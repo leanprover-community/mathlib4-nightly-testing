@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.LocallyConvex.SeparatingDual
 public import Mathlib.Analysis.Normed.Module.Multilinear.Basic
-
 import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-! # Completeness of spaces of linear and multilinear maps
@@ -26,13 +25,16 @@ open scoped Topology
 
 namespace SeparatingDual
 
-variable (𝕜 E F : Type*) [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    [NormedAddCommGroup F] [NormedSpace 𝕜 F] [SeparatingDual 𝕜 E] [Nontrivial E]
+variable
+  (𝕜 E F : Type*) [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F] [SeparatingDual 𝕜 E] [Nontrivial E]
 
-/-- If a space of linear maps from `E` to `F` is complete, and `E` is nontrivial, then `F` is
-complete. -/
-lemma completeSpace_of_completeSpace_continuousLinearMap [CompleteSpace (E →L[𝕜] F)] :
-    CompleteSpace F := by
+/--
+If a space of linear maps from `E` to `F` is complete, and `E` is nontrivial, then `F` is
+complete.
+-/
+lemma completeSpace_of_completeSpace_continuousLinearMap [CompleteSpace (E →L[𝕜] F)]
+    : CompleteSpace F := by
   refine Metric.complete_of_cauchySeq_tendsto fun f hf => ?_
   obtain ⟨v, hv⟩ : ∃ (v : E), v ≠ 0 := exists_ne 0
   obtain ⟨φ, hφ⟩ : ∃ φ : StrongDual 𝕜 E, φ v = 1 := exists_eq_one hv
@@ -45,27 +47,31 @@ lemma completeSpace_of_completeSpace_continuousLinearMap [CompleteSpace (E →L[
     exact (this.tendsto _).comp ha
   simpa [g, hφ]
 
-lemma completeSpace_continuousLinearMap_iff :
-    CompleteSpace (E →L[𝕜] F) ↔ CompleteSpace F :=
+lemma completeSpace_continuousLinearMap_iff : CompleteSpace (E →L[𝕜] F) ↔ CompleteSpace F :=
   ⟨fun _h ↦ completeSpace_of_completeSpace_continuousLinearMap 𝕜 E F, fun _h ↦ inferInstance⟩
 
 open ContinuousMultilinearMap
 
-variable {ι : Type*} [Finite ι] {M : ι → Type*} [∀ i, NormedAddCommGroup (M i)]
-  [∀ i, NormedSpace 𝕜 (M i)] [∀ i, SeparatingDual 𝕜 (M i)]
+variable
+  {ι : Type*} [Finite ι]
+  {M : ι → Type*}
+  [∀ i, NormedAddCommGroup (M i)] [∀ i, NormedSpace 𝕜 (M i)] [∀ i, SeparatingDual 𝕜 (M i)]
 
-/-- If a space of multilinear maps from `Π i, E i` to `F` is complete, and each `E i` has a nonzero
-element, then `F` is complete. -/
+/--
+If a space of multilinear maps from `Π i, E i` to `F` is complete, and each `E i` has a nonzero
+element, then `F` is complete.
+-/
 lemma completeSpace_of_completeSpace_continuousMultilinearMap
-    [CompleteSpace (ContinuousMultilinearMap 𝕜 M F)]
-    {m : ∀ i, M i} (hm : ∀ i, m i ≠ 0) : CompleteSpace F := by
+    [CompleteSpace (ContinuousMultilinearMap 𝕜 M F)] {m : ∀ i, M i} (hm : ∀ i, m i ≠ 0)
+    : CompleteSpace F := by
   refine Metric.complete_of_cauchySeq_tendsto fun f hf => ?_
   have : ∀ i, ∃ φ : StrongDual 𝕜 (M i), φ (m i) = 1 := fun i ↦ exists_eq_one (hm i)
   choose φ hφ using this
   cases nonempty_fintype ι
   let g : ℕ → (ContinuousMultilinearMap 𝕜 M F) := fun n ↦
     compContinuousLinearMapL φ
-    (ContinuousMultilinearMap.smulRightL 𝕜 _ F ((ContinuousMultilinearMap.mkPiAlgebra 𝕜 ι 𝕜)) (f n))
+      (ContinuousMultilinearMap.smulRightL 𝕜 _ F ((ContinuousMultilinearMap.mkPiAlgebra 𝕜 ι 𝕜))
+        (f n))
   have : CauchySeq g := by
     refine (ContinuousLinearMap.lipschitzWith _).cauchySeq_comp ?_
     exact (ContinuousLinearMap.lipschitzWith _).cauchySeq_comp hf
@@ -74,8 +80,8 @@ lemma completeSpace_of_completeSpace_continuousMultilinearMap
   have : Tendsto (fun n ↦ g n m) atTop (𝓝 (a m)) := ((continuous_eval_const _).tendsto _).comp ha
   simpa [g, hφ]
 
-lemma completeSpace_continuousMultilinearMap_iff {m : ∀ i, M i} (hm : ∀ i, m i ≠ 0) :
-    CompleteSpace (ContinuousMultilinearMap 𝕜 M F) ↔ CompleteSpace F :=
+lemma completeSpace_continuousMultilinearMap_iff {m : ∀ i, M i} (hm : ∀ i, m i ≠ 0)
+    : CompleteSpace (ContinuousMultilinearMap 𝕜 M F) ↔ CompleteSpace F :=
   ⟨fun _h ↦ completeSpace_of_completeSpace_continuousMultilinearMap 𝕜 F hm, fun _h ↦ inferInstance⟩
 
 end SeparatingDual

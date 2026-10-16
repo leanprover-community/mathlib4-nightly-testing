@@ -44,26 +44,29 @@ instance finPi (n) (π : Fin n → Type*) [∀ i, Encodable (π i)] : Encodable 
   ofEquiv _ (Equiv.piEquivSubtypeSigma (Fin n) π)
 
 -- TODO: Unify with `fintypePi` and find a better name
-/-- When `α` is finite and `β` is encodable, `α → β` is encodable too. Because the encoding is not
-unique, we wrap it in `Trunc` to preserve computability. -/
-def fintypeArrow (α : Type*) (β : Type*) [DecidableEq α] [Fintype α] [Encodable β] :
-    Trunc (Encodable (α → β)) :=
+/--
+When `α` is finite and `β` is encodable, `α → β` is encodable too. Because the encoding is not
+unique, we wrap it in `Trunc` to preserve computability.
+-/
+def fintypeArrow (α : Type*) (β : Type*) [DecidableEq α] [Fintype α] [Encodable β]
+    : Trunc (Encodable (α → β)) :=
   (Fintype.truncEquivFin α).map fun f =>
     Encodable.ofEquiv (Fin (Fintype.card α) → β) <| Equiv.arrowCongr f (Equiv.refl _)
 
-/-- When `α` is finite and all `π a` are encodable, `Π a, π a` is encodable too. Because the
-encoding is not unique, we wrap it in `Trunc` to preserve computability. -/
-def fintypePi (α : Type*) (π : α → Type*) [DecidableEq α] [Fintype α] [∀ a, Encodable (π a)] :
-    Trunc (Encodable (∀ a, π a)) :=
+/--
+When `α` is finite and all `π a` are encodable, `Π a, π a` is encodable too. Because the
+encoding is not unique, we wrap it in `Trunc` to preserve computability.
+-/
+def fintypePi (α : Type*) (π : α → Type*) [DecidableEq α] [Fintype α] [∀ a, Encodable (π a)]
+    : Trunc (Encodable (∀ a, π a)) :=
   (Fintype.truncEncodable α).bind fun a =>
     (@fintypeArrow α (Σ a, π a) _ _ (@Sigma.encodable _ _ a _)).bind fun f =>
       Trunc.mk <|
-        @Encodable.ofEquiv _ _ (@Subtype.encodable _ _ f _)
-          (Equiv.piEquivSubtypeSigma α π)
+        @Encodable.ofEquiv _ _ (@Subtype.encodable _ _ f _) (Equiv.piEquivSubtypeSigma α π)
 
 /-- If `α` and `β` are encodable and `α` is a fintype, then `α → β` is encodable as well. -/
-instance fintypeArrowOfEncodable {α β : Type*} [Encodable α] [Fintype α] [Encodable β] :
-    Encodable (α → β) :=
+instance fintypeArrowOfEncodable {α β : Type*} [Encodable α] [Fintype α] [Encodable β]
+    : Encodable (α → β) :=
   ofEquiv (Fin (Fintype.card α) → β) <| Equiv.arrowCongr fintypeEquivFin (Equiv.refl _)
 
 end Encodable

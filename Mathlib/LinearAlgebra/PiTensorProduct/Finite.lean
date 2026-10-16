@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Mathlib.RingTheory.Finiteness.Basic
-
 import Mathlib.LinearAlgebra.PiTensorProduct.Generators
 
 /-!
@@ -21,12 +20,15 @@ open TensorProduct
 
 namespace PiTensorProduct
 
-/-- The tensor product `⨂[R] i, M i` of a finite collection of finite modules `M i` over a
+/--
+The tensor product `⨂[R] i, M i` of a finite collection of finite modules `M i` over a
 `CommSemiring` is finite.
 -/
-instance finite {R : Type*} [CommSemiring R] {ι : Type*} [Finite ι] {M : ι → Type*}
-    [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)] [∀ i, Module.Finite R (M i)] :
-    Module.Finite R (⨂[R] i, M i) := by
+instance finite
+    {R : Type*} [CommSemiring R]
+    {ι : Type*} [Finite ι]
+    {M : ι → Type*} [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)] [∀ i, Module.Finite R (M i)]
+    : Module.Finite R (⨂[R] i, M i) := by
   choose n γ hg using fun i => Module.Finite.exists_fin (R := R) (M := M i)
   rw [Module.finite_def, ← submodule_span_eq_top hg]
   exact Submodule.fg_span (Set.finite_range _)

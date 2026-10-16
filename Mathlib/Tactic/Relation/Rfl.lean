@@ -6,7 +6,6 @@ Authors: Newell Jensen
 module
 
 public meta import Lean.Meta.Tactic.Rfl
-
 import Mathlib.Init
 
 /-!
@@ -22,8 +21,8 @@ namespace Mathlib.Tactic
 public section
 
 /-- Helper theorem for `Mathlib.Tactic.liftReflToEq`. -/
-theorem rel_of_eq_and_refl {α : Sort*} {R : α → α → Prop}
-    {x y : α} (hxy : x = y) (h : R x x) : R x y :=
+theorem rel_of_eq_and_refl {α : Sort*} {R : α → α → Prop} {x y : α} (hxy : x = y) (h : R x x)
+    : R x y :=
   hxy ▸ h
 
 end
@@ -39,19 +38,23 @@ If this can't be done, returns the original `MVarId`.
 -/
 def liftReflToEq (mvarId : MVarId) : MetaM MVarId := do
   mvarId.checkNotAssigned `liftReflToEq
-  let .app (.app rel _) _ ← withReducible mvarId.getType' | return mvarId
+  let .app (.app rel _) _ ← withReducible mvarId.getType'
+    | return mvarId
   if rel.isAppOf `Eq then
     -- No need to lift Eq to Eq
     return mvarId
   for lem in ← (reflExt.getState (← getEnv)).getMatch rel do
-    let res ← observing? do
-      -- First create an equality relating the LHS and RHS
-      -- and reduce the goal to proving that LHS is related to LHS.
-      let [mvarIdEq, mvarIdR] ←
-        mvarId.apply (← mkConstWithFreshMVarLevels ``Mathlib.Tactic.rel_of_eq_and_refl) | failure
-      -- Then fill in the proof of the latter by reflexivity.
-      let [] ← mvarIdR.apply (← mkConstWithFreshMVarLevels lem) | failure
-      return mvarIdEq
+    let res ←
+      observing? do
+        -- First create an equality relating the LHS and RHS
+        -- and reduce the goal to proving that LHS is related to LHS.
+        let [mvarIdEq, mvarIdR] ←
+            mvarId.apply (← mkConstWithFreshMVarLevels ``Mathlib.Tactic.rel_of_eq_and_refl)
+          | failure
+        -- Then fill in the proof of the latter by reflexivity.
+        let [] ← mvarIdR.apply (← mkConstWithFreshMVarLevels lem)
+          | failure
+        return mvarIdEq
     if let some mvarIdEq := res then
       return mvarIdEq
   return mvarId
@@ -60,12 +63,13 @@ def liftReflToEq (mvarId : MVarId) : MetaM MVarId := do
 This tactic applies to a goal whose target has the form `x ~ x`, where `~` is a reflexive
 relation, that is, a relation which has a reflexive lemma tagged with the attribute `@[refl]`.
 -/
-def rflTac : TacticM Unit :=
-  withMainContext do liftMetaFinishingTactic (·.applyRfl)
+def rflTac : TacticM Unit := withMainContext do liftMetaFinishingTactic (·.applyRfl)
 
-/-- If `e` is the form `@R .. x y`, where `R` is a reflexive
+/--
+If `e` is the form `@R .. x y`, where `R` is a reflexive
 relation, return `some (R, x, y)`.
-As a special case, if `e` is `@HEq α a β b`, return ``some (`HEq, a, b)``. -/
+As a special case, if `e` is `@HEq α a β b`, return ``some (`HEq, a, b)``.
+-/
 def _root_.Lean.Expr.relSidesIfRefl? (e : Expr) : MetaM (Option (Name × Expr × Expr)) := do
   if let some (_, lhs, rhs) := e.eq? then
     return (``Eq, lhs, rhs)

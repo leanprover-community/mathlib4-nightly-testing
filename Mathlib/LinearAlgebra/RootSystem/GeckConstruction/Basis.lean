@@ -6,7 +6,7 @@ Authors: Oliver Nash
 module
 
 public import Mathlib.Algebra.Lie.Basis.Base
-public import Mathlib.Algebra.Lie.CartanExists  -- shake: keep (used in `example` only)
+public import Mathlib.Algebra.Lie.CartanExists -- shake: keep (used in `example` only)
 public import Mathlib.Algebra.Lie.Weights.IsSimple
 public import Mathlib.LinearAlgebra.RootSystem.GeckConstruction.Relations
 public import Mathlib.LinearAlgebra.RootSystem.GeckConstruction.Semisimple
@@ -40,16 +40,16 @@ variable {K : Type*} [Field K] [CharZero K]
 
 section LeftInverse
 
-variable {ι M N : Type*} [Fintype ι] [DecidableEq ι]
-  [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+variable
+  {ι M N : Type*}
+  [Fintype ι] [DecidableEq ι] [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
   {P : RootPairing ι K M N} [P.IsReduced] [P.IsCrystallographic] [P.IsIrreducible] [P.IsRootSystem]
   (b : P.Base)
 
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 /-- The Geck construction yields a basis of the Lie algebra it constructs. -/
-def basis :
-    LieAlgebra.Basis b.support (cartanSubalgebra' b) where
+def basis : LieAlgebra.Basis b.support (cartanSubalgebra' b) where
   A := b.cartanMatrix
   h i := ⟨h i, h_mem_lieAlgebra i⟩
   e i := ⟨e i, e_mem_lieAlgebra i⟩
@@ -63,10 +63,12 @@ def basis :
     exact linearIndependent_h b
   sl2 i :=
     let t := isSl2Triple i
-    { h_ne_zero := by simp [Subtype.ext_iff, t.h_ne_zero]
+    {
+      h_ne_zero := by simp [Subtype.ext_iff, t.h_ne_zero]
       lie_e_f := by simp [Subtype.ext_iff, t.lie_e_f]
       lie_h_e_nsmul := by simp [Subtype.ext_iff, t.lie_h_e_nsmul]
-      lie_h_f_nsmul := by simp [Subtype.ext_iff, t.lie_h_f_nsmul] }
+      lie_h_f_nsmul := by simp [Subtype.ext_iff, t.lie_h_f_nsmul]
+    }
   lie_h_h i j := by simp [Subtype.ext_iff, lie_h_h]
   lie_h_e i j := by simp [Subtype.ext_iff, lie_h_e]
   lie_h_f i j := by simp [Subtype.ext_iff, lie_h_f]
@@ -76,8 +78,8 @@ def basis :
     let e₀ (i : b.support) : lieAlgebra b := ⟨e i, e_mem_lieAlgebra i⟩
     let f₀ (i : b.support) : lieAlgebra b := ⟨f i, f_mem_lieAlgebra i⟩
     change LieSubalgebra.lieSpan K (lieAlgebra b) (range e₀ ∪ range f₀) = ⊤
-    suffices LieSubalgebra.lieSpan K (lieAlgebra b) (range e₀ ∪ range f₀) =
-        LieSubalgebra.lieSpan K (lieAlgebra b) (range h₀ ∪ range e₀ ∪ range f₀) by
+    suffices LieSubalgebra.lieSpan K (lieAlgebra b) (range e₀ ∪ range f₀)
+        = LieSubalgebra.lieSpan K (lieAlgebra b) (range h₀ ∪ range e₀ ∪ range f₀) by
       have hr : range h₀ ∪ range e₀ ∪ range f₀ = Subtype.val ⁻¹' (range h ∪ range e ∪ range f) := by
         aesop
       rw [this, hr]
@@ -89,8 +91,7 @@ def basis :
     rintro - ⟨i, rfl⟩
     have hef : h₀ i = ⁅e₀ i, f₀ i⁆ := by ext1; simp [h₀, e₀, f₀, (isSl2Triple i).lie_e_f]
     rw [hef]
-    apply LieSubalgebra.lie_mem <;>
-      exact LieSubalgebra.subset_lieSpan <| by simp
+    apply LieSubalgebra.lie_mem <;> exact LieSubalgebra.subset_lieSpan <| by simp
 
 @[simp] lemma basis_A_eq : (basis b).A = b.cartanMatrix := rfl
 
@@ -100,10 +101,11 @@ variable [IsAlgClosed K]
 
 open LieAlgebra LieAlgebra.IsKilling
 
-/-- Up to equivalence, `LieAlgebra.IsKilling.rootSystem` is left inverse to
-`RootPairing.GeckConstruction.lieAlgebra`. -/
-def equivRootSystem :
-    P.Equiv (rootSystem (cartanSubalgebra' b)) :=
+/--
+Up to equivalence, `LieAlgebra.IsKilling.rootSystem` is left inverse to
+`RootPairing.GeckConstruction.lieAlgebra`.
+-/
+def equivRootSystem : P.Equiv (rootSystem (cartanSubalgebra' b)) :=
   b.equivOfCartanMatrixEq _ (basis b).baseSupportEquiv <| by simp [(basis b).cartanMatrix_base_eq]
 
 instance : IsSimple K (lieAlgebra b) := by
@@ -116,22 +118,25 @@ section RightInverse
 
 open LieAlgebra LieAlgebra.IsKilling
 
-variable [IsAlgClosed K]
-  {L : Type*} [LieRing L] [LieAlgebra K L] [FiniteDimensional K L] [IsSimple K L]
+variable
+  [IsAlgClosed K] {L : Type*} [LieRing L] [LieAlgebra K L] [FiniteDimensional K L] [IsSimple K L]
 
 open scoped Classical in
-/-- `LieAlgebra.IsKilling.rootSystem` is right inverse to `RootPairing.GeckConstruction.lieAlgebra`.
+/--
+`LieAlgebra.IsKilling.rootSystem` is right inverse to `RootPairing.GeckConstruction.lieAlgebra`.
 -/
-def equivLieAlgebra (H : LieSubalgebra K L) [H.IsCartanSubalgebra] (b : (rootSystem H).Base) :
-    L ≃ₗ⁅K⁆ lieAlgebra b :=
+def equivLieAlgebra (H : LieSubalgebra K L) [H.IsCartanSubalgebra] (b : (rootSystem H).Base)
+    : L ≃ₗ⁅K⁆ lieAlgebra b :=
   equivOfRootSystemEquiv <| equivRootSystem b
 
 open scoped Classical in
-/-- Every finite-dimensional simple Lie algebra arises from a root system via Geck's construction.
+/--
+Every finite-dimensional simple Lie algebra arises from a root system via Geck's construction.
 
-(Provided the coefficients are an algebraically-closed field of characteristic zero.) -/
-example :
-    ∃ (H : LieSubalgebra K L) (_ : H.IsCartanSubalgebra) (b : (rootSystem H).Base),
+(Provided the coefficients are an algebraically-closed field of characteristic zero.)
+-/
+example
+    : ∃ (H : LieSubalgebra K L) (_ : H.IsCartanSubalgebra) (b : (rootSystem H).Base),
       Nonempty (L ≃ₗ⁅K⁆ lieAlgebra b) := by
   obtain ⟨x, hx⟩ := exists_isCartanSubalgebra_engel K L
   obtain ⟨b⟩ := (rootSystem (LieSubalgebra.engel K x)).nonempty_base

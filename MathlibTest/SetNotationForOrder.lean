@@ -83,7 +83,6 @@ variable (a b : List Nat) in
 variable (a b : Set Nat) in
 #check a ⊃ b
 
-
 -- `⊆` is not elaborated to `LE.le` even if that is the only valid relation on this type
 variable (a b : Nat) in
 /--
@@ -126,7 +125,8 @@ example (a b : Set Nat) : True ∨ True ∨ a ⊆ b := by
   fail_if_success rw [or_comm (b := _ ⊆ _)]
   -- We need to use `≤` to do the rewrite.
   rw [or_comm (b := _ ≤ _)]
-  left; trivial
+  left
+  trivial
 
 /--
 warning: Ambiguous use of subset notation: the type is a metavariable.
@@ -141,7 +141,8 @@ example (a b : List Nat) : True ∨ True ∨ a ⊆ b := by
   fail_if_success rw [or_comm (b := _ ⊆ _)]
   -- `simp_rw` succeeds, because `simp` forces the simp lemma to be fully elaborated.
   simp_rw [or_comm (b := _ ⊆ _)]
-  left; trivial
+  left
+  trivial
 
 end Elab
 

@@ -24,16 +24,15 @@ instance module_finite_of_liesOver [Module.Finite A B] : Module.Finite (A ⧸ p)
 example [Module.Finite A B] : Module.Finite (A ⧸ P.under A) (B ⧸ P) := inferInstance
 
 /-- `B ⧸ P` is a finitely generated `A ⧸ p`-algebra if `B` is a finitely generated `A`-algebra. -/
-instance algebra_finiteType_of_liesOver [Algebra.FiniteType A B] :
-    Algebra.FiniteType (A ⧸ p) (B ⧸ P) :=
+instance algebra_finiteType_of_liesOver [Algebra.FiniteType A B]
+    : Algebra.FiniteType (A ⧸ p) (B ⧸ P) :=
   Algebra.FiniteType.of_restrictScalars_finiteType A (A ⧸ p) (B ⧸ P)
 
 /-- `B ⧸ P` is a Noetherian `A ⧸ p`-module if `B` is a Noetherian `A`-module. -/
 instance isNoetherian_of_liesOver [IsNoetherian A B] : IsNoetherian (A ⧸ p) (B ⧸ P) :=
   isNoetherian_of_tower A inferInstance
 
-instance QuotientMapQuotient.isNoetherian [IsNoetherian A B] :
-    IsNoetherian (A ⧸ p) (B ⧸ p.map (algebraMap A B)) :=
-  isNoetherian_of_tower A <|
-    isNoetherian_of_surjective (Ideal.Quotient.mkₐ A _).toLinearMap <|
-      LinearMap.range_eq_top.mpr Ideal.Quotient.mk_surjective
+instance QuotientMapQuotient.isNoetherian [IsNoetherian A B]
+    : IsNoetherian (A ⧸ p) (B ⧸ p.map (algebraMap A B)) :=
+  isNoetherian_of_tower A <| isNoetherian_of_surjective (Ideal.Quotient.mkₐ A _).toLinearMap <|
+    LinearMap.range_eq_top.mpr Ideal.Quotient.mk_surjective

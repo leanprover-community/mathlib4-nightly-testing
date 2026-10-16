@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.MetricSpace.Basic
 public import Mathlib.Topology.Order.Real
-
 import Mathlib.Topology.Order.MonotoneContinuity
 
 /-!

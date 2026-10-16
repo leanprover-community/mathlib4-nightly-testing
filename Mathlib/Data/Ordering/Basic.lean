@@ -19,12 +19,17 @@ namespace Ordering
 
 variable {α : Type*}
 
-/-- `Compares o a b` means that `a` and `b` have the ordering relation `o` between them, assuming
-that the relation `a < b` is defined. -/
+/--
+`Compares o a b` means that `a` and `b` have the ordering relation `o` between them, assuming
+that the relation `a < b` is defined.
+-/
 def Compares [LT α] : Ordering → α → α → Prop
-  | lt, a, b => a < b
-  | eq, a, b => a = b
-  | gt, a, b => a > b
+  | lt, a, b =>
+    a < b
+  | eq, a, b =>
+    a = b
+  | gt, a, b =>
+    a > b
 
 @[simp] lemma compares_lt [LT α] (a b : α) : Compares lt a b = (a < b) := rfl
 
@@ -32,12 +37,16 @@ def Compares [LT α] : Ordering → α → α → Prop
 
 @[simp] lemma compares_gt [LT α] (a b : α) : Compares gt a b = (a > b) := rfl
 
-/-- `o₁.dthen fun h => o₂(h)` is like `o₁.then o₂` but `o₂` is allowed to depend on
-`h : o₁ = .eq`. -/
-@[macro_inline] def dthen :
-    (o : Ordering) → (o = .eq → Ordering) → Ordering
-  | .eq, f => f rfl
-  | o, _ => o
+/--
+`o₁.dthen fun h => o₂(h)` is like `o₁.then o₂` but `o₂` is allowed to depend on
+`h : o₁ = .eq`.
+-/
+@[macro_inline]
+def dthen : (o : Ordering) → (o = .eq → Ordering) → Ordering
+  | .eq, f =>
+    f rfl
+  | o, _ =>
+    o
 
 end Ordering
 
@@ -46,11 +55,15 @@ Lift a decidable relation to an `Ordering`,
 assuming that incomparable terms are `Ordering.eq`.
 -/
 def cmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
-  if lt a b then Ordering.lt else if lt b a then Ordering.gt else Ordering.eq
+  if lt a b then
+    Ordering.lt
+  else if lt b a then
+    Ordering.gt
+  else
+    Ordering.eq
 
 /--
 Construct an `Ordering` from a type with a decidable `LT` instance,
 assuming that incomparable terms are `Ordering.eq`.
 -/
-def cmp {α : Type u} [LT α] [DecidableLT α] (a b : α) : Ordering :=
-  cmpUsing (· < ·) a b
+def cmp {α : Type u} [LT α] [DecidableLT α] (a b : α) : Ordering := cmpUsing (· < ·) a b

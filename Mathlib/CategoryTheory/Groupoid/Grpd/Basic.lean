@@ -35,33 +35,25 @@ namespace CategoryTheory
 -- intended to be used with explicit universe parameters
 set_option linter.checkUnivs false in
 /-- Category of groupoids -/
-def Grpd :=
-  Bundled Groupoid.{v, u}
+def Grpd := Bundled Groupoid.{v, u}
 
 namespace Grpd
 
-instance : Inhabited Grpd :=
-  ⟨Bundled.of (SingleObj PUnit)⟩
+instance : Inhabited Grpd := ⟨Bundled.of (SingleObj PUnit)⟩
 
+instance str' (C : Grpd.{v, u}) : Groupoid.{v, u} C.α := C.str
 
-instance str' (C : Grpd.{v, u}) : Groupoid.{v, u} C.α :=
-  C.str
-
-instance : CoeSort Grpd Type* :=
-  Bundled.coeSort
+instance : CoeSort Grpd Type* := Bundled.coeSort
 
 /-- Construct a bundled `Grpd` from the underlying type and the typeclass `Groupoid`. -/
-def of (C : Type u) [Groupoid.{v} C] : Grpd.{v, u} :=
-  Bundled.of C
+def of (C : Type u) [Groupoid.{v} C] : Grpd.{v, u} := Bundled.of C
 
 open Lean.PrettyPrinter.Delaborator in
 /-- This prints `CategoryTheory.Grpd.of X` as `↧X`. -/
 @[app_delab CategoryTheory.Grpd.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-@[simp]
-theorem coe_of (C : Type u) [Groupoid C] : (of C : Type u) = C :=
-  rfl
+@[simp] theorem coe_of (C : Type u) [Groupoid C] : (of C : Type u) = C := rfl
 
 /-- Category structure on `Grpd` -/
 instance category : LargeCategory.{max v u} Grpd.{v, u} where
@@ -72,8 +64,10 @@ instance category : LargeCategory.{max v u} Grpd.{v, u} where
   comp_id _ := rfl
   assoc := by intros; rfl
 
-/-- Functor that gets the set of objects of a groupoid. It is not
-called `forget`, because it is not a faithful functor. -/
+/--
+Functor that gets the set of objects of a groupoid. It is not
+called `forget`, because it is not a faithful functor.
+-/
 def objects : Grpd.{v, u} ⥤ Type u where
   obj C := Bundled.α C
   map F := ↾F.obj
@@ -85,19 +79,20 @@ def forgetToCat : Grpd.{v, u} ⥤ Cat.{v, u} where
 
 instance (X : Grpd) : Groupoid (Grpd.forgetToCat.obj X) := inferInstanceAs (Groupoid X)
 
-instance forgetToCat_full : forgetToCat.Full where map_surjective f := ⟨f.toFunctor, rfl⟩
+instance forgetToCat_full : forgetToCat.Full where
+  map_surjective f := ⟨f.toFunctor, rfl⟩
 
 instance forgetToCat_faithful : forgetToCat.Faithful where
   map_injective := congrArg (Cat.Hom.toFunctor)
 
-/-- Convert arrows in the category of groupoids to functors,
-which sometimes helps in applying simp lemmas -/
-theorem comp_eq_comp {C D E : Grpd.{v, u}} (f : C ⟶ D) (g : D ⟶ E) : f ≫ g = f ⋙ g :=
-  rfl
+/--
+Convert arrows in the category of groupoids to functors,
+which sometimes helps in applying simp lemmas
+-/
+theorem comp_eq_comp {C D E : Grpd.{v, u}} (f : C ⟶ D) (g : D ⟶ E) : f ≫ g = f ⋙ g := rfl
 
 /-- Converts identity in the category of groupoids to the functor identity -/
-theorem id_eq_id {C : Grpd.{v, u}} : 𝟙 C = 𝟭 C :=
-  rfl
+theorem id_eq_id {C : Grpd.{v, u}} : 𝟙 C = 𝟭 C := rfl
 
 section Products
 
@@ -109,7 +104,8 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The product fan over an indexed family of groupoids, is a limit cone. -/
 def piLimitFanIsLimit ⦃J : Type u⦄ (F : J → Grpd.{u, u}) : Limits.IsLimit (piLimitFan F) :=
-  Limits.Fan.IsLimit.mk (piLimitFan F) (fun s => Functor.pi' fun j => s.proj j)
+  Limits.Fan.IsLimit.mk (piLimitFan F)
+    (fun s => Functor.pi' fun j => s.proj j)
     (by
       intros
       dsimp only [piLimitFan]
@@ -117,22 +113,25 @@ def piLimitFanIsLimit ⦃J : Type u⦄ (F : J → Grpd.{u, u}) : Limits.IsLimit 
     (by
       intro s m w
       apply Functor.pi_ext
-      intro j; specialize w j
+      intro j
+      specialize w j
       simpa)
 
 instance has_pi : Limits.HasProducts.{u} Grpd.{u, u} :=
   Limits.hasProducts_of_limit_fans (by apply piLimitFan) (by apply piLimitFanIsLimit)
 
-/-- The product of a family of groupoids is isomorphic
-to the product object in the category of Groupoids -/
+/--
+The product of a family of groupoids is isomorphic
+to the product object in the category of Groupoids
+-/
 noncomputable def piIsoPi (J : Type u) (f : J → Grpd.{u, u}) : @of (∀ j, f j) _ ≅ ∏ᶜ f :=
   Limits.IsLimit.conePointUniqueUpToIso (piLimitFanIsLimit f)
     (Limits.limit.isLimit (Discrete.functor f))
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem piIsoPi_hom_π (J : Type u) (f : J → Grpd.{u, u}) (j : J) :
-    (piIsoPi J f).hom ≫ Limits.Pi.π f j = CategoryTheory.Pi.eval _ j := by
+theorem piIsoPi_hom_π (J : Type u) (f : J → Grpd.{u, u}) (j : J)
+    : (piIsoPi J f).hom ≫ Limits.Pi.π f j = CategoryTheory.Pi.eval _ j := by
   simp [piIsoPi]
   rfl
 

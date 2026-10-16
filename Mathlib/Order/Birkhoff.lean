@@ -8,7 +8,6 @@ module
 public import Mathlib.Data.Fintype.Order
 public import Mathlib.Order.Irreducible
 public import Mathlib.Order.UpperLower.Closure
-
 import Mathlib.Order.Interval.Finset.Basic
 
 /-!
@@ -68,8 +67,9 @@ lemma supIrred_Iic (a : α) : SupIrred (Iic a) := by
   refine ⟨fun h ↦ Iic_ne_bot h.eq_bot, fun s t hst ↦ ?_⟩
   have := mem_Iic_iff.2 (le_refl a)
   rw [← hst] at this
-  exact this.imp (fun ha ↦ (le_sup_left.trans_eq hst).antisymm <| Iic_le.2 ha) fun ha ↦
-    (le_sup_right.trans_eq hst).antisymm <| Iic_le.2 ha
+  exact this.imp
+    (fun ha ↦ (le_sup_left.trans_eq hst).antisymm <| Iic_le.2 ha)
+    fun ha ↦ (le_sup_right.trans_eq hst).antisymm <| Iic_le.2 ha
 
 variable [Finite α]
 
@@ -77,8 +77,11 @@ variable [Finite α]
 lemma supIrred_iff_of_finite : SupIrred s ↔ ∃ a, Iic a = s := by
   refine ⟨fun hs ↦ ?_, ?_⟩
   · obtain ⟨a, ha, has⟩ := (s : Set α).toFinite.exists_maximal (coe_nonempty.2 hs.ne_bot)
-    exact ⟨a, (hs.2 <| erase_sup_Iic ha fun b hb ↦
-      le_imp_eq_iff_le_imp_ge'.2 <| has hb).resolve_left (erase_lt.2 ha).ne⟩
+    exact ⟨
+      a,
+      (hs.2 <| erase_sup_Iic ha fun b hb ↦ le_imp_eq_iff_le_imp_ge'.2 <| has hb).resolve_left
+        (erase_lt.2 ha).ne
+    ⟩
   · rintro ⟨a, rfl⟩
     exact supIrred_Iic _
 
@@ -86,10 +89,12 @@ end LowerSet
 
 namespace OrderEmbedding
 
-/-- The **Birkhoff Embedding** of a finite partial order as sup-irreducible elements in its
-lattice of lower sets. -/
+/--
+The **Birkhoff Embedding** of a finite partial order as sup-irreducible elements in its
+lattice of lower sets.
+-/
 @[to_dual
-/-- The **Birkhoff Embedding** of a finite partial order as inf-irreducible elements in its
+  /-- The **Birkhoff Embedding** of a finite partial order as inf-irreducible elements in its
 lattice of lower sets. -/]
 def supIrredLowerSet : α ↪o {s : LowerSet α // SupIrred s} where
   toFun a := ⟨Iic a, supIrred_Iic _⟩
@@ -110,10 +115,12 @@ end OrderEmbedding
 namespace OrderIso
 variable [Finite α]
 
-/-- **Birkhoff Representation for partial orders.** Any partial order is isomorphic
-to the partial order of sup-irreducible elements in its lattice of lower sets. -/
+/--
+**Birkhoff Representation for partial orders.** Any partial order is isomorphic
+to the partial order of sup-irreducible elements in its lattice of lower sets.
+-/
 @[to_dual
-/-- **Birkhoff Representation for partial orders.** Any partial order is isomorphic
+  /-- **Birkhoff Representation for partial orders.** Any partial order is isomorphic
 to the partial order of inf-irreducible elements in its lattice of upper sets. -/]
 noncomputable def supIrredLowerSet : α ≃o {s : LowerSet α // SupIrred s} :=
   RelIso.ofSurjective _ OrderEmbedding.supIrredLowerSet_surjective
@@ -129,8 +136,8 @@ section SemilatticeSup
 variable [SemilatticeSup α] [OrderBot α] [Finite α]
 
 @[to_dual (attr := simp)]
-lemma supIrredLowerSet_symm_apply (s : {s : LowerSet α // SupIrred s}) [Fintype s] :
-    supIrredLowerSet.symm s = (s.1 : Set α).toFinset.sup id := by
+lemma supIrredLowerSet_symm_apply (s : {s : LowerSet α // SupIrred s}) [Fintype s]
+    : supIrredLowerSet.symm s = (s.1 : Set α).toFinset.sup id := by
   classical
   obtain ⟨s, hs⟩ := s
   obtain ⟨a, rfl⟩ := supIrred_iff_of_finite.1 hs
@@ -145,11 +152,14 @@ section DistribLattice
 variable [DistribLattice α] [Fintype α] [@DecidablePred α SupIrred]
 
 open scoped Classical in
-/-- **Birkhoff Representation for finite distributive lattices**. Any nonempty finite distributive
-lattice is isomorphic to the lattice of lower sets of its sup-irreducible elements. -/
+/--
+**Birkhoff Representation for finite distributive lattices**. Any nonempty finite distributive
+lattice is isomorphic to the lattice of lower sets of its sup-irreducible elements.
+-/
 noncomputable def OrderIso.lowerSetSupIrred [OrderBot α] : α ≃o LowerSet {a : α // SupIrred a} :=
   Equiv.toOrderIso
-    { toFun := fun a ↦ ⟨{b | ↑b ≤ a}, fun _ _ hcb hba ↦ hba.trans' hcb⟩
+    {
+      toFun := fun a ↦ ⟨{b | ↑b ≤ a}, fun _ _ hcb hba ↦ hba.trans' hcb⟩
       invFun := fun s ↦ (s : Set {a : α // SupIrred a}).toFinset.sup (↑)
       left_inv := fun a ↦ by
         refine le_antisymm (Finset.sup_le fun b ↦ Set.mem_toFinset.1) ?_
@@ -162,51 +172,62 @@ noncomputable def OrderIso.lowerSetSupIrred [OrderBot α] : α ≃o LowerSet {a 
         refine ⟨fun ha ↦ ?_, fun ha ↦ ?_⟩
         · obtain ⟨i, hi, ha⟩ := a.2.supPrime.le_finset_sup.1 ha
           exact s.lower ha (Set.mem_toFinset.1 hi)
-        · exact le_sup (Set.mem_toFinset.2 ha) }
-    (fun _ _ hbc _ ↦ le_trans' hbc) fun _ _ hst ↦ Finset.sup_mono <| Set.toFinset_mono hst
+        · exact le_sup (Set.mem_toFinset.2 ha)
+    }
+    (fun _ _ hbc _ ↦ le_trans' hbc)
+    fun _ _ hst ↦ Finset.sup_mono <| Set.toFinset_mono hst
 
 namespace OrderEmbedding
 
-/-- **Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
-powerset lattice. -/
+/--
+**Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
+powerset lattice.
+-/
 noncomputable def birkhoffSet : α ↪o Set {a : α // SupIrred a} := by
   by_cases! h : IsEmpty α
   · exact OrderEmbedding.ofIsEmpty
   have := Fintype.toOrderBot α
   exact OrderIso.lowerSetSupIrred.toOrderEmbedding.trans ⟨⟨_, SetLike.coe_injective⟩, Iff.rfl⟩
 
-/-- **Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
-powerset lattice. -/
+/--
+**Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
+powerset lattice.
+-/
 noncomputable def birkhoffFinset : α ↪o Finset {a : α // SupIrred a} := by
   exact birkhoffSet.trans Fintype.finsetOrderIsoSet.symm.toOrderEmbedding
 
-@[simp] lemma coe_birkhoffFinset (a : α) : birkhoffFinset a = birkhoffSet a := by
+@[simp]
+lemma coe_birkhoffFinset (a : α) : birkhoffFinset a = birkhoffSet a := by
   classical
   -- TODO: This should be a single `simp` call but `simp` refuses to use
   -- `OrderIso.coe_toOrderEmbedding` and `Fintype.coe_finsetOrderIsoSet_symm`
   simp [birkhoffFinset, (OrderIso.coe_toOrderEmbedding)]
 
-@[simp] lemma birkhoffSet_sup (a b : α) : birkhoffSet (a ⊔ b) = birkhoffSet a ∪ birkhoffSet b := by
+@[simp]
+lemma birkhoffSet_sup (a b : α) : birkhoffSet (a ⊔ b) = birkhoffSet a ∪ birkhoffSet b := by
   unfold OrderEmbedding.birkhoffSet; split <;> simp [eq_iff_true_of_subsingleton]
 
-@[simp] lemma birkhoffSet_inf (a b : α) : birkhoffSet (a ⊓ b) = birkhoffSet a ∩ birkhoffSet b := by
+@[simp]
+lemma birkhoffSet_inf (a b : α) : birkhoffSet (a ⊓ b) = birkhoffSet a ∩ birkhoffSet b := by
   unfold OrderEmbedding.birkhoffSet; split <;> simp [eq_iff_true_of_subsingleton]
 
-@[simp] lemma birkhoffSet_apply [OrderBot α] (a : α) :
-    birkhoffSet a = OrderIso.lowerSetSupIrred a := by
+@[simp]
+lemma birkhoffSet_apply [OrderBot α] (a : α) : birkhoffSet a = OrderIso.lowerSetSupIrred a := by
   have : Subsingleton (OrderBot α) := inferInstance
   simp +instances [birkhoffSet, this.allEq]
 
 variable [DecidableEq α]
 
-@[simp] lemma birkhoffFinset_sup (a b : α) :
-    birkhoffFinset (a ⊔ b) = birkhoffFinset a ∪ birkhoffFinset b := by
+@[simp]
+lemma birkhoffFinset_sup (a b : α)
+    : birkhoffFinset (a ⊔ b) = birkhoffFinset a ∪ birkhoffFinset b := by
   classical
   dsimp [OrderEmbedding.birkhoffFinset]
   simp [birkhoffSet_sup]
 
-@[simp] lemma birkhoffFinset_inf (a b : α) :
-    birkhoffFinset (a ⊓ b) = birkhoffFinset a ∩ birkhoffFinset b := by
+@[simp]
+lemma birkhoffFinset_inf (a b : α)
+    : birkhoffFinset (a ⊓ b) = birkhoffFinset a ∩ birkhoffFinset b := by
   classical
   dsimp [OrderEmbedding.birkhoffFinset]
   simp [birkhoffSet_inf]
@@ -215,16 +236,20 @@ end OrderEmbedding
 
 namespace LatticeHom
 
-/-- **Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
-powerset lattice. -/
+/--
+**Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
+powerset lattice.
+-/
 noncomputable def birkhoffSet : LatticeHom α (Set {a : α // SupIrred a}) where
   toFun := OrderEmbedding.birkhoffSet
   map_sup' := OrderEmbedding.birkhoffSet_sup
   map_inf' := OrderEmbedding.birkhoffSet_inf
 
 open scoped Classical in
-/-- **Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
-powerset lattice. -/
+/--
+**Birkhoff's Representation Theorem**. Any finite distributive lattice can be embedded in a
+powerset lattice.
+-/
 noncomputable def birkhoffFinset : LatticeHom α (Finset {a : α // SupIrred a}) where
   toFun := OrderEmbedding.birkhoffFinset
   map_sup' := OrderEmbedding.birkhoffFinset_sup
@@ -235,8 +260,8 @@ lemma birkhoffFinset_injective : Injective (birkhoffFinset (α := α)) :=
 
 end LatticeHom
 
-lemma exists_birkhoff_representation.{u} (α : Type u) [Finite α] [DistribLattice α] :
-    ∃ (β : Type u) (_ : DecidableEq β) (_ : Fintype β) (f : LatticeHom α (Finset β)),
+lemma exists_birkhoff_representation.{u} (α : Type u) [Finite α] [DistribLattice α]
+    : ∃ (β : Type u) (_ : DecidableEq β) (_ : Fintype β) (f : LatticeHom α (Finset β)),
       Injective f := by
   classical
   cases nonempty_fintype α

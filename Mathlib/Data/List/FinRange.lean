@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Kenny Lau, Kim Morrison, Alex Keizer
 module
 
 public import Mathlib.Data.Fin.Tuple.Basic
-
 import Mathlib.Data.List.Nodup
 
 /-!
@@ -25,27 +24,26 @@ namespace List
 
 variable {α : Type u}
 
-
 @[simp]
 lemma count_finRange {n : ℕ} (a : Fin n) : count a (finRange n) = 1 := by
   simp [List.Nodup.count (nodup_finRange n)]
 
-@[simp] theorem idxOf_finRange {k : ℕ} (i : Fin k) : (finRange k).idxOf i = i := by
+@[simp]
+theorem idxOf_finRange {k : ℕ} (i : Fin k) : (finRange k).idxOf i = i := by
   simpa using (nodup_finRange k).idxOf_getElem i
 
-theorem ofFn_eq_pmap {n} {f : Fin n → α} :
-    ofFn f = pmap (fun i hi => f ⟨i, hi⟩) (range n) fun _ => mem_range.1 := by
+theorem ofFn_eq_pmap {n} {f : Fin n → α}
+    : ofFn f = pmap (fun i hi => f ⟨i, hi⟩) (range n) fun _ => mem_range.1 := by
   ext
   grind
 
-theorem ofFn_id (n) : ofFn id = finRange n :=
-  (rfl)
+theorem ofFn_id (n) : ofFn id = finRange n := (rfl)
 
 theorem ofFn_eq_map {n} {f : Fin n → α} : ofFn f = (finRange n).map f := by
   rw [← ofFn_id, map_ofFn, Function.comp_id]
 
-theorem nodup_ofFn_ofInjective {n} {f : Fin n → α} (hf : Function.Injective f) :
-    Nodup (ofFn f) := by
+theorem nodup_ofFn_ofInjective {n} {f : Fin n → α} (hf : Function.Injective f)
+    : Nodup (ofFn f) := by
   rw [ofFn_eq_pmap]
   exact nodup_range.pmap fun _ _ _ _ H => Fin.val_eq_of_eq <| hf H
 
@@ -63,14 +61,16 @@ end List
 
 open List
 
-theorem Equiv.Perm.map_finRange_perm {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    map σ (finRange n) ~ finRange n := by
+theorem Equiv.Perm.map_finRange_perm {n : ℕ} (σ : Equiv.Perm (Fin n))
+    : map σ (finRange n) ~ finRange n := by
   rw [perm_ext_iff_of_nodup ((nodup_finRange n).map σ.injective) <| nodup_finRange n]
   simpa [mem_map, mem_finRange] using! σ.surjective
 
-/-- The list obtained from a permutation of a tuple `f` is permutation equivalent to
-the list obtained from `f`. -/
-theorem Equiv.Perm.ofFn_comp_perm {n : ℕ} {α : Type u} (σ : Equiv.Perm (Fin n)) (f : Fin n → α) :
-    ofFn (f ∘ σ) ~ ofFn f := by
+/--
+The list obtained from a permutation of a tuple `f` is permutation equivalent to
+the list obtained from `f`.
+-/
+theorem Equiv.Perm.ofFn_comp_perm {n : ℕ} {α : Type u} (σ : Equiv.Perm (Fin n)) (f : Fin n → α)
+    : ofFn (f ∘ σ) ~ ofFn f := by
   rw [ofFn_eq_map, ofFn_eq_map, ← map_map]
   exact σ.map_finRange_perm.map f

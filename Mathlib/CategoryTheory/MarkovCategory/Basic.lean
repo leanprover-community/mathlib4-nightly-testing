@@ -67,8 +67,7 @@ theorem eq_discard (X : C) (f : X ⟶ 𝟙_ C) : f = ε[X] := by
   rw [← Category.comp_id f, ← discard_unit, discard_natural]
 
 /-- The monoidal unit is a terminal object. -/
-def isTerminalUnit : IsTerminal (𝟙_ C) :=
-  IsTerminal.ofUniqueHom _ eq_discard
+def isTerminalUnit : IsTerminal (𝟙_ C) := IsTerminal.ofUniqueHom _ eq_discard
 
 /-- There is a unique morphism to the unit (it is terminal). -/
 instance (X : C) : Subsingleton (X ⟶ 𝟙_ C) where

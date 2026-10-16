@@ -36,17 +36,17 @@ namespace Functor
 
 variable (F : J ⥤ Type w₀)
 
-lemma eqvGen_colimitTypeRel_iff_of_isFiltered
-    (x y : (j : J) × (F.obj j)) :
-    Relation.EqvGen F.ColimitTypeRel x y ↔
-      ∃ (k : J) (f : x.1 ⟶ k) (g : y.1 ⟶ k), F.map f x.2 = F.map g y.2 := by
+lemma eqvGen_colimitTypeRel_iff_of_isFiltered (x y : (j : J) × (F.obj j))
+    : Relation.EqvGen F.ColimitTypeRel x y
+      ↔ ∃ (k : J) (f : x.1 ⟶ k) (g : y.1 ⟶ k), F.map f x.2 = F.map g y.2 := by
   constructor
   · intro h
     induction h with
     | rel x y h =>
       obtain ⟨f, h⟩ := h
       exact ⟨y.1, f, 𝟙 _, by simpa using h.symm⟩
-    | refl x => exact ⟨x.1, 𝟙 _, 𝟙 _, rfl⟩
+    | refl x =>
+      exact ⟨x.1, 𝟙 _, 𝟙 _, rfl⟩
     | symm _ _ _ h =>
       obtain ⟨k, f, g, h⟩ := h
       exact ⟨k, g, f, h.symm⟩
@@ -62,16 +62,17 @@ lemma eqvGen_colimitTypeRel_iff_of_isFiltered
     · exact .rel _ _ ⟨f, by rw [← h]⟩
     · exact .symm _ _ (.rel _ _ ⟨f', rfl⟩)
 
-lemma ιColimitType_eq_iff_of_isFiltered {j j' : J} (x : F.obj j) (y : F.obj j') :
-    F.ιColimitType j x = F.ιColimitType j' y ↔
-      ∃ (k : J) (f : j ⟶ k) (f' : j' ⟶ k), F.map f x = F.map f' y := by
+lemma ιColimitType_eq_iff_of_isFiltered {j j' : J} (x : F.obj j) (y : F.obj j')
+    : F.ιColimitType j x = F.ιColimitType j' y
+      ↔ ∃ (k : J) (f : j ⟶ k) (f' : j' ⟶ k), F.map f x = F.map f' y := by
   rw [ιColimitType_eq_iff, eqvGen_colimitTypeRel_iff_of_isFiltered]
 
-/-- More precise variant of the lemma `ιColimitType_eq_iff_of_isFiltered`
-in the case both `x` and `y` are in the same type `F.obj j`. -/
-lemma ιColimitType_eq_iff_of_isFiltered' {j : J} (x y : F.obj j) :
-    F.ιColimitType j x = F.ιColimitType j y ↔
-      ∃ (k : J) (f : j ⟶ k), F.map f x = F.map f y := by
+/--
+More precise variant of the lemma `ιColimitType_eq_iff_of_isFiltered`
+in the case both `x` and `y` are in the same type `F.obj j`.
+-/
+lemma ιColimitType_eq_iff_of_isFiltered' {j : J} (x y : F.obj j)
+    : F.ιColimitType j x = F.ιColimitType j y ↔ ∃ (k : J) (f : j ⟶ k), F.map f x = F.map f y := by
   rw [ιColimitType_eq_iff_of_isFiltered]
   constructor
   · rintro ⟨k, f, f', h⟩
@@ -85,10 +86,10 @@ namespace CoconeTypes
 
 variable {F} (c : CoconeTypes.{w₁} F)
 
-lemma descColimitType_injective_iff_of_isFiltered :
-    Function.Injective (F.descColimitType c) ↔
-      ∀ (j j' : J) (x : F.obj j) (x' : F.obj j'), c.ι j x = c.ι j' x' →
-        ∃ (k : J) (f : j ⟶ k) (f' : j' ⟶ k), F.map f x = F.map f' x' := by
+lemma descColimitType_injective_iff_of_isFiltered
+    : Function.Injective (F.descColimitType c)
+      ↔ ∀ (j j' : J) (x : F.obj j) (x' : F.obj j'),
+        c.ι j x = c.ι j' x' → ∃ (k : J) (f : j ⟶ k) (f' : j' ⟶ k), F.map f x = F.map f' x' := by
   constructor
   · intro h j j' x x' eq
     have : F.ιColimitType j x = F.ιColimitType j' x' := h eq
@@ -100,12 +101,14 @@ lemma descColimitType_injective_iff_of_isFiltered :
     obtain ⟨k, f, f', eq⟩ := h _ _ _ _ eq
     rw [← F.ιColimitType_map f x, eq, F.ιColimitType_map]
 
-/-- Variant of `descColimitType_injective_iff_of_isFiltered` where we
-assume both elements `x` and `x'` are in the same type `F.obj j`. -/
-lemma descColimitType_injective_iff_of_isFiltered' :
-    Function.Injective (F.descColimitType c) ↔
-      ∀ (j : J) (x x' : F.obj j), c.ι j x = c.ι j x' →
-        ∃ (k : J) (f : j ⟶ k), F.map f x = F.map f x' := by
+/--
+Variant of `descColimitType_injective_iff_of_isFiltered` where we
+assume both elements `x` and `x'` are in the same type `F.obj j`.
+-/
+lemma descColimitType_injective_iff_of_isFiltered'
+    : Function.Injective (F.descColimitType c)
+      ↔ ∀ (j : J) (x x' : F.obj j),
+        c.ι j x = c.ι j x' → ∃ (k : J) (f : j ⟶ k), F.map f x = F.map f x' := by
   rw [descColimitType_injective_iff_of_isFiltered]
   constructor
   · intro h j x x' eq
@@ -115,8 +118,9 @@ lemma descColimitType_injective_iff_of_isFiltered' :
     simp only [← comp_apply, ← map_comp]
     rw [coeq_condition]
   · intro h j j' x x' eq
-    obtain ⟨k, g, eq⟩ := h (max j j') (F.map (leftToMax _ _) x)
-      (F.map (rightToMax _ _) x') (by simpa only [c.ι_naturality_apply])
+    obtain ⟨k, g, eq⟩ :=
+      h (max j j') (F.map (leftToMax _ _) x) (F.map (rightToMax _ _) x')
+        (by simpa only [c.ι_naturality_apply])
     exact ⟨k, leftToMax _ _ ≫ g, rightToMax _ _ ≫ g, by simp [eq]⟩
 
 end CoconeTypes

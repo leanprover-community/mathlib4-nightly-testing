@@ -49,17 +49,22 @@ lemma conjneg_ne_conjneg : conjneg f ≠ conjneg g ↔ f ≠ g := conjneg_inject
 @[simp] lemma conjneg_add (f g : G → R) : conjneg (f + g) = conjneg f + conjneg g := by ext; simp
 @[simp] lemma conjneg_mul (f g : G → R) : conjneg (f * g) = conjneg f * conjneg g := by ext; simp
 
-@[simp] lemma conjneg_sum (s : Finset ι) (f : ι → G → R) :
-    conjneg (∑ i ∈ s, f i) = ∑ i ∈ s, conjneg (f i) := by ext; simp
+@[simp]
+lemma conjneg_sum (s : Finset ι) (f : ι → G → R)
+    : conjneg (∑ i ∈ s, f i) = ∑ i ∈ s, conjneg (f i) := by
+  ext; simp
 
-@[simp] lemma conjneg_prod (s : Finset ι) (f : ι → G → R) :
-    conjneg (∏ i ∈ s, f i) = ∏ i ∈ s, conjneg (f i) := by ext; simp
+@[simp]
+lemma conjneg_prod (s : Finset ι) (f : ι → G → R)
+    : conjneg (∏ i ∈ s, f i) = ∏ i ∈ s, conjneg (f i) := by
+  ext; simp
 
-@[simp] lemma conjneg_eq_zero : conjneg f = 0 ↔ f = 0 := by
+@[simp]
+lemma conjneg_eq_zero : conjneg f = 0 ↔ f = 0 := by
   rw [← conjneg_inj, conjneg_conjneg, conjneg_zero]
 
-@[simp] lemma conjneg_eq_one : conjneg f = 1 ↔ f = 1 := by
-  rw [← conjneg_inj, conjneg_conjneg, conjneg_one]
+@[simp]
+lemma conjneg_eq_one : conjneg f = 1 ↔ f = 1 := by rw [← conjneg_inj, conjneg_conjneg, conjneg_one]
 
 lemma conjneg_ne_zero : conjneg f ≠ 0 ↔ f ≠ 0 := conjneg_eq_zero.not
 lemma conjneg_ne_one : conjneg f ≠ 1 ↔ f ≠ 1 := conjneg_eq_one.not
@@ -67,11 +72,13 @@ lemma conjneg_ne_one : conjneg f ≠ 1 ↔ f ≠ 1 := conjneg_eq_one.not
 lemma sum_conjneg [Fintype G] (f : G → R) : ∑ a, conjneg f a = ∑ a, conj (f a) :=
   Fintype.sum_equiv (Equiv.neg _) _ _ fun _ ↦ rfl
 
-@[simp] lemma support_conjneg (f : G → R) : support (conjneg f) = -support f := by
+@[simp]
+lemma support_conjneg (f : G → R) : support (conjneg f) = - support f := by
   ext; simp [starRingEnd_apply]
 
 /-- `conjneg` bundled as a ring homomorphism. -/
-@[simps] def conjnegRingHom : (G → R) →+* (G → R) where
+@[simps]
+def conjnegRingHom : (G → R) →+* (G → R) where
   toFun := conjneg
   map_zero' := conjneg_zero
   map_one' := conjneg_one
@@ -84,6 +91,6 @@ section CommRing
 variable [CommRing R] [StarRing R]
 
 @[simp] lemma conjneg_sub (f g : G → R) : conjneg (f - g) = conjneg f - conjneg g := by ext; simp
-@[simp] lemma conjneg_neg (f : G → R) : conjneg (-f) = -conjneg f := by ext; simp
+@[simp] lemma conjneg_neg (f : G → R) : conjneg (-f) = - conjneg f := by ext; simp
 
 end CommRing

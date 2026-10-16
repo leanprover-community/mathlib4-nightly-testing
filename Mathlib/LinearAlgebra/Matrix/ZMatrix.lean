@@ -25,25 +25,27 @@ namespace Matrix
 
 open Module.End
 
-variable {ι R : Type*} [Fintype ι] [DecidableEq ι]
-  [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] [StarRing R] [TrivialStar R]
+variable
+  {ι R : Type*} [Fintype ι] [DecidableEq ι] [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
+  [StarRing R] [TrivialStar R]
   (A : Matrix ι ι R) (d : ι → R) (hA : (diagonal d * A).PosDef) (hD : ∀ i, 0 < d i)
 
 include hA hD
 
-public lemma diag_pos_of_mul_diagonal_posDef (i : ι) :
-    0 < A i i := by
+public lemma diag_pos_of_mul_diagonal_posDef (i : ι) : 0 < A i i := by
   rw [← mul_pos_iff_of_pos_left (hD i)]
   simpa using hA.2 (x := Finsupp.single i 1) (by simp)
 
-/-- A spectral bound result for Z-matrices satisfying a positive-definiteness condition.
+/--
+A spectral bound result for Z-matrices satisfying a positive-definiteness condition.
 
 It is important because it applies to Cartan matrices, and shows that all (real) eigenvalues must
 be strictly less than 4 (a fact which is necessary in the proof of
-`RootPairing.GeckConstruction.instIsIrreducible`). -/
+`RootPairing.GeckConstruction.instIsIrreducible`).
+-/
 public lemma lt_two_mul_of_mul_diagonal_posDef_of_for_le_of_hasEigen
-    (μ ρ : R) (hμ : ∀ i j, A i j ≤ if i = j then μ else 0) (hρ : HasEigenvalue A.toLin' ρ) :
-    ρ < 2 * μ := by
+    (μ ρ : R) (hμ : ∀ i j, A i j ≤ if i = j then μ else 0) (hρ : HasEigenvalue A.toLin' ρ)
+    : ρ < 2 * μ := by
   by_contra! contra
   set N := μ • 1 - A with N_def
   have hN (i j : ι) : 0 ≤ N i j := by specialize hμ i j; aesop
@@ -67,14 +69,16 @@ public lemma lt_two_mul_of_mul_diagonal_posDef_of_for_le_of_hasEigen
     have h₁ : μ ≤ ρ - μ := by grind
     have h₂ : 0 ≤ d i := (hD i).le
     have h₃ : (ρ - μ) * |v i| ≤ (N *ᵥ |v|) i := by
-      calc (ρ - μ) * |v i|
+      calc
+        (ρ - μ) * |v i|
           = |μ - ρ| * |v i| := by rw [← abs_eq_self.mpr h₀, abs_sub_comm]
         _ = |(N *ᵥ v) i| := by simp [hv]
         _ = |∑ j, N i j * v j| := by simp [mulVec_eq_sum, mul_comm]
         _ ≤ ∑ j, |N i j * v j| := Finset.abs_sum_le_sum_abs _ _
         _ = ∑ j, N i j * |v j| := by simp [abs_eq_self.mpr (hN i _)]
         _ = (N *ᵥ |v|) i := by simp [mulVec_eq_sum, mul_comm]
-    calc μ * (d i * |v i| ^ 2)
+    calc
+      μ * (d i * |v i| ^ 2)
         = μ * |v i| * (d i * |v i|) := by ring
       _ ≤ (ρ - μ) * |v i| * (d i * |v i|) := by gcongr
       _ ≤ (N *ᵥ |v|) i * (d i * |v i|) := by gcongr

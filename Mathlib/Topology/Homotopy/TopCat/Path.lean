@@ -25,9 +25,11 @@ namespace TopCat
 
 variable (X : TopCat.{u})
 
-/-- Given two points `x` and `y` of `X : TopCat`, this is the type
+/--
+Given two points `x` and `y` of `X : TopCat`, this is the type
 of paths from `x` to `y`, defined using a morphism `I ⟶ X`.
-Set `TopCat.pathEquiv` for the relation with `_root_.Path x y`. -/
+Set `TopCat.pathEquiv` for the relation with `_root_.Path x y`.
+-/
 @[ext]
 protected structure Path (x y : X) where
   /-- a morphism from the unit interval -/
@@ -41,13 +43,15 @@ variable {X} in
 /-- The bijection between `TopCat.Path X x y` and `_root_.Path x y`. -/
 @[simps!]
 def pathEquiv {x y : X} : X.Path x y ≃ _root_.Path x y where
-  toFun p :=
-    { toContinuousMap := p.hom.hom.comp TopCat.I.homeomorph.symm
-      source' := p.hom₀
-      target' := p.hom₁ }
-  invFun p :=
-    { hom := ofHom (p.toContinuousMap.comp (toContinuousMap TopCat.I.homeomorph))
-      hom₀ := p.source'
-      hom₁ := p.target' }
+  toFun p := {
+    toContinuousMap := p.hom.hom.comp TopCat.I.homeomorph.symm
+    source' := p.hom₀
+    target' := p.hom₁
+  }
+  invFun p := {
+    hom := ofHom (p.toContinuousMap.comp (toContinuousMap TopCat.I.homeomorph))
+    hom₀ := p.source'
+    hom₁ := p.target'
+  }
 
 end TopCat

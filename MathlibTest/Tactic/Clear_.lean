@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Clear_
 import Mathlib.Tactic.Replace
 
@@ -22,12 +23,12 @@ example (_delete_this : Nat) (dont_delete_this : Int) : Nat := by
   exact dont_delete_this.toNat
 
 -- Confirms that clear_ can clear hypotheses even when they have dependencies
-example (_delete_this : Type) (_delete_this_dep : _delete_this)
-    (_delete_this_rw : _delete_this = Nat)
-    (_delete_this_dep_dep : _delete_this_dep = _delete_this_dep) : Nat := by
+example
+    (_delete_this : Type) (_delete_this_dep : _delete_this) (_delete_this_rw : _delete_this = Nat)
+    (_delete_this_dep_dep : _delete_this_dep = _delete_this_dep)
+    : Nat := by
   clear_
-  fail_if_success
-    rw [← _delete_this_rw]
+  fail_if_success rw [← _delete_this_rw]
   exact 0
 
 -- Confirms that clear_ does not clear hypotheses
@@ -42,8 +43,8 @@ example (_dont_delete_this : Type) : _dont_delete_this = _dont_delete_this := by
   rfl
 
 -- Confirms that clear_ clears all that it can even if some underscored hypotheses cannot be cleared
-example (_dont_delete_this : Type) (_delete_this : _dont_delete_this = _dont_delete_this) :
-  _dont_delete_this = _dont_delete_this := by
+example (_dont_delete_this : Type) (_delete_this : _dont_delete_this = _dont_delete_this)
+    : _dont_delete_this = _dont_delete_this := by
   clear_
   fail_if_success assumption
   rfl

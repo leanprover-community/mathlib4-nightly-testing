@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Subtype
 public import Mathlib.Util.CompileInductive
-
 import Mathlib.Tactic.Finiteness.Attr
 import Mathlib.Tactic.Push
 
@@ -38,20 +37,19 @@ variable {α : Type*}
 /-- A set of lists is uniquely decodable if distinct concatenations yield distinct strings. -/
 def IsUniquelyDecodable (S : Set (List α)) : Prop :=
   ∀ (L₁ L₂ : List (List α)),
-    (∀ w ∈ L₁, w ∈ S) → (∀ w ∈ L₂, w ∈ S) →
-    L₁.flatten = L₂.flatten → L₁ = L₂
+    (∀ w ∈ L₁, w ∈ S) → (∀ w ∈ L₂, w ∈ S) → L₁.flatten = L₂.flatten → L₁ = L₂
 
 @[deprecated (since := "2026-08-16")] alias UniquelyDecodable := IsUniquelyDecodable
 
 variable {S : Set (List α)}
 
-/-- If a code is uniquely decodable, it does not contain the empty string.
+/--
+If a code is uniquely decodable, it does not contain the empty string.
 
 The empty string can be "decoded" as either zero or two copies of itself,
-violating unique decodability. -/
-lemma IsUniquelyDecodable.epsilon_notMem
-    (h : IsUniquelyDecodable S) :
-    [] ∉ S := by
+violating unique decodability.
+-/
+lemma IsUniquelyDecodable.epsilon_notMem (h : IsUniquelyDecodable S) : [] ∉ S := by
   simpa using h [[]] [[], []]
 
 @[deprecated (since := "2026-09-28")]
@@ -60,8 +58,8 @@ alias IsUniquelyDecodable.epsilon_not_mem := IsUniquelyDecodable.epsilon_notMem
 @[deprecated (since := "2026-08-16")]
 alias UniquelyDecodable.epsilon_not_mem := IsUniquelyDecodable.epsilon_notMem
 
-lemma IsUniquelyDecodable.flatten_injective (h : IsUniquelyDecodable S) :
-    Function.Injective (fun (L : {L : List (List α) // ∀ x ∈ L, x ∈ S}) => L.val.flatten) := by
+lemma IsUniquelyDecodable.flatten_injective (h : IsUniquelyDecodable S)
+    : Function.Injective (fun (L : {L : List (List α) // ∀ x ∈ L, x ∈ S}) => L.val.flatten) := by
   intro L₁ L₂ hflat
   apply Subtype.ext
   exact h L₁.val L₂.val L₁.prop L₂.prop hflat

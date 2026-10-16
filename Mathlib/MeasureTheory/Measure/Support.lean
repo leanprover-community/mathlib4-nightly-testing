@@ -53,50 +53,55 @@ open scoped Topology ENNReal
 
 variable {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
 
-/-- A point `x` is in the support of `μ` if any open neighborhood of `x` has positive measure.
+/--
+A point `x` is in the support of `μ` if any open neighborhood of `x` has positive measure.
 We provide the definition in terms of the filter-theoretic equivalent
-`∃ᶠ u in (𝓝 x).smallSets, 0 < μ u`. -/
+`∃ᶠ u in (𝓝 x).smallSets, 0 < μ u`.
+-/
 protected def support (μ : Measure X) : Set X := {x : X | ∃ᶠ u in (𝓝 x).smallSets, 0 < μ u}
 
 variable {μ : Measure X}
 
-theorem _root_.Filter.HasBasis.mem_measureSupport {ι : Sort*} {p : ι → Prop}
-    {s : ι → Set X} {x : X} (hl : (𝓝 x).HasBasis p s) :
-    x ∈ μ.support ↔ ∀ (i : ι), p i → 0 < μ (s i) :=
+theorem _root_.Filter.HasBasis.mem_measureSupport
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set X} {x : X} (hl : (𝓝 x).HasBasis p s)
+    : x ∈ μ.support ↔ ∀ (i : ι), p i → 0 < μ (s i) :=
   hl.frequently_smallSets pos_mono
 
-/-- A point `x` is in the support of measure `μ` iff any neighborhood of `x` contains a
-subset with positive measure. -/
-lemma mem_support_iff {x : X} : x ∈ μ.support ↔
-    ∃ᶠ u in (𝓝 x).smallSets, 0 < μ u := Iff.rfl
+/--
+A point `x` is in the support of measure `μ` iff any neighborhood of `x` contains a
+subset with positive measure.
+-/
+lemma mem_support_iff {x : X} : x ∈ μ.support ↔ ∃ᶠ u in (𝓝 x).smallSets, 0 < μ u := Iff.rfl
 
-/-- A point `x` is in the support of measure `μ` iff every neighborhood of `x` has positive
-measure. -/
+/--
+A point `x` is in the support of measure `μ` iff every neighborhood of `x` has positive
+measure.
+-/
 lemma mem_support_iff_forall (x : X) : x ∈ μ.support ↔ ∀ U ∈ 𝓝 x, 0 < μ U :=
   (𝓝 x).basis_sets.mem_measureSupport
 
 lemma support_eq_univ [μ.IsOpenPosMeasure] : μ.support = Set.univ := by
   simpa [Set.eq_univ_iff_forall, mem_support_iff_forall] using fun _ _ ↦ μ.measure_pos_of_mem_nhds
 
-lemma AbsolutelyContinuous.support_mono {μ ν : Measure X} (hμν : μ ≪ ν) :
-    μ.support ⊆ ν.support :=
+lemma AbsolutelyContinuous.support_mono {μ ν : Measure X} (hμν : μ ≪ ν) : μ.support ⊆ ν.support :=
   fun _ hx ↦ hx.mp <| .of_forall hμν.pos_mono
 
 lemma support_mono {ν : Measure X} (h : μ ≤ ν) : μ.support ⊆ ν.support :=
   h.absolutelyContinuous.support_mono
 
-/-- A point `x` lies outside the support of `μ` iff all of the subsets of one of its neighborhoods
-have measure zero. -/
+/--
+A point `x` lies outside the support of `μ` iff all of the subsets of one of its neighborhoods
+have measure zero.
+-/
 lemma notMem_support_iff {x : X} : x ∉ μ.support ↔ ∀ᶠ u in (𝓝 x).smallSets, μ u = 0 := by
   simp [mem_support_iff]
 
-theorem _root_.Filter.HasBasis.notMem_measureSupport {ι : Sort*} {p : ι → Prop}
-    {s : ι → Set X} {x : X} (hl : (𝓝 x).HasBasis p s) :
-    x ∉ μ.support ↔ ∃ i, p i ∧ μ (s i) = 0 := by
+theorem _root_.Filter.HasBasis.notMem_measureSupport
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set X} {x : X} (hl : (𝓝 x).HasBasis p s)
+    : x ∉ μ.support ↔ ∃ i, p i ∧ μ (s i) = 0 := by
   simp [hl.mem_measureSupport]
 
-@[simp]
-lemma support_zero : (0 : Measure X).support = ∅ := by simp [Measure.support]
+@[simp] lemma support_zero : (0 : Measure X).support = ∅ := by simp [Measure.support]
 
 /-- The support of the sum of two measures is the union of the supports. -/
 lemma support_add (μ ν : Measure X) : (μ + ν).support = μ.support ∪ ν.support := by
@@ -106,10 +111,11 @@ lemma support_add (μ ν : Measure X) : (μ + ν).support = μ.support ∪ ν.su
 lemma notMem_support_iff_exists {x : X} : x ∉ μ.support ↔ ∃ U ∈ 𝓝 x, μ U = 0 := by
   simp [mem_support_iff_forall]
 
-/-- The support of a measure equals the set of points whose open neighborhoods
-all have positive measure. -/
-lemma support_eq_forall_isOpen : μ.support =
-    {x : X | ∀ u : Set X, x ∈ u → IsOpen u → 0 < μ u} := by
+/--
+The support of a measure equals the set of points whose open neighborhoods
+all have positive measure.
+-/
+lemma support_eq_forall_isOpen : μ.support = {x : X | ∀ u : Set X, x ∈ u → IsOpen u → 0 < μ u} := by
   simp [Set.ext_iff, nhds_basis_opens _ |>.mem_measureSupport]
 
 lemma isClosed_support {μ : Measure X} : IsClosed μ.support := by
@@ -120,12 +126,10 @@ lemma isClosed_support {μ : Measure X} : IsClosed μ.support := by
 lemma isOpen_compl_support {μ : Measure X} : IsOpen μ.supportᶜ :=
   isOpen_compl_iff.mpr μ.isClosed_support
 
-lemma subset_compl_support_of_isOpen {t : Set X} (ht : IsOpen t) (h : μ t = 0) :
-    t ⊆ μ.supportᶜ :=
+lemma subset_compl_support_of_isOpen {t : Set X} (ht : IsOpen t) (h : μ t = 0) : t ⊆ μ.supportᶜ :=
   fun _ hx ↦ notMem_support_iff_exists.mpr ⟨t, ht.mem_nhds hx, h⟩
 
-lemma support_subset_of_isClosed {t : Set X} (ht : IsClosed t) (h : t ∈ ae μ) :
-    μ.support ⊆ t :=
+lemma support_subset_of_isClosed {t : Set X} (ht : IsClosed t) (h : t ∈ ae μ) : μ.support ⊆ t :=
   Set.compl_subset_compl.mp <| subset_compl_support_of_isOpen ht.isOpen_compl h
 
 lemma compl_support_eq_sUnion : μ.supportᶜ = ⋃₀ {t : Set X | IsOpen t ∧ μ t = 0} := by
@@ -140,8 +144,9 @@ lemma support_eq_sInter : μ.support = ⋂₀ {t : Set X | IsClosed t ∧ μ t�
 section Regular
 
 /-- Any compact set contained in the complement of the support has zero measure. -/
-lemma measure_eq_zero_of_isCompact_subset_compl_support {K : Set X} (hK : IsCompact K)
-    (hKsub : K ⊆ μ.supportᶜ) : μ K = 0 := by
+lemma measure_eq_zero_of_isCompact_subset_compl_support
+    {K : Set X} (hK : IsCompact K) (hKsub : K ⊆ μ.supportᶜ)
+    : μ K = 0 := by
   refine hK.induction_on measure_empty ?_ ?_ ?_
   · exact fun _ _ hst ht ↦ measure_mono_null hst ht
   · exact fun _ _ hs ht ↦ measure_union_null hs ht
@@ -150,8 +155,8 @@ lemma measure_eq_zero_of_isCompact_subset_compl_support {K : Set X} (hK : IsComp
     exact ⟨U, mem_nhdsWithin_of_mem_nhds hUnhds, hU0⟩
 
 /-- A measure which is compact-inner-regular on open sets has conull support. -/
-lemma support_mem_ae_of_innerRegularWRT_isCompact_isOpen
-    (hμ : μ.InnerRegularWRT IsCompact IsOpen) : μ.support ∈ ae μ := by
+lemma support_mem_ae_of_innerRegularWRT_isCompact_isOpen (hμ : μ.InnerRegularWRT IsCompact IsOpen)
+    : μ.support ∈ ae μ := by
   by_contra hne
   obtain ⟨K, hKsub, hKcompact, hKpos⟩ := hμ isOpen_compl_support 0 (pos_iff_ne_zero.2 hne)
   simp [measure_eq_zero_of_isCompact_subset_compl_support hKcompact hKsub] at hKpos
@@ -159,19 +164,20 @@ lemma support_mem_ae_of_innerRegularWRT_isCompact_isOpen
 /-- A measure which is compact-inner-regular on open sets has conull support. -/
 @[simp]
 lemma measure_compl_support_of_innerRegularWRT_isCompact_isOpen
-    (hμ : μ.InnerRegularWRT IsCompact IsOpen) : μ μ.supportᶜ = 0 :=
+    (hμ : μ.InnerRegularWRT IsCompact IsOpen)
+    : μ μ.supportᶜ = 0 :=
   support_mem_ae_of_innerRegularWRT_isCompact_isOpen hμ
 
 /-- An inner regular measure has conull support when open sets are measurable. -/
-lemma support_mem_ae_of_innerRegular [OpensMeasurableSpace X] [μ.InnerRegular] :
-    μ.support ∈ ae μ :=
+lemma support_mem_ae_of_innerRegular [OpensMeasurableSpace X] [μ.InnerRegular] : μ.support ∈ ae μ :=
   support_mem_ae_of_innerRegularWRT_isCompact_isOpen fun _ hU r hr =>
     InnerRegular.innerRegular hU.measurableSet r hr
 
 /-- An inner regular measure has conull support when open sets are measurable. -/
 @[simp]
-lemma measure_compl_support_of_innerRegular [OpensMeasurableSpace X] [μ.InnerRegular] :
-    μ μ.supportᶜ = 0 := support_mem_ae_of_innerRegular
+lemma measure_compl_support_of_innerRegular [OpensMeasurableSpace X] [μ.InnerRegular]
+    : μ μ.supportᶜ = 0 :=
+  support_mem_ae_of_innerRegular
 
 /-- A regular measure has conull support. -/
 lemma support_mem_ae_of_regular [μ.Regular] : μ.support ∈ ae μ :=
@@ -179,8 +185,7 @@ lemma support_mem_ae_of_regular [μ.Regular] : μ.support ∈ ae μ :=
 
 /-- A regular measure has conull support. -/
 @[simp]
-lemma measure_compl_support_of_regular [μ.Regular] : μ μ.supportᶜ = 0 :=
-  support_mem_ae_of_regular
+lemma measure_compl_support_of_regular [μ.Regular] : μ μ.supportᶜ = 0 := support_mem_ae_of_regular
 
 end Regular
 
@@ -189,8 +194,8 @@ section Lindelof
 /-- If the complement of the support is Lindelöf, then the support of a measure is conull. -/
 lemma support_mem_ae_of_isLindelof (h : IsLindelof μ.supportᶜ) : μ.support ∈ ae μ := by
   refine compl_compl μ.support ▸ h.compl_mem_sets_of_nhdsWithin fun s hs ↦ ?_
-  simpa [compl_mem_ae_iff, isOpen_compl_support.nhdsWithin_eq hs]
-    using notMem_support_iff_exists.mp hs
+  simpa [compl_mem_ae_iff, isOpen_compl_support.nhdsWithin_eq hs] using
+    notMem_support_iff_exists.mp hs
 
 variable [HereditarilyLindelofSpace X]
 
@@ -198,33 +203,37 @@ variable [HereditarilyLindelofSpace X]
 lemma support_mem_ae : μ.support ∈ ae μ :=
   support_mem_ae_of_isLindelof <| HereditarilyLindelofSpace.isLindelof μ.supportᶜ
 
-@[simp]
-lemma measure_compl_support : μ μ.supportᶜ = 0 := support_mem_ae
+@[simp] lemma measure_compl_support : μ μ.supportᶜ = 0 := support_mem_ae
 
 open Set
 
-lemma nonempty_inter_support_of_pos {s : Set X} (hμ : 0 < μ s) :
-    (s ∩ μ.support).Nonempty := by
+lemma nonempty_inter_support_of_pos {s : Set X} (hμ : 0 < μ s) : (s ∩ μ.support).Nonempty := by
   rw [← Set.not_disjoint_iff_nonempty_inter]
   contrapose! hμ
   exact μ.mono hμ.subset_compl_right |>.trans <| by simp
 
-/-- Under the assumption `OpensMeasurableSpace`, this is redundant because
-the complement of the support is open, and therefore measurable. -/
+/--
+Under the assumption `OpensMeasurableSpace`, this is redundant because
+the complement of the support is open, and therefore measurable.
+-/
 lemma nullMeasurableSet_compl_support : NullMeasurableSet (μ.supportᶜ) μ :=
   NullMeasurableSet.of_null measure_compl_support
 
-/-- Under the assumption `OpensMeasurableSpace`, this is redundant because
-the support is closed, and therefore measurable. -/
+/--
+Under the assumption `OpensMeasurableSpace`, this is redundant because
+the support is closed, and therefore measurable.
+-/
 lemma nullMeasurableSet_support : NullMeasurableSet μ.support μ :=
   NullMeasurableSet.compl_iff.mp nullMeasurableSet_compl_support
 
 lemma nonempty_support (hμ : μ ≠ 0) : μ.support.Nonempty :=
-   Nonempty.right <| nonempty_inter_support_of_pos <| measure_univ_pos.mpr hμ
+  Nonempty.right <| nonempty_inter_support_of_pos <| measure_univ_pos.mpr hμ
 
-lemma nonempty_support_iff : μ.support.Nonempty ↔ μ ≠ 0 :=
-  ⟨fun h e ↦ (not_nonempty_iff_eq_empty.mpr <| congrArg Measure.support e |>.trans
-    <| support_zero) h, fun h ↦ nonempty_support h⟩
+lemma nonempty_support_iff : μ.support.Nonempty ↔ μ ≠ 0 := ⟨
+  fun h e ↦
+    (not_nonempty_iff_eq_empty.mpr <| congrArg Measure.support e |>.trans <| support_zero) h,
+  fun h ↦ nonempty_support h
+⟩
 
 @[simp]
 lemma support_eq_empty_iff : μ.support = ∅ ↔ μ = 0 := by
@@ -236,14 +245,13 @@ section Restrict
 
 variable [OpensMeasurableSpace X]
 
-lemma mem_support_restrict {s : Set X} {x : X} :
-    x ∈ (μ.restrict s).support ↔ ∃ᶠ u in (𝓝[s] x).smallSets, 0 < μ u := by
+lemma mem_support_restrict {s : Set X} {x : X}
+    : x ∈ (μ.restrict s).support ↔ ∃ᶠ u in (𝓝[s] x).smallSets, 0 < μ u := by
   rw [nhds_basis_opens x |>.mem_measureSupport,
     (nhdsWithin_basis_open x s).frequently_smallSets pos_mono]
   grind [IsOpen.measurableSet, restrict_apply]
 
-lemma interior_inter_support {s : Set X} :
-    interior s ∩ μ.support ⊆ (μ.restrict s).support := by
+lemma interior_inter_support {s : Set X} : interior s ∩ μ.support ⊆ (μ.restrict s).support := by
   rintro x ⟨hxs, hxμ⟩
   rw [mem_support_restrict, (nhdsWithin_basis_open x s).frequently_smallSets pos_mono]
   rw [(nhds_basis_opens x).mem_measureSupport] at hxμ
@@ -252,8 +260,7 @@ lemma interior_inter_support {s : Set X} :
   gcongr
   exact interior_subset
 
-lemma support_restrict_subset {s : Set X} :
-    (μ.restrict s).support ⊆ closure s ∩ μ.support := by
+lemma support_restrict_subset {s : Set X} : (μ.restrict s).support ⊆ closure s ∩ μ.support := by
   refine Set.subset_inter (support_subset_of_isClosed isClosed_closure ?_)
     (support_mono restrict_le_self)
   rw [mem_ae_iff, μ.restrict_apply isClosed_closure.isOpen_compl.measurableSet]

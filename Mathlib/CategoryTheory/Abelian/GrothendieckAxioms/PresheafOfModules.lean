@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Category.Grp.FilteredColimits
 public import Mathlib.Algebra.Category.ModuleCat.Presheaf.Generator
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
 public import Mathlib.CategoryTheory.Functor.ReflectsIso.Balanced
-
 import Mathlib.CategoryTheory.Limits.FilteredColimitCommutesFiniteLimit
 
 /-!
@@ -23,8 +22,8 @@ open CategoryTheory Limits
 
 namespace PresheafOfModules
 
-public instance {C : Type u} [SmallCategory C] (R : Cᵒᵖ ⥤ RingCat.{u}) :
-    IsGrothendieckAbelian.{u} (PresheafOfModules.{u} R) where
+public instance {C : Type u} [SmallCategory C] (R : Cᵒᵖ ⥤ RingCat.{u})
+    : IsGrothendieckAbelian.{u} (PresheafOfModules.{u} R) where
   hasFilteredColimitsOfSize := ⟨fun _ ↦ ⟨fun _ ↦ inferInstance⟩⟩
   ab5OfSize := ⟨fun J _ _ ↦ ⟨⟨fun K _ _ ↦ ⟨fun {F} ↦
     have : PreservesLimit F (colim (J := J) ⋙ PresheafOfModules.toPresheaf R) :=

@@ -45,9 +45,9 @@ set_option backward.isDefEq.respectTransparency false in
 If `P` is local at the source, every quasi-compact scheme is dominated by an
 affine scheme via `p : Y ⟶ X` such that `p` satisfies `P`.
 -/
-lemma Scheme.exists_hom_isAffine_of_isZariskiLocalAtSource (X : Scheme.{u}) [CompactSpace X]
-    [IsZariskiLocalAtSource P] [P.ContainsIdentities] :
-    ∃ (Y : Scheme.{u}) (p : Y ⟶ X), Surjective p ∧ P p ∧ IsAffine Y := by
+lemma Scheme.exists_hom_isAffine_of_isZariskiLocalAtSource
+    (X : Scheme.{u}) [CompactSpace X] [IsZariskiLocalAtSource P] [P.ContainsIdentities]
+    : ∃ (Y : Scheme.{u}) (p : Y ⟶ X), Surjective p ∧ P p ∧ IsAffine Y := by
   let 𝒰 := X.affineCover.finiteSubcover
   let p : ∐ (fun i : 𝒰.I₀ ↦ 𝒰.X i) ⟶ X := Sigma.desc (fun i ↦ 𝒰.f i)
   refine ⟨_, p, ⟨fun x ↦ ?_⟩, ?_, inferInstance⟩
@@ -57,26 +57,31 @@ lemma Scheme.exists_hom_isAffine_of_isZariskiLocalAtSource (X : Scheme.{u}) [Com
   · rw [IsZariskiLocalAtSource.iff_of_openCover (P := P) (sigmaOpenCover _)]
     exact fun i ↦ by simpa [p] using IsZariskiLocalAtSource.of_isOpenImmersion _
 
-/-- If `P` is local at the target, to show `P` descends along `P'` we may assume
-the base to be affine. -/
-lemma IsZariskiLocalAtTarget.descendsAlong [IsZariskiLocalAtTarget P] [P'.IsStableUnderBaseChange]
+/--
+If `P` is local at the target, to show `P` descends along `P'` we may assume
+the base to be affine.
+-/
+lemma IsZariskiLocalAtTarget.descendsAlong
+    [IsZariskiLocalAtTarget P] [P'.IsStableUnderBaseChange]
     (H : ∀ {R : CommRingCat.{u}} {X Y : Scheme.{u}} (f : X ⟶ Spec R) (g : Y ⟶ Spec R),
-      P' f → P (pullback.fst f g) → P g) :
-    P.DescendsAlong P' := by
+      P' f → P (pullback.fst f g) → P g)
+    : P.DescendsAlong P' := by
   apply MorphismProperty.DescendsAlong.mk'
   introv h hf
   wlog hZ : ∃ R, Z = Spec R generalizing X Y Z
   · rw [IsZariskiLocalAtTarget.iff_of_openCover (P := P) Z.affineCover]
     intro i
     let ι := Z.affineCover.f i
-    let e : pullback (pullback.snd f ι) (pullback.snd g ι) ≅
-        pullback (pullback.fst f g) (pullback.fst f ι) :=
-      pullbackLeftPullbackSndIso f ι (pullback.snd g ι) ≪≫
-        pullback.congrHom rfl pullback.condition.symm ≪≫
-        (pullbackAssoc f g g ι).symm ≪≫ pullback.congrHom pullback.condition.symm rfl ≪≫
-        (pullbackRightPullbackFstIso f ι (pullback.fst f g)).symm
-    have heq : e.hom ≫ pullback.snd (pullback.fst f g) (pullback.fst f ι) =
-        pullback.fst (pullback.snd f ι) (pullback.snd g ι) := by
+    let e
+        : pullback (pullback.snd f ι) (pullback.snd g ι)
+          ≅ pullback (pullback.fst f g) (pullback.fst f ι) :=
+      pullbackLeftPullbackSndIso f ι (pullback.snd g ι)
+        ≪≫ pullback.congrHom rfl pullback.condition.symm ≪≫ (pullbackAssoc f g g ι).symm
+        ≪≫ pullback.congrHom pullback.condition.symm rfl
+        ≪≫ (pullbackRightPullbackFstIso f ι (pullback.fst f g)).symm
+    have heq
+        : e.hom ≫ pullback.snd (pullback.fst f g) (pullback.fst f ι)
+          = pullback.fst (pullback.snd f ι) (pullback.snd g ι) := by
       apply pullback.hom_ext <;> simp [e, pullback.condition]
     refine this (f := pullback.snd f ι) ?_ ?_ ⟨_, rfl⟩
     · exact P'.pullback_snd _ _ h
@@ -90,35 +95,41 @@ lemma IsZariskiLocalAtTarget.descendsAlong [IsZariskiLocalAtTarget P] [P'.IsStab
 variable (Q Q' : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop)
 
 variable {Q Q'} in
-lemma of_pullback_fst_Spec_of_codescendsAlong [P.RespectsIso]
+lemma of_pullback_fst_Spec_of_codescendsAlong
+    [P.RespectsIso]
     (hQQ' : RingHom.CodescendsAlong Q Q')
     (H₁ : ∀ {R S : CommRingCat.{u}} {f : R ⟶ S}, P' (Spec.map f) → Q' f.hom)
     (H₂ : ∀ {R S : CommRingCat.{u}} {f : R ⟶ S}, P (Spec.map f) ↔ Q f.hom)
-    {R S T : CommRingCat.{u}}
-    {f : Spec T ⟶ Spec R} {g : Spec S ⟶ Spec R} (h : P' f) (hf : P (pullback.fst f g)) :
-    P g := by
+    {R S T : CommRingCat.{u}} {f : Spec T ⟶ Spec R} {g : Spec S ⟶ Spec R}
+    (h : P' f) (hf : P (pullback.fst f g))
+    : P g := by
   obtain ⟨φ, rfl⟩ := Spec.map_surjective g
   obtain ⟨ψ, rfl⟩ := Spec.map_surjective f
   algebraize [φ.hom, ψ.hom]
   replace hf : P (pullback.fst (Spec.map <| CommRingCat.ofHom <| algebraMap R T)
-    (Spec.map <| CommRingCat.ofHom <| algebraMap R S)) := hf
+      (Spec.map <| CommRingCat.ofHom <| algebraMap R S)) :=
+    hf
   rw [H₂]
   refine hQQ'.algebraMap_tensorProduct (R := R) (S := T) (T := S) _ (H₁ h) ?_
   rwa [← pullbackSpecIso_hom_fst R T S, P.cancel_left_of_respectsIso, H₂] at hf
 
-/-- If `X` admits a morphism `p : T ⟶ X` from an affine scheme satisfying `P'`, to
+/--
+If `X` admits a morphism `p : T ⟶ X` from an affine scheme satisfying `P'`, to
 show a property descends along a morphism `f : X ⟶ Z` satisfying `P'`, `X` may assumed to
-be affine. -/
-lemma IsStableUnderBaseChange.of_pullback_fst_of_isAffine [P'.RespectsIso]
-    [P'.IsStableUnderComposition] [P.IsStableUnderBaseChange]
+be affine.
+-/
+lemma IsStableUnderBaseChange.of_pullback_fst_of_isAffine
+    [P'.RespectsIso] [P'.IsStableUnderComposition] [P.IsStableUnderBaseChange]
     (H : ∀ {R : CommRingCat.{u}} {S X : Scheme.{u}} (f : Spec R ⟶ S) (g : X ⟶ S),
-      P' f → P (pullback.fst f g) → P g) {X Y Z T : Scheme.{u}} [IsAffine T] (p : T ⟶ X)
-    (hp : P' p) (f : X ⟶ Z) (g : Y ⟶ Z) (h : P' f) (hf : P (pullback.fst f g)) : P g := by
+      P' f → P (pullback.fst f g) → P g)
+    {X Y Z T : Scheme.{u}} [IsAffine T]
+    (p : T ⟶ X) (hp : P' p)
+    (f : X ⟶ Z) (g : Y ⟶ Z) (h : P' f) (hf : P (pullback.fst f g))
+    : P g := by
   apply H ((T.isoSpec.inv ≫ p) ≫ f)
   · rw [Category.assoc, P'.cancel_left_of_respectsIso]
     exact P'.comp_mem _ _ hp h
-  · rw [← pullbackRightPullbackFstIso_inv_fst f g (T.isoSpec.inv ≫ p),
-        P.cancel_left_of_respectsIso]
+  · rw [← pullbackRightPullbackFstIso_inv_fst f g (T.isoSpec.inv ≫ p), P.cancel_left_of_respectsIso]
     exact P.pullback_fst _ _ hf
 
 open Opposite
@@ -130,10 +141,11 @@ variable
 
 set_option backward.isDefEq.respectTransparency.types false in
 include H₁ in
-lemma IsZariskiLocalAtTarget.descendsAlong_inf_quasiCompact [IsZariskiLocalAtTarget P]
+lemma IsZariskiLocalAtTarget.descendsAlong_inf_quasiCompact
+    [IsZariskiLocalAtTarget P]
     (H : ∀ {R S : CommRingCat.{u}} {Y : Scheme.{u}} (φ : R ⟶ S) (g : Y ⟶ Spec R),
-      P' (Spec.map φ) → P (pullback.fst (Spec.map φ) g) → P g) :
-    P.DescendsAlong (P' ⊓ @QuasiCompact) := by
+      P' (Spec.map φ) → P (pullback.fst (Spec.map φ) g) → P g)
+    : P.DescendsAlong (P' ⊓ @QuasiCompact) := by
   apply IsZariskiLocalAtTarget.descendsAlong
   intro R X Y f g hf h
   wlog hX : ∃ T, X = Spec T generalizing X
@@ -160,17 +172,19 @@ Then `P` descends along quasi-compact morphisms satisfying `P'`.
 
 Note: The second condition is in particular satisfied for faithfully flat morphisms.
 -/
-nonrec lemma HasRingHomProperty.descendsAlong [HasRingHomProperty P Q]
-    (hQQ' : RingHom.CodescendsAlong Q Q') :
-    P.DescendsAlong (P' ⊓ @QuasiCompact) := by
+nonrec lemma HasRingHomProperty.descendsAlong
+    [HasRingHomProperty P Q] (hQQ' : RingHom.CodescendsAlong Q Q')
+    : P.DescendsAlong (P' ⊓ @QuasiCompact) := by
   apply IsZariskiLocalAtTarget.descendsAlong_inf_quasiCompact _ _ H₁
   introv h hf
   wlog hY : ∃ S, Y = Spec S generalizing Y
   · rw [IsZariskiLocalAtSource.iff_of_openCover (P := P) Y.affineCover]
     intro i
-    have heq : pullback.fst (Spec.map φ) (Y.affineCover.f i ≫ g) =
-        pullback.map _ _ _ _ (𝟙 _) (Y.affineCover.f i) (𝟙 _) (by simp) (by simp) ≫
-          pullback.fst (Spec.map φ) g := (pullback.lift_fst _ _ _).symm
+    have heq
+        : pullback.fst (Spec.map φ) (Y.affineCover.f i ≫ g)
+          = pullback.map _ _ _ _ (𝟙 _) (Y.affineCover.f i) (𝟙 _) (by simp) (by simp)
+            ≫ pullback.fst (Spec.map φ) g :=
+      (pullback.lift_fst _ _ _).symm
     exact this _ (heq ▸ AlgebraicGeometry.IsZariskiLocalAtSource.comp hf _) ⟨_, rfl⟩
   obtain ⟨S, rfl⟩ := hY
   apply of_pullback_fst_Spec_of_codescendsAlong _ _ hQQ' H₂ _ h hf
@@ -190,9 +204,10 @@ Then `P` descends along quasi-compact morphisms satisfying `P'`.
 Note: The second condition is in particular satisfied for faithfully flat morphisms.
 -/
 nonrec lemma HasAffineProperty.descendsAlong_of_affineAnd
-    (hP : HasAffineProperty P (affineAnd Q)) [MorphismProperty.DescendsAlong @IsAffineHom P']
-    (hQ : RingHom.RespectsIso Q) (hQQ' : RingHom.CodescendsAlong Q Q') :
-    P.DescendsAlong (P' ⊓ @QuasiCompact) := by
+    (hP : HasAffineProperty P (affineAnd Q))
+    [MorphismProperty.DescendsAlong @IsAffineHom P']
+    (hQ : RingHom.RespectsIso Q) (hQQ' : RingHom.CodescendsAlong Q Q')
+    : P.DescendsAlong (P' ⊓ @QuasiCompact) := by
   apply IsZariskiLocalAtTarget.descendsAlong_inf_quasiCompact _ _ H₁
   introv h hf
   have : IsAffine Y := by
@@ -201,9 +216,11 @@ nonrec lemma HasAffineProperty.descendsAlong_of_affineAnd
       AlgebraicGeometry.HasAffineProperty.affineAnd_le_isAffineHom P inferInstance _ hf
   wlog hY : ∃ S, Y = Spec S generalizing Y
   · rw [← P.cancel_left_of_respectsIso Y.isoSpec.inv]
-    have heq : pullback.fst (Spec.map φ) (Y.isoSpec.inv ≫ g) =
-        pullback.map _ _ _ _ (𝟙 _) (Y.isoSpec.inv) (𝟙 _) (by simp) (by simp) ≫
-          pullback.fst (Spec.map φ) g := (pullback.lift_fst _ _ _).symm
+    have heq
+        : pullback.fst (Spec.map φ) (Y.isoSpec.inv ≫ g)
+          = pullback.map _ _ _ _ (𝟙 _) (Y.isoSpec.inv) (𝟙 _) (by simp) (by simp)
+            ≫ pullback.fst (Spec.map φ) g :=
+      (pullback.lift_fst _ _ _).symm
     refine this _ ?_ inferInstance ⟨_, rfl⟩
     rwa [heq, P.cancel_left_of_respectsIso]
   obtain ⟨Y, rfl⟩ := hY

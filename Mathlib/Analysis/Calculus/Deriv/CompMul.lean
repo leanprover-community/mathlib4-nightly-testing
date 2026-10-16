@@ -23,17 +23,18 @@ public section
 open Set
 open scoped Pointwise
 
-variable {𝕜 E : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable
+  {𝕜 E : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   {c : 𝕜} {f : 𝕜 → E} {f' : E} {s : Set 𝕜} {x : 𝕜}
 
-theorem hasDerivWithinAt_comp_mul_left_smul_iff :
-    HasDerivWithinAt (f <| c * ·) (c • f') s x ↔ HasDerivWithinAt f f' (c • s) (c * x) := by
+theorem hasDerivWithinAt_comp_mul_left_smul_iff
+    : HasDerivWithinAt (f <| c * ·) (c • f') s x ↔ HasDerivWithinAt f f' (c • s) (c * x) := by
   simp only [hasDerivWithinAt_iff_hasFDerivWithinAt, ← smul_eq_mul,
     ← hasFDerivWithinAt_comp_smul_smul_iff, ContinuousLinearMap.toSpanSingleton_smul]
 
 variable (c f s x) in
-theorem derivWithin_comp_mul_left :
-    derivWithin (f <| c * ·) s x = c • derivWithin f (c • s) (c * x) := by
+theorem derivWithin_comp_mul_left
+    : derivWithin (f <| c * ·) s x = c • derivWithin f (c • s) (c * x) := by
   simp only [← smul_eq_mul]
   rw [← derivWithin_const_smul_field, derivWithin, derivWithin,
     fderivWithin_comp_smul_eq_fderivWithin_smul, Pi.smul_def]

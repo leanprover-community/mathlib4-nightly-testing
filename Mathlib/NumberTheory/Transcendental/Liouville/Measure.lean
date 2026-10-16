@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 public import Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith
-
 import Mathlib.Analysis.PSeries
 import Mathlib.NumberTheory.Transcendental.Liouville.Residual
 
@@ -34,22 +33,25 @@ open scoped Filter ENNReal Topology NNReal
 
 open Filter Set Metric MeasureTheory Real
 
-theorem setOfPred_liouvilleWith_subset_aux :
-    { x : ℝ | ∃ p > 2, LiouvilleWith p x } ⊆
-      ⋃ m : ℤ, (· + (m : ℝ)) ⁻¹' ⋃ n > (0 : ℕ),
-        { x : ℝ | ∃ᶠ b : ℕ in atTop, ∃ a ∈ Finset.Icc (0 : ℤ) b,
-          |x - (a : ℤ) / b| < 1 / (b : ℝ) ^ (2 + 1 / n : ℝ) } := by
+theorem setOfPred_liouvilleWith_subset_aux
+    : { x : ℝ | ∃ p > 2, LiouvilleWith p x }
+      ⊆ ⋃ m : ℤ, (· + (m : ℝ)) ⁻¹' ⋃ n > (0 : ℕ),
+          { x : ℝ | ∃ᶠ b : ℕ in atTop, ∃ a ∈ Finset.Icc (0 : ℤ) b,
+            |x - (a : ℤ) / b| < 1 / (b : ℝ) ^ (2 + 1 / n : ℝ) } := by
   rintro x ⟨p, hp, hxp⟩
   rcases exists_nat_one_div_lt (sub_pos.2 hp) with ⟨n, hn⟩
   rw [lt_sub_iff_add_lt'] at hn
-  suffices ∀ y : ℝ, LiouvilleWith p y → y ∈ Ico (0 : ℝ) 1 → ∃ᶠ b : ℕ in atTop,
-      ∃ a ∈ Finset.Icc (0 : ℤ) b, |y - a / b| < 1 / (b : ℝ) ^ (2 + 1 / (n + 1 : ℕ) : ℝ) by
+  suffices ∀ y : ℝ,
+      LiouvilleWith p y → y ∈ Ico (0 : ℝ) 1
+        → ∃ᶠ b : ℕ in atTop,
+          ∃ a ∈ Finset.Icc (0 : ℤ) b, |y - a / b| < 1 / (b : ℝ) ^ (2 + 1 / (n + 1 : ℕ) : ℝ) by
     simp only [mem_iUnion, mem_preimage]
-    have hx : x + ↑(-⌊x⌋) ∈ Ico (0 : ℝ) 1 := by
+    have hx : x + ↑(- ⌊x⌋) ∈ Ico (0 : ℝ) 1 := by
       simp only [Int.floor_le, Int.lt_floor_add_one, add_neg_lt_iff_le_add', zero_add, and_self_iff,
         mem_Ico, Int.cast_neg, le_add_neg_iff_add_le]
-    exact ⟨-⌊x⌋, n + 1, n.succ_pos, this _ (hxp.add_int _) hx⟩
-  clear hxp x; intro x hxp hx01
+    exact ⟨- ⌊x⌋, n + 1, n.succ_pos, this _ (hxp.add_int _) hx⟩
+  clear hxp x
+  intro x hxp hx01
   refine ((hxp.frequently_lt_rpow_neg hn).and_eventually (eventually_ge_atTop 1)).mono ?_
   rintro b ⟨⟨a, -, hlt⟩, hb⟩
   rw [rpow_neg b.cast_nonneg, ← one_div, ← Nat.cast_succ] at hlt
@@ -59,14 +61,16 @@ theorem setOfPred_liouvilleWith_subset_aux :
   replace hlt : |x - a / b| < 1 / b := by
     refine hlt.trans_le (one_div_le_one_div_of_le hb0 ?_)
     calc
-      (b : ℝ) = (b : ℝ) ^ (1 : ℝ) := (rpow_one _).symm
+      (b : ℝ)
+        = (b : ℝ) ^ (1 : ℝ) := (rpow_one _).symm
       _ ≤ (b : ℝ) ^ (2 + 1 / (n + 1 : ℕ) : ℝ) :=
         rpow_le_rpow_of_exponent_le hb (one_le_two.trans ?_)
     simpa using n.cast_add_one_pos.le
   rw [sub_div' hb0.ne', abs_div, abs_of_pos hb0, div_lt_div_iff_of_pos_right hb0, abs_sub_lt_iff,
-    sub_lt_iff_lt_add, sub_lt_iff_lt_add, ← sub_lt_iff_lt_add'] at hlt
-  rw [Finset.mem_Icc, ← Int.lt_add_one_iff, ← Int.lt_add_one_iff, ← neg_lt_iff_pos_add, add_comm, ←
-    @Int.cast_lt ℝ, ← @Int.cast_lt ℝ]
+      sub_lt_iff_lt_add, sub_lt_iff_lt_add, ← sub_lt_iff_lt_add']
+    at hlt
+  rw [Finset.mem_Icc, ← Int.lt_add_one_iff, ← Int.lt_add_one_iff, ← neg_lt_iff_pos_add, add_comm,
+    ← @Int.cast_lt ℝ, ← @Int.cast_lt ℝ]
   push_cast
   refine ⟨lt_of_le_of_lt ?_ hlt.1, hlt.2.trans_le ?_⟩
   · simp only [mul_nonneg hx01.left b.cast_nonneg, neg_le_sub_iff_le_add, le_add_iff_nonneg_left]
@@ -76,16 +80,21 @@ theorem setOfPred_liouvilleWith_subset_aux :
 @[deprecated (since := "2026-07-09")]
 alias setOf_liouvilleWith_subset_aux := setOfPred_liouvilleWith_subset_aux
 
-/-- The set of numbers satisfying the Liouville condition with some exponent `p > 2` has Lebesgue
-measure zero. -/
+/--
+The set of numbers satisfying the Liouville condition with some exponent `p > 2` has Lebesgue
+measure zero.
+-/
 @[simp]
-theorem volume_iUnion_setOfPred_liouvilleWith :
-    volume (⋃ (p : ℝ) (_hp : 2 < p), { x : ℝ | LiouvilleWith p x }) = 0 := by
+theorem volume_iUnion_setOfPred_liouvilleWith
+    : volume (⋃ (p : ℝ) (_hp : 2 < p), { x : ℝ | LiouvilleWith p x }) = 0 := by
   simp only [← ofPred_exists, exists_prop]
   refine measure_mono_null setOfPred_liouvilleWith_subset_aux ?_
-  rw [measure_iUnion_null_iff]; intro m; rw [measure_preimage_add_right]; clear m
-  refine (measure_biUnion_null_iff (I := {n : ℕ | 1 ≤ n}) <| to_countable _).2
-    fun n (hn : 1 ≤ n) => ?_
+  rw [measure_iUnion_null_iff]
+  intro m
+  rw [measure_preimage_add_right]
+  clear m
+  refine (measure_biUnion_null_iff (I := {n : ℕ | 1 ≤ n}) <| to_countable _).2 fun n (hn : 1 ≤ n) =>
+    ?_
   generalize hr : (2 + 1 / n : ℝ) = r
   replace hr : 2 < r := by simp [← hr, zero_lt_one.trans_le hn]
   clear hn n
@@ -95,14 +104,15 @@ theorem volume_iUnion_setOfPred_liouvilleWith :
   have hB : ∀ a b, volume (B a b) = ↑((2 : ℝ≥0) / (b : ℝ≥0) ^ r) := fun a b ↦ by
     rw [Real.volume_ball, mul_one_div, ← NNReal.coe_two, ← NNReal.coe_natCast, ← NNReal.coe_rpow,
       ← NNReal.coe_div, ENNReal.ofReal_coe_nnreal]
-  have : ∀ b : ℕ, volume (⋃ a ∈ Finset.Icc (0 : ℤ) b, B a b) ≤
-      ↑(2 * ((b : ℝ≥0) ^ (1 - r) + (b : ℝ≥0) ^ (-r))) := fun b ↦
+  have : ∀ b : ℕ,
+      volume (⋃ a ∈ Finset.Icc (0 : ℤ) b, B a b)
+        ≤ ↑(2 * ((b : ℝ≥0) ^ (1 - r) + (b : ℝ≥0) ^ (-r))) := fun b ↦
     calc
-      volume (⋃ a ∈ Finset.Icc (0 : ℤ) b, B a b) ≤ ∑ a ∈ Finset.Icc (0 : ℤ) b, volume (B a b) :=
-        measure_biUnion_finset_le _ _
+      volume (⋃ a ∈ Finset.Icc (0 : ℤ) b, B a b)
+        ≤ ∑ a ∈ Finset.Icc (0 : ℤ) b, volume (B a b) := measure_biUnion_finset_le _ _
       _ = ↑((b + 1) * (2 / (b : ℝ≥0) ^ r)) := by
-        simp only [hB, Int.card_Icc, Finset.sum_const, nsmul_eq_mul, sub_zero,
-          Int.toNat_natCast, ← Nat.cast_succ, ENNReal.coe_mul, ENNReal.coe_natCast]
+        simp only [hB, Int.card_Icc, Finset.sum_const, nsmul_eq_mul, sub_zero, Int.toNat_natCast,
+          ← Nat.cast_succ, ENNReal.coe_mul, ENNReal.coe_natCast]
       _ = _ := by
         have : 1 - r ≠ 0 := by linarith
         rw [ENNReal.coe_inj]
@@ -129,7 +139,9 @@ theorem volume_setOfPred_liouville : volume { x : ℝ | Liouville x } = 0 := by
 @[deprecated (since := "2026-07-09")]
 alias volume_setOf_liouville := volume_setOfPred_liouville
 
-/-- The filters `residual ℝ` and `ae volume` are disjoint. This means that there exists a residual
-set of Lebesgue measure zero (e.g., the set of Liouville numbers). -/
+/--
+The filters `residual ℝ` and `ae volume` are disjoint. This means that there exists a residual
+set of Lebesgue measure zero (e.g., the set of Liouville numbers).
+-/
 theorem Real.disjoint_residual_ae : Disjoint (residual ℝ) (ae volume) :=
   disjoint_of_disjoint_of_mem disjoint_compl_right eventually_residual_liouville ae_not_liouville

@@ -29,12 +29,13 @@ Thus, it is best to avoid unfolding the definition and only use the API provided
 
 @[expose] public section
 
-/-- An element of an ordered algebra is *strictly positive* if it is nonnegative and invertible.
+/--
+An element of an ordered algebra is *strictly positive* if it is nonnegative and invertible.
 
 NOTE: This definition will be generalized to the non-unital case in the future; do not unfold
-the definition and use the API provided instead to avoid breakage when the refactor happens. -/
-def IsStrictlyPositive {A : Type*} [LE A] [Monoid A] [Zero A] (a : A) : Prop :=
-  0 ≤ a ∧ IsUnit a
+the definition and use the API provided instead to avoid breakage when the refactor happens.
+-/
+def IsStrictlyPositive {A : Type*} [LE A] [Monoid A] [Zero A] (a : A) : Prop := 0 ≤ a ∧ IsUnit a
 
 variable {A : Type*}
 
@@ -43,40 +44,47 @@ namespace IsStrictlyPositive
 section basic
 
 @[grind _=_]
-lemma iff_of_unital [LE A] [Monoid A] [Zero A] {a : A} :
-    IsStrictlyPositive a ↔ 0 ≤ a ∧ IsUnit a := Iff.rfl
+lemma iff_of_unital [LE A] [Monoid A] [Zero A] {a : A} : IsStrictlyPositive a ↔ 0 ≤ a ∧ IsUnit a :=
+  Iff.rfl
 
 @[aesop 20% apply (rule_sets := [CStarAlgebra])]
-protected lemma nonneg [LE A] [Monoid A] [Zero A] {a : A} (ha : IsStrictlyPositive a) :
-    0 ≤ a := ha.1
+protected lemma nonneg [LE A] [Monoid A] [Zero A] {a : A} (ha : IsStrictlyPositive a) : 0 ≤ a :=
+  ha.1
 
 @[aesop 20% apply (rule_sets := [CStarAlgebra])]
-protected lemma isUnit [LE A] [Monoid A] [Zero A] {a : A} (ha : IsStrictlyPositive a) :
-    IsUnit a := ha.2
+protected lemma isUnit [LE A] [Monoid A] [Zero A] {a : A} (ha : IsStrictlyPositive a) : IsUnit a :=
+  ha.2
 
-lemma _root_.IsUnit.isStrictlyPositive [LE A] [Monoid A] [Zero A]
-    {a : A} (ha : IsUnit a) (ha₀ : 0 ≤ a) : IsStrictlyPositive a := iff_of_unital.mpr ⟨ha₀, ha⟩
+lemma _root_.IsUnit.isStrictlyPositive
+    [LE A] [Monoid A] [Zero A] {a : A} (ha : IsUnit a) (ha₀ : 0 ≤ a)
+    : IsStrictlyPositive a :=
+  iff_of_unital.mpr ⟨ha₀, ha⟩
 
 @[grind →]
-lemma isSelfAdjoint [Semiring A] [PartialOrder A] [StarRing A] [StarOrderedRing A] {a : A}
-    (ha : IsStrictlyPositive a) : IsSelfAdjoint a := ha.nonneg.isSelfAdjoint
+lemma isSelfAdjoint
+    [Semiring A] [PartialOrder A] [StarRing A] [StarOrderedRing A]
+    {a : A} (ha : IsStrictlyPositive a)
+    : IsSelfAdjoint a :=
+  ha.nonneg.isSelfAdjoint
 
 @[simp, grind .]
-lemma _root_.isStrictlyPositive_one [LE A] [Monoid A] [Zero A] [ZeroLEOneClass A] :
-    IsStrictlyPositive (1 : A) := iff_of_unital.mpr ⟨zero_le_one, isUnit_one⟩
+lemma _root_.isStrictlyPositive_one [LE A] [Monoid A] [Zero A] [ZeroLEOneClass A]
+    : IsStrictlyPositive (1 : A) :=
+  iff_of_unital.mpr ⟨zero_le_one, isUnit_one⟩
 
 @[grind =]
-lemma _root_.Units.isStrictlyPositive_iff [LE A] [Monoid A] [Zero A] {a : Aˣ} :
-    IsStrictlyPositive (a : A) ↔ (0 : A) ≤ a :=
+lemma _root_.Units.isStrictlyPositive_iff [LE A] [Monoid A] [Zero A] {a : Aˣ}
+    : IsStrictlyPositive (a : A) ↔ (0 : A) ≤ a :=
   ⟨fun h => h.nonneg, fun h => iff_of_unital.mp ⟨h, a.isUnit⟩⟩
 
 @[aesop safe apply]
-lemma _root_.Units.isStrictlyPositive_of_le [LE A] [Monoid A] [Zero A] {a : Aˣ}
-    (h : (0 : A) ≤ a) : IsStrictlyPositive (a : A) := a.isStrictlyPositive_iff.mpr h
+lemma _root_.Units.isStrictlyPositive_of_le [LE A] [Monoid A] [Zero A] {a : Aˣ} (h : (0 : A) ≤ a)
+    : IsStrictlyPositive (a : A) :=
+  a.isStrictlyPositive_iff.mpr h
 
 @[nontriviality]
-protected lemma of_subsingleton [PartialOrder A] [Monoid A] [Zero A] [Subsingleton A]
-    {a : A} : IsStrictlyPositive a :=
+protected lemma of_subsingleton [PartialOrder A] [Monoid A] [Zero A] [Subsingleton A] {a : A}
+    : IsStrictlyPositive a :=
   iff_of_unital.mpr ⟨by simp, isUnit_of_subsingleton _⟩
 
 end basic
@@ -84,26 +92,27 @@ end basic
 section StarOrderedRing
 variable [Semiring A] [StarRing A] [PartialOrder A] [StarOrderedRing A]
 
-lemma _root_.IsUnit.isStrictlyPositive_star_right_conjugate_iff {u a : A} (hu : IsUnit u) :
-    IsStrictlyPositive (u * a * star u) ↔ IsStrictlyPositive a := by
+lemma _root_.IsUnit.isStrictlyPositive_star_right_conjugate_iff {u a : A} (hu : IsUnit u)
+    : IsStrictlyPositive (u * a * star u) ↔ IsStrictlyPositive a := by
   simp_rw [IsStrictlyPositive.iff_of_unital, hu.star_right_conjugate_nonneg_iff]
   lift u to Aˣ using hu
   rw [← Units.coe_star, Units.isUnit_mul_units, Units.isUnit_units_mul]
 
-lemma _root_.IsUnit.isStrictlyPositive_star_left_conjugate_iff {u a : A} (hu : IsUnit u) :
-    IsStrictlyPositive (star u * a * u) ↔ IsStrictlyPositive a := by
+lemma _root_.IsUnit.isStrictlyPositive_star_left_conjugate_iff {u a : A} (hu : IsUnit u)
+    : IsStrictlyPositive (star u * a * u) ↔ IsStrictlyPositive a := by
   simpa using hu.star.isStrictlyPositive_star_right_conjugate_iff
 
 @[grind =]
-theorem _root_.IsUnit.isStrictlyPositive_iff_conjugate_of_isSelfAdjoint (a b : A) (hb : IsUnit b)
-    (hb₂ : IsSelfAdjoint b := by cfc_tac) :
-    IsStrictlyPositive (b * a * b) ↔ IsStrictlyPositive a := by
+theorem _root_.IsUnit.isStrictlyPositive_iff_conjugate_of_isSelfAdjoint
+    (a b : A) (hb : IsUnit b) (hb₂ : IsSelfAdjoint b := by cfc_tac)
+    : IsStrictlyPositive (b * a * b) ↔ IsStrictlyPositive a := by
   grind [hb.isStrictlyPositive_star_left_conjugate_iff]
 
 @[aesop safe apply]
-theorem conjugate_of_isUnit_of_isSelfAdjoint (a b : A) (hb : IsUnit b)
-    (hb₂ : IsSelfAdjoint b := by cfc_tac) (ha : IsStrictlyPositive a := by cfc_tac) :
-    IsStrictlyPositive (b * a * b) :=
+theorem conjugate_of_isUnit_of_isSelfAdjoint
+    (a b : A) (hb : IsUnit b)
+    (hb₂ : IsSelfAdjoint b := by cfc_tac) (ha : IsStrictlyPositive a := by cfc_tac)
+    : IsStrictlyPositive (b * a * b) :=
   (hb.isStrictlyPositive_iff_conjugate_of_isSelfAdjoint _ _ hb₂).mpr ha
 
 end StarOrderedRing
@@ -113,23 +122,28 @@ section Algebra
 variable {𝕜 : Type*} [Ring A] [PartialOrder A]
 
 @[grind ←, aesop safe apply]
-protected lemma smul [Semifield 𝕜] [PartialOrder 𝕜] [Algebra 𝕜 A] [PosSMulMono 𝕜 A] {c : 𝕜}
-    (hc : 0 < c) {a : A} (ha : IsStrictlyPositive a) :
-    IsStrictlyPositive (c • a) := by
+protected lemma smul
+    [Semifield 𝕜] [PartialOrder 𝕜] [Algebra 𝕜 A] [PosSMulMono 𝕜 A]
+    {c : 𝕜} (hc : 0 < c)
+    {a : A} (ha : IsStrictlyPositive a)
+    : IsStrictlyPositive (c • a) := by
   have hunit : IsUnit (c • a) :=
     isUnit_iff_exists.mpr ⟨c⁻¹ • ha.isUnit.unit⁻¹, by simp [(ne_of_lt hc).symm]⟩
   exact hunit.isStrictlyPositive (smul_nonneg hc.le ha.nonneg)
 
 @[grind ←, aesop safe apply]
-lemma _root_.isStrictlyPositive_algebraMap [ZeroLEOneClass A] [Semifield 𝕜] [PartialOrder 𝕜]
-    [Algebra 𝕜 A] [PosSMulMono 𝕜 A] {c : 𝕜} (hc : 0 < c) :
-    IsStrictlyPositive (algebraMap 𝕜 A c) := by
+lemma _root_.isStrictlyPositive_algebraMap
+    [ZeroLEOneClass A] [Semifield 𝕜] [PartialOrder 𝕜] [Algebra 𝕜 A] [PosSMulMono 𝕜 A]
+    {c : 𝕜} (hc : 0 < c)
+    : IsStrictlyPositive (algebraMap 𝕜 A c) := by
   rw [Algebra.algebraMap_eq_smul_one]
   exact IsStrictlyPositive.smul hc isStrictlyPositive_one
 
-lemma spectrum_pos [CommSemiring 𝕜] [PartialOrder 𝕜] [Algebra 𝕜 A]
-    [NonnegSpectrumClass 𝕜 A] {a : A} (ha : IsStrictlyPositive a) {x : 𝕜}
-    (hx : x ∈ spectrum 𝕜 a) : 0 < x := by
+lemma spectrum_pos
+    [CommSemiring 𝕜] [PartialOrder 𝕜] [Algebra 𝕜 A] [NonnegSpectrumClass 𝕜 A]
+    {a : A} (ha : IsStrictlyPositive a)
+    {x : 𝕜} (hx : x ∈ spectrum 𝕜 a)
+    : 0 < x := by
   have h₁ : 0 ≤ x := by grind
   have h₂ : x ≠ 0 := by grind [= spectrum.zero_notMem_iff]
   exact lt_of_le_of_ne h₁ h₂.symm

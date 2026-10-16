@@ -46,7 +46,8 @@ variable {p q : R[X]} (x : A)
 theorem _root_.Polynomial.adjoin_X : R[(X : R[X])] = ⊤ := by
   refine top_unique fun p _hp => ?_
   set S := R[(X : R[X])]
-  rw [← sum_monomial_eq p]; simp only [← smul_X_eq_monomial]
+  rw [← sum_monomial_eq p]
+  simp only [← smul_X_eq_monomial]
   exact S.sum_mem fun n _hn => S.smul_mem (S.pow_mem (subset_adjoin rfl) _) _
 
 variable (R)
@@ -57,59 +58,56 @@ theorem adjoin_singleton_eq_range_aeval (x : A) : R[x] = (aeval x).range := by
 theorem _root_.Polynomial.aeval_mem_adjoin_singleton : aeval x p ∈ R[x] := by
   simp [adjoin_singleton_eq_range_aeval]
 
-instance {A B : Type*} [CommSemiring A] [Semiring B] [Algebra A B] (x : B) (p : Polynomial A) :
-    CoeDep B (p.aeval x) A[x] where
+instance {A B : Type*} [CommSemiring A] [Semiring B] [Algebra A B] (x : B) (p : Polynomial A)
+    : CoeDep B (p.aeval x) A[x] where
   coe := ⟨p.aeval x, aeval_mem_adjoin_singleton A x⟩
 
-@[simp]
-theorem adjoin_aeval_self : (aeval x p : R[x]) = aeval (x : R[x]) p := by
-  ext; simp
+@[simp] theorem adjoin_aeval_self : (aeval x p : R[x]) = aeval (x : R[x]) p := by ext; simp
 
-theorem adjoin_mem_exists_aeval {a : A} (h : a ∈ R[x]) :
-    ∃ p : R[X], aeval x p = a := by
+theorem adjoin_mem_exists_aeval {a : A} (h : a ∈ R[x]) : ∃ p : R[X], aeval x p = a := by
   rw [Algebra.adjoin_singleton_eq_range_aeval] at h
   simp_all
 
-theorem adjoin_eq_exists_aeval (a : R[x]) :
-    ∃ p : R[X], aeval x p = a := by
+theorem adjoin_eq_exists_aeval (a : R[x]) : ∃ p : R[X], aeval x p = a := by
   have : (a : A) ∈ R[x] := by simp
   set y := (a : A) with h
   rw [Algebra.adjoin_singleton_eq_range_aeval] at this
   simp_all
 
-lemma exists_mvPolynomial_aeval_eq_of_mem_adjoin {R A σ : Type*}
-    [CommSemiring R] [CommSemiring A] [Algebra R A]
-    {S : Set A} {a : A} {f : σ → A} (hS : S ⊆ Set.range f)
-    (ha : a ∈ adjoin R S) : ∃ p : MvPolynomial σ R, p.aeval f = a := by
+lemma exists_mvPolynomial_aeval_eq_of_mem_adjoin
+    {R A σ : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A]
+    {S : Set A} {a : A} {f : σ → A} (hS : S ⊆ Set.range f) (ha : a ∈ adjoin R S)
+    : ∃ p : MvPolynomial σ R, p.aeval f = a := by
   have ha : a ∈ adjoin R (Set.range f) := adjoin_mono hS ha
   rw [Algebra.adjoin_range_eq_range_aeval] at ha
   simp_all
 
-lemma exists_mvPolynomial_eq_of_adjoin {R A σ : Type*}
-    [CommSemiring R] [CommSemiring A] [Algebra R A]
-    {S : Set A} {f : σ → A} (hS : S ⊆ Set.range f)
-    (a : adjoin R S) : ∃ p : MvPolynomial σ R, p.aeval f = a :=
+lemma exists_mvPolynomial_eq_of_adjoin
+    {R A σ : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A]
+    {S : Set A} {f : σ → A} (hS : S ⊆ Set.range f) (a : adjoin R S)
+    : ∃ p : MvPolynomial σ R, p.aeval f = a :=
   exists_mvPolynomial_aeval_eq_of_mem_adjoin hS a.2
 
 /--
 Proving a fact about `a : R[x]` is the same as proving it for
-`aeval x p` where `p`is an arbitrary polynomial. -/
+`aeval x p` where `p`is an arbitrary polynomial.
+-/
 @[elab_as_elim]
-theorem adjoin_singleton_induction {M : R[x] → Prop}
-    (a : R[x]) (f : ∀ (p : Polynomial R), M (aeval x p : R[x])) : M a := by
+theorem adjoin_singleton_induction
+    {M : R[x] → Prop} (a : R[x]) (f : ∀ (p : Polynomial R), M (aeval x p : R[x]))
+    : M a := by
   obtain ⟨p, hp⟩ := Algebra.adjoin_eq_exists_aeval _ x a
   grind
 
-instance instCommSemiringAdjoinSingleton :
-    CommSemiring <| R[x] where
+instance instCommSemiringAdjoinSingleton : CommSemiring <| R[x] where
   mul_comm := fun ⟨p, hp⟩ ⟨q, hq⟩ ↦ by
-      obtain ⟨p', rfl⟩ := Algebra.adjoin_singleton_eq_range_aeval R x ▸ hp
-      obtain ⟨q', rfl⟩ := Algebra.adjoin_singleton_eq_range_aeval R x ▸ hq
-      simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, MulMemClass.mk_mul_mk, ← map_mul,
-        mul_comm p' q']
+    obtain ⟨p', rfl⟩ := Algebra.adjoin_singleton_eq_range_aeval R x ▸ hp
+    obtain ⟨q', rfl⟩ := Algebra.adjoin_singleton_eq_range_aeval R x ▸ hq
+    simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, MulMemClass.mk_mul_mk, ← map_mul,
+      mul_comm p' q']
 
-instance instCommRingAdjoinSingleton {R A : Type*} [CommRing R] [Ring A] [Algebra R A] (x : A) :
-    CommRing R[x] where
+instance instCommRingAdjoinSingleton {R A : Type*} [CommRing R] [Ring A] [Algebra R A] (x : A)
+  : CommRing R[x] where
 
 end aeval
 

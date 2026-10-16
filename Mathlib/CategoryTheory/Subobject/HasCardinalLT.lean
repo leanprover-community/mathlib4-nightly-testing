@@ -24,9 +24,9 @@ namespace CategoryTheory.Subobject
 
 variable {C : Type u} [Category.{v} C]
 
-lemma hasCardinalLT_of_mono {Y : C} {κ : Cardinal.{w}}
-    (h : HasCardinalLT (Subobject Y) κ) {X : C} (f : X ⟶ Y) [Mono f] :
-    HasCardinalLT (Subobject X) κ :=
+lemma hasCardinalLT_of_mono
+    {Y : C} {κ : Cardinal.{w}} (h : HasCardinalLT (Subobject Y) κ) {X : C} (f : X ⟶ Y) [Mono f]
+    : HasCardinalLT (Subobject X) κ :=
   h.of_injective _ (map_obj_injective f)
 
 end CategoryTheory.Subobject

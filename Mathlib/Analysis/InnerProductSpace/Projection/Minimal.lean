@@ -6,7 +6,6 @@ Authors: Zhouhang Zhou, Frédéric Dupuis, Heather Macbeth
 module
 
 public import Mathlib.Analysis.InnerProductSpace.Basic
-
 import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
@@ -30,12 +29,15 @@ open RCLike Real Filter InnerProductSpace
 
 open scoped Topology
 
-/-- **Existence of minimizers**, aka the **Hilbert projection theorem**.
+/--
+**Existence of minimizers**, aka the **Hilbert projection theorem**.
 
 Let `u` be a point in a real inner product space, and let `K` be a nonempty complete convex subset.
-Then there exists a (unique) `v` in `K` that minimizes the distance `‖u - v‖` to `u`. -/
-theorem exists_norm_eq_iInf_of_complete_convex {K : Set F} (ne : K.Nonempty) (h₁ : IsComplete K)
-    (h₂ : Convex ℝ K) : ∀ u : F, ∃ v ∈ K, ‖u - v‖ = ⨅ w : K, ‖u - w‖ := fun u => by
+Then there exists a (unique) `v` in `K` that minimizes the distance `‖u - v‖` to `u`.
+-/
+theorem exists_norm_eq_iInf_of_complete_convex
+    {K : Set F} (ne : K.Nonempty) (h₁ : IsComplete K) (h₂ : Convex ℝ K)
+    : ∀ u : F, ∃ v ∈ K, ‖u - v‖ = ⨅ w : K, ‖u - w‖ := fun u => by
   let δ := ⨅ w : K, ‖u - w‖
   let : Nonempty K := ne.to_subtype
   have zero_le_δ : 0 ≤ δ := le_ciInf fun _ => norm_nonneg _
@@ -76,25 +78,23 @@ theorem exists_norm_eq_iInf_of_complete_convex {K : Set F} (ne : K.Nonempty) (h�
       let b := u - wp
       let half := 1 / (2 : ℝ)
       let div := 1 / ((N : ℝ) + 1)
-      have :
-        4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ + ‖wp - wq‖ * ‖wp - wq‖ =
-          2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) :=
+      have : 4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ + ‖wp - wq‖ * ‖wp - wq‖
+          = 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) :=
         calc
-          4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ + ‖wp - wq‖ * ‖wp - wq‖ =
-              2 * ‖u - half • (wq + wp)‖ * (2 * ‖u - half • (wq + wp)‖) +
-              ‖wp - wq‖ * ‖wp - wq‖ := by
+          4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ + ‖wp - wq‖ * ‖wp - wq‖
+              = 2 * ‖u - half • (wq + wp)‖ * (2 * ‖u - half • (wq + wp)‖)
+                + ‖wp - wq‖ * ‖wp - wq‖ := by
             ring
-          _ =
-              absR 2 * ‖u - half • (wq + wp)‖ * (absR 2 * ‖u - half • (wq + wp)‖) +
-                ‖wp - wq‖ * ‖wp - wq‖ := by
+          _ = absR 2 * ‖u - half • (wq + wp)‖ * (absR 2 * ‖u - half • (wq + wp)‖)
+              + ‖wp - wq‖ * ‖wp - wq‖ := by
             rw [abs_of_nonneg]
             exact zero_le_two
-          _ =
-              ‖(2 : ℝ) • (u - half • (wq + wp))‖ * ‖(2 : ℝ) • (u - half • (wq + wp))‖ +
-                ‖wp - wq‖ * ‖wp - wq‖ := by simp [norm_smul]
+          _ = ‖(2 : ℝ) • (u - half • (wq + wp))‖ * ‖(2 : ℝ) • (u - half • (wq + wp))‖
+              + ‖wp - wq‖ * ‖wp - wq‖ := by
+            simp [norm_smul]
           _ = ‖a + b‖ * ‖a + b‖ + ‖a - b‖ * ‖a - b‖ := by
-            rw [smul_sub, smul_smul, mul_one_div_cancel (_root_.two_ne_zero : (2 : ℝ) ≠ 0), ←
-              one_add_one_eq_two, add_smul]
+            rw [smul_sub, smul_smul, mul_one_div_cancel (_root_.two_ne_zero : (2 : ℝ) ≠ 0),
+              ← one_add_one_eq_two, add_smul]
             simp only [one_smul]
             have eq₁ : wp - wq = a - b := (sub_sub_sub_cancel_left _ _ _).symm
             have eq₂ : u + u - (wq + wp) = a + b := by
@@ -116,16 +116,17 @@ theorem exists_norm_eq_iInf_of_complete_convex {K : Set F} (ne : K.Nonempty) (h�
       · exact sqrt_nonneg _
       rw [mul_self_sqrt]
       · calc
-        ‖wp - wq‖ * ‖wp - wq‖ =
-            2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) - 4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ := by
-          simp [← this]
-        _ ≤ 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) - 4 * δ * δ := by gcongr
-        _ ≤ 2 * ((δ + div) * (δ + div) + (δ + div) * (δ + div)) - 4 * δ * δ := by gcongr
-        _ = 8 * δ * div + 4 * div * div := by ring
+          ‖wp - wq‖ * ‖wp - wq‖
+              = 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖)
+                - 4 * ‖u - half • (wq + wp)‖ * ‖u - half • (wq + wp)‖ := by
+            simp [← this]
+          _ ≤ 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) - 4 * δ * δ := by gcongr
+          _ ≤ 2 * ((δ + div) * (δ + div) + (δ + div) * (δ + div)) - 4 * δ * δ := by gcongr
+          _ = 8 * δ * div + 4 * div * div := by ring
       positivity
     -- third goal : `Tendsto (fun (n : ℕ) => √(b n)) atTop (𝓝 0)`
-    suffices Tendsto (fun x ↦ √(8 * δ * x + 4 * x * x) : ℝ → ℝ) (𝓝 0) (𝓝 0)
-      from this.comp tendsto_one_div_add_atTop_nhds_zero_nat
+    suffices Tendsto (fun x ↦ √(8 * δ * x + 4 * x * x) : ℝ → ℝ) (𝓝 0) (𝓝 0) from
+      this.comp tendsto_one_div_add_atTop_nhds_zero_nat
     exact Continuous.tendsto' (by fun_prop) _ _ (by simp)
   -- Step 3: By completeness of `K`, let `w : ℕ → K` converge to some `v : K`.
   -- Prove that it satisfies all requirements.
@@ -137,10 +138,13 @@ theorem exists_norm_eq_iInf_of_complete_convex {K : Set F} (ne : K.Nonempty) (h�
     convert! Tendsto.comp h_cont.continuousAt w_tendsto
   exact tendsto_nhds_unique this norm_tendsto
 
-/-- Characterization of minimizers for the projection on a convex set in a real inner product
-space. -/
-theorem norm_eq_iInf_iff_real_inner_le_zero {K : Set F} (h : Convex ℝ K) {u : F} {v : F}
-    (hv : v ∈ K) : (‖u - v‖ = ⨅ w : K, ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w - v⟫_ℝ ≤ 0 := by
+/--
+Characterization of minimizers for the projection on a convex set in a real inner product
+space.
+-/
+theorem norm_eq_iInf_iff_real_inner_le_zero
+    {K : Set F} (h : Convex ℝ K) {u : F} {v : F} (hv : v ∈ K)
+    : (‖u - v‖ = ⨅ w : K, ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w - v⟫_ℝ ≤ 0 := by
   let : Nonempty K := ⟨⟨v, hv⟩⟩
   constructor
   · intro eq w hw
@@ -151,10 +155,13 @@ theorem norm_eq_iInf_iff_real_inner_le_zero {K : Set F} (h : Convex ℝ K) {u : 
     have δ_le' (w) (hw : w ∈ K) : δ ≤ ‖u - w‖ := δ_le ⟨w, hw⟩
     have (θ : ℝ) (hθ₁ : 0 < θ) (hθ₂ : θ ≤ 1) : 2 * p ≤ θ * q := by
       have : ‖u - v‖ ^ 2 ≤ ‖u - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * ‖w - v‖ ^ 2 :=
-        calc ‖u - v‖ ^ 2
+        calc
+          ‖u - v‖ ^ 2
           _ ≤ ‖u - (θ • w + (1 - θ) • v)‖ ^ 2 := by
-            simp only [sq]; apply mul_self_le_mul_self (norm_nonneg _)
-            rw [eq]; apply δ_le'
+            simp only [sq]
+            apply mul_self_le_mul_self (norm_nonneg _)
+            rw [eq]
+            apply δ_le'
             apply h hw hv
             exacts [le_of_lt hθ₁, sub_nonneg.2 hθ₂, add_sub_cancel _ _]
           _ = ‖u - v - θ • (w - v)‖ ^ 2 := by
@@ -165,19 +172,20 @@ theorem norm_eq_iInf_iff_real_inner_le_zero {K : Set F} (h : Convex ℝ K) {u : 
           _ = ‖u - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * ‖w - v‖ ^ 2 := by
             rw [@norm_sub_sq ℝ, inner_smul_right, norm_smul]
             simp only [sq]
-            change
-              ‖u - v‖ * ‖u - v‖ - 2 * (θ * ⟪u - v, w - v⟫_ℝ) +
-                absR θ * ‖w - v‖ * (absR θ * ‖w - v‖) =
-              ‖u - v‖ * ‖u - v‖ - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * (‖w - v‖ * ‖w - v‖)
-            rw [abs_of_pos hθ₁]; ring
-      have eq₁ :
-        ‖u - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * ‖w - v‖ ^ 2 =
-          ‖u - v‖ ^ 2 + (θ * θ * ‖w - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ) := by
+            change ‖u - v‖ * ‖u - v‖ - 2 * (θ * ⟪u - v, w - v⟫_ℝ)
+                + absR θ * ‖w - v‖ * (absR θ * ‖w - v‖)
+              = ‖u - v‖ * ‖u - v‖ - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * (‖w - v‖ * ‖w - v‖)
+            rw [abs_of_pos hθ₁]
+            ring
+      have eq₁
+          : ‖u - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ + θ * θ * ‖w - v‖ ^ 2
+            = ‖u - v‖ ^ 2 + (θ * θ * ‖w - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ) := by
         abel
       rw [eq₁, le_add_iff_nonneg_right] at this
-      have eq₂ :
-        θ * θ * ‖w - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ =
-          θ * (θ * ‖w - v‖ ^ 2 - 2 * ⟪u - v, w - v⟫_ℝ) := by ring
+      have eq₂
+          : θ * θ * ‖w - v‖ ^ 2 - 2 * θ * ⟪u - v, w - v⟫_ℝ
+            = θ * (θ * ‖w - v‖ ^ 2 - 2 * ⟪u - v, w - v⟫_ℝ) := by
+        ring
       rw [eq₂] at this
       exact le_of_sub_nonneg (nonneg_of_mul_nonneg_right this hθ₁)
     by_cases hq : q = 0
@@ -192,12 +200,13 @@ theorem norm_eq_iInf_iff_real_inner_le_zero {K : Set F} (h : Convex ℝ K) {u : 
       let θ := min (1 : ℝ) (p / q)
       have eq₁ : θ * q ≤ p :=
         calc
-          θ * q ≤ p / q * q := mul_le_mul_of_nonneg_right (min_le_right _ _) (sq_nonneg _)
+          θ * q
+            ≤ p / q * q := mul_le_mul_of_nonneg_right (min_le_right _ _) (sq_nonneg _)
           _ = p := div_mul_cancel₀ _ hq
       have : 2 * p ≤ p :=
         calc
-          2 * p ≤ θ * q := by
-            exact this θ (lt_min (by simp) (div_pos hp q_pos)) (by simp [θ])
+          2 * p
+            ≤ θ * q := by exact this θ (lt_min (by simp) (div_pos hp q_pos)) (by simp [θ])
           _ ≤ p := eq₁
       linarith
   · intro h
@@ -207,7 +216,8 @@ theorem norm_eq_iInf_iff_real_inner_le_zero {K : Set F} (h : Convex ℝ K) {u : 
       apply nonneg_le_nonneg_of_sq_le_sq (norm_nonneg _)
       have := h w w.2
       calc
-        ‖u - v‖ * ‖u - v‖ ≤ ‖u - v‖ * ‖u - v‖ - 2 * ⟪u - v, w - v⟫_ℝ := by linarith
+        ‖u - v‖ * ‖u - v‖
+          ≤ ‖u - v‖ * ‖u - v‖ - 2 * ⟪u - v, w - v⟫_ℝ := by linarith
         _ ≤ ‖u - v‖ ^ 2 - 2 * ⟪u - v, w - v⟫_ℝ + ‖w - v‖ ^ 2 := by
           rw [sq]
           refine le_add_of_nonneg_right ?_
@@ -226,26 +236,28 @@ namespace Submodule
 
 variable (K : Submodule 𝕜 E)
 
-/-- Existence of projections on complete subspaces.
+/--
+Existence of projections on complete subspaces.
 Let `u` be a point in an inner product space, and let `K` be a nonempty complete subspace.
 Then there exists a (unique) `v` in `K` that minimizes the distance `‖u - v‖` to `u`.
 This point `v` is usually called the orthogonal projection of `u` onto `K`.
 -/
-theorem exists_norm_eq_iInf_of_complete_subspace (h : IsComplete (↑K : Set E)) :
-    ∀ u : E, ∃ v ∈ K, ‖u - v‖ = ⨅ w : (K : Set E), ‖u - w‖ := by
+theorem exists_norm_eq_iInf_of_complete_subspace (h : IsComplete (↑K : Set E))
+    : ∀ u : E, ∃ v ∈ K, ‖u - v‖ = ⨅ w : (K : Set E), ‖u - w‖ := by
   let : InnerProductSpace ℝ E := InnerProductSpace.rclikeToReal 𝕜 E
   let K' : Submodule ℝ E := Submodule.restrictScalars ℝ K
   exact exists_norm_eq_iInf_of_complete_convex ⟨0, K'.zero_mem⟩ h K'.convex
 
-/-- Characterization of minimizers in the projection on a subspace, in the real case.
+/--
+Characterization of minimizers in the projection on a subspace, in the real case.
 Let `u` be a point in a real inner product space, and let `K` be a nonempty subspace.
 Then point `v` minimizes the distance `‖u - v‖` over points in `K` if and only if
 for all `w ∈ K`, `⟪u - v, w⟫ = 0` (i.e., `u - v` is orthogonal to the subspace `K`).
 This is superseded by `norm_eq_iInf_iff_inner_eq_zero` that gives the same conclusion over
 any `RCLike` field.
 -/
-theorem norm_eq_iInf_iff_real_inner_eq_zero (K : Submodule ℝ F) {u : F} {v : F} (hv : v ∈ K) :
-    (‖u - v‖ = ⨅ w : (↑K : Set F), ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w⟫_ℝ = 0 :=
+theorem norm_eq_iInf_iff_real_inner_eq_zero (K : Submodule ℝ F) {u : F} {v : F} (hv : v ∈ K)
+    : (‖u - v‖ = ⨅ w : (↑K : Set F), ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w⟫_ℝ = 0 :=
   Iff.intro
     (by
       intro h
@@ -257,16 +269,14 @@ theorem norm_eq_iInf_iff_real_inner_eq_zero (K : Submodule ℝ F) {u : F} {v : F
         let w' := w + v
         have : w' ∈ K := Submodule.add_mem _ hw hv
         have h₁ := h w' this
-        have h₂ : w' - v = w := by
-          simp only [w', add_neg_cancel_right, sub_eq_add_neg]
+        have h₂ : w' - v = w := by simp only [w', add_neg_cancel_right, sub_eq_add_neg]
         rw [h₂] at h₁
         exact h₁
       have ge : ⟪u - v, w⟫_ℝ ≥ 0 := by
         let w'' := -w + v
         have : w'' ∈ K := Submodule.add_mem _ (Submodule.neg_mem _ hw) hv
         have h₁ := h w'' this
-        have h₂ : w'' - v = -w := by
-          simp only [w'', add_neg_cancel_right, sub_eq_add_neg]
+        have h₂ : w'' - v = -w := by simp only [w'', add_neg_cancel_right, sub_eq_add_neg]
         rw [h₂, inner_neg_right] at h₁
         linarith
       exact le_antisymm le ge)
@@ -281,13 +291,14 @@ theorem norm_eq_iInf_iff_real_inner_eq_zero (K : Submodule ℝ F) {u : F} {v : F
       rwa [norm_eq_iInf_iff_real_inner_le_zero]
       exact Submodule.convex _)
 
-/-- Characterization of minimizers in the projection on a subspace.
+/--
+Characterization of minimizers in the projection on a subspace.
 Let `u` be a point in an inner product space, and let `K` be a nonempty subspace.
 Then point `v` minimizes the distance `‖u - v‖` over points in `K` if and only if
 for all `w ∈ K`, `⟪u - v, w⟫ = 0` (i.e., `u - v` is orthogonal to the subspace `K`)
 -/
-theorem norm_eq_iInf_iff_inner_eq_zero {u : E} {v : E} (hv : v ∈ K) :
-    (‖u - v‖ = ⨅ w : K, ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w⟫ = 0 := by
+theorem norm_eq_iInf_iff_inner_eq_zero {u : E} {v : E} (hv : v ∈ K)
+    : (‖u - v‖ = ⨅ w : K, ‖u - w‖) ↔ ∀ w ∈ K, ⟪u - v, w⟫ = 0 := by
   let : InnerProductSpace ℝ E := InnerProductSpace.rclikeToReal 𝕜 E
   let K' : Submodule ℝ E := K.restrictScalars ℝ
   constructor

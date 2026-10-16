@@ -86,9 +86,11 @@ theorem cube_root_of_unity_sum (hω : IsPrimitiveRoot ω 3) : 1 + ω + ω ^ 2 = 
   simpa [cyclotomic_prime, Finset.sum_range_succ] using hω.isRoot_cyclotomic (by decide)
 
 /-- The roots of a monic cubic whose quadratic term is zero and whose linear term is nonzero. -/
-theorem cubic_depressed_eq_zero_iff (hω : IsPrimitiveRoot ω 3) (hp_nonzero : p ≠ 0)
-    (hr : r ^ 2 = q ^ 2 + p ^ 3) (hs3 : s ^ 3 = q + r) (ht : t * s = p) (x : K) :
-    x ^ 3 + 3 * p * x - 2 * q = 0 ↔ x = s - t ∨ x = s * ω - t * ω ^ 2 ∨ x = s * ω ^ 2 - t * ω := by
+theorem cubic_depressed_eq_zero_iff
+    (hω : IsPrimitiveRoot ω 3) (hp_nonzero : p ≠ 0) (hr : r ^ 2 = q ^ 2 + p ^ 3)
+    (hs3 : s ^ 3 = q + r) (ht : t * s = p) (x : K)
+    : x ^ 3 + 3 * p * x - 2 * q = 0
+      ↔ x = s - t ∨ x = s * ω - t * ω ^ 2 ∨ x = s * ω ^ 2 - t * ω := by
   have h₁ : ∀ x a₁ a₂ a₃ : K, x = a₁ ∨ x = a₂ ∨ x = a₃ ↔ (x - a₁) * (x - a₂) * (x - a₃) = 0 := by
     intros; simp only [mul_eq_zero, sub_eq_zero, or_assoc]
   rw [h₁]
@@ -105,15 +107,17 @@ theorem cubic_depressed_eq_zero_iff (hω : IsPrimitiveRoot ω 3) (hp_nonzero : p
 
 variable [Invertible (2 : K)] [Invertible (3 : K)]
 
-/-- **The Solution of Cubic**.
-  The roots of a cubic polynomial whose discriminant is nonzero. -/
-theorem cubic_eq_zero_iff (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 3)
-    (hp : p = (3 * a * c - b ^ 2) / (9 * a ^ 2)) (hp_nonzero : p ≠ 0)
-    (hq : q = (9 * a * b * c - 2 * b ^ 3 - 27 * a ^ 2 * d) / (54 * a ^ 3))
-    (hr : r ^ 2 = q ^ 2 + p ^ 3) (hs3 : s ^ 3 = q + r) (ht : t * s = p) (x : K) :
-    a * x ^ 3 + b * x ^ 2 + c * x + d = 0 ↔
-      x = s - t - b / (3 * a) ∨
-        x = s * ω - t * ω ^ 2 - b / (3 * a) ∨ x = s * ω ^ 2 - t * ω - b / (3 * a) := by
+/--
+**The Solution of Cubic**.
+The roots of a cubic polynomial whose discriminant is nonzero.
+-/
+theorem cubic_eq_zero_iff
+    (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 3) (hp : p = (3 * a * c - b ^ 2) / (9 * a ^ 2))
+    (hp_nonzero : p ≠ 0) (hq : q = (9 * a * b * c - 2 * b ^ 3 - 27 * a ^ 2 * d) / (54 * a ^ 3))
+    (hr : r ^ 2 = q ^ 2 + p ^ 3) (hs3 : s ^ 3 = q + r) (ht : t * s = p) (x : K)
+    : a * x ^ 3 + b * x ^ 2 + c * x + d = 0
+      ↔ x = s - t - b / (3 * a) ∨ x = s * ω - t * ω ^ 2 - b / (3 * a)
+        ∨ x = s * ω ^ 2 - t * ω - b / (3 * a) := by
   let y := x + b / (3 * a)
   have h9 : (9 : K) = 3 ^ 2 := by norm_num
   have h54 : (54 : K) = 2 * 3 ^ 3 := by norm_num
@@ -124,12 +128,12 @@ theorem cubic_eq_zero_iff (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 3)
   simp_rw [y, eq_sub_iff_add_eq]
 
 /-- The solution of the cubic equation when p equals zero. -/
-theorem cubic_eq_zero_iff_of_p_eq_zero (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 3)
-    (hpz : 3 * a * c - b ^ 2 = 0)
+theorem cubic_eq_zero_iff_of_p_eq_zero
+    (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 3) (hpz : 3 * a * c - b ^ 2 = 0)
     (hq : q = (9 * a * b * c - 2 * b ^ 3 - 27 * a ^ 2 * d) / (54 * a ^ 3)) (hs3 : s ^ 3 = 2 * q)
-    (x : K) :
-    a * x ^ 3 + b * x ^ 2 + c * x + d = 0 ↔
-      x = s - b / (3 * a) ∨ x = s * ω - b / (3 * a) ∨ x = s * ω ^ 2 - b / (3 * a) := by
+    (x : K)
+    : a * x ^ 3 + b * x ^ 2 + c * x + d = 0
+      ↔ x = s - b / (3 * a) ∨ x = s * ω - b / (3 * a) ∨ x = s * ω ^ 2 - b / (3 * a) := by
   have h₁ : ∀ x a₁ a₂ a₃ : K, x = a₁ ∨ x = a₂ ∨ x = a₃ ↔ (x - a₁) * (x - a₂) * (x - a₃) = 0 := by
     intros; simp only [mul_eq_zero, sub_eq_zero, or_assoc]
   have h54 : (54 : K) = 2 * 3 ^ 3 := by norm_num
@@ -137,8 +141,9 @@ theorem cubic_eq_zero_iff_of_p_eq_zero (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 
   have hb3 : b ^ 3 = 3 * a * b * c := by rw [pow_succ, hb2]; ring
   have h₂ :=
     calc
-      a * x ^ 3 + b * x ^ 2 + c * x + d =
-      a * (x + b / (3 * a)) ^ 3 + (c - b ^ 2 / (3 * a)) * x + (d - b ^ 3 * a / (3 * a) ^ 3) := by
+      a * x ^ 3 + b * x ^ 2 + c * x + d
+          = a * (x + b / (3 * a)) ^ 3 + (c - b ^ 2 / (3 * a)) * x
+            + (d - b ^ 3 * a / (3 * a) ^ 3) := by
         field
       _ = a * (x + b / (3 * a)) ^ 3 + (d - (9 * a * b * c - 2 * b ^ 3) * a / (3 * a) ^ 3) := by
         simp only [hb2, hb3]; field
@@ -147,7 +152,8 @@ theorem cubic_eq_zero_iff_of_p_eq_zero (ha : a ≠ 0) (hω : IsPrimitiveRoot ω 
   have h₄ : ∀ x : K, x ^ 3 - s ^ 3 = (x - s) * (x - s * ω) * (x - s * ω ^ 2) := by
     intro x
     calc
-      x ^ 3 - s ^ 3 = (x - s) * (x ^ 2 + x * s + s ^ 2) := by ring
+      x ^ 3 - s ^ 3
+        = (x - s) * (x ^ 2 + x * s + s ^ 2) := by ring
       _ = (x - s) * (x ^ 2 - (ω + ω ^ 2) * x * s + (1 + ω + ω ^ 2) * x * s + s ^ 2) := by ring
       _ = (x - s) * (x ^ 2 - (ω + ω ^ 2) * x * s + ω ^ 3 * s ^ 2) := by
         rw [hω.pow_eq_one, cube_root_of_unity_sum hω]; simp
@@ -161,17 +167,17 @@ section Quartic
 
 variable [Invertible (2 : K)]
 
-/-- Roots of a quartic whose cubic term is zero and linear term is nonzero,
-  In terms of some `u` that satisfies a particular cubic resolvent. -/
+/--
+Roots of a quartic whose cubic term is zero and linear term is nonzero,
+In terms of some `u` that satisfies a particular cubic resolvent.
+-/
 theorem quartic_depressed_eq_zero_iff
-    (hq_nonzero : q ≠ 0)
-    (hu : u ^ 3 - p * u ^ 2 - 4 * r * u + 4 * p * r - q ^ 2 = 0)
-    (hs : s ^ 2 = u - p)
-    (hv : v ^ 2 = 4 * s ^ 2 - 8 * (u - q / s))
-    (hw : w ^ 2 = 4 * s ^ 2 - 8 * (u + q / s))
-    (x : K) :
-    x ^ 4 + p * x ^ 2 + q * x + r = 0 ↔
-      x = (-2 * s - v) / 4 ∨ x = (-2 * s + v) / 4 ∨ x = (2 * s - w) / 4 ∨ x = (2 * s + w) / 4 := by
+    (hq_nonzero : q ≠ 0) (hu : u ^ 3 - p * u ^ 2 - 4 * r * u + 4 * p * r - q ^ 2 = 0)
+    (hs : s ^ 2 = u - p) (hv : v ^ 2 = 4 * s ^ 2 - 8 * (u - q / s))
+    (hw : w ^ 2 = 4 * s ^ 2 - 8 * (u + q / s)) (x : K)
+    : x ^ 4 + p * x ^ 2 + q * x + r = 0
+      ↔ x = (-2 * s - v) / 4 ∨ x = (-2 * s + v) / 4 ∨ x = (2 * s - w) / 4
+        ∨ x = (2 * s + w) / 4 := by
   have hi2 : (2 : K) ≠ 0 := Invertible.ne_zero _
   have h4 : (4 : K) = 2 ^ 2 := by norm_num
   have hs_nonzero : s ≠ 0 := by
@@ -179,8 +185,8 @@ theorem quartic_depressed_eq_zero_iff
     linear_combination (exp := 2) -hu + (4 * r - u ^ 2) * hs + (u ^ 2 * s - 4 * r * s) * hs0
   calc
     _ ↔ 4 * (x ^ 4 + p * x ^ 2 + q * x + r) = 0 := by simp [h4, hi2]
-    _ ↔ (2 * (x * x) + 2 * s * x + (u - q / s)) * (2 * (x * x) + -(2 * s) * x + (u + q / s)) =
-        0 := by
+    _ ↔ (2 * (x * x) + 2 * s * x + (u - q / s)) * (2 * (x * x) + -(2 * s) * x + (u + q / s))
+        = 0 := by
       apply Eq.congr_left
       field_simp
       linear_combination -hu + (-x ^ 2 * s ^ 2 - x ^ 2 * p + x ^ 2 * u) * hw +
@@ -191,45 +197,44 @@ theorem quartic_depressed_eq_zero_iff
       rw [mul_eq_zero, quadratic_eq_zero_iff hi2 hv', quadratic_eq_zero_iff hi2 hw']
       simp [(by norm_num : (2 : K) * 2 = 4), or_assoc, or_comm]
 
-/-- **The Solution of Quartic**.
-  The roots of a quartic polynomial when `q` is nonzero. See [Zwillinger](zwillinger2003).
-  Here, `u` needs to satisfy the cubic resolvent. An explicit expression of `u` is possible using
-  the cubic formula, but would be too long. -/
-theorem quartic_eq_zero_iff (ha : a ≠ 0)
-    (hp : p = (8 * a * c - 3 * b ^ 2) / (8 * a ^ 2))
+/--
+**The Solution of Quartic**.
+The roots of a quartic polynomial when `q` is nonzero. See [Zwillinger](zwillinger2003).
+Here, `u` needs to satisfy the cubic resolvent. An explicit expression of `u` is possible using
+the cubic formula, but would be too long.
+-/
+theorem quartic_eq_zero_iff
+    (ha : a ≠ 0) (hp : p = (8 * a * c - 3 * b ^ 2) / (8 * a ^ 2))
     (hq : q = (b ^ 3 - 4 * a * b * c + 8 * a ^ 2 * d) / (8 * a ^ 3)) (hq_nonzero : q ≠ 0)
-    (hr : r =
-      (16 * a * b ^ 2 * c + 256 * a ^ 3 * e - 3 * b ^ 4 - 64 * a ^ 2 * b * d) / (256 * a ^ 4))
-    (hu : u ^ 3 - p * u ^ 2 - 4 * r * u + 4 * p * r - q ^ 2 = 0)
-    (hs : s ^ 2 = u - p)
-    (hv : v ^ 2 = 4 * s ^ 2 - 8 * (u - q / s))
-    (hw : w ^ 2 = 4 * s ^ 2 - 8 * (u + q / s)) (x : K) :
-    a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e = 0 ↔
-      x = (-2 * s - v) / 4 - b / (4 * a) ∨ x = (-2 * s + v) / 4 - b / (4 * a) ∨
-        x = (2 * s - w) / 4 - b / (4 * a) ∨ x = (2 * s + w) / 4 - b / (4 * a) := by
+    (hr
+      : r = (16 * a * b ^ 2 * c + 256 * a ^ 3 * e - 3 * b ^ 4 - 64 * a ^ 2 * b * d) / (256 * a ^ 4))
+    (hu : u ^ 3 - p * u ^ 2 - 4 * r * u + 4 * p * r - q ^ 2 = 0) (hs : s ^ 2 = u - p)
+    (hv : v ^ 2 = 4 * s ^ 2 - 8 * (u - q / s)) (hw : w ^ 2 = 4 * s ^ 2 - 8 * (u + q / s)) (x : K)
+    : a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e = 0
+      ↔ x = (-2 * s - v) / 4 - b / (4 * a) ∨ x = (-2 * s + v) / 4 - b / (4 * a)
+        ∨ x = (2 * s - w) / 4 - b / (4 * a) ∨ x = (2 * s + w) / 4 - b / (4 * a) := by
   let y := x + b / (4 * a)
   have h4 : (4 : K) = 2 ^ 2 := by norm_num
   have h8 : (8 : K) = 2 ^ 3 := by norm_num
   have h16 : (16 : K) = 2 ^ 4 := by norm_num
   have h256 : (256 : K) = 2 ^ 8 := by norm_num
-  have h₁ : a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e =
-      a * (y ^ 4 + p * y ^ 2 + q * y + r) := by
+  have h₁
+      : a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e = a * (y ^ 4 + p * y ^ 2 + q * y + r) := by
     simp only [h4, hp, h8, hq, hr, h16, h256, y]; field
   have h₂ : ∀ x, a * x = 0 ↔ x = 0 := by intro x; simp [ha]
   rw [h₁, h₂, quartic_depressed_eq_zero_iff hq_nonzero hu hs hv hw]
   simp_rw [y, eq_sub_iff_add_eq]
 
 /-- The roots of a quartic polynomial when `q` equals zero. -/
-theorem quartic_eq_zero_iff_of_q_eq_zero (ha : a ≠ 0)
-    (hp : p = (8 * a * c - 3 * b ^ 2) / (8 * a ^ 2))
+theorem quartic_eq_zero_iff_of_q_eq_zero
+    (ha : a ≠ 0) (hp : p = (8 * a * c - 3 * b ^ 2) / (8 * a ^ 2))
     (hqz : b ^ 3 - 4 * a * b * c + 8 * a ^ 2 * d = 0)
-    (hr : r =
-      (16 * a * b ^ 2 * c + 256 * a ^ 3 * e - 3 * b ^ 4 - 64 * a ^ 2 * b * d) / (256 * a ^ 4))
-    (ht : t ^ 2 = p ^ 2 - 4 * r)
-    (hv : v ^ 2 = (-p + t) / 2)
-    (hw : w ^ 2 = (-p - t) / 2) (x : K) :
-    a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e = 0 ↔
-      x = v - b / (4 * a) ∨ x = -v - b / (4 * a) ∨ x = w - b / (4 * a) ∨ x = -w - b / (4 * a) := by
+    (hr
+      : r = (16 * a * b ^ 2 * c + 256 * a ^ 3 * e - 3 * b ^ 4 - 64 * a ^ 2 * b * d) / (256 * a ^ 4))
+    (ht : t ^ 2 = p ^ 2 - 4 * r) (hv : v ^ 2 = (-p + t) / 2) (hw : w ^ 2 = (-p - t) / 2) (x : K)
+    : a * x ^ 4 + b * x ^ 3 + c * x ^ 2 + d * x + e = 0
+      ↔ x = v - b / (4 * a) ∨ x = -v - b / (4 * a) ∨ x = w - b / (4 * a)
+        ∨ x = -w - b / (4 * a) := by
   let y := x + b / (4 * a)
   have h4 : (4 : K) = 2 ^ 2 := by norm_num
   have h8 : (8 : K) = 2 ^ 3 := by norm_num

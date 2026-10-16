@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
-
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.IntegralRepresentation
 
 /-!
@@ -49,20 +48,20 @@ variable {A : Type*} [NonUnitalCStarAlgebra A] [PartialOrder A] [StarOrderedRing
 open Real MeasureTheory
 
 /-- This is an intermediate result; use the more general `CFC.monotone_nnrpow` instead. -/
-private lemma monotoneOn_nnrpow_Ioo {p : ℝ≥0} (hp : p ∈ Ioo 0 1) :
-    MonotoneOn (fun a : A => a ^ p) (Ici 0) := by
+private lemma monotoneOn_nnrpow_Ioo {p : ℝ≥0} (hp : p ∈ Ioo 0 1)
+    : MonotoneOn (fun a : A => a ^ p) (Ici 0) := by
   obtain ⟨μ, hμ⟩ := CFC.exists_measure_nnrpow_eq_integral_cfcₙ_rpowIntegrand₀₁ A hp
-  have h₃' : (Ici 0).EqOn (fun a : A => a ^ p)
-      (fun a : A => ∫ t in Ioi 0, cfcₙ (rpowIntegrand₀₁ p t) a ∂μ) :=
-    fun a ha => (hμ a ha).2
+  have h₃' : (Ici 0).EqOn
+      (fun a : A => a ^ p)
+      (fun a : A => ∫ t in Ioi 0, cfcₙ (rpowIntegrand₀₁ p t) a ∂μ) := fun a ha =>
+    (hμ a ha).2
   refine MonotoneOn.congr ?_ h₃'.symm
   refine integral_monotoneOn_of_integrand_ae ?_ fun a ha => (hμ a ha).1
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact monotoneOn_cfcₙ_rpowIntegrand₀₁ hp ht
 
 /-- `a ↦ a ^ p` is operator monotone for `p ∈ [0,1]`. -/
-lemma monotone_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1) :
-    Monotone (fun a : A => a ^ p) := by
+lemma monotone_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1) : Monotone (fun a : A => a ^ p) := by
   intro a b hab
   by_cases ha : 0 ≤ a
   · have hb : 0 ≤ b := ha.trans hab
@@ -83,28 +82,27 @@ lemma monotone_sqrt : Monotone (sqrt : A → A) := by
   constructor <;> simp
 
 @[gcongr]
-lemma nnrpow_le_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1) {a b : A} (hab : a ≤ b) :
-    a ^ p ≤ b ^ p := monotone_nnrpow hp hab
+lemma nnrpow_le_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1) {a b : A} (hab : a ≤ b) : a ^ p ≤ b ^ p :=
+  monotone_nnrpow hp hab
 
-@[gcongr]
-lemma sqrt_le_sqrt (a b : A) (hab : a ≤ b) : sqrt a ≤ sqrt b :=
-  monotone_sqrt hab
+@[gcongr] lemma sqrt_le_sqrt (a b : A) (hab : a ≤ b) : sqrt a ≤ sqrt b := monotone_sqrt hab
 
 /-- This is an intermediate result; use the more general `CFC.concaveOn_nnrpow` instead. -/
-private lemma concaveOn_nnrpow_Ioo {p : ℝ≥0} (hp : p ∈ Ioo 0 1) :
-    ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
+private lemma concaveOn_nnrpow_Ioo {p : ℝ≥0} (hp : p ∈ Ioo 0 1)
+    : ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
   obtain ⟨μ, hμ⟩ := CFC.exists_measure_nnrpow_eq_integral_cfcₙ_rpowIntegrand₀₁ A hp
-  have h₃' : (Ici 0).EqOn (fun a : A => a ^ p)
-      (fun a : A => ∫ t in Ioi 0, cfcₙ (rpowIntegrand₀₁ p t) a ∂μ) :=
-    fun a ha => (hμ a ha).2
+  have h₃' : (Ici 0).EqOn
+      (fun a : A => a ^ p)
+      (fun a : A => ∫ t in Ioi 0, cfcₙ (rpowIntegrand₀₁ p t) a ∂μ) := fun a ha =>
+    (hμ a ha).2
   refine ConcaveOn.congr ?_ h₃'.symm
   refine integral_concaveOn_of_integrand_ae (convex_Ici _) ?_ fun a ha => (hμ a ha).1
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact concaveOn_cfcₙ_rpowIntegrand₀₁ hp ht
 
 /-- `a ↦ a ^ p` is operator concave for `p ∈ [0,1]`. -/
-lemma concaveOn_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1) :
-    ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
+lemma concaveOn_nnrpow {p : ℝ≥0} (hp : p ∈ Icc 0 1)
+    : ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
   have hIcc : Icc (0 : ℝ≥0) 1 = Ioo 0 1 ∪ {0} ∪ {1} := by ext; simp
   rw [hIcc] at hp
   obtain (hp | hp) | hp := hp
@@ -144,12 +142,12 @@ lemma monotone_rpow {p : ℝ} (hp : p ∈ Icc 0 1) : Monotone (fun a : A => a ^ 
     exact monotone_nnrpow hp
 
 @[gcongr]
-lemma rpow_le_rpow {p : ℝ} (hp : p ∈ Icc 0 1) {a b : A} (hab : a ≤ b) :
-    a ^ p ≤ b ^ p := monotone_rpow hp hab
+lemma rpow_le_rpow {p : ℝ} (hp : p ∈ Icc 0 1) {a b : A} (hab : a ≤ b) : a ^ p ≤ b ^ p :=
+  monotone_rpow hp hab
 
 /-- `a ↦ a ^ p` is operator concave for `p ∈ [0,1]`. -/
-lemma concaveOn_rpow {p : ℝ} (hp : p ∈ Icc 0 1) :
-    ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
+lemma concaveOn_rpow {p : ℝ} (hp : p ∈ Icc 0 1)
+    : ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ p) := by
   let q : ℝ≥0 := ⟨p, hp.1⟩
   change ConcaveOn ℝ (Ici (0 : A)) (fun a : A => a ^ (q : ℝ))
   obtain hq | hq := eq_zero_or_pos q

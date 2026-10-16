@@ -38,20 +38,23 @@ elements of `α` and the children of a node labeled `a` are indexed by elements 
 inductive WType {α : Type*} (β : α → Type*)
   | mk (a : α) (f : β a → WType β) : WType β
 
-instance : Inhabited (WType fun _ : Unit => Empty) :=
-  ⟨WType.mk Unit.unit Empty.elim⟩
+instance : Inhabited (WType fun _ : Unit => Empty) := ⟨WType.mk Unit.unit Empty.elim⟩
 
 namespace WType
 
 variable {α : Type*} {β : α → Type*}
 
-/-- The canonical map to the corresponding sigma type, returning the label of a node as an
-  element `a` of `α`, and the children of the node as a function `β a → WType β`. -/
+/--
+The canonical map to the corresponding sigma type, returning the label of a node as an
+element `a` of `α`, and the children of the node as a function `β a → WType β`.
+-/
 def toSigma : WType β → Σ a : α, β a → WType β
   | ⟨a, f⟩ => ⟨a, f⟩
 
-/-- The canonical map from the sigma type into a `WType`. Given a node `a : α`, and
-  its children as a function `β a → WType β`, return the corresponding tree. -/
+/--
+The canonical map from the sigma type into a `WType`. Given a node `a : α`, and
+its children as a function `β a → WType β`, return the corresponding tree.
+-/
 def ofSigma : (Σ a : α, β a → WType β) → WType β
   | ⟨a, f⟩ => WType.mk a f
 
@@ -64,8 +67,10 @@ theorem toSigma_ofSigma : ∀ s : Σ a : α, β a → WType β, toSigma (ofSigma
   | ⟨_, _⟩ => rfl
 
 variable (β) in
-/-- The canonical bijection with the sigma type, showing that `WType` is a fixed point of
-  the polynomial functor `X ↦ Σ a : α, β a → X`. -/
+/--
+The canonical bijection with the sigma type, showing that `WType` is a fixed point of
+the polynomial functor `X ↦ Σ a : α, β a → X`.
+-/
 @[simps]
 def equivSigma : WType β ≃ Σ a : α, β a → WType β where
   toFun := toSigma
@@ -77,34 +82,32 @@ def equivSigma : WType β ≃ Σ a : α, β a → WType β where
 def elim (γ : Type*) (fγ : (Σ a : α, β a → γ) → γ) : WType β → γ
   | ⟨a, f⟩ => fγ ⟨a, fun b => elim γ fγ (f b)⟩
 
-theorem elim_injective (γ : Type*) (fγ : (Σ a : α, β a → γ) → γ)
-    (fγ_injective : Function.Injective fγ) : Function.Injective (elim γ fγ)
+theorem elim_injective
+    (γ : Type*) (fγ : (Σ a : α, β a → γ) → γ) (fγ_injective : Function.Injective fγ)
+    : Function.Injective (elim γ fγ)
   | ⟨a₁, f₁⟩, ⟨a₂, f₂⟩, h => by
     obtain ⟨rfl, h⟩ := Sigma.mk.inj_iff.mp (fγ_injective h)
     congr with x
     exact elim_injective γ fγ fγ_injective congr($(eq_of_heq h) x)
 
-instance [hα : IsEmpty α] : IsEmpty (WType β) :=
-  ⟨fun w => WType.recOn w (IsEmpty.elim hα)⟩
+instance [hα : IsEmpty α] : IsEmpty (WType β) := ⟨fun w => WType.recOn w (IsEmpty.elim hα)⟩
 
-theorem infinite_of_nonempty_of_isEmpty (a b : α) [ha : Nonempty (β a)] [he : IsEmpty (β b)] :
-    Infinite (WType β) :=
-  ⟨by
-    intro hf
-    have hba : b ≠ a := fun h => ha.elim (IsEmpty.elim' (show IsEmpty (β a) from h ▸ he))
-    refine
-      not_injective_infinite_finite
-        (fun n : ℕ =>
-          show WType β from Nat.recOn n ⟨b, IsEmpty.elim' he⟩ fun _ ih => ⟨a, fun _ => ih⟩)
-        ?_
-    intro n m h
-    induction n generalizing m with
-    | zero => rcases m with - | m <;> simp_all
-    | succ n ih =>
-      rcases m with - | m
-      · simp_all
-      · congrm $(ih ?_).succ
-        simp_all [funext_iff]⟩
+theorem infinite_of_nonempty_of_isEmpty (a b : α) [ha : Nonempty (β a)] [he : IsEmpty (β b)]
+    : Infinite (WType β) := ⟨by
+  intro hf
+  have hba : b ≠ a := fun h => ha.elim (IsEmpty.elim' (show IsEmpty (β a) from h ▸ he))
+  refine not_injective_infinite_finite
+    (fun n : ℕ => show WType β from Nat.recOn n ⟨b, IsEmpty.elim' he⟩ fun _ ih => ⟨a, fun _ => ih⟩)
+    ?_
+  intro n m h
+  induction n generalizing m with
+  | zero =>
+    rcases m with - | m <;> simp_all
+  | succ n ih =>
+    rcases m with - | m
+    · simp_all
+    · congrm $(ih ?_).succ
+      simp_all [funext_iff]⟩
 
 variable [∀ a : α, Fintype (β a)]
 
@@ -129,7 +132,7 @@ induction on `n` that these are all encodable. These auxiliary constructions are
 and of themselves, so we mark them as `private`.
 -/
 private abbrev WType' {α : Type*} (β : α → Type*) [∀ a : α, Fintype (β a)] (n : ℕ) :=
-  { t : WType β // t.depth ≤ n }
+  {t : WType β // t.depth ≤ n}
 
 variable [∀ a : α, Encodable (β a)]
 
@@ -161,15 +164,16 @@ variable [Encodable α]
 set_option backward.privateInPublic true in
 @[instance_reducible]
 private def encodable_succ (n : Nat) (_ : Encodable (WType' β n)) : Encodable (WType' β (n + 1)) :=
-  Encodable.ofLeftInverse (f n) (finv n)
-    (by
-      rintro ⟨⟨_, _⟩, _⟩
-      rfl)
+  Encodable.ofLeftInverse (f n) (finv n) (by
+    rintro ⟨⟨_, _⟩, _⟩
+    rfl)
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- `WType` is encodable when `α` is an encodable fintype and for every `a : α`, `β a` is
-encodable. -/
+/--
+`WType` is encodable when `α` is an encodable fintype and for every `a : α`, `β a` is
+encodable.
+-/
 instance : Encodable (WType β) := by
   haveI h' : ∀ n, Encodable (WType' β n) := fun n => Nat.rec encodable_zero encodable_succ n
   let f : WType β → Σ n, WType' β n := fun t => ⟨t.depth, ⟨t, le_rfl⟩⟩

@@ -22,20 +22,24 @@ open Qq
 
 /-- `norm_num` extension for `Nat.ModEq`. -/
 @[norm_num _ ≡ _ [MOD _]]
-def evalNatModEq : NormNumExt where eval {u αP} e := do
-  match u, αP, e with
-  | 0, ~q(Prop), ~q($a ≡ $b [MOD $n]) =>
-    let ⟨b, pb⟩ ← deriveBoolOfIff _ e q(Nat.modEq_iff_dvd.symm)
-    return .ofBoolResult pb
-  | _, _, _ => failure
+def evalNatModEq : NormNumExt where
+  eval {u αP} e := do
+    match u, αP, e with
+    | 0, ~q(Prop), ~q($a ≡ $b [MOD $n]) =>
+      let ⟨b, pb⟩ ← deriveBoolOfIff _ e q(Nat.modEq_iff_dvd.symm)
+      return .ofBoolResult pb
+    | _, _, _ =>
+      failure
 
 /-- `norm_num` extension for `Int.ModEq`. -/
 @[norm_num _ ≡ _ [ZMOD _]]
-def evalIntModEq : NormNumExt where eval {u αP} e := do
-  match u, αP, e with
-  | 0, ~q(Prop), ~q($a ≡ $b [ZMOD $n]) =>
-    let ⟨b, pb⟩ ← deriveBoolOfIff _ e q(Int.modEq_iff_dvd.symm)
-    return .ofBoolResult pb
-  | _, _, _ => failure
+def evalIntModEq : NormNumExt where
+  eval {u αP} e := do
+    match u, αP, e with
+    | 0, ~q(Prop), ~q($a ≡ $b [ZMOD $n]) =>
+      let ⟨b, pb⟩ ← deriveBoolOfIff _ e q(Int.modEq_iff_dvd.symm)
+      return .ofBoolResult pb
+    | _, _, _ =>
+      failure
 
 end Mathlib.Meta.NormNum

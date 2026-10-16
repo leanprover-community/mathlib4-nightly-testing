@@ -30,46 +30,45 @@ namespace Module.Basis
 
 section Semiring
 
-variable {R M : Type*} [Semiring R] [AddCommMonoid M] [Module R M] {n : ℕ} {b : Basis (Fin n) R M}
-  {i j : Fin (n + 1)}
+variable
+  {R M : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
+  {n : ℕ} {b : Basis (Fin n) R M} {i j : Fin (n + 1)}
 
 /-- The subspace spanned by the first `k` vectors of the basis `b`. -/
 def flag (b : Basis (Fin n) R M) (k : Fin (n + 1)) : Submodule R M :=
   .span R <| b '' {i | i.castSucc < k}
 
-@[simp]
-theorem flag_zero (b : Basis (Fin n) R M) : b.flag 0 = ⊥ := by simp [flag]
+@[simp] theorem flag_zero (b : Basis (Fin n) R M) : b.flag 0 = ⊥ := by simp [flag]
 
-@[simp]
-theorem flag_last (b : Basis (Fin n) R M) : b.flag (.last n) = ⊤ := by
-  simp [flag]
+@[simp] theorem flag_last (b : Basis (Fin n) R M) : b.flag (.last n) = ⊤ := by simp [flag]
 
-theorem flag_le_iff (b : Basis (Fin n) R M) {k p} :
-    b.flag k ≤ p ↔ ∀ i : Fin n, i.castSucc < k → b i ∈ p :=
+theorem flag_le_iff (b : Basis (Fin n) R M) {k p}
+    : b.flag k ≤ p ↔ ∀ i : Fin n, i.castSucc < k → b i ∈ p :=
   span_le.trans forall_mem_image
 
-theorem flag_succ (b : Basis (Fin n) R M) (k : Fin n) :
-    b.flag k.succ = R ∙ b k ⊔ b.flag k.castSucc := by
+theorem flag_succ (b : Basis (Fin n) R M) (k : Fin n)
+    : b.flag k.succ = R ∙ b k ⊔ b.flag k.castSucc := by
   simp [flag, Fin.castSucc_lt_castSucc_iff, le_iff_eq_or_lt, ofPred_or, span_insert]
 
 /-- `flag` commutes with `Basis.map`. -/
-theorem flag_map {M₂ : Type*} [AddCommMonoid M₂] [Module R M₂]
-    (b : Basis (Fin n) R M) (e : M ≃ₗ[R] M₂) (k : Fin (n + 1)) :
-    (b.map e).flag k = (b.flag k).map (e : M →ₗ[R] M₂) := by
+theorem flag_map
+    {M₂ : Type*} [AddCommMonoid M₂] [Module R M₂]
+    (b : Basis (Fin n) R M) (e : M ≃ₗ[R] M₂) (k : Fin (n + 1))
+    : (b.map e).flag k = (b.flag k).map (e : M →ₗ[R] M₂) := by
   simp [flag, Submodule.map_span, Set.image_image, coe_map]
 
 /-- `x ∈ b.flag k` iff `b.repr x i = 0` for `k ≤ i.castSucc`. -/
-theorem mem_flag_iff_repr_eq_zero (b : Basis (Fin n) R M) {k : Fin (n + 1)} {x : M} :
-    x ∈ b.flag k ↔ ∀ i : Fin n, k ≤ i.castSucc → b.repr x i = 0 := by
+theorem mem_flag_iff_repr_eq_zero (b : Basis (Fin n) R M) {k : Fin (n + 1)} {x : M}
+    : x ∈ b.flag k ↔ ∀ i : Fin n, k ≤ i.castSucc → b.repr x i = 0 := by
   simp [flag, mem_span_image, Finsupp.support_subset_iff]
 
-theorem self_mem_flag (b : Basis (Fin n) R M) {i : Fin n} {k : Fin (n + 1)} (h : i.castSucc < k) :
-    b i ∈ b.flag k :=
+theorem self_mem_flag (b : Basis (Fin n) R M) {i : Fin n} {k : Fin (n + 1)} (h : i.castSucc < k)
+    : b i ∈ b.flag k :=
   subset_span <| mem_image_of_mem _ h
 
 @[simp]
-theorem self_mem_flag_iff [Nontrivial R] (b : Basis (Fin n) R M) {i : Fin n} {k : Fin (n + 1)} :
-    b i ∈ b.flag k ↔ i.castSucc < k :=
+theorem self_mem_flag_iff [Nontrivial R] (b : Basis (Fin n) R M) {i : Fin n} {k : Fin (n + 1)}
+    : b i ∈ b.flag k ↔ i.castSucc < k :=
   b.self_mem_span_image
 
 @[gcongr, mono]
@@ -90,19 +89,21 @@ section Ring
 variable {R M : Type*} [Ring R] [AddCommGroup M] [Module R M] {n : ℕ}
 
 /-- The span of the new head vector lies in the successor flag of `Basis.mkFinCons`. -/
-theorem span_singleton_le_mkFinCons_flag_succ {v : M} {W : Submodule R M}
-    {bW : Basis (Fin n) R W} {hli hsp} (k : Fin (n + 1)) :
-    R ∙ v ≤ (Basis.mkFinCons v bW hli hsp).flag k.succ := by
+theorem span_singleton_le_mkFinCons_flag_succ
+    {v : M} {W : Submodule R M} {bW : Basis (Fin n) R W} {hli hsp} (k : Fin (n + 1))
+    : R ∙ v ≤ (Basis.mkFinCons v bW hli hsp).flag k.succ := by
   rw [Submodule.span_singleton_le_iff_mem]
   convert (Basis.mkFinCons v bW hli hsp).self_mem_flag (i := 0) (k := k.succ) ?_
   · simp [coe_mkFinCons, Fin.cons_zero]
   · simp
 
-/-- The image of a flag under `Submodule.subtype` lies in the successor flag of
-`Basis.mkFinCons`. -/
-theorem map_flag_le_mkFinCons_flag_succ {v : M} {W : Submodule R M}
-    {bW : Basis (Fin n) R W} {hli hsp} (k : Fin (n + 1)) :
-    (bW.flag k).map W.subtype ≤ (Basis.mkFinCons v bW hli hsp).flag k.succ := by
+/--
+The image of a flag under `Submodule.subtype` lies in the successor flag of
+`Basis.mkFinCons`.
+-/
+theorem map_flag_le_mkFinCons_flag_succ
+    {v : M} {W : Submodule R M} {bW : Basis (Fin n) R W} {hli hsp} (k : Fin (n + 1))
+    : (bW.flag k).map W.subtype ≤ (Basis.mkFinCons v bW hli hsp).flag k.succ := by
   rw [Submodule.map_le_iff_le_comap]
   exact bW.flag_le_iff.2 fun i hi => by
     convert (Basis.mkFinCons v bW hli hsp).self_mem_flag (i := i.succ) (k := k.succ)
@@ -116,17 +117,17 @@ section CommRing
 variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {n : ℕ}
 
 @[simp]
-theorem flag_le_ker_coord_iff [Nontrivial R] (b : Basis (Fin n) R M) {k : Fin (n + 1)} {l : Fin n} :
-    b.flag k ≤ LinearMap.ker (b.coord l) ↔ k ≤ l.castSucc := by
+theorem flag_le_ker_coord_iff [Nontrivial R] (b : Basis (Fin n) R M) {k : Fin (n + 1)} {l : Fin n}
+    : b.flag k ≤ LinearMap.ker (b.coord l) ↔ k ≤ l.castSucc := by
   simp [flag_le_iff, Finsupp.single_apply_eq_zero, imp_false, imp_not_comm]
 
-theorem flag_le_ker_coord (b : Basis (Fin n) R M) {k : Fin (n + 1)} {l : Fin n}
-    (h : k ≤ l.castSucc) : b.flag k ≤ LinearMap.ker (b.coord l) := by
+theorem flag_le_ker_coord (b : Basis (Fin n) R M) {k : Fin (n + 1)} {l : Fin n} (h : k ≤ l.castSucc)
+    : b.flag k ≤ LinearMap.ker (b.coord l) := by
   nontriviality R
   exact b.flag_le_ker_coord_iff.2 h
 
-theorem flag_le_ker_dual (b : Basis (Fin n) R M) (k : Fin n) :
-    b.flag k.castSucc ≤ LinearMap.ker (b.dualBasis k) := by
+theorem flag_le_ker_dual (b : Basis (Fin n) R M) (k : Fin n)
+    : b.flag k.castSucc ≤ LinearMap.ker (b.dualBasis k) := by
   nontriviality R
   rw [coe_dualBasis, b.flag_le_ker_coord_iff]
 
@@ -136,14 +137,12 @@ section DivisionRing
 
 variable {K V : Type*} [DivisionRing K] [AddCommGroup V] [Module K V] {n : ℕ}
 
-theorem flag_covBy (b : Basis (Fin n) K V) (i : Fin n) :
-    b.flag i.castSucc ⋖ b.flag i.succ := by
+theorem flag_covBy (b : Basis (Fin n) K V) (i : Fin n) : b.flag i.castSucc ⋖ b.flag i.succ := by
   rw [flag_succ]
   apply covBy_span_singleton_sup
   simp
 
-theorem flag_wcovBy (b : Basis (Fin n) K V) (i : Fin n) :
-    b.flag i.castSucc ⩿ b.flag i.succ :=
+theorem flag_wcovBy (b : Basis (Fin n) K V) (i : Fin n) : b.flag i.castSucc ⩿ b.flag i.succ :=
   (b.flag_covBy i).wcovBy
 
 /-- Range of `Basis.flag` as a `Flag`. -/

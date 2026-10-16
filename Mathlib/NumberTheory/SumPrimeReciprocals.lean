@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.PSeries
 public import Mathlib.NumberTheory.SmoothNumbers
-
 import Mathlib.Algebra.Order.Group.Indicator
 
 /-!
@@ -39,46 +38,50 @@ variable {M : Type*} [CommMonoid M] [TopologicalSpace M] (f : ℕ → M)
 
 omit [TopologicalSpace M] in
 @[to_additive]
-private lemma ite_prime_eq_mulIndicator :
-    (fun n : ℕ ↦ if n.Prime then f n else 1) = {n | n.Prime}.mulIndicator f := by
+private lemma ite_prime_eq_mulIndicator
+    : (fun n : ℕ ↦ if n.Prime then f n else 1) = {n | n.Prime}.mulIndicator f := by
   ext; simp [Set.mulIndicator_apply]
 
 /-- Reindex a product over `Nat.Primes` as a product over `ℕ`, extending `f` by `1`. -/
 @[to_additive /-- Reindex a sum over `Nat.Primes` as a sum over `ℕ`, extending `f` by `0`. -/]
-theorem Nat.Primes.tprod_eq_tprod_ite :
-    ∏' p : Primes, f p = ∏' n : ℕ, if n.Prime then f n else 1 := by
-  rw [ite_prime_eq_mulIndicator]; exact tprod_subtype {n | n.Prime} f
+theorem Nat.Primes.tprod_eq_tprod_ite
+    : ∏' p : Primes, f p = ∏' n : ℕ, if n.Prime then f n else 1 := by
+  rw [ite_prime_eq_mulIndicator]; exact tprod_subtype ({n | n.Prime}) f
 
 /-- `Multipliable` over `Nat.Primes` iff over `ℕ` extending `f` by `1`. -/
 @[to_additive /-- `Summable` over `Nat.Primes` iff over `ℕ` extending `f` by `0`. -/]
-theorem Nat.Primes.multipliable_iff_multipliable_ite :
-    Multipliable (fun p : Primes ↦ f p) ↔ Multipliable fun n : ℕ ↦ if n.Prime then f n else 1 := by
+theorem Nat.Primes.multipliable_iff_multipliable_ite
+    : Multipliable (fun p : Primes ↦ f p)
+      ↔ Multipliable fun n : ℕ ↦ if n.Prime then f n else 1 := by
   rw [ite_prime_eq_mulIndicator]
   exact multipliable_subtype_iff_mulIndicator (s := {n : ℕ | n.Prime})
 
 /-- `HasProd` over `Nat.Primes` iff over `ℕ` extending `f` by `1`. -/
 @[to_additive /-- `HasSum` over `Nat.Primes` iff over `ℕ` extending `f` by `0`. -/]
-theorem Nat.Primes.hasProd_iff_hasProd_ite {a : M} :
-    HasProd (fun p : Primes ↦ f p) a ↔ HasProd (fun n : ℕ ↦ if n.Prime then f n else 1) a := by
+theorem Nat.Primes.hasProd_iff_hasProd_ite {a : M}
+    : HasProd (fun p : Primes ↦ f p) a ↔ HasProd (fun n : ℕ ↦ if n.Prime then f n else 1) a := by
   rw [ite_prime_eq_mulIndicator]; exact hasProd_subtype_iff_mulIndicator (s := {n : ℕ | n.Prime})
 
 end PrimeSums
 
-/-- The cardinality of the set of `k`-rough numbers `≤ N` is bounded by `N` times the sum
-of `1/p` over the primes `k ≤ p ≤ N`. -/
+/--
+The cardinality of the set of `k`-rough numbers `≤ N` is bounded by `N` times the sum
+of `1/p` over the primes `k ≤ p ≤ N`.
+-/
 -- This needs `Mathlib/Analysis/RCLike/Basic.lean`, so we put it here
 -- instead of in `Mathlib/NumberTheory/SmoothNumbers.lean`.
-lemma Nat.roughNumbersUpTo_card_le' (N k : ℕ) :
-    #(roughNumbersUpTo N k) ≤
-      N * (N.succ.primesBelow \ k.primesBelow).sum (fun p ↦ (1 : ℝ) / p) := by
+lemma Nat.roughNumbersUpTo_card_le' (N k : ℕ)
+    : #(roughNumbersUpTo N k)
+      ≤ N * (N.succ.primesBelow \ k.primesBelow).sum (fun p ↦ (1 : ℝ) / p) := by
   simp_rw [Finset.mul_sum, mul_one_div]
   exact (Nat.cast_le.mpr <| roughNumbersUpTo_card_le N k).trans <|
     cast_sum (R := ℝ) .. ▸ Finset.sum_le_sum fun n _ ↦ cast_div_le
 
 /-- The sum over primes `k ≤ p ≤ 4^(π(k-1)+1)` over `1/p` (as a real number) is at least `1/2`. -/
-lemma one_half_le_sum_primes_ge_one_div (k : ℕ) :
-    1 / 2 ≤ ∑ p ∈ (4 ^ (#k.primesBelow + 1)).succ.primesBelow \ k.primesBelow,
-      (1 / p : ℝ) := by
+lemma one_half_le_sum_primes_ge_one_div (k : ℕ)
+    : 1 / 2
+      ≤ ∑ p ∈ (4 ^ (#k.primesBelow + 1)).succ.primesBelow \ k.primesBelow,
+        (1 / p : ℝ) := by
   set m : ℕ := 2 ^ #k.primesBelow
   set N₀ : ℕ := 2 * m ^ 2 with hN₀
   let S : ℝ := ((2 * N₀).succ.primesBelow \ k.primesBelow).sum (fun p ↦ (1 / p : ℝ))
@@ -87,25 +90,28 @@ lemma one_half_le_sum_primes_ge_one_div (k : ℕ) :
     rw [show 4 = 2 ^ 2 by simp, pow_right_comm]
     ring
   suffices 2 * N₀ ≤ m * (2 * N₀).sqrt + 2 * N₀ * S by
-    rwa [hN₀, ← mul_assoc, ← pow_two 2, ← mul_pow, sqrt_eq', ← sub_le_iff_le_add',
-      cast_mul, cast_mul, cast_pow, cast_two,
-      show (2 * (2 * m ^ 2) - m * (2 * m) : ℝ) = 2 * (2 * m ^ 2) * (1 / 2) by ring,
-      mul_le_mul_iff_right₀ <| by positivity] at this
-  calc (2 * N₀ : ℝ)
+    rwa [hN₀, ← mul_assoc, ← pow_two 2, ← mul_pow, sqrt_eq', ← sub_le_iff_le_add', cast_mul,
+        cast_mul, cast_pow, cast_two,
+        show (2 * (2 * m ^ 2) - m * (2 * m) : ℝ) = 2 * (2 * m ^ 2) * (1 / 2) by ring,
+        mul_le_mul_iff_right₀ <| by positivity]
+      at this
+  calc
+    (2 * N₀ : ℝ)
     _ = #((2 * N₀).smoothNumbersUpTo k) + #((2 * N₀).roughNumbersUpTo k) := by
-        exact_mod_cast ((2 * N₀).smoothNumbersUpTo_card_add_roughNumbersUpTo_card k).symm
+      exact_mod_cast ((2 * N₀).smoothNumbersUpTo_card_add_roughNumbersUpTo_card k).symm
     _ ≤ m * (2 * N₀).sqrt + #((2 * N₀).roughNumbersUpTo k) := by
-        exact_mod_cast Nat.add_le_add_right ((2 * N₀).smoothNumbersUpTo_card_le k) _
+      exact_mod_cast Nat.add_le_add_right ((2 * N₀).smoothNumbersUpTo_card_le k) _
     _ ≤ m * (2 * N₀).sqrt + 2 * N₀ * S := by grw [roughNumbersUpTo_card_le']; norm_cast
 
 /-- The sum over the reciprocals of the primes diverges. -/
-theorem not_summable_one_div_on_primes :
-    ¬ Summable (indicator {p | p.Prime} (fun n : ℕ ↦ (1 : ℝ) / n)) := by
+theorem not_summable_one_div_on_primes
+    : ¬ Summable (indicator ({p | p.Prime}) (fun n : ℕ ↦ (1 : ℝ) / n)) := by
   intro h
   obtain ⟨k, hk⟩ := h.nat_tsum_vanishing (Iio_mem_nhds one_half_pos : Iio (1 / 2 : ℝ) ∈ 𝓝 0)
   specialize hk ({p | Nat.Prime p} ∩ {p | k ≤ p}) inter_subset_right
   rw [tsum_subtype, indicator_indicator,
-    inter_eq_left.mpr fun n (hn : n ∈ {p | Nat.Prime p} ∩ {p | k ≤ p}) ↦ hn.1, mem_Iio] at hk
+      inter_eq_left.mpr fun n (hn : n ∈ {p | Nat.Prime p} ∩ {p | k ≤ p}) ↦ hn.1, mem_Iio]
+    at hk
   have h' : Summable (indicator ({p | Nat.Prime p} ∩ {p | k ≤ p}) fun n ↦ (1 : ℝ) / n) := by
     convert h.indicator {n : ℕ | k ≤ n} using 1
     simp only [indicator_indicator, inter_comm]
@@ -125,8 +131,8 @@ theorem Nat.Primes.not_summable_one_div : ¬ Summable (fun p : Nat.Primes ↦ (1
   convert! summable_subtype_iff_indicator.mp.mt not_summable_one_div_on_primes
 
 /-- The series over `p^r` for primes `p` converges if and only if `r < -1`. -/
-theorem Nat.Primes.summable_rpow {r : ℝ} :
-    Summable (fun p : Nat.Primes ↦ (p : ℝ) ^ r) ↔ r < -1 := by
+theorem Nat.Primes.summable_rpow {r : ℝ}
+    : Summable (fun p : Nat.Primes ↦ (p : ℝ) ^ r) ↔ r < -1 := by
   by_cases h : r < -1
   · -- case `r < -1`
     simp only [h, iff_true]

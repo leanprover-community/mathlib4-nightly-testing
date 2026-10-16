@@ -44,34 +44,43 @@ ring_seminorm, ring_norm
 
 variable {R : Type*}
 
-/-- A seminorm on a ring `R` is a function `f : R → ℝ` that preserves zero, takes nonnegative
-  values, is subadditive and submultiplicative and such that `f (-x) = f x` for all `x ∈ R`. -/
+/--
+A seminorm on a ring `R` is a function `f : R → ℝ` that preserves zero, takes nonnegative
+values, is subadditive and submultiplicative and such that `f (-x) = f x` for all `x ∈ R`.
+-/
 structure RingSeminorm (R : Type*) [NonUnitalNonAssocRing R] extends AddGroupSeminorm R where
-  /-- The property of a `RingSeminorm` that for all `x` and `y` in the ring, the norm of `x * y` is
-  less than the norm of `x` times the norm of `y`. -/
+  /--
+  The property of a `RingSeminorm` that for all `x` and `y` in the ring, the norm of `x * y` is
+  less than the norm of `x` times the norm of `y`.
+  -/
   mul_le' : ∀ x y : R, toFun (x * y) ≤ toFun x * toFun y
 
-/-- A function `f : R → ℝ` is a norm on a (nonunital) ring if it is a seminorm and `f x = 0`
-  implies `x = 0`. -/
+/--
+A function `f : R → ℝ` is a norm on a (nonunital) ring if it is a seminorm and `f x = 0`
+implies `x = 0`.
+-/
 structure RingNorm (R : Type*) [NonUnitalNonAssocRing R] extends RingSeminorm R, AddGroupNorm R
 
-/-- A multiplicative seminorm on a ring `R` is a function `f : R → ℝ` that preserves zero and
+/--
+A multiplicative seminorm on a ring `R` is a function `f : R → ℝ` that preserves zero and
 multiplication, takes nonnegative values, is subadditive and such that `f (-x) = f x` for all `x`.
 -/
-structure MulRingSeminorm (R : Type*) [NonAssocRing R] extends AddGroupSeminorm R,
-  MonoidWithZeroHom R ℝ
+structure MulRingSeminorm (R : Type*) [NonAssocRing R]
+  extends AddGroupSeminorm R, MonoidWithZeroHom R ℝ
 
-/-- A multiplicative norm on a ring `R` is a multiplicative ring seminorm such that `f x = 0`
+/--
+A multiplicative norm on a ring `R` is a multiplicative ring seminorm such that `f x = 0`
 implies `x = 0`.
 
 It is recommended to use `AbsoluteValue R ℝ` instead (which works for `Semiring R`
-and is equivalent to `MulRingNorm R` for a nontrivial `Ring R`). -/
+and is equivalent to `MulRingNorm R` for a nontrivial `Ring R`).
+-/
 structure MulRingNorm (R : Type*) [NonAssocRing R] extends MulRingSeminorm R, AddGroupNorm R
 
 attribute [nolint docBlame]
   RingSeminorm.toAddGroupSeminorm RingNorm.toAddGroupNorm RingNorm.toRingSeminorm
-    MulRingSeminorm.toAddGroupSeminorm MulRingSeminorm.toMonoidWithZeroHom
-    MulRingNorm.toAddGroupNorm MulRingNorm.toMulRingSeminorm
+  MulRingSeminorm.toAddGroupSeminorm MulRingSeminorm.toMonoidWithZeroHom MulRingNorm.toAddGroupNorm
+  MulRingNorm.toMulRingSeminorm
 
 namespace RingSeminorm
 
@@ -95,43 +104,37 @@ instance ringSeminormClass : RingSeminormClass (RingSeminorm R) R ℝ where
   map_mul_le_mul f := f.mul_le'
   map_neg_eq_map f := f.neg'
 
-@[simp]
-theorem toFun_eq_coe (p : RingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p :=
-  rfl
+@[simp] theorem toFun_eq_coe (p : RingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p := rfl
 
-@[ext]
-theorem ext {p q : RingSeminorm R} : (∀ x, p x = q x) → p = q :=
-  DFunLike.ext p q
+@[ext] theorem ext {p q : RingSeminorm R} : (∀ x, p x = q x) → p = q := DFunLike.ext p q
 
 instance : Zero (RingSeminorm R) :=
-  ⟨{ AddGroupSeminorm.instZeroAddGroupSeminorm.zero with mul_le' :=
-    fun _ _ => (zero_mul _).ge }⟩
+  ⟨{ AddGroupSeminorm.instZeroAddGroupSeminorm.zero with mul_le' := fun _ _ => (zero_mul _).ge }⟩
 
-theorem eq_zero_iff {p : RingSeminorm R} : p = 0 ↔ ∀ x, p x = 0 :=
-  DFunLike.ext_iff
+theorem eq_zero_iff {p : RingSeminorm R} : p = 0 ↔ ∀ x, p x = 0 := DFunLike.ext_iff
 
 theorem ne_zero_iff {p : RingSeminorm R} : p ≠ 0 ↔ ∃ x, p x ≠ 0 := by simp [eq_zero_iff]
 
-instance : Inhabited (RingSeminorm R) :=
-  ⟨0⟩
+instance : Inhabited (RingSeminorm R) := ⟨0⟩
 
-/-- The trivial seminorm on a ring `R` is the `RingSeminorm` taking value `0` at `0` and `1` at
-every other element. -/
-instance [DecidableEq R] : One (RingSeminorm R) :=
-  ⟨{ (1 : AddGroupSeminorm R) with
-      mul_le' := fun x y => by
-        by_cases h : x * y = 0
-        · refine (ite_eq_left h).trans_le (mul_nonneg ?_ ?_) <;>
-            · change _ ≤ ite _ _ _
+/--
+The trivial seminorm on a ring `R` is the `RingSeminorm` taking value `0` at `0` and `1` at
+every other element.
+-/
+instance [DecidableEq R] : One (RingSeminorm R) := ⟨{
+  (1 : AddGroupSeminorm R) with
+  mul_le' := fun x y => by
+    by_cases h : x * y = 0
+    · refine (ite_eq_left h).trans_le (mul_nonneg ?_ ?_)
+        <;> · change _ ≤ ite _ _ _
               split_ifs
               exacts [le_rfl, zero_le_one]
-        · change ite _ _ _ ≤ ite _ _ _ * ite _ _ _
-          simp only [ite_false, h, left_ne_zero_of_mul h, right_ne_zero_of_mul h, mul_one,
-            le_refl] }⟩
+    · change ite _ _ _ ≤ ite _ _ _ * ite _ _ _
+      simp only [ite_false, h, left_ne_zero_of_mul h, right_ne_zero_of_mul h, mul_one, le_refl]
+}⟩
 
 @[simp]
-theorem apply_one [DecidableEq R] (x : R) : (1 : RingSeminorm R) x = if x = 0 then 0 else 1 :=
-  rfl
+theorem apply_one [DecidableEq R] (x : R) : (1 : RingSeminorm R) x = if x = 0 then 0 else 1 := rfl
 
 end NonUnitalRing
 
@@ -140,9 +143,7 @@ section Ring
 variable [Ring R] (p : RingSeminorm R)
 
 theorem seminorm_one_eq_one_iff_ne_zero (hp : p 1 ≤ 1) : p 1 = 1 ↔ p ≠ 0 := by
-  refine
-    ⟨fun h => ne_zero_iff.mpr ⟨1, by rw [h]; exact one_ne_zero⟩,
-      fun h => ?_⟩
+  refine ⟨fun h => ne_zero_iff.mpr ⟨1, by rw [h]; exact one_ne_zero⟩, fun h => ?_⟩
   obtain hp0 | hp0 := (apply_nonneg p (1 : R)).eq_or_lt'
   · exfalso
     refine h (ext fun x => (apply_nonneg _ _).antisymm' ?_)
@@ -162,9 +163,11 @@ section CommRing
 
 variable [CommRing R] (p : RingSeminorm R)
 
-theorem exists_index_pow_le (hna : IsNonarchimedean p) (x y : R) (n : ℕ) :
-    ∃ (m : ℕ), m < n + 1 ∧ p ((x + y) ^ (n : ℕ)) ^ (1 / (n : ℝ)) ≤
-      (p (x ^ m) * p (y ^ (n - m : ℕ))) ^ (1 / (n : ℝ)) := by
+theorem exists_index_pow_le (hna : IsNonarchimedean p) (x y : R) (n : ℕ)
+    : ∃ (m : ℕ),
+      m < n + 1
+        ∧ p ((x + y) ^ (n : ℕ)) ^ (1 / (n : ℝ))
+          ≤ (p (x ^ m) * p (y ^ (n - m : ℕ))) ^ (1 / (n : ℝ)) := by
   obtain ⟨m, hm_lt, hm⟩ := hna.add_pow_le x y n (map_mul_le_mul p)
   exact ⟨m, hm_lt, by gcongr⟩
 
@@ -173,25 +176,30 @@ end CommRing
 end RingSeminorm
 
 /-- If `f` is a ring seminorm on `a`, then `∀ {n : ℕ}, n ≠ 0 → f (a ^ n) ≤ f a ^ n`. -/
-theorem map_pow_le_pow {F α : Type*} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ] (f : F)
-    (a : α) : ∀ {n : ℕ}, n ≠ 0 → f (a ^ n) ≤ f a ^ n
-  | 0, h => absurd rfl h
-  | 1, _ => by simp only [pow_one, le_refl]
+theorem map_pow_le_pow
+    {F α : Type*} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ] (f : F) (a : α)
+    : ∀ {n : ℕ}, n ≠ 0 → f (a ^ n) ≤ f a ^ n
+  | 0, h =>
+    absurd rfl h
+  | 1, _ => by
+    simp only [pow_one, le_refl]
   | n + 2, _ => by
     simp only [pow_succ _ (n + 1)]
     grw [map_mul_le_mul, map_pow_le_pow _ _ n.succ_ne_zero]
 
 /-- If `f` is a ring seminorm on `a` with `f 1 ≤ 1`, then `∀ (n : ℕ), f (a ^ n) ≤ f a ^ n`. -/
-theorem map_pow_le_pow' {F α : Type*} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ] {f : F}
-    (hf1 : f 1 ≤ 1) (a : α) : ∀ n : ℕ, f (a ^ n) ≤ f a ^ n
+theorem map_pow_le_pow'
+    {F α : Type*} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ] {f : F} (hf1 : f 1 ≤ 1) (a : α)
+    : ∀ n : ℕ, f (a ^ n) ≤ f a ^ n
   | 0 => by simp only [pow_zero, hf1]
   | n + 1 => map_pow_le_pow _ _ n.succ_ne_zero
 
 /-- The norm of a `NonUnitalSeminormedRing` as a `RingSeminorm`. -/
-def normRingSeminorm (R : Type*) [NonUnitalSeminormedRing R] : RingSeminorm R :=
-  { normAddGroupSeminorm R with
-    toFun := norm
-    mul_le' := norm_mul_le }
+def normRingSeminorm (R : Type*) [NonUnitalSeminormedRing R] : RingSeminorm R := {
+  normAddGroupSeminorm R with
+  toFun := norm
+  mul_le' := norm_mul_le
+}
 
 namespace RingSeminorm
 
@@ -199,10 +207,12 @@ variable [Ring R] (p : RingSeminorm R)
 
 open Filter Nat Real
 
-/-- If `f` is a ring seminorm on `R` with `f 1 ≤ 1` and `s : ℕ → ℕ` is bounded by `n`, then
-  `f (x ^ s (ψ n)) ^ (1 / (ψ n : ℝ))` is eventually bounded. -/
-theorem isBoundedUnder (hp : p 1 ≤ 1) {s : ℕ → ℕ} (hs_le : ∀ n : ℕ, s n ≤ n) {x : R} (ψ : ℕ → ℕ) :
-    IsBoundedUnder LE.le atTop fun n : ℕ => p (x ^ s (ψ n)) ^ (1 / (ψ n : ℝ)) := by
+/--
+If `f` is a ring seminorm on `R` with `f 1 ≤ 1` and `s : ℕ → ℕ` is bounded by `n`, then
+`f (x ^ s (ψ n)) ^ (1 / (ψ n : ℝ))` is eventually bounded.
+-/
+theorem isBoundedUnder (hp : p 1 ≤ 1) {s : ℕ → ℕ} (hs_le : ∀ n : ℕ, s n ≤ n) {x : R} (ψ : ℕ → ℕ)
+    : IsBoundedUnder LE.le atTop fun n : ℕ => p (x ^ s (ψ n)) ^ (1 / (ψ n : ℝ)) := by
   have h_le : ∀ m : ℕ, p (x ^ s (ψ m)) ^ (1 / (ψ m : ℝ)) ≤ p x ^ ((s (ψ m) : ℝ) / (ψ m : ℝ)) := by
     intro m
     rw [← mul_one_div (s (ψ m) : ℝ), rpow_mul (apply_nonneg p x), rpow_natCast]
@@ -243,27 +253,22 @@ instance ringNormClass : RingNormClass (RingNorm R) R ℝ where
 
 theorem toFun_eq_coe (p : RingNorm R) : p.toFun = p := rfl
 
-@[simp]
-theorem toRingSeminorm_apply (p : RingNorm R) (x : R) : p.toRingSeminorm x = p x :=
-  rfl
+@[simp] theorem toRingSeminorm_apply (p : RingNorm R) (x : R) : p.toRingSeminorm x = p x := rfl
 
-@[ext]
-theorem ext {p q : RingNorm R} : (∀ x, p x = q x) → p = q :=
-  DFunLike.ext p q
+@[ext] theorem ext {p q : RingNorm R} : (∀ x, p x = q x) → p = q := DFunLike.ext p q
 
 variable (R)
 
-/-- The trivial norm on a ring `R` is the `RingNorm` taking value `0` at `0` and `1` at every
-  other element. -/
-instance [DecidableEq R] : One (RingNorm R) :=
-  ⟨{ (1 : RingSeminorm R), (1 : AddGroupNorm R) with }⟩
+/--
+The trivial norm on a ring `R` is the `RingNorm` taking value `0` at `0` and `1` at every
+other element.
+-/
+instance [DecidableEq R] : One (RingNorm R) := ⟨{ (1 : RingSeminorm R), (1 : AddGroupNorm R) with }⟩
 
 @[simp]
-theorem apply_one [DecidableEq R] (x : R) : (1 : RingNorm R) x = if x = 0 then 0 else 1 :=
-  rfl
+theorem apply_one [DecidableEq R] (x : R) : (1 : RingNorm R) x = if x = 0 then 0 else 1 := rfl
 
-instance [DecidableEq R] : Inhabited (RingNorm R) :=
-  ⟨1⟩
+instance [DecidableEq R] : Inhabited (RingNorm R) := ⟨1⟩
 
 end NonUnitalRing
 
@@ -297,34 +302,30 @@ instance mulRingSeminormClass : MulRingSeminormClass (MulRingSeminorm R) R ℝ w
   map_mul f := f.map_mul'
   map_neg_eq_map f := f.neg'
 
-@[simp]
-theorem toFun_eq_coe (p : MulRingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p :=
-  rfl
+@[simp] theorem toFun_eq_coe (p : MulRingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p := rfl
 
-@[ext]
-theorem ext {p q : MulRingSeminorm R} : (∀ x, p x = q x) → p = q :=
-  DFunLike.ext p q
+@[ext] theorem ext {p q : MulRingSeminorm R} : (∀ x, p x = q x) → p = q := DFunLike.ext p q
 
 variable [DecidableEq R] [NoZeroDivisors R] [Nontrivial R]
 
-/-- The trivial seminorm on a ring `R` is the `MulRingSeminorm` taking value `0` at `0` and `1` at
-every other element. -/
-instance : One (MulRingSeminorm R) :=
-  ⟨{ (1 : AddGroupSeminorm R) with
-      map_one' := ite_eq_right one_ne_zero
-      map_mul' := fun x y => by
-        obtain rfl | hx := eq_or_ne x 0
-        · simp
-        obtain rfl | hy := eq_or_ne y 0
-        · simp
-        · simp [hx, hy] }⟩
+/--
+The trivial seminorm on a ring `R` is the `MulRingSeminorm` taking value `0` at `0` and `1` at
+every other element.
+-/
+instance : One (MulRingSeminorm R) := ⟨{
+  (1 : AddGroupSeminorm R) with
+  map_one' := ite_eq_right one_ne_zero
+  map_mul' := fun x y => by
+    obtain rfl | hx := eq_or_ne x 0
+    · simp
+    obtain rfl | hy := eq_or_ne y 0
+    · simp
+    · simp [hx, hy]
+}⟩
 
-@[simp]
-theorem apply_one (x : R) : (1 : MulRingSeminorm R) x = if x = 0 then 0 else 1 :=
-  rfl
+@[simp] theorem apply_one (x : R) : (1 : MulRingSeminorm R) x = if x = 0 then 0 else 1 := rfl
 
-instance : Inhabited (MulRingSeminorm R) :=
-  ⟨1⟩
+instance : Inhabited (MulRingSeminorm R) := ⟨1⟩
 
 end MulRingSeminorm
 
@@ -353,27 +354,22 @@ instance mulRingNormClass : MulRingNormClass (MulRingNorm R) R ℝ where
 theorem toFun_eq_coe (p : MulRingNorm R) : p.toFun = p := rfl
 
 @[simp]
-theorem toMulRingSeminorm_apply (p : MulRingNorm R) (x : R) : p.toMulRingSeminorm x = p x :=
-  rfl
+theorem toMulRingSeminorm_apply (p : MulRingNorm R) (x : R) : p.toMulRingSeminorm x = p x := rfl
 
-@[ext]
-theorem ext {p q : MulRingNorm R} : (∀ x, p x = q x) → p = q :=
-  DFunLike.ext p q
+@[ext] theorem ext {p q : MulRingNorm R} : (∀ x, p x = q x) → p = q := DFunLike.ext p q
 
 variable (R)
 variable [DecidableEq R] [NoZeroDivisors R] [Nontrivial R]
 
-/-- The trivial norm on a ring `R` is the `MulRingNorm` taking value `0` at `0` and `1` at every
-other element. -/
-instance : One (MulRingNorm R) :=
-  ⟨{ (1 : MulRingSeminorm R), (1 : AddGroupNorm R) with }⟩
+/--
+The trivial norm on a ring `R` is the `MulRingNorm` taking value `0` at `0` and `1` at every
+other element.
+-/
+instance : One (MulRingNorm R) := ⟨{ (1 : MulRingSeminorm R), (1 : AddGroupNorm R) with }⟩
 
-@[simp]
-theorem apply_one (x : R) : (1 : MulRingNorm R) x = if x = 0 then 0 else 1 :=
-  rfl
+@[simp] theorem apply_one (x : R) : (1 : MulRingNorm R) x = if x = 0 then 0 else 1 := rfl
 
-instance : Inhabited (MulRingNorm R) :=
-  ⟨1⟩
+instance : Inhabited (MulRingNorm R) := ⟨1⟩
 
 section MulRingNorm_equiv_AbsoluteValue
 
@@ -412,76 +408,76 @@ end MulRingNorm_equiv_AbsoluteValue
 end MulRingNorm
 
 /-- A nonzero ring seminorm on a field `K` is a ring norm. -/
-def RingSeminorm.toRingNorm {K : Type*} [Field K] (f : RingSeminorm K) (hnt : f ≠ 0) :
-    RingNorm K :=
-  { f with
-    eq_zero_of_map_eq_zero' := fun x hx => by
-      obtain ⟨c, hc⟩ := RingSeminorm.ne_zero_iff.mp hnt
-      by_contra hn0
-      have hc0 : f c = 0 := by
-        rw [← mul_one c, ← mul_inv_cancel₀ hn0, ← mul_assoc, mul_comm c, mul_assoc]
-        exact
-          le_antisymm
-            (le_trans (map_mul_le_mul f _ _)
-              (by rw [← RingSeminorm.toFun_eq_coe, ← AddGroupSeminorm.toFun_eq_coe, hx,
-                zero_mul]))
-            (apply_nonneg f _)
-      exact hc hc0 }
+def RingSeminorm.toRingNorm {K : Type*} [Field K] (f : RingSeminorm K) (hnt : f ≠ 0)
+    : RingNorm K := {
+  f with
+  eq_zero_of_map_eq_zero' := fun x hx => by
+    obtain ⟨c, hc⟩ := RingSeminorm.ne_zero_iff.mp hnt
+    by_contra hn0
+    have hc0 : f c = 0 := by
+      rw [← mul_one c, ← mul_inv_cancel₀ hn0, ← mul_assoc, mul_comm c, mul_assoc]
+      exact le_antisymm
+        (le_trans (map_mul_le_mul f _ _)
+          (by rw [← RingSeminorm.toFun_eq_coe, ← AddGroupSeminorm.toFun_eq_coe, hx, zero_mul]))
+        (apply_nonneg f _)
+    exact hc hc0
+}
 
 /-- The norm of a `NonUnitalNormedRing` as a `RingNorm`. -/
 @[simps!]
-def normRingNorm (R : Type*) [NonUnitalNormedRing R] : RingNorm R :=
-  { normAddGroupNorm R, normRingSeminorm R with }
+def normRingNorm (R : Type*) [NonUnitalNormedRing R] : RingNorm R := {
+  normAddGroupNorm R, normRingSeminorm R with
+}
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The seminorm on a `SeminormedRing`, as a `RingSeminorm`. -/
 @[simps]
 def SeminormedRing.toRingSeminorm (R : Type*) [SeminormedRing R] : RingSeminorm R where
-  toFun     := norm
+  toFun := norm
   map_zero' := norm_zero
-  add_le'   := norm_add_le
-  mul_le'   := norm_mul_le
-  neg'      := norm_neg
+  add_le' := norm_add_le
+  mul_le' := norm_mul_le
+  neg' := norm_neg
 
 @[simp]
-theorem SeminormedRing.toRingSeminorm_apply (R : Type*) [SeminormedRing R] (x : R) :
-    (SeminormedRing.toRingSeminorm R) x = ‖x‖ :=
+theorem SeminormedRing.toRingSeminorm_apply (R : Type*) [SeminormedRing R] (x : R)
+    : (SeminormedRing.toRingSeminorm R) x = ‖x‖ :=
   rfl
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedRing`, as a `RingNorm`. -/
 @[simps]
 def NormedRing.toRingNorm (R : Type*) [NormedRing R] : RingNorm R where
-  toFun     := norm
+  toFun := norm
   map_zero' := norm_zero
-  add_le'   := norm_add_le
-  mul_le'   := norm_mul_le
-  neg'      := norm_neg
+  add_le' := norm_add_le
+  mul_le' := norm_mul_le
+  neg' := norm_neg
   eq_zero_of_map_eq_zero' x hx := by rw [← norm_eq_zero]; exact hx
 
 @[simp]
-theorem NormedRing.toRingNorm_apply (R : Type*) [NormedRing R] (x : R) :
-    (NormedRing.toRingNorm R) x = ‖x‖ :=
+theorem NormedRing.toRingNorm_apply (R : Type*) [NormedRing R] (x : R)
+    : (NormedRing.toRingNorm R) x = ‖x‖ :=
   rfl
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedField`, as a `MulRingNorm`. -/
 @[simps]
 def NormedField.toMulRingNorm (R : Type*) [NormedField R] : MulRingNorm R where
-  toFun     := norm
+  toFun := norm
   map_zero' := norm_zero
-  map_one'  := norm_one
-  add_le'   := norm_add_le
-  map_mul'  := norm_mul
-  neg'      := norm_neg
+  map_one' := norm_one
+  add_le' := norm_add_le
+  map_mul' := norm_mul
+  neg' := norm_neg
   eq_zero_of_map_eq_zero' x hx := by rw [← norm_eq_zero]; exact hx
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedField`, as an `AbsoluteValue`. -/
 @[simps]
 def NormedField.toAbsoluteValue (R : Type*) [NormedField R] : AbsoluteValue R ℝ where
-  toFun     := norm
-  map_mul'  := norm_mul
-  nonneg'   := norm_nonneg
+  toFun := norm
+  map_mul' := norm_mul
+  nonneg' := norm_nonneg
   eq_zero' _ := norm_eq_zero
-  add_le'   := norm_add_le
+  add_le' := norm_add_le

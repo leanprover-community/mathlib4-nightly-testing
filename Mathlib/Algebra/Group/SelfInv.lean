@@ -31,14 +31,12 @@ variable [Inv α] {a : α}
 @[to_additive /-- An element `a` is *self-negative* if `-a = a`. -/]
 def IsSelfInv (a : α) : Prop := a⁻¹ = a
 
-@[to_additive]
-lemma isSelfInv_iff : IsSelfInv a ↔ a⁻¹ = a := Iff.rfl
+@[to_additive] lemma isSelfInv_iff : IsSelfInv a ↔ a⁻¹ = a := Iff.rfl
 
 @[to_additive]
 protected alias ⟨IsSelfInv.inv_eq, IsSelfInv.of_inv_eq⟩ := isSelfInv_iff
 
-@[to_additive]
-protected lemma IsSelfInv.eq_inv (h : IsSelfInv a) : a = a⁻¹ := h.symm
+@[to_additive] protected lemma IsSelfInv.eq_inv (h : IsSelfInv a) : a = a⁻¹ := h.symm
 
 @[to_additive]
 instance [DecidableEq α] : Decidable (IsSelfInv a) := decidable_of_iff _ isSelfInv_iff.symm
@@ -56,8 +54,8 @@ lemma isSelfInv_inv [InvolutiveInv α] {a : α} : IsSelfInv a⁻¹ ↔ IsSelfInv
 protected alias ⟨_, IsSelfInv.inv⟩ := isSelfInv_inv
 
 @[to_additive]
-protected lemma IsSelfInv.conj [DivisionMonoid α] {a : α} (h : IsSelfInv a) (b : α) :
-    IsSelfInv (b * a * b⁻¹) := by
+protected lemma IsSelfInv.conj [DivisionMonoid α] {a : α} (h : IsSelfInv a) (b : α)
+    : IsSelfInv (b * a * b⁻¹) := by
   rw [isSelfInv_iff, mul_inv_rev, mul_inv_rev, inv_inv, h, mul_assoc]
 
 @[to_additive]
@@ -65,13 +63,13 @@ lemma isSelfInv_conj_iff [Group α] {a b : α} : IsSelfInv (b * a * b⁻¹) ↔ 
   ⟨fun h ↦ by simpa [mul_assoc] using h.conj b⁻¹, fun h ↦ h.conj b⟩
 
 @[to_additive]
-protected lemma IsSelfInv.pow [DivisionMonoid α] {a : α} (h : IsSelfInv a) (n : ℕ) :
-    IsSelfInv (a ^ n) := by
+protected lemma IsSelfInv.pow [DivisionMonoid α] {a : α} (h : IsSelfInv a) (n : ℕ)
+    : IsSelfInv (a ^ n) := by
   rw [isSelfInv_iff, ← inv_pow, h.inv_eq]
 
 @[to_additive]
-protected lemma IsSelfInv.zpow [DivisionMonoid α] {a : α} (h : IsSelfInv a) (n : ℤ) :
-    IsSelfInv (a ^ n) := by
+protected lemma IsSelfInv.zpow [DivisionMonoid α] {a : α} (h : IsSelfInv a) (n : ℤ)
+    : IsSelfInv (a ^ n) := by
   rw [isSelfInv_iff, ← inv_zpow, h.inv_eq]
 
 @[to_additive isSelfNeg_iff_two_nsmul_eq_zero]

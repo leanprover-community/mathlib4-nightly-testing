@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Finset.Lattice.Fold
 public import Mathlib.Data.Nat.Cast.Order.Ring
-
 import Mathlib.Algebra.Order.Ring.Canonical
 
 /-!
@@ -35,8 +34,8 @@ lemma cast_finsetInf' (f : ι → ℕ) (hs) : (↑(s.inf' hs f) : R) = s.inf' hs
   apply_inf'_eq_inf'_comp _ _ cast_min
 
 @[simp, norm_cast]
-lemma cast_finsetSup [OrderBot R] [CanonicallyOrderedAdd R] (s : Finset ι) (f : ι → ℕ) :
-    (↑(s.sup f) : R) = s.sup fun i ↦ (f i : R) :=
+lemma cast_finsetSup [OrderBot R] [CanonicallyOrderedAdd R] (s : Finset ι) (f : ι → ℕ)
+    : (↑(s.sup f) : R) = s.sup fun i ↦ (f i : R) :=
   apply_sup_eq_sup_comp _ cast_max (by simp)
 
 end LinearOrderedSemiring
@@ -45,19 +44,17 @@ end Nat
 
 section
 
-variable {R ι : Type*} [LinearOrder R] [NonUnitalNonAssocSemiring R]
-  [CanonicallyOrderedAdd R] [OrderBot R]
+variable
+  {R ι : Type*} [LinearOrder R] [NonUnitalNonAssocSemiring R] [CanonicallyOrderedAdd R] [OrderBot R]
 
-lemma Finset.mul_sup₀ (s : Finset ι) (f : ι → R) (a : R) :
-    a * s.sup f = s.sup (a * f ·) := by
+lemma Finset.mul_sup₀ (s : Finset ι) (f : ι → R) (a : R) : a * s.sup f = s.sup (a * f ·) := by
   classical
   induction s using Finset.induction with
   | empty => simp
   | insert _ _ _ IH => simp only [sup_insert, mul_max, ← IH]
 
 /-- Also see `Finset.sup'_mul₀` for a version for `GroupWithZero`s. -/
-lemma Finset.sup_mul₀ (s : Finset ι) (f : ι → R) (a : R) :
-    s.sup f * a = s.sup (f · * a) := by
+lemma Finset.sup_mul₀ (s : Finset ι) (f : ι → R) (a : R) : s.sup f * a = s.sup (f · * a) := by
   classical
   induction s using Finset.induction with
   | empty => simp

@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Ring.InjSurj
 
 public section
 
-
 universe u v w x
 
 variable {α : Type u} {β : Type v} {R : Type x}
@@ -30,22 +29,18 @@ section HasDistribNeg
 variable [Monoid α] [HasDistribNeg α]
 
 /-- Each element of the group of units of a ring has an additive inverse. -/
-instance : Neg αˣ :=
-  ⟨fun u => ⟨-↑u, -↑u⁻¹, by simp, by simp⟩⟩
+instance : Neg αˣ := ⟨fun u => ⟨- ↑u, - ↑u⁻¹, by simp, by simp⟩⟩
 
-/-- Representing an element of a ring's unit group as an element of the ring commutes with
-mapping this element to its additive inverse. -/
-@[simp, norm_cast]
-protected theorem val_neg (u : αˣ) : (↑(-u) : α) = -u :=
-  rfl
+/--
+Representing an element of a ring's unit group as an element of the ring commutes with
+mapping this element to its additive inverse.
+-/
+@[simp, norm_cast] protected theorem val_neg (u : αˣ) : (↑(-u) : α) = -u := rfl
 
-@[simp, norm_cast]
-protected theorem coe_neg_one : ((-1 : αˣ) : α) = -1 :=
-  rfl
+@[simp, norm_cast] protected theorem coe_neg_one : ((-1 : αˣ) : α) = -1 := rfl
 
 @[simp, norm_cast]
-theorem val_eq_neg_one {a : αˣ} : (a : α) = -1 ↔ a = -1 := by
-  rw [← Units.coe_neg_one, val_inj]
+theorem val_eq_neg_one {a : αˣ} : (a : α) = -1 ↔ a = -1 := by rw [← Units.coe_neg_one, val_inj]
 
 instance : HasDistribNeg αˣ := val_injective.hasDistribNeg _ Units.val_neg val_mul
 
@@ -83,12 +78,12 @@ theorem divp_sub (a b : α) (u : αˣ) : a /ₚ u - b = (a - b * u) /ₚ u := by
   rw [mul_assoc, Units.mul_inv, mul_one]
 
 @[simp]
-protected theorem map_neg {F : Type*} [Ring β] [FunLike F α β] [RingHomClass F α β]
-    (f : F) (u : αˣ) : map (f : α →* β) (-u) = -map (f : α →* β) u :=
+protected theorem map_neg {F : Type*} [Ring β] [FunLike F α β] [RingHomClass F α β] (f : F) (u : αˣ)
+    : map (f : α →* β) (-u) = - map (f : α →* β) u :=
   ext (by simp only [coe_map, Units.val_neg, MonoidHom.coe_ofClass, map_neg])
 
-protected theorem map_neg_one {F : Type*} [Ring β] [FunLike F α β] [RingHomClass F α β]
-    (f : F) : map (f : α →* β) (-1) = -1 := by
+protected theorem map_neg_one {F : Type*} [Ring β] [FunLike F α β] [RingHomClass F α β] (f : F)
+    : map (f : α →* β) (-1) = -1 := by
   simp only [Units.map_neg, map_one]
 
 end Ring
@@ -109,16 +104,16 @@ theorem IsUnit.sub_iff [Ring α] {x y : α} : IsUnit (x - y) ↔ IsUnit (y - x) 
 
 namespace Units
 
-theorem divp_add_divp [CommSemiring α] (a b : α) (u₁ u₂ : αˣ) :
-    a /ₚ u₁ + b /ₚ u₂ = (a * u₂ + u₁ * b) /ₚ (u₁ * u₂) := by
+theorem divp_add_divp [CommSemiring α] (a b : α) (u₁ u₂ : αˣ)
+    : a /ₚ u₁ + b /ₚ u₂ = (a * u₂ + u₁ * b) /ₚ (u₁ * u₂) := by
   simp only [divp, add_mul, mul_inv_rev, val_mul]
   rw [mul_comm (↑u₁ * b), mul_comm b]
   rw [← mul_assoc, ← mul_assoc, mul_assoc a, mul_assoc (↑u₂⁻¹ : α), mul_inv, inv_mul, mul_one,
     mul_one]
-  -- Porting note: `assoc_rw` not ported: `assoc_rw [mul_inv, mul_inv, mul_one, mul_one]`
+-- Porting note: `assoc_rw` not ported: `assoc_rw [mul_inv, mul_inv, mul_one, mul_one]`
 
-theorem divp_sub_divp [CommRing α] (a b : α) (u₁ u₂ : αˣ) :
-    a /ₚ u₁ - b /ₚ u₂ = (a * u₂ - u₁ * b) /ₚ (u₁ * u₂) := by
+theorem divp_sub_divp [CommRing α] (a b : α) (u₁ u₂ : αˣ)
+    : a /ₚ u₁ - b /ₚ u₂ = (a * u₂ - u₁ * b) /ₚ (u₁ * u₂) := by
   simp only [sub_eq_add_neg, neg_divp, divp_add_divp, mul_neg]
 
 theorem add_eq_mul_one_add_div [Semiring R] {a : Rˣ} {b : R} : ↑a + b = a * (1 + ↑a⁻¹ * b) := by
@@ -132,8 +127,7 @@ section Semiring
 
 variable [Semiring α] [Semiring β]
 
-theorem isUnit_map (f : α →+* β) {a : α} : IsUnit a → IsUnit (f a) :=
-  IsUnit.map f
+theorem isUnit_map (f : α →+* β) {a : α} : IsUnit a → IsUnit (f a) := IsUnit.map f
 
 end Semiring
 

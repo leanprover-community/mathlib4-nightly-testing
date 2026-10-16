@@ -48,27 +48,29 @@ theorem Set.Subsingleton.isGδ_compl {s : Set X} [T1Space X] (hs : s.Subsingleto
 theorem Finset.isGδ_compl [T1Space X] (s : Finset X) : IsGδ (sᶜ : Set X) :=
   s.finite_toSet.isGδ_compl
 
-protected theorem IsGδ.singleton [FirstCountableTopology X] [T1Space X] (x : X) :
-    IsGδ ({x} : Set X) := by
+protected theorem IsGδ.singleton [FirstCountableTopology X] [T1Space X] (x : X)
+    : IsGδ ({x} : Set X) := by
   rcases (nhds_basis_opens x).exists_antitone_subbasis with ⟨U, hU, h_basis⟩
   rw [← biInter_basis_nhds h_basis.toHasBasis]
   exact .biInter (to_countable {_n : ℕ | True}) fun n _ => (hU n).2.isGδ
 
-theorem Set.Finite.isGδ [FirstCountableTopology X] {s : Set X} [T1Space X] (hs : s.Finite) :
-    IsGδ s :=
+theorem Set.Finite.isGδ [FirstCountableTopology X] {s : Set X} [T1Space X] (hs : s.Finite)
+    : IsGδ s :=
   Finite.induction_on _ hs .empty fun _ _ ↦ .union (.singleton _)
-
 
 section PerfectlyNormal
 
-/-- A topological space `X` is a *perfectly normal space* provided it is normal and
-closed sets are Gδ. -/
+/--
+A topological space `X` is a *perfectly normal space* provided it is normal and
+closed sets are Gδ.
+-/
 class PerfectlyNormalSpace (X : Type u) [TopologicalSpace X] : Prop extends NormalSpace X where
-    closed_gdelta : ∀ ⦃h : Set X⦄, IsClosed h → IsGδ h
+  closed_gdelta : ∀ ⦃h : Set X⦄, IsClosed h → IsGδ h
 
 /-- Lemma that allows the easy conclusion that perfectly normal spaces are completely normal. -/
-theorem Disjoint.hasSeparatingCover_closed_gdelta_right {s t : Set X} [NormalSpace X]
-    (st_dis : Disjoint s t) (t_cl : IsClosed t) (t_gd : IsGδ t) : HasSeparatingCover s t := by
+theorem Disjoint.hasSeparatingCover_closed_gdelta_right
+    {s t : Set X} [NormalSpace X] (st_dis : Disjoint s t) (t_cl : IsClosed t) (t_gd : IsGδ t)
+    : HasSeparatingCover s t := by
   obtain ⟨T, T_open, T_count, T_int⟩ := t_gd
   rcases T.eq_empty_or_nonempty with rfl | T_nonempty
   · rw [T_int, sInter_empty] at st_dis
@@ -95,14 +97,19 @@ theorem Disjoint.hasSeparatingCover_closed_gdelta_right {s t : Set X} [NormalSpa
     rw [← closure_eq_iff_isClosed.mpr t_cl] at clt_sub_g'
     exact subset_closure.trans <| (clt_sub_g' n).trans (g'_open n).subset_interior_closure
 
-instance (priority := 100) PerfectlyNormalSpace.toCompletelyNormalSpace
-    [PerfectlyNormalSpace X] : CompletelyNormalSpace X where
-  completely_normal _ _ hd₁ hd₂ := separatedNhds_iff_disjoint.mp <|
-    hasSeparatingCovers_iff_separatedNhds.mp
-      ⟨(hd₂.hasSeparatingCover_closed_gdelta_right isClosed_closure <|
-         closed_gdelta isClosed_closure).mono (fun ⦃_⦄ a ↦ a) subset_closure,
-       ((Disjoint.symm hd₁).hasSeparatingCover_closed_gdelta_right isClosed_closure <|
-         closed_gdelta isClosed_closure).mono (fun ⦃_⦄ a ↦ a) subset_closure⟩
+instance (priority := 100) PerfectlyNormalSpace.toCompletelyNormalSpace [PerfectlyNormalSpace X]
+    : CompletelyNormalSpace X where
+  completely_normal _ _ hd₁ hd₂ :=
+    separatedNhds_iff_disjoint.mp <| hasSeparatingCovers_iff_separatedNhds.mp ⟨
+      (hd₂.hasSeparatingCover_closed_gdelta_right isClosed_closure <|
+          closed_gdelta isClosed_closure).mono
+        (fun ⦃_⦄ a ↦ a)
+        subset_closure,
+      ((Disjoint.symm hd₁).hasSeparatingCover_closed_gdelta_right isClosed_closure <|
+          closed_gdelta isClosed_closure).mono
+        (fun ⦃_⦄ a ↦ a)
+        subset_closure
+    ⟩
 
 /-- In a perfectly normal space, all closed sets are Gδ. -/
 theorem IsClosed.isGδ [PerfectlyNormalSpace X] {s : Set X} (hs : IsClosed s) : IsGδ s :=
@@ -118,11 +125,12 @@ instance (priority := 100) [PerfectlyNormalSpace X] : R0Space X where
     intros
     solve_by_elim [hxy.mem_open]
 
-theorem Topology.IsInducing.perfectlyNormalSpace [PerfectlyNormalSpace Y] {e : X → Y}
-    (he : IsInducing e) : PerfectlyNormalSpace X where
+theorem Topology.IsInducing.perfectlyNormalSpace
+    [PerfectlyNormalSpace Y] {e : X → Y} (he : IsInducing e)
+    : PerfectlyNormalSpace X where
   toNormalSpace := he.completelyNormalSpace.toNormalSpace
-  closed_gdelta _ hs := (he.isClosed_iff.1 hs).elim fun _ ht =>
-    ht.2 ▸ ht.1.isGδ.preimage he.continuous
+  closed_gdelta _ hs :=
+    (he.isClosed_iff.1 hs).elim fun _ ht => ht.2 ▸ ht.1.isGδ.preimage he.continuous
 
 instance {s : Set X} [PerfectlyNormalSpace X] : PerfectlyNormalSpace s :=
   IsEmbedding.subtypeVal.perfectlyNormalSpace
@@ -134,13 +142,11 @@ class T6Space (X : Type u) [TopologicalSpace X] : Prop extends T0Space X, Perfec
 /-- A `T₆` space is a `T₅` space. -/
 instance (priority := 100) T6Space.toT5Space [T6Space X] : T5Space X where
 
-theorem Topology.IsEmbedding.t6Space [T6Space Y] {e : X → Y}
-    (he : IsEmbedding e) : T6Space X where
+theorem Topology.IsEmbedding.t6Space [T6Space Y] {e : X → Y} (he : IsEmbedding e) : T6Space X where
   toPerfectlyNormalSpace := he.perfectlyNormalSpace
   toT0Space := he.t0Space
 
-instance {s : Set X} [T6Space X] : T6Space s :=
-  IsEmbedding.subtypeVal.t6Space
+instance {s : Set X} [T6Space X] : T6Space s := IsEmbedding.subtypeVal.t6Space
 
 end PerfectlyNormal
 

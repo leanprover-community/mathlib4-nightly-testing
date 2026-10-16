@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Order.Filter.Map
 public import Mathlib.SetTheory.Cardinal.Arithmetic
-
 import Mathlib.Order.Filter.Finite
 
 /-!
@@ -29,18 +28,24 @@ namespace Cardinal
 
 universe u v
 
-/-- If a set `t` is eventually covered by a countable family of sets, all with cardinality at
+/--
+If a set `t` is eventually covered by a countable family of sets, all with cardinality at
 most `a`, then the cardinality of `t` is also bounded by `a`.
 Superseded by `mk_le_of_countable_eventually_mem` which does not assume
-that the indexing set lives in the same universe. -/
-lemma mk_subtype_le_of_countable_eventually_mem_aux {α ι : Type u} {a : Cardinal}
-    [Countable ι] {f : ι → Set α} {l : Filter ι} [NeBot l]
+that the indexing set lives in the same universe.
+-/
+lemma mk_subtype_le_of_countable_eventually_mem_aux
+    {α ι : Type u} {a : Cardinal} [Countable ι]
+    {f : ι → Set α} {l : Filter ι} [NeBot l]
     {t : Set α} (ht : ∀ x ∈ t, ∀ᶠ i in l, x ∈ f i)
-    (h'f : ∀ i, #(f i) ≤ a) : #t ≤ a := by
+    (h'f : ∀ i, #(f i) ≤ a)
+    : #t ≤ a := by
   rcases lt_or_ge a ℵ₀ with ha | ha
-  /- case `a` finite. In this case, it suffices to show that any finite subset `s` of `t` has
+  /-
+  case `a` finite. In this case, it suffices to show that any finite subset `s` of `t` has
   cardinality at most `a`. For this, we pick `i` such that `f i` contains all the points in `s`,
-  and apply the assumption that the cardinality of `f i` is at most `a`.   -/
+  and apply the assumption that the cardinality of `f i` is at most `a`.
+  -/
   · obtain ⟨n, rfl⟩ : ∃ (n : ℕ), a = n := lt_aleph0.1 ha
     apply mk_le_iff_forall_finset_subset_card_le.2 (fun s hs ↦ ?_)
     have A : ∀ x ∈ s, ∀ᶠ i in l, x ∈ f i := fun x hx ↦ ht x (hs hx)
@@ -59,19 +64,25 @@ lemma mk_subtype_le_of_countable_eventually_mem_aux {α ι : Type u} {a : Cardin
       intro x hx
       obtain ⟨i, hi⟩ : ∃ i, x ∈ f i := (ht x hx).exists
       exact mem_iUnion_of_mem i hi
-    calc #t ≤ #(⋃ i, f i) := mk_le_mk_of_subset this
+    calc
+      #t
+        ≤ #(⋃ i, f i) := mk_le_mk_of_subset this
       _ ≤ sum (fun i ↦ #(f i)) := mk_iUnion_le_sum_mk
       _ ≤ sum (fun _ ↦ a) := sum_le_sum _ _ h'f
       _ = #ι * a := by simp
       _ ≤ ℵ₀ * a := by grw [mk_le_aleph0]
       _ = a := aleph0_mul_eq ha
 
-/-- If a set `t` is eventually covered by a countable family of sets, all with cardinality at
-most `a`, then the cardinality of `t` is also bounded by `a`. -/
-lemma mk_subtype_le_of_countable_eventually_mem {α : Type u} {ι : Type v} {a : Cardinal}
-    [Countable ι] {f : ι → Set α} {l : Filter ι} [NeBot l]
+/--
+If a set `t` is eventually covered by a countable family of sets, all with cardinality at
+most `a`, then the cardinality of `t` is also bounded by `a`.
+-/
+lemma mk_subtype_le_of_countable_eventually_mem
+    {α : Type u} {ι : Type v} {a : Cardinal} [Countable ι]
+    {f : ι → Set α} {l : Filter ι} [NeBot l]
     {t : Set α} (ht : ∀ x ∈ t, ∀ᶠ i in l, x ∈ f i)
-    (h'f : ∀ i, #(f i) ≤ a) : #t ≤ a := by
+    (h'f : ∀ i, #(f i) ≤ a)
+    : #t ≤ a := by
   let g : ULift.{u, v} ι → Set (ULift.{v, u} α) := (ULift.down ⁻¹' ·) ∘ f ∘ ULift.down
   suffices #(ULift.down.{v} ⁻¹' t) ≤ Cardinal.lift.{v, u} a by simpa
   let l' : Filter (ULift.{u} ι) := Filter.map ULift.up l
@@ -81,19 +92,27 @@ lemma mk_subtype_le_of_countable_eventually_mem {α : Type u} {ι : Type v} {a :
   · intro i
     simpa [g] using! h'f i.down
 
-/-- If a space is eventually covered by a countable family of sets, all with cardinality at
-most `a`, then the cardinality of the space is also bounded by `a`. -/
-lemma mk_le_of_countable_eventually_mem {α : Type u} {ι : Type v} {a : Cardinal}
-    [Countable ι] {f : ι → Set α} {l : Filter ι} [NeBot l] (ht : ∀ x, ∀ᶠ i in l, x ∈ f i)
-    (h'f : ∀ i, #(f i) ≤ a) : #α ≤ a := by
+/--
+If a space is eventually covered by a countable family of sets, all with cardinality at
+most `a`, then the cardinality of the space is also bounded by `a`.
+-/
+lemma mk_le_of_countable_eventually_mem
+    {α : Type u} {ι : Type v} {a : Cardinal} [Countable ι]
+    {f : ι → Set α} {l : Filter ι} [NeBot l]
+    (ht : ∀ x, ∀ᶠ i in l, x ∈ f i) (h'f : ∀ i, #(f i) ≤ a)
+    : #α ≤ a := by
   rw [← mk_univ]
   exact mk_subtype_le_of_countable_eventually_mem (l := l) (fun x _ ↦ ht x) h'f
 
-/-- If a space is eventually covered by a countable family of sets, all with cardinality `a`,
-then the cardinality of the space is also `a`. -/
-lemma mk_of_countable_eventually_mem {α : Type u} {ι : Type v} {a : Cardinal}
-    [Countable ι] {f : ι → Set α} {l : Filter ι} [NeBot l] (ht : ∀ x, ∀ᶠ i in l, x ∈ f i)
-    (h'f : ∀ i, #(f i) = a) : #α = a := by
+/--
+If a space is eventually covered by a countable family of sets, all with cardinality `a`,
+then the cardinality of the space is also `a`.
+-/
+lemma mk_of_countable_eventually_mem
+    {α : Type u} {ι : Type v} {a : Cardinal} [Countable ι]
+    {f : ι → Set α} {l : Filter ι} [NeBot l]
+    (ht : ∀ x, ∀ᶠ i in l, x ∈ f i) (h'f : ∀ i, #(f i) = a)
+    : #α = a := by
   apply le_antisymm
   · apply mk_le_of_countable_eventually_mem ht (fun i ↦ (h'f i).le)
   · obtain ⟨i⟩ : Nonempty ι := nonempty_of_neBot l

@@ -7,9 +7,8 @@ module
 
 public import Mathlib.Order.Interval.Basic
 public import Mathlib.Order.Prod.Lex.Basic
-
-meta import Mathlib.Order.Interval.Basic  -- shake: keep (for `#eval` testing)
-meta import Mathlib.Order.Lex  -- shake: keep (for `#eval` testing)
+meta import Mathlib.Order.Interval.Basic -- shake: keep (for `#eval` testing)
+meta import Mathlib.Order.Lex -- shake: keep (for `#eval` testing)
 
 /-!
 # The lexicographic order on intervals
@@ -34,24 +33,25 @@ instance : LE (Lex (NonemptyInterval α)) where
 instance : LT (Lex (NonemptyInterval α)) where
   lt x y := toLex (ofLex x).toDualProd < toLex (ofLex y).toDualProd
 
-theorem toLex_le_toLex {x y : NonemptyInterval α} :
-    toLex x ≤ toLex y ↔ y.fst < x.fst ∨ x.fst = y.fst ∧ x.snd ≤ y.snd :=
+theorem toLex_le_toLex {x y : NonemptyInterval α}
+    : toLex x ≤ toLex y ↔ y.fst < x.fst ∨ x.fst = y.fst ∧ x.snd ≤ y.snd :=
   Prod.lex_def
 
-theorem toLex_lt_toLex {x y : NonemptyInterval α} :
-    toLex x < toLex y ↔ y.fst < x.fst ∨ x.fst = y.fst ∧ x.snd < y.snd :=
+theorem toLex_lt_toLex {x y : NonemptyInterval α}
+    : toLex x < toLex y ↔ y.fst < x.fst ∨ x.fst = y.fst ∧ x.snd < y.snd :=
   Prod.lex_def
 
 instance [DecidableEq α] [DecidableLT α] [DecidableLE α] : DecidableLE (Lex (NonemptyInterval α)) :=
   fun _ _ => decidable_of_iff' _ toLex_le_toLex
 
-instance [DecidableEq α] [DecidableLT α] : DecidableLT (Lex (NonemptyInterval α)) :=
-  fun _ _ => decidable_of_iff' _ toLex_lt_toLex
+instance [DecidableEq α] [DecidableLT α] : DecidableLT (Lex (NonemptyInterval α)) := fun _ _ =>
+  decidable_of_iff' _ toLex_lt_toLex
 
 end LELT
 
-instance [Preorder α] : Preorder (Lex (NonemptyInterval α)) := fast_instance%
-  Preorder.lift fun x => toLex (ofLex x).toDualProd
+instance [Preorder α] : Preorder (Lex (NonemptyInterval α)) :=
+  fast_instance%
+    Preorder.lift fun x => toLex (ofLex x).toDualProd
 
 theorem toLex_mono [PartialOrder α] : Monotone (toLex : NonemptyInterval α → _) :=
   Prod.Lex.toLex_mono.comp toDualProd_mono
@@ -59,15 +59,17 @@ theorem toLex_mono [PartialOrder α] : Monotone (toLex : NonemptyInterval α →
 theorem toLex_strictMono [PartialOrder α] : StrictMono (toLex : NonemptyInterval α → _) :=
   Prod.Lex.toLex_strictMono.comp toDualProd_strictMono
 
-instance [PartialOrder α] : PartialOrder (Lex (NonemptyInterval α)) := fast_instance%
-  PartialOrder.lift (fun x => toLex (ofLex x).toDualProd) <|
-    toLex.injective.comp <| toDualProd_injective.comp ofLex.injective
+instance [PartialOrder α] : PartialOrder (Lex (NonemptyInterval α)) :=
+  fast_instance%
+    PartialOrder.lift (fun x => toLex (ofLex x).toDualProd) <|
+      toLex.injective.comp <| toDualProd_injective.comp ofLex.injective
 
-instance [LinearOrder α] : LinearOrder (Lex (NonemptyInterval α)) := fast_instance%
-  { LinearOrder.lift' (fun x : Lex (NonemptyInterval α) => toLex (ofLex x).toDualProd) <|
-      toLex.injective.comp <| toDualProd_injective.comp ofLex.injective with
-    toDecidableEq := inferInstance
-    toDecidableLT := inferInstance
-    toDecidableLE := inferInstance }
+instance [LinearOrder α] : LinearOrder (Lex (NonemptyInterval α)) :=
+  fast_instance%
+    { LinearOrder.lift' (fun x : Lex (NonemptyInterval α) => toLex (ofLex x).toDualProd) <|
+        toLex.injective.comp <| toDualProd_injective.comp ofLex.injective with
+      toDecidableEq := inferInstance
+      toDecidableLT := inferInstance
+      toDecidableLE := inferInstance }
 
 end NonemptyInterval

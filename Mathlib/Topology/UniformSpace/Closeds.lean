@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Sets.VietorisTopology
 public import Mathlib.Topology.UniformSpace.UniformEmbedding
-
 import Mathlib.Topology.UniformSpace.Compact
 
 /-!
@@ -33,38 +32,36 @@ open SetRel
 def hausdorffEntourage (U : SetRel α α) : SetRel (Set α) (Set α) :=
   {x | x.1 ⊆ U.preimage x.2 ∧ x.2 ⊆ U.image x.1}
 
-theorem mem_hausdorffEntourage (U : SetRel α α) (s t : Set α) :
-    (s, t) ∈ hausdorffEntourage U ↔ s ⊆ U.preimage t ∧ t ⊆ U.image s :=
+theorem mem_hausdorffEntourage (U : SetRel α α) (s t : Set α)
+    : (s, t) ∈ hausdorffEntourage U ↔ s ⊆ U.preimage t ∧ t ⊆ U.image s :=
   Iff.rfl
 
 @[gcongr]
-theorem hausdorffEntourage_mono {U V : SetRel α α} (h : U ⊆ V) :
-    hausdorffEntourage U ⊆ hausdorffEntourage V := by
+theorem hausdorffEntourage_mono {U V : SetRel α α} (h : U ⊆ V)
+    : hausdorffEntourage U ⊆ hausdorffEntourage V := by
   unfold hausdorffEntourage
   gcongr
 
-theorem monotone_hausdorffEntourage : Monotone (hausdorffEntourage (α := α)) :=
-  fun _ _ => hausdorffEntourage_mono
+theorem monotone_hausdorffEntourage : Monotone (hausdorffEntourage (α := α)) := fun _ _ =>
+  hausdorffEntourage_mono
 
 @[simp]
 theorem hausdorffEntourage_id : hausdorffEntourage (.id : SetRel α α) = .id := by
   simp_rw [hausdorffEntourage, preimage_id, image_id, ← subset_antisymm_iff, SetRel.id]
 
-instance isRefl_hausdorffEntourage (U : SetRel α α) [U.IsRefl] :
-    (hausdorffEntourage U).IsRefl :=
+instance isRefl_hausdorffEntourage (U : SetRel α α) [U.IsRefl] : (hausdorffEntourage U).IsRefl :=
   ⟨fun _ => ⟨U.self_subset_preimage _, U.self_subset_image _⟩⟩
 
 @[simp]
-theorem inv_hausdorffEntourage (U : SetRel α α) :
-    (hausdorffEntourage U).inv = hausdorffEntourage U.inv :=
+theorem inv_hausdorffEntourage (U : SetRel α α)
+    : (hausdorffEntourage U).inv = hausdorffEntourage U.inv :=
   Set.ext fun _ => And.comm
 
-instance isSymm_hausdorffEntourage (U : SetRel α α) [U.IsSymm] :
-    (hausdorffEntourage U).IsSymm := by
+instance isSymm_hausdorffEntourage (U : SetRel α α) [U.IsSymm] : (hausdorffEntourage U).IsSymm := by
   rw [← inv_eq_self_iff, inv_hausdorffEntourage, inv_eq_self]
 
-theorem hausdorffEntourage_comp (U V : SetRel α α) :
-    hausdorffEntourage (U ○ V) = hausdorffEntourage U ○ hausdorffEntourage V := by
+theorem hausdorffEntourage_comp (U V : SetRel α α)
+    : hausdorffEntourage (U ○ V) = hausdorffEntourage U ○ hausdorffEntourage V := by
   apply subset_antisymm
   · intro ⟨s, t⟩ ⟨hst, hts⟩
     simp only [mem_comp, mem_hausdorffEntourage] at *
@@ -80,23 +77,25 @@ theorem hausdorffEntourage_comp (U V : SetRel α α) :
     grw [mem_hausdorffEntourage, preimage_comp, ← h₂₃, ← h₁₂, image_comp, ← h₂₁, ← h₃₂]
     exact ⟨subset_rfl, subset_rfl⟩
 
-instance isTrans_hausdorffEntourage (U : SetRel α α) [U.IsTrans] :
-    (hausdorffEntourage U).IsTrans := by
+instance isTrans_hausdorffEntourage (U : SetRel α α) [U.IsTrans]
+    : (hausdorffEntourage U).IsTrans := by
   grw [isTrans_iff_comp_subset_self, ← hausdorffEntourage_comp, comp_subset_self]
 
 @[simp]
-theorem singleton_mem_hausdorffEntourage (U : SetRel α α) (x y : α) :
-    ({x}, {y}) ∈ hausdorffEntourage U ↔ (x, y) ∈ U := by
+theorem singleton_mem_hausdorffEntourage (U : SetRel α α) (x y : α)
+    : ({x}, {y}) ∈ hausdorffEntourage U ↔ (x, y) ∈ U := by
   simp [hausdorffEntourage]
 
-theorem union_mem_hausdorffEntourage (U : SetRel α α) {s₁ s₂ t₁ t₂ : Set α}
-    (h₁ : (s₁, t₁) ∈ hausdorffEntourage U) (h₂ : (s₂, t₂) ∈ hausdorffEntourage U) :
-    (s₁ ∪ s₂, t₁ ∪ t₂) ∈ hausdorffEntourage U := by
+theorem union_mem_hausdorffEntourage
+    (U : SetRel α α)
+    {s₁ s₂ t₁ t₂ : Set α}
+    (h₁ : (s₁, t₁) ∈ hausdorffEntourage U) (h₂ : (s₂, t₂) ∈ hausdorffEntourage U)
+    : (s₁ ∪ s₂, t₁ ∪ t₂) ∈ hausdorffEntourage U := by
   grind [mem_hausdorffEntourage, preimage_union, image_union]
 
-theorem TotallyBounded.exists_prodMk_finset_mem_hausdorffEntourage [UniformSpace α]
-    {s : Set α} (hs : TotallyBounded s) {U : SetRel α α} (hU : U ∈ 𝓤 α) :
-    ∃ t : Finset α, (↑t, s) ∈ hausdorffEntourage U := by
+theorem TotallyBounded.exists_prodMk_finset_mem_hausdorffEntourage
+    [UniformSpace α] {s : Set α} (hs : TotallyBounded s) {U : SetRel α α} (hU : U ∈ 𝓤 α)
+    : ∃ t : Finset α, (↑t, s) ∈ hausdorffEntourage U := by
   obtain ⟨t, ht₁, ht₂⟩ := hs _ (symm_le_uniformity hU)
   lift t to Finset α using ht₁
   classical
@@ -107,9 +106,10 @@ theorem TotallyBounded.exists_prodMk_finset_mem_hausdorffEntourage [UniformSpace
   exact ⟨y, ⟨hy, x, hx, hxy⟩, hxy⟩
 
 theorem prod_mem_hausdorffEntourage_entourageProd
-    (U₁ : SetRel α α) (U₂ : SetRel β β) {s₁ t₁ : Set α} {s₂ t₂ : Set β}
-    (h₁ : (s₁, t₁) ∈ hausdorffEntourage U₁) (h₂ : (s₂, t₂) ∈ hausdorffEntourage U₂) :
-    (s₁ ×ˢ s₂, t₁ ×ˢ t₂) ∈ hausdorffEntourage (entourageProd U₁ U₂) := by
+    (U₁ : SetRel α α) (U₂ : SetRel β β)
+    {s₁ t₁ : Set α} {s₂ t₂ : Set β}
+    (h₁ : (s₁, t₁) ∈ hausdorffEntourage U₁) (h₂ : (s₂, t₂) ∈ hausdorffEntourage U₂)
+    : (s₁ ×ˢ s₂, t₁ ×ˢ t₂) ∈ hausdorffEntourage (entourageProd U₁ U₂) := by
   simp only [mem_hausdorffEntourage] at *
   grind [preimage_entourageProd_prod, image_entourageProd_prod]
 
@@ -118,37 +118,42 @@ end hausdorffEntourage
 variable [UniformSpace α] [UniformSpace β] [UniformSpace γ]
 
 variable (α) in
-/-- The Hausdorff uniformity on the powerset of a uniform space. Used for defining the uniformities
+/--
+The Hausdorff uniformity on the powerset of a uniform space. Used for defining the uniformities
 on `Closeds`, `Compacts` and `NonemptyCompacts`.
-See note [reducible non-instances]. -/
-protected abbrev UniformSpace.hausdorff : UniformSpace (Set α) := .ofCore
-  { uniformity := (𝓤 α).lift' hausdorffEntourage
+See note [reducible non-instances].
+-/
+protected abbrev UniformSpace.hausdorff : UniformSpace (Set α) :=
+  .ofCore {
+    uniformity := (𝓤 α).lift' hausdorffEntourage
     refl := by
       simp_rw [Filter.principal_le_lift', SetRel.id_subset_iff]
       intro (U : SetRel α α) hU
       have := isRefl_of_mem_uniformity hU
       exact isRefl_hausdorffEntourage U
     symm :=
-      Filter.tendsto_lift'.mpr fun U hU => Filter.mem_of_superset
-        (Filter.mem_lift' (symm_le_uniformity hU)) (inv_hausdorffEntourage U).symm.subset
+      Filter.tendsto_lift'.mpr fun U hU =>
+        Filter.mem_of_superset (Filter.mem_lift' (symm_le_uniformity hU))
+          (inv_hausdorffEntourage U).symm.subset
     comp := by
       rw [Filter.le_lift']
       intro U hU
       obtain ⟨V, hV, hVU⟩ := comp_mem_uniformity_sets hU
       refine Filter.mem_of_superset (Filter.mem_lift' (Filter.mem_lift' hV)) ?_
-      grw [← hausdorffEntourage_comp, hVU] }
+      grw [← hausdorffEntourage_comp, hVU]
+  }
 
 attribute [local instance] UniformSpace.hausdorff
 
 theorem Filter.HasBasis.uniformity_hausdorff
-    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s) :
-    (𝓤 (Set α)).HasBasis p (hausdorffEntourage ∘ s) :=
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s)
+    : (𝓤 (Set α)).HasBasis p (hausdorffEntourage ∘ s) :=
   h.lift' monotone_hausdorffEntourage
 
 namespace UniformSpace.hausdorff
 
-theorem isOpen_inter_nonempty_of_isOpen {U : Set α} (hU : IsOpen U) :
-    IsOpen {s | (s ∩ U).Nonempty} := by
+theorem isOpen_inter_nonempty_of_isOpen {U : Set α} (hU : IsOpen U)
+    : IsOpen {s | (s ∩ U).Nonempty} := by
   rw [isOpen_iff_mem_nhds]
   intro s ⟨x, hx₁, hx₂⟩
   rw [← hU.mem_nhds_iff, mem_nhds_iff] at hx₂
@@ -160,8 +165,7 @@ theorem isOpen_inter_nonempty_of_isOpen {U : Set α} (hU : IsOpen U) :
   exact ⟨y, hy, hVU hxy⟩
 
 /-- In the Hausdorff uniformity, the powerset of a closed set is closed. -/
-theorem _root_.IsClosed.powerset_hausdorff {F : Set α} (hF : IsClosed F) :
-    IsClosed F.powerset := by
+theorem _root_.IsClosed.powerset_hausdorff {F : Set α} (hF : IsClosed F) : IsClosed F.powerset := by
   simp_rw [Set.powerset, ← isOpen_compl_iff, Set.compl_ofPred, ← Set.inter_compl_nonempty_iff]
   exact isOpen_inter_nonempty_of_isOpen hF.isOpen_compl
 
@@ -181,12 +185,10 @@ theorem isUniformEmbedding_singleton : IsUniformEmbedding ({·} : α → Set α)
       singleton_mem_hausdorffEntourage]
     exact Filter.lift'_id
 
-theorem isClosedEmbedding_singleton [T0Space α] :
-    Topology.IsClosedEmbedding ({·} : α → Set α) where
+theorem isClosedEmbedding_singleton [T0Space α] : Topology.IsClosedEmbedding ({·} : α → Set α) where
   __ := isUniformEmbedding_singleton.isEmbedding
   isClosed_range :=
-    TopologicalSpace.isClosed_range_singleton
-      isClopen_singleton_empty.isOpen
+    TopologicalSpace.isClosed_range_singleton isClopen_singleton_empty.isOpen
       isOpen_inter_nonempty_of_isOpen
 
 theorem uniformContinuous_union : UniformContinuous (fun x : Set α × Set α => x.1 ∪ x.2) := by
@@ -195,7 +197,8 @@ theorem uniformContinuous_union : UniformContinuous (fun x : Set α × Set α =>
     with _ ⟨h₁, h₂⟩ using union_mem_hausdorffEntourage U h₁ h₂
 
 theorem uniformContinuous_prod : UniformContinuous (fun x : Set α × Set β => x.1 ×ˢ x.2) := by
-  refine (𝓤 α).basis_sets.uniformity_prod (𝓤 β).basis_sets |>.lift' monotone_hausdorffEntourage
+  refine (𝓤 α).basis_sets.uniformity_prod (𝓤 β).basis_sets
+    |>.lift' monotone_hausdorffEntourage
     |>.tendsto_right_iff.mpr fun ⟨U, V⟩ ⟨hU, hV⟩ => ?_
   filter_upwards [entourageProd_mem_uniformity (Filter.mem_lift' hU) (Filter.mem_lift' hV)]
     with ⟨⟨s₁, s₂⟩, ⟨t₁, t₂⟩⟩ ⟨h₁, h₂⟩ using prod_mem_hausdorffEntourage_entourageProd U V h₁ h₂
@@ -212,13 +215,13 @@ theorem uniformContinuous_closure : UniformContinuous (closure (X := α)) := by
   · grw [closure_subset_image hV t, hts, ← subset_closure, ← hVU, SetRel.image_comp]
 
 @[fun_prop]
-theorem continuous_closure : Continuous (closure (X := α)) :=
-  uniformContinuous_closure.continuous
+theorem continuous_closure : Continuous (closure (X := α)) := uniformContinuous_closure.continuous
 
 theorem isUniformInducing_closure : IsUniformInducing (closure (X := α)) := by
   refine ⟨le_antisymm ?_ <| Filter.map_le_iff_le_comap.mp uniformContinuous_closure⟩
-  rw [(𝓤 α).basis_sets.uniformity_hausdorff.comap _ |>.le_basis_iff
-    (𝓤 α).basis_sets.uniformity_hausdorff, Function.comp_id]
+  rw [(𝓤 α).basis_sets.uniformity_hausdorff.comap _
+      |>.le_basis_iff (𝓤 α).basis_sets.uniformity_hausdorff,
+    Function.comp_id]
   intro U hU
   obtain ⟨V : SetRel α α, hV, hVU⟩ := comp_mem_uniformity_sets hU
   refine ⟨V, hV, fun ⟨s, t⟩ ⟨hst, hts⟩ => ?_⟩
@@ -252,20 +255,26 @@ instance [DiscreteUniformity α] : DiscreteUniformity (Set α) := by
 
 end UniformSpace.hausdorff
 
-/-- When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniformly
-continuous map is uniformly continuous. -/
-theorem UniformContinuous.image_hausdorff {f : α → β} (hf : UniformContinuous f) :
-    UniformContinuous (f '' ·) := by
+/--
+When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniformly
+continuous map is uniformly continuous.
+-/
+theorem UniformContinuous.image_hausdorff {f : α → β} (hf : UniformContinuous f)
+    : UniformContinuous (f '' ·) := by
   refine Filter.tendsto_lift'.mpr fun U hU => ?_
   filter_upwards [Filter.mem_lift' (hf hU)] with ⟨s, t⟩ ⟨h₁, h₂⟩
   simp_rw [mem_hausdorffEntourage, Set.image_subset_iff]
-  exact ⟨h₁.trans fun x ⟨y, hy, hxy⟩ => ⟨f y, Set.mem_image_of_mem f hy, hxy⟩,
-    h₂.trans fun x ⟨y, hy, hxy⟩ => ⟨f y, Set.mem_image_of_mem f hy, hxy⟩⟩
+  exact ⟨
+    h₁.trans fun x ⟨y, hy, hxy⟩ => ⟨f y, Set.mem_image_of_mem f hy, hxy⟩,
+    h₂.trans fun x ⟨y, hy, hxy⟩ => ⟨f y, Set.mem_image_of_mem f hy, hxy⟩
+  ⟩
 
-/-- When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniform
-inducing map is uniform inducing. -/
-theorem IsUniformInducing.image_hausdorff {f : α → β} (hf : IsUniformInducing f) :
-    IsUniformInducing (f '' ·) := by
+/--
+When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniform
+inducing map is uniform inducing.
+-/
+theorem IsUniformInducing.image_hausdorff {f : α → β} (hf : IsUniformInducing f)
+    : IsUniformInducing (f '' ·) := by
   constructor
   change Filter.comap _ (Filter.lift' _ _) = Filter.lift' _ _
   rw [Filter.comap_lift'_eq, ← hf.comap_uniformity,
@@ -274,29 +283,36 @@ theorem IsUniformInducing.image_hausdorff {f : α → β} (hf : IsUniformInducin
   simp only [Function.comp, hausdorffEntourage, SetRel.preimage, SetRel.image, Set.preimage,
     Set.mem_ofPred, Set.image_subset_iff, Set.exists_mem_image]
 
-/-- When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniform
-embedding is a uniform embedding. -/
-theorem IsUniformEmbedding.image_hausdorff {f : α → β} (hf : IsUniformEmbedding f) :
-    IsUniformEmbedding (f '' ·) where
+/--
+When `Set` is equipped with the Hausdorff uniformity, taking the image under a uniform
+embedding is a uniform embedding.
+-/
+theorem IsUniformEmbedding.image_hausdorff {f : α → β} (hf : IsUniformEmbedding f)
+    : IsUniformEmbedding (f '' ·) where
   __ := hf.isUniformInducing.image_hausdorff
   injective := hf.injective.image_injective
 
 /-- In the Hausdorff uniformity, the powerset of a totally bounded set is totally bounded. -/
-theorem TotallyBounded.powerset_hausdorff {t : Set α} (ht : TotallyBounded t) :
-    TotallyBounded t.powerset := by
+theorem TotallyBounded.powerset_hausdorff {t : Set α} (ht : TotallyBounded t)
+    : TotallyBounded t.powerset := by
   simp_rw [(𝓤 α).basis_sets.uniformity_hausdorff.totallyBounded_iff, Function.comp_id,
     Set.powerset, Set.ofPred_subset, Set.mem_iUnion]
   intro (U : SetRel α α) hU
   obtain ⟨u, hu, ht⟩ := ht U hU
-  refine ⟨u.powerset, hu.powerset, fun s hs => ⟨u ∩ U.image s, by grind, fun x hx => ?_,
-    fun x ⟨_, hx⟩ => hx⟩⟩
+  refine ⟨
+    u.powerset,
+    hu.powerset,
+    fun s hs => ⟨u ∩ U.image s, by grind, fun x hx => ?_, fun x ⟨_, hx⟩ => hx⟩
+  ⟩
   obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (ht (hs hx))
   exact ⟨y, ⟨hy, ⟨x, hx, hxy⟩⟩, hxy⟩
 
-/-- The neighborhoods of a totally bounded set in the Hausdorff uniformity are neighborhoods in the
-Vietoris topology. -/
-theorem TotallyBounded.nhds_vietoris_le_nhds_hausdorff {s : Set α} (hs : TotallyBounded s) :
-    @nhds _ (.vietoris α) s ≤ 𝓝 s := by
+/--
+The neighborhoods of a totally bounded set in the Hausdorff uniformity are neighborhoods in the
+Vietoris topology.
+-/
+theorem TotallyBounded.nhds_vietoris_le_nhds_hausdorff {s : Set α} (hs : TotallyBounded s)
+    : @nhds _ (.vietoris α) s ≤ 𝓝 s := by
   open UniformSpace TopologicalSpace.vietoris in
   simp_rw [nhds_eq_comap_uniformity,
     uniformity_hasBasis_open.uniformity_hausdorff |>.comap _ |>.ge_iff, Function.comp_id,
@@ -314,10 +330,11 @@ theorem TotallyBounded.nhds_vietoris_le_nhds_hausdorff {s : Set α} (hs : Totall
     with u (hu : ↑t ⊆ V.preimage ↑u)
   grw [ht₂, ← SetRel.preimage_eq_image, hu, ← hVU, SetRel.preimage_comp]
 
-/-- A compact set has the same neighborhoods in the Hausdorff uniformity and the Vietoris topology.
+/--
+A compact set has the same neighborhoods in the Hausdorff uniformity and the Vietoris topology.
 -/
-theorem IsCompact.nhds_hausdorff_eq_nhds_vietoris {s : Set α} (hs : IsCompact s) :
-    𝓝 s = @nhds _ (.vietoris α) s := by
+theorem IsCompact.nhds_hausdorff_eq_nhds_vietoris {s : Set α} (hs : IsCompact s)
+    : 𝓝 s = @nhds _ (.vietoris α) s := by
   refine le_antisymm ?_ hs.totallyBounded.nhds_vietoris_le_nhds_hausdorff
   simp_rw [TopologicalSpace.nhds_generateFrom, le_iInf₂_iff, Filter.le_principal_iff]
   rintro _ ⟨hs', (⟨U, hU, rfl⟩ | ⟨U, hU, rfl⟩)⟩
@@ -344,16 +361,15 @@ end UniformSpace.hausdorff
 
 namespace TopologicalSpace.Closeds
 
-instance uniformSpace : UniformSpace (Closeds α) :=
-  .comap (↑) (.hausdorff α)
+instance uniformSpace : UniformSpace (Closeds α) := .comap (↑) (.hausdorff α)
 
-theorem uniformity_def :
-    𝓤 (Closeds α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
+theorem uniformity_def
+    : 𝓤 (Closeds α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
   rfl
 
 theorem _root_.Filter.HasBasis.uniformity_closeds
-    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s) :
-    (𝓤 (Closeds α)).HasBasis p (fun i => Prod.map (↑) (↑) ⁻¹' (hausdorffEntourage (s i))) :=
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s)
+    : (𝓤 (Closeds α)).HasBasis p (fun i => Prod.map (↑) (↑) ⁻¹' (hausdorffEntourage (s i))) :=
   h.uniformity_hausdorff.comap _
 
 theorem isUniformEmbedding_coe : IsUniformEmbedding ((↑) : Closeds α → Set α) where
@@ -363,20 +379,21 @@ theorem isUniformEmbedding_coe : IsUniformEmbedding ((↑) : Closeds α → Set 
 theorem uniformContinuous_coe : UniformContinuous ((↑) : Closeds α → Set α) :=
   isUniformEmbedding_coe.uniformContinuous
 
-theorem isOpen_inter_nonempty_of_isOpen {s : Set α} (hs : IsOpen s) :
-    IsOpen {t : Closeds α | ((t : Set α) ∩ s).Nonempty} :=
+theorem isOpen_inter_nonempty_of_isOpen {s : Set α} (hs : IsOpen s)
+    : IsOpen {t : Closeds α | ((t : Set α) ∩ s).Nonempty} :=
   isOpen_induced (UniformSpace.hausdorff.isOpen_inter_nonempty_of_isOpen hs)
 
-theorem isClosed_subsets_of_isClosed {s : Set α} (hs : IsClosed s) :
-    IsClosed {t : Closeds α | (t : Set α) ⊆ s} :=
+theorem isClosed_subsets_of_isClosed {s : Set α} (hs : IsClosed s)
+    : IsClosed {t : Closeds α | (t : Set α) ⊆ s} :=
   isClosed_induced hs.powerset_hausdorff
 
 theorem isClopen_singleton_bot : IsClopen {(⊥ : Closeds α)} := by
   convert UniformSpace.hausdorff.isClopen_singleton_empty.preimage uniformContinuous_coe.continuous
-  ext; simp
+  ext
+  simp
 
-theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t) :
-    TotallyBounded {F : Closeds α | ↑F ⊆ t} :=
+theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t)
+    : TotallyBounded {F : Closeds α | ↑F ⊆ t} :=
   totallyBounded_preimage isUniformEmbedding_coe.isUniformInducing ht.powerset_hausdorff
 
 theorem isClosed_setOfPred_totallyBounded : IsClosed {s : Closeds α | TotallyBounded (s : Set α)} :=
@@ -403,8 +420,7 @@ theorem isEmbedding_singleton : IsEmbedding ({·} : α → Closeds α) :=
   isUniformEmbedding_singleton.isEmbedding
 
 @[fun_prop]
-theorem continuous_singleton : Continuous ({·} : α → Closeds α) :=
-  isEmbedding_singleton.continuous
+theorem continuous_singleton : Continuous ({·} : α → Closeds α) := isEmbedding_singleton.continuous
 
 @[fun_prop]
 theorem isClosedEmbedding_singleton : Topology.IsClosedEmbedding ({·} : α → Closeds α) where
@@ -426,21 +442,20 @@ theorem uniformContinuous_sup : UniformContinuous (fun x : Closeds α × Closeds
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
 theorem _root_.UniformContinuous.sup_closeds
-    {f g : α → Closeds β} (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    UniformContinuous (fun x => f x ⊔ g x) :=
+    {f g : α → Closeds β} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ⊔ g x) :=
   uniformContinuous_sup.comp <| hf.prodMk hg
 
-instance : ContinuousSup (Closeds α) :=
-  ⟨uniformContinuous_sup.continuous⟩
+instance : ContinuousSup (Closeds α) := ⟨uniformContinuous_sup.continuous⟩
 
 theorem uniformContinuous_prod : UniformContinuous (fun x : Closeds α × Closeds β => x.1 ×ˢ x.2) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <|
     UniformSpace.hausdorff.uniformContinuous_prod.comp <|
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
-theorem _root_.UniformContinuous.prod_closeds {f : α → Closeds β} {g : α → Closeds γ}
-    (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    UniformContinuous (fun x => f x ×ˢ g x) :=
+theorem _root_.UniformContinuous.prod_closeds
+    {f : α → Closeds β} {g : α → Closeds γ} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ×ˢ g x) :=
   uniformContinuous_prod.comp (hf.prodMk hg)
 
 @[fun_prop]
@@ -470,16 +485,19 @@ theorem continuous_closure : Continuous (Closeds.closure (α := α)) :=
   uniformContinuous_closure.continuous
 
 instance [CompactSpace α] : CompactSpace (Closeds α) where
-  isCompact_univ := by simpa [gi.l_surjective.range_eq]
-    using isCompact_univ.image continuous_closure
+  isCompact_univ := by
+    simpa [gi.l_surjective.range_eq] using isCompact_univ.image continuous_closure
 
 @[simp]
 theorem compactSpace_iff : CompactSpace (Closeds α) ↔ CompactSpace α := by
-  refine ⟨fun _ => compactSpace_of_finite_subfamily_closed fun {ι} F hF₁ hF₂ => ?_,
-    fun _ => inferInstance⟩
-  have := isClopen_singleton_bot.compl.isClosed.isCompact.elim_finite_subfamily_closed
-    (fun i => {C : Closeds α | ↑C ⊆ F i})
-    (fun i => isClosed_subsets_of_isClosed (hF₁ i))
+  refine ⟨
+    fun _ => compactSpace_of_finite_subfamily_closed fun {ι} F hF₁ hF₂ => ?_,
+    fun _ => inferInstance
+  ⟩
+  have :=
+    isClopen_singleton_bot.compl.isClosed.isCompact.elim_finite_subfamily_closed
+      (fun i => {C : Closeds α | ↑C ⊆ F i})
+      (fun i => isClosed_subsets_of_isClosed (hF₁ i))
   simp_rw [Set.disjoint_compl_left_iff_subset, ← Set.ofPred_forall, ← Set.subset_iInter_iff, hF₂,
     Set.subset_empty_iff, coe_eq_empty, Set.ofPred_eq_eq_singleton] at this
   obtain ⟨s, hs⟩ := this .rfl
@@ -490,24 +508,23 @@ theorem compactSpace_iff : CompactSpace (Closeds α) ↔ CompactSpace α := by
 theorem noncompactSpace_iff : NoncompactSpace (Closeds α) ↔ NoncompactSpace α := by
   simp_rw [← not_compactSpace_iff, compactSpace_iff]
 
-instance [NoncompactSpace α] : NoncompactSpace (Closeds α) :=
-  noncompactSpace_iff.mpr ‹_›
+instance [NoncompactSpace α] : NoncompactSpace (Closeds α) := noncompactSpace_iff.mpr ‹_›
 
 end TopologicalSpace.Closeds
 
 namespace TopologicalSpace.Compacts
 
 instance uniformSpace : UniformSpace (Compacts α) :=
-  .replaceTopology (.comap (↑) (.hausdorff α)) <| ext_nhds fun K ↦ by
-    simp_rw [nhds_induced, K.isCompact.nhds_hausdorff_eq_nhds_vietoris]
+  .replaceTopology (.comap (↑) (.hausdorff α)) <|
+    ext_nhds fun K ↦ by simp_rw [nhds_induced, K.isCompact.nhds_hausdorff_eq_nhds_vietoris]
 
-theorem uniformity_def :
-    𝓤 (Compacts α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
+theorem uniformity_def
+    : 𝓤 (Compacts α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
   rfl
 
 theorem _root_.Filter.HasBasis.uniformity_compacts
-    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s) :
-    (𝓤 (Compacts α)).HasBasis p (fun i => Prod.map (↑) (↑) ⁻¹' (hausdorffEntourage (s i))) :=
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s)
+    : (𝓤 (Compacts α)).HasBasis p (fun i => Prod.map (↑) (↑) ⁻¹' (hausdorffEntourage (s i))) :=
   h.uniformity_hausdorff.comap _
 
 theorem isUniformEmbedding_coe : IsUniformEmbedding ((↑) : Compacts α → Set α) where
@@ -533,18 +550,17 @@ theorem continuous_toCloseds [T2Space α] : Continuous (toCloseds (α := α)) :=
   uniformContinuous_toCloseds.continuous
 
 @[fun_prop]
-theorem isClosedEmbedding_toCloseds [T2Space α] [CompleteSpace α] :
-    IsClosedEmbedding (toCloseds (α := α)) where
+theorem isClosedEmbedding_toCloseds [T2Space α] [CompleteSpace α]
+    : IsClosedEmbedding (toCloseds (α := α)) where
   __ := isEmbedding_toCloseds
   isClosed_range :=
     (show Set.range (toCloseds (α := α)) = {s : Closeds α | TotallyBounded (s : Set α)} from
-      subset_antisymm
-        (Set.range_subset_iff.mpr fun K => K.isCompact.totallyBounded)
-        (fun K hK => ⟨⟨K, hK.isCompact_of_isClosed K.isClosed⟩, rfl⟩)) ▸
-      Closeds.isClosed_setOfPred_totallyBounded
+        subset_antisymm (Set.range_subset_iff.mpr fun K => K.isCompact.totallyBounded)
+          (fun K hK => ⟨⟨K, hK.isCompact_of_isClosed K.isClosed⟩, rfl⟩))
+      ▸ Closeds.isClosed_setOfPred_totallyBounded
 
-theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t) :
-    TotallyBounded {K : Compacts α | ↑K ⊆ t} :=
+theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t)
+    : TotallyBounded {K : Compacts α | ↑K ⊆ t} :=
   totallyBounded_preimage isUniformEmbedding_coe.isUniformInducing ht.powerset_hausdorff
 
 theorem isUniformEmbedding_singleton : IsUniformEmbedding ({·} : α → Compacts α) :=
@@ -553,39 +569,38 @@ theorem isUniformEmbedding_singleton : IsUniformEmbedding ({·} : α → Compact
 theorem uniformContinuous_singleton : UniformContinuous ({·} : α → Compacts α) :=
   isUniformEmbedding_singleton.uniformContinuous
 
-theorem uniformContinuous_sup :
-    UniformContinuous (fun x : Compacts α × Compacts α => x.1 ⊔ x.2) :=
+theorem uniformContinuous_sup : UniformContinuous (fun x : Compacts α × Compacts α => x.1 ⊔ x.2) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <|
     UniformSpace.hausdorff.uniformContinuous_union.comp <|
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
 theorem _root_.UniformContinuous.sup_compacts
-    {f g : α → Compacts β} (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    UniformContinuous (fun x => f x ⊔ g x) :=
+    {f g : α → Compacts β} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ⊔ g x) :=
   uniformContinuous_sup.comp <| hf.prodMk hg
 
-theorem uniformContinuous_prod :
-    UniformContinuous (fun x : Compacts α × Compacts β => x.1 ×ˢ x.2) :=
+theorem uniformContinuous_prod
+    : UniformContinuous (fun x : Compacts α × Compacts β => x.1 ×ˢ x.2) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <|
     UniformSpace.hausdorff.uniformContinuous_prod.comp <|
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
-theorem _root_.UniformContinuous.prod_compacts {f : α → Compacts β} {g : α → Compacts γ}
-    (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    UniformContinuous (fun x => f x ×ˢ g x) :=
+theorem _root_.UniformContinuous.prod_compacts
+    {f : α → Compacts β} {g : α → Compacts γ} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ×ˢ g x) :=
   uniformContinuous_prod.comp (hf.prodMk hg)
 
-theorem _root_.UniformContinuous.compacts_map {f : α → β} (hf : UniformContinuous f) :
-    UniformContinuous (Compacts.map f hf.continuous) :=
+theorem _root_.UniformContinuous.compacts_map {f : α → β} (hf : UniformContinuous f)
+    : UniformContinuous (Compacts.map f hf.continuous) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <| hf.image_hausdorff.comp uniformContinuous_coe
 
-theorem _root_.IsUniformInducing.compacts_map {f : α → β} (hf : IsUniformInducing f) :
-    IsUniformInducing (Compacts.map f hf.uniformContinuous.continuous) :=
+theorem _root_.IsUniformInducing.compacts_map {f : α → β} (hf : IsUniformInducing f)
+    : IsUniformInducing (Compacts.map f hf.uniformContinuous.continuous) :=
   .of_comp hf.uniformContinuous.compacts_map uniformContinuous_coe <|
     hf.image_hausdorff.comp isUniformEmbedding_coe.isUniformInducing
 
-theorem _root_.IsUniformEmbedding.compacts_map {f : α → β} (hf : IsUniformEmbedding f) :
-    IsUniformEmbedding (Compacts.map f hf.uniformContinuous.continuous) where
+theorem _root_.IsUniformEmbedding.compacts_map {f : α → β} (hf : IsUniformEmbedding f)
+    : IsUniformEmbedding (Compacts.map f hf.uniformContinuous.continuous) where
   __ := hf.isUniformInducing.compacts_map
   injective := map_injective hf.uniformContinuous.continuous hf.injective
 
@@ -623,8 +638,9 @@ instance [CompleteSpace α] : CompleteSpace (Compacts α) := by
     set lx := l ⊓ 𝓟 (UniformSpace.ball x U) with le_def
     have hlx : lx.TotallyBounded := hl.mono inf_le_left
     have : lx.NeBot := by
-      rw [le_def, Filter.lift'_inf_principal_eq, Filter.lift'_neBot_iff fun _ _ h =>
-        Set.inter_subset_inter_left _ <| Set.biUnion_subset_biUnion_left h]
+      rw [le_def, Filter.lift'_inf_principal_eq,
+        Filter.lift'_neBot_iff fun _ _ h =>
+          Set.inter_subset_inter_left _ <| Set.biUnion_subset_biUnion_left h]
       intro s hs
       obtain ⟨K', ⟨h₁, -⟩, h₂⟩ := Filter.nonempty_of_mem <| Filter.inter_mem hK hs
       obtain ⟨y, hy, hxy⟩ := h₁ hx
@@ -647,16 +663,16 @@ end TopologicalSpace.Compacts
 namespace TopologicalSpace.NonemptyCompacts
 
 instance uniformSpace : UniformSpace (NonemptyCompacts α) :=
-  .replaceTopology (.comap (↑) (.hausdorff α)) <| ext_nhds fun K ↦ by
-    simp_rw [nhds_induced, K.isCompact.nhds_hausdorff_eq_nhds_vietoris]
+  .replaceTopology (.comap (↑) (.hausdorff α)) <|
+    ext_nhds fun K ↦ by simp_rw [nhds_induced, K.isCompact.nhds_hausdorff_eq_nhds_vietoris]
 
-theorem uniformity_def :
-    𝓤 (NonemptyCompacts α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
+theorem uniformity_def
+    : 𝓤 (NonemptyCompacts α) = .comap (Prod.map (↑) (↑)) ((𝓤 α).lift' hausdorffEntourage) :=
   rfl
 
 theorem _root_.Filter.HasBasis.uniformity_nonemptyCompacts
-    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s) :
-    (𝓤 (NonemptyCompacts α)).HasBasis p
+    {ι : Sort*} {p : ι → Prop} {s : ι → Set (α × α)} (h : (𝓤 α).HasBasis p s)
+    : (𝓤 (NonemptyCompacts α)).HasBasis p
       (fun i => Prod.map (↑) (↑) ⁻¹' (hausdorffEntourage (s i))) :=
   h.uniformity_hausdorff.comap _
 
@@ -683,8 +699,8 @@ theorem continuous_toCloseds [T2Space α] : Continuous (toCloseds (α := α)) :=
   uniformContinuous_toCloseds.continuous
 
 @[fun_prop]
-theorem isClosedEmbedding_toCloseds [T2Space α] [CompleteSpace α] :
-    IsClosedEmbedding (toCloseds (α := α)) :=
+theorem isClosedEmbedding_toCloseds [T2Space α] [CompleteSpace α]
+    : IsClosedEmbedding (toCloseds (α := α)) :=
   Compacts.isClosedEmbedding_toCloseds.comp isClosedEmbedding_toCompacts
 
 theorem isUniformEmbedding_toCompacts : IsUniformEmbedding (toCompacts (α := α)) where
@@ -694,8 +710,8 @@ theorem isUniformEmbedding_toCompacts : IsUniformEmbedding (toCompacts (α := α
 theorem uniformContinuous_toCompacts : UniformContinuous (toCompacts (α := α)) :=
   isUniformEmbedding_toCompacts.uniformContinuous
 
-theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t) :
-    TotallyBounded {K : NonemptyCompacts α | ↑K ⊆ t} :=
+theorem totallyBounded_subsets_of_totallyBounded {t : Set α} (ht : TotallyBounded t)
+    : TotallyBounded {K : NonemptyCompacts α | ↑K ⊆ t} :=
   totallyBounded_preimage isUniformEmbedding_coe.isUniformInducing ht.powerset_hausdorff
 
 theorem isUniformEmbedding_singleton : IsUniformEmbedding ({·} : α → NonemptyCompacts α) :=
@@ -704,39 +720,40 @@ theorem isUniformEmbedding_singleton : IsUniformEmbedding ({·} : α → Nonempt
 theorem uniformContinuous_singleton : UniformContinuous ({·} : α → NonemptyCompacts α) :=
   isUniformEmbedding_singleton.uniformContinuous
 
-theorem uniformContinuous_sup :
-    UniformContinuous (fun x : NonemptyCompacts α × NonemptyCompacts α => x.1 ⊔ x.2) :=
+theorem uniformContinuous_sup
+    : UniformContinuous (fun x : NonemptyCompacts α × NonemptyCompacts α => x.1 ⊔ x.2) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <|
     UniformSpace.hausdorff.uniformContinuous_union.comp <|
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
 theorem _root_.UniformContinuous.sup_nonemptyCompacts
-    {f g : α → NonemptyCompacts β} (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    UniformContinuous (fun x => f x ⊔ g x) :=
+    {f g : α → NonemptyCompacts β} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ⊔ g x) :=
   uniformContinuous_sup.comp <| hf.prodMk hg
 
-theorem uniformContinuous_prod :
-    UniformContinuous (fun x : NonemptyCompacts α × NonemptyCompacts β => x.1 ×ˢ x.2) :=
+theorem uniformContinuous_prod
+    : UniformContinuous (fun x : NonemptyCompacts α × NonemptyCompacts β => x.1 ×ˢ x.2) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <|
     UniformSpace.hausdorff.uniformContinuous_prod.comp <|
       uniformContinuous_coe.prodMap uniformContinuous_coe
 
 theorem _root_.UniformContinuous.prod_nonemptyCompacts
-    {f : α → NonemptyCompacts β} {g : α → NonemptyCompacts γ} (hf : UniformContinuous f)
-    (hg : UniformContinuous g) : UniformContinuous (fun x => f x ×ˢ g x) :=
+    {f : α → NonemptyCompacts β} {g : α → NonemptyCompacts γ}
+    (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : UniformContinuous (fun x => f x ×ˢ g x) :=
   uniformContinuous_prod.comp (hf.prodMk hg)
 
-theorem _root_.UniformContinuous.nonemptyCompacts_map {f : α → β} (hf : UniformContinuous f) :
-    UniformContinuous (NonemptyCompacts.map f hf.continuous) :=
+theorem _root_.UniformContinuous.nonemptyCompacts_map {f : α → β} (hf : UniformContinuous f)
+    : UniformContinuous (NonemptyCompacts.map f hf.continuous) :=
   isUniformEmbedding_coe.uniformContinuous_iff.mpr <| hf.image_hausdorff.comp uniformContinuous_coe
 
-theorem _root_.IsUniformInducing.nonemptyCompacts_map {f : α → β} (hf : IsUniformInducing f) :
-    IsUniformInducing (NonemptyCompacts.map f hf.uniformContinuous.continuous) :=
+theorem _root_.IsUniformInducing.nonemptyCompacts_map {f : α → β} (hf : IsUniformInducing f)
+    : IsUniformInducing (NonemptyCompacts.map f hf.uniformContinuous.continuous) :=
   .of_comp hf.uniformContinuous.nonemptyCompacts_map uniformContinuous_coe <|
     hf.image_hausdorff.comp isUniformEmbedding_coe.isUniformInducing
 
-theorem _root_.IsUniformEmbedding.nonemptyCompacts_map {f : α → β} (hf : IsUniformEmbedding f) :
-    IsUniformEmbedding (NonemptyCompacts.map f hf.uniformContinuous.continuous) where
+theorem _root_.IsUniformEmbedding.nonemptyCompacts_map {f : α → β} (hf : IsUniformEmbedding f)
+    : IsUniformEmbedding (NonemptyCompacts.map f hf.uniformContinuous.continuous) where
   __ := hf.isUniformInducing.nonemptyCompacts_map
   injective := map_injective hf.uniformContinuous.continuous hf.injective
 
@@ -762,8 +779,8 @@ theorem completeSpace_iff : CompleteSpace (NonemptyCompacts α) ↔ CompleteSpac
   simp
 
 @[simp]
-theorem _root_.TopologicalSpace.Compacts.completeSpace_iff :
-    CompleteSpace (Compacts α) ↔ CompleteSpace α where
+theorem _root_.TopologicalSpace.Compacts.completeSpace_iff
+    : CompleteSpace (Compacts α) ↔ CompleteSpace α where
   mp _ :=
     NonemptyCompacts.completeSpace_iff.mp <|
       NonemptyCompacts.isUniformEmbedding_toCompacts.completeSpace

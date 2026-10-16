@@ -50,12 +50,16 @@ section pt_definition
 
 variable (L : Type*) [CompleteLattice L]
 
-/-- The type of points of a complete lattice `L`, where a *point* of a complete lattice is,
-by definition, a frame homomorphism from `L` to `Prop`. -/
+/--
+The type of points of a complete lattice `L`, where a *point* of a complete lattice is,
+by definition, a frame homomorphism from `L` to `Prop`.
+-/
 abbrev PT := FrameHom L Prop
 
-/-- The frame homomorphism from a complete lattice `L` to the complete lattice of sets of
-points of `L`. -/
+/--
+The frame homomorphism from a complete lattice `L` to the complete lattice of sets of
+points of `L`.
+-/
 @[simps]
 def openOfElementHom : FrameHom L (Set (PT L)) where
   toFun u := {x | x u}
@@ -80,14 +84,17 @@ lemma isOpen_iff (U : Set (PT L)) : IsOpen U ↔ ∃ u : L, {x | x u} = U := Iff
 
 end PT
 
-/-- The covariant functor `pt` from the category of locales to the category of
+/--
+The covariant functor `pt` from the category of locales to the category of
 topological spaces, which sends a locale `L` to the topological space `PT L` of homomorphisms
 from `L` to `Prop` and a locale homomorphism `f` to a continuous function between the spaces
-of points. -/
+of points.
+-/
 def pt : Locale ⥤ TopCat where
   obj L := ↧(PT L.unop)
-  map f := TopCat.ofHom ⟨fun p ↦ p.comp f.unop.hom,
-    continuous_def.2 <| by rintro s ⟨u, rfl⟩; use f.unop u; rfl⟩
+  map f :=
+    TopCat.ofHom
+      ⟨fun p ↦ p.comp f.unop.hom, continuous_def.2 <| by rintro s ⟨u, rfl⟩; use f.unop u; rfl⟩
 
 end pt_definition
 
@@ -95,8 +102,10 @@ section locale_top_adjunction
 
 variable (X : Type*) [TopologicalSpace X] (L : Locale)
 
-/-- The unit of the adjunction between locales and topological spaces, which associates with
-a point `x` of the space `X` a point of the locale of opens of `X`. -/
+/--
+The unit of the adjunction between locales and topological spaces, which associates with
+a point `x` of the space `X` a point of the locale of opens of `X`.
+-/
 @[simps]
 def localePointOfSpacePoint (x : X) : PT (Opens X) where
   toFun := (x ∈ ·)
@@ -113,8 +122,11 @@ def counitAppCont : FrameHom L (Opens <| PT L) where
 
 /-- The forgetful functor `topToLocale` is left adjoint to the functor `pt`. -/
 def adjunctionTopToLocalePT : topToLocale ⊣ pt where
-  unit := { app := fun X ↦ TopCat.ofHom ⟨localePointOfSpacePoint X, continuous_def.2 <|
-        by rintro _ ⟨u, rfl⟩; simpa using! u.2⟩ }
+  unit := {
+    app := fun X ↦
+      TopCat.ofHom
+        ⟨localePointOfSpacePoint X, continuous_def.2 <| by rintro _ ⟨u, rfl⟩; simpa using! u.2⟩
+  }
   counit := { app := fun L ↦ ⟨Frm.ofHom (counitAppCont L)⟩ }
 
 end locale_top_adjunction

@@ -9,7 +9,6 @@ public import Mathlib.CategoryTheory.Adjunction.Restrict
 public import Mathlib.CategoryTheory.Monoidal.Braided.Basic
 public import Mathlib.CategoryTheory.Monoidal.Closed.Basic
 public import Mathlib.Tactic.TFAE
-
 import Mathlib.CategoryTheory.Monad.Adjunction
 /-!
 
@@ -44,21 +43,21 @@ variable {R : C ⥤ D} [R.Faithful] [R.Full] {L : D ⥤ C} (adj : L ⊣ R)
 
 /-- The uncurried retraction of the unit in the proof of `4 → 1` in `isIso_tfae` below. -/
 private noncomputable def adjRetractionAux
-    (c : C) (d : D) [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))] :
-    d ⊗ ((L ⋙ R).obj ((ihom d).obj (R.obj c))) ⟶ (R.obj c) :=
-  (β_ _ _).hom ≫ (_ ◁ adj.unit.app _) ≫ adj.unit.app _ ≫
-    R.map (inv (L.map (adj.unit.app _ ⊗ₘ adj.unit.app _))) ≫ (L ⋙ R).map (β_ _ _).hom ≫
-      (L ⋙ R).map ((ihom.ev _).app _) ≫ inv (adj.unit.app _)
+    (c : C) (d : D) [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))]
+    : d ⊗ ((L ⋙ R).obj ((ihom d).obj (R.obj c))) ⟶ (R.obj c) :=
+  (β_ _ _).hom ≫ (_ ◁ adj.unit.app _) ≫ adj.unit.app _
+    ≫ R.map (inv (L.map (adj.unit.app _ ⊗ₘ adj.unit.app _))) ≫ (L ⋙ R).map (β_ _ _).hom
+    ≫ (L ⋙ R).map ((ihom.ev _).app _) ≫ inv (adj.unit.app _)
 
 /-- The retraction of the unit in the proof of `4 → 1` in `isIso_tfae` below. -/
-private noncomputable def adjRetraction (c : C) (d : D)
-    [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))] :
-    (L ⋙ R).obj ((ihom d).obj (R.obj c)) ⟶ ((ihom d).obj (R.obj c)) :=
+private noncomputable def adjRetraction
+    (c : C) (d : D) [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))]
+    : (L ⋙ R).obj ((ihom d).obj (R.obj c)) ⟶ ((ihom d).obj (R.obj c)) :=
   curry <| adjRetractionAux adj c d
 
-private lemma adjRetraction_is_retraction (c : C) (d : D)
-    [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))] :
-    adj.unit.app ((ihom d).obj (R.obj c)) ≫ adjRetraction adj c d = 𝟙 _ := by
+private lemma adjRetraction_is_retraction
+    (c : C) (d : D) [IsIso (L.map (adj.unit.app ((ihom d).obj (R.obj c)) ⊗ₘ adj.unit.app d))]
+    : adj.unit.app ((ihom d).obj (R.obj c)) ≫ adjRetraction adj c d = 𝟙 _ := by
   suffices (_ ◁ adj.unit.app _) ≫ adjRetractionAux adj c d = (ihom.ev _).app _ by
     simp only [id_obj, adjRetraction, ← curry_natural_left, this]
     simp [curry_eq]
@@ -88,11 +87,13 @@ adjunction `L ⊣ R`. Denote the internal hom by `[-,-]`. The following are equi
 
 where `c, d, d'` are arbitrary objects of `C`/`D`, quantified over separately in each condition.
 -/
-theorem isIso_tfae : List.TFAE
-    [ ∀ (c : C) (d : D), IsIso (adj.unit.app ((ihom d).obj (R.obj c)))
-    , ∀ (c : C) (d : D), IsIso ((pre (adj.unit.app d)).app (R.obj c))
-    , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ▷ d'))
-    , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ⊗ₘ (adj.unit.app d')))] := by
+theorem isIso_tfae
+    : List.TFAE [
+      ∀ (c : C) (d : D), IsIso (adj.unit.app ((ihom d).obj (R.obj c))),
+      ∀ (c : C) (d : D), IsIso ((pre (adj.unit.app d)).app (R.obj c)),
+      ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ▷ d')),
+      ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ⊗ₘ (adj.unit.app d')))
+    ] := by
   tfae_have 3 → 4
   | h => by
     -- We can commute the tensor product in the condition that `L.map ((adj.unit.app d) ▷ d')` is
@@ -222,14 +223,13 @@ noncomputable def closed (c : C) : Closed c where
   rightAdj := R ⋙ (ihom (R.obj c)) ⋙ L
   adj := by
     refine ((ihom.adjunction (R.obj c)).comp adj).restrictFullyFaithful
-      (FullyFaithful.ofFullyFaithful R)
-      (FullyFaithful.id _) ?_ ?_
-    · refine NatIso.ofComponents (fun _ ↦ (μIso L _ _).symm ≪≫
-        asIso ((adj.counit.app _) ⊗ₘ (adj.counit.app _))) (fun _ ↦ ?_)
+      (FullyFaithful.ofFullyFaithful R) (FullyFaithful.id _) ?_ ?_
+    · refine NatIso.ofComponents
+        (fun _ ↦ (μIso L _ _).symm ≪≫ asIso ((adj.counit.app _) ⊗ₘ (adj.counit.app _)))
+        (fun _ ↦ ?_)
       dsimp
-      rw [Category.assoc, ← δ_natural_right_assoc,
-        tensorHom_def', ← MonoidalCategory.whiskerLeft_comp_assoc,
-        Adjunction.counit_naturality, whisker_exchange,
+      rw [Category.assoc, ← δ_natural_right_assoc, tensorHom_def',
+        ← MonoidalCategory.whiskerLeft_comp_assoc, Adjunction.counit_naturality, whisker_exchange,
         tensorHom_def_assoc, MonoidalCategory.whiskerLeft_comp]
     · exact NatIso.ofComponents (fun _ ↦ asIso (adj.unit.app ((ihom _).obj _)))
 

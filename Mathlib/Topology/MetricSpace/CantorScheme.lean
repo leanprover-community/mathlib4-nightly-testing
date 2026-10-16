@@ -50,23 +50,25 @@ open scoped Topology
 
 variable {β α : Type*} (A : List β → Set α)
 
-/-- From a `β`-scheme on `α` `A`, we define a partial function from `(ℕ → β)` to `α`
+/--
+From a `β`-scheme on `α` `A`, we define a partial function from `(ℕ → β)` to `α`
 which sends each infinite sequence `x` to an element of the intersection along the
 branch corresponding to `x`, if it exists.
-We call this the map induced by the scheme. -/
+We call this the map induced by the scheme.
+-/
 noncomputable def inducedMap : Σ s : Set (ℕ → β), s → α :=
   ⟨{x | Set.Nonempty (⋂ n : ℕ, A (res x n))}, fun x => x.property.some⟩
 
 section Topology
 
 /-- A scheme is antitone if each set contains its children. -/
-protected def Antitone : Prop :=
-  ∀ l : List β, ∀ a : β, A (a :: l) ⊆ A l
+protected def Antitone : Prop := ∀ l : List β, ∀ a : β, A (a :: l) ⊆ A l
 
-/-- A useful strengthening of being antitone is to require that each set contains
-the closure of each of its children. -/
-def ClosureAntitone [TopologicalSpace α] : Prop :=
-  ∀ l : List β, ∀ a : β, closure (A (a :: l)) ⊆ A l
+/--
+A useful strengthening of being antitone is to require that each set contains
+the closure of each of its children.
+-/
+def ClosureAntitone [TopologicalSpace α] : Prop := ∀ l : List β, ∀ a : β, closure (A (a :: l)) ⊆ A l
 
 /-- A scheme is disjoint if the children of each set of pairwise disjoint. -/
 protected def Disjoint : Prop :=
@@ -74,18 +76,22 @@ protected def Disjoint : Prop :=
 
 variable {A}
 
-/-- If `x` is in the domain of the induced map of a scheme `A`,
-its image under this map is in each set along the corresponding branch. -/
+/--
+If `x` is in the domain of the induced map of a scheme `A`,
+its image under this map is in each set along the corresponding branch.
+-/
 theorem map_mem (x : (inducedMap A).1) (n : ℕ) : (inducedMap A).2 x ∈ A (res x n) := by
   have := x.property.some_mem
   rw [mem_iInter] at this
   exact this n
 
-protected theorem ClosureAntitone.antitone [TopologicalSpace α] (hA : ClosureAntitone A) :
-    CantorScheme.Antitone A := fun l a => subset_closure.trans (hA l a)
+protected theorem ClosureAntitone.antitone [TopologicalSpace α] (hA : ClosureAntitone A)
+    : CantorScheme.Antitone A := fun l a =>
+  subset_closure.trans (hA l a)
 
-protected theorem Antitone.closureAntitone [TopologicalSpace α] (hanti : CantorScheme.Antitone A)
-    (hclosed : ∀ l, IsClosed (A l)) : ClosureAntitone A := fun _ _ =>
+protected theorem Antitone.closureAntitone
+    [TopologicalSpace α] (hanti : CantorScheme.Antitone A) (hclosed : ∀ l, IsClosed (A l))
+    : ClosureAntitone A := fun _ _ =>
   (hclosed _).closure_eq.subset.trans (hanti _ _)
 
 /-- A scheme where the children of each set are pairwise disjoint induces an injective map. -/
@@ -95,7 +101,8 @@ theorem Disjoint.map_injective (hA : CantorScheme.Disjoint A) : Injective (induc
   apply res_injective
   ext n : 1
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     simp only [res_succ, cons.injEq]
     refine ⟨?_, ih⟩
@@ -121,12 +128,12 @@ def VanishingDiam : Prop :=
 
 variable {A}
 
-theorem VanishingDiam.dist_lt (hA : VanishingDiam A) (ε : ℝ) (ε_pos : 0 < ε) (x : ℕ → β) :
-    ∃ n : ℕ, ∀ (y) (_ : y ∈ A (res x n)) (z) (_ : z ∈ A (res x n)), dist y z < ε := by
+theorem VanishingDiam.dist_lt (hA : VanishingDiam A) (ε : ℝ) (ε_pos : 0 < ε) (x : ℕ → β)
+    : ∃ n : ℕ, ∀ (y) (_ : y ∈ A (res x n)) (z) (_ : z ∈ A (res x n)), dist y z < ε := by
   specialize hA x
   rw [ENNReal.tendsto_atTop_zero] at hA
-  obtain ⟨n, hn⟩ := hA (ENNReal.ofReal (ε / 2)) (by
-    simp only [gt_iff_lt, ENNReal.ofReal_pos]; linarith)
+  obtain ⟨n, hn⟩ :=
+    hA (ENNReal.ofReal (ε / 2)) (by simp only [gt_iff_lt, ENNReal.ofReal_pos]; linarith)
   use n
   intro y hy z hz
   rw [← ENNReal.ofReal_lt_ofReal_iff ε_pos, ← edist_dist]
@@ -136,13 +143,14 @@ theorem VanishingDiam.dist_lt (hA : VanishingDiam A) (ε : ℝ) (ε_pos : 0 < ε
   linarith
 
 /-- A scheme with vanishing diameter along each branch induces a continuous map. -/
-theorem VanishingDiam.map_continuous [TopologicalSpace β] [DiscreteTopology β]
-    (hA : VanishingDiam A) : Continuous (inducedMap A).2 := by
+theorem VanishingDiam.map_continuous
+    [TopologicalSpace β] [DiscreteTopology β] (hA : VanishingDiam A)
+    : Continuous (inducedMap A).2 := by
   rw [Metric.continuous_iff']
   rintro x ε ε_pos
   obtain ⟨n, hn⟩ := hA.dist_lt _ ε_pos x
   rw [_root_.eventually_nhds_iff]
-  refine ⟨(↑)⁻¹' cylinder x.1 n, ?_, ?_, by simp⟩
+  refine ⟨(↑) ⁻¹' cylinder x.1 n, ?_, ?_, by simp⟩
   · rintro y hyx
     rw [mem_preimage, Subtype.coe_mk, cylinder_eq_res, mem_ofPred] at hyx
     apply hn
@@ -152,11 +160,15 @@ theorem VanishingDiam.map_continuous [TopologicalSpace β] [DiscreteTopology β]
   apply continuous_subtype_val.isOpen_preimage
   apply isOpen_cylinder
 
-/-- A scheme on a complete space with vanishing diameter
+/--
+A scheme on a complete space with vanishing diameter
 such that each set contains the closure of its children
-induces a total map. -/
-theorem ClosureAntitone.map_of_vanishingDiam [CompleteSpace α] (hdiam : VanishingDiam A)
-    (hanti : ClosureAntitone A) (hnonempty : ∀ l, (A l).Nonempty) : (inducedMap A).1 = univ := by
+induces a total map.
+-/
+theorem ClosureAntitone.map_of_vanishingDiam
+    [CompleteSpace α]
+    (hdiam : VanishingDiam A) (hanti : ClosureAntitone A) (hnonempty : ∀ l, (A l).Nonempty)
+    : (inducedMap A).1 = univ := by
   rw [eq_univ_iff_forall]
   intro x
   choose u hu using fun n => hnonempty (res x n)

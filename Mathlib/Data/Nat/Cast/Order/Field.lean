@@ -19,7 +19,6 @@ This file concerns the canonical homomorphism `ℕ → F`, where `F` is a `Linea
 
 public section
 
-
 namespace Nat
 
 section LinearOrderedSemifield

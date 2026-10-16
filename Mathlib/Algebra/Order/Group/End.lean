@@ -88,13 +88,9 @@ lemma mul_def (f g : r ≃r r) : (f * g) = g.trans f := rfl
 lemma one_apply (x : α) : (1 : r ≃r r) x = x := rfl
 lemma mul_apply (e₁ e₂ : r ≃r r) (x : α) : (e₁ * e₂) x = e₁ (e₂ x) := rfl
 
-@[simp]
-theorem inv_apply_self (e : r ≃r r) (x) : e⁻¹ (e x) = x :=
-  e.symm_apply_apply x
+@[simp] theorem inv_apply_self (e : r ≃r r) (x) : e⁻¹ (e x) = x := e.symm_apply_apply x
 
-@[simp]
-theorem apply_inv_self (e : r ≃r r) (x) : e (e⁻¹ x) = x :=
-  e.apply_symm_apply x
+@[simp] theorem apply_inv_self (e : r ≃r r) (x) : e (e⁻¹ x) = x := e.apply_symm_apply x
 
 end RelIso
 
@@ -102,8 +98,10 @@ namespace OrderHom
 
 variable [Preorder α]
 
-instance : Mul (α →o α) where mul f g := f.comp g
-instance : One (α →o α) where one := .id
+instance : Mul (α →o α) where
+  mul f g := f.comp g
+instance : One (α →o α) where
+  one := .id
 instance : IsMulApplyEqComp (α →o α) where
 instance : IsOneApplyEqSelf (α →o α) where
 

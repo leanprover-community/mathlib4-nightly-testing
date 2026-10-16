@@ -58,8 +58,8 @@ noncomputable irreducible_def klDiv (μ ν : Measure α) : ℝ≥0∞ :=
     then ENNReal.ofReal (∫ x, llr μ ν x ∂μ + ν.real univ - μ.real univ)
     else ∞
 
-lemma klDiv_of_ac_of_integrable (h1 : μ ≪ ν) (h2 : Integrable (llr μ ν) μ) :
-    klDiv μ ν = ENNReal.ofReal (∫ x, llr μ ν x ∂μ + ν.real univ - μ.real univ) := by
+lemma klDiv_of_ac_of_integrable (h1 : μ ≪ ν) (h2 : Integrable (llr μ ν) μ)
+    : klDiv μ ν = ENNReal.ofReal (∫ x, llr μ ν x ∂μ + ν.real univ - μ.real univ) := by
   rw [klDiv_def]
   exact ite_eq_left ⟨h1, h2⟩
 
@@ -107,26 +107,31 @@ section AlternativeFormulas
 variable [IsFiniteMeasure μ] [IsFiniteMeasure ν]
 
 open scoped Classical in
-lemma klDiv_eq_integral_klFun :
-    klDiv μ ν = if μ ≪ ν ∧ Integrable (llr μ ν) μ
-      then ENNReal.ofReal (∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν)
-      else ∞ := by
+lemma klDiv_eq_integral_klFun
+    : klDiv μ ν
+      = if μ ≪ ν ∧ Integrable (llr μ ν) μ then
+          ENNReal.ofReal (∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν)
+        else
+          ∞ := by
   rw [klDiv_def]
   exact if_ctx_congr Iff.rfl (fun h ↦ by rw [integral_klFun_rnDeriv h.1 h.2]) fun _ ↦ rfl
 
 open scoped Classical in
-lemma klDiv_eq_lintegral_klFun :
-    klDiv μ ν = if μ ≪ ν then ∫⁻ x, ENNReal.ofReal (klFun (μ.rnDeriv ν x).toReal) ∂ν else ∞ := by
+lemma klDiv_eq_lintegral_klFun
+    : klDiv μ ν = if μ ≪ ν then ∫⁻ x, ENNReal.ofReal (klFun (μ.rnDeriv ν x).toReal) ∂ν else ∞ := by
   rw [klDiv_eq_integral_klFun]
   by_cases hμν : μ ≪ ν
-  swap; · simp [hμν]
-  have h_int_iff := lintegral_ofReal_ne_top_iff_integrable
-    (f := fun x ↦ klFun (μ.rnDeriv ν x).toReal) (μ := ν) ?_ ?_
+  swap
+  · simp [hμν]
+  have h_int_iff :=
+    lintegral_ofReal_ne_top_iff_integrable
+      (f := fun x ↦ klFun (μ.rnDeriv ν x).toReal)
+      (μ := ν) ?_ ?_
   rotate_left
   · exact Measurable.aestronglyMeasurable (by fun_prop)
   · exact ae_of_all _ fun _ ↦ klFun_nonneg ENNReal.toReal_nonneg
   by_cases h_int : Integrable (llr μ ν) μ
-  · simp only [hμν, h_int, and_self, ↓reduceIte]
+  · simp only [hμν, h_int, and_self, ↓ reduceIte]
     rw [ofReal_integral_eq_lintegral_ofReal]
     · rwa [integrable_klFun_rnDeriv_iff hμν]
     · exact ae_of_all _ fun _ ↦ klFun_nonneg ENNReal.toReal_nonneg
@@ -134,8 +139,8 @@ lemma klDiv_eq_lintegral_klFun :
     symm
     simp [hμν, h_int, h_int_iff, integrable_klFun_rnDeriv_iff hμν]
 
-lemma klDiv_eq_lintegral_klFun_of_ac (h_ac : μ ≪ ν) :
-    klDiv μ ν = ∫⁻ x, ENNReal.ofReal (klFun (μ.rnDeriv ν x).toReal) ∂ν := by
+lemma klDiv_eq_lintegral_klFun_of_ac (h_ac : μ ≪ ν)
+    : klDiv μ ν = ∫⁻ x, ENNReal.ofReal (klFun (μ.rnDeriv ν x).toReal) ∂ν := by
   simp [klDiv_eq_lintegral_klFun, h_ac]
 
 end AlternativeFormulas
@@ -144,30 +149,34 @@ section Real
 
 variable [IsFiniteMeasure μ] [IsFiniteMeasure ν]
 
-/-- **Gibbs' inequality**: the Kullback-Leibler divergence is nonnegative.
+/--
+**Gibbs' inequality**: the Kullback-Leibler divergence is nonnegative.
 Note that since `klDiv` takes value in `ℝ≥0∞` (defined when it is finite as `ENNReal.ofReal (...)`),
 it is nonnegative by definition. This lemma proves that the argument of `ENNReal.ofReal`
-is also nonnegative. -/
-lemma integral_llr_add_sub_measure_univ_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
-    0 ≤ ∫ x, llr μ ν x ∂μ + ν.real univ - μ.real univ := by
+is also nonnegative.
+-/
+lemma integral_llr_add_sub_measure_univ_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
+    : 0 ≤ ∫ x, llr μ ν x ∂μ + ν.real univ - μ.real univ := by
   rw [← integral_klFun_rnDeriv hμν h_int]
   exact integral_nonneg fun x ↦ klFun_nonneg ENNReal.toReal_nonneg
 
-lemma toReal_klDiv (h : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
-    (klDiv μ ν).toReal = ∫ a, llr μ ν a ∂μ + ν.real univ - μ.real univ := by
+lemma toReal_klDiv (h : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
+    : (klDiv μ ν).toReal = ∫ a, llr μ ν a ∂μ + ν.real univ - μ.real univ := by
   rw [klDiv_of_ac_of_integrable h h_int, ENNReal.toReal_ofReal]
   exact integral_llr_add_sub_measure_univ_nonneg h h_int
 
-/-- If `μ ≪ ν` and `μ univ = ν univ`, then `toReal` of the Kullback-Leibler divergence is equal to
-an integral, without any integrability condition. -/
-lemma toReal_klDiv_of_measure_eq (h : μ ≪ ν) (h_eq : μ univ = ν univ) :
-    (klDiv μ ν).toReal = ∫ a, llr μ ν a ∂μ := by
+/--
+If `μ ≪ ν` and `μ univ = ν univ`, then `toReal` of the Kullback-Leibler divergence is equal to
+an integral, without any integrability condition.
+-/
+lemma toReal_klDiv_of_measure_eq (h : μ ≪ ν) (h_eq : μ univ = ν univ)
+    : (klDiv μ ν).toReal = ∫ a, llr μ ν a ∂μ := by
   by_cases h_int : Integrable (llr μ ν) μ
   · simp [toReal_klDiv h h_int, h_eq, measureReal_def]
   · rw [klDiv_of_not_integrable h_int, integral_undef h_int, ENNReal.toReal_top]
 
-lemma toReal_klDiv_eq_integral_klFun (h : μ ≪ ν) :
-    (klDiv μ ν).toReal = ∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν := by
+lemma toReal_klDiv_eq_integral_klFun (h : μ ≪ ν)
+    : (klDiv μ ν).toReal = ∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν := by
   by_cases h_int : Integrable (llr μ ν) μ
   · rw [klDiv_eq_integral_klFun, ite_eq_left ⟨h, h_int⟩, ENNReal.toReal_ofReal]
     exact integral_nonneg fun _ ↦ klFun_nonneg ENNReal.toReal_nonneg
@@ -175,9 +184,9 @@ lemma toReal_klDiv_eq_integral_klFun (h : μ ≪ ν) :
     · rw [klDiv_of_not_integrable h_int, ENNReal.toReal_top]
     · rwa [integrable_klFun_rnDeriv_iff h]
 
-lemma toReal_klDiv_smul_left (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) (c : ℝ≥0) :
-    (klDiv (c • μ) ν).toReal =
-      c * (klDiv μ ν).toReal + (1 - c) * ν.real univ + c * log c * μ.real univ := by
+lemma toReal_klDiv_smul_left (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) (c : ℝ≥0)
+    : (klDiv (c • μ) ν).toReal
+      = c * (klDiv μ ν).toReal + (1 - c) * ν.real univ + c * log c * μ.real univ := by
   by_cases hc : c = 0
   · simp [hc, measureReal_def]
   have h_llr := llr_smul_nnreal_left hμν c (by simpa)
@@ -192,9 +201,8 @@ lemma toReal_klDiv_smul_left (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν)
   simp [h_smul]
   ring
 
-lemma toReal_klDiv_smul_right_eq_smul_left (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
-    (c : ℝ≥0) :
-    (klDiv μ (c • ν)).toReal = c * (klDiv (c⁻¹ • μ) ν).toReal := by
+lemma toReal_klDiv_smul_right_eq_smul_left (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) (c : ℝ≥0)
+    : (klDiv μ (c • ν)).toReal = c * (klDiv (c⁻¹ • μ) ν).toReal := by
   by_cases hc : c = 0
   · simp only [hc, zero_smul, NNReal.coe_zero, inv_zero, klDiv_zero_left, zero_mul]
     rcases eq_zero_or_neZero μ with rfl | hμ <;> simp
@@ -216,16 +224,15 @@ lemma toReal_klDiv_smul_right_eq_smul_left (hμν : μ ≪ ν) (h_int : Integrab
   rw [integral_congr_ae h_llr_smul_inv, mul_sub, mul_add, mul_inv_cancel_left₀ (by simpa),
     mul_inv_cancel_left₀ (by simpa)]
 
-lemma toReal_klDiv_smul_right (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
-    {c : ℝ≥0} (hc : c ≠ 0) :
-    (klDiv μ (c • ν)).toReal =
-      (klDiv μ ν).toReal + (c - 1) * ν.real univ - log c * μ.real univ := by
+lemma toReal_klDiv_smul_right (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) {c : ℝ≥0} (hc : c ≠ 0)
+    : (klDiv μ (c • ν)).toReal
+      = (klDiv μ ν).toReal + (c - 1) * ν.real univ - log c * μ.real univ := by
   rw [toReal_klDiv_smul_right_eq_smul_left hμν h_int c, toReal_klDiv_smul_left hμν h_int c⁻¹]
   simp only [NNReal.coe_inv, log_inv, mul_neg, neg_mul, ← sub_eq_add_neg]
   field_simp
 
-lemma toReal_klDiv_smul_same (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) (c : ℝ≥0) :
-    (klDiv (c • μ) (c • ν)).toReal = c * (klDiv μ ν).toReal := by
+lemma toReal_klDiv_smul_same (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) (c : ℝ≥0)
+    : (klDiv (c • μ) (c • ν)).toReal = c * (klDiv μ ν).toReal := by
   by_cases hc : c = 0
   · simp [hc]
   rw [toReal_klDiv_smul_right_eq_smul_left, smul_smul, inv_mul_cancel₀ hc, one_smul]
@@ -236,8 +243,8 @@ lemma toReal_klDiv_smul_same (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν)
 
 end Real
 
-lemma klDiv_smul_right_eq_smul_left [IsFiniteMeasure μ] [IsFiniteMeasure ν] {c : ℝ≥0} (hc : c ≠ 0) :
-    klDiv μ (c • ν) = c * klDiv (c⁻¹ • μ) ν := by
+lemma klDiv_smul_right_eq_smul_left [IsFiniteMeasure μ] [IsFiniteMeasure ν] {c : ℝ≥0} (hc : c ≠ 0)
+    : klDiv μ (c • ν) = c * klDiv (c⁻¹ • μ) ν := by
   have hc' : (c : ℝ≥0∞) ≠ 0 := by simpa
   have hμ_smul : μ = c • (c⁻¹ • μ) := by rw [smul_smul, mul_inv_cancel₀ hc, one_smul]
   have hν_smul : ν = c⁻¹ • (c • ν) := by rw [smul_smul, inv_mul_cancel₀ hc, one_smul]
@@ -282,8 +289,8 @@ lemma klDiv_smul_right_eq_smul_left [IsFiniteMeasure μ] [IsFiniteMeasure ν] {c
   rw [ENNReal.ofReal_toReal]
   exact klDiv_ne_top (hμν.smul_left _) h_int_left
 
-lemma klDiv_smul_same [IsFiniteMeasure μ] [IsFiniteMeasure ν] (c : ℝ≥0) :
-    klDiv (c • μ) (c • ν) = c * klDiv μ ν := by
+lemma klDiv_smul_same [IsFiniteMeasure μ] [IsFiniteMeasure ν] (c : ℝ≥0)
+    : klDiv (c • μ) (c • ν) = c * klDiv μ ν := by
   by_cases hc : c = 0
   · simp [hc]
   have hc' : (c : ℝ≥0∞) ≠ 0 := by simpa
@@ -315,8 +322,8 @@ section Inequalities
 
 variable [IsFiniteMeasure μ] [IsFiniteMeasure ν]
 
-lemma integral_llr_add_mul_log_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
-    0 ≤ ∫ x, llr μ ν x ∂μ + μ.real univ * log (ν.real univ) + 1 - μ.real univ := by
+lemma integral_llr_add_mul_log_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
+    : 0 ≤ ∫ x, llr μ ν x ∂μ + μ.real univ * log (ν.real univ) + 1 - μ.real univ := by
   by_cases hμ : μ = 0
   · simp [hμ]
   by_cases hν : ν = 0
@@ -331,19 +338,21 @@ lemma integral_llr_add_mul_log_nonneg (hμν : μ ≪ ν) (h_int : Integrable (l
   · rw [integrable_congr (llr_smul_right hμν (ν univ)⁻¹ (by simp) (by simp [hν]))]
     exact h_int.sub (integrable_const _)
   rw [integral_congr_ae (llr_smul_right hμν (ν univ)⁻¹ (by simp) (by simp [hν])),
-    integral_sub h_int (integrable_const _), integral_const, smul_eq_mul] at h
+      integral_sub h_int (integrable_const _), integral_const, smul_eq_mul]
+    at h
   simpa using! h
 
-lemma mul_klFun_le_toReal_klDiv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
-    ν.real univ * klFun (μ.real univ / ν.real univ) ≤ (klDiv μ ν).toReal := by
-  calc ν.real univ * klFun (μ.real univ / ν.real univ)
-  _ ≤ ∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν := by
-    refine mul_le_integral_rnDeriv_of_ac convexOn_klFun continuous_klFun.continuousWithinAt ?_ hμν
-    rwa [integrable_klFun_rnDeriv_iff hμν]
-  _ = (klDiv μ ν).toReal := by rw [toReal_klDiv_eq_integral_klFun hμν]
+lemma mul_klFun_le_toReal_klDiv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
+    : ν.real univ * klFun (μ.real univ / ν.real univ) ≤ (klDiv μ ν).toReal := by
+  calc
+    ν.real univ * klFun (μ.real univ / ν.real univ)
+    _ ≤ ∫ x, klFun (μ.rnDeriv ν x).toReal ∂ν := by
+      refine mul_le_integral_rnDeriv_of_ac convexOn_klFun continuous_klFun.continuousWithinAt ?_ hμν
+      rwa [integrable_klFun_rnDeriv_iff hμν]
+    _ = (klDiv μ ν).toReal := by rw [toReal_klDiv_eq_integral_klFun hμν]
 
-lemma mul_log_le_toReal_klDiv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
-    μ.real univ * log (μ.real univ / ν.real univ) + ν.real univ - μ.real univ
+lemma mul_log_le_toReal_klDiv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ)
+    : μ.real univ * log (μ.real univ / ν.real univ) + ν.real univ - μ.real univ
       ≤ (klDiv μ ν).toReal := by
   by_cases hμ : μ = 0
   · simp [hμ, measureReal_def]
@@ -356,14 +365,15 @@ lemma mul_log_le_toReal_klDiv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν
     rw [mul_div_cancel₀]; simp [ENNReal.toReal_eq_zero_iff, hν, measureReal_def]
   rw [klFun, mul_sub, mul_add, mul_one, ← mul_assoc, this]
 
-lemma mul_log_le_klDiv (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν] :
-    ENNReal.ofReal (μ.real univ * log (μ.real univ / ν.real univ)
-        + ν.real univ - μ.real univ)
+lemma mul_log_le_klDiv (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    : ENNReal.ofReal (μ.real univ * log (μ.real univ / ν.real univ) + ν.real univ - μ.real univ)
       ≤ klDiv μ ν := by
   by_cases hμν : μ ≪ ν
-  swap; · simp [hμν]
+  swap
+  · simp [hμν]
   by_cases h_int : Integrable (llr μ ν) μ
-  swap; · simp [h_int]
+  swap
+  · simp [h_int]
   rw [← ENNReal.ofReal_toReal (a := klDiv μ ν)]
   · exact ENNReal.ofReal_le_ofReal (mul_log_le_toReal_klDiv hμν h_int)
   · rw [klDiv_ne_top_iff]
@@ -371,10 +381,11 @@ lemma mul_log_le_klDiv (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasur
 
 end Inequalities
 
-/-- **Converse Gibbs' inequality**: the Kullback-Leibler divergence between two finite measures is
-zero if and only if the two measures are equal. -/
-lemma klDiv_eq_zero_iff [IsFiniteMeasure μ] [IsFiniteMeasure ν] :
-    klDiv μ ν = 0 ↔ μ = ν := by
+/--
+**Converse Gibbs' inequality**: the Kullback-Leibler divergence between two finite measures is
+zero if and only if the two measures are equal.
+-/
+lemma klDiv_eq_zero_iff [IsFiniteMeasure μ] [IsFiniteMeasure ν] : klDiv μ ν = 0 ↔ μ = ν := by
   refine ⟨fun h ↦ ?_, fun h ↦ h ▸ klDiv_self _⟩
   have h_ne : klDiv μ ν ≠ ⊤ := by simp [h]
   rw [klDiv_ne_top_iff] at h_ne

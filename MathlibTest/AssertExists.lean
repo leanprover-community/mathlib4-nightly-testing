@@ -29,10 +29,7 @@ Lean.Elab.Command,
   which is imported by this file.
 -/
 #guard_msgs in
-assert_not_imported
-  Mathlib.Tactic.Common
-  Lean.Elab.Command
-  I_do_not_exist
+assert_not_imported Mathlib.Tactic.Common Lean.Elab.Command I_do_not_exist
 
 /--
 warning:

@@ -35,8 +35,7 @@ namespace Counterexample
 
 /-- Euler's sum of powers conjecture over a given semiring with a specific exponent. -/
 abbrev SumOfPowersConjectureWith (R : Type*) [Semiring R] (n : ℕ) : Prop :=
-  ∀ (a : List R) (b : R), 2 ≤ a.length → 0 ∉ a → b ≠ 0 →
-  (a.map (· ^ n)).sum = b ^ n → n ≤ a.length
+  ∀ (a : List R) (b : R), 2 ≤ a.length → 0 ∉ a → b ≠ 0 → (a.map (· ^ n)).sum = b ^ n → n ≤ a.length
 
 /-- Euler's sum of powers conjecture over the naturals for a given exponent. -/
 abbrev SumOfPowersConjectureFor (n : ℕ) : Prop := SumOfPowersConjectureWith ℕ n
@@ -45,8 +44,8 @@ abbrev SumOfPowersConjectureFor (n : ℕ) : Prop := SumOfPowersConjectureWith �
 abbrev SumOfPowersConjecture : Prop := ∀ n, SumOfPowersConjectureFor n
 
 /-- Euler's sum of powers conjecture over a given semiring with a specific exponent implies FLT. -/
-theorem fermatLastTheoremWith_of_sumOfPowersConjectureWith (R : Type*) [Semiring R] :
-    ∀ n ≥ 3, SumOfPowersConjectureWith R n → FermatLastTheoremWith R n := by
+theorem fermatLastTheoremWith_of_sumOfPowersConjectureWith (R : Type*) [Semiring R]
+    : ∀ n ≥ 3, SumOfPowersConjectureWith R n → FermatLastTheoremWith R n := by
   intro n hn conj a b c ha hb hc hsum
   have : n ≤ 2 := conj [a, b] c (by simp) (by simp [ha.symm, hb.symm]) hc (by simpa)
   lia
@@ -56,8 +55,8 @@ theorem fermatLastTheorem_of_sumOfPowersConjecture : SumOfPowersConjecture → F
   fun conj n hn ↦ fermatLastTheoremWith_of_sumOfPowersConjectureWith ℕ n hn <| conj n
 
 /-- For `n = 3`, Euler's sum of powers conjecture over a given semiring is equivalent to FLT. -/
-theorem sumOfPowersConjectureWith_three_iff_fermatLastTheoremWith_three (R : Type*) [Semiring R] :
-    SumOfPowersConjectureWith R 3 ↔ FermatLastTheoremWith R 3 := by
+theorem sumOfPowersConjectureWith_three_iff_fermatLastTheoremWith_three (R : Type*) [Semiring R]
+    : SumOfPowersConjectureWith R 3 ↔ FermatLastTheoremWith R 3 := by
   refine ⟨fermatLastTheoremWith_of_sumOfPowersConjectureWith R 3 (by rfl), ?_⟩
   intro FLT a b ha ha₀ hb₀ hsum
   contrapose! hsum
@@ -72,20 +71,28 @@ theorem sumOfPowersConjectureFor_le_three : ∀ n ≤ 3, SumOfPowersConjectureFo
       fermatLastTheoremThree
   lia
 
-/-- Given a ring homomorphism from `R` to `S` with no nontrivial zeros,
-the conjecture over `S` implies the conjecture over `R`. -/
-lemma sumOfPowersConjecture_of_ringHom {R S : Type*} [Semiring R] [Semiring S] {f : R →+* S}
-    (hf : ∀ x, f x = 0 → x = 0) {n : ℕ} (conj : SumOfPowersConjectureWith S n) :
-    SumOfPowersConjectureWith R n := by
+/--
+Given a ring homomorphism from `R` to `S` with no nontrivial zeros,
+the conjecture over `S` implies the conjecture over `R`.
+-/
+lemma sumOfPowersConjecture_of_ringHom
+    {R S : Type*} [Semiring R] [Semiring S]
+    {f : R →+* S} (hf : ∀ x, f x = 0 → x = 0)
+    {n : ℕ} (conj : SumOfPowersConjectureWith S n)
+    : SumOfPowersConjectureWith R n := by
   intro a b ha ha₀ hb hsum
   have h : (· ^ n) ∘ f = f ∘ (· ^ n) := by ext; simp
   convert! conj (a.map f) (f b) ?_ ?_ ?_ (by simp [h, hsum, List.sum_map_hom]) <;> grind
 
-/-- Given an injective ring homomorphism from `R` to `S`,
-the conjecture over `S` implies the conjecture over `R`. -/
-lemma sumOfPowersConjecture_of_injective {R S : Type*} [Semiring R] [Semiring S] {f : R →+* S}
-    (hf : Function.Injective f) {n : ℕ} (h : SumOfPowersConjectureWith S n) :
-    SumOfPowersConjectureWith R n :=
+/--
+Given an injective ring homomorphism from `R` to `S`,
+the conjecture over `S` implies the conjecture over `R`.
+-/
+lemma sumOfPowersConjecture_of_injective
+    {R S : Type*} [Semiring R] [Semiring S]
+    {f : R →+* S} (hf : Function.Injective f)
+    {n : ℕ} (h : SumOfPowersConjectureWith S n)
+    : SumOfPowersConjectureWith R n :=
   sumOfPowersConjecture_of_ringHom (fun _ _ ↦ hf <| by rwa [map_zero]) h
 
 /--
@@ -94,7 +101,7 @@ through a computer search, disproving the conjecture.
 <https://www.ams.org/journals/bull/1966-72-06/S0002-9904-1966-11654-3/S0002-9904-1966-11654-3.pdf>
 This is also the smallest counterexample for `n = 5`.
 -/
-theorem sumOfPowersConjectureFor_five_false : ¬SumOfPowersConjectureFor 5 := by
+theorem sumOfPowersConjectureFor_five_false : ¬ SumOfPowersConjectureFor 5 := by
   intro conj
   let a := [27, 84, 110, 133]
   let b := 144
@@ -110,7 +117,7 @@ In this paper, Elkies constructs infinitely many solutions to `a^4 + b^4 + c^4 =
 Here we use the smallest counterexample for `n = 4`, which was found a month later by Roger E. Frye
 <https://ieeexplore.ieee.org/document/74138>
 -/
-theorem sumOfPowersConjectureFor_four_false : ¬SumOfPowersConjectureFor 4 := by
+theorem sumOfPowersConjectureFor_four_false : ¬ SumOfPowersConjectureFor 4 := by
   intro conj
   let a := [95_800, 217_519, 414_560]
   let b := 422_481
@@ -123,16 +130,18 @@ where `x` and `y` are disjoint with length `m` and `n` respectively.
 This is a generalization of the diophantine equation of Euler's sum of powers conjecture.
 -/
 abbrev ExistsEqualSumsOfLikePowersFor (R : Type*) [Semiring R] (k m n : ℕ) : Prop :=
-  ∃ (x y : List R), (x.length = m) ∧ (y.length = n) ∧ (0 ∉ x) ∧ (0 ∉ y) ∧ (List.Disjoint x y) ∧
-  (x.map (· ^ k)).sum = (y.map (· ^ k)).sum
+  ∃ (x y : List R),
+    (x.length = m) ∧ (y.length = n) ∧ (0 ∉ x) ∧ (0 ∉ y) ∧ (List.Disjoint x y)
+      ∧ (x.map (· ^ k)).sum = (y.map (· ^ k)).sum
 
 /-- Euler's sum of powers conjecture for `k` restricts solutions for `(k, m, 1)`. -/
-theorem existsEqualSumsOfLikePowersFor_of_sumOfPowersConjectureWith (R : Type*) [Semiring R]
-    (k m : ℕ) (hm : 2 ≤ m) :
-    SumOfPowersConjectureWith R k → ExistsEqualSumsOfLikePowersFor R k m 1 → k ≤ m := by
+theorem existsEqualSumsOfLikePowersFor_of_sumOfPowersConjectureWith
+    (R : Type*) [Semiring R] (k m : ℕ) (hm : 2 ≤ m)
+    : SumOfPowersConjectureWith R k → ExistsEqualSumsOfLikePowersFor R k m 1 → k ≤ m := by
   intro conj ⟨x, y, hx, hy, hx₀, hy₀, hdisj, hsum⟩
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero,
-    List.eq_cons_of_length_one hy] at hsum
+      List.eq_cons_of_length_one hy]
+    at hsum
   exact hx ▸ conj x (y.get ⟨0, _⟩) (by lia) hx₀ (by grind) hsum
 
 /--
@@ -145,11 +154,13 @@ The status of this conjecture is unknown.
 abbrev LanderParkinSelfridgeConjecture (R : Type*) [Semiring R] (k m n : ℕ) : Prop :=
   ExistsEqualSumsOfLikePowersFor R k m n → k ≤ m + n
 
-/-- Euler's sum of powers conjecture for `k` implies the Lander, Parkin, and Selfridge conjecture
-for `(k, m, 1)`. -/
-theorem LanderParkinSelfridgeConjecture_of_sumOfPowersConjectureWith (R : Type*) [Semiring R]
-    (k m : ℕ) (hm : 2 ≤ m) :
-    SumOfPowersConjectureWith R k → LanderParkinSelfridgeConjecture R k m 1 := by
+/--
+Euler's sum of powers conjecture for `k` implies the Lander, Parkin, and Selfridge conjecture
+for `(k, m, 1)`.
+-/
+theorem LanderParkinSelfridgeConjecture_of_sumOfPowersConjectureWith
+    (R : Type*) [Semiring R] (k m : ℕ) (hm : 2 ≤ m)
+    : SumOfPowersConjectureWith R k → LanderParkinSelfridgeConjecture R k m 1 := by
   intro conj hsum
   have := existsEqualSumsOfLikePowersFor_of_sumOfPowersConjectureWith R k m hm conj hsum
   lia

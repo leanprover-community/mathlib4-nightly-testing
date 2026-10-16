@@ -50,26 +50,33 @@ section Additive
 variable {R : Type u} [CommRing R] {R' : Type v} [CommMonoid R']
 
 /-- The values of an additive character on a ring of positive characteristic are roots of unity. -/
-lemma val_mem_rootsOfUnity (φ : AddChar R R') (a : R) (h : 0 < ringChar R) :
-    (φ.val_isUnit a).unit ∈ rootsOfUnity (ringChar R).toPNat' R' := by
-  simp only [mem_rootsOfUnity', IsUnit.unit_spec, Nat.toPNat'_coe, h, ↓reduceIte,
+lemma val_mem_rootsOfUnity (φ : AddChar R R') (a : R) (h : 0 < ringChar R)
+    : (φ.val_isUnit a).unit ∈ rootsOfUnity (ringChar R).toPNat' R' := by
+  simp only [mem_rootsOfUnity', IsUnit.unit_spec, Nat.toPNat'_coe, h, ↓ reduceIte,
     ← map_nsmul_eq_pow, nsmul_eq_mul, CharP.cast_eq_zero, zero_mul, map_zero_eq_one]
 
-/-- An additive character is *primitive* iff all its multiplicative shifts by nonzero
-elements are nontrivial. -/
+/--
+An additive character is *primitive* iff all its multiplicative shifts by nonzero
+elements are nontrivial.
+-/
 def IsPrimitive (ψ : AddChar R R') : Prop := ∀ ⦃a : R⦄, a ≠ 0 → mulShift ψ a ≠ 1
 
-/-- The composition of a primitive additive character with an injective monoid homomorphism
-is also primitive. -/
-lemma IsPrimitive.compMulHom_of_isPrimitive {R'' : Type*} [CommMonoid R''] {φ : AddChar R R'}
-    {f : R' →* R''} (hφ : φ.IsPrimitive) (hf : Function.Injective f) :
-    (f.compAddChar φ).IsPrimitive := fun a ha ↦ by
+/--
+The composition of a primitive additive character with an injective monoid homomorphism
+is also primitive.
+-/
+lemma IsPrimitive.compMulHom_of_isPrimitive
+    {R'' : Type*} [CommMonoid R'']
+    {φ : AddChar R R'} {f : R' →* R''} (hφ : φ.IsPrimitive) (hf : Function.Injective f)
+    : (f.compAddChar φ).IsPrimitive := fun a ha ↦ by
   simpa [DFunLike.ext_iff] using (MonoidHom.compAddChar_injective_right f hf).ne (hφ ha)
 
-/-- The map associating to `a : R` the multiplicative shift of `ψ` by `a`
-is injective when `ψ` is primitive. -/
-theorem to_mulShift_inj_of_isPrimitive {ψ : AddChar R R'} (hψ : IsPrimitive ψ) :
-    Function.Injective ψ.mulShift := by
+/--
+The map associating to `a : R` the multiplicative shift of `ψ` by `a`
+is injective when `ψ` is primitive.
+-/
+theorem to_mulShift_inj_of_isPrimitive {ψ : AddChar R R'} (hψ : IsPrimitive ψ)
+    : Function.Injective ψ.mulShift := by
   intro a b h
   apply_fun fun x => x * mulShift ψ (-b) at h
   simp only [mulShift_mul, mulShift_zero, add_neg_cancel] at h
@@ -80,22 +87,24 @@ theorem to_mulShift_inj_of_isPrimitive {ψ : AddChar R R'} (hψ : IsPrimitive ψ
 -- This could be used to show that the map above is a bijection.
 -- We leave this for a later occasion.
 /-- When `R` is a field `F`, then a nontrivial additive character is primitive -/
-theorem IsPrimitive.of_ne_one {F : Type u} [Field F] {ψ : AddChar F R'} (hψ : ψ ≠ 1) :
-    IsPrimitive ψ :=
-  fun a ha h ↦ hψ <| by simpa [mulShift_mulShift, ha] using! congr(mulShift $h a⁻¹)
+theorem IsPrimitive.of_ne_one {F : Type u} [Field F] {ψ : AddChar F R'} (hψ : ψ ≠ 1)
+    : IsPrimitive ψ := fun a ha h ↦
+  hψ <| by simpa [mulShift_mulShift, ha] using! congr(mulShift $h a⁻¹)
 
 /-- If `r` is not a unit, then `e.mulShift r` is not primitive. -/
-lemma not_isPrimitive_mulShift [Finite R] (e : AddChar R R') {r : R}
-    (hr : ¬ IsUnit r) : ¬ IsPrimitive (e.mulShift r) := by
+lemma not_isPrimitive_mulShift [Finite R] (e : AddChar R R') {r : R} (hr : ¬ IsUnit r)
+    : ¬ IsPrimitive (e.mulShift r) := by
   simp only [IsPrimitive, not_forall]
-  simp only [isUnit_iff_mem_nonZeroDivisors_of_finite,
-    mem_nonZeroDivisors_iff_right, not_forall] at hr
+  simp only [isUnit_iff_mem_nonZeroDivisors_of_finite, mem_nonZeroDivisors_iff_right, not_forall]
+    at hr
   rcases hr with ⟨x, h, h'⟩
   exact ⟨x, h', by simp only [mulShift_mulShift, mul_comm r, h, mulShift_zero, not_ne_iff]⟩
 
-/-- Definition for a primitive additive character on a finite ring `R` into a cyclotomic extension
+/--
+Definition for a primitive additive character on a finite ring `R` into a cyclotomic extension
 of a field `R'`. It records which cyclotomic extension it is, the character, and the
-fact that the character is primitive. -/
+fact that the character is primitive.
+-/
 structure PrimitiveAddChar (R : Type u) [CommRing R] (R' : Type v) [Field R'] where
   /-- The first projection from `PrimitiveAddChar`, giving the cyclotomic field. -/
   n : ℕ+
@@ -113,8 +122,8 @@ section ZMod
 variable {N : ℕ} [NeZero N] {R : Type*} [CommRing R] (e : AddChar (ZMod N) R)
 
 /-- If `e` is not primitive, then `e.mulShift d = 1` for some proper divisor `d` of `N`. -/
-lemma exists_divisor_of_not_isPrimitive (he : ¬e.IsPrimitive) :
-    ∃ d : ℕ, d ∣ N ∧ d < N ∧ e.mulShift d = 1 := by
+lemma exists_divisor_of_not_isPrimitive (he : ¬e.IsPrimitive)
+    : ∃ d : ℕ, d ∣ N ∧ d < N ∧ e.mulShift d = 1 := by
   simp_rw [IsPrimitive, not_forall, not_ne_iff] at he
   rcases he with ⟨b, hb_ne, hb⟩
   -- We have `AddChar.mulShift e b = 1`, but `b ≠ 0`.
@@ -133,7 +142,6 @@ variable {C : Type v} [CommMonoid C]
 
 section ZModCharDef
 
-
 /-- We can define an additive character on `ZMod n` when we have an `n`th root of unity `ζ : C`. -/
 def zmodChar (n : ℕ) [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) : AddChar (ZMod n) C where
   toFun a := ζ ^ a.val
@@ -141,12 +149,12 @@ def zmodChar (n : ℕ) [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) : AddChar (ZMod n)
   map_add_eq_mul' x y := by simp only [ZMod.val_add, ← pow_eq_pow_mod _ hζ, ← pow_add]
 
 /-- The additive character on `ZMod n` defined using `ζ` sends `a` to `ζ^a`. -/
-theorem zmodChar_apply {n : ℕ} [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) (a : ZMod n) :
-    zmodChar n hζ a = ζ ^ a.val :=
+theorem zmodChar_apply {n : ℕ} [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) (a : ZMod n)
+    : zmodChar n hζ a = ζ ^ a.val :=
   rfl
 
-theorem zmodChar_apply' {n : ℕ} [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) (a : ℕ) :
-    zmodChar n hζ a = ζ ^ a := by
+theorem zmodChar_apply' {n : ℕ} [NeZero n] {ζ : C} (hζ : ζ ^ n = 1) (a : ℕ)
+    : zmodChar n hζ a = ζ ^ a := by
   rw [pow_eq_pow_mod a hζ, zmodChar_apply, ZMod.val_natCast]
 
 end ZModCharDef
@@ -162,38 +170,48 @@ theorem zmod_char_ne_one_iff (n : ℕ) [NeZero n] (ψ : AddChar (ZMod n) C) : ψ
   rw [ha₁, map_nsmul_eq_pow, h₁, one_pow]
 
 /-- A primitive additive character on `ZMod n` takes the value `1` only at `0`. -/
-theorem IsPrimitive.zmod_char_eq_one_iff (n : ℕ) [NeZero n]
-    {ψ : AddChar (ZMod n) C} (hψ : IsPrimitive ψ) (a : ZMod n) :
-    ψ a = 1 ↔ a = 0 := by
+theorem IsPrimitive.zmod_char_eq_one_iff
+    (n : ℕ) [NeZero n] {ψ : AddChar (ZMod n) C} (hψ : IsPrimitive ψ) (a : ZMod n)
+    : ψ a = 1 ↔ a = 0 := by
   refine ⟨fun h => not_imp_comm.mp (@hψ a) ?_, fun ha => by rw [ha, map_zero_eq_one]⟩
   rw [zmod_char_ne_one_iff n (mulShift ψ a), mulShift_apply, mul_one, h, Classical.not_not]
 
-/-- The converse: if the additive character takes the value `1` only at `0`,
-then it is primitive. -/
-theorem zmod_char_primitive_of_eq_one_only_at_zero (n : ℕ) (ψ : AddChar (ZMod n) C)
-    (hψ : ∀ a, ψ a = 1 → a = 0) : IsPrimitive ψ := by
+/--
+The converse: if the additive character takes the value `1` only at `0`,
+then it is primitive.
+-/
+theorem zmod_char_primitive_of_eq_one_only_at_zero
+    (n : ℕ) (ψ : AddChar (ZMod n) C) (hψ : ∀ a, ψ a = 1 → a = 0)
+    : IsPrimitive ψ := by
   intro a ha hf
-  have h : mulShift ψ a 1 = (1 : AddChar (ZMod n) C) (1 : ZMod n) :=
-    congr_fun (congr_arg (↑) hf) 1
-  rw [mulShift_apply, mul_one] at h; norm_cast at h
+  have h : mulShift ψ a 1 = (1 : AddChar (ZMod n) C) (1 : ZMod n) := congr_fun (congr_arg (↑) hf) 1
+  rw [mulShift_apply, mul_one] at h
+  norm_cast at h
   exact ha (hψ a h)
 
-/-- The additive character on `ZMod n` associated to a primitive `n`th root of unity
-is primitive -/
-theorem zmodChar_primitive_of_primitive_root (n : ℕ) [NeZero n] {ζ : C} (h : IsPrimitiveRoot ζ n) :
-    IsPrimitive (zmodChar n ((IsPrimitiveRoot.iff_def ζ n).mp h).left) := by
+/--
+The additive character on `ZMod n` associated to a primitive `n`th root of unity
+is primitive
+-/
+theorem zmodChar_primitive_of_primitive_root (n : ℕ) [NeZero n] {ζ : C} (h : IsPrimitiveRoot ζ n)
+    : IsPrimitive (zmodChar n ((IsPrimitiveRoot.iff_def ζ n).mp h).left) := by
   apply zmod_char_primitive_of_eq_one_only_at_zero
   intro a ha
   rw [zmodChar_apply, ← pow_zero ζ] at ha
   exact (ZMod.val_eq_zero a).mp (IsPrimitiveRoot.pow_inj h (ZMod.val_lt a) (NeZero.pos _) ha)
 
-/-- There is a primitive additive character on `ZMod n` if the characteristic of the target
-does not divide `n` -/
-noncomputable def primitiveZModChar (n : ℕ+) (F' : Type v) [Field F'] (h : (n : F') ≠ 0) :
-    PrimitiveAddChar (ZMod n) F' :=
+/--
+There is a primitive additive character on `ZMod n` if the characteristic of the target
+does not divide `n`
+-/
+noncomputable def primitiveZModChar (n : ℕ+) (F' : Type v) [Field F'] (h : (n : F') ≠ 0)
+    : PrimitiveAddChar (ZMod n) F' :=
   have : NeZero (n : F') := ⟨h⟩
-  ⟨n, zmodChar n (IsCyclotomicExtension.zeta_pow n F' _),
-    zmodChar_primitive_of_primitive_root n (IsCyclotomicExtension.zeta_spec n F' _)⟩
+  ⟨
+    n,
+    zmodChar n (IsCyclotomicExtension.zeta_pow n F' _),
+    zmodChar_primitive_of_primitive_root n (IsCyclotomicExtension.zeta_spec n F' _)
+  ⟩
 
 end ZModChar
 
@@ -203,17 +221,20 @@ end Additive
 ### Existence of a primitive additive character on a finite field
 -/
 
-/-- There is a primitive additive character on the finite field `F` if the characteristic
+/--
+There is a primitive additive character on the finite field `F` if the characteristic
 of the target is different from that of `F`.
 
 We obtain it as the composition of the trace from `F` to `ZMod p` with a primitive
-additive character on `ZMod p`, where `p` is the characteristic of `F`. -/
-noncomputable def FiniteField.primitiveChar (F F' : Type*) [Field F] [Finite F] [Field F']
-    (h : ringChar F' ≠ ringChar F) : PrimitiveAddChar F F' := by
+additive character on `ZMod p`, where `p` is the characteristic of `F`.
+-/
+noncomputable def FiniteField.primitiveChar
+    (F F' : Type*) [Field F] [Finite F] [Field F'] (h : ringChar F' ≠ ringChar F)
+    : PrimitiveAddChar F F' := by
   let p := ringChar F
   haveI hp : Fact p.Prime := ⟨CharP.char_is_prime F _⟩
   let pp := p.toPNat hp.1.pos
-  have hp₂ : ¬ringChar F' ∣ p := by
+  have hp₂ : ¬ ringChar F' ∣ p := by
     rcases CharP.char_is_prime_or_zero F' (ringChar F') with hq | hq
     · exact mt (Nat.Prime.dvd_iff_eq hp.1 (Nat.Prime.ne_one hq)).mp h.symm
     · rw [hq]
@@ -235,8 +256,10 @@ section sum
 
 variable {R : Type*} [AddGroup R] [Fintype R] {R' : Type*} [CommRing R']
 
-/-- The sum over the values of a nontrivial additive character vanishes if the target ring
-is a domain. -/
+/--
+The sum over the values of a nontrivial additive character vanishes if the target ring
+is a domain.
+-/
 theorem sum_eq_zero_of_ne_one [IsDomain R'] {ψ : AddChar R R'} (hψ : ψ ≠ 1) : ∑ a, ψ a = 0 := by
   rcases ne_one_iff.1 hψ with ⟨b, hb⟩
   have h₁ : ∑ a : R, ψ (b + a) = ∑ a : R, ψ a :=
@@ -247,16 +270,21 @@ theorem sum_eq_zero_of_ne_one [IsDomain R'] {ψ : AddChar R R'} (hψ : ψ ≠ 1)
   exact eq_zero_of_mul_eq_self_left hb h₁
 
 /-- The sum over the values of the trivial additive character is the cardinality of the source. -/
-theorem sum_eq_card_of_eq_one {ψ : AddChar R R'} (hψ : ψ = 1) :
-    ∑ a, ψ a = Fintype.card R := by simp [hψ]
+theorem sum_eq_card_of_eq_one {ψ : AddChar R R'} (hψ : ψ = 1) : ∑ a, ψ a = Fintype.card R := by
+  simp [hψ]
 
 end sum
 
-/-- The sum over the values of `mulShift ψ b` for `ψ` primitive is zero when `b ≠ 0`
-and `#R` otherwise. -/
-theorem sum_mulShift {R : Type*} [CommRing R] [Fintype R] [DecidableEq R]
-    {R' : Type*} [CommRing R'] [IsDomain R'] {ψ : AddChar R R'} (b : R)
-    (hψ : IsPrimitive ψ) : ∑ x : R, ψ (x * b) = if b = 0 then Fintype.card R else 0 := by
+/--
+The sum over the values of `mulShift ψ b` for `ψ` primitive is zero when `b ≠ 0`
+and `#R` otherwise.
+-/
+theorem sum_mulShift
+    {R : Type*} [CommRing R] [Fintype R] [DecidableEq R]
+    {R' : Type*} [CommRing R'] [IsDomain R']
+    {ψ : AddChar R R'}
+    (b : R) (hψ : IsPrimitive ψ)
+    : ∑ x : R, ψ (x * b) = if b = 0 then Fintype.card R else 0 := by
   split_ifs with h
   · -- case `b = 0`
     simp only [h, mul_zero, map_zero_eq_one, Finset.sum_const, Nat.smul_one_eq_cast]
@@ -273,18 +301,20 @@ section Ring
 
 variable {R : Type*} [CommRing R]
 
-/-- Post-composing an additive character to `ℂ` with complex conjugation gives the inverse
-character. -/
-lemma starComp_eq_inv (hR : 0 < ringChar R) {φ : AddChar R ℂ} :
-    (starRingEnd ℂ).compAddChar φ = φ⁻¹ := by
+/--
+Post-composing an additive character to `ℂ` with complex conjugation gives the inverse
+character.
+-/
+lemma starComp_eq_inv (hR : 0 < ringChar R) {φ : AddChar R ℂ}
+    : (starRingEnd ℂ).compAddChar φ = φ⁻¹ := by
   ext1 a
   simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_compAddChar, MonoidHom.coe_ofClass,
     Function.comp_apply, inv_apply']
   have H := Complex.norm_eq_one_of_mem_rootsOfUnity <| φ.val_mem_rootsOfUnity a hR
   exact (Complex.inv_eq_conj H).symm
 
-lemma starComp_apply (hR : 0 < ringChar R) {φ : AddChar R ℂ} (a : R) :
-    (starRingEnd ℂ) (φ a) = φ⁻¹ a := by
+lemma starComp_apply (hR : 0 < ringChar R) {φ : AddChar R ℂ} (a : R)
+    : (starRingEnd ℂ) (φ a) = φ⁻¹ a := by
   rw [← starComp_eq_inv hR]
   rfl
 

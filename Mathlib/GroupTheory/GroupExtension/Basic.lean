@@ -6,7 +6,6 @@ Authors: Yudai Yamazaki
 module
 
 public import Mathlib.GroupTheory.GroupExtension.Defs
-
 import Mathlib.Tactic.Group
 
 /-!
@@ -44,8 +43,10 @@ noncomputable def surjInvRightHom : S.Section where
 namespace Section
 
 variable {S}
-variable {E' : Type*} [Group E'] {S' : GroupExtension N E' G} (σ σ' : S.Section) (g g₁ g₂ : G)
-  (equiv : S.Equiv S')
+variable
+  {E' : Type*} [Group E']
+  {S' : GroupExtension N E' G}
+  (σ σ' : S.Section) (g g₁ g₂ : G) (equiv : S.Equiv S')
 
 @[to_additive]
 theorem mul_inv_mem_range_inl : σ g * (σ' g)⁻¹ ∈ S.inl.range := by
@@ -94,11 +95,10 @@ initialize_simps_projections Section (toFun → apply)
 
 /-- The composition of an isomorphism between equivalent group extensions and a section -/
 @[to_additive (attr := simps!)
-/-- The composition of an isomorphism between equivalent additive group extensions and a section -/]
+  /-- The composition of an isomorphism between equivalent additive group extensions and a section -/]
 def equivComp : S'.Section where
   toFun := equiv ∘ σ
-  rightInverse_rightHom g := by
-    rw [Function.comp_apply, equiv.rightHom_map, rightHom_section]
+  rightInverse_rightHom g := by rw [Function.comp_apply, equiv.rightHom_map, rightHom_section]
 
 end Section
 
@@ -107,21 +107,25 @@ namespace Equiv
 variable {S}
 variable {E' : Type*} [Group E'] {S' : GroupExtension N E' G}
 
-/-- An equivalence of group extensions from a homomorphism making a commuting diagram. Such a
-homomorphism is necessarily an isomorphism. -/
+/--
+An equivalence of group extensions from a homomorphism making a commuting diagram. Such a
+homomorphism is necessarily an isomorphism.
+-/
 @[to_additive
-/-- An equivalence of additive group extensions from a homomorphism making a commuting diagram.
+  /-- An equivalence of additive group extensions from a homomorphism making a commuting diagram.
 Such a homomorphism is necessarily an isomorphism. -/]
-noncomputable def ofMonoidHom (f : E →* E') (comp_inl : f.comp S.inl = S'.inl)
-    (rightHom_comp : S'.rightHom.comp f = S.rightHom) : S.Equiv S' where
+noncomputable def ofMonoidHom
+    (f : E →* E')
+    (comp_inl : f.comp S.inl = S'.inl) (rightHom_comp : S'.rightHom.comp f = S.rightHom)
+    : S.Equiv S' where
   __ := f
   invFun e' :=
     let e := Function.surjInv S.rightHom_surjective (S'.rightHom e')
     e * S.inl (Function.invFun S'.inl ((f e)⁻¹ * e'))
   left_inv e := by
     simp only [OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe, ← map_inv, ← map_mul]
-    obtain ⟨n, hn⟩ :
-        (Function.surjInv S.rightHom_surjective (S'.rightHom (f e)))⁻¹ * e ∈ S.inl.range := by
+    obtain ⟨n, hn⟩
+        : (Function.surjInv S.rightHom_surjective (S'.rightHom (f e)))⁻¹ * e ∈ S.inl.range := by
       rw [S.range_inl_eq_ker_rightHom, MonoidHom.mem_ker, map_mul, map_inv, ← MonoidHom.comp_apply,
         rightHom_comp]
       simpa only [Function.surjInv_eq] using inv_mul_cancel (S.rightHom e)
@@ -148,8 +152,8 @@ variable (s : S.Splitting)
 noncomputable def conjAct : G →* MulAut N := S.conjAct.comp s
 
 /-- A split group extension is equivalent to the extension associated to a semidirect product. -/
-noncomputable def semidirectProductToGroupExtensionEquiv :
-    (SemidirectProduct.toGroupExtension s.conjAct).Equiv S where
+noncomputable def semidirectProductToGroupExtensionEquiv
+    : (SemidirectProduct.toGroupExtension s.conjAct).Equiv S where
   toFun := fun ⟨n, g⟩ ↦ S.inl n * s g
   invFun := fun e ↦ ⟨Function.invFun S.inl (e * (s (S.rightHom e))⁻¹), S.rightHom e⟩
   left_inv := fun ⟨n, g⟩ ↦ by
@@ -194,8 +198,8 @@ theorem symm {s₁ s₂ : S.Splitting} (h : S.IsConj s₁ s₂) : S.IsConj s₂ 
 
 /-- `N`-conjugacy is transitive. -/
 @[to_additive /-- `N`-conjugacy is transitive. -/]
-theorem trans {s₁ s₂ s₃ : S.Splitting} (h₁ : S.IsConj s₁ s₂) (h₂ : S.IsConj s₂ s₃) :
-    S.IsConj s₁ s₃ := by
+theorem trans {s₁ s₂ s₃ : S.Splitting} (h₁ : S.IsConj s₁ s₂) (h₂ : S.IsConj s₂ s₃)
+    : S.IsConj s₁ s₃ := by
   obtain ⟨n₁, hn₁⟩ := h₁
   obtain ⟨n₂, hn₂⟩ := h₂
   exact ⟨n₁ * n₂, by simp only [hn₁, hn₂, map_mul]; group⟩
@@ -204,10 +208,7 @@ theorem trans {s₁ s₂ s₃ : S.Splitting} (h₁ : S.IsConj s₁ s₂) (h₂ :
 @[to_additive /-- The setoid of splittings with `N`-conjugacy -/]
 def setoid : Setoid S.Splitting where
   r := S.IsConj
-  iseqv :=
-  { refl := refl S
-    symm := symm S
-    trans := trans S }
+  iseqv := { refl := refl S, symm := symm S, trans := trans S }
 
 end IsConj
 

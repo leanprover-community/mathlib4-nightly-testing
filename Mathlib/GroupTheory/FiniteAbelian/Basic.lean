@@ -6,7 +6,6 @@ Authors: Pierre-Alexandre Bazin
 module
 
 public import Mathlib.Algebra.Module.PID
-
 import Mathlib.Data.ZMod.QuotientRing
 
 /-!
@@ -61,31 +60,36 @@ private def directSumNeZeroMulEquiv (ι : Type) [DecidableEq ι] (p : ι → ℕ
     (fun j hj hi a ↦ rfl)
 -/
 
-private def directSumNeZeroMulHom {ι : Type} [DecidableEq ι] (p : ι → ℕ) (n : ι → ℕ) :
-    (⨁ i : {i // n i ≠ 0}, ZMod (p i ^ n i)) →+ ⨁ i, ZMod (p i ^ n i) :=
+private def directSumNeZeroMulHom {ι : Type} [DecidableEq ι] (p : ι → ℕ) (n : ι → ℕ)
+    : (⨁ i : {i // n i ≠ 0}, ZMod (p i ^ n i)) →+ ⨁ i, ZMod (p i ^ n i) :=
   DirectSum.toAddMonoid fun i ↦ DirectSum.of (fun i ↦ ZMod (p i ^ n i)) i
 
-private def directSumNeZeroMulEquiv (ι : Type) [DecidableEq ι] (p : ι → ℕ) (n : ι → ℕ) :
-    (⨁ i : {i // n i ≠ 0}, ZMod (p i ^ n i)) ≃+ ⨁ i, ZMod (p i ^ n i) where
+private def directSumNeZeroMulEquiv (ι : Type) [DecidableEq ι] (p : ι → ℕ) (n : ι → ℕ)
+    : (⨁ i : {i // n i ≠ 0}, ZMod (p i ^ n i)) ≃+ ⨁ i, ZMod (p i ^ n i) where
   toFun := directSumNeZeroMulHom p n
-  invFun := DirectSum.toAddMonoid fun i ↦
-    if h : n i = 0 then 0 else DirectSum.of (fun j : {i // n i ≠ 0} ↦ ZMod (p j ^ n j)) ⟨i, h⟩
+  invFun :=
+    DirectSum.toAddMonoid fun i ↦
+      if h : n i = 0 then 0 else DirectSum.of (fun j : {i // n i ≠ 0} ↦ ZMod (p j ^ n j)) ⟨i, h⟩
   left_inv x := by
     induction x using DirectSum.induction_on with
-    | zero => simp
+    | zero =>
+      simp
     | of i x =>
       rw [directSumNeZeroMulHom, DirectSum.toAddMonoid_of, DirectSum.toAddMonoid_of,
         dite_eq_right i.prop]
-    | add x y hx hy => rw [map_add, map_add, hx, hy]
+    | add x y hx hy =>
+      rw [map_add, map_add, hx, hy]
   right_inv x := by
     induction x using DirectSum.induction_on with
-    | zero => rw [map_zero, map_zero]
+    | zero =>
+      rw [map_zero, map_zero]
     | of i x =>
       rw [DirectSum.toAddMonoid_of]
       split_ifs with h
       · simp [(ZMod.subsingleton_iff.2 <| by rw [h, pow_zero]).elim x 0]
       · simp_rw [directSumNeZeroMulHom, DirectSum.toAddMonoid_of]
-    | add x y hx hy => rw [map_add, map_add, hx, hy]
+    | add x y hx hy =>
+      rw [map_add, map_add, hx, hy]
   map_add' := map_add (directSumNeZeroMulHom p n)
 
 universe u
@@ -94,8 +98,9 @@ namespace Module
 
 variable (M : Type u)
 
-theorem finite_of_fg_torsion [AddCommGroup M] [Module ℤ M] [Module.Finite ℤ M]
-    (hM : Module.IsTorsion ℤ M) : _root_.Finite M := by
+theorem finite_of_fg_torsion
+    [AddCommGroup M] [Module ℤ M] [Module.Finite ℤ M] (hM : Module.IsTorsion ℤ M)
+    : _root_.Finite M := by
   rcases Module.equiv_directSum_of_isTorsion hM with ⟨ι, _, p, h, e, ⟨l⟩⟩
   have : ∀ i : ι, NeZero (p i ^ e i).natAbs := fun i =>
     ⟨Int.natAbs_ne_zero.mpr <| pow_ne_zero (e i) (h i).ne_zero⟩
@@ -113,48 +118,54 @@ namespace AddCommGroup
 
 variable [AddCommGroup G]
 
-/-- **Structure theorem of finitely generated abelian groups** : Any finitely generated abelian
+/--
+**Structure theorem of finitely generated abelian groups** : Any finitely generated abelian
 group is the product of a power of `ℤ` and a direct sum of some `ZMod (p i ^ e i)` for some
-prime powers `p i ^ e i`. -/
-theorem equiv_free_prod_directSum_zmod [hG : AddGroup.FG G] :
-    ∃ (n : ℕ) (ι : Type) (_ : Fintype ι) (p : ι → ℕ) (_ : ∀ i, Nat.Prime <| p i) (e : ι → ℕ),
+prime powers `p i ^ e i`.
+-/
+theorem equiv_free_prod_directSum_zmod [hG : AddGroup.FG G]
+    : ∃ (n : ℕ) (ι : Type) (_ : Fintype ι) (p : ι → ℕ) (_ : ∀ i, Nat.Prime <| p i) (e : ι → ℕ),
       Nonempty <| G ≃+ (Fin n →₀ ℤ) × ⨁ i : ι, ZMod (p i ^ e i) := by
   obtain ⟨n, ι, fι, p, hp, e, ⟨f⟩⟩ :=
     @Module.equiv_free_prod_directSum _ _ _ _ _ _ _ (Module.Finite.iff_addGroup_fg.mpr hG)
   refine ⟨n, ι, fι, fun i => (p i).natAbs, fun i => ?_, e, ⟨?_⟩⟩
   · rw [← Int.prime_iff_natAbs_prime, ← irreducible_iff_prime]; exact hp i
-  exact
-    f.toAddEquiv.trans
-      ((AddEquiv.refl _).prodCongr <|
-        DFinsupp.mapRange.addEquiv fun i =>
-          ((Int.quotientSpanEquivZMod _).trans <|
-              ZMod.ringEquivCongr <| (p i).natAbs_pow _).toAddEquiv)
+  exact f.toAddEquiv.trans ((AddEquiv.refl _).prodCongr <| DFinsupp.mapRange.addEquiv fun i =>
+    ((Int.quotientSpanEquivZMod _).trans <| ZMod.ringEquivCongr <| (p i).natAbs_pow _).toAddEquiv)
 
-/-- **Structure theorem of finite abelian groups** : Any finite abelian group is a direct sum of
-some `ZMod (p i ^ e i)` for some prime powers `p i ^ e i`. -/
-theorem equiv_directSum_zmod_of_finite [Finite G] :
-    ∃ (ι : Type) (_ : Fintype ι) (p : ι → ℕ) (_ : ∀ i, Nat.Prime <| p i) (e : ι → ℕ),
+/--
+**Structure theorem of finite abelian groups** : Any finite abelian group is a direct sum of
+some `ZMod (p i ^ e i)` for some prime powers `p i ^ e i`.
+-/
+theorem equiv_directSum_zmod_of_finite [Finite G]
+    : ∃ (ι : Type) (_ : Fintype ι) (p : ι → ℕ) (_ : ∀ i, Nat.Prime <| p i) (e : ι → ℕ),
       Nonempty <| G ≃+ ⨁ i : ι, ZMod (p i ^ e i) := by
   cases nonempty_fintype G
   obtain ⟨n, ι, fι, p, hp, e, ⟨f⟩⟩ := equiv_free_prod_directSum_zmod G
   rcases n with - | n
-  · have : Unique (Fin Nat.zero →₀ ℤ) :=
-      { uniq := by subsingleton }
+  · have : Unique (Fin Nat.zero →₀ ℤ) := { uniq := by subsingleton }
     exact ⟨ι, fι, p, hp, e, ⟨f.trans AddEquiv.uniqueProd⟩⟩
   · have := @Fintype.prodLeft _ _ _ (Fintype.ofEquiv G f.toEquiv) _
-    exact
-      (Fintype.ofSurjective (fun f : Fin n.succ →₀ ℤ => f 0) fun a =>
-            ⟨Finsupp.single 0 a, Finsupp.single_eq_same⟩).false.elim
+    exact (Fintype.ofSurjective
+      (fun f : Fin n.succ →₀ ℤ => f 0)
+      fun a => ⟨Finsupp.single 0 a, Finsupp.single_eq_same⟩).false.elim
 
-/-- **Structure theorem of finite abelian groups** : Any finite abelian group is a direct sum of
-some `ZMod (n i)` for some natural numbers `n i > 1`. -/
-lemma equiv_directSum_zmod_of_finite' (G : Type*) [AddCommGroup G] [Finite G] :
-    ∃ (ι : Type) (_ : Fintype ι) (n : ι → ℕ),
+/--
+**Structure theorem of finite abelian groups** : Any finite abelian group is a direct sum of
+some `ZMod (n i)` for some natural numbers `n i > 1`.
+-/
+lemma equiv_directSum_zmod_of_finite' (G : Type*) [AddCommGroup G] [Finite G]
+    : ∃ (ι : Type) (_ : Fintype ι) (n : ι → ℕ),
       (∀ i, 1 < n i) ∧ Nonempty (G ≃+ ⨁ i, ZMod (n i)) := by
   classical
   obtain ⟨ι, hι, p, hp, n, ⟨e⟩⟩ := AddCommGroup.equiv_directSum_zmod_of_finite G
-  refine ⟨{i : ι // n i ≠ 0}, inferInstance, fun i ↦ p i ^ n i, ?_,
-    ⟨e.trans (directSumNeZeroMulEquiv ι _ _).symm⟩⟩
+  refine ⟨
+    {i : ι // n i ≠ 0},
+    inferInstance,
+    fun i ↦ p i ^ n i,
+    ?_,
+    ⟨e.trans (directSumNeZeroMulEquiv ι _ _).symm⟩
+  ⟩
   rintro ⟨i, hi⟩
   exact one_lt_pow₀ (hp _).one_lt hi
 
@@ -174,43 +185,63 @@ theorem finite_of_fg_isMulTorsion [CommGroup G] [Group.FG G] (hG : IsMulTorsion 
 
 @[deprecated (since := "2026-07-01")] alias finite_of_fg_torsion := finite_of_fg_isMulTorsion
 
-/-- The **Structure Theorem For Finite Abelian Groups** in a multiplicative version:
-A finite abelian group `G` is isomorphic to a finite product of finite cyclic groups. -/
-theorem equiv_prod_multiplicative_zmod_of_finite (G : Type*) [CommGroup G] [Finite G] :
-    ∃ (ι : Type) (_ : Fintype ι) (n : ι → ℕ),
-       (∀ (i : ι), 1 < n i) ∧ Nonempty (G ≃* ((i : ι) → Multiplicative (ZMod (n i)))) := by
+/--
+The **Structure Theorem For Finite Abelian Groups** in a multiplicative version:
+A finite abelian group `G` is isomorphic to a finite product of finite cyclic groups.
+-/
+theorem equiv_prod_multiplicative_zmod_of_finite (G : Type*) [CommGroup G] [Finite G]
+    : ∃ (ι : Type) (_ : Fintype ι) (n : ι → ℕ),
+      (∀ (i : ι), 1 < n i) ∧ Nonempty (G ≃* ((i : ι) → Multiplicative (ZMod (n i)))) := by
   obtain ⟨ι, inst, n, h₁, h₂⟩ := AddCommGroup.equiv_directSum_zmod_of_finite' (Additive G)
-  exact ⟨ι, inst, n, h₁, ⟨MulEquiv.toAdditive.symm <| h₂.some.trans <|
-    (DirectSum.addEquivProd _).trans (MulEquiv.piMultiplicative _).toAdditiveRight⟩⟩
+  exact ⟨
+    ι,
+    inst,
+    n,
+    h₁,
+    ⟨MulEquiv.toAdditive.symm <| h₂.some.trans <|
+      (DirectSum.addEquivProd _).trans (MulEquiv.piMultiplicative _).toAdditiveRight⟩
+  ⟩
 
-/-- The **Structure theorem of finitely generated abelian groups** in a multiplicative version:
+/--
+The **Structure theorem of finitely generated abelian groups** in a multiplicative version:
 Any finitely generated abelian group is the product of a power of `ℤ`
-and a direct product of some `ZMod (p i ^ e i)` for some prime powers `p i ^ e i`. -/
-theorem equiv_free_prod_prod_multiplicative_zmod (G : Type*) [CommGroup G] [hG : Group.FG G] :
-    ∃ (ι j : Type) (_ : Fintype ι) (_ : Fintype j) (p : ι → ℕ)
-    (_ : ∀ i, Nat.Prime <| p i) (e : ι → ℕ),
+and a direct product of some `ZMod (p i ^ e i)` for some prime powers `p i ^ e i`.
+-/
+theorem equiv_free_prod_prod_multiplicative_zmod (G : Type*) [CommGroup G] [hG : Group.FG G]
+    : ∃ (ι j : Type) (_ : Fintype ι) (_ : Fintype j) (p : ι → ℕ) (_ : ∀ i, Nat.Prime <| p i)
+        (e : ι → ℕ),
       Nonempty <| G ≃* (j → Multiplicative ℤ) × ((i : ι) → Multiplicative (ZMod (p i ^ e i))) := by
   obtain ⟨n, ι, inst, x, p, e, equiv⟩ := AddCommGroup.equiv_free_prod_directSum_zmod (Additive G)
-  exact ⟨ι, Fin n, inst, inferInstance, x, p, e, ⟨MulEquiv.toAdditive.symm <| equiv.some.trans <|
-    ((Finsupp.addEquivFunOnFinite.trans ((AddEquiv.piAdditive _).trans <|
-        (AddEquiv.additiveMultiplicative ℤ).arrowCongr (Equiv.refl _)).symm).prodCongr
-          (DirectSum.addEquivProd _ )).trans (AddEquiv.prodAdditive _ _).symm⟩⟩
+  exact ⟨
+    ι,
+    Fin n,
+    inst,
+    inferInstance,
+    x,
+    p,
+    e,
+    ⟨MulEquiv.toAdditive.symm <| equiv.some.trans <|
+      ((Finsupp.addEquivFunOnFinite.trans ((AddEquiv.piAdditive _).trans <|
+            (AddEquiv.additiveMultiplicative ℤ).arrowCongr (Equiv.refl _)).symm).prodCongr
+          (DirectSum.addEquivProd _)).trans
+        (AddEquiv.prodAdditive _ _).symm⟩
+  ⟩
 
 end CommGroup
 
 namespace Subgroup
 
 @[to_additive]
-lemma finiteIndex_range_powMonoidHom_of_fg (A : Type*) [CommGroup A] [Group.FG A] {n : ℕ}
-    (hn : n ≠ 0) :
-    (powMonoidHom (α := A) n).range.FiniteIndex :=
+lemma finiteIndex_range_powMonoidHom_of_fg
+    (A : Type*) [CommGroup A] [Group.FG A] {n : ℕ} (hn : n ≠ 0)
+    : (powMonoidHom (α := A) n).range.FiniteIndex :=
   finiteIndex_iff_finite_quotient.mpr <| CommGroup.finite_of_fg_isMulTorsion _ <|
     CommGroup.isMulTorsion_quotient_range_powMonoidHom A hn
 
 @[to_additive]
-lemma isFiniteRelIndex_map_powMonoidHom_of_fg {A : Type*} [CommGroup A] {B : Subgroup A}
-    (hB : B.FG) {n : ℕ} (hn : n ≠ 0) :
-    B.map (powMonoidHom (α := A) n) |>.IsFiniteRelIndex B := by
+lemma isFiniteRelIndex_map_powMonoidHom_of_fg
+    {A : Type*} [CommGroup A] {B : Subgroup A} (hB : B.FG) {n : ℕ} (hn : n ≠ 0)
+    : B.map (powMonoidHom (α := A) n) |>.IsFiniteRelIndex B := by
   rw [isFiniteRelIndex_iff_finiteIndex]
   have : (map (powMonoidHom (α := A) n) B).subgroupOf B = (powMonoidHom (α := B) n).range := by
     ext1
@@ -223,20 +254,24 @@ end Subgroup
 
 namespace Submodule
 
-variable {R K M : Type*} [CommRing R] [CommRing K] [Algebra R K] [Module.Finite ℤ R]
-  [AddCommGroup M] [Module R M]
+variable
+  {R K M : Type*}
+  [CommRing R] [CommRing K] [Algebra R K] [Module.Finite ℤ R] [AddCommGroup M] [Module R M]
 
 lemma fg_toAddSubgroup {A : Submodule R M} (hfg : A.FG) : A.toAddSubgroup.FG := by
   rw [← AddSubgroup.toIntSubmodule_toAddSubgroup A.toAddSubgroup, ← fg_iff_addSubgroup_fg]
   exact FG.restrictScalars hfg
 
 open AddSubgroup in
-/-- If `A` and `B` are two `R`-submodules of the `R`-algebra `M`, where `R` is finitely generated
+/--
+If `A` and `B` are two `R`-submodules of the `R`-algebra `M`, where `R` is finitely generated
 as a `ℤ`-module, `A` is finitely generated, and `B` contains `n • A`, then `B` has finite
-relative index in `A`. -/
-lemma isFiniteRelIndex_of_map_linearMapMulLeft_le {A B : Submodule R K} {n : ℕ} (hn : n ≠ 0)
-    (hfg : A.FG) (h : A.map (LinearMap.mulLeft R (n : K)) ≤ B) :
-    B.toAddSubgroup.IsFiniteRelIndex A.toAddSubgroup := by
+relative index in `A`.
+-/
+lemma isFiniteRelIndex_of_map_linearMapMulLeft_le
+    {A B : Submodule R K} {n : ℕ}
+    (hn : n ≠ 0) (hfg : A.FG) (h : A.map (LinearMap.mulLeft R (n : K)) ≤ B)
+    : B.toAddSubgroup.IsFiniteRelIndex A.toAddSubgroup := by
   have := fg_toAddSubgroup hfg
   have := isFiniteRelIndex_map_nsmulAddMonoidHom_of_fg this hn
   refine isFiniteRelIndex_of_le_left (H := A.toAddSubgroup.map (nsmulAddMonoidHom n))

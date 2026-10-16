@@ -44,67 +44,86 @@ open scoped Convolution Topology
 
 namespace ContDiffBump
 
-variable {G : Type uG} {E' : Type uE'} [NormedAddCommGroup E'] {g : G → E'} [MeasurableSpace G]
-  {μ : MeasureTheory.Measure G} [NormedSpace ℝ E'] [NormedAddCommGroup G] [NormedSpace ℝ G]
-  [CompleteSpace E'] {φ : ContDiffBump (0 : G)} {x₀ : G}
+variable
+  {G : Type uG} {E' : Type uE'} [NormedAddCommGroup E']
+  {g : G → E'} [MeasurableSpace G]
+  {μ : MeasureTheory.Measure G}
+  [NormedSpace ℝ E'] [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace E']
+  {φ : ContDiffBump (0 : G)} {x₀ : G}
 
-/-- If `φ` is a bump function, compute `(φ ⋆ g) x₀`
-if `g` is constant on `Metric.ball x₀ φ.rOut`. -/
-theorem convolution_eq_right [HasContDiffBump G] {x₀ : G} (hg : ∀ x ∈ ball x₀ φ.rOut, g x = g x₀) :
-    (φ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀ = integral μ φ • g x₀ := by
+/--
+If `φ` is a bump function, compute `(φ ⋆ g) x₀`
+if `g` is constant on `Metric.ball x₀ φ.rOut`.
+-/
+theorem convolution_eq_right [HasContDiffBump G] {x₀ : G} (hg : ∀ x ∈ ball x₀ φ.rOut, g x = g x₀)
+    : (φ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀ = integral μ φ • g x₀ := by
   simp_rw [convolution_eq_right' _ φ.support_eq.subset hg, lsmul_apply, integral_smul_const]
 
 variable [BorelSpace G] [FiniteDimensional ℝ G]
 
-/-- If `φ` is a normed bump function, compute `φ ⋆ g`
-if `g` is constant on `Metric.ball x₀ φ.rOut`. -/
-theorem normed_convolution_eq_right [IsLocallyFiniteMeasure μ] [μ.IsOpenPosMeasure] {x₀ : G}
-    (hg : ∀ x ∈ ball x₀ φ.rOut, g x = g x₀) :
-    (φ.normed μ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀ = g x₀ := by
+/--
+If `φ` is a normed bump function, compute `φ ⋆ g`
+if `g` is constant on `Metric.ball x₀ φ.rOut`.
+-/
+theorem normed_convolution_eq_right
+    [IsLocallyFiniteMeasure μ] [μ.IsOpenPosMeasure] {x₀ : G} (hg : ∀ x ∈ ball x₀ φ.rOut, g x = g x₀)
+    : (φ.normed μ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀ = g x₀ := by
   rw [convolution_eq_right' _ φ.support_normed_eq.subset hg]
   exact integral_normed_smul φ μ (g x₀)
 
 variable [μ.IsAddHaarMeasure]
 
-/-- If `φ` is a normed bump function, approximate `(φ ⋆ g) x₀`
-if `g` is near `g x₀` on a ball with radius `φ.rOut` around `x₀`. -/
-theorem dist_normed_convolution_le {x₀ : G} {ε : ℝ} (hmg : AEStronglyMeasurable g μ)
-    (hg : ∀ x ∈ ball x₀ φ.rOut, dist (g x) (g x₀) ≤ ε) :
-    dist ((φ.normed μ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀) (g x₀) ≤ ε :=
+/--
+If `φ` is a normed bump function, approximate `(φ ⋆ g) x₀`
+if `g` is near `g x₀` on a ball with radius `φ.rOut` around `x₀`.
+-/
+theorem dist_normed_convolution_le
+    {x₀ : G} {ε : ℝ}
+    (hmg : AEStronglyMeasurable g μ) (hg : ∀ x ∈ ball x₀ φ.rOut, dist (g x) (g x₀) ≤ ε)
+    : dist ((φ.normed μ ⋆[lsmul ℝ ℝ, μ] g : G → E') x₀) (g x₀) ≤ ε :=
   dist_convolution_le (by simp_rw [← dist_self (g x₀), hg x₀ (mem_ball_self φ.rOut_pos)])
     φ.support_normed_eq.subset φ.nonneg_normed φ.integral_normed hmg hg
 
-/-- `(φ i ⋆ g i) (k i)` tends to `z₀` as `i` tends to some filter `l` if
+/--
+`(φ i ⋆ g i) (k i)` tends to `z₀` as `i` tends to some filter `l` if
 * `φ` is a sequence of normed bump functions
   such that `(φ i).rOut` tends to `0` as `i` tends to `l`;
 * `g i` is `μ`-a.e. strongly measurable as `i` tends to `l`;
 * `g i x` tends to `z₀` as `(i, x)` tends to `l ×ˢ 𝓝 x₀`;
-* `k i` tends to `x₀`. -/
-nonrec theorem convolution_tendsto_right {ι} {φ : ι → ContDiffBump (0 : G)} {g : ι → G → E'}
-    {k : ι → G} {x₀ : G} {z₀ : E'} {l : Filter ι} (hφ : Tendsto (fun i => (φ i).rOut) l (𝓝 0))
-    (hig : ∀ᶠ i in l, AEStronglyMeasurable (g i) μ) (hcg : Tendsto (uncurry g) (l ×ˢ 𝓝 x₀) (𝓝 z₀))
-    (hk : Tendsto k l (𝓝 x₀)) :
-    Tendsto (fun i => ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g i) (k i)) l (𝓝 z₀) :=
+* `k i` tends to `x₀`.
+-/
+nonrec theorem convolution_tendsto_right
+    {ι} {φ : ι → ContDiffBump (0 : G)} {g : ι → G → E'} {k : ι → G} {x₀ : G} {z₀ : E'}
+    {l : Filter ι}
+    (hφ : Tendsto (fun i => (φ i).rOut) l (𝓝 0)) (hig : ∀ᶠ i in l, AEStronglyMeasurable (g i) μ)
+    (hcg : Tendsto (uncurry g) (l ×ˢ 𝓝 x₀) (𝓝 z₀)) (hk : Tendsto k l (𝓝 x₀))
+    : Tendsto (fun i => ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g i) (k i)) l (𝓝 z₀) :=
   convolution_tendsto_right (Eventually.of_forall fun i => (φ i).nonneg_normed)
     (Eventually.of_forall fun i => (φ i).integral_normed) (tendsto_support_normed_smallSets hφ) hig
     hcg hk
 
-/-- Special case of `ContDiffBump.convolution_tendsto_right` where `g` is continuous,
-  and the limit is taken only in the first function. -/
-theorem convolution_tendsto_right_of_continuous {ι} {φ : ι → ContDiffBump (0 : G)} {l : Filter ι}
-    (hφ : Tendsto (fun i => (φ i).rOut) l (𝓝 0)) (hg : Continuous g) (x₀ : G) :
-    Tendsto (fun i => ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g) x₀) l (𝓝 (g x₀)) :=
+/--
+Special case of `ContDiffBump.convolution_tendsto_right` where `g` is continuous,
+and the limit is taken only in the first function.
+-/
+theorem convolution_tendsto_right_of_continuous
+    {ι} {φ : ι → ContDiffBump (0 : G)} {l : Filter ι} (hφ : Tendsto (fun i => (φ i).rOut) l (𝓝 0))
+    (hg : Continuous g) (x₀ : G)
+    : Tendsto (fun i => ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g) x₀) l (𝓝 (g x₀)) :=
   convolution_tendsto_right hφ (Eventually.of_forall fun _ => hg.aestronglyMeasurable)
     ((hg.tendsto x₀).comp tendsto_snd) tendsto_const_nhds
 
-/-- If a function `g` is locally integrable, then the convolution `φ i * g` converges almost
+/--
+If a function `g` is locally integrable, then the convolution `φ i * g` converges almost
 everywhere to `g` if `φ i` is a sequence of bump functions with support tending to `0`, provided
-that the ratio between the inner and outer radii of `φ i` remains bounded. -/
+that the ratio between the inner and outer radii of `φ i` remains bounded.
+-/
 theorem ae_convolution_tendsto_right_of_locallyIntegrable
     {ι} {φ : ι → ContDiffBump (0 : G)} {l : Filter ι} {K : ℝ}
-    (hφ : Tendsto (fun i ↦ (φ i).rOut) l (𝓝 0))
-    (h'φ : ∀ᶠ i in l, (φ i).rOut ≤ K * (φ i).rIn) (hg : LocallyIntegrable g μ) : ∀ᵐ x₀ ∂μ,
-    Tendsto (fun i ↦ ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g) x₀) l (𝓝 (g x₀)) := by
+    (hφ : Tendsto (fun i ↦ (φ i).rOut) l (𝓝 0)) (h'φ : ∀ᶠ i in l, (φ i).rOut ≤ K * (φ i).rIn)
+    (hg : LocallyIntegrable g μ)
+    : ∀ᵐ x₀ ∂μ,
+      Tendsto (fun i ↦ ((φ i).normed μ ⋆[lsmul ℝ ℝ, μ] g) x₀) l (𝓝 (g x₀)) := by
   -- By Lebesgue differentiation theorem, the average of `g` on a small ball converges
   -- almost everywhere to the value of `g` as the radius shrinks to zero.
   -- We will see that this set of points satisfies the desired conclusion.

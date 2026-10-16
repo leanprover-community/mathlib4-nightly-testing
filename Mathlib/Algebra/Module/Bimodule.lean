@@ -57,7 +57,6 @@ Develop the theory of two-sided ideals, which have type `Submodule (R ⊗[ℕ] R
 
 @[expose] public section
 
-
 open TensorProduct
 
 attribute [local instance] TensorProduct.Algebra.module
@@ -73,20 +72,25 @@ variable [Algebra R A] [Algebra R B]
 variable [IsScalarTower R A M] [IsScalarTower R B M]
 variable [SMulCommClass A B M]
 
-/-- A constructor for a subbimodule which demands closure under the two sets of scalars
+/--
+A constructor for a subbimodule which demands closure under the two sets of scalars
 individually, rather than jointly via their tensor product.
 
 Note that `R` plays no role but it is convenient to make this generalisation to support the cases
-`R = ℕ` and `R = ℤ` which both show up naturally. See also `Subbimodule.baseChange`. -/
+`R = ℕ` and `R = ℤ` which both show up naturally. See also `Subbimodule.baseChange`.
+-/
 @[simps]
-def mk (p : AddSubmonoid M) (hA : ∀ (a : A) {m : M}, m ∈ p → a • m ∈ p)
-    (hB : ∀ (b : B) {m : M}, m ∈ p → b • m ∈ p) : Submodule (A ⊗[R] B) M :=
-  { p with
-    carrier := p
-    smul_mem' := fun ab m =>
-      TensorProduct.inductionOn ab
-        (fun a b hm => by simpa only [TensorProduct.Algebra.smul_def] using! hA a (hB b hm))
-        fun z w hz hw hm => by simpa only [add_smul] using! p.add_mem (hz hm) (hw hm) }
+def mk
+    (p : AddSubmonoid M)
+    (hA : ∀ (a : A) {m : M}, m ∈ p → a • m ∈ p) (hB : ∀ (b : B) {m : M}, m ∈ p → b • m ∈ p)
+    : Submodule (A ⊗[R] B) M := {
+  p with
+  carrier := p
+  smul_mem' := fun ab m =>
+    TensorProduct.inductionOn ab
+      (fun a b hm => by simpa only [TensorProduct.Algebra.smul_def] using! hA a (hB b hm))
+      fun z w hz hw hm => by simpa only [add_smul] using! p.add_mem (hz hm) (hw hm)
+}
 
 theorem smul_mem (p : Submodule (A ⊗[R] B) M) (a : A) {m : M} (hm : m ∈ p) : a • m ∈ p := by
   suffices a • m = a ⊗ₜ[R] (1 : B) • m by exact this.symm ▸ p.smul_mem _ hm
@@ -96,27 +100,33 @@ theorem smul_mem' (p : Submodule (A ⊗[R] B) M) (b : B) {m : M} (hm : m ∈ p) 
   suffices b • m = (1 : A) ⊗ₜ[R] b • m by exact this.symm ▸ p.smul_mem _ hm
   simp [TensorProduct.Algebra.smul_def]
 
-/-- If `A` and `B` are also `Algebra`s over yet another set of scalars `S` then we may "base change"
-from `R` to `S`. -/
+/--
+If `A` and `B` are also `Algebra`s over yet another set of scalars `S` then we may "base change"
+from `R` to `S`.
+-/
 @[simps!]
-def baseChange (S : Type*) [CommSemiring S] [Module S M] [Algebra S A] [Algebra S B]
-    [IsScalarTower S A M] [IsScalarTower S B M] (p : Submodule (A ⊗[R] B) M) :
-    Submodule (A ⊗[S] B) M :=
+def baseChange
+    (S : Type*) [CommSemiring S] [Module S M] [Algebra S A] [Algebra S B] [IsScalarTower S A M]
+    [IsScalarTower S B M]
+    (p : Submodule (A ⊗[R] B) M)
+    : Submodule (A ⊗[S] B) M :=
   mk p.toAddSubmonoid (smul_mem p) (smul_mem' p)
 
 /-- Forgetting the `B` action, a `Submodule` over `A ⊗[R] B` is just a `Submodule` over `A`. -/
 @[simps]
-def toSubmodule (p : Submodule (A ⊗[R] B) M) : Submodule A M :=
-  { p with
-    carrier := p
-    smul_mem' := smul_mem p }
+def toSubmodule (p : Submodule (A ⊗[R] B) M) : Submodule A M := {
+  p with
+  carrier := p
+  smul_mem' := smul_mem p
+}
 
 /-- Forgetting the `A` action, a `Submodule` over `A ⊗[R] B` is just a `Submodule` over `B`. -/
 @[simps]
-def toSubmodule' (p : Submodule (A ⊗[R] B) M) : Submodule B M :=
-  { p with
-    carrier := p
-    smul_mem' := smul_mem' p }
+def toSubmodule' (p : Submodule (A ⊗[R] B) M) : Submodule B M := {
+  p with
+  carrier := p
+  smul_mem' := smul_mem' p
+}
 
 end Algebra
 
@@ -125,17 +135,19 @@ section Ring
 variable (R S M : Type*) [Ring R] [Ring S]
 variable [AddCommGroup M] [Module R M] [Module S M] [SMulCommClass R S M]
 
-/-- A `Submodule` over `R ⊗[ℕ] S` is naturally also a `Submodule` over the canonically-isomorphic
-ring `R ⊗[ℤ] S`. -/
+/--
+A `Submodule` over `R ⊗[ℕ] S` is naturally also a `Submodule` over the canonically-isomorphic
+ring `R ⊗[ℤ] S`.
+-/
 @[simps!]
-def toSubbimoduleInt (p : Submodule (R ⊗[ℕ] S) M) : Submodule (R ⊗[ℤ] S) M :=
-  baseChange ℤ p
+def toSubbimoduleInt (p : Submodule (R ⊗[ℕ] S) M) : Submodule (R ⊗[ℤ] S) M := baseChange ℤ p
 
-/-- A `Submodule` over `R ⊗[ℤ] S` is naturally also a `Submodule` over the canonically-isomorphic
-ring `R ⊗[ℕ] S`. -/
+/--
+A `Submodule` over `R ⊗[ℤ] S` is naturally also a `Submodule` over the canonically-isomorphic
+ring `R ⊗[ℕ] S`.
+-/
 @[simps!]
-def toSubbimoduleNat (p : Submodule (R ⊗[ℤ] S) M) : Submodule (R ⊗[ℕ] S) M :=
-  baseChange ℕ p
+def toSubbimoduleNat (p : Submodule (R ⊗[ℤ] S) M) : Submodule (R ⊗[ℕ] S) M := baseChange ℕ p
 
 end Ring
 

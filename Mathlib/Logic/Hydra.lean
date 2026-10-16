@@ -34,34 +34,35 @@ hydras, and prove their well-foundedness.
 
 @[expose] public section
 
-
 namespace Relation
 
 open Multiset Prod
 
 variable {α : Type*}
 
-/-- The relation that specifies valid moves in our hydra game. `CutExpand r s' s`
-  means that `s'` is obtained by removing one head `a ∈ s` and adding back an arbitrary
-  multiset `t` of heads such that all `a' ∈ t` satisfy `r a' a`.
+/--
+The relation that specifies valid moves in our hydra game. `CutExpand r s' s`
+means that `s'` is obtained by removing one head `a ∈ s` and adding back an arbitrary
+multiset `t` of heads such that all `a' ∈ t` satisfy `r a' a`.
 
-  This is most directly translated into `s' = s.erase a + t`, but `Multiset.erase` requires
-  `DecidableEq α`, so we use the equivalent condition `s' + {a} = s + t` instead, which
-  is also easier to verify for explicit multisets `s'`, `s` and `t`.
+This is most directly translated into `s' = s.erase a + t`, but `Multiset.erase` requires
+`DecidableEq α`, so we use the equivalent condition `s' + {a} = s + t` instead, which
+is also easier to verify for explicit multisets `s'`, `s` and `t`.
 
-  We also don't include the condition `a ∈ s` because `s' + {a} = s + t` already
-  guarantees `a ∈ s + t`, and if `r` is irreflexive then `a ∉ t`, which is the
-  case when `r` is well-founded, the case we are primarily interested in.
+We also don't include the condition `a ∈ s` because `s' + {a} = s + t` already
+guarantees `a ∈ s + t`, and if `r` is irreflexive then `a ∉ t`, which is the
+case when `r` is well-founded, the case we are primarily interested in.
 
-  The lemma `Relation.cutExpand_iff` below converts between this convenient definition
-  and the direct translation when `r` is irreflexive. -/
+The lemma `Relation.cutExpand_iff` below converts between this convenient definition
+and the direct translation when `r` is irreflexive.
+-/
 def CutExpand (r : α → α → Prop) (s' s : Multiset α) : Prop :=
   ∃ (t : Multiset α) (a : α), (∀ a' ∈ t, r a' a) ∧ s' + {a} = s + t
 
 variable {r : α → α → Prop}
 
-theorem cutExpand_le_invImage_lex [DecidableEq α] [Std.Irrefl r] :
-    CutExpand r ≤ InvImage (Finsupp.Lex (rᶜ ⊓ (· ≠ ·)) (· < ·)) toFinsupp := by
+theorem cutExpand_le_invImage_lex [DecidableEq α] [Std.Irrefl r]
+    : CutExpand r ≤ InvImage (Finsupp.Lex (rᶜ ⊓ (· ≠ ·)) (· < ·)) toFinsupp := by
   rintro s t ⟨u, a, hr, he⟩
   replace hr := fun a' ↦ mt (hr a')
   refine ⟨a, fun b h ↦ ?_, ?_⟩ <;> simp_rw [toFinsupp_apply]
@@ -69,8 +70,8 @@ theorem cutExpand_le_invImage_lex [DecidableEq α] [Std.Irrefl r] :
     simpa only [count_add, count_singleton, ite_eq_right h.2, add_zero, count_eq_zero.2 (hr b h.1)]
       using he
   · apply_fun count a at he
-    simp only [count_add, count_singleton_self, count_eq_zero.2 (hr _ (irrefl_of r a)),
-      add_zero] at he
+    simp only [count_add, count_singleton_self, count_eq_zero.2 (hr _ (irrefl_of r a)), add_zero]
+      at he
     exact he ▸ Nat.lt_succ_self _
 
 theorem cutExpand_singleton {s x} (h : ∀ x' ∈ s, r x' x) : CutExpand r s {x} :=
@@ -85,17 +86,17 @@ theorem cutExpand_add_left {t u} (s) : CutExpand r (s + t) (s + u) ↔ CutExpand
 lemma cutExpand_add_right {s' s} (t) : CutExpand r (s' + t) (s + t) ↔ CutExpand r s' s := by
   convert cutExpand_add_left t using 2 <;> apply add_comm
 
-theorem cutExpand_add_single {a' a : α} (s : Multiset α) (h : r a' a) :
-    CutExpand r (s + {a'}) (s + {a}) :=
+theorem cutExpand_add_single {a' a : α} (s : Multiset α) (h : r a' a)
+    : CutExpand r (s + {a'}) (s + {a}) :=
   (cutExpand_add_left s).2 <| cutExpand_singleton_singleton h
 
-theorem cutExpand_single_add {a' a : α} (h : r a' a) (s : Multiset α) :
-    CutExpand r ({a'} + s) ({a} + s) :=
+theorem cutExpand_single_add {a' a : α} (h : r a' a) (s : Multiset α)
+    : CutExpand r ({a'} + s) ({a} + s) :=
   (cutExpand_add_right s).2 <| cutExpand_singleton_singleton h
 
-theorem cutExpand_iff [DecidableEq α] [Std.Irrefl r] {s' s : Multiset α} :
-    CutExpand r s' s ↔
-      ∃ (t : Multiset α) (a : α), (∀ a' ∈ t, r a' a) ∧ a ∈ s ∧ s' = s.erase a + t := by
+theorem cutExpand_iff [DecidableEq α] [Std.Irrefl r] {s' s : Multiset α}
+    : CutExpand r s' s
+      ↔ ∃ (t : Multiset α) (a : α), (∀ a' ∈ t, r a' a) ∧ a ∈ s ∧ s' = s.erase a + t := by
   simp_rw [CutExpand, add_singleton_eq_iff]
   refine exists₂_congr fun t a ↦ ⟨?_, ?_⟩
   · rintro ⟨ht, ha, rfl⟩
@@ -104,18 +105,21 @@ theorem cutExpand_iff [DecidableEq α] [Std.Irrefl r] {s' s : Multiset α} :
   · rintro ⟨ht, h, rfl⟩
     exact ⟨ht, mem_add.2 (Or.inl h), (erase_add_left_pos t h).symm⟩
 
-theorem not_cutExpand_zero [Std.Irrefl r] (s) : ¬CutExpand r s 0 := by
+theorem not_cutExpand_zero [Std.Irrefl r] (s) : ¬ CutExpand r s 0 := by
   classical
   rw [cutExpand_iff]
   rintro ⟨_, _, _, ⟨⟩, _⟩
 
 lemma cutExpand_zero {x} : CutExpand r 0 {x} := ⟨0, x, nofun, add_comm 0 _⟩
 
-/-- For any relation `r` on `α`, multiset addition `Multiset α × Multiset α → Multiset α` is a
-  fibration between the game sum of `CutExpand r` with itself and `CutExpand r` itself. -/
-theorem cutExpand_fibration (r : α → α → Prop) :
-    Fibration (GameAdd (CutExpand r) (CutExpand r)) (CutExpand r) fun s ↦ s.1 + s.2 := by
-  rintro ⟨s₁, s₂⟩ s ⟨t, a, hr, he⟩; dsimp at he ⊢
+/--
+For any relation `r` on `α`, multiset addition `Multiset α × Multiset α → Multiset α` is a
+fibration between the game sum of `CutExpand r` with itself and `CutExpand r` itself.
+-/
+theorem cutExpand_fibration (r : α → α → Prop)
+    : Fibration (GameAdd (CutExpand r) (CutExpand r)) (CutExpand r) fun s ↦ s.1 + s.2 := by
+  rintro ⟨s₁, s₂⟩ s ⟨t, a, hr, he⟩
+  dsimp at he ⊢
   classical
   obtain ⟨ha, rfl⟩ := add_singleton_eq_iff.1 he
   rw [add_assoc, mem_add] at ha
@@ -128,9 +132,9 @@ theorem cutExpand_fibration (r : α → α → Prop) :
     · rw [add_assoc, erase_add_right_pos _ h]
 
 /-- `CutExpand` preserves leftward-closedness under a relation. -/
-lemma cutExpand_closed [Std.Irrefl r] (p : α → Prop)
-    (h : ∀ {a' a}, r a' a → p a → p a') {s' s : Multiset α} :
-    CutExpand r s' s → (∀ a ∈ s, p a) → ∀ a ∈ s', p a := by
+lemma cutExpand_closed
+    [Std.Irrefl r] (p : α → Prop) (h : ∀ {a' a}, r a' a → p a → p a') {s' s : Multiset α}
+    : CutExpand r s' s → (∀ a ∈ s, p a) → ∀ a ∈ s', p a := by
   classical
   rw [cutExpand_iff]
   rintro ⟨t, a, hr, ha, rfl⟩ hsp a' h'
@@ -148,25 +152,31 @@ lemma cutExpand_pair_left {a' a b} (hr : r a' a) : CutExpand r {a', b} {a, b} :=
 lemma cutExpand_pair_right {a b' b} (hr : r b' b) : CutExpand r {a, b'} {a, b} :=
   (cutExpand_add_left {a}).2 (cutExpand_singleton_singleton hr)
 
-lemma cutExpand_double_left {a a₁ a₂ b} (h₁ : r a₁ a) (h₂ : r a₂ a) :
-    CutExpand r {a₁, a₂, b} {a, b} :=
+lemma cutExpand_double_left {a a₁ a₂ b} (h₁ : r a₁ a) (h₂ : r a₂ a)
+    : CutExpand r {a₁, a₂, b} {a, b} :=
   (cutExpand_add_right {b}).2 (cutExpand_double h₁ h₂)
 
-/-- A multiset is accessible under `CutExpand` if all its singleton subsets are,
-  assuming `r` is irreflexive. -/
-theorem acc_of_singleton [Std.Irrefl r] {s : Multiset α} (hs : ∀ a ∈ s, Acc (CutExpand r) {a}) :
-    Acc (CutExpand r) s := by
+/--
+A multiset is accessible under `CutExpand` if all its singleton subsets are,
+assuming `r` is irreflexive.
+-/
+theorem acc_of_singleton [Std.Irrefl r] {s : Multiset α} (hs : ∀ a ∈ s, Acc (CutExpand r) {a})
+    : Acc (CutExpand r) s := by
   induction s using Multiset.induction with
-  | empty => exact Acc.intro 0 fun s h ↦ (not_cutExpand_zero s h).elim
+  | empty =>
+    exact Acc.intro 0 fun s h ↦ (not_cutExpand_zero s h).elim
   | cons a s ihs =>
     rw [← s.singleton_add a]
     rw [forall_mem_cons] at hs
     exact (hs.1.prod_gameAdd <| ihs fun a ha ↦ hs.2 a ha).of_fibration _ (cutExpand_fibration r)
 
-/-- A singleton `{a}` is accessible under `CutExpand r` if `a` is accessible under `r`,
-  assuming `r` is irreflexive. -/
+/--
+A singleton `{a}` is accessible under `CutExpand r` if `a` is accessible under `r`,
+assuming `r` is irreflexive.
+-/
 theorem _root_.Acc.cutExpand [Std.Irrefl r] {a : α} (hacc : Acc r a) : Acc (CutExpand r) {a} := by
-  induction hacc with | _ a h ih
+  induction hacc with
+  | _ a h ih
   refine Acc.intro _ fun s ↦ ?_
   classical
   simp only [cutExpand_iff, mem_singleton]

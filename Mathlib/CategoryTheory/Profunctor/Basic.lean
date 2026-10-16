@@ -43,14 +43,14 @@ structure ProfunctorCore where
   /-- The morphism part -/
   map {X X' : C} {Y Y' : D} (f : X ⟶ X') (g : Y ⟶ Y') : obj X Y' ⟶ obj X' Y
   map_id (X : C) (Y : D) : map (𝟙 X) (𝟙 Y) = 𝟙 _ := by cat_disch
-  map_comp {X₁ X₂ X₃ : C} {Y₁ Y₂ Y₃ : D} (f : X₁ ⟶ X₂) (f' : X₂ ⟶ X₃) (g : Y₁ ⟶ Y₂) (g' : Y₂ ⟶ Y₃) :
-    map (f ≫ f') (g ≫ g') = map f g' ≫ map f' g := by cat_disch
+  map_comp {X₁ X₂ X₃ : C} {Y₁ Y₂ Y₃ : D} (f : X₁ ⟶ X₂) (f' : X₂ ⟶ X₃) (g : Y₁ ⟶ Y₂) (g' : Y₂ ⟶ Y₃)
+      : map (f ≫ f') (g ≫ g') = map f g' ≫ map f' g := by
+    cat_disch
 
 attribute [simp] ProfunctorCore.map_id ProfunctorCore.map_comp
 
 /-- A profunctor from C to D (`Profunctor.{w} C D`) is a bifunctor `C ⥤ Dᵒᵖ ⥤ Type w`. -/
-@[pp_with_univ]
-abbrev Profunctor := C ⥤ Dᵒᵖ ⥤ Type w
+@[pp_with_univ] abbrev Profunctor := C ⥤ Dᵒᵖ ⥤ Type w
 
 variable {C D}
 
@@ -59,38 +59,41 @@ abbrev Functor.profunctor (F : C ⥤ Dᵒᵖ ⥤ Type w) : Profunctor.{w} C D :=
 
 namespace ProfunctorCore
 
-/-- Custom structure to construct natural transformations between profunctors, see
-`CategoryTheory.Profunctor.ofHom`. -/
+/--
+Custom structure to construct natural transformations between profunctors, see
+`CategoryTheory.Profunctor.ofHom`.
+-/
 structure Hom (P Q : ProfunctorCore.{w} C D) where
   /-- The components of the natural transformation -/
   app (X : C) (Y : D) : P.obj X Y ⟶ Q.obj X Y
-  naturality ⦃X X' : C⦄ ⦃Y Y' : D⦄ (f : X ⟶ X') (g : Y ⟶ Y') :
-    P.map f g ≫ app X' Y = app X Y' ≫ Q.map f g := by cat_disch
+  naturality ⦃X X' : C⦄ ⦃Y Y' : D⦄ (f : X ⟶ X') (g : Y ⟶ Y')
+      : P.map f g ≫ app X' Y = app X Y' ≫ Q.map f g := by
+    cat_disch
 
 attribute [reassoc (attr := simp)] ProfunctorCore.Hom.naturality
 
 @[simp]
-lemma map_id_comp (P : ProfunctorCore.{w} C D) (X : C) {Y Y' Y'' : D}
-    (g : Y ⟶ Y') (g' : Y' ⟶ Y'') :
-    P.map (𝟙 X) (g ≫ g') = P.map (𝟙 X) g' ≫ P.map (𝟙 X) g := by
+lemma map_id_comp (P : ProfunctorCore.{w} C D) (X : C) {Y Y' Y'' : D} (g : Y ⟶ Y') (g' : Y' ⟶ Y'')
+    : P.map (𝟙 X) (g ≫ g') = P.map (𝟙 X) g' ≫ P.map (𝟙 X) g := by
   nth_rw 1 [← Category.id_comp (𝟙 X)]
   simp only [P.map_comp]
 
 @[simp]
-lemma map_comp_id (P : ProfunctorCore.{w} C D) {X X' X'' : C} (Y : D)
-    (f : X ⟶ X') (f' : X' ⟶ X'') :
-    P.map (f ≫ f') (𝟙 Y) = P.map f (𝟙 Y) ≫ P.map f' (𝟙 Y) := by
+lemma map_comp_id (P : ProfunctorCore.{w} C D) {X X' X'' : C} (Y : D) (f : X ⟶ X') (f' : X' ⟶ X'')
+    : P.map (f ≫ f') (𝟙 Y) = P.map f (𝟙 Y) ≫ P.map f' (𝟙 Y) := by
   nth_rw 1 [← Category.id_comp (𝟙 Y)]
   simp only [P.map_comp]
 
 @[reassoc (attr := simp)]
-lemma map_lid_comp_map_rid (P : ProfunctorCore.{w} C D) {X X' : C} {Y Y' : D}
-    (f : X ⟶ X') (g : Y ⟶ Y') : P.map (𝟙 _) g ≫ P.map f (𝟙 _) = P.map f g := by
+lemma map_lid_comp_map_rid
+    (P : ProfunctorCore.{w} C D) {X X' : C} {Y Y' : D} (f : X ⟶ X') (g : Y ⟶ Y')
+    : P.map (𝟙 _) g ≫ P.map f (𝟙 _) = P.map f g := by
   simp [← P.map_comp]
 
 @[reassoc (attr := simp)]
-lemma map_rid_comp_map_lid (P : ProfunctorCore.{w} C D) {X X' : C} {Y Y' : D}
-    (f : X ⟶ X') (g : Y ⟶ Y') : P.map f (𝟙 _) ≫ P.map (𝟙 _) g = P.map f g := by
+lemma map_rid_comp_map_lid
+    (P : ProfunctorCore.{w} C D) {X X' : C} {Y Y' : D} (f : X ⟶ X') (g : Y ⟶ Y')
+    : P.map f (𝟙 _) ≫ P.map (𝟙 _) g = P.map f g := by
   simp [← P.map_comp]
 
 end ProfunctorCore
@@ -115,15 +118,14 @@ protected def id : Profunctor.{v₁} C C := yoneda
 
 /-- The opposite of a profunctor. -/
 @[simps! obj_obj obj_map map_app]
-protected def op (P : Profunctor.{w} C D) : Profunctor.{w} Dᵒᵖ Cᵒᵖ :=
-  .ofCore {
-    obj X Y := (P.obj (unop Y)).obj X
-    map f g := (P.map g.unop).app _ ≫ (P.obj _).map f }
+protected def op (P : Profunctor.{w} C D) : Profunctor.{w} (Dᵒᵖ) Cᵒᵖ :=
+  .ofCore { obj X Y := (P.obj (unop Y)).obj X, map f g := (P.map g.unop).app _ ≫ (P.obj _).map f }
 
 /-- Whisker a profunctor from `C` to `D` with functors into `C` and `D`. -/
 @[simps! obj_obj obj_map map_app]
-def whiskerLeft₂ {A B : Type*} [Category* A] [Category* B]
-    (P : Profunctor.{w} C D) (F : A ⥤ C) (G : B ⥤ D) : Profunctor.{w} A B :=
+def whiskerLeft₂
+    {A B : Type*} [Category* A] [Category* B] (P : Profunctor.{w} C D) (F : A ⥤ C) (G : B ⥤ D)
+    : Profunctor.{w} A B :=
   (((Functor.whiskeringLeft₂ _).obj F).obj G.op).obj P
 
 /-- Increase the universe level of a profunctor. -/
@@ -131,10 +133,11 @@ def whiskerLeft₂ {A B : Type*} [Category* A] [Category* B]
 def ulift (P : Profunctor.{w} C D) : Profunctor.{max w' w} C D :=
   (Functor.postcompose₂.obj uliftFunctor).obj P
 
-/-- Increase the universe level of a profunctor by one. This enables dot notation `P.ulift1`,
-which is not possible with `Profunctor.ulift`. -/
-abbrev ulift1 (P : Profunctor.{w} C D) : Profunctor.{w + 1} C D :=
-  Profunctor.ulift.{w + 1} P
+/--
+Increase the universe level of a profunctor by one. This enables dot notation `P.ulift1`,
+which is not possible with `Profunctor.ulift`.
+-/
+abbrev ulift1 (P : Profunctor.{w} C D) : Profunctor.{w + 1} C D := Profunctor.ulift.{w + 1} P
 
 end Profunctor
 

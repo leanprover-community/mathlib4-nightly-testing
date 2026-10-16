@@ -28,10 +28,11 @@ open CategoryTheory MonObj
 
 namespace GrpTypeEquivalenceGrp
 
-instance grpGroup (A : Type u) [GrpObj A] : Group A :=
-  { MonTypeEquivalenceMon.monMonoid A with
-    inv := ι[A]
-    inv_mul_cancel a := congr($(GrpObj.left_inv A) a) }
+instance grpGroup (A : Type u) [GrpObj A] : Group A := {
+  MonTypeEquivalenceMon.monMonoid A with
+  inv := ι[A]
+  inv_mul_cancel a := congr($(GrpObj.left_inv A) a)
+}
 
 /-- Converting a group object in `Type u` into a group. -/
 noncomputable def functor : Grp (Type u) ⥤ GrpCat.{u} where
@@ -40,16 +41,18 @@ noncomputable def functor : Grp (Type u) ⥤ GrpCat.{u} where
 
 /-- Converting a group into a group object in `Type u`. -/
 noncomputable def inverse : GrpCat.{u} ⥤ Grp (Type u) where
-  obj A :=
-    { MonTypeEquivalenceMon.inverse.obj ((forget₂ GrpCat MonCat).obj A) with
-      grp :=
-        { inv := ↾((·⁻¹) : A → A)
-          left_inv := by
-            ext x
-            exact inv_mul_cancel (G := A) x
-          right_inv := by
-            ext x
-            exact mul_inv_cancel (G := A) x } }
+  obj A := {
+    MonTypeEquivalenceMon.inverse.obj ((forget₂ GrpCat MonCat).obj A) with
+    grp := {
+      inv := ↾((·⁻¹) : A → A)
+      left_inv := by
+        ext x
+        exact inv_mul_cancel (G := A) x
+      right_inv := by
+        ext x
+        exact mul_inv_cancel (G := A) x
+    }
+  }
   map f := Grp.homMk' (MonTypeEquivalenceMon.inverse.map ((forget₂ GrpCat MonCat).map f))
 
 end GrpTypeEquivalenceGrp
@@ -59,14 +62,16 @@ noncomputable def grpTypeEquivalenceGrp : Grp (Type u) ≌ GrpCat.{u} where
   functor := GrpTypeEquivalenceGrp.functor
   inverse := GrpTypeEquivalenceGrp.inverse
   unitIso := Iso.refl _
-  counitIso := NatIso.ofComponents
-    (fun A => MulEquiv.toGrpIso { Equiv.refl _ with map_mul' := fun _ _ => rfl })
-    (by cat_disch)
+  counitIso :=
+    NatIso.ofComponents
+      (fun A => MulEquiv.toGrpIso { Equiv.refl _ with map_mul' := fun _ _ => rfl })
+      (by cat_disch)
 
-/-- The equivalences `Mon (Type u) ≌ MonCat.{u}` and `Grp (Type u) ≌ GrpCat.{u}`
+/--
+The equivalences `Mon (Type u) ≌ MonCat.{u}` and `Grp (Type u) ≌ GrpCat.{u}`
 are naturally compatible with the forgetful functors to `MonCat` and `Mon (Type u)`.
 -/
-noncomputable def grpTypeEquivalenceGrpForget :
-    GrpTypeEquivalenceGrp.functor ⋙ forget₂ GrpCat MonCat ≅
-      Grp.forget₂Mon (Type u) ⋙ MonTypeEquivalenceMon.functor :=
+noncomputable def grpTypeEquivalenceGrpForget
+    : GrpTypeEquivalenceGrp.functor ⋙ forget₂ GrpCat MonCat
+      ≅ Grp.forget₂Mon (Type u) ⋙ MonTypeEquivalenceMon.functor :=
   Iso.refl _

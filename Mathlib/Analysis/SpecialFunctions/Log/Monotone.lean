@@ -20,7 +20,6 @@ logarithm, tonality
 
 public section
 
-
 open Set Filter Function
 
 open Topology
@@ -37,8 +36,7 @@ theorem mul_log_strictMonoOn : StrictMonoOn (fun x ↦ x * log x) <| .Ici <| exp
 theorem log_mul_self_monotoneOn : MonotoneOn (fun x : ℝ => log x * x) { x | 1 ≤ x } := by
   grind [mul_log_strictMonoOn.monotoneOn, MonotoneOn.mono, show exp (-1) < 1 by simp]
 
-theorem mul_log_strictAntiOn :
-    StrictAntiOn (fun x : ℝ ↦ x * log x) <| .Icc 0 (exp (-1)) := by
+theorem mul_log_strictAntiOn : StrictAntiOn (fun x : ℝ ↦ x * log x) <| .Icc 0 (exp (-1)) := by
   refine strictAntiOn_of_deriv_neg (convex_Icc ..) continuous_mul_log.continuousOn fun x hx ↦ ?_
   have hgt : x < rexp (-1) := by simp_all [interior_Icc, mem_Ioo]
   have hpos : 0 < x := by simp_all [interior_Icc, mem_Ioo]
@@ -52,13 +50,14 @@ theorem log_div_self_antitoneOn : AntitoneOn (fun x : ℝ ↦ log x / x) <| .Ici
   have hyx : 0 ≤ y / x - 1 := by rwa [le_sub_iff_add_le, le_div_iff₀ x_pos, zero_add, one_mul]
   rw [div_le_iff₀ y_pos, ← sub_le_sub_iff_right (log x)]
   calc
-    log y - log x = log (y / x) := by rw [log_div y_pos.ne' x_pos.ne']
+    log y - log x
+      = log (y / x) := by rw [log_div y_pos.ne' x_pos.ne']
     _ ≤ y / x - 1 := log_le_sub_one_of_pos (div_pos y_pos x_pos)
     _ ≤ log x * (y / x - 1) := le_mul_of_one_le_left hyx hlogx
     _ = log x / x * y - log x := by ring
 
-theorem log_div_self_rpow_antitoneOn {a : ℝ} (ha : 0 < a) :
-    AntitoneOn (fun x : ℝ ↦ log x / x ^ a) <| .Ici (exp a⁻¹) := by
+theorem log_div_self_rpow_antitoneOn {a : ℝ} (ha : 0 < a)
+    : AntitoneOn (fun x : ℝ ↦ log x / x ^ a) <| .Ici (exp a⁻¹) := by
   intro x hex y _ hxy
   simp only
   have x_pos : 0 < x := lt_of_lt_of_le (exp_pos a⁻¹) (le_of_le_of_eq hex rfl)

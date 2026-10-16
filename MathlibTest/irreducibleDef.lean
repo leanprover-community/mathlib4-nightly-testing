@@ -6,11 +6,9 @@ set_option autoImplicit true
 irreducible_def frobnicate (a b : Nat) :=
   a + b
 
-example : frobnicate a 0 = a := by
-  simp [frobnicate]
+example : frobnicate a 0 = a := by simp [frobnicate]
 
-example : frobnicate a 0 = a :=
-  frobnicate_def a 0
+example : frobnicate a 0 = a := frobnicate_def a 0
 
 irreducible_def justAsArbitrary (lemma := myLemma) [Inhabited α] : α :=
   default

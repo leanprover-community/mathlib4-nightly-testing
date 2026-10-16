@@ -29,15 +29,16 @@ open scoped Nat
 
 /-! ### `cos` and `sin` for `ℝ` and `ℂ` -/
 
-
 section SinCos
 
 set_option backward.defeqAttrib.useBackward true in
-theorem Complex.hasSum_cos' (z : ℂ) :
-    HasSum (fun n : ℕ => (z * Complex.I) ^ (2 * n) / ↑(2 * n)!) (Complex.cos z) := by
+theorem Complex.hasSum_cos' (z : ℂ)
+    : HasSum (fun n : ℕ => (z * Complex.I) ^ (2 * n) / ↑ (2 * n)!) (Complex.cos z) := by
   rw [Complex.cos, Complex.exp_eq_exp_ℂ]
-  have := ((expSeries_div_hasSum_exp (z * Complex.I)).add
-    (expSeries_div_hasSum_exp (-z * Complex.I))).div_const 2
+  have :=
+    ((expSeries_div_hasSum_exp (z * Complex.I)).add
+        (expSeries_div_hasSum_exp (-z * Complex.I))).div_const
+      2
   replace := (Nat.divModEquiv 2).symm.hasSum_iff.mpr this
   dsimp [Function.comp_def] at this
   simp_rw [← mul_comm 2 _] at this
@@ -50,12 +51,16 @@ theorem Complex.hasSum_cos' (z : ℂ) :
     mul_div_cancel_left₀ _ (two_ne_zero : (2 : ℂ) ≠ 0)]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem Complex.hasSum_sin' (z : ℂ) :
-    HasSum (fun n : ℕ => (z * Complex.I) ^ (2 * n + 1) / ↑(2 * n + 1)! / Complex.I)
+theorem Complex.hasSum_sin' (z : ℂ)
+    : HasSum
+      (fun n : ℕ => (z * Complex.I) ^ (2 * n + 1) / ↑ (2 * n + 1)! / Complex.I)
       (Complex.sin z) := by
   rw [Complex.sin, Complex.exp_eq_exp_ℂ]
-  have := (((expSeries_div_hasSum_exp (-z * Complex.I)).sub
-    (expSeries_div_hasSum_exp (z * Complex.I))).mul_right Complex.I).div_const 2
+  have :=
+    (((expSeries_div_hasSum_exp (-z * Complex.I)).sub
+          (expSeries_div_hasSum_exp (z * Complex.I))).mul_right
+        Complex.I).div_const
+      2
   replace := (Nat.divModEquiv 2).symm.hasSum_iff.mpr this
   dsimp [Function.comp_def] at this
   simp_rw [← mul_comm 2 _] at this
@@ -68,49 +73,49 @@ theorem Complex.hasSum_sin' (z : ℂ) :
     neg_mul, neg_div, mul_assoc, mul_div_cancel_left₀ _ (two_ne_zero : (2 : ℂ) ≠ 0), Complex.div_I]
 
 /-- The power series expansion of `Complex.cos`. -/
-theorem Complex.hasSum_cos (z : ℂ) :
-    HasSum (fun n : ℕ => (-1) ^ n * z ^ (2 * n) / ↑(2 * n)!) (Complex.cos z) := by
+theorem Complex.hasSum_cos (z : ℂ)
+    : HasSum (fun n : ℕ => (-1) ^ n * z ^ (2 * n) / ↑ (2 * n)!) (Complex.cos z) := by
   convert Complex.hasSum_cos' z using 1
   simp_rw [mul_pow, pow_mul, Complex.I_sq, mul_comm]
 
 /-- The power series expansion of `Complex.sin`. -/
-theorem Complex.hasSum_sin (z : ℂ) :
-    HasSum (fun n : ℕ => (-1) ^ n * z ^ (2 * n + 1) / ↑(2 * n + 1)!) (Complex.sin z) := by
+theorem Complex.hasSum_sin (z : ℂ)
+    : HasSum (fun n : ℕ => (-1) ^ n * z ^ (2 * n + 1) / ↑ (2 * n + 1)!) (Complex.sin z) := by
   convert Complex.hasSum_sin' z using 1
   simp_rw [mul_pow, pow_succ, pow_mul, Complex.I_sq, ← mul_assoc, mul_div_assoc, div_right_comm,
     div_self Complex.I_ne_zero, mul_comm _ ((-1 : ℂ) ^ _), mul_one_div, mul_div_assoc, mul_assoc]
 
-theorem Complex.cos_eq_tsum' (z : ℂ) :
-    Complex.cos z = ∑' n : ℕ, (z * Complex.I) ^ (2 * n) / ↑(2 * n)! :=
+theorem Complex.cos_eq_tsum' (z : ℂ)
+    : Complex.cos z = ∑' n : ℕ, (z * Complex.I) ^ (2 * n) / ↑(2 * n)! :=
   (Complex.hasSum_cos' z).tsum_eq.symm
 
-theorem Complex.sin_eq_tsum' (z : ℂ) :
-    Complex.sin z = ∑' n : ℕ, (z * Complex.I) ^ (2 * n + 1) / ↑(2 * n + 1)! / Complex.I :=
+theorem Complex.sin_eq_tsum' (z : ℂ)
+    : Complex.sin z = ∑' n : ℕ, (z * Complex.I) ^ (2 * n + 1) / ↑(2 * n + 1)! / Complex.I :=
   (Complex.hasSum_sin' z).tsum_eq.symm
 
-theorem Complex.cos_eq_tsum (z : ℂ) :
-    Complex.cos z = ∑' n : ℕ, (-1) ^ n * z ^ (2 * n) / ↑(2 * n)! :=
+theorem Complex.cos_eq_tsum (z : ℂ)
+    : Complex.cos z = ∑' n : ℕ, (-1) ^ n * z ^ (2 * n) / ↑(2 * n)! :=
   (Complex.hasSum_cos z).tsum_eq.symm
 
-theorem Complex.sin_eq_tsum (z : ℂ) :
-    Complex.sin z = ∑' n : ℕ, (-1) ^ n * z ^ (2 * n + 1) / ↑(2 * n + 1)! :=
+theorem Complex.sin_eq_tsum (z : ℂ)
+    : Complex.sin z = ∑' n : ℕ, (-1) ^ n * z ^ (2 * n + 1) / ↑(2 * n + 1)! :=
   (Complex.hasSum_sin z).tsum_eq.symm
 
 /-- The power series expansion of `Real.cos`. -/
-theorem Real.hasSum_cos (r : ℝ) :
-    HasSum (fun n : ℕ => (-1) ^ n * r ^ (2 * n) / ↑(2 * n)!) (Real.cos r) :=
+theorem Real.hasSum_cos (r : ℝ)
+    : HasSum (fun n : ℕ => (-1) ^ n * r ^ (2 * n) / ↑ (2 * n)!) (Real.cos r) :=
   mod_cast Complex.hasSum_cos r
 
 /-- The power series expansion of `Real.sin`. -/
-theorem Real.hasSum_sin (r : ℝ) :
-    HasSum (fun n : ℕ => (-1) ^ n * r ^ (2 * n + 1) / ↑(2 * n + 1)!) (Real.sin r) :=
+theorem Real.hasSum_sin (r : ℝ)
+    : HasSum (fun n : ℕ => (-1) ^ n * r ^ (2 * n + 1) / ↑ (2 * n + 1)!) (Real.sin r) :=
   mod_cast Complex.hasSum_sin r
 
 theorem Real.cos_eq_tsum (r : ℝ) : Real.cos r = ∑' n : ℕ, (-1) ^ n * r ^ (2 * n) / ↑(2 * n)! :=
   (Real.hasSum_cos r).tsum_eq.symm
 
-theorem Real.sin_eq_tsum (r : ℝ) :
-    Real.sin r = ∑' n : ℕ, (-1) ^ n * r ^ (2 * n + 1) / ↑(2 * n + 1)! :=
+theorem Real.sin_eq_tsum (r : ℝ)
+    : Real.sin r = ∑' n : ℕ, (-1) ^ n * r ^ (2 * n + 1) / ↑(2 * n + 1)! :=
   (Real.hasSum_sin r).tsum_eq.symm
 
 end SinCos
@@ -121,13 +126,13 @@ section SinhCosh
 namespace Complex
 
 /-- The power series expansion of `Complex.cosh`. -/
-lemma hasSum_cosh (z : ℂ) : HasSum (fun n ↦ z ^ (2 * n) / ↑(2 * n)!) (cosh z) := by
+lemma hasSum_cosh (z : ℂ) : HasSum (fun n ↦ z ^ (2 * n) / ↑ (2 * n)!) (cosh z) := by
   simpa [mul_assoc, cos_mul_I] using hasSum_cos' (z * I)
 
 /-- The power series expansion of `Complex.sinh`. -/
-lemma hasSum_sinh (z : ℂ) : HasSum (fun n ↦ z ^ (2 * n + 1) / ↑(2 * n + 1)!) (sinh z) := by
-  simpa [mul_assoc, sin_mul_I, neg_pow z, pow_add, pow_mul, neg_mul, neg_div]
-    using (hasSum_sin' (z * I)).mul_right (-I)
+lemma hasSum_sinh (z : ℂ) : HasSum (fun n ↦ z ^ (2 * n + 1) / ↑ (2 * n + 1)!) (sinh z) := by
+  simpa [mul_assoc, sin_mul_I, neg_pow z, pow_add, pow_mul, neg_mul, neg_div] using
+    (hasSum_sin' (z * I)).mul_right (-I)
 
 lemma cosh_eq_tsum (z : ℂ) : cosh z = ∑' n, z ^ (2 * n) / ↑(2 * n)! := z.hasSum_cosh.tsum_eq.symm
 
@@ -139,11 +144,11 @@ end Complex
 namespace Real
 
 /-- The power series expansion of `Real.cosh`. -/
-lemma hasSum_cosh (r : ℝ) : HasSum (fun n ↦ r ^ (2 * n) / ↑(2 * n)!) (cosh r) :=
+lemma hasSum_cosh (r : ℝ) : HasSum (fun n ↦ r ^ (2 * n) / ↑ (2 * n)!) (cosh r) :=
   mod_cast Complex.hasSum_cosh r
 
 /-- The power series expansion of `Real.sinh`. -/
-lemma hasSum_sinh (r : ℝ) : HasSum (fun n ↦ r ^ (2 * n + 1) / ↑(2 * n + 1)!) (sinh r) :=
+lemma hasSum_sinh (r : ℝ) : HasSum (fun n ↦ r ^ (2 * n + 1) / ↑ (2 * n + 1)!) (sinh r) :=
   mod_cast Complex.hasSum_sinh r
 
 lemma cosh_eq_tsum (r : ℝ) : cosh r = ∑' n, r ^ (2 * n) / ↑(2 * n)! := r.hasSum_cosh.tsum_eq.symm

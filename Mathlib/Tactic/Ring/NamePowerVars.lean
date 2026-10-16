@@ -6,7 +6,7 @@ Authors: Wenrong Zou
 module
 
 public meta import Mathlib.Tactic.Simps
-public import Mathlib.RingTheory.MvPowerSeries.Basic  -- shake: keep (tactic dependency)
+public import Mathlib.RingTheory.MvPowerSeries.Basic -- shake: keep (tactic dependency)
 
 /-!
 The command `name_power_vars` names variables in
@@ -49,17 +49,19 @@ syntax (name := namePowerVarsOver) "name_power_vars" (ppSpace ident),+ " over " 
 
 @[command_elab namePowerVarsOver, inherit_doc namePowerVarsOver]
 def elabNamePowerSeriesVariablesOver : CommandElab
-| `(command|name_power_vars $vars:ident,* over $R:term) => do
-  let vars := vars.getElems
-  let size := vars.size
-  let sizeStx : TSyntax `term := quote size
-  for h : idx in [:size] do
-    let var := vars[idx]
-    let var := quote s!"{var.getId}"
-    let idx : TSyntax `term ← `(($(quote idx) : Fin $sizeStx))
-    let cmd ← `(command|local notation3 $var:str =>
-      MvPowerSeries.X (R := $R) (σ := Fin $sizeStx) $idx)
-    elabCommand cmd
-| _ => throwUnsupportedSyntax
+  | `(command|name_power_vars $vars:ident,* over $R:term) => do
+    let vars := vars.getElems
+    let size := vars.size
+    let sizeStx : TSyntax `term := quote size
+    for h : idx in [:size] do
+      let var := vars[idx]
+      let var := quote s!"{var.getId}"
+      let idx : TSyntax `term ← `(($(quote idx) : Fin $sizeStx))
+      let cmd ←
+        `(command|local notation3 $var:str =>
+          MvPowerSeries.X (R := $R) (σ := Fin $sizeStx) $idx)
+      elabCommand cmd
+  | _ =>
+    throwUnsupportedSyntax
 
 end Mathlib.Tactic

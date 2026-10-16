@@ -44,12 +44,13 @@ namespace Condensed
 
 namespace StoneanCompHaus
 
-/-- The equivalence from coherent sheaves on `Stonean` to coherent sheaves on `CompHaus`
-    (i.e. condensed sets). -/
-noncomputable
-def equivalence (A : Type*) [Category* A]
-    [∀ X, HasLimitsOfShape (StructuredArrow X Stonean.toCompHaus.op) A] :
-    Sheaf (coherentTopology Stonean) A ≌ Condensed.{u} A :=
+/--
+The equivalence from coherent sheaves on `Stonean` to coherent sheaves on `CompHaus`
+(i.e. condensed sets).
+-/
+noncomputable def equivalence
+    (A : Type*) [Category* A] [∀ X, HasLimitsOfShape (StructuredArrow X Stonean.toCompHaus.op) A]
+    : Sheaf (coherentTopology Stonean) A ≌ Condensed.{u} A :=
   coherentTopology.equivalence' Stonean.toCompHaus A
 
 end StoneanCompHaus
@@ -67,8 +68,8 @@ instance : Stonean.toProfinite.ReflectsEffectiveEpis where
 /--
 An effective presentation of an `X : Profinite` with respect to the inclusion functor from `Stonean`
 -/
-noncomputable def stoneanToProfiniteEffectivePresentation (X : Profinite) :
-    Stonean.toProfinite.EffectivePresentation X where
+noncomputable def stoneanToProfiniteEffectivePresentation (X : Profinite)
+    : Stonean.toProfinite.EffectivePresentation X where
   p := X.presentation
   f := Profinite.presentation.π X
   effectiveEpi := ((Profinite.effectiveEpi_tfae _).out 1 2).mpr (inferInstance : Epi _)
@@ -77,38 +78,34 @@ instance : Stonean.toProfinite.EffectivelyEnough where
   presentation X := ⟨stoneanToProfiniteEffectivePresentation X⟩
 
 /-- The equivalence from coherent sheaves on `Stonean` to coherent sheaves on `Profinite`. -/
-noncomputable
-def equivalence (A : Type*) [Category* A]
-    [∀ X, HasLimitsOfShape (StructuredArrow X Stonean.toProfinite.op) A] :
-    Sheaf (coherentTopology Stonean) A ≌ Sheaf (coherentTopology Profinite) A :=
+noncomputable def equivalence
+    (A : Type*) [Category* A] [∀ X, HasLimitsOfShape (StructuredArrow X Stonean.toProfinite.op) A]
+    : Sheaf (coherentTopology Stonean) A ≌ Sheaf (coherentTopology Profinite) A :=
   coherentTopology.equivalence' Stonean.toProfinite A
 
 end StoneanProfinite
 
 namespace ProfiniteCompHaus
 
-/-- The equivalence from coherent sheaves on `Profinite` to coherent sheaves on `CompHaus`
-(i.e. condensed sets). -/
-noncomputable
-def equivalence (A : Type*) [Category* A]
-    [∀ X, HasLimitsOfShape (StructuredArrow X profiniteToCompHaus.op) A] :
-    Sheaf (coherentTopology Profinite) A ≌ Condensed.{u} A :=
+/--
+The equivalence from coherent sheaves on `Profinite` to coherent sheaves on `CompHaus`
+(i.e. condensed sets).
+-/
+noncomputable def equivalence
+    (A : Type*) [Category* A] [∀ X, HasLimitsOfShape (StructuredArrow X profiniteToCompHaus.op) A]
+    : Sheaf (coherentTopology Profinite) A ≌ Condensed.{u} A :=
   coherentTopology.equivalence' profiniteToCompHaus A
 
 end ProfiniteCompHaus
 
 variable {A : Type*} [Category* A] (X : Condensed.{u} A)
 
-lemma isSheafProfinite
-    [∀ Y, HasLimitsOfShape (StructuredArrow Y profiniteToCompHaus.{u}.op) A] :
-    Presheaf.IsSheaf (coherentTopology Profinite)
-    (profiniteToCompHaus.op ⋙ X.obj) :=
+lemma isSheafProfinite [∀ Y, HasLimitsOfShape (StructuredArrow Y profiniteToCompHaus.{u}.op) A]
+    : Presheaf.IsSheaf (coherentTopology Profinite) (profiniteToCompHaus.op ⋙ X.obj) :=
   ((ProfiniteCompHaus.equivalence A).inverse.obj X).property
 
-lemma isSheafStonean
-    [∀ Y, HasLimitsOfShape (StructuredArrow Y Stonean.toCompHaus.{u}.op) A] :
-    Presheaf.IsSheaf (coherentTopology Stonean)
-    (Stonean.toCompHaus.op ⋙ X.obj) :=
+lemma isSheafStonean [∀ Y, HasLimitsOfShape (StructuredArrow Y Stonean.toCompHaus.{u}.op) A]
+    : Presheaf.IsSheaf (coherentTopology Stonean) (Stonean.toCompHaus.op ⋙ X.obj) :=
   ((StoneanCompHaus.equivalence A).inverse.obj X).property
 
 end Condensed

@@ -8,7 +8,6 @@ module
 public import Mathlib.CategoryTheory.Limits.Preserves.Finite
 public import Mathlib.Order.ConditionallyCompleteLattice.Basic
 public import Mathlib.Order.Hom.CompleteLattice
-
 import Mathlib.CategoryTheory.Limits.Lattice
 
 /-!
@@ -36,14 +35,14 @@ section
 
 variable [SemilatticeInf α] [OrderTop α] [SemilatticeInf β] [OrderTop β] [InfTopHomClass F α β]
 
-instance preservesLimit_finite_toFunctor {J : Type w} [SmallCategory J]
-    [FinCategory J] (K : J ⥤ α) : PreservesLimit K (OrderHom.ofClass f).toFunctor :=
+instance preservesLimit_finite_toFunctor {J : Type w} [SmallCategory J] [FinCategory J] (K : J ⥤ α)
+    : PreservesLimit K (OrderHom.ofClass f).toFunctor :=
   preservesLimit_of_preserves_limit_cone (finiteLimitCone K).isLimit <|
     (finiteLimitCone _).isLimit.ofIsoLimit
       (Cone.ext (eqToIso (show Finset.univ.inf _ = f _ by aesop)) (by subsingleton))
 
-instance preservesLimitsOfShape_finite_toFunctor {J : Type w} [SmallCategory J] [FinCategory J] :
-    PreservesLimitsOfShape J (OrderHom.ofClass f).toFunctor where
+instance preservesLimitsOfShape_finite_toFunctor {J : Type w} [SmallCategory J] [FinCategory J]
+  : PreservesLimitsOfShape J (OrderHom.ofClass f).toFunctor where
 
 instance : PreservesFiniteLimits (OrderHom.ofClass f).toFunctor where
   preservesFiniteLimits _ _ _ := inferInstance
@@ -54,14 +53,15 @@ section
 
 variable [SemilatticeSup α] [OrderBot α] [SemilatticeSup β] [OrderBot β] [SupBotHomClass F α β]
 
-instance preservesColimit_finite_toFunctor {J : Type w} [SmallCategory J]
-    [FinCategory J] (K : J ⥤ α) : PreservesColimit K (OrderHom.ofClass f).toFunctor :=
+instance preservesColimit_finite_toFunctor
+    {J : Type w} [SmallCategory J] [FinCategory J] (K : J ⥤ α)
+    : PreservesColimit K (OrderHom.ofClass f).toFunctor :=
   preservesColimit_of_preserves_colimit_cocone (finiteColimitCocone K).isColimit <|
     (finiteColimitCocone _).isColimit.ofIsoColimit
       (Cocone.ext (eqToIso (show Finset.univ.sup _ = f _ by aesop)) (by subsingleton))
 
-instance preservesColimitsOfShape_finite_toFunctor {J : Type w} [SmallCategory J]
-    [FinCategory J] : PreservesColimitsOfShape J (OrderHom.ofClass f).toFunctor where
+instance preservesColimitsOfShape_finite_toFunctor {J : Type w} [SmallCategory J] [FinCategory J]
+  : PreservesColimitsOfShape J (OrderHom.ofClass f).toFunctor where
 
 instance : PreservesFiniteColimits (OrderHom.ofClass f).toFunctor where
   preservesFiniteColimits _ _ _ := inferInstance
@@ -72,33 +72,33 @@ section
 
 variable [CompleteLattice α] [CompleteLattice β]
 
-instance preservesLimit_toFunctor [sInfHomClass F α β] {J : Type w} [Category.{w'} J]
-    (K : J ⥤ α) : PreservesLimit K (OrderHom.ofClass f).toFunctor :=
+instance preservesLimit_toFunctor [sInfHomClass F α β] {J : Type w} [Category.{w'} J] (K : J ⥤ α)
+    : PreservesLimit K (OrderHom.ofClass f).toFunctor :=
   preservesLimit_of_preserves_limit_cone (limitCone K).isLimit <|
     (limitCone _).isLimit.ofIsoLimit (Cone.ext (eqToIso (by aesop)) (by subsingleton))
 
-instance preservesLimitsOfShape_toFunctor [sInfHomClass F α β] {J : Type w} [Category.{w'} J] :
-    PreservesLimitsOfShape J (OrderHom.ofClass f).toFunctor where
+instance preservesLimitsOfShape_toFunctor [sInfHomClass F α β] {J : Type w} [Category.{w'} J]
+  : PreservesLimitsOfShape J (OrderHom.ofClass f).toFunctor where
 
-instance preservesLimitsOfSize_toFunctor [sInfHomClass F α β] :
-    PreservesLimitsOfSize.{w', w} (OrderHom.ofClass f).toFunctor where
+instance preservesLimitsOfSize_toFunctor [sInfHomClass F α β]
+  : PreservesLimitsOfSize.{w', w} (OrderHom.ofClass f).toFunctor where
 
-instance preservesLimits_toFunctor [sInfHomClass F α β] :
-    PreservesLimits (OrderHom.ofClass f).toFunctor where
+instance preservesLimits_toFunctor [sInfHomClass F α β]
+  : PreservesLimits (OrderHom.ofClass f).toFunctor where
 
-instance preservesColimit_toFunctor [sSupHomClass F α β] {J : Type w} [Category.{w'} J]
-    (K : J ⥤ α) : PreservesColimit K (OrderHom.ofClass f).toFunctor :=
+instance preservesColimit_toFunctor [sSupHomClass F α β] {J : Type w} [Category.{w'} J] (K : J ⥤ α)
+    : PreservesColimit K (OrderHom.ofClass f).toFunctor :=
   preservesColimit_of_preserves_colimit_cocone (colimitCocone K).isColimit <|
     (colimitCocone _).isColimit.ofIsoColimit (Cocone.ext (eqToIso (by aesop)) (by subsingleton))
 
-instance preservesColimitsOfShape_toFunctor [sSupHomClass F α β] {J : Type w} [Category.{w'} J] :
-    PreservesColimitsOfShape J (OrderHom.ofClass f).toFunctor where
+instance preservesColimitsOfShape_toFunctor [sSupHomClass F α β] {J : Type w} [Category.{w'} J]
+  : PreservesColimitsOfShape J (OrderHom.ofClass f).toFunctor where
 
-instance preservesColimitsOfSize_toFunctor [sSupHomClass F α β] :
-    PreservesColimitsOfSize.{w', w} (OrderHom.ofClass f).toFunctor where
+instance preservesColimitsOfSize_toFunctor [sSupHomClass F α β]
+  : PreservesColimitsOfSize.{w', w} (OrderHom.ofClass f).toFunctor where
 
-instance preservesColimits_toFunctor [sSupHomClass F α β] :
-    PreservesColimits (OrderHom.ofClass f).toFunctor where
+instance preservesColimits_toFunctor [sSupHomClass F α β]
+  : PreservesColimits (OrderHom.ofClass f).toFunctor where
 
 end
 

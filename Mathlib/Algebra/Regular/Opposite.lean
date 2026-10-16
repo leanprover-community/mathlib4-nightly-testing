@@ -25,8 +25,7 @@ theorem isRightRegular_op {a : R} : IsRightRegular (op a) ↔ IsLeftRegular a :=
   opEquiv.comp_injective _ |>.trans <| opEquiv.injective_comp _ |>.symm
 
 @[to_additive (attr := simp)]
-theorem isRegular_op {a : R} : IsRegular (op a) ↔ IsRegular a := by
-  simp [isRegular_iff, and_comm]
+theorem isRegular_op {a : R} : IsRegular (op a) ↔ IsRegular a := by simp [isRegular_iff, and_comm]
 
 @[to_additive] protected alias ⟨_, IsLeftRegular.op⟩ := isLeftRegular_op
 @[to_additive] protected alias ⟨_, IsRightRegular.op⟩ := isRightRegular_op
@@ -41,8 +40,7 @@ theorem isRightRegular_unop {a : Rᵐᵒᵖ} : IsRightRegular a.unop ↔ IsLeftR
   isLeftRegular_op.symm
 
 @[to_additive (attr := simp)]
-theorem isRegular_unop {a : Rᵐᵒᵖ} : IsRegular a.unop ↔ IsRegular a :=
-  isRegular_op.symm
+theorem isRegular_unop {a : Rᵐᵒᵖ} : IsRegular a.unop ↔ IsRegular a := isRegular_op.symm
 
 @[to_additive] protected alias ⟨_, IsLeftRegular.unop⟩ := isLeftRegular_unop
 @[to_additive] protected alias ⟨_, IsRightRegular.unop⟩ := isRightRegular_unop

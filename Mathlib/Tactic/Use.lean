@@ -41,14 +41,14 @@ try to synthesize. The third list is a sublist of the second list.
 
 Returns metavariables for all arguments whether or not the metavariables are assigned.
 -/
-def applyTheConstructor (mvarId : MVarId) :
-    MetaM (List MVarId × List MVarId × List MVarId) := do
+def applyTheConstructor (mvarId : MVarId) : MetaM (List MVarId × List MVarId × List MVarId) := do
   mvarId.withContext do
     mvarId.checkNotAssigned `constructor
     let target ← mvarId.getType'
     matchConstInduct target.getAppFn
-      (fun _ => throwTacticEx `constructor mvarId
-                  m!"target is not an inductive datatype{indentExpr target}")
+      (fun _ =>
+        throwTacticEx `constructor mvarId
+          m!"target is not an inductive datatype{indentExpr target}")
       fun ival us => do
         match ival.ctors with
         | [ctor] =>
@@ -68,67 +68,78 @@ def applyTheConstructor (mvarId : MVarId) :
           let e := mkAppN ctorConst args
           let eType ← inferType e
           unless (← withAssignableSyntheticOpaque <| isDefEq eType target) do
-            throwError m!"type mismatch{indentExpr e}\n{← mkHasTypeButIsExpectedMsg eType target}"
+            throwError m!"type mismatch{indentExpr e}\
+              \n{← mkHasTypeButIsExpectedMsg eType target}"
           mvarId.assign e
           return (explicit.toList, implicit.toList, insts.toList)
-        | _ => throwTacticEx `constructor mvarId
-                m!"target inductive type does not have exactly one constructor{indentExpr target}"
+        | _ =>
+          throwTacticEx `constructor mvarId
+            m!"target inductive type does not have exactly one constructor{indentExpr target}"
 
-/-- Use the `args` to refine the goals `gs` in order, but whenever there is a single
+/--
+Use the `args` to refine the goals `gs` in order, but whenever there is a single
 goal remaining then first try applying a single constructor if it's for a single-constructor
 inductive type. In `eager` mode, instead we always first try to refine, and if that fails we
 always try to apply such a constructor no matter if it's the last goal.
 
 Returns the remaining explicit goals `gs`, any goals `acc` due to `refine`, and a sublist of these
 of instance arguments that we should try synthesizing after the loop.
-The new set of goals should be `gs ++ acc`. -/
-partial
-def useLoop (eager : Bool) (gs : List MVarId) (args : List Term) (acc insts : List MVarId) :
-    TermElabM (List MVarId × List MVarId × List MVarId) := do
-  trace[tactic.use] "gs = {gs}\nargs = {args}\nacc = {acc}"
+The new set of goals should be `gs ++ acc`.
+-/
+partial def useLoop (eager : Bool) (gs : List MVarId) (args : List Term) (acc insts : List MVarId)
+    : TermElabM (List MVarId × List MVarId × List MVarId) := do
+  trace[tactic.use] "gs = {gs}\
+    \nargs = {args}\
+    \nacc = {acc}"
   match gs, args with
   | gs, [] =>
     return (gs, acc, insts)
   | [], arg :: _ =>
     throwErrorAt arg "too many arguments supplied to `use`"
-  | g :: gs', arg :: args' => g.withContext do
-    if ← g.isAssigned then
-      -- Goals might become assigned in inductive types with indices.
-      -- Let's check that what's supplied is defeq to what's already there.
-      let e ← Term.elabTermEnsuringType arg (← g.getType)
-      unless ← isDefEq e (.mvar g) do
-        throwErrorAt arg
-          "argument is not definitionally equal to inferred value{indentExpr (.mvar g)}"
-      return ← useLoop eager gs' args' acc insts
-    -- Type ascription is a workaround for `refine` ensuring the type after synthesizing mvars.
-    let refineArg ← `(tactic| refine ($arg : $(← Term.exprToSyntax (← g.getType))))
-    if eager then
-      -- In eager mode, first try refining with the argument before applying the constructor
-      if let some newGoals ← observing? (run g do withoutRecover <| evalTactic refineArg) then
-        return ← useLoop eager gs' args' (acc ++ newGoals) insts
-    if eager || gs'.isEmpty then
-      if let some (expl, impl, insts') ← observing? do
-                try applyTheConstructor g
-                catch e => trace[tactic.use] "Constructor. {e.toMessageData}"; throw e then
-        trace[tactic.use] "expl.length = {expl.length}, impl.length = {impl.length}"
-        return ← useLoop eager (expl ++ gs') args (acc ++ impl) (insts ++ insts')
-    -- In eager mode, the following will give an error, which hopefully is more informative than
-    -- the one provided by `applyTheConstructor`.
-    let newGoals ← run g do evalTactic refineArg
-    useLoop eager gs' args' (acc ++ newGoals) insts
+  | g :: gs', arg :: args' =>
+    g.withContext do
+      if ← g.isAssigned then
+        -- Goals might become assigned in inductive types with indices.
+        -- Let's check that what's supplied is defeq to what's already there.
+        let e ← Term.elabTermEnsuringType arg (← g.getType)
+        unless ← isDefEq e (.mvar g) do
+          throwErrorAt arg
+            "argument is not definitionally equal to inferred value{indentExpr (.mvar g)}"
+        return ← useLoop eager gs' args' acc insts
+      -- Type ascription is a workaround for `refine` ensuring the type after synthesizing mvars.
+      let refineArg ← `(tactic| refine ($arg : $(← Term.exprToSyntax (← g.getType))))
+      if eager then
+        -- In eager mode, first try refining with the argument before applying the constructor
+        if let some newGoals ← observing? (run g do withoutRecover <| evalTactic refineArg) then
+          return ← useLoop eager gs' args' (acc ++ newGoals) insts
+      if eager || gs'.isEmpty then
+        if let some (expl, impl, insts') ←
+            observing? do
+              try
+                applyTheConstructor g
+              catch e =>
+                trace[tactic.use] "Constructor. {e.toMessageData}"; throw e then
+          trace[tactic.use] "expl.length = {expl.length}, impl.length = {impl.length}"
+          return ← useLoop eager (expl ++ gs') args (acc ++ impl) (insts ++ insts')
+      -- In eager mode, the following will give an error, which hopefully is more informative than
+      -- the one provided by `applyTheConstructor`.
+      let newGoals ← run g do evalTactic refineArg
+      useLoop eager gs' args' (acc ++ newGoals) insts
 
 /-- Run the `useLoop` on the main goal then discharge remaining explicit `Prop` arguments. -/
 def runUse (eager : Bool) (discharger : TacticM Unit) (args : List Term) : TacticM Unit := do
-  let egoals ← focus do
-    let (egoals, acc, insts) ← useLoop eager (← getGoals) args [] []
-    -- Try synthesizing instance arguments
-    for inst in insts do
-      if !(← inst.isAssigned) then
-        discard <| inst.withContext <| observing? do inst.assign (← synthInstance (← inst.getType))
-    -- Set the goals.
-    setGoals (egoals ++ acc)
-    pruneSolvedGoals
-    pure egoals
+  let egoals ←
+    focus do
+      let (egoals, acc, insts) ← useLoop eager (← getGoals) args [] []
+      -- Try synthesizing instance arguments
+      for inst in insts do
+        if !(← inst.isAssigned) then
+          discard <| inst.withContext <|
+            observing? do inst.assign (← synthInstance (← inst.getType))
+      -- Set the goals.
+      setGoals (egoals ++ acc)
+      pruneSolvedGoals
+      pure egoals
   -- Run the discharger on non-assigned proposition metavariables
   -- (`trivial` uses `assumption`, which isn't great for non-propositions)
   for g in egoals do
@@ -138,7 +149,8 @@ def runUse (eager : Bool) (discharger : TacticM Unit) (args : List Term) : Tacti
           trace[tactic.use] "running discharger on {g}"
           discard <| run g discharger
 
-/-- `use_discharger` is used by `use` to discharge side goals.
+/--
+`use_discharger` is used by `use` to discharge side goals.
 
 This is an extensible tactic using `macro_rules`. By default it can:
 * rewrite a goal `∃ _ : p, q` into `p ∧ q` if `p` is in Prop;
@@ -149,16 +161,23 @@ This is an extensible tactic using `macro_rules`. By default it can:
 -/
 syntax "use_discharger" : tactic
 
-macro_rules | `(tactic| use_discharger) => `(tactic| apply exists_prop.mpr <;> use_discharger)
-macro_rules | `(tactic| use_discharger) => `(tactic| apply And.intro <;> use_discharger)
-macro_rules | `(tactic| use_discharger) => `(tactic| rfl)
-macro_rules | `(tactic| use_discharger) => `(tactic| assumption)
-macro_rules | `(tactic| use_discharger) => `(tactic| apply True.intro)
+macro_rules
+  | `(tactic| use_discharger) => `(tactic| apply exists_prop.mpr <;> use_discharger)
+macro_rules
+  | `(tactic| use_discharger) => `(tactic| apply And.intro <;> use_discharger)
+macro_rules
+  | `(tactic| use_discharger) => `(tactic| rfl)
+macro_rules
+  | `(tactic| use_discharger) => `(tactic| assumption)
+macro_rules
+  | `(tactic| use_discharger) => `(tactic| apply True.intro)
 
-/-- Returns a `TacticM Unit` that either runs the tactic sequence from `discharger?` if it's
-non-`none`, or it does `try with_reducible use_discharger`. -/
-def mkUseDischarger (discharger? : Option (TSyntax ``Parser.Tactic.discharger)) :
-    TacticM (TacticM Unit) := do
+/--
+Returns a `TacticM Unit` that either runs the tactic sequence from `discharger?` if it's
+non-`none`, or it does `try with_reducible use_discharger`.
+-/
+def mkUseDischarger (discharger? : Option (TSyntax ``Parser.Tactic.discharger))
+    : TacticM (TacticM Unit) := do
   let discharger ←
     if let some disch := discharger? then
       match disch with
@@ -215,8 +234,8 @@ called `use_discharger` to discharge goals, so `use! 42` will close the goal in 
 -/
 ```
 -/
-elab (name := useSyntax)
-    "use" discharger?:(Parser.Tactic.discharger)? ppSpace args:term,+ : tactic => do
+elab (name := useSyntax) "use" discharger?:(Parser.Tactic.discharger)? ppSpace args:term,+
+    : tactic => do
   runUse false (← mkUseDischarger discharger?) args.getElems.toList
 
 @[tactic_alt useSyntax]

@@ -20,8 +20,7 @@ info: Try this:
   -- no goals
 -/
 #guard_msgs in
-example (f : α → β) (L M : List α) : (L ++ M).map f = L.map f ++ M.map f := by
-  rw?
+example (f : α → β) (L M : List α) : (L ++ M).map f = L.map f ++ M.map f := by rw?
 
 open CategoryTheory
 
@@ -31,8 +30,7 @@ info: Try this:
   -- no goals
 -/
 #guard_msgs in
-example [Category C] {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) : f ≫ 𝟙 _ ≫ g = f ≫ g := by
-  rw?
+example [Category C] {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) : f ≫ 𝟙 _ ≫ g = f ≫ g := by rw?
 
 /--
 info: Try this:
@@ -40,8 +38,7 @@ info: Try this:
   -- no goals
 -/
 #guard_msgs in
-example [Group G] (h : G) : 1 * h = h := by
-  rw? [-mul_left_eq_self] -- exclude deprecated name for mul_eq_right, it is found first otherwise
+example [Group G] (h : G) : 1 * h = h := by rw? [-mul_left_eq_self] -- exclude deprecated name for mul_eq_right, it is found first otherwise
 
 #adaptation_note /-- nightly-2024-03-27
 `rw?` upstream no longer uses `MVarId.applyRefl`, so it can't deal with `Iff` goals.
@@ -55,12 +52,12 @@ This may need to wait until the next release. -/
 -- lemma prime_of_prime (n : ℕ) : Prime n ↔ Nat.Prime n := by
 --   rw?
 
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example [Group G] (h : G) (hyp : g * 1 = h) : g = h := by
   rw? at hyp
   assumption
 
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example : ∀ (x y : ℕ), x ≤ y := by
   intro x y
   rw? -- Used to be an error here https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/panic.20and.20error.20with.20rw.3F/near/370495531
@@ -76,7 +73,7 @@ axiom K : Type
 
 noncomputable def foo : K → K := test_sorry
 
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example : foo x = 1 ↔ ∃ k : ℤ, x = k := by
   rw? -- Used to panic, see https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/panic.20and.20error.20with.20rw.3F/near/370598036
   exact test_sorry
@@ -85,22 +82,21 @@ lemma six_eq_seven : 6 = 7 := test_sorry
 
 -- This test also verifies that we are removing duplicate results;
 -- it previously also reported `Nat.cast_ofNat`
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example : ∀ (x : ℕ), x ≤ 6 := by
   rw?
   guard_target = ∀ (x : ℕ), x ≤ 7
   exact test_sorry
 
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example : ∀ (x : ℕ) (_w : x ≤ 6), x ≤ 8 := by
   rw?
   guard_target = ∀ (x : ℕ) (_w : x ≤ 7), x ≤ 8
   exact test_sorry
 
 -- check we can look inside let expressions
-#guard_msgs(drop info) in
-example (n : ℕ) : let y := 3; n + y = 3 + n := by
-  rw?
+#guard_msgs (drop info) in
+example (n : ℕ) : let y := 3; n + y = 3 + n := by rw?
 
 axiom α : Type
 axiom f : α → α
@@ -110,22 +106,21 @@ axiom f_eq (n) : f n = z
 -- Check that the same lemma isn't used multiple times.
 -- This used to report two redundant copies of `f_eq`.
 -- It be lovely if `rw?` could produce two *different* rewrites by `f_eq` here!
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 lemma test : f n = f m := by
   fail_if_success rw? [-f_eq] -- Check that we can forbid lemmas.
   rw?
   rw [f_eq]
 
 -- Check that we can rewrite by local hypotheses.
-#guard_msgs(drop info) in
-example (h : 1 = 2) : 2 = 1 := by
-  rw?
+#guard_msgs (drop info) in
+example (h : 1 = 2) : 2 = 1 := by rw?
 
 def testConst : Nat := 4
 
 -- This used to (incorrectly!) succeed because `rw?` would try `rfl`,
 -- rather than `withReducible` `rfl`.
-#guard_msgs(drop info) in
+#guard_msgs (drop info) in
 example : testConst = 4 := by
   rw?
   exact test_sorry
@@ -137,8 +132,7 @@ info: Try this:
   -- no goals
 -/
 #guard_msgs in
-example {P : Prop} (p : P) (h : P → 1 = 2) : 2 = 1 := by
-  rw?
+example {P : Prop} (p : P) (h : P → 1 = 2) : 2 = 1 := by rw?
 
 -- Use `solve_by_elim` to discharge side conditions.
 /--
@@ -147,9 +141,7 @@ info: Try this:
   -- no goals
 -/
 #guard_msgs in
-example {P Q : Prop} (p : P) (f : P → Q) (h : Q → 1 = 2) : 2 = 1 := by
-  rw?
-
+example {P Q : Prop} (p : P) (f : P → Q) (h : Q → 1 = 2) : 2 = 1 := by rw?
 
 -- Rewrite in reverse, discharging side conditions from local hypotheses.
 /--

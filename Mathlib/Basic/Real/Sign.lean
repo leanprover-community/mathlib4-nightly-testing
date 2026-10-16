@@ -26,13 +26,19 @@ sign function
 
 @[expose] public section
 
-
 namespace Real
 
-/-- The sign function that maps negative real numbers to -1, positive numbers to 1, and 0
-otherwise. -/
+/--
+The sign function that maps negative real numbers to -1, positive numbers to 1, and 0
+otherwise.
+-/
 noncomputable def sign (r : ℝ) : ℝ :=
-  if r < 0 then -1 else if 0 < r then 1 else 0
+  if r < 0 then
+    -1
+  else if 0 < r then
+    1
+  else
+    0
 
 theorem sign_of_neg {r : ℝ} (hr : r < 0) : sign r = -1 := by rw [sign, ite_eq_left hr]
 
@@ -43,9 +49,7 @@ theorem sign_of_pos {r : ℝ} (hr : 0 < r) : sign r = 1 := by
 theorem sign_zero : sign 0 = 0 := by
   rw [sign, ite_eq_right (lt_irrefl _), ite_eq_right (lt_irrefl _)]
 
-@[simp]
-theorem sign_one : sign 1 = 1 :=
-  sign_of_pos <| by simp
+@[simp] theorem sign_one : sign 1 = 1 := sign_of_pos <| by simp
 
 theorem sign_apply_eq (r : ℝ) : sign r = -1 ∨ sign r = 0 ∨ sign r = 1 := by
   obtain hn | rfl | hp := lt_trichotomy r (0 : ℝ)
@@ -74,7 +78,7 @@ theorem sign_intCast (z : ℤ) : sign (z : ℝ) = ↑(Int.sign z) := by
   · rw [Int.cast_zero, sign_zero, Int.sign_zero, Int.cast_zero]
   · rw [sign_of_pos (Int.cast_pos.mpr hp), Int.sign_eq_one_of_pos hp, Int.cast_one]
 
-theorem sign_neg {r : ℝ} : sign (-r) = -sign r := by
+theorem sign_neg {r : ℝ} : sign (-r) = - sign r := by
   obtain hn | rfl | hp := lt_trichotomy r (0 : ℝ)
   · rw [sign_of_neg hn, sign_of_pos (neg_pos.mpr hn), neg_neg]
   · rw [sign_zero, neg_zero, sign_zero]

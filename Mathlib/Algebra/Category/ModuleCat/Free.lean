@@ -34,29 +34,33 @@ open CategoryTheory Module
 
 namespace ModuleCat
 
-variable {ι ι' R : Type*} [Ring R] {S : ShortComplex (ModuleCat R)}
-  (hS : S.Exact) (hS' : S.ShortExact) {v : ι → S.X₁}
+variable
+  {ι ι' R : Type*} [Ring R]
+  {S : ShortComplex (ModuleCat R)} (hS : S.Exact) (hS' : S.ShortExact)
+  {v : ι → S.X₁}
 
 open CategoryTheory Submodule Set
 
 section LinearIndependent
 
-variable (hv : LinearIndependent R v) {u : ι ⊕ ι' → S.X₂}
-  (hw : LinearIndependent R (S.g ∘ u ∘ Sum.inr))
+variable
+  (hv : LinearIndependent R v)
+  {u : ι ⊕ ι' → S.X₂} (hw : LinearIndependent R (S.g ∘ u ∘ Sum.inr))
   (hm : Mono S.f) (huv : u ∘ Sum.inl = S.f ∘ v)
 
 section
 include hS hw huv
 
-theorem disjoint_span_sum : Disjoint (span R (range (u ∘ Sum.inl)))
-    (span R (range (u ∘ Sum.inr))) := by
+theorem disjoint_span_sum
+    : Disjoint (span R (range (u ∘ Sum.inl))) (span R (range (u ∘ Sum.inr))) := by
   rw [huv, disjoint_comm]
   refine Disjoint.mono_right (span_mono (range_comp_subset_range _ _)) ?_
   rw [← LinearMap.coe_range, span_eq (LinearMap.range S.f.hom), hS.moduleCat_range_eq_ker]
   exact range_ker_disjoint hw
 
 include hv hm in
-/-- In the commutative diagram
+/--
+In the commutative diagram
 ```
              f     g
     0 --→ X₁ --→ X₂ --→ X₃
@@ -66,11 +70,13 @@ include hv hm in
 ```
 where the top row is an exact sequence of modules and the maps on the bottom are `Sum.inl` and
 `Sum.inr`. If `u` is injective and `v` and `w` are linearly independent, then `u` is linearly
-independent. -/
+independent.
+-/
 theorem linearIndependent_leftExact : LinearIndependent R u := by
   rw [linearIndependent_sum]
   refine ⟨?_, LinearIndependent.of_comp S.g.hom hw, disjoint_span_sum hS hw huv⟩
-  rw [huv, LinearMap.linearIndependent_iff S.f.hom]; swap
+  rw [huv, LinearMap.linearIndependent_iff S.f.hom]
+  swap
   · rw [LinearMap.ker_eq_bot, ← mono_iff_injective]
     infer_instance
   exact hv
@@ -78,10 +84,12 @@ theorem linearIndependent_leftExact : LinearIndependent R u := by
 end
 
 include hS' hv in
-/-- Given a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0` of `R`-modules and linearly independent
-families `v : ι → N` and `w : ι' → P`, we get a linearly independent family `ι ⊕ ι' → M` -/
-theorem linearIndependent_shortExact {w : ι' → S.X₃} (hw : LinearIndependent R w) :
-    LinearIndependent R (Sum.elim (S.f ∘ v) (S.g.hom.toFun.invFun ∘ w)) := by
+/--
+Given a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0` of `R`-modules and linearly independent
+families `v : ι → N` and `w : ι' → P`, we get a linearly independent family `ι ⊕ ι' → M`
+-/
+theorem linearIndependent_shortExact {w : ι' → S.X₃} (hw : LinearIndependent R w)
+    : LinearIndependent R (Sum.elim (S.f ∘ v) (S.g.hom.toFun.invFun ∘ w)) := by
   apply linearIndependent_leftExact hS'.exact hv _ hS'.mono_f rfl
   dsimp
   convert hw
@@ -93,7 +101,8 @@ end LinearIndependent
 section Span
 
 include hS in
-/-- In the commutative diagram
+/--
+In the commutative diagram
 ```
     f     g
  X₁ --→ X₂ --→ X₃
@@ -102,11 +111,12 @@ v|     u|     w|
  ι  → ι ⊕ ι' ← ι'
 ```
 where the top row is an exact sequence of modules and the maps on the bottom are `Sum.inl` and
-`Sum.inr`. If `v` spans `X₁` and `w` spans `X₃`, then `u` spans `X₂`. -/
-theorem span_exact {β : Type*} {u : ι ⊕ β → S.X₂} (huv : u ∘ Sum.inl = S.f ∘ v)
-    (hv : ⊤ ≤ span R (range v))
-    (hw : ⊤ ≤ span R (range (S.g ∘ u ∘ Sum.inr))) :
-    ⊤ ≤ span R (range u) := by
+`Sum.inr`. If `v` spans `X₁` and `w` spans `X₃`, then `u` spans `X₂`.
+-/
+theorem span_exact
+    {β : Type*} {u : ι ⊕ β → S.X₂} (huv : u ∘ Sum.inl = S.f ∘ v)
+    (hv : ⊤ ≤ span R (range v)) (hw : ⊤ ≤ span R (range (S.g ∘ u ∘ Sum.inr)))
+    : ⊤ ≤ span R (range u) := by
   intro m _
   have hgm : S.g m ∈ span R (range (S.g ∘ u ∘ Sum.inr)) := hw mem_top
   rw [Finsupp.mem_span_range_iff_exists_finsupp] at hgm
@@ -124,8 +134,9 @@ theorem span_exact {β : Type*} {u : ι ⊕ β → S.X₂} (huv : u ∘ Sum.inl 
   rw [← hn, map_finsuppSum] at hnm
   rw [← sub_add_cancel m m', ← hnm]
   simp only [map_smul]
-  have hn' : (Finsupp.sum cn fun a b ↦ b • S.f (v a)) =
-      (Finsupp.sum cn fun a b ↦ b • u (Sum.inl a)) := by
+  have hn'
+      : (Finsupp.sum cn fun a b ↦ b • S.f (v a))
+        = (Finsupp.sum cn fun a b ↦ b • u (Sum.inl a)) := by
     congr; ext a b; rw [← Function.comp_apply (f := S.f), ← huv, Function.comp_apply]
   rw [hn']
   apply add_mem
@@ -137,11 +148,13 @@ theorem span_exact {β : Type*} {u : ι ⊕ β → S.X₂} (huv : u ∘ Sum.inl 
     rw [Finsupp.sum_mapDomain_index_inj Sum.inr_injective]
 
 include hS in
-/-- Given an exact sequence `X₁ ⟶ X₂ ⟶ X₃ ⟶ 0` of `R`-modules and spanning
-families `v : ι → X₁` and `w : ι' → X₃`, we get a spanning family `ι ⊕ ι' → X₂` -/
-theorem span_rightExact {w : ι' → S.X₃} (hv : ⊤ ≤ span R (range v))
-    (hw : ⊤ ≤ span R (range w)) (hE : Epi S.g) :
-    ⊤ ≤ span R (range (Sum.elim (S.f ∘ v) (S.g.hom.toFun.invFun ∘ w))) := by
+/--
+Given an exact sequence `X₁ ⟶ X₂ ⟶ X₃ ⟶ 0` of `R`-modules and spanning
+families `v : ι → X₁` and `w : ι' → X₃`, we get a spanning family `ι ⊕ ι' → X₂`
+-/
+theorem span_rightExact
+    {w : ι' → S.X₃} (hv : ⊤ ≤ span R (range v)) (hw : ⊤ ≤ span R (range w)) (hE : Epi S.g)
+    : ⊤ ≤ span R (range (Sum.elim (S.f ∘ v) (S.g.hom.toFun.invFun ∘ w))) := by
   refine span_exact hS ?_ hv ?_
   · simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, Sum.elim_comp_inl]
   · convert hw
@@ -152,38 +165,39 @@ theorem span_rightExact {w : ι' → S.X₃} (hv : ⊤ ≤ span R (range v))
 
 end Span
 
-/-- In a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0`, given bases for `X₁` and `X₃`
-indexed by `ι` and `ι'` respectively, we get a basis for `X₂` indexed by `ι ⊕ ι'`. -/
-noncomputable
-def Basis.ofShortExact
-    (bN : Basis ι R S.X₁) (bP : Basis ι' R S.X₃) : Basis (ι ⊕ ι') R S.X₂ :=
+/--
+In a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0`, given bases for `X₁` and `X₃`
+indexed by `ι` and `ι'` respectively, we get a basis for `X₂` indexed by `ι ⊕ ι'`.
+-/
+noncomputable def Basis.ofShortExact (bN : Basis ι R S.X₁) (bP : Basis ι' R S.X₃)
+    : Basis (ι ⊕ ι') R S.X₂ :=
   Basis.mk (linearIndependent_shortExact hS' bN.linearIndependent bP.linearIndependent)
     (span_rightExact hS'.exact (le_of_eq (bN.span_eq.symm)) (le_of_eq (bP.span_eq.symm)) hS'.epi_g)
 
 include hS'
 
-/-- In a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0`, if `X₁` and `X₃` are free,
-then `X₂` is free. -/
-theorem free_shortExact [Module.Free R S.X₁] [Module.Free R S.X₃] :
-    Module.Free R S.X₂ :=
+/--
+In a short exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0`, if `X₁` and `X₃` are free,
+then `X₂` is free.
+-/
+theorem free_shortExact [Module.Free R S.X₁] [Module.Free R S.X₃] : Module.Free R S.X₂ :=
   Module.Free.of_basis (Basis.ofShortExact hS' (Module.Free.chooseBasis R S.X₁)
     (Module.Free.chooseBasis R S.X₃))
 
-theorem free_shortExact_rank_add [Module.Free R S.X₁] [Module.Free R S.X₃]
-    [StrongRankCondition R] :
-    Module.rank R S.X₂ = Module.rank R S.X₁ + Module.rank R S.X₃ := by
+theorem free_shortExact_rank_add [Module.Free R S.X₁] [Module.Free R S.X₃] [StrongRankCondition R]
+    : Module.rank R S.X₂ = Module.rank R S.X₁ + Module.rank R S.X₃ := by
   have := free_shortExact hS'
   rw [Module.Free.rank_eq_card_chooseBasisIndex, Module.Free.rank_eq_card_chooseBasisIndex R S.X₁,
     Module.Free.rank_eq_card_chooseBasisIndex R S.X₃, Cardinal.add_def, Cardinal.eq]
-  exact ⟨Basis.indexEquiv (Module.Free.chooseBasis R S.X₂) (Basis.ofShortExact hS'
-    (Module.Free.chooseBasis R S.X₁) (Module.Free.chooseBasis R S.X₃))⟩
+  exact ⟨Basis.indexEquiv (Module.Free.chooseBasis R S.X₂)
+    (Basis.ofShortExact hS' (Module.Free.chooseBasis R S.X₁) (Module.Free.chooseBasis R S.X₃))⟩
 
-theorem free_shortExact_finrank_add {n p : ℕ} [Module.Free R S.X₁] [Module.Free R S.X₃]
-    [Module.Finite R S.X₁] [Module.Finite R S.X₃]
-    (hN : Module.finrank R S.X₁ = n)
-    (hP : Module.finrank R S.X₃ = p)
-    [StrongRankCondition R] :
-    finrank R S.X₂ = n + p := by
+theorem free_shortExact_finrank_add
+    {n p : ℕ}
+    [Module.Free R S.X₁] [Module.Free R S.X₃] [Module.Finite R S.X₁] [Module.Finite R S.X₃]
+    (hN : Module.finrank R S.X₁ = n) (hP : Module.finrank R S.X₃ = p)
+    [StrongRankCondition R]
+    : finrank R S.X₂ = n + p := by
   apply finrank_eq_of_rank_eq
   rw [free_shortExact_rank_add hS', ← hN, ← hP]
   simp only [Nat.cast_add, finrank_eq_rank]

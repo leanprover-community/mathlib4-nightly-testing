@@ -46,8 +46,8 @@ out of `P` preserves epimorphisms.
 -/
 abbrev InternallyProjective (P : C) := isInternallyProjective.Is P
 
-instance InternallyProjective.preserves_epi (P : C) [InternallyProjective P] :
-    (ihom P).PreservesEpimorphisms :=
+instance InternallyProjective.preserves_epi (P : C) [InternallyProjective P]
+    : (ihom P).PreservesEpimorphisms :=
   isInternallyProjective.prop_of_is P
 
 instance : (isInternallyProjective (C := C)).IsStableUnderRetracts where

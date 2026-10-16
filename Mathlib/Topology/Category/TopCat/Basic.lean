@@ -29,8 +29,10 @@ universe u
 
 /-- The category of topological spaces. -/
 structure TopCat where
-  /-- The object in `TopCat` associated to a type equipped with the appropriate
-  typeclasses. -/
+  /--
+  The object in `TopCat` associated to a type equipped with the appropriate
+  typeclasses.
+  -/
   of ::
   /-- The underlying type. -/
   carrier : Type u
@@ -40,8 +42,10 @@ section Notation
 
 open Lean.PrettyPrinter.Delaborator
 
-/-- This prints `TopCat.of X` as `↧X`, and in particular prevents it being printed as
-`{ carrier := X, str := ... }` by `delabStructureInstance`. -/
+/--
+This prints `TopCat.of X` as `↧X`, and in particular prevents it being printed as
+`{ carrier := X, str := ... }` by `delabStructureInstance`.
+-/
 @[app_delab TopCat.of]
 meta def TopCat.delabOf : Delab := CategoryTheory.delabOf
 
@@ -53,13 +57,11 @@ initialize_simps_projections TopCat (-str)
 
 namespace TopCat
 
-instance : CoeSort (TopCat) (Type u) :=
-  ⟨TopCat.carrier⟩
+instance : CoeSort (TopCat) (Type u) := ⟨TopCat.carrier⟩
 
 attribute [coe] TopCat.carrier
 
-lemma coe_of (X : Type u) [TopologicalSpace X] : (of X : Type u) = X :=
-  rfl
+lemma coe_of (X : Type u) [TopologicalSpace X] : (of X : Type u) = X := rfl
 
 lemma of_carrier (X : TopCat.{u}) : of X = X := rfl
 
@@ -81,16 +83,14 @@ instance : ConcreteCategory.{u} TopCat (fun X Y => C(X, Y)) where
   ofHom f := ⟨f⟩
 
 /-- Turn a morphism in `TopCat` back into a `ContinuousMap`. -/
-abbrev Hom.hom {X Y : TopCat.{u}} (f : Hom X Y) :=
-  ConcreteCategory.hom (C := TopCat) f
+abbrev Hom.hom {X Y : TopCat.{u}} (f : Hom X Y) := ConcreteCategory.hom (C := TopCat) f
 
 /-- Typecheck a `ContinuousMap` as a morphism in `TopCat`. -/
 abbrev ofHom {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) : of X ⟶ of Y :=
   ConcreteCategory.ofHom (C := TopCat) f
 
 /-- Use the `ConcreteCategory.hom` projection for `@[simps]` lemmas. -/
-def Hom.Simps.hom (X Y : TopCat) (f : Hom X Y) :=
-  f.hom
+def Hom.Simps.hom (X Y : TopCat) (f : Hom X Y) := f.hom
 
 initialize_simps_projections Hom (hom' → hom)
 
@@ -98,58 +98,53 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp]
-lemma hom_id {X : TopCat.{u}} : (𝟙 X : X ⟶ X).hom = ContinuousMap.id X := rfl
+@[simp] lemma hom_id {X : TopCat.{u}} : (𝟙 X : X ⟶ X).hom = ContinuousMap.id X := rfl
 
-@[simp]
-theorem id_app (X : TopCat.{u}) (x : ↑X) : (𝟙 X : X ⟶ X) x = x := rfl
+@[simp] theorem id_app (X : TopCat.{u}) (x : ↑X) : (𝟙 X : X ⟶ X) x = x := rfl
 
 @[simp] theorem coe_id (X : TopCat.{u}) : (𝟙 X : X → X) = id := rfl
 
 @[simp]
-lemma hom_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom = g.hom.comp f.hom := rfl
+lemma hom_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).hom = g.hom.comp f.hom := rfl
 
 @[simp]
-theorem comp_app {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-    (f ≫ g : X → Z) x = g (f x) := rfl
+theorem comp_app {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X)
+    : (f ≫ g : X → Z) x = g (f x) :=
+  rfl
 
-@[simp] theorem coe_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g : X → Z) = g ∘ f := rfl
+@[simp]
+theorem coe_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[ext]
-lemma hom_ext {X Y : TopCat.{u}} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
-  Hom.ext hf
+@[ext] lemma hom_ext {X Y : TopCat.{u}} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
 @[ext]
 lemma ext {X Y : TopCat.{u}} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
 @[simp]
-lemma hom_ofHom {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) :
-    (ofHom f).hom = f := rfl
+lemma hom_ofHom {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y))
+    : (ofHom f).hom = f :=
+  rfl
 
-@[simp]
-lemma ofHom_hom {X Y : TopCat.{u}} (f : X ⟶ Y) :
-    ofHom (Hom.hom f) = f := rfl
+@[simp] lemma ofHom_hom {X Y : TopCat.{u}} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
 
 @[simp]
 lemma ofHom_id {X : Type u} [TopologicalSpace X] : ofHom (ContinuousMap.id X) = 𝟙 (of X) := rfl
 
 @[simp]
-lemma ofHom_comp {X Y Z : Type u} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
-    (f : C(X, Y)) (g : C(Y, Z)) :
-    ofHom (g.comp f) = ofHom f ≫ ofHom g :=
+lemma ofHom_comp
+    {X Y Z : Type u} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
+    (f : C(X, Y)) (g : C(Y, Z))
+    : ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-lemma ofHom_apply {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) (x : X) :
-    (ofHom f) x = f x := rfl
+lemma ofHom_apply {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) (x : X)
+    : (ofHom f) x = f x :=
+  rfl
 
-lemma hom_inv_id_apply {X Y : TopCat.{u}} (f : X ≅ Y) (x : X) : f.inv (f.hom x) = x := by
-  simp
+lemma hom_inv_id_apply {X Y : TopCat.{u}} (f : X ≅ Y) (x : X) : f.inv (f.hom x) = x := by simp
 
-lemma inv_hom_id_apply {X Y : TopCat.{u}} (f : X ≅ Y) (y : Y) : f.hom (f.inv y) = y := by
-  simp
+lemma inv_hom_id_apply {X Y : TopCat.{u}} (f : X ≅ Y) (y : Y) : f.hom (f.inv y) = y := by simp
 
 /-- Morphisms in `TopCat` are equivalent to continuous maps. -/
 @[simps]
@@ -162,26 +157,21 @@ Replace a function coercion for a morphism `TopCat.of X ⟶ TopCat.of Y` with th
 equal function coercion for a continuous map `C(X, Y)`.
 -/
 @[deprecated "No replacement" (since := "2026-04-23")]
-theorem coe_of_of {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    {f : C(X, Y)} {x} :
-    @DFunLike.coe (TopCat.of X ⟶ TopCat.of Y) ((CategoryTheory.forget TopCat).obj (TopCat.of X))
-      (fun _ ↦ (CategoryTheory.forget TopCat).obj ↧Y) ConcreteCategory.instFunLike
-      (ofHom f) x =
-    @DFunLike.coe C(X, Y) X
-      (fun _ ↦ Y) _
-      f x :=
+theorem coe_of_of {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] {f : C(X, Y)} {x}
+    : @DFunLike.coe (TopCat.of X ⟶ TopCat.of Y) ((CategoryTheory.forget TopCat).obj (TopCat.of X))
+        (fun _ ↦ (CategoryTheory.forget TopCat).obj ↧Y)
+        ConcreteCategory.instFunLike (ofHom f) x
+      = @DFunLike.coe (C(X, Y)) X (fun _ ↦ Y) _ f x :=
   rfl
 
-instance inhabited : Inhabited TopCat :=
-  ⟨↧Empty⟩
+instance inhabited : Inhabited TopCat := ⟨↧Empty⟩
 
 /-- The discrete topology on any type. -/
 def discrete : Type u ⥤ TopCat.{u} where
   obj X := @of X ⊥
   map f := @ofHom _ _ ⊥ ⊥ <| @ContinuousMap.mk _ _ ⊥ ⊥ f continuous_bot
 
-instance {X : Type u} : DiscreteTopology (discrete.obj X) :=
-  ⟨rfl⟩
+instance {X : Type u} : DiscreteTopology (discrete.obj X) := ⟨rfl⟩
 
 /-- The trivial topology on any type. -/
 def trivial : Type u ⥤ TopCat.{u} where
@@ -214,35 +204,35 @@ theorem of_homeoOfIso {X Y : TopCat.{u}} (f : X ≅ Y) : isoOfHomeo (homeoOfIso 
   ext
   rfl
 
-lemma isIso_of_bijective_of_isOpenMap {X Y : TopCat.{u}} (f : X ⟶ Y)
-    (hfbij : Function.Bijective f) (hfcl : IsOpenMap f) : IsIso f :=
-  let e : X ≃ₜ Y :=
-    (Equiv.ofBijective f hfbij).toHomeomorphOfContinuousOpen f.hom.continuous hfcl
+lemma isIso_of_bijective_of_isOpenMap
+    {X Y : TopCat.{u}} (f : X ⟶ Y) (hfbij : Function.Bijective f) (hfcl : IsOpenMap f)
+    : IsIso f :=
+  let e : X ≃ₜ Y := (Equiv.ofBijective f hfbij).toHomeomorphOfContinuousOpen f.hom.continuous hfcl
   inferInstanceAs <| IsIso (TopCat.isoOfHomeo e).hom
 
-lemma isIso_of_bijective_of_isClosedMap {X Y : TopCat.{u}} (f : X ⟶ Y)
-    (hfbij : Function.Bijective f) (hfcl : IsClosedMap f) : IsIso f :=
-  let e : X ≃ₜ Y :=
-    (Equiv.ofBijective f hfbij).toHomeomorphOfContinuousClosed f.hom.continuous hfcl
+lemma isIso_of_bijective_of_isClosedMap
+    {X Y : TopCat.{u}} (f : X ⟶ Y) (hfbij : Function.Bijective f) (hfcl : IsClosedMap f)
+    : IsIso f :=
+  let e : X ≃ₜ Y := (Equiv.ofBijective f hfbij).toHomeomorphOfContinuousClosed f.hom.continuous hfcl
   inferInstanceAs <| IsIso (TopCat.isoOfHomeo e).hom
 
-lemma isIso_iff_isHomeomorph {X Y : TopCat.{u}} (f : X ⟶ Y) :
-    IsIso f ↔ IsHomeomorph f :=
-  ⟨fun _ ↦ (homeoOfIso (asIso f)).isHomeomorph,
-    fun H ↦ isIso_of_bijective_of_isOpenMap _ H.bijective H.isOpenMap⟩
+lemma isIso_iff_isHomeomorph {X Y : TopCat.{u}} (f : X ⟶ Y) : IsIso f ↔ IsHomeomorph f := ⟨
+  fun _ ↦ (homeoOfIso (asIso f)).isHomeomorph,
+  fun H ↦ isIso_of_bijective_of_isOpenMap _ H.bijective H.isOpenMap
+⟩
 
-theorem isOpenEmbedding_iff_comp_isIso {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g] :
-    IsOpenEmbedding (f ≫ g) ↔ IsOpenEmbedding f :=
+theorem isOpenEmbedding_iff_comp_isIso {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g]
+    : IsOpenEmbedding (f ≫ g) ↔ IsOpenEmbedding f :=
   (TopCat.homeoOfIso (asIso g)).isOpenEmbedding.of_comp_iff f
 
 @[simp]
-theorem isOpenEmbedding_iff_comp_isIso' {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g] :
-    IsOpenEmbedding (g ∘ f) ↔ IsOpenEmbedding f := by
+theorem isOpenEmbedding_iff_comp_isIso' {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g]
+    : IsOpenEmbedding (g ∘ f) ↔ IsOpenEmbedding f := by
   simp only
   exact isOpenEmbedding_iff_comp_isIso f g
 
-theorem isOpenEmbedding_iff_isIso_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso f] :
-    IsOpenEmbedding (f ≫ g) ↔ IsOpenEmbedding g := by
+theorem isOpenEmbedding_iff_isIso_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso f]
+    : IsOpenEmbedding (f ≫ g) ↔ IsOpenEmbedding g := by
   constructor
   · intro h
     convert h.comp (TopCat.homeoOfIso (asIso f).symm).isOpenEmbedding
@@ -250,25 +240,22 @@ theorem isOpenEmbedding_iff_isIso_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y
   · exact fun h => h.comp (TopCat.homeoOfIso (asIso f)).isOpenEmbedding
 
 @[simp]
-theorem isOpenEmbedding_iff_isIso_comp' {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso f] :
-    IsOpenEmbedding (g ∘ f) ↔ IsOpenEmbedding g := by
+theorem isOpenEmbedding_iff_isIso_comp' {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso f]
+    : IsOpenEmbedding (g ∘ f) ↔ IsOpenEmbedding g := by
   simp only
   exact isOpenEmbedding_iff_isIso_comp f g
 
 /-- The `MorphismProperty` in `TopCat` of a morphism being an embedding. -/
-abbrev isEmbedding : MorphismProperty TopCat :=
-  fun ⦃A X : TopCat⦄ (f : A ⟶ X) ↦ Topology.IsEmbedding f.hom
+abbrev isEmbedding : MorphismProperty TopCat := fun ⦃A X : TopCat⦄ (f : A ⟶ X) ↦
+  Topology.IsEmbedding f.hom
 
 @[simp]
 lemma isEmbedding_iff ⦃A X : TopCat⦄ (f : A ⟶ X) : isEmbedding f ↔ Topology.IsEmbedding f.hom :=
   .rfl
 
 /-- The constant morphism `X ⟶ Y` in `TopCat` given by `y : Y`. -/
-def const {X Y : TopCat.{u}} (y : Y) : X ⟶ Y :=
-  ofHom ⟨fun _ ↦ y, by fun_prop⟩
+def const {X Y : TopCat.{u}} (y : Y) : X ⟶ Y := ofHom ⟨fun _ ↦ y, by fun_prop⟩
 
-@[simp]
-lemma const_apply {X Y : TopCat.{u}} (y : Y) (x : X) :
-    const y x = y := rfl
+@[simp] lemma const_apply {X Y : TopCat.{u}} (y : Y) (x : X) : const y x = y := rfl
 
 end TopCat

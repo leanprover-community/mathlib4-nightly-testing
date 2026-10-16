@@ -27,20 +27,22 @@ theorem frobenius_inj : Function.Injective (frobenius R p) :=
 
 end
 
-/-- If `ringChar R = 2`, where `R` is a finite reduced commutative ring,
-then every `a : R` is a square. -/
-theorem isSquare_of_charTwo' {R : Type*} [Finite R] [CommRing R] [IsReduced R] [CharP R 2]
-    (a : R) : IsSquare a := by
+/--
+If `ringChar R = 2`, where `R` is a finite reduced commutative ring,
+then every `a : R` is a square.
+-/
+theorem isSquare_of_charTwo' {R : Type*} [Finite R] [CommRing R] [IsReduced R] [CharP R 2] (a : R)
+    : IsSquare a := by
   cases nonempty_fintype R
-  exact
-    Exists.imp (fun b h => pow_two b ▸ Eq.symm h)
-      (((Fintype.bijective_iff_injective_and_card _).mpr ⟨frobenius_inj R 2, rfl⟩).surjective a)
+  exact Exists.imp
+    (fun b h => pow_two b ▸ Eq.symm h)
+    (((Fintype.bijective_iff_injective_and_card _).mpr ⟨frobenius_inj R 2, rfl⟩).surjective a)
 
 variable {R : Type*} [CommRing R] [IsReduced R]
 
 @[simp]
-theorem ExpChar.pow_prime_pow_mul_eq_one_iff (p k m : ℕ) [ExpChar R p] (x : R) :
-    x ^ (p ^ k * m) = 1 ↔ x ^ m = 1 := by
+theorem ExpChar.pow_prime_pow_mul_eq_one_iff (p k m : ℕ) [ExpChar R p] (x : R)
+    : x ^ (p ^ k * m) = 1 ↔ x ^ m = 1 := by
   rw [pow_mul']
   convert! ← (iterateFrobenius_inj R p k).eq_iff
   apply map_one

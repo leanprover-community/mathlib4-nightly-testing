@@ -103,24 +103,21 @@ info: Try this:
   [apply] exact Nat.add_comm a b
 -/
 #guard_msgs in
-example (a b : ℕ) : a + b = b + a := by
-  apply?
+example (a b : ℕ) : a + b = b + a := by apply?
 
 /--
 info: Try this:
   [apply] exact Nat.mul_sub_left_distrib n m k
 -/
 #guard_msgs in
-example (n m k : ℕ) : n * (m - k) = n * m - n * k := by
-  apply?
+example (n m k : ℕ) : n * (m - k) = n * m - n * k := by apply?
 
 /--
 info: Try this:
   [apply] exact Eq.symm (Nat.mul_sub_left_distrib n m k)
 -/
 #guard_msgs in
-example (n m k : ℕ) : n * m - n * k = n * (m - k) := by
-  apply?
+example (n m k : ℕ) : n * m - n * k = n * (m - k) := by apply?
 
 /- info: Try this: exact eq_comm -/
 #guard_msgs (drop info) in
@@ -147,8 +144,7 @@ info: Try this:
   [apply] exact Nat.le_of_dvd w h
 -/
 #guard_msgs in
-example (a b : ℕ) (h : a ∣ b) (w : b > 0) : a ≤ b := by
-  apply?
+example (a b : ℕ) (h : a ∣ b) (w : b > 0) : a ≤ b := by apply?
 
 /--
 info: Try this:
@@ -163,7 +159,7 @@ info: Try this:
   [apply] exact Nat.not_lt_zero a
 -/
 #guard_msgs in
-example (a : ℕ) : ¬ (a < 0) := by apply?
+example (a : ℕ) : ¬(a < 0) := by apply?
 /--
 info: Try this:
   [apply] exact Nat.not_succ_le_zero a h
@@ -249,8 +245,7 @@ example (P _Q : List ℕ) (h : ℕ) : List ℕ := by apply? using h, P
 
 -- Could be any number of results
 #guard_msgs (drop info) in
-example (l : List α) (f : α → β ⊕ γ) : List β × List γ := by
-  apply? using f -- partitionMap f l
+example (l : List α) (f : α → β ⊕ γ) : List β × List γ := by apply? using f -- partitionMap f l
 
 -- Could be any number of results (`Nat.mul n m`, `Nat.add n m`, etc)
 #guard_msgs (drop info) in
@@ -263,16 +258,14 @@ example (P Q : List ℕ) (_h : ℕ) : List ℕ := by apply? using P, Q
 -- Check that we don't use sorryAx:
 -- (see https://github.com/leanprover-community/mathlib4/issues/226)
 
-theorem Bool_eq_iff {A B : Bool} : (A = B) = (A ↔ B) := by
-  (cases A <;> cases B <;> simp)
+theorem Bool_eq_iff {A B : Bool} : (A = B) = (A ↔ B) := by (cases A <;> cases B <;> simp)
 
 /--
 info: Try this:
   [apply] exact Bool_eq_iff
 -/
 #guard_msgs in
-theorem Bool_eq_iff2 {A B : Bool} : (A = B) = (A ↔ B) := by
-  apply? -- exact Bool_eq_iff
+theorem Bool_eq_iff2 {A B : Bool} : (A = B) = (A ↔ B) := by apply? -- exact Bool_eq_iff
 
 assert_no_sorry Bool_eq_iff2
 
@@ -290,12 +283,10 @@ info: Try this:
   [apply] exact Iff.symm Nat.prime_iff
 -/
 #guard_msgs in
-lemma prime_of_prime (n : ℕ) : Prime n ↔ Nat.Prime n := by
-  exact?
+lemma prime_of_prime (n : ℕ) : Prime n ↔ Nat.Prime n := by exact?
 
 -- https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/apply.3F.20failure/near/402534407
-example (P Q : Prop) (h : P → Q) (h' : ¬Q) : ¬P := by
-  exact? says exact Not.imp h' h
+example (P Q : Prop) (h : P → Q) (h' : ¬Q) : ¬P := by exact? says exact Not.imp h' h
 
 -- Removed until we come up with a way of handling nonspecific lemmas
 -- that does not pollute the output or cause too much slow-down.

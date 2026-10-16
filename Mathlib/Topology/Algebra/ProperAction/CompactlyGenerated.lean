@@ -37,10 +37,12 @@ open Prod Set
 
 public section
 
-variable {G X : Type*} [TopologicalSpace X] [Group G]
-  [TopologicalSpace G] [MulAction G X] [CompactlyCoherentSpace (X × X)] [T2Space X]
+variable
+  {G X : Type*} [TopologicalSpace X] [Group G] [TopologicalSpace G] [MulAction G X]
+  [CompactlyCoherentSpace (X × X)] [T2Space X]
 
-/-- The `G`-action on `X` is proper iff, for each pair of compacts `U, V` in `X`,
+/--
+The `G`-action on `X` is proper iff, for each pair of compacts `U, V` in `X`,
 the set of `g` such that `U` intersects `g • V` is compact.
 
 See `ProperSMul.isCompact_setOfPred_inter_nonempty` for a one-way implication with fewer conditions.
@@ -50,7 +52,7 @@ make the proof work; but this follows from various more familiar conditions, suc
 `FirstCountableTopology X`. Importing `Mathlib.Topology.Sequences` makes this implication available.
 -/
 @[to_additive /--
-The `G`-action on `X` is proper iff, for each pair of compacts `U, V` in `X`,
+  The `G`-action on `X` is proper iff, for each pair of compacts `U, V` in `X`,
 the set of `g` such that `U` intersects `g +ᵥ V` is compact.
 
 See `ProperVAdd.isCompact_setOfPred_inter_nonempty` for a one-way implication with fewer conditions.
@@ -58,10 +60,11 @@ See `ProperVAdd.isCompact_setOfPred_inter_nonempty` for a one-way implication wi
 **Note**: We assume `CompactlyCoherentSpace (X × X)` as this is the minimal assumption needed to
 make the proof work; but this follows from various more familiar conditions, such as
 `FirstCountableTopology X`. Importing `Mathlib.Topology.Sequences` makes this implication available.
--/]
-lemma MulAction.properSMul_iff_isCompact_setOfPred_inter_nonempty [ContinuousSMul G X] :
-    ProperSMul G X ↔
-    (∀ {U V : Set X}, IsCompact U → IsCompact V → IsCompact {g : G | (g • U ∩ V).Nonempty}) := by
+  -/]
+lemma MulAction.properSMul_iff_isCompact_setOfPred_inter_nonempty [ContinuousSMul G X]
+    : ProperSMul G X
+      ↔ (∀ {U V : Set X},
+        IsCompact U → IsCompact V → IsCompact {g : G | (g • U ∩ V).Nonempty}) := by
   refine ⟨fun h ↦ ProperSMul.isCompact_setOfPred_inter_nonempty, fun h ↦ ⟨?_⟩⟩
   refine isProperMap_iff_isCompact_preimage.mpr ⟨by fun_prop, fun {K} hK ↦ ?_⟩
   -- First reduce to the case `K = U × V`.
@@ -84,16 +87,18 @@ alias MulAction.properSMul_iff_isCompact_setOf_inter_nonempty :=
 alias AddAction.properVAdd_iff_isCompact_setOf_inter_nonempty :=
   AddAction.properVAdd_iff_isCompact_setOfPred_inter_nonempty
 
-/-- If a discrete group acts on a T2 space `X` such that `X × X` is compactly
+/--
+If a discrete group acts on a T2 space `X` such that `X × X` is compactly
 coherent, and if the action is continuous in the second variable, then the action is properly
 discontinuous if and only if it is proper. This is in particular true if `X` is first-countable or
-weakly locally compact. -/
+weakly locally compact.
+-/
 @[to_additive /-- If a discrete additive group acts on a T2 space `X` such that `X × X` is compactly
 generated, and if the action is continuous in the second variable, then the action is properly
 discontinuous if and only if it is proper. This is in particular true if `X` is first-countable or
 weakly locally compact. -/]
-theorem properlyDiscontinuousSMul_iff_properSMul [DiscreteTopology G] [ContinuousConstSMul G X] :
-    ProperlyDiscontinuousSMul G X ↔ ProperSMul G X := by
+theorem properlyDiscontinuousSMul_iff_properSMul [DiscreteTopology G] [ContinuousConstSMul G X]
+    : ProperlyDiscontinuousSMul G X ↔ ProperSMul G X := by
   have : ContinuousSMul G X := ⟨continuous_prod_of_discrete_left.mpr continuous_const_smul⟩
   simp only [MulAction.properSMul_iff_isCompact_setOfPred_inter_nonempty, isCompact_iff_finite]
   rw [properlyDiscontinuousSMul_iff]

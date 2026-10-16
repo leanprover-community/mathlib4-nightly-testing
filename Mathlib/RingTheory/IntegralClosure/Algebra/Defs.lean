@@ -30,7 +30,8 @@ variable [Algebra R A] (R)
 variable (A)
 
 /-- An algebra is integral if every element of the extension is integral over the base ring. -/
-@[mk_iff] protected class Algebra.IsIntegral : Prop where
+@[mk_iff]
+protected class Algebra.IsIntegral : Prop where
   isIntegral : ∀ x : A, IsIntegral R x
 
 variable {R A}

@@ -22,8 +22,9 @@ open CategoryTheory Category Limits
 
 namespace PresheafOfModules
 
-variable {C : Type u₁} [Category.{v₁} C] {R : Cᵒᵖ ⥤ RingCat.{u}}
-  {J : Type u₂} [Category.{v₂} J]
+variable
+  {C : Type u₁} [Category.{v₁} C]
+  {R : Cᵒᵖ ⥤ RingCat.{u}} {J : Type u₂} [Category.{v₂} J]
   (F : J ⥤ PresheafOfModules.{v} R)
 
 section Limits
@@ -32,20 +33,24 @@ variable [∀ X, Small.{v} ((F ⋙ evaluation R X) ⋙ forget _).sections]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- A cone in the category `PresheafOfModules R` is limit if it is so after the application
-of the functors `evaluation R X` for all `X`. -/
-def evaluationJointlyReflectsLimits (c : Cone F)
-    (hc : ∀ (X : Cᵒᵖ), IsLimit ((evaluation R X).mapCone c)) : IsLimit c where
-  lift s :=
-    { app := fun X => (hc X).lift ((evaluation R X).mapCone s)
-      naturality := fun {X Y} f ↦ by
-        apply (isLimitOfPreserves (ModuleCat.restrictScalars (R.map f).hom) (hc Y)).hom_ext
-        intro j
-        have h₁ := (c.π.app j).naturality f
-        have h₂ := (hc X).fac ((evaluation R X).mapCone s) j
-        rw [Functor.mapCone_π_app, assoc, assoc, ← Functor.map_comp, IsLimit.fac]
-        dsimp at h₁ h₂ ⊢
-        rw [h₁, reassoc_of% h₂, Hom.naturality] }
+/--
+A cone in the category `PresheafOfModules R` is limit if it is so after the application
+of the functors `evaluation R X` for all `X`.
+-/
+def evaluationJointlyReflectsLimits
+    (c : Cone F) (hc : ∀ (X : Cᵒᵖ), IsLimit ((evaluation R X).mapCone c))
+    : IsLimit c where
+  lift s := {
+    app := fun X => (hc X).lift ((evaluation R X).mapCone s)
+    naturality := fun {X Y} f ↦ by
+      apply (isLimitOfPreserves (ModuleCat.restrictScalars (R.map f).hom) (hc Y)).hom_ext
+      intro j
+      have h₁ := (c.π.app j).naturality f
+      have h₂ := (hc X).fac ((evaluation R X).mapCone s) j
+      rw [Functor.mapCone_π_app, assoc, assoc, ← Functor.map_comp, IsLimit.fac]
+      dsimp at h₁ h₂ ⊢
+      rw [h₁, reassoc_of% h₂, Hom.naturality]
+  }
   fac s j := by
     ext1 X
     exact (hc X).fac ((evaluation R X).mapCone s) j
@@ -56,20 +61,23 @@ def evaluationJointlyReflectsLimits (c : Cone F)
     dsimp
     rw [← hm, comp_app]
 
-instance {X Y : Cᵒᵖ} (f : X ⟶ Y) :
-    HasLimit (F ⋙ evaluation R Y ⋙ ModuleCat.restrictScalars (R.map f).hom) := by
+instance {X Y : Cᵒᵖ} (f : X ⟶ Y)
+    : HasLimit (F ⋙ evaluation R Y ⋙ ModuleCat.restrictScalars (R.map f).hom) := by
   change HasLimit ((F ⋙ evaluation R Y) ⋙ ModuleCat.restrictScalars (R.map f).hom)
   infer_instance
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- Given `F : J ⥤ PresheafOfModules.{v} R`, this is the presheaf of modules obtained by
-taking a limit in the category of modules over `R.obj X` for all `X`. -/
+/--
+Given `F : J ⥤ PresheafOfModules.{v} R`, this is the presheaf of modules obtained by
+taking a limit in the category of modules over `R.obj X` for all `X`.
+-/
 @[simps]
 noncomputable def limitPresheafOfModules : PresheafOfModules R where
   obj X := limit (F ⋙ evaluation R X)
-  map {_ Y} f := limMap (Functor.whiskerLeft F (restriction R f)) ≫
-    (preservesLimitIso (ModuleCat.restrictScalars (R.map f).hom) (F ⋙ evaluation R Y)).inv
+  map {_ Y} f :=
+    limMap (Functor.whiskerLeft F (restriction R f))
+      ≫ (preservesLimitIso (ModuleCat.restrictScalars (R.map f).hom) (F ⋙ evaluation R Y)).inv
   map_id X := by
     dsimp
     rw [← cancel_mono (preservesLimitIso _ _).hom, assoc, Iso.inv_hom_id, comp_id]
@@ -89,21 +97,25 @@ noncomputable def limitPresheafOfModules : PresheafOfModules R where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The (limit) cone for `F : J ⥤ PresheafOfModules.{v} R` that is constructed from the limit
-of `F ⋙ evaluation R X` for all `X`. -/
+/--
+The (limit) cone for `F : J ⥤ PresheafOfModules.{v} R` that is constructed from the limit
+of `F ⋙ evaluation R X` for all `X`.
+-/
 @[simps]
 noncomputable def limitCone : Cone F where
   pt := limitPresheafOfModules F
-  π :=
-    { app := fun j ↦
-        { app := fun X ↦ limit.π (F ⋙ evaluation R X) j
-          naturality := fun {X Y} f ↦ by
-            dsimp
-            simp only [assoc, preservesLimitIso_inv_π]
-            apply limMap_π }
-      naturality := fun {j j'} f ↦ by
-        ext1 X
-        simpa using (limit.w (F ⋙ evaluation R X) f).symm }
+  π := {
+    app := fun j ↦ {
+      app := fun X ↦ limit.π (F ⋙ evaluation R X) j
+      naturality := fun {X Y} f ↦ by
+        dsimp
+        simp only [assoc, preservesLimitIso_inv_π]
+        apply limMap_π
+    }
+    naturality := fun {j j'} f ↦ by
+      ext1 X
+      simpa using (limit.w (F ⋙ evaluation R X) f).symm
+  }
 
 /-- The cone `limitCone F` is limit for any `F : J ⥤ PresheafOfModules.{v} R`. -/
 noncomputable def isLimitLimitCone : IsLimit (limitCone F) :=
@@ -111,16 +123,13 @@ noncomputable def isLimitLimitCone : IsLimit (limitCone F) :=
 
 instance hasLimit : HasLimit F := ⟨_, isLimitLimitCone F⟩
 
-noncomputable instance evaluation_preservesLimit (X : Cᵒᵖ) :
-    PreservesLimit F (evaluation R X) :=
+noncomputable instance evaluation_preservesLimit (X : Cᵒᵖ) : PreservesLimit F (evaluation R X) :=
   preservesLimit_of_preserves_limit_cone (isLimitLimitCone F) (limit.isLimit _)
 
-noncomputable instance toPresheaf_preservesLimit :
-    PreservesLimit F (toPresheaf R) :=
+noncomputable instance toPresheaf_preservesLimit : PreservesLimit F (toPresheaf R) :=
   preservesLimit_of_preserves_limit_cone (isLimitLimitCone F)
     (Limits.evaluationJointlyReflectsLimits _
-      (fun X => isLimitOfPreserves (evaluation R X ⋙ forget₂ _ AddCommGrpCat)
-        (isLimitLimitCone F)))
+      (fun X => isLimitOfPreserves (evaluation R X ⋙ forget₂ _ AddCommGrpCat) (isLimitLimitCone F)))
 
 end Limits
 
@@ -143,14 +152,13 @@ end Small
 
 section Finite
 
-instance hasFiniteLimits : HasFiniteLimits (PresheafOfModules.{v} R) :=
-  ⟨fun _ => inferInstance⟩
+instance hasFiniteLimits : HasFiniteLimits (PresheafOfModules.{v} R) := ⟨fun _ => inferInstance⟩
 
-noncomputable instance evaluation_preservesFiniteLimits (X : Cᵒᵖ) :
-    PreservesFiniteLimits (evaluation.{v} R X) where
+noncomputable instance evaluation_preservesFiniteLimits (X : Cᵒᵖ)
+  : PreservesFiniteLimits (evaluation.{v} R X) where
 
-noncomputable instance toPresheaf_preservesFiniteLimits :
-    PreservesFiniteLimits (toPresheaf.{v} R) where
+noncomputable instance toPresheaf_preservesFiniteLimits
+  : PreservesFiniteLimits (toPresheaf.{v} R) where
 
 end Finite
 

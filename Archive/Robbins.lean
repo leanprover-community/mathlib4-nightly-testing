@@ -66,14 +66,20 @@ variable [RobbinsAlgebra α] (a b c d : α)
 
 private instance : Std.Associative (α := α) (· + ·) := ⟨add_assoc⟩
 
-/-- Sum a number of copies of an element. Not intended to be used for 0 copies (although the
-ultimately correct value of `-(a + -a)` is included for completeness). -/
+/--
+Sum a number of copies of an element. Not intended to be used for 0 copies (although the
+ultimately correct value of `-(a + -a)` is included for completeness).
+-/
 def smul : ℕ → α → α
-  | 0, a => -(a + -a)
-  | 1, a => a
-  | k + 2, a => smul (k + 1) a + a
+  | 0, a =>
+    -(a + -a)
+  | 1, a =>
+    a
+  | k + 2, a =>
+    smul (k + 1) a + a
 
-instance : SMul ℕ α where smul := smul
+instance : SMul ℕ α where
+  smul := smul
 
 private lemma smul1 : 1 • a = a := rfl
 private lemma smul2 : 2 • a = a + a := rfl
@@ -111,8 +117,9 @@ lemma mann_48 : -(-(-(-(-a + b) + a + b + b) + -(-a + b) + -(b + c) + c) + c) = 
   conv_rhs => rw [← key, add_comm _ q, mann_47]
   ac_rfl
 
-lemma mann_49 :
-    -(-(-(-(-(-a + b) + a + b + b) + -(-a + b) + -(b + c) + c) + c + d) + -(-(b + c) + d)) = d := by
+lemma mann_49
+    : -(-(-(-(-(-a + b) + a + b + b) + -(-a + b) + -(b + c) + c) + c + d) + -(-(b + c) + d))
+      = d := by
   set w := -(-(-(-a + b) + a + b + b) + -(-a + b) + -(b + c) + c) + c
   nth_rw 3 [← robbins d w]
   rw [mann_48 a b c]
@@ -123,15 +130,20 @@ def q : α := -(-(3 • a) + a)
 
 lemma mann_50 : -(-(q a + -(3 • a)) + -(q a + 5 • a)) = q a := by
   have k₁ := mann_44 (3 • a) (q a + 2 • a)
-  have rearr₁ : -(-(3 • a + (q a + 2 • a)) + -(3 • a) + (q a + 2 • a)) + (q a + 2 • a) =
-      -(-(q a + 5 • a) + -(3 • a) + (q a + 2 • a)) + 2 • a + q a := by
+  have rearr₁
+      : -(-(3 • a + (q a + 2 • a)) + -(3 • a) + (q a + 2 • a)) + (q a + 2 • a)
+        = -(-(q a + 5 • a) + -(3 • a) + (q a + 2 • a)) + 2 • a + q a := by
     rw [smul2, smul3, smul5]
     ac_rfl
   rw [rearr₁] at k₁
-  have k₂ : -(-(-(-(q a + 3 • a + a + a) + q a + -(a + 2 • a) + 2 • a) + 2 • a + q a) +
-      -(-(a + 2 • a) + q a)) = q a := mann_49 (3 • a) a (2 • a) (q a)
-  have rearr₂ : (-(q a + 3 • a + a + a) + q a + -(a + 2 • a) + 2 • a) =
-      -(q a + 5 • a) + -(3 • a) + (q a + 2 • a) := by
+  have k₂
+      : -(-(-(-(q a + 3 • a + a + a) + q a + -(a + 2 • a) + 2 • a) + 2 • a + q a)
+          + -(-(a + 2 • a) + q a))
+        = q a :=
+    mann_49 (3 • a) a (2 • a) (q a)
+  have rearr₂
+      : (-(q a + 3 • a + a + a) + q a + -(a + 2 • a) + 2 • a)
+        = -(q a + 5 • a) + -(3 • a) + (q a + 2 • a) := by
     simp_rw [smul2, smul3, smul5, ← add_assoc]
     congr 2
     simp_rw [add_assoc]
@@ -177,8 +189,10 @@ lemma mann_54 : -(-(q a + -(3 • a) + b) + -(a + b)) = b := by
   conv_rhs => rw [← robbins b (q a + -(3 • a)), mann_53]
   ac_rfl
 
-/-- **Winker's first condition**,
-proved in 1997 by the automated theorem prover EQP to be derivable in Robbins algebras. -/
+/--
+**Winker's first condition**,
+proved in 1997 by the automated theorem prover EQP to be derivable in Robbins algebras.
+-/
 theorem winker : ∃ x y : α, x + y = y := by
   refine ⟨q default, 2 • default, ?_⟩
   conv_lhs => rw [← mann_52]
@@ -195,8 +209,7 @@ lemma mann_33 (h : -(a + -(b + c)) = -(a + b + -c)) : a + b = a := by
 lemma mann_34 (h : -(a + -(b + c)) = -(b + -(a + c))) : a = b := by
   rw [← robbins a (b + c), h, show a + (b + c) = b + (a + c) by ac_rfl, robbins]
 
-lemma mann_35 (h : -(a + -b) = c) : -(-(a + b) + c) = a := by
-  rw [← h, robbins]
+lemma mann_35 (h : -(a + -b) = c) : -(-(a + b) + c) = a := by rw [← h, robbins]
 
 lemma mann_36 (hk : 1 ≤ k) (h : -(a + -b) = c) : -(a + -(b + k • (a + c))) = c := by
   induction k, hk using Nat.le_induction with
@@ -236,8 +249,8 @@ lemma mann_39 (h₂ : -(2 • a + b) = -b) (h₃ : -(3 • a + b) = -b) : 2 • 
   rw [smul2, smul3]
   ac_rfl
 
-lemma mann_40 (h : -(a + b) = -b ∨ -(-(a + -b) + -b) = a) :
-    b + 2 • (a + -(a + -b)) = b + 3 • (a + -(a + -b)) := by
+lemma mann_40 (h : -(a + b) = -b ∨ -(-(a + -b) + -b) = a)
+    : b + 2 • (a + -(a + -b)) = b + 3 • (a + -(a + -b)) := by
   suffices -(b + 2 • (a + -(a + -b))) = -b ∧ -(b + 3 • (a + -(a + -b))) = -b by
     rw [add_comm b, add_comm b] at this
     replace this := mann_39 this.1 this.2
@@ -320,8 +333,10 @@ theorem neg_neg : - -a = a := by
 theorem huntington : -(-a + -b) + -(-a + b) = a := by
   conv_rhs => rw [← neg_neg a, ← robbins (-a) b, neg_neg, add_comm]
 
-instance : Zero α where zero := -(default + -default)
-instance : One α where one := default + -default
+instance : Zero α where
+  zero := -(default + -default)
+instance : One α where
+  one := default + -default
 
 lemma add_neg_self_const : a + -a = b + -b := by
   nth_rw 1 [← huntington (-b) (-a), ← huntington b (-a),

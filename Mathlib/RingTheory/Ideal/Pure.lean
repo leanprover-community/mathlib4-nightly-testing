@@ -8,7 +8,6 @@ module
 public import Mathlib.RingTheory.Flat.Tensor
 public import Mathlib.RingTheory.LocalProperties.Basic
 public import Mathlib.RingTheory.Spectrum.Prime.Basic
-
 import Mathlib.RingTheory.Ideal.IdempotentFG
 import Mathlib.RingTheory.Idempotents
 
@@ -37,16 +36,14 @@ open TensorProduct PrimeSpectrum
 
 /-- An ideal `I` of `R` is pure if `R ⧸ I` is a flat `R`-module. -/
 @[stacks 04PR]
-abbrev Ideal.Pure (I : Ideal R) : Prop :=
-  Module.Flat R (R ⧸ I)
+abbrev Ideal.Pure (I : Ideal R) : Prop := Module.Flat R (R ⧸ I)
 
-lemma injective_lTensor_quotient_iff_inf_eq_mul (I J : Ideal R) :
-    Function.Injective (J.subtype.lTensor (R ⧸ I)) ↔ I ⊓ J = I * J := by
+lemma injective_lTensor_quotient_iff_inf_eq_mul (I J : Ideal R)
+    : Function.Injective (J.subtype.lTensor (R ⧸ I)) ↔ I ⊓ J = I * J := by
   let f : J ⧸ (I • ⊤ : Submodule R J) →ₗ[R] R ⧸ I :=
-    Submodule.mapQ _ _ J.subtype <| by
-      simp [← Submodule.map_le_iff_le_comap, Ideal.mul_le_left]
-  have : J.subtype.lTensor (R ⧸ I) =
-      (TensorProduct.rid R (R ⧸ I)).symm ∘ₗ f ∘ₗ TensorProduct.quotTensorEquivQuotSMul J I := by
+    Submodule.mapQ _ _ J.subtype <| by simp [← Submodule.map_le_iff_le_comap, Ideal.mul_le_left]
+  have : J.subtype.lTensor (R ⧸ I)
+      = (TensorProduct.rid R (R ⧸ I)).symm ∘ₗ f ∘ₗ TensorProduct.quotTensorEquivQuotSMul J I := by
     ext
     simp [f, ← Ideal.Quotient.algebraMap_eq, Algebra.TensorProduct.tmul_one_eq_one_tmul]
   rw [this]
@@ -57,38 +54,40 @@ lemma injective_lTensor_quotient_iff_inf_eq_mul (I J : Ideal R) :
   simp [inf_comm, le_antisymm_iff, Ideal.mul_le_inf (I := I) (J := J)]
 
 @[stacks 04PS "(1) => (2)"]
-lemma Ideal.inf_eq_mul_of_pure (I J : Ideal R) [I.Pure] :
-    I ⊓ J = I * J := by
+lemma Ideal.inf_eq_mul_of_pure (I J : Ideal R) [I.Pure] : I ⊓ J = I * J := by
   rw [← injective_lTensor_quotient_iff_inf_eq_mul]
   apply Module.Flat.lTensor_preserves_injective_linearMap
   exact J.injective_subtype
 
-/-- If `I` is pure, `I ^ 2 = I`. The converse holds if `I` is finitely generated, see
-`Ideal.Pure.of_isIdempotentElem`. -/
+/--
+If `I` is pure, `I ^ 2 = I`. The converse holds if `I` is finitely generated, see
+`Ideal.Pure.of_isIdempotentElem`.
+-/
 lemma Ideal.isIdempotentElem_of_pure (I : Ideal R) [I.Pure] : IsIdempotentElem I := by
   simp [IsIdempotentElem, ← Ideal.inf_eq_mul_of_pure]
 
-lemma Ideal.Pure.of_isIdempotentElem {I : Ideal R} (h : I.FG) (h' : IsIdempotentElem I) :
-    I.Pure := by
+lemma Ideal.Pure.of_isIdempotentElem {I : Ideal R} (h : I.FG) (h' : IsIdempotentElem I)
+    : I.Pure := by
   rw [Ideal.isIdempotentElem_iff_of_fg _ h] at h'
   obtain ⟨e, he, rfl⟩ := h'
   have : Module.Flat R ((R ⧸ R ∙ e) × R ⧸ span {1 - e}) :=
     .of_linearEquiv <| AlgEquiv.prodQuotientOfIsIdempotentElem R he he.one_sub (by simp)
-      (by grind [IsIdempotentElem]) |>.toLinearEquiv.symm
+        (by grind [IsIdempotentElem])
+      |>.toLinearEquiv.symm
   apply Module.Flat.of_retract (LinearMap.inl R _ (R ⧸ span {1 - e})) (LinearMap.fst R _ _)
   simp
 
 @[stacks 04PS "(3) => (1)"]
-lemma Ideal.Pure.of_inf_eq_mul (I : Ideal R) (H : ∀ ⦃J : Ideal R⦄, J.FG → I ⊓ J = I * J) :
-    I.Pure := by
+lemma Ideal.Pure.of_inf_eq_mul (I : Ideal R) (H : ∀ ⦃J : Ideal R⦄, J.FG → I ⊓ J = I * J)
+    : I.Pure := by
   rw [Pure, Module.Flat.iff_lTensor_injective]
   intro J hJ
   rw [injective_lTensor_quotient_iff_inf_eq_mul]
   exact H hJ
 
 @[stacks 04PS "(1) => (5)"]
-lemma Ideal.exists_eq_mul_of_pure {I : Ideal R} [I.Pure] {x : R} (hx : x ∈ I) :
-    ∃ y ∈ I, x = x * y := by
+lemma Ideal.exists_eq_mul_of_pure {I : Ideal R} [I.Pure] {x : R} (hx : x ∈ I)
+    : ∃ y ∈ I, x = x * y := by
   suffices h : x ∈ I * Ideal.span {x} by
     rw [Ideal.mem_mul_span_singleton] at h
     grind
@@ -96,9 +95,9 @@ lemma Ideal.exists_eq_mul_of_pure {I : Ideal R} [I.Pure] {x : R} (hx : x ∈ I) 
   exact ⟨hx, subset_span rfl⟩
 
 @[stacks 04PS "(5) => (7)"]
-lemma Ideal.le_ker_atPrime_of_forall_exists_eq_mul {I : Ideal R}
-    (h : ∀ x ∈ I, ∃ y ∈ I, x = x * y) {p : Ideal R} [p.IsPrime] (hle : I ≤ p) :
-    I ≤ RingHom.ker (algebraMap R <| Localization.AtPrime p) := by
+lemma Ideal.le_ker_atPrime_of_forall_exists_eq_mul
+    {I : Ideal R} (h : ∀ x ∈ I, ∃ y ∈ I, x = x * y) {p : Ideal R} [p.IsPrime] (hle : I ≤ p)
+    : I ≤ RingHom.ker (algebraMap R <| Localization.AtPrime p) := by
   intro x hx
   obtain ⟨y, hy, heq⟩ := h _ hx
   have : IsUnit (algebraMap R (Localization.AtPrime p) (1 - y)) := by
@@ -109,10 +108,10 @@ lemma Ideal.le_ker_atPrime_of_forall_exists_eq_mul {I : Ideal R}
   have hzero : x * (1 - y) = 0 := by simp [mul_sub, ← heq]
   simp only [RingHom.mem_ker, ← this.mul_left_eq_zero, ← RingHom.map_mul, hzero, RingHom.map_zero]
 
-lemma Ideal.ker_piRingHom_atPrime_eq_of_pure (I : Ideal R) [I.Pure] :
-    RingHom.ker
-      (RingHom.pi fun p : zeroLocus (I : Set R) ↦
-        algebraMap R (Localization.AtPrime p.val.asIdeal)) = I := by
+lemma Ideal.ker_piRingHom_atPrime_eq_of_pure (I : Ideal R) [I.Pure]
+    : RingHom.ker (RingHom.pi fun p : zeroLocus (I : Set R) ↦
+        algebraMap R (Localization.AtPrime p.val.asIdeal))
+      = I := by
   refine le_antisymm ?_ fun x hx ↦ ?_
   · rw [Pi.ker_ringHom]
     refine le_trans ?_ I.iInf_ker_le
@@ -122,11 +121,12 @@ lemma Ideal.ker_piRingHom_atPrime_eq_of_pure (I : Ideal R) [I.Pure] :
     ext p
     rw [RingHom.pi_apply, Pi.zero_apply]
     exact Ideal.le_ker_atPrime_of_forall_exists_eq_mul
-      (fun x hx ↦ Ideal.exists_eq_mul_of_pure hx) p.2 hx
+      (fun x hx ↦ Ideal.exists_eq_mul_of_pure hx)
+      p.2 hx
 
 @[stacks 04PT]
-lemma Ideal.zeroLocus_inj_of_pure {I J : Ideal R} [I.Pure] [J.Pure] :
-    zeroLocus (I : Set R) = zeroLocus J ↔ I = J := by
+lemma Ideal.zeroLocus_inj_of_pure {I J : Ideal R} [I.Pure] [J.Pure]
+    : zeroLocus (I : Set R) = zeroLocus J ↔ I = J := by
   refine ⟨fun h ↦ ?_, fun h ↦ h ▸ rfl⟩
   rw [← I.ker_piRingHom_atPrime_eq_of_pure, ← J.ker_piRingHom_atPrime_eq_of_pure]
   generalize hs : zeroLocus (I : Set R) = s

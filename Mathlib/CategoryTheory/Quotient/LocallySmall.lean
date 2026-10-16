@@ -19,8 +19,8 @@ universe w v u
 
 namespace CategoryTheory.Quotient
 
-instance {C : Type u} [Category.{v} C] (r : HomRel C) [LocallySmall.{w} C] :
-    LocallySmall.{w} (Quotient r) where
+instance {C : Type u} [Category.{v} C] (r : HomRel C) [LocallySmall.{w} C]
+    : LocallySmall.{w} (Quotient r) where
   hom_small _ _ := small_of_surjective (functor r).map_surjective
 
 end CategoryTheory.Quotient

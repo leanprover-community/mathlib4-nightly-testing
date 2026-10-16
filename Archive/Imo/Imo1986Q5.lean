@@ -44,8 +44,7 @@ namespace IsGood
 variable {f : ℝ≥0 → ℝ≥0} (hf : IsGood f) {x y : ℝ≥0}
 include hf
 
-theorem map_add (x y : ℝ≥0) : f (x + y) = f (x * f y) * f y :=
-  (hf.map_add_rev x y).symm
+theorem map_add (x y : ℝ≥0) : f (x + y) = f (x * f y) * f y := (hf.map_add_rev x y).symm
 
 theorem map_eq_zero : f x = 0 ↔ 2 ≤ x := by
   refine ⟨fun hx₀ ↦ not_lt.1 fun hlt ↦ hf.map_ne_zero x hlt hx₀, fun hle ↦ ?_⟩
@@ -58,8 +57,8 @@ theorem map_of_lt_two (hx : x < 2) : f x = 2 / (2 - x) := by
   have hx' : 0 < 2 - x := tsub_pos_of_lt hx
   have hfx : f x ≠ 0 := hf.map_ne_zero_iff.2 hx
   apply le_antisymm
-  · rw [le_div_iff₀ hx', ← le_div_iff₀' hfx.bot_lt, tsub_le_iff_right, ← hf.map_eq_zero,
-     hf.map_add, div_mul_cancel₀ _ hfx, hf.map_two, zero_mul]
+  · rw [le_div_iff₀ hx', ← le_div_iff₀' hfx.bot_lt, tsub_le_iff_right, ← hf.map_eq_zero, hf.map_add,
+      div_mul_cancel₀ _ hfx, hf.map_two, zero_mul]
   · rw [div_le_iff₀' hx', ← hf.map_eq_zero]
     refine (mul_eq_zero.1 ?_).resolve_right hfx
     rw [hf.map_add_rev, hf.map_eq_zero, tsub_add_cancel_of_le hx.le]
@@ -82,8 +81,8 @@ theorem isGood_iff {f : ℝ≥0 → ℝ≥0} : IsGood f ↔ f = fun x ↦ 2 / (2
     cases lt_or_ge y 2 with
     | inl hy =>
       have hy' : 2 - y ≠ 0 := (tsub_pos_of_lt hy).ne'
-      rw [div_mul_div_comm, tsub_mul, mul_assoc, div_mul_cancel₀ _ hy', mul_comm x,
-        ← mul_tsub, tsub_add_eq_tsub_tsub_swap, mul_div_mul_left _ _ two_ne_zero]
+      rw [div_mul_div_comm, tsub_mul, mul_assoc, div_mul_cancel₀ _ hy', mul_comm x, ← mul_tsub,
+        tsub_add_eq_tsub_tsub_swap, mul_div_mul_left _ _ two_ne_zero]
     | inr hy =>
       have : 2 ≤ x + y := le_add_left hy
       simp [tsub_eq_zero_of_le, *]

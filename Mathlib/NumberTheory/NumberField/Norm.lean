@@ -26,7 +26,6 @@ rings of integers.
 
 @[expose] public section
 
-
 open scoped NumberField
 
 open Finset NumberField Algebra Module IntermediateField
@@ -49,20 +48,18 @@ variable {L : Type*} (K : Type*) [Field K] [Field L] [Algebra K L]
 
 /-- `Algebra.norm` as a morphism between the rings of integers. -/
 noncomputable def norm : 𝓞 L →* 𝓞 K :=
-  RingOfIntegers.restrict_monoidHom
-    ((Algebra.norm K).comp (algebraMap (𝓞 L) L : (𝓞 L) →* L))
+  RingOfIntegers.restrict_monoidHom ((Algebra.norm K).comp (algebraMap (𝓞 L) L : (𝓞 L) →* L))
     fun x => isIntegral_norm K x.2
 
-@[simp] lemma coe_norm (x : 𝓞 L) : norm K x = Algebra.norm K (x : L) :=
+@[simp] lemma coe_norm (x : 𝓞 L) : norm K x = Algebra.norm K (x : L) := rfl
+
+theorem coe_algebraMap_norm (x : 𝓞 L)
+    : (algebraMap (𝓞 K) (𝓞 L) (norm K x) : L) = algebraMap K L (Algebra.norm K (x : L)) :=
   rfl
 
-theorem coe_algebraMap_norm (x : 𝓞 L) :
-    (algebraMap (𝓞 K) (𝓞 L) (norm K x) : L) = algebraMap K L (Algebra.norm K (x : L)) :=
-  rfl
-
-theorem algebraMap_norm_algebraMap (x : 𝓞 K) :
-    algebraMap _ K (norm K (algebraMap (𝓞 K) (𝓞 L) x)) =
-      Algebra.norm K (algebraMap K L (algebraMap _ _ x)) :=
+theorem algebraMap_norm_algebraMap (x : 𝓞 K)
+    : algebraMap _ K (norm K (algebraMap (𝓞 K) (𝓞 L) x))
+      = Algebra.norm K (algebraMap K L (algebraMap _ _ x)) :=
   rfl
 
 theorem norm_algebraMap (x : 𝓞 K) : norm K (algebraMap (𝓞 K) (𝓞 L) x) = x ^ finrank K L := by
@@ -71,28 +68,28 @@ theorem norm_algebraMap (x : 𝓞 K) : norm K (algebraMap (𝓞 K) (𝓞 L) x) =
     RingOfIntegers.coe_eq_algebraMap, map_pow]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `L/K` is a finite Galois extension of fields, then, for all `(x : 𝓞 L)` we have that
-`x ∣ algebraMap (𝓞 K) (𝓞 L) (norm K x)`. -/
-theorem dvd_norm [FiniteDimensional K L] [IsGalois K L] (x : 𝓞 L) :
-    x ∣ algebraMap (𝓞 K) (𝓞 L) (norm K x) := by
+/--
+If `L/K` is a finite Galois extension of fields, then, for all `(x : 𝓞 L)` we have that
+`x ∣ algebraMap (𝓞 K) (𝓞 L) (norm K x)`.
+-/
+theorem dvd_norm [FiniteDimensional K L] [IsGalois K L] (x : 𝓞 L)
+    : x ∣ algebraMap (𝓞 K) (𝓞 L) (norm K x) := by
   classical
-  have hint :
-    IsIntegral ℤ (∏ σ ∈ univ.erase (AlgEquiv.refl : Gal(L/K)), σ x) :=
-    IsIntegral.prod _ (fun σ _ =>
-      ((RingOfIntegers.isIntegral_coe x).map σ))
+  have hint : IsIntegral ℤ (∏ σ ∈ univ.erase (AlgEquiv.refl : Gal(L/K)), σ x) :=
+    IsIntegral.prod _ (fun σ _ => ((RingOfIntegers.isIntegral_coe x).map σ))
   refine ⟨⟨_, hint⟩, ?_⟩
   ext
   rw [coe_algebraMap_norm K x, norm_eq_prod_automorphisms]
   simp [← Finset.mul_prod_erase _ _ (mem_univ AlgEquiv.refl)]
 
-theorem isUnit_norm_of_isGalois [FiniteDimensional K L] [IsGalois K L] {x : 𝓞 L} :
-    IsUnit (norm K x) ↔ IsUnit x :=
+theorem isUnit_norm_of_isGalois [FiniteDimensional K L] [IsGalois K L] {x : 𝓞 L}
+    : IsUnit (norm K x) ↔ IsUnit x :=
   ⟨fun hx ↦ isUnit_of_dvd_unit (dvd_norm K x) (hx.map _), IsUnit.map _⟩
 
 variable (F : Type*) [Field F] [Algebra K F] [FiniteDimensional K F]
 
-theorem norm_norm [Algebra F L] [FiniteDimensional F L] [IsScalarTower K F L] (x : 𝓞 L) :
-    norm K (norm F x) = norm K x := by
+theorem norm_norm [Algebra F L] [FiniteDimensional F L] [IsScalarTower K F L] (x : 𝓞 L)
+    : norm K (norm F x) = norm K x := by
   rw [RingOfIntegers.ext_iff, coe_norm, coe_norm, coe_norm, Algebra.norm_norm]
 
 variable {F}
@@ -103,8 +100,8 @@ theorem isUnit_norm [CharZero K] {x : 𝓞 F} : IsUnit (norm K x) ↔ IsUnit x :
   have : FiniteDimensional F L := FiniteDimensional.right K F L
   have : IsGalois F L := IsGalois.tower_top_of_isGalois K F L
   calc
-    IsUnit (norm K x) ↔ IsUnit ((norm K) x ^ finrank F L) :=
-      (isUnit_pow_iff (pos_iff_ne_zero.mp finrank_pos)).symm
+    IsUnit (norm K x)
+      ↔ IsUnit ((norm K) x ^ finrank F L) := (isUnit_pow_iff (pos_iff_ne_zero.mp finrank_pos)).symm
     _ ↔ IsUnit (norm K (algebraMap (𝓞 F) (𝓞 L) x)) := by
       rw [← norm_norm K F (algebraMap (𝓞 F) (𝓞 L) x), norm_algebraMap F _, map_pow]
     _ ↔ IsUnit (algebraMap (𝓞 F) (𝓞 L) x) := isUnit_norm_of_isGalois K

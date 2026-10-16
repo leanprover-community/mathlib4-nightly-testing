@@ -25,8 +25,7 @@ namespace Algebra.FormallyUnramified
 variable {R : Type*} {I : Type*} [Finite I] (f : I → Type*)
 variable [CommRing R] [∀ i, CommRing (f i)] [∀ i, Algebra R (f i)]
 
-theorem pi_iff :
-    FormallyUnramified R (∀ i, f i) ↔ ∀ i, FormallyUnramified R (f i) := by
+theorem pi_iff : FormallyUnramified R (∀ i, f i) ↔ ∀ i, FormallyUnramified R (f i) := by
   classical
   cases nonempty_fintype I
   constructor
@@ -61,16 +60,16 @@ theorem pi_iff :
       · rw [eq_comm, ← sub_eq_zero, ← h₂, mul_sub, mul_one, mul_comm]
     let J' := Ideal.span {1 - f₁ e}
     let f₁' : f x →ₐ[R] B ⧸ J' := by
-      apply AlgHom.ofLinearMap
-        (((Ideal.Quotient.mkₐ R J').comp f₁).toLinearMap.comp (LinearMap.single _ _ x))
+      apply AlgHom.ofLinearMap (((Ideal.Quotient.mkₐ R J').comp f₁).toLinearMap.comp
+        (LinearMap.single _ _ x))
       · simp only [AlgHom.comp_toLinearMap, LinearMap.coe_comp, LinearMap.coe_single,
           Function.comp_apply, AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk]
         rw [eq_comm, ← sub_eq_zero, ← (Ideal.Quotient.mk J').map_one, ← map_sub,
           Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
       · intro r s; simp [Pi.single_mul]
     let f₂' : f x →ₐ[R] B ⧸ J' := by
-      apply AlgHom.ofLinearMap
-        (((Ideal.Quotient.mkₐ R J').comp f₂).toLinearMap.comp (LinearMap.single _ _ x))
+      apply AlgHom.ofLinearMap (((Ideal.Quotient.mkₐ R J').comp f₂).toLinearMap.comp
+        (LinearMap.single _ _ x))
       · simp only [AlgHom.comp_toLinearMap, LinearMap.coe_comp, LinearMap.coe_single,
           Function.comp_apply, AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk]
         rw [eq_comm, ← sub_eq_zero, ← (Ideal.Quotient.mk J').map_one, ← map_sub,
@@ -79,25 +78,25 @@ theorem pi_iff :
     suffices f₁' = f₂' by
       have := congr($this (g x))
       simp only [AlgHom.comp_toLinearMap, AlgHom.ofLinearMap_apply, LinearMap.coe_comp,
-        LinearMap.coe_single, Function.comp_apply, AlgHom.toLinearMap_apply, ← map_sub,
-        Ideal.Quotient.mkₐ_eq_mk, ← sub_eq_zero (b := Ideal.Quotient.mk J' _), f₁', f₂',
-        Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton, J'] at this
+          LinearMap.coe_single, Function.comp_apply, AlgHom.toLinearMap_apply, ← map_sub,
+          Ideal.Quotient.mkₐ_eq_mk, ← sub_eq_zero (b := Ideal.Quotient.mk J' _), f₁', f₂',
+          Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton, J']
+        at this
       obtain ⟨c, hc⟩ := this
       apply_fun (f₁ e * ·) at hc
-      rwa [← mul_assoc, mul_sub, mul_sub, mul_one, (he.map f₁).eq, sub_self, zero_mul,
-        ← map_mul, H, ← map_mul, ← Pi.single_mul, one_mul, sub_eq_zero] at hc
+      rwa [← mul_assoc, mul_sub, mul_sub, mul_one, (he.map f₁).eq, sub_self, zero_mul, ← map_mul, H,
+          ← map_mul, ← Pi.single_mul, one_mul, sub_eq_zero]
+        at hc
     apply FormallyUnramified.comp_injective (I := J.map (algebraMap _ _))
     · rw [← Ideal.map_pow, hJ, Ideal.map_bot]
     · ext r
       rw [← sub_eq_zero]
       simp only [Ideal.Quotient.algebraMap_eq, AlgHom.coe_comp, Ideal.Quotient.mkₐ_eq_mk,
         Function.comp_apply, ← map_sub, Ideal.Quotient.eq_zero_iff_mem, f₁', f₂',
-        AlgHom.comp_toLinearMap, AlgHom.ofLinearMap_apply, LinearMap.coe_comp,
-        LinearMap.coe_single, Function.comp_apply, AlgHom.toLinearMap_apply,
-        Ideal.Quotient.mkₐ_eq_mk]
+        AlgHom.comp_toLinearMap, AlgHom.ofLinearMap_apply, LinearMap.coe_comp, LinearMap.coe_single,
+        Function.comp_apply, AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk]
       exact Ideal.mem_map_of_mem (Ideal.Quotient.mk J') (hf (Pi.single x r))
 
-instance [∀ i, FormallyUnramified R (f i)] : FormallyUnramified R (Π i, f i) :=
-  (pi_iff _).mpr ‹_›
+instance [∀ i, FormallyUnramified R (f i)] : FormallyUnramified R (Π i, f i) := (pi_iff _).mpr ‹_›
 
 end Algebra.FormallyUnramified

@@ -46,8 +46,7 @@ variable [SMul 𝕜 E]
 variable (𝕜 E) [PartialOrder 𝕜]
 
 /-- The type of absolutely convex open sets. -/
-def AbsConvexOpenSets :=
-  { s : Set E // (0 : E) ∈ s ∧ IsOpen s ∧ AbsConvex 𝕜 s }
+def AbsConvexOpenSets := {s : Set E // (0 : E) ∈ s ∧ IsOpen s ∧ AbsConvex 𝕜 s}
 
 noncomputable instance AbsConvexOpenSets.instCoeOut : CoeOut (AbsConvexOpenSets 𝕜 E) (Set E) :=
   ⟨Subtype.val⟩
@@ -56,20 +55,16 @@ namespace AbsConvexOpenSets
 
 variable {𝕜 E}
 
-theorem coe_zero_mem (s : AbsConvexOpenSets 𝕜 E) : (0 : E) ∈ (s : Set E) :=
-  s.2.1
+theorem coe_zero_mem (s : AbsConvexOpenSets 𝕜 E) : (0 : E) ∈ (s : Set E) := s.2.1
 
-theorem coe_isOpen (s : AbsConvexOpenSets 𝕜 E) : IsOpen (s : Set E) :=
-  s.2.2.1
+theorem coe_isOpen (s : AbsConvexOpenSets 𝕜 E) : IsOpen (s : Set E) := s.2.2.1
 
 theorem coe_nhds (s : AbsConvexOpenSets 𝕜 E) : (s : Set E) ∈ 𝓝 (0 : E) :=
   s.coe_isOpen.mem_nhds s.coe_zero_mem
 
-theorem coe_balanced (s : AbsConvexOpenSets 𝕜 E) : Balanced 𝕜 (s : Set E) :=
-  s.2.2.2.1
+theorem coe_balanced (s : AbsConvexOpenSets 𝕜 E) : Balanced 𝕜 (s : Set E) := s.2.2.2.1
 
-theorem coe_convex (s : AbsConvexOpenSets 𝕜 E) : Convex 𝕜 (s : Set E) :=
-  s.2.2.2.2
+theorem coe_convex (s : AbsConvexOpenSets 𝕜 E) : Convex 𝕜 (s : Set E) := s.2.2.2.2
 
 end AbsConvexOpenSets
 
@@ -95,8 +90,8 @@ noncomputable def gaugeSeminormFamily : SeminormFamily 𝕜 E (AbsConvexOpenSets
 
 variable {𝕜 E}
 
-theorem gaugeSeminormFamily_ball (s : AbsConvexOpenSets 𝕜 E) :
-    (gaugeSeminormFamily 𝕜 E s).ball 0 1 = (s : Set E) := by
+theorem gaugeSeminormFamily_ball (s : AbsConvexOpenSets 𝕜 E)
+    : (gaugeSeminormFamily 𝕜 E s).ball 0 1 = (s : Set E) := by
   dsimp only [gaugeSeminormFamily]
   rw [Seminorm.ball_zero_eq]
   simp_rw [gaugeSeminorm_toFun]
@@ -118,12 +113,15 @@ theorem with_gaugeSeminormFamily : WithSeminorms (gaugeSeminormFamily 𝕜 E) :=
   rcases hs with ⟨t, r, hr, rfl⟩
   rw [Seminorm.ball_finset_sup_eq_iInter _ _ _ hr]
   -- We have to show that the intersection contains zero, is open, balanced, and convex
-  refine
-    ⟨mem_iInter₂.mpr fun _ _ => by simp [hr],
-      isOpen_biInter_finset fun S _ => ?_,
-      balanced_iInter₂ fun _ _ => Seminorm.balanced_ball_zero _ _,
-      convex_iInter₂ fun _ _ => (convex_of_nonneg_surjective_algebraMap _
-        (fun _ => RCLike.nonneg_iff_exists_ofReal.mp) (Seminorm.convex_ball _ _ _) ..)⟩
+  refine ⟨
+    mem_iInter₂.mpr fun _ _ => by simp [hr],
+    isOpen_biInter_finset fun S _ => ?_,
+    balanced_iInter₂ fun _ _ => Seminorm.balanced_ball_zero _ _,
+    convex_iInter₂ fun _ _ =>
+      (convex_of_nonneg_surjective_algebraMap _
+        (fun _ => RCLike.nonneg_iff_exists_ofReal.mp)
+        (Seminorm.convex_ball _ _ _) ..)
+  ⟩
   -- The only nontrivial part is to show that the ball is open
   have hr' : r = ‖(r : 𝕜)‖ * 1 := by simp [abs_of_pos hr]
   have hr'' : (r : 𝕜) ≠ 0 := by simp [hr.ne']

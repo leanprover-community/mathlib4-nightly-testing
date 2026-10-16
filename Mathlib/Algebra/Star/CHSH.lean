@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Star.Basic
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Basic.Real.Star
-
 import Mathlib.Algebra.CharP.Invertible
 
 /-!
@@ -77,10 +76,10 @@ There is a CHSH tuple in 4-by-4 matrices such that
 
 public section
 
-
 universe u
 
-/-- A CHSH tuple in a \*-monoid consists of 4 self-adjoint involutions `A₀ A₁ B₀ B₁` such that
+/--
+A CHSH tuple in a \*-monoid consists of 4 self-adjoint involutions `A₀ A₁ B₀ B₁` such that
 the `Aᵢ` commute with the `Bⱼ`.
 
 The physical interpretation is that `A₀` and `A₁` are a pair of Boolean observables which
@@ -102,20 +101,25 @@ structure IsCHSHTuple {R} [Monoid R] [StarMul R] (A₀ A₁ B₀ B₁ : R) : Pro
 
 variable {R : Type u}
 
-theorem CHSH_id [CommRing R] {A₀ A₁ B₀ B₁ : R} (A₀_inv : A₀ ^ 2 = 1) (A₁_inv : A₁ ^ 2 = 1)
-    (B₀_inv : B₀ ^ 2 = 1) (B₁_inv : B₁ ^ 2 = 1) :
-    (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁) * (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁) =
-      4 * (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁) := by
+theorem CHSH_id
+    [CommRing R]
+    {A₀ A₁ B₀ B₁ : R}
+    (A₀_inv : A₀ ^ 2 = 1) (A₁_inv : A₁ ^ 2 = 1) (B₀_inv : B₀ ^ 2 = 1) (B₁_inv : B₁ ^ 2 = 1)
+    : (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁) * (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁)
+      = 4 * (2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁) := by
   grind
 
-/-- Given a CHSH tuple (A₀, A₁, B₀, B₁) in a *commutative* ordered \*-algebra over ℝ,
+/--
+Given a CHSH tuple (A₀, A₁, B₀, B₁) in a *commutative* ordered \*-algebra over ℝ,
 `A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2`.
 
 (We could work over ℤ[⅟2] if we wanted to!)
 -/
-theorem CHSH_inequality_of_comm [CommRing R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R] (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2 := by
+theorem CHSH_inequality_of_comm
+    [CommRing R] [PartialOrder R] [StarRing R] [StarOrderedRing R] [Algebra ℝ R]
+    [IsOrderedModule ℝ R]
+    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁)
+    : A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2 := by
   let P := 2 - A₀ * B₀ - A₀ * B₁ - A₁ * B₀ + A₁ * B₁
   have i₁ : 0 ≤ P := by
     have idem : P * P = 4 * P := CHSH_id T.A₀_inv T.A₁_inv T.B₀_inv T.B₁_inv
@@ -125,10 +129,9 @@ theorem CHSH_inequality_of_comm [CommRing R] [PartialOrder R] [StarRing R] [Star
       simp
     have sa : star P = P := by
       dsimp [P]
-      simp only [star_add, star_sub, star_mul, star_ofNat, T.A₀_sa, T.A₁_sa, T.B₀_sa,
-        T.B₁_sa, mul_comm B₀, mul_comm B₁]
-    simpa only [← idem', sa]
-      using smul_nonneg (by simp : (0 : ℝ) ≤ 1 / 4) (star_mul_self_nonneg P)
+      simp only [star_add, star_sub, star_mul, star_ofNat, T.A₀_sa, T.A₁_sa, T.B₀_sa, T.B₁_sa,
+        mul_comm B₀, mul_comm B₁]
+    simpa only [← idem', sa] using smul_nonneg (by simp : (0 : ℝ) ≤ 1 / 4) (star_mul_self_nonneg P)
   apply le_of_sub_nonneg
   simpa only [sub_add_eq_sub_sub, ← sub_add] using i₁
 
@@ -136,7 +139,6 @@ theorem CHSH_inequality_of_comm [CommRing R] [PartialOrder R] [StarRing R] [Star
 We now prove some rather specialized lemmas in preparation for the Tsirelson inequality,
 which we hide in a namespace as they are unlikely to be useful elsewhere.
 -/
-
 
 namespace TsirelsonInequality
 
@@ -153,7 +155,8 @@ end TsirelsonInequality
 
 open TsirelsonInequality
 
-/-- In a noncommutative ordered \*-algebra over ℝ,
+/--
+In a noncommutative ordered \*-algebra over ℝ,
 Tsirelson's bound for a CHSH tuple (A₀, A₁, B₀, B₁) is
 `A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2^(3/2) • 1`.
 
@@ -162,10 +165,11 @@ of the difference.
 
 (We could work over `ℤ[2^(1/2), 2^(-1/2)]` if we really wanted to!)
 -/
-theorem tsirelson_inequality [Ring R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R] [StarModule ℝ R]
-    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ √2 ^ 3 • (1 : R) := by
+theorem tsirelson_inequality
+    [Ring R] [PartialOrder R] [StarRing R] [StarOrderedRing R] [Algebra ℝ R] [IsOrderedModule ℝ R]
+    [StarModule ℝ R]
+    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁)
+    : A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ √2 ^ 3 • (1 : R) := by
   -- abel will create `ℤ` multiplication. We will `simp` them away to `ℝ` multiplication.
   have M : ∀ (m : ℤ) (a : ℝ) (x : R), m • a • x = ((m : ℝ) * a) • x := fun m a x => by
     rw [← Int.cast_smul_eq_zsmul ℝ, ← mul_smul]
@@ -185,8 +189,8 @@ theorem tsirelson_inequality [Ring R] [PartialOrder R] [StarRing R] [StarOrdered
     abel_nf
     -- all terms coincide, but the last one. Simplify all other terms
     simp only [M]
-    simp only [neg_mul, mul_inv_cancel_of_invertible, add_assoc, add_comm,
-      add_left_comm, one_smul, Int.cast_neg, neg_smul, Int.cast_ofNat, ← add_smul]
+    simp only [neg_mul, mul_inv_cancel_of_invertible, add_assoc, add_comm, add_left_comm, one_smul,
+      Int.cast_neg, neg_smul, Int.cast_ofNat, ← add_smul]
     grind
   have pos : 0 ≤ (√2)⁻¹ • (P ^ 2 + Q ^ 2) := by
     have P_sa : star P = P := by

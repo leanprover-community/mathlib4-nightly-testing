@@ -16,7 +16,8 @@ public section
 
 namespace ENNReal
 
-@[simp] lemma toReal_enatCard (α : Type*) : ENNReal.toReal (ENat.card α) = Nat.card α := by
+@[simp]
+lemma toReal_enatCard (α : Type*) : ENNReal.toReal (ENat.card α) = Nat.card α := by
   cases finite_or_infinite α <;> simp [ENat.card_eq_coe_natCard]
 
 end ENNReal

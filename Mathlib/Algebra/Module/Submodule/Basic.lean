@@ -40,16 +40,16 @@ variable {p q : Submodule R M}
 theorem toAddSubmonoid_strictMono : StrictMono (toAddSubmonoid : Submodule R M → AddSubmonoid M) :=
   fun _ _ => id
 
-theorem toAddSubmonoid_le : p.toAddSubmonoid ≤ q.toAddSubmonoid ↔ p ≤ q :=
-  Iff.rfl
+theorem toAddSubmonoid_le : p.toAddSubmonoid ≤ q.toAddSubmonoid ↔ p ≤ q := Iff.rfl
 
 @[gcongr, mono]
 theorem toAddSubmonoid_mono : Monotone (toAddSubmonoid : Submodule R M → AddSubmonoid M) :=
   toAddSubmonoid_strictMono.monotone
 
 @[gcongr, mono]
-theorem toSubMulAction_strictMono :
-    StrictMono (toSubMulAction : Submodule R M → SubMulAction R M) := fun _ _ => id
+theorem toSubMulAction_strictMono
+    : StrictMono (toSubMulAction : Submodule R M → SubMulAction R M) := fun _ _ =>
+  id
 
 @[gcongr, mono]
 theorem toSubMulAction_mono : Monotone (toSubMulAction : Submodule R M → SubMulAction R M) :=
@@ -73,12 +73,14 @@ variable (p)
 protected theorem sum_mem {t : Finset ι} {f : ι → M} : (∀ c ∈ t, f c ∈ p) → (∑ i ∈ t, f i) ∈ p :=
   sum_mem
 
-theorem sum_smul_mem {t : Finset ι} {f : ι → M} (r : ι → R) (hyp : ∀ c ∈ t, f c ∈ p) :
-    (∑ i ∈ t, r i • f i) ∈ p :=
+theorem sum_smul_mem {t : Finset ι} {f : ι → M} (r : ι → R) (hyp : ∀ c ∈ t, f c ∈ p)
+    : (∑ i ∈ t, r i • f i) ∈ p :=
   sum_mem fun i hi => smul_mem _ _ (hyp i hi)
 
-instance isCentralScalar [SMul S R] [SMul S M] [IsScalarTower S R M] [SMul Sᵐᵒᵖ R] [SMul Sᵐᵒᵖ M]
-    [IsScalarTower Sᵐᵒᵖ R M] [IsCentralScalar S M] : IsCentralScalar S p :=
+instance isCentralScalar
+    [SMul S R] [SMul S M] [IsScalarTower S R M] [SMul Sᵐᵒᵖ R] [SMul Sᵐᵒᵖ M] [IsScalarTower Sᵐᵒᵖ R M]
+    [IsCentralScalar S M]
+    : IsCentralScalar S p :=
   p.toSubMulAction.isCentralScalar
 
 instance instIsTorsionFree [Module.IsTorsionFree R M] : Module.IsTorsionFree R p :=
@@ -94,11 +96,9 @@ These instances work particularly well in conjunction with `AddGroup.toAddAction
 `s +ᵥ m` as an alias for `↑s + m`.
 -/
 
-
 variable {α β : Type*}
 
-instance [VAdd M α] : VAdd p α :=
-  AddSubmonoid.instVAddSubtypeMem p
+instance [VAdd M α] : VAdd p α := AddSubmonoid.instVAddSubtypeMem p
 
 instance vaddCommClass [VAdd M β] [VAdd α β] [VAddCommClass M α β] : VAddCommClass p α β :=
   ⟨fun a => vadd_comm (a : M)⟩
@@ -108,8 +108,7 @@ instance [VAdd M α] [FaithfulVAdd M α] : FaithfulVAdd p α :=
 
 variable {p}
 
-theorem vadd_def [VAdd M α] (g : p) (m : α) : g +ᵥ m = (g : M) +ᵥ m :=
-  rfl
+theorem vadd_def [VAdd M α] (g : p) (m : α) : g +ᵥ m = (g : M) +ᵥ m := rfl
 
 end AddAction
 
@@ -121,27 +120,23 @@ variable [Ring R] [AddCommGroup M]
 variable {module_M : Module R M}
 variable (p p' : Submodule R M)
 
-
 @[gcongr, mono]
 theorem toAddSubgroup_strictMono : StrictMono (toAddSubgroup : Submodule R M → AddSubgroup M) :=
   fun _ _ => id
 
-@[gcongr]
-theorem toAddSubgroup_le : p.toAddSubgroup ≤ p'.toAddSubgroup ↔ p ≤ p' :=
-  Iff.rfl
+@[gcongr] theorem toAddSubgroup_le : p.toAddSubgroup ≤ p'.toAddSubgroup ↔ p ≤ p' := Iff.rfl
 
 @[mono]
 theorem toAddSubgroup_mono : Monotone (toAddSubgroup : Submodule R M → AddSubgroup M) :=
   toAddSubgroup_strictMono.monotone
 
 @[simp]
-theorem toAddSubgroup_toAddSubmonoid (p : Submodule R M) :
-    p.toAddSubgroup.toAddSubmonoid = p.toAddSubmonoid :=
+theorem toAddSubgroup_toAddSubmonoid (p : Submodule R M)
+    : p.toAddSubgroup.toAddSubmonoid = p.toAddSubmonoid :=
   rfl
 
 -- See `neg_coe_set`
-theorem neg_coe : -(p : Set M) = p :=
-  Set.ext fun _ => p.neg_mem_iff
+theorem neg_coe : -(p : Set M) = p := Set.ext fun _ => p.neg_mem_iff
 
 end AddCommGroup
 
@@ -150,13 +145,15 @@ section IsDomain
 variable [Ring R] [IsDomain R]
 variable [AddCommGroup M] [Module R M]
 
-theorem notMem_of_ortho {x : M} {N : Submodule R M}
-    (ortho : ∀ (c : R), ∀ y ∈ N, c • x + y = (0 : M) → c = 0) : x ∉ N := by
+theorem notMem_of_ortho
+    {x : M} {N : Submodule R M} (ortho : ∀ (c : R), ∀ y ∈ N, c • x + y = (0 : M) → c = 0)
+    : x ∉ N := by
   intro hx
   simpa using ortho (-1) x hx
 
-theorem ne_zero_of_ortho {x : M} {N : Submodule R M}
-    (ortho : ∀ (c : R), ∀ y ∈ N, c • x + y = (0 : M) → c = 0) : x ≠ 0 :=
+theorem ne_zero_of_ortho
+    {x : M} {N : Submodule R M} (ortho : ∀ (c : R), ∀ y ∈ N, c • x + y = (0 : M) → c = 0)
+    : x ≠ 0 :=
   mt (fun h => show x ∈ N from h.symm ▸ N.zero_mem) (notMem_of_ortho ortho)
 
 end IsDomain
@@ -169,8 +166,7 @@ variable [DivisionSemiring S] [Semiring R] [AddCommMonoid M] [Module R M]
 variable [SMul S R] [Module S M] [IsScalarTower S R M]
 variable (p : Submodule R M) {s : S} {x : M}
 
-theorem smul_mem_iff (s0 : s ≠ 0) : s • x ∈ p ↔ x ∈ p :=
-  p.toSubMulAction.smul_mem_iff s0
+theorem smul_mem_iff (s0 : s ≠ 0) : s • x ∈ p ↔ x ∈ p := p.toSubMulAction.smul_mem_iff s0
 
 end Submodule
 

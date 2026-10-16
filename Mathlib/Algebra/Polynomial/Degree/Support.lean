@@ -55,24 +55,26 @@ theorem as_sum_support (p : R[X]) : p = ∑ i ∈ p.support, monomial i (p.coeff
 theorem as_sum_support_C_mul_X_pow (p : R[X]) : p = ∑ i ∈ p.support, C (p.coeff i) * X ^ i :=
   _root_.trans p.as_sum_support <| by simp only [C_mul_X_pow_eq_monomial]
 
-/-- We can reexpress a sum over `p.support` as a sum over `range n`,
+/--
+We can reexpress a sum over `p.support` as a sum over `range n`,
 for any `n` satisfying `p.natDegree < n`.
 -/
-theorem sum_over_range' [AddCommMonoid S] (p : R[X]) {f : ℕ → R → S} (h : ∀ n, f n 0 = 0) (n : ℕ)
-    (hn : p.natDegree < n) : p.sum f = ∑ a ∈ range n, f a (coeff p a) := by
+theorem sum_over_range'
+    [AddCommMonoid S] (p : R[X]) {f : ℕ → R → S} (h : ∀ n, f n 0 = 0) (n : ℕ) (hn : p.natDegree < n)
+    : p.sum f = ∑ a ∈ range n, f a (coeff p a) := by
   have := supp_subset_range hn
   simp only [Polynomial.sum, support, coeff] at this ⊢
   exact Finsupp.sum_of_support_subset _ this _ fun n _hn => h n
 
-/-- We can reexpress a sum over `p.support` as a sum over `range (p.natDegree + 1)`.
--/
-theorem sum_over_range [AddCommMonoid S] (p : R[X]) {f : ℕ → R → S} (h : ∀ n, f n 0 = 0) :
-    p.sum f = ∑ a ∈ range (p.natDegree + 1), f a (coeff p a) :=
+/-- We can reexpress a sum over `p.support` as a sum over `range (p.natDegree + 1)`. -/
+theorem sum_over_range [AddCommMonoid S] (p : R[X]) {f : ℕ → R → S} (h : ∀ n, f n 0 = 0)
+    : p.sum f = ∑ a ∈ range (p.natDegree + 1), f a (coeff p a) :=
   sum_over_range' p h (p.natDegree + 1) (lt_add_one _)
 
 -- TODO this is essentially a duplicate of `sum_over_range`, and should be removed.
-theorem sum_fin [AddCommMonoid S] (f : ℕ → R → S) (hf : ∀ i, f i 0 = 0) {n : ℕ} {p : R[X]}
-    (hn : p.degree < n) : (∑ i : Fin n, f i (p.coeff i)) = p.sum f := by
+theorem sum_fin
+    [AddCommMonoid S] (f : ℕ → R → S) (hf : ∀ i, f i 0 = 0) {n : ℕ} {p : R[X]} (hn : p.degree < n)
+    : (∑ i : Fin n, f i (p.coeff i)) = p.sum f := by
   by_cases hp : p = 0
   · rw [hp, sum_zero_index, Finset.sum_eq_zero]
     intro i _
@@ -80,19 +82,19 @@ theorem sum_fin [AddCommMonoid S] (f : ℕ → R → S) (hf : ∀ i, f i 0 = 0) 
   rw [sum_over_range' _ hf n ((natDegree_lt_iff_degree_lt hp).mpr hn),
     Fin.sum_univ_eq_sum_range fun i => f i (p.coeff i)]
 
-theorem as_sum_range' (p : R[X]) (n : ℕ) (hn : p.natDegree < n) :
-    p = ∑ i ∈ range n, monomial i (coeff p i) :=
+theorem as_sum_range' (p : R[X]) (n : ℕ) (hn : p.natDegree < n)
+    : p = ∑ i ∈ range n, monomial i (coeff p i) :=
   p.sum_monomial_eq.symm.trans <| p.sum_over_range' monomial_zero_right _ hn
 
 theorem as_sum_range (p : R[X]) : p = ∑ i ∈ range (p.natDegree + 1), monomial i (coeff p i) :=
   p.as_sum_range' _ (lt_add_one _)
 
-theorem as_sum_range_C_mul_X_pow' (p : R[X]) {n : ℕ} (hn : p.natDegree < n) :
-    p = ∑ i ∈ range n, C (coeff p i) * X ^ i :=
+theorem as_sum_range_C_mul_X_pow' (p : R[X]) {n : ℕ} (hn : p.natDegree < n)
+    : p = ∑ i ∈ range n, C (coeff p i) * X ^ i :=
   (p.as_sum_range' _ hn).trans <| by simp only [C_mul_X_pow_eq_monomial]
 
-theorem as_sum_range_C_mul_X_pow (p : R[X]) :
-    p = ∑ i ∈ range (p.natDegree + 1), C (coeff p i) * X ^ i :=
+theorem as_sum_range_C_mul_X_pow (p : R[X])
+    : p = ∑ i ∈ range (p.natDegree + 1), C (coeff p i) * X ^ i :=
   p.as_sum_range_C_mul_X_pow' (lt_add_one _)
 
 theorem mem_support_C_mul_X_pow {n a : ℕ} {c : R} (h : a ∈ support (C c * X ^ n)) : a = n :=
@@ -122,8 +124,8 @@ theorem natDegree_mem_support_of_nonzero (H : p ≠ 0) : p.natDegree ∈ p.suppo
   rw [mem_support_iff]
   exact (not_congr leadingCoeff_eq_zero).mpr H
 
-theorem natDegree_eq_support_max' (h : p ≠ 0) :
-    p.natDegree = p.support.max' (nonempty_support_iff.mpr h) :=
+theorem natDegree_eq_support_max' (h : p ≠ 0)
+    : p.natDegree = p.support.max' (nonempty_support_iff.mpr h) :=
   (le_max' _ _ <| natDegree_mem_support_of_nonzero h).antisymm <|
     max'_le _ _ _ le_natDegree_of_mem_supp
 

@@ -49,12 +49,14 @@ open Coalgebra in
 instance instHopfAlgebra : HopfAlgebra R A[G] where
   mul_antipode_rTensor_comul := by
     ext a b : 2
-    simpa [← (ℛ R b).eq] using congr(lsingle (R := R) (1 : G)
-      $(sum_antipode_mul_eq_algebraMap_counit (ℛ R b)))
+    simpa [← (ℛ R b).eq] using
+      congr(lsingle (R := R) (1 : G)
+        $(sum_antipode_mul_eq_algebraMap_counit (ℛ R b)))
   mul_antipode_lTensor_comul := by
     ext a b : 2
-    simpa [← (ℛ R b).eq] using congr(lsingle (R := R) (1 : G)
-      $(sum_mul_antipode_eq_algebraMap_counit (ℛ R b)))
+    simpa [← (ℛ R b).eq] using
+      congr(lsingle (R := R) (1 : G)
+        $(sum_mul_antipode_eq_algebraMap_counit (ℛ R b)))
 
 end MonoidAlgebra
 
@@ -68,21 +70,19 @@ instance instHopfAlgebra : HopfAlgebra R A[T;T⁻¹] :=
 variable {R A}
 
 @[simp]
-theorem antipode_C (a : A) :
-    HopfAlgebra.antipode R (C a) = C (HopfAlgebra.antipode R a) := by
+theorem antipode_C (a : A) : HopfAlgebra.antipode R (C a) = C (HopfAlgebra.antipode R a) := by
   rw [← single_eq_C, AddMonoidAlgebra.antipode_single]
   simp
 
 @[simp]
-theorem antipode_T (n : ℤ) :
-    HopfAlgebra.antipode R (T n : A[T;T⁻¹]) = T (-n) := by
+theorem antipode_T (n : ℤ) : HopfAlgebra.antipode R (T n : A[T;T⁻¹]) = T (-n) := by
   unfold T
   rw [AddMonoidAlgebra.antipode_single]
   simp only [HopfAlgebra.antipode_one, single_eq_C_mul_T, map_one, one_mul]
 
 @[simp]
-theorem antipode_C_mul_T (a : A) (n : ℤ) :
-    HopfAlgebra.antipode R (C a * T n) = C (HopfAlgebra.antipode R a) * T (-n) := by
+theorem antipode_C_mul_T (a : A) (n : ℤ)
+    : HopfAlgebra.antipode R (C a * T n) = C (HopfAlgebra.antipode R a) * T (-n) := by
   simp [← single_eq_C_mul_T]
 
 end LaurentPolynomial

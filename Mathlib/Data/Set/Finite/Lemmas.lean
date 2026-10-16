@@ -35,20 +35,24 @@ namespace Set
 
 /-! ### Properties -/
 
-theorem Finite.fin_embedding {s : Set α} (h : s.Finite) :
-    ∃ (n : ℕ) (f : Fin n ↪ α), range f = s :=
-  ⟨_, (Fintype.equivFin (h.toFinset : Set α)).symm.asEmbedding, by
-    simp only [Finset.coe_sort_coe, Equiv.asEmbedding_range, Finite.coe_toFinset, ofPred_mem_eq]⟩
+theorem Finite.fin_embedding {s : Set α} (h : s.Finite)
+    : ∃ (n : ℕ) (f : Fin n ↪ α), range f = s := ⟨
+  _,
+  (Fintype.equivFin (h.toFinset : Set α)).symm.asEmbedding,
+  by simp only [Finset.coe_sort_coe, Equiv.asEmbedding_range, Finite.coe_toFinset, ofPred_mem_eq]
+⟩
 
-theorem Finite.fin_param {s : Set α} (h : s.Finite) :
-    ∃ (n : ℕ) (f : Fin n → α), Injective f ∧ range f = s :=
+theorem Finite.fin_param {s : Set α} (h : s.Finite)
+    : ∃ (n : ℕ) (f : Fin n → α), Injective f ∧ range f = s :=
   let ⟨n, f, hf⟩ := h.fin_embedding
   ⟨n, f, f.injective, hf⟩
 
 /-- Induction up to a finite set `S`. -/
-theorem Finite.induction_to {C : Set α → Prop} {S : Set α} (h : S.Finite)
-    (S0 : Set α) (hS0 : S0 ⊆ S) (H0 : C S0) (H1 : ∀ s ⊂ S, C s → ∃ a ∈ S \ s, C (insert a s)) :
-    C S := by
+theorem Finite.induction_to
+    {C : Set α → Prop} {S : Set α} (h : S.Finite)
+    (S0 : Set α) (hS0 : S0 ⊆ S) (H0 : C S0)
+    (H1 : ∀ s ⊂ S, C s → ∃ a ∈ S \ s, C (insert a s))
+    : C S := by
   have : Finite S := Finite.to_subtype h
   have : Finite {T : Set α // T ⊆ S} := Finite.of_equiv (Set S) (Equiv.Set.powerset S).symm
   rw [← Subtype.coe_mk (p := (· ⊆ S)) _ le_rfl]
@@ -58,8 +62,11 @@ theorem Finite.induction_to {C : Set α → Prop} {S : Set α} (h : S.Finite)
   exact ⟨⟨insert a s.1, insert_subset ha1 s.2⟩, Set.ssubset_insert ha2, ha'⟩
 
 /-- Induction up to `univ`. -/
-theorem Finite.induction_to_univ [Finite α] {C : Set α → Prop} (S0 : Set α)
-    (H0 : C S0) (H1 : ∀ S ≠ univ, C S → ∃ a ∉ S, C (insert a S)) : C univ :=
+theorem Finite.induction_to_univ
+    [Finite α]
+    {C : Set α → Prop} (S0 : Set α) (H0 : C S0)
+    (H1 : ∀ S ≠ univ, C S → ∃ a ∉ S, C (insert a S))
+    : C univ :=
   finite_univ.induction_to S0 (subset_univ S0) H0 (by simpa [ssubset_univ_iff])
 
 theorem sUnion_finite_eq_univ {X : Type*} : ⋃₀ {(s : Set X) | Set.Finite s} = Set.univ :=
@@ -72,15 +79,15 @@ variable {s : Set α}
 /-! ### Order properties -/
 
 @[to_dual]
-theorem exists_min_image [LinearOrder β] (s : Set α) (f : α → β) (h1 : s.Finite) :
-    s.Nonempty → ∃ a ∈ s, ∀ b ∈ s, f a ≤ f b
+theorem exists_min_image [LinearOrder β] (s : Set α) (f : α → β) (h1 : s.Finite)
+    : s.Nonempty → ∃ a ∈ s, ∀ b ∈ s, f a ≤ f b
   | ⟨x, hx⟩ => by
     simpa only [exists_prop, Finite.mem_toFinset] using
       h1.toFinset.exists_min_image f ⟨x, h1.mem_toFinset.2 hx⟩
 
 @[to_dual]
-theorem exists_lower_bound_image [Nonempty α] [LinearOrder β] (s : Set α) (f : α → β)
-    (h : s.Finite) : ∃ a : α, ∀ b ∈ s, f a ≤ f b := by
+theorem exists_lower_bound_image [Nonempty α] [LinearOrder β] (s : Set α) (f : α → β) (h : s.Finite)
+    : ∃ a : α, ∀ b ∈ s, f a ≤ f b := by
   rcases s.eq_empty_or_nonempty with rfl | hs
   · exact ‹Nonempty α›.elim fun a => ⟨a, fun _ => False.elim⟩
   · rcases Set.exists_min_image s f h hs with ⟨x₀, _, hx₀⟩

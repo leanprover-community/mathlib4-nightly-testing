@@ -3,7 +3,7 @@ Copyright (c) 2021 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, Kyle Miller
 -/
-module  -- shake: keep-all, shake: keep-downstream
+module -- shake: keep-all, shake: keep-downstream
 
 public meta import Lean.Elab.BuiltinCommand
 public import Batteries.Util.LibraryNote -- For `library_note` command.
@@ -28,26 +28,36 @@ public meta section
 namespace Mathlib.Tactic
 open Lean Parser.Tactic Elab Command Elab.Tactic Meta
 
-/-- Syntax for the `variables` command: this command is just a stub,
-and merely warns that it has been renamed to `variable` in Lean 4. -/
+/--
+Syntax for the `variables` command: this command is just a stub,
+and merely warns that it has been renamed to `variable` in Lean 4.
+-/
 syntax (name := «variables») "variables" (ppSpace bracketedBinder)* : command
 
-/-- The `variables` command: this is just a stub,
-and merely warns that it has been renamed to `variable` in Lean 4. -/
-@[command_elab «variables»] def elabVariables : CommandElab
+/--
+The `variables` command: this is just a stub,
+and merely warns that it has been renamed to `variable` in Lean 4.
+-/
+@[command_elab «variables»]
+def elabVariables : CommandElab
   | `(variables%$pos $binders*) => do
     logWarningAt pos "'variables' has been replaced by 'variable' in lean 4"
     elabVariable (← `(variable%$pos $binders*))
-  | _ => throwUnsupportedSyntax
+  | _ =>
+    throwUnsupportedSyntax
 
-/-- Given two arrays of `FVarId`s, one from an old local context and the other from a new local
+/--
+Given two arrays of `FVarId`s, one from an old local context and the other from a new local
 context, pushes `FVarAliasInfo`s into the info tree for corresponding pairs of `FVarId`s.
 Recall that variables linked this way should be considered to be semantically identical.
 
 The effect of this is, for example, the unused variable linter will see that variables
-from the first array are used if corresponding variables in the second array are used. -/
-def pushFVarAliasInfo {m : Type → Type} [Monad m] [MonadInfoTree m]
-    (oldFVars newFVars : Array FVarId) (newLCtx : LocalContext) : m Unit := do
+from the first array are used if corresponding variables in the second array are used.
+-/
+def pushFVarAliasInfo
+    {m : Type → Type} [Monad m] [MonadInfoTree m]
+    (oldFVars newFVars : Array FVarId) (newLCtx : LocalContext)
+    : m Unit := do
   for old in oldFVars, new in newFVars do
     if old != new then
       let decl := newLCtx.get! new
@@ -89,14 +99,17 @@ example : ∀ a b : Nat, a = b → ∀ c, b = c → a = c := by
 ```
 -/
 syntax (name := introv) "introv" (ppSpace colGt binderIdent)* : tactic
-@[tactic introv] partial def evalIntrov : Tactic := fun stx ↦ do
+@[tactic introv]
+partial def evalIntrov : Tactic := fun stx ↦ do
   match stx with
-  | `(tactic| introv)                     => introsDep
+  | `(tactic| introv) =>
+    introsDep
   | `(tactic| introv $h:ident $hs:binderIdent*) =>
     evalTactic (← `(tactic| introv; intro $h:ident; introv $hs:binderIdent*))
   | `(tactic| introv _%$tk $hs:binderIdent*) =>
     evalTactic (← `(tactic| introv; intro _%$tk; introv $hs:binderIdent*))
-  | _ => throwUnsupportedSyntax
+  | _ =>
+    throwUnsupportedSyntax
 where
   introsDep : TacticM Unit := do
     let t ← getMainTarget
@@ -105,7 +118,8 @@ where
       if e.hasLooseBVars then
         intro1PStep
         introsDep
-    | _ => pure ()
+    | _ =>
+      pure ()
   intro1PStep : TacticM Unit :=
     liftMetaTactic fun goal ↦ do
       let (_, goal) ← goal.intro1P
@@ -115,12 +129,13 @@ where
 macro "assumption'" : tactic => `(tactic| any_goals assumption)
 
 /-- This tactic clears all auxiliary declarations from the context. -/
-elab (name := clearAuxDecl) "clear_aux_decl" : tactic => withMainContext do
-  let mut g ← getMainGoal
-  for ldec in ← getLCtx do
-    if ldec.isAuxDecl then
-      g ← g.tryClear ldec.fvarId
-  replaceMainGoal [g]
+elab (name := clearAuxDecl) "clear_aux_decl" : tactic =>
+  withMainContext do
+    let mut g ← getMainGoal
+    for ldec in ← getLCtx do
+      if ldec.isAuxDecl then
+        g ← g.tryClear ldec.fvarId
+    replaceMainGoal [g]
 
 attribute [pp_with_univ] ULift PUnit PEmpty
 
@@ -129,26 +144,26 @@ structure withResetServerInfo.Result (α : Type) where
   /-- Return value of the executed tactic. -/
   result? : Option α
   /-- Messages produced by the executed tactic. -/
-  msgs    : MessageLog
+  msgs : MessageLog
   /-- Info trees produced by the executed tactic, wrapped in `CommandContextInfo.save`. -/
-  trees   : PersistentArray InfoTree
+  trees : PersistentArray InfoTree
 
 /--
 Runs a tactic, returning any new messages and info trees rather than adding them to the state.
 -/
-def withResetServerInfo {α : Type} (t : TacticM α) :
-    TacticM (withResetServerInfo.Result α) := do
-  let (savedMsgs, savedTrees) ← modifyGetThe Core.State fun st =>
-    ((st.messages, st.infoState.trees), { st with messages := {}, infoState.trees := {} })
+def withResetServerInfo {α : Type} (t : TacticM α) : TacticM (withResetServerInfo.Result α) := do
+  let (savedMsgs, savedTrees) ←
+    modifyGetThe Core.State fun st =>
+      ((st.messages, st.infoState.trees), { st with messages := {}, infoState.trees := {} })
   Prod.snd <$> MonadFinally.tryFinally' t fun result? => do
-    let msgs  ← Core.getMessageLog
-    let ist   ← getInfoState
-    let trees ← ist.trees.mapM fun tree => do
-      let tree := tree.substitute ist.assignment
-      let ctx := .commandCtx <| ← CommandContextInfo.save
-      return InfoTree.context ctx tree
-    modifyThe Core.State fun st =>
-      { st with messages := savedMsgs, infoState.trees := savedTrees }
+    let msgs ← Core.getMessageLog
+    let ist ← getInfoState
+    let trees ←
+      ist.trees.mapM fun tree => do
+        let tree := tree.substitute ist.assignment
+        let ctx := .commandCtx <| ← CommandContextInfo.save
+        return InfoTree.context ctx tree
+    modifyThe Core.State fun st => { st with messages := savedMsgs, infoState.trees := savedTrees }
     return { result?, msgs, trees }
 
 end Mathlib.Tactic

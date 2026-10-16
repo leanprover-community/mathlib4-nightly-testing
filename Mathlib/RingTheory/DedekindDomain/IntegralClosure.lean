@@ -50,7 +50,6 @@ We show that an integral closure of a Dedekind domain in a finite separable
 field extension is again a Dedekind domain. This implies the ring of integers
 of a number field is a Dedekind domain. -/
 
-
 variable [Algebra A K] [IsFractionRing A K]
 variable (L : Type*) [Field L] (C : Type*) [CommRing C]
 variable [Algebra K L] [Algebra A L] [IsScalarTower A K L]
@@ -58,10 +57,12 @@ variable [Algebra C L] [IsIntegralClosure C A L] [Algebra A C] [IsScalarTower A 
 include K L
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `L` is an algebraic extension of `K = Frac(A)` and `L` has no zero smul divisors by `A`,
-then `L` is the localization of the integral closure `C` of `A` in `L` at `A⁰`. -/
-theorem IsIntegralClosure.isLocalization [IsDomain A] [Algebra.IsAlgebraic K L] :
-    IsLocalization (Algebra.algebraMapSubmonoid C A⁰) L := by
+/--
+If `L` is an algebraic extension of `K = Frac(A)` and `L` has no zero smul divisors by `A`,
+then `L` is the localization of the integral closure `C` of `A` in `L` at `A⁰`.
+-/
+theorem IsIntegralClosure.isLocalization [IsDomain A] [Algebra.IsAlgebraic K L]
+    : IsLocalization (Algebra.algebraMapSubmonoid C A⁰) L := by
   have : IsDomain C :=
     (IsIntegralClosure.equiv A C L (integralClosure A L)).toMulEquiv.isDomain (integralClosure A L)
   have : IsTorsionFree A L := .trans_faithfulSMul A K L
@@ -72,7 +73,7 @@ theorem IsIntegralClosure.isLocalization [IsDomain A] [Algebra.IsAlgebraic K L] 
       Subtype.coe_mk, map_ne_zero_iff _ (FaithfulSMul.algebraMap_injective A C)]
     exact mem_nonZeroDivisors_iff_ne_zero.mp hx
   · obtain ⟨m, hm⟩ :=
-      IsIntegral.exists_multiple_integral_of_isLocalization A⁰ z
+      IsIntegral.exists_multiple_integral_of_isLocalization (A⁰) z
         (Algebra.IsIntegral.isIntegral (R := K) z)
     obtain ⟨x, hx⟩ : ∃ x, algebraMap C L x = m • z := IsIntegralClosure.isIntegral_iff.mp hm
     refine ⟨⟨x, algebraMap A C m, m, SetLike.coe_mem m, rfl⟩, ?_⟩
@@ -80,17 +81,21 @@ theorem IsIntegralClosure.isLocalization [IsDomain A] [Algebra.IsAlgebraic K L] 
       smul_def]
   · simp only [IsIntegralClosure.algebraMap_injective C A L h]
 
-theorem IsIntegralClosure.isLocalization_of_isSeparable [IsDomain A] [Algebra.IsSeparable K L] :
-    IsLocalization (Algebra.algebraMapSubmonoid C A⁰) L :=
+theorem IsIntegralClosure.isLocalization_of_isSeparable [IsDomain A] [Algebra.IsSeparable K L]
+    : IsLocalization (Algebra.algebraMapSubmonoid C A⁰) L :=
   IsIntegralClosure.isLocalization A K L C
 
 variable [FiniteDimensional K L]
 variable {A K L}
 
-theorem IsIntegralClosure.range_le_span_dualBasis [Algebra.IsSeparable K L] {ι : Type*} [Finite ι]
-    [DecidableEq ι] (b : Basis ι K L) (hb_int : ∀ i, IsIntegral A (b i)) [IsIntegrallyClosed A] :
-    LinearMap.range ((Algebra.linearMap C L).restrictScalars A) ≤
-    Submodule.span A (Set.range <| (traceForm K L).dualBasis (traceForm_nondegenerate K L) b) := by
+theorem IsIntegralClosure.range_le_span_dualBasis
+    [Algebra.IsSeparable K L]
+    {ι : Type*} [Finite ι] [DecidableEq ι]
+    (b : Basis ι K L) (hb_int : ∀ i, IsIntegral A (b i))
+    [IsIntegrallyClosed A]
+    : LinearMap.range ((Algebra.linearMap C L).restrictScalars A)
+      ≤ Submodule.span A
+        (Set.range <| (traceForm K L).dualBasis (traceForm_nondegenerate K L) b) := by
   rw [← LinearMap.BilinForm.dualSubmodule_span_of_basis,
     ← LinearMap.BilinForm.le_flip_dualSubmodule, Submodule.span_le]
   rintro _ ⟨i, rfl⟩ _ ⟨y, rfl⟩
@@ -99,10 +104,14 @@ theorem IsIntegralClosure.range_le_span_dualBasis [Algebra.IsSeparable K L] {ι 
   refine Submodule.mem_one.mpr <| IsIntegrallyClosed.isIntegral_iff.mp ?_
   exact isIntegral_trace ((IsIntegralClosure.isIntegral A L y).algebraMap.mul (hb_int i))
 
-theorem integralClosure_le_span_dualBasis [Algebra.IsSeparable K L] {ι : Type*} [Finite ι]
-    [DecidableEq ι] (b : Basis ι K L) (hb_int : ∀ i, IsIntegral A (b i)) [IsIntegrallyClosed A] :
-    Subalgebra.toSubmodule (integralClosure A L) ≤
-    Submodule.span A (Set.range <| (traceForm K L).dualBasis (traceForm_nondegenerate K L) b) := by
+theorem integralClosure_le_span_dualBasis
+    [Algebra.IsSeparable K L]
+    {ι : Type*} [Finite ι] [DecidableEq ι]
+    (b : Basis ι K L) (hb_int : ∀ i, IsIntegral A (b i))
+    [IsIntegrallyClosed A]
+    : Subalgebra.toSubmodule (integralClosure A L)
+      ≤ Submodule.span A
+        (Set.range <| (traceForm K L).dualBasis (traceForm_nondegenerate K L) b) := by
   refine le_trans ?_ (IsIntegralClosure.range_le_span_dualBasis (integralClosure A L) b hb_int)
   intro x hx
   exact ⟨⟨x, hx⟩, rfl⟩
@@ -110,20 +119,23 @@ theorem integralClosure_le_span_dualBasis [Algebra.IsSeparable K L] {ι : Type*}
 variable [IsDomain A]
 variable (A K)
 
-/-- Send a set of `x`s in a finite extension `L` of the fraction field of `R`
-to `(y : R) • x ∈ integralClosure R L`. -/
-theorem exists_integral_multiples (s : Finset L) :
-    ∃ y ≠ (0 : A), ∀ x ∈ s, IsIntegral A (y • x) :=
+/--
+Send a set of `x`s in a finite extension `L` of the fraction field of `R`
+to `(y : R) • x ∈ integralClosure R L`.
+-/
+theorem exists_integral_multiples (s : Finset L) : ∃ y ≠ (0 : A), ∀ x ∈ s, IsIntegral A (y • x) :=
   have := IsLocalization.isAlgebraic K (nonZeroDivisors A)
   have := Algebra.IsAlgebraic.trans A K L
   Algebra.IsAlgebraic.exists_integral_multiples ..
 
 variable (L)
 
-/-- If `L` is a finite extension of `K = Frac(A)`,
-then `L` has a basis over `A` consisting of integral elements. -/
-theorem FiniteDimensional.exists_is_basis_integral :
-    ∃ (s : Finset L) (b : Basis s K L), ∀ x, IsIntegral A (b x) := by
+/--
+If `L` is a finite extension of `K = Frac(A)`,
+then `L` has a basis over `A` consisting of integral elements.
+-/
+theorem FiniteDimensional.exists_is_basis_integral
+    : ∃ (s : Finset L) (b : Basis s K L), ∀ x, IsIntegral A (b x) := by
   let := Classical.decEq L
   let s' := IsNoetherian.finsetBasisIndex K L
   let bs' := IsNoetherian.finsetBasis K L
@@ -132,25 +144,32 @@ theorem FiniteDimensional.exists_is_basis_integral :
     refine mt ((injective_iff_map_eq_zero (algebraMap A L)).mp ?_ _) hy
     rw [IsScalarTower.algebraMap_eq A K L]
     exact (algebraMap K L).injective.comp (IsFractionRing.injective A K)
-  refine ⟨s', bs'.map {Algebra.lmul _ _ (algebraMap A L y) with
-    toFun := fun x => algebraMap A L y * x
-    invFun := fun x => (algebraMap A L y)⁻¹ * x
-    left_inv := ?_
-    right_inv := ?_}, ?_⟩
+  refine ⟨
+    s',
+    bs'.map {
+      Algebra.lmul _ _ (algebraMap A L y) with
+      toFun := fun x => algebraMap A L y * x
+      invFun := fun x => (algebraMap A L y)⁻¹ * x
+      left_inv := ?_
+      right_inv := ?_
+    },
+    ?_
+  ⟩
   · intro x; simp only [inv_mul_cancel_left₀ hy']
   · intro x; simp only [mul_inv_cancel_left₀ hy']
   · rintro ⟨x', hx'⟩
-    simp only [Algebra.smul_def, Finset.mem_image, Finset.mem_univ,
-      true_and] at his'
+    simp only [Algebra.smul_def, Finset.mem_image, Finset.mem_univ, true_and] at his'
     exact his' _ ⟨_, rfl⟩
 
 variable [Algebra.IsSeparable K L]
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
 integrally closed and Noetherian, the integral closure `C` of `A` in `L` is
-Noetherian over `A`. -/
-theorem IsIntegralClosure.isNoetherian [IsIntegrallyClosed A] [IsNoetherianRing A] :
-    IsNoetherian A C := by
+Noetherian over `A`.
+-/
+theorem IsIntegralClosure.isNoetherian [IsIntegrallyClosed A] [IsNoetherianRing A]
+    : IsNoetherian A C := by
   have := Classical.decEq L
   obtain ⟨s, b, hb_int⟩ := FiniteDimensional.exists_is_basis_integral A K L
   let b' := (traceForm K L).dualBasis (traceForm_nondegenerate K L) b
@@ -162,89 +181,109 @@ theorem IsIntegralClosure.isNoetherian [IsIntegrallyClosed A] [IsNoetherianRing 
   rw [LinearMap.ker_comp, Submodule.ker_inclusion, Submodule.comap_bot, LinearMap.ker_codRestrict]
   exact LinearMap.ker_eq_bot_of_injective (IsIntegralClosure.algebraMap_injective C A L)
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
 integrally closed and Noetherian, the integral closure `C` of `A` in `L` is
-Noetherian. -/
-theorem IsIntegralClosure.isNoetherianRing [IsIntegrallyClosed A] [IsNoetherianRing A] :
-    IsNoetherianRing C :=
+Noetherian.
+-/
+theorem IsIntegralClosure.isNoetherianRing [IsIntegrallyClosed A] [IsNoetherianRing A]
+    : IsNoetherianRing C :=
   isNoetherianRing_iff.mpr <| isNoetherian_of_tower A (IsIntegralClosure.isNoetherian A K L C)
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
 integrally closed and Noetherian, the integral closure `C` of `A` in `L` is
-finite over `A`. -/
-theorem IsIntegralClosure.finite [IsIntegrallyClosed A] [IsNoetherianRing A] :
-    Module.Finite A C := by
+finite over `A`.
+-/
+theorem IsIntegralClosure.finite [IsIntegrallyClosed A] [IsNoetherianRing A]
+    : Module.Finite A C := by
   have := IsIntegralClosure.isNoetherian A K L C
   exact Module.IsNoetherian.finite A C
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a principal ring
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a principal ring
 and `L` has no zero smul divisors by `A`, the integral closure `C` of `A` in `L` is
-a free `A`-module. -/
-theorem IsIntegralClosure.module_free [IsTorsionFree A L] [IsPrincipalIdealRing A] :
-    Module.Free A C :=
+a free `A`-module.
+-/
+theorem IsIntegralClosure.module_free [IsTorsionFree A L] [IsPrincipalIdealRing A]
+    : Module.Free A C :=
   haveI : IsTorsionFree A C := IsIntegralClosure.isTorsionFree A L
   haveI : IsNoetherian A C := IsIntegralClosure.isNoetherian A K L _
   inferInstance
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a principal ring
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a principal ring
 and `L` has no zero smul divisors by `A`, the `A`-rank of the integral closure `C` of `A` in `L`
-is equal to the `K`-rank of `L`. -/
-theorem IsIntegralClosure.rank [IsPrincipalIdealRing A] [IsTorsionFree A L] :
-    Module.finrank A C = Module.finrank K L := by
+is equal to the `K`-rank of `L`.
+-/
+theorem IsIntegralClosure.rank [IsPrincipalIdealRing A] [IsTorsionFree A L]
+    : Module.finrank A C = Module.finrank K L := by
   have : Module.Free A C := IsIntegralClosure.module_free A K L C
   have : IsNoetherian A C := IsIntegralClosure.isNoetherian A K L C
   have : IsLocalization (Algebra.algebraMapSubmonoid C A⁰) L :=
     IsIntegralClosure.isLocalization A K L C
-  let b := Basis.localizationLocalization K A⁰ L (Module.Free.chooseBasis A C)
+  let b := Basis.localizationLocalization K (A⁰) L (Module.Free.chooseBasis A C)
   rw [Module.finrank_eq_card_chooseBasisIndex, Module.finrank_eq_card_basis b]
 
 variable {A K}
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
 integrally closed and Noetherian, the integral closure of `A` in `L` is
-Noetherian. -/
-theorem integralClosure.isNoetherianRing [IsIntegrallyClosed A] [IsNoetherianRing A] :
-    IsNoetherianRing (integralClosure A L) :=
+Noetherian.
+-/
+theorem integralClosure.isNoetherianRing [IsIntegrallyClosed A] [IsNoetherianRing A]
+    : IsNoetherianRing (integralClosure A L) :=
   IsIntegralClosure.isNoetherianRing A K L (integralClosure A L)
 
 variable (A K) [IsDomain C]
 
 set_option linter.overlappingInstances false
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
 the integral closure `C` of `A` in `L` is a Dedekind domain.
 
 This cannot be an instance since `A`, `K` or `L` can't be inferred. See also the instance
 `integralClosure.isDedekindDomain_fractionRing` where `K := FractionRing A`
-and `C := integralClosure A L`. -/
+and `C := integralClosure A L`.
+-/
 theorem IsIntegralClosure.isDedekindDomain [IsDedekindDomain A] : IsDedekindDomain C :=
   have : IsFractionRing C L := IsIntegralClosure.isFractionRing_of_finite_extension A K L C
   have : Algebra.IsIntegral A C := IsIntegralClosure.isIntegral_algebra A L
-  { IsIntegralClosure.isNoetherianRing A K L C,
+  {
+    IsIntegralClosure.isNoetherianRing A K L C,
     Ring.DimensionLEOne.of_isIntegral A C,
-    (isIntegrallyClosed_iff L).mpr fun {x} hx =>
-      ⟨IsIntegralClosure.mk' C x (isIntegral_trans (R := A) _ hx),
-        IsIntegralClosure.algebraMap_mk' _ _ _⟩ with : IsDedekindDomain C }
+    (isIntegrallyClosed_iff L).mpr fun {x} hx => ⟨
+      IsIntegralClosure.mk' C x (isIntegral_trans (R := A) _ hx),
+      IsIntegralClosure.algebraMap_mk' _ _ _
+    ⟩ with
+    : IsDedekindDomain C
+  }
 
-/-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
+/--
+If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
 the integral closure of `A` in `L` is a Dedekind domain.
 
 This cannot be an instance since `K` can't be inferred. See also the instance
-`integralClosure.isDedekindDomain_fractionRing` where `K := FractionRing A`. -/
-theorem integralClosure.isDedekindDomain [IsDedekindDomain A] :
-    IsDedekindDomain (integralClosure A L) :=
+`integralClosure.isDedekindDomain_fractionRing` where `K := FractionRing A`.
+-/
+theorem integralClosure.isDedekindDomain [IsDedekindDomain A]
+    : IsDedekindDomain (integralClosure A L) :=
   IsIntegralClosure.isDedekindDomain A K L (integralClosure A L)
 
 variable [Algebra (FractionRing A) L] [IsScalarTower A (FractionRing A) L]
 variable [FiniteDimensional (FractionRing A) L] [Algebra.IsSeparable (FractionRing A) L]
 
-/-- If `L` is a finite separable extension of `Frac(A)`, where `A` is a Dedekind domain,
+/--
+If `L` is a finite separable extension of `Frac(A)`, where `A` is a Dedekind domain,
 the integral closure of `A` in `L` is a Dedekind domain.
 
 See also the lemma `integralClosure.isDedekindDomain` where you can choose
-the field of fractions yourself. -/
-instance integralClosure.isDedekindDomain_fractionRing [IsDedekindDomain A] :
-    IsDedekindDomain (integralClosure A L) :=
+the field of fractions yourself.
+-/
+instance integralClosure.isDedekindDomain_fractionRing [IsDedekindDomain A]
+    : IsDedekindDomain (integralClosure A L) :=
   integralClosure.isDedekindDomain A (FractionRing A) L
 
 end IsIntegralClosure

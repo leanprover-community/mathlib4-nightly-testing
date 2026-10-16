@@ -19,24 +19,29 @@ public section
 variable {α : Type*}
 
 namespace Multiset
-variable [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α]
-  [ExistsAddOfLE α] [LocallyFiniteOrder α]
+variable
+  [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α] [ExistsAddOfLE α]
+  [LocallyFiniteOrder α]
 
 lemma map_add_left_Icc (a b c : α) : (Icc a b).map (c + ·) = Icc (c + a) (c + b) := by
-  classical rw [Icc, Icc, ← Finset.image_add_left_Icc, Finset.image_val,
-      ((Finset.nodup _).map <| add_right_injective c).dedup]
+  classical
+  rw [Icc, Icc, ← Finset.image_add_left_Icc, Finset.image_val,
+    ((Finset.nodup _).map <| add_right_injective c).dedup]
 
 lemma map_add_left_Ico (a b c : α) : (Ico a b).map (c + ·) = Ico (c + a) (c + b) := by
-  classical rw [Ico, Ico, ← Finset.image_add_left_Ico, Finset.image_val,
-      ((Finset.nodup _).map <| add_right_injective c).dedup]
+  classical
+  rw [Ico, Ico, ← Finset.image_add_left_Ico, Finset.image_val,
+    ((Finset.nodup _).map <| add_right_injective c).dedup]
 
 lemma map_add_left_Ioc (a b c : α) : (Ioc a b).map (c + ·) = Ioc (c + a) (c + b) := by
-  classical rw [Ioc, Ioc, ← Finset.image_add_left_Ioc, Finset.image_val,
-      ((Finset.nodup _).map <| add_right_injective c).dedup]
+  classical
+  rw [Ioc, Ioc, ← Finset.image_add_left_Ioc, Finset.image_val,
+    ((Finset.nodup _).map <| add_right_injective c).dedup]
 
 lemma map_add_left_Ioo (a b c : α) : (Ioo a b).map (c + ·) = Ioo (c + a) (c + b) := by
-  classical rw [Ioo, Ioo, ← Finset.image_add_left_Ioo, Finset.image_val,
-      ((Finset.nodup _).map <| add_right_injective c).dedup]
+  classical
+  rw [Ioo, Ioo, ← Finset.image_add_left_Ioo, Finset.image_val,
+    ((Finset.nodup _).map <| add_right_injective c).dedup]
 
 lemma map_add_right_Icc (a b c : α) : ((Icc a b).map fun x => x + c) = Icc (a + c) (b + c) := by
   simp_rw [add_comm _ c]

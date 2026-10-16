@@ -6,36 +6,38 @@ open Lean
 -- set_option trace.Elab.Deriving.toExpr true
 
 inductive MyMaybe (α : Type u)
-  | none | some (x : α)
-  deriving ToExpr
+  | none
+  | some (x : α)
+deriving ToExpr
 
-run_cmd Elab.Command.liftTermElabM do
-  guard <| "MyMaybe.some 2" == s!"{← Lean.PrettyPrinter.ppExpr <| toExpr (MyMaybe.some 2)}"
+run_cmd
+  Elab.Command.liftTermElabM do
+    guard <| "MyMaybe.some 2" == s!"{← Lean.PrettyPrinter.ppExpr <| toExpr (MyMaybe.some 2)}"
 
-run_cmd Elab.Command.liftTermElabM do
-  Meta.check <| toExpr (MyMaybe.some 2)
+run_cmd Elab.Command.liftTermElabM do Meta.check <| toExpr (MyMaybe.some 2)
 
 deriving instance ToExpr for ULift
 
-run_cmd Elab.Command.liftTermElabM do
-  let e := toExpr (MyMaybe.none : MyMaybe (ULift.{1,0} Nat))
-  let ty := toTypeExpr (MyMaybe (ULift.{1,0} Nat))
-  Meta.check e
-  Meta.check ty
-  guard <| ← Meta.isDefEq (← Meta.inferType e) ty
-  guard <| (← Meta.getLevel ty) == Level.zero.succ.succ
+run_cmd
+  Elab.Command.liftTermElabM do
+    let e := toExpr (MyMaybe.none : MyMaybe (ULift.{1, 0} Nat))
+    let ty := toTypeExpr (MyMaybe (ULift.{1, 0} Nat))
+    Meta.check e
+    Meta.check ty
+    guard <| ← Meta.isDefEq (← Meta.inferType e) ty
+    guard <| (← Meta.getLevel ty) == Level.zero.succ.succ
 
-run_cmd Elab.Command.liftTermElabM do
-  Meta.check <| toExpr <| (MyMaybe.some (ULift.up 2) : MyMaybe (ULift.{1,0} Nat))
+run_cmd
+  Elab.Command.liftTermElabM do
+    Meta.check <| toExpr <| (MyMaybe.some (ULift.up 2) : MyMaybe (ULift.{1, 0} Nat))
 
 deriving instance ToExpr for List
 
 inductive Foo
   | l (x : List Foo)
-  deriving ToExpr
+deriving ToExpr
 
-run_cmd Elab.Command.liftTermElabM <|
-  Meta.check <| toExpr (Foo.l [Foo.l [], Foo.l [Foo.l []]])
+run_cmd Elab.Command.liftTermElabM <| Meta.check <| toExpr (Foo.l [Foo.l [], Foo.l [Foo.l []]])
 
 /--
 error: failed to synthesize instance of type class
@@ -46,21 +48,23 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 #guard_msgs in
 inductive Bar
   | func (x : Bool → Nat)
-  deriving ToExpr
+deriving ToExpr
 
 def boolFunHelper (x y : α) (b : Bool) : α := if b then x else y
 
-instance {α : Type u} [ToExpr α] [ToLevel.{u+1}] : ToExpr (Bool → α) where
+instance {α : Type u} [ToExpr α] [ToLevel.{u + 1}] : ToExpr (Bool → α) where
   toExpr g :=
-    mkApp3 (.const ``boolFunHelper [toLevel.{u+1}])
-      (toTypeExpr α) (toExpr <| g true) (toExpr <| g false)
+    mkApp3 (.const ``boolFunHelper [toLevel.{u + 1}]) (toTypeExpr α) (toExpr <| g true)
+      (toExpr <| g false)
   toTypeExpr := .forallE `x (.const ``Bool []) (toTypeExpr α) .default
 
 deriving instance ToExpr for Bar
 
 example : True := by
   run_tac do
-    let f : Bool → Nat | false => 0 | true => 1
+    let f : Bool → Nat
+      | false => 0
+      | true => 1
     let e := toExpr <| Bar.func f
     Meta.check e
     guard <| ← Meta.isDefEq (← Meta.inferType e) (toTypeExpr Bar)
@@ -75,9 +79,10 @@ inductive B
 deriving ToExpr
 end
 
-run_cmd Elab.Command.liftTermElabM do
-  Meta.check <| toExpr A.a
-  Meta.check <| toExpr B.b
+run_cmd
+  Elab.Command.liftTermElabM do
+    Meta.check <| toExpr A.a
+    Meta.check <| toExpr B.b
 
 mutual
 inductive C
@@ -101,7 +106,6 @@ deriving instance ToExpr for BinderInfo
 deriving instance ToExpr for Literal
 deriving instance ToExpr for Expr
 
-run_cmd Elab.Command.liftTermElabM do
-  Meta.check <| toExpr <| toExpr [1,2,3]
+run_cmd Elab.Command.liftTermElabM do Meta.check <| toExpr <| toExpr [1, 2, 3]
 
 end DeriveToExprTests

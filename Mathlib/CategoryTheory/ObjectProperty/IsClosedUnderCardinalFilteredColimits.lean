@@ -37,36 +37,39 @@ open Limits
 
 variable {C : Type*} [Category* C]
 
-/-- For a property of object `P : ObjectProperty C` and a regular cardinal `κ`,
+/--
+For a property of object `P : ObjectProperty C` and a regular cardinal `κ`,
 the typeclass `P.IsClosedUnderCardinalFilteredColimits κ` means that
-`P` is stable under colimits of shape `J` for any `κ`-filtered category `J`. -/
+`P` is stable under colimits of shape `J` for any `κ`-filtered category `J`.
+-/
 class IsClosedUnderCardinalFilteredColimits
-    (P : ObjectProperty C) (κ : Cardinal.{w}) [Fact κ.IsRegular] : Prop where
+    (P : ObjectProperty C) (κ : Cardinal.{w}) [Fact κ.IsRegular]
+    : Prop where
   isCardinalClosedUnderColimitsOfShape'
-      (P) (κ) (J : Type w) [SmallCategory J] [IsCardinalFiltered J κ] :
-    P.IsClosedUnderColimitsOfShape J := by infer_instance
+      (P) (κ) (J : Type w) [SmallCategory J] [IsCardinalFiltered J κ]
+      : P.IsClosedUnderColimitsOfShape J := by
+    infer_instance
 
 namespace IsClosedUnderCardinalFilteredColimits
 
-variable (P : ObjectProperty C) (κ : Cardinal.{w}) [Fact κ.IsRegular]
-  [P.IsClosedUnderCardinalFilteredColimits κ]
+variable
+  (P : ObjectProperty C) (κ : Cardinal.{w})
+  [Fact κ.IsRegular] [P.IsClosedUnderCardinalFilteredColimits κ]
 
 lemma isCardinalClosedUnderColimitsOfShape
-    (J : Type*) [Category* J] [EssentiallySmall.{w} J] [IsCardinalFiltered J κ] :
-    P.IsClosedUnderColimitsOfShape J := by
+    (J : Type*) [Category* J] [EssentiallySmall.{w} J] [IsCardinalFiltered J κ]
+    : P.IsClosedUnderColimitsOfShape J := by
   rw [P.isClosedUnderColimitsOfShape_iff_of_equivalence (equivSmallModel.{w} J)]
   have := IsCardinalFiltered.of_equivalence κ (equivSmallModel.{w} J)
   exact isCardinalClosedUnderColimitsOfShape' P κ _
 
-instance [HasCardinalFilteredColimits C κ] :
-    HasCardinalFilteredColimits P.FullSubcategory κ where
+instance [HasCardinalFilteredColimits C κ] : HasCardinalFilteredColimits P.FullSubcategory κ where
   hasColimitsOfShape J _ _ := by
     have := HasCardinalFilteredColimits.hasColimitsOfShape C κ J
     have := isCardinalClosedUnderColimitsOfShape P κ J
     infer_instance
 
-instance [HasCardinalFilteredColimits C κ] :
-    P.ι.IsCardinalAccessible κ where
+instance [HasCardinalFilteredColimits C κ] : P.ι.IsCardinalAccessible κ where
   preservesColimitOfShape J _ _ := by
     have := HasCardinalFilteredColimits.hasColimitsOfShape C κ J
     have := isCardinalClosedUnderColimitsOfShape P κ J
@@ -76,12 +79,13 @@ include κ in
 lemma isClosedUnderIsomorphisms : P.IsClosedUnderIsomorphisms where
   of_iso {X Y} e hX :=
     have := isCardinalClosedUnderColimitsOfShape P κ PUnit
-    have p : P.ColimitOfShape PUnit.{w + 1} Y :=
-      { diag := (Functor.const _).obj X
-        ι.app _ := e.hom
-        isColimit.desc s := e.inv ≫ s.ι.app .unit
-        isColimit.uniq s m hm := by simp [← hm .unit]
-        prop_diag_obj _ := hX }
+    have p : P.ColimitOfShape PUnit.{w + 1} Y := {
+      diag := (Functor.const _).obj X
+      ι.app _ := e.hom
+      isColimit.desc s := e.inv ≫ s.ι.app .unit
+      isColimit.uniq s m hm := by simp [← hm .unit]
+      prop_diag_obj _ := hX
+    }
     p.prop
 
 end IsClosedUnderCardinalFilteredColimits

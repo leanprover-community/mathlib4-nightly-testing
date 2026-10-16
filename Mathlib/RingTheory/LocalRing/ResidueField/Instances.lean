@@ -7,28 +7,29 @@ module
 
 public import Mathlib.FieldTheory.Separable
 public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
-
 import Mathlib.RingTheory.Finiteness.Quotient
 
 /-! # Instances on residue fields -/
 
 public section
 
-variable {R A B : Type*} [CommRing R] [CommRing A] [CommRing B] [Algebra R A] [Algebra A B]
-    [Algebra R B] [IsScalarTower R A B]
+variable
+  {R A B : Type*} [CommRing R] [CommRing A] [CommRing B] [Algebra R A] [Algebra A B] [Algebra R B]
+  [IsScalarTower R A B]
 
 variable (p : Ideal A) (q : Ideal B) [q.LiesOver p]
 
 section maximal
 
-variable [p.IsMaximal] [q.IsMaximal] [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]
+variable
+  [p.IsMaximal] [q.IsMaximal] [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]
   [IsScalarTower A (Localization.AtPrime p) (Localization.AtPrime q)]
 
 attribute [local instance] Ideal.Quotient.field
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance [Algebra.IsSeparable (A ⧸ p) (B ⧸ q)] :
-    Algebra.IsSeparable p.ResidueField q.ResidueField := by
+instance [Algebra.IsSeparable (A ⧸ p) (B ⧸ q)]
+    : Algebra.IsSeparable p.ResidueField q.ResidueField := by
   refine Algebra.IsSeparable.of_equiv_equiv
     (.ofBijective _ p.bijective_algebraMap_quotient_residueField)
     (.ofBijective _ q.bijective_algebraMap_quotient_residueField) ?_
@@ -36,8 +37,8 @@ instance [Algebra.IsSeparable (A ⧸ p) (B ⧸ q)] :
   simp [RingHom.algebraMap_toAlgebra, ← IsScalarTower.algebraMap_apply]
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance [Algebra.IsSeparable p.ResidueField q.ResidueField] :
-    Algebra.IsSeparable (A ⧸ p) (B ⧸ q) := by
+instance [Algebra.IsSeparable p.ResidueField q.ResidueField]
+    : Algebra.IsSeparable (A ⧸ p) (B ⧸ q) := by
   refine Algebra.IsSeparable.of_equiv_equiv
     (.symm <| .ofBijective _ p.bijective_algebraMap_quotient_residueField)
     (.symm <| .ofBijective _ q.bijective_algebraMap_quotient_residueField) ?_
@@ -51,25 +52,24 @@ instance [Algebra.IsSeparable p.ResidueField q.ResidueField] :
   simp [RingHom.algebraMap_toAlgebra, ← IsScalarTower.algebraMap_apply]
 
 variable {p q} in
-lemma Algebra.isSeparable_residueField_iff :
-    Algebra.IsSeparable p.ResidueField q.ResidueField ↔ Algebra.IsSeparable (A ⧸ p) (B ⧸ q) :=
+lemma Algebra.isSeparable_residueField_iff
+    : Algebra.IsSeparable p.ResidueField q.ResidueField ↔ Algebra.IsSeparable (A ⧸ p) (B ⧸ q) :=
   ⟨fun _ ↦ inferInstance, fun _ ↦ inferInstance⟩
 
 end maximal
 
 section prime
 
-variable [p.IsPrime] [q.IsPrime] [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]
+variable
+  [p.IsPrime] [q.IsPrime] [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]
   [IsScalarTower A (Localization.AtPrime p) (Localization.AtPrime q)]
 
 instance : Algebra.IsAlgebraic (A ⧸ p) p.ResidueField :=
   IsLocalization.isAlgebraic _ (nonZeroDivisors (A ⧸ p))
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance [Algebra.IsIntegral A B] :
-    Algebra.IsAlgebraic p.ResidueField q.ResidueField := by
-  have : Algebra.IsIntegral (A ⧸ p) (B ⧸ q) :=
-    .tower_top A
+instance [Algebra.IsIntegral A B] : Algebra.IsAlgebraic p.ResidueField q.ResidueField := by
+  have : Algebra.IsIntegral (A ⧸ p) (B ⧸ q) := .tower_top A
   let := ((algebraMap (B ⧸ q) q.ResidueField).comp (algebraMap (A ⧸ p) (B ⧸ q))).toAlgebra
   have : IsScalarTower (A ⧸ p) (B ⧸ q) q.ResidueField := .of_algebraMap_eq' rfl
   have : Algebra.IsAlgebraic (A ⧸ p) q.ResidueField := .trans _ (B ⧸ q) _
@@ -89,13 +89,14 @@ instance ResidueField.algebraOfIsIntegral [Algebra.IsIntegral R k] : Algebra (Re
   fast_instance% (Ideal.Quotient.lift (maximalIdeal R) (algebraMap R k)
     (by simp [← eq_maximalIdeal (Algebra.ker_algebraMap_isMaximal_of_isIntegral R k)])).toAlgebra
 
-instance ResidueField.isScalarTowerOfIsIntegral [Algebra.IsIntegral R k] :
-    IsScalarTower R (ResidueField R) k :=
+instance ResidueField.isScalarTowerOfIsIntegral [Algebra.IsIntegral R k]
+    : IsScalarTower R (ResidueField R) k :=
   .of_algebraMap_eq fun _ ↦ rfl
 
-instance [Module.Finite R k] : Module.Finite (ResidueField R) k := .of_equiv_equiv
-  (Ideal.quotEquivOfEq (show Ideal.comap (algebraMap R k) ⊥ = maximalIdeal R by
-    rw [← eq_maximalIdeal (Algebra.ker_algebraMap_isMaximal_of_isIntegral R k), RingHom.ker]))
-  (RingEquiv.quotientBot k) (by ext; rfl)
+instance [Module.Finite R k] : Module.Finite (ResidueField R) k :=
+  .of_equiv_equiv
+    (Ideal.quotEquivOfEq (show Ideal.comap (algebraMap R k) ⊥ = maximalIdeal R by
+      rw [← eq_maximalIdeal (Algebra.ker_algebraMap_isMaximal_of_isIntegral R k), RingHom.ker]))
+    (RingEquiv.quotientBot k) (by ext; rfl)
 
 end IsLocalRing

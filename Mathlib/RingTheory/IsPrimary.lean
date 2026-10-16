@@ -6,7 +6,6 @@ Authors: Yakov Pechersky
 module
 
 public import Mathlib.RingTheory.Ideal.Colon
-
 import Mathlib.LinearAlgebra.Quotient.Basic
 
 /-!
@@ -46,9 +45,11 @@ section CommSemiring
 
 variable {R M : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M]
 
-/-- A proper submodule `S : Submodule R M` is primary iff
-  `r • x ∈ S` implies `x ∈ S` or `∃ n : ℕ, r ^ n • (⊤ : Submodule R M) ≤ S`.
-  This generalizes `Ideal.IsPrimary`. -/
+/--
+A proper submodule `S : Submodule R M` is primary iff
+`r • x ∈ S` implies `x ∈ S` or `∃ n : ℕ, r ^ n • (⊤ : Submodule R M) ≤ S`.
+This generalizes `Ideal.IsPrimary`.
+-/
 protected def IsPrimary (S : Submodule R M) : Prop :=
   S ≠ ⊤ ∧ ∀ {r : R} {x : M}, r • x ∈ S → x ∈ S ∨ ∃ n : ℕ, (r ^ n • ⊤ : Submodule R M) ≤ S
 
@@ -56,13 +57,14 @@ variable {S T : Submodule R M}
 
 lemma IsPrimary.ne_top (h : S.IsPrimary) : S ≠ ⊤ := h.left
 
-lemma IsPrimary.mem_or_mem (h : S.IsPrimary) {r : R} {m : M} (hrm : r • m ∈ S) :
-    m ∈ S ∨ r ∈ (S.colon Set.univ).radical :=
+lemma IsPrimary.mem_or_mem (h : S.IsPrimary) {r : R} {m : M} (hrm : r • m ∈ S)
+    : m ∈ S ∨ r ∈ (S.colon Set.univ).radical :=
   h.right hrm
 
-protected lemma IsPrimary.inf (hS : S.IsPrimary) (hT : T.IsPrimary)
-    (h : (S.colon Set.univ).radical = (T.colon Set.univ).radical) :
-    (S ⊓ T).IsPrimary := by
+protected lemma IsPrimary.inf
+    (hS : S.IsPrimary) (hT : T.IsPrimary)
+    (h : (S.colon Set.univ).radical = (T.colon Set.univ).radical)
+    : (S ⊓ T).IsPrimary := by
   obtain ⟨_, hS⟩ := hS
   obtain ⟨_, hT⟩ := hT
   refine ⟨by grind, fun ⟨hS', hT'⟩ ↦ ?_⟩
@@ -71,13 +73,15 @@ protected lemma IsPrimary.inf (hS : S.IsPrimary) (hT : T.IsPrimary)
   exact ⟨hS hS', hT hT'⟩
 
 open Finset in
-lemma isPrimary_finsetInf {ι : Type*} {s : Finset ι} {f : ι → Submodule R M} {i : ι} (hi : i ∈ s)
-    (hs : ∀ ⦃y⦄, y ∈ s → (f y).IsPrimary)
-    (hs' : ∀ ⦃y⦄, y ∈ s → ((f y).colon Set.univ).radical = ((f i).colon Set.univ).radical) :
-    (s.inf f).IsPrimary := by
+lemma isPrimary_finsetInf
+    {ι : Type*} {s : Finset ι} {f : ι → Submodule R M} {i : ι}
+    (hi : i ∈ s) (hs : ∀ ⦃y⦄, y ∈ s → (f y).IsPrimary)
+    (hs' : ∀ ⦃y⦄, y ∈ s → ((f y).colon Set.univ).radical = ((f i).colon Set.univ).radical)
+    : (s.inf f).IsPrimary := by
   classical
   induction s using Finset.induction_on generalizing i with
-  | empty => simp at hi
+  | empty =>
+    simp at hi
   | insert a s ha IH =>
     rcases s.eq_empty_or_nonempty with rfl | ⟨y, hy⟩
     · simp only [insert_empty_eq, mem_singleton] at hi
@@ -86,8 +90,8 @@ lemma isPrimary_finsetInf {ι : Type*} {s : Finset ι} {f : ι → Submodule R M
     have H ⦃x⦄ (hx : x ∈ s) : ((f x).colon Set.univ).radical = ((f y).colon Set.univ).radical := by
       rw [hs' (mem_insert_of_mem hx), hs' (mem_insert_of_mem hy)]
     refine IsPrimary.inf (hs (by simp)) (IH hy (fun x hx ↦ hs (by simp [hx])) H) ?_
-    rw [colon_finsetInf, Ideal.radical_finset_inf hy H,
-      hs' (mem_insert_self _ _), hs' (mem_insert_of_mem hy)]
+    rw [colon_finsetInf, Ideal.radical_finset_inf hy H, hs' (mem_insert_self _ _),
+      hs' (mem_insert_of_mem hy)]
 
 theorem IsPrimary.isPrime_radical_colon (hI : S.IsPrimary) : (S.colon .univ).radical.IsPrime := by
   refine isPrime_iff.mpr <| hI.imp (by simp) fun h x y ⟨n, hn⟩ ↦ ?_
@@ -96,14 +100,15 @@ theorem IsPrimary.isPrime_radical_colon (hI : S.IsPrimary) : (S.colon .univ).rad
   simp only [mul_pow, mem_colon, Set.mem_univ, true_imp_iff, mul_smul] at hn ⊢
   exact fun p ↦ (h (hn p)).resolve_right (mt mem_radical_of_pow_mem hx)
 
-theorem IsPrimary.radical_colon_singleton_of_notMem (hI : S.IsPrimary) {m : M} (hm : m ∉ S) :
-    (S.colon {m}).radical = (S.colon Set.univ).radical :=
-  le_antisymm (radical_le_radical_iff.mpr fun _ hy ↦
-    (hI.2 (Submodule.mem_colon_singleton.mp hy)).resolve_left hm)
+theorem IsPrimary.radical_colon_singleton_of_notMem (hI : S.IsPrimary) {m : M} (hm : m ∉ S)
+    : (S.colon {m}).radical = (S.colon Set.univ).radical :=
+  le_antisymm
+    (radical_le_radical_iff.mpr fun _ hy ↦
+      (hI.2 (Submodule.mem_colon_singleton.mp hy)).resolve_left hm)
     (radical_mono (Submodule.colon_mono le_rfl (Set.subset_univ {m})))
 
-theorem IsPrimary.radical_colon_singleton_eq_ite (hS : S.IsPrimary) (m : M) [Decidable (m ∈ S)] :
-    radical (S.colon {m}) = if m ∈ S then ⊤ else radical (S.colon Set.univ) := by
+theorem IsPrimary.radical_colon_singleton_eq_ite (hS : S.IsPrimary) (m : M) [Decidable (m ∈ S)]
+    : radical (S.colon {m}) = if m ∈ S then ⊤ else radical (S.colon Set.univ) := by
   split_ifs with hm
   · rwa [radical_eq_top, colon_eq_top_iff_subset, Set.singleton_subset_iff]
   · exact hS.radical_colon_singleton_of_notMem hm
@@ -114,14 +119,15 @@ section CommRing
 
 variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {S : Submodule R M}
 
-lemma isPrimary_iff_zero_divisor_quotient_imp_nilpotent_smul :
-    S.IsPrimary ↔ S ≠ ⊤ ∧ ∀ (r : R) (x : M ⧸ S), x ≠ 0 → r • x = 0 →
-      ∃ n : ℕ, r ^ n • (⊤ : Submodule R (M ⧸ S)) = ⊥ := by
+lemma isPrimary_iff_zero_divisor_quotient_imp_nilpotent_smul
+    : S.IsPrimary
+      ↔ S ≠ ⊤
+        ∧ ∀ (r : R) (x : M ⧸ S),
+          x ≠ 0 → r • x = 0 → ∃ n : ℕ, r ^ n • (⊤ : Submodule R (M ⧸ S)) = ⊥ := by
   refine (and_congr_right fun _ ↦ ?_)
   simp_rw [S.mkQ_surjective.forall, ← map_smul, ne_eq, ← LinearMap.mem_ker, ker_mkQ]
   congr! 2
-  rw [forall_comm, ← or_iff_not_imp_left,
-    ← LinearMap.range_eq_top.mpr S.mkQ_surjective, ← map_top]
+  rw [forall_comm, ← or_iff_not_imp_left, ← LinearMap.range_eq_top.mpr S.mkQ_surjective, ← map_top]
   simp_rw [eq_bot_iff, ← map_pointwise_smul, map_le_iff_le_comap, comap_bot, ker_mkQ]
 
 end CommRing

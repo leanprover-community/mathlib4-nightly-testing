@@ -36,33 +36,23 @@ open CategoryTheory Limits CompHausLike
 namespace CompHaus
 
 open List in
-theorem effectiveEpi_tfae
-    {B X : CompHaus.{u}} (π : X ⟶ B) :
-    TFAE
-    [ EffectiveEpi π
-    , Epi π
-    , Function.Surjective π
-    ] := by
+theorem effectiveEpi_tfae {B X : CompHaus.{u}} (π : X ⟶ B)
+    : TFAE [EffectiveEpi π, Epi π, Function.Surjective π] := by
   tfae_have 1 → 2 := fun _ ↦ inferInstance
   tfae_have 2 ↔ 3 := epi_iff_surjective π
   tfae_have 3 → 1 := fun hπ ↦ ⟨⟨effectiveEpiStruct π hπ⟩⟩
   tfae_finish
 
-instance : Preregular CompHaus :=
-  preregular fun _ _ _ ↦ ((effectiveEpi_tfae _).out 1 3).mp
+instance : Preregular CompHaus := preregular fun _ _ _ ↦ ((effectiveEpi_tfae _).out 1 3).mp
 
 example : Precoherent CompHaus.{u} := inferInstance
 
 -- TODO: prove this for `Type*`
 open List in
 theorem effectiveEpiFamily_tfae
-    {α : Type} [Finite α] {B : CompHaus.{u}}
-    (X : α → CompHaus.{u}) (π : (a : α) → (X a ⟶ B)) :
-    TFAE
-    [ EffectiveEpiFamily X π
-    , Epi (Sigma.desc π)
-    , ∀ b : B, ∃ (a : α) (x : X a), π a x = b
-    ] := by
+    {α : Type} [Finite α] {B : CompHaus.{u}} (X : α → CompHaus.{u}) (π : (a : α) → (X a ⟶ B))
+    : TFAE
+      [EffectiveEpiFamily X π, Epi (Sigma.desc π), ∀ b : B, ∃ (a : α) (x : X a), π a x = b] := by
   tfae_have 2 → 1
   | _ => by
     simpa [← effectiveEpi_desc_iff_effectiveEpiFamily, (effectiveEpi_tfae (Sigma.desc π)).out 1 2]
@@ -99,10 +89,10 @@ theorem effectiveEpiFamily_tfae
   tfae_finish
 
 theorem effectiveEpiFamily_of_jointly_surjective
-    {α : Type} [Finite α] {B : CompHaus.{u}}
-    (X : α → CompHaus.{u}) (π : (a : α) → (X a ⟶ B))
-    (surj : ∀ b : B, ∃ (a : α) (x : X a), π a x = b) :
-    EffectiveEpiFamily X π :=
+    {α : Type} [Finite α]
+    {B : CompHaus.{u}} (X : α → CompHaus.{u}) (π : (a : α) → (X a ⟶ B))
+    (surj : ∀ b : B, ∃ (a : α) (x : X a), π a x = b)
+    : EffectiveEpiFamily X π :=
   ((effectiveEpiFamily_tfae X π).out 3 1).mp surj
 
 end CompHaus

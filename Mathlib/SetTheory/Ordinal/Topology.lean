@@ -8,7 +8,6 @@ module
 public import Mathlib.SetTheory.Cardinal.Cofinality.Enum
 public import Mathlib.SetTheory.Ordinal.Enum
 public import Mathlib.Topology.Order.SuccPred
-
 import Mathlib.Topology.Order.Monotone
 
 /-!
@@ -43,12 +42,14 @@ instance : TopologicalSpace Ordinal.{u} := Preorder.topology Ordinal.{u}
 instance : OrderTopology Ordinal.{u} := ⟨rfl⟩
 
 open List Set in
-theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
-    TFAE [a ∈ closure s,
+theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal)
+    : TFAE [
+      a ∈ closure s,
       a ∈ closure (s ∩ Iic a),
       (s ∩ Iic a).Nonempty ∧ sSup (s ∩ Iic a) = a,
       ∃ t, t ⊆ s ∧ t.Nonempty ∧ BddAbove t ∧ sSup t = a,
-      ∃ (ι : Type u), Nonempty ι ∧ ∃ f : ι → Ordinal, (∀ i, f i ∈ s) ∧ ⨆ i, f i = a] := by
+      ∃ (ι : Type u), Nonempty ι ∧ ∃ f : ι → Ordinal, (∀ i, f i ∈ s) ∧ ⨆ i, f i = a
+    ] := by
   tfae_have 1 → 2 := by
     simpa only [mem_closure_iff_nhdsWithin_neBot, inter_comm s, nhdsWithin_inter',
       SuccOrder.nhdsLE_eq_nhds] using! id
@@ -74,21 +75,21 @@ theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
       bddAbove_of_small
   tfae_finish
 
-theorem mem_closure_iff_iSup :
-    a ∈ closure s ↔
-      ∃ (ι : Type u) (_ : Nonempty ι) (f : ι → Ordinal), (∀ i, f i ∈ s) ∧ ⨆ i, f i = a := by
+theorem mem_closure_iff_iSup
+    : a ∈ closure s
+      ↔ ∃ (ι : Type u) (_ : Nonempty ι) (f : ι → Ordinal), (∀ i, f i ∈ s) ∧ ⨆ i, f i = a := by
   apply ((mem_closure_tfae a s).out 1 5).trans
   simp_rw [exists_prop]
 
-theorem mem_iff_iSup_of_isClosed (hs : IsClosed s) :
-    a ∈ s ↔ ∃ (ι : Type u) (_hι : Nonempty ι) (f : ι → Ordinal),
-      (∀ i, f i ∈ s) ∧ ⨆ i, f i = a := by
+theorem mem_iff_iSup_of_isClosed (hs : IsClosed s)
+    : a ∈ s
+      ↔ ∃ (ι : Type u) (_hι : Nonempty ι) (f : ι → Ordinal), (∀ i, f i ∈ s) ∧ ⨆ i, f i = a := by
   rw [← mem_closure_iff_iSup, hs.closure_eq]
 
 @[deprecated mem_closure_iff_iSup +typeChanged (since := "2026-04-05")]
-theorem mem_closure_iff_bsup :
-    a ∈ closure s ↔
-      ∃ (o : Ordinal) (_ho : o ≠ 0) (f : ∀ a < o, Ordinal),
+theorem mem_closure_iff_bsup
+    : a ∈ closure s
+      ↔ ∃ (o : Ordinal) (_ho : o ≠ 0) (f : ∀ a < o, Ordinal),
         (∀ i hi, f i hi ∈ s) ∧ bsup.{u, u} o f = a := by
   rw [mem_closure_iff_iSup]
   constructor
@@ -98,15 +99,15 @@ theorem mem_closure_iff_bsup :
     exact ⟨_, by simpa, familyOfBFamily _ f, fun i ↦ hf .., iSup_eq_bsup f⟩
 
 @[deprecated mem_closure_iff_iSup +typeChanged (since := "2026-04-05")]
-theorem mem_closed_iff_bsup (hs : IsClosed s) :
-    a ∈ s ↔
-      ∃ (o : Ordinal) (_ho : o ≠ 0) (f : ∀ a < o, Ordinal),
+theorem mem_closed_iff_bsup (hs : IsClosed s)
+    : a ∈ s
+      ↔ ∃ (o : Ordinal) (_ho : o ≠ 0) (f : ∀ a < o, Ordinal),
         (∀ i hi, f i hi ∈ s) ∧ bsup.{u, u} o f = a := by
   rw [← mem_closure_iff_bsup, hs.closure_eq]
 
-theorem isClosed_iff_iSup :
-    IsClosed s ↔
-      ∀ {ι : Type u}, Nonempty ι → ∀ f : ι → Ordinal, (∀ i, f i ∈ s) → ⨆ i, f i ∈ s := by
+theorem isClosed_iff_iSup
+    : IsClosed s
+      ↔ ∀ {ι : Type u}, Nonempty ι → ∀ f : ι → Ordinal, (∀ i, f i ∈ s) → ⨆ i, f i ∈ s := by
   use fun hs ι hι f hf => (mem_iff_iSup_of_isClosed hs).2 ⟨ι, hι, f, hf, rfl⟩
   rw [← closure_subset_iff_isClosed]
   intro h x hx
@@ -114,10 +115,10 @@ theorem isClosed_iff_iSup :
   exact h hι f hf
 
 @[deprecated isClosed_iff_iSup +typeChanged (since := "2026-04-05")]
-theorem isClosed_iff_bsup :
-    IsClosed s ↔
-      ∀ {o : Ordinal}, o ≠ 0 → ∀ f : ∀ a < o, Ordinal,
-        (∀ i hi, f i hi ∈ s) → bsup.{u, u} o f ∈ s := by
+theorem isClosed_iff_bsup
+    : IsClosed s
+      ↔ ∀ {o : Ordinal},
+        o ≠ 0 → ∀ f : ∀ a < o, Ordinal, (∀ i hi, f i hi ∈ s) → bsup.{u, u} o f ∈ s := by
   rw [isClosed_iff_iSup]
   refine ⟨fun H o ho f hf => H (nonempty_toType_iff.2 ho) _ ?_, fun H ι hι f hf => ?_⟩
   · exact fun i => hf _ _
@@ -126,12 +127,12 @@ theorem isClosed_iff_bsup :
     exact fun i hi => hf _
 
 @[deprecated isNormal_enum_iff_dirSupClosed +typeChanged (since := "2026-05-25")]
-theorem enumOrd_isNormal_iff_isClosed (hs : ¬ BddAbove s) :
-    IsNormal (enumOrd s) ↔ IsClosed s := by
+theorem enumOrd_isNormal_iff_isClosed (hs : ¬ BddAbove s) : IsNormal (enumOrd s) ↔ IsClosed s := by
   have Hs := enumOrd_strictMono hs
-  refine
-    ⟨fun h => isClosed_iff_iSup.2 fun {ι} hι f hf => ?_, fun h =>
-      isNormal_iff.2 ⟨Hs, fun a ha o H => ?_⟩⟩
+  refine ⟨
+    fun h => isClosed_iff_iSup.2 fun {ι} hι f hf => ?_,
+    fun h => isNormal_iff.2 ⟨Hs, fun a ha o H => ?_⟩
+  ⟩
   · let g : ι → Ordinal.{u} := fun i => (enumOrdOrderIso s hs).symm ⟨_, hf i⟩
     suffices enumOrd s (⨆ i, g i) = ⨆ i, f i by
       rw [← this]
@@ -148,36 +149,40 @@ theorem enumOrd_isNormal_iff_isClosed (hs : ¬ BddAbove s) :
     · apply (enumOrd_le_of_forall_lt this _).trans
       · apply csSup_le'
         grind [upperBounds]
-      · exact fun b hb ↦ (enumOrd_strictMono hs (lt_add_one b)).trans_le <|
-          le_csSup bddAbove_of_small <| Set.mem_image_of_mem _ (ha.add_one_lt hb)
+      · exact fun b hb ↦
+          (enumOrd_strictMono hs (lt_add_one b)).trans_le <| le_csSup bddAbove_of_small <|
+            Set.mem_image_of_mem _ (ha.add_one_lt hb)
 
 open Set Filter Set.Notation
 
-/-- An ordinal is an accumulation point of a set of ordinals if it is positive and there
-are elements in the set arbitrarily close to the ordinal from below. -/
+/--
+An ordinal is an accumulation point of a set of ordinals if it is positive and there
+are elements in the set arbitrarily close to the ordinal from below.
+-/
 @[deprecated AccPt +typeChanged (since := "2026-05-24")]
-def IsAcc (o : Ordinal) (S : Set Ordinal) : Prop :=
-  AccPt o (𝓟 S)
+def IsAcc (o : Ordinal) (S : Set Ordinal) : Prop := AccPt o (𝓟 S)
 
-/-- A set of ordinals is closed below an ordinal if it contains all of
-its accumulation points below the ordinal. -/
+/--
+A set of ordinals is closed below an ordinal if it contains all of
+its accumulation points below the ordinal.
+-/
 @[deprecated IsClosed +typeChanged (since := "2026-05-24")]
-def IsClosedBelow (S : Set Ordinal) (o : Ordinal) : Prop :=
-  IsClosed (Iio o ↓∩ S)
+def IsClosedBelow (S : Set Ordinal) (o : Ordinal) : Prop := IsClosed (Iio o ↓∩ S)
 
 @[deprecated SuccOrder.accPt_principal +typeChanged (since := "2026-05-24")]
-theorem isAcc_iff (o : Ordinal) (S : Set Ordinal) : o.IsAcc S ↔
-    o ≠ 0 ∧ ∀ p < o, (S ∩ Ioo p o).Nonempty := by
+theorem isAcc_iff (o : Ordinal) (S : Set Ordinal)
+    : o.IsAcc S ↔ o ≠ 0 ∧ ∀ p < o, (S ∩ Ioo p o).Nonempty := by
   apply SuccOrder.accPt_principal.trans
   simp
 
 @[deprecated SuccOrder.accPt_principal +typeChanged (since := "2026-05-24")]
-theorem IsAcc.forall_lt {o : Ordinal} {S : Set Ordinal} (h : o.IsAcc S) :
-    ∀ p < o, (S ∩ Ioo p o).Nonempty := ((isAcc_iff _ _).mp h).2
+theorem IsAcc.forall_lt {o : Ordinal} {S : Set Ordinal} (h : o.IsAcc S)
+    : ∀ p < o, (S ∩ Ioo p o).Nonempty :=
+  ((isAcc_iff _ _).mp h).2
 
 @[deprecated AccPt.not_isMin +typeChanged (since := "2026-05-24")]
-theorem IsAcc.pos {o : Ordinal} {S : Set Ordinal} (h : o.IsAcc S) :
-    0 < o := pos_iff_ne_zero.mpr ((isAcc_iff _ _).mp h).1
+theorem IsAcc.pos {o : Ordinal} {S : Set Ordinal} (h : o.IsAcc S) : 0 < o :=
+  pos_iff_ne_zero.mpr ((isAcc_iff _ _).mp h).1
 
 @[deprecated AccPt.isSuccLimit +typeChanged (since := "2026-05-24")]
 theorem IsAcc.isSuccLimit {o : Ordinal} {S : Set Ordinal} (h : o.IsAcc S) : IsSuccLimit o :=
@@ -188,12 +193,14 @@ theorem IsAcc.mono {o : Ordinal} {S T : Set Ordinal} (h : S ⊆ T) (ho : o.IsAcc
   AccPt.mono ho (monotone_principal h)
 
 @[deprecated SuccOrder.accPt_principal +typeChanged (since := "2026-05-24")]
-theorem IsAcc.inter_Ioo_nonempty {o : Ordinal} {S : Set Ordinal} (hS : o.IsAcc S)
-    {p : Ordinal} (hp : p < o) : (S ∩ Ioo p o).Nonempty := hS.forall_lt p hp
+theorem IsAcc.inter_Ioo_nonempty
+    {o : Ordinal} {S : Set Ordinal} (hS : o.IsAcc S) {p : Ordinal} (hp : p < o)
+    : (S ∩ Ioo p o).Nonempty :=
+  hS.forall_lt p hp
 
 @[deprecated isClosed_iff_accPt +typeChanged (since := "2026-05-24")]
-theorem isClosedBelow_iff {S : Set Ordinal} {o : Ordinal} : IsClosedBelow S o ↔
-    ∀ p < o, IsAcc p S → p ∈ S := by
+theorem isClosedBelow_iff {S : Set Ordinal} {o : Ordinal}
+    : IsClosedBelow S o ↔ ∀ p < o, IsAcc p S → p ∈ S := by
   simp [IsClosedBelow, IsAcc, isClosed_iff_accPt, ← comap_principal,
     isOpen_Iio.isOpenEmbedding_subtypeVal.accPt_comap_iff]
 
@@ -201,15 +208,17 @@ theorem isClosedBelow_iff {S : Set Ordinal} {o : Ordinal} : IsClosedBelow S o �
 alias ⟨IsClosedBelow.forall_lt, _⟩ := isClosedBelow_iff
 
 @[deprecated isClosed_sInter +typeChanged (since := "2026-05-24")]
-theorem IsClosedBelow.sInter {o : Ordinal} {S : Set (Set Ordinal)}
-    (h : ∀ C ∈ S, IsClosedBelow C o) : IsClosedBelow (⋂₀ S) o := by
+theorem IsClosedBelow.sInter {o : Ordinal} {S : Set (Set Ordinal)} (h : ∀ C ∈ S, IsClosedBelow C o)
+    : IsClosedBelow (⋂₀S) o := by
   rw [isClosedBelow_iff]
-  exact fun p plto pAcc C CmemS ↦ (h C CmemS).forall_lt p plto <|
-    AccPt.mono pAcc (monotone_principal (sInter_subset_of_mem CmemS))
+  exact fun p plto pAcc C CmemS ↦
+    (h C CmemS).forall_lt p plto <|
+      AccPt.mono pAcc (monotone_principal (sInter_subset_of_mem CmemS))
 
 @[deprecated isClosed_iInter +typeChanged (since := "2026-05-24")]
-theorem IsClosedBelow.iInter {ι : Type u} {f : ι → Set Ordinal} {o : Ordinal}
-    (h : ∀ i, IsClosedBelow (f i) o) : IsClosedBelow (⋂ i, f i) o :=
+theorem IsClosedBelow.iInter
+    {ι : Type u} {f : ι → Set Ordinal} {o : Ordinal} (h : ∀ i, IsClosedBelow (f i) o)
+    : IsClosedBelow (⋂ i, f i) o :=
   IsClosedBelow.sInter fun _ ⟨i, hi⟩ ↦ hi ▸ (h i)
 
 end Ordinal

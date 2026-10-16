@@ -30,8 +30,7 @@ protected def op (S : Subring R) : Subring Rᵐᵒᵖ where
 
 attribute [norm_cast] coe_op
 
-@[simp]
-theorem mem_op {x : Rᵐᵒᵖ} {S : Subring R} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
+@[simp] theorem mem_op {x : Rᵐᵒᵖ} {S : Subring R} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
 
 /-- Pull an opposite subring back to a subring along `MulOpposite.op` -/
 @[simps! coe toSubsemiring]
@@ -41,14 +40,11 @@ protected def unop (S : Subring Rᵐᵒᵖ) : Subring R where
 
 attribute [norm_cast] coe_unop
 
-@[simp]
-theorem mem_unop {x : R} {S : Subring Rᵐᵒᵖ} : x ∈ S.unop ↔ MulOpposite.op x ∈ S := Iff.rfl
+@[simp] theorem mem_unop {x : R} {S : Subring Rᵐᵒᵖ} : x ∈ S.unop ↔ MulOpposite.op x ∈ S := Iff.rfl
 
-@[simp]
-theorem unop_op (S : Subring R) : S.op.unop = S := rfl
+@[simp] theorem unop_op (S : Subring R) : S.op.unop = S := rfl
 
-@[simp]
-theorem op_unop (S : Subring Rᵐᵒᵖ) : S.unop.op = S := rfl
+@[simp] theorem op_unop (S : Subring Rᵐᵒᵖ) : S.unop.op = S := rfl
 
 /-! ### Lattice results -/
 
@@ -80,32 +76,25 @@ theorem unop_injective : (@Subring.unop R _).Injective := opEquiv.symm.injective
 @[simp] theorem op_inj {S T : Subring R} : S.op = T.op ↔ S = T := opEquiv.eq_iff_eq
 @[simp] theorem unop_inj {S T : Subring Rᵐᵒᵖ} : S.unop = T.unop ↔ S = T := opEquiv.symm.eq_iff_eq
 
-@[simp]
-theorem op_bot : (⊥ : Subring R).op = ⊥ := opEquiv.map_bot
+@[simp] theorem op_bot : (⊥ : Subring R).op = ⊥ := opEquiv.map_bot
 
-@[simp]
-theorem op_eq_bot {S : Subring R} : S.op = ⊥ ↔ S = ⊥ := op_injective.eq_iff' op_bot
+@[simp] theorem op_eq_bot {S : Subring R} : S.op = ⊥ ↔ S = ⊥ := op_injective.eq_iff' op_bot
 
-@[simp]
-theorem unop_bot : (⊥ : Subring Rᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
+@[simp] theorem unop_bot : (⊥ : Subring Rᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
 
 @[simp]
 theorem unop_eq_bot {S : Subring Rᵐᵒᵖ} : S.unop = ⊥ ↔ S = ⊥ := unop_injective.eq_iff' unop_bot
 
-@[simp]
-theorem op_top : (⊤ : Subring R).op = ⊤ := rfl
+@[simp] theorem op_top : (⊤ : Subring R).op = ⊤ := rfl
 
-@[simp]
-theorem op_eq_top {S : Subring R} : S.op = ⊤ ↔ S = ⊤ := op_injective.eq_iff' op_top
+@[simp] theorem op_eq_top {S : Subring R} : S.op = ⊤ ↔ S = ⊤ := op_injective.eq_iff' op_top
 
-@[simp]
-theorem unop_top : (⊤ : Subring Rᵐᵒᵖ).unop = ⊤ := rfl
+@[simp] theorem unop_top : (⊤ : Subring Rᵐᵒᵖ).unop = ⊤ := rfl
 
 @[simp]
 theorem unop_eq_top {S : Subring Rᵐᵒᵖ} : S.unop = ⊤ ↔ S = ⊤ := unop_injective.eq_iff' unop_top
 
-theorem op_sup (S₁ S₂ : Subring R) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op :=
-  opEquiv.map_sup _ _
+theorem op_sup (S₁ S₂ : Subring R) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op := opEquiv.map_sup _ _
 
 theorem unop_sup (S₁ S₂ : Subring Rᵐᵒᵖ) : (S₁ ⊔ S₂).unop = S₁.unop ⊔ S₂.unop :=
   opEquiv.symm.map_sup _ _
@@ -146,15 +135,12 @@ theorem unop_closure (s : Set Rᵐᵒᵖ) : (closure s).unop = closure (MulOppos
   simp_rw [Set.preimage_preimage, MulOpposite.op_unop, Set.preimage_id']
 
 /-- Bijection between a subring `S` and its opposite. -/
-@[simps!]
-def addEquivOp (S : Subring R) : S ≃+ S.op := S.toSubsemiring.addEquivOp
+@[simps!] def addEquivOp (S : Subring R) : S ≃+ S.op := S.toSubsemiring.addEquivOp
 
 /-- Bijection between a subring `S` and `MulOpposite` of its opposite. -/
-@[simps!]
-def ringEquivOpMop (S : Subring R) : S ≃+* (S.op)ᵐᵒᵖ := S.toSubsemiring.ringEquivOpMop
+@[simps!] def ringEquivOpMop (S : Subring R) : S ≃+* (S.op)ᵐᵒᵖ := S.toSubsemiring.ringEquivOpMop
 
 /-- Bijection between `MulOpposite` of a subring `S` and its opposite. -/
-@[simps!]
-def mopRingEquivOp (S : Subring R) : Sᵐᵒᵖ ≃+* S.op := S.toSubsemiring.mopRingEquivOp
+@[simps!] def mopRingEquivOp (S : Subring R) : Sᵐᵒᵖ ≃+* S.op := S.toSubsemiring.mopRingEquivOp
 
 end Subring

@@ -17,7 +17,6 @@ In this file, we construct the equivalence of categories
 
 @[expose] public section
 
-
 open CategoryTheory.Category
 
 open CategoryTheory.Idempotents.Karoubi
@@ -69,11 +68,11 @@ def equivalence : Karoubi C ≌ Karoubi (Karoubi C) where
   unitIso := KaroubiKaroubi.unitIso C
   counitIso := KaroubiKaroubi.counitIso C
 
-instance equivalence.additive_functor [Preadditive C] :
-    Functor.Additive (equivalence C).functor where
+instance equivalence.additive_functor [Preadditive C]
+  : Functor.Additive (equivalence C).functor where
 
-instance equivalence.additive_inverse [Preadditive C] :
-    Functor.Additive (equivalence C).inverse where
+instance equivalence.additive_inverse [Preadditive C]
+  : Functor.Additive (equivalence C).inverse where
 
 end KaroubiKaroubi
 

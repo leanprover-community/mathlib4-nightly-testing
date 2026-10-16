@@ -15,7 +15,6 @@ The hom functor, sending `(X, Y)` to the type `X ⟶ Y`.
 
 @[expose] public section
 
-
 universe v u
 
 open Opposite
@@ -26,8 +25,10 @@ namespace CategoryTheory.Functor
 
 variable (C : Type u) [Category.{v} C]
 
-/-- `Functor.hom` is the hom-pairing, sending `(X, Y)` to `X ⟶ Y`, contravariant in `X` and
-covariant in `Y`. -/
+/--
+`Functor.hom` is the hom-pairing, sending `(X, Y)` to `X ⟶ Y`, contravariant in `X` and
+covariant in `Y`.
+-/
 @[simps]
 def hom : Cᵒᵖ × C ⥤ Type v where
   obj p := unop p.1 ⟶ p.2

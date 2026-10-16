@@ -11,7 +11,6 @@ public import Mathlib.Data.Set.CoeSort
 public import Mathlib.Data.Subtype
 public import Mathlib.Order.Notation
 public import Mathlib.Tactic.CrossRefAttribute
-
 import Aesop.BuiltinRules
 import Aesop.Frontend.Tactic
 import Aesop.Main
@@ -81,9 +80,11 @@ theorem mem_ofPred_eq {x : α} {p : α → Prop} : (x ∈ {y | p y}) = p x := rf
 
 grind_pattern mem_ofPred_eq => x ∈ Set.ofPred p
 
-/-- This lemma is intended for use with `rw` where a membership predicate is needed,
+/--
+This lemma is intended for use with `rw` where a membership predicate is needed,
 hence the explicit argument and the equality in the reverse direction from normal.
-See also `Set.mem_ofPred_eq` for the reverse direction applied to an argument. -/
+See also `Set.mem_ofPred_eq` for the reverse direction applied to an argument.
+-/
 theorem eq_mem_ofPred (p : α → Prop) : p = (· ∈ {a | p a}) := rfl
 
 @[deprecated (since := "2026-07-09")] alias eq_mem_setOf := eq_mem_ofPred
@@ -97,7 +98,7 @@ nevertheless be useful for various reasons, e.g. to apply further projection not
 argument to `simp`. -/
 alias ⟨_root_.Membership.mem.out, _⟩ := mem_ofPred
 
-theorem notMem_ofPred_iff {a : α} {p : α → Prop} : a ∉ { x | p x } ↔ ¬p a := Iff.rfl
+theorem notMem_ofPred_iff {a : α} {p : α → Prop} : a ∉ { x | p x } ↔ ¬ p a := Iff.rfl
 
 @[deprecated (since := "2026-07-09")] alias notMem_setOf_iff := notMem_ofPred_iff
 
@@ -128,10 +129,11 @@ theorem mem_sdiff_of_mem {s t : Set α} {x : α} (h1 : x ∈ s) (h2 : x ∉ t) :
 
 @[deprecated (since := "2026-06-03")] alias mem_diff_of_mem := mem_sdiff_of_mem
 
-/-- The preimage of `s : Set β` by `f : α → β`, written `f ⁻¹' s`,
-  is the set of `x : α` such that `f x ∈ s`. -/
-@[implicit_reducible]
-def preimage (f : α → β) (s : Set β) : Set α := {x | f x ∈ s}
+/--
+The preimage of `s : Set β` by `f : α → β`, written `f ⁻¹' s`,
+is the set of `x : α` such that `f x ∈ s`.
+-/
+@[implicit_reducible] def preimage (f : α → β) (s : Set β) : Set α := {x | f x ∈ s}
 
 /-- `f ⁻¹' t` denotes the preimage of `t : Set β` under the function `f : α → β`. -/
 infixr:80 " ⁻¹' " => preimage
@@ -143,12 +145,10 @@ theorem mem_preimage {f : α → β} {s : Set β} {a : α} : a ∈ f ⁻¹' s �
 infixr:80 " '' " => image
 
 @[simp, grind =, push]
-theorem mem_image (f : α → β) (s : Set α) (y : β) : y ∈ f '' s ↔ ∃ x ∈ s, f x = y :=
-  Iff.rfl
+theorem mem_image (f : α → β) (s : Set α) (y : β) : y ∈ f '' s ↔ ∃ x ∈ s, f x = y := Iff.rfl
 
 @[mfld_simps]
-theorem mem_image_of_mem (f : α → β) {x : α} {a : Set α} (h : x ∈ a) : f x ∈ f '' a :=
-  ⟨_, h, rfl⟩
+theorem mem_image_of_mem (f : α → β) {x : α} {a : Set α} (h : x ∈ a) : f x ∈ f '' a := ⟨_, h, rfl⟩
 
 /-- Restriction of `f` to `s` factors through `s.imageFactorization f : s → f '' s`. -/
 def imageFactorization (f : α → β) (s : Set α) : s → f '' s := fun p =>
@@ -158,42 +158,47 @@ def imageFactorization (f : α → β) (s : Set α) : s → f '' s := fun p =>
 def kernImage (f : α → β) (s : Set α) : Set β := {y | ∀ ⦃x⦄, f x = y → x ∈ s}
 
 lemma subset_kernImage_iff {s : Set β} {t : Set α} {f : α → β} : s ⊆ kernImage f t ↔ f ⁻¹' s ⊆ t :=
-  ⟨fun h _ hx ↦ h hx rfl,
-    fun h _ hx y hy ↦ h (show f y ∈ s from hy.symm ▸ hx)⟩
+  ⟨fun h _ hx ↦ h hx rfl, fun h _ hx y hy ↦ h (show f y ∈ s from hy.symm ▸ hx)⟩
 
 section Range
 
 variable {ι : Sort*} {f : ι → α}
 
-/-- Range of a function.
+/--
+Range of a function.
 
 This function is more flexible than `f '' univ`, as the image requires that the domain is in Type
-and not an arbitrary Sort. -/
+and not an arbitrary Sort.
+-/
 def range (f : ι → α) : Set α := {x | ∃ y, f y = x}
 
-@[simp, grind =, push] theorem mem_range {x : α} : x ∈ range f ↔ ∃ y, f y = x := Iff.rfl
+@[simp, grind =, push]
+theorem mem_range {x : α} : x ∈ range f ↔ ∃ y, f y = x := Iff.rfl
 
 @[mfld_simps] theorem mem_range_self (i : ι) : f i ∈ range f := ⟨i, rfl⟩
 
 /-- Any map `f : ι → α` factors through a map `rangeFactorization f : ι → range f`. -/
 def rangeFactorization (f : ι → α) : ι → range f := fun i => ⟨f i, mem_range_self i⟩
 
-@[simp] lemma rangeFactorization_injective :
-    (Set.rangeFactorization f).Injective ↔ f.Injective := by
+@[simp]
+lemma rangeFactorization_injective : (Set.rangeFactorization f).Injective ↔ f.Injective := by
   simp [Function.Injective, rangeFactorization]
 
-@[simp] lemma rangeFactorization_surjective : (rangeFactorization f).Surjective :=
-  fun ⟨_, i, rfl⟩ ↦ ⟨i, rfl⟩
+@[simp]
+lemma rangeFactorization_surjective : (rangeFactorization f).Surjective := fun ⟨_, i, rfl⟩ ↦
+  ⟨i, rfl⟩
 
-@[simp] lemma rangeFactorization_bijective :
-    (Set.rangeFactorization f).Bijective ↔ f.Injective := by simp [Function.Bijective]
+@[simp]
+lemma rangeFactorization_bijective : (Set.rangeFactorization f).Bijective ↔ f.Injective := by
+  simp [Function.Bijective]
 
-@[simp] lemma rangeFactorization_eq_rangeFactorization_iff {ι : Sort*} {α : Type*} {f : ι → α}
-    (a b : ι) : Set.rangeFactorization f a = Set.rangeFactorization f b ↔ f a = f b := by
+@[simp]
+lemma rangeFactorization_eq_rangeFactorization_iff {ι : Sort*} {α : Type*} {f : ι → α} (a b : ι)
+    : Set.rangeFactorization f a = Set.rangeFactorization f b ↔ f a = f b := by
   simp [Set.rangeFactorization]
 
-lemma rangeFactorization_eq_iff {ι : Sort*} {α : Type*} {f : ι → α} (a : ι) (b : Set.range f) :
-    Set.rangeFactorization f a = b ↔ f a = b := by
+lemma rangeFactorization_eq_iff {ι : Sort*} {α : Type*} {f : ι → α} (a : ι) (b : Set.range f)
+    : Set.rangeFactorization f a = b ↔ f a = b := by
   rw [Set.rangeFactorization, ← b.coe_eta b.2, Subtype.ext_iff]
 
 end Range
@@ -211,8 +216,8 @@ theorem comp_rangeSplitting (f : α → β) : f ∘ rangeSplitting f = Subtype.v
   simp only [Function.comp_apply]
   apply apply_rangeSplitting
 
-lemma Subtype.range_coind (f : α → β) {p : β → Prop} (h : ∀ (a : α), p (f a)) :
-    range (Subtype.coind f h) = Subtype.val ⁻¹' range f := by
+lemma Subtype.range_coind (f : α → β) {p : β → Prop} (h : ∀ (a : α), p (f a))
+    : range (Subtype.coind f h) = Subtype.val ⁻¹' range f := by
   simp [Set.ext_iff, Subtype.ext_iff]
 
 section Prod
@@ -234,19 +239,21 @@ theorem mem_prod_eq : (p ∈ s ×ˢ t) = (p.1 ∈ s ∧ p.2 ∈ t) := rfl
 @[simp, mfld_simps, grind =, push]
 theorem mem_prod : p ∈ s ×ˢ t ↔ p.1 ∈ s ∧ p.2 ∈ t := .rfl
 
-@[mfld_simps, push only high] /- This `push` lemma is so that `(a, b) ∈ s ×ˢ t` gets turned
-into `a ∈ s ∧ b ∈ t`, instead of getting `(a, b).1` and `(a, b).2`. -/
-theorem prodMk_mem_set_prod_eq : ((a, b) ∈ s ×ˢ t) = (a ∈ s ∧ b ∈ t) :=
-  rfl
+/-
+This `push` lemma is so that `(a, b) ∈ s ×ˢ t` gets turned
+into `a ∈ s ∧ b ∈ t`, instead of getting `(a, b).1` and `(a, b).2`.
+-/
+@[mfld_simps, push only high]
+theorem prodMk_mem_set_prod_eq : ((a, b) ∈ s ×ˢ t) = (a ∈ s ∧ b ∈ t) := rfl
 
 theorem mk_mem_prod (ha : a ∈ s) (hb : b ∈ t) : (a, b) ∈ s ×ˢ t := ⟨ha, hb⟩
 
-theorem prod_image_left (f : α → γ) (s : Set α) (t : Set β) :
-    (f '' s) ×ˢ t = (fun x ↦ (f x.1, x.2)) '' s ×ˢ t := by
+theorem prod_image_left (f : α → γ) (s : Set α) (t : Set β)
+    : (f '' s) ×ˢ t = (fun x ↦ (f x.1, x.2)) '' s ×ˢ t := by
   aesop
 
-theorem prod_image_right (f : α → γ) (s : Set α) (t : Set β) :
-    t ×ˢ (f '' s) = (fun x ↦ (x.1, f x.2)) '' t ×ˢ s := by
+theorem prod_image_right (f : α → γ) (s : Set α) (t : Set β)
+    : t ×ˢ (f '' s) = (fun x ↦ (x.1, f x.2)) '' t ×ˢ s := by
   aesop
 
 end Prod
@@ -258,7 +265,8 @@ def diagonal (α : Type*) : Set (α × α) := {p | p.1 = p.2}
 
 theorem mem_diagonal (x : α) : (x, x) ∈ diagonal α := rfl
 
-@[simp, grind =, push] theorem mem_diagonal_iff {x : α × α} : x ∈ diagonal α ↔ x.1 = x.2 := .rfl
+@[simp, grind =, push]
+theorem mem_diagonal_iff {x : α × α} : x ∈ diagonal α ↔ x.1 = x.2 := .rfl
 
 /-- The off-diagonal of a set `s` is the set of pairs `(a, b)` with `a, b ∈ s` and `a ≠ b`. -/
 def offDiag (s : Set α) : Set (α × α) := {x | x.1 ∈ s ∧ x.2 ∈ s ∧ x.1 ≠ x.2}
@@ -273,14 +281,17 @@ section Pi
 
 variable {ι : Type*} {α : ι → Type*}
 
-/-- Given an index set `ι` and a family of sets `t : Π i, Set (α i)`, `pi s t`
+/--
+Given an index set `ι` and a family of sets `t : Π i, Set (α i)`, `pi s t`
 is the set of dependent functions `f : Πa, π a` such that `f i` belongs to `t i`
-whenever `i ∈ s`. -/
+whenever `i ∈ s`.
+-/
 def pi (s : Set ι) (t : ∀ i, Set (α i)) : Set (∀ i, α i) := {f | ∀ i ∈ s, f i ∈ t i}
 
 variable {s : Set ι} {t : ∀ i, Set (α i)} {f : ∀ i, α i}
 
-@[simp, grind =, push] theorem mem_pi : f ∈ s.pi t ↔ ∀ i ∈ s, f i ∈ t i := .rfl
+@[simp, grind =, push]
+theorem mem_pi : f ∈ s.pi t ↔ ∀ i ∈ s, f i ∈ t i := .rfl
 
 theorem mem_univ_pi : f ∈ pi univ t ↔ ∀ i, f i ∈ t i := by simp
 
@@ -296,8 +307,10 @@ theorem mapsTo_image (f : α → β) (s : Set α) : MapsTo f s (f '' s) := fun _
 
 theorem mapsTo_preimage (f : α → β) (t : Set β) : MapsTo f (f ⁻¹' t) t := fun _ ↦ id
 
-/-- Given a map `f` sending `s : Set α` into `t : Set β`, restrict domain of `f` to `s`
-and the codomain to `t`. Same as `Subtype.map`. -/
+/--
+Given a map `f` sending `s : Set α` into `t : Set β`, restrict domain of `f` to `s`
+and the codomain to `t`. Same as `Subtype.map`.
+-/
 def MapsTo.restrict (f : α → β) (s : Set α) (t : Set β) (h : MapsTo f s t) : s → t :=
   Subtype.map f h
 
@@ -331,26 +344,30 @@ def InvOn (g : β → α) (f : α → β) (s : Set α) (t : Set β) : Prop :=
 
 section image2
 
-/-- The image of a binary function `f : α → β → γ` as a function `Set α → Set β → Set γ`.
-Mathematically this should be thought of as the image of the corresponding function `α × β → γ`. -/
+/--
+The image of a binary function `f : α → β → γ` as a function `Set α → Set β → Set γ`.
+Mathematically this should be thought of as the image of the corresponding function `α × β → γ`.
+-/
 def image2 (f : α → β → γ) (s : Set α) (t : Set β) : Set γ := {c | ∃ a ∈ s, ∃ b ∈ t, f a b = c}
 
 variable {f : α → β → γ} {s : Set α} {t : Set β} {a : α} {b : β} {c : γ}
 
-@[simp, grind =] theorem mem_image2 : c ∈ image2 f s t ↔ ∃ a ∈ s, ∃ b ∈ t, f a b = c := .rfl
+@[simp, grind =]
+theorem mem_image2 : c ∈ image2 f s t ↔ ∃ a ∈ s, ∃ b ∈ t, f a b = c := .rfl
 
-theorem mem_image2_of_mem (ha : a ∈ s) (hb : b ∈ t) : f a b ∈ image2 f s t :=
-  ⟨a, ha, b, hb, rfl⟩
+theorem mem_image2_of_mem (ha : a ∈ s) (hb : b ∈ t) : f a b ∈ image2 f s t := ⟨a, ha, b, hb, rfl⟩
 
 end image2
 
-/-- Given a set `s` of functions `α → β` and `t : Set α`, `seq s t` is the union of `f '' t` over
-all `f ∈ s`. -/
+/--
+Given a set `s` of functions `α → β` and `t : Set α`, `seq s t` is the union of `f '' t` over
+all `f ∈ s`.
+-/
 def seq (s : Set (α → β)) (t : Set α) : Set β := image2 (fun f ↦ f) s t
 
 @[simp, grind =]
-theorem mem_seq_iff {s : Set (α → β)} {t : Set α} {b : β} :
-    b ∈ seq s t ↔ ∃ f ∈ s, ∃ a ∈ t, (f : α → β) a = b :=
+theorem mem_seq_iff {s : Set (α → β)} {t : Set α} {b : β}
+    : b ∈ seq s t ↔ ∃ f ∈ s, ∃ a ∈ t, (f : α → β) a = b :=
   Iff.rfl
 
 lemma seq_eq_image2 (s : Set (α → β)) (t : Set α) : seq s t = image2 (fun f a ↦ f a) s t := rfl

@@ -32,9 +32,11 @@ variable {α : Type*}
 namespace Multiset
 variable {s t : Multiset α} {a : α}
 
-@[simp] lemma covBy_cons (s : Multiset α) (a : α) : s ⋖ a ::ₘ s :=
-  ⟨lt_cons_self _ _, fun t hst hts ↦ (covBy_succ _).2 (card_lt_card hst) <| by
-    simpa using card_lt_card hts⟩
+@[simp]
+lemma covBy_cons (s : Multiset α) (a : α) : s ⋖ a ::ₘ s := ⟨
+  lt_cons_self _ _,
+  fun t hst hts ↦ (covBy_succ _).2 (card_lt_card hst) <| by simpa using card_lt_card hts
+⟩
 
 lemma _root_.CovBy.exists_multiset_cons (h : s ⋖ t) : ∃ a, a ::ₘ s = t :=
   (lt_iff_cons_le.1 h.lt).imp fun _a ha ↦ ha.eq_of_not_lt <| h.2 <| lt_cons_self _ _
@@ -70,16 +72,20 @@ lemma ordConnected_range_val : Set.OrdConnected (Set.range val : Set <| Multiset
 lemma ordConnected_range_coe : Set.OrdConnected (Set.range ((↑) : Finset α → Set α)) :=
   ⟨by rintro _ _ _ ⟨s, rfl⟩ t ht; exact ⟨_, (s.finite_toSet.subset ht.2).coe_toFinset⟩⟩
 
-@[simp] lemma val_wcovBy_val : s.1 ⩿ t.1 ↔ s ⩿ t :=
+@[simp]
+lemma val_wcovBy_val : s.1 ⩿ t.1 ↔ s ⩿ t :=
   ordConnected_range_val.apply_wcovBy_apply_iff ⟨⟨_, val_injective⟩, val_le_iff⟩
 
-@[simp] lemma val_covBy_val : s.1 ⋖ t.1 ↔ s ⋖ t :=
+@[simp]
+lemma val_covBy_val : s.1 ⋖ t.1 ↔ s ⋖ t :=
   ordConnected_range_val.apply_covBy_apply_iff ⟨⟨_, val_injective⟩, val_le_iff⟩
 
-@[simp] lemma coe_wcovBy_coe : (s : Set α) ⩿ t ↔ s ⩿ t :=
+@[simp]
+lemma coe_wcovBy_coe : (s : Set α) ⩿ t ↔ s ⩿ t :=
   ordConnected_range_coe.apply_wcovBy_apply_iff ⟨⟨_, coe_injective⟩, coe_subset⟩
 
-@[simp] lemma coe_covBy_coe : (s : Set α) ⋖ t ↔ s ⋖ t :=
+@[simp]
+lemma coe_covBy_coe : (s : Set α) ⋖ t ↔ s ⋖ t :=
   ordConnected_range_coe.apply_covBy_apply_iff ⟨⟨_, coe_injective⟩, coe_subset⟩
 
 alias ⟨_, _root_.WCovBy.finset_val⟩ := val_wcovBy_val
@@ -108,8 +114,10 @@ lemma covBy_insert (ha : a ∉ s) : s ⋖ insert a s :=
   (wcovBy_insert _ _).covBy_of_lt <| ssubset_insert ha
 
 omit [DecidableEq α] in
-@[simp] lemma empty_covBy_singleton (a : α) : ∅ ⋖ ({a} : Finset α) := by
-  classical exact insert_empty_eq (β := Finset α) a ▸ covBy_insert <| notMem_empty a
+@[simp]
+lemma empty_covBy_singleton (a : α) : ∅ ⋖ ({a} : Finset α) := by
+  classical
+  exact insert_empty_eq (β := Finset α) a ▸ covBy_insert <| notMem_empty a
 
 @[simp] lemma erase_covBy (ha : a ∈ s) : s.erase a ⋖ s := ⟨erase_ssubset ha, (erase_wcovBy _ _).2⟩
 
@@ -137,7 +145,8 @@ lemma covBy_iff_exists_erase : s ⋖ t ↔ ∃ a ∈ t, t.erase a = s := by
 
 end DecidableEq
 
-@[simp] lemma isAtom_singleton (a : α) : IsAtom ({a} : Finset α) :=
+@[simp]
+lemma isAtom_singleton (a : α) : IsAtom ({a} : Finset α) :=
   ⟨singleton_ne_empty a, fun _ ↦ eq_empty_of_ssubset_singleton⟩
 
 protected lemma isAtom_iff : IsAtom s ↔ ∃ a, s = {a} := by
@@ -153,8 +162,10 @@ protected lemma isCoatom_iff : IsCoatom s ↔ ∃ a, s = {a}ᶜ := by
 
 end Fintype
 
-/-- Finsets are multiset-graded. This is not very meaningful mathematically but rather a handy way
-to record that the inclusion `Finset α ↪ Multiset α` preserves the covering relation. -/
+/--
+Finsets are multiset-graded. This is not very meaningful mathematically but rather a handy way
+to record that the inclusion `Finset α ↪ Multiset α` preserves the covering relation.
+-/
 instance instGradeMinOrder_multiset : GradeMinOrder (Multiset α) (Finset α) where
   grade := val
   grade_strictMono := val_strictMono

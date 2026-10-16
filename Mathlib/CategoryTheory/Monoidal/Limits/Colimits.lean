@@ -32,7 +32,8 @@ namespace CategoryTheory.Limits
 
 open MonoidalCategory
 
-variable {C : Type*} [Category* C] [MonoidalCategory C]
+variable
+  {C : Type*} [Category* C] [MonoidalCategory C]
   {J J₁ J₂ : Type*} [Category* J] [Category* J₁] [Category* J₂]
 
 section
@@ -41,16 +42,16 @@ variable {F₁ : J₁ ⥤ C} {F₂ : J₂ ⥤ C} {c₁ : Cocone F₁} {c₂ : Co
 
 variable (c₁ c₂) in
 /-- The external tensor product of two cocones. -/
-abbrev Cocone.tensor₂ :
-    Cocone (externalProduct F₁ F₂) :=
-  (curriedTensor C).mapCocone₂ c₁ c₂
+abbrev Cocone.tensor₂ : Cocone (externalProduct F₁ F₂) := (curriedTensor C).mapCocone₂ c₁ c₂
 
-/-- The external tensor product of colimit cocones for functors `F₁ : J₁ ⥤ C`
+/--
+The external tensor product of colimit cocones for functors `F₁ : J₁ ⥤ C`
 and `F₂ : J₂ ⥤ C` is a colimit cocone when `PreservesColimit₂ F₁ F₂ (curriedTensor C)`
-holds. -/
-noncomputable def IsColimit.tensor₂ [PreservesColimit₂ F₁ F₂ (curriedTensor C)]
-    (hc₁ : IsColimit c₁) (hc₂ : IsColimit c₂) :
-    IsColimit (c₁.tensor₂ c₂) :=
+holds.
+-/
+noncomputable def IsColimit.tensor₂
+    [PreservesColimit₂ F₁ F₂ (curriedTensor C)] (hc₁ : IsColimit c₁) (hc₂ : IsColimit c₂)
+    : IsColimit (c₁.tensor₂ c₂) :=
   isColimitOfPreserves₂ (curriedTensor C) hc₁ hc₂
 
 end
@@ -70,12 +71,15 @@ def Cocone.tensor : Cocone (F₁ ⊗ F₂) where
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 attribute [local simp] tensorHom_def in
-/-- The tensor product of colimit cocones for functors `F₁ : J ⥤ C`
+/--
+The tensor product of colimit cocones for functors `F₁ : J ⥤ C`
 and `F₂ : J ⥤ C` is a colimit cocone when `PreservesColimit₂ F₁ F₂ (curriedTensor C)`
-holds and `J` is sifted. -/
-noncomputable def IsColimit.tensor [PreservesColimit₂ F₁ F₂ (curriedTensor C)] [IsSifted J]
-    (hc₁ : IsColimit c₁) (hc₂ : IsColimit c₂) :
-    IsColimit (c₁.tensor c₂) := by
+holds and `J` is sifted.
+-/
+noncomputable def IsColimit.tensor
+    [PreservesColimit₂ F₁ F₂ (curriedTensor C)] [IsSifted J]
+    (hc₁ : IsColimit c₁) (hc₂ : IsColimit c₂)
+    : IsColimit (c₁.tensor c₂) := by
   refine (IsColimit.equivOfNatIsoOfIso ?_ _ _ ?_).1
     ((Functor.Final.isColimitWhiskerEquiv (Functor.diag J) _).2 (hc₁.tensor₂ hc₂))
   · exact NatIso.ofComponents (fun _ ↦ Iso.refl _) (fun _ ↦ by simp)

@@ -18,7 +18,9 @@ example : HasFiniteMulSupport fun _ : ℕ ↦ (1 : ℤ) := by fun_prop
 example : HasFiniteSupport (0 : ℕ → ℤ) := by fun_prop
 
 @[to_additive]
-lemma HasFiniteMulSupport_foo {K ι M : Type*} [Monoid M] {v : ι → K → ℤ}
-    (hv : ∀ x, HasFiniteMulSupport fun i ↦ v i x) (x y : K) :
-    HasFiniteMulSupport fun i ↦ max (v i x * v i y) 1 := by
+lemma HasFiniteMulSupport_foo
+    {K ι M : Type*} [Monoid M]
+    {v : ι → K → ℤ} (hv : ∀ x, HasFiniteMulSupport fun i ↦ v i x)
+    (x y : K)
+    : HasFiniteMulSupport fun i ↦ max (v i x * v i y) 1 := by
   fun_prop

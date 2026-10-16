@@ -8,8 +8,7 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Tactic.Positivity
-
-meta import Batteries.Data.Float.Rat  -- shake: keep (for `#eval` sanity check)
+meta import Batteries.Data.Float.Rat -- shake: keep (for `#eval` sanity check)
 
 /-!
 # Chudnovsky's formula for π
@@ -44,16 +43,13 @@ open scoped Real
 open Nat
 
 /-- The numerator of the nth term in Chudnovsky's series -/
-def chudnovskyNum (n : ℕ) : ℤ :=
-  (-1 : ℤ) ^ n * (6 * n)! * (545140134 * n + 13591409)
+def chudnovskyNum (n : ℕ) : ℤ := (-1 : ℤ) ^ n * (6 * n)! * (545140134 * n + 13591409)
 
 /-- The denominator of the nth term in Chudnovsky's series -/
-def chudnovskyDenom (n : ℕ) : ℕ :=
-  (3 * n)! * (n)! ^ 3 * 640320 ^ (3 * n)
+def chudnovskyDenom (n : ℕ) : ℕ := (3 * n)! * (n)! ^ 3 * 640320 ^ (3 * n)
 
 /-- The term at index `n` in Chudnovsky's series for `π⁻¹` -/
-def chudnovskyTerm (n : ℕ) : ℚ :=
-  chudnovskyNum n / chudnovskyDenom n
+def chudnovskyTerm (n : ℕ) : ℚ := chudnovskyNum n / chudnovskyDenom n
 
 /-- The infinite sum in Chudnovsky's formula for `π⁻¹` -/
 noncomputable def chudnovskySum : ℝ :=

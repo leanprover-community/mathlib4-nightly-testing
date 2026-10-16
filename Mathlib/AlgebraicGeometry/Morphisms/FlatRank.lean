@@ -9,7 +9,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation
 public import Mathlib.AlgebraicGeometry.Morphisms.Flat
 public import Mathlib.RingTheory.Flat.Rank
-
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 
 /-!
@@ -53,15 +52,19 @@ noncomputable section
 
 variable {X S Y T : Scheme.{u}} (f : X ⟶ S)
 
-/-- The rank of a morphism `f : X ⟶ S` of schemes at a point `s : S`, when `S` is affine.
-This is used as an auxiliary definition to define `AlgebraicGeometry.finrank`. -/
+/--
+The rank of a morphism `f : X ⟶ S` of schemes at a point `s : S`, when `S` is affine.
+This is used as an auxiliary definition to define `AlgebraicGeometry.finrank`.
+-/
 private def IsAffine.finrank [IsAffine S] (f : X ⟶ S) (s : S) : ℕ :=
   f.appTop.hom.finrank (S.isoSpec.hom s)
 
-private lemma IsAffine.finrank_of_isPullback [IsAffine S] [IsAffine T]
-    (f' : Y ⟶ T) (g' : Y ⟶ X) (g : T ⟶ S) (h : IsPullback g' f' f g) [Flat f] [IsFinite f]
-    (s : S) (t : T) (hs : g t = s) :
-    IsAffine.finrank f' t = IsAffine.finrank f s := by
+private lemma IsAffine.finrank_of_isPullback
+    [IsAffine S] [IsAffine T]
+    (f' : Y ⟶ T) (g' : Y ⟶ X) (g : T ⟶ S) (h : IsPullback g' f' f g)
+    [Flat f] [IsFinite f]
+    (s : S) (t : T) (hs : g t = s)
+    : IsAffine.finrank f' t = IsAffine.finrank f s := by
   subst hs
   have : IsAffine X := isAffine_of_isAffineHom f
   have : IsPushout f.appTop g.appTop g'.appTop f'.appTop := isPushout_appTop_of_isPullback h
@@ -70,53 +73,55 @@ private lemma IsAffine.finrank_of_isPullback [IsAffine S] [IsAffine T]
     ← Scheme.Hom.comp_apply, ← Scheme.isoSpec_hom_naturality]
   rfl
 
-private lemma IsAffine.finrank_snd [IsAffine S] [IsAffine T]
-    (g : T ⟶ S) [Flat f] [IsFinite f] (x : T) :
-    IsAffine.finrank (pullback.snd f g) x = IsAffine.finrank f (g x) :=
+private lemma IsAffine.finrank_snd
+    [IsAffine S] [IsAffine T] (g : T ⟶ S) [Flat f] [IsFinite f] (x : T)
+    : IsAffine.finrank (pullback.snd f g) x = IsAffine.finrank f (g x) :=
   finrank_of_isPullback f _ _ _ (.of_hasPullback _ _) _ _ rfl
 
-private lemma IsAffine.finrank_comp_left_of_isIso [IsAffine S]
-    (f : X ⟶ Y) (g : Y ⟶ S) [IsIso f] [IsFinite g] [Flat g] :
-    IsAffine.finrank (f ≫ g) = IsAffine.finrank g := by
+private lemma IsAffine.finrank_comp_left_of_isIso
+    [IsAffine S] (f : X ⟶ Y) (g : Y ⟶ S) [IsIso f] [IsFinite g] [Flat g]
+    : IsAffine.finrank (f ≫ g) = IsAffine.finrank g := by
   ext z
   apply finrank_of_isPullback g (f ≫ g) f (𝟙 _) _ _ _ rfl
   exact IsPullback.of_horiz_isIso (by simp)
 
-/-- The rank of a morphism `f : X ⟶ S` of schemes at a point `s : S`. When `f` is finite,
+/--
+The rank of a morphism `f : X ⟶ S` of schemes at a point `s : S`. When `f` is finite,
 flat and locally of finite presentation, this is a locally constant function (see
-`AlgebraicGeometry.isLocallyConstant_finrank`). -/
+`AlgebraicGeometry.isLocallyConstant_finrank`).
+-/
 @[stacks 02KA "second part"]
 def Scheme.Hom.finrank {X S : Scheme.{u}} (f : X ⟶ S) (s : S) : ℕ :=
   IsAffine.finrank (pullback.snd f (S.affineOpenCover.f <| S.affineOpenCover.idx s))
     (S.affineOpenCover.covers s).choose
 
-private lemma Scheme.Hom.finrank_eq_finrank_snd_of_isAffine (g : T ⟶ S) [IsAffine T] (t : T)
-    [Flat f] [IsFinite f] :
-    f.finrank (g t) = IsAffine.finrank (pullback.snd f g) t := by
+private lemma Scheme.Hom.finrank_eq_finrank_snd_of_isAffine
+    (g : T ⟶ S) [IsAffine T] (t : T) [Flat f] [IsFinite f]
+    : f.finrank (g t) = IsAffine.finrank (pullback.snd f g) t := by
   let i := S.affineOpenCover.f (S.affineOpenCover.idx (g t))
-  obtain ⟨y, hyl, hyr⟩ := Scheme.Pullback.exists_preimage_pullback
-    (S.affineOpenCover.covers <| g t).choose t (S.affineOpenCover.covers <| g t).choose_spec
+  obtain ⟨y, hyl, hyr⟩ :=
+    Scheme.Pullback.exists_preimage_pullback (S.affineOpenCover.covers <| g t).choose t
+      (S.affineOpenCover.covers <| g t).choose_spec
   obtain ⟨R, u, hu, z, rfl⟩ := (pullback i g).exists_Spec_apply_eq y
   trans IsAffine.finrank (pullback.snd (pullback.snd f g) (u ≫ pullback.snd _ _)) z
   · refine (IsAffine.finrank_of_isPullback _ _ ?_ ?_ ?_ _ _ ?_).symm
-    · exact pullback.map _ _ _ _ (pullback.fst f g) (u ≫ pullback.fst _ _) g
-        pullback.condition.symm (by simp [← pullback.condition]; rfl)
+    · exact pullback.map _ _ _ _ (pullback.fst f g) (u ≫ pullback.fst _ _) g pullback.condition.symm
+        (by simp [← pullback.condition]; rfl)
     · exact u ≫ pullback.fst _ _
     · apply IsPullback.map_fst_comp_fst_snd_comp_fst
     · exact hyl
   · simp_rw [← hyr]
     exact IsAffine.finrank_snd (pullback.snd f g) (u ≫ pullback.snd _ _) z
 
-private lemma Scheme.Hom.finrank_eq_of_isAffine [IsAffine S] [Flat f] [IsFinite f] (s : S) :
-    f.finrank s = IsAffine.finrank f s := by
-  rw [show s = (𝟙 S : S ⟶ S) s from rfl, finrank_eq_finrank_snd_of_isAffine,
-    IsAffine.finrank_snd]
+private lemma Scheme.Hom.finrank_eq_of_isAffine [IsAffine S] [Flat f] [IsFinite f] (s : S)
+    : f.finrank s = IsAffine.finrank f s := by
+  rw [show s = (𝟙 S : S ⟶ S) s from rfl, finrank_eq_finrank_snd_of_isAffine, IsAffine.finrank_snd]
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-lemma Scheme.Hom.finrank_SpecMap_eq_finrank {R S : CommRingCat.{u}} {f : R ⟶ S} (hf₁ : f.hom.Finite)
-    (hf₂ : f.hom.Flat) :
-    finrank (Spec.map f) = f.hom.finrank := by
+lemma Scheme.Hom.finrank_SpecMap_eq_finrank
+    {R S : CommRingCat.{u}} {f : R ⟶ S} (hf₁ : f.hom.Finite) (hf₂ : f.hom.Flat)
+    : finrank (Spec.map f) = f.hom.finrank := by
   simp only [← IsFinite.SpecMap_iff, ← Flat.SpecMap_iff] at hf₁ hf₂
   have hf₁ : (Spec.map f).appTop.hom.Finite := (Spec.map f).finite_appTop
   have hf₂ : (Spec.map f).appTop.hom.Flat := (Spec.map f).flat_appTop
@@ -132,9 +137,10 @@ lemma Scheme.Hom.finrank_SpecMap_eq_finrank {R S : CommRingCat.{u}} {f : R ⟶ S
   · simp [isoSpec_Spec_hom, SpecMap_ΓSpecIso_hom, ← AlgebraicGeometry.Spec.map_apply,
       ← Scheme.Hom.comp_apply, toSpecΓ_SpecMap_ΓSpecIso_inv]
 
-lemma Scheme.Hom.finrank_SpecMap_algebraMap (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
-    [Module.Finite R S] [Module.Flat R S] (x : PrimeSpectrum R) :
-    finrank (Spec.map (CommRingCat.ofHom <| algebraMap R S)) x = Module.rankAtStalk S x := by
+lemma Scheme.Hom.finrank_SpecMap_algebraMap
+    (R S : Type u) [CommRing R] [CommRing S] [Algebra R S] [Module.Finite R S] [Module.Flat R S]
+    (x : PrimeSpectrum R)
+    : finrank (Spec.map (CommRingCat.ofHom <| algebraMap R S)) x = Module.rankAtStalk S x := by
   rw [finrank_SpecMap_eq_finrank]
   · simp
   · simpa [RingHom.finite_algebraMap]
@@ -143,33 +149,35 @@ lemma Scheme.Hom.finrank_SpecMap_algebraMap (R S : Type u) [CommRing R] [CommRin
 variable (f : X ⟶ Y) [Flat f] [IsFinite f]
 
 @[simp]
-lemma Scheme.Hom.finrank_comp_left_of_isIso (f : X ⟶ Y) (g : Y ⟶ S)
-    [IsIso f] [Flat g] [IsFinite g] :
-    finrank (f ≫ g) = finrank g := by
+lemma Scheme.Hom.finrank_comp_left_of_isIso (f : X ⟶ Y) (g : Y ⟶ S) [IsIso f] [Flat g] [IsFinite g]
+    : finrank (f ≫ g) = finrank g := by
   ext z
-  let e : pullback (f ≫ g) (S.affineOpenCover.f (S.affineOpenCover.idx z)) ≅
-      pullback g (S.affineOpenCover.f (S.affineOpenCover.idx z)) :=
-    (pullbackRightPullbackFstIso g (S.affineOpenCover.f (S.affineOpenCover.idx z)) f).symm ≪≫
-      asIso (pullback.snd f (pullback.fst g (S.affineOpenCover.f _)))
+  let e
+      : pullback (f ≫ g) (S.affineOpenCover.f (S.affineOpenCover.idx z))
+        ≅ pullback g (S.affineOpenCover.f (S.affineOpenCover.idx z)) :=
+    (pullbackRightPullbackFstIso g (S.affineOpenCover.f (S.affineOpenCover.idx z)) f).symm
+      ≪≫ asIso (pullback.snd f (pullback.fst g (S.affineOpenCover.f _)))
   have : e.hom ≫ pullback.snd _ _ = pullback.snd _ _ := by simp [e]
   rw [finrank, finrank, ← this, IsAffine.finrank_comp_left_of_isIso]
 
-lemma Scheme.Hom.finrank_pullback_snd {Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z)
-    [Flat f] [IsFinite f] (y : Y) :
-    finrank (pullback.snd f g) y = finrank f (g y) := by
+lemma Scheme.Hom.finrank_pullback_snd
+    {Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [Flat f] [IsFinite f] (y : Y)
+    : finrank (pullback.snd f g) y = finrank f (g y) := by
   obtain ⟨R, i, _, y', rfl⟩ := Y.exists_Spec_apply_eq y
   rw [← Scheme.Hom.comp_apply, finrank_eq_finrank_snd_of_isAffine,
     finrank_eq_finrank_snd_of_isAffine, ← pullbackLeftPullbackSndIso_hom_snd f g i,
     ← finrank_eq_of_isAffine, ← finrank_eq_of_isAffine, finrank_comp_left_of_isIso]
 
-lemma Scheme.Hom.finrank_of_isPullback {P X Y Z : Scheme.{u}} (fst : P ⟶ X) (snd : P ⟶ Y)
-    (f : X ⟶ Z) (g : Y ⟶ Z) (h : IsPullback fst snd f g) [Flat f] [IsFinite f] (y : Y) :
-    finrank snd y = finrank f (g y) := by
+lemma Scheme.Hom.finrank_of_isPullback
+    {P X Y Z : Scheme.{u}} (fst : P ⟶ X) (snd : P ⟶ Y) (f : X ⟶ Z) (g : Y ⟶ Z)
+    (h : IsPullback fst snd f g) [Flat f] [IsFinite f]
+    (y : Y)
+    : finrank snd y = finrank f (g y) := by
   rw [← h.isoPullback_hom_snd, finrank_comp_left_of_isIso, finrank_pullback_snd]
 
-lemma Scheme.Hom.finrank_pullback_fst {Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z)
-    [Flat f] [IsFinite f] (y : Y) :
-    finrank (pullback.fst g f) y = finrank f (g y) :=
+lemma Scheme.Hom.finrank_pullback_fst
+    {Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [Flat f] [IsFinite f] (y : Y)
+    : finrank (pullback.fst g f) y = finrank f (g y) :=
   finrank_of_isPullback (pullback.snd g f) _ _ _ (.flip <| .of_hasPullback _ _) y
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -197,8 +205,10 @@ nonrec lemma Scheme.Hom.one_le_finrank_map (x : X) : 1 ≤ finrank f (f x) := by
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- A finite flat locally finitely presented morphism is surjective if and only if its rank
-function is at least `1` everywhere. -/
+/--
+A finite flat locally finitely presented morphism is surjective if and only if its rank
+function is at least `1` everywhere.
+-/
 nonrec lemma Scheme.Hom.one_le_finrank_iff_surjective : 1 ≤ finrank f ↔ Surjective f := by
   refine ⟨fun h ↦ ?_, fun _ ↦ ?_⟩
   · wlog hY : ∃ R, Y = Spec R
@@ -229,8 +239,8 @@ nonrec lemma Scheme.Hom.one_le_finrank_iff_surjective : 1 ≤ finrank f ↔ Surj
     exact one_le_finrank_map f x
 
 /-- The rank of a finite flat locally finitely presented morphism is locally constant. -/
-nonrec lemma Scheme.Hom.isLocallyConstant_finrank [LocallyOfFinitePresentation f] :
-    IsLocallyConstant (finrank f) := by
+nonrec lemma Scheme.Hom.isLocallyConstant_finrank [LocallyOfFinitePresentation f]
+    : IsLocallyConstant (finrank f) := by
   wlog hY : ∃ R, Y = Spec R
   · rw [IsLocallyConstant.iff_exists_open]
     intro y
@@ -268,8 +278,10 @@ lemma Scheme.Hom.finrank_eq_one_of_isIso (f : X ⟶ Y) [IsIso f] : finrank f = 1
   · exact RingHom.Flat.id ↑R
 
 set_option backward.defeqAttrib.useBackward true in
-/-- A finite flat locally finitely presented morphism is an isomorphism if and only if
-its rank is constant equal to `1`. -/
+/--
+A finite flat locally finitely presented morphism is an isomorphism if and only if
+its rank is constant equal to `1`.
+-/
 nonrec lemma Scheme.Hom.isIso_iff_finrank_eq : IsIso f ↔ finrank f = 1 := by
   refine ⟨fun h ↦ finrank_eq_one_of_isIso f, fun h ↦ ?_⟩
   wlog hY : ∃ R, Y = Spec R

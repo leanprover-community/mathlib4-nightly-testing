@@ -26,8 +26,8 @@ def FaithfullyFlat {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S) : Pro
   letI : Algebra R S := f.toAlgebra
   Module.FaithfullyFlat R S
 
-lemma faithfullyFlat_algebraMap_iff [Algebra R S] :
-    (algebraMap R S).FaithfullyFlat ↔ Module.FaithfullyFlat R S := by
+lemma faithfullyFlat_algebraMap_iff [Algebra R S]
+    : (algebraMap R S).FaithfullyFlat ↔ Module.FaithfullyFlat R S := by
   simp only [FaithfullyFlat]
   congr!
   exact Algebra.algebra_ext _ _ fun _ ↦ rfl
@@ -38,15 +38,18 @@ lemma flat (hf : f.FaithfullyFlat) : f.Flat := by
   algebraize [f]
   exact inferInstanceAs <| Module.Flat R S
 
-lemma iff_flat_and_comap_surjective :
-    f.FaithfullyFlat ↔ f.Flat ∧ Function.Surjective (PrimeSpectrum.comap f) := by
+lemma iff_flat_and_comap_surjective
+    : f.FaithfullyFlat ↔ f.Flat ∧ Function.Surjective (PrimeSpectrum.comap f) := by
   algebraize [f]
   rw [← algebraMap_toAlgebra f, faithfullyFlat_algebraMap_iff, flat_algebraMap_iff]
-  exact ⟨fun h ↦ ⟨inferInstance, PrimeSpectrum.comap_surjective_of_faithfullyFlat⟩,
-    fun ⟨h, hf⟩ ↦ .of_comap_surjective hf⟩
+  exact ⟨
+    fun h ↦ ⟨inferInstance, PrimeSpectrum.comap_surjective_of_faithfullyFlat⟩,
+    fun ⟨h, hf⟩ ↦ .of_comap_surjective hf
+  ⟩
 
-lemma eq_and : FaithfullyFlat =
-      fun (f : R →+* S) ↦ f.Flat ∧ Function.Surjective (PrimeSpectrum.comap f) := by
+lemma eq_and
+    : FaithfullyFlat
+      = fun (f : R →+* S) ↦ f.Flat ∧ Function.Surjective (PrimeSpectrum.comap f) := by
   ext
   rw [iff_flat_and_comap_surjective]
 

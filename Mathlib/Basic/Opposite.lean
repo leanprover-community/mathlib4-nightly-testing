@@ -18,13 +18,13 @@ opposite category, with all arrows reversed.
 
 @[expose] public section
 
-
 universe v u
 
 -- morphism levels before object levels. See note [category theory universes].
 variable (α : Sort u)
 
-/-- The type of objects of the opposite of `α`; used to define the opposite category.
+/--
+The type of objects of the opposite of `α`; used to define the opposite category.
 
 Now that Lean 4 supports definitional eta equality for records,
 both `unop (op X) = X` and `op (unop X) = X` are definitional equalities.
@@ -37,16 +37,19 @@ structure Opposite where
 
 attribute [pp_nodot] Opposite.unop
 
-/-- Make sure that `Opposite.op a` is pretty-printed as `op a` instead of `{ unop := a }` or
-`⟨a⟩`. -/
+/--
+Make sure that `Opposite.op a` is pretty-printed as `op a` instead of `{ unop := a }` or
+`⟨a⟩`.
+-/
 @[app_unexpander Opposite.op]
 protected meta def Opposite.unexpander_op : Lean.PrettyPrinter.Unexpander
   | s => pure s
 
 @[inherit_doc]
 notation:max -- Use a high right binding power (like that of postfix ⁻¹) so that, for example,
--- `Presheaf Cᵒᵖ` parses as `Presheaf (Cᵒᵖ)` and not `(Presheaf C)ᵒᵖ`.
-α "ᵒᵖ" => Opposite α
+    -- `Presheaf Cᵒᵖ` parses as `Presheaf (Cᵒᵖ)` and not `(Presheaf C)ᵒᵖ`.
+    α "ᵒᵖ" =>
+  Opposite α
 
 namespace Opposite
 
@@ -56,21 +59,15 @@ theorem op_injective : Function.Injective (op : α → αᵒᵖ) := fun _ _ => c
 
 theorem unop_injective : Function.Injective (unop : αᵒᵖ → α) := fun _ _ h => congrArg op h
 
-@[simp]
-theorem op_unop (x : αᵒᵖ) : op (unop x) = x :=
-  rfl
+@[simp] theorem op_unop (x : αᵒᵖ) : op (unop x) = x := rfl
 
-theorem unop_op (x : α) : unop (op x) = x :=
-  rfl
+theorem unop_op (x : α) : unop (op x) = x := rfl
 
 -- We could prove these by `Iff.rfl`, but that would make these eligible for `dsimp`. That would be
 -- a bad idea because `Opposite` is irreducible.
-theorem op_inj_iff (x y : α) : op x = op y ↔ x = y :=
-  op_injective.eq_iff
+theorem op_inj_iff (x y : α) : op x = op y ↔ x = y := op_injective.eq_iff
 
-@[simp]
-theorem unop_inj_iff (x y : αᵒᵖ) : unop x = unop y ↔ x = y :=
-  unop_injective.eq_iff
+@[simp] theorem unop_inj_iff (x y : αᵒᵖ) : unop x = unop y ↔ x = y := unop_injective.eq_iff
 
 /-- The type-level equivalence between a type and its opposite. -/
 def equivToOpposite : α ≃ αᵒᵖ where
@@ -83,22 +80,16 @@ theorem op_surjective : Function.Surjective (op : α → αᵒᵖ) := equivToOpp
 
 theorem unop_surjective : Function.Surjective (unop : αᵒᵖ → α) := equivToOpposite.symm.surjective
 
-@[simp]
-theorem equivToOpposite_coe : (equivToOpposite : α → αᵒᵖ) = op :=
-  rfl
+@[simp] theorem equivToOpposite_coe : (equivToOpposite : α → αᵒᵖ) = op := rfl
 
-@[simp]
-theorem equivToOpposite_symm_coe : (equivToOpposite.symm : αᵒᵖ → α) = unop :=
-  rfl
+@[simp] theorem equivToOpposite_symm_coe : (equivToOpposite.symm : αᵒᵖ → α) = unop := rfl
 
-theorem op_eq_iff_eq_unop {x : α} {y} : op x = y ↔ x = unop y :=
-  equivToOpposite.eq_symm_apply.symm
+theorem op_eq_iff_eq_unop {x : α} {y} : op x = y ↔ x = unop y := equivToOpposite.eq_symm_apply.symm
 
 theorem unop_eq_iff_eq_op {x} {y : α} : unop x = y ↔ x = op y :=
   equivToOpposite.symm.eq_symm_apply.symm
 
-instance [Inhabited α] : Inhabited αᵒᵖ :=
-  ⟨op default⟩
+instance [Inhabited α] : Inhabited αᵒᵖ := ⟨op default⟩
 
 instance [Nonempty α] : Nonempty αᵒᵖ := Nonempty.map op ‹_›
 

@@ -48,15 +48,16 @@ variable [DecidableEq (Submodule R M)]
 open Submodule in
 /-- Every module is the direct limit of its finitely generated submodules. -/
 noncomputable def equiv : DirectLimit _ (fgSystem R M) ≃ₗ[R] M :=
-  .ofBijective (lift _ _ _ _ (fun _ ↦ Submodule.subtype _) fun _ _ _ _ ↦ rfl)
-    ⟨lift_injective _ _ fun _ ↦ Subtype.val_injective, fun x ↦
-      ⟨of _ _ _ _ ⟨_, fg_span_singleton x⟩ ⟨x, subset_span <| by rfl⟩, lift_of ..⟩⟩
+  .ofBijective (lift _ _ _ _ (fun _ ↦ Submodule.subtype _) fun _ _ _ _ ↦ rfl) ⟨
+    lift_injective _ _ fun _ ↦ Subtype.val_injective,
+    fun x ↦ ⟨of _ _ _ _ ⟨_, fg_span_singleton x⟩ ⟨x, subset_span <| by rfl⟩, lift_of ..⟩
+  ⟩
 
 variable {R M}
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma equiv_comp_of (N : {N : Submodule R M // N.FG}) :
-    (equiv R M).toLinearMap ∘ₗ of _ _ _ _ N = N.1.subtype := by
+lemma equiv_comp_of (N : {N : Submodule R M // N.FG})
+    : (equiv R M).toLinearMap ∘ₗ of _ _ _ _ N = N.1.subtype := by
   ext; simp [equiv]
 
 end fgSystem

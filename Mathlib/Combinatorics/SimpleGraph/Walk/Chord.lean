@@ -29,29 +29,30 @@ namespace Walk
 
 variable {V : Type*} {G : SimpleGraph V} {u v w : V}
 
-/-- A chord of a walk `p` is an edge of `G` between two vertices of `p` which is not one
-of the edges of `p`. -/
+/--
+A chord of a walk `p` is an edge of `G` between two vertices of `p` which is not one
+of the edges of `p`.
+-/
 @[expose]
 def IsChord (p : G.Walk u v) (e : Sym2 V) : Prop :=
-  e ∈ G.edgeSet ∧ e ∉ p.edges ∧
-    e.lift ⟨fun v w => v ∈ p.support ∧ w ∈ p.support, by grind⟩
+  e ∈ G.edgeSet ∧ e ∉ p.edges ∧ e.lift ⟨fun v w => v ∈ p.support ∧ w ∈ p.support, by grind⟩
 
-theorem isChord_sym2Mk {p : G.Walk u v} {u' v' : V} :
-    p.IsChord s(u', v') ↔ G.Adj u' v' ∧ s(u', v') ∉ p.edges ∧ u' ∈ p.support ∧ v' ∈ p.support :=
+theorem isChord_sym2Mk {p : G.Walk u v} {u' v' : V}
+    : p.IsChord s(u', v') ↔ G.Adj u' v' ∧ s(u', v') ∉ p.edges ∧ u' ∈ p.support ∧ v' ∈ p.support :=
   .rfl
 
 /-- A walk is chordless if it has no chords. -/
-@[expose]
-def IsChordless (p : G.Walk u v) : Prop :=
-  ∀ ⦃e : Sym2 V⦄, ¬ p.IsChord e
+@[expose] def IsChordless (p : G.Walk u v) : Prop := ∀ ⦃e : Sym2 V⦄, ¬ p.IsChord e
 
-theorem isChordless_iff_forall_mem_edges {p : G.Walk u v} :
-    p.IsChordless ↔
-      ∀ ⦃u' v' : V⦄, u' ∈ p.support → v' ∈ p.support → G.Adj u' v' → s(u', v') ∈ p.edges := by
+theorem isChordless_iff_forall_mem_edges {p : G.Walk u v}
+    : p.IsChordless
+      ↔ ∀ ⦃u' v' : V⦄, u' ∈ p.support → v' ∈ p.support → G.Adj u' v' → s(u', v') ∈ p.edges := by
   simp [IsChordless, Sym2.forall, isChord_sym2Mk]; grind
 
-theorem IsChordless.mem_edges {p : G.Walk u v} (h : p.IsChordless) {u' v' : V}
-    (hu' : u' ∈ p.support) (hv' : v' ∈ p.support) (hadj : G.Adj u' v') : s(u', v') ∈ p.edges :=
+theorem IsChordless.mem_edges
+    {p : G.Walk u v} (h : p.IsChordless)
+    {u' v' : V} (hu' : u' ∈ p.support) (hv' : v' ∈ p.support) (hadj : G.Adj u' v')
+    : s(u', v') ∈ p.edges :=
   isChordless_iff_forall_mem_edges.mp h hu' hv' hadj
 
 theorem _root_.SimpleGraph.Adj.isChordless_toWalk (h : G.Adj u v) : h.toWalk.IsChordless := by

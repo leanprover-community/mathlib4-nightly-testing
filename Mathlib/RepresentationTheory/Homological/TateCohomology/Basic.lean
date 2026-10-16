@@ -8,9 +8,7 @@ module
 public import Mathlib.Algebra.Homology.Embedding.Connect
 public import Mathlib.RepresentationTheory.Homological.GroupCohomology.LongExactSequence
 public import Mathlib.RepresentationTheory.Homological.GroupHomology.LongExactSequence
-
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
-
 
 /-!
 # Tate Cohomology
@@ -59,13 +57,15 @@ variable {R G : Type u} [CommRing R] [Group G] [Fintype G] (M : Rep R G) {X Y : 
 
 open CategoryTheory groupCohomology groupHomology
 
-/-- This is the map from the coinvariants of `M : Rep R G` to the invariants, induced by the map
-`m ↦ ∑ g : G, M.ρ g m`. -/
+/--
+This is the map from the coinvariants of `M : Rep R G` to the invariants, induced by the map
+`m ↦ ∑ g : G, M.ρ g m`.
+-/
 def Rep.tateNorm : (inhomogeneousChains M).X 0 ⟶ (inhomogeneousCochains M).X 0 :=
   (chainsIso₀ M).hom ≫ M.norm.asHom.toModuleCatHom ≫ (cochainsIso₀ M).inv
 
-lemma Rep.tateNorm_eq :
-    M.tateNorm = ModuleCat.ofHom (Finsupp.lsum R fun _ ↦ LinearMap.pi fun _ ↦ M.ρ.norm) := by
+lemma Rep.tateNorm_eq
+    : M.tateNorm = ModuleCat.ofHom (Finsupp.lsum R fun _ ↦ LinearMap.pi fun _ ↦ M.ρ.norm) := by
   ext
   simp_all [tateNorm, chainsIso₀, cochainsIso₀, Unique.eq_default]
 
@@ -88,8 +88,8 @@ lemma Rep.d_comp_tateNorm : (inhomogeneousChains M).d 1 0 ≫ M.tateNorm = 0 := 
 
 /-- The Tate norm connecting complexes of inhomogeneous chains and cochains. -/
 @[simps]
-def tateComplexConnectData :
-    CochainComplex.ConnectData (inhomogeneousChains M) (inhomogeneousCochains M) where
+def tateComplexConnectData
+    : CochainComplex.ConnectData (inhomogeneousChains M) (inhomogeneousCochains M) where
   d₀ := M.tateNorm
   comp_d₀ := Rep.d_comp_tateNorm _
   d₀_comp := Rep.tateNorm_comp_d _
@@ -100,11 +100,13 @@ abbrev tateComplex : CochainComplex (ModuleCat R) ℤ :=
 
 lemma tateComplex_d_neg_one : (tateComplex M).d (-1) 0 = M.tateNorm := rfl
 
-lemma tateComplex_d_ofNat (n : ℕ) :
-    (tateComplex M).d n (n + 1) = (inhomogeneousCochains M).d n (n + 1) := rfl
+lemma tateComplex_d_ofNat (n : ℕ)
+    : (tateComplex M).d n (n + 1) = (inhomogeneousCochains M).d n (n + 1) :=
+  rfl
 
-lemma tateComplex_d_neg (n : ℕ) :
-    (tateComplex M).d (-(n + 2 : ℤ)) (-(n + 1 : ℤ)) = (inhomogeneousChains M).d (n + 1) n := rfl
+lemma tateComplex_d_neg (n : ℕ)
+    : (tateComplex M).d (-(n + 2 : ℤ)) (-(n + 1 : ℤ)) = (inhomogeneousChains M).d (n + 1) n :=
+  rfl
 
 /-- The chain map on the Tate complex induced by a morphism of representations. -/
 @[reducible]
@@ -113,19 +115,19 @@ def tateComplex.map (φ : X ⟶ Y) : tateComplex X ⟶ tateComplex Y := by
   ext
   simp [Rep.tateNorm_eq, Representation.norm, Rep.hom_comm_apply]
 
-@[simp]
-lemma tateComplex.map_zero : tateComplex.map (0 : X ⟶ Y) = 0 := by cat_disch
+@[simp] lemma tateComplex.map_zero : tateComplex.map (0 : X ⟶ Y) = 0 := by cat_disch
 
 set_option backward.isDefEq.respectTransparency false in
-lemma tateComplex.map_add (f g : X ⟶ Y) : tateComplex.map (f + g) =
-    tateComplex.map f + tateComplex.map g := by
+lemma tateComplex.map_add (f g : X ⟶ Y)
+    : tateComplex.map (f + g) = tateComplex.map f + tateComplex.map g := by
   ext (i | i) : 1
   · rfl
   · ext1
     simp only [CochainComplex.ConnectData.map_f, chainsMap_id_f_hom_eq_mapRange, Rep.add_hom,
       Representation.IntertwiningMap.add_toLinearMap, HomologicalComplex.add_f_apply,
       ModuleCat.hom_add]
-    ext; simp
+    ext
+    simp
 
 variable (R G) in
 /-- The functor taking a representation of `G` to its Tate complex. -/
@@ -141,8 +143,10 @@ def tateComplexFunctor : Rep R G ⥤ CochainComplex (ModuleCat R) ℤ where
 def tateCohomologyFunctor (n : ℤ) : Rep R G ⥤ ModuleCat R :=
   tateComplexFunctor R G ⋙ HomologicalComplex.homologyFunctor _ _ n
 
-/-- The shortcut path of taking Tate cohomology which aligns with
-`groupCohomology` and `groupHomology`. -/
+/--
+The shortcut path of taking Tate cohomology which aligns with
+`groupCohomology` and `groupHomology`.
+-/
 abbrev tateCohomology (n : ℤ) : ModuleCat R := (tateCohomologyFunctor n).obj M
 
 namespace TateCohomology
@@ -153,95 +157,115 @@ set_option backward.isDefEq.respectTransparency false in
 instance : (tateComplexFunctor (R := R) (G := G)).PreservesZeroMorphisms where
   map_zero X Y := by simp
 
-/-- The natural isomorphism between the `n`-th index of the Tate complex and inhomogeneous
-  `n`-cochains for `0 ≤ n`. -/
-def tateComplex.evalNonneg (n : ℕ) :
-    tateComplexFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.up ℤ) n ≅
-    cochainsFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.up ℕ) n :=
+/--
+The natural isomorphism between the `n`-th index of the Tate complex and inhomogeneous
+`n`-cochains for `0 ≤ n`.
+-/
+def tateComplex.evalNonneg (n : ℕ)
+    : tateComplexFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.up ℤ) n
+      ≅ cochainsFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.up ℕ) n :=
   .refl _
 
-/-- The natural isomorphism between the `n`-th index of the Tate complex and inhomogeneous
-  `n`-chains for `n < 0`. -/
-def tateComplex.evalNeg (n : ℕ) : tateComplexFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R)
-    (ComplexShape.up ℤ) (.negSucc n) ≅ chainsFunctor R G ⋙
-    HomologicalComplex.eval (ModuleCat R) (ComplexShape.down ℕ) n :=
+/--
+The natural isomorphism between the `n`-th index of the Tate complex and inhomogeneous
+`n`-chains for `n < 0`.
+-/
+def tateComplex.evalNeg (n : ℕ)
+    : tateComplexFunctor R G
+        ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.up ℤ) (.negSucc n)
+      ≅ chainsFunctor R G ⋙ HomologicalComplex.eval (ModuleCat R) (ComplexShape.down ℕ) n :=
   .refl _
 
 instance : (tateComplexFunctor R G).PreservesZeroMorphisms where
 
-lemma map_tateComplexFunctor_shortExact {S : ShortComplex (Rep R G)} (hS : S.ShortExact) :
-    (S.map (tateComplexFunctor R G)).ShortExact := by
-  simp only [HomologicalComplex.shortExact_iff_degreewise_shortExact , ← ShortComplex.map_comp]
+lemma map_tateComplexFunctor_shortExact {S : ShortComplex (Rep R G)} (hS : S.ShortExact)
+    : (S.map (tateComplexFunctor R G)).ShortExact := by
+  simp only [HomologicalComplex.shortExact_iff_degreewise_shortExact, ← ShortComplex.map_comp]
   rintro (_ | _)
-  · exact ShortComplex.shortExact_of_iso (ShortComplex.mapNatIso _ (tateComplex.evalNonneg _).symm)
-      <| map_cochainsFunctor_eval_shortExact hS _
-  · exact ShortComplex.shortExact_of_iso (ShortComplex.mapNatIso _ (tateComplex.evalNeg _).symm)
-      <| map_chainsFunctor_eval_shortExact hS _
+  · exact ShortComplex.shortExact_of_iso (ShortComplex.mapNatIso _
+        (tateComplex.evalNonneg _).symm) <|
+      map_cochainsFunctor_eval_shortExact hS _
+  · exact ShortComplex.shortExact_of_iso (ShortComplex.mapNatIso _ (tateComplex.evalNeg _).symm) <|
+      map_chainsFunctor_eval_shortExact hS _
 
 instance : (tateComplexFunctor R G).Additive where
   map_add := tateComplex.map_add ..
 
-/-- The next two statements say that `tateComplexFunctor` is an exact functor from `Rep R G` to
-  `CochainComplex (ModuleCat R) ℤ`. -/
-instance preservesFiniteLimits_tateComplexFunctor :
-    Limits.PreservesFiniteLimits (tateComplexFunctor R G) :=
-  (((tateComplexFunctor R G).exact_tfae.out 1 4 rfl rfl).mp
-    fun _ ↦ map_tateComplexFunctor_shortExact).1
+/--
+The next two statements say that `tateComplexFunctor` is an exact functor from `Rep R G` to
+`CochainComplex (ModuleCat R) ℤ`.
+-/
+instance preservesFiniteLimits_tateComplexFunctor
+    : Limits.PreservesFiniteLimits (tateComplexFunctor R G) :=
+  (((tateComplexFunctor R G).exact_tfae.out 1 4 rfl rfl).mp fun _ ↦
+    map_tateComplexFunctor_shortExact).1
 
-instance preservesFiniteColimits_tateComplexFunctor :
-    Limits.PreservesFiniteColimits (tateComplexFunctor R G) :=
-  (((tateComplexFunctor R G).exact_tfae.out 1 4 rfl rfl).mp
-    fun _ ↦ map_tateComplexFunctor_shortExact).2
+instance preservesFiniteColimits_tateComplexFunctor
+    : Limits.PreservesFiniteColimits (tateComplexFunctor R G) :=
+  (((tateComplexFunctor R G).exact_tfae.out 1 4 rfl rfl).mp fun _ ↦
+    map_tateComplexFunctor_shortExact).2
 
 end Exact
 
-/-- The connecting homomorphism in group cohomology induced by a short exact sequence
-  of `G`-modules. -/
-noncomputable abbrev δ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ) :
-    tateCohomology S.X₃ n ⟶ tateCohomology S.X₁ (n + 1) :=
+/--
+The connecting homomorphism in group cohomology induced by a short exact sequence
+of `G`-modules.
+-/
+noncomputable abbrev δ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ)
+    : tateCohomology S.X₃ n ⟶ tateCohomology S.X₁ (n + 1) :=
   (map_tateComplexFunctor_shortExact hS).δ n (n + 1) rfl
 
-/-- This and `δ_map` are the preliminary results for the long exact sequence in Tate cohomology
-  induced by a short exact sequence of `G`-reps. -/
-lemma map_δ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ) :
-    (tateCohomologyFunctor n).map S.g ≫ δ hS n = 0 :=
+/--
+This and `δ_map` are the preliminary results for the long exact sequence in Tate cohomology
+induced by a short exact sequence of `G`-reps.
+-/
+lemma map_δ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ)
+    : (tateCohomologyFunctor n).map S.g ≫ δ hS n = 0 :=
   (map_tateComplexFunctor_shortExact hS).comp_δ _ _ _
 
-lemma δ_map {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ) :
-    δ hS n ≫ (tateCohomologyFunctor (n + 1)).map S.f = 0 :=
+lemma δ_map {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ)
+    : δ hS n ≫ (tateCohomologyFunctor (n + 1)).map S.f = 0 :=
   (map_tateComplexFunctor_shortExact hS).δ_comp _ _ _
 
-lemma exact₃ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ) :
-    (ShortComplex.mk _ _ (map_δ hS n)).Exact :=
+lemma exact₃ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ)
+    : (ShortComplex.mk _ _ (map_δ hS n)).Exact :=
   (map_tateComplexFunctor_shortExact hS).homology_exact₃ ..
 
-lemma exact₁ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ) :
-    (ShortComplex.mk _ _ (δ_map hS n)).Exact :=
+lemma exact₁ {S : ShortComplex (Rep R G)} (hS : S.ShortExact) (n : ℤ)
+    : (ShortComplex.mk _ _ (δ_map hS n)).Exact :=
   (map_tateComplexFunctor_shortExact hS).homology_exact₁ ..
 
-lemma δ_naturality {X1 X2 : ShortComplex (Rep R G)}
-    (hX1 : X1.ShortExact) (hX2 : X2.ShortExact) (F : X1 ⟶ X2) (i : ℤ) :
-    TateCohomology.δ hX1 i ≫ (tateCohomologyFunctor (i + 1)).map F.τ₁ =
-    (tateCohomologyFunctor i).map F.τ₃ ≫ TateCohomology.δ hX2 i :=
-  HomologicalComplex.HomologySequence.δ_naturality
-    ((tateComplexFunctor R G).mapShortComplex.map F)
+lemma δ_naturality
+    {X1 X2 : ShortComplex (Rep R G)} (hX1 : X1.ShortExact) (hX2 : X2.ShortExact) (F : X1 ⟶ X2)
+    (i : ℤ)
+    : TateCohomology.δ hX1 i ≫ (tateCohomologyFunctor (i + 1)).map F.τ₁
+      = (tateCohomologyFunctor i).map F.τ₃ ≫ TateCohomology.δ hX2 i :=
+  HomologicalComplex.HomologySequence.δ_naturality ((tateComplexFunctor R G).mapShortComplex.map F)
     (map_tateComplexFunctor_shortExact hX1) (map_tateComplexFunctor_shortExact hX2) i (i + 1) rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The isomorphism between the `n`-th Tate cohomology and `n`-th group cohomology for `n : ℕ`
-non-zero. -/
-def isoGroupCohomology (n : ℕ) [NeZero n] :
-    tateCohomologyFunctor n ≅ groupCohomology.functor.{u} R G n :=
-  NatIso.ofComponents (fun M ↦ (tateComplexConnectData M).homologyIsoPos _ _ rfl) fun {X Y} f ↦ by
-    simp [tateCohomologyFunctor, CochainComplex.ConnectData.homologyMap_map_of_eq_succ (n := n)]
+/--
+The isomorphism between the `n`-th Tate cohomology and `n`-th group cohomology for `n : ℕ`
+non-zero.
+-/
+def isoGroupCohomology (n : ℕ) [NeZero n]
+    : tateCohomologyFunctor n ≅ groupCohomology.functor.{u} R G n :=
+  NatIso.ofComponents
+    (fun M ↦ (tateComplexConnectData M).homologyIsoPos _ _ rfl)
+    fun {X Y} f ↦ by
+      simp [tateCohomologyFunctor, CochainComplex.ConnectData.homologyMap_map_of_eq_succ (n := n)]
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The isomorphism between the `-n-1`-th Tate cohomology and `n`-th group homology for `n : ℕ`
-non-zero. -/
-def isoGroupHomology (m : ℤ) (n : ℕ) (hmn : m = -(n + 1)) [NeZero n] :
-    tateCohomologyFunctor m ≅ groupHomology.functor R G n :=
-  NatIso.ofComponents (fun M ↦ (tateComplexConnectData M).homologyIsoNeg _ _ hmn) fun {X Y} f ↦ by
-    simp [tateCohomologyFunctor,
-      CochainComplex.ConnectData.homologyMap_map_of_eq_neg_succ (hmn := hmn)]
+/--
+The isomorphism between the `-n-1`-th Tate cohomology and `n`-th group homology for `n : ℕ`
+non-zero.
+-/
+def isoGroupHomology (m : ℤ) (n : ℕ) (hmn : m = -(n + 1)) [NeZero n]
+    : tateCohomologyFunctor m ≅ groupHomology.functor R G n :=
+  NatIso.ofComponents
+    (fun M ↦ (tateComplexConnectData M).homologyIsoNeg _ _ hmn)
+    fun {X Y} f ↦ by
+      simp [tateCohomologyFunctor,
+        CochainComplex.ConnectData.homologyMap_map_of_eq_neg_succ (hmn := hmn)]
 
 end TateCohomology

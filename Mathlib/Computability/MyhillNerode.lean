@@ -6,7 +6,6 @@ Authors: Chris Wong
 module
 
 public import Mathlib.Computability.DFA
-
 import Mathlib.Data.Set.Finite.Basic
 
 /-!
@@ -36,28 +35,26 @@ variable (L) in
 def leftQuotient (x : List α) : Language α := { y | x ++ y ∈ L }
 
 variable (L) in
-@[simp]
-theorem leftQuotient_nil : L.leftQuotient [] = L := rfl
+@[simp] theorem leftQuotient_nil : L.leftQuotient [] = L := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 variable (L) in
-theorem leftQuotient_append (x y : List α) :
-    L.leftQuotient (x ++ y) = (L.leftQuotient x).leftQuotient y := by
+theorem leftQuotient_append (x y : List α)
+    : L.leftQuotient (x ++ y) = (L.leftQuotient x).leftQuotient y := by
   simp [leftQuotient, Language]
 
-@[simp]
-theorem mem_leftQuotient (x y : List α) : y ∈ L.leftQuotient x ↔ x ++ y ∈ L := Iff.rfl
+@[simp] theorem mem_leftQuotient (x y : List α) : y ∈ L.leftQuotient x ↔ x ++ y ∈ L := Iff.rfl
 
-theorem leftQuotient_accepts_apply (M : DFA α σ) (x : List α) :
-    leftQuotient M.accepts x = M.acceptsFrom (M.eval x) := by
+theorem leftQuotient_accepts_apply (M : DFA α σ) (x : List α)
+    : leftQuotient M.accepts x = M.acceptsFrom (M.eval x) := by
   ext y
   simp [DFA.mem_accepts, DFA.mem_acceptsFrom, DFA.eval, DFA.evalFrom_of_append]
 
 theorem leftQuotient_accepts (M : DFA α σ) : leftQuotient M.accepts = M.acceptsFrom ∘ M.eval :=
   funext <| leftQuotient_accepts_apply M
 
-theorem IsRegular.finite_range_leftQuotient (h : L.IsRegular) :
-    (Set.range L.leftQuotient).Finite := by
+theorem IsRegular.finite_range_leftQuotient (h : L.IsRegular)
+    : (Set.range L.leftQuotient).Finite := by
   have ⟨σ, x, M, hM⟩ := h
   rw [← hM, leftQuotient_accepts]
   exact Set.finite_of_finite_preimage (Set.toFinite _)
@@ -78,12 +75,12 @@ def toDFA : DFA α (Set.range L.leftQuotient) where
 theorem mem_accept_toDFA (s : Set.range L.leftQuotient) : s ∈ L.toDFA.accept ↔ [] ∈ s.val := Iff.rfl
 
 @[simp]
-theorem step_toDFA (s : Set.range L.leftQuotient) (a : α) :
-    (L.toDFA.step s a).val = s.val.leftQuotient [a] := rfl
+theorem step_toDFA (s : Set.range L.leftQuotient) (a : α)
+    : (L.toDFA.step s a).val = s.val.leftQuotient [a] :=
+  rfl
 
 variable (L) in
-@[simp]
-theorem start_toDFA : L.toDFA.start.val = L := rfl
+@[simp] theorem start_toDFA : L.toDFA.start.val = L := rfl
 
 variable (L) in
 @[simp]
@@ -95,15 +92,14 @@ theorem accepts_toDFA : L.toDFA.accepts = L := by
   | nil => simp
   | append_singleton x a ih => simp [ih, leftQuotient_append]
 
-theorem IsRegular.of_finite_range_leftQuotient (h : Set.Finite (Set.range L.leftQuotient)) :
-    L.IsRegular :=
+theorem IsRegular.of_finite_range_leftQuotient (h : Set.Finite (Set.range L.leftQuotient))
+    : L.IsRegular :=
   Language.isRegular_iff.mpr ⟨_, h.fintype, L.toDFA, by simp⟩
 
 /--
 **Myhill–Nerode theorem**. A language is regular if and only if the set of left quotients is finite.
 -/
-theorem isRegular_iff_finite_range_leftQuotient :
-    L.IsRegular ↔ (Set.range L.leftQuotient).Finite :=
+theorem isRegular_iff_finite_range_leftQuotient : L.IsRegular ↔ (Set.range L.leftQuotient).Finite :=
   ⟨IsRegular.finite_range_leftQuotient, .of_finite_range_leftQuotient⟩
 
 end Language

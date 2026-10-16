@@ -28,15 +28,13 @@ open Walk
 /-- Cycle graph over `Fin n` -/
 def cycleGraph : (n : ℕ) → SimpleGraph (Fin n)
   | 0 | 1 => ⊥
-  | _ + 2 => {
-    Adj a b := a - b = 1 ∨ b - a = 1
-  }
+  | _ + 2 => { Adj a b := a - b = 1 ∨ b - a = 1 }
 
 instance : (n : ℕ) → DecidableRel (cycleGraph n).Adj
   | 0 | 1 => fun _ _ => inferInstanceAs (Decidable False)
   | _ + 2 => by unfold cycleGraph; infer_instance
 
-theorem cycleGraph_zero_adj {u v : Fin 0} : ¬(cycleGraph 0).Adj u v := id
+theorem cycleGraph_zero_adj {u v : Fin 0} : ¬ (cycleGraph 0).Adj u v := id
 
 theorem cycleGraph_zero_eq_bot : cycleGraph 0 = ⊥ := Subsingleton.elim _ _
 theorem cycleGraph_one_eq_bot : cycleGraph 1 = ⊥ := Subsingleton.elim _ _
@@ -51,42 +49,44 @@ theorem cycleGraph_three_eq_top : cycleGraph 3 = ⊤ := by
   simp only [SimpleGraph.ext_iff, funext_iff]
   decide
 
-theorem cycleGraph_one_adj {u v : Fin 1} : ¬(cycleGraph 1).Adj u v := by
+theorem cycleGraph_one_adj {u v : Fin 1} : ¬ (cycleGraph 1).Adj u v := by
   simp [cycleGraph_one_eq_bot]
 
-theorem cycleGraph_adj {n : ℕ} {u v : Fin (n + 2)} :
-    (cycleGraph (n + 2)).Adj u v ↔ u - v = 1 ∨ v - u = 1 := Iff.rfl
+theorem cycleGraph_adj {n : ℕ} {u v : Fin (n + 2)}
+    : (cycleGraph (n + 2)).Adj u v ↔ u - v = 1 ∨ v - u = 1 :=
+  Iff.rfl
 
-theorem cycleGraph_adj' {n : ℕ} {u v : Fin n} :
-    (cycleGraph n).Adj u v ↔ (u - v).val = 1 ∨ (v - u).val = 1 := by
+theorem cycleGraph_adj' {n : ℕ} {u v : Fin n}
+    : (cycleGraph n).Adj u v ↔ (u - v).val = 1 ∨ (v - u).val = 1 := by
   match n with
   | 0 => exact u.elim0
   | 1 => simp [cycleGraph_one_adj]
   | n + 2 => simp [cycleGraph_adj, Fin.ext_iff]
 
-theorem cycleGraph_neighborSet {n : ℕ} {v : Fin (n + 2)} :
-    (cycleGraph (n + 2)).neighborSet v = {v - 1, v + 1} := by
+theorem cycleGraph_neighborSet {n : ℕ} {v : Fin (n + 2)}
+    : (cycleGraph (n + 2)).neighborSet v = {v - 1, v + 1} := by
   ext w
   simp only [mem_neighborSet, Set.mem_insert_iff, Set.mem_singleton_iff]
   rw [cycleGraph_adj, sub_eq_iff_eq_add', sub_eq_iff_eq_add', eq_sub_iff_add_eq, eq_comm]
 
-theorem cycleGraph_neighborFinset {n : ℕ} {v : Fin (n + 2)} :
-    (cycleGraph (n + 2)).neighborFinset v = {v - 1, v + 1} := by
+theorem cycleGraph_neighborFinset {n : ℕ} {v : Fin (n + 2)}
+    : (cycleGraph (n + 2)).neighborFinset v = {v - 1, v + 1} := by
   simp [neighborFinset, cycleGraph_neighborSet]
 
-theorem cycleGraph_degree_two_le {n : ℕ} {v : Fin (n + 2)} :
-    (cycleGraph (n + 2)).degree v = Finset.card {v - 1, v + 1} := by
+theorem cycleGraph_degree_two_le {n : ℕ} {v : Fin (n + 2)}
+    : (cycleGraph (n + 2)).degree v = Finset.card {v - 1, v + 1} := by
   rw [SimpleGraph.degree, cycleGraph_neighborFinset]
 
-theorem cycleGraph_degree_three_le {n : ℕ} {v : Fin (n + 3)} :
-    (cycleGraph (n + 3)).degree v = 2 := by
+theorem cycleGraph_degree_three_le {n : ℕ} {v : Fin (n + 3)}
+    : (cycleGraph (n + 3)).degree v = 2 := by
   rw [cycleGraph_degree_two_le, Finset.card_pair]
   simp only [ne_eq, sub_eq_iff_eq_add, add_assoc v, left_eq_add]
   exact ne_of_beq_false rfl
 
 theorem pathGraph_le_cycleGraph {n : ℕ} : pathGraph n ≤ cycleGraph n := by
   match n with
-  | 0 | 1 => simp
+  | 0 | 1 =>
+    simp
   | n + 2 =>
     intro u v h
     rw [pathGraph_adj] at h
@@ -109,7 +109,8 @@ section cycle
 
 set_option backward.privateInPublic true in
 private def cycleGraph.cycleCons (n : ℕ) : ∀ m : Fin (n + 3), (cycleGraph (n + 3)).Walk m 0
-  | ⟨0, h⟩ => Walk.nil
+  | ⟨0, h⟩ =>
+    Walk.nil
   | ⟨m + 1, h⟩ =>
     have hadj : (cycleGraph (n + 3)).Adj ⟨m + 1, h⟩ ⟨m, Nat.lt_of_succ_lt h⟩ := by
       simp [cycleGraph_adj, Fin.ext_iff, Fin.sub_val_of_le]
@@ -119,12 +120,11 @@ set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- The Eulerian cycle of `cycleGraph (n + 3)` -/
 def cycleGraph.cycle (n : ℕ) : (cycleGraph (n + 3)).Walk 0 0 :=
-  have hadj : (cycleGraph (n + 3)).Adj 0 (Fin.last (n + 2)) := by
-    simp [cycleGraph_adj]
+  have hadj : (cycleGraph (n + 3)).Adj 0 (Fin.last (n + 2)) := by simp [cycleGraph_adj]
   Walk.cons hadj (cycleGraph.cycleCons n (Fin.last (n + 2)))
 
-private theorem cycleGraph.length_cycle_cons (n : ℕ) :
-    ∀ m : Fin (n + 3), (cycleGraph.cycleCons n m).length = m.val
+private theorem cycleGraph.length_cycle_cons (n : ℕ)
+    : ∀ m : Fin (n + 3), (cycleGraph.cycleCons n m).length = m.val
   | ⟨0, h⟩ => by
     unfold cycleGraph.cycleCons
     rfl
@@ -140,15 +140,15 @@ theorem cycleGraph.length_cycle : (cycleGraph.cycle n).length = n + 3 := by
   unfold cycleGraph.cycle
   simp [cycleGraph.length_cycle_cons]
 
-private theorem cycleGraph.getVert_cycleCons (m : Fin (n + 3)) (i : ℕ) (hi : i ≤ m.val) :
-    (cycleGraph.cycleCons n m).getVert i = (m - i) % (n + 3) := by
+private theorem cycleGraph.getVert_cycleCons (m : Fin (n + 3)) (i : ℕ) (hi : i ≤ m.val)
+    : (cycleGraph.cycleCons n m).getVert i = (m - i) % (n + 3) := by
   obtain ⟨m, hm⟩ := m
   induction i generalizing m
   · simp [Nat.mod_eq_of_lt hm]
   · cases m <;> grind +locals [getVert_cons_succ]
 
-theorem cycleGraph.getVert_cycle {m : ℕ} (hm : m ≤ n + 3) :
-    (cycleGraph.cycle n).getVert m = ⟨(n + 3 - m) % (n + 3), Nat.mod_lt _ (by lia)⟩ := by
+theorem cycleGraph.getVert_cycle {m : ℕ} (hm : m ≤ n + 3)
+    : (cycleGraph.cycle n).getVert m = ⟨(n + 3 - m) % (n + 3), Nat.mod_lt _ (by lia)⟩ := by
   cases m
   · simp
   · grind +locals [getVert_cons_succ, cycleGraph.getVert_cycleCons]
@@ -168,8 +168,8 @@ section IsContained
 
 variable {V : Type*} {G : SimpleGraph V}
 
-lemma cycleGraph_isContained_iff {n : ℕ} (hn : 2 < n) :
-    cycleGraph n ⊑ G ↔ ∃ (v : V) (p : G.Walk v v), p.IsCycle ∧ p.length = n := by
+lemma cycleGraph_isContained_iff {n : ℕ} (hn : 2 < n)
+    : cycleGraph n ⊑ G ↔ ∃ (v : V) (p : G.Walk v v), p.IsCycle ∧ p.length = n := by
   have hn' : n - 3 + 3 = n := by lia
   refine ⟨fun ⟨h⟩ ↦ ⟨_, _, cycleGraph.isCycle_cycle.map (hn' ▸ h).injective, by simp [hn']⟩, ?_⟩
   rintro ⟨u, p, hp, rfl⟩

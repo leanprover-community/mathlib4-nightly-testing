@@ -45,23 +45,25 @@ namespace MeasureTheory
 
 variable {α : Type*} {m : MeasurableSpace α}
 
-/-- A vector measure on a measurable space `α` is a σ-additive `M`-valued function (for some `M`
-an additive monoid) such that the empty set and non-measurable sets are mapped to zero. -/
-structure VectorMeasure (α : Type*) [MeasurableSpace α] (M : Type*) [AddCommMonoid M]
-    [TopologicalSpace M] where
+/--
+A vector measure on a measurable space `α` is a σ-additive `M`-valued function (for some `M`
+an additive monoid) such that the empty set and non-measurable sets are mapped to zero.
+-/
+structure VectorMeasure
+    (α : Type*) [MeasurableSpace α] (M : Type*) [AddCommMonoid M] [TopologicalSpace M] where
   /-- The measure of sets -/
   measureOf' : Set α → M
   /-- The empty set has measure zero -/
   empty' : measureOf' ∅ = 0
   /-- Non-measurable sets have measure zero -/
-  not_measurable' ⦃i : Set α⦄ : ¬MeasurableSet i → measureOf' i = 0
+  not_measurable' ⦃i : Set α⦄ : ¬ MeasurableSet i → measureOf' i = 0
   /-- The measure is σ-additive -/
-  m_iUnion' ⦃f : ℕ → Set α⦄ : (∀ i, MeasurableSet (f i)) → Pairwise (Disjoint on f) →
-    HasSum (fun i => measureOf' (f i)) (measureOf' (⋃ i, f i))
+  m_iUnion' ⦃f : ℕ → Set α⦄
+    : (∀ i, MeasurableSet (f i)) → Pairwise (Disjoint on f)
+      → HasSum (fun i => measureOf' (f i)) (measureOf' (⋃ i, f i))
 
 /-- A `SignedMeasure` is an `ℝ`-vector measure. -/
-abbrev SignedMeasure (α : Type*) [MeasurableSpace α] :=
-  VectorMeasure α ℝ
+abbrev SignedMeasure (α : Type*) [MeasurableSpace α] := VectorMeasure α ℝ
 
 namespace VectorMeasure
 
@@ -72,8 +74,7 @@ variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]
 @[macro_inline]
 instance : FunLike (VectorMeasure α M) (Set α) M where
   coe := VectorMeasure.measureOf'
-  coe_injective v w h := by
-    cases v; cases w; congr
+  coe_injective v w h := by cases v; cases w; congr
 
 @[simp]
 theorem coe_mk (v : Set α → M) (h₁) (h₂) (h₃) : (mk v h₁ h₂ h₃ : VectorMeasure α M) = v := rfl

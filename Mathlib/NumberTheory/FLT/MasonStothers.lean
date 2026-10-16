@@ -27,16 +27,18 @@ open Polynomial UniqueFactorizationMonoid EuclideanDomain
 variable {k : Type*} [Field k] [DecidableEq k]
 
 -- we use this three times; the assumptions are symmetric in a, b, c.
-private theorem abc_subcall {a b c w : k[X]} {hw : w ≠ 0} (wab : w = wronskian a b) (ha : a ≠ 0)
-    (hb : b ≠ 0) (hc : c ≠ 0) (abc_dr_dvd_w : divRadical (a * b * c) ∣ w) :
-      c.natDegree + 1 ≤ (radical (a * b * c)).natDegree := by
+private theorem abc_subcall
+    {a b c w : k[X]} {hw : w ≠ 0} (wab : w = wronskian a b) (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0)
+    (abc_dr_dvd_w : divRadical (a * b * c) ∣ w)
+    : c.natDegree + 1 ≤ (radical (a * b * c)).natDegree := by
   have ab_nz := mul_ne_zero ha hb
   have abc_nz := mul_ne_zero ab_nz hc
   -- bound the degree of `divRadical (a * b * c)` using Wronskian `w`
   set abc_dr := divRadical (a * b * c)
   have abc_dr_ndeg_lt : abc_dr.natDegree < a.natDegree + b.natDegree := by
     calc
-      abc_dr.natDegree ≤ w.natDegree := Polynomial.natDegree_le_of_dvd abc_dr_dvd_w hw
+      abc_dr.natDegree
+        ≤ w.natDegree := Polynomial.natDegree_le_of_dvd abc_dr_dvd_w hw
       _ < a.natDegree + b.natDegree := by rw [wab] at hw ⊢; exact natDegree_wronskian_lt_add hw
   -- add the degree of `radical (a * b * c)` to both sides and rearrange
   set abc_r := radical (a * b * c)
@@ -53,12 +55,12 @@ private theorem abc_subcall {a b c w : k[X]} {hw : w ≠ 0} (wab : w = wronskian
 
 /-- **Polynomial ABC theorem.** -/
 protected theorem Polynomial.abc
-    {a b c : k[X]} (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0)
-    (hab : IsCoprime a b) (hsum : a + b + c = 0) :
-    (natDegree a + 1 ≤ (radical (a * b * c)).natDegree ∧
-      natDegree b + 1 ≤ (radical (a * b * c)).natDegree ∧
-      natDegree c + 1 ≤ (radical (a * b * c)).natDegree) ∨
-      derivative a = 0 ∧ derivative b = 0 ∧ derivative c = 0 := by
+    {a b c : k[X]}
+    (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0) (hab : IsCoprime a b) (hsum : a + b + c = 0)
+    : (natDegree a + 1 ≤ (radical (a * b * c)).natDegree
+        ∧ natDegree b + 1 ≤ (radical (a * b * c)).natDegree
+        ∧ natDegree c + 1 ≤ (radical (a * b * c)).natDegree)
+      ∨ derivative a = 0 ∧ derivative b = 0 ∧ derivative c = 0 := by
   set w := wronskian a b with wab
   have hbc : IsCoprime b c := by
     rw [add_eq_zero_iff_neg_eq] at hsum

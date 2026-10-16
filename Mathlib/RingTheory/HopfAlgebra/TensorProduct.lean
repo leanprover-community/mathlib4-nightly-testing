@@ -21,13 +21,12 @@ open Coalgebra HopfAlgebra
 
 namespace TensorProduct
 
-variable {R S A B : Type*} [CommSemiring R] [CommSemiring S] [Semiring A] [Semiring B]
-    [Algebra R S] [HopfAlgebra R A] [HopfAlgebra S B] [Algebra R B]
-    [IsScalarTower R S B]
+variable
+  {R S A B : Type*} [CommSemiring R] [CommSemiring S] [Semiring A] [Semiring B] [Algebra R S]
+  [HopfAlgebra R A] [HopfAlgebra S B] [Algebra R B] [IsScalarTower R S B]
 
 set_option backward.defeqAttrib.useBackward true in
-noncomputable
-instance : HopfAlgebra S (B ⊗[R] A) where
+noncomputable instance : HopfAlgebra S (B ⊗[R] A) where
   antipode := AlgebraTensorModule.map (HopfAlgebra.antipode S) (HopfAlgebra.antipode R)
   mul_antipode_rTensor_comul := by
     ext x y
@@ -51,7 +50,8 @@ instance : HopfAlgebra S (B ⊗[R] A) where
       simp [Algebra.algebraMap_eq_smul_one, smul_tmul']
 
 @[simp]
-theorem antipode_def :
-    antipode S (A := B ⊗[R] A) = AlgebraTensorModule.map (antipode S) (antipode R) := rfl
+theorem antipode_def
+    : antipode S (A := B ⊗[R] A) = AlgebraTensorModule.map (antipode S) (antipode R) :=
+  rfl
 
 end TensorProduct

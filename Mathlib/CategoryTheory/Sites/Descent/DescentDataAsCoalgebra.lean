@@ -46,33 +46,33 @@ open Bicategory Opposite
 
 namespace Pseudofunctor
 
-variable {C : Type u} [Category.{v} C]
-  {F : LocallyDiscrete Cᵒᵖ ⥤ᵖ Adj Cat.{v', u'}}
+variable {C : Type u} [Category.{v} C] {F : LocallyDiscrete Cᵒᵖ ⥤ᵖ Adj Cat.{v', u'}}
 
 variable (F) in
-/-- Given a pseudofunctor `F : LocallyDiscrete Cᵒᵖ ⥤ᵖ Adj Cat` and a family
+/--
+Given a pseudofunctor `F : LocallyDiscrete Cᵒᵖ ⥤ᵖ Adj Cat` and a family
 of morphisms `f i : X i ⟶ S` in `C`, this is the category of descent data for `F`
 relative to the morphisms `f i` where the objects are defined as coalgebras:
 the morphisms relating the various objects `obj i` over `X i` are of the
 form `obj i₁ ⟶ (f i₁)^* (f i₂)_* (obj i₂)`. This category can be compared
 to the corresponding category `DescentData` when suitable pullbacks exist
-and certain base change morphisms are isomorphisms (TODO). -/
-structure DescentDataAsCoalgebra
-    {ι : Type t} {S : C} {X : ι → C} (f : ∀ i, X i ⟶ S) where
+and certain base change morphisms are isomorphisms (TODO).
+-/
+structure DescentDataAsCoalgebra {ι : Type t} {S : C} {X : ι → C} (f : ∀ i, X i ⟶ S) where
   /-- The objects over `X i` for all `i` -/
   obj (i : ι) : (F.obj (.mk (op (X i)))).obj
   /-- The compatibility morphisms. -/
-  hom (i₁ i₂ : ι) : obj i₁ ⟶
-    (F.map (f i₁).op.toLoc).l.toFunctor.obj
-      ((F.map (f i₂).op.toLoc).r.toFunctor.obj (obj i₂))
+  hom (i₁ i₂ : ι)
+    : obj i₁
+      ⟶ (F.map (f i₁).op.toLoc).l.toFunctor.obj ((F.map (f i₂).op.toLoc).r.toFunctor.obj (obj i₂))
   counit (i : ι) : hom i i ≫ (F.map (f i).op.toLoc).adj.counit.toNatTrans.app _ = 𝟙 _ := by
     cat_disch
-  coassoc (i₁ i₂ i₃ : ι) :
-    hom i₁ i₂ ≫ (F.map (f i₁).op.toLoc).l.toFunctor.map
-      ((F.map (f i₂).op.toLoc).r.toFunctor.map (hom i₂ i₃)) =
-    hom i₁ i₃ ≫
-      (F.map (f i₁).op.toLoc).l.toFunctor.map
-        ((F.map (f i₂).op.toLoc).adj.unit.toNatTrans.app _) := by cat_disch
+  coassoc (i₁ i₂ i₃ : ι)
+      : hom i₁ i₂ ≫ (F.map (f i₁).op.toLoc).l.toFunctor.map
+          ((F.map (f i₂).op.toLoc).r.toFunctor.map (hom i₂ i₃))
+        = hom i₁ i₃ ≫ (F.map (f i₁).op.toLoc).l.toFunctor.map
+          ((F.map (f i₂).op.toLoc).adj.unit.toNatTrans.app _) := by
+    cat_disch
 
 namespace DescentDataAsCoalgebra
 
@@ -90,11 +90,11 @@ variable {ι : Type t} {S : C} {X : ι → C} {f : ∀ i, X i ⟶ S}
 structure Hom (D₁ D₂ : F.DescentDataAsCoalgebra f) where
   /-- The morphisms between the `obj` fields of descent data. -/
   hom (i : ι) : D₁.obj i ⟶ D₂.obj i
-  comm (i₁ i₂ : ι) :
-    D₁.hom i₁ i₂ ≫
-      (F.map (f i₁).op.toLoc).l.toFunctor.map
-        ((F.map (f i₂).op.toLoc).r.toFunctor.map (hom i₂)) =
-    hom i₁ ≫ D₂.hom i₁ i₂ := by cat_disch
+  comm (i₁ i₂ : ι)
+      : D₁.hom i₁ i₂ ≫ (F.map (f i₁).op.toLoc).l.toFunctor.map
+          ((F.map (f i₂).op.toLoc).r.toFunctor.map (hom i₂))
+        = hom i₁ ≫ D₂.hom i₁ i₂ := by
+    cat_disch
 
 attribute [reassoc (attr := simp)] Hom.comm
 
@@ -104,25 +104,27 @@ instance : Category (F.DescentDataAsCoalgebra f) where
   comp f g := { hom i := f.hom i ≫ g.hom i }
 
 @[ext]
-lemma hom_ext {D₁ D₂ : F.DescentDataAsCoalgebra f} {φ φ' : D₁ ⟶ D₂}
-    (h : ∀ i, φ.hom i = φ'.hom i) : φ = φ' :=
+lemma hom_ext {D₁ D₂ : F.DescentDataAsCoalgebra f} {φ φ' : D₁ ⟶ D₂} (h : ∀ i, φ.hom i = φ'.hom i)
+    : φ = φ' :=
   Hom.ext (funext h)
 
-@[simp]
-lemma id_hom (D : F.DescentDataAsCoalgebra f) (i : ι) :
-    Hom.hom (𝟙 D) i = 𝟙 _ := rfl
+@[simp] lemma id_hom (D : F.DescentDataAsCoalgebra f) (i : ι) : Hom.hom (𝟙 D) i = 𝟙 _ := rfl
 
 @[reassoc, simp]
-lemma comp_hom {D₁ D₂ D₃ : F.DescentDataAsCoalgebra f} (φ : D₁ ⟶ D₂) (φ' : D₂ ⟶ D₃) (i : ι) :
-    (φ ≫ φ').hom i = φ.hom i ≫ φ'.hom i := rfl
+lemma comp_hom {D₁ D₂ D₃ : F.DescentDataAsCoalgebra f} (φ : D₁ ⟶ D₂) (φ' : D₂ ⟶ D₃) (i : ι)
+    : (φ ≫ φ').hom i = φ.hom i ≫ φ'.hom i :=
+  rfl
 
 /-- Constructor for isomorphisms in `DescentDataAsCoalgebra`. -/
 @[simps]
-def isoMk {D₁ D₂ : F.DescentDataAsCoalgebra f} (e : ∀ (i : ι), D₁.obj i ≅ D₂.obj i)
-    (comm : ∀ (i₁ i₂ : ι), D₁.hom i₁ i₂ ≫
-      (F.map (f i₁).op.toLoc).l.toFunctor.map ((F.map (f i₂).op.toLoc).r.toFunctor.map (e i₂).hom) =
-      (e i₁).hom ≫ D₂.hom i₁ i₂ := by cat_disch) :
-    D₁ ≅ D₂ where
+def isoMk
+    {D₁ D₂ : F.DescentDataAsCoalgebra f} (e : ∀ (i : ι), D₁.obj i ≅ D₂.obj i)
+    (comm : ∀ (i₁ i₂ : ι),
+        D₁.hom i₁ i₂ ≫ (F.map (f i₁).op.toLoc).l.toFunctor.map
+            ((F.map (f i₂).op.toLoc).r.toFunctor.map (e i₂).hom)
+          = (e i₁).hom ≫ D₂.hom i₁ i₂ := by
+      cat_disch)
+    : D₁ ≅ D₂ where
   hom.hom i := (e i).hom
   hom.comm := comm
   inv.hom i := (e i).inv
@@ -134,86 +136,94 @@ end
 
 set_option backward.defeqAttrib.useBackward true in
 variable (F) in
-/-- When the index type `ι` contains a unique element, the category
+/--
+When the index type `ι` contains a unique element, the category
 `DescentDataAsCoalgebra` identifies to the category of coalgebras
 over the comonad corresponding to the adjunction
-`(F.map f.op.toLoc).adj`. -/
+`(F.map f.op.toLoc).adj`.
+-/
 @[simps! functor_obj_A functor_obj_a functor_map_f inverse_obj_obj inverse_obj_hom
   inverse_map_hom counitIso_hom_app_f counitIso_inv_app_f,
   simps! -isSimp unitIso_hom_app_hom unitIso_inv_app_hom]
-def coalgebraEquivalence (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S) :
-    F.DescentDataAsCoalgebra (fun (_ : ι) ↦ f) ≌
-    (Adjunction.ofCat (F.map f.op.toLoc).adj).toComonad.Coalgebra where
-  functor.obj D :=
-    { A := D.obj default
-      a := D.hom default default }
+def coalgebraEquivalence (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S)
+    : F.DescentDataAsCoalgebra (fun (_ : ι) ↦ f)
+      ≌ (Adjunction.ofCat (F.map f.op.toLoc).adj).toComonad.Coalgebra where
+  functor.obj D := { A := D.obj default, a := D.hom default default }
   functor.map φ := { f := φ.hom default }
-  inverse.obj A :=
-    { obj _ := A.A
-      hom _ _ := A.a
-      counit _ := A.counit
-      coassoc _ _ _ := A.coassoc.symm }
-  inverse.map φ :=
-    { hom i := φ.f
-      comm _ _ := φ.h }
+  inverse.obj A := {
+    obj _ := A.A
+    hom _ _ := A.a
+    counit _ := A.counit
+    coassoc _ _ _ := A.coassoc.symm
+  }
+  inverse.map φ := { hom i := φ.f, comm _ _ := φ.h }
   unitIso :=
     NatIso.ofComponents
-      (fun D ↦ isoMk (fun i ↦ eqToIso congr(D.obj $(by subsingleton)))
-        (fun i₁ i₂ ↦ by
-          obtain rfl := Subsingleton.elim i₁ default
-          obtain rfl := Subsingleton.elim i₂ default
-          simp)) (fun {D₁ D₂} α ↦ by
-      ext i
-      obtain rfl := Subsingleton.elim i default
-      simp)
+      (fun D ↦
+        isoMk
+          (fun i ↦ eqToIso congr(D.obj $(by subsingleton)))
+          (fun i₁ i₂ ↦ by
+            obtain rfl := Subsingleton.elim i₁ default
+            obtain rfl := Subsingleton.elim i₂ default
+            simp))
+      (fun {D₁ D₂} α ↦ by
+        ext i
+        obtain rfl := Subsingleton.elim i default
+        simp)
   counitIso := Iso.refl _
 
 end DescentDataAsCoalgebra
 
 variable (F) in
-/-- The functor `(F.obj (.mk (op S))).obj ⥤ F.DescentDataAsCoalgebra f`
-when `f i : X i ⟶ S` is a family of morphisms. -/
+/--
+The functor `(F.obj (.mk (op S))).obj ⥤ F.DescentDataAsCoalgebra f`
+when `f i : X i ⟶ S` is a family of morphisms.
+-/
 @[simps]
-def toDescentDataAsCoalgebra
-    {ι : Type t} {S : C} {X : ι → C} (f : ∀ i, X i ⟶ S) :
-    (F.obj (.mk (op S))).obj ⥤ F.DescentDataAsCoalgebra f where
-  obj M :=
-    { obj i := (F.map (f i).op.toLoc).l.toFunctor.obj M
-      hom i₁ i₂ :=
-        (F.map (f i₁).op.toLoc).l.toFunctor.map
-          ((F.map (f i₂).op.toLoc).adj.unit.toNatTrans.app _)
-      coassoc i₁ i₂ i₃ := by
-        rw [← Functor.map_comp, ← Functor.map_comp, Adj.unit_naturality] }
-  map g :=
-    { hom i := (F.map (f i).op.toLoc).l.toFunctor.map g
-      comm i₁ i₂ := by simp [← Functor.map_comp] }
+def toDescentDataAsCoalgebra {ι : Type t} {S : C} {X : ι → C} (f : ∀ i, X i ⟶ S)
+    : (F.obj (.mk (op S))).obj ⥤ F.DescentDataAsCoalgebra f where
+  obj M := {
+    obj i := (F.map (f i).op.toLoc).l.toFunctor.obj M
+    hom i₁ i₂ :=
+      (F.map (f i₁).op.toLoc).l.toFunctor.map ((F.map (f i₂).op.toLoc).adj.unit.toNatTrans.app _)
+    coassoc i₁ i₂ i₃ := by rw [← Functor.map_comp, ← Functor.map_comp, Adj.unit_naturality]
+  }
+  map g := {
+    hom i := (F.map (f i).op.toLoc).l.toFunctor.map g
+    comm i₁ i₂ := by simp [← Functor.map_comp]
+  }
 
 section
 
 variable (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S)
 
-/-- When `ι` contains a unique element and `f : X ⟶ S` is a morphism,
+/--
+When `ι` contains a unique element and `f : X ⟶ S` is a morphism,
 the composition of `F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f)`
 and the functor of the equivalence
 `DescentDataAsCoalgebra.coalgebraEquivalence F ι f` identifies to
 `Comonad.comparison` applied to the adjunction corresponding to
-`F.map f.op.toLoc`. -/
+`F.map f.op.toLoc`.
+-/
 @[simps!]
 def toDescentDataAsCoalgebraCompCoalgebraEquivalenceFunctorIso
-    (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S) :
-    F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f) ⋙
-      (DescentDataAsCoalgebra.coalgebraEquivalence F ι f).functor ≅
-    Comonad.comparison (Adjunction.ofCat (F.map f.op.toLoc).adj) :=
+    (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S)
+    : F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f)
+        ⋙ (DescentDataAsCoalgebra.coalgebraEquivalence F ι f).functor
+      ≅ Comonad.comparison (Adjunction.ofCat (F.map f.op.toLoc).adj) :=
   Iso.refl _
 
-lemma isEquivalence_toDescentDataAsCoalgebra_iff_isEquivalence_comonadComparison :
-    (F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f)).IsEquivalence ↔
-    (Comonad.comparison (Adjunction.ofCat (F.map f.op.toLoc).adj)).IsEquivalence := by
+lemma isEquivalence_toDescentDataAsCoalgebra_iff_isEquivalence_comonadComparison
+    : (F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f)).IsEquivalence
+      ↔ (Comonad.comparison (Adjunction.ofCat (F.map f.op.toLoc).adj)).IsEquivalence := by
   rw [← Functor.isEquivalence_iff_of_iso
     (F.toDescentDataAsCoalgebraCompCoalgebraEquivalenceFunctorIso ι f)]
-  exact ⟨fun _ ↦ inferInstance, fun _ ↦
-    Functor.isEquivalence_of_comp_right _
-      ((DescentDataAsCoalgebra.coalgebraEquivalence F ι f).functor)⟩
+  exact ⟨
+    fun _ ↦ inferInstance,
+    fun _ ↦
+      Functor.isEquivalence_of_comp_right _
+        ((DescentDataAsCoalgebra.coalgebraEquivalence F ι f).functor)
+  ⟩
 
 end
 

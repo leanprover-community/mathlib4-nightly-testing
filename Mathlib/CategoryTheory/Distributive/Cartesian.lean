@@ -54,28 +54,34 @@ open Category Limits MonoidalCategory Distributive CartesianMonoidalCategory
 
 variable (C : Type u) [Category.{v} C] [CartesianMonoidalCategory C] [HasBinaryCoproducts C]
 
-/-- A category `C` with finite products is Cartesian distributive if it is monoidal distributive
-with respect to the Cartesian monoidal structure. -/
-abbrev IsCartesianDistributive :=
-  IsMonoidalDistrib C
+/--
+A category `C` with finite products is Cartesian distributive if it is monoidal distributive
+with respect to the Cartesian monoidal structure.
+-/
+abbrev IsCartesianDistributive := IsMonoidalDistrib C
 
 namespace IsCartesianDistributive
 
-/-- To show a category is Cartesian distributive it is enough to show it is left distributive.
-The right distributivity is inferred from symmetry of the Cartesian monoidal structure. -/
+/--
+To show a category is Cartesian distributive it is enough to show it is left distributive.
+The right distributivity is inferred from symmetry of the Cartesian monoidal structure.
+-/
 lemma of_isMonoidalLeftDistrib [IsMonoidalLeftDistrib C] : IsCartesianDistributive C :=
   letI : BraidedCategory C := Nonempty.some inferInstance
   SymmetricCategory.isMonoidalDistrib_of_isMonoidalLeftDistrib
 
 /-- The coproduct coprojections are monic in a Cartesian distributive category. -/
 instance monoCoprod [IsCartesianDistributive C] : MonoCoprod C :=
-  MonoCoprod.mk' fun A B =>
-    ⟨_, coprodIsCoprod A B, ⟨fun {Z} f g he ↦ by
+  MonoCoprod.mk' fun A B => ⟨
+    _,
+    coprodIsCoprod A B,
+    ⟨fun {Z} f g he ↦ by
       let ι := coprod.inl (X := A) (Y := B)
-      have : Mono (Z ◁ ι) := SplitMono.mono
-        { retraction := (∂L Z A B).inv ≫ coprod.desc (𝟙 _) (fst Z B ≫ lift (𝟙 Z) f) }
+      have : Mono (Z ◁ ι) :=
+        SplitMono.mono { retraction := (∂L Z A B).inv ≫ coprod.desc (𝟙 _) (fst Z B ≫ lift (𝟙 Z) f) }
       have : lift (𝟙 Z) f = lift (𝟙 Z) g := by rw [← cancel_mono (Z ◁ ι)]; aesop
-      simpa only [lift_snd] using this =≫ snd _ _⟩⟩
+      simpa only [lift_snd] using this =≫ snd _ _⟩
+  ⟩
 
 end IsCartesianDistributive
 

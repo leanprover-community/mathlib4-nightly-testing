@@ -38,27 +38,28 @@ namespace CategoryTheory
 
 open Limits
 
-
 namespace ObjectProperty
 
 variable {C : Type u} [Category.{v} C] (P : ObjectProperty C)
 
-/-- A property `P : ObjectProperty C` is a strong generator
+/--
+A property `P : ObjectProperty C` is a strong generator
 if it is separating and for any proper subobject `A ⊂ X`, there exists
 a morphism `G ⟶ X` which does not factor through `A` from an object
-such that `P G` holds. -/
+such that `P G` holds.
+-/
 def IsStrongGenerator : Prop :=
-  P.IsSeparating ∧ ∀ ⦃X : C⦄ (A : Subobject X),
-    (∀ (G : C) (_ : P G) (f : G ⟶ X), Subobject.Factors A f) → A = ⊤
+  P.IsSeparating
+    ∧ ∀ ⦃X : C⦄ (A : Subobject X), (∀ (G : C) (_ : P G) (f : G ⟶ X), Subobject.Factors A f) → A = ⊤
 
 variable {P}
 
-lemma isStrongGenerator_iff :
-    P.IsStrongGenerator ↔ P.IsSeparating ∧
-      ∀ ⦃X Y : C⦄ (i : X ⟶ Y) [Mono i],
-        (∀ (G : C) (_ : P G), Function.Surjective (fun (f : G ⟶ X) ↦ f ≫ i)) → IsIso i := by
-  refine ⟨fun ⟨hS₁, hS₂⟩ ↦ ⟨hS₁, fun X Y i _ h ↦ ?_⟩,
-    fun ⟨hS₁, hS₂⟩ ↦ ⟨hS₁, fun X A hA ↦ ?_⟩⟩
+lemma isStrongGenerator_iff
+    : P.IsStrongGenerator
+      ↔ P.IsSeparating
+        ∧ ∀ ⦃X Y : C⦄ (i : X ⟶ Y) [Mono i],
+          (∀ (G : C) (_ : P G), Function.Surjective (fun (f : G ⟶ X) ↦ f ≫ i)) → IsIso i := by
+  refine ⟨fun ⟨hS₁, hS₂⟩ ↦ ⟨hS₁, fun X Y i _ h ↦ ?_⟩, fun ⟨hS₁, hS₂⟩ ↦ ⟨hS₁, fun X A hA ↦ ?_⟩⟩
   · rw [Subobject.isIso_iff_mk_eq_top]
     refine hS₂ _ (fun G hG g ↦ ?_)
     rw [Subobject.mk_factors_iff]
@@ -76,22 +77,24 @@ include hP
 
 lemma isSeparating : P.IsSeparating := hP.1
 
-lemma subobject_eq_top {X : C} {A : Subobject X}
-    (hA : ∀ (G : C) (_ : P G) (f : G ⟶ X), Subobject.Factors A f) :
-    A = ⊤ :=
+lemma subobject_eq_top
+    {X : C} {A : Subobject X} (hA : ∀ (G : C) (_ : P G) (f : G ⟶ X), Subobject.Factors A f)
+    : A = ⊤ :=
   hP.2 _ hA
 
-lemma isIso_of_mono ⦃X Y : C⦄ (i : X ⟶ Y) [Mono i]
-    (hi : ∀ (G : C) (_ : P G), Function.Surjective (fun (f : G ⟶ X) ↦ f ≫ i)) : IsIso i :=
+lemma isIso_of_mono
+    ⦃X Y : C⦄ (i : X ⟶ Y) [Mono i]
+    (hi : ∀ (G : C) (_ : P G), Function.Surjective (fun (f : G ⟶ X) ↦ f ≫ i))
+    : IsIso i :=
   (isStrongGenerator_iff.1 hP).2 i hi
 
-lemma exists_of_subobject_ne_top {X : C} {A : Subobject X} (hA : A ≠ ⊤) :
-    ∃ (G : C) (_ : P G) (f : G ⟶ X), ¬ Subobject.Factors A f := by
+lemma exists_of_subobject_ne_top {X : C} {A : Subobject X} (hA : A ≠ ⊤)
+    : ∃ (G : C) (_ : P G) (f : G ⟶ X), ¬ Subobject.Factors A f := by
   by_contra!
   exact hA (hP.subobject_eq_top this)
 
-lemma exists_of_mono_not_isIso {X Y : C} (i : X ⟶ Y) [Mono i] (hi : ¬ IsIso i) :
-    ∃ (G : C) (_ : P G) (g : G ⟶ Y), ∀ (f : G ⟶ X), f ≫ i ≠ g := by
+lemma exists_of_mono_not_isIso {X Y : C} (i : X ⟶ Y) [Mono i] (hi : ¬ IsIso i)
+    : ∃ (G : C) (_ : P G) (g : G ⟶ Y), ∀ (f : G ⟶ X), f ≫ i ≠ g := by
   by_contra!
   exact hi (hP.isIso_of_mono i this)
 
@@ -102,9 +105,10 @@ end IsStrongGenerator
 namespace IsStrongGenerator
 
 lemma mk_of_exists_extremalEpi
-    (hS : ∀ (X : C), ∃ (ι : Type w) (s : ι → C) (_ : ∀ i, P (s i)) (c : Cofan s) (_ : IsColimit c)
-      (p : c.pt ⟶ X), ExtremalEpi p) :
-    P.IsStrongGenerator := by
+    (hS : ∀ (X : C),
+      ∃ (ι : Type w) (s : ι → C) (_ : ∀ i, P (s i)) (c : Cofan s) (_ : IsColimit c) (p : c.pt ⟶ X),
+        ExtremalEpi p)
+    : P.IsStrongGenerator := by
   rw [isStrongGenerator_iff]
   refine ⟨IsSeparating.mk_of_exists_epi.{w} (fun X ↦ ?_), fun X Y i _ hi ↦ ?_⟩
   · obtain ⟨ι, s, hs, c, hc, p, _⟩ := hS X
@@ -116,31 +120,40 @@ lemma mk_of_exists_extremalEpi
       (Cofan.IsColimit.hom_ext hc _ _ (by simp [hφ]))
 
 lemma extremalEpi_coproductFrom
-    (hP : IsStrongGenerator P) (X : C) [HasCoproduct (P.coproductFromFamily X)] :
-    ExtremalEpi (P.coproductFrom X) where
+    (hP : IsStrongGenerator P) (X : C) [HasCoproduct (P.coproductFromFamily X)]
+    : ExtremalEpi (P.coproductFrom X) where
   toEpi := hP.isSeparating.epi_coproductFrom X
   isIso p i fac _ := hP.isIso_of_mono _ (fun G hG f ↦ ⟨P.ιCoproductFrom f hG ≫ p, by simp [fac]⟩)
 
 end IsStrongGenerator
 
 lemma isStrongGenerator_iff_exists_extremalEpi
-    [HasCoproducts.{w} C] [LocallySmall.{w} C] [ObjectProperty.Small.{w} P] :
-    P.IsStrongGenerator ↔
-      ∀ (X : C), ∃ (ι : Type w) (s : ι → C) (_ : ∀ i, P (s i)) (c : Cofan s) (_ : IsColimit c)
-        (p : c.pt ⟶ X), ExtremalEpi p := by
+    [HasCoproducts.{w} C] [LocallySmall.{w} C] [ObjectProperty.Small.{w} P]
+    : P.IsStrongGenerator
+      ↔ ∀ (X : C),
+        ∃ (ι : Type w) (s : ι → C) (_ : ∀ i, P (s i)) (c : Cofan s) (_ : IsColimit c)
+            (p : c.pt ⟶ X),
+          ExtremalEpi p := by
   refine ⟨fun hP X ↦ ?_, fun hP ↦ .mk_of_exists_extremalEpi hP⟩
   have := hasCoproductsOfShape_of_small.{w} C (CostructuredArrow P.ι X)
-  have := (coproductIsCoproduct (P.coproductFromFamily X)).whiskerEquivalence
-    (Discrete.equivalence (equivShrink.{w} _)).symm
-  refine ⟨_, fun j ↦ ((equivShrink.{w} (CostructuredArrow P.ι X)).symm j).left.1,
-    fun j ↦ ((equivShrink.{w} _).symm j).1.2, _,
+  have :=
     (coproductIsCoproduct (P.coproductFromFamily X)).whiskerEquivalence
-    (Discrete.equivalence (equivShrink.{w} _)).symm, _, hP.extremalEpi_coproductFrom X⟩
+      (Discrete.equivalence (equivShrink.{w} _)).symm
+  refine ⟨
+    _,
+    fun j ↦ ((equivShrink.{w} (CostructuredArrow P.ι X)).symm j).left.1,
+    fun j ↦ ((equivShrink.{w} _).symm j).1.2,
+    _,
+    (coproductIsCoproduct (P.coproductFromFamily X)).whiskerEquivalence
+      (Discrete.equivalence (equivShrink.{w} _)).symm,
+    _,
+    hP.extremalEpi_coproductFrom X
+  ⟩
 
 set_option backward.defeqAttrib.useBackward true in
 lemma IsStrongGenerator.mk_of_exists_colimitsOfShape
-    (hP : ∀ (X : C), ∃ (J : Type w) (_ : Category.{w'} J), P.colimitsOfShape J X) :
-    P.IsStrongGenerator := by
+    (hP : ∀ (X : C), ∃ (J : Type w) (_ : Category.{w'} J), P.colimitsOfShape J X)
+    : P.IsStrongGenerator := by
   rw [isStrongGenerator_iff]
   refine ⟨IsSeparating.mk_of_exists_colimitsOfShape hP, fun X Y i _ hi ↦ ?_⟩
   suffices IsSplitEpi i by
@@ -148,9 +161,8 @@ lemma IsStrongGenerator.mk_of_exists_colimitsOfShape
     exact ⟨r, by simp [← cancel_mono i, fac]⟩
   obtain ⟨J, _, ⟨p⟩⟩ := hP Y
   choose φ hφ using fun j ↦ hi _ (p.prop_diag_obj j) (p.ι.app j)
-  let c : Cocone p.diag := Cocone.mk _
-    { app := φ
-      naturality j₁ j₂ f := by simp [← cancel_mono i, hφ] }
+  let c : Cocone p.diag :=
+    Cocone.mk _ { app := φ, naturality j₁ j₂ f := by simp [← cancel_mono i, hφ] }
   refine ⟨p.isColimit.desc c, p.isColimit.hom_ext (fun j ↦ ?_)⟩
   dsimp at hφ ⊢
   rw [p.isColimit.fac_assoc, hφ, Category.comp_id]

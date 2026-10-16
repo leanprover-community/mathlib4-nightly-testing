@@ -23,39 +23,34 @@ symm, symmetric, matrix
 
 @[expose] public section
 
-
 variable {α β n m R : Type*}
 
 namespace Matrix
 
 /-- A matrix `A : Matrix n n α` is "symmetric" if `Aᵀ = A`. -/
 @[wikidata Q339011]
-def IsSymm (A : Matrix n n α) : Prop :=
-  Aᵀ = A
+def IsSymm (A : Matrix n n α) : Prop := Aᵀ = A
 
 instance (A : Matrix n n α) [Decidable (Aᵀ = A)] : Decidable (IsSymm A) :=
   inferInstanceAs <| Decidable (_ = _)
 
-theorem IsSymm.eq {A : Matrix n n α} (h : A.IsSymm) : Aᵀ = A :=
-  h
+theorem IsSymm.eq {A : Matrix n n α} (h : A.IsSymm) : Aᵀ = A := h
 
 /-- A version of `Matrix.ext_iff` that unfolds the `Matrix.transpose`. -/
-theorem IsSymm.ext_iff {A : Matrix n n α} : A.IsSymm ↔ ∀ i j, A j i = A i j :=
-  Matrix.ext_iff.symm
+theorem IsSymm.ext_iff {A : Matrix n n α} : A.IsSymm ↔ ∀ i j, A j i = A i j := Matrix.ext_iff.symm
 
 /-- A version of `Matrix.ext` that unfolds the `Matrix.transpose`. -/
-theorem IsSymm.ext {A : Matrix n n α} : (∀ i j, A j i = A i j) → A.IsSymm :=
-  Matrix.ext
+theorem IsSymm.ext {A : Matrix n n α} : (∀ i j, A j i = A i j) → A.IsSymm := Matrix.ext
 
 theorem IsSymm.apply {A : Matrix n n α} (h : A.IsSymm) (i j : n) : A j i = A i j :=
   IsSymm.ext_iff.1 h i j
 
-theorem isSymm_mul_transpose_self [Fintype n] [NonUnitalCommSemiring α] (A : Matrix n n α) :
-    (A * Aᵀ).IsSymm :=
+theorem isSymm_mul_transpose_self [Fintype n] [NonUnitalCommSemiring α] (A : Matrix n n α)
+    : (A * Aᵀ).IsSymm :=
   transpose_mul _ _
 
-theorem isSymm_transpose_mul_self [Fintype n] [NonUnitalCommSemiring α] (A : Matrix n n α) :
-    (Aᵀ * A).IsSymm :=
+theorem isSymm_transpose_mul_self [Fintype n] [NonUnitalCommSemiring α] (A : Matrix n n α)
+    : (Aᵀ * A).IsSymm :=
   transpose_mul _ _
 
 theorem isSymm_add_transpose_self [AddCommSemigroup α] (A : Matrix n n α) : (A + Aᵀ).IsSymm :=
@@ -64,17 +59,14 @@ theorem isSymm_add_transpose_self [AddCommSemigroup α] (A : Matrix n n α) : (A
 theorem isSymm_transpose_add_self [AddCommSemigroup α] (A : Matrix n n α) : (Aᵀ + A).IsSymm :=
   add_comm _ _
 
-@[simp]
-theorem isSymm_zero [Zero α] : (0 : Matrix n n α).IsSymm :=
-  transpose_zero
+@[simp] theorem isSymm_zero [Zero α] : (0 : Matrix n n α).IsSymm := transpose_zero
 
 @[simp]
-theorem isSymm_one [DecidableEq n] [Zero α] [One α] : (1 : Matrix n n α).IsSymm :=
-  transpose_one
+theorem isSymm_one [DecidableEq n] [Zero α] [One α] : (1 : Matrix n n α).IsSymm := transpose_one
 
-theorem IsSymm.pow [CommSemiring α] [Fintype n] [DecidableEq n] {A : Matrix n n α} (h : A.IsSymm)
-    (k : ℕ) :
-    (A ^ k).IsSymm := by
+theorem IsSymm.pow
+    [CommSemiring α] [Fintype n] [DecidableEq n] {A : Matrix n n α} (h : A.IsSymm) (k : ℕ)
+    : (A ^ k).IsSymm := by
   rw [IsSymm, transpose_pow, h]
 
 @[simp]
@@ -82,12 +74,11 @@ theorem IsSymm.map {A : Matrix n n α} (h : A.IsSymm) (f : α → β) : (A.map f
   rw [IsSymm, ← transpose_map, h.eq]
 
 @[simp]
-theorem isSymm_map_iff {A : Matrix n n α} {f : α → β} (hf : f.Injective) :
-    (A.map f).IsSymm ↔ A.IsSymm := by
+theorem isSymm_map_iff {A : Matrix n n α} {f : α → β} (hf : f.Injective)
+    : (A.map f).IsSymm ↔ A.IsSymm := by
   rw [IsSymm, IsSymm, ← transpose_map, map_injective hf |>.eq_iff]
 
-theorem IsSymm.transpose {A : Matrix n n α} (h : A.IsSymm) : Aᵀ.IsSymm :=
-  congr_arg _ h
+theorem IsSymm.transpose {A : Matrix n n α} (h : A.IsSymm) : Aᵀ.IsSymm := congr_arg _ h
 
 @[simp]
 theorem isSymm_transpose_iff {A : Matrix n n α} : Aᵀ.IsSymm ↔ A.IsSymm := by
@@ -128,15 +119,15 @@ theorem IsSymm.smul [SMul R α] {A : Matrix n n α} (h : A.IsSymm) (k : R) : (k 
   (transpose_smul _ _).trans (congr_arg _ h)
 
 @[simp]
-theorem isSymm_smul_iff [Monoid R] [MulAction R α] {A : Matrix n n α} (k : R) [Invertible k] :
-    (k • A).IsSymm ↔ A.IsSymm := by
+theorem isSymm_smul_iff [Monoid R] [MulAction R α] {A : Matrix n n α} (k : R) [Invertible k]
+    : (k • A).IsSymm ↔ A.IsSymm := by
   refine ⟨fun h ↦ ?_, (·.smul k)⟩
   rw [← invOf_smul_smul k A]
   exact h.smul ⅟k
 
-lemma IsSymm.dotProduct_mulVec_comm [Fintype n] [NonUnitalCommSemiring α]
-    {A : Matrix n n α} (hA : A.IsSymm) {x y : n → α} :
-    x ⬝ᵥ A *ᵥ y = y ⬝ᵥ A *ᵥ x := by
+lemma IsSymm.dotProduct_mulVec_comm
+    [Fintype n] [NonUnitalCommSemiring α] {A : Matrix n n α} (hA : A.IsSymm) {x y : n → α}
+    : x ⬝ᵥ A *ᵥ y = y ⬝ᵥ A *ᵥ x := by
   rw [dotProduct_mulVec, ← mulVec_transpose, hA.eq, dotProduct_comm]
 
 @[simp]
@@ -156,11 +147,14 @@ theorem isSymm_reindex_iff {A : Matrix n n α} (f : n ≃ m) : (A.reindex f f).I
 theorem isSymm_diagonal [DecidableEq n] [Zero α] (v : n → α) : (diagonal v).IsSymm :=
   diagonal_transpose _
 
-/-- A block matrix `A.fromBlocks B C D` is symmetric,
-if `A` and `D` are symmetric and `Bᵀ = C`. -/
-theorem IsSymm.fromBlocks {A : Matrix m m α} {B : Matrix m n α} {C : Matrix n m α}
-    {D : Matrix n n α} (hA : A.IsSymm) (hBC : Bᵀ = C) (hD : D.IsSymm) :
-    (A.fromBlocks B C D).IsSymm := by
+/--
+A block matrix `A.fromBlocks B C D` is symmetric,
+if `A` and `D` are symmetric and `Bᵀ = C`.
+-/
+theorem IsSymm.fromBlocks
+    {A : Matrix m m α} {B : Matrix m n α} {C : Matrix n m α} {D : Matrix n n α}
+    (hA : A.IsSymm) (hBC : Bᵀ = C) (hD : D.IsSymm)
+    : (A.fromBlocks B C D).IsSymm := by
   have hCB : Cᵀ = B := by
     rw [← hBC]
     simp
@@ -168,19 +162,20 @@ theorem IsSymm.fromBlocks {A : Matrix m m α} {B : Matrix m n α} {C : Matrix n 
   rw [fromBlocks_transpose, hA, hCB, hBC, hD]
 
 /-- This is the `iff` version of `Matrix.isSymm.fromBlocks`. -/
-theorem isSymm_fromBlocks_iff {A : Matrix m m α} {B : Matrix m n α} {C : Matrix n m α}
-    {D : Matrix n n α} : (A.fromBlocks B C D).IsSymm ↔ A.IsSymm ∧ Bᵀ = C ∧ Cᵀ = B ∧ D.IsSymm :=
-  ⟨fun h =>
-    ⟨congr(toBlocks₁₁ $h), congr(toBlocks₂₁ $h), congr(toBlocks₁₂ $h), congr(toBlocks₂₂ $h)⟩,
-    fun ⟨hA, hBC, _, hD⟩ => IsSymm.fromBlocks hA hBC hD⟩
+theorem isSymm_fromBlocks_iff
+    {A : Matrix m m α} {B : Matrix m n α} {C : Matrix n m α} {D : Matrix n n α}
+    : (A.fromBlocks B C D).IsSymm ↔ A.IsSymm ∧ Bᵀ = C ∧ Cᵀ = B ∧ D.IsSymm := ⟨
+  fun h => ⟨congr(toBlocks₁₁ $h), congr(toBlocks₂₁ $h), congr(toBlocks₁₂ $h), congr(toBlocks₂₂ $h)⟩,
+  fun ⟨hA, hBC, _, hD⟩ => IsSymm.fromBlocks hA hBC hD
+⟩
 
-theorem isSymm_comp_iff {A : Matrix m m (Matrix n n α)} :
-    (A.comp m m n n α).IsSymm ↔ Aᵀ = A.map (·ᵀ) := by
+theorem isSymm_comp_iff {A : Matrix m m (Matrix n n α)}
+    : (A.comp m m n n α).IsSymm ↔ Aᵀ = A.map (·ᵀ) := by
   rw [IsSymm, transpose_comp, transpose_map, comp .. |>.injective.eq_iff, eq_comm,
     transpose_involutive _ _ |>.eq_iff]
 
-theorem isSymm_comp_iff_forall {A : Matrix m m (Matrix n n α)} :
-    (A.comp m m n n α).IsSymm ↔ ∀ i j i' j', A j i j' i' = A i j i' j' := by
+theorem isSymm_comp_iff_forall {A : Matrix m m (Matrix n n α)}
+    : (A.comp m m n n α).IsSymm ↔ ∀ i j i' j', A j i j' i' = A i j i' j' := by
   simp [IsSymm.ext_iff]
   grind
 

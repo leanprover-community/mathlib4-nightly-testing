@@ -8,7 +8,6 @@ module
 public meta import Lean.Elab.Command
 public meta import Mathlib.Lean.Expr.Basic
 public meta import Mathlib.Lean.Name
-
 import Mathlib.Init
 
 /-!
@@ -47,10 +46,11 @@ This is useful for finding automatically named instances with absurd names.
 
 Use as `#long_names` or `#long_names 100` to specify the length.
 -/
-elab "#long_instances " N:(num)?: command =>
+elab "#long_instances " N:(num)? : command =>
   Command.runTermElabM fun _ => do
     let N := N.map TSyntax.getNat |>.getD 50
-    let namesByModule ← allNamesByModule
-      (fun n => n.lastComponentAsString.startsWith "inst" && n.lastComponentAsString.length > N)
+    let namesByModule ←
+      allNamesByModule (fun n =>
+        n.lastComponentAsString.startsWith "inst" && n.lastComponentAsString.length > N)
     let namesByModule := namesByModule.filter fun m _ => m.getRoot.toString = "Mathlib"
     printNameHashMap namesByModule

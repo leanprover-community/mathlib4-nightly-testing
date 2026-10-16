@@ -21,11 +21,13 @@ namespace QuadraticAlgebra
 
 variable {R : Type*} [CommRing R] {a b : R}
 
-/-- The norm of an element in a quadratic algebra is the determinant of the endomorphism defined by
-left multiplication by that element. -/
+/--
+The norm of an element in a quadratic algebra is the determinant of the endomorphism defined by
+left multiplication by that element.
+-/
 @[simp]
-theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b) :
-    (DistribSMul.toLinearMap R (QuadraticAlgebra R a b) z).det = z.norm := by
+theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b)
+    : (DistribSMul.toLinearMap R (QuadraticAlgebra R a b) z).det = z.norm := by
   rw [← LinearMap.det_toMatrix <| basis ..]
   have : !![z.re, a * z.im; z.im, z.re + b * z.im].det = z.norm := by
     simp [norm]
@@ -37,8 +39,6 @@ theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b) :
   apply DFunLike.coe_injective
   rw [LinearMap.toMatrix_symm, Matrix.repr_toLin]
   ext i
-  fin_cases i
-    <;> simp
-    <;> ring
+  fin_cases i <;> simp <;> ring
 
 end QuadraticAlgebra

@@ -11,7 +11,6 @@ public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalar
 public import Mathlib.Topology.Algebra.Order.Module
 public import Mathlib.Topology.Order.DenselyOrdered
 
-
 /-!
 # Proper cones
 
@@ -55,18 +54,22 @@ variable [AddCommMonoid G] [TopologicalSpace G] [Module R G]
 local notation "R≥0" => Nonneg R
 
 variable (R E) in
-/-- A proper cone is a pointed cone `C` that is closed. Proper cones have the nice property that
+/--
+A proper cone is a pointed cone `C` that is closed. Proper cones have the nice property that
 they are equal to their double dual, see `ProperCone.dual_dual`.
-This makes them useful for defining cone programs and proving duality theorems. -/
+This makes them useful for defining cone programs and proving duality theorems.
+-/
 abbrev ProperCone := ClosedSubmodule R≥0 E
 
 namespace ProperCone
 section Module
 variable {C C₁ C₂ : ProperCone R E} {r : R} {x : E}
 
-/-- Any proper cone can be seen as a pointed cone.
+/--
+Any proper cone can be seen as a pointed cone.
 
-This is an alias of `ClosedSubmodule.toSubmodule` for convenience and discoverability. -/
+This is an alias of `ClosedSubmodule.toSubmodule` for convenience and discoverability.
+-/
 @[coe] abbrev toPointedCone (C : ProperCone R E) : PointedCone R E := C.toSubmodule
 
 instance : Coe (ProperCone R E) (PointedCone R E) := ⟨toPointedCone⟩
@@ -105,8 +108,10 @@ lemma mem_bot : x ∈ (⊥ : ProperCone R E) ↔ x = 0 := .rfl
 
 end T1Space
 
-/-- The closure of image of a proper cone under an `R`-linear map is a proper cone. We
-use continuous maps here so that the comap of f is also a map between proper cones. -/
+/--
+The closure of image of a proper cone under an `R`-linear map is a proper cone. We
+use continuous maps here so that the comap of f is also a map between proper cones.
+-/
 abbrev comap (f : E →L[R] F) (C : ProperCone R F) : ProperCone R E :=
   ClosedSubmodule.comap (f.restrictScalars R≥0) C
 
@@ -114,28 +119,33 @@ abbrev comap (f : E →L[R] F) (C : ProperCone R F) : ProperCone R E :=
 
 @[simp] lemma coe_comap (f : E →L[R] F) (C : ProperCone R F) : (C.comap f : Set E) = f ⁻¹' C := rfl
 
-lemma comap_comap (g : F →L[R] G) (f : E →L[R] F) (C : ProperCone R G) :
-    (C.comap g).comap f = C.comap (g.comp f) := rfl
+lemma comap_comap (g : F →L[R] G) (f : E →L[R] F) (C : ProperCone R G)
+    : (C.comap g).comap f = C.comap (g.comp f) :=
+  rfl
 
 lemma mem_comap {C : ProperCone R F} {f : E →L[R] F} : x ∈ C.comap f ↔ f x ∈ C := .rfl
 
 variable [ContinuousAdd F] [ContinuousConstSMul R F]
 
-/-- The closure of image of a proper cone under a linear map is a proper cone.
+/--
+The closure of image of a proper cone under a linear map is a proper cone.
 
-We use continuous maps here to match `ProperCone.comap`. -/
+We use continuous maps here to match `ProperCone.comap`.
+-/
 abbrev map (f : E →L[R] F) (C : ProperCone R E) : ProperCone R F :=
   ClosedSubmodule.map (f.restrictScalars R≥0) C
 
 @[simp] lemma map_id (C : ProperCone R F) : C.map (.id _ _) = C := ClosedSubmodule.map_id _
 
 @[simp, norm_cast]
-lemma coe_map (f : E →L[R] F) (C : ProperCone R E) :
-    C.map f = (C.toPointedCone.map (f : E →ₗ[R] F)).closure := rfl
+lemma coe_map (f : E →L[R] F) (C : ProperCone R E)
+    : C.map f = (C.toPointedCone.map (f : E →ₗ[R] F)).closure :=
+  rfl
 
 @[simp]
-lemma mem_map {f : E →L[R] F} {C : ProperCone R E} {y : F} :
-    y ∈ C.map f ↔ y ∈ (C.toPointedCone.map (f : E →ₗ[R] F)).closure := .rfl
+lemma mem_map {f : E →L[R] F} {C : ProperCone R E} {y : F}
+    : y ∈ C.map f ↔ y ∈ (C.toPointedCone.map (f : E →ₗ[R] F)).closure :=
+  .rfl
 
 end Module
 
@@ -143,8 +153,10 @@ section PositiveCone
 variable [PartialOrder E] [IsOrderedAddMonoid E] [PosSMulMono R E] [OrderClosedTopology E] {x : E}
 
 variable (R E) in
-/-- The positive cone is the proper cone formed by the set of nonnegative elements in an ordered
-module. -/
+/--
+The positive cone is the proper cone formed by the set of nonnegative elements in an ordered
+module.
+-/
 @[simps!]
 def positive : ProperCone R E where
   toSubmodule := PointedCone.positive R E
@@ -165,11 +177,12 @@ This section proves topological results about convex cones.
 namespace ConvexCone
 variable [Semifield 𝕜] [LinearOrder 𝕜] [Module 𝕜 E]
 
-variable [TopologicalSpace 𝕜] [OrderTopology 𝕜] [DenselyOrdered 𝕜] [NoMaxOrder 𝕜]
-  [ContinuousSMul 𝕜 E] {C : ConvexCone 𝕜 E}
+variable
+  [TopologicalSpace 𝕜] [OrderTopology 𝕜] [DenselyOrdered 𝕜] [NoMaxOrder 𝕜] [ContinuousSMul 𝕜 E]
+  {C : ConvexCone 𝕜 E}
 
-lemma Pointed.of_nonempty_of_isClosed (hC : (C : Set E).Nonempty) (hSclos : IsClosed (C : Set E)) :
-    C.Pointed := by
+lemma Pointed.of_nonempty_of_isClosed (hC : (C : Set E).Nonempty) (hSclos : IsClosed (C : Set E))
+    : C.Pointed := by
   obtain ⟨x, hx⟩ := hC
   let f : 𝕜 → E := (· • x)
   -- The closure of `f (0, ∞)` is a subset of `C`
@@ -182,8 +195,9 @@ lemma Pointed.of_nonempty_of_isClosed (hC : (C : Set E).Nonempty) (hSclos : IsCl
 
 variable [IsOrderedRing 𝕜]
 
-instance canLift : CanLift (ConvexCone 𝕜 E) (ProperCone 𝕜 E) (↑)
-    fun C ↦ (C : Set E).Nonempty ∧ IsClosed (C : Set E) where
+instance canLift
+    : CanLift (ConvexCone 𝕜 E) (ProperCone 𝕜 E) (↑) fun C ↦
+      (C : Set E).Nonempty ∧ IsClosed (C : Set E) where
   prf C hC := ⟨⟨C.toPointedCone <| .of_nonempty_of_isClosed hC.1 hC.2, hC.2⟩, rfl⟩
 
 end ConvexCone

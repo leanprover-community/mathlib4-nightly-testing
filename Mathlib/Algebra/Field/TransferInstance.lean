@@ -23,10 +23,12 @@ variable {α β : Type*} (e : α ≃ β)
 
 -- See note [instance transfer via equivalence]
 /-- Transfer `NNRatCast` across an `Equiv` -/
-protected abbrev nnratCast [NNRatCast β] : NNRatCast α where nnratCast q := e.invFun q
+protected abbrev nnratCast [NNRatCast β] : NNRatCast α where
+  nnratCast q := e.invFun q
 
 /-- Transfer `RatCast` across an `Equiv` -/
-protected abbrev ratCast [RatCast β] : RatCast α where ratCast n := e.invFun n
+protected abbrev ratCast [RatCast β] : RatCast α where
+  ratCast n := e.invFun n
 
 /-- Transfer `DivisionRing` across an `Equiv` -/
 protected abbrev divisionRing [DivisionRing β] : DivisionRing α := by

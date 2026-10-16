@@ -40,9 +40,10 @@ structure GuessNameData where
   When applying the dictionary, we lower-case the output if the input was also given in lower-case.
   -/
   abbreviationDict : Std.HashMap String String
-  deriving Inhabited
+deriving Inhabited
 
-/-- A set of strings of names that end in a capital letter.
+/--
+A set of strings of names that end in a capital letter.
 * If the string contains a lowercase letter, the string should be split between the first occurrence
   of a lower-case letter followed by an upper-case letter.
 * If multiple strings have the same prefix, they should be grouped by prefix
@@ -50,62 +51,75 @@ structure GuessNameData where
   (no element can be a prefix of a later element)
 
 Todo: automate the translation from `String` to an element in this `TreeMap`
-  (but this would require having something similar to the `rb_lmap` from Lean 3). -/
+  (but this would require having something similar to the `rb_lmap` from Lean 3).
+-/
 def endCapitalNames : TreeMap String (List String) compare :=
   -- todo: we want something like
   -- endCapitalNamesOfList ["LE", "LT", "GE", "GT", "WF", "CoeTC", "CoeT", "CoeHTCT"]
-  .ofList [("LE", [""]), ("LT", [""]), ("GE", [""]), ("GT", [""]), ("WF", [""]),
-    ("Coe", ["TC", "T", "HTCT"])]
+  .ofList [
+    ("LE", [""]), ("LT", [""]), ("GE", [""]), ("GT", [""]), ("WF", [""]),
+    ("Coe", ["TC", "T", "HTCT"])
+  ]
 
 open String in
-/-- This function takes a String and splits it into separate parts based on the following
+/--
+This function takes a String and splits it into separate parts based on the following
 [naming conventions](https://leanprover-community.github.io/contribute/naming.html).
 
 E.g. `#eval "InvHMulLEConjugate₂SMul_ne_top".splitCase` yields
-`["Inv", "HMul", "LE", "Conjugate₂", "SMul", "_", "ne", "_", "top"]`. -/
-partial def String.splitCase (s : String) (i₀ : Pos.Raw := 0) (r : List String := []) :
-    List String := Id.run do
+`["Inv", "HMul", "LE", "Conjugate₂", "SMul", "_", "ne", "_", "top"]`.
+-/
+partial def String.splitCase (s : String) (i₀ : Pos.Raw := 0) (r : List String := [])
+    : List String := Id.run do
   -- We test if we need to split between `i₀` and `i₁`.
   let i₁ := i₀.next s
   if i₁.atEnd s then
     -- If `i₀` is the last position, return the list.
-    let r := s::r
+    let r := s :: r
     return r.reverse
-  /- We split the string in three cases
+  /-
+  We split the string in three cases
   * We split on both sides of `_` to keep them there when rejoining the string;
   * We split after a name in `endCapitalNames`;
   * We split after a lower-case letter that is followed by an upper-case letter
-    (unless it is part of a name in `endCapitalNames`). -/
+    (unless it is part of a name in `endCapitalNames`).
+  -/
   if i₀.get s == '_' || i₁.get s == '_' then
     return splitCase (String.Pos.Raw.extract s i₁ s.rawEndPos) 0 <|
-      (String.Pos.Raw.extract s 0 i₁)::r
+      (String.Pos.Raw.extract s 0 i₁) :: r
   if (i₁.get s).isUpper then
     if let some strs := endCapitalNames[String.Pos.Raw.extract s 0 i₁]? then
-      if let some (pref, newS) := strs.findSome?
-        fun x : String ↦ (String.Pos.Raw.extract s i₁ s.rawEndPos).dropPrefix? x
-          |>.map (x, ·.toString) then
-        return splitCase newS 0 <| (String.Pos.Raw.extract s 0 i₁ ++ pref)::r
+      if let some (pref, newS) :=
+          strs.findSome? fun x : String ↦
+            (String.Pos.Raw.extract s i₁ s.rawEndPos).dropPrefix? x |>.map (x, ·.toString) then
+        return splitCase newS 0 <| (String.Pos.Raw.extract s 0 i₁ ++ pref) :: r
     if !(i₀.get s).isUpper then
       return splitCase (String.Pos.Raw.extract s i₁ s.rawEndPos) 0 <|
-        (String.Pos.Raw.extract s 0 i₁)::r
+        (String.Pos.Raw.extract s 0 i₁) :: r
   return splitCase s i₁ r
 
-/-- Replaces characters in `s` by lower-casing the first characters until a non-upper-case character
-is found. -/
+/--
+Replaces characters in `s` by lower-casing the first characters until a non-upper-case character
+is found.
+-/
 partial def String.decapitalizeSeq (s : String) (i : String.Pos.Raw := 0) : String :=
   if i.atEnd s || !(i.get s).isUpper then
     s
   else
     decapitalizeSeq (i.set s (i.get s).toLower) <| i.next s
 
-/-- If `r` starts with an upper-case letter, return `s`, otherwise return `s` with the
-initial sequence of upper-case letters lower-cased. -/
+/--
+If `r` starts with an upper-case letter, return `s`, otherwise return `s` with the
+initial sequence of upper-case letters lower-cased.
+-/
 def decapitalizeLike (r : String) (s : String) :=
   if String.Pos.Raw.get r 0 |>.isUpper then s else s.decapitalizeSeq
 
-/-- Decapitalize the first element of a list if `s` starts with a lower-case letter.
+/--
+Decapitalize the first element of a list if `s` starts with a lower-case letter.
 Note that we need to decapitalize multiple characters in some cases,
-in examples like `HMul` or `HAdd`. -/
+in examples like `HMul` or `HAdd`.
+-/
 def decapitalizeFirstLike (s : String) : List String → List String
   | x :: r => decapitalizeLike s x :: r
   | [] => []
@@ -121,34 +135,44 @@ yields `["Neg", "HAdd", "LE", "Conjugate₂", "VAdd", "_", "ne", "_", "top"]`.
 -/
 def applyNameDict (g : GuessNameData) : List String → List String
   | x :: s =>
-    let z := match g.nameDict.get? x.toLower with
+    let z :=
+      match g.nameDict.get? x.toLower with
       | some y => decapitalizeFirstLike x y
       | none => [x]
     z ++ applyNameDict g s
-  | [] => []
+  | [] =>
+    []
 
-/-- Helper for `fixAbbreviation`.
+/--
+Helper for `fixAbbreviation`.
 Note: this function has a quadratic number of recursive calls, but is not a performance
-bottleneck. -/
+bottleneck.
+-/
 def fixAbbreviationAux (g : GuessNameData) : List String → List String → String
-  | [], []     => ""
-  | [], x::s   => x ++ fixAbbreviationAux g s []
-  | pre::l, s' =>
+  | [], [] =>
+    ""
+  | [], x :: s =>
+    x ++ fixAbbreviationAux g s []
+  | pre :: l, s' =>
     let s := s' ++ [pre]
     let t := String.join s
-    /- If a name starts with upper-case, and contains an underscore, it cannot match anything in
+    /-
+    If a name starts with upper-case, and contains an underscore, it cannot match anything in
     the abbreviation dictionary. This is necessary to correctly translate something like
     `fixAbbreviation ["eventually", "LE", "_", "one"]` to `"eventuallyLE_one"`, since otherwise the
-    substring `LE_zero` gets replaced by `Nonpos`. -/
+    substring `LE_zero` gets replaced by `Nonpos`.
+    -/
     if pre == "_" && (String.Pos.Raw.get t 0).isUpper then
       s[0]! ++ fixAbbreviationAux g (s.drop 1 ++ l) []
-    else match g.abbreviationDict.get? t.decapitalizeSeq with
-    | some post => decapitalizeLike t post ++ fixAbbreviationAux g l []
-    | none      => fixAbbreviationAux g l s
-  termination_by l s => (l.length + s.length, l.length)
-  decreasing_by all_goals grind
+    else
+      match g.abbreviationDict.get? t.decapitalizeSeq with
+      | some post => decapitalizeLike t post ++ fixAbbreviationAux g l []
+      | none => fixAbbreviationAux g l s
+termination_by l s => (l.length + s.length, l.length)
+decreasing_by all_goals grind
 
-/-- Replace substrings according to `abbreviationDict`, matching the case of the first letter.
+/--
+Replace substrings according to `abbreviationDict`, matching the case of the first letter.
 
 Example:
 ```
@@ -160,8 +184,7 @@ gives the preliminary translation `["Add", "Support"]`. Subsequently
 ```
 "fixes" this translation and returns `Support`.
 -/
-def fixAbbreviation (g : GuessNameData) (l : List String) : String :=
-  fixAbbreviationAux g l []
+def fixAbbreviation (g : GuessNameData) (l : List String) : String := fixAbbreviationAux g l []
 
 /--
 Autogenerate additive name.
@@ -171,26 +194,24 @@ This runs in several steps:
 3) Fix up abbreviations that are not word-by-word translations, like "addComm" or "Nonneg".
 -/
 def guessName (g : GuessNameData) : String → String :=
-  String.mapTokens '\'' <|
-  fun s =>
-    fixAbbreviation g <|
-    applyNameDict g
-    s.splitCase
+  String.mapTokens '\'' <| fun s => fixAbbreviation g <| applyNameDict g s.splitCase
 
 /-- Rename binder names in a pi type. -/
-def renameBinderNames (g : GuessName.GuessNameData) (rename : NameMap Name)
-    (src : Expr) : Expr :=
-  src.mapForallBinderNames fun n => (rename.get? n).getD <|
-    match n with
-    | .str p s => .str p <|
-      let s' := GuessName.guessName g s
-      if s' != s then s' else
-      -- If the name starts with `h`, translate the rest of the name, e.g. `hmax` ↦ `hmin`.
-      if let some suffix := s.dropPrefix? 'h' then
-        "h" ++ GuessName.guessName g suffix.toString
-      else
-        s
-    | n => n
+def renameBinderNames (g : GuessName.GuessNameData) (rename : NameMap Name) (src : Expr) : Expr :=
+  src.mapForallBinderNames fun n =>
+    (rename.get? n).getD <| match n with
+      | .str p s =>
+        .str p <|
+          let s' := GuessName.guessName g s
+          if s' != s then
+            s'
+          -- If the name starts with `h`, translate the rest of the name, e.g. `hmax` ↦ `hmin`.
+          else if let some suffix := s.dropPrefix? 'h' then
+            "h" ++ GuessName.guessName g suffix.toString
+          else
+            s
+      | n =>
+        n
 
 /-- Environment extension used for guessing the translation of a name. -/
 abbrev GuessNameExt := EnvExtension GuessNameData
@@ -199,20 +220,27 @@ abbrev GuessNameExt := EnvExtension GuessNameData
 def registerGuessNameExt (data : GuessNameData) : IO GuessNameExt := do
   registerEnvExtension (pure data)
 
-/-- Add the translation `src ↦ tgt` to the `GuessNameExt`.
+/--
+Add the translation `src ↦ tgt` to the `GuessNameExt`.
 Both `src` and `tgt` should be capitalized.
-This change persists until the end of the current file, but it does not persist through imports. -/
-def GuessNameExt.addTranslation (ext : GuessNameExt) (srcId tgtId : Ident) :
-    Elab.Command.CommandElabM Unit := do
+This change persists until the end of the current file, but it does not persist through imports.
+-/
+def GuessNameExt.addTranslation (ext : GuessNameExt) (srcId tgtId : Ident)
+    : Elab.Command.CommandElabM Unit := do
   let src := srcId.getId.toString
   let tgt := tgtId.getId.toString
   if src.front.isLower then throwErrorAt srcId "`{src}` should be capitalized"
   if tgt.front.isLower then throwErrorAt tgtId "`{tgt}` should be capitalized"
-  modifyEnv fun env ↦ ext.modifyState env fun data ↦
-    let src := src.decapitalizeSeq
-    if src.splitCase matches [_] then
-      { data with nameDict := data.nameDict.insert src tgt.splitCase }
-    else
-      { data with abbreviationDict := data.abbreviationDict.insert src tgt }
+  modifyEnv fun env ↦
+    ext.modifyState env fun data ↦
+      let src := src.decapitalizeSeq
+      if src.splitCase matches [_] then {
+        data with
+        nameDict := data.nameDict.insert src tgt.splitCase
+      }
+      else {
+        data with
+        abbreviationDict := data.abbreviationDict.insert src tgt
+      }
 
 end Mathlib.Tactic.GuessName

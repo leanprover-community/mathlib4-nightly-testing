@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Convex.Gauge
 public import Mathlib.RingTheory.Polynomial.Bernstein
 public import Mathlib.Topology.Algebra.Module.LocallyConvex
 public import Mathlib.Topology.ContinuousMap.Polynomial
-
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Analysis.Normed.Order.Lattice
 
@@ -58,13 +57,11 @@ noncomputable section
 open Filter
 open scoped unitInterval Topology Uniformity
 
-/-- The Bernstein polynomials, as continuous functions on `[0,1]`.
--/
-def bernstein (n ν : ℕ) : C(I, ℝ) :=
-  (bernsteinPolynomial ℝ n ν).toContinuousMapOn I
+/-- The Bernstein polynomials, as continuous functions on `[0,1]`. -/
+def bernstein (n ν : ℕ) : C(I, ℝ) := (bernsteinPolynomial ℝ n ν).toContinuousMapOn I
 
-theorem bernstein_apply (n ν : ℕ) (x : I) :
-    bernstein n ν x = (n.choose ν : ℝ) * (x : ℝ) ^ ν * (1 - (x : ℝ)) ^ (n - ν) := by
+theorem bernstein_apply (n ν : ℕ) (x : I)
+    : bernstein n ν x = (n.choose ν : ℝ) * (x : ℝ) ^ ν * (1 - (x : ℝ)) ^ (n - ν) := by
   dsimp [bernstein, Polynomial.toContinuousMapOn, Polynomial.toContinuousMap, bernsteinPolynomial]
   simp
 
@@ -81,11 +78,16 @@ open Lean Meta Qq Function
 
 /-- Extension of the `positivity` tactic for Bernstein polynomials: they are always non-negative. -/
 @[positivity DFunLike.coe (bernstein _ _) _]
-meta def evalBernstein : PositivityExt where eval {_ _} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  let .app (.app _coe (.app (.app _ n) ν)) x ← whnf e | throwError "not bernstein polynomial"
-  let p ← mkAppOptM ``bernstein_nonneg #[n, ν, x]
-  pure (.nonnegative p)
+meta def evalBernstein : PositivityExt where
+  eval {_ _} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      let .app (.app _coe (.app (.app _ n) ν)) x ← whnf e
+        | throwError "not bernstein polynomial"
+      let p ← mkAppOptM ``bernstein_nonneg #[n, ν, x]
+      pure (.nonnegative p)
 
 end Mathlib.Meta.Positivity
 
@@ -93,11 +95,9 @@ end Mathlib.Meta.Positivity
 We now give a slight reformulation of `bernsteinPolynomial.variance`.
 -/
 
-
 namespace bernstein
 
-/-- Send `k : Fin (n+1)` to the equally spaced points `k/n` in the unit interval.
--/
+/-- Send `k : Fin (n+1)` to the equally spaced points `k/n` in the unit interval. -/
 def z {n : ℕ} (k : Fin (n + 1)) : I :=
   ⟨(k : ℝ) / n, by simp [div_nonneg, div_le_one_of_le₀, k.is_le]⟩
 
@@ -112,8 +112,8 @@ theorem probability (n : ℕ) (x : I) : (∑ k : Fin (n + 1), bernstein n k x) =
   apply_fun fun p => Polynomial.aeval (x : ℝ) p at this
   simpa [Finset.sum_range]
 
-theorem variance {n : ℕ} (hn : n ≠ 0) (x : I) :
-    (∑ k : Fin (n + 1), (x - k/ₙ : ℝ) ^ 2 * bernstein n k x) = (x : ℝ) * (1 - x) / n := by
+theorem variance {n : ℕ} (hn : n ≠ 0) (x : I)
+    : (∑ k : Fin (n + 1), (x - k/ₙ : ℝ) ^ 2 * bernstein n k x) = (x : ℝ) * (1 - x) / n := by
   convert congr(Polynomial.aeval (x : ℝ) $(bernsteinPolynomial.variance ℝ n) / n ^ 2) using 1
   · simp only [z, bernstein_apply, nsmul_eq_mul, bernsteinPolynomial, Finset.sum_range, map_sum,
       Polynomial.coe_aeval_eq_eval, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_sub,
@@ -130,10 +130,12 @@ open bernstein
 
 local postfix:1024 "/ₙ" => z
 
-variable {E : Type*} [AddCommGroup E] [TopologicalSpace E] [IsTopologicalAddGroup E]
-  [Module ℝ E] [ContinuousSMul ℝ E]
+variable
+  {E : Type*}
+  [AddCommGroup E] [TopologicalSpace E] [IsTopologicalAddGroup E] [Module ℝ E] [ContinuousSMul ℝ E]
 
-/-- The `n`-th approximation of a continuous function on `[0,1]` by Bernstein polynomials,
+/--
+The `n`-th approximation of a continuous function on `[0,1]` by Bernstein polynomials,
 given by `∑ k, bernstein n k x • f (k/n)`.
 -/
 def bernsteinApproximation (n : ℕ) (f : C(I, E)) : C(I, E) :=
@@ -155,8 +157,8 @@ We show that if `k ∉ S`, then `1 ≤ δ^-2 * (x - k/n)^2`.
 
 namespace bernsteinApproximation
 
-theorem apply (n : ℕ) (f : C(I, E)) (x : I) :
-    bernsteinApproximation n f x = ∑ k : Fin (n + 1), bernstein n k x • f k/ₙ := by
+theorem apply (n : ℕ) (f : C(I, E)) (x : I)
+    : bernsteinApproximation n f x = ∑ k : Fin (n + 1), bernstein n k x • f k/ₙ := by
   simp [bernsteinApproximation]
 
 @[simp]
@@ -171,7 +173,8 @@ end bernsteinApproximation
 
 open bernsteinApproximation
 
-/-- The Bernstein approximations
+/--
+The Bernstein approximations
 ```
 ∑ k : Fin (n+1), f (k/n : ℝ) * n.choose k * x^k * (1-x)^(n-k)
 ```
@@ -180,38 +183,47 @@ for a continuous function `f : C([0,1], ℝ)` converge uniformly to `f` as `n` t
 This is the proof given in [Richard Beals' *Analysis, an introduction*][beals-analysis], §7D,
 and reproduced on wikipedia.
 -/
-theorem bernsteinApproximation_uniform [LocallyConvexSpace ℝ E] (f : C(I, E)) :
-    Tendsto (fun n : ℕ => bernsteinApproximation n f) atTop (𝓝 f) := by
+theorem bernsteinApproximation_uniform [LocallyConvexSpace ℝ E] (f : C(I, E))
+    : Tendsto (fun n : ℕ => bernsteinApproximation n f) atTop (𝓝 f) := by
   let : UniformSpace E := IsTopologicalAddGroup.rightUniformSpace E
   have : IsUniformAddGroup E := isUniformAddGroup_of_addCommGroup
-  /- Topology on a locally convex TVS is given by a family of seminorms `‖x‖_U = gauge U x`,
+  /-
+  Topology on a locally convex TVS is given by a family of seminorms `‖x‖_U = gauge U x`,
   where the open symmetric convex sets `U` form a basis of neighborhoods in this topology,
   and are the open unit balls for the corresponding seminorms.
-  For technical reasons, we neither assume `U`s to be open, nor symmetric. -/
-  suffices ∀ U ∈ 𝓝 (0 : E), Convex ℝ U →
-      ∀ᶠ n in atTop, ∀ x : I, gauge U (bernsteinApproximation n f x - f x) < 1 by
+  For technical reasons, we neither assume `U`s to be open, nor symmetric.
+  -/
+  suffices ∀ U ∈ 𝓝 (0 : E),
+      Convex ℝ U → ∀ᶠ n in atTop, ∀ x : I, gauge U (bernsteinApproximation n f x - f x) < 1 by
     rw [(LocallyConvexSpace.convex_basis_zero ℝ E).uniformity_of_nhds_zero_swapped
-      |>.compactConvergenceUniformity_of_compact |> nhds_basis_uniformity |>.tendsto_right_iff]
+        |>.compactConvergenceUniformity_of_compact
+        |> nhds_basis_uniformity
+      |>.tendsto_right_iff]
     rintro U ⟨hU₀, hcU⟩
     filter_upwards [this U hU₀ hcU] with n hn x
     exact setOfPred_gauge_lt_one_subset_self hcU (mem_of_mem_nhds hU₀) (absorbent_nhds_zero hU₀)
       (hn x)
   intro U hU₀ hUc
-  /- Choose a constant `C` such that `‖f x - f y‖_U ≤ C` for all `x`, `y`.
-  For a normed space, this would be twice the norm of `f`. -/
+  /-
+  Choose a constant `C` such that `‖f x - f y‖_U ≤ C` for all `x`, `y`.
+  For a normed space, this would be twice the norm of `f`.
+  -/
   obtain ⟨C, hC⟩ : ∃ C, ∀ x y, gauge U (f x - f y) ≤ C := by
     have : Continuous fun (x, y) ↦ gauge U (f x - f y) := by fun_prop
-    simpa only [BddAbove, Set.Nonempty, mem_upperBounds, Set.forall_mem_range, Prod.forall]
-      using isCompact_range this |>.bddAbove
+    simpa only [BddAbove, Set.Nonempty, mem_upperBounds, Set.forall_mem_range, Prod.forall] using
+      isCompact_range this |>.bddAbove
   have hC₀ : 0 ≤ C := le_trans (gauge_nonneg _) (hC 0 0)
-  /- Use uniform continuity of `f` to choose `δ > 0` such that `‖f x - f y‖_U < 1 / 2`
-  whenever `dist x y < δ`. -/
+  /-
+  Use uniform continuity of `f` to choose `δ > 0` such that `‖f x - f y‖_U < 1 / 2`
+  whenever `dist x y < δ`.
+  -/
   obtain ⟨δ, hδ₀, hδ⟩ : ∃ δ > 0, ∀ x y : I, dist x y < δ → gauge U (f x - f y) < 1 / 2 := by
     have := CompactSpace.uniformContinuous_of_continuous (map_continuous f)
-    rw [Metric.uniformity_basis_dist.uniformContinuous_iff
-      (basis_sets _).uniformity_of_nhds_zero_swapped] at this
-    exact this {z | gauge U z < 1 / 2} <| tendsto_gauge_nhds_zero hU₀
-      |>.eventually_lt_const <| by positivity
+    rw [Metric.uniformity_basis_dist.uniformContinuous_iff (basis_sets
+        _).uniformity_of_nhds_zero_swapped]
+      at this
+    exact this {z | gauge U z < 1 / 2} <| tendsto_gauge_nhds_zero hU₀ |>.eventually_lt_const <| by
+      positivity
   -- Take `n ≠ 0` such that `C / δ ^ 2 / n < 1 / 2`.
   have nhds_zero := tendsto_const_div_atTop_nhds_zero_nat (C / δ ^ 2)
   filter_upwards [nhds_zero.eventually_lt_const (half_pos one_pos), eventually_ne_atTop 0]
@@ -221,14 +233,14 @@ theorem bernsteinApproximation_uniform [LocallyConvexSpace ℝ E] (f : C(I, E)) 
   set S : Finset (Fin (n + 1)) := {k : Fin (n + 1) | dist k/ₙ x < δ}
   calc
     gauge U (bernsteinApproximation n f x - f x)
-      = gauge U (∑ k : Fin (n + 1), bernstein n k x • (f k/ₙ - f x)) := by
+        = gauge U (∑ k : Fin (n + 1), bernstein n k x • (f k/ₙ - f x)) := by
       simp [bernsteinApproximation.apply, smul_sub, ← Finset.sum_smul]
     _ ≤ ∑ k : Fin (n + 1), gauge U (bernstein n k x • (f k/ₙ - f x)) :=
       gauge_sum_le hUc (absorbent_nhds_zero hU₀) _ _
     _ = ∑ k : Fin (n + 1), bernstein n k x * gauge U (f k/ₙ - f x) := by
       simp only [gauge_smul_of_nonneg, bernstein_nonneg, smul_eq_mul]
-    _ = (∑ k ∈ S, bernstein n k x * gauge U (f k/ₙ - f x)) +
-          ∑ k ∈ Sᶜ, bernstein n k x * gauge U (f k/ₙ - f x) :=
+    _ = (∑ k ∈ S, bernstein n k x * gauge U (f k/ₙ - f x))
+        + ∑ k ∈ Sᶜ, bernstein n k x * gauge U (f k/ₙ - f x) :=
       (S.sum_add_sum_compl _).symm
     -- We'll now deal with the terms in `S` and the terms in `Sᶜ` in separate calc blocks.
     _ < 1 / 2 + 1 / 2 := add_lt_add_of_le_of_lt ?_ ?_
@@ -258,8 +270,8 @@ theorem bernsteinApproximation_uniform [LocallyConvexSpace ℝ E] (f : C(I, E)) 
         gcongr with k hk
         conv_lhs => rw [← one_mul (bernstein _ _ _)]
         gcongr
-        simpa [one_le_div₀, hδ₀, sq_le_sq, S, abs_of_pos, ← Real.dist_eq, dist_comm (x : ℝ)]
-          using! hk
+        simpa [one_le_div₀, hδ₀, sq_le_sq, S, abs_of_pos, ← Real.dist_eq, dist_comm (x : ℝ)] using!
+          hk
       -- Again enlarging the sum from `Sᶜ` to all of `Fin (n+1)`
       _ ≤ C * ∑ k : Fin (n + 1), ((x : ℝ) - k/ₙ) ^ 2 / δ ^ 2 * bernstein n k x := by
         gcongr; exact Sᶜ.subset_univ

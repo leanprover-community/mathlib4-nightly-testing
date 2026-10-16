@@ -2,9 +2,11 @@ import Mathlib.Tactic.NormNum.Basic
 import Mathlib.Tactic.FunProp.Attr
 
 open Lean.Elab.Command Mathlib.Command.MinImports in
-run_cmd liftTermElabM do
-  guard ([`A, `A.B.C_3, `A.B.C_2, `A.B.C_1, `A.B.C_0, `A.B.C].map previousInstName
-      == [`A, `A.B.C_2, `A.B.C_1, `A.B.C,   `A.B.C,   `A.B.C])
+run_cmd
+  liftTermElabM do
+    guard
+      ([`A, `A.B.C_3, `A.B.C_2, `A.B.C_1, `A.B.C_0, `A.B.C].map previousInstName
+        == [`A, `A.B.C_2, `A.B.C_1, `A.B.C, `A.B.C, `A.B.C])
 
 run_cmd
   let stx ← `(variable (a : Nat) in theorem TestingAttributes : a = a := rfl)
@@ -103,7 +105,6 @@ set_option linter.defProp false in
 -- The dependency on `Semiring` is only found in the `variable` declaration.
 -- We find it by looking up the declaration by name and checking the term,
 -- which used to get confused if running in a namespace.
-
 /-- info: public import Mathlib.Algebra.Ring.Defs -/
 #guard_msgs in
 #min_imports in
@@ -247,8 +248,8 @@ structure DontProposeToMoveThisStructure where
   foo : ℕ
 
 inductive DontProposeToMoveThisInductive where
-| foo : ℕ → DontProposeToMoveThisInductive
-| bar : ℕ → DontProposeToMoveThisInductive → DontProposeToMoveThisInductive
+  | foo : ℕ → DontProposeToMoveThisInductive
+  | bar : ℕ → DontProposeToMoveThisInductive → DontProposeToMoveThisInductive
 
 set_option linter.upstreamableDecl.defs true
 
@@ -268,8 +269,8 @@ Note: This linter can be disabled with `set_option linter.upstreamableDecl false
 -/
 #guard_msgs in
 inductive ProposeToMoveThisInductive where
-| foo : ℕ → ProposeToMoveThisInductive
-| bar : ℕ → ProposeToMoveThisInductive → ProposeToMoveThisInductive
+  | foo : ℕ → ProposeToMoveThisInductive
+  | bar : ℕ → ProposeToMoveThisInductive → ProposeToMoveThisInductive
 
 -- This theorem depends on a local inductive, so should not be moved.
 #guard_msgs in

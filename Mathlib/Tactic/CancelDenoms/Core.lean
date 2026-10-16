@@ -41,60 +41,72 @@ namespace Mathlib.Tactic.CancelDenoms
 
 /-! ### Lemmas used in the procedure -/
 
-theorem mul_subst {α} [CommRing α] {n1 n2 k e1 e2 t1 t2 : α}
-    (h1 : n1 * e1 = t1) (h2 : n2 * e2 = t2) (h3 : n1 * n2 = k) : k * (e1 * e2) = t1 * t2 := by
-  rw [← h3, mul_comm n1, mul_assoc n2, ← mul_assoc n1, h1,
-      ← mul_assoc n2, mul_comm n2, mul_assoc, h2]
+theorem mul_subst
+    {α} [CommRing α]
+    {n1 n2 k e1 e2 t1 t2 : α} (h1 : n1 * e1 = t1) (h2 : n2 * e2 = t2) (h3 : n1 * n2 = k)
+    : k * (e1 * e2) = t1 * t2 := by
+  rw [← h3, mul_comm n1, mul_assoc n2, ← mul_assoc n1, h1, ← mul_assoc n2, mul_comm n2, mul_assoc,
+    h2]
 
-theorem div_subst {α} [Field α] {n1 n2 k e1 e2 t1 : α}
-    (h1 : n1 * e1 = t1) (h2 : n2 / e2 = 1) (h3 : n1 * n2 = k) : k * (e1 / e2) = t1 := by
+theorem div_subst
+    {α} [Field α] {n1 n2 k e1 e2 t1 : α} (h1 : n1 * e1 = t1) (h2 : n2 / e2 = 1) (h3 : n1 * n2 = k)
+    : k * (e1 / e2) = t1 := by
   rw [← h3, mul_assoc, mul_div_left_comm, h2, ← mul_assoc, h1, mul_comm, one_mul]
 
-theorem cancel_factors_eq_div {α} [Field α] {n e e' : α}
-    (h : n * e = e') (h2 : n ≠ 0) : e = e' / n :=
+theorem cancel_factors_eq_div {α} [Field α] {n e e' : α} (h : n * e = e') (h2 : n ≠ 0)
+    : e = e' / n :=
   eq_div_of_mul_eq h2 <| by rwa [mul_comm] at h
 
-theorem add_subst {α} [Ring α] {n e1 e2 t1 t2 : α} (h1 : n * e1 = t1) (h2 : n * e2 = t2) :
-    n * (e1 + e2) = t1 + t2 := by simp [left_distrib, *]
+theorem add_subst {α} [Ring α] {n e1 e2 t1 t2 : α} (h1 : n * e1 = t1) (h2 : n * e2 = t2)
+    : n * (e1 + e2) = t1 + t2 := by
+  simp [left_distrib, *]
 
-theorem sub_subst {α} [Ring α] {n e1 e2 t1 t2 : α} (h1 : n * e1 = t1) (h2 : n * e2 = t2) :
-    n * (e1 - e2) = t1 - t2 := by simp [left_distrib, *, sub_eq_add_neg]
+theorem sub_subst {α} [Ring α] {n e1 e2 t1 t2 : α} (h1 : n * e1 = t1) (h2 : n * e2 = t2)
+    : n * (e1 - e2) = t1 - t2 := by
+  simp [left_distrib, *, sub_eq_add_neg]
 
 theorem neg_subst {α} [Ring α] {n e t : α} (h1 : n * e = t) : n * -e = -t := by simp [*]
 
-theorem pow_subst {α} [CommRing α] {n e1 t1 k l : α} {e2 : ℕ}
-    (h1 : n * e1 = t1) (h2 : l * n ^ e2 = k) : k * (e1 ^ e2) = l * t1 ^ e2 := by
+theorem pow_subst
+    {α} [CommRing α] {n e1 t1 k l : α} {e2 : ℕ} (h1 : n * e1 = t1) (h2 : l * n ^ e2 = k)
+    : k * (e1 ^ e2) = l * t1 ^ e2 := by
   rw [← h2, ← h1, mul_pow, mul_assoc]
 
-theorem inv_subst {α} [Field α] {n k e : α} (h2 : e ≠ 0) (h3 : n * e = k) :
-    k * (e ⁻¹) = n := by rw [← div_eq_mul_inv, ← h3, mul_div_cancel_right₀ _ h2]
+theorem inv_subst {α} [Field α] {n k e : α} (h2 : e ≠ 0) (h3 : n * e = k) : k * (e⁻¹) = n := by
+  rw [← div_eq_mul_inv, ← h3, mul_div_cancel_right₀ _ h2]
 
-theorem cancel_factors_lt {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem cancel_factors_lt
+    {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b ad bd a' b' gcd : α}
-    (ha : ad * a = a') (hb : bd * b = b') (had : 0 < ad) (hbd : 0 < bd) (hgcd : 0 < gcd) :
-    (a < b) = (1 / gcd * (bd * a') < 1 / gcd * (ad * b')) := by
+    (ha : ad * a = a') (hb : bd * b = b') (had : 0 < ad) (hbd : 0 < bd) (hgcd : 0 < gcd)
+    : (a < b) = (1 / gcd * (bd * a') < 1 / gcd * (ad * b')) := by
   rw [mul_lt_mul_iff_right₀, ← ha, ← hb, ← mul_assoc, ← mul_assoc, mul_comm bd,
     mul_lt_mul_iff_right₀]
   · exact mul_pos had hbd
   · exact one_div_pos.2 hgcd
 
-theorem cancel_factors_le {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem cancel_factors_le
+    {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b ad bd a' b' gcd : α}
-    (ha : ad * a = a') (hb : bd * b = b') (had : 0 < ad) (hbd : 0 < bd) (hgcd : 0 < gcd) :
-    (a ≤ b) = (1 / gcd * (bd * a') ≤ 1 / gcd * (ad * b')) := by
+    (ha : ad * a = a') (hb : bd * b = b') (had : 0 < ad) (hbd : 0 < bd) (hgcd : 0 < gcd)
+    : (a ≤ b) = (1 / gcd * (bd * a') ≤ 1 / gcd * (ad * b')) := by
   rw [mul_le_mul_iff_right₀, ← ha, ← hb, ← mul_assoc, ← mul_assoc, mul_comm bd,
     mul_le_mul_iff_right₀]
   · exact mul_pos had hbd
   · exact one_div_pos.2 hgcd
 
-theorem cancel_factors_eq {α} [Field α] {a b ad bd a' b' gcd : α} (ha : ad * a = a')
-    (hb : bd * b = b') (had : ad ≠ 0) (hbd : bd ≠ 0) (hgcd : gcd ≠ 0) :
-    (a = b) = (1 / gcd * (bd * a') = 1 / gcd * (ad * b')) := by
+theorem cancel_factors_eq
+    {α} [Field α]
+    {a b ad bd a' b' gcd : α}
+    (ha : ad * a = a') (hb : bd * b = b') (had : ad ≠ 0) (hbd : bd ≠ 0) (hgcd : gcd ≠ 0)
+    : (a = b) = (1 / gcd * (bd * a') = 1 / gcd * (ad * b')) := by
   grind
 
-theorem cancel_factors_ne {α} [Field α] {a b ad bd a' b' gcd : α} (ha : ad * a = a')
-    (hb : bd * b = b') (had : ad ≠ 0) (hbd : bd ≠ 0) (hgcd : gcd ≠ 0) :
-    (a ≠ b) = (1 / gcd * (bd * a') ≠ 1 / gcd * (ad * b')) := by
+theorem cancel_factors_ne
+    {α} [Field α]
+    {a b ad bd a' b' gcd : α}
+    (ha : ad * a = a') (hb : bd * b = b') (had : ad ≠ 0) (hbd : bd ≠ 0) (hgcd : gcd ≠ 0)
+    : (a ≠ b) = (1 / gcd * (bd * a') ≠ 1 / gcd * (ad * b')) := by
   rw [eq_iff_iff, not_iff_not, cancel_factors_eq ha hb had hbd hgcd]
 
 /-! ### Computing cancellation factors -/
@@ -123,20 +135,24 @@ partial def findCancelFactor (e : Expr) : ℕ × BinaryTree ℕ :=
       let (v1, t1) := findCancelFactor e1
       let n := v1 * q
       (n, .node n t1 <| .node q .nil .nil)
-    | none => (1, .node 1 .nil .nil)
-  | (``Neg.neg, #[_, _, e]) => findCancelFactor e
+    | none =>
+      (1, .node 1 .nil .nil)
+  | (``Neg.neg, #[_, _, e]) =>
+    findCancelFactor e
   | (``HPow.hPow, #[_, ℕ, _, _, e1, e2]) =>
     match e2.nat? with
     | some k =>
       let (v1, t1) := findCancelFactor e1
       let n := v1 ^ k
       (n, .node n t1 <| .node k .nil .nil)
-    | none => (1, .node 1 .nil .nil)
+    | none =>
+      (1, .node 1 .nil .nil)
   | (``Inv.inv, #[_, _, e]) =>
     match e.nat? with
     | some q => (q, .node q .nil <| .node q .nil .nil)
     | none => (1, .node 1 .nil .nil)
-  | _ => (1, .node 1 .nil .nil)
+  | _ =>
+    (1, .node 1 .nil .nil)
 
 private def synthesizeUsingNormNum (type : Q(Prop)) : MetaM Q($type) := do
   try
@@ -144,7 +160,8 @@ private def synthesizeUsingNormNum (type : Q(Prop)) : MetaM Q($type) := do
   catch e =>
     throwError "Could not prove {type} using norm_num. {e.toMessageData}"
 
-/-- `CancelResult mα e v'` provides a value for `v * e` where the denominators have been cancelled.
+/--
+`CancelResult mα e v'` provides a value for `v * e` where the denominators have been cancelled.
 -/
 structure CancelResult {u : Level} {α : Q(Type u)} (mα : Q(Mul $α)) (e : Q($α)) (v : Q($α)) where
   /-- An expression with denominators cancelled. -/
@@ -160,8 +177,10 @@ by `findCancelFactor`.
 The `v'` argument is a numeral expression corresponding to `v`, which we need in order to state
 the return type accurately.
 -/
-partial def mkProdPrf {u : Level} (α : Q(Type u)) (sα : Q(Field $α)) (v : ℕ) (v' : Q($α))
-    (t : BinaryTree ℕ) (e : Q($α)) : MetaM (CancelResult q(inferInstance) e v') := do
+partial def mkProdPrf
+    {u : Level} (α : Q(Type u)) (sα : Q(Field $α))
+    (v : ℕ) (v' : Q($α)) (t : BinaryTree ℕ) (e : Q($α))
+    : MetaM (CancelResult (q(inferInstance)) e v') := do
   let amwo : Q(AddMonoidWithOne $α) := q(inferInstance)
   trace[CancelDenoms] "mkProdPrf {e} {v}"
   match t, e with
@@ -176,7 +195,7 @@ partial def mkProdPrf {u : Level} (α : Q(Type u)) (sα : Q(Field $α)) (v : ℕ
   | .node _ lhs@(.node ln _ _) rhs, ~q($e1 * $e2) => do
     trace[CancelDenoms] "recursing into mul"
     have ln' := (← mkOfNat α amwo <| mkRawNatLit ln).1
-    have vln' := (← mkOfNat α amwo <| mkRawNatLit (v/ln)).1
+    have vln' := (← mkOfNat α amwo <| mkRawNatLit (v / ln)).1
     let ⟨v1, hv1⟩ ← mkProdPrf α sα ln ln' lhs e1
     let ⟨v2, hv2⟩ ← mkProdPrf α sα (v / ln) vln' rhs e2
     let npf ← synthesizeUsingNormNum q($ln' * $vln' = $v')
@@ -209,17 +228,19 @@ partial def mkProdPrf {u : Level} (α : Q(Type u)) (sα : Q(Field $α)) (v : ℕ
   | _, _ => do
     return ⟨q($v' * $e), q(rfl)⟩
 
-/-- Theorems to get expression into a form that `findCancelFactor` and `mkProdPrf`
-can more easily handle. These are important for dividing by rationals and negative integers. -/
-def deriveThms : List Name :=
-  [``div_div_eq_mul_div, ``div_neg]
+/--
+Theorems to get expression into a form that `findCancelFactor` and `mkProdPrf`
+can more easily handle. These are important for dividing by rationals and negative integers.
+-/
+def deriveThms : List Name := [``div_div_eq_mul_div, ``div_neg]
 
 /-- Helper lemma to chain together a `simp` proof and the result of `mkProdPrf`. -/
 theorem derive_trans {α} [Mul α] {a b c d : α} (h : a = b) (h' : c * b = d) : c * a = d := h ▸ h'
 
 /-- Helper lemma to chain together two `simp` proofs and the result of `mkProdPrf`. -/
-theorem derive_trans₂ {α} [Mul α] {a b c d e : α} (h : a = b) (h' : b = c) (h'' : d * c = e) :
-    d * a = e := h ▸ h' ▸ h''
+theorem derive_trans₂ {α} [Mul α] {a b c d e : α} (h : a = b) (h' : b = c) (h'' : d * c = e)
+    : d * a = e :=
+  h ▸ h' ▸ h''
 
 /--
 Given `e`, a term with rational division, produces a natural number `n` and a proof of `n*e = e'`,
@@ -241,12 +262,17 @@ def derive (e : Expr) : MetaM (ℕ × Expr) := do
     trace[CancelDenoms] "pf : {← inferType r.pf}"
     let pf' ←
       match eSimp.proof?, eSimpNormNum.proof? with
-      | some pfSimp, some pfSimp' => mkAppM ``derive_trans₂ #[pfSimp, pfSimp', r.pf]
-      | some pfSimp, none | none, some pfSimp => mkAppM ``derive_trans #[pfSimp, r.pf]
-      | none, none => pure r.pf
+      | some pfSimp, some pfSimp' =>
+        mkAppM ``derive_trans₂ #[pfSimp, pfSimp', r.pf]
+      | some pfSimp, none
+      | none, some pfSimp =>
+        mkAppM ``derive_trans #[pfSimp, r.pf]
+      | none, none =>
+        pure r.pf
     return (n, pf')
   catch E => do
-    throwError "CancelDenoms.derive failed to normalize {e}.\n{E.toMessageData}"
+    throwError "CancelDenoms.derive failed to normalize {e}.\
+      \n{E.toMessageData}"
 
 /--
 `findCompLemma e` arranges `e` in the form `lhs R rhs`, where `R ∈ {<, ≤, =, ≠}`, and returns
@@ -257,16 +283,23 @@ it is not, the final component of the return value tracks this.
 -/
 def findCompLemma (e : Expr) : MetaM (Option (Expr × Expr × Name × Bool)) := do
   match (← whnfR e).getAppFnArgs with
-  | (``LT.lt, #[_, _, a, b]) => return (a, b, ``cancel_factors_lt, true)
-  | (``LE.le, #[_, _, a, b]) => return (a, b, ``cancel_factors_le, true)
-  | (``Eq, #[_, a, b]) => return (a, b, ``cancel_factors_eq, false)
+  | (``LT.lt, #[_, _, a, b]) =>
+    return (a, b, ``cancel_factors_lt, true)
+  | (``LE.le, #[_, _, a, b]) =>
+    return (a, b, ``cancel_factors_le, true)
+  | (``Eq, #[_, a, b]) =>
+    return (a, b, ``cancel_factors_eq, false)
   -- `a ≠ b` reduces to `¬ a = b` under `whnf`
-  | (``Not, #[p]) => match (← whnfR p).getAppFnArgs with
+  | (``Not, #[p]) =>
+    match (← whnfR p).getAppFnArgs with
     | (``Eq, #[_, a, b]) => return (a, b, ``cancel_factors_ne, false)
     | _ => return none
-  | (``GE.ge, #[_, _, a, b]) => return (b, a, ``cancel_factors_le, true)
-  | (``GT.gt, #[_, _, a, b]) => return (b, a, ``cancel_factors_lt, true)
-  | _ => return none
+  | (``GE.ge, #[_, _, a, b]) =>
+    return (b, a, ``cancel_factors_le, true)
+  | (``GT.gt, #[_, _, a, b]) =>
+    return (b, a, ``cancel_factors_lt, true)
+  | _ =>
+    return none
 
 /--
 `cancelDenominatorsInType h` assumes that `h` is of the form `lhs R rhs`,
@@ -275,7 +308,8 @@ It produces an Expression `h'` of the form `lhs' R rhs'` and a proof that `h = h
 Numeric denominators have been canceled in `lhs'` and `rhs'`.
 -/
 def cancelDenominatorsInType (h : Expr) : MetaM (Expr × Expr) := do
-  let some (lhs, rhs, lem, ord) ← findCompLemma h | throwError m!"cannot kill factors"
+  let some (lhs, rhs, lem, ord) ← findCompLemma h
+    | throwError m!"cannot kill factors"
   let (al, lhs_p) ← derive lhs
   let ⟨u, α, _⟩ ← inferTypeQ' lhs
   let amwo ← synthInstanceQ q(AddMonoidWithOne $α)
@@ -284,7 +318,8 @@ def cancelDenominatorsInType (h : Expr) : MetaM (Expr × Expr) := do
   have al := (← mkOfNat α amwo <| mkRawNatLit al).1
   have ar := (← mkOfNat α amwo <| mkRawNatLit ar).1
   have gcd := (← mkOfNat α amwo <| mkRawNatLit gcd).1
-  let (al_cond, ar_cond, gcd_cond) ← if ord then do
+  let (al_cond, ar_cond, gcd_cond) ←
+    if ord then do
       let _ ← synthInstanceQ q(Field $α)
       let _ ← synthInstanceQ q(LinearOrder $α)
       let _ ← synthInstanceQ q(IsStrictOrderedRing $α)

@@ -63,13 +63,13 @@ lemma natCast_iSup : BddAbove (range f) → ↑(⨆ i, f i) = ⨆ i, (f i : ℕ�
 
 @[deprecated (since := "2026-07-17")] alias coe_iSup := natCast_iSup
 
-@[norm_cast] lemma natCast_iInf [Nonempty ι] : ↑(⨅ i, f i) = ⨅ i, (f i : ℕ∞) :=
+@[norm_cast]
+lemma natCast_iInf [Nonempty ι] : ↑(⨅ i, f i) = ⨅ i, (f i : ℕ∞) :=
   WithTop.coe_iInf (OrderBot.bddBelow _)
 
 @[deprecated (since := "2026-07-17")] alias coe_iInf := natCast_iInf
 
-lemma iInf_eq_top_of_isEmpty [IsEmpty ι] : ⨅ i, (f i : ℕ∞) = ⊤ := by
-  simp
+lemma iInf_eq_top_of_isEmpty [IsEmpty ι] : ⨅ i, (f i : ℕ∞) = ⊤ := by simp
 
 lemma iInf_eq_natCast_iff {f : ι → ℕ∞} {n : ℕ} : ⨅ i, f i = n ↔ (∃ i, f i = n) ∧ ∀ i, n ≤ f i := by
   cases isEmpty_or_nonempty ι
@@ -83,20 +83,19 @@ lemma iInf_toNat : (⨅ i, (f i : ℕ∞)).toNat = ⨅ i, f i := by
   · simp
   · norm_cast
 
-@[simp] lemma iInf_eq_zero {f : ι → ℕ∞} : ⨅ i, f i = 0 ↔ ∃ i, f i = 0 := by
+@[simp]
+lemma iInf_eq_zero {f : ι → ℕ∞} : ⨅ i, f i = 0 ↔ ∃ i, f i = 0 := by
   simpa [Order.lt_one_iff] using iInf_lt_iff (α := ℕ∞) (a := 1)
 
 variable {f : ι → ℕ∞} {s : Set ℕ∞}
 
-lemma sSup_eq_zero : sSup s = 0 ↔ ∀ a ∈ s, a = 0 :=
-  sSup_eq_bot
+lemma sSup_eq_zero : sSup s = 0 ↔ ∀ a ∈ s, a = 0 := sSup_eq_bot
 
 lemma sInf_eq_zero : sInf s = 0 ↔ 0 ∈ s := by
   rw [← Order.lt_one_iff, sInf_lt_iff]
   simp
 
-lemma sSup_eq_zero' : sSup s = 0 ↔ s = ∅ ∨ s = {0} :=
-  sSup_eq_bot'
+lemma sSup_eq_zero' : sSup s = 0 ↔ s = ∅ ∨ s = {0} := sSup_eq_bot'
 
 @[simp] lemma iSup_eq_zero : iSup f = 0 ↔ ∀ i, f i = 0 := iSup_eq_bot
 @[simp] lemma iSup_zero : ⨆ _ : ι, (0 : ℕ∞) = 0 := by simp
@@ -105,10 +104,11 @@ lemma sSup_eq_top_of_infinite (h : s.Infinite) : sSup s = ⊤ := by
   apply (sSup_eq_top ..).mpr
   intro x hx
   cases x with
-  | top => simp at hx
+  | top =>
+    simp at hx
   | coe x =>
     contrapose! h
-    apply Finite.subset <| Finite.Set.finite_image {n : ℕ | n ≤ x} (fun (n : ℕ) => (n : ℕ∞))
+    apply Finite.subset <| Finite.Set.finite_image ({n : ℕ | n ≤ x}) (fun (n : ℕ) => (n : ℕ∞))
     intro y hy
     specialize h y hy
     have hxt : y < ⊤ := lt_of_le_of_lt h hx
@@ -123,15 +123,15 @@ lemma finite_of_sSup_lt_top (h : sSup s < ⊤) : s.Finite := by
 lemma sSup_mem_of_nonempty_of_lt_top [Nonempty s] (hs' : sSup s < ⊤) : sSup s ∈ s :=
   Nonempty.csSup_mem .of_subtype (finite_of_sSup_lt_top hs')
 
-lemma exists_eq_iSup_of_lt_top [Nonempty ι] (h : ⨆ i, f i < ⊤) :
-    ∃ i, f i = ⨆ i, f i :=
+lemma exists_eq_iSup_of_lt_top [Nonempty ι] (h : ⨆ i, f i < ⊤) : ∃ i, f i = ⨆ i, f i :=
   sSup_mem_of_nonempty_of_lt_top h
 
 lemma exists_eq_iInf [Nonempty ι] (f : ι → ℕ∞) : ∃ a, f a = ⨅ x, f x :=
   csInf_mem (range_nonempty fun i ↦ f i)
 
-lemma exists_eq_iSup₂_of_lt_top {ι₁ ι₂ : Type*} {f : ι₁ → ι₂ → ℕ∞} [Nonempty ι₁] [Nonempty ι₂]
-    (h : ⨆ i, ⨆ j, f i j < ⊤) : ∃ i j, f i j = ⨆ i, ⨆ j, f i j := by
+lemma exists_eq_iSup₂_of_lt_top
+    {ι₁ ι₂ : Type*} {f : ι₁ → ι₂ → ℕ∞} [Nonempty ι₁] [Nonempty ι₂] (h : ⨆ i, ⨆ j, f i j < ⊤)
+    : ∃ i j, f i j = ⨆ i, ⨆ j, f i j := by
   rw [iSup_prod'] at h ⊢
   exact Prod.exists'.mp (exists_eq_iSup_of_lt_top h)
 
@@ -148,25 +148,24 @@ lemma mul_iSup (a : ℕ∞) (f : ι → ℕ∞) : a * ⨆ i, f i = ⨆ i, a * f 
   obtain hι | hι := isEmpty_or_nonempty ι
   · simp
   cases d with
-  | top => simp
+  | top =>
+    simp
   | coe d =>
-  have hlt : ⨆ i, f i < ⊤ := by
-    rw [lt_top_iff_ne_top]
-    intro htop
-    obtain ⟨i, hi : d < f i⟩ := (iSup_eq_top ..).1 htop d (by simp)
-    exact (((h i).trans_lt hi).trans_le (ENat.self_le_mul_left _ hne)).false
-  obtain ⟨j, hj⟩ := exists_eq_iSup_of_lt_top hlt
-  rw [← hj]
-  apply h
+    have hlt : ⨆ i, f i < ⊤ := by
+      rw [lt_top_iff_ne_top]
+      intro htop
+      obtain ⟨i, hi : d < f i⟩ := (iSup_eq_top ..).1 htop d (by simp)
+      exact (((h i).trans_lt hi).trans_le (ENat.self_le_mul_left _ hne)).false
+    obtain ⟨j, hj⟩ := exists_eq_iSup_of_lt_top hlt
+    rw [← hj]
+    apply h
 
 lemma iSup_mul (f : ι → ℕ∞) (a : ℕ∞) : (⨆ i, f i) * a = ⨆ i, f i * a := by
   simp_rw [mul_comm, ENat.mul_iSup]
 
-lemma mul_sSup : a * sSup s = ⨆ b ∈ s, a * b := by
-  simp_rw [sSup_eq_iSup, mul_iSup]
+lemma mul_sSup : a * sSup s = ⨆ b ∈ s, a * b := by simp_rw [sSup_eq_iSup, mul_iSup]
 
-lemma sSup_mul : sSup s * a = ⨆ b ∈ s, b * a := by
-  simp_rw [mul_comm, mul_sSup]
+lemma sSup_mul : sSup s * a = ⨆ b ∈ s, b * a := by simp_rw [mul_comm, mul_sSup]
 
 lemma mul_iInf [Nonempty ι] : a * ⨅ i, f i = ⨅ i, a * f i := by
   refine (le_iInf fun x ↦ by grw [iInf_le]).antisymm ?_
@@ -174,8 +173,7 @@ lemma mul_iInf [Nonempty ι] : a * ⨅ i, f i = ⨅ i, a * f i := by
   rw [← hb, iInf_le_iff]
   exact fun x h ↦ h _
 
-lemma iInf_mul [Nonempty ι] : (⨅ i, f i) * a = ⨅ i, f i * a := by
-  simp_rw [mul_comm, mul_iInf]
+lemma iInf_mul [Nonempty ι] : (⨅ i, f i) * a = ⨅ i, f i * a := by simp_rw [mul_comm, mul_iInf]
 
 /-- A version of `mul_iInf` with a slightly more general hypothesis. -/
 lemma mul_iInf' (h₀ : a = 0 → Nonempty ι) : a * ⨅ i, f i = ⨅ i, a * f i := by
@@ -188,15 +186,17 @@ lemma mul_iInf' (h₀ : a = 0 → Nonempty ι) : a * ⨅ i, f i = ⨅ i, a * f i
 lemma iInf_mul' (h₀ : a = 0 → Nonempty ι) : (⨅ i, f i) * a = ⨅ i, f i * a := by
   simp_rw [mul_comm, mul_iInf' h₀]
 
-/-- If `a ≠ 0`, then right multiplication by `a` maps infimum to infimum.
-See also `ENat.iInf_mul` that assumes `[Nonempty ι]` but does not require `a ≠ 0`. -/
-lemma mul_iInf_of_ne (ha₀ : a ≠ 0) : a * ⨅ i, f i = ⨅ i, a * f i :=
-  mul_iInf' <| by simp [ha₀]
+/--
+If `a ≠ 0`, then right multiplication by `a` maps infimum to infimum.
+See also `ENat.iInf_mul` that assumes `[Nonempty ι]` but does not require `a ≠ 0`.
+-/
+lemma mul_iInf_of_ne (ha₀ : a ≠ 0) : a * ⨅ i, f i = ⨅ i, a * f i := mul_iInf' <| by simp [ha₀]
 
-/-- If `a ≠ 0`, then right multiplication by `a` maps infimum to infimum.
-See also `ENat.iInf_mul` that assumes `[Nonempty ι]` but does not require `a ≠ 0`. -/
-lemma iInf_mul_of_ne (ha₀ : a ≠ 0) : (⨅ i, f i) * a = ⨅ i, f i * a :=
-  iInf_mul' <| by simp [ha₀]
+/--
+If `a ≠ 0`, then right multiplication by `a` maps infimum to infimum.
+See also `ENat.iInf_mul` that assumes `[Nonempty ι]` but does not require `a ≠ 0`.
+-/
+lemma iInf_mul_of_ne (ha₀ : a ≠ 0) : (⨅ i, f i) * a = ⨅ i, f i * a := iInf_mul' <| by simp [ha₀]
 
 lemma add_iSup [Nonempty ι] (f : ι → ℕ∞) : a + ⨆ i, f i = ⨆ i, a + f i := by
   obtain rfl | ha := eq_or_ne a ⊤
@@ -208,38 +208,43 @@ lemma add_iSup [Nonempty ι] (f : ι → ℕ∞) : a + ⨆ i, f i = ⨆ i, a + f
 lemma iSup_add [Nonempty ι] (f : ι → ℕ∞) : (⨆ i, f i) + a = ⨆ i, f i + a := by
   simp [add_comm, add_iSup]
 
-lemma add_biSup' {p : ι → Prop} (h : ∃ i, p i) (f : ι → ℕ∞) :
-    a + ⨆ i, ⨆ _ : p i, f i = ⨆ i, ⨆ _ : p i, a + f i := by
+lemma add_biSup' {p : ι → Prop} (h : ∃ i, p i) (f : ι → ℕ∞)
+    : a + ⨆ i, ⨆ _ : p i, f i = ⨆ i, ⨆ _ : p i, a + f i := by
   have : Nonempty {i // p i} := nonempty_subtype.2 h
   simp only [iSup_subtype', add_iSup]
 
-lemma biSup_add' {p : ι → Prop} (h : ∃ i, p i) (f : ι → ℕ∞) :
-    (⨆ i, ⨆ _ : p i, f i) + a = ⨆ i, ⨆ _ : p i, f i + a := by simp only [add_comm, add_biSup' h]
+lemma biSup_add' {p : ι → Prop} (h : ∃ i, p i) (f : ι → ℕ∞)
+    : (⨆ i, ⨆ _ : p i, f i) + a = ⨆ i, ⨆ _ : p i, f i + a := by
+  simp only [add_comm, add_biSup' h]
 
-lemma add_biSup {ι : Type*} {s : Set ι} (hs : s.Nonempty) (f : ι → ℕ∞) :
-    a + ⨆ i ∈ s, f i = ⨆ i ∈ s, a + f i := add_biSup' hs _
+lemma add_biSup {ι : Type*} {s : Set ι} (hs : s.Nonempty) (f : ι → ℕ∞)
+    : a + ⨆ i ∈ s, f i = ⨆ i ∈ s, a + f i :=
+  add_biSup' hs _
 
-lemma biSup_add {ι : Type*} {s : Set ι} (hs : s.Nonempty) (f : ι → ℕ∞) :
-    (⨆ i ∈ s, f i) + a = ⨆ i ∈ s, f i + a := biSup_add' hs _
+lemma biSup_add {ι : Type*} {s : Set ι} (hs : s.Nonempty) (f : ι → ℕ∞)
+    : (⨆ i ∈ s, f i) + a = ⨆ i ∈ s, f i + a :=
+  biSup_add' hs _
 
-lemma add_sSup (hs : s.Nonempty) : a + sSup s = ⨆ b ∈ s, a + b := by
-  rw [sSup_eq_iSup, add_biSup hs]
+lemma add_sSup (hs : s.Nonempty) : a + sSup s = ⨆ b ∈ s, a + b := by rw [sSup_eq_iSup, add_biSup hs]
 
-lemma sSup_add (hs : s.Nonempty) : sSup s + a = ⨆ b ∈ s, b + a := by
-  rw [sSup_eq_iSup, biSup_add hs]
+lemma sSup_add (hs : s.Nonempty) : sSup s + a = ⨆ b ∈ s, b + a := by rw [sSup_eq_iSup, biSup_add hs]
 
-lemma iSup_add_iSup_le [Nonempty ι] [Nonempty κ] {g : κ → ℕ∞} (h : ∀ i j, f i + g j ≤ a) :
-    iSup f + iSup g ≤ a := by simp_rw [iSup_add, add_iSup]; exact iSup₂_le h
+lemma iSup_add_iSup_le [Nonempty ι] [Nonempty κ] {g : κ → ℕ∞} (h : ∀ i j, f i + g j ≤ a)
+    : iSup f + iSup g ≤ a := by
+  simp_rw [iSup_add, add_iSup]; exact iSup₂_le h
 
-lemma biSup_add_biSup_le' {p : ι → Prop} {q : κ → Prop} (hp : ∃ i, p i) (hq : ∃ j, q j)
-    {g : κ → ℕ∞} (h : ∀ i, p i → ∀ j, q j → f i + g j ≤ a) :
-    (⨆ i, ⨆ _ : p i, f i) + ⨆ j, ⨆ _ : q j, g j ≤ a := by
+lemma biSup_add_biSup_le'
+    {p : ι → Prop} {q : κ → Prop} (hp : ∃ i, p i) (hq : ∃ j, q j)
+    {g : κ → ℕ∞} (h : ∀ i, p i → ∀ j, q j → f i + g j ≤ a)
+    : (⨆ i, ⨆ _ : p i, f i) + ⨆ j, ⨆ _ : q j, g j ≤ a := by
   simp_rw [biSup_add' hp, add_biSup' hq]
   exact iSup₂_le fun i hi => iSup₂_le (h i hi)
 
-lemma biSup_add_biSup_le {ι κ : Type*} {s : Set ι} {t : Set κ} (hs : s.Nonempty) (ht : t.Nonempty)
-    {f : ι → ℕ∞} {g : κ → ℕ∞} {a : ℕ∞} (h : ∀ i ∈ s, ∀ j ∈ t, f i + g j ≤ a) :
-    (⨆ i ∈ s, f i) + ⨆ j ∈ t, g j ≤ a := biSup_add_biSup_le' hs ht h
+lemma biSup_add_biSup_le
+    {ι κ : Type*} {s : Set ι} {t : Set κ} (hs : s.Nonempty) (ht : t.Nonempty)
+    {f : ι → ℕ∞} {g : κ → ℕ∞} {a : ℕ∞} (h : ∀ i ∈ s, ∀ j ∈ t, f i + g j ≤ a)
+    : (⨆ i ∈ s, f i) + ⨆ j ∈ t, g j ≤ a :=
+  biSup_add_biSup_le' hs ht h
 
 lemma iSup_add_iSup (h : ∀ i j, ∃ k, f i + g j ≤ f k + g k) : iSup f + iSup g = ⨆ i, f i + g i := by
   cases isEmpty_or_nonempty ι
@@ -249,16 +254,17 @@ lemma iSup_add_iSup (h : ∀ i j, ∃ k, f i + g j ≤ f k + g k) : iSup f + iSu
     rcases h i j with ⟨k, hk⟩
     exact le_iSup_of_le k hk
 
-lemma iSup_add_iSup_of_monotone {ι : Type*} [Preorder ι] [IsDirectedOrder ι] {f g : ι → ℕ∞}
-    (hf : Monotone f) (hg : Monotone g) : iSup f + iSup g = ⨆ a, f a + g a :=
+lemma iSup_add_iSup_of_monotone
+    {ι : Type*} [Preorder ι] [IsDirectedOrder ι] {f g : ι → ℕ∞} (hf : Monotone f) (hg : Monotone g)
+    : iSup f + iSup g = ⨆ a, f a + g a :=
   iSup_add_iSup fun i j ↦ (exists_ge_ge i j).imp fun _k ⟨hi, hj⟩ ↦ by gcongr <;> apply_rules
 
-lemma smul_iSup {R} [SMul R ℕ∞] [IsScalarTower R ℕ∞ ℕ∞] (f : ι → ℕ∞) (c : R) :
-    c • ⨆ i, f i = ⨆ i, c • f i := by
+lemma smul_iSup {R} [SMul R ℕ∞] [IsScalarTower R ℕ∞ ℕ∞] (f : ι → ℕ∞) (c : R)
+    : c • ⨆ i, f i = ⨆ i, c • f i := by
   simpa using mul_iSup (c • 1) f
 
-lemma smul_sSup {R} [SMul R ℕ∞] [IsScalarTower R ℕ∞ ℕ∞] (s : Set ℕ∞) (c : R) :
-    c • sSup s = ⨆ a ∈ s, c • a := by
+lemma smul_sSup {R} [SMul R ℕ∞] [IsScalarTower R ℕ∞ ℕ∞] (s : Set ℕ∞) (c : R)
+    : c • sSup s = ⨆ a ∈ s, c • a := by
   simp_rw [sSup_eq_iSup, smul_iSup]
 
 lemma sub_iSup [Nonempty ι] (ha : a ≠ ⊤) : a - ⨆ i, f i = ⨅ i, a - f i := by
@@ -268,8 +274,8 @@ lemma sub_iSup [Nonempty ι] (ha : a ≠ ⊤) : a - ⨆ i, f i = ⨅ i, a - f i 
   simp_rw [not_exists, not_lt] at h
   refine le_antisymm (le_iInf fun i ↦ tsub_le_tsub_left (le_iSup ..) _) <|
     ENat.le_sub_of_add_le_left (ne_top_of_le_ne_top ha <| iSup_le h) <|
-    add_le_of_le_tsub_right_of_le (iInf_le_of_le (Classical.arbitrary _) tsub_le_self) <|
-    iSup_le fun i ↦ ?_
+      add_le_of_le_tsub_right_of_le (iInf_le_of_le (Classical.arbitrary _) tsub_le_self) <|
+        iSup_le fun i ↦ ?_
   rw [← ENat.sub_sub_cancel ha (h _)]
   exact tsub_le_tsub_left (iInf_le (a - f ·) i) _
 
@@ -284,42 +290,41 @@ theorem sub_iInf : (a - ⨅ i, f i) = ⨆ i, a - f i := by
 
 theorem sInf_add {s : Set ℕ∞} : sInf s + a = ⨅ b ∈ s, b + a := by simp [sInf_eq_iInf, iInf_add]
 
-theorem add_iInf {a : ℕ∞} : a + iInf f = ⨅ b, a + f b := by
-  rw [add_comm, iInf_add]; simp [add_comm]
+theorem add_iInf {a : ℕ∞} : a + iInf f = ⨅ b, a + f b := by rw [add_comm, iInf_add]; simp [add_comm]
 
 theorem iInf_add_iInf (h : ∀ i j, ∃ k, f k + g k ≤ f i + g j) : iInf f + iInf g = ⨅ a, f a + g a :=
   suffices ⨅ a, f a + g a ≤ iInf f + iInf g from
     le_antisymm (le_iInf fun _ => add_le_add (iInf_le _ _) (iInf_le _ _)) this
   calc
-    ⨅ a, f a + g a ≤ ⨅ (a) (a'), f a + g a' :=
-      le_iInf₂ fun a a' => let ⟨k, h⟩ := h a a'; iInf_le_of_le k h
+    ⨅ a, f a + g a
+      ≤ ⨅ (a) (a'), f a + g a' := le_iInf₂ fun a a' => let ⟨k, h⟩ := h a a'; iInf_le_of_le k h
     _ = iInf f + iInf g := by simp_rw [iInf_add, add_iInf]
 
-lemma iInf_add_iInf_of_monotone {ι : Type*} [Preorder ι] [IsCodirectedOrder ι] {f g : ι → ℕ∞}
-    (hf : Monotone f) (hg : Monotone g) : iInf f + iInf g = ⨅ a, f a + g a :=
+lemma iInf_add_iInf_of_monotone
+    {ι : Type*} [Preorder ι] [IsCodirectedOrder ι]
+    {f g : ι → ℕ∞} (hf : Monotone f) (hg : Monotone g)
+    : iInf f + iInf g = ⨅ a, f a + g a :=
   iInf_add_iInf fun i j ↦ (exists_le_le i j).imp fun _k ⟨hi, hj⟩ ↦ by gcongr <;> apply_rules
 
-lemma add_iInf₂ {κ : ι → Sort*} (f : (i : ι) → κ i → ℕ∞) :
-    a + ⨅ (i) (j), f i j = ⨅ (i) (j), a + f i j := by
+lemma add_iInf₂ {κ : ι → Sort*} (f : (i : ι) → κ i → ℕ∞)
+    : a + ⨅ (i) (j), f i j = ⨅ (i) (j), a + f i j := by
   simp [add_iInf]
 
-lemma iInf₂_add {κ : ι → Sort*} (f : (i : ι) → κ i → ℕ∞) :
-    (⨅ (i) (j), f i j) + a = ⨅ (i) (j), f i j + a := by
+lemma iInf₂_add {κ : ι → Sort*} (f : (i : ι) → κ i → ℕ∞)
+    : (⨅ (i) (j), f i j) + a = ⨅ (i) (j), f i j + a := by
   simp only [add_comm, add_iInf₂]
 
-lemma add_sInf {s : Set ℕ∞} : a + sInf s = ⨅ b ∈ s, a + b := by
-  rw [sInf_eq_iInf, add_iInf₂]
+lemma add_sInf {s : Set ℕ∞} : a + sInf s = ⨅ b ∈ s, a + b := by rw [sInf_eq_iInf, add_iInf₂]
 
 variable {κ : Sort*}
 
-lemma le_iInf_add_iInf {g : κ → ℕ∞} (h : ∀ i j, a ≤ f i + g j) :
-    a ≤ iInf f + iInf g := by
+lemma le_iInf_add_iInf {g : κ → ℕ∞} (h : ∀ i j, a ≤ f i + g j) : a ≤ iInf f + iInf g := by
   simp_rw [iInf_add, add_iInf]; exact le_iInf₂ h
 
-lemma le_iInf₂_add_iInf₂ {q₁ : ι → Sort*} {q₂ : κ → Sort*}
-    {f : (i : ι) → q₁ i → ℕ∞} {g : (k : κ) → q₂ k → ℕ∞}
-    (h : ∀ i pi k qk, a ≤ f i pi + g k qk) :
-    a ≤ (⨅ (i) (qi), f i qi) + ⨅ (k) (qk), g k qk := by
+lemma le_iInf₂_add_iInf₂
+    {q₁ : ι → Sort*} {q₂ : κ → Sort*} {f : (i : ι) → q₁ i → ℕ∞} {g : (k : κ) → q₂ k → ℕ∞}
+    (h : ∀ i pi k qk, a ≤ f i pi + g k qk)
+    : a ≤ (⨅ (i) (qi), f i qi) + ⨅ (k) (qk), g k qk := by
   simp_rw [iInf₂_add, add_iInf₂]
   exact le_iInf₂ fun i hi => le_iInf₂ (h i hi)
 

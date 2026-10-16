@@ -6,7 +6,6 @@ Authors: Anne Baanen, Yury Kudryashov, Joseph Myers, Heather Macbeth, Kim Morris
 module
 
 public import Mathlib.Algebra.NoZeroSMulDivisors.Defs
-
 import Mathlib.Algebra.GroupWithZero.Action.Units
 
 /-!

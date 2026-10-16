@@ -1,6 +1,4 @@
-/-
-Tests for norm_cast
--/
+/- Tests for norm_cast -/
 
 import Mathlib.Basic.Complex.Basic
 import Mathlib.Basic.ENNReal.Inv
@@ -55,7 +53,7 @@ example : (((((an : ℚ) : ℝ) * bq) + (cq : ℝ) ^ dn) : ℂ) = (an : ℂ) * (
 example : ((an : ℤ) : ℝ) < bq ∧ (cr : ℂ) ^ 2 = dz ↔ (an : ℚ) < bq ∧ ((cr ^ 2) : ℂ) = dz := by
   norm_cast
 
---testing numerals
+-- testing numerals
 example : ((42 : ℕ) : ℤ) = 42 := by norm_cast
 example : ((42 : ℕ) : ℂ) = 42 := by norm_cast
 example : ((42 : ℤ) : ℚ) = 42 := by norm_cast
@@ -81,8 +79,7 @@ namespace hidden
 
 def WithZero (α) := Option α
 
-@[coe]
-def WithZero.of (a : α) : WithZero α := some a
+@[coe] def WithZero.of (a : α) : WithZero α := some a
 
 instance : CoeTail α (WithZero α) := ⟨WithZero.of⟩
 
@@ -97,18 +94,17 @@ instance [Mul α] : MulZeroClass (WithZero α) where
 
 @[norm_cast] lemma coe_one [One α] : ((1 : α) : WithZero α) = 1 := rfl
 
-@[norm_cast] lemma coe_inj {a b : α} : (a : WithZero α) = b ↔ a = b :=
-  Option.some_inj
+@[norm_cast] lemma coe_inj {a b : α} : (a : WithZero α) = b ↔ a = b := Option.some_inj
 
-@[norm_cast] lemma mul_coe [Mul α] (a b : α) :
-  ((a * b : α) : WithZero α) = (a : WithZero α) * b := rfl
+@[norm_cast]
+lemma mul_coe [Mul α] (a b : α) : ((a * b : α) : WithZero α) = (a : WithZero α) * b := rfl
 
 example [Mul α] [One α] (x y : α) (h : (x : WithZero α) * y = 1) : x * y = 1 := mod_cast h
 
 end hidden
 
-example (k : ℕ) {x y : ℕ} :
-    (x * x + y * y : ℤ) - ↑((x * y + 1) * k) = ↑y * ↑y - ↑k * ↑x * ↑y + (↑x * ↑x - ↑k) := by
+example (k : ℕ) {x y : ℕ}
+    : (x * x + y * y : ℤ) - ↑((x * y + 1) * k) = ↑y * ↑y - ↑k * ↑x * ↑y + (↑x * ↑x - ↑k) := by
   push_cast
   ring
 
@@ -117,8 +113,7 @@ example (k : ℕ) {x y : ℕ} (h : ((x + y + k : ℕ) : ℤ) = 0) : x + y + k = 
   guard_hyp h : (x : ℤ) + y + k = 0
   assumption_mod_cast
 
-example (a b : ℕ) (h2 : ((a + b + 0 : ℕ) : ℤ) = 10) :
-    ((a + b : ℕ) : ℤ) = 10 := by
+example (a b : ℕ) (h2 : ((a + b + 0 : ℕ) : ℤ) = 10) : ((a + b : ℕ) : ℤ) = 10 := by
   push_cast
   push_cast [Int.add_zero] at h2
   exact h2
@@ -134,8 +129,7 @@ lemma half_lt_self_bis {a : ℝ≥0∞} (hz : a ≠ 0) (ht : a ≠ ⊤) : a / 2 
   norm_cast at hz
   exact NNReal.half_lt_self hz
 
-example (x : NNReal) : (x : ENNReal) / 3 = ↑(x / 3) := by
-  norm_cast
+example (x : NNReal) : (x : ENNReal) / 3 = ↑(x / 3) := by norm_cast
 
 end ENNReal
 

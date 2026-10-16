@@ -52,17 +52,18 @@ A bilinear form on a Lie module `M` of a Lie algebra `L` is *invariant* if
 for all `x : L` and `y z : M` the condition `Φ ⁅x, y⁆ z = -Φ y ⁅x, z⁆` holds.
 -/
 def _root_.LinearMap.BilinForm.lieInvariant : Prop :=
-  ∀ (x : L) (y z : M), Φ ⁅x, y⁆ z = -Φ y ⁅x, z⁆
+  ∀ (x : L) (y z : M), Φ (⁅x, y⁆) z = - Φ y ⁅x, z⁆
 
-lemma _root_.LinearMap.BilinForm.lieInvariant_iff [LieAlgebra R L] [LieModule R L M] :
-    Φ.lieInvariant L ↔ Φ ∈ LieModule.maxTrivSubmodule R L (LinearMap.BilinForm R M) := by
+lemma _root_.LinearMap.BilinForm.lieInvariant_iff [LieAlgebra R L] [LieModule R L M]
+    : Φ.lieInvariant L ↔ Φ ∈ LieModule.maxTrivSubmodule R L (LinearMap.BilinForm R M) := by
   refine ⟨fun h x ↦ ?_, fun h x y z ↦ ?_⟩
   · ext y z
     rw [LieHom.lie_apply, LinearMap.sub_apply, Module.Dual.lie_apply, LinearMap.zero_apply,
       LinearMap.zero_apply, h, sub_self]
   · replace h := congr($(h x) y z)
-    simp only [LieHom.lie_apply, LinearMap.sub_apply, Module.Dual.lie_apply,
-      LinearMap.zero_apply, sub_eq_zero] at h
+    simp only [LieHom.lie_apply, LinearMap.sub_apply, Module.Dual.lie_apply, LinearMap.zero_apply,
+        sub_eq_zero]
+      at h
     simp [← h]
 
 /--
@@ -74,9 +75,9 @@ def orthogonal (hΦ_inv : Φ.lieInvariant L) (N : LieSubmodule R L M) : LieSubmo
   __ := Φ.orthogonal N
   lie_mem {x y} := by
     suffices (∀ n ∈ N, Φ n y = 0) → ∀ n ∈ N, Φ n ⁅x, y⁆ = 0 by
-      simpa only [
-        AddSubsemigroup.mem_carrier, AddSubmonoid.mem_toSubsemigroup, Submodule.mem_toAddSubmonoid,
-        LinearMap.BilinForm.mem_orthogonal_iff, LieSubmodule.mem_toSubmodule]
+      simpa only [AddSubsemigroup.mem_carrier, AddSubmonoid.mem_toSubsemigroup,
+        Submodule.mem_toAddSubmonoid, LinearMap.BilinForm.mem_orthogonal_iff,
+        LieSubmodule.mem_toSubmodule]
     intro H a ha
     rw [← neg_eq_zero, ← hΦ_inv]
     exact H _ <| N.lie_mem ha
@@ -84,11 +85,12 @@ def orthogonal (hΦ_inv : Φ.lieInvariant L) (N : LieSubmodule R L M) : LieSubmo
 variable (hΦ_inv : Φ.lieInvariant L)
 
 @[simp]
-lemma orthogonal_toSubmodule (N : LieSubmodule R L M) :
-    (orthogonal Φ hΦ_inv N).toSubmodule = Φ.orthogonal N.toSubmodule := rfl
+lemma orthogonal_toSubmodule (N : LieSubmodule R L M)
+    : (orthogonal Φ hΦ_inv N).toSubmodule = Φ.orthogonal N.toSubmodule :=
+  rfl
 
-lemma mem_orthogonal (N : LieSubmodule R L M) (y : M) :
-    y ∈ orthogonal Φ hΦ_inv N ↔ ∀ x ∈ N, Φ x y = 0 := by
+lemma mem_orthogonal (N : LieSubmodule R L M) (y : M)
+    : y ∈ orthogonal Φ hΦ_inv N ↔ ∀ x ∈ N, Φ x y = 0 := by
   simp [orthogonal, LinearMap.BilinForm.mem_orthogonal_iff]
 
 variable [LieAlgebra R L]
@@ -96,15 +98,15 @@ variable [LieAlgebra R L]
 lemma orthogonal_disjoint
     (Φ : LinearMap.BilinForm R L) (hΦ_nondeg : Φ.Nondegenerate) (hΦ_inv : Φ.lieInvariant L)
     -- TODO: replace the following assumption by a typeclass assumption `[HasNonAbelianAtoms]`
-    (hL : ∀ I : LieIdeal R L, IsAtom I → ¬IsLieAbelian I)
-    (I : LieIdeal R L) (hI : IsAtom I) :
-    Disjoint I (orthogonal Φ hΦ_inv I) := by
+    (hL : ∀ I : LieIdeal R L, IsAtom I → ¬ IsLieAbelian I)
+    (I : LieIdeal R L) (hI : IsAtom I)
+    : Disjoint I (orthogonal Φ hΦ_inv I) := by
   rw [disjoint_iff, ← hI.lt_iff, lt_iff_le_and_ne]
-  suffices ¬I ≤ orthogonal Φ hΦ_inv I by simpa
+  suffices ¬ I ≤ orthogonal Φ hΦ_inv I by simpa
   intro contra
   apply hI.1
   rw [eq_bot_iff, ← lie_eq_self_of_isAtom_of_nonabelian I hI (hL I hI),
-      LieSubmodule.lieIdeal_oper_eq_span, LieSubmodule.lieSpan_le]
+    LieSubmodule.lieIdeal_oper_eq_span, LieSubmodule.lieSpan_le]
   rintro _ ⟨x, y, rfl⟩
   simp only [LieSubmodule.bot_coe, Set.mem_singleton_iff]
   apply hΦ_nondeg.1
@@ -124,31 +126,30 @@ variable [Module.Finite K L]
 variable (Φ : LinearMap.BilinForm K L) (hΦ_nondeg : Φ.Nondegenerate)
 variable (hΦ_inv : Φ.lieInvariant L) (hΦ_refl : Φ.IsRefl)
 -- TODO: replace the following assumption by a typeclass assumption `[HasNonAbelianAtoms]`
-variable (hL : ∀ I : LieIdeal K L, IsAtom I → ¬IsLieAbelian I)
+variable (hL : ∀ I : LieIdeal K L, IsAtom I → ¬ IsLieAbelian I)
 include hΦ_nondeg hΦ_refl hL
 
 open Module Submodule in
-lemma orthogonal_isCompl_toSubmodule (I : LieIdeal K L) (hI : IsAtom I) :
-    IsCompl I.toSubmodule (orthogonal Φ hΦ_inv I).toSubmodule := by
+lemma orthogonal_isCompl_toSubmodule (I : LieIdeal K L) (hI : IsAtom I)
+    : IsCompl I.toSubmodule (orthogonal Φ hΦ_inv I).toSubmodule := by
   rw [orthogonal_toSubmodule, LinearMap.BilinForm.isCompl_orthogonal_iff_disjoint hΦ_refl,
-      ← orthogonal_toSubmodule _ hΦ_inv, LieSubmodule.disjoint_toSubmodule]
+    ← orthogonal_toSubmodule _ hΦ_inv, LieSubmodule.disjoint_toSubmodule]
   exact orthogonal_disjoint Φ hΦ_nondeg hΦ_inv hL I hI
 
 open Module Submodule in
-lemma orthogonal_isCompl (I : LieIdeal K L) (hI : IsAtom I) :
-    IsCompl I (orthogonal Φ hΦ_inv I) := by
+lemma orthogonal_isCompl (I : LieIdeal K L) (hI : IsAtom I)
+    : IsCompl I (orthogonal Φ hΦ_inv I) := by
   rw [← LieSubmodule.isCompl_toSubmodule]
   exact orthogonal_isCompl_toSubmodule Φ hΦ_nondeg hΦ_inv hΦ_refl hL I hI
 
 include hΦ_inv
 
-lemma restrict_nondegenerate (I : LieIdeal K L) (hI : IsAtom I) :
-    (Φ.restrict I).Nondegenerate := by
+lemma restrict_nondegenerate (I : LieIdeal K L) (hI : IsAtom I) : (Φ.restrict I).Nondegenerate := by
   rw [LinearMap.BilinForm.restrict_nondegenerate_iff_isCompl_orthogonal hΦ_refl]
   exact orthogonal_isCompl_toSubmodule Φ hΦ_nondeg hΦ_inv hΦ_refl hL I hI
 
-lemma restrict_orthogonal_nondegenerate (I : LieIdeal K L) (hI : IsAtom I) :
-    (Φ.restrict (orthogonal Φ hΦ_inv I)).Nondegenerate := by
+lemma restrict_orthogonal_nondegenerate (I : LieIdeal K L) (hI : IsAtom I)
+    : (Φ.restrict (orthogonal Φ hΦ_inv I)).Nondegenerate := by
   rw [LinearMap.BilinForm.restrict_nondegenerate_iff_isCompl_orthogonal hΦ_refl]
   simp only [LieIdeal.toLieSubalgebra_toSubmodule, orthogonal_toSubmodule,
     LinearMap.BilinForm.orthogonal_orthogonal hΦ_nondeg hΦ_refl]
@@ -178,7 +179,7 @@ lemma atomistic : ∀ I : LieIdeal K L, sSup {J : LieIdeal K L | IsAtom J ∧ J 
 termination_by I => finrank K I
 decreasing_by
   apply finrank_lt_finrank_of_lt
-  suffices ¬I ≤ J' by simpa
+  suffices ¬ I ≤ J' by simpa
   intro hIJ'
   apply hJ.1
   rw [eq_bot_iff]

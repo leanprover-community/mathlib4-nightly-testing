@@ -41,15 +41,11 @@ def Char.manuallyExcluded (c : Char) : Bool :=
   ]
 
 /-- We deliberately exclude some characters. -/
-def Char.allowedNonAscii (c : Char) : Bool :=
-    !c.isAscii && !c.manuallyExcluded
+def Char.allowedNonAscii (c : Char) : Bool := !c.isAscii && !c.manuallyExcluded
 
 def reprCharsChunked (xs : List Char) (chunkSize : Nat := 16) : String :=
   let elems := xs.map (fun c => "'" ++ String.singleton c ++ "'")
-  let lines :=
-    elems
-      |>.toChunks chunkSize
-      |>.map (fun chunk => String.intercalate ", " chunk)
+  let lines := elems |>.toChunks chunkSize |>.map (fun chunk => String.intercalate ", " chunk)
   "[" ++ String.intercalate ",\n" lines ++ "]"
 
 def main : IO Unit := do

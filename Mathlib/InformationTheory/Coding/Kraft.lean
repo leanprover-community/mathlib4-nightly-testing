@@ -8,7 +8,6 @@ module
 public import Mathlib.InformationTheory.Coding.PrefixFree
 public import Mathlib.Topology.Algebra.InfiniteSum.Defs
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-
 import Mathlib.InformationTheory.Coding.KraftMcMillan
 import Mathlib.Topology.Algebra.InfiniteSum.Real
 
@@ -41,36 +40,35 @@ variable {α : Type*} [Fintype α] [Nonempty α]
 
 /-- **Kraft's inequality.** The Kraft sum of a finite prefix-free code is at most one. -/
 theorem IsPrefixFree.finsetSum_one_div_card_pow_length_le_one
-    {S : Finset (List α)} (hS : IsPrefixFree (S : Set (List α))) :
-    ∑ w ∈ S, (1 / (Fintype.card α : ℝ)) ^ w.length ≤ 1 := by
+    {S : Finset (List α)} (hS : IsPrefixFree (S : Set (List α)))
+    : ∑ w ∈ S, (1 / (Fintype.card α : ℝ)) ^ w.length ≤ 1 := by
   by_cases hε : [] ∈ S
-  · have hS' : S = {[]} := by
-      exact_mod_cast hS.eq_singleton_empty_of_empty_mem hε
+  · have hS' : S = {[]} := by exact_mod_cast hS.eq_singleton_empty_of_empty_mem hε
     simp [hS']
   · exact (hS.isUniquelyDecodable hε).finsetSum_one_div_card_pow_length_le_one
 
 private lemma IsPrefixFree.finsetSum_one_div_card_pow_length_of_subtype
-    {S : Set (List α)} (hS : IsPrefixFree S) (F : Finset S) :
-    ∑ w ∈ F, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length ≤ 1 := by
+    {S : Set (List α)} (hS : IsPrefixFree S) (F : Finset S)
+    : ∑ w ∈ F, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length ≤ 1 := by
   classical
   let T : Finset (List α) := F.image Subtype.val
   have hTS : (T : Set (List α)) ⊆ S := by grind
   calc
-    ∑ w ∈ F, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length =
-        ∑ w ∈ T, (1 / (Fintype.card α : ℝ)) ^ w.length := by simp [T]
+    ∑ w ∈ F, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length
+      = ∑ w ∈ T, (1 / (Fintype.card α : ℝ)) ^ w.length := by simp [T]
     _ ≤ 1 := (hS.anti hTS).finsetSum_one_div_card_pow_length_le_one
 
 /-- The Kraft sum of an arbitrary prefix-free code is summable. -/
-theorem IsPrefixFree.summable_one_div_card_pow_length
-    {S : Set (List α)} (hS : IsPrefixFree S) :
-    Summable (fun w : S ↦ (1 / (Fintype.card α : ℝ)) ^ (w : List α).length) :=
+theorem IsPrefixFree.summable_one_div_card_pow_length {S : Set (List α)} (hS : IsPrefixFree S)
+    : Summable (fun w : S ↦ (1 / (Fintype.card α : ℝ)) ^ (w : List α).length) :=
   summable_of_sum_le (fun _ ↦ by positivity) hS.finsetSum_one_div_card_pow_length_of_subtype
 
-/-- **Kraft's inequality for arbitrary codes.** The Kraft sum of an arbitrary prefix-free code is
-at most one. -/
-theorem IsPrefixFree.tsum_one_div_card_pow_length_le_one
-    {S : Set (List α)} (hS : IsPrefixFree S) :
-    ∑' w : S, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length ≤ 1 :=
+/--
+**Kraft's inequality for arbitrary codes.** The Kraft sum of an arbitrary prefix-free code is
+at most one.
+-/
+theorem IsPrefixFree.tsum_one_div_card_pow_length_le_one {S : Set (List α)} (hS : IsPrefixFree S)
+    : ∑' w : S, (1 / (Fintype.card α : ℝ)) ^ (w : List α).length ≤ 1 :=
   hS.summable_one_div_card_pow_length.tsum_le_of_sum_le
     hS.finsetSum_one_div_card_pow_length_of_subtype
 

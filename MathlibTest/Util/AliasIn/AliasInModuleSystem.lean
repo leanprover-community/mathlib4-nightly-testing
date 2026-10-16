@@ -6,7 +6,8 @@ public import Mathlib.Util.AliasIn
 
 public section
 
-@[alias_in Baz] def Foo.Bar.baz : Nat := 1
+@[alias_in Baz]
+def Foo.Bar.baz : Nat := 1
 /-- info: Foo.Baz.baz : Nat -/
 #guard_msgs in
 #check Foo.Baz.baz
@@ -18,12 +19,14 @@ example : Foo.Baz.baz = 1 := rfl
 #guard_msgs in
 #eval Foo.Baz.baz
 
-@[alias_in Baz.Qux] def Foo.Bar.baz2 : Nat := 2
+@[alias_in Baz.Qux]
+def Foo.Bar.baz2 : Nat := 2
 /-- info: Baz.Qux.baz2 : Nat -/
 #guard_msgs in
 #check Baz.Qux.baz2
 
-@[alias_in Baz.Qux 1] def Foo.Bar.baz3 : Nat := 2
+@[alias_in Baz.Qux 1]
+def Foo.Bar.baz3 : Nat := 2
 /-- info: Foo.Baz.Qux.baz3 : Nat -/
 #guard_msgs in
 #check Foo.Baz.Qux.baz3
@@ -38,27 +41,30 @@ error: Foo.Bar.baz4 has only 2 namespaces, cannot remove 3.
 Use `@[alias_in Baz.Qux 2]` instead.
 -/
 #guard_msgs in
-@[alias_in Baz.Qux 3] def Foo.Bar.baz4 : Nat := 2
-
+@[alias_in Baz.Qux 3]
+def Foo.Bar.baz4 : Nat := 2
 
 /--
 error: Bar.baz4 has only 1 namespaces, cannot remove 3.
 Use `@[alias_in Baz.Qux.Foo 1]` instead.
 -/
 #guard_msgs in
-@[alias_in Baz.Qux.Foo] def Bar.baz4 : Nat := 2
+@[alias_in Baz.Qux.Foo]
+def Bar.baz4 : Nat := 2
 
 /-- error: The `alias_in` attribute cannot be local. -/
 #guard_msgs in
-@[local alias_in Baz] def non.local : Nat := 2
+@[local alias_in Baz]
+def non.local : Nat := 2
 
 /-- error: The `alias_in` attribute cannot be scoped. -/
 #guard_msgs in
-@[scoped alias_in Baz] def non.scoped : Nat := 2
-
+@[scoped alias_in Baz]
+def non.scoped : Nat := 2
 
 /-- Look at this docstring! -/
-@[alias_in Baz] def Foo.Bar.baz5 : Nat := 2
+@[alias_in Baz]
+def Foo.Bar.baz5 : Nat := 2
 
 /--
 info: **Alias** of `Foo.Bar.baz5`.
@@ -71,11 +77,13 @@ Look at this docstring!
 open Lean in
 run_cmd logInfo m!"{(← Lean.findDocString? (← getEnv) `Foo.Baz.baz5).get!}"
 
-@[alias_in Baz] def Foo.Bar.baz6 : Nat := 1
+@[alias_in Baz]
+def Foo.Bar.baz6 : Nat := 1
 
 /-- error: The `alias_in` attribute cannot be used for private declarations. -/
 #guard_msgs in
-@[alias_in Baz] private def Foo.Bar.baz7 : Nat := 1
+@[alias_in Baz]
+private def Foo.Bar.baz7 : Nat := 1
 
 end
 
@@ -83,12 +91,14 @@ section
 
 /-- error: The `alias_in` attribute cannot be used for private declarations. -/
 #guard_msgs in
-@[alias_in Baz] def Foo.Bar.baz8 : Nat := 2
-
+@[alias_in Baz]
+def Foo.Bar.baz8 : Nat := 2
 
 #guard_msgs in
-@[alias_in Baz] public def Foo.Bar.baz9 : Nat := 2
+@[alias_in Baz]
+public def Foo.Bar.baz9 : Nat := 2
 
 /-- error: The `alias_in` attribute cannot be used for private declarations. -/
 #guard_msgs in
-@[alias_in Baz] private def Foo.Bar.baz10 : Nat := 2
+@[alias_in Baz]
+private def Foo.Bar.baz10 : Nat := 2

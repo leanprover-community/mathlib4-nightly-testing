@@ -46,8 +46,10 @@ namespace Matroid
 
 section Delete
 
-/-- The deletion `M ＼ D` is the restriction of a matroid `M` to `M.E \ D`.
-Its independent sets are the `M`-independent subsets of `M.E \ D`. -/
+/--
+The deletion `M ＼ D` is the restriction of a matroid `M` to `M.E \ D`.
+Its independent sets are the `M`-independent subsets of `M.E \ D`.
+-/
 def delete (M : Matroid α) (D : Set α) : Matroid α := M ↾ (M.E \ D)
 
 /-- `M ＼ D` refers to the deletion of a set `D` from the matroid `M`. -/
@@ -71,12 +73,10 @@ lemma IsRestriction.exists_eq_delete (hNM : N ≤r M) : ∃ D ⊆ M.E, N = M ＼
 lemma isRestriction_iff_exists_eq_delete : N ≤r M ↔ ∃ D ⊆ M.E, N = M ＼ D :=
   ⟨IsRestriction.exists_eq_delete, by rintro ⟨D, -, rfl⟩; apply delete_isRestriction⟩
 
-@[simp]
-lemma delete_ground (M : Matroid α) (D : Set α) : (M ＼ D).E = M.E \ D := rfl
+@[simp] lemma delete_ground (M : Matroid α) (D : Set α) : (M ＼ D).E = M.E \ D := rfl
 
 @[aesop unsafe 10% (rule_sets := [Matroid])]
-lemma delete_subset_ground (M : Matroid α) (D : Set α) : (M ＼ D).E ⊆ M.E :=
-  sdiff_subset
+lemma delete_subset_ground (M : Matroid α) (D : Set α) : (M ＼ D).E ⊆ M.E := sdiff_subset
 
 @[simp]
 lemma delete_eq_self_iff : M ＼ D = M ↔ Disjoint D M.E := by
@@ -84,8 +84,7 @@ lemma delete_eq_self_iff : M ＼ D = M ↔ Disjoint D M.E := by
 
 alias ⟨_, delete_eq_self⟩ := delete_eq_self_iff
 
-lemma deleteElem_eq_self (he : e ∉ M.E) : M ＼ {e} = M := by
-  simpa
+lemma deleteElem_eq_self (he : e ∉ M.E) : M ＼ {e} = M := by simpa
 
 @[simp]
 lemma delete_delete (M : Matroid α) (D₁ D₂ : Set α) : M ＼ D₁ ＼ D₂ = M ＼ (D₁ ∪ D₂) := by
@@ -111,19 +110,18 @@ lemma delete_empty (M : Matroid α) : M ＼ ∅ = M := by
   rw [delete_eq_self_iff]
   exact empty_disjoint _
 
-lemma delete_delete_eq_delete_sdiff (M : Matroid α) (D₁ D₂ : Set α) :
-    M ＼ D₁ ＼ D₂ = M ＼ D₁ ＼ (D₂ \ D₁) := by
+lemma delete_delete_eq_delete_sdiff (M : Matroid α) (D₁ D₂ : Set α)
+    : M ＼ D₁ ＼ D₂ = M ＼ D₁ ＼ (D₂ \ D₁) := by
   simp
 
 @[deprecated (since := "2026-06-03")]
 alias delete_delete_eq_delete_diff := delete_delete_eq_delete_sdiff
 
-lemma IsRestriction.restrict_delete_of_disjoint (h : N ≤r M) (hX : Disjoint X N.E) :
-    N ≤r (M ＼ X) := by
+lemma IsRestriction.restrict_delete_of_disjoint (h : N ≤r M) (hX : Disjoint X N.E)
+    : N ≤r (M ＼ X) := by
   obtain ⟨D, hD, rfl⟩ := isRestriction_iff_exists_eq_delete.1 h
   refine isRestriction_iff_exists_eq_delete.2 ⟨D \ X, sdiff_subset_sdiff_left hD, ?_⟩
-  rwa [delete_delete, union_sdiff_self, union_comm, ← delete_delete, eq_comm,
-    delete_eq_self_iff]
+  rwa [delete_delete, union_sdiff_self, union_comm, ← delete_delete, eq_comm, delete_eq_self_iff]
 
 lemma IsRestriction.isRestriction_deleteElem (h : N ≤r M) (he : e ∉ N.E) : N ≤r M ＼ {e} :=
   h.restrict_delete_of_disjoint (by simpa)
@@ -135,11 +133,9 @@ lemma delete_indep_iff : (M ＼ D).Indep I ↔ M.Indep I ∧ Disjoint I D := by
   rw [← restrict_compl, restrict_indep_iff, subset_sdiff, ← and_assoc,
     and_iff_left_of_imp Indep.subset_ground]
 
-lemma deleteElem_indep_iff : (M ＼ {e}).Indep I ↔ M.Indep I ∧ e ∉ I := by
-  simp
+lemma deleteElem_indep_iff : (M ＼ {e}).Indep I ↔ M.Indep I ∧ e ∉ I := by simp
 
-lemma Indep.of_delete (h : (M ＼ D).Indep I) : M.Indep I :=
-  (delete_indep_iff.mp h).1
+lemma Indep.of_delete (h : (M ＼ D).Indep I) : M.Indep I := (delete_indep_iff.mp h).1
 
 lemma Indep.indep_delete_of_disjoint (h : M.Indep I) (hID : Disjoint I D) : (M ＼ D).Indep I :=
   delete_indep_iff.mpr ⟨h, hID⟩
@@ -167,14 +163,13 @@ lemma delete_isBasis'_iff : (M ＼ D).IsBasis' I X ↔ M.IsBasis' I (X \ D) := b
     and_iff_left_iff_imp, inter_comm, ← inter_sdiff_assoc]
   exact fun _ ↦ disjoint_sdiff_left
 
-lemma IsBasis.of_delete (h : (M ＼ D).IsBasis I X) : M.IsBasis I X :=
-  (delete_isBasis_iff.mp h).1
+lemma IsBasis.of_delete (h : (M ＼ D).IsBasis I X) : M.IsBasis I X := (delete_isBasis_iff.mp h).1
 
 lemma IsBasis.delete (h : M.IsBasis I X) (hX : Disjoint X D) : (M ＼ D).IsBasis I X := by
   rw [delete_isBasis_iff]; exact ⟨h, hX⟩
 
-lemma Coindep.delete_isBase_iff (hD : M.Coindep D) :
-    (M ＼ D).IsBase B ↔ M.IsBase B ∧ Disjoint B D := by
+lemma Coindep.delete_isBase_iff (hD : M.Coindep D)
+    : (M ＼ D).IsBase B ↔ M.IsBase B ∧ Disjoint B D := by
   rw [Matroid.delete_isBase_iff]
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · have hss := h.subset
@@ -189,8 +184,8 @@ lemma Coindep.delete_rankPos [M.RankPos] (hD : M.Coindep D) : (M ＼ D).RankPos 
   rw [rankPos_iff, hD.delete_isBase_iff]
   simp [M.empty_not_isBase]
 
-lemma Coindep.delete_spanning_iff {S : Set α} (hD : M.Coindep D) :
-    (M ＼ D).Spanning S ↔ M.Spanning S ∧ Disjoint S D := by
+lemma Coindep.delete_spanning_iff {S : Set α} (hD : M.Coindep D)
+    : (M ＼ D).Spanning S ↔ M.Spanning S ∧ Disjoint S D := by
   simp only [spanning_iff_exists_isBase_subset', hD.delete_isBase_iff, and_assoc, delete_ground,
     subset_sdiff, and_congr_left_iff, and_imp]
   refine fun hSE hSD ↦ ⟨fun ⟨B, hB, hBD, hBS⟩ ↦ ⟨B, hB, hBS⟩, fun ⟨B, hB, hBS⟩ ↦ ⟨B, hB, ?_, hBS⟩⟩
@@ -206,8 +201,7 @@ lemma delete_isLoop_iff : (M ＼ D).IsLoop e ↔ M.IsLoop e ∧ e ∉ D := by
 lemma delete_isNonloop_iff : (M ＼ D).IsNonloop e ↔ M.IsNonloop e ∧ e ∉ D := by
   rw [← indep_singleton, delete_indep_iff, disjoint_singleton_left, indep_singleton]
 
-lemma IsNonloop.of_delete (h : (M ＼ D).IsNonloop e) : M.IsNonloop e :=
-  (delete_isNonloop_iff.1 h).1
+lemma IsNonloop.of_delete (h : (M ＼ D).IsNonloop e) : M.IsNonloop e := (delete_isNonloop_iff.1 h).1
 
 lemma isNonloop_iff_delete_of_notMem (he : e ∉ D) : M.IsNonloop e ↔ (M ＼ D).IsNonloop e :=
   ⟨fun h ↦ delete_isNonloop_iff.2 ⟨h, he⟩, fun h ↦ h.of_delete⟩
@@ -216,8 +210,7 @@ lemma delete_loops_eq_removeLoops (M : Matroid α) : M ＼ M.loops = M.removeLoo
   rw [removeLoops, delete_eq_restrict, compl_loops_eq]
 
 @[simp]
-lemma delete_isCircuit_iff {C : Set α} :
-    (M ＼ D).IsCircuit C ↔ M.IsCircuit C ∧ Disjoint C D := by
+lemma delete_isCircuit_iff {C : Set α} : (M ＼ D).IsCircuit C ↔ M.IsCircuit C ∧ Disjoint C D := by
   rw [delete_eq_restrict, restrict_isCircuit_iff, and_congr_right_iff, subset_sdiff,
     and_iff_right_iff_imp]
   exact fun h _ ↦ h.subset_ground
@@ -225,28 +218,27 @@ lemma delete_isCircuit_iff {C : Set α} :
 lemma IsCircuit.of_delete {C : Set α} (h : (M ＼ D).IsCircuit C) : M.IsCircuit C :=
   (delete_isCircuit_iff.1 h).1
 
-lemma circuit_iff_delete_of_disjoint {C : Set α} (hCD : Disjoint C D) :
-    M.IsCircuit C ↔ (M ＼ D).IsCircuit C :=
+lemma circuit_iff_delete_of_disjoint {C : Set α} (hCD : Disjoint C D)
+    : M.IsCircuit C ↔ (M ＼ D).IsCircuit C :=
   ⟨fun h ↦ delete_isCircuit_iff.2 ⟨h, hCD⟩, fun h ↦ h.of_delete⟩
 
 @[simp]
-lemma delete_closure_eq (M : Matroid α) (D X : Set α) :
-    (M ＼ D).closure X = M.closure (X \ D) \ D := by
-  rw [← restrict_compl, restrict_closure_eq', sdiff_sdiff_self, bot_eq_empty, union_empty,
-    sdiff_eq, inter_comm M.E, ← inter_assoc X, ← sdiff_eq, closure_inter_ground,
-    ← inter_assoc, ← sdiff_eq, inter_eq_left]
+lemma delete_closure_eq (M : Matroid α) (D X : Set α)
+    : (M ＼ D).closure X = M.closure (X \ D) \ D := by
+  rw [← restrict_compl, restrict_closure_eq', sdiff_sdiff_self, bot_eq_empty, union_empty, sdiff_eq,
+    inter_comm M.E, ← inter_assoc X, ← sdiff_eq, closure_inter_ground, ← inter_assoc, ← sdiff_eq,
+    inter_eq_left]
   exact sdiff_subset.trans (M.closure_subset_ground _)
 
-lemma delete_closure_eq_of_disjoint (M : Matroid α) {D X : Set α} (hXD : Disjoint X D) :
-    (M ＼ D).closure X = M.closure X \ D := by
+lemma delete_closure_eq_of_disjoint (M : Matroid α) {D X : Set α} (hXD : Disjoint X D)
+    : (M ＼ D).closure X = M.closure X \ D := by
   rw [delete_closure_eq, hXD.sdiff_eq_left]
 
 @[simp]
-lemma delete_loops_eq (M : Matroid α) (D : Set α) : (M ＼ D).loops = M.loops \ D := by
-  simp [loops]
+lemma delete_loops_eq (M : Matroid α) (D : Set α) : (M ＼ D).loops = M.loops \ D := by simp [loops]
 
-lemma delete_isColoop_iff (M : Matroid α) (D : Set α) :
-    (M ＼ D).IsColoop e ↔ e ∉ M.closure ((M.E \ D) \ {e}) ∧ e ∈ M.E ∧ e ∉ D := by
+lemma delete_isColoop_iff (M : Matroid α) (D : Set α)
+    : (M ＼ D).IsColoop e ↔ e ∉ M.closure ((M.E \ D) \ {e}) ∧ e ∈ M.E ∧ e ∉ D := by
   rw [delete_eq_restrict, restrict_isColoop_iff sdiff_subset, mem_sdiff, and_congr_left_iff]
   simp
 
@@ -255,11 +247,9 @@ lemma delete_isColoop_iff (M : Matroid α) (D : Set α) :
 instance delete_finitary (M : Matroid α) [Finitary M] (D : Set α) : Finitary (M ＼ D) :=
   inferInstanceAs <| Finitary (M ↾ (M.E \ D))
 
-instance delete_finite [M.Finite] : (M ＼ D).Finite :=
-  ⟨M.ground_finite.sdiff⟩
+instance delete_finite [M.Finite] : (M ＼ D).Finite := ⟨M.ground_finite.sdiff⟩
 
-instance delete_rankFinite [RankFinite M] : RankFinite (M ＼ D) :=
-  restrict_rankFinite _
+instance delete_rankFinite [RankFinite M] : RankFinite (M ＼ D) := restrict_rankFinite _
 
 end Delete
 

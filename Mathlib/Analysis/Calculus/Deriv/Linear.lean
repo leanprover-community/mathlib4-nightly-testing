@@ -6,7 +6,6 @@ Authors: Gabriel Ebner, Yury Kudryashov
 module
 
 public import Mathlib.Analysis.Calculus.Deriv.Basic
-
 import Mathlib.Analysis.Calculus.FDeriv.Linear
 
 /-!
@@ -23,7 +22,6 @@ derivative, linear map
 -/
 
 public section
-
 
 universe u v w
 
@@ -49,18 +47,15 @@ protected theorem ContinuousLinearMap.hasDerivAtFilter : HasDerivAtFilter e (e 1
 protected theorem ContinuousLinearMap.hasStrictDerivAt : HasStrictDerivAt e (e 1) x :=
   e.hasDerivAtFilter
 
-protected theorem ContinuousLinearMap.hasDerivAt : HasDerivAt e (e 1) x :=
-  e.hasDerivAtFilter
+protected theorem ContinuousLinearMap.hasDerivAt : HasDerivAt e (e 1) x := e.hasDerivAtFilter
 
 protected theorem ContinuousLinearMap.hasDerivWithinAt : HasDerivWithinAt e (e 1) s x :=
   e.hasDerivAtFilter
 
-@[simp]
-protected theorem ContinuousLinearMap.deriv : deriv e x = e 1 :=
-  e.hasDerivAt.deriv
+@[simp] protected theorem ContinuousLinearMap.deriv : deriv e x = e 1 := e.hasDerivAt.deriv
 
-protected theorem ContinuousLinearMap.derivWithin (hxs : UniqueDiffWithinAt 𝕜 s x) :
-    derivWithin e s x = e 1 :=
+protected theorem ContinuousLinearMap.derivWithin (hxs : UniqueDiffWithinAt 𝕜 s x)
+    : derivWithin e s x = e 1 :=
   e.hasDerivWithinAt.derivWithin hxs
 
 end ContinuousLinearMap
@@ -74,21 +69,16 @@ variable (e : 𝕜 →ₗ[𝕜] F)
 protected theorem LinearMap.hasDerivAtFilter : HasDerivAtFilter e (e 1) L :=
   e.toContinuousLinearMap₁.hasDerivAtFilter
 
-protected theorem LinearMap.hasStrictDerivAt : HasStrictDerivAt e (e 1) x :=
-  e.hasDerivAtFilter
+protected theorem LinearMap.hasStrictDerivAt : HasStrictDerivAt e (e 1) x := e.hasDerivAtFilter
 
-protected theorem LinearMap.hasDerivAt : HasDerivAt e (e 1) x :=
-  e.hasDerivAtFilter
+protected theorem LinearMap.hasDerivAt : HasDerivAt e (e 1) x := e.hasDerivAtFilter
 
-protected theorem LinearMap.hasDerivWithinAt : HasDerivWithinAt e (e 1) s x :=
-  e.hasDerivAtFilter
+protected theorem LinearMap.hasDerivWithinAt : HasDerivWithinAt e (e 1) s x := e.hasDerivAtFilter
 
-@[simp]
-protected theorem LinearMap.deriv : deriv e x = e 1 :=
-  e.hasDerivAt.deriv
+@[simp] protected theorem LinearMap.deriv : deriv e x = e 1 := e.hasDerivAt.deriv
 
-protected theorem LinearMap.derivWithin (hxs : UniqueDiffWithinAt 𝕜 s x) :
-    derivWithin e s x = e 1 :=
+protected theorem LinearMap.derivWithin (hxs : UniqueDiffWithinAt 𝕜 s x)
+    : derivWithin e s x = e 1 :=
   e.hasDerivWithinAt.derivWithin hxs
 
 end LinearMap

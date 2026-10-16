@@ -35,10 +35,12 @@ are a particular case of the notion of `X`-generated topological spaces where
 
 open TopologicalSpace Topology
 
-/-- A topological space is Delta-generated if its topology is generated
-by the continuous maps from topological spaces of the form `Fin n → ℝ`. -/
+/--
+A topological space is Delta-generated if its topology is generated
+by the continuous maps from topological spaces of the form `Fin n → ℝ`.
+-/
 abbrev DeltaGeneratedSpace (Y : Type*) [TopologicalSpace Y] : Prop :=
-    IsGeneratedBy (fun n ↦ Fin n → ℝ) Y
+  IsGeneratedBy (fun n ↦ Fin n → ℝ) Y
 
 namespace DeltaGeneratedSpace
 
@@ -48,17 +50,14 @@ variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 abbrev of : Type _ := WithGeneratedByTopology (fun n ↦ Fin n → ℝ) Y
 
 /-- Delta-generated spaces are locally path-connected. -/
-instance [DeltaGeneratedSpace X] :
-    LocallyPathConnectedSpace X := by
-  rw [← IsGeneratedBy.generatedBy_eq (X := fun n ↦ Fin n → ℝ) (Y := X),
-    generatedBy_eq_coinduced]
+instance [DeltaGeneratedSpace X] : LocallyPathConnectedSpace X := by
+  rw [← IsGeneratedBy.generatedBy_eq (X := fun n ↦ Fin n → ℝ) (Y := X), generatedBy_eq_coinduced]
   exact LocallyPathConnectedSpace.coinduced _
 
 /-- Delta-generated spaces are sequential. -/
 instance [DeltaGeneratedSpace X] : SequentialSpace X := by
   rw [← IsGeneratedBy.generatedBy_eq (X := fun n ↦ Fin n → ℝ) (Y := X)]
-  exact SequentialSpace.iSup (fun n ↦ SequentialSpace.iSup
-    (fun f ↦ SequentialSpace.coinduced _))
+  exact SequentialSpace.iSup (fun n ↦ SequentialSpace.iSup (fun f ↦ SequentialSpace.coinduced _))
 
 end DeltaGeneratedSpace
 

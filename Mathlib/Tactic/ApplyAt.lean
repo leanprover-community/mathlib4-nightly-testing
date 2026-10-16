@@ -29,18 +29,21 @@ then replaces the type of `i` with `αᵢ₊₁ → ⋯ → αₙ` by applying t
 original `i`.
 -/
 @[nolint tacticAlt]
-elab "apply " t:term " at " i:ident : tactic => withSynthesize <| withMainContext do
-  let f ← elabTermForApply t
-  let some ldecl := (← getLCtx).findFromUserName? i.getId
-    | throwErrorAt i m!"Identifier {i} not found"
-  let (mvs, bis, _) ← forallMetaTelescopeReducingUntilDefEq (← inferType f) ldecl.type
-  for (m, b) in mvs.zip bis do
-    if b.isInstImplicit && !(← m.mvarId!.isAssigned) then
-      try m.mvarId!.inferInstance
-      catch _ => continue
-  let (_, mainGoal) ← (← getMainGoal).note ldecl.userName
-    (← mkAppOptM' f (mvs.pop.push ldecl.toExpr |>.map some))
-  let mainGoal ← mainGoal.tryClear ldecl.fvarId
-  replaceMainGoal <| [mainGoal] ++ mvs.pop.toList.map (·.mvarId!)
+elab "apply " t:term " at " i:ident : tactic =>
+  withSynthesize <| withMainContext do
+    let f ← elabTermForApply t
+    let some ldecl := (← getLCtx).findFromUserName? i.getId
+      | throwErrorAt i m!"Identifier {i} not found"
+    let (mvs, bis, _) ← forallMetaTelescopeReducingUntilDefEq (← inferType f) ldecl.type
+    for (m, b) in mvs.zip bis do
+      if b.isInstImplicit && !(← m.mvarId!.isAssigned) then
+        try
+          m.mvarId!.inferInstance
+        catch _ =>
+          continue
+    let (_, mainGoal) ←
+      (← getMainGoal).note ldecl.userName (← mkAppOptM' f (mvs.pop.push ldecl.toExpr |>.map some))
+    let mainGoal ← mainGoal.tryClear ldecl.fvarId
+    replaceMainGoal <| [mainGoal] ++ mvs.pop.toList.map (·.mvarId!)
 
 end Mathlib.Tactic

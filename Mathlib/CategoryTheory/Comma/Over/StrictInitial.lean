@@ -27,63 +27,72 @@ open Limits
 variable {C : Type*} [Category* C]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `C` has strict initial objects and `X` is an initial object, the category
-`Over X` is equivalent to a point. -/
+/--
+If `C` has strict initial objects and `X` is an initial object, the category
+`Over X` is equivalent to a point.
+-/
 @[simps, pp_with_univ]
-noncomputable
-def overEquivOfIsInitial [HasStrictInitialObjects C] (X : C) (h : IsInitial X) :
-    Over X ≌ Discrete PUnit.{w + 1} where
+noncomputable def overEquivOfIsInitial [HasStrictInitialObjects C] (X : C) (h : IsInitial X)
+    : Over X ≌ Discrete PUnit.{w + 1} where
   functor := Functor.star _
   inverse := Functor.fromPUnit (.mk (𝟙 X))
-  unitIso := NatIso.ofComponents fun A ↦
-    haveI := h.isIso_to A.hom
-    Over.isoMk (asIso A.hom)
+  unitIso :=
+    NatIso.ofComponents fun A ↦
+      haveI := h.isIso_to A.hom
+      Over.isoMk (asIso A.hom)
   counitIso := Iso.refl _
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `C` has strict terminal objects and `X` is a terminal object, the category
-`Under X` is equivalent to a point. -/
+/--
+If `C` has strict terminal objects and `X` is a terminal object, the category
+`Under X` is equivalent to a point.
+-/
 @[simps, pp_with_univ]
-noncomputable
-def underEquivOfIsTerminal [HasStrictTerminalObjects C] (X : C) (h : IsTerminal X) :
-    Under X ≌ Discrete PUnit.{w + 1} where
+noncomputable def underEquivOfIsTerminal [HasStrictTerminalObjects C] (X : C) (h : IsTerminal X)
+    : Under X ≌ Discrete PUnit.{w + 1} where
   functor := Functor.star _
   inverse := Functor.fromPUnit (.mk (𝟙 X))
   counitIso := Iso.refl _
-  unitIso := NatIso.ofComponents fun A ↦
-    haveI := h.isIso_from A.hom
-    Under.isoMk (asIso A.hom).symm
+  unitIso :=
+    NatIso.ofComponents fun A ↦
+      haveI := h.isIso_from A.hom
+      Under.isoMk (asIso A.hom).symm
 
 variable (P Q : MorphismProperty C) [P.ContainsIdentities] [Q.IsMultiplicative] [Q.RespectsIso]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- If `C` has strict initial objects and `X` is an initial object, the category
-`P.Over Q X` is equivalent to a point. -/
+/--
+If `C` has strict initial objects and `X` is an initial object, the category
+`P.Over Q X` is equivalent to a point.
+-/
 @[simps, pp_with_univ]
-noncomputable
-def MorphismProperty.overEquivOfIsInitial [HasStrictInitialObjects C] (X : C) (h : IsInitial X) :
-    P.Over Q X ≌ Discrete PUnit.{w + 1} where
+noncomputable def MorphismProperty.overEquivOfIsInitial
+    [HasStrictInitialObjects C] (X : C) (h : IsInitial X)
+    : P.Over Q X ≌ Discrete PUnit.{w + 1} where
   functor := Functor.star _
   inverse := Functor.fromPUnit (.mk _ (𝟙 X) (P.id_mem _))
-  unitIso := NatIso.ofComponents fun A ↦
-    haveI := h.isIso_to A.hom
-    Over.isoMk (asIso A.hom)
+  unitIso :=
+    NatIso.ofComponents fun A ↦
+      haveI := h.isIso_to A.hom
+      Over.isoMk (asIso A.hom)
   counitIso := Iso.refl _
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `C` has strict terminal objects and `X` is a terminal object, the category
-`P.Under Q X` is equivalent to a point. -/
+/--
+If `C` has strict terminal objects and `X` is a terminal object, the category
+`P.Under Q X` is equivalent to a point.
+-/
 @[simps, pp_with_univ]
-noncomputable
-def MorphismProperty.underEquivOfIsTerminal [HasStrictTerminalObjects C] (X : C)
-    (h : IsTerminal X) :
-    P.Under Q X ≌ Discrete PUnit.{w + 1} where
+noncomputable def MorphismProperty.underEquivOfIsTerminal
+    [HasStrictTerminalObjects C] (X : C) (h : IsTerminal X)
+    : P.Under Q X ≌ Discrete PUnit.{w + 1} where
   functor := Functor.star _
   inverse := Functor.fromPUnit (.mk _ (𝟙 X) (P.id_mem _))
   counitIso := Iso.refl _
-  unitIso := NatIso.ofComponents fun A ↦
-    haveI := h.isIso_from A.hom
-    Under.isoMk (asIso A.hom).symm
+  unitIso :=
+    NatIso.ofComponents fun A ↦
+      haveI := h.isIso_from A.hom
+      Under.isoMk (asIso A.hom).symm
 
 end CategoryTheory

@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Johannes Hölzl
 module
 
 public import Mathlib.MeasureTheory.Integral.Lebesgue.Sub
-
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 
 /-!
@@ -27,45 +26,51 @@ namespace MeasureTheory
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
-theorem limsup_lintegral_le {f : ℕ → α → ℝ≥0∞} (g : α → ℝ≥0∞) (hf_meas : ∀ n, Measurable (f n))
-    (h_bound : ∀ n, f n ≤ᵐ[μ] g) (h_fin : ∫⁻ a, g a ∂μ ≠ ∞) :
-    limsup (fun n => ∫⁻ a, f n a ∂μ) atTop ≤ ∫⁻ a, limsup (fun n => f n a) atTop ∂μ :=
+theorem limsup_lintegral_le
+    {f : ℕ → α → ℝ≥0∞}
+    (g : α → ℝ≥0∞)
+    (hf_meas : ∀ n, Measurable (f n)) (h_bound : ∀ n, f n ≤ᵐ[μ] g) (h_fin : ∫⁻ a, g a ∂μ ≠ ∞)
+    : limsup (fun n => ∫⁻ a, f n a ∂μ) atTop ≤ ∫⁻ a, limsup (fun n => f n a) atTop ∂μ :=
   calc
-    limsup (fun n => ∫⁻ a, f n a ∂μ) atTop = ⨅ n : ℕ, ⨆ i ≥ n, ∫⁻ a, f i a ∂μ :=
-      limsup_eq_iInf_iSup_of_nat
+    limsup (fun n => ∫⁻ a, f n a ∂μ) atTop
+      = ⨅ n : ℕ, ⨆ i ≥ n, ∫⁻ a, f i a ∂μ := limsup_eq_iInf_iSup_of_nat
     _ ≤ ⨅ n : ℕ, ∫⁻ a, ⨆ i ≥ n, f i a ∂μ := iInf_mono fun _ => iSup₂_lintegral_le _
     _ = ∫⁻ a, ⨅ n : ℕ, ⨆ i ≥ n, f i a ∂μ := by
       refine (lintegral_iInf ?_ ?_ ?_).symm
       · intro n
-        exact .biSup {i | i ≥ n} (Set.to_countable _) (fun i _ ↦ hf_meas i)
+        exact .biSup ({i | i ≥ n}) (Set.to_countable _) (fun i _ ↦ hf_meas i)
       · intro n m hnm a
-        exact iSup_le_iSup_of_subset (s := {i | i ≥ m}) (t := {i | i ≥ n})
-          fun i hi => le_trans hnm hi
+        exact iSup_le_iSup_of_subset (s := {i | i ≥ m}) (t := {i | i ≥ n}) fun i hi =>
+          le_trans hnm hi
       · refine ne_top_of_le_ne_top h_fin (lintegral_mono_ae ?_)
         refine (ae_all_iff.2 h_bound).mono fun n hn => ?_
         exact iSup_le fun i => iSup_le fun _ => hn i
     _ = ∫⁻ a, limsup (fun n => f n a) atTop ∂μ := by simp only [limsup_eq_iInf_iSup_of_nat]
 
 /-- **Dominated convergence theorem** for nonnegative `Measurable` functions. -/
-theorem tendsto_lintegral_of_dominated_convergence {F : ℕ → α → ℝ≥0∞} {f : α → ℝ≥0∞}
-    (bound : α → ℝ≥0∞) (hF_meas : ∀ n, Measurable (F n)) (h_bound : ∀ n, F n ≤ᵐ[μ] bound)
-    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) atTop (𝓝 (f a))) :
-    Tendsto (fun n => ∫⁻ a, F n a ∂μ) atTop (𝓝 (∫⁻ a, f a ∂μ)) :=
+theorem tendsto_lintegral_of_dominated_convergence
+    {F : ℕ → α → ℝ≥0∞} {f : α → ℝ≥0∞}
+    (bound : α → ℝ≥0∞)
+    (hF_meas : ∀ n, Measurable (F n)) (h_bound : ∀ n, F n ≤ᵐ[μ] bound)
+    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) atTop (𝓝 (f a)))
+    : Tendsto (fun n => ∫⁻ a, F n a ∂μ) atTop (𝓝 (∫⁻ a, f a ∂μ)) :=
   tendsto_of_le_liminf_of_limsup_le
     (calc
       ∫⁻ a, f a ∂μ = ∫⁻ a, liminf (fun n : ℕ => F n a) atTop ∂μ :=
         lintegral_congr_ae <| h_lim.mono fun _ h => h.liminf_eq.symm
       _ ≤ liminf (fun n => ∫⁻ a, F n a ∂μ) atTop := lintegral_liminf_le hF_meas)
     (calc
-      limsup (fun n : ℕ => ∫⁻ a, F n a ∂μ) atTop ≤ ∫⁻ a, limsup (fun n => F n a) atTop ∂μ :=
-        limsup_lintegral_le _ hF_meas h_bound h_fin
+      limsup (fun n : ℕ => ∫⁻ a, F n a ∂μ) atTop
+        ≤ ∫⁻ a, limsup (fun n => F n a) atTop ∂μ := limsup_lintegral_le _ hF_meas h_bound h_fin
       _ = ∫⁻ a, f a ∂μ := lintegral_congr_ae <| h_lim.mono fun _ h => h.limsup_eq)
 
 /-- **Dominated convergence theorem** for nonnegative `AEMeasurable` functions. -/
-theorem tendsto_lintegral_of_dominated_convergence' {F : ℕ → α → ℝ≥0∞} {f : α → ℝ≥0∞}
-    (bound : α → ℝ≥0∞) (hF_meas : ∀ n, AEMeasurable (F n) μ) (h_bound : ∀ n, F n ≤ᵐ[μ] bound)
-    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) atTop (𝓝 (f a))) :
-    Tendsto (fun n => ∫⁻ a, F n a ∂μ) atTop (𝓝 (∫⁻ a, f a ∂μ)) := by
+theorem tendsto_lintegral_of_dominated_convergence'
+    {F : ℕ → α → ℝ≥0∞} {f : α → ℝ≥0∞}
+    (bound : α → ℝ≥0∞)
+    (hF_meas : ∀ n, AEMeasurable (F n) μ) (h_bound : ∀ n, F n ≤ᵐ[μ] bound)
+    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) atTop (𝓝 (f a)))
+    : Tendsto (fun n => ∫⁻ a, F n a ∂μ) atTop (𝓝 (∫⁻ a, f a ∂μ)) := by
   have : ∀ n, ∫⁻ a, F n a ∂μ = ∫⁻ a, (hF_meas n).mk (F n) a ∂μ := fun n =>
     lintegral_congr_ae (hF_meas n).ae_eq_mk
   simp_rw [this]
@@ -80,13 +85,17 @@ theorem tendsto_lintegral_of_dominated_convergence' {F : ℕ → α → ℝ≥0�
     filter_upwards [h_bound n, (hF_meas n).ae_eq_mk] with a H H'
     rwa [H'] at H
 
-/-- **Dominated convergence theorem** for filters with a countable basis and
-AEMeasurable functions. -/
-theorem tendsto_lintegral_filter_of_dominated_convergence' {ι} {l : Filter ι}
-    [l.IsCountablyGenerated] {F : ι → α → ℝ≥0∞} {f : α → ℝ≥0∞} (bound : α → ℝ≥0∞)
+/--
+**Dominated convergence theorem** for filters with a countable basis and
+AEMeasurable functions.
+-/
+theorem tendsto_lintegral_filter_of_dominated_convergence'
+    {ι} {l : Filter ι} [l.IsCountablyGenerated]
+    {F : ι → α → ℝ≥0∞} {f : α → ℝ≥0∞}
+    (bound : α → ℝ≥0∞)
     (hF_meas : ∀ᶠ n in l, AEMeasurable (F n) μ) (h_bound : ∀ᶠ n in l, ∀ᵐ a ∂μ, F n a ≤ bound a)
-    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) l (𝓝 (f a))) :
-    Tendsto (fun n => ∫⁻ a, F n a ∂μ) l (𝓝 <| ∫⁻ a, f a ∂μ) := by
+    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) l (𝓝 (f a)))
+    : Tendsto (fun n => ∫⁻ a, F n a ∂μ) l (𝓝 <| ∫⁻ a, f a ∂μ) := by
   rw [tendsto_iff_seq_tendsto]
   intro x xl
   have hxl := by
@@ -111,31 +120,36 @@ theorem tendsto_lintegral_filter_of_dominated_convergence' {ι} {l : Filter ι}
     rwa [tendsto_add_atTop_iff_nat]
 
 /-- **Dominated convergence theorem** for filters with a countable basis. -/
-theorem tendsto_lintegral_filter_of_dominated_convergence {ι} {l : Filter ι}
-    [l.IsCountablyGenerated] {F : ι → α → ℝ≥0∞} {f : α → ℝ≥0∞} (bound : α → ℝ≥0∞)
+theorem tendsto_lintegral_filter_of_dominated_convergence
+    {ι} {l : Filter ι} [l.IsCountablyGenerated]
+    {F : ι → α → ℝ≥0∞} {f : α → ℝ≥0∞}
+    (bound : α → ℝ≥0∞)
     (hF_meas : ∀ᶠ n in l, Measurable (F n)) (h_bound : ∀ᶠ n in l, ∀ᵐ a ∂μ, F n a ≤ bound a)
-    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) l (𝓝 (f a))) :
-    Tendsto (fun n => ∫⁻ a, F n a ∂μ) l (𝓝 <| ∫⁻ a, f a ∂μ) := by
+    (h_fin : ∫⁻ a, bound a ∂μ ≠ ∞) (h_lim : ∀ᵐ a ∂μ, Tendsto (fun n => F n a) l (𝓝 (f a)))
+    : Tendsto (fun n => ∫⁻ a, F n a ∂μ) l (𝓝 <| ∫⁻ a, f a ∂μ) := by
   refine tendsto_lintegral_filter_of_dominated_convergence' bound ?_ h_bound h_fin h_lim
   filter_upwards [hF_meas] using by fun_prop
 
-/-- If a monotone sequence of functions has an upper bound and the sequence of integrals of these
+/--
+If a monotone sequence of functions has an upper bound and the sequence of integrals of these
 functions tends to the integral of the upper bound, then the sequence of functions converges
 almost everywhere to the upper bound. Auxiliary version assuming moreover that the
-functions in the sequence are ae measurable. -/
-lemma tendsto_of_lintegral_tendsto_of_monotone_aux {α : Type*} {mα : MeasurableSpace α}
-    {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
+functions in the sequence are ae measurable.
+-/
+lemma tendsto_of_lintegral_tendsto_of_monotone_aux
+    {α : Type*} {mα : MeasurableSpace α} {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
     (hf_meas : ∀ n, AEMeasurable (f n) μ) (hF_meas : AEMeasurable F μ)
     (hf_tendsto : Tendsto (fun i ↦ ∫⁻ a, f i a ∂μ) atTop (𝓝 (∫⁻ a, F a ∂μ)))
-    (hf_mono : ∀ᵐ a ∂μ, Monotone (fun i ↦ f i a))
-    (h_bound : ∀ᵐ a ∂μ, ∀ i, f i a ≤ F a) (h_int_finite : ∫⁻ a, F a ∂μ ≠ ∞) :
-    ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
+    (hf_mono : ∀ᵐ a ∂μ, Monotone (fun i ↦ f i a)) (h_bound : ∀ᵐ a ∂μ, ∀ i, f i a ≤ F a)
+    (h_int_finite : ∫⁻ a, F a ∂μ ≠ ∞)
+    : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
   have h_bound_finite : ∀ᵐ a ∂μ, F a ≠ ∞ := by
     filter_upwards [ae_lt_top' hF_meas h_int_finite] with a ha using ha.ne
   have h_exists : ∀ᵐ a ∂μ, ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l) := by
     filter_upwards [h_bound, h_bound_finite, hf_mono] with a h_le h_fin h_mono
-    have h_tendsto : Tendsto (fun i ↦ f i a) atTop atTop ∨
-        ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l) := tendsto_atTop_of_monotone h_mono
+    have h_tendsto
+        : Tendsto (fun i ↦ f i a) atTop atTop ∨ ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l) :=
+      tendsto_atTop_of_monotone h_mono
     rcases h_tendsto with h_absurd | h_tendsto
     · rw [tendsto_atTop_atTop_iff_of_monotone h_mono] at h_absurd
       obtain ⟨i, hi⟩ := h_absurd (F a + 1)
@@ -143,8 +157,11 @@ lemma tendsto_of_lintegral_tendsto_of_monotone_aux {α : Type*} {mα : Measurabl
       exact ENNReal.lt_add_right h_fin one_ne_zero
     · exact h_tendsto
   classical
-  let F' : α → ℝ≥0∞ := fun a ↦ if h : ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l)
-    then h.choose else ∞
+  let F' : α → ℝ≥0∞ := fun a ↦
+    if h : ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l) then
+      h.choose
+    else
+      ∞
   have hF'_tendsto : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F' a)) := by
     filter_upwards [h_exists] with a ha
     simp_rw [F', dite_eq_left ha]
@@ -159,18 +176,20 @@ lemma tendsto_of_lintegral_tendsto_of_monotone_aux {α : Type*} {mα : Measurabl
   refine tendsto_nhds_unique ?_ hf_tendsto
   exact lintegral_tendsto_of_tendsto_of_monotone hf_meas hf_mono hF'_tendsto
 
-/-- If a monotone sequence of functions has an upper bound and the sequence of integrals of these
+/--
+If a monotone sequence of functions has an upper bound and the sequence of integrals of these
 functions tends to the integral of the upper bound, then the sequence of functions converges
-almost everywhere to the upper bound. -/
-lemma tendsto_of_lintegral_tendsto_of_monotone {α : Type*} {mα : MeasurableSpace α}
-    {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
+almost everywhere to the upper bound.
+-/
+lemma tendsto_of_lintegral_tendsto_of_monotone
+    {α : Type*} {mα : MeasurableSpace α} {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
     (hF_meas : AEMeasurable F μ)
     (hf_tendsto : Tendsto (fun i ↦ ∫⁻ a, f i a ∂μ) atTop (𝓝 (∫⁻ a, F a ∂μ)))
-    (hf_mono : ∀ᵐ a ∂μ, Monotone (fun i ↦ f i a))
-    (h_bound : ∀ᵐ a ∂μ, ∀ i, f i a ≤ F a) (h_int_finite : ∫⁻ a, F a ∂μ ≠ ∞) :
-    ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
-  have : ∀ n, ∃ g : α → ℝ≥0∞, Measurable g ∧ g ≤ f n ∧ ∫⁻ a, f n a ∂μ = ∫⁻ a, g a ∂μ :=
-    fun n ↦ exists_measurable_le_lintegral_eq _ _
+    (hf_mono : ∀ᵐ a ∂μ, Monotone (fun i ↦ f i a)) (h_bound : ∀ᵐ a ∂μ, ∀ i, f i a ≤ F a)
+    (h_int_finite : ∫⁻ a, F a ∂μ ≠ ∞)
+    : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
+  have : ∀ n, ∃ g : α → ℝ≥0∞, Measurable g ∧ g ≤ f n ∧ ∫⁻ a, f n a ∂μ = ∫⁻ a, g a ∂μ := fun n ↦
+    exists_measurable_le_lintegral_eq _ _
   choose g gmeas gf hg using this
   let g' : ℕ → α → ℝ≥0∞ := Nat.rec (g 0) (fun n I x ↦ max (g (n + 1) x) (I x))
   have M n : Measurable (g' n) := by
@@ -179,7 +198,8 @@ lemma tendsto_of_lintegral_tendsto_of_monotone {α : Type*} {mα : MeasurableSpa
     | succ n ih => exact Measurable.max (gmeas (n + 1)) ih
   have I : ∀ n x, g n x ≤ g' n x := by
     intro n x
-    cases n with | zero | succ => simp [g']
+    cases n with
+    | zero | succ => simp [g']
   have I' : ∀ᵐ x ∂μ, ∀ n, g' n x ≤ f n x := by
     filter_upwards [hf_mono] with x hx n
     induction n with
@@ -201,16 +221,18 @@ lemma tendsto_of_lintegral_tendsto_of_monotone {α : Type*} {mα : MeasurableSpa
   filter_upwards [this, I', h_bound] with x hx h'x h''x
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le hx tendsto_const_nhds h'x h''x
 
-/-- If an antitone sequence of functions has a lower bound and the sequence of integrals of these
+/--
+If an antitone sequence of functions has a lower bound and the sequence of integrals of these
 functions tends to the integral of the lower bound, then the sequence of functions converges
-almost everywhere to the lower bound. -/
-lemma tendsto_of_lintegral_tendsto_of_antitone {α : Type*} {mα : MeasurableSpace α}
-    {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
+almost everywhere to the lower bound.
+-/
+lemma tendsto_of_lintegral_tendsto_of_antitone
+    {α : Type*} {mα : MeasurableSpace α} {f : ℕ → α → ℝ≥0∞} {F : α → ℝ≥0∞} {μ : Measure α}
     (hf_meas : ∀ n, AEMeasurable (f n) μ)
     (hf_tendsto : Tendsto (fun i ↦ ∫⁻ a, f i a ∂μ) atTop (𝓝 (∫⁻ a, F a ∂μ)))
-    (hf_mono : ∀ᵐ a ∂μ, Antitone (fun i ↦ f i a))
-    (h_bound : ∀ᵐ a ∂μ, ∀ i, F a ≤ f i a) (h0 : ∫⁻ a, f 0 a ∂μ ≠ ∞) :
-    ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
+    (hf_mono : ∀ᵐ a ∂μ, Antitone (fun i ↦ f i a)) (h_bound : ∀ᵐ a ∂μ, ∀ i, F a ≤ f i a)
+    (h0 : ∫⁻ a, f 0 a ∂μ ≠ ∞)
+    : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F a)) := by
   have h_int_finite : ∫⁻ a, F a ∂μ ≠ ∞ := by
     refine ((lintegral_mono_ae ?_).trans_lt h0.lt_top).ne
     filter_upwards [h_bound] with a ha using ha 0
@@ -222,8 +244,11 @@ lemma tendsto_of_lintegral_tendsto_of_antitone {α : Type*} {mα : MeasurableSpa
       exact pure_le_nhds _
     · exact h
   classical
-  let F' : α → ℝ≥0∞ := fun a ↦ if h : ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l)
-    then h.choose else ∞
+  let F' : α → ℝ≥0∞ := fun a ↦
+    if h : ∃ l, Tendsto (fun i ↦ f i a) atTop (𝓝 l) then
+      h.choose
+    else
+      ∞
   have hF'_tendsto : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (F' a)) := by
     filter_upwards [h_exists] with a ha
     simp_rw [F', dite_eq_left ha]

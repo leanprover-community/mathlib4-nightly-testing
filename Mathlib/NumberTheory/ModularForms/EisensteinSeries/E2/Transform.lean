@@ -7,7 +7,6 @@ Authors: Chris Birkbeck
 module
 
 public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Summable
-
 import Mathlib.LinearAlgebra.Matrix.FixedDetMatrices
 
 /-!
@@ -79,15 +78,21 @@ noncomputable section
 
 namespace EisensteinSeries
 
-/-- This is an auxiliary correction term for proving how E2 transforms. It allows us to work with
-nicer indexing sets for our infinite sums. The key is the `aux_identity` below. -/
-def δ (x : Fin 2 → ℤ) : ℂ := if x = ![0, 0] then 1 else if x = ![0, -1] then 2 else 0
+/--
+This is an auxiliary correction term for proving how E2 transforms. It allows us to work with
+nicer indexing sets for our infinite sums. The key is the `aux_identity` below.
+-/
+def δ (x : Fin 2 → ℤ) : ℂ :=
+  if x = ![0, 0] then
+    1
+  else if x = ![0, -1] then
+    2
+  else
+    0
 
-@[simp]
-lemma δ_eq : δ ![0, 0] = 1 := by simp [δ]
+@[simp] lemma δ_eq : δ ![0, 0] = 1 := by simp [δ]
 
-@[simp]
-lemma δ_eq_two : δ ![0, -1] = 2 := by simp [δ]
+@[simp] lemma δ_eq_two : δ ![0, -1] = 2 := by simp [δ]
 
 lemma δ_eventually_cofinite : δ =ᶠ[cofinite] 0 := by
   filter_upwards [eventually_cofinite_ne ![0, 0], eventually_cofinite_ne ![0, -1]] with x hx hx'
@@ -95,22 +100,25 @@ lemma δ_eventually_cofinite : δ =ᶠ[cofinite] 0 := by
 
 /-- This term gives an alternative infinite sum for G2 which is absolutely convergent. -/
 abbrev G2Term (z : ℍ) (m : Fin 2 → ℤ) : ℂ :=
-    (((m 0 : ℂ) * z + m 1) ^ 2 * (m 0 * z + m 1 + 1))⁻¹ + δ m
+  (((m 0 : ℂ) * z + m 1) ^ 2 * (m 0 * z + m 1 + 1))⁻¹ + δ m
 
 lemma G2Term_summable (z : ℍ) : Summable (G2Term z) := by
   have H : Summable fun m ↦ G2Term z m - δ m := by
     simp_rw [G2Term, add_sub_cancel_right]
     apply summable_of_isBigO_rpow_norm (a := 3) (by linarith)
-    simpa [pow_three, pow_two, ← mul_assoc] using ((isBigO_linear_add_const_vec z 0 1).mul
-      (isBigO_linear_add_const_vec z 0 0)).mul (isBigO_linear_add_const_vec z 0 0)
+    simpa [pow_three, pow_two, ← mul_assoc] using
+      ((isBigO_linear_add_const_vec z 0 1).mul (isBigO_linear_add_const_vec z 0 0)).mul
+        (isBigO_linear_add_const_vec z 0 0)
   exact H.congr_cofinite <| δ_eventually_cofinite.mp <| .of_forall <| by simp +contextual
 
---This is the version we use the most.
+-- This is the version we use the most.
 lemma G2Term_prod_summable (z : ℍ) : Summable (fun p : ℤ × ℤ ↦ G2Term z ![p.1, p.2]) := by
   apply (finTwoArrowEquiv _).symm.summable_iff.mpr (G2Term_summable z)
 
-lemma aux_identity (z : ℍ) (b n : ℤ) : ((b : ℂ) * z + n + 1)⁻¹ * (((b : ℂ) * z + n) ^ 2)⁻¹ +
-    (δ ![b, n]) + (((b : ℂ) * z + n)⁻¹ - ((b : ℂ) * z + n + 1)⁻¹) = (((b : ℂ) * z + n) ^ 2)⁻¹ := by
+lemma aux_identity (z : ℍ) (b n : ℤ)
+    : ((b : ℂ) * z + n + 1)⁻¹ * (((b : ℂ) * z + n) ^ 2)⁻¹ + (δ ![b, n])
+        + (((b : ℂ) * z + n)⁻¹ - ((b : ℂ) * z + n + 1)⁻¹)
+      = (((b : ℂ) * z + n) ^ 2)⁻¹ := by
   by_cases h : b = 0 ∧ n = 0
   · simp [h.1, h.2]
   · simp only [not_and] at h
@@ -134,19 +142,20 @@ lemma G2_eq_tsum_G2Term (z : ℍ) : G2 z = ∑' m, ∑' n, G2Term z ![m, n] := b
   rw [G2, show t = t + 0 by ring, ← tsum_tsum_symmetricIco_sub_eq z, ← Summable.tsum_add]
   · rw [← tsum_eq_of_summable_unconditional (L := symmetricIcc ℤ)]
     · congr with a
-      rw [e2Summand, tsum_eq_of_summable_unconditional
-        (summable_right_one_div_linear_sub_one_div_linear_succ z a), ← Summable.tsum_add
-        ((G2Term_prod_summable z).prod_factor _)
-        (summable_right_one_div_linear_sub_one_div_linear_succ z a)]
+      rw [e2Summand,
+        tsum_eq_of_summable_unconditional (summable_right_one_div_linear_sub_one_div_linear_succ z
+          a),
+        ← Summable.tsum_add ((G2Term_prod_summable z).prod_factor _)
+          (summable_right_one_div_linear_sub_one_div_linear_succ z a)]
       exact tsum_congr (fun b ↦ by simp [eisSummand, G2Term, aux_identity z a b, zpow_ofNat])
-    · simpa only [tsum_symmetricIco_linear_sub_linear_add_one_eq_zero z, add_zero]
-        using (G2Term_prod_summable z).prod
+    · simpa only [tsum_symmetricIco_linear_sub_linear_add_one_eq_zero z, add_zero] using
+        (G2Term_prod_summable z).prod
   · exact (G2Term_prod_summable z).prod
-  · exact summable_zero.congr
-      fun b ↦ by simp [← tsum_symmetricIco_linear_sub_linear_add_one_eq_zero z b]
+  · exact summable_zero.congr fun b ↦ by
+      simp [← tsum_symmetricIco_linear_sub_linear_add_one_eq_zero z b]
 
-lemma G2_S_action_eq_tsum_G2Term (z : ℍ) : ((z : ℂ) ^ 2)⁻¹ * G2 (S • z) - -2 * π * I / z =
-    ∑' n : ℤ, ∑' m : ℤ, G2Term z ![m, n] := by
+lemma G2_S_action_eq_tsum_G2Term (z : ℍ)
+    : ((z : ℂ) ^ 2)⁻¹ * G2 (S • z) - -2 * π * I / z = ∑' n : ℤ, ∑' m : ℤ, G2Term z ![m, n] := by
   rw [← tsum_symmetricIco_tsum_sub_eq z, ← tsum_symmetricIco_tsum_eq_S_act z,
     ← tsum_eq_of_summable_unconditional (L := symmetricIco ℤ), ← Summable.tsum_sub]
   · apply tsum_congr (fun N ↦ ?_)
@@ -170,13 +179,13 @@ lemma G2_S_action_eq_tsum_G2Term (z : ℍ) : ((z : ℂ) ^ 2)⁻¹ * G2 (S • z)
     rw [← ((finTwoArrowEquiv _).trans (.prodComm ..)).symm.summable_iff] at this
     exact this.prod
 
-lemma tsum_G2Term_eq_tsum (z : ℍ) : ∑' (m : Fin 2 → ℤ), G2Term z m =
-    ∑' m : ℤ, ∑' n : ℤ, G2Term z ![m, n] := by
+lemma tsum_G2Term_eq_tsum (z : ℍ)
+    : ∑' (m : Fin 2 → ℤ), G2Term z m = ∑' m : ℤ, ∑' n : ℤ, G2Term z ![m, n] := by
   rw [← (finTwoArrowEquiv _).symm.tsum_eq]
   exact Summable.tsum_prod' (G2Term_prod_summable z) ((G2Term_prod_summable z).prod_factor)
 
-lemma tsum_G2Term_eq_tsum' (z : ℍ) : ∑' (m : Fin 2 → ℤ), G2Term z m =
-    ∑' n : ℤ, ∑' m : ℤ, G2Term z ![m, n] := by
+lemma tsum_G2Term_eq_tsum' (z : ℍ)
+    : ∑' (m : Fin 2 → ℤ), G2Term z m = ∑' n : ℤ, ∑' m : ℤ, G2Term z ![m, n] := by
   rw [Summable.tsum_comm', tsum_G2Term_eq_tsum]
   · exact G2Term_prod_summable z
   · exact (G2Term_prod_summable z).prod_factor
@@ -184,15 +193,13 @@ lemma tsum_G2Term_eq_tsum' (z : ℍ) : ∑' (m : Fin 2 → ℤ), G2Term z m =
     rw [← ((finTwoArrowEquiv _).trans (.prodComm ..)).symm.summable_iff] at H
     exact H.prod_factor
 
-
 public section
 
 section transform
 
 /-- This is the key identity for how `G2` transforms under the slash action by `S`. -/
 lemma G2_S_transform (z : ℍ) : G2 z = ((z : ℂ) ^ 2)⁻¹ * G2 (S • z) - -2 * π * I / z := by
-  rw [G2_S_action_eq_tsum_G2Term, G2_eq_tsum_G2Term z, ← tsum_G2Term_eq_tsum',
-  tsum_G2Term_eq_tsum]
+  rw [G2_S_action_eq_tsum_G2Term, G2_eq_tsum_G2Term z, ← tsum_G2Term_eq_tsum', tsum_G2Term_eq_tsum]
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma G2_T_transform : G2 ∣[(2 : ℤ)] T = G2 := by
@@ -204,36 +211,35 @@ lemma G2_T_transform : G2 ∣[(2 : ℤ)] T = G2 := by
 lemma G2_slash_action (γ : SL(2, ℤ)) : G2 ∣[(2 : ℤ)] γ = G2 - D2 γ := by
   have : γ ∈ Subgroup.closure {S, T} := by simp [SpecialLinearGroup.SL2Z_generators]
   induction this using Subgroup.closure_induction with
-  | one => simp only [SlashAction.slash_one, D2_one, sub_zero]
+  | one =>
+    simp only [SlashAction.slash_one, D2_one, sub_zero]
   | mem g hg =>
-      simp only [mem_insert_iff, mem_singleton_iff] at hg
-      rcases hg with (h1 | h2)
-      · ext z
-        simp only [Pi.sub_apply, h1, D2_S z, SlashInvariantForm.slash_S_apply G2 2 z, mul_comm,
-          G2_S_transform z, modular_S_smul]
-        ring_nf
-        aesop
-      · simpa only [h2, D2_T, sub_zero] using G2_T_transform
+    simp only [mem_insert_iff, mem_singleton_iff] at hg
+    rcases hg with (h1 | h2)
+    · ext z
+      simp only [Pi.sub_apply, h1, D2_S z, SlashInvariantForm.slash_S_apply G2 2 z, mul_comm,
+        G2_S_transform z, modular_S_smul]
+      ring_nf
+      aesop
+    · simpa only [h2, D2_T, sub_zero] using G2_T_transform
   | mul g h _ _ ig ih =>
-      rw [D2_mul, SlashAction.slash_mul, ig, sub_eq_add_neg, SlashAction.add_slash, ih]
-      grind [SlashAction.neg_slash, SL_slash]
+    rw [D2_mul, SlashAction.slash_mul, ig, sub_eq_add_neg, SlashAction.add_slash, ih]
+    grind [SlashAction.neg_slash, SL_slash]
   | inv g _ ig =>
-      have H1 : (G2 ∣[(2 : ℤ)] g) ∣[(2 : ℤ)] g⁻¹ = (G2 - D2 g) ∣[(2 : ℤ)] g⁻¹ := by
-        rw [ig]
-      simp_rw [← SlashAction.slash_mul, sub_eq_add_neg, SlashAction.add_slash, mul_inv_cancel,
-        SlashAction.slash_one, SL_slash, SlashAction.neg_slash] at H1
-      nth_rw 2 [H1]
-      have := D2_inv g
-      simp only [SL_slash] at this
-      rw [← sub_eq_add_neg, this, SL_slash, sub_neg_eq_add, add_sub_cancel_right]
+    have H1 : (G2 ∣[(2 : ℤ)] g) ∣[(2 : ℤ)] g⁻¹ = (G2 - D2 g) ∣[(2 : ℤ)] g⁻¹ := by rw [ig]
+    simp_rw [← SlashAction.slash_mul, sub_eq_add_neg, SlashAction.add_slash, mul_inv_cancel,
+      SlashAction.slash_one, SL_slash, SlashAction.neg_slash] at H1
+    nth_rw 2 [H1]
+    have := D2_inv g
+    simp only [SL_slash] at this
+    rw [← sub_eq_add_neg, this, SL_slash, sub_neg_eq_add, add_sub_cancel_right]
 
 lemma E2_slash_action (γ : SL(2, ℤ)) : E2 ∣[(2 : ℤ)] γ = E2 - (1 / (2 * riemannZeta 2)) • D2 γ := by
   ext z
   simp [E2, SL_smul_slash, G2_slash_action γ, mul_sub]
 
 /-- `E2` is invariant under the weight-2 slash action of `T`, since the defect `D2 T` vanishes. -/
-lemma E2_T_transform : E2 ∣[(2 : ℤ)] T = E2 := by
-  simp [E2_slash_action, D2_T]
+lemma E2_T_transform : E2 ∣[(2 : ℤ)] T = E2 := by simp [E2_slash_action, D2_T]
 
 /-- `E2` is invariant under `z ↦ z + 1` (the action of `T`). -/
 lemma E2_T_smul (z : ℍ) : E2 (T • z) = E2 z := by

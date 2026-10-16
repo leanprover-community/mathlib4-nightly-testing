@@ -31,30 +31,38 @@ section LE
 variable [LE α]
 
 instance : LE (Quotient s) where
-  le := Quotient.lift₂ (Relation.TransGen fun x y ↦ x ≤ y ∨ x ≈ y) <| by
-    refine fun x₁ x₂ y₁ y₂ hx hy ↦ propext ⟨?_, ?_⟩ <;> intro h
-    · exact .trans (.single <| .inr (symm hx)) <| .trans h (.single <| .inr hy)
-    · exact .trans (.single <| .inr hx) <| .trans h (.single <| .inr (symm hy))
+  le :=
+    Quotient.lift₂ (Relation.TransGen fun x y ↦ x ≤ y ∨ x ≈ y) <| by
+      refine fun x₁ x₂ y₁ y₂ hx hy ↦ propext ⟨?_, ?_⟩ <;> intro h
+      · exact .trans (.single <| .inr (symm hx)) <| .trans h (.single <| .inr hy)
+      · exact .trans (.single <| .inr hx) <| .trans h (.single <| .inr (symm hy))
 
-theorem le_def {x y : α} :
-    Quotient.mk s x ≤ Quotient.mk s y ↔ Relation.TransGen (fun x y ↦ x ≤ y ∨ x ≈ y) x y := .rfl
+theorem le_def {x y : α}
+    : Quotient.mk s x ≤ Quotient.mk s y ↔ Relation.TransGen (fun x y ↦ x ≤ y ∨ x ≈ y) x y :=
+  .rfl
 
 instance : @Std.Refl (Quotient s) (· ≤ ·) where
   refl x := by
-    induction x using Quotient.inductionOn with | h x
+    induction x using Quotient.inductionOn with
+    | h x
     exact .single <| .inr (refl x)
 
 instance : IsTrans (Quotient s) (· ≤ ·) where
   trans x y z h₁ h₂ := by
-    induction x using Quotient.inductionOn with | h x
-    induction y using Quotient.inductionOn with | h y
-    induction z using Quotient.inductionOn with | h z
+    induction x using Quotient.inductionOn with
+    | h x
+    induction y using Quotient.inductionOn with
+    | h y
+    induction z using Quotient.inductionOn with
+    | h z
     exact Relation.TransGen.trans h₁ h₂
 
 instance [@Std.Total α (· ≤ ·)] : @Std.Total (Quotient s) (· ≤ ·) where
   total x y := by
-    induction x using Quotient.inductionOn with | h x
-    induction y using Quotient.inductionOn with | h y
+    induction x using Quotient.inductionOn with
+    | h x
+    induction y using Quotient.inductionOn with
+    | h y
     obtain h | h := total_of (· ≤ ·) x y
     · exact .inl <| .single <| .inl h
     · exact .inr <| .single <| .inl h
@@ -68,15 +76,18 @@ end LE
 section Preorder
 variable [Preorder α]
 
-theorem mk_monotone : Monotone (Quotient.mk s) :=
-  fun _ _ h ↦ .single (.inl h)
+theorem mk_monotone : Monotone (Quotient.mk s) := fun _ _ h ↦ .single (.inl h)
 
-theorem lift_monotone {α β : Type*} [Preorder α] {s : Setoid α} [Preorder β]
-    (f : α → β) (hf : Monotone f) (H : ∀ x₁ x₂, x₁ ≈ x₂ → f x₁ = f x₂) :
-    Monotone (Quotient.lift f H) := by
+theorem lift_monotone
+    {α β : Type*} [Preorder α]
+    {s : Setoid α} [Preorder β]
+    (f : α → β) (hf : Monotone f) (H : ∀ x₁ x₂, x₁ ≈ x₂ → f x₁ = f x₂)
+    : Monotone (Quotient.lift f H) := by
   intro x y h
-  induction x using Quotient.inductionOn with | h x
-  induction y using Quotient.inductionOn with | h y
+  induction x using Quotient.inductionOn with
+  | h x
+  induction y using Quotient.inductionOn with
+  | h y
   induction h
   on_goal 2 => rename_i IH; apply IH.trans
   all_goals
@@ -106,11 +117,14 @@ theorem mk_le_mk {x y : α} : Quotient.mk s x ≤ Quotient.mk s y ↔ x ≤ y �
 
 instance instLinearOrder [DecidableRel (· ≈ · : α → α → Prop)] : LinearOrder (Quotient s) where
   le_antisymm x y h₁ h₂ := by
-    induction x using Quotient.inductionOn with | h x
-    induction y using Quotient.inductionOn with | h y
+    induction x using Quotient.inductionOn with
+    | h x
+    induction y using Quotient.inductionOn with
+    | h y
     rw [mk_le_mk] at h₁ h₂
     cases h₁ with
-    | inr h => exact Quotient.sound h
+    | inr h =>
+      exact Quotient.sound h
     | inl h₁ =>
       cases h₂ with
       | inr h => exact (Quotient.sound h).symm
@@ -123,8 +137,7 @@ theorem mk_lt_mk {x y : α} : Quotient.mk s x < Quotient.mk s y ↔ x < y ∧ ¬
   contrapose! +distrib
   rw [mk_le_mk, comm_of (· ≈ ·)]
 
-theorem lt_of_mk_lt_mk {x y : α} (h : Quotient.mk s x < Quotient.mk s y) : x < y :=
-  (mk_lt_mk.1 h).1
+theorem lt_of_mk_lt_mk {x y : α} (h : Quotient.mk s x < Quotient.mk s y) : x < y := (mk_lt_mk.1 h).1
 
 end LinearOrder
 end Quotient

@@ -17,8 +17,7 @@ This file proves miscellaneous results under the assumption of `OrderTopology` p
 
 public section
 
-variable {α : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
-  {a : α} {s : Set α}
+variable {α : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α] {a : α} {s : Set α}
 
 open Filter Order Set
 
@@ -43,8 +42,10 @@ variable [NoMaxOrder α]
 theorem isOpen_singleton_iff : IsOpen {a} ↔ ¬ IsSuccLimit a := by
   nontriviality α
   refine ⟨fun h ha ↦ ?_, fun ha ↦ ?_⟩
-  · obtain ⟨l, u, h₁, h₂⟩ := mem_nhds_iff_exists_Ioo_subset' (by simpa using ha.not_isMin)
-      (by simpa only [not_isMax_iff] using not_isMax a) |>.mp (h.mem_nhds (mem_singleton a))
+  · obtain ⟨l, u, h₁, h₂⟩ :=
+      mem_nhds_iff_exists_Ioo_subset' (by simpa using ha.not_isMin)
+          (by simpa only [not_isMax_iff] using not_isMax a)
+        |>.mp (h.mem_nhds (mem_singleton a))
     refine ha.isSuccPrelimit l ?_
     rw [← succ_eq_iff_covBy]
     simp only [mem_Ioo, subset_singleton_iff] at h₁ h₂
@@ -64,12 +65,10 @@ theorem nhds_of_isMin {a : α} (h : IsMin a) : 𝓝 a = pure a := by
   tauto
 
 @[to_dual (attr := simp)]
-theorem nhds_bot [OrderBot α] : 𝓝 (⊥ : α) = pure ⊥ :=
-  nhds_of_isMin isMin_bot
+theorem nhds_bot [OrderBot α] : 𝓝 (⊥ : α) = pure ⊥ := nhds_of_isMin isMin_bot
 
 @[to_dual]
-theorem isOpen_iff {s : Set α} : IsOpen s ↔
-    ∀ o ∈ s, IsSuccLimit o → ∃ a < o, Ioo a o ⊆ s := by
+theorem isOpen_iff {s : Set α} : IsOpen s ↔ ∀ o ∈ s, IsSuccLimit o → ∃ a < o, Ioo a o ⊆ s := by
   refine isOpen_iff_mem_nhds.trans <| forall₂_congr fun o ho ↦ ?_
   by_cases ho' : IsSuccLimit o
   · rw [(hasBasis_nhds_Ioc_of_exists_lt (not_isMin_iff.1 ho'.not_isMin)).mem_iff]
@@ -77,8 +76,8 @@ theorem isOpen_iff {s : Set α} : IsOpen s ↔
   · simp [nhds_eq_pure.2 ho', ho, ho']
 
 @[to_dual]
-theorem accPt_principal {a : α} {s : Set α} :
-    AccPt a (𝓟 s) ↔ ¬ IsMin a ∧ ∀ b < a, (s ∩ Ioo b a).Nonempty := by
+theorem accPt_principal {a : α} {s : Set α}
+    : AccPt a (𝓟 s) ↔ ¬ IsMin a ∧ ∀ b < a, (s ∩ Ioo b a).Nonempty := by
   rw [accPt_iff_frequently]
   by_cases ha : IsMin a
   · simp [nhds_of_isMin, ha]

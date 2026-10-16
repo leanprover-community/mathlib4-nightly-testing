@@ -58,42 +58,48 @@ variable {ι R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommG
 
 namespace RootPairing
 
-/-- A base of a root pairing.
+/--
+A base of a root pairing.
 
 For reduced root pairings this definition is equivalent to the usual definition appearing in the
 informal literature but not for non-reduced root pairings it is more restrictive. See the module
 doc string for further remarks.
 
-See also `RootPairing.Base.mk'`. -/
+See also `RootPairing.Base.mk'`.
+-/
 structure Base (P : RootPairing ι R M N) where
   /-- The indices of the simple roots / coroots. -/
   support : Finset ι
   linearIndepOn_root : LinearIndepOn R P.root support
   linearIndepOn_coroot : LinearIndepOn R P.coroot support
-  root_mem_or_neg_mem (i : ι) : P.root i ∈ AddSubmonoid.closure (P.root '' support) ∨
-                               -P.root i ∈ AddSubmonoid.closure (P.root '' support)
-  coroot_mem_or_neg_mem (i : ι) : P.coroot i ∈ AddSubmonoid.closure (P.coroot '' support) ∨
-                                 -P.coroot i ∈ AddSubmonoid.closure (P.coroot '' support)
+  root_mem_or_neg_mem (i : ι)
+    : P.root i ∈ AddSubmonoid.closure (P.root '' support)
+      ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' support)
+  coroot_mem_or_neg_mem (i : ι)
+    : P.coroot i ∈ AddSubmonoid.closure (P.coroot '' support)
+      ∨ - P.coroot i ∈ AddSubmonoid.closure (P.coroot '' support)
 
 section AlternateConstructor
 
-variable [Finite ι] [CharZero R] [IsDomain R] (P : RootPairing ι R M N) [P.IsCrystallographic]
+variable
+  [Finite ι] [CharZero R] [IsDomain R]
+  (P : RootPairing ι R M N) [P.IsCrystallographic]
   {s : Finset ι}
-  (h₀ : LinearIndepOn R P.root s)
-  (h₁ : Set.Pairwise s fun i j ↦ P.pairingIn ℤ i j ≤ 0)
+  (h₀ : LinearIndepOn R P.root s) (h₁ : Set.Pairwise s fun i j ↦ P.pairingIn ℤ i j ≤ 0)
   (h₂ : ∀ i, P.coroot i ∈ span ℤ (P.coroot '' s))
 include h₀ h₁ h₂
 
 lemma nonneg_or_nonpos_of_sum_smul_mem_range_root
-    (c : s → ℤ) (hc : ∑ k, c k • P.root k ∈ range P.root) :
-    0 ≤ c ∨ c ≤ 0 := by
+    (c : s → ℤ) (hc : ∑ k, c k • P.root k ∈ range P.root)
+    : 0 ≤ c ∨ c ≤ 0 := by
   classical
   have : Fintype ι := Fintype.ofFinite ι
   have h₀' : LinearIndepOn ℤ P.root s := h₀.linearIndependent.restrict_scalars' ℤ
   by_contra! hc'
-  have key (d : s → ℤ) (hd : ∑ k, d k • P.root k ∈ range P.root) (hd' : ¬ 0 ≤ d ∧ ¬ d ≤ 0)
-      (hdc : ∑ k, (d k).natAbs = ∑ k, (c k).natAbs) :
-      ∃ k, 0 < d k ∧ d ≤ Pi.single k 1 := by
+  have key
+      (d : s → ℤ) (hd : ∑ k, d k • P.root k ∈ range P.root) (hd' : ¬ 0 ≤ d ∧ ¬ d ≤ 0)
+      (hdc : ∑ k, (d k).natAbs = ∑ k, (c k).natAbs)
+      : ∃ k, 0 < d k ∧ d ≤ Pi.single k 1 := by
     obtain ⟨i, hi⟩ : ∃ i : ι, P.root i = ∑ k, d k • P.root k := hd
     obtain ⟨k, hk, hik⟩ : ∃ k : s, 0 < d k ∧ 0 < P.pairingIn ℤ i k :=
       P.exists_pos_pairingIn h₀' h₁ hi.symm hd'.2
@@ -110,8 +116,9 @@ lemma nonneg_or_nonpos_of_sum_smul_mem_range_root
     replace hk₀ : ¬ 0 ≤ d - Pi.single k 1 := by aesop
     replace hd : P.root j = ∑ l : s, (d - Pi.single k 1 : s → ℤ) l • P.root l := by
       simp [hj, hi, sub_smul, Pi.single_apply]
-    replace hd : d ≤ Pi.single k 1 := sub_nonpos.mp <|
-      (nonneg_or_nonpos_of_sum_smul_mem_range_root (d - Pi.single k 1) ⟨j, hd⟩).resolve_left hk₀
+    replace hd : d ≤ Pi.single k 1 :=
+      sub_nonpos.mp <|
+        (nonneg_or_nonpos_of_sum_smul_mem_range_root (d - Pi.single k 1) ⟨j, hd⟩).resolve_left hk₀
     exact ⟨k, hk, hd⟩
   obtain ⟨k, hk, hk'⟩ := key c hc hc' rfl
   obtain ⟨l, hl, hl'⟩ :=
@@ -126,9 +133,9 @@ termination_by ∑ k, (c k).natAbs
 variable (h₃ : ∀ i, P.root i ∈ span ℤ (P.root '' s))
 include h₃
 
-private lemma Base.mkOfPairwiseLEZero_aux (i : ι) :
-     P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-    -P.root i ∈ AddSubmonoid.closure (P.root '' s) := by
+private lemma Base.mkOfPairwiseLEZero_aux (i : ι)
+    : P.root i ∈ AddSubmonoid.closure (P.root '' s)
+      ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s) := by
   have {c : s → ℤ} (hc : 0 ≤ c) : ∑ k, c k • P.root k ∈ AddSubmonoid.closure (P.root '' s) := by
     simp_rw [← span_nat_eq_addSubmonoidClosure, mem_toAddSubmonoid,
       Fintype.mem_span_image_iff_exists_fun, ← natCast_zsmul]
@@ -138,10 +145,13 @@ private lemma Base.mkOfPairwiseLEZero_aux (i : ι) :
   · exact .inl <| by simpa [← hc] using this h
   · exact .inr <| by simpa [← hc] using this <| neg_nonneg.mpr h
 
-/-- An alternate condition for a subset of linearly independent (co)roots to form a base.
+/--
+An alternate condition for a subset of linearly independent (co)roots to form a base.
 
-This is useful when constructing a root pairing from a realisation of a Cartan matrix. -/
-@[no_expose] def Base.mkOfPairwiseLEZero : P.Base where
+This is useful when constructing a root pairing from a realisation of a Cartan matrix.
+-/
+@[no_expose]
+def Base.mkOfPairwiseLEZero : P.Base where
   support := s
   linearIndepOn_root := h₀
   linearIndepOn_coroot := by
@@ -151,7 +161,8 @@ This is useful when constructing a root pairing from a realisation of a Cartan m
   coroot_mem_or_neg_mem := by
     have : Fintype ι := Fintype.ofFinite ι
     exact Base.mkOfPairwiseLEZero_aux P.flip (P.linearIndepOn_coroot_iff.mpr h₀)
-      (fun j hj k hk hjk ↦ h₁ hk hj hjk.symm) h₃ h₂
+      (fun j hj k hk hjk ↦ h₁ hk hj hjk.symm)
+      h₃ h₂
 
 @[simp]
 lemma Base.mkOfPairwiseLEZero_support : (mkOfPairwiseLEZero P h₀ h₁ h₂ h₃).support = s := by rfl
@@ -170,8 +181,8 @@ lemma support_nonempty [Nonempty ι] [NeZero (2 : R)] : b.support.Nonempty := by
   simpa [P.ne_zero default, contra] using b.root_mem_or_neg_mem default
 
 /-- Interchanging roots and coroots, one still has a base of a root pairing. -/
-@[simps] protected def flip :
-    P.flip.Base where
+@[simps]
+protected def flip : P.flip.Base where
   support := b.support
   linearIndepOn_root := b.linearIndepOn_coroot
   linearIndepOn_coroot := b.linearIndepOn_root
@@ -180,31 +191,39 @@ lemma support_nonempty [Nonempty ι] [NeZero (2 : R)] : b.support.Nonempty := by
 
 section Map
 
-variable {ι₂ M₂ N₂ : Type*} [AddCommGroup M₂] [Module R M₂] [AddCommGroup N₂] [Module R N₂]
+variable
+  {ι₂ M₂ N₂ : Type*} [AddCommGroup M₂] [Module R M₂] [AddCommGroup N₂] [Module R N₂]
   {P₂ : RootPairing ι₂ R M₂ N₂} (e : P.Equiv P₂)
 
-private lemma map_aux_pos [DecidableEq ι₂] (s : Finset ι) {f : ι → M} {f₂ : ι₂ → M₂}
-    (e₁ : ι ≃ ι₂) (e₂ : M ≃ₗ[R] M₂) (he : f₂ ∘ e₁ = e₂ ∘ f) {i : ι₂}
-    (hi : f (e₁.symm i) ∈ AddSubmonoid.closure (f '' s)) :
-    f₂ i ∈ AddSubmonoid.closure (f₂ '' (s.image e₁)) := by
+private lemma map_aux_pos
+    [DecidableEq ι₂]
+    (s : Finset ι)
+    {f : ι → M} {f₂ : ι₂ → M₂}
+    (e₁ : ι ≃ ι₂) (e₂ : M ≃ₗ[R] M₂) (he : f₂ ∘ e₁ = e₂ ∘ f)
+    {i : ι₂} (hi : f (e₁.symm i) ∈ AddSubmonoid.closure (f '' s))
+    : f₂ i ∈ AddSubmonoid.closure (f₂ '' (s.image e₁)) := by
   have aux₁ : f (e₁.symm i) = e₂.symm (f₂ i) := by have := congr($he (e₁.symm i)); simp_all
   have aux₂ : AddSubmonoid.closure (f₂ '' e₁ '' s) = (AddSubmonoid.closure (f '' s)).map e₂ := by
     rw [AddMonoidHom.map_mclosure, ← image_comp, ← image_comp, he]
   aesop
 
-private lemma map_aux_neg [DecidableEq ι₂] (s : Finset ι) {f : ι → M} {f₂ : ι₂ → M₂}
-    (e₁ : ι ≃ ι₂) (e₂ : M ≃ₗ[R] M₂) (he : f₂ ∘ e₁ = e₂ ∘ f) {i : ι₂}
-    (hi : -f (e₁.symm i) ∈ AddSubmonoid.closure (f '' s)) :
-    -f₂ i ∈ AddSubmonoid.closure (f₂ '' (s.image e₁)) := by
+private lemma map_aux_neg
+    [DecidableEq ι₂]
+    (s : Finset ι)
+    {f : ι → M} {f₂ : ι₂ → M₂}
+    (e₁ : ι ≃ ι₂) (e₂ : M ≃ₗ[R] M₂) (he : f₂ ∘ e₁ = e₂ ∘ f)
+    {i : ι₂} (hi : - f (e₁.symm i) ∈ AddSubmonoid.closure (f '' s))
+    : - f₂ i ∈ AddSubmonoid.closure (f₂ '' (s.image e₁)) := by
   have aux₁ : f (e₁.symm i) = e₂.symm (f₂ i) := by have := congr($he (e₁.symm i)); simp_all
   have aux₂ : AddSubmonoid.closure (f₂ '' e₁ '' s) = (AddSubmonoid.closure (f '' s)).map e₂ := by
     rw [AddMonoidHom.map_mclosure, ← image_comp, ← image_comp, he]
   aesop
 
 /-- The push forward of a base along an equivalence. -/
-protected def map :
-    P₂.Base where
-  support := open scoped Classical in b.support.image e.indexEquiv
+protected def map : P₂.Base where
+  support :=
+    open scoped Classical in
+    b.support.image e.indexEquiv
   linearIndepOn_root := by
     have aux : P₂.root ∘ e.indexEquiv = e.weightEquiv ∘ P.root := e.root_weightMap.symm
     simp only [Finset.coe_image, ← linearIndepOn_equiv, aux]
@@ -229,36 +248,36 @@ protected def map :
     · right
       exact map_aux_neg b.support e.indexEquiv e.coweightEquiv.symm e.symm.coroot_coweightMap.symm h
 
-@[simp] lemma support_map_eq [DecidableEq ι₂] :
-    (b.map e).support = b.support.image e.indexEquiv := by
+@[simp]
+lemma support_map_eq [DecidableEq ι₂] : (b.map e).support = b.support.image e.indexEquiv := by
   unfold Base.map
   convert rfl
 
 /-- The natural bijection between support of a base and that of its push forward. -/
-@[simps!] def supportMapEquiv [DecidableEq ι₂] :
-    b.support ≃ (b.map e).support :=
+@[simps!]
+def supportMapEquiv [DecidableEq ι₂] : b.support ≃ (b.map e).support :=
   (e.indexEquiv.imageFinset b.support).trans <| Finset.equivOfEq (b.support_map_eq e).symm
 
 end Map
 
 include b in
-lemma root_ne_neg_of_ne [Nontrivial R] {i j : ι}
-    (hi : i ∈ b.support) (hj : j ∈ b.support) (hij : i ≠ j) :
-    P.root i ≠ -P.root j := by
+lemma root_ne_neg_of_ne
+    [Nontrivial R] {i j : ι} (hi : i ∈ b.support) (hj : j ∈ b.support) (hij : i ≠ j)
+    : P.root i ≠ - P.root j := by
   classical
   intro contra
-  have := linearIndepOn_iff'.mp b.linearIndepOn_root ({i, j} : Finset ι) 1
-    (by simp [Set.insert_subset_iff, hi, hj]) (by simp [Finset.sum_pair hij, contra])
+  have :=
+    linearIndepOn_iff'.mp b.linearIndepOn_root ({i, j} : Finset ι) 1
+      (by simp [Set.insert_subset_iff, hi, hj]) (by simp [Finset.sum_pair hij, contra])
   simp_all
 
-lemma linearIndependent_pair_of_ne {i j : b.support} (hij : i ≠ j) :
-    LinearIndependent R ![P.root i, P.root j] := by
+lemma linearIndependent_pair_of_ne {i j : b.support} (hij : i ≠ j)
+    : LinearIndependent R ![P.root i, P.root j] := by
   have : ({(j : ι), (i : ι)} : Set ι) ⊆ b.support := by simp [pair_subset_iff]
   rw [← linearIndepOn_id_range_iff (by simp_all)]
   simpa using LinearIndepOn.id_image <| b.linearIndepOn_root.mono this
 
-lemma root_mem_span_int (i : ι) :
-    P.root i ∈ span ℤ (P.root '' b.support) := by
+lemma root_mem_span_int (i : ι) : P.root i ∈ span ℤ (P.root '' b.support) := by
   have := b.root_mem_or_neg_mem i
   simp only [← span_nat_eq_addSubmonoidClosure, mem_toAddSubmonoid] at this
   rw [← span_span_of_tower (R := ℕ)]
@@ -267,37 +286,33 @@ lemma root_mem_span_int (i : ι) :
   · rw [← neg_mem_iff]
     exact subset_span hi
 
-lemma coroot_mem_span_int (i : ι) :
-    P.coroot i ∈ span ℤ (P.coroot '' b.support) :=
+lemma coroot_mem_span_int (i : ι) : P.coroot i ∈ span ℤ (P.coroot '' b.support) :=
   b.flip.root_mem_span_int i
 
 @[simp]
-lemma span_int_root_support :
-    span ℤ (P.root '' b.support) = span ℤ (range P.root) := by
+lemma span_int_root_support : span ℤ (P.root '' b.support) = span ℤ (range P.root) := by
   refine le_antisymm (span_mono <| image_subset_range _ _) (span_le.mpr ?_)
   rintro - ⟨i, rfl⟩
   exact b.root_mem_span_int i
 
 @[simp]
-lemma span_int_coroot_support :
-    span ℤ (P.coroot '' b.support) = span ℤ (range P.coroot) :=
+lemma span_int_coroot_support : span ℤ (P.coroot '' b.support) = span ℤ (range P.coroot) :=
   b.flip.span_int_root_support
 
 @[simp]
-lemma span_root_support :
-    span R (P.root '' b.support) = P.rootSpan R := by
+lemma span_root_support : span R (P.root '' b.support) = P.rootSpan R := by
   rw [← span_span_of_tower (R := ℤ), span_int_root_support, span_span_of_tower]
 
 @[simp]
-lemma span_coroot_support :
-    span R (P.coroot '' b.support) = P.corootSpan R :=
+lemma span_coroot_support : span R (P.coroot '' b.support) = P.corootSpan R :=
   b.flip.span_root_support
 
 open Finsupp in
-lemma eq_one_or_neg_one_of_mem_support_of_smul_mem_aux [Finite ι]
-    [HasUniqueDiv M] [HasUniqueDiv N]
-    (i : ι) (h : i ∈ b.support) (t : R) (ht : t • P.root i ∈ range P.root) :
-    ∃ z : ℤ, z * t = 1 := by
+lemma eq_one_or_neg_one_of_mem_support_of_smul_mem_aux
+    [Finite ι] [HasUniqueDiv M] [HasUniqueDiv N]
+    (i : ι) (h : i ∈ b.support)
+    (t : R) (ht : t • P.root i ∈ range P.root)
+    : ∃ z : ℤ, z * t = 1 := by
   obtain ⟨j, hj⟩ := ht
   obtain ⟨f, hf⟩ : ∃ f : b.support → ℤ, P.coroot i = ∑ i, (t * f i) • P.coroot i := by
     have : P.coroot j ∈ span ℤ (P.coroot '' b.support) := b.coroot_mem_span_int j
@@ -307,8 +322,11 @@ lemma eq_one_or_neg_one_of_mem_support_of_smul_mem_aux [Finite ι]
     simp_rw [mul_smul, ← Finset.smul_sum, Int.cast_smul_eq_zsmul, hf,
       coroot_eq_smul_coroot_iff.mpr hj]
   use f ⟨i, h⟩
-  replace hf : P.coroot i = linearCombination R (fun k : b.support ↦ P.coroot k)
-      (t • (linearEquivFunOnFinite R _ _).symm (fun x ↦ (f x : R))) := by
+  replace hf
+      : P.coroot i
+        = linearCombination R
+          (fun k : b.support ↦ P.coroot k)
+          (t • (linearEquivFunOnFinite R _ _).symm (fun x ↦ (f x : R))) := by
     rw [map_smul, linearCombination_eq_fintype_linearCombination_apply,
       Fintype.linearCombination_apply, hf]
     simp_rw [mul_smul, ← Finset.smul_sum]
@@ -320,10 +338,11 @@ lemma eq_one_or_neg_one_of_mem_support_of_smul_mem_aux [Finite ι]
 
 variable [CharZero R]
 
-lemma eq_one_or_neg_one_of_mem_support_of_smul_mem [Finite ι]
-    [HasUniqueDiv M] [HasUniqueDiv N]
-    (i : ι) (h : i ∈ b.support) (t : R) (ht : t • P.root i ∈ range P.root) :
-    t = 1 ∨ t = -1 := by
+lemma eq_one_or_neg_one_of_mem_support_of_smul_mem
+    [Finite ι] [HasUniqueDiv M] [HasUniqueDiv N]
+    (i : ι) (h : i ∈ b.support)
+    (t : R) (ht : t • P.root i ∈ range P.root)
+    : t = 1 ∨ t = -1 := by
   obtain ⟨z, hz⟩ := b.eq_one_or_neg_one_of_mem_support_of_smul_mem_aux i h t ht
   replace ht : (z : R) • P.coroot i ∈ range P.coroot := by
     obtain ⟨j, hj⟩ := ht
@@ -339,12 +358,13 @@ lemma eq_one_or_neg_one_of_mem_support_of_smul_mem [Finite ι]
   rw [Int.mul_eq_one_iff_eq_one_or_neg_one] at this
   tauto
 
-lemma pos_or_neg_of_sum_smul_root_mem (f : ι → ℤ)
-    (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support) :
-    0 < f ∨ f < 0 := by
+lemma pos_or_neg_of_sum_smul_root_mem
+    (f : ι → ℤ) (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support)
+    : 0 < f ∨ f < 0 := by
   suffices ∀ (f : ι → ℤ)
-      (hf : ∑ j ∈ b.support, f j • P.root j ∈ AddSubmonoid.closure (P.root '' b.support))
-      (hf₀ : f.support ⊆ b.support) (hf' : f ≠ 0), 0 < f by
+        (hf : ∑ j ∈ b.support, f j • P.root j ∈ AddSubmonoid.closure (P.root '' b.support))
+        (hf₀ : f.support ⊆ b.support) (hf' : f ≠ 0),
+      0 < f by
     obtain ⟨k, hk⟩ := hf
     have hf' : f ≠ 0 := by rintro rfl; exact P.ne_zero k <| by simp [hk]
     rcases b.root_mem_or_neg_mem k with hk' | hk' <;> rw [hk] at hk'
@@ -354,12 +374,14 @@ lemma pos_or_neg_of_sum_smul_root_mem (f : ι → ℤ)
   let f' : b.support → ℤ := fun i ↦ f i
   replace hf : ∑ j, f' j • P.root j ∈ AddSubmonoid.closure (P.root '' b.support) := by
     suffices ∑ j, f' j • P.root j = ∑ j ∈ b.support, f j • P.root j by rwa [this]
-    rw [← b.support.sum_finset_coe]; rfl
-  rw [← span_nat_eq_addSubmonoidClosure, mem_toAddSubmonoid,
-    Fintype.mem_span_image_iff_exists_fun] at hf
+    rw [← b.support.sum_finset_coe]
+    rfl
+  rw [← span_nat_eq_addSubmonoidClosure, mem_toAddSubmonoid, Fintype.mem_span_image_iff_exists_fun]
+    at hf
   obtain ⟨c, hc⟩ := hf
-  replace hc (i : b.support) : c i = f' i := Fintype.linearIndependent_iffₛ.mp
-    (b.linearIndepOn_root.restrict_scalars' ℤ) (Int.ofNat ∘ c) f' (by simpa) i
+  replace hc (i : b.support) : c i = f' i :=
+    Fintype.linearIndependent_iffₛ.mp (b.linearIndepOn_root.restrict_scalars' ℤ) (Int.ofNat ∘ c) f'
+      (by simpa) i
   have aux : 0 ≤ f := by
     intro i
     by_cases hi : i ∈ b.support
@@ -372,9 +394,9 @@ lemma pos_or_neg_of_sum_smul_root_mem (f : ι → ℤ)
   replace contra : f = 0 := le_antisymm contra aux
   contradiction
 
-lemma not_nonpos_iff_pos_of_sum_mem_range_root (f : ι → ℤ)
-    (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support) :
-    (¬ f ≤ 0) ↔ 0 < f := by
+lemma not_nonpos_iff_pos_of_sum_mem_range_root
+    (f : ι → ℤ) (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support)
+    : (¬ f ≤ 0) ↔ 0 < f := by
   rw [Pi.lt_def]
   refine ⟨fun h ↦ ⟨?_, ?_⟩, fun ⟨h, ⟨i, hi⟩⟩ contra ↦ by simp [le_antisymm contra h] at hi⟩
   · rcases b.pos_or_neg_of_sum_smul_root_mem f hf hf₀ with h' | h'
@@ -383,21 +405,26 @@ lemma not_nonpos_iff_pos_of_sum_mem_range_root (f : ι → ℤ)
       exact h (le_of_lt h')
   · contrapose! h; exact h
 
-lemma not_nonneg_iff_neg_of_sum_mem_range_root (f : ι → ℤ)
-    (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support) :
-    (¬ 0 ≤ f) ↔ f < 0 := by
+lemma not_nonneg_iff_neg_of_sum_mem_range_root
+    (f : ι → ℤ) (hf : ∑ j ∈ b.support, f j • P.root j ∈ range P.root) (hf₀ : f.support ⊆ b.support)
+    : (¬ 0 ≤ f) ↔ f < 0 := by
   replace hf : ∑ j ∈ b.support, (-f) j • P.root j ∈ range P.root := by
     rw [← neg_mem_range_root_iff]; simpa
   have := b.not_nonpos_iff_pos_of_sum_mem_range_root (-f) hf (by simpa)
   simp_all
 
-lemma sub_notMem_range_root
-    {i j : ι} (hi : i ∈ b.support) (hj : j ∈ b.support) :
-    P.root i - P.root j ∉ range P.root := by
+lemma sub_notMem_range_root {i j : ι} (hi : i ∈ b.support) (hj : j ∈ b.support)
+    : P.root i - P.root j ∉ range P.root := by
   rcases eq_or_ne j i with rfl | hij
   · simpa only [sub_self, mem_range, not_exists] using fun k ↦ P.ne_zero k
   classical
-  let f : ι → ℤ := fun k ↦ if k = i then 1 else if k = j then -1 else 0
+  let f : ι → ℤ := fun k ↦
+    if k = i then
+      1
+    else if k = j then
+      -1
+    else
+      0
   have hf : ∑ k ∈ b.support, f k • P.root k = P.root i - P.root j := by
     have : {i, j} ⊆ b.support := by aesop (add simp Finset.insert_subset_iff)
     rw [← Finset.sum_subset (s₁ := {i, j}) (s₂ := b.support) (by lia) (by aesop),
@@ -408,26 +435,25 @@ lemma sub_notMem_range_root
   · simpa [hij, f] using le_of_lt pos j
   · simpa [hij, f] using le_of_lt neg i
 
-lemma sub_notMem_range_coroot
-    {i j : ι} (hi : i ∈ b.support) (hj : j ∈ b.support) :
-    P.coroot i - P.coroot j ∉ range P.coroot :=
+lemma sub_notMem_range_coroot {i j : ι} (hi : i ∈ b.support) (hj : j ∈ b.support)
+    : P.coroot i - P.coroot j ∉ range P.coroot :=
   b.flip.sub_notMem_range_root hi hj
 
-lemma pairingIn_le_zero_of_ne [IsDomain R] [P.IsCrystallographic] [Finite ι]
-    {i j} (hij : i ≠ j) (hi : i ∈ b.support) (hj : j ∈ b.support) :
-    P.pairingIn ℤ i j ≤ 0 := by
+lemma pairingIn_le_zero_of_ne
+    [IsDomain R] [P.IsCrystallographic] [Finite ι]
+    {i j} (hij : i ≠ j) (hi : i ∈ b.support) (hj : j ∈ b.support)
+    : P.pairingIn ℤ i j ≤ 0 := by
   by_contra! h
   exact b.sub_notMem_range_root hi hj <| P.root_sub_root_mem_of_pairingIn_pos h hij
 
 variable {b}
 variable [IsDomain R] [P.IsCrystallographic] [Finite ι] {i j : b.support}
 
-@[simp] lemma chainBotCoeff_eq_zero :
-    P.chainBotCoeff i j = 0 :=
+@[simp]
+lemma chainBotCoeff_eq_zero : P.chainBotCoeff i j = 0 :=
   chainBotCoeff_eq_zero_iff.mpr <| Or.inr <| b.sub_notMem_range_root j.property i.property
 
-lemma chainTopCoeff_eq_of_ne (hij : i ≠ j) :
-    P.chainTopCoeff i j = -P.pairingIn ℤ j i := by
+lemma chainTopCoeff_eq_of_ne (hij : i ≠ j) : P.chainTopCoeff i j = - P.pairingIn ℤ j i := by
   rw [← chainTopCoeff_sub_chainBotCoeff (b.linearIndependent_pair_of_ne hij)]
   simp
 
@@ -438,31 +464,29 @@ section RootSystem
 variable {P : RootPairing ι R M N} (b : P.Base) [P.IsRootSystem]
 
 /-- A base of a root system yields a basis of the root space. -/
-def toWeightBasis :
-    Basis b.support R M :=
+def toWeightBasis : Basis b.support R M :=
   Basis.mk b.linearIndepOn_root <| by
     change ⊤ ≤ span R (range <| P.root ∘ ((↑) : b.support → ι))
     simp [range_comp]
 
-@[simp] lemma toWeightBasis_apply (i : b.support) :
-    b.toWeightBasis i = P.root i := by
-  simp [toWeightBasis]
+@[simp]
+lemma toWeightBasis_apply (i : b.support) : b.toWeightBasis i = P.root i := by simp [toWeightBasis]
 
-@[simp] lemma toWeightBasis_repr_root (i : b.support) :
-    b.toWeightBasis.repr (P.root i) = Finsupp.single i 1 := by
+@[simp]
+lemma toWeightBasis_repr_root (i : b.support)
+    : b.toWeightBasis.repr (P.root i) = Finsupp.single i 1 := by
   simp [← LinearEquiv.eq_symm_apply]
 
 /-- A base of a root system yields a basis of the coroot space. -/
-def toCoweightBasis :
-    Basis b.support R N :=
-  Base.toWeightBasis (P := P.flip) b.flip
+def toCoweightBasis : Basis b.support R N := Base.toWeightBasis (P := P.flip) b.flip
 
-@[simp] lemma toCoweightBasis_apply (i : b.support) :
-    b.toCoweightBasis i = P.coroot i :=
+@[simp]
+lemma toCoweightBasis_apply (i : b.support) : b.toCoweightBasis i = P.coroot i :=
   b.flip.toWeightBasis_apply (P := P.flip) i
 
-@[simp] lemma toCoweightBasis_repr_coroot (i : b.support) :
-    b.toCoweightBasis.repr (P.coroot i) = Finsupp.single i 1 := by
+@[simp]
+lemma toCoweightBasis_repr_coroot (i : b.support)
+    : b.toCoweightBasis.repr (P.coroot i) = Finsupp.single i 1 := by
   simp [← LinearEquiv.eq_symm_apply]
 
 end RootSystem
@@ -473,37 +497,38 @@ variable {P : RootPairing ι R M N} (b : P.Base)
 
 include b
 
-@[simp] lemma spanIntRootSupport :
-    span ℤ (P.rootSpanMem ℤ '' b.support) = ⊤ := by
+@[simp]
+lemma spanIntRootSupport : span ℤ (P.rootSpanMem ℤ '' b.support) = ⊤ := by
   refine Submodule.eq_top_iff'.mpr fun ⟨x, hx⟩ ↦ ?_
   rw [← SetLike.mem_coe, ← (injective_subtype (P.rootSpan ℤ)).mem_set_image, ← Submodule.map_coe]
   simpa [Submodule.map_span, ← image_comp]
 
-lemma linearIndependentInt [CharZero R] :
-    LinearIndependent ℤ (fun i : b.support ↦ P.rootSpanMem ℤ i) :=
+lemma linearIndependentInt [CharZero R]
+    : LinearIndependent ℤ (fun i : b.support ↦ P.rootSpanMem ℤ i) :=
   ((P.rootSpan ℤ).subtype.linearIndependent_iff (by simp)).mp <|
     b.linearIndepOn_root.restrict_scalars' ℤ
 
 /-- A base for a root system gives a `ℤ`-basis for the `ℤ`-span of the roots. -/
-def toWeightBasisInt [CharZero R] :
-    Basis b.support ℤ (P.rootSpan ℤ) :=
+def toWeightBasisInt [CharZero R] : Basis b.support ℤ (P.rootSpan ℤ) :=
   Basis.mk b.linearIndependentInt <| by
     have : (fun i : b.support ↦ P.rootSpanMem ℤ i) = P.rootSpanMem ℤ ∘ ((↑) : b.support → ι) := rfl
     simp [this, range_comp]
 
-@[simp] lemma coe_toWeightBasisInt_apply [CharZero R] (i : b.support) :
-    (b.toWeightBasisInt i : M) = P.root i := by
+@[simp]
+lemma coe_toWeightBasisInt_apply [CharZero R] (i : b.support)
+    : (b.toWeightBasisInt i : M) = P.root i := by
   simp [toWeightBasisInt]
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
-lemma exists_root_eq_sum_nat_or_neg (i : ι) :
-    ∃ f : ι → ℕ, f.support ⊆ b.support ∧
-      (P.root i =   ∑ j ∈ b.support, f j • P.root j ∨
-       P.root i = - ∑ j ∈ b.support, f j • P.root j) := by
+lemma exists_root_eq_sum_nat_or_neg (i : ι)
+    : ∃ f : ι → ℕ,
+      f.support ⊆ b.support
+        ∧ (P.root i = ∑ j ∈ b.support, f j • P.root j
+          ∨ P.root i = - ∑ j ∈ b.support, f j • P.root j) := by
   classical
   simp_rw [← neg_eq_iff_eq_neg]
-  suffices ∀ m ∈ AddSubmonoid.closure (P.root '' b.support),
-    ∃ f : ι → ℕ, f.support ⊆ b.support ∧ m = ∑ j ∈ b.support, f j • P.root j by
+  suffices ∀ m ∈ AddSubmonoid.closure (P.root '' b.support), ∃ f : ι → ℕ,
+      f.support ⊆ b.support ∧ m = ∑ j ∈ b.support, f j • P.root j by
     rcases b.root_mem_or_neg_mem i with hi | hi
     · obtain ⟨f, hf, hf'⟩ := this _ hi
       exact ⟨f, hf, Or.inl hf'⟩
@@ -517,15 +542,15 @@ lemma exists_root_eq_sum_nat_or_neg (i : ι) :
     refine ⟨f + g, ?_, by simp [hf', hg', add_smul, Finset.sum_add_distrib]⟩
     exact (support_add f g).trans <| union_subset_iff.mpr ⟨hf, hg⟩
 
-lemma exists_root_eq_sum_int [CharZero R] (i : ι) :
-    ∃ f : ι → ℤ, f.support ⊆ b.support ∧ (0 < f ∨ f < 0) ∧
-      P.root i = ∑ j ∈ b.support, f j • P.root j := by
+lemma exists_root_eq_sum_int [CharZero R] (i : ι)
+    : ∃ f : ι → ℤ,
+      f.support ⊆ b.support ∧ (0 < f ∨ f < 0) ∧ P.root i = ∑ j ∈ b.support, f j • P.root j := by
   obtain ⟨f, hf, hf' | hf'⟩ := b.exists_root_eq_sum_nat_or_neg i
   · refine ⟨Nat.cast ∘ f, by simpa, Or.inl <| Pi.lt_def.mpr ⟨fun _ ↦ by simp, ?_⟩, by simp [hf']⟩
     by_contra! contra
     replace contra : f = 0 := by ext i; simpa using contra i
     exact P.ne_zero i <| by simp [hf', contra]
-  · refine ⟨-Nat.cast ∘ f, by simpa, Or.inr <| Pi.lt_def.mpr ⟨fun _ ↦ by simp, ?_⟩, by simp [hf']⟩
+  · refine ⟨- Nat.cast ∘ f, by simpa, Or.inr <| Pi.lt_def.mpr ⟨fun _ ↦ by simp, ?_⟩, by simp [hf']⟩
     by_contra! contra
     replace contra : f = 0 := by ext i; simpa using contra i
     exact P.ne_zero i <| by simp [hf', contra]
@@ -537,25 +562,24 @@ section PositiveRoots
 variable {P : RootPairing ι R M N} (b : P.Base) [CharZero R]
 
 /-- Given a base `α₁, α₂, …`, the height of a root `∑ zᵢαᵢ` relative to this base is `∑ zᵢ`. -/
-def height (i : ι) : ℤ :=
-  ∑ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j
+def height (i : ι) : ℤ := ∑ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j
 
 variable {b} in
-lemma height_eq_sum {i : ι} {f : ι → ℤ} (heq : P.root i = ∑ j ∈ b.support, f j • P.root j) :
-    b.height i = ∑ j ∈ b.support, f j := by
+lemma height_eq_sum {i : ι} {f : ι → ℤ} (heq : P.root i = ∑ j ∈ b.support, f j • P.root j)
+    : b.height i = ∑ j ∈ b.support, f j := by
   suffices ∀ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j = f j from
     Finset.sum_congr rfl this
   intro j hj
   obtain ⟨-, -, h⟩ := (b.exists_root_eq_sum_int i).choose_spec
   rw [h, b.support.sum_subtype (p := (· ∈ b.support)) (by simp) (F := inferInstance),
-    b.support.sum_subtype (p := (· ∈ b.support)) (by simp) (F := inferInstance)] at heq
-  have aux (j : b.support) := Fintype.linearIndependent_iffₛ.mp
-      (b.linearIndepOn_root.restrict_scalars' ℤ) ((b.exists_root_eq_sum_int i).choose ∘ (↑))
-      (f ∘ (↑)) (by simpa) j
+      b.support.sum_subtype (p := (· ∈ b.support)) (by simp) (F := inferInstance)]
+    at heq
+  have aux (j : b.support) :=
+    Fintype.linearIndependent_iffₛ.mp (b.linearIndepOn_root.restrict_scalars' ℤ)
+      ((b.exists_root_eq_sum_int i).choose ∘ (↑)) (f ∘ (↑)) (by simpa) j
   simpa using! aux ⟨j, hj⟩
 
-lemma height_ne_zero (i : ι) :
-    b.height i ≠ 0 := by
+lemma height_ne_zero (i : ι) : b.height i ≠ 0 := by
   obtain ⟨f, hf₀, hf₁, hf₂⟩ := b.exists_root_eq_sum_int i
   rw [height_eq_sum hf₂]
   rcases hf₁ with pos | neg
@@ -574,24 +598,23 @@ lemma height_ne_zero (i : ι) :
       · simpa using hj
     exact P.ne_zero i <| by simp [hf₂, contra]
 
-lemma height_reflectionPerm_self (i : ι) :
-    letI := P.indexNeg
-    b.height (-i) = -b.height i := by
+lemma height_reflectionPerm_self (i : ι)
+    : letI := P.indexNeg
+      b.height (-i) = - b.height i := by
   let := P.indexNeg
   obtain ⟨f, hf₀, hf₁, hf₂⟩ := b.exists_root_eq_sum_int i
   have hf₃ : P.root (-i) = ∑ j ∈ b.support, (-f) j • P.root j := by simpa
   simp only [height_eq_sum hf₂, height_eq_sum hf₃, Pi.neg_apply, Finset.sum_neg_distrib]
 
 variable {b} in
-lemma height_one_of_mem_support {i : ι} (hi : i ∈ b.support) :
-    b.height i = 1 := by
+lemma height_one_of_mem_support {i : ι} (hi : i ∈ b.support) : b.height i = 1 := by
   classical
   have : P.root i = ∑ j ∈ b.support, (Pi.single i 1 : ι → ℤ) j • P.root j := by
     rw [Finset.sum_eq_single_of_mem i hi (by simp_all)]; simp
   simpa [height_eq_sum this]
 
-lemma height_add {i j k : ι} (hk : P.root k = P.root i + P.root j) :
-    b.height k = b.height i + b.height j := by
+lemma height_add {i j k : ι} (hk : P.root k = P.root i + P.root j)
+    : b.height k = b.height i + b.height j := by
   obtain ⟨f, -, -, hf⟩ := b.exists_root_eq_sum_int i
   obtain ⟨g, -, -, hg⟩ := b.exists_root_eq_sum_int j
   have hfg : P.root k = ∑ l ∈ b.support, (f + g) l • P.root l := by
@@ -599,14 +622,14 @@ lemma height_add {i j k : ι} (hk : P.root k = P.root i + P.root j) :
   simp_rw [height_eq_sum hf, height_eq_sum hg, height_eq_sum hfg, ← Finset.sum_add_distrib,
     Pi.add_apply]
 
-lemma height_sub {i j k : ι} (hk : P.root k = P.root i - P.root j) :
-    b.height k = b.height i - b.height j := by
+lemma height_sub {i j k : ι} (hk : P.root k = P.root i - P.root j)
+    : b.height k = b.height i - b.height j := by
   let := P.indexNeg
   replace hk : P.root k = P.root i + P.root (-j) := by simpa [← sub_eq_add_neg]
   rw [sub_eq_add_neg, ← b.height_reflectionPerm_self, b.height_add hk]
 
-lemma height_add_zsmul {i j k : ι} {z : ℤ} (hk : P.root k = P.root i + z • P.root j) :
-    b.height k = b.height i + z • b.height j := by
+lemma height_add_zsmul {i j k : ι} {z : ℤ} (hk : P.root k = P.root i + z • P.root j)
+    : b.height k = b.height i + z • b.height j := by
   obtain ⟨f, -, -, hf⟩ := b.exists_root_eq_sum_int i
   obtain ⟨g, -, -, hg⟩ := b.exists_root_eq_sum_int j
   have hfg : P.root k = ∑ l ∈ b.support, (f + z • g) l • P.root l := by
@@ -625,43 +648,41 @@ lemma isPos_iff' {i : ι} : b.IsPos i ↔ 0 ≤ b.height i := by
   have := b.height_ne_zero i
   lia
 
-lemma IsPos.or_neg (i : ι) :
-    letI := P.indexNeg
-    b.IsPos i ∨ b.IsPos (-i) := by
+lemma IsPos.or_neg (i : ι)
+    : letI := P.indexNeg
+      b.IsPos i ∨ b.IsPos (-i) := by
   rw [isPos_iff, isPos_iff, height_reflectionPerm_self]
   have := b.height_ne_zero i
   lia
 
-lemma IsPos.neg_iff_not (i : ι) :
-    letI := P.indexNeg
-    b.IsPos (-i) ↔ ¬ b.IsPos i := by
+lemma IsPos.neg_iff_not (i : ι)
+    : letI := P.indexNeg
+      b.IsPos (-i) ↔ ¬ b.IsPos i := by
   rw [isPos_iff, isPos_iff, height_reflectionPerm_self]
   have := b.height_ne_zero i
   lia
 
 variable {b}
 
-lemma isPos_of_mem_support {i : ι} (h : i ∈ b.support) :
-    b.IsPos i := by
+lemma isPos_of_mem_support {i : ι} (h : i ∈ b.support) : b.IsPos i := by
   rw [isPos_iff, height_one_of_mem_support h]
   exact Int.one_pos
 
-lemma IsPos.add {i j k : ι}
-    (hi : b.IsPos i) (hj : b.IsPos j) (hk : P.root k = P.root i + P.root j) :
-    b.IsPos k := by
+lemma IsPos.add {i j k : ι} (hi : b.IsPos i) (hj : b.IsPos j) (hk : P.root k = P.root i + P.root j)
+    : b.IsPos k := by
   rw [isPos_iff] at hi hj ⊢
   rw [b.height_add hk]
   lia
 
-lemma IsPos.sub {i j k : ι}
-    (hi : b.IsPos i) (hj : j ∈ b.support) (hk : P.root k = P.root i - P.root j) :
-    b.IsPos k := by
+lemma IsPos.sub
+    {i j k : ι} (hi : b.IsPos i) (hj : j ∈ b.support) (hk : P.root k = P.root i - P.root j)
+    : b.IsPos k := by
   rw [isPos_iff] at hi
   rw [isPos_iff', b.height_sub hk, height_one_of_mem_support hj]
   lia
 
-lemma IsPos.exists_mem_support_pos_pairingIn [P.IsCrystallographic] {i : ι} (h₀ : b.IsPos i) :
-    ∃ j ∈ b.support, 0 < P.pairingIn ℤ j i := by
+lemma IsPos.exists_mem_support_pos_pairingIn [P.IsCrystallographic] {i : ι} (h₀ : b.IsPos i)
+    : ∃ j ∈ b.support, 0 < P.pairingIn ℤ j i := by
   by_contra! contra
   suffices P.pairingIn ℤ i i ≤ 0 by simp_all
   obtain ⟨f, hf₀, hf₁, hf₂⟩ := b.exists_root_eq_sum_int i
@@ -681,8 +702,8 @@ lemma IsPos.exists_mem_support_pos_pairingIn [P.IsCrystallographic] {i : ι} (h�
   · exact smul_nonpos_of_nonneg_of_nonpos (hf₁.le j) (contra j (hf₀ hj))
   · simp_all
 
-lemma exists_mem_support_pos_pairingIn_ne_zero [P.IsCrystallographic] (i : ι) :
-    ∃ j ∈ b.support, P.pairingIn ℤ j i ≠ 0 := by
+lemma exists_mem_support_pos_pairingIn_ne_zero [P.IsCrystallographic] (i : ι)
+    : ∃ j ∈ b.support, P.pairingIn ℤ j i ≠ 0 := by
   rcases IsPos.or_neg b i with hi | hi
   · obtain ⟨j, hj, hj₀⟩ := hi.exists_mem_support_pos_pairingIn
     exact ⟨j, hj, hj₀.ne'⟩
@@ -691,9 +712,10 @@ lemma exists_mem_support_pos_pairingIn_ne_zero [P.IsCrystallographic] (i : ι) :
 
 variable [Finite ι] [IsDomain R] [P.IsCrystallographic] [P.IsReduced]
 
-lemma IsPos.add_zsmul {i j k : ι} {z : ℤ} (hij : i ≠ j)
-    (hi : b.IsPos i) (hj : j ∈ b.support) (hk : P.root k = P.root i + z • P.root j) :
-    b.IsPos k := by
+lemma IsPos.add_zsmul
+    {i j k : ι} {z : ℤ}
+    (hij : i ≠ j) (hi : b.IsPos i) (hj : j ∈ b.support) (hk : P.root k = P.root i + z • P.root j)
+    : b.IsPos k := by
   replace hij : LinearIndependent R ![P.root j, P.root i] := by
     refine IsReduced.linearIndependent P hij.symm fun contra ↦ ?_
     let := P.indexNeg
@@ -701,7 +723,8 @@ lemma IsPos.add_zsmul {i j k : ι} {z : ℤ} (hij : i ≠ j)
     rw [contra, isPos_iff, height_reflectionPerm_self, height_one_of_mem_support hj] at hi
     lia
   induction z generalizing i k with
-  | zero => simp_all
+  | zero =>
+    simp_all
   | succ w hw =>
     obtain ⟨l, hl⟩ : P.root i + (w : ℤ) • P.root j ∈ range P.root := by
       replace hk : P.root i + (w + 1) • P.root j ∈ range P.root := ⟨k, by rw [hk]; module⟩
@@ -718,26 +741,27 @@ lemma IsPos.add_zsmul {i j k : ι} {z : ℤ} (hij : i ≠ j)
     replace hk : P.root k = P.root l - P.root j := by rw [hk, hl]; module
     exact (hw hi hl hij).sub hj hk
 
-lemma IsPos.reflectionPerm {i j : ι} (hi : b.IsPos i) (hj : j ∈ b.support) (hij : i ≠ j) :
-    b.IsPos (P.reflectionPerm j i) := by
-  have : P.root (P.reflectionPerm j i) = P.root i + (-P.pairingIn ℤ i j) • P.root j := by
+lemma IsPos.reflectionPerm {i j : ι} (hi : b.IsPos i) (hj : j ∈ b.support) (hij : i ≠ j)
+    : b.IsPos (P.reflectionPerm j i) := by
+  have : P.root (P.reflectionPerm j i) = P.root i + (- P.pairingIn ℤ i j) • P.root j := by
     rw [root_reflectionPerm, neg_smul, reflection_apply_root' ℤ, sub_eq_add_neg]
   exact hi.add_zsmul hij hj this
 
 omit [P.IsReduced] in
 lemma IsPos.induction_on_add
     {i : ι} (h₀ : b.IsPos i)
-    {p : ι → Prop}
-    (h₁ : ∀ i ∈ b.support, p i)
-    (h₂ : ∀ i j k, P.root k = P.root i + P.root j → p i → j ∈ b.support → p k) :
-    p i := by
+    {p : ι → Prop} (h₁ : ∀ i ∈ b.support, p i)
+    (h₂ : ∀ i j k, P.root k = P.root i + P.root j → p i → j ∈ b.support → p k)
+    : p i := by
   generalize hN : b.height i = N
   induction N using Int.induction_on generalizing i with
-  | zero => exact False.elim <| b.height_ne_zero i hN
+  | zero =>
+    exact False.elim <| b.height_ne_zero i hN
   | succ n ih =>
     obtain ⟨j, hj, hj'⟩ := h₀.exists_mem_support_pos_pairingIn
     rw [P.zero_lt_pairingIn_iff'] at hj'
-    rcases eq_or_ne i j with rfl | hij; · exact h₁ i hj
+    rcases eq_or_ne i j with rfl | hij
+    · exact h₁ i hj
     obtain ⟨k, hk⟩ := P.root_sub_root_mem_of_pairingIn_pos hj' hij
     have hkn : b.height k = n := by rw [b.height_sub hk, height_one_of_mem_support hj]; lia
     have hkpos : b.IsPos k := by rw [isPos_iff']; lia
@@ -747,13 +771,14 @@ lemma IsPos.induction_on_add
     lia
 
 omit [P.IsReduced] in
-/-- This lemma is included mostly for comparison with the informal literature. Usually
-`RootPairing.Base.IsPos.induction_on_add` will be more useful. -/
-lemma exists_eq_sum_and_forall_sum_mem_of_isPos {i : ι} (hi : b.IsPos i) :
-    ∃ n, ∃ f : Fin n → ι,
-      range f ⊆ b.support ∧
-      P.root i = ∑ m, P.root (f m) ∧
-      ∀ m, ∑ m' ≤ m, P.root (f m') ∈ range P.root := by
+/--
+This lemma is included mostly for comparison with the informal literature. Usually
+`RootPairing.Base.IsPos.induction_on_add` will be more useful.
+-/
+lemma exists_eq_sum_and_forall_sum_mem_of_isPos {i : ι} (hi : b.IsPos i)
+    : ∃ n, ∃ f : Fin n → ι,
+      range f ⊆ b.support ∧ P.root i = ∑ m, P.root (f m)
+        ∧ ∀ m, ∑ m' ≤ m, P.root (f m') ∈ range P.root := by
   apply hi.induction_on_add (fun j hj ↦ ⟨1, ![j], by simpa⟩)
   intro j k l h₁ ⟨n, f, h₂, h₃, h₄⟩ h₅
   refine ⟨n + 1, Fin.snoc f k, ?_, ?_, fun m ↦ ?_⟩
@@ -768,11 +793,11 @@ lemma exists_eq_sum_and_forall_sum_mem_of_isPos {i : ι} (hi : b.IsPos i) :
       simp [hm, Fin.sum_univ_castSucc, ← h₃, ← h₁]
 
 omit [P.IsReduced] in
-lemma induction_add (i : ι) {p : ι → Prop}
-    (h₀ : ∀ i, p i → p (P.reflectionPerm i i))
-    (h₁ : ∀ i ∈ b.support, p i)
-    (h₂ : ∀ i j k, P.root k = P.root i + P.root j → p i → j ∈ b.support → p k) :
-    p i := by
+lemma induction_add
+    (i : ι)
+    {p : ι → Prop} (h₀ : ∀ i, p i → p (P.reflectionPerm i i)) (h₁ : ∀ i ∈ b.support, p i)
+    (h₂ : ∀ i j k, P.root k = P.root i + P.root j → p i → j ∈ b.support → p k)
+    : p i := by
   let := P.indexNeg
   rcases IsPos.or_neg b i with hi | hi
   · exact hi.induction_on_add h₁ h₂
@@ -782,15 +807,15 @@ lemma induction_add (i : ι) {p : ι → Prop}
 lemma IsPos.induction_on_reflect
     {i : ι} (h₀ : b.IsPos i)
     {p : ι → Prop}
-    (h₁ : ∀ i ∈ b.support, p i)
-    (h₂ : ∀ i j, p i → j ∈ b.support → p (P.reflectionPerm j i)) :
-    p i := by
+    (h₁ : ∀ i ∈ b.support, p i) (h₂ : ∀ i j, p i → j ∈ b.support → p (P.reflectionPerm j i))
+    : p i := by
   generalize hN : (b.height i).natAbs = N
   induction N using Nat.strongRecOn generalizing i with
   | ind n ih =>
     obtain ⟨j, hj, hj'⟩ := h₀.exists_mem_support_pos_pairingIn
     rw [P.zero_lt_pairingIn_iff'] at hj'
-    rcases eq_or_ne i j with rfl | hij; · exact h₁ i hj
+    rcases eq_or_ne i j with rfl | hij
+    · exact h₁ i hj
     have hk := h₀.reflectionPerm hj hij
     have : (b.height (P.reflectionPerm j i)).natAbs < n := by
       suffices b.height (P.reflectionPerm j i) < b.height i by
@@ -802,23 +827,24 @@ lemma IsPos.induction_on_reflect
       rw [b.height_add_zsmul this]
       replace hj : 0 < b.height j := (isPos_iff _).mp <| isPos_of_mem_support hj
       aesop
-    simpa using h₂ (P.reflectionPerm j i) j
-      (ih (m := (b.height (P.reflectionPerm j i)).natAbs) this hk rfl) hj
+    simpa using
+      h₂ (P.reflectionPerm j i) j (ih (m := (b.height (P.reflectionPerm j i)).natAbs) this hk rfl)
+        hj
 
-lemma induction_reflect (i : ι) {p : ι → Prop}
-    (h₀ : ∀ i, p i → p (P.reflectionPerm i i))
-    (h₁ : ∀ i ∈ b.support, p i)
-    (h₂ : ∀ i j, p i → j ∈ b.support → p (P.reflectionPerm j i)) :
-    p i := by
+lemma induction_reflect
+    (i : ι)
+    {p : ι → Prop} (h₀ : ∀ i, p i → p (P.reflectionPerm i i)) (h₁ : ∀ i ∈ b.support, p i)
+    (h₂ : ∀ i j, p i → j ∈ b.support → p (P.reflectionPerm j i))
+    : p i := by
   let := P.indexNeg
   rcases IsPos.or_neg b i with hi | hi
   · exact hi.induction_on_reflect h₁ h₂
   · suffices p (-i) by rw [← neg_neg i]; exact h₀ (-i) this
     exact hi.induction_on_reflect h₁ h₂
 
-lemma forall_mem_support_invtSubmodule_iff (q : Submodule R M) :
-    (∀ i ∈ b.support, q ∈ invtSubmodule (P.reflection i)) ↔
-      (∀ i, q ∈ invtSubmodule (P.reflection i)) := by
+lemma forall_mem_support_invtSubmodule_iff (q : Submodule R M)
+    : (∀ i ∈ b.support, q ∈ invtSubmodule (P.reflection i))
+      ↔ (∀ i, q ∈ invtSubmodule (P.reflection i)) := by
   refine ⟨fun hq i ↦ ?_, fun hq i _ ↦ hq i⟩
   let := P.indexNeg
   have (j : ι) : P.reflection (-j) = P.reflection j := by ext x; simp [reflection_apply, two_smul]

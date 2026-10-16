@@ -45,8 +45,7 @@ instance : (functorToContAction F).Faithful :=
   inferInstanceAs <| (ObjectProperty.lift _ _ _).Faithful
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance : (functorToContAction F).Full :=
-  inferInstanceAs <| (ObjectProperty.lift _ _ _).Full
+instance : (functorToContAction F).Full := inferInstanceAs <| (ObjectProperty.lift _ _ _).Full
 
 instance {F : C ⥤ FintypeCat.{u₁}} [FiberFunctor F] : (functorToContAction F).EssSurj where
   mem_essImage X := by
@@ -62,30 +61,36 @@ instance : (functorToContAction F).EssSurj := by
     (autEquivAutWhiskerRight F (FintypeCat.uSwitchEquivalence.{w, u₁}).fullyFaithfulFunctor)
   let equiv : ContAction FintypeCat.{u₁} (Aut F') ≌ ContAction FintypeCat.{w} (Aut F) :=
     (FintypeCat.uSwitchEquivalence.{u₁, w}.mapContAction (Aut F')
-       (fun X ↦ by
+        (fun X ↦ by
           rw [Action.isContinuous_def]
-          change Continuous ((fun p ↦ (FintypeCat.uSwitchEquiv X.obj.V).symm p) ∘
-              (fun p : Aut F' × _ ↦ (X.obj.ρ p.1).asHom.hom p.2) ∘
-              (fun p : Aut F' × _ ↦ (p.1, FintypeCat.uSwitchEquiv _ p.2)))
+          change Continuous
+            ((fun p ↦ (FintypeCat.uSwitchEquiv X.obj.V).symm p)
+              ∘ (fun p : Aut F' × _ ↦ (X.obj.ρ p.1).asHom.hom p.2)
+              ∘ (fun p : Aut F' × _ ↦ (p.1, FintypeCat.uSwitchEquiv _ p.2)))
           exact Continuous.comp (by fun_prop) (Continuous.comp X.2.1 (by fun_prop)))
-       (fun X ↦ by
+        (fun X ↦ by
           rw [Action.isContinuous_def]
-          change Continuous ((fun p ↦ (FintypeCat.uSwitchEquiv X.obj.V).symm p) ∘
-              (fun p : Aut F' × _ ↦ (X.obj.ρ p.1).asHom.hom p.2) ∘
-              (fun p : Aut F' × _ ↦ (p.1, FintypeCat.uSwitchEquiv _ p.2)))
+          change Continuous
+            ((fun p ↦ (FintypeCat.uSwitchEquiv X.obj.V).symm p)
+              ∘ (fun p : Aut F' × _ ↦ (X.obj.ρ p.1).asHom.hom p.2)
+              ∘ (fun p : Aut F' × _ ↦ (p.1, FintypeCat.uSwitchEquiv _ p.2)))
           exact Continuous.comp (by fun_prop) (Continuous.comp X.2.1 (by fun_prop)))).trans <|
       ContAction.resEquiv _ f
   have : functorToContAction F ≅ functorToContAction F' ⋙ equiv.functor :=
     NatIso.ofComponents
-      (fun X ↦ ObjectProperty.isoMk _ (Action.mkIso (FintypeCat.uSwitchEquivalence.unitIso.app _)
-      (fun g ↦ FintypeCat.uSwitchEquivalence.unitIso.hom.naturality (g.asIso.hom.app X))))
+      (fun X ↦
+        ObjectProperty.isoMk _
+          (Action.mkIso (FintypeCat.uSwitchEquivalence.unitIso.app _)
+            (fun g ↦ FintypeCat.uSwitchEquivalence.unitIso.hom.naturality (g.asIso.hom.app X))))
       (fun f ↦ by
         ext : 2
         exact FintypeCat.uSwitchEquivalence.unitIso.hom.naturality (F.map f))
   exact Functor.essSurj_of_iso this.symm
 
-/-- Any fiber functor `F` induces an equivalence of categories with the category of finite and
-discrete `Aut F`-sets. -/
+/--
+Any fiber functor `F` induces an equivalence of categories with the category of finite and
+discrete `Aut F`-sets.
+-/
 @[stacks 0BN4]
 instance : (functorToContAction F).IsEquivalence where
 

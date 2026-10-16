@@ -38,14 +38,15 @@ namespace AlgebraicGeometry
 
 variable {X Y Z S : Scheme} (f : X ⟶ S) (g : Y ⟶ S)
 
-/-- We say that morphism `f : X ⟶ Y` is geometrically reduced if for all `Spec K ⟶ Y` with `K`
-a field, `X ×[Y] Spec K` is reduced. -/
+/--
+We say that morphism `f : X ⟶ Y` is geometrically reduced if for all `Spec K ⟶ Y` with `K`
+a field, `X ×[Y] Spec K` is reduced.
+-/
 @[mk_iff]
 class GeometricallyReduced (f : X ⟶ Y) : Prop where
   geometrically_isReduced : geometrically IsReduced f
 
-lemma GeometricallyReduced.eq_geometrically :
-    @GeometricallyReduced = geometrically IsReduced := by
+lemma GeometricallyReduced.eq_geometrically : @GeometricallyReduced = geometrically IsReduced := by
   ext; exact geometricallyReduced_iff _
 
 instance : IsStableUnderBaseChange @GeometricallyReduced :=
@@ -63,8 +64,7 @@ instance (V : S.Opens) [GeometricallyReduced f] : GeometricallyReduced (f ∣_ V
   MorphismProperty.of_isPullback (isPullback_morphismRestrict ..).flip ‹_›
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (s : S) [GeometricallyReduced f] :
-    GeometricallyReduced (f.fiberToSpecResidueField s) :=
+instance (s : S) [GeometricallyReduced f] : GeometricallyReduced (f.fiberToSpecResidueField s) :=
   MorphismProperty.pullback_snd _ _ inferInstance
 
 instance (s : S) [GeometricallyReduced f] : IsReduced (f.fiber s) :=
@@ -72,8 +72,8 @@ instance (s : S) [GeometricallyReduced f] : IsReduced (f.fiber s) :=
 
 set_option backward.isDefEq.respectTransparency false in
 lemma GeometricallyReduced.isReduced_of_flat_of_finite_irreducibleComponents
-    (f : X ⟶ Y) [GeometricallyReduced f] [Flat f]
-    [IsReduced Y] [Finite (irreducibleComponents Y)] : IsReduced X := by
+    (f : X ⟶ Y) [GeometricallyReduced f] [Flat f] [IsReduced Y] [Finite (irreducibleComponents Y)]
+    : IsReduced X := by
   let pt (Z : irreducibleComponents Y) := Y.presheaf.stalk Z.property.1.genericPoint
   have hpt (Z : _) : IsField (pt Z) :=
     isField_stalk_of_closure_mem_irreducibleComponents _ _ (by
@@ -88,27 +88,33 @@ lemma GeometricallyReduced.isReduced_of_flat_of_finite_irreducibleComponents
     rw [isSchemeTheoreticallyDominant_iff_isDominant, isDominant_iff, denseRange_iff_closure_range,
       Set.eq_univ_iff_forall]
     intro y
-    let z : Z := Sigma.ι (fun Z ↦ Spec (pt Z)) ⟨_, irreducibleComponent_mem_irreducibleComponents y⟩
-      (IsLocalRing.closedPoint _)
+    let z : Z :=
+      Sigma.ι
+        (fun Z ↦ Spec (pt Z))
+        ⟨_, irreducibleComponent_mem_irreducibleComponents y⟩ (IsLocalRing.closedPoint _)
     have hz : g z ⤳ y := by
       simp only [g, z, Z, ← Scheme.Hom.comp_apply, Sigma.ι_comp_desc, pt,
         Scheme.fromSpecStalk_closedPoint]
-      exact (IsIrreducible.isGenericPoint_genericPoint _
-        isClosed_irreducibleComponent).specializes mem_irreducibleComponent
+      exact (IsIrreducible.isGenericPoint_genericPoint _ isClosed_irreducibleComponent).specializes
+        mem_irreducibleComponent
     exact hz.mem_closed isClosed_closure (subset_closure ⟨_, rfl⟩)
   suffices IsReduced (pullback f g) from IsSchemeTheoreticallyDominant.isReduced (pullback.fst f g)
-  have H := IsUniversalColimit.isPullback_of_isColimit_left
-    (X := fun Z ↦ Spec (pt Z))
-    (FinitaryPreExtensive.isUniversal_finiteCoproducts (coproductIsCoproduct _))
-    (fun Z ↦ Y.fromSpecStalk _) g f _ _ (fun _ ↦ .of_hasPullback _ _) (coproductIsCoproduct _)
+  have H :=
+    IsUniversalColimit.isPullback_of_isColimit_left
+      (X := fun Z ↦ Spec (pt Z))
+      (FinitaryPreExtensive.isUniversal_finiteCoproducts (coproductIsCoproduct _))
+      (fun Z ↦ Y.fromSpecStalk _)
+      g f _ _
+      (fun _ ↦ .of_hasPullback _ _)
+      (coproductIsCoproduct _)
   apply +allowSynthFailures @isReduced_of_isOpenImmersion (f := H.isoPullback.inv)
   apply +allowSynthFailures @IsReduced.of_openCover (𝒰 := sigmaOpenCover _)
   exact fun i ↦ GeometricallyReduced.geometrically_isReduced _ _ _ (.of_hasPullback _ _)
 
 set_option backward.isDefEq.respectTransparency false in
 lemma GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian
-    (f : X ⟶ Y) [GeometricallyReduced f] [Flat f]
-    [IsReduced Y] [IsLocallyNoetherian Y] : IsReduced X := by
+    (f : X ⟶ Y) [GeometricallyReduced f] [Flat f] [IsReduced Y] [IsLocallyNoetherian Y]
+    : IsReduced X := by
   apply +allowSynthFailures @IsReduced.of_openCover (𝒰 := Y.affineCover.pullback₁ f)
   intro i
   have : IsReduced (Y.affineCover.X i) := isReduced_of_isOpenImmersion (Y.affineCover.f i)
@@ -117,16 +123,18 @@ lemma GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian
     exact TopologicalSpace.NoetherianSpace.finite_irreducibleComponents
   exact isReduced_of_flat_of_finite_irreducibleComponents (pullback.snd _ _)
 
-/-- If `X` is geometrically reduced over `S`, and `Y` is both reduced and locally noetherian,
+/--
+If `X` is geometrically reduced over `S`, and `Y` is both reduced and locally noetherian,
 then `X ×ₛ Y` is also reduced.
 
-TODO: get rid of the noetherian hypothesis. -/
-instance [GeometricallyReduced f] [Flat f] [IsReduced Y] [IsLocallyNoetherian Y] :
-    IsReduced (pullback f g) :=
+TODO: get rid of the noetherian hypothesis.
+-/
+instance [GeometricallyReduced f] [Flat f] [IsReduced Y] [IsLocallyNoetherian Y]
+    : IsReduced (pullback f g) :=
   GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian (pullback.snd _ _)
 
-instance [GeometricallyReduced g] [Flat g] [IsReduced X] [IsLocallyNoetherian X] :
-    IsReduced (pullback f g) :=
+instance [GeometricallyReduced g] [Flat g] [IsReduced X] [IsLocallyNoetherian X]
+    : IsReduced (pullback f g) :=
   GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian (pullback.fst _ _)
 
 end AlgebraicGeometry

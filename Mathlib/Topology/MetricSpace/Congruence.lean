@@ -37,8 +37,10 @@ section PseudoEMetricSpace
 variable [PseudoEMetricSpace P₁] [PseudoEMetricSpace P₂]
 variable [PseudoEMetricSpace P₃] [PseudoEMetricSpace P₄]
 
-/-- A congruence between indexed sets of vertices v₁ and v₂.
-Use `open scoped Congruent` to access the `v₁ ≅ v₂` notation. -/
+/--
+A congruence between indexed sets of vertices v₁ and v₂.
+Use `open scoped Congruent` to access the `v₁ ≅ v₂` notation.
+-/
 def Congruent (v₁ : ι → P₁) (v₂ : ι → P₂) : Prop :=
   ∀ i₁ i₂, edist (v₁ i₁) (v₁ i₂) = edist (v₂ i₁) (v₂ i₂)
 
@@ -46,14 +48,16 @@ def Congruent (v₁ : ι → P₁) (v₂ : ι → P₂) : Prop :=
 scoped[Congruent] infixl:25 " ≅ " => Congruent
 
 /-- Congruence holds if and only if all extended distances are the same. -/
-lemma congruent_iff_edist_eq :
-    Congruent v₁ v₂ ↔ ∀ i₁ i₂, edist (v₁ i₁) (v₁ i₂) = edist (v₂ i₁) (v₂ i₂) :=
+lemma congruent_iff_edist_eq
+    : Congruent v₁ v₂ ↔ ∀ i₁ i₂, edist (v₁ i₁) (v₁ i₂) = edist (v₂ i₁) (v₂ i₂) :=
   Iff.rfl
 
-/-- Congruence holds if and only if all extended distances between points with different
-indices are the same. -/
-lemma congruent_iff_pairwise_edist_eq :
-    Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ edist (v₁ i₁) (v₁ i₂) = edist (v₂ i₁) (v₂ i₂) := by
+/--
+Congruence holds if and only if all extended distances between points with different
+indices are the same.
+-/
+lemma congruent_iff_pairwise_edist_eq
+    : Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ edist (v₁ i₁) (v₁ i₂) = edist (v₂ i₁) (v₂ i₂) := by
   refine ⟨fun h ↦ fun _ _ _ ↦ h _ _, fun h ↦ fun i₁ i₂ ↦ ?_⟩
   by_cases hi : i₁ = i₂
   · simp [hi]
@@ -80,27 +84,27 @@ alias ⟨_, of_pairwise_edist_eq⟩ := congruent_iff_pairwise_edist_eq
 
 @[symm] protected lemma symm (h : v₁ ≅ v₂) : v₂ ≅ v₁ := fun i₁ i₂ ↦ (h i₁ i₂).symm
 
-lemma _root_.congruent_comm : v₁ ≅ v₂ ↔ v₂ ≅ v₁ :=
-  ⟨Congruent.symm, Congruent.symm⟩
+lemma _root_.congruent_comm : v₁ ≅ v₂ ↔ v₂ ≅ v₁ := ⟨Congruent.symm, Congruent.symm⟩
 
-@[trans] protected lemma trans (h₁₂ : v₁ ≅ v₂) (h₂₃ : v₂ ≅ v₃) : v₁ ≅ v₃ :=
-  fun i₁ i₂ ↦ (h₁₂ i₁ i₂).trans (h₂₃ i₁ i₂)
+@[trans]
+protected lemma trans (h₁₂ : v₁ ≅ v₂) (h₂₃ : v₂ ≅ v₃) : v₁ ≅ v₃ := fun i₁ i₂ ↦
+  (h₁₂ i₁ i₂).trans (h₂₃ i₁ i₂)
 
 /-- Change the index set ι to an index ι' that maps to ι. -/
-lemma index_map (h : v₁ ≅ v₂) (f : ι' → ι) : (v₁ ∘ f) ≅ (v₂ ∘ f) :=
-  fun i₁ i₂ ↦ edist_eq h (f i₁) (f i₂)
+lemma index_map (h : v₁ ≅ v₂) (f : ι' → ι) : (v₁ ∘ f) ≅ (v₂ ∘ f) := fun i₁ i₂ ↦
+  edist_eq h (f i₁) (f i₂)
 
 /-- Change between equivalent index sets ι and ι'. -/
-@[simp] lemma index_equiv {E : Type*} [EquivLike E ι' ι] (f : E) (v₁ : ι → P₁) (v₂ : ι → P₂) :
-    v₁ ∘ f ≅ v₂ ∘ f ↔ v₁ ≅ v₂ := by
+@[simp]
+lemma index_equiv {E : Type*} [EquivLike E ι' ι] (f : E) (v₁ : ι → P₁) (v₂ : ι → P₂)
+    : v₁ ∘ f ≅ v₂ ∘ f ↔ v₁ ≅ v₂ := by
   refine ⟨fun h i₁ i₂ ↦ ?_, fun h ↦ index_map h f⟩
-  simpa [(EquivLike.toEquiv f).right_inv i₁, (EquivLike.toEquiv f).right_inv i₂]
-    using edist_eq h ((EquivLike.toEquiv f).symm i₁) ((EquivLike.toEquiv f).symm i₂)
+  simpa [(EquivLike.toEquiv f).right_inv i₁, (EquivLike.toEquiv f).right_inv i₂] using
+    edist_eq h ((EquivLike.toEquiv f).symm i₁) ((EquivLike.toEquiv f).symm i₂)
 
 /-- Families with at most a single point are always congruent. -/
 @[nontriviality, simp]
-lemma of_subsingleton_index [Subsingleton ι] : v₁ ≅ v₂ :=
-  fun i j => by simp [Subsingleton.elim i j]
+lemma of_subsingleton_index [Subsingleton ι] : v₁ ≅ v₂ := fun i j => by simp [Subsingleton.elim i j]
 
 lemma comp_left {f : P₁ → P₃} (hf : Isometry f) (h : v₁ ≅ v₂) : f ∘ v₁ ≅ v₂ :=
   .trans (fun _ _ ↦ hf _ _) h
@@ -117,11 +121,12 @@ lemma comp_right_iff {f : P₂ → P₃} (hf : Isometry f) : v₁ ≅ f ∘ v₂
   rw [congruent_comm, comp_left_iff hf, congruent_comm]
 
 /-- Two sets of vertices remain congruent under a dilation if the dilations have equal ratios. -/
-lemma comp_dilation {F₁ F₂}
-    [FunLike F₁ P₁ P₃] [DilationClass F₁ P₁ P₃] [FunLike F₂ P₂ P₄] [DilationClass F₂ P₂ P₄]
-    {f₁ : F₁} {f₂ : F₂} (h : v₁ ≅ v₂) (hf : Dilation.ratio f₁ = Dilation.ratio f₂) :
-    f₁ ∘ v₁ ≅ f₂ ∘ v₂ :=
-  fun i j => by simp [hf, h i j]
+lemma comp_dilation
+    {F₁ F₂} [FunLike F₁ P₁ P₃] [DilationClass F₁ P₁ P₃] [FunLike F₂ P₂ P₄] [DilationClass F₂ P₂ P₄]
+    {f₁ : F₁} {f₂ : F₂}
+    (h : v₁ ≅ v₂) (hf : Dilation.ratio f₁ = Dilation.ratio f₂)
+    : f₁ ∘ v₁ ≅ f₂ ∘ v₂ := fun i j => by
+  simp [hf, h i j]
 
 end Congruent
 
@@ -132,27 +137,31 @@ section PseudoMetricSpace
 variable [PseudoMetricSpace P₁] [PseudoMetricSpace P₂]
 
 /-- Congruence holds if and only if all non-negative distances are the same. -/
-lemma congruent_iff_nndist_eq :
-    Congruent v₁ v₂ ↔ ∀ i₁ i₂, nndist (v₁ i₁) (v₁ i₂) = nndist (v₂ i₁) (v₂ i₂) :=
+lemma congruent_iff_nndist_eq
+    : Congruent v₁ v₂ ↔ ∀ i₁ i₂, nndist (v₁ i₁) (v₁ i₂) = nndist (v₂ i₁) (v₂ i₂) :=
   forall₂_congr (fun _ _ ↦ by rw [edist_nndist, edist_nndist]; norm_cast)
 
-/-- Congruence holds if and only if all non-negative distances between points with different
-indices are the same. -/
-lemma congruent_iff_pairwise_nndist_eq :
-    Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ nndist (v₁ i₁) (v₁ i₂) = nndist (v₂ i₁) (v₂ i₂) := by
+/--
+Congruence holds if and only if all non-negative distances between points with different
+indices are the same.
+-/
+lemma congruent_iff_pairwise_nndist_eq
+    : Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ nndist (v₁ i₁) (v₁ i₂) = nndist (v₂ i₁) (v₂ i₂) := by
   simp_rw [congruent_iff_pairwise_edist_eq, edist_nndist]
   exact_mod_cast Iff.rfl
 
 /-- Congruence holds if and only if all distances are the same. -/
-lemma congruent_iff_dist_eq :
-    Congruent v₁ v₂ ↔ ∀ i₁ i₂, dist (v₁ i₁) (v₁ i₂) = dist (v₂ i₁) (v₂ i₂) :=
-  congruent_iff_nndist_eq.trans
-    (forall₂_congr (fun _ _ ↦ by rw [dist_nndist, dist_nndist]; norm_cast))
+lemma congruent_iff_dist_eq
+    : Congruent v₁ v₂ ↔ ∀ i₁ i₂, dist (v₁ i₁) (v₁ i₂) = dist (v₂ i₁) (v₂ i₂) :=
+  congruent_iff_nndist_eq.trans (forall₂_congr (fun _ _ ↦ by
+    rw [dist_nndist, dist_nndist]; norm_cast))
 
-/-- Congruence holds if and only if all non-negative distances between points with different
-indices are the same. -/
-lemma congruent_iff_pairwise_dist_eq :
-    Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ dist (v₁ i₁) (v₁ i₂) = dist (v₂ i₁) (v₂ i₂) := by
+/--
+Congruence holds if and only if all non-negative distances between points with different
+indices are the same.
+-/
+lemma congruent_iff_pairwise_dist_eq
+    : Congruent v₁ v₂ ↔ Pairwise fun i₁ i₂ ↦ dist (v₁ i₁) (v₁ i₂) = dist (v₂ i₁) (v₂ i₂) := by
   simp_rw [congruent_iff_pairwise_nndist_eq, dist_nndist]
   exact_mod_cast Iff.rfl
 

@@ -46,11 +46,14 @@ If the `Set.Notation` namespace is open, sets of a subtype coerced to the ambien
 represented with `↑`.
 -/
 @[scoped delab app.Set.image]
-meta def delabSetImageSubtype : Delab := whenPPOption getPPCoercions do
-  let #[α, _, f, _] := (← getExpr).getAppArgs | failure
-  guard <| f.isAppOfArity ``Subtype.val 2
-  let some _ := α.coeTypeSet? | failure
-  let e ← withAppArg delab
-  `(↑$e)
+meta def delabSetImageSubtype : Delab :=
+  whenPPOption getPPCoercions do
+    let #[α, _, f, _] := (← getExpr).getAppArgs
+      | failure
+    guard <| f.isAppOfArity ``Subtype.val 2
+    let some _ := α.coeTypeSet?
+      | failure
+    let e ← withAppArg delab
+    `(↑$e)
 
 end Set.Notation

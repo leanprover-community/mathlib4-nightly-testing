@@ -47,12 +47,11 @@ variable [HasZeroMorphisms C]
 
 /-- The left orthogonal of a property of objects is closed under quotients. -/
 instance (P : ObjectProperty C) : P.leftOrthogonal.IsClosedUnderQuotients where
-  prop_of_epi f _ hX := (P.leftOrthogonal_iff _).mpr
-    fun _ g hZ ↦ zero_of_epi_comp f (hX (f ≫ g) hZ)
+  prop_of_epi f _ hX := (P.leftOrthogonal_iff _).mpr fun _ g hZ ↦ zero_of_epi_comp f (hX (f ≫ g) hZ)
 
 /-- The left orthogonal of a property of objects is closed under colimits of any shape. -/
-instance (P : ObjectProperty C) {J : Type u'} [Category.{v'} J] :
-    P.leftOrthogonal.IsClosedUnderColimitsOfShape J where
+instance (P : ObjectProperty C) {J : Type u'} [Category.{v'} J]
+    : P.leftOrthogonal.IsClosedUnderColimitsOfShape J where
   colimitsOfShape_le := by
     intro X ⟨hX⟩ Y f hY
     apply hX.isColimit.hom_ext
@@ -62,12 +61,12 @@ instance (P : ObjectProperty C) {J : Type u'} [Category.{v'} J] :
 
 /-- The right orthogonal of a property of objects is closed under subobjects. -/
 instance (P : ObjectProperty C) : P.rightOrthogonal.IsClosedUnderSubobjects where
-  prop_of_mono i _ hY := (P.rightOrthogonal_iff _).mpr
-    fun _ f hX ↦ zero_of_comp_mono i (hY (f ≫ i) hX)
+  prop_of_mono i _ hY :=
+    (P.rightOrthogonal_iff _).mpr fun _ f hX ↦ zero_of_comp_mono i (hY (f ≫ i) hX)
 
 /-- The right orthogonal of a property of objects is closed under limits of any shape. -/
-instance (P : ObjectProperty C) {J : Type u'} [Category.{v'} J] :
-    P.rightOrthogonal.IsClosedUnderLimitsOfShape J where
+instance (P : ObjectProperty C) {J : Type u'} [Category.{v'} J]
+    : P.rightOrthogonal.IsClosedUnderLimitsOfShape J where
   limitsOfShape_le := by
     intro X ⟨hX⟩ Y f hY
     apply hX.isLimit.hom_ext

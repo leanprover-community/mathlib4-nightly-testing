@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Analysis.Normed.Group.Quotient
 public import Mathlib.Analysis.Normed.Module.Ball.Pointwise
-public import Mathlib.Topology.Instances.AddCircle.Real  -- shake: keep (used in type annotation)
+public import Mathlib.Topology.Instances.AddCircle.Real -- shake: keep (used in type annotation)
 
 /-!
 # The additive circle as a normed group
@@ -27,7 +27,6 @@ We define the normed group structure on `AddCircle p`, for `p : ℝ`. For exampl
 
 public section
 
-
 noncomputable section
 
 open Metric QuotientAddGroup Set
@@ -43,8 +42,8 @@ variable (p : ℝ)
 instance : NormedAddCommGroup (AddCircle p) := QuotientAddGroup.instNormedAddCommGroup _
 
 @[simp]
-theorem norm_coe_mul (x : ℝ) (t : ℝ) :
-    ‖(↑(t * x) : AddCircle (t * p))‖ = |t| * ‖(x : AddCircle p)‖ := by
+theorem norm_coe_mul (x : ℝ) (t : ℝ)
+    : ‖(↑(t * x) : AddCircle (t * p))‖ = |t| * ‖(x : AddCircle p)‖ := by
   obtain rfl | ht := eq_or_ne t 0
   · simp
   simp only [norm_eq_infDist, ← Real.norm_eq_abs, ← infDist_smul₀ ht, smul_zero]
@@ -82,7 +81,7 @@ theorem norm_eq {x : ℝ} : ‖(x : AddCircle p)‖ = |x - round (p⁻¹ * x) * 
     · simpa [abs_of_nonneg] using hr (fract x)
     · simpa [abs_sub_comm (fract x)] using hr (fract x - 1) (by simp)
   · simpa [zmultiples, QuotientAddGroup.eq, zsmul_eq_mul, mul_one, mem_mk, mem_range, and_imp,
-      forall_exists_index, eq_neg_add_iff_add_eq, ← eq_sub_iff_add_eq, forall_comm (α := ℕ)]
+        forall_exists_index, eq_neg_add_iff_add_eq, ← eq_sub_iff_add_eq, forall_comm (α := ℕ)]
       using round_le _
 
 theorem norm_eq' (hp : 0 < p) {x : ℝ} : ‖(x : AddCircle p)‖ = p * |p⁻¹ * x - round (p⁻¹ * x)| := by
@@ -100,9 +99,10 @@ theorem norm_le_half_period {x : AddCircle p} (hp : p ≠ 0) : ‖x‖ ≤ |p| /
 
 @[simp]
 theorem norm_half_period_eq : ‖(↑(p / 2) : AddCircle p)‖ = |p| / 2 := by
-  rcases eq_or_ne p 0 with (rfl | hp); · simp
-  rw [norm_eq, ← mul_div_assoc, inv_mul_cancel₀ hp, one_div, round_two_inv, Int.cast_one,
-    one_mul, (by linarith : p / 2 - p = -(p / 2)), abs_neg, abs_div, abs_two]
+  rcases eq_or_ne p 0 with (rfl | hp)
+  · simp
+  rw [norm_eq, ← mul_div_assoc, inv_mul_cancel₀ hp, one_div, round_two_inv, Int.cast_one, one_mul,
+    (by linarith : p / 2 - p = -(p / 2)), abs_neg, abs_div, abs_two]
 
 theorem norm_coe_eq_abs_iff {x : ℝ} (hp : p ≠ 0) : ‖(x : AddCircle p)‖ = |x| ↔ |x| ≤ |p| / 2 := by
   refine ⟨fun hx => hx ▸ norm_le_half_period p hp, fun hx => ?_⟩
@@ -127,19 +127,20 @@ theorem norm_coe_eq_abs_iff {x : ℝ} (hp : p ≠ 0) : ‖(x : AddCircle p)‖ =
 
 open Metric
 
-theorem closedBall_eq_univ_of_half_period_le (hp : p ≠ 0) (x : AddCircle p) {ε : ℝ}
-    (hε : |p| / 2 ≤ ε) : closedBall x ε = univ :=
+theorem closedBall_eq_univ_of_half_period_le
+    (hp : p ≠ 0) (x : AddCircle p) {ε : ℝ} (hε : |p| / 2 ≤ ε)
+    : closedBall x ε = univ :=
   eq_univ_iff_forall.mpr fun x => by
     simpa only [mem_closedBall, dist_eq_norm] using (norm_le_half_period p hp).trans hε
 
 @[simp]
-theorem coe_real_preimage_closedBall_period_zero (x ε : ℝ) :
-    (↑) ⁻¹' closedBall (x : AddCircle (0 : ℝ)) ε = closedBall x ε := by
+theorem coe_real_preimage_closedBall_period_zero (x ε : ℝ)
+    : (↑) ⁻¹' closedBall (x : AddCircle (0 : ℝ)) ε = closedBall x ε := by
   ext y
   simp [dist_eq_norm, ← QuotientAddGroup.mk_sub]
 
-theorem coe_real_preimage_closedBall_eq_iUnion (x ε : ℝ) :
-    (↑) ⁻¹' closedBall (x : AddCircle p) ε = ⋃ z : ℤ, closedBall (x + z • p) ε := by
+theorem coe_real_preimage_closedBall_eq_iUnion (x ε : ℝ)
+    : (↑) ⁻¹' closedBall (x : AddCircle p) ε = ⋃ z : ℤ, closedBall (x + z • p) ε := by
   rcases eq_or_ne p 0 with (rfl | hp)
   · simp [iUnion_const]
   ext y
@@ -148,12 +149,14 @@ theorem coe_real_preimage_closedBall_eq_iUnion (x ε : ℝ) :
   refine ⟨fun h => ⟨round (p⁻¹ * (y - x)), h⟩, ?_⟩
   rintro ⟨n, hn⟩
   rw [← mul_le_mul_iff_right₀ (abs_pos.mpr <| inv_ne_zero hp), ← abs_mul, mul_sub, mul_comm _ p,
-    inv_mul_cancel_left₀ hp] at hn ⊢
+      inv_mul_cancel_left₀ hp]
+    at hn ⊢
   exact (round_le (p⁻¹ * (y - x)) n).trans hn
 
-theorem coe_real_preimage_closedBall_inter_eq {x ε : ℝ} (s : Set ℝ)
-    (hs : s ⊆ closedBall x (|p| / 2)) :
-    (↑) ⁻¹' closedBall (x : AddCircle p) ε ∩ s = if ε < |p| / 2 then closedBall x ε ∩ s else s := by
+theorem coe_real_preimage_closedBall_inter_eq
+    {x ε : ℝ} (s : Set ℝ) (hs : s ⊆ closedBall x (|p| / 2))
+    : (↑) ⁻¹' closedBall (x : AddCircle p) ε ∩ s
+      = if ε < |p| / 2 then closedBall x ε ∩ s else s := by
   rcases le_or_gt (|p| / 2) ε with hε | hε
   · rcases eq_or_ne p 0 with (rfl | hp)
     · simp only [abs_zero, zero_div] at hε
@@ -162,8 +165,8 @@ theorem coe_real_preimage_closedBall_inter_eq {x ε : ℝ} (s : Set ℝ)
       exact hs.trans (closedBall_subset_closedBall <| by simp [hε])
     simp [closedBall_eq_univ_of_half_period_le p hp (↑x) hε, not_lt.mpr hε]
   · suffices ∀ z : ℤ, closedBall (x + z • p) ε ∩ s = if z = 0 then closedBall x ε ∩ s else ∅ by
-      simp [-zsmul_eq_mul, coe_real_preimage_closedBall_eq_iUnion,
-        iUnion_inter, iUnion_ite, this, hε]
+      simp [-zsmul_eq_mul, coe_real_preimage_closedBall_eq_iUnion, iUnion_inter, iUnion_ite, this,
+        hε]
     intro z
     simp only [Real.closedBall_eq_Icc] at hs ⊢
     rcases eq_or_ne z 0 with (rfl | hz)
@@ -189,21 +192,22 @@ section FiniteOrderPoints
 
 variable {p} [hp : Fact (0 < p)]
 
-theorem norm_div_natCast {m n : ℕ} :
-    ‖(↑(↑m / ↑n * p) : AddCircle p)‖ = p * (↑(min (m % n) (n - m % n)) / n) := by
+theorem norm_div_natCast {m n : ℕ}
+    : ‖(↑(↑m / ↑n * p) : AddCircle p)‖ = p * (↑(min (m % n) (n - m % n)) / n) := by
   have : p⁻¹ * (↑m / ↑n * p) = ↑m / ↑n := by rw [mul_comm _ p, inv_mul_cancel_left₀ hp.out.ne.symm]
   rw [norm_eq' p hp.out, this, abs_sub_round_div_natCast_eq]
 
-theorem exists_norm_eq_of_isOfFinAddOrder {u : AddCircle p} (hu : IsOfFinAddOrder u) :
-    ∃ k : ℕ, ‖u‖ = p * (k / addOrderOf u) := by
+theorem exists_norm_eq_of_isOfFinAddOrder {u : AddCircle p} (hu : IsOfFinAddOrder u)
+    : ∃ k : ℕ, ‖u‖ = p * (k / addOrderOf u) := by
   let n := addOrderOf u
   change ∃ k : ℕ, ‖u‖ = p * (k / n)
   obtain ⟨m, -, -, hm⟩ := exists_gcd_eq_one_of_isOfFinAddOrder hu
   refine ⟨min (m % n) (n - m % n), ?_⟩
   rw [← hm, norm_div_natCast]
 
-theorem le_add_order_smul_norm_of_isOfFinAddOrder {u : AddCircle p} (hu : IsOfFinAddOrder u)
-    (hu' : u ≠ 0) : p ≤ addOrderOf u • ‖u‖ := by
+theorem le_add_order_smul_norm_of_isOfFinAddOrder
+    {u : AddCircle p} (hu : IsOfFinAddOrder u) (hu' : u ≠ 0)
+    : p ≤ addOrderOf u • ‖u‖ := by
   obtain ⟨n, hn⟩ := exists_norm_eq_of_isOfFinAddOrder hu
   replace hu : (addOrderOf u : ℝ) ≠ 0 := by
     norm_cast

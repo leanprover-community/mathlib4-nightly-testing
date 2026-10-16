@@ -8,7 +8,6 @@ module
 public import Mathlib.Topology.MetricSpace.CantorScheme
 public import Mathlib.Topology.MetricSpace.Polish
 public import Mathlib.Topology.Perfect
-
 import Mathlib.Topology.Metrizable.Real
 
 /-!
@@ -40,9 +39,9 @@ section CantorInjMetric
 
 variable {α : Type*} [MetricSpace α] {C : Set α} {ε : ℝ≥0∞}
 
-private theorem Perfect.small_diam_aux (hC : Perfect C) (ε_pos : 0 < ε) {x : α} (xC : x ∈ C) :
-    let D := closure (Metric.eball x (ε / 2) ∩ C)
-    Perfect D ∧ D.Nonempty ∧ D ⊆ C ∧ Metric.ediam D ≤ ε := by
+private theorem Perfect.small_diam_aux (hC : Perfect C) (ε_pos : 0 < ε) {x : α} (xC : x ∈ C)
+    : let D := closure (Metric.eball x (ε / 2) ∩ C)
+      Perfect D ∧ D.Nonempty ∧ D ⊆ C ∧ Metric.ediam D ≤ ε := by
   have : x ∈ Metric.eball x (ε / 2) := by
     apply Metric.mem_eball_self
     rw [ENNReal.div_pos_iff]
@@ -56,28 +55,37 @@ private theorem Perfect.small_diam_aux (hC : Perfect C) (ε_pos : 0 < ε) {x : �
   convert Metric.ediam_eball_le (x := x)
   rw [mul_comm, ENNReal.div_mul_cancel] <;> simp
 
-/-- A refinement of `Perfect.splitting` for metric spaces, where we also control
-the diameter of the new perfect sets. -/
-theorem Perfect.small_diam_splitting (hC : Perfect C) (hnonempty : C.Nonempty) (ε_pos : 0 < ε) :
-    ∃ C₀ C₁ : Set α, (Perfect C₀ ∧ C₀.Nonempty ∧ C₀ ⊆ C ∧ Metric.ediam C₀ ≤ ε) ∧
-    (Perfect C₁ ∧ C₁.Nonempty ∧ C₁ ⊆ C ∧ Metric.ediam C₁ ≤ ε) ∧ Disjoint C₀ C₁ := by
+/--
+A refinement of `Perfect.splitting` for metric spaces, where we also control
+the diameter of the new perfect sets.
+-/
+theorem Perfect.small_diam_splitting (hC : Perfect C) (hnonempty : C.Nonempty) (ε_pos : 0 < ε)
+    : ∃ C₀ C₁ : Set α,
+      (Perfect C₀ ∧ C₀.Nonempty ∧ C₀ ⊆ C ∧ Metric.ediam C₀ ≤ ε)
+        ∧ (Perfect C₁ ∧ C₁.Nonempty ∧ C₁ ⊆ C ∧ Metric.ediam C₁ ≤ ε) ∧ Disjoint C₀ C₁ := by
   rcases hC.splitting hnonempty with ⟨D₀, D₁, ⟨perf0, non0, sub0⟩, ⟨perf1, non1, sub1⟩, hdisj⟩
   obtain ⟨x₀, hx₀⟩ := non0
   obtain ⟨x₁, hx₁⟩ := non1
   rcases perf0.small_diam_aux ε_pos hx₀ with ⟨perf0', non0', sub0', diam0⟩
   rcases perf1.small_diam_aux ε_pos hx₁ with ⟨perf1', non1', sub1', diam1⟩
-  refine
-    ⟨closure (Metric.eball x₀ (ε / 2) ∩ D₀), closure (Metric.eball x₁ (ε / 2) ∩ D₁),
-      ⟨perf0', non0', sub0'.trans sub0, diam0⟩, ⟨perf1', non1', sub1'.trans sub1, diam1⟩, ?_⟩
+  refine ⟨
+    closure (Metric.eball x₀ (ε / 2) ∩ D₀),
+    closure (Metric.eball x₁ (ε / 2) ∩ D₁),
+    ⟨perf0', non0', sub0'.trans sub0, diam0⟩,
+    ⟨perf1', non1', sub1'.trans sub1, diam1⟩,
+    ?_
+  ⟩
   apply Disjoint.mono _ _ hdisj <;> assumption
 
 open CantorScheme
 
-/-- Any nonempty perfect set in a complete metric space admits a continuous injection
-from the Cantor space, `ℕ → Bool`. -/
+/--
+Any nonempty perfect set in a complete metric space admits a continuous injection
+from the Cantor space, `ℕ → Bool`.
+-/
 theorem Perfect.exists_nat_bool_injection
-    (hC : Perfect C) (hnonempty : C.Nonempty) [CompleteSpace α] :
-    ∃ f : (ℕ → Bool) → α, range f ⊆ C ∧ Continuous f ∧ Injective f := by
+    (hC : Perfect C) (hnonempty : C.Nonempty) [CompleteSpace α]
+    : ∃ f : (ℕ → Bool) → α, range f ⊆ C ∧ Continuous f ∧ Injective f := by
   obtain ⟨u, -, upos', hu⟩ := exists_seq_strictAnti_tendsto' (zero_lt_one' ℝ≥0∞)
   have upos := fun n => (upos' n).1
   let P := Subtype fun E : Set α => Perfect E ∧ E.Nonempty
@@ -86,7 +94,8 @@ theorem Perfect.exists_nat_bool_injection
     hC.small_diam_splitting hnonempty hε
   let DP : List Bool → P := fun l => by
     induction l with
-    | nil => exact ⟨C, ⟨hC, hnonempty⟩⟩
+    | nil =>
+      exact ⟨C, ⟨hC, hnonempty⟩⟩
     | cons a l ih =>
       cases a
       · use C0 ih.property.1 ih.property.2 (upos (l.length + 1))
@@ -131,11 +140,14 @@ theorem Perfect.exists_nat_bool_injection
 
 end CantorInjMetric
 
-/-- Any closed uncountable subset of a Polish space admits a continuous injection
-from the Cantor space `ℕ → Bool`. -/
-theorem IsClosed.exists_nat_bool_injection_of_not_countable {α : Type*} [TopologicalSpace α]
-    [PolishSpace α] {C : Set α} (hC : IsClosed C) (hunc : ¬C.Countable) :
-    ∃ f : (ℕ → Bool) → α, range f ⊆ C ∧ Continuous f ∧ Function.Injective f := by
+/--
+Any closed uncountable subset of a Polish space admits a continuous injection
+from the Cantor space `ℕ → Bool`.
+-/
+theorem IsClosed.exists_nat_bool_injection_of_not_countable
+    {α : Type*} [TopologicalSpace α] [PolishSpace α]
+    {C : Set α} (hC : IsClosed C) (hunc : ¬C.Countable)
+    : ∃ f : (ℕ → Bool) → α, range f ⊆ C ∧ Continuous f ∧ Function.Injective f := by
   let := TopologicalSpace.upgradeIsCompletelyMetrizable α
   obtain ⟨D, hD, Dnonempty, hDC⟩ := exists_perfect_nonempty_of_isClosed_of_not_countable hC hunc
   obtain ⟨f, hfD, hf⟩ := hD.exists_nat_bool_injection Dnonempty

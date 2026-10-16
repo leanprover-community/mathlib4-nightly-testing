@@ -4,7 +4,7 @@ import Mathlib.Data.ZMod.Defs
 -- but should be enough to trigger a stack overflow from a non-tail-recursive implementation
 -- of exponentiation by repeated squaring.
 def k := 11213
-def p := 2^k - 1
+def p := 2 ^ k - 1
 
 set_option exponentiation.threshold 100000 in
 -- We ensure here that the `@[csimp]` attribute successfully replaces (at runtime)
@@ -12,4 +12,4 @@ set_option exponentiation.threshold 100000 in
 -- with a tail-recursive implementation by repeated squaring.
 /-- info: 1 -/
 #guard_msgs in
-#eval (37 : ZMod p)^(p-1)
+#eval (37 : ZMod p) ^ (p - 1)

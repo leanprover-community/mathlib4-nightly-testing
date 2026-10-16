@@ -30,27 +30,30 @@ with `fun_prop` rather that `measurability`. The `measurability` attribute is eq
 -/
 syntax (name := measurability) "measurability" : attr
 
-initialize registerBuiltinAttribute {
-  name := `measurability
-  descr :=
-    "The `measurability` attribute used to tag measurability statements for the `measurability` " ++
-    "tactic."
-  add decl stx kind := MetaM.run' do
-    if ← isFunPropGoal (← getConstInfo decl).type then
-      try
-        Attribute.add decl `fun_prop (← `(attr|fun_prop)) kind
-        logWarningAt stx "Use `@[fun_prop]` instead"
-      catch e =>
-        logWarningAt stx m!"This theorem will not be used by `measurability`: {e.toMessageData}"
-    else
-      Attribute.add decl `aesop
-        (← `(attr|aesop safe apply (rule_sets := [$(mkIdent `Measurable):ident]))) kind
-  erase decl := MetaM.run' do
-    if ← isFunPropGoal (← getConstInfo decl).type then
-      Attribute.erase decl `fun_prop
-    else
-      Attribute.erase decl `aesop
-}
+initialize
+  registerBuiltinAttribute {
+    name := `measurability
+    descr :=
+      "The `measurability` attribute used to tag measurability statements for the `measurability` "
+        ++ "tactic."
+    add decl stx kind :=
+      MetaM.run' do
+        if ← isFunPropGoal (← getConstInfo decl).type then
+          try
+            Attribute.add decl `fun_prop (← `(attr|fun_prop)) kind
+            logWarningAt stx "Use `@[fun_prop]` instead"
+          catch e =>
+            logWarningAt stx m!"This theorem will not be used by `measurability`: {e.toMessageData}"
+        else
+          Attribute.add decl `aesop
+            (← `(attr|aesop safe apply (rule_sets := [$(mkIdent `Measurable):ident]))) kind
+    erase decl :=
+      MetaM.run' do
+        if ← isFunPropGoal (← getConstInfo decl).type then
+          Attribute.erase decl `fun_prop
+        else
+          Attribute.erase decl `aesop
+  }
 
 /--
 The tactic `measurability` solves goals of the form `Measurable f`, `AEMeasurable f`,
@@ -70,7 +73,8 @@ macro (name := Mathlib.Tactic.measurability) "measurability" : tactic =>
 The tactic `measurability?` solves goals of the form `Measurable f`, `AEMeasurable f`,
 `StronglyMeasurable f`, `AEStronglyMeasurable f μ`, or `MeasurableSet s` by applying lemmas tagged
 with the `measurability` user attribute, and suggests a faster proof script that can be substituted
-for the tactic call in case of success. -/
+for the tactic call in case of success.
+-/
 macro (name := Mathlib.Tactic.measurability?) "measurability?" : tactic =>
   `(tactic| aesop? (config := { terminal := true })
     (rule_sets := [$(Lean.mkIdent `Measurable):ident]))

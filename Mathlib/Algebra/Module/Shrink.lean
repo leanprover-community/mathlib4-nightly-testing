@@ -23,7 +23,6 @@ instance : Module R (Shrink.{v} α) := fast_instance% addEquiv.module R
 
 variable (R α) in
 /-- Shrinking `α` to a smaller universe preserves module structure. -/
-@[simps!]
-def linearEquiv : Shrink.{v} α ≃ₗ[R] α := (addEquiv (α := α)).linearEquiv R
+@[simps!] def linearEquiv : Shrink.{v} α ≃ₗ[R] α := (addEquiv (α := α)).linearEquiv R
 
 end Shrink

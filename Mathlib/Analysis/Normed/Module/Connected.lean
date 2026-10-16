@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Convex.Contractible
 public import Mathlib.LinearAlgebra.Dimension.DivisionRing
 public import Mathlib.Topology.Algebra.Module.Cardinality
-
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Normed.Module.Convex
 
@@ -37,14 +36,17 @@ open scoped Convex ENNReal
 
 section TopologicalVectorSpace
 
-variable {E : Type*} [AddCommGroup E] [Module ℝ E]
-  [TopologicalSpace E] [ContinuousAdd E] [ContinuousSMul ℝ E]
+variable
+  {E : Type*}
+  [AddCommGroup E] [Module ℝ E] [TopologicalSpace E] [ContinuousAdd E] [ContinuousSMul ℝ E]
 
-/-- In a real vector space of dimension `> 1`, the complement of any countable set is path
-connected. -/
+/--
+In a real vector space of dimension `> 1`, the complement of any countable set is path
+connected.
+-/
 theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
-    (h : 1 < Module.rank ℝ E) {s : Set E} (hs : s.Countable) :
-    IsPathConnected sᶜ := by
+    (h : 1 < Module.rank ℝ E) {s : Set E} (hs : s.Countable)
+    : IsPathConnected sᶜ := by
   have : Nontrivial E := (rank_pos_iff_nontrivial (R := ℝ)).1 (zero_lt_one.trans h)
   -- the set `sᶜ` is dense, therefore nonempty. Pick `a ∈ sᶜ`. We have to show that any
   -- `b ∈ sᶜ` can be joined to `a`.
@@ -53,7 +55,8 @@ theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
   intro b hb
   rcases eq_or_ne a b with rfl | hab
   · exact JoinedIn.refl ha
-  /- Assume `b ≠ a`. Write `a = c - x` and `b = c + x` for some nonzero `x`. Choose `y` which
+  /-
+  Assume `b ≠ a`. Write `a = c - x` and `b = c + x` for some nonzero `x`. Choose `y` which
   is linearly independent from `x`. Then the segments joining `a = c - x` to `c + ty` are pairwise
   disjoint for varying `t` (except for the endpoint `a`) so only countably many of them can
   intersect `s`. In the same way, there are countably many `t`s for which the segment
@@ -75,8 +78,7 @@ theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
     apply countable_ofPred_nonempty_of_disjoint _ (fun t ↦ inter_subset_right) hs
     intro t t' htt'
     apply disjoint_iff_inter_eq_empty.2
-    have N : {c + x} ∩ s = ∅ := by
-      simpa only [singleton_inter_eq_empty, mem_compl_iff, Ib] using hb
+    have N : {c + x} ∩ s = ∅ := by simpa only [singleton_inter_eq_empty, mem_compl_iff, Ib] using hb
     rw [inter_assoc, inter_comm s, inter_assoc, inter_self, ← inter_assoc, ← subset_empty_iff, ← N]
     apply inter_subset_inter_left
     apply Eq.subset
@@ -85,8 +87,7 @@ theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
     apply countable_ofPred_nonempty_of_disjoint _ (fun t ↦ inter_subset_right) hs
     intro t t' htt'
     apply disjoint_iff_inter_eq_empty.2
-    have N : {c - x} ∩ s = ∅ := by
-      simpa only [singleton_inter_eq_empty, mem_compl_iff, Ia] using ha
+    have N : {c - x} ∩ s = ∅ := by simpa only [singleton_inter_eq_empty, mem_compl_iff, Ia] using ha
     rw [inter_assoc, inter_comm s, inter_assoc, inter_self, ← inter_assoc, ← subset_empty_iff, ← N]
     apply inter_subset_inter_left
     rw [sub_eq_add_neg _ x]
@@ -95,7 +96,8 @@ theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
     convert hy.units_smul ![-1, 1]
     simp [← List.ofFn_inj]
   obtain ⟨t, ht⟩ : Set.Nonempty ({t : ℝ | ([c + x -[ℝ] c + t • y] ∩ s).Nonempty}
-      ∪ {t : ℝ | ([c - x -[ℝ] c + t • y] ∩ s).Nonempty})ᶜ := ((A.union B).dense_compl ℝ).nonempty
+      ∪ {t : ℝ | ([c - x -[ℝ] c + t • y] ∩ s).Nonempty})ᶜ :=
+    ((A.union B).dense_compl ℝ).nonempty
   let z := c + t • y
   simp only [compl_union, mem_inter_iff, mem_compl_iff, mem_ofPred_eq, not_nonempty_iff_eq_empty]
     at ht
@@ -111,20 +113,23 @@ theorem Set.Countable.isPathConnected_compl_of_one_lt_rank
     exact Ib.symm
   exact JA.trans JB.symm
 
-/-- In a real vector space of dimension `> 1`, the complement of any countable set is
-connected. -/
-theorem Set.Countable.isConnected_compl_of_one_lt_rank (h : 1 < Module.rank ℝ E) {s : Set E}
-    (hs : s.Countable) : IsConnected sᶜ :=
+/--
+In a real vector space of dimension `> 1`, the complement of any countable set is
+connected.
+-/
+theorem Set.Countable.isConnected_compl_of_one_lt_rank
+    (h : 1 < Module.rank ℝ E) {s : Set E} (hs : s.Countable)
+    : IsConnected sᶜ :=
   (hs.isPathConnected_compl_of_one_lt_rank h).isConnected
 
 /-- In a real vector space of dimension `> 1`, the complement of any singleton is path-connected. -/
-theorem isPathConnected_compl_singleton_of_one_lt_rank (h : 1 < Module.rank ℝ E) (x : E) :
-    IsPathConnected {x}ᶜ :=
+theorem isPathConnected_compl_singleton_of_one_lt_rank (h : 1 < Module.rank ℝ E) (x : E)
+    : IsPathConnected {x}ᶜ :=
   Set.Countable.isPathConnected_compl_of_one_lt_rank h (countable_singleton x)
 
 /-- In a real vector space of dimension `> 1`, the complement of a singleton is connected. -/
-theorem isConnected_compl_singleton_of_one_lt_rank (h : 1 < Module.rank ℝ E) (x : E) :
-    IsConnected {x}ᶜ :=
+theorem isConnected_compl_singleton_of_one_lt_rank (h : 1 < Module.rank ℝ E) (x : E)
+    : IsConnected {x}ᶜ :=
   (isPathConnected_compl_singleton_of_one_lt_rank h x).isConnected
 
 end TopologicalVectorSpace
@@ -137,36 +142,30 @@ section Ball
 
 namespace Metric
 
-theorem contractibleSpace_ball {x : E} {r : ℝ} (hr : 0 < r) :
-    ContractibleSpace (ball x r) :=
+theorem contractibleSpace_ball {x : E} {r : ℝ} (hr : 0 < r) : ContractibleSpace (ball x r) :=
   (convex_ball _ _).contractibleSpace (by simpa)
 
-theorem contractibleSpace_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) :
-    ContractibleSpace (eball x r) :=
+theorem contractibleSpace_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) : ContractibleSpace (eball x r) :=
   (convex_eball _ _).contractibleSpace ⟨x, by simpa⟩
 
-theorem contractibleSpace_closedBall {x : E} {r : ℝ} (hr : 0 ≤ r) :
-    ContractibleSpace (closedBall x r) :=
+theorem contractibleSpace_closedBall {x : E} {r : ℝ} (hr : 0 ≤ r)
+    : ContractibleSpace (closedBall x r) :=
   (convex_closedBall _ _).contractibleSpace (by simpa)
 
-instance contractibleSpace_closedEBall {x : E} {r : ℝ≥0∞} :
-    ContractibleSpace (closedEBall x r) :=
+instance contractibleSpace_closedEBall {x : E} {r : ℝ≥0∞} : ContractibleSpace (closedEBall x r) :=
   (convex_closedEBall _ _).contractibleSpace ⟨x, by simp⟩
 
-theorem isPathConnected_ball {x : E} {r : ℝ} (hr : 0 < r) :
-    IsPathConnected (ball x r) :=
+theorem isPathConnected_ball {x : E} {r : ℝ} (hr : 0 < r) : IsPathConnected (ball x r) :=
   convex_ball _ _ |>.isPathConnected <| by simpa
 
-theorem isPathConnected_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) :
-    IsPathConnected (eball x r) :=
+theorem isPathConnected_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) : IsPathConnected (eball x r) :=
   convex_eball _ _ |>.isPathConnected ⟨x, by simpa⟩
 
-theorem isPathConnected_closedBall {x : E} {r : ℝ} (hr : 0 ≤ r) :
-    IsPathConnected (closedBall x r) :=
+theorem isPathConnected_closedBall {x : E} {r : ℝ} (hr : 0 ≤ r)
+    : IsPathConnected (closedBall x r) :=
   convex_closedBall _ _ |>.isPathConnected ⟨x, by simpa⟩
 
-theorem isPathConnected_closedEBall {x : E} {r : ℝ≥0∞} :
-    IsPathConnected (closedEBall x r) :=
+theorem isPathConnected_closedEBall {x : E} {r : ℝ≥0∞} : IsPathConnected (closedEBall x r) :=
   isPathConnected_iff_pathConnectedSpace.mpr inferInstance
 
 theorem isPreconnected_ball {x : E} {r : ℝ} : IsPreconnected (ball x r) :=
@@ -181,12 +180,10 @@ theorem isPreconnected_closedBall {x : E} {r : ℝ} : IsPreconnected (closedBall
 theorem isPreconnected_closedEBall {x : E} {r : ℝ≥0∞} : IsPreconnected (closedEBall x r) :=
   (convex_closedEBall _ _).isPreconnected
 
-theorem isConnected_ball {x : E} {r : ℝ} (hr : 0 < r) :
-    IsConnected (ball x r) :=
+theorem isConnected_ball {x : E} {r : ℝ} (hr : 0 < r) : IsConnected (ball x r) :=
   (isPathConnected_ball hr).isConnected
 
-theorem isConnected_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) :
-    IsConnected (eball x r) :=
+theorem isConnected_eball {x : E} {r : ℝ≥0∞} (hr : 0 < r) : IsConnected (eball x r) :=
   (isPathConnected_eball hr).isConnected
 
 theorem isConnected_closedBall {x : E} {r : ℝ} (hr : 0 ≤ r) : IsConnected (closedBall x r) :=
@@ -199,13 +196,17 @@ end Metric
 
 end Ball
 
-/-- In a real vector space of dimension `> 1`, any sphere of nonnegative radius is
-path connected. -/
-theorem isPathConnected_sphere (h : 1 < Module.rank ℝ E) (x : E) {r : ℝ} (hr : 0 ≤ r) :
-    IsPathConnected (sphere x r) := by
-  /- when `r > 0`, we write the sphere as the image of `{0}ᶜ` under the map
+/--
+In a real vector space of dimension `> 1`, any sphere of nonnegative radius is
+path connected.
+-/
+theorem isPathConnected_sphere (h : 1 < Module.rank ℝ E) (x : E) {r : ℝ} (hr : 0 ≤ r)
+    : IsPathConnected (sphere x r) := by
+  /-
+  when `r > 0`, we write the sphere as the image of `{0}ᶜ` under the map
   `y ↦ x + (r * ‖y‖⁻¹) • y`. Since the image under a continuous map of a path connected set
-  is path connected, this concludes the proof. -/
+  is path connected, this concludes the proof.
+  -/
   rcases hr.eq_or_lt with rfl | rpos
   · simpa using isPathConnected_singleton x
   let f : E → E := fun y ↦ x + (r * ‖y‖⁻¹) • y
@@ -231,13 +232,13 @@ theorem isPathConnected_sphere (h : 1 < Module.rank ℝ E) (x : E) {r : ℝ} (hr
   rwa [this] at C
 
 /-- In a real vector space of dimension `> 1`, any sphere of nonnegative radius is connected. -/
-theorem isConnected_sphere (h : 1 < Module.rank ℝ E) (x : E) {r : ℝ} (hr : 0 ≤ r) :
-    IsConnected (sphere x r) :=
+theorem isConnected_sphere (h : 1 < Module.rank ℝ E) (x : E) {r : ℝ} (hr : 0 ≤ r)
+    : IsConnected (sphere x r) :=
   (isPathConnected_sphere h x hr).isConnected
 
 /-- In a real vector space of dimension `> 1`, any sphere is preconnected. -/
-theorem isPreconnected_sphere (h : 1 < Module.rank ℝ E) (x : E) (r : ℝ) :
-    IsPreconnected (sphere x r) := by
+theorem isPreconnected_sphere (h : 1 < Module.rank ℝ E) (x : E) (r : ℝ)
+    : IsPreconnected (sphere x r) := by
   rcases le_or_gt 0 r with hr | hr
   · exact (isConnected_sphere h x hr).isPreconnected
   · simpa [hr] using isPreconnected_empty
@@ -246,27 +247,33 @@ end NormedSpace
 
 section
 
-variable {F : Type*} [AddCommGroup F] [Module ℝ F] [TopologicalSpace F]
-  [IsTopologicalAddGroup F] [ContinuousSMul ℝ F]
+variable
+  {F : Type*}
+  [AddCommGroup F] [Module ℝ F] [TopologicalSpace F] [IsTopologicalAddGroup F] [ContinuousSMul ℝ F]
 
-/-- Let `E` be a linear subspace in a real vector space.
-If `E` has codimension at least two, its complement is path-connected. -/
-theorem isPathConnected_compl_of_one_lt_codim {E : Submodule ℝ F}
-    (hcodim : 1 < Module.rank ℝ (F ⧸ E)) : IsPathConnected (Eᶜ : Set F) := by
+/--
+Let `E` be a linear subspace in a real vector space.
+If `E` has codimension at least two, its complement is path-connected.
+-/
+theorem isPathConnected_compl_of_one_lt_codim
+    {E : Submodule ℝ F} (hcodim : 1 < Module.rank ℝ (F ⧸ E))
+    : IsPathConnected (Eᶜ : Set F) := by
   rcases E.exists_isCompl with ⟨E', hE'⟩
   refine isPathConnected_compl_of_isPathConnected_compl_zero hE'.symm
     (isPathConnected_compl_singleton_of_one_lt_rank ?_ 0)
   rwa [← (E.quotientEquivOfIsCompl E' hE').rank_eq]
 
-/-- Let `E` be a linear subspace in a real vector space.
-If `E` has codimension at least two, its complement is connected. -/
-theorem isConnected_compl_of_one_lt_codim {E : Submodule ℝ F} (hcodim : 1 < Module.rank ℝ (F ⧸ E)) :
-    IsConnected (Eᶜ : Set F) :=
+/--
+Let `E` be a linear subspace in a real vector space.
+If `E` has codimension at least two, its complement is connected.
+-/
+theorem isConnected_compl_of_one_lt_codim {E : Submodule ℝ F} (hcodim : 1 < Module.rank ℝ (F ⧸ E))
+    : IsConnected (Eᶜ : Set F) :=
   (isPathConnected_compl_of_one_lt_codim hcodim).isConnected
 
-theorem Submodule.connectedComponentIn_eq_self_of_one_lt_codim (E : Submodule ℝ F)
-    (hcodim : 1 < Module.rank ℝ (F ⧸ E)) {x : F} (hx : x ∉ E) :
-    connectedComponentIn ((E : Set F)ᶜ) x = (E : Set F)ᶜ :=
+theorem Submodule.connectedComponentIn_eq_self_of_one_lt_codim
+    (E : Submodule ℝ F) (hcodim : 1 < Module.rank ℝ (F ⧸ E)) {x : F} (hx : x ∉ E)
+    : connectedComponentIn ((E : Set F)ᶜ) x = (E : Set F)ᶜ :=
   (isConnected_compl_of_one_lt_codim hcodim).2.connectedComponentIn hx
 
 end

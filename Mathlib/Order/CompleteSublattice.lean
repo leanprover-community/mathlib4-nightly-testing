@@ -32,8 +32,10 @@ open Function Set
 
 variable (α β : Type*) [CompleteLattice α] [CompleteLattice β] (f : CompleteLatticeHom α β)
 
-/-- A complete sublattice is a subset of a complete lattice that is closed under arbitrary suprema
-and infima. -/
+/--
+A complete sublattice is a subset of a complete lattice that is closed under arbitrary suprema
+and infima.
+-/
 structure CompleteSublattice extends Sublattice α where
   sSupClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sSup s ∈ carrier
   sInfClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sInf s ∈ carrier
@@ -42,12 +44,15 @@ variable {α β}
 
 namespace CompleteSublattice
 
-/-- To check that a subset is a complete sublattice, one does not need to check that it is closed
-under binary `Sup` since this follows from the stronger `sSup` condition. Likewise for infima. -/
-@[simps] def mk' (carrier : Set α)
-    (sSupClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sSup s ∈ carrier)
-    (sInfClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sInf s ∈ carrier) :
-    CompleteSublattice α where
+/--
+To check that a subset is a complete sublattice, one does not need to check that it is closed
+under binary `Sup` since this follows from the stronger `sSup` condition. Likewise for infima.
+-/
+@[simps]
+def mk'
+    (carrier : Set α) (sSupClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sSup s ∈ carrier)
+    (sInfClosed' : ∀ ⦃s : Set α⦄, s ⊆ carrier → sInf s ∈ carrier)
+    : CompleteSublattice α where
   carrier := carrier
   sSupClosed' := sSupClosed'
   sInfClosed' := sInfClosed'
@@ -100,10 +105,12 @@ theorem coe_sSup' (S : Set L) : (↑(sSup S) : α) = ⨆ N ∈ S, (N : α) := by
 theorem coe_sInf' (S : Set L) : (↑(sInf S) : α) = ⨅ N ∈ S, (N : α) := by
   rw [coe_sInf, ← Set.image, sInf_image]
 
-@[simp] theorem coe_iSup {ι} (f : ι → L) : (↑(iSup f) : α) = ⨆ i, (f i : α) := by
+@[simp]
+theorem coe_iSup {ι} (f : ι → L) : (↑(iSup f) : α) = ⨆ i, (f i : α) := by
   rw [iSup, coe_sSup', iSup_range]
 
-@[simp] theorem coe_iInf {ι} (f : ι → L) : (↑(iInf f) : α) = ⨅ i, (f i : α) := by
+@[simp]
+theorem coe_iInf {ι} (f : ι → L) : (↑(iInf f) : α) = ⨅ i, (f i : α) := by
   rw [iInf, coe_sInf', iInf_range]
 
 -- Redeclaring to get proper keys for these instances
@@ -111,8 +118,8 @@ instance : Max {x // x ∈ L} := Sublattice.instSupCoe
 instance : Min {x // x ∈ L} := Sublattice.instInfCoe
 
 instance instCompleteLattice : CompleteLattice L :=
-  Subtype.coe_injective.completeLattice _ .rfl .rfl
-    Sublattice.coe_sup Sublattice.coe_inf coe_sSup' coe_sInf' coe_top coe_bot
+  Subtype.coe_injective.completeLattice _ .rfl .rfl Sublattice.coe_sup Sublattice.coe_inf coe_sSup'
+    coe_sInf' coe_top coe_bot
 
 /-- The natural complete lattice hom from a complete sublattice to the original lattice. -/
 def subtype (L : CompleteSublattice α) : CompleteLatticeHom L α where
@@ -123,12 +130,14 @@ def subtype (L : CompleteSublattice α) : CompleteLatticeHom L α where
 @[simp, norm_cast] lemma coe_subtype (L : CompleteSublattice α) : L.subtype = ((↑) : L → α) := rfl
 lemma subtype_apply (L : CompleteSublattice α) (a : L) : L.subtype a = a := rfl
 
-lemma subtype_injective (L : CompleteSublattice α) :
-    Injective <| subtype L := Subtype.coe_injective
+lemma subtype_injective (L : CompleteSublattice α) : Injective <| subtype L := Subtype.coe_injective
 
-/-- The push forward of a complete sublattice under a complete lattice hom is a complete
-sublattice. -/
-@[simps] def map (L : CompleteSublattice α) : CompleteSublattice β where
+/--
+The push forward of a complete sublattice under a complete lattice hom is a complete
+sublattice.
+-/
+@[simps]
+def map (L : CompleteSublattice α) : CompleteSublattice β where
   carrier := f '' L
   supClosed' := L.supClosed.image f
   infClosed' := L.infClosed.image f
@@ -144,31 +153,29 @@ sublattice. -/
 @[simp] theorem mem_map {b : β} : b ∈ L.map f ↔ ∃ a ∈ L, f a = b := Iff.rfl
 
 /-- The pull back of a complete sublattice under a complete lattice hom is a complete sublattice. -/
-@[simps] def comap (L : CompleteSublattice β) : CompleteSublattice α where
+@[simps]
+def comap (L : CompleteSublattice β) : CompleteSublattice α where
   carrier := f ⁻¹' L
   supClosed' := L.supClosed.preimage f
   infClosed' := L.infClosed.preimage f
   sSupClosed' s hs := by
-    simpa only [mem_preimage, map_sSup, SetLike.mem_coe] using sSupClosed
-      <| mapsTo_iff_image_subset.mp hs
+    simpa only [mem_preimage, map_sSup, SetLike.mem_coe] using
+      sSupClosed <| mapsTo_iff_image_subset.mp hs
   sInfClosed' s hs := by
-    simpa only [mem_preimage, map_sInf, SetLike.mem_coe] using sInfClosed
-      <| mapsTo_iff_image_subset.mp hs
+    simpa only [mem_preimage, map_sInf, SetLike.mem_coe] using
+      sInfClosed <| mapsTo_iff_image_subset.mp hs
 
 @[simp] theorem mem_comap {L : CompleteSublattice β} {a : α} : a ∈ L.comap f ↔ f a ∈ L := Iff.rfl
 
-protected lemma disjoint_iff {a b : L} :
-    Disjoint a b ↔ Disjoint (a : α) (b : α) := by
+protected lemma disjoint_iff {a b : L} : Disjoint a b ↔ Disjoint (a : α) (b : α) := by
   rw [disjoint_iff, disjoint_iff, ← Sublattice.coe_inf, ← coe_bot (L := L),
     Subtype.coe_injective.eq_iff]
 
-protected lemma codisjoint_iff {a b : L} :
-    Codisjoint a b ↔ Codisjoint (a : α) (b : α) := by
+protected lemma codisjoint_iff {a b : L} : Codisjoint a b ↔ Codisjoint (a : α) (b : α) := by
   rw [codisjoint_iff, codisjoint_iff, ← Sublattice.coe_sup, ← coe_top (L := L),
     Subtype.coe_injective.eq_iff]
 
-protected lemma isCompl_iff {a b : L} :
-    IsCompl a b ↔ IsCompl (a : α) (b : α) := by
+protected lemma isCompl_iff {a b : L} : IsCompl a b ↔ IsCompl (a : α) (b : α) := by
   rw [isCompl_iff, isCompl_iff, CompleteSublattice.disjoint_iff, CompleteSublattice.codisjoint_iff]
 
 lemma isComplemented_iff : ComplementedLattice L ↔ ∀ a ∈ L, ∃ b ∈ L, IsCompl a b := by
@@ -182,8 +189,10 @@ instance : Top (CompleteSublattice α) := ⟨mk' univ (fun _ _ ↦ mem_univ _) (
 
 variable (L)
 
-/-- Copy of a complete sublattice with a new `carrier` equal to the old one. Useful to fix
-definitional equalities. -/
+/--
+Copy of a complete sublattice with a new `carrier` equal to the old one. Useful to fix
+definitional equalities.
+-/
 protected def copy (s : Set α) (hs : s = L) : CompleteSublattice α :=
   mk' s (hs ▸ L.sSupClosed') (hs ▸ L.sInfClosed')
 
@@ -195,16 +204,19 @@ end CompleteSublattice
 
 namespace CompleteLatticeHom
 
-/-- The range of a `CompleteLatticeHom` is a `CompleteSublattice`.
+/--
+The range of a `CompleteLatticeHom` is a `CompleteSublattice`.
 
-See Note [range copy pattern]. -/
+See Note [range copy pattern].
+-/
 protected def range : CompleteSublattice β :=
   (CompleteSublattice.map f ⊤).copy (range f) image_univ.symm
 
 theorem range_coe : (f.range : Set β) = range f := rfl
 
 /-- We can regard a complete lattice homomorphism as an order equivalence to its range. -/
-@[simps! apply] noncomputable def toOrderIsoRangeOfInjective (hf : Injective f) : α ≃o f.range :=
+@[simps! apply]
+noncomputable def toOrderIsoRangeOfInjective (hf : Injective f) : α ≃o f.range :=
   (orderEmbeddingOfInjective f hf).orderIso
 
 end CompleteLatticeHom

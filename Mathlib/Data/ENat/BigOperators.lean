@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.Data.ENat.Lattice
-
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.BigOperators.WithTop
 
@@ -28,15 +27,17 @@ section OperationsAndInfty
 variable {α : Type*}
 
 @[simp]
-theorem toNat_prod {ι : Type*} {s : Finset ι} {f : ι → ℕ∞} :
-    (∏ i ∈ s, f i).toNat = ∏ i ∈ s, (f i).toNat :=
+theorem toNat_prod {ι : Type*} {s : Finset ι} {f : ι → ℕ∞}
+    : (∏ i ∈ s, f i).toNat = ∏ i ∈ s, (f i).toNat :=
   map_prod toNatHom _ _
 
-theorem iInf_sum {ι α : Type*} {f : ι → α → ℕ∞} {s : Finset α} [Nonempty ι]
-    (h : ∀ (t : Finset α) (i j : ι), ∃ k, ∀ a ∈ t, f k a ≤ f i a ∧ f k a ≤ f j a) :
-    ⨅ i, ∑ a ∈ s, f i a = ∑ a ∈ s, ⨅ i, f i a := by
+theorem iInf_sum
+    {ι α : Type*} {f : ι → α → ℕ∞} {s : Finset α} [Nonempty ι]
+    (h : ∀ (t : Finset α) (i j : ι), ∃ k, ∀ a ∈ t, f k a ≤ f i a ∧ f k a ≤ f j a)
+    : ⨅ i, ∑ a ∈ s, f i a = ∑ a ∈ s, ⨅ i, f i a := by
   induction s using Finset.cons_induction_on with
-  | empty => simp only [Finset.sum_empty, ciInf_const]
+  | empty =>
+    simp only [Finset.sum_empty, ciInf_const]
   | cons a s ha ih =>
     simp only [Finset.sum_cons, ← ih]
     refine (iInf_add_iInf fun i j => ?_).symm
@@ -67,45 +68,54 @@ lemma sum_ne_top : ∑ a ∈ s, f a ≠ ⊤ ↔ ∀ a ∈ s, f a ≠ ⊤ := With
 /-- A sum is finite iff all summands are finite. -/
 @[simp] lemma sum_lt_top : ∑ a ∈ s, f a < ⊤ ↔ ∀ a ∈ s, f a < ⊤ := WithTop.sum_lt_top
 
-theorem lt_top_of_sum_ne_top {s : Finset α} {f : α → ℕ∞} (h : ∑ x ∈ s, f x ≠ ⊤) {a : α}
-    (ha : a ∈ s) : f a < ⊤ :=
+theorem lt_top_of_sum_ne_top {s : Finset α} {f : α → ℕ∞} (h : ∑ x ∈ s, f x ≠ ⊤) {a : α} (ha : a ∈ s)
+    : f a < ⊤ :=
   sum_lt_top.1 h.lt_top a ha
 
-/-- Seeing `ℕ∞` as `ℕ` does not change their sum, unless one of the `ℕ∞` is
-infinity -/
-theorem toNat_sum {s : Finset α} {f : α → ℕ∞} (hf : ∀ a ∈ s, f a ≠ ⊤) :
-    ENat.toNat (∑ a ∈ s, f a) = ∑ a ∈ s, ENat.toNat (f a) := by
+/--
+Seeing `ℕ∞` as `ℕ` does not change their sum, unless one of the `ℕ∞` is
+infinity
+-/
+theorem toNat_sum {s : Finset α} {f : α → ℕ∞} (hf : ∀ a ∈ s, f a ≠ ⊤)
+    : ENat.toNat (∑ a ∈ s, f a) = ∑ a ∈ s, ENat.toNat (f a) := by
   rw [← natCast_inj, natCast_toNat (sum_ne_top.2 hf), Nat.cast_sum]
   exact sum_congr rfl fun x hx => (natCast_toNat (hf x hx)).symm
 
-theorem sum_lt_sum_of_nonempty {s : Finset α} (hs : s.Nonempty) {f g : α → ℕ∞}
-    (Hlt : ∀ i ∈ s, f i < g i) : ∑ i ∈ s, f i < ∑ i ∈ s, g i := by
+theorem sum_lt_sum_of_nonempty
+    {s : Finset α} (hs : s.Nonempty) {f g : α → ℕ∞} (Hlt : ∀ i ∈ s, f i < g i)
+    : ∑ i ∈ s, f i < ∑ i ∈ s, g i := by
   induction hs using Nonempty.cons_induction with
-  | singleton => simp [Hlt _ (mem_singleton_self _)]
+  | singleton =>
+    simp [Hlt _ (mem_singleton_self _)]
   | cons _ _ _ _ ih =>
     simp only [sum_cons, forall_mem_cons] at Hlt ⊢
     exact ENat.add_lt_add Hlt.1 (ih Hlt.2)
 
-theorem exists_le_of_sum_le {s : Finset α} (hs : s.Nonempty) {f g : α → ℕ∞}
-    (Hle : ∑ i ∈ s, f i ≤ ∑ i ∈ s, g i) : ∃ i ∈ s, f i ≤ g i := by
+theorem exists_le_of_sum_le
+    {s : Finset α} (hs : s.Nonempty) {f g : α → ℕ∞} (Hle : ∑ i ∈ s, f i ≤ ∑ i ∈ s, g i)
+    : ∃ i ∈ s, f i ≤ g i := by
   contrapose! Hle
   apply sum_lt_sum_of_nonempty hs Hle
 
 end Sum
 
-lemma sum_iSup {α ι : Type*} {s : Finset α} {f : α → ι → ℕ∞}
-    (hf : ∀ i j, ∃ k, ∀ a, f a i ≤ f a k ∧ f a j ≤ f a k) :
-    ∑ a ∈ s, ⨆ i, f a i = ⨆ i, ∑ a ∈ s, f a i := by
+lemma sum_iSup
+    {α ι : Type*} {s : Finset α} {f : α → ι → ℕ∞}
+    (hf : ∀ i j, ∃ k, ∀ a, f a i ≤ f a k ∧ f a j ≤ f a k)
+    : ∑ a ∈ s, ⨆ i, f a i = ⨆ i, ∑ a ∈ s, f a i := by
   induction s using Finset.cons_induction with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s ha ihs =>
     simp_rw [Finset.sum_cons, ihs]
     refine iSup_add_iSup fun i j ↦ (hf i j).imp fun k hk ↦ ?_
     gcongr
     exacts [(hk a).1, (hk _).2]
 
-lemma sum_iSup_of_monotone {α ι : Type*} [Preorder ι] [IsDirectedOrder ι] {s : Finset α}
-    {f : α → ι → ℕ∞} (hf : ∀ a, Monotone (f a)) : (∑ a ∈ s, iSup (f a)) = ⨆ n, ∑ a ∈ s, f a n :=
+lemma sum_iSup_of_monotone
+    {α ι : Type*} [Preorder ι] [IsDirectedOrder ι]
+    {s : Finset α} {f : α → ι → ℕ∞} (hf : ∀ a, Monotone (f a))
+    : (∑ a ∈ s, iSup (f a)) = ⨆ n, ∑ a ∈ s, f a n :=
   sum_iSup fun i j ↦ (exists_ge_ge i j).imp fun _k ⟨hi, hj⟩ a ↦ ⟨hf a hi, hf a hj⟩
 
 end ENat

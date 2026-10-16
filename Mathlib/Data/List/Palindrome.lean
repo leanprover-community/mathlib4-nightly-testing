@@ -28,12 +28,12 @@ palindrome, reverse, induction
 
 public section
 
-
 variable {α β : Type*}
 
 namespace List
 
-/-- `Palindrome l` asserts that `l` is a palindrome. This is defined inductively:
+/--
+`Palindrome l` asserts that `l` is a palindrome. This is defined inductively:
 
 * The empty list is a palindrome;
 * A list with one element is a palindrome;

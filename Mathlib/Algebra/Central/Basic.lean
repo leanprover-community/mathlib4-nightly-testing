@@ -6,7 +6,6 @@ Authors: Kevin Buzzard, Jujian Zhang, Yunzhou Xie
 module
 
 public import Mathlib.Algebra.Central.Defs
-
 import Mathlib.Algebra.Module.Torsion.Field
 
 /-!
@@ -28,11 +27,11 @@ universe u v
 
 namespace Algebra.IsCentral
 
-variable (K : Type u) [CommSemiring K] (D D' : Type v) [Semiring D] [Algebra K D]
-  [h : IsCentral K D] [Semiring D'] [Algebra K D']
+variable
+  (K : Type u) [CommSemiring K]
+  (D D' : Type v) [Semiring D] [Algebra K D] [h : IsCentral K D] [Semiring D'] [Algebra K D']
 
-@[simp]
-lemma center_eq_bot : Subalgebra.center K D = ⊥ := eq_bot_iff.2 IsCentral.out
+@[simp] lemma center_eq_bot : Subalgebra.center K D = ⊥ := eq_bot_iff.2 IsCentral.out
 
 variable {D} in
 lemma mem_center_iff {x : D} : x ∈ Subalgebra.center K D ↔ ∃ (a : K), x = algebraMap K D a := by
@@ -43,15 +42,16 @@ instance self : IsCentral K K where
   out x := by simp [Algebra.mem_bot]
 
 lemma baseField_essentially_unique
-    (k K D : Type*) [Field k] [Field K] [Ring D] [Nontrivial D]
-    [Algebra k K] [Algebra K D] [Algebra k D] [IsScalarTower k K D]
-    [IsCentral k D] :
-    Function.Bijective (algebraMap k K) := by
-  have : IsCentral K D :=
-  { out := fun x ↦ show x ∈ Subalgebra.center k D → _ by
-      simp only [center_eq_bot, mem_bot, Set.mem_range, forall_exists_index]
-      rintro x rfl
-      exact ⟨algebraMap k K x, by simp [algebraMap_eq_smul_one, smul_assoc]⟩ }
+    (k K D : Type*) [Field k] [Field K] [Ring D] [Nontrivial D] [Algebra k K] [Algebra K D]
+    [Algebra k D] [IsScalarTower k K D] [IsCentral k D]
+    : Function.Bijective (algebraMap k K) := by
+  have : IsCentral K D := {
+    out := fun x ↦
+      show x ∈ Subalgebra.center k D → _ by
+        simp only [center_eq_bot, mem_bot, Set.mem_range, forall_exists_index]
+        rintro x rfl
+        exact ⟨algebraMap k K x, by simp [algebraMap_eq_smul_one, smul_assoc]⟩
+  }
   refine ⟨FaithfulSMul.algebraMap_injective k K, fun x => ?_⟩
   have H : algebraMap K D x ∈ (Subalgebra.center K D : Set D) := Subalgebra.algebraMap_mem _ _
   rw [show (Subalgebra.center K D : Set D) = Subalgebra.center k D by rfl] at H
@@ -65,10 +65,12 @@ lemma of_algEquiv (e : D ≃ₐ[K] D') : IsCentral K D' where
     ⟨k, by simpa [ofId] using congr(e $hk)⟩
 
 open MulOpposite in
-/-- Opposite algebra of a central algebra is central. This instance combined with the coming
-  `IsSimpleRing` instance for the opposite of central simple algebra will be an
-  inverse for an element in `BrauerGroup`, find out more about this in
-  `Mathlib/Algebra/BrauerGroup/Defs.lean`. -/
+/--
+Opposite algebra of a central algebra is central. This instance combined with the coming
+`IsSimpleRing` instance for the opposite of central simple algebra will be an
+inverse for an element in `BrauerGroup`, find out more about this in
+`Mathlib/Algebra/BrauerGroup/Defs.lean`.
+-/
 instance : IsCentral K Dᵐᵒᵖ where
   out z hz :=
     have ⟨k, hk⟩ := h.1 (MulOpposite.unop_mem_center_iff.mpr hz)

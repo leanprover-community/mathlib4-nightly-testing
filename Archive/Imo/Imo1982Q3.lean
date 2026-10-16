@@ -39,9 +39,11 @@ variable {x : ℕ → ℝ} {n : ℕ} (hn : n ≠ 0) (hx : Antitone x)
 namespace Imo1982Q3
 include hn hx
 
-/-- `x n` is at most the average of all previous terms in the sequence.
+/--
+`x n` is at most the average of all previous terms in the sequence.
 
-This is expressed here with `∑ k ∈ range n, x k` added to both sides. -/
+This is expressed here with `∑ k ∈ range n, x k` added to both sides.
+-/
 lemma le_avg : ∑ k ∈ range (n + 1), x k ≤ (∑ k ∈ range n, x k) * (1 + 1 / n) := by
   rw [sum_range_succ, mul_one_add, add_le_add_iff_left, mul_one_div,
     le_div_iff₀ (mod_cast hn.bot_lt), mul_comm, ← nsmul_eq_mul]
@@ -51,8 +53,8 @@ lemma le_avg : ∑ k ∈ range (n + 1), x k ≤ (∑ k ∈ range n, x k) * (1 + 
   simpa using hi
 
 /-- The main inequality used for part a. -/
-lemma ineq (h0 : x 0 = 1) (hp : ∀ k, 0 < x k) :
-    4 * n / (n + 1) ≤ ∑ k ∈ range (n + 1), x k ^ 2 / x (k + 1) := by
+lemma ineq (h0 : x 0 = 1) (hp : ∀ k, 0 < x k)
+    : 4 * n / (n + 1) ≤ ∑ k ∈ range (n + 1), x k ^ 2 / x (k + 1) := by
   calc
     -- We first use AM-GM.
     _ ≤ (∑ k ∈ range n, x (k + 1) + 1) ^ 2 / (∑ k ∈ range n, x (k + 1)) * n / (n + 1) := by
@@ -61,8 +63,7 @@ lemma ineq (h0 : x 0 = 1) (hp : ∀ k, 0 < x k) :
       · simpa using four_mul_le_sq_add (∑ k ∈ range n, x (k + 1)) 1
       · exact sum_pos (fun k _ ↦ hp _) (nonempty_range_iff.2 hn)
     -- We move the fraction into the denominator.
-    _ = (∑ k ∈ range n, x (k + 1) + 1) ^ 2 / ((∑ k ∈ range n, x (k + 1)) * (1 + 1 / n)) := by
-      field
+    _ = (∑ k ∈ range n, x (k + 1) + 1) ^ 2 / ((∑ k ∈ range n, x (k + 1)) * (1 + 1 / n)) := by field
     -- We make use of the `le_avg` lemma.
     _ ≤ (∑ k ∈ range (n + 1), x k) ^ 2 / ∑ k ∈ range (n + 1), x (k + 1) := by
       gcongr
@@ -76,15 +77,16 @@ lemma ineq (h0 : x 0 = 1) (hp : ∀ k, 0 < x k) :
 end Imo1982Q3
 
 /-- Part a of the problem is solved by `n = 4000`. -/
-theorem imo1982_q3a (hx : Antitone x) (h0 : x 0 = 1) (hp : ∀ k, 0 < x k) :
-    ∃ n : ℕ, 3.999 ≤ ∑ k ∈ range n, (x k) ^ 2 / x (k + 1) := by
+theorem imo1982_q3a (hx : Antitone x) (h0 : x 0 = 1) (hp : ∀ k, 0 < x k)
+    : ∃ n : ℕ, 3.999 ≤ ∑ k ∈ range n, (x k) ^ 2 / x (k + 1) := by
   use 4000
   convert! Imo1982Q3.ineq (Nat.succ_ne_zero 3998) hx h0 hp
   norm_num
 
 /-- Part b of the problem is solved by `x k = (1 / 2) ^ k`. -/
-theorem imo1982_q3b : ∃ x : ℕ → ℝ, Antitone x ∧ x 0 = 1 ∧ (∀ k, 0 < x k)
-    ∧ ∀ n, ∑ k ∈ range n, x k ^ 2 / x (k + 1) < 4 := by
+theorem imo1982_q3b
+    : ∃ x : ℕ → ℝ,
+      Antitone x ∧ x 0 = 1 ∧ (∀ k, 0 < x k) ∧ ∀ n, ∑ k ∈ range n, x k ^ 2 / x (k + 1) < 4 := by
   refine ⟨fun k ↦ 2⁻¹ ^ k, ?_, pow_zero _, ?_, fun n ↦ ?_⟩
   · apply (pow_right_strictAnti₀ _ _).antitone <;> norm_num
   · simp

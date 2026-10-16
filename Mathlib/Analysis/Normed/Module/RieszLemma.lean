@@ -26,29 +26,30 @@ the closure of a set `s` of optimal distance from a point in `x` to the frontier
 
 public section
 
-
 open Set Metric
 
 variable {𝕜 : Type*} [NormedField 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {F : Type*} [SeminormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Riesz's lemma, which usually states that it is possible to find a
+/--
+Riesz's lemma, which usually states that it is possible to find a
 vector with norm 1 whose distance to a closed proper subspace is
 arbitrarily close to 1. The statement here is in terms of multiples of
 norms, since in general the existence of an element of norm exactly 1
 is not guaranteed. For a variant giving an element with norm in `[1, R]`, see
 `riesz_lemma_of_norm_lt`, and for a variant giving an element with norm
 exactly one assuming stronger assumptions on the underlying field, see
-`riesz_lemma_of_lt_one`. -/
-theorem riesz_lemma {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃ x : E, x ∉ F) {r : ℝ}
-    (hr : r < 1) : ∃ x₀ : E, x₀ ∉ F ∧ ∀ y ∈ F, r * ‖x₀‖ ≤ ‖x₀ - y‖ := by
+`riesz_lemma_of_lt_one`.
+-/
+theorem riesz_lemma
+    {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃ x : E, x ∉ F) {r : ℝ} (hr : r < 1)
+    : ∃ x₀ : E, x₀ ∉ F ∧ ∀ y ∈ F, r * ‖x₀‖ ≤ ‖x₀ - y‖ := by
   obtain ⟨x, hx⟩ : ∃ x : E, x ∉ F := hF
   let d := Metric.infDist x F
   have hFn : (F : Set E).Nonempty := ⟨_, F.zero_mem⟩
   have hdp : 0 < d :=
-    lt_of_le_of_ne Metric.infDist_nonneg fun heq =>
-      hx ((hFc.mem_iff_infDist_zero hFn).2 heq.symm)
+    lt_of_le_of_ne Metric.infDist_nonneg fun heq => hx ((hFc.mem_iff_infDist_zero hFn).2 heq.symm)
   let r' := max r 2⁻¹
   have hr' : r' < 1 := by
     simp only [r', max_lt_iff, hr, true_and]
@@ -64,7 +65,8 @@ theorem riesz_lemma {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃
   refine ⟨x - y₀, x_ne_y₀, fun y hy => le_of_lt ?_⟩
   have hy₀y : y₀ + y ∈ F := F.add_mem hy₀F hy
   calc
-    r * ‖x - y₀‖ ≤ r' * ‖x - y₀‖ := by gcongr; apply le_max_left
+    r * ‖x - y₀‖
+      ≤ r' * ‖x - y₀‖ := by gcongr; apply le_max_left
     _ < d := by
       rw [← dist_eq_norm]
       exact (lt_div_iff₀' hlt).1 hxy₀
@@ -83,17 +85,19 @@ Since we are considering a general nontrivially normed field, there may be a gap
 (for instance no element of norm in `(1,2)`). Hence, we cannot allow `R` arbitrarily close to `1`,
 and require `R > ‖c‖` for some `c : 𝕜` with norm `> 1`.
 -/
-theorem riesz_lemma_of_norm_lt {c : 𝕜} (hc : 1 < ‖c‖) {R : ℝ} (hR : ‖c‖ < R) {F : Subspace 𝕜 E}
-    (hFc : IsClosed (F : Set E)) (hF : ∃ x : E, x ∉ F) :
-    ∃ x₀ : E, ‖x₀‖ ≤ R ∧ ∀ y ∈ F, 1 ≤ ‖x₀ - y‖ := by
+theorem riesz_lemma_of_norm_lt
+    {c : 𝕜} (hc : 1 < ‖c‖)
+    {R : ℝ} (hR : ‖c‖ < R)
+    {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃ x : E, x ∉ F)
+    : ∃ x₀ : E, ‖x₀‖ ≤ R ∧ ∀ y ∈ F, 1 ≤ ‖x₀ - y‖ := by
   have Rpos : 0 < R := (norm_nonneg _).trans_lt hR
   have : ‖c‖ / R < 1 := by
     rw [div_lt_iff₀ Rpos]
     simpa using hR
   rcases riesz_lemma hFc hF this with ⟨x, xF, hx⟩
   have x0 : x ≠ 0 := fun H => by simp [H] at xF
-  obtain ⟨d, d0, dxlt, ledx, -⟩ :
-    ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < R ∧ R / ‖c‖ ≤ ‖d • x‖ ∧ ‖d‖⁻¹ ≤ R⁻¹ * ‖c‖ * ‖x‖ :=
+  obtain ⟨d, d0, dxlt, ledx, -⟩
+      : ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < R ∧ R / ‖c‖ ≤ ‖d • x‖ ∧ ‖d‖⁻¹ ≤ R⁻¹ * ‖c‖ * ‖x‖ :=
     rescale_to_shell hc Rpos x0
   refine ⟨d • x, dxlt.le, fun y hy => ?_⟩
   set y' := d⁻¹ • y
@@ -107,8 +111,8 @@ theorem riesz_lemma_of_norm_lt {c : 𝕜} (hc : 1 < ‖c‖) {R : ℝ} (hR : ‖
     _ ≤ ‖d‖ * ‖x - y'‖ := by gcongr; exact hx y' (by simp [y', Submodule.smul_mem _ _ hy])
     _ = ‖d • x - y‖ := by rw [yy', ← smul_sub, norm_smul]
 
-theorem Metric.closedBall_infDist_compl_subset_closure {x : F} {s : Set F} (hx : x ∈ s) :
-    closedBall x (infDist x sᶜ) ⊆ closure s := by
+theorem Metric.closedBall_infDist_compl_subset_closure {x : F} {s : Set F} (hx : x ∈ s)
+    : closedBall x (infDist x sᶜ) ⊆ closure s := by
   rcases eq_or_ne (infDist x sᶜ) 0 with h₀ | h₀
   · rw [h₀, closedBall_zero']
     exact closure_mono (singleton_subset_iff.2 hx)
@@ -121,10 +125,12 @@ which is at distance at least `r` of every element of `F`, for any `r < 1`.
 For a version with weaker assumptions on the underlying field, see `riesz_lemma` or
 `riesz_lemma_of_norm_lt`.
 -/
-theorem riesz_lemma_of_lt_one {𝕜 : Type*} [RCLike 𝕜]
+theorem riesz_lemma_of_lt_one
+    {𝕜 : Type*} [RCLike 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃ (x : E), x ∉ F) {r : ℝ} (hr : r < 1) :
-    ∃ x₀ ∉ F, ‖x₀‖ = 1 ∧ ∀ y ∈ F, r ≤ ‖x₀ - y‖ := by
+    {F : Subspace 𝕜 E} (hFc : IsClosed (F : Set E)) (hF : ∃ (x : E), x ∉ F)
+    {r : ℝ} (hr : r < 1)
+    : ∃ x₀ ∉ F, ‖x₀‖ = 1 ∧ ∀ y ∈ F, r ≤ ‖x₀ - y‖ := by
   obtain ⟨x₀, hx₀, h⟩ := riesz_lemma hFc hF hr
   have hx₀' : x₀ ≠ 0 := by rintro rfl; simp at hx₀
   refine ⟨(‖x₀‖⁻¹ : 𝕜) • x₀, ?_, norm_smul_inv_norm hx₀', ?_⟩

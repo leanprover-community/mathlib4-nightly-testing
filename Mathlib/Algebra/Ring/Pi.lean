@@ -53,47 +53,60 @@ instance addGroupWithOne [∀ i, AddGroupWithOne (f i)] : AddGroupWithOne (∀ i
   intCast_negSucc n := funext fun _ ↦ AddGroupWithOne.intCast_negSucc n
 
 /-- A product of `AddCommGroupWithOne`s is an `AddCommGroupWithOne`. -/
-instance addCommGroupWithOne [∀ i, AddCommGroupWithOne (f i)] : AddCommGroupWithOne (∀ i, f i) :=
-  { Pi.addGroupWithOne, Pi.addCommGroup with }
+instance addCommGroupWithOne [∀ i, AddCommGroupWithOne (f i)] : AddCommGroupWithOne (∀ i, f i) := {
+  Pi.addGroupWithOne, Pi.addCommGroup with
+}
 
-instance nonUnitalNonAssocSemiring [∀ i, NonUnitalNonAssocSemiring <| f i] :
-    NonUnitalNonAssocSemiring (∀ i : I, f i) :=
-  { Pi.distrib, Pi.addCommMonoid, Pi.mulZeroClass with }
+instance nonUnitalNonAssocSemiring [∀ i, NonUnitalNonAssocSemiring <| f i]
+    : NonUnitalNonAssocSemiring (∀ i : I, f i) := {
+  Pi.distrib, Pi.addCommMonoid, Pi.mulZeroClass with
+}
 
-instance nonUnitalSemiring [∀ i, NonUnitalSemiring <| f i] : NonUnitalSemiring (∀ i : I, f i) :=
-  { Pi.nonUnitalNonAssocSemiring, Pi.semigroupWithZero with }
+instance nonUnitalSemiring [∀ i, NonUnitalSemiring <| f i] : NonUnitalSemiring (∀ i : I, f i) := {
+  Pi.nonUnitalNonAssocSemiring, Pi.semigroupWithZero with
+}
 
-instance nonAssocSemiring [∀ i, NonAssocSemiring <| f i] : NonAssocSemiring (∀ i : I, f i) :=
-  { Pi.nonUnitalNonAssocSemiring, Pi.mulZeroOneClass, Pi.addMonoidWithOne with }
+instance nonAssocSemiring [∀ i, NonAssocSemiring <| f i] : NonAssocSemiring (∀ i : I, f i) := {
+  Pi.nonUnitalNonAssocSemiring, Pi.mulZeroOneClass, Pi.addMonoidWithOne with
+}
 
-instance semiring [∀ i, Semiring <| f i] : Semiring (∀ i : I, f i) :=
-  { Pi.nonUnitalSemiring, Pi.nonAssocSemiring, Pi.monoidWithZero with }
+instance semiring [∀ i, Semiring <| f i] : Semiring (∀ i : I, f i) := {
+  Pi.nonUnitalSemiring, Pi.nonAssocSemiring, Pi.monoidWithZero with
+}
 
-instance nonUnitalCommSemiring [∀ i, NonUnitalCommSemiring <| f i] :
-    NonUnitalCommSemiring (∀ i : I, f i) :=
-  { Pi.nonUnitalSemiring, Pi.commSemigroup with }
+instance nonUnitalCommSemiring [∀ i, NonUnitalCommSemiring <| f i]
+    : NonUnitalCommSemiring (∀ i : I, f i) := {
+  Pi.nonUnitalSemiring, Pi.commSemigroup with
+}
 
-instance commSemiring [∀ i, CommSemiring <| f i] : CommSemiring (∀ i : I, f i) :=
-  { Pi.semiring, Pi.commMonoid with }
+instance commSemiring [∀ i, CommSemiring <| f i] : CommSemiring (∀ i : I, f i) := {
+  Pi.semiring, Pi.commMonoid with
+}
 
-instance nonUnitalNonAssocRing [∀ i, NonUnitalNonAssocRing <| f i] :
-    NonUnitalNonAssocRing (∀ i : I, f i) :=
-  { Pi.addCommGroup, Pi.nonUnitalNonAssocSemiring with }
+instance nonUnitalNonAssocRing [∀ i, NonUnitalNonAssocRing <| f i]
+    : NonUnitalNonAssocRing (∀ i : I, f i) := {
+  Pi.addCommGroup, Pi.nonUnitalNonAssocSemiring with
+}
 
-instance nonUnitalRing [∀ i, NonUnitalRing <| f i] : NonUnitalRing (∀ i : I, f i) :=
-  { Pi.nonUnitalNonAssocRing, Pi.nonUnitalSemiring with }
+instance nonUnitalRing [∀ i, NonUnitalRing <| f i] : NonUnitalRing (∀ i : I, f i) := {
+  Pi.nonUnitalNonAssocRing, Pi.nonUnitalSemiring with
+}
 
-instance nonAssocRing [∀ i, NonAssocRing <| f i] : NonAssocRing (∀ i : I, f i) :=
-  { Pi.nonUnitalNonAssocRing, Pi.nonAssocSemiring, Pi.addGroupWithOne with }
+instance nonAssocRing [∀ i, NonAssocRing <| f i] : NonAssocRing (∀ i : I, f i) := {
+  Pi.nonUnitalNonAssocRing, Pi.nonAssocSemiring, Pi.addGroupWithOne with
+}
 
-instance ring [∀ i, Ring <| f i] : Ring (∀ i : I, f i) :=
-  { Pi.semiring, Pi.addCommGroup, Pi.addGroupWithOne with }
+instance ring [∀ i, Ring <| f i] : Ring (∀ i : I, f i) := {
+  Pi.semiring, Pi.addCommGroup, Pi.addGroupWithOne with
+}
 
-instance nonUnitalCommRing [∀ i, NonUnitalCommRing <| f i] : NonUnitalCommRing (∀ i : I, f i) :=
-  { Pi.nonUnitalRing, Pi.commSemigroup with }
+instance nonUnitalCommRing [∀ i, NonUnitalCommRing <| f i] : NonUnitalCommRing (∀ i : I, f i) := {
+  Pi.nonUnitalRing, Pi.commSemigroup with
+}
 
-instance commRing [∀ i, CommRing <| f i] : CommRing (∀ i : I, f i) :=
-  { Pi.ring, Pi.commSemiring with }
+instance commRing [∀ i, CommRing <| f i] : CommRing (∀ i : I, f i) := {
+  Pi.ring, Pi.commSemiring with
+}
 
 end Pi
 
@@ -103,45 +116,63 @@ universe u v
 
 variable {I : Type u}
 
-/-- A family of non-unital ring homomorphisms `f a : γ →ₙ+* β a` defines a non-unital ring
+/--
+A family of non-unital ring homomorphisms `f a : γ →ₙ+* β a` defines a non-unital ring
 homomorphism `NonUnitalRingHom.pi f : γ →+* Π a, β a` given by
-`NonUnitalRingHom.pi f x b = f b x`. -/
+`NonUnitalRingHom.pi f x b = f b x`.
+-/
 @[simps]
-def NonUnitalRingHom.pi {f : I → Type*} {γ : Type*} [∀ i, NonUnitalNonAssocSemiring (f i)]
-    [NonUnitalNonAssocSemiring γ] (g : ∀ i, γ →ₙ+* f i) : γ →ₙ+* ∀ i, f i :=
-  { MulHom.pi fun i => (g i).toMulHom, AddMonoidHom.pi fun i => (g i).toAddMonoidHom with
-    toFun := fun x b => g b x }
+def NonUnitalRingHom.pi
+    {f : I → Type*} {γ : Type*} [∀ i, NonUnitalNonAssocSemiring (f i)] [NonUnitalNonAssocSemiring γ]
+    (g : ∀ i, γ →ₙ+* f i)
+    : γ →ₙ+* ∀ i, f i := {
+  MulHom.pi fun i => (g i).toMulHom, AddMonoidHom.pi fun i => (g i).toAddMonoidHom with
+  toFun := fun x b => g b x
+}
 
 @[deprecated (since := "2026-05-30")] protected alias Pi.nonUnitalRingHom := NonUnitalRingHom.pi
 @[deprecated (since := "2026-05-30")] protected alias Pi.nonUnitalRingHom_apply :=
   NonUnitalRingHom.pi_apply
 
-theorem NonUnitalRingHom.pi_injective {f : I → Type*} {γ : Type*} [Nonempty I]
-    [∀ i, NonUnitalNonAssocSemiring (f i)] [NonUnitalNonAssocSemiring γ] (g : ∀ i, γ →ₙ+* f i)
-    (hg : ∀ i, Function.Injective (g i)) : Function.Injective (NonUnitalRingHom.pi g) :=
+theorem NonUnitalRingHom.pi_injective
+    {f : I → Type*} {γ : Type*}
+    [Nonempty I] [∀ i, NonUnitalNonAssocSemiring (f i)] [NonUnitalNonAssocSemiring γ]
+    (g : ∀ i, γ →ₙ+* f i) (hg : ∀ i, Function.Injective (g i))
+    : Function.Injective (NonUnitalRingHom.pi g) :=
   MulHom.pi_injective (fun i => (g i).toMulHom) hg
 
 @[deprecated (since := "2026-05-30")] protected alias Pi.nonUnitalRingHom_injective :=
   NonUnitalRingHom.pi_injective
 
-/-- Evaluation of functions into an indexed collection of non-unital rings at a point is a
-non-unital ring homomorphism. This is `Function.eval` as a `NonUnitalRingHom`. -/
+/--
+Evaluation of functions into an indexed collection of non-unital rings at a point is a
+non-unital ring homomorphism. This is `Function.eval` as a `NonUnitalRingHom`.
+-/
 @[simps!]
-def Pi.evalNonUnitalRingHom (f : I → Type v) [∀ i, NonUnitalNonAssocSemiring (f i)] (i : I) :
-    (∀ i, f i) →ₙ+* f i :=
-  { Pi.evalMulHom f i, Pi.evalAddMonoidHom f i with }
+def Pi.evalNonUnitalRingHom (f : I → Type v) [∀ i, NonUnitalNonAssocSemiring (f i)] (i : I)
+    : (∀ i, f i) →ₙ+* f i := {
+  Pi.evalMulHom f i, Pi.evalAddMonoidHom f i with
+}
 
 /-- `Function.const` as a `NonUnitalRingHom`. -/
 @[simps]
-def Pi.constNonUnitalRingHom (α β : Type*) [NonUnitalNonAssocSemiring β] : β →ₙ+* α → β :=
-  { NonUnitalRingHom.pi fun _ => NonUnitalRingHom.id β with toFun := Function.const _ }
+def Pi.constNonUnitalRingHom (α β : Type*) [NonUnitalNonAssocSemiring β] : β →ₙ+* α → β := {
+  NonUnitalRingHom.pi fun _ => NonUnitalRingHom.id β with
+  toFun := Function.const _
+}
 
-/-- Non-unital ring homomorphism between the function spaces `I → α` and `I → β`, induced by a
-non-unital ring homomorphism `f` between `α` and `β`. -/
+/--
+Non-unital ring homomorphism between the function spaces `I → α` and `I → β`, induced by a
+non-unital ring homomorphism `f` between `α` and `β`.
+-/
 @[simps]
-protected def NonUnitalRingHom.compLeft {α β : Type*} [NonUnitalNonAssocSemiring α]
-    [NonUnitalNonAssocSemiring β] (f : α →ₙ+* β) (I : Type*) : (I → α) →ₙ+* I → β :=
-  { f.toMulHom.compLeft I, f.toAddMonoidHom.compLeft I with toFun := fun h => f ∘ h }
+protected def NonUnitalRingHom.compLeft
+    {α β : Type*} [NonUnitalNonAssocSemiring α] [NonUnitalNonAssocSemiring β]
+    (f : α →ₙ+* β) (I : Type*)
+    : (I → α) →ₙ+* I → β := {
+  f.toMulHom.compLeft I, f.toAddMonoidHom.compLeft I with
+  toFun := fun h => f ∘ h
+}
 
 end NonUnitalRingHom
 
@@ -151,44 +182,64 @@ universe u v
 
 variable {I : Type u}
 
-/-- A family of ring homomorphisms `f a : γ →+* β a` defines a ring homomorphism
-`RingHom.pi f : γ →+* Π a, β a` given by `RingHom.pi f x b = f b x`. -/
+/--
+A family of ring homomorphisms `f a : γ →+* β a` defines a ring homomorphism
+`RingHom.pi f : γ →+* Π a, β a` given by `RingHom.pi f x b = f b x`.
+-/
 @[simps]
-protected def RingHom.pi {f : I → Type*} {γ : Type*} [∀ i, NonAssocSemiring (f i)]
-    [NonAssocSemiring γ] (g : ∀ i, γ →+* f i) : γ →+* ∀ i, f i :=
-  { MonoidHom.pi fun i => (g i).toMonoidHom, AddMonoidHom.pi fun i => (g i).toAddMonoidHom with
-    toFun := fun x b => g b x }
+protected def RingHom.pi
+    {f : I → Type*} {γ : Type*} [∀ i, NonAssocSemiring (f i)] [NonAssocSemiring γ]
+    (g : ∀ i, γ →+* f i)
+    : γ →+* ∀ i, f i := {
+  MonoidHom.pi fun i => (g i).toMonoidHom, AddMonoidHom.pi fun i => (g i).toAddMonoidHom with
+  toFun := fun x b => g b x
+}
 
 @[deprecated (since := "2026-05-30")] protected alias Pi.ringHom := RingHom.pi
 @[deprecated (since := "2026-05-30")] protected alias Pi.ringHom_apply := RingHom.pi_apply
 
-theorem RingHom.pi_injective {f : I → Type*} {γ : Type*} [Nonempty I] [∀ i, NonAssocSemiring (f i)]
-    [NonAssocSemiring γ] (g : ∀ i, γ →+* f i) (hg : ∀ i, Function.Injective (g i)) :
-    Function.Injective (RingHom.pi g) :=
+theorem RingHom.pi_injective
+    {f : I → Type*} {γ : Type*} [Nonempty I] [∀ i, NonAssocSemiring (f i)] [NonAssocSemiring γ]
+    (g : ∀ i, γ →+* f i) (hg : ∀ i, Function.Injective (g i))
+    : Function.Injective (RingHom.pi g) :=
   MonoidHom.pi_injective (fun i => (g i).toMonoidHom) hg
 
 @[deprecated (since := "2026-05-30")] protected alias Pi.ringHom_injective := RingHom.pi_injective
 
-/-- Evaluation of functions into an indexed collection of rings at a point is a ring
-homomorphism. This is `Function.eval` as a `RingHom`. -/
+/--
+Evaluation of functions into an indexed collection of rings at a point is a ring
+homomorphism. This is `Function.eval` as a `RingHom`.
+-/
 @[simps!]
-def Pi.evalRingHom (f : I → Type v) [∀ i, NonAssocSemiring (f i)] (i : I) : (∀ i, f i) →+* f i :=
-  { Pi.evalMonoidHom f i, Pi.evalAddMonoidHom f i with }
+def Pi.evalRingHom (f : I → Type v) [∀ i, NonAssocSemiring (f i)] (i : I) : (∀ i, f i) →+* f i := {
+  Pi.evalMonoidHom f i, Pi.evalAddMonoidHom f i with
+}
 
-instance (f : I → Type*) [∀ i, Semiring (f i)] (i) :
-    RingHomSurjective (Pi.evalRingHom f i) where
-  is_surjective x := ⟨by classical exact (if h : · = i then h ▸ x else 0), by simp⟩
+instance (f : I → Type*) [∀ i, Semiring (f i)] (i) : RingHomSurjective (Pi.evalRingHom f i) where
+  is_surjective x := ⟨
+    by
+      classical
+      exact (if h : · = i then h ▸ x else 0),
+    by simp
+  ⟩
 
 /-- `Function.const` as a `RingHom`. -/
 @[simps]
-def Pi.constRingHom (α β : Type*) [NonAssocSemiring β] : β →+* α → β :=
-  { RingHom.pi fun _ => RingHom.id β with toFun := Function.const _ }
+def Pi.constRingHom (α β : Type*) [NonAssocSemiring β] : β →+* α → β := {
+  RingHom.pi fun _ => RingHom.id β with
+  toFun := Function.const _
+}
 
-/-- Ring homomorphism between the function spaces `I → α` and `I → β`, induced by a ring
-homomorphism `f` between `α` and `β`. -/
+/--
+Ring homomorphism between the function spaces `I → α` and `I → β`, induced by a ring
+homomorphism `f` between `α` and `β`.
+-/
 @[simps]
-protected def RingHom.compLeft {α β : Type*} [NonAssocSemiring α] [NonAssocSemiring β]
-    (f : α →+* β) (I : Type*) : (I → α) →+* I → β :=
-  { f.toMonoidHom.compLeft I, f.toAddMonoidHom.compLeft I with toFun := fun h => f ∘ h }
+protected def RingHom.compLeft
+    {α β : Type*} [NonAssocSemiring α] [NonAssocSemiring β] (f : α →+* β) (I : Type*)
+    : (I → α) →+* I → β := {
+  f.toMonoidHom.compLeft I, f.toAddMonoidHom.compLeft I with
+  toFun := fun h => f ∘ h
+}
 
 end RingHom

@@ -20,13 +20,17 @@ namespace Mathlib.Tactic
 
 open Lean Elab.Tactic Meta
 
-/-- A parser for a single rename to perform in the `rename` tactic:
-these should have the form `h => hnew` (describing a rename of a hypothesis `h` to `hnew`). -/
+/--
+A parser for a single rename to perform in the `rename` tactic:
+these should have the form `h => hnew` (describing a rename of a hypothesis `h` to `hnew`).
+-/
 syntax renameArg := term " => " ident
 
-/-- `rename' h => hnew` renames the hypothesis named `h` to `hnew`.
+/--
+`rename' h => hnew` renames the hypothesis named `h` to `hnew`.
 To rename several hypothesis, use `rename' h₁ => h₁new, h₂ => h₂new`.
-You can use `rename' a => b, b => a` to swap two variables. -/
+You can use `rename' a => b, b => a` to swap two variables.
+-/
 syntax (name := rename') "rename' " renameArg,+ : tactic
 
 elab_rules : tactic
@@ -36,8 +40,9 @@ elab_rules : tactic
       let mut lctx ← getLCtx
       for fvar in ids, tgt in bs do
         lctx := lctx.setUserName fvar tgt.getId
-      let mvarNew ← mkFreshExprMVarAt lctx (← getLocalInstances)
-        (← goal.getType) MetavarKind.syntheticOpaque (← goal.getTag)
+      let mvarNew ←
+        mkFreshExprMVarAt lctx (← getLocalInstances) (← goal.getType) MetavarKind.syntheticOpaque
+          (← goal.getTag)
       goal.assign mvarNew
       pure mvarNew.mvarId!
     withMainContext do

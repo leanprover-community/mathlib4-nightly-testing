@@ -6,7 +6,6 @@ Authors: Stefan Kebekus
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Integrability.Log
-
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-!
@@ -28,23 +27,24 @@ open scoped Interval
 Helper lemma for `integral_log_sin_zero_pi_div_two`: The integral of `log ∘ sin` on `0 … π` is
 double the integral on `0 … π/2`.
 -/
-private lemma integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two :
-    ∫ x in 0..π, log (sin x) = 2 * ∫ x in 0..(π / 2), log (sin x) := by
+private lemma integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two
+    : ∫ x in 0..π, log (sin x) = 2 * ∫ x in 0..(π / 2), log (sin x) := by
   rw [← intervalIntegral.integral_add_adjacent_intervals (a := 0) (b := π / 2) (c := π)
     (by apply intervalIntegrable_log_sin) (by apply intervalIntegrable_log_sin)]
   conv =>
-    left; right; arg 1
+    left
+    right
+    arg 1
     intro x
     rw [← sin_pi_sub]
   rw [intervalIntegral.integral_comp_sub_left (fun x ↦ log (sin x)), sub_self,
     (by linarith : π - π / 2 = π / 2)]
   ring!
 
-/--
-The integral of `log ∘ sin` on `0 … π/2` equals `-log 2 * π / 2`.
--/
-theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = -log 2 * π / 2 := by
-  calc ∫ x in 0..(π / 2), log (sin x)
+/-- The integral of `log ∘ sin` on `0 … π/2` equals `-log 2 * π / 2`. -/
+theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = - log 2 * π / 2 := by
+  calc
+    ∫ x in 0..(π / 2), log (sin x)
     _ = ∫ x in 0..(π / 2), (log (sin (2 * x)) - log 2 - log (cos x)) := by
       apply intervalIntegral.integral_congr_codiscreteWithin
       apply Filter.codiscreteWithin_mono (by tauto : Ι 0 (π / 2) ⊆ Set.univ)
@@ -61,28 +61,25 @@ theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = -
     _ = (∫ x in 0..(π / 2), log (sin (2 * x))) - π / 2 * log 2
         - ∫ x in 0..(π / 2), log (cos x) := by
       rw [intervalIntegral.integral_sub _ _,
-        intervalIntegral.integral_sub _ intervalIntegrable_const,
-        intervalIntegral.integral_const]
+        intervalIntegral.integral_sub _ intervalIntegrable_const, intervalIntegral.integral_const]
       · simp
       · simpa using (intervalIntegrable_log_sin (a := 0) (b := π)).comp_mul_left
       · apply IntervalIntegrable.sub _ intervalIntegrable_const
         simpa using (intervalIntegrable_log_sin (a := 0) (b := π)).comp_mul_left
       · exact intervalIntegrable_log_cos
-    _ = (∫ x in 0..(π / 2), log (sin (2 * x)))
-        - π / 2 * log 2 - ∫ x in 0..(π / 2), log (sin x) := by
+    _ = (∫ x in 0..(π / 2), log (sin (2 * x))) - π / 2 * log 2
+        - ∫ x in 0..(π / 2), log (sin x) := by
       simp [← sin_pi_div_two_sub,
         intervalIntegral.integral_comp_sub_left (fun x ↦ log (sin x)) (π / 2)]
-    _ = -log 2 * π / 2 := by
+    _ = - log 2 * π / 2 := by
       simp only [intervalIntegral.integral_comp_mul_left (f := fun x ↦ log (sin x)) two_ne_zero,
         mul_zero, (by linarith : 2 * (π / 2) = π),
         integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two, smul_eq_mul, ne_eq,
         OfNat.ofNat_ne_zero, not_false_eq_true, inv_mul_cancel_left₀, sub_sub_cancel_left, neg_mul]
       linarith
 
-/--
-The integral of `log ∘ sin` on `0 … π` equals `-log 2 * π`.
--/
-theorem integral_log_sin_zero_pi : ∫ x in 0..π, log (sin x) = -log 2 * π := by
+/-- The integral of `log ∘ sin` on `0 … π` equals `-log 2 * π`. -/
+theorem integral_log_sin_zero_pi : ∫ x in 0..π, log (sin x) = - log 2 * π := by
   rw [integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two,
     integral_log_sin_zero_pi_div_two]
   ring

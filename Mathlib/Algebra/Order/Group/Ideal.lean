@@ -24,17 +24,23 @@ public section
 
 namespace SemigroupIdeal
 
-variable {M : Type*} [CommMonoid M] [PartialOrder M] [WellQuasiOrderedLE M]
-  [CanonicallyOrderedMul M]
+variable
+  {M : Type*} [CommMonoid M] [PartialOrder M] [WellQuasiOrderedLE M] [CanonicallyOrderedMul M]
 
-/-- In a canonically ordered and well-quasi-ordered monoid, any semigroup ideal is finitely
-generated. -/
+/--
+In a canonically ordered and well-quasi-ordered monoid, any semigroup ideal is finitely
+generated.
+-/
 @[to_additive /-- In a canonically ordered and well-quasi-ordered additive monoid, any semigroup
 ideal is finitely generated. -/]
 theorem fg_of_wellQuasiOrderedLE (I : SemigroupIdeal M) : I.FG := by
   have hpwo := Set.isPWO_of_wellQuasiOrderedLE { x | x ∈ I }
-  refine ⟨_, (setOfPred_minimal_antichain _).finite_of_partiallyWellOrderedOn
-    (hpwo.mono (setOfPred_minimal_subset _)), ?_⟩
+  refine ⟨
+    _,
+    (setOfPred_minimal_antichain _).finite_of_partiallyWellOrderedOn
+      (hpwo.mono (setOfPred_minimal_subset _)),
+    ?_
+  ⟩
   ext x
   simp only [mem_closure'', SetLike.setOfPred_mem_eq, SetLike.mem_coe, Set.mem_ofPred_eq]
   constructor
@@ -47,8 +53,10 @@ theorem fg_of_wellQuasiOrderedLE (I : SemigroupIdeal M) : I.FG := by
     apply SubMulAction.smul_mem
     exact hz.1
 
-/-- In a canonically ordered and well-quasi-ordered monoid, the semigroup ideals satisfy the
-ascending chain condition. -/
+/--
+In a canonically ordered and well-quasi-ordered monoid, the semigroup ideals satisfy the
+ascending chain condition.
+-/
 @[to_additive /-- A canonically ordered and well-quasi-ordered additive monoid, the semigroup ideals
 satisfy the ascending chain condition. -/]
 instance : WellFoundedGT (SemigroupIdeal M) := by

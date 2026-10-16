@@ -29,11 +29,13 @@ namespace AlgebraicGeometry
 variable {X Y : Scheme.{u}} (f : X ⟶ Y)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `f : X ⟶ Y` is locally of finite presentation, flat and has smooth fibers, then `f` is
-smooth. -/
-lemma Smooth.of_smooth_fiberToSpecResidueField [LocallyOfFinitePresentation f] [Flat f]
-    (h : ∀ y, Smooth (f.fiberToSpecResidueField y)) :
-    Smooth f := by
+/--
+If `f : X ⟶ Y` is locally of finite presentation, flat and has smooth fibers, then `f` is
+smooth.
+-/
+lemma Smooth.of_smooth_fiberToSpecResidueField
+    [LocallyOfFinitePresentation f] [Flat f] (h : ∀ y, Smooth (f.fiberToSpecResidueField y))
+    : Smooth f := by
   wlog h : ∃ R, Y = Spec R
   · rw [IsZariskiLocalAtTarget.iff_of_openCover (P := @Smooth) Y.affineCover]
     intro i
@@ -59,8 +61,9 @@ lemma Smooth.of_smooth_fiberToSpecResidueField [LocallyOfFinitePresentation f] [
   rw [← RingHom.formallySmooth_algebraMap]
   refine RingHom.Smooth.formallySmooth ?_
   rw [← CommRingCat.hom_ofHom (algebraMap p.ResidueField (p.Fiber ↑S)),
-    ← HasRingHomProperty.Spec_iff (P := @Smooth), ← MorphismProperty.arrow_mk_iso_iff (P := @Smooth)
-    (Spec.fiberToSpecResidueFieldIso R S ⟨p, hp⟩)]
+    ← HasRingHomProperty.Spec_iff (P := @Smooth),
+    ← MorphismProperty.arrow_mk_iso_iff (P := @Smooth)
+      (Spec.fiberToSpecResidueFieldIso R S ⟨p, hp⟩)]
   exact h ⟨p, hp⟩
 
 end AlgebraicGeometry

@@ -18,17 +18,13 @@ namespace Units
 
 variable {α : Type*}
 
-@[to_additive]
-instance [Monoid α] [Preorder α] : Preorder αˣ :=
-  Preorder.lift val
+@[to_additive] instance [Monoid α] [Preorder α] : Preorder αˣ := Preorder.lift val
 
 @[to_additive (attr := simp, norm_cast)]
-theorem val_le_val [Monoid α] [Preorder α] {a b : αˣ} : (a : α) ≤ b ↔ a ≤ b :=
-  Iff.rfl
+theorem val_le_val [Monoid α] [Preorder α] {a b : αˣ} : (a : α) ≤ b ↔ a ≤ b := Iff.rfl
 
 @[to_additive (attr := simp, norm_cast)]
-theorem val_lt_val [Monoid α] [Preorder α] {a b : αˣ} : (a : α) < b ↔ a < b :=
-  Iff.rfl
+theorem val_lt_val [Monoid α] [Preorder α] {a b : αˣ} : (a : α) < b ↔ a < b := Iff.rfl
 
 @[to_additive]
 instance instPartialOrderUnits [Monoid α] [PartialOrder α] : PartialOrder αˣ :=
@@ -41,7 +37,6 @@ instance [Monoid α] [LinearOrder α] : Max αˣ where
 @[to_additive]
 instance [Monoid α] [LinearOrder α] : Min αˣ where
   min a b := if a ≤ b then a else b
-
 
 @[to_additive (attr := simp, norm_cast)]
 theorem max_val [Monoid α] [LinearOrder α] (a b : αˣ) : (max a b).val = max a.val b.val := by
@@ -67,7 +62,6 @@ instance [Monoid α] [LinearOrder α] : LinearOrder αˣ :=
 /-- `val : αˣ → α` as an order embedding. -/
 @[to_additive (attr := simps -fullyApplied)
   /-- `val : add_units α → α` as an order embedding. -/]
-def orderEmbeddingVal [Monoid α] [LinearOrder α] : αˣ ↪o α :=
-  ⟨⟨val, val_injective⟩, .rfl⟩
+def orderEmbeddingVal [Monoid α] [LinearOrder α] : αˣ ↪o α := ⟨⟨val, val_injective⟩, .rfl⟩
 
 end Units

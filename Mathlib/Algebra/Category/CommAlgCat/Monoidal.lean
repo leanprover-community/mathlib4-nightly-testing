@@ -45,7 +45,7 @@ def binaryCofanIsColimit : IsColimit (binaryCofan A B) :=
     (fun f g m hm₁ hm₂ ↦ by
       ext1
       refine liftEquiv.symm_apply_eq (y := ⟨⟨_, _⟩, fun _ _ ↦ .all _ _⟩).mp ?_
-      exact Subtype.ext (Prod.ext congr(($hm₁).hom) congr(($hm₂).hom)))
+      exact Subtype.ext (Prod.ext (congr(($hm₁).hom)) congr(($hm₂).hom)))
 
 /-- The initial object of `CommAlgCat R` is `R` as an algebra over itself. -/
 def isInitialSelf : IsInitial (of R R) :=
@@ -112,7 +112,9 @@ variable {A B C : (CommAlgCat.{u} R)ᵒᵖ}
 variable (A B) in
 @[simp] lemma toUnit_unop_hom : (toUnit A).unop.hom = Algebra.ofId R A.unop := rfl
 
-@[simp] lemma lift_unop_hom (f : C ⟶ A) (g : C ⟶ B) :
-    (lift f g).unop.hom = lift f.unop.hom g.unop.hom fun _ _ ↦ .all _ _ := rfl
+@[simp]
+lemma lift_unop_hom (f : C ⟶ A) (g : C ⟶ B)
+    : (lift f g).unop.hom = lift f.unop.hom g.unop.hom fun _ _ ↦ .all _ _ :=
+  rfl
 
 end CommAlgCat

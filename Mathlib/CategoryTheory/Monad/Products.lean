@@ -23,7 +23,6 @@ is a monadic right adjoint.
 
 @[expose] public section
 
-
 noncomputable section
 
 universe v u
@@ -49,7 +48,8 @@ def prodComonad : Comonad C where
   δ := { app := fun _ => prod.lift Limits.prod.fst (𝟙 _) }
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The forward direction of the equivalence from coalgebras for the product comonad to the over
+/--
+The forward direction of the equivalence from coalgebras for the product comonad to the over
 category.
 -/
 @[simps]
@@ -58,14 +58,13 @@ def coalgebraToOver : Coalgebra (prodComonad X) ⥤ Over X where
   map f := Over.homMk f.f (by simp [← dsimp% f.h_assoc])
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The backward direction of the equivalence from coalgebras for the product comonad to the over
+/--
+The backward direction of the equivalence from coalgebras for the product comonad to the over
 category.
 -/
 @[simps]
 def overToCoalgebra : Over X ⥤ Coalgebra (prodComonad X) where
-  obj f :=
-    { A := f.left
-      a := prod.lift f.hom (𝟙 _) }
+  obj f := { A := f.left, a := prod.lift f.hom (𝟙 _) }
   map g := { f := g.left }
 
 set_option backward.defeqAttrib.useBackward true in
@@ -75,14 +74,14 @@ set_option backward.isDefEq.respectTransparency false in
 def coalgebraEquivOver : Coalgebra (prodComonad X) ≌ Over X where
   functor := coalgebraToOver X
   inverse := overToCoalgebra X
-  unitIso := NatIso.ofComponents fun A =>
-    Coalgebra.isoMk (Iso.refl _) (Limits.prod.hom_ext (by simp) (by simpa using A.counit))
+  unitIso :=
+    NatIso.ofComponents fun A =>
+      Coalgebra.isoMk (Iso.refl _) (Limits.prod.hom_ext (by simp) (by simpa using A.counit))
   counitIso := NatIso.ofComponents fun f => Over.isoMk (Iso.refl _)
 
 end
 
 section
-
 
 variable [HasBinaryCoproducts C]
 
@@ -95,7 +94,8 @@ def coprodMonad : Monad C where
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The forward direction of the equivalence from algebras for the coproduct monad to the under
+/--
+The forward direction of the equivalence from algebras for the coproduct monad to the under
 category.
 -/
 @[simps]
@@ -104,28 +104,26 @@ def algebraToUnder : Monad.Algebra (coprodMonad X) ⥤ Under X where
   map f := Under.homMk f.f (by simp [← dsimp% f.h])
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The backward direction of the equivalence from algebras for the coproduct monad to the under
+/--
+The backward direction of the equivalence from algebras for the coproduct monad to the under
 category.
 -/
 @[simps]
 def underToAlgebra : Under X ⥤ Monad.Algebra (coprodMonad X) where
-  obj f :=
-    { A := f.right
-      a := coprod.desc f.hom (𝟙 _) }
+  obj f := { A := f.right, a := coprod.desc f.hom (𝟙 _) }
   map g := { f := g.right }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The equivalence from algebras for the coproduct monad to the under category.
--/
+/-- The equivalence from algebras for the coproduct monad to the under category. -/
 @[simps]
 def algebraEquivUnder : Monad.Algebra (coprodMonad X) ≌ Under X where
   functor := algebraToUnder X
   inverse := underToAlgebra X
-  unitIso := NatIso.ofComponents fun A =>
-    Monad.Algebra.isoMk (Iso.refl _) (coprod.hom_ext (by simp) (by simpa using A.unit.symm))
-  counitIso :=
-    NatIso.ofComponents fun f => Under.isoMk (Iso.refl _)
+  unitIso :=
+    NatIso.ofComponents fun A =>
+      Monad.Algebra.isoMk (Iso.refl _) (coprod.hom_ext (by simp) (by simpa using A.unit.symm))
+  counitIso := NatIso.ofComponents fun f => Under.isoMk (Iso.refl _)
 
 end
 

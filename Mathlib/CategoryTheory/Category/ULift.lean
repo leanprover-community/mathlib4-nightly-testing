@@ -6,7 +6,6 @@ Authors: Adam Topaz
 module
 
 public import Mathlib.CategoryTheory.EqToHom
-
 import Mathlib.Data.ULift
 
 /-!
@@ -68,45 +67,35 @@ set_option backward.isDefEq.respectTransparency false in
 def ULift.equivalence : C ≌ ULift.{u₂} C where
   functor := ULift.upFunctor
   inverse := ULift.downFunctor
-  unitIso :=
-    { hom := 𝟙 _
-      inv := 𝟙 _ }
-  counitIso :=
-    { hom := { app := fun _ => 𝟙 _ }
-      inv := { app := fun _ => 𝟙 _ } }
+  unitIso := { hom := 𝟙 _, inv := 𝟙 _ }
+  counitIso := { hom := { app := fun _ => 𝟙 _ }, inv := { app := fun _ => 𝟙 _ } }
 
 section ULiftHom
 
-/-- `ULiftHom.{w} C` is an alias for `C`, which is endowed with a category instance
-  whose morphisms are obtained by applying `ULift.{w}` to the morphisms from `C`.
+/--
+`ULiftHom.{w} C` is an alias for `C`, which is endowed with a category instance
+whose morphisms are obtained by applying `ULift.{w}` to the morphisms from `C`.
 -/
 def ULiftHom.{w, u} (C : Type u) : Type u :=
   let _ := ULift.{w} C
   C
 
-instance {C} [Inhabited C] : Inhabited (ULiftHom C) :=
-  ⟨(default : C)⟩
+instance {C} [Inhabited C] : Inhabited (ULiftHom C) := ⟨(default : C)⟩
 
 /-- The obvious function `ULiftHom C → C`. -/
-def ULiftHom.objDown {C} (A : ULiftHom C) : C :=
-  A
+def ULiftHom.objDown {C} (A : ULiftHom C) : C := A
 
 /-- The obvious function `C → ULiftHom C`. -/
-def ULiftHom.objUp {C} (A : C) : ULiftHom C :=
-  A
+def ULiftHom.objUp {C} (A : C) : ULiftHom C := A
 
 /-- The type-level equivalence between `C` and `ULiftHom C`. -/
 def ULiftHom.objEquiv {C} : C ≃ ULiftHom C where
   toFun := ULiftHom.objUp
   invFun := ULiftHom.objDown
 
-@[simp]
-theorem objDown_objUp {C} (A : C) : (ULiftHom.objUp A).objDown = A :=
-  rfl
+@[simp] theorem objDown_objUp {C} (A : C) : (ULiftHom.objUp A).objDown = A := rfl
 
-@[simp]
-theorem objUp_objDown {C} (A : ULiftHom C) : ULiftHom.objUp A.objDown = A :=
-  rfl
+@[simp] theorem objUp_objDown {C} (A : ULiftHom C) : ULiftHom.objUp A.objDown = A := rfl
 
 instance ULiftHom.category : Category.{max v₂ v₁} (ULiftHom.{v₂} C) where
   Hom A B := ULift.{v₂} <| A.objDown ⟶ B.objDown
@@ -136,15 +125,16 @@ def ULiftHom.equiv : C ≌ ULiftHom C where
 
 end ULiftHom
 
-/-- `AsSmall C` is a small category equivalent to `C`.
-  More specifically, if `C : Type u` is endowed with `Category.{v} C`, then
-  `AsSmall.{w} C : Type (max w v u)` is endowed with an instance of a small category.
+/--
+`AsSmall C` is a small category equivalent to `C`.
+More specifically, if `C : Type u` is endowed with `Category.{v} C`, then
+`AsSmall.{w} C : Type (max w v u)` is endowed with an instance of a small category.
 
-  The objects and morphisms of `AsSmall C` are defined by applying `ULift` to the
-  objects and morphisms of `C`.
+The objects and morphisms of `AsSmall C` are defined by applying `ULift` to the
+objects and morphisms of `C`.
 
-  Note: We require a category instance for this definition in order to have direct
-  access to the universe level `v`.
+Note: We require a category instance for this definition in order to have direct
+access to the universe level `v`.
 -/
 @[nolint unusedArguments]
 def AsSmall.{w, v, u} (D : Type u) [Category.{v} D] := ULift.{max w v} D
@@ -171,8 +161,8 @@ theorem down_comp {X Y Z : AsSmall C} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).do
   rfl
 
 @[simp]
-theorem eqToHom_down {X Y : AsSmall C} (h : X = Y) :
-    (eqToHom h).down = eqToHom (congrArg ULift.down h) := by
+theorem eqToHom_down {X Y : AsSmall C} (h : X = Y)
+    : (eqToHom h).down = eqToHom (congrArg ULift.down h) := by
   subst h
   rfl
 
@@ -185,24 +175,24 @@ def AsSmall.equiv : C ≌ AsSmall C where
   unitIso := NatIso.ofComponents fun _ => eqToIso rfl
   counitIso := NatIso.ofComponents fun _ => eqToIso <| ULift.ext rfl
 
-instance [Inhabited C] : Inhabited (AsSmall C) :=
-  ⟨⟨default⟩⟩
+instance [Inhabited C] : Inhabited (AsSmall C) := ⟨⟨default⟩⟩
 
 /-- The type-level equivalence between `C` and `ULiftHom (ULift C)`. -/
-def ULiftHomULiftCategory.objEquiv.{v', u', u} {C : Type u} :
-    C ≃ ULiftHom.{v'} (ULift.{u'} C) :=
+def ULiftHomULiftCategory.objEquiv.{v', u', u} {C : Type u} : C ≃ ULiftHom.{v'} (ULift.{u'} C) :=
   Equiv.ulift.symm.trans ULiftHom.objEquiv
 
 /-- The equivalence between `C` and `ULiftHom (ULift C)`. -/
-def ULiftHomULiftCategory.equiv.{v', u', v, u} (C : Type u) [Category.{v} C] :
-    C ≌ ULiftHom.{v'} (ULift.{u'} C) :=
+def ULiftHomULiftCategory.equiv.{v', u', v, u} (C : Type u) [Category.{v} C]
+    : C ≌ ULiftHom.{v'} (ULift.{u'} C) :=
   ULift.equivalence.trans ULiftHom.equiv
 
-/-- A type-level equivalence `(C ⥤ D) ≃ (C ⥤ (ULiftHom.{v'} (ULift.{u'} D)))`. Note that this is
-not ensured by a categorical equivalence, and so needs special treatment. -/
+/--
+A type-level equivalence `(C ⥤ D) ≃ (C ⥤ (ULiftHom.{v'} (ULift.{u'} D)))`. Note that this is
+not ensured by a categorical equivalence, and so needs special treatment.
+-/
 def ULiftHomULiftCategory.equivCongrLeft.{v', u'}
-    {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D] :
-    (C ⥤ D) ≃ (C ⥤ (ULiftHom.{v'} (ULift.{u'} D))) where
+    {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
+    : (C ⥤ D) ≃ (C ⥤ (ULiftHom.{v'} (ULift.{u'} D))) where
   toFun F := F ⋙ ULift.upFunctor ⋙ ULiftHom.up
   invFun F := F ⋙ ULiftHom.down ⋙ ULift.downFunctor
 

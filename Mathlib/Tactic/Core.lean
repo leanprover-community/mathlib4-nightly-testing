@@ -28,22 +28,23 @@ open Elab Meta
 Return the modifiers of declaration `nm` with (optional) docstring `newDoc`.
 Currently, recursive or partial definitions are not supported, and no attributes are provided.
 -/
-def toModifiers (nm : Name) (newDoc : Option (TSyntax `Lean.Parser.Command.docComment) := none) :
-    CoreM Modifiers := do
+def toModifiers (nm : Name) (newDoc : Option (TSyntax `Lean.Parser.Command.docComment) := none)
+    : CoreM Modifiers := do
   let env ← getEnv
   let d ← getConstInfo nm
-  let mods : Modifiers :=
-  { docString? := newDoc
+  let mods : Modifiers := {
+    docString? := newDoc
     visibility :=
-    if isPrivateName nm then
-      Visibility.private
-    else
-      Visibility.regular
+      if isPrivateName nm then
+        Visibility.private
+      else
+        Visibility.regular
     isProtected := isProtected env nm
     computeKind := if (env.find? <| nm.mkStr "_cstage1").isSome then .regular else .noncomputable
     recKind := RecKind.default -- nonrec only matters for name resolution, so is irrelevant (?)
     isUnsafe := d.isUnsafe
-    attrs := #[] }
+    attrs := #[]
+  }
   return mods
 
 /--
@@ -52,13 +53,14 @@ You can provide a new type, value and (optional) docstring, but the remaining in
 from `nm`.
 Currently only implemented for definitions and theorems. Also see docstring of `toModifiers`
 -/
-def toPreDefinition (nm newNm : Name) (newType newValue : Expr)
-    (newDoc : Option (TSyntax `Lean.Parser.Command.docComment) := none) :
-    CoreM PreDefinition := do
+def toPreDefinition
+    (nm newNm : Name) (newType newValue : Expr)
+    (newDoc : Option (TSyntax `Lean.Parser.Command.docComment) := none)
+    : CoreM PreDefinition := do
   let d ← getConstInfo nm
   let mods ← toModifiers nm newDoc
-  let predef : PreDefinition :=
-  { ref := Syntax.missing
+  let predef : PreDefinition := {
+    ref := Syntax.missing
     binders := mkNullNode #[]
     kind := if d.isDef then DefKind.def else DefKind.theorem
     levelParams := d.levelParams
@@ -66,7 +68,8 @@ def toPreDefinition (nm newNm : Name) (newType newValue : Expr)
     declName := newNm
     type := newType
     value := newValue
-    termination := .none }
+    termination := .none
+  }
   return predef
 
 /-- Make `nm` protected. -/
@@ -74,8 +77,9 @@ def setProtected {m : Type → Type} [MonadEnv m] (nm : Name) : m Unit :=
   modifyEnv (addProtected · nm)
 
 /-- Introduce variables, using rintro patterns from a specified list. -/
-def MVarId.rintroWithPats (g : MVarId) (patterns : List (TSyntax `rintroPat))
-    (numIntros? : Option Nat := none) : MetaM (List MVarId × List (TSyntax `rintroPat)) := do
+def MVarId.rintroWithPats
+    (g : MVarId) (patterns : List (TSyntax `rintroPat)) (numIntros? : Option Nat := none)
+    : MetaM (List MVarId × List (TSyntax `rintroPat)) := do
   let n ← numIntros?.getDM (return getIntrosSize (← instantiateMVars (← g.getType)))
   if n == 0 then
     return ([g], patterns)
@@ -87,12 +91,15 @@ def MVarId.rintroWithPats (g : MVarId) (patterns : List (TSyntax `rintroPat))
 /-- Introduce variables, giving them names from a specified list. -/
 @[deprecated MVarId.rintroWithPats +typeChanged (since := "2026-04-17")]
 def MVarId.introsWithBinderIdents
-    (g : MVarId) (ids : List (TSyntax ``binderIdent)) (maxIntros? : Option Nat := none) :
-    MetaM (List (TSyntax ``binderIdent) × Array FVarId × MVarId) := do
+    (g : MVarId) (ids : List (TSyntax ``binderIdent)) (maxIntros? : Option Nat := none)
+    : MetaM (List (TSyntax ``binderIdent) × Array FVarId × MVarId) := do
   let type ← g.getType
   let type ← Lean.instantiateMVars type
   let n := getIntrosSize type
-  let n := match maxIntros? with | none => n | some maxIntros => min n maxIntros
+  let n :=
+    match maxIntros? with
+    | none => n
+    | some maxIntros => min n maxIntros
   if n == 0 then
     return (ids, #[], g)
   let mut ids := ids
@@ -100,10 +107,11 @@ def MVarId.introsWithBinderIdents
   for _ in [0:n] do
     names := names.push (ids.headD (Unhygienic.run `(binderIdent| _)))
     ids := ids.tail
-  let (xs, g) ← g.introN n <| names.toList.map fun stx =>
-    match stx.raw with
-    | `(binderIdent| $n:ident) => n.getId
-    | _ => `_
+  let (xs, g) ←
+    g.introN n <| names.toList.map fun stx =>
+      match stx.raw with
+      | `(binderIdent| $n:ident) => n.getId
+      | _ => `_
   g.withContext do
     for n in names, fvar in xs do
       (Expr.fvar fvar).addLocalVarInfoForBinderIdent n
@@ -123,22 +131,22 @@ open Lean Parser.Tactic
 /-- Extract the arguments from a `simpArgs` syntax as an array of syntaxes -/
 def getSimpArgs : Syntax → TacticM (Array Syntax)
   | `(simpArgs| [$args,*]) => pure args.getElems
-  | _                      => Elab.throwUnsupportedSyntax
+  | _ => Elab.throwUnsupportedSyntax
 
 /-- Extract the arguments from a `dsimpArgs` syntax as an array of syntaxes -/
 def getDSimpArgs : Syntax → TacticM (Array Syntax)
   | `(dsimpArgs| [$args,*]) => pure args.getElems
-  | _                       => Elab.throwUnsupportedSyntax
+  | _ => Elab.throwUnsupportedSyntax
 
 /-- Extract the arguments from a `withArgs` syntax as an array of syntaxes -/
 def getWithArgs : Syntax → TacticM (Array Syntax)
   | `(withArgs| with $args*) => pure args
-  | _                        => Elab.throwUnsupportedSyntax
+  | _ => Elab.throwUnsupportedSyntax
 
 /-- Extract the argument from a `usingArg` syntax as a syntax term -/
 def getUsingArg : Syntax → TacticM Syntax
   | `(usingArg| using $e) => pure e
-  | _                     => Elab.throwUnsupportedSyntax
+  | _ => Elab.throwUnsupportedSyntax
 
 /--
 `repeat1 tac` applies `tac` to main goal at least once. If the application succeeds,
@@ -150,34 +158,41 @@ end Mathlib.Tactic
 
 namespace Lean.Elab.Tactic
 
-/-- Given a local context and an array of `FVarIds` assumed to be in that local context, remove all
-implementation details. -/
+/--
+Given a local context and an array of `FVarIds` assumed to be in that local context, remove all
+implementation details.
+-/
 def filterOutImplementationDetails (lctx : LocalContext) (fvarIds : Array FVarId) : Array FVarId :=
-  fvarIds.filter (fun fvar => ! (lctx.fvarIdToDecl.find! fvar).isImplementationDetail)
+  fvarIds.filter (fun fvar => !(lctx.fvarIdToDecl.find! fvar).isImplementationDetail)
 
 /-- Elaborate syntax for an `FVarId` in the local context of the given goal. -/
-def getFVarIdAt (goal : MVarId) (id : Syntax) : TacticM FVarId := withRef id do
-  -- use apply-like elaboration to suppress insertion of implicit arguments
-  let e ← goal.withContext do
-    elabTermForApply id (mayPostpone := false)
-  match e with
-  | Expr.fvar fvarId => return fvarId
-  | _                => throwError "unexpected term '{e}'; expected single reference to variable"
+def getFVarIdAt (goal : MVarId) (id : Syntax) : TacticM FVarId :=
+  withRef id do
+    -- use apply-like elaboration to suppress insertion of implicit arguments
+    let e ← goal.withContext do elabTermForApply id (mayPostpone := false)
+    match e with
+    | Expr.fvar fvarId => return fvarId
+    | _ => throwError "unexpected term '{e}'; expected single reference to variable"
 
-/-- Get the array of `FVarId`s in the local context of the given `goal`.
+/--
+Get the array of `FVarId`s in the local context of the given `goal`.
 
 If `ids` is specified, elaborate them in the local context of the given goal to obtain the array of
 `FVarId`s.
 
 If `includeImplementationDetails` is `false` (the default), we filter out implementation details
-(`implDecl`s and `auxDecl`s) from the resulting list of `FVarId`s. -/
-def getFVarIdsAt (goal : MVarId) (ids : Option (Array Syntax) := none)
-    (includeImplementationDetails : Bool := false) : TacticM (Array FVarId) :=
+(`implDecl`s and `auxDecl`s) from the resulting list of `FVarId`s.
+-/
+def getFVarIdsAt
+    (goal : MVarId)
+    (ids : Option (Array Syntax) := none) (includeImplementationDetails : Bool := false)
+    : TacticM (Array FVarId) :=
   goal.withContext do
     let lctx := (← goal.getDecl).lctx
-    let fvarIds ← match ids with
-    | none => pure lctx.getFVarIds
-    | some ids => ids.mapM <| getFVarIdAt goal
+    let fvarIds ←
+      match ids with
+      | none => pure lctx.getFVarIds
+      | some ids => ids.mapM <| getFVarIdAt goal
     if includeImplementationDetails then
       return fvarIds
     else
@@ -207,7 +222,8 @@ def allGoals (tac : TacticM Unit) : TacticM Unit := do
           throw ex
   setGoals mvarIdsNew.toList
 
-/-- Simulates the `<;>` tactic combinator.
+/--
+Simulates the `<;>` tactic combinator.
 First runs `tac1` and then runs `tac2` on all newly-generated subgoals.
 -/
 def andThenOnSubgoals (tac1 : TacticM Unit) (tac2 : TacticM Unit) : TacticM Unit :=
@@ -216,32 +232,41 @@ def andThenOnSubgoals (tac1 : TacticM Unit) (tac2 : TacticM Unit) : TacticM Unit
 universe u
 variable {m : Type → Type u} [Monad m] [MonadExcept Exception m]
 
-/-- Repeats a tactic at most `n` times, stopping sooner if the
-tactic fails. Always succeeds. -/
-def iterateAtMost : Nat → m Unit → m Unit
-  | 0, _ => pure ()
-  | n + 1, tac => try tac; iterateAtMost n tac catch _ => pure ()
-
-/-- `iterateExactly' n t` executes `t` `n` times. If any iteration fails, the whole tactic fails.
+/--
+Repeats a tactic at most `n` times, stopping sooner if the
+tactic fails. Always succeeds.
 -/
+def iterateAtMost : Nat → m Unit → m Unit
+  | 0, _ =>
+    pure ()
+  | n + 1, tac =>
+    try tac; iterateAtMost n tac catch _ => pure ()
+
+/-- `iterateExactly' n t` executes `t` `n` times. If any iteration fails, the whole tactic fails. -/
 def iterateExactly' : Nat → m Unit → m Unit
-  | 0, _ => pure ()
-  | n + 1, tac => tac *> iterateExactly' n tac
+  | 0, _ =>
+    pure ()
+  | n + 1, tac =>
+    tac *> iterateExactly' n tac
 
 /--
 `iterateRange m n t`: Repeat the given tactic at least `m` times and
 at most `n` times or until `t` fails. Fails if `t` does not run at least `m` times.
 -/
 def iterateRange : Nat → Nat → m Unit → m Unit
-  | 0, 0, _   => pure ()
-  | 0, b, tac => iterateAtMost b tac
-  | (a+1), n, tac => do tac; iterateRange a (n-1) tac
+  | 0, 0, _ =>
+    pure ()
+  | 0, b, tac =>
+    iterateAtMost b tac
+  | (a + 1), n, tac => do
+    tac; iterateRange a (n - 1) tac
 
 /-- Repeats a tactic until it fails. Always succeeds. -/
 partial def iterateUntilFailure (tac : m Unit) : m Unit :=
   try tac; iterateUntilFailure tac catch _ => pure ()
 
-/-- `iterateUntilFailureWithResults` is a helper tactic which accumulates the list of results
+/--
+`iterateUntilFailureWithResults` is a helper tactic which accumulates the list of results
 obtained from iterating `tac` until it fails. Always succeeds.
 -/
 partial def iterateUntilFailureWithResults {α : Type} (tac : m α) : m (List α) := do
@@ -249,9 +274,11 @@ partial def iterateUntilFailureWithResults {α : Type} (tac : m α) : m (List α
     let a ← tac
     let l ← iterateUntilFailureWithResults tac
     pure (a :: l)
-  catch _ => pure []
+  catch _ =>
+    pure []
 
-/-- `iterateUntilFailureCount` is similar to `iterateUntilFailure` except it counts
+/--
+`iterateUntilFailureCount` is similar to `iterateUntilFailure` except it counts
 the number of successful calls to `tac`. Always succeeds.
 -/
 def iterateUntilFailureCount {α : Type} (tac : m α) : m Nat := do
@@ -266,8 +293,7 @@ open Lean
 /-- Returns the root directory which contains the package root file, e.g. `Mathlib.lean`. -/
 def getPackageDir (pkg : String) : IO System.FilePath := do
   let sp ← getSrcSearchPath
-  let root? ← sp.findM? fun p =>
-    (p / pkg).isDir <||> ((p / pkg).withExtension "lean").pathExists
+  let root? ← sp.findM? fun p => (p / pkg).isDir <||> ((p / pkg).withExtension "lean").pathExists
   if let some root := root? then return root
   throw <| IO.userError s!"Could not find {pkg} directory. \
     Make sure the LEAN_SRC_PATH environment variable is set correctly."

@@ -28,9 +28,11 @@ section
 
 variable (P Q : ObjectProperty C) (X : C)
 
-@[simp high] lemma prop_inf_iff : (P ⊓ Q) X ↔ P X ∧ Q X := Iff.rfl
+@[simp high]
+lemma prop_inf_iff : (P ⊓ Q) X ↔ P X ∧ Q X := Iff.rfl
 
-@[simp high] lemma prop_sup_iff : (P ⊔ Q) X ↔ P X ∨ Q X := Iff.rfl
+@[simp high]
+lemma prop_sup_iff : (P ⊔ Q) X ↔ P X ∨ Q X := Iff.rfl
 
 instance nonempty_sup_left [P.Nonempty] : (P ⊔ Q).Nonempty :=
   nonempty_of_prop (Or.inl P.prop_arbitrary)
@@ -54,12 +56,12 @@ lemma isoClosure_sup : (P ⊔ Q).isoClosure = P.isoClosure ⊔ Q.isoClosure := b
     · exact monotone_isoClosure le_sup_left _ hY
     · exact monotone_isoClosure le_sup_right _ hY
 
-instance [P.IsClosedUnderIsomorphisms] [Q.IsClosedUnderIsomorphisms] :
-    (P ⊔ Q).IsClosedUnderIsomorphisms := by
+instance [P.IsClosedUnderIsomorphisms] [Q.IsClosedUnderIsomorphisms]
+    : (P ⊔ Q).IsClosedUnderIsomorphisms := by
   simp only [isClosedUnderIsomorphisms_iff_isoClosure_eq_self, isoClosure_sup, isoClosure_eq_self]
 
-instance [P.IsClosedUnderIsomorphisms] [Q.IsClosedUnderIsomorphisms] :
-    IsClosedUnderIsomorphisms (P ⊓ Q) where
+instance [P.IsClosedUnderIsomorphisms] [Q.IsClosedUnderIsomorphisms]
+    : IsClosedUnderIsomorphisms (P ⊓ Q) where
   of_iso e h := ⟨IsClosedUnderIsomorphisms.of_iso e h.1, IsClosedUnderIsomorphisms.of_iso e h.2⟩
 
 instance : IsClosedUnderIsomorphisms (⊥ : ObjectProperty C) where
@@ -74,14 +76,13 @@ section
 
 variable {α : Sort*} (P : α → ObjectProperty C) (X : C)
 
-@[simp high] lemma prop_iSup_iff :
-    (⨆ (a : α), P a) X ↔ ∃ (a : α), P a X := by simp
+@[simp high]
+lemma prop_iSup_iff : (⨆ (a : α), P a) X ↔ ∃ (a : α), P a X := by simp
 
 lemma nonempty_iSup (a : α) [(P a).Nonempty] : (⨆ a, P a).Nonempty :=
   nonempty_of_prop ((prop_iSup_iff P _).mpr ⟨a, (P a).prop_arbitrary⟩)
 
-lemma isoClosure_iSup :
-    ((⨆ (a : α), P a)).isoClosure = ⨆ (a : α), (P a).isoClosure := by
+lemma isoClosure_iSup : ((⨆ (a : α), P a)).isoClosure = ⨆ (a : α), (P a).isoClosure := by
   refine le_antisymm ?_ ?_
   · rintro X ⟨Y, hY, ⟨e⟩⟩
     simp only [prop_iSup_iff] at hY ⊢
@@ -92,13 +93,10 @@ lemma isoClosure_iSup :
     rw [isoClosure_le_iff]
     exact (le_iSup P a).trans (le_isoClosure _)
 
-instance [∀ a, (P a).IsClosedUnderIsomorphisms] :
-    ((⨆ (a : α), P a)).IsClosedUnderIsomorphisms := by
-  simp only [isClosedUnderIsomorphisms_iff_isoClosure_eq_self,
-    isoClosure_iSup, isoClosure_eq_self]
+instance [∀ a, (P a).IsClosedUnderIsomorphisms] : ((⨆ (a : α), P a)).IsClosedUnderIsomorphisms := by
+  simp only [isClosedUnderIsomorphisms_iff_isoClosure_eq_self, isoClosure_iSup, isoClosure_eq_self]
 
-instance [∀ a, (P a).IsClosedUnderIsomorphisms] :
-    ((⨅ (a : α), P a)).IsClosedUnderIsomorphisms where
+instance [∀ a, (P a).IsClosedUnderIsomorphisms] : ((⨅ (a : α), P a)).IsClosedUnderIsomorphisms where
   of_iso e h := by
     simp only [iInf_apply, iInf_Prop_eq] at h ⊢
     intro a
@@ -114,12 +112,11 @@ lemma nonempty_iff_ne_bot (P : ObjectProperty C) : P.Nonempty ↔ ¬ P = ⊥ := 
   rw [ne_bot_iff_exists, nonempty_iff]
 
 @[push]
-lemma not_nonempty_iff_eq_bot (P : ObjectProperty C) : ¬ P.Nonempty ↔ P = ⊥ := by
+lemma not_nonempty_iff_eq_bot (P : ObjectProperty C) : ¬P.Nonempty ↔ P = ⊥ := by
   rw [P.nonempty_iff_ne_bot, not_not]
 
 @[simp]
-lemma ι_map_top (P : ObjectProperty C) :
-    (⊤ : ObjectProperty _).map P.ι = P.isoClosure := by
+lemma ι_map_top (P : ObjectProperty C) : (⊤ : ObjectProperty _).map P.ι = P.isoClosure := by
   ext X
   constructor
   · rintro ⟨⟨Y, hY⟩, _, ⟨e⟩⟩

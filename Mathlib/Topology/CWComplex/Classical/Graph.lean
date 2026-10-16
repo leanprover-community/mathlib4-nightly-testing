@@ -47,19 +47,20 @@ namespace CWComplex.OneSkeletonGraph
 
 variable {C : Set X} [CWComplex C]
 
-lemma isLink_iff_pair (e : cell C 1) (x y : cell C 0) :
-    (OneSkeletonGraph C).IsLink e x y ↔ cellFrontier 1 e = {map 0 x ![], map 0 y ![]} := by
+lemma isLink_iff_pair (e : cell C 1) (x y : cell C 0)
+    : (OneSkeletonGraph C).IsLink e x y ↔ cellFrontier 1 e = {map 0 x ![], map 0 y ![]} := by
   rw [OneSkeletonGraph_isLink, closedCell_zero_eq_singleton, closedCell_zero_eq_singleton,
     singleton_union]
 
-lemma exists_isLoopAt_iff (e : cell C 1) : (∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x) ↔
-      ∃ x : cell C 0, cellFrontier 1 e = closedCell 0 x := by
+lemma exists_isLoopAt_iff (e : cell C 1)
+    : (∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x)
+      ↔ ∃ x : cell C 0, cellFrontier 1 e = closedCell 0 x := by
   refine exists_congr fun x ↦ ?_
   change cellFrontier 1 e = closedCell 0 x ∪ closedCell 0 x ↔ _
   rw [union_self]
 
-lemma exists_isLoopAt_iff_subsingleton (e : cell C 1) :
-    (∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x) ↔ (cellFrontier 1 e).Subsingleton := by
+lemma exists_isLoopAt_iff_subsingleton (e : cell C 1)
+    : (∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x) ↔ (cellFrontier 1 e).Subsingleton := by
   rw [exists_isLoopAt_iff]
   refine ⟨fun ⟨x, hx⟩ => by simp [closedCell_zero_eq_singleton, hx], fun h => ?_⟩
   obtain ⟨x, y, hxy⟩ := exists_cellFrontier_one_eq e
@@ -67,13 +68,15 @@ lemma exists_isLoopAt_iff_subsingleton (e : cell C 1) :
   obtain rfl : x = y := RelCWComplex.injective_map_zero C <| (hxy ▸ h) (by simp) (by simp)
   exact ⟨x, by simp [hxy, closedCell_zero_eq_singleton]⟩
 
-lemma not_exists_isLoopAt_iff_nontrivial (e : cell C 1) :
-    ¬(∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x) ↔ (cellFrontier 1 e).Nontrivial :=
+lemma not_exists_isLoopAt_iff_nontrivial (e : cell C 1)
+    : ¬(∃ x : cell C 0, (OneSkeletonGraph C).IsLoopAt e x) ↔ (cellFrontier 1 e).Nontrivial :=
   (exists_isLoopAt_iff_subsingleton e).not.trans not_subsingleton_iff
 
 @[simp]
-lemma adj_iff (x y : cell C 0) : (OneSkeletonGraph C).Adj x y ↔
-    ∃ e : cell C 1, cellFrontier 1 e = closedCell 0 x ∪ closedCell 0 y := Iff.rfl
+lemma adj_iff (x y : cell C 0)
+    : (OneSkeletonGraph C).Adj x y
+      ↔ ∃ e : cell C 1, cellFrontier 1 e = closedCell 0 x ∪ closedCell 0 y :=
+  Iff.rfl
 
 end CWComplex.OneSkeletonGraph
 

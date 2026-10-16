@@ -23,32 +23,26 @@ universe w v₁ v₂ v₃ u₁ u₂ u₃
 
 namespace CategoryTheory
 
-variable {A : Type u₁} {B : Type u₂} {T : Type u₃}
-  [Category.{v₁} A] [Category.{v₂} B] [Category.{v₃} T]
+variable
+  {A : Type u₁} {B : Type u₂} {T : Type u₃} [Category.{v₁} A] [Category.{v₂} B] [Category.{v₃} T]
 
-instance Comma.locallySmall
-    (L : A ⥤ T) (R : B ⥤ T) [LocallySmall.{w} A] [LocallySmall.{w} B] :
-    LocallySmall.{w} (Comma L R) where
-  hom_small X Y := small_of_injective.{w}
-      (f := fun g ↦ (⟨g.left, g.right⟩ : _ × _))
-        (fun _ _ _ ↦ by aesop)
+instance Comma.locallySmall (L : A ⥤ T) (R : B ⥤ T) [LocallySmall.{w} A] [LocallySmall.{w} B]
+    : LocallySmall.{w} (Comma L R) where
+  hom_small X Y :=
+    small_of_injective.{w} (f := fun g ↦ (⟨g.left, g.right⟩ : _ × _)) (fun _ _ _ ↦ by aesop)
 
-instance StructuredArrow.locallySmall (S : T) (T : B ⥤ T)
-    [LocallySmall.{w} B] :
-    LocallySmall.{w} (StructuredArrow S T) :=
+instance StructuredArrow.locallySmall (S : T) (T : B ⥤ T) [LocallySmall.{w} B]
+    : LocallySmall.{w} (StructuredArrow S T) :=
   Comma.locallySmall _ _
 
-instance CostructuredArrow.locallySmall (S : A ⥤ T) (X : T)
-    [LocallySmall.{w} A] :
-    LocallySmall.{w} (CostructuredArrow S X) :=
+instance CostructuredArrow.locallySmall (S : A ⥤ T) (X : T) [LocallySmall.{w} A]
+    : LocallySmall.{w} (CostructuredArrow S X) :=
   Comma.locallySmall _ _
 
-instance Over.locallySmall (X : T) [LocallySmall.{w} T] :
-    LocallySmall.{w} (Over X) :=
+instance Over.locallySmall (X : T) [LocallySmall.{w} T] : LocallySmall.{w} (Over X) :=
   CostructuredArrow.locallySmall _ _
 
-instance Under.locallySmall (X : T) [LocallySmall.{w} T] :
-    LocallySmall.{w} (Under X) :=
+instance Under.locallySmall (X : T) [LocallySmall.{w} T] : LocallySmall.{w} (Under X) :=
   StructuredArrow.locallySmall _ _
 
 end CategoryTheory

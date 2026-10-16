@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.FailIfNoProgress
 import Mathlib.Tactic.Basic
 
@@ -54,8 +55,7 @@ h : x = true
 ⊢ x = true
 -/
 #guard_msgs in
-example (x : Bool) (h : x = true) : x = true := by
-  fail_if_no_progress skip
+example (x : Bool) (h : x = true) : x = true := by fail_if_no_progress skip
 
 /--
 error: no progress made on
@@ -64,8 +64,7 @@ h : x = true
 ⊢ x = true
 -/
 #guard_msgs in
-example (x : Bool) (h : x = true) : x = true := by
-  fail_if_no_progress simp -failIfUnchanged
+example (x : Bool) (h : x = true) : x = true := by fail_if_no_progress simp -failIfUnchanged
 
 /--
 error: no progress made on
@@ -74,8 +73,7 @@ h : x = true
 ⊢ True
 -/
 #guard_msgs in
-example (x : Bool) (h : x = true) : True := by
-  fail_if_no_progress simp -failIfUnchanged at h
+example (x : Bool) (h : x = true) : True := by fail_if_no_progress simp -failIfUnchanged at h
 
 /--
 error: no progress made on

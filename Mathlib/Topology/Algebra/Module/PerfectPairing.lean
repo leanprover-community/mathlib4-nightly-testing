@@ -32,22 +32,27 @@ Adapt `PerfectPairing` to this Prop-valued typeclass paradigm
 open Function
 
 namespace LinearMap
-variable {R M N : Type*}
-  [CommRing R] [TopologicalSpace R] [AddCommGroup M] [Module R M] [TopologicalSpace M]
-  [AddCommGroup N] [Module R N] [TopologicalSpace N] (p : M →ₗ[R] N →ₗ[R] R) {x : M} {y : N}
+variable
+  {R M N : Type*} [CommRing R] [TopologicalSpace R] [AddCommGroup M] [Module R M]
+  [TopologicalSpace M] [AddCommGroup N] [Module R N] [TopologicalSpace N]
+  (p : M →ₗ[R] N →ₗ[R] R)
+  {x : M} {y : N}
 
-/-- For a topological ring `R` and two topological modules `M` and `N`, a continuous perfect pairing
+/--
+For a topological ring `R` and two topological modules `M` and `N`, a continuous perfect pairing
 is a continuous bilinear map `M × N → R` that is bijective in both arguments.
 
 We require continuity in the forward direction only so that we can put several different topologies
-on the continuous dual: strong, weak, weak-\* topology... -/
+on the continuous dual: strong, weak, weak-\* topology...
+-/
 @[ext]
 class IsContPerfPair (p : M →ₗ[R] N →ₗ[R] R) where
   continuous_uncurry (p) : Continuous fun (x, y) ↦ p x y
-  bijective_left (p) :
-    Bijective fun x ↦ ContinuousLinearMap.mk (p x) <| continuous_uncurry.comp <| .prodMk_right x
-  bijective_right (p) :
-    Bijective fun y ↦ ContinuousLinearMap.mk (p.flip y) <| continuous_uncurry.comp <| .prodMk_left y
+  bijective_left (p)
+    : Bijective fun x ↦ ContinuousLinearMap.mk (p x) <| continuous_uncurry.comp <| .prodMk_right x
+  bijective_right (p)
+    : Bijective fun y ↦
+      ContinuousLinearMap.mk (p.flip y) <| continuous_uncurry.comp <| .prodMk_left y
 
 variable [p.IsContPerfPair]
 
@@ -65,8 +70,10 @@ lemma continuous_of_isContPerfPair : Continuous (p x) :=
 
 variable [IsTopologicalRing R]
 
-/-- Turn a continuous perfect pairing between `M` and `N` into a map from `M` to continuous linear
-maps `N → R`. -/
+/--
+Turn a continuous perfect pairing between `M` and `N` into a map from `M` to continuous linear
+maps `N → R`.
+-/
 noncomputable def toContPerfPair : M ≃ₗ[R] StrongDual R N :=
   .ofBijective { toFun := _, map_add' x y := by ext; simp, map_smul' r x := by ext; simp } <|
     IsContPerfPair.bijective_left p

@@ -26,11 +26,13 @@ namespace Cat
 /-- The endofunctor `Cat ⥤ Cat` assigning to each category its opposite category. -/
 @[simps]
 def opFunctor : Cat.{v₁, u₁} ⥤ Cat.{v₁, u₁} where
-  obj C := ↧Cᵒᵖ
+  obj C := ↧ Cᵒᵖ
   map F := F.toFunctor.op.toCatHom
 
-/-- The natural isomorphism between the double application of `Cat.opFunctor` and the
-identity functor on `Cat`. -/
+/--
+The natural isomorphism between the double application of `Cat.opFunctor` and the
+identity functor on `Cat`.
+-/
 @[simps!]
 def opFunctorInvolutive : opFunctor.{v₁, u₁} ⋙ opFunctor.{v₁, u₁} ≅ 𝟭 _ :=
   NatIso.ofComponents (fun C => .mk (unopUnop C).toCatHom (opOp C).toCatHom)

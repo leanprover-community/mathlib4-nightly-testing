@@ -17,7 +17,6 @@ of commutative monoids.
 
 @[expose] public section
 
-
 noncomputable section
 
 universe v u
@@ -34,17 +33,17 @@ section
 
 variable (X Y : C)
 
-/-- `f +ₗ g` is the composite `X ⟶ Y ⊞ Y ⟶ Y`, where the first map is `(f, g)` and the second map
-is `(𝟙 𝟙)`. -/
-@[simp]
-def leftAdd (f g : X ⟶ Y) : X ⟶ Y :=
-  biprod.lift f g ≫ biprod.desc (𝟙 Y) (𝟙 Y)
+/--
+`f +ₗ g` is the composite `X ⟶ Y ⊞ Y ⟶ Y`, where the first map is `(f, g)` and the second map
+is `(𝟙 𝟙)`.
+-/
+@[simp] def leftAdd (f g : X ⟶ Y) : X ⟶ Y := biprod.lift f g ≫ biprod.desc (𝟙 Y) (𝟙 Y)
 
-/-- `f +ᵣ g` is the composite `X ⟶ X ⊞ X ⟶ Y`, where the first map is `(𝟙, 𝟙)` and the second map
-is `(f g)`. -/
-@[simp]
-def rightAdd (f g : X ⟶ Y) : X ⟶ Y :=
-  biprod.lift (𝟙 X) (𝟙 X) ≫ biprod.desc f g
+/--
+`f +ᵣ g` is the composite `X ⟶ X ⊞ X ⟶ Y`, where the first map is `(𝟙, 𝟙)` and the second map
+is `(f g)`.
+-/
+@[simp] def rightAdd (f g : X ⟶ Y) : X ⟶ Y := biprod.lift (𝟙 X) (𝟙 X) ≫ biprod.desc f g
 
 local infixr:65 " +ₗ " => leftAdd X Y
 
@@ -62,7 +61,7 @@ theorem isUnital_leftAdd : EckmannHilton.IsUnital (· +ₗ ·) 0 := by
     · simp
     · simp [biprod.lift_snd, Category.assoc, comp_zero]
   exact {
-    left_id := fun f => by simp [hr f, leftAdd, Category.assoc, Category.comp_id, biprod.inr_desc],
+    left_id := fun f => by simp [hr f, leftAdd, Category.assoc, Category.comp_id, biprod.inr_desc]
     right_id := fun f => by simp [hl f, leftAdd, Category.assoc, Category.comp_id, biprod.inl_desc]
   }
 
@@ -78,7 +77,7 @@ theorem isUnital_rightAdd : EckmannHilton.IsUnital (· +ᵣ ·) 0 := by
     · simp
     · simp only [biprod.inr_desc, BinaryBicone.inr_fst_assoc, zero_comp]
   exact {
-    left_id := fun f => by simp [h₂ f, rightAdd, biprod.lift_snd_assoc, Category.id_comp],
+    left_id := fun f => by simp [h₂ f, rightAdd, biprod.lift_snd_assoc, Category.id_comp]
     right_id := fun f => by simp [h₁ f, rightAdd, biprod.lift_fst_assoc, Category.id_comp]
   }
 
@@ -86,8 +85,7 @@ theorem distrib (f g h k : X ⟶ Y) : (f +ᵣ g) +ₗ h +ᵣ k = (f +ₗ h) +ᵣ
   let diag : X ⊞ X ⟶ Y ⊞ Y := biprod.lift (biprod.desc f g) (biprod.desc h k)
   have hd₁ : biprod.inl ≫ diag = biprod.lift f h := by ext <;> simp [diag]
   have hd₂ : biprod.inr ≫ diag = biprod.lift g k := by ext <;> simp [diag]
-  have h₁ : biprod.lift (f +ᵣ g) (h +ᵣ k) = biprod.lift (𝟙 X) (𝟙 X) ≫ diag := by
-    ext <;> cat_disch
+  have h₁ : biprod.lift (f +ᵣ g) (h +ᵣ k) = biprod.lift (𝟙 X) (𝟙 X) ≫ diag := by ext <;> cat_disch
   have h₂ : diag ≫ biprod.desc (𝟙 Y) (𝟙 Y) = biprod.desc (f +ₗ h) (g +ₗ k) := by
     ext <;> simp [reassoc_of% hd₁, reassoc_of% hd₂]
   rw [leftAdd, h₁, Category.assoc, h₂, rightAdd]

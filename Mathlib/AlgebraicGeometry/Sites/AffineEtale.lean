@@ -6,8 +6,8 @@ Authors: Christian Merten, Joël Riou
 module
 
 -- these `ModuleCat` instances are only used by the `example` below, which `shake` cannot see
-public import Mathlib.Algebra.Category.ModuleCat.AB  -- shake: keep
-public import Mathlib.Algebra.Category.ModuleCat.FilteredColimits  -- shake: keep
+public import Mathlib.Algebra.Category.ModuleCat.AB -- shake: keep
+public import Mathlib.Algebra.Category.ModuleCat.FilteredColimits -- shake: keep
 public import Mathlib.AlgebraicGeometry.Sites.Affine
 public import Mathlib.AlgebraicGeometry.Sites.Etale
 public import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Sheaf
@@ -41,8 +41,10 @@ namespace AlgebraicGeometry.Scheme
 variable {S : Scheme.{u}}
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The small affine étale site: The category of affine schemes étale over `S`, whose objects are
-commutative rings `R` with an étale structure morphism `Spec R ⟶ S`. -/
+/--
+The small affine étale site: The category of affine schemes étale over `S`, whose objects are
+commutative rings `R` with an étale structure morphism `Spec R ⟶ S`.
+-/
 def AffineEtale (S : Scheme.{u}) : Type (u + 1) :=
   MorphismProperty.CostructuredArrow @Etale.{u} ⊤ Scheme.Spec.{u} S
 deriving Category, HasPullbacks
@@ -69,12 +71,14 @@ instance : (AffineEtale.Spec S).Full :=
 
 set_option backward.isDefEq.respectTransparency.types false in
 instance : (AffineEtale.Spec S).IsCoverDense S.smallEtaleTopology :=
-  inferInstanceAs <| (MorphismProperty.CostructuredArrow.toOver _ _ _).IsCoverDense
-    (S.smallGrothendieckTopology _)
+  inferInstanceAs <|
+    (MorphismProperty.CostructuredArrow.toOver _ _ _).IsCoverDense (S.smallGrothendieckTopology _)
 
 variable (S) in
-/-- The topology on the small affine étale site is the topology induced by `Spec` from
-the small étale site. -/
+/--
+The topology on the small affine étale site is the topology induced by `Spec` from
+the small étale site.
+-/
 def topology : GrothendieckTopology S.AffineEtale :=
   (AffineEtale.Spec S).inducedTopology S.smallEtaleTopology
 
@@ -83,8 +87,8 @@ instance : Functor.IsDenseSubsite (topology S) S.smallEtaleTopology (AffineEtale
   infer_instance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance : Functor.IsOneHypercoverDense.{u} (AffineEtale.Spec S)
-    (topology S) S.smallEtaleTopology :=
+instance
+    : Functor.IsOneHypercoverDense.{u} (AffineEtale.Spec S) (topology S) S.smallEtaleTopology :=
   isOneHypercoverDense_toOver_Spec _
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -95,36 +99,35 @@ end AffineEtale
 
 section
 
-variable {A : Type u'} [Category.{u} A]
-  {FA : A → A → Type*} {CD : A → Type u}
-  [∀ X Y, FunLike (FA X Y) (CD X) (CD Y)] [ConcreteCategory.{u} A FA]
-  [PreservesLimits (CategoryTheory.forget A)] [HasColimits A] [HasLimits A]
-  [(CategoryTheory.forget A).ReflectsIsomorphisms]
+variable
+  {A : Type u'} [Category.{u} A]
+  {FA : A → A → Type*} {CD : A → Type u} [∀ X Y, FunLike (FA X Y) (CD X) (CD Y)]
+  [ConcreteCategory.{u} A FA] [PreservesLimits (CategoryTheory.forget A)] [HasColimits A]
+  [HasLimits A] [(CategoryTheory.forget A).ReflectsIsomorphisms]
   [PreservesFilteredColimitsOfSize.{u, u} (CategoryTheory.forget A)]
 
-instance : HasSheafify (AffineEtale.topology S) A :=
-  hasSheafifyEssentiallySmallSite.{u} _ _
+instance : HasSheafify (AffineEtale.topology S) A := hasSheafifyEssentiallySmallSite.{u} _ _
 
-instance : ((AffineEtale.Spec S).sheafPushforwardContinuous A
-    (AffineEtale.topology S) S.smallEtaleTopology).IsEquivalence :=
+instance
+    : ((AffineEtale.Spec S).sheafPushforwardContinuous A (AffineEtale.topology S)
+      S.smallEtaleTopology).IsEquivalence :=
   Functor.isEquivalence_of_isOneHypercoverDense _ _ _ _
 
 instance : HasSheafify S.smallEtaleTopology A :=
-  Functor.IsDenseSubsite.hasSheafify_of_isEquivalence
-    (AffineEtale.topology S) S.smallEtaleTopology (AffineEtale.Spec S)
+  Functor.IsDenseSubsite.hasSheafify_of_isEquivalence (AffineEtale.topology S) S.smallEtaleTopology
+    (AffineEtale.Spec S)
 
-instance :
-    ((AffineEtale.Spec S).sheafPushforwardContinuous A
-      (AffineEtale.topology S) S.smallEtaleTopology).IsEquivalence :=
+instance
+    : ((AffineEtale.Spec S).sheafPushforwardContinuous A (AffineEtale.topology S)
+      S.smallEtaleTopology).IsEquivalence :=
   Functor.isEquivalence_of_isOneHypercoverDense _ _ _ _
 
 instance : (AffineEtale.topology S).WEqualsLocallyBijective A :=
   .ofEssentiallySmall (AffineEtale.topology S)
 
 instance : S.smallEtaleTopology.WEqualsLocallyBijective A :=
-  .transport  _ _ _
-    (Functor.IsDenseSubsite.coverPreserving (AffineEtale.topology S) _
-      (AffineEtale.Spec S))
+  .transport _ _ _
+    (Functor.IsDenseSubsite.coverPreserving (AffineEtale.topology S) _ (AffineEtale.Spec S))
 
 -- The `IsGrothendieckAbelian` instances defined below would fail
 -- without the next two instances
@@ -134,25 +137,25 @@ instance [Abelian A] : Abelian (Sheaf S.smallEtaleTopology A) := inferInstance
 
 variable (S A)
 
-/-- The category of sheaves on the small affine étale site is equivalent to the category of
-sheaves on the small étale site. -/
+/--
+The category of sheaves on the small affine étale site is equivalent to the category of
+sheaves on the small étale site.
+-/
 @[simps! inverse]
 def AffineEtale.sheafEquiv : Sheaf (AffineEtale.topology S) A ≌ Sheaf S.smallEtaleTopology A :=
-  ((AffineEtale.Spec S).sheafPushforwardContinuous A
-      (topology S) S.smallEtaleTopology).asEquivalence.symm
+  ((AffineEtale.Spec S).sheafPushforwardContinuous A (topology S)
+    S.smallEtaleTopology).asEquivalence.symm
 
-instance isGrothendieckAbelian_sheaf_affineEtaleTopology
-    [Abelian A] [IsGrothendieckAbelian.{u} A] :
-    IsGrothendieckAbelian.{u} (Sheaf (AffineEtale.topology S) A) :=
+instance isGrothendieckAbelian_sheaf_affineEtaleTopology [Abelian A] [IsGrothendieckAbelian.{u} A]
+    : IsGrothendieckAbelian.{u} (Sheaf (AffineEtale.topology S) A) :=
   Sheaf.isGrothendieckAbelian_of_essentiallySmall _ _
 
-instance isGrothendieckAbelian_sheaf_smallEtaleTopology
-    [Abelian A] [IsGrothendieckAbelian.{u} A] :
-    IsGrothendieckAbelian.{u} (Sheaf S.smallEtaleTopology A) :=
+instance isGrothendieckAbelian_sheaf_smallEtaleTopology [Abelian A] [IsGrothendieckAbelian.{u} A]
+    : IsGrothendieckAbelian.{u} (Sheaf S.smallEtaleTopology A) :=
   IsGrothendieckAbelian.of_equivalence (AffineEtale.sheafEquiv S A)
 
-example (R : Type u) [Ring R] :
-    IsGrothendieckAbelian.{u} (Sheaf S.smallEtaleTopology (ModuleCat.{u} R)) :=
+example (R : Type u) [Ring R]
+    : IsGrothendieckAbelian.{u} (Sheaf S.smallEtaleTopology (ModuleCat.{u} R)) :=
   inferInstance
 
 end

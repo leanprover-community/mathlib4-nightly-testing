@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Group.Monoid
 public import Mathlib.Control.Basic
 public import Mathlib.Control.Functor
-
 import Mathlib.Tactic.Attr.Register
 
 /-!
@@ -33,23 +32,24 @@ variable {F : Type u → Type v}
 variable [Applicative F] [LawfulApplicative F]
 variable {α β γ σ : Type u}
 
-theorem Applicative.map_seq_map (f : α → β → γ) (g : σ → β) (x : F α) (y : F σ) :
-    f <$> x <*> g <$> y = ((· ∘ g) ∘ f) <$> x <*> y := by
+theorem Applicative.map_seq_map (f : α → β → γ) (g : σ → β) (x : F α) (y : F σ)
+    : f <$> x <*> g <$> y = ((· ∘ g) ∘ f) <$> x <*> y := by
   simp [functor_norm, Function.comp_def]
 
 theorem Applicative.pure_seq_eq_map' (f : α → β) : ((pure f : F (α → β)) <*> ·) = (f <$> ·) := by
   simp [functor_norm]
 
 set_option linter.overlappingInstances false in
-theorem Applicative.ext {F} :
-    ∀ {A1 : Applicative F} {A2 : Applicative F} [@LawfulApplicative F A1] [@LawfulApplicative F A2],
-      (∀ {α : Type u} (x : α), @Pure.pure _ A1.toPure _ x = @Pure.pure _ A2.toPure _ x) →
-      (∀ {α β : Type u} (f : F (α → β)) (x : F α),
-          @Seq.seq _ A1.toSeq _ _ f (fun _ => x) = @Seq.seq _ A2.toSeq _ _ f (fun _ => x)) →
-      A1 = A2
+theorem Applicative.ext {F}
+    : ∀ {A1 : Applicative F} {A2 : Applicative F} [@LawfulApplicative F A1]
+        [@LawfulApplicative F A2],
+      (∀ {α : Type u} (x : α), @Pure.pure _ A1.toPure _ x = @Pure.pure _ A2.toPure _ x)
+        → (∀ {α β : Type u} (f : F (α → β)) (x : F α),
+          @Seq.seq _ A1.toSeq _ _ f (fun _ => x) = @Seq.seq _ A2.toSeq _ _ f (fun _ => x))
+        → A1 = A2
   | { toFunctor := F1, seq := s1, pure := p1, seqLeft := sl1, seqRight := sr1 },
-    { toFunctor := F2, seq := s2, pure := p2, seqLeft := sl2, seqRight := sr2 },
-    L1, L2, H1, H2 => by
+      { toFunctor := F2, seq := s2, pure := p2, seqLeft := sl2, seqRight := sr2 }, L1, L2, H1,
+      H2 => by
     obtain rfl : @p1 = @p2 := by
       funext α x
       apply H1
@@ -71,7 +71,8 @@ end Lemmas
 -- Porting note: we have a monad instance for `Id` but not `id`, mathport can't tell
 -- which one is intended
 
-instance : CommApplicative Id where commutative_prod _ _ := rfl
+instance : CommApplicative Id where
+  commutative_prod _ _ := rfl
 
 namespace Functor
 
@@ -92,8 +93,8 @@ theorem map_pure (f : α → β) (x : α) : (f <$> pure x : Comp F G β) = pure 
 theorem seq_pure (f : Comp F G (α → β)) (x : α) : f <*> pure x = (fun g : α → β => g x) <$> f :=
   Comp.ext <| by simp [functor_norm]
 
-theorem seq_assoc (x : Comp F G α) (f : Comp F G (α → β)) (g : Comp F G (β → γ)) :
-    g <*> (f <*> x) = @Function.comp α β γ <$> g <*> f <*> x :=
+theorem seq_assoc (x : Comp F G α) (f : Comp F G (α → β)) (g : Comp F G (β → γ))
+    : g <*> (f <*> x) = @Function.comp α β γ <$> g <*> f <*> x :=
   Comp.ext <| by simp [comp_def, functor_norm]
 
 theorem pure_seq_eq_map (f : α → β) (x : Comp F G α) : pure f <*> x = f <$> x :=
@@ -108,21 +109,23 @@ instance instLawfulApplicativeComp : LawfulApplicative (Comp F G) where
   seq_pure := Comp.seq_pure
   seq_assoc := Comp.seq_assoc
 
-theorem applicative_id_comp {F} [AF : Applicative F] [LawfulApplicative F] :
-    @instApplicativeComp Id F _ _ = AF :=
-  @Applicative.ext F _ _ (instLawfulApplicativeComp (F := Id)) _
-    (fun _ => rfl) (fun _ _ => rfl)
+theorem applicative_id_comp {F} [AF : Applicative F] [LawfulApplicative F]
+    : @instApplicativeComp Id F _ _ = AF :=
+  @Applicative.ext F _ _ (instLawfulApplicativeComp (F := Id)) _ (fun _ => rfl) (fun _ _ => rfl)
 
-theorem applicative_comp_id {F} [AF : Applicative F] [LawfulApplicative F] :
-    @Comp.instApplicativeComp F Id _ _ = AF :=
+theorem applicative_comp_id {F} [AF : Applicative F] [LawfulApplicative F]
+    : @Comp.instApplicativeComp F Id _ _ = AF :=
   @Applicative.ext F _ _ (instLawfulApplicativeComp (G := Id)) _
-    (fun _ => rfl) (fun f x => show id <$> f <*> x = f <*> x by rw [id_map])
+    (fun _ => rfl)
+    (fun f x => show id <$> f <*> x = f <*> x by rw [id_map])
 
 open CommApplicative
 
 set_option backward.isDefEq.respectTransparency false in
-instance {f : Type u → Type w} {g : Type v → Type u} [Applicative f] [Applicative g]
-    [CommApplicative f] [CommApplicative g] : CommApplicative (Comp f g) where
+instance
+    {f : Type u → Type w} {g : Type v → Type u}
+    [Applicative f] [Applicative g] [CommApplicative f] [CommApplicative g]
+    : CommApplicative (Comp f g) where
   commutative_prod _ _ := by
     simp! [map, Seq.seq]
     rw [commutative_map]
@@ -139,9 +142,10 @@ end Functor
 open Functor
 
 @[functor_norm]
-theorem Comp.seq_mk {α β : Type w} {f : Type u → Type v} {g : Type w → Type u} [Applicative f]
-    [Applicative g] (h : f (g (α → β))) (x : f (g α)) :
-    Comp.mk h <*> Comp.mk x = Comp.mk ((· <*> ·) <$> h <*> x) :=
+theorem Comp.seq_mk
+    {α β : Type w} {f : Type u → Type v} {g : Type w → Type u} [Applicative f] [Applicative g]
+    (h : f (g (α → β))) (x : f (g α))
+    : Comp.mk h <*> Comp.mk x = Comp.mk ((· <*> ·) <$> h <*> x) :=
   rfl
 
 -- Porting note: There is some awkwardness in the following definition now that we have `HMul`.

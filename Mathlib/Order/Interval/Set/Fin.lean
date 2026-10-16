@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Order.Fin.Basic
 public import Mathlib.Order.Interval.Set.UnorderedInterval
-
 import Mathlib.Logic.Equiv.Set
 
 /-!
@@ -39,8 +38,7 @@ variable {m n : ℕ}
 ### (Pre)images under `Fin.val`
 -/
 
-@[simp]
-theorem range_val : range ((↑) : Fin n → ℕ) = Set.Iio n := by ext; simp [Fin.exists_iff]
+@[simp] theorem range_val : range ((↑) : Fin n → ℕ) = Set.Iio n := by ext; simp [Fin.exists_iff]
 
 @[simp] theorem preimage_val_Ici_val (i : Fin n) : (↑) ⁻¹' Ici (i : ℕ) = Ici i := rfl
 @[simp] theorem preimage_val_Ioi_val (i : Fin n) : (↑) ⁻¹' Ioi (i : ℕ) = Ioi i := rfl
@@ -97,8 +95,7 @@ theorem image_val_Ioo (i j : Fin n) : (↑) '' Ioo i j = Ioo (i : ℕ) j := by
 @[simp] theorem image_val_uIoc (i j : Fin n) : (↑) '' uIoc i j = uIoc (i : ℕ) j := by simp [uIoc]
 @[simp] theorem image_val_uIoo (i j : Fin n) : (↑) '' uIoo i j = uIoo (i : ℕ) j := by simp [uIoo]
 
-lemma ofNat_injOn_Iio {n m : ℕ} [NeZero n] (hmn : m ≤ n) :
-    Set.InjOn (Fin.ofNat n) (Set.Iio m) := by
+lemma ofNat_injOn_Iio {n m : ℕ} [NeZero n] (hmn : m ≤ n) : Set.InjOn (Fin.ofNat n) (Set.Iio m) := by
   intro i ha j hb _
   simp only [mem_Iio] at ha hb
   have hi : i < n := by lia
@@ -110,58 +107,58 @@ lemma ofNat_injOn_Iio {n m : ℕ} [NeZero n] (hmn : m ≤ n) :
 -/
 
 @[simp]
-theorem preimage_castLE_Ici_castLE (i : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Ici (castLE h i) = Ici i :=
+theorem preimage_castLE_Ici_castLE (i : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Ici (castLE h i) = Ici i :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Ioi_castLE (i : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Ioi (castLE h i) = Ioi i :=
+theorem preimage_castLE_Ioi_castLE (i : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Ioi (castLE h i) = Ioi i :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Iic_castLE (i : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Iic (castLE h i) = Iic i :=
+theorem preimage_castLE_Iic_castLE (i : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Iic (castLE h i) = Iic i :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Iio_castLE (i : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Iio (castLE h i) = Iio i :=
+theorem preimage_castLE_Iio_castLE (i : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Iio (castLE h i) = Iio i :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Icc_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Icc (castLE h i) (castLE h j) = Icc i j :=
+theorem preimage_castLE_Icc_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Icc (castLE h i) (castLE h j) = Icc i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Ico_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Ico (castLE h i) (castLE h j) = Ico i j :=
+theorem preimage_castLE_Ico_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Ico (castLE h i) (castLE h j) = Ico i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Ioc_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Ioc (castLE h i) (castLE h j) = Ioc i j :=
+theorem preimage_castLE_Ioc_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Ioc (castLE h i) (castLE h j) = Ioc i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_Ioo_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' Ioo (castLE h i) (castLE h j) = Ioo i j :=
+theorem preimage_castLE_Ioo_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' Ioo (castLE h i) (castLE h j) = Ioo i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_uIcc_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' uIcc (castLE h i) (castLE h j) = uIcc i j :=
+theorem preimage_castLE_uIcc_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' uIcc (castLE h i) (castLE h j) = uIcc i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_uIoc_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' uIoc (castLE h i) (castLE h j) = uIoc i j :=
+theorem preimage_castLE_uIoc_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' uIoc (castLE h i) (castLE h j) = uIoc i j :=
   rfl
 
 @[simp]
-theorem preimage_castLE_uIoo_castLE (i j : Fin m) (h : m ≤ n) :
-    castLE h ⁻¹' uIoo (castLE h i) (castLE h j) = uIoo i j :=
+theorem preimage_castLE_uIoo_castLE (i j : Fin m) (h : m ≤ n)
+    : castLE h ⁻¹' uIoo (castLE h i) (castLE h j) = uIoo i j :=
   rfl
 
 @[simp]
@@ -173,38 +170,38 @@ theorem image_castLE_Iio (i : Fin m) (h : m ≤ n) : castLE h '' Iio i = Iio (ca
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_Icc (i j : Fin m) (h : m ≤ n) :
-    castLE h '' Icc i j = Icc (castLE h i) (castLE h j) :=
+theorem image_castLE_Icc (i j : Fin m) (h : m ≤ n)
+    : castLE h '' Icc i j = Icc (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_Ico (i j : Fin m) (h : m ≤ n) :
-    castLE h '' Ico i j = Ico (castLE h i) (castLE h j) :=
+theorem image_castLE_Ico (i j : Fin m) (h : m ≤ n)
+    : castLE h '' Ico i j = Ico (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_Ioc (i j : Fin m) (h : m ≤ n) :
-    castLE h '' Ioc i j = Ioc (castLE h i) (castLE h j) :=
+theorem image_castLE_Ioc (i j : Fin m) (h : m ≤ n)
+    : castLE h '' Ioc i j = Ioc (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_Ioo (i j : Fin m) (h : m ≤ n) :
-    castLE h '' Ioo i j = Ioo (castLE h i) (castLE h j) :=
+theorem image_castLE_Ioo (i j : Fin m) (h : m ≤ n)
+    : castLE h '' Ioo i j = Ioo (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_uIcc (i j : Fin m) (h : m ≤ n) :
-    castLE h '' uIcc i j = uIcc (castLE h i) (castLE h j) :=
+theorem image_castLE_uIcc (i j : Fin m) (h : m ≤ n)
+    : castLE h '' uIcc i j = uIcc (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_uIoc (i j : Fin m) (h : m ≤ n) :
-    castLE h '' uIoc i j = uIoc (castLE h i) (castLE h j) :=
+theorem image_castLE_uIoc (i j : Fin m) (h : m ≤ n)
+    : castLE h '' uIoc i j = uIoc (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 @[simp]
-theorem image_castLE_uIoo (i j : Fin m) (h : m ≤ n) :
-    castLE h '' uIoo i j = uIoo (castLE h i) (castLE h j) :=
+theorem image_castLE_uIoo (i j : Fin m) (h : m ≤ n)
+    : castLE h '' uIoo i j = uIoo (castLE h i) (castLE h j) :=
   val_injective.image_injective <| by simp [image_image]
 
 /-!
@@ -232,48 +229,48 @@ theorem preimage_castAdd_Iio_castAdd (m) (i : Fin n) : castAdd m ⁻¹' Iio (cas
   rfl
 
 @[simp]
-theorem preimage_castAdd_Icc_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' Icc (castAdd m i) (castAdd m j) = Icc i j :=
+theorem preimage_castAdd_Icc_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' Icc (castAdd m i) (castAdd m j) = Icc i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_Ico_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' Ico (castAdd m i) (castAdd m j) = Ico i j :=
+theorem preimage_castAdd_Ico_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' Ico (castAdd m i) (castAdd m j) = Ico i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_Ioc_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' Ioc (castAdd m i) (castAdd m j) = Ioc i j :=
+theorem preimage_castAdd_Ioc_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' Ioc (castAdd m i) (castAdd m j) = Ioc i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_Ioo_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' Ioo (castAdd m i) (castAdd m j) = Ioo i j :=
+theorem preimage_castAdd_Ioo_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' Ioo (castAdd m i) (castAdd m j) = Ioo i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_uIcc_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' uIcc (castAdd m i) (castAdd m j) = uIcc i j :=
+theorem preimage_castAdd_uIcc_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' uIcc (castAdd m i) (castAdd m j) = uIcc i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_uIoc_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' uIoc (castAdd m i) (castAdd m j) = uIoc i j :=
+theorem preimage_castAdd_uIoc_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' uIoc (castAdd m i) (castAdd m j) = uIoc i j :=
   rfl
 
 @[simp]
-theorem preimage_castAdd_uIoo_castAdd (m) (i j : Fin n) :
-    castAdd m ⁻¹' uIoo (castAdd m i) (castAdd m j) = uIoo i j :=
+theorem preimage_castAdd_uIoo_castAdd (m) (i j : Fin n)
+    : castAdd m ⁻¹' uIoo (castAdd m i) (castAdd m j) = uIoo i j :=
   rfl
 
 @[simp]
-theorem image_castAdd_Ici (m) [NeZero m] (i : Fin n) :
-    castAdd m '' Ici i = Ico (castAdd m i) (natAdd n 0) :=
+theorem image_castAdd_Ici (m) [NeZero m] (i : Fin n)
+    : castAdd m '' Ici i = Ico (castAdd m i) (natAdd n 0) :=
   val_injective.image_injective <| by simp [← image_comp]
 
 @[simp]
-theorem image_castAdd_Ioi (m) [NeZero m] (i : Fin n) :
-    castAdd m '' Ioi i = Ioo (castAdd m i) (natAdd n 0) :=
+theorem image_castAdd_Ioi (m) [NeZero m] (i : Fin n)
+    : castAdd m '' Ioi i = Ioo (castAdd m i) (natAdd n 0) :=
   val_injective.image_injective <| by simp [← image_comp]
 
 @[simp]
@@ -285,38 +282,38 @@ theorem image_castAdd_Iio (m) (i : Fin n) : castAdd m '' Iio i = Iio (castAdd m 
   image_castLE_Iio ..
 
 @[simp]
-theorem image_castAdd_Icc (m) (i j : Fin n) :
-    castAdd m '' Icc i j = Icc (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_Icc (m) (i j : Fin n)
+    : castAdd m '' Icc i j = Icc (castAdd m i) (castAdd m j) :=
   image_castLE_Icc ..
 
 @[simp]
-theorem image_castAdd_Ico (m) (i j : Fin n) :
-    castAdd m '' Ico i j = Ico (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_Ico (m) (i j : Fin n)
+    : castAdd m '' Ico i j = Ico (castAdd m i) (castAdd m j) :=
   image_castLE_Ico ..
 
 @[simp]
-theorem image_castAdd_Ioc (m) (i j : Fin n) :
-    castAdd m '' Ioc i j = Ioc (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_Ioc (m) (i j : Fin n)
+    : castAdd m '' Ioc i j = Ioc (castAdd m i) (castAdd m j) :=
   image_castLE_Ioc ..
 
 @[simp]
-theorem image_castAdd_Ioo (m) (i j : Fin n) :
-    castAdd m '' Ioo i j = Ioo (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_Ioo (m) (i j : Fin n)
+    : castAdd m '' Ioo i j = Ioo (castAdd m i) (castAdd m j) :=
   image_castLE_Ioo ..
 
 @[simp]
-theorem image_castAdd_uIcc (m) (i j : Fin n) :
-    castAdd m '' uIcc i j = uIcc (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_uIcc (m) (i j : Fin n)
+    : castAdd m '' uIcc i j = uIcc (castAdd m i) (castAdd m j) :=
   image_castLE_uIcc ..
 
 @[simp]
-theorem image_castAdd_uIoc (m) (i j : Fin n) :
-    castAdd m '' uIoc i j = uIoc (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_uIoc (m) (i j : Fin n)
+    : castAdd m '' uIoc i j = uIoc (castAdd m i) (castAdd m j) :=
   image_castLE_uIoc ..
 
 @[simp]
-theorem image_castAdd_uIoo (m) (i j : Fin n) :
-    castAdd m '' uIoo i j = uIoo (castAdd m i) (castAdd m j) :=
+theorem image_castAdd_uIoo (m) (i j : Fin n)
+    : castAdd m '' uIoo i j = uIoo (castAdd m i) (castAdd m j) :=
   image_castLE_uIoo ..
 
 /-!
@@ -343,38 +340,38 @@ theorem preimage_cast_Iic (h : m = n) (i : Fin n) : .cast h ⁻¹' Iic i = Iic (
 theorem preimage_cast_Iio (h : m = n) (i : Fin n) : .cast h ⁻¹' Iio i = Iio (i.cast h.symm) := rfl
 
 @[simp]
-theorem preimage_cast_Icc (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' Icc i j = Icc (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_Icc (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' Icc i j = Icc (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_Ico (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' Ico i j = Ico (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_Ico (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' Ico i j = Ico (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_Ioc (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' Ioc i j = Ioc (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_Ioc (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' Ioc i j = Ioc (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_Ioo (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' Ioo i j = Ioo (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_Ioo (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' Ioo i j = Ioo (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_uIcc (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' uIcc i j = uIcc (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_uIcc (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' uIcc i j = uIcc (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_uIoc (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' uIoc i j = uIoc (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_uIoc (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' uIoc i j = uIoc (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 @[simp]
-theorem preimage_cast_uIoo (h : m = n) (i j : Fin n) :
-    .cast h ⁻¹' uIoo i j = uIoo (i.cast h.symm) (j.cast h.symm) :=
+theorem preimage_cast_uIoo (h : m = n) (i j : Fin n)
+    : .cast h ⁻¹' uIoo i j = uIoo (i.cast h.symm) (j.cast h.symm) :=
   rfl
 
 /-!
@@ -394,38 +391,38 @@ theorem preimage_castSucc_Iic_castSucc (i : Fin n) : castSucc ⁻¹' Iic i.castS
 theorem preimage_castSucc_Iio_castSucc (i : Fin n) : castSucc ⁻¹' Iio i.castSucc = Iio i := rfl
 
 @[simp]
-theorem preimage_castSucc_Icc_castSucc (i j : Fin n) :
-    castSucc ⁻¹' Icc i.castSucc j.castSucc = Icc i j :=
+theorem preimage_castSucc_Icc_castSucc (i j : Fin n)
+    : castSucc ⁻¹' Icc i.castSucc j.castSucc = Icc i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_Ico_castSucc (i j : Fin n) :
-    castSucc ⁻¹' Ico i.castSucc j.castSucc = Ico i j :=
+theorem preimage_castSucc_Ico_castSucc (i j : Fin n)
+    : castSucc ⁻¹' Ico i.castSucc j.castSucc = Ico i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_Ioc_castSucc (i j : Fin n) :
-    castSucc ⁻¹' Ioc i.castSucc j.castSucc = Ioc i j :=
+theorem preimage_castSucc_Ioc_castSucc (i j : Fin n)
+    : castSucc ⁻¹' Ioc i.castSucc j.castSucc = Ioc i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_Ioo_castSucc (i j : Fin n) :
-    castSucc ⁻¹' Ioo i.castSucc j.castSucc = Ioo i j :=
+theorem preimage_castSucc_Ioo_castSucc (i j : Fin n)
+    : castSucc ⁻¹' Ioo i.castSucc j.castSucc = Ioo i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_uIcc_castSucc (i j : Fin n) :
-    castSucc ⁻¹' uIcc i.castSucc j.castSucc = uIcc i j :=
+theorem preimage_castSucc_uIcc_castSucc (i j : Fin n)
+    : castSucc ⁻¹' uIcc i.castSucc j.castSucc = uIcc i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_uIoc_castSucc (i j : Fin n) :
-    castSucc ⁻¹' uIoc i.castSucc j.castSucc = uIoc i j :=
+theorem preimage_castSucc_uIoc_castSucc (i j : Fin n)
+    : castSucc ⁻¹' uIoc i.castSucc j.castSucc = uIoc i j :=
   rfl
 
 @[simp]
-theorem preimage_castSucc_uIoo_castSucc (i j : Fin n) :
-    castSucc ⁻¹' uIoo i.castSucc j.castSucc = uIoo i j :=
+theorem preimage_castSucc_uIoo_castSucc (i j : Fin n)
+    : castSucc ⁻¹' uIoo i.castSucc j.castSucc = uIoo i j :=
   rfl
 
 @[simp]
@@ -437,12 +434,10 @@ theorem image_castSucc_Ioi (i : Fin n) : castSucc '' Ioi i = Ioo i.castSucc (.la
   image_castAdd_Ioi ..
 
 @[simp]
-theorem image_castSucc_Iic (i : Fin n) : castSucc '' Iic i = Iic i.castSucc :=
-  image_castAdd_Iic ..
+theorem image_castSucc_Iic (i : Fin n) : castSucc '' Iic i = Iic i.castSucc := image_castAdd_Iic ..
 
 @[simp]
-theorem image_castSucc_Iio (i : Fin n) : castSucc '' Iio i = Iio i.castSucc :=
-  image_castAdd_Iio ..
+theorem image_castSucc_Iio (i : Fin n) : castSucc '' Iio i = Iio i.castSucc := image_castAdd_Iio ..
 
 @[simp]
 theorem image_castSucc_Icc (i j : Fin n) : castSucc '' Icc i j = Icc i.castSucc j.castSucc :=
@@ -485,12 +480,12 @@ theorem range_natAdd (m n : ℕ) : range (natAdd m : Fin n → Fin (m + n)) = {i
     ext
     simp [hi]
 
-theorem range_natAdd_eq_Ici (m n : ℕ) [NeZero n] :
-    range (natAdd m : Fin n → Fin (m + n)) = Ici (natAdd m 0) :=
+theorem range_natAdd_eq_Ici (m n : ℕ) [NeZero n]
+    : range (natAdd m : Fin n → Fin (m + n)) = Ici (natAdd m 0) :=
   range_natAdd m n
 
-theorem range_natAdd_eq_Ioi (m n : ℕ) [NeZero m] :
-    range (natAdd m : Fin n → Fin (m + n)) = Ioi (castAdd n ⊤) := by
+theorem range_natAdd_eq_Ioi (m n : ℕ) [NeZero m]
+    : range (natAdd m : Fin n → Fin (m + n)) = Ioi (castAdd n ⊤) := by
   ext ⟨_, _⟩
   simp [range_natAdd, lt_def, ← Nat.succ_le_iff, Nat.one_le_iff_ne_zero.mpr (NeZero.ne m)]
 
@@ -511,38 +506,38 @@ theorem preimage_natAdd_Iio_natAdd (m) (i : Fin n) : natAdd m ⁻¹' Iio (natAdd
   ext; simp
 
 @[simp]
-theorem preimage_natAdd_Icc_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' Icc (natAdd m i) (natAdd m j) = Icc i j := by
+theorem preimage_natAdd_Icc_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' Icc (natAdd m i) (natAdd m j) = Icc i j := by
   ext; simp
 
 @[simp]
-theorem preimage_natAdd_Ico_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' Ico (natAdd m i) (natAdd m j) = Ico i j := by
+theorem preimage_natAdd_Ico_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' Ico (natAdd m i) (natAdd m j) = Ico i j := by
   ext; simp
 
 @[simp]
-theorem preimage_natAdd_Ioc_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' Ioc (natAdd m i) (natAdd m j) = Ioc i j := by
+theorem preimage_natAdd_Ioc_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' Ioc (natAdd m i) (natAdd m j) = Ioc i j := by
   ext; simp
 
 @[simp]
-theorem preimage_natAdd_Ioo_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' Ioo (natAdd m i) (natAdd m j) = Ioo i j := by
+theorem preimage_natAdd_Ioo_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' Ioo (natAdd m i) (natAdd m j) = Ioo i j := by
   ext; simp
 
 @[simp]
-theorem preimage_natAdd_uIcc_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' uIcc (natAdd m i) (natAdd m j) = uIcc i j := by
+theorem preimage_natAdd_uIcc_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' uIcc (natAdd m i) (natAdd m j) = uIcc i j := by
   simp [uIcc, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 @[simp]
-theorem preimage_natAdd_uIoc_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' uIoc (natAdd m i) (natAdd m j) = uIoc i j := by
+theorem preimage_natAdd_uIoc_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' uIoc (natAdd m i) (natAdd m j) = uIoc i j := by
   simp [uIoc, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 @[simp]
-theorem preimage_natAdd_uIoo_natAdd (m) (i j : Fin n) :
-    natAdd m ⁻¹' uIoo (natAdd m i) (natAdd m j) = uIoo i j := by
+theorem preimage_natAdd_uIoo_natAdd (m) (i j : Fin n)
+    : natAdd m ⁻¹' uIoo (natAdd m i) (natAdd m j) = uIoo i j := by
   simp [uIoo, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 @[simp]
@@ -557,42 +552,42 @@ theorem image_natAdd_Ioi (m) (i : Fin n) : natAdd m '' Ioi i = Ioi (natAdd m i) 
   exact Ioi_subset_Ici_self.trans <| image_natAdd_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_natAdd_Icc (m) (i j : Fin n) :
-    natAdd m '' Icc i j = Icc (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_Icc (m) (i j : Fin n)
+    : natAdd m '' Icc i j = Icc (natAdd m i) (natAdd m j) := by
   rw [← preimage_natAdd_Icc_natAdd, image_preimage_eq_of_subset]
   exact Icc_subset_Ici_self.trans <| image_natAdd_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_natAdd_Ico (m) (i j : Fin n) :
-    natAdd m '' Ico i j = Ico (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_Ico (m) (i j : Fin n)
+    : natAdd m '' Ico i j = Ico (natAdd m i) (natAdd m j) := by
   rw [← preimage_natAdd_Ico_natAdd, image_preimage_eq_of_subset]
   exact Ico_subset_Ici_self.trans <| image_natAdd_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_natAdd_Ioc (m) (i j : Fin n) :
-    natAdd m '' Ioc i j = Ioc (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_Ioc (m) (i j : Fin n)
+    : natAdd m '' Ioc i j = Ioc (natAdd m i) (natAdd m j) := by
   rw [← preimage_natAdd_Ioc_natAdd, image_preimage_eq_of_subset]
   exact Ioc_subset_Ioi_self.trans <| image_natAdd_Ioi m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_natAdd_Ioo (m) (i j : Fin n) :
-    natAdd m '' Ioo i j = Ioo (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_Ioo (m) (i j : Fin n)
+    : natAdd m '' Ioo i j = Ioo (natAdd m i) (natAdd m j) := by
   rw [← preimage_natAdd_Ioo_natAdd, image_preimage_eq_of_subset]
   exact Ioo_subset_Ioi_self.trans <| image_natAdd_Ioi m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_natAdd_uIcc (m) (i j : Fin n) :
-    natAdd m '' uIcc i j = uIcc (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_uIcc (m) (i j : Fin n)
+    : natAdd m '' uIcc i j = uIcc (natAdd m i) (natAdd m j) := by
   simp [uIcc, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 @[simp]
-theorem image_natAdd_uIoc (m) (i j : Fin n) :
-    natAdd m '' uIoc i j = uIoc (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_uIoc (m) (i j : Fin n)
+    : natAdd m '' uIoc i j = uIoc (natAdd m i) (natAdd m j) := by
   simp [uIoc, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 @[simp]
-theorem image_natAdd_uIoo (m) (i j : Fin n) :
-    natAdd m '' uIoo i j = uIoo (natAdd m i) (natAdd m j) := by
+theorem image_natAdd_uIoo (m) (i j : Fin n)
+    : natAdd m '' uIoo i j = uIoo (natAdd m i) (natAdd m j) := by
   simp [uIoo, ← (strictMono_natAdd m).monotone.map_max, ← (strictMono_natAdd m).monotone.map_min]
 
 /-!
@@ -616,38 +611,38 @@ theorem preimage_addNat_Iio_addNat (m) (i : Fin n) : (addNat · m) ⁻¹' Iio (i
   ext; simp
 
 @[simp]
-theorem preimage_addNat_Icc_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' Icc (i.addNat m) (j.addNat m) = Icc i j := by
+theorem preimage_addNat_Icc_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' Icc (i.addNat m) (j.addNat m) = Icc i j := by
   ext; simp
 
 @[simp]
-theorem preimage_addNat_Ico_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' Ico (i.addNat m) (j.addNat m) = Ico i j := by
+theorem preimage_addNat_Ico_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' Ico (i.addNat m) (j.addNat m) = Ico i j := by
   ext; simp
 
 @[simp]
-theorem preimage_addNat_Ioc_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' Ioc (i.addNat m) (j.addNat m) = Ioc i j := by
+theorem preimage_addNat_Ioc_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' Ioc (i.addNat m) (j.addNat m) = Ioc i j := by
   ext; simp
 
 @[simp]
-theorem preimage_addNat_Ioo_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' Ioo (i.addNat m) (j.addNat m) = Ioo i j := by
+theorem preimage_addNat_Ioo_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' Ioo (i.addNat m) (j.addNat m) = Ioo i j := by
   ext; simp
 
 @[simp]
-theorem preimage_addNat_uIcc_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' uIcc (i.addNat m) (j.addNat m) = uIcc i j := by
+theorem preimage_addNat_uIcc_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' uIcc (i.addNat m) (j.addNat m) = uIcc i j := by
   simp [uIcc, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 @[simp]
-theorem preimage_addNat_uIoc_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' uIoc (i.addNat m) (j.addNat m) = uIoc i j := by
+theorem preimage_addNat_uIoc_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' uIoc (i.addNat m) (j.addNat m) = uIoc i j := by
   simp [uIoc, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 @[simp]
-theorem preimage_addNat_uIoo_addNat (m) (i j : Fin n) :
-    (addNat · m) ⁻¹' uIoo (i.addNat m) (j.addNat m) = uIoo i j := by
+theorem preimage_addNat_uIoo_addNat (m) (i j : Fin n)
+    : (addNat · m) ⁻¹' uIoo (i.addNat m) (j.addNat m) = uIoo i j := by
   simp [uIoo, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 @[simp]
@@ -664,42 +659,42 @@ theorem image_addNat_Ioi (m) (i : Fin n) : (addNat · m) '' Ioi i = Ioi (i.addNa
   exact Ioi_subset_Ici_self.trans <| image_addNat_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_addNat_Icc (m) (i j : Fin n) :
-    (addNat · m) '' Icc i j = Icc (i.addNat m) (j.addNat m) := by
+theorem image_addNat_Icc (m) (i j : Fin n)
+    : (addNat · m) '' Icc i j = Icc (i.addNat m) (j.addNat m) := by
   rw [← preimage_addNat_Icc_addNat, image_preimage_eq_of_subset]
   exact Icc_subset_Ici_self.trans <| image_addNat_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_addNat_Ico (m) (i j : Fin n) :
-    (addNat · m) '' Ico i j = Ico (i.addNat m) (j.addNat m) := by
+theorem image_addNat_Ico (m) (i j : Fin n)
+    : (addNat · m) '' Ico i j = Ico (i.addNat m) (j.addNat m) := by
   rw [← preimage_addNat_Ico_addNat, image_preimage_eq_of_subset]
   exact Ico_subset_Ici_self.trans <| image_addNat_Ici m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_addNat_Ioc (m) (i j : Fin n) :
-    (addNat · m) '' Ioc i j = Ioc (i.addNat m) (j.addNat m) := by
+theorem image_addNat_Ioc (m) (i j : Fin n)
+    : (addNat · m) '' Ioc i j = Ioc (i.addNat m) (j.addNat m) := by
   rw [← preimage_addNat_Ioc_addNat, image_preimage_eq_of_subset]
   exact Ioc_subset_Ioi_self.trans <| image_addNat_Ioi m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_addNat_Ioo (m) (i j : Fin n) :
-    (addNat · m) '' Ioo i j = Ioo (i.addNat m) (j.addNat m) := by
+theorem image_addNat_Ioo (m) (i j : Fin n)
+    : (addNat · m) '' Ioo i j = Ioo (i.addNat m) (j.addNat m) := by
   rw [← preimage_addNat_Ioo_addNat, image_preimage_eq_of_subset]
   exact Ioo_subset_Ioi_self.trans <| image_addNat_Ioi m i ▸ image_subset_range _ _
 
 @[simp]
-theorem image_addNat_uIcc (m) (i j : Fin n) :
-    (addNat · m) '' uIcc i j = uIcc (i.addNat m) (j.addNat m) := by
+theorem image_addNat_uIcc (m) (i j : Fin n)
+    : (addNat · m) '' uIcc i j = uIcc (i.addNat m) (j.addNat m) := by
   simp [uIcc, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 @[simp]
-theorem image_addNat_uIoc (m) (i j : Fin n) :
-    (addNat · m) '' uIoc i j = uIoc (i.addNat m) (j.addNat m) := by
+theorem image_addNat_uIoc (m) (i j : Fin n)
+    : (addNat · m) '' uIoc i j = uIoc (i.addNat m) (j.addNat m) := by
   simp [uIoc, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 @[simp]
-theorem image_addNat_uIoo (m) (i j : Fin n) :
-    (addNat · m) '' uIoo i j = uIoo (i.addNat m) (j.addNat m) := by
+theorem image_addNat_uIoo (m) (i j : Fin n)
+    : (addNat · m) '' uIoo i j = uIoo (i.addNat m) (j.addNat m) := by
   simp [uIoo, ← (strictMono_addNat m).monotone.map_max, ← (strictMono_addNat m).monotone.map_min]
 
 /-!
@@ -795,13 +790,11 @@ theorem image_succ_uIoo (i j : Fin n) : succ '' uIoo i j = uIoo i.succ j.succ :=
 ### `Fin.rev`
 -/
 
-@[simp]
-theorem range_rev : range (rev : Fin n → Fin n) = univ := rev_surjective.range_eq
+@[simp] theorem range_rev : range (rev : Fin n → Fin n) = univ := rev_surjective.range_eq
 
 theorem image_rev (s : Set (Fin n)) : rev '' s = rev ⁻¹' s := revPerm.image_eq_preimage_symm s
 
-@[simp]
-theorem image_rev_fun : image (@rev n) = preimage rev := funext image_rev
+@[simp] theorem image_rev_fun : image (@rev n) = preimage rev := funext image_rev
 
 @[simp]
 theorem preimage_rev_Ici (i : Fin n) : rev ⁻¹' Ici i = Iic i.rev := by ext; simp [le_rev_iff]

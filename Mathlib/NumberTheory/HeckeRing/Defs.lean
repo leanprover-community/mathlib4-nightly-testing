@@ -67,11 +67,13 @@ open scoped Pointwise
 
 variable {G : Type*} [Group G]
 
-/-- A *Hecke triple* `(H₁, Δ, H₂)`: the compatibility conditions on a submonoid `Δ` and a pair
+/--
+A *Hecke triple* `(H₁, Δ, H₂)`: the compatibility conditions on a submonoid `Δ` and a pair
 of subgroups `H₁, H₂` of `G` making the double cosets `H₁\Δ/H₂` finite unions of left cosets:
 both subgroups are contained in `Δ`, they are commensurable, and `Δ` commensurates them. The
 classical Hecke pair `(H, Δ)` of [Shimura][shimura1971], Chapter 3, is the diagonal case
-`IsHeckeTriple Δ H H`. -/
+`IsHeckeTriple Δ H H`.
+-/
 class IsHeckeTriple (Δ : Submonoid G) (H₁ H₂ : Subgroup G) : Prop where
   /-- The left subgroup is contained in `Δ`. -/
   left_le : H₁.toSubmonoid ≤ Δ
@@ -79,8 +81,10 @@ class IsHeckeTriple (Δ : Submonoid G) (H₁ H₂ : Subgroup G) : Prop where
   right_le : H₂.toSubmonoid ≤ Δ
   /-- The two subgroups are commensurable. -/
   commensurable : Commensurable H₁ H₂
-  /-- The submonoid `Δ` lies in the commensurator of the right subgroup (hence, the subgroups
-  being commensurable, also in that of the left one; see `le_commensurator_left`). -/
+  /--
+  The submonoid `Δ` lies in the commensurator of the right subgroup (hence, the subgroups
+  being commensurable, also in that of the left one; see `le_commensurator_left`).
+  -/
   le_commensurator_right : Δ ≤ (commensurator H₂).toSubmonoid
 
 namespace IsHeckeTriple
@@ -88,8 +92,9 @@ namespace IsHeckeTriple
 variable {Δ : Submonoid G} {H₁ H₂ H₃ : Subgroup G}
 
 /-- The Hecke triple `(H, Δ, H)` coming from a pair `(H, Δ)` with `H ≤ Δ ≤ commensurator H`. -/
-theorem of_diagonal {H : Subgroup G} (h : H.toSubmonoid ≤ Δ)
-    (hc : Δ ≤ (commensurator H).toSubmonoid) : IsHeckeTriple Δ H H :=
+theorem of_diagonal
+    {H : Subgroup G} (h : H.toSubmonoid ≤ Δ) (hc : Δ ≤ (commensurator H).toSubmonoid)
+    : IsHeckeTriple Δ H H :=
   ⟨h, h, .refl H, hc⟩
 
 /-- Elements of the left subgroup lie in `Δ`. -/
@@ -101,36 +106,41 @@ theorem mem_of_mem_right (H₁ : Subgroup G) [IsHeckeTriple Δ H₁ H₂] {x : G
   right_le H₁ hx
 
 /-- The submonoid `Δ` lies in the commensurator of the left subgroup. -/
-theorem le_commensurator_left (H₂ : Subgroup G) [h : IsHeckeTriple Δ H₁ H₂] :
-    Δ ≤ (commensurator H₁).toSubmonoid := by
+theorem le_commensurator_left (H₂ : Subgroup G) [h : IsHeckeTriple Δ H₁ H₂]
+    : Δ ≤ (commensurator H₁).toSubmonoid := by
   rw [h.commensurable.eq]
   exact h.le_commensurator_right
 
 /-- Elements of `Δ` lie in the commensurator of the right subgroup. -/
-theorem mem_commensurator_right (H₁ : Subgroup G) [IsHeckeTriple Δ H₁ H₂] (g : Δ) :
-    (g : G) ∈ commensurator H₂ :=
+theorem mem_commensurator_right (H₁ : Subgroup G) [IsHeckeTriple Δ H₁ H₂] (g : Δ)
+    : (g : G) ∈ commensurator H₂ :=
   le_commensurator_right H₁ g.2
 
 /-- Elements of `Δ` lie in the commensurator of the left subgroup. -/
-theorem mem_commensurator_left (H₂ : Subgroup G) [IsHeckeTriple Δ H₁ H₂] (g : Δ) :
-    (g : G) ∈ commensurator H₁ :=
+theorem mem_commensurator_left (H₂ : Subgroup G) [IsHeckeTriple Δ H₁ H₂] (g : Δ)
+    : (g : G) ∈ commensurator H₁ :=
   le_commensurator_left H₂ g.2
 
-/-- Conjugating the right subgroup of a Hecke triple `(H₁, Δ, H₂)` by an element of `Δ` gives a
-subgroup commensurable with the left one. -/
-theorem commensurable_conjAct_right [IsHeckeTriple Δ H₁ H₂] (g : Δ) :
-    Commensurable (ConjAct.toConjAct (g : G) • H₂) H₁ := by
+/--
+Conjugating the right subgroup of a Hecke triple `(H₁, Δ, H₂)` by an element of `Δ` gives a
+subgroup commensurable with the left one.
+-/
+theorem commensurable_conjAct_right [IsHeckeTriple Δ H₁ H₂] (g : Δ)
+    : Commensurable (ConjAct.toConjAct (g : G) • H₂) H₁ := by
   have hg : Commensurable (ConjAct.toConjAct (g : G) • H₂) H₂ := mem_commensurator_right H₁ g
   exact hg.trans (commensurable (Δ := Δ)).symm
 
-/-- Hecke coset module data compose. Not an instance, since the middle subgroup cannot be
-inferred from the goal. -/
-theorem trans [IsHeckeTriple Δ H₁ H₂] [IsHeckeTriple Δ H₂ H₃] :
-    IsHeckeTriple Δ H₁ H₃ :=
-  ⟨left_le H₂, right_le H₂,
-    (commensurable (Δ := Δ) (H₁ := H₁) (H₂ := H₂)).trans
-      (commensurable (Δ := Δ) (H₁ := H₂) (H₂ := H₃)),
-    le_commensurator_right H₂⟩
+/--
+Hecke coset module data compose. Not an instance, since the middle subgroup cannot be
+inferred from the goal.
+-/
+theorem trans [IsHeckeTriple Δ H₁ H₂] [IsHeckeTriple Δ H₂ H₃] : IsHeckeTriple Δ H₁ H₃ := ⟨
+  left_le H₂,
+  right_le H₂,
+  (commensurable (Δ := Δ) (H₁ := H₁) (H₂ := H₂)).trans
+    (commensurable (Δ := Δ) (H₁ := H₂) (H₂ := H₃)),
+  le_commensurator_right H₂
+⟩
 
 /-- The left diagonal datum `(H₁, Δ, H₁)`. Not an instance, since `H₂` cannot be inferred. -/
 theorem diag_left [IsHeckeTriple Δ H₁ H₂] : IsHeckeTriple Δ H₁ H₁ :=
@@ -142,18 +152,22 @@ theorem diag_right [IsHeckeTriple Δ H₁ H₂] : IsHeckeTriple Δ H₂ H₂ :=
 
 end IsHeckeTriple
 
-/-- The setoid on `Δ` identifying elements with the same double coset `H₁gH₂ = H₁hH₂`, pulled
+/--
+The setoid on `Δ` identifying elements with the same double coset `H₁gH₂ = H₁hH₂`, pulled
 back from `DoubleCoset.setoid` along the inclusion `Δ ↪ G`.
 
 This is an `abbrev` rather than a global instance: the subgroups `H₁, H₂` cannot be inferred
 from the submonoid `Δ`, so this cannot participate in instance search (and a global instance
 would also create a `Setoid` diamond on `↥Δ` with the left-coset setoid). The quotient map is
-`HeckeCoset.mk`. -/
+`HeckeCoset.mk`.
+-/
 abbrev HeckeCoset.setoid (Δ : Submonoid G) (H₁ H₂ : Subgroup G) : Setoid Δ :=
   (DoubleCoset.setoid (H₁ : Set G) H₂).comap Subtype.val
 
-/-- A Hecke double coset: an equivalence class of `Δ`-elements under `H₁gH₂ = H₁hH₂`. This is
-the basis type for the `HeckeCosetModule`. -/
+/--
+A Hecke double coset: an equivalence class of `Δ`-elements under `H₁gH₂ = H₁hH₂`. This is
+the basis type for the `HeckeCosetModule`.
+-/
 def HeckeCoset (Δ : Submonoid G) (H₁ H₂ : Subgroup G) := Quotient (HeckeCoset.setoid Δ H₁ H₂)
 
 namespace HeckeCoset
@@ -161,8 +175,7 @@ namespace HeckeCoset
 variable {Δ : Submonoid G}
 
 /-- The double coset `H₁gH₂` of an element `g : Δ`. -/
-def mk (H₁ H₂ : Subgroup G) (g : Δ) : HeckeCoset Δ H₁ H₂ :=
-  Quotient.mk (setoid Δ H₁ H₂) g
+def mk (H₁ H₂ : Subgroup G) (g : Δ) : HeckeCoset Δ H₁ H₂ := Quotient.mk (setoid Δ H₁ H₂) g
 
 variable (Δ) in
 instance (H₁ H₂ : Subgroup G) : Inhabited (HeckeCoset Δ H₁ H₂) := ⟨mk H₁ H₂ ⟨1, Δ.one_mem⟩⟩
@@ -175,19 +188,22 @@ lemma one_def (H : Subgroup G) : (1 : HeckeCoset Δ H H) = mk H H ⟨1, Δ.one_m
 
 end HeckeCoset
 
-/-- The Hecke coset module with coefficients in `Z`: the finitely-supported `Z`-linear
+/--
+The Hecke coset module with coefficients in `Z`: the finitely-supported `Z`-linear
 combinations of double cosets `H₁\Δ/H₂`. For `H₁ = H₂` this is the underlying module of the
 Hecke ring `𝕋 Δ H Z` (see `HeckeRing`). The coefficients `Z` need only carry a `Zero` for the
 type to make sense; algebraic structure is added by the instances below at the weakest level each
-requires. -/
+requires.
+-/
 def HeckeCosetModule (Δ : Submonoid G) (H₁ H₂ : Subgroup G) (Z : Type*) [Zero Z] :=
   HeckeCoset Δ H₁ H₂ →₀ Z
 
-/-- The Hecke ring `𝕋 Δ H Z` with coefficients in `Z`: the diagonal Hecke coset module
+/--
+The Hecke ring `𝕋 Δ H Z` with coefficients in `Z`: the diagonal Hecke coset module
 `HeckeCosetModule Δ H H Z`, the finitely-supported `Z`-linear combinations of double cosets
-`H\Δ/H`. The convolution product making it a ring is developed in later files. -/
-abbrev HeckeRing (Δ : Submonoid G) (H : Subgroup G) (Z : Type*) [Zero Z] :=
-  HeckeCosetModule Δ H H Z
+`H\Δ/H`. The convolution product making it a ring is developed in later files.
+-/
+abbrev HeckeRing (Δ : Submonoid G) (H : Subgroup G) (Z : Type*) [Zero Z] := HeckeCosetModule Δ H H Z
 
 @[inherit_doc]
 scoped[HeckeCosetModule] notation "𝕋" => HeckeRing
@@ -196,8 +212,10 @@ namespace HeckeCosetModule
 
 variable (Δ : Submonoid G) (H₁ H₂ : Subgroup G) (Z : Type*)
 
-/-- Elements of `HeckeCosetModule Δ H₁ H₂ Z` are functions `HeckeCoset Δ H₁ H₂ → Z` (finitely
-supported). -/
+/--
+Elements of `HeckeCosetModule Δ H₁ H₂ Z` are functions `HeckeCoset Δ H₁ H₂ → Z` (finitely
+supported).
+-/
 @[macro_inline]
 instance [Zero Z] : FunLike (HeckeCosetModule Δ H₁ H₂ Z) (HeckeCoset Δ H₁ H₂) Z :=
   inferInstanceAs (FunLike (HeckeCoset Δ H₁ H₂ →₀ Z) (HeckeCoset Δ H₁ H₂) Z)
@@ -208,21 +226,27 @@ noncomputable instance [AddCommMonoid Z] : AddCommMonoid (HeckeCosetModule Δ H�
 noncomputable instance [AddCommGroup Z] : AddCommGroup (HeckeCosetModule Δ H₁ H₂ Z) :=
   inferInstanceAs (AddCommGroup (HeckeCoset Δ H₁ H₂ →₀ Z))
 
-/-- The sanctioned constructor of `HeckeCosetModule Δ H₁ H₂ Z` from a finitely-supported function
+/--
+The sanctioned constructor of `HeckeCosetModule Δ H₁ H₂ Z` from a finitely-supported function
 on double cosets. Build elements through `of` rather than relying on the definitional unfolding
-`HeckeCosetModule Δ H₁ H₂ Z = (HeckeCoset Δ H₁ H₂ →₀ Z)`. -/
-def of {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z] :
-    (HeckeCoset Δ H₁ H₂ →₀ Z) ≃ HeckeCosetModule Δ H₁ H₂ Z :=
+`HeckeCosetModule Δ H₁ H₂ Z = (HeckeCoset Δ H₁ H₂ →₀ Z)`.
+-/
+def of {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z]
+    : (HeckeCoset Δ H₁ H₂ →₀ Z) ≃ HeckeCosetModule Δ H₁ H₂ Z :=
   Equiv.refl _
 
 @[simp]
-lemma of_apply {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z]
-    (f : HeckeCoset Δ H₁ H₂ →₀ Z) (D : HeckeCoset Δ H₁ H₂) : of f D = f D :=
+lemma of_apply
+    {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z]
+    (f : HeckeCoset Δ H₁ H₂ →₀ Z) (D : HeckeCoset Δ H₁ H₂)
+    : of f D = f D :=
   rfl
 
 @[ext]
-lemma ext {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z]
-    {f g : HeckeCosetModule Δ H₁ H₂ Z} (h : ∀ D, f D = g D) : f = g :=
+lemma ext
+    {Δ : Submonoid G} {H₁ H₂ : Subgroup G} {Z : Type*} [Zero Z]
+    {f g : HeckeCosetModule Δ H₁ H₂ Z} (h : ∀ D, f D = g D)
+    : f = g :=
   Finsupp.ext h
 
 end HeckeCosetModule

@@ -20,11 +20,11 @@ namespace Function.Injective
 variable [Semiring R] [PartialOrder R]
 
 /-- Pullback an `IsOrderedRing` under an injective map. -/
-protected lemma isOrderedRing [IsOrderedRing R] [Semiring S] [PartialOrder S]
-    (f : S → R) (zero : f 0 = 0) (one : f 1 = 1)
-    (add : ∀ x y, f (x + y) = f x + f y) (mul : ∀ x y, f (x * y) = f x * f y)
-    (le : ∀ {x y}, f x ≤ f y ↔ x ≤ y) :
-    IsOrderedRing S where
+protected lemma isOrderedRing
+    [IsOrderedRing R] [Semiring S] [PartialOrder S]
+    (f : S → R) (zero : f 0 = 0) (one : f 1 = 1) (add : ∀ x y, f (x + y) = f x + f y)
+    (mul : ∀ x y, f (x * y) = f x * f y) (le : ∀ {x y}, f x ≤ f y ↔ x ≤ y)
+    : IsOrderedRing S where
   __ := Function.Injective.isOrderedAddMonoid f add le
   zero_le_one := by simp only [← le, zero, one, zero_le_one]
   mul_le_mul_of_nonneg_left a ha b c hbc := by
@@ -33,11 +33,12 @@ protected lemma isOrderedRing [IsOrderedRing R] [Semiring S] [PartialOrder S]
     rw [← le, mul, mul]; refine mul_le_mul_of_nonneg_right (le.2 hbc) ?_; rwa [← zero, le]
 
 /-- Pullback a `IsStrictOrderedRing` under an injective map. -/
-protected lemma isStrictOrderedRing [IsStrictOrderedRing R] [Semiring S] [PartialOrder S]
-    (f : S → R) (zero : f 0 = 0) (one : f 1 = 1)
-    (add : ∀ x y, f (x + y) = f x + f y) (mul : ∀ x y, f (x * y) = f x * f y)
-    (le : ∀ {x y}, f x ≤ f y ↔ x ≤ y) (lt : ∀ {x y}, f x < f y ↔ x < y) :
-    IsStrictOrderedRing S where
+protected lemma isStrictOrderedRing
+    [IsStrictOrderedRing R] [Semiring S] [PartialOrder S]
+    (f : S → R) (zero : f 0 = 0) (one : f 1 = 1) (add : ∀ x y, f (x + y) = f x + f y)
+    (mul : ∀ x y, f (x * y) = f x * f y) (le : ∀ {x y}, f x ≤ f y ↔ x ≤ y)
+    (lt : ∀ {x y}, f x < f y ↔ x < y)
+    : IsStrictOrderedRing S where
   __ := Function.Injective.isOrderedCancelAddMonoid f add le
   __ := domain_nontrivial f zero one
   __ := Function.Injective.isOrderedRing f zero one add mul le

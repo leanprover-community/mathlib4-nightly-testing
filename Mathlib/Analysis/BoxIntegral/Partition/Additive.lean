@@ -38,20 +38,23 @@ namespace BoxIntegral
 
 variable {ι M : Type*} {n : ℕ}
 
-/-- A function on `Box ι` is called box additive if for every box `J` and a partition `π` of `J`
+/--
+A function on `Box ι` is called box additive if for every box `J` and a partition `π` of `J`
 we have `f J = ∑ Ji ∈ π.boxes, f Ji`. A function is called box additive on subboxes of `I : Box ι`
 if the same property holds for `J ≤ I`. We formalize these two notions in the same definition
 using `I : WithBot (Box ι)`: the value `I = ⊤` corresponds to functions box additive on the whole
-space. -/
+space.
+-/
 structure BoxAdditiveMap (ι M : Type*) [AddCommMonoid M] (I : WithTop (Box ι)) where
   /-- The function underlying this additive map. -/
   toFun : Box ι → M
-  sum_partition_boxes' : ∀ J : Box ι, ↑J ≤ I → ∀ π : Prepartition J, π.IsPartition →
-    ∑ Ji ∈ π.boxes, toFun Ji = toFun J
+  sum_partition_boxes'
+    : ∀ J : Box ι, ↑J ≤ I → ∀ π : Prepartition J, π.IsPartition → ∑ Ji ∈ π.boxes, toFun Ji = toFun J
 
-
-/-- A function on `Box ι` is called box additive if for every box `J` and a partition `π` of `J`
-we have `f J = ∑ Ji ∈ π.boxes, f Ji`. -/
+/--
+A function on `Box ι` is called box additive if for every box `J` and a partition `π` of `J`
+we have `f J = ∑ Ji ∈ π.boxes, f Ji`.
+-/
 scoped notation:25 ι " →ᵇᵃ " M => BoxIntegral.BoxAdditiveMap ι M ⊤
 
 @[inherit_doc] scoped notation:25 ι " →ᵇᵃ[" I "] " M => BoxIntegral.BoxAdditiveMap ι M I
@@ -60,8 +63,7 @@ namespace BoxAdditiveMap
 
 open Box Prepartition Finset
 
-variable {N : Type*} [AddCommMonoid M] [AddCommMonoid N] {I₀ : WithTop (Box ι)} {I : Box ι}
-  {i : ι}
+variable {N : Type*} [AddCommMonoid M] [AddCommMonoid N] {I₀ : WithTop (Box ι)} {I : Box ι} {i : ι}
 
 /-! ### Coercion, extensionality, and the defining property -/
 
@@ -72,42 +74,37 @@ instance : FunLike (ι →ᵇᵃ[I₀] M) (Box ι) M where
 
 initialize_simps_projections BoxIntegral.BoxAdditiveMap (toFun → apply)
 
-@[simp]
-theorem coe_mk (f h) : ⇑(mk f h : ι →ᵇᵃ[I₀] M) = f := rfl
+@[simp] theorem coe_mk (f h) : ⇑(mk f h : ι →ᵇᵃ[I₀] M) = f := rfl
 
-theorem coe_injective : Injective fun (f : ι →ᵇᵃ[I₀] M) x => f x :=
-  DFunLike.coe_injective
+theorem coe_injective : Injective fun (f : ι →ᵇᵃ[I₀] M) x => f x := DFunLike.coe_injective
 
 theorem coe_inj {f g : ι →ᵇᵃ[I₀] M} : (f : Box ι → M) = g ↔ f = g := DFunLike.coe_fn_eq
 
-@[ext]
-theorem ext {f g : ι →ᵇᵃ[I₀] M} (h : ∀ J, f J = g J) : f = g :=
-  DFunLike.ext _ _ h
+@[ext] theorem ext {f g : ι →ᵇᵃ[I₀] M} (h : ∀ J, f J = g J) : f = g := DFunLike.ext _ _ h
 
-theorem sum_partition_boxes (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) {π : Prepartition I}
-    (h : π.IsPartition) : ∑ J ∈ π.boxes, f J = f I :=
+theorem sum_partition_boxes
+    (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) {π : Prepartition I} (h : π.IsPartition)
+    : ∑ J ∈ π.boxes, f J = f I :=
   f.sum_partition_boxes' I hI π h
 
 /-! ### Additive monoid structure -/
 
 @[simps -fullyApplied]
-instance : Zero (ι →ᵇᵃ[I₀] M) :=
-  ⟨⟨0, fun _ _ _ _ => sum_const_zero⟩⟩
+instance : Zero (ι →ᵇᵃ[I₀] M) := ⟨⟨0, fun _ _ _ _ => sum_const_zero⟩⟩
 
-instance : Inhabited (ι →ᵇᵃ[I₀] M) :=
-  ⟨0⟩
+instance : Inhabited (ι →ᵇᵃ[I₀] M) := ⟨0⟩
 
 instance : IsZeroApply (ι →ᵇᵃ[I₀] M) where
 
-instance : Add (ι →ᵇᵃ[I₀] M) :=
-  ⟨fun f g =>
-    ⟨f + g, fun I hI π hπ => by
-      simp only [Pi.add_apply, sum_add_distrib, sum_partition_boxes _ hI hπ]⟩⟩
+instance : Add (ι →ᵇᵃ[I₀] M) := ⟨fun f g => ⟨
+  f + g,
+  fun I hI π hπ => by simp only [Pi.add_apply, sum_add_distrib, sum_partition_boxes _ hI hπ]
+⟩⟩
 
-instance {R} [DistribSMul R M] : SMul R (ι →ᵇᵃ[I₀] M) :=
-  ⟨fun r f =>
-    ⟨r • (f : Box ι → M), fun I hI π hπ => by
-      simp only [Pi.smul_apply, ← smul_sum, sum_partition_boxes _ hI hπ]⟩⟩
+instance {R} [DistribSMul R M] : SMul R (ι →ᵇᵃ[I₀] M) := ⟨fun r f => ⟨
+  r • (f : Box ι → M),
+  fun I hI π hπ => by simp only [Pi.smul_apply, ← smul_sum, sum_partition_boxes _ hI hπ]
+⟩⟩
 
 instance : AddCommMonoid (ι →ᵇᵃ[I₀] M) :=
   Function.Injective.addCommMonoid _ coe_injective rfl (fun _ _ => rfl) fun _ _ => rfl
@@ -119,27 +116,37 @@ instance {R} [DistribSMul R M] : IsSMulApply R (ι →ᵇᵃ[I₀] M) where
 /-! ### Constructions and combinators -/
 
 @[simp]
-theorem map_split_add (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) (i : ι) (x : ℝ) :
-    (I.splitLower i x).elim' 0 f + (I.splitUpper i x).elim' 0 f = f I := by
+theorem map_split_add (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) (i : ι) (x : ℝ)
+    : (I.splitLower i x).elim' 0 f + (I.splitUpper i x).elim' 0 f = f I := by
   rw [← f.sum_partition_boxes hI (isPartitionSplit I i x), sum_split_boxes]
 
-/-- If `f` is box-additive on subboxes of `I₀`, then it is box-additive on subboxes of any
-`I ≤ I₀`. -/
+/--
+If `f` is box-additive on subboxes of `I₀`, then it is box-additive on subboxes of any
+`I ≤ I₀`.
+-/
 @[simps]
 def restrict (f : ι →ᵇᵃ[I₀] M) (I : WithTop (Box ι)) (hI : I ≤ I₀) : ι →ᵇᵃ[I] M :=
   ⟨f, fun J hJ => f.2 J (hJ.trans hI)⟩
 
-/-- If `f : Box ι → M` is box additive on partitions of the form `split I i x`, then it is box
-additive. -/
-def ofMapSplitAdd [Finite ι] (f : Box ι → M) (I₀ : WithTop (Box ι))
-    (hf : ∀ I : Box ι, ↑I ≤ I₀ → ∀ {i x}, x ∈ Ioo (I.lower i) (I.upper i) →
-      (I.splitLower i x).elim' 0 f + (I.splitUpper i x).elim' 0 f = f I) :
-    ι →ᵇᵃ[I₀] M := by
+/--
+If `f : Box ι → M` is box additive on partitions of the form `split I i x`, then it is box
+additive.
+-/
+def ofMapSplitAdd
+    [Finite ι]
+    (f : Box ι → M) (I₀ : WithTop (Box ι))
+    (hf : ∀ I : Box ι,
+      ↑I ≤ I₀
+        → ∀ {i x},
+          x ∈ Ioo (I.lower i) (I.upper i)
+            → (I.splitLower i x).elim' 0 f + (I.splitUpper i x).elim' 0 f = f I)
+    : ι →ᵇᵃ[I₀] M := by
   classical
   refine ⟨f, ?_⟩
   replace hf (I : Box ι) (hI : ↑I ≤ I₀) (s) : ∑ J ∈ (splitMany I s).boxes, f J = f I := by
     induction s using Finset.induction_on with
-    | empty => simp
+    | empty =>
+      simp
     | insert a s _ ihs =>
       rw [splitMany_insert, inf_split, ← ihs, biUnion_boxes, sum_biUnion_boxes]
       refine Finset.sum_congr rfl fun J' hJ' => ?_
@@ -153,21 +160,27 @@ def ofMapSplitAdd [Finite ι] (f : Box ι → M) (I₀ : WithTop (Box ι))
   rw [← hf _ hI, ← inf_of_le_right hs, inf_splitMany, biUnion_boxes, sum_biUnion_boxes]
   exact Finset.sum_congr rfl fun J hJ => (hf _ (Hle _ hJ) _).symm
 
-/-- If `g : M → N` is an additive map and `f` is a box additive map, then `g ∘ f` is a box additive
-map. -/
+/--
+If `g : M → N` is an additive map and `f` is a box additive map, then `g ∘ f` is a box additive
+map.
+-/
 @[simps -fullyApplied]
 def map (f : ι →ᵇᵃ[I₀] M) (g : M →+ N) : ι →ᵇᵃ[I₀] N where
   toFun := g ∘ f
   sum_partition_boxes' I hI π hπ := by simp_rw [comp, ← map_sum, f.sum_partition_boxes hI hπ]
 
-/-- If `f` is a box additive function on subboxes of `I` and `π₁`, `π₂` are two prepartitions of
-`I` that cover the same part of `I`, then `∑ J ∈ π₁.boxes, f J = ∑ J ∈ π₂.boxes, f J`. -/
-theorem sum_boxes_congr [Finite ι] (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) {π₁ π₂ : Prepartition I}
-    (h : π₁.iUnion = π₂.iUnion) : ∑ J ∈ π₁.boxes, f J = ∑ J ∈ π₂.boxes, f J := by
+/--
+If `f` is a box additive function on subboxes of `I` and `π₁`, `π₂` are two prepartitions of
+`I` that cover the same part of `I`, then `∑ J ∈ π₁.boxes, f J = ∑ J ∈ π₂.boxes, f J`.
+-/
+theorem sum_boxes_congr
+    [Finite ι] (f : ι →ᵇᵃ[I₀] M) (hI : ↑I ≤ I₀) {π₁ π₂ : Prepartition I} (h : π₁.iUnion = π₂.iUnion)
+    : ∑ J ∈ π₁.boxes, f J = ∑ J ∈ π₂.boxes, f J := by
   rcases exists_splitMany_inf_eq_filter_of_finite {π₁, π₂} ((finite_singleton _).insert _) with
     ⟨s, hs⟩
   simp only [inf_splitMany] at hs
-  rcases hs _ (Or.inl rfl), hs _ (Or.inr rfl) with ⟨h₁, h₂⟩; clear hs
+  rcases hs _ (Or.inl rfl), hs _ (Or.inr rfl) with ⟨h₁, h₂⟩
+  clear hs
   rw [h] at h₁
   calc
     ∑ J ∈ π₁.boxes, f J = ∑ J ∈ π₁.boxes, ∑ J' ∈ (splitMany J s).boxes, f J' :=
@@ -187,14 +200,18 @@ section AddCommGroup
 variable {M : Type*} [AddCommGroup M]
 
 instance : Neg (ι →ᵇᵃ[I₀] M) where
-  neg f := ⟨-(f : Box ι → M), fun I hI π hπ ↦ by
-    simp only [Pi.neg_apply, Finset.sum_neg_distrib, sum_partition_boxes _ hI hπ]⟩
+  neg f := ⟨
+    -(f : Box ι → M),
+    fun I hI π hπ ↦ by simp only [Pi.neg_apply, Finset.sum_neg_distrib, sum_partition_boxes _ hI hπ]
+  ⟩
 
 instance : IsNegApply (ι →ᵇᵃ[I₀] M) where
 
 instance : Sub (ι →ᵇᵃ[I₀] M) where
-  sub f g := ⟨(f : Box ι → M) - g, fun I hI π hπ ↦ by
-    simp only [Pi.sub_apply, Finset.sum_sub_distrib, sum_partition_boxes _ hI hπ]⟩
+  sub f g := ⟨
+    (f : Box ι → M) - g,
+    fun I hI π hπ ↦ by simp only [Pi.sub_apply, Finset.sum_sub_distrib, sum_partition_boxes _ hI hπ]
+  ⟩
 
 instance : IsSubApply (ι →ᵇᵃ[I₀] M) where
 
@@ -208,28 +225,34 @@ section ToSMul
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- If `f` is a box-additive map, then so is the map sending `I` to the scalar multiplication
-by `f I` as a continuous linear map from `E` to itself. -/
+/--
+If `f` is a box-additive map, then so is the map sending `I` to the scalar multiplication
+by `f I` as a continuous linear map from `E` to itself.
+-/
 def toSMul (f : ι →ᵇᵃ[I₀] ℝ) : ι →ᵇᵃ[I₀] E →L[ℝ] E :=
   f.map (ContinuousLinearMap.lsmul ℝ ℝ).toLinearMap.toAddMonoidHom
 
-@[simp]
-theorem toSMul_apply (f : ι →ᵇᵃ[I₀] ℝ) (I : Box ι) (x : E) : f.toSMul I x = f I • x := rfl
+@[simp] theorem toSMul_apply (f : ι →ᵇᵃ[I₀] ℝ) (I : Box ι) (x : E) : f.toSMul I x = f I • x := rfl
 
 end ToSMul
 
 /-! ### Difference along an axis: `upper − lower` over faces -/
 
-/-- Given a box `I₀` in `ℝⁿ⁺¹`, `f x : Box (Fin n) → G` is a family of functions indexed by a real
+/--
+Given a box `I₀` in `ℝⁿ⁺¹`, `f x : Box (Fin n) → G` is a family of functions indexed by a real
 `x` and for `x ∈ [I₀.lower i, I₀.upper i]`, `f x` is box-additive on subboxes of the `i`-th face of
 `I₀`, then `fun J ↦ f (J.upper i) (J.face i) - f (J.lower i) (J.face i)` is box-additive on subboxes
-of `I₀`. -/
+of `I₀`.
+-/
 @[simps!]
-def upperSubLower.{u} {G : Type u} [AddCommGroup G] (I₀ : Box (Fin (n + 1))) (i : Fin (n + 1))
-    (f : ℝ → Box (Fin n) → G) (fb : Icc (I₀.lower i) (I₀.upper i) → Fin n →ᵇᵃ[I₀.face i] G)
-    (hf : ∀ (x) (hx : x ∈ Icc (I₀.lower i) (I₀.upper i)) (J), f x J = fb ⟨x, hx⟩ J) :
-    Fin (n + 1) →ᵇᵃ[I₀] G :=
-  ofMapSplitAdd (fun J : Box (Fin (n + 1)) => f (J.upper i) (J.face i) - f (J.lower i) (J.face i))
+def upperSubLower.{u}
+    {G : Type u} [AddCommGroup G]
+    (I₀ : Box (Fin (n + 1))) (i : Fin (n + 1)) (f : ℝ → Box (Fin n) → G)
+    (fb : Icc (I₀.lower i) (I₀.upper i) → Fin n →ᵇᵃ[I₀.face i] G)
+    (hf : ∀ (x) (hx : x ∈ Icc (I₀.lower i) (I₀.upper i)) (J), f x J = fb ⟨x, hx⟩ J)
+    : Fin (n + 1) →ᵇᵃ[I₀] G :=
+  ofMapSplitAdd
+    (fun J : Box (Fin (n + 1)) => f (J.upper i) (J.face i) - f (J.lower i) (J.face i))
     I₀
     (by
       intro J hJ j x

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Complex.UpperHalfPlane.ProperAction
 public import Mathlib.NumberTheory.ModularForms.ArithmeticSubgroups
-
 import Mathlib.Topology.Algebra.Group.DiscontinuousSubgroup
 
 /-!
@@ -29,8 +28,8 @@ instance properlyDiscontinuousSL2ZRange : ProperlyDiscontinuousSMul 𝒮ℒ ℍ 
   exact ⟨γ, ⟨by simp [𝒮ℒ'], hγ⟩, rfl⟩
 
 /-- Arithmetic subgroups of `GL(2, ℝ)` act properly discontinuously on `ℍ`. -/
-instance Subgroup.IsArithmetic.properlyDiscontinuous {𝒢 : Subgroup (GL (Fin 2) ℝ)}
-    [IsArithmetic 𝒢] : ProperlyDiscontinuousSMul 𝒢 ℍ := by
+instance Subgroup.IsArithmetic.properlyDiscontinuous {𝒢 : Subgroup (GL (Fin 2) ℝ)} [IsArithmetic 𝒢]
+    : ProperlyDiscontinuousSMul 𝒢 ℍ := by
   rw [is_commensurable.properlyDiscontinuousSMul_iff]
   infer_instance
 

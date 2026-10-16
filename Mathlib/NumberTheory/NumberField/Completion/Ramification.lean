@@ -45,8 +45,8 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L] (v : InfinitePlace K) {
 open Completion
 
 /-- If `w` is a ramified place over `v` then `w.Completion` has `v.Completion` dimension two. -/
-theorem IsRamified.finrank_eq_two [w.LiesOver v] (h : w.IsRamified K) :
-    Module.finrank v.Completion w.Completion = 2 := by
+theorem IsRamified.finrank_eq_two [w.LiesOver v] (h : w.IsRamified K)
+    : Module.finrank v.Completion w.Completion = 2 := by
   have H := NumberField.InfinitePlace.isRamified_iff.mp h
   rw [NumberField.InfinitePlace.LiesOver.comap_eq w v] at H
   have := LiesOver.extensionEmbedding_liesOver_of_isReal w H.2
@@ -55,12 +55,13 @@ theorem IsRamified.finrank_eq_two [w.LiesOver v] (h : w.IsRamified K) :
     Complex.finrank_real_complex]
 
 /-- If `w` is an unramified place over `v` then `w.Completion` has `v.Completion` dimension one. -/
-theorem IsUnramified.finrank_eq_one [w.LiesOver v] (h : w.IsUnramified K) :
-    Module.finrank v.Completion w.Completion = 1 := by
+theorem IsUnramified.finrank_eq_one [w.LiesOver v] (h : w.IsUnramified K)
+    : Module.finrank v.Completion w.Completion = 1 := by
   rcases v.isReal_or_isComplex with (hv | hv)
   · have := LiesOver.extensionEmbedding_liesOver_of_isReal w hv
-    rw [Algebra.finrank_eq_of_equiv_equiv (ringEquivRealOfIsReal hv) (ringEquivRealOfIsReal
-        (h.liesOver_isReal_over _ _ hv)) (RingHom.ext fun _ ↦ Complex.ofReal_inj.1 <| by simp),
+    rw [Algebra.finrank_eq_of_equiv_equiv (ringEquivRealOfIsReal hv)
+        (ringEquivRealOfIsReal (h.liesOver_isReal_over _ _ hv))
+        (RingHom.ext fun _ ↦ Complex.ofReal_inj.1 <| by simp),
       Module.finrank_self]
   · cases LiesOver.embedding_comp_eq_or_conjugate_embedding_comp_eq w v with
     | inl hl =>
@@ -73,8 +74,9 @@ theorem IsUnramified.finrank_eq_one [w.LiesOver v] (h : w.IsUnramified K) :
       have : ComplexEmbedding.LiesOver (conjugate w.embedding) v.embedding := ⟨hr⟩
       have := liesOver_conjugate_extensionEmbedding w v
       rw [Algebra.finrank_eq_of_equiv_equiv (ringEquivComplexOfIsComplex hv)
-        ((ringEquivComplexOfIsComplex (LiesOver.isComplex_of_isComplex_under _ hv)).trans
-          (starRingAut (R := ℂ))) (by ext; simp [← conjugate_coe_eq]),
+          ((ringEquivComplexOfIsComplex (LiesOver.isComplex_of_isComplex_under _ hv)).trans
+            (starRingAut (R := ℂ)))
+          (by ext; simp [← conjugate_coe_eq]),
         Module.finrank_self]
 
 @[deprecated (since := "2026-07-10")] alias Completion.finrank_eq_two_of_isRamified :=
@@ -84,8 +86,8 @@ theorem IsUnramified.finrank_eq_one [w.LiesOver v] (h : w.IsUnramified K) :
   IsUnramified.finrank_eq_one
 
 variable (w) in
-theorem mult_mul_finrank [w.LiesOver v] :
-    v.mult * Module.finrank v.Completion w.Completion = w.mult := by
+theorem mult_mul_finrank [w.LiesOver v]
+    : v.mult * Module.finrank v.Completion w.Completion = w.mult := by
   have hv : v = w.comap (algebraMap K L) := Subtype.ext ‹w.LiesOver v›.under_eq.symm
   rcases w.isUnramified_or_isRamified K with h | h
   · rw [h.finrank_eq_one v, hv, h.eq, mul_one]
@@ -100,12 +102,12 @@ open scoped Classical in
 protected noncomputable def inertiaDeg : ℕ :=
   if _ : w.LiesOver v then (⊥ : Ideal w.Completion).inertiaDeg v.Completion else 0
 
-theorem inertiaDeg_of_liesOver [w.LiesOver v] :
-    v.inertiaDeg w = (⊥ : Ideal w.Completion).inertiaDeg v.Completion := by
+theorem inertiaDeg_of_liesOver [w.LiesOver v]
+    : v.inertiaDeg w = (⊥ : Ideal w.Completion).inertiaDeg v.Completion := by
   simp only [InfinitePlace.inertiaDeg, dite_eq_left]
 
-theorem inertiaDeg_eq_finrank [w.LiesOver v] :
-    v.inertiaDeg w = Module.finrank v.Completion w.Completion := by
+theorem inertiaDeg_eq_finrank [w.LiesOver v]
+    : v.inertiaDeg w = Module.finrank v.Completion w.Completion := by
   rw [inertiaDeg_of_liesOver, Ideal.inertiaDeg_eq_of_isMaximal ⊥]
   exact Algebra.finrank_eq_of_equiv_equiv (RingEquiv.quotientBot v.Completion)
     (RingEquiv.quotientBot w.Completion) (by ext; simp [RingHom.algebraMap_toAlgebra])
@@ -122,8 +124,8 @@ variable (K L) in
 open scoped Classical in
 open Finset Set in
 /-- The degree of `L` over `K` is equal to the sum of the inertia degrees of the places over `v`. -/
-theorem sum_inertiaDeg_eq_finrank [NumberField K] [NumberField L] :
-    ∑ w ∈ v.placesOver L, v.inertiaDeg w = Module.finrank K L := by
+theorem sum_inertiaDeg_eq_finrank [NumberField K] [NumberField L]
+    : ∑ w ∈ v.placesOver L, v.inertiaDeg w = Module.finrank K L := by
   rw [← union_ramifiedPlacesOver_unramifiedPlacesOver L v, toFinset_union,
     sum_union (Set.disjoint_toFinset.2 <| disjoint_ramifiedPlacesOver_unramifiedPlacesOver L v),
     sum_congr rfl (fun _ h ↦ inertiaDeg_eq_two (by simpa using h)),

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Dynamics.Ergodic.Action.OfMinimal
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
-
 import Mathlib.Topology.Instances.AddCircle.DenseSubgroup
 
 /-!

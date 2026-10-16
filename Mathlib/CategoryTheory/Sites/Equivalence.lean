@@ -71,16 +71,16 @@ instance : e.functor.IsDenseSubsite J (e.inverse.inducedTopology J) := by
   nth_rw 1 [this]
   infer_instance
 
-lemma eq_inducedTopology_of_isDenseSubsite [e.inverse.IsDenseSubsite K J] :
-    K = e.inverse.inducedTopology J := by
+lemma eq_inducedTopology_of_isDenseSubsite [e.inverse.IsDenseSubsite K J]
+    : K = e.inverse.inducedTopology J := by
   ext
   rw [mem_inducedTopology_iff_of_isCoverDense]
   exact (e.inverse.functorPushforward_mem_iff K J).symm
 
 set_option backward.defeqAttrib.useBackward true in
 lemma isDenseSubsite_functor_of_isCocontinuous
-    [e.functor.IsCocontinuous J K] [e.inverse.IsCocontinuous K J] :
-    e.functor.IsDenseSubsite J K where
+    [e.functor.IsCocontinuous J K] [e.inverse.IsCocontinuous K J]
+    : e.functor.IsDenseSubsite J K where
   functorPushforward_mem_iff {X S} := by
     constructor
     · intro H
@@ -92,8 +92,8 @@ lemma isDenseSubsite_functor_of_isCocontinuous
       exact fun Y f (H : S _) ↦ ⟨_, _, e.counitInv.app Y, H, by simp⟩
 
 lemma isDenseSubsite_inverse_of_isCocontinuous
-    [e.functor.IsCocontinuous J K] [e.inverse.IsCocontinuous K J] :
-    e.inverse.IsDenseSubsite K J :=
+    [e.functor.IsCocontinuous J K] [e.inverse.IsCocontinuous K J]
+    : e.inverse.IsDenseSubsite K J :=
   have : e.symm.functor.IsCocontinuous K J := inferInstanceAs (e.inverse.IsCocontinuous _ _)
   have : e.symm.inverse.IsCocontinuous J K := inferInstanceAs (e.functor.IsCocontinuous _ _)
   isDenseSubsite_functor_of_isCocontinuous _ _ e.symm
@@ -107,15 +107,13 @@ instance : e.functor.IsDenseSubsite J K := by
 /-- The functor in the equivalence of sheaf categories. -/
 @[simps!]
 def sheafCongr.functor : Sheaf J A ⥤ Sheaf K A :=
-  ObjectProperty.lift _
-    (sheafToPresheaf _ _ ⋙ (Functor.whiskeringLeft _ _ _).obj e.inverse.op)
+  ObjectProperty.lift _ (sheafToPresheaf _ _ ⋙ (Functor.whiskeringLeft _ _ _).obj e.inverse.op)
     (e.inverse.op_comp_isSheaf _ _)
 
 /-- The inverse in the equivalence of sheaf categories. -/
 @[simps!]
 def sheafCongr.inverse : Sheaf K A ⥤ Sheaf J A :=
-  ObjectProperty.lift _
-    (sheafToPresheaf _ _ ⋙ (Functor.whiskeringLeft _ _ _).obj e.functor.op)
+  ObjectProperty.lift _ (sheafToPresheaf _ _ ⋙ (Functor.whiskeringLeft _ _ _).obj e.functor.op)
     (e.functor.op_comp_isSheaf _ _)
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -123,16 +121,14 @@ set_option backward.defeqAttrib.useBackward true in
 /-- The unit iso in the equivalence of sheaf categories. -/
 @[simps!]
 def sheafCongr.unitIso : 𝟭 (Sheaf J A) ≅ functor J K e A ⋙ inverse J K e A :=
-  NatIso.ofComponents
-    (fun F ↦ ObjectProperty.isoMk _ (isoWhiskerRight e.op.unitIso F.obj))
+  NatIso.ofComponents (fun F ↦ ObjectProperty.isoMk _ (isoWhiskerRight e.op.unitIso F.obj))
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The counit iso in the equivalence of sheaf categories. -/
 @[simps!]
 def sheafCongr.counitIso : inverse J K e A ⋙ functor J K e A ≅ 𝟭 (Sheaf _ A) :=
-  NatIso.ofComponents
-    (fun F ↦ ObjectProperty.isoMk _ (isoWhiskerRight e.op.counitIso F.obj))
+  NatIso.ofComponents (fun F ↦ ObjectProperty.isoMk _ (isoWhiskerRight e.op.counitIso F.obj))
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of sheaf categories. -/
@@ -149,23 +145,22 @@ def sheafCongr : Sheaf J A ≌ Sheaf K A where
 variable [HasSheafify K A]
 
 /-- Transport a presheaf to the equivalent category and sheafify there. -/
-noncomputable
-def transportAndSheafify : (Cᵒᵖ ⥤ A) ⥤ Sheaf J A :=
+noncomputable def transportAndSheafify : (Cᵒᵖ ⥤ A) ⥤ Sheaf J A :=
   e.op.congrLeft.functor ⋙ presheafToSheaf _ _ ⋙ (e.sheafCongr J K A).inverse
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An auxiliary definition for the sheafification adjunction. -/
-noncomputable
-def transportIsoSheafToPresheaf : (e.sheafCongr J K A).functor ⋙
-    sheafToPresheaf K A ⋙ e.op.congrLeft.inverse ≅ sheafToPresheaf J A :=
+noncomputable def transportIsoSheafToPresheaf
+    : (e.sheafCongr J K A).functor ⋙ sheafToPresheaf K A ⋙ e.op.congrLeft.inverse
+      ≅ sheafToPresheaf J A :=
   NatIso.ofComponents (fun F ↦ isoWhiskerRight e.op.unitIso.symm F.obj)
 
 /-- Transporting and sheafifying is left adjoint to taking the underlying presheaf. -/
-noncomputable
-def transportSheafificationAdjunction : transportAndSheafify J K e A ⊣ sheafToPresheaf J A :=
+noncomputable def transportSheafificationAdjunction
+    : transportAndSheafify J K e A ⊣ sheafToPresheaf J A :=
   ((e.op.congrLeft.toAdjunction.comp (sheafificationAdjunction _ _)).comp
-    (e.sheafCongr J K A).symm.toAdjunction).ofNatIsoRight
+      (e.sheafCongr J K A).symm.toAdjunction).ofNatIsoRight
     (transportIsoSheafToPresheaf _ _ _ _)
 
 noncomputable instance : PreservesFiniteLimits <| transportAndSheafify J K e A where
@@ -176,8 +171,7 @@ include K e in
 theorem hasSheafify : HasSheafify J A :=
   HasSheafify.mk' J A (transportSheafificationAdjunction J K e A)
 
-variable {A : Type*} [Category* A] {B : Type*} [Category* B] (F : A ⥤ B)
-  [K.HasSheafCompose F]
+variable {A : Type*} [Category* A] {B : Type*} [Category* B] (F : A ⥤ B) [K.HasSheafCompose F]
 
 include K e in
 theorem hasSheafCompose : J.HasSheafCompose F where
@@ -200,16 +194,14 @@ variable [HasSheafify ((equivSmallModel C).inverse.inducedTopology J) A]
 variable [((equivSmallModel C).inverse.inducedTopology J).HasSheafCompose F]
 
 /-- Transport to a small model and sheafify there. -/
-noncomputable
-def smallSheafify : (Cᵒᵖ ⥤ A) ⥤ Sheaf J A := (equivSmallModel C).transportAndSheafify J
-  ((equivSmallModel C).inverse.inducedTopology J) A
+noncomputable def smallSheafify : (Cᵒᵖ ⥤ A) ⥤ Sheaf J A :=
+  (equivSmallModel C).transportAndSheafify J ((equivSmallModel C).inverse.inducedTopology J) A
 
 /--
 Transporting to a small model and sheafifying there is left adjoint to the underlying presheaf
 functor
 -/
-noncomputable
-def smallSheafificationAdjunction : smallSheafify J A ⊣ sheafToPresheaf J A :=
+noncomputable def smallSheafificationAdjunction : smallSheafify J A ⊣ sheafToPresheaf J A :=
   (equivSmallModel C).transportSheafificationAdjunction J _ A
 
 lemma hasSheafifyEssentiallySmallSite : HasSheafify J A :=
@@ -220,14 +212,14 @@ instance hasSheafComposeEssentiallySmallSite : HasSheafCompose J F :=
 
 omit [HasSheafify ((equivSmallModel C).inverse.inducedTopology J) A] in
 lemma hasLimitsEssentiallySmallSite
-    [HasLimits <| Sheaf ((equivSmallModel C).inverse.inducedTopology J) A] :
-    HasLimitsOfSize.{max v₃ w, max v₃ w} <| Sheaf J A :=
+    [HasLimits <| Sheaf ((equivSmallModel C).inverse.inducedTopology J) A]
+    : HasLimitsOfSize.{max v₃ w, max v₃ w} <| Sheaf J A :=
   Adjunction.has_limits_of_equivalence ((equivSmallModel C).sheafCongr J
     ((equivSmallModel C).inverse.inducedTopology J) A).functor
 
 instance hasColimitsEssentiallySmallSite
-    [HasColimits <| Sheaf ((equivSmallModel C).inverse.inducedTopology J) A] :
-    HasColimitsOfSize.{max v₃ w, max v₃ w} <| Sheaf J A :=
+    [HasColimits <| Sheaf ((equivSmallModel C).inverse.inducedTopology J) A]
+    : HasColimitsOfSize.{max v₃ w, max v₃ w} <| Sheaf J A :=
   Adjunction.has_colimits_of_equivalence ((equivSmallModel C).sheafCongr J
     ((equivSmallModel C).inverse.inducedTopology J) A).functor
 
@@ -243,30 +235,36 @@ variable [Functor.IsContinuous G K J] [(G.sheafPushforwardContinuous A K J).EssS
 
 open Localization
 
-lemma W_inverseImage_whiskeringLeft :
-    K.W.inverseImage ((whiskeringLeft Dᵒᵖ Cᵒᵖ A).obj G.op) = J.W := by
+lemma W_inverseImage_whiskeringLeft
+    : K.W.inverseImage ((whiskeringLeft (Dᵒᵖ) (Cᵒᵖ) A).obj G.op) = J.W := by
   ext P Q f
-  have h₁ : K.W (A := A) =
-    ObjectProperty.isLocal (· ∈ Set.range (sheafToPresheaf J A ⋙
-      ((whiskeringLeft Dᵒᵖ Cᵒᵖ A).obj G.op)).obj) := by
+  have h₁
+      : K.W (A := A)
+        = ObjectProperty.isLocal
+          (·
+            ∈ Set.range (sheafToPresheaf J A ⋙ ((whiskeringLeft (Dᵒᵖ) (Cᵒᵖ) A).obj G.op)).obj) := by
     rw [W_eq_isLocal_range_sheafToPresheaf_obj, ← ObjectProperty.isoClosure_isLocal]
     conv_rhs => rw [← ObjectProperty.isoClosure_isLocal]
     apply congr_arg
     ext P
     constructor
     · rintro ⟨_, ⟨R, rfl⟩, ⟨e⟩⟩
-      exact ⟨_, ⟨_, rfl⟩, ⟨e.trans ((sheafToPresheaf _ _).mapIso
-        ((G.sheafPushforwardContinuous A K J).objObjPreimageIso R).symm)⟩⟩
+      exact ⟨
+        _,
+        ⟨_, rfl⟩,
+        ⟨e.trans ((sheafToPresheaf _ _).mapIso
+          ((G.sheafPushforwardContinuous A K J).objObjPreimageIso R).symm)⟩
+      ⟩
     · rintro ⟨_, ⟨R, rfl⟩, ⟨e⟩⟩
       exact ⟨G.op ⋙ R.obj, ⟨(G.sheafPushforwardContinuous A K J).obj R, rfl⟩, ⟨e⟩⟩
-  have h₂ : ∀ (R : Sheaf J A),
-    Function.Bijective (fun (g : G.op ⋙ Q ⟶ G.op ⋙ R.obj) ↦ whiskerLeft G.op f ≫ g) ↔
-      Function.Bijective (fun (g : Q ⟶ R.obj) ↦ f ≫ g) := fun R ↦ by
+  have h₂
+      : ∀ (R : Sheaf J A),
+        Function.Bijective (fun (g : G.op ⋙ Q ⟶ G.op ⋙ R.obj) ↦ whiskerLeft G.op f ≫ g)
+          ↔ Function.Bijective (fun (g : Q ⟶ R.obj) ↦ f ≫ g) := fun R ↦ by
     rw [← Function.Bijective.of_comp_iff _
       (Functor.whiskerLeft_obj_map_bijective_of_isCoverDense J G Q R.obj R.property)]
     exact Function.Bijective.of_comp_iff'
-      (Functor.whiskerLeft_obj_map_bijective_of_isCoverDense J G P R.obj R.property)
-        (fun g ↦ f ≫ g)
+      (Functor.whiskerLeft_obj_map_bijective_of_isCoverDense J G P R.obj R.property) (fun g ↦ f ≫ g)
   rw [h₁, J.W_eq_isLocal_range_sheafToPresheaf_obj, MorphismProperty.inverseImage_iff]
   constructor
   · rintro h _ ⟨R, rfl⟩
@@ -274,24 +272,23 @@ lemma W_inverseImage_whiskeringLeft :
   · rintro h _ ⟨R, rfl⟩
     exact (h₂ R).2 (h _ ⟨R, rfl⟩)
 
-lemma W_whiskerLeft_iff {P Q : Cᵒᵖ ⥤ A} (f : P ⟶ Q) :
-    K.W (whiskerLeft G.op f) ↔ J.W f := by
+lemma W_whiskerLeft_iff {P Q : Cᵒᵖ ⥤ A} (f : P ⟶ Q) : K.W (whiskerLeft G.op f) ↔ J.W f := by
   rw [← W_inverseImage_whiskeringLeft J K G]
   rfl
 
 end
 
 lemma PreservesSheafification.transport
-    [Functor.IsContinuous G K J]
-    [(G.sheafPushforwardContinuous B K J).EssSurj]
-    [(G.sheafPushforwardContinuous A K J).EssSurj]
-    [K.PreservesSheafification F] : J.PreservesSheafification F where
+    [Functor.IsContinuous G K J] [(G.sheafPushforwardContinuous B K J).EssSurj]
+    [(G.sheafPushforwardContinuous A K J).EssSurj] [K.PreservesSheafification F]
+    : J.PreservesSheafification F where
   le P Q f hf := by
     rw [← J.W_whiskerLeft_iff (G := G) (K := K)] at hf
     have := K.W_of_preservesSheafification F (whiskerLeft G.op f) hf
     rw [whiskerRight_left] at this
-    have := K.W.of_postcomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_inv _) <|
-      K.W.of_precomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_hom _) this
+    have :=
+      K.W.of_postcomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_inv _) <|
+        K.W.of_precomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_hom _) this
     rwa [K.W_whiskerLeft_iff (G := G) (J := J) (f := whiskerRight f F)] at this
 
 variable [Functor.IsContinuous G K J] [(G.sheafPushforwardContinuous A K J).EssSurj]
@@ -299,18 +296,19 @@ variable [G.IsCocontinuous K J] {FA : A → A → Type*} {CA : A → Type*}
 variable [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory A FA]
 variable [K.WEqualsLocallyBijective A]
 
-lemma WEqualsLocallyBijective.transport (hG : CoverPreserving K J G) :
-    J.WEqualsLocallyBijective A where
+lemma WEqualsLocallyBijective.transport (hG : CoverPreserving K J G)
+    : J.WEqualsLocallyBijective A where
   iff f := by
     rw [← W_whiskerLeft_iff J K G f, ← Presheaf.isLocallyInjective_whisker_iff K J G f hG,
       ← Presheaf.isLocallySurjective_whisker_iff K J G f hG, W_iff_isLocallyBijective]
 
-variable [EssentiallySmall.{w} C]
+variable
+  [EssentiallySmall.{w} C]
   [∀ (X : Cᵒᵖ), HasLimitsOfShape (StructuredArrow X (equivSmallModel C).inverse.op) A]
 
 lemma WEqualsLocallyBijective.ofEssentiallySmall
-    [((equivSmallModel C).inverse.inducedTopology J).WEqualsLocallyBijective A] :
-    J.WEqualsLocallyBijective A :=
+    [((equivSmallModel C).inverse.inducedTopology J).WEqualsLocallyBijective A]
+    : J.WEqualsLocallyBijective A :=
   WEqualsLocallyBijective.transport J ((equivSmallModel C).inverse.inducedTopology J)
     (equivSmallModel C).inverse (IsDenseSubsite.coverPreserving _ _ _)
 
@@ -318,8 +316,8 @@ variable [∀ (X : Cᵒᵖ), HasLimitsOfShape (StructuredArrow X (equivSmallMode
 variable [PreservesSheafification ((equivSmallModel C).inverse.inducedTopology J) F]
 
 instance : PreservesSheafification J F :=
-  PreservesSheafification.transport (A := A) J
-    ((equivSmallModel C).inverse.inducedTopology J) (equivSmallModel C).inverse B F
+  PreservesSheafification.transport (A := A) J ((equivSmallModel C).inverse.inducedTopology J)
+    (equivSmallModel C).inverse B F
 
 end GrothendieckTopology
 

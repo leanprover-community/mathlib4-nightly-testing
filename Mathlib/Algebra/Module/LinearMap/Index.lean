@@ -6,7 +6,6 @@ Authors: Oliver Nash
 module
 
 public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-
 import Mathlib.Algebra.Exact.Sequence
 
 /-!
@@ -33,60 +32,57 @@ section Ring
 
 variable {R : Type*} [Ring R] [Module R M] [Module R N] (f : M →ₗ[R] N)
 
-/-- The index of a linear map with sign convention `index = dim ker - dim coker`.
+/--
+The index of a linear map with sign convention `index = dim ker - dim coker`.
 
-In the case that either the kernel or cokernel has infinite rank, the value is junk. -/
+In the case that either the kernel or cokernel has infinite rank, the value is junk.
+-/
 public def index : ℤ := finrank R f.ker - finrank R (N ⧸ f.range)
 
 variable {f}
 
-public lemma index_eq_finrank_sub :
-    f.index = finrank R f.ker - finrank R (N ⧸ f.range) := by
-  rfl
+public lemma index_eq_finrank_sub : f.index = finrank R f.ker - finrank R (N ⧸ f.range) := by rfl
 
-@[nontriviality] public lemma index_of_subsingleton [Subsingleton R] :
-    f.index = 0 := by
-  simp [index_eq_finrank_sub]
+@[nontriviality]
+public lemma index_of_subsingleton [Subsingleton R] : f.index = 0 := by simp [index_eq_finrank_sub]
 
-@[simp] public lemma index_zero :
-    (0 : M →ₗ[R] N).index = finrank R M - finrank R N := by
+@[simp]
+public lemma index_zero : (0 : M →ₗ[R] N).index = finrank R M - finrank R N := by
   rw [index_eq_finrank_sub, ker_zero, range_zero]
   simpa using (Submodule.quotEquivOfEqBot _ rfl).finrank_eq
 
-public lemma index_of_injective [Nontrivial R] (hf : Injective f) :
-    f.index = - finrank R (N ⧸ f.range) := by
+public lemma index_of_injective [Nontrivial R] (hf : Injective f)
+    : f.index = - finrank R (N ⧸ f.range) := by
   simpa [index_eq_finrank_sub] using ker_eq_bot.2 hf ▸ finrank_bot _ _
 
-@[simp] public lemma index_subtype [Nontrivial R] {S : Submodule R M} :
-    S.subtype.index = - finrank R (M ⧸ S) := by
+@[simp]
+public lemma index_subtype [Nontrivial R] {S : Submodule R M}
+    : S.subtype.index = - finrank R (M ⧸ S) := by
   rw [index_of_injective S.injective_subtype, S.range_subtype]
 
 variable [StrongRankCondition R]
 
-public lemma index_of_surjective (hf : Surjective f) :
-    f.index = finrank R f.ker := by
+public lemma index_of_surjective (hf : Surjective f) : f.index = finrank R f.ker := by
   rw [index_eq_finrank_sub, range_eq_top.mpr hf]
   simp [finrank_eq_zero_of_subsingleton]
 
-@[simp] public lemma index_mkQ {S : Submodule R M} :
-    S.mkQ.index = finrank R S := by
+@[simp]
+public lemma index_mkQ {S : Submodule R M} : S.mkQ.index = finrank R S := by
   rw [index_of_surjective S.mkQ_surjective, S.ker_mkQ]
 
-@[simp] public lemma index_projectionOnto {S T : Submodule R M} (hST : IsCompl S T) :
-    (S.projectionOnto T hST).index = finrank R T := by
+@[simp]
+public lemma index_projectionOnto {S T : Submodule R M} (hST : IsCompl S T)
+    : (S.projectionOnto T hST).index = finrank R T := by
   rw [index_of_surjective (Submodule.projectionOnto_surjective hST), Submodule.ker_projectionOnto]
 
-public lemma index_of_bijective (hf : Bijective f) :
-    f.index = 0 := by
+public lemma index_of_bijective (hf : Bijective f) : f.index = 0 := by
   nontriviality R
   rw [index_of_surjective hf.surjective, ker_eq_bot.mpr hf.injective, finrank_bot, Nat.cast_zero]
 
-@[simp] public lemma index_id :
-    (id : M →ₗ[R] M).index = 0 :=
-  index_of_bijective bijective_id
+@[simp] public lemma index_id : (id : M →ₗ[R] M).index = 0 := index_of_bijective bijective_id
 
-@[simp] public lemma _root_.LinearEquiv.index_eq_zero {e : M ≃ₗ[R] N} :
-    e.toLinearMap.index = 0 :=
+@[simp]
+public lemma _root_.LinearEquiv.index_eq_zero {e : M ≃ₗ[R] N} : e.toLinearMap.index = 0 :=
   index_of_bijective e.bijective
 
 end Ring
@@ -95,12 +91,12 @@ section DivisionRing
 
 variable {k : Type*} [DivisionRing k] [Module k M] [Module k N] {f : M →ₗ[k] N}
 
-@[simp] public lemma index_neg :
-    (-f).index = f.index := by
+@[simp]
+public lemma index_neg : (-f).index = f.index := by
   rw [index_eq_finrank_sub, index_eq_finrank_sub, ker_neg, range_neg]
 
-public lemma index_eq_of_finiteDimensional [FiniteDimensional k M] [FiniteDimensional k N] :
-    f.index = finrank k M - finrank k N := by
+public lemma index_eq_of_finiteDimensional [FiniteDimensional k M] [FiniteDimensional k N]
+    : f.index = finrank k M - finrank k N := by
   -- `0 → f.ker → M → N → f.coker → 0`
   rw [index_eq_finrank_sub]
   have h₁ := f.range.finrank_quotient_add_finrank
@@ -110,11 +106,12 @@ public lemma index_eq_of_finiteDimensional [FiniteDimensional k M] [FiniteDimens
 
 set_option backward.isDefEq.respectTransparency.types false in
 open Submodule in
-@[simp] public lemma index_comp {P : Type*} [AddCommGroup P] [Module k P]
-    (g : N →ₗ[k] P) (f : M →ₗ[k] N)
-    [FiniteDimensional k f.ker] [FiniteDimensional k g.ker]
-    [FiniteDimensional k (N ⧸ f.range)] [FiniteDimensional k (P ⧸ g.range)] :
-    (g ∘ₗ f).index = g.index + f.index := by
+@[simp]
+public lemma index_comp
+    {P : Type*} [AddCommGroup P] [Module k P]
+    (g : N →ₗ[k] P) (f : M →ₗ[k] N) [FiniteDimensional k f.ker] [FiniteDimensional k g.ker]
+    [FiniteDimensional k (N ⧸ f.range)] [FiniteDimensional k (P ⧸ g.range)]
+    : (g ∘ₗ f).index = g.index + f.index := by
   -- `0 → f.ker → (g ∘ₗ f).ker → g.ker → f.coker → (g ∘ₗ f).coker → g.coker → 0`
   have aux : f.range ≤ comap g (g ∘ₗ f).range := by rw [← map_le_iff_le_comap, range_comp]
   let f₀ : f.ker →ₗ[k] (g ∘ₗ f).ker := inclusion <| ker_le_ker_comp f g
@@ -138,8 +135,7 @@ section Field
 
 variable {k : Type*} [Field k] [Module k M] [Module k N] {f : M →ₗ[k] N}
 
-public lemma index_smul (t : k) (ht : t ≠ 0) :
-    (t • f).index = f.index := by
+public lemma index_smul (t : k) (ht : t ≠ 0) : (t • f).index = f.index := by
   rw [index_eq_finrank_sub, index_eq_finrank_sub, ker_smul _ _ ht, range_smul _ _ ht]
 
 end Field

@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.MvPolynomial.Equiv
 public import Mathlib.RingTheory.Ideal.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Basic
-
 import Mathlib.Tactic.MoveAdd
 
 /-!
@@ -54,8 +53,7 @@ open Finset (antidiagonal mem_antidiagonal)
 
 /-- Formal power series over a coefficient type `R` -/
 @[wikidata Q1003025]
-abbrev PowerSeries (R : Type*) :=
-  MvPowerSeries Unit R
+abbrev PowerSeries (R : Type*) := MvPowerSeries Unit R
 
 namespace PowerSeries
 
@@ -74,20 +72,19 @@ section Semiring
 variable [Semiring R]
 
 /-- The `n`th coefficient of a formal power series. -/
-def coeff (n : ℕ) : R⟦X⟧ →ₗ[R] R :=
-  MvPowerSeries.coeff (single () n)
+def coeff (n : ℕ) : R⟦X⟧ →ₗ[R] R := MvPowerSeries.coeff (single () n)
 
 /-- The `n`th monomial with coefficient `a` as formal power series. -/
-def monomial (n : ℕ) : R →ₗ[R] R⟦X⟧ :=
-  MvPowerSeries.monomial (single () n)
+def monomial (n : ℕ) : R →ₗ[R] R⟦X⟧ := MvPowerSeries.monomial (single () n)
 
-theorem coeff_def {s : Unit →₀ ℕ} {n : ℕ} (h : s () = n) :
-    coeff (R := R) n = MvPowerSeries.coeff s := by
+theorem coeff_def {s : Unit →₀ ℕ} {n : ℕ} (h : s () = n)
+    : coeff (R := R) n = MvPowerSeries.coeff s := by
   rw [coeff, ← h, ← Finsupp.unique_single s]
 
 @[simp]
-lemma coeff_coeToMvPowerSeries {f : R⟦X⟧} (n : ℕ) :
-    MvPowerSeries.coeff (Finsupp.single () n) f = f.coeff n := rfl
+lemma coeff_coeToMvPowerSeries {f : R⟦X⟧} (n : ℕ)
+    : MvPowerSeries.coeff (Finsupp.single () n) f = f.coeff n :=
+  rfl
 
 /-- Two formal power series are equal if all their coefficients are equal. -/
 @[ext]
@@ -112,12 +109,12 @@ instance [Subsingleton R] : Subsingleton R⟦X⟧ := by
 def mk {R} (f : ℕ → R) : R⟦X⟧ := fun s => f (s ())
 
 @[simp]
-theorem coeff_mk (n : ℕ) (f : ℕ → R) : coeff n (mk f) = f n :=
-  congr(f $Finsupp.single_eq_same)
+theorem coeff_mk (n : ℕ) (f : ℕ → R) : coeff n (mk f) = f n := congr(f $Finsupp.single_eq_same)
 
 theorem coeff_monomial (m n : ℕ) (a : R) : coeff m (monomial n a) = if m = n then a else 0 :=
   calc
-    coeff m (monomial n a) = _ := MvPowerSeries.coeff_monomial _ _ _
+    coeff m (monomial n a)
+      = _ := MvPowerSeries.coeff_monomial _ _ _
     _ = if m = n then a else 0 := by simp only [Finsupp.unique_single_eq_iff]
 
 theorem monomial_eq_mk (n : ℕ) (a : R) : monomial n a = mk fun m => if m = n then a else 0 :=
@@ -131,43 +128,35 @@ theorem coeff_monomial_same (n : ℕ) (a : R) : coeff n (monomial n a) = a :=
 theorem coeff_comp_monomial (n : ℕ) : (coeff (R := R) n).comp (monomial n) = LinearMap.id :=
   LinearMap.ext <| coeff_monomial_same n
 
-theorem monomial_mul_monomial (m n : ℕ) (a b : R) :
-    monomial m a * monomial n b = monomial (m + n) (a * b) := by
+theorem monomial_mul_monomial (m n : ℕ) (a b : R)
+    : monomial m a * monomial n b = monomial (m + n) (a * b) := by
   simpa [monomial] using
     MvPowerSeries.monomial_mul_monomial (Finsupp.single () m) (Finsupp.single () n) a b
 
 /-- The constant coefficient of a formal power series. -/
-def constantCoeff : R⟦X⟧ →+* R :=
-  MvPowerSeries.constantCoeff
+def constantCoeff : R⟦X⟧ →+* R := MvPowerSeries.constantCoeff
 
-theorem constantCoeff_eq (f : R⟦X⟧) :
-    constantCoeff f = MvPowerSeries.constantCoeff f := rfl
+theorem constantCoeff_eq (f : R⟦X⟧) : constantCoeff f = MvPowerSeries.constantCoeff f := rfl
 
 /-- The constant formal power series. -/
-def C : R →+* R⟦X⟧ :=
-  MvPowerSeries.C
+def C : R →+* R⟦X⟧ := MvPowerSeries.C
 
 lemma C_apply {r : R} : C r = MvPowerSeries.C r := rfl
 
 @[simp] lemma algebraMap_eq {R : Type*} [CommSemiring R] : algebraMap R R⟦X⟧ = C := rfl
 
 /-- The variable of the formal power series ring. -/
-def X : R⟦X⟧ :=
-  MvPowerSeries.X ()
+def X : R⟦X⟧ := MvPowerSeries.X ()
 
 lemma X_apply : X (R := R) = MvPowerSeries.X () := rfl
 
-theorem commute_X (φ : R⟦X⟧) : Commute φ X :=
-  MvPowerSeries.commute_X _ _
+theorem commute_X (φ : R⟦X⟧) : Commute φ X := MvPowerSeries.commute_X _ _
 
-theorem X_mul {φ : R⟦X⟧} : X * φ = φ * X :=
-  MvPowerSeries.X_mul
+theorem X_mul {φ : R⟦X⟧} : X * φ = φ * X := MvPowerSeries.X_mul
 
-theorem commute_X_pow (φ : R⟦X⟧) (n : ℕ) : Commute φ (X ^ n) :=
-  MvPowerSeries.commute_X_pow _ _ _
+theorem commute_X_pow (φ : R⟦X⟧) (n : ℕ) : Commute φ (X ^ n) := MvPowerSeries.commute_X_pow _ _ _
 
-theorem X_pow_mul {φ : R⟦X⟧} {n : ℕ} : X ^ n * φ = φ * X ^ n :=
-  MvPowerSeries.X_pow_mul
+theorem X_pow_mul {φ : R⟦X⟧} {n : ℕ} : X ^ n * φ = φ * X ^ n := MvPowerSeries.X_pow_mul
 
 @[simp]
 theorem coeff_zero_eq_constantCoeff : ⇑(coeff (R := R) 0) = constantCoeff := by
@@ -188,9 +177,7 @@ theorem monomial_zero_eq_C_apply (a : R) : monomial 0 a = C a := by simp
 theorem coeff_C (n : ℕ) (a : R) : coeff n (C a : R⟦X⟧) = if n = 0 then a else 0 := by
   rw [← monomial_zero_eq_C_apply, coeff_monomial]
 
-@[simp]
-theorem coeff_zero_C (a : R) : coeff 0 (C a) = a := by
-  rw [coeff_C, ite_eq_left rfl]
+@[simp] theorem coeff_zero_C (a : R) : coeff 0 (C a) = a := by rw [coeff_C, ite_eq_left rfl]
 
 theorem coeff_C_of_ne_zero {a : R} {n : ℕ} (h : n ≠ 0) : coeff n (C a) = 0 := by
   rw [coeff_C, ite_eq_right h]
@@ -198,8 +185,7 @@ theorem coeff_C_of_ne_zero {a : R} {n : ℕ} (h : n ≠ 0) : coeff n (C a) = 0 :
 @[deprecated (since := "2026-05-20")] alias coeff_ne_zero_C := coeff_C_of_ne_zero
 
 @[simp]
-theorem coeff_succ_C {a : R} {n : ℕ} : coeff (n + 1) (C a) = 0 :=
-  coeff_C_of_ne_zero n.succ_ne_zero
+theorem coeff_succ_C {a : R} {n : ℕ} : coeff (n + 1) (C a) = 0 := coeff_C_of_ne_zero n.succ_ne_zero
 
 @[grind inj]
 theorem C_injective : Function.Injective (C (R := R)) := MvPowerSeries.C_injective
@@ -209,8 +195,7 @@ protected theorem subsingleton_iff : Subsingleton R⟦X⟧ ↔ Subsingleton R :=
   rw [subsingleton_iff] at h ⊢
   exact fun a b ↦ C_injective (h (C a) (C b))
 
-theorem X_eq : (X : R⟦X⟧) = monomial 1 1 :=
-  rfl
+theorem X_eq : (X : R⟦X⟧) = monomial 1 1 := rfl
 
 theorem coeff_X (n : ℕ) : coeff n (X : R⟦X⟧) = if n = 1 then 1 else 0 := by
   rw [X_eq, coeff_monomial]
@@ -219,32 +204,26 @@ theorem coeff_X (n : ℕ) : coeff n (X : R⟦X⟧) = if n = 1 then 1 else 0 := b
 theorem coeff_zero_X : coeff 0 (X : R⟦X⟧) = 0 := by
   rw [coeff, Finsupp.single_zero, X, MvPowerSeries.coeff_zero_X]
 
-@[simp]
-theorem coeff_one_X : coeff 1 (X : R⟦X⟧) = 1 := by rw [coeff_X, ite_eq_left rfl]
+@[simp] theorem coeff_one_X : coeff 1 (X : R⟦X⟧) = 1 := by rw [coeff_X, ite_eq_left rfl]
 
 @[simp]
 theorem X_ne_zero [Nontrivial R] : (X : R⟦X⟧) ≠ 0 := fun H => by
   simpa only [coeff_one_X, one_ne_zero, map_zero] using congr(coeff 1 $H)
 
-theorem X_pow_eq (n : ℕ) : (X : R⟦X⟧) ^ n = monomial n 1 :=
-  MvPowerSeries.X_pow_eq _ n
+theorem X_pow_eq (n : ℕ) : (X : R⟦X⟧) ^ n = monomial n 1 := MvPowerSeries.X_pow_eq _ n
 
 @[simp, grind =]
 theorem coeff_X_pow (m n : ℕ) : coeff m ((X : R⟦X⟧) ^ n) = if m = n then 1 else 0 := by
   rw [X_pow_eq, coeff_monomial]
 
-theorem coeff_X_pow_self (n : ℕ) : coeff n ((X : R⟦X⟧) ^ n) = 1 := by
-  simp
+theorem coeff_X_pow_self (n : ℕ) : coeff n ((X : R⟦X⟧) ^ n) = 1 := by simp
 
-@[simp]
-theorem coeff_one (n : ℕ) : coeff n (1 : R⟦X⟧) = if n = 0 then 1 else 0 :=
-  coeff_C n 1
+@[simp] theorem coeff_one (n : ℕ) : coeff n (1 : R⟦X⟧) = if n = 0 then 1 else 0 := coeff_C n 1
 
-theorem coeff_zero_one : coeff 0 (1 : R⟦X⟧) = 1 :=
-  coeff_zero_C 1
+theorem coeff_zero_one : coeff 0 (1 : R⟦X⟧) = 1 := coeff_zero_C 1
 
-theorem coeff_mul (n : ℕ) (φ ψ : R⟦X⟧) :
-    coeff n (φ * ψ) = ∑ p ∈ antidiagonal n, coeff p.1 φ * coeff p.2 ψ := by
+theorem coeff_mul (n : ℕ) (φ ψ : R⟦X⟧)
+    : coeff n (φ * ψ) = ∑ p ∈ antidiagonal n, coeff p.1 φ * coeff p.2 ψ := by
   -- `rw` can't see that `PowerSeries = MvPowerSeries Unit`, so use `.trans`
   refine (MvPowerSeries.coeff_mul _ φ ψ).trans ?_
   rw [Finsupp.antidiagonal_single, Finset.sum_map]
@@ -258,34 +237,42 @@ theorem coeff_mul_C (n : ℕ) (φ : R⟦X⟧) (a : R) : coeff n (φ * C a) = coe
 theorem coeff_C_mul (n : ℕ) (φ : R⟦X⟧) (a : R) : coeff n (C a * φ) = a * coeff n φ :=
   MvPowerSeries.coeff_C_mul _ φ a
 
-@[simp] lemma coeff_mul_natCast {φ : R⟦X⟧} {a n : ℕ} :
-    coeff n (φ * (a : R⟦X⟧)) = coeff n φ * a := coeff_mul_C _ _ _
+@[simp]
+lemma coeff_mul_natCast {φ : R⟦X⟧} {a n : ℕ} : coeff n (φ * (a : R⟦X⟧)) = coeff n φ * a :=
+  coeff_mul_C _ _ _
 
-@[simp] lemma coeff_natCast_mul {φ : R⟦X⟧} {a n : ℕ} :
-    coeff n ((a : R⟦X⟧) * φ) = a * coeff n φ := coeff_C_mul _ _ _
+@[simp]
+lemma coeff_natCast_mul {φ : R⟦X⟧} {a n : ℕ} : coeff n ((a : R⟦X⟧) * φ) = a * coeff n φ :=
+  coeff_C_mul _ _ _
 
-@[simp] lemma coeff_mul_ofNat {φ : R⟦X⟧} {a n : ℕ} [Nat.AtLeastTwo a] :
-    coeff n (φ * ofNat(a)) = coeff n φ * ofNat(a) := coeff_mul_C _ _ _
+@[simp]
+lemma coeff_mul_ofNat {φ : R⟦X⟧} {a n : ℕ} [Nat.AtLeastTwo a]
+    : coeff n (φ * ofNat(a)) = coeff n φ * ofNat(a) :=
+  coeff_mul_C _ _ _
 
-@[simp] lemma coeff_ofNat_mul {φ : R⟦X⟧} {a n : ℕ} [Nat.AtLeastTwo a] :
-    coeff n (ofNat(a) * φ) = ofNat(a) * coeff n φ := coeff_C_mul _ _ _
+@[simp]
+lemma coeff_ofNat_mul {φ : R⟦X⟧} {a n : ℕ} [Nat.AtLeastTwo a]
+    : coeff n (ofNat(a) * φ) = ofNat(a) * coeff n φ :=
+  coeff_C_mul _ _ _
 
-@[simp] lemma coeff_mul_intCast {R : Type*} [Ring R] {φ : R⟦X⟧} {a : ℤ} {n : ℕ} :
-    coeff n (φ * (a : R⟦X⟧)) = coeff n φ * a := by
+@[simp]
+lemma coeff_mul_intCast {R : Type*} [Ring R] {φ : R⟦X⟧} {a : ℤ} {n : ℕ}
+    : coeff n (φ * (a : R⟦X⟧)) = coeff n φ * a := by
   simpa using coeff_mul_C n φ a
 
-@[simp] lemma coeff_intCast_mul {R : Type*} [Ring R] {φ : R⟦X⟧} {a : ℤ} {n : ℕ} :
-    coeff n ((a : R⟦X⟧) * φ) = a * coeff n φ := by
+@[simp]
+lemma coeff_intCast_mul {R : Type*} [Ring R] {φ : R⟦X⟧} {a : ℤ} {n : ℕ}
+    : coeff n ((a : R⟦X⟧) * φ) = a * coeff n φ := by
   simpa using coeff_C_mul n φ a
 
 @[simp]
-theorem coeff_smul {S : Type*} [Semiring S] [Module R S] (n : ℕ) (φ : PowerSeries S) (a : R) :
-    coeff n (a • φ) = a • coeff n φ :=
+theorem coeff_smul {S : Type*} [Semiring S] [Module R S] (n : ℕ) (φ : PowerSeries S) (a : R)
+    : coeff n (a • φ) = a • coeff n φ :=
   rfl
 
 @[simp]
-theorem constantCoeff_smul {S : Type*} [Semiring S] [Module R S] (φ : PowerSeries S) (a : R) :
-    constantCoeff (a • φ) = a • constantCoeff φ :=
+theorem constantCoeff_smul {S : Type*} [Semiring S] [Module R S] (φ : PowerSeries S) (a : R)
+    : constantCoeff (a • φ) = a • constantCoeff φ :=
   rfl
 
 theorem smul_eq_C_mul (f : R⟦X⟧) (a : R) : a • f = C a * f := by
@@ -309,64 +296,48 @@ theorem mul_X_cancel {φ ψ : R⟦X⟧} (h : φ * X = ψ * X) : φ = ψ := by
   intro n
   simpa using h (n + 1)
 
-theorem mul_X_injective : Function.Injective (· * X : R⟦X⟧ → R⟦X⟧) :=
-  fun _ _ ↦ mul_X_cancel
+theorem mul_X_injective : Function.Injective (· * X : R⟦X⟧ → R⟦X⟧) := fun _ _ ↦ mul_X_cancel
 
-theorem mul_X_inj {φ ψ : R⟦X⟧} : φ * X = ψ * X ↔ φ = ψ :=
-  mul_X_injective.eq_iff
+theorem mul_X_inj {φ ψ : R⟦X⟧} : φ * X = ψ * X ↔ φ = ψ := mul_X_injective.eq_iff
 
 theorem X_mul_cancel {φ ψ : R⟦X⟧} (h : X * φ = X * ψ) : φ = ψ := by
   rw [PowerSeries.ext_iff] at h ⊢
   intro n
   simpa using h (n + 1)
 
-theorem X_mul_injective : Function.Injective (X * · : R⟦X⟧ → R⟦X⟧) :=
-  fun _ _ ↦ X_mul_cancel
+theorem X_mul_injective : Function.Injective (X * · : R⟦X⟧ → R⟦X⟧) := fun _ _ ↦ X_mul_cancel
 
-theorem X_mul_inj {φ ψ : R⟦X⟧} : X * φ = X * ψ ↔ φ = ψ :=
-  X_mul_injective.eq_iff
+theorem X_mul_inj {φ ψ : R⟦X⟧} : X * φ = X * ψ ↔ φ = ψ := X_mul_injective.eq_iff
 
-@[simp]
-theorem constantCoeff_C (a : R) : constantCoeff (C a) = a :=
-  rfl
+@[simp] theorem constantCoeff_C (a : R) : constantCoeff (C a) = a := rfl
 
-@[simp]
-theorem constantCoeff_comp_C : constantCoeff.comp C = RingHom.id R :=
-  rfl
+@[simp] theorem constantCoeff_comp_C : constantCoeff.comp C = RingHom.id R := rfl
 
-@[simp]
-theorem constantCoeff_zero : constantCoeff (R := R) 0 = 0 :=
-  rfl
+@[simp] theorem constantCoeff_zero : constantCoeff (R := R) 0 = 0 := rfl
 
-@[simp]
-theorem constantCoeff_one : constantCoeff (R := R) 1 = 1 :=
-  rfl
+@[simp] theorem constantCoeff_one : constantCoeff (R := R) 1 = 1 := rfl
 
-@[simp]
-theorem constantCoeff_X : constantCoeff (R := R) X = 0 :=
-  MvPowerSeries.coeff_zero_X _
+@[simp] theorem constantCoeff_X : constantCoeff (R := R) X = 0 := MvPowerSeries.coeff_zero_X _
 
-@[simp]
-theorem constantCoeff_mk {f : ℕ → R} : constantCoeff (mk f) = f 0 := rfl
+@[simp] theorem constantCoeff_mk {f : ℕ → R} : constantCoeff (mk f) = f 0 := rfl
 
 theorem coeff_zero_mul_X (φ : R⟦X⟧) : coeff 0 (φ * X) = 0 := by simp
 
 theorem coeff_zero_X_mul (φ : R⟦X⟧) : coeff 0 (X * φ) = 0 := by simp
 
-theorem constantCoeff_surj : Function.Surjective (constantCoeff (R := R)) :=
-  fun r => ⟨C r, constantCoeff_C r⟩
+theorem constantCoeff_surj : Function.Surjective (constantCoeff (R := R)) := fun r =>
+  ⟨C r, constantCoeff_C r⟩
 
 -- The following section duplicates the API of `Mathlib.Data.Polynomial.Coeff` and should attempt
 -- to keep up to date with that
 section
 
-theorem coeff_C_mul_X_pow (x : R) (k n : ℕ) :
-    coeff n (C x * X ^ k : R⟦X⟧) = if n = k then x else 0 := by
+theorem coeff_C_mul_X_pow (x : R) (k n : ℕ)
+    : coeff n (C x * X ^ k : R⟦X⟧) = if n = k then x else 0 := by
   simp [X_pow_eq, coeff_monomial]
 
 @[simp]
-theorem coeff_mul_X_pow (p : R⟦X⟧) (n d : ℕ) :
-    coeff (d + n) (p * X ^ n) = coeff d p := by
+theorem coeff_mul_X_pow (p : R⟦X⟧) (n d : ℕ) : coeff (d + n) (p * X ^ n) = coeff d p := by
   rw [coeff_mul, Finset.sum_eq_single (d, n), coeff_X_pow, ite_eq_left rfl, mul_one]
   · rintro ⟨i, j⟩ h1 h2
     rw [coeff_X_pow, ite_eq_right, mul_zero]
@@ -378,8 +349,7 @@ theorem coeff_mul_X_pow (p : R⟦X⟧) (n d : ℕ) :
   · exact fun h1 => (h1 (mem_antidiagonal.2 rfl)).elim
 
 @[simp]
-theorem coeff_X_pow_mul (p : R⟦X⟧) (n d : ℕ) :
-    coeff (d + n) (X ^ n * p) = coeff d p := by
+theorem coeff_X_pow_mul (p : R⟦X⟧) (n d : ℕ) : coeff (d + n) (X ^ n * p) = coeff d p := by
   rw [coeff_mul, Finset.sum_eq_single (n, d), coeff_X_pow, ite_eq_left rfl, one_mul]
   · rintro ⟨i, j⟩ h1 h2
     rw [coeff_X_pow, ite_eq_right, zero_mul]
@@ -391,42 +361,38 @@ theorem coeff_X_pow_mul (p : R⟦X⟧) (n d : ℕ) :
   · rw [add_comm]
     exact fun h1 => (h1 (mem_antidiagonal.2 rfl)).elim
 
-theorem mul_X_pow_cancel {k : ℕ} {φ ψ : R⟦X⟧} (h : φ * X ^ k = ψ * X ^ k) :
-    φ = ψ := by
+theorem mul_X_pow_cancel {k : ℕ} {φ ψ : R⟦X⟧} (h : φ * X ^ k = ψ * X ^ k) : φ = ψ := by
   rw [PowerSeries.ext_iff] at h ⊢
   intro n
   simpa using h (n + k)
 
-theorem mul_X_pow_injective {k : ℕ} : Function.Injective (· * X ^ k : R⟦X⟧ → R⟦X⟧) :=
-  fun _ _ ↦ mul_X_pow_cancel
+theorem mul_X_pow_injective {k : ℕ} : Function.Injective (· * X ^ k : R⟦X⟧ → R⟦X⟧) := fun _ _ ↦
+  mul_X_pow_cancel
 
-theorem mul_X_pow_inj {k : ℕ} {φ ψ : R⟦X⟧} :
-    φ * X ^ k = ψ * X ^ k ↔ φ = ψ :=
+theorem mul_X_pow_inj {k : ℕ} {φ ψ : R⟦X⟧} : φ * X ^ k = ψ * X ^ k ↔ φ = ψ :=
   mul_X_pow_injective.eq_iff
 
-theorem X_pow_mul_cancel {k : ℕ} {φ ψ : R⟦X⟧} (h : X ^ k * φ = X ^ k * ψ) :
-    φ = ψ := by
+theorem X_pow_mul_cancel {k : ℕ} {φ ψ : R⟦X⟧} (h : X ^ k * φ = X ^ k * ψ) : φ = ψ := by
   rw [PowerSeries.ext_iff] at h ⊢
   intro n
   simpa using h (n + k)
 
-theorem X_pow_mul_injective {k : ℕ} : Function.Injective (X ^ k * · : R⟦X⟧ → R⟦X⟧) :=
-  fun _ _ ↦ X_pow_mul_cancel
+theorem X_pow_mul_injective {k : ℕ} : Function.Injective (X ^ k * · : R⟦X⟧ → R⟦X⟧) := fun _ _ ↦
+  X_pow_mul_cancel
 
-theorem X_pow_mul_inj {k : ℕ} {φ ψ : R⟦X⟧} :
-    X ^ k * φ = X ^ k * ψ ↔ φ = ψ :=
+theorem X_pow_mul_inj {k : ℕ} {φ ψ : R⟦X⟧} : X ^ k * φ = X ^ k * ψ ↔ φ = ψ :=
   X_pow_mul_injective.eq_iff
 
-theorem coeff_mul_X_pow' (p : R⟦X⟧) (n d : ℕ) :
-    coeff d (p * X ^ n) = ite (n ≤ d) (coeff (d - n) p) 0 := by
+theorem coeff_mul_X_pow' (p : R⟦X⟧) (n d : ℕ)
+    : coeff d (p * X ^ n) = ite (n ≤ d) (coeff (d - n) p) 0 := by
   split_ifs with h
   · rw [← tsub_add_cancel_of_le h, coeff_mul_X_pow, add_tsub_cancel_right]
   · refine (coeff_mul _ _ _).trans (Finset.sum_eq_zero fun x hx => ?_)
     rw [coeff_X_pow, ite_eq_right, mul_zero]
     exact ((le_of_add_le_right (mem_antidiagonal.mp hx).le).trans_lt <| not_le.mp h).ne
 
-theorem coeff_X_pow_mul' (p : R⟦X⟧) (n d : ℕ) :
-    coeff d (X ^ n * p) = ite (n ≤ d) (coeff (d - n) p) 0 := by
+theorem coeff_X_pow_mul' (p : R⟦X⟧) (n d : ℕ)
+    : coeff d (X ^ n * p) = ite (n ≤ d) (coeff (d - n) p) 0 := by
   split_ifs with h
   · rw [← tsub_add_cancel_of_le h, coeff_X_pow_mul]
     simp
@@ -443,20 +409,18 @@ theorem isUnit_constantCoeff (φ : R⟦X⟧) (h : IsUnit φ) : IsUnit (constantC
   MvPowerSeries.isUnit_constantCoeff φ h
 
 /-- Split off the constant coefficient. -/
-theorem eq_shift_mul_X_add_const (φ : R⟦X⟧) :
-    φ = (mk fun p => coeff (p + 1) φ) * X + C (constantCoeff φ) := by
+theorem eq_shift_mul_X_add_const (φ : R⟦X⟧)
+    : φ = (mk fun p => coeff (p + 1) φ) * X + C (constantCoeff φ) := by
   ext (_ | n)
   · simp
-  · simp only [coeff_succ_mul_X, coeff_mk, map_add, coeff_C, n.succ_ne_zero,
-      ite_false, add_zero]
+  · simp only [coeff_succ_mul_X, coeff_mk, map_add, coeff_C, n.succ_ne_zero, ite_false, add_zero]
 
 /-- Split off the constant coefficient. -/
-theorem eq_X_mul_shift_add_const (φ : R⟦X⟧) :
-    φ = (X * mk fun p => coeff (p + 1) φ) + C (constantCoeff φ) := by
+theorem eq_X_mul_shift_add_const (φ : R⟦X⟧)
+    : φ = (X * mk fun p => coeff (p + 1) φ) + C (constantCoeff φ) := by
   ext (_ | n)
   · simp
-  · simp only [coeff_succ_X_mul, coeff_mk, map_add, coeff_C, n.succ_ne_zero,
-      ite_false, add_zero]
+  · simp only [coeff_succ_X_mul, coeff_mk, map_add, coeff_C, n.succ_ne_zero, ite_false, add_zero]
 
 section Map
 
@@ -464,19 +428,13 @@ variable {S : Type*} {T : Type*} [Semiring S] [Semiring T]
 variable (f : R →+* S) (g : S →+* T)
 
 /-- The map between formal power series induced by a map on the coefficients. -/
-def map : R⟦X⟧ →+* S⟦X⟧ :=
-  MvPowerSeries.map f
+def map : R⟦X⟧ →+* S⟦X⟧ := MvPowerSeries.map f
 
-@[simp]
-theorem map_id : (map (RingHom.id R) : R⟦X⟧ → R⟦X⟧) = id :=
-  rfl
+@[simp] theorem map_id : (map (RingHom.id R) : R⟦X⟧ → R⟦X⟧) = id := rfl
 
-theorem map_comp : map (g.comp f) = (map g).comp (map f) :=
-  rfl
+theorem map_comp : map (g.comp f) = (map g).comp (map f) := rfl
 
-@[simp]
-theorem coeff_map (n : ℕ) (φ : R⟦X⟧) : coeff n (map f φ) = f (coeff n φ) :=
-  rfl
+@[simp] theorem coeff_map (n : ℕ) (φ : R⟦X⟧) : coeff n (map f φ) = f (coeff n φ) := rfl
 
 @[simp]
 theorem map_C (r : R) : map f (C r) = C (f r) := by
@@ -488,16 +446,16 @@ theorem map_X : map f X = X := by
   ext
   simp [coeff_X, apply_ite f]
 
-theorem map_surjective (f : S →+* T) (hf : Function.Surjective f) :
-    Function.Surjective (PowerSeries.map f) := by
+theorem map_surjective (f : S →+* T) (hf : Function.Surjective f)
+    : Function.Surjective (PowerSeries.map f) := by
   intro g
   use PowerSeries.mk fun k ↦ Function.surjInv hf (PowerSeries.coeff k g)
   ext k
   simp only [Function.surjInv, coeff_map, coeff_mk]
   exact Classical.choose_spec (hf (coeff k g))
 
-theorem map_injective (f : S →+* T) (hf : Function.Injective ⇑f) :
-    Function.Injective (PowerSeries.map f) := by
+theorem map_injective (f : S →+* T) (hf : Function.Injective ⇑f)
+    : Function.Injective (PowerSeries.map f) := by
   intro u v huv
   ext k
   apply hf
@@ -506,12 +464,12 @@ theorem map_injective (f : S →+* T) (hf : Function.Injective ⇑f) :
 end Map
 
 @[simp]
-theorem map_eq_zero {R S : Type*} [DivisionSemiring R] [Semiring S] [Nontrivial S] (φ : R⟦X⟧)
-    (f : R →+* S) : φ.map f = 0 ↔ φ = 0 :=
+theorem map_eq_zero
+    {R S : Type*} [DivisionSemiring R] [Semiring S] [Nontrivial S] (φ : R⟦X⟧) (f : R →+* S)
+    : φ.map f = 0 ↔ φ = 0 :=
   MvPowerSeries.map_eq_zero _ _
 
-theorem X_pow_dvd_iff {n : ℕ} {φ : R⟦X⟧} :
-    (X : R⟦X⟧) ^ n ∣ φ ↔ ∀ m, m < n → coeff m φ = 0 := by
+theorem X_pow_dvd_iff {n : ℕ} {φ : R⟦X⟧} : (X : R⟦X⟧) ^ n ∣ φ ↔ ∀ m, m < n → coeff m φ = 0 := by
   convert! @MvPowerSeries.X_pow_dvd_iff Unit R _ () n φ
   constructor <;> intro h m hm
   · rw [Finsupp.unique_single m]
@@ -532,9 +490,11 @@ section toSubring
 
 variable [Ring R] (p : PowerSeries R) (T : Subring R) (hp : ∀ n, p.coeff n ∈ T)
 
-/-- Given a formal power series `p` and a subring `T` that contains the
+/--
+Given a formal power series `p` and a subring `T` that contains the
 coefficients of `p`, return the corresponding formal power series
-whose coefficients are in `T`. -/
+whose coefficients are in `T`.
+-/
 def toSubring : PowerSeries T := mk fun n => ⟨p.coeff n, hp n⟩
 
 @[simp]
@@ -545,8 +505,7 @@ theorem coeff_toSubring {n : ℕ} : (p.toSubring T hp).coeff n = p.coeff n := by
 theorem constantCoeff_toSubring : (p.toSubring T hp).constantCoeff = p.constantCoeff :=
   coeff_zero_eq_constantCoeff_apply p
 
-@[simp]
-theorem map_toSubring : (p.toSubring T hp).map T.subtype = p := ext fun n => by simp
+@[simp] theorem map_toSubring : (p.toSubring T hp).map T.subtype = p := ext fun n => by simp
 
 end toSubring
 
@@ -581,15 +540,13 @@ noncomputable def rescale (a : R) : R⟦X⟧ →+* R⟦X⟧ where
     rw [← H, pow_add, mul_mul_mul_comm]
 
 @[simp]
-theorem coeff_rescale (f : R⟦X⟧) (a : R) (n : ℕ) :
-    coeff n (rescale a f) = a ^ n * coeff n f :=
+theorem coeff_rescale (f : R⟦X⟧) (a : R) (n : ℕ) : coeff n (rescale a f) = a ^ n * coeff n f :=
   coeff_mk n (fun n ↦ a ^ n * coeff n f)
 
 @[simp]
 theorem rescale_zero : rescale 0 = (C (R := R)).comp constantCoeff := by
   ext x n
-  simp only [Function.comp_apply, RingHom.coe_comp, rescale, RingHom.coe_mk,
-    coeff_C]
+  simp only [Function.comp_apply, RingHom.coe_comp, rescale, RingHom.coe_mk, coeff_C]
   split_ifs with h <;> simp [h]
 
 theorem rescale_zero_apply (f : R⟦X⟧) : rescale 0 f = C (constantCoeff f) := by simp
@@ -603,8 +560,7 @@ theorem rescale_mk (f : ℕ → R) (a : R) : rescale a (mk f) = mk fun n : ℕ =
   ext
   rw [coeff_rescale, coeff_mk, coeff_mk]
 
-theorem rescale_rescale (f : R⟦X⟧) (a b : R) :
-    rescale b (rescale a f) = rescale (a * b) f := by
+theorem rescale_rescale (f : R⟦X⟧) (a b : R) : rescale b (rescale a f) = rescale (a * b) f := by
   ext n
   simp_rw [coeff_rescale]
   rw [mul_pow, mul_comm _ (b ^ n), mul_assoc]
@@ -613,14 +569,15 @@ theorem rescale_mul (a b : R) : rescale (a * b) = (rescale b).comp (rescale a) :
   ext
   simp [← rescale_rescale]
 
-theorem rescale_map {S : Type*} [CommSemiring S] (φ : R →+* S) (r : R) (f : R⟦X⟧) :
-    rescale (φ r) (f.map φ) = (rescale r f).map (φ : R →+* S) := by
+theorem rescale_map {S : Type*} [CommSemiring S] (φ : R →+* S) (r : R) (f : R⟦X⟧)
+    : rescale (φ r) (f.map φ) = (rescale r f).map (φ : R →+* S) := by
   ext n
   simp [coeff_rescale, coeff_map, map_mul, map_pow]
 
-theorem rescale_algebraMap_map {A S : Type*} [CommSemiring A] [Algebra A R] [CommSemiring S]
-    [Algebra A S] (φ : R →ₐ[A] S) (a : A) (f : R⟦X⟧) :
-    rescale (algebraMap A S a) (f.map φ) = (rescale (algebraMap A R a) f).map φ := by
+theorem rescale_algebraMap_map
+    {A S : Type*} [CommSemiring A] [Algebra A R] [CommSemiring S] [Algebra A S]
+    (φ : R →ₐ[A] S) (a : A) (f : R⟦X⟧)
+    : rescale (algebraMap A S a) (f.map φ) = (rescale (algebraMap A R a) f).map φ := by
   convert rescale_map (φ : R →+* S) _ _
   simp
 
@@ -633,15 +590,15 @@ open Finset.HasAntidiagonal Finset
 variable {R : Type*} [CommSemiring R] {ι : Type*}
 
 /-- Coefficients of a product of power series -/
-theorem coeff_prod [DecidableEq ι] (f : ι → PowerSeries R) (d : ℕ) (s : Finset ι) :
-    coeff d (∏ j ∈ s, f j) = ∑ l ∈ finsuppAntidiag s d, ∏ i ∈ s, coeff (l i) (f i) := by
+theorem coeff_prod [DecidableEq ι] (f : ι → PowerSeries R) (d : ℕ) (s : Finset ι)
+    : coeff d (∏ j ∈ s, f j) = ∑ l ∈ finsuppAntidiag s d, ∏ i ∈ s, coeff (l i) (f i) := by
   simp only [coeff]
   rw [MvPowerSeries.coeff_prod, ← Finsupp.uniqueAddEquiv_symm_apply _ d,
     ← mapRange_finsuppAntidiag_eq, sum_map]
   rfl
 
-theorem prod_monomial (f : ι → ℕ) (g : ι → R) (s : Finset ι) :
-    ∏ i ∈ s, monomial (f i) (g i) = monomial (∑ i ∈ s, f i) (∏ i ∈ s, g i) := by
+theorem prod_monomial (f : ι → ℕ) (g : ι → R) (s : Finset ι)
+    : ∏ i ∈ s, monomial (f i) (g i) = monomial (∑ i ∈ s, f i) (∏ i ∈ s, g i) := by
   simpa [monomial, Finsupp.single_finsetSum] using
     MvPowerSeries.prod_monomial (fun i ↦ Finsupp.single () (f i)) g s
 
@@ -649,8 +606,8 @@ theorem monomial_pow (m : ℕ) (a : R) (n : ℕ) : (monomial m a) ^ n = monomial
   simpa [monomial] using MvPowerSeries.monomial_pow (Finsupp.single () m) a n
 
 /-- The `n`-th coefficient of the `k`-th power of a power series. -/
-lemma coeff_pow (k n : ℕ) (φ : R⟦X⟧) :
-    coeff n (φ ^ k) = ∑ l ∈ finsuppAntidiag (range k) n, ∏ i ∈ range k, coeff (l i) φ := by
+lemma coeff_pow (k n : ℕ) (φ : R⟦X⟧)
+    : coeff n (φ ^ k) = ∑ l ∈ finsuppAntidiag (range k) n, ∏ i ∈ range k, coeff (l i) φ := by
   have h₁ (i : ℕ) : Function.const ℕ φ i = φ := rfl
   have h₂ (i : ℕ) : ∏ j ∈ range i, Function.const ℕ φ j = φ ^ i := by
     apply prod_range_induction (fun _ => φ) (fun i => φ ^ i) rfl i (fun _ => congrFun rfl)
@@ -658,42 +615,44 @@ lemma coeff_pow (k n : ℕ) (φ : R⟦X⟧) :
   apply coeff_prod (f := Function.const ℕ φ) (d := n) (s := range k)
 
 /-- First coefficient of the product of two power series. -/
-lemma coeff_one_mul (φ ψ : R⟦X⟧) : coeff 1 (φ * ψ) =
-    coeff 1 φ * constantCoeff ψ + coeff 1 ψ * constantCoeff φ := by
+lemma coeff_one_mul (φ ψ : R⟦X⟧)
+    : coeff 1 (φ * ψ) = coeff 1 φ * constantCoeff ψ + coeff 1 ψ * constantCoeff φ := by
   have : Finset.antidiagonal 1 = {(0, 1), (1, 0)} := by exact rfl
   rw [coeff_mul, this, Finset.sum_insert, Finset.sum_singleton, coeff_zero_eq_constantCoeff,
     mul_comm, add_comm]
   simp
 
 /-- First coefficient of the `n`-th power of a power series. -/
-lemma coeff_one_pow (n : ℕ) (φ : R⟦X⟧) :
-    coeff 1 (φ ^ n) = n * coeff 1 φ * (constantCoeff φ) ^ (n - 1) := by
+lemma coeff_one_pow (n : ℕ) (φ : R⟦X⟧)
+    : coeff 1 (φ ^ n) = n * coeff 1 φ * (constantCoeff φ) ^ (n - 1) := by
   rcases Nat.eq_zero_or_pos n with (rfl | hn)
   · simp
   induction n with
-  | zero => lia
+  | zero =>
+    lia
   | succ n' ih =>
-      have h₁ (m : ℕ) : φ ^ (m + 1) = φ ^ m * φ := by exact rfl
-      have h₂ : Finset.antidiagonal 1 = {(0, 1), (1, 0)} := by exact rfl
-      rw [h₁, coeff_mul, h₂, Finset.sum_insert, Finset.sum_singleton]
-      · simp only [coeff_zero_eq_constantCoeff, map_pow, Nat.cast_add, Nat.cast_one,
-          add_tsub_cancel_right]
-        have h₀ : n' = 0 ∨ 1 ≤ n' := by lia
-        rcases h₀ with h' | h'
-        · by_contra h''
-          rw [h'] at h''
-          simp only [pow_zero, one_mul, coeff_one, one_ne_zero, ↓reduceIte, zero_mul, add_zero,
-            mul_one] at h''
-          simp at h''
-        · rw [ih]
-          · conv => lhs; arg 2; rw [mul_comm, ← mul_assoc]
-            move_mul [← constantCoeff φ ^ (n' - 1)]
-            conv => enter [1, 2, 1, 1, 2]; rw [← pow_one (a := constantCoeff φ)]
-            rw [← pow_add (a := constantCoeff φ)]
-            conv => enter [1, 2, 1, 1]; rw [Nat.sub_add_cancel h']
-            ring
-          exact h'
-      · decide
+    have h₁ (m : ℕ) : φ ^ (m + 1) = φ ^ m * φ := by exact rfl
+    have h₂ : Finset.antidiagonal 1 = {(0, 1), (1, 0)} := by exact rfl
+    rw [h₁, coeff_mul, h₂, Finset.sum_insert, Finset.sum_singleton]
+    · simp only [coeff_zero_eq_constantCoeff, map_pow, Nat.cast_add, Nat.cast_one,
+        add_tsub_cancel_right]
+      have h₀ : n' = 0 ∨ 1 ≤ n' := by lia
+      rcases h₀ with h' | h'
+      · by_contra h''
+        rw [h'] at h''
+        simp only [pow_zero, one_mul, coeff_one, one_ne_zero, ↓ reduceIte, zero_mul, add_zero,
+            mul_one]
+          at h''
+        simp at h''
+      · rw [ih]
+        · conv => lhs; arg 2; rw [mul_comm, ← mul_assoc]
+          move_mul [← constantCoeff φ ^ (n' - 1)]
+          conv => enter [1, 2, 1, 1, 2]; rw [← pow_one (a := constantCoeff φ)]
+          rw [← pow_add (a := constantCoeff φ)]
+          conv => enter [1, 2, 1, 1]; rw [Nat.sub_add_cancel h']
+          ring
+        exact h'
+    · decide
 
 end CommSemiring
 
@@ -701,7 +660,7 @@ section CommRing
 
 variable {A : Type*} [CommRing A]
 
-theorem not_isField : ¬IsField A⟦X⟧ := by
+theorem not_isField : ¬ IsField A⟦X⟧ := by
   by_cases hA : Subsingleton A
   · exact not_isField_of_subsingleton _
   · nontriviality A
@@ -710,8 +669,8 @@ theorem not_isField : ¬IsField A⟦X⟧ := by
     constructor
     · rw [bot_lt_iff_ne_bot, Ne, Ideal.span_singleton_eq_bot]
       exact X_ne_zero
-    · rw [lt_top_iff_ne_top, Ne, Ideal.eq_top_iff_one, Ideal.mem_span_singleton,
-        X_dvd_iff, constantCoeff_one]
+    · rw [lt_top_iff_ne_top, Ne, Ideal.eq_top_iff_one, Ideal.mem_span_singleton, X_dvd_iff,
+        constantCoeff_one]
       exact one_ne_zero
 
 @[simp]
@@ -724,12 +683,9 @@ theorem rescale_neg_one_X : rescale (-1 : A) X = -X := by
   rw [rescale_X, map_neg, map_one, neg_one_mul]
 
 /-- The ring homomorphism taking a power series `f(X)` to `f(-X)`. -/
-noncomputable def evalNegHom : A⟦X⟧ →+* A⟦X⟧ :=
-  rescale (-1 : A)
+noncomputable def evalNegHom : A⟦X⟧ →+* A⟦X⟧ := rescale (-1 : A)
 
-@[simp]
-theorem evalNegHom_X : evalNegHom (X : A⟦X⟧) = -X :=
-  rescale_neg_one_X
+@[simp] theorem evalNegHom_X : evalNegHom (X : A⟦X⟧) = -X := rescale_neg_one_X
 
 end CommRing
 
@@ -737,22 +693,19 @@ section Algebra
 
 variable {A B : Type*} [CommSemiring R] [Semiring A] [Algebra R A] [Semiring B] [Algebra R B]
 
-theorem C_eq_algebraMap {r : R} : C r = (algebraMap R R⟦X⟧) r :=
-  rfl
+theorem C_eq_algebraMap {r : R} : C r = (algebraMap R R⟦X⟧) r := rfl
 
-theorem algebraMap_apply {r : R} : algebraMap R A⟦X⟧ r = C (algebraMap R A r) :=
+theorem algebraMap_apply {r : R} : algebraMap R (A⟦X⟧) r = C (algebraMap R A r) :=
   MvPowerSeries.algebraMap_apply
 
-instance [Nontrivial R] : Nontrivial (Subalgebra R R⟦X⟧) :=
-  { (inferInstance : Nontrivial <| Subalgebra R <| MvPowerSeries Unit R) with }
+instance [Nontrivial R] : Nontrivial (Subalgebra R R⟦X⟧) := {
+  (inferInstance : Nontrivial <| Subalgebra R <| MvPowerSeries Unit R) with
+}
 
 /-- Change of coefficients in power series, as an `AlgHom` -/
-def mapAlgHom (φ : A →ₐ[R] B) :
-    PowerSeries A →ₐ[R] PowerSeries B :=
-  MvPowerSeries.mapAlgHom φ
+def mapAlgHom (φ : A →ₐ[R] B) : PowerSeries A →ₐ[R] PowerSeries B := MvPowerSeries.mapAlgHom φ
 
-theorem mapAlgHom_apply (φ : A →ₐ[R] B) (f : A⟦X⟧) :
-    mapAlgHom φ f = f.map φ :=
+theorem mapAlgHom_apply (φ : A →ₐ[R] B) (f : A⟦X⟧) : mapAlgHom φ f = f.map φ :=
   MvPowerSeries.mapAlgHom_apply φ f
 
 end Algebra
@@ -767,30 +720,23 @@ section Semiring
 variable {R : Type*} [Semiring R] (φ ψ : R[X])
 
 /-- The natural inclusion from polynomials into formal power series. -/
-@[coe]
-def toPowerSeries : R[X] → PowerSeries R := fun φ =>
-  PowerSeries.mk fun n => coeff φ n
+@[coe] def toPowerSeries : R[X] → PowerSeries R := fun φ => PowerSeries.mk fun n => coeff φ n
 
 /-- The natural inclusion from polynomials into formal power series. -/
-instance coeToPowerSeries : Coe R[X] (PowerSeries R) :=
-  ⟨toPowerSeries⟩
+instance coeToPowerSeries : Coe (R[X]) (PowerSeries R) := ⟨toPowerSeries⟩
 
-theorem coe_def : (φ : PowerSeries R) = PowerSeries.mk (coeff φ) :=
-  rfl
+theorem coe_def : (φ : PowerSeries R) = PowerSeries.mk (coeff φ) := rfl
 
 @[simp]
-theorem coeff_coe (n) : PowerSeries.coeff n φ = coeff φ n :=
-  congr(coeff φ $Finsupp.single_eq_same)
+theorem coeff_coe (n) : PowerSeries.coeff n φ = coeff φ n := congr(coeff φ $Finsupp.single_eq_same)
 
 @[simp, norm_cast]
-theorem coe_monomial (n : ℕ) (a : R) :
-    (monomial n a : PowerSeries R) = PowerSeries.monomial n a := by
+theorem coe_monomial (n : ℕ) (a : R)
+    : (monomial n a : PowerSeries R) = PowerSeries.monomial n a := by
   ext
   simp [coeff_coe, PowerSeries.coeff_monomial, Polynomial.coeff_monomial, eq_comm]
 
-@[simp, norm_cast]
-theorem coe_zero : ((0 : R[X]) : PowerSeries R) = 0 :=
-  rfl
+@[simp, norm_cast] theorem coe_zero : ((0 : R[X]) : PowerSeries R) = 0 := rfl
 
 @[simp, norm_cast]
 theorem coe_one : ((1 : R[X]) : PowerSeries R) = 1 := by
@@ -807,27 +753,23 @@ theorem coe_mul : ((φ * ψ : R[X]) : PowerSeries R) = φ * ψ :=
   PowerSeries.ext fun n => by simp only [coeff_coe, PowerSeries.coeff_mul, coeff_mul]
 
 @[simp, norm_cast]
-lemma coe_smul (φ : R[X]) (r : R) :
-    (r • φ : Polynomial R) = r • (φ : PowerSeries R) := rfl
+lemma coe_smul (φ : R[X]) (r : R) : (r • φ : Polynomial R) = r • (φ : PowerSeries R) := rfl
 
 @[simp, norm_cast]
 theorem coe_C (a : R) : ((C a : R[X]) : PowerSeries R) = PowerSeries.C a := by
   have := coe_monomial 0 a
   rwa [PowerSeries.monomial_zero_eq_C_apply] at this
 
-@[simp, norm_cast]
-theorem coe_X : ((X : R[X]) : PowerSeries R) = PowerSeries.X :=
-  coe_monomial _ _
+@[simp, norm_cast] theorem coe_X : ((X : R[X]) : PowerSeries R) = PowerSeries.X := coe_monomial _ _
 
 @[simp]
-lemma polynomial_map_coe {U V : Type*} [CommSemiring U] [CommSemiring V] {φ : U →+* V}
-    {f : Polynomial U} : Polynomial.map φ f = PowerSeries.map φ f := by
+lemma polynomial_map_coe
+    {U V : Type*} [CommSemiring U] [CommSemiring V] {φ : U →+* V} {f : Polynomial U}
+    : Polynomial.map φ f = PowerSeries.map φ f := by
   ext
   simp
 
-@[simp]
-theorem constantCoeff_coe : PowerSeries.constantCoeff φ = φ.coeff 0 :=
-  rfl
+@[simp] theorem constantCoeff_coe : PowerSeries.constantCoeff φ = φ.coeff 0 := rfl
 
 variable (R)
 
@@ -837,17 +779,14 @@ theorem coe_injective : Function.Injective ((↑) : R[X] → PowerSeries R) := f
 
 variable {R φ ψ}
 
-@[simp, norm_cast]
-theorem coe_inj : (φ : PowerSeries R) = ψ ↔ φ = ψ :=
-  (coe_injective R).eq_iff
+@[simp, norm_cast] theorem coe_inj : (φ : PowerSeries R) = ψ ↔ φ = ψ := (coe_injective R).eq_iff
 
-@[simp]
-theorem coe_eq_zero_iff : (φ : PowerSeries R) = 0 ↔ φ = 0 := by rw [← coe_zero, coe_inj]
+@[simp] theorem coe_eq_zero_iff : (φ : PowerSeries R) = 0 ↔ φ = 0 := by rw [← coe_zero, coe_inj]
 
-@[simp]
-theorem coe_eq_one_iff : (φ : PowerSeries R) = 1 ↔ φ = 1 := by rw [← coe_one, coe_inj]
+@[simp] theorem coe_eq_one_iff : (φ : PowerSeries R) = 1 ↔ φ = 1 := by rw [← coe_one, coe_inj]
 
-/-- The coercion from polynomials to power series
+/--
+The coercion from polynomials to power series
 as a ring homomorphism.
 -/
 def coeToPowerSeries.ringHom : R[X] →+* PowerSeries R where
@@ -857,9 +796,7 @@ def coeToPowerSeries.ringHom : R[X] →+* PowerSeries R where
   map_add' := coe_add
   map_mul' := coe_mul
 
-@[simp]
-theorem coeToPowerSeries.ringHom_apply : coeToPowerSeries.ringHom φ = φ :=
-  rfl
+@[simp] theorem coeToPowerSeries.ringHom_apply : coeToPowerSeries.ringHom φ = φ := rfl
 
 @[simp, norm_cast]
 theorem coe_pow (n : ℕ) : ((φ ^ n : R[X]) : PowerSeries R) = (φ : PowerSeries R) ^ n :=
@@ -870,8 +807,8 @@ theorem eval₂_C_X_eq_coe : φ.eval₂ PowerSeries.C PowerSeries.X = ↑φ := b
   rw [← coeToPowerSeries.ringHom_apply, eval₂_eq_sum_range, eval₂_eq_sum_range, map_sum]
   apply Finset.sum_congr rfl
   intros
-  rw [map_mul, map_pow, coeToPowerSeries.ringHom_apply,
-    coeToPowerSeries.ringHom_apply, coe_C, coe_X]
+  rw [map_mul, map_pow, coeToPowerSeries.ringHom_apply, coeToPowerSeries.ringHom_apply, coe_C,
+    coe_X]
 
 end Semiring
 
@@ -879,20 +816,21 @@ section CommSemiring
 
 variable {R : Type*} [CommSemiring R] (φ : R[X])
 
-theorem _root_.MvPolynomial.toMvPowerSeries_pUnitAlgEquiv {f : MvPolynomial PUnit R} :
-    (f.toMvPowerSeries : PowerSeries R) =
-      (MvPolynomial.uniqueAlgEquiv R PUnit f).toPowerSeries := by
+theorem _root_.MvPolynomial.toMvPowerSeries_pUnitAlgEquiv {f : MvPolynomial PUnit R}
+    : (f.toMvPowerSeries : PowerSeries R)
+      = (MvPolynomial.uniqueAlgEquiv R PUnit f).toPowerSeries := by
   induction f using MvPolynomial.induction_on' with
   | monomial d r =>
-    --Note: this `have` should be a generic `simp` lemma for a `Unique` type with `()` replaced
-    --by any element.
+    -- Note: this `have` should be a generic `simp` lemma for a `Unique` type with `()` replaced
+    -- by any element.
     have : single () (d ()) = d := by ext; simp
     simp only [MvPolynomial.coe_monomial, MvPolynomial.uniqueAlgEquiv_monomial,
       Polynomial.coe_monomial, PowerSeries.monomial, this]
-  | add f g hf hg => simp [hf, hg]
+  | add f g hf hg =>
+    simp [hf, hg]
 
-theorem pUnitAlgEquiv_symm_toPowerSeries {f : Polynomial R} :
-    ((f.toPowerSeries) : MvPowerSeries PUnit R)
+theorem pUnitAlgEquiv_symm_toPowerSeries {f : Polynomial R}
+    : ((f.toPowerSeries) : MvPowerSeries PUnit R)
       = ((MvPolynomial.uniqueAlgEquiv R PUnit).symm f).toMvPowerSeries := by
   set g := (MvPolynomial.uniqueAlgEquiv R PUnit).symm f
   have : f = MvPolynomial.uniqueAlgEquiv R PUnit g := by simp only [g, AlgEquiv.apply_symm_apply]
@@ -900,16 +838,18 @@ theorem pUnitAlgEquiv_symm_toPowerSeries {f : Polynomial R} :
 
 variable (A : Type*) [Semiring A] [Algebra R A]
 
-/-- The coercion from polynomials to power series
+/--
+The coercion from polynomials to power series
 as an algebra homomorphism.
 -/
-def coeToPowerSeries.algHom : R[X] →ₐ[R] PowerSeries A :=
-  { (PowerSeries.map (algebraMap R A)).comp coeToPowerSeries.ringHom with
-    commutes' := fun r => by simp [PowerSeries.algebraMap_apply] }
+def coeToPowerSeries.algHom : R[X] →ₐ[R] PowerSeries A := {
+  (PowerSeries.map (algebraMap R A)).comp coeToPowerSeries.ringHom with
+  commutes' := fun r => by simp [PowerSeries.algebraMap_apply]
+}
 
 @[simp]
-theorem coeToPowerSeries.algHom_apply :
-    coeToPowerSeries.algHom A φ = PowerSeries.map (algebraMap R A) ↑φ :=
+theorem coeToPowerSeries.algHom_apply
+    : coeToPowerSeries.algHom A φ = PowerSeries.map (algebraMap R A) ↑φ :=
   rfl
 
 end CommSemiring
@@ -918,8 +858,7 @@ section CommRing
 variable {R : Type*} [CommRing R]
 
 @[simp, norm_cast]
-lemma coe_neg (p : R[X]) : ((-p : R[X]) : PowerSeries R) = -p :=
-  coeToPowerSeries.ringHom.map_neg p
+lemma coe_neg (p : R[X]) : ((-p : R[X]) : PowerSeries R) = -p := coeToPowerSeries.ringHom.map_neg p
 
 @[simp, norm_cast]
 lemma coe_sub (p q : R[X]) : ((p - q : R[X]) : PowerSeries R) = p - q :=
@@ -937,25 +876,21 @@ open Polynomial
 
 variable {R A : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] (f : R⟦X⟧)
 
-instance algebraPolynomial : Algebra R[X] A⟦X⟧ :=
+instance algebraPolynomial : Algebra (R[X]) A⟦X⟧ :=
   RingHom.toAlgebra (Polynomial.coeToPowerSeries.algHom A).toRingHom
 
-instance algebraPowerSeries : Algebra R⟦X⟧ A⟦X⟧ :=
-  (map (algebraMap R A)).toAlgebra
+instance algebraPowerSeries : Algebra (R⟦X⟧) A⟦X⟧ := (map (algebraMap R A)).toAlgebra
 
 -- see Note [lower instance priority]
-instance (priority := 100) algebraPolynomial' {A : Type*} [CommSemiring A] [Algebra R A[X]] :
-    Algebra R A⟦X⟧ :=
+instance (priority := 100) algebraPolynomial' {A : Type*} [CommSemiring A] [Algebra R A[X]]
+    : Algebra R A⟦X⟧ :=
   RingHom.toAlgebra <| Polynomial.coeToPowerSeries.ringHom.comp (algebraMap R A[X])
 
 variable (A)
 
-theorem algebraMap_apply' (p : R[X]) : algebraMap R[X] A⟦X⟧ p = map (algebraMap R A) p :=
-  rfl
+theorem algebraMap_apply' (p : R[X]) : algebraMap (R[X]) (A⟦X⟧) p = map (algebraMap R A) p := rfl
 
-theorem algebraMap_apply'' :
-    algebraMap R⟦X⟧ A⟦X⟧ f = map (algebraMap R A) f :=
-  rfl
+theorem algebraMap_apply'' : algebraMap (R⟦X⟧) (A⟦X⟧) f = map (algebraMap R A) f := rfl
 
 end Algebra
 

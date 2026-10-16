@@ -39,10 +39,11 @@ extensions of rings `B/A` seems to outweigh these terminological issues.
 
 assert_not_exists IsFractionRing
 
-variable (G A A' B : Type*) [Group G] [CommSemiring A] [Semiring B] [Algebra A B]
-  [MulSemiringAction G B]
+variable
+  (G A A' B : Type*) [Group G] [CommSemiring A] [Semiring B] [Algebra A B] [MulSemiringAction G B]
 
-/-- `G` is a Galois group for `L/K` if the action of `G` on `L` is faithful with fixed field `K`.
+/--
+`G` is a Galois group for `L/K` if the action of `G` on `L` is faithful with fixed field `K`.
 In particular, we do not assume that `L` is an algebraic extension of `K`.
 
 See the implementation notes in this file for the meaning of this definition in the case of rings.
@@ -55,9 +56,11 @@ class IsGaloisGroup where
 namespace IsGaloisGroup
 
 variable {G A B} in
-theorem of_mulEquiv [hG : IsGaloisGroup G A B] {H : Type*} [Group H]
-    [MulSemiringAction H B] (e : H ≃* G) (he : ∀ h (x : B), (e h) • x = h • x) :
-    IsGaloisGroup H A B where
+theorem of_mulEquiv
+    [hG : IsGaloisGroup G A B]
+    {H : Type*} [Group H] [MulSemiringAction H B]
+    (e : H ≃* G) (he : ∀ h (x : B), (e h) • x = h • x)
+    : IsGaloisGroup H A B where
   faithful := ⟨fun h ↦ e.injective <| hG.faithful.eq_of_smul_eq_smul <| by simpa only [he]⟩
   commutes := ⟨fun x a b ↦ by simpa [he] using hG.commutes.smul_comm (e x) a b⟩
   isInvariant := ⟨fun b h ↦
@@ -65,9 +68,9 @@ theorem of_mulEquiv [hG : IsGaloisGroup G A B] {H : Type*} [Group H]
     hG.isInvariant.isInvariant b (fun g ↦ by simpa [he'] using h (e.symm g))⟩
 
 variable {G A B} in
-theorem iff_of_mulEquiv {H : Type*} [Group H] [MulSemiringAction H B]
-    (e : H ≃* G) (he : ∀ h (x : B), e h • x = h • x) :
-    IsGaloisGroup H A B ↔ IsGaloisGroup G A B := by
+theorem iff_of_mulEquiv
+    {H : Type*} [Group H] [MulSemiringAction H B] (e : H ≃* G) (he : ∀ h (x : B), e h • x = h • x)
+    : IsGaloisGroup H A B ↔ IsGaloisGroup G A B := by
   refine ⟨fun h ↦ h.of_mulEquiv e.symm fun g x ↦ ?_, fun h ↦ h.of_mulEquiv e he⟩
   rw [← he, e.apply_symm_apply]
 
@@ -76,13 +79,13 @@ variable {G A B} in
 theorem top_iff : IsGaloisGroup (⊤ : Subgroup G) A B ↔ IsGaloisGroup G A B :=
   iff_of_mulEquiv Subgroup.topEquiv fun _ _ ↦ rfl
 
-instance [IsGaloisGroup G A B] : IsGaloisGroup (⊤ : Subgroup G) A B :=
-  IsGaloisGroup.top_iff.mpr ‹_›
+instance [IsGaloisGroup G A B] : IsGaloisGroup (⊤ : Subgroup G) A B := IsGaloisGroup.top_iff.mpr ‹_›
 
-theorem of_algEquiv [hG : IsGaloisGroup G A B] (B' : Type*) [Semiring B']
-    [Algebra A B'] [MulSemiringAction G B'] (e : B ≃ₐ[A] B')
-    (he : ∀ (g : G) (x : B), e (g • x) = g • (e x)) :
-    IsGaloisGroup G A B' where
+theorem of_algEquiv
+    [hG : IsGaloisGroup G A B]
+    (B' : Type*) [Semiring B'] [Algebra A B'] [MulSemiringAction G B']
+    (e : B ≃ₐ[A] B') (he : ∀ (g : G) (x : B), e (g • x) = g • (e x))
+    : IsGaloisGroup G A B' where
   faithful := ⟨fun h ↦ hG.faithful.eq_of_smul_eq_smul fun b ↦ by simpa [← he] using h (e b)⟩
   commutes := ⟨fun g a b' ↦ by
     have h' {x'} : e.symm (g • x') = g • e.symm x' := by
@@ -91,14 +94,17 @@ theorem of_algEquiv [hG : IsGaloisGroup G A B] (B' : Type*) [Semiring B']
     apply e.symm.injective
     simpa [h', map_smul] using hG.commutes.smul_comm g a (e.symm b')⟩
   isInvariant := ⟨fun x' hx' ↦ by
-    obtain ⟨a, ha⟩ := hG.isInvariant.isInvariant (e.symm x') (fun g ↦ by
-      apply e.injective
-      simp [he, hx'])
+    obtain ⟨a, ha⟩ :=
+      hG.isInvariant.isInvariant (e.symm x') (fun g ↦ by
+        apply e.injective
+        simp [he, hx'])
     exact ⟨a, by rw [← e.commutes, ha, AlgEquiv.apply_symm_apply]⟩⟩
 
-theorem of_ringHom_surjective [hG : IsGaloisGroup G A B] [CommSemiring A']
-    [Algebra A' B] (e : A →+* A') (he : ∀ a, algebraMap A' B (e a) = algebraMap A B a)
-    (he' : Function.Surjective e) : IsGaloisGroup G A' B where
+theorem of_ringHom_surjective
+    [hG : IsGaloisGroup G A B] [CommSemiring A'] [Algebra A' B]
+    (e : A →+* A')
+    (he : ∀ a, algebraMap A' B (e a) = algebraMap A B a) (he' : Function.Surjective e)
+    : IsGaloisGroup G A' B where
   faithful := hG.faithful
   commutes := ⟨by
     intro g a' b
@@ -110,20 +116,22 @@ theorem of_ringHom_surjective [hG : IsGaloisGroup G A B] [CommSemiring A']
     obtain ⟨a, ha⟩ := hG.isInvariant.isInvariant b h
     exact ⟨e a, by rw [he, ha]⟩⟩
 
-theorem of_ringEquiv [hG : IsGaloisGroup G A B] [CommSemiring A'] [Algebra A' B]
-    (e : A ≃+* A') (he : ∀ a, algebraMap A' B (e a) = algebraMap A B a) :
-    IsGaloisGroup G A' B :=
+theorem of_ringEquiv
+    [hG : IsGaloisGroup G A B] [CommSemiring A'] [Algebra A' B]
+    (e : A ≃+* A') (he : ∀ a, algebraMap A' B (e a) = algebraMap A B a)
+    : IsGaloisGroup G A' B :=
   .of_ringHom_surjective G A A' B e he e.surjective
 
 attribute [instance low] IsGaloisGroup.commutes IsGaloisGroup.isInvariant
 
 variable [hA : IsGaloisGroup G A B] [FaithfulSMul A B]
 
-/-- If `B/A` is Galois with Galois group `G`, then `A` is isomorphic to the subring of elements of
-`B` fixed by `G`. -/
+/--
+If `B/A` is Galois with Galois group `G`, then `A` is isomorphic to the subring of elements of
+`B` fixed by `G`.
+-/
 @[simps apply_coe]
-noncomputable def ringEquivFixedPoints :
-    A ≃+* FixedPoints.subsemiring B G where
+noncomputable def ringEquivFixedPoints : A ≃+* FixedPoints.subsemiring B G where
   toFun x := ⟨algebraMap A B x, fun _ ↦ by rw [smul_algebraMap]⟩
   invFun x := (hA.isInvariant.isInvariant x x.prop).choose
   map_mul' _ _ := by simp [Subtype.ext_iff]
@@ -132,9 +140,9 @@ noncomputable def ringEquivFixedPoints :
   right_inv x := by simpa [Subtype.ext_iff] using (hA.isInvariant.isInvariant x x.prop).choose_spec
 
 @[simp]
-theorem algebraMap_ringEquivFixedPoints_symm_apply (x : FixedPoints.subsemiring B G) :
-    algebraMap A B ((ringEquivFixedPoints G A B).symm x) = x :=
- (hA.isInvariant.isInvariant x x.prop).choose_spec
+theorem algebraMap_ringEquivFixedPoints_symm_apply (x : FixedPoints.subsemiring B G)
+    : algebraMap A B ((ringEquivFixedPoints G A B).symm x) = x :=
+  (hA.isInvariant.isInvariant x x.prop).choose_spec
 
 variable [CommSemiring A'] [Algebra A' B] [FaithfulSMul A' B] [hA' : IsGaloisGroup G A' B]
 
@@ -143,13 +151,13 @@ noncomputable def ringEquiv : A ≃+* A' :=
   (ringEquivFixedPoints G A B).trans (ringEquivFixedPoints G A' B).symm
 
 @[simp]
-theorem algebraMap_ringEquiv_apply (x : A) :
-    algebraMap A' B (IsGaloisGroup.ringEquiv G A A' B x) = algebraMap A B x := by
+theorem algebraMap_ringEquiv_apply (x : A)
+    : algebraMap A' B (IsGaloisGroup.ringEquiv G A A' B x) = algebraMap A B x := by
   simp [ringEquiv]
 
 @[simp]
-theorem algebraMap_ringEquiv_symm_apply (x : A') :
-    algebraMap A B ((IsGaloisGroup.ringEquiv G A A' B).symm x) = algebraMap A' B x := by
+theorem algebraMap_ringEquiv_symm_apply (x : A')
+    : algebraMap A B ((IsGaloisGroup.ringEquiv G A A' B).symm x) = algebraMap A' B x := by
   simp [ringEquiv]
 
 end IsGaloisGroup

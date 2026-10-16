@@ -31,13 +31,9 @@ namespace Fin
 variable {α : Type*} [Preorder α]
 
 /-- This is the order isomorphism from `Fin 1` to a finset `{a}`. -/
-noncomputable def orderIsoSingleton (a : α) :
-    Fin 1 ≃o ({a} : Finset α) :=
-  OrderIso.ofUnique _ _
+noncomputable def orderIsoSingleton (a : α) : Fin 1 ≃o ({a} : Finset α) := OrderIso.ofUnique _ _
 
-@[simp]
-lemma orderIsoSingleton_apply (a : α) (i : Fin 1) :
-    orderIsoSingleton a i = a := rfl
+@[simp] lemma orderIsoSingleton_apply (a : α) (i : Fin 1) : orderIsoSingleton a i = a := rfl
 
 variable [DecidableEq α]
 
@@ -46,10 +42,9 @@ section
 variable (a b : α) (hab : a < b)
 
 /-- This is the order isomorphism from `Fin 2` to a finset `{a, b}` when `a < b`. -/
-noncomputable def orderIsoPair :
-    Fin 2 ≃o ({a, b} : Finset α) :=
-  StrictMono.orderIsoOfSurjective ![⟨a, by simp⟩, ⟨b, by simp⟩]
-    (strictMono_vecEmpty.vecCons hab) (fun ⟨x, hx⟩ ↦ by
+noncomputable def orderIsoPair : Fin 2 ≃o ({a, b} : Finset α) :=
+  StrictMono.orderIsoOfSurjective (![⟨a, by simp⟩, ⟨b, by simp⟩]) (strictMono_vecEmpty.vecCons hab)
+    (fun ⟨x, hx⟩ ↦ by
       simp only [Finset.mem_insert, Finset.mem_singleton] at hx
       obtain rfl | rfl := hx
       · exact ⟨0, rfl⟩
@@ -64,12 +59,14 @@ section
 
 variable (a b c : α) (hab : a < b) (hbc : b < c)
 
-/-- This is the order isomorphism from `Fin 3`
-to a finset `{a, b, c}` when `a < b` and `b < c`. -/
-noncomputable def orderIsoTriple :
-    Fin 3 ≃o ({a, b, c} : Finset α) :=
-  StrictMono.orderIsoOfSurjective ![⟨a, by simp⟩, ⟨b, by simp⟩, ⟨c, by simp⟩]
-    (StrictMono.vecCons (strictMono_vecEmpty.vecCons hbc) hab) (fun ⟨x, hx⟩ ↦ by
+/--
+This is the order isomorphism from `Fin 3`
+to a finset `{a, b, c}` when `a < b` and `b < c`.
+-/
+noncomputable def orderIsoTriple : Fin 3 ≃o ({a, b, c} : Finset α) :=
+  StrictMono.orderIsoOfSurjective (![⟨a, by simp⟩, ⟨b, by simp⟩, ⟨c, by simp⟩])
+    (StrictMono.vecCons (strictMono_vecEmpty.vecCons hbc) hab)
+    (fun ⟨x, hx⟩ ↦ by
       simp only [Finset.mem_insert, Finset.mem_singleton] at hx
       obtain rfl | rfl | rfl := hx
       · exact ⟨0, rfl⟩

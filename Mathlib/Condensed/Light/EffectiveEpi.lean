@@ -6,7 +6,6 @@ Authors: Jonas van der Schaaf, Dagur Asgeirsson
 module
 
 public import Mathlib.Condensed.Light.Epi
-
 import Mathlib.CategoryTheory.Sites.RegularEpi
 
 /-!

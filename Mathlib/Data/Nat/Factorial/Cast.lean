@@ -22,7 +22,6 @@ to `↑a - 1`, the other factor is `0` anyway.
 
 public section
 
-
 open Nat
 
 variable (S : Type*)
@@ -33,8 +32,10 @@ section Ring
 
 variable [Ring S] (a : ℕ)
 
-/-- Convenience lemma. The `a - 1` is not using truncated subtraction, as opposed to the definition
-of `Nat.descFactorial` as a natural. -/
+/--
+Convenience lemma. The `a - 1` is not using truncated subtraction, as opposed to the definition
+of `Nat.descFactorial` as a natural.
+-/
 theorem cast_descFactorial_two : (a.descFactorial 2 : S) = a * (a - 1) := by
   rw [descFactorial]
   cases a

@@ -41,38 +41,34 @@ protected lemma IsSelfInv.empty : IsSelfInv (∅ : Set α) := inv_empty
 protected lemma IsSelfInv.univ : IsSelfInv (univ : Set α) := inv_univ
 
 @[to_additive]
-protected lemma IsSelfInv.inter (hs : IsSelfInv s) (ht : IsSelfInv t) :
-    IsSelfInv (s ∩ t) := by
+protected lemma IsSelfInv.inter (hs : IsSelfInv s) (ht : IsSelfInv t) : IsSelfInv (s ∩ t) := by
   rw [isSelfInv_iff, inter_inv, hs, ht]
 
 @[to_additive]
-protected lemma IsSelfInv.union (hs : IsSelfInv s) (ht : IsSelfInv t) :
-    IsSelfInv (s ∪ t) := by
+protected lemma IsSelfInv.union (hs : IsSelfInv s) (ht : IsSelfInv t) : IsSelfInv (s ∪ t) := by
   rw [isSelfInv_iff, union_inv, hs, ht]
 
 @[to_additive]
-protected lemma IsSelfInv.iUnion {ι : Sort*} {s : ι → Set α}
-    (h : ∀ i, IsSelfInv (s i)) : IsSelfInv (⋃ i, s i) := by
+protected lemma IsSelfInv.iUnion {ι : Sort*} {s : ι → Set α} (h : ∀ i, IsSelfInv (s i))
+    : IsSelfInv (⋃ i, s i) := by
   simpa only [isSelfInv_iff, iUnion_inv] using iUnion_congr h
 
 @[to_additive]
-protected lemma IsSelfInv.iInter {ι : Sort*} {s : ι → Set α}
-    (h : ∀ i, IsSelfInv (s i)) : IsSelfInv (⋂ i, s i) := by
+protected lemma IsSelfInv.iInter {ι : Sort*} {s : ι → Set α} (h : ∀ i, IsSelfInv (s i))
+    : IsSelfInv (⋂ i, s i) := by
   simpa only [isSelfInv_iff, iInter_inv] using iInter_congr h
 
 @[to_additive]
-protected lemma IsSelfInv.sUnion {S : Set (Set α)} (h : ∀ s ∈ S, IsSelfInv s) :
-    IsSelfInv (⋃₀ S) :=
+protected lemma IsSelfInv.sUnion {S : Set (Set α)} (h : ∀ s ∈ S, IsSelfInv s) : IsSelfInv (⋃₀S) :=
   sUnion_eq_iUnion ▸ .iUnion fun s ↦ h s s.2
 
 @[to_additive]
-protected lemma IsSelfInv.sInter {S : Set (Set α)} (h : ∀ s ∈ S, IsSelfInv s) :
-    IsSelfInv (⋂₀ S) :=
+protected lemma IsSelfInv.sInter {S : Set (Set α)} (h : ∀ s ∈ S, IsSelfInv s) : IsSelfInv (⋂₀S) :=
   sInter_eq_iInter ▸ .iInter fun s ↦ h s s.2
 
 @[to_additive Set.IsSelfNeg.prod]
-protected lemma IsSelfInv.prod {t : Set β} (hs : IsSelfInv s) (ht : IsSelfInv t) :
-    IsSelfInv (s ×ˢ t) := by
+protected lemma IsSelfInv.prod {t : Set β} (hs : IsSelfInv s) (ht : IsSelfInv t)
+    : IsSelfInv (s ×ˢ t) := by
   rw [isSelfInv_iff, inv_prod, hs, ht]
 
 @[to_additive (attr := simp)]
@@ -99,9 +95,7 @@ lemma isSelfInv_iff_subset_inv : IsSelfInv s ↔ s ⊆ s⁻¹ :=
 @[to_additive]
 protected alias ⟨IsSelfInv.subset_inv, IsSelfInv.of_subset_inv⟩ := isSelfInv_iff_subset_inv
 
-@[to_additive]
-lemma isSelfInv_iff_inv_subset : IsSelfInv s ↔ s⁻¹ ⊆ s :=
-  inv_eq_self_iff_inv_subset
+@[to_additive] lemma isSelfInv_iff_inv_subset : IsSelfInv s ↔ s⁻¹ ⊆ s := inv_eq_self_iff_inv_subset
 
 @[to_additive]
 protected alias ⟨IsSelfInv.inv_subset, IsSelfInv.of_inv_subset⟩ := isSelfInv_iff_inv_subset

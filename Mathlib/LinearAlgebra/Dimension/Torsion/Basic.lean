@@ -23,8 +23,10 @@ public section
 
 open Submodule
 
-theorem rank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
-    {M' : Submodule R M} (hN : M' ≤ torsion R M) : Module.rank R (M ⧸ M') = Module.rank R M :=
+theorem rank_quotient_eq_of_le_torsion
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    {M' : Submodule R M} (hN : M' ≤ torsion R M)
+    : Module.rank R (M ⧸ M') = Module.rank R M :=
   (rank_quotient_le M').antisymm <| by
     nontriviality R
     rw [Module.rank]
@@ -36,14 +38,17 @@ theorem rank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup 
     simp_rw [Finset.smul_sum, Submonoid.smul_def, smul_smul] at hg
     exact r.prop.2 _ (mul_comm (g i) r ▸ hs t _ hg i hi)
 
-theorem finrank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
-    {M' : Submodule R M} (hN : M' ≤ torsion R M) :
-    Module.finrank R (M ⧸ M') = Module.finrank R M :=
+theorem finrank_quotient_eq_of_le_torsion
+    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+    {M' : Submodule R M} (hN : M' ≤ torsion R M)
+    : Module.finrank R (M ⧸ M') = Module.finrank R M :=
   congr($(rank_quotient_eq_of_le_torsion hN).toNat)
 
-/-- Quotienting an additive commutative group by its torsion subgroup does not change its
-`ℤ`-`finrank`. -/
-theorem finrank_quotient_torsion_eq {M : Type*} [AddCommGroup M] :
-    Module.finrank ℤ (M ⧸ (AddCommGroup.torsion M).toIntSubmodule) = Module.finrank ℤ M :=
+/--
+Quotienting an additive commutative group by its torsion subgroup does not change its
+`ℤ`-`finrank`.
+-/
+theorem finrank_quotient_torsion_eq {M : Type*} [AddCommGroup M]
+    : Module.finrank ℤ (M ⧸ (AddCommGroup.torsion M).toIntSubmodule) = Module.finrank ℤ M :=
   finrank_quotient_eq_of_le_torsion <| le_of_eq <| by
     rw [← Submodule.torsion_int, Submodule.toAddSubgroup_toIntSubmodule]

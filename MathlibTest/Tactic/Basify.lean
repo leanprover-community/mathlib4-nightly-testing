@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic
 
@@ -8,8 +9,7 @@ set_option linter.unnecessarySeqFocus false
 
 /-! ## Operations of `ℝ≥0∞` and `ℝ≥0` -/
 
-example (a : ℝ≥0∞) (h : a ≠ ⊤) : (0 : ℝ≥0∞) ≤ a := by
-  basify
+example (a : ℝ≥0∞) (h : a ≠ ⊤) : (0 : ℝ≥0∞) ≤ a := by basify
 
 example (a : ℝ≥0∞) : a ≤ a + 1 := by
   basify
@@ -23,8 +23,7 @@ example (a b : ℝ≥0∞) (h : a + 1.5 = b + 1.5) : a = b := by
   basify
   linarith
 
-example (n : ℕ) : (n : ℝ≥0∞) ≠ ⊤ := by
-  basify
+example (n : ℕ) : (n : ℝ≥0∞) ≠ ⊤ := by basify
 
 example (a b c : ℝ≥0∞) (hc : c ≠ ⊤) (h : a + c = b + c) : a = b := by
   basify
@@ -38,8 +37,7 @@ example (a b : ℝ≥0∞) (hb : b ≠ ⊤) (h : a ≤ b) : a - b = 0 := by
   basify
   grind
 
-example (a : ℝ≥0∞) (n : ℕ) (h : a ≠ ⊤) : a ^ n ≠ ⊤ := by
-  basify
+example (a : ℝ≥0∞) (n : ℕ) (h : a ≠ ⊤) : a ^ n ≠ ⊤ := by basify
 
 example (a : ℝ≥0∞) (h : a ≠ 0) (h' : a ≠ ⊤) : a * a⁻¹ = 1 := by
   basify
@@ -57,8 +55,7 @@ example (a b : ℝ≥0∞) (ha : a ≠ ⊤) (hb : b ≠ ⊤) : a + b ≤ 2 * max
   basify
   grind
 
-example (a b : ℝ≥0∞) (ha : a ≠ ⊤) (hb : b ≠ ⊤) : (a + b).toReal = a.toReal + b.toReal := by
-  basify
+example (a b : ℝ≥0∞) (ha : a ≠ ⊤) (hb : b ≠ ⊤) : (a + b).toReal = a.toReal + b.toReal := by basify
 
 /-! ## Real powers -/
 
@@ -66,13 +63,12 @@ example (a : ℝ≥0∞) (y : ℝ) (hy : 0 ≤ y) (h : a ≠ ⊤) : a ^ y ≤ a 
   basify
   linarith
 
-example (a b : ℝ≥0∞) (y : ℝ) (hy : 0 ≤ y) (ha : a ≠ ⊤) (hb : b ≠ ⊤) (h : a ≤ b) :
-    a ^ y ≤ b ^ y := by
+example (a b : ℝ≥0∞) (y : ℝ) (hy : 0 ≤ y) (ha : a ≠ ⊤) (hb : b ≠ ⊤) (h : a ≤ b)
+    : a ^ y ≤ b ^ y := by
   basify
   gcongr
 
-example (a : ℝ≥0) (y : ℝ) (hy : 0 ≤ y) : ((a : ℝ≥0∞) ^ y).toReal = (a : ℝ) ^ y := by
-  basify
+example (a : ℝ≥0) (y : ℝ) (hy : 0 ≤ y) : ((a : ℝ≥0∞) ^ y).toReal = (a : ℝ) ^ y := by basify
 
 /-! ## Norms and distances -/
 
@@ -83,8 +79,7 @@ example (a b : E) : ‖a + b‖ₑ ≤ ‖a‖ₑ + ‖b‖ₑ := by
   basify
   exact norm_add_le a b
 
-example (a : E) : ‖a‖ₑ ≠ ⊤ := by
-  basify
+example (a : E) : ‖a‖ₑ ≠ ⊤ := by basify
 
 example (a b : E) : ‖a‖₊ ≤ ‖a - b‖₊ + ‖b‖₊ := by
   basify
@@ -110,8 +105,7 @@ example (a b : ℕ∞) (h : a ≤ b) : a ≤ b + 2 := by
   basify
   lia
 
-example (a b : ℕ∞) (h : a = b) : a - b = b - a := by
-  basify
+example (a b : ℕ∞) (h : a = b) : a - b = b - a := by basify
 
 example (a : ℕ∞) (h : a ≠ ⊤) : 2 * a = a + a := by
   basify
@@ -170,8 +164,7 @@ example (a b c : ℝ≥0∞) (hc : c ≠ ⊤) (h : a + c = b + c) : ∀ _ : ℕ,
   linarith
 
 /-- An atom under a `let` -/
-example (a b : ℝ≥0∞) (h : (let c : ℝ≥0∞ := a + b; c) = 0) : a = 0 := by
-  basify; linarith
+example (a b : ℝ≥0∞) (h : (let c : ℝ≥0∞ := a + b; c) = 0) : a = 0 := by basify; linarith
 
 /-- A subterm with bvar is not an atom -/
 example (f : ℕ → ℝ≥0∞) (h : ∀ i, f i ≤ 1) : f 0 ≤ 1 := by
@@ -182,17 +175,21 @@ example (f : ℕ → ℝ≥0∞) (h : ∀ i, f i ≤ 1) : f 0 ≤ 1 := by
 
 section Numerals
 
-/-- An eliminator for `ℕ`, so that `ℕ` counts as a registered type below. Mathlib registers none,
-but a numeral carries a `ℕ` index whatever its own type, so one is needed to reach it. -/
+/--
+An eliminator for `ℕ`, so that `ℕ` counts as a registered type below. Mathlib registers none,
+but a numeral carries a `ℕ` index whatever its own type, so one is needed to reach it.
+-/
 @[elab_as_elim]
-private def natRecToInt {C : ℕ → Sort*} (mk : ∀ (n : ℤ) (_nonneg : 0 ≤ n), C n.toNat) (t : ℕ) :
-    C t :=
+private def natRecToInt {C : ℕ → Sort*} (mk : ∀ (n : ℤ) (_nonneg : 0 ≤ n), C n.toNat) (t : ℕ)
+    : C t :=
   Int.toNat_natCast t ▸ mk t (Int.natCast_nonneg t)
 
 attribute [local basify_elim] natRecToInt
 
-/-- A raw natural number literal is not an atom: case splitting the `3` of `@OfNat.ofNat ℕ 3 _`
-turns the numeral into an opaque term. -/
+/--
+A raw natural number literal is not an atom: case splitting the `3` of `@OfNat.ofNat ℕ 3 _`
+turns the numeral into an opaque term.
+-/
 example (a : ℕ) (h : 2 * a = 6) : a = 3 := by
   basify
   lia
@@ -201,9 +198,11 @@ end Numerals
 
 /-! ### Complex examples -/
 
-/-- The `ℝ≥0∞` arithmetic at the heart of `Wiedijk100Theorems.first_vote_neg`. The original proof
+/--
+The `ℝ≥0∞` arithmetic at the heart of `Wiedijk100Theorems.first_vote_neg`. The original proof
 spelled out `ENNReal.eq_sub_of_add_eq`, `ENNReal.eq_div_iff`, `ENNReal.mul_sub`,
-`ENNReal.mul_div_cancel` and `ENNReal.add_sub_cancel_left` by hand. -/
+`ENNReal.mul_div_cancel` and `ENNReal.add_sub_cancel_left` by hand.
+-/
 example (A : ℝ≥0∞) (p q : ℕ) (h : 0 < p + q) (hA : A + p / (p + q) = 1) : A = q / (p + q) := by
   have h' : (p + q : ℝ≥0∞) ≠ 0 := by
     basify

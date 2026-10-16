@@ -7,17 +7,18 @@ module
 
 public import Mathlib.Algebra.Order.Hom.Basic
 public import Mathlib.Data.Fintype.Order
-
 import Mathlib.Order.ConditionallyCompleteLattice.Indexed
 
 /-!
 # Results on order homomorphism classes and lattice operations
 -/
 
-public lemma Finite.iSup_eq_iSup_subtype {ι K M F : Type*} [Finite ι] [Zero K] [Zero M]
-    [ConditionallyCompleteLattice M] [FunLike F K M] [ZeroHomClass F K M] [NonnegHomClass F K M]
-    {x : ι → K} (hx : x ≠ 0) {v : F} :
-    ⨆ i, v (x i) =  ⨆ i : {j // x j ≠ 0}, v (x i) := by
+public lemma Finite.iSup_eq_iSup_subtype
+    {ι K M F : Type*} [Finite ι] [Zero K] [Zero M] [ConditionallyCompleteLattice M] [FunLike F K M]
+    [ZeroHomClass F K M] [NonnegHomClass F K M]
+    {x : ι → K} (hx : x ≠ 0)
+    {v : F}
+    : ⨆ i, v (x i) = ⨆ i : {j // x j ≠ 0}, v (x i) := by
   obtain ⟨i, hi⟩ : ∃ j, x j ≠ 0 := Function.ne_iff.mp hx
   have : Nonempty {j // x j ≠ 0} := .intro ⟨i, hi⟩
   have : Nonempty ι := .intro i

@@ -2,8 +2,7 @@ import Mathlib.CategoryTheory.Functor.Basic
 
 namespace CategoryTheory.Functor
 
-variable {C₁ C₂ C₃ C₄ : Type*}
-  [Category* C₁] [Category* C₂] [Category* C₃] [Category* C₄]
+variable {C₁ C₂ C₃ C₄ : Type*} [Category* C₁] [Category* C₂] [Category* C₃] [Category* C₄]
 
 class Foo (F : C₁ ⥤ C₂) where
   data (F) : ℕ
@@ -61,10 +60,11 @@ but not defeq (because `Nat.assoc` is not a defeq in general). -/
 instance [F.Foo] [G.Foo] : (F ⋙ G).Foo where
   data := Foo.data F + Foo.data G
 
-/- This must succeed with `Nat.add_assoc` as a proof. It would be problematic
-if `rfl` worked. -/
-example [F.Foo] [G.Foo] [H.Foo] :
-    Foo.data ((F ⋙ G) ⋙ H) = Foo.data (F ⋙ (G ⋙ H)) := by
+/-
+This must succeed with `Nat.add_assoc` as a proof. It would be problematic
+if `rfl` worked.
+-/
+example [F.Foo] [G.Foo] [H.Foo] : Foo.data ((F ⋙ G) ⋙ H) = Foo.data (F ⋙ (G ⋙ H)) := by
   fail_if_success rfl
   exact Nat.add_assoc _ _ _
 

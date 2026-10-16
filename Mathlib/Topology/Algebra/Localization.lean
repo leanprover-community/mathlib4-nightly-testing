@@ -26,16 +26,15 @@ to the equivalence class of `(x, 1)` in the localization of `R` at an `M`.
 
 @[expose] public section
 
-
 variable {R : Type*} [CommRing R] [TopologicalSpace R] {M : Submonoid R}
 
-/-- The ring topology on `Localization M` coinduced from the natural homomorphism sending `x : R`
-to the equivalence class of `(x, 1)`. -/
+/--
+The ring topology on `Localization M` coinduced from the natural homomorphism sending `x : R`
+to the equivalence class of `(x, 1)`.
+-/
 def Localization.ringTopology : RingTopology (Localization M) :=
   RingTopology.coinduced (Localization.monoidOf M).toFun
 
-instance : TopologicalSpace (Localization M) :=
-  Localization.ringTopology.toTopologicalSpace
+instance : TopologicalSpace (Localization M) := Localization.ringTopology.toTopologicalSpace
 
-instance : IsTopologicalRing (Localization M) :=
-  Localization.ringTopology.toIsTopologicalRing
+instance : IsTopologicalRing (Localization M) := Localization.ringTopology.toIsTopologicalRing

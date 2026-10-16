@@ -31,13 +31,10 @@ def center : Subgroup G where
   __ := Submonoid.center G
   inv_mem' := Set.inv_mem_center
 
-@[to_additive]
-theorem coe_center : ↑(center G) = Set.center G :=
-  rfl
+@[to_additive] theorem coe_center : ↑(center G) = Set.center G := rfl
 
 @[to_additive (attr := simp)]
-theorem center_toSubmonoid : (center G).toSubmonoid = Submonoid.center G :=
-  rfl
+theorem center_toSubmonoid : (center G).toSubmonoid = Submonoid.center G := rfl
 
 instance center.isMulCommutative : IsMulCommutative (center G) :=
   ⟨⟨fun a b => Subtype.ext (b.2.comm a).symm⟩⟩
@@ -49,7 +46,7 @@ def centerCongr (e : G ≃* H) : center G ≃* center H := Submonoid.centerCongr
 
 /-- The center of a group is isomorphic to the center of its opposite. -/
 @[to_additive (attr := simps!)
-/-- The center of an additive group is isomorphic to the center of its opposite. -/]
+  /-- The center of an additive group is isomorphic to the center of its opposite. -/]
 def centerToMulOpposite : center G ≃* center Gᵐᵒᵖ := Submonoid.centerToMulOpposite
 
 variable {G}
@@ -63,18 +60,20 @@ instance decidableMemCenter (z : G) [Decidable (∀ g, g * z = z * g)] : Decidab
   decidable_of_iff' _ mem_center_iff
 
 @[to_additive]
-theorem map_center_le_center {F} [FunLike F G H] [MonoidHomClass F G H] {f : F}
-    (hf : Function.Surjective f) : map f (center G) ≤ center H :=
+theorem map_center_le_center
+    {F} [FunLike F G H] [MonoidHomClass F G H] {f : F} (hf : Function.Surjective f)
+    : map f (center G) ≤ center H :=
   Set.image_center_subset hf
 
 @[to_additive]
-theorem comap_center_le_center {F} [FunLike F G H] [MonoidHomClass F G H] {f : F}
-    (hf : Function.Injective f) : comap f (center H) ≤ center G :=
+theorem comap_center_le_center
+    {F} [FunLike F G H] [MonoidHomClass F G H] {f : F} (hf : Function.Injective f)
+    : comap f (center H) ≤ center G :=
   Set.preimage_center_subset hf
 
 @[to_additive (attr := simp)]
-theorem map_center_eq {F} [EquivLike F G H] [MulEquivClass F G H] (f : F) :
-    map f (center G) = center H :=
+theorem map_center_eq {F} [EquivLike F G H] [MulEquivClass F G H] (f : F)
+    : map f (center G) = center H :=
   SetLike.coe_injective (Set.image_center_eq f)
 
 @[to_additive]
@@ -98,28 +97,27 @@ theorem center_eq_top_iff : center G = ⊤ ↔ IsMulCommutative G := by
   simp [eq_top_iff', isMulCommutative_iff, mem_center_iff, eq_comm]
 
 @[to_additive]
-theorem center_eq_top [hG : IsMulCommutative G] : center G = ⊤ :=
-    center_eq_top_iff.mpr hG
+theorem center_eq_top [hG : IsMulCommutative G] : center G = ⊤ := center_eq_top_iff.mpr hG
 
 /-- A group is commutative if the center is the whole group. -/
 @[to_additive (attr := instance_reducible)
-/-- An additive group is commutative if the center is the whole group. -/]
-def _root_.Group.commGroupOfCenterEqTop (h : center G = ⊤) : CommGroup G :=
-  { ‹Group G› with
-    mul_comm := by
-      rw [eq_top_iff'] at h
-      intro x y
-      apply Subgroup.mem_center_iff.mp _ x
-      exact h y
-  }
+  /-- An additive group is commutative if the center is the whole group. -/]
+def _root_.Group.commGroupOfCenterEqTop (h : center G = ⊤) : CommGroup G := {
+  ‹Group G› with
+  mul_comm := by
+    rw [eq_top_iff'] at h
+    intro x y
+    apply Subgroup.mem_center_iff.mp _ x
+    exact h y
+}
 
 @[to_additive]
 protected theorem center_prod : center (G × H) = prod (center G) (center H) :=
   SetLike.coe_injective Set.center_prod
 
 @[to_additive]
-protected theorem center_pi {η : Type*} {G : η → Type*} [Π i, Group (G i)] :
-    center (Π i, G i) = pi .univ fun i ↦ center (G i) :=
+protected theorem center_pi {η : Type*} {G : η → Type*} [Π i, Group (G i)]
+    : center (Π i, G i) = pi .univ fun i ↦ center (G i) :=
   SetLike.coe_injective Set.center_pi
 
 section Normalizer
@@ -155,8 +153,8 @@ end IsConj
 namespace ConjClasses
 
 set_option backward.isDefEq.respectTransparency false in
-theorem mk_bijOn (G : Type*) [Group G] :
-    Set.BijOn ConjClasses.mk (↑(Subgroup.center G)) (noncenter G)ᶜ := by
+theorem mk_bijOn (G : Type*) [Group G]
+    : Set.BijOn ConjClasses.mk (↑(Subgroup.center G)) (noncenter G)ᶜ := by
   refine ⟨fun g hg ↦ ?_, fun x hx y _ H ↦ ?_, ?_⟩
   · simp only [mem_noncenter, Set.compl_def, Set.mem_ofPred, Set.not_nontrivial_iff]
     intro x hx y hy

@@ -34,7 +34,6 @@ flow onto an invariant subset, and the time-reversal of a flow by a group.
 
 @[expose] public section
 
-
 open Set Function
 
 variable {τ α : Type*}
@@ -45,8 +44,7 @@ variable {τ α : Type*}
 section Invariant
 
 /-- A set `s ⊆ α` is invariant under `ϕ : τ → α → α` if `ϕ t s ⊆ s` for all `t` in `τ`. -/
-def IsInvariant (ϕ : τ → α → α) (s : Set α) : Prop :=
-  ∀ t, MapsTo (ϕ t) s s
+def IsInvariant (ϕ : τ → α → α) (s : Set α) : Prop := ∀ t, MapsTo (ϕ t) s s
 
 variable (ϕ : τ → α → α) (s : Set α)
 
@@ -57,20 +55,28 @@ theorem isInvariant_iff_image : IsInvariant ϕ s ↔ ∀ t, ϕ t '' s ⊆ s := b
 def IsForwardInvariant [Preorder τ] [Zero τ] (ϕ : τ → α → α) (s : Set α) : Prop :=
   ∀ ⦃t⦄, 0 ≤ t → MapsTo (ϕ t) s s
 
-theorem IsInvariant.isForwardInvariant [Preorder τ] [Zero τ] {ϕ : τ → α → α} {s : Set α}
-    (h : IsInvariant ϕ s) : IsForwardInvariant ϕ s := fun t _ht => h t
+theorem IsInvariant.isForwardInvariant
+    [Preorder τ] [Zero τ] {ϕ : τ → α → α} {s : Set α} (h : IsInvariant ϕ s)
+    : IsForwardInvariant ϕ s := fun t _ht =>
+  h t
 
-/-- If `τ` is a `CanonicallyOrderedAdd` monoid (e.g., `ℕ` or `ℝ≥0`), then the notions
-`IsForwardInvariant` and `IsInvariant` are equivalent. -/
-theorem IsForwardInvariant.isInvariant [AddMonoid τ] [PartialOrder τ] [CanonicallyOrderedAdd τ]
-    {ϕ : τ → α → α} {s : Set α}
-    (h : IsForwardInvariant ϕ s) : IsInvariant ϕ s := fun _ => h zero_le
+/--
+If `τ` is a `CanonicallyOrderedAdd` monoid (e.g., `ℕ` or `ℝ≥0`), then the notions
+`IsForwardInvariant` and `IsInvariant` are equivalent.
+-/
+theorem IsForwardInvariant.isInvariant
+    [AddMonoid τ] [PartialOrder τ] [CanonicallyOrderedAdd τ]
+    {ϕ : τ → α → α} {s : Set α} (h : IsForwardInvariant ϕ s)
+    : IsInvariant ϕ s := fun _ =>
+  h zero_le
 
-/-- If `τ` is a `CanonicallyOrderedAdd` monoid (e.g., `ℕ` or `ℝ≥0`), then the notions
-`IsForwardInvariant` and `IsInvariant` are equivalent. -/
-theorem isForwardInvariant_iff_isInvariant [AddMonoid τ] [PartialOrder τ] [CanonicallyOrderedAdd τ]
-    {ϕ : τ → α → α} {s : Set α} :
-    IsForwardInvariant ϕ s ↔ IsInvariant ϕ s :=
+/--
+If `τ` is a `CanonicallyOrderedAdd` monoid (e.g., `ℕ` or `ℝ≥0`), then the notions
+`IsForwardInvariant` and `IsInvariant` are equivalent.
+-/
+theorem isForwardInvariant_iff_isInvariant
+    [AddMonoid τ] [PartialOrder τ] [CanonicallyOrderedAdd τ] {ϕ : τ → α → α} {s : Set α}
+    : IsForwardInvariant ϕ s ↔ IsInvariant ϕ s :=
   ⟨IsForwardInvariant.isInvariant, IsInvariant.isForwardInvariant⟩
 
 end Invariant
@@ -80,8 +86,10 @@ end Invariant
 -/
 
 variable (τ α) in
-/-- A flow on a topological space `α` by an additive topological
-monoid `τ` is a continuous monoid action of `τ` on `α`. -/
+/--
+A flow on a topological space `α` by an additive topological
+monoid `τ` is a continuous monoid action of `τ` on `α`.
+-/
 structure Flow [TopologicalSpace τ] [TopologicalSpace α] [AddZero τ] where
   /-- The map `τ → α → α` underlying a flow of `τ` on `α`. -/
   toFun : τ → α → α
@@ -107,11 +115,9 @@ protected def id : Flow τ α where
   map_add' _ _ _ := rfl
   map_zero' _ := rfl
 
-@[simp]
-theorem id_apply (t : τ) : Flow.id τ α t = id := rfl
+@[simp] theorem id_apply (t : τ) : Flow.id τ α t = id := rfl
 
-instance : Inhabited (Flow τ α) :=
-  ⟨Flow.id τ α⟩
+instance : Inhabited (Flow τ α) := ⟨Flow.id τ α⟩
 
 @[ext]
 theorem ext : ∀ {ϕ₁ ϕ₂ : Flow τ α}, (∀ t x, ϕ₁ t x = ϕ₂ t x) → ϕ₁ = ϕ₂
@@ -121,25 +127,25 @@ theorem ext : ∀ {ϕ₁ ϕ₂ : Flow τ α}, (∀ t x, ϕ₁ t x = ϕ₂ t x) �
     exact h _ _
 
 @[continuity, fun_prop]
-protected theorem continuous {β : Type*} [TopologicalSpace β] {t : β → τ} (ht : Continuous t)
-    {f : β → α} (hf : Continuous f) : Continuous fun x => ϕ (t x) (f x) :=
+protected theorem continuous
+    {β : Type*} [TopologicalSpace β] {t : β → τ} (ht : Continuous t) {f : β → α} (hf : Continuous f)
+    : Continuous fun x => ϕ (t x) (f x) :=
   ϕ.cont'.comp (ht.prodMk hf)
 
 alias _root_.Continuous.flow := Flow.continuous
 
-@[continuity, fun_prop]
-theorem continuous_toFun (t : τ) : Continuous (ϕ.toFun t) := by
-  fun_prop
+@[continuity, fun_prop] theorem continuous_toFun (t : τ) : Continuous (ϕ.toFun t) := by fun_prop
 
 theorem map_add (t₁ t₂ : τ) (x : α) : ϕ (t₁ + t₂) x = ϕ t₁ (ϕ t₂ x) := ϕ.map_add' _ _ _
 
-@[simp]
-theorem map_zero : ϕ 0 = id := funext ϕ.map_zero'
+@[simp] theorem map_zero : ϕ 0 = id := funext ϕ.map_zero'
 
 theorem map_zero_apply (x : α) : ϕ 0 x = x := ϕ.map_zero' x
 
-/-- Iterations of a continuous function from a topological space `α`
-to itself defines a semiflow by `ℕ` on `α`. -/
+/--
+Iterations of a continuous function from a topological space `α`
+to itself defines a semiflow by `ℕ` on `α`.
+-/
 def fromIter {g : α → α} (h : Continuous g) : Flow ℕ α where
   toFun n := g^[n]
   cont' := continuous_prod_of_discrete_left.mpr h.iterate
@@ -147,8 +153,8 @@ def fromIter {g : α → α} (h : Continuous g) : Flow ℕ α where
   map_zero' _x := rfl
 
 @[simp]
-theorem fromIter_apply {g : α → α} (h : Continuous g) (n : ℕ) (x : α) :
-    fromIter h n x = g^[n] x := rfl
+theorem fromIter_apply {g : α → α} (h : Continuous g) (n : ℕ) (x : α) : fromIter h n x = g^[n] x :=
+  rfl
 
 /-- The discrete flow `ℤ → α → α` induced by a homeomorphism `f : α → α`. -/
 protected def _root_.Homeomorph.flow (f : α ≃ₜ α) : Flow ℤ α where
@@ -162,17 +168,13 @@ protected def _root_.Homeomorph.flow (f : α ≃ₜ α) : Flow ℤ α where
   map_zero' x := by simp
 
 @[simp]
-theorem _root_.Homeomorph.flow_apply {f : α ≃ₜ α} {n : ℤ} {x : α} :
-    f.flow n x = (f ^ n) x := by rfl
+theorem _root_.Homeomorph.flow_apply {f : α ≃ₜ α} {n : ℤ} {x : α} : f.flow n x = (f ^ n) x := by rfl
 
 variable (α) in
-@[simp]
-theorem _root_.Homeomorph.one_flow : (1 : α ≃ₜ α).flow = Flow.id ℤ α := by
-  ext; simp
+@[simp] theorem _root_.Homeomorph.one_flow : (1 : α ≃ₜ α).flow = Flow.id ℤ α := by ext; simp
 
 @[simp]
-theorem _root_.Homeomorph.inv_flow {f : α ≃ₜ α} {n : ℤ} : f⁻¹.flow n = f.flow (-n) := by
-  ext; simp
+theorem _root_.Homeomorph.inv_flow {f : α ≃ₜ α} {n : ℤ} : f⁻¹.flow n = f.flow (-n) := by ext; simp
 
 /-- Restriction of a flow onto an invariant set. -/
 def restrict {s : Set α} (h : IsInvariant ϕ s) : Flow τ s where
@@ -182,8 +184,9 @@ def restrict {s : Set α} (h : IsInvariant ϕ s) : Flow τ s where
   map_zero' _ := Subtype.ext (map_zero_apply _ _)
 
 @[simp]
-theorem coe_restrict_apply {s : Set α} (h : IsInvariant ϕ s) (t : τ) (x : s) :
-    restrict ϕ h t x = ϕ t x := rfl
+theorem coe_restrict_apply {s : Set α} (h : IsInvariant ϕ s) (t : τ) (x : s)
+    : restrict ϕ h t x = ϕ t x :=
+  rfl
 
 end AddZero
 
@@ -205,8 +208,9 @@ def restrictAddSubmonoid (S : AddSubmonoid τ) : Flow S α where
   map_add' t₁ t₂ x := ϕ.map_add' t₁ t₂ x
   map_zero' := ϕ.map_zero'
 
-theorem restrictAddSubmonoid_apply (S : AddSubmonoid τ) (t : S) (x : α) :
-    restrictAddSubmonoid ϕ S t x = ϕ t x := rfl
+theorem restrictAddSubmonoid_apply (S : AddSubmonoid τ) (t : S) (x : α)
+    : restrictAddSubmonoid ϕ S t x = ϕ t x :=
+  rfl
 
 section Orbit
 
@@ -228,11 +232,11 @@ theorem mem_orbit_of_mem_orbit {x₁ x₂ : α} (t : τ) (h : x₂ ∈ orbit ϕ 
   ϕ.toAddAction.mem_orbit_of_mem_orbit t h
 
 /-- The orbit of a point under a flow `ϕ` is invariant under `ϕ`. -/
-theorem isInvariant_orbit (x : α) : IsInvariant ϕ (orbit ϕ x) :=
-  fun t _ => ϕ.toAddAction.mem_orbit_of_mem_orbit t
+theorem isInvariant_orbit (x : α) : IsInvariant ϕ (orbit ϕ x) := fun t _ =>
+  ϕ.toAddAction.mem_orbit_of_mem_orbit t
 
-theorem orbit_restrict (s : Set α) (hs : IsInvariant ϕ s) (x : s) :
-    orbit (ϕ.restrict hs) x = Subtype.val ⁻¹' orbit ϕ x :=
+theorem orbit_restrict (s : Set α) (hs : IsInvariant ϕ s) (x : s)
+    : orbit (ϕ.restrict hs) x = Subtype.val ⁻¹' orbit ϕ x :=
   Set.ext (fun x => by simp [orbit_eq_range, Subtype.ext_iff])
 
 variable [Preorder τ] [AddLeftMono τ]
@@ -243,8 +247,9 @@ def restrictNonneg : Flow (AddSubmonoid.nonneg τ) α := ϕ.restrictAddSubmonoid
 /-- The forward orbit of a point under a flow. -/
 def forwardOrbit (x : α) : Set α := orbit ϕ.restrictNonneg x
 
-theorem forwardOrbit_eq_range_nonneg (x : α) :
-    forwardOrbit ϕ x = Set.range (fun t : {t : τ // 0 ≤ t} => ϕ t x) := rfl
+theorem forwardOrbit_eq_range_nonneg (x : α)
+    : forwardOrbit ϕ x = Set.range (fun t : {t : τ // 0 ≤ t} => ϕ t x) :=
+  rfl
 
 /-- The forward orbit of a point under a flow `ϕ` is forward-invariant under `ϕ`. -/
 theorem isForwardInvariant_forwardOrbit (x : α) : IsForwardInvariant ϕ (forwardOrbit ϕ x) :=
@@ -261,17 +266,20 @@ end Orbit
 
 variable {β γ : Type*} [TopologicalSpace β] [TopologicalSpace γ] (ψ : Flow τ β) (χ : Flow τ γ)
 
-/-- Given flows `ϕ` by `τ` on `α` and `ψ` by `τ` on `β`, a function `π : α → β` is called a
+/--
+Given flows `ϕ` by `τ` on `α` and `ψ` by `τ` on `β`, a function `π : α → β` is called a
 *semiconjugacy* from `ϕ` to `ψ` if `π` is continuous and surjective, and `π ∘ (ϕ t) = (ψ t) ∘ π` for
-all `t : τ`. -/
+all `t : τ`.
+-/
 structure IsSemiconjugacy (π : α → β) (ϕ : Flow τ α) (ψ : Flow τ β) : Prop where
   cont : Continuous π
   surj : Function.Surjective π
   semiconj : ∀ t, Function.Semiconj π (ϕ t) (ψ t)
 
 /-- The composition of semiconjugacies is a semiconjugacy. -/
-theorem IsSemiconjugacy.comp {π : α → β} {ρ : β → γ}
-    (h₁ : IsSemiconjugacy π ϕ ψ) (h₂ : IsSemiconjugacy ρ ψ χ) : IsSemiconjugacy (ρ ∘ π) ϕ χ :=
+theorem IsSemiconjugacy.comp
+    {π : α → β} {ρ : β → γ} (h₁ : IsSemiconjugacy π ϕ ψ) (h₂ : IsSemiconjugacy ρ ψ χ)
+    : IsSemiconjugacy (ρ ∘ π) ϕ χ :=
   ⟨h₂.cont.comp h₁.cont, h₂.surj.comp h₁.surj, fun t => (h₂.semiconj t).comp_left (h₁.semiconj t)⟩
 
 /-- The identity is a semiconjugacy from `ϕ` to `ψ` if and only if `ϕ` and `ψ` are equal. -/
@@ -304,15 +312,14 @@ def toHomeomorph (t : τ) : (α ≃ₜ α) where
   left_inv x := by simp [← map_add]
   right_inv x := by simp [← map_add]
 
-@[simp]
-theorem toHomeomorph_apply (t : τ) (x : α) : ϕ.toHomeomorph t x = ϕ t x := rfl
+@[simp] theorem toHomeomorph_apply (t : τ) (x : α) : ϕ.toHomeomorph t x = ϕ t x := rfl
 
 @[simp]
 theorem toHomeomorph_symm_apply (t : τ) (x : α) : (ϕ.toHomeomorph t).symm x = ϕ (-t) x := rfl
 
 @[simp]
-theorem _root_.Homeomorph.toHomeomorph_flow_eq {f : α ≃ₜ α} {n : ℤ} :
-    f.flow.toHomeomorph n = f ^ n := by
+theorem _root_.Homeomorph.toHomeomorph_flow_eq {f : α ≃ₜ α} {n : ℤ}
+    : f.flow.toHomeomorph n = f ^ n := by
   ext; simp
 
 theorem isInvariant_iff_image_eq (s : Set α) : IsInvariant ϕ s ↔ ∀ t, ϕ t '' s = s :=
@@ -330,16 +337,17 @@ section SubtractionCommMonoid
 
 variable [SubtractionCommMonoid τ] [ContinuousNeg τ] (ϕ : Flow τ α)
 
-/-- The time-reversal of a flow `ϕ` by a (commutative, additive) group
-is defined `ϕ.reverse t x = ϕ (-t) x`. -/
+/--
+The time-reversal of a flow `ϕ` by a (commutative, additive) group
+is defined `ϕ.reverse t x = ϕ (-t) x`.
+-/
 def reverse : Flow τ α where
   toFun t := ϕ (-t)
   cont' := by fun_prop
   map_add' _ _ _ := by rw [neg_add, map_add]
   map_zero' _ := by rw [neg_zero, map_zero_apply]
 
-@[simp]
-theorem reverse_apply (t : τ) (x : α) : ϕ.reverse t x = ϕ (-t) x := rfl
+@[simp] theorem reverse_apply (t : τ) (x : α) : ϕ.reverse t x = ϕ (-t) x := rfl
 
 end SubtractionCommMonoid
 

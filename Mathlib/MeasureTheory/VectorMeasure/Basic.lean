@@ -8,7 +8,6 @@ module
 public import Mathlib.MeasureTheory.PiSystem
 public import Mathlib.MeasureTheory.VectorMeasure.Defs
 public import Mathlib.Topology.Algebra.InfiniteSum.Module
-
 import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 import Mathlib.Topology.Algebra.InfiniteSum.Order
 import Mathlib.Topology.Metrizable.Uniformity
@@ -46,16 +45,16 @@ section
 
 variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]
 
-@[simp]
-theorem empty (v : VectorMeasure α M) : v ∅ = 0 :=
-  v.empty'
+@[simp] theorem empty (v : VectorMeasure α M) : v ∅ = 0 := v.empty'
 
 @[simp]
-theorem not_measurable (v : VectorMeasure α M) {i : Set α} (hi : ¬MeasurableSet i) : v i = 0 :=
+theorem not_measurable (v : VectorMeasure α M) {i : Set α} (hi : ¬ MeasurableSet i) : v i = 0 :=
   v.not_measurable' hi
 
-theorem m_iUnion (v : VectorMeasure α M) {f : ℕ → Set α} (hf₁ : ∀ i, MeasurableSet (f i))
-    (hf₂ : Pairwise (Disjoint on f)) : HasSum (fun i => v (f i)) (v (⋃ i, f i)) :=
+theorem m_iUnion
+    (v : VectorMeasure α M)
+    {f : ℕ → Set α} (hf₁ : ∀ i, MeasurableSet (f i)) (hf₂ : Pairwise (Disjoint on f))
+    : HasSum (fun i => v (f i)) (v (⋃ i, f i)) :=
   v.m_iUnion' hf₁ hf₂
 
 @[deprecated (since := "2026-06-10")] alias coe_injective := DFunLike.coe_injective
@@ -78,8 +77,8 @@ theorem ext {s t : VectorMeasure α M} (h : ∀ i : Set α, MeasurableSet i → 
 
 variable [Countable β] {v : VectorMeasure α M} {f : β → Set α}
 
-theorem hasSum_of_disjoint_iUnion (hm : ∀ i, MeasurableSet (f i)) (hd : Pairwise (Disjoint on f)) :
-    HasSum (fun i => v (f i)) (v (⋃ i, f i)) := by
+theorem hasSum_of_disjoint_iUnion (hm : ∀ i, MeasurableSet (f i)) (hd : Pairwise (Disjoint on f))
+    : HasSum (fun i => v (f i)) (v (⋃ i, f i)) := by
   rcases Countable.exists_injective_nat β with ⟨e, he⟩
   rw [← hasSum_extend_zero he]
   convert! m_iUnion v (f := Function.extend e f fun _ ↦ ∅) _ _
@@ -88,58 +87,65 @@ theorem hasSum_of_disjoint_iUnion (hm : ∀ i, MeasurableSet (f i)) (hd : Pairwi
   · simp [Function.apply_extend MeasurableSet, Function.comp_def, hm]
   · exact hd.disjoint_extend_bot (he.factorsThrough _)
 
-theorem of_if {ι : Type*} {x : ι} {B : Set ι} {A : Set α} [Decidable (x ∈ B)] :
-    v (if x ∈ B then A else ∅) = indicator B (fun _ => v A) x := by
+theorem of_if {ι : Type*} {x : ι} {B : Set ι} {A : Set α} [Decidable (x ∈ B)]
+    : v (if x ∈ B then A else ∅) = indicator B (fun _ => v A) x := by
   split_ifs with h <;> simp [h]
 
 variable [T2Space M]
 
-theorem of_disjoint_iUnion (hm : ∀ i, MeasurableSet (f i)) (hd : Pairwise (Disjoint on f)) :
-    v (⋃ i, f i) = ∑' i, v (f i) :=
+theorem of_disjoint_iUnion (hm : ∀ i, MeasurableSet (f i)) (hd : Pairwise (Disjoint on f))
+    : v (⋃ i, f i) = ∑' i, v (f i) :=
   (hasSum_of_disjoint_iUnion hm hd).tsum_eq.symm
 
-theorem of_biUnion {ι : Type*} {s : Set ι} {f : ι → Set α} (hs : s.Countable)
-    (hd : s.Pairwise (Disjoint on f)) (h : ∀ b ∈ s, MeasurableSet (f b)) :
-    v (⋃ b ∈ s, f b) = ∑' p : s, v (f p) := by
+theorem of_biUnion
+    {ι : Type*} {s : Set ι} {f : ι → Set α}
+    (hs : s.Countable) (hd : s.Pairwise (Disjoint on f)) (h : ∀ b ∈ s, MeasurableSet (f b))
+    : v (⋃ b ∈ s, f b) = ∑' p : s, v (f p) := by
   have := hs.toEncodable
   rw [biUnion_eq_iUnion]
   apply of_disjoint_iUnion
   · exact fun x ↦ h x x.2
   · exact hd.on_injective Subtype.coe_injective fun x => x.2
 
-theorem of_biUnion_finset {ι : Type*} {s : Finset ι} {f : ι → Set α} (hd : PairwiseDisjoint (↑s) f)
-    (hm : ∀ b ∈ s, MeasurableSet (f b)) : v (⋃ b ∈ s, f b) = ∑ p ∈ s, v (f p) := by
+theorem of_biUnion_finset
+    {ι : Type*} {s : Finset ι} {f : ι → Set α}
+    (hd : PairwiseDisjoint (↑s) f) (hm : ∀ b ∈ s, MeasurableSet (f b))
+    : v (⋃ b ∈ s, f b) = ∑ p ∈ s, v (f p) := by
   rw [← Finset.sum_attach, Finset.attach_eq_univ, ← tsum_fintype (L := .unconditional s)]
   exact of_biUnion s.countable_toSet hd hm
 
-theorem of_union {A B : Set α} (h : Disjoint A B) (hA : MeasurableSet A) (hB : MeasurableSet B) :
-    v (A ∪ B) = v A + v B := by
+theorem of_union {A B : Set α} (h : Disjoint A B) (hA : MeasurableSet A) (hB : MeasurableSet B)
+    : v (A ∪ B) = v A + v B := by
   rw [Set.union_eq_iUnion, of_disjoint_iUnion, tsum_fintype, Fintype.sum_bool, cond, cond]
   exacts [fun b => Bool.casesOn b hB hA, pairwise_disjoint_on_bool.2 h]
 
-theorem of_add_of_sdiff {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B) (h : A ⊆ B) :
-    v A + v (B \ A) = v B := by
+theorem of_add_of_sdiff {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B) (h : A ⊆ B)
+    : v A + v (B \ A) = v B := by
   rw [← of_union (@Set.disjoint_sdiff_right _ A B) hA (hB.diff hA), Set.union_sdiff_cancel h]
 
 @[deprecated (since := "2026-06-03")] alias of_add_of_diff := of_add_of_sdiff
 
-theorem of_sdiff {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
-    {v : VectorMeasure α M} {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B)
-    (h : A ⊆ B) : v (B \ A) = v B - v A := by
+theorem of_sdiff
+    {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
+    {v : VectorMeasure α M} {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B) (h : A ⊆ B)
+    : v (B \ A) = v B - v A := by
   rw [← of_add_of_sdiff hA hB h, add_sub_cancel_left]
 
 @[deprecated (since := "2026-06-03")] alias of_diff := of_sdiff
 
-theorem of_compl {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
-    {v : VectorMeasure α M} {A : Set α} (hA : MeasurableSet A) :
-    v Aᶜ = v univ - v A := by
+theorem of_compl
+    {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
+    {v : VectorMeasure α M} {A : Set α} (hA : MeasurableSet A)
+    : v Aᶜ = v univ - v A := by
   simpa [compl_eq_univ_sdiff] using of_sdiff hA .univ (v := v) (subset_univ _)
 
-theorem of_sdiff_of_sdiff_eq_zero {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B)
-    (h' : v (B \ A) = 0) : v (A \ B) + v B = v A := by
+theorem of_sdiff_of_sdiff_eq_zero
+    {A B : Set α} (hA : MeasurableSet A) (hB : MeasurableSet B) (h' : v (B \ A) = 0)
+    : v (A \ B) + v B = v A := by
   symm
   calc
-    v A = v (A \ B ∪ A ∩ B) := by simp only [Set.sdiff_union_inter]
+    v A
+      = v (A \ B ∪ A ∩ B) := by simp only [Set.sdiff_union_inter]
     _ = v (A \ B) + v (A ∩ B) := by
       rw [of_union]
       · rw [disjoint_comm]
@@ -155,33 +161,39 @@ theorem of_sdiff_of_sdiff_eq_zero {A B : Set α} (hA : MeasurableSet A) (hB : Me
 
 @[deprecated (since := "2026-06-03")] alias of_diff_of_diff_eq_zero := of_sdiff_of_sdiff_eq_zero
 
-theorem of_iUnion_nonneg {M : Type*} [TopologicalSpace M]
-    [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
-    [OrderClosedTopology M] {v : VectorMeasure α M} (hf₁ : ∀ i, MeasurableSet (f i))
-    (hf₂ : Pairwise (Disjoint on f)) (hf₃ : ∀ i, 0 ≤ v (f i)) : 0 ≤ v (⋃ i, f i) :=
+theorem of_iUnion_nonneg
+    {M : Type*} [TopologicalSpace M] [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
+    [OrderClosedTopology M]
+    {v : VectorMeasure α M}
+    (hf₁ : ∀ i, MeasurableSet (f i)) (hf₂ : Pairwise (Disjoint on f)) (hf₃ : ∀ i, 0 ≤ v (f i))
+    : 0 ≤ v (⋃ i, f i) :=
   (v.of_disjoint_iUnion hf₁ hf₂).symm ▸ tsum_nonneg hf₃
 
-theorem of_iUnion_nonpos {M : Type*} [TopologicalSpace M]
-    [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
-    [OrderClosedTopology M] {v : VectorMeasure α M} (hf₁ : ∀ i, MeasurableSet (f i))
-    (hf₂ : Pairwise (Disjoint on f)) (hf₃ : ∀ i, v (f i) ≤ 0) : v (⋃ i, f i) ≤ 0 :=
+theorem of_iUnion_nonpos
+    {M : Type*} [TopologicalSpace M] [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
+    [OrderClosedTopology M]
+    {v : VectorMeasure α M}
+    (hf₁ : ∀ i, MeasurableSet (f i)) (hf₂ : Pairwise (Disjoint on f)) (hf₃ : ∀ i, v (f i) ≤ 0)
+    : v (⋃ i, f i) ≤ 0 :=
   (v.of_disjoint_iUnion hf₁ hf₂).symm ▸ tsum_nonpos hf₃
 
-theorem of_nonneg_disjoint_union_eq_zero {s : SignedMeasure α} {A B : Set α} (h : Disjoint A B)
-    (hA₁ : MeasurableSet A) (hB₁ : MeasurableSet B) (hA₂ : 0 ≤ s A) (hB₂ : 0 ≤ s B)
-    (hAB : s (A ∪ B) = 0) : s A = 0 := by
+theorem of_nonneg_disjoint_union_eq_zero
+    {s : SignedMeasure α} {A B : Set α} (h : Disjoint A B) (hA₁ : MeasurableSet A)
+    (hB₁ : MeasurableSet B) (hA₂ : 0 ≤ s A) (hB₂ : 0 ≤ s B) (hAB : s (A ∪ B) = 0)
+    : s A = 0 := by
   rw [of_union h hA₁ hB₁] at hAB
   linarith
 
-theorem of_nonpos_disjoint_union_eq_zero {s : SignedMeasure α} {A B : Set α} (h : Disjoint A B)
-    (hA₁ : MeasurableSet A) (hB₁ : MeasurableSet B) (hA₂ : s A ≤ 0) (hB₂ : s B ≤ 0)
-    (hAB : s (A ∪ B) = 0) : s A = 0 := by
+theorem of_nonpos_disjoint_union_eq_zero
+    {s : SignedMeasure α} {A B : Set α} (h : Disjoint A B) (hA₁ : MeasurableSet A)
+    (hB₁ : MeasurableSet B) (hA₂ : s A ≤ 0) (hB₂ : s B ≤ 0) (hAB : s (A ∪ B) = 0)
+    : s A = 0 := by
   rw [of_union h hA₁ hB₁] at hAB
   linarith
 
 theorem tendsto_vectorMeasure_iUnion_atTop_nat
-    {s : ℕ → Set α} (hm : Monotone s) (hs : ∀ i, MeasurableSet (s i)) :
-    Tendsto (fun n ↦ v (s n)) atTop (𝓝 (v (⋃ n, s n))) := by
+    {s : ℕ → Set α} (hm : Monotone s) (hs : ∀ i, MeasurableSet (s i))
+    : Tendsto (fun n ↦ v (s n)) atTop (𝓝 (v (⋃ n, s n))) := by
   set t : ℕ → Set α := disjointed s
   have ht n : MeasurableSet (t n) := .disjointed (fun n ↦ hs n) n
   have : HasSum (fun n ↦ v (t n)) (v (⋃ n, s n)) := by
@@ -196,32 +208,34 @@ theorem tendsto_vectorMeasure_iUnion_atTop_nat
 
 theorem tendsto_vectorMeasure_iInter_atTop_nat
     {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M] [ContinuousSub M]
-    {v : VectorMeasure α M} {s : ℕ → Set α} (hm : Antitone s) (hs : ∀ i, MeasurableSet (s i)) :
-    Tendsto (fun n ↦ v (s n)) atTop (𝓝 (v (⋂ n, s n))) := by
+    {v : VectorMeasure α M} {s : ℕ → Set α} (hm : Antitone s) (hs : ∀ i, MeasurableSet (s i))
+    : Tendsto (fun n ↦ v (s n)) atTop (𝓝 (v (⋂ n, s n))) := by
   have I n : v (s n) = v univ - v (s n)ᶜ := by simp [of_compl (hs n)]
   have J : v (⋂ n, s n) = v univ - v (⋃ n, (s n)ᶜ) := by
     rw [← of_compl (MeasurableSet.iUnion (fun n ↦ (hs n).compl))]
     simp
   simp_rw [I, J]
   apply tendsto_const_nhds.sub
-  exact tendsto_vectorMeasure_iUnion_atTop_nat (fun i j hij ↦ by simpa using hm hij)
+  exact tendsto_vectorMeasure_iUnion_atTop_nat
+    (fun i j hij ↦ by simpa using hm hij)
     (fun i ↦ (hs i).compl)
 
-/-- If two vector measures give the same mass to the whole space and coincide on a
-generating π-system, then they coincide. -/
-theorem ext_of_generateFrom {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
+/--
+If two vector measures give the same mass to the whole space and coincide on a
+generating π-system, then they coincide.
+-/
+theorem ext_of_generateFrom
+    {M : Type*} [AddCommGroup M] [TopologicalSpace M] [T2Space M]
     {X : Type*} {mX : MeasurableSpace X} {μ ν : VectorMeasure X M}
-    (C : Set (Set X)) (hμν : ∀ s ∈ C, μ s = ν s)
-    (hA : mX = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
-    (h_univ : μ Set.univ = ν Set.univ) : μ = ν := by
+    (C : Set (Set X)) (hμν : ∀ s ∈ C, μ s = ν s) (hA : mX = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C) (h_univ : μ Set.univ = ν Set.univ)
+    : μ = ν := by
   ext s hs
   induction s, hs using MeasurableSpace.induction_on_inter hA hC with
   | empty => simp
   | basic t ht => exact hμν t ht
-  | compl t htm iht =>
-    simp [of_compl, iht, htm, h_univ]
-  | iUnion f hfd hfm ihf =>
-    simp [of_disjoint_iUnion, hfm, hfd, ihf]
+  | compl t htm iht => simp [of_compl, iht, htm, h_univ]
+  | iUnion f hfd hfm ihf => simp [of_disjoint_iUnion, hfm, hfd, ihf]
 
 end
 
@@ -230,8 +244,10 @@ section SMul
 variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]
 variable {R : Type*} [Semiring R] [DistribMulAction R M] [ContinuousConstSMul R M]
 
-/-- Given a scalar `r` and a vector measure `v`, `smul r v` is the vector measure corresponding to
-the set function `s : Set α => r • (v s)`. -/
+/--
+Given a scalar `r` and a vector measure `v`, `smul r v` is the vector measure corresponding to
+the set function `s : Set α => r • (v s)`.
+-/
 @[instance_reducible]
 def smul (r : R) (v : VectorMeasure α M) : VectorMeasure α M where
   measureOf' := r • ⇑v
@@ -239,8 +255,7 @@ def smul (r : R) (v : VectorMeasure α M) : VectorMeasure α M where
   not_measurable' _ hi := by rw [Pi.smul_apply, v.not_measurable hi, smul_zero]
   m_iUnion' _ hf₁ hf₂ := by exact HasSum.const_smul _ (v.m_iUnion hf₁ hf₂)
 
-instance instSMul : SMul R (VectorMeasure α M) :=
-  ⟨smul⟩
+instance instSMul : SMul R (VectorMeasure α M) := ⟨smul⟩
 
 instance : IsSMulApply R (VectorMeasure α M) where
 
@@ -254,24 +269,20 @@ section AddCommMonoid
 
 variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]
 
-instance instZero : Zero (VectorMeasure α M) :=
-  ⟨⟨0, rfl, fun _ _ => rfl, fun _ _ _ => hasSum_zero⟩⟩
+instance instZero : Zero (VectorMeasure α M) := ⟨⟨0, rfl, fun _ _ => rfl, fun _ _ _ => hasSum_zero⟩⟩
 
 instance : IsZeroApply (VectorMeasure α M) where
 
-instance instInhabited : Inhabited (VectorMeasure α M) :=
-  ⟨0⟩
+instance instInhabited : Inhabited (VectorMeasure α M) := ⟨0⟩
 
 @[nontriviality]
-lemma apply_eq_zero_of_isEmpty [IsEmpty α] (μ : VectorMeasure α M) (s : Set α) :
-    μ s = 0 := by
+lemma apply_eq_zero_of_isEmpty [IsEmpty α] (μ : VectorMeasure α M) (s : Set α) : μ s = 0 := by
   simp [eq_empty_of_isEmpty s]
 
 instance [IsEmpty α] : Subsingleton (VectorMeasure α M) :=
   ⟨fun μ ν => by ext; rw [apply_eq_zero_of_isEmpty, apply_eq_zero_of_isEmpty]⟩
 
-theorem eq_zero_of_isEmpty [IsEmpty α] (μ : VectorMeasure α M) : μ = 0 :=
-  Subsingleton.elim μ 0
+theorem eq_zero_of_isEmpty [IsEmpty α] (μ : VectorMeasure α M) : μ = 0 := Subsingleton.elim μ 0
 
 @[deprecated (since := "2026-06-10")] alias coe_zero := FunLike.coe_zero
 
@@ -286,8 +297,7 @@ def add (v w : VectorMeasure α M) : VectorMeasure α M where
   not_measurable' _ hi := by rw [Pi.add_apply, v.not_measurable hi, w.not_measurable hi, add_zero]
   m_iUnion' _ hf₁ hf₂ := HasSum.add (v.m_iUnion hf₁ hf₂) (w.m_iUnion hf₁ hf₂)
 
-instance instAdd : Add (VectorMeasure α M) :=
-  ⟨add⟩
+instance instAdd : Add (VectorMeasure α M) := ⟨add⟩
 
 instance : IsAddApply (VectorMeasure α M) where
 
@@ -317,8 +327,7 @@ def neg (v : VectorMeasure α M) : VectorMeasure α M where
   not_measurable' _ hi := by rw [Pi.neg_apply, neg_eq_zero, v.not_measurable hi]
   m_iUnion' _ hf₁ hf₂ := HasSum.neg <| v.m_iUnion hf₁ hf₂
 
-instance instNeg : Neg (VectorMeasure α M) :=
-  ⟨neg⟩
+instance instNeg : Neg (VectorMeasure α M) := ⟨neg⟩
 
 instance : IsNegApply (VectorMeasure α M) where
 
@@ -333,8 +342,7 @@ def sub (v w : VectorMeasure α M) : VectorMeasure α M where
   not_measurable' _ hi := by rw [Pi.sub_apply, v.not_measurable hi, w.not_measurable hi, sub_zero]
   m_iUnion' _ hf₁ hf₂ := HasSum.sub (v.m_iUnion hf₁ hf₂) (w.m_iUnion hf₁ hf₂)
 
-instance instSub : Sub (VectorMeasure α M) :=
-  ⟨sub⟩
+instance instSub : Sub (VectorMeasure α M) := ⟨sub⟩
 
 instance : IsSubApply (VectorMeasure α M) where
 
@@ -368,23 +376,25 @@ end Module
 
 section Dirac
 
-variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M] [MeasurableSpace β]
-  {x : β} {v : M} {s : Set β}
+variable
+  {M : Type*} [AddCommMonoid M] [TopologicalSpace M] [MeasurableSpace β] {x : β} {v : M} {s : Set β}
 
 open scoped Classical in
-/-- The Dirac vector measure with mass `v` at a point `x`. It gives mass `v` to measurable sets
-containing `x`, and `0` otherwise. -/
+/--
+The Dirac vector measure with mass `v` at a point `x`. It gives mass `v` to measurable sets
+containing `x`, and `0` otherwise.
+-/
 def dirac (x : β) (v : M) : VectorMeasure β M where
   measureOf' s := if MeasurableSet s ∧ x ∈ s then v else 0
   empty' := by simp
   not_measurable' := by simp +contextual
   m_iUnion' f f_meas f_disj := by
-    by_cases hx : x ∈ ⋃ i, f i; swap
+    by_cases hx : x ∈ ⋃ i, f i
+    swap
     · simp only [mem_iUnion, not_exists] at hx
       simp [hx, hasSum_zero]
-    have : MeasurableSet (⋃ i, f i) := by
-      apply MeasurableSet.iUnion f_meas
-    simp only [f_meas, true_and, MeasurableSet.iUnion f_meas, hx, and_self, ↓reduceIte]
+    have : MeasurableSet (⋃ i, f i) := by apply MeasurableSet.iUnion f_meas
+    simp only [f_meas, true_and, MeasurableSet.iUnion f_meas, hx, and_self, ↓ reduceIte]
     obtain ⟨j, hj⟩ : ∃ j, x ∈ f j := by simpa using hx
     nth_rewrite 2 [show v = if x ∈ f j then v else 0 by simp [hj]]
     apply hasSum_single
@@ -392,13 +402,14 @@ def dirac (x : β) (v : M) : VectorMeasure β M where
     have : Disjoint (f i) (f j) := f_disj hi
     grind
 
-@[simp] lemma dirac_apply_of_mem (hs : MeasurableSet s) (hx : x ∈ s) : dirac x v s = v :=
+@[simp]
+lemma dirac_apply_of_mem (hs : MeasurableSet s) (hx : x ∈ s) : dirac x v s = v :=
   ite_eq_left (And.intro hs hx)
 
-@[simp] lemma dirac_apply_of_notMem (hx : x ∉ s) : dirac x v s = 0 := by
-  simp [dirac, hx]
+@[simp] lemma dirac_apply_of_notMem (hx : x ∉ s) : dirac x v s = 0 := by simp [dirac, hx]
 
-@[simp] lemma dirac_zero : dirac x (0 : M) = 0 := by
+@[simp]
+lemma dirac_zero : dirac x (0 : M) = 0 := by
   ext s hs
   simp [dirac]
 

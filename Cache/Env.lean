@@ -47,16 +47,21 @@ absent, empty, or whitespace-only value takes `ifUnset`; any other value warns
 on stderr and takes `ifUnset` as well.
 -/
 def parseEnvFlag (name : String) (value? : Option String) (ifUnset : Bool) : IO Bool := do
-  let some value := nonEmptyEnvValue value? | return ifUnset
+  let some value := nonEmptyEnvValue value?
+    | return ifUnset
   match value.toLower with
-  | "1" | "true" => return true
-  | "0" | "false" => return false
+  | "1" | "true" =>
+    return true
+  | "0" | "false" =>
+    return false
   | _ =>
     IO.eprintln s!"Warning: ignoring {name}={value} (expected 1, true, 0 or false)."
     return ifUnset
 
-/-- Value of the boolean environment variable `name`, read from the environment
-and parsed by `parseEnvFlag`. -/
+/--
+Value of the boolean environment variable `name`, read from the environment
+and parsed by `parseEnvFlag`.
+-/
 def getEnvFlag (name : String) (ifUnset : Bool) : IO Bool := do
   parseEnvFlag name (← IO.getEnv name) ifUnset
 

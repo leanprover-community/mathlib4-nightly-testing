@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.ModularForms.CuspFormSubmodule
 public import Mathlib.NumberTheory.ModularForms.Discriminant
-
 import Mathlib.Algebra.Order.Floor.Semifield
 
 /-!
@@ -30,8 +29,8 @@ for `𝒮ℒ` (= `SL(2, ℤ)`) of even weight.
 
 @[expose] public noncomputable section
 
-open UpperHalfPlane ModularForm SlashInvariantForm SlashInvariantFormClass
-  CuspFormClass OnePoint Filter EisensteinSeries Asymptotics
+open UpperHalfPlane ModularForm SlashInvariantForm SlashInvariantFormClass CuspFormClass OnePoint
+  Filter EisensteinSeries Asymptotics
 
 open scoped MatrixGroups
 
@@ -45,34 +44,40 @@ local notation "Δ" => ModularForm.discriminant
 
 namespace CuspForm
 
-/-- Multiply a modular form of weight `k - 12` by the discriminant to get a cusp form of
-weight `k`. Built directly as a `CuspForm` via `CuspForm.mulModularForm`. -/
+/--
+Multiply a modular form of weight `k - 12` by the discriminant to get a cusp form of
+weight `k`. Built directly as a `CuspForm` via `CuspForm.mulModularForm`.
+-/
 def ofMulDiscriminant (f : ModularForm 𝒮ℒ (k - 12)) : CuspForm 𝒮ℒ k :=
   CuspForm.mcast (by ring) (CuspForm.discriminant.mulModularForm f)
 
 @[simp]
-lemma ofMulDiscriminant_apply (f : ModularForm 𝒮ℒ (k - 12)) (z : ℍ) :
-    (ofMulDiscriminant f) z = Δ z * f z := rfl
+lemma ofMulDiscriminant_apply (f : ModularForm 𝒮ℒ (k - 12)) (z : ℍ)
+    : (ofMulDiscriminant f) z = Δ z * f z :=
+  rfl
 
-lemma divByDiscriminant_slash_eq (f : CuspForm 𝒮ℒ k) (γ : SL(2, ℤ)) :
-    (fun z ↦ f z / Δ z) ∣[k - 12] γ = fun z ↦ f z / Δ z := by
+lemma divByDiscriminant_slash_eq (f : CuspForm 𝒮ℒ k) (γ : SL(2, ℤ))
+    : (fun z ↦ f z / Δ z) ∣[k - 12] γ = fun z ↦ f z / Δ z := by
   have hγ : (γ : GL (Fin 2) ℝ) ∈ 𝒮ℒ := ⟨γ, rfl⟩
   change (⇑f / ⇑CuspForm.discriminant) ∣[k - 12] γ = ⇑f / ⇑CuspForm.discriminant
   simp_rw [div_slash_SL2, SL_slash, slash_action_eqn _ _ hγ]
 
-/-- The linear equivalence between cusp forms of weight `k` and modular forms of weight `k - 12`,
-given by division by the discriminant. -/
+/--
+The linear equivalence between cusp forms of weight `k` and modular forms of weight `k - 12`,
+given by division by the discriminant.
+-/
 def discriminantEquiv : CuspForm 𝒮ℒ k ≃ₗ[ℂ] ModularForm 𝒮ℒ (k - 12) where
-  toFun f :=
-    { toFun z := f z / Δ z
-      slash_action_eq' := fun _ ⟨γ, hγ⟩ ↦ hγ ▸ divByDiscriminant_slash_eq f γ
-      holo' := f.holo'.div CuspForm.discriminant.holo' discriminant_ne_zero
-      bdd_at_cusps' {c} hc := by
-        rw [Subgroup.IsArithmetic.isCusp_iff_isCusp_SL2Z] at hc
-        rw [isBoundedAt_iff_forall_SL2Z hc]
-        intro γ _
-        rw [divByDiscriminant_slash_eq f γ, IsBoundedAtImInfty, BoundedAtFilter]
-        exact (div_isBoundedUnder_of_isBigO (exp_decay_isBigO_discriminant f)).isBigO_one ℝ }
+  toFun f := {
+    toFun z := f z / Δ z
+    slash_action_eq' := fun _ ⟨γ, hγ⟩ ↦ hγ ▸ divByDiscriminant_slash_eq f γ
+    holo' := f.holo'.div CuspForm.discriminant.holo' discriminant_ne_zero
+    bdd_at_cusps' {c} hc := by
+      rw [Subgroup.IsArithmetic.isCusp_iff_isCusp_SL2Z] at hc
+      rw [isBoundedAt_iff_forall_SL2Z hc]
+      intro γ _
+      rw [divByDiscriminant_slash_eq f γ, IsBoundedAtImInfty, BoundedAtFilter]
+      exact (div_isBoundedUnder_of_isBigO (exp_decay_isBigO_discriminant f)).isBigO_one ℝ
+  }
   map_add' a b := by
     ext z
     change (a z + b z) / Δ z = a z / Δ z + b z / Δ z
@@ -89,49 +94,54 @@ def discriminantEquiv : CuspForm 𝒮ℒ k ≃ₗ[ℂ] ModularForm 𝒮ℒ (k - 
     ext z
     exact mul_div_cancel_left₀ (f z) (discriminant_ne_zero z)
 
-lemma discriminantEquiv_apply (f : CuspForm 𝒮ℒ k) (z : ℍ) :
-    (discriminantEquiv f) z = f z / Δ z := rfl
+lemma discriminantEquiv_apply (f : CuspForm 𝒮ℒ k) (z : ℍ) : (discriminantEquiv f) z = f z / Δ z :=
+  rfl
 
 /-- Divide a cusp form by the discriminant to get a modular form of weight `k - 12`. -/
 @[deprecated discriminantEquiv +typeChanged (since := "2026-05-18")]
 def divDiscriminant (f : CuspForm 𝒮ℒ k) : ModularForm 𝒮ℒ (k - 12) := discriminantEquiv f
 
 @[deprecated discriminantEquiv_apply +typeChanged (since := "2026-05-18")]
-lemma divDiscriminant_apply (f : CuspForm 𝒮ℒ k) (z : ℍ) :
-    (divDiscriminant f) z = f z / Δ z := rfl
+lemma divDiscriminant_apply (f : CuspForm 𝒮ℒ k) (z : ℍ) : (divDiscriminant f) z = f z / Δ z := rfl
 
 end CuspForm
 
 namespace ModularForm
 
 @[simp]
-lemma discriminant_mul_discriminantEquiv_apply (f : CuspForm 𝒮ℒ k) (z : ℍ) :
-    Δ z * (CuspForm.discriminantEquiv f) z = f z := by
+lemma discriminant_mul_discriminantEquiv_apply (f : CuspForm 𝒮ℒ k) (z : ℍ)
+    : Δ z * (CuspForm.discriminantEquiv f) z = f z := by
   rw [CuspForm.discriminantEquiv_apply, mul_div_cancel₀ _ (discriminant_ne_zero z)]
 
 @[simp]
-lemma discriminant_mul_discriminantEquiv (f : CuspForm 𝒮ℒ k) :
-    Δ * (CuspForm.discriminantEquiv f : ℍ → ℂ) = f := by
+lemma discriminant_mul_discriminantEquiv (f : CuspForm 𝒮ℒ k)
+    : Δ * (CuspForm.discriminantEquiv f : ℍ → ℂ) = f := by
   grind [Pi.mul_apply, discriminant_mul_discriminantEquiv_apply]
 
-/-- The order of the q-expansion of the modular discriminant is 1: the zeroth coefficient
-vanishes (Δ is a cusp form) and the first coefficient equals 1. -/
+/--
+The order of the q-expansion of the modular discriminant is 1: the zeroth coefficient
+vanishes (Δ is a cusp form) and the first coefficient equals 1.
+-/
 lemma discriminant_qExpansion_order : (qExpansion 1 Δ).order = 1 := by
   refine PowerSeries.order_eq_nat.mpr
     ⟨discriminant_qExpansion_coeff_one ▸ one_ne_zero, fun i hi ↦ ?_⟩
   obtain rfl : i = 0 := by lia
-  simpa using CuspFormClass.qExpansion_coeff_zero CuspForm.discriminant one_pos
-    one_mem_strictPeriods_SL
+  simpa using
+    CuspFormClass.qExpansion_coeff_zero CuspForm.discriminant one_pos one_mem_strictPeriods_SL
 
-/-- The q-expansion of a level-1 modular form whose zeroth coefficient vanishes factors as
+/--
+The q-expansion of a level-1 modular form whose zeroth coefficient vanishes factors as
 the q-expansion of `Δ` times the q-expansion of the corresponding form of weight `k - 12`
-obtained via `discriminantEquiv`. -/
-lemma qExpansion_eq_qExpansion_discriminant_mul (f : ModularForm 𝒮ℒ k)
-    (hcusp : (qExpansion 1 f).coeff 0 = 0) :
-    qExpansion 1 f = qExpansion 1 discriminant *
-      qExpansion 1 (CuspForm.discriminantEquiv (toCuspForm f hcusp)) := by
+obtained via `discriminantEquiv`.
+-/
+lemma qExpansion_eq_qExpansion_discriminant_mul
+    (f : ModularForm 𝒮ℒ k) (hcusp : (qExpansion 1 f).coeff 0 = 0)
+    : qExpansion 1 f
+      = qExpansion 1 discriminant
+        * qExpansion 1 (CuspForm.discriminantEquiv (toCuspForm f hcusp)) := by
   rw [show (f : ℍ → ℂ) = discriminant * (toCuspForm f hcusp).discriminantEquiv from
-      (discriminant_mul_discriminantEquiv (toCuspForm f hcusp)).symm, ← CuspForm.coe_discriminant]
+      (discriminant_mul_discriminantEquiv (toCuspForm f hcusp)).symm,
+    ← CuspForm.coe_discriminant]
   exact ModularForm.qExpansion_mul_coe one_pos one_mem_strictPeriods_SL _ _
 
 end ModularForm
@@ -147,13 +157,12 @@ lemma ModularForm.levelOne_odd_weight_eq_zero (hk : Odd k) (f : ModularForm 𝒮
   ModularForm.eq_zero_of_neg_one_mem (show (-1 : GL (Fin 2) ℝ) ∈ 𝒮ℒ from ⟨-1, by ext; simp⟩) hk f
 
 /-- Modular forms of odd weight for `𝒮ℒ` are zero-dimensional. -/
-lemma ModularForm.levelOne_odd_weight_rank_zero (hk : Odd k) :
-    Module.rank ℂ (ModularForm 𝒮ℒ k) = 0 :=
+lemma ModularForm.levelOne_odd_weight_rank_zero (hk : Odd k)
+    : Module.rank ℂ (ModularForm 𝒮ℒ k) = 0 :=
   rank_zero_iff_forall_zero.mpr (levelOne_odd_weight_eq_zero hk)
 
 /-- Cusp forms of weight `k < 12` for `𝒮ℒ` are zero-dimensional. -/
-lemma CuspForm.rank_eq_zero_of_weight_lt_twelve (hk : k < 12) :
-    Module.rank ℂ (CuspForm 𝒮ℒ k) = 0 :=
+lemma CuspForm.rank_eq_zero_of_weight_lt_twelve (hk : k < 12) : Module.rank ℂ (CuspForm 𝒮ℒ k) = 0 :=
   CuspForm.discriminantEquiv.rank_eq.trans (levelOne_neg_weight_rank_zero (by lia))
 
 /-- The space of weight 12 cusp forms for `𝒮ℒ` has rank 1. -/
@@ -161,15 +170,17 @@ lemma CuspForm.rank_eq_one_of_weight_eq_twelve : Module.rank ℂ (CuspForm 𝒮�
   simpa [CuspForm.discriminantEquiv.rank_eq] using! levelOne_weight_zero_rank_one
 
 /-- Every weight 12 cusp form for `𝒮ℒ` is a scalar multiple of the discriminant. -/
-lemma CuspForm.exists_smul_discriminant_of_weight_eq_twelve (f : CuspForm 𝒮ℒ 12) :
-    ∃ c : ℂ, c • CuspForm.discriminant = f :=
+lemma CuspForm.exists_smul_discriminant_of_weight_eq_twelve (f : CuspForm 𝒮ℒ 12)
+    : ∃ c : ℂ, c • CuspForm.discriminant = f :=
   (finrank_eq_one_iff_of_nonzero' _ (DFunLike.ne_iff.mpr ⟨I, discriminant_ne_zero _⟩)).mp
     (Module.rank_eq_one_iff_finrank_eq_one.mp CuspForm.rank_eq_one_of_weight_eq_twelve) f
 
-/-- For even `k ≥ 3`, the rank of `𝒮ℒ` modular forms is one more than the rank of
-cusp forms. -/
-lemma ModularForm.rank_eq_one_add_rank_cuspForm {k : ℕ} (hk : 3 ≤ k) (hk2 : Even k) :
-    Module.rank ℂ (ModularForm 𝒮ℒ k) = 1 + Module.rank ℂ (CuspForm 𝒮ℒ k) := by
+/--
+For even `k ≥ 3`, the rank of `𝒮ℒ` modular forms is one more than the rank of
+cusp forms.
+-/
+lemma ModularForm.rank_eq_one_add_rank_cuspForm {k : ℕ} (hk : 3 ≤ k) (hk2 : Even k)
+    : Module.rank ℂ (ModularForm 𝒮ℒ k) = 1 + Module.rank ℂ (CuspForm 𝒮ℒ k) := by
   suffices Module.rank ℂ (ModularForm 𝒮ℒ k ⧸ cuspFormSubmodule 𝒮ℒ k) = 1 by
     rw [(CuspForm.equivCuspFormSubmodule 𝒮ℒ k).rank_eq,
       ← Submodule.rank_quotient_add_rank (cuspFormSubmodule 𝒮ℒ k), this]
@@ -181,8 +192,8 @@ lemma ModularForm.rank_eq_one_add_rank_cuspForm {k : ℕ} (hk : 3 ≤ k) (hk2 : 
   · refine (Submodule.Quotient.forall _).mpr fun f ↦ ⟨(qExpansion 1 f).coeff 0, ?_⟩
     rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.eq, mem_cuspFormSubmodule_iff,
       isCuspForm_iff_coeffZero_eq_zero, FunLike.coe_sub, ModularForm.qExpansion_sub,
-      FunLike.coe_smul, ModularForm.qExpansion_smul, map_sub,
-      PowerSeries.coeff_smul, E_qExpansion_coeff_zero hk hk2, smul_eq_mul, mul_one, sub_self]
+      FunLike.coe_smul, ModularForm.qExpansion_smul, map_sub, PowerSeries.coeff_smul,
+      E_qExpansion_coeff_zero hk hk2, smul_eq_mul, mul_one, sub_self]
     all_goals simp
 
 end RankIdentity
@@ -193,13 +204,11 @@ namespace ModularForm
 
 lemma levelOne_weight_four_rank_one : Module.rank ℂ (ModularForm 𝒮ℒ 4) = 1 :=
   (rank_eq_one_add_rank_cuspForm (by simp) ⟨2, rfl⟩).trans
-    ((congrArg (1 + ·) (CuspForm.rank_eq_zero_of_weight_lt_twelve (by simp))).trans
-      (by norm_cast))
+    ((congrArg (1 + ·) (CuspForm.rank_eq_zero_of_weight_lt_twelve (by simp))).trans (by norm_cast))
 
 lemma levelOne_weight_six_rank_one : Module.rank ℂ (ModularForm 𝒮ℒ 6) = 1 :=
   (rank_eq_one_add_rank_cuspForm (by simp) ⟨3, rfl⟩).trans
-    ((congrArg (1 + ·) (CuspForm.rank_eq_zero_of_weight_lt_twelve (by simp))).trans
-      (by norm_cast))
+    ((congrArg (1 + ·) (CuspForm.rank_eq_zero_of_weight_lt_twelve (by simp))).trans (by norm_cast))
 
 lemma E₄_qExpansion_coeff_one : (qExpansion 1 E₄).coeff 1 = 240 := by
   norm_num [E_qExpansion_coeff _ ⟨2, rfl⟩, show bernoulli 4 = -1 / 30 by decide +kernel]
@@ -207,13 +216,16 @@ lemma E₄_qExpansion_coeff_one : (qExpansion 1 E₄).coeff 1 = 240 := by
 lemma E₆_qExpansion_coeff_one : (qExpansion 1 E₆).coeff 1 = -504 := by
   norm_num [E_qExpansion_coeff _ ⟨3, rfl⟩, show bernoulli 6 = 1 / 42 by decide +kernel]
 
-/- Algebraic core of the weight-2 vanishing argument: if `p : PowerSeries ℂ`
+/-
+Algebraic core of the weight-2 vanishing argument: if `p : PowerSeries ℂ`
 satisfies `c₄ • p₄ = p²` and `c₆ • p₆ = p³` for power series `p₄`, `p₆` with
-constant term `1` and first-order coefficients `240` and `-504`, then `p = 0`. -/
-private lemma eq_zero_of_pow_eq_smul {p p4 p6 : PowerSeries ℂ} {c4 c6 : ℂ}
+constant term `1` and first-order coefficients `240` and `-504`, then `p = 0`.
+-/
+private lemma eq_zero_of_pow_eq_smul
+    {p p4 p6 : PowerSeries ℂ} {c4 c6 : ℂ}
     (hp4_0 : p4.coeff 0 = 1) (hp6_0 : p6.coeff 0 = 1) (hp4_1 : p4.coeff 1 = 240)
-    (hp6_1 : p6.coeff 1 = -504) (hqc4 : c4 • p4 = p ^ 2)
-    (hqc6 : c6 • p6 = p ^ 3) : p = 0 := by
+    (hp6_1 : p6.coeff 1 = -504) (hqc4 : c4 • p4 = p ^ 2) (hqc6 : c6 • p6 = p ^ 3)
+    : p = 0 := by
   simp_all only [PowerSeries.coeff_zero_eq_constantCoeff]
   let D := (c4 • p4) ^ 3 - (c6 • p6) ^ 2
   have hD0 : D.coeff 0 = c4 ^ 3 - c6 ^ 2 := by simp [D, hp4_0, hp6_0]
@@ -243,33 +255,32 @@ private lemma weight_two_qExpansion_eq_zero (f : ModularForm 𝒮ℒ 2) : qExpan
 
 /-- Modular forms of weight 2 for `𝒮ℒ` are zero. -/
 theorem levelOne_weight_two_rank_zero : Module.rank ℂ (ModularForm 𝒮ℒ 2) = 0 := by
-  simpa [rank_zero_iff_forall_zero, ModularForm.qExpansion_eq_zero_iff]
-    using weight_two_qExpansion_eq_zero
+  simpa [rank_zero_iff_forall_zero, ModularForm.qExpansion_eq_zero_iff] using
+    weight_two_qExpansion_eq_zero
 
 /-- The dimension formula for `𝒮ℒ` modular forms of even weight. -/
-theorem dimension_level_one (k : ℕ) (hk2 : Even k) :
-    Module.rank ℂ (ModularForm 𝒮ℒ k) =
-      if k ≡ 2 [MOD 12] then k / 12 else k / 12 + 1 := by
-  induction k using Nat.strong_induction_on with | h k ihn =>
-  have : k < 3 ∨ (3 ≤ k ∧ k < 12) ∨ 12 ≤ k := by grind
-  rcases this with hk | hk | hk
-  · -- `k < 3`: direct case-by-case check
-    interval_cases k
-    · simpa using! levelOne_weight_zero_rank_one
-    · grind
-    · simpa [Nat.ModEq] using levelOne_weight_two_rank_zero
-  · -- `3 ≤ k < 12`: rank decomposition + the weight `k - 12` space is zero
-    rw [rank_eq_one_add_rank_cuspForm hk.1 hk2, CuspForm.discriminantEquiv.rank_eq,
-      levelOne_neg_weight_rank_zero (by lia)]
-    have : k ∈ (Finset.Icc 3 11).filter Even := by grind
-    fin_cases this <;> simp [Nat.ModEq]
-  · -- `12 ≤ k`: rank decomposition + induction hypothesis at weight `k - 12`
-    rw [rank_eq_one_add_rank_cuspForm (by lia) hk2, CuspForm.discriminantEquiv.rank_eq,
-      show ((k : ℤ) - 12 : ℤ) = ((k - 12 : ℕ) : ℤ) by lia,
-      ihn (k - 12) (by lia) (by grind)]
-    simp only [Nat.ModEq, show k / 12 = (k - 12) / 12 + 1 by lia,
-      show (k - 12) % 12 = k % 12 by lia]
-    split_ifs <;> grind
+theorem dimension_level_one (k : ℕ) (hk2 : Even k)
+    : Module.rank ℂ (ModularForm 𝒮ℒ k) = if k ≡ 2 [MOD 12] then k / 12 else k / 12 + 1 := by
+  induction k using Nat.strong_induction_on with
+  | h k ihn =>
+    have : k < 3 ∨ (3 ≤ k ∧ k < 12) ∨ 12 ≤ k := by grind
+    rcases this with hk | hk | hk
+    · -- `k < 3`: direct case-by-case check
+      interval_cases k
+      · simpa using! levelOne_weight_zero_rank_one
+      · grind
+      · simpa [Nat.ModEq] using levelOne_weight_two_rank_zero
+    · -- `3 ≤ k < 12`: rank decomposition + the weight `k - 12` space is zero
+      rw [rank_eq_one_add_rank_cuspForm hk.1 hk2, CuspForm.discriminantEquiv.rank_eq,
+        levelOne_neg_weight_rank_zero (by lia)]
+      have : k ∈ (Finset.Icc 3 11).filter Even := by grind
+      fin_cases this <;> simp [Nat.ModEq]
+    · -- `12 ≤ k`: rank decomposition + induction hypothesis at weight `k - 12`
+      rw [rank_eq_one_add_rank_cuspForm (by lia) hk2, CuspForm.discriminantEquiv.rank_eq,
+        show ((k : ℤ) - 12 : ℤ) = ((k - 12 : ℕ) : ℤ) by lia, ihn (k - 12) (by lia) (by grind)]
+      simp only [Nat.ModEq, show k / 12 = (k - 12) / 12 + 1 by lia,
+        show (k - 12) % 12 = k % 12 by lia]
+      split_ifs <;> grind
 
 instance (k : ℤ) : FiniteDimensional ℂ (ModularForm 𝒮ℒ k) := by
   rw [FiniteDimensional, ← Module.rank_lt_aleph0_iff]
@@ -283,29 +294,37 @@ instance (k : ℤ) : FiniteDimensional ℂ (ModularForm 𝒮ℒ k) := by
   · rw [levelOne_odd_weight_rank_zero hk_odd]
     exact Cardinal.aleph0_pos
 
-/-- **Sturm bound for level-1 modular forms (natural weight).** If a modular form `f` of weight
-`k : ℕ` has q-expansion of order strictly greater than `k / 12`, then `f` is identically zero. -/
-theorem sturm_bound_levelOne_nat {k : ℕ} {f : ModularForm 𝒮ℒ (k : ℤ)}
-    (h : (↑(k / 12) : ℕ∞) < (qExpansion 1 f).order) : f = 0 := by
-  induction k using Nat.strong_induction_on with | _ k ih =>
-  have h0 : (qExpansion 1 f).coeff 0 = 0 :=
-    PowerSeries.coeff_of_lt_order _ ((Nat.cast_nonneg _).trans_lt h)
-  suffices CuspForm.discriminantEquiv (toCuspForm f h0) = 0 by
-    simpa [CuspForm.discriminantEquiv.map_eq_zero_iff, DFunLike.ext_iff]
-  rcases lt_or_ge k 12 with hk12 | hk12
-  · apply rank_zero_iff_forall_zero.mp (levelOne_neg_weight_rank_zero (by lia))
-  · rw [← mcast_eq_zero_iff (b := ↑(k - 12)) (by lia) rfl]
-    refine ih (k - 12) (by lia) ?_
-    have hsucc : k / 12 = (k - 12) / 12 + 1 := by lia
-    rw [qExpansion_eq_qExpansion_discriminant_mul f h0, PowerSeries.order_mul,
-      discriminant_qExpansion_order, add_comm, hsucc, Nat.cast_add, Nat.cast_one] at h
-    exact (ENat.add_lt_add_iff_right (ENat.natCast_ne_top 1)).mp h
+/--
+**Sturm bound for level-1 modular forms (natural weight).** If a modular form `f` of weight
+`k : ℕ` has q-expansion of order strictly greater than `k / 12`, then `f` is identically zero.
+-/
+theorem sturm_bound_levelOne_nat
+    {k : ℕ} {f : ModularForm 𝒮ℒ (k : ℤ)} (h : (↑(k / 12) : ℕ∞) < (qExpansion 1 f).order)
+    : f = 0 := by
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+    have h0 : (qExpansion 1 f).coeff 0 = 0 :=
+      PowerSeries.coeff_of_lt_order _ ((Nat.cast_nonneg _).trans_lt h)
+    suffices CuspForm.discriminantEquiv (toCuspForm f h0) = 0 by
+      simpa [CuspForm.discriminantEquiv.map_eq_zero_iff, DFunLike.ext_iff]
+    rcases lt_or_ge k 12 with hk12 | hk12
+    · apply rank_zero_iff_forall_zero.mp (levelOne_neg_weight_rank_zero (by lia))
+    · rw [← mcast_eq_zero_iff (b := ↑(k - 12)) (by lia) rfl]
+      refine ih (k - 12) (by lia) ?_
+      have hsucc : k / 12 = (k - 12) / 12 + 1 := by lia
+      rw [qExpansion_eq_qExpansion_discriminant_mul f h0, PowerSeries.order_mul,
+          discriminant_qExpansion_order, add_comm, hsucc, Nat.cast_add, Nat.cast_one]
+        at h
+      exact (ENat.add_lt_add_iff_right (ENat.natCast_ne_top 1)).mp h
 
-/-- **Sturm bound for level-1 modular forms.** If a modular form `f` of weight `k` for `SL(2, ℤ)`
+/--
+**Sturm bound for level-1 modular forms.** If a modular form `f` of weight `k` for `SL(2, ℤ)`
 has q-expansion of order strictly greater than `k / 12`, then `f` is identically zero.
-Corollary of the natural-weight version `sturm_bound_levelOne_nat`. -/
-theorem sturm_bound_levelOne {k : ℤ} {f : ModularForm 𝒮ℒ k}
-    (h : (↑(k.toNat / 12) : ℕ∞) < (qExpansion 1 f).order) : f = 0 := by
+Corollary of the natural-weight version `sturm_bound_levelOne_nat`.
+-/
+theorem sturm_bound_levelOne
+    {k : ℤ} {f : ModularForm 𝒮ℒ k} (h : (↑(k.toNat / 12) : ℕ∞) < (qExpansion 1 f).order)
+    : f = 0 := by
   rcases lt_or_ge k 0 with hk | hk
   · exact rank_zero_iff_forall_zero.mp (levelOne_neg_weight_rank_zero hk) f
   · lift k to ℕ using hk

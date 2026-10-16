@@ -39,12 +39,14 @@ namespace Mathlib.CrossRef
 /-- A topic identifying a π-Base project. -/
 inductive PiBaseTopic where
   | topology
-  deriving BEq, Hashable, Ord
+deriving BEq, Hashable, Ord
 
 namespace PiBaseTopic
 
-/-- The string such that `https://{topic.urlSubdomain}.pi-base.org` is the base URL of the π-Base
-project identified by this topic. -/
+/--
+The string such that `https://{topic.urlSubdomain}.pi-base.org` is the base URL of the π-Base
+project identified by this topic.
+-/
 def urlSubdomain : PiBaseTopic → String
   | topology => "topology"
 
@@ -52,8 +54,10 @@ def urlSubdomain : PiBaseTopic → String
 def label : PiBaseTopic → String
   | topology => "Topology"
 
-/-- A lowercase short name for the given database. Used in `Database.shortName`. Useful when
-exporting to JSON. -/
+/--
+A lowercase short name for the given database. Used in `Database.shortName`. Useful when
+exporting to JSON.
+-/
 def shortName : PiBaseTopic → String
   | topology => "topology"
 
@@ -68,7 +72,7 @@ inductive Database where
   | pibase (topic : PiBaseTopic)
   | stacks
   | wikidata
-  deriving BEq, Hashable, Ord
+deriving BEq, Hashable, Ord
 
 -- While `PiBaseTopic` has a single constructor, `simp` can prove `pibase.injEq` by itself.
 -- This can be removed once a second π-Base topic is added.
@@ -78,21 +82,28 @@ namespace Database
 
 /-- The URL for an external database entry, where `id` is the identifier recorded in `Tag.tag`. -/
 def url : Database → String → String
-  | .dlmf, id => s!"https://dlmf.nist.gov/{id}"
-  | .kerodon, id => s!"https://kerodon.net/tag/{id}"
-  | .lmfdb, id => s!"https://www.lmfdb.org/knowledge/show/{id}"
-  | .oeis, id => s!"https://oeis.org/{id}"
+  | .dlmf, id =>
+    s!"https://dlmf.nist.gov/{id}"
+  | .kerodon, id =>
+    s!"https://kerodon.net/tag/{id}"
+  | .lmfdb, id =>
+    s!"https://www.lmfdb.org/knowledge/show/{id}"
+  | .oeis, id =>
+    s!"https://oeis.org/{id}"
   | .pibase topic, id =>
     -- The `.toString` is required: `String.take` returns a `String.Slice`, and matching a slice
     -- against a string literal compares the slice structurally, so it would never match here.
-    let path := match (id.take 1).toString with
+    let path :=
+      match (id.take 1).toString with
       | "P" => "properties"
       | "S" => "spaces"
       | "T" => "theorems"
       | _ => ""
     s!"https://{topic.urlSubdomain}.pi-base.org/{path}/{id}"
-  | .stacks, id => s!"https://stacks.math.columbia.edu/tag/{id}"
-  | .wikidata, id => s!"https://www.wikidata.org/wiki/{id}"
+  | .stacks, id =>
+    s!"https://stacks.math.columbia.edu/tag/{id}"
+  | .wikidata, id =>
+    s!"https://www.wikidata.org/wiki/{id}"
 
 /-- The display label used in docstring links and trace output. -/
 def label : Database → String
@@ -107,11 +118,11 @@ def label : Database → String
 /-- A lowercase short name for the given database. Useful when exporting to JSON. -/
 def shortName : Database → String
   | .dlmf => "dlmf"
-  | .kerodon  => "kerodon"
-  | .lmfdb    => "lmfdb"
+  | .kerodon => "kerodon"
+  | .lmfdb => "lmfdb"
   | .oeis => "oeis"
   | .pibase topic => s!"pibase-{topic.shortName}"
-  | .stacks   => "stacks"
+  | .stacks => "stacks"
   | .wikidata => "wikidata"
 
 end Database
@@ -126,24 +137,26 @@ structure Tag where
   tag : String
   /-- An optional comment supplied with the attribute. -/
   comment : String
-  deriving BEq, Hashable
+deriving BEq, Hashable
 
-/-- The environment extension storing all cross-references.
-`addImportedFn` is a constant function to avoid a performance overhead during initialization. -/
+/--
+The environment extension storing all cross-references.
+`addImportedFn` is a constant function to avoid a performance overhead during initialization.
+-/
 initialize tagExt : SimplePersistentEnvExtension Tag (Array (Array Tag)) ←
-  registerSimplePersistentEnvExtension {
-    addImportedFn tags := tags
-    addEntryFn tags _ := tags
-  }
+  registerSimplePersistentEnvExtension { addImportedFn tags := tags, addEntryFn tags _ := tags }
 
 /-- `addTagEntry declName db tag comment` records a cross-reference for `declName` in `tagExt`. -/
-def addTagEntry {m : Type → Type} [MonadEnv m]
-    (declName : Name) (db : Database) (tag comment : String) : m Unit :=
-  modifyEnv (tagExt.addEntry ·
-    { declName := declName, database := db, tag := tag, comment := comment })
+def addTagEntry
+    {m : Type → Type} [MonadEnv m] (declName : Name) (db : Database) (tag comment : String)
+    : m Unit :=
+  modifyEnv
+    (tagExt.addEntry · { declName := declName, database := db, tag := tag, comment := comment })
 
-/-- Append a cross-reference link to the docstring of `decl` and record it in `tagExt`.
-This is the database-agnostic core of every cross-reference attribute's `add` handler. -/
+/--
+Append a cross-reference link to the docstring of `decl` and record it in `tagExt`.
+This is the database-agnostic core of every cross-reference attribute's `add` handler.
+-/
 def addCrossRefDoc (db : Database) (decl : Name) (idStr comment : String) : CoreM Unit := do
   let oldDoc := (← findDocString? (← getEnv) decl).getD ""
   let commentInDoc := if comment.isEmpty then "" else s!" ({comment})"
@@ -155,12 +168,16 @@ open Parser
 
 /-! ### Stacks (and Kerodon) parser -/
 
-/-- `stacksTag` is the node kind of Stacks Project Tags: a sequence of digits and
-uppercase letters. -/
+/--
+`stacksTag` is the node kind of Stacks Project Tags: a sequence of digits and
+uppercase letters.
+-/
 abbrev stacksTagKind : SyntaxNodeKind := `stacksTag
 
-/-- The main parser for Stacks Project Tags: it accepts any sequence of 4 digits or
-uppercase letters. -/
+/--
+The main parser for Stacks Project Tags: it accepts any sequence of 4 digits or
+uppercase letters.
+-/
 def stacksTagFn : ParserFn := fun c s =>
   let i := s.pos
   let s := takeWhileFn Char.isAlphanum c s
@@ -170,7 +187,7 @@ def stacksTagFn : ParserFn := fun c s =>
     ParserState.mkError s "stacks tag"
   else
     let tag := c.extract i s.pos
-    if !tag.all fun (c : Char) => c.isDigit || c.isUpper then
+    if ! tag.all fun (c : Char) => c.isDigit || c.isUpper then
       ParserState.mkUnexpectedError s
         "Stacks tags must consist only of digits and uppercase letters."
     else if tag.length != 4 then
@@ -179,10 +196,7 @@ def stacksTagFn : ParserFn := fun c s =>
       mkNodeToken stacksTagKind i true c s
 
 @[inherit_doc stacksTagFn]
-def stacksTagNoAntiquot : Parser := {
-  fn   := stacksTagFn
-  info := mkAtomicInfo "stacksTag"
-}
+def stacksTagNoAntiquot : Parser := { fn := stacksTagFn, info := mkAtomicInfo "stacksTag" }
 
 @[inherit_doc stacksTagFn]
 def stacksTagParser : Parser :=
@@ -215,10 +229,7 @@ def wikidataIdFn : ParserFn := fun c s =>
         "Wikidata ids must start with the letter Q followed by one or more digits."
 
 @[inherit_doc wikidataIdFn]
-def wikidataIdNoAntiquot : Parser := {
-  fn   := wikidataIdFn
-  info := mkAtomicInfo "wikidataId"
-}
+def wikidataIdNoAntiquot : Parser := { fn := wikidataIdFn, info := mkAtomicInfo "wikidataId" }
 
 @[inherit_doc wikidataIdFn]
 def wikidataIdParser : Parser :=
@@ -226,12 +237,16 @@ def wikidataIdParser : Parser :=
 
 /-! ### LMFDB parser -/
 
-/-- `lmfdbId` is the node kind of LMFDB identifiers: lower case words with `.` in between.
-The words can also contain underscores and digits. -/
+/--
+`lmfdbId` is the node kind of LMFDB identifiers: lower case words with `.` in between.
+The words can also contain underscores and digits.
+-/
 abbrev lmfdbIdKind : SyntaxNodeKind := `lmfdbId
 
-/-- The main parser for LMFDB identifiers: it accepts lower case words with `.` in between.
-The words can also contain underscores and digits. -/
+/--
+The main parser for LMFDB identifiers: it accepts lower case words with `.` in between.
+The words can also contain underscores and digits.
+-/
 def lmfdbIdFn : ParserFn := fun c s =>
   let i := s.pos
   let s := takeWhileFn (fun c => c.isAlphanum || c == '.' || c == '_') c s
@@ -239,32 +254,31 @@ def lmfdbIdFn : ParserFn := fun c s =>
     s
   else if s.pos == i then
     ParserState.mkError s "lmfdb id"
-  else
-    if !(c.extract i s.pos).toList.all
+  else if ! (c.extract i s.pos).toList.all
       (fun c => c.isLower || c.isDigit || c == '.' || c == '_') then
-      ParserState.mkUnexpectedError s
-        "LMFDB ids must consist only of lowercase letters, digits, periods, and underscores."
-    else
-      mkNodeToken lmfdbIdKind i true c s
+    ParserState.mkUnexpectedError s
+      "LMFDB ids must consist only of lowercase letters, digits, periods, and underscores."
+  else
+    mkNodeToken lmfdbIdKind i true c s
 
 @[inherit_doc lmfdbIdFn]
-def lmfdbIdNoAntiquot : Parser := {
-  fn   := lmfdbIdFn
-  info := mkAtomicInfo "lmfdbId"
-}
+def lmfdbIdNoAntiquot : Parser := { fn := lmfdbIdFn, info := mkAtomicInfo "lmfdbId" }
 
 @[inherit_doc lmfdbIdFn]
-def lmfdbIdParser : Parser :=
-  withAntiquot (mkAntiquot "lmfdbId" lmfdbIdKind) lmfdbIdNoAntiquot
+def lmfdbIdParser : Parser := withAntiquot (mkAntiquot "lmfdbId" lmfdbIdKind) lmfdbIdNoAntiquot
 
 /-! ### π-Base parser -/
 
-/-- `pibaseId` is the node kind of π-Base identifiers: one of the letters `P`, `S`, or `T`,
-followed by exactly six digits. -/
+/--
+`pibaseId` is the node kind of π-Base identifiers: one of the letters `P`, `S`, or `T`,
+followed by exactly six digits.
+-/
 abbrev pibaseIdKind : SyntaxNodeKind := `pibaseId
 
-/-- The main parser for π-Base identifiers: it accepts canonical property, space, and theorem
-identifiers, such as `P000001`, `S000023`, and `T000010`. -/
+/--
+The main parser for π-Base identifiers: it accepts canonical property, space, and theorem
+identifiers, such as `P000001`, `S000023`, and `T000010`.
+-/
 def pibaseIdFn : ParserFn := fun c s =>
   let i := s.pos
   let s := takeWhileFn Char.isAlphanum c s
@@ -277,11 +291,10 @@ def pibaseIdFn : ParserFn := fun c s =>
     match id.toList with
     | kind :: rest =>
       if kind != 'P' && kind != 'S' && kind != 'T' then
-        ParserState.mkUnexpectedError s
-          "π-Base ids must start with P, S, or T."
+        ParserState.mkUnexpectedError s "π-Base ids must start with P, S, or T."
       else if rest.length != 6 then
         ParserState.mkUnexpectedError s "π-Base ids must have exactly six digits after P/S/T."
-      else if !rest.all Char.isDigit then
+      else if ! rest.all Char.isDigit then
         ParserState.mkUnexpectedError s
           "π-Base ids must consist of P, S, or T followed by six digits."
       else
@@ -291,29 +304,29 @@ def pibaseIdFn : ParserFn := fun c s =>
         "π-Base ids must consist of P, S, or T followed by six digits."
 
 @[inherit_doc pibaseIdFn]
-def pibaseIdNoAntiquot : Parser := {
-  fn   := pibaseIdFn
-  info := mkAtomicInfo "pibaseId"
-}
+def pibaseIdNoAntiquot : Parser := { fn := pibaseIdFn, info := mkAtomicInfo "pibaseId" }
 
 @[inherit_doc pibaseIdFn]
-def pibaseIdParser : Parser :=
-  withAntiquot (mkAntiquot "pibaseId" pibaseIdKind) pibaseIdNoAntiquot
+def pibaseIdParser : Parser := withAntiquot (mkAntiquot "pibaseId" pibaseIdKind) pibaseIdNoAntiquot
 
 /-! ### DLMF parser -/
 
-/-- `dlmfId` is the node kind of DLMF references:
+/--
+`dlmfId` is the node kind of DLMF references:
 generally <chapter_no>.<section_no>.E<equation_no> (e.g. `5.4.E1`).
 See https://dlmf.nist.gov/help/cite for more details on the permalink format.
 Note that while underscores are not mentioned in the DLMF permalink table, they are
-supported and present in some actual links for equations. -/
+supported and present in some actual links for equations.
+-/
 abbrev dlmfIdKind : SyntaxNodeKind := `dlmfId
 
-/-- The main parser for DLMF references:
+/--
+The main parser for DLMF references:
 generally <chapter_no>.<section_no>.E<equation_no> (e.g. `5.4.E1`).
 See https://dlmf.nist.gov/help/cite for more details on the permalink format.
 Note that while underscores are not mentioned in the DLMF permalink table, they are
-supported and present in some actual links for equations. -/
+supported and present in some actual links for equations.
+-/
 def dlmfIdFn : ParserFn := fun c s =>
   let i := s.pos
   let s := takeWhileFn (fun c => c.isAlphanum || c == '.' || c == '_') c s
@@ -321,24 +334,19 @@ def dlmfIdFn : ParserFn := fun c s =>
     s
   else if s.pos == i then
     ParserState.mkError s "dlmf id"
-  else
-    if !(c.extract i s.pos).toList.all
+  else if ! (c.extract i s.pos).toList.all
       (fun c => c ∈ ['i', 'v', 'x', 'l', 'c', 'd', 'm', 'E', 'F', 'T', '.', '_'] || c.isDigit) then
-      ParserState.mkUnexpectedError s
-        "DLMF references must consist only of (lowercase) roman numerals, the letters E/T/F, \
-         digits, periods, and underscores."
-    else
-      mkNodeToken dlmfIdKind i true c s
+    ParserState.mkUnexpectedError s
+      "DLMF references must consist only of (lowercase) roman numerals, the letters E/T/F, \
+        digits, periods, and underscores."
+  else
+    mkNodeToken dlmfIdKind i true c s
 
 @[inherit_doc dlmfIdFn]
-def dlmfIdNoAntiquot : Parser := {
-  fn   := dlmfIdFn
-  info := mkAtomicInfo "dlmfId"
-}
+def dlmfIdNoAntiquot : Parser := { fn := dlmfIdFn, info := mkAtomicInfo "dlmfId" }
 
 @[inherit_doc dlmfIdFn]
-def dlmfIdParser : Parser :=
-  withAntiquot (mkAntiquot "dlmfId" dlmfIdKind) dlmfIdNoAntiquot
+def dlmfIdParser : Parser := withAntiquot (mkAntiquot "dlmfId" dlmfIdKind) dlmfIdNoAntiquot
 
 /-! ### OEIS parser -/
 
@@ -366,14 +374,10 @@ def oeisIdFn : ParserFn := fun c s =>
       "OEIS ids must be the letter A followed by exactly six digits, e.g. A123456."
 
 @[inherit_doc oeisIdFn]
-def oeisIdNoAntiquot : Parser := {
-  fn   := oeisIdFn
-  info := mkAtomicInfo "oeisId"
-}
+def oeisIdNoAntiquot : Parser := { fn := oeisIdFn, info := mkAtomicInfo "oeisId" }
 
 @[inherit_doc oeisIdFn]
-def oeisIdParser : Parser :=
-  withAntiquot (mkAntiquot "oeisId" oeisIdKind) oeisIdNoAntiquot
+def oeisIdParser : Parser := withAntiquot (mkAntiquot "oeisId" oeisIdKind) oeisIdNoAntiquot
 
 end Mathlib.CrossRef
 
@@ -381,32 +385,38 @@ open Mathlib.CrossRef
 
 /-- Extract the underlying tag as a string from a `stacksTag` node. -/
 def Lean.TSyntax.getStacksTag (stx : TSyntax stacksTagKind) : CoreM String := do
-  let some val := Syntax.isLit? stacksTagKind stx | throwError "Malformed Stacks tag"
+  let some val := Syntax.isLit? stacksTagKind stx
+    | throwError "Malformed Stacks tag"
   return val
 
 /-- Extract the underlying identifier as a string from a `wikidataId` node. -/
 def Lean.TSyntax.getWikidataId (stx : TSyntax wikidataIdKind) : CoreM String := do
-  let some val := Syntax.isLit? wikidataIdKind stx | throwError "Malformed Wikidata id"
+  let some val := Syntax.isLit? wikidataIdKind stx
+    | throwError "Malformed Wikidata id"
   return val
 
 /-- Extract the underlying identifier as a string from a `lmfdbId` node. -/
 def Lean.TSyntax.getLmfdbId (stx : TSyntax lmfdbIdKind) : CoreM String := do
-  let some val := Syntax.isLit? lmfdbIdKind stx | throwError "Malformed LMFDB id"
+  let some val := Syntax.isLit? lmfdbIdKind stx
+    | throwError "Malformed LMFDB id"
   return val
 
 /-- Extract the underlying identifier as a string from a `pibaseId` node. -/
 def Lean.TSyntax.getPibaseId (stx : TSyntax pibaseIdKind) : CoreM String := do
-  let some val := Syntax.isLit? pibaseIdKind stx | throwError "Malformed π-Base id"
+  let some val := Syntax.isLit? pibaseIdKind stx
+    | throwError "Malformed π-Base id"
   return val
 
 /-- Extract the underlying identifier as a string from a `dlmfId` node. -/
 def Lean.TSyntax.getDlmfId (stx : TSyntax dlmfIdKind) : CoreM String := do
-  let some val := Syntax.isLit? dlmfIdKind stx | throwError "Malformed DLMF ref."
+  let some val := Syntax.isLit? dlmfIdKind stx
+    | throwError "Malformed DLMF ref."
   return val
 
 /-- Extract the underlying identifier as a string from an `oeisId` node. -/
 def Lean.TSyntax.getOeisId (stx : TSyntax oeisIdKind) : CoreM String := do
-  let some val := Syntax.isLit? oeisIdKind stx | throwError "Malformed OEIS id."
+  let some val := Syntax.isLit? oeisIdKind stx
+    | throwError "Malformed OEIS id."
   return val
 
 namespace Lean.PrettyPrinter
@@ -414,50 +424,56 @@ namespace Lean.PrettyPrinter
 namespace Formatter
 
 /-- The formatter for Stacks Project Tags syntax. -/
-@[combinator_formatter stacksTagNoAntiquot] def stacksTagNoAntiquot.formatter :=
-  visitAtom stacksTagKind
+@[combinator_formatter stacksTagNoAntiquot]
+def stacksTagNoAntiquot.formatter := visitAtom stacksTagKind
 
 /-- The formatter for Wikidata identifier syntax. -/
-@[combinator_formatter wikidataIdNoAntiquot] def wikidataIdNoAntiquot.formatter :=
-  visitAtom wikidataIdKind
+@[combinator_formatter wikidataIdNoAntiquot]
+def wikidataIdNoAntiquot.formatter := visitAtom wikidataIdKind
 
 /-- The formatter for LMFDB identifier syntax. -/
-@[combinator_formatter lmfdbIdNoAntiquot] def lmfdbIdNoAntiquot.formatter :=
-  visitAtom lmfdbIdKind
+@[combinator_formatter lmfdbIdNoAntiquot]
+def lmfdbIdNoAntiquot.formatter := visitAtom lmfdbIdKind
 
 /-- The formatter for π-Base identifier syntax. -/
-@[combinator_formatter pibaseIdNoAntiquot] def pibaseIdNoAntiquot.formatter :=
-  visitAtom pibaseIdKind
+@[combinator_formatter pibaseIdNoAntiquot]
+def pibaseIdNoAntiquot.formatter := visitAtom pibaseIdKind
 
 /-- The formatter for DLMF identifier syntax. -/
-@[combinator_formatter dlmfIdNoAntiquot] def dlmfIdNoAntiquot.formatter :=
-  visitAtom dlmfIdKind
+@[combinator_formatter dlmfIdNoAntiquot]
+def dlmfIdNoAntiquot.formatter := visitAtom dlmfIdKind
 
 /-- The formatter for OEIS identifier syntax. -/
-@[combinator_formatter oeisIdNoAntiquot] def oeisIdNoAntiquot.formatter :=
-  visitAtom oeisIdKind
+@[combinator_formatter oeisIdNoAntiquot]
+def oeisIdNoAntiquot.formatter := visitAtom oeisIdKind
 
 end Formatter
 
 namespace Parenthesizer
 
 /-- The parenthesizer for Stacks Project Tags syntax. -/
-@[combinator_parenthesizer stacksTagNoAntiquot] def stacksTagAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer stacksTagNoAntiquot]
+def stacksTagAntiquot.parenthesizer := visitToken
 
 /-- The parenthesizer for Wikidata identifier syntax. -/
-@[combinator_parenthesizer wikidataIdNoAntiquot] def wikidataIdAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer wikidataIdNoAntiquot]
+def wikidataIdAntiquot.parenthesizer := visitToken
 
 /-- The parenthesizer for LMFDB identifier syntax. -/
-@[combinator_parenthesizer lmfdbIdNoAntiquot] def lmfdbIdAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer lmfdbIdNoAntiquot]
+def lmfdbIdAntiquot.parenthesizer := visitToken
 
 /-- The parenthesizer for π-Base identifier syntax. -/
-@[combinator_parenthesizer pibaseIdNoAntiquot] def pibaseIdAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer pibaseIdNoAntiquot]
+def pibaseIdAntiquot.parenthesizer := visitToken
 
 /-- The parenthesizer for DLMF identifier syntax. -/
-@[combinator_parenthesizer dlmfIdNoAntiquot] def dlmfIdAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer dlmfIdNoAntiquot]
+def dlmfIdAntiquot.parenthesizer := visitToken
 
 /-- The parenthesizer for OEIS identifier syntax. -/
-@[combinator_parenthesizer oeisIdNoAntiquot] def oeisIdAntiquot.parenthesizer := visitToken
+@[combinator_parenthesizer oeisIdNoAntiquot]
+def oeisIdAntiquot.parenthesizer := visitToken
 
 end Lean.PrettyPrinter.Parenthesizer
 
@@ -473,7 +489,8 @@ syntax "kerodon" : stacksTagDB
 /-- The syntax for a "stacks" database identifier in a `@[stacks]` attribute. -/
 syntax "stacks" : stacksTagDB
 
-/-- The `stacksTag` attribute.
+/--
+The `stacksTag` attribute.
 Use it as `@[kerodon TAG "Optional comment"]` or `@[stacks TAG "Optional comment"]`
 depending on the database you are referencing.
 
@@ -484,22 +501,25 @@ See the [Tags page](https://stacks.math.columbia.edu/tags) in the Stacks project
 -/
 syntax (name := stacksTag) stacksTagDB stacksTagParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `stacksTag
-  descr := "Apply a Stacks or Kerodon project tag to a theorem."
-  add decl stx _attrKind := do
-    let (db, tag, comment) ← match stx with
-      | `(attr| stacks $tag $[$comment]?) => pure (Database.stacks, tag, comment)
-      | `(attr| kerodon $tag $[$comment]?) => pure (Database.kerodon, tag, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc db decl (← tag.getStacksTag) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `stacksTag
+    descr := "Apply a Stacks or Kerodon project tag to a theorem."
+    add decl stx _attrKind := do
+      let (db, tag, comment) ←
+        match stx with
+        | `(attr| stacks $tag $[$comment]?) => pure (Database.stacks, tag, comment)
+        | `(attr| kerodon $tag $[$comment]?) => pure (Database.kerodon, tag, comment)
+        | _ => throwUnsupportedSyntax
+      addCrossRefDoc db decl (← tag.getStacksTag) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 /-! ### Wikidata attribute -/
 
-/-- The `wikidata` attribute.
+/--
+The `wikidata` attribute.
 Use it as `@[wikidata Q12345 "Optional comment"]` to associate a Mathlib declaration with
 the corresponding [Wikidata](https://www.wikidata.org) item.
 
@@ -507,46 +527,53 @@ The identifier must be the letter `Q` followed by one or more digits.
 -/
 syntax (name := wikidataTag) "wikidata" wikidataIdParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `wikidataTag
-  descr := "Apply a Wikidata identifier to a declaration."
-  add decl stx _attrKind := do
-    let (id, comment) ← match stx with
-      | `(attr| wikidata $id $[$comment]?) => pure (id, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc .wikidata decl (← id.getWikidataId) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `wikidataTag
+    descr := "Apply a Wikidata identifier to a declaration."
+    add decl stx _attrKind := do
+      let (id, comment) ←
+        match stx with
+        | `(attr| wikidata $id $[$comment]?) => pure (id, comment)
+        | _ => throwUnsupportedSyntax
+      addCrossRefDoc .wikidata decl (← id.getWikidataId) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 /-! ### LMFDB attribute -/
 
-/-- The `lmfdb` attribute.
+/--
+The `lmfdb` attribute.
 Use it as `@[lmfdb foo.bar "Optional comment"]` to associate a Mathlib declaration with
 the corresponding [LMFDB](https://www.lmfdb.org) item.
 -/
 syntax (name := lmfdbTag) "lmfdb" lmfdbIdParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `lmfdbTag
-  descr := "Apply an LMFDB identifier to a declaration."
-  add decl stx _attrKind := do
-    let (id, comment) ← match stx with
-      | `(attr| lmfdb $id $[$comment]?) => pure (id, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc .lmfdb decl (← id.getLmfdbId) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `lmfdbTag
+    descr := "Apply an LMFDB identifier to a declaration."
+    add decl stx _attrKind := do
+      let (id, comment) ←
+        match stx with
+        | `(attr| lmfdb $id $[$comment]?) => pure (id, comment)
+        | _ => throwUnsupportedSyntax
+      addCrossRefDoc .lmfdb decl (← id.getLmfdbId) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 /-! ### π-Base attribute -/
 
 -- This parser should track the possible values of `PiBaseTopic`.
-/-- The topic identifying a π-Base database. Possible values:
+/--
+The topic identifying a π-Base database. Possible values:
 
 - `topology`
 
-This list will be expanded in the future. -/
+This list will be expanded in the future.
+-/
 syntax pibaseTopic := &"topology"
 
 /-- Get the `PiBaseTopic` from a syntax key. -/
@@ -554,7 +581,8 @@ def getPiBaseTopic? : TSyntax ``pibaseTopic → Option PiBaseTopic
   | `(pibaseTopic| topology) => some .topology
   | _ => none
 
-/-- The `pibase` attribute.
+/--
+The `pibase` attribute.
 Use it as `@[pibase <topic> P000001 "Optional comment"]` to associate a Mathlib declaration with
 the corresponding [π-Base](https://pi-base.org/) property, space, or theorem.
 
@@ -568,43 +596,51 @@ The identifier must start with `P`, `S`, or `T`, followed by exactly six digits.
 -/
 syntax (name := pibaseTag) "pibase" pibaseTopic pibaseIdParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `pibaseTag
-  descr := "Apply a π-Base identifier to a declaration."
-  add decl stx _attrKind := do
-    let (id, topic, comment) ← match stx with
-      | `(attr| pibase $topic $id $[$comment]?) =>
-        let some topic := getPiBaseTopic? topic | throwUnsupportedSyntax
-        pure (id, topic, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc (.pibase topic) decl (← id.getPibaseId) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `pibaseTag
+    descr := "Apply a π-Base identifier to a declaration."
+    add decl stx _attrKind := do
+      let (id, topic, comment) ←
+        match stx with
+        | `(attr| pibase $topic $id $[$comment]?) =>
+          let some topic := getPiBaseTopic? topic
+            | throwUnsupportedSyntax
+          pure (id, topic, comment)
+        | _ =>
+          throwUnsupportedSyntax
+      addCrossRefDoc (.pibase topic) decl (← id.getPibaseId) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 /-! ### DLMF attribute -/
 
-/-- The `dlmf` attribute.
+/--
+The `dlmf` attribute.
 Use it as `@[dlmf 5.4.E1 "Optional comment"]` to associate a Mathlib declaration with
 the corresponding [DLMF](https://dlmf.nist.gov) item.
 -/
 syntax (name := dlmfTag) "dlmf" dlmfIdParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `dlmfTag
-  descr := "Apply a DLMF identifier to a declaration."
-  add decl stx _attrKind := do
-    let (id, comment) ← match stx with
-      | `(attr| dlmf $id $[$comment]?) => pure (id, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc .dlmf decl (← id.getDlmfId) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `dlmfTag
+    descr := "Apply a DLMF identifier to a declaration."
+    add decl stx _attrKind := do
+      let (id, comment) ←
+        match stx with
+        | `(attr| dlmf $id $[$comment]?) => pure (id, comment)
+        | _ => throwUnsupportedSyntax
+      addCrossRefDoc .dlmf decl (← id.getDlmfId) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 /-! ### OEIS attribute -/
 
-/-- The `oeis` attribute.
+/--
+The `oeis` attribute.
 Use it as `@[oeis A123456 "Optional comment"]` to associate a Mathlib declaration with
 the corresponding [OEIS](https://oeis.org/) item.
 
@@ -612,17 +648,19 @@ The identifier must be the letter `A` followed by six digits.
 -/
 syntax (name := oeisTag) "oeis" oeisIdParser (ppSpace str)? : attr
 
-initialize Lean.registerBuiltinAttribute {
-  name := `oeisTag
-  descr := "Apply an OEIS identifier to a declaration."
-  add decl stx _attrKind := do
-    let (id, comment) ← match stx with
-      | `(attr| oeis $id $[$comment]?) => pure (id, comment)
-      | _ => throwUnsupportedSyntax
-    addCrossRefDoc .oeis decl (← id.getOeisId) ((comment.map (·.getString)).getD "")
-  -- docstrings are immutable once an asynchronous elaboration task has been started
-  applicationTime := .beforeElaboration
-}
+initialize
+  Lean.registerBuiltinAttribute {
+    name := `oeisTag
+    descr := "Apply an OEIS identifier to a declaration."
+    add decl stx _attrKind := do
+      let (id, comment) ←
+        match stx with
+        | `(attr| oeis $id $[$comment]?) => pure (id, comment)
+        | _ => throwUnsupportedSyntax
+      addCrossRefDoc .oeis decl (← id.getOeisId) ((comment.map (·.getString)).getD "")
+    -- docstrings are immutable once an asynchronous elaboration task has been started
+    applicationTime := .beforeElaboration
+  }
 
 end Mathlib.CrossRef
 
@@ -632,31 +670,33 @@ private def Lean.Environment.getSortedCrossRefs (env : Environment) : Array Tag 
   tags.2.flatten.appendList tags.1 |>.qsort (·.tag < ·.tag)
 
 /-- Returns the declaration names of results carrying the cross-reference `tag`. -/
-private def Lean.Environment.getCrossRefDeclNames (env : Environment) (tag : String) :
-    Array Name :=
+private def Lean.Environment.getCrossRefDeclNames (env : Environment) (tag : String) : Array Name :=
   env.getSortedCrossRefs.filterMap fun d => if d.tag == tag then some d.declName else none
 
 namespace Mathlib.CrossRef
 
-/-- `traceCrossRefs db verbose` prints the cross-references of database `db` and
-inlines the declaration types if `verbose` is `true`. -/
-def traceCrossRefs (db : Database) (verbose : Bool := false) :
-    Command.CommandElabM Unit := do
+/--
+`traceCrossRefs db verbose` prints the cross-references of database `db` and
+inlines the declaration types if `verbose` is `true`.
+-/
+def traceCrossRefs (db : Database) (verbose : Bool := false) : Command.CommandElabM Unit := do
   let env ← getEnv
   let entries := env.getSortedCrossRefs |>.filter (·.database == db)
-  if entries.isEmpty then logInfo "No tags found." else
-  let mut msgs := #[m!""]
-  for d in entries do
-    let (parL, parR) := if d.comment.isEmpty then ("", "") else (" (", ")")
-    let cmt := parL ++ d.comment ++ parR
-    msgs := msgs.push
-      m!"[{db.label} {d.tag}]({db.url d.tag}) \
-        corresponds to declaration `{.ofConstName d.declName}`.{cmt}"
-    if verbose then
-      let dType := ((env.find? d.declName).getD default).type
-      msgs := (msgs.push m!"{dType}").push ""
-  let msg := MessageData.joinSep msgs.toList "\n"
-  logInfo msg
+  if entries.isEmpty then
+    logInfo "No tags found."
+  else
+    let mut msgs := #[m!""]
+    for d in entries do
+      let (parL, parR) := if d.comment.isEmpty then ("", "") else (" (", ")")
+      let cmt := parL ++ d.comment ++ parR
+      msgs :=
+        msgs.push m!"[{db.label} {d.tag}]({db.url d.tag}) \
+          corresponds to declaration `{.ofConstName d.declName}`.{cmt}"
+      if verbose then
+        let dType := ((env.find? d.declName).getD default).type
+        msgs := (msgs.push m!"{dType}").push ""
+    let msg := MessageData.joinSep msgs.toList "\n"
+    logInfo msg
 
 /--
 `#stacks_tags` retrieves all declarations that have the `stacks` attribute.
@@ -668,10 +708,10 @@ For each found declaration, it prints a line
 The variant `#stacks_tags!` also adds the theorem statement (for theorems)
 or declaration type (for definitions, structures, instances, etc.) after each summary line.
 -/
-elab (name := stacksTags) "#stacks_tags" tk:("!")? : command =>
-  traceCrossRefs .stacks (tk.isSome)
+elab (name := stacksTags) "#stacks_tags" tk:("!")? : command => traceCrossRefs .stacks (tk.isSome)
 
-/-- The `#kerodon_tags` command retrieves all declarations that have the `kerodon` attribute.
+/--
+The `#kerodon_tags` command retrieves all declarations that have the `kerodon` attribute.
 
 For each found declaration, it prints a line
 ```
@@ -683,7 +723,8 @@ or declaration type (for definitions, structures, instances, etc.) after each su
 elab (name := kerodonTags) "#kerodon_tags" tk:("!")? : command =>
   traceCrossRefs .kerodon (tk.isSome)
 
-/-- The `#wikidata_tags` command retrieves all declarations that have the `wikidata` attribute.
+/--
+The `#wikidata_tags` command retrieves all declarations that have the `wikidata` attribute.
 
 For each found declaration, it prints a line
 ```
@@ -695,7 +736,8 @@ or declaration type (for definitions, structures, instances, etc.) after each su
 elab (name := wikidataTags) "#wikidata_tags" tk:("!")? : command =>
   traceCrossRefs .wikidata (tk.isSome)
 
-/-- The `#lmfdb_tags` command retrieves all declarations that have the `lmfdb` attribute.
+/--
+The `#lmfdb_tags` command retrieves all declarations that have the `lmfdb` attribute.
 
 For each found declaration, it prints a line
 ```
@@ -704,10 +746,10 @@ For each found declaration, it prints a line
 The variant `#lmfdb_tags!` also adds the theorem statement (for theorems)
 or declaration type (for definitions, structures, instances, etc.) after each summary line.
 -/
-elab (name := lmfdbTags) "#lmfdb_tags" tk:("!")? : command =>
-  traceCrossRefs .lmfdb (tk.isSome)
+elab (name := lmfdbTags) "#lmfdb_tags" tk:("!")? : command => traceCrossRefs .lmfdb (tk.isSome)
 
-/-- The `#pibase_tags topic` command retrieves all declarations that have the `pibase` attribute
+/--
+The `#pibase_tags topic` command retrieves all declarations that have the `pibase` attribute
 with the given topic.
 
 For each found declaration, it prints a line
@@ -718,10 +760,12 @@ The variant `#pibase_tags! topic` also adds the theorem statement (for theorems)
 or declaration type (for definitions, structures, instances, etc.) after each summary line.
 -/
 elab (name := pibaseTags) "#pibase_tags" tk:("!")? ppSpace topic:pibaseTopic : command => do
-  let some topic := getPiBaseTopic? topic | throwUnsupportedSyntax
+  let some topic := getPiBaseTopic? topic
+    | throwUnsupportedSyntax
   traceCrossRefs (.pibase topic) (tk.isSome)
 
-/-- The `#dlmf_tags` command retrieves all declarations that have the `dlmf` attribute.
+/--
+The `#dlmf_tags` command retrieves all declarations that have the `dlmf` attribute.
 
 For each found declaration, it prints a line
 ```
@@ -730,10 +774,10 @@ For each found declaration, it prints a line
 The variant `#dlmf_tags!` also adds the theorem statement (for theorems)
 or declaration type (for definitions, structures, instances, etc.) after each summary line.
 -/
-elab (name := dlmfTags) "#dlmf_tags" tk:("!")? : command =>
-  traceCrossRefs .dlmf (tk.isSome)
+elab (name := dlmfTags) "#dlmf_tags" tk:("!")? : command => traceCrossRefs .dlmf (tk.isSome)
 
-/-- The `#oeis_tags` command retrieves all declarations that have the `oeis` attribute.
+/--
+The `#oeis_tags` command retrieves all declarations that have the `oeis` attribute.
 
 For each found declaration, it prints a line
 ```
@@ -742,7 +786,6 @@ For each found declaration, it prints a line
 The variant `#oeis_tags!` also adds the theorem statement (for theorems)
 or declaration type (for definitions, structures, instances, etc.) after each summary line.
 -/
-elab (name := oeisTags) "#oeis_tags" tk:("!")? : command =>
-  traceCrossRefs .oeis (tk.isSome)
+elab (name := oeisTags) "#oeis_tags" tk:("!")? : command => traceCrossRefs .oeis (tk.isSome)
 
 end Mathlib.CrossRef

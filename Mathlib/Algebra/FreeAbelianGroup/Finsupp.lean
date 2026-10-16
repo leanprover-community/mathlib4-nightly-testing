@@ -38,37 +38,39 @@ def FreeAbelianGroup.toFinsupp : FreeAbelianGroup X →+ X →₀ ℤ :=
 def Finsupp.toFreeAbelianGroup : (X →₀ ℤ) →+ FreeAbelianGroup X :=
   Finsupp.liftAddHom fun x => (smulAddHom ℤ (FreeAbelianGroup X)).flip (FreeAbelianGroup.of x)
 
-@[simp] lemma FreeAbelianGroup.toFinsupp_of (x : X) : toFinsupp (of x) = .single x 1 := by
-  simp [toFinsupp]
+@[simp]
+lemma FreeAbelianGroup.toFinsupp_of (x : X) : toFinsupp (of x) = .single x 1 := by simp [toFinsupp]
 
-@[simp] lemma Finsupp.toFreeAbelianGroup_single (x : X) (n : ℤ) :
-    toFreeAbelianGroup (single x n) = n • .of x := by simp [toFreeAbelianGroup]
+@[simp]
+lemma Finsupp.toFreeAbelianGroup_single (x : X) (n : ℤ)
+    : toFreeAbelianGroup (single x n) = n • .of x := by
+  simp [toFreeAbelianGroup]
 
 open Finsupp FreeAbelianGroup
 
 @[simp]
-theorem Finsupp.toFreeAbelianGroup_comp_singleAddHom (x : X) :
-    Finsupp.toFreeAbelianGroup.comp (Finsupp.singleAddHom x) =
-      (smulAddHom ℤ (FreeAbelianGroup X)).flip (of x) :=
+theorem Finsupp.toFreeAbelianGroup_comp_singleAddHom (x : X)
+    : Finsupp.toFreeAbelianGroup.comp (Finsupp.singleAddHom x)
+      = (smulAddHom ℤ (FreeAbelianGroup X)).flip (of x) :=
   AddMonoidHom.ext <| toFreeAbelianGroup_single _
 
 @[simp]
-theorem FreeAbelianGroup.toFinsupp_comp_toFreeAbelianGroup :
-    toFinsupp.comp toFreeAbelianGroup = AddMonoidHom.id (X →₀ ℤ) := by
+theorem FreeAbelianGroup.toFinsupp_comp_toFreeAbelianGroup
+    : toFinsupp.comp toFreeAbelianGroup = AddMonoidHom.id (X →₀ ℤ) := by
   ext
   simp
 
 @[simp]
-theorem Finsupp.toFreeAbelianGroup_comp_toFinsupp :
-    toFreeAbelianGroup.comp toFinsupp = AddMonoidHom.id (FreeAbelianGroup X) := by
+theorem Finsupp.toFreeAbelianGroup_comp_toFinsupp
+    : toFreeAbelianGroup.comp toFinsupp = AddMonoidHom.id (FreeAbelianGroup X) := by
   ext
   rw [toFreeAbelianGroup, toFinsupp, AddMonoidHom.comp_apply, lift_apply_of,
     liftAddHom_apply_single, AddMonoidHom.flip_apply, smulAddHom_apply, one_smul,
     AddMonoidHom.id_apply]
 
 @[simp]
-theorem Finsupp.toFreeAbelianGroup_toFinsupp {X} (x : FreeAbelianGroup X) :
-    Finsupp.toFreeAbelianGroup (FreeAbelianGroup.toFinsupp x) = x := by
+theorem Finsupp.toFreeAbelianGroup_toFinsupp {X} (x : FreeAbelianGroup X)
+    : Finsupp.toFreeAbelianGroup (FreeAbelianGroup.toFinsupp x) = x := by
   rw [← AddMonoidHom.comp_apply, Finsupp.toFreeAbelianGroup_comp_toFinsupp, AddMonoidHom.id_apply]
 
 namespace FreeAbelianGroup
@@ -76,8 +78,8 @@ namespace FreeAbelianGroup
 open Finsupp
 
 @[simp]
-theorem toFinsupp_toFreeAbelianGroup (f : X →₀ ℤ) :
-    FreeAbelianGroup.toFinsupp (Finsupp.toFreeAbelianGroup f) = f := by
+theorem toFinsupp_toFreeAbelianGroup (f : X →₀ ℤ)
+    : FreeAbelianGroup.toFinsupp (Finsupp.toFreeAbelianGroup f) = f := by
   rw [← AddMonoidHom.comp_apply, toFinsupp_comp_toFreeAbelianGroup, AddMonoidHom.id_apply]
 
 variable (X)
@@ -93,15 +95,17 @@ def equivFinsupp : FreeAbelianGroup X ≃+ (X →₀ ℤ) where
 
 variable {X}
 
-/-- `coeff x` is the additive group homomorphism `FreeAbelianGroup X →+ ℤ`
-that sends `a` to the multiplicity of `x : X` in `a`. -/
-def coeff (x : X) : FreeAbelianGroup X →+ ℤ :=
-  (Finsupp.applyAddHom x).comp toFinsupp
+/--
+`coeff x` is the additive group homomorphism `FreeAbelianGroup X →+ ℤ`
+that sends `a` to the multiplicity of `x : X` in `a`.
+-/
+def coeff (x : X) : FreeAbelianGroup X →+ ℤ := (Finsupp.applyAddHom x).comp toFinsupp
 
-/-- `support a` for `a : FreeAbelianGroup X` is the finite set of `x : X`
-that occur in the formal sum `a`. -/
-def support (a : FreeAbelianGroup X) : Finset X :=
-  a.toFinsupp.support
+/--
+`support a` for `a : FreeAbelianGroup X` is the finite set of `x : X`
+that occur in the formal sum `a`.
+-/
+def support (a : FreeAbelianGroup X) : Finset X := a.toFinsupp.support
 
 @[simp]
 theorem mem_support_iff (x : X) (a : FreeAbelianGroup X) : x ∈ a.support ↔ coeff x a ≠ 0 := by
@@ -125,14 +129,14 @@ theorem support_neg (a : FreeAbelianGroup X) : support (-a) = support a := by
   simp only [support, map_neg, Finsupp.support_neg]
 
 @[simp]
-theorem support_zsmul (k : ℤ) (h : k ≠ 0) (a : FreeAbelianGroup X) :
-    support (k • a) = support a := by
+theorem support_zsmul (k : ℤ) (h : k ≠ 0) (a : FreeAbelianGroup X)
+    : support (k • a) = support a := by
   ext x
   simp [h]
 
 @[simp]
-theorem support_nsmul (k : ℕ) (h : k ≠ 0) (a : FreeAbelianGroup X) :
-    support (k • a) = support a := by
+theorem support_nsmul (k : ℕ) (h : k ≠ 0) (a : FreeAbelianGroup X)
+    : support (k • a) = support a := by
   apply support_zsmul k _ a
   exact mod_cast h
 
@@ -141,18 +145,18 @@ theorem support_add (a b : FreeAbelianGroup X) : support (a + b) ⊆ a.support �
   simp only [support, map_add]
   apply Finsupp.support_add
 
-@[simp] theorem support_eq_empty {a : FreeAbelianGroup X} : a.support = ∅ ↔ a = 0 :=
+@[simp]
+theorem support_eq_empty {a : FreeAbelianGroup X} : a.support = ∅ ↔ a = 0 :=
   Finsupp.support_eq_empty.trans (equivFinsupp X).map_eq_zero_iff
 
-@[simp] theorem nonempty_support_iff {a : FreeAbelianGroup X} :
-    a.support.Nonempty ↔ a ≠ 0 := by
+@[simp]
+theorem nonempty_support_iff {a : FreeAbelianGroup X} : a.support.Nonempty ↔ a ≠ 0 := by
   contrapose!; exact support_eq_empty
 
-theorem card_support_eq_zero {a : FreeAbelianGroup X} : a.support.card = 0 ↔ a = 0 := by
-  simp
+theorem card_support_eq_zero {a : FreeAbelianGroup X} : a.support.card = 0 ↔ a = 0 := by simp
 
-theorem eq_sum_support_coeff_smul_of (a : FreeAbelianGroup X) :
-    a = ∑ x ∈ a.support, coeff x a • of x := by
+theorem eq_sum_support_coeff_smul_of (a : FreeAbelianGroup X)
+    : a = ∑ x ∈ a.support, coeff x a • of x := by
   conv_lhs => rw [← toFreeAbelianGroup_toFinsupp a, ← sum_single a.toFinsupp]
   simp [sum, support, coeff]
 

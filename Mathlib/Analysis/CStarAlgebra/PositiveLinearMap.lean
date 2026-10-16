@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Module.PositiveLinearMap
 public import Mathlib.Analysis.CStarAlgebra.SpecialFunctions.PosPart
-
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-! # Positive linear maps in C⋆-algebras
@@ -35,20 +34,20 @@ section CStarAlgebra
 
 namespace PositiveLinearMap
 
-variable [NonUnitalCStarAlgebra A₁] [NonUnitalCStarAlgebra A₂] [PartialOrder A₁]
-  [StarOrderedRing A₁] [PartialOrder A₂] [StarOrderedRing A₂]
-  [CStarAlgebra B₁] [CStarAlgebra B₂] [PartialOrder B₁] [PartialOrder B₂]
-  [StarOrderedRing B₁]
+variable
+  [NonUnitalCStarAlgebra A₁] [NonUnitalCStarAlgebra A₂] [PartialOrder A₁] [StarOrderedRing A₁]
+  [PartialOrder A₂] [StarOrderedRing A₂] [CStarAlgebra B₁] [CStarAlgebra B₂] [PartialOrder B₁]
+  [PartialOrder B₂] [StarOrderedRing B₁]
 
-lemma apply_le_of_isSelfAdjoint (f : B₁ →ₚ[ℂ] B₂) (x : B₁) (hx : IsSelfAdjoint x) :
-    f x ≤ f (algebraMap ℝ B₁ ‖x‖) := by
+lemma apply_le_of_isSelfAdjoint (f : B₁ →ₚ[ℂ] B₂) (x : B₁) (hx : IsSelfAdjoint x)
+    : f x ≤ f (algebraMap ℝ B₁ ‖x‖) := by
   gcongr
   exact IsSelfAdjoint.le_algebraMap_norm_self _
 
-lemma norm_apply_le_of_nonneg [StarOrderedRing B₂] (f : B₁ →ₚ[ℂ] B₂) (x : B₁) (hx : 0 ≤ x) :
-    ‖f x‖ ≤ ‖f 1‖ * ‖x‖ := by
+lemma norm_apply_le_of_nonneg [StarOrderedRing B₂] (f : B₁ →ₚ[ℂ] B₂) (x : B₁) (hx : 0 ≤ x)
+    : ‖f x‖ ≤ ‖f 1‖ * ‖x‖ := by
   have h : ‖‖x‖‖ = ‖x‖ := by simp
-  rw [mul_comm, ← h, ← norm_smul ‖x‖ (f 1)]
+  rw [mul_comm, ← h, ← norm_smul (‖x‖) (f 1)]
   clear h
   refine CStarAlgebra.norm_le_norm_of_le_of_nonneg ?_
   rw [← Complex.coe_smul, ← LinearMapClass.map_smul f]
@@ -57,12 +56,12 @@ lemma norm_apply_le_of_nonneg [StarOrderedRing B₂] (f : B₁ →ₚ[ℂ] B₂)
   exact IsSelfAdjoint.le_algebraMap_norm_self _
 
 open Complex Filter in
-/--
-If `f` is a positive map, then it is bounded (and therefore continuous).
--/
+/-- If `f` is a positive map, then it is bounded (and therefore continuous). -/
 lemma exists_norm_apply_le (f : A₁ →ₚ[ℂ] A₂) : ∃ C : ℝ≥0, ∀ a, ‖f a‖ ≤ C * ‖a‖ := by
-  /- It suffices to only consider for positive `a`, by decomposing `a` into positive and negative
-     parts of the real and imaginary parts. -/
+  /-
+  It suffices to only consider for positive `a`, by decomposing `a` into positive and negative
+  parts of the real and imaginary parts.
+  -/
   suffices h_nonneg : ∃ C : ℝ≥0, ∀ a, 0 ≤ a → ‖f a‖ ≤ C * ‖a‖ by
     obtain ⟨C, hmain⟩ := h_nonneg
     refine ⟨4 * C, fun x ↦ ?_⟩
@@ -96,8 +95,7 @@ lemma exists_norm_apply_le (f : A₁ →ₚ[ℂ] A₂) : ∃ C : ℝ≥0, ∀ a,
     simp [norm_smul, hx_norm, ← inv_pow, this]
   -- There is some `n` such that `‖f (∑' m, 2 ^ (-m) • x m)‖ < 2 ^ n`
   obtain ⟨n, hn⟩ : ∃ n : ℕ, ‖f (∑' (n : ℕ), (2 : ℝ) ^ (-(n : ℤ)) • x n)‖ < (2 : ℝ) ^ n :=
-    tendsto_pow_atTop_atTop_of_one_lt one_lt_two |>.eventually_gt_atTop _
-      |>.exists
+    tendsto_pow_atTop_atTop_of_one_lt one_lt_two |>.eventually_gt_atTop _ |>.exists
   -- But `2 ^ n ≤ ‖f (2 ^ (-n) • x n)‖ ≤ ‖f (∑' m, 2 ^ (-m) • x m)‖`, which is a contradiction.
   apply hn.not_ge
   trans ‖f ((2 : ℝ) ^ (-n : ℤ) • x n)‖
@@ -109,8 +107,8 @@ lemma exists_norm_apply_le (f : A₁ →ₚ[ℂ] A₂) : ∃ C : ℝ≥0, ∀ a,
     gcongr
     exact x_summable.le_tsum n fun m _ ↦ this m
 
-instance {F : Type*} [FunLike F A₁ A₂] [LinearMapClass F ℂ A₁ A₂] [OrderHomClass F A₁ A₂] :
-    ContinuousLinearMapClass F ℂ A₁ A₂ where
+instance {F : Type*} [FunLike F A₁ A₂] [LinearMapClass F ℂ A₁ A₂] [OrderHomClass F A₁ A₂]
+    : ContinuousLinearMapClass F ℂ A₁ A₂ where
   map_continuous f := by
     have hbound : ∃ C : ℝ, ∀ a, ‖f a‖ ≤ C * ‖a‖ := by
       obtain ⟨C, h⟩ := exists_norm_apply_le (.ofClass f)

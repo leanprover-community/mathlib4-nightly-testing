@@ -18,7 +18,6 @@ space over `ℝ`.
 
 public section
 
-
 namespace Complex
 
 /-- The determinant of `conjAe`, as a linear map. -/
@@ -28,7 +27,6 @@ theorem det_conjAe : conjAe.toLinearEquiv.toLinearMap.det = -1 := by
   simp
 
 /-- The determinant of `conjAe`, as a linear equiv. -/
-@[simp]
-theorem linearEquiv_det_conjAe : conjAe.toLinearEquiv.det = -1 := by simp [← Units.val_inj]
+@[simp] theorem linearEquiv_det_conjAe : conjAe.toLinearEquiv.det = -1 := by simp [← Units.val_inj]
 
 end Complex

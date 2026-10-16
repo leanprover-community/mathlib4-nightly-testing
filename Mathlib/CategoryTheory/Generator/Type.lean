@@ -23,7 +23,6 @@ namespace CategoryTheory
 lemma Types.isSeparator_punit : IsSeparator (PUnit.{u + 1}) := by
   intro X Y f g h
   ext x
-  exact ConcreteCategory.congr_hom (h PUnit (by simp) (↾fun _ ↦ x))
-    .unit
+  exact ConcreteCategory.congr_hom (h PUnit (by simp) (↾fun _ ↦ x)) .unit
 
 end CategoryTheory

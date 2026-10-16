@@ -35,42 +35,35 @@ namespace ConcreteCategory
 
 section
 
-instance [(forget C).PreservesMonomorphisms] {X Y : C} (f : X ⟶ Y) [Mono f] :
-    Mono (↾f) := Functor.map_mono (forget C) f
+instance [(forget C).PreservesMonomorphisms] {X Y : C} (f : X ⟶ Y) [Mono f] : Mono (↾f) :=
+  Functor.map_mono (forget C) f
 
-instance [(forget C).PreservesEpimorphisms] {X Y : C} (f : X ⟶ Y) [Epi f] :
-    Epi (↾f) := Functor.map_epi (forget C) f
+instance [(forget C).PreservesEpimorphisms] {X Y : C} (f : X ⟶ Y) [Epi f] : Epi (↾f) :=
+  Functor.map_epi (forget C) f
 
 /-- In any concrete category, injective morphisms are monomorphisms. -/
-theorem mono_of_injective {X Y : C} (f : X ⟶ Y) (i : Function.Injective f) :
-    Mono f :=
+theorem mono_of_injective {X Y : C} (f : X ⟶ Y) (i : Function.Injective f) : Mono f :=
   (forget C).mono_of_mono_map ((mono_iff_injective ((forget C).map f)).2 i)
 
-instance forget₂_preservesMonomorphisms (C : Type u) (D : Type u')
-    [Category.{v} C] [Category.{v'} D]
+instance forget₂_preservesMonomorphisms
+    (C : Type u) (D : Type u') [Category.{v} C] [Category.{v'} D]
     {FC : C → C → Type*} {CC : C → Type w}
-    [∀ X Y, FunLike (FC X Y) (CC X) (CC Y)]
-    [ConcreteCategory C FC]
-    {FD : D → D → Type*} {CD : D → Type w}
-    [∀ X Y, FunLike (FD X Y) (CD X) (CD Y)]
-    [ConcreteCategory D FD]
-    [HasForget₂ C D] [(forget C).PreservesMonomorphisms] :
-    (forget₂ C D).PreservesMonomorphisms :=
+    [∀ X Y, FunLike (FC X Y) (CC X) (CC Y)] [ConcreteCategory C FC]
+    {FD : D → D → Type*} {CD : D → Type w} [∀ X Y, FunLike (FD X Y) (CD X) (CD Y)]
+    [ConcreteCategory D FD] [HasForget₂ C D] [(forget C).PreservesMonomorphisms]
+    : (forget₂ C D).PreservesMonomorphisms :=
   have : (forget₂ C D ⋙ forget D).PreservesMonomorphisms := by
     simp only [HasForget₂.forget_comp]
     infer_instance
   Functor.preservesMonomorphisms_of_preserves_of_reflects _ (forget D)
 
-instance forget₂_preservesEpimorphisms (C : Type u) (D : Type u')
-    [Category.{v} C] [Category.{v'} D]
+instance forget₂_preservesEpimorphisms
+    (C : Type u) (D : Type u') [Category.{v} C] [Category.{v'} D]
     {FC : C → C → Type*} {CC : C → Type w}
-    [∀ X Y, FunLike (FC X Y) (CC X) (CC Y)]
-    [ConcreteCategory C FC]
-    {FD : D → D → Type*} {CD : D → Type w}
-    [∀ X Y, FunLike (FD X Y) (CD X) (CD Y)]
-    [ConcreteCategory D FD]
-    [HasForget₂ C D] [(forget C).PreservesEpimorphisms] :
-    (forget₂ C D).PreservesEpimorphisms :=
+    [∀ X Y, FunLike (FC X Y) (CC X) (CC Y)] [ConcreteCategory C FC]
+    {FD : D → D → Type*} {CD : D → Type w} [∀ X Y, FunLike (FD X Y) (CD X) (CD Y)]
+    [ConcreteCategory D FD] [HasForget₂ C D] [(forget C).PreservesEpimorphisms]
+    : (forget₂ C D).PreservesEpimorphisms :=
   have : (forget₂ C D ⋙ forget D).PreservesEpimorphisms := by
     simp only [HasForget₂.forget_comp]
     infer_instance
@@ -78,16 +71,14 @@ instance forget₂_preservesEpimorphisms (C : Type u) (D : Type u')
 
 variable (C)
 
-lemma surjective_le_epimorphisms :
-    MorphismProperty.surjective C ≤ epimorphisms C :=
-  fun _ _ _ hf => (forget C).epi_of_epi_map ((epi_iff_surjective _).2 hf)
+lemma surjective_le_epimorphisms : MorphismProperty.surjective C ≤ epimorphisms C := fun _ _ _ hf =>
+  (forget C).epi_of_epi_map ((epi_iff_surjective _).2 hf)
 
-lemma injective_le_monomorphisms :
-    MorphismProperty.injective C ≤ monomorphisms C :=
-  fun _ _ _ hf => (forget C).mono_of_mono_map ((mono_iff_injective _).2 hf)
+lemma injective_le_monomorphisms : MorphismProperty.injective C ≤ monomorphisms C := fun _ _ _ hf =>
+  (forget C).mono_of_mono_map ((mono_iff_injective _).2 hf)
 
-lemma surjective_eq_epimorphisms_iff :
-    MorphismProperty.surjective C = epimorphisms C ↔ (forget C).PreservesEpimorphisms := by
+lemma surjective_eq_epimorphisms_iff
+    : MorphismProperty.surjective C = epimorphisms C ↔ (forget C).PreservesEpimorphisms := by
   constructor
   · intro h
     constructor
@@ -103,8 +94,8 @@ lemma surjective_eq_epimorphisms_iff :
     rw [← epi_iff_surjective]
     infer_instance
 
-lemma injective_eq_monomorphisms_iff :
-    MorphismProperty.injective C = monomorphisms C ↔ (forget C).PreservesMonomorphisms := by
+lemma injective_eq_monomorphisms_iff
+    : MorphismProperty.injective C = monomorphisms C ↔ (forget C).PreservesMonomorphisms := by
   constructor
   · intro h
     constructor
@@ -120,31 +111,32 @@ lemma injective_eq_monomorphisms_iff :
     rw [← mono_iff_injective]
     infer_instance
 
-lemma injective_eq_monomorphisms [(forget C).PreservesMonomorphisms] :
-    MorphismProperty.injective C = monomorphisms C := by
+lemma injective_eq_monomorphisms [(forget C).PreservesMonomorphisms]
+    : MorphismProperty.injective C = monomorphisms C := by
   rw [injective_eq_monomorphisms_iff]
   infer_instance
 
-lemma surjective_eq_epimorphisms [(forget C).PreservesEpimorphisms] :
-    MorphismProperty.surjective C = epimorphisms C := by
+lemma surjective_eq_epimorphisms [(forget C).PreservesEpimorphisms]
+    : MorphismProperty.surjective C = epimorphisms C := by
   rw [surjective_eq_epimorphisms_iff]
   infer_instance
 
-variable [HasStrongEpiMonoFactorisations C] [(forget C).PreservesMonomorphisms]
+variable
+  [HasStrongEpiMonoFactorisations C] [(forget C).PreservesMonomorphisms]
   [(forget C).PreservesEpimorphisms]
 
-/-- A concrete category with strong epi mono factorizations and such that
+/--
+A concrete category with strong epi mono factorizations and such that
 the forget functor preserves mono and epi admits functorial surjective/injective
-factorizations. -/
-noncomputable def functorialSurjectiveInjectiveFactorizationData :
-    FunctorialSurjectiveInjectiveFactorizationData C :=
-  (functorialEpiMonoFactorizationData C).ofLE
-    (by rw [surjective_eq_epimorphisms])
+factorizations.
+-/
+noncomputable def functorialSurjectiveInjectiveFactorizationData
+    : FunctorialSurjectiveInjectiveFactorizationData C :=
+  (functorialEpiMonoFactorizationData C).ofLE (by rw [surjective_eq_epimorphisms])
     (by rw [injective_eq_monomorphisms])
 
 instance (priority := 100) : HasFunctorialSurjectiveInjectiveFactorization C where
-  nonempty_functorialFactorizationData :=
-    ⟨functorialSurjectiveInjectiveFactorizationData C⟩
+  nonempty_functorialFactorizationData := ⟨functorialSurjectiveInjectiveFactorizationData C⟩
 
 end
 
@@ -152,36 +144,40 @@ section
 
 open CategoryTheory.Limits
 
-theorem injective_of_mono_of_preservesPullback {X Y : C} (f : X ⟶ Y) [Mono f]
-    [PreservesLimitsOfShape WalkingCospan (forget C)] : Function.Injective f :=
+theorem injective_of_mono_of_preservesPullback
+    {X Y : C} (f : X ⟶ Y) [Mono f] [PreservesLimitsOfShape WalkingCospan (forget C)]
+    : Function.Injective f :=
   (mono_iff_injective ((forget C).map f)).mp inferInstance
 
-theorem mono_iff_injective_of_preservesPullback {X Y : C} (f : X ⟶ Y)
-    [PreservesLimitsOfShape WalkingCospan (forget C)] : Mono f ↔ Function.Injective f :=
+theorem mono_iff_injective_of_preservesPullback
+    {X Y : C} (f : X ⟶ Y) [PreservesLimitsOfShape WalkingCospan (forget C)]
+    : Mono f ↔ Function.Injective f :=
   ((forget C).mono_map_iff_mono _).symm.trans (mono_iff_injective _)
 
 /-- In any concrete category, surjective morphisms are epimorphisms. -/
-theorem epi_of_surjective {X Y : C} (f : X ⟶ Y) (s : Function.Surjective f) :
-    Epi f :=
+theorem epi_of_surjective {X Y : C} (f : X ⟶ Y) (s : Function.Surjective f) : Epi f :=
   (forget C).epi_of_epi_map ((epi_iff_surjective ((forget C).map f)).2 s)
 
-theorem surjective_of_epi_of_preservesPushout {X Y : C} (f : X ⟶ Y) [Epi f]
-    [PreservesColimitsOfShape WalkingSpan (forget C)] : Function.Surjective f :=
+theorem surjective_of_epi_of_preservesPushout
+    {X Y : C} (f : X ⟶ Y) [Epi f] [PreservesColimitsOfShape WalkingSpan (forget C)]
+    : Function.Surjective f :=
   (epi_iff_surjective ((forget C).map f)).mp inferInstance
 
-theorem epi_iff_surjective_of_preservesPushout {X Y : C} (f : X ⟶ Y)
-    [PreservesColimitsOfShape WalkingSpan (forget C)] : Epi f ↔ Function.Surjective f :=
+theorem epi_iff_surjective_of_preservesPushout
+    {X Y : C} (f : X ⟶ Y) [PreservesColimitsOfShape WalkingSpan (forget C)]
+    : Epi f ↔ Function.Surjective f :=
   ((forget C).epi_map_iff_epi _).symm.trans (epi_iff_surjective _)
 
-theorem bijective_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] :
-    Function.Bijective f := by
+theorem bijective_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] : Function.Bijective f := by
   rw [bijective_iff_isIso_ofHom]
   infer_instance
 
-/-- If the forgetful functor of a concrete category reflects isomorphisms, being an isomorphism
-is equivalent to being bijective. -/
-theorem isIso_iff_bijective [(forget C).ReflectsIsomorphisms]
-    {X Y : C} (f : X ⟶ Y) : IsIso f ↔ Function.Bijective f := by
+/--
+If the forgetful functor of a concrete category reflects isomorphisms, being an isomorphism
+is equivalent to being bijective.
+-/
+theorem isIso_iff_bijective [(forget C).ReflectsIsomorphisms] {X Y : C} (f : X ⟶ Y)
+    : IsIso f ↔ Function.Bijective f := by
   rw [bijective_iff_isIso_ofHom]
   refine ⟨fun _ ↦ inferInstance, fun h ↦ ?_⟩
   have : IsIso ((forget C).map f) := h

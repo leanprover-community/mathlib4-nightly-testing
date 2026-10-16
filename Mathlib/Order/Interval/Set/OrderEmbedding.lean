@@ -28,8 +28,10 @@ section Preorder
 
 variable [Preorder α] [Preorder β] (e : α ↪o β) (x y : α)
 
-@[to_dual (attr := simp)] theorem preimage_Ici : e ⁻¹' Ici (e x) = Ici x := ext fun _ ↦ e.le_iff_le
-@[to_dual (attr := simp)] theorem preimage_Ioi : e ⁻¹' Ioi (e x) = Ioi x := ext fun _ ↦ e.lt_iff_lt
+@[to_dual (attr := simp)]
+theorem preimage_Ici : e ⁻¹' Ici (e x) = Ici x := ext fun _ ↦ e.le_iff_le
+@[to_dual (attr := simp)]
+theorem preimage_Ioi : e ⁻¹' Ioi (e x) = Ioi x := ext fun _ ↦ e.lt_iff_lt
 
 @[simp] theorem preimage_Icc : e ⁻¹' Icc (e x) (e y) = Icc x y := by ext; simp
 @[simp] theorem preimage_Ico : e ⁻¹' Ico (e x) (e y) = Ico x y := by ext; simp
@@ -40,12 +42,13 @@ end Preorder
 
 variable [LinearOrder α]
 
-@[simp] theorem preimage_uIcc [Lattice β] (e : α ↪o β) (x y : α) :
-    e ⁻¹' (uIcc (e x) (e y)) = uIcc x y := by
+@[simp]
+theorem preimage_uIcc [Lattice β] (e : α ↪o β) (x y : α) : e ⁻¹' (uIcc (e x) (e y)) = uIcc x y := by
   cases le_total x y <;> simp [*]
 
-@[simp] theorem preimage_uIoc [LinearOrder β] (e : α ↪o β) (x y : α) :
-    e ⁻¹' (uIoc (e x) (e y)) = uIoc x y := by
+@[simp]
+theorem preimage_uIoc [LinearOrder β] (e : α ↪o β) (x y : α)
+    : e ⁻¹' (uIoc (e x) (e y)) = uIoc x y := by
   cases le_total x y <;> simp [*]
 
 end OrderEmbedding

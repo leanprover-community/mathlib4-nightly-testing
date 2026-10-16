@@ -39,23 +39,23 @@ variable {M : Type*} [Zero M]
 noncomputable instance : FloorSemiring ℝ≥0 := inferInstanceAs <| FloorSemiring (Subtype _)
 
 @[simp, norm_cast]
-theorem coe_mulIndicator {α} (s : Set α) (f : α → ℝ≥0) (a : α) :
-    ((s.mulIndicator f a : ℝ≥0) : ℝ) = s.mulIndicator (fun x => ↑(f x)) a :=
+theorem coe_mulIndicator {α} (s : Set α) (f : α → ℝ≥0) (a : α)
+    : ((s.mulIndicator f a : ℝ≥0) : ℝ) = s.mulIndicator (fun x => ↑(f x)) a :=
   map_mulIndicator toRealHom _ _ _
 
 @[simp, norm_cast]
-theorem coe_indicator {α} (s : Set α) (f : α → ℝ≥0) (a : α) :
-    ((s.indicator f a : ℝ≥0) : ℝ) = s.indicator (fun x => ↑(f x)) a :=
+theorem coe_indicator {α} (s : Set α) (f : α → ℝ≥0) (a : α)
+    : ((s.indicator f a : ℝ≥0) : ℝ) = s.indicator (fun x => ↑(f x)) a :=
   map_indicator toRealHom _ _ _
 
 @[simp, norm_cast]
-theorem coe_mulSingle {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α) :
-    ((Pi.mulSingle a b : α → ℝ≥0) c : ℝ) = (Pi.mulSingle a b : α → ℝ) c := by
+theorem coe_mulSingle {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α)
+    : ((Pi.mulSingle a b : α → ℝ≥0) c : ℝ) = (Pi.mulSingle a b : α → ℝ) c := by
   simpa using coe_mulIndicator {a} (fun _ ↦ b) c
 
 @[simp, norm_cast]
-theorem coe_single {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α) :
-    ((Pi.single a b : α → ℝ≥0) c : ℝ) = (Pi.single a b : α → ℝ) c := by
+theorem coe_single {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α)
+    : ((Pi.single a b : α → ℝ≥0) c : ℝ) = (Pi.single a b : α → ℝ) c := by
   simpa using coe_indicator {a} (fun _ ↦ b) c
 
 @[norm_cast]
@@ -81,19 +81,21 @@ theorem coe_sum (s : Finset ι) (f : ι → ℝ≥0) : ∑ i ∈ s, f i = ∑ i 
   map_sum toRealHom _ _
 
 @[simp, norm_cast]
-lemma toReal_finsuppSum (f : ι →₀ M) (g : ι → M → ℝ≥0) :
-    f.sum g = f.sum (fun i m ↦ toReal (g i m)) := map_finsuppSum toRealHom ..
+lemma toReal_finsuppSum (f : ι →₀ M) (g : ι → M → ℝ≥0)
+    : f.sum g = f.sum (fun i m ↦ toReal (g i m)) :=
+  map_finsuppSum toRealHom ..
 
 @[simp, norm_cast]
-lemma toReal_finsuppProd (f : ι →₀ M) (g : ι → M → ℝ≥0) :
-    f.prod g = f.prod (fun i m ↦ toReal (g i m)) := map_finsuppProd toRealHom ..
+lemma toReal_finsuppProd (f : ι →₀ M) (g : ι → M → ℝ≥0)
+    : f.prod g = f.prod (fun i m ↦ toReal (g i m)) :=
+  map_finsuppProd toRealHom ..
 
 @[simp, norm_cast]
 lemma coe_expect (s : Finset ι) (f : ι → ℝ≥0) : 𝔼 i ∈ s, f i = 𝔼 i ∈ s, (f i : ℝ) :=
   map_expect toRealHom ..
 
-theorem _root_.Real.toNNReal_sum_of_nonneg (hf : ∀ i ∈ s, 0 ≤ f i) :
-    Real.toNNReal (∑ a ∈ s, f a) = ∑ a ∈ s, Real.toNNReal (f a) := by
+theorem _root_.Real.toNNReal_sum_of_nonneg (hf : ∀ i ∈ s, 0 ≤ f i)
+    : Real.toNNReal (∑ a ∈ s, f a) = ∑ a ∈ s, Real.toNNReal (f a) := by
   rw [← coe_inj, NNReal.coe_sum, Real.coe_toNNReal _ (Finset.sum_nonneg hf)]
   exact Finset.sum_congr rfl fun x hxs => by rw [Real.coe_toNNReal _ (hf x hxs)]
 
@@ -101,34 +103,39 @@ theorem _root_.Real.toNNReal_sum_of_nonneg (hf : ∀ i ∈ s, 0 ≤ f i) :
 theorem coe_prod (s : Finset ι) (f : ι → ℝ≥0) : ↑(∏ a ∈ s, f a) = ∏ a ∈ s, (f a : ℝ) :=
   map_prod toRealHom _ _
 
-theorem _root_.Real.toNNReal_prod_of_nonneg (hf : ∀ a, a ∈ s → 0 ≤ f a) :
-    Real.toNNReal (∏ a ∈ s, f a) = ∏ a ∈ s, Real.toNNReal (f a) := by
+theorem _root_.Real.toNNReal_prod_of_nonneg (hf : ∀ a, a ∈ s → 0 ≤ f a)
+    : Real.toNNReal (∏ a ∈ s, f a) = ∏ a ∈ s, Real.toNNReal (f a) := by
   rw [← coe_inj, NNReal.coe_prod, Real.coe_toNNReal _ (Finset.prod_nonneg hf)]
   exact Finset.prod_congr rfl fun x hxs => by rw [Real.coe_toNNReal _ (hf x hxs)]
 
-theorem le_iInf_add_iInf {ι ι' : Sort*} [Nonempty ι] [Nonempty ι'] {f : ι → ℝ≥0} {g : ι' → ℝ≥0}
-    {a : ℝ≥0} (h : ∀ i j, a ≤ f i + g j) : a ≤ (⨅ i, f i) + ⨅ j, g j := by
+theorem le_iInf_add_iInf
+    {ι ι' : Sort*} [Nonempty ι] [Nonempty ι']
+    {f : ι → ℝ≥0} {g : ι' → ℝ≥0} {a : ℝ≥0} (h : ∀ i j, a ≤ f i + g j)
+    : a ≤ (⨅ i, f i) + ⨅ j, g j := by
   rw [← NNReal.coe_le_coe, NNReal.coe_add, coe_iInf, coe_iInf]
   exact le_ciInf_add_ciInf h
 
-theorem mul_finset_sup {α} (r : ℝ≥0) (s : Finset α) (f : α → ℝ≥0) :
-    r * s.sup f = s.sup fun a => r * f a :=
+theorem mul_finset_sup {α} (r : ℝ≥0) (s : Finset α) (f : α → ℝ≥0)
+    : r * s.sup f = s.sup fun a => r * f a :=
   Finset.apply_sup_eq_sup_comp _ (NNReal.mul_sup r) (mul_zero r)
 
-theorem finset_sup_mul {α} (s : Finset α) (f : α → ℝ≥0) (r : ℝ≥0) :
-    s.sup f * r = s.sup fun a => f a * r :=
+theorem finset_sup_mul {α} (s : Finset α) (f : α → ℝ≥0) (r : ℝ≥0)
+    : s.sup f * r = s.sup fun a => f a * r :=
   Finset.apply_sup_eq_sup_comp (· * r) (fun x y => NNReal.sup_mul x y r) (zero_mul r)
 
-theorem finset_sup_div {α} {f : α → ℝ≥0} {s : Finset α} (r : ℝ≥0) :
-    s.sup f / r = s.sup fun a => f a / r := by simp only [div_eq_inv_mul, mul_finset_sup]
+theorem finset_sup_div {α} {f : α → ℝ≥0} {s : Finset α} (r : ℝ≥0)
+    : s.sup f / r = s.sup fun a => f a / r := by
+  simp only [div_eq_inv_mul, mul_finset_sup]
 
 section Set
 
-@[simp] lemma bddAbove_natCast_image_iff {s : Set ℕ} : BddAbove ((↑) '' s : Set ℝ≥0) ↔ BddAbove s :=
+@[simp]
+lemma bddAbove_natCast_image_iff {s : Set ℕ} : BddAbove ((↑) '' s : Set ℝ≥0) ↔ BddAbove s :=
   ⟨.imp' Nat.floor (by simp [upperBounds, Nat.le_floor_iff]), .imp' (↑) (by simp [upperBounds])⟩
 
-@[simp, norm_cast] lemma bddAbove_range_natCast_iff {ι : Sort*} (f : ι → ℕ) :
-    BddAbove (Set.range (f ·) : Set NNReal) ↔ BddAbove (Set.range f) := by
+@[simp, norm_cast]
+lemma bddAbove_range_natCast_iff {ι : Sort*} (f : ι → ℕ)
+    : BddAbove (Set.range (f ·) : Set NNReal) ↔ BddAbove (Set.range f) := by
   rw [← bddAbove_natCast_image_iff, ← Set.range_comp]
   rfl
 
@@ -146,14 +153,15 @@ typeclass. For lemmas about subtraction and addition see lemmas about `OrderedSu
 `Mathlib/Algebra/Order/Sub/Basic.lean`. See also `mul_tsub` and `tsub_mul`.
 -/
 
-theorem sub_div (a b c : ℝ≥0) : (a - b) / c = a / c - b / c :=
-  tsub_div _ _ _
+theorem sub_div (a b c : ℝ≥0) : (a - b) / c = a / c - b / c := tsub_div _ _ _
 
-/-- This lemma is needed for the `norm_cast` simp set. Outside of this use case `Nat.coe_sub`
-should be used. -/
+/--
+This lemma is needed for the `norm_cast` simp set. Outside of this use case `Nat.coe_sub`
+should be used.
+-/
 @[norm_cast]
-protected theorem coe_sub_of_lt {a b : ℝ≥0} (h : a < b) :
-    ((b - a : ℝ≥0) : ℝ) = b - a := NNReal.coe_sub h.le
+protected theorem coe_sub_of_lt {a b : ℝ≥0} (h : a < b) : ((b - a : ℝ≥0) : ℝ) = b - a :=
+  NNReal.coe_sub h.le
 
 end Sub
 
@@ -189,8 +197,8 @@ theorem iSup_mul_le {a : ℝ≥0} {g : ι → ℝ≥0} {h : ℝ≥0} (H : ∀ i,
   rw [iSup_mul]
   exact ciSup_le' H
 
-theorem iSup_mul_iSup_le {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, g i * h j ≤ a) :
-    iSup g * iSup h ≤ a :=
+theorem iSup_mul_iSup_le {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, g i * h j ≤ a)
+    : iSup g * iSup h ≤ a :=
   iSup_mul_le fun _ => mul_iSup_le <| H _
 
 variable [Nonempty ι]
@@ -203,18 +211,19 @@ theorem le_iInf_mul {a : ℝ≥0} {g : ι → ℝ≥0} {h : ℝ≥0} (H : ∀ i,
   rw [iInf_mul]
   exact le_ciInf H
 
-theorem le_iInf_mul_iInf {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, a ≤ g i * h j) :
-    a ≤ iInf g * iInf h :=
+theorem le_iInf_mul_iInf {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, a ≤ g i * h j)
+    : a ≤ iInf g * iInf h :=
   le_iInf_mul fun i => le_mul_iInf <| H i
 
-@[simp, norm_cast] lemma natCast_iSup {ι : Sort*} (f : ι → ℕ) :
-    ⨆ i, f i = (⨆ i, f i : NNReal) := by
+@[simp, norm_cast]
+lemma natCast_iSup {ι : Sort*} (f : ι → ℕ) : ⨆ i, f i = (⨆ i, f i : NNReal) := by
   by_cases h : BddAbove (Set.range f)
   · apply eq_of_forall_ge_iff
     simp [ciSup_le_iff', ← Nat.le_floor_iff, *]
   · simp [*]
 
-@[simp, norm_cast] lemma natCast_iInf {ι : Sort*} (f : ι → ℕ) : ⨅ i, f i = (⨅ i, f i : NNReal) := by
+@[simp, norm_cast]
+lemma natCast_iInf {ι : Sort*} (f : ι → ℕ) : ⨅ i, f i = (⨅ i, f i : NNReal) := by
   cases isEmpty_or_nonempty ι
   · simp
   apply eq_of_forall_le_iff
@@ -234,20 +243,15 @@ section rify
 
 end rify
 
-@[simp]
-theorem range_coe : range toReal = Ici 0 := Subtype.range_coe_subtype
+@[simp] theorem range_coe : range toReal = Ici 0 := Subtype.range_coe_subtype
 
-@[simp]
-theorem image_coe_Ici (x : ℝ≥0) : toReal '' Ici x = Ici ↑x := image_subtype_val_Ici_Ici ..
+@[simp] theorem image_coe_Ici (x : ℝ≥0) : toReal '' Ici x = Ici ↑x := image_subtype_val_Ici_Ici ..
 
-@[simp]
-theorem image_coe_Iic (x : ℝ≥0) : toReal '' Iic x = Icc 0 ↑x := image_subtype_val_Ici_Iic ..
+@[simp] theorem image_coe_Iic (x : ℝ≥0) : toReal '' Iic x = Icc 0 ↑x := image_subtype_val_Ici_Iic ..
 
-@[simp]
-theorem image_coe_Ioi (x : ℝ≥0) : toReal '' Ioi x = Ioi ↑x := image_subtype_val_Ici_Ioi ..
+@[simp] theorem image_coe_Ioi (x : ℝ≥0) : toReal '' Ioi x = Ioi ↑x := image_subtype_val_Ici_Ioi ..
 
-@[simp]
-theorem image_coe_Iio (x : ℝ≥0) : toReal '' Iio x = Ico 0 ↑x := image_subtype_val_Ici_Iio ..
+@[simp] theorem image_coe_Iio (x : ℝ≥0) : toReal '' Iio x = Ico 0 ↑x := image_subtype_val_Ici_Iio ..
 
 @[simp]
 theorem image_coe_Icc (x y : ℝ≥0) : toReal '' Icc x y = Icc ↑x ↑y :=

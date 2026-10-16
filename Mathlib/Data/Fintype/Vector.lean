@@ -30,8 +30,7 @@ end List.Vector
 
 namespace Sym.Sym'
 
-instance [Finite α] {n : ℕ} : Finite (Sym.Sym' α n) :=
-  inferInstanceAs <| Finite (Quotient _)
+instance [Finite α] {n : ℕ} : Finite (Sym.Sym' α n) := inferInstanceAs <| Finite (Quotient _)
 
 instance instFintype [DecidableEq α] [Fintype α] {n : ℕ} : Fintype (Sym.Sym' α n) :=
   inferInstanceAs <| Fintype (Quotient _)
@@ -40,8 +39,7 @@ end Sym.Sym'
 
 namespace Sym
 
-instance [Finite α] {n : ℕ} : Finite (Sym α n) :=
-  Finite.of_equiv _ Sym.symEquivSym'.symm
+instance [Finite α] {n : ℕ} : Finite (Sym α n) := Finite.of_equiv _ Sym.symEquivSym'.symm
 
 instance instFintype [DecidableEq α] [Fintype α] {n : ℕ} : Fintype (Sym α n) :=
   fast_instance% Fintype.ofEquiv _ Sym.symEquivSym'.symm

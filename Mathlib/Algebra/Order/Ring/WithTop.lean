@@ -27,10 +27,14 @@ variable [MulZeroClass α] {a b : WithTop α}
 @[to_dual]
 instance : MulZeroClass (WithTop α) where
   mul
-    | (a : α), (b : α) => ↑(a * b)
-    | (a : α), ⊤ => if a = 0 then 0 else ⊤
-    | ⊤, (b : α) => if b = 0 then 0 else ⊤
-    | ⊤, ⊤ => ⊤
+    | (a : α), (b : α) =>
+      ↑(a * b)
+    | (a : α), ⊤ =>
+      if a = 0 then 0 else ⊤
+    | ⊤, (b : α) =>
+      if b = 0 then 0 else ⊤
+    | ⊤, ⊤ =>
+      ⊤
   mul_zero
     | (a : α) => congr(some $(mul_zero _))
     | ⊤ => ite_eq_left rfl
@@ -61,8 +65,8 @@ lemma top_mul (hb : b ≠ 0) : ⊤ * b = ⊤ := by rw [top_mul', ite_eq_right hb
 lemma top_mul_top : (⊤ * ⊤ : WithTop α) = ⊤ := rfl
 
 @[to_dual]
-lemma mul_def (a b : WithTop α) :
-    a * b = if a = 0 ∨ b = 0 then 0 else WithTop.map₂ (· * ·) a b := by
+lemma mul_def (a b : WithTop α)
+    : a * b = if a = 0 ∨ b = 0 then 0 else WithTop.map₂ (· * ·) a b := by
   cases a <;> cases b <;> aesop
 
 @[to_dual]
@@ -80,10 +84,14 @@ lemma coe_mul_eq_bind {a : α} (ha : a ≠ 0) : ∀ b, (a * b : WithTop α) = b.
 
 @[to_dual (attr := simp)]
 lemma untopD_zero_mul (a b : WithTop α) : (a * b).untopD 0 = a.untopD 0 * b.untopD 0 := by
-  by_cases ha : a = 0; · rw [ha, zero_mul, ← coe_zero, untopD_coe, zero_mul]
-  by_cases hb : b = 0; · rw [hb, mul_zero, ← coe_zero, untopD_coe, mul_zero]
-  cases a; · rw [top_mul hb, untopD_top, zero_mul]
-  cases b; · rw [mul_top ha, untopD_top, mul_zero]
+  by_cases ha : a = 0
+  · rw [ha, zero_mul, ← coe_zero, untopD_coe, zero_mul]
+  by_cases hb : b = 0
+  · rw [hb, mul_zero, ← coe_zero, untopD_coe, mul_zero]
+  cases a
+  · rw [top_mul hb, untopD_top, zero_mul]
+  cases b
+  · rw [mul_top ha, untopD_top, mul_zero]
   rw [← coe_mul, untopD_coe, untopD_coe, untopD_coe]
 
 @[to_dual]
@@ -104,33 +112,35 @@ instance instNoZeroDivisors [NoZeroDivisors α] : NoZeroDivisors (WithTop α) :=
 
 variable [Preorder α]
 
-protected lemma mul_right_strictMono [PosMulStrictMono α] (h₀ : 0 < a) (hinf : a ≠ ⊤) :
-    StrictMono (a * ·) := by
+protected lemma mul_right_strictMono [PosMulStrictMono α] (h₀ : 0 < a) (hinf : a ≠ ⊤)
+    : StrictMono (a * ·) := by
   lift a to α using hinf
   rintro b c hbc
   lift b to α using hbc.ne_top
   match c with
-  | ⊤ => simp [← coe_mul, mul_top h₀.ne']
+  | ⊤ =>
+    simp [← coe_mul, mul_top h₀.ne']
   | (c : α) =>
-  simp only [coe_pos, coe_lt_coe, ← coe_mul, gt_iff_lt] at *
-  exact mul_lt_mul_of_pos_left hbc h₀
+    simp only [coe_pos, coe_lt_coe, ← coe_mul, gt_iff_lt] at *
+    exact mul_lt_mul_of_pos_left hbc h₀
 
-protected lemma mul_left_strictMono [MulPosStrictMono α] (h₀ : 0 < a) (hinf : a ≠ ⊤) :
-    StrictMono (· * a) := by
+protected lemma mul_left_strictMono [MulPosStrictMono α] (h₀ : 0 < a) (hinf : a ≠ ⊤)
+    : StrictMono (· * a) := by
   lift a to α using hinf
   rintro b c hbc
   lift b to α using hbc.ne_top
   match c with
-  | ⊤ => simp [← coe_mul, top_mul h₀.ne']
+  | ⊤ =>
+    simp [← coe_mul, top_mul h₀.ne']
   | (c : α) =>
-  simp only [coe_pos, coe_lt_coe, ← coe_mul, gt_iff_lt] at *
-  gcongr
+    simp only [coe_pos, coe_lt_coe, ← coe_mul, gt_iff_lt] at *
+    gcongr
 
 end MulZeroClass
 
 /-- `Nontrivial α` is needed here as otherwise we have `1 * ⊤ = ⊤` but also `0 * ⊤ = 0`. -/
 @[to_dual
-/-- `Nontrivial α` is needed here as otherwise we have `1 * ⊥ = ⊥` but also `= 0 * ⊥ = 0`. -/]
+  /-- `Nontrivial α` is needed here as otherwise we have `1 * ⊥ = ⊥` but also `= 0 * ⊥ = 0`. -/]
 instance instMulZeroOneClass [MulZeroOneClass α] [Nontrivial α] : MulZeroOneClass (WithTop α) where
   one_mul
     | ⊤ => mul_top (mt coe_eq_coe.1 one_ne_zero)
@@ -141,51 +151,69 @@ instance instMulZeroOneClass [MulZeroOneClass α] [Nontrivial α] : MulZeroOneCl
 
 /-- A version of `WithTop.map` for `MonoidWithZeroHom`s. -/
 @[to_dual (attr := simps -fullyApplied)
-/-- A version of `WithBot.map` for `MonoidWithZeroHom`s. -/]
-protected def _root_.MonoidWithZeroHom.withTopMap {R S : Type*} [MulZeroOneClass R] [DecidableEq R]
-    [Nontrivial R] [MulZeroOneClass S] [DecidableEq S] [Nontrivial S] (f : R →*₀ S)
-    (hf : Function.Injective f) : WithTop R →*₀ WithTop S :=
-  { f.toZeroHom.withTopMap, f.toMonoidHom.toOneHom.withTopMap with
-    toFun := WithTop.map f
-    map_mul' := fun x y => by
-      have : ∀ z, map f z = 0 ↔ z = 0 := fun z =>
-        (Option.map_injective hf).eq_iff' f.toZeroHom.withTopMap.map_zero
-      rcases Decidable.eq_or_ne x 0 with (rfl | hx)
-      · simp
-      rcases Decidable.eq_or_ne y 0 with (rfl | hy)
-      · simp
-      cases x with | top => simp [hy, this] | coe x => ?_
-      cases y with
-      | top =>
-        have : (f x : WithTop S) ≠ 0 := by simpa [hf.eq_iff' (map_zero f)] using hx
-        simp [mul_top hx, mul_top this]
-      | coe y => simp [← coe_mul] }
+  /-- A version of `WithBot.map` for `MonoidWithZeroHom`s. -/]
+protected def _root_.MonoidWithZeroHom.withTopMap
+    {R S : Type*} [MulZeroOneClass R] [DecidableEq R] [Nontrivial R] [MulZeroOneClass S]
+    [DecidableEq S] [Nontrivial S]
+    (f : R →*₀ S) (hf : Function.Injective f)
+    : WithTop R →*₀ WithTop S := {
+  f.toZeroHom.withTopMap, f.toMonoidHom.toOneHom.withTopMap with
+  toFun := WithTop.map f
+  map_mul' := fun x y => by
+    have : ∀ z, map f z = 0 ↔ z = 0 := fun z =>
+      (Option.map_injective hf).eq_iff' f.toZeroHom.withTopMap.map_zero
+    rcases Decidable.eq_or_ne x 0 with (rfl | hx)
+    · simp
+    rcases Decidable.eq_or_ne y 0 with (rfl | hy)
+    · simp
+    cases x with
+    | top => simp [hy, this]
+    | coe x => ?_
+    cases y with
+    | top =>
+      have : (f x : WithTop S) ≠ 0 := by simpa [hf.eq_iff' (map_zero f)] using hx
+      simp [mul_top hx, mul_top this]
+    | coe y =>
+      simp [← coe_mul]
+}
 
 @[to_dual]
-instance instSemigroupWithZero [SemigroupWithZero α] [NoZeroDivisors α] :
-    SemigroupWithZero (WithTop α) where
+instance instSemigroupWithZero [SemigroupWithZero α] [NoZeroDivisors α]
+    : SemigroupWithZero (WithTop α) where
   mul_assoc a b c := by
-    rcases eq_or_ne a 0 with (rfl | ha); · simp only [zero_mul]
-    rcases eq_or_ne b 0 with (rfl | hb); · simp only [zero_mul, mul_zero]
-    rcases eq_or_ne c 0 with (rfl | hc); · simp only [mul_zero]
-    cases a with | top => simp [hb, hc] | coe a => ?_
-    cases b with | top => simp [mul_top ha, top_mul hc] | coe b => ?_
+    rcases eq_or_ne a 0 with (rfl | ha)
+    · simp only [zero_mul]
+    rcases eq_or_ne b 0 with (rfl | hb)
+    · simp only [zero_mul, mul_zero]
+    rcases eq_or_ne c 0 with (rfl | hc)
+    · simp only [mul_zero]
+    cases a with
+    | top => simp [hb, hc]
+    | coe a => ?_
+    cases b with
+    | top => simp [mul_top ha, top_mul hc]
+    | coe b => ?_
     cases c with
     | top =>
       rw [mul_top hb, mul_top ha]
       rw [← coe_zero, ne_eq, coe_eq_coe] at ha hb
       simp [ha, hb]
-    | coe c => simp only [← coe_mul, mul_assoc]
+    | coe c =>
+      simp only [← coe_mul, mul_assoc]
 
 section MonoidWithZero
 variable [MonoidWithZero α] [NoZeroDivisors α] [Nontrivial α] {x : WithTop α} {n : ℕ}
 
 @[to_dual]
 instance : MonoidWithZero (WithTop α) where
-  npow n a := match a, n with
-    | (a : α), n => ↑(a ^ n)
-    | ⊤, 0 => 1
-    | ⊤, _n + 1 => ⊤
+  npow n a :=
+    match a, n with
+    | (a : α), n =>
+      ↑(a ^ n)
+    | ⊤, 0 =>
+      1
+    | ⊤, _n + 1 =>
+      ⊤
   npow_zero a := by simp_rw [HPow.hPow, Pow.pow]; cases a <;> simp
   npow_succ n a := by simp_rw [HPow.hPow, Pow.pow]; cases n <;> cases a <;> simp [pow_succ]
 
@@ -193,11 +221,12 @@ instance : MonoidWithZero (WithTop α) where
 lemma coe_pow (a : α) (n : ℕ) : (↑(a ^ n) : WithTop α) = a ^ n := rfl
 
 @[to_dual (attr := simp)]
-lemma top_pow {n : ℕ} (hn : n ≠ 0) : (⊤ : WithTop α) ^ n = ⊤ := match n with | _ + 1 => rfl
+lemma top_pow {n : ℕ} (hn : n ≠ 0) : (⊤ : WithTop α) ^ n = ⊤ :=
+  match n with
+  | _ + 1 => rfl
 
 @[to_dual (attr := simp)]
-lemma pow_eq_top_iff : x ^ n = ⊤ ↔ x = ⊤ ∧ n ≠ 0 := by
-  cases x <;> cases n <;> simp [← coe_pow]
+lemma pow_eq_top_iff : x ^ n = ⊤ ↔ x = ⊤ ∧ n ≠ 0 := by cases x <;> cases n <;> simp [← coe_pow]
 
 @[to_dual]
 lemma pow_ne_top_iff : x ^ n ≠ ⊤ ↔ x ≠ ⊤ ∨ n = 0 := by simp [pow_eq_top_iff, or_iff_not_imp_left]
@@ -215,23 +244,23 @@ lemma pow_lt_top [Preorder α] (hx : x < ⊤) : x ^ n < ⊤ := pow_lt_top_iff.2 
 end MonoidWithZero
 
 @[to_dual]
-instance instCommMonoidWithZero [CommMonoidWithZero α] [NoZeroDivisors α] [Nontrivial α] :
-    CommMonoidWithZero (WithTop α) where
+instance instCommMonoidWithZero [CommMonoidWithZero α] [NoZeroDivisors α] [Nontrivial α]
+    : CommMonoidWithZero (WithTop α) where
   mul_comm a b := by simp_rw [mul_def]; exact if_congr or_comm rfl (Option.map₂_comm mul_comm)
 
 @[to_dual]
-instance instNonUnitalNonAssocSemiring [NonUnitalNonAssocSemiring α]
-    [Subsingleton (AddUnits α)] : NonUnitalNonAssocSemiring (WithTop α) where
+instance instNonUnitalNonAssocSemiring [NonUnitalNonAssocSemiring α] [Subsingleton (AddUnits α)]
+    : NonUnitalNonAssocSemiring (WithTop α) where
   right_distrib a b c := by
     cases c with
     | top =>
       by_cases ha : a = 0
       · simp [ha]
-      · have : a + b ≠ 0 := by
-          cases a <;> cases b <;> norm_cast at * <;> simp [ha]
+      · have : a + b ≠ 0 := by cases a <;> cases b <;> norm_cast at * <;> simp [ha]
         simp [ha, this]
     | coe c =>
-      by_cases hc : c = 0; · simp [hc]
+      by_cases hc : c = 0
+      · simp [hc]
       simp only [mul_coe_eq_bind hc]
       cases a <;> cases b <;> try rfl
       congrm some $(add_mul ..)
@@ -240,48 +269,51 @@ instance instNonUnitalNonAssocSemiring [NonUnitalNonAssocSemiring α]
     | top =>
       by_cases ha : a = 0
       · simp [ha]
-      · have : a + b ≠ 0 := by
-          cases a <;> cases b <;> norm_cast at * <;> simp [ha]
+      · have : a + b ≠ 0 := by cases a <;> cases b <;> norm_cast at * <;> simp [ha]
         simp [ha, this]
     | coe c =>
-      by_cases hc : c = 0; · simp [hc]
+      by_cases hc : c = 0
+      · simp [hc]
       simp only [coe_mul_eq_bind hc]
       cases a <;> cases b <;> try rfl
       congrm some $(mul_add ..)
 
 @[to_dual]
-instance instNonAssocSemiring [NonAssocSemiring α] [Subsingleton (AddUnits α)]
-    [Nontrivial α] : NonAssocSemiring (WithTop α) where
+instance instNonAssocSemiring [NonAssocSemiring α] [Subsingleton (AddUnits α)] [Nontrivial α]
+  : NonAssocSemiring (WithTop α) where
 
 @[to_dual]
-instance instNonUnitalSemiring [NonUnitalSemiring α] [Subsingleton (AddUnits α)]
-    [NoZeroDivisors α] : NonUnitalSemiring (WithTop α) where
+instance instNonUnitalSemiring [NonUnitalSemiring α] [Subsingleton (AddUnits α)] [NoZeroDivisors α]
+  : NonUnitalSemiring (WithTop α) where
 
 @[to_dual]
-instance instSemiring [Semiring α] [Subsingleton (AddUnits α)]
-    [NoZeroDivisors α] [Nontrivial α] : Semiring (WithTop α) where
+instance instSemiring [Semiring α] [Subsingleton (AddUnits α)] [NoZeroDivisors α] [Nontrivial α]
+  : Semiring (WithTop α) where
 
 @[to_dual]
-instance instCommSemiring [CommSemiring α] [Subsingleton (AddUnits α)]
-    [NoZeroDivisors α] [Nontrivial α] : CommSemiring (WithTop α) where
+instance instCommSemiring
+  [CommSemiring α] [Subsingleton (AddUnits α)] [NoZeroDivisors α] [Nontrivial α]
+  : CommSemiring (WithTop α) where
 
-instance instIsOrderedRing [CommSemiring α] [PartialOrder α] [CanonicallyOrderedAdd α]
-    [NoZeroDivisors α] [Nontrivial α] : IsOrderedRing (WithTop α) :=
+instance instIsOrderedRing
+    [CommSemiring α] [PartialOrder α] [CanonicallyOrderedAdd α] [NoZeroDivisors α] [Nontrivial α]
+    : IsOrderedRing (WithTop α) :=
   CanonicallyOrderedAdd.toIsOrderedRing
 
 /-- A version of `WithTop.map` for `RingHom`s. -/
 @[to_dual (attr := simps -fullyApplied)
-/-- A version of `WithTop.map` for `RingHom`s. -/]
-protected def _root_.RingHom.withTopMap {R S : Type*}
-    [NonAssocSemiring R] [PartialOrder R] [CanonicallyOrderedAdd R]
-    [DecidableEq R] [Nontrivial R]
-    [NonAssocSemiring S] [PartialOrder S] [CanonicallyOrderedAdd S]
-    [DecidableEq S] [Nontrivial S]
-    (f : R →+* S) (hf : Function.Injective f) : WithTop R →+* WithTop S :=
-  { MonoidWithZeroHom.withTopMap f.toMonoidWithZeroHom hf, f.toAddMonoidHom.withTopMap with }
+  /-- A version of `WithTop.map` for `RingHom`s. -/]
+protected def _root_.RingHom.withTopMap
+    {R S : Type*}
+    [NonAssocSemiring R] [PartialOrder R] [CanonicallyOrderedAdd R] [DecidableEq R] [Nontrivial R]
+    [NonAssocSemiring S] [PartialOrder S] [CanonicallyOrderedAdd S] [DecidableEq S] [Nontrivial S]
+    (f : R →+* S) (hf : Function.Injective f)
+    : WithTop R →+* WithTop S := {
+  MonoidWithZeroHom.withTopMap f.toMonoidWithZeroHom hf, f.toAddMonoidHom.withTopMap with
+}
 
-variable [CommSemiring α] [PartialOrder α] [OrderBot α]
-  [CanonicallyOrderedAdd α] [PosMulStrictMono α]
+variable
+  [CommSemiring α] [PartialOrder α] [OrderBot α] [CanonicallyOrderedAdd α] [PosMulStrictMono α]
   {a a₁ a₂ b₁ b₂ : WithTop α}
 
 @[gcongr]
@@ -303,13 +335,16 @@ protected lemma mul_lt_mul (ha : a₁ < a₂) (hb : b₁ < b₂) : a₁ * b₁ <
 variable [NoZeroDivisors α] [Nontrivial α] {a b : WithTop α}
 
 protected lemma pow_right_strictMono : ∀ {n : ℕ}, n ≠ 0 → StrictMono fun a : WithTop α ↦ a ^ n
-  | 0, h => absurd rfl h
-  | 1, _ => by simpa only [pow_one] using! strictMono_id
+  | 0, h =>
+    absurd rfl h
+  | 1, _ => by
+    simpa only [pow_one] using! strictMono_id
   | n + 2, _ => fun x y h ↦ by
     simp_rw [pow_succ _ (n + 1)]
     exact WithTop.mul_lt_mul (WithTop.pow_right_strictMono n.succ_ne_zero h) h
 
-@[gcongr] protected lemma pow_lt_pow_left (hab : a < b) {n : ℕ} (hn : n ≠ 0) : a ^ n < b ^ n :=
+@[gcongr]
+protected lemma pow_lt_pow_left (hab : a < b) {n : ℕ} (hn : n ≠ 0) : a ^ n < b ^ n :=
   WithTop.pow_right_strictMono hn hab
 
 end WithTop
@@ -434,8 +469,9 @@ instance [MulZeroClass α] [Preorder α] [MulPosReflectLE α] : MulPosReflectLE 
     norm_cast at x0
     exact le_of_mul_le_mul_right h x0
 
-instance instIsOrderedRing [CommSemiring α] [PartialOrder α] [IsOrderedRing α]
-    [CanonicallyOrderedAdd α] [NoZeroDivisors α] [Nontrivial α] :
-    IsOrderedRing (WithBot α) where
+instance instIsOrderedRing
+  [CommSemiring α] [PartialOrder α] [IsOrderedRing α] [CanonicallyOrderedAdd α] [NoZeroDivisors α]
+  [Nontrivial α]
+  : IsOrderedRing (WithBot α) where
 
 end WithBot

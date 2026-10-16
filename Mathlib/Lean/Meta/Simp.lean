@@ -29,15 +29,15 @@ open Elab.Tactic
 
 instance : ToFormat SimpTheorems where
   format s :=
-f!"pre:
-{s.pre.values.toList}
-post:
-{s.post.values.toList}
-lemmaNames:
-{s.lemmaNames.toList.map (·.key)}
-toUnfold: {s.toUnfold.toList}
-erased: {s.erased.toList.map (·.key)}
-toUnfoldThms: {s.toUnfoldThms.toList}"
+    f!"pre:\
+      \n{s.pre.values.toList}\
+      \npost:\
+      \n{s.post.values.toList}\
+      \nlemmaNames:\
+      \n{s.lemmaNames.toList.map (·.key)}\
+      \ntoUnfold: {s.toUnfold.toList}\
+      \nerased: {s.erased.toList.map (·.key)}\
+      \ntoUnfoldThms: {s.toUnfoldThms.toList}"
 
 /--
 Constructs a proof that the original expression is true
@@ -46,8 +46,8 @@ given a simp result which simplifies the target to `True`.
 def Result.ofTrue (r : Simp.Result) : MetaM (Option Expr) :=
   if r.expr.isConstOf ``True then
     some <$> match r.proof? with
-    | some proof => mkOfEqTrue proof
-    | none => pure (mkConst ``True.intro)
+      | some proof => mkOfEqTrue proof
+      | none => pure (mkConst ``True.intro)
   else
     pure none
 
@@ -63,42 +63,42 @@ def getPropHyps : MetaM (Array FVarId) := do
 end Simp
 
 /-- Construct a `SimpTheorems` from a list of names. -/
-def simpTheoremsOfNames (lemmas : List Name := []) (simpOnly : Bool := false) :
-    MetaM SimpTheorems := do
+def simpTheoremsOfNames (lemmas : List Name := []) (simpOnly : Bool := false)
+    : MetaM SimpTheorems := do
   lemmas.foldlM (·.addConst ·)
     (← if simpOnly then
-      simpOnlyBuiltins.foldlM (·.addConst ·) {}
-    else
-      getSimpTheorems)
+         simpOnlyBuiltins.foldlM (·.addConst ·) {}
+       else
+         getSimpTheorems)
 
 -- TODO We need to write a `mkSimpContext` in `MetaM`
 -- that supports all the bells and whistles in `simp`.
 -- It should generalize this, and another partial implementation in `Tactic.Simps.Basic`.
 
 /-- Construct a `Simp.Context` from a list of names. -/
-def Simp.Context.ofNames (lemmas : List Name := []) (simpOnly : Bool := false)
-    (config : Simp.Config := {}) : MetaM Simp.Context := do
-  Simp.mkContext config
-    (simpTheorems := #[← simpTheoremsOfNames lemmas simpOnly])
+def Simp.Context.ofNames
+    (lemmas : List Name := []) (simpOnly : Bool := false) (config : Simp.Config := {})
+    : MetaM Simp.Context := do
+  Simp.mkContext config (simpTheorems := #[← simpTheoremsOfNames lemmas simpOnly])
     (congrTheorems := ← Lean.Meta.getSimpCongrTheorems)
 
 -- adapted from `Lean.Elab.Tactic.mkSimpContext`
-/-- Construct a `Simp.Context`, following the same algorithm that would be done in a "simp" run:
+/--
+Construct a `Simp.Context`, following the same algorithm that would be done in a "simp" run:
 look up all the simp-lemmas in the library, and adjust (add/erase) as specified by the provided
-`simpArgs` list. -/
-def Simp.Context.ofArgs (args : TSyntax ``Parser.Tactic.simpArgs) (config : Simp.Config := {}) :
-    TacticM Simp.Context := do
+`simpArgs` list.
+-/
+def Simp.Context.ofArgs (args : TSyntax ``Parser.Tactic.simpArgs) (config : Simp.Config := {})
+    : TacticM Simp.Context := do
   let simpTheorems ← Meta.getSimpTheorems
   let congrTheorems ← Meta.getSimpCongrTheorems
-  let ctx ← Simp.mkContext config
-     (simpTheorems := #[simpTheorems])
-     congrTheorems
+  let ctx ← Simp.mkContext config (simpTheorems := #[simpTheorems]) congrTheorems
   let r ← elabSimpArgs args (eraseLocal := false) (kind := SimpKind.simp) (simprocs := {}) ctx
   return r.ctx
 
 /-- Simplify an expression using only a list of lemmas specified by name. -/
-def simpOnlyNames (lemmas : List Name) (e : Expr) (config : Simp.Config := {}) :
-    MetaM Simp.Result := do
+def simpOnlyNames (lemmas : List Name) (e : Expr) (config : Simp.Config := {})
+    : MetaM Simp.Result := do
   (·.1) <$> simp e (← Simp.Context.ofNames lemmas true config)
 
 /--
@@ -110,20 +110,23 @@ using a combination of type hints as well as casting if the proof is not definit
 The optional argument `type?`, if present, must be definitionally equal to the type of `e`.
 When it is specified we simplify this type rather than the inferred type of `e`.
 -/
-def simpType (S : Expr → MetaM Simp.Result) (e : Expr) (type? : Option Expr := none) :
-    MetaM Expr := do
+def simpType (S : Expr → MetaM Simp.Result) (e : Expr) (type? : Option Expr := none)
+    : MetaM Expr := do
   let type ← type?.getDM (inferType e)
   match ← S type with
   | ⟨ty', none, _⟩ => mkExpectedTypeHint e ty'
   -- We use `mkExpectedTypeHint` in this branch as well, in order to preserve the binder types.
   | ⟨ty', some prf, _⟩ => mkExpectedTypeHint (← mkEqMP prf e) ty'
 
-/-- Independently simplify both the left-hand side and the right-hand side
+/--
+Independently simplify both the left-hand side and the right-hand side
 of an equality. The equality is allowed to be under binders.
-Returns the simplified equality and a proof of it. -/
+Returns the simplified equality and a proof of it.
+-/
 def simpEq (S : Expr → MetaM Simp.Result) (type pf : Expr) : MetaM (Expr × Expr) := do
   forallTelescope type fun fvars type => do
-    let .app (.app (.app (.const `Eq [u]) α) lhs) rhs := type | throwError "simpEq expecting Eq"
+    let .app (.app (.app (.const `Eq [u]) α) lhs) rhs := type
+      | throwError "simpEq expecting Eq"
     let ⟨lhs', lhspf?, _⟩ ← S lhs
     let ⟨rhs', rhspf?, _⟩ ← S rhs
     let mut pf' := mkAppN pf fvars
@@ -138,16 +141,22 @@ def simpEq (S : Expr → MetaM Simp.Result) (type pf : Expr) : MetaM (Expr × Ex
 def SimpTheorems.contains (d : SimpTheorems) (declName : Name) :=
   d.isLemma (.decl declName) || d.isDeclToUnfold declName
 
-/-- Tests whether `decl` has `simp`-attribute `simpAttr`. Returns `false` is `simpAttr` is not a
-valid simp-attribute. -/
+/--
+Tests whether `decl` has `simp`-attribute `simpAttr`. Returns `false` is `simpAttr` is not a
+valid simp-attribute.
+-/
 def isInSimpSet (simpAttr decl : Name) : CoreM Bool := do
-  let some simpDecl ← getSimpExtension? simpAttr | return false
+  let some simpDecl ← getSimpExtension? simpAttr
+    | return false
   return (← simpDecl.getTheorems).contains decl
 
-/-- Returns all declarations with the `simp`-attribute `simpAttr`.
-Note: this also returns many auxiliary declarations. -/
+/--
+Returns all declarations with the `simp`-attribute `simpAttr`.
+Note: this also returns many auxiliary declarations.
+-/
 def getAllSimpDecls (simpAttr : Name) : CoreM (List Name) := do
-  let some simpDecl ← getSimpExtension? simpAttr | return []
+  let some simpDecl ← getSimpExtension? simpAttr
+    | return []
   let thms ← simpDecl.getTheorems
   return thms.toUnfold.toList ++ thms.lemmaNames.toList.filterMap fun
     | .decl decl => some decl
@@ -161,7 +170,8 @@ def getAllSimpAttrs (decl : Name) : CoreM (Array Name) := do
       simpAttrs := simpAttrs.push simpAttr
   return simpAttrs
 
-/-- Run `e` while the entries in `declNames` are erased from the `simp` set, while preserving the
+/--
+Run `e` while the entries in `declNames` are erased from the `simp` set, while preserving the
 rest of the `simp` configuration.
 
 Performance note: the code in `e` will be run with a new cache (which is discarded at the end of the
@@ -172,11 +182,12 @@ meta def Simp.withoutTheorems {α} (declNames : Array Name) (e : SimpM α) : Sim
   let mut procs ← getSimprocs
   for name in declNames do
     -- Erase all variants of the theorem, not just the forward post-proc.
-    theorems := theorems
-      |>.eraseTheorem (.decl name)
-      |>.eraseTheorem (.decl name (inv := true))
-      |>.eraseTheorem (.decl name (post := false))
-      |>.eraseTheorem (.decl name (inv := true) (post := false))
+    theorems :=
+      theorems
+        |>.eraseTheorem (.decl name)
+        |>.eraseTheorem (.decl name (inv := true))
+        |>.eraseTheorem (.decl name (post := false))
+        |>.eraseTheorem (.decl name (inv := true) (post := false))
     procs := procs.erase name
   let oldMethods ← getMethods
   let methods := mkMethods #[procs] oldMethods.discharge? oldMethods.wellBehavedDischarge

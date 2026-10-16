@@ -27,34 +27,38 @@ def elabOptAttrArg : TSyntax ``optAttrArg → TermElabM (Array Attribute)
   | `(optAttrArg| (attr := $[$attrs],*)) => elabAttrs attrs
   | _ => pure #[]
 
-/-- Re-implementation of the inner loop of `Lean.Linter.tacticCheckInstances` for use on
+/--
+Re-implementation of the inner loop of `Lean.Linter.tacticCheckInstances` for use on
 declarations synthesized by Mathlib attributes (`@[simps]`, `@[reassoc]`, `@[elementwise]`, ...).
 Returns the list of semireducible non-instance definitions that `Meta.check declType .default`
 had to unfold but `Meta.check declType .implicit` would not, or `none` if `declType` already
-passes the `.implicit` check. -/
+passes the `.implicit` check.
+-/
 private def checkImplicitTransparency (declType : Expr) : MetaM (Option (List Name)) := do
   let origDiag := (← get).diag
-  let result : Option (List Name) ← withOptions (diagnostics.set · true) do
-    try Meta.check declType .default catch _ => return none
-    let counterDefault := (← get).diag.unfoldCounter
-    modify ({ · with diag := origDiag })
-    try
-      Meta.check declType .implicit
-      return none
-    catch _ =>
-      let counterInst := (← get).diag.unfoldCounter
-      let diff := Meta.subCounters counterDefault counterInst
-      let env ← getEnv
-      return some <| diff.toList.filterMap fun (n, count) => do
-        guard <| count > 0
-        guard <| getReducibilityStatusCore env n matches .semireducible
-        guard <| !Meta.isInstanceCore env n
-        return n
+  let result : Option (List Name) ←
+    withOptions (diagnostics.set · true) do
+      try Meta.check declType .default catch _ => return none
+      let counterDefault := (← get).diag.unfoldCounter
+      modify ({ · with diag := origDiag })
+      try
+        Meta.check declType .implicit
+        return none
+      catch _ =>
+        let counterInst := (← get).diag.unfoldCounter
+        let diff := Meta.subCounters counterDefault counterInst
+        let env ← getEnv
+        return some <| diff.toList.filterMap fun (n, count) => do
+          guard <| count > 0
+          guard <| getReducibilityStatusCore env n matches .semireducible
+          guard <| ! Meta.isInstanceCore env n
+          return n
   -- Always restore the original diagnostics snapshot, mirroring `tacticCheckInstances`.
   modify ({ · with diag := origDiag })
   return result
 
-/-- Extension of `linter.tacticCheckInstances` to lemmas produced by Mathlib attributes such as
+/--
+Extension of `linter.tacticCheckInstances` to lemmas produced by Mathlib attributes such as
 `@[simps]`, `@[reassoc]`, and `@[elementwise]`. Call sites pass the syntax of the user's
 attribute (`ref`), the name of the generated lemma (`declName`), and the lemma's type
 (`declType`); a warning is emitted at `ref` if `declType` is type-correct at `.default` but
@@ -63,12 +67,14 @@ marked `@[implicit_reducible]` to fix the mismatch.
 
 The check is gated by the existing core option `linter.tacticCheckInstances` and is silent
 otherwise; following the convention of the core linter, it does *not* participate in
-`linter.all`. -/
+`linter.all`.
+-/
 def warnIfImplicitIllTyped (ref : Syntax) (declName : Name) (declType : Expr) : MetaM Unit := do
-  let lintOpt : Lean.Option Bool :=
-    { name := `linter.tacticCheckInstances, defValue := false }
-  unless lintOpt.get (← getOptions) do return
-  let some candidates ← checkImplicitTransparency declType | return
+  let lintOpt : Lean.Option Bool := { name := `linter.tacticCheckInstances, defValue := false }
+  unless lintOpt.get (← getOptions) do
+    return
+  let some candidates ← checkImplicitTransparency declType
+    | return
   if candidates.isEmpty then return
   let bullets := MessageData.joinSep (candidates.map (m!"{MessageData.ofConstName ·}")) Format.line
   Lean.Linter.logLint lintOpt ref
@@ -76,7 +82,8 @@ def warnIfImplicitIllTyped (ref : Syntax) (declName : Name) (declType : Expr) : 
       `.implicit` transparency; consider marking some of the following as \
       `@[implicit_reducible]`:{indentD bullets}"
 
-/-- A helper function for constructing a related declaration from an existing one.
+/--
+A helper function for constructing a related declaration from an existing one.
 
 This is currently used by the attributes `reassoc` and `elementwise`,
 and has been factored out to avoid code duplication.
@@ -109,12 +116,11 @@ Arguments:
   Warning: As a result, the original doc-string of `ref` will not be visible,
   and go-to-def on `ref` will not go to the definition of `ref`.
 -/
-def addRelatedDecl (src tgt : Name) (ref : Syntax)
-    (attrs : TSyntax ``optAttrArg)
+def addRelatedDecl
+    (src tgt : Name) (ref : Syntax) (attrs : TSyntax ``optAttrArg)
     (construct : Expr → List Name → MetaM (Expr × List Name))
-    (docstringPrefix? : Option String := none)
-    (hoverInfo : Bool := false) :
-    MetaM Unit := do
+    (docstringPrefix? : Option String := none) (hoverInfo : Bool := false)
+    : MetaM Unit := do
   -- If `tgt` already exists in an imported module, the `addDeclarationRangesFromSyntax` call
   -- below panics (and if it exists in the current module, `addDecl` would fail with a less
   -- helpful message), so we check for a pre-existing declaration up front.
@@ -125,16 +131,26 @@ def addRelatedDecl (src tgt : Name) (ref : Syntax)
   let (newValue, newLevels) ← construct value info.levelParams
   let newValue ← instantiateMVars newValue
   let newType ← instantiateMVars (← inferType newValue)
-  unless ← isProp newType do throwError "Related declaration is not a proposition: {newType}"
+  unless ← isProp newType do
+    throwError "Related declaration is not a proposition: {newType}"
   warnIfImplicitIllTyped ref tgt newType
-  addDecl <| ← mkThmOrUnsafeDef
-    { levelParams := newLevels, type := newType, name := tgt, value := newValue }
+  addDecl <|
+    ← mkThmOrUnsafeDef { levelParams := newLevels, type := newType, name := tgt, value := newValue }
   if isProtected (← getEnv) src then
     setEnv <| addProtected (← getEnv) tgt
   match docstringPrefix?, ← findDocString? (← getEnv) src with
-  | none, none => pure ()
-  | some doc, none | none, some doc => addDocStringCore tgt doc
-  | some docPre, some docPost => addDocStringCore tgt s!"{docPre}\n\n---\n\n{docPost}"
+  | none, none =>
+    pure ()
+  | some doc, none
+  | none, some doc =>
+    addDocStringCore tgt doc
+  | some docPre, some docPost =>
+    addDocStringCore tgt
+      s!"{docPre}\
+        \n\
+        \n---\
+        \n\
+        \n{docPost}"
   inferDefEqAttr tgt
   Term.TermElabM.run' do
     let attrs ← elabOptAttrArg attrs

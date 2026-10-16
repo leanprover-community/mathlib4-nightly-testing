@@ -7,7 +7,6 @@ module
 
 public meta import ProofWidgets.Component.Basic
 public import Mathlib.Tactic.Widget.SelectPanelUtils
-
 import ProofWidgets.Component.Basic
 import ProofWidgets.Component.OfRpcMethod
 
@@ -21,14 +20,13 @@ public meta section
 
 open Lean Meta Server ProofWidgets
 
-
 /-! ### CongrM widget -/
 
 /-- Return the link text and inserted text above and below of the congrm widget. -/
 @[nolint unusedArguments]
-def makeCongrMString (pos : Array Lean.SubExpr.GoalsLocation) (goalType : Expr)
-    (_ : SelectInsertParams) :
-    MetaM (String × String × Option (String.Pos.Raw × String.Pos.Raw)) := do
+def makeCongrMString
+    (pos : Array Lean.SubExpr.GoalsLocation) (goalType : Expr) (_ : SelectInsertParams)
+    : MetaM (String × String × Option (String.Pos.Raw × String.Pos.Raw)) := do
   let subexprPos := getGoalLocations pos
   unless goalType.isAppOf ``Eq || goalType.isAppOf ``Iff do
     throwError "The goal must be an equality or iff."
@@ -43,19 +41,22 @@ def makeCongrMString (pos : Array Lean.SubExpr.GoalsLocation) (goalType : Expr)
 
 /-- Rpc function for the congrm widget. -/
 @[server_rpc_method]
-def CongrMSelectionPanel.rpc := mkSelectionPanelRPC makeCongrMString
-  "Use shift-click to select sub-expressions in the goal that should become holes in congrm."
-  "CongrM 🔍️"
+def CongrMSelectionPanel.rpc :=
+  mkSelectionPanelRPC makeCongrMString
+    "Use shift-click to select sub-expressions in the goal that should become holes in congrm."
+    "CongrM 🔍️"
 
 /-- The congrm widget. -/
 @[widget_module]
-def CongrMSelectionPanel : Component SelectInsertParams :=
-  mk_rpc_widget% CongrMSelectionPanel.rpc
+def CongrMSelectionPanel : Component SelectInsertParams := mk_rpc_widget% CongrMSelectionPanel.rpc
 
 open scoped Json in
-/-- Display a widget panel allowing to generate a `congrm` call with holes specified by selecting
-subexpressions in the goal. -/
+/--
+Display a widget panel allowing to generate a `congrm` call with holes specified by selecting
+subexpressions in the goal.
+-/
 elab stx:"congrm?" : tactic => do
-  let some replaceRange := (← getFileMap).lspRangeOfStx? stx | return
+  let some replaceRange := (← getFileMap).lspRangeOfStx? stx
+    | return
   Widget.savePanelWidgetInfo CongrMSelectionPanel.javascriptHash
     (pure <| json% { replaceRange: $(replaceRange) }) stx

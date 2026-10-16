@@ -27,9 +27,10 @@ variable {F : C ⥤ D} (hF : F.FullyFaithful)
 
 namespace Preadditive
 
-
-/-- If `D` is a preadditive category, any fully faithful functor `F : C ⥤ D` induces a preadditive
-structure on `C`. -/
+/--
+If `D` is a preadditive category, any fully faithful functor `F : C ⥤ D` induces a preadditive
+structure on `C`.
+-/
 @[instance_reducible]
 def ofFullyFaithful : Preadditive C where
   homGroup P Q := hF.homEquiv.addCommGroup
@@ -41,11 +42,13 @@ end Preadditive
 open Preadditive
 namespace Functor.FullyFaithful
 
-/-- The preadditive structure on `C` induced by a fully faithful functor `F : C ⥤ D` makes `F` an
-additive functor. -/
-lemma additive_ofFullyFaithful :
-    letI : Preadditive C := Preadditive.ofFullyFaithful hF
-    F.Additive :=
+/--
+The preadditive structure on `C` induced by a fully faithful functor `F : C ⥤ D` makes `F` an
+additive functor.
+-/
+lemma additive_ofFullyFaithful
+    : letI : Preadditive C := Preadditive.ofFullyFaithful hF
+      F.Additive :=
   letI : Preadditive C := Preadditive.ofFullyFaithful hF
   { map_add := by simp [Equiv.add_def] }
 
@@ -53,11 +56,13 @@ end Functor.FullyFaithful
 
 namespace Equivalence
 
-/-- The preadditive structure on `C` induced by an equivalence `e : C ≌ D` makes `e.inverse` an
-additive functor. -/
-lemma additive_inverse_of_FullyFaithful (e : C ≌ D) :
-    letI : Preadditive C := ofFullyFaithful e.fullyFaithfulFunctor
-    e.inverse.Additive :=
+/--
+The preadditive structure on `C` induced by an equivalence `e : C ≌ D` makes `e.inverse` an
+additive functor.
+-/
+lemma additive_inverse_of_FullyFaithful (e : C ≌ D)
+    : letI : Preadditive C := ofFullyFaithful e.fullyFaithfulFunctor
+      e.inverse.Additive :=
   letI : Preadditive C := ofFullyFaithful e.fullyFaithfulFunctor
   letI : e.functor.Additive := e.fullyFaithfulFunctor.additive_ofFullyFaithful
   e.inverse_additive

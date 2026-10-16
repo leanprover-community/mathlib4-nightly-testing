@@ -1,4 +1,5 @@
 module
+
 -- The delaborator tests below define public `meta` declarations mentioning `Delab` and
 -- `CategoryTheory.delabOf`, so both must be publicly imported.
 public import Lean.PrettyPrinter.Delaborator.Basic
@@ -35,8 +36,9 @@ example : GrpCat := ↧(Multiplicative ℤ)
 example : CommGrpCat := ↧(Multiplicative ℤ)
 example : MonCat := ↧ℕ
 example (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] : CompHaus := ↧X
-example (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] [ExtremallyDisconnected X] :
-    Stonean := ↧X
+example (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] [ExtremallyDisconnected X]
+    : Stonean :=
+  ↧X
 
 -- `Profinite` is reducibly `CompHausLike _`, but has its own `Profinite.of`.
 section
@@ -55,10 +57,12 @@ example : ModuleCat ℤ := ↧ℤ
 example {R M : Type*} [Ring R] [AddCommGroup M] [Module R M] : ModuleCat R := ↧M
 example (R : Type) [CommRing R] (A : Type) [CommRing A] [Algebra R A] : CommAlgCat R := ↧A
 example (R : Type) [CommRing R] (A : Type) [Ring A] [Algebra R A] : AlgCat R := ↧A
-example (R : Type) [Ring R] (M : Type) [AddCommGroup M] [Module R M] [Module.Finite R M] :
-    FGModuleCat R := ↧M
-example (R : Type) [CommRing R] (M : Type) [AddCommGroup M] [Module R M] [Coalgebra R M] :
-    CoalgCat R := ↧M
+example (R : Type) [Ring R] (M : Type) [AddCommGroup M] [Module R M] [Module.Finite R M]
+    : FGModuleCat R :=
+  ↧M
+example (R : Type) [CommRing R] (M : Type) [AddCommGroup M] [Module R M] [Coalgebra R M]
+    : CoalgCat R :=
+  ↧M
 
 /-! ### Universes -/
 
@@ -85,12 +89,13 @@ example : (↧ℤ : CommRingCat) ⟶ ↧ℤ := CommRingCat.ofHom (RingHom.id _)
 
 /-! ### Error messages -/
 
-/-- error: `↧` failed: no bundling map found for the expected type
+/--
+error: `↧` failed: no bundling map found for the expected type
   ℕ
-Expected a type whose head constant `FooCat` has an associated declaration `FooCat.of`. -/
+Expected a type whose head constant `FooCat` has an associated declaration `FooCat.of`.
+-/
 #guard_msgs in
 example : ℕ := ↧ℤ
-
 
 /--
 error: `↧` failed: the expected type must be known, but it is
@@ -106,7 +111,8 @@ example := ↧ℤ
 
 section Delab
 
-@[app_delab CommRingCat.of] public meta def CommRingCat.delabOf' := CategoryTheory.delabOf
+@[app_delab CommRingCat.of]
+public meta def CommRingCat.delabOf' := CategoryTheory.delabOf
 
 /-- info: ↧ℤ : CommRingCat -/
 #guard_msgs in
@@ -127,7 +133,8 @@ public def OptOutCat.of (X : Type) : OptOutCat := ⟨X⟩
 #check (↧ℤ : OptOutCat)
 
 -- ... unless it is opted in.
-@[app_delab OptOutCat.of] public meta def OptOutCat.delabOf := CategoryTheory.delabOf
+@[app_delab OptOutCat.of]
+public meta def OptOutCat.delabOf := CategoryTheory.delabOf
 
 /-- info: ↧ℤ : OptOutCat -/
 #guard_msgs in

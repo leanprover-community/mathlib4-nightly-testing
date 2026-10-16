@@ -57,17 +57,18 @@ noncomputable def normedMk : NormedAddGroupHom M (SeparationQuotient M) where
 theorem norm_normedMk_le : ‖normedMk (M := M)‖ ≤ 1 :=
   NormedAddGroupHom.opNorm_le_bound _ zero_le_one fun m => by simp
 
-lemma apply_eq_apply_of_inseparable {F : Type*} [FunLike F M N] [AddMonoidHomClass F M N] (f : F)
-    (hf : ∀ x, ‖x‖ = 0 → f x = 0) : ∀ x y, Inseparable x y → f x = f y :=
-  fun x y h ↦ eq_of_sub_eq_zero <| by
+lemma apply_eq_apply_of_inseparable
+    {F : Type*} [FunLike F M N] [AddMonoidHomClass F M N] (f : F) (hf : ∀ x, ‖x‖ = 0 → f x = 0)
+    : ∀ x y, Inseparable x y → f x = f y := fun x y h ↦
+  eq_of_sub_eq_zero <| by
     rw [← map_sub]
     rw [Metric.inseparable_iff, dist_eq_norm] at h
     exact hf (x - y) h
 
 /-- The lift of a group hom to the separation quotient as a group hom. -/
 @[simps]
-noncomputable def liftNormedAddGroupHom (f : NormedAddGroupHom M N)
-    (hf : ∀ x, ‖x‖ = 0 → f x = 0) : NormedAddGroupHom (SeparationQuotient M) N where
+noncomputable def liftNormedAddGroupHom (f : NormedAddGroupHom M N) (hf : ∀ x, ‖x‖ = 0 → f x = 0)
+    : NormedAddGroupHom (SeparationQuotient M) N where
   toFun := SeparationQuotient.liftContinuousAddMonoidHom f <| apply_eq_apply_of_inseparable f hf
   map_add' v₁ v₂ := map_add ..
   bound' := by
@@ -75,51 +76,62 @@ noncomputable def liftNormedAddGroupHom (f : NormedAddGroupHom M N)
     obtain ⟨v, rfl⟩ := surjective_mk v
     exact le_opNorm f v
 
-theorem norm_liftNormedAddGroupHom_apply_le (f : NormedAddGroupHom M N)
-    (hf : ∀ x, ‖x‖ = 0 → f x = 0) (x : SeparationQuotient M) :
-    ‖liftNormedAddGroupHom f hf x‖ ≤ ‖f‖ * ‖x‖ := by
+theorem norm_liftNormedAddGroupHom_apply_le
+    (f : NormedAddGroupHom M N) (hf : ∀ x, ‖x‖ = 0 → f x = 0) (x : SeparationQuotient M)
+    : ‖liftNormedAddGroupHom f hf x‖ ≤ ‖f‖ * ‖x‖ := by
   obtain ⟨x, rfl⟩ := surjective_mk x
   exact le_opNorm f x
 
-/-- The equivalence between `NormedAddGroupHom M N` vanishing on the inseparable setoid and
-`NormedAddGroupHom (SeparationQuotient M) N`. -/
+/--
+The equivalence between `NormedAddGroupHom M N` vanishing on the inseparable setoid and
+`NormedAddGroupHom (SeparationQuotient M) N`.
+-/
 @[simps]
-noncomputable def liftNormedAddGroupHomEquiv {N : Type*} [SeminormedAddCommGroup N] :
-    {f : NormedAddGroupHom M N // ∀ x, ‖x‖ = 0 → f x = 0} ≃
-    NormedAddGroupHom (SeparationQuotient M) N where
+noncomputable def liftNormedAddGroupHomEquiv {N : Type*} [SeminormedAddCommGroup N]
+    : {f : NormedAddGroupHom M N // ∀ x, ‖x‖ = 0 → f x = 0}
+      ≃ NormedAddGroupHom (SeparationQuotient M) N where
   toFun f := liftNormedAddGroupHom f f.prop
-  invFun g := ⟨g.comp normedMk, by
-    intro x hx
-    rw [← norm_mk, norm_eq_zero] at hx
-    simp [hx]⟩
+  invFun g := ⟨
+    g.comp normedMk,
+    by
+      intro x hx
+      rw [← norm_mk, norm_eq_zero] at hx
+      simp [hx]
+  ⟩
   right_inv _ := by
     ext x
     obtain ⟨x, rfl⟩ := surjective_mk x
     rfl
 
-/-- For a norm-continuous group homomorphism `f`, its lift to the separation quotient
-is bounded by the norm of `f`. -/
-theorem norm_liftNormedAddGroupHom_le {N : Type*} [SeminormedAddCommGroup N]
-    (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0) :
-    ‖liftNormedAddGroupHom f hf‖ ≤ ‖f‖ :=
+/--
+For a norm-continuous group homomorphism `f`, its lift to the separation quotient
+is bounded by the norm of `f`.
+-/
+theorem norm_liftNormedAddGroupHom_le
+    {N : Type*} [SeminormedAddCommGroup N] (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0)
+    : ‖liftNormedAddGroupHom f hf‖ ≤ ‖f‖ :=
   NormedAddGroupHom.opNorm_le_bound _ (norm_nonneg f) (norm_liftNormedAddGroupHom_apply_le f hf)
 
-theorem liftNormedAddGroupHom_norm_le {N : Type*} [SeminormedAddCommGroup N]
-    (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0) {c : ℝ≥0} (fb : ‖f‖ ≤ c) :
-    ‖liftNormedAddGroupHom f hf‖ ≤ c :=
+theorem liftNormedAddGroupHom_norm_le
+    {N : Type*} [SeminormedAddCommGroup N]
+    (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0)
+    {c : ℝ≥0} (fb : ‖f‖ ≤ c)
+    : ‖liftNormedAddGroupHom f hf‖ ≤ c :=
   (norm_liftNormedAddGroupHom_le f hf).trans fb
 
-theorem liftNormedAddGroupHom_normNoninc {N : Type*} [SeminormedAddCommGroup N]
-    (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0) (fb : f.NormNoninc) :
-    (liftNormedAddGroupHom f hf).NormNoninc := fun x => by
+theorem liftNormedAddGroupHom_normNoninc
+    {N : Type*} [SeminormedAddCommGroup N]
+    (f : NormedAddGroupHom M N) (hf : ∀ s, ‖s‖ = 0 → f s = 0) (fb : f.NormNoninc)
+    : (liftNormedAddGroupHom f hf).NormNoninc := fun x => by
   have fb' : ‖f‖ ≤ 1 := NormedAddGroupHom.NormNoninc.normNoninc_iff_norm_le_one.mp fb
   exact le_trans (norm_liftNormedAddGroupHom_apply_le f hf x)
     (mul_le_of_le_one_left (norm_nonneg x) fb')
 
-/-- The operator norm of the projection is `1` if there is an element whose norm is different from
-`0`. -/
-theorem norm_normedMk_eq_one [NontrivialTopology M] :
-    ‖normedMk (M := M)‖ = 1 := by
+/--
+The operator norm of the projection is `1` if there is an element whose norm is different from
+`0`.
+-/
+theorem norm_normedMk_eq_one [NontrivialTopology M] : ‖normedMk (M := M)‖ = 1 := by
   apply NormedAddGroupHom.opNorm_eq_of_bounds _ zero_le_one
   · simpa only [normedMk_apply, one_mul] using! fun _ ↦ le_rfl
   · intro N _ hle

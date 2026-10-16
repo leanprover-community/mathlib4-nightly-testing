@@ -35,17 +35,21 @@ class GroupConeClass (S : Type*) (G : outParam Type*) [CommGroup G] [SetLike S G
 export GroupConeClass (eq_one_of_mem_of_inv_mem)
 export AddGroupConeClass (eq_zero_of_mem_of_neg_mem)
 
-/-- A (positive) cone in an abelian group is a submonoid that
+/--
+A (positive) cone in an abelian group is a submonoid that
 does not contain both `a` and `-a` for any nonzero `a`.
 This is equivalent to being the set of non-negative elements of
-some order making the group into a partially ordered group. -/
+some order making the group into a partially ordered group.
+-/
 structure AddGroupCone (G : Type*) [AddCommGroup G] extends AddSubmonoid G where
   eq_zero_of_mem_of_neg_mem' {a} : a ∈ carrier → -a ∈ carrier → a = 0
 
-/-- A (positive) cone in an abelian group is a submonoid that
+/--
+A (positive) cone in an abelian group is a submonoid that
 does not contain both `a` and `a⁻¹` for any non-identity `a`.
 This is equivalent to being the set of elements that are at least 1 in
-some order making the group into a partially ordered group. -/
+some order making the group into a partially ordered group.
+-/
 @[to_additive]
 structure GroupCone (G : Type*) [CommGroup G] extends Submonoid G where
   eq_one_of_mem_of_inv_mem' {a} : a ∈ carrier → a⁻¹ ∈ carrier → a = 1
@@ -59,8 +63,8 @@ instance GroupCone.instSetLike (G : Type*) [CommGroup G] : SetLike (GroupCone G)
 instance (G : Type*) [CommGroup G] : PartialOrder (GroupCone G) := .ofSetLike (GroupCone G)
 
 @[to_additive]
-instance GroupCone.instGroupConeClass (G : Type*) [CommGroup G] :
-    GroupConeClass (GroupCone G) G where
+instance GroupCone.instGroupConeClass (G : Type*) [CommGroup G]
+    : GroupConeClass (GroupCone G) G where
   mul_mem {C} := C.mul_mem'
   one_mem {C} := C.one_mem'
   eq_one_of_mem_of_inv_mem {C} := C.eq_one_of_mem_of_inv_mem'
@@ -86,8 +90,8 @@ lemma mem_oneLE : a ∈ oneLE H ↔ 1 ≤ a := Iff.rfl
 lemma coe_oneLE : oneLE H = {x : H | 1 ≤ x} := rfl
 
 @[to_additive]
-instance oneLE.hasMemOrInvMem {H : Type*} [CommGroup H] [LinearOrder H] [IsOrderedMonoid H] :
-    HasMemOrInvMem (oneLE H) where
+instance oneLE.hasMemOrInvMem {H : Type*} [CommGroup H] [LinearOrder H] [IsOrderedMonoid H]
+    : HasMemOrInvMem (oneLE H) where
   mem_or_inv_mem := by simpa using le_total 1
 
 end GroupCone
@@ -104,14 +108,15 @@ abbrev PartialOrder.mkOfGroupCone [GroupConeClass S G] : PartialOrder G where
     simpa [div_eq_one, eq_comm] using eq_one_of_mem_of_inv_mem nab (by simpa using nba)
 
 @[to_additive]
-lemma PartialOrder.mkOfGroupCone_le_iff {S G : Type*} [CommGroup G] [SetLike S G]
-    [GroupConeClass S G] {C : S} {a b : G} :
-    (mkOfGroupCone C).le a b ↔ b / a ∈ C := Iff.rfl
+lemma PartialOrder.mkOfGroupCone_le_iff
+    {S G : Type*} [CommGroup G] [SetLike S G] [GroupConeClass S G] {C : S} {a b : G}
+    : (mkOfGroupCone C).le a b ↔ b / a ∈ C :=
+  Iff.rfl
 
 /-- Construct a linear order by designating a maximal cone in an abelian group. -/
 @[to_additive /-- Construct a linear order by designating a maximal cone in an abelian group. -/]
-abbrev LinearOrder.mkOfGroupCone
-    [GroupConeClass S G] [HasMemOrInvMem C] [DecidablePred (· ∈ C)] : LinearOrder G where
+abbrev LinearOrder.mkOfGroupCone [GroupConeClass S G] [HasMemOrInvMem C] [DecidablePred (· ∈ C)]
+    : LinearOrder G where
   __ := PartialOrder.mkOfGroupCone C
   le_total a b := by simpa [PartialOrder.mkOfGroupCone_le_iff] using mem_or_inv_mem C (b / a)
   toDecidableLE _ := _
@@ -119,8 +124,8 @@ abbrev LinearOrder.mkOfGroupCone
 /-- Construct a partially ordered abelian group by designating a cone in an abelian group. -/
 @[to_additive
   /-- Construct a partially ordered abelian group by designating a cone in an abelian group. -/]
-lemma IsOrderedMonoid.mkOfCone [GroupConeClass S G] :
-    let _ : PartialOrder G := PartialOrder.mkOfGroupCone C
-    IsOrderedMonoid G :=
+lemma IsOrderedMonoid.mkOfCone [GroupConeClass S G]
+    : let _ : PartialOrder G := PartialOrder.mkOfGroupCone C
+      IsOrderedMonoid G :=
   let _ : PartialOrder G := PartialOrder.mkOfGroupCone C
   { mul_le_mul_left := fun a b nab c ↦ by simpa [· ≤ ·] using nab }

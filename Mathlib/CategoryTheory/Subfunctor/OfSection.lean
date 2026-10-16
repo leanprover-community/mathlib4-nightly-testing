@@ -30,8 +30,10 @@ section
 
 variable {F : Cᵒᵖ ⥤ Type w} {X : Cᵒᵖ} (x : F.obj X)
 
-/-- The subpresheaf of `F : Cᵒᵖ ⥤ Type w` that is generated
-by a section `x : F.obj X`. -/
+/--
+The subpresheaf of `F : Cᵒᵖ ⥤ Type w` that is generated
+by a section `x : F.obj X`.
+-/
 @[simps -isSimp]
 def ofSection : Subfunctor F where
   obj U := Set.ofPred (fun u ↦ ∃ (f : X ⟶ U), F.map f x = u)
@@ -42,8 +44,7 @@ def ofSection : Subfunctor F where
 lemma mem_ofSection_obj : x ∈ (ofSection x).obj X := ⟨𝟙 _, by simp⟩
 
 @[simp]
-lemma ofSection_le_iff (G : Subfunctor F) :
-    ofSection x ≤ G ↔ x ∈ G.obj X := by
+lemma ofSection_le_iff (G : Subfunctor F) : ofSection x ≤ G ↔ x ∈ G.obj X := by
   constructor
   · intro hx
     exact hx _ (mem_ofSection_obj x)
@@ -51,8 +52,8 @@ lemma ofSection_le_iff (G : Subfunctor F) :
     exact G.map f hx
 
 @[simp]
-lemma ofSection_image {F' : Cᵒᵖ ⥤ Type w} (f : F ⟶ F') :
-    (ofSection x).image f = ofSection (f.app _ x) := by
+lemma ofSection_image {F' : Cᵒᵖ ⥤ Type w} (f : F ⟶ F')
+    : (ofSection x).image f = ofSection (f.app _ x) := by
   apply le_antisymm
   · rw [image_le_iff, ofSection_le_iff, preimage_obj, Set.mem_preimage]
     exact ⟨𝟙 X, by simp⟩
@@ -65,19 +66,16 @@ section
 
 variable {F : Cᵒᵖ ⥤ Type v}
 
-lemma ofSection_eq_range {X : Cᵒᵖ} (x : F.obj X) :
-    ofSection x = range (yonedaEquiv.symm x) := by
+lemma ofSection_eq_range {X : Cᵒᵖ} (x : F.obj X) : ofSection x = range (yonedaEquiv.symm x) := by
   ext U y
-  simp only [ofSection_obj, Set.mem_ofPred_eq, Opposite.op_unop, range_obj,
-    Set.mem_range]
+  simp only [ofSection_obj, Set.mem_ofPred_eq, Opposite.op_unop, range_obj, Set.mem_range]
   constructor
   · rintro ⟨f, rfl⟩
     exact ⟨f.unop, rfl⟩
   · rintro ⟨f, rfl⟩
     exact ⟨f.op, rfl⟩
 
-lemma range_eq_ofSection {X : C} (f : yoneda.obj X ⟶ F) :
-    range f = ofSection (yonedaEquiv f) := by
+lemma range_eq_ofSection {X : C} (f : yoneda.obj X ⟶ F) : range f = ofSection (yonedaEquiv f) := by
   rw [ofSection_eq_range, Equiv.symm_apply_apply]
 
 end
@@ -87,8 +85,8 @@ section
 variable {F : Cᵒᵖ ⥤ Type max v w}
 
 set_option backward.defeqAttrib.useBackward true in
-lemma ofSection_eq_range' {X : Cᵒᵖ} (x : F.obj X) :
-    ofSection x = range (uliftYonedaEquiv.symm x) := by
+lemma ofSection_eq_range' {X : Cᵒᵖ} (x : F.obj X)
+    : ofSection x = range (uliftYonedaEquiv.symm x) := by
   ext U y
   dsimp [uliftYonedaEquiv]
   simp only [Set.mem_range, ULift.exists]
@@ -99,8 +97,8 @@ lemma ofSection_eq_range' {X : Cᵒᵖ} (x : F.obj X) :
     exact ⟨f.op, rfl⟩
 
 set_option backward.isDefEq.respectTransparency false in
-lemma range_eq_ofSection' {X : C} (f : yoneda.obj X ⋙ uliftFunctor.{w} ⟶ F) :
-    range f = ofSection (uliftYonedaEquiv f) := by
+lemma range_eq_ofSection' {X : C} (f : yoneda.obj X ⋙ uliftFunctor.{w} ⟶ F)
+    : range f = ofSection (uliftYonedaEquiv f) := by
   rw [ofSection_eq_range', Equiv.symm_apply_apply]
 
 end

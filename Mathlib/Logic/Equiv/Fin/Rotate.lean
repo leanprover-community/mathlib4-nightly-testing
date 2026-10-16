@@ -30,11 +30,11 @@ def finRotate : ∀ n, Equiv.Perm (Fin n)
 
 @[simp] lemma finRotate_zero : finRotate 0 = Equiv.refl _ := rfl
 
-lemma finRotate_succ (n : ℕ) :
-    finRotate (n + 1) = finAddFlip.trans (finCongr (Nat.add_comm 1 n)) := rfl
+lemma finRotate_succ (n : ℕ) : finRotate (n + 1) = finAddFlip.trans (finCongr (Nat.add_comm 1 n)) :=
+  rfl
 
-theorem finRotate_of_lt {k : ℕ} (h : k < n) :
-    finRotate (n + 1) ⟨k, h.trans_le n.le_succ⟩ = ⟨k + 1, Nat.succ_lt_succ h⟩ := by
+theorem finRotate_of_lt {k : ℕ} (h : k < n)
+    : finRotate (n + 1) ⟨k, h.trans_le n.le_succ⟩ = ⟨k + 1, Nat.succ_lt_succ h⟩ := by
   ext
   dsimp [finRotate_succ]
   simp [finAddFlip_apply_mk_left h, Nat.add_comm]
@@ -44,11 +44,10 @@ theorem finRotate_last' : finRotate (n + 1) ⟨n, by lia⟩ = ⟨0, Nat.zero_lt_
   rw [finAddFlip_apply_mk_right le_rfl]
   simp
 
-theorem finRotate_last : finRotate (n + 1) (Fin.last _) = 0 :=
-  finRotate_last'
+theorem finRotate_last : finRotate (n + 1) (Fin.last _) = 0 := finRotate_last'
 
-theorem Fin.snoc_eq_cons_rotate {α : Type*} (v : Fin n → α) (a : α) :
-    @Fin.snoc _ (fun _ => α) v a = fun i => @Fin.cons _ (fun _ => α) a v (finRotate _ i) := by
+theorem Fin.snoc_eq_cons_rotate {α : Type*} (v : Fin n → α) (a : α)
+    : @Fin.snoc _ (fun _ => α) v a = fun i => @Fin.cons _ (fun _ => α) a v (finRotate _ i) := by
   ext ⟨i, h⟩
   by_cases h' : i < n
   · rw [finRotate_of_lt h', Fin.snoc, Fin.cons, dite_eq_left h']
@@ -60,15 +59,15 @@ theorem Fin.snoc_eq_cons_rotate {α : Type*} (v : Fin n → α) (a : α) :
     rw [finRotate_last', Fin.snoc, Fin.cons, dite_eq_right (lt_irrefl _)]
     rfl
 
-@[simp]
-theorem finRotate_one : finRotate 1 = Equiv.refl _ :=
-  Subsingleton.elim _ _
+@[simp] theorem finRotate_one : finRotate 1 = Equiv.refl _ := Subsingleton.elim _ _
 
 @[simp]
 theorem finRotate_apply (i : Fin n) : haveI := i.neZero; finRotate n i = i + 1 := by
   match n with
-  | 0 => exact i.elim0
-  | 1 => exact @Subsingleton.elim (Fin 1) _ _ _
+  | 0 =>
+    exact i.elim0
+  | 1 =>
+    exact @Subsingleton.elim (Fin 1) _ _ _
   | n + 2 =>
     obtain rfl | h := Fin.eq_or_lt_of_le i.le_last
     · simp [finRotate_last]
@@ -76,25 +75,22 @@ theorem finRotate_apply (i : Fin n) : haveI := i.neZero; finRotate n i = i + 1 :
       simp only [Fin.lt_def, Fin.val_last] at h
       simp [finRotate_of_lt h, Fin.add_def, Nat.mod_eq_of_lt (Nat.succ_lt_succ h)]
 
-theorem finRotate_apply_zero : finRotate n.succ 0 = 1 := by
-  simp
+theorem finRotate_apply_zero : finRotate n.succ 0 = 1 := by simp
 
-theorem coe_finRotate_of_ne_last {i : Fin n.succ} (h : i ≠ Fin.last n) :
-    (finRotate (n + 1) i : ℕ) = i + 1 := by
+theorem coe_finRotate_of_ne_last {i : Fin n.succ} (h : i ≠ Fin.last n)
+    : (finRotate (n + 1) i : ℕ) = i + 1 := by
   rw [finRotate_apply]
   have : (i : ℕ) < n := Fin.val_lt_last h
   exact Fin.val_add_one_of_lt this
 
-theorem coe_finRotate (i : Fin n.succ) :
-    (finRotate n.succ i : ℕ) = if i = Fin.last n then (0 : ℕ) else i + 1 := by
+theorem coe_finRotate (i : Fin n.succ)
+    : (finRotate n.succ i : ℕ) = if i = Fin.last n then (0 : ℕ) else i + 1 := by
   rw [finRotate_apply, Fin.val_add_one i]
 
-theorem lt_finRotate_iff_ne_last (i : Fin (n + 1)) :
-    i < finRotate _ i ↔ i ≠ Fin.last n := by
+theorem lt_finRotate_iff_ne_last (i : Fin (n + 1)) : i < finRotate _ i ↔ i ≠ Fin.last n := by
   simpa using Fin.lt_last_iff_ne_last
 
-theorem lt_finRotate_iff_ne_neg_one [NeZero n] (i : Fin n) :
-    i < finRotate _ i ↔ i ≠ -1 := by
+theorem lt_finRotate_iff_ne_neg_one [NeZero n] (i : Fin n) : i < finRotate _ i ↔ i ≠ -1 := by
   obtain ⟨n, rfl⟩ := exists_eq_succ_of_ne_zero (NeZero.ne n)
   rw [lt_finRotate_iff_ne_last, ne_eq, not_iff_not, ← Fin.neg_last, neg_neg]
 
@@ -104,12 +100,12 @@ lemma finRotate_symm_apply (i : Fin n) : haveI := i.neZero; (finRotate _).symm i
   apply (finRotate n.succ).symm_apply_eq.mpr
   rw [finRotate_apply, sub_add_cancel]
 
-lemma coe_finRotate_symm_of_ne_zero [NeZero n] {i : Fin n} (hi : i ≠ 0) :
-    ((finRotate _).symm i : ℕ) = i - 1 := by
+lemma coe_finRotate_symm_of_ne_zero [NeZero n] {i : Fin n} (hi : i ≠ 0)
+    : ((finRotate _).symm i : ℕ) = i - 1 := by
   rwa [finRotate_symm_apply, Fin.val_sub_one_of_ne_zero]
 
-theorem finRotate_symm_lt_iff_ne_zero [NeZero n] (i : Fin n) :
-    (finRotate _).symm i < i ↔ i ≠ 0 := by
+theorem finRotate_symm_lt_iff_ne_zero [NeZero n] (i : Fin n)
+    : (finRotate _).symm i < i ↔ i ≠ 0 := by
   obtain ⟨n, rfl⟩ := exists_eq_succ_of_ne_zero (NeZero.ne n)
   refine ⟨ne_zero_of_lt, fun hi ↦ ?_⟩
   rw [Fin.lt_def, coe_finRotate_symm_of_ne_zero hi]
@@ -125,10 +121,13 @@ def finCycle (k : Fin n) : Equiv.Perm (Fin n) where
 
 lemma finCycle_eq_finRotate_iterate {k : Fin n} : finCycle k = (finRotate n)^[k.1] := by
   match n with
-  | 0 => exact k.elim0
+  | 0 =>
+    exact k.elim0
   | n + 1 =>
-    ext i; induction k using Fin.induction with
-    | zero => simp
+    ext i
+    induction k using Fin.induction with
+    | zero =>
+      simp
     | succ k ih =>
       rw [Fin.val_eq_val, Fin.val_castSucc] at ih
       rw [Fin.val_succ, Function.iterate_succ', Function.comp_apply, ← ih, finRotate_apply,

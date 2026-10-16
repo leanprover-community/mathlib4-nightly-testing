@@ -30,20 +30,22 @@ public noncomputable section
 
 variable {E F : Type*}
 
-variable [NormedAddCommGroup E] [NormedAddCommGroup F]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
-  [CompleteSpace F]
+variable
+  [NormedAddCommGroup E] [NormedAddCommGroup F] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [MeasurableSpace E] [BorelSpace E] [CompleteSpace F]
 
 open FourierTransform TemperedDistribution ENNReal MeasureTheory
 open scoped SchwartzMap
 
 variable (E F) in
-/-- The Bessel potential space of order `s : ℝ` and `p : ℝ≥0∞`, also known as the Sobolev space and
+/--
+The Bessel potential space of order `s : ℝ` and `p : ℝ≥0∞`, also known as the Sobolev space and
 usually denoted by `H^{s,p}`.
 
 It is defined as the set of all tempered distributions `u` such that
 `𝓕⁻ (1 + ‖x‖ ^ 2) ^ (s / 2) 𝓕 u` can be represented by a `Lp` function `v`. Both `u` and `v` are
-stored as data to avoid using `Classical.choose`. -/
+stored as data to avoid using `Classical.choose`.
+-/
 structure BesselPotentialSpace [NormedSpace ℂ F] (s : ℝ) (p : ℝ≥0∞) [hp : Fact (1 ≤ p)] where
   /-- The underlying tempered distribution -/
   toDistr : 𝓢'(E, F)
@@ -67,26 +69,26 @@ variable [NormedSpace ℂ F]
 
 variable {s s' : ℝ} {p : ℝ≥0∞} [hp : Fact (1 ≤ p)]
 
-instance : CoeHead H^{s, p}(E, F) 𝓢'(E, F) where
+instance : CoeHead (H^{s, p}(E, F)) 𝓢'(E, F) where
   coe f := f.toDistr
 
-private theorem ext' {f g : H^{s, p}(E, F)}
-    (h₁ : f.toDistr = g.toDistr) (h₂ : f.toLp = g.toLp) : f = g := by
+private theorem ext' {f g : H^{s, p}(E, F)} (h₁ : f.toDistr = g.toDistr) (h₂ : f.toLp = g.toLp)
+    : f = g := by
   cases f; cases g; congr
 
-theorem memSobolev_toDistr (f : H^{s, p}(E, F)) : f.toDistr.MemSobolev s p  :=
+theorem memSobolev_toDistr (f : H^{s, p}(E, F)) : f.toDistr.MemSobolev s p :=
   ⟨f.toLp, f.bessel_toDistr_eq_toLp⟩
 
 @[simp]
-theorem besselPotential_neg_toLp_eq {f : H^{s, p}(E, F)} :
-    besselPotential E F (-s) f.toLp = f := by
+theorem besselPotential_neg_toLp_eq {f : H^{s, p}(E, F)} : besselPotential E F (-s) f.toLp = f := by
   simp [← f.bessel_toDistr_eq_toLp]
 
 @[ext]
 theorem ext {f g : H^{s, p}(E, F)} (h₁ : f.toDistr = g.toDistr) : f = g := by
   apply ext' h₁ (LinearMap.ker_eq_bot.mp MeasureTheory.Lp.ker_toTemperedDistributionCLM_eq_bot _)
   calc
-    f.toLp = besselPotential E F s f.toDistr := f.bessel_toDistr_eq_toLp.symm
+    f.toLp
+      = besselPotential E F s f.toDistr := f.bessel_toDistr_eq_toLp.symm
     _ = besselPotential E F s g.toDistr := by congr
     _ = g.toLp := g.bessel_toDistr_eq_toLp
 
@@ -98,21 +100,17 @@ def copy (s' : ℝ) (f : H^{s, p}(E, F)) (hs : s = s' := by grind) : H^{s', p}(E
     rw [← hs]
     exact f.bessel_toDistr_eq_toLp
 
-@[simp]
-theorem toDistr_copy (f : H^{s, p}(E, F)) (hs : s = s') :
-  (f.copy s').toDistr = f := by rfl
+@[simp] theorem toDistr_copy (f : H^{s, p}(E, F)) (hs : s = s') : (f.copy s').toDistr = f := by rfl
 
-@[simp]
-theorem toLp_copy (f : H^{s, p}(E, F)) (hs : s = s') :
-  (f.copy s').toLp = f.toLp := by rfl
+@[simp] theorem toLp_copy (f : H^{s, p}(E, F)) (hs : s = s') : (f.copy s').toLp = f.toLp := by rfl
 
 variable (E F s p) in
-theorem injective_toLp :
-    Function.Injective (toLp (s := s) (p := p) (E := E) (F := F)) := by
+theorem injective_toLp : Function.Injective (toLp (s := s) (p := p) (E := E) (F := F)) := by
   intro f g hfg
   refine ext' ?_ hfg
   calc
-    f.toDistr = besselPotential E F (-s) f.toLp := by simp
+    f.toDistr
+      = besselPotential E F (-s) f.toLp := by simp
     _ = besselPotential E F (-s) g.toLp := by congr
     _ = g.toDistr := by simp
 
@@ -120,55 +118,54 @@ instance : Zero H^{s, p}(E, F) where
   zero := {
     toDistr := 0
     toLp := 0
-    bessel_toDistr_eq_toLp := by simp [← Lp.toTemperedDistributionCLM_apply] }
+    bessel_toDistr_eq_toLp := by simp [← Lp.toTemperedDistributionCLM_apply]
+  }
 
-@[simp, norm_cast]
-theorem toDistr_zero : (0 : H^{s, p}(E, F)).toDistr = 0 := rfl
+@[simp, norm_cast] theorem toDistr_zero : (0 : H^{s, p}(E, F)).toDistr = 0 := rfl
 
-@[simp]
-theorem toLp_zero : (0 : H^{s, p}(E, F)).toLp = 0 := rfl
+@[simp] theorem toLp_zero : (0 : H^{s, p}(E, F)).toLp = 0 := rfl
 
 instance : Add H^{s, p}(E, F) where
   add f g := {
     toDistr := f + g
     toLp := f.toLp + g.toLp
-    bessel_toDistr_eq_toLp := by simp [← Lp.toTemperedDistributionCLM_apply, map_add,
-      f.bessel_toDistr_eq_toLp, g.bessel_toDistr_eq_toLp] }
+    bessel_toDistr_eq_toLp := by
+      simp [← Lp.toTemperedDistributionCLM_apply, map_add, f.bessel_toDistr_eq_toLp,
+        g.bessel_toDistr_eq_toLp]
+  }
 
-@[simp, norm_cast]
-theorem toDistr_add (f g : H^{s, p}(E, F)) : (f + g).toDistr = f + g := rfl
+@[simp, norm_cast] theorem toDistr_add (f g : H^{s, p}(E, F)) : (f + g).toDistr = f + g := rfl
 
-@[simp]
-theorem toLp_add (f g : H^{s, p}(E, F)) : (f + g).toLp = f.toLp + g.toLp := rfl
+@[simp] theorem toLp_add (f g : H^{s, p}(E, F)) : (f + g).toLp = f.toLp + g.toLp := rfl
 
 instance : Sub H^{s, p}(E, F) where
   sub f g := {
     toDistr := f - g
     toLp := f.toLp - g.toLp
-    bessel_toDistr_eq_toLp := by simp [← Lp.toTemperedDistributionCLM_apply, map_sub,
-      f.bessel_toDistr_eq_toLp, g.bessel_toDistr_eq_toLp] }
+    bessel_toDistr_eq_toLp := by
+      simp [← Lp.toTemperedDistributionCLM_apply, map_sub, f.bessel_toDistr_eq_toLp,
+        g.bessel_toDistr_eq_toLp]
+  }
 
-@[simp, norm_cast]
-theorem toDistr_sub (f g : H^{s, p}(E, F)) : (f - g).toDistr = f - g := rfl
+@[simp, norm_cast] theorem toDistr_sub (f g : H^{s, p}(E, F)) : (f - g).toDistr = f - g := rfl
 
-@[simp]
-theorem toLp_sub (f g : H^{s, p}(E, F)) : (f - g).toLp = f.toLp - g.toLp := rfl
+@[simp] theorem toLp_sub (f g : H^{s, p}(E, F)) : (f - g).toLp = f.toLp - g.toLp := rfl
 
 instance : Neg H^{s, p}(E, F) where
   neg f := {
     toDistr := -f.toDistr
     toLp := -f.toLp
     bessel_toDistr_eq_toLp := by
-      simp [← Lp.toTemperedDistributionCLM_apply, map_neg, f.bessel_toDistr_eq_toLp] }
+      simp [← Lp.toTemperedDistributionCLM_apply, map_neg, f.bessel_toDistr_eq_toLp]
+  }
 
-@[simp, norm_cast]
-theorem toDistr_neg (f : H^{s, p}(E, F)) : (-f).toDistr = -f := rfl
+@[simp, norm_cast] theorem toDistr_neg (f : H^{s, p}(E, F)) : (-f).toDistr = -f := rfl
 
-@[simp]
-theorem toLp_neg (f : H^{s, p}(E, F)) : (-f).toLp = -f.toLp := rfl
+@[simp] theorem toLp_neg (f : H^{s, p}(E, F)) : (-f).toLp = -f.toLp := rfl
 
-variable {R : Type*} {p : ℝ≥0∞} [hp : Fact (1 ≤ p)]
-  [SMul R ℂ] [SMul R 𝓢'(E, F)] [SMul R (Lp F p (μ := (volume : Measure E)))]
+variable
+  {R : Type*} {p : ℝ≥0∞}
+  [hp : Fact (1 ≤ p)] [SMul R ℂ] [SMul R 𝓢'(E, F)] [SMul R (Lp F p (μ := (volume : Measure E)))]
   [IsScalarTower R ℂ 𝓢'(E, F)] [IsScalarTower R ℂ (Lp F p (μ := (volume : Measure E)))]
 
 instance : SMul R H^{s, p}(E, F) where
@@ -176,13 +173,13 @@ instance : SMul R H^{s, p}(E, F) where
     toDistr := c • f.toDistr
     toLp := c • f.toLp
     bessel_toDistr_eq_toLp := by
-      simp [← Lp.toTemperedDistributionCLM_apply, f.bessel_toDistr_eq_toLp] }
+      simp [← Lp.toTemperedDistributionCLM_apply, f.bessel_toDistr_eq_toLp]
+  }
 
 @[simp, norm_cast]
 theorem toDistr_smul (c : R) (f : H^{s, p}(E, F)) : (c • f).toDistr = c • f := rfl
 
-@[simp]
-theorem toLp_smul (c : R) (f : H^{s, p}(E, F)) : (c • f).toLp = c • f.toLp := rfl
+@[simp] theorem toLp_smul (c : R) (f : H^{s, p}(E, F)) : (c • f).toLp = c • f.toLp := rfl
 
 instance : AddCommGroup H^{s, p}(E, F) :=
   fast_instance% (injective_toLp E F s p).addCommGroup _ rfl (fun _ _ => rfl) (fun _ => rfl)
@@ -195,16 +192,17 @@ def coeAddMonoidHom : H^{s, p}(E, F) →+ 𝓢'(E, F) where
   map_zero' := rfl
   map_add' _ _ := rfl
 
-theorem coeAddMonoidHom_injective : Function.Injective (coeAddMonoidHom E F s p) := by
-  apply ext
+theorem coeAddMonoidHom_injective : Function.Injective (coeAddMonoidHom E F s p) := by apply ext
 
 instance : Module ℂ H^{s, p}(E, F) :=
   fast_instance% coeAddMonoidHom_injective.module ℂ (coeAddMonoidHom E F s p) fun _ _ => by rfl
 
 variable (E F s p) in
-/-- The map `u ↦ 𝓕⁻ (1 + ‖x‖ ^ 2) ^ (s / 2) 𝓕 u` as a linear map from `H^{s,p}` to `Lp`.
+/--
+The map `u ↦ 𝓕⁻ (1 + ‖x‖ ^ 2) ^ (s / 2) 𝓕 u` as a linear map from `H^{s,p}` to `Lp`.
 
-See `toLpₗᵢ` for the linear isometry equivalence. -/
+See `toLpₗᵢ` for the linear isometry equivalence.
+-/
 def toLpₗ : H^{s, p}(E, F) →ₗ[ℂ] Lp F p (volume : Measure E) where
   toFun := toLp
   map_add' f g := by rfl
@@ -217,33 +215,25 @@ def ofLp (f : Lp F p (volume : Measure E)) : H^{s, p}(E, F) where
   toLp := f
   bessel_toDistr_eq_toLp := by simp
 
-@[simp]
-theorem toLp_ofLp (f : Lp F p (volume : Measure E)) :
-    (ofLp s f).toLp = f := by rfl
+@[simp] theorem toLp_ofLp (f : Lp F p (volume : Measure E)) : (ofLp s f).toLp = f := by rfl
 
 @[simp]
-theorem toDistr_ofLp (f : Lp F p (volume : Measure E)) :
-    (ofLp s f).toDistr = besselPotential E F (-s) f := by rfl
+theorem toDistr_ofLp (f : Lp F p (volume : Measure E))
+    : (ofLp s f).toDistr = besselPotential E F (-s) f := by
+  rfl
 
-@[simp]
-theorem ofLp_toLp (f : H^{s, p}(E, F)) :
-    ofLp s f.toLp = f :=
-  injective_toLp E F s p rfl
+@[simp] theorem ofLp_toLp (f : H^{s, p}(E, F)) : ofLp s f.toLp = f := injective_toLp E F s p rfl
 
-@[simp]
-theorem toLpₗ_apply (f : H^{s, p}(E, F)) :
-    toLpₗ E F s p f = toLp f := by rfl
+@[simp] theorem toLpₗ_apply (f : H^{s, p}(E, F)) : toLpₗ E F s p f = toLp f := by rfl
 
 instance : NormedAddCommGroup H^{s, p}(E, F) :=
   fast_instance% NormedAddCommGroup.induced H^{s, p}(E, F)
     (Lp F p (volume : Measure E)) (toLpₗ E F s p) (by exact injective_toLp E F s p)
 
-@[simp]
-theorem norm_toLp_eq (f : H^{s, p}(E, F)) : ‖f.toLp‖ = ‖f‖ := by rfl
+@[simp] theorem norm_toLp_eq (f : H^{s, p}(E, F)) : ‖f.toLp‖ = ‖f‖ := by rfl
 
 instance : NormedSpace ℂ H^{s, p}(E, F) where
-  norm_smul_le c f := by
-    simp [← norm_toLp_eq, ← norm_smul]
+  norm_smul_le c f := by simp [← norm_toLp_eq, ← norm_smul]
 
 variable (E F s p) in
 /-- The linear isometry between `H^{s,p}` and `Lp`. -/
@@ -254,16 +244,14 @@ def toLpₗᵢ : H^{s, p}(E, F) ≃ₗᵢ[ℂ] Lp F p (volume : Measure E) where
   right_inv f := by simp
   norm_map' _ := rfl
 
-@[simp]
-theorem toLpₗᵢ_apply (f : H^{s, p}(E, F)) :
-    toLpₗᵢ E F s p f = toLp f := by rfl
+@[simp] theorem toLpₗᵢ_apply (f : H^{s, p}(E, F)) : toLpₗᵢ E F s p f = toLp f := by rfl
 
 @[simp]
-theorem toLpₗᵢ_symm_apply (f : Lp F p (volume : Measure E)) :
-    (toLpₗᵢ E F s p).symm f = besselPotential E F (-s) f := by rfl
+theorem toLpₗᵢ_symm_apply (f : Lp F p (volume : Measure E))
+    : (toLpₗᵢ E F s p).symm f = besselPotential E F (-s) f := by
+  rfl
 
-instance : CompleteSpace H^{s, p}(E, F) :=
-  (toLpₗᵢ E F s p).toIsometryEquiv.completeSpace
+instance : CompleteSpace H^{s, p}(E, F) := (toLpₗᵢ E F s p).toIsometryEquiv.completeSpace
 
 end NormedSpace
 
@@ -302,12 +290,14 @@ def MemSobolev.toBesselPotentialSpace {f : 𝓢'(E, F)} (hf : f.MemSobolev s p) 
   bessel_toDistr_eq_toLp := hf.choose_spec
 
 @[simp]
-theorem MemSobolev.toBesselPotentialSpace_toDistr {f : 𝓢'(E, F)} (hf : f.MemSobolev s p) :
-    hf.toBesselPotentialSpace.toDistr = f := by rfl
+theorem MemSobolev.toBesselPotentialSpace_toDistr {f : 𝓢'(E, F)} (hf : f.MemSobolev s p)
+    : hf.toBesselPotentialSpace.toDistr = f := by
+  rfl
 
-theorem MemSobolev.toBesselPotentialSpace_injective {f g : 𝓢'(E, F)} (hf : f.MemSobolev s p)
-    (hg : g.MemSobolev s p) (h : hf.toBesselPotentialSpace = hg.toBesselPotentialSpace) :
-    f = g := by
+theorem MemSobolev.toBesselPotentialSpace_injective
+    {f g : 𝓢'(E, F)} (hf : f.MemSobolev s p) (hg : g.MemSobolev s p)
+    (h : hf.toBesselPotentialSpace = hg.toBesselPotentialSpace)
+    : f = g := by
   rw [← hf.toBesselPotentialSpace_toDistr, ← hg.toBesselPotentialSpace_toDistr, h]
 
 end TemperedDistribution

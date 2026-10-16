@@ -21,7 +21,6 @@ object and one morphism.
 
 @[expose] public section
 
-
 universe w v u
 
 noncomputable section
@@ -35,16 +34,17 @@ variable [CartesianMonoidalCategory C] [MonoidalClosed C]
 
 open scoped CartesianClosed
 
-/-- If a Cartesian closed category has an initial object which is isomorphic to the terminal object,
+/--
+If a Cartesian closed category has an initial object which is isomorphic to the terminal object,
 then each homset has exactly one element.
 -/
 @[instance_reducible]
 def uniqueHomsetOfInitialIsoUnit [HasInitial C] (i : ⊥_ C ≅ 𝟙_ C) (X Y : C) : Unique (X ⟶ Y) :=
-  Equiv.unique <|
-    calc
-      (X ⟶ Y) ≃ (X ⊗ 𝟙_ C ⟶ Y) := Iso.homCongr (rightUnitor _).symm (Iso.refl _)
-      _ ≃ (X ⊗ ⊥_ C ⟶ Y) := (Iso.homCongr ((Iso.refl _) ⊗ᵢ i.symm) (Iso.refl _))
-      _ ≃ (⊥_ C ⟶ Y ^^ X) := (ihom.adjunction _).homEquiv _ _
+  Equiv.unique <| calc
+    (X ⟶ Y)
+      ≃ (X ⊗ 𝟙_ C ⟶ Y) := Iso.homCongr (rightUnitor _).symm (Iso.refl _)
+    _ ≃ (X ⊗ ⊥_ C ⟶ Y) := (Iso.homCongr ((Iso.refl _) ⊗ᵢ i.symm) (Iso.refl _))
+    _ ≃ (⊥_ C ⟶ Y ^^ X) := (ihom.adjunction _).homEquiv _ _
 
 open scoped ZeroObject
 
@@ -57,17 +57,15 @@ def uniqueHomsetOfZero [HasZeroObject C] (X Y : C) : Unique (X ⟶ Y) := by
 
 attribute [local instance] uniqueHomsetOfZero
 
-/-- A Cartesian closed category with a zero object is equivalent to the category with one object and
+/--
+A Cartesian closed category with a zero object is equivalent to the category with one object and
 one morphism.
 -/
 def equivPUnit [HasZeroObject C] : C ≌ Discrete PUnit.{w + 1} where
   functor := Functor.star C
   inverse := Functor.fromPUnit 0
-  unitIso := NatIso.ofComponents
-      (fun X =>
-        { hom := default
-          inv := default })
-      fun _ => Subsingleton.elim _ _
+  unitIso :=
+    NatIso.ofComponents (fun X => { hom := default, inv := default }) fun _ => Subsingleton.elim _ _
   counitIso := Functor.punitExt _ _
 
 end CategoryTheory

@@ -5,10 +5,10 @@ open TopologicalSpace
 -- TODO If and when `(try)SynthInstance` in `#check` is fixed,
 -- replace `ℕ` and `Prop` with variables
 
-variable {α β : Type*} [TopologicalSpace α]
+variable
+  {α β : Type*} [TopologicalSpace α]
   {τ₁ τ₂ : TopologicalSpace ℕ} {σ₁ σ₂ : TopologicalSpace Prop}
-  (f : ℕ → α) (g : β → α) (h : α → β) (p : ℕ → Prop)
-  (s : Set ℕ) (t : Set β)
+  (f : ℕ → α) (g : β → α) (h : α → β) (p : ℕ → Prop) (s : Set ℕ) (t : Set β)
 
 section
 
@@ -17,12 +17,14 @@ section
 section applied
 
 /-- info: [IsOpen s, IsClosed s, Continuous p, Continuous p] : List Prop -/
-#guard_msgs(info) in
-#check [@IsOpen _ (induced f inferInstance) s, @IsClosed _ (induced f inferInstance) s,
-  @Continuous _ _ (induced p inferInstance) _ p, @Continuous _ _ _ (coinduced p inferInstance) p]
+#guard_msgs (info) in
+#check [
+  @IsOpen _ (induced f inferInstance) s, @IsClosed _ (induced f inferInstance) s,
+  @Continuous _ _ (induced p inferInstance) _ p, @Continuous _ _ _ (coinduced p inferInstance) p
+]
 
 /-- info: closure s : Set ℕ -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check @closure _ (induced f inferInstance) s
 
 end applied
@@ -30,15 +32,15 @@ end applied
 section unapplied
 
 /-- info: [IsOpen, IsClosed] : List (Set ℕ → Prop) -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [@IsOpen _ (induced f inferInstance), @IsClosed _ (induced f inferInstance)]
 
 /-- info: closure : Set ℕ → Set ℕ -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check @closure _ (induced f inferInstance)
 
 /-- info: [Continuous, Continuous] : List ((ℕ → Prop) → Prop) -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [@Continuous _ _ (induced p inferInstance) _, @Continuous _ _ _ (coinduced p inferInstance)]
 
 end unapplied
@@ -57,22 +59,28 @@ section applied
 -- prioritizes the local variable over the canonical instance.)
 
 /-- info: [IsOpen[τ₁] s, IsOpen[τ₂] s, IsOpen[induced g inferInstance] t, IsOpen s] : List Prop -/
-#guard_msgs(info) in
-#check [IsOpen[τ₁] s, IsOpen[τ₂] s, IsOpen[induced g inferInstance] t,
-IsOpen[instTopologicalSpaceNat] s]
+#guard_msgs (info) in
+#check [
+  IsOpen[τ₁] s, IsOpen[τ₂] s, IsOpen[induced g inferInstance] t,
+  IsOpen[instTopologicalSpaceNat] s
+]
 
-/-- info:
-[IsClosed[τ₁] s, IsClosed[τ₂] s, IsClosed[induced g inferInstance] t, IsClosed s] : List Prop -/
-#guard_msgs(info) in
-#check [IsClosed[τ₁] s, IsClosed[τ₂] s, IsClosed[induced g inferInstance] t,
-IsClosed[instTopologicalSpaceNat] s]
+/--
+info:
+[IsClosed[τ₁] s, IsClosed[τ₂] s, IsClosed[induced g inferInstance] t, IsClosed s] : List Prop
+-/
+#guard_msgs (info) in
+#check [
+  IsClosed[τ₁] s, IsClosed[τ₂] s, IsClosed[induced g inferInstance] t,
+  IsClosed[instTopologicalSpaceNat] s
+]
 
 /-- info: [closure[τ₁] s, closure[τ₂] s, closure s] : List (Set ℕ) -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [closure[τ₁] s, closure[τ₂] s, closure[instTopologicalSpaceNat] s]
 
 /-- info: closure[induced g inferInstance] t : Set β -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check closure[induced g inferInstance] t
 
 end applied
@@ -82,28 +90,30 @@ section unapplied
 -- Same as above, except with unapplied operators.
 
 /-- info: [IsOpen[τ₁], IsOpen[τ₂], IsOpen] : List (Set ℕ → Prop) -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [IsOpen[τ₁], IsOpen[τ₂], IsOpen[instTopologicalSpaceNat]]
 
 /-- info: IsOpen[induced g inferInstance] : Set β → Prop -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check IsOpen[induced g inferInstance]
 
-/-- info: [IsClosed[τ₁], IsClosed[τ₂], IsClosed]
-: List (Set ℕ → Prop) -/
-#guard_msgs(info) in
+/--
+info: [IsClosed[τ₁], IsClosed[τ₂], IsClosed]
+: List (Set ℕ → Prop)
+-/
+#guard_msgs (info) in
 #check [IsClosed[τ₁], IsClosed[τ₂], IsClosed[instTopologicalSpaceNat]]
 
 /-- info: IsClosed[induced g inferInstance] : Set β → Prop -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check IsClosed[induced g inferInstance]
 
 /-- info: [closure[τ₁], closure[τ₂], closure] : List (Set ℕ → Set ℕ) -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [closure[τ₁], closure[τ₂], closure[instTopologicalSpaceNat]]
 
 /-- info: closure[induced g inferInstance] : Set β → Set β -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check closure[induced g inferInstance]
 
 end unapplied
@@ -120,30 +130,34 @@ section applied
 -- `instTopologicalSpaceNat`, `sierpinskiSpace` does not.
 
 /-- info: [Continuous[τ₁, _] p, Continuous[τ₂, _] p] : List Prop -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [Continuous[τ₁, sierpinskiSpace] p, Continuous[τ₂, sierpinskiSpace] p]
 
 -- TODO should be `Continuous[induced g inferInstance, _]`
 -- Once `(try)SynthInstance` in `#check` is fixed, the delab should no longer trigger on the right.
-/--info: Continuous[induced g inferInstance, inferInstance] g : Prop -/
-#guard_msgs(info) in
+/-- info: Continuous[induced g inferInstance, inferInstance] g : Prop -/
+#guard_msgs (info) in
 #check Continuous[induced g inferInstance, inferInstance] g
 
 /-- info: [Continuous[_, σ₁] p, Continuous[_, σ₂] p] : List Prop -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check [Continuous[instTopologicalSpaceNat, σ₁] p, Continuous[instTopologicalSpaceNat, σ₂] p]
 
 -- TODO should be `Continuous[_, coinduced h inferInstance]`
 -- Once `(try)SynthInstance` in `#check` is fixed, the delab should no longer trigger on the left.
 /-- info: Continuous[inferInstance, coinduced h inferInstance] h : Prop -/
-#guard_msgs(info) in
+#guard_msgs (info) in
 #check Continuous[inferInstance, coinduced h inferInstance] h
 
-/-- info: [Continuous[induced p inferInstance, coinduced p inferInstance] p, Continuous p]
-: List Prop -/
-#guard_msgs(info) in
-#check [Continuous[induced p inferInstance, coinduced p inferInstance] p,
-  Continuous[instTopologicalSpaceNat, sierpinskiSpace] p]
+/--
+info: [Continuous[induced p inferInstance, coinduced p inferInstance] p, Continuous p]
+: List Prop
+-/
+#guard_msgs (info) in
+#check [
+  Continuous[induced p inferInstance, coinduced p inferInstance] p,
+  Continuous[instTopologicalSpaceNat, sierpinskiSpace] p
+]
 
 end applied
 
@@ -151,36 +165,47 @@ section unapplied
 
 -- Same as above, except for unapplied operators.
 
-/-- info: [Continuous[τ₁, _], Continuous[τ₂, _]]
-: List ((ℕ → Prop) → Prop) -/
-#guard_msgs(info) in
+/--
+info: [Continuous[τ₁, _], Continuous[τ₂, _]]
+: List ((ℕ → Prop) → Prop)
+-/
+#guard_msgs (info) in
 #check [Continuous[τ₁, sierpinskiSpace], Continuous[τ₂, sierpinskiSpace]]
 
 -- TODO: should be `Continuous[induced g inferInstance, _]
 -- When `(try)SynthInstance` in `#check` is fixed, the delab should no longer trigger on the right.
-/-- info:
-Continuous[induced g inferInstance, inferInstance] : (β → α) → Prop -/
-#guard_msgs(info) in
+/--
+info:
+Continuous[induced g inferInstance, inferInstance] : (β → α) → Prop
+-/
+#guard_msgs (info) in
 #check Continuous[induced g inferInstance, (inferInstance : TopologicalSpace α)]
 
-/-- info: [Continuous[_, σ₁], Continuous[_, σ₂]]
-: List ((ℕ → Prop) → Prop) -/
-#guard_msgs(info) in
+/--
+info: [Continuous[_, σ₁], Continuous[_, σ₂]]
+: List ((ℕ → Prop) → Prop)
+-/
+#guard_msgs (info) in
 #check [Continuous[instTopologicalSpaceNat, σ₁], Continuous[instTopologicalSpaceNat, σ₂]]
-
 
 -- TODO should be `Continuous[_, coinduced h inferInstance]`.
 -- When `(try)SynthInstance` in `#check` is fixed, the delab should no longer trigger on the left.
-/-- info:
-Continuous[inferInstance, coinduced h inferInstance] : (α → β) → Prop -/
-#guard_msgs(info) in
+/--
+info:
+Continuous[inferInstance, coinduced h inferInstance] : (α → β) → Prop
+-/
+#guard_msgs (info) in
 #check Continuous[(inferInstance : TopologicalSpace α), coinduced h inferInstance]
 
-/-- info: [Continuous[induced p inferInstance, coinduced p inferInstance], Continuous]
-: List ((ℕ → Prop) → Prop) -/
-#guard_msgs(info) in
-#check [Continuous[induced p inferInstance, coinduced p inferInstance],
-  Continuous[instTopologicalSpaceNat, sierpinskiSpace]]
+/--
+info: [Continuous[induced p inferInstance, coinduced p inferInstance], Continuous]
+: List ((ℕ → Prop) → Prop)
+-/
+#guard_msgs (info) in
+#check [
+  Continuous[induced p inferInstance, coinduced p inferInstance],
+  Continuous[instTopologicalSpaceNat, sierpinskiSpace]
+]
 
 end unapplied
 end binary

@@ -40,8 +40,10 @@ open Limits Category
 
 variable (C : Type*) [Category* C] {A B : Type*} [AddMonoid A] [AddMonoid B]
 
-/-- The category `PullbackShift C φ` is equipped with a shift such that for all `a`,
-the shift functor by `a` is `shiftFunctor C (φ a)`. -/
+/--
+The category `PullbackShift C φ` is equipped with a shift such that for all `a`,
+the shift functor by `a` is `shiftFunctor C (φ a)`.
+-/
 @[nolint unusedArguments]
 def PullbackShift [HasShift C B] (_ : A →+ B) := C
 deriving Category
@@ -51,71 +53,78 @@ attribute [local instance] endofunctorMonoidalCategory
 variable [HasShift C B] (φ : A →+ B)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The shift on `PullbackShift C φ` is obtained by precomposing the shift on `C` with
-the monoidal functor `Discrete.addMonoidalFunctor φ : Discrete A ⥤ Discrete B`. -/
+/--
+The shift on `PullbackShift C φ` is obtained by precomposing the shift on `C` with
+the monoidal functor `Discrete.addMonoidalFunctor φ : Discrete A ⥤ Discrete B`.
+-/
 instance : HasShift (PullbackShift C φ) A where
   shift := Discrete.addMonoidalFunctor φ ⋙ shiftMonoidalFunctor C B
 
-instance [HasZeroObject C] : HasZeroObject (PullbackShift C φ) :=
-  inferInstanceAs <| HasZeroObject C
+instance [HasZeroObject C] : HasZeroObject (PullbackShift C φ) := inferInstanceAs <| HasZeroObject C
 
-instance [Preadditive C] : Preadditive (PullbackShift C φ) :=
-  inferInstanceAs <| Preadditive C
+instance [Preadditive C] : Preadditive (PullbackShift C φ) := inferInstanceAs <| Preadditive C
 
-instance [Preadditive C] (a : A) [(shiftFunctor C (φ a)).Additive] :
-    (shiftFunctor (PullbackShift C φ) a).Additive :=
+instance [Preadditive C] (a : A) [(shiftFunctor C (φ a)).Additive]
+    : (shiftFunctor (PullbackShift C φ) a).Additive :=
   inferInstanceAs (shiftFunctor C (φ a)).Additive
 
-/-- When `b = φ a`, this is the canonical
-isomorphism `shiftFunctor (PullbackShift C φ) a ≅ shiftFunctor C b`. -/
-def pullbackShiftIso (a : A) (b : B) (h : b = φ a) :
-    shiftFunctor (PullbackShift C φ) a ≅ shiftFunctor C b := eqToIso (by subst h; rfl)
+/--
+When `b = φ a`, this is the canonical
+isomorphism `shiftFunctor (PullbackShift C φ) a ≅ shiftFunctor C b`.
+-/
+def pullbackShiftIso (a : A) (b : B) (h : b = φ a)
+    : shiftFunctor (PullbackShift C φ) a ≅ shiftFunctor C b :=
+  eqToIso (by subst h; rfl)
 
 variable {C}
-variable (X : PullbackShift C φ) (a₁ a₂ a₃ : A) (h : a₁ + a₂ = a₃) (b₁ b₂ b₃ : B)
-  (h₁ : b₁ = φ a₁) (h₂ : b₂ = φ a₂) (h₃ : b₃ = φ a₃)
+variable
+  (X : PullbackShift C φ)
+  (a₁ a₂ a₃ : A) (h : a₁ + a₂ = a₃)
+  (b₁ b₂ b₃ : B) (h₁ : b₁ = φ a₁) (h₂ : b₂ = φ a₂) (h₃ : b₃ = φ a₃)
 
 set_option backward.defeqAttrib.useBackward true in
-lemma pullbackShiftFunctorZero_inv_app :
-    (shiftFunctorZero _ A).inv.app X =
-      (shiftFunctorZero C B).inv.app X ≫ (pullbackShiftIso C φ 0 0 (by simp)).inv.app X := by
+lemma pullbackShiftFunctorZero_inv_app
+    : (shiftFunctorZero _ A).inv.app X
+      = (shiftFunctorZero C B).inv.app X ≫ (pullbackShiftIso C φ 0 0 (by simp)).inv.app X := by
   change (shiftFunctorZero C B).inv.app X ≫ _ = _
   dsimp [Discrete.eqToHom, Discrete.addMonoidalFunctor_ε]
   congr 2
   apply eqToHom_map
 
 set_option backward.isDefEq.respectTransparency false in
-lemma pullbackShiftFunctorZero_hom_app :
-    (shiftFunctorZero _ A).hom.app X =
-      (pullbackShiftIso C φ 0 0 (by simp)).hom.app X ≫ (shiftFunctorZero C B).hom.app X := by
+lemma pullbackShiftFunctorZero_hom_app
+    : (shiftFunctorZero _ A).hom.app X
+      = (pullbackShiftIso C φ 0 0 (by simp)).hom.app X ≫ (shiftFunctorZero C B).hom.app X := by
   rw [← cancel_epi ((shiftFunctorZero _ A).inv.app X), Iso.inv_hom_id_app,
     pullbackShiftFunctorZero_inv_app, assoc, Iso.inv_hom_id_app_assoc, Iso.inv_hom_id_app]
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-lemma pullbackShiftFunctorZero'_inv_app :
-    (shiftFunctorZero _ A).inv.app X = (shiftFunctorZero' C (φ 0) (by rw [map_zero])).inv.app X ≫
-      (pullbackShiftIso C φ 0 (φ 0) rfl).inv.app X := by
+lemma pullbackShiftFunctorZero'_inv_app
+    : (shiftFunctorZero _ A).inv.app X
+      = (shiftFunctorZero' C (φ 0) (by rw [map_zero])).inv.app X
+        ≫ (pullbackShiftIso C φ 0 (φ 0) rfl).inv.app X := by
   rw [pullbackShiftFunctorZero_inv_app]
   simp only [Functor.id_obj, pullbackShiftIso, eqToIso.inv, eqToHom_app, shiftFunctorZero',
     Iso.trans_inv, NatTrans.comp_app, eqToIso_refl, Iso.refl_inv, NatTrans.id_app, assoc]
   erw [comp_id]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma pullbackShiftFunctorZero'_hom_app :
-    (shiftFunctorZero _ A).hom.app X = (pullbackShiftIso C φ 0 (φ 0) rfl).hom.app X ≫
-      (shiftFunctorZero' C (φ 0) (by rw [map_zero])).hom.app X := by
+lemma pullbackShiftFunctorZero'_hom_app
+    : (shiftFunctorZero _ A).hom.app X
+      = (pullbackShiftIso C φ 0 (φ 0) rfl).hom.app X
+        ≫ (shiftFunctorZero' C (φ 0) (by rw [map_zero])).hom.app X := by
   rw [← cancel_epi ((shiftFunctorZero _ A).inv.app X), Iso.inv_hom_id_app,
     pullbackShiftFunctorZero'_inv_app, assoc, Iso.inv_hom_id_app_assoc, Iso.inv_hom_id_app]
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma pullbackShiftFunctorAdd'_inv_app :
-    (shiftFunctorAdd' _ a₁ a₂ a₃ h).inv.app X =
-      (shiftFunctor (PullbackShift C φ) a₂).map ((pullbackShiftIso C φ a₁ b₁ h₁).hom.app X) ≫
-        (pullbackShiftIso C φ a₂ b₂ h₂).hom.app _ ≫
-        (shiftFunctorAdd' C b₁ b₂ b₃ (by rw [h₁, h₂, h₃, ← h, φ.map_add])).inv.app X ≫
-        (pullbackShiftIso C φ a₃ b₃ h₃).inv.app X := by
+lemma pullbackShiftFunctorAdd'_inv_app
+    : (shiftFunctorAdd' _ a₁ a₂ a₃ h).inv.app X
+      = (shiftFunctor (PullbackShift C φ) a₂).map ((pullbackShiftIso C φ a₁ b₁ h₁).hom.app X)
+        ≫ (pullbackShiftIso C φ a₂ b₂ h₂).hom.app _
+        ≫ (shiftFunctorAdd' C b₁ b₂ b₃ (by rw [h₁, h₂, h₃, ← h, φ.map_add])).inv.app X
+        ≫ (pullbackShiftIso C φ a₃ b₃ h₃).inv.app X := by
   subst h₁ h₂ h
   obtain rfl : b₃ = φ a₁ + φ a₂ := by rw [h₃, φ.map_add]
   simp only [NatTrans.naturality_assoc]
@@ -129,12 +138,13 @@ lemma pullbackShiftFunctorAdd'_inv_app :
   apply eqToHom_map
 
 set_option backward.isDefEq.respectTransparency false in
-lemma pullbackShiftFunctorAdd'_hom_app :
-    (shiftFunctorAdd' _ a₁ a₂ a₃ h).hom.app X =
-      (pullbackShiftIso C φ a₃ b₃ h₃).hom.app X ≫
-      (shiftFunctorAdd' C b₁ b₂ b₃ (by rw [h₁, h₂, h₃, ← h, φ.map_add])).hom.app X ≫
-      (pullbackShiftIso C φ a₂ b₂ h₂).inv.app _ ≫
-      (shiftFunctor (PullbackShift C φ) a₂).map ((pullbackShiftIso C φ a₁ b₁ h₁).inv.app X) := by
+lemma pullbackShiftFunctorAdd'_hom_app
+    : (shiftFunctorAdd' _ a₁ a₂ a₃ h).hom.app X
+      = (pullbackShiftIso C φ a₃ b₃ h₃).hom.app X
+        ≫ (shiftFunctorAdd' C b₁ b₂ b₃ (by rw [h₁, h₂, h₃, ← h, φ.map_add])).hom.app X
+        ≫ (pullbackShiftIso C φ a₂ b₂ h₂).inv.app _
+        ≫ (shiftFunctor (PullbackShift C φ) a₂).map
+          ((pullbackShiftIso C φ a₁ b₁ h₁).inv.app X) := by
   rw [← cancel_epi ((shiftFunctorAdd' _ a₁ a₂ a₃ h).inv.app X), Iso.inv_hom_id_app,
     pullbackShiftFunctorAdd'_inv_app φ X a₁ a₂ a₃ h b₁ b₂ b₃ h₁ h₂ h₃, assoc, assoc, assoc,
     Iso.inv_hom_id_app_assoc, Iso.inv_hom_id_app_assoc, Iso.hom_inv_id_app_assoc,
@@ -158,19 +168,22 @@ to `PullbackShift.functor G φ`. Then a `CommShift B` instance on `τ` will defi
 instance on `PullbackShift.natTrans τ φ`, and we won't have to juggle with two `CommShift`
 instances on `τ`.
 -/
-def PullbackShift.natTrans {G : C ⥤ D} (τ : F ⟶ G) :
-    PullbackShift.functor φ F ⟶ PullbackShift.functor φ G := τ
+def PullbackShift.natTrans {G : C ⥤ D} (τ : F ⟶ G)
+    : PullbackShift.functor φ F ⟶ PullbackShift.functor φ G :=
+  τ
 
 namespace Functor
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- If `F : C ⥤ D` commutes with the shifts on `C` and `D`, then `PullbackShift.functor F φ`
+/--
+If `F : C ⥤ D` commutes with the shifts on `C` and `D`, then `PullbackShift.functor F φ`
 commutes with their pullbacks by an additive map `φ`.
 -/
 instance commShiftPullback : (PullbackShift.functor φ F).CommShift A where
-  commShiftIso a := isoWhiskerRight (pullbackShiftIso C φ a (φ a) rfl) F ≪≫
-    F.commShiftIso (φ a) ≪≫ isoWhiskerLeft _ (pullbackShiftIso D φ a (φ a) rfl).symm
+  commShiftIso a :=
+    isoWhiskerRight (pullbackShiftIso C φ a (φ a) rfl) F ≪≫ F.commShiftIso (φ a)
+      ≪≫ isoWhiskerLeft _ (pullbackShiftIso D φ a (φ a) rfl).symm
   commShiftIso_zero := by
     ext
     dsimp
@@ -183,8 +196,8 @@ instance commShiftPullback : (PullbackShift.functor φ F).CommShift A where
     simp only [PullbackShift.functor, comp_obj, Iso.trans_hom, isoWhiskerRight_hom,
       isoWhiskerLeft_hom, Iso.symm_hom, NatTrans.comp_app, whiskerRight_app, whiskerLeft_app,
       CommShift.isoAdd_hom_app, map_comp, assoc]
-    rw [F.commShiftIso_add' (φ.map_add _ _).symm,
-      ← shiftFunctorAdd'_eq_shiftFunctorAdd, ← shiftFunctorAdd'_eq_shiftFunctorAdd,
+    rw [F.commShiftIso_add' (φ.map_add _ _).symm, ← shiftFunctorAdd'_eq_shiftFunctorAdd,
+      ← shiftFunctorAdd'_eq_shiftFunctorAdd,
       pullbackShiftFunctorAdd'_hom_app φ _ _ _ _ rfl _ _ _ rfl rfl rfl,
       pullbackShiftFunctorAdd'_inv_app φ _ _ _ _ rfl _ _ _ rfl rfl rfl]
     simp only [CommShift.isoAdd'_hom_app, assoc, map_comp, NatTrans.naturality_assoc,
@@ -199,10 +212,10 @@ instance commShiftPullback : (PullbackShift.functor φ F).CommShift A where
     rw [id_comp, assoc, assoc]
     rfl
 
-lemma commShiftPullback_iso_eq (a : A) (b : B) (h : b = φ a) :
-    (PullbackShift.functor φ F).commShiftIso a (C := PullbackShift C φ) (D := PullbackShift D φ) =
-      isoWhiskerRight (pullbackShiftIso C φ a b h) F ≪≫ (F.commShiftIso b) ≪≫
-        isoWhiskerLeft F (pullbackShiftIso D φ a b h).symm := by
+lemma commShiftPullback_iso_eq (a : A) (b : B) (h : b = φ a)
+    : (PullbackShift.functor φ F).commShiftIso a (C := PullbackShift C φ) (D := PullbackShift D φ)
+      = isoWhiskerRight (pullbackShiftIso C φ a b h) F ≪≫ (F.commShiftIso b)
+        ≪≫ isoWhiskerLeft F (pullbackShiftIso D φ a b h).symm := by
   obtain rfl : b = φ a := h
   rfl
 
@@ -214,19 +227,19 @@ variable {F} {G : C ⥤ D} [G.CommShift B]
 
 set_option backward.isDefEq.respectTransparency false in
 open CategoryTheory.Functor in
-instance commShiftPullback (τ : F ⟶ G) [NatTrans.CommShift τ B] :
-    NatTrans.CommShift (PullbackShift.natTrans φ τ) A where
+instance commShiftPullback (τ : F ⟶ G) [NatTrans.CommShift τ B]
+    : NatTrans.CommShift (PullbackShift.natTrans φ τ) A where
   shift_comm _ := by
     ext
     dsimp [PullbackShift.natTrans]
     simp only [commShiftPullback_iso_eq φ _ _ _ rfl, Iso.trans_hom, isoWhiskerRight_hom,
-      isoWhiskerLeft_hom, Iso.symm_hom, comp_app, whiskerRight_app, whiskerLeft_app,
-      assoc]
+      isoWhiskerLeft_hom, Iso.symm_hom, comp_app, whiskerRight_app, whiskerLeft_app, assoc]
     rw [← τ.naturality_assoc]
     simp [← NatTrans.shift_app_comm_assoc]
 
 variable (C) in
-/-- The natural isomorphism between the identity of `PullbackShift C φ` and the
+/--
+The natural isomorphism between the identity of `PullbackShift C φ` and the
 pullback of the identity of `C`.
 -/
 def PullbackShift.natIsoId : 𝟭 (PullbackShift C φ) ≅ PullbackShift.functor φ (𝟭 C) := Iso.refl _
@@ -246,11 +259,13 @@ instance : NatTrans.CommShift (PullbackShift.natIsoId C φ).hom A where
 
 variable (F) {E : Type*} [Category* E] [HasShift E B] (G : D ⥤ E) [G.CommShift B]
 
-/-- The natural isomorphism between the pullback of `F ⋙ G` and the
+/--
+The natural isomorphism between the pullback of `F ⋙ G` and the
 composition of the pullbacks of `F` and `G`.
 -/
-def PullbackShift.natIsoComp : PullbackShift.functor φ (F ⋙ G) ≅
-    PullbackShift.functor φ F ⋙ PullbackShift.functor φ G := Iso.refl _
+def PullbackShift.natIsoComp
+    : PullbackShift.functor φ (F ⋙ G) ≅ PullbackShift.functor φ F ⋙ PullbackShift.functor φ G :=
+  Iso.refl _
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -282,12 +297,14 @@ The adjunction `adj`, seen as an adjunction between `PullbackShift.functor F φ`
 and `PullbackShift.functor G φ`.
 -/
 @[simps -isSimp]
-def PullbackShift.adjunction {F} {G : D ⥤ C} (adj : F ⊣ G) :
-    PullbackShift.functor φ F ⊣ PullbackShift.functor φ G where
-  unit := (NatTrans.PullbackShift.natIsoId C φ).hom ≫
-    PullbackShift.natTrans φ adj.unit ≫ (NatTrans.PullbackShift.natIsoComp φ F G).hom
-  counit := (NatTrans.PullbackShift.natIsoComp φ G F).inv ≫
-    PullbackShift.natTrans φ adj.counit ≫ (NatTrans.PullbackShift.natIsoId D φ).inv
+def PullbackShift.adjunction {F} {G : D ⥤ C} (adj : F ⊣ G)
+    : PullbackShift.functor φ F ⊣ PullbackShift.functor φ G where
+  unit :=
+    (NatTrans.PullbackShift.natIsoId C φ).hom ≫ PullbackShift.natTrans φ adj.unit
+      ≫ (NatTrans.PullbackShift.natIsoComp φ F G).hom
+  counit :=
+    (NatTrans.PullbackShift.natIsoComp φ G F).inv ≫ PullbackShift.natTrans φ adj.counit
+      ≫ (NatTrans.PullbackShift.natIsoId D φ).inv
   left_triangle_components _ := by
     simp [PullbackShift.natTrans, NatTrans.PullbackShift.natIsoComp,
       NatTrans.PullbackShift.natIsoId, PullbackShift.functor]

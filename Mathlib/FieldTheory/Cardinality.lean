@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Localization.Cardinality
 public import Mathlib.SetTheory.Cardinal.Divisibility
-
 import Mathlib.Algebra.Field.TransferInstance
 import Mathlib.Algebra.MonoidAlgebra.Cardinal
 import Mathlib.Data.Rat.Encodable
@@ -30,7 +29,6 @@ a field structure, and so can all types with prime power cardinalities, and this
 
 public section
 
-
 local notation "‖" x "‖" => Fintype.card x
 
 open scoped Cardinal nonZeroDivisors
@@ -51,8 +49,8 @@ theorem Fintype.nonempty_field_iff {α} [Fintype α] : Nonempty (Field α) ↔ I
   exact ⟨(Fintype.equivOfCardEq
     (((Fintype.card_eq_nat_card).trans (GaloisField.card p n hn.ne')).trans hα)).symm.field⟩
 
-theorem Fintype.not_isField_of_card_not_prime_pow {α} [Fintype α] [Ring α] :
-    ¬IsPrimePow ‖α‖ → ¬IsField α :=
+theorem Fintype.not_isField_of_card_not_prime_pow {α} [Fintype α] [Ring α]
+    : ¬ IsPrimePow ‖α‖ → ¬ IsField α :=
   mt fun h => Fintype.nonempty_field_iff.mp ⟨h.toField⟩
 
 /-- Any infinite type can be endowed a field structure. -/
@@ -66,5 +64,6 @@ theorem Field.nonempty_iff {α : Type u} : Nonempty (Field α) ↔ IsPrimePow #�
   rw [Cardinal.isPrimePow_iff]
   obtain h | h := fintypeOrInfinite α
   · simpa only [Cardinal.mk_fintype, Nat.cast_inj, exists_eq_left',
-      Cardinal.natCast_lt_aleph0.not_ge, false_or] using Fintype.nonempty_field_iff
+        Cardinal.natCast_lt_aleph0.not_ge, false_or]
+      using Fintype.nonempty_field_iff
   · simpa only [← Cardinal.infinite_iff, h, true_or, iff_true] using Infinite.nonempty_field

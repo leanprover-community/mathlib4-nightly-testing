@@ -25,8 +25,11 @@ namespace CategoryTheory
 
 open Limits CategoryTheory.Functor
 
-variable {K : Type u} [Category.{v} K] {C : Type u'} [Category.{v'} C]
-  {D : Type u''} [Category.{v''} D] {F G : K ⥤ C} (f : F ⟶ G)
+variable
+  {K : Type u} [Category.{v} K]
+  {C : Type u'} [Category.{v'} C]
+  {D : Type u''} [Category.{v''} D]
+  {F G : K ⥤ C} (f : F ⟶ G)
 section
 
 variable [HasPullbacks C]
@@ -38,14 +41,13 @@ lemma NatTrans.mono_iff_mono_app : Mono f ↔ ∀ (k : K), Mono (f.app k) :=
   ⟨fun _ ↦ inferInstance, fun _ ↦ mono_of_mono_app _⟩
 
 set_option backward.defeqAttrib.useBackward true in
-instance [Mono f] (H : C ⥤ D) [H.PreservesMonomorphisms] :
-    Mono (whiskerRight f H) := by
+instance [Mono f] (H : C ⥤ D) [H.PreservesMonomorphisms] : Mono (whiskerRight f H) := by
   have : ∀ X, Mono ((whiskerRight f H).app X) := by intros; dsimp; infer_instance
   apply NatTrans.mono_of_mono_app
 
 set_option backward.defeqAttrib.useBackward true in
-instance (F : C ⥤ D) [F.PreservesMonomorphisms] :
-    ((Functor.whiskeringRight K C D).obj F).PreservesMonomorphisms where
+instance (F : C ⥤ D) [F.PreservesMonomorphisms]
+    : ((Functor.whiskeringRight K C D).obj F).PreservesMonomorphisms where
   preserves f _ := by dsimp; infer_instance
 
 end
@@ -54,15 +56,13 @@ section
 
 variable [HasPushouts C]
 
-instance [Epi f] (k : K) : Epi (f.app k) :=
-  inferInstanceAs (Epi (((evaluation K C).obj k).map f))
+instance [Epi f] (k : K) : Epi (f.app k) := inferInstanceAs (Epi (((evaluation K C).obj k).map f))
 
 lemma NatTrans.epi_iff_epi_app : Epi f ↔ ∀ (k : K), Epi (f.app k) :=
   ⟨fun _ ↦ inferInstance, fun _ ↦ epi_of_epi_app _⟩
 
 set_option backward.defeqAttrib.useBackward true in
-instance [Epi f] (H : C ⥤ D) [H.PreservesEpimorphisms] :
-    Epi (whiskerRight f H) := by
+instance [Epi f] (H : C ⥤ D) [H.PreservesEpimorphisms] : Epi (whiskerRight f H) := by
   have : ∀ X, Epi ((whiskerRight f H).app X) := by intros; dsimp; infer_instance
   apply NatTrans.epi_of_epi_app
 

@@ -8,7 +8,6 @@ module
 public import Mathlib.GroupTheory.QuotientGroup.Finite
 public import Mathlib.RingTheory.Ideal.Basic
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
-
 import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.RingTheory.Congruence.Basic
 
@@ -35,8 +34,8 @@ variable {ι ι' R : Type*} [Ring R] (I J : Ideal R) {a b : R}
 namespace Ideal.Quotient
 
 @[simp]
-lemma mk_span_range (f : ι → R) [(span (range f)).IsTwoSided] (i : ι) :
-    mk (span (.range f)) (f i) = 0 := by
+lemma mk_span_range (f : ι → R) [(span (range f)).IsTwoSided] (i : ι)
+    : mk (span (.range f)) (f i) = 0 := by
   rw [Ideal.Quotient.eq_zero_iff_mem]
   exact Ideal.subset_span ⟨i, rfl⟩
 
@@ -45,14 +44,12 @@ variable {I} {x y : R}
 theorem zero_eq_one_iff : (0 : R ⧸ I) = 1 ↔ I = ⊤ :=
   eq_comm.trans <| (Submodule.Quotient.mk_eq_zero _).trans (eq_top_iff_one _).symm
 
-theorem zero_ne_one_iff : (0 : R ⧸ I) ≠ 1 ↔ I ≠ ⊤ :=
-  not_congr zero_eq_one_iff
+theorem zero_ne_one_iff : (0 : R ⧸ I) ≠ 1 ↔ I ≠ ⊤ := not_congr zero_eq_one_iff
 
 protected lemma subsingleton_iff : Subsingleton (R ⧸ I) ↔ I = ⊤ :=
   Submodule.Quotient.subsingleton_iff
 
-protected lemma nontrivial_iff : Nontrivial (R ⧸ I) ↔ I ≠ ⊤ :=
-  Submodule.Quotient.nontrivial_iff
+protected lemma nontrivial_iff : Nontrivial (R ⧸ I) ↔ I ≠ ⊤ := Submodule.Quotient.nontrivial_iff
 
 instance : Unique (R ⧸ (⊤ : Ideal R)) :=
   ⟨⟨0⟩, by rintro ⟨x⟩; exact Quotient.eq_zero_iff_mem.mpr Submodule.mem_top⟩
@@ -60,20 +57,20 @@ instance : Unique (R ⧸ (⊤ : Ideal R)) :=
 variable [I.IsTwoSided]
 
 -- this instance is harder to find than the one via `Algebra α (R ⧸ I)`, so use a lower priority
-instance (priority := 100) isScalarTower_right {α} [SMul α R] [IsScalarTower α R R] :
-    IsScalarTower α (R ⧸ I) (R ⧸ I) :=
+instance (priority := 100) isScalarTower_right {α} [SMul α R] [IsScalarTower α R R]
+    : IsScalarTower α (R ⧸ I) (R ⧸ I) :=
   (Quotient.ringCon I).isScalarTower_right
 
-instance smulCommClass {α} [SMul α R] [IsScalarTower α R R] [SMulCommClass α R R] :
-    SMulCommClass α (R ⧸ I) (R ⧸ I) :=
+instance smulCommClass {α} [SMul α R] [IsScalarTower α R R] [SMulCommClass α R R]
+    : SMulCommClass α (R ⧸ I) (R ⧸ I) :=
   (Quotient.ringCon I).smulCommClass
 
-instance smulCommClass' {α} [SMul α R] [IsScalarTower α R R] [SMulCommClass R α R] :
-    SMulCommClass (R ⧸ I) α (R ⧸ I) :=
+instance smulCommClass' {α} [SMul α R] [IsScalarTower α R R] [SMulCommClass R α R]
+    : SMulCommClass (R ⧸ I) α (R ⧸ I) :=
   (Quotient.ringCon I).smulCommClass'
 
-theorem eq_zero_iff_dvd {R} [CommRing R] (x y : R) :
-    Ideal.Quotient.mk (Ideal.span ({x} : Set R)) y = 0 ↔ x ∣ y := by
+theorem eq_zero_iff_dvd {R} [CommRing R] (x y : R)
+    : Ideal.Quotient.mk (Ideal.span ({x} : Set R)) y = 0 ↔ x ∣ y := by
   rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
 
 @[simp]
@@ -83,7 +80,8 @@ lemma mk_singleton_self (x : R) [(Ideal.span {x}).IsTwoSided] : mk (Ideal.span {
 variable (I)
 
 instance noZeroDivisors [hI : I.IsPrime] : NoZeroDivisors (R ⧸ I) where
-    eq_zero_or_eq_zero_of_mul_eq_zero {a b} := Quotient.inductionOn₂' a b fun {_ _} hab =>
+  eq_zero_or_eq_zero_of_mul_eq_zero {a b} :=
+    Quotient.inductionOn₂' a b fun {_ _} hab =>
       (hI.mem_or_mem (eq_zero_iff_mem.1 hab)).elim (Or.inl ∘ eq_zero_iff_mem.2)
         (Or.inr ∘ eq_zero_iff_mem.2)
 
@@ -101,8 +99,7 @@ theorem isDomain_iff_prime : IsDomain (R ⧸ I) ↔ I.IsPrime := by
 
 set_option backward.isDefEq.respectTransparency false in
 variable {I} in
-theorem exists_inv [hI : I.IsMaximal] :
-    ∀ {a : R ⧸ I}, a ≠ 0 → ∃ b : R ⧸ I, a * b = 1 := by
+theorem exists_inv [hI : I.IsMaximal] : ∀ {a : R ⧸ I}, a ≠ 0 → ∃ b : R ⧸ I, a * b = 1 := by
   apply exists_right_inv_of_exists_left_inv
   rintro ⟨a⟩ h
   rcases hI.exists_inv (mt eq_zero_iff_mem.2 h) with ⟨b, c, hc, abc⟩
@@ -112,44 +109,51 @@ theorem exists_inv [hI : I.IsMaximal] :
   rwa [abc, ← neg_mem_iff (G := R) (H := I), neg_sub] at hc
 
 open scoped Classical in
-/-- The quotient by a maximal ideal is a group with zero. This is a `def` rather than `instance`,
+/--
+The quotient by a maximal ideal is a group with zero. This is a `def` rather than `instance`,
 since users will have computable inverses in some applications.
 
-See note [reducible non-instances]. -/
-protected noncomputable abbrev groupWithZero [hI : I.IsMaximal] :
-    GroupWithZero (R ⧸ I) := fast_instance%
-  { inv := fun a => if ha : a = 0 then 0 else Classical.choose (exists_inv ha)
-    mul_inv_cancel := fun a (ha : a ≠ 0) =>
-      show a * dite _ _ _ = _ by rw [dite_eq_right ha]; exact Classical.choose_spec (exists_inv ha)
-    inv_zero := dite_eq_left rfl
-    __ := Quotient.nontrivial_iff.mpr hI.out.1 }
+See note [reducible non-instances].
+-/
+protected noncomputable abbrev groupWithZero [hI : I.IsMaximal] : GroupWithZero (R ⧸ I) :=
+  fast_instance%
+    { inv := fun a => if ha : a = 0 then 0 else Classical.choose (exists_inv ha)
+      mul_inv_cancel := fun a (ha : a ≠ 0) =>
+        show a * dite _ _ _ = _ by rw [dite_eq_right ha]; exact Classical.choose_spec (exists_inv ha)
+      inv_zero := dite_eq_left rfl
+      __ := Quotient.nontrivial_iff.mpr hI.out.1 }
 
-/-- The quotient by a two-sided ideal that is maximal as a left ideal is a division ring.
+/--
+The quotient by a two-sided ideal that is maximal as a left ideal is a division ring.
 This is a `def` rather than `instance`, since users
 will have computable inverses (and `qsmul`, `ratCast`) in some applications.
 
-See note [reducible non-instances]. -/
-protected noncomputable abbrev divisionRing [I.IsMaximal] : DivisionRing (R ⧸ I) := fast_instance%
-  { __ := ring _
-    __ := Quotient.groupWithZero _
-    nnqsmul := _
-    nnqsmul_def _ _ := rfl
-    qsmul := _
-    qsmul_def _ _ := rfl }
+See note [reducible non-instances].
+-/
+protected noncomputable abbrev divisionRing [I.IsMaximal] : DivisionRing (R ⧸ I) :=
+  fast_instance%
+    { __ := ring _
+      __ := Quotient.groupWithZero _
+      nnqsmul := _
+      nnqsmul_def _ _ := rfl
+      qsmul := _
+      qsmul_def _ _ := rfl }
 
-/-- The quotient of a commutative ring by a maximal ideal is a field.
+/--
+The quotient of a commutative ring by a maximal ideal is a field.
 This is a `def` rather than `instance`, since users
 will have computable inverses (and `qsmul`, `ratCast`) in some applications.
 
-See note [reducible non-instances]. -/
-protected noncomputable abbrev field {R} [CommRing R] (I : Ideal R) [I.IsMaximal] :
-    Field (R ⧸ I) := fast_instance%
-  { __ := commRing _
-    __ := Quotient.divisionRing I }
+See note [reducible non-instances].
+-/
+protected noncomputable abbrev field {R} [CommRing R] (I : Ideal R) [I.IsMaximal] : Field (R ⧸ I) :=
+  fast_instance%
+    { __ := commRing _
+      __ := Quotient.divisionRing I }
 
 /-- If the quotient by an ideal is a field, then the ideal is maximal. -/
-theorem maximal_of_isField {R} [CommRing R] (I : Ideal R) (hqf : IsField (R ⧸ I)) :
-    I.IsMaximal := by
+theorem maximal_of_isField {R} [CommRing R] (I : Ideal R) (hqf : IsField (R ⧸ I))
+    : I.IsMaximal := by
   apply Ideal.isMaximal_iff.2
   constructor
   · intro h
@@ -161,12 +165,13 @@ theorem maximal_of_isField {R} [CommRing R] (I : Ideal R) (hqf : IsField (R ⧸ 
     exact J.sub_mem (J.mul_mem_right _ hxJ) (hIJ (Ideal.Quotient.eq.1 hy))
 
 /-- The quotient of a ring by an ideal is a field iff the ideal is maximal. -/
-theorem maximal_ideal_iff_isField_quotient {R} [CommRing R] (I : Ideal R) :
-    I.IsMaximal ↔ IsField (R ⧸ I) :=
-  ⟨fun h =>
+theorem maximal_ideal_iff_isField_quotient {R} [CommRing R] (I : Ideal R)
+    : I.IsMaximal ↔ IsField (R ⧸ I) := ⟨
+  fun h =>
     let _i := @Quotient.field _ _ I h
     Field.toIsField _,
-    maximal_of_isField _⟩
+  maximal_of_isField _
+⟩
 
 end Quotient
 
@@ -191,8 +196,11 @@ instance modulePi [I.IsTwoSided] : Module (R ⧸ I) ((ι → R) ⧸ pi fun _ ↦
 variable (ι) in
 /-- `R^n/I^n` is isomorphic to `(R/I)^n` as an `R/I`-module. -/
 noncomputable def piQuotEquiv [I.IsTwoSided] : ((ι → R) ⧸ pi fun _ ↦ I) ≃ₗ[R ⧸ I] ι → (R ⧸ I) where
-  toFun x := Quotient.liftOn' x (fun f i ↦ Ideal.Quotient.mk I (f i)) fun _ _ hab ↦
-    funext fun i ↦ (Submodule.Quotient.eq' _).2 (QuotientAddGroup.leftRel_apply.mp hab i)
+  toFun x :=
+    Quotient.liftOn' x
+      (fun f i ↦ Ideal.Quotient.mk I (f i))
+      fun _ _ hab ↦
+        funext fun i ↦ (Submodule.Quotient.eq' _).2 (QuotientAddGroup.leftRel_apply.mp hab i)
   map_add' := by rintro ⟨_⟩ ⟨_⟩; rfl
   map_smul' := by rintro ⟨_⟩ ⟨_⟩; rfl
   invFun x := Ideal.Quotient.mk _ (Quotient.out <| x ·)
@@ -201,15 +209,18 @@ noncomputable def piQuotEquiv [I.IsTwoSided] : ((ι → R) ⧸ pi fun _ ↦ I) �
     exact Ideal.Quotient.eq.2 fun i ↦ Ideal.Quotient.eq.1 (Quotient.out_eq' _)
   right_inv x := funext fun i ↦ Quotient.out_eq' (x i)
 
-/-- If `f : R^n → R^m` is an `R`-linear map and `I ⊆ R` is an ideal, then the image of `I^n` is
-    contained in `I^m`. -/
-theorem map_pi [I.IsTwoSided] [Finite ι] (x : ι → R) (hi : ∀ i, x i ∈ I)
-    (f : (ι → R) →ₗ[R] ι' → R) (i : ι') : f x i ∈ I := by
+/--
+If `f : R^n → R^m` is an `R`-linear map and `I ⊆ R` is an ideal, then the image of `I^n` is
+contained in `I^m`.
+-/
+theorem map_pi
+    [I.IsTwoSided] [Finite ι] (x : ι → R) (hi : ∀ i, x i ∈ I) (f : (ι → R) →ₗ[R] ι' → R) (i : ι')
+    : f x i ∈ I := by
   classical
-    cases nonempty_fintype ι
-    rw [pi_eq_sum_univ x]
-    simp only [Finset.sum_apply, smul_eq_mul, map_sum, Pi.smul_apply, map_smul]
-    exact I.sum_mem fun j _ => I.mul_mem_right _ (hi j)
+  cases nonempty_fintype ι
+  rw [pi_eq_sum_univ x]
+  simp only [Finset.sum_apply, smul_eq_mul, map_sum, Pi.smul_apply, map_smul]
+  exact I.sum_mem fun j _ => I.mul_mem_right _ (hi j)
 
 end Pi
 

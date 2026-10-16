@@ -33,17 +33,19 @@ universe u v w
 -- This is intentionally a structure rather than a type synonym
 -- to enforce using `CodiscreteEquiv` (or `Codiscrete.mk` and `Codiscrete.as`) to move between
 -- `Codiscrete α` and `α`. Otherwise there is too much API leakage.
-/-- A wrapper for promoting any type to a category,
+/--
+A wrapper for promoting any type to a category,
 with a unique morphism between any two objects of the category.
 -/
 @[ext, aesop safe cases (rule_sets := [CategoryTheory])]
 structure Codiscrete (α : Type u) where
-  /-- A wrapper for promoting any type to a category,
-  with a unique morphism between any two objects of the category. -/
+  /--
+  A wrapper for promoting any type to a category,
+  with a unique morphism between any two objects of the category.
+  -/
   as : α
 
-@[simp]
-theorem Codiscrete.mk_as {α : Type u} (X : Codiscrete α) : Codiscrete.mk X.as = X := rfl
+@[simp] theorem Codiscrete.mk_as {α : Type u} (X : Codiscrete α) : Codiscrete.mk X.as = X := rfl
 
 /-- `Codiscrete α` is equivalent to the original type `α`. -/
 @[simps]
@@ -53,8 +55,7 @@ def codiscreteEquiv {α : Type u} : Codiscrete α ≃ α where
   left_inv := by cat_disch
   right_inv := by cat_disch
 
-instance {α : Type u} [DecidableEq α] : DecidableEq (Codiscrete α) :=
-  codiscreteEquiv.decidableEq
+instance {α : Type u} [DecidableEq α] : DecidableEq (Codiscrete α) := codiscreteEquiv.decidableEq
 
 namespace Codiscrete
 
@@ -99,14 +100,18 @@ def invFunctor (F : C ⥤ Codiscrete A) : C → A := Codiscrete.as ∘ F.obj
 def natTrans {F G : C ⥤ Codiscrete A} : F ⟶ G where
   app _ := ⟨⟩
 
-/-- Given two functors into a codiscrete category, the trivial natural transformation is a
-natural isomorphism. -/
+/--
+Given two functors into a codiscrete category, the trivial natural transformation is a
+natural isomorphism.
+-/
 def natIso {F G : C ⥤ Codiscrete A} : F ≅ G where
   hom := natTrans
   inv := natTrans
 
-/-- Every functor `F` to a codiscrete category is naturally isomorphic (actually, equal) to
-`Codiscrete.as ∘ F.obj`. -/
+/--
+Every functor `F` to a codiscrete category is naturally isomorphic (actually, equal) to
+`Codiscrete.as ∘ F.obj`.
+-/
 @[simps!]
 def natIsoFunctor {F : C ⥤ Codiscrete A} : F ≅ functor (Codiscrete.as ∘ F.obj) := Iso.refl _
 
@@ -132,19 +137,26 @@ def functorToCat : Type u ⥤ Cat.{0, u} where
 
 open Adjunction Cat
 
-/-- For a category `C` and type `A`, there is an equivalence between functions `objects.obj C ⟶ A`
-and functors `C ⥤ Codiscrete A`. -/
-def equivFunctorToCodiscrete {C : Type u} [Category.{v} C] {A : Type w} :
-    (C → A) ≃ (C ⥤ Codiscrete A) where
+/--
+For a category `C` and type `A`, there is an equivalence between functions `objects.obj C ⟶ A`
+and functors `C ⥤ Codiscrete A`.
+-/
+def equivFunctorToCodiscrete {C : Type u} [Category.{v} C] {A : Type w}
+    : (C → A) ≃ (C ⥤ Codiscrete A) where
   toFun := functor
   invFun := invFunctor
 
-/-- The functor that turns a type into a codiscrete category is right adjoint to the objects
-functor. -/
-def adj : objects ⊣ functorToCat := mkOfHomEquiv {
-  homEquiv _ _ := TypeCat.homEquiv.trans (equivFunctorToCodiscrete.trans (Functor.equivCatHom _ _))
-  homEquiv_naturality_left_symm _ _ := rfl
-  homEquiv_naturality_right _ _ := rfl }
+/--
+The functor that turns a type into a codiscrete category is right adjoint to the objects
+functor.
+-/
+def adj : objects ⊣ functorToCat :=
+  mkOfHomEquiv {
+    homEquiv _ _ :=
+      TypeCat.homEquiv.trans (equivFunctorToCodiscrete.trans (Functor.equivCatHom _ _))
+    homEquiv_naturality_left_symm _ _ := rfl
+    homEquiv_naturality_right _ _ := rfl
+  }
 
 /-- Components of the unit of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat`. -/
 def unitApp (C : Type u) [Category.{v} C] : C ⥤ Codiscrete C := functor id
@@ -152,22 +164,24 @@ def unitApp (C : Type u) [Category.{v} C] : C ⥤ Codiscrete C := functor id
 /-- Components of the counit of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat` -/
 def counitApp (A : Type u) : Codiscrete A → A := Codiscrete.as
 
-lemma adj_unit_app (X : Cat.{0, u}) :
-    adj.unit.app X = (unitApp X).toCatHom := rfl
+lemma adj_unit_app (X : Cat.{0, u}) : adj.unit.app X = (unitApp X).toCatHom := rfl
 
-lemma adj_counit_app (A : Type u) :
-    adj.counit.app A = ↾(counitApp A) := rfl
+lemma adj_counit_app (A : Type u) : adj.counit.app A = ↾(counitApp A) := rfl
 
-/-- Left triangle equality of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat`,
-as a universe polymorphic statement. -/
-lemma left_triangle_components (C : Type u) [Category.{v} C] :
-    (counitApp C).comp (unitApp C).obj = id :=
+/--
+Left triangle equality of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat`,
+as a universe polymorphic statement.
+-/
+lemma left_triangle_components (C : Type u) [Category.{v} C]
+    : (counitApp C).comp (unitApp C).obj = id :=
   rfl
 
-/-- Right triangle equality of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat`,
-stated using a composition of functors. -/
-lemma right_triangle_components (X : Type u) :
-    unitApp (Codiscrete X) ⋙ functorOfFun (counitApp X) = 𝟭 (Codiscrete X) :=
+/--
+Right triangle equality of the adjunction `Cat.objects ⊣ Codiscrete.functorToCat`,
+stated using a composition of functors.
+-/
+lemma right_triangle_components (X : Type u)
+    : unitApp (Codiscrete X) ⋙ functorOfFun (counitApp X) = 𝟭 (Codiscrete X) :=
   rfl
 
 end Codiscrete

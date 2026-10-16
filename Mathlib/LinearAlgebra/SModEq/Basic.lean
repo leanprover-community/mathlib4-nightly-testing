@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
-
 import Mathlib.Algebra.Group.Action.Pointwise.Set.Basic
 
 /-!
@@ -15,7 +14,6 @@ import Mathlib.Algebra.Group.Action.Pointwise.Set.Basic
 -/
 
 @[expose] public section
-
 
 open Submodule
 
@@ -29,24 +27,21 @@ variable {x x₁ x₂ y y₁ y₂ z : M}
 variable {N : Type*} [AddCommGroup N] [Module R N] (V : Submodule R N)
 
 /-- A predicate saying two elements of a module are equivalent modulo a submodule. -/
-def SModEq (x y : M) : Prop :=
-  (Submodule.Quotient.mk x : M ⧸ U) = Submodule.Quotient.mk y
+def SModEq (x y : M) : Prop := (Submodule.Quotient.mk x : M ⧸ U) = Submodule.Quotient.mk y
 
 @[inherit_doc] notation:50 x " ≡ " y " [SMOD " N "]" => SModEq N x y
 
 variable {U U₁ U₂}
 
-protected theorem SModEq.def :
-    x ≡ y [SMOD U] ↔ (Submodule.Quotient.mk x : M ⧸ U) = Submodule.Quotient.mk y :=
+protected theorem SModEq.def
+    : x ≡ y [SMOD U] ↔ (Submodule.Quotient.mk x : M ⧸ U) = Submodule.Quotient.mk y :=
   Iff.rfl
 
 namespace SModEq
 
 theorem sub_mem : x ≡ y [SMOD U] ↔ x - y ∈ U := by rw [SModEq.def, Submodule.Quotient.eq]
 
-@[simp]
-theorem top : x ≡ y [SMOD (⊤ : Submodule R M)] :=
-  (Submodule.Quotient.eq ⊤).2 mem_top
+@[simp] theorem top : x ≡ y [SMOD (⊤ : Submodule R M)] := (Submodule.Quotient.eq ⊤).2 mem_top
 
 @[simp]
 theorem bot : x ≡ y [SMOD (⊥ : Submodule R M)] ↔ x = y := by
@@ -56,27 +51,23 @@ theorem bot : x ≡ y [SMOD (⊥ : Submodule R M)] ↔ x = y := by
 theorem mono (HU : U₁ ≤ U₂) (hxy : x ≡ y [SMOD U₁]) : x ≡ y [SMOD U₂] :=
   (Submodule.Quotient.eq U₂).2 <| HU <| (Submodule.Quotient.eq U₁).1 hxy
 
-lemma of_toAddSubgroup_le {U : Submodule R M} {V : Submodule S M}
-    (h : U.toAddSubgroup ≤ V.toAddSubgroup) {x y : M} (hxy : x ≡ y [SMOD U]) : x ≡ y [SMOD V] := by
+lemma of_toAddSubgroup_le
+    {U : Submodule R M} {V : Submodule S M} (h : U.toAddSubgroup ≤ V.toAddSubgroup)
+    {x y : M} (hxy : x ≡ y [SMOD U])
+    : x ≡ y [SMOD V] := by
   simp only [SModEq, Submodule.Quotient.eq] at hxy ⊢
   exact h hxy
 
-@[refl, simp]
-protected theorem refl (x : M) : x ≡ x [SMOD U] :=
-  @rfl _ _
+@[refl, simp] protected theorem refl (x : M) : x ≡ x [SMOD U] := @rfl _ _
 
-protected theorem rfl : x ≡ x [SMOD U] :=
-  SModEq.refl _
+protected theorem rfl : x ≡ x [SMOD U] := SModEq.refl _
 
-@[symm]
-nonrec theorem symm (hxy : x ≡ y [SMOD U]) : y ≡ x [SMOD U] :=
-  hxy.symm
+@[symm] nonrec theorem symm (hxy : x ≡ y [SMOD U]) : y ≡ x [SMOD U] := hxy.symm
 
 theorem comm : x ≡ y [SMOD U] ↔ y ≡ x [SMOD U] := ⟨symm, symm⟩
 
 @[trans]
-nonrec theorem trans (hxy : x ≡ y [SMOD U]) (hyz : y ≡ z [SMOD U]) : x ≡ z [SMOD U] :=
-  hxy.trans hyz
+nonrec theorem trans (hxy : x ≡ y [SMOD U]) (hyz : y ≡ z [SMOD U]) : x ≡ z [SMOD U] := hxy.trans hyz
 
 instance : IsEquiv M (SModEq U) where
   refl := .refl
@@ -89,10 +80,11 @@ theorem add (hxy₁ : x₁ ≡ y₁ [SMOD U]) (hxy₂ : x₂ ≡ y₂ [SMOD U]) 
   simp_rw [Quotient.mk_add, hxy₁, hxy₂]
 
 @[gcongr]
-theorem sum {ι} {s : Finset ι} {x y : ι → M}
-    (hxy : ∀ i ∈ s, x i ≡ y i [SMOD U]) : ∑ i ∈ s, x i ≡ ∑ i ∈ s, y i [SMOD U] := by
+theorem sum {ι} {s : Finset ι} {x y : ι → M} (hxy : ∀ i ∈ s, x i ≡ y i [SMOD U])
+    : ∑ i ∈ s, x i ≡ ∑ i ∈ s, y i [SMOD U] := by
   induction s using Finset.cons_induction with
-  | empty => simp [SModEq.rfl]
+  | empty =>
+    simp [SModEq.rfl]
   | cons i s _ ih =>
     grw [Finset.sum_cons, Finset.sum_cons, hxy i (Finset.mem_cons_self i s),
       ih (fun j hj ↦ hxy j (Finset.mem_cons_of_mem hj))]
@@ -113,23 +105,23 @@ lemma zsmul (hxy : x ≡ y [SMOD U]) (n : ℤ) : n • x ≡ n • y [SMOD U] :=
   simp_rw [Quotient.mk_smul, hxy]
 
 @[gcongr]
-theorem mul {I : Ideal A} {x₁ x₂ y₁ y₂ : A} (hxy₁ : x₁ ≡ y₁ [SMOD I])
-    (hxy₂ : x₂ ≡ y₂ [SMOD I]) : x₁ * x₂ ≡ y₁ * y₂ [SMOD I] := by
+theorem mul {I : Ideal A} {x₁ x₂ y₁ y₂ : A} (hxy₁ : x₁ ≡ y₁ [SMOD I]) (hxy₂ : x₂ ≡ y₂ [SMOD I])
+    : x₁ * x₂ ≡ y₁ * y₂ [SMOD I] := by
   simp only [SModEq.def, Ideal.Quotient.mk_eq_mk, map_mul] at hxy₁ hxy₂ ⊢
   rw [hxy₁, hxy₂]
 
 @[gcongr]
-theorem prod {I : Ideal A} {ι} {s : Finset ι} {x y : ι → A}
-    (hxy : ∀ i ∈ s, x i ≡ y i [SMOD I]) : ∏ i ∈ s, x i ≡ ∏ i ∈ s, y i [SMOD I] := by
+theorem prod {I : Ideal A} {ι} {s : Finset ι} {x y : ι → A} (hxy : ∀ i ∈ s, x i ≡ y i [SMOD I])
+    : ∏ i ∈ s, x i ≡ ∏ i ∈ s, y i [SMOD I] := by
   induction s using Finset.cons_induction with
-  | empty => simp [SModEq.rfl]
+  | empty =>
+    simp [SModEq.rfl]
   | cons i s _ ih =>
     grw [Finset.prod_cons, Finset.prod_cons, hxy i (Finset.mem_cons_self i s),
       ih (fun j hj ↦ hxy j (Finset.mem_cons_of_mem hj))]
 
 @[gcongr]
-lemma pow {I : Ideal A} {x y : A} (n : ℕ) (hxy : x ≡ y [SMOD I]) :
-    x ^ n ≡ y ^ n [SMOD I] := by
+lemma pow {I : Ideal A} {x y : A} (n : ℕ) (hxy : x ≡ y [SMOD I]) : x ^ n ≡ y ^ n [SMOD I] := by
   simp only [SModEq.def, Ideal.Quotient.mk_eq_mk, map_pow] at hxy ⊢
   rw [hxy]
 
@@ -155,25 +147,27 @@ theorem comap {f : M →ₗ[R] N} (hxy : f x ≡ f y [SMOD V]) : x ≡ y [SMOD V
     show f (x - y) ∈ V from (f.map_sub x y).symm ▸ (Submodule.Quotient.eq _).1 hxy
 
 @[gcongr]
-theorem eval {R : Type*} [CommRing R] {I : Ideal R} {x y : R} (h : x ≡ y [SMOD I]) (f : R[X]) :
-    f.eval x ≡ f.eval y [SMOD I] := by
+theorem eval {R : Type*} [CommRing R] {I : Ideal R} {x y : R} (h : x ≡ y [SMOD I]) (f : R[X])
+    : f.eval x ≡ f.eval y [SMOD I] := by
   simp_rw [Polynomial.eval_eq_sum, Polynomial.sum]
   gcongr
 
 variable (S) in
-theorem restrictScalars [SMul S R] [IsScalarTower S R M] : x ≡ y [SMOD U.restrictScalars S] ↔
-    x ≡ y [SMOD U] := by simp [SModEq.sub_mem]
+theorem restrictScalars [SMul S R] [IsScalarTower S R M]
+    : x ≡ y [SMOD U.restrictScalars S] ↔ x ≡ y [SMOD U] := by
+  simp [SModEq.sub_mem]
 
-theorem idealQuotientMk {R : Type*} [CommRing R] {I : Ideal R} {x y : R} :
-    x ≡ y [SMOD I] ↔ Ideal.Quotient.mk I x = Ideal.Quotient.mk I y := Iff.rfl
+theorem idealQuotientMk {R : Type*} [CommRing R] {I : Ideal R} {x y : R}
+    : x ≡ y [SMOD I] ↔ Ideal.Quotient.mk I x = Ideal.Quotient.mk I y :=
+  Iff.rfl
 
 section Pointwise
 
 open scoped Pointwise
 
 @[simp]
-theorem _root_.Submodule.vadd_set_subset_vadd_set_iff :
-    x +ᵥ (U : Set M) ⊆ y +ᵥ (U : Set M) ↔ x ≡ y [SMOD U] := by
+theorem _root_.Submodule.vadd_set_subset_vadd_set_iff
+    : x +ᵥ (U : Set M) ⊆ y +ᵥ (U : Set M) ↔ x ≡ y [SMOD U] := by
   rw [SModEq.sub_mem]
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · rw [Set.vadd_set_subset_iff_subset_neg_vadd_set, vadd_vadd, neg_add_eq_sub] at h
@@ -183,11 +177,13 @@ theorem _root_.Submodule.vadd_set_subset_vadd_set_iff :
     simpa [Set.mem_vadd_set_iff_neg_vadd_mem] using U.add_mem h hz
 
 @[simp]
-theorem _root_.Submodule.vadd_set_eq_vadd_set_iff :
-    x +ᵥ (U : Set M) = y +ᵥ (U : Set M) ↔ x ≡ y [SMOD U] :=
-  ⟨fun h ↦ Submodule.vadd_set_subset_vadd_set_iff.mp h.subset,
-    fun h ↦ Set.Subset.antisymm (Submodule.vadd_set_subset_vadd_set_iff.mpr h)
-      (Submodule.vadd_set_subset_vadd_set_iff.mpr h.symm)⟩
+theorem _root_.Submodule.vadd_set_eq_vadd_set_iff
+    : x +ᵥ (U : Set M) = y +ᵥ (U : Set M) ↔ x ≡ y [SMOD U] := ⟨
+  fun h ↦ Submodule.vadd_set_subset_vadd_set_iff.mp h.subset,
+  fun h ↦
+    Set.Subset.antisymm (Submodule.vadd_set_subset_vadd_set_iff.mpr h)
+      (Submodule.vadd_set_subset_vadd_set_iff.mpr h.symm)
+⟩
 
 end Pointwise
 

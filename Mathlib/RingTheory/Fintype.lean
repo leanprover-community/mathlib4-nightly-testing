@@ -6,7 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Data.ZMod.Basic
-
 import Mathlib.Tactic.NormNum
 
 /-!
@@ -15,23 +14,20 @@ import Mathlib.Tactic.NormNum
 
 public section
 
-
 open Finset ZMod
 
 section Ring
 
 variable {R : Type*} [Ring R] [Fintype R] [DecidableEq R]
 
-lemma Finset.univ_of_card_le_two (h : Fintype.card R ≤ 2) :
-    (univ : Finset R) = {0, 1} := by
+lemma Finset.univ_of_card_le_two (h : Fintype.card R ≤ 2) : (univ : Finset R) = {0, 1} := by
   rcases subsingleton_or_nontrivial R
   · exact le_antisymm (fun a _ ↦ by simp [Subsingleton.elim a 0]) (Finset.subset_univ _)
   · refine (eq_of_subset_of_card_le (subset_univ _) ?_).symm
     convert! h
     simp
 
-lemma Finset.univ_of_card_le_three (h : Fintype.card R ≤ 3) :
-    (univ : Finset R) = {0, 1, -1} := by
+lemma Finset.univ_of_card_le_three (h : Fintype.card R ≤ 3) : (univ : Finset R) = {0, 1, -1} := by
   refine (eq_of_subset_of_card_le (subset_univ _) ?_).symm
   rcases lt_or_eq_of_le h with h | h
   · apply card_le_card

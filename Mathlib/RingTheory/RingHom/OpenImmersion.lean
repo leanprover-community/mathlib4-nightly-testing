@@ -22,27 +22,27 @@ namespace Algebra
 
 open IsLocalization Away
 
-variable {R S T : Type*} [CommSemiring R] [CommSemiring S] [CommSemiring T]
-  [Algebra R S] [Algebra R T]
+variable
+  {R S T : Type*} [CommSemiring R] [CommSemiring S] [CommSemiring T] [Algebra R S] [Algebra R T]
 
 /-- A standard open immersion is one that is a localization map away from some element. -/
-@[mk_iff] class IsStandardOpenImmersion (R S : Type*) [CommSemiring R] [CommSemiring S]
-    [Algebra R S] : Prop where
+@[mk_iff]
+class IsStandardOpenImmersion (R S : Type*) [CommSemiring R] [CommSemiring S] [Algebra R S]
+    : Prop where
   exists_away (R S) : ∃ r : R, IsLocalization.Away r S
 
 namespace IsStandardOpenImmersion
 
-instance (r : R) : IsStandardOpenImmersion R (Localization.Away r) :=
-  ⟨r, inferInstance⟩
+instance (r : R) : IsStandardOpenImmersion R (Localization.Away r) := ⟨r, inferInstance⟩
 
 variable (R S T) in
-@[trans] theorem trans [Algebra S T] [IsScalarTower R S T]
-    [IsStandardOpenImmersion R S] [IsStandardOpenImmersion S T] :
-    IsStandardOpenImmersion R T :=
+@[trans]
+theorem trans
+    [Algebra S T] [IsScalarTower R S T] [IsStandardOpenImmersion R S] [IsStandardOpenImmersion S T]
+    : IsStandardOpenImmersion R T :=
   let ⟨r, _⟩ := exists_away R S
   let ⟨s, _⟩ := exists_away S T
-  have : Away (algebraMap R S (sec r s).1) T :=
-    .of_associated (associated_sec_fst r s).symm
+  have : Away (algebraMap R S (sec r s).1) T := .of_associated (associated_sec_fst r s).symm
   ⟨r * (sec r s).1, mul' S T r _⟩
 
 open _root_.TensorProduct in
@@ -53,30 +53,29 @@ instance [IsStandardOpenImmersion R T] : IsStandardOpenImmersion S (S ⊗[R] T) 
 instance : IsStandardOpenImmersion R R :=
   ⟨1, IsLocalization.away_of_isUnit_of_bijective R isUnit_one Function.bijective_id⟩
 
-lemma of_bijective (h : Function.Bijective (algebraMap R S)) :
-    IsStandardOpenImmersion R S := by
+lemma of_bijective (h : Function.Bijective (algebraMap R S)) : IsStandardOpenImmersion R S := by
   rw [Algebra.isStandardOpenImmersion_iff]
   use 1
   apply IsLocalization.away_of_isUnit_of_bijective _ isUnit_one h
 
-lemma of_algEquiv {T : Type*} [CommSemiring T] [Algebra R T] (e : S ≃ₐ[R] T)
-    [h : IsStandardOpenImmersion R S] :
-    IsStandardOpenImmersion R T := by
+lemma of_algEquiv
+    {T : Type*} [CommSemiring T] [Algebra R T] (e : S ≃ₐ[R] T) [h : IsStandardOpenImmersion R S]
+    : IsStandardOpenImmersion R T := by
   rw [Algebra.isStandardOpenImmersion_iff] at *
   obtain ⟨r, hr⟩ := h
   use r
   exact IsLocalization.isLocalization_of_algEquiv _ e
 
-lemma iff_of_algEquiv {T : Type*} [CommSemiring T] [Algebra R T]
-    (e : S ≃ₐ[R] T) :
-    IsStandardOpenImmersion R S ↔ IsStandardOpenImmersion R T :=
+lemma iff_of_algEquiv {T : Type*} [CommSemiring T] [Algebra R T] (e : S ≃ₐ[R] T)
+    : IsStandardOpenImmersion R S ↔ IsStandardOpenImmersion R T :=
   ⟨fun _ ↦ .of_algEquiv e, fun _ ↦ .of_algEquiv e.symm⟩
 
 variable (R S) in
-lemma of_isPushout (R' S' : Type*) [CommSemiring R'] [CommSemiring S']
-    [Algebra R R'] [Algebra S S'] [Algebra R' S'] [Algebra R S'] [IsScalarTower R R' S']
-    [IsScalarTower R S S'] [IsPushout R S R' S'] [IsStandardOpenImmersion R S] :
-    IsStandardOpenImmersion R' S' :=
+lemma of_isPushout
+    (R' S' : Type*) [CommSemiring R'] [CommSemiring S'] [Algebra R R'] [Algebra S S']
+    [Algebra R' S'] [Algebra R S'] [IsScalarTower R R' S'] [IsScalarTower R S S']
+    [IsPushout R S R' S'] [IsStandardOpenImmersion R S]
+    : IsStandardOpenImmersion R' S' :=
   have : IsPushout R R' S S' := by rwa [IsPushout.comm]
   .of_algEquiv (IsPushout.equiv R _ S _)
 
@@ -92,18 +91,18 @@ def IsStandardOpenImmersion : Prop :=
   letI := f.toAlgebra
   Algebra.IsStandardOpenImmersion R S
 
-lemma isStandardOpenImmersion_algebraMap [Algebra R S] :
-    (algebraMap R S).IsStandardOpenImmersion ↔ Algebra.IsStandardOpenImmersion R S := by
+lemma isStandardOpenImmersion_algebraMap [Algebra R S]
+    : (algebraMap R S).IsStandardOpenImmersion ↔ Algebra.IsStandardOpenImmersion R S := by
   rw [IsStandardOpenImmersion, toAlgebra_algebraMap]
 
 namespace IsStandardOpenImmersion
 
-protected lemma algebraMap [Algebra R S] (r : R) [IsLocalization.Away r S] :
-    (algebraMap R S).IsStandardOpenImmersion :=
+protected lemma algebraMap [Algebra R S] (r : R) [IsLocalization.Away r S]
+    : (algebraMap R S).IsStandardOpenImmersion :=
   isStandardOpenImmersion_algebraMap.2 ⟨r, inferInstance⟩
 
-lemma toAlgebra {f : R →+* S} (hf : f.IsStandardOpenImmersion) :
-    @Algebra.IsStandardOpenImmersion R S _ _ f.toAlgebra :=
+lemma toAlgebra {f : R →+* S} (hf : f.IsStandardOpenImmersion)
+    : @Algebra.IsStandardOpenImmersion R S _ _ f.toAlgebra :=
   letI := f.toAlgebra; hf
 
 /-- A bijective ring map is a standard open immersion. -/
@@ -113,13 +112,12 @@ lemma of_bijective {f : R →+* S} (hf : Function.Bijective f) : f.IsStandardOpe
 
 variable (R) in
 /-- The identity map of a ring is a standard open immersion. -/
-lemma id : (RingHom.id R).IsStandardOpenImmersion :=
-  of_bijective Function.bijective_id
+lemma id : (RingHom.id R).IsStandardOpenImmersion := of_bijective Function.bijective_id
 
 variable {f g} in
 /-- The composition of two standard open immersions is a standard open immersion. -/
-lemma comp (hf : f.IsStandardOpenImmersion) (hg : g.IsStandardOpenImmersion) :
-    (g.comp f).IsStandardOpenImmersion := by
+lemma comp (hf : f.IsStandardOpenImmersion) (hg : g.IsStandardOpenImmersion)
+    : (g.comp f).IsStandardOpenImmersion := by
   algebraize [f, g, g.comp f]
   obtain ⟨r, hr⟩ := hf
   obtain ⟨s, hs⟩ := hg

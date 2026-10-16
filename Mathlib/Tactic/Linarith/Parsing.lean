@@ -43,8 +43,8 @@ open Lean Elab Tactic Meta
 and returns the value associated with this key if it exists.
 Otherwise, it fails.
 -/
-def List.findDefeq {v : Type} (red : TransparencyMode) (m : List (Expr × v)) (e : Expr) :
-    MetaM v := do
+def List.findDefeq {v : Type} (red : TransparencyMode) (m : List (Expr × v)) (e : Expr)
+    : MetaM v := do
   if let some (_, n) ← m.findM? fun ⟨e', _⟩ => withTransparency red (isDefEq e e') then
     return n
   else
@@ -56,8 +56,8 @@ We introduce a local instance allowing addition of `TreeMap`s,
 removing any keys with value zero.
 We don't need to prove anything about this addition, as it is only used in meta code.
 -/
-local instance {α β : Type*} {c : α → α → Ordering} [Add β] [Zero β] [DecidableEq β] :
-    Add (TreeMap α β c) where
+local instance {α β : Type*} {c : α → α → Ordering} [Add β] [Zero β] [DecidableEq β]
+    : Add (TreeMap α β c) where
   add := fun f g => (f.mergeWith (fun _ b b' => b + b') g).filter (fun _ b => b ≠ 0)
 
 namespace Mathlib.Tactic.Linarith
@@ -71,13 +71,17 @@ abbrev Monom : Type := TreeMap ℕ ℕ
 def Monom.one : Monom := TreeMap.empty
 
 /-- Compare monomials by first comparing their keys and then their powers. -/
-def Monom.lt : Monom → Monom → Bool :=
-  fun a b =>
-    ((a.keys : List ℕ) < b.keys) ||
-      (((a.keys : List ℕ) = b.keys) && ((a.values : List ℕ) < b.values))
+def Monom.lt : Monom → Monom → Bool := fun a b =>
+  ((a.keys : List ℕ) < b.keys) || (((a.keys : List ℕ) = b.keys) && ((a.values : List ℕ) < b.values))
 
 instance : Ord Monom where
-  compare x y := if x.lt y then .lt else if x == y then .eq else .gt
+  compare x y :=
+    if x.lt y then
+      .lt
+    else if x == y then
+      .eq
+    else
+      .gt
 
 /-- Linear combinations of monomials are represented by mapping monomials to coefficients. -/
 abbrev Sum : Type := TreeMap Monom ℤ
@@ -91,13 +95,14 @@ def Sum.scaleByMonom (s : Sum) (m : Monom) : Sum :=
 
 /-- `sum.mul s1 s2` distributes the multiplication of two sums. -/
 def Sum.mul (s1 s2 : Sum) : Sum :=
-  s1.foldr (fun mn coeff sm => sm + ((s2.scaleByMonom mn).map (fun _ v => v * coeff)))
-    TreeMap.empty
+  s1.foldr (fun mn coeff sm => sm + ((s2.scaleByMonom mn).map (fun _ v => v * coeff))) TreeMap.empty
 
 /-- The `n`th power of `s : Sum` is the `n`-fold product of `s`, with `s.pow 0 = Sum.one`. -/
 partial def Sum.pow (s : Sum) : ℕ → Sum
-  | 0 => Sum.one
-  | 1 => s
+  | 0 =>
+    Sum.one
+  | 1 =>
+    s
   | n =>
     let m := n >>> 1
     let a := s.pow m
@@ -107,20 +112,16 @@ partial def Sum.pow (s : Sum) : ℕ → Sum
       a.mul a |>.mul s
 
 /-- `SumOfMonom m` lifts `m` to a sum with coefficient `1`. -/
-def SumOfMonom (m : Monom) : Sum :=
-  TreeMap.empty.insert m 1
+def SumOfMonom (m : Monom) : Sum := TreeMap.empty.insert m 1
 
 /-- The unit monomial `one` is represented by the empty TreeMap. -/
 def one : Monom := TreeMap.empty
 
 /-- A scalar `z` is represented by a `Sum` with coefficient `z` and monomial `one` -/
-def scalar (z : ℤ) : Sum :=
-  TreeMap.empty.insert one z
+def scalar (z : ℤ) : Sum := TreeMap.empty.insert one z
 
 /-- A single variable `n` is represented by a sum with coefficient `1` and monomial `n`. -/
-def var (n : ℕ) : Sum :=
-  TreeMap.empty.insert (TreeMap.empty.insert n 1) 1
-
+def var (n : ℕ) : Sum := TreeMap.empty.insert (TreeMap.empty.insert n 1) 1
 
 /-! ### Parsing algorithms -/
 
@@ -145,7 +146,7 @@ def linearFormOfAtom (red : TransparencyMode) (m : ExprMap) (e : Expr) : MetaM (
     return (m, var k)
   catch _ =>
     let n := m.length + 1
-    return ((e, n)::m, var n)
+    return ((e, n) :: m, var n)
 
 /--
 `linearFormOfExpr red map e` computes the linear form of `e`.
@@ -157,37 +158,40 @@ It matches atomic expressions up to reducibility given by `red`.
 Because it matches up to definitional equality, this function must be in the `MetaM` monad,
 and forces some functions that call it into `MetaM` as well.
 -/
-
-partial def linearFormOfExpr (red : TransparencyMode) (m : ExprMap) (e : Expr) :
-    MetaM (ExprMap × Sum) := do
+partial def linearFormOfExpr (red : TransparencyMode) (m : ExprMap) (e : Expr)
+    : MetaM (ExprMap × Sum) := do
   let e ← whnfR e
   match e.numeral? with
-  | some 0 => return ⟨m, TreeMap.empty⟩
-  | some (n + 1) => return ⟨m, scalar (n + 1)⟩
+  | some 0 =>
+    return ⟨m, TreeMap.empty⟩
+  | some (n + 1) =>
+    return ⟨m, scalar (n + 1)⟩
   | none =>
-  match e.getAppFnArgs with
-  | (``HMul.hMul, #[_, _, _, _, e1, e2]) => do
-    let (m1, comp1) ← linearFormOfExpr red m e1
-    let (m2, comp2) ← linearFormOfExpr red m1 e2
-    return (m2, comp1.mul comp2)
-  | (``HAdd.hAdd, #[_, _, _, _, e1, e2]) => do
-    let (m1, comp1) ← linearFormOfExpr red m e1
-    let (m2, comp2) ← linearFormOfExpr red m1 e2
-    return (m2, comp1 + comp2)
-  | (``HSub.hSub, #[_, _, _, _, e1, e2]) => do
-    let (m1, comp1) ← linearFormOfExpr red m e1
-    let (m2, comp2) ← linearFormOfExpr red m1 e2
-    return (m2, comp1 + comp2.map (fun _ v => -v))
-  | (``Neg.neg, #[_, _, e]) => do
-    let (m1, comp) ← linearFormOfExpr red m e
-    return (m1, comp.map (fun _ v => -v))
-  | (``HPow.hPow, #[_, _, _, _, a, n]) => do
-    match n.numeral? with
-    | some n => do
-      let (m1, comp) ← linearFormOfExpr red m a
-      return (m1, comp.pow n)
-    | none => linearFormOfAtom red m e
-  | _ => linearFormOfAtom red m e
+    match e.getAppFnArgs with
+    | (``HMul.hMul, #[_, _, _, _, e1, e2]) => do
+      let (m1, comp1) ← linearFormOfExpr red m e1
+      let (m2, comp2) ← linearFormOfExpr red m1 e2
+      return (m2, comp1.mul comp2)
+    | (``HAdd.hAdd, #[_, _, _, _, e1, e2]) => do
+      let (m1, comp1) ← linearFormOfExpr red m e1
+      let (m2, comp2) ← linearFormOfExpr red m1 e2
+      return (m2, comp1 + comp2)
+    | (``HSub.hSub, #[_, _, _, _, e1, e2]) => do
+      let (m1, comp1) ← linearFormOfExpr red m e1
+      let (m2, comp2) ← linearFormOfExpr red m1 e2
+      return (m2, comp1 + comp2.map (fun _ v => -v))
+    | (``Neg.neg, #[_, _, e]) => do
+      let (m1, comp) ← linearFormOfExpr red m e
+      return (m1, comp.map (fun _ v => -v))
+    | (``HPow.hPow, #[_, _, _, _, a, n]) => do
+      match n.numeral? with
+      | some n => do
+        let (m1, comp) ← linearFormOfExpr red m a
+        return (m1, comp.pow n)
+      | none =>
+        linearFormOfAtom red m e
+    | _ =>
+      linearFormOfAtom red m e
 
 /--
 `elimMonom s map` eliminates the monomial level of the `Sum` `s`.
@@ -198,12 +202,14 @@ but each monomial key is replaced with its index according to `map`.
 If any new monomials are encountered, they are assigned variable numbers and `map` is updated.
 -/
 def elimMonom (s : Sum) (m : TreeMap Monom ℕ) : TreeMap Monom ℕ × TreeMap ℕ ℤ :=
-  s.foldr (fun mn coeff ⟨map, out⟩ ↦
-    match map[mn]? with
-    | some n => ⟨map, out.insert n coeff⟩
-    | none =>
-      let n := map.size
-      ⟨map.insert mn n, out.insert n coeff⟩)
+  s.foldr
+    (fun mn coeff ⟨map, out⟩ ↦
+      match map[mn]? with
+      | some n =>
+        ⟨map, out.insert n coeff⟩
+      | none =>
+        let n := map.size
+        ⟨map.insert mn n, out.insert n coeff⟩)
     (m, TreeMap.empty)
 
 /--
@@ -213,8 +219,8 @@ into a `comp` object.
 `e_map` maps atomic expressions to indices; `monom_map` maps monomials to indices.
 Both of these are updated during processing and returned.
 -/
-def toComp (red : TransparencyMode) (e : Expr) (e_map : ExprMap) (monom_map : TreeMap Monom ℕ) :
-    MetaM (Comp × ExprMap × TreeMap Monom ℕ) := do
+def toComp (red : TransparencyMode) (e : Expr) (e_map : ExprMap) (monom_map : TreeMap Monom ℕ)
+    : MetaM (Comp × ExprMap × TreeMap Monom ℕ) := do
   let (iq, e) ← parseCompAndExpr e
   let (m', comp') ← linearFormOfExpr red e_map e
   let ⟨nm, mm'⟩ := elimMonom comp' monom_map
@@ -225,13 +231,14 @@ def toComp (red : TransparencyMode) (e : Expr) (e_map : ExprMap) (monom_map : Tr
 `toCompFold red e_map exprs monom_map` folds `toComp` over `exprs`,
 updating `e_map` and `monom_map` as it goes.
 -/
-def toCompFold (red : TransparencyMode) : ExprMap → List Expr → TreeMap Monom ℕ →
-    MetaM (List Comp × ExprMap × TreeMap Monom ℕ)
-| m, [],     mm => return ([], m, mm)
-| m, (h::t), mm => do
+def toCompFold (red : TransparencyMode)
+    : ExprMap → List Expr → TreeMap Monom ℕ → MetaM (List Comp × ExprMap × TreeMap Monom ℕ)
+  | m, [], mm =>
+    return ([], m, mm)
+  | m, (h :: t), mm => do
     let (c, m', mm') ← toComp red h m mm
     let (l, mp, mm') ← toCompFold red m' t mm'
-    return (c::l, mp, mm')
+    return (c :: l, mp, mm')
 
 /--
 `linearFormsAndMaxVar red pfs` is the main interface for computing the linear forms of a list
@@ -240,11 +247,10 @@ the same length, such that `c[i]` represents the linear form of the type of `pfs
 
 It also returns the largest variable index that appears in comparisons in `c`.
 -/
-def linearFormsAndMaxVar (red : TransparencyMode) (pfs : List Expr) :
-    MetaM (List Comp × ℕ) := do
+def linearFormsAndMaxVar (red : TransparencyMode) (pfs : List Expr) : MetaM (List Comp × ℕ) := do
   let pftps ← (pfs.mapM inferType)
   let (l, _, map) ← toCompFold red [] pftps TreeMap.empty
-  trace[linarith.detail] "monomial map: {map.toList.map fun ⟨k,v⟩ => (k.toList, v)}"
+  trace[linarith.detail] "monomial map: {map.toList.map fun ⟨k, v⟩ => (k.toList, v)}"
   return (l, map.size - 1)
 
 end Mathlib.Tactic.Linarith

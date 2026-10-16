@@ -29,21 +29,22 @@ namespace HomotopicalAlgebra
 
 open CategoryTheory Limits
 
-/-- Transport of a model category structure on a category `D` via an equivalence of
+/--
+Transport of a model category structure on a category `D` via an equivalence of
 categories `e : C ≌ D`. We assume that the category `C` is already endowed
 with a `CategoryWithFibrations` instance (and similarly for cofibrations and weak
 equivalences), and that the three properties of morphisms (fibrations, cofibrations,
 weak equivalences) in `C` coincide with the inverse images by `e.functor : C ⥤ D`
-of the corresponding properties of morphisms in `D`. -/
+of the corresponding properties of morphisms in `D`.
+-/
 @[instance_reducible]
 def ModelCategory.transport
-    {C D : Type*} [Category* C] [Category* D] [ModelCategory D]
-    [CategoryWithCofibrations C] [CategoryWithFibrations C]
-    [CategoryWithWeakEquivalences C] (e : C ≌ D)
-    (h₁ : cofibrations C = (cofibrations D).inverseImage e.functor)
+    {C D : Type*} [Category* C] [Category* D] [ModelCategory D] [CategoryWithCofibrations C]
+    [CategoryWithFibrations C] [CategoryWithWeakEquivalences C]
+    (e : C ≌ D) (h₁ : cofibrations C = (cofibrations D).inverseImage e.functor)
     (h₂ : fibrations C = (fibrations D).inverseImage e.functor)
-    (h₃ : weakEquivalences C = (weakEquivalences D).inverseImage e.functor) :
-    ModelCategory C := by
+    (h₃ : weakEquivalences C = (weakEquivalences D).inverseImage e.functor)
+    : ModelCategory C := by
   have h₁' : trivialCofibrations C = (trivialCofibrations D).inverseImage e.functor := by
     simp [trivialCofibrations, h₁, h₃]
   have h₂' : trivialFibrations C = (trivialFibrations D).inverseImage e.functor := by
@@ -68,6 +69,7 @@ def ModelCategory.transport
       rw [← e.functor.hasLiftingProperty_iff_of_isEquivalence]
       infer_instance
     cm5a := by rw [h₁', h₂]; infer_instance
-    cm5b := by rw [h₁, h₂']; infer_instance }
+    cm5b := by rw [h₁, h₂']; infer_instance
+  }
 
 end HomotopicalAlgebra

@@ -8,7 +8,6 @@ module
 public import Mathlib.Order.Filter.Defs
 public import Mathlib.Order.Setoid.Basic
 public import Mathlib.Topology.Defs.Basic
-
 import Mathlib.Tactic.IrreducibleDef
 
 /-!
@@ -134,10 +133,11 @@ irreducible_def nhds (x : X) : Filter X :=
 @[inherit_doc]
 scoped[Topology] notation "𝓝" => nhds
 
-/-- The "neighborhood within" filter. Elements of `𝓝[s] x` are sets containing the
-intersection of `s` and a neighborhood of `x`. -/
-def nhdsWithin (x : X) (s : Set X) : Filter X :=
-  𝓝 x ⊓ 𝓟 s
+/--
+The "neighborhood within" filter. Elements of `𝓝[s] x` are sets containing the
+intersection of `s` and a neighborhood of `x`.
+-/
+def nhdsWithin (x : X) (s : Set X) : Filter X := 𝓝 x ⊓ 𝓟 s
 
 @[inherit_doc]
 scoped[Topology] notation "𝓝[" s "] " x:100 => nhdsWithin x s
@@ -159,40 +159,45 @@ scoped[Topology] notation3 (name := nhdsGT) "𝓝[>] " x:100 => nhdsWithin x (Se
 scoped[Topology] notation3 (name := nhdsLT) "𝓝[<] " x:100 => nhdsWithin x (Set.Iio x)
 
 /-- The filter of neighborhoods of a set in a topological space. -/
-def nhdsSet (s : Set X) : Filter X :=
-  sSup (nhds '' s)
+def nhdsSet (s : Set X) : Filter X := sSup (nhds '' s)
 
 @[inherit_doc] scoped[Topology] notation "𝓝ˢ" => nhdsSet
 
-/-- The "neighbourhood within" filter for sets. Elements of `𝓝[t] s` are sets containing the
-intersection of `t` and a neighbourhood of `s`. -/
+/--
+The "neighbourhood within" filter for sets. Elements of `𝓝[t] s` are sets containing the
+intersection of `t` and a neighbourhood of `s`.
+-/
 def nhdsSetWithin (s t : Set X) : Filter X := 𝓝ˢ s ⊓ 𝓟 t
 
 @[inherit_doc] scoped[Topology] notation "𝓝ˢ[" t "] " s:100 => nhdsSetWithin s t
 
-/-- The *neighborhoods kernel* of a set is the intersection of all its neighborhoods. In an
-Alexandrov-discrete space, this is the smallest neighborhood of the set. -/
+/--
+The *neighborhoods kernel* of a set is the intersection of all its neighborhoods. In an
+Alexandrov-discrete space, this is the smallest neighborhood of the set.
+-/
 def nhdsKer (s : Set X) : Set X := (𝓝ˢ s).ker
 
-/-- A function between topological spaces is continuous at a point `x₀`
-if `f x` tends to `f x₀` when `x` tends to `x₀`. -/
-@[fun_prop]
-def ContinuousAt (f : X → Y) (x : X) :=
-  Tendsto f (𝓝 x) (𝓝 (f x))
+/--
+A function between topological spaces is continuous at a point `x₀`
+if `f x` tends to `f x₀` when `x` tends to `x₀`.
+-/
+@[fun_prop] def ContinuousAt (f : X → Y) (x : X) := Tendsto f (𝓝 x) (𝓝 (f x))
 
-/-- A function between topological spaces is continuous at a point `x₀` within a subset `s`
-if `f x` tends to `f x₀` when `x` tends to `x₀` while staying within `s`. -/
+/--
+A function between topological spaces is continuous at a point `x₀` within a subset `s`
+if `f x` tends to `f x₀` when `x` tends to `x₀` while staying within `s`.
+-/
 @[fun_prop]
-def ContinuousWithinAt (f : X → Y) (s : Set X) (x : X) : Prop :=
-  Tendsto f (𝓝[s] x) (𝓝 (f x))
+def ContinuousWithinAt (f : X → Y) (s : Set X) (x : X) : Prop := Tendsto f (𝓝[s] x) (𝓝 (f x))
 
-/-- A function between topological spaces is continuous on a subset `s`
-when it's continuous at every point of `s` within `s`. -/
-@[fun_prop]
-def ContinuousOn (f : X → Y) (s : Set X) : Prop :=
-  ∀ x ∈ s, ContinuousWithinAt f s x
+/--
+A function between topological spaces is continuous on a subset `s`
+when it's continuous at every point of `s` within `s`.
+-/
+@[fun_prop] def ContinuousOn (f : X → Y) (s : Set X) : Prop := ∀ x ∈ s, ContinuousWithinAt f s x
 
-/-- `x` specializes to `y` (notation: `x ⤳ y`) if either of the following equivalent properties
+/--
+`x` specializes to `y` (notation: `x ⤳ y`) if either of the following equivalent properties
 hold:
 
 * `𝓝 x ≤ 𝓝 y`; this property is used as the definition;
@@ -204,13 +209,14 @@ hold:
 * `y` is a cluster point of the filter `pure x = 𝓟 {x}`.
 
 This relation defines a `Preorder` on `X`. If `X` is a T₀ space, then this `Preorder` is a
-`PartialOrder`. If `X` is a T₁ space, then this `PartialOrder` is trivial: `x ⤳ y ↔ x = y`. -/
+`PartialOrder`. If `X` is a T₁ space, then this `PartialOrder` is trivial: `x ⤳ y ↔ x = y`.
+-/
 def Specializes (x y : X) : Prop := 𝓝 x ≤ 𝓝 y
 
-@[inherit_doc]
-infixl:300 " ⤳ " => Specializes
+@[inherit_doc] infixl:300 " ⤳ " => Specializes
 
-/-- Two points `x` and `y` in a topological space are `Inseparable`, or *topologically
+/--
+Two points `x` and `y` in a topological space are `Inseparable`, or *topologically
 indistinguishable*, if any of the following equivalent properties hold:
 
 - `𝓝 x = 𝓝 y`; we use this property as the definition;
@@ -219,32 +225,30 @@ indistinguishable*, if any of the following equivalent properties hold:
 - `x ∈ closure {y}` and `y ∈ closure {x}`, see `inseparable_iff_mem_closure`;
 - `closure {x} = closure {y}`, see `inseparable_iff_closure_eq`.
 -/
-def Inseparable (x y : X) : Prop :=
-  𝓝 x = 𝓝 y
+def Inseparable (x y : X) : Prop := 𝓝 x = 𝓝 y
 
 variable (X)
 
-instance : IsPreorder X Specializes :=
-  inferInstanceAs <| IsPreorder X (LE.le.onFun 𝓝)
+instance : IsPreorder X Specializes := inferInstanceAs <| IsPreorder X (LE.le.onFun 𝓝)
 
 /-- Specialization forms a preorder on the topological space. -/
 @[instance_reducible]
-def specializationPreorder : Preorder X :=
-  { Preorder.lift (OrderDual.toDual ∘ 𝓝) with
-    le := fun x y => y ⤳ x
-    lt := fun x y => y ⤳ x ∧ ¬x ⤳ y }
+def specializationPreorder : Preorder X := {
+  Preorder.lift (OrderDual.toDual ∘ 𝓝) with
+  le := fun x y => y ⤳ x
+  lt := fun x y => y ⤳ x ∧ ¬ x ⤳ y
+}
 
-instance : IsEquiv X Inseparable :=
-  inferInstanceAs <| IsEquiv X (Eq.onFun 𝓝)
+instance : IsEquiv X Inseparable := inferInstanceAs <| IsEquiv X (Eq.onFun 𝓝)
 
 /-- A `setoid` version of `Inseparable`, used to define the `SeparationQuotient`. -/
-@[instance_reducible]
-def inseparableSetoid : Setoid X := { Setoid.comap 𝓝 ⊥ with r := Inseparable }
+@[instance_reducible] def inseparableSetoid : Setoid X := { Setoid.comap 𝓝 ⊥ with r := Inseparable }
 
-/-- The quotient of a topological space by its `inseparableSetoid`. Also called the Kolmogorov
-quotient. This quotient is guaranteed to be a T₀ space. -/
-@[implicit_reducible]
-def SeparationQuotient := Quotient (inseparableSetoid X)
+/--
+The quotient of a topological space by its `inseparableSetoid`. Also called the Kolmogorov
+quotient. This quotient is guaranteed to be a T₀ space.
+-/
+@[implicit_reducible] def SeparationQuotient := Quotient (inseparableSetoid X)
 
 variable {X}
 
@@ -253,48 +257,53 @@ A set `s` is locally closed at a point `x` if there is a neighborhood `U` of `x`
 `Z` such that `U ∩ s = U ∩ Z`.
 Also see `isLocallyClosedAt_tfae` and other lemmas in `Mathlib/Topology/LocallyClosed.lean`.
 -/
-def IsLocallyClosedAt (s : Set X) (x : X) : Prop :=
-  ∃ U ∈ 𝓝 x, ∃ Z, IsClosed Z ∧ U ∩ s = U ∩ Z
+def IsLocallyClosedAt (s : Set X) (x : X) : Prop := ∃ U ∈ 𝓝 x, ∃ Z, IsClosed Z ∧ U ∩ s = U ∩ Z
 
 section Lim
 
-
 /-- If `f` is a filter, then `Filter.lim f` is a limit of the filter, if it exists. -/
-noncomputable def Filter.lim [Nonempty X] (f : Filter X) : X :=
-  Classical.epsilon fun x => f ≤ 𝓝 x
+noncomputable def Filter.lim [Nonempty X] (f : Filter X) : X := Classical.epsilon fun x => f ≤ 𝓝 x
 
-/-- If `f` is a filter in `α` and `g : α → X` is a function, then `Filter.limUnder f g` is a limit
-of `g` at `f`, if it exists. -/
+/--
+If `f` is a filter in `α` and `g : α → X` is a function, then `Filter.limUnder f g` is a limit
+of `g` at `f`, if it exists.
+-/
 noncomputable def Filter.limUnder {α : Type*} [Nonempty X] (f : Filter α) (g : α → X) : X :=
   lim (f.map g)
 
 end Lim
 
-/-- A point `x` is a cluster point of a filter `F` if `𝓝 x ⊓ F ≠ ⊥`.
+/--
+A point `x` is a cluster point of a filter `F` if `𝓝 x ⊓ F ≠ ⊥`.
 Also known as an accumulation point or a limit point, but beware that terminology varies.
 This is *not* the same as asking `𝓝[≠] x ⊓ F ≠ ⊥`, which is called `AccPt` in Mathlib.
-See `mem_closure_iff_clusterPt` in particular. -/
-def ClusterPt (x : X) (F : Filter X) : Prop :=
-  NeBot (𝓝 x ⊓ F)
+See `mem_closure_iff_clusterPt` in particular.
+-/
+def ClusterPt (x : X) (F : Filter X) : Prop := NeBot (𝓝 x ⊓ F)
 
-/-- A point `x` is a cluster point of a sequence `u` along a filter `F` if it is a cluster point
-of `map u F`. -/
-def MapClusterPt {ι : Type*} (x : X) (F : Filter ι) (u : ι → X) : Prop :=
-  ClusterPt x (map u F)
+/--
+A point `x` is a cluster point of a sequence `u` along a filter `F` if it is a cluster point
+of `map u F`.
+-/
+def MapClusterPt {ι : Type*} (x : X) (F : Filter ι) (u : ι → X) : Prop := ClusterPt x (map u F)
 
-/-- A point `x` is an accumulation point of a filter `F` if `𝓝[≠] x ⊓ F ≠ ⊥`.
-See also `ClusterPt`. -/
-def AccPt (x : X) (F : Filter X) : Prop :=
-  NeBot (𝓝[≠] x ⊓ F)
+/--
+A point `x` is an accumulation point of a filter `F` if `𝓝[≠] x ⊓ F ≠ ⊥`.
+See also `ClusterPt`.
+-/
+def AccPt (x : X) (F : Filter X) : Prop := NeBot (𝓝[≠] x ⊓ F)
 
-/-- A set `s` is compact if for every nontrivial filter `f` that contains `s`,
-there exists `a ∈ s` such that every set of `f` meets every neighborhood of `a`. -/
-def IsCompact (s : Set X) :=
-  ∀ ⦃f⦄ [NeBot f], f ≤ 𝓟 s → ∃ x ∈ s, ClusterPt x f
+/--
+A set `s` is compact if for every nontrivial filter `f` that contains `s`,
+there exists `a ∈ s` such that every set of `f` meets every neighborhood of `a`.
+-/
+def IsCompact (s : Set X) := ∀ ⦃f⦄ [NeBot f], f ≤ 𝓟 s → ∃ x ∈ s, ClusterPt x f
 
 variable (X) in
-/-- Type class for compact spaces. Separation is sometimes included in the definition, especially
-in the French literature, but we do not include it here. -/
+/--
+Type class for compact spaces. Separation is sometimes included in the definition, especially
+in the French literature, but we do not include it here.
+-/
 @[wikidata Q381892]
 class CompactSpace : Prop where
   /-- In a compact space, `Set.univ` is a compact set. -/
@@ -304,30 +313,37 @@ variable (X) in
 /-- `X` is a noncompact topological space if it is not a compact space. -/
 class NoncompactSpace : Prop where
   /-- In a noncompact space, `Set.univ` is not a compact set. -/
-  noncompact_univ : ¬IsCompact (Set.univ : Set X)
+  noncompact_univ : ¬ IsCompact (Set.univ : Set X)
 
-/-- We say that a topological space is a *weakly locally compact space*,
-if each point of this space admits a compact neighborhood. -/
+/--
+We say that a topological space is a *weakly locally compact space*,
+if each point of this space admits a compact neighborhood.
+-/
 class WeaklyLocallyCompactSpace (X : Type*) [TopologicalSpace X] : Prop where
   /-- Every point of a weakly locally compact space admits a compact neighborhood. -/
   exists_compact_mem_nhds (x : X) : ∃ s, IsCompact s ∧ s ∈ 𝓝 x
 
 export WeaklyLocallyCompactSpace (exists_compact_mem_nhds)
 
-/-- There are various definitions of "locally compact space" in the literature,
+/--
+There are various definitions of "locally compact space" in the literature,
 which agree for Hausdorff spaces but not in general.
 This one is the precise condition on X needed
 for the evaluation map `C(X, Y) × X → Y` to be continuous for all `Y`
 when `C(X, Y)` is given the compact-open topology.
 
 See also `WeaklyLocallyCompactSpace`, a typeclass that only assumes
-that each point has a compact neighborhood. -/
+that each point has a compact neighborhood.
+-/
 class LocallyCompactSpace (X : Type*) [TopologicalSpace X] : Prop where
-  /-- In a locally compact space,
-  every neighbourhood of every point contains a compact neighbourhood of that same point. -/
+  /--
+  In a locally compact space,
+  every neighbourhood of every point contains a compact neighbourhood of that same point.
+  -/
   local_compact_nhds : ∀ (x : X), ∀ n ∈ 𝓝 x, ∃ s ∈ 𝓝 x, s ⊆ n ∧ IsCompact s
 
-/-- We say that `X` and `Y` are a locally compact pair of topological spaces,
+/--
+We say that `X` and `Y` are a locally compact pair of topological spaces,
 if for any continuous map `f : X → Y`, a point `x : X`, and a neighbourhood `s ∈ 𝓝 (f x)`,
 there exists a compact neighbourhood `K ∈ 𝓝 x` such that `f` maps `K` to `s`.
 
@@ -341,21 +357,24 @@ It is satisfied in two cases:
   saying that a weakly locally compact R₁ topological space is locally compact.
 -/
 class LocallyCompactPair (X Y : Type*) [TopologicalSpace X] [TopologicalSpace Y] : Prop where
-  /-- If `f : X → Y` is a continuous map in a locally compact pair of topological spaces
+  /--
+  If `f : X → Y` is a continuous map in a locally compact pair of topological spaces
   and `s : Set Y` is a neighbourhood of `f x`, `x : X`,
-  then there exists a compact neighbourhood `K` of `x` such that `f` maps `K` to `s`. -/
-  exists_mem_nhds_isCompact_mapsTo : ∀ {f : X → Y} {x : X} {s : Set Y},
-    Continuous f → s ∈ 𝓝 (f x) → ∃ K ∈ 𝓝 x, IsCompact K ∧ Set.MapsTo f K s
+  then there exists a compact neighbourhood `K` of `x` such that `f` maps `K` to `s`.
+  -/
+  exists_mem_nhds_isCompact_mapsTo
+    : ∀ {f : X → Y} {x : X} {s : Set Y},
+      Continuous f → s ∈ 𝓝 (f x) → ∃ K ∈ 𝓝 x, IsCompact K ∧ Set.MapsTo f K s
 
 export LocallyCompactPair (exists_mem_nhds_isCompact_mapsTo)
 
 variable (X) in
 /-- `Filter.cocompact` is the filter generated by complements to compact sets. -/
-def Filter.cocompact : Filter X :=
-  ⨅ (s : Set X) (_ : IsCompact s), 𝓟 sᶜ
+def Filter.cocompact : Filter X := ⨅ (s : Set X) (_ : IsCompact s), 𝓟 sᶜ
 
 variable (X) in
-/-- `Filter.coclosedCompact` is the filter generated by complements to closed compact sets.
-In a Hausdorff space, this is the same as `Filter.cocompact`. -/
-def Filter.coclosedCompact : Filter X :=
-  ⨅ (s : Set X) (_ : IsClosed s) (_ : IsCompact s), 𝓟 sᶜ
+/--
+`Filter.coclosedCompact` is the filter generated by complements to closed compact sets.
+In a Hausdorff space, this is the same as `Filter.cocompact`.
+-/
+def Filter.coclosedCompact : Filter X := ⨅ (s : Set X) (_ : IsClosed s) (_ : IsCompact s), 𝓟 sᶜ

@@ -83,11 +83,13 @@ open MonoidalCategory Representation Finsupp
 section Tor
 
 variable {k G} in
-/-- Given `A : Rep k G` and a chain complex `P` in `Rep k G`, this is the chain complex whose
-`n`th object is `(A ⊗ Pₙ)_G`. -/
-abbrev HomologicalComplex.coinvariantsTensorObj {α : Type*} [AddRightCancelSemigroup α] [One α]
-    (A : Rep k G) (P : ChainComplex (Rep k G) α) :
-    ChainComplex (ModuleCat k) α :=
+/--
+Given `A : Rep k G` and a chain complex `P` in `Rep k G`, this is the chain complex whose
+`n`th object is `(A ⊗ Pₙ)_G`.
+-/
+abbrev HomologicalComplex.coinvariantsTensorObj
+    {α : Type*} [AddRightCancelSemigroup α] [One α] (A : Rep k G) (P : ChainComplex (Rep k G) α)
+    : ChainComplex (ModuleCat k) α :=
   (((Rep.coinvariantsTensor k G).obj A).mapHomologicalComplex _).obj P
 
 namespace Rep
@@ -101,13 +103,13 @@ def Tor (n : ℕ) : Rep k G ⥤ Rep k G ⥤ ModuleCat k where
 variable {k G} (A : Rep.{w} k G)
 
 /-- `Tor` can be computed using a projective resolution. -/
-abbrev torIso (A : Rep k G) {B : Rep k G} (P : ProjectiveResolution B) (n : ℕ) :
-    ((Rep.Tor k G n).obj A).obj B ≅ (P.complex.coinvariantsTensorObj A).homology n :=
+abbrev torIso (A : Rep k G) {B : Rep k G} (P : ProjectiveResolution B) (n : ℕ)
+    : ((Rep.Tor k G n).obj A).obj B ≅ (P.complex.coinvariantsTensorObj A).homology n :=
   P.isoLeftDerivedObj ((coinvariantsTensor k G).obj A) n
 
 /-- The higher `Tor` groups for `X` and `Y` are zero if `Y` is projective. -/
-lemma isZero_Tor_succ_of_projective (X Y : Rep k G) [Projective Y] (n : ℕ) :
-    IsZero (((Tor k G (n + 1)).obj X).obj Y) :=
+lemma isZero_Tor_succ_of_projective (X Y : Rep k G) [Projective Y] (n : ℕ)
+    : IsZero (((Tor k G (n + 1)).obj X).obj Y) :=
   Functor.isZero_leftDerived_obj_projective_succ ..
 
 end Rep
@@ -123,83 +125,95 @@ namespace inhomogeneousChains
 
 /-- The differential in the complex of inhomogeneous chains used to calculate group homology. -/
 def d : ModuleCat.of k ((Fin (n + 1) → G) →₀ A) ⟶ ModuleCat.of k ((Fin n → G) →₀ A) :=
-  ModuleCat.ofHom <| lsum (R := k) k fun g => lsingle (fun i => g i.succ) ∘ₗ A.ρ (g 0)⁻¹ +
-    Finset.univ.sum fun j : Fin (n + 1) =>
+  ModuleCat.ofHom <| lsum (R := k) k fun g =>
+    lsingle (fun i => g i.succ) ∘ₗ A.ρ (g 0)⁻¹ + Finset.univ.sum fun j : Fin (n + 1) =>
       (-1 : k) ^ ((j : ℕ) + 1) • lsingle (Fin.contractNth j (· * ·) g)
 
 variable {A n} in
 @[simp]
-theorem d_single (n : ℕ) (g : Fin (n + 1) → G) (a : A) :
-    d A n (single g a) = single (fun i => g i.succ) (A.ρ (g 0)⁻¹ a) +
-      Finset.univ.sum fun j : Fin (n + 1) =>
+theorem d_single (n : ℕ) (g : Fin (n + 1) → G) (a : A)
+    : d A n (single g a)
+      = single (fun i => g i.succ) (A.ρ (g 0)⁻¹ a) + Finset.univ.sum fun j : Fin (n + 1) =>
         (-1 : k) ^ ((j : ℕ) + 1) • single (Fin.contractNth j (· * ·) g) a := by
   simp [d]
 
 open ModuleCat.MonoidalCategory
 
 set_option backward.defeqAttrib.useBackward true in
-theorem d_eq [DecidableEq G] :
-    d A n = (coinvariantsTensorFreeLEquiv A (Fin (n + 1) → G)).toModuleIso.inv ≫
-      ((barComplex k G).coinvariantsTensorObj A).d (n + 1) n ≫
-      (coinvariantsTensorFreeLEquiv A (Fin n → G)).toModuleIso.hom := by
+theorem d_eq [DecidableEq G]
+    : d A n
+      = (coinvariantsTensorFreeLEquiv A (Fin (n + 1) → G)).toModuleIso.inv
+        ≫ ((barComplex k G).coinvariantsTensorObj A).d (n + 1) n
+        ≫ (coinvariantsTensorFreeLEquiv A (Fin n → G)).toModuleIso.hom := by
   ext : 3
   simp [d_single (k := k), TensorProduct.tmul_add, TensorProduct.tmul_sum,
     barComplex.d_single (k := k)]
 
 end inhomogeneousChains
 
-/-- Given a `k`-linear `G`-representation `A`, this is the complex of inhomogeneous chains
+/--
+Given a `k`-linear `G`-representation `A`, this is the complex of inhomogeneous chains
 $$\dots \to \bigoplus_{G^1} A \to \bigoplus_{G^0} A \to 0$$
-which calculates the group homology of `A`. -/
-noncomputable abbrev inhomogeneousChains :
-    ChainComplex (ModuleCat k) ℕ :=
-  ChainComplex.of (fun n => ↧((Fin n → G) →₀ A))
-    (fun n => inhomogeneousChains.d A n) fun n => by
-    classical
-    rw [inhomogeneousChains.d_eq, inhomogeneousChains.d_eq]
-    slice_lhs 3 4 => rw [Iso.hom_inv_id]
-    slice_lhs 2 4 => rw [Category.id_comp, ((barComplex k G).coinvariantsTensorObj A).d_comp_d]
-    simp
+which calculates the group homology of `A`.
+-/
+noncomputable abbrev inhomogeneousChains : ChainComplex (ModuleCat k) ℕ :=
+  ChainComplex.of
+    (fun n => ↧((Fin n → G) →₀ A))
+    (fun n => inhomogeneousChains.d A n)
+    fun n => by
+      classical
+      rw [inhomogeneousChains.d_eq, inhomogeneousChains.d_eq]
+      slice_lhs 3 4 => rw [Iso.hom_inv_id]
+      slice_lhs 2 4 => rw [Category.id_comp, ((barComplex k G).coinvariantsTensorObj A).d_comp_d]
+      simp
 
 open inhomogeneousChains
 
 variable {A n} in
 @[ext]
-theorem inhomogeneousChains.ext {M : ModuleCat k} {x y : (inhomogeneousChains A).X n ⟶ M}
-    (h : ∀ g, ModuleCat.ofHom (lsingle g) ≫ x = ModuleCat.ofHom (lsingle g) ≫ y) :
-    x = y := ModuleCat.hom_ext <| lhom_ext' fun g => ModuleCat.hom_ext_iff.1 (h g)
+theorem inhomogeneousChains.ext
+    {M : ModuleCat k} {x y : (inhomogeneousChains A).X n ⟶ M}
+    (h : ∀ g, ModuleCat.ofHom (lsingle g) ≫ x = ModuleCat.ofHom (lsingle g) ≫ y)
+    : x = y :=
+  ModuleCat.hom_ext <| lhom_ext' fun g => ModuleCat.hom_ext_iff.1 (h g)
 
-theorem inhomogeneousChains.d_def (n : ℕ) :
-    (inhomogeneousChains A).d (n + 1) n = d A n := by
+theorem inhomogeneousChains.d_def (n : ℕ) : (inhomogeneousChains A).d (n + 1) n = d A n := by
   simp [inhomogeneousChains]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem inhomogeneousChains.d_comp_d :
-    d A (n + 1) ≫ d A n = 0 := by
+theorem inhomogeneousChains.d_comp_d : d A (n + 1) ≫ d A n = 0 := by
   simpa [ChainComplex.of.d] using ((inhomogeneousChains A).d_comp_d (n + 2) (n + 1) n)
 
-/-- Given a `k`-linear `G`-representation `A`, the complex of inhomogeneous chains is isomorphic
-to `(A ⊗[k] P)_G`, where `P` is the bar resolution of `k` as a trivial `G`-representation. -/
-def inhomogeneousChainsIso [DecidableEq G] :
-    inhomogeneousChains A ≅ (barComplex k G).coinvariantsTensorObj A := by
+/--
+Given a `k`-linear `G`-representation `A`, the complex of inhomogeneous chains is isomorphic
+to `(A ⊗[k] P)_G`, where `P` is the bar resolution of `k` as a trivial `G`-representation.
+-/
+def inhomogeneousChainsIso [DecidableEq G]
+    : inhomogeneousChains A ≅ (barComplex k G).coinvariantsTensorObj A := by
   refine HomologicalComplex.Hom.isoOfComponents ?_ ?_
   · intro i
     apply (coinvariantsTensorFreeLEquiv A (Fin i → G)).toModuleIso.symm
   rintro i j rfl
   simp [d_eq, -LinearEquiv.toModuleIso_hom, -LinearEquiv.toModuleIso_inv]
 
-/-- The `n`-cycles `Zₙ(G, A)` of a `k`-linear `G`-representation `A`, i.e. the kernel of the
-differential `Cₙ(G, A) ⟶ Cₙ₋₁(G, A)` in the complex of inhomogeneous chains. -/
+/--
+The `n`-cycles `Zₙ(G, A)` of a `k`-linear `G`-representation `A`, i.e. the kernel of the
+differential `Cₙ(G, A) ⟶ Cₙ₋₁(G, A)` in the complex of inhomogeneous chains.
+-/
 abbrev cycles (n : ℕ) : ModuleCat k := (inhomogeneousChains A).cycles n
 
 open HomologicalComplex
 
 variable {A} in
-/-- When `m = 0` this makes a term of `cycles A 0` from any element of `A` (or more precisely
+/--
+When `m = 0` this makes a term of `cycles A 0` from any element of `A` (or more precisely
 any element in the kernel of `d₀,₀ = 0`). When `m` is positive, this makes a term of `cycles A m`
-from any element of the kernel of `dₘ,ₘ₋₁`. -/
-abbrev cyclesMk (m n : ℕ) (h : (ComplexShape.down ℕ).next m = n) (f : (Fin m → G) →₀ A)
-    (hf : (inhomogeneousChains A).d m n f = 0) : cycles A m :=
+from any element of the kernel of `dₘ,ₘ₋₁`.
+-/
+abbrev cyclesMk
+    (m n : ℕ) (h : (ComplexShape.down ℕ).next m = n) (f : (Fin m → G) →₀ A)
+    (hf : (inhomogeneousChains A).d m n f = 0)
+    : cycles A m :=
   (inhomogeneousChains A).cyclesMk f n h hf
 
 /-- The natural inclusion of the `n`-cycles `Zₙ(G, A)` into the `n`-chains `Cₙ(G, A).` -/
@@ -207,13 +221,16 @@ abbrev iCycles (n : ℕ) : cycles A n ⟶ (inhomogeneousChains A).X n :=
   (inhomogeneousChains A).iCycles n
 
 variable {A} in
-theorem iCycles_mk {m n : ℕ} (h : (ComplexShape.down ℕ).next m = n) (f : (Fin m → G) →₀ A)
-    (hf : (inhomogeneousChains A).d m n f = 0) :
-    iCycles A m (cyclesMk m n h f hf) = f := by
+theorem iCycles_mk
+    {m n : ℕ} (h : (ComplexShape.down ℕ).next m = n) (f : (Fin m → G) →₀ A)
+    (hf : (inhomogeneousChains A).d m n f = 0)
+    : iCycles A m (cyclesMk m n h f hf) = f := by
   exact (inhomogeneousChains A).i_cyclesMk f n h hf
 
-/-- This is the map from `i`-chains to `j`-cycles induced by the differential in the complex of
-inhomogeneous chains. -/
+/--
+This is the map from `i`-chains to `j`-cycles induced by the differential in the complex of
+inhomogeneous chains.
+-/
 abbrev toCycles (i j : ℕ) : (inhomogeneousChains A).X i ⟶ cycles A j :=
   (inhomogeneousChains A).toCycles i j
 
@@ -223,43 +240,50 @@ open groupHomology Rep
 
 variable {k G : Type u} [CommRing k] [Group G] (A : Rep k G)
 
-/-- The group homology of a `k`-linear `G`-representation `A`, as the homology of its complex
-of inhomogeneous chains. -/
-def groupHomology (n : ℕ) : ModuleCat k :=
-  (inhomogeneousChains A).homology n
+/--
+The group homology of a `k`-linear `G`-representation `A`, as the homology of its complex
+of inhomogeneous chains.
+-/
+def groupHomology (n : ℕ) : ModuleCat k := (inhomogeneousChains A).homology n
 
-/-- The natural map from `n`-cycles to `n`th group homology for a `k`-linear
-`G`-representation `A`. -/
-abbrev groupHomology.π (n : ℕ) :
-    cycles A n ⟶ groupHomology A n :=
+/--
+The natural map from `n`-cycles to `n`th group homology for a `k`-linear
+`G`-representation `A`.
+-/
+abbrev groupHomology.π (n : ℕ) : cycles A n ⟶ groupHomology A n :=
   (inhomogeneousChains A).homologyπ n
 
 set_option backward.isDefEq.respectTransparency false in
 variable {A} in
 @[elab_as_elim]
-theorem groupHomology_induction_on {n : ℕ}
-    {C : groupHomology A n → Prop} (x : groupHomology A n)
-    (h : ∀ x : cycles A n, C (π A n x)) : C x := by
+theorem groupHomology_induction_on
+    {n : ℕ} {C : groupHomology A n → Prop}
+    (x : groupHomology A n) (h : ∀ x : cycles A n, C (π A n x))
+    : C x := by
   rcases (ModuleCat.epi_iff_surjective (π A n)).1 inferInstance x with ⟨y, rfl⟩
   exact h y
 
-/-- The `n`th group homology of a `k`-linear `G`-representation `A` is isomorphic to
-`Torₙ(A, k)` (taken in `Rep k G`), where `k` is a trivial `k`-linear `G`-representation. -/
-def groupHomologyIsoTor [DecidableEq G] (n : ℕ) :
-    groupHomology A n ≅ ((Tor k G n).obj A).obj (Rep.trivial k G k) :=
-  isoOfQuasiIsoAt (HomotopyEquiv.ofIso (inhomogeneousChainsIso A)).hom n ≪≫
-    (torIso A (barResolution k G) n).symm
+/--
+The `n`th group homology of a `k`-linear `G`-representation `A` is isomorphic to
+`Torₙ(A, k)` (taken in `Rep k G`), where `k` is a trivial `k`-linear `G`-representation.
+-/
+def groupHomologyIsoTor [DecidableEq G] (n : ℕ)
+    : groupHomology A n ≅ ((Tor k G n).obj A).obj (Rep.trivial k G k) :=
+  isoOfQuasiIsoAt (HomotopyEquiv.ofIso (inhomogeneousChainsIso A)).hom n
+    ≪≫ (torIso A (barResolution k G) n).symm
 
-/-- The `n`th group homology of a `k`-linear `G`-representation `A` is isomorphic to
+/--
+The `n`th group homology of a `k`-linear `G`-representation `A` is isomorphic to
 `Hₙ((A ⊗ P)_G)`, where `P` is any projective resolution of `k` as a trivial `k`-linear
-`G`-representation. -/
-def groupHomologyIso [DecidableEq G] (A : Rep k G) (n : ℕ)
-    (P : ProjectiveResolution (Rep.trivial k G k)) :
-    groupHomology A n ≅ (P.complex.coinvariantsTensorObj A).homology n :=
+`G`-representation.
+-/
+def groupHomologyIso
+    [DecidableEq G] (A : Rep k G) (n : ℕ) (P : ProjectiveResolution (Rep.trivial k G k))
+    : groupHomology A n ≅ (P.complex.coinvariantsTensorObj A).homology n :=
   groupHomologyIsoTor A n ≪≫ torIso A P n
 
-lemma isZero_groupHomology_succ_of_subsingleton [Subsingleton G] (n : ℕ) :
-    Limits.IsZero (groupHomology A (n + 1)) :=
+lemma isZero_groupHomology_succ_of_subsingleton [Subsingleton G] (n : ℕ)
+    : Limits.IsZero (groupHomology A (n + 1)) :=
   (isZero_Tor_succ_of_projective A (Rep.trivial k G k) n).of_iso <| groupHomologyIsoTor _ _
 
 end

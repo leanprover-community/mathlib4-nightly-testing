@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Ring.StandardPart
 public import Mathlib.Order.Filter.FilterProduct
 public import Mathlib.Topology.MetricSpace.Bounded
-
 import Mathlib.Algebra.Order.Module.Field
 import Mathlib.Data.EReal.Inv
 import Mathlib.Topology.Algebra.InfiniteSum.Order
@@ -42,115 +41,70 @@ open scoped Topology
 noncomputable section
 
 /-- Hyperreal numbers on the ultrafilter extending the cofinite filter. -/
-def Hyperreal : Type :=
-  Germ (hyperfilter ℕ : Filter ℕ) ℝ
+def Hyperreal : Type := Germ (hyperfilter ℕ : Filter ℕ) ℝ
 deriving Inhabited
 
 namespace Hyperreal
 
 @[inherit_doc] notation "ℝ*" => Hyperreal
 
-instance : Field ℝ* :=
-  inferInstanceAs (Field (Germ _ _))
+instance : Field ℝ* := inferInstanceAs (Field (Germ _ _))
 
-instance : LinearOrder ℝ* :=
-  inferInstanceAs (LinearOrder (Germ _ _))
+instance : LinearOrder ℝ* := inferInstanceAs (LinearOrder (Germ _ _))
 
-instance : IsStrictOrderedRing ℝ* :=
-  inferInstanceAs (IsStrictOrderedRing (Germ _ _))
+instance : IsStrictOrderedRing ℝ* := inferInstanceAs (IsStrictOrderedRing (Germ _ _))
 
 /-- Natural embedding `ℝ → ℝ*`. -/
 @[coe] def ofReal : ℝ → ℝ* := const
 
 instance : CoeTC ℝ ℝ* := ⟨ofReal⟩
 
-@[simp, norm_cast]
-theorem coe_eq_coe {x y : ℝ} : (x : ℝ*) = y ↔ x = y :=
-  Germ.const_inj
+@[simp, norm_cast] theorem coe_eq_coe {x y : ℝ} : (x : ℝ*) = y ↔ x = y := Germ.const_inj
 
-theorem coe_ne_coe {x y : ℝ} : (x : ℝ*) ≠ y ↔ x ≠ y :=
-  coe_eq_coe.not
+theorem coe_ne_coe {x y : ℝ} : (x : ℝ*) ≠ y ↔ x ≠ y := coe_eq_coe.not
 
-@[simp, norm_cast]
-theorem coe_eq_zero {x : ℝ} : (x : ℝ*) = 0 ↔ x = 0 :=
-  coe_eq_coe
+@[simp, norm_cast] theorem coe_eq_zero {x : ℝ} : (x : ℝ*) = 0 ↔ x = 0 := coe_eq_coe
 
-@[simp, norm_cast]
-theorem coe_eq_one {x : ℝ} : (x : ℝ*) = 1 ↔ x = 1 :=
-  coe_eq_coe
+@[simp, norm_cast] theorem coe_eq_one {x : ℝ} : (x : ℝ*) = 1 ↔ x = 1 := coe_eq_coe
 
-@[norm_cast]
-theorem coe_ne_zero {x : ℝ} : (x : ℝ*) ≠ 0 ↔ x ≠ 0 :=
-  coe_ne_coe
+@[norm_cast] theorem coe_ne_zero {x : ℝ} : (x : ℝ*) ≠ 0 ↔ x ≠ 0 := coe_ne_coe
 
-@[norm_cast]
-theorem coe_ne_one {x : ℝ} : (x : ℝ*) ≠ 1 ↔ x ≠ 1 :=
-  coe_ne_coe
+@[norm_cast] theorem coe_ne_one {x : ℝ} : (x : ℝ*) ≠ 1 ↔ x ≠ 1 := coe_ne_coe
 
-@[simp, norm_cast]
-theorem coe_one : ↑(1 : ℝ) = (1 : ℝ*) :=
-  rfl
+@[simp, norm_cast] theorem coe_one : ↑(1 : ℝ) = (1 : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_zero : ↑(0 : ℝ) = (0 : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_inv (x : ℝ) : ↑x⁻¹ = (x⁻¹ : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_neg (x : ℝ) : ↑(-x) = (-x : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_add (x y : ℝ) : ↑(x + y) = (x + y : ℝ*) := rfl
 
 @[simp, norm_cast]
-theorem coe_zero : ↑(0 : ℝ) = (0 : ℝ*) :=
-  rfl
+theorem coe_ofNat (n : ℕ) [n.AtLeastTwo] : ((ofNat(n) : ℝ) : ℝ*) = OfNat.ofNat n := rfl
+
+@[simp, norm_cast] theorem coe_mul (x y : ℝ) : ↑(x * y) = (x * y : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_div (x y : ℝ) : ↑(x / y) = (x / y : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_sub (x y : ℝ) : ↑(x - y) = (x - y : ℝ*) := rfl
+
+@[simp, norm_cast] theorem coe_le_coe {x y : ℝ} : (x : ℝ*) ≤ y ↔ x ≤ y := Germ.const_le_iff
+
+@[simp, norm_cast] theorem coe_lt_coe {x y : ℝ} : (x : ℝ*) < y ↔ x < y := Germ.const_lt_iff
+
+@[simp, norm_cast] theorem coe_nonneg {x : ℝ} : 0 ≤ (x : ℝ*) ↔ 0 ≤ x := coe_le_coe
+
+@[simp, norm_cast] theorem coe_pos {x : ℝ} : 0 < (x : ℝ*) ↔ 0 < x := coe_lt_coe
+
+@[simp, norm_cast] theorem coe_abs (x : ℝ) : ((|x| : ℝ) : ℝ*) = |↑x| := const_abs x
 
 @[simp, norm_cast]
-theorem coe_inv (x : ℝ) : ↑x⁻¹ = (x⁻¹ : ℝ*) :=
-  rfl
+theorem coe_max (x y : ℝ) : ((max x y : ℝ) : ℝ*) = max ↑x ↑y := Germ.const_max _ _
 
 @[simp, norm_cast]
-theorem coe_neg (x : ℝ) : ↑(-x) = (-x : ℝ*) :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_add (x y : ℝ) : ↑(x + y) = (x + y : ℝ*) :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_ofNat (n : ℕ) [n.AtLeastTwo] :
-    ((ofNat(n) : ℝ) : ℝ*) = OfNat.ofNat n :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_mul (x y : ℝ) : ↑(x * y) = (x * y : ℝ*) :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_div (x y : ℝ) : ↑(x / y) = (x / y : ℝ*) :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_sub (x y : ℝ) : ↑(x - y) = (x - y : ℝ*) :=
-  rfl
-
-@[simp, norm_cast]
-theorem coe_le_coe {x y : ℝ} : (x : ℝ*) ≤ y ↔ x ≤ y :=
-  Germ.const_le_iff
-
-@[simp, norm_cast]
-theorem coe_lt_coe {x y : ℝ} : (x : ℝ*) < y ↔ x < y :=
-  Germ.const_lt_iff
-
-@[simp, norm_cast]
-theorem coe_nonneg {x : ℝ} : 0 ≤ (x : ℝ*) ↔ 0 ≤ x :=
-  coe_le_coe
-
-@[simp, norm_cast]
-theorem coe_pos {x : ℝ} : 0 < (x : ℝ*) ↔ 0 < x :=
-  coe_lt_coe
-
-@[simp, norm_cast]
-theorem coe_abs (x : ℝ) : ((|x| : ℝ) : ℝ*) = |↑x| :=
-  const_abs x
-
-@[simp, norm_cast]
-theorem coe_max (x y : ℝ) : ((max x y : ℝ) : ℝ*) = max ↑x ↑y :=
-  Germ.const_max _ _
-
-@[simp, norm_cast]
-theorem coe_min (x y : ℝ) : ((min x y : ℝ) : ℝ*) = min ↑x ↑y :=
-  Germ.const_min _ _
+theorem coe_min (x y : ℝ) : ((min x y : ℝ) : ℝ*) = min ↑x ↑y := Germ.const_min _ _
 
 /-- The canonical map `ℝ → ℝ*` as an `OrderRingHom`. -/
 @[simps]
@@ -172,9 +126,7 @@ theorem archimedeanClassMk_coe {x : ℝ} (hx : x ≠ 0) : mk (x : ℝ*) = 0 :=
 
 @[deprecated (since := "2026-09-17")] alias archimdeanClassMk_coe := archimedeanClassMk_coe
 
-@[simp]
-theorem stdPart_coe (x : ℝ) : stdPart (x : ℝ*) = x :=
-  stdPart_map_real coeRingHom x
+@[simp] theorem stdPart_coe (x : ℝ) : stdPart (x : ℝ*) = x := stdPart_map_real coeRingHom x
 
 /-! ### Basic constants -/
 
@@ -203,20 +155,13 @@ theorem coe_lt_omega (r : ℝ) : r < ω := by
   rw [eventually_atTop]
   exact ⟨n, fun m hm ↦ hn.trans_le (mod_cast hm)⟩
 
-theorem omega_pos : 0 < ω :=
-  coe_lt_omega 0
+theorem omega_pos : 0 < ω := coe_lt_omega 0
 
-@[simp]
-theorem omega_ne_zero : ω ≠ 0 :=
-  omega_pos.ne'
+@[simp] theorem omega_ne_zero : ω ≠ 0 := omega_pos.ne'
 
-@[simp]
-theorem abs_omega : |ω| = ω :=
-  abs_of_pos omega_pos
+@[simp] theorem abs_omega : |ω| = ω := abs_of_pos omega_pos
 
-@[simp]
-theorem archimedeanClassMk_omega_neg : mk ω < 0 :=
-  fun n ↦ by simpa using! coe_lt_omega n
+@[simp] theorem archimedeanClassMk_omega_neg : mk ω < 0 := fun n ↦ by simpa using! coe_lt_omega n
 
 @[simp]
 theorem stdPart_omega : stdPart ω = 0 := by
@@ -226,59 +171,47 @@ theorem stdPart_omega : stdPart ω = 0 := by
 /-! #### ε -/
 
 /-- A sample infinitesimal hyperreal ε = ⟦(0, 1, 1/2, 1/3, ⋯)⟧. -/
-def epsilon : ℝ* :=
-  ofSeq fun n => n⁻¹
+def epsilon : ℝ* := ofSeq fun n => n⁻¹
 
 @[inherit_doc] scoped notation "ε" => Hyperreal.epsilon
 recommended_spelling "epsilon" for "ε" in [epsilon, «termε»]
 
-@[simp]
-theorem inv_omega : ω⁻¹ = ε :=
-  rfl
+@[simp] theorem inv_omega : ω⁻¹ = ε := rfl
 
-@[simp]
-theorem inv_epsilon : ε⁻¹ = ω :=
-  @inv_inv _ _ ω
+@[simp] theorem inv_epsilon : ε⁻¹ = ω := @inv_inv _ _ ω
 
-@[simp]
-theorem epsilon_pos : 0 < ε :=
-  inv_pos_of_pos omega_pos
+@[simp] theorem epsilon_pos : 0 < ε := inv_pos_of_pos omega_pos
 
-@[simp]
-theorem epsilon_ne_zero : ε ≠ 0 :=
-  epsilon_pos.ne'
+@[simp] theorem epsilon_ne_zero : ε ≠ 0 := epsilon_pos.ne'
 
-@[simp]
-theorem epsilon_mul_omega : ε * ω = 1 :=
-  @inv_mul_cancel₀ _ _ ω omega_ne_zero
+@[simp] theorem epsilon_mul_omega : ε * ω = 1 := @inv_mul_cancel₀ _ _ ω omega_ne_zero
 
-@[simp]
-theorem archimedeanClassMk_epsilon_pos : 0 < mk ε := by
-  simp [← inv_omega]
+@[simp] theorem archimedeanClassMk_epsilon_pos : 0 < mk ε := by simp [← inv_omega]
 
 /-!
 ### Some facts about `Tendsto`
 -/
 
 @[simp]
-theorem tendsto_ofSeq {f : ℕ → ℝ} {lb : Filter ℝ} :
-    (ofSeq f).Tendsto lb ↔ Tendsto f (hyperfilter ℕ) lb :=
+theorem tendsto_ofSeq {f : ℕ → ℝ} {lb : Filter ℝ}
+    : (ofSeq f).Tendsto lb ↔ Tendsto f (hyperfilter ℕ) lb :=
   .rfl
 
-theorem stdPart_map {x : ℝ*} {r : ℝ} {f : ℝ → ℝ} (hf : ContinuousAt f r)
-    (hxr : x.Tendsto (𝓝 r)) : (x.map f).Tendsto (𝓝 (f r)) := by
+theorem stdPart_map {x : ℝ*} {r : ℝ} {f : ℝ → ℝ} (hf : ContinuousAt f r) (hxr : x.Tendsto (𝓝 r))
+    : (x.map f).Tendsto (𝓝 (f r)) := by
   rcases ofSeq_surjective x with ⟨g, rfl⟩
   exact hf.tendsto.comp hxr
 
-theorem stdPart_map₂ {x y : ℝ*} {r s : ℝ} {f : ℝ → ℝ → ℝ}
-    (hxr : x.Tendsto (𝓝 r)) (hys : y.Tendsto (𝓝 s))
-    (hf : ContinuousAt (Function.uncurry f) (r, s)) : (x.map₂ f y).Tendsto (𝓝 (f r s)) := by
+theorem stdPart_map₂
+    {x y : ℝ*} {r s : ℝ} {f : ℝ → ℝ → ℝ}
+    (hxr : x.Tendsto (𝓝 r)) (hys : y.Tendsto (𝓝 s)) (hf : ContinuousAt (Function.uncurry f) (r, s))
+    : (x.map₂ f y).Tendsto (𝓝 (f r s)) := by
   rcases ofSeq_surjective x with ⟨x, rfl⟩
   rcases ofSeq_surjective y with ⟨y, rfl⟩
   exact hf.tendsto.comp (hxr.prodMk_nhds hys)
 
-theorem tendsto_iff_forall {x : ℝ*} {r : ℝ} :
-    x.Tendsto (𝓝 r) ↔ (∀ s < r, s ≤ x) ∧ (∀ s > r, x ≤ s) := by
+theorem tendsto_iff_forall {x : ℝ*} {r : ℝ}
+    : x.Tendsto (𝓝 r) ↔ (∀ s < r, s ≤ x) ∧ (∀ s > r, x ≤ s) := by
   rcases ofSeq_surjective x with ⟨f, rfl⟩
   rw [tendsto_ofSeq, (nhds_basis_Ioo _).tendsto_right_iff]
   simp_rw [Set.mem_Ioo, eventually_and, ← ofSeq_lt_ofSeq]
@@ -292,8 +225,8 @@ theorem tendsto_iff_forall {x : ℝ*} {r : ℝ} :
   · obtain ⟨u, hu, hu'⟩ := exists_between ht
     exact (H.2 _ hu).trans_lt (coe_lt_coe.2 hu')
 
-theorem archimedeanClassMk_nonneg_of_tendsto {x : ℝ*} {r : ℝ} (hx : x.Tendsto (𝓝 r)) :
-    0 ≤ mk x := by
+theorem archimedeanClassMk_nonneg_of_tendsto {x : ℝ*} {r : ℝ} (hx : x.Tendsto (𝓝 r))
+    : 0 ≤ mk x := by
   rw [tendsto_iff_forall] at hx
   obtain ⟨s, hs⟩ := exists_lt r
   obtain ⟨t, ht⟩ := exists_gt r
@@ -308,8 +241,7 @@ theorem archimedeanClassMk_pos_of_tendsto {x : ℝ*} (hx : x.Tendsto (𝓝 0)) :
   rw [← stdPart_eq_zero, stdPart_of_tendsto hx]
 
 @[simp]
-theorem stdPart_epsilon : stdPart ε = 0 :=
-  stdPart_eq_zero.2 archimedeanClassMk_epsilon_pos.ne'
+theorem stdPart_epsilon : stdPart ε = 0 := stdPart_eq_zero.2 archimedeanClassMk_epsilon_pos.ne'
 
 theorem epsilon_lt_of_pos {r : ℝ} : 0 < r → ε < r :=
   lt_of_pos_of_archimedean coeRingHom archimedeanClassMk_epsilon_pos
@@ -342,16 +274,18 @@ theorem tendsto_atTop_iff {x : ℝ*} : x.Tendsto atTop ↔ 0 < x ∧ mk x < 0 wh
   mpr h := by
     rcases ofSeq_surjective x with ⟨f, rfl⟩
     rw [tendsto_ofSeq, tendsto_atTop]
-    exact fun r ↦ ofSeq_le_ofSeq.1
-      (lt_of_mk_lt_mk_of_nonneg (h.2.trans_le <| archimedeanClassMk_coe_nonneg r) h.1.le).le
+    exact fun r ↦
+      ofSeq_le_ofSeq.1 (lt_of_mk_lt_mk_of_nonneg (h.2.trans_le <| archimedeanClassMk_coe_nonneg r)
+        h.1.le).le
 
 theorem tendsto_atBot_iff {x : ℝ*} : x.Tendsto atBot ↔ x < 0 ∧ mk x < 0 where
   mp h := ⟨lt_of_tendsto_atBot 0 h, archimedeanClassMk_neg_of_tendsto_atBot h⟩
   mpr h := by
     rcases ofSeq_surjective x with ⟨f, rfl⟩
     rw [tendsto_ofSeq, tendsto_atBot]
-    exact fun r ↦ ofSeq_le_ofSeq.1
-      (lt_of_mk_lt_mk_of_nonpos (h.2.trans_le <| archimedeanClassMk_coe_nonneg r) h.1.le).le
+    exact fun r ↦
+      ofSeq_le_ofSeq.1 (lt_of_mk_lt_mk_of_nonpos (h.2.trans_le <| archimedeanClassMk_coe_nonneg r)
+        h.1.le).le
 
 end Hyperreal
 end

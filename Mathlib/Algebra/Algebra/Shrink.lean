@@ -26,7 +26,6 @@ instance [Semiring α] [Algebra R α] : Algebra R (Shrink.{v} α) := (equivShrin
 variable (R α) in
 /-- Shrinking `α` to a smaller universe preserves algebra structure. -/
 @[simps!]
-def algEquiv [Semiring α] [Algebra R α] : Shrink.{v} α ≃ₐ[R] α :=
-  (equivShrink α).symm.algEquiv _
+def algEquiv [Semiring α] [Algebra R α] : Shrink.{v} α ≃ₐ[R] α := (equivShrink α).symm.algEquiv _
 
 end Shrink

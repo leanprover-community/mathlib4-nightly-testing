@@ -6,7 +6,6 @@ Authors: Sophie Morel
 module
 
 public import Mathlib.RepresentationTheory.Character
-
 import Mathlib.Algebra.Category.FGModuleCat.Abelian
 import Mathlib.Algebra.Category.ModuleCat.Injective
 import Mathlib.RepresentationTheory.Maschke
@@ -58,8 +57,7 @@ If `G` is finite and its order is nonzero in the field `k`, then every object of
 -/
 -- Will this clash with the previously defined `Projective` instances?
 instance (V : Rep.{u} k G) : Projective V := by
-  rw [← Rep.equivalenceModuleMonoidAlgebra.map_projective_iff,
-    ← IsProjective.iff_projective]
+  rw [← Rep.equivalenceModuleMonoidAlgebra.map_projective_iff, ← IsProjective.iff_projective]
   exact Module.projective_of_isSemisimpleRing _ _
 
 end Rep
@@ -87,8 +85,8 @@ If `G` is finite and its order is nonzero in an algebraically closed field `k`,
 then an object of `FDRep k G` is simple if and only if its space of endomorphisms is
 a `k`-vector space of dimension `1`.
 -/
-lemma simple_iff_end_is_rank_one [NeZero (Nat.card G : k)] (V : FDRep k G) :
-    Simple V ↔ Module.finrank k (V ⟶ V) = 1 where
+lemma simple_iff_end_is_rank_one [NeZero (Nat.card G : k)] (V : FDRep k G)
+    : Simple V ↔ Module.finrank k (V ⟶ V) = 1 where
   mp h := finrank_endomorphism_simple_eq_one k V
   mpr h := by
     refine { mono_isIso_iff_nonzero {W} f _ := ⟨fun hf habs ↦ ?_, fun hf ↦ ?_⟩ }
@@ -118,8 +116,8 @@ omit [Finite G] in
 If `G` is finite and `k` an algebraically closed field of characteristic `0`,
 then an object of `FDRep k G` is simple if and only if its character has norm `1`.
 -/
-lemma simple_iff_char_is_norm_one [CharZero k] [Fintype G] (V : FDRep k G) :
-    Simple V ↔ ∑ g : G, V.character g * V.character g⁻¹ = Nat.card G := by
+lemma simple_iff_char_is_norm_one [CharZero k] [Fintype G] (V : FDRep k G)
+    : Simple V ↔ ∑ g : G, V.character g * V.character g⁻¹ = Nat.card G := by
   have := invertibleOfNonzero (NeZero.ne (Nat.card G : k))
   constructor <;> intro h
   · symm; simpa [Nonempty.intro (Iso.refl V), inv_mul_eq_one₀] using char_orthonormal V V

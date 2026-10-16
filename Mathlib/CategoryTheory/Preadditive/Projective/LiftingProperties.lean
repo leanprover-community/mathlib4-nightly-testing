@@ -30,21 +30,19 @@ variable {C : Type u} [Category.{v} C]
 namespace Projective
 
 lemma hasLiftingProperty_of_isZero
-    {Z P X Y : C} (i : Z ⟶ P) (p : X ⟶ Y) [Epi p] [Projective P] (hZ : IsZero Z) :
-    HasLiftingProperty i p where
-  sq_hasLift {f g} sq := ⟨⟨{
-    l := Projective.factorThru g p
-    fac_left := hZ.eq_of_src _ _ }⟩⟩
+    {Z P X Y : C} (i : Z ⟶ P) (p : X ⟶ Y) [Epi p] [Projective P] (hZ : IsZero Z)
+    : HasLiftingProperty i p where
+  sq_hasLift {f g} sq := ⟨⟨{ l := Projective.factorThru g p, fac_left := hZ.eq_of_src _ _ }⟩⟩
 
-instance {X Y P : C} (p : X ⟶ Y) [Epi p] [Projective P] [HasZeroObject C] (i : 0 ⟶ P) :
-    HasLiftingProperty (i : 0 ⟶ P) p :=
+instance {X Y P : C} (p : X ⟶ Y) [Epi p] [Projective P] [HasZeroObject C] (i : 0 ⟶ P)
+    : HasLiftingProperty (i : 0 ⟶ P) p :=
   Projective.hasLiftingProperty_of_isZero i p (isZero_zero C)
 
 end Projective
 
 lemma projective_iff_llp_epimorphisms_of_isZero
-    [HasZeroMorphisms C] {P Z : C} (i : Z ⟶ P) (hZ : IsZero Z) :
-    Projective P ↔ (MorphismProperty.epimorphisms C).llp i := by
+    [HasZeroMorphisms C] {P Z : C} (i : Z ⟶ P) (hZ : IsZero Z)
+    : Projective P ↔ (MorphismProperty.epimorphisms C).llp i := by
   obtain rfl := hZ.eq_of_src i 0
   constructor
   · intro _ X Y p (_ : Epi p)
@@ -56,9 +54,8 @@ lemma projective_iff_llp_epimorphisms_of_isZero
     have sq : CommSq 0 (0 : Z ⟶ P) p f := ⟨by simp⟩
     exact ⟨sq.lift, by simp⟩
 
-lemma projective_iff_llp_epimorphisms_zero
-    [HasZeroMorphisms C] [HasZeroObject C] (P : C) :
-    Projective P ↔ (MorphismProperty.epimorphisms C).llp (0 : 0 ⟶ P) :=
+lemma projective_iff_llp_epimorphisms_zero [HasZeroMorphisms C] [HasZeroObject C] (P : C)
+    : Projective P ↔ (MorphismProperty.epimorphisms C).llp (0 : 0 ⟶ P) :=
   projective_iff_llp_epimorphisms_of_isZero _ (isZero_zero C)
 
 end CategoryTheory

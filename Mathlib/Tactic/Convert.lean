@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.Notation
 public import Mathlib.Tactic.CongrExclamation
-
 meta import Mathlib.Tactic.CongrExclamation
 
 /-!
@@ -71,14 +70,16 @@ public meta section
 
 open Lean Meta Elab Tactic
 
-/-- Configuration for the `convert` family of tactics.
+/--
+Configuration for the `convert` family of tactics.
 This is `Congr!.Config` with different, less aggressive, defaults.
 
 To elaborate config options for `convert`, use `Convert.elabConfig` which chooses
 between `Convert.CheapConfig` and `Convert.ExpensiveConfig` based on other flags.
 -/
 structure Convert.CheapConfig extends Congr!.Config where
-  /-- Solve instance equality at the pre-step, since there are no cases where doing so at the
+  /--
+  Solve instance equality at the pre-step, since there are no cases where doing so at the
   post-step solves more goals, and doing this earlier means less work for the congruence algorithm.
   -/
   preTransparency := .instances
@@ -88,7 +89,8 @@ structure Convert.CheapConfig extends Congr!.Config where
 /-- Internal elaborator for `Convert.CheapConfig`: use `Convert.elabConfig` instead. -/
 declare_config_elab Convert.elabCheapConfig Convert.CheapConfig
 
-/-- Configuration for the `convert!` family of tactics.
+/--
+Configuration for the `convert!` family of tactics.
 This is `Convert.CheapConfig` (used by `convert` without exclamation mark) with different,
 more aggressive, defaults.
 
@@ -111,7 +113,8 @@ structure Convert.ExpensiveConfig extends Convert.CheapConfig where
 /-- Internal elaborator for `Convert.ExpensiveConfig`: use `Convert.elabConfig` instead. -/
 declare_config_elab Convert.elabExpensiveConfig Convert.ExpensiveConfig
 
-/-- Configuration elaborator for the `convert`/`convert!` family of tactics.
+/--
+Configuration elaborator for the `convert`/`convert!` family of tactics.
 
 If `expensive` is true, we're elaborating for `convert!`, and will configure to run at default
 transparency (unless explicitly overridden by the user saying e.g. `(transparency := .instances)`.)
@@ -133,16 +136,19 @@ and return the resulting goals.
 With `symm = true`, reverses the equality in `v`, and uses `Eq.mpr v e` instead.
 With `depth = some n`, calls `MVarId.congrN! n` instead, with `n` as the max recursion depth.
 -/
-def Lean.MVarId.convert (e : Expr) (symm : Bool)
+def Lean.MVarId.convert
+    (e : Expr) (symm : Bool)
     (depth : Option Nat := none) (config : Congr!.Config := {})
-    (patterns : List (TSyntax `rintroPat) := []) (g : MVarId) :
-    MetaM (List MVarId) := g.withContext do
-  let src ← inferType e
-  let tgt ← g.getType
-  let v ← mkFreshExprMVar (← mkAppM ``Eq (if symm then #[src, tgt] else #[tgt, src]))
-  g.assign (← mkAppM (if symm then ``Eq.mp else ``Eq.mpr) #[v, e])
-  let m := v.mvarId!
-  m.congrN! depth config patterns
+    (patterns : List (TSyntax `rintroPat) := [])
+    (g : MVarId)
+    : MetaM (List MVarId) :=
+  g.withContext do
+    let src ← inferType e
+    let tgt ← g.getType
+    let v ← mkFreshExprMVar (← mkAppM ``Eq (if symm then #[src, tgt] else #[tgt, src]))
+    g.assign (← mkAppM (if symm then ``Eq.mp else ``Eq.mpr) #[v, e])
+    let m := v.mvarId!
+    m.congrN! depth config patterns
 
 /--
 Replaces the type of the local declaration `fvarId` with `typeNew`,
@@ -154,17 +160,19 @@ With `symm = true`, reverses the equality,
 changing the goal to prove `typeNew` is equal to `typeOld`.
 With `depth = some n`, calls `MVarId.congrN! n` instead, with `n` as the max recursion depth.
 -/
-def Lean.MVarId.convertLocalDecl (g : MVarId) (fvarId : FVarId) (typeNew : Expr) (symm : Bool)
+def Lean.MVarId.convertLocalDecl
+    (g : MVarId) (fvarId : FVarId) (typeNew : Expr) (symm : Bool)
     (depth : Option Nat := none) (config : Congr!.Config := {})
-    (patterns : List (TSyntax `rintroPat) := []) :
-    MetaM (MVarId × List MVarId) := g.withContext do
-  let typeOld ← fvarId.getType
-  let v ← mkFreshExprMVar (← mkAppM ``Eq
-    (if symm then #[typeNew, typeOld] else #[typeOld, typeNew]))
-  let pf ← if symm then mkEqSymm v else pure v
-  let res ← g.replaceLocalDecl fvarId typeNew pf
-  let gs ← v.mvarId!.congrN! depth config patterns
-  return (res.mvarId, gs)
+    (patterns : List (TSyntax `rintroPat) := [])
+    : MetaM (MVarId × List MVarId) :=
+  g.withContext do
+    let typeOld ← fvarId.getType
+    let v ←
+      mkFreshExprMVar (← mkAppM ``Eq (if symm then #[typeNew, typeOld] else #[typeOld, typeNew]))
+    let pf ← if symm then mkEqSymm v else pure v
+    let res ← g.replaceLocalDecl fvarId typeNew pf
+    let gs ← v.mvarId!.congrN! depth config patterns
+    return (res.mvarId, gs)
 
 namespace Mathlib.Tactic
 
@@ -219,42 +227,47 @@ example (p q : Nat → Prop) (h : ∀ ε > 0, p ε) :
   sorry
 ```
 -/
-syntax (name := convert) "convert" "!"? Lean.Parser.Tactic.optConfig " ←"? ppSpace term
-  (" using " num)? (" with" (ppSpace colGt rintroPat)*)? : tactic
+syntax (name := convert)
+  "convert" "!"? Lean.Parser.Tactic.optConfig " ←"? ppSpace term (" using " num)?
+  (" with" (ppSpace colGt rintroPat)*)?
+  : tactic
 
 @[tactic_alt convert]
-syntax (name := convert!) "convert!" Lean.Parser.Tactic.optConfig " ←"? ppSpace term
-  (" using " num)? (" with" (ppSpace colGt rintroPat)*)? : tactic
+syntax (name := convert!)
+  "convert!" Lean.Parser.Tactic.optConfig " ←"? ppSpace term (" using " num)?
+  (" with" (ppSpace colGt rintroPat)*)?
+  : tactic
 
 macro_rules
-| `(tactic| convert! $cfg $[←%$l]? $t $[using $n]? $[with $[$w]*]?) =>
+  | `(tactic| convert! $cfg $[←%$l]? $t $[using $n]? $[with $[$w]*]?) =>
     `(tactic| convert ! $cfg $[←%$l]? $t:term $[using $n]? $[with $[$w]*]?)
 
 /--
 Elaborates `term` ensuring the expected type, allowing stuck metavariables.
 Returns stuck metavariables as additional goals.
 -/
-def elabTermForConvert (term : Syntax) (expectedType? : Option Expr) :
-    TacticM (Expr × List MVarId) := do
+def elabTermForConvert (term : Syntax) (expectedType? : Option Expr)
+    : TacticM (Expr × List MVarId) := do
   withCollectingNewGoalsFrom (parentTag := ← getMainTag) (tagSuffix := `convert)
-      (allowNaturalHoles := true) do
-    -- Allow typeclass inference failures since these will be inferred by unification
-    -- or else become new goals
-    withTheReader Term.Context (fun ctx => { ctx with ignoreTCFailures := true }) do
-      let t ← elabTermEnsuringType (mayPostpone := true) term expectedType?
-      -- Process everything so that tactics get run, but again allow TC failures
-      Term.synthesizeSyntheticMVars (postpone := .no) (ignoreStuckTC := true)
-      return t
+    (allowNaturalHoles := true)
+    do
+      -- Allow typeclass inference failures since these will be inferred by unification
+      -- or else become new goals
+      withTheReader Term.Context (fun ctx => { ctx with ignoreTCFailures := true }) do
+        let t ← elabTermEnsuringType (mayPostpone := true) term expectedType?
+        -- Process everything so that tactics get run, but again allow TC failures
+        Term.synthesizeSyntheticMVars (postpone := .no) (ignoreStuckTC := true)
+        return t
 
 elab_rules : tactic
-| `(tactic| convert $[!%$expensive]? $cfg $[←%$sym]? $term $[using $n]? $[with $ps?*]?) =>
-  withMainContext do
-    let config ← Convert.elabConfig expensive.isSome cfg
-    let patterns := (ps?.getD #[]).toList
-    let expectedType ← mkFreshExprMVar (mkSort (← getLevel (← getMainTarget)))
-    let (e, gs) ← elabTermForConvert term expectedType
-    liftMetaTactic fun g ↦
-      return (← g.convert e sym.isSome (n.map (·.getNat)) config patterns) ++ gs
+  | `(tactic| convert $[!%$expensive]? $cfg $[←%$sym]? $term $[using $n]? $[with $ps?*]?) =>
+    withMainContext do
+      let config ← Convert.elabConfig expensive.isSome cfg
+      let patterns := (ps?.getD #[]).toList
+      let expectedType ← mkFreshExprMVar (mkSort (← getLevel (← getMainTarget)))
+      let (e, gs) ← elabTermForConvert term expectedType
+      liftMetaTactic fun g ↦
+        return (← g.convert e sym.isSome (n.map (·.getNat)) config patterns) ++ gs
 
 /--
 `convert_to t` on a goal `⊢ t'` changes the goal to `⊢ t` and adds new goals for proving the
@@ -284,35 +297,38 @@ pattern-matched, like `rintro` would, using the `with` keyword.
 * `convert_to (config := cfg) t` uses the configuration options in `cfg` to control the congruence
   rules (see `Congr!.Config`).
 -/
-syntax (name := convertTo) "convert_to" ("!")? Lean.Parser.Tactic.optConfig " ←"? ppSpace term
-  (" using " num)? (" with" (ppSpace colGt rintroPat)*)? (Parser.Tactic.location)? : tactic
+syntax (name := convertTo)
+  "convert_to" ("!")? Lean.Parser.Tactic.optConfig " ←"? ppSpace term (" using " num)?
+  (" with" (ppSpace colGt rintroPat)*)? (Parser.Tactic.location)?
+  : tactic
 
 @[tactic_alt convertTo]
-syntax (name := convert_to!) "convert_to!" Lean.Parser.Tactic.optConfig " ←"? ppSpace term
-  (" using " num)? (" with" (ppSpace colGt rintroPat)*)? (Parser.Tactic.location)? : tactic
+syntax (name := convert_to!)
+  "convert_to!" Lean.Parser.Tactic.optConfig " ←"? ppSpace term (" using " num)?
+  (" with" (ppSpace colGt rintroPat)*)? (Parser.Tactic.location)?
+  : tactic
 
 macro_rules
-| `(tactic| convert_to! $cfg $[←%$l]? $t $[using $n]? $[with $w]? $[$loc]?) =>
+  | `(tactic| convert_to! $cfg $[←%$l]? $t $[using $n]? $[with $w]? $[$loc]?) =>
     `(tactic| convert_to ! $cfg $[←%$l]? $t:term $[using $n]? $[with $w]? $[$loc]?)
 
 elab_rules : tactic
-| `(tactic| convert_to $[!%$expensive]? $cfg $[←%$sym]? $newType $[using $n]?
-    $[with $ps?*]? $[$loc?:location]?) => do
-  let n : ℕ := n |>.map (·.getNat) |>.getD 1
-  let config ← Convert.elabConfig expensive.isSome cfg
-  let patterns := (ps?.getD #[]).toList
-  withLocation (expandOptLocation (mkOptionalNode loc?))
-    (atLocal := fun fvarId ↦ do
-      let (e, gs) ← elabTermForConvert newType (← inferType (← fvarId.getType))
-      liftMetaTactic fun g ↦ do
-        let (g', gs') ← g.convertLocalDecl fvarId e sym.isSome n config patterns
-        return (gs' ++ (g' :: gs)))
-    (atTarget := do
-      let expectedType ← mkFreshExprMVar (mkSort (← getLevel (← getMainTarget)))
-      let (e, gs) ← elabTermForConvert (← `((id ?_ : $newType))) expectedType
-      liftMetaTactic fun g ↦
-        return (← g.convert e sym.isSome n config patterns) ++ gs)
-    (failed := fun _ ↦ throwError "convert_to failed")
+  | `(tactic| convert_to $[!%$expensive]? $cfg $[←%$sym]? $newType $[using $n]?
+      $[with $ps?*]? $[$loc?:location]?) => do
+    let n : ℕ := n |>.map (·.getNat) |>.getD 1
+    let config ← Convert.elabConfig expensive.isSome cfg
+    let patterns := (ps?.getD #[]).toList
+    withLocation (expandOptLocation (mkOptionalNode loc?))
+      (atLocal := fun fvarId ↦ do
+        let (e, gs) ← elabTermForConvert newType (← inferType (← fvarId.getType))
+        liftMetaTactic fun g ↦ do
+          let (g', gs') ← g.convertLocalDecl fvarId e sym.isSome n config patterns
+          return (gs' ++ (g' :: gs)))
+      (atTarget := do
+        let expectedType ← mkFreshExprMVar (mkSort (← getLevel (← getMainTarget)))
+        let (e, gs) ← elabTermForConvert (← `((id ?_ : $newType))) expectedType
+        liftMetaTactic fun g ↦ return (← g.convert e sym.isSome n config patterns) ++ gs)
+      (failed := fun _ ↦ throwError "convert_to failed")
 
 /--
 `ac_change t` on a goal `⊢ t'` changes the goal to `⊢ t` and adds new goals for proving the equality
@@ -345,9 +361,9 @@ syntax (name := acChange) "ac_change " term (" using " num)? : tactic
 syntax (name := acChange!) "ac_change! " term (" using " num)? : tactic
 
 macro_rules
-| `(tactic| ac_change $t $[using $n]?) =>
+  | `(tactic| ac_change $t $[using $n]?) =>
     `(tactic| convert_to $t:term $[using $n]? <;> try ac_rfl)
-| `(tactic| ac_change! $t $[using $n]?) =>
+  | `(tactic| ac_change! $t $[using $n]?) =>
     `(tactic| convert_to! $t:term $[using $n]? <;> try ac_rfl)
 
 end Mathlib.Tactic

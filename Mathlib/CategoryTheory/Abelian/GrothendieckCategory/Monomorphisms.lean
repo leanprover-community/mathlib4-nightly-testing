@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
 public import Mathlib.CategoryTheory.MorphismProperty.TransfiniteComposition
-
 import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Colim
 
 /-!
@@ -28,8 +27,8 @@ namespace IsGrothendieckAbelian
 
 open MorphismProperty
 
-instance {C : Type u} [Category.{v} C] [Abelian C] [IsGrothendieckAbelian.{w} C] :
-    IsStableUnderTransfiniteComposition.{w} (monomorphisms C) := by
+instance {C : Type u} [Category.{v} C] [Abelian C] [IsGrothendieckAbelian.{w} C]
+    : IsStableUnderTransfiniteComposition.{w} (monomorphisms C) := by
   infer_instance
 
 end IsGrothendieckAbelian

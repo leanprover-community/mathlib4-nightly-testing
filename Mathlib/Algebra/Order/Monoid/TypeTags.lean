@@ -14,32 +14,33 @@ public section
 
 variable {α : Type*}
 
-instance Multiplicative.isOrderedMonoid [AddCommMonoid α] [Preorder α] [IsOrderedAddMonoid α] :
-    IsOrderedMonoid (Multiplicative α) :=
-  { mul_le_mul_left := @IsOrderedAddMonoid.add_le_add_left α _ _ _ }
+instance Multiplicative.isOrderedMonoid [AddCommMonoid α] [Preorder α] [IsOrderedAddMonoid α]
+    : IsOrderedMonoid (Multiplicative α) := {
+  mul_le_mul_left := @IsOrderedAddMonoid.add_le_add_left α _ _ _
+}
 
-instance Additive.isOrderedAddMonoid [CommMonoid α] [Preorder α] [IsOrderedMonoid α] :
-    IsOrderedAddMonoid (Additive α) :=
-  { add_le_add_left := @IsOrderedMonoid.mul_le_mul_left α _ _ _ }
+instance Additive.isOrderedAddMonoid [CommMonoid α] [Preorder α] [IsOrderedMonoid α]
+    : IsOrderedAddMonoid (Additive α) := {
+  add_le_add_left := @IsOrderedMonoid.mul_le_mul_left α _ _ _
+}
 
 instance Multiplicative.isOrderedCancelMonoid
-    [AddCommMonoid α] [Preorder α] [IsOrderedCancelAddMonoid α] :
-    IsOrderedCancelMonoid (Multiplicative α) :=
-  { le_of_mul_le_mul_left := @IsOrderedCancelAddMonoid.le_of_add_le_add_left α _ _ _ }
+    [AddCommMonoid α] [Preorder α] [IsOrderedCancelAddMonoid α]
+    : IsOrderedCancelMonoid (Multiplicative α) := {
+  le_of_mul_le_mul_left := @IsOrderedCancelAddMonoid.le_of_add_le_add_left α _ _ _
+}
 
-instance Additive.isOrderedCancelAddMonoid
-    [CommMonoid α] [Preorder α] [IsOrderedCancelMonoid α] :
-    IsOrderedCancelAddMonoid (Additive α) :=
-  { le_of_add_le_add_left := @IsOrderedCancelMonoid.le_of_mul_le_mul_left α _ _ _ }
+instance Additive.isOrderedCancelAddMonoid [CommMonoid α] [Preorder α] [IsOrderedCancelMonoid α]
+    : IsOrderedCancelAddMonoid (Additive α) := {
+  le_of_add_le_add_left := @IsOrderedCancelMonoid.le_of_mul_le_mul_left α _ _ _
+}
 
-instance Multiplicative.canonicallyOrderedMul
-    [AddMonoid α] [Preorder α] [CanonicallyOrderedAdd α] :
-    CanonicallyOrderedMul (Multiplicative α) where
+instance Multiplicative.canonicallyOrderedMul [AddMonoid α] [Preorder α] [CanonicallyOrderedAdd α]
+    : CanonicallyOrderedMul (Multiplicative α) where
   le_mul_self _ _ := le_add_self (α := α)
   le_self_mul _ _ := le_self_add (α := α)
 
-instance Additive.canonicallyOrderedAdd
-    [Monoid α] [Preorder α] [CanonicallyOrderedMul α] :
-    CanonicallyOrderedAdd (Additive α) where
+instance Additive.canonicallyOrderedAdd [Monoid α] [Preorder α] [CanonicallyOrderedMul α]
+    : CanonicallyOrderedAdd (Additive α) where
   le_add_self _ _ := le_mul_self (α := α)
   le_self_add _ _ := le_self_mul (α := α)

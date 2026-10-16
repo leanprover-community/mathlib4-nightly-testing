@@ -30,8 +30,7 @@ protected def op (S : Subsemiring R) : Subsemiring Rᵐᵒᵖ where
 
 attribute [norm_cast] coe_op
 
-@[simp]
-theorem mem_op {x : Rᵐᵒᵖ} {S : Subsemiring R} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
+@[simp] theorem mem_op {x : Rᵐᵒᵖ} {S : Subsemiring R} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
 
 /-- Pull an opposite subsemiring back to a subsemiring along `MulOpposite.op` -/
 @[simps! coe toSubmonoid]
@@ -45,11 +44,9 @@ attribute [norm_cast] coe_unop
 @[simp]
 theorem mem_unop {x : R} {S : Subsemiring Rᵐᵒᵖ} : x ∈ S.unop ↔ MulOpposite.op x ∈ S := Iff.rfl
 
-@[simp]
-theorem unop_op (S : Subsemiring R) : S.op.unop = S := rfl
+@[simp] theorem unop_op (S : Subsemiring R) : S.op.unop = S := rfl
 
-@[simp]
-theorem op_unop (S : Subsemiring Rᵐᵒᵖ) : S.unop.op = S := rfl
+@[simp] theorem op_unop (S : Subsemiring Rᵐᵒᵖ) : S.unop.op = S := rfl
 
 /-! ### Lattice results -/
 
@@ -84,32 +81,25 @@ theorem unop_injective : (@Subsemiring.unop R _).Injective := opEquiv.symm.injec
 @[simp]
 theorem unop_inj {S T : Subsemiring Rᵐᵒᵖ} : S.unop = T.unop ↔ S = T := opEquiv.symm.eq_iff_eq
 
-@[simp]
-theorem op_bot : (⊥ : Subsemiring R).op = ⊥ := opEquiv.map_bot
+@[simp] theorem op_bot : (⊥ : Subsemiring R).op = ⊥ := opEquiv.map_bot
 
-@[simp]
-theorem op_eq_bot {S : Subsemiring R} : S.op = ⊥ ↔ S = ⊥ := op_injective.eq_iff' op_bot
+@[simp] theorem op_eq_bot {S : Subsemiring R} : S.op = ⊥ ↔ S = ⊥ := op_injective.eq_iff' op_bot
 
-@[simp]
-theorem unop_bot : (⊥ : Subsemiring Rᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
+@[simp] theorem unop_bot : (⊥ : Subsemiring Rᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
 
 @[simp]
 theorem unop_eq_bot {S : Subsemiring Rᵐᵒᵖ} : S.unop = ⊥ ↔ S = ⊥ := unop_injective.eq_iff' unop_bot
 
-@[simp]
-theorem op_top : (⊤ : Subsemiring R).op = ⊤ := rfl
+@[simp] theorem op_top : (⊤ : Subsemiring R).op = ⊤ := rfl
 
-@[simp]
-theorem op_eq_top {S : Subsemiring R} : S.op = ⊤ ↔ S = ⊤ := op_injective.eq_iff' op_top
+@[simp] theorem op_eq_top {S : Subsemiring R} : S.op = ⊤ ↔ S = ⊤ := op_injective.eq_iff' op_top
 
-@[simp]
-theorem unop_top : (⊤ : Subsemiring Rᵐᵒᵖ).unop = ⊤ := rfl
+@[simp] theorem unop_top : (⊤ : Subsemiring Rᵐᵒᵖ).unop = ⊤ := rfl
 
 @[simp]
 theorem unop_eq_top {S : Subsemiring Rᵐᵒᵖ} : S.unop = ⊤ ↔ S = ⊤ := unop_injective.eq_iff' unop_top
 
-theorem op_sup (S₁ S₂ : Subsemiring R) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op :=
-  opEquiv.map_sup _ _
+theorem op_sup (S₁ S₂ : Subsemiring R) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op := opEquiv.map_sup _ _
 
 theorem unop_sup (S₁ S₂ : Subsemiring Rᵐᵒᵖ) : (S₁ ⊔ S₂).unop = S₁.unop ⊔ S₂.unop :=
   opEquiv.symm.map_sup _ _

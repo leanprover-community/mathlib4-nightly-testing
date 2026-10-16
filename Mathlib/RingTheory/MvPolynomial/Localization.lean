@@ -38,14 +38,16 @@ attribute [local instance] algebraMvPolynomial
 If `S` is the localization of `R` at a submonoid `M`, then `MvPolynomial σ S`
 is the localization of `MvPolynomial σ R` at `M.map MvPolynomial.C`.
 
-See also `Polynomial.isLocalization` for the univariate case. -/
+See also `Polynomial.isLocalization` for the univariate case.
+-/
 instance isLocalization : IsLocalization (M.map <| C (σ := σ)) (MvPolynomial σ S) :=
   isLocalizedModule_iff_isLocalization.mp <| (isLocalizedModule_iff_isBaseChange M S _).mpr <|
     .of_equiv (algebraTensorAlgEquiv _ _).toLinearEquiv fun _ ↦ by simp
 
-lemma isLocalization_C_mk' (a : R) (m : M) :
-    C (IsLocalization.mk' S a m) = IsLocalization.mk' (MvPolynomial σ S) (C (σ := σ) a)
-      ⟨C m, Submonoid.mem_map_of_mem C m.property⟩ := by
+lemma isLocalization_C_mk' (a : R) (m : M)
+    : C (IsLocalization.mk' S a m)
+      = IsLocalization.mk' (MvPolynomial σ S) (C (σ := σ) a)
+        ⟨C m, Submonoid.mem_map_of_mem C m.property⟩ := by
   simp_rw [IsLocalization.eq_mk'_iff_mul_eq, algebraMap_def, map_C, ← map_mul,
     IsLocalization.mk'_spec]
 
@@ -58,11 +60,13 @@ open MvPolynomial
 variable (r : R) [IsLocalization.Away r S]
 
 set_option backward.privateInPublic true in
-/-- The canonical algebra map from `MvPolynomial Unit R` quotiented by
-`C r * X () - 1` to the localization of `R` away from `r`. -/
-private noncomputable
-def auxHom : (MvPolynomial Unit R) ⧸ (Ideal.span { C r * X () - 1 }) →ₐ[R] S :=
-  Ideal.Quotient.liftₐ (Ideal.span { C r * X () - 1}) (aeval (fun _ ↦ invSelf r)) <| by
+/--
+The canonical algebra map from `MvPolynomial Unit R` quotiented by
+`C r * X () - 1` to the localization of `R` away from `r`.
+-/
+private noncomputable def auxHom
+    : (MvPolynomial Unit R) ⧸ (Ideal.span { C r * X () - 1 }) →ₐ[R] S :=
+  Ideal.Quotient.liftₐ (Ideal.span {C r * X () - 1}) (aeval (fun _ ↦ invSelf r)) <| by
     intro p hp
     refine Submodule.span_induction ?_ ?_ ?_ ?_ hp
     · rintro p ⟨q, rfl⟩
@@ -74,13 +78,12 @@ def auxHom : (MvPolynomial Unit R) ⧸ (Ideal.span { C r * X () - 1 }) →ₐ[R]
       simp [hx]
 
 @[simp]
-private lemma auxHom_mk (p : MvPolynomial Unit R) :
-    auxHom S r p = aeval (S₁ := S) (fun _ ↦ invSelf r) p :=
+private lemma auxHom_mk (p : MvPolynomial Unit R)
+    : auxHom S r p = aeval (S₁ := S) (fun _ ↦ invSelf r) p :=
   rfl
 
 set_option backward.privateInPublic true in
-private noncomputable
-def auxInv : S →+* (MvPolynomial Unit R) ⧸ Ideal.span { C r * X () - 1 } :=
+private noncomputable def auxInv : S →+* (MvPolynomial Unit R) ⧸ Ideal.span { C r * X () - 1 } :=
   letI g : R →+* MvPolynomial Unit R ⧸ (Ideal.span { C r * X () - 1 }) :=
     (Ideal.Quotient.mk _).comp C
   IsLocalization.Away.lift (S := S) (g := g) r <| by
@@ -109,23 +112,24 @@ private lemma auxInv_auxHom : (auxInv S r).comp (auxHom (S := S) r).toRingHom = 
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- The canonical algebra isomorphism from `MvPolynomial Unit R` quotiented by
-`C r * X () - 1` to the localization of `R` away from `r`. -/
-noncomputable def mvPolynomialQuotientEquiv :
-    ((MvPolynomial Unit R) ⧸ Ideal.span { C r * X () - 1 }) ≃ₐ[R] S where
+/--
+The canonical algebra isomorphism from `MvPolynomial Unit R` quotiented by
+`C r * X () - 1` to the localization of `R` away from `r`.
+-/
+noncomputable def mvPolynomialQuotientEquiv
+    : ((MvPolynomial Unit R) ⧸ Ideal.span { C r * X () - 1 }) ≃ₐ[R] S where
   toFun := auxHom S r
   invFun := auxInv S r
-  left_inv x := by
-    simpa using congr($(auxInv_auxHom S r) x)
-  right_inv s := by
-    simpa using congr($(auxHom_auxInv S r) s)
+  left_inv x := by simpa using congr($(auxInv_auxHom S r) x)
+  right_inv s := by simpa using congr($(auxHom_auxInv S r) s)
   map_mul' := by simp
   map_add' := by simp
   commutes' := by simp
 
 @[simp]
-lemma mvPolynomialQuotientEquiv_apply (p : MvPolynomial Unit R) :
-    mvPolynomialQuotientEquiv S r (Ideal.Quotient.mk _ p) = aeval (S₁ := S) (fun _ ↦ invSelf r) p :=
+lemma mvPolynomialQuotientEquiv_apply (p : MvPolynomial Unit R)
+    : mvPolynomialQuotientEquiv S r (Ideal.Quotient.mk _ p)
+      = aeval (S₁ := S) (fun _ ↦ invSelf r) p :=
   rfl
 
 end IsLocalization.Away

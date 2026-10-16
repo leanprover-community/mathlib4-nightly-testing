@@ -30,7 +30,6 @@ See [miraglia2006introduction] Chapter 21 for a proof that `CompHaus` has enough
 
 @[expose] public section
 
-
 noncomputable section
 
 open CategoryTheory Function
@@ -50,14 +49,16 @@ instance projective_ultrafilter (X : Type*) : Projective (of <| Ultrafilter X) w
     convert!
       denseRange_pure.equalizer (g.hom.hom.continuous.comp hh) f.hom.hom.continuous
         _
-          -- This used to be `rw`, but we need `rw; rfl` after https://github.com/leanprover/lean4/pull/2644
+    -- This used to be `rw`, but we need `rw; rfl` after https://github.com/leanprover/lean4/pull/2644
 
     -- This used to be `rw`, but we need `rw; rfl` after https://github.com/leanprover/lean4/pull/2644
     rw [comp_assoc, ultrafilter_extend_extends, ← comp_assoc, this, id_comp]
     rfl
 
-/-- For any compact Hausdorff space `X`,
-  the natural map `Ultrafilter X → X` is a projective presentation. -/
+/--
+For any compact Hausdorff space `X`,
+the natural map `Ultrafilter X → X` is a projective presentation.
+-/
 def projectivePresentation (X : CompHaus) : ProjectivePresentation X where
   p := of <| Ultrafilter X
   f := CompHausLike.ofHom _ ⟨_, continuous_ultrafilter_extend id⟩
@@ -66,6 +67,7 @@ def projectivePresentation (X : CompHaus) : ProjectivePresentation X where
     ConcreteCategory.epi_of_surjective _ fun x =>
       ⟨(pure x : Ultrafilter X), congr_fun (ultrafilter_extend_extends (𝟙 X)) x⟩
 
-instance : EnoughProjectives CompHaus where presentation X := ⟨projectivePresentation X⟩
+instance : EnoughProjectives CompHaus where
+  presentation X := ⟨projectivePresentation X⟩
 
 end CompHaus

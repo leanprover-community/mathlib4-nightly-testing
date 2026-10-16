@@ -117,32 +117,24 @@ theorem invOf_mul_cancel_left' {_ : Invertible a} : ⅟a * (a * b) = b := by
   rw [← mul_assoc, invOf_mul_self, one_mul]
 example {G} [Group G] (a b : G) : a⁻¹ * (a * b) = b := inv_mul_cancel_left a b
 
-theorem invOf_mul_cancel_left [Invertible a] : ⅟a * (a * b) = b :=
-  invOf_mul_cancel_left' _ _
+theorem invOf_mul_cancel_left [Invertible a] : ⅟a * (a * b) = b := invOf_mul_cancel_left' _ _
 
 @[simp]
 theorem mul_invOf_cancel_left' {_ : Invertible a} : a * (⅟a * b) = b := by
   rw [← mul_assoc, mul_invOf_self, one_mul]
 example {G} [Group G] (a b : G) : a * (a⁻¹ * b) = b := mul_inv_cancel_left a b
 
-theorem mul_invOf_cancel_left [Invertible a] : a * (⅟a * b) = b :=
-  mul_invOf_cancel_left' a b
+theorem mul_invOf_cancel_left [Invertible a] : a * (⅟a * b) = b := mul_invOf_cancel_left' a b
 
-@[simp]
-theorem invOf_mul_cancel_right' {_ : Invertible b} : a * ⅟b * b = a := by
-  simp [mul_assoc]
+@[simp] theorem invOf_mul_cancel_right' {_ : Invertible b} : a * ⅟b * b = a := by simp [mul_assoc]
 example {G} [Group G] (a b : G) : a * b⁻¹ * b = a := inv_mul_cancel_right a b
 
-theorem invOf_mul_cancel_right [Invertible b] : a * ⅟b * b = a :=
-  invOf_mul_cancel_right' _ _
+theorem invOf_mul_cancel_right [Invertible b] : a * ⅟b * b = a := invOf_mul_cancel_right' _ _
 
-@[simp]
-theorem mul_invOf_cancel_right' {_ : Invertible b} : a * b * ⅟b = a := by
-  simp [mul_assoc]
+@[simp] theorem mul_invOf_cancel_right' {_ : Invertible b} : a * b * ⅟b = a := by simp [mul_assoc]
 example {G} [Group G] (a b : G) : a * b * b⁻¹ = a := mul_inv_cancel_right a b
 
-theorem mul_invOf_cancel_right [Invertible b] : a * b * ⅟b = a :=
-  mul_invOf_cancel_right' _ _
+theorem mul_invOf_cancel_right [Invertible b] : a * b * ⅟b = a := mul_invOf_cancel_right' _ _
 
 variable {a b}
 
@@ -160,8 +152,7 @@ theorem invOf_eq_iff_left [Invertible a] : ⅟a = b ↔ b * a = 1 :=
 
 variable (a b)
 
-theorem invertible_unique [Invertible a] [Invertible b]
-    (h : a = b) : ⅟a = ⅟b := by
+theorem invertible_unique [Invertible a] [Invertible b] (h : a = b) : ⅟a = ⅟b := by
   apply invOf_eq_right_inv
   rw [h, mul_invOf_self]
 
@@ -172,38 +163,35 @@ instance Invertible.subsingleton : Subsingleton (Invertible a) :=
 
 /-- If `a` is invertible and `a = b`, then `⅟a = ⅟b`. -/
 @[congr]
-theorem Invertible.congr [Invertible a] [Invertible b] (h : a = b) :
-    ⅟a = ⅟b :=
+theorem Invertible.congr [Invertible a] [Invertible b] (h : a = b) : ⅟a = ⅟b :=
   invertible_unique a b h
 
 end Monoid
 
 /-- If `r` is invertible and `s = r` and `si = ⅟r`, then `s` is invertible with `⅟s = si`. -/
 @[instance_reducible]
-def Invertible.copy' [MulOneClass α] {r : α} (hr : Invertible r) (s : α) (si : α) (hs : s = r)
-    (hsi : si = ⅟r) : Invertible s where
+def Invertible.copy'
+    [MulOneClass α] {r : α} (hr : Invertible r) (s : α) (si : α) (hs : s = r) (hsi : si = ⅟r)
+    : Invertible s where
   invOf := si
   invOf_mul_self := by rw [hs, hsi, invOf_mul_self]
   mul_invOf_self := by rw [hs, hsi, mul_invOf_self]
 
 /-- If `r` is invertible and `s = r`, then `s` is invertible. -/
-abbrev Invertible.copy [MulOneClass α] {r : α} (hr : Invertible r) (s : α) (hs : s = r) :
-    Invertible s :=
+abbrev Invertible.copy [MulOneClass α] {r : α} (hr : Invertible r) (s : α) (hs : s = r)
+    : Invertible s :=
   hr.copy' _ _ hs rfl
 
 /-- Each element of a group is invertible. -/
 @[instance_reducible]
-def invertibleOfGroup [Group α] (a : α) : Invertible a :=
-  ⟨a⁻¹, inv_mul_cancel a, mul_inv_cancel a⟩
+def invertibleOfGroup [Group α] (a : α) : Invertible a := ⟨a⁻¹, inv_mul_cancel a, mul_inv_cancel a⟩
 
 @[simp]
 theorem invOf_eq_group_inv [Group α] (a : α) [Invertible a] : ⅟a = a⁻¹ :=
   invOf_eq_right_inv (mul_inv_cancel a)
 
 /-- `1` is the inverse of itself -/
-@[instance_reducible]
-def invertibleOne [Monoid α] : Invertible (1 : α) :=
-  ⟨1, mul_one _, one_mul _⟩
+@[instance_reducible] def invertibleOne [Monoid α] : Invertible (1 : α) := ⟨1, mul_one _, one_mul _⟩
 
 @[simp]
 theorem invOf_one' [Monoid α] {_ : Invertible (1 : α)} : ⅟(1 : α) = 1 :=
@@ -229,13 +217,13 @@ def invertibleMul [Monoid α] (a b : α) [Invertible a] [Invertible b] : Inverti
   ⟨⅟b * ⅟a, by simp [← mul_assoc], by simp [← mul_assoc]⟩
 
 @[simp]
-theorem invOf_mul [Monoid α] (a b : α) [Invertible a] [Invertible b] [Invertible (a * b)] :
-    ⅟(a * b) = ⅟b * ⅟a :=
+theorem invOf_mul [Monoid α] (a b : α) [Invertible a] [Invertible b] [Invertible (a * b)]
+    : ⅟(a * b) = ⅟b * ⅟a :=
   invOf_eq_right_inv (by simp [← mul_assoc])
 
 /-- A copy of `invertibleMul` for dot notation. -/
-abbrev Invertible.mul [Monoid α] {a b : α} (_ : Invertible a) (_ : Invertible b) :
-    Invertible (a * b) :=
+abbrev Invertible.mul [Monoid α] {a b : α} (_ : Invertible a) (_ : Invertible b)
+    : Invertible (a * b) :=
   invertibleMul _ _
 
 section
@@ -265,12 +253,10 @@ variable [IsDedekindFiniteMonoid α] (a b : α)
 
 /-- An element in a Dedekind-finite monoid is invertible if it has a left inverse. -/
 @[instance_reducible]
-def invertibleOfLeftInverse (h : b * a = 1) : Invertible a :=
-  ⟨b, h, mul_eq_one_symm h⟩
+def invertibleOfLeftInverse (h : b * a = 1) : Invertible a := ⟨b, h, mul_eq_one_symm h⟩
 
 /-- An element in a Dedekind-finite monoid is invertible if it has a right inverse. -/
 @[instance_reducible]
-def invertibleOfRightInverse (h : a * b = 1) : Invertible a :=
-  ⟨b, mul_eq_one_symm h, h⟩
+def invertibleOfRightInverse (h : a * b = 1) : Invertible a := ⟨b, mul_eq_one_symm h, h⟩
 
 end

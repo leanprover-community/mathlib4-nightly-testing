@@ -24,7 +24,8 @@ open Opposite
 -- See note [category theory universes]
 universe v v₁ v₂ u u₁ u₂
 
-/-- A quiver `G` on a type `V` of vertices assigns to every pair `a b : V` of vertices
+/--
+A quiver `G` on a type `V` of vertices assigns to every pair `a b : V` of vertices
 a type `a ⟶ b` of arrows from `a` to `b`. This is hence a form of directed multigraphs.
 
 For graphs with no repeated edges, one can either use `Quiver.IsThin` to demand
@@ -50,8 +51,7 @@ infixr:10 " ⟶ " => Quiver.Hom
 namespace Quiver
 
 /-- `Vᵒᵖ` reverses the direction of all arrows of `V`. -/
-instance opposite {V} [Quiver V] : Quiver Vᵒᵖ :=
-  ⟨fun a b => (unop b ⟶ unop a)ᵒᵖ⟩
+instance opposite {V} [Quiver V] : Quiver Vᵒᵖ := ⟨fun a b => (unop b ⟶ unop a)ᵒᵖ⟩
 
 /-- The opposite of an arrow in `V`. -/
 @[implicit_reducible, to_dual self]
@@ -67,8 +67,10 @@ def Hom.opEquiv {V} [Quiver V] {X Y : V} : (X ⟶ Y) ≃ (Opposite.op Y ⟶ Oppo
   toFun := Opposite.op
   invFun := Opposite.unop
 
-/-- To show that two Homs from the opposite category agree, it suffices to show they agree
-in the original category. -/
+/--
+To show that two Homs from the opposite category agree, it suffices to show they agree
+in the original category.
+-/
 @[ext low, to_dual self]
 theorem Hom.unop_ext {V} [Quiver V] {X Y : Vᵒᵖ} {f g : X ⟶ Y} (h : f.unop = g.unop) : f = g :=
   Hom.opEquiv.symm.injective h
@@ -86,28 +88,30 @@ abbrev IsThin (V : Type u) [Quiver V] : Prop := ∀ a b : V, Subsingleton (a ⟶
 
 to_dual_insert_cast_fun IsThin := fun inst a b ↦ inst b a, fun inst a b ↦ inst b a
 
-
 section
 
 variable {V : Type*} [Quiver V] {X Y X' Y' : V}
 
-/-- An arrow in a quiver can be transported across equalities between the source and target
-objects. -/
+/--
+An arrow in a quiver can be transported across equalities between the source and target
+objects.
+-/
 @[to_dual self (reorder := X Y, X' Y', hX hY)]
 def homOfEq (f : X ⟶ Y) (hX : X = X') (hY : Y = Y') : X' ⟶ Y' := by
   subst hX hY
   exact f
 
 @[simp, to_dual self]
-lemma homOfEq_trans (f : X ⟶ Y) (hX : X = X') (hY : Y = Y')
-    {X'' Y'' : V} (hX' : X' = X'') (hY' : Y' = Y'') :
-    homOfEq (homOfEq f hX hY) hX' hY' = homOfEq f (hX.trans hX') (hY.trans hY') := by
+lemma homOfEq_trans
+    (f : X ⟶ Y) (hX : X = X') (hY : Y = Y') {X'' Y'' : V} (hX' : X' = X'') (hY' : Y' = Y'')
+    : homOfEq (homOfEq f hX hY) hX' hY' = homOfEq f (hX.trans hX') (hY.trans hY') := by
   subst hX hY hX' hY'
   rfl
 
 @[to_dual self]
-lemma homOfEq_injective (hX : X = X') (hY : Y = Y')
-    {f g : X ⟶ Y} (h : Quiver.homOfEq f hX hY = Quiver.homOfEq g hX hY) : f = g := by
+lemma homOfEq_injective
+    (hX : X = X') (hY : Y = Y') {f g : X ⟶ Y} (h : Quiver.homOfEq f hX hY = Quiver.homOfEq g hX hY)
+    : f = g := by
   subst hX hY
   exact h
 
@@ -115,20 +119,21 @@ lemma homOfEq_injective (hX : X = X') (hY : Y = Y')
 lemma homOfEq_rfl (f : X ⟶ Y) : Quiver.homOfEq f rfl rfl = f := rfl
 
 @[to_dual self]
-lemma heq_of_homOfEq_ext (hX : X = X') (hY : Y = Y') {f : X ⟶ Y} {f' : X' ⟶ Y'}
-    (e : Quiver.homOfEq f hX hY = f') : f ≍ f' := by
+lemma heq_of_homOfEq_ext
+    (hX : X = X') (hY : Y = Y') {f : X ⟶ Y} {f' : X' ⟶ Y'} (e : Quiver.homOfEq f hX hY = f')
+    : f ≍ f' := by
   subst hX hY
   rw [Quiver.homOfEq_rfl] at e
   rw [e]
 
 @[to_dual self]
-lemma homOfEq_eq_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X = X') (hY : Y = Y') :
-    Quiver.homOfEq f hX hY = g ↔ f = Quiver.homOfEq g hX.symm hY.symm := by
+lemma homOfEq_eq_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X = X') (hY : Y = Y')
+    : Quiver.homOfEq f hX hY = g ↔ f = Quiver.homOfEq g hX.symm hY.symm := by
   subst hX hY; simp
 
 @[to_dual self]
-lemma eq_homOfEq_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X' = X) (hY : Y' = Y) :
-    f = Quiver.homOfEq g hX hY ↔ Quiver.homOfEq f hX.symm hY.symm = g := by
+lemma eq_homOfEq_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X' = X) (hY : Y' = Y)
+    : f = Quiver.homOfEq g hX hY ↔ Quiver.homOfEq f hX.symm hY.symm = g := by
   subst hX hY; simp
 
 @[to_dual self]
@@ -136,15 +141,14 @@ lemma homOfEq_heq (hX : X = X') (hY : Y = Y') (f : X ⟶ Y) : homOfEq f hX hY �
   (heq_of_homOfEq_ext hX hY rfl).symm
 
 @[to_dual self]
-lemma homOfEq_heq_left_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X = X') (hY : Y = Y') :
-    homOfEq f hX hY ≍ g ↔ f ≍ g := by
+lemma homOfEq_heq_left_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X = X') (hY : Y = Y')
+    : homOfEq f hX hY ≍ g ↔ f ≍ g := by
   cases hX; cases hY; rfl
 
 @[to_dual self]
-lemma homOfEq_heq_right_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X' = X) (hY : Y' = Y) :
-    f ≍ homOfEq g hX hY ↔ f ≍ g := by
+lemma homOfEq_heq_right_iff (f : X ⟶ Y) (g : X' ⟶ Y') (hX : X' = X) (hY : Y' = Y)
+    : f ≍ homOfEq g hX hY ↔ f ≍ g := by
   cases hX; cases hY; rfl
-
 
 end
 

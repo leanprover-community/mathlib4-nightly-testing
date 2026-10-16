@@ -22,8 +22,10 @@ info: @Function.Bijective ℤ ℤ (λ, Int.succ *)
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℤ → ℤ)
-  for keys in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun x : Int => Int.succ ($m x)) do
-      logInfo m! "{← keysAsPattern keys}"
+  for keys
+      in ← encodeExprWithEta (labelledStars := true)
+        q(Function.Bijective fun x : Int => Int.succ ($m x)) do
+    logInfo m!"{← keysAsPattern keys}"
 
 /--
 info: And (@Function.Bijective ℤ ℤ Int.succ) (@Function.Bijective ℤ ℤ Int.succ)
@@ -37,9 +39,11 @@ info: And (@Function.Bijective ℤ ℤ (λ, Int.succ *)) (@Function.Bijective �
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℤ → ℤ)
-  for keys in ← encodeExprWithEta (labelledStars := true) q((Function.Bijective fun x : Int => Int.succ ($m x)) ∧
-      Function.Bijective fun x : Int => Int.succ ($m x)) do
-    logInfo m! "{← keysAsPattern keys}"
+  for keys
+      in ← encodeExprWithEta (labelledStars := true)
+        q((Function.Bijective fun x : Int => Int.succ ($m x)) ∧
+          Function.Bijective fun x : Int => Int.succ ($m x)) do
+    logInfo m!"{← keysAsPattern keys}"
 
 /--
 info: @Eq *0 (@HAdd.hAdd *0 *0 * * (@HAdd.hAdd *0 *0 * * *1 *1) *2) (@HAdd.hAdd *0 *0 * * *1 a)
@@ -50,9 +54,9 @@ run_meta do
   let _ ← mkFreshExprMVarQ q(Add $t)
   let m ← mkFreshExprMVarQ q($t)
   let m' ← mkFreshExprMVarQ q($t)
-  withLocalDeclDQ `a q($t) fun n => do
-  for keys in ← encodeExprWithEta (labelledStars := true) q($m+$m + $m' = $m + $n) do
-    logInfo m! "{← keysAsPattern keys}"
+  withLocalDeclDQ `a (q($t)) fun n => do
+    for keys in ← encodeExprWithEta (labelledStars := true) q($m+$m + $m' = $m + $n) do
+      logInfo m!"{← keysAsPattern keys}"
 
 /--
 info: @Function.Bijective *0 *0 (@HAdd.hAdd *0 *0 * * *)
@@ -65,8 +69,9 @@ run_meta do
   let _ ← mkFreshExprMVarQ q(Add $t)
   let m ← mkFreshExprMVarQ q($t → $t)
   let m' ← mkFreshExprMVarQ q($t → $t)
-  for keys in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun x => $m x + $m' x) do
-    logInfo m! "{← keysAsPattern keys}"
+  for keys
+      in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun x => $m x + $m' x) do
+    logInfo m!"{← keysAsPattern keys}"
 
 /-- info: @OfNat.ofNat ℕ 2 * -/
 #guard_msgs in
@@ -76,7 +81,6 @@ run_meta do
 /-- info: @LE.le ℕ * 3 2 -/
 #guard_msgs in
 #log_keys 2 ≥ 3
-
 
 /-- info: ℕ → @Eq ℕ #0 5 -/
 #guard_msgs in
@@ -119,8 +123,6 @@ open Finset in
 #guard_msgs in
 #log_keys Int.sqrt $ (-id : Int → Int) 6
 
-
-
 /--
 info: @Function.Bijective
   ℕ
@@ -150,7 +152,6 @@ info: Nat.sqrt
 #guard_msgs in
 #log_keys Nat.sqrt $ ((2•1+ᵥid)+4*5/id^9 : Nat → Nat) 5
 
-
 /-- info: @Function.Bijective ℕ ℕ (λ, @HPow.hPow ℕ ℕ * * #0 #0) -/
 #guard_msgs in
 #log_keys Function.Bijective fun x => x^x
@@ -171,7 +172,6 @@ info: Nat.sqrt
 #guard_msgs in
 #log_keys id fun (α : Type) [Ring α] => (2•3 : α)
 
-
 /-- info: @Function.Bijective ℕ ℕ (λ, 4) -/
 #guard_msgs in
 #log_keys Function.Bijective fun _ : Nat => 4
@@ -180,32 +180,32 @@ info: Nat.sqrt
 #guard_msgs in
 #log_keys fun _ : Nat => 4
 
-
 -- metavariables in a lambda body
 /-- info: @Function.Bijective ℕ ℕ (λ, *0) -/
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℕ)
   for keys in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun _ : Nat => $m) do
-    logInfo m! "{← keysAsPattern keys}"
+    logInfo m!"{← keysAsPattern keys}"
 
 /-- info: λ, *0 -/
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℕ)
   for keys in ← encodeExprWithEta (labelledStars := true) q(fun _ : Nat => $m) do
-    logInfo m! "{← keysAsPattern keys}"
+    logInfo m!"{← keysAsPattern keys}"
 
 /-- info: @Function.Bijective ℕ ℕ (λ, *) -/
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℕ → ℕ → ℕ)
-  for keys in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun x : Nat => $m x x) do
-    logInfo m! "{← keysAsPattern keys}"
+  for keys
+      in ← encodeExprWithEta (labelledStars := true) q(Function.Bijective fun x : Nat => $m x x) do
+    logInfo m!"{← keysAsPattern keys}"
 
 /-- info: λ, * -/
 #guard_msgs in
 run_meta do
   let m ← mkFreshExprMVarQ q(ℕ → ℕ → ℕ)
   for keys in ← encodeExprWithEta (labelledStars := true) q(fun x : Nat => $m x x) do
-    logInfo m! "{← keysAsPattern keys}"
+    logInfo m!"{← keysAsPattern keys}"

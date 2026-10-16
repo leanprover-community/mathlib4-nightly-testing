@@ -65,18 +65,20 @@ variable {R A : Type*} [Semiring R]
 
 namespace MonoidAlgebra
 
-/-- The coefficient of a monomial in a product `f * g` that can be reached in at most one way
-as a product of monomials in the supports of `f` and `g` is a product. -/
+/--
+The coefficient of a monomial in a product `f * g` that can be reached in at most one way
+as a product of monomials in the supports of `f` and `g` is a product.
+-/
 @[to_additive (dont_translate := R) coeff_mul_add_of_uniqueAdd
-/-- The coefficient of a monomial in a product `f * g` that can be reached in at most one way
+  /-- The coefficient of a monomial in a product `f * g` that can be reached in at most one way
 as a product of monomials in the supports of `f` and `g` is a product. -/]
-theorem coeff_mul_mul_of_uniqueMul [Mul A] {f g : R[A]} {a0 b0 : A}
-    (h : UniqueMul f.coeff.support g.coeff.support a0 b0) :
-    (f * g).coeff (a0 * b0) = f.coeff a0 * g.coeff b0 := by
+theorem coeff_mul_mul_of_uniqueMul
+    [Mul A] {f g : R[A]} {a0 b0 : A} (h : UniqueMul f.coeff.support g.coeff.support a0 b0)
+    : (f * g).coeff (a0 * b0) = f.coeff a0 * g.coeff b0 := by
   classical
   simp_rw [coeff_mul, sum, ← Finset.sum_product']
-  refine (Finset.sum_eq_single (a0, b0) ?_ ?_).trans (ite_eq_left rfl) <;>
-    simp_rw [Finset.mem_product]
+  refine (Finset.sum_eq_single (a0, b0) ?_ ?_).trans (ite_eq_left rfl)
+    <;> simp_rw [Finset.mem_product]
   · refine fun ab hab hne ↦ ite_eq_right (fun he ↦ hne <| Prod.ext ?_ ?_)
     exacts [(h hab.1 hab.2 he).1, (h hab.1 hab.2 he).2]
   · refine fun hnotMem ↦ ite_eq_right_iff.mpr (fun _ ↦ ?_)
@@ -98,29 +100,29 @@ instance [NoZeroDivisors R] [Mul A] [UniqueProds A] : NoZeroDivisors R[A] where
     exact coeff_mul_mul_of_uniqueMul h ▸ mul_ne_zero a0 b0
 
 @[to_additive (dont_translate := R)]
-instance [IsCancelAdd R] [IsLeftCancelMulZero R] [Mul A] [UniqueProds A] :
-    IsLeftCancelMulZero R[A] where
+instance [IsCancelAdd R] [IsLeftCancelMulZero R] [Mul A] [UniqueProds A]
+    : IsLeftCancelMulZero R[A] where
   mul_left_cancel_of_ne_zero {f} hf {g₁ g₂} eq := by
     classical
-    induction hg : g₁.coeff.support ∪ g₂.coeff.support
-      using Finset.eraseInduction generalizing g₁ g₂ with
+    induction hg : g₁.coeff.support ∪ g₂.coeff.support using Finset.eraseInduction generalizing
+      g₁ g₂ with
     | _ s ih =>
-    obtain h | h := s.eq_empty_or_nonempty <;> subst s
-    · simp_all
-    simp only [ne_eq, ← coeff_eq_zero, ← support_nonempty_iff] at hf
-    obtain ⟨af, haf, ag, hag, uniq⟩ := UniqueProds.uniqueMul_of_nonempty hf h
-    have h := coeff_mul_mul_of_uniqueMul (uniq.mono subset_rfl Finset.subset_union_left)
-    dsimp only at eq
-    rw [eq, coeff_mul_mul_of_uniqueMul (uniq.mono subset_rfl Finset.subset_union_right)] at h
-    have := mul_left_cancel₀ (mem_support_iff.mp haf) h
-    rw [← g₁.erase_add_single ag, ← g₂.erase_add_single ag, this] at eq ⊢
-    simp_rw [mul_add, add_right_cancel_iff] at eq
-    rw [ih ag hag eq]
-    simp [Finset.erase_union_distrib]
+      obtain h | h := s.eq_empty_or_nonempty <;> subst s
+      · simp_all
+      simp only [ne_eq, ← coeff_eq_zero, ← support_nonempty_iff] at hf
+      obtain ⟨af, haf, ag, hag, uniq⟩ := UniqueProds.uniqueMul_of_nonempty hf h
+      have h := coeff_mul_mul_of_uniqueMul (uniq.mono subset_rfl Finset.subset_union_left)
+      dsimp only at eq
+      rw [eq, coeff_mul_mul_of_uniqueMul (uniq.mono subset_rfl Finset.subset_union_right)] at h
+      have := mul_left_cancel₀ (mem_support_iff.mp haf) h
+      rw [← g₁.erase_add_single ag, ← g₂.erase_add_single ag, this] at eq ⊢
+      simp_rw [mul_add, add_right_cancel_iff] at eq
+      rw [ih ag hag eq]
+      simp [Finset.erase_union_distrib]
 
 @[to_additive (dont_translate := R)]
-instance [IsCancelAdd R] [IsRightCancelMulZero R] [Mul A] [UniqueProds A] :
-    IsRightCancelMulZero R[A] :=
+instance [IsCancelAdd R] [IsRightCancelMulZero R] [Mul A] [UniqueProds A]
+    : IsRightCancelMulZero R[A] :=
   MulOpposite.isLeftCancelMulZero_iff.mp <|
     MonoidAlgebra.opRingEquiv.injective.isLeftCancelMulZero _ (map_zero _) (map_mul _)
 

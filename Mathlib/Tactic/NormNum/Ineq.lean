@@ -23,10 +23,12 @@ namespace Mathlib.Meta.NormNum
 
 variable {u : Level}
 
-/-- Helper function to synthesize typed `Semiring α` `PartialOrder α` `IsOrderedRing α`
-expressions. -/
-def inferOrderedSemiring (α : Q(Type u)) : MetaM <|
-    (_ : Q(Semiring $α)) × (_ : Q(PartialOrder $α)) × Q(IsOrderedRing $α) :=
+/--
+Helper function to synthesize typed `Semiring α` `PartialOrder α` `IsOrderedRing α`
+expressions.
+-/
+def inferOrderedSemiring (α : Q(Type u))
+    : MetaM <| (_ : Q(Semiring $α)) × (_ : Q(PartialOrder $α)) × Q(IsOrderedRing $α) :=
   let go := do
     let semiring ← synthInstanceQ q(Semiring $α)
     let partialOrder ← synthInstanceQ q(PartialOrder $α)
@@ -34,10 +36,12 @@ def inferOrderedSemiring (α : Q(Type u)) : MetaM <|
     return ⟨semiring, partialOrder, isOrderedRing⟩
   go <|> throwError "not an ordered semiring"
 
-/-- Helper function to synthesize typed `Ring α` `PartialOrder α` `IsOrderedRing α`
-expressions. -/
-def inferOrderedRing (α : Q(Type u)) : MetaM <|
-    (_ : Q(Ring $α)) × (_ : Q(PartialOrder $α)) × Q(IsOrderedRing $α) :=
+/--
+Helper function to synthesize typed `Ring α` `PartialOrder α` `IsOrderedRing α`
+expressions.
+-/
+def inferOrderedRing (α : Q(Type u))
+    : MetaM <| (_ : Q(Ring $α)) × (_ : Q(PartialOrder $α)) × Q(IsOrderedRing $α) :=
   let go := do
     let ring ← synthInstanceQ q(Ring $α)
     let partialOrder ← synthInstanceQ q(PartialOrder $α)
@@ -45,10 +49,12 @@ def inferOrderedRing (α : Q(Type u)) : MetaM <|
     return ⟨ring, partialOrder, isOrderedRing⟩
   go <|> throwError "not an ordered ring"
 
-/-- Helper function to synthesize typed `Semifield α` `LinearOrder α` `IsStrictOrderedRing α`
-expressions. -/
-def inferLinearOrderedSemifield (α : Q(Type u)) : MetaM <|
-    (_ : Q(Semifield $α)) × (_ : Q(LinearOrder $α)) × Q(IsStrictOrderedRing $α) :=
+/--
+Helper function to synthesize typed `Semifield α` `LinearOrder α` `IsStrictOrderedRing α`
+expressions.
+-/
+def inferLinearOrderedSemifield (α : Q(Type u))
+    : MetaM <| (_ : Q(Semifield $α)) × (_ : Q(LinearOrder $α)) × Q(IsStrictOrderedRing $α) :=
   let go := do
     let semifield ← synthInstanceQ q(Semifield $α)
     let linearOrder ← synthInstanceQ q(LinearOrder $α)
@@ -56,10 +62,12 @@ def inferLinearOrderedSemifield (α : Q(Type u)) : MetaM <|
     return ⟨semifield, linearOrder, isStrictOrderedRing⟩
   go <|> throwError "not a linear ordered semifield"
 
-/-- Helper function to synthesize typed `Field α` `LinearOrder α` `IsStrictOrderedRing α`
-expressions. -/
-def inferLinearOrderedField (α : Q(Type u)) : MetaM <|
-    (_ : Q(Field $α)) × (_ : Q(LinearOrder $α)) × Q(IsStrictOrderedRing $α) :=
+/--
+Helper function to synthesize typed `Field α` `LinearOrder α` `IsStrictOrderedRing α`
+expressions.
+-/
+def inferLinearOrderedField (α : Q(Type u))
+    : MetaM <| (_ : Q(Field $α)) × (_ : Q(LinearOrder $α)) × Q(IsStrictOrderedRing $α) :=
   let go := do
     let field ← synthInstanceQ q(Field $α)
     let linearOrder ← synthInstanceQ q(LinearOrder $α)
@@ -69,18 +77,20 @@ def inferLinearOrderedField (α : Q(Type u)) : MetaM <|
 
 variable {α : Type*}
 
-theorem isNat_le_true [Semiring α] [PartialOrder α] [IsOrderedRing α] : {a b : α} → {a' b' : ℕ} →
-    IsNat a a' → IsNat b b' → Nat.ble a' b' = true → a ≤ b
+theorem isNat_le_true [Semiring α] [PartialOrder α] [IsOrderedRing α]
+    : {a b : α} → {a' b' : ℕ} → IsNat a a' → IsNat b b' → Nat.ble a' b' = true → a ≤ b
   | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, h => Nat.mono_cast (Nat.le_of_ble_eq_true h)
 
-theorem isNat_lt_false [Semiring α] [PartialOrder α] [IsOrderedRing α] {a b : α} {a' b' : ℕ}
-    (ha : IsNat a a') (hb : IsNat b b') (h : Nat.ble b' a' = true) : ¬a < b :=
+theorem isNat_lt_false
+    [Semiring α] [PartialOrder α] [IsOrderedRing α]
+    {a b : α} {a' b' : ℕ} (ha : IsNat a a') (hb : IsNat b b') (h : Nat.ble b' a' = true)
+    : ¬ a < b :=
   not_lt_of_ge (isNat_le_true hb ha h)
 
-theorem isNNRat_le_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    {a b : α} → {na nb : ℕ} → {da db : ℕ} →
-    IsNNRat a na da → IsNNRat b nb db →
-    decide (Nat.mul na (db) ≤ Nat.mul nb (da)) → a ≤ b
+theorem isNNRat_le_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
+    : {a b : α} → {na nb : ℕ} → {da db : ℕ} → IsNNRat a na da → IsNNRat b nb db
+      → decide (Nat.mul na (db) ≤ Nat.mul nb (da))
+      → a ≤ b
   | _, _, _, _, da, db, ⟨_, rfl⟩, ⟨_, rfl⟩, h => by
     have h := (Nat.cast_le (α := α)).mpr <| of_decide_eq_true h
     have ha : 0 ≤ ⅟(da : α) := invOf_nonneg.mpr <| Nat.cast_nonneg da
@@ -90,9 +100,10 @@ theorem isNNRat_le_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] 
     simp only [Nat.mul_eq, Nat.cast_mul, mul_invOf_cancel_right'] at h
     rwa [Nat.commute_cast] at h
 
-theorem isNNRat_lt_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    {a b : α} → {na nb : ℕ} → {da db : ℕ} →
-    IsNNRat a na da → IsNNRat b nb db → decide (na * db < nb * da) → a < b
+theorem isNNRat_lt_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
+    : {a b : α} → {na nb : ℕ} → {da db : ℕ} → IsNNRat a na da → IsNNRat b nb db
+      → decide (na * db < nb * da)
+      → a < b
   | _, _, _, _, da, db, ⟨_, rfl⟩, ⟨_, rfl⟩, h => by
     have h := (Nat.cast_lt (α := α)).mpr <| of_decide_eq_true h
     have ha : 0 < ⅟(da : α) := pos_invOf_of_invertible_cast da
@@ -102,20 +113,24 @@ theorem isNNRat_lt_true [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] 
     simp? at h says simp only [Nat.cast_mul, mul_invOf_cancel_right'] at h
     rwa [Nat.commute_cast] at h
 
-theorem isNNRat_le_false [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem isNNRat_le_false
+    [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b : α} {na nb : ℕ} {da db : ℕ}
-    (ha : IsNNRat a na da) (hb : IsNNRat b nb db) (h : decide (nb * da < na * db)) : ¬a ≤ b :=
+    (ha : IsNNRat a na da) (hb : IsNNRat b nb db) (h : decide (nb * da < na * db))
+    : ¬ a ≤ b :=
   not_le_of_gt (isNNRat_lt_true hb ha h)
 
-theorem isNNRat_lt_false [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem isNNRat_lt_false
+    [Semiring α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b : α} {na nb : ℕ} {da db : ℕ}
-    (ha : IsNNRat a na da) (hb : IsNNRat b nb db) (h : decide (nb * da ≤ na * db)) : ¬a < b :=
+    (ha : IsNNRat a na da) (hb : IsNNRat b nb db) (h : decide (nb * da ≤ na * db))
+    : ¬ a < b :=
   not_lt_of_ge (isNNRat_le_true hb ha h)
 
-theorem isRat_le_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    {a b : α} → {na nb : ℤ} → {da db : ℕ} →
-    IsRat a na da → IsRat b nb db →
-    decide (Int.mul na (.ofNat db) ≤ Int.mul nb (.ofNat da)) → a ≤ b
+theorem isRat_le_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
+    : {a b : α} → {na nb : ℤ} → {da db : ℕ} → IsRat a na da → IsRat b nb db
+      → decide (Int.mul na (.ofNat db) ≤ Int.mul nb (.ofNat da))
+      → a ≤ b
   | _, _, _, _, da, db, ⟨_, rfl⟩, ⟨_, rfl⟩, h => by
     have h := Int.cast_mono (R := α) <| of_decide_eq_true h
     have ha : 0 ≤ ⅟(da : α) := invOf_nonneg.mpr <| Nat.cast_nonneg da
@@ -123,12 +138,14 @@ theorem isRat_le_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α] :
     have h := (mul_le_mul_of_nonneg_left · hb) <| mul_le_mul_of_nonneg_right h ha
     rw [← mul_assoc, Int.commute_cast] at h
     simp only [Int.ofNat_eq_natCast, Int.mul_def, Int.cast_mul, Int.cast_natCast,
-      mul_invOf_cancel_right'] at h
+        mul_invOf_cancel_right']
+      at h
     rwa [Int.commute_cast] at h
 
-theorem isRat_lt_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    {a b : α} → {na nb : ℤ} → {da db : ℕ} →
-    IsRat a na da → IsRat b nb db → decide (na * db < nb * da) → a < b
+theorem isRat_lt_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
+    : {a b : α} → {na nb : ℤ} → {da db : ℕ} → IsRat a na da → IsRat b nb db
+      → decide (na * db < nb * da)
+      → a < b
   | _, _, _, _, da, db, ⟨_, rfl⟩, ⟨_, rfl⟩, h => by
     have h := Int.cast_strictMono (R := α) <| of_decide_eq_true h
     have ha : 0 < ⅟(da : α) := pos_invOf_of_invertible_cast da
@@ -138,52 +155,61 @@ theorem isRat_lt_true [Ring α] [LinearOrder α] [IsStrictOrderedRing α] :
     simp? at h says simp only [Int.cast_mul, Int.cast_natCast, mul_invOf_cancel_right'] at h
     rwa [Int.commute_cast] at h
 
-theorem isRat_le_false [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem isRat_le_false
+    [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b : α} {na nb : ℤ} {da db : ℕ}
-    (ha : IsRat a na da) (hb : IsRat b nb db) (h : decide (nb * da < na * db)) : ¬a ≤ b :=
+    (ha : IsRat a na da) (hb : IsRat b nb db) (h : decide (nb * da < na * db))
+    : ¬ a ≤ b :=
   not_le_of_gt (isRat_lt_true hb ha h)
 
-theorem isRat_lt_false [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
+theorem isRat_lt_false
+    [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
     {a b : α} {na nb : ℤ} {da db : ℕ}
-    (ha : IsRat a na da) (hb : IsRat b nb db) (h : decide (nb * da ≤ na * db)) : ¬a < b :=
+    (ha : IsRat a na da) (hb : IsRat b nb db) (h : decide (nb * da ≤ na * db))
+    : ¬ a < b :=
   not_lt_of_ge (isRat_le_true hb ha h)
 
 /-! ### (In)equalities -/
 
-theorem isNat_lt_true [Semiring α] [PartialOrder α] [IsOrderedRing α] [CharZero α] :
-    {a b : α} → {a' b' : ℕ} →
-    IsNat a a' → IsNat b b' → Nat.ble b' a' = false → a < b
-  | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, h =>
-    Nat.cast_lt.2 <| ble_eq_false.1 h
+theorem isNat_lt_true [Semiring α] [PartialOrder α] [IsOrderedRing α] [CharZero α]
+    : {a b : α} → {a' b' : ℕ} → IsNat a a' → IsNat b b' → Nat.ble b' a' = false → a < b
+  | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, h => Nat.cast_lt.2 <| ble_eq_false.1 h
 
-theorem isNat_le_false [Semiring α] [PartialOrder α] [IsOrderedRing α] [CharZero α]
-    {a b : α} {a' b' : ℕ}
-    (ha : IsNat a a') (hb : IsNat b b') (h : Nat.ble a' b' = false) : ¬a ≤ b :=
+theorem isNat_le_false
+    [Semiring α] [PartialOrder α] [IsOrderedRing α] [CharZero α]
+    {a b : α} {a' b' : ℕ} (ha : IsNat a a') (hb : IsNat b b') (h : Nat.ble a' b' = false)
+    : ¬ a ≤ b :=
   not_le_of_gt (isNat_lt_true hb ha h)
 
-theorem isInt_le_true [Ring α] [PartialOrder α] [IsOrderedRing α] : {a b : α} → {a' b' : ℤ} →
-    IsInt a a' → IsInt b b' → decide (a' ≤ b') → a ≤ b
+theorem isInt_le_true [Ring α] [PartialOrder α] [IsOrderedRing α]
+    : {a b : α} → {a' b' : ℤ} → IsInt a a' → IsInt b b' → decide (a' ≤ b') → a ≤ b
   | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, h => Int.cast_mono <| of_decide_eq_true h
 
-theorem isInt_lt_true [Ring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α] :
-    {a b : α} → {a' b' : ℤ} →
-    IsInt a a' → IsInt b b' → decide (a' < b') → a < b
+theorem isInt_lt_true [Ring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α]
+    : {a b : α} → {a' b' : ℤ} → IsInt a a' → IsInt b b' → decide (a' < b') → a < b
   | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, h => Int.cast_lt.2 <| of_decide_eq_true h
 
-theorem isInt_le_false [Ring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α]
-    {a b : α} {a' b' : ℤ}
-    (ha : IsInt a a') (hb : IsInt b b') (h : decide (b' < a')) : ¬a ≤ b :=
+theorem isInt_le_false
+    [Ring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α]
+    {a b : α} {a' b' : ℤ} (ha : IsInt a a') (hb : IsInt b b') (h : decide (b' < a'))
+    : ¬ a ≤ b :=
   not_le_of_gt (isInt_lt_true hb ha h)
 
-theorem isInt_lt_false [Ring α] [PartialOrder α] [IsOrderedRing α] {a b : α} {a' b' : ℤ}
-    (ha : IsInt a a') (hb : IsInt b b') (h : decide (b' ≤ a')) : ¬a < b :=
+theorem isInt_lt_false
+    [Ring α] [PartialOrder α] [IsOrderedRing α]
+    {a b : α} {a' b' : ℤ} (ha : IsInt a a') (hb : IsInt b b') (h : decide (b' ≤ a'))
+    : ¬ a < b :=
   not_lt_of_ge (isInt_le_true hb ha h)
 
 attribute [local instance] monadLiftOptionMetaM in
-/-- Identify (as `true` or `false`) expressions of the form `a ≤ b`, where `a` and `b` are numeric
-expressions whose evaluations to `NormNum.Result` have already been computed. -/
-def evalLE.core {u : Level} {α : Q(Type u)} (lα : Q(LE $α)) {a b : Q($α)}
-    (ra : NormNum.Result a) (rb : NormNum.Result b) : MetaM (NormNum.Result q($a ≤ $b)) := do
+/--
+Identify (as `true` or `false`) expressions of the form `a ≤ b`, where `a` and `b` are numeric
+expressions whose evaluations to `NormNum.Result` have already been computed.
+-/
+def evalLE.core
+    {u : Level} {α : Q(Type u)} (lα : Q(LE $α))
+    {a b : Q($α)} (ra : NormNum.Result a) (rb : NormNum.Result b)
+    : MetaM (NormNum.Result q($a ≤ $b)) := do
   let e := q($a ≤ $b)
   let rec intArm : MetaM (Result e) := do
     let ⟨_ir, _, _i⟩ ← inferOrderedRing α
@@ -213,10 +239,18 @@ def evalLE.core {u : Level} {α : Q(Type u)} (lα : Q(LE $α)) {a b : Q($α)}
       let r : Q(decide ($nb * $da < $na * $db) = true) := (q(Eq.refl true) : Expr)
       return .isFalse q(isRat_le_false $pa $pb $r)
   match ra, rb with
-  | .isBool .., _ | _, .isBool .. => failure
-  | .isNNRat _ .., _ | _, .isNNRat _ .. => ratArm
-  | .isNegNNRat _ .., _ | _, .isNegNNRat _ .. => ratArm
-  | .isNegNat _ .., _ | _, .isNegNat _ .. => intArm
+  | .isBool .., _
+  | _, .isBool .. =>
+    failure
+  | .isNNRat _ .., _
+  | _, .isNNRat _ .. =>
+    ratArm
+  | .isNegNNRat _ .., _
+  | _, .isNegNNRat _ .. =>
+    ratArm
+  | .isNegNat _ .., _
+  | _, .isNegNat _ .. =>
+    intArm
   | .isNat ra na pa, .isNat rb nb pb =>
     let ⟨_, _, _i⟩ ← inferOrderedSemiring α
     haveI' : $ra =Q by clear! $ra $rb; infer_instance := ⟨⟩
@@ -232,23 +266,34 @@ def evalLE.core {u : Level} {α : Q(Type u)} (lα : Q(LE $α)) {a b : Q($α)}
     else -- Nats can appear in an ordered ring without `CharZero`.
       intArm
 
-/-- The `norm_num` extension which identifies expressions of the form `a ≤ b`,
-such that `norm_num` successfully recognises both `a` and `b`. -/
-@[norm_num _ ≤ _] def evalLE : NormNumExt where eval {v β} e := do
-  haveI' : v =QL 0 := ⟨⟩; haveI' : $β =Q Prop := ⟨⟩
-  let .app (.app f a) b ← whnfR e | failure
-  let ⟨u, α, a⟩ ← inferTypeQ' a
-  have b : Q($α) := b
-  let ra ← derive a; let rb ← derive b
-  let lα ← synthInstanceQ q(LE $α)
-  guard <|← withNewMCtxDepth <| isDefEq f q(LE.le (α := $α))
-  evalLE.core lα ra rb
+/--
+The `norm_num` extension which identifies expressions of the form `a ≤ b`,
+such that `norm_num` successfully recognises both `a` and `b`.
+-/
+@[norm_num _ ≤ _]
+def evalLE : NormNumExt where
+  eval {v β} e := do
+    haveI' : v =QL 0 := ⟨⟩
+    haveI' : $β =Q Prop := ⟨⟩
+    let .app (.app f a) b ← whnfR e
+      | failure
+    let ⟨u, α, a⟩ ← inferTypeQ' a
+    have b : Q($α) := b
+    let ra ← derive a
+    let rb ← derive b
+    let lα ← synthInstanceQ q(LE $α)
+    guard <| ← withNewMCtxDepth <| isDefEq f q(LE.le (α := $α))
+    evalLE.core lα ra rb
 
 attribute [local instance] monadLiftOptionMetaM in
-/-- Identify (as `true` or `false`) expressions of the form `a < b`, where `a` and `b` are numeric
-expressions whose evaluations to `NormNum.Result` have already been computed. -/
-def evalLT.core {u : Level} {α : Q(Type u)} (lα : Q(LT $α)) {a b : Q($α)}
-    (ra : NormNum.Result a) (rb : NormNum.Result b) : MetaM (NormNum.Result q($a < $b)) := do
+/--
+Identify (as `true` or `false`) expressions of the form `a < b`, where `a` and `b` are numeric
+expressions whose evaluations to `NormNum.Result` have already been computed.
+-/
+def evalLT.core
+    {u : Level} {α : Q(Type u)} (lα : Q(LT $α))
+    {a b : Q($α)} (ra : NormNum.Result a) (rb : NormNum.Result b)
+    : MetaM (NormNum.Result q($a < $b)) := do
   let e := q($a < $b)
   let rec intArm : MetaM (Result e) := do
     let ⟨_ir, _, _i⟩ ← inferOrderedRing α
@@ -290,12 +335,22 @@ def evalLT.core {u : Level} {α : Q(Type u)} (lα : Q(LT $α)) {a b : Q($α)}
       let r : Q(decide ($nb * $da ≤ $na * $db) = true) := (q(Eq.refl true) : Expr)
       return .isFalse q(isRat_lt_false $pa $pb $r)
   match ra, rb with
-  | .isBool .., _ | _, .isBool .. => failure
-  | .isNegNNRat _ .., _ | _, .isNegNNRat _ .. => ratArm
-    -- mixing positive rationals and negative naturals means we need to use the full rat handler
-  | .isNNRat _ .., .isNegNat _ .. | .isNegNat _ .., .isNNRat _ .. => ratArm
-  | .isNNRat _ .., _ | _, .isNNRat _ .. => nnratArm
-  | .isNegNat _ .., _ | _, .isNegNat _ .. => intArm
+  | .isBool .., _
+  | _, .isBool .. =>
+    failure
+  | .isNegNNRat _ .., _
+  | _, .isNegNNRat _ .. =>
+    ratArm
+  -- mixing positive rationals and negative naturals means we need to use the full rat handler
+  | .isNNRat _ .., .isNegNat _ ..
+  | .isNegNat _ .., .isNNRat _ .. =>
+    ratArm
+  | .isNNRat _ .., _
+  | _, .isNNRat _ .. =>
+    nnratArm
+  | .isNegNat _ .., _
+  | _, .isNegNat _ .. =>
+    intArm
   | .isNat ra na pa, .isNat rb nb pb =>
     let ⟨_, _, _i⟩ ← inferOrderedSemiring α
     haveI' : $ra =Q by clear! $ra $rb; infer_instance := ⟨⟩
@@ -312,16 +367,23 @@ def evalLT.core {u : Level} {α : Q(Type u)} (lα : Q(LT $α)) {a b : Q($α)}
       let r : Q(Nat.ble $nb $na = true) := (q(Eq.refl true) : Expr)
       return .isFalse q(isNat_lt_false $pa $pb $r)
 
-/-- The `norm_num` extension which identifies expressions of the form `a < b`,
-such that `norm_num` successfully recognises both `a` and `b`. -/
-@[norm_num _ < _] def evalLT : NormNumExt where eval {v β} e := do
-  haveI' : v =QL 0 := ⟨⟩; haveI' : $β =Q Prop := ⟨⟩
-  let .app (.app f a) b ← whnfR e | failure
-  let ⟨u, α, a⟩ ← inferTypeQ' a
-  have b : Q($α) := b
-  let ra ← derive a; let rb ← derive b
-  let lα ← synthInstanceQ q(LT $α)
-  guard <|← withNewMCtxDepth <| isDefEq f q(LT.lt (α := $α))
-  evalLT.core lα ra rb
+/--
+The `norm_num` extension which identifies expressions of the form `a < b`,
+such that `norm_num` successfully recognises both `a` and `b`.
+-/
+@[norm_num _ < _]
+def evalLT : NormNumExt where
+  eval {v β} e := do
+    haveI' : v =QL 0 := ⟨⟩
+    haveI' : $β =Q Prop := ⟨⟩
+    let .app (.app f a) b ← whnfR e
+      | failure
+    let ⟨u, α, a⟩ ← inferTypeQ' a
+    have b : Q($α) := b
+    let ra ← derive a
+    let rb ← derive b
+    let lα ← synthInstanceQ q(LT $α)
+    guard <| ← withNewMCtxDepth <| isDefEq f q(LT.lt (α := $α))
+    evalLT.core lα ra rb
 
 end Mathlib.Meta.NormNum

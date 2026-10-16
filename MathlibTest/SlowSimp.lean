@@ -40,8 +40,7 @@ namespace Hom
 
 def id (X : PointedSpace) : Hom X X := ⟨ContinuousMap.id _, rfl⟩
 
-def comp {X Y Z : PointedSpace} (f : Hom X Y) (g : Hom Y Z) : Hom X Z :=
-   ⟨g.map.comp f.map, by simp⟩
+def comp {X Y Z : PointedSpace} (f : Hom X Y) (g : Hom Y Z) : Hom X Z := ⟨g.map.comp f.map, by simp⟩
 
 end Hom
 
@@ -54,10 +53,6 @@ end PointedSpace
 
 set_option maxHeartbeats 20000 in
 def PointedSpaceEquiv_inverse : Under (TopCat.of Unit) ⥤ PointedSpace where
-  obj := fun X =>
-  { carrier := X.right
-    base := X.hom () }
-  map := fun f =>
-  { map := f.right.hom
-    base := CategoryTheory.congr_fun f.w () }
+  obj := fun X => { carrier := X.right, base := X.hom () }
+  map := fun f => { map := f.right.hom, base := CategoryTheory.congr_fun f.w () }
   map_comp := by intros; simp_all; rfl -- This is the slow step.

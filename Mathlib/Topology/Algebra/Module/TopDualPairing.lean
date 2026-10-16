@@ -8,7 +8,6 @@ module
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Topology.Algebra.Module.PerfectPairing
 public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
-
 import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
@@ -32,8 +31,10 @@ variable {E : Type*} [AddCommGroup E] [Module 𝕜 E]
 variable [TopologicalSpace E] [IsTopologicalAddGroup E] [ContinuousSMul 𝕜 E]
 variable [FiniteDimensional 𝕜 E] [T2Space E]
 
-/-- The `topDualPairing` is a continuous perfect pairing for finite-dimensional
-Hausdorff spaces over complete nontrivially normed fields. -/
+/--
+The `topDualPairing` is a continuous perfect pairing for finite-dimensional
+Hausdorff spaces over complete nontrivially normed fields.
+-/
 instance topDualPairing_isContPerfPair : (topDualPairing 𝕜 E).IsContPerfPair where
   continuous_uncurry := by
     have : IsModuleTopology 𝕜 E := isModuleTopologyOfFiniteDimensional

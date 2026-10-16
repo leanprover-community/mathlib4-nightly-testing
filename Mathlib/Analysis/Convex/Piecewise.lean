@@ -30,19 +30,21 @@ This file proves convex and concave theorems for piecewise functions.
 
 public section
 
+variable
+  {𝕜 E β : Type*} [Semiring 𝕜] [PartialOrder 𝕜] [AddCommMonoid E] [LinearOrder E]
+  [IsOrderedAddMonoid E] [Module 𝕜 E] [PosSMulMono 𝕜 E] [AddCommGroup β] [PartialOrder β]
+  [IsOrderedAddMonoid β] [Module 𝕜 β] [PosSMulMono 𝕜 β]
+  {e : E} {f g : E → β}
 
-variable {𝕜 E β : Type*} [Semiring 𝕜] [PartialOrder 𝕜]
-  [AddCommMonoid E] [LinearOrder E] [IsOrderedAddMonoid E] [Module 𝕜 E]
-  [PosSMulMono 𝕜 E] [AddCommGroup β] [PartialOrder β] [IsOrderedAddMonoid β]
-  [Module 𝕜 β] [PosSMulMono 𝕜 β] {e : E} {f g : E → β}
-
-/-- The piecewise function `(Set.Iic e).piecewise f g` of a function `f` decreasing and convex on
+/--
+The piecewise function `(Set.Iic e).piecewise f g` of a function `f` decreasing and convex on
 `Set.Iic e` and a function `g` increasing and convex on `Set.Ici e`, such that `f e = g e`, is
-convex on the universal set. -/
+convex on the universal set.
+-/
 theorem convexOn_univ_piecewise_Iic_of_antitoneOn_Iic_monotoneOn_Ici
     (hf : ConvexOn 𝕜 (Set.Iic e) f) (hg : ConvexOn 𝕜 (Set.Ici e) g)
-    (h_anti : AntitoneOn f (Set.Iic e)) (h_mono : MonotoneOn g (Set.Ici e)) (h_eq : f e = g e) :
-    ConvexOn 𝕜 Set.univ ((Set.Iic e).piecewise f g) := by
+    (h_anti : AntitoneOn f (Set.Iic e)) (h_mono : MonotoneOn g (Set.Ici e)) (h_eq : f e = g e)
+    : ConvexOn 𝕜 Set.univ ((Set.Iic e).piecewise f g) := by
   refine ⟨convex_univ, fun x _ y _ a b ha hb hab ↦ ?_⟩
   obtain hx | hx := le_or_gt x e <;> obtain hy | hy := le_or_gt y e
   · have hc : a • x + b • y ≤ e := (Convex.combo_le_max x y ha hb hab).trans (max_le hx hy)
@@ -83,45 +85,51 @@ theorem convexOn_univ_piecewise_Iic_of_antitoneOn_Iic_monotoneOn_Ici
       · rw [← h_eq]
         gcongr
         exact h_anti hy Set.self_mem_Iic hy
-  · have hc : e < a • x + b • y :=
-        (lt_min hx hy).trans_le (Convex.min_le_combo x y ha hb hab)
+  · have hc : e < a • x + b • y := (lt_min hx hy).trans_le (Convex.min_le_combo x y ha hb hab)
     rw [(Set.Iic e).piecewise_eq_of_notMem f g (Set.notMem_Iic.mpr hx),
       (Set.Iic e).piecewise_eq_of_notMem f g (Set.notMem_Iic.mpr hy),
       (Set.Iic e).piecewise_eq_of_notMem f g (Set.notMem_Iic.mpr hc)]
     exact hg.2 hx.le hy.le ha hb hab
 
-/-- The piecewise function `(Set.Ici e).piecewise f g` of a function `f` increasing and convex on
+/--
+The piecewise function `(Set.Ici e).piecewise f g` of a function `f` increasing and convex on
 `Set.Ici e` and a function `g` decreasing and convex on `Set.Iic e`, such that `f e = g e`, is
-convex on the universal set. -/
+convex on the universal set.
+-/
 theorem convexOn_univ_piecewise_Ici_of_monotoneOn_Ici_antitoneOn_Iic
     (hf : ConvexOn 𝕜 (Set.Ici e) f) (hg : ConvexOn 𝕜 (Set.Iic e) g)
-    (h_mono : MonotoneOn f (Set.Ici e)) (h_anti : AntitoneOn g (Set.Iic e)) (h_eq : f e = g e) :
-    ConvexOn 𝕜 Set.univ ((Set.Ici e).piecewise f g) := by
-  have h_piecewise_Ici_eq_piecewise_Iic :
-      (Set.Ici e).piecewise f g = (Set.Iic e).piecewise g f := by
-    ext x; by_cases hx : x = e
+    (h_mono : MonotoneOn f (Set.Ici e)) (h_anti : AntitoneOn g (Set.Iic e)) (h_eq : f e = g e)
+    : ConvexOn 𝕜 Set.univ ((Set.Ici e).piecewise f g) := by
+  have h_piecewise_Ici_eq_piecewise_Iic
+      : (Set.Ici e).piecewise f g = (Set.Iic e).piecewise g f := by
+    ext x
+    by_cases hx : x = e
       <;> simp [Set.piecewise, @le_iff_lt_or_eq _ _ x e, ← @ite_not _ (e ≤ _), hx, h_eq]
   rw [h_piecewise_Ici_eq_piecewise_Iic]
   exact convexOn_univ_piecewise_Iic_of_antitoneOn_Iic_monotoneOn_Ici hg hf h_anti h_mono h_eq.symm
 
-/-- The piecewise function `(Set.Iic e).piecewise f g` of a function `f` increasing and concave on
+/--
+The piecewise function `(Set.Iic e).piecewise f g` of a function `f` increasing and concave on
 `Set.Iic e` and a function `g` decreasing and concave on `Set.Ici e`, such that `f e = g e`, is
-concave on the universal set. -/
+concave on the universal set.
+-/
 theorem concaveOn_univ_piecewise_Iic_of_monotoneOn_Iic_antitoneOn_Ici
     (hf : ConcaveOn 𝕜 (Set.Iic e) f) (hg : ConcaveOn 𝕜 (Set.Ici e) g)
-    (h_mono : MonotoneOn f (Set.Iic e)) (h_anti : AntitoneOn g (Set.Ici e)) (h_eq : f e = g e) :
-    ConcaveOn 𝕜 Set.univ ((Set.Iic e).piecewise f g) := by
+    (h_mono : MonotoneOn f (Set.Iic e)) (h_anti : AntitoneOn g (Set.Ici e)) (h_eq : f e = g e)
+    : ConcaveOn 𝕜 Set.univ ((Set.Iic e).piecewise f g) := by
   rw [← neg_convexOn_iff, ← Set.piecewise_neg]
-  exact convexOn_univ_piecewise_Iic_of_antitoneOn_Iic_monotoneOn_Ici
-    hf.neg hg.neg h_mono.neg h_anti.neg (neg_inj.mpr h_eq)
+  exact convexOn_univ_piecewise_Iic_of_antitoneOn_Iic_monotoneOn_Ici hf.neg hg.neg h_mono.neg
+    h_anti.neg (neg_inj.mpr h_eq)
 
-/-- The piecewise function `(Set.Ici e).piecewise f g` of a function `f` decreasing and concave on
+/--
+The piecewise function `(Set.Ici e).piecewise f g` of a function `f` decreasing and concave on
 `Set.Ici e` and a function `g` increasing and concave on `Set.Iic e`, such that `f e = g e`, is
-concave on the universal set. -/
+concave on the universal set.
+-/
 theorem concaveOn_univ_piecewise_Ici_of_antitoneOn_Ici_monotoneOn_Iic
     (hf : ConcaveOn 𝕜 (Set.Ici e) f) (hg : ConcaveOn 𝕜 (Set.Iic e) g)
-    (h_anti : AntitoneOn f (Set.Ici e)) (h_mono : MonotoneOn g (Set.Iic e)) (h_eq : f e = g e) :
-    ConcaveOn 𝕜 Set.univ ((Set.Ici e).piecewise f g) := by
+    (h_anti : AntitoneOn f (Set.Ici e)) (h_mono : MonotoneOn g (Set.Iic e)) (h_eq : f e = g e)
+    : ConcaveOn 𝕜 Set.univ ((Set.Ici e).piecewise f g) := by
   rw [← neg_convexOn_iff, ← Set.piecewise_neg]
-  exact convexOn_univ_piecewise_Ici_of_monotoneOn_Ici_antitoneOn_Iic
-    hf.neg hg.neg h_anti.neg h_mono.neg (neg_inj.mpr h_eq)
+  exact convexOn_univ_piecewise_Ici_of_monotoneOn_Ici_antitoneOn_Iic hf.neg hg.neg h_anti.neg
+    h_mono.neg (neg_inj.mpr h_eq)

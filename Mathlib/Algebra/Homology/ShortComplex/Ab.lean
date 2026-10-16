@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Category.Grp.Abelian
 public import Mathlib.Algebra.Category.Grp.Kernels
 public import Mathlib.Algebra.Homology.ShortComplex.ShortExact
-
 import Mathlib.GroupTheory.QuotientGroup.Finite
 
 /-!
@@ -48,11 +47,13 @@ lemma ab_zero_apply (x : S.X₁) : S.g (S.f x) = 0 := by
 /-- The canonical additive morphism `S.X₁ →+ AddMonoidHom.ker S.g` induced by `S.f`. -/
 @[simps!]
 def abToCycles : S.X₁ →+ AddMonoidHom.ker S.g.hom :=
-    AddMonoidHom.mk' (fun x => ⟨S.f x, S.ab_zero_apply x⟩) (by aesop)
+  AddMonoidHom.mk' (fun x => ⟨S.f x, S.ab_zero_apply x⟩) (by aesop)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The explicit left homology data of a short complex of abelian group that is
-given by a kernel and a quotient given by the `AddMonoidHom` API. -/
+/--
+The explicit left homology data of a short complex of abelian group that is
+given by a kernel and a quotient given by the `AddMonoidHom` API.
+-/
 @[simps]
 def abLeftHomologyData : S.LeftHomologyData where
   K := ↧S.g.hom.ker
@@ -73,9 +74,11 @@ def abLeftHomologyData : S.LeftHomologyData where
 @[simp]
 lemma abLeftHomologyData_f' : S.abLeftHomologyData.f' = AddCommGrpCat.ofHom S.abToCycles := rfl
 
-/-- Given a short complex `S` of abelian groups, this is the isomorphism between
+/--
+Given a short complex `S` of abelian groups, this is the isomorphism between
 the abstract `S.cycles` of the homology API and the more concrete description as
-`AddMonoidHom.ker S.g`. -/
+`AddMonoidHom.ker S.g`.
+-/
 noncomputable def abCyclesIso : S.cycles ≅ ↧(AddMonoidHom.ker S.g.hom) :=
   S.abLeftHomologyData.cyclesIso
 
@@ -85,29 +88,29 @@ set_option backward.isDefEq.respectTransparency false in
 -- It was not used a simp lemma in Mathlib.
 -- Possible solution: higher priority function coercions that remove the `of`?
 -- @[simp]
-lemma abCyclesIso_inv_apply_iCycles (x : AddMonoidHom.ker S.g.hom) :
-    S.iCycles (S.abCyclesIso.inv x) = x := by
+lemma abCyclesIso_inv_apply_iCycles (x : AddMonoidHom.ker S.g.hom)
+    : S.iCycles (S.abCyclesIso.inv x) = x := by
   dsimp only [abCyclesIso]
   rw [← ConcreteCategory.comp_apply, S.abLeftHomologyData.cyclesIso_inv_comp_iCycles]
   rfl
 
-/-- Given a short complex `S` of abelian groups, this is the isomorphism between
+/--
+Given a short complex `S` of abelian groups, this is the isomorphism between
 the abstract `S.homology` of the homology API and the more explicit
 quotient of `AddMonoidHom.ker S.g` by the image of
-`S.abToCycles : S.X₁ →+ AddMonoidHom.ker S.g`. -/
-noncomputable def abHomologyIso : S.homology ≅
-    ↧((AddMonoidHom.ker S.g.hom) ⧸ AddMonoidHom.range S.abToCycles) :=
+`S.abToCycles : S.X₁ →+ AddMonoidHom.ker S.g`.
+-/
+noncomputable def abHomologyIso
+    : S.homology ≅ ↧((AddMonoidHom.ker S.g.hom) ⧸ AddMonoidHom.range S.abToCycles) :=
   S.abLeftHomologyData.homologyIso
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma exact_iff_surjective_abToCycles :
-    S.Exact ↔ Function.Surjective S.abToCycles := by
+lemma exact_iff_surjective_abToCycles : S.Exact ↔ Function.Surjective S.abToCycles := by
   rw [S.abLeftHomologyData.exact_iff_epi_f', abLeftHomologyData_f',
     AddCommGrpCat.epi_iff_surjective]
   rfl
 
-lemma ab_exact_iff :
-    S.Exact ↔ ∀ (x₂ : S.X₂) (_ : S.g x₂ = 0), ∃ (x₁ : S.X₁), S.f x₁ = x₂ := by
+lemma ab_exact_iff : S.Exact ↔ ∀ (x₂ : S.X₂) (_ : S.g x₂ = 0), ∃ (x₁ : S.X₁), S.f x₁ = x₂ := by
   rw [exact_iff_surjective_abToCycles]
   constructor
   · intro h x₂ hx₂
@@ -117,8 +120,7 @@ lemma ab_exact_iff :
     obtain ⟨x₁, rfl⟩ := h x₂ hx₂
     exact ⟨x₁, rfl⟩
 
-lemma ab_exact_iff_function_exact :
-    S.Exact ↔ Function.Exact S.f S.g := by
+lemma ab_exact_iff_function_exact : S.Exact ↔ Function.Exact S.f S.g := by
   rw [S.ab_exact_iff]
   apply forall_congr'
   intro x₂
@@ -146,30 +148,33 @@ lemma ab_exact_iff_range_eq_ker : S.Exact ↔ S.f.hom.range = S.g.hom.ker := by
 
 alias ⟨Exact.ab_range_eq_ker, _⟩ := ab_exact_iff_range_eq_ker
 
-/-- In an exact sequence of abelian groups, if the first and last groups are finite, then so is the
-middle one. -/
-lemma Exact.ab_finite {S : ShortComplex Ab.{u}} (hS : S.Exact) [Finite S.X₁] [Finite S.X₃] :
-    Finite S.X₂ := by
+/--
+In an exact sequence of abelian groups, if the first and last groups are finite, then so is the
+middle one.
+-/
+lemma Exact.ab_finite {S : ShortComplex Ab.{u}} (hS : S.Exact) [Finite S.X₁] [Finite S.X₃]
+    : Finite S.X₂ := by
   have : Finite S.f.hom.range := Set.finite_range _
   have : Finite (S.X₂ ⧸ S.f.hom.range) := by
     rw [hS.ab_range_eq_ker]
     exact .of_equiv _ (QuotientAddGroup.quotientKerEquivRange _).toEquiv.symm
   exact .of_addSubgroup_quotient (H := S.f.hom.range)
 
-lemma ShortExact.ab_injective_f (hS : S.ShortExact) :
-    Function.Injective S.f :=
+lemma ShortExact.ab_injective_f (hS : S.ShortExact) : Function.Injective S.f :=
   (AddCommGrpCat.mono_iff_injective _).1 hS.mono_f
 
-lemma ShortExact.ab_surjective_g (hS : S.ShortExact) :
-    Function.Surjective S.g :=
+lemma ShortExact.ab_surjective_g (hS : S.ShortExact) : Function.Surjective S.g :=
   (AddCommGrpCat.epi_iff_surjective _).1 hS.epi_g
 
-/-- In a short exact sequence of abelian groups, the middle group is finite iff the first and last
-are. -/
-lemma ShortExact.ab_finite_iff {S : ShortComplex Ab.{u}} (hS : S.ShortExact) :
-    Finite S.X₂ ↔ Finite S.X₁ ∧ Finite S.X₃ where
+/--
+In a short exact sequence of abelian groups, the middle group is finite iff the first and last
+are.
+-/
+lemma ShortExact.ab_finite_iff {S : ShortComplex Ab.{u}} (hS : S.ShortExact)
+    : Finite S.X₂ ↔ Finite S.X₁ ∧ Finite S.X₃ where
   mp _ := ⟨.of_injective _ hS.ab_injective_f, .of_surjective _ hS.ab_surjective_g⟩
-  mpr | ⟨_, _⟩ => hS.exact.ab_finite
+  mpr
+    | ⟨_, _⟩ => hS.exact.ab_finite
 
 end ShortComplex
 

@@ -51,25 +51,27 @@ namespace Topology.ClosureCompl
 
 variable {X : Type*} [TopologicalSpace X] {s t : Set X}
 
-
-/-- The six closed sets obtained from a given set `s` are given by applying
-`k, kc, kck, kckc, kckck, kckckc` to `s`. -/
+/--
+The six closed sets obtained from a given set `s` are given by applying
+`k, kc, kck, kckc, kckck, kckckc` to `s`.
+-/
 def theClosedSix (s : Set X) : Multiset (Set X) :=
   {k s, k sᶜ, k (k s)ᶜ, k (k sᶜ)ᶜ, k (k (k s)ᶜ)ᶜ, k (k (k sᶜ)ᶜ)ᶜ}
 
 /-- The complements of the six closed sets. -/
-def theOpenSix (s : Set X) : Multiset (Set X) :=
-  (theClosedSix s).map compl
+def theOpenSix (s : Set X) : Multiset (Set X) := (theClosedSix s).map compl
 
-/- By applying the identity and complement operations to the six closed sets, we obtain
-precisely the six closed sets plus the six open sets. -/
-theorem sum_map_theClosedSix_add_compl (s : Set X) :
-    ((theClosedSix s).map fun t ↦ {t} + {tᶜ}).sum = theClosedSix s + theOpenSix s :=
+/-
+By applying the identity and complement operations to the six closed sets, we obtain
+precisely the six closed sets plus the six open sets.
+-/
+theorem sum_map_theClosedSix_add_compl (s : Set X)
+    : ((theClosedSix s).map fun t ↦ {t} + {tᶜ}).sum = theClosedSix s + theOpenSix s :=
   Multiset.sum_map_add
 
 /-- `theFourteen s` can be split into 3 subsets. -/
-theorem theFourteen_eq_pair_add_theClosedSix_add_theOpenSix (s : Set X) :
-    theFourteen s = {s, sᶜ} + theClosedSix s + theOpenSix s := by
+theorem theFourteen_eq_pair_add_theClosedSix_add_theOpenSix (s : Set X)
+    : theFourteen s = {s, sᶜ} + theClosedSix s + theOpenSix s := by
   rw [add_assoc, ← sum_map_theClosedSix_add_compl]; rfl
 
 /-- Every set in `theClosedSix s` is closed (because the last operation is closure). -/
@@ -86,23 +88,23 @@ theorem mem_theOpenSix_iff : t ∈ theOpenSix s ↔ tᶜ ∈ theClosedSix s := b
   conv_lhs => rw [theOpenSix, ← compl_compl t, Multiset.mem_map_of_injective compl_injective]
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
-/-- Six inequalities that suffice to deduce the six closed sets obtained from a given set
-contain no duplicates. -/
+/--
+Six inequalities that suffice to deduce the six closed sets obtained from a given set
+contain no duplicates.
+-/
 def TheSixIneq (s : Set X) : Prop :=
-    k (k (k sᶜ)ᶜ)ᶜ ≠ k (k (k s)ᶜ)ᶜ
-  ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k (k sᶜ)ᶜ
-  ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k (k s)ᶜ
-  ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k sᶜ
-  ∧ k (k (k s)ᶜ)ᶜ  ≠ k (k s)ᶜ
-  ∧ k (k (k s)ᶜ)ᶜ  ≠ k s
+  k (k (k sᶜ)ᶜ)ᶜ ≠ k (k (k s)ᶜ)ᶜ ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k (k sᶜ)ᶜ ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k (k s)ᶜ
+    ∧ k (k (k sᶜ)ᶜ)ᶜ ≠ k sᶜ ∧ k (k (k s)ᶜ)ᶜ ≠ k (k s)ᶜ ∧ k (k (k s)ᶜ)ᶜ ≠ k s
 
 open Multiset in
-/-- `theClosedSix` applied to an arbitrary set `s` results in no duplicates iff `TheSixIneq`
-is true for `s`. -/
+/--
+`theClosedSix` applied to an arbitrary set `s` results in no duplicates iff `TheSixIneq`
+is true for `s`.
+-/
 theorem nodup_theClosedSix_theFourteen_iff : (theClosedSix s).Nodup ↔ TheSixIneq s := by
   rw [TheSixIneq, theClosedSix]
-  simp only [insert_eq_cons, nodup_cons, mem_cons, mem_singleton,
-             not_or, nodup_singleton, and_true, ← ne_eq, and_assoc]
+  simp only [insert_eq_cons, nodup_cons, mem_cons, mem_singleton, not_or, nodup_singleton, and_true,
+    ← ne_eq, and_assoc]
   -- The goal becomes 6 inequalities ↔ 15 inequalities.
   constructor -- Show both implications.
   · -- One implication is almost trivial as the six inequalities are among the fifteen.
@@ -115,8 +117,10 @@ theorem nodup_theClosedSix_theFourteen_iff : (theClosedSix s).Nodup ↔ TheSixIn
       try assumption
     -- Solve trivial goals (the six inequalities contained in `TheSixIneq`).
     any_goals
-    /- Now eight other goals can be solved by simplifying
-      and then using one of the six given inequalities. -/
+      /-
+      Now eight other goals can be solved by simplifying
+      and then using one of the six given inequalities.
+      -/
       apply mt (congr_arg (k ·ᶜ))
       first
       | try repeat rw [kckckck_eq_kck, eq_comm]
@@ -129,11 +133,13 @@ theorem nodup_theClosedSix_theFourteen_iff : (theClosedSix s).Nodup ↔ TheSixIn
     rwa [kckckck_eq_kck]
 
 open Multiset in
-/-- `theFourteen s` contains no duplicates if and only if `theClosedSix s` has none,
-and `theClosedSix s` is disjoint from `theOpenSix s`. -/
+/--
+`theFourteen s` contains no duplicates if and only if `theClosedSix s` has none,
+and `theClosedSix s` is disjoint from `theOpenSix s`.
+-/
 theorem nodup_theFourteen_of_nodup_theClosedSix_of_disjoint
-    (nodup : (theClosedSix s).Nodup) (disj : Disjoint (theClosedSix s) (theOpenSix s)) :
-    (theFourteen s).Nodup := by
+    (nodup : (theClosedSix s).Nodup) (disj : Disjoint (theClosedSix s) (theOpenSix s))
+    : (theFourteen s).Nodup := by
   rw [theFourteen_eq_pair_add_theClosedSix_add_theOpenSix, add_assoc, nodup_add, nodup_add]
   refine ⟨?_, ⟨nodup, nodup.map compl_injective, disj⟩, ?_⟩
   -- The two goals now are {s, sᶜ}.Nodup and Disjoint {s, sᶜ} (theClosedSix s + theOpenSix s).
@@ -181,9 +187,9 @@ theorem i_fourteenSet : i fourteenSet = Ioo 0 1 ∪ Ioo 1 2 := by
   rw [fourteenSet, interior_union_of_disjoint_closure, interior_union_of_disjoint_closure]
   · simp [(isOpen_Ioo.union isOpen_Ioo).interior_eq, this]
   all_goals
-  · simp [k_Icc_4_5_inter_rat, -union_singleton, closure_union, disjoint_iff_inter_eq_empty,
-      union_inter_distrib_right, Icc_inter_Icc]
-    norm_num
+    · simp [k_Icc_4_5_inter_rat, -union_singleton, closure_union, disjoint_iff_inter_eq_empty,
+        union_inter_distrib_right, Icc_inter_Icc]
+      norm_num
 
 theorem k_fourteenSet : k fourteenSet = Icc 0 2 ∪ {3} ∪ Icc 4 5 := by
   simp_rw [fourteenSet, closure_union]
@@ -193,10 +199,10 @@ theorem kc_fourteenSet : k fourteenSetᶜ = (Ioo 0 1 ∪ Ioo 1 2)ᶜ := by
   rw [closure_compl, compl_inj_iff, i_fourteenSet]
 
 theorem kck_fourteenSet : k (k fourteenSet)ᶜ = (Ioo 0 2 ∪ Ioo 4 5)ᶜ := by
-  rw [closure_compl, k_fourteenSet,
-    interior_union_of_disjoint_closure, interior_union_of_disjoint_closure]
+  rw [closure_compl, k_fourteenSet, interior_union_of_disjoint_closure,
+    interior_union_of_disjoint_closure]
   all_goals
-     simp [-union_singleton, disjoint_iff_inter_eq_empty, union_inter_distrib_right, Icc_inter_Icc]
+    simp [-union_singleton, disjoint_iff_inter_eq_empty, union_inter_distrib_right, Icc_inter_Icc]
   all_goals norm_num
 
 theorem kckc_fourteenSet : k (k fourteenSetᶜ)ᶜ = Icc 0 2 := by
@@ -214,27 +220,31 @@ theorem kckckc_fourteenSet : k (k (k fourteenSetᶜ)ᶜ)ᶜ = (Ioo 0 2)ᶜ := by
 theorem nodup_theClosedSix_fourteenSet : (theClosedSix fourteenSet).Nodup := by
   rw [nodup_theClosedSix_theFourteen_iff, TheSixIneq, kckckc_fourteenSet, kckck_fourteenSet,
     kckc_fourteenSet, kck_fourteenSet, kc_fourteenSet, k_fourteenSet]
-  refine ⟨(ne_of_mem_of_not_mem' (a := 1) ?_ ?_).symm,
+  refine ⟨
+    (ne_of_mem_of_not_mem' (a := 1) ?_ ?_).symm,
     (ne_of_mem_of_not_mem' (a := 1) ?_ ?_).symm,
     ne_of_mem_of_not_mem' (a := 4.5) ?_ ?_,
     (ne_of_mem_of_not_mem' (a := 1) ?_ ?_).symm,
     ne_of_mem_of_not_mem' (a := 1) ?_ ?_,
-    (ne_of_mem_of_not_mem' (a := 3) ?_ ?_).symm⟩
+    (ne_of_mem_of_not_mem' (a := 3) ?_ ?_).symm
+  ⟩
   all_goals norm_num
 
 /-- No set from `theClosedSix fourteenSet` is empty. -/
-theorem nonempty_of_mem_theClosedSix_fourteenSet {s}
-    (h : s ∈ theClosedSix fourteenSet) : s.Nonempty := by
-  rw [theClosedSix, kckckc_fourteenSet, kckck_fourteenSet,
-    kckc_fourteenSet, kck_fourteenSet, kc_fourteenSet, k_fourteenSet] at h
+theorem nonempty_of_mem_theClosedSix_fourteenSet {s} (h : s ∈ theClosedSix fourteenSet)
+    : s.Nonempty := by
+  rw [theClosedSix, kckckc_fourteenSet, kckck_fourteenSet, kckc_fourteenSet, kck_fourteenSet,
+      kc_fourteenSet, k_fourteenSet]
+    at h
   repeat obtain _ | ⟨_, h⟩ := h; rotate_left
   all_goals use 2; norm_num
 
 /-- No set from `theClosedSix fourteenSet` is the universal set. -/
-theorem not_eq_univ_of_mem_theClosedSix_fourteenSet {s}
-    (h : s ∈ theClosedSix fourteenSet) : s ≠ univ := by
-  rw [theClosedSix, kckckc_fourteenSet, kckck_fourteenSet,
-    kckc_fourteenSet, kck_fourteenSet, kc_fourteenSet, k_fourteenSet] at h
+theorem not_eq_univ_of_mem_theClosedSix_fourteenSet {s} (h : s ∈ theClosedSix fourteenSet)
+    : s ≠ univ := by
+  rw [theClosedSix, kckckc_fourteenSet, kckck_fourteenSet, kckc_fourteenSet, kck_fourteenSet,
+      kc_fourteenSet, k_fourteenSet]
+    at h
   rw [Ne, eq_univ_iff_forall]
   push Not
   repeat obtain _ | ⟨_, h⟩ := h; rotate_left
@@ -248,16 +258,19 @@ theorem not_eq_univ_of_mem_theClosedSix_fourteenSet {s}
 /-- The fourteen different operations applied to the `fourteenSet` generate no duplicates. -/
 theorem nodup_theFourteen_fourteenSet : (theFourteen fourteenSet).Nodup :=
   nodup_theFourteen_of_nodup_theClosedSix_of_disjoint nodup_theClosedSix_fourteenSet <|
-    Multiset.disjoint_iff_ne.mpr <| by
-      rintro s hc _ ho rfl
-      exact not_eq_univ_of_mem_theClosedSix_fourteenSet hc <| IsClopen.eq_univ
-        ⟨isClosed_of_mem_theClosedSix hc, isOpen_of_mem_theOpenSix ho⟩
-        (nonempty_of_mem_theClosedSix_fourteenSet hc)
+    Multiset.disjoint_iff_ne.mpr <|
+      by
+        rintro s hc _ ho rfl
+        exact not_eq_univ_of_mem_theClosedSix_fourteenSet hc <|
+          IsClopen.eq_univ ⟨isClosed_of_mem_theClosedSix hc, isOpen_of_mem_theOpenSix ho⟩
+            (nonempty_of_mem_theClosedSix_fourteenSet hc)
 
 /-- The number of distinct sets obtainable from `fourteenSet` is exactly 14. -/
 theorem ncard_isObtainable_fourteenSet : {t | IsObtainable fourteenSet t}.ncard = 14 := by
-  rw [← card_theFourteen fourteenSet, ← Multiset.toFinset_card_of_nodup
-    nodup_theFourteen_fourteenSet, ← Set.ncard_coe_finset]
-  congr; ext; simp [mem_theFourteen_iff_isObtainable]
+  rw [← card_theFourteen fourteenSet,
+    ← Multiset.toFinset_card_of_nodup nodup_theFourteen_fourteenSet, ← Set.ncard_coe_finset]
+  congr
+  ext
+  simp [mem_theFourteen_iff_isObtainable]
 
 end Topology.ClosureCompl

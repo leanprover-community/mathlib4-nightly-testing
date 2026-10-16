@@ -6,7 +6,6 @@ Authors: Justus Springer
 module
 
 public import Mathlib.CategoryTheory.Triangulated.Subcategory
-
 import Mathlib.CategoryTheory.ObjectProperty.ClosureShift
 
 /-!
@@ -55,55 +54,59 @@ namespace CategoryTheory.ObjectProperty
 
 open Category Limits Preadditive ZeroObject Pretriangulated Triangulated
 
-variable {C : Type*} [Category* C] [HasZeroObject C] [HasShift C ℤ] [Preadditive C]
-  [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C] (P : ObjectProperty C)
+variable
+  {C : Type*} [Category* C] [HasZeroObject C] [HasShift C ℤ] [Preadditive C]
+  [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C]
+  (P : ObjectProperty C)
 
-/-- All objects that can be reached by shifts, binary products, retracts and at most `n`
-extensions from objects in `P`. -/
+/--
+All objects that can be reached by shifts, binary products, retracts and at most `n`
+extensions from objects in `P`.
+-/
 abbrev triangEnvelopeIter (n : ℕ) : ObjectProperty C :=
   ((P.shiftClosure ℤ).binaryProductsClosure.retractClosure.extensionProductIter n).retractClosure
 
 @[simp]
-lemma triangEnvelopeIter_zero :
-    P.triangEnvelopeIter 0 = (P.shiftClosure ℤ).binaryProductsClosure.retractClosure := by
+lemma triangEnvelopeIter_zero
+    : P.triangEnvelopeIter 0 = (P.shiftClosure ℤ).binaryProductsClosure.retractClosure := by
   rw [triangEnvelopeIter, extensionProductIter_zero, retractClosure_eq_self]
 
-lemma triangEnvelopeIter_succ (n : ℕ) :
-    P.triangEnvelopeIter (n + 1) =
-      (extensionProduct (P.shiftClosure ℤ).binaryProductsClosure.retractClosure
-         (P.triangEnvelopeIter n)).retractClosure := by
+lemma triangEnvelopeIter_succ (n : ℕ)
+    : P.triangEnvelopeIter (n + 1)
+      = (extensionProduct (P.shiftClosure ℤ).binaryProductsClosure.retractClosure
+        (P.triangEnvelopeIter n)).retractClosure := by
   rw [triangEnvelopeIter, extensionProductIter_succ,
     ← retractClosure_extensionProduct_retractClosure_retractClosure]
   simp
 
-lemma triangEnvelopeIter_succ' [IsTriangulated C] (n : ℕ) :
-    P.triangEnvelopeIter (n + 1) =
-      (extensionProduct (P.triangEnvelopeIter n)
+lemma triangEnvelopeIter_succ' [IsTriangulated C] (n : ℕ)
+    : P.triangEnvelopeIter (n + 1)
+      = (extensionProduct (P.triangEnvelopeIter n)
         (P.shiftClosure ℤ).binaryProductsClosure.retractClosure).retractClosure := by
   rw [triangEnvelopeIter, extensionProductIter_succ',
     ← retractClosure_extensionProduct_retractClosure_retractClosure]
   simp
 
-lemma triangEnvelopeIter_add [IsTriangulated C] {n m n' : ℕ} (h : n = n' + 1 := by lia) :
-    P.triangEnvelopeIter (n + m) =
-      (extensionProduct (P.triangEnvelopeIter n') (P.triangEnvelopeIter m)).retractClosure := by
+lemma triangEnvelopeIter_add [IsTriangulated C] {n m n' : ℕ} (h : n = n' + 1 := by lia)
+    : P.triangEnvelopeIter (n + m)
+      = (extensionProduct (P.triangEnvelopeIter n') (P.triangEnvelopeIter m)).retractClosure := by
   simp only [triangEnvelopeIter, retractClosure_extensionProduct_retractClosure_retractClosure,
     extensionProductIter_add _ h]
 
-lemma triangEnvelopeIter_add' [IsTriangulated C] {n m m' : ℕ} (h : m = m' + 1 := by lia) :
-    P.triangEnvelopeIter (n + m) =
-      (extensionProduct (P.triangEnvelopeIter n) (P.triangEnvelopeIter m')).retractClosure := by
+lemma triangEnvelopeIter_add' [IsTriangulated C] {n m m' : ℕ} (h : m = m' + 1 := by lia)
+    : P.triangEnvelopeIter (n + m)
+      = (extensionProduct (P.triangEnvelopeIter n) (P.triangEnvelopeIter m')).retractClosure := by
   simp only [triangEnvelopeIter, retractClosure_extensionProduct_retractClosure_retractClosure,
     extensionProductIter_add' _ h]
 
 variable {P} in
-lemma monotone_triangEnvelopeIter {Q : ObjectProperty C} (hPQ : P ≤ Q) (n : ℕ) :
-    P.triangEnvelopeIter n ≤ Q.triangEnvelopeIter n :=
+lemma monotone_triangEnvelopeIter {Q : ObjectProperty C} (hPQ : P ≤ Q) (n : ℕ)
+    : P.triangEnvelopeIter n ≤ Q.triangEnvelopeIter n :=
   monotone_retractClosure <| monotone_extensionProductIter
     (monotone_retractClosure <| limitsClosure_monotone _ <| monotone_shiftClosure hPQ) n
 
-lemma monotone'_triangEnvelopeIter {n m : ℕ} (h : n ≤ m := by lia) :
-    P.triangEnvelopeIter n ≤ P.triangEnvelopeIter m := by
+lemma monotone'_triangEnvelopeIter {n m : ℕ} (h : n ≤ m := by lia)
+    : P.triangEnvelopeIter n ≤ P.triangEnvelopeIter m := by
   apply monotone_retractClosure
   by_cases! hP : P.Nonempty
   · exact monotone'_extensionProductIter _ h
@@ -118,18 +121,23 @@ lemma le_triangEnvelopeIter (n : ℕ) : P ≤ P.triangEnvelopeIter n :=
       rw [← triangEnvelopeIter_zero]
       exact P.monotone'_triangEnvelopeIter (Nat.zero_le n)
 
-/-- An object property `P` is called a strong triangulated generator, if every object
+/--
+An object property `P` is called a strong triangulated generator, if every object
 can be reached from objects in `P` by shifts, binary products, retracts and at most `n`
-extensions, for some fixed `n`. -/
+extensions, for some fixed `n`.
+-/
 @[stacks 09SJ "(2)"]
 def IsStrongTriangulatedGenerator : Prop := ∃ n, P.triangEnvelopeIter n = ⊤
 
-lemma isStrongTriangulatedGenerator_iff :
-    P.IsStrongTriangulatedGenerator ↔ ∃ n, P.triangEnvelopeIter n = ⊤ := Iff.rfl
+lemma isStrongTriangulatedGenerator_iff
+    : P.IsStrongTriangulatedGenerator ↔ ∃ n, P.triangEnvelopeIter n = ⊤ :=
+  Iff.rfl
 
-/-- All objects that can be reached by shifts, binary products, retracts and extensions
+/--
+All objects that can be reached by shifts, binary products, retracts and extensions
 from objects in `P`. This is the smallest triangulated object property closed under retracts
-that contains `P`, see `ObjectProperty.triangEnvelope_le_iff`. -/
+that contains `P`, see `ObjectProperty.triangEnvelope_le_iff`.
+-/
 def triangEnvelope : ObjectProperty C := ⨆ n, P.triangEnvelopeIter n
 
 lemma prop_triangEnvelope_iff (X : C) : P.triangEnvelope X ↔ ∃ n, P.triangEnvelopeIter n X :=
@@ -141,14 +149,13 @@ lemma triangEnvelopeIter_le_triangEnvelope (n : ℕ) : P.triangEnvelopeIter n �
 lemma le_triangEnvelope : P ≤ P.triangEnvelope :=
   (P.le_triangEnvelopeIter 0).trans (P.triangEnvelopeIter_le_triangEnvelope 0)
 
-instance [P.Nonempty] : P.triangEnvelope.Nonempty :=
-  .mono P.le_triangEnvelope
+instance [P.Nonempty] : P.triangEnvelope.Nonempty := .mono P.le_triangEnvelope
 
 variable {P} in
-lemma monotone_triangEnvelope {Q : ObjectProperty C} (h : P ≤ Q) :
-    P.triangEnvelope ≤ Q.triangEnvelope :=
-  iSup_le fun n => (P.monotone_triangEnvelopeIter h n).trans
-    (Q.triangEnvelopeIter_le_triangEnvelope n)
+lemma monotone_triangEnvelope {Q : ObjectProperty C} (h : P ≤ Q)
+    : P.triangEnvelope ≤ Q.triangEnvelope :=
+  iSup_le fun n =>
+    (P.monotone_triangEnvelopeIter h n).trans (Q.triangEnvelopeIter_le_triangEnvelope n)
 
 instance : P.triangEnvelope.IsStableUnderRetracts where
   of_retract := by
@@ -158,12 +165,13 @@ instance : P.triangEnvelope.IsStableUnderRetracts where
     exact ⟨n, IsStableUnderRetracts.of_retract r hn⟩
 
 instance : P.triangEnvelope.IsStableUnderShift ℤ where
-  isStableUnderShiftBy a := IsStableUnderShiftBy.mk <| by
-    intro X hX
-    rw [prop_triangEnvelope_iff] at hX
-    obtain ⟨n, hn⟩ := hX
-    rw [prop_shift_iff, prop_triangEnvelope_iff]
-    exact ⟨n, IsStableUnderShiftBy.le_shift _ hn⟩
+  isStableUnderShiftBy a :=
+    IsStableUnderShiftBy.mk <| by
+      intro X hX
+      rw [prop_triangEnvelope_iff] at hX
+      obtain ⟨n, hn⟩ := hX
+      rw [prop_shift_iff, prop_triangEnvelope_iff]
+      exact ⟨n, IsStableUnderShiftBy.le_shift _ hn⟩
 
 instance [IsTriangulated C] : P.triangEnvelope.IsTriangulatedClosed₂ := by
   apply IsTriangulatedClosed₂.mk'
@@ -177,8 +185,8 @@ instance [IsTriangulated C] : P.triangEnvelope.IsTriangulatedClosed₂ := by
 
 instance [P.Nonempty] [IsTriangulated C] : P.triangEnvelope.IsTriangulated where
 
-lemma triangEnvelope_le_iff {Q : ObjectProperty C} [Q.IsStableUnderRetracts] [Q.IsTriangulated] :
-    P.triangEnvelope ≤ Q ↔ P ≤ Q := by
+lemma triangEnvelope_le_iff {Q : ObjectProperty C} [Q.IsStableUnderRetracts] [Q.IsTriangulated]
+    : P.triangEnvelope ≤ Q ↔ P ≤ Q := by
   refine ⟨fun h ↦ le_trans P.le_triangEnvelope h, fun h ↦ ?_⟩
   rw [triangEnvelope, iSup_le_iff]
   intro n
@@ -186,16 +194,20 @@ lemma triangEnvelope_le_iff {Q : ObjectProperty C} [Q.IsStableUnderRetracts] [Q.
   apply extensionProductIter_le_of_isTriangulatedClosed₂
   rwa [retractClosure_le_iff, binaryProductsClosure_le_iff, shiftClosure_le_iff]
 
-/-- An object property `P` is called a classical generator, if every object can be reached
-from objects in `P` by shifts, binary products, retracts and extensions. -/
+/--
+An object property `P` is called a classical generator, if every object can be reached
+from objects in `P` by shifts, binary products, retracts and extensions.
+-/
 @[stacks 09SJ "(1)"]
 def IsClassicalTriangulatedGenerator : Prop := P.triangEnvelope = ⊤
 
-lemma isClassicalTriangulatedGenerator_iff :
-    P.IsClassicalTriangulatedGenerator ↔ P.triangEnvelope = ⊤ := Iff.rfl
+lemma isClassicalTriangulatedGenerator_iff
+    : P.IsClassicalTriangulatedGenerator ↔ P.triangEnvelope = ⊤ :=
+  Iff.rfl
 
 lemma IsStrongTriangulatedGenerator.isClassicalTriangulatedGenerator
-    (h : P.IsStrongTriangulatedGenerator) : P.IsClassicalTriangulatedGenerator := by
+    (h : P.IsStrongTriangulatedGenerator)
+    : P.IsClassicalTriangulatedGenerator := by
   obtain ⟨n, hn⟩ := h
   rw [isClassicalTriangulatedGenerator_iff, eq_top_iff]
   exact hn ▸ (P.triangEnvelopeIter_le_triangEnvelope n)

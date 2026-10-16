@@ -59,20 +59,24 @@ variable {R : Type u}
 
 -- TODO: assume weaker typeclasses
 
-/-- An ordered semiring is a semiring with a partial order such that addition is monotone and
-multiplication by a nonnegative number is monotone. -/
-class IsOrderedRing (R : Type*) [Semiring R] [PartialOrder R] extends
-    IsOrderedAddMonoid R, ZeroLEOneClass R, PosMulMono R, MulPosMono R where
+/--
+An ordered semiring is a semiring with a partial order such that addition is monotone and
+multiplication by a nonnegative number is monotone.
+-/
+class IsOrderedRing (R : Type*) [Semiring R] [PartialOrder R]
+  extends IsOrderedAddMonoid R, ZeroLEOneClass R, PosMulMono R, MulPosMono R where
 
 -- See note [lower instance priority]
 attribute [instance 100] IsOrderedRing.toZeroLEOneClass
 attribute [instance 200] IsOrderedRing.toPosMulMono
 attribute [instance 200] IsOrderedRing.toMulPosMono
 
-/-- A strict ordered semiring is a nontrivial semiring with a partial order such that addition is
-strictly monotone and multiplication by a positive number is strictly monotone. -/
-class IsStrictOrderedRing (R : Type*) [Semiring R] [PartialOrder R] extends
-    IsOrderedCancelAddMonoid R, ZeroLEOneClass R, Nontrivial R, PosMulStrictMono R,
+/--
+A strict ordered semiring is a nontrivial semiring with a partial order such that addition is
+strictly monotone and multiplication by a positive number is strictly monotone.
+-/
+class IsStrictOrderedRing (R : Type*) [Semiring R] [PartialOrder R]
+  extends IsOrderedCancelAddMonoid R, ZeroLEOneClass R, Nontrivial R, PosMulStrictMono R,
     MulPosStrictMono R where
 
 -- See note [lower instance priority]
@@ -86,17 +90,19 @@ instance [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] : Lean.Grind.Orde
   mul_lt_mul_of_pos_left := mul_lt_mul_of_pos_left
   mul_lt_mul_of_pos_right := mul_lt_mul_of_pos_right
 
-lemma IsOrderedRing.of_mul_nonneg [Ring R] [PartialOrder R] [IsOrderedAddMonoid R]
-    [ZeroLEOneClass R] (mul_nonneg : ∀ a b : R, 0 ≤ a → 0 ≤ b → 0 ≤ a * b) :
-    IsOrderedRing R where
+lemma IsOrderedRing.of_mul_nonneg
+    [Ring R] [PartialOrder R] [IsOrderedAddMonoid R] [ZeroLEOneClass R]
+    (mul_nonneg : ∀ a b : R, 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
+    : IsOrderedRing R where
   mul_le_mul_of_nonneg_left a ha b c hbc := by
     simpa only [mul_sub, sub_nonneg] using mul_nonneg _ _ ha (sub_nonneg.2 hbc)
   mul_le_mul_of_nonneg_right a ha b c hbc := by
     simpa only [sub_mul, sub_nonneg] using mul_nonneg _ _ (sub_nonneg.2 hbc) ha
 
-lemma IsStrictOrderedRing.of_mul_pos [Ring R] [PartialOrder R] [IsOrderedAddMonoid R]
-    [ZeroLEOneClass R] [Nontrivial R] (mul_pos : ∀ a b : R, 0 < a → 0 < b → 0 < a * b) :
-    IsStrictOrderedRing R where
+lemma IsStrictOrderedRing.of_mul_pos
+    [Ring R] [PartialOrder R] [IsOrderedAddMonoid R] [ZeroLEOneClass R] [Nontrivial R]
+    (mul_pos : ∀ a b : R, 0 < a → 0 < b → 0 < a * b)
+    : IsStrictOrderedRing R where
   mul_lt_mul_of_pos_left a ha b c hbc := by
     simpa only [mul_sub, sub_pos] using mul_pos _ _ ha (sub_pos.2 hbc)
   mul_lt_mul_of_pos_right a ha b c hbc := by
@@ -104,9 +110,9 @@ lemma IsStrictOrderedRing.of_mul_pos [Ring R] [PartialOrder R] [IsOrderedAddMono
 
 -- see Note [lower instance priority]
 /-- Turn an ordered domain into a strict ordered ring. -/
-instance (priority := 50) IsOrderedRing.toIsStrictOrderedRing (R : Type*)
-    [Ring R] [PartialOrder R] [IsOrderedRing R] [NoZeroDivisors R] [Nontrivial R] :
-    IsStrictOrderedRing R :=
+instance (priority := 50) IsOrderedRing.toIsStrictOrderedRing
+    (R : Type*) [Ring R] [PartialOrder R] [IsOrderedRing R] [NoZeroDivisors R] [Nontrivial R]
+    : IsStrictOrderedRing R :=
   .of_mul_pos fun _ _ ap bp ↦ (mul_nonneg ap.le bp.le).lt_of_ne' (mul_ne_zero ap.ne' bp.ne')
 
 section IsStrictOrderedRing
@@ -117,15 +123,16 @@ instance (priority := 100) IsStrictOrderedRing.toIsOrderedRing : IsOrderedRing R
   __ := ‹IsStrictOrderedRing R›
 
 /-- This is not an instance, as it would loop with `NeZero.charZero_one`. -/
-theorem AddMonoidWithOne.toCharZero {R}
-    [AddMonoidWithOne R] [PartialOrder R] [ZeroLEOneClass R]
-    [NeZero (1 : R)] [AddLeftStrictMono R] : CharZero R where
+theorem AddMonoidWithOne.toCharZero
+    {R}
+    [AddMonoidWithOne R] [PartialOrder R] [ZeroLEOneClass R] [NeZero (1 : R)] [AddLeftStrictMono R]
+    : CharZero R where
   cast_injective :=
     (strictMono_nat_of_lt_succ fun n ↦ by rw [Nat.cast_succ]; apply lt_add_one).injective
 
 -- see Note [lower instance priority]
-instance (priority := 100) IsStrictOrderedRing.toCharZero :
-    CharZero R := AddMonoidWithOne.toCharZero
+instance (priority := 100) IsStrictOrderedRing.toCharZero : CharZero R :=
+  AddMonoidWithOne.toCharZero
 
 -- see Note [lower instance priority]
 instance (priority := 100) IsStrictOrderedRing.toNoMaxOrder : NoMaxOrder R :=
@@ -180,8 +187,10 @@ lemma one_sub_le_one_add_mul_one_sub (h : c + b * c ≤ a + b) : 1 - a ≤ (1 + 
   rw [mul_one_sub, one_add_mul, sub_le_sub_iff, add_assoc, add_comm b]
   gcongr
 
-/-- A nontrivial ordered ring is of characteristic zero.
-This is not made a global instance for performance reasons. -/
+/--
+A nontrivial ordered ring is of characteristic zero.
+This is not made a global instance for performance reasons.
+-/
 theorem IsOrderedRing.toCharZero [Nontrivial R] : CharZero R := AddMonoidWithOne.toCharZero
 
 instance [Nontrivial R] : NoMaxOrder R := ⟨fun a ↦ ⟨a + 1, by simp⟩⟩

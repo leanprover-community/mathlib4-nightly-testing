@@ -18,13 +18,11 @@ on these types.
 
 public section
 
-
 open Set Filter Bornology Function
 
 open Filter
 
-variable {α β ι : Type*} {X : ι → Type*} [Bornology α] [Bornology β]
-  [∀ i, Bornology (X i)]
+variable {α β ι : Type*} {X : ι → Type*} [Bornology α] [Bornology β] [∀ i, Bornology (X i)]
 
 instance Prod.instBornology : Bornology (α × β) where
   cobounded := (cobounded α).coprod (cobounded β)
@@ -40,8 +38,7 @@ abbrev Bornology.induced {α β : Type*} [Bornology β] (f : α → β) : Bornol
   cobounded := comap f (cobounded β)
   le_cofinite := (comap_mono (Bornology.le_cofinite β)).trans (comap_cofinite_le _)
 
-instance {p : α → Prop} : Bornology (Subtype p) :=
-  Bornology.induced (Subtype.val : Subtype p → α)
+instance {p : α → Prop} : Bornology (Subtype p) := Bornology.induced (Subtype.val : Subtype p → α)
 
 namespace Bornology
 
@@ -49,12 +46,10 @@ namespace Bornology
 ### Bounded sets in `α × β`
 -/
 
+theorem cobounded_prod : cobounded (α × β) = (cobounded α).coprod (cobounded β) := rfl
 
-theorem cobounded_prod : cobounded (α × β) = (cobounded α).coprod (cobounded β) :=
-  rfl
-
-theorem isBounded_image_fst_and_snd {s : Set (α × β)} :
-    IsBounded (Prod.fst '' s) ∧ IsBounded (Prod.snd '' s) ↔ IsBounded s :=
+theorem isBounded_image_fst_and_snd {s : Set (α × β)}
+    : IsBounded (Prod.fst '' s) ∧ IsBounded (Prod.snd '' s) ↔ IsBounded s :=
   compl_mem_coprod.symm
 
 lemma IsBounded.image_fst {s : Set (α × β)} (hs : IsBounded s) : IsBounded (Prod.fst '' s) :=
@@ -75,40 +70,41 @@ theorem IsBounded.prod (hs : IsBounded s) (ht : IsBounded t) : IsBounded (s ×ˢ
   isBounded_image_fst_and_snd.1
     ⟨hs.subset <| fst_image_prod_subset _ _, ht.subset <| snd_image_prod_subset _ _⟩
 
-theorem isBounded_prod_of_nonempty (hne : Set.Nonempty (s ×ˢ t)) :
-    IsBounded (s ×ˢ t) ↔ IsBounded s ∧ IsBounded t :=
+theorem isBounded_prod_of_nonempty (hne : Set.Nonempty (s ×ˢ t))
+    : IsBounded (s ×ˢ t) ↔ IsBounded s ∧ IsBounded t :=
   ⟨fun h => ⟨h.fst_of_prod hne.snd, h.snd_of_prod hne.fst⟩, fun h => h.1.prod h.2⟩
 
 theorem isBounded_prod : IsBounded (s ×ˢ t) ↔ s = ∅ ∨ t = ∅ ∨ IsBounded s ∧ IsBounded t := by
-  rcases s.eq_empty_or_nonempty with (rfl | hs); · simp
-  rcases t.eq_empty_or_nonempty with (rfl | ht); · simp
+  rcases s.eq_empty_or_nonempty with (rfl | hs)
+  · simp
+  rcases t.eq_empty_or_nonempty with (rfl | ht)
+  · simp
   simp only [hs.ne_empty, ht.ne_empty, isBounded_prod_of_nonempty (hs.prod ht), false_or]
 
 theorem isBounded_prod_self : IsBounded (s ×ˢ s) ↔ IsBounded s := by
-  rcases s.eq_empty_or_nonempty with (rfl | hs); · simp
+  rcases s.eq_empty_or_nonempty with (rfl | hs)
+  · simp
   exact (isBounded_prod_of_nonempty (hs.prod hs)).trans and_self_iff
 
 /-!
 ### Bounded sets in `Π i, X i`
 -/
 
+theorem cobounded_pi : cobounded (∀ i, X i) = Filter.coprodᵢ fun i => cobounded (X i) := rfl
 
-theorem cobounded_pi : cobounded (∀ i, X i) = Filter.coprodᵢ fun i => cobounded (X i) :=
-  rfl
-
-theorem forall_isBounded_image_eval_iff {s : Set (∀ i, X i)} :
-    (∀ i, IsBounded (eval i '' s)) ↔ IsBounded s :=
+theorem forall_isBounded_image_eval_iff {s : Set (∀ i, X i)}
+    : (∀ i, IsBounded (eval i '' s)) ↔ IsBounded s :=
   compl_mem_coprodᵢ.symm
 
-lemma IsBounded.image_eval {s : Set (∀ i, X i)} (hs : IsBounded s) (i : ι) :
-    IsBounded (eval i '' s) :=
+lemma IsBounded.image_eval {s : Set (∀ i, X i)} (hs : IsBounded s) (i : ι)
+    : IsBounded (eval i '' s) :=
   forall_isBounded_image_eval_iff.2 hs i
 
 theorem IsBounded.pi (h : ∀ i, IsBounded (S i)) : IsBounded (pi univ S) :=
   forall_isBounded_image_eval_iff.1 fun i => (h i).subset eval_image_univ_pi_subset
 
-theorem isBounded_pi_of_nonempty (hne : (pi univ S).Nonempty) :
-    IsBounded (pi univ S) ↔ ∀ i, IsBounded (S i) :=
+theorem isBounded_pi_of_nonempty (hne : (pi univ S).Nonempty)
+    : IsBounded (pi univ S) ↔ ∀ i, IsBounded (S i) :=
   ⟨fun H i => @eval_image_univ_pi _ _ _ i hne ▸ forall_isBounded_image_eval_iff.2 H i, IsBounded.pi⟩
 
 theorem isBounded_pi : IsBounded (pi univ S) ↔ (∃ i, S i = ∅) ∨ ∀ i, IsBounded (S i) := by
@@ -122,13 +118,12 @@ theorem isBounded_pi : IsBounded (pi univ S) ↔ (∃ i, S i = ∅) ∨ ∀ i, I
 ### Bounded sets in `{x // p x}`
 -/
 
-
-theorem isBounded_induced {α β : Type*} [Bornology β] {f : α → β} {s : Set α} :
-    @IsBounded α (Bornology.induced f) s ↔ IsBounded (f '' s) :=
+theorem isBounded_induced {α β : Type*} [Bornology β] {f : α → β} {s : Set α}
+    : @IsBounded α (Bornology.induced f) s ↔ IsBounded (f '' s) :=
   compl_mem_comap
 
-theorem isBounded_image_subtype_val {p : α → Prop} {s : Set { x // p x }} :
-    IsBounded (Subtype.val '' s) ↔ IsBounded s :=
+theorem isBounded_image_subtype_val {p : α → Prop} {s : Set {x // p x}}
+    : IsBounded (Subtype.val '' s) ↔ IsBounded s :=
   isBounded_induced.symm
 
 end Bornology
@@ -136,7 +131,6 @@ end Bornology
 /-!
 ### Bounded spaces
 -/
-
 
 open Bornology
 
@@ -146,12 +140,12 @@ instance [BoundedSpace α] [BoundedSpace β] : BoundedSpace (α × β) := by
 instance [∀ i, BoundedSpace (X i)] : BoundedSpace (∀ i, X i) := by
   simp [← cobounded_eq_bot_iff, cobounded_pi]
 
-theorem boundedSpace_induced_iff {α β : Type*} [Bornology β] {f : α → β} :
-    @BoundedSpace α (Bornology.induced f) ↔ IsBounded (range f) := by
+theorem boundedSpace_induced_iff {α β : Type*} [Bornology β] {f : α → β}
+    : @BoundedSpace α (Bornology.induced f) ↔ IsBounded (range f) := by
   rw [← @isBounded_univ, isBounded_induced, image_univ]
 
-theorem boundedSpace_subtype_iff {p : α → Prop} :
-    BoundedSpace (Subtype p) ↔ IsBounded { x | p x } := by
+theorem boundedSpace_subtype_iff {p : α → Prop}
+    : BoundedSpace (Subtype p) ↔ IsBounded { x | p x } := by
   rw [boundedSpace_induced_iff, Subtype.range_coe_subtype]
 
 theorem boundedSpace_val_set_iff {s : Set α} : BoundedSpace s ↔ IsBounded s :=
@@ -170,18 +164,13 @@ instance [BoundedSpace α] {p : α → Prop} : BoundedSpace (Subtype p) :=
 The bornology on those type synonyms is inherited without change.
 -/
 
+instance : Bornology (Additive α) := ‹Bornology α›
 
-instance : Bornology (Additive α) :=
-  ‹Bornology α›
+instance : Bornology (Multiplicative α) := ‹Bornology α›
 
-instance : Bornology (Multiplicative α) :=
-  ‹Bornology α›
+instance [BoundedSpace α] : BoundedSpace (Additive α) := ‹BoundedSpace α›
 
-instance [BoundedSpace α] : BoundedSpace (Additive α) :=
-  ‹BoundedSpace α›
-
-instance [BoundedSpace α] : BoundedSpace (Multiplicative α) :=
-  ‹BoundedSpace α›
+instance [BoundedSpace α] : BoundedSpace (Multiplicative α) := ‹BoundedSpace α›
 
 /-!
 ### Order dual
@@ -189,9 +178,6 @@ instance [BoundedSpace α] : BoundedSpace (Multiplicative α) :=
 The bornology on this type synonym is inherited without change.
 -/
 
+instance : Bornology αᵒᵈ := ‹Bornology α›
 
-instance : Bornology αᵒᵈ :=
-  ‹Bornology α›
-
-instance [BoundedSpace α] : BoundedSpace αᵒᵈ :=
-  ‹BoundedSpace α›
+instance [BoundedSpace α] : BoundedSpace αᵒᵈ := ‹BoundedSpace α›

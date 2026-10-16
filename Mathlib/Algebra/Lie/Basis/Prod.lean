@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Lie.Basis.Basic
 public import Mathlib.Algebra.Lie.Semisimple.Basic
-
 import Mathlib.Algebra.Lie.Prod
 
 /-!
@@ -28,18 +27,20 @@ variable {ι₁ ι₂ L₁ L₂ : Type*} [Finite ι₁] [Finite ι₂] (eι : ι
 
 section CommRing
 
-variable {R : Type*} [CommRing R]
-  [LieAlgebra R L₁] {H₁ : LieSubalgebra R L₁} (b₁ : Basis ι₁ H₁)
-  [LieAlgebra R L₂] {H₂ : LieSubalgebra R L₂} (b₂ : Basis ι₂ H₂)
+variable
+  {R : Type*} [CommRing R] [LieAlgebra R L₁]
+  {H₁ : LieSubalgebra R L₁} (b₁ : Basis ι₁ H₁)
+  [LieAlgebra R L₂]
+  {H₂ : LieSubalgebra R L₂} (b₂ : Basis ι₂ H₂)
 
-/-- A distinguished subalgebra of the product of two based Lie algebras with equivalent indexing
-sets. -/
-protected def prod :
-    LieSubalgebra R (L₁ × L₂) :=
+/--
+A distinguished subalgebra of the product of two based Lie algebras with equivalent indexing
+sets.
+-/
+protected def prod : LieSubalgebra R (L₁ × L₂) :=
   .lieSpan _ _ <|
-    {(b₁.h i, b₂.h (eι i)) | i : ι₁} ∪
-    {(b₁.e i, b₂.e (eι i)) | i : ι₁} ∪
-    {(b₁.f i, b₂.f (eι i)) | i : ι₁}
+    {(b₁.h i, b₂.h (eι i)) | i : ι₁} ∪ {(b₁.e i, b₂.e (eι i)) | i : ι₁}
+      ∪ {(b₁.f i, b₂.f (eι i)) | i : ι₁}
 
 /-- The equivalence obtained by interchanging the two bases consumed by `LieAlgebra.Basis.prod`. -/
 def prodSymmEquiv : prod eι.symm b₂ b₁ ≃ₗ⁅R⁆ b₁.prod eι b₂ :=
@@ -49,28 +50,27 @@ def prodSymmEquiv : prod eι.symm b₂ b₁ ≃ₗ⁅R⁆ b₁.prod eι b₂ :=
     (LieEquiv.ofEq _ _ <| by simpa)
 
 @[simp]
-lemma prodSymmEquiv_symm_apply {y : b₁.prod eι b₂} :
-    (prodSymmEquiv eι b₁ b₂).symm y =
-      ⟨((y : L₁ × L₂).snd, (y : L₁ × L₂).fst), ((prodSymmEquiv eι b₁ b₂).symm y).property⟩ :=
+lemma prodSymmEquiv_symm_apply {y : b₁.prod eι b₂}
+    : (prodSymmEquiv eι b₁ b₂).symm y
+      = ⟨((y : L₁ × L₂).snd, (y : L₁ × L₂).fst), ((prodSymmEquiv eι b₁ b₂).symm y).property⟩ :=
   rfl
 
-lemma h_mem_prod (i : ι₁) :
-    (b₁.h i, b₂.h (eι i)) ∈ b₁.prod eι b₂ :=
-  subset_lieSpan <| by aesop
+lemma h_mem_prod (i : ι₁) : (b₁.h i, b₂.h (eι i)) ∈ b₁.prod eι b₂ := subset_lieSpan <| by aesop
 
-/-- A distinguished subalgebra of the Lie algebra defined by `LieAlgebra.Basis.prod`.
+/--
+A distinguished subalgebra of the Lie algebra defined by `LieAlgebra.Basis.prod`.
 
 Subject to the assumtions demanded by `LieAlgebra.Basis.isCartanSubalgebra` this will be a Cartan
-subalgebra of `LieAlgebra.Basis.prod`. -/
-def prodCartan :
-    LieSubalgebra R (prod eι b₁ b₂) :=
+subalgebra of `LieAlgebra.Basis.prod`.
+-/
+def prodCartan : LieSubalgebra R (prod eι b₁ b₂) :=
   .lieSpan _ _ {⟨(b₁.h i, b₂.h (eι i)), h_mem_prod eι b₁ b₂ i⟩ | i : ι₁}
 
 open Finsupp in
-lemma prodCartanEquiv_aux :
-    InjOn (LinearMap.fst R L₁ L₂) (span R {(b₁.h i, b₂.h (eι i)) | i : ι₁}) := by
-  suffices ∀ y, (∃ l : ι₁ →₀ R,
-      (l.linearCombination R fun i ↦ (b₁.h i, b₂.h (eι i))) = (0, y)) → y = 0 by
+lemma prodCartanEquiv_aux
+    : InjOn (LinearMap.fst R L₁ L₂) (span R {(b₁.h i, b₂.h (eι i)) | i : ι₁}) := by
+  suffices ∀ y,
+      (∃ l : ι₁ →₀ R, (l.linearCombination R fun i ↦ (b₁.h i, b₂.h (eι i))) = (0, y)) → y = 0 by
     have aux : {(b₁.h i, b₂.h (eι i)) | i : ι₁} = (fun i : ι₁ ↦ (b₁.h i, b₂.h (eι i))) '' univ := by
       ext; simp
     simp_rw [← LinearMap.disjoint_ker_iff_injOn, LinearMap.disjoint_ker, aux,
@@ -86,16 +86,18 @@ lemma prodCartanEquiv_aux :
 
 open LinearMap in
 /-- The Lie subalgebra `LieAlgebra.Basis.prod` is a copy of the Cartan subalgebra of the input. -/
-def prodCartanEquiv :
-    prodCartan eι b₁ b₂ ≃ₗ[R] H₁ :=
-  /- Informally this is obvious since `prodCartan eι b₁ b₂` is the linear span of
+def prodCartanEquiv : prodCartan eι b₁ b₂ ≃ₗ[R] H₁ :=
+  /-
+  Informally this is obvious since `prodCartan eι b₁ b₂` is the linear span of
   `{(b₁.h i, b₂.h (eι i)) | i : ι₁}` and `H₁` is the linear span of `{b₁.h i | i : ι₁}` (and both
-  families are linearly independent) but formally some care is required. -/
-  have h₁ : (prodCartan eι b₁ b₂).map (prod eι b₁ b₂).incl =
-      (lieSpan R (L₁ × L₂) {(b₁.h i, b₂.h (eι i)) | i : ι₁} : Set (L₁ × L₂)) := by
+  families are linearly independent) but formally some care is required.
+  -/
+  have h₁
+      : (prodCartan eι b₁ b₂).map (prod eι b₁ b₂).incl
+        = (lieSpan R (L₁ × L₂) {(b₁.h i, b₂.h (eι i)) | i : ι₁} : Set (L₁ × L₂)) := by
     rw [prodCartan, map_lieSpan]; congr; aesop
-  have h₂ : (lieSpan R _ {(b₁.h i, b₂.h (eι i)) | i : ι₁}) =
-      span R {(b₁.h i, b₂.h (eι i)) | i : ι₁} :=
+  have h₂
+      : (lieSpan R _ {(b₁.h i, b₂.h (eι i)) | i : ι₁}) = span R {(b₁.h i, b₂.h (eι i)) | i : ι₁} :=
     coe_lieSpan_eq_span_of_forall_lie_eq_zero <| by simp [b₁.lie_h_h, b₂.lie_h_h]
   have h₃ : (span R {(b₁.h i, b₂.h (eι i)) | i : ι₁}).map (.fst R L₁ L₂) = span R (range b₁.h) := by
     rw [Submodule.map_span]; congr; ext; simp
@@ -105,12 +107,17 @@ def prodCartanEquiv :
   let e₀ : prodCartan eι b₁ b₂ ≃ₗ[R] (prodCartan eι b₁ b₂).map (prod eι b₁ b₂).incl :=
     (prodCartan eι b₁ b₂).equivMapOfInjective (prod eι b₁ b₂).incl <| by simp
   let e₁ : (prodCartan eι b₁ b₂).map (prod eι b₁ b₂).incl ≃ₗ[R]
-      lieSpan R (L₁ × L₂) {(b₁.h i, b₂.h (eι i)) | i : ι₁} := LieEquiv.ofEq _ _ h₁
+      lieSpan R (L₁ × L₂) {(b₁.h i, b₂.h (eι i)) | i : ι₁} :=
+    LieEquiv.ofEq _ _ h₁
   let e₂ : lieSpan R (L₁ × L₂) {(b₁.h i, b₂.h (eι i)) | i : ι₁} ≃ₗ[R]
-      span R {(b₁.h i, b₂.h (eι i)) | i : ι₁} := LinearEquiv.ofEq _ _ h₂
+      span R {(b₁.h i, b₂.h (eι i)) | i : ι₁} :=
+    LinearEquiv.ofEq _ _ h₂
   let e₃ : span R {(b₁.h i, b₂.h (eι i)) | i : ι₁} ≃ₗ[R] span R (range b₁.h) :=
-    (LinearEquiv.ofBijective _ ⟨submoduleMap_injective_of_injOn (prodCartanEquiv_aux eι b₁ b₂),
-      submoduleMap_surjective _ _⟩).trans <| .ofEq _ _ h₃
+    (LinearEquiv.ofBijective _ ⟨
+        submoduleMap_injective_of_injOn (prodCartanEquiv_aux eι b₁ b₂),
+        submoduleMap_surjective _ _
+      ⟩).trans <|
+      .ofEq _ _ h₃
   let e₄ : span R (range b₁.h) ≃ₗ[R] lieSpan R L₁ (range b₁.h) := LinearEquiv.ofEq _ _ h₄.symm
   let e₅ : lieSpan R L₁ (range b₁.h) ≃ₗ[R] H₁ := (LieEquiv.ofEq _ _ h₅).symm
   e₀.trans <| e₁.trans <| e₂.trans <| e₃.trans <| e₄.trans e₅
@@ -124,15 +131,16 @@ protected abbrev prodE (i : ι₁) : b₁.prod eι b₂ :=
 protected abbrev prodF (i : ι₁) : b₁.prod eι b₂ :=
   ⟨(b₁.f i, b₂.f (eι i)), subset_lieSpan <| by aesop⟩
 
-lemma basisProd_aux :
-    lieSpan R (prod eι b₁ b₂) (range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂)) = ⊤ := by
-  suffices lieSpan R (prod eι b₁ b₂) (range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂)) =
-      lieSpan R (prod eι b₁ b₂)
+lemma basisProd_aux
+    : lieSpan R (prod eι b₁ b₂) (range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂)) = ⊤ := by
+  suffices lieSpan R (prod eι b₁ b₂) (range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂))
+      = lieSpan R (prod eι b₁ b₂)
         (range (prodH eι b₁ b₂) ∪ range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂)) by
-    have hr : range (prodH eι b₁ b₂) ∪ range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂) =
-        Subtype.val ⁻¹' ( {(b₁.h i, b₂.h (eι i)) | i : ι₁} ∪
-                          {(b₁.e i, b₂.e (eι i)) | i : ι₁} ∪
-                          {(b₁.f i, b₂.f (eι i)) | i : ι₁} ) := by
+    have hr
+        : range (prodH eι b₁ b₂) ∪ range (prodE eι b₁ b₂) ∪ range (prodF eι b₁ b₂)
+          = Subtype.val
+            ⁻¹' ({(b₁.h i, b₂.h (eι i)) | i : ι₁} ∪ {(b₁.e i, b₂.e (eι i)) | i : ι₁}
+              ∪ {(b₁.f i, b₂.f (eι i)) | i : ι₁}) := by
       ext; simp [Subtype.ext_iff]
     rw [this, hr]
     exact lieSpan_lieSpan_coe_preimage
@@ -147,8 +155,7 @@ lemma basisProd_aux :
   · exact subset_lieSpan <| mem_union_right _ <| mem_range_self i
 
 /-- A distinguished basis carried by `LieAlgebra.Basis.prod`. -/
-def basisProd (hA : b₁.A.reindex eι eι = b₂.A) :
-    Basis ι₁ (prodCartan eι b₁ b₂) where
+def basisProd (hA : b₁.A.reindex eι eι = b₂.A) : Basis ι₁ (prodCartan eι b₁ b₂) where
   A := b₁.A
   h := prodH eι b₁ b₂
   e := prodE eι b₁ b₂
@@ -157,13 +164,14 @@ def basisProd (hA : b₁.A.reindex eι eι = b₂.A) :
   span_ef := b₁.basisProd_aux eι b₂
   linInd := .of_comp (prod eι b₁ b₂).subtype <| .of_comp (LinearMap.fst R L₁ L₂) b₁.linInd
   nondegen := b₁.nondegen
-  sl2 i :=
-    { h_ne_zero := by simp [Subtype.ext_iff, (b₁.sl2 i).h_ne_zero]
-      lie_e_f := by simp [Subtype.ext_iff, (b₁.sl2 i).lie_e_f, (b₂.sl2 (eι i)).lie_e_f]
-      lie_h_e_nsmul := by
-        simp [Subtype.ext_iff, (b₁.sl2 i).lie_h_e_nsmul, (b₂.sl2 (eι i)).lie_h_e_nsmul]
-      lie_h_f_nsmul := by
-        simp [Subtype.ext_iff, (b₁.sl2 i).lie_h_f_nsmul, (b₂.sl2 (eι i)).lie_h_f_nsmul] }
+  sl2 i := {
+    h_ne_zero := by simp [Subtype.ext_iff, (b₁.sl2 i).h_ne_zero]
+    lie_e_f := by simp [Subtype.ext_iff, (b₁.sl2 i).lie_e_f, (b₂.sl2 (eι i)).lie_e_f]
+    lie_h_e_nsmul := by
+      simp [Subtype.ext_iff, (b₁.sl2 i).lie_h_e_nsmul, (b₂.sl2 (eι i)).lie_h_e_nsmul]
+    lie_h_f_nsmul := by
+      simp [Subtype.ext_iff, (b₁.sl2 i).lie_h_f_nsmul, (b₂.sl2 (eι i)).lie_h_f_nsmul]
+  }
   lie_h_h i j := by simp [Subtype.ext_iff, b₁.lie_h_h, b₂.lie_h_h]
   lie_h_e i j := by simp [Subtype.ext_iff, b₁.lie_h_e, b₂.lie_h_e, ← hA]
   lie_h_f i j := by simp [Subtype.ext_iff, b₁.lie_h_f, b₂.lie_h_f, ← hA]
@@ -171,8 +179,7 @@ def basisProd (hA : b₁.A.reindex eι eι = b₂.A) :
     have hij' : eι i ≠ eι j := by aesop
     simp [Subtype.ext_iff, b₁.lie_e_f_ne i j hij, b₂.lie_e_f_ne _ _ hij']
 
-lemma surjective_fst_prod :
-    Surjective ((LieHom.fst R L₁ L₂).comp (prod eι b₁ b₂).incl) := by
+lemma surjective_fst_prod : Surjective ((LieHom.fst R L₁ L₂).comp (prod eι b₁ b₂).incl) := by
   set L : LieSubalgebra R (L₁ × L₂) := b₁.prod eι b₂
   set p₁ : L →ₗ⁅R⁆ L₁ := (LieHom.fst R L₁ L₂).comp L.incl
   have h₁ : range b₁.e = range (p₁ ∘ prodE eι b₁ b₂) := rfl
@@ -181,39 +188,40 @@ lemma surjective_fst_prod :
     map_lieSpan, image_union, h₁, h₂]
   simp [range_comp]
 
-lemma surjective_snd_prod :
-    Surjective ((LieHom.snd R L₁ L₂).comp (prod eι b₁ b₂).incl) := by
+lemma surjective_snd_prod : Surjective ((LieHom.snd R L₁ L₂).comp (prod eι b₁ b₂).incl) := by
   set L : LieSubalgebra R (L₁ × L₂) := b₁.prod eι b₂
   set p₂ : L →ₗ⁅R⁆ L₂ := (LieHom.snd R L₁ L₂).comp L.incl
   have h₁ : range b₂.e = range (p₂ ∘ prodE eι b₁ b₂) := by
     simp [show p₂ ∘ prodE eι b₁ b₂ = b₂.e ∘ eι from rfl]
   have h₂ : range b₂.f = range (p₂ ∘ prodF eι b₁ b₂) := by
     simp [show p₂ ∘ prodF eι b₁ b₂ = b₂.f ∘ eι from rfl]
-  rw [← LieHom.range_eq_top, eq_top_iff, ← b₂.span_ef, map_top,
-    ← b₁.basisProd_aux eι b₂, map_lieSpan, image_union, h₁, h₂]
+  rw [← LieHom.range_eq_top, eq_top_iff, ← b₂.span_ef, map_top, ← b₁.basisProd_aux eι b₂,
+    map_lieSpan, image_union, h₁, h₂]
   simp [range_comp]
 
-lemma lie_fst_eq_zero_of_mem_prodCartan
-    {y : b₁.prod eι b₂} (hy : y ∈ prodCartan eι b₁ b₂) (x : H₁) :
-    ⁅(y : L₁ × L₂).fst, (x : L₁)⁆ = 0 := by
+lemma lie_fst_eq_zero_of_mem_prodCartan {y : b₁.prod eι b₂} (hy : y ∈ prodCartan eι b₁ b₂) (x : H₁)
+    : ⁅(y : L₁ × L₂).fst, (x : L₁)⁆ = 0 := by
   have := b₁.isLieAbelian_cartan
   induction hy using lieSpan_induction with
   | mem u hu =>
     obtain ⟨i, rfl⟩ := hu
     suffices ⁅b₁.h' i, x⁆ = 0 by simpa [Subtype.ext_iff, Basis.h'] using this
     apply trivial_lie_zero
-  | zero => simp
-  | add u v hu hv hu' hv' => simp [hu', hv']
-  | smul t u hu hu' => simp [hu']
-  | lie u v hu hv hu' hv' => simp [hu', hv']
+  | zero =>
+    simp
+  | add u v hu hv hu' hv' =>
+    simp [hu', hv']
+  | smul t u hu hu' =>
+    simp [hu']
+  | lie u v hu hv hu' hv' =>
+    simp [hu', hv']
 
-lemma lie_snd_eq_zero_of_mem_prodCartan
-    {y : b₁.prod eι b₂} (hy : y ∈ prodCartan eι b₁ b₂) (x : H₂) :
-    ⁅(y : L₁ × L₂).snd, (x : L₂)⁆ = 0 := by
+lemma lie_snd_eq_zero_of_mem_prodCartan {y : b₁.prod eι b₂} (hy : y ∈ prodCartan eι b₁ b₂) (x : H₂)
+    : ⁅(y : L₁ × L₂).snd, (x : L₂)⁆ = 0 := by
   suffices (prodSymmEquiv eι b₁ b₂).symm y ∈ prodCartan eι.symm b₂ b₁ from
     lie_fst_eq_zero_of_mem_prodCartan eι.symm b₂ b₁ this x
-  replace hy :
-      (prodSymmEquiv eι b₁ b₂).symm y ∈ (prodCartan eι b₁ b₂).map (prodSymmEquiv eι b₁ b₂).symm :=
+  replace hy
+      : (prodSymmEquiv eι b₁ b₂).symm y ∈ (prodCartan eι b₁ b₂).map (prodSymmEquiv eι b₁ b₂).symm :=
     mem_image_of_mem (prodSymmEquiv eι b₁ b₂).symm hy
   rw [prodCartan, map_lieSpan] at hy
   rw [prodCartan]
@@ -225,20 +233,22 @@ end CommRing
 
 section Field
 
-variable {K : Type*} [Field K] [CharZero K]
-  [LieAlgebra K L₁] [FiniteDimensional K L₁] {H₁ : LieSubalgebra K L₁} (b₁ : Basis ι₁ H₁)
-  [LieAlgebra K L₂] [FiniteDimensional K L₂] {H₂ : LieSubalgebra K L₂} (b₂ : Basis ι₂ H₂)
-  (hA : b₁.A.reindex eι eι = b₂.A)
+variable
+  {K : Type*} [Field K] [CharZero K] [LieAlgebra K L₁] [FiniteDimensional K L₁]
+  {H₁ : LieSubalgebra K L₁} (b₁ : Basis ι₁ H₁)
+  [LieAlgebra K L₂] [FiniteDimensional K L₂]
+  {H₂ : LieSubalgebra K L₂} (b₂ : Basis ι₂ H₂) (hA : b₁.A.reindex eι eι = b₂.A)
 include hA
 
-lemma prod_lt_top [Nontrivial L₂] :
-    b₁.prod eι b₂ < ⊤ := by
-  /- This innocent-looking result is the key. The informal literature seems only to contain
+lemma prod_lt_top [Nontrivial L₂] : b₁.prod eι b₂ < ⊤ := by
+  /-
+  This innocent-looking result is the key. The informal literature seems only to contain
   somewhat heavy-weight proofs (e.g., [Chapter IV, Theorem 14.2][humphreys1972] makes an
   inductive argument using highest weights) but in fact it follows very easily from
   `LieAlgebra.Basis.isCartanSubalgebra`. The argument is essentially: if `b₁.prod eι b₂` is not
   proper then it's Cartan subalgebra contains `H₁ × H₂` which is absurd since it
-  `LieAlgebra.Basis.prodCartanEquiv` tells us it is equivalent to `H₁`. -/
+  `LieAlgebra.Basis.prodCartanEquiv` tells us it is equivalent to `H₁`.
+  -/
   have := Fintype.ofFinite ι₁
   have := Fintype.ofFinite ι₂
   have := b₁.isCartanSubalgebra
@@ -249,12 +259,15 @@ lemma prod_lt_top [Nontrivial L₂] :
   have (x : H₁ × H₂) (hx) : ⟨(x.1, x.2), hx⟩ ∈ prodCartan eι b₁ b₂ := by
     rw [← mem_toLieSubmodule, ← rootSpace_zero_eq, LieModule.mem_genWeightSpace]
     refine fun ⟨y, hy⟩ ↦ ⟨1, ?_⟩
-    simpa [Subtype.ext_iff] using ⟨lie_fst_eq_zero_of_mem_prodCartan eι b₁ b₂ hy x.fst,
-      lie_snd_eq_zero_of_mem_prodCartan eι b₁ b₂ hy x.snd⟩
-  let f : H₁ × H₂ →ₗ[K] prodCartan eι b₁ b₂ :=
-    { toFun x := ⟨⟨⟨x.fst, x.snd⟩, by simp [contra]⟩, this x _⟩
-      map_add' := by simp
-      map_smul' := by simp }
+    simpa [Subtype.ext_iff] using ⟨
+      lie_fst_eq_zero_of_mem_prodCartan eι b₁ b₂ hy x.fst,
+      lie_snd_eq_zero_of_mem_prodCartan eι b₁ b₂ hy x.snd
+    ⟩
+  let f : H₁ × H₂ →ₗ[K] prodCartan eι b₁ b₂ := {
+    toFun x := ⟨⟨⟨x.fst, x.snd⟩, by simp [contra]⟩, this x _⟩
+    map_add' := by simp
+    map_smul' := by simp
+  }
   have f_inj : Injective f := fun x y h ↦ by simpa [Prod.ext_iff, f] using h
   let g : H₁ × H₂ →ₗ[K] H₁ := (prodCartanEquiv eι b₁ b₂) ∘ₗ f
   have hg₁ : Injective g := by simpa [g]
@@ -265,8 +278,7 @@ lemma prod_lt_top [Nontrivial L₂] :
 variable [IsSimple K L₁] [IsSimple K L₂]
 
 /-- `LieAlgebra.Basis.prod` is equivalent to its left input algebra. -/
-def prodEquivLeft :
-    b₁.prod eι b₂ ≃ₗ⁅K⁆ L₁ :=
+def prodEquivLeft : b₁.prod eι b₂ ≃ₗ⁅K⁆ L₁ :=
   let L : LieSubalgebra K (L₁ × L₂) := b₁.prod eι b₂
   let p₁ : L →ₗ⁅K⁆ L₁ := (LieHom.fst K L₁ L₂).comp L.incl
   have : Injective p₁ := by
@@ -297,13 +309,11 @@ def prodEquivLeft :
   .ofBijective p₁ ⟨this, surjective_fst_prod eι b₁ b₂⟩
 
 /-- `LieAlgebra.Basis.prod` is equivalent to its right input algebra. -/
-def prodEquivRight :
-    b₁.prod eι b₂ ≃ₗ⁅K⁆ L₂ :=
+def prodEquivRight : b₁.prod eι b₂ ≃ₗ⁅K⁆ L₂ :=
   (prodSymmEquiv eι b₁ b₂).symm.trans (prodEquivLeft eι.symm b₂ b₁ <| by simp [← hA])
 
 /-- Simple Lie algebras with equivalent bases are equivalent. -/
-public def equivOfReindex :
-    L₁ ≃ₗ⁅K⁆ L₂ :=
+public def equivOfReindex : L₁ ≃ₗ⁅K⁆ L₂ :=
   (prodEquivLeft eι b₁ b₂ hA).symm.trans (prodEquivRight eι b₁ b₂ hA)
 
 end Field

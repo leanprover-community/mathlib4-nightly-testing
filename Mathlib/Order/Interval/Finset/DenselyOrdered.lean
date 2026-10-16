@@ -20,21 +20,19 @@ public section
 
 variable {X : Type*} [LinearOrder X] [LocallyFiniteOrder X]
 
-lemma LocallyFiniteOrder.denselyOrdered_iff_subsingleton :
-    DenselyOrdered X ↔ Subsingleton X := by
+lemma LocallyFiniteOrder.denselyOrdered_iff_subsingleton : DenselyOrdered X ↔ Subsingleton X := by
   refine ⟨fun H ↦ ?_, fun h ↦ h.instDenselyOrdered⟩
   rw [← not_nontrivial_iff_subsingleton, nontrivial_iff_lt]
   rintro ⟨a, b, hab⟩
   exact not_lt_of_denselyOrdered_of_locallyFinite a b hab
 
-lemma denselyOrdered_set_iff_subsingleton {s : Set X} :
-    DenselyOrdered s ↔ s.Subsingleton := by
+lemma denselyOrdered_set_iff_subsingleton {s : Set X} : DenselyOrdered s ↔ s.Subsingleton := by
   classical
   simp [LocallyFiniteOrder.denselyOrdered_iff_subsingleton]
 
 @[to_dual]
-lemma WithBot.denselyOrdered_set_iff_subsingleton {s : Set (WithBot X)} :
-    DenselyOrdered s ↔ s.Subsingleton := by
+lemma WithBot.denselyOrdered_set_iff_subsingleton {s : Set (WithBot X)}
+    : DenselyOrdered s ↔ s.Subsingleton := by
   refine ⟨fun H ↦ ?_, fun h ↦ h.denselyOrdered⟩
   rw [← Set.subsingleton_coe, ← not_nontrivial_iff_subsingleton, nontrivial_iff_lt]
   suffices DenselyOrdered (WithBot.some ⁻¹' s) by
@@ -44,8 +42,7 @@ lemma WithBot.denselyOrdered_set_iff_subsingleton {s : Set (WithBot X)} :
     have hz0 : (⊥ : WithBot X) < z := by simp [(Subtype.coe_lt_coe.mpr hz).trans_le']
     replace hz' : WithBot.unbot z.val hz0.ne' < WithBot.unbot y (hz0.trans hz').ne' := by
       rwa [← WithBot.coe_lt_coe, WithBot.coe_unbot, WithBot.coe_unbot]
-    refine absurd (this ?_ ?_) hz'.ne <;>
-    simp
+    refine absurd (this ?_ ?_) hz'.ne <;> simp
   constructor
   simp only [Subtype.exists, Set.mem_preimage, Subtype.forall, Subtype.mk_lt_mk, exists_and_right,
     exists_prop]

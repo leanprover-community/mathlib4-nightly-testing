@@ -25,7 +25,6 @@ reflect isomorphisms for any preadditive category `C`.
 
 public section
 
-
 open CategoryTheory CategoryTheory.Category CategoryTheory.Idempotents Opposite
 
 open scoped Simplicial
@@ -51,8 +50,9 @@ instance : (N₁ : SimplicialObject C ⥤ Karoubi (ChainComplex C ℕ)).Reflects
     have h₂ := HomologicalComplex.congr_hom (Karoubi.hom_ext_iff.mp (IsIso.inv_hom_id (N₁.map f)))
     have h₃ := fun n =>
       Karoubi.HomologicalComplex.p_comm_f_assoc (inv (N₁.map f)) n (f.app (op ⦋n⦌))
-    simp only [N₁_map_f, Karoubi.comp_f, HomologicalComplex.comp_f,
-      AlternatingFaceMapComplex.map_f, N₁_obj_p, Karoubi.id_f, assoc] at h₁ h₂ h₃
+    simp only [N₁_map_f, Karoubi.comp_f, HomologicalComplex.comp_f, AlternatingFaceMapComplex.map_f,
+        N₁_obj_p, Karoubi.id_f, assoc]
+      at h₁ h₂ h₃
     -- we have to construct an inverse to f in degree n, by induction on n
     intro n
     induction n with
@@ -73,11 +73,11 @@ instance : (N₁ : SimplicialObject C ⥤ Karoubi (ChainComplex C ℕ)).Reflects
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem compatibility_N₂_N₁_karoubi :
-    N₂ ⋙ (karoubiChainComplexEquivalence C ℕ).functor =
-      karoubiFunctorCategoryEmbedding SimplexCategoryᵒᵖ C ⋙
-        N₁ ⋙ (karoubiChainComplexEquivalence (Karoubi C) ℕ).functor ⋙
-            Functor.mapHomologicalComplex (KaroubiKaroubi.equivalence C).inverse _ := by
+theorem compatibility_N₂_N₁_karoubi
+    : N₂ ⋙ (karoubiChainComplexEquivalence C ℕ).functor
+      = karoubiFunctorCategoryEmbedding (SimplexCategoryᵒᵖ) C ⋙ N₁
+        ⋙ (karoubiChainComplexEquivalence (Karoubi C) ℕ).functor
+        ⋙ Functor.mapHomologicalComplex (KaroubiKaroubi.equivalence C).inverse _ := by
   refine CategoryTheory.Functor.ext (fun P => ?_) fun P Q f => ?_
   · refine HomologicalComplex.ext ?_ ?_
     · ext n
@@ -87,32 +87,33 @@ theorem compatibility_N₂_N₁_karoubi :
     · rintro _ n (rfl : n + 1 = _)
       ext
       have h := (AlternatingFaceMapComplex.map P.p).comm (n + 1) n
-      dsimp [N₂, karoubiChainComplexEquivalence,
-        KaroubiHomologicalComplexEquivalence.Functor.obj] at h ⊢
+      dsimp [N₂, karoubiChainComplexEquivalence, KaroubiHomologicalComplexEquivalence.Functor.obj]
+        at h ⊢
       simp only [assoc, Karoubi.eqToHom_f, eqToHom_refl, comp_id,
-        karoubi_alternatingFaceMapComplex_d, karoubi_PInfty_f,
-        ← HomologicalComplex.Hom.comm_assoc, ← h, app_idem_assoc]
+        karoubi_alternatingFaceMapComplex_d, karoubi_PInfty_f, ← HomologicalComplex.Hom.comm_assoc,
+        ← h, app_idem_assoc]
   · ext n
     dsimp [KaroubiKaroubi.inverse, Functor.mapHomologicalComplex]
-    simp only [karoubi_PInfty_f, HomologicalComplex.eqToHom_f, Karoubi.eqToHom_f,
-      assoc, comp_id, PInfty_f_naturality, app_p_comp,
-      karoubiChainComplexEquivalence_functor_obj_X_p, N₂_obj_p_f, eqToHom_refl,
-      PInfty_f_naturality_assoc, app_comp_p, PInfty_f_idem_assoc]
+    simp only [karoubi_PInfty_f, HomologicalComplex.eqToHom_f, Karoubi.eqToHom_f, assoc, comp_id,
+      PInfty_f_naturality, app_p_comp, karoubiChainComplexEquivalence_functor_obj_X_p, N₂_obj_p_f,
+      eqToHom_refl, PInfty_f_naturality_assoc, app_comp_p, PInfty_f_idem_assoc]
 
-/-- We deduce that `N₂ : Karoubi (SimplicialObject C) ⥤ Karoubi (ChainComplex C ℕ)`
+/--
+We deduce that `N₂ : Karoubi (SimplicialObject C) ⥤ Karoubi (ChainComplex C ℕ)`
 reflects isomorphisms from the fact that
-`N₁ : SimplicialObject (Karoubi C) ⥤ Karoubi (ChainComplex (Karoubi C) ℕ)` does. -/
+`N₁ : SimplicialObject (Karoubi C) ⥤ Karoubi (ChainComplex (Karoubi C) ℕ)` does.
+-/
 instance : (N₂ : Karoubi (SimplicialObject C) ⥤ Karoubi (ChainComplex C ℕ)).ReflectsIsomorphisms :=
   ⟨fun f => by
     intro
     -- The following functor `F` reflects isomorphisms because it is
     -- a composition of four functors which reflect isomorphisms.
     -- Then, it suffices to show that `F.map f` is an isomorphism.
-    let F₁ := karoubiFunctorCategoryEmbedding SimplexCategoryᵒᵖ C
+    let F₁ := karoubiFunctorCategoryEmbedding (SimplexCategoryᵒᵖ) C
     let F₂ : SimplicialObject (Karoubi C) ⥤ _ := N₁
     let F₃ := (karoubiChainComplexEquivalence (Karoubi C) ℕ).functor
-    let F₄ := Functor.mapHomologicalComplex (KaroubiKaroubi.equivalence C).inverse
-      (ComplexShape.down ℕ)
+    let F₄ :=
+      Functor.mapHomologicalComplex (KaroubiKaroubi.equivalence C).inverse (ComplexShape.down ℕ)
     let F := F₁ ⋙ F₂ ⋙ F₃ ⋙ F₄
     have : IsIso (F.map f) := by
       simp only [F, F₁]

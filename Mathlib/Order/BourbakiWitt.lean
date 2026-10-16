@@ -46,8 +46,10 @@ instance {α : Type*} [LE α] : SetLike (NonemptyChain α) α where
 
 instance {α : Type*} [LE α] : PartialOrder (NonemptyChain α) := .ofSetLike (NonemptyChain α)
 
-/-- A chain complete partial order (CCPO) is a nonempty partial order such that every
-nonempty chain has a supremum (which we call `cSup`) -/
+/--
+A chain complete partial order (CCPO) is a nonempty partial order such that every
+nonempty chain has a supremum (which we call `cSup`)
+-/
 class ChainCompletePartialOrder (α : Type*) extends PartialOrder α where
   /-- The supremum of a nonempty chain -/
   cSup : NonemptyChain α → α
@@ -72,8 +74,10 @@ instance [CompleteLattice α] : ChainCompletePartialOrder α where
 
 variable [ChainCompletePartialOrder α] {x : α} {f : α → α}
 
-/-- An admissible set for given `x : α` and `f : α → α` has `x`, the base point, as a least element
-and is closed under applying `f` and `cSup`. -/
+/--
+An admissible set for given `x : α` and `f : α → α` has `x`, the base point, as a least element
+and is closed under applying `f` and `cSup`.
+-/
 structure IsAdmissible (x : α) (f : α → α) (s : Set α) : Prop where
   /-- The base point is the least element of an admissible set -/
   base_isLeast : IsLeast s x
@@ -115,19 +119,23 @@ lemma subset_bot_iff {s : Set α} (h : IsAdmissible x f s) : s ⊆ bot x f ↔ s
 lemma map_mem_bot {y : α} (le_map : ∀ x, x ≤ f x) (h : y ∈ bot x f) : f y ∈ bot x f :=
   (bot_isAdmissible le_map).image_self_subset_self <| mem_image_of_mem f h
 
-/-- `y` is an extreme point for `x : α` and `f : α → α` if it is in the bottom admissible set and
+/--
+`y` is an extreme point for `x : α` and `f : α → α` if it is in the bottom admissible set and
 `y` is larger than `f z` for any `z < y` in the bottom admissible set.
-This definition comes from [serge_lang_algebra] -/
+This definition comes from [serge_lang_algebra]
+-/
 structure IsExtremePt (x : α) (f : α → α) (y : α) : Prop where
   mem_bot : y ∈ bot x f
   map_le_of_mem_of_lt {z : α} (h : z ∈ bot x f) (h' : z < y) : f z ≤ y
 
 namespace IsExtremePt
 
-/-- If `y` is an extreme point and `f` is inflationary, then there are no element between `y` and
-`f y`. -/
-lemma bot_eq_of_le_or_map_le {y : α} (le_map : ∀ x, x ≤ f x) (hy : IsExtremePt x f y) :
-    {z ∈ bot x f | z ≤ y ∨ f y ≤ z} = bot x f := by
+/--
+If `y` is an extreme point and `f` is inflationary, then there are no element between `y` and
+`f y`.
+-/
+lemma bot_eq_of_le_or_map_le {y : α} (le_map : ∀ x, x ≤ f x) (hy : IsExtremePt x f y)
+    : {z ∈ bot x f | z ≤ y ∨ f y ≤ z} = bot x f := by
   rw [← subset_bot_iff]
   · apply sep_subset
   · apply IsAdmissible.mk
@@ -136,8 +144,7 @@ lemma bot_eq_of_le_or_map_le {y : α} (le_map : ∀ x, x ≤ f x) (hy : IsExtrem
         · exact (bot_isAdmissible le_map).base_isLeast.1
         · exact Or.inl ((bot_isAdmissible le_map).base_isLeast.2 hy.mem_bot)
       · exact fun y h ↦ (bot_isAdmissible le_map).base_isLeast.2 h.1
-    · rintro _ ⟨z, ⟨hz, (hzy | hyz)⟩, rfl⟩ <;>
-        refine ⟨map_mem_bot le_map hz, ?_⟩
+    · rintro _ ⟨z, ⟨hz, (hzy | hyz)⟩, rfl⟩ <;> refine ⟨map_mem_bot le_map hz, ?_⟩
       · rcases le_iff_lt_or_eq.1 hzy with (hzy | rfl)
         · left; exact hy.map_le_of_mem_of_lt hz hzy
         · right; exact le_refl _
@@ -151,8 +158,8 @@ lemma bot_eq_of_le_or_map_le {y : α} (le_map : ∀ x, x ≤ f x) (hy : IsExtrem
         right
         apply le_trans h' (le_cSup _ _ hz)
 
-lemma setOfPred_isExtremePt_isAdmissible (le_map : ∀ x, x ≤ f x) :
-    IsAdmissible x f {y | IsExtremePt x f y} := by
+lemma setOfPred_isExtremePt_isAdmissible (le_map : ∀ x, x ≤ f x)
+    : IsAdmissible x f {y | IsExtremePt x f y} := by
   apply IsAdmissible.mk
   · constructor
     · refine ⟨(bot_isAdmissible le_map).base_isLeast.1, ?_⟩
@@ -174,7 +181,7 @@ lemma setOfPred_isExtremePt_isAdmissible (le_map : ∀ x, x ≤ f x) :
   · intro c hc
     refine ⟨(bot_isAdmissible le_map).cSup_mem _ (subset_trans hc (fun _ h ↦ h.mem_bot)), ?_⟩
     intro y hy hy'
-    obtain ⟨z, hz, hzy⟩ : ∃ z ∈ c, ¬ (f z ≤ y) := by
+    obtain ⟨z, hz, hzy⟩ : ∃ z ∈ c, ¬(f z ≤ y) := by
       by_contra! h
       apply lt_irrefl y (lt_of_lt_of_le hy' ?_)
       apply cSup_le
@@ -202,8 +209,8 @@ lemma setOfPred_isExtremePt_eq_bot (le_map : ∀ x, x ≤ f x) : {y | IsExtremeP
 @[deprecated (since := "2026-07-09")]
 alias setOf_isExtremePt_eq_bot := setOfPred_isExtremePt_eq_bot
 
-lemma mem_bot_iff_isExtremePt {y : α} (le_map : ∀ x, x ≤ f x) :
-    y ∈ bot x f ↔ IsExtremePt x f y := by
+lemma mem_bot_iff_isExtremePt {y : α} (le_map : ∀ x, x ≤ f x)
+    : y ∈ bot x f ↔ IsExtremePt x f y := by
   rw [← setOfPred_isExtremePt_eq_bot le_map, mem_ofPred]
 
 lemma bot_isChain (le_map : ∀ x, x ≤ f x) : IsChain (· ≤ ·) (bot x f) := by
@@ -218,13 +225,16 @@ end IsExtremePt
 
 open Function IsExtremePt
 
-/-- **The Bourbaki-Witt Theorem**: If `α` is a chain complete partial order and `f : α → α` is
-inflationary, then `f` has a fixed point -/
-theorem nonempty_fixedPoints_of_inflationary [Nonempty α] (le_map : ∀ x, x ≤ f x) :
-    (fixedPoints f).Nonempty := by
+/--
+**The Bourbaki-Witt Theorem**: If `α` is a chain complete partial order and `f : α → α` is
+inflationary, then `f` has a fixed point
+-/
+theorem nonempty_fixedPoints_of_inflationary [Nonempty α] (le_map : ∀ x, x ≤ f x)
+    : (fixedPoints f).Nonempty := by
   let x : α := Classical.ofNonempty
-  let y := cSup
-    (NonemptyChain.mk (bot x f) ⟨x, (bot_isAdmissible le_map).base_isLeast.1⟩ (bot_isChain le_map))
+  let y :=
+    cSup (NonemptyChain.mk (bot x f) ⟨x, (bot_isAdmissible le_map).base_isLeast.1⟩
+      (bot_isChain le_map))
   use y
   apply le_antisymm (le_cSup _ _ (_ : f y ∈ bot x f)) (le_map y)
   apply (bot_isAdmissible le_map).image_self_subset_self
@@ -239,18 +249,18 @@ namespace CompleteLattice
 
 variable [OmegaCompletePartialOrder α] [CompleteLattice β] {f g : α → β}
 
-lemma ωScottContinuous.iSup {f : ι → α → β} (hf : ∀ i, ωScottContinuous (f i)) :
-    ωScottContinuous (⨆ i, f i) := by
+lemma ωScottContinuous.iSup {f : ι → α → β} (hf : ∀ i, ωScottContinuous (f i))
+    : ωScottContinuous (⨆ i, f i) := by
   refine ωScottContinuous.of_monotone_map_ωSup
     ⟨Monotone.iSup fun i ↦ (hf i).monotone, fun c ↦ eq_of_forall_ge_iff fun a ↦ ?_⟩
   simp +contextual [ωSup_le_iff, (hf _).map_ωSup, @forall_comm ι]
 
-lemma ωScottContinuous.sSup {s : Set (α → β)} (hs : ∀ f ∈ s, ωScottContinuous f) :
-    ωScottContinuous (sSup s) := by
+lemma ωScottContinuous.sSup {s : Set (α → β)} (hs : ∀ f ∈ s, ωScottContinuous f)
+    : ωScottContinuous (sSup s) := by
   rw [sSup_eq_iSup]; apply ωScottContinuous.iSup fun f ↦ ωScottContinuous.iSup <| hs f
 
-lemma ωScottContinuous.sup (hf : ωScottContinuous f) (hg : ωScottContinuous g) :
-    ωScottContinuous (f ⊔ g) := by
+lemma ωScottContinuous.sup (hf : ωScottContinuous f) (hg : ωScottContinuous g)
+    : ωScottContinuous (f ⊔ g) := by
   rw [← sSup_pair]
   apply ωScottContinuous.sSup
   rintro f (rfl | rfl | _) <;> assumption
@@ -283,14 +293,17 @@ variable [OmegaCompletePartialOrder α] [CompleteLinearOrder β] {f g : α → �
 -- `Topology.IsScott.scott_eq_upper_of_completeLinearOrder`
 -- We have that the product topology coincides with the upper topology
 -- https://github.com/leanprover-community/mathlib4/pull/12133
-lemma ωScottContinuous.inf (hf : ωScottContinuous f) (hg : ωScottContinuous g) :
-    ωScottContinuous (f ⊓ g) := by
+lemma ωScottContinuous.inf (hf : ωScottContinuous f) (hg : ωScottContinuous g)
+    : ωScottContinuous (f ⊓ g) := by
   refine ωScottContinuous.of_monotone_map_ωSup
     ⟨hf.monotone.inf hg.monotone, fun c ↦ eq_of_forall_ge_iff fun a ↦ ?_⟩
   simp only [Pi.inf_apply, hf.map_ωSup c, hg.map_ωSup c, inf_le_iff, ωSup_le_iff, Chain.coe_map,
     Function.comp, OrderHom.coe_mk, ← forall_or_left, ← forall_or_right]
-  exact ⟨fun h _ ↦ h _ _, fun h i j ↦
-    (h (max j i)).imp (le_trans <| hf.monotone <| c.mono <| le_max_left _ _)
-      (le_trans <| hg.monotone <| c.mono <| le_max_right _ _)⟩
+  exact ⟨
+    fun h _ ↦ h _ _,
+    fun h i j ↦
+      (h (max j i)).imp (le_trans <| hf.monotone <| c.mono <| le_max_left _ _)
+        (le_trans <| hg.monotone <| c.mono <| le_max_right _ _)
+  ⟩
 
 end CompleteLattice

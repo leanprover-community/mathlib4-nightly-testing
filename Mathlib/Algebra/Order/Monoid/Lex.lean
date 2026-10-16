@@ -30,29 +30,19 @@ namespace MonoidHom
 
 variable {α β : Type*} [Monoid α] [Preorder α] [Monoid β] [Preorder β]
 
-@[to_additive]
-lemma inl_mono : Monotone (MonoidHom.inl α β) :=
-  fun _ _ ↦ by simp
+@[to_additive] lemma inl_mono : Monotone (MonoidHom.inl α β) := fun _ _ ↦ by simp
+
+@[to_additive] lemma inl_strictMono : StrictMono (MonoidHom.inl α β) := fun _ _ ↦ by simp
+
+@[to_additive] lemma inr_mono : Monotone (MonoidHom.inr α β) := fun _ _ ↦ by simp
+
+@[to_additive] lemma inr_strictMono : StrictMono (MonoidHom.inr α β) := fun _ _ ↦ by simp
 
 @[to_additive]
-lemma inl_strictMono : StrictMono (MonoidHom.inl α β) :=
-  fun _ _ ↦ by simp
+lemma fst_mono : Monotone (MonoidHom.fst α β) := fun _ _ ↦ by simp +contextual [Prod.le_def]
 
 @[to_additive]
-lemma inr_mono : Monotone (MonoidHom.inr α β) :=
-  fun _ _ ↦ by simp
-
-@[to_additive]
-lemma inr_strictMono : StrictMono (MonoidHom.inr α β) :=
-  fun _ _ ↦ by simp
-
-@[to_additive]
-lemma fst_mono : Monotone (MonoidHom.fst α β) :=
-  fun _ _ ↦ by simp +contextual [Prod.le_def]
-
-@[to_additive]
-lemma snd_mono : Monotone (MonoidHom.snd α β) :=
-  fun _ _ ↦ by simp +contextual [Prod.le_def]
+lemma snd_mono : Monotone (MonoidHom.snd α β) := fun _ _ ↦ by simp +contextual [Prod.le_def]
 
 end MonoidHom
 
@@ -88,8 +78,10 @@ def snd : α × β →*o β where
   __ := MonoidHom.snd _ _
   monotone' := MonoidHom.snd_mono
 
-/-- Given ordered monoids M, N, the natural inclusion ordered homomorphism from M to the
-lexicographic M ×ₗ N. -/
+/--
+Given ordered monoids M, N, the natural inclusion ordered homomorphism from M to the
+lexicographic M ×ₗ N.
+-/
 @[to_additive (attr := simps!) /-- Given ordered additive monoids M, N, the natural inclusion
 ordered homomorphism from M to the lexicographic M ×ₗ N. -/]
 def inlₗ : α →*o α ×ₗ β where
@@ -97,8 +89,10 @@ def inlₗ : α →*o α ×ₗ β where
   map_one' := rfl
   map_mul' := by simp [← toLex_mul]
 
-/-- Given ordered monoids M, N, the natural inclusion ordered homomorphism from N to the
-lexicographic M ×ₗ N. -/
+/--
+Given ordered monoids M, N, the natural inclusion ordered homomorphism from N to the
+lexicographic M ×ₗ N.
+-/
 @[to_additive (attr := simps!) /-- Given ordered additive monoids M, N, the natural inclusion
 ordered homomorphism from N to the lexicographic M ×ₗ N. -/]
 def inrₗ : β →*o (α ×ₗ β) where
@@ -106,8 +100,10 @@ def inrₗ : β →*o (α ×ₗ β) where
   map_one' := rfl
   map_mul' := by simp [← toLex_mul]
 
-/-- Given ordered monoids M, N, the natural projection ordered homomorphism from the
-lexicographic M ×ₗ N to M. -/
+/--
+Given ordered monoids M, N, the natural projection ordered homomorphism from the
+lexicographic M ×ₗ N to M.
+-/
 @[to_additive (attr := simps!) /-- Given ordered additive monoids M, N, the natural projection
 ordered homomorphism from the lexicographic M ×ₗ N to M. -/]
 def fstₗ : (α ×ₗ β) →*o α where
@@ -117,28 +113,21 @@ def fstₗ : (α ×ₗ β) →*o α where
   monotone' := Prod.Lex.monotone_fst_ofLex
 
 @[to_additive (attr := simp)]
-theorem fst_comp_inl : (fst α β).comp (inl α β) = .id α :=
-  rfl
+theorem fst_comp_inl : (fst α β).comp (inl α β) = .id α := rfl
 
 @[to_additive (attr := simp)]
-theorem fstₗ_comp_inlₗ : (fstₗ α β).comp (inlₗ α β) = .id α :=
-  rfl
+theorem fstₗ_comp_inlₗ : (fstₗ α β).comp (inlₗ α β) = .id α := rfl
 
 @[to_additive (attr := simp)]
-theorem snd_comp_inl : (snd α β).comp (inl α β) = 1 :=
-  rfl
+theorem snd_comp_inl : (snd α β).comp (inl α β) = 1 := rfl
 
 @[to_additive (attr := simp)]
-theorem fst_comp_inr : (fst α β).comp (inr α β) = 1 :=
-  rfl
+theorem fst_comp_inr : (fst α β).comp (inr α β) = 1 := rfl
 
 @[to_additive (attr := simp)]
-theorem snd_comp_inr : (snd α β).comp (inr α β) = .id β :=
-  rfl
+theorem snd_comp_inr : (snd α β).comp (inr α β) = .id β := rfl
 
-@[to_additive]
-theorem inl_mul_inr_eq_mk (m : α) (n : β) : inl α β m * inr α β n = (m, n) := by
-  simp
+@[to_additive] theorem inl_mul_inr_eq_mk (m : α) (n : β) : inl α β m * inr α β n = (m, n) := by simp
 
 @[to_additive]
 theorem inlₗ_mul_inrₗ_eq_toLex (m : α) (n : β) : inlₗ α β m * inrₗ α β n = toLex (m, n) := by

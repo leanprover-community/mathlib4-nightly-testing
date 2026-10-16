@@ -24,7 +24,6 @@ variables, polynomial, vars
 
 @[expose] public section
 
-
 universe u v w
 
 namespace MvPolynomial
@@ -46,22 +45,24 @@ theorem supported_eq_range_rename (s : Set σ) : supported R s = (rename ((↑) 
   rw [supported, Set.image_eq_range, adjoin_range_eq_range_aeval, rename_eq_aeval]
   congr
 
-/-- The isomorphism between the subalgebra of polynomials supported by `s` and
-`MvPolynomial s R`. -/
+/--
+The isomorphism between the subalgebra of polynomials supported by `s` and
+`MvPolynomial s R`.
+-/
 noncomputable def supportedEquivMvPolynomial (s : Set σ) : supported R s ≃ₐ[R] MvPolynomial s R :=
   (Subalgebra.equivOfEq _ _ (supported_eq_range_rename s)).trans
     (AlgEquiv.ofInjective (rename ((↑) : s → σ)) (rename_injective _ Subtype.val_injective)).symm
 
 @[simp]
-theorem supportedEquivMvPolynomial_symm_C (s : Set σ) (x : R) :
-    (supportedEquivMvPolynomial s).symm (C x) = algebraMap R (supported R s) x := by
+theorem supportedEquivMvPolynomial_symm_C (s : Set σ) (x : R)
+    : (supportedEquivMvPolynomial s).symm (C x) = algebraMap R (supported R s) x := by
   ext1
   simp [supportedEquivMvPolynomial, MvPolynomial.algebraMap_eq]
 
 @[simp]
-theorem supportedEquivMvPolynomial_symm_X (s : Set σ) (i : s) :
-    (↑((supportedEquivMvPolynomial s).symm (X i : MvPolynomial s R)) : MvPolynomial σ R) =
-      X ↑i := by
+theorem supportedEquivMvPolynomial_symm_X (s : Set σ) (i : s)
+    : (↑((supportedEquivMvPolynomial s).symm (X i : MvPolynomial s R)) : MvPolynomial σ R)
+      = X ↑i := by
   simp [supportedEquivMvPolynomial]
 
 variable {s t : Set σ}
@@ -91,8 +92,7 @@ theorem supported_eq_adjoin_X : supported R s = Algebra.adjoin R (X '' s) := rfl
 theorem supported_univ : supported R (Set.univ : Set σ) = ⊤ := by
   simp [Algebra.eq_top_iff, mem_supported]
 
-@[simp]
-theorem supported_empty : supported R (∅ : Set σ) = ⊥ := by simp [supported_eq_adjoin_X]
+@[simp] theorem supported_empty : supported R (∅ : Set σ) = ⊥ := by simp [supported_eq_adjoin_X]
 
 variable {s}
 
@@ -110,12 +110,12 @@ theorem supported_le_supported_iff [Nontrivial R] : supported R s ≤ supported 
     simpa using @h (X i)
   · exact supported_mono
 
-theorem supported_strictMono [Nontrivial R] :
-    StrictMono (supported R : Set σ → Subalgebra R (MvPolynomial σ R)) :=
+theorem supported_strictMono [Nontrivial R]
+    : StrictMono (supported R : Set σ → Subalgebra R (MvPolynomial σ R)) :=
   strictMono_of_le_iff_le fun _ _ ↦ supported_le_supported_iff.symm
 
-theorem exists_restrict_to_vars (R : Type*) [CommRing R] {F : MvPolynomial σ ℤ}
-    (hF : ↑F.vars ⊆ s) : ∃ f : (s → R) → R, ∀ x : σ → R, f (x ∘ (↑) : s → R) = aeval x F := by
+theorem exists_restrict_to_vars (R : Type*) [CommRing R] {F : MvPolynomial σ ℤ} (hF : ↑F.vars ⊆ s)
+    : ∃ f : (s → R) → R, ∀ x : σ → R, f (x ∘ (↑) : s → R) = aeval x F := by
   rw [← mem_supported, supported_eq_range_rename, AlgHom.mem_range] at hF
   obtain ⟨F', hF'⟩ := hF
   use fun z ↦ aeval z F'

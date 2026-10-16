@@ -20,10 +20,8 @@ relation, `functor_map_eq_iff` says that no unnecessary identifications have bee
 
 @[expose] public section
 
-
 /-- A `HomRel` on `C` consists of a relation on every hom-set. -/
-def HomRel (C) [Quiver C] :=
-  ∀ ⦃X Y : C⦄, (X ⟶ Y) → (X ⟶ Y) → Prop
+def HomRel (C) [Quiver C] := ∀ ⦃X Y : C⦄, (X ⟶ Y) → (X ⟶ Y) → Prop
 deriving Inhabited
 
 namespace CategoryTheory
@@ -35,12 +33,10 @@ section
 variable {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D)
 
 /-- A functor induces a `HomRel` on its domain, relating those maps that have the same image. -/
-def Functor.homRel : HomRel C :=
-  fun _ _ f g ↦ F.map f = F.map g
+def Functor.homRel : HomRel C := fun _ _ f g ↦ F.map f = F.map g
 
 @[simp]
-lemma Functor.homRel_iff {X Y : C} (f g : X ⟶ Y) :
-    F.homRel f g ↔ F.map f = F.map g := Iff.rfl
+lemma Functor.homRel_iff {X Y : C} (f g : X ⟶ Y) : F.homRel f g ↔ F.map f = F.map g := Iff.rfl
 
 end
 
@@ -61,8 +57,8 @@ export IsStableUnderPostcomp (comp_right)
 
 /-- Generates the closure of a family of relations w.r.t. composition from left and right. -/
 inductive CompClosure (r : HomRel C) : HomRel C
-  | intro {s t : C} (a b : C) (f : s ⟶ a) (m₁ m₂ : a ⟶ b) (g : b ⟶ t) (h : r m₁ m₂) :
-    CompClosure r (f ≫ m₁ ≫ g) (f ≫ m₂ ≫ g)
+  | intro {s t : C} (a b : C) (f : s ⟶ a) (m₁ m₂ : a ⟶ b) (g : b ⟶ t) (h : r m₁ m₂)
+    : CompClosure r (f ≫ m₁ ≫ g) (f ≫ m₂ ≫ g)
 
 variable {r} in
 theorem CompClosure.of {a b : C} {m₁ m₂ : a ⟶ b} (h : r m₁ m₂) : CompClosure r m₁ m₂ := by
@@ -82,15 +78,13 @@ section
 
 variable [IsStableUnderPrecomp r] [IsStableUnderPostcomp r]
 
-lemma compClosure_iff_self {X Y : C} (f g : X ⟶ Y) :
-    CompClosure r f g ↔ r f g := by
+lemma compClosure_iff_self {X Y : C} (f g : X ⟶ Y) : CompClosure r f g ↔ r f g := by
   refine ⟨?_, CompClosure.of⟩
   rintro ⟨_, _, _, _, _, _, h⟩
   exact HomRel.comp_left _ (HomRel.comp_right _ h)
 
 @[simp]
-theorem compClosure_eq_self :
-    CompClosure r = r := by
+theorem compClosure_eq_self : CompClosure r = r := by
   dsimp [HomRel]
   ext
   simp only [compClosure_iff_self]
@@ -99,20 +93,18 @@ end
 
 end HomRel
 
-/-- A `HomRel` is a congruence when it's an equivalence on every hom-set, and it can be composed
-from left and right. -/
-class Congruence : Prop
-    extends HomRel.IsStableUnderPrecomp r, HomRel.IsStableUnderPostcomp r where
+/--
+A `HomRel` is a congruence when it's an equivalence on every hom-set, and it can be composed
+from left and right.
+-/
+class Congruence : Prop extends HomRel.IsStableUnderPrecomp r, HomRel.IsStableUnderPostcomp r where
   /-- `r` is an equivalence on every hom-set. -/
   equivalence : ∀ {X Y}, _root_.Equivalence (@r X Y)
 
 /-- For `F : C ⥤ D`, `F.homRel` is a congruence. -/
-instance Functor.congruence_homRel {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D) :
-    Congruence F.homRel where
-  equivalence :=
-    { refl := fun _ ↦ rfl
-      symm := by aesop
-      trans := by aesop }
+instance Functor.congruence_homRel {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D)
+    : Congruence F.homRel where
+  equivalence := { refl := fun _ ↦ rfl, symm := by aesop, trans := by aesop }
   comp_left := by aesop
   comp_right := by aesop
 
@@ -122,29 +114,25 @@ structure Quotient (r : HomRel C) where
   /-- The object of `C`. -/
   as : C
 
-instance [Inhabited C] : Inhabited (Quotient r) :=
-  ⟨{ as := default }⟩
+instance [Inhabited C] : Inhabited (Quotient r) := ⟨{ as := default }⟩
 
 namespace Quotient
 
 /-- Hom-sets of the quotient category. -/
-def Hom (s t : Quotient r) : Type _ :=
-  Quot <| @HomRel.CompClosure C _ r s.as t.as
+def Hom (s t : Quotient r) : Type _ := Quot <| @HomRel.CompClosure C _ r s.as t.as
 
-instance (a : Quotient r) : Inhabited (Hom r a a) :=
-  ⟨Quot.mk _ (𝟙 a.as)⟩
+instance (a : Quotient r) : Inhabited (Hom r a a) := ⟨Quot.mk _ (𝟙 a.as)⟩
 
 /-- Composition in the quotient category. -/
 def comp ⦃a b c : Quotient r⦄ : Hom r a b → Hom r b c → Hom r a c := fun hf hg ↦
   Quot.liftOn hf
     (fun f ↦
-      Quot.liftOn hg (fun g ↦ Quot.mk _ (f ≫ g)) fun _ _ h ↦
-        Quot.sound (HomRel.comp_left f h))
+      Quot.liftOn hg (fun g ↦ Quot.mk _ (f ≫ g)) fun _ _ h ↦ Quot.sound (HomRel.comp_left f h))
     fun _ _ h ↦ Quot.inductionOn hg fun _ ↦ Quot.sound (HomRel.comp_right _ h)
 
 @[simp]
-theorem comp_mk {a b c : Quotient r} (f : a.as ⟶ b.as) (g : b.as ⟶ c.as) :
-    comp r (Quot.mk _ f) (Quot.mk _ g) = Quot.mk _ (f ≫ g) :=
+theorem comp_mk {a b c : Quotient r} (f : a.as ⟶ b.as) (g : b.as ⟶ c.as)
+    : comp r (Quot.mk _ f) (Quot.mk _ g) = Quot.mk _ (f ≫ g) :=
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -156,8 +144,10 @@ instance category : Category (Quotient r) where
   id_comp f := Quot.inductionOn f <| by simp
   assoc f g h := Quot.inductionOn f <| Quot.inductionOn g <| Quot.inductionOn h <| by simp
 
-/-- An equivalence between the type synonym for a quotient category and the type alias
-for the original category. -/
+/--
+An equivalence between the type synonym for a quotient category and the type alias
+for the original category.
+-/
 def equiv {C : Type _} [Category* C] (r : HomRel C) : Quotient r ≃ C where
   toFun x := x.1
   invFun x := ⟨x⟩
@@ -168,14 +158,16 @@ variable {G : Type*} [Groupoid G] (r : HomRel G)
 
 /-- Inverse of a map in the quotient category of a groupoid. -/
 protected def inv {X Y : Quotient r} (f : X ⟶ Y) : Y ⟶ X :=
-  Quot.liftOn f (fun f' => Quot.mk _ (Groupoid.inv f')) (fun _ _ con => by
-    obtain ⟨_, _, a, f, g, b, hfg⟩ := con
-    simpa using! (Quot.sound (HomRel.CompClosure.intro _ _
-      (inv b ≫ inv g) _ _ (inv f ≫ inv a) hfg)).symm)
+  Quot.liftOn f
+    (fun f' => Quot.mk _ (Groupoid.inv f'))
+    (fun _ _ con => by
+      obtain ⟨_, _, a, f, g, b, hfg⟩ := con
+      simpa using!
+        (Quot.sound (HomRel.CompClosure.intro _ _ (inv b ≫ inv g) _ _ (inv f ≫ inv a) hfg)).symm)
 
 @[simp]
-theorem inv_mk {X Y : Quotient r} (f : X.as ⟶ Y.as) :
-    Quotient.inv r (Quot.mk _ f) = Quot.mk _ (Groupoid.inv f) :=
+theorem inv_mk {X Y : Quotient r} (f : X.as ⟶ Y.as)
+    : Quotient.inv r (Quot.mk _ f) = Quot.mk _ (Groupoid.inv f) :=
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -203,33 +195,33 @@ instance essSurj_functor : (functor r).EssSurj where
 instance [Unique C] : Unique (Quotient r) where
   uniq a := by ext; subsingleton
 
-instance [∀ (x y : C), Subsingleton (x ⟶ y)] (x y : Quotient r) :
-    Subsingleton (x ⟶ y) := (full_functor r).map_surjective.subsingleton
+instance [∀ (x y : C), Subsingleton (x ⟶ y)] (x y : Quotient r) : Subsingleton (x ⟶ y) :=
+  (full_functor r).map_surjective.subsingleton
 
-protected theorem induction {P : ∀ {a b : Quotient r}, (a ⟶ b) → Prop}
-    (h : ∀ {x y : C} (f : x ⟶ y), P ((functor r).map f)) :
-    ∀ {a b : Quotient r} (f : a ⟶ b), P f := by
+protected theorem induction
+    {P : ∀ {a b : Quotient r}, (a ⟶ b) → Prop} (h : ∀ {x y : C} (f : x ⟶ y), P ((functor r).map f))
+    : ∀ {a b : Quotient r} (f : a ⟶ b), P f := by
   rintro ⟨x⟩ ⟨y⟩ ⟨f⟩
   exact h f
 
-protected theorem sound {a b : C} {f₁ f₂ : a ⟶ b} (h : r f₁ f₂) :
-    (functor r).map f₁ = (functor r).map f₂ := by
+protected theorem sound {a b : C} {f₁ f₂ : a ⟶ b} (h : r f₁ f₂)
+    : (functor r).map f₁ = (functor r).map f₂ := by
   simpa using! Quot.sound (HomRel.CompClosure.intro _ _ (𝟙 a) f₁ f₂ (𝟙 b) h)
 
 set_option backward.isDefEq.respectTransparency false in
-theorem functor_map_eq_iff [h : Congruence r] {X Y : C} (f f' : X ⟶ Y) :
-    (functor r).map f = (functor r).map f' ↔ r f f' := by
+theorem functor_map_eq_iff [h : Congruence r] {X Y : C} (f f' : X ⟶ Y)
+    : (functor r).map f = (functor r).map f' ↔ r f f' := by
   dsimp [functor]
   rw [Equivalence.quot_mk_eq_iff, HomRel.compClosure_eq_self r]
   simpa only [HomRel.compClosure_eq_self r] using h.equivalence
 
-theorem functor_homRel_eq_compClosure_eqvGen {X Y : C} (f g : X ⟶ Y) :
-    (functor r).homRel f g ↔ Relation.EqvGen (@HomRel.CompClosure C _ r X Y) f g :=
+theorem functor_homRel_eq_compClosure_eqvGen {X Y : C} (f g : X ⟶ Y)
+    : (functor r).homRel f g ↔ Relation.EqvGen (@HomRel.CompClosure C _ r X Y) f g :=
   Quot.eq
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem compClosure.congruence :
-    Congruence fun X Y => Relation.EqvGen (@HomRel.CompClosure C _ r X Y) := by
+theorem compClosure.congruence
+    : Congruence fun X Y => Relation.EqvGen (@HomRel.CompClosure C _ r X Y) := by
   convert! (inferInstance : Congruence (functor r).homRel)
   ext
   rw [functor_homRel_eq_compClosure_eqvGen]
@@ -241,10 +233,9 @@ variable {D : Type _} [Category* D] (F : C ⥤ D)
 def lift (H : ∀ (x y : C) (f₁ f₂ : x ⟶ y), r f₁ f₂ → F.map f₁ = F.map f₂) : Quotient r ⥤ D where
   obj a := F.obj a.as
   map hf :=
-    Quot.liftOn hf (fun f ↦ F.map f)
-      (by
-        rintro _ _ ⟨_, _, _, _, _, _, h⟩
-        simp [H _ _ _ _ h])
+    Quot.liftOn hf (fun f ↦ F.map f) (by
+      rintro _ _ ⟨_, _, _, _, _, _, h⟩
+      simp [H _ _ _ _ h])
   map_id a := F.map_id a.as
   map_comp := by
     rintro a b c ⟨f⟩ ⟨g⟩
@@ -252,8 +243,7 @@ def lift (H : ∀ (x y : C) (f₁ f₂ : x ⟶ y), r f₁ f₂ → F.map f₁ = 
 
 variable (H : ∀ (x y : C) (f₁ f₂ : x ⟶ y), r f₁ f₂ → F.map f₁ = F.map f₂)
 
-theorem lift_spec : functor r ⋙ lift r F H = F := by
-  tauto
+theorem lift_spec : functor r ⋙ lift r F H = F := by tauto
 
 theorem lift_unique (Φ : Quotient r ⥤ D) (hΦ : functor r ⋙ Φ = F) : Φ = lift r F H := by
   subst_vars
@@ -267,9 +257,9 @@ theorem lift_unique (Φ : Quotient r ⥤ D) (hΦ : functor r ⋙ Φ = F) : Φ = 
     simp only [heq_eq_eq]
     congr
 
-lemma lift_unique' (F₁ F₂ : Quotient r ⥤ D) (h : functor r ⋙ F₁ = functor r ⋙ F₂) :
-    F₁ = F₂ := by
-  rw [lift_unique r (functor r ⋙ F₂) _ F₂ rfl]; swap
+lemma lift_unique' (F₁ F₂ : Quotient r ⥤ D) (h : functor r ⋙ F₁ = functor r ⋙ F₂) : F₁ = F₂ := by
+  rw [lift_unique r (functor r ⋙ F₂) _ F₂ rfl]
+  swap
   · rintro X Y f g h
     dsimp
     rw [Quotient.sound r h]
@@ -277,61 +267,63 @@ lemma lift_unique' (F₁ F₂ : Quotient r ⥤ D) (h : functor r ⋙ F₁ = func
   rw [h]
 
 /-- The original functor factors through the induced functor. -/
-def lift.isLift : functor r ⋙ lift r F H ≅ F :=
-  NatIso.ofComponents fun _ ↦ Iso.refl _
+def lift.isLift : functor r ⋙ lift r F H ≅ F := NatIso.ofComponents fun _ ↦ Iso.refl _
 
-@[simp]
-theorem lift.isLift_hom (X : C) : (lift.isLift r F H).hom.app X = 𝟙 (F.obj X) :=
-  rfl
+@[simp] theorem lift.isLift_hom (X : C) : (lift.isLift r F H).hom.app X = 𝟙 (F.obj X) := rfl
 
-@[simp]
-theorem lift.isLift_inv (X : C) : (lift.isLift r F H).inv.app X = 𝟙 (F.obj X) :=
-  rfl
+@[simp] theorem lift.isLift_inv (X : C) : (lift.isLift r F H).inv.app X = 𝟙 (F.obj X) := rfl
 
-theorem lift_obj_functor_obj (X : C) :
-    (lift r F H).obj ((functor r).obj X) = F.obj X := rfl
+theorem lift_obj_functor_obj (X : C) : (lift r F H).obj ((functor r).obj X) = F.obj X := rfl
 
-theorem lift_map_functor_map {X Y : C} (f : X ⟶ Y) :
-    (lift r F H).map ((functor r).map f) = F.map f :=
+theorem lift_map_functor_map {X Y : C} (f : X ⟶ Y)
+    : (lift r F H).map ((functor r).map f) = F.map f :=
   rfl
 
 variable {r}
 
-lemma natTrans_ext {F G : Quotient r ⥤ D} (τ₁ τ₂ : F ⟶ G)
-    (h : whiskerLeft (Quotient.functor r) τ₁ = whiskerLeft (Quotient.functor r) τ₂) : τ₁ = τ₂ :=
+lemma natTrans_ext
+    {F G : Quotient r ⥤ D}
+    (τ₁ τ₂ : F ⟶ G) (h : whiskerLeft (Quotient.functor r) τ₁ = whiskerLeft (Quotient.functor r) τ₂)
+    : τ₁ = τ₂ :=
   NatTrans.ext (by ext1 ⟨X⟩; congrm $(h).app X)
 
 variable (r)
 
-/-- In order to define a natural transformation `F ⟶ G` with `F G : Quotient r ⥤ D`, it suffices
-to do so after precomposing with `Quotient.functor r`. -/
-def natTransLift {F G : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G) :
-    F ⟶ G where
+/--
+In order to define a natural transformation `F ⟶ G` with `F G : Quotient r ⥤ D`, it suffices
+to do so after precomposing with `Quotient.functor r`.
+-/
+def natTransLift {F G : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G)
+    : F ⟶ G where
   app := fun ⟨X⟩ => τ.app X
   naturality := fun ⟨X⟩ ⟨Y⟩ => by
     rintro ⟨f⟩
     exact τ.naturality f
 
 @[simp]
-lemma natTransLift_app (F G : Quotient r ⥤ D)
-    (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G) (X : C) :
-    (natTransLift r τ).app ((Quotient.functor r).obj X) = τ.app X := rfl
+lemma natTransLift_app
+    (F G : Quotient r ⥤ D) (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G) (X : C)
+    : (natTransLift r τ).app ((Quotient.functor r).obj X) = τ.app X :=
+  rfl
 
 @[reassoc]
-lemma comp_natTransLift {F G H : Quotient r ⥤ D}
-    (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G)
-    (τ' : Quotient.functor r ⋙ G ⟶ Quotient.functor r ⋙ H) :
-    natTransLift r τ ≫ natTransLift r τ' = natTransLift r (τ ≫ τ') := by cat_disch
+lemma comp_natTransLift
+    {F G H : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ⟶ Quotient.functor r ⋙ G)
+    (τ' : Quotient.functor r ⋙ G ⟶ Quotient.functor r ⋙ H)
+    : natTransLift r τ ≫ natTransLift r τ' = natTransLift r (τ ≫ τ') := by
+  cat_disch
 
 @[simp]
-lemma natTransLift_id (F : Quotient r ⥤ D) :
-    natTransLift r (𝟙 (Quotient.functor r ⋙ F)) = 𝟙 _ := by cat_disch
+lemma natTransLift_id (F : Quotient r ⥤ D) : natTransLift r (𝟙 (Quotient.functor r ⋙ F)) = 𝟙 _ := by
+  cat_disch
 
-/-- In order to define a natural isomorphism `F ≅ G` with `F G : Quotient r ⥤ D`, it suffices
-to do so after precomposing with `Quotient.functor r`. -/
+/--
+In order to define a natural isomorphism `F ≅ G` with `F G : Quotient r ⥤ D`, it suffices
+to do so after precomposing with `Quotient.functor r`.
+-/
 @[simps]
-def natIsoLift {F G : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ≅ Quotient.functor r ⋙ G) :
-    F ≅ G where
+def natIsoLift {F G : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ≅ Quotient.functor r ⋙ G)
+    : F ≅ G where
   hom := natTransLift _ τ.hom
   inv := natTransLift _ τ.inv
   hom_inv_id := by rw [comp_natTransLift, τ.hom_inv_id, natTransLift_id]
@@ -339,12 +331,11 @@ def natIsoLift {F G : Quotient r ⥤ D} (τ : Quotient.functor r ⋙ F ≅ Quoti
 
 variable (D)
 
-instance full_whiskeringLeft_functor :
-    ((whiskeringLeft C _ D).obj (functor r)).Full where
+instance full_whiskeringLeft_functor : ((whiskeringLeft C _ D).obj (functor r)).Full where
   map_surjective f := ⟨natTransLift r f, by cat_disch⟩
 
-instance faithful_whiskeringLeft_functor :
-    ((whiskeringLeft C _ D).obj (functor r)).Faithful := ⟨by apply natTrans_ext⟩
+instance faithful_whiskeringLeft_functor : ((whiskeringLeft C _ D).obj (functor r)).Faithful :=
+  ⟨by apply natTrans_ext⟩
 
 end Quotient
 
@@ -364,8 +355,7 @@ instance : (Quotient.lift L.homRel L (by simp)).Faithful where
     exact Quotient.sound _ h
 
 instance [L.EssSurj] : (Quotient.lift L.homRel L (by simp)).EssSurj where
-  mem_essImage X :=
-    ⟨(Quotient.functor _).obj (L.objPreimage X), ⟨L.objObjPreimageIso X⟩⟩
+  mem_essImage X := ⟨(Quotient.functor _).obj (L.objPreimage X), ⟨L.objObjPreimageIso X⟩⟩
 
 instance [L.Full] [L.EssSurj] : (Quotient.lift L.homRel L (by simp)).IsEquivalence where
 

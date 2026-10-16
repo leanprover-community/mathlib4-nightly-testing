@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Data.Nat.Prime.Defs
-
 import Mathlib.Algebra.BigOperators.Associated
 import Mathlib.Tactic.Zify
 
@@ -23,7 +22,6 @@ While in terms of semantics they could be in the `Basic.lean` file, importing
 
 public section
 
-
 open Finset Nat
 
 namespace Nat
@@ -36,7 +34,8 @@ theorem prod_factorial_pos : 0 < ∏ i ∈ s, (f i)! := prod_pos fun _ _ ↦ fac
 
 theorem prod_factorial_dvd_factorial_sum : (∏ i ∈ s, (f i)!) ∣ (∑ i ∈ s, f i)! := by
   induction s using Finset.cons_induction_on with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s has ih =>
     rw [prod_cons, Finset.sum_cons]
     exact (mul_dvd_mul_left _ ih).trans (Nat.factorial_mul_factorial_dvd_factorial_add _ _)
@@ -53,8 +52,8 @@ theorem ascFactorial_eq_prod_range (n : ℕ) : ∀ k, n.ascFactorial k = ∏ i �
   | 0 => rfl
   | k + 1 => by rw [ascFactorial, prod_range_succ_comm, ascFactorial_eq_prod_range n k]
 
-lemma Prime.dvd_ascFactorial_iff {p k n : ℕ} (hp : p.Prime) :
-    p ∣ k.ascFactorial n ↔ ∃ i < n, p ∣ k + i := by
+lemma Prime.dvd_ascFactorial_iff {p k n : ℕ} (hp : p.Prime)
+    : p ∣ k.ascFactorial n ↔ ∃ i < n, p ∣ k + i := by
   simp [Nat.ascFactorial_eq_prod_range, hp.prime.dvd_finsetProd_iff]
 
 theorem descFactorial_eq_prod_range (n : ℕ) : ∀ k, n.descFactorial k = ∏ i ∈ range k, (n - i)

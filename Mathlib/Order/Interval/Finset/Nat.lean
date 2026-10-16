@@ -45,33 +45,27 @@ instance : Unique (Iic 0) where
   default := ⟨0, by simp⟩
   uniq a := Subtype.ext (Nat.le_zero.1 (mem_Iic.1 a.2))
 
-theorem Icc_eq_range' : Icc a b = ⟨List.range' a (b + 1 - a), List.nodup_range'⟩ :=
+theorem Icc_eq_range' : Icc a b = ⟨List.range' a (b + 1 - a), List.nodup_range'⟩ := rfl
+
+theorem Ico_eq_range' : Ico a b = ⟨List.range' a (b - a), List.nodup_range'⟩ := rfl
+
+theorem Ioc_eq_range' : Ioc a b = ⟨List.range' (a + 1) (b - a), List.nodup_range'⟩ := rfl
+
+theorem Ioo_eq_range' : Ioo a b = ⟨List.range' (a + 1) (b - a - 1), List.nodup_range'⟩ := rfl
+
+theorem uIcc_eq_range'
+    : uIcc a b = ⟨List.range' (min a b) (max a b + 1 - min a b), List.nodup_range'⟩ :=
   rfl
 
-theorem Ico_eq_range' : Ico a b = ⟨List.range' a (b - a), List.nodup_range'⟩ :=
-  rfl
-
-theorem Ioc_eq_range' : Ioc a b = ⟨List.range' (a + 1) (b - a), List.nodup_range'⟩ :=
-  rfl
-
-theorem Ioo_eq_range' : Ioo a b = ⟨List.range' (a + 1) (b - a - 1), List.nodup_range'⟩ :=
-  rfl
-
-theorem uIcc_eq_range' :
-    uIcc a b = ⟨List.range' (min a b) (max a b + 1 - min a b), List.nodup_range'⟩ := rfl
-
-theorem Iio_eq_range : Iio a = range a := by
-  grind
+theorem Iio_eq_range : Iio a = range a := by grind
 
 @[simp]
 theorem Ico_zero_eq_range : Ico 0 a = range a := by
   rw [← Nat.bot_eq_zero, ← Iio_eq_Ico, Iio_eq_range]
 
-lemma range_eq_Icc_zero_sub_one (n : ℕ) (hn : n ≠ 0) : range n = Icc 0 (n - 1) := by
-  grind
+lemma range_eq_Icc_zero_sub_one (n : ℕ) (hn : n ≠ 0) : range n = Icc 0 (n - 1) := by grind
 
-theorem _root_.Finset.range_eq_Ico : range a = Ico 0 a :=
-  (Ico_zero_eq_range a).symm
+theorem _root_.Finset.range_eq_Ico : range a = Ico 0 a := (Ico_zero_eq_range a).symm
 
 theorem range_succ_eq_Icc_zero (n : ℕ) : range (n + 1) = Icc 0 n := by
   rw [range_eq_Icc_zero_sub_one _ (Nat.add_one_ne_zero _), Nat.add_sub_cancel_right]
@@ -97,8 +91,7 @@ theorem card_Iio : #(Iio b) = b := by rw [Iio_eq_Ico, card_Ico, Nat.bot_eq_zero,
 
 -- TODO: Generalise the following series of lemmas.
 
-@[simp]
-theorem Ico_succ_singleton : Ico a (a + 1) = {a} := by grind
+@[simp] theorem Ico_succ_singleton : Ico a (a + 1) = {a} := by grind
 
 @[simp]
 theorem Ico_pred_singleton {a : ℕ} (h : 0 < a) : Ico (a - 1) a = {a - 1} := by
@@ -106,8 +99,7 @@ theorem Ico_pred_singleton {a : ℕ} (h : 0 < a) : Ico (a - 1) a = {a - 1} := by
   rw [mem_Ico, mem_singleton]
   lia
 
-@[simp]
-theorem Ioc_succ_singleton : Ioc b (b + 1) = {b + 1} := by grind
+@[simp] theorem Ioc_succ_singleton : Ioc b (b + 1) = {b + 1} := by grind
 
 variable {a b c}
 
@@ -116,16 +108,16 @@ lemma mem_Ioc_succ : a ∈ Ioc b (b + 1) ↔ a = b + 1 := by simp
 lemma mem_Ioc_succ' (a : Ioc b (b + 1)) : a = ⟨b + 1, mem_Ioc.2 (by lia)⟩ :=
   Subtype.val_inj.1 (mem_Ioc_succ.1 a.2)
 
-theorem image_sub_const_Ico (h : c ≤ a) :
-    ((Ico a b).image fun x => x - c) = Ico (a - c) (b - c) := by
+theorem image_sub_const_Ico (h : c ≤ a)
+    : ((Ico a b).image fun x => x - c) = Ico (a - c) (b - c) := by
   ext x
   simp_rw [mem_image, mem_Ico]
   refine ⟨?_, fun h ↦ ⟨x + c, by lia⟩⟩
   rintro ⟨x, hx, rfl⟩
   lia
 
-theorem Ico_image_const_sub_eq_Ico (hac : a ≤ c) :
-    ((Ico a b).image fun x => c - x) = Ico (c + 1 - b) (c + 1 - a) := by
+theorem Ico_image_const_sub_eq_Ico (hac : a ≤ c)
+    : ((Ico a b).image fun x => c - x) = Ico (c + 1 - b) (c + 1 - a) := by
   ext x
   simp_rw [mem_image, mem_Ico]
   refine ⟨?_, fun h ↦ ⟨c - x, by lia⟩⟩
@@ -166,8 +158,10 @@ theorem mod_injOn_Ico (n a : ℕ) : Set.InjOn (· % a) (Finset.Ico n (n + a)) :=
       simpa using Nat.lt_add_of_pos_right (n := n) ha
     · refine ih ?_ ?_ hkl <;> simp only [Finset.mem_coe, hk, hl]
 
-/-- Note that while this lemma cannot be easily generalized to a type class, it holds for ℤ as
-well. See `Int.image_Ico_emod` for the ℤ version. -/
+/--
+Note that while this lemma cannot be easily generalized to a type class, it holds for ℤ as
+well. See `Int.image_Ico_emod` for the ℤ version.
+-/
 theorem image_Ico_mod (n a : ℕ) : (Ico n (n + a)).image (· % a) = range a := by
   obtain rfl | ha := eq_or_ne a 0
   · rw [range_zero, add_zero, Ico_self, image_empty]
@@ -195,8 +189,8 @@ section Multiset
 
 open Multiset
 
-theorem multiset_Ico_map_mod (n a : ℕ) :
-    (Multiset.Ico n (n + a)).map (· % a) = Multiset.range a := by
+theorem multiset_Ico_map_mod (n a : ℕ)
+    : (Multiset.Ico n (n + a)).map (· % a) = Multiset.range a := by
   convert! congr(Finset.val $(image_Ico_mod n a))
   refine ((nodup_map_iff_inj_on (Finset.Ico _ _).nodup).2 <| ?_).dedup.symm
   exact mod_injOn_Ico _ _
@@ -223,8 +217,8 @@ end List
 
 namespace Finset
 
-theorem range_image_pred_top_sub (n : ℕ) :
-    ((Finset.range n).image fun j => n - 1 - j) = Finset.range n := by
+theorem range_image_pred_top_sub (n : ℕ)
+    : ((Finset.range n).image fun j => n - 1 - j) = Finset.range n := by
   cases n
   · rw [range_zero, image_empty]
   · rw [Finset.range_eq_Ico, Nat.Ico_image_const_sub_eq_Ico (Nat.zero_le _)]
@@ -246,14 +240,16 @@ section Induction
 
 variable {P : ℕ → Prop}
 
-theorem Nat.decreasing_induction_of_not_bddAbove (h : ∀ n, P (n + 1) → P n)
-    (hP : ¬BddAbove { x | P x }) (n : ℕ) : P n :=
+theorem Nat.decreasing_induction_of_not_bddAbove
+    (h : ∀ n, P (n + 1) → P n) (hP : ¬ BddAbove { x | P x }) (n : ℕ)
+    : P n :=
   let ⟨_, hm, hl⟩ := not_bddAbove_iff.1 hP n
   decreasingInduction (fun _ _ => h _) hm hl.le
 
 @[elab_as_elim]
-lemma Nat.strong_decreasing_induction (base : ∃ n, ∀ m > n, P m) (step : ∀ n, (∀ m > n, P m) → P n)
-    (n : ℕ) : P n := by
+lemma Nat.strong_decreasing_induction
+    (base : ∃ n, ∀ m > n, P m) (step : ∀ n, (∀ m > n, P m) → P n) (n : ℕ)
+    : P n := by
   apply Nat.decreasing_induction_of_not_bddAbove (P := fun n ↦ ∀ m ≥ n, P m) _ _ n n le_rfl
   · intro n ih m hm
     rcases hm.eq_or_lt with rfl | hm
@@ -265,37 +261,56 @@ lemma Nat.strong_decreasing_induction (base : ∃ n, ∀ m > n, P m) (step : ∀
     all_goals lia
 
 theorem Nat.decreasing_induction_of_infinite
-    (h : ∀ n, P (n + 1) → P n) (hP : { x | P x }.Infinite) (n : ℕ) : P n :=
+    (h : ∀ n, P (n + 1) → P n) (hP : { x | P x }.Infinite) (n : ℕ)
+    : P n :=
   Nat.decreasing_induction_of_not_bddAbove h (mt BddAbove.finite hP) n
 
-theorem Nat.cauchy_induction' (seed : ℕ) (h : ∀ n, P (n + 1) → P n) (hs : P seed)
-    (hi : ∀ x, seed ≤ x → P x → ∃ y, x < y ∧ P y) (n : ℕ) : P n := by
+theorem Nat.cauchy_induction'
+    (seed : ℕ)
+    (h : ∀ n, P (n + 1) → P n) (hs : P seed) (hi : ∀ x, seed ≤ x → P x → ∃ y, x < y ∧ P y) (n : ℕ)
+    : P n := by
   apply Nat.decreasing_induction_of_infinite h fun hf => _
   intro hf
   obtain ⟨m, hP, hm⟩ := hf.exists_maximal ⟨seed, hs⟩
   obtain ⟨y, hl, hy⟩ := hi m (le_of_not_gt <| not_lt_iff_le_imp_ge.2 <| hm hs) hP
   exact hl.not_ge (hm hy hl.le)
 
-theorem Nat.cauchy_induction (h : ∀ n, P (n + 1) → P n) (seed : ℕ) (hs : P seed) (f : ℕ → ℕ)
-    (hf : ∀ x, seed ≤ x → P x → x < f x ∧ P (f x)) (n : ℕ) : P n :=
+theorem Nat.cauchy_induction
+    (h : ∀ n, P (n + 1) → P n)
+    (seed : ℕ) (hs : P seed)
+    (f : ℕ → ℕ) (hf : ∀ x, seed ≤ x → P x → x < f x ∧ P (f x))
+    (n : ℕ)
+    : P n :=
   seed.cauchy_induction' h hs (fun x hl hx => ⟨f x, hf x hl hx⟩) n
 
-theorem Nat.cauchy_induction_mul (h : ∀ (n : ℕ), P (n + 1) → P n) (k seed : ℕ) (hk : 1 < k)
-    (hs : P seed.succ) (hm : ∀ x, seed < x → P x → P (k * x)) (n : ℕ) : P n := by
+theorem Nat.cauchy_induction_mul
+    (h : ∀ (n : ℕ), P (n + 1) → P n)
+    (k seed : ℕ) (hk : 1 < k) (hs : P seed.succ) (hm : ∀ x, seed < x → P x → P (k * x))
+    (n : ℕ)
+    : P n := by
   apply Nat.cauchy_induction h _ hs (k * ·) fun x hl hP => ⟨_, hm x hl hP⟩
   intro _ hl _
   convert (Nat.mul_lt_mul_right <| seed.succ_pos.trans_le hl).2 hk
   rw [one_mul]
 
-theorem Nat.cauchy_induction_two_mul (h : ∀ n, P (n + 1) → P n) (seed : ℕ) (hs : P seed.succ)
-    (hm : ∀ x, seed < x → P x → P (2 * x)) (n : ℕ) : P n :=
+theorem Nat.cauchy_induction_two_mul
+    (h : ∀ n, P (n + 1) → P n)
+    (seed : ℕ) (hs : P seed.succ) (hm : ∀ x, seed < x → P x → P (2 * x))
+    (n : ℕ)
+    : P n :=
   Nat.cauchy_induction_mul h 2 seed Nat.one_lt_two hs hm n
 
-theorem Nat.pow_imp_self_of_one_lt {M} [Monoid M] (k : ℕ) (hk : 1 < k)
-    (P : M → Prop) (hmul : ∀ x y, P x → P (x * y) ∨ P (y * x))
-    (hpow : ∀ x, P (x ^ k) → P x) : ∀ n x, P (x ^ n) → P x :=
-  k.cauchy_induction_mul (fun n ih x hx ↦ ih x <| (hmul _ x hx).elim
-    (fun h ↦ by rwa [_root_.pow_succ]) fun h ↦ by rwa [_root_.pow_succ']) 0 hk
-    (fun x hx ↦ pow_one x ▸ hx) fun n _ hn x hx ↦ hpow x <| hn _ <| (pow_mul x k n).subst hx
+theorem Nat.pow_imp_self_of_one_lt
+    {M} [Monoid M]
+    (k : ℕ) (hk : 1 < k)
+    (P : M → Prop) (hmul : ∀ x y, P x → P (x * y) ∨ P (y * x)) (hpow : ∀ x, P (x ^ k) → P x)
+    : ∀ n x, P (x ^ n) → P x :=
+  k.cauchy_induction_mul
+    (fun n ih x hx ↦
+      ih x <|
+        (hmul _ x hx).elim (fun h ↦ by rwa [_root_.pow_succ]) fun h ↦ by rwa [_root_.pow_succ'])
+    0 hk
+    (fun x hx ↦ pow_one x ▸ hx)
+    fun n _ hn x hx ↦ hpow x <| hn _ <| (pow_mul x k n).subst hx
 
 end Induction

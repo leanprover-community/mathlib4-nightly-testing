@@ -20,9 +20,7 @@ variable {α : Type*}
 namespace Rat
 variable {p q : ℚ}
 
-@[simp]
-theorem castHom_rat : castHom ℚ = RingHom.id ℚ :=
-  RingHom.ext cast_id
+@[simp] theorem castHom_rat : castHom ℚ = RingHom.id ℚ := RingHom.ext cast_id
 
 section LinearOrderedField
 
@@ -36,14 +34,10 @@ theorem cast_pos_of_pos (hq : 0 < q) : (0 : K) < q := by
 theorem cast_strictMono : StrictMono ((↑) : ℚ → K) := fun p q => by
   simpa only [sub_pos, cast_sub] using cast_pos_of_pos (K := K) (q := q - p)
 
-@[gcongr, mono]
-theorem cast_mono : Monotone ((↑) : ℚ → K) :=
-  cast_strictMono.monotone
+@[gcongr, mono] theorem cast_mono : Monotone ((↑) : ℚ → K) := cast_strictMono.monotone
 
 /-- Coercion from `ℚ` as an order embedding. -/
-@[simps!]
-def castOrderEmbedding : ℚ ↪o K :=
-  OrderEmbedding.ofStrictMono (↑) cast_strictMono
+@[simps!] def castOrderEmbedding : ℚ ↪o K := OrderEmbedding.ofStrictMono (↑) cast_strictMono
 
 @[simp, norm_cast] lemma cast_le : (p : K) ≤ q ↔ p ≤ q := castOrderEmbedding.le_iff_le
 
@@ -116,20 +110,16 @@ theorem preimage_cast_Ioo (p q : ℚ) : (↑) ⁻¹' Ioo (p : K) q = Ioo p q :=
   castOrderEmbedding.preimage_Ioo p q
 
 @[simp]
-theorem preimage_cast_Ici (q : ℚ) : (↑) ⁻¹' Ici (q : K) = Ici q :=
-  castOrderEmbedding.preimage_Ici q
+theorem preimage_cast_Ici (q : ℚ) : (↑) ⁻¹' Ici (q : K) = Ici q := castOrderEmbedding.preimage_Ici q
 
 @[simp]
-theorem preimage_cast_Iic (q : ℚ) : (↑) ⁻¹' Iic (q : K) = Iic q :=
-  castOrderEmbedding.preimage_Iic q
+theorem preimage_cast_Iic (q : ℚ) : (↑) ⁻¹' Iic (q : K) = Iic q := castOrderEmbedding.preimage_Iic q
 
 @[simp]
-theorem preimage_cast_Ioi (q : ℚ) : (↑) ⁻¹' Ioi (q : K) = Ioi q :=
-  castOrderEmbedding.preimage_Ioi q
+theorem preimage_cast_Ioi (q : ℚ) : (↑) ⁻¹' Ioi (q : K) = Ioi q := castOrderEmbedding.preimage_Ioi q
 
 @[simp]
-theorem preimage_cast_Iio (q : ℚ) : (↑) ⁻¹' Iio (q : K) = Iio q :=
-  castOrderEmbedding.preimage_Iio q
+theorem preimage_cast_Iio (q : ℚ) : (↑) ⁻¹' Iio (q : K) = Iio q := castOrderEmbedding.preimage_Iio q
 
 @[simp]
 theorem preimage_cast_uIcc (p q : ℚ) : (↑) ⁻¹' uIcc (p : K) q = uIcc p q :=
@@ -152,21 +142,17 @@ theorem cast_strictMono : StrictMono ((↑) : ℚ≥0 → K) := fun p q h => by
   · simp
   · simp
 
-@[gcongr, mono]
-theorem cast_mono : Monotone ((↑) : ℚ≥0 → K) :=
-  cast_strictMono.monotone
+@[gcongr, mono] theorem cast_mono : Monotone ((↑) : ℚ≥0 → K) := cast_strictMono.monotone
 
 /-- Coercion from `ℚ` as an order embedding. -/
-@[simps!]
-def castOrderEmbedding : ℚ≥0 ↪o K :=
-  OrderEmbedding.ofStrictMono (↑) cast_strictMono
+@[simps!] def castOrderEmbedding : ℚ≥0 ↪o K := OrderEmbedding.ofStrictMono (↑) cast_strictMono
 
 @[simp, norm_cast] lemma cast_le : (p : K) ≤ q ↔ p ≤ q := castOrderEmbedding.le_iff_le
 @[simp, norm_cast] lemma cast_lt : (p : K) < q ↔ p < q := cast_strictMono.lt_iff_lt
 @[simp] lemma cast_nonpos : (q : K) ≤ 0 ↔ q ≤ 0 := by norm_cast
 @[simp] lemma cast_pos : (0 : K) < q ↔ 0 < q := by norm_cast
 @[norm_cast] lemma cast_lt_zero : (q : K) < 0 ↔ q < 0 := by norm_cast
-@[simp] lemma not_cast_lt_zero : ¬(q : K) < 0 := mod_cast not_lt_zero
+@[simp] lemma not_cast_lt_zero : ¬ (q : K) < 0 := mod_cast not_lt_zero
 @[simp] lemma cast_le_one : (p : K) ≤ 1 ↔ p ≤ 1 := by norm_cast
 @[simp] lemma one_le_cast : 1 ≤ (p : K) ↔ 1 ≤ p := by norm_cast
 @[simp] lemma cast_lt_one : (p : K) < 1 ↔ p < 1 := by norm_cast
@@ -175,17 +161,13 @@ def castOrderEmbedding : ℚ≥0 ↪o K :=
 section ofNat
 variable {n : ℕ} [n.AtLeastTwo]
 
-@[simp] lemma cast_le_ofNat : (p : K) ≤ ofNat(n) ↔ p ≤ OfNat.ofNat n := by
-  simp [← cast_le (K := K)]
+@[simp] lemma cast_le_ofNat : (p : K) ≤ ofNat(n) ↔ p ≤ OfNat.ofNat n := by simp [← cast_le (K := K)]
 
-@[simp] lemma ofNat_le_cast : ofNat(n) ≤ (p : K) ↔ OfNat.ofNat n ≤ p := by
-  simp [← cast_le (K := K)]
+@[simp] lemma ofNat_le_cast : ofNat(n) ≤ (p : K) ↔ OfNat.ofNat n ≤ p := by simp [← cast_le (K := K)]
 
-@[simp] lemma cast_lt_ofNat : (p : K) < ofNat(n) ↔ p < OfNat.ofNat n := by
-  simp [← cast_lt (K := K)]
+@[simp] lemma cast_lt_ofNat : (p : K) < ofNat(n) ↔ p < OfNat.ofNat n := by simp [← cast_lt (K := K)]
 
-@[simp] lemma ofNat_lt_cast : ofNat(n) < (p : K) ↔ OfNat.ofNat n < p := by
-  simp [← cast_lt (K := K)]
+@[simp] lemma ofNat_lt_cast : ofNat(n) < (p : K) ↔ OfNat.ofNat n < p := by simp [← cast_lt (K := K)]
 
 end ofNat
 
@@ -205,11 +187,11 @@ theorem cast_lt_natCast {m : ℚ≥0} {n : ℕ} : (m : K) < n ↔ m < (n : ℚ�
 theorem natCast_lt_cast {m : ℕ} {n : ℚ≥0} : (m : K) < n ↔ (m : ℚ≥0) < n := by
   rw [← cast_lt (K := K), cast_natCast]
 
-@[simp, norm_cast] lemma cast_min (p q : ℚ≥0) : (↑(min p q) : K) = min (p : K) (q : K) :=
-  (@cast_mono K _).map_min
+@[simp, norm_cast]
+lemma cast_min (p q : ℚ≥0) : (↑(min p q) : K) = min (p : K) (q : K) := (@cast_mono K _).map_min
 
-@[simp, norm_cast] lemma cast_max (p q : ℚ≥0) : (↑(max p q) : K) = max (p : K) (q : K) :=
-  (@cast_mono K _).map_max
+@[simp, norm_cast]
+lemma cast_max (p q : ℚ≥0) : (↑(max p q) : K) = max (p : K) (q : K) := (@cast_mono K _).map_max
 
 open Set
 
@@ -260,53 +242,64 @@ open Lean Qq
 
 /-- Extension for Rat.cast. -/
 @[positivity Rat.cast _]
-meta def evalRatCast : PositivityExt where eval {u α} _zα pα? e := do
-  let ~q(@Rat.cast _ (_) ($a : ℚ)) := e | throwError "not Rat.cast"
-  match ← core q(inferInstance) (some q(inferInstance)) a with
-  | .positive pa => id <|
-    match pα? with
-    | none => do
+meta def evalRatCast : PositivityExt where
+  eval {u α} _zα pα? e := do
+    let ~q(@Rat.cast _ (_) ($a : ℚ)) := e
+      | throwError "not Rat.cast"
+    match ← core (q(inferInstance)) (some q(inferInstance)) a with
+    | .positive pa =>
+      id <| match pα? with
+        | none => do
+          let _oα ← synthInstanceQ q(DivisionRing $α)
+          let _cα ← synthInstanceQ q(CharZero $α)
+          assumeInstancesCommute
+          return .nonzero q((Rat.cast_ne_zero (α := $α)).mpr ($pa).ne')
+        | some _ => do
+          let _oα ← synthInstanceQ q(Field $α)
+          let _oα ← synthInstanceQ q(LinearOrder $α)
+          let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
+          assumeInstancesCommute
+          return .positive q((Rat.cast_pos (K := $α)).mpr $pa)
+    | .nonnegative pa =>
+      id <| match pα? with
+        | none =>
+          pure .none
+        | some _ => do
+          let _oα ← synthInstanceQ q(Field $α)
+          let _oα ← synthInstanceQ q(LinearOrder $α)
+          let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
+          assumeInstancesCommute
+          return .nonnegative q((Rat.cast_nonneg (K := $α)).mpr $pa)
+    | .nonzero pa =>
       let _oα ← synthInstanceQ q(DivisionRing $α)
       let _cα ← synthInstanceQ q(CharZero $α)
       assumeInstancesCommute
-      return .nonzero q((Rat.cast_ne_zero (α := $α)).mpr ($pa).ne')
-    | some _ => do
-      let _oα ← synthInstanceQ q(Field $α)
-      let _oα ← synthInstanceQ q(LinearOrder $α)
-      let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
-      assumeInstancesCommute
-      return .positive q((Rat.cast_pos (K := $α)).mpr $pa)
-  | .nonnegative pa => id <|
-    match pα? with | none => pure .none | some _ => do
-    let _oα ← synthInstanceQ q(Field $α)
-    let _oα ← synthInstanceQ q(LinearOrder $α)
-    let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
-    assumeInstancesCommute
-    return .nonnegative q((Rat.cast_nonneg (K := $α)).mpr $pa)
-  | .nonzero pa =>
-    let _oα ← synthInstanceQ q(DivisionRing $α)
-    let _cα ← synthInstanceQ q(CharZero $α)
-    assumeInstancesCommute
-    return .nonzero q((Rat.cast_ne_zero (α := $α)).mpr $pa)
-  | .none => pure .none
+      return .nonzero q((Rat.cast_ne_zero (α := $α)).mpr $pa)
+    | .none =>
+      pure .none
 
 /-- Extension for NNRat.cast. -/
 @[positivity NNRat.cast _]
-meta def evalNNRatCast : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  let ~q(@NNRat.cast _ (_) ($a : ℚ≥0)) := e | throwError "not NNRat.cast"
-  match ← core q(inferInstance) (some q(inferInstance)) a with
-  | .positive pa =>
-    let _oα ← synthInstanceQ q(Semifield $α)
-    let _oα ← synthInstanceQ q(LinearOrder $α)
-    let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
-    assumeInstancesCommute
-    return .positive q((NNRat.cast_pos (K := $α)).mpr $pa)
-  | _ =>
-    let _oα ← synthInstanceQ q(Semifield $α)
-    let _oα ← synthInstanceQ q(LinearOrder $α)
-    let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
-    assumeInstancesCommute
-    return .nonnegative q(NNRat.cast_nonneg _)
+meta def evalNNRatCast : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      let ~q(@NNRat.cast _ (_) ($a : ℚ≥0)) := e
+        | throwError "not NNRat.cast"
+      match ← core (q(inferInstance)) (some q(inferInstance)) a with
+      | .positive pa =>
+        let _oα ← synthInstanceQ q(Semifield $α)
+        let _oα ← synthInstanceQ q(LinearOrder $α)
+        let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
+        assumeInstancesCommute
+        return .positive q((NNRat.cast_pos (K := $α)).mpr $pa)
+      | _ =>
+        let _oα ← synthInstanceQ q(Semifield $α)
+        let _oα ← synthInstanceQ q(LinearOrder $α)
+        let _oα ← synthInstanceQ q(IsStrictOrderedRing $α)
+        assumeInstancesCommute
+        return .nonnegative q(NNRat.cast_nonneg _)
 
 end Mathlib.Meta.Positivity

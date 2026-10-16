@@ -23,9 +23,10 @@ ultrametric, nonarchimedean
 
 public section
 
-instance Pi.instIsUltrametricDist {ι : Type*} {X : ι → Type*} [Fintype ι]
-    [(i : ι) → PseudoMetricSpace (X i)] [(i : ι) → IsUltrametricDist (X i)] :
-    IsUltrametricDist ((i : ι) → X i) := by
+instance Pi.instIsUltrametricDist
+    {ι : Type*} {X : ι → Type*}
+    [Fintype ι] [(i : ι) → PseudoMetricSpace (X i)] [(i : ι) → IsUltrametricDist (X i)]
+    : IsUltrametricDist ((i : ι) → X i) := by
   constructor
   intro f g h
   simp only [dist_pi_def, ← NNReal.coe_max, NNReal.coe_le_coe, ← Finset.sup_sup]

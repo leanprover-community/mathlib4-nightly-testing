@@ -1,4 +1,5 @@
 module
+
 import Mathlib
 
 -- `grind` will infer these instances often, so it is important that they remain fast.

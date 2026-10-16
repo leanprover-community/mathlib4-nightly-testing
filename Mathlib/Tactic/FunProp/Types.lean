@@ -19,7 +19,6 @@ this file defines environment extension for `funProp`
 
 public meta section
 
-
 namespace Mathlib
 open Lean Meta
 open Std (TreeSet)
@@ -30,14 +29,13 @@ initialize registerTraceClass `Meta.Tactic.fun_prop
 initialize registerTraceClass `Meta.Tactic.fun_prop.attr
 initialize registerTraceClass `Debug.Meta.Tactic.fun_prop
 
-
 /-- Indicated origin of a function or a statement. -/
 inductive Origin where
   /-- It is a constant defined in the environment. -/
   | decl (name : Name)
   /-- It is a free variable in the local context. -/
   | fvar (fvarId : FVarId)
-  deriving Inhabited, BEq
+deriving Inhabited, BEq
 
 /-- Name of the origin. -/
 def Origin.name (origin : Origin) : Name :=
@@ -75,7 +73,8 @@ def defaultNamesToUnfold : Array Name :=
 
 /-- `fun_prop` configuration -/
 structure Config where
-  /-- Maximum number of transitions between function properties. For example inferring continuity
+  /--
+  Maximum number of transitions between function properties. For example inferring continuity
   from differentiability and then differentiability from smoothness (`ContDiff ℝ ∞`) requires
   `maxTransitionDepth = 2`. The default value of one expects that transition theorems are
   transitively closed e.g. there is a transition theorem that infers continuity directly from
@@ -95,8 +94,7 @@ structure Context where
   /-- `fun_prop` config -/
   config : Config := {}
   /-- Name to unfold -/
-  constToUnfold : TreeSet Name Name.quickCmp :=
-    .ofArray defaultNamesToUnfold _
+  constToUnfold : TreeSet Name Name.quickCmp := .ofArray defaultNamesToUnfold _
   /-- Custom discharger to satisfy theorem hypotheses. -/
   disch : Expr → MetaM (Option Expr) := fun _ => pure none
   /-- current transition depth -/
@@ -111,19 +109,21 @@ structure GeneralTheorem where
   /-- discrimination tree keys used to index this theorem -/
   keys : List (RefinedDiscrTree.Key × RefinedDiscrTree.LazyEntry)
   /-- priority -/
-  priority : Nat  := eval_prio default
-  deriving Inhabited
+  priority : Nat := eval_prio default
+deriving Inhabited
 
 /-- Structure holding transition or morphism theorems for `fun_prop` tactic. -/
 structure GeneralTheorems where
   /-- Discrimination tree indexing theorems. -/
   theorems : RefinedDiscrTree GeneralTheorem := {}
-  deriving Inhabited
+deriving Inhabited
 
 /-- `fun_prop` state -/
 structure State where
-  /-- Simp's cache is used as the `fun_prop` tactic is designed to be used inside of simp and
-  utilize its cache. It holds successful goals. -/
+  /--
+  Simp's cache is used as the `fun_prop` tactic is designed to be used inside of simp and
+  utilize its cache. It holds successful goals.
+  -/
   cache : Simp.Cache := {}
   /-- Cache storing failed goals such that they are not tried again. -/
   failureCache : ExprSet := {}
@@ -137,8 +137,10 @@ structure State where
   transitionTheorems : GeneralTheorems
 
 /-- Increase depth -/
-def Context.increaseTransitionDepth (ctx : Context) : Context :=
-  {ctx with transitionDepth := ctx.transitionDepth + 1}
+def Context.increaseTransitionDepth (ctx : Context) : Context := {
+  ctx with
+  transitionDepth := ctx.transitionDepth + 1
+}
 
 /-- Monad to run `fun_prop` tactic in. -/
 abbrev FunPropM := ReaderT FunProp.Context <| StateT FunProp.State MetaM
@@ -150,8 +152,7 @@ structure Result where
   proof : Expr
 
 /-- Default names to unfold -/
-def defaultUnfoldPred : Name → Bool :=
-  defaultNamesToUnfold.contains
+def defaultUnfoldPred : Name → Bool := defaultNamesToUnfold.contains
 
 /-- Get predicate on names indicating whether they should be unfolded. -/
 def unfoldNamePred : FunPropM (Name → Bool) := do
@@ -163,38 +164,41 @@ def increaseSteps : FunPropM Unit := do
   let numSteps := (← get).numSteps
   let maxSteps := (← read).config.maxSteps
   if numSteps > maxSteps then
-     throwError s!"fun_prop failed, maximum number({maxSteps}) of steps exceeded"
-  modify (fun s => {s with numSteps := s.numSteps + 1})
+    throwError s!"fun_prop failed, maximum number({maxSteps}) of steps exceeded"
+  modify (fun s => { s with numSteps := s.numSteps + 1 })
 
 /-- Increase transition depth. Return `none` if maximum transition depth has been reached. -/
 def withIncreasedTransitionDepth {α} (go : FunPropM (Option α)) : FunPropM (Option α) := do
   let maxDepth := (← read).config.maxTransitionDepth
   let newDepth := (← read).transitionDepth + 1
   if newDepth > maxDepth then
-    trace[Meta.Tactic.fun_prop]
-    "maximum transition depth ({maxDepth}) reached
-    if you want `fun_prop` to continue then increase the maximum depth with \
-    `fun_prop (maxTransitionDepth := {newDepth})`"
+    trace[Meta.Tactic.fun_prop] "maximum transition depth ({maxDepth}) reached\
+      \n    if you want `fun_prop` to continue then increase the maximum depth with \
+      `fun_prop (maxTransitionDepth := {newDepth})`"
     return none
   else
-    withReader (fun s => {s with transitionDepth := newDepth}) go
+    withReader (fun s => { s with transitionDepth := newDepth }) go
 
-/-- Log error message that will displayed to the user at the end.
+/--
+Log error message that will displayed to the user at the end.
 
 Messages are logged only when `transitionDepth = 0` i.e. when `fun_prop` is **not** trying to infer
 function property like continuity from another property like differentiability.
 The main reason is that if the user forgets to add a continuity theorem for function `foo` then
 `fun_prop` should report that there is a continuity theorem for `foo` missing. If we would log
 messages `transitionDepth > 0` then user will see messages saying that there is a missing theorem
-for differentiability, smoothness, ... for `foo`. -/
+for differentiability, smoothness, ... for `foo`.
+-/
 def logError (msg : String) : FunPropM Unit := do
   if (← read).transitionDepth = 0 then
-    modify fun s =>
-      {s with msgLog :=
+    modify fun s => {
+      s with
+      msgLog :=
         if s.msgLog.contains msg then
           s.msgLog
         else
-          msg::s.msgLog}
+          msg :: s.msgLog
+    }
 
 end Meta.FunProp
 

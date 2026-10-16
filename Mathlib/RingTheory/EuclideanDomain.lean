@@ -21,7 +21,6 @@ euclidean domain
 
 @[expose] public section
 
-
 section
 
 open EuclideanDomain Set Ideal
@@ -44,22 +43,23 @@ theorem right_div_gcd_ne_zero {p q : R} (hq : q ≠ 0) : q / GCDMonoid.gcd p q �
   rw [mul_comm, mul_div_cancel_right₀ _ pq0]
   exact r0
 
-theorem isCoprime_div_gcd_div_gcd (hq : q ≠ 0) :
-    IsCoprime (p / GCDMonoid.gcd p q) (q / GCDMonoid.gcd p q) :=
+theorem isCoprime_div_gcd_div_gcd (hq : q ≠ 0)
+    : IsCoprime (p / GCDMonoid.gcd p q) (q / GCDMonoid.gcd p q) :=
   (gcd_isUnit_iff _ _).1 <|
     isUnit_gcd_of_eq_mul_gcd
         (EuclideanDomain.mul_div_cancel' (gcd_ne_zero_of_right hq) <| gcd_dvd_left _ _).symm
         (EuclideanDomain.mul_div_cancel' (gcd_ne_zero_of_right hq) <| gcd_dvd_right _ _).symm <|
       gcd_ne_zero_of_right hq
 
-/-- This is a version of `isCoprime_div_gcd_div_gcd` which replaces the `q ≠ 0` assumption with
-`gcd p q ≠ 0`. -/
-theorem isCoprime_div_gcd_div_gcd_of_gcd_ne_zero (hpq : GCDMonoid.gcd p q ≠ 0) :
-    IsCoprime (p / GCDMonoid.gcd p q) (q / GCDMonoid.gcd p q) :=
+/--
+This is a version of `isCoprime_div_gcd_div_gcd` which replaces the `q ≠ 0` assumption with
+`gcd p q ≠ 0`.
+-/
+theorem isCoprime_div_gcd_div_gcd_of_gcd_ne_zero (hpq : GCDMonoid.gcd p q ≠ 0)
+    : IsCoprime (p / GCDMonoid.gcd p q) (q / GCDMonoid.gcd p q) :=
   (gcd_isUnit_iff _ _).1 <|
-    isUnit_gcd_of_eq_mul_gcd
-        (EuclideanDomain.mul_div_cancel' (hpq) <| gcd_dvd_left _ _).symm
-        (EuclideanDomain.mul_div_cancel' (hpq) <| gcd_dvd_right _ _).symm hpq
+    isUnit_gcd_of_eq_mul_gcd (EuclideanDomain.mul_div_cancel' (hpq) <| gcd_dvd_left _ _).symm
+      (EuclideanDomain.mul_div_cancel' (hpq) <| gcd_dvd_right _ _).symm hpq
 
 end GCDMonoid
 
@@ -79,8 +79,7 @@ def gcdMonoid (R) [EuclideanDomain R] [DecidableEq R] : GCDMonoid R where
 
 variable {α : Type*} [EuclideanDomain α]
 
-theorem span_gcd [DecidableEq α] (x y : α) :
-    span ({gcd x y} : Set α) = span ({x, y} : Set α) :=
+theorem span_gcd [DecidableEq α] (x y : α) : span ({gcd x y} : Set α) = span ({x, y} : Set α) :=
   letI := EuclideanDomain.gcdMonoid α
   _root_.span_gcd x y
 
@@ -89,15 +88,15 @@ theorem gcd_isUnit_iff [DecidableEq α] {x y : α} : IsUnit (gcd x y) ↔ IsCopr
   _root_.gcd_isUnit_iff x y
 
 -- this should be proved for UFDs surely?
-theorem isCoprime_of_dvd {x y : α} (nonzero : ¬(x = 0 ∧ y = 0))
-    (H : ∀ z ∈ nonunits α, z ≠ 0 → z ∣ x → ¬z ∣ y) : IsCoprime x y :=
+theorem isCoprime_of_dvd
+    {x y : α} (nonzero : ¬(x = 0 ∧ y = 0)) (H : ∀ z ∈ nonunits α, z ≠ 0 → z ∣ x → ¬ z ∣ y)
+    : IsCoprime x y :=
   letI := Classical.decEq α
   letI := EuclideanDomain.gcdMonoid α
   _root_.isCoprime_of_dvd x y nonzero H
 
 -- this should be proved for UFDs surely?
-theorem dvd_or_coprime (x y : α) (h : Irreducible x) :
-    x ∣ y ∨ IsCoprime x y :=
+theorem dvd_or_coprime (x y : α) (h : Irreducible x) : x ∣ y ∨ IsCoprime x y :=
   letI := Classical.decEq α
   letI := EuclideanDomain.gcdMonoid α
   _root_.dvd_or_isCoprime x y h

@@ -39,15 +39,16 @@ variable {V : Type u} {n : ℕ}
 
 /-! ### Simple Graphs -/
 
-/-- The type of relations for the language of graphs, consisting of a single binary relation `adj`.
+/--
+The type of relations for the language of graphs, consisting of a single binary relation `adj`.
 -/
 inductive graphRel : ℕ → Type
   | adj : graphRel 2
-  deriving DecidableEq
+deriving DecidableEq
 
 /-- The language consisting of a single relation representing adjacency. -/
 protected def graph : Language := ⟨fun _ => Empty, graphRel⟩
-  deriving IsRelational
+deriving IsRelational
 
 /-- The symbol representing the adjacency relation. -/
 abbrev adj : Language.graph.Relations 2 := .adj
@@ -55,28 +56,27 @@ abbrev adj : Language.graph.Relations 2 := .adj
 /-- Any simple graph can be thought of as a structure in the language of graphs. -/
 @[instance_reducible]
 def _root_.SimpleGraph.structure (G : SimpleGraph V) : Language.graph.Structure V where
-  RelMap | .adj => (fun x => G.Adj (x 0) (x 1))
+  RelMap
+    | .adj => (fun x => G.Adj (x 0) (x 1))
 
 namespace graph
 
-instance instSubsingleton : Subsingleton (Language.graph.Relations n) :=
-  ⟨by rintro ⟨⟩ ⟨⟩; rfl⟩
+instance instSubsingleton : Subsingleton (Language.graph.Relations n) := ⟨by rintro ⟨⟩ ⟨⟩; rfl⟩
 
 end graph
 
 /-- The theory of simple graphs. -/
-protected def Theory.simpleGraph : Language.graph.Theory :=
-  {adj.irreflexive, adj.symmetric}
+protected def Theory.simpleGraph : Language.graph.Theory := {adj.irreflexive, adj.symmetric}
 
 @[simp]
-theorem Theory.simpleGraph_model_iff [Language.graph.Structure V] :
-    V ⊨ Theory.simpleGraph ↔
-      (Std.Irrefl fun x y : V ↦ RelMap adj ![x, y]) ∧
-        Std.Symm fun x y : V ↦ RelMap adj ![x, y] := by
+theorem Theory.simpleGraph_model_iff [Language.graph.Structure V]
+    : V ⊨ Theory.simpleGraph
+      ↔ (Std.Irrefl fun x y : V ↦ RelMap adj ![x, y])
+        ∧ Std.Symm fun x y : V ↦ RelMap adj ![x, y] := by
   simp [Theory.simpleGraph]
 
-instance simpleGraph_model (G : SimpleGraph V) :
-    @Theory.Model _ V G.structure Theory.simpleGraph := by
+instance simpleGraph_model (G : SimpleGraph V)
+    : @Theory.Model _ V G.structure Theory.simpleGraph := by
   let := G.structure
   rw [Theory.simpleGraph_model_iff]
   exact ⟨G.loopless, G.symm⟩
@@ -84,22 +84,21 @@ instance simpleGraph_model (G : SimpleGraph V) :
 variable (V) in
 /-- Any model of the theory of simple graphs represents a simple graph. -/
 @[simps]
-def simpleGraphOfStructure [Language.graph.Structure V] [V ⊨ Theory.simpleGraph] :
-    SimpleGraph V where
+def simpleGraphOfStructure [Language.graph.Structure V] [V ⊨ Theory.simpleGraph]
+    : SimpleGraph V where
   Adj x y := RelMap adj ![x, y]
 
 @[simp]
-theorem _root_.SimpleGraph.simpleGraphOfStructure (G : SimpleGraph V) :
-    @simpleGraphOfStructure V G.structure _ = G := by
+theorem _root_.SimpleGraph.simpleGraphOfStructure (G : SimpleGraph V)
+    : @simpleGraphOfStructure V G.structure _ = G := by
   ext
   rfl
 
 @[simp]
-theorem structure_simpleGraphOfStructure [S : Language.graph.Structure V] [V ⊨ Theory.simpleGraph] :
-    (simpleGraphOfStructure V).structure = S := by
+theorem structure_simpleGraphOfStructure [S : Language.graph.Structure V] [V ⊨ Theory.simpleGraph]
+    : (simpleGraphOfStructure V).structure = S := by
   ext
-  case funMap n f xs =>
-    exact isEmptyElim f
+  case funMap n f xs => exact isEmptyElim f
   case RelMap n r xs =>
     match n, r with
     | 2, .adj =>

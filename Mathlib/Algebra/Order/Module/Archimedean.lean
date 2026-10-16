@@ -29,7 +29,7 @@ namespace ArchimedeanClass
 theorem mk_smul (a : M) {k : K} (h : k ≠ 0) : mk (k • a) = mk a := by
   have : Nontrivial K := nontrivial_iff.mpr ⟨k, 0, h⟩
   obtain ⟨m, hm⟩ := Archimedean.arch 1 (show 0 < |k| by simpa using h)
-  obtain ⟨n, hn⟩ := Archimedean.arch |k| (show 0 < 1 by simp)
+  obtain ⟨n, hn⟩ := Archimedean.arch (|k|) (show 0 < 1 by simp)
   simp_rw [mk_eq_mk, abs_smul]
   refine ⟨⟨m, ?_⟩, ⟨n, ?_⟩⟩
   · rw [← smul_assoc]
@@ -47,47 +47,53 @@ namespace FiniteArchimedeanClass
 
 variable (K)
 
-/-- Given an upper set `s` of finite archimedean classes in a linearly ordered module `M` with
+/--
+Given an upper set `s` of finite archimedean classes in a linearly ordered module `M` with
 Archimedean scalars, all elements belonging to these classes together with 0 form a submodule.
 
-This has the same carrier as `FiniteArchimedeanClass.addSubgroup`. -/
-noncomputable
-def submodule (s : UpperSet (FiniteArchimedeanClass M)) : Submodule K M where
+This has the same carrier as `FiniteArchimedeanClass.addSubgroup`.
+-/
+noncomputable def submodule (s : UpperSet (FiniteArchimedeanClass M)) : Submodule K M where
   __ := addSubgroup s
-  smul_mem' k {a} ha ne := s.upper (ArchimedeanClass.mk_le_mk_smul ..) <|
-    ha fun eq ↦ ne <| by simp [ArchimedeanClass.mk_eq_top_iff.mp eq]
+  smul_mem' k {a} ha ne :=
+    s.upper (ArchimedeanClass.mk_le_mk_smul ..) <|
+      ha fun eq ↦ ne <| by simp [ArchimedeanClass.mk_eq_top_iff.mp eq]
 
 theorem submodule_strictAnti : StrictAnti (submodule K (M := M)) := addSubgroup_strictAnti
 
-/-- An open ball defined by `ArchimedeanClass.submodule` of `UpperSet.Ioi c`.
+/--
+An open ball defined by `ArchimedeanClass.submodule` of `UpperSet.Ioi c`.
 For `c = ⊤`, we assign the junk value `⊥`.
 
-This has the same carrier as `ArchimedeanClass.ballAddSubgroup`'s. -/
-noncomputable
-abbrev ball (c : FiniteArchimedeanClass M) := submodule K (UpperSet.Ioi c)
+This has the same carrier as `ArchimedeanClass.ballAddSubgroup`'s.
+-/
+noncomputable abbrev ball (c : FiniteArchimedeanClass M) := submodule K (UpperSet.Ioi c)
 
-/-- A closed ball defined by `ArchimedeanClass.submodule` of `UpperSet.Ici c`.
+/--
+A closed ball defined by `ArchimedeanClass.submodule` of `UpperSet.Ici c`.
 
-This has the same carrier as `ArchimedeanClass.closedBallAddSubgroup`'s. -/
-noncomputable
-abbrev closedBall (c : FiniteArchimedeanClass M) := submodule K (UpperSet.Ici c)
-
-@[simp]
-theorem toAddSubgroup_ball (c : FiniteArchimedeanClass M) :
-    (ball K c).toAddSubgroup = ballAddSubgroup c := rfl
+This has the same carrier as `ArchimedeanClass.closedBallAddSubgroup`'s.
+-/
+noncomputable abbrev closedBall (c : FiniteArchimedeanClass M) := submodule K (UpperSet.Ici c)
 
 @[simp]
-theorem toAddSubgroup_closedBall (c : FiniteArchimedeanClass M) :
-    (closedBall K c).toAddSubgroup = closedBallAddSubgroup c := rfl
+theorem toAddSubgroup_ball (c : FiniteArchimedeanClass M)
+    : (ball K c).toAddSubgroup = ballAddSubgroup c :=
+  rfl
 
 @[simp]
-theorem mem_ball_iff {a : M} {c : FiniteArchimedeanClass M} :
-    a ∈ ball K c ↔ ∀ h : a ≠ 0, c < mk a h :=
+theorem toAddSubgroup_closedBall (c : FiniteArchimedeanClass M)
+    : (closedBall K c).toAddSubgroup = closedBallAddSubgroup c :=
+  rfl
+
+@[simp]
+theorem mem_ball_iff {a : M} {c : FiniteArchimedeanClass M}
+    : a ∈ ball K c ↔ ∀ h : a ≠ 0, c < mk a h :=
   mem_ballAddSubgroup_iff
 
 @[simp]
-theorem mem_closedBall_iff {a : M} {c : FiniteArchimedeanClass M} :
-    a ∈ closedBall K c ↔ ∀ h : a ≠ 0, c ≤ mk a h :=
+theorem mem_closedBall_iff {a : M} {c : FiniteArchimedeanClass M}
+    : a ∈ closedBall K c ↔ ∀ h : a ≠ 0, c ≤ mk a h :=
   mem_closedBallAddSubgroup_iff
 
 theorem ball_strictAnti : StrictAnti (ball (M := M) K) := ballAddSubgroup_strictAnti

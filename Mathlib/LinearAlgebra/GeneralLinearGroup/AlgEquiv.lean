@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Module.Projective
 public import Mathlib.Algebra.Ring.Action.ConjAct
-
 import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
@@ -23,13 +22,16 @@ For the continuous versions, see `Mathlib/Analysis/Normed/Operator/ContinuousAlg
 
 open Module LinearMap LinearEquiv
 
-variable {K V W : Type*} [Semifield K] [AddCommMonoid V] [Module K V] [Projective K V]
-  [AddCommMonoid W] [Module K W] [Projective K W]
+variable
+  {K V W : Type*} [Semifield K] [AddCommMonoid V] [Module K V] [Projective K V] [AddCommMonoid W]
+  [Module K W] [Projective K W]
 
-/-- Given an algebra isomorphism `f : End K V ≃ₐ[K] End K W`, there exists a linear isomorphism `T`
-such that `f` is given by `x ↦ T ∘ₗ x ∘ₗ T.symm`. -/
-public theorem AlgEquiv.eq_linearEquivConjAlgEquiv (f : End K V ≃ₐ[K] End K W) :
-    ∃ T : V ≃ₗ[K] W, f = T.conjAlgEquiv K := by
+/--
+Given an algebra isomorphism `f : End K V ≃ₐ[K] End K W`, there exists a linear isomorphism `T`
+such that `f` is given by `x ↦ T ∘ₗ x ∘ₗ T.symm`.
+-/
+public theorem AlgEquiv.eq_linearEquivConjAlgEquiv (f : End K V ≃ₐ[K] End K W)
+    : ∃ T : V ≃ₗ[K] W, f = T.conjAlgEquiv K := by
   by_cases! hV : Subsingleton V
   · nontriviality W
     simpa using congr(f $(Subsingleton.allEq 0 1))
@@ -43,7 +45,9 @@ public theorem AlgEquiv.eq_linearEquivConjAlgEquiv (f : End K V ≃ₐ[K] End K 
   have hT x : T x = f (smulRight v x) z := rfl
   have this A x : T (A x) = f A (T x) := by
     simp only [hT, ← End.mul_apply, ← map_mul]
-    congr; ext; simp
+    congr
+    ext
+    simp
   have surj : Function.Surjective T := fun w ↦ by
     obtain ⟨d, hd⟩ := Projective.exists_dual_eq_one K hz
     exact ⟨f.symm (smulRight d w) u, by simp [T, this, hd]⟩
@@ -56,14 +60,14 @@ public theorem AlgEquiv.eq_linearEquivConjAlgEquiv (f : End K V ≃ₐ[K] End K 
   exact ⟨.ofBijective T ⟨inj, surj⟩, fun A ↦ (LinearMap.ext <| this A).symm⟩
 
 variable (K V W) in
-public theorem LinearEquiv.conjAlgEquiv_surjective :
-    Function.Surjective (conjAlgEquiv K (S := K) (M₁ := V) (M₂ := W)) :=
-  fun f ↦ f.eq_linearEquivConjAlgEquiv.imp fun _ h ↦ h.symm
+public theorem LinearEquiv.conjAlgEquiv_surjective
+    : Function.Surjective (conjAlgEquiv K (S := K) (M₁ := V) (M₂ := W)) := fun f ↦
+  f.eq_linearEquivConjAlgEquiv.imp fun _ h ↦ h.symm
 
 /-- Alternate statement of `AlgEquiv.eq_linearEquivConjAlgEquiv` for when `V = W`. -/
-public theorem Module.End.mulSemiringActionToAlgEquiv_conjAct_surjective :
-    Function.Surjective
-      (MulSemiringAction.toAlgEquiv (G := ConjAct (GeneralLinearGroup K V)) K (End K V)) := by
+public theorem Module.End.mulSemiringActionToAlgEquiv_conjAct_surjective
+    : Function.Surjective (MulSemiringAction.toAlgEquiv (G := ConjAct (GeneralLinearGroup K V)) K
+      (End K V)) := by
   intro f
   have ⟨T, hT⟩ := f.eq_linearEquivConjAlgEquiv
   exact ⟨.ofLinearEquiv T, hT.symm⟩

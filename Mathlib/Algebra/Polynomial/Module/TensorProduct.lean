@@ -27,19 +27,15 @@ variable (R M : Type*) [CommRing R] [AddCommGroup M] [Module R M]
 namespace PolynomialModule
 
 /-- The `R[X]`-linear equivalence `(R[X] ⊗[R] M) ≃ₗ[R[X]] (PolynomialModule R M)`. -/
-def polynomialTensorProductLEquivPolynomialModule :
-    R[X] ⊗[R] M ≃ₗ[R[X]] PolynomialModule R M :=
+def polynomialTensorProductLEquivPolynomialModule : R[X] ⊗[R] M ≃ₗ[R[X]] PolynomialModule R M :=
   let e := liftBaseChange R[X] <| lsingle R (M := M) 0
-  let inv := (eval X).restrictScalars R ∘ₗ map R[X] (TensorProduct.mk R R[X] M 1)
+  let inv := (eval X).restrictScalars R ∘ₗ map (R[X]) (TensorProduct.mk R (R[X]) M 1)
   have left : inv ∘ₗ e = .id := by
     ext n x
     simp [inv, e, ← monomial_one_right_eq_X_pow, smul_tmul']
   have right : e.restrictScalars R ∘ₗ inv = .id := by
     ext n x
     simp [e, inv, ← monomial_one_right_eq_X_pow]
-  { __ := e
-    invFun := inv
-    left_inv := (congr($left ·))
-    right_inv := (congr($right ·)) }
+  { __ := e, invFun := inv, left_inv := (congr($left ·)), right_inv := (congr($right ·)) }
 
 end PolynomialModule

@@ -25,29 +25,34 @@ a presentation of `B` as a `A`-module (and some additional data).
 
 namespace Module
 
-variable {B : Type*} [Ring B] {M : Type*} [AddCommGroup M] [Module B M]
-  [DecidableEq B]
+variable
+  {B : Type*} [Ring B]
+  {M : Type*} [AddCommGroup M] [Module B M] [DecidableEq B]
   (presM : Presentation B M) [DecidableEq presM.G]
   {A : Type*} [CommRing A] [Algebra A B] [Module A M] [IsScalarTower A B M]
   (presB : Presentation A B)
 
 namespace Presentation
 
-/-- The additional data that is necessary in order to obtain a presentation
-of the restriction of scalars of a module. -/
+/--
+The additional data that is necessary in order to obtain a presentation
+of the restriction of scalars of a module.
+-/
 abbrev RestrictScalarsData : Type _ :=
-  (presB.finsupp presM.G).CokernelData
-    (LinearMap.restrictScalars A presM.map)
+  (presB.finsupp presM.G).CokernelData (LinearMap.restrictScalars A presM.map)
     (fun (⟨g, g'⟩ : presB.G × presM.R) ↦ presB.var g • Finsupp.single g' (1 : B))
 
 variable (data : presM.RestrictScalarsData presB)
 
-/-- A presentation of the restriction of scalars from `B` to `A` of a `B`-module `M`,
+/--
+A presentation of the restriction of scalars from `B` to `A` of a `B`-module `M`,
 given a presentation of `M` as a `B`-module, a presentation of `B` as an `A`-module,
-and an additional data. -/
+and an additional data.
+-/
 noncomputable def restrictScalars : Presentation A M :=
-  ofExact (g := LinearMap.restrictScalars A presM.π) (presB.finsupp presM.G) data
-    presM.exact presM.surjective_π (by
+  ofExact (g := LinearMap.restrictScalars A presM.π) (presB.finsupp presM.G) data presM.exact
+    presM.surjective_π
+    (by
       ext v
       dsimp
       simp only [Submodule.mem_top, iff_true]
@@ -61,8 +66,8 @@ noncomputable def restrictScalars : Presentation A M :=
         · intro g a f _ _ hf
           rw [map_add, Finsupp.single_add]
           refine Submodule.add_mem _ ?_ hf
-          rw [← Finsupp.smul_single_one, ← Finsupp.smul_single_one,
-            map_smul, Relations.Solution.π_single, smul_assoc]
+          rw [← Finsupp.smul_single_one, ← Finsupp.smul_single_one, map_smul,
+            Relations.Solution.π_single, smul_assoc]
           exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨⟨g, r⟩, rfl⟩))
 
 end Presentation

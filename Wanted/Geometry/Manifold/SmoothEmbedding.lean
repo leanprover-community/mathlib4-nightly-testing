@@ -13,13 +13,14 @@ open Topology
 
 namespace Manifold
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-  {E₁ E₃ E₄ : Type*} [NormedAddCommGroup E₁] [NormedSpace 𝕜 E₁]
-  [NormedAddCommGroup E₃] [NormedSpace 𝕜 E₃] [NormedAddCommGroup E₄] [NormedSpace 𝕜 E₄]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E₁ E₃ E₄ : Type*} [NormedAddCommGroup E₁] [NormedSpace 𝕜 E₁] [NormedAddCommGroup E₃]
+  [NormedSpace 𝕜 E₃] [NormedAddCommGroup E₄] [NormedSpace 𝕜 E₄]
   {H G G' : Type*} [TopologicalSpace H] [TopologicalSpace G] [TopologicalSpace G']
   {I : ModelWithCorners 𝕜 E₁ H} {J : ModelWithCorners 𝕜 E₃ G} {J' : ModelWithCorners 𝕜 E₄ G'}
-  {M N N' : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [TopologicalSpace N] [ChartedSpace G N] [TopologicalSpace N'] [ChartedSpace G' N']
+  {M N N' : Type*} [TopologicalSpace M] [ChartedSpace H M] [TopologicalSpace N] [ChartedSpace G N]
+  [TopologicalSpace N'] [ChartedSpace G' N']
   {n : ℕ∞ω}
 
 namespace IsSmoothEmbedding

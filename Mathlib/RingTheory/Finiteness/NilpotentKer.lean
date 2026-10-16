@@ -6,7 +6,6 @@ Authors: Andrew Yang
 module
 
 public import Mathlib.RingTheory.Noetherian.Nilpotent
-
 import Mathlib.LinearAlgebra.TensorProduct.Quotient
 import Mathlib.RingTheory.Finiteness.Subalgebra
 import Mathlib.RingTheory.Ideal.Quotient.Operations
@@ -18,15 +17,16 @@ public section
 
 open TensorProduct
 
-/-- If `I` is a finitely generated nilpotent ideal of an `R`-algebra `S`, and `T = S / I` is
-`R`-finite, then `S` is also `R`-finite. -/
+/--
+If `I` is a finitely generated nilpotent ideal of an `R`-algebra `S`, and `T = S / I` is
+`R`-finite, then `S` is also `R`-finite.
+-/
 lemma Module.finite_of_surjective_of_ker_le_nilradical
-    {R S T : Type*} [CommRing R] [CommRing S] [CommRing T]
-    [Algebra R S] [Algebra R T]
-    [Module.Finite R T] (f : S →ₐ[R] T)
-    (hf₁ : Function.Surjective f) (hf₂ : RingHom.ker f ≤ nilradical S)
-    (hf₃ : (RingHom.ker f).FG) :
-    Module.Finite R S := by
+    {R S T : Type*}
+    [CommRing R] [CommRing S] [CommRing T] [Algebra R S] [Algebra R T] [Module.Finite R T]
+    (f : S →ₐ[R] T)
+    (hf₁ : Function.Surjective f) (hf₂ : RingHom.ker f ≤ nilradical S) (hf₃ : (RingHom.ker f).FG)
+    : Module.Finite R S := by
   have : Module.Finite R (S ⧸ RingHom.ker f) :=
     let e := Ideal.quotientKerAlgEquivOfSurjective hf₁
     .of_surjective e.symm.toLinearMap e.symm.surjective
@@ -37,7 +37,8 @@ lemma Module.finite_of_surjective_of_ker_le_nilradical
     exact .of_surjective e.toLinearMap e.surjective
   intro n
   induction n with
-  | zero => rw [pow_zero, Ideal.one_eq_top]; infer_instance
+  | zero =>
+    rw [pow_zero, Ideal.one_eq_top]; infer_instance
   | succ n IH =>
     let φ : (S ⧸ I ^ (n + 1)) →ₐ[S] S ⧸ I ^ n :=
       Ideal.Quotient.factorₐ _ (Ideal.pow_le_pow_right n.le_succ)

@@ -29,15 +29,21 @@ namespace MeasureTheory
 
 variable {𝓧 : Type*}
 
-/-- The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
-Lebesgue integrals respectively) agree almost everywhere. -/
-lemma toReal_condLExp (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧}
-    {f : 𝓧 → ℝ≥0∞} (hf_meas : AEMeasurable f μ) (hf : ∫⁻ x, f x ∂μ ≠ ∞) :
-    (fun x ↦ (μ⁻[f|m] x).toReal) =ᵐ[μ] μ[fun x ↦ (f x).toReal | m] := by
+/--
+The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
+Lebesgue integrals respectively) agree almost everywhere.
+-/
+lemma toReal_condLExp
+    (m : MeasurableSpace 𝓧)
+    {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧} {f : 𝓧 → ℝ≥0∞}
+    (hf_meas : AEMeasurable f μ) (hf : ∫⁻ x, f x ∂μ ≠ ∞)
+    : (fun x ↦ (μ⁻[f|m] x).toReal) =ᵐ[μ] μ[fun x ↦ (f x).toReal | m] := by
   by_cases hm : m ≤ m𝓧
-  swap; · simp [condLExp_of_not_le hm, condExp_of_not_le hm]; rfl
+  swap
+  · simp [condLExp_of_not_le hm, condExp_of_not_le hm]; rfl
   by_cases hμ : SigmaFinite (μ.trim hm)
-  swap; · simp [condLExp_of_not_sigmaFinite hm hμ, condExp_of_not_sigmaFinite hm hμ]; rfl
+  swap
+  · simp [condLExp_of_not_sigmaFinite hm hμ, condExp_of_not_sigmaFinite hm hμ]; rfl
   refine ae_eq_condExp_of_forall_setIntegral_eq hm (E := ℝ) ?_ ?_ ?_ ?_ (μ := μ)
   · rwa [integrable_toReal_iff (by fun_prop)]
     filter_upwards [ae_lt_top' (by fun_prop) hf] with x hx using hx.ne
@@ -50,15 +56,20 @@ lemma toReal_condLExp (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} 
     · exact ae_restrict_of_ae (condLExp_lt_top hf)
   · exact StronglyMeasurable.aestronglyMeasurable (by fun_prop)
 
-/-- The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
-Lebesgue integrals respectively) agree almost everywhere. -/
-lemma condLExp_ofReal (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧}
-    {f : 𝓧 → ℝ} (hf : Integrable f μ) (h'f : 0 ≤ᵐ[μ] f) :
-    μ⁻[fun x ↦ ENNReal.ofReal (f x) | m] =ᵐ[μ] fun x ↦ ENNReal.ofReal (μ[f | m] x) := by
+/--
+The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
+Lebesgue integrals respectively) agree almost everywhere.
+-/
+lemma condLExp_ofReal
+    (m : MeasurableSpace 𝓧)
+    {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧} {f : 𝓧 → ℝ} (hf : Integrable f μ) (h'f : 0 ≤ᵐ[μ] f)
+    : μ⁻[fun x ↦ ENNReal.ofReal (f x) | m] =ᵐ[μ] fun x ↦ ENNReal.ofReal (μ[f | m] x) := by
   by_cases hm : m ≤ m𝓧
-  swap; · simp [condLExp_of_not_le hm, condExp_of_not_le hm]; rfl
+  swap
+  · simp [condLExp_of_not_le hm, condExp_of_not_le hm]; rfl
   by_cases hμ : SigmaFinite (μ.trim hm)
-  swap; · simp [condLExp_of_not_sigmaFinite hm hμ, condExp_of_not_sigmaFinite hm hμ]; rfl
+  swap
+  · simp [condLExp_of_not_sigmaFinite hm hμ, condExp_of_not_sigmaFinite hm hμ]; rfl
   have A : μ[fun x ↦ (ENNReal.ofReal (f x)).toReal | m] =ᵐ[μ] μ[f | m] := by
     apply condExp_congr_ae
     filter_upwards [h'f] with x hx using ENNReal.toReal_ofReal hx
@@ -79,11 +90,14 @@ lemma condLExp_ofReal (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} 
   rw [← ENNReal.toReal_eq_toReal_iff' C.ne, ENNReal.toReal_ofReal h'''a, ha, h''a]
   simp
 
-/-- The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
-Lebesgue integrals respectively) agree almost everywhere. -/
-lemma condLExp_enorm (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧}
-    {f : 𝓧 → ℝ} (hf : Integrable f μ) (h'f : 0 ≤ᵐ[μ] f) :
-    μ⁻[fun x ↦ ‖f x‖ₑ | m] =ᵐ[μ] fun x ↦ ‖μ[f | m] x‖ₑ := by
+/--
+The two definitions of the conditional expectation `condExp` and `condLExp` (for Bochner and
+Lebesgue integrals respectively) agree almost everywhere.
+-/
+lemma condLExp_enorm
+    (m : MeasurableSpace 𝓧)
+    {m𝓧 : MeasurableSpace 𝓧} {μ : Measure 𝓧} {f : 𝓧 → ℝ} (hf : Integrable f μ) (h'f : 0 ≤ᵐ[μ] f)
+    : μ⁻[fun x ↦ ‖f x‖ₑ | m] =ᵐ[μ] fun x ↦ ‖μ[f | m] x‖ₑ := by
   have A : μ⁻[fun x ↦ ENNReal.ofReal (f x) | m] =ᵐ[μ] μ⁻[fun x ↦ ‖f x‖ₑ | m] := by
     apply condLExp_congr_ae
     filter_upwards [h'f] with x hx using by simp [Real.enorm_eq_ofReal hx]
@@ -91,18 +105,20 @@ lemma condLExp_enorm (m : MeasurableSpace 𝓧) {m𝓧 : MeasurableSpace 𝓧} {
   filter_upwards [condExp_nonneg h'f (m := m)] with x hx using by simp [Real.enorm_eq_ofReal hx]
 
 lemma lintegral_enorm_condExp_indicator
-    {m : MeasurableSpace 𝓧} {m𝓧 : MeasurableSpace 𝓧} (hm : m ≤ m𝓧) {μ : Measure 𝓧}
-    [SigmaFinite (μ.trim hm)] {s : Set 𝓧} (hs : MeasurableSet s) (h's : μ s ≠ ∞ := by finiteness) :
-    ∫⁻ a, ‖μ[s.indicator (1 : 𝓧 → ℝ) | m] a‖ₑ ∂μ = μ s := calc
-  _ = ∫⁻ a, μ⁻[fun x ↦ ‖s.indicator (1 : 𝓧 → ℝ) x‖ₑ | m] a ∂μ := by
-    apply lintegral_congr_ae
-    apply (condLExp_enorm _ _ _).symm
-    · apply (integrable_indicator_iff hs).2
-      apply integrableOn_const h's
-    · filter_upwards with x
-      simp only [Pi.zero_apply, Set.indicator, Pi.one_apply]
-      grind
-  _ = μ s := by
-    simp [lintegral_condLExp hm, enorm_indicator_eq_indicator_enorm, lintegral_indicator hs]
+    {m : MeasurableSpace 𝓧} {m𝓧 : MeasurableSpace 𝓧} (hm : m ≤ m𝓧)
+    {μ : Measure 𝓧} [SigmaFinite (μ.trim hm)]
+    {s : Set 𝓧} (hs : MeasurableSet s) (h's : μ s ≠ ∞ := by finiteness)
+    : ∫⁻ a, ‖μ[s.indicator (1 : 𝓧 → ℝ) | m] a‖ₑ ∂μ = μ s :=
+  calc
+    _ = ∫⁻ a, μ⁻[fun x ↦ ‖s.indicator (1 : 𝓧 → ℝ) x‖ₑ | m] a ∂μ := by
+      apply lintegral_congr_ae
+      apply (condLExp_enorm _ _ _).symm
+      · apply (integrable_indicator_iff hs).2
+        apply integrableOn_const h's
+      · filter_upwards with x
+        simp only [Pi.zero_apply, Set.indicator, Pi.one_apply]
+        grind
+    _ = μ s := by
+      simp [lintegral_condLExp hm, enorm_indicator_eq_indicator_enorm, lintegral_indicator hs]
 
 end MeasureTheory

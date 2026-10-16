@@ -6,9 +6,7 @@ Authors: Mario Carneiro, Emily Riehl
 module
 
 public import Mathlib.CategoryTheory.Monad.Limits
-
 import Mathlib.AlgebraicTopology.SimplicialSet.NerveAdjunction
-
 
 /-!
 # The category of small categories has all small colimits.
@@ -22,7 +20,6 @@ homotopy category functor `SSet ⥤ Cat`.
 
 public section
 
-
 noncomputable section
 
 universe v
@@ -33,10 +30,11 @@ namespace CategoryTheory
 
 namespace Cat
 
-/-- The category of small categories has all small colimits as a reflective subcategory of the
-category of simplicial sets, which has all small colimits. -/
-instance : HasColimits Cat.{v, v} :=
-  hasColimits_of_reflective nerveFunctor
+/--
+The category of small categories has all small colimits as a reflective subcategory of the
+category of simplicial sets, which has all small colimits.
+-/
+instance : HasColimits Cat.{v, v} := hasColimits_of_reflective nerveFunctor
 
 end Cat
 

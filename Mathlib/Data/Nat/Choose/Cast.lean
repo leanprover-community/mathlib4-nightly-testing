@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Nat.Choose.Basic
 public import Mathlib.Data.Nat.Factorial.Cast
-
 import Mathlib.Algebra.GroupWithZero.Units.Basic
 
 /-!
@@ -19,7 +18,6 @@ of characteristic `0`.
 -/
 
 public section
-
 
 open Nat
 

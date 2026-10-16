@@ -6,7 +6,6 @@ Authors: Yoh Tanimoto
 module
 
 public import Mathlib.Analysis.Normed.MulAction
-
 import Mathlib.Analysis.Normed.Group.Continuity
 
 /-!
@@ -66,5 +65,4 @@ def nullSubmodule : Submodule 𝕜 E where
 
 lemma isClosed_nullSubmodule : IsClosed (nullSubmodule 𝕜 E : Set E) := isClosed_nullAddSubgroup
 
-@[simp]
-lemma mem_nullSubmodule_iff {x : E} : x ∈ nullSubmodule 𝕜 E ↔ ‖x‖ = 0 := Iff.rfl
+@[simp] lemma mem_nullSubmodule_iff {x : E} : x ∈ nullSubmodule 𝕜 E ↔ ‖x‖ = 0 := Iff.rfl

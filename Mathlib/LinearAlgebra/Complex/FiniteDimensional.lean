@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Complex.Cardinality
 public import Mathlib.LinearAlgebra.Complex.Module
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-
 import Mathlib.Order.Interval.Set.Infinite
 
 /-!
@@ -37,25 +36,27 @@ theorem rank_real_complex : Module.rank ℝ ℂ = 2 := by simp [← finrank_eq_r
 theorem rank_real_complex'.{u} : Cardinal.lift.{u} (Module.rank ℝ ℂ) = 2 := by
   rw [← finrank_eq_rank, finrank_real_complex, Cardinal.lift_natCast, Nat.cast_ofNat]
 
-/-- `Fact` version of the dimension of `ℂ` over `ℝ`, locally useful in the definition of the
-circle. -/
-theorem finrank_real_complex_fact : Fact (finrank ℝ ℂ = 2) :=
-  ⟨finrank_real_complex⟩
+/--
+`Fact` version of the dimension of `ℂ` over `ℝ`, locally useful in the definition of the
+circle.
+-/
+theorem finrank_real_complex_fact : Fact (finrank ℝ ℂ = 2) := ⟨finrank_real_complex⟩
 
 end Complex
 
-instance (priority := 500) FiniteDimensional.complexToReal (E : Type*) [AddCommGroup E]
-    [Module ℂ E] [FiniteDimensional ℂ E] : FiniteDimensional ℝ E :=
+instance (priority := 500) FiniteDimensional.complexToReal
+    (E : Type*) [AddCommGroup E] [Module ℂ E] [FiniteDimensional ℂ E]
+    : FiniteDimensional ℝ E :=
   FiniteDimensional.trans ℝ ℂ E
 
-theorem rank_real_of_complex (E : Type*) [AddCommGroup E] [Module ℂ E] :
-    Module.rank ℝ E = 2 * Module.rank ℂ E :=
+theorem rank_real_of_complex (E : Type*) [AddCommGroup E] [Module ℂ E]
+    : Module.rank ℝ E = 2 * Module.rank ℂ E :=
   Cardinal.lift_inj.{_, 0}.1 <| by
     rw [← lift_rank_mul_lift_rank ℝ ℂ E, Complex.rank_real_complex']
     simp only [Cardinal.lift_id']
 
-theorem finrank_real_of_complex (E : Type*) [AddCommGroup E] [Module ℂ E] :
-    Module.finrank ℝ E = 2 * Module.finrank ℂ E := by
+theorem finrank_real_of_complex (E : Type*) [AddCommGroup E] [Module ℂ E]
+    : Module.finrank ℝ E = 2 * Module.finrank ℂ E := by
   rw [← Module.finrank_mul_finrank ℝ ℂ E, Complex.finrank_real_complex]
 
 section Rational
@@ -73,8 +74,10 @@ lemma Complex.rank_rat_complex : Module.rank ℚ ℂ = continuum := by
   refine (Free.rank_eq_mk_of_infinite_lt ℚ ℂ ?_).trans Cardinal.mk_complex
   simpa using aleph0_lt_continuum
 
-/-- `ℂ` and `ℝ` are isomorphic as vector spaces over `ℚ`, or equivalently,
-as additive groups. -/
+/--
+`ℂ` and `ℝ` are isomorphic as vector spaces over `ℚ`, or equivalently,
+as additive groups.
+-/
 theorem Complex.nonempty_linearEquiv_real : Nonempty (ℂ ≃ₗ[ℚ] ℝ) :=
   Module.nonempty_linearEquiv_iff_rank_eq.mpr <| by simp
 

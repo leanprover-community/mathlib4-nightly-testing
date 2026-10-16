@@ -33,7 +33,6 @@ Complex measure
 
 @[expose] public section
 
-
 noncomputable section
 
 open scoped MeasureTheory ENNReal NNReal
@@ -45,41 +44,43 @@ namespace MeasureTheory
 open VectorMeasure
 
 /-- A `ComplexMeasure` is a `ℂ`-vector measure. -/
-abbrev ComplexMeasure (α : Type*) [MeasurableSpace α] :=
-  VectorMeasure α ℂ
+abbrev ComplexMeasure (α : Type*) [MeasurableSpace α] := VectorMeasure α ℂ
 
 namespace ComplexMeasure
 
 /-- The real part of a complex measure is a signed measure. -/
 @[simps! apply]
-def re : ComplexMeasure α →ₗ[ℝ] SignedMeasure α :=
-  mapRangeL Complex.reCLM
+def re : ComplexMeasure α →ₗ[ℝ] SignedMeasure α := mapRangeL Complex.reCLM
 
 /-- The imaginary part of a complex measure is a signed measure. -/
 @[simps! apply]
-def im : ComplexMeasure α →ₗ[ℝ] SignedMeasure α :=
-  mapRangeL Complex.imCLM
+def im : ComplexMeasure α →ₗ[ℝ] SignedMeasure α := mapRangeL Complex.imCLM
 
 /-- Given `s` and `t` signed measures, `s + it` is a complex measure -/
 @[simps!]
-def _root_.MeasureTheory.SignedMeasure.toComplexMeasure (s t : SignedMeasure α) :
-    ComplexMeasure α where
+def _root_.MeasureTheory.SignedMeasure.toComplexMeasure (s t : SignedMeasure α)
+    : ComplexMeasure α where
   measureOf' i := ⟨s i, t i⟩
   empty' := by rw [s.empty, t.empty]; rfl
   not_measurable' i hi := by rw [s.not_measurable hi, t.not_measurable hi]; rfl
   m_iUnion' _ hf hfdisj := (Complex.hasSum_iff _ _).2 ⟨s.m_iUnion hf hfdisj, t.m_iUnion hf hfdisj⟩
 
 theorem _root_.MeasureTheory.SignedMeasure.toComplexMeasure_apply
-    {s t : SignedMeasure α} {i : Set α} : s.toComplexMeasure t i = ⟨s i, t i⟩ := rfl
+    {s t : SignedMeasure α} {i : Set α}
+    : s.toComplexMeasure t i = ⟨s i, t i⟩ :=
+  rfl
 
-theorem toComplexMeasure_to_signedMeasure (c : ComplexMeasure α) :
-    SignedMeasure.toComplexMeasure (ComplexMeasure.re c) (ComplexMeasure.im c) = c := rfl
+theorem toComplexMeasure_to_signedMeasure (c : ComplexMeasure α)
+    : SignedMeasure.toComplexMeasure (ComplexMeasure.re c) (ComplexMeasure.im c) = c :=
+  rfl
 
-theorem _root_.MeasureTheory.SignedMeasure.re_toComplexMeasure (s t : SignedMeasure α) :
-    ComplexMeasure.re (SignedMeasure.toComplexMeasure s t) = s := rfl
+theorem _root_.MeasureTheory.SignedMeasure.re_toComplexMeasure (s t : SignedMeasure α)
+    : ComplexMeasure.re (SignedMeasure.toComplexMeasure s t) = s :=
+  rfl
 
-theorem _root_.MeasureTheory.SignedMeasure.im_toComplexMeasure (s t : SignedMeasure α) :
-    ComplexMeasure.im (SignedMeasure.toComplexMeasure s t) = t := rfl
+theorem _root_.MeasureTheory.SignedMeasure.im_toComplexMeasure (s t : SignedMeasure α)
+    : ComplexMeasure.im (SignedMeasure.toComplexMeasure s t) = t :=
+  rfl
 
 /-- The complex measures form an equivalence to the type of pairs of signed measures. -/
 @[simps]
@@ -97,21 +98,22 @@ variable [ContinuousConstSMul R ℝ] [ContinuousConstSMul R ℂ]
 set_option backward.isDefEq.respectTransparency false in
 /-- The complex measures form a linear isomorphism to the type of pairs of signed measures. -/
 @[simps]
-def equivSignedMeasureₗ : ComplexMeasure α ≃ₗ[R] SignedMeasure α × SignedMeasure α :=
-  { equivSignedMeasure with
-    map_add' := fun c d => by rfl
-    map_smul' := by
-      intro r c
-      dsimp
-      ext
-      · simp [Complex.smul_re]
-      · simp [Complex.smul_im] }
+def equivSignedMeasureₗ : ComplexMeasure α ≃ₗ[R] SignedMeasure α × SignedMeasure α := {
+  equivSignedMeasure with
+  map_add' := fun c d => by rfl
+  map_smul' := by
+    intro r c
+    dsimp
+    ext
+    · simp [Complex.smul_re]
+    · simp [Complex.smul_im]
+}
 
 end
 
 set_option backward.isDefEq.respectTransparency false in
-theorem absolutelyContinuous_ennreal_iff (c : ComplexMeasure α) (μ : VectorMeasure α ℝ≥0∞) :
-    c ≪ᵥ μ ↔ ComplexMeasure.re c ≪ᵥ μ ∧ ComplexMeasure.im c ≪ᵥ μ := by
+theorem absolutelyContinuous_ennreal_iff (c : ComplexMeasure α) (μ : VectorMeasure α ℝ≥0∞)
+    : c ≪ᵥ μ ↔ ComplexMeasure.re c ≪ᵥ μ ∧ ComplexMeasure.im c ≪ᵥ μ := by
   constructor <;> intro h
   · constructor <;> · intro i hi; simp [h hi]
   · intro i hi

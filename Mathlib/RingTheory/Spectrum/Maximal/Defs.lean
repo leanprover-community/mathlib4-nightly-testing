@@ -21,8 +21,10 @@ It is naturally a subset of the prime spectrum endowed with the subspace topolog
 
 public section
 
-/-- The maximal spectrum of a commutative (semi)ring `R` is the type of all
-maximal ideals of `R`. -/
+/--
+The maximal spectrum of a commutative (semi)ring `R` is the type of all
+maximal ideals of `R`.
+-/
 @[ext]
 structure MaximalSpectrum (R : Type*) [CommSemiring R] where
   asIdeal : Ideal R

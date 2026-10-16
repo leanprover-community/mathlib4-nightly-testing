@@ -26,8 +26,8 @@ namespace MvPolynomial
 variable {σ R : Type*} [CommRing R] {P : MvPolynomial σ R}
 
 -- Subsumed by `isNilpotent_iff` below.
-private theorem isNilpotent_iff_of_fintype [Finite σ] :
-    IsNilpotent P ↔ ∀ i, IsNilpotent (P.coeff i) := by
+private theorem isNilpotent_iff_of_fintype [Finite σ]
+    : IsNilpotent P ↔ ∀ i, IsNilpotent (P.coeff i) := by
   classical
   -- Note: including `Fintype.ofFinite σ` in the entire context interferes with the `rw` below.
   refine have := Fintype.ofFinite σ; Fintype.induction_empty_option ?_ ?_ ?_ σ P
@@ -39,9 +39,9 @@ private theorem isNilpotent_iff_of_fintype [Finite σ] :
       -isEmptyRingEquiv_apply, isEmptyRingEquiv_eq_coeff_zero]
   · intro α _ H P
     obtain ⟨P, rfl⟩ := (optionEquivLeft _ _).symm.surjective P
-    simp [IsNilpotent.map_iff (optionEquivLeft _ _).symm.injective,
-      Polynomial.isNilpotent_iff, H, Finsupp.optionEquiv.forall_congr_left,
-      ← optionEquivLeft_coeff_some_coeff_none, Finsupp.coe_update]
+    simp [IsNilpotent.map_iff (optionEquivLeft _ _).symm.injective, Polynomial.isNilpotent_iff, H,
+      Finsupp.optionEquiv.forall_congr_left, ← optionEquivLeft_coeff_some_coeff_none,
+      Finsupp.coe_update]
 
 theorem isNilpotent_iff : IsNilpotent P ↔ ∀ i, IsNilpotent (P.coeff i) := by
   obtain ⟨n, f, hf, P, rfl⟩ := P.exists_fin_rename
@@ -64,9 +64,10 @@ theorem isUnit_iff : IsUnit P ↔ IsUnit (P.coeff 0) ∧ ∀ i ≠ 0, IsNilpoten
     have H := (Polynomial.coeff_isUnit_isNilpotent_of_isUnit (H.map e.symm)).2 (n i) hi
     simp only [ne_eq, isNilpotent_iff] at H
     convert ← H (n.equivMapDomain (Equiv.optionSubtypeNe i).symm).some
-    refine (optionEquivLeft_coeff_some_coeff_none R { b // b ≠ i }
-      (Finsupp.equivMapDomain (Equiv.optionSubtypeNe i).symm n)
-      ((renameEquiv R (Equiv.optionSubtypeNe i)).symm P)).trans ?_
+    refine (optionEquivLeft_coeff_some_coeff_none R {b // b ≠ i}
+        (Finsupp.equivMapDomain (Equiv.optionSubtypeNe i).symm n)
+        ((renameEquiv R (Equiv.optionSubtypeNe i)).symm P)).trans
+      ?_
     simp [Finsupp.equivMapDomain_eq_mapDomain, -Equiv.optionSubtypeNe_symm_apply,
       coeff_rename_mapDomain _ (Equiv.optionSubtypeNe i).symm.injective]
   · have : IsNilpotent (P - C (P.coeff 0)) := by
@@ -76,17 +77,15 @@ theorem isUnit_iff : IsUnit P ↔ IsUnit (P.coeff 0) ∧ ∀ i ≠ 0, IsNilpoten
 instance : IsLocalHom (C : _ →+* MvPolynomial σ R) where
   map_nonunit := by simp +contextual [isUnit_iff]
 
-instance : IsLocalHom (algebraMap R (MvPolynomial σ R)) :=
-  inferInstanceAs (IsLocalHom C)
+instance : IsLocalHom (algebraMap R (MvPolynomial σ R)) := inferInstanceAs (IsLocalHom C)
 
-theorem isUnit_iff_totalDegree_of_isReduced [IsReduced R] :
-    IsUnit P ↔ IsUnit (P.coeff 0) ∧ P.totalDegree = 0 := by
+theorem isUnit_iff_totalDegree_of_isReduced [IsReduced R]
+    : IsUnit P ↔ IsUnit (P.coeff 0) ∧ P.totalDegree = 0 := by
   convert isUnit_iff (P := P)
   rw [totalDegree_eq_zero_iff]
   simp [not_imp_comm (a := _ = (0 : R)), Finsupp.ext_iff]
 
-theorem isUnit_iff_eq_C_of_isReduced [IsReduced R] :
-    IsUnit P ↔ ∃ r, IsUnit r ∧ P = C r := by
+theorem isUnit_iff_eq_C_of_isReduced [IsReduced R] : IsUnit P ↔ ∃ r, IsUnit r ∧ P = C r := by
   rw [isUnit_iff_totalDegree_of_isReduced, totalDegree_eq_zero_iff_eq_C]
   refine ⟨fun H ↦ ⟨_, H⟩, ?_⟩
   rintro ⟨r, hr, rfl⟩

@@ -31,7 +31,6 @@ Noetherian, noetherian, Noetherian ring, Noetherian module, noetherian ring, noe
 
 public section
 
-
 open Filter
 
 open IsNoetherian Submodule
@@ -40,8 +39,8 @@ section Semiring
 
 variable {R M : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
 
-theorem eventuallyConst_of_isNoetherian [IsNoetherian R M] (f : ℕ →o Submodule R M) :
-    atTop.EventuallyConst f := by
+theorem eventuallyConst_of_isNoetherian [IsNoetherian R M] (f : ℕ →o Submodule R M)
+    : atTop.EventuallyConst f := by
   simp_rw [eventuallyConst_atTop, eq_comm]
   exact (monotone_stabilizes_iff_noetherian.mpr inferInstance) f
 

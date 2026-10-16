@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Data.Stream.Init
 public import Mathlib.Topology.Compactification.StoneCech
-
 import Mathlib.Topology.Algebra.Semigroup
 
 /-!
@@ -46,68 +45,76 @@ Ramsey theory, ultrafilter
 
 @[expose] public section
 
-
 open Filter
 
 /-- Multiplication of ultrafilters given by `∀ᶠ m in U*V, p m ↔ ∀ᶠ m in U, ∀ᶠ m' in V, p (m*m')`. -/
 @[to_additive (attr := instance_reducible)
-/-- Addition of ultrafilters given by `∀ᶠ m in U+V, p m ↔ ∀ᶠ m in U, ∀ᶠ m' in V, p (m+m')`. -/]
-def Ultrafilter.mul {M} [Mul M] : Mul (Ultrafilter M) where mul U V := (· * ·) <$> U <*> V
+  /-- Addition of ultrafilters given by `∀ᶠ m in U+V, p m ↔ ∀ᶠ m in U, ∀ᶠ m' in V, p (m+m')`. -/]
+def Ultrafilter.mul {M} [Mul M] : Mul (Ultrafilter M) where
+  mul U V := (· * ·) <$> U <*> V
 
 attribute [local instance] Ultrafilter.mul Ultrafilter.add
 
-/-- We could have taken this as the definition of `U * V`, but then we would have to prove that it
-defines an ultrafilter. -/
+/--
+We could have taken this as the definition of `U * V`, but then we would have to prove that it
+defines an ultrafilter.
+-/
 @[to_additive /-- We could have taken this as the definition of `U + V`, but then we would have to
 prove that it defines an ultrafilter. -/]
-theorem Ultrafilter.eventually_mul {M} [Mul M] (U V : Ultrafilter M) (p : M → Prop) :
-    (∀ᶠ m in ↑(U * V), p m) ↔ ∀ᶠ m in U, ∀ᶠ m' in V, p (m * m') :=
+theorem Ultrafilter.eventually_mul {M} [Mul M] (U V : Ultrafilter M) (p : M → Prop)
+    : (∀ᶠ m in ↑(U * V), p m) ↔ ∀ᶠ m in U, ∀ᶠ m' in V, p (m * m') :=
   Iff.rfl
 
 /-- Semigroup structure on `Ultrafilter M` induced by a semigroup structure on `M`. -/
 @[to_additive (attr := instance_reducible)
-/-- Additive semigroup structure on `Ultrafilter M` induced by an additive semigroup
+  /-- Additive semigroup structure on `Ultrafilter M` induced by an additive semigroup
 structure on `M`. -/]
-def Ultrafilter.semigroup {M} [Semigroup M] : Semigroup (Ultrafilter M) :=
-  { Ultrafilter.mul with
-    mul_assoc := fun U V W =>
-      Ultrafilter.coe_inj.mp <|
-        Filter.ext' fun p => by simp [Ultrafilter.eventually_mul, mul_assoc] }
+def Ultrafilter.semigroup {M} [Semigroup M] : Semigroup (Ultrafilter M) := {
+  Ultrafilter.mul with
+  mul_assoc := fun U V W =>
+    Ultrafilter.coe_inj.mp <| Filter.ext' fun p => by simp [Ultrafilter.eventually_mul, mul_assoc]
+}
 
 attribute [local instance] Ultrafilter.semigroup Ultrafilter.addSemigroup
 
 -- We don't prove `continuous_mul_right`, because in general it is false!
 @[to_additive]
-theorem Ultrafilter.continuous_mul_left {M} [Mul M] (V : Ultrafilter M) :
-    Continuous (· * V) :=
-  ultrafilterBasis_is_basis.continuous_iff.2 <| Set.forall_mem_range.mpr fun s ↦
-    ultrafilter_isOpen_basic { m : M | ∀ᶠ m' in V, m * m' ∈ s }
+theorem Ultrafilter.continuous_mul_left {M} [Mul M] (V : Ultrafilter M) : Continuous (· * V) :=
+  ultrafilterBasis_is_basis.continuous_iff.2 <|
+    Set.forall_mem_range.mpr fun s ↦ ultrafilter_isOpen_basic { m : M | ∀ᶠ m' in V, m * m' ∈ s }
 
 namespace Hindman
 
-/-- `FS a m` means that `m` is a finite sum in `a`, i.e. that `m` is the sum of a nonempty
-subsequence of `a`. We give a direct inductive definition instead of talking about subsequences. -/
+/--
+`FS a m` means that `m` is a finite sum in `a`, i.e. that `m` is the sum of a nonempty
+subsequence of `a`. We give a direct inductive definition instead of talking about subsequences.
+-/
 inductive FS {M} [AddSemigroup M] : Stream' M → M → Prop
   | head (a : Stream' M) : FS a a.head
   | of_tail (a : Stream' M) (m : M) (h : FS a.tail m) : FS a m
   | cons (a : Stream' M) (m : M) (h : FS a.tail m) : FS a (a.head + m)
 
-/-- `FP a m` means that `m` is a finite product in `a`, i.e. that `m` is the product of a nonempty
-subsequence of `a`. We give a direct inductive definition instead of talking about subsequences. -/
+/--
+`FP a m` means that `m` is a finite product in `a`, i.e. that `m` is the product of a nonempty
+subsequence of `a`. We give a direct inductive definition instead of talking about subsequences.
+-/
 @[to_additive FS]
 inductive FP {M} [Semigroup M] : Stream' M → M → Prop
   | head (a : Stream' M) : FP a a.head
   | of_tail (a : Stream' M) (m : M) (h : FP a.tail m) : FP a m
   | cons (a : Stream' M) (m : M) (h : FP a.tail m) : FP a (a.head * m)
 
-/-- If `m` and `m'` are finite products in `M`, then so is `m * m'`, provided that `m'` is obtained
-from a subsequence of `M` starting sufficiently late. -/
+/--
+If `m` and `m'` are finite products in `M`, then so is `m * m'`, provided that `m'` is obtained
+from a subsequence of `M` starting sufficiently late.
+-/
 @[to_additive /-- If `m` and `m'` are finite sums in `M`, then so is `m + m'`, provided that `m'`
 is obtained from a subsequence of `M` starting sufficiently late. -/]
-theorem FP.mul {M} [Semigroup M] {a : Stream' M} {m : M} (hm : FP a m) :
-    ∃ n, ∀ m', FP (a.drop n) m' → FP a (m * m') := by
+theorem FP.mul {M} [Semigroup M] {a : Stream' M} {m : M} (hm : FP a m)
+    : ∃ n, ∀ m', FP (a.drop n) m' → FP a (m * m') := by
   induction hm with
-  | head a => exact ⟨1, fun m hm => FP.cons a m hm⟩
+  | head a =>
+    exact ⟨1, fun m hm => FP.cons a m hm⟩
   | of_tail a m _ ih =>
     obtain ⟨n, hn⟩ := ih
     use n + 1
@@ -121,8 +128,8 @@ theorem FP.mul {M} [Semigroup M] {a : Stream' M} {m : M} (hm : FP a m) :
     exact FP.cons _ _ (hn _ hm')
 
 @[to_additive exists_idempotent_ultrafilter_le_FS]
-theorem exists_idempotent_ultrafilter_le_FP {M} [Semigroup M] (a : Stream' M) :
-    ∃ U : Ultrafilter M, U * U = U ∧ ∀ᶠ m in U, FP a m := by
+theorem exists_idempotent_ultrafilter_le_FP {M} [Semigroup M] (a : Stream' M)
+    : ∃ U : Ultrafilter M, U * U = U ∧ ∀ᶠ m in U, FP a m := by
   let S : Set (Ultrafilter M) := ⋂ n, { U | ∀ᶠ m in U, FP (a.drop n) m }
   have h := exists_idempotent_in_compact_subsemigroup ?_ S ?_ ?_ ?_
   · rcases h with ⟨U, hU, U_idem⟩
@@ -151,21 +158,25 @@ theorem exists_idempotent_ultrafilter_le_FP {M} [Semigroup M] (a : Stream' M) :
     simpa only [Stream'.drop_drop, add_comm] using hm'
 
 @[to_additive exists_FS_of_large]
-theorem exists_FP_of_large {M} [Semigroup M] (U : Ultrafilter M) (U_idem : U * U = U) (s₀ : Set M)
-    (sU : s₀ ∈ U) : ∃ a, ∀ m, FP a m → m ∈ s₀ := by
-  /- Informally: given a `U`-large set `s₀`, the set `s₀ ∩ { m | ∀ᶠ m' in U, m * m' ∈ s₀ }` is also
+theorem exists_FP_of_large
+    {M} [Semigroup M] (U : Ultrafilter M) (U_idem : U * U = U) (s₀ : Set M) (sU : s₀ ∈ U)
+    : ∃ a, ∀ m, FP a m → m ∈ s₀ := by
+  /-
+  Informally: given a `U`-large set `s₀`, the set `s₀ ∩ { m | ∀ᶠ m' in U, m * m' ∈ s₀ }` is also
   `U`-large (since `U` is idempotent). Thus in particular there is an `a₀` in this intersection. Now
   let `s₁` be the intersection `s₀ ∩ { m | a₀ * m ∈ s₀ }`. By choice of `a₀`, this is again
   `U`-large, so we can repeat the argument starting from `s₁`, obtaining `a₁`, `s₂`, etc.
-  This gives the desired infinite sequence. -/
+  This gives the desired infinite sequence.
+  -/
   have exists_elem : ∀ {s : Set M} (_hs : s ∈ U), (s ∩ { m | ∀ᶠ m' in U, m * m' ∈ s }).Nonempty :=
     fun {s} hs => Ultrafilter.nonempty_of_mem (inter_mem hs <| by rwa [← U_idem] at hs)
-  let elem : { s // s ∈ U } → M := fun p => (exists_elem p.property).some
-  let succ : {s // s ∈ U} → {s // s ∈ U} := fun (p : {s // s ∈ U}) =>
-        ⟨p.val ∩ {m : M | elem p * m ∈ p.val},
-         inter_mem p.property
-           (show (exists_elem p.property).some ∈ {m : M | ∀ᶠ (m' : M) in ↑U, m * m' ∈ p.val} from
-              p.val.inter_subset_right (exists_elem p.property).some_mem)⟩
+  let elem : {s // s ∈ U} → M := fun p => (exists_elem p.property).some
+  let succ : {s // s ∈ U} → {s // s ∈ U} := fun (p : {s // s ∈ U}) => ⟨
+    p.val ∩ {m : M | elem p * m ∈ p.val},
+    inter_mem p.property
+      (show (exists_elem p.property).some ∈ {m : M | ∀ᶠ (m' : M) in ↑U, m * m' ∈ p.val} from
+        p.val.inter_subset_right (exists_elem p.property).some_mem)
+  ⟩
   use Stream'.corec elem succ (Subtype.mk s₀ sU)
   suffices ∀ (a : Stream' M) (m), FP a m → ∀ p, a = Stream'.corec elem succ p → m ∈ p.val by
     intro m hm
@@ -187,33 +198,41 @@ theorem exists_FP_of_large {M} [Semigroup M] (U : Ultrafilter M) (U_idem : U * U
     · simpa only using! this
     rw [Stream'.corec_eq, Stream'.tail_cons]
 
-/-- The strong form of **Hindman's theorem**: in any finite cover of an FP-set, one the parts
-contains an FP-set. -/
+/--
+The strong form of **Hindman's theorem**: in any finite cover of an FP-set, one the parts
+contains an FP-set.
+-/
 @[to_additive FS_partition_regular /-- The strong form of **Hindman's theorem**: in any finite
 cover of an FS-set, one the parts contains an FS-set. -/]
-theorem FP_partition_regular {M} [Semigroup M] (a : Stream' M) (s : Set (Set M)) (sfin : s.Finite)
-    (scov : ∀ m, FP a m → m ∈ ⋃₀ s) : ∃ c ∈ s, ∃ b : Stream' M, ∀ m, FP b m → m ∈ c :=
+theorem FP_partition_regular
+    {M} [Semigroup M]
+    (a : Stream' M) (s : Set (Set M)) (sfin : s.Finite) (scov : ∀ m, FP a m → m ∈ ⋃₀s)
+    : ∃ c ∈ s, ∃ b : Stream' M, ∀ m, FP b m → m ∈ c :=
   let ⟨U, idem, aU⟩ := exists_idempotent_ultrafilter_le_FP a
   let ⟨c, cs, hc⟩ :=
     (Ultrafilter.finite_sUnion_mem_iff sfin).mp (mem_of_superset aU (Set.ofPred_subset.2 scov))
   ⟨c, cs, exists_FP_of_large U idem c hc⟩
 
-/-- The weak form of **Hindman's theorem**: in any finite cover of a nonempty semigroup, one of the
-parts contains an FP-set. -/
+/--
+The weak form of **Hindman's theorem**: in any finite cover of a nonempty semigroup, one of the
+parts contains an FP-set.
+-/
 @[to_additive exists_FS_of_finite_cover /-- The weak form of **Hindman's theorem**: in any finite
 cover of a nonempty additive semigroup, one of the parts contains an FS-set. -/]
-theorem exists_FP_of_finite_cover {M} [Semigroup M] [Nonempty M] (s : Set (Set M)) (sfin : s.Finite)
-    (scov : ⊤ ⊆ ⋃₀ s) : ∃ c ∈ s, ∃ a : Stream' M, ∀ m, FP a m → m ∈ c :=
+theorem exists_FP_of_finite_cover
+    {M} [Semigroup M] [Nonempty M] (s : Set (Set M)) (sfin : s.Finite) (scov : ⊤ ⊆ ⋃₀s)
+    : ∃ c ∈ s, ∃ a : Stream' M, ∀ m, FP a m → m ∈ c :=
   let ⟨U, hU⟩ :=
     exists_idempotent_of_compact_t2_of_continuous_mul_left (@Ultrafilter.continuous_mul_left M _)
   let ⟨c, c_s, hc⟩ := (Ultrafilter.finite_sUnion_mem_iff sfin).mp (mem_of_superset univ_mem scov)
   ⟨c, c_s, exists_FP_of_large U hU c hc⟩
 
 @[to_additive FS_iter_tail_sub_FS]
-theorem FP_drop_subset_FP {M} [Semigroup M] (a : Stream' M) (n : ℕ) :
-    ∀ ⦃m⦄, FP (a.drop n) m → FP a m := by
+theorem FP_drop_subset_FP {M} [Semigroup M] (a : Stream' M) (n : ℕ)
+    : ∀ ⦃m⦄, FP (a.drop n) m → FP a m := by
   induction n with
-  | zero => exact fun m hm ↦ hm
+  | zero =>
+    exact fun m hm ↦ hm
   | succ n ih =>
     rw [← Stream'.drop_drop]
     exact fun m hm ↦ ih (FP.of_tail _ _ hm)
@@ -225,8 +244,8 @@ theorem FP.singleton {M} [Semigroup M] (a : Stream' M) (i : ℕ) : FP a (a.get i
   | succ i ih => exact FP.of_tail _ _ (ih _)
 
 @[to_additive]
-theorem FP.mul_two {M} [Semigroup M] (a : Stream' M) (i j : ℕ) (ij : i < j) :
-    FP a (a.get i * a.get j) := by
+theorem FP.mul_two {M} [Semigroup M] (a : Stream' M) (i j : ℕ) (ij : i < j)
+    : FP a (a.get i * a.get j) := by
   refine FP_drop_subset_FP _ i ?_
   rw [← Stream'.head_drop]
   apply FP.cons
@@ -237,10 +256,11 @@ theorem FP.mul_two {M} [Semigroup M] (a : Stream' M) (i j : ℕ) (ij : i < j) :
   lia
 
 @[to_additive]
-theorem FP.finsetProd {M} [CommMonoid M] (a : Stream' M) (s : Finset ℕ) (hs : s.Nonempty) :
-    FP a (s.prod fun i => a.get i) := by
+theorem FP.finsetProd {M} [CommMonoid M] (a : Stream' M) (s : Finset ℕ) (hs : s.Nonempty)
+    : FP a (s.prod fun i => a.get i) := by
   refine FP_drop_subset_FP _ (s.min' hs) ?_
-  induction s using Finset.eraseInduction with | H s ih => _
+  induction s using Finset.eraseInduction with
+  | H s ih => _
   rw [← Finset.mul_prod_erase _ _ (s.min'_mem hs), ← Stream'.head_drop]
   rcases (s.erase (s.min' hs)).eq_empty_or_nonempty with h | h
   · rw [h, Finset.prod_empty, mul_one]

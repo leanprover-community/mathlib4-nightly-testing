@@ -24,8 +24,7 @@ universe u v w
 
 open Function
 
-instance : Countable ℤ :=
-  Countable.of_equiv ℕ Equiv.intEquivNat.symm
+instance : Countable ℤ := Countable.of_equiv ℕ Equiv.intEquivNat.symm
 
 /-!
 ### Definition in terms of `Function.Embedding`
@@ -65,11 +64,9 @@ instance [Countable α] [Countable β] : Countable (α ⊕ β) := by
   rcases exists_injective_nat β with ⟨g, hg⟩
   exact (Equiv.natSumNatEquivNat.injective.comp <| hf.sumMap hg).countable
 
-instance Sum.uncountable_inl [Uncountable α] : Uncountable (α ⊕ β) :=
-  inl_injective.uncountable
+instance Sum.uncountable_inl [Uncountable α] : Uncountable (α ⊕ β) := inl_injective.uncountable
 
-instance Sum.uncountable_inr [Uncountable β] : Uncountable (α ⊕ β) :=
-  inr_injective.uncountable
+instance Sum.uncountable_inr [Uncountable β] : Uncountable (α ⊕ β) := inr_injective.uncountable
 
 instance Option.instCountable [Countable α] : Countable (Option α) :=
   Countable.of_equiv _ (Equiv.optionEquivSumPUnit.{0, _} α).symm

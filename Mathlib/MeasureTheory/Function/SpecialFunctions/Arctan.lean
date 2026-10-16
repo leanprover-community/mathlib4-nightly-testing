@@ -15,11 +15,9 @@ public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 public section
 
-
 namespace Real
 
-theorem measurable_arctan : Measurable arctan :=
-  continuous_arctan.measurable
+theorem measurable_arctan : Measurable arctan := continuous_arctan.measurable
 
 end Real
 

@@ -6,7 +6,6 @@ Authors: Floris van Doorn, Jeremy Avigad
 module
 
 public import Mathlib.Algebra.Order.Ring.Canonical
-
 import Mathlib.Algebra.Order.Group.Nat
 
 /-!
@@ -17,17 +16,14 @@ This file defines a simple distance function on naturals from truncated subtract
 
 @[expose] public section
 
-
 namespace Nat
 
 /-- Distance (absolute value of difference) between natural numbers. -/
-def dist (n m : ℕ) :=
-  n - m + (m - n)
+def dist (n m : ℕ) := n - m + (m - n)
 
 theorem dist_comm (n m : ℕ) : dist n m = dist m n := by simp [dist, add_comm]
 
-@[simp]
-theorem dist_self (n : ℕ) : dist n n = 0 := by simp [dist, tsub_self]
+@[simp] theorem dist_self (n : ℕ) : dist n n = 0 := by simp [dist, tsub_self]
 
 theorem eq_of_dist_eq_zero {n m : ℕ} (h : dist n m = 0) : n = m := by unfold Nat.dist at h; lia
 
@@ -35,8 +31,7 @@ theorem dist_eq_zero {n m : ℕ} (h : n = m) : dist n m = 0 := by unfold Nat.dis
 
 theorem dist_eq_sub_of_le {n m : ℕ} (h : n ≤ m) : dist n m = m - n := by unfold Nat.dist; lia
 
-theorem dist_eq_sub_of_le_right {n m : ℕ} (h : m ≤ n) : dist n m = n - m := by
-  unfold Nat.dist; lia
+theorem dist_eq_sub_of_le_right {n m : ℕ} (h : m ≤ n) : dist n m = n - m := by unfold Nat.dist; lia
 
 theorem dist_tri_left (n m : ℕ) : m ≤ dist n m + n := by unfold Nat.dist; lia
 theorem dist_tri_right (n m : ℕ) : m ≤ n + dist n m := by unfold Nat.dist; lia
@@ -46,11 +41,9 @@ theorem dist_tri_right' (n m : ℕ) : n ≤ m + dist n m := by unfold Nat.dist; 
 theorem dist_zero_right (n : ℕ) : dist n 0 = n := by unfold Nat.dist; lia
 theorem dist_zero_left (n : ℕ) : dist 0 n = n := by unfold Nat.dist; lia
 
-theorem dist_add_add_right (n k m : ℕ) : dist (n + k) (m + k) = dist n m := by
-  unfold Nat.dist; lia
+theorem dist_add_add_right (n k m : ℕ) : dist (n + k) (m + k) = dist n m := by unfold Nat.dist; lia
 
-theorem dist_add_add_left (k n m : ℕ) : dist (k + n) (k + m) = dist n m := by
-  unfold Nat.dist; lia
+theorem dist_add_add_left (k n m : ℕ) : dist (k + n) (k + m) = dist n m := by unfold Nat.dist; lia
 
 theorem dist_eq_intro {n m k l : ℕ} (h : n + m = k + l) : dist n k = dist l m := by
   unfold Nat.dist; lia

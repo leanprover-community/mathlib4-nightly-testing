@@ -16,7 +16,6 @@ public import Mathlib.Order.Prod.Lex.Basic
 
 /-- `toLex` as an `OrderHom`. -/
 @[simps]
-def Prod.Lex.toLexOrderHom {α β : Type*} [PartialOrder α] [Preorder β] :
-    α × β →o α ×ₗ β where
+def Prod.Lex.toLexOrderHom {α β : Type*} [PartialOrder α] [Preorder β] : α × β →o α ×ₗ β where
   toFun := toLex
   monotone' := Prod.Lex.toLex_mono

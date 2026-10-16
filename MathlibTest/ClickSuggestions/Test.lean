@@ -96,9 +96,11 @@ example : ∀ n m : Nat, n + m = m + n := by
   click_test "/0/1" => "rw [Nat.add_comm]"
   exact test_sorry
 
-example {α} [Lattice α] [AddGroup α] (f : ℕ → α) (c : α)
-    (h : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| ≤ ε) :
-    ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| < ε := by
+example
+    {α} [Lattice α] [AddGroup α]
+    (f : ℕ → α)
+    (c : α) (h : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| ≤ ε)
+    : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| < ε := by
   intro ε hε n
   obtain ⟨N, hN, h⟩ := h ε hε n
   click_test "/1/1/1/1/1/1" => "grw [← h]"
@@ -106,9 +108,11 @@ example {α} [Lattice α] [AddGroup α] (f : ℕ → α) (c : α)
   fail_if_success click_test "/1/1/1/1/1/1" => "grw [hε]"
   exact test_sorry
 
-example {α} [Lattice α] [AddGroup α] (f : ℕ → α) (c : α)
-    (h : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| < ε) :
-    ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| ≤ ε := by
+example
+    {α} [Lattice α] [AddGroup α]
+    (f : ℕ → α)
+    (c : α) (h : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| < ε)
+    : ∀ ε > 0, ∀ n, ∃ N > n, ∀ m ≥ N, |f N - f m| ≤ ε := by
   intro ε hε n
   obtain ⟨N, hN, h⟩ := h ε hε n
   click_test "/1/1/1/1/1/1" => "grw [← h]"
@@ -127,8 +131,7 @@ local infix:50 " ≈ " => AntisymmRel (· ≤ ·)
 
 axiom f : α → α
 
-@[gcongr]
-axiom f_congr' : a ≤ b → f a ≤ f b
+@[gcongr] axiom f_congr' : a ≤ b → f a ≤ f b
 
 example (h : a ≈ b) (h' : b ≈ c) : f a ≤ f c := by
   click_test "/0/1/1" => "grw [h]"
@@ -149,8 +152,7 @@ example (f g : Nat → Nat) : (f + g) 2 = f 2 + g 2 := by
   exact test_sorry
 
 -- When the motive is not type correct, suggest `rw!`
-example (a b : Nat) (l : List Nat) (hl : a + b < l.length) (h : l[a + b] = 5) :
-    l[b + a] = 5 := by
+example (a b : Nat) (l : List Nat) (hl : a + b < l.length) (h : l[a + b] = 5) : l[b + a] = 5 := by
   -- `b + a` also appears in the proof, which is why `(occs := .pos [1])` is suggested.
   click_test "/0/1/0/1" =>
     "rw! (occs := .pos [1]) [Nat.add_comm b a]"
@@ -158,8 +160,8 @@ example (a b : Nat) (l : List Nat) (hl : a + b < l.length) (h : l[a + b] = 5) :
   rw! (occs := .pos [1]) [Nat.add_comm b a]
   exact h
 
-example (a b : Nat) (l : List Nat) (hl : a + b < l.length) (h : l[a + b] = 5) :
-    b + a + l[b + a] = b + a + 5 := by
+example (a b : Nat) (l : List Nat) (hl : a + b < l.length) (h : l[a + b] = 5)
+    : b + a + l[b + a] = b + a + 5 := by
   click_test "/0/1/1/0/1" =>
     "rw! (occs := .pos [2]) [Nat.add_comm b a]"
     "rw! (occs := .pos [2]) [add_comm b a]"
@@ -174,8 +176,7 @@ example (n m : Nat) (h : n.succ = m.succ) : True := by
     "rw [Nat.succ_inj] at h" "rw [Nat.succ.injEq] at h" "apply Nat.my_inj at h"
   -- we do not suggest the automatically generated `.inj` lemma,
   -- because the `.injEq` version is stronger.
-  fail_if_success
-    click_test h "" => "apply Nat.succ.inj at h  "
+  fail_if_success click_test h "" => "apply Nat.succ.inj at h  "
   trivial
 
 -- `nth_rw` is used if `rw` would include more other rewrites:

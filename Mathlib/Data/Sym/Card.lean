@@ -6,7 +6,6 @@ Authors: Yaël Dillies, Bhavik Mehta, Huỳnh Trần Khanh, Stuart Presnell
 module
 
 public import Mathlib.Data.Finset.Sym
-
 import Mathlib.Data.Fintype.Sum
 
 /-!
@@ -54,7 +53,6 @@ stars and bars, multichoose
 
 @[expose] public section
 
-
 open Finset Fintype Function Sum Nat
 
 variable {α : Type*}
@@ -65,23 +63,27 @@ section Sym
 
 variable (α) (n : ℕ)
 
-/-- Over `Fin (n + 1)`, the multisets of size `k + 1` containing `0` are equivalent to those of size
-`k`, as demonstrated by respectively erasing or appending `0`. -/
-protected def e1 {n k : ℕ} : { s : Sym (Fin (n + 1)) (k + 1) // ↑0 ∈ s } ≃ Sym (Fin n.succ) k where
+/--
+Over `Fin (n + 1)`, the multisets of size `k + 1` containing `0` are equivalent to those of size
+`k`, as demonstrated by respectively erasing or appending `0`.
+-/
+protected def e1 {n k : ℕ} : {s : Sym (Fin (n + 1)) (k + 1) // ↑0 ∈ s} ≃ Sym (Fin n.succ) k where
   toFun s := s.1.erase 0 s.2
   invFun s := ⟨cons 0 s, mem_cons_self 0 s⟩
   left_inv s := by simp
   right_inv s := by simp
 
-/-- The multisets of size `k` over `Fin n+2` not containing `0`
+/--
+The multisets of size `k` over `Fin n+2` not containing `0`
 are equivalent to those of size `k` over `Fin n+1`,
 as demonstrated by respectively decrementing or incrementing every element of the multiset.
 -/
-protected def e2 {n k : ℕ} : { s : Sym (Fin n.succ.succ) k // ↑0 ∉ s } ≃ Sym (Fin n.succ) k where
+protected def e2 {n k : ℕ} : {s : Sym (Fin n.succ.succ) k // ↑0 ∉ s} ≃ Sym (Fin n.succ) k where
   toFun s := map (Fin.predAbove 0) s.1
-  invFun s :=
-    ⟨map (Fin.succAbove 0) s,
-      (mt mem_map.1) (not_exists.2 fun t => not_and.2 fun _ => Fin.succAbove_ne _ t)⟩
+  invFun s := ⟨
+    map (Fin.succAbove 0) s,
+    (mt mem_map.1) (not_exists.2 fun t => not_and.2 fun _ => Fin.succAbove_ne _ t)
+  ⟩
   left_inv s := by
     ext1
     simp only [map_map]
@@ -91,9 +93,12 @@ protected def e2 {n k : ℕ} : { s : Sym (Fin n.succ.succ) k // ↑0 ∉ s } ≃
     simp only [map_map, comp_apply, ← Fin.castSucc_zero, Fin.predAbove_succAbove, map_id']
 
 theorem card_sym_fin_eq_multichoose : ∀ n k : ℕ, card (Sym (Fin n) k) = multichoose n k
-  | n, 0 => by simp
-  | 0, k + 1 => by rw [multichoose_zero_succ]; exact card_eq_zero
-  | 1, k + 1 => by simp
+  | n, 0 => by
+    simp
+  | 0, k + 1 => by
+    rw [multichoose_zero_succ]; exact card_eq_zero
+  | 1, k + 1 => by
+    simp
   | n + 2, k + 1 => by
     rw [multichoose_succ_succ, ← card_sym_fin_eq_multichoose (n + 1) (k + 1),
       ← card_sym_fin_eq_multichoose (n + 2) k, add_comm (Fintype.card _), ← card_sum]
@@ -102,15 +107,17 @@ theorem card_sym_fin_eq_multichoose : ∀ n k : ℕ, card (Sym (Fin n) k) = mult
     apply Equiv.sumCompl
 
 /-- For any fintype `α` of cardinality `n`, `card (Sym α k) = multichoose (card α) k`. -/
-theorem card_sym_eq_multichoose (α : Type*) (k : ℕ) [Fintype α] [Fintype (Sym α k)] :
-    card (Sym α k) = multichoose (card α) k := by
+theorem card_sym_eq_multichoose (α : Type*) (k : ℕ) [Fintype α] [Fintype (Sym α k)]
+    : card (Sym α k) = multichoose (card α) k := by
   rw [← card_sym_fin_eq_multichoose]
   exact card_congr (equivCongr (equivFin α))
 
-/-- The *stars and bars* lemma: the cardinality of `Sym α k` is equal to
-`Nat.choose (card α + k - 1) k`. -/
-theorem card_sym_eq_choose {α : Type*} [Fintype α] (k : ℕ) [Fintype (Sym α k)] :
-    card (Sym α k) = (card α + k - 1).choose k := by
+/--
+The *stars and bars* lemma: the cardinality of `Sym α k` is equal to
+`Nat.choose (card α + k - 1) k`.
+-/
+theorem card_sym_eq_choose {α : Type*} [Fintype α] (k : ℕ) [Fintype (Sym α k)]
+    : card (Sym α k) = (card α + k - 1).choose k := by
   rw [card_sym_eq_multichoose, Nat.multichoose_eq]
 
 end Sym
@@ -125,28 +132,29 @@ variable [DecidableEq α]
 theorem card_image_diag (s : Finset α) : #(s.diag.image Sym2.mk.uncurry) = #s := by
   simp [card_image_of_injOn]
 
-lemma two_mul_card_image_offDiag (s : Finset α) :
-    2 * #(s.offDiag.image Sym2.mk.uncurry) = #s.offDiag := by
+lemma two_mul_card_image_offDiag (s : Finset α)
+    : 2 * #(s.offDiag.image Sym2.mk.uncurry) = #s.offDiag := by
   rw [card_eq_sum_card_image (Sym2.mk.uncurry : α × α → _), sum_const_nat (Sym2.ind _), mul_comm]
   -- FIXME: Would be cool for the final `aesop` call not to require this `a ≠ b ∨ b ≠ a` trick.
-  have (a b : α) (ha : a ∈ s) (hb : b ∈ s) (hab : a ≠ b ∨ b ≠ a) :
-      {z ∈ s.offDiag | Sym2.mk.uncurry z = s(a, b)} = .cons (a, b) {(b, a)}
-        (by simpa [eq_comm] using hab) := by aesop
+  have (a b : α) (ha : a ∈ s) (hb : b ∈ s) (hab : a ≠ b ∨ b ≠ a)
+      : {z ∈ s.offDiag | Sym2.mk.uncurry z = s(a, b)}
+        = .cons (a, b) {(b, a)} (by simpa [eq_comm] using hab) := by
+    aesop
   aesop
 
-/-- The `offDiag` of `s : Finset α` is sent on a finset of `Sym2 α` of card `#s.offDiag / 2`.
+/--
+The `offDiag` of `s : Finset α` is sent on a finset of `Sym2 α` of card `#s.offDiag / 2`.
 This is because every element `s(x, y)` of `Sym2 α` not on the diagonal comes from exactly two
-pairs: `(x, y)` and `(y, x)`. -/
-theorem card_image_offDiag (s : Finset α) :
-    #(s.offDiag.image Sym2.mk.uncurry) = (#s).choose 2 := by
+pairs: `(x, y)` and `(y, x)`.
+-/
+theorem card_image_offDiag (s : Finset α) : #(s.offDiag.image Sym2.mk.uncurry) = (#s).choose 2 := by
   rw [Nat.choose_two_right, Nat.mul_sub_left_distrib, mul_one, ← offDiag_card,
     Nat.div_eq_of_eq_mul_right Nat.zero_lt_two (two_mul_card_image_offDiag s).symm]
 
-theorem card_subtype_diag [Fintype α] : card { a : Sym2 α // a.IsDiag } = card α :=
+theorem card_subtype_diag [Fintype α] : card {a : Sym2 α // a.IsDiag} = card α :=
   card_congr diagElemEquiv
 
-theorem card_subtype_not_diag [Fintype α] :
-    card { a : Sym2 α // ¬a.IsDiag } = (card α).choose 2 := by
+theorem card_subtype_not_diag [Fintype α] : card {a : Sym2 α // ¬a.IsDiag} = (card α).choose 2 := by
   convert! card_image_offDiag (univ : Finset α)
   rw [← filter_image_mk_not_isDiag, Fintype.card_of_subtype]
   rintro x

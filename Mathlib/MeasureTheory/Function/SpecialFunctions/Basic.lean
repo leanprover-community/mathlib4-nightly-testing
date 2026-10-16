@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
 
@@ -34,80 +33,60 @@ namespace Real
 
 variable {α : Type*} {_ : MeasurableSpace α} {f : α → ℝ} {μ : MeasureTheory.Measure α}
 
-theorem measurable_exp : Measurable exp :=
-  continuous_exp.measurable
+theorem measurable_exp : Measurable exp := continuous_exp.measurable
 
 theorem measurable_log : Measurable log :=
-  measurable_of_measurable_on_compl_singleton 0 <|
-    Continuous.measurable <| continuousOn_iff_continuous_domRestrict.1 continuousOn_log
+  measurable_of_measurable_on_compl_singleton 0 <| Continuous.measurable <|
+    continuousOn_iff_continuous_domRestrict.1 continuousOn_log
 
-lemma measurable_of_measurable_exp (hf : Measurable (fun x ↦ exp (f x))) :
-    Measurable f := by
+lemma measurable_of_measurable_exp (hf : Measurable (fun x ↦ exp (f x))) : Measurable f := by
   have : f = fun x ↦ log (exp (f x)) := by ext; rw [log_exp]
   rw [this]
   exact measurable_log.comp hf
 
-lemma aemeasurable_of_aemeasurable_exp (hf : AEMeasurable (fun x ↦ exp (f x)) μ) :
-    AEMeasurable f μ := by
+lemma aemeasurable_of_aemeasurable_exp (hf : AEMeasurable (fun x ↦ exp (f x)) μ)
+    : AEMeasurable f μ := by
   have : f = fun x ↦ log (exp (f x)) := by ext; rw [log_exp]
   rw [this]
   exact measurable_log.comp_aemeasurable hf
 
-lemma aemeasurable_of_aemeasurable_exp_mul {t : ℝ}
-    (ht : t ≠ 0) (hf : AEMeasurable (fun x ↦ exp (t * f x)) μ) :
-    AEMeasurable f μ := by
-  simpa only [mul_div_cancel_left₀ _ ht]
-    using (aemeasurable_of_aemeasurable_exp hf).fun_div (aemeasurable_const (b := t))
+lemma aemeasurable_of_aemeasurable_exp_mul
+    {t : ℝ} (ht : t ≠ 0) (hf : AEMeasurable (fun x ↦ exp (t * f x)) μ)
+    : AEMeasurable f μ := by
+  simpa only [mul_div_cancel_left₀ _ ht] using
+    (aemeasurable_of_aemeasurable_exp hf).fun_div (aemeasurable_const (b := t))
 
-theorem measurable_sin : Measurable sin :=
-  continuous_sin.measurable
+theorem measurable_sin : Measurable sin := continuous_sin.measurable
 
-theorem measurable_cos : Measurable cos :=
-  continuous_cos.measurable
+theorem measurable_cos : Measurable cos := continuous_cos.measurable
 
-theorem measurable_sinh : Measurable sinh :=
-  continuous_sinh.measurable
+theorem measurable_sinh : Measurable sinh := continuous_sinh.measurable
 
-theorem measurable_cosh : Measurable cosh :=
-  continuous_cosh.measurable
+theorem measurable_cosh : Measurable cosh := continuous_cosh.measurable
 
-@[fun_prop]
-theorem measurable_arcsin : Measurable arcsin :=
-  continuous_arcsin.measurable
+@[fun_prop] theorem measurable_arcsin : Measurable arcsin := continuous_arcsin.measurable
 
-@[fun_prop]
-theorem measurable_arccos : Measurable arccos :=
-  continuous_arccos.measurable
+@[fun_prop] theorem measurable_arccos : Measurable arccos := continuous_arccos.measurable
 
 end Real
 
 namespace Complex
 
-@[fun_prop]
-theorem measurable_re : Measurable re :=
-  continuous_re.measurable
+@[fun_prop] theorem measurable_re : Measurable re := continuous_re.measurable
 
-@[fun_prop]
-theorem measurable_im : Measurable im :=
-  continuous_im.measurable
+@[fun_prop] theorem measurable_im : Measurable im := continuous_im.measurable
 
-theorem measurable_ofReal : Measurable ((↑) : ℝ → ℂ) :=
-  continuous_ofReal.measurable
+theorem measurable_ofReal : Measurable ((↑) : ℝ → ℂ) := continuous_ofReal.measurable
 
-theorem measurable_exp : Measurable exp :=
-  continuous_exp.measurable
+theorem measurable_exp : Measurable exp := continuous_exp.measurable
 
-theorem measurable_sin : Measurable sin :=
-  continuous_sin.measurable
+theorem measurable_sin : Measurable sin := continuous_sin.measurable
 
-theorem measurable_cos : Measurable cos :=
-  continuous_cos.measurable
+theorem measurable_cos : Measurable cos := continuous_cos.measurable
 
-theorem measurable_sinh : Measurable sinh :=
-  continuous_sinh.measurable
+theorem measurable_sinh : Measurable sinh := continuous_sinh.measurable
 
-theorem measurable_cosh : Measurable cosh :=
-  continuous_cosh.measurable
+theorem measurable_cosh : Measurable cosh := continuous_cosh.measurable
 
 theorem measurable_arg : Measurable arg :=
   Measurable.ite (by measurability) (by fun_prop) <|
@@ -127,12 +106,10 @@ variable {α : Type*} {m : MeasurableSpace α} {f : α → ℝ} (hf : Measurable
 include hf
 
 @[fun_prop]
-protected theorem Measurable.exp : Measurable fun x => Real.exp (f x) :=
-  Real.measurable_exp.comp hf
+protected theorem Measurable.exp : Measurable fun x => Real.exp (f x) := Real.measurable_exp.comp hf
 
 @[fun_prop]
-protected theorem Measurable.log : Measurable fun x => log (f x) :=
-  measurable_log.comp hf
+protected theorem Measurable.log : Measurable fun x => log (f x) := measurable_log.comp hf
 
 @[fun_prop]
 protected theorem Measurable.cos : Measurable fun x ↦ cos (f x) := measurable_cos.comp hf
@@ -216,12 +193,10 @@ protected theorem Measurable.csinh : Measurable fun x => Complex.sinh (f x) :=
   Complex.measurable_sinh.comp hf
 
 @[fun_prop]
-protected theorem Measurable.carg : Measurable fun x => arg (f x) :=
-  measurable_arg.comp hf
+protected theorem Measurable.carg : Measurable fun x => arg (f x) := measurable_arg.comp hf
 
 @[fun_prop]
-protected theorem Measurable.clog : Measurable fun x => Complex.log (f x) :=
-  measurable_log.comp hf
+protected theorem Measurable.clog : Measurable fun x => Complex.log (f x) := measurable_log.comp hf
 
 end ComplexComposition
 
@@ -263,14 +238,15 @@ protected lemma AEMeasurable.clog : AEMeasurable (fun x ↦ log (f x)) μ :=
 end ComplexComposition
 
 @[fun_prop]
-protected theorem Measurable.complex_ofReal {α : Type*} {m : MeasurableSpace α} {f : α → ℝ}
-    (hf : Measurable f) :
-    Measurable fun x ↦ (f x : ℂ) := by fun_prop
+protected theorem Measurable.complex_ofReal
+    {α : Type*} {m : MeasurableSpace α} {f : α → ℝ} (hf : Measurable f)
+    : Measurable fun x ↦ (f x : ℂ) := by
+  fun_prop
 
 @[fun_prop]
-protected theorem AEMeasurable.complex_ofReal {α : Type*} {m : MeasurableSpace α} {μ : Measure α}
-    {f : α → ℝ} (hf : AEMeasurable f μ) :
-    AEMeasurable (fun x ↦ (f x : ℂ)) μ := by
+protected theorem AEMeasurable.complex_ofReal
+    {α : Type*} {m : MeasurableSpace α} {μ : Measure α} {f : α → ℝ} (hf : AEMeasurable f μ)
+    : AEMeasurable (fun x ↦ (f x : ℂ)) μ := by
   fun_prop
 
 section PowInstances

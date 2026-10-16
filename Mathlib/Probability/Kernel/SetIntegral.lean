@@ -6,7 +6,6 @@ Authors: Etienne Marion
 module
 
 public import Mathlib.Probability.Kernel.Integral
-
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 /-! # Integral against a kernel over a set
@@ -21,12 +20,13 @@ open MeasureTheory ProbabilityTheory
 
 namespace ProbabilityTheory.Kernel
 
-variable {X Y E : Type*} {mX : MeasurableSpace X} {mY : MeasurableSpace Y}
-  [NormedAddCommGroup E] [NormedSpace ℝ E] (κ : Kernel X Y)
+variable
+  {X Y E : Type*} {mX : MeasurableSpace X} {mY : MeasurableSpace Y}
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  (κ : Kernel X Y)
 
-lemma integral_integral_indicator (μ : Measure X) (f : X → Y → E) {s : Set X}
-    (hs : MeasurableSet s) :
-    ∫ x, ∫ y, s.indicator (f · y) x ∂κ x ∂μ = ∫ x in s, ∫ y, f x y ∂κ x ∂μ := by
+lemma integral_integral_indicator (μ : Measure X) (f : X → Y → E) {s : Set X} (hs : MeasurableSet s)
+    : ∫ x, ∫ y, s.indicator (f · y) x ∂κ x ∂μ = ∫ x in s, ∫ y, f x y ∂κ x ∂μ := by
   simp_rw [← integral_indicator hs, Kernel.integral_indicator₂]
 
 end ProbabilityTheory.Kernel

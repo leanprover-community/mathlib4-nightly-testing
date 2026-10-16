@@ -30,12 +30,10 @@ lemma ext_nat' [AddZeroClass A] [AddMonoidHomClass F ℕ A] (f g : F) (h : f 1 =
     intro n
     induction n with
     | zero => simp_rw [map_zero f, map_zero g]
-    | succ n ihn =>
-      simp [h, ihn]
+    | succ n ihn => simp [h, ihn]
 
 @[ext]
-lemma AddMonoidHom.ext_nat [AddZeroClass A] {f g : ℕ →+ A} : f 1 = g 1 → f = g :=
-  ext_nat' f g
+lemma AddMonoidHom.ext_nat [AddZeroClass A] {f g : ℕ →+ A} : f 1 = g 1 → f = g := ext_nat' f g
 
 end AddMonoidHomClass
 
@@ -45,10 +43,11 @@ variable [AddMonoid M]
 variable (M) in
 /-- Additive homomorphisms from `ℕ` are defined by the image of `1`. -/
 def multiplesHom : M ≃ (ℕ →+ M) where
-  toFun x :=
-  { toFun := fun n ↦ n • x
+  toFun x := {
+    toFun := fun n ↦ n • x
     map_zero' := zero_nsmul x
-    map_add' := fun _ _ ↦ add_nsmul _ _ _ }
+    map_add' := fun _ _ ↦ add_nsmul _ _ _
+  }
   invFun f := f 1
   left_inv := one_nsmul
   right_inv f := AddMonoidHom.ext_nat <| one_nsmul (f 1)
@@ -66,24 +65,28 @@ section Monoid
 variable [Monoid M]
 
 variable (M) in
-/-- Monoid homomorphisms from `Multiplicative ℕ` are defined by the image
-of `Multiplicative.ofAdd 1`. -/
+/--
+Monoid homomorphisms from `Multiplicative ℕ` are defined by the image
+of `Multiplicative.ofAdd 1`.
+-/
 def powersHom : M ≃ (Multiplicative ℕ →* M) :=
   Additive.ofMul.trans <| (multiplesHom _).trans AddMonoidHom.toMultiplicativeLeft
 
-@[simp] lemma powersHom_apply (x : M) (n : Multiplicative ℕ) :
-    powersHom M x n = x ^ n.toAdd := rfl
+@[simp] lemma powersHom_apply (x : M) (n : Multiplicative ℕ) : powersHom M x n = x ^ n.toAdd := rfl
 
-@[simp] lemma powersHom_symm_apply (f : Multiplicative ℕ →* M) :
-    (powersHom M).symm f = f (Multiplicative.ofAdd 1) := rfl
+@[simp]
+lemma powersHom_symm_apply (f : Multiplicative ℕ →* M)
+    : (powersHom M).symm f = f (Multiplicative.ofAdd 1) :=
+  rfl
 
-lemma MonoidHom.apply_mnat (f : Multiplicative ℕ →* M) (n : Multiplicative ℕ) :
-    f n = f (Multiplicative.ofAdd 1) ^ n.toAdd := by
+lemma MonoidHom.apply_mnat (f : Multiplicative ℕ →* M) (n : Multiplicative ℕ)
+    : f n = f (Multiplicative.ofAdd 1) ^ n.toAdd := by
   rw [← powersHom_symm_apply, ← powersHom_apply, Equiv.apply_symm_apply]
 
 @[ext]
-lemma MonoidHom.ext_mnat ⦃f g : Multiplicative ℕ →* M⦄
-    (h : f (Multiplicative.ofAdd 1) = g (Multiplicative.ofAdd 1)) : f = g :=
+lemma MonoidHom.ext_mnat
+    ⦃f g : Multiplicative ℕ →* M⦄ (h : f (Multiplicative.ofAdd 1) = g (Multiplicative.ofAdd 1))
+    : f = g :=
   MonoidHom.ext fun n ↦ by rw [f.apply_mnat, g.apply_mnat, h]
 
 end Monoid

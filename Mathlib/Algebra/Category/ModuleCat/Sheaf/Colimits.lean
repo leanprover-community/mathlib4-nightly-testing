@@ -26,18 +26,20 @@ open CategoryTheory Limits
 
 variable {C : Type u'} [Category.{v'} C] {J : GrothendieckTopology C}
 
-variable (R : Sheaf J RingCat.{u}) [HasWeakSheafify J AddCommGrpCat.{v}]
-  [J.WEqualsLocallyBijective AddCommGrpCat.{v}] (K : Type w) [Category.{w'} K]
+variable
+  (R : Sheaf J RingCat.{u})
+  [HasWeakSheafify J AddCommGrpCat.{v}] [J.WEqualsLocallyBijective AddCommGrpCat.{v}]
+  (K : Type w) [Category.{w'} K]
 
-instance [HasColimitsOfShape K (PresheafOfModules.{v} R.obj)] :
-    HasColimitsOfShape K (SheafOfModules.{v} R) where
+instance [HasColimitsOfShape K (PresheafOfModules.{v} R.obj)]
+    : HasColimitsOfShape K (SheafOfModules.{v} R) where
   has_colimit F := by
     let e : F ≅ (F ⋙ forget R) ⋙ PresheafOfModules.sheafification (𝟙 R.obj) :=
       Functor.isoWhiskerLeft F
         (asIso (PresheafOfModules.sheafificationAdjunction (𝟙 R.obj)).counit).symm
     exact hasColimit_of_iso e
 
-instance [HasColimitsOfSize.{w', w} (PresheafOfModules.{v} R.obj)] :
-    HasColimitsOfSize.{w', w} (SheafOfModules.{v} R) where
+instance [HasColimitsOfSize.{w', w} (PresheafOfModules.{v} R.obj)]
+  : HasColimitsOfSize.{w', w} (SheafOfModules.{v} R) where
 
 end SheafOfModules

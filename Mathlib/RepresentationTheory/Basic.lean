@@ -43,10 +43,8 @@ section
 
 variable (k G V : Type*) [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]
 
-/-- A representation of `G` on the `k`-module `V` is a homomorphism `G →* (V →ₗ[k] V)`.
--/
-abbrev Representation :=
-  G →* V →ₗ[k] V
+/-- A representation of `G` on the `k`-module `V` is a homomorphism `G →* (V →ₗ[k] V)`. -/
+abbrev Representation := G →* V →ₗ[k] V
 
 end
 
@@ -56,16 +54,12 @@ section trivial
 
 variable (k G V : Type*) [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]
 
-/-- The trivial representation of `G` on a `k`-module V.
--/
-def trivial : Representation k G V :=
-  1
+/-- The trivial representation of `G` on a `k`-module V. -/
+def trivial : Representation k G V := 1
 
 variable {G V}
 
-@[simp]
-theorem trivial_apply (g : G) (v : V) : trivial k G V g v = v :=
-  rfl
+@[simp] theorem trivial_apply (g : G) (v : V) : trivial k G V g v = v := rfl
 
 variable {k}
 
@@ -75,35 +69,31 @@ class IsTrivial (ρ : Representation k G V) : Prop where
 
 instance : IsTrivial (trivial k G V) where
 
-theorem isTrivial_def (ρ : Representation k G V) [IsTrivial ρ] (g : G) :
-    ρ g = LinearMap.id := IsTrivial.out g
+theorem isTrivial_def (ρ : Representation k G V) [IsTrivial ρ] (g : G) : ρ g = LinearMap.id :=
+  IsTrivial.out g
 
-theorem isTrivial_apply (ρ : Representation k G V) [IsTrivial ρ] (g : G) (x : V) :
-    ρ g x = x := congr($(isTrivial_def ρ g) x)
+theorem isTrivial_apply (ρ : Representation k G V) [IsTrivial ρ] (g : G) (x : V) : ρ g x = x :=
+  congr($(isTrivial_def ρ g) x)
 
 end trivial
 
 section Group
 
-variable {k G V : Type*} [Semiring k] [Group G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V)
+variable
+  {k G V : Type*} [Semiring k] [Group G] [AddCommMonoid V] [Module k V] (ρ : Representation k G V)
 
 @[simp]
-theorem inv_self_apply (g : G) (x : V) :
-    ρ g⁻¹ (ρ g x) = x := by
+theorem inv_self_apply (g : G) (x : V) : ρ g⁻¹ (ρ g x) = x := by
   simp [← Module.End.mul_apply, ← map_mul]
 
 @[simp]
-theorem self_inv_apply (g : G) (x : V) :
-    ρ g (ρ g⁻¹ x) = x := by
+theorem self_inv_apply (g : G) (x : V) : ρ g (ρ g⁻¹ x) = x := by
   simp [← Module.End.mul_apply, ← map_mul]
 
-lemma inv_apply_eq_iff {g : G} {x y : V} :
-    ρ g⁻¹ x = y ↔ x = ρ g y := by
+lemma inv_apply_eq_iff {g : G} {x y : V} : ρ g⁻¹ x = y ↔ x = ρ g y := by
   constructor <;> rintro rfl <;> simp
 
-lemma apply_bijective (g : G) :
-    Function.Bijective (ρ g) :=
+lemma apply_bijective (g : G) : Function.Bijective (ρ g) :=
   Equiv.bijective ⟨ρ g, ρ g⁻¹, inv_self_apply ρ g, self_inv_apply ρ g⟩
 
 end Group
@@ -113,7 +103,8 @@ section MonoidAlgebra
 variable {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
 variable (ρ : Representation k G V)
 
-/-- A `k`-linear representation of `G` on `V` can be thought of as
+/--
+A `k`-linear representation of `G` on `V` can be thought of as
 an algebra map from `k[G]` into the `k`-linear endomorphisms of `V`.
 -/
 noncomputable def asAlgebraHom : k[G] →ₐ[k] Module.End k V := lift k _ G ρ
@@ -121,8 +112,8 @@ noncomputable def asAlgebraHom : k[G] →ₐ[k] Module.End k V := lift k _ G ρ
 theorem asAlgebraHom_def : asAlgebraHom ρ = lift k _ G ρ := rfl
 
 @[simp]
-theorem asAlgebraHom_single (g : G) (r : k) :
-    asAlgebraHom ρ (MonoidAlgebra.single g r) = r • ρ g := by
+theorem asAlgebraHom_single (g : G) (r : k)
+    : asAlgebraHom ρ (MonoidAlgebra.single g r) = r • ρ g := by
   simp only [asAlgebraHom_def, MonoidAlgebra.lift_single]
 
 theorem asAlgebraHom_single_one (g : G) : asAlgebraHom ρ (MonoidAlgebra.single g 1) = ρ g := by simp
@@ -133,7 +124,8 @@ theorem asAlgebraHom_of (g : G) : asAlgebraHom ρ (of k G g) = ρ g := by
 section
 
 variable {k G V : Type*} [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-/-- If `ρ : Representation k G V`, then `ρ.asModule` is a type synonym for `V`,
+/--
+If `ρ : Representation k G V`, then `ρ.asModule` is a type synonym for `V`,
 which we equip with an instance `Module k[G] ρ.asModule`.
 
 You should use `asModuleEquiv : ρ.asModule ≃+ V` to translate terms.
@@ -145,41 +137,40 @@ deriving AddCommMonoid, Module k
 instance (ρ : Representation k G V) : Inhabited ρ.asModule where
   default := 0
 
-/-- The additive equivalence from the `Module k[G]` to the original vector space
+/--
+The additive equivalence from the `Module k[G]` to the original vector space
 of the representative.
 
 This is just the identity, but it is helpful for typechecking and keeping track of instances.
 -/
-def asModuleEquiv (ρ : Representation k G V) : ρ.asModule ≃ₗ[k] V :=
-  LinearEquiv.refl _ _
+def asModuleEquiv (ρ : Representation k G V) : ρ.asModule ≃ₗ[k] V := LinearEquiv.refl _ _
 
 instance [Module.Finite k V] (ρ : Representation k G V) : Module.Finite k ρ.asModule :=
   .equiv ρ.asModuleEquiv.symm
 
 end
 
-/-- A `k`-linear representation of `G` on `V` can be thought of as a module over `k[G]`.
--/
-noncomputable instance : Module k[G] ρ.asModule :=
-  Module.compHom V (asAlgebraHom ρ).toRingHom
+/-- A `k`-linear representation of `G` on `V` can be thought of as a module over `k[G]`. -/
+noncomputable instance : Module (k[G]) ρ.asModule := Module.compHom V (asAlgebraHom ρ).toRingHom
 
 @[simp]
-theorem asModuleEquiv_map_smul (r : k[G]) (x : ρ.asModule) :
-    ρ.asModuleEquiv (r • x) = ρ.asAlgebraHom r (ρ.asModuleEquiv x) :=
+theorem asModuleEquiv_map_smul (r : k[G]) (x : ρ.asModule)
+    : ρ.asModuleEquiv (r • x) = ρ.asAlgebraHom r (ρ.asModuleEquiv x) :=
   rfl
 
-theorem asModuleEquiv_symm_map_smul (r : k) (x : V) :
-    ρ.asModuleEquiv.symm (r • x) = algebraMap k k[G] r • ρ.asModuleEquiv.symm x := by
+theorem asModuleEquiv_symm_map_smul (r : k) (x : V)
+    : ρ.asModuleEquiv.symm (r • x) = algebraMap k (k[G]) r • ρ.asModuleEquiv.symm x := by
   rw [LinearEquiv.symm_apply_eq]
   simp
 
 @[simp]
-theorem asModuleEquiv_symm_map_rho (g : G) (x : V) :
-    ρ.asModuleEquiv.symm (ρ g x) = MonoidAlgebra.of k G g • ρ.asModuleEquiv.symm x := by
+theorem asModuleEquiv_symm_map_rho (g : G) (x : V)
+    : ρ.asModuleEquiv.symm (ρ g x) = MonoidAlgebra.of k G g • ρ.asModuleEquiv.symm x := by
   rw [LinearEquiv.symm_apply_eq]
   simp
 
-/-- Build a `Representation k G M` from a `[Module k[G] M]`.
+/--
+Build a `Representation k G M` from a `[Module k[G] M]`.
 
 This version is not always what we want, as it relies on an existing `[Module k M]` instance,
 along with a `[IsScalarTower k k[G] M]` instance.
@@ -188,21 +179,23 @@ We remedy this below in `ofModule`
 (with the tradeoff that the representation is defined
 only on a type synonym of the original module.)
 -/
-noncomputable def ofModule' (M : Type*) [AddCommMonoid M] [Module k M] [Module k[G] M]
-    [IsScalarTower k k[G] M] : Representation k G M :=
+noncomputable def ofModule'
+    (M : Type*) [AddCommMonoid M] [Module k M] [Module (k[G]) M] [IsScalarTower k (k[G]) M]
+    : Representation k G M :=
   (MonoidAlgebra.lift k (M →ₗ[k] M) G).symm (Algebra.lsmul k k M)
 
 section
 
-variable (M : Type*) [AddCommMonoid M] [Module k[G] M]
+variable (M : Type*) [AddCommMonoid M] [Module (k[G]) M]
 
-/-- Build a `Representation` from a `[Module k[G] M]`.
+/--
+Build a `Representation` from a `[Module k[G] M]`.
 
 Note that the representation is built on `restrictScalars k k[G] M`,
 rather than on `M` itself.
 -/
-noncomputable def ofModule : Representation k G (RestrictScalars k k[G] M) :=
-  (MonoidAlgebra.lift k _ G).symm (RestrictScalars.lsmul k k[G] M)
+noncomputable def ofModule : Representation k G (RestrictScalars k (k[G]) M) :=
+  (MonoidAlgebra.lift k _ G).symm (RestrictScalars.lsmul k (k[G]) M)
 
 /-!
 ## `ofModule` and `asModule` are inverses.
@@ -221,12 +214,10 @@ after we convert to a representation and back to a module,
 we have `Module k[G] (restrictScalars k k[G] M)`.
 -/
 
-
 @[simp]
-theorem ofModule_asAlgebraHom_apply_apply (r : k[G])
-    (m : RestrictScalars k k[G] M) :
-    ((ofModule M).asAlgebraHom r) m =
-      (RestrictScalars.addEquiv _ _ _).symm (r • RestrictScalars.addEquiv _ _ _ m) := by
+theorem ofModule_asAlgebraHom_apply_apply (r : k[G]) (m : RestrictScalars k (k[G]) M)
+    : ((ofModule M).asAlgebraHom r) m
+      = (RestrictScalars.addEquiv _ _ _).symm (r • RestrictScalars.addEquiv _ _ _ m) := by
   apply MonoidAlgebra.induction_on r
   · intro g
     simp only [one_smul, MonoidAlgebra.lift_symm_apply, MonoidAlgebra.of_apply,
@@ -238,29 +229,29 @@ theorem ofModule_asAlgebraHom_apply_apply (r : k[G])
     simp only [w, map_smul, LinearMap.smul_apply, RestrictScalars.addEquiv_symm_map_smul_smul]
 
 @[simp]
-theorem ofModule_asModule_act (g : G) (x : RestrictScalars k k[G] ρ.asModule) :
-    ofModule ρ.asModule g x =
-      (RestrictScalars.addEquiv _ _ _).symm
+theorem ofModule_asModule_act (g : G) (x : RestrictScalars k (k[G]) ρ.asModule)
+    : ofModule ρ.asModule g x
+      = (RestrictScalars.addEquiv _ _ _).symm
         (ρ.asModuleEquiv.symm (ρ g (ρ.asModuleEquiv (RestrictScalars.addEquiv _ _ _ x)))) := by
   dsimp [ofModule, RestrictScalars.lsmul_apply_apply]
   simp
 
-theorem smul_ofModule_asModule (r : k[G]) (m : (ofModule M).asModule) :
-    (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (r • m)) =
-      r • (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (G := G) m) := by
+theorem smul_ofModule_asModule (r : k[G]) (m : (ofModule M).asModule)
+    : (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (r • m))
+      = r • (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (G := G) m) := by
   dsimp
   simp only [AddEquiv.apply_symm_apply, ofModule_asAlgebraHom_apply_apply]
 
 end
 
 @[simp]
-lemma single_smul (t : k) (g : G) (v : ρ.asModule) :
-    MonoidAlgebra.single (g : G) t • v = t • ρ g (ρ.asModuleEquiv v) := by
+lemma single_smul (t : k) (g : G) (v : ρ.asModule)
+    : MonoidAlgebra.single (g : G) t • v = t • ρ g (ρ.asModuleEquiv v) := by
   rw [← LinearMap.smul_apply, ← asAlgebraHom_single, ← asModuleEquiv_map_smul]
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-instance : IsScalarTower k k[G] ρ.asModule where
+instance : IsScalarTower k (k[G]) ρ.asModule where
   smul_assoc t x v := by
     revert t
     apply x.induction_on
@@ -278,8 +269,10 @@ section Norm
 variable {k G V : Type*} [Semiring k] [Group G] [Fintype G] [AddCommMonoid V] [Module k V]
 variable (ρ : Representation k G V)
 
-/-- Given a representation `(V, ρ)` of a finite group `G`, `norm ρ` is the linear map `V →ₗ[k] V`
-defined by `x ↦ ∑ ρ g x` for `g` in `G`. -/
+/--
+Given a representation `(V, ρ)` of a finite group `G`, `norm ρ` is the linear map `V →ₗ[k] V`
+defined by `x ↦ ∑ ρ g x` for `g` in `G`.
+-/
 def norm : Module.End k V := ∑ g : G, ρ g
 
 @[simp]
@@ -304,14 +297,16 @@ end Norm
 
 section Subrepresentation
 
-variable {k G V : Type*} [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V)
+variable
+  {k G V : Type*} [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V] (ρ : Representation k G V)
 
-/-- Given a `k`-linear `G`-representation `(V, ρ)`, this is the representation defined by
-restricting `ρ` to a `G`-invariant `k`-submodule of `V`. -/
+/--
+Given a `k`-linear `G`-representation `(V, ρ)`, this is the representation defined by
+restricting `ρ` to a `G`-invariant `k`-submodule of `V`.
+-/
 @[simps]
-def subrepresentation (W : Submodule k V) (le_comap : ∀ g, W ≤ W.comap (ρ g)) :
-    Representation k G W where
+def subrepresentation (W : Submodule k V) (le_comap : ∀ g, W ≤ W.comap (ρ g))
+    : Representation k G W where
   toFun g := (ρ g).restrict <| le_comap g
   map_one' := by ext; simp
   map_mul' _ _ := by ext; simp
@@ -320,14 +315,16 @@ end Subrepresentation
 
 section Quotient
 
-variable {k G V : Type*} [Ring k] [Monoid G] [AddCommGroup V] [Module k V]
-  (ρ : Representation k G V)
+variable
+  {k G V : Type*} [Ring k] [Monoid G] [AddCommGroup V] [Module k V] (ρ : Representation k G V)
 
-/-- Given a `k`-linear `G`-representation `(V, ρ)` and a `G`-invariant `k`-submodule `W ≤ V`, this
-is the representation induced on `V ⧸ W` by `ρ`. -/
+/--
+Given a `k`-linear `G`-representation `(V, ρ)` and a `G`-invariant `k`-submodule `W ≤ V`, this
+is the representation induced on `V ⧸ W` by `ρ`.
+-/
 @[simps]
-def quotient (W : Submodule k V) (le_comap : ∀ g, W ≤ W.comap (ρ g)) :
-    Representation k G (V ⧸ W) where
+def quotient (W : Submodule k V) (le_comap : ∀ g, W ≤ W.comap (ρ g))
+    : Representation k G (V ⧸ W) where
   toFun g := Submodule.mapQ _ _ (ρ g) <| le_comap g
   map_one' := by ext; simp
   map_mul' _ _ := by ext; simp
@@ -339,18 +336,19 @@ section OfQuotient
 variable {k G V : Type*} [Semiring k] [Group G] [AddCommMonoid V] [Module k V]
 variable (ρ : Representation k G V) (S : Subgroup G)
 
-lemma apply_eq_of_coe_eq [IsTrivial (ρ.comp S.subtype)] (g h : G) (hgh : (g : G ⧸ S) = h) :
-    ρ g = ρ h := by
+lemma apply_eq_of_coe_eq [IsTrivial (ρ.comp S.subtype)] (g h : G) (hgh : (g : G ⧸ S) = h)
+    : ρ g = ρ h := by
   ext x
   refine (apply_bijective ρ g⁻¹).injective.eq_iff.1 ?_
   simpa using (isTrivial_apply (ρ.comp S.subtype) ⟨g⁻¹ * h, QuotientGroup.eq.1 hgh⟩ x).symm
 
 variable [S.Normal]
 
-/-- Given a normal subgroup `S ≤ G`, a `G`-representation `ρ` which is trivial on `S` factors
-through `G ⧸ S`. -/
-def ofQuotient [IsTrivial (ρ.comp S.subtype)] :
-    Representation k (G ⧸ S) V :=
+/--
+Given a normal subgroup `S ≤ G`, a `G`-representation `ρ` which is trivial on `S` factors
+through `G ⧸ S`.
+-/
+def ofQuotient [IsTrivial (ρ.comp S.subtype)] : Representation k (G ⧸ S) V :=
   (QuotientGroup.con S).lift ρ <| by
     rintro x y ⟨⟨z, hz⟩, rfl⟩
     ext w
@@ -358,8 +356,8 @@ def ofQuotient [IsTrivial (ρ.comp S.subtype)] :
     congrm $(ρ.apply_eq_of_coe_eq S _ _ (by simpa)) w
 
 @[simp]
-lemma ofQuotient_coe_apply [IsTrivial (ρ.comp S.subtype)] (g : G) (x : V) :
-    ofQuotient ρ S (g : G ⧸ S) x = ρ g x :=
+lemma ofQuotient_coe_apply [IsTrivial (ρ.comp S.subtype)] (g : G) (x : V)
+    : ofQuotient ρ S (g : G ⧸ S) x = ρ g x :=
   rfl
 
 end OfQuotient
@@ -371,18 +369,22 @@ variable (ρ : Representation k G V)
 
 instance : AddCommGroup ρ.asModule := inferInstanceAs <| AddCommGroup V
 
-/- Given a representation `(V, ρ)` of a monoid `G`, this says
-`(ρ(g) - Id)(x + ρ(g)(x) + ... + ρ(gⁿ)(x)) = ρ(gⁿ⁺¹)(x) - x` for all `n : ℕ, g : G` and `x : V`. -/
-lemma apply_sub_id_partialSum_eq (n : ℕ) (g : G) (x : V) :
-    (ρ g - LinearMap.id (R := k) (M := V)) ((Fin.last _).partialSum
-      (fun (j : Fin (n + 1)) => ρ (g ^ (j : ℕ)) x)) = ρ (g ^ (n + 1)) x - x := by
+/-
+Given a representation `(V, ρ)` of a monoid `G`, this says
+`(ρ(g) - Id)(x + ρ(g)(x) + ... + ρ(gⁿ)(x)) = ρ(gⁿ⁺¹)(x) - x` for all `n : ℕ, g : G` and `x : V`.
+-/
+lemma apply_sub_id_partialSum_eq (n : ℕ) (g : G) (x : V)
+    : (ρ g - LinearMap.id (R := k) (M := V)) ((Fin.last _).partialSum
+        (fun (j : Fin (n + 1)) => ρ (g ^ (j : ℕ)) x))
+      = ρ (g ^ (n + 1)) x - x := by
   induction n with
-  | zero => simp [Fin.partialSum]
+  | zero =>
+    simp [Fin.partialSum]
   | succ n h =>
-    have : Fin.init (fun (j : Fin (n + 2)) => ρ (g ^ (j : ℕ)) x) =
-      fun (j : Fin (n + 1)) => ρ (g ^ (j : ℕ)) x := by ext; simp [Fin.init]
-    rw [← Fin.succ_eq_last_succ.2 rfl, Fin.partialSum_succ, ← Fin.partialSum_init, map_add,
-      this, h]
+    have : Fin.init (fun (j : Fin (n + 2)) => ρ (g ^ (j : ℕ)) x)
+        = fun (j : Fin (n + 1)) => ρ (g ^ (j : ℕ)) x := by
+      ext; simp [Fin.init]
+    rw [← Fin.succ_eq_last_succ.2 rfl, Fin.partialSum_succ, ← Fin.partialSum_init, map_add, this, h]
     simp [pow_succ']
 
 end AddCommGroup
@@ -393,8 +395,9 @@ variable (k : Type*) [Semiring k] (G : Type*) [Monoid G] (H : Type*) [MulAction 
 
 /-- A `G`-action on `H` induces a representation `G →* End(k[H])` in the natural way. -/
 noncomputable def ofMulAction : Representation k G k[H] where
-  toFun g := (coeffLinearEquiv k).symm.toLinearMap ∘ₗ Finsupp.lmapDomain k k (g • ·) ∘ₗ
-    (coeffLinearEquiv k).toLinearMap
+  toFun g :=
+    (coeffLinearEquiv k).symm.toLinearMap ∘ₗ Finsupp.lmapDomain k k (g • ·)
+      ∘ₗ (coeffLinearEquiv k).toLinearMap
   map_one' := by ext; simp
   map_mul' x y := by ext; simp [mul_smul]
 
@@ -406,58 +409,65 @@ noncomputable abbrev diagonal (n : ℕ) := ofMulAction k G (Fin n → G)
 
 variable {k G H}
 
-theorem ofMulAction_def (g : G) :
-    ofMulAction k G H g = (coeffLinearEquiv k).symm.toLinearMap ∘ₗ Finsupp.lmapDomain k k (g • ·) ∘ₗ
-      (coeffLinearEquiv k).toLinearMap := rfl
+theorem ofMulAction_def (g : G)
+    : ofMulAction k G H g
+      = (coeffLinearEquiv k).symm.toLinearMap ∘ₗ Finsupp.lmapDomain k k (g • ·)
+        ∘ₗ (coeffLinearEquiv k).toLinearMap :=
+  rfl
 
 @[simp]
-theorem ofMulAction_single (g : G) (x : H) (r : k) :
-    ofMulAction k G H g (single x r) = single (g • x) r := by simp [ofMulAction_def]
+theorem ofMulAction_single (g : G) (x : H) (r : k)
+    : ofMulAction k G H g (single x r) = single (g • x) r := by
+  simp [ofMulAction_def]
 
 end MulAction
 section DistribMulAction
 
-variable (k G A : Type*) [Semiring k] [Monoid G] [AddCommMonoid A] [Module k A]
-  [DistribMulAction G A] [SMulCommClass G k A]
+variable
+  (k G A : Type*) [Semiring k] [Monoid G] [AddCommMonoid A] [Module k A] [DistribMulAction G A]
+  [SMulCommClass G k A]
 
-/-- Turns a `k`-module `A` with a compatible `DistribMulAction` of a monoid `G` into a
-`k`-linear `G`-representation on `A`. -/
+/--
+Turns a `k`-module `A` with a compatible `DistribMulAction` of a monoid `G` into a
+`k`-linear `G`-representation on `A`.
+-/
 def ofDistribMulAction : Representation k G A where
-  toFun := fun m =>
-    { DistribMulAction.toAddMonoidEnd G A m with
-      map_smul' := smul_comm _ }
+  toFun := fun m => { DistribMulAction.toAddMonoidEnd G A m with map_smul' := smul_comm _ }
   map_one' := by ext; exact one_smul _ _
   map_mul' := by intros; ext; exact mul_smul _ _ _
 
 variable {k G A}
 
-@[simp] theorem ofDistribMulAction_apply_apply (g : G) (a : A) :
-    ofDistribMulAction k G A g a = g • a := rfl
+@[simp]
+theorem ofDistribMulAction_apply_apply (g : G) (a : A) : ofDistribMulAction k G A g a = g • a := rfl
 
 @[simp]
-theorem norm_ofDistribMulAction_eq {G : Type*} [Group G] [Fintype G]
-    [DistribMulAction G A] [SMulCommClass G k A] (x : A) :
-    (ofDistribMulAction k G A).norm x = ∑ g : G, g • x := by
+theorem norm_ofDistribMulAction_eq
+    {G : Type*} [Group G] [Fintype G] [DistribMulAction G A] [SMulCommClass G k A] (x : A)
+    : (ofDistribMulAction k G A).norm x = ∑ g : G, g • x := by
   simp [norm]
 
 end DistribMulAction
 section MulDistribMulAction
 variable (M G : Type*) [Monoid M] [CommGroup G] [MulDistribMulAction M G]
 
-/-- Turns a `CommGroup` `G` with a `MulDistribMulAction` of a monoid `M` into a
-`ℤ`-linear `M`-representation on `Additive G`. -/
+/--
+Turns a `CommGroup` `G` with a `MulDistribMulAction` of a monoid `M` into a
+`ℤ`-linear `M`-representation on `Additive G`.
+-/
 def ofMulDistribMulAction : Representation ℤ M (Additive G) :=
   (addMonoidEndRingEquivInt (Additive G) : AddMonoid.End (Additive G) →* _).comp
     ((MulEquiv.monoidEnd G : _ →* _).comp (MulDistribMulAction.toMonoidEnd M G))
 
-@[simp] theorem ofMulDistribMulAction_apply_apply (g : M) (a : Additive G) :
-    ofMulDistribMulAction M G g a = Additive.ofMul (g • a.toMul) := rfl
+@[simp]
+theorem ofMulDistribMulAction_apply_apply (g : M) (a : Additive G)
+    : ofMulDistribMulAction M G g a = Additive.ofMul (g • a.toMul) :=
+  rfl
 
 @[simp]
-theorem norm_ofMulDistribMulAction_eq {G M : Type*} [Group G] [Fintype G]
-    [CommGroup M] [MulDistribMulAction G M] (x : Additive M) :
-    Additive.toMul ((ofMulDistribMulAction G M).norm x) =
-      ∏ g : G, g • Additive.toMul x := by
+theorem norm_ofMulDistribMulAction_eq
+    {G M : Type*} [Group G] [Fintype G] [CommGroup M] [MulDistribMulAction G M] (x : Additive M)
+    : Additive.toMul ((ofMulDistribMulAction G M).norm x) = ∏ g : G, g • Additive.toMul x := by
   simp [norm]
 
 end MulDistribMulAction
@@ -467,8 +477,8 @@ section
 
 variable {k G : Type*} [Semiring k] [Group G]
 @[simp]
-theorem coeff_ofMulAction {H : Type*} [MulAction G H] (g : G) (f : k[H]) (h : H) :
-    (ofMulAction k G H g f).coeff h = f.coeff (g⁻¹ • h) := by
+theorem coeff_ofMulAction {H : Type*} [MulAction G H] (g : G) (f : k[H]) (h : H)
+    : (ofMulAction k G H g f).coeff h = f.coeff (g⁻¹ • h) := by
   conv_lhs => rw [← smul_inv_smul g h]
   set h' := g⁻¹ • h
   have hg : Function.Injective (g • · : H → H) := by
@@ -479,17 +489,18 @@ theorem coeff_ofMulAction {H : Type*} [MulAction G H] (g : G) (f : k[H]) (h : H)
 @[deprecated (since := "2026-06-18")] alias ofMulAction_apply := coeff_ofMulAction
 
 -- Noncomputable since `MonoidAlgebra.instMul` is now noncomputable
-noncomputable instance : HMul k[G] (ofMulAction k G G).asModule k[G] where
+noncomputable instance : HMul (k[G]) (ofMulAction k G G).asModule k[G] where
   hMul x y := x * (ofMulAction k G G).asModuleEquiv y
 
 end
 
-variable {k G V : Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
+variable
+  {k G V : Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V)
 
 @[simp]
-lemma asAlgebraHom_ofMulAction_smul_eq_mul (x y : k[G]) :
-    (ofMulAction k G G).asAlgebraHom x y = x * y := by
+lemma asAlgebraHom_ofMulAction_smul_eq_mul (x y : k[G])
+    : (ofMulAction k G G).asAlgebraHom x y = x * y := by
   induction x using induction_on with
   | of g => ext; simp [MonoidAlgebra.coeff_single_mul_apply]
   | add x y hx hy => simp [hx, hy, add_mul]
@@ -498,19 +509,21 @@ lemma asAlgebraHom_ofMulAction_smul_eq_mul (x y : k[G]) :
 @[deprecated (since := "2026-06-18")]
 alias ofMulAction_self_smul_eq_mul := asAlgebraHom_ofMulAction_smul_eq_mul
 
-/-- If we equip `k[G]` with the `k`-linear `G`-representation induced by the left regular action of
+/--
+If we equip `k[G]` with the `k`-linear `G`-representation induced by the left regular action of
 `G` on itself, the resulting object is isomorphic as a `k[G]`-module to `k[G]` with its natural
-`k[G]`-module structure. -/
+`k[G]`-module structure.
+-/
 @[simps]
 noncomputable def ofMulActionSelfAsModuleEquiv : (ofMulAction k G G).asModule ≃ₗ[k[G]] k[G] where
   toAddEquiv := (asModuleEquiv _).toAddEquiv
   map_smul' := by simp
 
-/-- When `G` is a group, a `k`-linear representation of `G` on `V` can be thought of as
+/--
+When `G` is a group, a `k`-linear representation of `G` on `V` can be thought of as
 a group homomorphism from `G` into the invertible `k`-linear endomorphisms of `V`.
 -/
-def asGroupHom : G →* Units (V →ₗ[k] V) :=
-  MonoidHom.toHomUnits ρ
+def asGroupHom : G →* Units (V →ₗ[k] V) := MonoidHom.toHomUnits ρ
 
 theorem asGroupHom_apply (g : G) : ↑(asGroupHom ρ g) = ρ g := by
   simp only [asGroupHom, MonoidHom.coe_toHomUnits]
@@ -521,16 +534,16 @@ variable [Fintype G]
 
 open Finsupp
 
-lemma leftRegular_norm_apply :
-    (leftRegular k G).norm =
-      (LinearMap.lsmul k _).flip ((leftRegular k G).norm (single 1 1)) ∘ₗ
-      linearCombination _ (fun _ => 1) ∘ₗ (coeffLinearEquiv _).toLinearMap := by
+lemma leftRegular_norm_apply
+    : (leftRegular k G).norm
+      = (LinearMap.lsmul k _).flip ((leftRegular k G).norm (single 1 1))
+        ∘ₗ linearCombination _ (fun _ => 1) ∘ₗ (coeffLinearEquiv _).toLinearMap := by
   ext i : 2
-  simpa [Representation.norm] using Finset.sum_bijective _
-    (Group.mulRight_bijective i) (by simp) (by simp)
+  simpa [Representation.norm] using
+    Finset.sum_bijective _ (Group.mulRight_bijective i) (by simp) (by simp)
 
-lemma leftRegular_norm_eq_zero_iff (x : k[G]) :
-    (leftRegular k G).norm x = 0 ↔ x.coeff.linearCombination k (fun _ => (1 : k)) = 0 := by
+lemma leftRegular_norm_eq_zero_iff (x : k[G])
+    : (leftRegular k G).norm x = 0 ↔ x.coeff.linearCombination k (fun _ => (1 : k)) = 0 := by
   rw [leftRegular_norm_apply]
   constructor
   · rw [MonoidAlgebra.ext_iff, Finsupp.ext_iff]
@@ -540,22 +553,24 @@ lemma leftRegular_norm_eq_zero_iff (x : k[G]) :
     ext
     simp_all
 
-lemma ker_leftRegular_norm_eq :
-    LinearMap.ker (leftRegular k G).norm = LinearMap.ker
-      (linearCombination k (fun _ => (1 : k)) ∘ₗ (coeffLinearEquiv _).toLinearMap) := by
+lemma ker_leftRegular_norm_eq
+    : LinearMap.ker (leftRegular k G).norm
+      = LinearMap.ker
+        (linearCombination k (fun _ => (1 : k)) ∘ₗ (coeffLinearEquiv _).toLinearMap) := by
   ext
   exact leftRegular_norm_eq_zero_iff _
 
 end Finite
 section Cyclic
 
-lemma coeff_of_leftRegular_of_generator (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g)
-    (x : k[G]) (hx : leftRegular k G g x = x) (γ : G) :
-    x.coeff γ = x.coeff g := by
+lemma coeff_of_leftRegular_of_generator
+    (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g) (x : k[G]) (hx : leftRegular k G g x = x) (γ : G)
+    : x.coeff γ = x.coeff g := by
   rw [MonoidAlgebra.ext_iff, Finsupp.ext_iff] at hx
   rcases hg γ with ⟨i, rfl⟩
   induction i with
-  | zero => simpa using hx g
+  | zero =>
+    simpa using hx g
   | succ n h =>
     simpa [← h, zpow_natCast, zpow_add_one, pow_mul_comm', pow_succ'] using (hx (g ^ (n + 1))).symm
   | pred n h =>
@@ -576,7 +591,8 @@ variable (ρ : (i : ι) → Representation k G (V i))
 
 open DirectSum
 
-/-- Given representations of `G` on a family `V i` indexed by `i`, there is a
+/--
+Given representations of `G` on a family `V i` indexed by `i`, there is a
 natural representation of `G` on their direct sum `⨁ i, V i`.
 -/
 @[simps]
@@ -593,7 +609,8 @@ variable {k G V W : Type*} [Semiring k] [Monoid G]
 variable [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
 variable (ρV : Representation k G V) (ρW : Representation k G W)
 
-/-- Given representations of `G` on `V` and `W`, there is a natural representation of `G` on their
+/--
+Given representations of `G` on `V` and `W`, there is a natural representation of `G` on their
 product `V × W`.
 -/
 @[simps!]
@@ -612,7 +629,8 @@ variable (ρV : Representation k G V) (ρW : Representation k G W)
 
 open TensorProduct
 
-/-- Given representations of `G` on `V` and `W`, there is a natural representation of `G` on their
+/--
+Given representations of `G` on `V` and `W`, there is a natural representation of `G` on their
 tensor product `V ⊗[k] W`.
 -/
 noncomputable def tprod : Representation k G (V ⊗[k] W) where
@@ -622,20 +640,18 @@ noncomputable def tprod : Representation k G (V ⊗[k] W) where
 
 local notation ρV " ⊗ " ρW => tprod ρV ρW
 
-@[simp]
-theorem tprod_apply (g : G) : (ρV ⊗ ρW) g = TensorProduct.map (ρV g) (ρW g) :=
-  rfl
+@[simp] theorem tprod_apply (g : G) : (ρV ⊗ ρW) g = TensorProduct.map (ρV g) (ρW g) := rfl
 
-theorem smul_tprod_one_asModule (r : k[G]) (x : V) (y : W) :
-    r • (show (ρV.tprod 1).asModule from x ⊗ₜ y) = (r • show ρV.asModule from x) ⊗ₜ y := by
+theorem smul_tprod_one_asModule (r : k[G]) (x : V) (y : W)
+    : r • (show (ρV.tprod 1).asModule from x ⊗ₜ y) = (r • show ρV.asModule from x) ⊗ₜ y := by
   change asAlgebraHom (ρV ⊗ 1) _ _ = asAlgebraHom ρV _ _ ⊗ₜ _
   simp only [asAlgebraHom_def, MonoidAlgebra.lift_apply, tprod_apply, MonoidHom.one_apply,
     LinearMap.finsupp_sum_apply, LinearMap.smul_apply, TensorProduct.map_tmul, Module.End.one_apply]
   simp only [Finsupp.sum, TensorProduct.sum_tmul]
   rfl
 
-theorem smul_one_tprod_asModule (r : k[G]) (x : V) (y : W) :
-    r • (show (1 ⊗ ρW).asModule from x ⊗ₜ y) = x ⊗ₜ (r • show ρW.asModule from y) := by
+theorem smul_one_tprod_asModule (r : k[G]) (x : V) (y : W)
+    : r • (show (1 ⊗ ρW).asModule from x ⊗ₜ y) = x ⊗ₜ (r • show ρW.asModule from y) := by
   change asAlgebraHom (1 ⊗ ρW) _ _ = _ ⊗ₜ asAlgebraHom ρW _ _
   simp only [asAlgebraHom_def, MonoidAlgebra.lift_apply, tprod_apply, MonoidHom.one_apply,
     LinearMap.finsupp_sum_apply, LinearMap.smul_apply, TensorProduct.map_tmul, Module.End.one_apply]
@@ -649,80 +665,82 @@ variable {k G V W : Type*} [CommSemiring k] [Group G]
 variable [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
 variable (ρV : Representation k G V) (ρW : Representation k G W)
 
-/-- Given representations of `G` on `V` and `W`, there is a natural representation of `G` on the
+/--
+Given representations of `G` on `V` and `W`, there is a natural representation of `G` on the
 module `V →ₗ[k] W`, where `G` acts by conjugation.
 -/
 def linHom : Representation k G (V →ₗ[k] W) where
-  toFun g :=
-    { toFun := fun f => ρW g ∘ₗ f ∘ₗ ρV g⁻¹
-      map_add' := fun f₁ f₂ => by simp_rw [add_comp, comp_add]
-      map_smul' := fun r f => by simp_rw [RingHom.id_apply, smul_comp, comp_smul] }
+  toFun g := {
+    toFun := fun f => ρW g ∘ₗ f ∘ₗ ρV g⁻¹
+    map_add' := fun f₁ f₂ => by simp_rw [add_comp, comp_add]
+    map_smul' := fun r f => by simp_rw [RingHom.id_apply, smul_comp, comp_smul]
+  }
   map_one' := ext fun x => by simp [Module.End.one_eq_id]
   map_mul' g h := ext fun x => by simp [Module.End.mul_eq_comp, comp_assoc]
 
 @[simp]
-theorem linHom_apply (g : G) (f : V →ₗ[k] W) : (linHom ρV ρW) g f = ρW g ∘ₗ f ∘ₗ ρV g⁻¹ :=
-  rfl
+theorem linHom_apply (g : G) (f : V →ₗ[k] W) : (linHom ρV ρW) g f = ρW g ∘ₗ f ∘ₗ ρV g⁻¹ := rfl
 
-/-- The dual of a representation `ρ` of `G` on a module `V`, given by `(dual ρ) g f = f ∘ₗ (ρ g⁻¹)`,
+/--
+The dual of a representation `ρ` of `G` on a module `V`, given by `(dual ρ) g f = f ∘ₗ (ρ g⁻¹)`,
 where `f : Module.Dual k V`.
 -/
 def dual : Representation k G (Module.Dual k V) where
-  toFun g :=
-    { toFun := fun f => f ∘ₗ ρV g⁻¹
-      map_add' := fun f₁ f₂ => by simp only [add_comp]
-      map_smul' r f := by ext; simp }
+  toFun g := {
+    toFun := fun f => f ∘ₗ ρV g⁻¹
+    map_add' := fun f₁ f₂ => by simp only [add_comp]
+    map_smul' r f := by ext; simp
+  }
   map_one' := by ext; simp
   map_mul' g h := by ext; simp
 
-@[simp]
-theorem dual_apply (g : G) : (dual ρV) g = Module.Dual.transpose (R := k) (ρV g⁻¹) :=
-  rfl
+@[simp] theorem dual_apply (g : G) : (dual ρV) g = Module.Dual.transpose (R := k) (ρV g⁻¹) := rfl
 
-/-- Given $k$-modules $V, W$, there is a homomorphism $φ : V^* ⊗ W → Hom_k(V, W)$
+/--
+Given $k$-modules $V, W$, there is a homomorphism $φ : V^* ⊗ W → Hom_k(V, W)$
 (implemented by `dualTensorHom` in `Mathlib/LinearAlgebra/Contraction.lean`).
 Given representations of $G$ on $V$ and $W$,there are representations of $G$ on $V^* ⊗ W$ and on
 $Hom_k(V, W)$.
 This lemma says that $φ$ is $G$-linear.
 -/
-theorem dualTensorHom_comm (g : G) :
-    dualTensorHom k V W ∘ₗ TensorProduct.map (ρV.dual g) (ρW g) =
-      (linHom ρV ρW) g ∘ₗ dualTensorHom k V W := by
+theorem dualTensorHom_comm (g : G)
+    : dualTensorHom k V W ∘ₗ TensorProduct.map (ρV.dual g) (ρW g)
+      = (linHom ρV ρW) g ∘ₗ dualTensorHom k V W := by
   ext; simp [Module.Dual.transpose_apply]
 
 end LinearHom
 
 section
 
-variable {k G : Type*} [CommSemiring k] [Monoid G] {α A : Type*}
-  [AddCommMonoid A] [Module k A] (ρ : Representation k G A)
+variable
+  {k G : Type*} [CommSemiring k] [Monoid G]
+  {α A : Type*} [AddCommMonoid A] [Module k A]
+  (ρ : Representation k G A)
 
 open Finsupp
 
 /-- The representation on `α →₀ A` defined pointwise by a representation on `A`. -/
 @[simps -isSimp]
-noncomputable def finsupp (α : Type*) :
-    Representation k G (α →₀ A) where
+noncomputable def finsupp (α : Type*) : Representation k G (α →₀ A) where
   toFun g := lsum k fun i => (Finsupp.lsingle i).comp (ρ g)
   map_one' := lhom_ext (fun _ _ => by simp)
   map_mul' _ _ := lhom_ext (fun _ _ => by simp)
 
 @[simp]
-lemma finsupp_single (g : G) (x : α) (a : A) :
-    ρ.finsupp α g (single x a) = single x (ρ g a) := by
+lemma finsupp_single (g : G) (x : α) (a : A) : ρ.finsupp α g (single x a) = single x (ρ g a) := by
   simp [finsupp_apply]
 
 /-- The representation on `α →₀ k[G]` defined pointwise by the left regular representation. -/
-noncomputable abbrev free (k G : Type*) [CommSemiring k] [Monoid G] (α : Type*) :
-    Representation k G (α →₀ k[G]) :=
+noncomputable abbrev free (k G : Type*) [CommSemiring k] [Monoid G] (α : Type*)
+    : Representation k G (α →₀ k[G]) :=
   finsupp (leftRegular k G) α
 
-noncomputable instance (k G : Type*) [CommRing k] [Monoid G] (α : Type*) :
-    AddCommGroup (free k G α).asModule :=
+noncomputable instance (k G : Type*) [CommRing k] [Monoid G] (α : Type*)
+    : AddCommGroup (free k G α).asModule :=
   inferInstanceAs <| AddCommGroup (α →₀ k[G])
 
-lemma free_single_single (g h : G) (i : α) (r : k) :
-    free k G α g (single i (single h r)) = .single i (single (g * h) r) := by
+lemma free_single_single (g h : G) (i : α) (r : k)
+    : free k G α g (single i (single h r)) = .single i (single (g * h) r) := by
   simp
 
 variable (k G) (α : Type*)
@@ -735,23 +753,27 @@ noncomputable def finsuppLEquivFreeAsModule : (α →₀ k[G]) ≃ₗ[k[G]] (fre
       (free k G α).asModuleEquiv.symm_apply_eq, asModuleEquiv_map_smul,
       LinearEquiv.apply_symm_apply]
     induction x using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add => simp [*, add_smul]
+    | zero =>
+      simp
+    | add =>
+      simp [*, add_smul]
     | single g a =>
-    induction y using Finsupp.induction_linear with
-    | zero => simp
-    | add => simp [*]
-    | single h y =>
-    induction y using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add => simp [*]
-    | single i b => simp
+      induction y using Finsupp.induction_linear with
+      | zero =>
+        simp
+      | add =>
+        simp [*]
+      | single h y =>
+        induction y using MonoidAlgebra.induction_linear with
+        | zero => simp
+        | add => simp [*]
+        | single i b => simp
 
 /-- `α` gives a `k[G]`-basis of the representation `free k G α`. -/
-noncomputable def freeAsModuleBasis : Basis α k[G] (free k G α).asModule where
+noncomputable def freeAsModuleBasis : Basis α (k[G]) (free k G α).asModule where
   repr := (finsuppLEquivFreeAsModule k G α).symm
 
-theorem free_asModule_free : Module.Free k[G] (free k G α).asModule :=
+theorem free_asModule_free : Module.Free (k[G]) (free k G α).asModule :=
   Module.Free.of_basis (freeAsModuleBasis k G α)
 
 end

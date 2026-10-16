@@ -23,7 +23,6 @@ having to supply instances or delay with non-defeq conflicts between instances.
 
 public section
 
-
 universe w v u
 
 noncomputable section
@@ -33,8 +32,7 @@ namespace CategoryTheory
 instance discreteFintype {α : Type*} [Fintype α] : Fintype (Discrete α) :=
   Fintype.ofEquiv α discreteEquiv.symm
 
-instance {α : Type*} [Finite α] : Finite (Discrete α) :=
-  Finite.of_equiv α discreteEquiv.symm
+instance {α : Type*} [Finite α] : Finite (Discrete α) := Finite.of_equiv α discreteEquiv.symm
 
 @[no_expose]
 instance discreteHomFintype {α : Type*} (X Y : Discrete α) : Fintype (X ⟶ Y) := .ofFinite _
@@ -53,16 +51,15 @@ instance {J : Type u} [Fintype J] [SmallCategory J] [Quiver.IsThin J] : FinCateg
 
 open Opposite
 
-/-- The opposite of a finite category is finite.
--/
+/-- The opposite of a finite category is finite. -/
 instance finCategoryOpposite {J : Type v} [SmallCategory J] [FinCategory J] : FinCategory Jᵒᵖ where
   fintypeObj := Fintype.ofEquiv _ equivToOpposite
   fintypeHom j j' := Fintype.ofEquiv _ (opEquiv j j').symm
 
 attribute [local instance] uliftCategory in
 /-- Applying `ULift` to morphisms and objects of a category preserves finiteness. -/
-instance finCategoryUlift {J : Type v} [SmallCategory J] [FinCategory J] :
-    FinCategory.{max w v} (ULiftHom.{w, max w v} (ULift.{w, v} J)) where
+instance finCategoryUlift {J : Type v} [SmallCategory J] [FinCategory J]
+    : FinCategory.{max w v} (ULiftHom.{w, max w v} (ULift.{w, v} J)) where
   fintypeObj := ULift.fintype J
   fintypeHom := fun _ _ => ULift.fintype _
 

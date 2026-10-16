@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Variables
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-
 import Mathlib.Data.Finsupp.Notation
 import Mathlib.Data.Finsupp.WellFounded
 import Mathlib.RingTheory.MvPolynomial.Tower
@@ -65,7 +64,8 @@ namespace Fin
 section accumulate
 
 /-- The `j`th entry of `accumulate n m t` is the sum of `t i` over all `i ≥ j`. -/
-@[simps] def accumulate (n m : ℕ) : (Fin n → ℕ) →+ (Fin m → ℕ) where
+@[simps]
+def accumulate (n m : ℕ) : (Fin n → ℕ) →+ (Fin m → ℕ) where
   toFun t j := ∑ i : Fin n with j.val ≤ i.val, t i
   map_zero' := funext <| fun _ ↦ sum_eq_zero <| fun _ _ ↦ rfl
   map_add' _ _ := funext <| fun _ ↦ sum_add_distrib
@@ -74,8 +74,8 @@ section accumulate
 def invAccumulate (n m : ℕ) (s : Fin m → ℕ) (i : Fin n) : ℕ :=
   (if hi : i < m then s ⟨i, hi⟩ else 0) - (if hi : i + 1 < m then s ⟨i + 1, hi⟩ else 0)
 
-lemma accumulate_rec {i n m : ℕ} (hin : i < n) (him : i + 1 < m) (t : Fin n → ℕ) :
-    accumulate n m t ⟨i, Nat.lt_of_succ_lt him⟩ = t ⟨i, hin⟩ + accumulate n m t ⟨i + 1, him⟩ := by
+lemma accumulate_rec {i n m : ℕ} (hin : i < n) (him : i + 1 < m) (t : Fin n → ℕ)
+    : accumulate n m t ⟨i, Nat.lt_of_succ_lt him⟩ = t ⟨i, hin⟩ + accumulate n m t ⟨i + 1, him⟩ := by
   simp_rw [accumulate_apply]
   convert (add_sum_erase _ _ _).symm
   · ext
@@ -84,9 +84,9 @@ lemma accumulate_rec {i n m : ℕ} (hin : i < n) (him : i + 1 < m) (t : Fin n �
     rw [and_comm, ne_comm, ← Fin.val_ne_iff]
   · exact mem_filter.2 ⟨mem_univ _, le_rfl⟩
 
-lemma accumulate_last {i n m : ℕ} (hin : i < n) (hmi : m = i + 1) (t : Fin n → ℕ)
-    (ht : ∀ j : Fin n, m ≤ j → t j = 0) :
-    accumulate n m t ⟨i, i.lt_succ_self.trans_eq hmi.symm⟩ = t ⟨i, hin⟩ := by
+lemma accumulate_last
+    {i n m : ℕ} (hin : i < n) (hmi : m = i + 1) (t : Fin n → ℕ) (ht : ∀ j : Fin n, m ≤ j → t j = 0)
+    : accumulate n m t ⟨i, i.lt_succ_self.trans_eq hmi.symm⟩ = t ⟨i, hin⟩ := by
   rw [accumulate_apply]
   apply sum_eq_single_of_mem
   · rw [mem_filter]; exact ⟨mem_univ _, le_rfl⟩
@@ -101,23 +101,26 @@ lemma accumulate_injective {n m} (hnm : n ≤ m) : Function.Injective (accumulat
     rwa [← he, accumulate_rec i.2 h t, add_right_cancel_iff] at this
   · have := h.antisymm (i.2.nat_succ_le.trans hnm)
     rw [← accumulate_last i.2 this t, ← accumulate_last i.2 this s, he]
-    iterate 2 { intro j hj; exact ((j.2.trans_le hnm).not_ge hj).elim }
+    iterate 2 {
+      intro j hj; exact ((j.2.trans_le hnm).not_ge hj).elim
+    }
 
-lemma accumulate_invAccumulate {n m} (hmn : m ≤ n) {s : Fin m → ℕ} (hs : Antitone s) :
-    accumulate n m (invAccumulate n m s) = s := funext <| fun ⟨i, hi⟩ ↦ by
-  have := Nat.le_sub_one_of_lt hi
-  revert hi
-  refine Nat.decreasingInduction' (fun i hi _ ih him ↦ ?_) this fun hm ↦ ?_
-  · rw [← Nat.pred_eq_sub_one, Nat.lt_pred_iff, Nat.succ_eq_add_one] at hi
-    rw [accumulate_rec (him.trans_le hmn) hi, ih hi, invAccumulate, dite_eq_left him,
-      dite_eq_left hi]
-    simp only
-    exact Nat.sub_add_cancel (hs i.le_succ)
-  · have := (Nat.sub_one_add_one <| Nat.ne_zero_of_lt hm).symm
-    rw [accumulate_last (hm.trans_le hmn) this, invAccumulate, dite_eq_left hm,
-      dite_eq_right this.not_gt, Nat.sub_zero]
-    intro j hj
-    rw [invAccumulate, dite_eq_right hj.not_gt, Nat.zero_sub]
+lemma accumulate_invAccumulate {n m} (hmn : m ≤ n) {s : Fin m → ℕ} (hs : Antitone s)
+    : accumulate n m (invAccumulate n m s) = s :=
+  funext <| fun ⟨i, hi⟩ ↦ by
+    have := Nat.le_sub_one_of_lt hi
+    revert hi
+    refine Nat.decreasingInduction' (fun i hi _ ih him ↦ ?_) this fun hm ↦ ?_
+    · rw [← Nat.pred_eq_sub_one, Nat.lt_pred_iff, Nat.succ_eq_add_one] at hi
+      rw [accumulate_rec (him.trans_le hmn) hi, ih hi, invAccumulate, dite_eq_left him,
+        dite_eq_left hi]
+      simp only
+      exact Nat.sub_add_cancel (hs i.le_succ)
+    · have := (Nat.sub_one_add_one <| Nat.ne_zero_of_lt hm).symm
+      rw [accumulate_last (hm.trans_le hmn) this, invAccumulate, dite_eq_left hm,
+        dite_eq_right this.not_gt, Nat.sub_zero]
+      intro j hj
+      rw [invAccumulate, dite_eq_right hj.not_gt, Nat.zero_sub]
 
 end accumulate
 
@@ -132,61 +135,66 @@ section CommSemiring
 variable [CommSemiring R] [Fintype σ] [Fintype τ]
 
 variable (σ R n) in
-/-- The `R`-algebra homomorphism from $R[x_1,\dots,x_n]$ to the symmetric subalgebra of
-  $R[\{x_i \mid i ∈ σ\}]$ sending $x_i$ to the $i$-th elementary symmetric polynomial. -/
-noncomputable def esymmAlgHom :
-    MvPolynomial (Fin n) R →ₐ[R] symmetricSubalgebra σ R :=
+/--
+The `R`-algebra homomorphism from $R[x_1,\dots,x_n]$ to the symmetric subalgebra of
+$R[\{x_i \mid i ∈ σ\}]$ sending $x_i$ to the $i$-th elementary symmetric polynomial.
+-/
+noncomputable def esymmAlgHom : MvPolynomial (Fin n) R →ₐ[R] symmetricSubalgebra σ R :=
   aeval (fun i ↦ ⟨esymm σ R (i + 1), esymm_isSymmetric σ R _⟩)
 
-lemma esymmAlgHom_apply (p : MvPolynomial (Fin n) R) :
-    (esymmAlgHom σ R n p).val = aeval (fun i : Fin n ↦ esymm σ R (i + 1)) p :=
+lemma esymmAlgHom_apply (p : MvPolynomial (Fin n) R)
+    : (esymmAlgHom σ R n p).val = aeval (fun i : Fin n ↦ esymm σ R (i + 1)) p :=
   (Subalgebra.mvPolynomial_aeval_coe _ _ _).symm
 
-lemma rename_esymmAlgHom (e : σ ≃ τ) :
-    (renameSymmetricSubalgebra e).toAlgHom.comp (esymmAlgHom σ R n) = esymmAlgHom τ R n := by
+lemma rename_esymmAlgHom (e : σ ≃ τ)
+    : (renameSymmetricSubalgebra e).toAlgHom.comp (esymmAlgHom σ R n) = esymmAlgHom τ R n := by
   ext i : 2
   simp_rw [AlgHom.comp_apply, esymmAlgHom, aeval_X, AlgEquiv.coe_toAlgHom,
     renameSymmetricSubalgebra_apply_coe, rename_esymm]
 
 variable (σ) in
 /-- The image of a monomial under `esymmAlgHom`. -/
-noncomputable def esymmAlgHomMonomial (t : Fin n →₀ ℕ) (r : R) :
-    MvPolynomial σ R := (esymmAlgHom σ R n <| monomial t r).val
+noncomputable def esymmAlgHomMonomial (t : Fin n →₀ ℕ) (r : R) : MvPolynomial σ R :=
+  (esymmAlgHom σ R n <| monomial t r).val
 
 variable {i : Fin n} {r : R}
 
-lemma isSymmetric_esymmAlgHomMonomial (t : Fin n →₀ ℕ) (r : R) :
-    (esymmAlgHomMonomial σ t r).IsSymmetric := (esymmAlgHom _ _ _ _).2
+lemma isSymmetric_esymmAlgHomMonomial (t : Fin n →₀ ℕ) (r : R)
+    : (esymmAlgHomMonomial σ t r).IsSymmetric :=
+  (esymmAlgHom _ _ _ _).2
 
-lemma esymmAlgHomMonomial_single :
-    esymmAlgHomMonomial σ (Finsupp.single i k) r = C r * esymm σ R (i + 1) ^ k := by
+lemma esymmAlgHomMonomial_single
+    : esymmAlgHomMonomial σ (Finsupp.single i k) r = C r * esymm σ R (i + 1) ^ k := by
   rw [esymmAlgHomMonomial, esymmAlgHom_apply, aeval_monomial, algebraMap_eq,
     Finsupp.prod_single_index]
   exact pow_zero _
 
-lemma esymmAlgHomMonomial_single_one :
-    esymmAlgHomMonomial σ (Finsupp.single i k) 1 = esymm σ R (i + 1) ^ k := by
+lemma esymmAlgHomMonomial_single_one
+    : esymmAlgHomMonomial σ (Finsupp.single i k) 1 = esymm σ R (i + 1) ^ k := by
   rw [esymmAlgHomMonomial_single, map_one, one_mul]
 
-lemma esymmAlgHomMonomial_add {t s : Fin n →₀ ℕ} :
-    esymmAlgHomMonomial σ (t + s) r = esymmAlgHomMonomial σ t r * esymmAlgHomMonomial σ s 1 := by
+lemma esymmAlgHomMonomial_add {t s : Fin n →₀ ℕ}
+    : esymmAlgHomMonomial σ (t + s) r = esymmAlgHomMonomial σ t r * esymmAlgHomMonomial σ s 1 := by
   simp_rw [esymmAlgHomMonomial, esymmAlgHom_apply, ← map_mul, monomial_mul_monomial, mul_one]
 
 lemma esymmAlgHom_zero : esymmAlgHomMonomial σ (0 : Fin n →₀ ℕ) r = C r := by
   rw [esymmAlgHomMonomial, monomial_zero', esymmAlgHom_apply, aeval_C, algebraMap_eq]
 
-private lemma supDegree_monic_esymm [Nontrivial R] {i : ℕ} (him : i < m) :
-    supDegree toLex (esymm (Fin m) R (i + 1)) =
-      toLex (Finsupp.indicator (Iic ⟨i, him⟩) fun _ _ ↦ 1) ∧
-    Monic toLex (esymm (Fin m) R (i + 1)) := by
-  have := supDegree_leadingCoeff_sum_eq (D := toLex) (s := univ.powersetCard (i + 1))
-    (i := Iic (⟨i, him⟩ : Fin m)) ?_ (f := fun s ↦ monomial (∑ j ∈ s, fun₀ | j => 1) (1 : R)) ?_
+private lemma supDegree_monic_esymm [Nontrivial R] {i : ℕ} (him : i < m)
+    : supDegree toLex (esymm (Fin m) R (i + 1))
+        = toLex (Finsupp.indicator (Iic ⟨i, him⟩) fun _ _ ↦ 1)
+      ∧ Monic toLex (esymm (Fin m) R (i + 1)) := by
+  have :=
+    supDegree_leadingCoeff_sum_eq (D := toLex) (s := univ.powersetCard (i + 1))
+      (i := Iic (⟨i, him⟩ : Fin m)) ?_
+      (f := fun s ↦ monomial (∑ j ∈ s, fun₀ | j => 1) (1 : R))
+      ?_
   · rwa [← esymm_eq_sum_monomial, ← Finsupp.indicator_eq_sum_single, ← single_eq_monomial,
-      supDegree_single_ne_zero _ one_ne_zero, leadingCoeff_single toLex.injective] at this
+        supDegree_single_ne_zero _ one_ne_zero, leadingCoeff_single toLex.injective]
+      at this
   · exact mem_powersetCard.2 ⟨subset_univ _, Fin.card_Iic _⟩
   intro t ht hne
-  have ht' : #t = #(Iic (⟨i, him⟩ : Fin m)) := by
-    rw [(mem_powersetCard.1 ht).2, Fin.card_Iic]
+  have ht' : #t = #(Iic (⟨i, him⟩ : Fin m)) := by rw [(mem_powersetCard.1 ht).2, Fin.card_Iic]
   simp_rw [← single_eq_monomial, supDegree_single_ne_zero _ one_ne_zero,
     ← Finsupp.indicator_eq_sum_single]
   rw [ne_comm, Ne, ← subset_iff_eq_of_card_le ht'.le, not_subset] at hne
@@ -200,8 +208,8 @@ private lemma supDegree_monic_esymm [Nontrivial R] {i : ℕ} (him : i < m) :
     exact lt_irrefl k <| ((lt_min'_iff _ _).1 hk) _ <| mem_sdiff.2 ⟨hki, h⟩
   · rw [dite_eq_right hkm.2, dite_eq_left hkm.1]; exact Nat.zero_lt_one
 
-lemma supDegree_esymm [Nontrivial R] (him : i < m) :
-    ofLex (supDegree toLex <| esymm (Fin m) R (i + 1)) = accumulate n m (Finsupp.single i 1) := by
+lemma supDegree_esymm [Nontrivial R] (him : i < m)
+    : ofLex (supDegree toLex <| esymm (Fin m) R (i + 1)) = accumulate n m (Finsupp.single i 1) := by
   rw [(supDegree_monic_esymm him).1, ofLex_toLex]
   ext j
   simp_rw [Finsupp.indicator_apply, dite_eq_ite, mem_Iic, accumulate_apply, Finsupp.single_apply,
@@ -216,36 +224,38 @@ lemma monic_esymm {i : ℕ} (him : i ≤ m) : Monic toLex (esymm (Fin m) R i) :=
     nontriviality R
     exact (supDegree_monic_esymm him).2
 
-lemma leadingCoeff_esymmAlgHomMonomial (t : Fin n →₀ ℕ) (hnm : n ≤ m) :
-    leadingCoeff toLex (esymmAlgHomMonomial (Fin m) t r) = r := by
+lemma leadingCoeff_esymmAlgHomMonomial (t : Fin n →₀ ℕ) (hnm : n ≤ m)
+    : leadingCoeff toLex (esymmAlgHomMonomial (Fin m) t r) = r := by
   induction t using Finsupp.induction₂ with
-  | zero => rw [esymmAlgHom_zero, leadingCoeff_toLex_C]
+  | zero =>
+    rw [esymmAlgHom_zero, leadingCoeff_toLex_C]
   | add_single i _ _ _ _ ih =>
     rw [esymmAlgHomMonomial_add, esymmAlgHomMonomial_single_one,
-        ((monic_esymm <| i.2.trans_le hnm).pow toLex_add toLex.injective).leadingCoeff_mul_eq_left,
-        ih]
+      ((monic_esymm <| i.2.trans_le hnm).pow toLex_add toLex.injective).leadingCoeff_mul_eq_left,
+      ih]
     exacts [toLex.injective, toLex_add]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma supDegree_esymmAlgHomMonomial (hr : r ≠ 0) (t : Fin n →₀ ℕ) (hnm : n ≤ m) :
-    ofLex (supDegree toLex <| esymmAlgHomMonomial (Fin m) t r) = accumulate n m t := by
+lemma supDegree_esymmAlgHomMonomial (hr : r ≠ 0) (t : Fin n →₀ ℕ) (hnm : n ≤ m)
+    : ofLex (supDegree toLex <| esymmAlgHomMonomial (Fin m) t r) = accumulate n m t := by
   nontriviality R
   induction t using Finsupp.induction₂ with
-  | zero => simp_rw [esymmAlgHom_zero, supDegree_toLex_C, ofLex_zero, Finsupp.coe_zero, map_zero]
+  | zero =>
+    simp_rw [esymmAlgHom_zero, supDegree_toLex_C, ofLex_zero, Finsupp.coe_zero, map_zero]
   | add_single i _ _ _ _ ih =>
     have := i.2.trans_le hnm
     rw [esymmAlgHomMonomial_add, esymmAlgHomMonomial_single_one,
-        Monic.supDegree_mul_of_ne_zero_left toLex.injective toLex_add, ofLex_add, Finsupp.coe_add,
-        ih, Finsupp.coe_add, map_add, Monic.supDegree_pow rfl toLex_add toLex.injective, ofLex_smul,
-        Finsupp.coe_smul, supDegree_esymm this, ← map_nsmul, ← Finsupp.coe_smul,
-        Finsupp.smul_single, nsmul_one, Nat.cast_id]
+      Monic.supDegree_mul_of_ne_zero_left toLex.injective toLex_add, ofLex_add, Finsupp.coe_add, ih,
+      Finsupp.coe_add, map_add, Monic.supDegree_pow rfl toLex_add toLex.injective, ofLex_smul,
+      Finsupp.coe_smul, supDegree_esymm this, ← map_nsmul, ← Finsupp.coe_smul, Finsupp.smul_single,
+      nsmul_one, Nat.cast_id]
     · exact monic_esymm this
     · exact (monic_esymm this).pow toLex_add toLex.injective
     · rwa [Ne, ← leadingCoeff_eq_zero toLex.injective, leadingCoeff_esymmAlgHomMonomial _ hnm]
 
 omit [Fintype σ] in
-lemma IsSymmetric.antitone_supDegree [LinearOrder σ] {p : MvPolynomial σ R} (hp : p.IsSymmetric) :
-    Antitone ↑(ofLex <| p.supDegree toLex) := by
+lemma IsSymmetric.antitone_supDegree [LinearOrder σ] {p : MvPolynomial σ R} (hp : p.IsSymmetric)
+    : Antitone ↑(ofLex <| p.supDegree toLex) := by
   obtain rfl | h0 := eq_or_ne p 0
   · rw [supDegree_zero, bot_eq_zero (α := Lex (σ →₀ ℕ))]
     exact Pi.zero_mono
@@ -258,7 +268,8 @@ lemma IsSymmetric.antitone_supDegree [LinearOrder σ] {p : MvPolynomial σ R} (h
   refine ⟨i, fun k hk ↦ ?_, ?_⟩
   all_goals dsimp only [Pi.toLex_apply, ofLex_toLex]
   · conv_rhs => rw [← Equiv.swap_apply_of_ne_of_ne hk.ne (hk.trans_le hle).ne]
-    rw [Finsupp.mapDomain_apply_of_injective (Equiv.injective _), supDegree]; rfl
+    rw [Finsupp.mapDomain_apply_of_injective (Equiv.injective _), supDegree]
+    rfl
   · apply hlt.trans_eq
     simp_rw [Finsupp.mapDomain_equiv_apply, Equiv.symm_swap, Equiv.swap_apply_left]
 
@@ -270,13 +281,13 @@ variable (R)
 variable [Fintype σ] [CommRing R]
 
 /- Also holds for a cancellative CommSemiring. -/
-lemma esymmAlgHom_fin_injective (h : n ≤ m) :
-    Function.Injective (esymmAlgHom (Fin m) R n) := by
+lemma esymmAlgHom_fin_injective (h : n ≤ m) : Function.Injective (esymmAlgHom (Fin m) R n) := by
   rw [injective_iff_map_eq_zero]
   refine fun p ↦ (fun hp ↦ ?_).mtr
   rw [p.as_sum, map_sum (esymmAlgHom (Fin m) R n), ← Subalgebra.coe_eq_zero,
     AddSubmonoidClass.coe_finsetSum]
-  refine sum_ne_zero_of_injOn_supDegree (D := toLex) (support_nonempty.2 hp) (fun t ht ↦ ?_)
+  refine sum_ne_zero_of_injOn_supDegree (D := toLex) (support_nonempty.2 hp)
+    (fun t ht ↦ ?_)
     (fun t ht s hs he ↦ DFunLike.ext' <| accumulate_injective h ?_)
   · rw [← esymmAlgHomMonomial, Ne, ← leadingCoeff_eq_zero toLex.injective,
       leadingCoeff_esymmAlgHomMonomial t h]
@@ -284,25 +295,25 @@ lemma esymmAlgHom_fin_injective (h : n ≤ m) :
   rw [mem_coe, mem_support_iff] at ht hs
   dsimp only [Function.comp] at he
   rwa [← esymmAlgHomMonomial, ← esymmAlgHomMonomial, ← ofLex_inj, DFunLike.ext'_iff,
-       supDegree_esymmAlgHomMonomial ht t h, supDegree_esymmAlgHomMonomial hs s h] at he
+      supDegree_esymmAlgHomMonomial ht t h, supDegree_esymmAlgHomMonomial hs s h]
+    at he
 
-lemma esymmAlgHom_injective (hn : n ≤ Fintype.card σ) :
-    Function.Injective (esymmAlgHom σ R n) := by
+lemma esymmAlgHom_injective (hn : n ≤ Fintype.card σ) : Function.Injective (esymmAlgHom σ R n) := by
   rw [← rename_esymmAlgHom (Fintype.equivFin σ).symm, AlgHom.coe_comp]
   exact (AlgEquiv.injective _).comp (esymmAlgHom_fin_injective R hn)
 
-lemma esymmAlgHom_fin_bijective (n : ℕ) :
-    Function.Bijective (esymmAlgHom (Fin n) R n) := by
+lemma esymmAlgHom_fin_bijective (n : ℕ) : Function.Bijective (esymmAlgHom (Fin n) R n) := by
   use esymmAlgHom_fin_injective R le_rfl
   rintro ⟨p, hp⟩
   rw [← AlgHom.mem_range]
   obtain rfl | h0 := eq_or_ne p 0
   · exact Subalgebra.zero_mem _
-  induction he : p.supDegree toLex using WellFoundedLT.induction generalizing p with | _ t ih
+  induction he : p.supDegree toLex using WellFoundedLT.induction generalizing p with
+  | _ t ih
   subst he
   let t := Finsupp.equivFunOnFinite.symm (invAccumulate n n <| ↑(ofLex <| p.supDegree toLex))
-  have hd :
-      (esymmAlgHomMonomial _ t <| p.leadingCoeff toLex).supDegree toLex = p.supDegree toLex := by
+  have hd
+      : (esymmAlgHomMonomial _ t <| p.leadingCoeff toLex).supDegree toLex = p.supDegree toLex := by
     rw [← ofLex_inj, DFunLike.ext'_iff, supDegree_esymmAlgHomMonomial _ _ le_rfl]
     · exact accumulate_invAccumulate le_rfl hp.antitone_supDegree
     · rwa [Ne, leadingCoeff_eq_zero toLex.injective]
@@ -315,14 +326,15 @@ lemma esymmAlgHom_fin_bijective (n : ℕ) :
     apply sub_add_cancel p
   · rw [leadingCoeff_esymmAlgHomMonomial t le_rfl]
 
-lemma esymmAlgHom_fin_surjective (h : m ≤ n) :
-    Function.Surjective (esymmAlgHom (Fin m) R n) := by
+lemma esymmAlgHom_fin_surjective (h : m ≤ n) : Function.Surjective (esymmAlgHom (Fin m) R n) := by
   intro p
   obtain ⟨q, rfl⟩ := (esymmAlgHom_fin_bijective R m).2 p
   rw [← AlgHom.mem_range]
   induction q using MvPolynomial.induction_on with
-  | C r => rw [← algebraMap_eq, AlgHom.commutes]; apply Subalgebra.algebraMap_mem
-  | add p q hp hq => rw [map_add]; exact Subalgebra.add_mem _ hp hq
+  | C r =>
+    rw [← algebraMap_eq, AlgHom.commutes]; apply Subalgebra.algebraMap_mem
+  | add p q hp hq =>
+    rw [map_add]; exact Subalgebra.add_mem _ hp hq
   | mul_X p i hp =>
     rw [map_mul]
     apply Subalgebra.mul_mem _ hp
@@ -330,22 +342,22 @@ lemma esymmAlgHom_fin_surjective (h : m ≤ n) :
     refine ⟨X ⟨i, i.2.trans_le h⟩, ?_⟩
     simp_rw [esymmAlgHom, aeval_X]
 
-lemma esymmAlgHom_surjective (hn : Fintype.card σ ≤ n) :
-    Function.Surjective (esymmAlgHom σ R n) := by
+lemma esymmAlgHom_surjective (hn : Fintype.card σ ≤ n)
+    : Function.Surjective (esymmAlgHom σ R n) := by
   rw [← rename_esymmAlgHom (Fintype.equivFin σ).symm, AlgHom.coe_comp]
   exact (AlgEquiv.surjective _).comp (esymmAlgHom_fin_surjective R hn)
 
 variable (σ) in
 /-- If the cardinality of `σ` is `n`, then `esymmAlgHom σ R n` is an isomorphism. -/
 @[simps! apply]
-noncomputable def esymmAlgEquiv (hn : Fintype.card σ = n) :
-    MvPolynomial (Fin n) R ≃ₐ[R] symmetricSubalgebra σ R :=
+noncomputable def esymmAlgEquiv (hn : Fintype.card σ = n)
+    : MvPolynomial (Fin n) R ≃ₐ[R] symmetricSubalgebra σ R :=
   AlgEquiv.ofBijective (esymmAlgHom σ R n)
     ⟨esymmAlgHom_injective R hn.ge, esymmAlgHom_surjective R hn.le⟩
 
 set_option backward.isDefEq.respectTransparency false in
-lemma esymmAlgEquiv_symm_apply (hn : Fintype.card σ = n) (i : Fin n) :
-    (esymmAlgEquiv σ R hn).symm ⟨esymm σ R (i + 1), esymm_isSymmetric σ R _⟩ = X i := by
+lemma esymmAlgEquiv_symm_apply (hn : Fintype.card σ = n) (i : Fin n)
+    : (esymmAlgEquiv σ R hn).symm ⟨esymm σ R (i + 1), esymm_isSymmetric σ R _⟩ = X i := by
   apply_fun esymmAlgHom σ R n using esymmAlgHom_injective R hn.ge
   simp_rw [esymmAlgEquiv, AlgEquiv.ofBijective_apply_symm_apply, esymmAlgHom, aeval_X]
 

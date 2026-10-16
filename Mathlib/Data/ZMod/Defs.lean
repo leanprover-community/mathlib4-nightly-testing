@@ -6,11 +6,10 @@ Authors: Eric Rodriguez
 module
 
 public import Mathlib.Algebra.Group.Fin.Basic
-public import Mathlib.Algebra.Ring.GrindInstances  -- shake: keep (used in `example` only)
+public import Mathlib.Algebra.Ring.GrindInstances -- shake: keep (used in `example` only)
 public import Mathlib.Algebra.Ring.Int.Defs
 public import Mathlib.Data.Fintype.EquivFin
 public import Mathlib.Data.Nat.ModEq
-
 import Mathlib.Algebra.Ring.Nat
 
 /-!
@@ -34,7 +33,6 @@ able to import some part of `ZMod`.
 
 @[expose] public section
 
-
 namespace Fin
 
 /-!
@@ -45,13 +43,12 @@ Afterwards, when we define `ZMod n` in terms of `Fin n`, we use these definition
 to register the ring structure on `ZMod n` as type class instance.
 -/
 
-
 open Nat.ModEq Int
 
 open scoped Fin.IntCast Fin.NatCast
 
-@[simp] theorem val_intCast {n : Nat} [NeZero n] (x : Int) :
-    (x : Fin n).val = (x % n).toNat := by
+@[simp]
+theorem val_intCast {n : Nat} [NeZero n] (x : Int) : (x : Fin n).val = (x % n).toNat := by
   rw [Fin.intCast_def']
   split <;> rename_i h
   · simp [Int.emod_natAbs_of_nonneg h]
@@ -67,26 +64,23 @@ open scoped Fin.IntCast Fin.NatCast
 /-- Multiplicative commutative semigroup structure on `Fin n`. -/
 instance instCommSemigroup (n : ℕ) : CommSemigroup (Fin n) where
   mul_assoc := fun ⟨a, _⟩ ⟨b, _⟩ ⟨c, _⟩ =>
-    Fin.eq_of_val_eq <|
-      calc
-        a * b % n * c ≡ a * b * c [MOD n] := (Nat.mod_modEq _ _).mul_right _
-        _ ≡ a * (b * c) [MOD n] := by rw [mul_assoc]
-        _ ≡ a * (b * c % n) [MOD n] := (Nat.mod_modEq _ _).symm.mul_left _
+    Fin.eq_of_val_eq <| calc
+      a * b % n * c ≡ a * b * c [MOD n] := (Nat.mod_modEq _ _).mul_right _
+      _ ≡ a * (b * c) [MOD n] := by rw [mul_assoc]
+      _ ≡ a * (b * c % n) [MOD n] := (Nat.mod_modEq _ _).symm.mul_left _
   mul_comm := Fin.mul_comm
 
-private theorem left_distrib_aux (n : ℕ) : ∀ a b c : Fin n, a * (b + c) = a * b + a * c :=
-  fun ⟨a, _⟩ ⟨b, _⟩ ⟨c, _⟩ =>
-  Fin.eq_of_val_eq <|
-    calc
-      a * ((b + c) % n) ≡ a * (b + c) [MOD n] := (Nat.mod_modEq _ _).mul_left _
-      _ ≡ a * b + a * c [MOD n] := by rw [mul_add]
-      _ ≡ a * b % n + a * c % n [MOD n] := (Nat.mod_modEq _ _).symm.add (Nat.mod_modEq _ _).symm
+private theorem left_distrib_aux (n : ℕ)
+    : ∀ a b c : Fin n, a * (b + c) = a * b + a * c := fun ⟨a, _⟩ ⟨b, _⟩ ⟨c, _⟩ =>
+  Fin.eq_of_val_eq <| calc
+    a * ((b + c) % n) ≡ a * (b + c) [MOD n] := (Nat.mod_modEq _ _).mul_left _
+    _ ≡ a * b + a * c [MOD n] := by rw [mul_add]
+    _ ≡ a * b % n + a * c % n [MOD n] := (Nat.mod_modEq _ _).symm.add (Nat.mod_modEq _ _).symm
 
 /-- Distributive structure on `Fin n`. -/
 instance instDistrib (n : ℕ) : Distrib (Fin n) where
   left_distrib := private left_distrib_aux n
-  right_distrib := fun a b c => by
-    rw [mul_comm, left_distrib_aux, mul_comm _ b, mul_comm]
+  right_distrib := fun a b c => by rw [mul_comm, left_distrib_aux, mul_comm _ b, mul_comm]
 
 instance instNonUnitalCommRing (n : ℕ) [NeZero n] : NonUnitalCommRing (Fin n) where
   zero_mul := Fin.zero_mul
@@ -153,11 +147,12 @@ namespace ZMod
 instance instUnique : Unique (ZMod 1) := Fin.instUnique
 
 instance fintype : ∀ (n : ℕ) [NeZero n], Fintype (ZMod n)
-  | 0, h => (h.ne _ rfl).elim
-  | n + 1, _ => Fin.fintype (n + 1)
+  | 0, h =>
+    (h.ne _ rfl).elim
+  | n + 1, _ =>
+    Fin.fintype (n + 1)
 
-instance infinite : Infinite (ZMod 0) :=
-  Int.infinite
+instance infinite : Infinite (ZMod 0) := Int.infinite
 
 @[simp]
 theorem card (n : ℕ) [Fintype (ZMod n)] : Fintype.card (ZMod n) = n := by
@@ -166,9 +161,11 @@ theorem card (n : ℕ) [Fintype (ZMod n)] : Fintype.card (ZMod n) = n := by
   | succ n => convert! Fintype.card_fin (n + 1) using 2
 
 open Fin.CommRing in
-/- We define each field by cases, to ensure that the eta-expanded `ZMod.commRing` is defeq to the
+/-
+We define each field by cases, to ensure that the eta-expanded `ZMod.commRing` is defeq to the
 original, this helps avoid diamonds with instances coming from classes extending `CommRing` such as
-field. -/
+field.
+-/
 instance commRing (n : ℕ) : CommRing (ZMod n) where
   add := Nat.casesOn n (@Add.add Int _) fun n => @Add.add (Fin n.succ) _
   add_assoc := Nat.casesOn n (@add_assoc Int _) fun n => @add_assoc (Fin n.succ) _
@@ -178,25 +175,27 @@ instance commRing (n : ℕ) : CommRing (ZMod n) where
   neg := Nat.casesOn n (@Neg.neg Int _) fun n => @Neg.neg (Fin n.succ) _
   sub := Nat.casesOn n (@Sub.sub Int _) fun n => @Sub.sub (Fin n.succ) _
   sub_eq_add_neg := Nat.casesOn n (@sub_eq_add_neg Int _) fun n => @sub_eq_add_neg (Fin n.succ) _
-  zsmul := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).zsmul fun n => ((inferInstance : CommRing (Fin n.succ))).zsmul
-  zsmul_zero' := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).zsmul_zero'
-    fun n => ((inferInstance : CommRing (Fin n.succ))).zsmul_zero'
-  zsmul_succ' := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).zsmul_succ'
-    fun n => ((inferInstance : CommRing (Fin n.succ))).zsmul_succ'
-  zsmul_neg' := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).zsmul_neg'
-    fun n => ((inferInstance : CommRing (Fin n.succ))).zsmul_neg'
-  nsmul := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).nsmul fun n => ((inferInstance : CommRing (Fin n.succ))).nsmul
-  nsmul_zero := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).nsmul_zero
-    fun n => ((inferInstance : CommRing (Fin n.succ))).nsmul_zero
-  nsmul_succ := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).nsmul_succ
-    fun n => ((inferInstance : CommRing (Fin n.succ))).nsmul_succ
+  zsmul :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).zsmul fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).zsmul
+  zsmul_zero' :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).zsmul_zero' fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).zsmul_zero'
+  zsmul_succ' :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).zsmul_succ' fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).zsmul_succ'
+  zsmul_neg' :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).zsmul_neg' fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).zsmul_neg'
+  nsmul :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).nsmul fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).nsmul
+  nsmul_zero :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).nsmul_zero fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).nsmul_zero
+  nsmul_succ :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).nsmul_succ fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).nsmul_succ
   neg_add_cancel := Nat.casesOn n (@neg_add_cancel Int _) fun n => @neg_add_cancel (Fin n.succ) _
   add_comm := Nat.casesOn n (@add_comm Int _) fun n => @add_comm (Fin n.succ) _
   mul := Nat.casesOn n (@Mul.mul Int _) fun n => @Mul.mul (Fin n.succ) _
@@ -217,17 +216,17 @@ instance commRing (n : ℕ) : CommRing (ZMod n) where
   mul_comm := Nat.casesOn n (@mul_comm Int _) fun n => @mul_comm (Fin n.succ) _
   zero_mul := Nat.casesOn n (@zero_mul Int _) fun n => @zero_mul (Fin n.succ) _
   mul_zero := Nat.casesOn n (@mul_zero Int _) fun n => @mul_zero (Fin n.succ) _
-  npow := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).npow fun n => ((inferInstance : CommRing (Fin n.succ))).npow
-  npow_zero := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).npow_zero
-    fun n => ((inferInstance : CommRing (Fin n.succ))).npow_zero
-  npow_succ := Nat.casesOn n
-    ((inferInstance : CommRing ℤ)).npow_succ
-    fun n => ((inferInstance : CommRing (Fin n.succ))).npow_succ
+  npow :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).npow fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).npow
+  npow_zero :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).npow_zero fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).npow_zero
+  npow_succ :=
+    Nat.casesOn n ((inferInstance : CommRing ℤ)).npow_succ fun n =>
+      ((inferInstance : CommRing (Fin n.succ))).npow_succ
 
-instance inhabited (n : ℕ) : Inhabited (ZMod n) :=
-  ⟨0⟩
+instance inhabited (n : ℕ) : Inhabited (ZMod n) := ⟨0⟩
 
 -- Verify that we can use `ZMod n` in `grind`.
 example (n : ℕ) : Lean.Grind.CommRing (ZMod n) := inferInstance

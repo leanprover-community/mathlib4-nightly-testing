@@ -36,9 +36,7 @@ variable {C : Type u} [Category.{v} C]
 
 variable {X Y Z : C} (f : X ⟶ Y) (S S' : C)
 
-/--
-`OverClass X S` is the typeclass containing the data of a structure morphism `X ↘ S : X ⟶ S`.
--/
+/-- `OverClass X S` is the typeclass containing the data of a structure morphism `X ↘ S : X ⟶ S`. -/
 class OverClass (X S : C) : Type v where
   ofHom ::
   /-- The structure morphism. Use `X ↘ S` instead. -/
@@ -70,8 +68,7 @@ def CanonicallyOverClass.Simps.over (X S : C) [CanonicallyOverClass X S] : X ⟶
 
 initialize_simps_projections CanonicallyOverClass (hom → over)
 
-@[simps]
-instance : OverClass X X := ⟨𝟙 _⟩
+@[simps] instance : OverClass X X := ⟨𝟙 _⟩
 
 instance : IsIso (S ↘ S) := inferInstanceAs (IsIso (𝟙 S))
 
@@ -82,47 +79,53 @@ instance (priority := 900) [CanonicallyOverClass X Y] [OverClass Y S] : OverClas
   ⟨X ↘ Y ≫ Y ↘ S⟩
 end CanonicallyOverClass
 
-/-- Given `OverClass X S` and `OverClass Y S` and `f : X ⟶ Y`,
-`HomIsOver f S` is the typeclass asserting `f` commutes with the structure morphisms. -/
+/--
+Given `OverClass X S` and `OverClass Y S` and `f : X ⟶ Y`,
+`HomIsOver f S` is the typeclass asserting `f` commutes with the structure morphisms.
+-/
 class HomIsOver (f : X ⟶ Y) (S : C) [OverClass X S] [OverClass Y S] : Prop where
   comp_over : f ≫ Y ↘ S = X ↘ S := by aesop
 
 @[reassoc (attr := simp)]
-lemma comp_over [OverClass X S] [OverClass Y S] [HomIsOver f S] :
-    f ≫ Y ↘ S = X ↘ S :=
+lemma comp_over [OverClass X S] [OverClass Y S] [HomIsOver f S] : f ≫ Y ↘ S = X ↘ S :=
   HomIsOver.comp_over
 
 instance [OverClass X S] : HomIsOver (𝟙 X) S where
 
-instance [OverClass X S] [OverClass Y S] [OverClass Z S]
-    (f : X ⟶ Y) (g : Y ⟶ Z) [HomIsOver f S] [HomIsOver g S] :
-    HomIsOver (f ≫ g) S where
+instance
+  [OverClass X S] [OverClass Y S] [OverClass Z S]
+  (f : X ⟶ Y) (g : Y ⟶ Z) [HomIsOver f S] [HomIsOver g S]
+  : HomIsOver (f ≫ g) S where
 
-/-- `IsOverTower X Y S` is the typeclass asserting that the structure morphisms
-`X ↘ Y`, `Y ↘ S`, and `X ↘ S` commute. -/
+/--
+`IsOverTower X Y S` is the typeclass asserting that the structure morphisms
+`X ↘ Y`, `Y ↘ S`, and `X ↘ S` commute.
+-/
 abbrev IsOverTower (X Y S : C) [OverClass X S] [OverClass Y S] [OverClass X Y] :=
   HomIsOver (X ↘ Y) S
 
 instance [OverClass X S] : IsOverTower X X S where
 instance [OverClass X S] : IsOverTower X S S where
 
-instance [CanonicallyOverClass X Y] [OverClass Y S] : IsOverTower X Y S :=
-  ⟨rfl⟩
+instance [CanonicallyOverClass X Y] [OverClass Y S] : IsOverTower X Y S := ⟨rfl⟩
 
-lemma homIsOver_of_isOverTower [OverClass X S] [OverClass X S'] [OverClass Y S]
-    [OverClass Y S'] [OverClass S S']
-    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S] : HomIsOver f S' := by
+lemma homIsOver_of_isOverTower
+    [OverClass X S] [OverClass X S'] [OverClass Y S] [OverClass Y S'] [OverClass S S']
+    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S]
+    : HomIsOver f S' := by
   constructor
   rw [← comp_over (Y ↘ S), comp_over_assoc f, comp_over]
 
-instance [CanonicallyOverClass X S]
-    [OverClass X S'] [OverClass Y S] [OverClass Y S'] [OverClass S S']
-    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S] : HomIsOver f S' :=
+instance
+    [CanonicallyOverClass X S] [OverClass X S'] [OverClass Y S] [OverClass Y S'] [OverClass S S']
+    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S]
+    : HomIsOver f S' :=
   homIsOver_of_isOverTower f S S'
 
-instance [OverClass X S]
-    [OverClass X S'] [CanonicallyOverClass Y S] [OverClass Y S'] [OverClass S S']
-    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S] : HomIsOver f S' :=
+instance
+    [OverClass X S] [OverClass X S'] [CanonicallyOverClass Y S] [OverClass Y S'] [OverClass S S']
+    [IsOverTower X S S'] [IsOverTower Y S S'] [HomIsOver f S]
+    : HomIsOver f S' :=
   homIsOver_of_isOverTower f S S'
 
 variable (X) in
@@ -132,8 +135,8 @@ def OverClass.asOver [OverClass X S] : Over S := Over.mk (X ↘ S)
 
 /-- Bundle a morphism `f : X ⟶ Y` with `HomIsOver f S` into a morphism in `Over S`. -/
 @[simps! left]
-def OverClass.asOverHom [OverClass X S] [OverClass Y S] (f : X ⟶ Y) [HomIsOver f S] :
-    OverClass.asOver X S ⟶ OverClass.asOver Y S :=
+def OverClass.asOverHom [OverClass X S] [OverClass Y S] (f : X ⟶ Y) [HomIsOver f S]
+    : OverClass.asOver X S ⟶ OverClass.asOver Y S :=
   Over.homMk f (comp_over f S)
 
 @[simps]
@@ -164,11 +167,15 @@ instance {f : X ⟶ Y} [IsIso f] [HomIsOver f S] : HomIsOver (inv f) S where
 
 @[simp] lemma asOverHom_id : asOverHom S (𝟙 X) = 𝟙 (asOver X S) := rfl
 
-@[simp, reassoc] lemma asOverHom_comp (f : X ⟶ Y) (g : Y ⟶ Z) [HomIsOver f S] [HomIsOver g S] :
-    asOverHom S (f ≫ g) = asOverHom S f ≫ asOverHom S g := rfl
+@[simp, reassoc]
+lemma asOverHom_comp (f : X ⟶ Y) (g : Y ⟶ Z) [HomIsOver f S] [HomIsOver g S]
+    : asOverHom S (f ≫ g) = asOverHom S f ≫ asOverHom S g :=
+  rfl
 
-@[simp] lemma asOverHom_inv (f : X ⟶ Y) [IsIso f] [HomIsOver f S] :
-    asOverHom S (inv f) = inv (asOverHom S f) := by simp [← hom_comp_eq_id, ← asOverHom_comp]
+@[simp]
+lemma asOverHom_inv (f : X ⟶ Y) [IsIso f] [HomIsOver f S]
+    : asOverHom S (inv f) = inv (asOverHom S f) := by
+  simp [← hom_comp_eq_id, ← asOverHom_comp]
 
 end OverClass
 

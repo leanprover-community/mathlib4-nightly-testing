@@ -27,10 +27,10 @@ variable (e : α ≃ β)
 
 variable (R : Type*) [Zero R] in
 /-- Transfer `NoZeroSMulDivisors` across an `Equiv` -/
-protected lemma noZeroSMulDivisors [Zero α] [Zero β] [SMul R β] [NoZeroSMulDivisors R β]
-    (e : α ≃ β) (map_zero : e 0 = 0) :
-    letI := e.smul R
-    NoZeroSMulDivisors R α := by
+protected lemma noZeroSMulDivisors
+    [Zero α] [Zero β] [SMul R β] [NoZeroSMulDivisors R β] (e : α ≃ β) (map_zero : e 0 = 0)
+    : letI := e.smul R
+      NoZeroSMulDivisors R α := by
   let := e.smul R
   refine ⟨fun {r} m ↦ ?_⟩
   simp_rw [e.eq_symm_apply.2 map_zero, eq_symm_apply, smul_def, apply_symm_apply]
@@ -52,29 +52,31 @@ protected abbrev module : Module R α where
   add_smul := by simp [e.smul_def, add_smul]
 
 variable (R) in
-/-- When `α` is equipped with the `A`-module structure transferred via `e : α ≃+ β`,
-this isomorphism is `A`-linear. -/
-def linearEquiv :
-    letI := e.module R
-    α ≃ₗ[R] β :=
+/--
+When `α` is equipped with the `A`-module structure transferred via `e : α ≃+ β`,
+this isomorphism is `A`-linear.
+-/
+def linearEquiv
+    : letI := e.module R
+      α ≃ₗ[R] β :=
   letI := e.module R
-  { e with
+  {
+    e with
     map_smul' := fun r x => by
       apply e.symm.injective
       simp only [RingHom.id_apply, EmbeddingLike.apply_eq_iff_eq]
-      exact Iff.mp (eq_symm_apply _) rfl }
+      exact Iff.mp (eq_symm_apply _) rfl
+  }
 
-@[simp]
-lemma linearEquiv_apply (a : α) : e.linearEquiv R a = e a := rfl
+@[simp] lemma linearEquiv_apply (a : α) : e.linearEquiv R a = e a := rfl
 
-@[simp]
-lemma linearEquiv_symm_apply (b : β) : (e.linearEquiv R).symm b = e.symm b := rfl
+@[simp] lemma linearEquiv_symm_apply (b : β) : (e.linearEquiv R).symm b = e.symm b := rfl
 
 variable (R) in
 /-- Transfer `Module.IsTorsionFree` across an `Equiv` -/
-protected lemma moduleIsTorsionFree [Module.IsTorsionFree R β] :
-    letI := e.module R
-    Module.IsTorsionFree R α :=
+protected lemma moduleIsTorsionFree [Module.IsTorsionFree R β]
+    : letI := e.module R
+      Module.IsTorsionFree R α :=
   letI := e.module R
   (e.linearEquiv R).injective.moduleIsTorsionFree _ (by simp)
 
@@ -90,11 +92,13 @@ alias Equiv.moduleIsTorsionFree := AddEquiv.moduleIsTorsionFree
 
 variable [Module R α] (A : Type*) [Semiring A] [Module R A] [Module A β]
 
-/-- The module instance from `AddEquiv.module` is compatible with the `R`-module structures,
-if the `AddEquiv` is induced by an `R`-module isomorphism. -/
-lemma LinearEquiv.isScalarTower [IsScalarTower R A β] (e : α ≃ₗ[R] β) :
-    letI := e.toAddEquiv.module A
-    IsScalarTower R A α := by
+/--
+The module instance from `AddEquiv.module` is compatible with the `R`-module structures,
+if the `AddEquiv` is induced by an `R`-module isomorphism.
+-/
+lemma LinearEquiv.isScalarTower [IsScalarTower R A β] (e : α ≃ₗ[R] β)
+    : letI := e.toAddEquiv.module A
+      IsScalarTower R A α := by
   let := e.toAddEquiv.module A
   constructor
   intro x y z

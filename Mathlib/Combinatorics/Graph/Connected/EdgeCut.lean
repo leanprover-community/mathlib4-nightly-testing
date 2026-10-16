@@ -38,17 +38,18 @@ def edgeCut (G : Graph α β) (S : Set α) : Set β := {e | ∃ u v, G.IsLink e 
 @[grind =]
 lemma mem_edgeCut_iff : e ∈ edgeCut G S ↔ ∃ u v, G.IsLink e u v ∧ u ∈ S ∧ v ∉ S := Iff.rfl
 
-lemma IsLink.mem_edgeCut_iff (h : G.IsLink e u v) :
-    e ∈ edgeCut G S ↔ (u ∈ S ∧ v ∉ S) ∨ (v ∈ S ∧ u ∉ S) := by
+lemma IsLink.mem_edgeCut_iff (h : G.IsLink e u v)
+    : e ∈ edgeCut G S ↔ (u ∈ S ∧ v ∉ S) ∨ (v ∈ S ∧ u ∉ S) := by
   grind [isLink_comm, h.eq_and_eq_or_eq_and_eq]
 
 @[grind .]
-lemma edgeCut_subset_edgeSet : G.edgeCut S ⊆ E(G) :=
-  fun _ ⟨_, _, huv, _, _⟩ ↦ huv.edge_mem
+lemma edgeCut_subset_edgeSet : G.edgeCut S ⊆ E(G) := fun _ ⟨_, _, huv, _, _⟩ ↦ huv.edge_mem
 
 lemma edgeCut_eq_empty_iff (hS : S ⊆ V(G)) : G.edgeCut S = ∅ ↔ G.induce S ≤c G := by
-  refine ⟨fun h ↦ IsClosedSubgraph.mk' (induce_le hS) fun e x ⟨y, hxy⟩ hxS ↦ ?_,
-    fun h ↦ by grind [h.mem_iff_of_isLink]⟩
+  refine ⟨
+    fun h ↦ IsClosedSubgraph.mk' (induce_le hS) fun e x ⟨y, hxy⟩ hxS ↦ ?_,
+    fun h ↦ by grind [h.mem_iff_of_isLink]
+  ⟩
   rw [edgeSet_induce]
   use x, y, hxy, hxS
   contrapose! h
@@ -69,24 +70,26 @@ lemma edgeCut_symmDiff : G.edgeCut (S ∆ S') = G.edgeCut S ∆ G.edgeCut S' := 
   obtain ⟨x, y, hxy⟩ := exists_isLink_of_mem_edgeSet he
   grind [hxy.mem_edgeCut_iff]
 
-protected lemma IsClosedSubgraph.edgeCut_subset_edgeSet (hHG : H ≤c G) (hS : S ⊆ V(H)) :
-    G.edgeCut S ⊆ E(H) :=
-  fun _ ⟨_, _, hxy, hu, _⟩ ↦ hHG.closed hxy.inc_left (hS hu)
+protected lemma IsClosedSubgraph.edgeCut_subset_edgeSet (hHG : H ≤c G) (hS : S ⊆ V(H))
+    : G.edgeCut S ⊆ E(H) := fun _ ⟨_, _, hxy, hu, _⟩ ↦
+  hHG.closed hxy.inc_left (hS hu)
 
 end edgeCut
 
 section IsEdgeCut
 
-/-- A set of edges is an edge cut if there exists a set of vertices such that the edges in the set
-are between the set of vertices and its complement. -/
+/--
+A set of edges is an edge cut if there exists a set of vertices such that the edges in the set
+are between the set of vertices and its complement.
+-/
 def IsEdgeCut (G : Graph α β) (F : Set β) : Prop := ∃ S : Set α, G.edgeCut S = F
 
 lemma IsEdgeCut.exists_edgeCut (hF : G.IsEdgeCut F) : ∃ S ⊆ V(G), G.edgeCut S = F := by
   obtain ⟨S, rfl⟩ := hF
   exact ⟨V(G) ∩ S, inter_subset_left .., by grind [edgeCut]⟩
 
-lemma IsEdgeCut.exists_of_isLink (he : G.IsLink e u v) (heF : e ∈ F) (hF : G.IsEdgeCut F) :
-    ∃ S ⊆ V(G), G.edgeCut S = F ∧ u ∈ S ∧ v ∉ S := by
+lemma IsEdgeCut.exists_of_isLink (he : G.IsLink e u v) (heF : e ∈ F) (hF : G.IsEdgeCut F)
+    : ∃ S ⊆ V(G), G.edgeCut S = F ∧ u ∈ S ∧ v ∉ S := by
   obtain ⟨S, hS, rfl⟩ := hF.exists_edgeCut
   grind [he.mem_edgeCut_iff, G.edgeCut_vertexSet_diff (S := S)]
 
@@ -94,28 +97,30 @@ lemma IsEdgeCut.subset_edgeSet (hF : G.IsEdgeCut F) : F ⊆ E(G) := by
   obtain ⟨S, rfl⟩ := hF
   exact G.edgeCut_subset_edgeSet
 
-protected lemma IsEdgeCut.symmDiff (hF : G.IsEdgeCut F) (hF' : G.IsEdgeCut F') :
-    G.IsEdgeCut (F ∆ F') := by
+protected lemma IsEdgeCut.symmDiff (hF : G.IsEdgeCut F) (hF' : G.IsEdgeCut F')
+    : G.IsEdgeCut (F ∆ F') := by
   obtain ⟨S, rfl⟩ := hF
   obtain ⟨S', rfl⟩ := hF'
   use S ∆ S', edgeCut_symmDiff
 
 @[grind →]
-lemma IsEdgeCut.right_of_symmDiff (hF : G.IsEdgeCut F) (hsymmDiff : G.IsEdgeCut (F ∆ F')) :
-    G.IsEdgeCut F' := by simpa using hF.symmDiff hsymmDiff
+lemma IsEdgeCut.right_of_symmDiff (hF : G.IsEdgeCut F) (hsymmDiff : G.IsEdgeCut (F ∆ F'))
+    : G.IsEdgeCut F' := by
+  simpa using hF.symmDiff hsymmDiff
 
 @[grind →]
-lemma IsEdgeCut.left_of_symmDiff (hF' : G.IsEdgeCut F') (hsymmDiff : G.IsEdgeCut (F ∆ F')) :
-    G.IsEdgeCut F := by simpa using hsymmDiff.symmDiff hF'
+lemma IsEdgeCut.left_of_symmDiff (hF' : G.IsEdgeCut F') (hsymmDiff : G.IsEdgeCut (F ∆ F'))
+    : G.IsEdgeCut F := by
+  simpa using hsymmDiff.symmDiff hF'
 
-lemma IsEdgeCut.inter_edgeSet_of_le (hHG : H ≤ G) (hF : G.IsEdgeCut F) :
-    H.IsEdgeCut (E(H) ∩ F) := by
+lemma IsEdgeCut.inter_edgeSet_of_le (hHG : H ≤ G) (hF : G.IsEdgeCut F)
+    : H.IsEdgeCut (E(H) ∩ F) := by
   obtain ⟨S, rfl⟩ := hF
   exact ⟨S, hHG.edgeCut_eq_inter⟩
 
 @[gcongr]
-lemma IsEdgeCut.anti_of_subset (hHG : H ≤ G) (hFH : F ⊆ E(H)) (hF : G.IsEdgeCut F) :
-    H.IsEdgeCut F :=
+lemma IsEdgeCut.anti_of_subset (hHG : H ≤ G) (hFH : F ⊆ E(H)) (hF : G.IsEdgeCut F)
+    : H.IsEdgeCut F :=
   inter_eq_right.mpr hFH ▸ hF.inter_edgeSet_of_le hHG
 
 @[gcongr]
@@ -161,8 +166,10 @@ end IsBridge
 
 section IsBond
 
-/-- A bond of a graph is a minimal nonempty edge-cut; see
-[Diestel, *Graph Theory*, Section 1.9][diestel2017]. -/
+/--
+A bond of a graph is a minimal nonempty edge-cut; see
+[Diestel, *Graph Theory*, Section 1.9][diestel2017].
+-/
 @[expose]
 def IsBond (G : Graph α β) (F : Set β) : Prop := Minimal (fun F ↦ G.IsEdgeCut F ∧ F.Nonempty) F
 
@@ -181,17 +188,19 @@ lemma isBond_singleton_iff_isBridge : G.IsBond {e} ↔ G.IsBridge e := by
   exact hF'e
 alias ⟨_, IsBridge.isBond_singleton⟩ := isBond_singleton_iff_isBridge
 
-lemma IsBond.isBridge_deleteEdges (heB : e ∈ B) (hB : G.IsBond B) :
-    (G.deleteEdges (B \ {e})).IsBridge e := by
+lemma IsBond.isBridge_deleteEdges (heB : e ∈ B) (hB : G.IsBond B)
+    : (G.deleteEdges (B \ {e})).IsBridge e := by
   have := hB.prop.1.inter_edgeSet_of_le (G.deleteEdges_le (F := B \ {e}))
   rw [edgeSet_deleteEdges, inter_comm, inter_sdiff_distrib_left, inter_eq_left.mpr hB.subset,
-    inter_eq_right.mpr sdiff_subset] at this
+      inter_eq_right.mpr sdiff_subset]
+    at this
   simpa [heB, IsBridge] using this
 
 lemma IsBond.of_isClosedSubgraph (hGH : G ≤c H) (hB : G.IsBond B) : H.IsBond B := by
   refine ⟨⟨hB.isEdgeCut.of_isClosedSubgraph hGH, hB.nonempty⟩, fun C ⟨hC, e, heC⟩ hCB ↦ ?_⟩
-  exact hB.2 ⟨hC.inter_edgeSet_of_le hGH.le, e, hB.subset (hCB heC), heC⟩ (inter_subset_right
-    |>.trans hCB) |>.trans inter_subset_right
+  exact hB.2 ⟨hC.inter_edgeSet_of_le hGH.le, e, hB.subset (hCB heC), heC⟩
+      (inter_subset_right |>.trans hCB)
+    |>.trans inter_subset_right
 alias IsClosedSubgraph.isBond := IsBond.of_isClosedSubgraph
 
 end IsBond

@@ -42,22 +42,23 @@ namespace CategoryTheory.TwoSquare.GuitartExact
 
 open HomotopicalAlgebra Opposite
 
-variable {C₀ C H₀ H : Type*} [Category* C₀] [Category* C] [Category* H₀] [Category* H]
-  {T : C₀ ⥤ H₀} {L : C₀ ⥤ C} {R : H₀ ⥤ H} {B : C ⥤ H}
-  [T.EssSurj] [T.Full] [B.Full]
+variable
+  {C₀ C H₀ H : Type*} [Category* C₀] [Category* C] [Category* H₀] [Category* H]
+  {T : C₀ ⥤ H₀} {L : C₀ ⥤ C} {R : H₀ ⥤ H} {B : C ⥤ H} [T.EssSurj] [T.Full] [B.Full]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma quotient_of_nonempty_leftHomotopy (e : T ⋙ R ≅ L ⋙ B)
+lemma quotient_of_nonempty_leftHomotopy
+    (e : T ⋙ R ≅ L ⋙ B)
     (he : ∀ ⦃X₀ : C₀⦄ ⦃Y : C⦄ (f₀ f₁ : L.obj X₀ ⟶ Y) (_ : B.map f₀ = B.map f₁),
-      ∃ (P : Precylinder X₀), T.map P.i₀ = T.map P.i₁ ∧
-        Nonempty ((P.map L).LeftHomotopy f₀ f₁)) :
-    GuitartExact e.hom := by
+      ∃ (P : Precylinder X₀),
+        T.map P.i₀ = T.map P.i₁ ∧ Nonempty ((P.map L).LeftHomotopy f₀ f₁))
+    : GuitartExact e.hom := by
   rw [guitartExact_iff_isConnected_downwards]
   intro Y₀ X g
   let X₀ := T.objPreimage Y₀
   let e₀ : T.obj X₀ ≅ Y₀ := T.objObjPreimageIso Y₀
-  let S := { f : L.obj X₀ ⟶ X // B.map f = e.inv.app X₀ ≫ R.map e₀.hom ≫ g }
+  let S := {f : L.obj X₀ ⟶ X // B.map f = e.inv.app X₀ ≫ R.map e₀.hom ≫ g}
   let Z (s : S) : CostructuredArrowDownwards e.hom g :=
     CostructuredArrowDownwards.mk _ _ X₀ e₀.inv s.val (by simp [s.property])
   have : Nonempty (CostructuredArrowDownwards e.hom g) := by
@@ -66,8 +67,7 @@ lemma quotient_of_nonempty_leftHomotopy (e : T ⋙ R ≅ L ⋙ B)
   refine zigzag_isConnected (fun A₀ A₁ ↦ ?_)
   have H (A : CostructuredArrowDownwards e.hom g) : ∃ s, Nonempty (Z s ⟶ A) := by
     obtain ⟨a, ha⟩ := T.map_surjective (e₀.hom ≫ A.left.hom)
-    refine ⟨⟨L.map a ≫ A.hom.right, ?_⟩,
-      ⟨CostructuredArrow.homMk (StructuredArrow.homMk a ?_)⟩⟩
+    refine ⟨⟨L.map a ≫ A.hom.right, ?_⟩, ⟨CostructuredArrow.homMk (StructuredArrow.homMk a ?_)⟩⟩
     · simp [← dsimp% NatIso.naturality_1 e a, ha, dsimp% A.hom.w]
     · cat_disch
   obtain ⟨s₀, ⟨f₀⟩⟩ := H A₀
@@ -75,21 +75,21 @@ lemma quotient_of_nonempty_leftHomotopy (e : T ⋙ R ≅ L ⋙ B)
   obtain ⟨P, hP, ⟨h⟩⟩ := he s₀.val s₁.val (by simp [s₀.property, s₁.property])
   let Z' : CostructuredArrowDownwards e.hom g :=
     CostructuredArrowDownwards.mk _ _ P.I (e₀.inv ≫ T.map P.i₀) h.h (by
-      simp [R.map_comp, ← B.map_comp, dsimp% h.h₀, s₀.property,
-        dsimp% e.hom.naturality_assoc P.i₀])
+      simp [R.map_comp, ← B.map_comp, dsimp% h.h₀, s₀.property, dsimp% e.hom.naturality_assoc P.i₀])
   calc
     Zigzag A₀ (Z s₀) := .of_inv f₀
-    Zigzag (Z s₀) Z' := .of_hom <|
-      CostructuredArrow.homMk (StructuredArrow.homMk P.i₀) (by simp [Z, Z', dsimp% h.h₀])
-    Zigzag Z' (Z s₁) := .of_inv <|
-      CostructuredArrow.homMk (StructuredArrow.homMk P.i₁) (by simp [Z, Z', dsimp% h.h₁])
+    Zigzag (Z s₀) Z' :=
+      .of_hom <| CostructuredArrow.homMk (StructuredArrow.homMk P.i₀) (by simp [Z, Z', dsimp% h.h₀])
+    Zigzag Z' (Z s₁) :=
+      .of_inv <| CostructuredArrow.homMk (StructuredArrow.homMk P.i₁) (by simp [Z, Z', dsimp% h.h₁])
     Zigzag (Z s₁) A₁ := .of_hom f₁
 
-lemma quotient_of_nonempty_rightHomotopy (e : T ⋙ R ≅ L ⋙ B)
+lemma quotient_of_nonempty_rightHomotopy
+    (e : T ⋙ R ≅ L ⋙ B)
     (he : ∀ ⦃X : C⦄ ⦃Y₀ : C₀⦄ (f₀ f₁ : X ⟶ L.obj Y₀) (_ : B.map f₀ = B.map f₁),
-      ∃ (P : PrepathObject Y₀), T.map P.p₀ = T.map P.p₁ ∧
-        Nonempty ((P.map L).RightHomotopy f₀ f₁)) :
-    GuitartExact e.inv := by
+      ∃ (P : PrepathObject Y₀),
+        T.map P.p₀ = T.map P.p₁ ∧ Nonempty ((P.map L).RightHomotopy f₀ f₁))
+    : GuitartExact e.inv := by
   rw [← guitartExact_op_iff]
   let e' : T.op ⋙ R.op ≅ L.op ⋙ B.op := NatIso.op e.symm
   refine quotient_of_nonempty_leftHomotopy e' (fun X₀ Y f₀ f₁ h ↦ ?_)

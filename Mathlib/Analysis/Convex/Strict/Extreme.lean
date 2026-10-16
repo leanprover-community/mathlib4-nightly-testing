@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Convex.Extreme
 public import Mathlib.Analysis.Convex.StrictConvexSpace
-
 import Mathlib.Algebra.CharP.Invertible
 
 /-! # Extreme points of (strictly convex) sets
@@ -33,9 +32,11 @@ open Set Metric
 
 open Filter in
 open scoped Topology in
-theorem disjoint_interior_extremePoints {E : Type*} [AddCommGroup E] [Module ℝ E]
-    [TopologicalSpace E] [IsTopologicalAddGroup E] [ContinuousSMul ℝ E] [Nontrivial E]
-    (S : Set E) : Disjoint (interior S) (extremePoints ℝ S) := by
+theorem disjoint_interior_extremePoints
+    {E : Type*} [AddCommGroup E] [Module ℝ E] [TopologicalSpace E] [IsTopologicalAddGroup E]
+    [ContinuousSMul ℝ E] [Nontrivial E]
+    (S : Set E)
+    : Disjoint (interior S) (extremePoints ℝ S) := by
   refine Set.disjoint_iff.mpr fun x ⟨x_int, x_ext⟩ ↦ ?_
   rw [mem_interior_iff_mem_nhds] at x_int
   have h₁ : ∀ᶠ v in 𝓝[≠] 0, x - v ∈ S :=
@@ -46,9 +47,10 @@ theorem disjoint_interior_extremePoints {E : Type*} [AddCommGroup E] [Module ℝ
   have key : x ∈ openSegment ℝ (x - v) (x + v) := mem_openSegment_sub_add _ _
   grind only [x_ext.2 hv₁ hv₂ key]
 
-lemma StrictConvex.sdiff_interior_subset_extremePoints {𝕜 A : Type*} [Semiring 𝕜]
-    [PartialOrder 𝕜] [AddCommMonoid A] [Module 𝕜 A] [TopologicalSpace A] {C : Set A}
-    (hc : StrictConvex 𝕜 C) : C \ interior C ⊆ extremePoints 𝕜 C := by
+lemma StrictConvex.sdiff_interior_subset_extremePoints
+    {𝕜 A : Type*} [Semiring 𝕜] [PartialOrder 𝕜] [AddCommMonoid A] [Module 𝕜 A] [TopologicalSpace A]
+    {C : Set A} (hc : StrictConvex 𝕜 C)
+    : C \ interior C ⊆ extremePoints 𝕜 C := by
   refine fun x hx ↦ ⟨hx.1, fun y hy z hz ⟨a, b, ha, hb, hab, hxab⟩ ↦ ?_⟩
   have hyz : y = z := by
     by_contra
@@ -62,37 +64,44 @@ alias StrictConvex.diff_interior_subset_extremePoints :=
 section Normed
 variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
 
-/-- In a nontrivial normed space, the extreme points of the closed ball is contained in
-the sphere. -/
-theorem extremePoints_closedBall_subset_sphere [Nontrivial A] {x : A} {r : ℝ} :
-    extremePoints ℝ (closedBall x r) ⊆ sphere x r := by
+/--
+In a nontrivial normed space, the extreme points of the closed ball is contained in
+the sphere.
+-/
+theorem extremePoints_closedBall_subset_sphere [Nontrivial A] {x : A} {r : ℝ}
+    : extremePoints ℝ (closedBall x r) ⊆ sphere x r := by
   rw [← closedBall_sdiff_ball, subset_sdiff, ← interior_closedBall' _]
   exact ⟨extremePoints_subset, disjoint_interior_extremePoints _ |>.symm⟩
 
-theorem StrictConvex.extremePoints_eq_sdiff_interior [Nontrivial A] {S : Set A}
-    (hS : StrictConvex ℝ S) : extremePoints ℝ S = S \ interior S :=
+theorem StrictConvex.extremePoints_eq_sdiff_interior
+    [Nontrivial A] {S : Set A} (hS : StrictConvex ℝ S)
+    : extremePoints ℝ S = S \ interior S :=
   antisymm (subset_sdiff.mpr ⟨extremePoints_subset, disjoint_interior_extremePoints _ |>.symm⟩)
     hS.sdiff_interior_subset_extremePoints
 
 @[deprecated (since := "2026-06-03")]
 alias StrictConvex.extremePoints_eq_diff_interior := StrictConvex.extremePoints_eq_sdiff_interior
 
-/-- In a strictly convex space, the sphere is contained in the extreme points of the closed ball
+/--
+In a strictly convex space, the sphere is contained in the extreme points of the closed ball
 when the radius is nonzero.
-In a nontrivial space, they are equal, see `extremePoints_closedBall_eq_sphere`. -/
-lemma StrictConvexSpace.sphere_subset_extremePoints_closedBall [StrictConvexSpace ℝ A]
-    (a : A) {r : ℝ} (hr : r ≠ 0) : sphere a r ⊆ extremePoints ℝ (closedBall a r) := fun _ hx ↦ by
+In a nontrivial space, they are equal, see `extremePoints_closedBall_eq_sphere`.
+-/
+lemma StrictConvexSpace.sphere_subset_extremePoints_closedBall
+    [StrictConvexSpace ℝ A] (a : A) {r : ℝ} (hr : r ≠ 0)
+    : sphere a r ⊆ extremePoints ℝ (closedBall a r) := fun _ hx ↦ by
   rw [← frontier_closedBall _ hr, frontier, closure_closedBall] at hx
   exact (_root_.strictConvex_closedBall ℝ _ _).sdiff_interior_subset_extremePoints hx
 
-theorem StrictConvexSpace.extremePoints_closedBall_eq_sphere [Nontrivial A] {x : A} {r : ℝ}
-    [StrictConvexSpace ℝ A] : extremePoints ℝ (closedBall x r) = sphere x r := by
+theorem StrictConvexSpace.extremePoints_closedBall_eq_sphere
+    [Nontrivial A] {x : A} {r : ℝ} [StrictConvexSpace ℝ A]
+    : extremePoints ℝ (closedBall x r) = sphere x r := by
   rw [(_root_.strictConvex_closedBall ℝ x r).extremePoints_eq_sdiff_interior, interior_closedBall',
     closedBall_sdiff_ball]
 
 end Normed
 
-@[simp] lemma Set.extremePoints_Icc {a b : ℝ} (hab : a ≤ b) :
-    extremePoints ℝ (Icc a b) = {a, b} := by
+@[simp]
+lemma Set.extremePoints_Icc {a b : ℝ} (hab : a ≤ b) : extremePoints ℝ (Icc a b) = {a, b} := by
   rw [Real.Icc_eq_closedBall, StrictConvexSpace.extremePoints_closedBall_eq_sphere]
   grind [Real.sphere_eq_pair]

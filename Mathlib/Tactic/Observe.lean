@@ -8,7 +8,6 @@ module
 public meta import Lean.Elab.Tactic.ElabTerm
 public meta import Lean.Meta.Tactic.LibrarySearch
 public meta import Lean.Meta.Tactic.TryThis
-
 import Mathlib.Init
 
 /-!
@@ -23,7 +22,8 @@ namespace Mathlib.Tactic.LibrarySearch
 
 open Lean Meta Elab Tactic Meta.Tactic.TryThis LibrarySearch
 
-/-- `observe hp : p` asserts the proposition `p` as a hypothesis named `hp`, and tries to prove it
+/--
+`observe hp : p` asserts the proposition `p` as a hypothesis named `hp`, and tries to prove it
 using `exact?`.
 If no proof is found, the tactic fails.
 In other words, this tactic is equivalent to `have hp : p := by exact?`.
@@ -33,29 +33,31 @@ In other words, this tactic is equivalent to `have hp : p := by exact?`.
   This may be particularly useful to speed up proofs.
 -/
 -- TODO: the syntax `observe hp : p using e1, e2, ...` exists but does not appear to do anything.
-syntax (name := observe) "observe" "?"? (ppSpace ident)? " : " term
-  (" using " (colGt term),+)? : tactic
+syntax (name := observe) "observe" "?"? (ppSpace ident)? " : " term (" using " (colGt term),+)?
+  : tactic
 
-elab_rules : tactic |
-  `(tactic| observe%$tk $[?%$trace]? $[$n?:ident]? : $t:term $[using $[$required:term],*]?) => do
-  let name : Name := match n? with
-    | none   => `this
-    | some n => n.getId
-  withMainContext do
-    let (type, _) ← elabTermWithHoles t none (← getMainTag) true
-    let .mvar goal ← mkFreshExprMVar type | failure
-    if let some _ ← librarySearch goal then
-      reportOutOfHeartbeats `library_search tk
-      throwError "observe did not find a solution"
-    else
-      let v := (← instantiateMVars (mkMVar goal)).headBeta
-      if trace.isSome then
-        addHaveSuggestion tk (some name) type v (checkState? := (← saveState))
-      let (_, newGoal) ← (← getMainGoal).note name v
-      replaceMainGoal [newGoal]
+elab_rules : tactic
+  | `(tactic| observe%$tk $[?%$trace]? $[$n?:ident]? : $t:term $[using $[$required:term],*]?) => do
+    let name : Name :=
+      match n? with
+      | none => `this
+      | some n => n.getId
+    withMainContext do
+      let (type, _) ← elabTermWithHoles t none (← getMainTag) true
+      let .mvar goal ← mkFreshExprMVar type
+        | failure
+      if let some _ ← librarySearch goal then
+        reportOutOfHeartbeats `library_search tk
+        throwError "observe did not find a solution"
+      else
+        let v := (← instantiateMVars (mkMVar goal)).headBeta
+        if trace.isSome then
+          addHaveSuggestion tk (some name) type v (checkState? := (← saveState))
+        let (_, newGoal) ← (← getMainGoal).note name v
+        replaceMainGoal [newGoal]
 
-@[tactic_alt observe] macro "observe?" h:(ppSpace ident)? " : " t:term : tactic =>
-  `(tactic| observe ? $[$h]? : $t)
+@[tactic_alt observe]
+macro "observe?" h:(ppSpace ident)? " : " t:term : tactic => `(tactic| observe ? $[$h]? : $t)
 
 @[tactic_alt observe]
 macro "observe?" h:(ppSpace ident)? " : " t:term " using " terms:(colGt term),+ : tactic =>

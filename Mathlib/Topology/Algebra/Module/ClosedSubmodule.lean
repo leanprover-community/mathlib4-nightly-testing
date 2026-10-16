@@ -25,15 +25,14 @@ Actually provide the `Order.Frame (ClosedSubmodule R M)` instance.
 
 open Function TopologicalSpace
 
-variable {ι : Sort*} {R M N O : Type*} [Semiring R]
-  [AddCommMonoid M] [TopologicalSpace M] [Module R M]
-  [AddCommMonoid N] [TopologicalSpace N] [Module R N]
-  [AddCommMonoid O] [TopologicalSpace O] [Module R O]
+variable
+  {ι : Sort*} {R M N O : Type*}
+  [Semiring R] [AddCommMonoid M] [TopologicalSpace M] [Module R M] [AddCommMonoid N]
+  [TopologicalSpace N] [Module R N] [AddCommMonoid O] [TopologicalSpace O] [Module R O]
 
 variable (R M) in
 /-- The type of closed submodules of a topological module. -/
-@[ext]
-structure ClosedSubmodule extends Submodule R M, Closeds M where
+@[ext] structure ClosedSubmodule extends Submodule R M, Closeds M where
 
 namespace ClosedSubmodule
 variable {s t : ClosedSubmodule R M} {x : M}
@@ -46,8 +45,9 @@ add_decl_doc toSubmodule
 /-- Reinterpret a closed submodule as a closed set. -/
 add_decl_doc toCloseds
 
-lemma toSubmodule_injective : Injective (toSubmodule : ClosedSubmodule R M → Submodule R M) :=
-  fun s t h ↦ by cases s; congr!
+lemma toSubmodule_injective
+    : Injective (toSubmodule : ClosedSubmodule R M → Submodule R M) := fun s t h ↦ by
+  cases s; congr!
 
 instance : SetLike (ClosedSubmodule R M) M where
   coe s := s.1
@@ -55,8 +55,8 @@ instance : SetLike (ClosedSubmodule R M) M where
 
 instance : PartialOrder (ClosedSubmodule R M) := .ofSetLike (ClosedSubmodule R M)
 
-lemma toCloseds_injective : Injective (toCloseds : ClosedSubmodule R M → Closeds M) :=
-  fun _s _t h ↦ SetLike.coe_injective congr(($h : Set M))
+lemma toCloseds_injective : Injective (toCloseds : ClosedSubmodule R M → Closeds M) := fun _s _t h ↦
+  SetLike.coe_injective congr(($h : Set M))
 
 instance : AddSubmonoidClass (ClosedSubmodule R M) M where
   zero_mem s := s.zero_mem
@@ -76,11 +76,9 @@ instance : Coe (ClosedSubmodule R M) (Submodule R M) where
 lemma coe_toSubmodule (s : ClosedSubmodule R M) : (s.toSubmodule : Set M) = s := rfl
 
 @[simp]
-lemma mem_toSubmodule_iff (x : M) (s : ClosedSubmodule R M) : x ∈ s.toSubmodule ↔ x ∈ s := by
-  rfl
+lemma mem_toSubmodule_iff (x : M) (s : ClosedSubmodule R M) : x ∈ s.toSubmodule ↔ x ∈ s := by rfl
 
-@[simp]
-lemma coe_toCloseds (s : ClosedSubmodule R M) : (s.toCloseds : Set M) = s := rfl
+@[simp] lemma coe_toCloseds (s : ClosedSubmodule R M) : (s.toCloseds : Set M) = s := rfl
 
 lemma isClosed (s : ClosedSubmodule R M) : IsClosed (s : Set M) := s.isClosed'
 
@@ -89,8 +87,10 @@ initialize_simps_projections ClosedSubmodule (carrier → coe, as_prefix coe)
 instance : CanLift (Submodule R M) (ClosedSubmodule R M) toSubmodule (IsClosed (X := M) ·) where
   prf s hs := ⟨⟨s, hs⟩, rfl⟩
 
-@[simp, norm_cast] lemma toSubmodule_le_toSubmodule {s t : ClosedSubmodule R M} :
-    s.toSubmodule ≤ t.toSubmodule ↔ s ≤ t := .rfl
+@[simp, norm_cast]
+lemma toSubmodule_le_toSubmodule {s t : ClosedSubmodule R M}
+    : s.toSubmodule ≤ t.toSubmodule ↔ s ≤ t :=
+  .rfl
 
 /-- The preimage of a closed submodule under a continuous linear map as a closed submodule. -/
 @[simps!]
@@ -101,13 +101,16 @@ def comap (f : M →L[R] N) (s : ClosedSubmodule R N) : ClosedSubmodule R M wher
 @[simp]
 lemma mem_comap {f : M →L[R] N} {s : ClosedSubmodule R N} {x : M} : x ∈ s.comap f ↔ f x ∈ s := .rfl
 
-@[simp] lemma toSubmodule_comap (f : M →L[R] N) (s : ClosedSubmodule R N) :
-    (s.comap f).toSubmodule = s.toSubmodule.comap (f : M →ₗ[R] N) := rfl
+@[simp]
+lemma toSubmodule_comap (f : M →L[R] N) (s : ClosedSubmodule R N)
+    : (s.comap f).toSubmodule = s.toSubmodule.comap (f : M →ₗ[R] N) :=
+  rfl
 
 @[simp] lemma comap_id (s : ClosedSubmodule R M) : s.comap (.id _ _) = s := rfl
 
-lemma comap_comap (g : N →L[R] O) (f : M →L[R] N) (s : ClosedSubmodule R O) :
-    (s.comap g).comap f = s.comap (g.comp f) := rfl
+lemma comap_comap (g : N →L[R] O) (f : M →L[R] N) (s : ClosedSubmodule R O)
+    : (s.comap g).comap f = s.comap (g.comp f) :=
+  rfl
 
 instance instInf : Min (ClosedSubmodule R M) where
   min s t := ⟨s ⊓ t, s.isClosed.inter t.isClosed⟩
@@ -116,12 +119,14 @@ instance instInfSet : InfSet (ClosedSubmodule R M) where
   sInf S := ⟨⨅ s ∈ S, s, by simpa using isClosed_biInter fun x hx ↦ x.isClosed⟩
 
 @[simp, norm_cast]
-lemma toSubmodule_sInf (S : Set (ClosedSubmodule R M)) :
-    toSubmodule (sInf S) = ⨅ s ∈ S, s.toSubmodule := rfl
+lemma toSubmodule_sInf (S : Set (ClosedSubmodule R M))
+    : toSubmodule (sInf S) = ⨅ s ∈ S, s.toSubmodule :=
+  rfl
 
 @[simp, norm_cast]
-lemma toSubmodule_iInf (f : ι → ClosedSubmodule R M) :
-    toSubmodule (⨅ i, f i) = ⨅ i, (f i).toSubmodule := by rw [iInf, toSubmodule_sInf, iInf_range]
+lemma toSubmodule_iInf (f : ι → ClosedSubmodule R M)
+    : toSubmodule (⨅ i, f i) = ⨅ i, (f i).toSubmodule := by
+  rw [iInf, toSubmodule_sInf, iInf_range]
 
 @[simp, norm_cast]
 lemma coe_sInf (S : Set (ClosedSubmodule R M)) : ↑(sInf S) = ⨅ s ∈ S, (s : Set M) := by
@@ -131,18 +136,21 @@ lemma coe_sInf (S : Set (ClosedSubmodule R M)) : ↑(sInf S) = ⨅ s ∈ S, (s :
 lemma coe_iInf (f : ι → ClosedSubmodule R M) : ↑(⨅ i, f i) = ⨅ i, (f i : Set M) := by
   simp [← coe_toSubmodule]
 
-@[simp] lemma mem_sInf {S : Set (ClosedSubmodule R M)} : x ∈ sInf S ↔ ∀ s ∈ S, x ∈ s := by
+@[simp]
+lemma mem_sInf {S : Set (ClosedSubmodule R M)} : x ∈ sInf S ↔ ∀ s ∈ S, x ∈ s := by
   simp [← SetLike.mem_coe]
 
-@[simp] lemma mem_iInf {f : ι → ClosedSubmodule R M} : x ∈ ⨅ i, f i ↔ ∀ i, x ∈ f i := by
+@[simp]
+lemma mem_iInf {f : ι → ClosedSubmodule R M} : x ∈ ⨅ i, f i ↔ ∀ i, x ∈ f i := by
   simp [← SetLike.mem_coe]
 
 instance instSemilatticeInf : SemilatticeInf (ClosedSubmodule R M) :=
   toSubmodule_injective.semilatticeInf _ .rfl .rfl fun _ _ ↦ rfl
 
 @[simp, norm_cast]
-lemma toSubmodule_inf (s t : ClosedSubmodule R M) :
-    toSubmodule (s ⊓ t) = s.toSubmodule ⊓ t.toSubmodule := rfl
+lemma toSubmodule_inf (s t : ClosedSubmodule R M)
+    : toSubmodule (s ⊓ t) = s.toSubmodule ⊓ t.toSubmodule :=
+  rfl
 
 @[simp, norm_cast] lemma coe_inf (s t : ClosedSubmodule R M) : ↑(s ⊓ t) = (s ⊓ t : Set M) := rfl
 
@@ -186,7 +194,8 @@ protected def closure (s : Submodule R M) : ClosedSubmodule R M where
   toSubmodule := s.topologicalClosure
   isClosed' := isClosed_closure
 
-@[simp] lemma closure_le {s : Submodule R M} {t : ClosedSubmodule R M} : s.closure ≤ t ↔ s ≤ t :=
+@[simp]
+lemma closure_le {s : Submodule R M} {t : ClosedSubmodule R M} : s.closure ≤ t ↔ s ≤ t :=
   t.isClosed.closure_subset_iff
 
 @[simp]
@@ -210,23 +219,25 @@ namespace ClosedSubmodule
 
 variable [ContinuousAdd N] [ContinuousConstSMul R N] {f : M →L[R] N}
 
-lemma closure_toSubmodule_eq {s : ClosedSubmodule R N} : s.toSubmodule.closure = s := by
-  ext x; simp
+lemma closure_toSubmodule_eq {s : ClosedSubmodule R N} : s.toSubmodule.closure = s := by ext x; simp
 
-/-- The closure of the image of a closed submodule under a continuous linear map is a closed
+/--
+The closure of the image of a closed submodule under a continuous linear map is a closed
 submodule.
 
 `ClosedSubmodule.map f` is left-adjoint to `ClosedSubmodule.comap f`.
-See `ClosedSubmodule.gc_map_comap`. -/
+See `ClosedSubmodule.gc_map_comap`.
+-/
 def map (f : M →L[R] N) (s : ClosedSubmodule R M) : ClosedSubmodule R N :=
   (s.toSubmodule.map (f : M →ₗ[R] N)).closure
 
 @[simp]
-lemma map_id [ContinuousAdd M] [ContinuousConstSMul R M] (s : ClosedSubmodule R M) :
-    s.map (.id _ _) = s := SetLike.coe_injective <| by simp [map]
+lemma map_id [ContinuousAdd M] [ContinuousConstSMul R M] (s : ClosedSubmodule R M)
+    : s.map (.id _ _) = s :=
+  SetLike.coe_injective <| by simp [map]
 
-lemma map_le_iff_le_comap {s : ClosedSubmodule R M} {t : ClosedSubmodule R N} :
-    map f s ≤ t ↔ s ≤ comap f t := by
+lemma map_le_iff_le_comap {s : ClosedSubmodule R M} {t : ClosedSubmodule R N}
+    : map f s ≤ t ↔ s ≤ comap f t := by
   simp [map, Submodule.map_le_iff_le_comap]; simp [← toSubmodule_le_toSubmodule]
 
 lemma gc_map_comap : GaloisConnection (map f) (comap f) := fun _ _ ↦ map_le_iff_le_comap
@@ -236,48 +247,48 @@ variable {s t : ClosedSubmodule R N} {x : N}
 instance : Max (ClosedSubmodule R N) where
   max s t := (s.toSubmodule ⊔ t.toSubmodule).closure
 
-@[simp]
-lemma toSubmodule_sup :
-  toSubmodule (s ⊔ t) = (s.toSubmodule ⊔ t.toSubmodule).closure := rfl
+@[simp] lemma toSubmodule_sup : toSubmodule (s ⊔ t) = (s.toSubmodule ⊔ t.toSubmodule).closure := rfl
 
 @[simp, norm_cast]
-lemma coe_sup :
-    ↑(s ⊔ t) = closure (s.toSubmodule ⊔ t.toSubmodule).carrier := by
+lemma coe_sup : ↑(s ⊔ t) = closure (s.toSubmodule ⊔ t.toSubmodule).carrier := by
   simp only [← coe_toSubmodule, toSubmodule_sup]
   simp only [coe_toSubmodule, Submodule.coe_closure, Submodule.carrier_eq_coe]
 
-@[simp] lemma mem_sup :
-    x ∈ s ⊔ t ↔ x ∈ closure (s.toSubmodule ⊔ t.toSubmodule).carrier := Iff.rfl
+@[simp] lemma mem_sup : x ∈ s ⊔ t ↔ x ∈ closure (s.toSubmodule ⊔ t.toSubmodule).carrier := Iff.rfl
 
 instance : SupSet (ClosedSubmodule R N) where
   sSup S := ⟨(⨆ s ∈ S, s.toSubmodule).closure, isClosed_closure⟩
 
 @[simp]
-lemma toSubmodule_sSup (S : Set (ClosedSubmodule R N)) :
-    toSubmodule (sSup S) = (⨆ s ∈ S, s.toSubmodule).closure := rfl
+lemma toSubmodule_sSup (S : Set (ClosedSubmodule R N))
+    : toSubmodule (sSup S) = (⨆ s ∈ S, s.toSubmodule).closure :=
+  rfl
 
 @[simp]
-lemma toSubmodule_iSup (f : ι → ClosedSubmodule R N) :
-    toSubmodule (⨆ i, f i) = (⨆ i, (f i).toSubmodule).closure := by
+lemma toSubmodule_iSup (f : ι → ClosedSubmodule R N)
+    : toSubmodule (⨆ i, f i) = (⨆ i, (f i).toSubmodule).closure := by
   rw [iSup, toSubmodule_sSup, iSup_range]
 
 @[simp, norm_cast]
-lemma coe_sSup (S : Set (ClosedSubmodule R N)) :
-    ↑(sSup S) = closure (⨆ s ∈ S, s.toSubmodule).carrier := by
+lemma coe_sSup (S : Set (ClosedSubmodule R N))
+    : ↑(sSup S) = closure (⨆ s ∈ S, s.toSubmodule).carrier := by
   simp only [← coe_toSubmodule, toSubmodule_sSup]
   simp only [coe_toSubmodule, Submodule.coe_closure, Submodule.carrier_eq_coe]
 
 @[simp, norm_cast]
-lemma coe_iSup (f : ι → ClosedSubmodule R N) :
-    ↑(⨆ i, f i) = closure (⨆ i, (f i).toSubmodule).carrier := by
+lemma coe_iSup (f : ι → ClosedSubmodule R N)
+    : ↑(⨆ i, f i) = closure (⨆ i, (f i).toSubmodule).carrier := by
   simp only [← coe_toSubmodule, toSubmodule_iSup, Submodule.carrier_eq_coe]
   rfl
 
-@[simp] lemma mem_sSup {S : Set (ClosedSubmodule R N)} :
-    x ∈ sSup S ↔ x ∈ closure (⨆ s ∈ S, s.toSubmodule).carrier := Iff.rfl
+@[simp]
+lemma mem_sSup {S : Set (ClosedSubmodule R N)}
+    : x ∈ sSup S ↔ x ∈ closure (⨆ s ∈ S, s.toSubmodule).carrier :=
+  Iff.rfl
 
-@[simp] lemma mem_iSup {f : ι → ClosedSubmodule R N} :
-    x ∈ ⨆ i, f i ↔ x ∈ closure (⨆ i, (f i).toSubmodule).carrier := by
+@[simp]
+lemma mem_iSup {f : ι → ClosedSubmodule R N}
+    : x ∈ ⨆ i, f i ↔ x ∈ closure (⨆ i, (f i).toSubmodule).carrier := by
   simp [← SetLike.mem_coe]
 
 instance : SemilatticeSup (ClosedSubmodule R N) where
@@ -307,10 +318,12 @@ namespace ClosedSubmodule
 
 variable (f : M ≃L[R] N)
 
-/-- A continuous equivalence `f` between modules `M` and `N` on `R` induces an equivalence between
+/--
+A continuous equivalence `f` between modules `M` and `N` on `R` induces an equivalence between
 closed submodules in `M` and those in `N` through `map f`.
 The definition does not use `ClosedSubmodule.map` because that has additional `ContinuousAdd` and
-`ContinuousConstSMul` type-class assumptions. -/
+`ContinuousConstSMul` type-class assumptions.
+-/
 def mapEquiv : ClosedSubmodule R M ≃ ClosedSubmodule R N where
   toFun s := ⟨s.toSubmodule.map f.toLinearMap, by simpa using s.isClosed⟩
   invFun t := ⟨t.toSubmodule.map f.symm.toLinearMap, by simpa using t.isClosed⟩
@@ -319,30 +332,25 @@ def mapEquiv : ClosedSubmodule R M ≃ ClosedSubmodule R N where
 
 variable (s : ClosedSubmodule R M)
 
-@[simp]
-lemma mapEquiv_apply : (s.mapEquiv f).toSubmodule = s.toSubmodule.map f.toLinearMap := rfl
+@[simp] lemma mapEquiv_apply : (s.mapEquiv f).toSubmodule = s.toSubmodule.map f.toLinearMap := rfl
 
-@[simp]
-lemma mapEquiv_symm : mapEquiv f.symm = (mapEquiv f).symm := rfl
+@[simp] lemma mapEquiv_symm : mapEquiv f.symm = (mapEquiv f).symm := rfl
 
 @[simp]
 lemma mem_mapEquiv_iff (x : N) : x ∈ (s.mapEquiv f) ↔ f.symm x ∈ s :=
   Submodule.mem_map_equiv (e := f.toLinearEquiv) s.toSubmodule
 
-lemma mem_mapEquiv_iff' (x : M) : f x ∈ (s.mapEquiv f) ↔ x ∈ s := by
-  simp
+lemma mem_mapEquiv_iff' (x : M) : f x ∈ (s.mapEquiv f) ↔ x ∈ s := by simp
 
 @[simp]
 lemma mapEquiv_bot_eq_bot [T1Space M] [T1Space N] : ((⊥ : ClosedSubmodule R M).mapEquiv f) = ⊥ := by
   ext x; simp
 
-@[simp]
-lemma mapEquiv_top_eq_top : ((⊤ : ClosedSubmodule R M).mapEquiv f) = ⊤ := by
-  ext x; simp
+@[simp] lemma mapEquiv_top_eq_top : ((⊤ : ClosedSubmodule R M).mapEquiv f) = ⊤ := by ext x; simp
 
 @[simp]
-lemma mapEquiv_inf_eq (f : M ≃L[R] N) {s t : ClosedSubmodule R M} :
-    (s ⊓ t).mapEquiv f = s.mapEquiv f ⊓ t.mapEquiv f := by
+lemma mapEquiv_inf_eq (f : M ≃L[R] N) {s t : ClosedSubmodule R M}
+    : (s ⊓ t).mapEquiv f = s.mapEquiv f ⊓ t.mapEquiv f := by
   ext x
   simp only [Submodule.carrier_eq_coe, coe_toSubmodule, SetLike.mem_coe, toSubmodule_inf,
     Submodule.coe_inf, Set.mem_inter_iff, mem_mapEquiv_iff, mem_inf]
@@ -350,8 +358,8 @@ lemma mapEquiv_inf_eq (f : M ≃L[R] N) {s t : ClosedSubmodule R M} :
 variable [ContinuousAdd N] [ContinuousConstSMul R N] [ContinuousAdd M] [ContinuousConstSMul R M]
 
 @[simp]
-lemma closure_map_eq_mapEquiv_closure (s : Submodule R M) :
-    (s.map f.toLinearMap).closure = s.closure.mapEquiv f := by
+lemma closure_map_eq_mapEquiv_closure (s : Submodule R M)
+    : (s.map f.toLinearMap).closure = s.closure.mapEquiv f := by
   ext x
   simp only [Submodule.carrier_eq_coe, coe_toSubmodule, Submodule.coe_closure, Submodule.map_coe,
     LinearEquiv.coe_coe, ContinuousLinearEquiv.coe_toLinearEquiv, mapEquiv_apply, Set.mem_image]
@@ -359,14 +367,13 @@ lemma closure_map_eq_mapEquiv_closure (s : Submodule R M) :
   simp
 
 @[simp]
-lemma mapEquiv_sup_eq (f : M ≃L[R] N) {s t : ClosedSubmodule R M} :
-    (s ⊔ t).mapEquiv f = s.mapEquiv f ⊔ t.mapEquiv f := by
+lemma mapEquiv_sup_eq (f : M ≃L[R] N) {s t : ClosedSubmodule R M}
+    : (s ⊔ t).mapEquiv f = s.mapEquiv f ⊔ t.mapEquiv f := by
   ext x
   simp only [mapEquiv_apply, toSubmodule_sup, Submodule.carrier_eq_coe, Submodule.map_coe,
     LinearEquiv.coe_coe, ContinuousLinearEquiv.coe_toLinearEquiv, coe_toSubmodule,
     Submodule.coe_closure, Set.mem_image]
-  have : f = f.toLinearEquiv.toLinearMap := by
-    exact LinearMap.ext (congrFun rfl)
+  have : f = f.toLinearEquiv.toLinearMap := by exact LinearMap.ext (congrFun rfl)
   rw [← this, ← Submodule.coe_closure, ← Submodule.map_sup, Submodule.map_coe]
   simp [← ContinuousLinearEquiv.image_closure]
 
@@ -374,8 +381,10 @@ end ClosedSubmodule
 
 section CompleteSpace
 
-instance {𝕜 H : Type*} [Semiring 𝕜] [AddCommMonoid H] [UniformSpace H] [Module 𝕜 H]
-    [CompleteSpace H] (K : ClosedSubmodule 𝕜 H) : CompleteSpace K := by
+instance
+    {𝕜 H : Type*} [Semiring 𝕜] [AddCommMonoid H] [UniformSpace H] [Module 𝕜 H] [CompleteSpace H]
+    (K : ClosedSubmodule 𝕜 H)
+    : CompleteSpace K := by
   apply IsComplete.completeSpace_coe
   rw [← ClosedSubmodule.carrier_eq_coe]
   exact K.isClosed'.isComplete

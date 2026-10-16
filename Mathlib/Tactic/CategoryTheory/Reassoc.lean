@@ -35,15 +35,19 @@ namespace Mathlib.Tactic.Reassoc
 
 /-- A variant of `eq_whisker` with a more convenient argument order for use in tactics. -/
 @[to_dual none]
-theorem eq_whisker' {C : Type*} [Category* C]
-    {X Y : C} {f g : X ⟶ Y} (w : f = g) {Z : C} (h : Y ⟶ Z) :
-    f ≫ h = g ≫ h := by rw [w]
+theorem eq_whisker'
+    {C : Type*} [Category* C] {X Y : C} {f g : X ⟶ Y} (w : f = g) {Z : C} (h : Y ⟶ Z)
+    : f ≫ h = g ≫ h := by
+  rw [w]
 
 /-- Simplify an expression using only the axioms of a category. -/
 def categorySimp (e : Expr) : MetaM Simp.Result :=
-  simpOnlyNames [``Category.comp_id, ``Category.id_comp, ``Category.assoc,
-    ``Functor.id_obj, ``Functor.id_map, ``Functor.comp_obj, ``Functor.comp_map] e
-    (config := { decide := false })
+  simpOnlyNames
+    [
+      ``Category.comp_id, ``Category.id_comp, ``Category.assoc,
+      ``Functor.id_obj, ``Functor.id_map, ``Functor.comp_obj, ``Functor.comp_map
+    ]
+    e (config := { decide := false })
 
 /--
 Given an equation `f = g` between morphisms `X ⟶ Y` in a category,
@@ -122,8 +126,9 @@ def reassocExpr (pf : Expr) : MetaM (Expr × Array MVarId) := do
   forallTelescopeReducing (← inferType pf) fun xs _ => do
     let pf := mkAppN pf xs
     let handlers ← reassocImplRef.get
-    let (pf, insts) ← handlers.firstM (fun h => h pf) <|> do
-      throwError "`reassoc` can only be used on terms about equality of (iso)morphisms"
+    let (pf, insts) ←
+      handlers.firstM (fun h => h pf)
+        <|> do throwError "`reassoc` can only be used on terms about equality of (iso)morphisms"
     return (← mkLambdaFVars xs pf, insts)
 
 /--
@@ -139,22 +144,24 @@ def reassocExpr' (pf : Expr) : TermElabM Expr := do
 
 private def reassocImpl (src : Name) (ref : Syntax) (kind : AttributeKind) : AttrM Name :=
   match ref with
-  | `(attr| reassoc $[$toDual:toDualOpt]? $optAttr) => MetaM.run' do
-    unless kind == AttributeKind.global do
-      throwAttrMustBeGlobal `reassoc kind
-    let toDual := toDual.isSome || (Translate.findTranslation? (← getEnv) ToDual.data src).isSome
-    let tgt := src.appendAfter "_assoc"
-    addRelatedDecl src tgt ref optAttr fun value levels => do
-      Term.TermElabM.run' <| Term.withSynthesize do
-        let pf ← reassocExpr' value
-        pure (pf, levels)
-    -- If the original declaration is tagged with `to_dual`,
-    -- then tag the generated declaration with `to_dual none`.
-    if toDual then
-      liftCommandElabM <| Command.elabCommand <| ←
-        `(command| attribute [to_dual none] $(mkIdent tgt))
-    return tgt
-  | _ => throwUnsupportedSyntax
+  | `(attr| reassoc $[$toDual:toDualOpt]? $optAttr) =>
+    MetaM.run' do
+      unless kind == AttributeKind.global do
+        throwAttrMustBeGlobal `reassoc kind
+      let toDual := toDual.isSome || (Translate.findTranslation? (← getEnv) ToDual.data src).isSome
+      let tgt := src.appendAfter "_assoc"
+      addRelatedDecl src tgt ref optAttr fun value levels => do
+        Term.TermElabM.run' <| Term.withSynthesize do
+          let pf ← reassocExpr' value
+          pure (pf, levels)
+      -- If the original declaration is tagged with `to_dual`,
+      -- then tag the generated declaration with `to_dual none`.
+      if toDual then
+        liftCommandElabM <| Command.elabCommand <|
+          ← `(command| attribute [to_dual none] $(mkIdent tgt))
+      return tgt
+  | _ =>
+    throwUnsupportedSyntax
 
 initialize
   registerGeneratingAttr `reassoc ((#[·]) <$> reassocImpl · · ·)
@@ -163,7 +170,7 @@ initialize
     descr := ""
     applicationTime := .afterCompilation
     add := (discard <| reassocImpl · · ·)
-    }
+  }
 
 /--
 `reassoc_of% t`, where `t` is

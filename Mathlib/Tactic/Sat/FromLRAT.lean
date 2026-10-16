@@ -49,16 +49,20 @@ open Std (HashMap)
 
 namespace Sat
 
-/-- A literal is a positive or negative occurrence of an atomic propositional variable.
-  Note that unlike DIMACS, 0 is a valid variable index. -/
+/--
+A literal is a positive or negative occurrence of an atomic propositional variable.
+Note that unlike DIMACS, 0 is a valid variable index.
+-/
 inductive Literal
   | pos : Nat → Literal
   | neg : Nat → Literal
 
-/-- Construct a literal. Positive numbers are translated to positive literals,
-  and negative numbers become negative literals. The input is assumed to be nonzero. -/
+/--
+Construct a literal. Positive numbers are translated to positive literals,
+and negative numbers become negative literals. The input is assumed to be nonzero.
+-/
 def Literal.ofInt (i : Int) : Literal :=
-  if i < 0 then Literal.neg (-i-1).toNat else Literal.pos (i-1).toNat
+  if i < 0 then Literal.neg (-i - 1).toNat else Literal.pos (i - 1).toNat
 
 /-- Swap the polarity of a literal. -/
 def Literal.negate : Literal → Literal
@@ -68,8 +72,8 @@ def Literal.negate : Literal → Literal
 instance : ToExpr Literal where
   toTypeExpr := mkConst ``Literal
   toExpr
-  | Literal.pos i => mkApp (mkConst ``Literal.pos) (mkRawNatLit i)
-  | Literal.neg i => mkApp (mkConst ``Literal.neg) (mkRawNatLit i)
+    | Literal.pos i => mkApp (mkConst ``Literal.pos) (mkRawNatLit i)
+    | Literal.neg i => mkApp (mkConst ``Literal.neg) (mkRawNatLit i)
 
 /-- A clause is a list of literals, thought of as a disjunction like `a ∨ b ∨ ¬c`. -/
 def Clause := List Literal
@@ -89,8 +93,10 @@ def Fmla.one (c : Clause) : Fmla := [c]
 /-- A conjunction of formulas. -/
 def Fmla.and (a b : Fmla) : Fmla := a ++ b
 
-/-- Formula `f` subsumes `f'` if all the clauses in `f'` are in `f`.
-We use this to prove that all clauses in the formula are subsumed by it. -/
+/--
+Formula `f` subsumes `f'` if all the clauses in `f'` are in `f`.
+We use this to prove that all clauses in the formula are subsumed by it.
+-/
 structure Fmla.subsumes (f f' : Fmla) : Prop where
   prop : ∀ x, x ∈ f' → x ∈ f
 
@@ -108,30 +114,34 @@ def Valuation.neg (v : Valuation) : Literal → Prop
   | Literal.pos i => ¬ v i
   | Literal.neg i => v i
 
-/-- `v.satisfies c` asserts that clause `c` satisfied by the valuation.
+/--
+`v.satisfies c` asserts that clause `c` satisfied by the valuation.
 It is written in a negative way: A clause like `a ∨ ¬b ∨ c` is rewritten as
 `¬a → b → ¬c → False`, so we are asserting that it is not the case that
-all literals in the clause are falsified. -/
+all literals in the clause are falsified.
+-/
 def Valuation.satisfies (v : Valuation) : Clause → Prop
   | [] => False
-  | l::c => v.neg l → v.satisfies c
+  | l :: c => v.neg l → v.satisfies c
 termination_by structural ps => ps
 
-/-- `v.satisfies_fmla f` asserts that formula `f` is satisfied by the valuation.
-A formula is satisfied if all clauses in it are satisfied. -/
+/--
+`v.satisfies_fmla f` asserts that formula `f` is satisfied by the valuation.
+A formula is satisfied if all clauses in it are satisfied.
+-/
 structure Valuation.satisfies_fmla (v : Valuation) (f : Fmla) : Prop where
   prop : ∀ c, c ∈ f → v.satisfies c
 
 /-- `f.proof c` asserts that `c` is derivable from `f`. -/
-def Fmla.proof (f : Fmla) (c : Clause) : Prop :=
-  ∀ v : Valuation, v.satisfies_fmla f → v.satisfies c
+def Fmla.proof (f : Fmla) (c : Clause) : Prop := ∀ v : Valuation, v.satisfies_fmla f → v.satisfies c
 
 /-- If `f` subsumes `c` (i.e. `c ∈ f`), then `f.proof c`. -/
-theorem Fmla.proof_of_subsumes {f : Fmla} {c : Clause}
-    (H : Fmla.subsumes f (Fmla.one c)) : f.proof c :=
-  fun _ h ↦ h.1 _ <| H.1 _ <| List.Mem.head ..
+theorem Fmla.proof_of_subsumes {f : Fmla} {c : Clause} (H : Fmla.subsumes f (Fmla.one c))
+    : f.proof c := fun _ h ↦
+  h.1 _ <| H.1 _ <| List.Mem.head ..
 
-/-- The core unit-propagation step.
+/--
+The core unit-propagation step.
 
 We have a local context of assumptions `¬l'` (sometimes called an assignment)
 and we wish to add `¬l` to the context, that is, we want to prove `l` is also falsified.
@@ -139,39 +149,53 @@ This is because there is a clause `a ∨ b ∨ ¬l` in the global context
 such that all literals in the clause are falsified except for `¬l`;
 so in the context `h₁` where we suppose that `¬l` is falsified,
 the clause itself is falsified so we can prove `False`.
-We continue the proof in `h₂`, with the assumption that `l` is falsified. -/
-theorem Valuation.by_cases {v : Valuation} {l}
-    (h₁ : v.neg l.negate → False) (h₂ : v.neg l → False) : False :=
-match l with
-| Literal.pos _ => h₂ h₁
-| Literal.neg _ => h₁ h₂
+We continue the proof in `h₂`, with the assumption that `l` is falsified.
+-/
+theorem Valuation.by_cases {v : Valuation} {l} (h₁ : v.neg l.negate → False) (h₂ : v.neg l → False)
+    : False :=
+  match l with
+  | Literal.pos _ => h₂ h₁
+  | Literal.neg _ => h₁ h₂
 
-/-- `v.implies p [a, b, c] 0` definitionally unfolds to `(v 0 ↔ a) → (v 1 ↔ b) → (v 2 ↔ c) → p`.
-This is used to introduce assumptions about the first `n` values of `v` during reification. -/
+/--
+`v.implies p [a, b, c] 0` definitionally unfolds to `(v 0 ↔ a) → (v 1 ↔ b) → (v 2 ↔ c) → p`.
+This is used to introduce assumptions about the first `n` values of `v` during reification.
+-/
 def Valuation.implies (v : Valuation) (p : Prop) : List Prop → Nat → Prop
-  | [], _ => p
-  | a::as, n => (v n ↔ a) → v.implies p as (n + 1)
+  | [], _ =>
+    p
+  | a :: as, n =>
+    (v n ↔ a) → v.implies p as (n + 1)
 termination_by structural ps => ps
 
-/-- `Valuation.mk [a, b, c]` is a valuation which is `a` at 0, `b` at 1 and `c` at 2, and false
-everywhere else. -/
+/--
+`Valuation.mk [a, b, c]` is a valuation which is `a` at 0, `b` at 1 and `c` at 2, and false
+everywhere else.
+-/
 def Valuation.mk : List Prop → Valuation
-  | [], _ => False
-  | a::_, 0 => a
-  | _::as, n + 1 => mk as n
+  | [], _ =>
+    False
+  | a :: _, 0 =>
+    a
+  | _ :: as, n + 1 =>
+    mk as n
 termination_by structural ps => ps
 
-/-- The fundamental relationship between `mk` and `implies`:
-`(mk ps).implies p ps 0` is equivalent to `p`. -/
-theorem Valuation.mk_implies {p} {as ps} (as₁) : as = List.reverseAux as₁ ps →
-    (Valuation.mk as).implies p ps as₁.length → p := by
+/--
+The fundamental relationship between `mk` and `implies`:
+`(mk ps).implies p ps 0` is equivalent to `p`.
+-/
+theorem Valuation.mk_implies {p} {as ps} (as₁)
+    : as = List.reverseAux as₁ ps → (Valuation.mk as).implies p ps as₁.length → p := by
   induction ps generalizing as₁ with
-  | nil => exact fun _ ↦ id
+  | nil =>
+    exact fun _ ↦ id
   | cons a as ih =>
-    refine fun e H ↦ @ih (a::as₁) e (H ?_)
-    subst e; clear ih H
-    suffices ∀ n n', n' = List.length as₁ + n →
-      ∀ bs, mk (as₁.reverseAux bs) n' ↔ mk bs n from this 0 _ rfl (a::as)
+    refine fun e H ↦ @ih (a :: as₁) e (H ?_)
+    subst e
+    clear ih H
+    suffices ∀ n n', n' = List.length as₁ + n → ∀ bs, mk (as₁.reverseAux bs) n' ↔ mk bs n from
+      this 0 _ rfl (a :: as)
     induction as₁ with
     | nil => simp
     | cons b as₁ ih => simpa using! fun n bs ↦ ih (n + 1) _ (Nat.succ_add ..) _
@@ -182,16 +206,21 @@ structure Fmla.reify (v : Valuation) (f : Fmla) (p : Prop) : Prop where
 
 variable {v : Valuation}
 
-/-- If `f` is unsatisfiable, and every `v` which agrees with `ps` implies `¬⟦f⟧_v → p`, then `p`.
+/--
+If `f` is unsatisfiable, and every `v` which agrees with `ps` implies `¬⟦f⟧_v → p`, then `p`.
 Equivalently, there exists a valuation `v` which agrees with `ps`,
-and every such valuation yields `¬⟦f⟧_v` because `f` is unsatisfiable. -/
-theorem Fmla.refute {p : Prop} {ps} (f : Fmla) (hf : f.proof [])
-    (hv : ∀ v, Valuation.implies v (Fmla.reify v f p) ps 0) : p :=
+and every such valuation yields `¬⟦f⟧_v` because `f` is unsatisfiable.
+-/
+theorem Fmla.refute
+    {p : Prop} {ps}
+    (f : Fmla) (hf : f.proof []) (hv : ∀ v, Valuation.implies v (Fmla.reify v f p) ps 0)
+    : p :=
   (Valuation.mk_implies [] rfl (hv _)).1 (hf _)
 
 /-- Negation turns AND into OR, so `¬⟦f₁ ∧ f₂⟧_v ≡ ¬⟦f₁⟧_v ∨ ¬⟦f₂⟧_v`. -/
-theorem Fmla.reify_or {f₁ : Fmla} {a : Prop} {f₂ : Fmla} {b : Prop}
-    (h₁ : Fmla.reify v f₁ a) (h₂ : Fmla.reify v f₂ b) : Fmla.reify v (f₁.and f₂) (a ∨ b) := by
+theorem Fmla.reify_or
+    {f₁ : Fmla} {a : Prop} {f₂ : Fmla} {b : Prop} (h₁ : Fmla.reify v f₁ a) (h₂ : Fmla.reify v f₂ b)
+    : Fmla.reify v (f₁.and f₂) (a ∨ b) := by
   refine ⟨fun H ↦ by_contra fun hn ↦ H ⟨fun c h ↦ by_contra fun hn' ↦ ?_⟩⟩
   rcases List.mem_append.1 h with h | h
   · exact hn <| Or.inl <| h₁.1 fun Hc ↦ hn' <| Hc.1 _ h
@@ -202,26 +231,29 @@ structure Clause.reify (v : Valuation) (c : Clause) (p : Prop) : Prop where
   prop : ¬ v.satisfies c → p
 
 /-- Reification of a single clause formula. -/
-theorem Fmla.reify_one {c : Clause} {a : Prop} (h : Clause.reify v c a) :
-    Fmla.reify v (Fmla.one c) a :=
-  ⟨fun H ↦ h.1 fun h ↦ H ⟨fun | _, List.Mem.head .. => h⟩⟩
+theorem Fmla.reify_one {c : Clause} {a : Prop} (h : Clause.reify v c a)
+    : Fmla.reify v (Fmla.one c) a := ⟨fun H ↦
+  h.1 fun h ↦
+    H ⟨fun
+      | _, List.Mem.head .. => h⟩⟩
 
 /-- Asserts that `¬⟦l⟧_v` implies `p`. -/
 structure Literal.reify (v : Valuation) (l : Literal) (p : Prop) : Prop where
   prop : v.neg l → p
 
 /-- Negation turns OR into AND, so `¬⟦l ∨ c⟧_v ≡ ¬⟦l⟧_v ∧ ¬⟦c⟧_v`. -/
-theorem Clause.reify_and {l : Literal} {a : Prop} {c : Clause} {b : Prop}
-    (h₁ : Literal.reify v l a) (h₂ : Clause.reify v c b) :
-    Clause.reify v (Clause.cons l c) (a ∧ b) :=
+theorem Clause.reify_and
+    {l : Literal} {a : Prop} {c : Clause} {b : Prop}
+    (h₁ : Literal.reify v l a) (h₂ : Clause.reify v c b)
+    : Clause.reify v (Clause.cons l c) (a ∧ b) :=
   ⟨fun H ↦ ⟨h₁.1 (by_contra fun hn ↦ H hn.elim), h₂.1 fun h ↦ H fun _ ↦ h⟩⟩
 
 /-- The reification of the empty clause is `True`: `¬⟦⊥⟧_v ≡ True`. -/
 theorem Clause.reify_zero : Clause.reify v Clause.nil True := ⟨fun _ ↦ trivial⟩
 
 /-- The reification of a singleton clause `¬⟦l⟧_v ≡ ¬⟦l⟧_v`. -/
-theorem Clause.reify_one {l : Literal} {a : Prop}
-    (h₁ : Literal.reify v l a) : Clause.reify v (Clause.nil.cons l) a :=
+theorem Clause.reify_one {l : Literal} {a : Prop} (h₁ : Literal.reify v l a)
+    : Clause.reify v (Clause.nil.cons l) a :=
   ⟨fun H ↦ ((Clause.reify_and h₁ Clause.reify_zero).1 H).1⟩
 
 /-- The reification of a positive literal `¬⟦a⟧_v ≡ ¬a`. -/
@@ -240,35 +272,46 @@ structure Clause where
   lits : Array Int
   /-- The clause expression of type `Clause` -/
   expr : Expr
-  /-- A proof of `⊢ ctx.proof c`.
+  /--
+  A proof of `⊢ ctx.proof c`.
   Note that we do not use `have` statements to cache these proofs:
   this is literally the proof expression itself. As a result, the proof terms
   rely heavily on dag-like sharing of the expression, and printing these proof terms
-  directly is likely to crash lean for larger examples. -/
+  directly is likely to crash lean for larger examples.
+  -/
   proof : Expr
 
-/-- Construct the clause expression from the input list. For example `[1, -2]` is translated to
-`Clause.cons (Literal.pos 1) (Clause.cons (Literal.neg 2) Clause.nil)`. -/
+/--
+Construct the clause expression from the input list. For example `[1, -2]` is translated to
+`Clause.cons (Literal.pos 1) (Clause.cons (Literal.neg 2) Clause.nil)`.
+-/
 def buildClause (arr : Array Int) : Expr :=
-  let nil  := mkConst ``Sat.Clause.nil
+  let nil := mkConst ``Sat.Clause.nil
   let cons := mkConst ``Sat.Clause.cons
   arr.foldr (fun i e ↦ mkApp2 cons (toExpr <| Sat.Literal.ofInt i) e) nil
 
 /-- Constructs the formula expression from the input CNF, as a balanced tree of `Fmla.and` nodes. -/
 partial def buildConj (arr : Array (Array Int)) (start stop : Nat) : Expr :=
   match stop - start with
-  | 0 => panic! "empty"
-  | 1 => mkApp (mkConst ``Sat.Fmla.one) (buildClause arr[start]!)
+  | 0 =>
+    panic! "empty"
+  | 1 =>
+    mkApp (mkConst ``Sat.Fmla.one) (buildClause arr[start]!)
   | len =>
     let mid := start + len / 2
     mkApp2 (mkConst ``Sat.Fmla.and) (buildConj arr start mid) (buildConj arr mid stop)
 
-/-- Constructs the proofs of `⊢ ctx.proof c` for each clause `c` in `ctx`.
-The proofs are stashed in a `HashMap` keyed on the clause ID. -/
-partial def buildClauses (arr : Array (Array Int)) (ctx : Expr) (start stop : Nat)
-    (f p : Expr) (accum : Nat × HashMap Nat Clause) : Nat × HashMap Nat Clause :=
+/--
+Constructs the proofs of `⊢ ctx.proof c` for each clause `c` in `ctx`.
+The proofs are stashed in a `HashMap` keyed on the clause ID.
+-/
+partial def buildClauses
+    (arr : Array (Array Int)) (ctx : Expr) (start stop : Nat) (f p : Expr)
+    (accum : Nat × HashMap Nat Clause)
+    : Nat × HashMap Nat Clause :=
   match stop - start with
-  | 0 => panic! "empty"
+  | 0 =>
+    panic! "empty"
   | 1 =>
     let c := f.appArg!
     let proof := mkApp3 (mkConst ``Sat.Fmla.proof_of_subsumes) ctx c p
@@ -283,72 +326,73 @@ partial def buildClauses (arr : Array (Array Int)) (ctx : Expr) (start stop : Na
     let accum := buildClauses arr ctx start mid f₁ p₁ accum
     buildClauses arr ctx mid stop f₂ p₂ accum
 
-/-- A localized clause reference.
-It is the same as `Clause` except that the proof is now a local variable. -/
+/--
+A localized clause reference.
+It is the same as `Clause` except that the proof is now a local variable.
+-/
 structure LClause where
   /-- The list of literals as read from the input file -/
   lits : Array Int
   /-- The clause expression of type `Clause` -/
   expr : Expr
-  /-- The bound variable index of the hypothesis asserting `⊢ ctx.proof c`,
+  /--
+  The bound variable index of the hypothesis asserting `⊢ ctx.proof c`,
   _counting from the outside and 1-based_. (We use this numbering because we will need to
-  reference the variable from multiple binder depths.) -/
+  reference the variable from multiple binder depths.)
+  -/
   depth : Nat
 
-/-- Construct an individual proof step `⊢ ctx.proof c`.
+/--
+Construct an individual proof step `⊢ ctx.proof c`.
 
-  * `db`: the current global context
-  * `ns`, `clause`: the new clause
-  * `pf`: the LRAT proof trace
-  * `ctx`: the main formula
+* `db`: the current global context
+* `ns`, `clause`: the new clause
+* `pf`: the LRAT proof trace
+* `ctx`: the main formula
 
-  The proof has three steps:
+The proof has three steps:
 
-  1. Introduce local assumptions `have h1 : ctx.proof c1 := p1` for each clause `c1`
-     referenced in the proof. We actually do all the introductions at once,
-     as in `(fun h1 h2 h3 ↦ ...) p1 p2 p3`, because we want `p_i` to not be under any binders
-     to avoid the cost of `instantiate` during typechecking and get the benefits of dag-like
-     sharing in the `pi` (which are themselves previous proof steps which may be large terms).
-     The hypotheses are in `gctx`, keyed on the clause ID.
+1. Introduce local assumptions `have h1 : ctx.proof c1 := p1` for each clause `c1`
+   referenced in the proof. We actually do all the introductions at once,
+   as in `(fun h1 h2 h3 ↦ ...) p1 p2 p3`, because we want `p_i` to not be under any binders
+   to avoid the cost of `instantiate` during typechecking and get the benefits of dag-like
+   sharing in the `pi` (which are themselves previous proof steps which may be large terms).
+   The hypotheses are in `gctx`, keyed on the clause ID.
 
-  2. Unfold `⊢ ctx.proof [a, b, c]` to
-     `∀ v, v.satisfies_fmla ctx → v.neg a → v.neg b → v.neg c → False` and `intro v hv ha hb hc`,
-     storing each `ha : v.neg a` in `lctx`, keyed on the literal `a`.
+2. Unfold `⊢ ctx.proof [a, b, c]` to
+   `∀ v, v.satisfies_fmla ctx → v.neg a → v.neg b → v.neg c → False` and `intro v hv ha hb hc`,
+   storing each `ha : v.neg a` in `lctx`, keyed on the literal `a`.
 
-  3. For each LRAT step `hc : ctx.proof [x, y]`, `hc v hv : v.neg x → v.neg y → False`.
-     We look for a literal that is not falsified in the clause. Since it is a unit propagation
-     step, there can be at most one such literal.
-     * If `x` is the non-falsified clause, let `x'` denote the negated literal of `x`.
-       Then `x'.negate` reduces to `x`, so `hnx : v.neg x'.negate |- hc v hv hnx hy : False`,
-       so we construct the term
-         `by_cases (fun hnx : v.neg x'.negate ↦ hc v hv hnx hy) (fun hx : v.neg x ↦ ...)`
-       and `hx` is added to the local context.
-     * If all clauses are falsified, then we are done: `hc v hv hx hy : False`.
+3. For each LRAT step `hc : ctx.proof [x, y]`, `hc v hv : v.neg x → v.neg y → False`.
+   We look for a literal that is not falsified in the clause. Since it is a unit propagation
+   step, there can be at most one such literal.
+   * If `x` is the non-falsified clause, let `x'` denote the negated literal of `x`.
+     Then `x'.negate` reduces to `x`, so `hnx : v.neg x'.negate |- hc v hv hnx hy : False`,
+     so we construct the term
+       `by_cases (fun hnx : v.neg x'.negate ↦ hc v hv hnx hy) (fun hx : v.neg x ↦ ...)`
+     and `hx` is added to the local context.
+   * If all clauses are falsified, then we are done: `hc v hv hx hy : False`.
 -/
-partial def buildProofStep (db : HashMap Nat Clause)
-    (ns pf : Array Int) (ctx clause : Expr) : Except String Expr := Id.run do
+partial def buildProofStep (db : HashMap Nat Clause) (ns pf : Array Int) (ctx clause : Expr)
+    : Except String Expr := Id.run do
   let mut lams := #[]
   let mut args := #[]
   let mut gctx : HashMap Nat LClause := {}
   -- step 1
   for i in pf do
     let i := i.natAbs
-    let some cl := db[i]? | return Except.error "missing clause"
-    if !gctx.contains i then
+    let some cl := db[i]?
+      | return Except.error "missing clause"
+    if ! gctx.contains i then
       lams := lams.push (mkApp2 (mkConst ``Sat.Fmla.proof) ctx cl.expr)
       args := args.push cl.proof
-      gctx := gctx.insert i {
-        lits := cl.lits
-        expr := cl.expr
-        depth := args.size
-      }
+      gctx := gctx.insert i { lits := cl.lits, expr := cl.expr, depth := args.size }
   let n := args.size
   -- step 2
   let mut f :=
-    (mkAppN · args) ∘
-    lams.foldr (mkLambda `c default) ∘
-    mkLambda `v default (mkConst ``Sat.Valuation) ∘
-    mkLambda `hv default (mkApp2 (mkConst ``Sat.Valuation.satisfies_fmla) (mkBVar 0) ctx)
+    (mkAppN · args) ∘ lams.foldr (mkLambda `c default)
+      ∘ mkLambda `v default (mkConst ``Sat.Valuation)
+      ∘ mkLambda `hv default (mkApp2 (mkConst ``Sat.Valuation.satisfies_fmla) (mkBVar 0) ctx)
   let v depth := mkBVar (depth + 1)
   let hv depth := mkBVar depth
   lams := #[]
@@ -365,7 +409,8 @@ partial def buildProofStep (db : HashMap Nat Clause)
   -- step 3
   for (step : Int) in pf do
     if step < 0 then return Except.error "unimplemented: RAT step"
-    let some cl := gctx[step.toNat]? | return Except.error "missing clause"
+    let some cl := gctx[step.toNat]?
+      | return Except.error "missing clause"
     let mut unit := none
     for i in cl.lits do
       unless lctx.contains i do
@@ -374,13 +419,18 @@ partial def buildProofStep (db : HashMap Nat Clause)
         unit := some i
     let mut pr := mkApp2 (mkBVar (depth + n + 2 - cl.depth)) (v depth) (hv depth)
     for i in cl.lits do
-      pr := mkApp pr <| mkBVar (match lctx[i]? with | some k => depth - k | _ => 0)
-    let some u := unit | return Except.ok <| f pr
+      pr :=
+        mkApp pr <| mkBVar (match lctx[i]? with
+          | some k => depth - k
+          | _ => 0)
+    let some u := unit
+      | return Except.ok <| f pr
     let lit := toExpr <| Sat.Literal.ofInt u
     let nlit := toExpr <| Sat.Literal.ofInt (-u)
-    let d1 := depth-1
-    let app := mkApp3 (mkConst ``Sat.Valuation.by_cases) (v d1) nlit <|
-      mkLambda `h default (mkApp2 (mkConst ``Sat.Valuation.neg) (v d1) lit) pr
+    let d1 := depth - 1
+    let app :=
+      mkApp3 (mkConst ``Sat.Valuation.by_cases) (v d1) nlit <|
+        mkLambda `h default (mkApp2 (mkConst ``Sat.Valuation.neg) (v d1) lit) pr
     let dom := mkApp2 (mkConst ``Sat.Valuation.neg) (v d1) nlit
     f := fun e ↦ f <| mkApp app <| mkLambda `h default dom e
     lctx := lctx.insert (-u) depth
@@ -393,30 +443,34 @@ inductive LRATStep
   | /-- A (multiple) deletion step, which deletes all the listed clause IDs from the context -/
     del (ids : Array Nat) : LRATStep
 
-/-- Build the main proof of `⊢ ctx.proof []` using the LRAT proof trace.
+/--
+Build the main proof of `⊢ ctx.proof []` using the LRAT proof trace.
 
-  * `arr`: The input CNF
-  * `ctx`: The abbreviated formula, a constant like `foo.ctx_1`
-  * `ctx'`: The definitional expansion of the formula, a tree of `Fmla.and` nodes
-  * `steps`: The input LRAT proof trace
+* `arr`: The input CNF
+* `ctx`: The abbreviated formula, a constant like `foo.ctx_1`
+* `ctx'`: The definitional expansion of the formula, a tree of `Fmla.and` nodes
+* `steps`: The input LRAT proof trace
 -/
-partial def buildProof (arr : Array (Array Int)) (ctx ctx' : Expr)
-    (steps : Array LRATStep) : MetaM Expr := do
+partial def buildProof (arr : Array (Array Int)) (ctx ctx' : Expr) (steps : Array LRATStep)
+    : MetaM Expr := do
   let p := mkApp (mkConst ``Sat.Fmla.subsumes_self) ctx
   let mut db := (buildClauses arr ctx 0 arr.size ctx' p default).2
   for step in steps do
     match step with
-    | LRATStep.del ds => db := ds.foldl (·.erase ·) db
+    | LRATStep.del ds =>
+      db := ds.foldl (·.erase ·) db
     | LRATStep.add i ns pf =>
       let e := buildClause ns
       match buildProofStep db ns pf ctx e with
       | Except.ok proof =>
         if ns.isEmpty then return proof
         db := db.insert i { lits := ns, expr := e, proof }
-      | Except.error msg => throwError msg
+      | Except.error msg =>
+        throwError msg
   throwError "failed to prove empty clause"
 
-/-- Build the type and value of the reified theorem. This rewrites all the SAT definitions
+/--
+Build the type and value of the reified theorem. This rewrites all the SAT definitions
 into standard operators on `Prop`, for example if the formula is `[[1, 2], [-1, 2], [-2]]` then
 this produces a proof of `⊢ ∀ a b : Prop, (a ∧ b) ∨ (¬a ∧ b) ∨ ¬b`. We use the input `nvars` to
 decide how many quantifiers to use.
@@ -439,16 +493,16 @@ partial def buildReify (ctx ctx' proof : Expr) (nvars : Nat) : Expr × Expr := I
   let (e, pr) := reifyFmla ctx'
   let mut pr := pr
   for i in [0:nvars] do
-    let j := nvars-i-1
+    let j := nvars - i - 1
     let ty := mkApp2 (mkConst ``Iff) (mkApp (mkBVar j) (mkRawNatLit j)) (mkBVar nvars)
     pr := mkLambda `h default ty pr
   pr := mkLambda `v default (mkConst ``Sat.Valuation) pr
-  let mut e := e.lowerLooseBVars (nvars+1) (nvars+1)
+  let mut e := e.lowerLooseBVars (nvars + 1) (nvars + 1)
   let cons := mkApp (mkConst ``List.cons [.zero]) (mkSort .zero)
   let nil := mkApp (mkConst ``List.nil [.zero]) (mkSort .zero)
   let rec mkPS depth e
-  | 0 => e
-  | n + 1 => mkPS (depth+1) (mkApp2 cons (mkBVar depth) e) n
+    | 0 => e
+    | n + 1 => mkPS (depth + 1) (mkApp2 cons (mkBVar depth) e) n
   pr := mkApp5 (mkConst ``Sat.Fmla.refute) e (mkPS 0 nil nvars) ctx proof pr
   for _ in [0:nvars] do
     e := mkForall `a default (mkSort .zero) e
@@ -470,12 +524,14 @@ where
       let c := f.appArg!
       let (e, h) := reifyClause c
       (e, mkApp4 (mkConst ``Sat.Fmla.reify_one) v c e h)
-    | _ => panic! "not a valid formula"
+    | _ =>
+      panic! "not a valid formula"
   /-- Returns `a` and `pr : reify v c a` given a clause `c` -/
   reifyClause c :=
     if c.appFn!.isConst then
       (mkConst ``True, mkApp (mkConst ``Sat.Clause.reify_zero) v)
-    else reifyClause1 c
+    else
+      reifyClause1 c
   /-- Returns `a` and `pr : reify v c a` given a nonempty clause `c` -/
   reifyClause1 c :=
     let l := c.appFn!.appArg!
@@ -495,10 +551,13 @@ where
       (mkApp (mkConst ``Not) e, mkApp4 (mkConst ``Sat.Literal.reify_pos) v e n h)
     | ``Sat.Literal.neg =>
       (e, mkApp4 (mkConst ``Sat.Literal.reify_neg) v e n h)
-    | _ => panic! "not a valid literal"
-  /-- Returns `a` and `pr : v n ↔ a` given a variable index `n`.
+    | _ =>
+      panic! "not a valid literal"
+  /--
+  Returns `a` and `pr : v n ↔ a` given a variable index `n`.
   These are both lookups into the context
-  `(a0 .. a(n-1) : Prop) (v) (h1 : v 0 ↔ a0) ... (hn : v (n-1) ↔ a(n-1))`. -/
+  `(a0 .. a(n-1) : Prop) (v) (h1 : v 0 ↔ a0) ... (hn : v (n-1) ↔ a(n-1))`.
+  -/
   reifyVar v :=
     let n := v.rawNatLit?.get!
     (mkBVar (2 * nvars - n), mkBVar (nvars - n - 1))
@@ -526,8 +585,10 @@ partial def parseNats (arr : Array Nat := #[]) : String.Parser (Array Nat) := do
   | 0 => pure arr
   | n => parseNats (arr.push n)
 
-/-- Parse a DIMACS format `.cnf` file.
-This is not very robust; we assume the file has had comments stripped. -/
+/--
+Parse a DIMACS format `.cnf` file.
+This is not very robust; we assume the file has had comments stripped.
+-/
 def parseDimacs : String.Parser (Nat × Array (Array Int)) := do
   pstring "p cnf" *> ws
   let nvars ← parseNat <* ws
@@ -538,16 +599,20 @@ def parseDimacs : String.Parser (Nat × Array (Array Int)) := do
   pure (nvars, clauses)
 
 /-- Parse an LRAT file into a list of steps. -/
-def parseLRAT : String.Parser (Array LRATStep) := many do
-  let step ← parseNat <* ws
-  if (← peek!) = 'd' then skip <* ws; pure <| LRATStep.del (← parseNats)
-  else ws; pure <| LRATStep.add step (← parseInts) (← parseInts)
+def parseLRAT : String.Parser (Array LRATStep) :=
+  many do
+    let step ← parseNat <* ws
+    if (← peek!) = 'd' then
+      skip <* ws; pure <| LRATStep.del (← parseNats)
+    else
+      ws; pure <| LRATStep.add step (← parseInts) (← parseInts)
 
 end Parser
 
 open Std.Internal
 
-/-- Core of `fromLRAT`. Constructs the context and main proof definitions,
+/--
+Core of `fromLRAT`. Constructs the context and main proof definitions,
 but not the reification theorem. Returns:
 
   * `nvars`: the number of variables specified in the CNF file
@@ -564,10 +629,10 @@ def fromLRATAux (cnf lrat : String) (name : Name) : MetaM (Nat × Expr × Expr �
   addDecl <| Declaration.defnDecl {
     name := ctxName
     levelParams := []
-    type        := mkConst ``Sat.Fmla
-    value       := ctx'
-    hints       := ReducibilityHints.regular 0
-    safety      := DefinitionSafety.safe
+    type := mkConst ``Sat.Fmla
+    value := ctx'
+    hints := ReducibilityHints.regular 0
+    safety := DefinitionSafety.safe
   }
   let ctx := mkConst ctxName
   let Parsec.ParseResult.success _ steps := Parser.parseLRAT ⟨_, lrat.startPos⟩
@@ -577,24 +642,25 @@ def fromLRATAux (cnf lrat : String) (name : Name) : MetaM (Nat × Expr × Expr �
   addDecl <| Declaration.thmDecl {
     name := declName
     levelParams := []
-    type        := mkApp2 (mkConst ``Sat.Fmla.proof) ctx (buildClause #[])
-    value       := proof
+    type := mkApp2 (mkConst ``Sat.Fmla.proof) ctx (buildClause #[])
+    value := proof
   }
   return (nvars, ctx, ctx', mkConst declName)
 
-/-- Main entry point. Given strings `cnf` and `lrat` with unparsed file data, and a name `name`,
+/--
+Main entry point. Given strings `cnf` and `lrat` with unparsed file data, and a name `name`,
 adds `theorem name : type := proof` where `type` is a propositional theorem like
 `∀ (a a_1 : Prop), (¬a ∧ ¬a_1 ∨ a ∧ ¬a_1) ∨ ¬a ∧ a_1 ∨ a ∧ a_1`.
 
 Also creates auxiliaries named `name.ctx_1` (for the CNF formula)
-and `name.proof_1` (for the LRAT proof), with `name` itself containing the reification proof. -/
+and `name.proof_1` (for the LRAT proof), with `name` itself containing the reification proof.
+-/
 def fromLRAT (cnf lrat : String) (name : Name) : MetaM Unit := do
   let (nvars, ctx, ctx', proof) ← fromLRATAux cnf lrat name
   let (type, value) := buildReify ctx ctx' proof nvars
   addDecl <| Declaration.thmDecl { name, levelParams := [], type, value }
 
 open Elab Term
-
 
 /--
 A macro for producing SAT proofs from CNF / LRAT files.
@@ -618,8 +684,8 @@ foo : ∀ (a a_1 : Prop), (¬a ∧ ¬a_1 ∨ a ∧ ¬a_1) ∨ ¬a ∧ a_1 ∨ a 
 * You can use the `include_str` macro in place of the two strings
   to load CNF / LRAT files from disk.
 -/
-elab "lrat_proof " n:(ident <|> "example")
-    ppSpace cnf:term:max ppSpace lrat:term:max : command => do
+elab "lrat_proof " n:(ident <|> "example") ppSpace cnf:term:max ppSpace lrat:term:max
+    : command => do
   let name := (← getCurrNamespace) ++ if n.1.isIdent then n.1.getId else `_example
   Command.liftTermElabM do
     let cnf ← unsafe evalTerm String (mkConst ``String) cnf
@@ -679,9 +745,10 @@ elab "from_lrat " cnf:term:max ppSpace lrat:term:max : term => do
   fromLRAT cnf lrat name
   return mkConst name
 
-example : ∀ (a b : Prop), (¬a ∧ ¬b ∨ a ∧ ¬b) ∨ ¬a ∧ b ∨ a ∧ b := from_lrat
-  "p cnf 2 4  1 2 0  -1 2 0  1 -2 0  -1 -2 0"
-  "5 -2 0 4 3 0  5 d 3 4 0  6 1 0 5 1 0  6 d 1 0  7 0 5 2 6 0"
+example : ∀ (a b : Prop), (¬a ∧ ¬b ∨ a ∧ ¬b) ∨ ¬a ∧ b ∨ a ∧ b :=
+  from_lrat
+    "p cnf 2 4  1 2 0  -1 2 0  1 -2 0  -1 -2 0"
+    "5 -2 0 4 3 0  5 d 3 4 0  6 1 0 5 1 0  6 d 1 0  7 0 5 2 6 0"
 
 end Sat
 

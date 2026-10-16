@@ -22,10 +22,12 @@ public meta section
 namespace Mathlib.Tactic.Linarith.SimplexAlgorithm
 
 /-- Preprocess the goal to pass it to `Linarith.SimplexAlgorithm.findPositiveVector`. -/
-def preprocess (matType : ℕ → ℕ → Type) [UsableInSimplexAlgorithm matType] (hyps : List Comp)
-    (maxVar : ℕ) : matType (maxVar + 1) (hyps.length) × List Nat :=
-  let values : List (ℕ × ℕ × ℚ) := hyps.foldlIdx (init := []) fun idx cur comp =>
-    cur ++ comp.coeffs.map fun (var, c) => (var, idx, c)
+def preprocess
+    (matType : ℕ → ℕ → Type) [UsableInSimplexAlgorithm matType] (hyps : List Comp) (maxVar : ℕ)
+    : matType (maxVar + 1) (hyps.length) × List Nat :=
+  let values : List (ℕ × ℕ × ℚ) :=
+    hyps.foldlIdx (init := []) fun idx cur comp =>
+      cur ++ comp.coeffs.map fun (var, c) => (var, idx, c)
 
   let strictIndexes := hyps.findIdxs (·.str == Ineq.lt)
   (ofValues values, strictIndexes)
@@ -36,8 +38,8 @@ Extract the certificate from the `vec` found by `Linarith.SimplexAlgorithm.findP
 def postprocess (vec : Array ℚ) : Std.HashMap ℕ ℕ :=
   let common_den : ℕ := vec.foldl (fun acc item => acc.lcm item.den) 1
   let vecNat : Array ℕ := vec.map (fun x : ℚ => (x * common_den).floor.toNat)
-  (∅ : Std.HashMap Nat Nat).insertMany <| vecNat.zipIdx.filterMap
-    fun ⟨item, idx⟩ => if item != 0 then some (idx, item) else none
+  (∅ : Std.HashMap Nat Nat).insertMany <|
+    vecNat.zipIdx.filterMap fun ⟨item, idx⟩ => if item != 0 then some (idx, item) else none
 
 end SimplexAlgorithm
 

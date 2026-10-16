@@ -6,7 +6,6 @@ Authors: Anne Baanen, Eric Wieser
 module
 
 public import Mathlib.Data.Fin.Tuple.Basic
-
 import Mathlib.Data.Set.Image
 
 /-!
@@ -40,7 +39,6 @@ Examples of usage can be found in the `MathlibTest/matrix.lean` file.
 
 @[expose] public section
 
-
 namespace Matrix
 
 universe u
@@ -50,18 +48,18 @@ variable {α : Type u}
 section MatrixNotation
 
 /-- `![]` is the vector with no entries. -/
-def vecEmpty : Fin 0 → α :=
-  Fin.elim0
+def vecEmpty : Fin 0 → α := Fin.elim0
 
-/-- `vecCons h t` prepends an entry `h` to a vector `t`.
+/--
+`vecCons h t` prepends an entry `h` to a vector `t`.
 
 The inverse functions are `vecHead` and `vecTail`.
 The notation `![a, b, ...]` expands to `vecCons a (vecCons b ...)`.
 -/
-def vecCons {n : ℕ} (h : α) (t : Fin n → α) : Fin n.succ → α :=
-  Fin.cons h t
+def vecCons {n : ℕ} (h : α) (t : Fin n → α) : Fin n.succ → α := Fin.cons h t
 
-/-- `![...]` notation is used to construct a vector `Fin n → α` using `Matrix.vecEmpty` and
+/--
+`![...]` notation is used to construct a vector `Fin n → α` using `Matrix.vecEmpty` and
 `Matrix.vecCons`.
 
 For instance, `![a, b, c] : Fin 3` is syntax for `vecCons a (vecCons b (vecCons c vecEmpty))`.
@@ -91,16 +89,15 @@ meta def vecEmptyUnexpander : Lean.PrettyPrinter.Unexpander
   | _ => throw ()
 
 /-- `vecHead v` gives the first entry of the vector `v` -/
-def vecHead {n : ℕ} (v : Fin n.succ → α) : α :=
-  v 0
+def vecHead {n : ℕ} (v : Fin n.succ → α) : α := v 0
 
 /-- `vecTail v` gives a vector consisting of all entries of `v` except the first -/
-def vecTail {n : ℕ} (v : Fin n.succ → α) : Fin n → α :=
-  v ∘ Fin.succ
+def vecTail {n : ℕ} (v : Fin n.succ → α) : Fin n → α := v ∘ Fin.succ
 
 variable {n : ℕ}
 
-/-- Use `![...]` notation for displaying a vector `Fin n → α`, for example:
+/--
+Use `![...]` notation for displaying a vector `Fin n → α`, for example:
 
 ```
 #eval ![1, 2] + ![3, 4] -- ![4, 6]
@@ -108,75 +105,77 @@ variable {n : ℕ}
 -/
 instance _root_.PiFin.hasRepr [Repr α] : Repr (Fin n → α) where
   reprPrec f _ :=
-    Std.Format.bracket "![" (Std.Format.joinSep
-      ((List.finRange n).map fun n => repr (f n)) ("," ++ Std.Format.line)) "]"
+    Std.Format.bracket "!["
+      (Std.Format.joinSep ((List.finRange n).map fun n => repr (f n)) ("," ++ Std.Format.line)) "]"
 
 end MatrixNotation
 
 variable {m n o : ℕ}
 
-theorem empty_eq (v : Fin 0 → α) : v = ![] :=
-  Subsingleton.elim _ _
+theorem empty_eq (v : Fin 0 → α) : v = ![] := Subsingleton.elim _ _
 
 section Val
 
-@[simp]
-theorem head_fin_const (a : α) : (vecHead fun _ : Fin (n + 1) => a) = a :=
-  rfl
+@[simp] theorem head_fin_const (a : α) : (vecHead fun _ : Fin (n + 1) => a) = a := rfl
 
-@[simp]
-theorem cons_val_zero (x : α) (u : Fin m → α) : vecCons x u 0 = x :=
-  rfl
+@[simp] theorem cons_val_zero (x : α) (u : Fin m → α) : vecCons x u 0 = x := rfl
 
-theorem cons_val_zero' (h : 0 < m.succ) (x : α) (u : Fin m → α) : vecCons x u ⟨0, h⟩ = x :=
-  rfl
+theorem cons_val_zero' (h : 0 < m.succ) (x : α) (u : Fin m → α) : vecCons x u ⟨0, h⟩ = x := rfl
 
 @[simp]
 theorem cons_val_succ (x : α) (u : Fin m → α) (i : Fin m) : vecCons x u i.succ = u i := by
   simp [vecCons]
 
 @[simp]
-theorem cons_val_succ' {i : ℕ} (h : i.succ < m.succ) (x : α) (u : Fin m → α) :
-    vecCons x u ⟨i.succ, h⟩ = u ⟨i, Nat.lt_of_succ_lt_succ h⟩ := by
+theorem cons_val_succ' {i : ℕ} (h : i.succ < m.succ) (x : α) (u : Fin m → α)
+    : vecCons x u ⟨i.succ, h⟩ = u ⟨i, Nat.lt_of_succ_lt_succ h⟩ := by
   simp only [vecCons, Fin.cons, Fin.cases_succ']
 
-/-- We don't want to always simplify `Fin.cons` to `vecCons`.
+/--
+We don't want to always simplify `Fin.cons` to `vecCons`.
 But in cases that we are already mixing the declarations for dependent tuples and non-dependent
-tuples, we can simplify to the non-dependent tuples. -/
-@[simp]
-lemma Fin.cons_vecEmpty {α : Type*} (x : α) : Fin.cons x ![] = ![x] := by rfl
+tuples, we can simplify to the non-dependent tuples.
+-/
+@[simp] lemma Fin.cons_vecEmpty {α : Type*} (x : α) : Fin.cons x ![] = ![x] := by rfl
 
 /-- Simplify `Fin.snoc` to `vecCons` in this case. -/
 @[simp]
-lemma Fin.snoc_vecEmpty {α : Type*} (x : α) : Fin.snoc ![] x = ![x] := by
+lemma Fin.snoc_vecEmpty {α : Type*} (x : α) : Fin.snoc (![]) x = ![x] := by
   ext i
   cases Fin.fin_one_eq_zero i
   rfl
 
-/-- We don't want to always simplify `Fin.cons` to `vecCons`.
+/--
+We don't want to always simplify `Fin.cons` to `vecCons`.
 But in cases that we are already mixing the declarations for dependent tuples and non-dependent
 tuples, we can simplify to the non-dependent tuples.
-This allows us to simplify `Fin.cons 5 ![1, 3, 7]` to `![5, 1, 3, 7]`. -/
+This allows us to simplify `Fin.cons 5 ![1, 3, 7]` to `![5, 1, 3, 7]`.
+-/
 @[simp]
-lemma Fin.cons_vecCons {α : Type*} (x y : α) (p : Fin n → α) :
-  Fin.cons x (vecCons y p) = vecCons x (vecCons y p) := by rfl
+lemma Fin.cons_vecCons {α : Type*} (x y : α) (p : Fin n → α)
+    : Fin.cons x (vecCons y p) = vecCons x (vecCons y p) := by
+  rfl
 
-/-- We push `Fin.snoc` inside `vecCons`. This allows us to simplify e.g.
-`Fin.snoc ![1, 3, 7] 5` to `![1, 3, 7, 5]`. -/
+/--
+We push `Fin.snoc` inside `vecCons`. This allows us to simplify e.g.
+`Fin.snoc ![1, 3, 7] 5` to `![1, 3, 7, 5]`.
+-/
 @[simp]
-lemma Fin.snoc_vecCons {α : Type*} (x y : α) (p : Fin n → α) :
-    Fin.snoc (vecCons y p) x = vecCons y (Fin.snoc p x) :=
+lemma Fin.snoc_vecCons {α : Type*} (x y : α) (p : Fin n → α)
+    : Fin.snoc (vecCons y p) x = vecCons y (Fin.snoc p x) :=
   Fin.cons_snoc_eq_snoc_cons .. |>.symm
 
 section simprocs
 open Lean Qq
 
-/-- Parses a chain of `Matrix.vecCons` calls into elements, leaving everything else in the tail.
+/--
+Parses a chain of `Matrix.vecCons` calls into elements, leaving everything else in the tail.
 
 `let ⟨xs, tailn, tail⟩ ← matchVecConsPrefix n e` decomposes `e : Fin n → _` in the form
-`vecCons x₀ <| ... <| vecCons xₙ <| tail` where `tail : Fin tailn → _`. -/
-meta partial def matchVecConsPrefix (n : Q(Nat)) (e : Expr) :
-    MetaM <| List Expr × Q(Nat) × Expr := do
+`vecCons x₀ <| ... <| vecCons xₙ <| tail` where `tail : Fin tailn → _`.
+-/
+meta partial def matchVecConsPrefix (n : Q(Nat)) (e : Expr)
+    : MetaM <| List Expr × Q(Nat) × Expr := do
   match_expr ← Meta.whnfR e with
   | Matrix.vecCons _ n x xs => do
     let (elems, n', tail) ← matchVecConsPrefix n xs
@@ -185,12 +184,16 @@ meta partial def matchVecConsPrefix (n : Q(Nat)) (e : Expr) :
     return ([], n, e)
 
 open Qq in
-/-- A simproc that handles terms of the form `Matrix.vecCons a f i` where `i` is a numeric literal.
+/--
+A simproc that handles terms of the form `Matrix.vecCons a f i` where `i` is a numeric literal.
 
-In practice, this is most effective at handling `![a, b, c] i`-style terms. -/
+In practice, this is most effective at handling `![a, b, c] i`-style terms.
+-/
 dsimproc cons_val (Matrix.vecCons _ _ _) := fun e => do
-  let_expr Matrix.vecCons α en x xs' ei := ← Meta.whnfR e | return .continue
-  let some i := ei.int? | return .continue
+  let_expr Matrix.vecCons α en x xs' ei := ← Meta.whnfR e
+    | return .continue
+  let some i := ei.int?
+    | return .continue
   let (xs, etailn, tail) ← matchVecConsPrefix en xs'
   let xs := x :: xs
   -- Determine if the tail is a numeral or only an offset.
@@ -206,7 +209,8 @@ dsimproc cons_val (Matrix.vecCons _ _ _) := fun e => do
   let wrapped_i ←
     if variadic then
       -- can't wrap as we don't know the length
-      unless 0 ≤ i ∧ i < xs.length + tailn do return .continue
+      unless 0 ≤ i ∧ i < xs.length + tailn do
+        return .continue
       pure i.toNat
     else
       pure (i % (xs.length + tailn)).toNat
@@ -220,9 +224,7 @@ dsimproc cons_val (Matrix.vecCons _ _ _) := fun e => do
 
 end simprocs
 
-@[simp]
-theorem head_cons (x : α) (u : Fin m → α) : vecHead (vecCons x u) = x :=
-  rfl
+@[simp] theorem head_cons (x : α) (u : Fin m → α) : vecHead (vecCons x u) = x := rfl
 
 @[simp]
 theorem tail_cons (x : α) (u : Fin m → α) : vecTail (vecCons x u) = u := by
@@ -230,11 +232,9 @@ theorem tail_cons (x : α) (u : Fin m → α) : vecTail (vecCons x u) = u := by
   simp [vecTail]
 
 @[simp]
-theorem _root_.Fin.tail_vecCons (x : α) (t : Fin n → α) : Fin.tail (Matrix.vecCons x t) = t :=
-  rfl
+theorem _root_.Fin.tail_vecCons (x : α) (t : Fin n → α) : Fin.tail (Matrix.vecCons x t) = t := rfl
 
-theorem empty_val' {n' : Type*} (j : n') : (fun i => (![] : Fin 0 → n' → α) i j) = ![] :=
-  empty_eq _
+theorem empty_val' {n' : Type*} (j : n') : (fun i => (![] : Fin 0 → n' → α) i j) = ![] := empty_eq _
 
 @[simp]
 theorem cons_head_tail (u : Fin m.succ → α) : vecCons (vecHead u) (vecTail u) = u :=
@@ -244,41 +244,37 @@ theorem cons_head_tail (u : Fin m.succ → α) : vecCons (vecHead u) (vecTail u)
 theorem range_cons (x : α) (u : Fin n → α) : Set.range (vecCons x u) = {x} ∪ Set.range u :=
   Set.ext fun y => by simp [Fin.exists_fin_succ, eq_comm]
 
-@[simp]
-theorem range_empty (u : Fin 0 → α) : Set.range u = ∅ :=
-  Set.range_eq_empty _
+@[simp] theorem range_empty (u : Fin 0 → α) : Set.range u = ∅ := Set.range_eq_empty _
 
 theorem range_cons_empty (x : α) (u : Fin 0 → α) : Set.range (Matrix.vecCons x u) = {x} := by
   rw [range_cons, range_empty, Set.union_empty]
 
 -- simp can prove this (up to commutativity)
-theorem range_cons_cons_empty (x y : α) (u : Fin 0 → α) :
-    Set.range (vecCons x <| vecCons y u) = {x, y} := by
+theorem range_cons_cons_empty (x y : α) (u : Fin 0 → α)
+    : Set.range (vecCons x <| vecCons y u) = {x, y} := by
   rw [range_cons, range_cons_empty, Set.singleton_union]
 
 theorem vecCons_const (a : α) : (vecCons a fun _ : Fin n => a) = fun _ => a :=
   funext <| Fin.forall_iff_succ.2 ⟨rfl, cons_val_succ _ _⟩
 
-theorem vec_single_eq_const (a : α) : ![a] = fun _ => a :=
-  funext <| Unique.forall_iff.2 rfl
+theorem vec_single_eq_const (a : α) : ![a] = fun _ => a := funext <| Unique.forall_iff.2 rfl
 
-/-- `![a, b, ...] 1` is equal to `b`.
+/--
+`![a, b, ...] 1` is equal to `b`.
 
-  The simplifier needs a special lemma for length `≥ 2`, in addition to
-  `cons_val_succ`, because `1 : Fin 1 = 0 : Fin 1`.
+The simplifier needs a special lemma for length `≥ 2`, in addition to
+`cons_val_succ`, because `1 : Fin 1 = 0 : Fin 1`.
 -/
-@[simp]
-theorem cons_val_one (x : α) (u : Fin m.succ → α) : vecCons x u 1 = u 0 :=
-  rfl
+@[simp] theorem cons_val_one (x : α) (u : Fin m.succ → α) : vecCons x u 1 = u 0 := rfl
 
 theorem cons_val_two (x : α) (u : Fin m.succ.succ → α) : vecCons x u 2 = vecHead (vecTail u) := rfl
 
-lemma cons_val_three (x : α) (u : Fin m.succ.succ.succ → α) :
-    vecCons x u 3 = vecHead (vecTail (vecTail u)) :=
+lemma cons_val_three (x : α) (u : Fin m.succ.succ.succ → α)
+    : vecCons x u 3 = vecHead (vecTail (vecTail u)) :=
   rfl
 
-lemma cons_val_four (x : α) (u : Fin m.succ.succ.succ.succ → α) :
-    vecCons x u 4 = vecHead (vecTail (vecTail (vecTail u))) :=
+lemma cons_val_four (x : α) (u : Fin m.succ.succ.succ.succ → α)
+    : vecCons x u 4 = vecHead (vecTail (vecTail (vecTail u))) :=
   rfl
 
 @[simp]
@@ -295,14 +291,16 @@ theorem vecCons_inj {x y : α} {u v : Fin n → α} : vecCons x u = vecCons y v 
 
 open Lean Qq in
 /-- `mkVecLiteralQ ![x, y, z]` produces the term `q(![$x, $y, $z])`. -/
-meta def _root_.PiFin.mkLiteralQ {u : Level} {α : Q(Type u)} {n : ℕ} (elems : Fin n → Q($α)) :
-    Q(Fin $n → $α) :=
+meta def _root_.PiFin.mkLiteralQ {u : Level} {α : Q(Type u)} {n : ℕ} (elems : Fin n → Q($α))
+    : Q(Fin $n → $α) :=
   loop 0 q(vecEmpty)
 where
-  /-- The core logic of `loop` is that `loop 0 ![] = ![a 0, a 1, a 2] = loop 1 ![a 2]`, where
+  /--
+  The core logic of `loop` is that `loop 0 ![] = ![a 0, a 1, a 2] = loop 1 ![a 2]`, where
   recursion starts from the end. In this example, on the right-hand side, the variable `rest := 1`
   tracks the length of the current generated notation `![a 2]`, and the last used index is
-  `n - rest` (`= 3 - 1 = 2`). -/
+  `n - rest` (`= 3 - 1 = 2`).
+  -/
   loop (i : ℕ) (rest : Q(Fin $i → $α)) : Q(Fin $n → $α) :=
     if h : i < n then
       loop (i + 1) q(vecCons $(elems (Fin.rev ⟨i, h⟩)) $rest)
@@ -325,20 +323,21 @@ of elements by virtue of the semantics of `bit0` and `bit1` and of
 addition on `Fin n`).
 -/
 
-
-/-- `vecAppend ho u v` appends two vectors of lengths `m` and `n` to produce
+/--
+`vecAppend ho u v` appends two vectors of lengths `m` and `n` to produce
 one of length `o = m + n`. This is a variant of `Fin.append` with an additional `ho` argument,
 which provides control of definitional equality for the vector length.
 
 This turns out to be helpful when providing simp lemmas to reduce `![a, b, c] n`, and also means
 that `vecAppend ho u v 0` is valid. `Fin.append u v 0` is not valid in this case because there is
-no `Zero (Fin (m + n))` instance. -/
+no `Zero (Fin (m + n))` instance.
+-/
 def vecAppend {α : Type*} {o : ℕ} (ho : o = m + n) (u : Fin m → α) (v : Fin n → α) : Fin o → α :=
   Fin.append u v ∘ Fin.cast ho
 
-theorem vecAppend_eq_ite {α : Type*} {o : ℕ} (ho : o = m + n) (u : Fin m → α) (v : Fin n → α) :
-    vecAppend ho u v = fun i : Fin o =>
-      if h : (i : ℕ) < m then u ⟨i, h⟩ else v ⟨(i : ℕ) - m, by lia⟩ := by
+theorem vecAppend_eq_ite {α : Type*} {o : ℕ} (ho : o = m + n) (u : Fin m → α) (v : Fin n → α)
+    : vecAppend ho u v
+      = fun i : Fin o => if h : (i : ℕ) < m then u ⟨i, h⟩ else v ⟨(i : ℕ) - m, by lia⟩ := by
   ext i
   rw [vecAppend, Fin.append, Function.comp_apply, Fin.addCases]
   congr with hi
@@ -346,12 +345,13 @@ theorem vecAppend_eq_ite {α : Type*} {o : ℕ} (ho : o = m + n) (u : Fin m → 
   rfl
 
 @[simp]
-theorem vecAppend_apply_zero {α : Type*} {o : ℕ} (ho : o + 1 = m + 1 + n) (u : Fin (m + 1) → α)
-    (v : Fin n → α) : vecAppend ho u v 0 = u 0 :=
+theorem vecAppend_apply_zero
+    {α : Type*} {o : ℕ} (ho : o + 1 = m + 1 + n) (u : Fin (m + 1) → α) (v : Fin n → α)
+    : vecAppend ho u v 0 = u 0 :=
   rfl
 
 @[simp]
-theorem empty_vecAppend (v : Fin n → α) : vecAppend n.zero_add.symm ![] v = v := by
+theorem empty_vecAppend (v : Fin n → α) : vecAppend n.zero_add.symm (![]) v = v := by
   ext
   simp [vecAppend_eq_ite]
 
@@ -361,8 +361,8 @@ theorem vecAppend_empty (v : Fin n → α) : vecAppend rfl v ![] = v := by
   simp [vecAppend_eq_ite]
 
 @[simp]
-theorem cons_vecAppend (ho : o + 1 = m + 1 + n) (x : α) (u : Fin m → α) (v : Fin n → α) :
-    vecAppend ho (vecCons x u) v = vecCons x (vecAppend (by lia) u v) := by
+theorem cons_vecAppend (ho : o + 1 = m + 1 + n) (x : α) (u : Fin m → α) (v : Fin n → α)
+    : vecAppend ho (vecCons x u) v = vecCons x (vecAppend (by lia) u v) := by
   ext i
   simp_rw [vecAppend_eq_ite]
   split_ifs with h
@@ -375,19 +375,23 @@ theorem cons_vecAppend (ho : o + 1 = m + 1 + n) (x : α) (u : Fin m → α) (v :
     · rw [not_lt, Fin.val_mk, Nat.add_le_add_iff_right] at h
       simp [not_lt.2 h]
 
-/-- `vecAlt0 v` gives a vector with half the length of `v`, with
-only alternate elements (even-numbered). -/
+/--
+`vecAlt0 v` gives a vector with half the length of `v`, with
+only alternate elements (even-numbered).
+-/
 def vecAlt0 (hm : m = n + n) (v : Fin m → α) (k : Fin n) : α := v ⟨(k : ℕ) + k, by lia⟩
 
-/-- `vecAlt1 v` gives a vector with half the length of `v`, with
-only alternate elements (odd-numbered). -/
+/--
+`vecAlt1 v` gives a vector with half the length of `v`, with
+only alternate elements (odd-numbered).
+-/
 def vecAlt1 (hm : m = n + n) (v : Fin m → α) (k : Fin n) : α :=
   v ⟨(k : ℕ) + k + 1, hm.symm ▸ Nat.add_succ_lt_add k.2 k.2⟩
 
 section bits
 
-theorem vecAlt0_vecAppend (v : Fin n → α) :
-    vecAlt0 rfl (vecAppend rfl v v) = v ∘ (fun n ↦ n + n) := by
+theorem vecAlt0_vecAppend (v : Fin n → α)
+    : vecAlt0 rfl (vecAppend rfl v v) = v ∘ (fun n ↦ n + n) := by
   ext i
   simp_rw [Function.comp, vecAlt0, vecAppend_eq_ite]
   split_ifs with h <;> congr
@@ -398,59 +402,61 @@ theorem vecAlt0_vecAppend (v : Fin n → α) :
     refine (Nat.mod_eq_of_lt ?_).symm
     lia
 
-theorem vecAlt1_vecAppend (v : Fin (n + 1) → α) :
-    vecAlt1 rfl (vecAppend rfl v v) = v ∘ (fun n ↦ (n + n) + 1) := by
+theorem vecAlt1_vecAppend (v : Fin (n + 1) → α)
+    : vecAlt1 rfl (vecAppend rfl v v) = v ∘ (fun n ↦ (n + n) + 1) := by
   ext i
   simp_rw [Function.comp, vecAlt1, vecAppend_eq_ite]
   cases n with
   | zero =>
     obtain ⟨i, hi⟩ := i
-    simp only [Nat.zero_add, Nat.lt_one_iff] at hi; subst i; rfl
+    simp only [Nat.zero_add, Nat.lt_one_iff] at hi
+    subst i
+    rfl
   | succ n =>
     split_ifs with h <;> congr
     · simp [Nat.mod_eq_of_lt, h]
     · rw [Fin.val_mk, not_lt] at h
-      simp only [Nat.mod_add_mod,
-        Nat.mod_eq_sub_mod h, show 1 % (n + 2) = 1 from Nat.mod_eq_of_lt (by lia)]
+      simp only [Nat.mod_add_mod, Nat.mod_eq_sub_mod h,
+        show 1 % (n + 2) = 1 from Nat.mod_eq_of_lt (by lia)]
       refine (Nat.mod_eq_of_lt ?_).symm
       lia
 
 @[simp]
-theorem vecHead_vecAlt0 (hm : m + 2 = n + 1 + (n + 1)) (v : Fin (m + 2) → α) :
-    vecHead (vecAlt0 hm v) = v 0 :=
+theorem vecHead_vecAlt0 (hm : m + 2 = n + 1 + (n + 1)) (v : Fin (m + 2) → α)
+    : vecHead (vecAlt0 hm v) = v 0 :=
   rfl
 
 @[simp]
-theorem vecHead_vecAlt1 (hm : m + 2 = n + 1 + (n + 1)) (v : Fin (m + 2) → α) :
-    vecHead (vecAlt1 hm v) = v 1 := by simp [vecHead, vecAlt1]
+theorem vecHead_vecAlt1 (hm : m + 2 = n + 1 + (n + 1)) (v : Fin (m + 2) → α)
+    : vecHead (vecAlt1 hm v) = v 1 := by
+  simp [vecHead, vecAlt1]
 
-theorem cons_vec_bit0_eq_alt0 (x : α) (u : Fin n → α) (i : Fin (n + 1)) :
-    vecCons x u (i + i) = vecAlt0 rfl (vecAppend rfl (vecCons x u) (vecCons x u)) i := by
+theorem cons_vec_bit0_eq_alt0 (x : α) (u : Fin n → α) (i : Fin (n + 1))
+    : vecCons x u (i + i) = vecAlt0 rfl (vecAppend rfl (vecCons x u) (vecCons x u)) i := by
   rw [vecAlt0_vecAppend]; rfl
 
-theorem cons_vec_bit1_eq_alt1 (x : α) (u : Fin n → α) (i : Fin (n + 1)) :
-    vecCons x u ((i + i) + 1) = vecAlt1 rfl (vecAppend rfl (vecCons x u) (vecCons x u)) i := by
+theorem cons_vec_bit1_eq_alt1 (x : α) (u : Fin n → α) (i : Fin (n + 1))
+    : vecCons x u ((i + i) + 1) = vecAlt1 rfl (vecAppend rfl (vecCons x u) (vecCons x u)) i := by
   rw [vecAlt1_vecAppend]; rfl
 
 end bits
 
 @[simp]
-theorem cons_vecAlt0 (h : m + 1 + 1 = n + 1 + (n + 1)) (x y : α) (u : Fin m → α) :
-    vecAlt0 h (vecCons x (vecCons y u)) = vecCons x (vecAlt0 (by lia) u) := by
+theorem cons_vecAlt0 (h : m + 1 + 1 = n + 1 + (n + 1)) (x y : α) (u : Fin m → α)
+    : vecAlt0 h (vecCons x (vecCons y u)) = vecCons x (vecAlt0 (by lia) u) := by
   ext i
   simp_rw [vecAlt0]
   rcases i with ⟨⟨⟩ | i, hi⟩
   · rfl
-  · simp only [← Nat.add_assoc, Nat.add_right_comm, cons_val_succ',
-      vecAlt0]
+  · simp only [← Nat.add_assoc, Nat.add_right_comm, cons_val_succ', vecAlt0]
 
 @[simp]
 theorem empty_vecAlt0 (α) {h} : vecAlt0 h (![] : Fin 0 → α) = ![] := by
   simp [eq_iff_true_of_subsingleton]
 
 @[simp]
-theorem cons_vecAlt1 (h : m + 1 + 1 = n + 1 + (n + 1)) (x y : α) (u : Fin m → α) :
-    vecAlt1 h (vecCons x (vecCons y u)) = vecCons y (vecAlt1 (by lia) u) := by
+theorem cons_vecAlt1 (h : m + 1 + 1 = n + 1 + (n + 1)) (x y : α) (u : Fin m → α)
+    : vecAlt1 h (vecCons x (vecCons y u)) = vecCons y (vecAlt1 (by lia) u) := by
   ext i
   simp_rw [vecAlt1]
   rcases i with ⟨⟨⟩ | i, hi⟩
@@ -463,8 +469,7 @@ theorem empty_vecAlt1 (α) {h} : vecAlt1 h (![] : Fin 0 → α) = ![] := by
 
 end Val
 
-lemma const_fin1_eq (x : α) : (fun _ : Fin 1 => x) = ![x] :=
-  (cons_fin_one x _).symm
+lemma const_fin1_eq (x : α) : (fun _ : Fin 1 => x) = ![x] := (cons_fin_one x _).symm
 
 /-!
 ### Interaction between cons and Equiv.swap
@@ -473,19 +478,21 @@ lemma const_fin1_eq (x : α) : (fun _ : Fin 1 => x) = ![x] :=
 section swap
 
 @[simp]
-lemma cons_cons_comp_swap_zero_one (a b : α) (x : Fin n → α) :
-    vecCons a (vecCons b x) ∘ (Equiv.swap 0 1) = vecCons b (vecCons a x) := by
+lemma cons_cons_comp_swap_zero_one (a b : α) (x : Fin n → α)
+    : vecCons a (vecCons b x) ∘ (Equiv.swap 0 1) = vecCons b (vecCons a x) := by
   ext j : 1
   match j with
-  | 0 => simp
-  | 1 => simp
+  | 0 =>
+    simp
+  | 1 =>
+    simp
   | ⟨i + 2, h⟩ =>
     have h' : (⟨i + 2, h⟩ : Fin n.succ.succ) = Fin.succ (Fin.succ ⟨i, by lia⟩) := by grind
     simp only [Nat.succ_eq_add_one, h', Function.comp_apply,
       Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero _) (Fin.succ_succ_ne_one _), cons_val_succ]
 
-lemma cons_swap (a : α) (x : Fin n → α) (i j : Fin n) :
-    vecCons a (x ∘ (Equiv.swap i j)) = vecCons a x ∘ (Equiv.swap i.succ j.succ) := by
+lemma cons_swap (a : α) (x : Fin n → α) (i j : Fin n)
+    : vecCons a (x ∘ (Equiv.swap i j)) = vecCons a x ∘ (Equiv.swap i.succ j.succ) := by
   ext k : 1
   rcases eq_or_ne k 0 with rfl | hk₀
   · simp [Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero i).symm (Fin.succ_ne_zero j).symm]

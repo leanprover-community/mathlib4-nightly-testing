@@ -31,7 +31,6 @@ compatibility condition `(r • s) • a = r • (s • a)`.
 
 @[expose] public section
 
-
 open scoped Pointwise
 
 universe u v w u₁ v₁
@@ -55,8 +54,7 @@ section Semiring
 variable [CommSemiring R] [CommSemiring S] [Semiring A]
 variable [Algebra R S] [Algebra S A]
 
-instance subalgebra (S₀ : Subalgebra R S) : IsScalarTower S₀ S A :=
-  of_algebraMap_eq fun _ ↦ rfl
+instance subalgebra (S₀ : Subalgebra R S) : IsScalarTower S₀ S A := of_algebraMap_eq fun _ ↦ rfl
 
 variable [Algebra R A] [IsScalarTower R S A]
 
@@ -78,13 +76,16 @@ variable {S A B} [CommSemiring R] [CommSemiring S] [Semiring A] [Semiring B]
 variable [Algebra R S] [Algebra S A] [Algebra R A] [Algebra S B] [Algebra R B]
 variable [IsScalarTower R S A] [IsScalarTower R S B]
 
-/-- Given a tower `A / ↥U / S / R` of algebras, where `U` is an `S`-subalgebra of `A`, reinterpret
-`U` as an `R`-subalgebra of `A`. -/
-def restrictScalars (U : Subalgebra S A) : Subalgebra R A :=
-  { U with
-    algebraMap_mem' := fun x ↦ by
-      rw [IsScalarTower.algebraMap_apply R S A]
-      exact U.algebraMap_mem _ }
+/--
+Given a tower `A / ↥U / S / R` of algebras, where `U` is an `S`-subalgebra of `A`, reinterpret
+`U` as an `R`-subalgebra of `A`.
+-/
+def restrictScalars (U : Subalgebra S A) : Subalgebra R A := {
+  U with
+  algebraMap_mem' := fun x ↦ by
+    rw [IsScalarTower.algebraMap_apply R S A]
+    exact U.algebraMap_mem _
+}
 
 @[simp]
 theorem coe_restrictScalars {U : Subalgebra S A} : (restrictScalars R U : Set A) = (U : Set A) :=
@@ -97,21 +98,23 @@ theorem restrictScalars_top : restrictScalars R (⊤ : Subalgebra S A) = ⊤ :=
   SetLike.coe_injective <| by dsimp
 
 @[simp]
-theorem restrictScalars_toSubmodule {U : Subalgebra S A} :
-    Subalgebra.toSubmodule (U.restrictScalars R) = U.toSubmodule.restrictScalars R :=
+theorem restrictScalars_toSubmodule {U : Subalgebra S A}
+    : Subalgebra.toSubmodule (U.restrictScalars R) = U.toSubmodule.restrictScalars R :=
   SetLike.coe_injective rfl
 
 @[simp]
 theorem mem_restrictScalars {U : Subalgebra S A} {x : A} : x ∈ restrictScalars R U ↔ x ∈ U :=
   Iff.rfl
 
-theorem restrictScalars_injective :
-    Function.Injective (restrictScalars R : Subalgebra S A → Subalgebra R A) := fun U V H ↦
+theorem restrictScalars_injective
+    : Function.Injective (restrictScalars R : Subalgebra S A → Subalgebra R A) := fun U V H ↦
   ext fun x ↦ by rw [← mem_restrictScalars R, H, mem_restrictScalars]
 
-/-- Produces an `R`-algebra map from `U.restrictScalars R` given an `S`-algebra map from `U`.
+/--
+Produces an `R`-algebra map from `U.restrictScalars R` given an `S`-algebra map from `U`.
 
-This is a special case of `AlgHom.restrictScalars` that can be helpful in elaboration. -/
+This is a special case of `AlgHom.restrictScalars` that can be helpful in elaboration.
+-/
 @[simp]
 def ofRestrictScalars (U : Subalgebra S A) (f : U →ₐ[S] B) : U.restrictScalars R →ₐ[R] B :=
   f.restrictScalars R
@@ -123,23 +126,23 @@ section CommSemiring
 variable [CommSemiring R] [CommSemiring A] [Algebra R A] (S : Subalgebra R A)
 
 @[simp]
-theorem restrictScalars_one :
-    Submodule.restrictScalars R (1 : Submodule S A) = Subalgebra.toSubmodule S := by
+theorem restrictScalars_one
+    : Submodule.restrictScalars R (1 : Submodule S A) = Subalgebra.toSubmodule S := by
   ext; simp
 
-theorem codisjoint_one_iff (I : Ideal A) :
-    Codisjoint (1 : Submodule S A) (I.restrictScalars S) ↔
-      Codisjoint (Subalgebra.toSubmodule S) (I.restrictScalars R) := by
+theorem codisjoint_one_iff (I : Ideal A)
+    : Codisjoint (1 : Submodule S A) (I.restrictScalars S)
+      ↔ Codisjoint (Subalgebra.toSubmodule S) (I.restrictScalars R) := by
   simp [← Submodule.codisjoint_restrictScalars_iff R]
 
-theorem disjoint_one_iff (I : Ideal A) :
-    Disjoint (1 : Submodule S A) (I.restrictScalars S) ↔
-      Disjoint (Subalgebra.toSubmodule S) (I.restrictScalars R) := by
+theorem disjoint_one_iff (I : Ideal A)
+    : Disjoint (1 : Submodule S A) (I.restrictScalars S)
+      ↔ Disjoint (Subalgebra.toSubmodule S) (I.restrictScalars R) := by
   simp [← Submodule.disjoint_restrictScalars_iff R]
 
 @[simp]
-lemma range_isScalarTower_toAlgHom :
-    LinearMap.range (IsScalarTower.toAlgHom R S A : S →ₗ[R] A) = Subalgebra.toSubmodule S := by
+lemma range_isScalarTower_toAlgHom
+    : LinearMap.range (IsScalarTower.toAlgHom R S A : S →ₗ[R] A) = Subalgebra.toSubmodule S := by
   ext
   simp [algebraMap_eq]
 
@@ -154,11 +157,12 @@ open Subalgebra
 variable [CommSemiring R] [CommSemiring S] [CommSemiring A]
 variable [Algebra R S] [Algebra S A] [Algebra R A] [IsScalarTower R S A]
 
-theorem adjoin_range_toAlgHom (t : Set A) :
-    (Algebra.adjoin (toAlgHom R S A).range t).restrictScalars R =
-      (Algebra.adjoin S t).restrictScalars R :=
+theorem adjoin_range_toAlgHom (t : Set A)
+    : (Algebra.adjoin (toAlgHom R S A).range t).restrictScalars R
+      = (Algebra.adjoin S t).restrictScalars R :=
   Subalgebra.ext fun z ↦
-    show z ∈ Subsemiring.closure (Set.range (algebraMap (toAlgHom R S A).range A) ∪ t : Set A) ↔
-         z ∈ Subsemiring.closure (Set.range (algebraMap S A) ∪ t : Set A) by simp
+    show z ∈ Subsemiring.closure (Set.range (algebraMap (toAlgHom R S A).range A) ∪ t : Set A)
+        ↔ z ∈ Subsemiring.closure (Set.range (algebraMap S A) ∪ t : Set A) by
+      simp
 
 end IsScalarTower

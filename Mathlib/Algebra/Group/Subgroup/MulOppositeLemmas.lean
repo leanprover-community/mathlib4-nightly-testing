@@ -27,11 +27,13 @@ variable {ι : Sort*} {G : Type*} [Group G]
 
 namespace Subgroup
 
-/-- We redeclare this instance to get keys
+/--
+We redeclare this instance to get keys
 `SMul (@Subtype (MulOpposite _) (@Membership.mem (MulOpposite _)
   (Subgroup (MulOpposite _) _) _ (@Subgroup.op _ _ _))) _`
 compared to the keys for `Submonoid.smul`
-`SMul (@Subtype _ (@Membership.mem _ (Submonoid _ _) _ _)) _` -/
+`SMul (@Subtype _ (@Membership.mem _ (Submonoid _ _) _ _)) _`
+-/
 @[to_additive] instance instSMul (H : Subgroup G) : SMul H.op G := Submonoid.smul ..
 
 /-! ### Lattice results -/
@@ -61,18 +63,15 @@ theorem unop_top : (⊤ : Subgroup Gᵐᵒᵖ).unop = ⊤ := rfl
 theorem unop_eq_top {S : Subgroup Gᵐᵒᵖ} : S.unop = ⊤ ↔ S = ⊤ := unop_injective.eq_iff' unop_top
 
 @[to_additive]
-theorem op_sup (S₁ S₂ : Subgroup G) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op :=
-  opEquiv.map_sup _ _
+theorem op_sup (S₁ S₂ : Subgroup G) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op := opEquiv.map_sup _ _
 
 @[to_additive]
 theorem unop_sup (S₁ S₂ : Subgroup Gᵐᵒᵖ) : (S₁ ⊔ S₂).unop = S₁.unop ⊔ S₂.unop :=
   opEquiv.symm.map_sup _ _
 
-@[to_additive]
-theorem op_inf (S₁ S₂ : Subgroup G) : (S₁ ⊓ S₂).op = S₁.op ⊓ S₂.op := rfl
+@[to_additive] theorem op_inf (S₁ S₂ : Subgroup G) : (S₁ ⊓ S₂).op = S₁.op ⊓ S₂.op := rfl
 
-@[to_additive]
-theorem unop_inf (S₁ S₂ : Subgroup Gᵐᵒᵖ) : (S₁ ⊓ S₂).unop = S₁.unop ⊓ S₂.unop := rfl
+@[to_additive] theorem unop_inf (S₁ S₂ : Subgroup Gᵐᵒᵖ) : (S₁ ⊓ S₂).unop = S₁.unop ⊓ S₂.unop := rfl
 
 @[to_additive]
 theorem op_sSup (S : Set (Subgroup G)) : (sSup S).op = sSup (.unop ⁻¹' S) :=
@@ -116,16 +115,13 @@ theorem unop_closure (s : Set Gᵐᵒᵖ) : (closure s).unop = closure (MulOppos
   simp_rw [Set.preimage_preimage, MulOpposite.op_unop, Set.preimage_id']
 
 @[to_additive]
-instance (H : Subgroup G) [Encodable H] : Encodable H.op :=
-  Encodable.ofEquiv H H.equivOp.symm
+instance (H : Subgroup G) [Encodable H] : Encodable H.op := Encodable.ofEquiv H H.equivOp.symm
 
 @[to_additive]
-instance (H : Subgroup G) [Countable H] : Countable H.op :=
-  Countable.of_equiv H H.equivOp
+instance (H : Subgroup G) [Countable H] : Countable H.op := Countable.of_equiv H H.equivOp
 
 @[to_additive]
-theorem smul_opposite_mul {H : Subgroup G} (x g : G) (h : H.op) :
-    h • (g * x) = g * h • x :=
+theorem smul_opposite_mul {H : Subgroup G} (x g : G) (h : H.op) : h • (g * x) = g * h • x :=
   mul_assoc _ _ _
 
 @[to_additive (attr := simp)]
@@ -134,16 +130,13 @@ theorem normal_op {H : Subgroup G} : H.op.Normal ↔ H.Normal := by
 
 @[to_additive] alias ⟨Normal.of_op, Normal.op⟩ := normal_op
 
-@[to_additive]
-instance op.instNormal {H : Subgroup G} [H.Normal] : H.op.Normal := .op ‹_›
+@[to_additive] instance op.instNormal {H : Subgroup G} [H.Normal] : H.op.Normal := .op ‹_›
 
 @[to_additive (attr := simp)]
-theorem normal_unop {H : Subgroup Gᵐᵒᵖ} : H.unop.Normal ↔ H.Normal := by
-  rw [← normal_op, op_unop]
+theorem normal_unop {H : Subgroup Gᵐᵒᵖ} : H.unop.Normal ↔ H.Normal := by rw [← normal_op, op_unop]
 
 @[to_additive] alias ⟨Normal.of_unop, Normal.unop⟩ := normal_unop
 
-@[to_additive]
-instance unop.instNormal {H : Subgroup Gᵐᵒᵖ} [H.Normal] : H.unop.Normal := .unop ‹_›
+@[to_additive] instance unop.instNormal {H : Subgroup Gᵐᵒᵖ} [H.Normal] : H.unop.Normal := .unop ‹_›
 
 end Subgroup

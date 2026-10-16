@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Disjointed
 public import Mathlib.Algebra.Order.Ring.Prod
 public import Mathlib.Data.Int.Interval
-
 import Mathlib.Algebra.Order.Ring.Int
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Zify
@@ -42,21 +41,21 @@ def box : ℕ → Finset α := disjointed fun n ↦ Icc (-n : α) n
 omit [IsOrderedRing α] in
 @[simp] lemma box_zero : (box 0 : Finset α) = {0} := by simp [box]
 
-lemma box_succ_eq_sdiff (n : ℕ) :
-    box (n + 1) = Icc (-n.succ : α) n.succ \ Icc (-n) n := by
+lemma box_succ_eq_sdiff (n : ℕ) : box (n + 1) = Icc (-n.succ : α) n.succ \ Icc (-n) n := by
   rw [box, Icc_neg_mono.disjointed_add_one]
   simp only [Nat.cast_add_one, Nat.succ_eq_add_one]
 
 lemma disjoint_box_succ_prod (n : ℕ) : Disjoint (box (n + 1)) (Icc (-n : α) n) := by
   rw [box_succ_eq_sdiff]; exact disjoint_sdiff_self_left
 
-@[simp] lemma box_succ_union_prod (n : ℕ) :
-    box (n + 1) ∪ Icc (-n : α) n = Icc (-n.succ : α) n.succ :=
+@[simp]
+lemma box_succ_union_prod (n : ℕ) : box (n + 1) ∪ Icc (-n : α) n = Icc (-n.succ : α) n.succ :=
   Icc_neg_mono.disjointed_add_one_sup _
 
-lemma box_succ_disjUnion (n : ℕ) :
-    (box (n + 1)).disjUnion (Icc (-n : α) n) (disjoint_box_succ_prod _) =
-      Icc (-n.succ : α) n.succ := by rw [disjUnion_eq_union, box_succ_union_prod]
+lemma box_succ_disjUnion (n : ℕ)
+    : (box (n + 1)).disjUnion (Icc (-n : α) n) (disjoint_box_succ_prod _)
+      = Icc (-n.succ : α) n.succ := by
+  rw [disjUnion_eq_union, box_succ_union_prod]
 
 @[simp] lemma zero_mem_box : (0 : α) ∈ box n ↔ n = 0 := by cases n <;> simp [box_succ_eq_sdiff]
 
@@ -70,14 +69,16 @@ open Finset
 /-! ### Product of locally finite ordered rings -/
 
 namespace Prod
-variable {α β : Type*} [Ring α] [PartialOrder α] [IsOrderedRing α]
-  [Ring β] [PartialOrder β] [IsOrderedRing β] [LocallyFiniteOrder α] [LocallyFiniteOrder β]
-  [DecidableEq α] [DecidableEq β] [DecidableLE (α × β)]
+variable
+  {α β : Type*} [Ring α] [PartialOrder α] [IsOrderedRing α] [Ring β] [PartialOrder β]
+  [IsOrderedRing β] [LocallyFiniteOrder α] [LocallyFiniteOrder β] [DecidableEq α] [DecidableEq β]
+  [DecidableLE (α × β)]
 
-@[simp] lemma card_box_succ (n : ℕ) :
-    #(box (n + 1) : Finset (α × β)) =
-      #(Icc (-n.succ : α) n.succ) * #(Icc (-n.succ : β) n.succ) -
-        #(Icc (-n : α) n) * #(Icc (-n : β) n) := by
+@[simp]
+lemma card_box_succ (n : ℕ)
+    : #(box (n + 1) : Finset (α × β))
+      = #(Icc (-n.succ : α) n.succ) * #(Icc (-n.succ : β) n.succ)
+        - #(Icc (-n : α) n) * #(Icc (-n : β) n) := by
   rw [box_succ_eq_sdiff, card_sdiff_of_subset (Icc_neg_mono n.le_succ), Finset.card_Icc_prod,
     Finset.card_Icc_prod]
   simp_rw [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, neg_add_rev, fst_add, fst_neg,
@@ -100,8 +101,10 @@ lemma card_box : ∀ {n}, n ≠ 0 → #(box n : Finset (ℤ × ℤ)) = 8 * n
     zify
     ring
 
-@[simp] lemma mem_box : ∀ {n}, x ∈ box n ↔ max x.1.natAbs x.2.natAbs = n
-  | 0 => by simp [Prod.ext_iff]
+@[simp]
+lemma mem_box : ∀ {n}, x ∈ box n ↔ max x.1.natAbs x.2.natAbs = n
+  | 0 => by
+    simp [Prod.ext_iff]
   | n + 1 => by
     simp [box_succ_eq_sdiff, Prod.le_def]
     omega

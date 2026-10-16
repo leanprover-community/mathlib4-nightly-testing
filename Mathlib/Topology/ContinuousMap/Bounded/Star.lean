@@ -45,10 +45,10 @@ In summary, if `β` is a C⋆-algebra over `𝕜`, then so is `α →ᵇ β`; no
 completeness is guaranteed when `β` is complete (see
 `BoundedContinuousFunction.complete`). -/
 
-
 section NormedAddCommGroup
 
-variable {𝕜 : Type*} [NormedField 𝕜] [StarRing 𝕜] [TopologicalSpace α] [SeminormedAddCommGroup β]
+variable
+  {𝕜 : Type*} [NormedField 𝕜] [StarRing 𝕜] [TopologicalSpace α] [SeminormedAddCommGroup β]
   [StarAddMonoid β] [NormedStarGroup β]
 
 variable [NormedSpace 𝕜 β] [StarModule 𝕜 β]
@@ -58,13 +58,13 @@ instance instStarAddMonoid : StarAddMonoid (α →ᵇ β) where
   star_involutive f := ext fun x => star_star (f x)
   star_add f g := ext fun x => star_add (f x) (g x)
 
-/-- The right-hand side of this equality can be parsed `star ∘ ⇑f` because of the
-instance `Pi.instStarForAll`. Upon inspecting the goal, one sees `⊢ ↑(star f) = star ↑f`. -/
-@[simp]
-theorem coe_star (f : α →ᵇ β) : ⇑(star f) = star (⇑f) := rfl
+/--
+The right-hand side of this equality can be parsed `star ∘ ⇑f` because of the
+instance `Pi.instStarForAll`. Upon inspecting the goal, one sees `⊢ ↑(star f) = star ↑f`.
+-/
+@[simp] theorem coe_star (f : α →ᵇ β) : ⇑(star f) = star (⇑f) := rfl
 
-@[simp]
-theorem star_apply (f : α →ᵇ β) (x : α) : star f x = star (f x) := rfl
+@[simp] theorem star_apply (f : α →ᵇ β) (x : α) : star f x = star (f x) := rfl
 
 instance instNormedStarGroup : NormedStarGroup (α →ᵇ β) where
   norm_star_le f := by simp only [norm_eq, star_apply, norm_star, le_of_eq]
@@ -96,13 +96,13 @@ end CStarRing
 
 section NormedAlgebra
 
-variable (𝕜 : Type*) [NormedField 𝕜] [TopologicalSpace α]
-  [NormedRing β] [NormedAlgebra 𝕜 β] [StarAddMonoid β] [NormedStarGroup β]
+variable
+  (𝕜 : Type*) [NormedField 𝕜] [TopologicalSpace α] [NormedRing β] [NormedAlgebra 𝕜 β]
+  [StarAddMonoid β] [NormedStarGroup β]
 
 /-- The ⋆-algebra-homomorphism forgetting that a bounded continuous function is bounded. -/
 @[simps!]
-def toContinuousMapStarₐ : (α →ᵇ β) →⋆ₐ[𝕜] C(α, β) := { toContinuousMapₐ 𝕜 with
-  map_star' _ := rfl }
+def toContinuousMapStarₐ : (α →ᵇ β) →⋆ₐ[𝕜] C(α, β) := { toContinuousMapₐ 𝕜 with map_star' _ := rfl }
 
 @[simp]
 theorem coe_toContinuousMapStarₐ (f : α →ᵇ β) : (f.toContinuousMapStarₐ 𝕜 : α → β) = f := rfl

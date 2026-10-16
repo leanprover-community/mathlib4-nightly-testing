@@ -23,13 +23,15 @@ open CategoryTheory Limits HomotopicalAlgebra
 
 namespace HomologicalComplex
 
-variable {C : Type*} [Category* C] [Preadditive C]
+variable
+  {C : Type*} [Category* C] [Preadditive C]
   {ι : Type*} {c : ComplexShape ι} [DecidableRel c.Rel]
-  (K : HomologicalComplex C c)
-  [∀ i, HasBinaryBiproduct (K.X i) (K.X i)]
+  (K : HomologicalComplex C c) [∀ i, HasBinaryBiproduct (K.X i) (K.X i)]
 
-/-- The precylinder object of a homological complex that is given by
-`HomologicalComplex.cylinder`. -/
+/--
+The precylinder object of a homological complex that is given by
+`HomologicalComplex.cylinder`.
+-/
 @[simps]
 noncomputable def precylinder [K.HasCylinder] : Precylinder K where
   I := K.cylinder
@@ -37,8 +39,10 @@ noncomputable def precylinder [K.HasCylinder] : Precylinder K where
   i₁ := cylinder.ι₁ _
   π := cylinder.π _
 
-/-- The pre-path object of a homological complex that is given by
-`HomologicalComplex.pathObject`. -/
+/--
+The pre-path object of a homological complex that is given by
+`HomologicalComplex.pathObject`.
+-/
 @[simps]
 noncomputable def prepathObject [K.HasPathObject] : PrepathObject K where
   P := K.pathObject

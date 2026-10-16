@@ -29,13 +29,11 @@ variable {r : ℝ} {x : E} {c : 𝕜} {ε : ℝ}
 variable (𝕜 E)
 
 /-- The norm of a seminormed space as a seminorm. -/
-@[expose] def normSeminorm : Seminorm 𝕜 E :=
-  { normAddGroupSeminorm E with smul' := norm_smul }
+@[expose] def normSeminorm : Seminorm 𝕜 E := { normAddGroupSeminorm E with smul' := norm_smul }
 
 -- Todo: exposing this definition is questionable, but unexposing needs some work
 
-@[simp]
-theorem coe_normSeminorm : ⇑(normSeminorm 𝕜 E) = norm := by rfl
+@[simp] theorem coe_normSeminorm : ⇑(normSeminorm 𝕜 E) = norm := by rfl
 
 @[simp]
 theorem ball_normSeminorm : (normSeminorm 𝕜 E).ball = Metric.ball := by
@@ -69,19 +67,23 @@ theorem balanced_closedBall_zero : Balanced 𝕜 (Metric.closedBall (0 : E) r) :
   rw [← closedBall_normSeminorm 𝕜]
   exact (normSeminorm _ _).balanced_closedBall_zero r
 
-/-- If there is a scalar `c` with `‖c‖ > 1`, then any element with nonzero norm can be
+/--
+If there is a scalar `c` with `‖c‖ > 1`, then any element with nonzero norm can be
 moved by scalar multiplication to any shell of width `‖c‖`. Also recap information on the norm of
-the rescaling element that shows up in applications. -/
-lemma rescale_to_shell_semi_normed_zpow (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : ‖x‖ ≠ 0) :
-    ∃ n : ℤ, c ^ n ≠ 0 ∧ ‖c ^ n • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖c ^ n • x‖) ∧
-      (‖c ^ n‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
+the rescaling element that shows up in applications.
+-/
+lemma rescale_to_shell_semi_normed_zpow (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : ‖x‖ ≠ 0)
+    : ∃ n : ℤ,
+      c ^ n ≠ 0 ∧ ‖c ^ n • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖c ^ n • x‖) ∧ (‖c ^ n‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
   (normSeminorm 𝕜 E).rescale_to_shell_zpow hc εpos hx
 
-/-- If there is a scalar `c` with `‖c‖ > 1`, then any element with nonzero norm can be
+/--
+If there is a scalar `c` with `‖c‖ > 1`, then any element with nonzero norm can be
 moved by scalar multiplication to any shell of width `‖c‖`. Also recap information on the norm of
-the rescaling element that shows up in applications. -/
-lemma rescale_to_shell_semi_normed (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : ‖x‖ ≠ 0) :
-    ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖d • x‖) ∧ (‖d‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
+the rescaling element that shows up in applications.
+-/
+lemma rescale_to_shell_semi_normed (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : ‖x‖ ≠ 0)
+    : ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖d • x‖) ∧ (‖d‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
   (normSeminorm 𝕜 E).rescale_to_shell hc εpos hx
 
 end Seminormed
@@ -91,16 +93,18 @@ section Normed
 variable [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {r : ℝ} {x : E} {c : 𝕜} {ε : ℝ}
 
-lemma rescale_to_shell_zpow (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : x ≠ 0) :
-    ∃ n : ℤ, c ^ n ≠ 0 ∧ ‖c ^ n • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖c ^ n • x‖) ∧
-      (‖c ^ n‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
+lemma rescale_to_shell_zpow (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : x ≠ 0)
+    : ∃ n : ℤ,
+      c ^ n ≠ 0 ∧ ‖c ^ n • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖c ^ n • x‖) ∧ (‖c ^ n‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
   rescale_to_shell_semi_normed_zpow hc εpos (norm_ne_zero_iff.mpr hx)
 
-/-- If there is a scalar `c` with `‖c‖ > 1`, then any element can be moved by scalar multiplication
+/--
+If there is a scalar `c` with `‖c‖ > 1`, then any element can be moved by scalar multiplication
 to any shell of width `‖c‖`. Also recap information on the norm of the rescaling element that shows
-up in applications. -/
-lemma rescale_to_shell (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : x ≠ 0) :
-    ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖d • x‖) ∧ (‖d‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
+up in applications.
+-/
+lemma rescale_to_shell (hc : 1 < ‖c‖) (εpos : 0 < ε) (hx : x ≠ 0)
+    : ∃ d : 𝕜, d ≠ 0 ∧ ‖d • x‖ < ε ∧ (ε / ‖c‖ ≤ ‖d • x‖) ∧ (‖d‖⁻¹ ≤ ε⁻¹ * ‖c‖ * ‖x‖) :=
   rescale_to_shell_semi_normed hc εpos (norm_ne_zero_iff.mpr hx)
 
 end Normed

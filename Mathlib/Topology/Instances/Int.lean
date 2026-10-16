@@ -18,27 +18,25 @@ The structure of a metric space on `ℤ` is introduced in this file, induced fro
 
 public section
 
-
 noncomputable section
 
 open Filter Metric Set Topology
 
 namespace Int
 
-instance : Dist ℤ :=
-  ⟨fun x y => dist (x : ℝ) y⟩
+instance : Dist ℤ := ⟨fun x y => dist (x : ℝ) y⟩
 
 theorem dist_eq (x y : ℤ) : dist x y = |(x : ℝ) - y| := rfl
 
 theorem dist_eq' (m n : ℤ) : dist m n = |m - n| := by rw [dist_eq]; norm_cast
 
-@[norm_cast, simp]
-theorem dist_cast_real (x y : ℤ) : dist (x : ℝ) y = dist x y :=
-  rfl
+@[norm_cast, simp] theorem dist_cast_real (x y : ℤ) : dist (x : ℝ) y = dist x y := rfl
 
 theorem pairwise_one_le_dist : Pairwise fun m n : ℤ => 1 ≤ dist m n := by
   intro m n hne
-  rw [dist_eq]; norm_cast; rwa [← zero_add (1 : ℤ), Int.add_one_le_iff, abs_pos, sub_ne_zero]
+  rw [dist_eq]
+  norm_cast
+  rwa [← zero_add (1 : ℤ), Int.add_one_le_iff, abs_pos, sub_ne_zero]
 
 theorem isUniformEmbedding_coe_real : IsUniformEmbedding ((↑) : ℤ → ℝ) :=
   isUniformEmbedding_bot_of_pairwise_le_dist zero_lt_one pairwise_one_le_dist
@@ -52,16 +50,15 @@ theorem preimage_ball (x : ℤ) (r : ℝ) : (↑) ⁻¹' ball (x : ℝ) r = ball
 
 theorem preimage_closedBall (x : ℤ) (r : ℝ) : (↑) ⁻¹' closedBall (x : ℝ) r = closedBall x r := rfl
 
-theorem ball_eq_Ioo (x : ℤ) (r : ℝ) : ball x r = Ioo ⌊↑x - r⌋ ⌈↑x + r⌉ := by
+theorem ball_eq_Ioo (x : ℤ) (r : ℝ) : ball x r = Ioo (⌊↑x - r⌋) ⌈↑x + r⌉ := by
   rw [← preimage_ball, Real.ball_eq_Ioo, preimage_Ioo]
 
-theorem closedBall_eq_Icc (x : ℤ) (r : ℝ) : closedBall x r = Icc ⌈↑x - r⌉ ⌊↑x + r⌋ := by
+theorem closedBall_eq_Icc (x : ℤ) (r : ℝ) : closedBall x r = Icc (⌈↑x - r⌉) ⌊↑x + r⌋ := by
   rw [← preimage_closedBall, Real.closedBall_eq_Icc, preimage_Icc]
 
-instance : ProperSpace ℤ :=
-  ⟨fun x r => by
-    rw [closedBall_eq_Icc]
-    exact (Set.finite_Icc _ _).isCompact⟩
+instance : ProperSpace ℤ := ⟨fun x r => by
+  rw [closedBall_eq_Icc]
+  exact (Set.finite_Icc _ _).isCompact⟩
 
 instance : IsOrderBornology ℤ :=
   .of_isCompactIcc 0 (by simp [Int.closedBall_eq_Icc]) (by simp [Int.closedBall_eq_Icc])

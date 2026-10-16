@@ -6,7 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Data.Rat.Cast.Lemmas
-
 import Mathlib.Data.Rat.Cast.CharZero
 
 /-!

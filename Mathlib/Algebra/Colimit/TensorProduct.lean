@@ -26,9 +26,10 @@ open TensorProduct
 variable {R M P : Type*} [CommSemiring R]
 variable [AddCommMonoid M] [Module R M] [AddCommMonoid P] [Module R P]
 
-theorem Submodule.FG.exists_rTensor_fg_inclusion_eq {N : Submodule R P} (hN : N.FG)
-    {x y : N ⊗[R] M} (eq : N.subtype.rTensor M x = N.subtype.rTensor M y) :
-    ∃ N', N'.FG ∧ ∃ h : N ≤ N', (N.inclusion h).rTensor M x = (N.inclusion h).rTensor M y := by
+theorem Submodule.FG.exists_rTensor_fg_inclusion_eq
+    {N : Submodule R P} (hN : N.FG)
+    {x y : N ⊗[R] M} (eq : N.subtype.rTensor M x = N.subtype.rTensor M y)
+    : ∃ N', N'.FG ∧ ∃ h : N ≤ N', (N.inclusion h).rTensor M x = (N.inclusion h).rTensor M y := by
   lift N to {N : Submodule R P // N.FG} using hN
   apply_fun (Module.fgSystem.equiv R P).symm.toLinearMap.rTensor M at eq
   apply_fun directLimitLeft _ _ at eq

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import Mathlib.Topology.Algebra.ValuativeRel.ValuativeTopology
-
 import Mathlib.RingTheory.Valuation.RankOne
 
 /-!
@@ -23,8 +22,10 @@ p-adic, p adic, padic, norm, valuation, cauchy, completion, p-adic completion
 
 public section
 
-variable {p : ℕ} [hp : Fact p.Prime] {Γ₀ : Type*} [LinearOrderedCommMonoidWithZero Γ₀]
-    (v : Valuation ℚ_[p] Γ₀)
+variable
+  {p : ℕ} [hp : Fact p.Prime]
+  {Γ₀ : Type*} [LinearOrderedCommMonoidWithZero Γ₀]
+  (v : Valuation (ℚ_[p]) Γ₀)
 
 open ValuativeRel WithZero Valuation MonoidWithZeroHom.ValueGroup₀
 
@@ -58,8 +59,8 @@ instance : IsValuativeTopology ℚ_[p] := by
     intro ⟨ε, hε, hball⟩
     obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hε (inv_lt_one_of_one_lt₀ h1p)
     have hnorm : ‖(p : ℚ_[p]) ^ n‖ < ε := by simpa [norm_pow, norm_p] using hn
-    refine ⟨Units.mk0 (mulValuation.restrict (p ^ n)) ?_,
-      fun z hz ↦ hball (mem_ball_zero_iff.mpr ?_)⟩
+    refine
+      ⟨Units.mk0 (mulValuation.restrict (p ^ n)) ?_, fun z hz ↦ hball (mem_ball_zero_iff.mpr ?_)⟩
     · exact (ne_zero_iff _).mpr (pow_ne_zero _ (Nat.cast_ne_zero.mpr hp.out.ne_zero))
     simp only [Set.mem_ofPred_eq, Units.val_mk0, restrict_lt_iff] at hz
     exact (norm_lt_norm_iff_mulValuation_lt.mpr hz).trans hnorm

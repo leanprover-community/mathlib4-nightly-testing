@@ -54,7 +54,7 @@ open scoped ZeroAtInfty
 
 instance [TopologicalSpace α] [NonUnitalCStarAlgebra A] : NonUnitalCStarAlgebra C₀(α, A) where
 
-instance [TopologicalSpace α] [NonUnitalCommCStarAlgebra A] :
-    NonUnitalCommCStarAlgebra C₀(α, A) where
+instance [TopologicalSpace α] [NonUnitalCommCStarAlgebra A]
+  : NonUnitalCommCStarAlgebra C₀(α, A) where
 
 end ZeroAtInftyContinuousMap

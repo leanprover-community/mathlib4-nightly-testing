@@ -25,11 +25,8 @@ variable {x y : M}
 
 namespace SModEq
 
-/--
-A variant of `SModEq.smul`, where the scalar belongs to an ideal.
--/
-theorem smul' (hxy : x ≡ y [SMOD U])
-    {c : R} (hc : c ∈ I) : c • x ≡ c • y [SMOD (I • U)] := by
+/-- A variant of `SModEq.smul`, where the scalar belongs to an ideal. -/
+theorem smul' (hxy : x ≡ y [SMOD U]) {c : R} (hc : c ∈ I) : c • x ≡ c • y [SMOD (I • U)] := by
   rw [SModEq.sub_mem] at hxy ⊢
   rw [← smul_sub]
   exact smul_mem_smul hc hxy

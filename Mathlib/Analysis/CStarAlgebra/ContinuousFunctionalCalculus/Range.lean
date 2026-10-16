@@ -6,7 +6,6 @@ Authors: Jireh Loreaux
 module
 
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances
-
 import Mathlib.Algebra.Order.Monoid.Submonoid
 import Mathlib.Topology.ContinuousMap.ContinuousSqrt
 
@@ -52,11 +51,11 @@ variable [ClosedEmbeddingContinuousFunctionalCalculus 𝕜 A p]
 variable [IsTopologicalRing A] [ContinuousStar A]
 
 open scoped ContinuousFunctionalCalculus in
-theorem range_cfcHom {a : A} (ha : p a) :
-    (cfcHom ha (R := 𝕜)).range = elemental 𝕜 a := by
+theorem range_cfcHom {a : A} (ha : p a) : (cfcHom ha (R := 𝕜)).range = elemental 𝕜 a := by
   rw [StarAlgHom.range_eq_map_top, ← ContinuousMap.elemental_id_eq_top, StarAlgebra.elemental,
     ← StarSubalgebra.topologicalClosure_map _ _ (cfcHom_isClosedEmbedding ha (R := 𝕜)).isClosedMap
-      (cfcHom_continuous ha), StarAlgHom.map_adjoin]
+      (cfcHom_continuous ha),
+    StarAlgHom.map_adjoin]
   congr
   simpa using cfcHom_id ha
 
@@ -69,8 +68,7 @@ variable [ContinuousFunctionalCalculus 𝕜 A p]
 variable [IsTopologicalRing A] [ContinuousStar A]
 
 open scoped ContinuousFunctionalCalculus in
-theorem range_cfcHom_le {a : A} (ha : p a) :
-    (cfcHom ha (R := 𝕜)).range ≤ elemental 𝕜 a := by
+theorem range_cfcHom_le {a : A} (ha : p a) : (cfcHom ha (R := 𝕜)).range ≤ elemental 𝕜 a := by
   grw [StarAlgHom.range_eq_map_top, ← ContinuousMap.elemental_id_eq_top, StarAlgebra.elemental,
     StarSubalgebra.map_topologicalClosure_le _ _ (cfcHom_continuous ha (R := 𝕜)),
     StarAlgHom.map_adjoin]
@@ -81,20 +79,21 @@ lemma range_cfc_subset {a : A} (ha : p a) : Set.range (cfc (R := 𝕜) · a) ⊆
 
 variable {𝕜}
 
-theorem cfcHom_mem_elemental {a : A} (ha : p a) (f : C(spectrum 𝕜 a, 𝕜)) :
-    cfcHom ha f ∈ elemental 𝕜 a :=
+theorem cfcHom_mem_elemental {a : A} (ha : p a) (f : C(spectrum 𝕜 a, 𝕜))
+    : cfcHom ha f ∈ elemental 𝕜 a :=
   range_cfcHom_le 𝕜 ha ⟨f, rfl⟩
 
 @[simp, grind ←]
-theorem cfc_mem_elemental (f : 𝕜 → 𝕜) (a : A) :
-    cfc f a ∈ elemental 𝕜 a :=
-  cfc_cases _ a f (zero_mem _) fun hf ha ↦
-    cfcHom_mem_elemental ha ⟨_, hf.domRestrict⟩
+theorem cfc_mem_elemental (f : 𝕜 → 𝕜) (a : A) : cfc f a ∈ elemental 𝕜 a :=
+  cfc_cases _ a f (zero_mem _) fun hf ha ↦ cfcHom_mem_elemental ha ⟨_, hf.domRestrict⟩
 
-lemma cfc_mem {𝕜' S : Type*} [Monoid 𝕜'] [MulAction 𝕜' A] [SetLike S A] [SubringClass S A]
-    [SMul 𝕜 𝕜'] [IsScalarTower 𝕜 𝕜' A] [SMulMemClass S 𝕜' A] [StarMemClass S A] {s : S}
-    [hs : IsClosed (s : Set A)] (f : 𝕜 → 𝕜) {a : A} (has : a ∈ s) :
-    cfc f a ∈ s :=
+lemma cfc_mem
+    {𝕜' S : Type*} [Monoid 𝕜'] [MulAction 𝕜' A] [SetLike S A] [SubringClass S A] [SMul 𝕜 𝕜']
+    [IsScalarTower 𝕜 𝕜' A] [SMulMemClass S 𝕜' A] [StarMemClass S A]
+    {s : S} [hs : IsClosed (s : Set A)]
+    (f : 𝕜 → 𝕜)
+    {a : A} (has : a ∈ s)
+    : cfc f a ∈ s :=
   have := SMulMemClass.ofIsScalarTower S 𝕜 𝕜' A
   StarSubalgebra.topologicalClosure_minimal (t := .ofClass s) (by simpa) (by simpa)
     (cfc_mem_elemental f a)
@@ -106,9 +105,9 @@ variable {A : Type*} [Ring A] [StarRing A] [Algebra ℝ A] [TopologicalSpace A]
 variable [IsTopologicalRing A]
 variable [T2Space A] [PartialOrder A] [NonnegSpectrumClass ℝ A] [StarOrderedRing A]
 
-lemma range_cfc_nnreal_eq_image_cfc_real [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
-    (a : A) (ha : 0 ≤ a := by cfc_tac) :
-    Set.range (cfc (R := ℝ≥0) · a) = (cfc · a) '' {f | ∀ x ∈ spectrum ℝ a, 0 ≤ f x} := by
+lemma range_cfc_nnreal_eq_image_cfc_real
+    [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac)
+    : Set.range (cfc (R := ℝ≥0) · a) = (cfc · a) '' {f | ∀ x ∈ spectrum ℝ a, 0 ≤ f x} := by
   ext
   constructor
   · rintro ⟨f, rfl⟩
@@ -121,15 +120,15 @@ lemma range_cfc_nnreal_eq_image_cfc_real [ContinuousFunctionalCalculus ℝ A IsS
 variable [ContinuousStar A] [StarModule ℝ A]
 
 lemma range_cfc_nnreal_subset
-    [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac) :
-    Set.range (cfc (R := ℝ≥0) · a) ⊆ {x | x ∈ StarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
+    [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac)
+    : Set.range (cfc (R := ℝ≥0) · a) ⊆ {x | x ∈ StarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
   grw [range_cfc_nnreal_eq_image_cfc_real a ha, Set.ofPred_and, SetLike.setOfPred_mem_eq,
     ← range_cfc_subset ℝ ha.isSelfAdjoint, Set.inter_comm, ← Set.image_preimage_eq_inter_range]
   exact Set.image_mono fun _ ↦ cfc_nonneg
 
 lemma range_cfc_nnreal
-    [ClosedEmbeddingContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a) :
-    Set.range (cfc (R := ℝ≥0) · a) = {x | x ∈ StarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
+    [ClosedEmbeddingContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a)
+    : Set.range (cfc (R := ℝ≥0) · a) = {x | x ∈ StarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
   apply subset_antisymm (range_cfc_nnreal_subset a ha)
   rw [range_cfc_nnreal_eq_image_cfc_real a ha, Set.ofPred_and, SetLike.setOfPred_mem_eq,
     ← range_cfc _ ha.isSelfAdjoint, Set.inter_comm, ← Set.image_preimage_eq_inter_range]
@@ -137,12 +136,14 @@ lemma range_cfc_nnreal
   exact cfc_cases _ a f ⟨0, by simp, by simp⟩ fun hf' ha' ↦
     ⟨f, (cfc_nonneg_iff f a hf' ha').mp (by simpa), by simp [cfc_apply f a ha' hf']⟩
 
-theorem cfc_nnreal_mem {𝕜 : Type*} [RCLike 𝕜] [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
-    {S : Type*} [MulAction 𝕜 A] [SetLike S A]
-    [SubringClass S A] [IsScalarTower ℝ 𝕜 A]
-    [SMulMemClass S 𝕜 A] [StarMemClass S A] {s : S} [hs : IsClosed (s : Set A)]
-    (f : ℝ≥0 → ℝ≥0) {a : A} (has : a ∈ s) :
-    cfc f a ∈ s := by
+theorem cfc_nnreal_mem
+    {𝕜 : Type*} [RCLike 𝕜] [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
+    {S : Type*} [MulAction 𝕜 A] [SetLike S A] [SubringClass S A] [IsScalarTower ℝ 𝕜 A]
+    [SMulMemClass S 𝕜 A] [StarMemClass S A]
+    {s : S} [hs : IsClosed (s : Set A)]
+    (f : ℝ≥0 → ℝ≥0)
+    {a : A} (has : a ∈ s)
+    : cfc f a ∈ s := by
   by_cases ha : 0 ≤ a
   · rw [cfc_nnreal_eq_real ..]
     exact cfc_mem _ has
@@ -165,11 +166,12 @@ section ClosedEmbedding
 variable [NonUnitalClosedEmbeddingContinuousFunctionalCalculus 𝕜 A p]
 
 open scoped NonUnitalContinuousFunctionalCalculus in
-theorem range_cfcₙHom {a : A} (ha : p a) :
-    NonUnitalStarAlgHom.range (cfcₙHom ha (R := 𝕜)) = elemental 𝕜 a := by
+theorem range_cfcₙHom {a : A} (ha : p a)
+    : NonUnitalStarAlgHom.range (cfcₙHom ha (R := 𝕜)) = elemental 𝕜 a := by
   rw [← NonUnitalStarAlgebra.map_top, ← ContinuousMapZero.elemental_eq_top,
-    NonUnitalStarAlgebra.elemental, ← NonUnitalStarSubalgebra.topologicalClosure_map _
-    (cfcₙHom_isClosedEmbedding ha (R := 𝕜)).isClosedMap (cfcₙHom_continuous ha),
+    NonUnitalStarAlgebra.elemental,
+    ← NonUnitalStarSubalgebra.topologicalClosure_map _
+      (cfcₙHom_isClosedEmbedding ha (R := 𝕜)).isClosedMap (cfcₙHom_continuous ha),
     NonUnitalStarAlgHom.map_adjoin]
   congr
   simpa using cfcₙHom_id ha
@@ -182,8 +184,8 @@ end ClosedEmbedding
 variable [NonUnitalContinuousFunctionalCalculus 𝕜 A p]
 
 open scoped NonUnitalContinuousFunctionalCalculus in
-theorem range_cfcₙHom_le {a : A} (ha : p a) :
-    NonUnitalStarAlgHom.range (cfcₙHom ha (R := 𝕜)) ≤ elemental 𝕜 a := by
+theorem range_cfcₙHom_le {a : A} (ha : p a)
+    : NonUnitalStarAlgHom.range (cfcₙHom ha (R := 𝕜)) ≤ elemental 𝕜 a := by
   grw [← NonUnitalStarAlgebra.map_top, ← ContinuousMapZero.elemental_eq_top,
     NonUnitalStarAlgebra.elemental,
     NonUnitalStarSubalgebra.map_topologicalClosure_le (R := 𝕜) _ (cfcₙHom_continuous ha),
@@ -197,20 +199,21 @@ variable {𝕜}
 
 open scoped ContinuousMapZero
 
-theorem cfcₙHom_mem_elemental {a : A} (ha : p a) (f : C(quasispectrum 𝕜 a, 𝕜)₀) :
-    cfcₙHom ha f ∈ elemental 𝕜 a :=
+theorem cfcₙHom_mem_elemental {a : A} (ha : p a) (f : C(quasispectrum 𝕜 a, 𝕜)₀)
+    : cfcₙHom ha f ∈ elemental 𝕜 a :=
   range_cfcₙHom_le 𝕜 ha ⟨f, rfl⟩
 
 @[simp, grind ←]
-theorem cfcₙ_mem_elemental (f : 𝕜 → 𝕜) (a : A) :
-    cfcₙ f a ∈ elemental 𝕜 a :=
-  cfcₙ_cases _ a f (zero_mem _) fun hf hf₀ ha ↦
-    cfcₙHom_mem_elemental ha ⟨⟨_, hf.domRestrict⟩, hf₀⟩
+theorem cfcₙ_mem_elemental (f : 𝕜 → 𝕜) (a : A) : cfcₙ f a ∈ elemental 𝕜 a :=
+  cfcₙ_cases _ a f (zero_mem _) fun hf hf₀ ha ↦ cfcₙHom_mem_elemental ha ⟨⟨_, hf.domRestrict⟩, hf₀⟩
 
-lemma cfcₙ_mem {𝕜' S : Type*} [Monoid 𝕜'] [MulAction 𝕜' A] [SetLike S A] [NonUnitalSubringClass S A]
-    [SMul 𝕜 𝕜'] [IsScalarTower 𝕜 𝕜' A] [SMulMemClass S 𝕜' A] [StarMemClass S A] {s : S}
-    [hs : IsClosed (s : Set A)] (f : 𝕜 → 𝕜) {a : A} (has : a ∈ s) :
-    cfcₙ f a ∈ s :=
+lemma cfcₙ_mem
+    {𝕜' S : Type*} [Monoid 𝕜'] [MulAction 𝕜' A] [SetLike S A] [NonUnitalSubringClass S A]
+    [SMul 𝕜 𝕜'] [IsScalarTower 𝕜 𝕜' A] [SMulMemClass S 𝕜' A] [StarMemClass S A]
+    {s : S} [hs : IsClosed (s : Set A)]
+    (f : 𝕜 → 𝕜)
+    {a : A} (has : a ∈ s)
+    : cfcₙ f a ∈ s :=
   have := SMulMemClass.ofIsScalarTower S 𝕜 𝕜' A
   NonUnitalStarSubalgebra.topologicalClosure_minimal (t := .ofClass s) _ (by simpa) (by simpa)
     (cfcₙ_mem_elemental f a)
@@ -224,8 +227,8 @@ variable [IsTopologicalRing A] [T2Space A] [PartialOrder A] [NonnegSpectrumClass
 variable [StarOrderedRing A]
 
 lemma range_cfcₙ_nnreal_eq_image_cfcₙ_real
-    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac) :
-    Set.range (cfcₙ (R := ℝ≥0) · a) = (cfcₙ · a) '' {f | ∀ x ∈ quasispectrum ℝ a, 0 ≤ f x} := by
+    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac)
+    : Set.range (cfcₙ (R := ℝ≥0) · a) = (cfcₙ · a) '' {f | ∀ x ∈ quasispectrum ℝ a, 0 ≤ f x} := by
   ext
   constructor
   · rintro ⟨f, rfl⟩
@@ -238,15 +241,16 @@ lemma range_cfcₙ_nnreal_eq_image_cfcₙ_real
 variable [StarModule ℝ A] [ContinuousStar A] [ContinuousConstSMul ℝ A]
 
 lemma range_cfcₙ_nnreal_subset
-    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac) :
-    Set.range (cfcₙ (R := ℝ≥0) · a) ⊆ {x | x ∈ NonUnitalStarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
+    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint] (a : A) (ha : 0 ≤ a := by cfc_tac)
+    : Set.range (cfcₙ (R := ℝ≥0) · a) ⊆ {x | x ∈ NonUnitalStarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
   grw [range_cfcₙ_nnreal_eq_image_cfcₙ_real a ha, Set.ofPred_and, SetLike.setOfPred_mem_eq,
     ← range_cfcₙ_subset _ ha.isSelfAdjoint, Set.inter_comm, ← Set.image_preimage_eq_inter_range]
   exact Set.image_mono fun _ ↦ cfcₙ_nonneg
 
-lemma range_cfcₙ_nnreal [NonUnitalClosedEmbeddingContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
-    (a : A) (ha : 0 ≤ a := by cfc_tac) :
-    Set.range (cfcₙ (R := ℝ≥0) · a) = {x | x ∈ NonUnitalStarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
+lemma range_cfcₙ_nnreal
+    [NonUnitalClosedEmbeddingContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
+    (a : A) (ha : 0 ≤ a := by cfc_tac)
+    : Set.range (cfcₙ (R := ℝ≥0) · a) = {x | x ∈ NonUnitalStarAlgebra.elemental ℝ a ∧ 0 ≤ x} := by
   rw [range_cfcₙ_nnreal_eq_image_cfcₙ_real a ha, Set.ofPred_and, SetLike.setOfPred_mem_eq,
     ← range_cfcₙ _ ha.isSelfAdjoint, Set.inter_comm, ← Set.image_preimage_eq_inter_range]
   refine Set.Subset.antisymm (Set.image_mono (fun _ ↦ cfcₙ_nonneg)) ?_
@@ -259,13 +263,14 @@ lemma range_cfcₙ_nnreal [NonUnitalClosedEmbeddingContinuousFunctionalCalculus 
   · exact ⟨0, by simp, by grind [cfcₙ_zero]⟩
 
 open NNReal in
-theorem cfcₙ_nnreal_mem {𝕜 : Type*} [RCLike 𝕜]
-    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
-    {S : Type*} [MulAction 𝕜 A] [SetLike S A]
-    [NonUnitalSubringClass S A] [IsScalarTower ℝ 𝕜 A]
-    [SMulMemClass S 𝕜 A] [StarMemClass S A] {s : S} [hs : IsClosed (s : Set A)]
-    (f : ℝ≥0 → ℝ≥0) {a : A} (has : a ∈ s) :
-    cfcₙ f a ∈ s := by
+theorem cfcₙ_nnreal_mem
+    {𝕜 : Type*} [RCLike 𝕜] [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
+    {S : Type*} [MulAction 𝕜 A] [SetLike S A] [NonUnitalSubringClass S A] [IsScalarTower ℝ 𝕜 A]
+    [SMulMemClass S 𝕜 A] [StarMemClass S A]
+    {s : S} [hs : IsClosed (s : Set A)]
+    (f : ℝ≥0 → ℝ≥0)
+    {a : A} (has : a ∈ s)
+    : cfcₙ f a ∈ s := by
   by_cases ha : 0 ≤ a
   · rw [cfcₙ_nnreal_eq_real ..]
     exact cfcₙ_mem _ has
@@ -275,12 +280,12 @@ end NonUnital
 
 section StarOrderedSubtype
 
-variable {𝕜 S A : Type*} [NonUnitalRing A] [StarRing A] [TopologicalSpace A]
-    [ContinuousStar A] [Module ℝ A] [IsScalarTower ℝ A A] [SMulCommClass ℝ A A]
-    [IsTopologicalRing A] [PartialOrder A] [StarOrderedRing A] [NonnegSpectrumClass ℝ A]
-    [RCLike 𝕜] [Module 𝕜 A] [IsScalarTower ℝ 𝕜 A] [ContinuousConstSMul ℝ A]
-    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint] [StarModule ℝ A]
-    [SetLike S A] [NonUnitalSubringClass S A] [SMulMemClass S 𝕜 A] [StarMemClass S A]
+variable
+  {𝕜 S A : Type*} [NonUnitalRing A] [StarRing A] [TopologicalSpace A] [ContinuousStar A]
+  [Module ℝ A] [IsScalarTower ℝ A A] [SMulCommClass ℝ A A] [IsTopologicalRing A] [PartialOrder A]
+  [StarOrderedRing A] [NonnegSpectrumClass ℝ A] [RCLike 𝕜] [Module 𝕜 A] [IsScalarTower ℝ 𝕜 A]
+  [ContinuousConstSMul ℝ A] [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
+  [StarModule ℝ A] [SetLike S A] [NonUnitalSubringClass S A] [SMulMemClass S 𝕜 A] [StarMemClass S A]
 
 instance Subtype.starOrderedRing (s : S) [hs : IsClosed (s : Set A)] : StarOrderedRing s :=
   .of_nonneg_iff' add_le_add_right fun x ↦ by

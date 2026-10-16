@@ -78,11 +78,9 @@ def opEquiv : Subsemigroup M ≃o Subsemigroup Mᵐᵒᵖ where
   right_inv := op_unop
   map_rel_iff' := op_le_op_iff
 
-@[to_additive]
-theorem op_injective : (@Subsemigroup.op M _).Injective := opEquiv.injective
+@[to_additive] theorem op_injective : (@Subsemigroup.op M _).Injective := opEquiv.injective
 
-@[to_additive]
-theorem unop_injective : (@Subsemigroup.unop M _).Injective := opEquiv.symm.injective
+@[to_additive] theorem unop_injective : (@Subsemigroup.unop M _).Injective := opEquiv.symm.injective
 
 @[to_additive (attr := simp)]
 theorem op_inj {S T : Subsemigroup M} : S.op = T.op ↔ S = T := opEquiv.eq_iff_eq
@@ -115,15 +113,13 @@ theorem unop_top : (⊤ : Subsemigroup Mᵐᵒᵖ).unop = ⊤ := rfl
 theorem unop_eq_top {S : Subsemigroup Mᵐᵒᵖ} : S.unop = ⊤ ↔ S = ⊤ := unop_injective.eq_iff' unop_top
 
 @[to_additive]
-theorem op_sup (S₁ S₂ : Subsemigroup M) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op :=
-  opEquiv.map_sup _ _
+theorem op_sup (S₁ S₂ : Subsemigroup M) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op := opEquiv.map_sup _ _
 
 @[to_additive]
 theorem unop_sup (S₁ S₂ : Subsemigroup Mᵐᵒᵖ) : (S₁ ⊔ S₂).unop = S₁.unop ⊔ S₂.unop :=
   opEquiv.symm.map_sup _ _
 
-@[to_additive]
-theorem op_inf (S₁ S₂ : Subsemigroup M) : (S₁ ⊓ S₂).op = S₁.op ⊓ S₂.op := rfl
+@[to_additive] theorem op_inf (S₁ S₂ : Subsemigroup M) : (S₁ ⊓ S₂).op = S₁.op ⊓ S₂.op := rfl
 
 @[to_additive]
 theorem unop_inf (S₁ S₂ : Subsemigroup Mᵐᵒᵖ) : (S₁ ⊓ S₂).unop = S₁.unop ⊓ S₂.unop := rfl
@@ -172,7 +168,6 @@ theorem unop_closure (s : Set Mᵐᵒᵖ) : (closure s).unop = closure (MulOppos
 /-- Bijection between a subsemigroup `H` and its opposite. -/
 @[to_additive (attr := simps!) /-- Bijection between an additive subsemigroup `H` and its opposite.
   -/]
-def equivOp (H : Subsemigroup M) : H ≃ H.op :=
-  MulOpposite.opEquiv.subtypeEquiv fun _ => Iff.rfl
+def equivOp (H : Subsemigroup M) : H ≃ H.op := MulOpposite.opEquiv.subtypeEquiv fun _ => Iff.rfl
 
 end Subsemigroup

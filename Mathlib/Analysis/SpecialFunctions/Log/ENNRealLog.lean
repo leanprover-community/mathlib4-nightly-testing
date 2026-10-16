@@ -37,15 +37,20 @@ open scoped NNReal
 /-! ### Definition -/
 section Definition
 
-/-- The logarithm function defined on the extended nonnegative reals `ℝ≥0∞`
+/--
+The logarithm function defined on the extended nonnegative reals `ℝ≥0∞`
 to the extended reals `EReal`. Coincides with the usual logarithm function
 and with `Real.log` on positive reals, and takes values `log 0 = ⊥` and `log ⊤ = ⊤`.
 Conventions about multiplication in `ℝ≥0∞` and addition in `EReal` make the identity
-`log (x * y) = log x + log y` unconditional. -/
+`log (x * y) = log x + log y` unconditional.
+-/
 noncomputable def log (x : ℝ≥0∞) : EReal :=
-  if x = 0 then ⊥
-    else if x = ⊤ then ⊤
-    else Real.log x.toReal
+  if x = 0 then
+    ⊥
+  else if x = ⊤ then
+    ⊤
+  else
+    Real.log x.toReal
 
 @[simp] lemma log_zero : log 0 = ⊥ := ite_eq_left rfl
 @[simp] lemma log_one : log 1 = 0 := by simp [log]
@@ -53,8 +58,7 @@ noncomputable def log (x : ℝ≥0∞) : EReal :=
 
 @[simp]
 lemma log_ofReal (x : ℝ) : log (ENNReal.ofReal x) = if x ≤ 0 then ⊥ else ↑(Real.log x) := by
-  simp only [log, ENNReal.ofReal_ne_top,
-    ENNReal.ofReal_eq_zero, ite_false]
+  simp only [log, ENNReal.ofReal_ne_top, ENNReal.ofReal_eq_zero, ite_false]
   split_ifs with h_nonpos
   · rfl
   · rw [ENNReal.toReal_ofReal (not_le.mp h_nonpos).le]
@@ -62,15 +66,13 @@ lemma log_ofReal (x : ℝ) : log (ENNReal.ofReal x) = if x ≤ 0 then ⊥ else �
 lemma log_ofReal_of_pos {x : ℝ} (hx : 0 < x) : log (ENNReal.ofReal x) = Real.log x := by
   rw [log_ofReal, ite_eq_right hx.not_ge]
 
-theorem log_pos_real {x : ℝ≥0∞} (h : x ≠ 0) (h' : x ≠ ⊤) :
-    log x = Real.log (ENNReal.toReal x) := by simp [log, h, h']
+theorem log_pos_real {x : ℝ≥0∞} (h : x ≠ 0) (h' : x ≠ ⊤) : log x = Real.log (ENNReal.toReal x) := by
+  simp [log, h, h']
 
-theorem log_pos_real' {x : ℝ≥0∞} (h : 0 < x.toReal) :
-    log x = Real.log (ENNReal.toReal x) := by
+theorem log_pos_real' {x : ℝ≥0∞} (h : 0 < x.toReal) : log x = Real.log (ENNReal.toReal x) := by
   simp [log, (ENNReal.toReal_pos_iff.1 h).1.ne', (ENNReal.toReal_pos_iff.1 h).2.ne]
 
-theorem log_of_nnreal {x : ℝ≥0} (h : x ≠ 0) :
-    log (x : ℝ≥0∞) = Real.log x := by simp [log, h]
+theorem log_of_nnreal {x : ℝ≥0} (h : x ≠ 0) : log (x : ℝ≥0∞) = Real.log x := by simp [log, h]
 
 end Definition
 
@@ -95,9 +97,7 @@ theorem log_surjective : Function.Surjective log := by
 
 theorem log_bijective : Function.Bijective log := ⟨log_injective, log_surjective⟩
 
-@[simp]
-theorem log_eq_iff {x y : ℝ≥0∞} : log x = log y ↔ x = y :=
-  log_injective.eq_iff
+@[simp] theorem log_eq_iff {x y : ℝ≥0∞} : log x = log y ↔ x = y := log_injective.eq_iff
 
 @[simp] theorem log_eq_bot_iff {x : ℝ≥0∞} : log x = ⊥ ↔ x = 0 := log_zero ▸ @log_eq_iff x 0
 
@@ -157,7 +157,7 @@ theorem log_rpow {x : ℝ≥0∞} {y : ℝ} : log (x ^ y) = y * log x := by
     · rw [ENNReal.top_rpow_of_neg y_neg, log_zero, log_top, EReal.coe_mul_top_of_neg y_neg]
     · have x_ne_zero := (ENNReal.toReal_pos_iff.1 x_real).1.ne'
       have x_ne_top := (ENNReal.toReal_pos_iff.1 x_real).2.ne
-      simp only [log, rpow_eq_zero_iff, x_ne_zero, false_and, x_ne_top, or_self, ↓reduceIte,
+      simp only [log, rpow_eq_zero_iff, x_ne_zero, false_and, x_ne_top, or_self, ↓ reduceIte,
         rpow_eq_top_iff]
       norm_cast
       exact ENNReal.toReal_rpow x y ▸ Real.log_rpow x_real y
@@ -167,7 +167,7 @@ theorem log_rpow {x : ℝ≥0∞} {y : ℝ} : log (x ^ y) = y * log x := by
     · rw [ENNReal.top_rpow_of_pos y_pos, log_top, EReal.mul_top_of_pos]; norm_cast
     · have x_ne_zero := (ENNReal.toReal_pos_iff.1 x_real).1.ne'
       have x_ne_top := (ENNReal.toReal_pos_iff.1 x_real).2.ne
-      simp only [log, rpow_eq_zero_iff, x_ne_zero, false_and, x_ne_top, or_self, ↓reduceIte,
+      simp only [log, rpow_eq_zero_iff, x_ne_zero, false_and, x_ne_top, or_self, ↓ reduceIte,
         rpow_eq_top_iff]
       norm_cast
       exact ENNReal.toReal_rpow x y ▸ Real.log_rpow x_real y
@@ -175,8 +175,7 @@ theorem log_rpow {x : ℝ≥0∞} {y : ℝ} : log (x ^ y) = y * log x := by
 theorem log_pow {x : ℝ≥0∞} {n : ℕ} : log (x ^ n) = n * log x := by
   rw [← rpow_natCast, log_rpow, EReal.coe_natCast]
 
-lemma log_inv {x : ℝ≥0∞} : log x⁻¹ = - log x := by
-  simp [← rpow_neg_one, log_rpow]
+lemma log_inv {x : ℝ≥0∞} : log x⁻¹ = - log x := by simp [← rpow_neg_one, log_rpow]
 
 end Morphism
 

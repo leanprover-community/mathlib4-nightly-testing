@@ -14,7 +14,6 @@ public import Mathlib.Order.Interval.Set.Basic
 
 public section
 
-
 variable {α : Type*}
 
 namespace Set
@@ -24,7 +23,6 @@ section OrderedCommGroup
 variable [CommGroup α] [PartialOrder α] [IsOrderedMonoid α] {a c d : α}
 
 /-! `inv_mem_Ixx_iff`, `sub_mem_Ixx_iff` -/
-
 
 @[to_additive]
 theorem inv_mem_Icc_iff : a⁻¹ ∈ Set.Icc c d ↔ a ∈ Set.Icc d⁻¹ c⁻¹ :=
@@ -106,9 +104,9 @@ theorem sub_mem_Ioo_iff_right : a - b ∈ Set.Ioo c d ↔ b ∈ Set.Ioo (a - d) 
 
 -- I think that symmetric intervals deserve attention and API: they arise all the time,
 -- for instance when considering metric balls in `ℝ`.
-theorem mem_Icc_iff_abs_le {R : Type*}
-    [AddCommGroup R] [LinearOrder R] [IsOrderedAddMonoid R] {x y z : R} :
-    |x - y| ≤ z ↔ y ∈ Icc (x - z) (x + z) :=
+theorem mem_Icc_iff_abs_le
+    {R : Type*} [AddCommGroup R] [LinearOrder R] [IsOrderedAddMonoid R] {x y z : R}
+    : |x - y| ≤ z ↔ y ∈ Icc (x - z) (x + z) :=
   abs_le.trans <| and_comm.trans <| and_congr sub_le_comm neg_le_sub_iff_le_add
 
 /-! `sub_mem_Ixx_zero_right` and `sub_mem_Ixx_zero_iff_right`; this specializes the previous
@@ -133,8 +131,8 @@ section LinearOrderedAddCommGroup
 variable [AddCommGroup α] [LinearOrder α] [IsOrderedAddMonoid α]
 
 /-- If we remove a smaller interval from a larger, the result is nonempty -/
-theorem nonempty_Ico_sdiff {x dx y dy : α} (h : dy < dx) (hx : 0 < dx) :
-    Nonempty ↑(Ico x (x + dx) \ Ico y (y + dy)) := by
+theorem nonempty_Ico_sdiff {x dx y dy : α} (h : dy < dx) (hx : 0 < dx)
+    : Nonempty ↑(Ico x (x + dx) \ Ico y (y + dy)) := by
   rcases lt_or_ge x y with h' | h'
   · use x
     simp [*, not_le.2 h']
@@ -153,8 +151,8 @@ section OrderedCommGroup
 variable [CommGroup α] [PartialOrder α] [IsOrderedMonoid α] (a b : α)
 
 @[to_additive]
-theorem pairwise_disjoint_Ioc_mul_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ioc (a * b ^ n) (a * b ^ (n + 1))) := by
+theorem pairwise_disjoint_Ioc_mul_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ioc (a * b ^ n) (a * b ^ (n + 1))) := by
   simp +unfoldPartialApp only [Function.onFun]
   simp_rw [Set.disjoint_iff]
   intro m n hmn x hx
@@ -168,8 +166,8 @@ theorem pairwise_disjoint_Ioc_mul_zpow :
   exact le_antisymm i1 i2
 
 @[to_additive]
-theorem pairwise_disjoint_Ico_mul_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ico (a * b ^ n) (a * b ^ (n + 1))) := by
+theorem pairwise_disjoint_Ico_mul_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ico (a * b ^ n) (a * b ^ (n + 1))) := by
   simp +unfoldPartialApp only [Function.onFun]
   simp_rw [Set.disjoint_iff]
   intro m n hmn x hx
@@ -183,23 +181,23 @@ theorem pairwise_disjoint_Ico_mul_zpow :
   exact le_antisymm i1 i2
 
 @[to_additive]
-theorem pairwise_disjoint_Ioo_mul_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ioo (a * b ^ n) (a * b ^ (n + 1))) := fun _ _ hmn =>
+theorem pairwise_disjoint_Ioo_mul_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ioo (a * b ^ n) (a * b ^ (n + 1))) := fun _ _ hmn =>
   (pairwise_disjoint_Ioc_mul_zpow a b hmn).mono Ioo_subset_Ioc_self Ioo_subset_Ioc_self
 
 @[to_additive]
-theorem pairwise_disjoint_Ioc_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ioc (b ^ n) (b ^ (n + 1))) := by
+theorem pairwise_disjoint_Ioc_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ioc (b ^ n) (b ^ (n + 1))) := by
   simpa only [one_mul] using pairwise_disjoint_Ioc_mul_zpow 1 b
 
 @[to_additive]
-theorem pairwise_disjoint_Ico_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ico (b ^ n) (b ^ (n + 1))) := by
+theorem pairwise_disjoint_Ico_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ico (b ^ n) (b ^ (n + 1))) := by
   simpa only [one_mul] using pairwise_disjoint_Ico_mul_zpow 1 b
 
 @[to_additive]
-theorem pairwise_disjoint_Ioo_zpow :
-    Pairwise (Disjoint on fun n : ℤ => Ioo (b ^ n) (b ^ (n + 1))) := by
+theorem pairwise_disjoint_Ioo_zpow
+    : Pairwise (Disjoint on fun n : ℤ => Ioo (b ^ n) (b ^ (n + 1))) := by
   simpa only [one_mul] using pairwise_disjoint_Ioo_mul_zpow 1 b
 
 end OrderedCommGroup
@@ -208,33 +206,33 @@ section OrderedRing
 
 variable [Ring α] [PartialOrder α] [IsOrderedRing α] (a : α)
 
-theorem pairwise_disjoint_Ioc_add_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ioc (a + n) (a + n + 1)) := by
+theorem pairwise_disjoint_Ioc_add_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ioc (a + n) (a + n + 1)) := by
   simpa only [zsmul_one, Int.cast_add, Int.cast_one, ← add_assoc] using
     pairwise_disjoint_Ioc_add_zsmul a (1 : α)
 
-theorem pairwise_disjoint_Ico_add_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ico (a + n) (a + n + 1)) := by
+theorem pairwise_disjoint_Ico_add_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ico (a + n) (a + n + 1)) := by
   simpa only [zsmul_one, Int.cast_add, Int.cast_one, ← add_assoc] using
     pairwise_disjoint_Ico_add_zsmul a (1 : α)
 
-theorem pairwise_disjoint_Ioo_add_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ioo (a + n) (a + n + 1)) := by
+theorem pairwise_disjoint_Ioo_add_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ioo (a + n) (a + n + 1)) := by
   simpa only [zsmul_one, Int.cast_add, Int.cast_one, ← add_assoc] using
     pairwise_disjoint_Ioo_add_zsmul a (1 : α)
 
 variable (α)
 
-theorem pairwise_disjoint_Ico_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ico (n : α) (n + 1)) := by
+theorem pairwise_disjoint_Ico_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ico (n : α) (n + 1)) := by
   simpa only [zero_add] using pairwise_disjoint_Ico_add_intCast (0 : α)
 
-theorem pairwise_disjoint_Ioo_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ioo (n : α) (n + 1)) := by
+theorem pairwise_disjoint_Ioo_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ioo (n : α) (n + 1)) := by
   simpa only [zero_add] using pairwise_disjoint_Ioo_add_intCast (0 : α)
 
-theorem pairwise_disjoint_Ioc_intCast :
-    Pairwise (Disjoint on fun n : ℤ => Ioc (n : α) (n + 1)) := by
+theorem pairwise_disjoint_Ioc_intCast
+    : Pairwise (Disjoint on fun n : ℤ => Ioc (n : α) (n + 1)) := by
   simpa only [zero_add] using pairwise_disjoint_Ioc_add_intCast (0 : α)
 
 end OrderedRing

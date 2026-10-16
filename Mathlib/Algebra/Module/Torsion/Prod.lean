@@ -22,9 +22,10 @@ variable {R M N : Type*}
 
 namespace Prod
 
-instance moduleIsTorsionFree [Semiring R] [AddCommMonoid M] [AddCommMonoid N]
-    [Module R M] [Module R N] [IsTorsionFree R M] [IsTorsionFree R N] :
-    IsTorsionFree R (M × N) where
+instance moduleIsTorsionFree
+    [Semiring R] [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module R N] [IsTorsionFree R M]
+    [IsTorsionFree R N]
+    : IsTorsionFree R (M × N) where
   isSMulRegular _r hr := hr.isSMulRegular.prodMap hr.isSMulRegular
 
 end Prod

@@ -6,7 +6,6 @@ Authors: Jovan Gerbscheid
 module
 
 public import Mathlib.Init
-
 import Lean.Meta.Basic
 
 /-!
@@ -25,28 +24,34 @@ open Lean
 
 namespace Lean.Meta
 
-/-- An `IO.Ref` that keeps track of any errors that could have been thrown by `act`
-when folding over the constants in the environment. -/
+/--
+An `IO.Ref` that keeps track of any errors that could have been thrown by `act`
+when folding over the constants in the environment.
+-/
 public abbrev FoldDeclErrorRef := IO.Ref (List MessageData)
 
 /-- Run `act env name constInfo`, catching potential errors. -/
 @[inline]
-def visitConst (modName : Name) (errorRef : FoldDeclErrorRef)
-    (act : α → Name → ConstantInfo → MetaM α)
-    (a : α) (name : Name) (constInfo : ConstantInfo) : MetaM α := do
+def visitConst
+    (modName : Name) (errorRef : FoldDeclErrorRef) (act : α → Name → ConstantInfo → MetaM α) (a : α)
+    (name : Name) (constInfo : ConstantInfo)
+    : MetaM α := do
   try
     act a name constInfo
   catch e =>
-    let msg := m!"Processing failure with {name} in {modName}:\n  {e.toMessageData}"
+    let msg :=
+      m!"Processing failure with {name} in {modName}:\
+        \n  {e.toMessageData}"
     errorRef.modify (msg :: ·)
     return a
 
 /-- Loop through all constants in modules with module index from `start` to `stop - 1`. -/
 @[specialize]
-def foldModules (ngen : NameGenerator) (errorRef : FoldDeclErrorRef)
-    (env : Environment) (init : α) (act : α → Name → ConstantInfo → MetaM α)
-    (mctx : Meta.Context) (cctx : Core.Context)
-    (start stop : Nat) : EIO Exception α := do
+def foldModules
+    (ngen : NameGenerator) (errorRef : FoldDeclErrorRef) (env : Environment) (init : α)
+    (act : α → Name → ConstantInfo → MetaM α) (mctx : Meta.Context) (cctx : Core.Context)
+    (start stop : Nat)
+    : EIO Exception α := do
   let cctx := { cctx with initHeartbeats := ← IO.getNumHeartbeats }
   let go : MetaM α := do
     let mut a := init
@@ -61,14 +66,17 @@ def foldModules (ngen : NameGenerator) (errorRef : FoldDeclErrorRef)
     return a
   go.run' mctx {} |>.run' cctx { env, ngen }
 
-/-- Fold through all imported constants using `act`.
+/--
+Fold through all imported constants using `act`.
 This uses parallelism, with each thread independently folding over a subset of modules.
 The array of tasks is returned, so this function typically returns before all tasks have finished.
-The results can then be combined using `Array.foldl`. -/
+The results can then be combined using `Array.foldl`.
+-/
 @[specialize]
-public def foldImportedDecls (init : α) (cfg : Config)
-    (act : α → Name → ConstantInfo → MetaM α) (constantsPerTask : Nat := 5000) :
-    CoreM (Array (Task (Except Exception α)) × FoldDeclErrorRef) := do
+public def foldImportedDecls
+    (init : α) (cfg : Config) (act : α → Name → ConstantInfo → MetaM α)
+    (constantsPerTask : Nat := 5000)
+    : CoreM (Array (Task (Except Exception α)) × FoldDeclErrorRef) := do
   let env ← getEnv
   let numModules := env.header.moduleData.size
   let mctx := { keyedConfig := cfg.toConfigWithKey }
@@ -95,16 +103,16 @@ public def foldImportedDecls (init : α) (cfg : Config)
 
 /-- Fold through all constants of the current file using `act`. -/
 @[specialize]
-public def foldCurrFileDecls (init : α) (cfg : Config)
-    (act : α → Name → ConstantInfo → MetaM α) : CoreM (α × FoldDeclErrorRef) := do
+public def foldCurrFileDecls (init : α) (cfg : Config) (act : α → Name → ConstantInfo → MetaM α)
+    : CoreM (α × FoldDeclErrorRef) := do
   let env ← getEnv
   let modName := env.header.mainModule
   let errorRef ← IO.mkRef {}
   let (childNGen, parentNGen) := (← getNGen).mkChild
   setNGen parentNGen
   let go : MetaM α := env.constants.map₂.foldlM (visitConst modName errorRef act) init
-  let result ← go.run' { keyedConfig := cfg.toConfigWithKey } {}
-    |>.run' (← read) { env, ngen := childNGen }
+  let result ←
+    go.run' { keyedConfig := cfg.toConfigWithKey } {} |>.run' (← read) { env, ngen := childNGen }
   return (result, errorRef)
 
 end Lean.Meta

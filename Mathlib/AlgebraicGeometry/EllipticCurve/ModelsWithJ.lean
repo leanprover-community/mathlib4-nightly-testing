@@ -41,8 +41,7 @@ namespace WeierstrassCurve
 variable (R : Type*) [CommRing R] (W : WeierstrassCurve R)
 
 /-- The Weierstrass curve `Y² + Y = X³`. It is of j-invariant 0 if it is an elliptic curve. -/
-def ofJ0 : WeierstrassCurve R :=
-  ⟨0, 0, 1, 0, 0⟩
+def ofJ0 : WeierstrassCurve R := ⟨0, 0, 1, 0, 0⟩
 
 lemma ofJ0_c₄ : (ofJ0 R).c₄ = 0 := by
   rw [ofJ0, c₄, b₂, b₄]
@@ -53,8 +52,7 @@ lemma ofJ0_Δ : (ofJ0 R).Δ = -27 := by
   norm_num1
 
 /-- The Weierstrass curve `Y² = X³ + X`. It is of j-invariant 1728 if it is an elliptic curve. -/
-def ofJ1728 : WeierstrassCurve R :=
-  ⟨0, 0, 0, 1, 0⟩
+def ofJ1728 : WeierstrassCurve R := ⟨0, 0, 0, 1, 0⟩
 
 lemma ofJ1728_c₄ : (ofJ1728 R).c₄ = -48 := by
   rw [ofJ1728, c₄, b₂, b₄]
@@ -66,11 +64,12 @@ lemma ofJ1728_Δ : (ofJ1728 R).Δ = -64 := by
 
 variable {R} (j : R)
 
-/-- The Weierstrass curve `Y² + (j - 1728)XY = X³ - 36(j - 1728)³X - (j - 1728)⁵`.
+/--
+The Weierstrass curve `Y² + (j - 1728)XY = X³ - 36(j - 1728)³X - (j - 1728)⁵`.
 It is a modification of the curve in [silverman2009], Chapter III, Proposition 1.4 (c) to avoid
-denominators. It is of j-invariant j if it is an elliptic curve. -/
-def ofJNe0Or1728 : WeierstrassCurve R :=
-  ⟨j - 1728, 0, 0, -36 * (j - 1728) ^ 3, -(j - 1728) ^ 5⟩
+denominators. It is of j-invariant j if it is an elliptic curve.
+-/
+def ofJNe0Or1728 : WeierstrassCurve R := ⟨j - 1728, 0, 0, -36 * (j - 1728) ^ 3, - (j - 1728) ^ 5⟩
 
 lemma ofJNe0Or1728_c₄ : (ofJNe0Or1728 j).c₄ = j * (j - 1728) ^ 3 := by
   simp only [ofJNe0Or1728, c₄, b₂, b₄]
@@ -83,8 +82,10 @@ lemma ofJNe0Or1728_Δ : (ofJNe0Or1728 j).Δ = j ^ 2 * (j - 1728) ^ 9 := by
 variable (R) [W.IsElliptic]
 
 -- TODO: change to `[IsUnit ...]` once https://github.com/leanprover-community/mathlib4/issues/17458 is merged
-/-- When 3 is a unit, `Y² + Y = X³` is an elliptic curve.
-It is of j-invariant 0 (see `WeierstrassCurve.ofJ0_j`). -/
+/--
+When 3 is a unit, `Y² + Y = X³` is an elliptic curve.
+It is of j-invariant 0 (see `WeierstrassCurve.ofJ0_j`).
+-/
 instance [hu : Fact (IsUnit (3 : R))] : (ofJ0 R).IsElliptic := by
   rw [isElliptic_iff, ofJ0_Δ]
   convert (hu.out.pow 3).neg
@@ -96,8 +97,10 @@ lemma ofJ0_j [Fact (IsUnit (3 : R))] : (ofJ0 R).j = 0 := by
   ring1
 
 -- TODO: change to `[IsUnit ...]` once https://github.com/leanprover-community/mathlib4/issues/17458 is merged
-/-- When 2 is a unit, `Y² = X³ + X` is an elliptic curve.
-It is of j-invariant 1728 (see `WeierstrassCurve.ofJ1728_j`). -/
+/--
+When 2 is a unit, `Y² = X³ + X` is an elliptic curve.
+It is of j-invariant 1728 (see `WeierstrassCurve.ofJ1728_j`).
+-/
 instance [hu : Fact (IsUnit (2 : R))] : (ofJ1728 R).IsElliptic := by
   rw [isElliptic_iff, ofJ1728_Δ]
   convert (hu.out.pow 6).neg
@@ -111,29 +114,37 @@ lemma ofJ1728_j [Fact (IsUnit (2 : R))] : (ofJ1728 R).j = 1728 := by
 variable {R}
 
 -- TODO: change to `[IsUnit ...]` once https://github.com/leanprover-community/mathlib4/issues/17458 is merged
-/-- When j and j - 1728 are both units,
+/--
+When j and j - 1728 are both units,
 `Y² + (j - 1728)XY = X³ - 36(j - 1728)³X - (j - 1728)⁵` is an elliptic curve.
-It is of j-invariant j (see `WeierstrassCurve.ofJNe0Or1728_j`). -/
-instance (j : R) [h1 : Fact (IsUnit j)] [h2 : Fact (IsUnit (j - 1728))] :
-    (ofJNe0Or1728 j).IsElliptic := by
+It is of j-invariant j (see `WeierstrassCurve.ofJNe0Or1728_j`).
+-/
+instance (j : R) [h1 : Fact (IsUnit j)] [h2 : Fact (IsUnit (j - 1728))]
+    : (ofJNe0Or1728 j).IsElliptic := by
   rw [isElliptic_iff, ofJNe0Or1728_Δ]
   exact (h1.out.pow 2).mul (h2.out.pow 9)
 
 -- TODO: change to `[IsUnit ...]` once https://github.com/leanprover-community/mathlib4/issues/17458 is merged
-lemma ofJNe0Or1728_j (j : R) [Fact (IsUnit j)] [Fact (IsUnit (j - 1728))] :
-    (ofJNe0Or1728 j).j = j := by
+lemma ofJNe0Or1728_j (j : R) [Fact (IsUnit j)] [Fact (IsUnit (j - 1728))]
+    : (ofJNe0Or1728 j).j = j := by
   rw [WeierstrassCurve.j, Units.inv_mul_eq_iff_eq_mul, ofJNe0Or1728_c₄, coe_Δ', ofJNe0Or1728_Δ]
   ring1
 
 variable {F : Type*} [Field F] (j : F) [DecidableEq F]
 
-/-- For any element j of a field `F`, there exists an elliptic curve over `F`
+/--
+For any element j of a field `F`, there exists an elliptic curve over `F`
 with j-invariant equal to j (see `WeierstrassCurve.ofJ_j`).
 Its coefficients are given explicitly (see `WeierstrassCurve.ofJ0`, `WeierstrassCurve.ofJ1728`
-and `WeierstrassCurve.ofJNe0Or1728`). -/
+and `WeierstrassCurve.ofJNe0Or1728`).
+-/
 def ofJ : WeierstrassCurve F :=
-  if j = 0 then if (3 : F) = 0 then ofJ1728 F else ofJ0 F
-  else if j = 1728 then ofJ1728 F else ofJNe0Or1728 j
+  if j = 0 then
+    if (3 : F) = 0 then ofJ1728 F else ofJ0 F
+  else if j = 1728 then
+    ofJ1728 F
+  else
+    ofJNe0Or1728 j
 
 lemma ofJ_0_of_three_ne_zero (h3 : (3 : F) ≠ 0) : ofJ 0 = ofJ0 F := by
   rw [ofJ, ite_eq_left rfl, ite_eq_right h3]
@@ -196,7 +207,6 @@ lemma ofJ_j : (ofJ j).j = j := by
       have := Fact.mk (sub_ne_zero.2 h1728).isUnit
       simp_rw [ofJ_ne_0_ne_1728 j h0 h1728, ofJNe0Or1728_j]
 
-instance : Inhabited { W : WeierstrassCurve F // W.IsElliptic } :=
-  ⟨⟨ofJ 37, inferInstance⟩⟩
+instance : Inhabited {W : WeierstrassCurve F // W.IsElliptic} := ⟨⟨ofJ 37, inferInstance⟩⟩
 
 end WeierstrassCurve

@@ -27,12 +27,16 @@ open scoped Topology NNReal
 
 variable {α β F : Type*} [NormedAddCommGroup F] [CompleteSpace F] {u : α → ℝ}
 
-/-- An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
-Version relative to a set, with general index set. -/
-theorem tendstoUniformlyOn_tsum {f : α → β → F} (hu : Summable u) {s : Set β}
-    (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n) :
-    TendstoUniformlyOn (fun t : Finset α => fun x => ∑ n ∈ t, f n x) (fun x => ∑' n, f n x) atTop
-      s := by
+/--
+An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
+Version relative to a set, with general index set.
+-/
+theorem tendstoUniformlyOn_tsum
+    {f : α → β → F} (hu : Summable u) {s : Set β} (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n)
+    : TendstoUniformlyOn
+      (fun t : Finset α => fun x => ∑ n ∈ t, f n x)
+      (fun x => ∑' n, f n x)
+      atTop s := by
   refine tendstoUniformlyOn_iff.2 fun ε εpos => ?_
   filter_upwards [(tendsto_order.1 (tendsto_tsum_compl_atTop_zero u)).2 _ εpos] with t ht x hx
   have A : Summable fun n => ‖f n x‖ :=
@@ -42,20 +46,27 @@ theorem tendstoUniformlyOn_tsum {f : α → β → F} (hu : Summable u) {s : Set
   apply (norm_tsum_le_tsum_norm (A.subtype _)).trans
   exact (A.subtype _).tsum_le_tsum (fun n => hfu _ _ hx) (hu.subtype _)
 
-/-- An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
-Version relative to a set, with index set `ℕ`. -/
-theorem tendstoUniformlyOn_tsum_nat {f : ℕ → β → F} {u : ℕ → ℝ} (hu : Summable u) {s : Set β}
-    (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n) :
-    TendstoUniformlyOn (fun N => fun x => ∑ n ∈ Finset.range N, f n x) (fun x => ∑' n, f n x) atTop
-      s :=
-  fun v hv => tendsto_finset_range.eventually (tendstoUniformlyOn_tsum hu hfu v hv)
+/--
+An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
+Version relative to a set, with index set `ℕ`.
+-/
+theorem tendstoUniformlyOn_tsum_nat
+    {f : ℕ → β → F} {u : ℕ → ℝ} (hu : Summable u) {s : Set β} (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n)
+    : TendstoUniformlyOn
+      (fun N => fun x => ∑ n ∈ Finset.range N, f n x)
+      (fun x => ∑' n, f n x)
+      atTop s := fun v hv =>
+  tendsto_finset_range.eventually (tendstoUniformlyOn_tsum hu hfu v hv)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- An infinite sum of functions with eventually summable sup norm is the uniform limit of its
-partial sums. Version relative to a set, with general index set. -/
-theorem tendstoUniformlyOn_tsum_of_cofinite_eventually {ι : Type*} {f : ι → β → F} {u : ι → ℝ}
-    (hu : Summable u) {s : Set β} (hfu : ∀ᶠ n in cofinite, ∀ x ∈ s, ‖f n x‖ ≤ u n) :
-    TendstoUniformlyOn (fun t x => ∑ n ∈ t, f n x) (fun x => ∑' n, f n x) atTop s := by
+/--
+An infinite sum of functions with eventually summable sup norm is the uniform limit of its
+partial sums. Version relative to a set, with general index set.
+-/
+theorem tendstoUniformlyOn_tsum_of_cofinite_eventually
+    {ι : Type*} {f : ι → β → F} {u : ι → ℝ} (hu : Summable u)
+    {s : Set β} (hfu : ∀ᶠ n in cofinite, ∀ x ∈ s, ‖f n x‖ ≤ u n)
+    : TendstoUniformlyOn (fun t x => ∑ n ∈ t, f n x) (fun x => ∑' n, f n x) atTop s := by
   classical
   refine tendstoUniformlyOn_iff.2 fun ε εpos => ?_
   have := (tendsto_order.1 (tendsto_tsum_compl_atTop_zero u)).2 _ εpos
@@ -78,50 +89,71 @@ theorem tendstoUniformlyOn_tsum_of_cofinite_eventually {ι : Type*} {f : ι → 
   have : i ∉ hN.toFinset := fun hg ↦ hi (Finset.union_subset_left hn hg)
   simp_all
 
-theorem tendstoUniformlyOn_tsum_nat_eventually {α F : Type*} [NormedAddCommGroup F]
-    [CompleteSpace F] {f : ℕ → α → F} {u : ℕ → ℝ} (hu : Summable u) {s : Set α}
-    (hfu : ∀ᶠ n in atTop, ∀ x ∈ s, ‖f n x‖ ≤ u n) :
-    TendstoUniformlyOn (fun N x => ∑ n ∈ Finset.range N, f n x)
-       (fun x => ∑' n, f n x) atTop s :=
-  fun v hv ↦ tendsto_finset_range.eventually <|
-    tendstoUniformlyOn_tsum_of_cofinite_eventually hu (Nat.cofinite_eq_atTop ▸ hfu) v hv
+theorem tendstoUniformlyOn_tsum_nat_eventually
+    {α F : Type*} [NormedAddCommGroup F] [CompleteSpace F]
+    {f : ℕ → α → F} {u : ℕ → ℝ} (hu : Summable u)
+    {s : Set α} (hfu : ∀ᶠ n in atTop, ∀ x ∈ s, ‖f n x‖ ≤ u n)
+    : TendstoUniformlyOn (fun N x => ∑ n ∈ Finset.range N, f n x) (fun x => ∑' n, f n x) atTop s :=
+  fun v hv ↦
+    tendsto_finset_range.eventually <|
+      tendstoUniformlyOn_tsum_of_cofinite_eventually hu (Nat.cofinite_eq_atTop ▸ hfu) v hv
 
-/-- An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
-Version with general index set. -/
-theorem tendstoUniformly_tsum {f : α → β → F} (hu : Summable u) (hfu : ∀ n x, ‖f n x‖ ≤ u n) :
-    TendstoUniformly (fun t : Finset α => fun x => ∑ n ∈ t, f n x)
-      (fun x => ∑' n, f n x) atTop := by
+/--
+An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
+Version with general index set.
+-/
+theorem tendstoUniformly_tsum {f : α → β → F} (hu : Summable u) (hfu : ∀ n x, ‖f n x‖ ≤ u n)
+    : TendstoUniformly
+      (fun t : Finset α => fun x => ∑ n ∈ t, f n x)
+      (fun x => ∑' n, f n x)
+      atTop := by
   rw [← tendstoUniformlyOn_univ]; exact tendstoUniformlyOn_tsum hu fun n x _ => hfu n x
 
-/-- An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
-Version with index set `ℕ`. -/
-theorem tendstoUniformly_tsum_nat {f : ℕ → β → F} {u : ℕ → ℝ} (hu : Summable u)
-    (hfu : ∀ n x, ‖f n x‖ ≤ u n) :
-    TendstoUniformly (fun N => fun x => ∑ n ∈ Finset.range N, f n x) (fun x => ∑' n, f n x)
-      atTop :=
-  fun v hv => tendsto_finset_range.eventually (tendstoUniformly_tsum hu hfu v hv)
+/--
+An infinite sum of functions with summable sup norm is the uniform limit of its partial sums.
+Version with index set `ℕ`.
+-/
+theorem tendstoUniformly_tsum_nat
+    {f : ℕ → β → F} {u : ℕ → ℝ} (hu : Summable u) (hfu : ∀ n x, ‖f n x‖ ≤ u n)
+    : TendstoUniformly
+      (fun N => fun x => ∑ n ∈ Finset.range N, f n x)
+      (fun x => ∑' n, f n x)
+      atTop := fun v hv =>
+  tendsto_finset_range.eventually (tendstoUniformly_tsum hu hfu v hv)
 
-/-- An infinite sum of functions with eventually summable sup norm is the uniform limit of its
-partial sums. Version with general index set. -/
-theorem tendstoUniformly_tsum_of_cofinite_eventually {ι : Type*} {f : ι → β → F} {u : ι → ℝ}
-    (hu : Summable u) (hfu : ∀ᶠ (n : ι) in cofinite, ∀ x : β, ‖f n x‖ ≤ u n) :
-    TendstoUniformly (fun t x => ∑ n ∈ t, f n x) (fun x => ∑' n, f n x) atTop := by
+/--
+An infinite sum of functions with eventually summable sup norm is the uniform limit of its
+partial sums. Version with general index set.
+-/
+theorem tendstoUniformly_tsum_of_cofinite_eventually
+    {ι : Type*} {f : ι → β → F} {u : ι → ℝ}
+    (hu : Summable u) (hfu : ∀ᶠ (n : ι) in cofinite, ∀ x : β, ‖f n x‖ ≤ u n)
+    : TendstoUniformly (fun t x => ∑ n ∈ t, f n x) (fun x => ∑' n, f n x) atTop := by
   rw [← tendstoUniformlyOn_univ]
   apply tendstoUniformlyOn_tsum_of_cofinite_eventually hu
   simpa using hfu
 
-/-- An infinite sum of functions with summable sup norm is continuous on a set if each individual
-function is. -/
-theorem continuousOn_tsum [TopologicalSpace β] {f : α → β → F} {s : Set β}
-    (hf : ∀ i, ContinuousOn (f i) s) (hu : Summable u) (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n) :
-    ContinuousOn (fun x => ∑' n, f n x) s := by
+/--
+An infinite sum of functions with summable sup norm is continuous on a set if each individual
+function is.
+-/
+theorem continuousOn_tsum
+    [TopologicalSpace β]
+    {f : α → β → F} {s : Set β} (hf : ∀ i, ContinuousOn (f i) s)
+    (hu : Summable u) (hfu : ∀ n x, x ∈ s → ‖f n x‖ ≤ u n)
+    : ContinuousOn (fun x => ∑' n, f n x) s := by
   refine (tendstoUniformlyOn_tsum hu hfu).continuousOn (Frequently.of_forall ?_)
   intro t
   exact continuousOn_finsetSum _ fun i _ => hf i
 
-/-- An infinite sum of functions with summable sup norm is continuous if each individual
-function is. -/
-theorem continuous_tsum [TopologicalSpace β] {f : α → β → F} (hf : ∀ i, Continuous (f i))
-    (hu : Summable u) (hfu : ∀ n x, ‖f n x‖ ≤ u n) : Continuous fun x => ∑' n, f n x := by
+/--
+An infinite sum of functions with summable sup norm is continuous if each individual
+function is.
+-/
+theorem continuous_tsum
+    [TopologicalSpace β]
+    {f : α → β → F} (hf : ∀ i, Continuous (f i))
+    (hu : Summable u) (hfu : ∀ n x, ‖f n x‖ ≤ u n)
+    : Continuous fun x => ∑' n, f n x := by
   simp_rw [← continuousOn_univ] at hf ⊢
   exact continuousOn_tsum hf hu fun n x _ => hfu n x

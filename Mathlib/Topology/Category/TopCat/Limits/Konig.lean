@@ -59,17 +59,23 @@ private abbrev FiniteDiagram (J : Type u) [SmallCategory J] :=
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- Partial sections of a cofiltered limit are sections when restricted to
+/--
+Partial sections of a cofiltered limit are sections when restricted to
 a finite subset of objects and morphisms of `J`.
 -/
-def partialSections {J : Type u} [SmallCategory J] (F : J ⥤ TopCat.{v}) {G : Finset J}
-    (H : Finset (FiniteDiagramArrow G)) : Set (∀ j, F.obj j) :=
+def partialSections
+    {J : Type u} [SmallCategory J]
+    (F : J ⥤ TopCat.{v})
+    {G : Finset J} (H : Finset (FiniteDiagramArrow G))
+    : Set (∀ j, F.obj j) :=
   {u | ∀ {f : FiniteDiagramArrow G} (_ : f ∈ H), F.map f.2.2.2.2 (u f.1) = u f.2.1}
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-theorem partialSections.nonempty [IsCofilteredOrEmpty J] [h : ∀ j : J, Nonempty (F.obj j)]
-    {G : Finset J} (H : Finset (FiniteDiagramArrow G)) : (partialSections F H).Nonempty := by
+theorem partialSections.nonempty
+    [IsCofilteredOrEmpty J] [h : ∀ j : J, Nonempty (F.obj j)]
+    {G : Finset J} (H : Finset (FiniteDiagramArrow G))
+    : (partialSections F H).Nonempty := by
   classical
   cases isEmpty_or_nonempty J
   · exact ⟨isEmptyElim, fun {j} => IsEmpty.elim' inferInstance j.1⟩
@@ -84,8 +90,8 @@ theorem partialSections.nonempty [IsCofilteredOrEmpty J] [h : ∀ j : J, Nonempt
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-theorem partialSections.directed :
-    Directed GE.ge fun G : FiniteDiagram J => partialSections F G.2 := by
+theorem partialSections.directed
+    : Directed GE.ge fun G : FiniteDiagram J => partialSections F G.2 := by
   classical
   intro A B
   let ιA : FiniteDiagramArrow A.1 → FiniteDiagramArrow (A.1 ⊔ B.1) := fun f =>
@@ -108,11 +114,11 @@ theorem partialSections.directed :
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-theorem partialSections.closed [∀ j : J, T2Space (F.obj j)] {G : Finset J}
-    (H : Finset (FiniteDiagramArrow G)) : IsClosed (partialSections F H) := by
-  have :
-    partialSections F H =
-      ⋂ (f : FiniteDiagramArrow G) (_ : f ∈ H), {u | F.map f.2.2.2.2 (u f.1) = u f.2.1} := by
+theorem partialSections.closed
+    [∀ j : J, T2Space (F.obj j)] {G : Finset J} (H : Finset (FiniteDiagramArrow G))
+    : IsClosed (partialSections F H) := by
+  have : partialSections F H
+      = ⋂ (f : FiniteDiagramArrow G) (_ : f ∈ H), {u | F.map f.2.2.2.2 (u f.1) = u f.2.1} := by
     ext1
     simp only [Set.mem_iInter, Set.mem_ofPred_eq]
     rfl
@@ -121,18 +127,19 @@ theorem partialSections.closed [∀ j : J, T2Space (F.obj j)] {G : Finset J}
   intro f _
   apply isClosed_eq <;> fun_prop
 
-/-- Cofiltered limits of nonempty compact Hausdorff spaces are nonempty topological spaces.
--/
-theorem nonempty_limitCone_of_compact_t2_cofiltered_system (F : J ⥤ TopCat.{max v u})
-    [IsCofilteredOrEmpty J]
-    [∀ j : J, Nonempty (F.obj j)] [∀ j : J, CompactSpace (F.obj j)] [∀ j : J, T2Space (F.obj j)] :
-    Nonempty (TopCat.limitCone F).pt := by
+/-- Cofiltered limits of nonempty compact Hausdorff spaces are nonempty topological spaces. -/
+theorem nonempty_limitCone_of_compact_t2_cofiltered_system
+    (F : J ⥤ TopCat.{max v u}) [IsCofilteredOrEmpty J] [∀ j : J, Nonempty (F.obj j)]
+    [∀ j : J, CompactSpace (F.obj j)] [∀ j : J, T2Space (F.obj j)]
+    : Nonempty (TopCat.limitCone F).pt := by
   classical
   obtain ⟨u, hu⟩ :=
-    IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed (fun G => partialSections F _)
-      (partialSections.directed F) (fun G => partialSections.nonempty F _)
-      (fun G => IsClosed.isCompact (partialSections.closed F _)) fun G =>
-      partialSections.closed F _
+    IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed
+      (fun G => partialSections F _)
+      (partialSections.directed F)
+      (fun G => partialSections.nonempty F _)
+      (fun G => IsClosed.isCompact (partialSections.closed F _))
+      fun G => partialSections.closed F _
   use u
   intro X Y f
   let G : FiniteDiagram J := ⟨{X, Y}, {⟨X, Y, by grind, by grind, f⟩}⟩

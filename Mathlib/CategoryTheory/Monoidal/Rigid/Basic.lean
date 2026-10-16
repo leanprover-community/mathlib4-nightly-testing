@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Monoidal.Closed.Basic
 public import Mathlib.Tactic.CategoryTheory.Monoidal.Basic
-
 import Mathlib.Tactic.ApplyFun
 
 /-!
@@ -62,7 +61,6 @@ rigid category, monoidal category
 
 @[expose] public section
 
-
 open CategoryTheory MonoidalCategory
 
 universe v v₁ v₂ v₃ u u₁ u₂ u₃
@@ -73,22 +71,28 @@ namespace CategoryTheory
 
 variable {C : Type u₁} [Category.{v₁} C] [MonoidalCategory C]
 
-/-- An exact pairing is a pair of objects `X Y : C` which admit
-  a coevaluation and evaluation morphism which fulfill two triangle equalities. -/
+/--
+An exact pairing is a pair of objects `X Y : C` which admit
+a coevaluation and evaluation morphism which fulfill two triangle equalities.
+-/
 class ExactPairing (X Y : C) where
-  /-- Coevaluation of an exact pairing.
+  /--
+  Coevaluation of an exact pairing.
 
-  Do not use directly. Use `ExactPairing.coevaluation` instead. -/
+  Do not use directly. Use `ExactPairing.coevaluation` instead.
+  -/
   coevaluation' : 𝟙_ C ⟶ X ⊗ Y
-  /-- Evaluation of an exact pairing.
+  /--
+  Evaluation of an exact pairing.
 
-  Do not use directly. Use `ExactPairing.evaluation` instead. -/
+  Do not use directly. Use `ExactPairing.evaluation` instead.
+  -/
   evaluation' : Y ⊗ X ⟶ 𝟙_ C
-  coevaluation_evaluation' :
-    Y ◁ coevaluation' ≫ (α_ _ _ _).inv ≫ evaluation' ▷ Y = (ρ_ Y).hom ≫ (λ_ Y).inv := by
+  coevaluation_evaluation'
+      : Y ◁ coevaluation' ≫ (α_ _ _ _).inv ≫ evaluation' ▷ Y = (ρ_ Y).hom ≫ (λ_ Y).inv := by
     cat_disch
-  evaluation_coevaluation' :
-    coevaluation' ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ evaluation' = (λ_ X).hom ≫ (ρ_ X).inv := by
+  evaluation_coevaluation'
+      : coevaluation' ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ evaluation' = (λ_ X).hom ≫ (ρ_ X).inv := by
     cat_disch
 
 namespace ExactPairing
@@ -109,20 +113,18 @@ def evaluation : Y ⊗ X ⟶ 𝟙_ C := @evaluation' _ _ _ X Y _
 @[inherit_doc] notation "η_" => ExactPairing.coevaluation
 @[inherit_doc] notation "ε_" => ExactPairing.evaluation
 
-lemma coevaluation_evaluation :
-    Y ◁ η_ _ _ ≫ (α_ _ _ _).inv ≫ ε_ X _ ▷ Y = (ρ_ Y).hom ≫ (λ_ Y).inv :=
+lemma coevaluation_evaluation
+    : Y ◁ η_ _ _ ≫ (α_ _ _ _).inv ≫ ε_ X _ ▷ Y = (ρ_ Y).hom ≫ (λ_ Y).inv :=
   coevaluation_evaluation'
 
-lemma evaluation_coevaluation :
-    η_ _ _ ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ ε_ _ Y = (λ_ X).hom ≫ (ρ_ X).inv :=
+lemma evaluation_coevaluation
+    : η_ _ _ ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ ε_ _ Y = (λ_ X).hom ≫ (ρ_ X).inv :=
   evaluation_coevaluation'
 
-lemma coevaluation_evaluation'' :
-    Y ◁ η_ X Y ⊗≫ ε_ X Y ▷ Y = ⊗𝟙.hom := by
+lemma coevaluation_evaluation'' : Y ◁ η_ X Y ⊗≫ ε_ X Y ▷ Y = ⊗𝟙.hom := by
   convert coevaluation_evaluation X Y <;> simp [monoidalComp]
 
-lemma evaluation_coevaluation'' :
-    η_ X Y ▷ X ⊗≫ X ◁ ε_ X Y = ⊗𝟙.hom := by
+lemma evaluation_coevaluation'' : η_ X Y ▷ X ⊗≫ X ◁ ε_ X Y = ⊗𝟙.hom := by
   convert evaluation_coevaluation X Y <;> simp [monoidalComp]
 
 end ExactPairing
@@ -136,18 +138,19 @@ instance exactPairingUnit : ExactPairing (𝟙_ C) (𝟙_ C) where
   coevaluation_evaluation' := by monoidal_coherence
   evaluation_coevaluation' := by monoidal_coherence
 
-/-- The tensor product of exact pairings. Given exact pairings `(X₁, Y₁)` and `(X₂, Y₂)`,
-we get an exact pairing `(X₁ ⊗ X₂, Y₂ ⊗ Y₁)`. Note the reversed order in the second factor. -/
-instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂] :
-    ExactPairing (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) where
+/--
+The tensor product of exact pairings. Given exact pairings `(X₁, Y₁)` and `(X₂, Y₂)`,
+we get an exact pairing `(X₁ ⊗ X₂, Y₂ ⊗ Y₁)`. Note the reversed order in the second factor.
+-/
+instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂]
+    : ExactPairing (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) where
   coevaluation' := η_ X₁ Y₁ ⊗≫ (X₁ ◁ η_ X₂ Y₂) ▷ Y₁ ⊗≫ 𝟙 _
   evaluation' := 𝟙 _ ⊗≫ Y₂ ◁ (ε_ X₁ Y₁ ▷ X₂) ⊗≫ ε_ X₂ Y₂
   coevaluation_evaluation' := by
     calc
-      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫
-          (Y₂ ⊗ Y₁) ◁ (X₁ ◁ η_ X₂ Y₂) ▷ Y₁ ⊗≫
-          (Y₂ ◁ (ε_ X₁ Y₁ ▷ X₂)) ▷ (Y₂ ⊗ Y₁) ⊗≫
-          ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by monoidal
+      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫ (Y₂ ⊗ Y₁) ◁ (X₁ ◁ η_ X₂ Y₂) ▷ Y₁
+          ⊗≫ (Y₂ ◁ (ε_ X₁ Y₁ ▷ X₂)) ▷ (Y₂ ⊗ Y₁) ⊗≫ ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by
+        monoidal
       -- Group η₂ and ε₁ so they compose with ≫ (both act on the Y₁ ⊗ X₁ factor):
       --
       --   Y₂  Y₁      ╭── X₁ ────────────╮
@@ -157,10 +160,9 @@ instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] 
       --   │                │         │   │
       --   ╰────── ε₂ ──────╯         │   │
       --                              Y₂  Y₁
-      --
-      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫
-          Y₂ ◁ ((Y₁ ⊗ X₁) ◁ η_ X₂ Y₂ ≫ ε_ X₁ Y₁ ▷ (X₂ ⊗ Y₂)) ▷ Y₁ ⊗≫
-          ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by monoidal
+      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫ Y₂ ◁ ((Y₁ ⊗ X₁) ◁ η_ X₂ Y₂ ≫ ε_ X₁ Y₁ ▷ (X₂ ⊗ Y₂)) ▷ Y₁
+          ⊗≫ ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by
+        monoidal
       -- Slide the η₂ cup past the ε₁ cap (whisker_exchange), separating the
       -- two zigzags into independent snakes:
       --
@@ -173,21 +175,19 @@ instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] 
       --   │  │     │     │
       --   ╰──╯     │     │       ← snake for (X₂, Y₂)
       --            Y₂    Y₁
-      --
-      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫
-          Y₂ ◁ (ε_ X₁ Y₁ ▷ (𝟙_ C) ≫ (𝟙_ C) ◁ η_ X₂ Y₂) ▷ Y₁ ⊗≫
-          ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by
+      _ = (Y₂ ⊗ Y₁) ◁ η_ X₁ Y₁ ⊗≫ Y₂ ◁ (ε_ X₁ Y₁ ▷ (𝟙_ C) ≫ (𝟙_ C) ◁ η_ X₂ Y₂) ▷ Y₁
+          ⊗≫ ε_ X₂ Y₂ ▷ (Y₂ ⊗ Y₁) := by
         rw [whisker_exchange]
       -- Separate into two snakes and cancel each.
-      _ = 𝟙 _ ⊗≫ Y₂ ◁ (Y₁ ◁ η_ X₁ Y₁ ⊗≫ ε_ X₁ Y₁ ▷ Y₁) ⊗≫
-          (Y₂ ◁ η_ X₂ Y₂ ⊗≫ ε_ X₂ Y₂ ▷ Y₂) ▷ Y₁ ⊗≫ 𝟙 _ := by monoidal
+      _ = 𝟙 _ ⊗≫ Y₂ ◁ (Y₁ ◁ η_ X₁ Y₁ ⊗≫ ε_ X₁ Y₁ ▷ Y₁) ⊗≫ (Y₂ ◁ η_ X₂ Y₂ ⊗≫ ε_ X₂ Y₂ ▷ Y₂) ▷ Y₁
+          ⊗≫ 𝟙 _ := by
+        monoidal
       _ = _ := by rw [coevaluation_evaluation'', coevaluation_evaluation'']; monoidal
   evaluation_coevaluation' := by
     calc
-      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫
-          (X₁ ◁ η_ X₂ Y₂) ▷ (Y₁ ⊗ X₁ ⊗ X₂) ⊗≫
-          (X₁ ⊗ X₂) ◁ (Y₂ ◁ ε_ X₁ Y₁ ▷ X₂) ⊗≫
-          (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by monoidal
+      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫ (X₁ ◁ η_ X₂ Y₂) ▷ (Y₁ ⊗ X₁ ⊗ X₂)
+          ⊗≫ (X₁ ⊗ X₂) ◁ (Y₂ ◁ ε_ X₁ Y₁ ▷ X₂) ⊗≫ (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by
+        monoidal
       -- Group η₂ and ε₁ so they compose with ≫:
       --
       --   ╭── Y₁ ────────────╮       X₁   X₂
@@ -197,10 +197,9 @@ instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] 
       --   │    │         │                │
       --   │    │         ╰──────── ε₂ ────╯
       --   X₁   X₂
-      --
-      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫
-          X₁ ◁ (η_ X₂ Y₂ ▷ (Y₁ ⊗ X₁) ≫ (X₂ ⊗ Y₂) ◁ ε_ X₁ Y₁) ▷ X₂ ⊗≫
-          (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by monoidal
+      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫ X₁ ◁ (η_ X₂ Y₂ ▷ (Y₁ ⊗ X₁) ≫ (X₂ ⊗ Y₂) ◁ ε_ X₁ Y₁) ▷ X₂
+          ⊗≫ (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by
+        monoidal
       -- Slide the ε₁ cap past the η₂ cup (← whisker_exchange), separating the
       -- two zigzags into independent snakes:
       --
@@ -213,24 +212,21 @@ instance ExactPairing.tensor {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] 
       --   │   │      │       │
       --   │   │      ╰───────╯       ← snake for (X₂, Y₂)
       --   X₁  X₂
-      --
-      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫
-          X₁ ◁ ((𝟙_ C) ◁ ε_ X₁ Y₁ ≫ η_ X₂ Y₂ ▷ (𝟙_ C)) ▷ X₂ ⊗≫
-          (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by
+      _ = η_ X₁ Y₁ ▷ (X₁ ⊗ X₂) ⊗≫ X₁ ◁ ((𝟙_ C) ◁ ε_ X₁ Y₁ ≫ η_ X₂ Y₂ ▷ (𝟙_ C)) ▷ X₂
+          ⊗≫ (X₁ ⊗ X₂) ◁ ε_ X₂ Y₂ := by
         rw [← whisker_exchange]
       -- Separate into two snakes and cancel each.
-      _ = 𝟙 _ ⊗≫ (η_ X₁ Y₁ ▷ X₁ ⊗≫ X₁ ◁ ε_ X₁ Y₁) ▷ X₂ ⊗≫
-          X₁ ◁ (η_ X₂ Y₂ ▷ X₂ ⊗≫ X₂ ◁ ε_ X₂ Y₂) ⊗≫ 𝟙 _ := by monoidal
+      _ = 𝟙 _ ⊗≫ (η_ X₁ Y₁ ▷ X₁ ⊗≫ X₁ ◁ ε_ X₁ Y₁) ▷ X₂ ⊗≫ X₁ ◁ (η_ X₂ Y₂ ▷ X₂ ⊗≫ X₂ ◁ ε_ X₂ Y₂)
+          ⊗≫ 𝟙 _ := by
+        monoidal
       _ = _ := by rw [evaluation_coevaluation'', evaluation_coevaluation'']; monoidal
 
-lemma ExactPairing.tensor_coevaluation {X₁ X₂ Y₁ Y₂ : C}
-    [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂] :
-    η_ (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) = η_ X₁ Y₁ ⊗≫ (X₁ ◁ η_ X₂ Y₂) ▷ Y₁ ⊗≫ 𝟙 _ :=
+lemma ExactPairing.tensor_coevaluation {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂]
+    : η_ (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) = η_ X₁ Y₁ ⊗≫ (X₁ ◁ η_ X₂ Y₂) ▷ Y₁ ⊗≫ 𝟙 _ :=
   rfl
 
-lemma ExactPairing.tensor_evaluation {X₁ X₂ Y₁ Y₂ : C}
-    [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂] :
-    ε_ (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) = 𝟙 _ ⊗≫ Y₂ ◁ (ε_ X₁ Y₁ ▷ X₂) ⊗≫ ε_ X₂ Y₂ :=
+lemma ExactPairing.tensor_evaluation {X₁ X₂ Y₁ Y₂ : C} [ExactPairing X₁ Y₁] [ExactPairing X₂ Y₂]
+    : ε_ (X₁ ⊗ X₂) (Y₂ ⊗ Y₁) = 𝟙 _ ⊗≫ Y₂ ◁ (ε_ X₁ Y₁ ▷ X₂) ⊗≫ ε_ X₂ Y₂ :=
   rfl
 
 /-- A class of objects which have a right dual. -/
@@ -270,27 +266,25 @@ instance hasRightDualLeftDual {X : C} [HasLeftDual X] : HasRightDual ᘁX where
 instance hasLeftDualRightDual {X : C} [HasRightDual X] : HasLeftDual Xᘁ where
   leftDual := X
 
-/-- The tensor product of two objects with right duals has a right dual,
-given by the tensor product of the duals in the opposite order. -/
+/--
+The tensor product of two objects with right duals has a right dual,
+given by the tensor product of the duals in the opposite order.
+-/
 @[implicit_reducible]
-def hasRightDualTensor {X Y : C} [HasRightDual X] [HasRightDual Y] :
-    HasRightDual (X ⊗ Y) where
+def hasRightDualTensor {X Y : C} [HasRightDual X] [HasRightDual Y] : HasRightDual (X ⊗ Y) where
   rightDual := Yᘁ ⊗ Xᘁ
 
-/-- The tensor product of two objects with left duals has a left dual,
-given by the tensor product of the duals in the opposite order. -/
+/--
+The tensor product of two objects with left duals has a left dual,
+given by the tensor product of the duals in the opposite order.
+-/
 @[implicit_reducible]
-def hasLeftDualTensor {X Y : C} [HasLeftDual X] [HasLeftDual Y] :
-    HasLeftDual (X ⊗ Y) where
+def hasLeftDualTensor {X Y : C} [HasLeftDual X] [HasLeftDual Y] : HasLeftDual (X ⊗ Y) where
   leftDual := ᘁY ⊗ ᘁX
 
-@[simp]
-theorem leftDual_rightDual {X : C} [HasRightDual X] : ᘁXᘁ = X :=
-  rfl
+@[simp] theorem leftDual_rightDual {X : C} [HasRightDual X] : ᘁ Xᘁ = X := rfl
 
-@[simp]
-theorem rightDual_leftDual {X : C} [HasLeftDual X] : (ᘁX)ᘁ = X :=
-  rfl
+@[simp] theorem rightDual_leftDual {X : C} [HasLeftDual X] : (ᘁX)ᘁ = X := rfl
 
 /-- The right adjoint mate `fᘁ : Xᘁ ⟶ Yᘁ` of a morphism `f : X ⟶ Y`. -/
 def rightAdjointMate {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y) : Yᘁ ⟶ Xᘁ :=
@@ -304,78 +298,78 @@ def leftAdjointMate {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y) : �
 @[inherit_doc] notation "ᘁ" f => leftAdjointMate f
 
 @[simp]
-theorem rightAdjointMate_id {X : C} [HasRightDual X] : (𝟙 X)ᘁ = 𝟙 (Xᘁ) := by
-  simp [rightAdjointMate]
+theorem rightAdjointMate_id {X : C} [HasRightDual X] : (𝟙 X)ᘁ = 𝟙 (Xᘁ) := by simp [rightAdjointMate]
 
 @[simp]
-theorem leftAdjointMate_id {X : C} [HasLeftDual X] : (ᘁ(𝟙 X)) = 𝟙 (ᘁX) := by
-  simp [leftAdjointMate]
+theorem leftAdjointMate_id {X : C} [HasLeftDual X] : (ᘁ(𝟙 X)) = 𝟙 (ᘁX) := by simp [leftAdjointMate]
 
-theorem rightAdjointMate_comp {X Y Z : C} [HasRightDual X] [HasRightDual Y] {f : X ⟶ Y}
-    {g : Xᘁ ⟶ Z} :
-    fᘁ ≫ g =
-      (ρ_ (Yᘁ)).inv ≫
-        _ ◁ η_ X (Xᘁ) ≫ _ ◁ (f ⊗ₘ g) ≫ (α_ (Yᘁ) Y Z).inv ≫ ε_ Y (Yᘁ) ▷ _ ≫ (λ_ Z).hom :=
+theorem rightAdjointMate_comp {X Y Z : C} [HasRightDual X] [HasRightDual Y] {f : X ⟶ Y} {g : Xᘁ ⟶ Z}
+    : fᘁ ≫ g
+      = (ρ_ (Yᘁ)).inv ≫ _ ◁ η_ X (Xᘁ) ≫ _ ◁ (f ⊗ₘ g) ≫ (α_ (Yᘁ) Y Z).inv ≫ ε_ Y (Yᘁ) ▷ _
+        ≫ (λ_ Z).hom :=
   calc
     _ = 𝟙 _ ⊗≫ (Yᘁ : C) ◁ η_ X Xᘁ ≫ Yᘁ ◁ f ▷ Xᘁ ⊗≫ (ε_ Y Yᘁ ▷ Xᘁ ≫ 𝟙_ C ◁ g) ⊗≫ 𝟙 _ := by
       dsimp only [rightAdjointMate]; monoidal
-    _ = _ := by
-      rw [← whisker_exchange, tensorHom_def]; monoidal
+    _ = _ := by rw [← whisker_exchange, tensorHom_def]; monoidal
 
-theorem leftAdjointMate_comp {X Y Z : C} [HasLeftDual X] [HasLeftDual Y] {f : X ⟶ Y}
-    {g : (ᘁX) ⟶ Z} :
-    (ᘁf) ≫ g =
-      (λ_ _).inv ≫
-        η_ (ᘁX : C) X ▷ _ ≫ (g ⊗ₘ f) ▷ _ ≫ (α_ _ _ _).hom ≫ _ ◁ ε_ _ _ ≫ (ρ_ _).hom :=
+theorem leftAdjointMate_comp {X Y Z : C} [HasLeftDual X] [HasLeftDual Y] {f : X ⟶ Y} {g : (ᘁX) ⟶ Z}
+    : (ᘁf) ≫ g
+      = (λ_ _).inv ≫ η_ (ᘁX : C) X ▷ _ ≫ (g ⊗ₘ f) ▷ _ ≫ (α_ _ _ _).hom ≫ _ ◁ ε_ _ _ ≫ (ρ_ _).hom :=
   calc
     _ = 𝟙 _ ⊗≫ η_ (ᘁX : C) X ▷ (ᘁY) ⊗≫ (ᘁX) ◁ f ▷ (ᘁY) ⊗≫ ((ᘁX) ◁ ε_ (ᘁY) Y ≫ g ▷ 𝟙_ C) ⊗≫ 𝟙 _ := by
       dsimp only [leftAdjointMate]; monoidal
-    _ = _ := by
-      rw [whisker_exchange, tensorHom_def']; monoidal
+    _ = _ := by rw [whisker_exchange, tensorHom_def']; monoidal
 
 /-- The composition of right adjoint mates is the adjoint mate of the composition. -/
 @[reassoc]
-theorem comp_rightAdjointMate {X Y Z : C} [HasRightDual X] [HasRightDual Y] [HasRightDual Z]
-    {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g)ᘁ = gᘁ ≫ fᘁ := by
+theorem comp_rightAdjointMate
+    {X Y Z : C} [HasRightDual X] [HasRightDual Y] [HasRightDual Z] {f : X ⟶ Y} {g : Y ⟶ Z}
+    : (f ≫ g)ᘁ = gᘁ ≫ fᘁ := by
   rw [rightAdjointMate_comp]
   simp only [rightAdjointMate, comp_whiskerRight]
-  simp only [← Category.assoc]; congr 3; simp only [Category.assoc]
-  simp only [← MonoidalCategory.whiskerLeft_comp]; congr 2
+  simp only [← Category.assoc]
+  congr 3
+  simp only [Category.assoc]
+  simp only [← MonoidalCategory.whiskerLeft_comp]
+  congr 2
   symm
   calc
-    _ = 𝟙 _ ⊗≫ (η_ Y Yᘁ ▷ 𝟙_ C ≫ (Y ⊗ Yᘁ) ◁ η_ X Xᘁ) ⊗≫ Y ◁ Yᘁ ◁ f ▷ Xᘁ ⊗≫
-        Y ◁ ε_ Y Yᘁ ▷ Xᘁ ⊗≫ g ▷ Xᘁ ⊗≫ 𝟙 _ := by
+    _ = 𝟙 _ ⊗≫ (η_ Y Yᘁ ▷ 𝟙_ C ≫ (Y ⊗ Yᘁ) ◁ η_ X Xᘁ) ⊗≫ Y ◁ Yᘁ ◁ f ▷ Xᘁ ⊗≫ Y ◁ ε_ Y Yᘁ ▷ Xᘁ
+        ⊗≫ g ▷ Xᘁ ⊗≫ 𝟙 _ := by
       rw [tensorHom_def']; monoidal
-    _ = η_ X Xᘁ ⊗≫ (η_ Y Yᘁ ▷ (X ⊗ Xᘁ) ≫ (Y ⊗ Yᘁ) ◁ f ▷ Xᘁ) ⊗≫
-        Y ◁ ε_ Y Yᘁ ▷ Xᘁ ⊗≫ g ▷ Xᘁ ⊗≫ 𝟙 _ := by
+    _ = η_ X Xᘁ ⊗≫ (η_ Y Yᘁ ▷ (X ⊗ Xᘁ) ≫ (Y ⊗ Yᘁ) ◁ f ▷ Xᘁ) ⊗≫ Y ◁ ε_ Y Yᘁ ▷ Xᘁ ⊗≫ g ▷ Xᘁ
+        ⊗≫ 𝟙 _ := by
       rw [← whisker_exchange]; monoidal
     _ = η_ X Xᘁ ⊗≫ f ▷ Xᘁ ⊗≫ (η_ Y Yᘁ ▷ Y ⊗≫ Y ◁ ε_ Y Yᘁ) ▷ Xᘁ ⊗≫ g ▷ Xᘁ ⊗≫ 𝟙 _ := by
       rw [← whisker_exchange]; monoidal
-    _ = η_ X Xᘁ ≫ f ▷ Xᘁ ≫ g ▷ Xᘁ := by
-      rw [evaluation_coevaluation'']; monoidal
+    _ = η_ X Xᘁ ≫ f ▷ Xᘁ ≫ g ▷ Xᘁ := by rw [evaluation_coevaluation'']; monoidal
 
 /-- The composition of left adjoint mates is the adjoint mate of the composition. -/
 @[reassoc]
-theorem comp_leftAdjointMate {X Y Z : C} [HasLeftDual X] [HasLeftDual Y] [HasLeftDual Z] {f : X ⟶ Y}
-    {g : Y ⟶ Z} : (ᘁf ≫ g) = (ᘁg) ≫ ᘁf := by
+theorem comp_leftAdjointMate
+    {X Y Z : C} [HasLeftDual X] [HasLeftDual Y] [HasLeftDual Z] {f : X ⟶ Y} {g : Y ⟶ Z}
+    : (ᘁf ≫ g) = (ᘁg) ≫ ᘁf := by
   rw [leftAdjointMate_comp]
   simp only [leftAdjointMate, MonoidalCategory.whiskerLeft_comp]
-  simp only [← Category.assoc]; congr 3; simp only [Category.assoc]
-  simp only [← comp_whiskerRight]; congr 2
+  simp only [← Category.assoc]
+  congr 3
+  simp only [Category.assoc]
+  simp only [← comp_whiskerRight]
+  congr 2
   symm
   calc
-    _ = 𝟙 _ ⊗≫ ((𝟙_ C) ◁ η_ (ᘁY) Y ≫ η_ (ᘁX) X ▷ ((ᘁY) ⊗ Y)) ⊗≫ (ᘁX) ◁ f ▷ (ᘁY) ▷ Y ⊗≫
-        (ᘁX) ◁ ε_ (ᘁY) Y ▷ Y ⊗≫ (ᘁX) ◁ g := by
+    _ = 𝟙 _ ⊗≫ ((𝟙_ C) ◁ η_ (ᘁY) Y ≫ η_ (ᘁX) X ▷ ((ᘁY) ⊗ Y)) ⊗≫ (ᘁX) ◁ f ▷ (ᘁY) ▷ Y
+        ⊗≫ (ᘁX) ◁ ε_ (ᘁY) Y ▷ Y ⊗≫ (ᘁX) ◁ g := by
       rw [tensorHom_def]; monoidal
-    _ = η_ (ᘁX) X ⊗≫ (((ᘁX) ⊗ X) ◁ η_ (ᘁY) Y ≫ ((ᘁX) ◁ f) ▷ ((ᘁY) ⊗ Y)) ⊗≫
-        (ᘁX) ◁ ε_ (ᘁY) Y ▷ Y ⊗≫ (ᘁX) ◁ g := by
+    _ = η_ (ᘁX) X ⊗≫ (((ᘁX) ⊗ X) ◁ η_ (ᘁY) Y ≫ ((ᘁX) ◁ f) ▷ ((ᘁY) ⊗ Y)) ⊗≫ (ᘁX) ◁ ε_ (ᘁY) Y ▷ Y
+        ⊗≫ (ᘁX) ◁ g := by
       rw [whisker_exchange]; monoidal
     _ = η_ (ᘁX) X ⊗≫ ((ᘁX) ◁ f) ⊗≫ (ᘁX) ◁ (Y ◁ η_ (ᘁY) Y ⊗≫ ε_ (ᘁY) Y ▷ Y) ⊗≫ (ᘁX) ◁ g := by
       rw [whisker_exchange]; monoidal
-    _ = η_ (ᘁX) X ≫ (ᘁX) ◁ f ≫ (ᘁX) ◁ g := by
-      rw [coevaluation_evaluation'']; monoidal
+    _ = η_ (ᘁX) X ≫ (ᘁX) ◁ f ≫ (ᘁX) ◁ g := by rw [coevaluation_evaluation'']; monoidal
 
-/-- Given an exact pairing on `Y Y'`,
+/--
+Given an exact pairing on `Y Y'`,
 we get a bijection on hom-sets `(Y' ⊗ X ⟶ Z) ≃ (X ⟶ Y ⊗ Z)`
 by "pulling the string on the left" up or down.
 
@@ -389,22 +383,17 @@ def tensorLeftHomEquiv (X Y Y' Z : C) [ExactPairing Y Y'] : (Y' ⊗ X ⟶ Z) ≃
   invFun f := Y' ◁ f ≫ (α_ _ _ _).inv ≫ ε_ _ _ ▷ _ ≫ (λ_ _).hom
   left_inv f := by
     calc
-      _ = 𝟙 _ ⊗≫ Y' ◁ η_ Y Y' ▷ X ⊗≫ ((Y' ⊗ Y) ◁ f ≫ ε_ Y Y' ▷ Z) ⊗≫ 𝟙 _ := by
-        monoidal
-      _ = 𝟙 _ ⊗≫ (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ▷ X ⊗≫ f := by
-        rw [whisker_exchange]; monoidal
-      _ = f := by
-        rw [coevaluation_evaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ Y' ◁ η_ Y Y' ▷ X ⊗≫ ((Y' ⊗ Y) ◁ f ≫ ε_ Y Y' ▷ Z) ⊗≫ 𝟙 _ := by monoidal
+      _ = 𝟙 _ ⊗≫ (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ▷ X ⊗≫ f := by rw [whisker_exchange]; monoidal
+      _ = f := by rw [coevaluation_evaluation'']; monoidal
   right_inv f := by
     calc
-      _ = 𝟙 _ ⊗≫ (η_ Y Y' ▷ X ≫ (Y ⊗ Y') ◁ f) ⊗≫ Y ◁ ε_ Y Y' ▷ Z ⊗≫ 𝟙 _ := by
-        monoidal
-      _ = f ⊗≫ (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ▷ Z ⊗≫ 𝟙 _ := by
-        rw [← whisker_exchange]; monoidal
-      _ = f := by
-        rw [evaluation_coevaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ (η_ Y Y' ▷ X ≫ (Y ⊗ Y') ◁ f) ⊗≫ Y ◁ ε_ Y Y' ▷ Z ⊗≫ 𝟙 _ := by monoidal
+      _ = f ⊗≫ (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ▷ Z ⊗≫ 𝟙 _ := by rw [← whisker_exchange]; monoidal
+      _ = f := by rw [evaluation_coevaluation'']; monoidal
 
-/-- Given an exact pairing on `Y Y'`,
+/--
+Given an exact pairing on `Y Y'`,
 we get a bijection on hom-sets `(X ⊗ Y ⟶ Z) ≃ (X ⟶ Z ⊗ Y')`
 by "pulling the string on the right" up or down.
 -/
@@ -413,60 +402,58 @@ def tensorRightHomEquiv (X Y Y' Z : C) [ExactPairing Y Y'] : (X ⊗ Y ⟶ Z) ≃
   invFun f := f ▷ _ ≫ (α_ _ _ _).hom ≫ _ ◁ ε_ _ _ ≫ (ρ_ _).hom
   left_inv f := by
     calc
-      _ = 𝟙 _ ⊗≫ X ◁ η_ Y Y' ▷ Y ⊗≫ (f ▷ (Y' ⊗ Y) ≫ Z ◁ ε_ Y Y') ⊗≫ 𝟙 _ := by
-        monoidal
-      _ = 𝟙 _ ⊗≫ X ◁ (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ⊗≫ f := by
-        rw [← whisker_exchange]; monoidal
-      _ = f := by
-        rw [evaluation_coevaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ X ◁ η_ Y Y' ▷ Y ⊗≫ (f ▷ (Y' ⊗ Y) ≫ Z ◁ ε_ Y Y') ⊗≫ 𝟙 _ := by monoidal
+      _ = 𝟙 _ ⊗≫ X ◁ (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ⊗≫ f := by rw [← whisker_exchange]; monoidal
+      _ = f := by rw [evaluation_coevaluation'']; monoidal
   right_inv f := by
     calc
-      _ = 𝟙 _ ⊗≫ (X ◁ η_ Y Y' ≫ f ▷ (Y ⊗ Y')) ⊗≫ Z ◁ ε_ Y Y' ▷ Y' ⊗≫ 𝟙 _ := by
-        monoidal
-      _ = f ⊗≫ Z ◁ (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ⊗≫ 𝟙 _ := by
-        rw [whisker_exchange]; monoidal
-      _ = f := by
-        rw [coevaluation_evaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ (X ◁ η_ Y Y' ≫ f ▷ (Y ⊗ Y')) ⊗≫ Z ◁ ε_ Y Y' ▷ Y' ⊗≫ 𝟙 _ := by monoidal
+      _ = f ⊗≫ Z ◁ (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ⊗≫ 𝟙 _ := by rw [whisker_exchange]; monoidal
+      _ = f := by rw [coevaluation_evaluation'']; monoidal
 
-theorem tensorLeftHomEquiv_naturality {X Y Y' Z Z' : C} [ExactPairing Y Y'] (f : Y' ⊗ X ⟶ Z)
-    (g : Z ⟶ Z') :
-    (tensorLeftHomEquiv X Y Y' Z') (f ≫ g) = (tensorLeftHomEquiv X Y Y' Z) f ≫ Y ◁ g := by
+theorem tensorLeftHomEquiv_naturality
+    {X Y Y' Z Z' : C} [ExactPairing Y Y'] (f : Y' ⊗ X ⟶ Z) (g : Z ⟶ Z')
+    : (tensorLeftHomEquiv X Y Y' Z') (f ≫ g) = (tensorLeftHomEquiv X Y Y' Z) f ≫ Y ◁ g := by
   simp [tensorLeftHomEquiv]
 
-theorem tensorLeftHomEquiv_symm_naturality {X X' Y Y' Z : C} [ExactPairing Y Y'] (f : X ⟶ X')
-    (g : X' ⟶ Y ⊗ Z) :
-    (tensorLeftHomEquiv X Y Y' Z).symm (f ≫ g) =
-      _ ◁ f ≫ (tensorLeftHomEquiv X' Y Y' Z).symm g := by
+theorem tensorLeftHomEquiv_symm_naturality
+    {X X' Y Y' Z : C} [ExactPairing Y Y'] (f : X ⟶ X') (g : X' ⟶ Y ⊗ Z)
+    : (tensorLeftHomEquiv X Y Y' Z).symm (f ≫ g)
+      = _ ◁ f ≫ (tensorLeftHomEquiv X' Y Y' Z).symm g := by
   simp [tensorLeftHomEquiv]
 
-theorem tensorRightHomEquiv_naturality {X Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⊗ Y ⟶ Z)
-    (g : Z ⟶ Z') :
-    (tensorRightHomEquiv X Y Y' Z') (f ≫ g) = (tensorRightHomEquiv X Y Y' Z) f ≫ g ▷ Y' := by
+theorem tensorRightHomEquiv_naturality
+    {X Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⊗ Y ⟶ Z) (g : Z ⟶ Z')
+    : (tensorRightHomEquiv X Y Y' Z') (f ≫ g) = (tensorRightHomEquiv X Y Y' Z) f ≫ g ▷ Y' := by
   simp [tensorRightHomEquiv]
 
-theorem tensorRightHomEquiv_symm_naturality {X X' Y Y' Z : C} [ExactPairing Y Y'] (f : X ⟶ X')
-    (g : X' ⟶ Z ⊗ Y') :
-    (tensorRightHomEquiv X Y Y' Z).symm (f ≫ g) =
-      f ▷ Y ≫ (tensorRightHomEquiv X' Y Y' Z).symm g := by
+theorem tensorRightHomEquiv_symm_naturality
+    {X X' Y Y' Z : C} [ExactPairing Y Y'] (f : X ⟶ X') (g : X' ⟶ Z ⊗ Y')
+    : (tensorRightHomEquiv X Y Y' Z).symm (f ≫ g)
+      = f ▷ Y ≫ (tensorRightHomEquiv X' Y Y' Z).symm g := by
   simp [tensorRightHomEquiv]
 
-/-- If `Y Y'` have an exact pairing,
+/--
+If `Y Y'` have an exact pairing,
 then the functor `tensorLeft Y'` is left adjoint to `tensorLeft Y`.
 -/
 def tensorLeftAdjunction (Y Y' : C) [ExactPairing Y Y'] : tensorLeft Y' ⊣ tensorLeft Y :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv := fun X Z => tensorLeftHomEquiv X Y Y' Z
-      homEquiv_naturality_left_symm := fun f g => tensorLeftHomEquiv_symm_naturality f g
-      homEquiv_naturality_right := fun f g => tensorLeftHomEquiv_naturality f g }
+  Adjunction.mkOfHomEquiv {
+    homEquiv := fun X Z => tensorLeftHomEquiv X Y Y' Z
+    homEquiv_naturality_left_symm := fun f g => tensorLeftHomEquiv_symm_naturality f g
+    homEquiv_naturality_right := fun f g => tensorLeftHomEquiv_naturality f g
+  }
 
-/-- If `Y Y'` have an exact pairing,
+/--
+If `Y Y'` have an exact pairing,
 then the functor `tensor_right Y` is left adjoint to `tensor_right Y'`.
 -/
 def tensorRightAdjunction (Y Y' : C) [ExactPairing Y Y'] : tensorRight Y ⊣ tensorRight Y' :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv := fun X Z => tensorRightHomEquiv X Y Y' Z
-      homEquiv_naturality_left_symm := fun f g => tensorRightHomEquiv_symm_naturality f g
-      homEquiv_naturality_right := fun f g => tensorRightHomEquiv_naturality f g }
+  Adjunction.mkOfHomEquiv {
+    homEquiv := fun X Z => tensorRightHomEquiv X Y Y' Z
+    homEquiv_naturality_left_symm := fun f g => tensorRightHomEquiv_symm_naturality f g
+    homEquiv_naturality_right := fun f g => tensorRightHomEquiv_naturality f g
+  }
 
 /--
 If `Y` has a left dual `ᘁY`, then it is a closed object, with the internal hom functor `Y ⟶[C] -`
@@ -485,110 +472,107 @@ def closedOfHasLeftDual (Y : C) [HasLeftDual Y] : Closed Y where
   adj := tensorLeftAdjunction (ᘁY) Y
 
 /-- `tensorLeftHomEquiv` commutes with tensoring on the right -/
-theorem tensorLeftHomEquiv_tensor {X X' Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⟶ Y ⊗ Z)
-    (g : X' ⟶ Z') :
-    (tensorLeftHomEquiv (X ⊗ X') Y Y' (Z ⊗ Z')).symm ((f ⊗ₘ g) ≫ (α_ _ _ _).hom) =
-      (α_ _ _ _).inv ≫ ((tensorLeftHomEquiv X Y Y' Z).symm f ⊗ₘ g) := by
+theorem tensorLeftHomEquiv_tensor
+    {X X' Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⟶ Y ⊗ Z) (g : X' ⟶ Z')
+    : (tensorLeftHomEquiv (X ⊗ X') Y Y' (Z ⊗ Z')).symm ((f ⊗ₘ g) ≫ (α_ _ _ _).hom)
+      = (α_ _ _ _).inv ≫ ((tensorLeftHomEquiv X Y Y' Z).symm f ⊗ₘ g) := by
   simp [tensorLeftHomEquiv, tensorHom_def']
 
 /-- `tensorRightHomEquiv` commutes with tensoring on the left -/
-theorem tensorRightHomEquiv_tensor {X X' Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⟶ Z ⊗ Y')
-    (g : X' ⟶ Z') :
-    (tensorRightHomEquiv (X' ⊗ X) Y Y' (Z' ⊗ Z)).symm ((g ⊗ₘ f) ≫ (α_ _ _ _).inv) =
-      (α_ _ _ _).hom ≫ (g ⊗ₘ (tensorRightHomEquiv X Y Y' Z).symm f) := by
+theorem tensorRightHomEquiv_tensor
+    {X X' Y Y' Z Z' : C} [ExactPairing Y Y'] (f : X ⟶ Z ⊗ Y') (g : X' ⟶ Z')
+    : (tensorRightHomEquiv (X' ⊗ X) Y Y' (Z' ⊗ Z)).symm ((g ⊗ₘ f) ≫ (α_ _ _ _).inv)
+      = (α_ _ _ _).hom ≫ (g ⊗ₘ (tensorRightHomEquiv X Y Y' Z).symm f) := by
   simp [tensorRightHomEquiv, tensorHom_def]
 
 @[simp]
-theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerLeft {Y Y' Z : C} [ExactPairing Y Y']
-    (f : Y' ⟶ Z) : (tensorLeftHomEquiv _ _ _ _).symm (η_ _ _ ≫ Y ◁ f) = (ρ_ _).hom ≫ f := by
+theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerLeft
+    {Y Y' Z : C} [ExactPairing Y Y'] (f : Y' ⟶ Z)
+    : (tensorLeftHomEquiv _ _ _ _).symm (η_ _ _ ≫ Y ◁ f) = (ρ_ _).hom ≫ f := by
   calc
     _ = Y' ◁ η_ Y Y' ⊗≫ ((Y' ⊗ Y) ◁ f ≫ ε_ Y Y' ▷ Z) ⊗≫ 𝟙 _ := by
       dsimp [tensorLeftHomEquiv]; monoidal
-    _ = (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ⊗≫ f := by
-      rw [whisker_exchange]; monoidal
+    _ = (Y' ◁ η_ Y Y' ⊗≫ ε_ Y Y' ▷ Y') ⊗≫ f := by rw [whisker_exchange]; monoidal
     _ = _ := by rw [coevaluation_evaluation'']; monoidal
 
 @[simp]
-theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerRight {X Y : C} [HasRightDual X]
-    [HasRightDual Y] (f : X ⟶ Y) :
-    (tensorLeftHomEquiv _ _ _ _).symm (η_ _ _ ≫ f ▷ (Xᘁ)) = (ρ_ _).hom ≫ fᘁ := by
+theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerRight
+    {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y)
+    : (tensorLeftHomEquiv _ _ _ _).symm (η_ _ _ ≫ f ▷ (Xᘁ)) = (ρ_ _).hom ≫ fᘁ := by
   dsimp [tensorLeftHomEquiv, rightAdjointMate]
   simp
 
 @[simp]
-theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerLeft {X Y : C} [HasLeftDual X]
-    [HasLeftDual Y] (f : X ⟶ Y) :
-    (tensorRightHomEquiv _ (ᘁY) _ _).symm (η_ (ᘁX : C) X ≫ (ᘁX : C) ◁ f) = (λ_ _).hom ≫ ᘁf := by
+theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerLeft
+    {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y)
+    : (tensorRightHomEquiv _ (ᘁY) _ _).symm (η_ (ᘁX : C) X ≫ (ᘁX : C) ◁ f) = (λ_ _).hom ≫ ᘁf := by
   dsimp [tensorRightHomEquiv, leftAdjointMate]
   simp
 
 @[simp]
-theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerRight {Y Y' Z : C} [ExactPairing Y Y']
-    (f : Y ⟶ Z) : (tensorRightHomEquiv _ Y _ _).symm (η_ Y Y' ≫ f ▷ Y') = (λ_ _).hom ≫ f :=
+theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerRight
+    {Y Y' Z : C} [ExactPairing Y Y'] (f : Y ⟶ Z)
+    : (tensorRightHomEquiv _ Y _ _).symm (η_ Y Y' ≫ f ▷ Y') = (λ_ _).hom ≫ f :=
   calc
     _ = η_ Y Y' ▷ Y ⊗≫ (f ▷ (Y' ⊗ Y) ≫ Z ◁ ε_ Y Y') ⊗≫ 𝟙 _ := by
       dsimp [tensorRightHomEquiv]; monoidal
-    _ = (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ⊗≫ f := by
-      rw [← whisker_exchange]; monoidal
-    _ = _ := by
-      rw [evaluation_coevaluation'']; monoidal
+    _ = (η_ Y Y' ▷ Y ⊗≫ Y ◁ ε_ Y Y') ⊗≫ f := by rw [← whisker_exchange]; monoidal
+    _ = _ := by rw [evaluation_coevaluation'']; monoidal
 
 @[simp]
-theorem tensorLeftHomEquiv_whiskerLeft_comp_evaluation {Y Z : C} [HasLeftDual Z] (f : Y ⟶ ᘁZ) :
-    (tensorLeftHomEquiv _ _ _ _) (Z ◁ f ≫ ε_ _ _) = f ≫ (ρ_ _).inv :=
+theorem tensorLeftHomEquiv_whiskerLeft_comp_evaluation {Y Z : C} [HasLeftDual Z] (f : Y ⟶ ᘁZ)
+    : (tensorLeftHomEquiv _ _ _ _) (Z ◁ f ≫ ε_ _ _) = f ≫ (ρ_ _).inv :=
   calc
     _ = 𝟙 _ ⊗≫ (η_ (ᘁZ : C) Z ▷ Y ≫ ((ᘁZ) ⊗ Z) ◁ f) ⊗≫ (ᘁZ) ◁ ε_ (ᘁZ) Z := by
       dsimp [tensorLeftHomEquiv]; monoidal
-    _ = f ⊗≫ (η_ (ᘁZ) Z ▷ (ᘁZ) ⊗≫ (ᘁZ) ◁ ε_ (ᘁZ) Z) := by
-      rw [← whisker_exchange]; monoidal
-    _ = _ := by
-      rw [evaluation_coevaluation'']; monoidal
+    _ = f ⊗≫ (η_ (ᘁZ) Z ▷ (ᘁZ) ⊗≫ (ᘁZ) ◁ ε_ (ᘁZ) Z) := by rw [← whisker_exchange]; monoidal
+    _ = _ := by rw [evaluation_coevaluation'']; monoidal
 
 @[simp]
-theorem tensorLeftHomEquiv_whiskerRight_comp_evaluation {X Y : C} [HasLeftDual X] [HasLeftDual Y]
-    (f : X ⟶ Y) : (tensorLeftHomEquiv _ _ _ _) (f ▷ _ ≫ ε_ _ _) = (ᘁf) ≫ (ρ_ _).inv := by
+theorem tensorLeftHomEquiv_whiskerRight_comp_evaluation
+    {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y)
+    : (tensorLeftHomEquiv _ _ _ _) (f ▷ _ ≫ ε_ _ _) = (ᘁf) ≫ (ρ_ _).inv := by
   dsimp [tensorLeftHomEquiv, leftAdjointMate]
   simp
 
 @[simp]
-theorem tensorRightHomEquiv_whiskerLeft_comp_evaluation {X Y : C} [HasRightDual X] [HasRightDual Y]
-    (f : X ⟶ Y) : (tensorRightHomEquiv _ _ _ _) ((Yᘁ : C) ◁ f ≫ ε_ _ _) = fᘁ ≫ (λ_ _).inv := by
+theorem tensorRightHomEquiv_whiskerLeft_comp_evaluation
+    {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y)
+    : (tensorRightHomEquiv _ _ _ _) ((Yᘁ : C) ◁ f ≫ ε_ _ _) = fᘁ ≫ (λ_ _).inv := by
   dsimp [tensorRightHomEquiv, rightAdjointMate]
   simp
 
 @[simp]
-theorem tensorRightHomEquiv_whiskerRight_comp_evaluation {X Y : C} [HasRightDual X] (f : Y ⟶ Xᘁ) :
-    (tensorRightHomEquiv _ _ _ _) (f ▷ X ≫ ε_ X (Xᘁ)) = f ≫ (λ_ _).inv :=
+theorem tensorRightHomEquiv_whiskerRight_comp_evaluation {X Y : C} [HasRightDual X] (f : Y ⟶ Xᘁ)
+    : (tensorRightHomEquiv _ _ _ _) (f ▷ X ≫ ε_ X (Xᘁ)) = f ≫ (λ_ _).inv :=
   calc
     _ = 𝟙 _ ⊗≫ (Y ◁ η_ X Xᘁ ≫ f ▷ (X ⊗ Xᘁ)) ⊗≫ ε_ X Xᘁ ▷ Xᘁ := by
       dsimp [tensorRightHomEquiv]; monoidal
-    _ = f ⊗≫ (Xᘁ ◁ η_ X Xᘁ ⊗≫ ε_ X Xᘁ ▷ Xᘁ) := by
-      rw [whisker_exchange]; monoidal
-    _ = _ := by
-      rw [coevaluation_evaluation'']; monoidal
+    _ = f ⊗≫ (Xᘁ ◁ η_ X Xᘁ ⊗≫ ε_ X Xᘁ ▷ Xᘁ) := by rw [whisker_exchange]; monoidal
+    _ = _ := by rw [coevaluation_evaluation'']; monoidal
 
 -- Next four lemmas passing `fᘁ` or `ᘁf` through (co)evaluations.
 @[reassoc]
-theorem coevaluation_comp_rightAdjointMate {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y) :
-    η_ Y (Yᘁ) ≫ _ ◁ (fᘁ) = η_ _ _ ≫ f ▷ _ := by
+theorem coevaluation_comp_rightAdjointMate {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y)
+    : η_ Y (Yᘁ) ≫ _ ◁ (fᘁ) = η_ _ _ ≫ f ▷ _ := by
   apply_fun (tensorLeftHomEquiv _ Y (Yᘁ) _).symm
   simp
 
 @[reassoc]
-theorem leftAdjointMate_comp_evaluation {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y) :
-    X ◁ (ᘁf) ≫ ε_ _ _ = f ▷ _ ≫ ε_ _ _ := by
+theorem leftAdjointMate_comp_evaluation {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y)
+    : X ◁ (ᘁf) ≫ ε_ _ _ = f ▷ _ ≫ ε_ _ _ := by
   apply_fun tensorLeftHomEquiv _ (ᘁX) X _
   simp
 
 @[reassoc]
-theorem coevaluation_comp_leftAdjointMate {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y) :
-    η_ (ᘁY) Y ≫ (ᘁf) ▷ Y = η_ (ᘁX) X ≫ (ᘁX) ◁ f := by
+theorem coevaluation_comp_leftAdjointMate {X Y : C} [HasLeftDual X] [HasLeftDual Y] (f : X ⟶ Y)
+    : η_ (ᘁY) Y ≫ (ᘁf) ▷ Y = η_ (ᘁX) X ≫ (ᘁX) ◁ f := by
   apply_fun (tensorRightHomEquiv _ (ᘁY) Y _).symm
   simp
 
 @[reassoc]
-theorem rightAdjointMate_comp_evaluation {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y) :
-    (fᘁ ▷ X) ≫ ε_ X (Xᘁ) = ((Yᘁ) ◁ f) ≫ ε_ Y (Yᘁ) := by
+theorem rightAdjointMate_comp_evaluation {X Y : C} [HasRightDual X] [HasRightDual Y] (f : X ⟶ Y)
+    : (fᘁ ▷ X) ≫ ε_ X (Xᘁ) = ((Yᘁ) ◁ f) ≫ ε_ Y (Yᘁ) := by
   apply_fun tensorRightHomEquiv _ X (Xᘁ) _
   simp
 
@@ -599,24 +583,19 @@ def exactPairingCongrLeft {X X' Y : C} [ExactPairing X' Y] (i : X ≅ X') : Exac
   coevaluation' := η_ _ _ ≫ i.inv ▷ Y
   evaluation_coevaluation' :=
     calc
-      _ = η_ X' Y ▷ X ⊗≫ (i.inv ▷ (Y ⊗ X) ≫ X ◁ (Y ◁ i.hom)) ⊗≫ X ◁ ε_ X' Y := by
-        monoidal
-      _ = 𝟙 _ ⊗≫ (η_ X' Y ▷ X ≫ (X' ⊗ Y) ◁ i.hom) ⊗≫
-          (i.inv ▷ (Y ⊗ X') ≫ X ◁ ε_ X' Y) ⊗≫ 𝟙 _ := by
+      _ = η_ X' Y ▷ X ⊗≫ (i.inv ▷ (Y ⊗ X) ≫ X ◁ (Y ◁ i.hom)) ⊗≫ X ◁ ε_ X' Y := by monoidal
+      _ = 𝟙 _ ⊗≫ (η_ X' Y ▷ X ≫ (X' ⊗ Y) ◁ i.hom) ⊗≫ (i.inv ▷ (Y ⊗ X') ≫ X ◁ ε_ X' Y) ⊗≫ 𝟙 _ := by
         rw [← whisker_exchange]; monoidal
       _ = 𝟙 _ ⊗≫ i.hom ⊗≫ (η_ X' Y ▷ X' ⊗≫ X' ◁ ε_ X' Y) ⊗≫ i.inv ⊗≫ 𝟙 _ := by
         rw [← whisker_exchange, ← whisker_exchange]; monoidal
-      _ = 𝟙 _ ⊗≫ (i.hom ≫ i.inv) ⊗≫ 𝟙 _ := by
-        rw [evaluation_coevaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ (i.hom ≫ i.inv) ⊗≫ 𝟙 _ := by rw [evaluation_coevaluation'']; monoidal
       _ = (λ_ X).hom ≫ (ρ_ X).inv := by
         rw [Iso.hom_inv_id]
         monoidal
   coevaluation_evaluation' := by
     calc
-      _ = Y ◁ η_ X' Y ≫ Y ◁ (i.inv ≫ i.hom) ▷ Y ⊗≫ ε_ X' Y ▷ Y := by
-        monoidal
-      _ = Y ◁ η_ X' Y ⊗≫ ε_ X' Y ▷ Y := by
-        rw [Iso.inv_hom_id]; monoidal
+      _ = Y ◁ η_ X' Y ≫ Y ◁ (i.inv ≫ i.hom) ▷ Y ⊗≫ ε_ X' Y ▷ Y := by monoidal
+      _ = Y ◁ η_ X' Y ⊗≫ ε_ X' Y ▷ Y := by rw [Iso.inv_hom_id]; monoidal
       _ = _ := by
         rw [coevaluation_evaluation'']
         simp
@@ -628,32 +607,27 @@ def exactPairingCongrRight {X Y Y' : C} [ExactPairing X Y'] (i : Y ≅ Y') : Exa
   coevaluation' := η_ _ _ ≫ X ◁ i.inv
   evaluation_coevaluation' := by
     calc
-      _ = η_ X Y' ▷ X ⊗≫ X ◁ (i.inv ≫ i.hom) ▷ X ≫ X ◁ ε_ X Y' := by
-        monoidal
-      _ = η_ X Y' ▷ X ⊗≫ X ◁ ε_ X Y' := by
-        rw [Iso.inv_hom_id]; monoidal
+      _ = η_ X Y' ▷ X ⊗≫ X ◁ (i.inv ≫ i.hom) ▷ X ≫ X ◁ ε_ X Y' := by monoidal
+      _ = η_ X Y' ▷ X ⊗≫ X ◁ ε_ X Y' := by rw [Iso.inv_hom_id]; monoidal
       _ = _ := by
         rw [evaluation_coevaluation'']
         simp
   coevaluation_evaluation' :=
     calc
-      _ = Y ◁ η_ X Y' ⊗≫ (Y ◁ (X ◁ i.inv) ≫ i.hom ▷ (X ⊗ Y)) ⊗≫ ε_ X Y' ▷ Y := by
-        monoidal
-      _ = 𝟙 _ ⊗≫ (Y ◁ η_ X Y' ≫ i.hom ▷ (X ⊗ Y')) ⊗≫
-          ((Y' ⊗ X) ◁ i.inv ≫ ε_ X Y' ▷ Y) ⊗≫ 𝟙 _ := by
+      _ = Y ◁ η_ X Y' ⊗≫ (Y ◁ (X ◁ i.inv) ≫ i.hom ▷ (X ⊗ Y)) ⊗≫ ε_ X Y' ▷ Y := by monoidal
+      _ = 𝟙 _ ⊗≫ (Y ◁ η_ X Y' ≫ i.hom ▷ (X ⊗ Y')) ⊗≫ ((Y' ⊗ X) ◁ i.inv ≫ ε_ X Y' ▷ Y) ⊗≫ 𝟙 _ := by
         rw [whisker_exchange]; monoidal
       _ = 𝟙 _ ⊗≫ i.hom ⊗≫ (Y' ◁ η_ X Y' ⊗≫ ε_ X Y' ▷ Y') ⊗≫ i.inv ⊗≫ 𝟙 _ := by
         rw [whisker_exchange, whisker_exchange]; monoidal
-      _ = 𝟙 _ ⊗≫ (i.hom ≫ i.inv) ⊗≫ 𝟙 _ := by
-        rw [coevaluation_evaluation'']; monoidal
+      _ = 𝟙 _ ⊗≫ (i.hom ≫ i.inv) ⊗≫ 𝟙 _ := by rw [coevaluation_evaluation'']; monoidal
       _ = (ρ_ Y).hom ≫ (λ_ Y).inv := by
         rw [Iso.hom_inv_id]
         monoidal
 
 /-- Transport an exact pairing across isomorphisms. -/
 @[instance_reducible]
-def exactPairingCongr {X X' Y Y' : C} [ExactPairing X' Y'] (i : X ≅ X') (j : Y ≅ Y') :
-    ExactPairing X Y :=
+def exactPairingCongr {X X' Y Y' : C} [ExactPairing X' Y'] (i : X ≅ X') (j : Y ≅ Y')
+    : ExactPairing X Y :=
   haveI : ExactPairing X' Y := exactPairingCongrRight j
   exactPairingCongrLeft i
 
@@ -691,18 +665,20 @@ theorem leftDualIso_id {X Y : C} (p : ExactPairing X Y) : leftDualIso p p = Iso.
   ext
   simp only [leftDualIso, Iso.refl_hom, @leftAdjointMate_id]
 
-/-- The right dual of a tensor product is isomorphic to the reversed tensor product of
-the right duals. -/
-def rightDualTensorIso (X Y : C) [HasRightDual X] [HasRightDual Y]
-    [HasRightDual (X ⊗ Y)] :
-    (X ⊗ Y)ᘁ ≅ Yᘁ ⊗ Xᘁ :=
+/--
+The right dual of a tensor product is isomorphic to the reversed tensor product of
+the right duals.
+-/
+def rightDualTensorIso (X Y : C) [HasRightDual X] [HasRightDual Y] [HasRightDual (X ⊗ Y)]
+    : (X ⊗ Y)ᘁ ≅ Yᘁ ⊗ Xᘁ :=
   rightDualIso HasRightDual.exact ExactPairing.tensor
 
-/-- The left dual of a tensor product is isomorphic to the reversed tensor product of
-the left duals. -/
-def leftDualTensorIso (X Y : C) [HasLeftDual X] [HasLeftDual Y]
-    [HasLeftDual (X ⊗ Y)] :
-    leftDual (X ⊗ Y) ≅ leftDual Y ⊗ leftDual X :=
+/--
+The left dual of a tensor product is isomorphic to the reversed tensor product of
+the left duals.
+-/
+def leftDualTensorIso (X Y : C) [HasLeftDual X] [HasLeftDual Y] [HasLeftDual (X ⊗ Y)]
+    : leftDual (X ⊗ Y) ≅ leftDual Y ⊗ leftDual X :=
   leftDualIso HasLeftDual.exact ExactPairing.tensor
 
 /-- A right rigid monoidal category is one in which every object has a right dual. -/
@@ -716,21 +692,24 @@ class LeftRigidCategory (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C] w
 attribute [instance_reducible, instance 100] RightRigidCategory.rightDual
 attribute [instance_reducible, instance 100] LeftRigidCategory.leftDual
 
-/-- Any left rigid category is monoidal closed, with the internal hom `X ⟶[C] Y = ᘁX ⊗ Y`.
+/--
+Any left rigid category is monoidal closed, with the internal hom `X ⟶[C] Y = ᘁX ⊗ Y`.
 This has to be a definition rather than an instance to avoid diamonds, for example between
 `category_theory.monoidal_closed.functor_category` and
 `CategoryTheory.Monoidal.leftRigidFunctorCategory`. Moreover, in concrete applications there is
 often a more useful definition of the internal hom object than `ᘁY ⊗ X`, in which case the monoidal
 closed structure shouldn't come the rigid structure (e.g. in the category `FinVect k`, it is more
 convenient to define the internal hom as `Y →ₗ[k] X` rather than `ᘁY ⊗ X` even though these are
-naturally isomorphic). -/
+naturally isomorphic).
+-/
 @[instance_reducible]
-def monoidalClosedOfLeftRigidCategory (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C]
-    [LeftRigidCategory C] : MonoidalClosed C where
+def monoidalClosedOfLeftRigidCategory
+    (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C] [LeftRigidCategory C]
+    : MonoidalClosed C where
   closed X := closedOfHasLeftDual X
 
 /-- A rigid monoidal category is a monoidal category which is left rigid and right rigid. -/
-class RigidCategory (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C] extends
-    RightRigidCategory C, LeftRigidCategory C
+class RigidCategory (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C]
+  extends RightRigidCategory C, LeftRigidCategory C
 
 end CategoryTheory

@@ -1,8 +1,6 @@
 import Mathlib.Tactic.Hint
 
-/--
-error: No suggestions available
--/
+/-- error: No suggestions available -/
 #guard_msgs in
 example (h : 1 < 0) : False := by hint
 

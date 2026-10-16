@@ -18,8 +18,7 @@ info: some ([Stacks Tag A04Q](https://stacks.math.columbia.edu/tag/A04Q) (A comm
 [Kerodon Tag B15R](https://kerodon.net/tag/B15R) (Also a comment))
 -/
 #guard_msgs in
-run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `X.tagged}"
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `X.tagged}"
 
 #guard_msgs in
 @[stacks 0BR2, kerodon 0X12]
@@ -38,13 +37,16 @@ example : True := .intro
 example : True := .intro
 
 /-- error: <input>:1:3: Stacks tags must be exactly 4 characters -/
-#guard_msgs in #parse Mathlib.CrossRef.stacksTagFn => "A05"
+#guard_msgs in
+#parse Mathlib.CrossRef.stacksTagFn => "A05"
 
 /-- error: <input>:1:4: Stacks tags must consist only of digits and uppercase letters. -/
-#guard_msgs in #parse Mathlib.CrossRef.stacksTagFn => "A05b"
+#guard_msgs in
+#parse Mathlib.CrossRef.stacksTagFn => "A05b"
 
 /-- info: 0BD5 -/
-#guard_msgs in #parse Mathlib.CrossRef.stacksTagFn => "0BD5"
+#guard_msgs in
+#parse Mathlib.CrossRef.stacksTagFn => "0BD5"
 
 /--
 info:
@@ -78,8 +80,7 @@ end W
 
 /-- info: some ([Wikidata Q12345](https://www.wikidata.org/wiki/Q12345) (A Wikidata comment)) -/
 #guard_msgs in
-run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `W.wikiTagged}"
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `W.wikiTagged}"
 
 /--
 info:
@@ -89,39 +90,43 @@ info:
 #wikidata_tags
 
 /-- error: <input>:1:5: Wikidata ids must consist of the letter Q followed by digits. -/
-#guard_msgs in #parse Mathlib.CrossRef.wikidataIdFn => "Q12X3"
+#guard_msgs in
+#parse Mathlib.CrossRef.wikidataIdFn => "Q12X3"
 
 /-- error: <input>:1:6: Wikidata ids must start with the letter Q followed by one or more digits. -/
-#guard_msgs in #parse Mathlib.CrossRef.wikidataIdFn => "P12345"
+#guard_msgs in
+#parse Mathlib.CrossRef.wikidataIdFn => "P12345"
 
 /-- info: Q42 -/
-#guard_msgs in #parse Mathlib.CrossRef.wikidataIdFn => "Q42"
+#guard_msgs in
+#parse Mathlib.CrossRef.wikidataIdFn => "Q42"
 
 namespace LMFDB
 
 @[lmfdb group.abelian "A vacuous comment"]
-theorem IsAbelian : 1 + 1 = 2 := by
-  rfl
+theorem IsAbelian : 1 + 1 = 2 := by rfl
 
 /--
 info: some ([LMFDB group.abelian](https://www.lmfdb.org/knowledge/show/group.abelian) (A vacuous comment))
 -/
 #guard_msgs in
-run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `LMFDB.IsAbelian}"
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `LMFDB.IsAbelian}"
 
 /--
 error: <input>:1:9: LMFDB ids must consist only of lowercase letters, digits, periods, and underscores.
 -/
-#guard_msgs in #parse Mathlib.CrossRef.lmfdbIdFn => "LMFDB.tag"
+#guard_msgs in
+#parse Mathlib.CrossRef.lmfdbIdFn => "LMFDB.tag"
 
 /-- info: lmfdb.tag_99 -/
-#guard_msgs in #parse Mathlib.CrossRef.lmfdbIdFn => "lmfdb.tag_99"
+#guard_msgs in
+#parse Mathlib.CrossRef.lmfdbIdFn => "lmfdb.tag_99"
 
 /--
 error: <input>:1:5: LMFDB ids must consist only of lowercase letters, digits, periods, and underscores.
 -/
-#guard_msgs in #parse Mathlib.CrossRef.lmfdbIdFn => "LMFDB&tag"
+#guard_msgs in
+#parse Mathlib.CrossRef.lmfdbIdFn => "LMFDB&tag"
 
 /--
 info:
@@ -147,8 +152,7 @@ theorem t : True := .intro
 info: some ([π-Base (Topology) P000001](https://topology.pi-base.org/properties/P000001) (A vacuous comment))
 -/
 #guard_msgs in
-run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `Pibase.p}"
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `Pibase.p}"
 
 /--
 info:
@@ -164,39 +168,41 @@ info:
 example (topology : Nat) : Nat := topology
 
 /-- error: <input>:1:3: π-Base ids must have exactly six digits after P/S/T. -/
-#guard_msgs in #parse Mathlib.CrossRef.pibaseIdFn => "P42"
+#guard_msgs in
+#parse Mathlib.CrossRef.pibaseIdFn => "P42"
 
 /-- error: <input>:1:7: π-Base ids must consist of P, S, or T followed by six digits. -/
-#guard_msgs in #parse Mathlib.CrossRef.pibaseIdFn => "P00001X"
+#guard_msgs in
+#parse Mathlib.CrossRef.pibaseIdFn => "P00001X"
 
 /-- error: <input>:1:7: π-Base ids must start with P, S, or T. -/
-#guard_msgs in #parse Mathlib.CrossRef.pibaseIdFn => "Q000001"
+#guard_msgs in
+#parse Mathlib.CrossRef.pibaseIdFn => "Q000001"
 
 /-- info: S000023 -/
-#guard_msgs in #parse Mathlib.CrossRef.pibaseIdFn => "S000023"
+#guard_msgs in
+#parse Mathlib.CrossRef.pibaseIdFn => "S000023"
 
 end Pibase
 
 namespace DLMF
 
 @[dlmf 5.5.E1 "A vacuous comment"]
-theorem test : 1 + 1 = 2 := by
-  rfl
+theorem test : 1 + 1 = 2 := by rfl
 
-/--
-info: some ([DLMF 5.5.E1](https://dlmf.nist.gov/5.5.E1) (A vacuous comment))
--/
+/-- info: some ([DLMF 5.5.E1](https://dlmf.nist.gov/5.5.E1) (A vacuous comment)) -/
 #guard_msgs in
-run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `DLMF.test}"
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) `DLMF.test}"
 
 /--
 error: <input>:1:6: DLMF references must consist only of (lowercase) roman numerals, the letters E/T/F, digits, periods, and underscores.
 -/
-#guard_msgs in #parse Mathlib.CrossRef.dlmfIdFn => "random*string"
+#guard_msgs in
+#parse Mathlib.CrossRef.dlmfIdFn => "random*string"
 
 /-- info: 18.30.iv -/
-#guard_msgs in #parse Mathlib.CrossRef.dlmfIdFn => "18.30.iv"
+#guard_msgs in
+#parse Mathlib.CrossRef.dlmfIdFn => "18.30.iv"
 
 /--
 info:
@@ -210,40 +216,50 @@ end DLMF
 namespace OEIS
 
 @[oeis A123456 "A vacuous comment"]
-theorem test : 1 + 1 = 2 := by
-  rfl
+theorem test : 1 + 1 = 2 := by rfl
 
 @[oeis A123456]
-theorem test' : 1 + 1 = 2 := by
-  rfl
-
-/-- error: <input>:1:11: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456. -/
-#guard_msgs in
-run_cmd
-  Lean.ofExcept <| Lean.Parser.runParserCategory (← Lean.getEnv)
-    `command "@[oeis A123] theorem test'' : True := .intro"
+theorem test' : 1 + 1 = 2 := by rfl
 
 /--
-info: some ([OEIS A123456](https://oeis.org/A123456) (A vacuous comment))
+error: <input>:1:11: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456.
 -/
 #guard_msgs in
 run_cmd
-  Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) ``OEIS.test}"
+  Lean.ofExcept <| Lean.Parser.runParserCategory (← Lean.getEnv) `command
+    "@[oeis A123] theorem test'' : True := .intro"
 
-/-- error: <input>:1:6: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456. -/
-#guard_msgs in #parse Mathlib.CrossRef.oeisIdFn => "search"
+/-- info: some ([OEIS A123456](https://oeis.org/A123456) (A vacuous comment)) -/
+#guard_msgs in
+run_cmd Lean.logInfo m!"{← Lean.findDocString? (← Lean.getEnv) ``OEIS.test}"
 
-/-- error: <input>:1:4: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456. -/
-#guard_msgs in #parse Mathlib.CrossRef.oeisIdFn => "A123"
+/--
+error: <input>:1:6: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456.
+-/
+#guard_msgs in
+#parse Mathlib.CrossRef.oeisIdFn => "search"
 
-/-- error: <input>:1:7: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456. -/
-#guard_msgs in #parse Mathlib.CrossRef.oeisIdFn => "A123ABC"
+/--
+error: <input>:1:4: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456.
+-/
+#guard_msgs in
+#parse Mathlib.CrossRef.oeisIdFn => "A123"
 
-/-- error: <input>:1:7: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456. -/
-#guard_msgs in #parse Mathlib.CrossRef.oeisIdFn => "B123456"
+/--
+error: <input>:1:7: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456.
+-/
+#guard_msgs in
+#parse Mathlib.CrossRef.oeisIdFn => "A123ABC"
+
+/--
+error: <input>:1:7: OEIS ids must be the letter A followed by exactly six digits, e.g. A123456.
+-/
+#guard_msgs in
+#parse Mathlib.CrossRef.oeisIdFn => "B123456"
 
 /-- info: A123456 -/
-#guard_msgs in #parse Mathlib.CrossRef.oeisIdFn => "A123456"
+#guard_msgs in
+#parse Mathlib.CrossRef.oeisIdFn => "A123456"
 
 /--
 info:
@@ -271,13 +287,11 @@ def captureException (env : Environment) (s : ParserFn) (input : String) : Excep
 
 /-- error: <input>:1:3: Stacks tags must be exactly 4 characters -/
 #guard_msgs in
-run_cmd do
-  let _ ← Lean.ofExcept <| captureException (← getEnv) stacksTagFn "A05"
+run_cmd do let _ ← Lean.ofExcept <| captureException (← getEnv) stacksTagFn "A05"
 
 /-- error: <input>:1:4: Stacks tags must consist only of digits and uppercase letters. -/
 #guard_msgs in
-run_cmd do
-  let _ ← Lean.ofExcept <| captureException (← getEnv) stacksTagFn "aaaa"
+run_cmd do let _ ← Lean.ofExcept <| captureException (← getEnv) stacksTagFn "aaaa"
 
 /-- error: <input>:1:0: expected stacks tag -/
 #guard_msgs in

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Anne Baanen
 -/
 module
+
 import Mathlib.Tactic.ReduceModChar
 
 /-!
@@ -80,7 +81,7 @@ example (a : ZMod 7) (h : a + 14 = 2) : a + 7 = 2 := by
   assumption
 
 -- A stress test:
-example (a b : ZMod 37) : (a + b)^37 = a^37 + b^37 := by ring_nf; reduce_mod_char
+example (a b : ZMod 37) : (a + b) ^ 37 = a ^ 37 + b ^ 37 := by ring_nf; reduce_mod_char
 
 -- From the zulip thread:
 -- https://leanprover.zulipchat.com/#narrow/stream/217875-Is-there-code-for-X.3F/topic/tactic.20for.20easy.20calculations.20in.20ZMod.20p.3F
@@ -102,8 +103,7 @@ example {R} [CommRing R] [CharP R 2] (x y : R) : (x + y) ^ 2 = x ^ 2 + y ^ 2 := 
   ring_nf
   reduce_mod_char!
 
-example {R : Type*} [Ring R] [CharP R 2] : (2 : R) = 0 := by
-  reduce_mod_char!
+example {R : Type*} [Ring R] [CharP R 2] : (2 : R) = 0 := by reduce_mod_char!
 
 end Assumption
 

@@ -35,8 +35,10 @@ multiplication on `R` by $a \circ b = \frac{1}{2}(ab + ba)$.
 
 variable (R M : Type*) [CommSemiring R] [AddCommMonoid M] [Module R M]
 
-/-- Relation on the tensor algebra which will yield the symmetric algebra when
-quotiented out by. -/
+/--
+Relation on the tensor algebra which will yield the symmetric algebra when
+quotiented out by.
+-/
 inductive TensorAlgebra.SymRel : TensorAlgebra R M → TensorAlgebra R M → Prop where
   | mul_comm (x y : M) : SymRel (ι R x * ι R y) (ι R y * ι R x)
 
@@ -45,8 +47,10 @@ inductive TensorAlgebra.SymRel : TensorAlgebra R M → TensorAlgebra R M → Pro
 
 open TensorAlgebra
 
-/-- Concrete construction of the symmetric algebra of `M` by quotienting out
-the tensor algebra by the commutativity relation. -/
+/--
+Concrete construction of the symmetric algebra of `M` by quotienting out
+the tensor algebra by the commutativity relation.
+-/
 abbrev SymmetricAlgebra := symRingCon R M |>.Quotient
 
 namespace SymmetricAlgebra
@@ -60,11 +64,13 @@ lemma algHom_surjective : Function.Surjective (algHom R M) := Quotient.mk_surjec
 def ι : M →ₗ[R] SymmetricAlgebra R M := algHom R M ∘ₗ TensorAlgebra.ι R
 
 @[elab_as_elim]
-theorem induction {motive : SymmetricAlgebra R M → Prop}
+theorem induction
+    {motive : SymmetricAlgebra R M → Prop}
     (algebraMap : ∀ r, motive (algebraMap R (SymmetricAlgebra R M) r)) (ι : ∀ x, motive (ι R M x))
     (mul : ∀ a b, motive a → motive b → motive (a * b))
     (add : ∀ a b, motive a → motive b → motive (a + b))
-    (a : SymmetricAlgebra R M) : motive a := by
+    (a : SymmetricAlgebra R M)
+    : motive a := by
   rcases algHom_surjective _ _ a with ⟨a, rfl⟩
   induction a using TensorAlgebra.induction with
   | algebraMap r => rw [AlgHom.commutes]; exact algebraMap r
@@ -77,16 +83,23 @@ instance : CommSemiring (SymmetricAlgebra R M) where
   mul_comm a b := by
     change Commute a b
     induction b using SymmetricAlgebra.induction with
-    | algebraMap r => exact Algebra.commute_algebraMap_right _ _
-    | ι x => induction a using SymmetricAlgebra.induction with
-      | algebraMap r => exact Algebra.commute_algebraMap_left _ _
+    | algebraMap r =>
+      exact Algebra.commute_algebraMap_right _ _
+    | ι x =>
+      induction a using SymmetricAlgebra.induction with
+      | algebraMap r =>
+        exact Algebra.commute_algebraMap_left _ _
       | ι y =>
         have := RingCon.le_ringConGen (r := SymRel R M) _ _ <| SymRel.mul_comm y x
         simpa [commute_iff_eq, ι, ← RingCon.coe_mul]
-      | mul a b ha hb => exact ha.mul_left hb
-      | add a b ha hb => exact ha.add_left hb
-    | mul b c hb hc => exact hb.mul_right hc
-    | add b c hb hc => exact hb.add_right hc
+      | mul a b ha hb =>
+        exact ha.mul_left hb
+      | add a b ha hb =>
+        exact ha.add_left hb
+    | mul b c hb hc =>
+      exact hb.mul_right hc
+    | add b c hb hc =>
+      exact hb.add_right hc
 
 instance (R M) [CommRing R] [AddCommMonoid M] [Module R M] : CommRing (SymmetricAlgebra R M) where
   __ := (inferInstance : CommSemiring (SymmetricAlgebra R M))
@@ -94,31 +107,34 @@ instance (R M) [CommRing R] [AddCommMonoid M] [Module R M] : CommRing (Symmetric
 
 variable {R M} {A : Type*} [CommSemiring A] [Algebra R A]
 
-/-- For any linear map `f : M →ₗ[R] A`, `SymmetricAlgebra.lift f` lifts the linear map to an
-R-algebra homomorphism from `SymmetricAlgebra R M` to `A`. -/
+/--
+For any linear map `f : M →ₗ[R] A`, `SymmetricAlgebra.lift f` lifts the linear map to an
+R-algebra homomorphism from `SymmetricAlgebra R M` to `A`.
+-/
 def lift : (M →ₗ[R] A) ≃ (SymmetricAlgebra R M →ₐ[R] A) :=
-  let equiv : (TensorAlgebra R M →ₐ[R] A) ≃
-    {f : TensorAlgebra R M →ₐ[R] A // TensorAlgebra.symRingCon R M ≤ RingCon.ker f.toRingHom} :=
-      (Equiv.subtypeUnivEquiv fun h _ _ h' ↦ ?_).symm
+  let equiv
+      : (TensorAlgebra R M →ₐ[R] A)
+        ≃ {f : TensorAlgebra R M →ₐ[R] A
+          // TensorAlgebra.symRingCon R M ≤ RingCon.ker f.toRingHom} :=
+    (Equiv.subtypeUnivEquiv fun h _ _ h' ↦ ?_).symm
   (TensorAlgebra.lift R).trans <| equiv.trans <| RingCon.liftₐEquiv (symRingCon R M)
 where finally
   refine RingCon.ringConGen_le.2 (fun x y h' => ?_) h'
-  induction h' with | mul_comm x y
+  induction h' with
+  | mul_comm x y
   rw [RingCon.ker_apply, map_mul, map_mul, mul_comm]
 
 variable (f : M →ₗ[R] A)
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-lemma lift_ι_apply (a : M) : lift f (ι R M a) = f a := by
-  simp [lift, ι, algHom, RingCon.liftₐEquiv]
+lemma lift_ι_apply (a : M) : lift f (ι R M a) = f a := by simp [lift, ι, algHom, RingCon.liftₐEquiv]
 
-@[simp]
-lemma lift_comp_ι : lift f ∘ₗ ι R M = f := LinearMap.ext <| lift_ι_apply f
+@[simp] lemma lift_comp_ι : lift f ∘ₗ ι R M = f := LinearMap.ext <| lift_ι_apply f
 
 @[ext 1200]
-theorem algHom_ext {F G : SymmetricAlgebra R M →ₐ[R] A}
-    (h : F ∘ₗ ι R M = (G ∘ₗ ι R M : M →ₗ[R] A)) : F = G := by
+theorem algHom_ext {F G : SymmetricAlgebra R M →ₐ[R] A} (h : F ∘ₗ ι R M = (G ∘ₗ ι R M : M →ₗ[R] A))
+    : F = G := by
   ext x
   congrm $h x
 
@@ -130,20 +146,19 @@ lemma lift_ι : lift (ι R M) = .id R (SymmetricAlgebra R M) := by
   simp
 
 /-- The left-inverse of `algebraMap`. -/
-def algebraMapInv : SymmetricAlgebra R M →ₐ[R] R :=
-  lift (0 : M →ₗ[R] R)
+def algebraMapInv : SymmetricAlgebra R M →ₐ[R] R := lift (0 : M →ₗ[R] R)
 
 theorem algebraMapInv_ι (x : M) : algebraMapInv (ι R M x) = 0 := lift_ι_apply 0 x
 
 variable (M)
 
-theorem algebraMap_leftInverse :
-    Function.LeftInverse algebraMapInv (algebraMap R <| SymmetricAlgebra R M) := fun x => by
+theorem algebraMap_leftInverse
+    : Function.LeftInverse algebraMapInv (algebraMap R <| SymmetricAlgebra R M) := fun x => by
   simp [algebraMapInv]
 
 @[simp]
-theorem algebraMap_inj (x y : R) :
-    algebraMap R (SymmetricAlgebra R M) x = algebraMap R (SymmetricAlgebra R M) y ↔ x = y :=
+theorem algebraMap_inj (x y : R)
+    : algebraMap R (SymmetricAlgebra R M) x = algebraMap R (SymmetricAlgebra R M) y ↔ x = y :=
   (algebraMap_leftInverse M).injective.eq_iff
 
 @[simp]
@@ -163,10 +178,11 @@ end SymmetricAlgebra
 variable {A : Type*} [CommSemiring A] [Algebra R A] (f : M →ₗ[R] A)
 variable {R} {M}
 
-/-- Given a morphism `f : M →ₗ[R] A`, `IsSymmetricAlgebra f` is a proposition saying that the
-algebra homomorphism from `SymmetricAlgebra R M` to `A` is bijective. -/
-def IsSymmetricAlgebra (f : M →ₗ[R] A) : Prop :=
-  Function.Bijective (SymmetricAlgebra.lift f)
+/--
+Given a morphism `f : M →ₗ[R] A`, `IsSymmetricAlgebra f` is a proposition saying that the
+algebra homomorphism from `SymmetricAlgebra R M` to `A` is bijective.
+-/
+def IsSymmetricAlgebra (f : M →ₗ[R] A) : Prop := Function.Bijective (SymmetricAlgebra.lift f)
 
 theorem SymmetricAlgebra.isSymmetricAlgebra_ι : IsSymmetricAlgebra (ι R M) := by
   rw [IsSymmetricAlgebra, lift_ι]
@@ -178,16 +194,15 @@ variable {f : M →ₗ[R] A} (h : IsSymmetricAlgebra f)
 
 section equiv
 
-/-- For `f : M →ₗ[R] A`, construct the algebra isomorphism `SymmetricAlgebra R M ≃ₐ[R] A`
-from `IsSymmetricAlgebra f`. -/
-noncomputable def equiv : SymmetricAlgebra R M ≃ₐ[R] A :=
-  .ofBijective (SymmetricAlgebra.lift f) h
+/--
+For `f : M →ₗ[R] A`, construct the algebra isomorphism `SymmetricAlgebra R M ≃ₐ[R] A`
+from `IsSymmetricAlgebra f`.
+-/
+noncomputable def equiv : SymmetricAlgebra R M ≃ₐ[R] A := .ofBijective (SymmetricAlgebra.lift f) h
 
-@[simp]
-lemma equiv_apply (a : SymmetricAlgebra R M) : h.equiv a = SymmetricAlgebra.lift f a := rfl
+@[simp] lemma equiv_apply (a : SymmetricAlgebra R M) : h.equiv a = SymmetricAlgebra.lift f a := rfl
 
-@[simp]
-lemma equiv_toAlgHom : h.equiv = SymmetricAlgebra.lift f := rfl
+@[simp] lemma equiv_toAlgHom : h.equiv = SymmetricAlgebra.lift f := rfl
 
 @[simp]
 lemma equiv_symm_apply (a : M) : h.equiv.symm (f a) = SymmetricAlgebra.ι R M a :=
@@ -197,17 +212,19 @@ lemma equiv_symm_apply (a : M) : h.equiv.symm (f a) = SymmetricAlgebra.ι R M a 
 lemma equiv_symm_comp : h.equiv.toLinearEquiv.symm ∘ₗ f = SymmetricAlgebra.ι R M :=
   LinearMap.ext fun x ↦ equiv_symm_apply h x
 
-lemma of_equiv (e : SymmetricAlgebra R M ≃ₐ[R] A)
-    (he : (e : SymmetricAlgebra R M →ₗ[R] A) ∘ₗ SymmetricAlgebra.ι R M = f) :
-    IsSymmetricAlgebra f := by
+lemma of_equiv
+    (e : SymmetricAlgebra R M ≃ₐ[R] A)
+    (he : (e : SymmetricAlgebra R M →ₗ[R] A) ∘ₗ SymmetricAlgebra.ι R M = f)
+    : IsSymmetricAlgebra f := by
   suffices h : e = SymmetricAlgebra.lift f by
     change Function.Bijective _
     exact h ▸ e.bijective
   ext x
   simpa using congr($he x)
 
-lemma comp_equiv (e : SymmetricAlgebra R M ≃ₐ[R] A) :
-    IsSymmetricAlgebra (e.toLinearMap ∘ₗ (SymmetricAlgebra.ι R M)) := .of_equiv e rfl
+lemma comp_equiv (e : SymmetricAlgebra R M ≃ₐ[R] A)
+    : IsSymmetricAlgebra (e.toLinearMap ∘ₗ (SymmetricAlgebra.ι R M)) :=
+  .of_equiv e rfl
 
 end equiv
 
@@ -215,18 +232,19 @@ section UniversalProperty
 
 variable {A' : Type*} [CommSemiring A'] [Algebra R A'] (g : M →ₗ[R] A')
 
-/-- Given a morphism `g : M →ₗ[R] A'`, lift this to a morphism of type `A →ₐ[R] A'` (where `A`
-satisfies the universal property of the symmetric algebra of `M`) -/
+/--
+Given a morphism `g : M →ₗ[R] A'`, lift this to a morphism of type `A →ₐ[R] A'` (where `A`
+satisfies the universal property of the symmetric algebra of `M`)
+-/
 noncomputable def lift : A →ₐ[R] A' := (SymmetricAlgebra.lift g).comp h.equiv.symm
 
-@[simp]
-lemma lift_eq (a : M) : h.lift g (f a) = g a := by simp [lift]
+@[simp] lemma lift_eq (a : M) : h.lift g (f a) = g a := by simp [lift]
 
-@[simp]
-lemma lift_comp_linearMap : h.lift g ∘ₗ f = g := LinearMap.ext <| lift_eq h g
+@[simp] lemma lift_comp_linearMap : h.lift g ∘ₗ f = g := LinearMap.ext <| lift_eq h g
 
-lemma algHom_ext (h : IsSymmetricAlgebra f) {F G : A →ₐ[R] A'}
-    (hFG : F ∘ₗ f = (G ∘ₗ f : M →ₗ[R] A')) : F = G := by
+lemma algHom_ext
+    (h : IsSymmetricAlgebra f) {F G : A →ₐ[R] A'} (hFG : F ∘ₗ f = (G ∘ₗ f : M →ₗ[R] A'))
+    : F = G := by
   suffices F.comp h.equiv.toAlgHom = G.comp h.equiv.toAlgHom by
     rw [DFunLike.ext'_iff] at this ⊢
     exact h.equiv.surjective.injective_comp_right this
@@ -234,18 +252,18 @@ lemma algHom_ext (h : IsSymmetricAlgebra f) {F G : A →ₐ[R] A'}
   simpa using congr($hFG x)
 
 variable {g} in
-lemma lift_unique {F : A →ₐ[R] A'} (hF : F ∘ₗ f = g) : F = h.lift g :=
-  h.algHom_ext (by simpa)
+lemma lift_unique {F : A →ₐ[R] A'} (hF : F ∘ₗ f = g) : F = h.lift g := h.algHom_ext (by simpa)
 
 end UniversalProperty
 
 include h in
 @[elab_as_elim]
-theorem induction {motive : A → Prop}
-    (algebraMap : ∀ r, motive ((algebraMap R A) r)) (ι : ∀ x, motive (f x))
+theorem induction
+    {motive : A → Prop} (algebraMap : ∀ r, motive ((algebraMap R A) r)) (ι : ∀ x, motive (f x))
     (mul : ∀ a b, motive a → motive b → motive (a * b))
     (add : ∀ a b, motive a → motive b → motive (a + b))
-    (a : A) : motive a := by
+    (a : A)
+    : motive a := by
   rw [← h.equiv.right_inv a]
   generalize h.equiv.invFun a = y
   change motive (SymmetricAlgebra.lift f y)

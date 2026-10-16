@@ -32,8 +32,7 @@ theorem isRightRegular_up {a : R} : IsRightRegular (ULift.up.{u} a) ↔ IsRightR
   Equiv.ulift.symm.comp_injective _ |>.trans <| Equiv.ulift.symm.injective_comp _ |>.symm
 
 @[to_additive (attr := simp)]
-theorem isRegular_up {a : R} : IsRegular (ULift.up.{u} a) ↔ IsRegular a := by
-  simp [isRegular_iff]
+theorem isRegular_up {a : R} : IsRegular (ULift.up.{u} a) ↔ IsRegular a := by simp [isRegular_iff]
 
 @[to_additive (attr := simp)]
 theorem isLeftRegular_down {a : ULift.{u} R} : IsLeftRegular a.down ↔ IsLeftRegular a :=
@@ -44,14 +43,12 @@ theorem isRightRegular_down {a : ULift.{u} R} : IsRightRegular a.down ↔ IsRigh
   isRightRegular_up.symm
 
 @[to_additive (attr := simp)]
-theorem isRegular_down {a : ULift.{u} R} : IsRegular a.down ↔ IsRegular a :=
-  isRegular_up.symm
+theorem isRegular_down {a : ULift.{u} R} : IsRegular a.down ↔ IsRegular a := isRegular_up.symm
 
 end
 
 @[simp]
-theorem isSMulRegular_iff [SMul α R] {r : α} :
-    IsSMulRegular (ULift R) r ↔ IsSMulRegular R r :=
+theorem isSMulRegular_iff [SMul α R] {r : α} : IsSMulRegular (ULift R) r ↔ IsSMulRegular R r :=
   Equiv.ulift.symm.comp_injective _ |>.trans <| Equiv.ulift.symm.injective_comp _ |>.symm
 
 end ULift

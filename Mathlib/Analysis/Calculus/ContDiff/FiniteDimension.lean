@@ -15,10 +15,10 @@ public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 public section
 
-
 universe uD uE uF
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {D : Type uD} [NormedAddCommGroup D] [NormedSpace 𝕜 D]
   {E : Type uE} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   {F : Type uF} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
@@ -34,10 +34,12 @@ open scoped ContDiff
 
 variable [CompleteSpace 𝕜]
 
-/-- A family of continuous linear maps is `C^n` at `x` within `s` if and only if all its
-  applications are. -/
-theorem contDiffWithinAt_clm_apply {f : D → E →L[𝕜] F} {s : Set D} {x : D} [FiniteDimensional 𝕜 E] :
-    ContDiffWithinAt 𝕜 n f s x ↔ ∀ y, ContDiffWithinAt 𝕜 n (fun x ↦ f x y) s x := by
+/--
+A family of continuous linear maps is `C^n` at `x` within `s` if and only if all its
+applications are.
+-/
+theorem contDiffWithinAt_clm_apply {f : D → E →L[𝕜] F} {s : Set D} {x : D} [FiniteDimensional 𝕜 E]
+    : ContDiffWithinAt 𝕜 n f s x ↔ ∀ y, ContDiffWithinAt 𝕜 n (fun x ↦ f x y) s x := by
   refine ⟨fun h y => h.clm_apply contDiffWithinAt_const, fun h => ?_⟩
   let d := finrank 𝕜 E
   have hd : d = finrank 𝕜 (Fin d → 𝕜) := (finrank_fin_fun 𝕜).symm
@@ -47,16 +49,17 @@ theorem contDiffWithinAt_clm_apply {f : D → E →L[𝕜] F} {s : Set D} {x : D
   exact e₂.symm.contDiff.comp_contDiffWithinAt (contDiffWithinAt_pi.mpr fun i ↦ h _)
 
 /-- A family of continuous linear maps is `C^n` on `s` if and only if all its applications are. -/
-theorem contDiffOn_clm_apply {f : D → E →L[𝕜] F} {s : Set D} [FiniteDimensional 𝕜 E] :
-    ContDiffOn 𝕜 n f s ↔ ∀ y, ContDiffOn 𝕜 n (fun x => f x y) s := by
+theorem contDiffOn_clm_apply {f : D → E →L[𝕜] F} {s : Set D} [FiniteDimensional 𝕜 E]
+    : ContDiffOn 𝕜 n f s ↔ ∀ y, ContDiffOn 𝕜 n (fun x => f x y) s := by
   simp [ContDiffOn, contDiffWithinAt_clm_apply]
   tauto
 
-theorem contDiff_clm_apply_iff {f : D → E →L[𝕜] F} [FiniteDimensional 𝕜 E] :
-    ContDiff 𝕜 n f ↔ ∀ y, ContDiff 𝕜 n fun x => f x y := by
+theorem contDiff_clm_apply_iff {f : D → E →L[𝕜] F} [FiniteDimensional 𝕜 E]
+    : ContDiff 𝕜 n f ↔ ∀ y, ContDiff 𝕜 n fun x => f x y := by
   simp_rw [← contDiffOn_univ, contDiffOn_clm_apply]
 
-/-- This is a useful lemma to prove that a certain operation preserves functions being `C^n`.
+/--
+This is a useful lemma to prove that a certain operation preserves functions being `C^n`.
 When you do induction on `n`, this gives a useful characterization of a function being `C^(n+1)`,
 assuming you have already computed the derivative. The advantage of this version over
 `contDiff_succ_iff_fderiv` is that both occurrences of `ContDiff` are for functions with the same
@@ -64,22 +67,25 @@ domain and codomain (`D` and `E`). This is not the case for `contDiff_succ_iff_f
 often requires an inconvenient need to generalize `F`, which results in universe issues
 (see the discussion in the section of `ContDiff.comp`).
 
-This lemma avoids these universe issues, but only applies for finite-dimensional `D`. -/
-theorem contDiff_succ_iff_fderiv_apply [FiniteDimensional 𝕜 D] :
-    ContDiff 𝕜 (n + 1) f ↔ Differentiable 𝕜 f ∧
-      (n = ω → AnalyticOnNhd 𝕜 f Set.univ) ∧ ∀ y, ContDiff 𝕜 n fun x => fderiv 𝕜 f x y := by
+This lemma avoids these universe issues, but only applies for finite-dimensional `D`.
+-/
+theorem contDiff_succ_iff_fderiv_apply [FiniteDimensional 𝕜 D]
+    : ContDiff 𝕜 (n + 1) f
+      ↔ Differentiable 𝕜 f ∧ (n = ω → AnalyticOnNhd 𝕜 f Set.univ)
+        ∧ ∀ y, ContDiff 𝕜 n fun x => fderiv 𝕜 f x y := by
   rw [contDiff_succ_iff_fderiv, contDiff_clm_apply_iff]
 
-theorem contDiffOn_succ_of_fderiv_apply [FiniteDimensional 𝕜 D]
+theorem contDiffOn_succ_of_fderiv_apply
+    [FiniteDimensional 𝕜 D]
     (hf : DifferentiableOn 𝕜 f s) (h'f : n = ω → AnalyticOn 𝕜 f s)
-    (h : ∀ y, ContDiffOn 𝕜 n (fun x => fderivWithin 𝕜 f s x y) s) :
-    ContDiffOn 𝕜 (n + 1) f s :=
+    (h : ∀ y, ContDiffOn 𝕜 n (fun x => fderivWithin 𝕜 f s x y) s)
+    : ContDiffOn 𝕜 (n + 1) f s :=
   contDiffOn_succ_of_fderivWithin hf h'f <| contDiffOn_clm_apply.mpr h
 
-theorem contDiffOn_succ_iff_fderiv_apply [FiniteDimensional 𝕜 D] (hs : UniqueDiffOn 𝕜 s) :
-    ContDiffOn 𝕜 (n + 1) f s ↔
-      DifferentiableOn 𝕜 f s ∧ (n = ω → AnalyticOn 𝕜 f s) ∧
-      ∀ y, ContDiffOn 𝕜 n (fun x => fderivWithin 𝕜 f s x y) s := by
+theorem contDiffOn_succ_iff_fderiv_apply [FiniteDimensional 𝕜 D] (hs : UniqueDiffOn 𝕜 s)
+    : ContDiffOn 𝕜 (n + 1) f s
+      ↔ DifferentiableOn 𝕜 f s ∧ (n = ω → AnalyticOn 𝕜 f s)
+        ∧ ∀ y, ContDiffOn 𝕜 n (fun x => fderivWithin 𝕜 f s x y) s := by
   rw [contDiffOn_succ_iff_fderivWithin hs, contDiffOn_clm_apply]
 
 end FiniteDimensional

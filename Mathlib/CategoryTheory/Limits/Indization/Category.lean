@@ -10,7 +10,6 @@ public import Mathlib.CategoryTheory.Limits.Constructions.Filtered
 public import Mathlib.CategoryTheory.Limits.ExactFunctor
 public import Mathlib.CategoryTheory.Limits.Indization.Equalizers
 public import Mathlib.CategoryTheory.Limits.Indization.LocallySmall
-
 import Mathlib.CategoryTheory.Limits.Indization.Products
 import Mathlib.CategoryTheory.Limits.Preserves.Presheaf
 
@@ -68,18 +67,18 @@ variable {C : Type u} [Category.{v} C]
 
 variable (C) in
 /-- The category of Ind-objects of `C`. -/
-def Ind : Type (max u (v + 1)) :=
-  ShrinkHoms (ObjectProperty.FullSubcategory (IsIndObject (C := C)))
+def Ind : Type (max u (v + 1)) := ShrinkHoms (ObjectProperty.FullSubcategory (IsIndObject (C := C)))
 
 noncomputable instance : Category.{v} (Ind C) :=
-  inferInstanceAs <| Category.{v}
-    (ShrinkHoms (ObjectProperty.FullSubcategory (IsIndObject (C := C))))
+  inferInstanceAs <|
+    Category.{v} (ShrinkHoms (ObjectProperty.FullSubcategory (IsIndObject (C := C))))
 
 variable (C) in
-/-- The defining properties of `Ind C` are that its morphisms live in `v` and that it is equivalent
-to the full subcategory of `Cᵒᵖ ⥤ Type v` containing the ind-objects. -/
-noncomputable def Ind.equivalence :
-    Ind C ≌ ObjectProperty.FullSubcategory (IsIndObject (C := C)) :=
+/--
+The defining properties of `Ind C` are that its morphisms live in `v` and that it is equivalent
+to the full subcategory of `Cᵒᵖ ⥤ Type v` containing the ind-objects.
+-/
+noncomputable def Ind.equivalence : Ind C ≌ ObjectProperty.FullSubcategory (IsIndObject (C := C)) :=
   (ShrinkHoms.equivalence _).symm
 
 variable (C) in
@@ -118,49 +117,46 @@ noncomputable def Ind.yonedaCompInclusion : Ind.yoneda ⋙ Ind.inclusion C ≅ C
   isoWhiskerLeft (ObjectProperty.lift _ _ _)
     (isoWhiskerRight (Ind.equivalence C).counitIso (ObjectProperty.ι _))
 
-noncomputable instance {J : Type v} [SmallCategory J] [IsFiltered J] :
-    ObjectProperty.IsClosedUnderColimitsOfShape (IsIndObject (C := C)) J :=
+noncomputable instance {J : Type v} [SmallCategory J] [IsFiltered J]
+    : ObjectProperty.IsClosedUnderColimitsOfShape (IsIndObject (C := C)) J :=
   .mk' (by
     rintro _ ⟨F, hF⟩
     exact isIndObject_colimit _ _ hF)
 
-noncomputable instance {J : Type v} [SmallCategory J] [IsFiltered J] :
-    CreatesColimitsOfShape J (Ind.inclusion C) :=
-  inferInstanceAs <|
-    CreatesColimitsOfShape J ((Ind.equivalence C).functor ⋙ ObjectProperty.ι _)
+noncomputable instance {J : Type v} [SmallCategory J] [IsFiltered J]
+    : CreatesColimitsOfShape J (Ind.inclusion C) :=
+  inferInstanceAs <| CreatesColimitsOfShape J ((Ind.equivalence C).functor ⋙ ObjectProperty.ι _)
 
 instance : HasFilteredColimits (Ind C) where
   HasColimitsOfShape _ _ _ :=
     hasColimitsOfShape_of_hasColimitsOfShape_createsColimitsOfShape (Ind.inclusion C)
 
-noncomputable instance {J : Type v} [HasLimitsOfShape (Discrete J) C] :
-    ObjectProperty.IsClosedUnderLimitsOfShape (IsIndObject (C := C)) (Discrete J) :=
+noncomputable instance {J : Type v} [HasLimitsOfShape (Discrete J) C]
+    : ObjectProperty.IsClosedUnderLimitsOfShape (IsIndObject (C := C)) (Discrete J) :=
   .mk' (by
     rintro _ ⟨F, hF⟩
     exact isIndObject_limit_of_discrete_of_hasLimitsOfShape _ hF)
 
-noncomputable instance {J : Type v} [HasLimitsOfShape (Discrete J) C] :
-    CreatesLimitsOfShape (Discrete J) (Ind.inclusion C) :=
+noncomputable instance {J : Type v} [HasLimitsOfShape (Discrete J) C]
+    : CreatesLimitsOfShape (Discrete J) (Ind.inclusion C) :=
   inferInstanceAs <|
     CreatesLimitsOfShape (Discrete J) ((Ind.equivalence C).functor ⋙ ObjectProperty.ι _)
 
-instance {J : Type v} [HasLimitsOfShape (Discrete J) C] :
-    HasLimitsOfShape (Discrete J) (Ind C) :=
+instance {J : Type v} [HasLimitsOfShape (Discrete J) C] : HasLimitsOfShape (Discrete J) (Ind C) :=
   hasLimitsOfShape_of_hasLimitsOfShape_createsLimitsOfShape (Ind.inclusion C)
 
-noncomputable instance [HasLimitsOfShape WalkingParallelPair C] :
-    CreatesLimitsOfShape WalkingParallelPair (Ind.inclusion C) :=
+noncomputable instance [HasLimitsOfShape WalkingParallelPair C]
+    : CreatesLimitsOfShape WalkingParallelPair (Ind.inclusion C) :=
   inferInstanceAs <|
-    CreatesLimitsOfShape WalkingParallelPair
-      ((Ind.equivalence C).functor ⋙ ObjectProperty.ι _)
+    CreatesLimitsOfShape WalkingParallelPair ((Ind.equivalence C).functor ⋙ ObjectProperty.ι _)
 
-instance [HasLimitsOfShape WalkingParallelPair C] :
-    HasLimitsOfShape WalkingParallelPair (Ind C) :=
+instance [HasLimitsOfShape WalkingParallelPair C] : HasLimitsOfShape WalkingParallelPair (Ind C) :=
   hasLimitsOfShape_of_hasLimitsOfShape_createsLimitsOfShape (Ind.inclusion C)
 
 noncomputable instance [HasFiniteLimits C] : CreatesFiniteLimits (Ind.inclusion C) :=
-  letI _ : CreatesFiniteProducts (Ind.inclusion C) :=
-    { creates _ _ := createsLimitsOfShapeOfEquiv (Discrete.equivalence Equiv.ulift) _ }
+  letI _ : CreatesFiniteProducts (Ind.inclusion C) := {
+    creates _ _ := createsLimitsOfShapeOfEquiv (Discrete.equivalence Equiv.ulift) _
+  }
   createsFiniteLimitsOfCreatesEqualizersAndFiniteProducts (Ind.inclusion C)
 
 instance [HasFiniteLimits C] : HasFiniteLimits (Ind C) :=
@@ -169,83 +165,89 @@ instance [HasFiniteLimits C] : HasFiniteLimits (Ind C) :=
 noncomputable instance [HasLimits C] : CreatesLimitsOfSize.{v, v} (Ind.inclusion C) :=
   createsLimitsOfSizeOfCreatesEqualizersAndProducts.{v, v} (Ind.inclusion C)
 
-instance [HasLimits C] : HasLimits (Ind C) :=
-  hasLimits_of_hasLimits_createsLimits (Ind.inclusion C)
+instance [HasLimits C] : HasLimits (Ind C) := hasLimits_of_hasLimits_createsLimits (Ind.inclusion C)
 
 instance : PreservesLimits (Ind.yoneda (C := C)) :=
   letI _ : PreservesLimitsOfSize.{v, v} (Ind.yoneda ⋙ Ind.inclusion C) :=
     preservesLimits_of_natIso Ind.yonedaCompInclusion.symm
   preservesLimits_of_reflects_of_preserves Ind.yoneda (Ind.inclusion C)
 
-theorem Ind.isIndObject_inclusion_obj (X : Ind C) : IsIndObject ((Ind.inclusion C).obj X) :=
-  X.2
+theorem Ind.isIndObject_inclusion_obj (X : Ind C) : IsIndObject ((Ind.inclusion C).obj X) := X.2
 
 /-- Pick a presentation of an ind-object `X` using choice. -/
 noncomputable def Ind.presentation (X : Ind C) : IndObjectPresentation ((Ind.inclusion C).obj X) :=
   X.isIndObject_inclusion_obj.presentation
 
 /-- An ind-object `X` is the colimit (in `Ind C`!) of the filtered diagram presenting it. -/
-noncomputable def Ind.colimitPresentationCompYoneda (X : Ind C) :
-    colimit (X.presentation.F ⋙ Ind.yoneda) ≅ X :=
+noncomputable def Ind.colimitPresentationCompYoneda (X : Ind C)
+    : colimit (X.presentation.F ⋙ Ind.yoneda) ≅ X :=
   Ind.inclusion.fullyFaithful.isoEquiv.symm <| calc
     (Ind.inclusion C).obj (colimit (X.presentation.F ⋙ Ind.yoneda))
       ≅ colimit (X.presentation.F ⋙ Ind.yoneda ⋙ Ind.inclusion C) := preservesColimitIso _ _
     _ ≅ colimit (X.presentation.F ⋙ yoneda) :=
-          HasColimit.isoOfNatIso (isoWhiskerLeft X.presentation.F Ind.yonedaCompInclusion)
+      HasColimit.isoOfNatIso (isoWhiskerLeft X.presentation.F Ind.yonedaCompInclusion)
     _ ≅ (Ind.inclusion C).obj X :=
-          IsColimit.coconePointUniqueUpToIso (colimit.isColimit _) X.presentation.isColimit
+      IsColimit.coconePointUniqueUpToIso (colimit.isColimit _) X.presentation.isColimit
 
 instance : RepresentablyCoflat (Ind.yoneda (C := C)) := by
   refine ⟨fun X => ?_⟩
   suffices IsFiltered (CostructuredArrow yoneda ((Ind.inclusion C).obj X)) from
-    IsFiltered.of_equivalence
-      ((CostructuredArrow.post Ind.yoneda (Ind.inclusion C) X).asEquivalence.trans
+    IsFiltered.of_equivalence ((CostructuredArrow.post Ind.yoneda (Ind.inclusion C)
+        X).asEquivalence.trans
       (CostructuredArrow.mapNatIso Ind.yonedaCompInclusion)).symm
   exact ((isIndObject_iff _).1 (Ind.isIndObject_inclusion_obj X)).1
 
 noncomputable instance : PreservesFiniteColimits (Ind.yoneda (C := C)) :=
   preservesFiniteColimits_of_coflat _
 
-/-- This is the functor `(I ⥤ C) ⥤ Ind C` that sends a functor `F` to `colim (Y ∘ F)`, where `Y`
-is the Yoneda embedding. It is known as "ind-lim" and denoted `“colim”` in [Kashiwara2006]. -/
-protected noncomputable def Ind.lim (I : Type v) [SmallCategory I] [IsFiltered I] :
-    (I ⥤ C) ⥤ Ind C :=
+/--
+This is the functor `(I ⥤ C) ⥤ Ind C` that sends a functor `F` to `colim (Y ∘ F)`, where `Y`
+is the Yoneda embedding. It is known as "ind-lim" and denoted `“colim”` in [Kashiwara2006].
+-/
+protected noncomputable def Ind.lim (I : Type v) [SmallCategory I] [IsFiltered I]
+    : (I ⥤ C) ⥤ Ind C :=
   (whiskeringRight _ _ _).obj Ind.yoneda ⋙ colim
 
 /-- Computing ind-lims in `Ind C` is the same as computing them in `Cᵒᵖ ⥤ Type v`. -/
-noncomputable def Ind.limCompInclusion {I : Type v} [SmallCategory I] [IsFiltered I] :
-    Ind.lim I ⋙ Ind.inclusion C ≅ (whiskeringRight _ _ _).obj yoneda ⋙ colim := calc
-  Ind.lim I ⋙ Ind.inclusion C
-    ≅ (whiskeringRight _ _ _).obj Ind.yoneda ⋙ colim ⋙ Ind.inclusion C := Functor.associator _ _ _
-  _ ≅ (whiskeringRight _ _ _).obj Ind.yoneda ⋙
-      (whiskeringRight _ _ _).obj (Ind.inclusion C) ⋙ colim :=
-    isoWhiskerLeft _ (preservesColimitNatIso _)
-  _ ≅ ((whiskeringRight _ _ _).obj Ind.yoneda ⋙
-      (whiskeringRight _ _ _).obj (Ind.inclusion C)) ⋙ colim := (Functor.associator _ _ _).symm
-  _ ≅ (whiskeringRight _ _ _).obj (Ind.yoneda ⋙ Ind.inclusion C) ⋙ colim :=
-    isoWhiskerRight (whiskeringRightObjCompIso _ _) colim
-  _ ≅ (whiskeringRight _ _ _).obj yoneda ⋙ colim :=
-    isoWhiskerRight ((whiskeringRight _ _ _).mapIso (Ind.yonedaCompInclusion)) colim
+noncomputable def Ind.limCompInclusion {I : Type v} [SmallCategory I] [IsFiltered I]
+    : Ind.lim I ⋙ Ind.inclusion C ≅ (whiskeringRight _ _ _).obj yoneda ⋙ colim :=
+  calc
+    Ind.lim I ⋙ Ind.inclusion C
+      ≅ (whiskeringRight _ _ _).obj Ind.yoneda ⋙ colim ⋙ Ind.inclusion C := Functor.associator _ _ _
+    _ ≅ (whiskeringRight _ _ _).obj Ind.yoneda ⋙ (whiskeringRight _ _ _).obj (Ind.inclusion C)
+        ⋙ colim :=
+      isoWhiskerLeft _ (preservesColimitNatIso _)
+    _ ≅ ((whiskeringRight _ _ _).obj Ind.yoneda ⋙ (whiskeringRight _ _ _).obj (Ind.inclusion C))
+        ⋙ colim :=
+      (Functor.associator _ _ _).symm
+    _ ≅ (whiskeringRight _ _ _).obj (Ind.yoneda ⋙ Ind.inclusion C) ⋙ colim :=
+      isoWhiskerRight (whiskeringRightObjCompIso _ _) colim
+    _ ≅ (whiskeringRight _ _ _).obj yoneda ⋙ colim :=
+      isoWhiskerRight ((whiskeringRight _ _ _).mapIso (Ind.yonedaCompInclusion)) colim
 
-instance {α : Type w} [SmallCategory α] [FinCategory α] [HasLimitsOfShape α C] {I : Type v}
-    [SmallCategory I] [IsFiltered I] :
-    PreservesLimitsOfShape α (Ind.lim I : (I ⥤ C) ⥤ _) :=
+instance
+    {α : Type w} [SmallCategory α] [FinCategory α] [HasLimitsOfShape α C]
+    {I : Type v} [SmallCategory I] [IsFiltered I]
+    : PreservesLimitsOfShape α (Ind.lim I : (I ⥤ C) ⥤ _) :=
   haveI : PreservesLimitsOfShape α (Ind.lim I ⋙ Ind.inclusion C) :=
     preservesLimitsOfShape_of_natIso Ind.limCompInclusion.symm
   preservesLimitsOfShape_of_reflects_of_preserves _ (Ind.inclusion C)
 
-instance {α : Type w} [SmallCategory α] [FinCategory α] [HasColimitsOfShape α C] {I : Type v}
-    [SmallCategory I] [IsFiltered I] :
-    PreservesColimitsOfShape α (Ind.lim I : (I ⥤ C) ⥤ _) :=
+instance
+    {α : Type w} [SmallCategory α] [FinCategory α] [HasColimitsOfShape α C]
+    {I : Type v} [SmallCategory I] [IsFiltered I]
+    : PreservesColimitsOfShape α (Ind.lim I : (I ⥤ C) ⥤ _) :=
   inferInstanceAs (PreservesColimitsOfShape α (_ ⋙ colim))
 
-instance {α : Type v} [Finite α] [HasColimitsOfShape (Discrete α) C] :
-    HasColimitsOfShape (Discrete α) (Ind C) := by
+instance {α : Type v} [Finite α] [HasColimitsOfShape (Discrete α) C]
+    : HasColimitsOfShape (Discrete α) (Ind C) := by
   refine ⟨fun F => ?_⟩
   let I : α → Type v := fun s => (F.obj ⟨s⟩).presentation.I
   let G : ∀ s, I s ⥤ C := fun s => (F.obj ⟨s⟩).presentation.F
-  let iso : Discrete.functor (fun s => Pi.eval I s ⋙ G s) ⋙
-      (whiskeringRight _ _ _).obj Ind.yoneda ⋙ colim ≅ F := by
+  let iso
+      : Discrete.functor (fun s => Pi.eval I s ⋙ G s) ⋙ (whiskeringRight _ _ _).obj Ind.yoneda
+          ⋙ colim
+        ≅ F := by
     refine Discrete.natIso (fun s => ?_)
     refine (Functor.Final.colimitIso (Pi.eval I s.as) (G s.as ⋙ Ind.yoneda)) ≪≫ ?_
     exact Ind.colimitPresentationCompYoneda _
@@ -263,36 +265,42 @@ instance [HasFiniteCoproducts C] : HasCoproducts.{v} (Ind C) :=
     ⟨fun _ => hasColimitsOfShape_of_equivalence (Discrete.equivalence Equiv.ulift)⟩
   hasCoproducts_of_finite_and_filtered
 
-/-- Given an `IndParallelPairPresentation f g`, we can understand the parallel pair `(f, g)` as
-the colimit of `(P.φ, P.ψ)` in `Ind C`. -/
+/--
+Given an `IndParallelPairPresentation f g`, we can understand the parallel pair `(f, g)` as
+the colimit of `(P.φ, P.ψ)` in `Ind C`.
+-/
 noncomputable def IndParallelPairPresentation.parallelPairIsoParallelPairCompIndYoneda
     {A B : Ind C} {f g : A ⟶ B}
-    (P : IndParallelPairPresentation ((Ind.inclusion _).map f) ((Ind.inclusion _).map g)) :
-    parallelPair f g ≅ parallelPair P.φ P.ψ ⋙ Ind.lim P.I :=
+    (P : IndParallelPairPresentation ((Ind.inclusion _).map f) ((Ind.inclusion _).map g))
+    : parallelPair f g ≅ parallelPair P.φ P.ψ ⋙ Ind.lim P.I :=
   ((whiskeringRight WalkingParallelPair _ _).obj (Ind.inclusion C)).preimageIso <|
-    diagramIsoParallelPair _ ≪≫
-      P.parallelPairIsoParallelPairCompYoneda ≪≫
-      isoWhiskerLeft (parallelPair _ _) Ind.limCompInclusion.symm
+    diagramIsoParallelPair _ ≪≫ P.parallelPairIsoParallelPairCompYoneda
+      ≪≫ isoWhiskerLeft (parallelPair _ _) Ind.limCompInclusion.symm
 
-instance [HasColimitsOfShape WalkingParallelPair C] :
-    HasColimitsOfShape WalkingParallelPair (Ind C) := by
+instance [HasColimitsOfShape WalkingParallelPair C]
+    : HasColimitsOfShape WalkingParallelPair (Ind C) := by
   refine ⟨fun F => ?_⟩
-  obtain ⟨P⟩ := nonempty_indParallelPairPresentation (F.obj WalkingParallelPair.zero).2
-    (F.obj WalkingParallelPair.one).2 (Ind.inclusion _ |>.map <| F.map WalkingParallelPairHom.left)
-    (Ind.inclusion _ |>.map <| F.map WalkingParallelPairHom.right)
+  obtain ⟨P⟩ :=
+    nonempty_indParallelPairPresentation (F.obj WalkingParallelPair.zero).2
+      (F.obj WalkingParallelPair.one).2
+      (Ind.inclusion _ |>.map <| F.map WalkingParallelPairHom.left)
+      (Ind.inclusion _ |>.map <| F.map WalkingParallelPairHom.right)
   exact hasColimit_of_iso (diagramIsoParallelPair _ ≪≫ P.parallelPairIsoParallelPairCompIndYoneda)
 
 instance [HasFiniteColimits C] : HasColimits (Ind C) :=
   has_colimits_of_hasCoequalizers_and_coproducts
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- A way to understand morphisms in `Ind C`: every morphism is induced by a natural transformation
-of diagrams. -/
-theorem Ind.exists_nonempty_arrow_mk_iso_ind_lim {A B : Ind C} {f : A ⟶ B} :
-    ∃ (I : Type v) (_ : SmallCategory I) (_ : IsFiltered I) (F G : I ⥤ C) (φ : F ⟶ G),
+/--
+A way to understand morphisms in `Ind C`: every morphism is induced by a natural transformation
+of diagrams.
+-/
+theorem Ind.exists_nonempty_arrow_mk_iso_ind_lim {A B : Ind C} {f : A ⟶ B}
+    : ∃ (I : Type v) (_ : SmallCategory I) (_ : IsFiltered I) (F G : I ⥤ C) (φ : F ⟶ G),
       Nonempty (Arrow.mk f ≅ Arrow.mk ((Ind.lim _).map φ)) := by
-  obtain ⟨P⟩ := nonempty_indParallelPairPresentation A.2 B.2
-    (Ind.inclusion _ |>.map f) (Ind.inclusion _ |>.map f)
+  obtain ⟨P⟩ :=
+    nonempty_indParallelPairPresentation A.2 B.2 (Ind.inclusion _ |>.map f)
+      (Ind.inclusion _ |>.map f)
   refine ⟨P.I, inferInstance, inferInstance, P.F₁, P.F₂, P.φ, ⟨Arrow.isoMk ?_ ?_ ?_⟩⟩
   · exact P.parallelPairIsoParallelPairCompIndYoneda.app WalkingParallelPair.zero
   · exact P.parallelPairIsoParallelPairCompIndYoneda.app WalkingParallelPair.one
@@ -303,11 +311,13 @@ section Small
 
 variable (C : Type u) [SmallCategory C] [HasFiniteColimits C]
 
-/-- For small finitely cocomplete categories `C : Type u`, the category of Ind-objects `Ind C` is
-equivalent to the category of left-exact functors `Cᵒᵖ ⥤ Type u` -/
-noncomputable def Ind.leftExactFunctorEquivalence : Ind C ≌ LeftExactFunctor Cᵒᵖ (Type u) :=
-  (Ind.equivalence _).trans <| ObjectProperty.fullSubcategoryCongr
-    (by ext; apply isIndObject_iff_preservesFiniteLimits)
+/--
+For small finitely cocomplete categories `C : Type u`, the category of Ind-objects `Ind C` is
+equivalent to the category of left-exact functors `Cᵒᵖ ⥤ Type u`
+-/
+noncomputable def Ind.leftExactFunctorEquivalence : Ind C ≌ LeftExactFunctor (Cᵒᵖ) (Type u) :=
+  (Ind.equivalence _).trans <|
+    ObjectProperty.fullSubcategoryCongr (by ext; apply isIndObject_iff_preservesFiniteLimits)
 
 end Small
 

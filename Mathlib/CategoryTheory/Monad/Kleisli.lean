@@ -21,7 +21,6 @@ the monad `(T, η_ T, μ_ T)` as well as the co-Kleisli adjunction which gives r
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 universe v u
@@ -29,10 +28,12 @@ universe v u
 -- morphism levels before object levels. See note [category theory universes].
 variable {C : Type u} [Category.{v} C]
 
-/-- The objects for the Kleisli category of the monad `T : Monad C`, which are the same
+/--
+The objects for the Kleisli category of the monad `T : Monad C`, which are the same
 thing as objects of the base category `C`.
 -/
-structure Kleisli (T : Monad C) where mk (T) ::
+structure Kleisli (T : Monad C) where
+  mk (T) ::
   /-- The underlying object of the base category. -/
   of : C
 
@@ -43,8 +44,10 @@ variable {T : Monad C}
 @[simp] lemma mk_of (c : Kleisli T) : Kleisli.mk T c.of = c := rfl
 lemma of_mk (c : C) : (Kleisli.mk T c).of = c := rfl
 
-/-- For (T : Monad C), morphisms `c ⟶ c'` in the Kleisli category of `T` are
-morphisms ` c ⟶ T.obj c'` in `C`. -/
+/--
+For (T : Monad C), morphisms `c ⟶ c'` in the Kleisli category of `T` are
+morphisms ` c ⟶ T.obj c'` in `C`.
+-/
 structure Hom (c c' : Kleisli T) where
   /-- The morphism in C underlying the morphism in the Kleisli category. -/
   of : c.of ⟶ T.obj c'.of
@@ -54,8 +57,10 @@ instance [Inhabited C] (T : Monad C) : Inhabited (Kleisli T) := ⟨.mk T default
 variable (T)
 
 attribute [local ext] Hom in
-/-- The Kleisli category on a monad `T`.
-cf Definition 5.2.9 in [Riehl][riehl2017]. -/
+/--
+The Kleisli category on a monad `T`.
+cf Definition 5.2.9 in [Riehl][riehl2017].
+-/
 @[simps!]
 instance category : Category (Kleisli T) where
   Hom X Y := Hom X Y
@@ -66,14 +71,11 @@ instance category : Category (Kleisli T) where
     dsimp
     rw [← T.η.naturality_assoc f.of, T.left_unit]
     apply Category.comp_id
-  assoc f g h := by
-    simp [Monad.assoc, T.mu_naturality_assoc]
+  assoc f g h := by simp [Monad.assoc, T.mu_naturality_assoc]
 
 variable {T} in
 attribute [local ext] Hom in
-@[ext]
-lemma hom_ext {x y : Kleisli T} {f g : x ⟶ y} (h : f.of = g.of) : f = g :=
-  Hom.ext h
+@[ext] lemma hom_ext {x y : Kleisli T} {f g : x ⟶ y} (h : f.of = g.of) : f = g := Hom.ext h
 
 namespace Adjunction
 
@@ -92,19 +94,21 @@ def fromKleisli : Kleisli T ⥤ C where
   obj X := T.obj X.of
   map {_} {Y} f := T.map f.of ≫ T.μ.app Y.of
   map_id _ := T.right_unit _
-  map_comp {X} {Y} {Z} f g := by
-    simp [← T.μ.naturality_assoc g.of, T.assoc]
+  map_comp {X} {Y} {Z} f g := by simp [← T.μ.naturality_assoc g.of, T.assoc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The Kleisli adjunction which gives rise to the monad `(T, η_ T, μ_ T)`.
-cf Lemma 5.2.11 of [Riehl][riehl2017]. -/
+/--
+The Kleisli adjunction which gives rise to the monad `(T, η_ T, μ_ T)`.
+cf Lemma 5.2.11 of [Riehl][riehl2017].
+-/
 def adj : toKleisli T ⊣ fromKleisli T :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv X Y := { toFun f := f.of, invFun f := .mk f }
-      homEquiv_naturality_left_symm := fun {X} {Y} {Z} f g => by
-        ext
-        simp [← T.η.naturality_assoc g] }
+  Adjunction.mkOfHomEquiv {
+    homEquiv X Y := { toFun f := f.of, invFun f := .mk f }
+    homEquiv_naturality_left_symm := fun {X} {Y} {Z} f g => by
+      ext
+      simp [← T.η.naturality_assoc g]
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The composition of the adjunction gives the original functor. -/
@@ -115,10 +119,12 @@ end Adjunction
 
 end Kleisli
 
-/-- The objects for the co-Kleisli category of the comonad `U : Comonad C`, which are the same
+/--
+The objects for the co-Kleisli category of the comonad `U : Comonad C`, which are the same
 thing as objects of the base category `C`.
 -/
-structure Cokleisli (U : Comonad C) where mk (U) ::
+structure Cokleisli (U : Comonad C) where
+  mk (U) ::
   /-- The underlying object of the base category. -/
   of : C
 
@@ -130,8 +136,10 @@ variable (U : Comonad C)
 lemma of_mk (c : C) : (Cokleisli.mk U c).of = c := rfl
 
 variable {U} in
-/-- For (U : Comonad C), morphisms `c ⟶ c'` in the Cokleisli category of `U` are
-morphisms ` U.obj c ⟶ c'` in `C`. -/
+/--
+For (U : Comonad C), morphisms `c ⟶ c'` in the Cokleisli category of `U` are
+morphisms ` U.obj c ⟶ c'` in `C`.
+-/
 structure Hom (c c' : Cokleisli U) where
   /-- The morphism in C underlying the morphism in the Kleisli category. -/
   of : U.obj c.of ⟶ c'.of
@@ -147,9 +155,7 @@ instance category : Category (Cokleisli U) where
 
 variable {T} in
 attribute [local ext] Hom in
-@[ext]
-lemma hom_ext {x y : Cokleisli U} {f g : x ⟶ y} (h : f.of = g.of) : f = g :=
-  Hom.ext h
+@[ext] lemma hom_ext {x y : Cokleisli U} {f g : x ⟶ y} (h : f.of = g.of) : f = g := Hom.ext h
 
 namespace Adjunction
 
@@ -170,9 +176,10 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The co-Kleisli adjunction which gives rise to the comonad `(U, ε_ U, δ_ U)`. -/
 def adj : fromCokleisli U ⊣ toCokleisli U :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv X Y := { toFun f := .mk f, invFun f := f.of }
-      homEquiv_naturality_right := fun {X} {Y} {_} f g => by cat_disch }
+  Adjunction.mkOfHomEquiv {
+    homEquiv X Y := { toFun f := .mk f, invFun f := f.of }
+    homEquiv_naturality_right := fun {X} {Y} {_} f g => by cat_disch
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The composition of the adjunction gives the original functor. -/

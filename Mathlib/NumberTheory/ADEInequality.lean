@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.PNat.Interval
 public import Mathlib.Tactic.NormNum
-
 import Mathlib.Data.Multiset.Sort
 import Mathlib.Data.PNat.Basic
 import Mathlib.Tactic.FinCases
@@ -39,105 +38,104 @@ in the classification of Dynkin diagrams, root systems, and semisimple Lie algeb
 
 @[expose] public section
 
-
 namespace ADEInequality
 
 open Multiset
 
-
-/-- `A' q r := {1,q,r}` is a `Multiset ℕ+`
+/--
+`A' q r := {1,q,r}` is a `Multiset ℕ+`
 that is a solution to the inequality
-`(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`. -/
-def A' (q r : ℕ+) : Multiset ℕ+ :=
-  {1, q, r}
+`(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
+-/
+def A' (q r : ℕ+) : Multiset ℕ+ := {1, q, r}
 
-/-- `A r := {1,1,r}` is a `Multiset ℕ+`
+/--
+`A r := {1,1,r}` is a `Multiset ℕ+`
 that is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-These solutions are related to the Dynkin diagrams $A_r$. -/
-def A (r : ℕ+) : Multiset ℕ+ :=
-  A' 1 r
+These solutions are related to the Dynkin diagrams $A_r$.
+-/
+def A (r : ℕ+) : Multiset ℕ+ := A' 1 r
 
-/-- `D' r := {2,2,r}` is a `Multiset ℕ+`
+/--
+`D' r := {2,2,r}` is a `Multiset ℕ+`
 that is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-These solutions are related to the Dynkin diagrams $D_{r+2}$. -/
-def D' (r : ℕ+) : Multiset ℕ+ :=
-  {2, 2, r}
+These solutions are related to the Dynkin diagrams $D_{r+2}$.
+-/
+def D' (r : ℕ+) : Multiset ℕ+ := {2, 2, r}
 
-/-- `E' r := {2,3,r}` is a `Multiset ℕ+`.
+/--
+`E' r := {2,3,r}` is a `Multiset ℕ+`.
 For `r ∈ {3,4,5}` is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-These solutions are related to the Dynkin diagrams $E_{r+3}$. -/
-def E' (r : ℕ+) : Multiset ℕ+ :=
-  {2, 3, r}
+These solutions are related to the Dynkin diagrams $E_{r+3}$.
+-/
+def E' (r : ℕ+) : Multiset ℕ+ := {2, 3, r}
 
-/-- `E6 := {2,3,3}` is a `Multiset ℕ+`
+/--
+`E6 := {2,3,3}` is a `Multiset ℕ+`
 that is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-This solution is related to the Dynkin diagrams $E_6$. -/
-def E6 : Multiset ℕ+ :=
-  E' 3
+This solution is related to the Dynkin diagrams $E_6$.
+-/
+def E6 : Multiset ℕ+ := E' 3
 
-/-- `E7 := {2,3,4}` is a `Multiset ℕ+`
+/--
+`E7 := {2,3,4}` is a `Multiset ℕ+`
 that is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-This solution is related to the Dynkin diagrams $E_7$. -/
-def E7 : Multiset ℕ+ :=
-  E' 4
+This solution is related to the Dynkin diagrams $E_7$.
+-/
+def E7 : Multiset ℕ+ := E' 4
 
-/-- `E8 := {2,3,5}` is a `Multiset ℕ+`
+/--
+`E8 := {2,3,5}` is a `Multiset ℕ+`
 that is a solution to the inequality
 `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1`.
 
-This solution is related to the Dynkin diagrams $E_8$. -/
-def E8 : Multiset ℕ+ :=
-  E' 5
+This solution is related to the Dynkin diagrams $E_8$.
+-/
+def E8 : Multiset ℕ+ := E' 5
 
-/-- `sumInv pqr` for a `pqr : Multiset ℕ+` is the sum of the inverses
+/--
+`sumInv pqr` for a `pqr : Multiset ℕ+` is the sum of the inverses
 of the elements of `pqr`, as rational number.
 
-The intended argument is a multiset `{p,q,r}` of cardinality `3`. -/
-def sumInv (pqr : Multiset ℕ+) : ℚ :=
-  Multiset.sum (pqr.map fun (x : ℕ+) => x⁻¹)
+The intended argument is a multiset `{p,q,r}` of cardinality `3`.
+-/
+def sumInv (pqr : Multiset ℕ+) : ℚ := Multiset.sum (pqr.map fun (x : ℕ+) => x⁻¹)
 
 theorem sumInv_pqr (p q r : ℕ+) : sumInv {p, q, r} = (p : ℚ)⁻¹ + (q : ℚ)⁻¹ + (r : ℚ)⁻¹ := by
-  simp only [sumInv, insert_eq_cons, add_assoc, map_cons, sum_cons,
-    map_singleton, sum_singleton]
+  simp only [sumInv, insert_eq_cons, add_assoc, map_cons, sum_cons, map_singleton, sum_singleton]
 
-/-- A multiset `pqr` of positive natural numbers is `Admissible`
-if it is equal to `A' q r`, or `D' r`, or one of `E6`, `E7`, or `E8`. -/
+/--
+A multiset `pqr` of positive natural numbers is `Admissible`
+if it is equal to `A' q r`, or `D' r`, or one of `E6`, `E7`, or `E8`.
+-/
 def Admissible (pqr : Multiset ℕ+) : Prop :=
   (∃ q r, A' q r = pqr) ∨ (∃ r, D' r = pqr) ∨ E' 3 = pqr ∨ E' 4 = pqr ∨ E' 5 = pqr
 
-theorem admissible_A' (q r : ℕ+) : Admissible (A' q r) :=
-  Or.inl ⟨q, r, rfl⟩
+theorem admissible_A' (q r : ℕ+) : Admissible (A' q r) := Or.inl ⟨q, r, rfl⟩
 
-theorem admissible_D' (n : ℕ+) : Admissible (D' n) :=
-  Or.inr <| Or.inl ⟨n, rfl⟩
+theorem admissible_D' (n : ℕ+) : Admissible (D' n) := Or.inr <| Or.inl ⟨n, rfl⟩
 
-theorem admissible_E'3 : Admissible (E' 3) :=
-  Or.inr <| Or.inr <| Or.inl rfl
+theorem admissible_E'3 : Admissible (E' 3) := Or.inr <| Or.inr <| Or.inl rfl
 
-theorem admissible_E'4 : Admissible (E' 4) :=
-  Or.inr <| Or.inr <| Or.inr <| Or.inl rfl
+theorem admissible_E'4 : Admissible (E' 4) := Or.inr <| Or.inr <| Or.inr <| Or.inl rfl
 
-theorem admissible_E'5 : Admissible (E' 5) :=
-  Or.inr <| Or.inr <| Or.inr <| Or.inr rfl
+theorem admissible_E'5 : Admissible (E' 5) := Or.inr <| Or.inr <| Or.inr <| Or.inr rfl
 
-theorem admissible_E6 : Admissible E6 :=
-  admissible_E'3
+theorem admissible_E6 : Admissible E6 := admissible_E'3
 
-theorem admissible_E7 : Admissible E7 :=
-  admissible_E'4
+theorem admissible_E7 : Admissible E7 := admissible_E'4
 
-theorem admissible_E8 : Admissible E8 :=
-  admissible_E'5
+theorem admissible_E8 : Admissible E8 := admissible_E'5
 
 theorem Admissible.one_lt_sumInv {pqr : Multiset ℕ+} : Admissible pqr → 1 < sumInv pqr := by
   rw [Admissible]
@@ -160,7 +158,8 @@ theorem lt_three {p q r : ℕ+} (hpq : p ≤ q) (hqr : q ≤ r) (H : 1 < sumInv 
   have hq : (q : ℚ)⁻¹ ≤ 3⁻¹ := inv_anti₀ (by positivity) (by exact_mod_cast h3q)
   have hr : (r : ℚ)⁻¹ ≤ 3⁻¹ := inv_anti₀ (by positivity) (by exact_mod_cast h3r)
   calc
-    (p : ℚ)⁻¹ + (q : ℚ)⁻¹ + (r : ℚ)⁻¹ ≤ 3⁻¹ + 3⁻¹ + 3⁻¹ := add_le_add (add_le_add hp hq) hr
+    (p : ℚ)⁻¹ + (q : ℚ)⁻¹ + (r : ℚ)⁻¹
+      ≤ 3⁻¹ + 3⁻¹ + 3⁻¹ := add_le_add (add_le_add hp hq) hr
     _ = 1 := by norm_num
 
 theorem lt_four {q r : ℕ+} (hqr : q ≤ r) (H : 1 < sumInv {2, q, r}) : q < 4 := by
@@ -170,7 +169,8 @@ theorem lt_four {q r : ℕ+} (hqr : q ≤ r) (H : 1 < sumInv {2, q, r}) : q < 4 
   have hq : (q : ℚ)⁻¹ ≤ 4⁻¹ := inv_anti₀ (by positivity) (by exact_mod_cast H)
   have hr : (r : ℚ)⁻¹ ≤ 4⁻¹ := inv_anti₀ (by positivity) (by exact_mod_cast h4r)
   calc
-    (2⁻¹ + (q : ℚ)⁻¹ + (r : ℚ)⁻¹) ≤ 2⁻¹ + 4⁻¹ + 4⁻¹ := add_le_add (add_le_add le_rfl hq) hr
+    (2⁻¹ + (q : ℚ)⁻¹ + (r : ℚ)⁻¹)
+      ≤ 2⁻¹ + 4⁻¹ + 4⁻¹ := add_le_add (add_le_add le_rfl hq) hr
     _ = 1 := by norm_num
 
 theorem lt_six {r : ℕ+} (H : 1 < sumInv {2, 3, r}) : r < 6 := by
@@ -178,11 +178,13 @@ theorem lt_six {r : ℕ+} (H : 1 < sumInv {2, 3, r}) : r < 6 := by
   rw [sumInv_pqr]
   have hr : (r : ℚ)⁻¹ ≤ 6⁻¹ := inv_anti₀ (by positivity) (by exact_mod_cast H)
   calc
-    (2⁻¹ + 3⁻¹ + (r : ℚ)⁻¹ : ℚ) ≤ 2⁻¹ + 3⁻¹ + 6⁻¹ := add_le_add (add_le_add le_rfl le_rfl) hr
+    (2⁻¹ + 3⁻¹ + (r : ℚ)⁻¹ : ℚ)
+      ≤ 2⁻¹ + 3⁻¹ + 6⁻¹ := add_le_add (add_le_add le_rfl le_rfl) hr
     _ = 1 := by norm_num
 
-theorem admissible_of_one_lt_sumInv_aux' {p q r : ℕ+} (hpq : p ≤ q) (hqr : q ≤ r)
-    (H : 1 < sumInv {p, q, r}) : Admissible {p, q, r} := by
+theorem admissible_of_one_lt_sumInv_aux'
+    {p q r : ℕ+} (hpq : p ≤ q) (hqr : q ≤ r) (H : 1 < sumInv {p, q, r})
+    : Admissible {p, q, r} := by
   have hp3 : p < 3 := lt_three hpq hqr H
   -- Porting note: `interval_cases` doesn't support `ℕ+` yet.
   replace hp3 := Finset.mem_Iio.mpr hp3
@@ -190,27 +192,28 @@ theorem admissible_of_one_lt_sumInv_aux' {p q r : ℕ+} (hpq : p ≤ q) (hqr : q
   fin_cases hp3
   · exact admissible_A' q r
   have hq4 : q < 4 := lt_four hqr H
-  replace hq4 := Finset.mem_Ico.mpr ⟨hpq, hq4⟩; clear hpq
+  replace hq4 := Finset.mem_Ico.mpr ⟨hpq, hq4⟩
+  clear hpq
   conv at hq4 => change q ∈ ({2, 3} : Multiset ℕ+)
   fin_cases hq4
   · exact admissible_D' r
   have hr6 : r < 6 := lt_six H
-  replace hr6 := Finset.mem_Ico.mpr ⟨hqr, hr6⟩; clear hqr
+  replace hr6 := Finset.mem_Ico.mpr ⟨hqr, hr6⟩
+  clear hqr
   conv at hr6 => change r ∈ ({3, 4, 5} : Multiset ℕ+)
   fin_cases hr6
   · exact admissible_E6
   · exact admissible_E7
   · exact admissible_E8
 
-theorem admissible_of_one_lt_sumInv_aux :
-    ∀ {pqr : List ℕ+} (_ : pqr.SortedLE) (_ : pqr.length = 3) (_ : 1 < sumInv pqr),
-      Admissible pqr
+theorem admissible_of_one_lt_sumInv_aux
+    : ∀ {pqr : List ℕ+} (_ : pqr.SortedLE) (_ : pqr.length = 3) (_ : 1 < sumInv pqr), Admissible pqr
   | [p, q, r], hs, _, H => by
     obtain ⟨⟨hpq, -⟩, hqr⟩ : (p ≤ q ∧ p ≤ r) ∧ q ≤ r := by simpa using hs.pairwise
     exact admissible_of_one_lt_sumInv_aux' hpq hqr H
 
-theorem admissible_of_one_lt_sumInv {p q r : ℕ+} (H : 1 < sumInv {p, q, r}) :
-    Admissible {p, q, r} := by
+theorem admissible_of_one_lt_sumInv {p q r : ℕ+} (H : 1 < sumInv {p, q, r})
+    : Admissible {p, q, r} := by
   simp only [Admissible]
   let S := sort (α := ℕ+) {p, q, r}
   have hS : S.SortedLE := (pairwise_sort _ _).sortedLE
@@ -220,7 +223,8 @@ theorem admissible_of_one_lt_sumInv {p q r : ℕ+} (H : 1 < sumInv {p, q, r}) :
   apply admissible_of_one_lt_sumInv_aux hS _ H
   simp only [S, insert_eq_cons, length_sort, card_cons, card_singleton]
 
-/-- A multiset `{p,q,r}` of positive natural numbers
+/--
+A multiset `{p,q,r}` of positive natural numbers
 is a solution to `(p⁻¹ + q⁻¹ + r⁻¹ : ℚ) > 1` if and only if
 it is `Admissible` which means it is one of:
 

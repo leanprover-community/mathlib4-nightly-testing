@@ -28,8 +28,8 @@ theorem modEq_iff_eq_mod_zmultiples : a ≡ b [PMOD p] ↔ (a : G ⧸ AddSubgrou
   simp_rw [modEq_iff_eq_add_zsmul, QuotientAddGroup.eq_iff_sub_mem, AddSubgroup.mem_zmultiples_iff,
     eq_sub_iff_add_eq', eq_comm]
 
-theorem not_modEq_iff_ne_mod_zmultiples :
-    ¬a ≡ b [PMOD p] ↔ (a : G ⧸ AddSubgroup.zmultiples p) ≠ b :=
+theorem not_modEq_iff_ne_mod_zmultiples
+    : ¬ a ≡ b [PMOD p] ↔ (a : G ⧸ AddSubgroup.zmultiples p) ≠ b :=
   modEq_iff_eq_mod_zmultiples.not
 
 end AddCommGroup

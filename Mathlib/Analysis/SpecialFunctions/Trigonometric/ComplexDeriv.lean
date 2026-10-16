@@ -16,7 +16,6 @@ Basic facts and derivatives for the complex trigonometric functions.
 
 public section
 
-
 namespace Complex
 
 open Set Filter
@@ -33,17 +32,16 @@ theorem hasDerivAt_tan {x : ℂ} (h : cos x ≠ 0) : HasDerivAt tan (1 / cos x ^
 
 open scoped Topology
 
-theorem tendsto_norm_tan_of_cos_eq_zero {x : ℂ} (hx : cos x = 0) :
-    Tendsto (fun x => ‖tan x‖) (𝓝[≠] x) atTop := by
+theorem tendsto_norm_tan_of_cos_eq_zero {x : ℂ} (hx : cos x = 0)
+    : Tendsto (fun x => ‖tan x‖) (𝓝[≠] x) atTop := by
   simp only [tan_eq_sin_div_cos, norm_div]
   have A : sin x ≠ 0 := fun h => by simpa [*, sq] using sin_sq_add_cos_sq x
-  have B : Tendsto cos (𝓝[≠] x) (𝓝[≠] 0) :=
-    hx ▸ (hasDerivAt_cos x).tendsto_nhdsNE (neg_ne_zero.2 A)
+  have B : Tendsto cos (𝓝[≠] x) (𝓝[≠] 0) := hx ▸ (hasDerivAt_cos x).tendsto_nhdsNE (neg_ne_zero.2 A)
   exact continuous_sin.continuousWithinAt.norm.pos_mul_atTop (norm_pos_iff.2 A)
     (tendsto_norm_nhdsNE_zero.comp B).inv_tendsto_nhdsGT_zero
 
-theorem tendsto_norm_tan_atTop (k : ℤ) :
-    Tendsto (fun x => ‖tan x‖) (𝓝[≠] ((2 * k + 1) * π / 2 : ℂ)) atTop :=
+theorem tendsto_norm_tan_atTop (k : ℤ)
+    : Tendsto (fun x => ‖tan x‖) (𝓝[≠] ((2 * k + 1) * π / 2 : ℂ)) atTop :=
   tendsto_norm_tan_of_cos_eq_zero <| cos_eq_zero_iff.2 ⟨k, rfl⟩
 
 @[simp]
@@ -59,9 +57,10 @@ theorem differentiableAt_tan {x : ℂ} : DifferentiableAt ℂ tan x ↔ cos x �
 @[simp]
 theorem deriv_tan (x : ℂ) : deriv tan x = 1 / cos x ^ 2 :=
   if h : cos x = 0 then by
-    have : ¬DifferentiableAt ℂ tan x := mt differentiableAt_tan.1 (Classical.not_not.2 h)
+    have : ¬ DifferentiableAt ℂ tan x := mt differentiableAt_tan.1 (Classical.not_not.2 h)
     simp [deriv_zero_of_not_differentiableAt this, h, sq]
-  else (hasDerivAt_tan h).deriv
+  else
+    (hasDerivAt_tan h).deriv
 
 @[simp]
 theorem contDiffAt_tan {x : ℂ} {n : WithTop ℕ∞} : ContDiffAt ℂ n tan x ↔ cos x ≠ 0 :=
@@ -69,7 +68,7 @@ theorem contDiffAt_tan {x : ℂ} {n : WithTop ℕ∞} : ContDiffAt ℂ n tan x �
 
 /-- The limit `lim_{z → 0} (tan z) / z = 1`, for the complex tangent. -/
 theorem tendsto_tan_div_nhdsNE_zero : Tendsto (fun z : ℂ ↦ tan z / z) (𝓝[≠] 0) (𝓝 1) :=
-  (hasDerivAt_iff_tendsto_slope.mp (by simpa using hasDerivAt_tan (x := 0) (by simp))).congr
-    fun _ ↦ by simp [slope_def_field]
+  (hasDerivAt_iff_tendsto_slope.mp (by simpa using hasDerivAt_tan (x := 0) (by simp))).congr fun _ ↦
+    by simp [slope_def_field]
 
 end Complex

@@ -34,8 +34,7 @@ open CategoryTheory Coalgebra
 open scoped TensorProduct MonoidalCategory
 
 @[simps]
-noncomputable instance instMonoidalCategoryStruct :
-    MonoidalCategoryStruct.{u} (CoalgCat R) where
+noncomputable instance instMonoidalCategoryStruct : MonoidalCategoryStruct.{u} (CoalgCat R) where
   tensorObj X Y := of R (X ⊗[R] Y)
   whiskerLeft X _ _ f := ofHom (f.1.lTensor X)
   whiskerRight f X := ofHom (f.1.rTensor X)
@@ -45,11 +44,13 @@ noncomputable instance instMonoidalCategoryStruct :
   leftUnitor X := (Coalgebra.TensorProduct.lid R X).toCoalgIso
   rightUnitor X := (Coalgebra.TensorProduct.rid R R X).toCoalgIso
 
-/-- The data needed to induce a `MonoidalCategory` structure via
-`CoalgCat.instMonoidalCategoryStruct` and the forgetful functor to modules. -/
+/--
+The data needed to induce a `MonoidalCategory` structure via
+`CoalgCat.instMonoidalCategoryStruct` and the forgetful functor to modules.
+-/
 @[simps]
-noncomputable def MonoidalCategory.inducingFunctorData :
-    Monoidal.InducingFunctorData (forget₂ (CoalgCat R) (ModuleCat R)) where
+noncomputable def MonoidalCategory.inducingFunctorData
+    : Monoidal.InducingFunctorData (forget₂ (CoalgCat R) (ModuleCat R)) where
   μIso _ _ := Iso.refl _
   whiskerLeft_eq X Y Z f := by ext; rfl
   whiskerRight_eq X f := by ext; rfl

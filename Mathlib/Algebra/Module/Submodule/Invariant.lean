@@ -29,48 +29,52 @@ namespace Module.End
 
 variable {R M : Type*} [Semiring R] [AddCommMonoid M] [Module R M] (f g : End R M)
 
-/-- Given an endomorphism, `f` of some module, this is the sublattice of all `f`-invariant
-submodules. -/
+/--
+Given an endomorphism, `f` of some module, this is the sublattice of all `f`-invariant
+submodules.
+-/
 def invtSubmodule : Sublattice (Submodule R M) where
   carrier := {p : Submodule R M | p ≤ p.comap f}
-  supClosed' p hp q hq := sup_le_iff.mpr
-    ⟨le_trans hp <| Submodule.comap_mono le_sup_left,
-    le_trans hq <| Submodule.comap_mono le_sup_right⟩
+  supClosed' p hp q hq :=
+    sup_le_iff.mpr ⟨
+      le_trans hp <| Submodule.comap_mono le_sup_left,
+      le_trans hq <| Submodule.comap_mono le_sup_right
+    ⟩
   infClosed' p hp q hq := by
     simp only [Set.mem_ofPred_eq, Submodule.comap_inf, le_inf_iff]
     exact ⟨inf_le_of_left_le hp, inf_le_of_right_le hq⟩
 
-lemma mem_invtSubmodule {p : Submodule R M} :
-    p ∈ f.invtSubmodule ↔ p ≤ p.comap f :=
-  Iff.rfl
+lemma mem_invtSubmodule {p : Submodule R M} : p ∈ f.invtSubmodule ↔ p ≤ p.comap f := Iff.rfl
 
 /-- `p` is `f` invariant if and only if `p.map f ≤ p`. -/
-theorem mem_invtSubmodule_iff_map_le {p : Submodule R M} :
-    p ∈ f.invtSubmodule ↔ p.map f ≤ p := Submodule.map_le_iff_le_comap.symm
+theorem mem_invtSubmodule_iff_map_le {p : Submodule R M} : p ∈ f.invtSubmodule ↔ p.map f ≤ p :=
+  Submodule.map_le_iff_le_comap.symm
 
 /-- `p` is `f` invariant if and only if `Set.MapsTo f p p`. -/
-theorem mem_invtSubmodule_iff_mapsTo {p : Submodule R M} :
-    p ∈ f.invtSubmodule ↔ Set.MapsTo f p p := Iff.rfl
+theorem mem_invtSubmodule_iff_mapsTo {p : Submodule R M} : p ∈ f.invtSubmodule ↔ Set.MapsTo f p p :=
+  Iff.rfl
 
 alias ⟨_, _root_.Set.Mapsto.mem_invtSubmodule⟩ := mem_invtSubmodule_iff_mapsTo
 
-theorem mem_invtSubmodule_iff_forall_mem_of_mem {p : Submodule R M} :
-    p ∈ f.invtSubmodule ↔ ∀ x ∈ p, f x ∈ p :=
+theorem mem_invtSubmodule_iff_forall_mem_of_mem {p : Submodule R M}
+    : p ∈ f.invtSubmodule ↔ ∀ x ∈ p, f x ∈ p :=
   Iff.rfl
 
 /-- `p` is `f.symm` invariant if and only if `p ≤ p.map f`. -/
-lemma mem_invtSubmodule_symm_iff_le_map {f : M ≃ₗ[R] M} {p : Submodule R M} :
-    p ∈ invtSubmodule f.symm ↔ p ≤ p.map (f : M →ₗ[R] M) :=
+lemma mem_invtSubmodule_symm_iff_le_map {f : M ≃ₗ[R] M} {p : Submodule R M}
+    : p ∈ invtSubmodule f.symm ↔ p ≤ p.map (f : M →ₗ[R] M) :=
   (mem_invtSubmodule_iff_map_le _).trans (f.toEquiv.symm.subset_symm_image _ _).symm
 
-lemma invtSubmodule_inf_invtSubmodule_le_invtSubmodule_add :
-    f.invtSubmodule ⊓ g.invtSubmodule ≤ (f + g).invtSubmodule :=
-  fun p ⟨hfp, hgp⟩ _ hx ↦ p.add_mem (hfp hx) (hgp hx)
+lemma invtSubmodule_inf_invtSubmodule_le_invtSubmodule_add
+    : f.invtSubmodule ⊓ g.invtSubmodule ≤ (f + g).invtSubmodule := fun p ⟨hfp, hgp⟩ _ hx ↦
+  p.add_mem (hfp hx) (hgp hx)
 
 section CommRing
 
-variable {R S : Type*} [Semiring R] [Semiring S] [Module R M] [Module S M]
-  [DistribSMul S R] [SMulCommClass R S M] [IsScalarTower S R M] (f : End R M)
+variable
+  {R S : Type*} [Semiring R] [Semiring S] [Module R M] [Module S M] [DistribSMul S R]
+  [SMulCommClass R S M] [IsScalarTower S R M]
+  (f : End R M)
 
 lemma invtSubmodule_le_invtSubmodule_smul (c : S) : f.invtSubmodule ≤ (c • f).invtSubmodule :=
   fun p hfp _ hx ↦ p.smul_of_tower_mem c (hfp hx)
@@ -87,23 +91,21 @@ namespace invtSubmodule
 
 variable {f}
 
-lemma inf_mem {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule) :
-    p ⊓ q ∈ f.invtSubmodule :=
+lemma inf_mem {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule)
+    : p ⊓ q ∈ f.invtSubmodule :=
   Sublattice.inf_mem hp hq
 
-lemma sup_mem {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule) :
-    p ⊔ q ∈ f.invtSubmodule :=
+lemma sup_mem {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule)
+    : p ⊔ q ∈ f.invtSubmodule :=
   Sublattice.sup_mem hp hq
 
 variable (f)
 
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-protected lemma top_mem : ⊤ ∈ f.invtSubmodule := by simp [invtSubmodule]
+@[simp] protected lemma top_mem : ⊤ ∈ f.invtSubmodule := by simp [invtSubmodule]
 
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-protected lemma bot_mem : ⊥ ∈ f.invtSubmodule := by simp [invtSubmodule]
+@[simp] protected lemma bot_mem : ⊥ ∈ f.invtSubmodule := by simp [invtSubmodule]
 
 instance : BoundedOrder (f.invtSubmodule) where
   top := ⟨⊤, invtSubmodule.top_mem f⟩
@@ -112,102 +114,99 @@ instance : BoundedOrder (f.invtSubmodule) where
   bot_le := fun ⟨p, hp⟩ ↦ by simp
 
 @[simp]
-protected lemma zero :
-    (0 : End R M).invtSubmodule = ⊤ :=
+protected lemma zero : (0 : End R M).invtSubmodule = ⊤ :=
   eq_top_iff.mpr fun x ↦ by simp [invtSubmodule]
 
 @[simp]
-protected lemma id :
-    invtSubmodule (LinearMap.id : End R M) = ⊤ :=
+protected lemma id : invtSubmodule (LinearMap.id : End R M) = ⊤ :=
   eq_top_iff.mpr fun x ↦ by simp [invtSubmodule]
 
-@[simp]
-protected lemma one :
-    invtSubmodule (1 : End R M) = ⊤ :=
-  invtSubmodule.id
+@[simp] protected lemma one : invtSubmodule (1 : End R M) = ⊤ := invtSubmodule.id
 
 set_option backward.isDefEq.respectTransparency false in
-protected lemma mk_eq_bot_iff {p : Submodule R M} (hp : p ∈ f.invtSubmodule) :
-    (⟨p, hp⟩ : f.invtSubmodule) = ⊥ ↔ p = ⊥ :=
+protected lemma mk_eq_bot_iff {p : Submodule R M} (hp : p ∈ f.invtSubmodule)
+    : (⟨p, hp⟩ : f.invtSubmodule) = ⊥ ↔ p = ⊥ :=
   Subtype.mk_eq_bot_iff (by simp [invtSubmodule]) _
 
 set_option backward.isDefEq.respectTransparency false in
-protected lemma mk_eq_top_iff {p : Submodule R M} (hp : p ∈ f.invtSubmodule) :
-    (⟨p, hp⟩ : f.invtSubmodule) = ⊤ ↔ p = ⊤ :=
+protected lemma mk_eq_top_iff {p : Submodule R M} (hp : p ∈ f.invtSubmodule)
+    : (⟨p, hp⟩ : f.invtSubmodule) = ⊤ ↔ p = ⊤ :=
   Subtype.mk_eq_top_iff (by simp [invtSubmodule]) _
 
 @[simp]
-protected lemma disjoint_mk_iff {p q : Submodule R M}
-    (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule) :
-    Disjoint (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ Disjoint p q := by
+protected lemma disjoint_mk_iff
+    {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule)
+    : Disjoint (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ Disjoint p q := by
   rw [disjoint_iff, disjoint_iff, Sublattice.mk_inf_mk,
     Subtype.mk_eq_bot_iff (⊥ : f.invtSubmodule).property]
 
-protected lemma disjoint_iff {p q : f.invtSubmodule} :
-    Disjoint p q ↔ Disjoint (p : Submodule R M) (q : Submodule R M) := by
+protected lemma disjoint_iff {p q : f.invtSubmodule}
+    : Disjoint p q ↔ Disjoint (p : Submodule R M) (q : Submodule R M) := by
   obtain ⟨p, hp⟩ := p
   obtain ⟨q, hq⟩ := q
   simp
 
 @[simp]
-protected lemma codisjoint_mk_iff {p q : Submodule R M}
-    (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule) :
-    Codisjoint (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ Codisjoint p q := by
+protected lemma codisjoint_mk_iff
+    {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule)
+    : Codisjoint (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ Codisjoint p q := by
   rw [codisjoint_iff, codisjoint_iff, Sublattice.mk_sup_mk,
     Subtype.mk_eq_top_iff (⊤ : f.invtSubmodule).property]
 
-protected lemma codisjoint_iff {p q : f.invtSubmodule} :
-    Codisjoint p q ↔ Codisjoint (p : Submodule R M) (q : Submodule R M) := by
+protected lemma codisjoint_iff {p q : f.invtSubmodule}
+    : Codisjoint p q ↔ Codisjoint (p : Submodule R M) (q : Submodule R M) := by
   obtain ⟨p, hp⟩ := p
   obtain ⟨q, hq⟩ := q
   simp
 
 @[simp]
-protected lemma isCompl_mk_iff {p q : Submodule R M}
-    (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule) :
-    IsCompl (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ IsCompl p q := by
+protected lemma isCompl_mk_iff
+    {p q : Submodule R M} (hp : p ∈ f.invtSubmodule) (hq : q ∈ f.invtSubmodule)
+    : IsCompl (α := f.invtSubmodule) ⟨p, hp⟩ ⟨q, hq⟩ ↔ IsCompl p q := by
   simp [isCompl_iff]
 
-protected lemma isCompl_iff {p q : f.invtSubmodule} :
-    IsCompl p q ↔ IsCompl (p : Submodule R M) (q : Submodule R M) := by
+protected lemma isCompl_iff {p q : f.invtSubmodule}
+    : IsCompl p q ↔ IsCompl (p : Submodule R M) (q : Submodule R M) := by
   obtain ⟨p, hp⟩ := p
   obtain ⟨q, hq⟩ := q
   simp
 
 set_option backward.isDefEq.respectTransparency false in
-lemma map_subtype_mem_of_mem_invtSubmodule {p : Submodule R M} (hp : p ∈ f.invtSubmodule)
-    {q : Submodule R p} (hq : q ∈ invtSubmodule (LinearMap.restrict f hp)) :
-    Submodule.map p.subtype q ∈ f.invtSubmodule := by
+lemma map_subtype_mem_of_mem_invtSubmodule
+    {p : Submodule R M} (hp : p ∈ f.invtSubmodule)
+    {q : Submodule R p} (hq : q ∈ invtSubmodule (LinearMap.restrict f hp))
+    : Submodule.map p.subtype q ∈ f.invtSubmodule := by
   rintro - ⟨⟨x, hx⟩, hx', rfl⟩
   specialize hq hx'
   rw [Submodule.mem_comap, LinearMap.restrict_apply] at hq
   simpa [hq] using hp hx
 
-protected lemma comp {p : Submodule R M} {g : End R M}
-    (hf : p ∈ f.invtSubmodule) (hg : p ∈ g.invtSubmodule) :
-    p ∈ invtSubmodule (f ∘ₗ g) :=
-  fun _ hx ↦ hf (hg hx)
+protected lemma comp
+    {p : Submodule R M} {g : End R M} (hf : p ∈ f.invtSubmodule) (hg : p ∈ g.invtSubmodule)
+    : p ∈ invtSubmodule (f ∘ₗ g) := fun _ hx ↦
+  hf (hg hx)
 
-@[simp] lemma _root_.LinearEquiv.map_mem_invtSubmodule_conj_iff {R M N : Type*} [CommSemiring R]
-    [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N] {f : End R M}
-    {e : M ≃ₗ[R] N} {p : Submodule R M} :
-    p.map (e : M →ₗ[R] N) ∈ (e.conj f).invtSubmodule ↔ p ∈ f.invtSubmodule := by
+@[simp]
+lemma _root_.LinearEquiv.map_mem_invtSubmodule_conj_iff
+    {R M N : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
+    {f : End R M} {e : M ≃ₗ[R] N} {p : Submodule R M}
+    : p.map (e : M →ₗ[R] N) ∈ (e.conj f).invtSubmodule ↔ p ∈ f.invtSubmodule := by
   have : e.symm.toLinearMap ∘ₗ ((e ∘ₗ f) ∘ₗ e.symm.toLinearMap) ∘ₗ e = f := by ext; simp
   rw [LinearEquiv.conj_apply, mem_invtSubmodule, mem_invtSubmodule, Submodule.map_le_iff_le_comap,
     Submodule.map_equiv_eq_comap_symm, ← Submodule.comap_comp, ← Submodule.comap_comp, this]
 
-lemma _root_.LinearEquiv.map_mem_invtSubmodule_iff {R M N : Type*} [CommSemiring R]
-    [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N] {f : End R N}
-    {e : M ≃ₗ[R] N} {p : Submodule R M} :
-    p.map (e : M →ₗ[R] N) ∈ f.invtSubmodule ↔ p ∈ (e.symm.conj f).invtSubmodule := by
+lemma _root_.LinearEquiv.map_mem_invtSubmodule_iff
+    {R M N : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
+    {f : End R N} {e : M ≃ₗ[R] N} {p : Submodule R M}
+    : p.map (e : M →ₗ[R] N) ∈ f.invtSubmodule ↔ p ∈ (e.symm.conj f).invtSubmodule := by
   simp [← e.map_mem_invtSubmodule_conj_iff]
 
 end invtSubmodule
 
 variable (R) in
-lemma span_orbit_mem_invtSubmodule {G : Type*}
-    [Monoid G] [DistribMulAction G M] [SMulCommClass G R M] (x : M) (g : G) :
-    span R (MulAction.orbit G x) ∈ invtSubmodule (DistribSMul.toLinearMap R M g) := by
+lemma span_orbit_mem_invtSubmodule
+    {G : Type*} [Monoid G] [DistribMulAction G M] [SMulCommClass G R M] (x : M) (g : G)
+    : span R (MulAction.orbit G x) ∈ invtSubmodule (DistribSMul.toLinearMap R M g) := by
   rw [mem_invtSubmodule, Submodule.span_le, Submodule.comap_coe]
   intro y hy
   simp only [Set.mem_preimage, DistribSMul.toLinearMap_apply, SetLike.mem_coe]

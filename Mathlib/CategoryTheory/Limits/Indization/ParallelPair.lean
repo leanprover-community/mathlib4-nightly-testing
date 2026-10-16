@@ -31,9 +31,11 @@ open Limits CategoryTheory.Functor
 
 variable {C : Type u₁} [Category.{v₁} C]
 
-/-- Structure containing data exhibiting two parallel natural transformations `f` and `g` between
+/--
+Structure containing data exhibiting two parallel natural transformations `f` and `g` between
 presheaves `A` and `B` as induced by a natural transformation in a functor category exhibiting
-`A` and `B` as ind-objects. -/
+`A` and `B` as ind-objects.
+-/
 structure IndParallelPairPresentation {A B : Cᵒᵖ ⥤ Type v₁} (f g : A ⟶ B) where
   /-- The indexing category. -/
   I : Type v₁
@@ -61,20 +63,23 @@ structure IndParallelPairPresentation {A B : Cᵒᵖ ⥤ Type v₁} (f g : A ⟶
   /-- `g` is in fact presented by `ψ`. -/
   hg : g = IsColimit.map isColimit₁ (Cocone.mk B ι₂) (whiskerRight ψ yoneda)
 
-instance {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B} (P : IndParallelPairPresentation f g) :
-    SmallCategory P.I := P.ℐ
-instance {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B} (P : IndParallelPairPresentation f g) :
-    IsFiltered P.I := P.hI
+instance {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B} (P : IndParallelPairPresentation f g)
+    : SmallCategory P.I :=
+  P.ℐ
+instance {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B} (P : IndParallelPairPresentation f g)
+    : IsFiltered P.I :=
+  P.hI
 
 namespace NonemptyParallelPairPresentationAux
 
-variable {A B : Cᵒᵖ ⥤ Type v₁} (f g : A ⟶ B) (P₁ : IndObjectPresentation A)
-  (P₂ : IndObjectPresentation B)
+variable
+  {A B : Cᵒᵖ ⥤ Type v₁} (f g : A ⟶ B) (P₁ : IndObjectPresentation A) (P₂ : IndObjectPresentation B)
 
 /-- Implementation; see `nonempty_indParallelPairPresentation`. -/
 abbrev K : Type v₁ :=
-  Comma ((P₁.toCostructuredArrow ⋙ CostructuredArrow.map f).prod'
-    (P₁.toCostructuredArrow ⋙ CostructuredArrow.map g))
+  Comma
+    ((P₁.toCostructuredArrow ⋙ CostructuredArrow.map f).prod'
+      (P₁.toCostructuredArrow ⋙ CostructuredArrow.map g))
     (P₂.toCostructuredArrow.prod' P₂.toCostructuredArrow)
 
 /-- Implementation; see `nonempty_indParallelPairPresentation`. -/
@@ -103,13 +108,14 @@ def ϕ : F₁ f g P₁ P₂ ⟶ F₂ f g P₁ P₂ where
   app h := h.hom.1.left
   naturality _ _ h := by
     have := h.w
-    simp only [prod'_map, Functor.comp_map, Prod.hom_ext_iff,
-      CostructuredArrow.hom_eq_iff] at this
+    simp only [prod'_map, Functor.comp_map, Prod.hom_ext_iff, CostructuredArrow.hom_eq_iff] at this
     exact this.1
 
 set_option backward.defeqAttrib.useBackward true in
-theorem hf : f = IsColimit.map (isColimit₁ f g P₁ P₂)
-    (Cocone.mk B (ι₂ f g P₁ P₂)) (whiskerRight (ϕ f g P₁ P₂) yoneda) := by
+theorem hf
+    : f
+      = IsColimit.map (isColimit₁ f g P₁ P₂) (Cocone.mk B (ι₂ f g P₁ P₂))
+        (whiskerRight (ϕ f g P₁ P₂) yoneda) := by
   refine (isColimit₁ f g P₁ P₂).hom_ext (fun i => ?_)
   rw [IsColimit.ι_map]
   simpa using! i.hom.1.w.symm
@@ -119,13 +125,14 @@ def ψ : F₁ f g P₁ P₂ ⟶ F₂ f g P₁ P₂ where
   app h := h.hom.2.left
   naturality _ _ h := by
     have := h.w
-    simp only [prod'_map, Functor.comp_map, Prod.hom_ext_iff,
-      CostructuredArrow.hom_eq_iff] at this
+    simp only [prod'_map, Functor.comp_map, Prod.hom_ext_iff, CostructuredArrow.hom_eq_iff] at this
     exact this.2
 
 set_option backward.defeqAttrib.useBackward true in
-theorem hg : g = IsColimit.map (isColimit₁ f g P₁ P₂)
-    (Cocone.mk B (ι₂ f g P₁ P₂)) (whiskerRight (ψ f g P₁ P₂) yoneda) := by
+theorem hg
+    : g
+      = IsColimit.map (isColimit₁ f g P₁ P₂) (Cocone.mk B (ι₂ f g P₁ P₂))
+        (whiskerRight (ψ f g P₁ P₂) yoneda) := by
   refine (isColimit₁ f g P₁ P₂).hom_ext (fun i => ?_)
   rw [IsColimit.ι_map]
   simpa using! i.hom.2.w.symm
@@ -147,19 +154,21 @@ noncomputable def presentation : IndParallelPairPresentation f g where
 
 end NonemptyParallelPairPresentationAux
 
-theorem nonempty_indParallelPairPresentation {A B : Cᵒᵖ ⥤ Type v₁} (hA : IsIndObject A)
-    (hB : IsIndObject B) (f g : A ⟶ B) : Nonempty (IndParallelPairPresentation f g) :=
+theorem nonempty_indParallelPairPresentation
+    {A B : Cᵒᵖ ⥤ Type v₁} (hA : IsIndObject A) (hB : IsIndObject B) (f g : A ⟶ B)
+    : Nonempty (IndParallelPairPresentation f g) :=
   ⟨NonemptyParallelPairPresentationAux.presentation f g hA.presentation hB.presentation⟩
 
 namespace IndParallelPairPresentation
 
-/-- Given an `IndParallelPairPresentation f g`, we can understand the parallel pair `(f, g)`
-as the colimit of `(P.φ, P.ψ)` in `Cᵒᵖ ⥤ Type v`. -/
-noncomputable def parallelPairIsoParallelPairCompYoneda {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B}
-    (P : IndParallelPairPresentation f g) :
-    parallelPair f g ≅ parallelPair P.φ P.ψ ⋙ (whiskeringRight _ _ _).obj yoneda ⋙ colim :=
-  parallelPair.ext
-    (P.isColimit₁.coconePointUniqueUpToIso (colimit.isColimit _))
+/--
+Given an `IndParallelPairPresentation f g`, we can understand the parallel pair `(f, g)`
+as the colimit of `(P.φ, P.ψ)` in `Cᵒᵖ ⥤ Type v`.
+-/
+noncomputable def parallelPairIsoParallelPairCompYoneda
+    {A B : Cᵒᵖ ⥤ Type v₁} {f g : A ⟶ B} (P : IndParallelPairPresentation f g)
+    : parallelPair f g ≅ parallelPair P.φ P.ψ ⋙ (whiskeringRight _ _ _).obj yoneda ⋙ colim :=
+  parallelPair.ext (P.isColimit₁.coconePointUniqueUpToIso (colimit.isColimit _))
     (P.isColimit₂.coconePointUniqueUpToIso (colimit.isColimit _))
     (P.isColimit₁.hom_ext (fun j => by
       simp [P.hf, P.isColimit₁.ι_map_assoc, P.isColimit₁.comp_coconePointUniqueUpToIso_hom_assoc,

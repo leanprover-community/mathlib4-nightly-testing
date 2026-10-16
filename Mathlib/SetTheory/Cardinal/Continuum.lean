@@ -20,7 +20,6 @@ We also prove some `simp` lemmas about cardinal arithmetic involving `𝔠`.
 
 @[expose] public section
 
-
 namespace Cardinal
 
 universe u v
@@ -28,14 +27,11 @@ universe u v
 open Cardinal
 
 /-- Cardinality of the continuum. -/
-def continuum : Cardinal.{u} :=
-  2 ^ ℵ₀
+def continuum : Cardinal.{u} := 2 ^ ℵ₀
 
 @[inherit_doc] scoped notation "𝔠" => Cardinal.continuum
 
-@[simp]
-theorem two_power_aleph0 : 2 ^ ℵ₀ = 𝔠 :=
-  rfl
+@[simp] theorem two_power_aleph0 : 2 ^ ℵ₀ = 𝔠 := rfl
 
 @[simp]
 theorem lift_continuum : lift.{v} 𝔠 = 𝔠 := by
@@ -61,88 +57,62 @@ theorem lift_lt_continuum {c : Cardinal.{u}} : lift.{v} c < 𝔠 ↔ c < 𝔠 :=
 ### Inequalities
 -/
 
+theorem aleph0_lt_continuum : ℵ₀ < 𝔠 := cantor ℵ₀
 
-theorem aleph0_lt_continuum : ℵ₀ < 𝔠 :=
-  cantor ℵ₀
+theorem aleph0_le_continuum : ℵ₀ ≤ 𝔠 := aleph0_lt_continuum.le
 
-theorem aleph0_le_continuum : ℵ₀ ≤ 𝔠 :=
-  aleph0_lt_continuum.le
+@[simp] theorem beth_one : ℶ_ 1 = 𝔠 := by simpa using beth_succ 0
 
-@[simp]
-theorem beth_one : ℶ_ 1 = 𝔠 := by simpa using beth_succ 0
-
-theorem nat_lt_continuum (n : ℕ) : ↑n < 𝔠 :=
-  natCast_lt_aleph0.trans aleph0_lt_continuum
+theorem nat_lt_continuum (n : ℕ) : ↑n < 𝔠 := natCast_lt_aleph0.trans aleph0_lt_continuum
 
 theorem mk_set_nat : #(Set ℕ) = 𝔠 := by simp
 
-theorem continuum_pos : 0 < 𝔠 :=
-  nat_lt_continuum 0
+theorem continuum_pos : 0 < 𝔠 := nat_lt_continuum 0
 
-theorem continuum_ne_zero : 𝔠 ≠ 0 :=
-  continuum_pos.ne'
+theorem continuum_ne_zero : 𝔠 ≠ 0 := continuum_pos.ne'
 
 theorem aleph_one_le_continuum : ℵ₁ ≤ 𝔠 := by
   rw [← succ_aleph0]
   exact Order.succ_le_of_lt aleph0_lt_continuum
 
 @[simp]
-theorem continuum_toNat : toNat continuum = 0 :=
-  toNat_apply_of_aleph0_le aleph0_le_continuum
+theorem continuum_toNat : toNat continuum = 0 := toNat_apply_of_aleph0_le aleph0_le_continuum
 
-@[simp]
-theorem continuum_toENat : toENat continuum = ⊤ :=
-  (toENat_eq_top.2 aleph0_le_continuum)
+@[simp] theorem continuum_toENat : toENat continuum = ⊤ := (toENat_eq_top.2 aleph0_le_continuum)
 
 /-!
 ### Addition
 -/
 
+@[simp]
+theorem aleph0_add_continuum : ℵ₀ + 𝔠 = 𝔠 := add_eq_right aleph0_le_continuum aleph0_le_continuum
+
+@[simp] theorem continuum_add_aleph0 : 𝔠 + ℵ₀ = 𝔠 := (add_comm _ _).trans aleph0_add_continuum
+
+@[simp] theorem continuum_add_self : 𝔠 + 𝔠 = 𝔠 := add_eq_self aleph0_le_continuum
+
+@[simp] theorem nat_add_continuum (n : ℕ) : ↑n + 𝔠 = 𝔠 := nat_add_eq n aleph0_le_continuum
+
+@[simp] theorem continuum_add_nat (n : ℕ) : 𝔠 + n = 𝔠 := (add_comm _ _).trans (nat_add_continuum n)
 
 @[simp]
-theorem aleph0_add_continuum : ℵ₀ + 𝔠 = 𝔠 :=
-  add_eq_right aleph0_le_continuum aleph0_le_continuum
+theorem ofNat_add_continuum {n : ℕ} [Nat.AtLeastTwo n] : ofNat(n) + 𝔠 = 𝔠 := nat_add_continuum n
 
 @[simp]
-theorem continuum_add_aleph0 : 𝔠 + ℵ₀ = 𝔠 :=
-  (add_comm _ _).trans aleph0_add_continuum
-
-@[simp]
-theorem continuum_add_self : 𝔠 + 𝔠 = 𝔠 :=
-  add_eq_self aleph0_le_continuum
-
-@[simp]
-theorem nat_add_continuum (n : ℕ) : ↑n + 𝔠 = 𝔠 :=
-  nat_add_eq n aleph0_le_continuum
-
-@[simp]
-theorem continuum_add_nat (n : ℕ) : 𝔠 + n = 𝔠 :=
-  (add_comm _ _).trans (nat_add_continuum n)
-
-@[simp]
-theorem ofNat_add_continuum {n : ℕ} [Nat.AtLeastTwo n] : ofNat(n) + 𝔠 = 𝔠 :=
-  nat_add_continuum n
-
-@[simp]
-theorem continuum_add_ofNat {n : ℕ} [Nat.AtLeastTwo n] : 𝔠 + ofNat(n) = 𝔠 :=
-  continuum_add_nat n
+theorem continuum_add_ofNat {n : ℕ} [Nat.AtLeastTwo n] : 𝔠 + ofNat(n) = 𝔠 := continuum_add_nat n
 
 /-!
 ### Multiplication
 -/
 
-
 @[simp]
-theorem continuum_mul_self : 𝔠 * 𝔠 = 𝔠 :=
-  mul_eq_left aleph0_le_continuum le_rfl continuum_ne_zero
+theorem continuum_mul_self : 𝔠 * 𝔠 = 𝔠 := mul_eq_left aleph0_le_continuum le_rfl continuum_ne_zero
 
 @[simp]
 theorem continuum_mul_aleph0 : 𝔠 * ℵ₀ = 𝔠 :=
   mul_eq_left aleph0_le_continuum aleph0_le_continuum aleph0_ne_zero
 
-@[simp]
-theorem aleph0_mul_continuum : ℵ₀ * 𝔠 = 𝔠 :=
-  (mul_comm _ _).trans continuum_mul_aleph0
+@[simp] theorem aleph0_mul_continuum : ℵ₀ * 𝔠 = 𝔠 := (mul_comm _ _).trans continuum_mul_aleph0
 
 @[simp]
 theorem nat_mul_continuum {n : ℕ} (hn : n ≠ 0) : ↑n * 𝔠 = 𝔠 :=
@@ -164,14 +134,9 @@ theorem continuum_mul_ofNat {n : ℕ} [Nat.AtLeastTwo n] : 𝔠 * ofNat(n) = �
 ### Power
 -/
 
+@[simp] theorem aleph0_power_aleph0 : ℵ₀ ^ ℵ₀ = 𝔠 := power_self_eq le_rfl
 
-@[simp]
-theorem aleph0_power_aleph0 : ℵ₀ ^ ℵ₀ = 𝔠 :=
-  power_self_eq le_rfl
-
-@[simp]
-theorem nat_power_aleph0 {n : ℕ} (hn : 2 ≤ n) : n ^ ℵ₀ = 𝔠 :=
-  nat_power_eq le_rfl hn
+@[simp] theorem nat_power_aleph0 {n : ℕ} (hn : 2 ≤ n) : n ^ ℵ₀ = 𝔠 := nat_power_eq le_rfl hn
 
 @[simp]
 theorem continuum_power_aleph0 : 𝔠 ^ ℵ₀ = 𝔠 := by

@@ -22,7 +22,6 @@ When the category `C` is idempotent complete, it is shown that
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 open Category
@@ -37,23 +36,15 @@ namespace HomologicalComplex
 
 variable {P Q : Karoubi (HomologicalComplex C c)} (f : P ⟶ Q) (n : ι)
 
-@[simp, reassoc]
-theorem p_comp_d : P.p.f n ≫ f.f.f n = f.f.f n :=
-  congr($(p_comp f).f n)
+@[simp, reassoc] theorem p_comp_d : P.p.f n ≫ f.f.f n = f.f.f n := congr($(p_comp f).f n)
 
-@[simp, reassoc]
-theorem comp_p_d : f.f.f n ≫ Q.p.f n = f.f.f n :=
-  congr($(comp_p f).f n)
+@[simp, reassoc] theorem comp_p_d : f.f.f n ≫ Q.p.f n = f.f.f n := congr($(comp_p f).f n)
 
-@[reassoc]
-theorem p_comm_f : P.p.f n ≫ f.f.f n = f.f.f n ≫ Q.p.f n :=
-  congr($(p_comm f).f n)
+@[reassoc] theorem p_comm_f : P.p.f n ≫ f.f.f n = f.f.f n ≫ Q.p.f n := congr($(p_comm f).f n)
 
 variable (P)
 
-@[simp, reassoc]
-theorem p_idem : P.p.f n ≫ P.p.f n = P.p.f n :=
-  congr($(P.idem).f n)
+@[simp, reassoc] theorem p_idem : P.p.f n ≫ P.p.f n = P.p.f n := congr($(P.idem).f n)
 
 end HomologicalComplex
 
@@ -65,23 +56,24 @@ namespace KaroubiHomologicalComplexEquivalence
 
 namespace Functor
 
-/-- The functor `Karoubi (HomologicalComplex C c) ⥤ HomologicalComplex (Karoubi C) c`,
-on objects. -/
+/--
+The functor `Karoubi (HomologicalComplex C c) ⥤ HomologicalComplex (Karoubi C) c`,
+on objects.
+-/
 @[simps]
 def obj (P : Karoubi (HomologicalComplex C c)) : HomologicalComplex (Karoubi C) c where
-  X n :=
-    ⟨P.X.X n, P.p.f n, by
-      simpa only [HomologicalComplex.comp_f] using congr($(P.idem).f n)⟩
+  X n := ⟨P.X.X n, P.p.f n, by simpa only [HomologicalComplex.comp_f] using congr($(P.idem).f n)⟩
   d i j := { f := P.p.f i ≫ P.X.d i j }
   shape i j hij := by simp only [hom_eq_zero_iff]; cat_disch
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The functor `Karoubi (HomologicalComplex C c) ⥤ HomologicalComplex (Karoubi C) c`,
-on morphisms. -/
+/--
+The functor `Karoubi (HomologicalComplex C c) ⥤ HomologicalComplex (Karoubi C) c`,
+on morphisms.
+-/
 @[simps]
 def map {P Q : Karoubi (HomologicalComplex C c)} (f : P ⟶ Q) : obj P ⟶ obj Q where
-  f n :=
-    { f := f.f.f n }
+  f n := { f := f.f.f n }
 
 end Functor
 
@@ -93,26 +85,31 @@ def functor : Karoubi (HomologicalComplex C c) ⥤ HomologicalComplex (Karoubi C
 
 namespace Inverse
 
-/-- The functor `HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C c)`,
-on objects -/
+/--
+The functor `HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C c)`,
+on objects
+-/
 @[simps]
 def obj (K : HomologicalComplex (Karoubi C) c) : Karoubi (HomologicalComplex C c) where
-  X :=
-    { X := fun n => (K.X n).X
-      d := fun i j => (K.d i j).f
-      shape := fun i j hij => hom_eq_zero_iff.mp (K.shape i j hij)
-      d_comp_d' := fun i j k _ _ => by
-        simpa only [comp_f] using hom_eq_zero_iff.mp (K.d_comp_d i j k) }
+  X := {
+    X := fun n => (K.X n).X
+    d := fun i j => (K.d i j).f
+    shape := fun i j hij => hom_eq_zero_iff.mp (K.shape i j hij)
+    d_comp_d' := fun i j k _ _ => by simpa only [comp_f] using hom_eq_zero_iff.mp (K.d_comp_d i j k)
+  }
   p := { f := fun n => (K.X n).p }
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The functor `HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C c)`,
-on morphisms -/
+/--
+The functor `HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C c)`,
+on morphisms
+-/
 @[simps]
 def map {K L : HomologicalComplex (Karoubi C) c} (f : K ⟶ L) : obj K ⟶ obj L where
-  f :=
-    { f := fun n => (f.f n).f
-      comm' := fun i j hij => by simpa only [comp_f] using! hom_ext_iff.mp (f.comm' i j hij) }
+  f := {
+    f := fun n => (f.f n).f
+    comm' := fun i j hij => by simpa only [comp_f] using! hom_ext_iff.mp (f.comm' i j hij)
+  }
 
 end Inverse
 
@@ -124,50 +121,58 @@ def inverse : HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The counit isomorphism of the equivalence
-`Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c`. -/
+/--
+The counit isomorphism of the equivalence
+`Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c`.
+-/
 @[simps!]
 def counitIso : inverse ⋙ functor ≅ 𝟭 (HomologicalComplex (Karoubi C) c) :=
-  eqToIso (Functor.ext (fun P => HomologicalComplex.ext (by cat_disch) (by simp))
-    (by cat_disch))
+  eqToIso (Functor.ext (fun P => HomologicalComplex.ext (by cat_disch) (by simp)) (by cat_disch))
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The unit isomorphism of the equivalence
-`Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c`. -/
+/--
+The unit isomorphism of the equivalence
+`Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c`.
+-/
 @[simps]
 def unitIso : 𝟭 (Karoubi (HomologicalComplex C c)) ≅ functor ⋙ inverse where
-  hom :=
-    { app := fun P =>
-        { f :=
-            { f := fun n => P.p.f n
-              comm' := fun i j _ => by
-                dsimp
-                simp only [HomologicalComplex.Hom.comm, HomologicalComplex.Hom.comm_assoc,
-                  HomologicalComplex.p_idem] }
-          comm := by
-            ext n
-            dsimp
-            simp only [HomologicalComplex.p_idem] }
-      naturality := fun P Q φ => by
-        ext
+  hom := {
+    app := fun P => {
+      f := {
+        f := fun n => P.p.f n
+        comm' := fun i j _ => by
+          dsimp
+          simp only [HomologicalComplex.Hom.comm, HomologicalComplex.Hom.comm_assoc,
+            HomologicalComplex.p_idem]
+      }
+      comm := by
+        ext n
         dsimp
-        simp only [HomologicalComplex.comp_p_d,
-          HomologicalComplex.p_comp_d] }
-  inv :=
-    { app := fun P =>
-        { f :=
-            { f := fun n => P.p.f n
-              comm' := fun i j _ => by
-                dsimp
-                simp only [HomologicalComplex.Hom.comm, assoc, HomologicalComplex.p_idem] }
-          comm := by
-            ext n
-            dsimp
-            simp only [HomologicalComplex.p_idem] }
-      naturality := fun P Q φ => by
-        ext
+        simp only [HomologicalComplex.p_idem]
+    }
+    naturality := fun P Q φ => by
+      ext
+      dsimp
+      simp only [HomologicalComplex.comp_p_d, HomologicalComplex.p_comp_d]
+  }
+  inv := {
+    app := fun P => {
+      f := {
+        f := fun n => P.p.f n
+        comm' := fun i j _ => by
+          dsimp
+          simp only [HomologicalComplex.Hom.comm, assoc, HomologicalComplex.p_idem]
+      }
+      comm := by
+        ext n
         dsimp
-        simp only [HomologicalComplex.comp_p_d, HomologicalComplex.p_comp_d] }
+        simp only [HomologicalComplex.p_idem]
+    }
+    naturality := fun P Q φ => by
+      ext
+      dsimp
+      simp only [HomologicalComplex.comp_p_d, HomologicalComplex.p_comp_d]
+  }
   hom_inv_id := by
     ext
     dsimp
@@ -185,8 +190,8 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence `Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c`. -/
 @[simps]
-def karoubiHomologicalComplexEquivalence :
-    Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c where
+def karoubiHomologicalComplexEquivalence
+    : Karoubi (HomologicalComplex C c) ≌ HomologicalComplex (Karoubi C) c where
   functor := KaroubiHomologicalComplexEquivalence.functor
   inverse := KaroubiHomologicalComplexEquivalence.inverse
   unitIso := KaroubiHomologicalComplexEquivalence.unitIso
@@ -201,13 +206,12 @@ def karoubiChainComplexEquivalence : Karoubi (ChainComplex C α) ≌ ChainComple
 
 /-- The equivalence `Karoubi (CochainComplex C α) ≌ CochainComplex (Karoubi C) α`. -/
 @[simps!]
-def karoubiCochainComplexEquivalence :
-    Karoubi (CochainComplex C α) ≌ CochainComplex (Karoubi C) α :=
+def karoubiCochainComplexEquivalence
+    : Karoubi (CochainComplex C α) ≌ CochainComplex (Karoubi C) α :=
   karoubiHomologicalComplexEquivalence C (ComplexShape.up α)
 
 instance [IsIdempotentComplete C] : IsIdempotentComplete (HomologicalComplex C c) := by
-  rw [isIdempotentComplete_iff_of_equivalence
-      ((toKaroubiEquivalence C).mapHomologicalComplex c),
+  rw [isIdempotentComplete_iff_of_equivalence ((toKaroubiEquivalence C).mapHomologicalComplex c),
     ← isIdempotentComplete_iff_of_equivalence (karoubiHomologicalComplexEquivalence C c)]
   infer_instance
 

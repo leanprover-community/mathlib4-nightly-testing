@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Analysis.Complex.Exponential
-
 import Mathlib.Algebra.Polynomial.SumIteratedDerivative
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
@@ -28,8 +27,9 @@ namespace LindemannWeierstrass
 open scoped Nat
 open Complex Polynomial
 
-theorem hasDerivAt_cexp_mul_sumIDeriv (p : ℂ[X]) (s : ℂ) (x : ℝ) :
-    HasDerivAt (fun x : ℝ ↦ -(cexp (-(x • s)) * p.sumIDeriv.eval (x • s)))
+theorem hasDerivAt_cexp_mul_sumIDeriv (p : ℂ[X]) (s : ℂ) (x : ℝ)
+    : HasDerivAt
+      (fun x : ℝ ↦ -(cexp (-(x • s)) * p.sumIDeriv.eval (x • s)))
       (s * (cexp (-(x • s)) * p.eval (x • s))) x := by
   have h₀ := (hasDerivAt_id' x).smul_const s
   have h₁ := h₀.fun_neg.cexp
@@ -39,9 +39,9 @@ theorem hasDerivAt_cexp_mul_sumIDeriv (p : ℂ[X]) (s : ℂ) (x : ℝ) :
   simp only [one_smul, eval_add, Function.comp_apply]
   ring
 
-theorem integral_exp_mul_eval (p : ℂ[X]) (s : ℂ) :
-    s * ∫ x in 0..1, exp (-(x • s)) * p.eval (x • s) =
-      -(exp (-s) * p.sumIDeriv.eval s) + p.sumIDeriv.eval 0 := by
+theorem integral_exp_mul_eval (p : ℂ[X]) (s : ℂ)
+    : s * ∫ x in 0..1, exp (-(x • s)) * p.eval (x • s)
+      = -(exp (-s) * p.sumIDeriv.eval s) + p.sumIDeriv.eval 0 := by
   rw [← intervalIntegral.integral_const_mul,
     intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun x hx => hasDerivAt_cexp_mul_sumIDeriv p s x)
@@ -59,16 +59,15 @@ This approach is based on
 [the wikipedia proof](https://en.wikipedia.org/wiki/Lindemann%E2%80%93Weierstrass_theorem):
 `Iᵢ(s) = P(fᵢ, s)`. Jacobson finds a slightly different bound using the power series of `eˣ`.
 -/
-def P (f : ℂ[X]) (s : ℂ) :=
-  exp s * f.sumIDeriv.eval 0 - f.sumIDeriv.eval s
+def P (f : ℂ[X]) (s : ℂ) := exp s * f.sumIDeriv.eval 0 - f.sumIDeriv.eval s
 
-theorem P_eq_integral_exp_mul_eval (f : ℂ[X]) (s : ℂ) :
-    P f s = exp s * (s * ∫ x in 0..1, exp (-(x • s)) * f.eval (x • s)) := by
+theorem P_eq_integral_exp_mul_eval (f : ℂ[X]) (s : ℂ)
+    : P f s = exp s * (s * ∫ x in 0..1, exp (-(x • s)) * f.eval (x • s)) := by
   rw [integral_exp_mul_eval, mul_add, mul_neg, exp_neg, mul_inv_cancel_left₀ (exp_ne_zero s),
     neg_add_eq_sub, P]
 
-theorem P_algebraMap (f : ℤ[X]) (s : ℂ) :
-    P (f.map <| algebraMap ℤ ℂ) s = exp s * f.sumIDeriv.eval 0 - f.sumIDeriv.aeval s := by
+theorem P_algebraMap (f : ℤ[X]) (s : ℂ)
+    : P (f.map <| algebraMap ℤ ℂ) s = exp s * f.sumIDeriv.eval 0 - f.sumIDeriv.aeval s := by
   simp [P, aeval_sumIDeriv_eq_eval]
 
 /--
@@ -76,11 +75,10 @@ Given a sequence of complex polynomials `fₚ`, a complex constant `s`, and a re
 that `|fₚ(xs)| ≤ c ^ p` for all `p ∈ ℕ` and `x ∈ Ioc 0 1`, then there is also a nonnegative
 constant `c'` such that for all nonzero `p ∈ ℕ`, `|P(fₚ, s)| ≤ c' ^ p`.
 -/
-theorem P_le_aux (f : ℕ → ℂ[X]) (s : ℂ) (c : ℝ)
-    (hc : ∀ p : ℕ, ∀ x ∈ Set.Ioc (0 : ℝ) 1, ‖(f p).eval (x • s)‖ ≤ c ^ p) :
-    ∃ c' ≥ 0, ∀ p : ℕ,
-      ‖P (f p) s‖ ≤
-        Real.exp s.re * (Real.exp ‖s‖ * c' ^ p * ‖s‖) := by
+theorem P_le_aux
+    (f : ℕ → ℂ[X]) (s : ℂ) (c : ℝ)
+    (hc : ∀ p : ℕ, ∀ x ∈ Set.Ioc (0 : ℝ) 1, ‖(f p).eval (x • s)‖ ≤ c ^ p)
+    : ∃ c' ≥ 0, ∀ p : ℕ, ‖P (f p) s‖ ≤ Real.exp s.re * (Real.exp ‖s‖ * c' ^ p * ‖s‖) := by
   refine ⟨|c|, abs_nonneg _, fun p => ?_⟩
   rw [P_eq_integral_exp_mul_eval (f p) s, mul_comm s, norm_mul, norm_mul, norm_exp]
   gcongr
@@ -103,19 +101,22 @@ Given a sequence of complex polynomials `fₚ`, a complex constant `s`, and a re
 that `|fₚ(xs)| ≤ c ^ p` for all `p ∈ ℕ` and `x ∈ Ioc 0 1`, then there is also a nonnegative
 constant `c'` such that for all nonzero `p ∈ ℕ`, `|P(fₚ, s)| ≤ c' ^ p`.
 -/
-theorem P_le (f : ℕ → ℂ[X]) (s : ℂ) (c : ℝ)
-    (hc : ∀ p : ℕ, ∀ x ∈ Set.Ioc (0 : ℝ) 1, ‖(f p).eval (x • s)‖ ≤ c ^ p) :
-    ∃ c' ≥ 0, ∀ p ≠ 0, ‖P (f p) s‖ ≤ c' ^ p := by
-  obtain ⟨c', hc', h'⟩ := P_le_aux f s c hc; clear c hc
+theorem P_le
+    (f : ℕ → ℂ[X]) (s : ℂ) (c : ℝ)
+    (hc : ∀ p : ℕ, ∀ x ∈ Set.Ioc (0 : ℝ) 1, ‖(f p).eval (x • s)‖ ≤ c ^ p)
+    : ∃ c' ≥ 0, ∀ p ≠ 0, ‖P (f p) s‖ ≤ c' ^ p := by
+  obtain ⟨c', hc', h'⟩ := P_le_aux f s c hc
+  clear c hc
   let c₁ := max (Real.exp s.re) 1
   let c₂ := max (Real.exp ‖s‖) 1
-  let c₃ := max ‖s‖ 1
+  let c₃ := max (‖s‖) 1
   use c₁ * (c₂ * c' * c₃), by positivity
   intro p hp
   refine (h' p).trans ?_
   simp_rw [mul_pow]
   have le_max_one_pow {x : ℝ} : x ≤ max x 1 ^ p :=
-    (max_cases x 1).elim (fun h ↦ h.1.symm ▸ le_self_pow₀ h.2 hp)
+    (max_cases x 1).elim
+      (fun h ↦ h.1.symm ▸ le_self_pow₀ h.2 hp)
       fun h ↦ by rw [h.1, one_pow]; exact h.2.le
   gcongr <;> exact le_max_one_pow
 
@@ -125,13 +126,13 @@ Given a polynomial with integer coefficients `p` and a complex constant `s`, the
 
 Note: Jacobson writes `h(x)` for `x ^ (q - 1) * p(x) ^ q` and `bⱼ` for its coefficients.
 -/
-theorem exp_polynomial_approx_aux (f : ℤ[X]) (s : ℂ) :
-    ∃ c ≥ 0, ∀ p ≠ 0, ‖P (map (algebraMap ℤ ℂ) (X ^ (p - 1) * f ^ p)) s‖ ≤ c ^ p := by
+theorem exp_polynomial_approx_aux (f : ℤ[X]) (s : ℂ)
+    : ∃ c ≥ 0, ∀ p ≠ 0, ‖P (map (algebraMap ℤ ℂ) (X ^ (p - 1) * f ^ p)) s‖ ≤ c ^ p := by
   have : Bornology.IsBounded
       ((fun x : ℝ ↦ max (x * ‖s‖) 1 * ‖aeval (x * s) f‖) '' Set.Ioc 0 1) := by
-    have h :
-      (fun x : ℝ ↦ max (x * ‖s‖) 1 * ‖aeval (x * s) f‖) '' Set.Ioc 0 1 ⊆
-        (fun x : ℝ ↦ max (x * ‖s‖) 1 * ‖aeval (x * s) f‖) '' Set.Icc 0 1 :=
+    have h
+        : (fun x : ℝ ↦ max (x * ‖s‖) 1 * ‖aeval (x * s) f‖) '' Set.Ioc 0 1
+          ⊆ (fun x : ℝ ↦ max (x * ‖s‖) 1 * ‖aeval (x * s) f‖) '' Set.Icc 0 1 :=
       Set.image_mono Set.Ioc_subset_Icc_self
     refine (IsCompact.image isCompact_Icc ?_).isBounded.subset h
     fun_prop
@@ -166,12 +167,14 @@ are the algebraic numbers whose exponentials we want to prove to be linearly ind
 Note: Jacobson (equation (68) / lemma 3, page 285) writes `Nₚ` for our `nₚ` and `M` for our `c`
 (modulo a constant factor).
 -/
-public theorem exp_polynomial_approx (f : ℤ[X]) (hf : f.eval 0 ≠ 0) :
-    ∃ c,
-      ∀ p > (eval 0 f).natAbs, p.Prime →
-        ∃ nₚ : ℤ, ¬ ↑p ∣ nₚ ∧ ∃ gₚ : ℤ[X], gₚ.natDegree ≤ p * f.natDegree - 1 ∧
-          ∀ {r : ℂ}, r ∈ f.aroots ℂ →
-            ‖nₚ • exp r - p • aeval r gₚ‖ ≤ c ^ p / (p - 1)! := by
+public theorem exp_polynomial_approx (f : ℤ[X]) (hf : f.eval 0 ≠ 0)
+    : ∃ c, ∀ p > (eval 0 f).natAbs,
+      p.Prime
+        → ∃ nₚ : ℤ,
+          ¬ ↑p ∣ nₚ
+            ∧ ∃ gₚ : ℤ[X],
+              gₚ.natDegree ≤ p * f.natDegree - 1
+                ∧ ∀ {r : ℂ}, r ∈ f.aroots ℂ → ‖nₚ • exp r - p • aeval r gₚ‖ ≤ c ^ p / (p - 1)! := by
   simp_rw [nsmul_eq_mul, zsmul_eq_mul]
   choose c' c'0 abs_P_le using exp_polynomial_approx_aux f
   by_cases h : f.aroots ℂ = 0
@@ -191,7 +194,8 @@ public theorem exp_polynomial_approx (f : ℤ[X]) (hf : f.eval 0 ≠ 0) :
       add_tsub_cancel_left]
   intro r hr
   rw [le_div_iff₀' (Nat.cast_pos.mpr (Nat.factorial_pos _) : (0 : ℝ) < _)]
-  calc ↑(p - 1)! * ‖↑(eval 0 f ^ p + ↑p * eval 0 gₚ') * cexp r - ↑p * (aeval r) gₚ‖
+  calc
+    ↑ (p - 1)! * ‖↑(eval 0 f ^ p + ↑p * eval 0 gₚ') * cexp r - ↑p * (aeval r) gₚ‖
     _ = ‖↑(p - 1)! * (↑(eval 0 f ^ p + ↑p * eval 0 gₚ') * cexp r - ↑p * (aeval r) gₚ)‖ := ?_
     _ = ‖(↑(p - 1)! * eval 0 f ^ p + ↑p ! * eval 0 gₚ') * cexp r - ↑p ! * (aeval r) gₚ‖ := ?_
     _ = ‖P (map (algebraMap ℤ ℂ) h) r‖ := ?_

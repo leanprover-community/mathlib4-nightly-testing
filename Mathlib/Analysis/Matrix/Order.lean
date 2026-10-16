@@ -59,23 +59,24 @@ protected alias ⟨LE.le.posSemidef, PosSemidef.nonneg⟩ := nonneg_iff_posSemid
 
 attribute [aesop safe forward (rule_sets := [CStarAlgebra])] PosSemidef.nonneg
 
-private lemma le_antisymm_aux {A : Matrix n n 𝕜} (h₁ : A.PosSemidef) (h₂ : (-A).PosSemidef) :
-    A = 0 := by
+private lemma le_antisymm_aux {A : Matrix n n 𝕜} (h₁ : A.PosSemidef) (h₂ : (-A).PosSemidef)
+    : A = 0 := by
   classical
   ext i j
   have hdiag i : A i i = 0 :=
     le_antisymm (by simpa using h₂.diag_nonneg) (by simpa using h₁.diag_nonneg)
   have h1 := h₁.2 (.single i 1 + .single j (A j i))
   have h2 := h₂.2 (.single i 1 + .single j (A j i))
-  simp [Finsupp.sum_add_index, mul_add, add_mul,
-      -neg_add_rev, hdiag, ← h₁.1.apply j i, -RCLike.star_def] at *
+  simp [Finsupp.sum_add_index, mul_add, add_mul, -neg_add_rev, hdiag, ← h₁.1.apply j i,
+      -RCLike.star_def]
+    at *
   simpa using le_antisymm h2 h1
 
 /-- The partial order on matrices given by `A ≤ B := (B - A).PosSemidef`. -/
 abbrev instPartialOrder : PartialOrder (Matrix n n 𝕜) where
   le_antisymm A B h₁ h₂ := by
-    simpa [sub_eq_zero, eq_comm] using le_antisymm_aux h₁
-     (by simpa only [← neg_sub B, le_iff] using h₂)
+    simpa [sub_eq_zero, eq_comm] using
+      le_antisymm_aux h₁ (by simpa only [← neg_sub B, le_iff] using h₂)
 
 scoped[MatrixOrder] attribute [instance] Matrix.instPartialOrder
 
@@ -85,8 +86,10 @@ lemma instIsOrderedAddMonoid : IsOrderedAddMonoid (Matrix n n 𝕜) where
 scoped[MatrixOrder] attribute [instance] Matrix.instIsOrderedAddMonoid
 
 lemma posSemidef_is_closed : IsClosed {A : Matrix n n 𝕜 | A.PosSemidef} := by
-  rw [show {A | A.PosSemidef} = {A : Matrix n n 𝕜 | A.IsHermitian} ∩
-    ⋂ x : n →₀ 𝕜, {A | 0 ≤ x.sum fun i xi ↦ x.sum fun j xj ↦ star xi * A i j * xj} by aesop]
+  rw [show {A | A.PosSemidef}
+      = {A : Matrix n n 𝕜 | A.IsHermitian}
+        ∩ ⋂ x : n →₀ 𝕜, {A | 0 ≤ x.sum fun i xi ↦ x.sum fun j xj ↦ star xi * A i j * xj} by
+    aesop]
   refine IsClosed.inter ?_ ?_
   · exact isClosed_eq (by fun_prop) (by fun_prop)
   · refine isClosed_iInter <| fun _ ↦ isClosed_le continuous_const ?_
@@ -94,8 +97,8 @@ lemma posSemidef_is_closed : IsClosed {A : Matrix n n 𝕜 | A.PosSemidef} := by
     fun_prop
 
 lemma instOrderClosedTopology : OrderClosedTopology (Matrix n n 𝕜) where
-  isClosed_le' := isClosed_le_of_isClosed_nonneg <| by
-    simpa [nonneg_iff_posSemidef] using posSemidef_is_closed
+  isClosed_le' :=
+    isClosed_le_of_isClosed_nonneg <| by simpa [nonneg_iff_posSemidef] using posSemidef_is_closed
 
 scoped[MatrixOrder] attribute [instance] Matrix.instOrderClosedTopology
 
@@ -107,21 +110,21 @@ lemma instNonnegSpectrumClass : NonnegSpectrumClass ℝ (Matrix n n 𝕜) where
     simp only [quasispectrum_eq_spectrum_union_zero ℝ A, Set.union_singleton, Set.mem_insert_iff,
       forall_eq_or_imp, le_refl, true_and]
     intro x hx
-    obtain ⟨i, rfl⟩ := Set.ext_iff.mp
-      hA.posSemidef.1.spectrum_real_eq_range_eigenvalues x |>.mp hx
+    obtain ⟨i, rfl⟩ := Set.ext_iff.mp hA.posSemidef.1.spectrum_real_eq_range_eigenvalues x |>.mp hx
     exact hA.posSemidef.eigenvalues_nonneg _
 
 scoped[MatrixOrder] attribute [instance] instNonnegSpectrumClass
 
 lemma instStarOrderedRing : StarOrderedRing (Matrix n n 𝕜) :=
-  .of_nonneg_iff' add_le_add_right fun A ↦
-    ⟨fun hA ↦ by
+  .of_nonneg_iff' add_le_add_right fun A ↦ ⟨
+    fun hA ↦ by
       classical
       obtain ⟨X, hX, -, rfl⟩ :=
         sub_zero A ▸ CFC.exists_sqrt_of_isSelfAdjoint_of_quasispectrumRestricts hA.isHermitian
           (QuasispectrumRestricts.nnreal_of_nonneg hA.nonneg)
       exact ⟨X, hX.star_eq.symm ▸ rfl⟩,
-    fun ⟨A, hA⟩ => hA ▸ (posSemidef_conjTranspose_mul_self A).nonneg⟩
+    fun ⟨A, hA⟩ => hA ▸ (posSemidef_conjTranspose_mul_self A).nonneg
+  ⟩
 
 scoped[MatrixOrder] attribute [instance] instStarOrderedRing
 
@@ -145,8 +148,8 @@ lemma inv_sqrt : (CFC.sqrt A)⁻¹ = CFC.sqrt A⁻¹ := by
 
 end sqrtDeprecated
 
-theorem det_sqrt [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.PosSemidef) :
-    (CFC.sqrt A).det = RCLike.sqrt A.det := by
+theorem det_sqrt [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.PosSemidef)
+    : (CFC.sqrt A).det = RCLike.sqrt A.det := by
   rw [CFC.sqrt_eq_cfc, cfc_nnreal_eq_real _ A, hA.1.cfc_eq, RCLike.sqrt_of_nonneg hA.det_nonneg]
   simp only [IsHermitian.cfc, Real.coe_sqrt, Real.coe_toNNReal', det_map, det_diagonal,
     Function.comp_apply, hA.isHermitian.det_eq_prod_eigenvalues, ← RCLike.ofReal_prod,
@@ -155,13 +158,13 @@ theorem det_sqrt [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.PosSemidef) :
 
 end PosSemidef
 
-theorem IsHermitian.det_abs [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.IsHermitian) :
-    det (CFC.abs A) = ‖det A‖ := by
+theorem IsHermitian.det_abs [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.IsHermitian)
+    : det (CFC.abs A) = ‖det A‖ := by
   rw [CFC.abs_eq_cfc_norm A, hA.cfc_eq]
   simp [IsHermitian.cfc, -Unitary.conjStarAlgAut_apply, hA.det_eq_prod_eigenvalues]
 
-theorem posSemidef_iff_isHermitian_and_spectrum_nonneg [DecidableEq n] {A : Matrix n n 𝕜} :
-    A.PosSemidef ↔ A.IsHermitian ∧ spectrum 𝕜 A ⊆ {a : 𝕜 | 0 ≤ a} := by
+theorem posSemidef_iff_isHermitian_and_spectrum_nonneg [DecidableEq n] {A : Matrix n n 𝕜}
+    : A.PosSemidef ↔ A.IsHermitian ∧ spectrum 𝕜 A ⊆ {a : 𝕜 | 0 ≤ a} := by
   refine ⟨fun h => ⟨h.isHermitian, fun a => ?_⟩, fun ⟨h1, h2⟩ => ?_⟩
   · simp only [h.isHermitian.spectrum_eq_image_range, Set.mem_image, Set.mem_range,
       exists_exists_eq_and, Set.mem_ofPred_eq, forall_exists_index]
@@ -171,15 +174,15 @@ theorem posSemidef_iff_isHermitian_and_spectrum_nonneg [DecidableEq n] {A : Matr
     intro i
     simpa [h1.spectrum_eq_image_range] using @h2 (h1.eigenvalues i)
 
-theorem isStrictlyPositive_iff_posDef [DecidableEq n] {x : Matrix n n 𝕜} :
-    IsStrictlyPositive x ↔ x.PosDef :=
-  ⟨fun h => h.nonneg.posSemidef.posDef_iff_isUnit.mpr h.isUnit,
-  fun h => h.isUnit.isStrictlyPositive h.posSemidef.nonneg⟩
+theorem isStrictlyPositive_iff_posDef [DecidableEq n] {x : Matrix n n 𝕜}
+    : IsStrictlyPositive x ↔ x.PosDef := ⟨
+  fun h => h.nonneg.posSemidef.posDef_iff_isUnit.mpr h.isUnit,
+  fun h => h.isUnit.isStrictlyPositive h.posSemidef.nonneg
+⟩
 
 alias ⟨IsStrictlyPositive.posDef, PosDef.isStrictlyPositive⟩ := isStrictlyPositive_iff_posDef
 
 attribute [aesop safe forward (rule_sets := [CStarAlgebra])] PosDef.isStrictlyPositive
-
 
 section kronecker
 
@@ -190,10 +193,12 @@ variable [Finite n] {m : Type*} [Finite m]
 open scoped Kronecker
 
 /-- The kronecker product of two positive semi-definite matrices is positive semi-definite. -/
-theorem PosSemidef.kronecker {x : Matrix n n 𝕜} {y : Matrix m m 𝕜}
-    (hx : x.PosSemidef) (hy : y.PosSemidef) : (x ⊗ₖ y).PosSemidef := by
+theorem PosSemidef.kronecker
+    {x : Matrix n n 𝕜} {y : Matrix m m 𝕜} (hx : x.PosSemidef) (hy : y.PosSemidef)
+    : (x ⊗ₖ y).PosSemidef := by
   classical
-  have := Fintype.ofFinite n; have := Fintype.ofFinite m
+  have := Fintype.ofFinite n
+  have := Fintype.ofFinite m
   obtain ⟨a, rfl⟩ := CStarAlgebra.nonneg_iff_eq_star_mul_self.mp hx.nonneg
   obtain ⟨b, rfl⟩ := CStarAlgebra.nonneg_iff_eq_star_mul_self.mp hy.nonneg
   simpa [mul_kronecker_mul, ← conjTranspose_kronecker, star_eq_conjTranspose] using
@@ -201,10 +206,11 @@ theorem PosSemidef.kronecker {x : Matrix n n 𝕜} {y : Matrix m m 𝕜}
 
 open Matrix in
 /-- The kronecker of two positive definite matrices is positive definite. -/
-theorem PosDef.kronecker {x : Matrix n n 𝕜} {y : Matrix m m 𝕜}
-    (hx : x.PosDef) (hy : y.PosDef) : (x ⊗ₖ y).PosDef := by
+theorem PosDef.kronecker {x : Matrix n n 𝕜} {y : Matrix m m 𝕜} (hx : x.PosDef) (hy : y.PosDef)
+    : (x ⊗ₖ y).PosDef := by
   classical
-  have := Fintype.ofFinite n; have := Fintype.ofFinite m
+  have := Fintype.ofFinite n
+  have := Fintype.ofFinite m
   exact hx.posSemidef.kronecker hy.posSemidef |>.posDef_iff_isUnit.mpr <|
     hx.isUnit.kronecker hy.isUnit
 
@@ -214,10 +220,12 @@ section hadamard
 
 variable {ι : Type*}
 
-/-- [**Schur product theorem**][schur1911] (positive semidefinite version): the Hadamard (entrywise)
-product of positive semidefinite matrices is positive semidefinite. -/
-theorem PosSemidef.hadamard {A B : Matrix ι ι 𝕜}
-    (hA : A.PosSemidef) (hB : B.PosSemidef) : (A ⊙ B).PosSemidef := by
+/--
+[**Schur product theorem**][schur1911] (positive semidefinite version): the Hadamard (entrywise)
+product of positive semidefinite matrices is positive semidefinite.
+-/
+theorem PosSemidef.hadamard {A B : Matrix ι ι 𝕜} (hA : A.PosSemidef) (hB : B.PosSemidef)
+    : (A ⊙ B).PosSemidef := by
   classical
   refine ⟨hA.isHermitian.hadamard hB.isHermitian, fun x ↦ ?_⟩
   have hAB : ((A ⊙ B).submatrix (↑) (↑) : Matrix x.support _ _).PosSemidef := by
@@ -228,12 +236,14 @@ theorem PosSemidef.hadamard {A B : Matrix ι ι 𝕜}
     rw [star_dotProduct_hadamard_mulVec_eq_kronecker]
     exact (hAs.kronecker hBs).dotProduct_mulVec_nonneg _
   simpa [Finsupp.sum, ← Finset.sum_attach x.support, ← Finset.subtype_mem_eq_attach,
-    ← Finsupp.subtypeDomain_apply, ← Finsupp.support_subtypeDomain] using hAB.2 _
+      ← Finsupp.subtypeDomain_apply, ← Finsupp.support_subtypeDomain]
+    using hAB.2 _
 
-/-- **Schur product theorem**: the Hadamard (entrywise) product of positive definite
-matrices is positive definite. -/
-theorem PosDef.hadamard {A B : Matrix ι ι 𝕜}
-    (hA : A.PosDef) (hB : B.PosDef) : (A ⊙ B).PosDef := by
+/--
+**Schur product theorem**: the Hadamard (entrywise) product of positive definite
+matrices is positive definite.
+-/
+theorem PosDef.hadamard {A B : Matrix ι ι 𝕜} (hA : A.PosDef) (hB : B.PosDef) : (A ⊙ B).PosDef := by
   classical
   refine ⟨hA.isHermitian.hadamard hB.isHermitian, fun x hx ↦ ?_⟩
   have hAB : ((A ⊙ B).submatrix (↑) (↑) : Matrix x.support _ _).PosDef := by
@@ -260,19 +270,23 @@ variable (n α 𝕜 : Type*) [Fintype n] [Semiring α] [RCLike 𝕜] [Module α 
 def tracePositiveLinearMap : Matrix n n 𝕜 →ₚ[α] 𝕜 :=
   .mk₀ (traceLinearMap n α 𝕜) fun _ h ↦ h.posSemidef.trace_nonneg
 
-@[simp] lemma toLinearMap_tracePositiveLinearMap :
-    (tracePositiveLinearMap n α 𝕜).toLinearMap = traceLinearMap n α 𝕜 := rfl
+@[simp]
+lemma toLinearMap_tracePositiveLinearMap
+    : (tracePositiveLinearMap n α 𝕜).toLinearMap = traceLinearMap n α 𝕜 :=
+  rfl
 
 @[simp] lemma tracePositiveLinearMap_apply (x) : tracePositiveLinearMap n α 𝕜 x = trace x := rfl
 
 end tracePositiveLinearMap
 
 set_option backward.privateInPublic true in
-/-- The pre-inner product space structure implementation. Only an auxiliary for
+/--
+The pre-inner product space structure implementation. Only an auxiliary for
 `Matrix.toMatrixSeminormedAddCommGroup`, `Matrix.toMatrixNormedAddCommGroup`,
-and `Matrix.toMatrixInnerProductSpace`. -/
-private abbrev PosSemidef.matrixPreInnerProductSpace {M : Matrix n n 𝕜} (hM : M.PosSemidef) :
-    PreInnerProductSpace.Core 𝕜 (Matrix n n 𝕜) where
+and `Matrix.toMatrixInnerProductSpace`.
+-/
+private abbrev PosSemidef.matrixPreInnerProductSpace {M : Matrix n n 𝕜} (hM : M.PosSemidef)
+    : PreInnerProductSpace.Core 𝕜 (Matrix n n 𝕜) where
   inner x y := (y * M * xᴴ).trace
   conj_inner_symm _ _ := by
     simp only [mul_assoc, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
@@ -283,46 +297,56 @@ private abbrev PosSemidef.matrixPreInnerProductSpace {M : Matrix n n 𝕜} (hM :
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- A positive definite matrix `M` induces a norm on `Matrix n n 𝕜`
-`‖x‖ = sqrt (x * M * xᴴ).trace`. -/
+/--
+A positive definite matrix `M` induces a norm on `Matrix n n 𝕜`
+`‖x‖ = sqrt (x * M * xᴴ).trace`.
+-/
 @[instance_reducible]
-noncomputable def toMatrixSeminormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosSemidef) :
-    SeminormedAddCommGroup (Matrix n n 𝕜) :=
+noncomputable def toMatrixSeminormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosSemidef)
+    : SeminormedAddCommGroup (Matrix n n 𝕜) :=
   @InnerProductSpace.Core.toSeminormedAddCommGroup _ _ _ _ _ hM.matrixPreInnerProductSpace
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- A positive definite matrix `M` induces a norm on `Matrix n n 𝕜`:
-`‖x‖ = sqrt (x * M * xᴴ).trace`. -/
+/--
+A positive definite matrix `M` induces a norm on `Matrix n n 𝕜`:
+`‖x‖ = sqrt (x * M * xᴴ).trace`.
+-/
 @[instance_reducible]
-noncomputable def toMatrixNormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosDef) :
-    NormedAddCommGroup (Matrix n n 𝕜) :=
-  letI : InnerProductSpace.Core 𝕜 (Matrix n n 𝕜) :=
-  { __ := hM.posSemidef.matrixPreInnerProductSpace
+noncomputable def toMatrixNormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosDef)
+    : NormedAddCommGroup (Matrix n n 𝕜) :=
+  letI : InnerProductSpace.Core 𝕜 (Matrix n n 𝕜) := {
+    __ := hM.posSemidef.matrixPreInnerProductSpace
     definite x hx := by
       classical
-      obtain ⟨y, hy, rfl⟩ := CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp
-        hM.isStrictlyPositive
+      obtain ⟨y, hy, rfl⟩ :=
+        CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp hM.isStrictlyPositive
       simp +instances only at hx
       rw [← mul_assoc, ← conjTranspose_conjTranspose x, star_eq_conjTranspose, ← conjTranspose_mul,
-        conjTranspose_conjTranspose, mul_assoc, trace_conjTranspose_mul_self_eq_zero_iff] at hx
+          conjTranspose_conjTranspose, mul_assoc, trace_conjTranspose_mul_self_eq_zero_iff]
+        at hx
       lift y to (Matrix n n 𝕜)ˣ using hy
-      simpa [← mul_assoc] using congr(y⁻¹ * $hx) }
+      simpa [← mul_assoc] using congr(y⁻¹ * $hx)
+  }
   this.toNormedAddCommGroup
 
-/-- A positive semi-definite matrix `M` induces an inner product on `Matrix n n 𝕜`:
-`⟪x, y⟫ = (y * M * xᴴ).trace`. -/
+/--
+A positive semi-definite matrix `M` induces an inner product on `Matrix n n 𝕜`:
+`⟪x, y⟫ = (y * M * xᴴ).trace`.
+-/
 @[instance_reducible]
-def toMatrixInnerProductSpace (M : Matrix n n 𝕜) (hM : M.PosSemidef) :
-    letI : SeminormedAddCommGroup (Matrix n n 𝕜) := M.toMatrixSeminormedAddCommGroup hM
-    InnerProductSpace 𝕜 (Matrix n n 𝕜) :=
+def toMatrixInnerProductSpace (M : Matrix n n 𝕜) (hM : M.PosSemidef)
+    : letI : SeminormedAddCommGroup (Matrix n n 𝕜) := M.toMatrixSeminormedAddCommGroup hM
+      InnerProductSpace 𝕜 (Matrix n n 𝕜) :=
   InnerProductSpace.ofCore _
 
 open scoped Norms.L2Operator in
-/-- The isometric continuous functional calculus on `Matrix n n 𝕜` arising from the operator norm
-given by the identification with (continuous) linear endomorphisms of `EuclideanSpace 𝕜 n`. -/
-instance instIsometricContinuousFunctionalCalculus [DecidableEq n] :
-    IsometricContinuousFunctionalCalculus ℝ (Matrix n n 𝕜) IsSelfAdjoint where
+/--
+The isometric continuous functional calculus on `Matrix n n 𝕜` arising from the operator norm
+given by the identification with (continuous) linear endomorphisms of `EuclideanSpace 𝕜 n`.
+-/
+instance instIsometricContinuousFunctionalCalculus [DecidableEq n]
+    : IsometricContinuousFunctionalCalculus ℝ (Matrix n n 𝕜) IsSelfAdjoint where
   isometric A hA := by
     rw [← isHermitian_iff_isSelfAdjoint] at hA
     rw [IsHermitian.cfcHom_eq_cfcAux hA, AddMonoidHomClass.isometry_iff_norm]
@@ -333,8 +357,8 @@ instance instIsometricContinuousFunctionalCalculus [DecidableEq n] :
     let : Fintype (spectrum ℝ A) := .ofFinite _
     rw [ContinuousMap.norm_eq_norm_coeFn]
     refine Function.Surjective.pi_norm_comp ?_ _
-    rw [← Function.Surjective.of_comp_iff'
-      (Set.equivOfEq hA.spectrum_real_eq_range_eigenvalues).bijective]
+    rw [← Function.Surjective.of_comp_iff' (Set.equivOfEq
+      hA.spectrum_real_eq_range_eigenvalues).bijective]
     exact Set.codRestrict_range_surjective hA.eigenvalues
 
 scoped[Matrix.Norms.L2Operator] attribute [instance]

@@ -26,30 +26,34 @@ open List
 
 variable {α β : Type*}
 
-/-- The antidiagonal of a multiset `s` consists of all pairs `(t₁, t₂)`
-    such that `t₁ + t₂ = s`. These pairs are counted with multiplicities. -/
+/--
+The antidiagonal of a multiset `s` consists of all pairs `(t₁, t₂)`
+such that `t₁ + t₂ = s`. These pairs are counted with multiplicities.
+-/
 def antidiagonal (s : Multiset α) : Multiset (Multiset α × Multiset α) :=
-  Quot.liftOn s (fun l ↦ (revzip (powersetAux l) : Multiset (Multiset α × Multiset α)))
+  Quot.liftOn s
+    (fun l ↦ (revzip (powersetAux l) : Multiset (Multiset α × Multiset α)))
     fun _ _ h ↦ Quot.sound (revzip_powersetAux_perm h)
 
-theorem antidiagonal_coe (l : List α) : @antidiagonal α l = revzip (powersetAux l) :=
-  rfl
+theorem antidiagonal_coe (l : List α) : @antidiagonal α l = revzip (powersetAux l) := rfl
 
 @[simp]
 theorem antidiagonal_coe' (l : List α) : @antidiagonal α l = revzip (powersetAux' l) :=
   Quot.sound revzip_powersetAux_perm_aux'
 
-/-- A pair `(t₁, t₂)` of multisets is contained in `antidiagonal s`
-    if and only if `t₁ + t₂ = s`. -/
+/--
+A pair `(t₁, t₂)` of multisets is contained in `antidiagonal s`
+if and only if `t₁ + t₂ = s`.
+-/
 @[simp]
-theorem mem_antidiagonal {s : Multiset α} {x : Multiset α × Multiset α} :
-    x ∈ antidiagonal s ↔ x.1 + x.2 = s :=
+theorem mem_antidiagonal {s : Multiset α} {x : Multiset α × Multiset α}
+    : x ∈ antidiagonal s ↔ x.1 + x.2 = s :=
   Quotient.inductionOn s fun l ↦ by
     dsimp only [quot_mk_to_coe, antidiagonal_coe]
     refine ⟨fun h => revzip_powersetAux h, fun h ↦ ?_⟩
     have _ := Classical.decEq α
-    simp only [revzip_powersetAux_lemma l revzip_powersetAux, h.symm, mem_coe,
-      List.mem_map, mem_powersetAux]
+    simp only [revzip_powersetAux_lemma l revzip_powersetAux, h.symm, mem_coe, List.mem_map,
+      mem_powersetAux]
     obtain ⟨x₁, x₂⟩ := x
     exact ⟨x₁, le_add_right _ _, by rw [add_tsub_cancel_left x₁ x₂]⟩
 
@@ -61,41 +65,41 @@ theorem antidiagonal_map_fst (s : Multiset α) : (antidiagonal s).map Prod.fst =
 theorem antidiagonal_map_snd (s : Multiset α) : (antidiagonal s).map Prod.snd = powerset s :=
   Quotient.inductionOn s fun l ↦ by simp [powersetAux']
 
-@[simp]
-theorem antidiagonal_zero : @antidiagonal α 0 = {(0, 0)} :=
-  rfl
+@[simp] theorem antidiagonal_zero : @antidiagonal α 0 = {(0, 0)} := rfl
 
 @[simp]
-theorem antidiagonal_cons (a : α) (s) :
-    antidiagonal (a ::ₘ s) =
-      map (Prod.map id (cons a)) (antidiagonal s) + map (Prod.map (cons a) id) (antidiagonal s) :=
+theorem antidiagonal_cons (a : α) (s)
+    : antidiagonal (a ::ₘ s)
+      = map (Prod.map id (cons a)) (antidiagonal s) + map (Prod.map (cons a) id) (antidiagonal s) :=
   Quotient.inductionOn s fun l ↦ by
     simp only [revzip, reverse_append, quot_mk_to_coe, coe_eq_coe, powersetAux'_cons, cons_coe,
       map_coe, antidiagonal_coe', coe_add]
     rw [← zip_map, ← zip_map, zip_append, (_ : _ ++ _ = _)] <;> simp
 
-theorem antidiagonal_add (s t : Multiset α) :
-    (s + t).antidiagonal =
-      s.antidiagonal.bind fun p ↦ t.antidiagonal.map fun q ↦ (p.1 + q.1, p.2 + q.2) := by
+theorem antidiagonal_add (s t : Multiset α)
+    : (s + t).antidiagonal
+      = s.antidiagonal.bind fun p ↦ t.antidiagonal.map fun q ↦ (p.1 + q.1, p.2 + q.2) := by
   induction s using Multiset.induction_on with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s ih =>
     simp_rw [cons_add, antidiagonal_cons, ih, add_bind, bind_map, map_bind, map_map]
     congr! <;> simp
 
 @[simp]
-theorem map_swap_antidiagonal (s : Multiset α) :
-    s.antidiagonal.map Prod.swap = s.antidiagonal := by
+theorem map_swap_antidiagonal (s : Multiset α) : s.antidiagonal.map Prod.swap = s.antidiagonal := by
   induction s using Multiset.induction_on with
-  | empty => rfl
+  | empty =>
+    rfl
   | cons a s ih =>
     simp only [antidiagonal_cons, map_add, map_map, ← Prod.map_comp_swap,
       ← Multiset.map_map _ Prod.swap, ih, add_comm]
 
-theorem antidiagonal_eq_map_powerset [DecidableEq α] (s : Multiset α) :
-    s.antidiagonal = s.powerset.map fun t ↦ (s - t, t) := by
+theorem antidiagonal_eq_map_powerset [DecidableEq α] (s : Multiset α)
+    : s.antidiagonal = s.powerset.map fun t ↦ (s - t, t) := by
   induction s using Multiset.induction_on with
-  | empty => simp only [antidiagonal_zero, powerset_zero, Multiset.zero_sub, map_singleton]
+  | empty =>
+    simp only [antidiagonal_zero, powerset_zero, Multiset.zero_sub, map_singleton]
   | cons a s hs =>
     simp_rw [antidiagonal_cons, powerset_cons, map_add, hs, map_map, Function.comp, Prod.map_apply,
       id, sub_cons, erase_cons_head]

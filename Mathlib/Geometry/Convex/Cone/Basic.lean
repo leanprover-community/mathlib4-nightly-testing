@@ -53,8 +53,10 @@ section Definitions
 variable [Semiring R] [PartialOrder R]
 
 variable (R M) in
-/-- A convex cone is a subset `s` of an `R`-module such that `a • x + b • y ∈ s` whenever `a, b > 0`
-and `x, y ∈ s`. -/
+/--
+A convex cone is a subset `s` of an `R`-module such that `a • x + b • y ∈ s` whenever `a, b > 0`
+and `x, y ∈ s`.
+-/
 @[wikidata Q2256541]
 structure ConvexCone [AddCommMonoid M] [SMul R M] where
   /-- The **carrier set** underlying this cone: the set of points contained in it -/
@@ -85,8 +87,7 @@ instance : PartialOrder (ConvexCone R M) := .ofSetLike (ConvexCone R M)
 @[simp] lemma mem_mk {h₁ h₂} : x ∈ mk (R := R) s h₁ h₂ ↔ x ∈ s := .rfl
 
 /-- Two `ConvexCone`s are equal if they have the same elements. -/
-@[ext]
-theorem ext (h : ∀ x, x ∈ C₁ ↔ x ∈ C₂) : C₁ = C₂ := SetLike.ext h
+@[ext] theorem ext (h : ∀ x, x ∈ C₁ ↔ x ∈ C₂) : C₁ = C₂ := SetLike.ext h
 
 variable (C) in
 @[aesop 90% (rule_sets := [SetLike])]
@@ -95,11 +96,15 @@ protected lemma smul_mem (hc : 0 < c) (hx : x ∈ C) : c • x ∈ C := C.smul_m
 variable (C) in
 protected lemma add_mem ⦃x⦄ (hx : x ∈ C) ⦃y⦄ (hy : y ∈ C) : x + y ∈ C := C.add_mem' hx hy
 
-instance : AddMemClass (ConvexCone R M) M where add_mem ha hb := add_mem' _ ha hb
+instance : AddMemClass (ConvexCone R M) M where
+  add_mem ha hb := add_mem' _ ha hb
 
-/-- Copy of a convex cone with a new `carrier` equal to the old one. Useful to fix definitional
-equalities. -/
-@[simps] protected def copy (C : ConvexCone R M) (s : Set M) (hs : s = C) : ConvexCone R M where
+/--
+Copy of a convex cone with a new `carrier` equal to the old one. Useful to fix definitional
+equalities.
+-/
+@[simps]
+protected def copy (C : ConvexCone R M) (s : Set M) (hs : s = C) : ConvexCone R M where
   carrier := s
   add_mem' := hs.symm ▸ C.add_mem'
   smul_mem' := by simpa [hs] using! C.smul_mem'
@@ -107,10 +112,11 @@ equalities. -/
 lemma copy_eq (C : ConvexCone R M) (s : Set M) (hs) : C.copy s hs = C := SetLike.coe_injective hs
 
 instance : InfSet (ConvexCone R M) where
-  sInf S :=
-    ⟨⋂ C ∈ S, C, fun _r hr _x hx ↦ mem_biInter fun C hC ↦ C.smul_mem hr <| mem_iInter₂.1 hx C hC,
-      fun _ hx _ hy ↦
-      mem_biInter fun C hC ↦ add_mem (mem_iInter₂.1 hx C hC) (mem_iInter₂.1 hy C hC)⟩
+  sInf S := ⟨
+    ⋂ C ∈ S, C,
+    fun _r hr _x hx ↦ mem_biInter fun C hC ↦ C.smul_mem hr <| mem_iInter₂.1 hx C hC,
+    fun _ hx _ hy ↦ mem_biInter fun C hC ↦ add_mem (mem_iInter₂.1 hx C hC) (mem_iInter₂.1 hy C hC)
+  ⟩
 
 @[simp, norm_cast]
 lemma coe_sInf (S : Set (ConvexCone R M)) : ↑(sInf S) = ⋂ C ∈ S, (C : Set M) := rfl
@@ -138,8 +144,8 @@ lemma hull_min (hsC : s ⊆ C) : hull R s ≤ C := sInf_le hsC
 
 lemma hull_le_iff : hull R s ≤ C ↔ s ⊆ C := ⟨subset_hull.trans, hull_min⟩
 
-lemma gc_hull_coe : GaloisConnection (hull R : Set M → ConvexCone R M) (↑) :=
-  fun _C _s ↦ hull_le_iff
+lemma gc_hull_coe : GaloisConnection (hull R : Set M → ConvexCone R M) (↑) := fun _C _s ↦
+  hull_le_iff
 
 /-- Galois insertion between `ConvexCone` and `SetLike.coe`. -/
 protected def gi : GaloisInsertion (hull R : Set M → ConvexCone R M) (↑) where
@@ -148,8 +154,7 @@ protected def gi : GaloisInsertion (hull R : Set M → ConvexCone R M) (↑) whe
   choice s hs := (hull R s).copy s <| subset_hull.antisymm hs
   choice_eq _ _ := copy_eq _ _ _
 
-instance : Bot (ConvexCone R M) :=
-  ⟨⟨∅, fun _ _ _ => False.elim, fun _ => False.elim⟩⟩
+instance : Bot (ConvexCone R M) := ⟨⟨∅, fun _ _ _ => False.elim, fun _ => False.elim⟩⟩
 
 @[simp] lemma notMem_bot : x ∉ (⊥ : ConvexCone R M) := id
 
@@ -173,8 +178,8 @@ variable (C₁ C₂) in
 
 @[simp, norm_cast] lemma coe_top : ↑(⊤ : ConvexCone R M) = (univ : Set M) := rfl
 
-@[simp, norm_cast] lemma disjoint_coe : Disjoint (C₁ : Set M) C₂ ↔ Disjoint C₁ C₂ := by
-  simp [disjoint_iff, ← coe_inf]
+@[simp, norm_cast]
+lemma disjoint_coe : Disjoint (C₁ : Set M) C₂ ↔ Disjoint C₁ C₂ := by simp [disjoint_iff, ← coe_inf]
 
 instance : Inhabited (ConvexCone R M) := ⟨⊥⟩
 
@@ -202,20 +207,18 @@ def map (f : M →ₗ[R] N) (C : ConvexCone R M) : ConvexCone R N where
     hy₁ ▸ hy₂ ▸ f.map_add x₁ x₂ ▸ mem_image_of_mem f (add_mem hx₁ hx₂)
 
 @[simp, norm_cast]
-theorem coe_map (C : ConvexCone R M) (f : M →ₗ[R] N) : (C.map f : Set N) = f '' C :=
-  rfl
+theorem coe_map (C : ConvexCone R M) (f : M →ₗ[R] N) : (C.map f : Set N) = f '' C := rfl
 
 @[simp]
 theorem mem_map {f : M →ₗ[R] N} {C : ConvexCone R M} {y : N} : y ∈ C.map f ↔ ∃ x ∈ C, f x = y :=
   Set.mem_image f C y
 
-theorem map_map (g : N →ₗ[R] O) (f : M →ₗ[R] N) (C : ConvexCone R M) :
-    (C.map f).map g = C.map (g.comp f) :=
+theorem map_map (g : N →ₗ[R] O) (f : M →ₗ[R] N) (C : ConvexCone R M)
+    : (C.map f).map g = C.map (g.comp f) :=
   SetLike.coe_injective <| image_image g f C
 
 @[simp]
-theorem map_id (C : ConvexCone R M) : C.map LinearMap.id = C :=
-  SetLike.coe_injective <| image_id _
+theorem map_id (C : ConvexCone R M) : C.map LinearMap.id = C := SetLike.coe_injective <| image_id _
 
 /-- The preimage of a convex cone under an `R`-linear map is a convex cone. -/
 def comap (f : M →ₗ[R] N) (C : ConvexCone R N) : ConvexCone R M where
@@ -228,20 +231,16 @@ def comap (f : M →ₗ[R] N) (C : ConvexCone R N) : ConvexCone R M where
     exact add_mem hx hy
 
 @[simp]
-theorem coe_comap (f : M →ₗ[R] N) (C : ConvexCone R N) : (C.comap f : Set M) = f ⁻¹' C :=
+theorem coe_comap (f : M →ₗ[R] N) (C : ConvexCone R N) : (C.comap f : Set M) = f ⁻¹' C := rfl
+
+@[simp] theorem comap_id (C : ConvexCone R M) : C.comap LinearMap.id = C := rfl
+
+theorem comap_comap (g : N →ₗ[R] O) (f : M →ₗ[R] N) (C : ConvexCone R O)
+    : (C.comap g).comap f = C.comap (g.comp f) :=
   rfl
 
 @[simp]
-theorem comap_id (C : ConvexCone R M) : C.comap LinearMap.id = C :=
-  rfl
-
-theorem comap_comap (g : N →ₗ[R] O) (f : M →ₗ[R] N) (C : ConvexCone R O) :
-    (C.comap g).comap f = C.comap (g.comp f) :=
-  rfl
-
-@[simp]
-theorem mem_comap {f : M →ₗ[R] N} {C : ConvexCone R N} {x : M} : x ∈ C.comap f ↔ f x ∈ C :=
-  Iff.rfl
+theorem mem_comap {f : M →ₗ[R] N} {C : ConvexCone R N} {x : M} : x ∈ C.comap f ↔ f x ∈ C := Iff.rfl
 
 end Maps
 
@@ -264,7 +263,6 @@ end LinearOrderedField
 
 /-! ### Convex cones with extra properties -/
 
-
 section OrderedSemiring
 
 variable [Semiring R] [PartialOrder R]
@@ -279,8 +277,8 @@ def Pointed (C : ConvexCone R M) : Prop := (0 : M) ∈ C
 /-- A convex cone is blunt if it doesn't include `0`. -/
 def Blunt (C : ConvexCone R M) : Prop := (0 : M) ∉ C
 
-lemma blunt_iff_not_pointed : C.Blunt ↔ ¬ C.Pointed := .rfl
-lemma pointed_iff_not_blunt : C.Pointed ↔ ¬ C.Blunt := by simp [Blunt, Pointed]
+lemma blunt_iff_not_pointed : C.Blunt ↔ ¬C.Pointed := .rfl
+lemma pointed_iff_not_blunt : C.Pointed ↔ ¬C.Blunt := by simp [Blunt, Pointed]
 
 theorem Pointed.mono (h : C₁ ≤ C₂) : C₁.Pointed → C₂.Pointed := @h _
 theorem Blunt.anti (h : C₂ ≤ C₁) : C₁.Blunt → C₂.Blunt := (· ∘ @h 0)
@@ -297,13 +295,13 @@ def Flat (C : ConvexCone R G) : Prop := ∃ x ∈ C, x ≠ (0 : G) ∧ -x ∈ C
 /-- A convex cone is salient if it doesn't include `x` and `-x` for any nonzero `x`. -/
 def Salient (C : ConvexCone R G) : Prop := ∀ x ∈ C, x ≠ (0 : G) → -x ∉ C
 
-theorem salient_iff_not_flat : C.Salient ↔ ¬ C.Flat := by simp [Salient, Flat]
+theorem salient_iff_not_flat : C.Salient ↔ ¬C.Flat := by simp [Salient, Flat]
 
 theorem Flat.mono (h : C₁ ≤ C₂) : C₁.Flat → C₂.Flat
   | ⟨x, hxS, hx, hnxS⟩ => ⟨x, h hxS, hx, h hnxS⟩
 
-theorem Salient.anti (h : C₂ ≤ C₁) : C₁.Salient → C₂.Salient :=
-  fun hS x hxT hx hnT => hS x (h hxT) hx (h hnT)
+theorem Salient.anti (h : C₂ ≤ C₁) : C₁.Salient → C₂.Salient := fun hS x hxT hx hnT =>
+  hS x (h hxT) hx (h hnT)
 
 /-- A flat cone is always pointed (contains `0`). -/
 theorem Flat.pointed (hC : C.Flat) : C.Pointed := by
@@ -325,20 +323,21 @@ def toPreorder (C : ConvexCone R G) (h₁ : C.Pointed) : Preorder G where
 
 /-- A pointed and salient cone defines a partial order. -/
 @[instance_reducible]
-def toPartialOrder (C : ConvexCone R G) (h₁ : C.Pointed) (h₂ : C.Salient) : PartialOrder G :=
-  { toPreorder C h₁ with
-    le_antisymm := by
-      intro a b ab ba
-      by_contra h
-      have h' : b - a ≠ 0 := fun h'' => h (eq_of_sub_eq_zero h'').symm
-      have H := h₂ (b - a) ab h'
-      rw [neg_sub b a] at H
-      exact H ba }
+def toPartialOrder (C : ConvexCone R G) (h₁ : C.Pointed) (h₂ : C.Salient) : PartialOrder G := {
+  toPreorder C h₁ with
+  le_antisymm := by
+    intro a b ab ba
+    by_contra h
+    have h' : b - a ≠ 0 := fun h'' => h (eq_of_sub_eq_zero h'').symm
+    have H := h₂ (b - a) ab h'
+    rw [neg_sub b a] at H
+    exact H ba
+}
 
 /-- A pointed and salient cone defines an `IsOrderedAddMonoid`. -/
-lemma to_isOrderedAddMonoid (C : ConvexCone R G) (h₁ : C.Pointed) (h₂ : C.Salient) :
-    let _ := toPartialOrder C h₁ h₂
-    IsOrderedAddMonoid G where
+lemma to_isOrderedAddMonoid (C : ConvexCone R G) (h₁ : C.Pointed) (h₂ : C.Salient)
+    : let _ := toPartialOrder C h₁ h₂
+      IsOrderedAddMonoid G where
   __ := toPartialOrder C h₁ h₂
   add_le_add_left a b hab c := show b + c - (a + c) ∈ C by rwa [add_sub_add_right_eq_sub]
 
@@ -350,8 +349,7 @@ section Monoid
 
 variable [AddCommMonoid M] [Module R M] {C₁ C₂ : ConvexCone R M} {x : M}
 
-instance : Zero (ConvexCone R M) :=
-  ⟨⟨0, fun _ _ => by simp, fun _ => by simp⟩⟩
+instance : Zero (ConvexCone R M) := ⟨⟨0, fun _ _ => by simp, fun _ => by simp⟩⟩
 
 @[simp] lemma mem_zero : x ∈ (0 : ConvexCone R M) ↔ x = 0 := .rfl
 
@@ -388,20 +386,23 @@ section Reproducing
 
 variable [AddCommGroup M] [Module R M]
 
-/-- A convex cone is reproducing if its set of element differences equals the entire module,
-i.e., every element of `M` can be written as a difference of two elements of `C`. -/
-def IsReproducing (C : ConvexCone R M) : Prop :=
-  (C : Set M) - (C : Set M) = Set.univ
+/--
+A convex cone is reproducing if its set of element differences equals the entire module,
+i.e., every element of `M` can be written as a difference of two elements of `C`.
+-/
+def IsReproducing (C : ConvexCone R M) : Prop := (C : Set M) - (C : Set M) = Set.univ
 
-/-- A sufficient criterion for a convex cone `C` to be reproducing is that `Set.univ` is a subset
-of `C - C`. -/
-theorem IsReproducing.of_univ_subset {C : ConvexCone R M}
-    (h : Set.univ ⊆ (C : Set M) - (C : Set M)) : C.IsReproducing :=
+/--
+A sufficient criterion for a convex cone `C` to be reproducing is that `Set.univ` is a subset
+of `C - C`.
+-/
+theorem IsReproducing.of_univ_subset {C : ConvexCone R M} (h : Set.univ ⊆ (C : Set M) - (C : Set M))
+    : C.IsReproducing :=
   Set.eq_univ_iff_forall.mpr fun _ ↦ h (Set.mem_univ _)
 
 /-- The set difference of a reproducing cone with itself equals `Set.univ`. -/
-lemma IsReproducing.sub_eq_univ {C : ConvexCone R M} (hC : C.IsReproducing) :
-    (C : Set M) - (C : Set M) = Set.univ :=
+lemma IsReproducing.sub_eq_univ {C : ConvexCone R M} (hC : C.IsReproducing)
+    : (C : Set M) - (C : Set M) = Set.univ :=
   hC
 
 end Reproducing
@@ -410,19 +411,21 @@ section Generating
 
 variable [AddCommMonoid M] [Module R M]
 
-theorem IsReproducing.span_eq_top {R : Type*} {M : Type*} [Ring R] [PartialOrder R]
-    [AddCommGroup M] [Module R M] {C : ConvexCone R M} (h : C.IsReproducing) :
-    Submodule.span R (C : Set M) = ⊤ := by
+theorem IsReproducing.span_eq_top
+    {R : Type*} {M : Type*} [Ring R] [PartialOrder R] [AddCommGroup M] [Module R M]
+    {C : ConvexCone R M} (h : C.IsReproducing)
+    : Submodule.span R (C : Set M) = ⊤ := by
   rw [eq_top_iff]
   rintro x -
   rw [IsReproducing, Set.eq_univ_iff_forall] at h
   obtain ⟨y, hy, z, hz, rfl⟩ := Set.mem_sub.mp (h x)
   exact sub_mem (Submodule.subset_span hy) (Submodule.subset_span hz)
 
-theorem IsReproducing.of_span_eq_top {R : Type*} {M : Type*} [Ring R] [LinearOrder R]
-    [AddLeftStrictMono R] [AddCommGroup M] [Nontrivial M] [Module R M] {C : ConvexCone R M}
-    (h : Submodule.span R (C : Set M) = ⊤) :
-    C.IsReproducing := by
+theorem IsReproducing.of_span_eq_top
+    {R : Type*} {M : Type*}
+    [Ring R] [LinearOrder R] [AddLeftStrictMono R] [AddCommGroup M] [Nontrivial M] [Module R M]
+    {C : ConvexCone R M} (h : Submodule.span R (C : Set M) = ⊤)
+    : C.IsReproducing := by
   rw [IsReproducing, Set.eq_univ_iff_forall]
   intro x
   -- A generating cone in a nontrivial module must be nonempty
@@ -441,22 +444,25 @@ theorem IsReproducing.of_span_eq_top {R : Type*} {M : Type*} [Ring R] [LinearOrd
       simp only [Set.mem_sub, SetLike.mem_coe]
       rcases lt_trichotomy r 0 with hr | rfl | hr
       · -- r < 0: use (-r) • z - (-r) • y = r • (y - z)
-        refine ⟨(-r) • z, C.smul_mem (neg_pos.mpr hr) hz,
-               (-r) • y, C.smul_mem (neg_pos.mpr hr) hy, ?_⟩
+        refine
+          ⟨(-r) • z, C.smul_mem (neg_pos.mpr hr) hz, (-r) • y, C.smul_mem (neg_pos.mpr hr) hy, ?_⟩
         rw [neg_smul, neg_smul, neg_sub_neg, smul_sub]
       · -- r = 0
         simp only [zero_smul]
         obtain ⟨c, hc⟩ := hne
         exact ⟨c, hc, c, hc, sub_self c⟩
       · -- r > 0: use r • y - r • z
-        exact ⟨r • y, C.smul_mem hr hy, r • z, C.smul_mem hr hz, (smul_sub r y z).symm⟩}
+        exact ⟨r • y, C.smul_mem hr hy, r • z, C.smul_mem hr hz, (smul_sub r y z).symm⟩
+  }
   have hCS : (C : Set M) ⊆ S := fun x hx ↦
     let ⟨c, hc⟩ := hne; ⟨x + c, C.add_mem hx hc, c, hc, add_sub_cancel_right x c⟩
   exact (h ▸ Submodule.span_le.mpr hCS) trivial
 
-theorem span_eq_top_iff_isReproducing {R : Type*} {M : Type*} [Ring R] [LinearOrder R]
-    [AddLeftStrictMono R] [AddCommGroup M] [Nontrivial M] [Module R M] {C : ConvexCone R M} :
-    Submodule.span R (C : Set M) = ⊤ ↔ C.IsReproducing :=
+theorem span_eq_top_iff_isReproducing
+    {R : Type*} {M : Type*}
+    [Ring R] [LinearOrder R] [AddLeftStrictMono R] [AddCommGroup M] [Nontrivial M] [Module R M]
+    {C : ConvexCone R M}
+    : Submodule.span R (C : Set M) = ⊤ ↔ C.IsReproducing :=
   ⟨.of_span_eq_top, IsReproducing.span_eq_top⟩
 
 end Generating
@@ -466,24 +472,29 @@ end Module
 end OrderedSemiring
 
 section Field
-variable [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] [AddCommGroup M] [Module 𝕜 M]
+variable
+  [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] [AddCommGroup M] [Module 𝕜 M]
   {C : ConvexCone 𝕜 M} {s : Set M} {x : M}
 
 /-- The cone hull of a convex set is simply the union of the open halflines through that set. -/
 lemma mem_hull_of_convex (hs : Convex 𝕜 s) : x ∈ hull 𝕜 s ↔ ∃ r : 𝕜, 0 < r ∧ x ∈ r • s where
-  mp hx := hull_min (C := {
-              carrier := {y | ∃ r : 𝕜, 0 < r ∧ y ∈ r • s}
-              smul_mem' := by
-                intro r₁ hr₁ y ⟨r₂, hr₂, hy⟩
-                refine ⟨r₁ * r₂, mul_pos hr₁ hr₂, ?_⟩
-                rw [mul_smul]
-                exact smul_mem_smul_set hy
-              add_mem' := by
-                rintro y₁ ⟨r₁, hr₁, hy₁⟩ y₂ ⟨r₂, hr₂, hy₂⟩
-                refine ⟨r₁ + r₂, add_pos hr₁ hr₂, ?_⟩
-                rw [hs.add_smul hr₁.le hr₂.le]
-                exact add_mem_add hy₁ hy₂
-            }) (fun y hy ↦ ⟨1, by simpa⟩) hx
+  mp hx :=
+    hull_min
+      (C := {
+        carrier := {y | ∃ r : 𝕜, 0 < r ∧ y ∈ r • s}
+        smul_mem' := by
+          intro r₁ hr₁ y ⟨r₂, hr₂, hy⟩
+          refine ⟨r₁ * r₂, mul_pos hr₁ hr₂, ?_⟩
+          rw [mul_smul]
+          exact smul_mem_smul_set hy
+        add_mem' := by
+          rintro y₁ ⟨r₁, hr₁, hy₁⟩ y₂ ⟨r₂, hr₂, hy₂⟩
+          refine ⟨r₁ + r₂, add_pos hr₁ hr₂, ?_⟩
+          rw [hs.add_smul hr₁.le hr₂.le]
+          exact add_mem_add hy₁ hy₂
+      })
+      (fun y hy ↦ ⟨1, by simpa⟩)
+      hx
   mpr := by rintro ⟨r, hr, y, hy, rfl⟩; exact (hull 𝕜 s).smul_mem hr <| subset_hull hy
 
 /-- The cone hull of a convex set is simply the union of the open halflines through that set. -/
@@ -507,7 +518,6 @@ namespace Submodule
 
 /-! ### Submodules are cones -/
 
-
 section OrderedSemiring
 
 variable [Semiring R] [PartialOrder R]
@@ -526,18 +536,17 @@ def toConvexCone (C : Submodule R M) : ConvexCone R M where
 
 @[simp] lemma mem_toConvexCone : x ∈ C.toConvexCone ↔ x ∈ C := .rfl
 
-@[simp]
-lemma toConvexCone_le_toConvexCone : C₁.toConvexCone ≤ C₂.toConvexCone ↔ C₁ ≤ C₂ := .rfl
+@[simp] lemma toConvexCone_le_toConvexCone : C₁.toConvexCone ≤ C₂.toConvexCone ↔ C₁ ≤ C₂ := .rfl
 
 @[simp] lemma toConvexCone_bot : (⊥ : Submodule R M).toConvexCone = 0 := rfl
 @[simp] lemma toConvexCone_top : (⊤ : Submodule R M).toConvexCone = ⊤ := rfl
 
 @[simp]
-lemma toConvexCone_inf (C₁ C₂ : Submodule R M) :
-    (C₁ ⊓ C₂).toConvexCone = C₁.toConvexCone ⊓ C₂.toConvexCone := rfl
+lemma toConvexCone_inf (C₁ C₂ : Submodule R M)
+    : (C₁ ⊓ C₂).toConvexCone = C₁.toConvexCone ⊓ C₂.toConvexCone :=
+  rfl
 
-@[simp]
-lemma pointed_toConvexCone (C : Submodule R M) : C.toConvexCone.Pointed := C.zero_mem
+@[simp] lemma pointed_toConvexCone (C : Submodule R M) : C.toConvexCone.Pointed := C.zero_mem
 
 end AddCommMonoid
 
@@ -550,12 +559,16 @@ end Submodule
 namespace ConvexCone
 
 section PositiveCone
-variable [Semiring R] [PartialOrder R] [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
-  [Module R M] [PosSMulMono R M] {x : M}
+variable
+  [Semiring R] [PartialOrder R] [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
+  [Module R M] [PosSMulMono R M]
+  {x : M}
 
 variable (R M) in
-/-- The positive cone is the convex cone formed by the set of nonnegative elements in an ordered
-module. -/
+/--
+The positive cone is the convex cone formed by the set of nonnegative elements in an ordered
+module.
+-/
 def positive : ConvexCone R M where
   carrier := Set.Ici 0
   smul_mem' _ hc _ (hx : _ ≤ _) := smul_nonneg hc.le hx
@@ -564,43 +577,43 @@ def positive : ConvexCone R M where
 @[simp] lemma mem_positive : x ∈ positive R M ↔ 0 ≤ x := .rfl
 
 variable (R M) in
-@[simp]
-theorem coe_positive : ↑(positive R M) = Set.Ici (0 : M) :=
-  rfl
+@[simp] theorem coe_positive : ↑(positive R M) = Set.Ici (0 : M) := rfl
 
 /-- The positive cone of an ordered module is always salient. -/
-lemma salient_positive {G : Type*} [AddCommGroup G] [PartialOrder G] [IsOrderedAddMonoid G]
-    [Module R G] [PosSMulMono R G] : Salient (positive R G) :=
-  fun x hx_nonneg hx_ne_zero hx_nonpos ↦ lt_irrefl (0 : G) <| by
+lemma salient_positive
+    {G : Type*}
+    [AddCommGroup G] [PartialOrder G] [IsOrderedAddMonoid G] [Module R G] [PosSMulMono R G]
+    : Salient (positive R G) := fun x hx_nonneg hx_ne_zero hx_nonpos ↦
+  lt_irrefl (0 : G) <| by
     simpa using add_pos_of_nonneg_of_pos hx_nonpos <| hx_nonneg.lt_of_ne' hx_ne_zero
 
 /-- The positive cone of an ordered module is always pointed. -/
-theorem pointed_positive : Pointed (positive R M) :=
-  le_refl 0
+theorem pointed_positive : Pointed (positive R M) := le_refl 0
 
 end PositiveCone
 
 section StrictlyPositiveCone
-variable [Semiring R] [PartialOrder R] [AddCommGroup M] [PartialOrder M] [IsOrderedAddMonoid M]
-  [Module R M] [PosSMulStrictMono R M] {x : M}
+variable
+  [Semiring R] [PartialOrder R] [AddCommGroup M] [PartialOrder M] [IsOrderedAddMonoid M]
+  [Module R M] [PosSMulStrictMono R M]
+  {x : M}
 
 variable (R M) in
-/-- The cone of strictly positive elements.
+/--
+The cone of strictly positive elements.
 
 Note that this naming diverges from the mathlib convention of `pos` and `nonneg` due to "positive
-cone" (`ConvexCone.positive`) being established terminology for the non-negative elements. -/
+cone" (`ConvexCone.positive`) being established terminology for the non-negative elements.
+-/
 def strictlyPositive : ConvexCone R M where
   carrier := Set.Ioi 0
   smul_mem' _ hc _ (hx : _ < _) := smul_pos hc hx
   add_mem' _ hx _ hy := add_pos hx hy
 
-@[simp]
-lemma mem_strictlyPositive : x ∈ strictlyPositive R M ↔ 0 < x := .rfl
+@[simp] lemma mem_strictlyPositive : x ∈ strictlyPositive R M ↔ 0 < x := .rfl
 
 variable (R M) in
-@[simp]
-theorem coe_strictlyPositive : ↑(strictlyPositive R M) = Set.Ioi (0 : M) :=
-  rfl
+@[simp] theorem coe_strictlyPositive : ↑(strictlyPositive R M) = Set.Ioi (0 : M) := rfl
 
 lemma strictlyPositive_le_positive : strictlyPositive R M ≤ positive R M := fun _ => le_of_lt
 
@@ -609,8 +622,7 @@ theorem salient_strictlyPositive : Salient (strictlyPositive R M) :=
   salient_positive.anti strictlyPositive_le_positive
 
 /-- The strictly positive cone of an ordered module is always blunt. -/
-theorem blunt_strictlyPositive : Blunt (strictlyPositive R M) :=
-  lt_irrefl 0
+theorem blunt_strictlyPositive : Blunt (strictlyPositive R M) := lt_irrefl 0
 
 end StrictlyPositiveCone
 

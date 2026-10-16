@@ -66,8 +66,10 @@ example : functorOp c ⋙ CostructuredArrow.proj toLightProfinite.op ⟨c.pt⟩ 
 
 -- We check that `Profinite.Extend.functor` factors through `LightProfinite.Extend.functor`,
 -- via the equivalence `StructuredArrow.post _ _ lightToProfinite`.
-example : functor c ⋙ (StructuredArrow.post _ _ lightToProfinite) =
-    Profinite.Extend.functor (lightToProfinite.mapCone c) := rfl
+example
+    : functor c ⋙ (StructuredArrow.post _ _ lightToProfinite)
+      = Profinite.Extend.functor (lightToProfinite.mapCone c) :=
+  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 /--
@@ -76,8 +78,8 @@ If the projection maps in the cone are epimorphic and the cone is limiting, then
 -/
 theorem functor_initial (hc : IsLimit c) [∀ i, Epi (c.π.app i)] : Initial (functor c) := by
   rw [initial_iff_comp_equivalence _ (StructuredArrow.post _ _ lightToProfinite)]
-  have : ∀ i, Epi ((lightToProfinite.mapCone c).π.app i) :=
-    fun i ↦ inferInstanceAs (Epi (lightToProfinite.map (c.π.app i)))
+  have : ∀ i, Epi ((lightToProfinite.mapCone c).π.app i) := fun i ↦
+    inferInstanceAs (Epi (lightToProfinite.map (c.π.app i)))
   exact Profinite.Extend.functor_initial _ (isLimitOfPreserves lightToProfinite hc)
 
 /--
@@ -104,12 +106,10 @@ Given a functor `G` from `LightProfinite` and `S : LightProfinite`, we obtain a 
 Whiskering this cone with `LightProfinite.Extend.functor c` gives `G.mapCone c` as we check in the
 example below.
 -/
-def cone (S : LightProfinite) :
-    Cone (StructuredArrow.proj S toLightProfinite ⋙ toLightProfinite ⋙ G) where
+def cone (S : LightProfinite)
+    : Cone (StructuredArrow.proj S toLightProfinite ⋙ toLightProfinite ⋙ G) where
   pt := G.obj S
-  π :=
-    { app i := G.map i.hom
-      naturality _ _ f := by simp [← Functor.map_comp] }
+  π := { app i := G.map i.hom, naturality _ _ f := by simp [← Functor.map_comp] }
 
 example : G.mapCone c = (cone G c.pt).whisker (functor c) := rfl
 
@@ -117,9 +117,9 @@ example : G.mapCone c = (cone G c.pt).whisker (functor c) := rfl
 If `c` and `G.mapCone c` are limit cones and the projection maps in `c` are epimorphic,
 then `cone G c.pt` is a limit cone.
 -/
-noncomputable
-def isLimitCone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsLimit <| G.mapCone c) :
-    IsLimit (cone G c.pt) := (functor_initial c hc).isLimitWhiskerEquiv _ _ hc'
+noncomputable def isLimitCone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsLimit <| G.mapCone c)
+    : IsLimit (cone G c.pt) :=
+  (functor_initial c hc).isLimitWhiskerEquiv _ _ hc'
 
 end Limit
 
@@ -137,8 +137,8 @@ Whiskering this cocone with `LightProfinite.Extend.functorOp c` gives `G.mapCoco
 check in the example below.
 -/
 @[simps]
-def cocone (S : LightProfinite) :
-    Cocone (CostructuredArrow.proj toLightProfinite.op ⟨S⟩ ⋙ toLightProfinite.op ⋙ G) where
+def cocone (S : LightProfinite)
+    : Cocone (CostructuredArrow.proj toLightProfinite.op ⟨S⟩ ⋙ toLightProfinite.op ⋙ G) where
   pt := G.obj ⟨S⟩
   ι := {
     app := fun i ↦ G.map i.hom
@@ -146,18 +146,19 @@ def cocone (S : LightProfinite) :
       have := f.w
       simp only [op_obj, op_map] at this
       simp only [comp_obj, CostructuredArrow.proj_obj, op_obj, const_obj_obj, Functor.comp_map,
-        CostructuredArrow.proj_map, op_map, ← map_comp, this, const_obj_map, Category.comp_id]) }
+        CostructuredArrow.proj_map, op_map, ← map_comp, this, const_obj_map, Category.comp_id])
+  }
 
-example : G.mapCocone c.op = (cocone G c.pt).whisker
-    ((opOpEquivalence ℕ).functor ⋙ functorOp c) := rfl
+example : G.mapCocone c.op = (cocone G c.pt).whisker ((opOpEquivalence ℕ).functor ⋙ functorOp c) :=
+  rfl
 
 /--
 If `c` is a limit cone, `G.mapCocone c.op` is a colimit cone and the projection maps in `c`
 are epimorphic, then `cocone G c.pt` is a colimit cone.
 -/
-noncomputable
-def isColimitCocone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsColimit <| G.mapCocone c.op) :
-    IsColimit (cocone G c.pt) :=
+noncomputable def isColimitCocone
+    (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsColimit <| G.mapCocone c.op)
+    : IsColimit (cocone G c.pt) :=
   haveI := functorOp_final c hc
   (Functor.final_comp (opOpEquivalence ℕ).functor (functorOp c)).isColimitWhiskerEquiv _ _ hc'
 
@@ -185,8 +186,7 @@ abbrev diagram' : StructuredArrow S toLightProfinite ⥤ LightProfinite :=
 /-- A cone over `S.diagram'` whose cone point is `S`. -/
 def asLimitCone' : Cone (S.diagram') := cone (𝟭 _) S
 
-instance (i : ℕᵒᵖ) : Epi (S.asLimitCone.π.app i) :=
-  (epi_iff_surjective _).mpr (S.proj_surjective _)
+instance (i : ℕᵒᵖ) : Epi (S.asLimitCone.π.app i) := (epi_iff_surjective _).mpr (S.proj_surjective _)
 
 /-- `S.asLimitCone'` is a limit cone. -/
 noncomputable def asLimit' : IsLimit S.asLimitCone' := isLimitCone _ (𝟭 _) S.asLimit S.asLimit

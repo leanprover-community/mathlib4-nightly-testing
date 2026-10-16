@@ -6,7 +6,6 @@ Authors: Jireh Loreaux
 module
 
 public import Aesop
-
 import Mathlib.Tactic.FunProp
 
 /-!
@@ -20,19 +19,24 @@ public meta section
 
 declare_aesop_rule_sets [CStarAlgebra]
 
-/-- A tactic used to automatically discharge goals relating to the continuous functional calculus,
-specifically whether the element satisfies the predicate. -/
+/--
+A tactic used to automatically discharge goals relating to the continuous functional calculus,
+specifically whether the element satisfies the predicate.
+-/
 syntax (name := cfcTac) "cfc_tac" : tactic
 macro_rules
-  | `(tactic| cfc_tac) => `(tactic|
-         try (first |
-              assumption |
-              infer_instance |
-              aesop (rule_sets := [$(Lean.mkIdent `CStarAlgebra):ident])))
+  | `(tactic| cfc_tac) =>
+    `(tactic|
+      try (first |
+           assumption |
+           infer_instance |
+           aesop (rule_sets := [$(Lean.mkIdent `CStarAlgebra):ident])))
 
 -- we may want to try using `fun_prop` directly in the future.
-/-- A tactic used to automatically discharge goals relating to the continuous functional calculus,
-specifically concerning continuity of the functions involved. -/
+/--
+A tactic used to automatically discharge goals relating to the continuous functional calculus,
+specifically concerning continuity of the functions involved.
+-/
 syntax (name := cfcContTac) "cfc_cont_tac" : tactic
 macro_rules
   | `(tactic| cfc_cont_tac) =>
@@ -41,10 +45,12 @@ macro_rules
                              (rule_sets := [$(Lean.mkIdent `CStarAlgebra):ident]))
       | assumption))
 
-/-- A tactic used to automatically discharge goals relating to the non-unital continuous functional
-calculus, specifically concerning whether `f 0 = 0`. -/
+/--
+A tactic used to automatically discharge goals relating to the non-unital continuous functional
+calculus, specifically concerning whether `f 0 = 0`.
+-/
 syntax (name := cfcZeroTac) "cfc_zero_tac" : tactic
 macro_rules
   | `(tactic| cfc_zero_tac) =>
-      `(tactic| try
-          (first | aesop (rule_sets := [$(Lean.mkIdent `CStarAlgebra):ident]) | assumption))
+    `(tactic| try
+        (first | aesop (rule_sets := [$(Lean.mkIdent `CStarAlgebra):ident]) | assumption))

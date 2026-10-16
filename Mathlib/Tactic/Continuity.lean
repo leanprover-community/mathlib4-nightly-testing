@@ -16,7 +16,8 @@ public meta section
 
 attribute [aesop (rule_sets := [Continuous]) unfold norm] Function.comp
 
-/-- `@[continuity]` adds the tagged definition to the set of lemmas used by the `continuity` tactic.
+/--
+`@[continuity]` adds the tagged definition to the set of lemmas used by the `continuity` tactic.
 Lemmas are used without backtracking: when the conclusion of this lemma matches the goal, the lemma
 is applied unconditionally. Thus a lemma should preserve provability: if the goal can be proven,
 then after applying a `@[continuity]` lemma to it, the generated subgoals should remain provable.

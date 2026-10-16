@@ -6,7 +6,6 @@ Authors: Stefan Kebekus
 module
 
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
@@ -49,9 +48,9 @@ Monotonicity will then force `y - x < (S x)⁻¹ ≤ (2 ^ n * S a)⁻¹`.  As a 
 diameter at most `(2 ^ n * S a)⁻¹`, so that `volume E` is bounded by
 `∑ (2 ^ n * S a)⁻¹ = 2 * (S a)⁻¹ < ∞`.
 -/
-private theorem MonotoneOn.eventually_le_two_mul' {S : ℝ → ℝ} {a : ℝ}
-    (h₁ : MonotoneOn S (Set.Ici a)) (h₂ : 0 < S a) :
-    ∀ᶠ r in volume.cofinite ⊓ atTop, S (r + (S r)⁻¹) ≤ 2 * S r := by
+private theorem MonotoneOn.eventually_le_two_mul'
+    {S : ℝ → ℝ} {a : ℝ} (h₁ : MonotoneOn S (Set.Ici a)) (h₂ : 0 < S a)
+    : ∀ᶠ r in volume.cofinite ⊓ atTop, S (r + (S r)⁻¹) ≤ 2 * S r := by
   classical
   -- The exceptional set `E` and its dyadic slices `En n`
   set E := {r | a ≤ r ∧ 2 * S r < S (r + (S r)⁻¹)} with hE_def
@@ -64,8 +63,11 @@ private theorem MonotoneOn.eventually_le_two_mul' {S : ℝ → ℝ} {a : ℝ}
     have h₃ : S a ≤ S r := h₁ self_mem_Ici hr.1 hr.1
     have h₄ : ∃ n : ℕ, S r < 2 ^ (n + 1) * S a := by
       obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (S r / S a) one_lt_two
-      exact ⟨n, ((div_lt_iff₀ h₂).1 hn).trans_le
-        (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ one_le_two n.le_succ) h₂.le)⟩
+      exact ⟨
+        n,
+        ((div_lt_iff₀ h₂).1 hn).trans_le
+          (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ one_le_two n.le_succ) h₂.le)
+      ⟩
     refine mem_iUnion.2 ⟨Nat.find h₄, hr, ?_, Nat.find_spec h₄⟩
     rcases Nat.eq_zero_or_pos (Nat.find h₄) with h₅ | h₅
     · simpa [h₅] using h₃
@@ -103,15 +105,18 @@ private theorem MonotoneOn.eventually_le_two_mul' {S : ℝ → ℝ} {a : ℝ}
       simp only [mul_inv, ← inv_pow]
       exact (summable_geometric_of_lt_one (r := 2⁻¹) (by simp) (by norm_num)).mul_right _
     have h₃ : ∑' n : ℕ, ENNReal.ofReal (((2 : ℝ) ^ n * S a)⁻¹) = ENNReal.ofReal (2 * (S a)⁻¹) := by
-      rw [← ENNReal.ofReal_tsum_of_nonneg (f := fun n ↦ ((2 : ℝ) ^ n * S a)⁻¹)
-        (fun n ↦ by positivity) hsum]
+      rw [← ENNReal.ofReal_tsum_of_nonneg
+        (f := fun n ↦ ((2 : ℝ) ^ n * S a)⁻¹)
+        (fun n ↦ by positivity)
+        hsum]
       congr 1
       simp only [mul_inv, ← inv_pow]
       rw [tsum_mul_right, tsum_geometric_inv_two]
-    calc volume E
+    calc
+      volume E
         ≤ ∑' n, volume (En n) := le_trans (measure_mono hcov) (measure_iUnion_le En)
       _ ≤ ∑' n : ℕ, ENNReal.ofReal (((2 : ℝ) ^ n * S a)⁻¹) :=
-          ENNReal.tsum_le_tsum fun n ↦ le_trans (Real.volume_le_diam (En n)) (hdiam n)
+        ENNReal.tsum_le_tsum fun n ↦ le_trans (Real.volume_le_diam (En n)) (hdiam n)
       _ = ENNReal.ofReal (2 * (S a)⁻¹) := h₃
       _ < ⊤ := ENNReal.ofReal_lt_top
   -- Conclusion
@@ -128,9 +133,9 @@ private theorem MonotoneOn.eventually_le_two_mul' {S : ℝ → ℝ} {a : ℝ}
 the inequality `S (r + (S r)⁻¹) ≤ 2 * S r` holds for all sufficiently large `r` outside a set of
 finite Lebesgue measure.
 -/
-theorem MonotoneOn.eventually_le_two_mul {S : ℝ → ℝ} {a : ℝ}
-    (h₁ : MonotoneOn S (Set.Ici a)) (h₂ : 0 ≤ S a) :
-    ∀ᶠ r in volume.cofinite ⊓ atTop, S (r + (S r)⁻¹) ≤ 2 * S r := by
+theorem MonotoneOn.eventually_le_two_mul
+    {S : ℝ → ℝ} {a : ℝ} (h₁ : MonotoneOn S (Set.Ici a)) (h₂ : 0 ≤ S a)
+    : ∀ᶠ r in volume.cofinite ⊓ atTop, S (r + (S r)⁻¹) ≤ 2 * S r := by
   by_cases hb : ∀ b, a ≤ b → S b = 0
   · have : Set.Ici a ∈ volume.cofinite ⊓ atTop := by
       rw [mem_inf_iff_superset]

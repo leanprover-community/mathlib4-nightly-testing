@@ -41,8 +41,8 @@ namespace Real
 
 /-- Convert a sequence of binary digits to a real number from `unitInterval`. -/
 noncomputable def fromBinary : (ℕ → Bool) → unitInterval :=
-  let φ : (ℕ → Bool) ≃ₜ (ℕ → Fin 2) := Homeomorph.piCongrRight
-    (fun _ ↦ finTwoEquiv.toHomeomorphOfDiscrete.symm)
+  let φ : (ℕ → Bool) ≃ₜ (ℕ → Fin 2) :=
+    Homeomorph.piCongrRight (fun _ ↦ finTwoEquiv.toHomeomorphOfDiscrete.symm)
   Subtype.coind (ofDigits ∘ φ) (fun _ ↦ ⟨ofDigits_nonneg _, ofDigits_le_one _⟩)
 
 theorem fromBinary_continuous : Continuous fromBinary :=
@@ -68,15 +68,19 @@ theorem cantorToHilbert_surjective : cantorToHilbert.Surjective :=
     cantorSpaceHomeomorphNatToCantorSpace.surjective
 
 attribute [local instance] PiNat.metricSpace in
-theorem exists_retractionCantorSet {X : Set (ℕ → Bool)} (h_closed : IsClosed X)
-    (h_nonempty : X.Nonempty) : ∃ f : (ℕ → Bool) → (ℕ → Bool), Continuous f ∧ Set.range f = X := by
+theorem exists_retractionCantorSet
+    {X : Set (ℕ → Bool)} (h_closed : IsClosed X) (h_nonempty : X.Nonempty)
+    : ∃ f : (ℕ → Bool) → (ℕ → Bool), Continuous f ∧ Set.range f = X := by
   obtain ⟨f, fs, frange, hf⟩ := PiNat.exists_lipschitz_retraction_of_isClosed h_closed h_nonempty
   exact ⟨f, hf.continuous, frange⟩
 
-/-- **Hausdorff–Alexandroff theorem**: every nonempty compact metric space is a continuous image
-of the Cantor set. -/
-theorem exists_nat_bool_continuous_surjective_of_compact (X : Type*) [Nonempty X] [MetricSpace X]
-    [CompactSpace X] : ∃ f : (ℕ → Bool) → X, Continuous f ∧ Function.Surjective f := by
+/--
+**Hausdorff–Alexandroff theorem**: every nonempty compact metric space is a continuous image
+of the Cantor set.
+-/
+theorem exists_nat_bool_continuous_surjective_of_compact
+    (X : Type*) [Nonempty X] [MetricSpace X] [CompactSpace X]
+    : ∃ f : (ℕ → Bool) → X, Continuous f ∧ Function.Surjective f := by
   -- `X` is homeomorphic to a closed subset `KH` of the Hilbert cube.
   let : TopologicalSpace.SeparableSpace X :=
     TopologicalSpace.SecondCountableTopology.to_separableSpace
@@ -86,11 +90,13 @@ theorem exists_nat_bool_continuous_surjective_of_compact (X : Type*) [Nonempty X
   -- `KC` is the closed preimage of `KH` under the continuous surjection `cantorToHilbert`.
   let KC : Set (ℕ → Bool) := cantorToHilbert ⁻¹' KH
   have hKC_closed : IsClosed KC :=
-    IsClosed.preimage cantorToHilbert_continuous (Topology.IsClosedEmbedding.isClosed_range
-    <| Continuous.isClosedEmbedding (Topology.IsEmbedding.continuous h_emb) h_emb.injective)
+    IsClosed.preimage cantorToHilbert_continuous
+      (Topology.IsClosedEmbedding.isClosed_range <|
+        Continuous.isClosedEmbedding (Topology.IsEmbedding.continuous h_emb) h_emb.injective)
   -- Take a retraction `f'` from the Cantor space to `KC`.
-  obtain ⟨f, hf_continuous, hf_surjective⟩ := exists_retractionCantorSet hKC_closed
-    <| Set.Nonempty.preimage (Set.range_nonempty emb) cantorToHilbert_surjective
+  obtain ⟨f, hf_continuous, hf_surjective⟩ :=
+    exists_retractionCantorSet hKC_closed <|
+      Set.Nonempty.preimage (Set.range_nonempty emb) cantorToHilbert_surjective
   let f' : (ℕ → Bool) → KC := Subtype.coind f (by simp [← hf_surjective])
   have hf'_surjective : Function.Surjective f' := Subtype.coind_surjective _ (by grind [Set.SurjOn])
   -- Let `h` be the restriction of `cantorToHilbert` to `KC → KH`.

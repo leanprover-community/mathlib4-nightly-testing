@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel, Yury Kudryashov
 module
 
 public import Mathlib.Basic.ENNReal.Holder
-
 import Mathlib.Tactic.LinearCombination
 
 /-!
@@ -44,19 +43,23 @@ open scoped ENNReal NNReal
 
 namespace Real
 
-/-- Real numbers `p q r : ℝ` are said to be a **Hölder triple** if `p` and `q` are positive
-and `p⁻¹ + q⁻¹ = r⁻¹`. -/
+/--
+Real numbers `p q r : ℝ` are said to be a **Hölder triple** if `p` and `q` are positive
+and `p⁻¹ + q⁻¹ = r⁻¹`.
+-/
 @[mk_iff]
 structure HolderTriple (p q r : ℝ) : Prop where
   inv_add_inv_eq_inv : p⁻¹ + q⁻¹ = r⁻¹
   left_pos : 0 < p
   right_pos : 0 < q
 
-/-- Real numbers `p q : ℝ` are **Hölder conjugate** if they are positive and satisfy the
+/--
+Real numbers `p q : ℝ` are **Hölder conjugate** if they are positive and satisfy the
 equality `p⁻¹ + q⁻¹ = 1`. This is an abbreviation for `Real.HolderTriple p q 1`. This condition
 shows up in many theorems in analysis, notably related to `L^p` norms.
 
-It is equivalent that `1 < p` and `p⁻¹ + q⁻¹ = 1`. See `Real.holderConjugate_iff`. -/
+It is equivalent that `1 < p` and `p⁻¹ + q⁻¹ = 1`. See `Real.holderConjugate_iff`.
+-/
 abbrev HolderConjugate (p q : ℝ) := HolderTriple p q 1
 
 /-- The conjugate exponent of `p` is `q = p / (p-1)`, so that `p⁻¹ + q⁻¹ = 1`. -/
@@ -118,16 +121,17 @@ lemma one_div_add_one_div : 1 / p + 1 / q = 1 / r := by simpa using h.inv_add_in
 lemma one_div_eq : 1 / r = 1 / p + 1 / q := h.one_div_add_one_div.symm
 lemma inv_inv_add_inv : (p⁻¹ + q⁻¹)⁻¹ = r := by simp [h.inv_add_inv_eq_inv]
 
-protected lemma inv_lt_inv : p⁻¹ < r⁻¹ := calc
-  p⁻¹ = p⁻¹ + 0 := add_zero _ |>.symm
-  _ < p⁻¹ + q⁻¹ := by gcongr; exact h.symm.inv_pos
-  _ = r⁻¹ := h.inv_add_inv_eq_inv
+protected lemma inv_lt_inv : p⁻¹ < r⁻¹ :=
+  calc
+    p⁻¹
+      = p⁻¹ + 0 := add_zero _ |>.symm
+    _ < p⁻¹ + q⁻¹ := by gcongr; exact h.symm.inv_pos
+    _ = r⁻¹ := h.inv_add_inv_eq_inv
 lemma lt : r < p := by simpa using inv_strictAnti₀ h.inv_pos h.inv_lt_inv
 lemma inv_sub_inv_eq_inv : r⁻¹ - q⁻¹ = p⁻¹ := sub_eq_of_eq_add h.inv_eq
 
 lemma holderConjugate_div_div : (p / r).HolderConjugate (q / r) where
-  inv_add_inv_eq_inv := by
-    simp [div_eq_mul_inv, ← mul_add, h.inv_add_inv_eq_inv, h.ne_zero']
+  inv_add_inv_eq_inv := by simp [div_eq_mul_inv, ← mul_add, h.inv_add_inv_eq_inv, h.ne_zero']
   left_pos := by have := h.left_pos; have := h.pos'; positivity
   right_pos := by have := h.right_pos; have := h.pos'; positivity
 
@@ -144,8 +148,7 @@ section
 variable (h : p.HolderConjugate q)
 include h
 
-@[symm]
-protected lemma symm : q.HolderConjugate p := HolderTriple.symm h
+@[symm] protected lemma symm : q.HolderConjugate p := HolderTriple.symm h
 
 theorem inv_add_inv_eq_one : p⁻¹ + q⁻¹ = 1 := inv_one (G := ℝ) ▸ h.inv_add_inv_eq_inv
 
@@ -207,41 +210,46 @@ lemma holderConjugate_iff_eq_conjExponent (hp : 1 < p) : p.HolderConjugate q ↔
 lemma HolderConjugate.conjExponent (h : 1 < p) : p.HolderConjugate (conjExponent p) :=
   (holderConjugate_iff_eq_conjExponent h).2 rfl
 
-lemma holderConjugate_one_div (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1) :
-    (1 / a).HolderConjugate (1 / b) := by simpa using HolderConjugate.inv_inv ha hb hab
+lemma holderConjugate_one_div (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1)
+    : (1 / a).HolderConjugate (1 / b) := by
+  simpa using HolderConjugate.inv_inv ha hb hab
 
 end Real
 
 namespace NNReal
 
-/-- Nonnegative real numbers `p q r : ℝ≥0` are said to be a **Hölder triple** if `p` and `q` are
-positive and `p⁻¹ + q⁻¹ = r⁻¹`. -/
+/--
+Nonnegative real numbers `p q r : ℝ≥0` are said to be a **Hölder triple** if `p` and `q` are
+positive and `p⁻¹ + q⁻¹ = r⁻¹`.
+-/
 @[mk_iff]
 structure HolderTriple (p q r : ℝ≥0) : Prop where
   inv_add_inv_eq_inv : p⁻¹ + q⁻¹ = r⁻¹
   left_pos : 0 < p
   right_pos : 0 < q
 
-/-- Nonnegative real numbers `p q : ℝ≥0` are **Hölder conjugate** if they are positive and satisfy
+/--
+Nonnegative real numbers `p q : ℝ≥0` are **Hölder conjugate** if they are positive and satisfy
 the equality `p⁻¹ + q⁻¹ = 1`. This is an abbreviation for `NNReal.HolderTriple p q 1`. This
 condition shows up in many theorems in analysis, notably related to `L^p` norms.
 
-It is equivalent that `1 < p` and `p⁻¹ + q⁻¹ = 1`. See `NNReal.holderConjugate_iff`. -/
+It is equivalent that `1 < p` and `p⁻¹ + q⁻¹ = 1`. See `NNReal.holderConjugate_iff`.
+-/
 abbrev HolderConjugate (p q : ℝ≥0) := HolderTriple p q 1
 
 /-- The conjugate exponent of `p` is `q = p/(p-1)`, so that `p⁻¹ + q⁻¹ = 1`. -/
 def conjExponent (p : ℝ≥0) : ℝ≥0 := p / (p - 1)
 
 @[simp, norm_cast]
-lemma holderTriple_coe_iff {p q r : ℝ≥0} :
-    Real.HolderTriple (p : ℝ) (q : ℝ) (r : ℝ) ↔ HolderTriple p q r := by
+lemma holderTriple_coe_iff {p q r : ℝ≥0}
+    : Real.HolderTriple (p : ℝ) (q : ℝ) (r : ℝ) ↔ HolderTriple p q r := by
   rw_mod_cast [Real.holderTriple_iff, holderTriple_iff]
 
 alias ⟨_, HolderTriple.coe⟩ := holderTriple_coe_iff
 
 @[simp, norm_cast]
-lemma holderConjugate_coe_iff {p q : ℝ≥0} :
-    Real.HolderConjugate (p : ℝ) (q : ℝ) ↔ HolderConjugate p q :=
+lemma holderConjugate_coe_iff {p q : ℝ≥0}
+    : Real.HolderConjugate (p : ℝ) (q : ℝ) ↔ HolderConjugate p q :=
   holderTriple_coe_iff (r := 1)
 
 alias ⟨_, HolderConjugate.coe⟩ := holderConjugate_coe_iff
@@ -309,8 +317,7 @@ lemma inv_sub_inv_eq_inv : r⁻¹ - q⁻¹ = p⁻¹ := by
   exact_mod_cast h.coe.inv_sub_inv_eq_inv
 
 lemma holderConjugate_div_div : (p / r).HolderConjugate (q / r) where
-  inv_add_inv_eq_inv := by
-    simp [div_eq_mul_inv, ← mul_add, h.inv_add_inv_eq_inv, h.ne_zero']
+  inv_add_inv_eq_inv := by simp [div_eq_mul_inv, ← mul_add, h.inv_add_inv_eq_inv, h.ne_zero']
   left_pos := by have := h.left_pos; have := h.pos'; positivity
   right_pos := by have := h.right_pos; have := h.pos'; positivity
 
@@ -327,8 +334,7 @@ section
 variable (h : p.HolderConjugate q)
 include h
 
-@[symm]
-protected lemma symm : q.HolderConjugate p := HolderTriple.symm h
+@[symm] protected lemma symm : q.HolderConjugate p := HolderTriple.symm h
 
 theorem inv_add_inv_eq_one : p⁻¹ + q⁻¹ = 1 := inv_one (G := ℝ≥0) ▸ h.inv_add_inv_eq_inv
 
@@ -384,17 +390,18 @@ lemma holderConjugate_iff_eq_conjExponent (hp : 1 < p) : p.HolderConjugate q ↔
 lemma HolderConjugate.conjExponent (h : 1 < p) : p.HolderConjugate (conjExponent p) :=
   (holderConjugate_iff_eq_conjExponent h).2 rfl
 
-lemma holderConjugate_one_div (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1) :
-    (1 / a).HolderConjugate (1 / b) := by simpa using HolderConjugate.inv_inv ha hb hab
+lemma holderConjugate_one_div (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1)
+    : (1 / a).HolderConjugate (1 / b) := by
+  simpa using HolderConjugate.inv_inv ha hb hab
 
 end NNReal
 
-protected lemma Real.HolderTriple.toNNReal {p q r : ℝ} (h : p.HolderTriple q r) :
-    p.toNNReal.HolderTriple q.toNNReal r.toNNReal := by
+protected lemma Real.HolderTriple.toNNReal {p q r : ℝ} (h : p.HolderTriple q r)
+    : p.toNNReal.HolderTriple q.toNNReal r.toNNReal := by
   simpa [← NNReal.holderTriple_coe_iff, h.nonneg, h.symm.nonneg, h.nonneg']
 
-protected lemma Real.HolderConjugate.toNNReal {p q : ℝ} (h : p.HolderConjugate q) :
-    p.toNNReal.HolderConjugate q.toNNReal := by
+protected lemma Real.HolderConjugate.toNNReal {p q : ℝ} (h : p.HolderConjugate q)
+    : p.toNNReal.HolderConjugate q.toNNReal := by
   simpa using Real.HolderTriple.toNNReal h
 
 namespace ENNReal
@@ -410,12 +417,11 @@ lemma coe_conjExponent {p : ℝ≥0} (hp : 1 < p) : p.conjExponent = conjExponen
   field_simp [(tsub_pos_of_lt hp).ne']
   rw [tsub_add_cancel_of_le hp.le]
 
-
 variable {a b p q r : ℝ≥0∞}
 
 @[simp, norm_cast]
-lemma holderTriple_coe_iff {p q r : ℝ≥0} (hr : r ≠ 0) :
-    HolderTriple (p : ℝ≥0∞) (q : ℝ≥0∞) (r : ℝ≥0∞) ↔ NNReal.HolderTriple p q r := by
+lemma holderTriple_coe_iff {p q r : ℝ≥0} (hr : r ≠ 0)
+    : HolderTriple (p : ℝ≥0∞) (q : ℝ≥0∞) (r : ℝ≥0∞) ↔ NNReal.HolderTriple p q r := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · rw [NNReal.holderTriple_iff]
     obtain ⟨hp, hq⟩ : p ≠ 0 ∧ q ≠ 0 := by
@@ -433,21 +439,22 @@ lemma holderTriple_coe_iff {p q r : ℝ≥0} (hr : r ≠ 0) :
 alias ⟨_, _root_.NNReal.HolderTriple.coe_ennreal⟩ := holderTriple_coe_iff
 
 @[simp, norm_cast]
-lemma holderConjugate_coe_iff {p q : ℝ≥0} :
-    HolderConjugate (p : ℝ≥0∞) (q : ℝ≥0∞) ↔ NNReal.HolderConjugate p q :=
+lemma holderConjugate_coe_iff {p q : ℝ≥0}
+    : HolderConjugate (p : ℝ≥0∞) (q : ℝ≥0∞) ↔ NNReal.HolderConjugate p q :=
   holderTriple_coe_iff one_ne_zero
 
 alias ⟨_, _root_.NNReal.HolderConjugate.coe_ennreal⟩ := holderConjugate_coe_iff
 
 namespace HolderTriple
 
-lemma _root_.Real.HolderTriple.ennrealOfReal {p q r : ℝ} (h : p.HolderTriple q r) :
-    HolderTriple (ENNReal.ofReal p) (ENNReal.ofReal q) (ENNReal.ofReal r) := by
+lemma _root_.Real.HolderTriple.ennrealOfReal {p q r : ℝ} (h : p.HolderTriple q r)
+    : HolderTriple (ENNReal.ofReal p) (ENNReal.ofReal q) (ENNReal.ofReal r) := by
   simpa [holderTriple_iff, ofReal_inv_of_pos, h.pos, h.symm.pos, h.pos', ofReal_add, h.nonneg,
-    h.symm.nonneg] using congr(ENNReal.ofReal $h.inv_add_inv_eq_inv)
+      h.symm.nonneg]
+    using congr(ENNReal.ofReal $h.inv_add_inv_eq_inv)
 
-lemma _root_.Real.HolderConjugate.ennrealOfReal {p q : ℝ} (h : p.HolderConjugate q) :
-    HolderConjugate (ENNReal.ofReal p) (ENNReal.ofReal q) := by
+lemma _root_.Real.HolderConjugate.ennrealOfReal {p q : ℝ} (h : p.HolderConjugate q)
+    : HolderConjugate (ENNReal.ofReal p) (ENNReal.ofReal q) := by
   simpa using Real.HolderTriple.ennrealOfReal h
 
 lemma of_toReal (h : Real.HolderTriple p.toReal q.toReal r.toReal) : HolderTriple p q r := by
@@ -458,32 +465,31 @@ lemma of_toReal (h : Real.HolderTriple p.toReal q.toReal r.toReal) : HolderTripl
   simpa [hp.2.ne, hq.2.ne, hr.2.ne] using h.ennrealOfReal
 
 variable (r) in
-lemma toReal_iff (hp : 0 < p.toReal) (hq : 0 < q.toReal) :
-    Real.HolderTriple p.toReal q.toReal r.toReal ↔ HolderTriple p q r := by
+lemma toReal_iff (hp : 0 < p.toReal) (hq : 0 < q.toReal)
+    : Real.HolderTriple p.toReal q.toReal r.toReal ↔ HolderTriple p q r := by
   refine ⟨of_toReal, fun h ↦ ⟨?_, hp, hq⟩⟩
   rw [toReal_pos_iff] at hp hq
-  simpa [toReal_add, Finiteness.inv_ne_top, hp.1.ne', hq.1.ne']
-    using congr($(h.inv_add_inv_eq_inv).toReal)
+  simpa [toReal_add, Finiteness.inv_ne_top, hp.1.ne', hq.1.ne'] using
+    congr($(h.inv_add_inv_eq_inv).toReal)
 
 variable (r) in
-lemma toReal (hp : 0 < p.toReal) (hq : 0 < q.toReal) [HolderTriple p q r] :
-    Real.HolderTriple p.toReal q.toReal r.toReal :=
+lemma toReal (hp : 0 < p.toReal) (hq : 0 < q.toReal) [HolderTriple p q r]
+    : Real.HolderTriple p.toReal q.toReal r.toReal :=
   toReal_iff r hp hq |>.mpr ‹_›
 
-lemma of_toNNReal (h : NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal) :
-    HolderTriple p q r :=
+lemma of_toNNReal (h : NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal) : HolderTriple p q r :=
   .of_toReal <| by simpa only [coe_toNNReal_eq_toReal] using h.coe
 
 variable (r) in
-lemma toNNReal_iff (hp : 0 < p.toNNReal) (hq : 0 < q.toNNReal) :
-    NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal ↔ HolderTriple p q r := by
+lemma toNNReal_iff (hp : 0 < p.toNNReal) (hq : 0 < q.toNNReal)
+    : NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal ↔ HolderTriple p q r := by
   simp_rw [← NNReal.holderTriple_coe_iff, coe_toNNReal_eq_toReal]
   apply toReal_iff r ?_ ?_
   all_goals simpa [← coe_toNNReal_eq_toReal]
 
 variable (r) in
-lemma toNNReal (hp : 0 < p.toNNReal) (hq : 0 < q.toNNReal) [HolderTriple p q r] :
-    NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal :=
+lemma toNNReal (hp : 0 < p.toNNReal) (hq : 0 < q.toNNReal) [HolderTriple p q r]
+    : NNReal.HolderTriple p.toNNReal q.toNNReal r.toNNReal :=
   toNNReal_iff r hp hq |>.mpr ‹_›
 
 end HolderTriple
@@ -494,8 +500,7 @@ lemma of_toReal (h : p.toReal.HolderConjugate q.toReal) : p.HolderConjugate q :=
   rw [Real.HolderConjugate] at h
   exact HolderTriple.of_toReal (toReal_one ▸ h)
 
-lemma toReal_iff (hp : 1 < p.toReal) :
-    p.toReal.HolderConjugate q.toReal ↔ p.HolderConjugate q := by
+lemma toReal_iff (hp : 1 < p.toReal) : p.toReal.HolderConjugate q.toReal ↔ p.HolderConjugate q := by
   refine ⟨of_toReal, fun h ↦ ?_⟩
   have hq : 0 < q.toReal := by
     rw [toReal_pos_iff]
@@ -504,26 +509,24 @@ lemma toReal_iff (hp : 1 < p.toReal) :
     exact toReal_mono one_ne_top hp
   simpa using HolderTriple.toReal 1 (zero_lt_one.trans hp) hq
 
-lemma toReal (hp : 1 < p.toReal) [HolderConjugate p q] :
-    p.toReal.HolderConjugate q.toReal :=
+lemma toReal (hp : 1 < p.toReal) [HolderConjugate p q] : p.toReal.HolderConjugate q.toReal :=
   toReal_iff hp |>.mpr ‹_›
 
-lemma toReal_of_ne_top (hp : p ≠ ∞) (hq : q ≠ ∞) [HolderConjugate p q] :
-    p.toReal.HolderConjugate q.toReal :=
+lemma toReal_of_ne_top (hp : p ≠ ∞) (hq : q ≠ ∞) [HolderConjugate p q]
+    : p.toReal.HolderConjugate q.toReal :=
   toReal ((toReal_lt_toReal one_ne_top hp).mpr ((lt_top_iff_one_lt q p).mp hq.lt_top))
 
-lemma of_toNNReal (h : NNReal.HolderConjugate p.toNNReal q.toNNReal) :
-    HolderConjugate p q :=
+lemma of_toNNReal (h : NNReal.HolderConjugate p.toNNReal q.toNNReal) : HolderConjugate p q :=
   .of_toReal <| by simpa only [coe_toNNReal_eq_toReal] using h.coe
 
-lemma toNNReal_iff (hp : 1 < p.toNNReal) :
-    NNReal.HolderConjugate p.toNNReal q.toNNReal ↔ HolderConjugate p q := by
+lemma toNNReal_iff (hp : 1 < p.toNNReal)
+    : NNReal.HolderConjugate p.toNNReal q.toNNReal ↔ HolderConjugate p q := by
   simp_rw [← NNReal.holderTriple_coe_iff, coe_toNNReal_eq_toReal]
   apply toReal_iff ?_
   all_goals simpa [← coe_toNNReal_eq_toReal]
 
-lemma toNNReal (hp : 1 < p.toNNReal) [HolderConjugate p q] :
-    NNReal.HolderConjugate p.toNNReal q.toNNReal :=
+lemma toNNReal (hp : 1 < p.toNNReal) [HolderConjugate p q]
+    : NNReal.HolderConjugate p.toNNReal q.toNNReal :=
   toNNReal_iff hp |>.mpr ‹_›
 
 protected lemma conjExponent {p : ℝ≥0∞} (hp : 1 ≤ p) : p.HolderConjugate (conjExponent p) := by
@@ -540,7 +543,8 @@ protected lemma conjExponent {p : ℝ≥0∞} (hp : 1 ≤ p) : p.HolderConjugate
       rw [ENNReal.add_div, ENNReal.div_self ((tsub_pos_of_lt hp₁).ne') (sub_ne_top hp), one_div]
     _ = (1⁻¹ - p⁻¹)⁻¹ := by
       rw [tsub_add_cancel_of_le, ← inv_eq_iff_eq_inv, div_eq_mul_inv, ENNReal.mul_inv, inv_inv,
-        ENNReal.mul_sub, ENNReal.inv_mul_cancel, mul_one] <;> simp [*]
+          ENNReal.mul_sub, ENNReal.inv_mul_cancel, mul_one]
+        <;> simp [*]
 
 instance {p : ℝ≥0∞} [Fact (1 ≤ p)] : p.HolderConjugate (conjExponent p) := .conjExponent Fact.out
 
@@ -560,7 +564,8 @@ lemma mul_eq_add : p * q = p + q := by
   obtain rfl | hq := eq_or_ne q ∞
   · simp [ne_zero p ∞]
   simpa [add_comm p, mul_add, add_mul, hp, hq, ne_zero p q, ne_zero q p, ENNReal.mul_inv_cancel,
-    ENNReal.inv_mul_cancel_right] using congr(p * $((inv_add_inv_eq_one p q).symm) * q)
+      ENNReal.inv_mul_cancel_right]
+    using congr(p * $((inv_add_inv_eq_one p q).symm) * q)
 
 lemma div_conj_eq_sub_one : p / q = p - 1 := by
   obtain rfl | hq := eq_or_ne q ∞

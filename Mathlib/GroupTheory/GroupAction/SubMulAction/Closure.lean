@@ -24,14 +24,11 @@ def closure (R : Type*) {M : Type*} [SMul R M] (s : Set M) : SubMulAction R M :=
 variable {R M : Type*} [SMul R M] {s t : Set M} {x : M}
 
 @[to_additive]
-theorem mem_closure : x ∈ closure R s ↔ ∀ p : SubMulAction R M, s ⊆ p → x ∈ p :=
-  Set.mem_iInter₂
+theorem mem_closure : x ∈ closure R s ↔ ∀ p : SubMulAction R M, s ⊆ p → x ∈ p := Set.mem_iInter₂
 
-@[to_additive]
-theorem subset_closure : s ⊆ closure R s := fun _ h => mem_closure.2 fun _ hp => hp h
+@[to_additive] theorem subset_closure : s ⊆ closure R s := fun _ h => mem_closure.2 fun _ hp => hp h
 
-@[to_additive]
-theorem mem_closure_of_mem (hx : x ∈ s) : x ∈ closure R s := subset_closure hx
+@[to_additive] theorem mem_closure_of_mem (hx : x ∈ s) : x ∈ closure R s := subset_closure hx
 
 @[to_additive]
 theorem closure_le {p} : closure R s ≤ p ↔ s ⊆ p :=
@@ -43,8 +40,7 @@ theorem closure_mono (h : s ⊆ t) : closure R s ≤ closure R t :=
 
 /-- A `SubMulAction` is finitely generated if it is the closure of a finite set. -/
 @[to_additive /-- A `SubAddAction` is finitely generated if it is the closure of a finite set. -/]
-def FG (p : SubMulAction R M) :=
-  ∃ (s : Set M), s.Finite ∧ p = closure R s
+def FG (p : SubMulAction R M) := ∃ (s : Set M), s.Finite ∧ p = closure R s
 
 @[to_additive]
 theorem fg_iff {p : SubMulAction R M} : p.FG ↔ ∃ (s : Finset M), p = closure R s :=

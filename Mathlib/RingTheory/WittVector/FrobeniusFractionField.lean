@@ -38,7 +38,6 @@ the classification of one-dimensional isocrystals over an algebraically closed f
 
 @[expose] public section
 
-
 noncomputable section
 
 namespace WittVector
@@ -60,7 +59,6 @@ whose variable represents the `n`th coefficient of `x` in `x * a`.
 
 -/
 
-
 section CommRing
 
 variable {k : Type*} [CommRing k] [CharP k p]
@@ -69,22 +67,22 @@ open Polynomial
 
 /-- The root of this polynomial determines the `n+1`st coefficient of our solution. -/
 def succNthDefiningPoly (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) : Polynomial k :=
-  X ^ p * C (a₁.coeff 0 ^ p ^ (n + 1)) - X * C (a₂.coeff 0 ^ p ^ (n + 1)) +
-    C
-      (a₁.coeff (n + 1) * (bs 0 ^ p) ^ p ^ (n + 1) +
-            nthRemainder p n (fun v => bs v ^ p) (truncateFun (n + 1) a₁) -
-          a₂.coeff (n + 1) * bs 0 ^ p ^ (n + 1) -
-        nthRemainder p n bs (truncateFun (n + 1) a₂))
+  X ^ p * C (a₁.coeff 0 ^ p ^ (n + 1)) - X * C (a₂.coeff 0 ^ p ^ (n + 1))
+    + C
+      (a₁.coeff (n + 1) * (bs 0 ^ p) ^ p ^ (n + 1)
+        + nthRemainder p n (fun v => bs v ^ p) (truncateFun (n + 1) a₁)
+        - a₂.coeff (n + 1) * bs 0 ^ p ^ (n + 1) - nthRemainder p n bs (truncateFun (n + 1) a₂))
 
-theorem succNthDefiningPoly_degree [IsDomain k] (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k)
-    (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0) :
-    (succNthDefiningPoly p n a₁ a₂ bs).degree = p := by
+theorem succNthDefiningPoly_degree
+    [IsDomain k]
+    (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : (succNthDefiningPoly p n a₁ a₂ bs).degree = p := by
   have : (X ^ p * C (a₁.coeff 0 ^ p ^ (n + 1))).degree = (p : WithBot ℕ) := by
     rw [degree_mul, degree_C]
     · simp
     · exact pow_ne_zero _ ha₁
-  have : (X ^ p * C (a₁.coeff 0 ^ p ^ (n + 1)) - X * C (a₂.coeff 0 ^ p ^ (n + 1))).degree =
-      (p : WithBot ℕ) := by
+  have : (X ^ p * C (a₁.coeff 0 ^ p ^ (n + 1)) - X * C (a₂.coeff 0 ^ p ^ (n + 1))).degree
+      = (p : WithBot ℕ) := by
     rw [degree_sub_eq_left_of_degree_lt, this]
     rw [this, degree_mul, degree_C, degree_X, add_zero]
     · exact mod_cast hp.out.one_lt
@@ -100,35 +98,35 @@ section IsAlgClosed
 
 variable {k : Type*} [Field k] [CharP k p] [IsAlgClosed k]
 
-theorem root_exists (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0)
-    (ha₂ : a₂.coeff 0 ≠ 0) : ∃ b : k, (succNthDefiningPoly p n a₁ a₂ bs).IsRoot b :=
+theorem root_exists
+    (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : ∃ b : k, (succNthDefiningPoly p n a₁ a₂ bs).IsRoot b :=
   IsAlgClosed.exists_root _ <| by
     simp only [succNthDefiningPoly_degree p n a₁ a₂ bs ha₁ ha₂, ne_eq, Nat.cast_eq_zero,
       hp.out.ne_zero, not_false_eq_true]
 
 /-- This is the `n+1`st coefficient of our solution, projected from `root_exists`. -/
-def succNthVal (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0)
-    (ha₂ : a₂.coeff 0 ≠ 0) : k :=
+def succNthVal
+    (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : k :=
   Classical.choose (root_exists p n a₁ a₂ bs ha₁ ha₂)
 
-theorem succNthVal_spec (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0)
-    (ha₂ : a₂.coeff 0 ≠ 0) :
-    (succNthDefiningPoly p n a₁ a₂ bs).IsRoot (succNthVal p n a₁ a₂ bs ha₁ ha₂) :=
+theorem succNthVal_spec
+    (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : (succNthDefiningPoly p n a₁ a₂ bs).IsRoot (succNthVal p n a₁ a₂ bs ha₁ ha₂) :=
   Classical.choose_spec (root_exists p n a₁ a₂ bs ha₁ ha₂)
 
-theorem succNthVal_spec' (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0)
-    (ha₂ : a₂.coeff 0 ≠ 0) :
-    succNthVal p n a₁ a₂ bs ha₁ ha₂ ^ p * a₁.coeff 0 ^ p ^ (n + 1) +
-          a₁.coeff (n + 1) * (bs 0 ^ p) ^ p ^ (n + 1) +
-        nthRemainder p n (fun v => bs v ^ p) (truncateFun (n + 1) a₁) =
-      succNthVal p n a₁ a₂ bs ha₁ ha₂ * a₂.coeff 0 ^ p ^ (n + 1) +
-          a₂.coeff (n + 1) * bs 0 ^ p ^ (n + 1) +
-        nthRemainder p n bs (truncateFun (n + 1) a₂) := by
+theorem succNthVal_spec'
+    (n : ℕ) (a₁ a₂ : 𝕎 k) (bs : Fin (n + 1) → k) (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : succNthVal p n a₁ a₂ bs ha₁ ha₂ ^ p * a₁.coeff 0 ^ p ^ (n + 1)
+        + a₁.coeff (n + 1) * (bs 0 ^ p) ^ p ^ (n + 1)
+        + nthRemainder p n (fun v => bs v ^ p) (truncateFun (n + 1) a₁)
+      = succNthVal p n a₁ a₂ bs ha₁ ha₂ * a₂.coeff 0 ^ p ^ (n + 1)
+        + a₂.coeff (n + 1) * bs 0 ^ p ^ (n + 1) + nthRemainder p n bs (truncateFun (n + 1) a₂) := by
   rw [← sub_eq_zero]
   have := succNthVal_spec p n a₁ a₂ bs ha₁ ha₂
-  simp only [Polynomial.eval_X, Polynomial.eval_C,
-    Polynomial.eval_pow, succNthDefiningPoly, Polynomial.eval_mul, Polynomial.eval_add,
-    Polynomial.eval_sub, Polynomial.IsRoot.def]
+  simp only [Polynomial.eval_X, Polynomial.eval_C, Polynomial.eval_pow, succNthDefiningPoly,
+      Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.IsRoot.def]
     at this
   convert this using 1
   ring
@@ -145,22 +143,21 @@ theorem solution_pow (a₁ a₂ : 𝕎 k) : ∃ x : k, x ^ (p - 1) = a₂.coeff 
   IsAlgClosed.exists_pow_nat_eq _ <| tsub_pos_of_lt hp.out.one_lt
 
 /-- The base case (0th coefficient) of our solution vector. -/
-def solution (a₁ a₂ : 𝕎 k) : k :=
-  Classical.choose <| solution_pow p a₁ a₂
+def solution (a₁ a₂ : 𝕎 k) : k := Classical.choose <| solution_pow p a₁ a₂
 
 theorem solution_spec (a₁ a₂ : 𝕎 k) : solution p a₁ a₂ ^ (p - 1) = a₂.coeff 0 / a₁.coeff 0 :=
   Classical.choose_spec <| solution_pow p a₁ a₂
 
-theorem solution_nonzero {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0) :
-    solution p a₁ a₂ ≠ 0 := by
+theorem solution_nonzero {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : solution p a₁ a₂ ≠ 0 := by
   intro h
   have := solution_spec p a₁ a₂
   rw [h, zero_pow] at this
   · simpa [ha₁, ha₂] using _root_.div_eq_zero_iff.mp this.symm
   · exact Nat.sub_ne_zero_of_lt hp.out.one_lt
 
-theorem solution_spec' {a₁ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (a₂ : 𝕎 k) :
-    solution p a₁ a₂ ^ p * a₁.coeff 0 = solution p a₁ a₂ * a₂.coeff 0 := by
+theorem solution_spec' {a₁ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (a₂ : 𝕎 k)
+    : solution p a₁ a₂ ^ p * a₁.coeff 0 = solution p a₁ a₂ * a₂.coeff 0 := by
   have := solution_spec p a₁ a₂
   have := Nat.exists_eq_succ_of_ne_zero hp.out.ne_zero
   grind
@@ -176,38 +173,41 @@ section IsAlgClosed
 variable {k : Type*} [Field k] [CharP k p] [IsAlgClosed k]
 
 /-- Recursively defines the sequence of coefficients for `WittVector.frobeniusRotation`. -/
-noncomputable def frobeniusRotationCoeff {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0)
-    (ha₂ : a₂.coeff 0 ≠ 0) : ℕ → k
+noncomputable def frobeniusRotationCoeff {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : ℕ → k
   | 0 => solution p a₁ a₂
   | n + 1 => succNthVal p n a₁ a₂ (fun i => frobeniusRotationCoeff ha₁ ha₂ i.val) ha₁ ha₂
 
-/-- For nonzero `a₁` and `a₂`, `frobeniusRotation a₁ a₂` is a Witt vector that satisfies the
+/--
+For nonzero `a₁` and `a₂`, `frobeniusRotation a₁ a₂` is a Witt vector that satisfies the
 equation `frobenius (frobeniusRotation a₁ a₂) * a₁ = (frobeniusRotation a₁ a₂) * a₂`.
 -/
 def frobeniusRotation {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0) : 𝕎 k :=
   WittVector.mk p (frobeniusRotationCoeff p ha₁ ha₂)
 
-theorem frobeniusRotation_nonzero {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0) :
-    frobeniusRotation p ha₁ ha₂ ≠ 0 := by
+theorem frobeniusRotation_nonzero {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : frobeniusRotation p ha₁ ha₂ ≠ 0 := by
   intro h
   apply solution_nonzero p ha₁ ha₂
   simpa [← h, frobeniusRotation, frobeniusRotationCoeff] using WittVector.zero_coeff p k 0
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem frobenius_frobeniusRotation {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0) :
-    frobenius (frobeniusRotation p ha₁ ha₂) * a₁ = frobeniusRotation p ha₁ ha₂ * a₂ := by
+theorem frobenius_frobeniusRotation {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 ≠ 0) (ha₂ : a₂.coeff 0 ≠ 0)
+    : frobenius (frobeniusRotation p ha₁ ha₂) * a₁ = frobeniusRotation p ha₁ ha₂ * a₂ := by
   ext n
   rcases n with - | n
   · simp only [WittVector.mul_coeff_zero, WittVector.coeff_frobenius_charP, frobeniusRotation,
       coeff_mk, frobeniusRotationCoeff]
     exact solution_spec' _ ha₁ _
-  · simp only [nthRemainder_spec, WittVector.coeff_frobenius_charP,
-      frobeniusRotation, coeff_mk, frobeniusRotationCoeff]
+  · simp only [nthRemainder_spec, WittVector.coeff_frobenius_charP, frobeniusRotation, coeff_mk,
+      frobeniusRotationCoeff]
     have :=
-      succNthVal_spec' p n a₁ a₂ (fun i : Fin (n + 1) => frobeniusRotationCoeff p ha₁ ha₂ i.val)
+      succNthVal_spec' p n a₁ a₂
+        (fun i : Fin (n + 1) => frobeniusRotationCoeff p ha₁ ha₂ i.val)
         ha₁ ha₂
     simp only [frobeniusRotationCoeff, Fin.val_zero] at this
-    convert! this using 3; clear this
+    convert! this using 3
+    clear this
     apply TruncatedWittVector.ext
     intro i
     simp only [WittVector.coeff_truncateFun, WittVector.coeff_frobenius_charP]
@@ -215,29 +215,29 @@ theorem frobenius_frobeniusRotation {a₁ a₂ : 𝕎 k} (ha₁ : a₁.coeff 0 �
 
 local notation "φ" => IsFractionRing.ringEquivOfRingEquiv (frobeniusEquiv p k)
 
-theorem exists_frobenius_solution_fractionRing_aux (m n : ℕ) (r' q' : 𝕎 k) (hr' : r'.coeff 0 ≠ 0)
-    (hq' : q'.coeff 0 ≠ 0) (hq : (p : 𝕎 k) ^ n * q' ∈ nonZeroDivisors (𝕎 k)) :
-    let b : 𝕎 k := frobeniusRotation p hr' hq'
-    IsFractionRing.ringEquivOfRingEquiv (frobeniusEquiv p k)
-          (algebraMap (𝕎 k) (FractionRing (𝕎 k)) b) *
-        Localization.mk ((p : 𝕎 k) ^ m * r') ⟨(p : 𝕎 k) ^ n * q', hq⟩ =
-      (p : Localization (nonZeroDivisors (𝕎 k))) ^ (m - n : ℤ) *
-        algebraMap (𝕎 k) (FractionRing (𝕎 k)) b := by
+theorem exists_frobenius_solution_fractionRing_aux
+    (m n : ℕ) (r' q' : 𝕎 k)
+    (hr' : r'.coeff 0 ≠ 0) (hq' : q'.coeff 0 ≠ 0) (hq : (p : 𝕎 k) ^ n * q' ∈ nonZeroDivisors (𝕎 k))
+    : let b : 𝕎 k := frobeniusRotation p hr' hq'
+      IsFractionRing.ringEquivOfRingEquiv (frobeniusEquiv p k)
+            (algebraMap (𝕎 k) (FractionRing (𝕎 k)) b)
+          * Localization.mk ((p : 𝕎 k) ^ m * r') ⟨(p : 𝕎 k) ^ n * q', hq⟩
+        = (p : Localization (nonZeroDivisors (𝕎 k))) ^ (m - n : ℤ)
+          * algebraMap (𝕎 k) (FractionRing (𝕎 k)) b := by
   intro b
   have key : WittVector.frobenius b * r' = q' * b := by
     linear_combination frobenius_frobeniusRotation p hr' hq'
   have hq'' : algebraMap (𝕎 k) (FractionRing (𝕎 k)) q' ≠ 0 := by
     have hq''' : q' ≠ 0 := fun h => hq' (by simp [h])
-    simpa only [Ne, map_zero] using
-      (IsFractionRing.injective (𝕎 k) (FractionRing (𝕎 k))).ne hq'''
+    simpa only [Ne, map_zero] using (IsFractionRing.injective (𝕎 k) (FractionRing (𝕎 k))).ne hq'''
   simp_rw [zpow_sub₀ (FractionRing.p_nonzero p k), IsFractionRing.ringEquivOfRingEquiv_apply,
     IsLocalization.map_eq, RingHom.coe_coe, frobeniusEquiv_apply, FractionRing.mk_eq_div, map_mul,
     map_pow, map_natCast, zpow_natCast, mul_div_mul_comm, mul_left_comm]
   congr
   simp_rw [← mul_div_assoc, div_eq_iff hq'', mul_comm (algebraMap _ _ b), ← map_mul, key]
 
-theorem exists_frobenius_solution_fractionRing {a : FractionRing (𝕎 k)} (ha : a ≠ 0) :
-    ∃ᵉ (b ≠ 0) (m : ℤ), φ b * a = (p : FractionRing (𝕎 k)) ^ m * b := by
+theorem exists_frobenius_solution_fractionRing {a : FractionRing (𝕎 k)} (ha : a ≠ 0)
+    : ∃ᵉ (b ≠ 0) (m : ℤ), φ b * a = (p : FractionRing (𝕎 k)) ^ m * b := by
   revert ha
   refine Localization.induction_on a ?_
   rintro ⟨r, q, hq⟩ hrq

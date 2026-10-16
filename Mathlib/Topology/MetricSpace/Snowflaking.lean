@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 public import Mathlib.Topology.EMetricSpace.Paracompact
 public import Mathlib.Topology.Separation.CompletelyRegular
-
 import Mathlib.Analysis.MeanInequalitiesPow
 
 /-!
@@ -58,9 +57,11 @@ noncomputable section
 
 namespace Metric
 
-/-- A copy of a type with metric given by `dist x y = (dist x.val y.val) ^ α`.
+/--
+A copy of a type with metric given by `dist x y = (dist x.val y.val) ^ α`.
 
-This is defined as a one-field structure. -/
+This is defined as a one-field structure.
+-/
 @[ext]
 structure Snowflaking (X : Type*) (α : ℝ) (hα₀ : 0 < α) (hα₁ : α ≤ 1) where
   /-- The value wrapped in `x : Snowflaking X α hα₀ hα₁`. -/
@@ -81,71 +82,69 @@ def ofSnowflaking : Snowflaking X α hα₀ hα₁ ≃ X where
 def toSnowflaking : X ≃ Snowflaking X α hα₀ hα₁ := ofSnowflaking.symm
 
 @[simp]
-theorem toSnowflaking.sizeOf_spec [SizeOf X] (x : X) :
-    sizeOf (toSnowflaking x : Snowflaking X α hα₀ hα₁) = 1 + sizeOf x :=
+theorem toSnowflaking.sizeOf_spec [SizeOf X] (x : X)
+    : sizeOf (toSnowflaking x : Snowflaking X α hα₀ hα₁) = 1 + sizeOf x :=
   rfl
 
 attribute [nolint simpNF] mk.injEq
 
 /-- This definition makes `cases x` and `induction x` use `toSnowflaking` instead of `mk`. -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-def casesOn_toSnowflaking {motive : Snowflaking X α hα₀ hα₁ → Sort*}
-    (toSnowflaking : ∀ x, motive (Snowflaking.toSnowflaking x)) (x : Snowflaking X α hα₀ hα₁) :
-    motive x :=
+def casesOn_toSnowflaking
+    {motive : Snowflaking X α hα₀ hα₁ → Sort*}
+    (toSnowflaking : ∀ x, motive (Snowflaking.toSnowflaking x))
+    (x : Snowflaking X α hα₀ hα₁)
+    : motive x :=
   toSnowflaking x.val
 
-@[simp]
-theorem mk_eq_toSnowflaking : (mk : X → Snowflaking X α hα₀ hα₁) = toSnowflaking := rfl
+@[simp] theorem mk_eq_toSnowflaking : (mk : X → Snowflaking X α hα₀ hα₁) = toSnowflaking := rfl
+
+@[simp] theorem val_eq_ofSnowflaking : (val : Snowflaking X α hα₀ hα₁ → X) = ofSnowflaking := rfl
 
 @[simp]
-theorem val_eq_ofSnowflaking : (val : Snowflaking X α hα₀ hα₁ → X) = ofSnowflaking := rfl
-
-@[simp]
-theorem symm_toSnowflaking :
-    (toSnowflaking : X ≃ Snowflaking X α hα₀ hα₁).symm = ofSnowflaking :=
+theorem symm_toSnowflaking : (toSnowflaking : X ≃ Snowflaking X α hα₀ hα₁).symm = ofSnowflaking :=
   rfl
 
 @[simp]
-theorem symm_ofSnowflaking :
-    (ofSnowflaking : Snowflaking X α hα₀ hα₁ ≃ X).symm = toSnowflaking :=
+theorem symm_ofSnowflaking : (ofSnowflaking : Snowflaking X α hα₀ hα₁ ≃ X).symm = toSnowflaking :=
   rfl
 
 @[simp]
-theorem toSnowflaking_ofSnowflaking (x : Snowflaking X α hα₀ hα₁) :
-    toSnowflaking x.ofSnowflaking = x :=
+theorem toSnowflaking_ofSnowflaking (x : Snowflaking X α hα₀ hα₁)
+    : toSnowflaking x.ofSnowflaking = x :=
   rfl
 
 @[simp]
-theorem ofSnowflaking_toSnowflaking (x : X) :
-    (toSnowflaking x : Snowflaking X α hα₀ hα₁).ofSnowflaking = x :=
+theorem ofSnowflaking_toSnowflaking (x : X)
+    : (toSnowflaking x : Snowflaking X α hα₀ hα₁).ofSnowflaking = x :=
   rfl
 
 @[simp]
-theorem ofSnowflaking_comp_toSnowflaking :
-    (ofSnowflaking : Snowflaking X α hα₀ hα₁ → X) ∘ toSnowflaking = id :=
+theorem ofSnowflaking_comp_toSnowflaking
+    : (ofSnowflaking : Snowflaking X α hα₀ hα₁ → X) ∘ toSnowflaking = id :=
   rfl
 
 @[simp]
-theorem toSnowflaking_comp_ofSnowflaking :
-    (toSnowflaking : X → Snowflaking X α hα₀ hα₁) ∘ ofSnowflaking = id :=
+theorem toSnowflaking_comp_ofSnowflaking
+    : (toSnowflaking : X → Snowflaking X α hα₀ hα₁) ∘ ofSnowflaking = id :=
   rfl
 
-theorem image_toSnowflaking_eq_preimage (s : Set X) :
-    (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = ofSnowflaking ⁻¹' s :=
+theorem image_toSnowflaking_eq_preimage (s : Set X)
+    : (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = ofSnowflaking ⁻¹' s :=
   toSnowflaking.image_eq_preimage_symm _
 
-theorem image_ofSnowflaking_eq_preimage (s : Set (Snowflaking X α hα₀ hα₁)) :
-    ofSnowflaking '' s = toSnowflaking ⁻¹' s :=
+theorem image_ofSnowflaking_eq_preimage (s : Set (Snowflaking X α hα₀ hα₁))
+    : ofSnowflaking '' s = toSnowflaking ⁻¹' s :=
   ofSnowflaking.image_eq_preimage_symm _
 
 @[simp]
-theorem image_toSnowflaking_image_ofSnowflaking (s : Set (Snowflaking X α hα₀ hα₁)) :
-    toSnowflaking '' ofSnowflaking '' s = s :=
+theorem image_toSnowflaking_image_ofSnowflaking (s : Set (Snowflaking X α hα₀ hα₁))
+    : toSnowflaking '' ofSnowflaking '' s = s :=
   ofSnowflaking.symm_image_image _
 
 @[simp]
-theorem image_ofSnowflaking_image_toSnowflaking (s : Set X) :
-    ofSnowflaking '' (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = s :=
+theorem image_ofSnowflaking_image_toSnowflaking (s : Set X)
+    : ofSnowflaking '' (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = s :=
   ofSnowflaking.image_symm_image _
 
 /-!
@@ -181,11 +180,9 @@ In the future, we can add more of them, if needed,
 or even copy all the topology-related classes, if we get a tactic to do it automatically.
 -/
 
-instance [T0Space X] : T0Space (Snowflaking X α hα₀ hα₁) :=
-  homeomorph.symm.t0Space
+instance [T0Space X] : T0Space (Snowflaking X α hα₀ hα₁) := homeomorph.symm.t0Space
 
-instance [T2Space X] : T2Space (Snowflaking X α hα₀ hα₁) :=
-  homeomorph.symm.t2Space
+instance [T2Space X] : T2Space (Snowflaking X α hα₀ hα₁) := homeomorph.symm.t2Space
 
 instance [SecondCountableTopology X] : SecondCountableTopology (Snowflaking X α hα₀ hα₁) :=
   homeomorph.secondCountableTopology
@@ -207,23 +204,23 @@ instance : Bornology (Snowflaking X α hα₀ hα₁) := .induced ofSnowflaking
 open Bornology
 
 @[simp]
-theorem isBounded_image_ofSnowflaking_iff {s : Set (Snowflaking X α hα₀ hα₁)} :
-    IsBounded (ofSnowflaking '' s) ↔ IsBounded s :=
+theorem isBounded_image_ofSnowflaking_iff {s : Set (Snowflaking X α hα₀ hα₁)}
+    : IsBounded (ofSnowflaking '' s) ↔ IsBounded s :=
   isBounded_induced.symm
 
 @[simp]
-theorem isBounded_preimage_toSnowflaking_iff {s : Set (Snowflaking X α hα₀ hα₁)} :
-    IsBounded (toSnowflaking ⁻¹' s) ↔ IsBounded s := by
+theorem isBounded_preimage_toSnowflaking_iff {s : Set (Snowflaking X α hα₀ hα₁)}
+    : IsBounded (toSnowflaking ⁻¹' s) ↔ IsBounded s := by
   rw [← image_ofSnowflaking_eq_preimage, isBounded_image_ofSnowflaking_iff]
 
 @[simp]
-theorem isBounded_image_toSnowflaking_iff {s : Set X} :
-    IsBounded (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) ↔ IsBounded s := by
+theorem isBounded_image_toSnowflaking_iff {s : Set X}
+    : IsBounded (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) ↔ IsBounded s := by
   rw [← isBounded_image_ofSnowflaking_iff, image_ofSnowflaking_image_toSnowflaking]
 
 @[simp]
-theorem isBounded_preimage_ofSnowflaking_iff {s : Set X} :
-    IsBounded (ofSnowflaking ⁻¹' s : Set (Snowflaking X α hα₀ hα₁)) ↔ IsBounded s := by
+theorem isBounded_preimage_ofSnowflaking_iff {s : Set X}
+    : IsBounded (ofSnowflaking ⁻¹' s : Set (Snowflaking X α hα₀ hα₁)) ↔ IsBounded s := by
   rw [← image_toSnowflaking_eq_preimage, isBounded_image_toSnowflaking_iff]
 
 end Bornology
@@ -241,16 +238,18 @@ variable [UniformSpace X]
 instance : UniformSpace (Snowflaking X α hα₀ hα₁) :=
   UniformSpace.comap Snowflaking.ofSnowflaking ‹_›
 
-theorem uniformContinuous_ofSnowflaking :
-    UniformContinuous (ofSnowflaking : Snowflaking X α hα₀ hα₁ → X) :=
+theorem uniformContinuous_ofSnowflaking
+    : UniformContinuous (ofSnowflaking : Snowflaking X α hα₀ hα₁ → X) :=
   uniformContinuous_comap
 
-theorem uniformContinuous_toSnowflaking :
-    UniformContinuous (toSnowflaking : X → Snowflaking X α hα₀ hα₁) :=
+theorem uniformContinuous_toSnowflaking
+    : UniformContinuous (toSnowflaking : X → Snowflaking X α hα₀ hα₁) :=
   uniformContinuous_comap' uniformContinuous_id
 
-/-- The natural uniform space equivalence between `Snowflaking X α hα hα₁`
-and the underlying space. -/
+/--
+The natural uniform space equivalence between `Snowflaking X α hα hα₁`
+and the underlying space.
+-/
 @[simps! toEquiv apply symm_apply]
 def uniformEquiv : Snowflaking X α hα₀ hα₁ ≃ᵤ X where
   toEquiv := ofSnowflaking
@@ -275,18 +274,18 @@ variable [EDist X]
 instance : EDist (Snowflaking X α hα₀ hα₁) where
   edist x y := edist x.ofSnowflaking y.ofSnowflaking ^ α
 
-theorem edist_def (x y : Snowflaking X α hα₀ hα₁) :
-    edist x y = edist x.ofSnowflaking y.ofSnowflaking ^ α :=
+theorem edist_def (x y : Snowflaking X α hα₀ hα₁)
+    : edist x y = edist x.ofSnowflaking y.ofSnowflaking ^ α :=
   rfl
 
 @[simp]
-theorem edist_toSnowflaking_toSnowflaking (x y : X) :
-    edist (toSnowflaking x : Snowflaking X α hα₀ hα₁) (toSnowflaking y) = edist x y ^ α :=
+theorem edist_toSnowflaking_toSnowflaking (x y : X)
+    : edist (toSnowflaking x : Snowflaking X α hα₀ hα₁) (toSnowflaking y) = edist x y ^ α :=
   rfl
 
 @[simp]
-theorem edist_ofSnowflaking_ofSnowflaking (x y : Snowflaking X α hα₀ hα₁) :
-    edist x.ofSnowflaking y.ofSnowflaking = edist x y ^ α⁻¹ := by
+theorem edist_ofSnowflaking_ofSnowflaking (x y : Snowflaking X α hα₀ hα₁)
+    : edist x.ofSnowflaking y.ofSnowflaking = edist x y ^ α⁻¹ := by
   rw [edist_def, ENNReal.rpow_rpow_inv hα₀.ne']
 
 end EDist
@@ -305,87 +304,85 @@ instance : PseudoEMetricSpace (Snowflaking X α hα₀ hα₁) where
   toUniformSpace := inferInstance
   uniformity_edist := by
     have H : (𝓤 X).HasBasis (0 < ·) fun x => {p | edist p.1 p.2 < x ^ (α⁻¹)} := by
-      refine EMetric.mk_uniformity_basis (fun _ _ ↦ by positivity) fun ε hε ↦
-        ⟨ε ^ α, by positivity, ?_⟩
+      refine
+        EMetric.mk_uniformity_basis (fun _ _ ↦ by positivity) fun ε hε ↦ ⟨ε ^ α, by positivity, ?_⟩
       rw [ENNReal.rpow_rpow_inv hα₀.ne']
     simp (disch := positivity) [uniformity_comap, H.eq_biInf, ENNReal.rpow_lt_rpow_iff]
 
 @[simp]
-theorem preimage_ofSnowflaking_eball (x : X) (r : ℝ≥0∞) :
-    ofSnowflaking ⁻¹' Metric.eball x r =
-      Metric.eball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem preimage_ofSnowflaking_eball (x : X) (r : ℝ≥0∞)
+    : ofSnowflaking ⁻¹' Metric.eball x r
+      = Metric.eball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   ext ⟨y⟩
   simp (disch := positivity) [ENNReal.rpow_lt_rpow_iff]
 
 @[simp]
-theorem image_toSnowflaking_eball (x : X) (r : ℝ≥0∞) :
-    toSnowflaking '' Metric.eball x r =
-      Metric.eball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem image_toSnowflaking_eball (x : X) (r : ℝ≥0∞)
+    : toSnowflaking '' Metric.eball x r
+      = Metric.eball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   rw [image_toSnowflaking_eq_preimage, preimage_ofSnowflaking_eball]
 
 @[simp]
-theorem preimage_toSnowflaking_eball (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞) :
-    toSnowflaking ⁻¹' Metric.eball x d = Metric.eball x.ofSnowflaking (d ^ α⁻¹) := by
+theorem preimage_toSnowflaking_eball (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞)
+    : toSnowflaking ⁻¹' Metric.eball x d = Metric.eball x.ofSnowflaking (d ^ α⁻¹) := by
   rw [toSnowflaking.preimage_eq_iff_eq_image, image_toSnowflaking_eball,
     toSnowflaking_ofSnowflaking, ENNReal.rpow_inv_rpow hα₀.ne']
 
 @[simp]
-theorem image_ofSnowflaking_eball (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞) :
-    ofSnowflaking '' Metric.eball x d = Metric.eball x.ofSnowflaking (d ^ α⁻¹) := by
+theorem image_ofSnowflaking_eball (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞)
+    : ofSnowflaking '' Metric.eball x d = Metric.eball x.ofSnowflaking (d ^ α⁻¹) := by
   rw [image_ofSnowflaking_eq_preimage, preimage_toSnowflaking_eball]
 
 @[simp]
-theorem preimage_ofSnowflaking_closedEBall (x : X) (r : ℝ≥0∞) :
-    ofSnowflaking ⁻¹' Metric.closedEBall x r =
-      Metric.closedEBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem preimage_ofSnowflaking_closedEBall (x : X) (r : ℝ≥0∞)
+    : ofSnowflaking ⁻¹' Metric.closedEBall x r
+      = Metric.closedEBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   ext ⟨y⟩
   simp (disch := positivity) [ENNReal.rpow_le_rpow_iff]
 
 @[simp]
-theorem image_toSnowflaking_closedEBall (x : X) (r : ℝ≥0∞) :
-    toSnowflaking '' Metric.closedEBall x r =
-      Metric.closedEBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem image_toSnowflaking_closedEBall (x : X) (r : ℝ≥0∞)
+    : toSnowflaking '' Metric.closedEBall x r
+      = Metric.closedEBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   rw [image_toSnowflaking_eq_preimage, preimage_ofSnowflaking_closedEBall]
 
 @[simp]
-theorem preimage_toSnowflaking_closedEBall (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞) :
-    toSnowflaking ⁻¹' Metric.closedEBall x d = Metric.closedEBall x.ofSnowflaking (d ^ α⁻¹) := by
+theorem preimage_toSnowflaking_closedEBall (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞)
+    : toSnowflaking ⁻¹' Metric.closedEBall x d = Metric.closedEBall x.ofSnowflaking (d ^ α⁻¹) := by
   rw [toSnowflaking.preimage_eq_iff_eq_image, image_toSnowflaking_closedEBall,
     toSnowflaking_ofSnowflaking, ENNReal.rpow_inv_rpow hα₀.ne']
 
 @[simp]
-theorem image_ofSnowflaking_closedEBall (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞) :
-    ofSnowflaking '' Metric.closedEBall x d =
-      Metric.closedEBall x.ofSnowflaking (d ^ α⁻¹) := by
+theorem image_ofSnowflaking_closedEBall (x : Snowflaking X α hα₀ hα₁) (d : ℝ≥0∞)
+    : ofSnowflaking '' Metric.closedEBall x d = Metric.closedEBall x.ofSnowflaking (d ^ α⁻¹) := by
   rw [image_ofSnowflaking_eq_preimage, preimage_toSnowflaking_closedEBall]
 
 @[simp]
-theorem ediam_image_ofSnowflaking (s : Set (Snowflaking X α hα₀ hα₁)) :
-    ediam (ofSnowflaking '' s) = ediam s ^ α⁻¹ := by
+theorem ediam_image_ofSnowflaking (s : Set (Snowflaking X α hα₀ hα₁))
+    : ediam (ofSnowflaking '' s) = ediam s ^ α⁻¹ := by
   refine eq_of_forall_ge_iff fun c ↦ ?_
   simp only [ENNReal.rpow_inv_le_iff hα₀, ediam_le_iff, Set.forall_mem_image,
     edist_ofSnowflaking_ofSnowflaking]
 
 @[simp]
-theorem ediam_preimage_toSnowflaking (s : Set (Snowflaking X α hα₀ hα₁)) :
-    ediam (toSnowflaking ⁻¹' s) = ediam s ^ α⁻¹ := by
+theorem ediam_preimage_toSnowflaking (s : Set (Snowflaking X α hα₀ hα₁))
+    : ediam (toSnowflaking ⁻¹' s) = ediam s ^ α⁻¹ := by
   rw [← image_ofSnowflaking_eq_preimage, ediam_image_ofSnowflaking]
 
 @[simp]
-theorem ediam_preimage_ofSnowflaking (s : Set X) :
-    ediam (ofSnowflaking ⁻¹' s : Set (Snowflaking X α hα₀ hα₁)) = ediam s ^ α := by
+theorem ediam_preimage_ofSnowflaking (s : Set X)
+    : ediam (ofSnowflaking ⁻¹' s : Set (Snowflaking X α hα₀ hα₁)) = ediam s ^ α := by
   rw [← ENNReal.rpow_inv_rpow hα₀.ne' (ediam _), ← ediam_preimage_toSnowflaking,
     ← Set.preimage_comp, ofSnowflaking_comp_toSnowflaking, Set.preimage_id]
 
 @[simp]
-theorem ediam_image_toSnowflaking (s : Set X) :
-    ediam (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = ediam s ^ α := by
+theorem ediam_image_toSnowflaking (s : Set X)
+    : ediam (toSnowflaking '' s : Set (Snowflaking X α hα₀ hα₁)) = ediam s ^ α := by
   simp [image_toSnowflaking_eq_preimage]
 
 end PseudoEMetricSpace
 
-instance [EMetricSpace X] : EMetricSpace (Snowflaking X α hα₀ hα₁) :=
-  .ofT0PseudoEMetricSpace _
+instance [EMetricSpace X] : EMetricSpace (Snowflaking X α hα₀ hα₁) := .ofT0PseudoEMetricSpace _
 
 /-!
 ### Distance and a (pseudo) metric space structure
@@ -400,8 +397,8 @@ instance [Dist X] : Dist (Snowflaking X α hα₀ hα₁) where
   dist x y := dist x.ofSnowflaking y.ofSnowflaking ^ α
 
 @[simp]
-theorem dist_toSnowflaking_toSnowflaking [Dist X] (x y : X) :
-    dist (toSnowflaking x : Snowflaking X α hα₀ hα₁) (toSnowflaking y) = dist x y ^ α :=
+theorem dist_toSnowflaking_toSnowflaking [Dist X] (x y : X)
+    : dist (toSnowflaking x : Snowflaking X α hα₀ hα₁) (toSnowflaking y) = dist x y ^ α :=
   rfl
 
 section PseudoMetricSpace
@@ -413,9 +410,12 @@ instance : PseudoMetricSpace (Snowflaking X α hα₀ hα₁) :=
     PseudoEMetricSpace.toPseudoMetricSpaceOfDist dist
       (by intro x y; cases x; cases y; rw [dist_toSnowflaking_toSnowflaking]; positivity)
       (by
-        intro x y; cases x; cases y
+        intro x y
+        cases x
+        cases y
         rw [edist_toSnowflaking_toSnowflaking, dist_toSnowflaking_toSnowflaking,
-          ← ENNReal.ofReal_rpow_of_nonneg, ← edist_dist] <;> positivity)
+            ← ENNReal.ofReal_rpow_of_nonneg, ← edist_dist]
+          <;> positivity)
   aux.replaceBornology fun s ↦ by
     rw [← isBounded_preimage_toSnowflaking_iff, Metric.isBounded_iff, Metric.isBounded_iff]
     constructor
@@ -431,61 +431,61 @@ instance : PseudoMetricSpace (Snowflaking X α hα₀ hα₁) :=
 open Metric
 
 @[simp]
-theorem dist_ofSnowflaking_ofSnowflaking (x y : Snowflaking X α hα₀ hα₁) :
-    dist x.ofSnowflaking y.ofSnowflaking = dist x y ^ α⁻¹ := by
-  cases x; cases y
+theorem dist_ofSnowflaking_ofSnowflaking (x y : Snowflaking X α hα₀ hα₁)
+    : dist x.ofSnowflaking y.ofSnowflaking = dist x y ^ α⁻¹ := by
+  cases x
+  cases y
   simp [Real.rpow_rpow_inv dist_nonneg hα₀.ne']
 
 @[simp]
-theorem preimage_ofSnowflaking_ball (x : X) {r : ℝ} (hr : 0 ≤ r) :
-    ofSnowflaking ⁻¹' ball x r = ball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem preimage_ofSnowflaking_ball (x : X) {r : ℝ} (hr : 0 ≤ r)
+    : ofSnowflaking ⁻¹' ball x r = ball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   ext ⟨y⟩
   simp (disch := positivity) [Real.rpow_lt_rpow_iff]
 
 @[simp]
-theorem image_toSnowflaking_ball (x : X) {r : ℝ} (hr : 0 ≤ r) :
-    toSnowflaking '' ball x r = ball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem image_toSnowflaking_ball (x : X) {r : ℝ} (hr : 0 ≤ r)
+    : toSnowflaking '' ball x r = ball (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   rw [image_toSnowflaking_eq_preimage, preimage_ofSnowflaking_ball x hr]
 
 @[simp]
-theorem preimage_toSnowflaking_ball (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r) :
-    toSnowflaking ⁻¹' ball x r = ball x.ofSnowflaking (r ^ α⁻¹) := by
+theorem preimage_toSnowflaking_ball (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r)
+    : toSnowflaking ⁻¹' ball x r = ball x.ofSnowflaking (r ^ α⁻¹) := by
   rw [toSnowflaking.preimage_eq_iff_eq_image, image_toSnowflaking_ball _ (by positivity),
     toSnowflaking_ofSnowflaking, Real.rpow_inv_rpow hr hα₀.ne']
 
 @[simp]
-theorem image_ofSnowflaking_ball (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r) :
-    ofSnowflaking '' ball x r = ball x.ofSnowflaking (r ^ α⁻¹) := by
+theorem image_ofSnowflaking_ball (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r)
+    : ofSnowflaking '' ball x r = ball x.ofSnowflaking (r ^ α⁻¹) := by
   rw [image_ofSnowflaking_eq_preimage, preimage_toSnowflaking_ball _ hr]
 
 @[simp]
-theorem preimage_ofSnowflaking_closedBall (x : X) {r : ℝ} (hr : 0 ≤ r) :
-    ofSnowflaking ⁻¹' closedBall x r =
-      closedBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem preimage_ofSnowflaking_closedBall (x : X) {r : ℝ} (hr : 0 ≤ r)
+    : ofSnowflaking ⁻¹' closedBall x r
+      = closedBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   ext ⟨y⟩
   simp (disch := positivity) [Real.rpow_le_rpow_iff]
 
 @[simp]
-theorem image_toSnowflaking_closedBall (x : X) {r : ℝ} (hr : 0 ≤ r) :
-    toSnowflaking '' closedBall x r =
-      closedBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
+theorem image_toSnowflaking_closedBall (x : X) {r : ℝ} (hr : 0 ≤ r)
+    : toSnowflaking '' closedBall x r
+      = closedBall (toSnowflaking x : Snowflaking X α hα₀ hα₁) (r ^ α) := by
   rw [image_toSnowflaking_eq_preimage, preimage_ofSnowflaking_closedBall x hr]
 
 @[simp]
-theorem preimage_toSnowflaking_closedBall (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r) :
-    toSnowflaking ⁻¹' closedBall x r = closedBall x.ofSnowflaking (r ^ α⁻¹) := by
+theorem preimage_toSnowflaking_closedBall (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r)
+    : toSnowflaking ⁻¹' closedBall x r = closedBall x.ofSnowflaking (r ^ α⁻¹) := by
   rw [toSnowflaking.preimage_eq_iff_eq_image, image_toSnowflaking_closedBall _ (by positivity),
     toSnowflaking_ofSnowflaking, Real.rpow_inv_rpow hr hα₀.ne']
 
 @[simp]
-theorem image_ofSnowflaking_closedBall (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r) :
-    ofSnowflaking '' closedBall x r = closedBall x.ofSnowflaking (r ^ α⁻¹) := by
+theorem image_ofSnowflaking_closedBall (x : Snowflaking X α hα₀ hα₁) {r : ℝ} (hr : 0 ≤ r)
+    : ofSnowflaking '' closedBall x r = closedBall x.ofSnowflaking (r ^ α⁻¹) := by
   rw [image_ofSnowflaking_eq_preimage, preimage_toSnowflaking_closedBall _ hr]
 
 end PseudoMetricSpace
 
-instance [MetricSpace X] : MetricSpace (Snowflaking X α hα₀ hα₁) :=
-  .ofT0PseudoMetricSpace _
+instance [MetricSpace X] : MetricSpace (Snowflaking X α hα₀ hα₁) := .ofT0PseudoMetricSpace _
 
 end Snowflaking
 end Metric

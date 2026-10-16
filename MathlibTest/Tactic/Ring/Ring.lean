@@ -11,8 +11,8 @@ notation "ℝ" => Real
 @[instance] axiom Real.linearOrder : LinearOrder ℝ
 @[instance] axiom Real.isStrictOrderedRing : IsStrictOrderedRing ℝ
 
-example {a b c : ℝ} {f : ℝ → ℝ} (h : f (a * c * b) * f (c + b + a) = 1) :
-    f (a + b + c) * f (b * a * c) = 1 := by
+example {a b c : ℝ} {f : ℝ → ℝ} (h : f (a * c * b) * f (c + b + a) = 1)
+    : f (a + b + c) * f (b * a * c) = 1 := by
   ring_nf at *
   exact h
 
@@ -21,7 +21,7 @@ example (x y : ℕ) : x + y + y = 2 * y + x := by ring
 example (x y : ℕ) : x + id y = y + id x := by ring!
 example (x y : ℕ+) : x + y = y + x := by ring
 example {α} [CommRing α] (x y : α) : x + y + y - x = 2 * y := by ring
-example {α} [CommSemiring α] (x y : α) : (x + y)^2 = x^2 + 2 • x * y + y^2 := by ring
+example {α} [CommSemiring α] (x y : α) : (x + y) ^ 2 = x ^ 2 + 2 • x * y + y ^ 2 := by ring
 
 example (x y : ℕ) : (x + y) ^ 3 = x ^ 3 + y ^ 3 + 3 * (x * y ^ 2 + x ^ 2 * y) := by ring
 example (x y : ℕ+) : (x + y) ^ 3 = x ^ 3 + y ^ 3 + 3 * (x * y ^ 2 + x ^ 2 * y) := by ring
@@ -29,24 +29,29 @@ example (x y : ℝ) : (x + y) ^ 3 = x ^ 3 + y ^ 3 + 3 * (x * y ^ 2 + x ^ 2 * y) 
 example {α} [CommSemiring α] (x : α) : (x + 1) ^ 6 = (1 + x) ^ 6 := by ring
 example (n : ℕ) : (n / 2) + (n / 2) = 2 * (n / 2) := by ring
 example {α} [Field α] [CharZero α] (a : α) : a / 2 = a / 2 := by ring
-example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α) :
-  a * (-c / b) * (-c / b) + -c + c = a * (c / b * (c / b)) := by ring
-example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α) :
-  b ^ 2 - 4 * c * a = -(4 * c * a) + b ^ 2 := by ring
-example {α} [CommSemiring α] (x : α) : x ^ (2 + 2) = x^4 := by ring1
-example {α} [CommSemiring α] (x : α) : x ^ (2 + 2) = x^4 := by ring
+example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α)
+    : a * (-c / b) * (-c / b) + -c + c = a * (c / b * (c / b)) := by
+  ring
+example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α)
+    : b ^ 2 - 4 * c * a = -(4 * c * a) + b ^ 2 := by
+  ring
+example {α} [CommSemiring α] (x : α) : x ^ (2 + 2) = x ^ 4 := by ring1
+example {α} [CommSemiring α] (x : α) : x ^ (2 + 2) = x ^ 4 := by ring
 example {α} [CommRing α] (x : α) : x ^ 2 = x * x := by ring
 -- example {α} [CommRing α] (x : α) : x ^ (2 : ℤ) = x * x := by ring
-example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α) :
-  b ^ 2 - 4 * c * a = -(4 * c * a) + b ^ 2 := by ring
-example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α) :
-  b ^ 2 - 4 * a * c = 4 * a * 0 + b * b - 4 * a * c := by ring
-example {α} [CommSemiring α] (x y z : α) (n : ℕ) :
-  (x + y) * (z * (y * y) + (x * x ^ n + (1 + ↑n) * x ^ n * y)) =
-  x * (x * x ^ n) + ((2 + ↑n) * (x * x ^ n) * y +
-    (x * z + (z * y + (1 + ↑n) * x ^ n)) * (y * y)) := by ring
-example {α} [CommRing α] (a b c d e : α) :
-  (-(a * b) + c + d) * e = (c + (d + -a * b)) * e := by ring
+example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α)
+    : b ^ 2 - 4 * c * a = -(4 * c * a) + b ^ 2 := by
+  ring
+example {α} [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a b c : α)
+    : b ^ 2 - 4 * a * c = 4 * a * 0 + b * b - 4 * a * c := by
+  ring
+example {α} [CommSemiring α] (x y z : α) (n : ℕ)
+    : (x + y) * (z * (y * y) + (x * x ^ n + (1 + ↑n) * x ^ n * y))
+      = x * (x * x ^ n)
+        + ((2 + ↑n) * (x * x ^ n) * y + (x * z + (z * y + (1 + ↑n) * x ^ n)) * (y * y)) := by
+  ring
+example {α} [CommRing α] (a b c d e : α) : (-(a * b) + c + d) * e = (c + (d + -a * b)) * e := by
+  ring
 example (a n s : ℕ) : a * (n - s) = (n - s) * a := by ring
 
 example {α} [CommRing α] (x : α) : (2 : ℕ) • x = x + x := by ring
@@ -66,33 +71,32 @@ example (x : α) : x⁻¹ ^ 2 = (x ^ 2)⁻¹ := by ring1
 example (x : α) : x⁻¹ ^ 2 = (x ^ 2)⁻¹ := by ring1
 example (x y : α) : x * y⁻¹ = y⁻¹ * x := by ring1
 
-example (x y : α) : (x^2 * y)⁻¹ = (y * x^2)⁻¹ := by ring1
-example (x y : α) : (x^2)⁻¹ / y = (y * x^2)⁻¹ := by ring1
+example (x y : α) : (x ^ 2 * y)⁻¹ = (y * x ^ 2)⁻¹ := by ring1
+example (x y : α) : (x ^ 2)⁻¹ / y = (y * x ^ 2)⁻¹ := by ring1
 example (x y : α) : 3 / (x - x + y)⁻¹ = 3 * (x + y⁻¹ - x)⁻¹ := by ring1
 
 variable [CharZero α]
 
 example (x : α) : x / 2 = x / 2 := by ring
-example (x : α) : (x : α) = x * (5/3)*(3/5) := by ring1
+example (x : α) : (x : α) = x * (5 / 3) * (3 / 5) := by ring1
 
 end Rat
 
 example (A : ℕ) : (2 * A) ^ 2 = (2 * A) ^ 2 := by ring
 
-example (x y z : ℚ) (hx : x ≠ 0) (hy : y ≠ 0) :
-    x / (y / z) + y ⁻¹ + 1 / (y * -x) = -1/ (x * y) + (x * z + 1) / y := by
+example (x y z : ℚ) (hx : x ≠ 0) (hy : y ≠ 0)
+    : x / (y / z) + y⁻¹ + 1 / (y * -x) = -1 / (x * y) + (x * z + 1) / y := by
   field_simp
   ring
 
-example (a b c d x y : ℚ) (hx : x ≠ 0) (hy : y ≠ 0) :
-    a + b / x - c / x^2 + d / x^3 = a + x⁻¹ * (y * b / y + (d / x - c) / x) := by
+example (a b c d x y : ℚ) (hx : x ≠ 0) (hy : y ≠ 0)
+    : a + b / x - c / x ^ 2 + d / x ^ 3 = a + x⁻¹ * (y * b / y + (d / x - c) / x) := by
   field_simp
   ring
 
 example : (876544 : ℤ) * -1 + (1000000 - 123456) = 0 := by ring
 
-example (x : ℝ) (hx : x ≠ 0) :
-    2 * x ^ 3 * 2 / (24 * x) = x ^ 2 / 6 := by
+example (x : ℝ) (hx : x ≠ 0) : 2 * x ^ 3 * 2 / (24 * x) = x ^ 2 / 6 := by
   field_simp
   ring
 
@@ -105,11 +109,13 @@ example (x : ℤ) (h : x - x + x = 0) : x = 0 := by
 -- this proof style is not recommended practice
 example (A B : ℕ) (H : B * A = 2) : A * B = 2 := by ring_nf at H ⊢; exact H
 
-example (f : ℕ → ℕ) :
-  2 + f (2 * f 3 * f 3) + f 3 = 1 + f (f 3 ^ 2 + f 3 * f 3) + 1 + f (2 + 1) := by ring_nf
+example (f : ℕ → ℕ)
+    : 2 + f (2 * f 3 * f 3) + f 3 = 1 + f (f 3 ^ 2 + f 3 * f 3) + 1 + f (2 + 1) := by
+  ring_nf
 
-example (n : ℕ) (m : ℤ) : 2^(n + 1) * m = 2 * 2^n * m := by ring
-example (a b : ℤ) (n : ℕ) : (a + b)^(n + 2) = (a^2 + b^2 + a * b + b * a) * (a + b)^n := by ring
+example (n : ℕ) (m : ℤ) : 2 ^ (n + 1) * m = 2 * 2 ^ n * m := by ring
+example (a b : ℤ) (n : ℕ) : (a + b) ^ (n + 2) = (a ^ 2 + b ^ 2 + a * b + b * a) * (a + b) ^ n := by
+  ring
 example (x y : ℕ) : x + id y = y + id x := by ring!
 
 -- Example with ring discharging the goal
@@ -148,8 +154,7 @@ info: Try this:
   Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
 -/
 #guard_msgs in
-example (x : ℕ) : (22 + 7 * x + 3 * 8 = 0 + 7 * x + 46 + 1)
-                    = (7 * x + 46 = 7 * x + 47) := by
+example (x : ℕ) : (22 + 7 * x + 3 * 8 = 0 + 7 * x + 46 + 1) = (7 * x + 46 = 7 * x + 47) := by
   conv => ring
   trivial
 
@@ -162,32 +167,27 @@ example (a : Nat) : 1 * f a * 1 = f (a + 0) := by
   ring1
 
 -- check that mdata is consumed by ring_nf
-example (a b : ℤ) : a+b=0 ↔ b+a=0 := by
+example (a b : ℤ) : a + b = 0 ↔ b + a = 0 := by
   have : 3 = 3 := rfl
   ring_nf -- reduced to `True` with mdata
 
 -- Powers in the exponent get evaluated correctly
-example (X : ℤ) : (X^5 + 1) * (X^2^3 + X) = X^13 + X^8 + X^6 + X := by ring
+example (X : ℤ) : (X ^ 5 + 1) * (X ^ 2 ^ 3 + X) = X ^ 13 + X ^ 8 + X ^ 6 + X := by ring
 example (a : ℚ) (m n : ℕ) : (a ^ (m + 1)) ^ n = a ^ (n * (m + 1)) := by ring
 
 -- simulate the type of MvPolynomial
-def R : Type u → Type v → Sort (max (u+1) (v+1)) := test_sorry
+def R : Type u → Type v → Sort (max (u + 1) (v + 1)) := test_sorry
 noncomputable instance : CommRing (R a b) := test_sorry
 
-example (p : R PUnit.{u + 1} PUnit.{v + 1}) : p + 0 = p := by
-  ring
-example (p q : R PUnit.{u + 1} PUnit.{v + 1}) : p + q = q + p := by
-  ring
+example (p : R PUnit.{u + 1} PUnit.{v + 1}) : p + 0 = p := by ring
+example (p q : R PUnit.{u + 1} PUnit.{v + 1}) : p + q = q + p := by ring
 
-
-example (p : R PUnit.{u + 1} PUnit.{v + 1}) : p + 0 = p := by
-  ring_nf
-example (p q : R PUnit.{u + 1} PUnit.{v + 1}) : p + q = q + p := by
-  ring_nf
+example (p : R PUnit.{u + 1} PUnit.{v + 1}) : p + 0 = p := by ring_nf
+example (p q : R PUnit.{u + 1} PUnit.{v + 1}) : p + q = q + p := by ring_nf
 
 -- https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/ring_nf.20returns.20ugly.20literals/near/400988184
-example {n : ℝ} :
-    (n + 1 / 2) ^ 2 * (n + 1 + 1 / 3) = 1 / 3 + n * (19 / 12) + n ^ 2 * (7 / 3) + n ^ 3 := by
+example {n : ℝ}
+    : (n + 1 / 2) ^ 2 * (n + 1 + 1 / 3) = 1 / 3 + n * (19 / 12) + n ^ 2 * (7 / 3) + n ^ 3 := by
   -- `conv_lhs` prevents `ring_nf` picking a bad normalization for both sides.
   conv_lhs => ring_nf
 
@@ -229,17 +229,13 @@ example (x : ℤ) (R : ℤ → ℤ → Prop) : True := by
 
 end
 
-example (n : ℕ) (r : ℝ) : n • r = n * r := by
-  ring
+example (n : ℕ) (r : ℝ) : n • r = n * r := by ring
 
-example (n : ℕ) (r : ℝ) : n • r = n * r := by
-  ring_nf
+example (n : ℕ) (r : ℝ) : n • r = n * r := by ring_nf
 
-example (n : ℤ) (r : ℝ) : n • r = n * r := by
-  ring
+example (n : ℤ) (r : ℝ) : n • r = n * r := by ring
 
-example (n : ℤ) (r : ℝ) : n • r = n * r := by
-  ring_nf
+example (n : ℤ) (r : ℝ) : n • r = n * r := by ring_nf
 
 -- new behaviour as of https://github.com/leanprover-community/mathlib4/issues/27562
 -- (Previously, because of a metavariable instantiation issue, the tactic succeeded as a no-op.)
@@ -272,22 +268,19 @@ example (x : ℝ) (f : ℝ → ℝ) : True := by
   trivial
 
 -- Test that `ring_nf` doesn't get confused about bound variables
-example : (fun x : ℝ => x * x^2) = (fun y => y^2 * y) := by
-  ring_nf
+example : (fun x : ℝ => x * x ^ 2) = (fun y => y ^ 2 * y) := by ring_nf
 
 -- Test that `ring` works for division without subtraction
 example {R : Type} [Semifield R] [CharZero R] {x : R} : x / 2 + x / 2 = x := by ring
 
-theorem test_axioms {R : Type} [CommRing R] (a b : R) :
-    (a + b) ^ 2 + (a * b) ^ 3 = a ^ 2 + (2 : R) * a * b + b ^ 2 + a ^ 3 * b ^ 3 := by
+theorem test_axioms {R : Type} [CommRing R] (a b : R)
+    : (a + b) ^ 2 + (a * b) ^ 3 = a ^ 2 + (2 : R) * a * b + b ^ 2 + a ^ 3 * b ^ 3 := by
   ring
 
 /-!
 Test that `ring` does not depend on the axiom of choice.
 -/
-/--
-info: 'test_axioms' depends on axioms: [propext]
--/
+/-- info: 'test_axioms' depends on axioms: [propext] -/
 #guard_msgs in
 #print axioms test_axioms
 

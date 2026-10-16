@@ -8,7 +8,6 @@ module
 public import Mathlib.Data.Nat.Cast.Defs
 public import Mathlib.Order.Filter.Ultrafilter.Basic
 public import Mathlib.SetTheory.Cardinal.Defs
-
 import Mathlib.SetTheory.Cardinal.Arithmetic
 
 /-!
@@ -23,13 +22,11 @@ open Cardinal Filter Set
 section Finite
 variable [Finite α]
 
-public theorem Cardinal.mk_ultrafilter_of_finite :
-    #(Ultrafilter α) = #α := by
+public theorem Cardinal.mk_ultrafilter_of_finite : #(Ultrafilter α) = #α := by
   refine Cardinal.mk_congr (Equiv.ofBijective pure ?_).symm
   exact ⟨Ultrafilter.pure_injective, Ultrafilter.pure_surjective⟩
 
-public theorem Cardinal.mk_filter_of_finite :
-    #(Filter α) = 2 ^ #α := by
+public theorem Cardinal.mk_filter_of_finite : #(Filter α) = 2 ^ #α := by
   rw [← Cardinal.mk_set]
   refine Cardinal.mk_congr (Equiv.ofBijective Filter.principal ?_).symm
   exact ⟨Filter.principal_injective, Filter.principal_surjective⟩
@@ -39,17 +36,19 @@ end Finite
 section Infinite
 
 def interPair (s : Set α) : Set (Finset α × Finset (Finset α)) :=
-  open scoped Classical in {p | p.1.filter (· ∈ s) ∈ p.2}
+  open scoped Classical in
+  {p | p.1.filter (· ∈ s) ∈ p.2}
 
 noncomputable def interPairsFilter (s : Set (Set α)) : Filter (Finset α × Finset (Finset α)) :=
-  open scoped Classical in ⨅ t, 𝓟 (if t ∈ s then interPair t else (interPair t)ᶜ)
+  open scoped Classical in
+  ⨅ t, 𝓟 (if t ∈ s then interPair t else (interPair t)ᶜ)
 
 instance interPairsFilter_neBot (s : Set (Set α)) : (interPairsFilter s).NeBot := by
   classical
   unfold interPairsFilter
   rw [← iInf_range, ← generate_eq_biInf, generate_neBot_iff]
   set f := fun t => if t ∈ s then interPair t else (interPair t)ᶜ
-  suffices h : ∀ t, t.Finite → (⋂₀ (f '' t)).Nonempty by
+  suffices h : ∀ t, t.Finite → (⋂₀(f '' t)).Nonempty by
     intro t hts ht
     choose c hc using hts
     refine Set.Nonempty.mono (sInter_mono ?_) <|
@@ -64,10 +63,14 @@ instance interPairsFilter_neBot (s : Set (Set α)) : (interPairsFilter s).NeBot 
     nonempty_def, mem_symmDiff, ← xor_def] at hne
   choose c hc using hne
   let F := ⋃ (i) (hi : i ∈ t) (j) (hj : j ∈ t) (his : i ∈ s) (hjs : j ∉ s), {c his hjs}
-  have hF : F.Finite := ht.biUnion' fun i hi => ht.biUnion' fun j hj =>
-    finite_iUnion fun his => finite_iUnion fun hjs => finite_singleton (c his hjs)
-  refine ⟨(hF.toFinset, (ht.toFinset.filter (· ∈ s)).image (fun i => hF.toFinset.filter (· ∈ i))),
-    mem_biInter fun x hx => ?_⟩
+  have hF : F.Finite :=
+    ht.biUnion' fun i hi =>
+      ht.biUnion' fun j hj =>
+        finite_iUnion fun his => finite_iUnion fun hjs => finite_singleton (c his hjs)
+  refine ⟨
+    (hF.toFinset, (ht.toFinset.filter (· ∈ s)).image (fun i => hF.toFinset.filter (· ∈ i))),
+    mem_biInter fun x hx => ?_
+  ⟩
   unfold f interPair
   split_ifs with hxs
   · refine Finset.mem_image_of_mem (fun i => hF.toFinset.filter (· ∈ i)) ?_
@@ -82,28 +85,33 @@ instance interPairsFilter_neBot (s : Set (Set α)) : (interPairsFilter s).NeBot 
       exact ⟨y, hy, x, hx, hys, hxs, rfl⟩
     simpa [hxy] using hc hys hxs
 
-theorem interPairsFilter_pairwiseDisjoint : Set.univ.Pairwise
-    (fun s t : Set (Set α) => Disjoint (interPairsFilter s) (interPairsFilter t)) := by
+theorem interPairsFilter_pairwiseDisjoint
+    : Set.univ.Pairwise (fun s t : Set (Set α) =>
+      Disjoint (interPairsFilter s) (interPairsFilter t)) := by
   intro s _ t _ hst
   simp_rw [← symmDiff_nonempty, nonempty_def, mem_symmDiff] at hst
   rw [Filter.disjoint_iff]
   unfold interPairsFilter
   obtain ⟨x, hx | hx⟩ := hst
-  · exact ⟨interPair x, Filter.mem_iInf_of_mem x
-      (ite_eq_left hx.1 ▸ Filter.mem_principal_self (interPair x)),
-      (interPair x)ᶜ, Filter.mem_iInf_of_mem x
-      (ite_eq_right hx.2 ▸ Filter.mem_principal_self (interPair x)ᶜ),
-      disjoint_compl_right⟩
-  · exact ⟨(interPair x)ᶜ, Filter.mem_iInf_of_mem x
-      (ite_eq_right hx.2 ▸ Filter.mem_principal_self (interPair x)ᶜ),
-      interPair x, Filter.mem_iInf_of_mem x
-      (ite_eq_left hx.1 ▸ Filter.mem_principal_self (interPair x)),
-      disjoint_compl_left⟩
+  · exact ⟨
+      interPair x,
+      Filter.mem_iInf_of_mem x (ite_eq_left hx.1 ▸ Filter.mem_principal_self (interPair x)),
+      (interPair x)ᶜ,
+      Filter.mem_iInf_of_mem x (ite_eq_right hx.2 ▸ Filter.mem_principal_self (interPair x)ᶜ),
+      disjoint_compl_right
+    ⟩
+  · exact ⟨
+      (interPair x)ᶜ,
+      Filter.mem_iInf_of_mem x (ite_eq_right hx.2 ▸ Filter.mem_principal_self (interPair x)ᶜ),
+      interPair x,
+      Filter.mem_iInf_of_mem x (ite_eq_left hx.1 ▸ Filter.mem_principal_self (interPair x)),
+      disjoint_compl_left
+    ⟩
 
 variable [Infinite α]
 
-public theorem Cardinal.mk_ultrafilter_of_infinite :
-    #(Ultrafilter α) = 2 ^ (2 ^ #α : Cardinal) := by
+public theorem Cardinal.mk_ultrafilter_of_infinite
+    : #(Ultrafilter α) = 2 ^ (2 ^ #α : Cardinal) := by
   rw [← Cardinal.mk_set, ← Cardinal.mk_set]
   apply le_antisymm
   · exact Cardinal.mk_le_of_injective (Filter.sets_injective.comp Ultrafilter.coe_injective)
@@ -119,8 +127,7 @@ public theorem Cardinal.mk_ultrafilter_of_infinite :
     rw [← Ultrafilter.coe_injective.ne_iff]
     exact (hdj.mono (Ultrafilter.of_le _) (Ultrafilter.of_le _)).ne (Ultrafilter.neBot _).ne
 
-public theorem Cardinal.mk_filter_of_infinite :
-    #(Filter α) = 2 ^ (2 ^ #α : Cardinal) := by
+public theorem Cardinal.mk_filter_of_infinite : #(Filter α) = 2 ^ (2 ^ #α : Cardinal) := by
   apply le_antisymm
   · rw [← Cardinal.mk_set, ← Cardinal.mk_set]
     exact Cardinal.mk_le_of_injective Filter.sets_injective

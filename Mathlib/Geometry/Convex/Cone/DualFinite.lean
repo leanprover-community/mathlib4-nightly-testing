@@ -38,31 +38,37 @@ variable [AddCommGroup N] [Module R N]
 variable {p : M →ₗ[R] N →ₗ[R] R}
 
 variable (p) in
-/-- A cone is dually finitely generated (`DualFG`) if it is the dual of a finite set. Equivalently,
+/--
+A cone is dually finitely generated (`DualFG`) if it is the dual of a finite set. Equivalently,
 the cone can be written as the intersection of finitely many halfspace. It is also known as an
 H-cone. This is the counterpart to `FG` (finitely generated) which states that the cone is the span
-of a finite set, or a V-cone. -/
+of a finite set, or a V-cone.
+-/
 def DualFG (C : PointedCone R N) : Prop := ∃ s : Finset M, dual p s = C
 
 /-- The top cone is dually finitely generated. -/
 @[simp] protected lemma DualFG.top : DualFG p ⊤ := ⟨∅, by simp⟩
 
 /-- A dually finitely generated cone is the dual of a finitely generated cone. -/
-lemma DualFG.exists_fg_dual {C : PointedCone R N} (hC : C.DualFG p) :
-    ∃ D : PointedCone R M, D.FG ∧ dual p D = C := by
+lemma DualFG.exists_fg_dual {C : PointedCone R N} (hC : C.DualFG p)
+    : ∃ D : PointedCone R M, D.FG ∧ dual p D = C := by
   obtain ⟨s, hs⟩ := hC; exact ⟨_, Submodule.fg_span s.finite_toSet, by simp [hs]⟩
 
-/-- A cone is dually finitely generated if and only if it is the dual of a finitely generated
-cone. -/
-lemma DualFG.iff_exists_fg_dual {C : PointedCone R N} :
-    C.DualFG p ↔ ∃ D : PointedCone R M, D.FG ∧ dual p D = C where
+/--
+A cone is dually finitely generated if and only if it is the dual of a finitely generated
+cone.
+-/
+lemma DualFG.iff_exists_fg_dual {C : PointedCone R N}
+    : C.DualFG p ↔ ∃ D : PointedCone R M, D.FG ∧ dual p D = C where
   mp h := h.exists_fg_dual
   mpr := by
     rintro ⟨_, ⟨s, rfl⟩, rfl⟩
-    use s; simp
+    use s
+    simp
 
 /-- A dually finitely generated cone is dually finitely generated w.r.t. the identity pairing. -/
-lemma DualFG.id {C : PointedCone R N} (hC : C.DualFG p) : C.DualFG .id := by classical
+lemma DualFG.id {C : PointedCone R N} (hC : C.DualFG p) : C.DualFG .id := by
+  classical
   obtain ⟨s, rfl⟩ := hC
   use Finset.image p s
   simp
@@ -81,26 +87,31 @@ variable (p) in
 /-- The dual of a finitely generated cone is dually finitely generated. -/
 lemma DualFG.dual_of_fg {C : PointedCone R M} (hC : C.FG) : (dual p C).DualFG p := by
   obtain ⟨s, rfl⟩ := hC
-  use s; rw [← dual_hull]
+  use s
+  rw [← dual_hull]
 
 alias FG.dual_dualfg := DualFG.dual_of_fg
 
 /-- The intersection of two dually finitely generated cones is again dually finitely generated. -/
-lemma DualFG.inf {C D : PointedCone R N} (hC : C.DualFG p) (hD : D.DualFG p) :
-    (C ⊓ D).DualFG p := by classical
-  obtain ⟨S, rfl⟩ := hC; obtain ⟨T, rfl⟩ := hD
-  use S ∪ T; rw [Finset.coe_union, dual_union]
+lemma DualFG.inf {C D : PointedCone R N} (hC : C.DualFG p) (hD : D.DualFG p)
+    : (C ⊓ D).DualFG p := by
+  classical
+  obtain ⟨S, rfl⟩ := hC
+  obtain ⟨T, rfl⟩ := hD
+  use S ∪ T
+  rw [Finset.coe_union, dual_union]
 
 /-- The double dual of a dually finitely generated cone is the cone itself. -/
 @[simp]
-lemma DualFG.dual_dual_flip {C : PointedCone R N} (hC : C.DualFG p) :
-    dual p (dual p.flip C) = C := by
+lemma DualFG.dual_dual_flip {C : PointedCone R N} (hC : C.DualFG p)
+    : dual p (dual p.flip C) = C := by
   obtain ⟨D, hDualFG, rfl⟩ := exists_fg_dual hC
   exact dual_dual_flip_dual (p := p) D
 
 /-- The double dual of a dually finitely generated cone is the cone itself. -/
 @[simp]
-lemma DualFG.dual_flip_dual {C : PointedCone R M} (hC : C.DualFG p.flip) :
-    dual p.flip (dual p C) = C := hC.dual_dual_flip
+lemma DualFG.dual_flip_dual {C : PointedCone R M} (hC : C.DualFG p.flip)
+    : dual p.flip (dual p C) = C :=
+  hC.dual_dual_flip
 
 end PointedCone

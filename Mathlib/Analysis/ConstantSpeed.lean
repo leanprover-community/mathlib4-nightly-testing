@@ -6,7 +6,6 @@ Authors: Rémi Bottinelli
 module
 
 public import Mathlib.Topology.EMetricSpace.VariationOnFromTo
-
 import Mathlib.Algebra.Order.BigOperators.Expect
 import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Tactic.ContinuousFunctionalCalculus
@@ -44,7 +43,6 @@ arc-length, parameterization
 
 @[expose] public section
 
-
 open scoped NNReal ENNReal
 
 open Set
@@ -52,7 +50,8 @@ open Set
 variable {α : Type*} [LinearOrder α] {E : Type*} [TopologicalSpace E] [WeakPseudoEMetricSpace E]
 variable (f : ℝ → E) (s : Set ℝ) (l : ℝ≥0)
 
-/-- `f` has constant speed `l` on `s` if the variation of `f` on `s ∩ Icc x y` is equal to
+/--
+`f` has constant speed `l` on `s` if the variation of `f` on `s ∩ Icc x y` is equal to
 `l * (y - x)` for any `x y` in `s`.
 -/
 def HasConstantSpeedOnWith :=
@@ -60,19 +59,22 @@ def HasConstantSpeedOnWith :=
 
 variable {f s l}
 
-theorem HasConstantSpeedOnWith.hasLocallyBoundedVariationOn (h : HasConstantSpeedOnWith f s l) :
-    LocallyBoundedVariationOn f s := fun x y hx hy => by
+theorem HasConstantSpeedOnWith.hasLocallyBoundedVariationOn (h : HasConstantSpeedOnWith f s l)
+    : LocallyBoundedVariationOn f s := fun x y hx hy => by
   simp only [BoundedVariationOn, h hx hy, Ne, ENNReal.ofReal_ne_top, not_false_iff]
 
-theorem hasConstantSpeedOnWith_of_subsingleton (f : ℝ → E) {s : Set ℝ} (hs : s.Subsingleton)
-    (l : ℝ≥0) : HasConstantSpeedOnWith f s l := by
-  rintro x hx y hy; cases hs hx hy
+theorem hasConstantSpeedOnWith_of_subsingleton
+    (f : ℝ → E) {s : Set ℝ} (hs : s.Subsingleton) (l : ℝ≥0)
+    : HasConstantSpeedOnWith f s l := by
+  rintro x hx y hy
+  cases hs hx hy
   rw [eVariationOn.subsingleton f (fun y hy z hz => hs hy.1 hz.1 : (s ∩ Icc x x).Subsingleton)]
   simp only [sub_self, mul_zero, ENNReal.ofReal_zero]
 
-theorem hasConstantSpeedOnWith_iff_ordered :
-    HasConstantSpeedOnWith f s l ↔ ∀ ⦃x⦄ (_ : x ∈ s) ⦃y⦄ (_ : y ∈ s),
-      x ≤ y → eVariationOn f (s ∩ Icc x y) = ENNReal.ofReal (l * (y - x)) := by
+theorem hasConstantSpeedOnWith_iff_ordered
+    : HasConstantSpeedOnWith f s l
+      ↔ ∀ ⦃x⦄ (_ : x ∈ s) ⦃y⦄ (_ : y ∈ s),
+        x ≤ y → eVariationOn f (s ∩ Icc x y) = ENNReal.ofReal (l * (y - x)) := by
   refine ⟨fun h x xs y ys _ => h xs ys, fun h x xs y ys => ?_⟩
   rcases le_total x y with (xy | yx)
   · exact h xs ys xy
@@ -83,43 +85,51 @@ theorem hasConstantSpeedOnWith_iff_ordered :
       cases le_antisymm (wy.trans yx) xw
       rfl
 
-theorem hasConstantSpeedOnWith_iff_variationOnFromTo_eq :
-    HasConstantSpeedOnWith f s l ↔ LocallyBoundedVariationOn f s ∧
-      ∀ ⦃x⦄ (_ : x ∈ s) ⦃y⦄ (_ : y ∈ s), variationOnFromTo f s x y = l * (y - x) := by
+theorem hasConstantSpeedOnWith_iff_variationOnFromTo_eq
+    : HasConstantSpeedOnWith f s l
+      ↔ LocallyBoundedVariationOn f s
+        ∧ ∀ ⦃x⦄ (_ : x ∈ s) ⦃y⦄ (_ : y ∈ s), variationOnFromTo f s x y = l * (y - x) := by
   constructor
-  · rintro h; refine ⟨h.hasLocallyBoundedVariationOn, fun x xs y ys => ?_⟩
+  · rintro h
+    refine ⟨h.hasLocallyBoundedVariationOn, fun x xs y ys => ?_⟩
     rw [hasConstantSpeedOnWith_iff_ordered] at h
     rcases le_total x y with (xy | yx)
     · rw [variationOnFromTo.eq_of_le f s xy, h xs ys xy]
       exact ENNReal.toReal_ofReal (mul_nonneg l.prop (sub_nonneg.mpr xy))
     · rw [variationOnFromTo.eq_of_ge f s yx, h ys xs yx]
       have := ENNReal.toReal_ofReal (mul_nonneg l.prop (sub_nonneg.mpr yx))
-      simp_all only [NNReal.val_eq_coe]; ring
+      simp_all only [NNReal.val_eq_coe]
+      ring
   · rw [hasConstantSpeedOnWith_iff_ordered]
     rintro h x xs y ys xy
     rw [← h.2 xs ys, variationOnFromTo.eq_of_le f s xy, ENNReal.ofReal_toReal (h.1 x y xs ys)]
 
-theorem HasConstantSpeedOnWith.union {t : Set ℝ} (hfs : HasConstantSpeedOnWith f s l)
-    (hft : HasConstantSpeedOnWith f t l) {x : ℝ} (hs : IsGreatest s x) (ht : IsLeast t x) :
-    HasConstantSpeedOnWith f (s ∪ t) l := by
+theorem HasConstantSpeedOnWith.union
+    {t : Set ℝ}
+    (hfs : HasConstantSpeedOnWith f s l) (hft : HasConstantSpeedOnWith f t l)
+    {x : ℝ} (hs : IsGreatest s x) (ht : IsLeast t x)
+    : HasConstantSpeedOnWith f (s ∪ t) l := by
   rw [hasConstantSpeedOnWith_iff_ordered] at hfs hft ⊢
   rintro z (zs | zt) y (ys | yt) zy
   · have : (s ∪ t) ∩ Icc z y = s ∩ Icc z y := by
-      ext w; constructor
+      ext w
+      constructor
       · rintro ⟨ws | wt, zw, wy⟩
         · exact ⟨ws, zw, wy⟩
         · exact ⟨(le_antisymm (wy.trans (hs.2 ys)) (ht.2 wt)).symm ▸ hs.1, zw, wy⟩
       · rintro ⟨ws, zwy⟩; exact ⟨Or.inl ws, zwy⟩
     rw [this, hfs zs ys zy]
   · have : (s ∪ t) ∩ Icc z y = s ∩ Icc z x ∪ t ∩ Icc x y := by
-      ext w; constructor
+      ext w
+      constructor
       · rintro ⟨ws | wt, zw, wy⟩
         exacts [Or.inl ⟨ws, zw, hs.2 ws⟩, Or.inr ⟨wt, ht.2 wt, wy⟩]
       · rintro (⟨ws, zw, wx⟩ | ⟨wt, xw, wy⟩)
         exacts [⟨Or.inl ws, zw, wx.trans (ht.2 yt)⟩, ⟨Or.inr wt, (hs.2 zs).trans xw, wy⟩]
     rw [this, eVariationOn.union (f := f) (x := x), hfs zs hs.1 (hs.2 zs), hft ht.1 yt (ht.2 yt)]
-    · have q := ENNReal.ofReal_add (mul_nonneg l.prop (sub_nonneg.mpr (hs.2 zs)))
-        (mul_nonneg l.prop (sub_nonneg.mpr (ht.2 yt)))
+    · have q :=
+        ENNReal.ofReal_add (mul_nonneg l.prop (sub_nonneg.mpr (hs.2 zs)))
+          (mul_nonneg l.prop (sub_nonneg.mpr (ht.2 yt)))
       simp only [NNReal.val_eq_coe] at q
       rw [← q]
       ring_nf
@@ -129,30 +139,33 @@ theorem HasConstantSpeedOnWith.union {t : Set ℝ} (hfs : HasConstantSpeedOnWith
     simp only [Icc_self, sub_self, mul_zero, ENNReal.ofReal_zero]
     exact eVariationOn.subsingleton _ fun _ ⟨_, uz⟩ _ ⟨_, vz⟩ => uz.trans vz.symm
   · have : (s ∪ t) ∩ Icc z y = t ∩ Icc z y := by
-      ext w; constructor
+      ext w
+      constructor
       · rintro ⟨ws | wt, zw, wy⟩
         · exact ⟨le_antisymm ((ht.2 zt).trans zw) (hs.2 ws) ▸ ht.1, zw, wy⟩
         · exact ⟨wt, zw, wy⟩
       · rintro ⟨wt, zwy⟩; exact ⟨Or.inr wt, zwy⟩
     rw [this, hft zt yt zy]
 
-theorem HasConstantSpeedOnWith.Icc_Icc {x y z : ℝ} (hfs : HasConstantSpeedOnWith f (Icc x y) l)
-    (hft : HasConstantSpeedOnWith f (Icc y z) l) : HasConstantSpeedOnWith f (Icc x z) l := by
+theorem HasConstantSpeedOnWith.Icc_Icc
+    {x y z : ℝ}
+    (hfs : HasConstantSpeedOnWith f (Icc x y) l) (hft : HasConstantSpeedOnWith f (Icc y z) l)
+    : HasConstantSpeedOnWith f (Icc x z) l := by
   rcases le_total x y with (xy | yx)
   · rcases le_total y z with (yz | zy)
     · rw [← Set.Icc_union_Icc_eq_Icc xy yz]
       exact hfs.union hft (isGreatest_Icc xy) (isLeast_Icc yz)
     · rintro u ⟨xu, uz⟩ v ⟨xv, vz⟩
-      rw [Icc_inter_Icc, sup_of_le_right xu, inf_of_le_right vz, ←
-        hfs ⟨xu, uz.trans zy⟩ ⟨xv, vz.trans zy⟩, Icc_inter_Icc, sup_of_le_right xu,
+      rw [Icc_inter_Icc, sup_of_le_right xu, inf_of_le_right vz,
+        ← hfs ⟨xu, uz.trans zy⟩ ⟨xv, vz.trans zy⟩, Icc_inter_Icc, sup_of_le_right xu,
         inf_of_le_right (vz.trans zy)]
   · rintro u ⟨xu, uz⟩ v ⟨xv, vz⟩
-    rw [Icc_inter_Icc, sup_of_le_right xu, inf_of_le_right vz, ←
-      hft ⟨yx.trans xu, uz⟩ ⟨yx.trans xv, vz⟩, Icc_inter_Icc, sup_of_le_right (yx.trans xu),
+    rw [Icc_inter_Icc, sup_of_le_right xu, inf_of_le_right vz,
+      ← hft ⟨yx.trans xu, uz⟩ ⟨yx.trans xv, vz⟩, Icc_inter_Icc, sup_of_le_right (yx.trans xu),
       inf_of_le_right vz]
 
-theorem hasConstantSpeedOnWith_zero_iff :
-    HasConstantSpeedOnWith f s 0 ↔ ∀ᵉ (x ∈ s) (y ∈ s), edist (f x) (f y) = 0 := by
+theorem hasConstantSpeedOnWith_zero_iff
+    : HasConstantSpeedOnWith f s 0 ↔ ∀ᵉ (x ∈ s) (y ∈ s), edist (f x) (f y) = 0 := by
   dsimp [HasConstantSpeedOnWith]
   simp only [zero_mul, ENNReal.ofReal_zero, ← eVariationOn.eq_zero_iff]
   constructor
@@ -167,16 +180,20 @@ theorem hasConstantSpeedOnWith_zero_iff :
   · rintro h x _ y _
     simpa [h] using eVariationOn.mono (s := s) f inter_subset_left
 
-theorem HasConstantSpeedOnWith.ratio {l' : ℝ≥0} (hl' : l' ≠ 0) {φ : ℝ → ℝ} (φm : MonotoneOn φ s)
-    (hfφ : HasConstantSpeedOnWith (f ∘ φ) s l) (hf : HasConstantSpeedOnWith f (φ '' s) l') ⦃x : ℝ⦄
-    (xs : x ∈ s) : EqOn φ (fun y => l / l' * (y - x) + φ x) s := by
+theorem HasConstantSpeedOnWith.ratio
+    {l' : ℝ≥0} (hl' : l' ≠ 0)
+    {φ : ℝ → ℝ} (φm : MonotoneOn φ s) (hfφ : HasConstantSpeedOnWith (f ∘ φ) s l)
+    (hf : HasConstantSpeedOnWith f (φ '' s) l')
+    ⦃x : ℝ⦄ (xs : x ∈ s)
+    : EqOn φ (fun y => l / l' * (y - x) + φ x) s := by
   rintro y ys
   rw [← sub_eq_iff_eq_add, mul_comm, ← mul_div_assoc, eq_div_iff (NNReal.coe_ne_zero.mpr hl')]
   rw [hasConstantSpeedOnWith_iff_variationOnFromTo_eq] at hf
   rw [hasConstantSpeedOnWith_iff_variationOnFromTo_eq] at hfφ
   symm
   calc
-    (y - x) * l = l * (y - x) := by rw [mul_comm]
+    (y - x) * l
+      = l * (y - x) := by rw [mul_comm]
     _ = variationOnFromTo (f ∘ φ) s x y := (hfφ.2 xs ys).symm
     _ = variationOnFromTo f (φ '' s) (φ x) (φ y) :=
       (variationOnFromTo.comp_eq_of_monotoneOn f φ φm xs ys)
@@ -184,34 +201,42 @@ theorem HasConstantSpeedOnWith.ratio {l' : ℝ≥0} (hl' : l' ≠ 0) {φ : ℝ �
     _ = (φ y - φ x) * l' := by rw [mul_comm]
 
 /-- `f` has unit speed on `s` if it is linearly parameterized by `l = 1` on `s`. -/
-def HasUnitSpeedOn (f : ℝ → E) (s : Set ℝ) :=
-  HasConstantSpeedOnWith f s 1
+def HasUnitSpeedOn (f : ℝ → E) (s : Set ℝ) := HasConstantSpeedOnWith f s 1
 
-theorem HasUnitSpeedOn.union {t : Set ℝ} {x : ℝ} (hfs : HasUnitSpeedOn f s)
-    (hft : HasUnitSpeedOn f t) (hs : IsGreatest s x) (ht : IsLeast t x) :
-    HasUnitSpeedOn f (s ∪ t) :=
+theorem HasUnitSpeedOn.union
+    {t : Set ℝ} {x : ℝ}
+    (hfs : HasUnitSpeedOn f s) (hft : HasUnitSpeedOn f t) (hs : IsGreatest s x) (ht : IsLeast t x)
+    : HasUnitSpeedOn f (s ∪ t) :=
   HasConstantSpeedOnWith.union hfs hft hs ht
 
-theorem HasUnitSpeedOn.Icc_Icc {x y z : ℝ} (hfs : HasUnitSpeedOn f (Icc x y))
-    (hft : HasUnitSpeedOn f (Icc y z)) : HasUnitSpeedOn f (Icc x z) :=
+theorem HasUnitSpeedOn.Icc_Icc
+    {x y z : ℝ} (hfs : HasUnitSpeedOn f (Icc x y)) (hft : HasUnitSpeedOn f (Icc y z))
+    : HasUnitSpeedOn f (Icc x z) :=
   HasConstantSpeedOnWith.Icc_Icc hfs hft
 
-/-- If both `f` and `f ∘ φ` have unit speed (on `t` and `s` respectively) and `φ`
+/--
+If both `f` and `f ∘ φ` have unit speed (on `t` and `s` respectively) and `φ`
 monotonically maps `s` onto `t`, then `φ` is just a translation (on `s`).
 -/
-theorem unique_unit_speed {φ : ℝ → ℝ} (φm : MonotoneOn φ s) (hfφ : HasUnitSpeedOn (f ∘ φ) s)
-    (hf : HasUnitSpeedOn f (φ '' s)) ⦃x : ℝ⦄ (xs : x ∈ s) : EqOn φ (fun y => y - x + φ x) s := by
+theorem unique_unit_speed
+    {φ : ℝ → ℝ}
+    (φm : MonotoneOn φ s) (hfφ : HasUnitSpeedOn (f ∘ φ) s) (hf : HasUnitSpeedOn f (φ '' s))
+    ⦃x : ℝ⦄ (xs : x ∈ s)
+    : EqOn φ (fun y => y - x + φ x) s := by
   dsimp only [HasUnitSpeedOn] at hf hfφ
   convert HasConstantSpeedOnWith.ratio one_ne_zero φm hfφ hf xs
   simp
 
-/-- If both `f` and `f ∘ φ` have unit speed (on `Icc 0 t` and `Icc 0 s` respectively)
+/--
+If both `f` and `f ∘ φ` have unit speed (on `Icc 0 t` and `Icc 0 s` respectively)
 and `φ` monotonically maps `Icc 0 s` onto `Icc 0 t`, then `φ` is the identity on `Icc 0 s`
 -/
-theorem unique_unit_speed_on_Icc_zero {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t) {φ : ℝ → ℝ}
-    (φm : MonotoneOn φ <| Icc 0 s) (φst : φ '' Icc 0 s = Icc 0 t)
-    (hfφ : HasUnitSpeedOn (f ∘ φ) (Icc 0 s)) (hf : HasUnitSpeedOn f (Icc 0 t)) :
-    EqOn φ id (Icc 0 s) := by
+theorem unique_unit_speed_on_Icc_zero
+    {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
+    {φ : ℝ → ℝ} (φm : MonotoneOn φ <| Icc 0 s) (φst : φ '' Icc 0 s = Icc 0 t)
+    (hfφ : HasUnitSpeedOn (f ∘ φ) (Icc 0 s))
+    (hf : HasUnitSpeedOn f (Icc 0 t))
+    : EqOn φ id (Icc 0 s) := by
   rw [← φst] at hf
   convert unique_unit_speed φm hfφ hf ⟨le_rfl, hs⟩
   have : φ 0 = 0 := by
@@ -223,7 +248,8 @@ theorem unique_unit_speed_on_Icc_zero {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t) 
   simp only [tsub_zero, this, add_zero]
   rfl
 
-/-- The natural parameterization of `f` on `s`, which, if `f` has locally bounded variation on `s`,
+/--
+The natural parameterization of `f` on `s`, which, if `f` has locally bounded variation on `s`,
 * has unit speed on `s` (by `has_unit_speed_naturalParameterization`).
 * composed with `variationOnFromTo f s a`, is at distance zero from `f`
   (by `edist_naturalParameterization_eq_zero`).
@@ -231,18 +257,20 @@ theorem unique_unit_speed_on_Icc_zero {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t) 
 noncomputable def naturalParameterization (f : α → E) (s : Set α) (a : α) : ℝ → E :=
   f ∘ @Function.invFunOn _ _ ⟨a⟩ (variationOnFromTo f s a) s
 
-theorem edist_naturalParameterization_eq_zero {f : α → E} {s : Set α}
-    (hf : LocallyBoundedVariationOn f s) {a : α} (as : a ∈ s) {b : α} (bs : b ∈ s) :
-    edist (naturalParameterization f s a (variationOnFromTo f s a b)) (f b) = 0 := by
+theorem edist_naturalParameterization_eq_zero
+    {f : α → E} {s : Set α} (hf : LocallyBoundedVariationOn f s)
+    {a : α} (as : a ∈ s)
+    {b : α} (bs : b ∈ s)
+    : edist (naturalParameterization f s a (variationOnFromTo f s a b)) (f b) = 0 := by
   dsimp only [naturalParameterization]
   have : Nonempty α := ⟨a⟩
   obtain ⟨cs, hc⟩ := Function.invFunOn_pos (b := variationOnFromTo f s a b) ⟨b, bs, rfl⟩
   rw [variationOnFromTo.eq_left_iff hf as cs bs] at hc
   apply variationOnFromTo.edist_zero_of_eq_zero hf cs bs hc
 
-theorem has_unit_speed_naturalParameterization (f : α → E) {s : Set α}
-    (hf : LocallyBoundedVariationOn f s) {a : α} (as : a ∈ s) :
-    HasUnitSpeedOn (naturalParameterization f s a) (variationOnFromTo f s a '' s) := by
+theorem has_unit_speed_naturalParameterization
+    (f : α → E) {s : Set α} (hf : LocallyBoundedVariationOn f s) {a : α} (as : a ∈ s)
+    : HasUnitSpeedOn (naturalParameterization f s a) (variationOnFromTo f s a '' s) := by
   dsimp only [HasUnitSpeedOn]
   rw [hasConstantSpeedOnWith_iff_ordered]
   rintro _ ⟨b, bs, rfl⟩ _ ⟨c, cs, rfl⟩ h
@@ -252,9 +280,8 @@ theorem has_unit_speed_naturalParameterization (f : α → E) {s : Set α}
     exact fun x hx y hy => hx.2.trans hy.2.symm
   · rw [NNReal.coe_one, one_mul, sub_eq_add_neg, variationOnFromTo.eq_neg_swap, neg_neg, add_comm,
       variationOnFromTo.add hf bs as cs, ← variationOnFromTo.eq_neg_swap f]
-    rw [←
-      eVariationOn.comp_inter_Icc_eq_of_monotoneOn (naturalParameterization f s a) _
-        (variationOnFromTo.monotoneOn hf as) bs cs]
+    rw [← eVariationOn.comp_inter_Icc_eq_of_monotoneOn (naturalParameterization f s a) _
+      (variationOnFromTo.monotoneOn hf as) bs cs]
     rw [eVariationOn.eq_of_edist_zero_on (f' := f)]
     · rw [variationOnFromTo.eq_of_le _ _ bc, ENNReal.ofReal_toReal (hf b c bs cs)]
     · rintro x ⟨xs, _, _⟩

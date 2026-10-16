@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Control.Fix
 public import Mathlib.Order.OmegaCompletePartialOrder
-
 import Mathlib.Data.Stream.Init
 
 /-!
@@ -30,12 +29,14 @@ variable {α : Type*} {β : α → Type*}
 
 open OmegaCompletePartialOrder
 
-/-- Intuitively, a fixed point operator `fix` is lawful if it satisfies `fix f = f (fix f)` for all
+/--
+Intuitively, a fixed point operator `fix` is lawful if it satisfies `fix f = f (fix f)` for all
 `f`, but this is inconsistent / uninteresting in most cases due to the existence of "exotic"
 functions `f`, such as the function that is defined iff its argument is not, familiar from the
 halting problem. Instead, this requirement is limited to only functions that are `Continuous` in the
 sense of `ω`-complete partial orders, which excludes the example because it is not monotone
-(making the input argument less defined can make `f` more defined). -/
+(making the input argument less defined can make `f` more defined).
+-/
 class LawfulFix (α : Type*) [OmegaCompletePartialOrder α] extends Fix α where
   fix_eq : ∀ {f : α → α}, ωScottContinuous f → Fix.fix f = f (Fix.fix f)
 
@@ -54,9 +55,11 @@ theorem approx_mono' {i : ℕ} : Fix.approx f i ≤ Fix.approx f (succ i) := by
 
 theorem approx_mono ⦃i j : ℕ⦄ (hij : i ≤ j) : approx f i ≤ approx f j := by
   induction j with
-  | zero => cases hij; exact le_rfl
+  | zero =>
+    cases hij; exact le_rfl
   | succ j ih =>
-    cases hij; · exact le_rfl
+    cases hij
+    · exact le_rfl
     exact le_trans (ih ‹_›) (approx_mono' f)
 
 theorem mem_iff (a : α) (b : β a) : b ∈ Part.fix f a ↔ ∃ i, b ∈ approx f i a := by
@@ -73,14 +76,17 @@ theorem mem_iff (a : α) (b : β a) : b ∈ Part.fix f a ↔ ∃ i, b ∈ approx
       subst this
       exact h₁
     obtain ⟨i, hh⟩ := hh
-    revert h₁; generalize succ (Nat.find h₀) = j; intro h₁
+    revert h₁
+    generalize succ (Nat.find h₀) = j
+    intro h₁
     wlog case : i ≤ j
     · rcases le_total i j with H | H <;> [skip; symm] <;> apply_assumption <;> assumption
     replace hh := approx_mono f case _ _ hh
     apply Part.mem_unique h₁ hh
   · simp only [fix_def' (⇑f) h₀, not_exists, false_iff, notMem_none]
     simp only [dom_iff_mem, not_exists] at h₀
-    intro; apply h₀
+    intro
+    apply h₀
 
 theorem approx_le_fix (i : ℕ) : approx f i ≤ Part.fix f := fun a b hh ↦ by
   rw [mem_iff f]
@@ -101,16 +107,14 @@ theorem exists_fix_le_approx (x : α) : ∃ i, Part.fix f x ≤ approx f i x := 
     cases hh _ _ h'
 
 /-- The series of approximations of `fix f` (see `approx`) as a `Chain` -/
-def approxChain : Chain ((a : _) → Part <| β a) :=
-  ⟨approx f, approx_mono f⟩
+def approxChain : Chain ((a : _) → Part <| β a) := ⟨approx f, approx_mono f⟩
 
 theorem le_f_of_mem_approx {x} : x ∈ approxChain f → x ≤ f x := by
   simp only [Membership.mem, forall_exists_index]
   rintro i rfl
   apply approx_mono'
 
-theorem approx_mem_approxChain {i} : approx f i ∈ approxChain f :=
-  Stream'.mem_of_get_eq rfl
+theorem approx_mem_approxChain {i} : approx f i ∈ approxChain f := Stream'.mem_of_get_eq rfl
 
 end Fix
 
@@ -141,7 +145,8 @@ theorem fix_le {X : (a : _) → Part <| β a} (hX : f X ≤ X) : Part.fix f ≤ 
   simp only [Fix.approxChain]
   intro i
   induction i with
-  | zero => apply bot_le
+  | zero =>
+    apply bot_le
   | succ _ i_ih =>
     trans f X
     · apply f.monotone i_ih
@@ -149,13 +154,14 @@ theorem fix_le {X : (a : _) → Part <| β a} (hX : f X ≤ X) : Part.fix f ≤ 
 
 variable {g : ((a : _) → Part <| β a) → (a : _) → Part <| β a}
 
-theorem fix_eq_ωSup_of_ωScottContinuous (hc : ωScottContinuous g) : Part.fix g =
-    ωSup (approxChain (⟨g,hc.monotone⟩ : ((a : _) → Part <| β a) →o (a : _) → Part <| β a)) := by
+theorem fix_eq_ωSup_of_ωScottContinuous (hc : ωScottContinuous g)
+    : Part.fix g
+      = ωSup (approxChain
+        (⟨g, hc.monotone⟩ : ((a : _) → Part <| β a) →o (a : _) → Part <| β a)) := by
   rw [← fix_eq_ωSup]
   rfl
 
-theorem fix_eq_of_ωScottContinuous (hc : ωScottContinuous g) :
-    Part.fix g = g (Part.fix g) := by
+theorem fix_eq_of_ωScottContinuous (hc : ωScottContinuous g) : Part.fix g = g (Part.fix g) := by
   rw [fix_eq_ωSup_of_ωScottContinuous hc, hc.map_ωSup]
   apply le_antisymm
   · apply ωSup_le_ωSup_of_le _
@@ -177,16 +183,17 @@ def toUnitMono (f : Part α →o Part α) : (Unit → Part α) →o Unit → Par
   monotone' x y (h : x ≤ y) u := f.monotone <| h u
 
 set_option backward.defeqAttrib.useBackward true in
-theorem ωScottContinuous_toUnitMono (f : Part α → Part α) (hc : ωScottContinuous f) :
-    ωScottContinuous (toUnitMono ⟨f,hc.monotone⟩) := .of_map_ωSup_of_orderHom fun _ => by
-  ext ⟨⟩ : 1
-  dsimp [OmegaCompletePartialOrder.ωSup]
-  erw [hc.map_ωSup]
-  rw [Chain.map_comp]
-  rfl
+theorem ωScottContinuous_toUnitMono (f : Part α → Part α) (hc : ωScottContinuous f)
+    : ωScottContinuous (toUnitMono ⟨f, hc.monotone⟩) :=
+  .of_map_ωSup_of_orderHom fun _ => by
+    ext ⟨⟩ : 1
+    dsimp [OmegaCompletePartialOrder.ωSup]
+    erw [hc.map_ωSup]
+    rw [Chain.map_comp]
+    rfl
 
-noncomputable instance lawfulFix : LawfulFix (Part α) :=
-  ⟨fun {f : Part α → Part α} hc ↦ show Part.fix (toUnitMono ⟨f,hc.monotone⟩) () = _ by
+noncomputable instance lawfulFix : LawfulFix (Part α) := ⟨fun {f : Part α → Part α} hc ↦
+  show Part.fix (toUnitMono ⟨f, hc.monotone⟩) () = _ by
     rw [Part.fix_eq_of_ωScottContinuous (ωScottContinuous_toUnitMono f hc)]; rfl⟩
 
 end Part
@@ -206,15 +213,15 @@ variable (α β γ)
 
 /-- `Sigma.curry` as a monotone function. -/
 @[simps]
-def monotoneCurry [(x y : _) → Preorder <| γ x y] :
-    (∀ x : Σ a, β a, γ x.1 x.2) →o ∀ (a) (b : β a), γ a b where
+def monotoneCurry [(x y : _) → Preorder <| γ x y]
+    : (∀ x : Σ a, β a, γ x.1 x.2) →o ∀ (a) (b : β a), γ a b where
   toFun := curry
   monotone' _x _y h a b := h ⟨a, b⟩
 
 /-- `Sigma.uncurry` as a monotone function. -/
 @[simps]
-def monotoneUncurry [(x y : _) → Preorder <| γ x y] :
-    (∀ (a) (b : β a), γ a b) →o ∀ x : Σ a, β a, γ x.1 x.2 where
+def monotoneUncurry [(x y : _) → Preorder <| γ x y]
+    : (∀ (a) (b : β a), γ a b) →o ∀ x : Σ a, β a, γ x.1 x.2 where
   toFun := uncurry
   monotone' _x _y h a := h a.1 a.2
 
@@ -222,8 +229,7 @@ variable [(x y : _) → OmegaCompletePartialOrder <| γ x y]
 
 open OmegaCompletePartialOrder.Chain
 
-theorem ωScottContinuous_curry :
-    ωScottContinuous (monotoneCurry α β γ) :=
+theorem ωScottContinuous_curry : ωScottContinuous (monotoneCurry α β γ) :=
   ωScottContinuous.of_map_ωSup_of_orderHom fun c ↦ by
     ext x y
     dsimp [curry, ωSup]
@@ -231,13 +237,12 @@ theorem ωScottContinuous_curry :
     rfl
 
 set_option backward.defeqAttrib.useBackward true in
-theorem ωScottContinuous_uncurry :
-    ωScottContinuous (monotoneUncurry α β γ) :=
-    .of_map_ωSup_of_orderHom fun c ↦ by
-  ext ⟨x, y⟩
-  dsimp [uncurry, ωSup]
-  rw [map_comp, map_comp]
-  rfl
+theorem ωScottContinuous_uncurry : ωScottContinuous (monotoneUncurry α β γ) :=
+  .of_map_ωSup_of_orderHom fun c ↦ by
+    ext ⟨x, y⟩
+    dsimp [uncurry, ωSup]
+    rw [map_comp, map_comp]
+    rfl
 
 end Monotone
 
@@ -252,16 +257,15 @@ section Curry
 
 variable {f : (∀ a b, γ a b) → ∀ a b, γ a b}
 
-theorem uncurry_curry_ωScottContinuous (hc : ωScottContinuous f) :
-    ωScottContinuous <| (monotoneUncurry α β γ).comp <|
-      (⟨f,hc.monotone⟩ : ((x : _) → (y : β x) → γ x y) →o (x : _) → (y : β x) → γ x y).comp <|
-      monotoneCurry α β γ :=
+theorem uncurry_curry_ωScottContinuous (hc : ωScottContinuous f)
+    : ωScottContinuous <| (monotoneUncurry α β γ).comp <|
+      (⟨f, hc.monotone⟩ : ((x : _) → (y : β x) → γ x y) →o (x : _) → (y : β x) → γ x y).comp <|
+        monotoneCurry α β γ :=
   (ωScottContinuous_uncurry _ _ _).comp (hc.comp (ωScottContinuous_curry _ _ _))
 
 end Curry
 
-instance lawfulFix' [LawfulFix <| (x : Sigma β) → γ x.1 x.2] :
-    LawfulFix ((x y : _) → γ x y) where
+instance lawfulFix' [LawfulFix <| (x : Sigma β) → γ x.1 x.2] : LawfulFix ((x y : _) → γ x y) where
   fix_eq {_f} hc := by
     dsimp [fix]
     conv_lhs => erw [LawfulFix.fix_eq (uncurry_curry_ωScottContinuous hc)]

@@ -50,35 +50,35 @@ section Monoid
 variable [MulOneClass M] {s t : Set α} {a : α}
 
 @[to_additive]
-theorem mulIndicator_union_mul_inter_apply (f : α → M) (s t : Set α) (a : α) :
-    mulIndicator (s ∪ t) f a * mulIndicator (s ∩ t) f a
+theorem mulIndicator_union_mul_inter_apply (f : α → M) (s t : Set α) (a : α)
+    : mulIndicator (s ∪ t) f a * mulIndicator (s ∩ t) f a
       = mulIndicator s f a * mulIndicator t f a := by
   by_cases hs : a ∈ s <;> by_cases ht : a ∈ t <;> simp [*]
 
 @[to_additive]
-theorem mulIndicator_union_mul_inter (f : α → M) (s t : Set α) :
-    mulIndicator (s ∪ t) f * mulIndicator (s ∩ t) f = mulIndicator s f * mulIndicator t f :=
+theorem mulIndicator_union_mul_inter (f : α → M) (s t : Set α)
+    : mulIndicator (s ∪ t) f * mulIndicator (s ∩ t) f = mulIndicator s f * mulIndicator t f :=
   funext <| mulIndicator_union_mul_inter_apply f s t
 
 @[to_additive]
-theorem mulIndicator_union_of_notMem_inter (h : a ∉ s ∩ t) (f : α → M) :
-    mulIndicator (s ∪ t) f a = mulIndicator s f a * mulIndicator t f a := by
+theorem mulIndicator_union_of_notMem_inter (h : a ∉ s ∩ t) (f : α → M)
+    : mulIndicator (s ∪ t) f a = mulIndicator s f a * mulIndicator t f a := by
   rw [← mulIndicator_union_mul_inter_apply f s t, mulIndicator_of_notMem h, mul_one]
 
 @[to_additive]
-theorem mulIndicator_union_of_disjoint (h : Disjoint s t) (f : α → M) :
-    mulIndicator (s ∪ t) f = fun a => mulIndicator s f a * mulIndicator t f a :=
+theorem mulIndicator_union_of_disjoint (h : Disjoint s t) (f : α → M)
+    : mulIndicator (s ∪ t) f = fun a => mulIndicator s f a * mulIndicator t f a :=
   funext fun _ => mulIndicator_union_of_notMem_inter (fun ha => h.le_bot ha) _
 
 open scoped symmDiff in
 @[to_additive]
-theorem mulIndicator_symmDiff (s t : Set α) (f : α → M) :
-    mulIndicator (s ∆ t) f = mulIndicator (s \ t) f * mulIndicator (t \ s) f :=
+theorem mulIndicator_symmDiff (s t : Set α) (f : α → M)
+    : mulIndicator (s ∆ t) f = mulIndicator (s \ t) f * mulIndicator (t \ s) f :=
   mulIndicator_union_of_disjoint (disjoint_sdiff_self_right.mono_left sdiff_le) _
 
 @[to_additive]
-theorem mulIndicator_mul (s : Set α) (f g : α → M) :
-    (mulIndicator s fun a => f a * g a) = fun a => mulIndicator s f a * mulIndicator s g a := by
+theorem mulIndicator_mul (s : Set α) (f g : α → M)
+    : (mulIndicator s fun a => f a * g a) = fun a => mulIndicator s f a * mulIndicator s g a := by
   funext
   simp only [mulIndicator]
   split_ifs
@@ -86,47 +86,47 @@ theorem mulIndicator_mul (s : Set α) (f g : α → M) :
   rw [mul_one]
 
 @[to_additive]
-theorem mulIndicator_mul' (s : Set α) (f g : α → M) :
-    mulIndicator s (f * g) = mulIndicator s f * mulIndicator s g :=
+theorem mulIndicator_mul' (s : Set α) (f g : α → M)
+    : mulIndicator s (f * g) = mulIndicator s f * mulIndicator s g :=
   mulIndicator_mul s f g
 
 @[to_additive (attr := simp)]
-theorem mulIndicator_compl_mul_self_apply (s : Set α) (f : α → M) (a : α) :
-    mulIndicator sᶜ f a * mulIndicator s f a = f a :=
+theorem mulIndicator_compl_mul_self_apply (s : Set α) (f : α → M) (a : α)
+    : mulIndicator sᶜ f a * mulIndicator s f a = f a :=
   by_cases (fun ha : a ∈ s => by simp [ha]) fun ha => by simp [ha]
 
 @[to_additive (attr := simp)]
-theorem mulIndicator_compl_mul_self (s : Set α) (f : α → M) :
-    mulIndicator sᶜ f * mulIndicator s f = f :=
+theorem mulIndicator_compl_mul_self (s : Set α) (f : α → M)
+    : mulIndicator sᶜ f * mulIndicator s f = f :=
   funext <| mulIndicator_compl_mul_self_apply s f
 
 @[to_additive (attr := simp)]
-theorem mulIndicator_self_mul_compl_apply (s : Set α) (f : α → M) (a : α) :
-    mulIndicator s f a * mulIndicator sᶜ f a = f a :=
+theorem mulIndicator_self_mul_compl_apply (s : Set α) (f : α → M) (a : α)
+    : mulIndicator s f a * mulIndicator sᶜ f a = f a :=
   by_cases (fun ha : a ∈ s => by simp [ha]) fun ha => by simp [ha]
 
 @[to_additive (attr := simp)]
-theorem mulIndicator_self_mul_compl (s : Set α) (f : α → M) :
-    mulIndicator s f * mulIndicator sᶜ f = f :=
+theorem mulIndicator_self_mul_compl (s : Set α) (f : α → M)
+    : mulIndicator s f * mulIndicator sᶜ f = f :=
   funext <| mulIndicator_self_mul_compl_apply s f
 
 @[to_additive]
-theorem mulIndicator_mul_eq_left {f g : α → M} (h : Disjoint (mulSupport f) (mulSupport g)) :
-    (mulSupport f).mulIndicator (f * g) = f := by
+theorem mulIndicator_mul_eq_left {f g : α → M} (h : Disjoint (mulSupport f) (mulSupport g))
+    : (mulSupport f).mulIndicator (f * g) = f := by
   refine (mulIndicator_congr fun x hx => ?_).trans mulIndicator_mulSupport
   have : g x = 1 := notMem_mulSupport.1 (disjoint_left.1 h hx)
   rw [Pi.mul_apply, this, mul_one]
 
 @[to_additive]
-theorem mulIndicator_mul_eq_right {f g : α → M} (h : Disjoint (mulSupport f) (mulSupport g)) :
-    (mulSupport g).mulIndicator (f * g) = g := by
+theorem mulIndicator_mul_eq_right {f g : α → M} (h : Disjoint (mulSupport f) (mulSupport g))
+    : (mulSupport g).mulIndicator (f * g) = g := by
   refine (mulIndicator_congr fun x hx => ?_).trans mulIndicator_mulSupport
   have : f x = 1 := notMem_mulSupport.1 (disjoint_right.1 h hx)
   rw [Pi.mul_apply, this, one_mul]
 
 @[to_additive]
-theorem mulIndicator_mul_compl_eq_piecewise [DecidablePred (· ∈ s)] (f g : α → M) :
-    s.mulIndicator f * sᶜ.mulIndicator g = s.piecewise f g := by
+theorem mulIndicator_mul_compl_eq_piecewise [DecidablePred (· ∈ s)] (f g : α → M)
+    : s.mulIndicator f * sᶜ.mulIndicator g = s.piecewise f g := by
   ext x
   by_cases h : x ∈ s
   · rw [piecewise_eq_of_mem _ _ _ h, Pi.mul_apply, Set.mulIndicator_of_mem h,
@@ -152,32 +152,31 @@ theorem mulIndicator_inv' (s : Set α) (f : α → G) : mulIndicator s f⁻¹ = 
   (mulIndicatorHom G s).map_inv f
 
 @[to_additive]
-theorem mulIndicator_inv (s : Set α) (f : α → G) :
-    (mulIndicator s fun a => (f a)⁻¹) = fun a => (mulIndicator s f a)⁻¹ :=
+theorem mulIndicator_inv (s : Set α) (f : α → G)
+    : (mulIndicator s fun a => (f a)⁻¹) = fun a => (mulIndicator s f a)⁻¹ :=
   mulIndicator_inv' s f
 
 @[to_additive]
-theorem mulIndicator_div (s : Set α) (f g : α → G) :
-    (mulIndicator s fun a => f a / g a) = fun a => mulIndicator s f a / mulIndicator s g a :=
+theorem mulIndicator_div (s : Set α) (f g : α → G)
+    : (mulIndicator s fun a => f a / g a) = fun a => mulIndicator s f a / mulIndicator s g a :=
   (mulIndicatorHom G s).map_div f g
 
 @[to_additive]
-theorem mulIndicator_div' (s : Set α) (f g : α → G) :
-    mulIndicator s (f / g) = mulIndicator s f / mulIndicator s g :=
+theorem mulIndicator_div' (s : Set α) (f g : α → G)
+    : mulIndicator s (f / g) = mulIndicator s f / mulIndicator s g :=
   mulIndicator_div s f g
 
 @[to_additive indicator_compl']
-theorem mulIndicator_compl (s : Set α) (f : α → G) :
-    mulIndicator sᶜ f = f * (mulIndicator s f)⁻¹ :=
+theorem mulIndicator_compl (s : Set α) (f : α → G) : mulIndicator sᶜ f = f * (mulIndicator s f)⁻¹ :=
   eq_mul_inv_of_mul_eq <| s.mulIndicator_compl_mul_self f
 
 @[to_additive indicator_compl]
-theorem mulIndicator_compl' (s : Set α) (f : α → G) :
-    mulIndicator sᶜ f = f / mulIndicator s f := by rw [div_eq_mul_inv, mulIndicator_compl]
+theorem mulIndicator_compl' (s : Set α) (f : α → G) : mulIndicator sᶜ f = f / mulIndicator s f := by
+  rw [div_eq_mul_inv, mulIndicator_compl]
 
 @[to_additive indicator_sdiff']
-theorem mulIndicator_sdiff (h : s ⊆ t) (f : α → G) :
-    mulIndicator (t \ s) f = mulIndicator t f * (mulIndicator s f)⁻¹ :=
+theorem mulIndicator_sdiff (h : s ⊆ t) (f : α → G)
+    : mulIndicator (t \ s) f = mulIndicator t f * (mulIndicator s f)⁻¹ :=
   eq_mul_inv_of_mul_eq <| by
     rw [Pi.mul_def, ← mulIndicator_union_of_disjoint, sdiff_union_self,
       union_eq_self_of_subset_right h]
@@ -186,17 +185,17 @@ theorem mulIndicator_sdiff (h : s ⊆ t) (f : α → G) :
 @[deprecated (since := "2026-06-03")] alias mulIndicator_diff := mulIndicator_sdiff
 
 @[to_additive indicator_sdiff]
-theorem mulIndicator_sdiff' (h : s ⊆ t) (f : α → G) :
-    mulIndicator (t \ s) f = mulIndicator t f / mulIndicator s f := by
+theorem mulIndicator_sdiff' (h : s ⊆ t) (f : α → G)
+    : mulIndicator (t \ s) f = mulIndicator t f / mulIndicator s f := by
   rw [mulIndicator_sdiff h, div_eq_mul_inv]
 
 @[deprecated (since := "2026-06-03")] alias mulIndicator_diff' := mulIndicator_sdiff'
 
 open scoped symmDiff in
 @[to_additive]
-theorem apply_mulIndicator_symmDiff {g : G → β} (hg : ∀ x, g x⁻¹ = g x)
-    (s t : Set α) (f : α → G) (x : α) :
-    g (mulIndicator (s ∆ t) f x) = g (mulIndicator s f x / mulIndicator t f x) := by
+theorem apply_mulIndicator_symmDiff
+    {g : G → β} (hg : ∀ x, g x⁻¹ = g x) (s t : Set α) (f : α → G) (x : α)
+    : g (mulIndicator (s ∆ t) f x) = g (mulIndicator s f x / mulIndicator t f x) := by
   by_cases hs : x ∈ s <;> by_cases ht : x ∈ t <;> simp [mem_symmDiff, *]
 
 end Group
@@ -204,9 +203,11 @@ end Group
 section One
 
 @[to_additive]
-lemma mulSupport_subset_subsingleton_of_disjoint_on_mulSupport [One β] {s : γ → Set α} (f : α → β)
-  (hs : Pairwise (Disjoint on (fun j ↦ s j ∩ f.mulSupport))) (i : α) (j : γ) (hj : i ∈ s j) :
-    (fun d ↦ (s d).mulIndicator f i).mulSupport ⊆ {j} := by
+lemma mulSupport_subset_subsingleton_of_disjoint_on_mulSupport
+    [One β]
+    {s : γ → Set α} (f : α → β) (hs : Pairwise (Disjoint on (fun j ↦ s j ∩ f.mulSupport)))
+    (i : α) (j : γ) (hj : i ∈ s j)
+    : (fun d ↦ (s d).mulIndicator f i).mulSupport ⊆ {j} := by
   suffices ∀ j', j' ≠ j → {i} ⊆ s j → {i} ⊆ s j' → {i} ⊆ mulSupport f → False by by_contra; aesop
   intro j' h hj hj' hi
   simp only [Pairwise, Disjoint, Set.subset_inter_iff] at hs
@@ -221,8 +222,8 @@ variable {ι : Type*} [DecidableEq ι] {M : Type*} [One M]
 /-- On non-dependent functions, `Set.mulIndicator` on a singleton set equals `Pi.mulSingle`. -/
 @[to_additive (attr := simp)
   /-- On non-dependent functions, `Set.indicator` on a singleton set equals `Pi.single`. -/]
-theorem mulIndicator_singleton (i : ι) (f : ι → M) :
-    Set.mulIndicator {i} f = Pi.mulSingle i (f i) := by
+theorem mulIndicator_singleton (i : ι) (f : ι → M)
+    : Set.mulIndicator {i} f = Pi.mulSingle i (f i) := by
   ext j
   simp only [Set.mulIndicator_apply, Pi.mulSingle_apply, Set.mem_singleton_iff]
   split_ifs with h <;> simp [h]
@@ -230,6 +231,8 @@ theorem mulIndicator_singleton (i : ι) (f : ι → M) :
 end Set
 
 @[to_additive]
-theorem map_mulIndicator {M N F : Type*} [One M] [One N] [FunLike F M N] [OneHomClass F M N] (f : F)
-    (s : Set α) (g : α → M) (x : α) : f (s.mulIndicator g x) = s.mulIndicator (f ∘ g) x := by
+theorem map_mulIndicator
+    {M N F : Type*} [One M] [One N] [FunLike F M N] [OneHomClass F M N]
+    (f : F) (s : Set α) (g : α → M) (x : α)
+    : f (s.mulIndicator g x) = s.mulIndicator (f ∘ g) x := by
   simp [Set.mulIndicator_comp_of_one]

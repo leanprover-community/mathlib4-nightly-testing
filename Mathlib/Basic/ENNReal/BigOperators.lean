@@ -36,40 +36,44 @@ lemma ofNNReal_finsetSum (s : Finset ι) (f : ι → ℝ≥0) : ↑(∑ i ∈ s,
 @[deprecated (since := "2026-04-08")] alias coe_finset_sum := ofNNReal_finsetSum
 
 @[simp, norm_cast]
-lemma ofNNReal_finsetProd (s : Finset ι) (f : ι → ℝ≥0) :
-    ↑(∏ i ∈ s, f i) = ∏ i ∈ s, ofNNReal (f i) := map_prod ofNNRealHom f s
+lemma ofNNReal_finsetProd (s : Finset ι) (f : ι → ℝ≥0)
+    : ↑(∏ i ∈ s, f i) = ∏ i ∈ s, ofNNReal (f i) :=
+  map_prod ofNNRealHom f s
 
 @[deprecated (since := "2026-06-04")] alias coe_finsetProd := ofNNReal_finsetProd
 @[deprecated (since := "2026-04-08")] alias coe_finset_prod := ofNNReal_finsetProd
 
 @[simp, norm_cast]
-lemma ofNNReal_finsuppSum (f : ι →₀ M) (g : ι → M → ℝ≥0) :
-    f.sum g = f.sum (fun i m ↦ ofNNReal (g i m)) := map_finsuppSum ofNNRealHom ..
+lemma ofNNReal_finsuppSum (f : ι →₀ M) (g : ι → M → ℝ≥0)
+    : f.sum g = f.sum (fun i m ↦ ofNNReal (g i m)) :=
+  map_finsuppSum ofNNRealHom ..
 
 @[simp, norm_cast]
-lemma ofNNReal_finsuppProd (f : ι →₀ M) (g : ι → M → ℝ≥0) :
-    f.prod g = f.prod (fun i m ↦ ofNNReal (g i m)) := map_finsuppProd ofNNRealHom ..
+lemma ofNNReal_finsuppProd (f : ι →₀ M) (g : ι → M → ℝ≥0)
+    : f.prod g = f.prod (fun i m ↦ ofNNReal (g i m)) :=
+  map_finsuppProd ofNNRealHom ..
 
 @[simp]
-theorem toNNReal_prod (s : Finset ι) (f : ι → ℝ≥0∞) :
-    (∏ i ∈ s, f i).toNNReal = ∏ i ∈ s, (f i).toNNReal :=
+theorem toNNReal_prod (s : Finset ι) (f : ι → ℝ≥0∞)
+    : (∏ i ∈ s, f i).toNNReal = ∏ i ∈ s, (f i).toNNReal :=
   map_prod toNNRealHom _ _
 
 @[simp]
-theorem toReal_prod (s : Finset ι) (f : ι → ℝ≥0∞) :
-    (∏ i ∈ s, f i).toReal = ∏ i ∈ s, (f i).toReal :=
+theorem toReal_prod (s : Finset ι) (f : ι → ℝ≥0∞) : (∏ i ∈ s, f i).toReal = ∏ i ∈ s, (f i).toReal :=
   map_prod toRealHom _ _
 
-theorem ofReal_prod_of_nonneg {α : Type*} {s : Finset α} {f : α → ℝ} (hf : ∀ i, i ∈ s → 0 ≤ f i) :
-    ENNReal.ofReal (∏ i ∈ s, f i) = ∏ i ∈ s, ENNReal.ofReal (f i) := by
+theorem ofReal_prod_of_nonneg {α : Type*} {s : Finset α} {f : α → ℝ} (hf : ∀ i, i ∈ s → 0 ≤ f i)
+    : ENNReal.ofReal (∏ i ∈ s, f i) = ∏ i ∈ s, ENNReal.ofReal (f i) := by
   simp_rw [ENNReal.ofReal, ← ofNNReal_finsetProd, coe_inj]
   exact Real.toNNReal_prod_of_nonneg hf
 
-theorem iInf_sum {ι α : Type*} {f : ι → α → ℝ≥0∞} {s : Finset α} [Nonempty ι]
-    (h : ∀ (t : Finset α) (i j : ι), ∃ k, ∀ a ∈ t, f k a ≤ f i a ∧ f k a ≤ f j a) :
-    ⨅ i, ∑ a ∈ s, f i a = ∑ a ∈ s, ⨅ i, f i a := by
+theorem iInf_sum
+    {ι α : Type*} {f : ι → α → ℝ≥0∞} {s : Finset α} [Nonempty ι]
+    (h : ∀ (t : Finset α) (i j : ι), ∃ k, ∀ a ∈ t, f k a ≤ f i a ∧ f k a ≤ f j a)
+    : ⨅ i, ∑ a ∈ s, f i a = ∑ a ∈ s, ⨅ i, f i a := by
   induction s using Finset.cons_induction_on with
-  | empty => simp only [Finset.sum_empty, ciInf_const]
+  | empty =>
+    simp only [Finset.sum_empty, ciInf_const]
   | cons a s ha ih =>
     simp only [Finset.sum_cons, ← ih]
     refine (iInf_add_iInf fun i j => ?_).symm
@@ -100,46 +104,54 @@ lemma sum_ne_top : ∑ a ∈ s, f a ≠ ∞ ↔ ∀ a ∈ s, f a ≠ ∞ := With
 /-- A sum is finite iff all summands are finite. -/
 @[simp] lemma sum_lt_top : ∑ a ∈ s, f a < ∞ ↔ ∀ a ∈ s, f a < ∞ := WithTop.sum_lt_top
 
-theorem lt_top_of_sum_ne_top {s : Finset α} {f : α → ℝ≥0∞} (h : ∑ x ∈ s, f x ≠ ∞) {a : α}
-    (ha : a ∈ s) : f a < ∞ :=
+theorem lt_top_of_sum_ne_top
+    {s : Finset α} {f : α → ℝ≥0∞} (h : ∑ x ∈ s, f x ≠ ∞) {a : α} (ha : a ∈ s)
+    : f a < ∞ :=
   sum_lt_top.1 h.lt_top a ha
 
-/-- Seeing `ℝ≥0∞` as `ℝ≥0` does not change their sum, unless one of the `ℝ≥0∞` is
-infinity -/
-theorem toNNReal_sum {s : Finset α} {f : α → ℝ≥0∞} (hf : ∀ a ∈ s, f a ≠ ∞) :
-    ENNReal.toNNReal (∑ a ∈ s, f a) = ∑ a ∈ s, ENNReal.toNNReal (f a) := by
+/--
+Seeing `ℝ≥0∞` as `ℝ≥0` does not change their sum, unless one of the `ℝ≥0∞` is
+infinity
+-/
+theorem toNNReal_sum {s : Finset α} {f : α → ℝ≥0∞} (hf : ∀ a ∈ s, f a ≠ ∞)
+    : ENNReal.toNNReal (∑ a ∈ s, f a) = ∑ a ∈ s, ENNReal.toNNReal (f a) := by
   rw [← coe_inj, coe_toNNReal, ofNNReal_finsetSum, sum_congr rfl]
   · intro x hx
     exact (coe_toNNReal (hf x hx)).symm
   · exact sum_ne_top.2 hf
 
 /-- seeing `ℝ≥0∞` as `Real` does not change their sum, unless one of the `ℝ≥0∞` is infinity -/
-theorem toReal_sum {s : Finset α} {f : α → ℝ≥0∞} (hf : ∀ a ∈ s, f a ≠ ∞) :
-    ENNReal.toReal (∑ a ∈ s, f a) = ∑ a ∈ s, ENNReal.toReal (f a) := by
+theorem toReal_sum {s : Finset α} {f : α → ℝ≥0∞} (hf : ∀ a ∈ s, f a ≠ ∞)
+    : ENNReal.toReal (∑ a ∈ s, f a) = ∑ a ∈ s, ENNReal.toReal (f a) := by
   rw [ENNReal.toReal, toNNReal_sum hf, NNReal.coe_sum]
   rfl
 
-theorem ofReal_sum_of_nonneg {s : Finset α} {f : α → ℝ} (hf : ∀ i, i ∈ s → 0 ≤ f i) :
-    ENNReal.ofReal (∑ i ∈ s, f i) = ∑ i ∈ s, ENNReal.ofReal (f i) := by
+theorem ofReal_sum_of_nonneg {s : Finset α} {f : α → ℝ} (hf : ∀ i, i ∈ s → 0 ≤ f i)
+    : ENNReal.ofReal (∑ i ∈ s, f i) = ∑ i ∈ s, ENNReal.ofReal (f i) := by
   simp_rw [ENNReal.ofReal, ← ofNNReal_finsetSum, coe_inj]
   exact Real.toNNReal_sum_of_nonneg hf
 
-theorem sum_lt_sum_of_nonempty {s : Finset α} (hs : s.Nonempty) {f g : α → ℝ≥0∞}
-    (Hlt : ∀ i ∈ s, f i < g i) : ∑ i ∈ s, f i < ∑ i ∈ s, g i := by
+theorem sum_lt_sum_of_nonempty
+    {s : Finset α} (hs : s.Nonempty) {f g : α → ℝ≥0∞} (Hlt : ∀ i ∈ s, f i < g i)
+    : ∑ i ∈ s, f i < ∑ i ∈ s, g i := by
   induction hs using Finset.Nonempty.cons_induction with
-  | singleton => simp [Hlt _ (Finset.mem_singleton_self _)]
+  | singleton =>
+    simp [Hlt _ (Finset.mem_singleton_self _)]
   | cons _ _ _ _ ih =>
     simp only [Finset.sum_cons, forall_mem_cons] at Hlt ⊢
     exact ENNReal.add_lt_add Hlt.1 (ih Hlt.2)
 
-theorem exists_le_of_sum_le {s : Finset α} (hs : s.Nonempty) {f g : α → ℝ≥0∞}
-    (Hle : ∑ i ∈ s, f i ≤ ∑ i ∈ s, g i) : ∃ i ∈ s, f i ≤ g i := by
+theorem exists_le_of_sum_le
+    {s : Finset α} (hs : s.Nonempty) {f g : α → ℝ≥0∞} (Hle : ∑ i ∈ s, f i ≤ ∑ i ∈ s, g i)
+    : ∃ i ∈ s, f i ≤ g i := by
   contrapose! Hle
   apply ENNReal.sum_lt_sum_of_nonempty hs Hle
 
-/-- `Finset.sum_div` does not apply since `ℝ≥0∞` is not a `DivisionSemiring`.  Although
-  the proof of `Finset.sum_div` only needs `DivInvMonoid` and `NonUnitalNonAssocSemiring`, the best
-  typeclass including these is `DivisionSemiring`. -/
+/--
+`Finset.sum_div` does not apply since `ℝ≥0∞` is not a `DivisionSemiring`.  Although
+the proof of `Finset.sum_div` only needs `DivInvMonoid` and `NonUnitalNonAssocSemiring`, the best
+typeclass including these is `DivisionSemiring`.
+-/
 lemma sum_div (a : ℝ≥0∞) : (∑ i ∈ s, f i) / a = ∑ i ∈ s, f i / a := by
   simp_rw [div_eq_mul_inv, Finset.sum_mul]
 
@@ -149,8 +161,8 @@ section Inv
 
 variable {ι : Type*} {f g : ι → ℝ≥0∞} {s : Finset ι}
 
-lemma prod_inv_distrib (hf : (s : Set ι).Pairwise fun i j ↦ f i ≠ 0 ∨ f j ≠ ∞) :
-    (∏ i ∈ s, f i)⁻¹ = ∏ i ∈ s, (f i)⁻¹ := by
+lemma prod_inv_distrib (hf : (s : Set ι).Pairwise fun i j ↦ f i ≠ 0 ∨ f j ≠ ∞)
+    : (∏ i ∈ s, f i)⁻¹ = ∏ i ∈ s, (f i)⁻¹ := by
   induction s using Finset.cons_induction with
   | empty => simp
   | cons i s hi ih => ?_
@@ -160,31 +172,35 @@ lemma prod_inv_distrib (hf : (s : Set ι).Pairwise fun i j ↦ f i ≠ 0 ∨ f j
   · exact imp_iff_not_or.2 (hf (by simp) (by simp [hj]) <| .symm <| ne_of_mem_of_not_mem hj hi) hi₀
   · exact imp_iff_not_or.2 (hf (by simp [hj]) (by simp) <| ne_of_mem_of_not_mem hj hi).symm hi₀
 
-lemma prod_div_distrib (hg : (s : Set ι).Pairwise fun i j ↦ g i ≠ 0 ∨ g j ≠ ∞) :
-    (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) := by
+lemma prod_div_distrib (hg : (s : Set ι).Pairwise fun i j ↦ g i ≠ 0 ∨ g j ≠ ∞)
+    : (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) := by
   simp only [div_eq_mul_inv, prod_inv_distrib hg, ← Finset.prod_mul_distrib]
 
-lemma prod_div_distrib_of_ne_top (hg : ∀ i ∈ s, g i ≠ ∞) :
-    (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) :=
+lemma prod_div_distrib_of_ne_top (hg : ∀ i ∈ s, g i ≠ ∞)
+    : (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) :=
   prod_div_distrib (by grind [Set.Pairwise])
 
-lemma prod_div_distrib_of_ne_zero (hg : ∀ i ∈ s, g i ≠ 0) :
-    (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) :=
+lemma prod_div_distrib_of_ne_zero (hg : ∀ i ∈ s, g i ≠ 0)
+    : (∏ i ∈ s, f i / g i) = (∏ i ∈ s, f i) / (∏ i ∈ s, g i) :=
   prod_div_distrib (by grind [Set.Pairwise])
 
-lemma finsetSum_iSup {α : Type*} {s : Finset α} {f : α → ι → ℝ≥0∞}
-    (hf : ∀ i j, ∃ k, ∀ a, f a i ≤ f a k ∧ f a j ≤ f a k) :
-    ∑ a ∈ s, ⨆ i, f a i = ⨆ i, ∑ a ∈ s, f a i := by
+lemma finsetSum_iSup
+    {α : Type*} {s : Finset α} {f : α → ι → ℝ≥0∞}
+    (hf : ∀ i j, ∃ k, ∀ a, f a i ≤ f a k ∧ f a j ≤ f a k)
+    : ∑ a ∈ s, ⨆ i, f a i = ⨆ i, ∑ a ∈ s, f a i := by
   induction s using Finset.cons_induction with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s ha ihs =>
     simp_rw [Finset.sum_cons, ihs]
     refine iSup_add_iSup fun i j ↦ (hf i j).imp fun k hk ↦ ?_
     gcongr
     exacts [(hk a).1, (hk _).2]
 
-lemma finsetSum_iSup_of_monotone {α : Type*} [Preorder ι] [IsDirectedOrder ι] {s : Finset α}
-    {f : α → ι → ℝ≥0∞} (hf : ∀ a, Monotone (f a)) : (∑ a ∈ s, iSup (f a)) = ⨆ n, ∑ a ∈ s, f a n :=
+lemma finsetSum_iSup_of_monotone
+    {α : Type*} [Preorder ι] [IsDirectedOrder ι]
+    {s : Finset α} {f : α → ι → ℝ≥0∞} (hf : ∀ a, Monotone (f a))
+    : (∑ a ∈ s, iSup (f a)) = ⨆ n, ∑ a ∈ s, f a n :=
   finsetSum_iSup fun i j ↦ (exists_ge_ge i j).imp fun _k ⟨hi, hj⟩ a ↦ ⟨hf a hi, hf a hj⟩
 
 end Inv

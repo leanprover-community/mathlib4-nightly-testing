@@ -6,7 +6,6 @@ Authors: Riccardo Brasca
 module
 
 public import Mathlib.LinearAlgebra.Dimension.Finite
-
 import Mathlib.LinearAlgebra.FreeModule.StrongRankCondition
 
 /-!
@@ -24,7 +23,6 @@ We provide some instances for finite and free modules involving matrices.
 
 public section
 
-
 universe u u' v w
 
 variable (R : Type u) (S : Type u') (M : Type v) (N : Type w)
@@ -39,8 +37,8 @@ variable [Ring R] [Ring S] [AddCommGroup M] [Module R M] [Module.Free R M] [Modu
 variable [AddCommGroup N] [Module R N] [Module S N] [SMulCommClass R S N]
 
 private noncomputable def linearMapEquivFun : (M →ₗ[R] N) ≃ₗ[S] ChooseBasisIndex R M → N :=
-  (chooseBasis R M).repr.congrLeft N S ≪≫ₗ (Finsupp.lsum S).symm ≪≫ₗ
-    LinearEquiv.piCongrRight fun _ ↦ LinearMap.ringLmapEquivSelf R S N
+  (chooseBasis R M).repr.congrLeft N S ≪≫ₗ (Finsupp.lsum S).symm
+    ≪≫ₗ LinearEquiv.piCongrRight fun _ ↦ LinearMap.ringLmapEquivSelf R S N
 
 instance Module.Free.linearMap [Module.Free S N] : Module.Free S (M →ₗ[R] N) :=
   Module.Free.of_equiv (linearMapEquivFun R S M N).symm
@@ -51,20 +49,18 @@ instance Module.Finite.linearMap [Module.Finite S N] : Module.Finite S (M →ₗ
 variable [StrongRankCondition R] [StrongRankCondition S] [Module.Free S N]
 
 open Cardinal
-theorem Module.rank_linearMap :
-    Module.rank S (M →ₗ[R] N) = lift.{w} (Module.rank R M) * lift.{v} (Module.rank S N) := by
-  rw [(linearMapEquivFun R S M N).rank_eq, rank_fun_eq_lift_mul,
-    ← finrank_eq_card_chooseBasisIndex, ← finrank_eq_rank R, lift_natCast]
+theorem Module.rank_linearMap
+    : Module.rank S (M →ₗ[R] N) = lift.{w} (Module.rank R M) * lift.{v} (Module.rank S N) := by
+  rw [(linearMapEquivFun R S M N).rank_eq, rank_fun_eq_lift_mul, ← finrank_eq_card_chooseBasisIndex,
+    ← finrank_eq_rank R, lift_natCast]
 
 /-- The `finrank` of `M →ₗ[R] N` as an `S`-module is `(finrank R M) * (finrank S N)`. -/
-theorem Module.finrank_linearMap :
-    finrank S (M →ₗ[R] N) = finrank R M * finrank S N := by
+theorem Module.finrank_linearMap : finrank S (M →ₗ[R] N) = finrank R M * finrank S N := by
   simp_rw [finrank, rank_linearMap, toNat_mul, toNat_lift]
 
 variable [Module R S] [SMulCommClass R S S]
 
-theorem Module.rank_linearMap_self :
-    Module.rank S (M →ₗ[R] S) = lift.{u'} (Module.rank R M) := by
+theorem Module.rank_linearMap_self : Module.rank S (M →ₗ[R] S) = lift.{u'} (Module.rank R M) := by
   rw [rank_linearMap, rank_self, lift_one, mul_one]
 
 theorem Module.finrank_linearMap_self : finrank S (M →ₗ[R] S) = finrank R M := by
@@ -74,11 +70,11 @@ end Ring
 
 section AlgHom
 
-variable (K M : Type*) (L : Type v) [CommRing K] [Ring M] [Algebra K M]
-  [Module.Free K M] [Module.Finite K M] [CommRing L] [IsDomain L] [Algebra K L]
+variable
+  (K M : Type*) (L : Type v) [CommRing K] [Ring M] [Algebra K M] [Module.Free K M]
+  [Module.Finite K M] [CommRing L] [IsDomain L] [Algebra K L]
 
-instance Finite.algHom : Finite (M →ₐ[K] L) :=
-  (linearIndependent_algHom_toLinearMap K M L).finite
+instance Finite.algHom : Finite (M →ₐ[K] L) := (linearIndependent_algHom_toLinearMap K M L).finite
 
 open Cardinal
 

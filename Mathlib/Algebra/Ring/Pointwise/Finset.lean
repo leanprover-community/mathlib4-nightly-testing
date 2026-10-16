@@ -31,8 +31,8 @@ variable {α : Type*}
 
 /-- `Finset α` has distributive negation if `α` has. -/
 @[instance_reducible]
-protected noncomputable def distribNeg [DecidableEq α] [Mul α] [HasDistribNeg α] :
-    HasDistribNeg (Finset α) :=
+protected noncomputable def distribNeg [DecidableEq α] [Mul α] [HasDistribNeg α]
+    : HasDistribNeg (Finset α) :=
   coe_injective.hasDistribNeg _ coe_neg coe_mul
 
 scoped[Pointwise] attribute [instance] Finset.distribNeg
@@ -53,11 +53,9 @@ lacks.
 ```
 -/
 
-lemma mul_add_subset : s * (t + u) ⊆ s * t + s * u :=
-  image₂_distrib_subset_left mul_add
+lemma mul_add_subset : s * (t + u) ⊆ s * t + s * u := image₂_distrib_subset_left mul_add
 
-lemma add_mul_subset : (s + t) * u ⊆ s * u + t * u :=
-  image₂_distrib_subset_right add_mul
+lemma add_mul_subset : (s + t) * u ⊆ s * u + t * u := image₂_distrib_subset_right add_mul
 
 end Distrib
 end Finset

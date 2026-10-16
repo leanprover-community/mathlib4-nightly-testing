@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 
 /-- info: max 1 2 : ℕ -/
@@ -11,7 +12,8 @@ import Mathlib.Algebra.Order.Archimedean.Real.Basic
 
 /-- info: ({0} ⊔ {1} ⊔ ({2} ⊔ {3})) ⊓ ({4} ⊔ {5}) ⊔ {6} ⊓ {7} ⊓ ({8} ⊓ {9}) : Set ℕ -/
 #guard_msgs in
-#check (max (min (max (max {0} {1}) (max {2} {3})) (max {4} {5})) (min (min {6} {7}) (min {8} {9})) : Set ℕ)
+#check (max (min (max (max {0} {1}) (max {2} {3})) (max {4} {5})) (min (min {6} {7}) (min {8} {9}))
+  : Set ℕ)
 
 section
 

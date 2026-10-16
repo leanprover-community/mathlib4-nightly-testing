@@ -65,8 +65,8 @@ In the above example, when the `apply_congr` tactic is called it gives the hypot
 which is then used to rewrite the `f x` to `g x`.
 -/
 def Lean.Elab.Tactic.applyCongr (q : Option Expr) : TacticM Unit := do
-  let const lhsFun _ ← (getAppFn ∘ cleanupAnnotations) <$> instantiateMVars (← getLhs) |
-    throwError "Left-hand side must be an application of a constant."
+  let const lhsFun _ ← (getAppFn ∘ cleanupAnnotations) <$> instantiateMVars (← getLhs)
+    | throwError "Left-hand side must be an application of a constant."
   let congrTheoremExprs ←
     match q with
     -- If the user specified a lemma, use that one,
@@ -81,9 +81,10 @@ def Lean.Elab.Tactic.applyCongr (q : Option Expr) : TacticM Unit := do
   if congrTheoremExprs == [] then
     throwError "No matching congr lemmas found"
   -- For every lemma:
-  liftMetaTactic fun mainGoal => congrTheoremExprs.firstM (fun congrTheoremExpr => do
-    let newGoals ← mainGoal.apply congrTheoremExpr { newGoals := .nonDependentOnly }
-    newGoals.mapM fun newGoal => Prod.snd <$> newGoal.intros)
+  liftMetaTactic fun mainGoal =>
+    congrTheoremExprs.firstM (fun congrTheoremExpr => do
+      let newGoals ← mainGoal.apply congrTheoremExpr { newGoals := .nonDependentOnly }
+      newGoals.mapM fun newGoal => Prod.snd <$> newGoal.intros)
 
 syntax (name := Lean.Parser.Tactic.applyCongr) "apply_congr" (ppSpace colGt term)? : conv
 

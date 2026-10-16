@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Complex.AbsMax
 public import Mathlib.Geometry.Manifold.MFDeriv.Defs
-
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.Notation
 
@@ -47,15 +46,16 @@ open Function Set Filter Complex
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℂ E H} [I.Boundaryless]
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I 1 M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 
-/-- **Maximum modulus principle**: if `f : M → F` is complex differentiable in a neighborhood of `c`
+/--
+**Maximum modulus principle**: if `f : M → F` is complex differentiable in a neighborhood of `c`
 and the norm `‖f z‖` has a local maximum at `c`, then `‖f z‖` is locally constant in a neighborhood
-of `c`. This is a manifold version of `Complex.norm_eventually_eq_of_isLocalMax`. -/
-theorem Complex.norm_eventually_eq_of_mdifferentiableAt_of_isLocalMax {f : M → F} {c : M}
-    (hd : ∀ᶠ z in 𝓝 c, MDiffAt f z) (hc : IsLocalMax (norm ∘ f) c) :
-    ∀ᶠ y in 𝓝 c, ‖f y‖ = ‖f c‖ := by
+of `c`. This is a manifold version of `Complex.norm_eventually_eq_of_isLocalMax`.
+-/
+theorem Complex.norm_eventually_eq_of_mdifferentiableAt_of_isLocalMax
+    {f : M → F} {c : M} (hd : ∀ᶠ z in 𝓝 c, MDiffAt f z) (hc : IsLocalMax (norm ∘ f) c)
+    : ∀ᶠ y in 𝓝 c, ‖f y‖ = ‖f c‖ := by
   set e := extChartAt I c
   have hI : range I = univ := ModelWithCorners.Boundaryless.range_eq_univ
   have H₁ : 𝓝[range I] (e c) = 𝓝 (e c) := by rw [hI, nhdsWithin_univ]
@@ -70,7 +70,8 @@ theorem Complex.norm_eventually_eq_of_mdifferentiableAt_of_isLocalMax {f : M →
       exact (extChartAt I c).map_target hyt
     have hfy : f (e.symm y) ∈ (chartAt F (0 : F)).source := mem_univ _
     rw [mdifferentiableAt_iff_of_mem_source hys hfy, hI, differentiableWithinAt_univ,
-      e.right_inv hyt] at hy₂
+        e.right_inv hyt]
+      at hy₂
     exact hy₂.2
   convert! norm_eventually_eq_of_isLocalMax hd _
   · congrm f $((extChartAt_to_inv _).symm)
@@ -82,12 +83,15 @@ theorem Complex.norm_eventually_eq_of_mdifferentiableAt_of_isLocalMax {f : M →
 
 namespace MDifferentiableOn
 
-/-- **Maximum modulus principle** on a connected set. Let `U` be a (pre)connected open set in a
+/--
+**Maximum modulus principle** on a connected set. Let `U` be a (pre)connected open set in a
 complex normed space. Let `f : E → F` be a function that is complex differentiable on `U`. Suppose
-that `‖f x‖` takes its maximum value on `U` at `c ∈ U`. Then `‖f x‖ = ‖f c‖` for all `x ∈ U`. -/
-theorem norm_eqOn_of_isPreconnected_of_isMaxOn {f : M → F} {U : Set M} {c : M}
-    (hd : MDiff[U] f) (hc : IsPreconnected U) (ho : IsOpen U)
-    (hcU : c ∈ U) (hm : IsMaxOn (norm ∘ f) U c) : EqOn (norm ∘ f) (const M ‖f c‖) U := by
+that `‖f x‖` takes its maximum value on `U` at `c ∈ U`. Then `‖f x‖ = ‖f c‖` for all `x ∈ U`.
+-/
+theorem norm_eqOn_of_isPreconnected_of_isMaxOn
+    {f : M → F} {U : Set M} {c : M} (hd : MDiff[U] f) (hc : IsPreconnected U) (ho : IsOpen U)
+    (hcU : c ∈ U) (hm : IsMaxOn (norm ∘ f) U c)
+    : EqOn (norm ∘ f) (const M ‖f c‖) U := by
   set V := U ∩ {z | ‖f z‖ = ‖f c‖}
   suffices U ⊆ V from fun x hx ↦ (this hx).2
   have hVo : IsOpen V := by
@@ -102,28 +106,35 @@ theorem norm_eqOn_of_isPreconnected_of_isMaxOn {f : M → F} {U : Set M} {c : M}
   set W := U ∩ {z | ‖f z‖ = ‖f c‖}ᶜ
   have hWo : IsOpen W := hd.continuousOn.norm.isOpen_inter_preimage ho isOpen_ne
   have hdVW : Disjoint V W := disjoint_compl_right.mono inf_le_right inf_le_right
-  have hUVW : U ⊆ V ∪ W := fun x hx => (eq_or_ne ‖f x‖ ‖f c‖).imp (.intro hx) (.intro hx)
+  have hUVW : U ⊆ V ∪ W := fun x hx => (eq_or_ne (‖f x‖) ‖f c‖).imp (.intro hx) (.intro hx)
   exact hc.subset_left_of_subset_union hVo hWo hdVW hUVW hVne
 
-/-- **Maximum modulus principle** on a connected set. Let `U` be a (pre)connected open set in a
+/--
+**Maximum modulus principle** on a connected set. Let `U` be a (pre)connected open set in a
 complex normed space.  Let `f : E → F` be a function that is complex differentiable on `U`. Suppose
 that `‖f x‖` takes its maximum value on `U` at `c ∈ U`. Then `f x = f c` for all `x ∈ U`.
 
-TODO: change assumption from `IsMaxOn` to `IsLocalMax`. -/
-theorem eqOn_of_isPreconnected_of_isMaxOn_norm [StrictConvexSpace ℝ F] {f : M → F} {U : Set M}
-    {c : M} (hd : MDiff[U] f) (hc : IsPreconnected U) (ho : IsOpen U)
-    (hcU : c ∈ U) (hm : IsMaxOn (norm ∘ f) U c) : EqOn f (const M (f c)) U := fun x hx =>
+TODO: change assumption from `IsMaxOn` to `IsLocalMax`.
+-/
+theorem eqOn_of_isPreconnected_of_isMaxOn_norm
+    [StrictConvexSpace ℝ F]
+    {f : M → F} {U : Set M} {c : M} (hd : MDiff[U] f) (hc : IsPreconnected U) (ho : IsOpen U)
+    (hcU : c ∈ U) (hm : IsMaxOn (norm ∘ f) U c)
+    : EqOn f (const M (f c)) U := fun x hx =>
   have H₁ : ‖f x‖ = ‖f c‖ := hd.norm_eqOn_of_isPreconnected_of_isMaxOn hc ho hcU hm hx
   have hd' : MDiff[U] (f · + f c) := hd.add mdifferentiableOn_const
   have H₂ : ‖f x + f c‖ = ‖f c + f c‖ :=
     hd'.norm_eqOn_of_isPreconnected_of_isMaxOn hc ho hcU hm.norm_add_self hx
   eq_of_norm_eq_of_norm_add_eq H₁ <| by simp only [H₂, SameRay.rfl.norm_add, H₁, Function.const]
 
-/-- If a function `f : M → F` from a complex manifold to a complex normed space is holomorphic on a
-(pre)connected compact open set, then it is a constant on this set. -/
-theorem apply_eq_of_isPreconnected_isCompact_isOpen {f : M → F} {U : Set M} {a b : M}
-    (hd : MDiff[U] f) (hpc : IsPreconnected U) (hc : IsCompact U)
-    (ho : IsOpen U) (ha : a ∈ U) (hb : b ∈ U) : f a = f b := by
+/--
+If a function `f : M → F` from a complex manifold to a complex normed space is holomorphic on a
+(pre)connected compact open set, then it is a constant on this set.
+-/
+theorem apply_eq_of_isPreconnected_isCompact_isOpen
+    {f : M → F} {U : Set M} {a b : M} (hd : MDiff[U] f) (hpc : IsPreconnected U) (hc : IsCompact U)
+    (ho : IsOpen U) (ha : a ∈ U) (hb : b ∈ U)
+    : f a = f b := by
   -- Subtract `f b` to avoid the assumption `[StrictConvexSpace ℝ F]`
   wlog hb₀ : f b = 0 generalizing f
   -- TODO: Add `MDifferentiableOn.sub` etc
@@ -131,8 +142,7 @@ theorem apply_eq_of_isPreconnected_isCompact_isOpen {f : M → F} {U : Set M} {a
       ⟨(hd x hx).1.sub continuousWithinAt_const, (hd x hx).2.sub_const _⟩
     simpa [sub_eq_zero] using this hd' (sub_self _)
   rcases hc.exists_isMaxOn ⟨a, ha⟩ hd.continuousOn.norm with ⟨c, hcU, hc⟩
-  have : ∀ x ∈ U, ‖f x‖ = ‖f c‖ :=
-    norm_eqOn_of_isPreconnected_of_isMaxOn hd hpc ho hcU hc
+  have : ∀ x ∈ U, ‖f x‖ = ‖f c‖ := norm_eqOn_of_isPreconnected_of_isMaxOn hd hpc ho hcU hc
   rw [hb₀, ← norm_eq_zero, this a ha, ← this b hb, hb₀, norm_zero]
 
 end MDifferentiableOn
@@ -152,23 +162,24 @@ namespace MDifferentiable
 variable [CompactSpace M]
 
 /-- A holomorphic function on a compact complex manifold is locally constant. -/
-protected theorem isLocallyConstant {f : M → F} (hf : MDiff f) :
-    IsLocallyConstant f :=
+protected theorem isLocallyConstant {f : M → F} (hf : MDiff f) : IsLocallyConstant f :=
   haveI : LocallyConnectedSpace H := I.toHomeomorph.locallyConnectedSpace
   haveI : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace H M
   IsLocallyConstant.of_constant_on_preconnected_clopens fun _ hpc hclo _a ha _b hb ↦
-    hf.mdifferentiableOn.apply_eq_of_isPreconnected_isCompact_isOpen hpc
-      hclo.isClosed.isCompact hclo.isOpen hb ha
+    hf.mdifferentiableOn.apply_eq_of_isPreconnected_isCompact_isOpen hpc hclo.isClosed.isCompact
+      hclo.isOpen hb ha
 
 /-- A holomorphic function on a compact connected complex manifold is constant. -/
-theorem apply_eq_of_compactSpace [PreconnectedSpace M] {f : M → F}
-    (hf : MDiff f) (a b : M) : f a = f b :=
+theorem apply_eq_of_compactSpace [PreconnectedSpace M] {f : M → F} (hf : MDiff f) (a b : M)
+    : f a = f b :=
   hf.isLocallyConstant.apply_eq_of_preconnectedSpace _ _
 
-/-- A holomorphic function on a compact connected complex manifold is the constant function `f ≡ v`,
-for some value `v`. -/
-theorem exists_eq_const_of_compactSpace [PreconnectedSpace M] {f : M → F} (hf : MDiff f) :
-    ∃ v : F, f = Function.const M v :=
+/--
+A holomorphic function on a compact connected complex manifold is the constant function `f ≡ v`,
+for some value `v`.
+-/
+theorem exists_eq_const_of_compactSpace [PreconnectedSpace M] {f : M → F} (hf : MDiff f)
+    : ∃ v : F, f = Function.const M v :=
   hf.isLocallyConstant.exists_eq_const
 
 end MDifferentiable

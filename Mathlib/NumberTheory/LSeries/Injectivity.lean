@@ -6,7 +6,6 @@ Authors: Michael Stoll
 module
 
 public import Mathlib.NumberTheory.LSeries.Convergence
-
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.NumberTheory.LSeries.Linearity
@@ -26,38 +25,42 @@ open LSeries Complex
 -- The following two lemmas need both `LSeries.Linearity` and `LSeries.Convergence`,
 -- so cannot live in either of these files.
 
-/-- The abscissa of absolute convergence of `f + g` is at most the maximum of those
-of `f` and `g`. -/
-lemma LSeries.abscissaOfAbsConv_add_le (f g : ℕ → ℂ) :
-    abscissaOfAbsConv (f + g) ≤ max (abscissaOfAbsConv f) (abscissaOfAbsConv g) :=
+/--
+The abscissa of absolute convergence of `f + g` is at most the maximum of those
+of `f` and `g`.
+-/
+lemma LSeries.abscissaOfAbsConv_add_le (f g : ℕ → ℂ)
+    : abscissaOfAbsConv (f + g) ≤ max (abscissaOfAbsConv f) (abscissaOfAbsConv g) :=
   abscissaOfAbsConv_binop_le LSeriesSummable.add f g
 
-/-- The abscissa of absolute convergence of `f - g` is at most the maximum of those
-of `f` and `g`. -/
-lemma LSeries.abscissaOfAbsConv_sub_le (f g : ℕ → ℂ) :
-    abscissaOfAbsConv (f - g) ≤ max (abscissaOfAbsConv f) (abscissaOfAbsConv g) :=
+/--
+The abscissa of absolute convergence of `f - g` is at most the maximum of those
+of `f` and `g`.
+-/
+lemma LSeries.abscissaOfAbsConv_sub_le (f g : ℕ → ℂ)
+    : abscissaOfAbsConv (f - g) ≤ max (abscissaOfAbsConv f) (abscissaOfAbsConv g) :=
   abscissaOfAbsConv_binop_le LSeriesSummable.sub f g
 
-private
-lemma cpow_mul_div_cpow_eq_div_div_cpow (m n : ℕ) (z : ℂ) (x : ℝ) :
-    (n + 1) ^ (x : ℂ) * (z / m ^ (x : ℂ)) = z / (m / (n + 1)) ^ (x : ℂ) := by
+private lemma cpow_mul_div_cpow_eq_div_div_cpow (m n : ℕ) (z : ℂ) (x : ℝ)
+    : (n + 1) ^ (x : ℂ) * (z / m ^ (x : ℂ)) = z / (m / (n + 1)) ^ (x : ℂ) := by
   have Hn : (0 : ℝ) ≤ (n + 1 : ℝ)⁻¹ := by positivity
   rw [← mul_div_assoc, mul_comm, div_eq_mul_inv z, mul_div_assoc]
   congr
   simp_rw [div_eq_mul_inv]
-  rw [show (n + 1 : ℂ)⁻¹ = (n + 1 : ℝ)⁻¹ by simp,
-    show (n + 1 : ℂ) = (n + 1 : ℝ) by norm_cast, show (m : ℂ) = (m : ℝ) by norm_cast,
-    mul_cpow_ofReal_nonneg m.cast_nonneg Hn, mul_inv, mul_comm]
+  rw [show (n + 1 : ℂ)⁻¹ = (n + 1 : ℝ)⁻¹ by simp, show (n + 1 : ℂ) = (n + 1 : ℝ) by norm_cast,
+    show (m : ℂ) = (m : ℝ) by norm_cast, mul_cpow_ofReal_nonneg m.cast_nonneg Hn, mul_inv, mul_comm]
   congr
   rw [← cpow_neg, show (-x : ℂ) = (-1 : ℝ) * x by simp, cpow_mul_ofReal_nonneg Hn,
     Real.rpow_neg_one, inv_inv]
 
 open Filter Real in
-/-- If the coefficients `f m` of an L-series are zero for `m ≤ n` and the L-series converges
-at some point, then `f (n+1)` is the limit of `(n+1)^x * LSeries f x` as `x → ∞`. -/
-lemma LSeries.tendsto_cpow_mul_atTop {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ n, f m = 0)
-    (ha : abscissaOfAbsConv f < ⊤) :
-    Tendsto (fun x : ℝ ↦ (n + 1) ^ (x : ℂ) * LSeries f x) atTop (nhds (f (n + 1))) := by
+/--
+If the coefficients `f m` of an L-series are zero for `m ≤ n` and the L-series converges
+at some point, then `f (n+1)` is the limit of `(n+1)^x * LSeries f x` as `x → ∞`.
+-/
+lemma LSeries.tendsto_cpow_mul_atTop
+    {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ n, f m = 0) (ha : abscissaOfAbsConv f < ⊤)
+    : Tendsto (fun x : ℝ ↦ (n + 1) ^ (x : ℂ) * LSeries f x) atTop (nhds (f (n + 1))) := by
   obtain ⟨y, hay, hyt⟩ := exists_between ha
   lift y to ℝ using ⟨hyt.ne, ((OrderBot.bot_le _).trans_lt hay).ne'⟩
   -- `F x m` is the `m`th term of `(n+1)^x * LSeries f x`, except that `F x (n+1) = 0`
@@ -70,7 +73,7 @@ lemma LSeries.tendsto_cpow_mul_atTop {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ 
     · simp [H, term, (n.zero_lt_succ.trans H).ne', F, cpow_mul_div_cpow_eq_div_div_cpow]
   have hs {x : ℝ} (hx : x ≥ y) : Summable fun m ↦ (n + 1) ^ (x : ℂ) * term f x m := by
     refine (summable_mul_left_iff <| natCast_add_one_cpow_ne_zero n _).mpr <|
-       LSeriesSummable_of_abscissaOfAbsConv_lt_re ?_
+      LSeriesSummable_of_abscissaOfAbsConv_lt_re ?_
     simpa only [ofReal_re] using hay.trans_le <| EReal.coe_le_coe_iff.mpr hx
   -- we can write `(n+1)^x * LSeries f x` as `f (n+1)` plus the series over `F x`
   have key : ∀ x ≥ y, (n + 1) ^ (x : ℂ) * LSeries f x = f (n + 1) + ∑' m : ℕ, F x m := by
@@ -83,8 +86,8 @@ lemma LSeries.tendsto_cpow_mul_atTop {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ 
     · simp [hm, hF]
   -- reduce to showing that `∑' m, F x m → 0` as `x → ∞`
   conv => enter [3, 1]; rw [← add_zero (f _)]
-  refine Tendsto.congr'
-    (eventuallyEq_of_mem (s := {x | y ≤ x}) (mem_atTop y) key).symm <| tendsto_const_nhds.add ?_
+  refine Tendsto.congr' (eventuallyEq_of_mem (s := {x | y ≤ x}) (mem_atTop y) key).symm <|
+    tendsto_const_nhds.add ?_
   -- get the prerequisites for applying dominated convergence
   have hys : Summable (F y) := by
     refine ((hs le_rfl).indicator {m | n + 1 < m}).congr fun m ↦ ?_
@@ -103,8 +106,8 @@ lemma LSeries.tendsto_cpow_mul_atTop {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ 
         enter [1, x]
         rw [div_eq_mul_inv, H₁, ← ofReal_cpow H₀, ← ofReal_inv, ← Real.inv_rpow H₀, inv_div]
       conv => enter [3, 1]; rw [← mul_zero (f k)]
-      exact
-        (tendsto_rpow_atTop_of_base_lt_one _ (neg_one_lt_zero.trans_le H₀') H₂).ofReal.const_mul _
+      exact (tendsto_rpow_atTop_of_base_lt_one _ (neg_one_lt_zero.trans_le H₀') H₂).ofReal.const_mul
+        _
     · simp [hF₀ _ H]
   rw [show (0 : ℂ) = tsum (fun _ : ℕ ↦ 0) from tsum_zero.symm]
   refine tendsto_tsum_of_dominated_convergence hys.norm hc <| eventually_iff.mpr ?_
@@ -120,10 +123,12 @@ lemma LSeries.tendsto_cpow_mul_atTop {f : ℕ → ℂ} {n : ℕ} (h : ∀ m ≤ 
   · simp [hF₀ _ H]
 
 open Filter in
-/-- If the L-series of `f` converges at some point, then `f 1` is the limit of `LSeries f x`
-as `x → ∞`. -/
-lemma LSeries.tendsto_atTop {f : ℕ → ℂ} (ha : abscissaOfAbsConv f < ⊤) :
-    Tendsto (fun x : ℝ ↦ LSeries f x) atTop (nhds (f 1)) := by
+/--
+If the L-series of `f` converges at some point, then `f 1` is the limit of `LSeries f x`
+as `x → ∞`.
+-/
+lemma LSeries.tendsto_atTop {f : ℕ → ℂ} (ha : abscissaOfAbsConv f < ⊤)
+    : Tendsto (fun x : ℝ ↦ LSeries f x) atTop (nhds (f 1)) := by
   let F (n : ℕ) : ℂ := if n = 0 then 0 else f n
   have hF₀ : F 0 = 0 := rfl
   have hF {n : ℕ} (hn : n ≠ 0) : F n = f n := ite_eq_right hn
@@ -132,20 +137,21 @@ lemma LSeries.tendsto_atTop {f : ℕ → ℂ} (ha : abscissaOfAbsConv f < ⊤) :
   convert! LSeries.tendsto_cpow_mul_atTop (n := 0) (fun _ hm ↦ Nat.le_zero.mp hm ▸ hF₀) ha' using 1
   simp
 
-lemma LSeries_eq_zero_of_abscissaOfAbsConv_eq_top {f : ℕ → ℂ} (h : abscissaOfAbsConv f = ⊤) :
-    LSeries f = 0 := by
+lemma LSeries_eq_zero_of_abscissaOfAbsConv_eq_top {f : ℕ → ℂ} (h : abscissaOfAbsConv f = ⊤)
+    : LSeries f = 0 := by
   ext1 s
   exact LSeries.eq_zero_of_not_LSeriesSummable f s <| mt LSeriesSummable.abscissaOfAbsConv_le <|
     h ▸ fun H ↦ (H.trans_lt <| EReal.coe_lt_top _).false
 
 open Filter Nat in
-/-- The `LSeries` of `f` is zero for large real arguments if and only if either `f n = 0`
-for all `n ≠ 0` or the L-series converges nowhere. -/
-lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
-    (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] 0 ↔ (∀ n ≠ 0, f n = 0) ∨ abscissaOfAbsConv f = ⊤ := by
+/--
+The `LSeries` of `f` is zero for large real arguments if and only if either `f n = 0`
+for all `n ≠ 0` or the L-series converges nowhere.
+-/
+lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ}
+    : (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] 0 ↔ (∀ n ≠ 0, f n = 0) ∨ abscissaOfAbsConv f = ⊤ := by
   by_cases h : abscissaOfAbsConv f = ⊤
-  · simpa [h] using!
-      Eventually.of_forall <| by simp [LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h]
+  · simpa [h] using! Eventually.of_forall <| by simp [LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h]
   · simp only [ne_eq, h, or_false]
     refine ⟨fun H ↦ ?_, fun H ↦ Eventually.of_forall fun x ↦ ?_⟩
     · let F (n : ℕ) : ℂ := if n = 0 then 0 else f n
@@ -160,24 +166,28 @@ lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
         obtain ⟨s, hs⟩ := H
         exact ⟨s, hs.1, fun x hx ↦ by simp [hs.2 hx]⟩
       intro n
-      induction n using Nat.strongRecOn with | ind n ih =>
-      -- it suffices to show that `n ^ x * LSeries F x` tends to `F n` as `x` tends to `∞`
-      suffices Tendsto (fun x : ℝ ↦ n ^ (x : ℂ) * LSeries F x) atTop (nhds (F n)) by
-        replace this := this.congr' <| H' n
-        simp only [tendsto_const_nhds_iff] at this
-        exact this.symm
-      cases n with
-      | zero => exact Tendsto.congr' (H' 0).symm <| by simp [hF₀]
-      | succ n =>
-          simpa using! LSeries.tendsto_cpow_mul_atTop (fun m hm ↦ ih m <| lt_succ_of_le hm) <|
-            Ne.lt_top ha
+      induction n using Nat.strongRecOn with
+      | ind n ih =>
+        -- it suffices to show that `n ^ x * LSeries F x` tends to `F n` as `x` tends to `∞`
+        suffices Tendsto (fun x : ℝ ↦ n ^ (x : ℂ) * LSeries F x) atTop (nhds (F n)) by
+          replace this := this.congr' <| H' n
+          simp only [tendsto_const_nhds_iff] at this
+          exact this.symm
+        cases n with
+        | zero =>
+          exact Tendsto.congr' (H' 0).symm <| by simp [hF₀]
+        | succ n =>
+          simpa using!
+            LSeries.tendsto_cpow_mul_atTop (fun m hm ↦ ih m <| lt_succ_of_le hm) <| Ne.lt_top ha
     · simp [LSeries_congr (fun {n} ↦ H n) x, show (fun _ : ℕ ↦ (0 : ℂ)) = 0 from rfl]
 
 open Nat in
-/-- Assuming `f 0 = 0`, the `LSeries` of `f` is zero if and only if either `f = 0` or the
-L-series converges nowhere. -/
-lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0) :
-    LSeries f = 0 ↔ f = 0 ∨ abscissaOfAbsConv f = ⊤ := by
+/--
+Assuming `f 0 = 0`, the `LSeries` of `f` is zero if and only if either `f = 0` or the
+L-series converges nowhere.
+-/
+lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0)
+    : LSeries f = 0 ↔ f = 0 ∨ abscissaOfAbsConv f = ⊤ := by
   by_cases h : abscissaOfAbsConv f = ⊤
   · simpa [h] using! LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h
   · simp only [h, or_false]
@@ -190,12 +200,14 @@ lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0) :
     · simpa only [H] using! Filter.EventuallyEq.rfl
 
 open Filter in
-/-- If the `LSeries` of `f` and of `g` converge somewhere and agree on large real arguments,
-then the L-series of `f - g` is zero for large real arguments. -/
-lemma LSeries_sub_eventuallyEq_zero_of_LSeries_eventually_eq {f g : ℕ → ℂ}
-    (hf : abscissaOfAbsConv f < ⊤) (hg : abscissaOfAbsConv g < ⊤)
-    (h : (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] fun x ↦ LSeries g x) :
-    (fun x : ℝ ↦ LSeries (f - g) x) =ᶠ[atTop] (0 : ℝ → ℂ) := by
+/--
+If the `LSeries` of `f` and of `g` converge somewhere and agree on large real arguments,
+then the L-series of `f - g` is zero for large real arguments.
+-/
+lemma LSeries_sub_eventuallyEq_zero_of_LSeries_eventually_eq
+    {f g : ℕ → ℂ} (hf : abscissaOfAbsConv f < ⊤) (hg : abscissaOfAbsConv g < ⊤)
+    (h : (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] fun x ↦ LSeries g x)
+    : (fun x : ℝ ↦ LSeries (f - g) x) =ᶠ[atTop] (0 : ℝ → ℂ) := by
   rw [EventuallyEq, eventually_atTop] at h ⊢
   obtain ⟨x₀, hx₀⟩ := h
   obtain ⟨yf, hyf₁, hyf₂⟩ := exists_between hf
@@ -214,30 +226,37 @@ lemma LSeries_sub_eventuallyEq_zero_of_LSeries_eventually_eq {f g : ℕ → ℂ}
   rw [LSeries_sub Hf Hg, hx₀ x <| (le_max_left ..).trans hx, sub_self, Pi.zero_apply]
 
 open Filter in
-/-- If the `LSeries` of `f` and of `g` converge somewhere and agree on large real arguments,
-then `f n = g n` whenever `n ≠ 0`. -/
-lemma LSeries.eq_of_LSeries_eventually_eq {f g : ℕ → ℂ} (hf : abscissaOfAbsConv f < ⊤)
-    (hg : abscissaOfAbsConv g < ⊤) (h : (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] fun x ↦ LSeries g x)
-    {n : ℕ} (hn : n ≠ 0) :
-    f n = g n := by
+/--
+If the `LSeries` of `f` and of `g` converge somewhere and agree on large real arguments,
+then `f n = g n` whenever `n ≠ 0`.
+-/
+lemma LSeries.eq_of_LSeries_eventually_eq
+    {f g : ℕ → ℂ} (hf : abscissaOfAbsConv f < ⊤) (hg : abscissaOfAbsConv g < ⊤)
+    (h : (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] fun x ↦ LSeries g x)
+    {n : ℕ} (hn : n ≠ 0)
+    : f n = g n := by
   have hsub : (fun x : ℝ ↦ LSeries (f - g) x) =ᶠ[atTop] (0 : ℝ → ℂ) :=
     LSeries_sub_eventuallyEq_zero_of_LSeries_eventually_eq hf hg h
   have ha : abscissaOfAbsConv (f - g) ≠ ⊤ :=
     lt_top_iff_ne_top.mp <| (abscissaOfAbsConv_sub_le f g).trans_lt <| max_lt hf hg
-  simpa only [Pi.sub_apply, sub_eq_zero]
-    using (LSeries_eventually_eq_zero_iff'.mp hsub).resolve_right ha n hn
+  simpa only [Pi.sub_apply, sub_eq_zero] using
+    (LSeries_eventually_eq_zero_iff'.mp hsub).resolve_right ha n hn
 
-/-- If the `LSeries` of `f` and of `g` both converge somewhere, then they are equal if and only
-if `f n = g n` whenever `n ≠ 0`. -/
-lemma LSeries_eq_iff_of_abscissaOfAbsConv_lt_top {f g : ℕ → ℂ} (hf : abscissaOfAbsConv f < ⊤)
-    (hg : abscissaOfAbsConv g < ⊤) :
-    LSeries f = LSeries g ↔ ∀ n ≠ 0, f n = g n := by
+/--
+If the `LSeries` of `f` and of `g` both converge somewhere, then they are equal if and only
+if `f n = g n` whenever `n ≠ 0`.
+-/
+lemma LSeries_eq_iff_of_abscissaOfAbsConv_lt_top
+    {f g : ℕ → ℂ} (hf : abscissaOfAbsConv f < ⊤) (hg : abscissaOfAbsConv g < ⊤)
+    : LSeries f = LSeries g ↔ ∀ n ≠ 0, f n = g n := by
   refine ⟨fun H n hn ↦ ?_, fun H ↦ funext (LSeries_congr fun {n} ↦ H n)⟩
   refine eq_of_LSeries_eventually_eq hf hg ?_ hn
   exact Filter.Eventually.of_forall fun x ↦ congr($H x)
 
-/-- The map `f ↦ LSeries f` is injective on functions `f` such that `f 0 = 0` and the L-series
-of `f` converges somewhere. -/
+/--
+The map `f ↦ LSeries f` is injective on functions `f` such that `f 0 = 0` and the L-series
+of `f` converges somewhere.
+-/
 lemma LSeries_injOn : Set.InjOn LSeries {f | f 0 = 0 ∧ abscissaOfAbsConv f < ⊤} := by
   intro f hf g hg h
   push _ ∈ _ at hf hg

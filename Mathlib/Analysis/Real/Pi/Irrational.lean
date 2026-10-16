@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import Mathlib.NumberTheory.Real.Irrational
-
 import Mathlib.Topology.Algebra.Order.Floor
 
 /-!
@@ -61,19 +60,20 @@ with significantly fewer analysis computations.
 In addition, note the `0 ^ n` on the right-hand side - this is intentional, and again allows
 combining the proof of the "usual" recursion formula and the base case `I 1 θ`.
 -/
-private lemma recursion' (n : ℕ) :
-    I (n + 1) θ * θ ^ 2 = - (2 * 2 * ((n + 1) * (0 ^ n * cos θ))) +
-      2 * (n + 1) * (2 * n + 1) * I n θ - 4 * (n + 1) * n * I (n - 1) θ := by
+private lemma recursion' (n : ℕ)
+    : I (n + 1) θ * θ ^ 2
+      = -(2 * 2 * ((n + 1) * (0 ^ n * cos θ))) + 2 * (n + 1) * (2 * n + 1) * I n θ
+        - 4 * (n + 1) * n * I (n - 1) θ := by
   rw [I]
   let f (x : ℝ) : ℝ := 1 - x ^ 2
   let u₁ (x : ℝ) : ℝ := f x ^ (n + 1)
-  let u₁' (x : ℝ) : ℝ := - (2 * (n + 1) * x * f x ^ n)
+  let u₁' (x : ℝ) : ℝ := -(2 * (n + 1) * x * f x ^ n)
   let v₁ (x : ℝ) : ℝ := sin (x * θ)
   let v₁' (x : ℝ) : ℝ := cos (x * θ) * θ
   let u₂ (x : ℝ) : ℝ := x * (f x) ^ n
   let u₂' (x : ℝ) : ℝ := (f x) ^ n - 2 * n * x ^ 2 * (f x) ^ (n - 1)
   let v₂ (x : ℝ) : ℝ := cos (x * θ)
-  let v₂' (x : ℝ) : ℝ := -sin (x * θ) * θ
+  let v₂' (x : ℝ) : ℝ := - sin (x * θ) * θ
   have hfd : Continuous f := by fun_prop
   have hu₁d : Continuous u₁' := by fun_prop
   have hv₁d : Continuous v₁' := by fun_prop
@@ -82,7 +82,7 @@ private lemma recursion' (n : ℕ) :
   have hu₁_eval_one : u₁ 1 = 0 := by simp only [u₁, f]; simp
   have hu₁_eval_neg_one : u₁ (-1) = 0 := by simp only [u₁, f]; simp
   have t : u₂ 1 * v₂ 1 - u₂ (-1) * v₂ (-1) = 2 * (0 ^ n * cos θ) := by simp [u₂, v₂, f, ← two_mul]
-  have hf (x) : HasDerivAt f (- 2 * x) x := by
+  have hf (x) : HasDerivAt f (-2 * x) x := by
     convert (hasDerivAt_pow 2 x).const_sub 1 using 1
     simp
   have hu₁ (x) : HasDerivAt u₁ (u₁' x) x := by
@@ -97,16 +97,21 @@ private lemma recursion' (n : ℕ) :
   have hv₂ (x) : HasDerivAt v₂ (v₂' x) x := (hasDerivAt_mul_const θ).cos
   convert_to (∫ (x : ℝ) in (-1)..1, u₁ x * v₁' x) * θ = _ using 1
   · simp_rw [u₁, v₁', f, ← intervalIntegral.integral_mul_const, sq θ, mul_assoc]
-  rw [integral_mul_deriv_eq_deriv_mul (fun x _ => hu₁ x) (fun x _ => hv₁ x)
-    (hu₁d.intervalIntegrable _ _) (hv₁d.intervalIntegrable _ _), hu₁_eval_one, hu₁_eval_neg_one,
-    zero_mul, zero_mul, sub_zero, zero_sub, ← integral_neg, ← integral_mul_const]
+  rw [integral_mul_deriv_eq_deriv_mul
+      (fun x _ => hu₁ x)
+      (fun x _ => hv₁ x)
+      (hu₁d.intervalIntegrable _ _) (hv₁d.intervalIntegrable _ _),
+    hu₁_eval_one, hu₁_eval_neg_one, zero_mul, zero_mul, sub_zero, zero_sub, ← integral_neg,
+    ← integral_mul_const]
   convert_to ((-2 : ℝ) * (n + 1)) * ∫ (x : ℝ) in (-1)..1, (u₂ x * v₂' x) = _ using 1
   · rw [← integral_const_mul]
     congr 1 with x
     dsimp [u₁', v₁, u₂, v₂']
     ring
-  rw [integral_mul_deriv_eq_deriv_mul (fun x _ => hu₂ x) (fun x _ => hv₂ x)
-    (hu₂d.intervalIntegrable _ _) (hv₂d.intervalIntegrable _ _),
+  rw [integral_mul_deriv_eq_deriv_mul
+      (fun x _ => hu₂ x)
+      (fun x _ => hv₂ x)
+      (hu₂d.intervalIntegrable _ _) (hv₂d.intervalIntegrable _ _),
     mul_sub, t, neg_mul, neg_mul, neg_mul, sub_neg_eq_add]
   have (x : _) : u₂' x = (2 * n + 1) * f x ^ n - 2 * n * f x ^ (n - 1) := by
     cases n with
@@ -124,9 +129,9 @@ private lemma recursion' (n : ℕ) :
 Auxiliary for the proof that `π` is irrational.
 The recursive formula for `I (n + 2) θ * θ ^ 2` in terms of `I n θ` and `I (n + 1) θ`.
 -/
-private lemma recursion (n : ℕ) :
-    I (n + 2) θ * θ ^ 2 =
-      2 * (n + 2) * (2 * n + 3) * I (n + 1) θ - 4 * (n + 2) * (n + 1) * I n θ := by
+private lemma recursion (n : ℕ)
+    : I (n + 2) θ * θ ^ 2
+      = 2 * (n + 2) * (2 * n + 3) * I (n + 1) θ - 4 * (n + 2) * (n + 1) * I n θ := by
   rw [recursion' (n + 1)]
   push_cast
   ring
@@ -167,8 +172,8 @@ Prove a degree bound for `sinPoly n` by induction. Note this is where we find th
 explicit description of `sinPoly`.
 -/
 private lemma sinPoly_natDegree_le : ∀ n : ℕ, (sinPoly n).natDegree ≤ n
-  | 0
-  | 1 => by simp [sinPoly]
+  | 0 | 1 => by
+    simp [sinPoly]
   | n + 2 => by
     rw [sinPoly]
     refine natDegree_add_le_of_degree_le ((natDegree_smul_le _ _).trans ?_) ?_
@@ -182,30 +187,39 @@ Prove a degree bound for `cosPoly n` by induction. Note this is where we find th
 explicit description of `cosPoly`.
 -/
 private lemma cosPoly_natDegree_le : ∀ n : ℕ, (cosPoly n).natDegree ≤ n
-  | 0 => by simp [cosPoly]
-  | 1 => (natDegree_monomial_le _).trans (by simp)
+  | 0 => by
+    simp [cosPoly]
+  | 1 =>
+    (natDegree_monomial_le _).trans (by simp)
   | n + 2 => by
-      rw [cosPoly]
-      refine natDegree_add_le_of_degree_le ((natDegree_smul_le _ _).trans ?_) ?_
-      · exact (cosPoly_natDegree_le (n + 1)).trans (by simp)
-      exact natDegree_mul_le.trans (by simp [add_comm 2, cosPoly_natDegree_le n])
+    rw [cosPoly]
+    refine natDegree_add_le_of_degree_le ((natDegree_smul_le _ _).trans ?_) ?_
+    · exact (cosPoly_natDegree_le (n + 1)).trans (by simp)
+    exact natDegree_mul_le.trans (by simp [add_comm 2, cosPoly_natDegree_le n])
 
 /--
 Auxiliary for the proof that `π` is irrational.
 The key lemma: the sequence of integrals `I` can be written as a linear combination of `sin` and
 `cos`, with coefficients given by the polynomials `sinPoly` and `cosPoly`.
 -/
-private lemma sinPoly_add_cosPoly_eval (θ : ℝ) :
-    ∀ n : ℕ,
-      I n θ * θ ^ (2 * n + 1) = n ! * ((sinPoly n).eval₂ (Int.castRingHom _) θ * sin θ +
-        (cosPoly n).eval₂ (Int.castRingHom _) θ * cos θ)
-  | 0 => by simp [sinPoly, cosPoly, I_zero]
-  | 1 => by simp [I_one, sinPoly, cosPoly, sub_eq_add_neg]
+private lemma sinPoly_add_cosPoly_eval (θ : ℝ)
+    : ∀ n : ℕ,
+      I n θ * θ ^ (2 * n + 1)
+        = n !
+          * ((sinPoly n).eval₂ (Int.castRingHom _) θ * sin θ
+            + (cosPoly n).eval₂ (Int.castRingHom _) θ * cos θ)
+  | 0 => by
+    simp [sinPoly, cosPoly, I_zero]
+  | 1 => by
+    simp [I_one, sinPoly, cosPoly, sub_eq_add_neg]
   | n + 2 => by
-      calc I (n + 2) θ * θ ^ (2 * (n + 2) + 1) = I (n + 2) θ * θ ^ 2 * θ ^ (2 * n + 3) := by ring
-        _ = 2 * (n + 2) * (2 * n + 3) * (I (n + 1) θ * θ ^ (2 * (n + 1) + 1)) -
-            4 * (n + 2) * (n + 1) * θ ^ 2 * (I n θ * θ ^ (2 * n + 1)) := by rw [recursion]; ring
-        _ = _ := by simp [sinPoly_add_cosPoly_eval, sinPoly, cosPoly, Nat.factorial_succ]; ring
+    calc
+      I (n + 2) θ * θ ^ (2 * (n + 2) + 1)
+        = I (n + 2) θ * θ ^ 2 * θ ^ (2 * n + 3) := by ring
+      _ = 2 * (n + 2) * (2 * n + 3) * (I (n + 1) θ * θ ^ (2 * (n + 1) + 1))
+          - 4 * (n + 2) * (n + 1) * θ ^ 2 * (I n θ * θ ^ (2 * n + 1)) := by
+        rw [recursion]; ring
+      _ = _ := by simp [sinPoly_add_cosPoly_eval, sinPoly, cosPoly, Nat.factorial_succ]; ring
 
 /--
 Auxiliary for the proof that `π` is irrational.
@@ -213,8 +227,8 @@ For a polynomial `p` with natural degree `≤ k` and integer coefficients, evalu
 rational `a / b` gives a rational of the form `z / b ^ k`.
 TODO: should this be moved elsewhere? It uses none of the pi-specific definitions.
 -/
-private lemma is_integer {p : ℤ[X]} (a b : ℤ) {k : ℕ} (hp : p.natDegree ≤ k) :
-    ∃ z : ℤ, p.eval₂ (Int.castRingHom ℝ) (a / b) * b ^ k = z := by
+private lemma is_integer {p : ℤ[X]} (a b : ℤ) {k : ℕ} (hp : p.natDegree ≤ k)
+    : ∃ z : ℤ, p.eval₂ (Int.castRingHom ℝ) (a / b) * b ^ k = z := by
   rcases eq_or_ne b 0 with rfl | hb
   · rcases k.eq_zero_or_pos with rfl | hk
     · exact ⟨p.coeff 0, by simp⟩
@@ -242,8 +256,7 @@ private lemma I_pos : 0 < I n (π / 2) := by
   refine fun x hx => mul_nonneg (pow_nonneg ?_ _) ?_
   · rw [sub_nonneg, sq_le_one_iff_abs_le_one, abs_le]
     exact ⟨hx.1.le, hx.2⟩
-  refine cos_nonneg_of_neg_pi_div_two_le_of_le ?_ ?_ <;>
-  nlinarith [hx.1, hx.2, pi_pos]
+  refine cos_nonneg_of_neg_pi_div_two_le_of_le ?_ ?_ <;> nlinarith [hx.1, hx.2, pi_pos]
 
 /--
 Auxiliary for the proof that `π` is irrational.
@@ -266,20 +279,21 @@ Auxiliary for the proof that `π` is irrational.
 For any real `a`, we have that `a ^ (2n+1) / n!` tends to `0` as `n → ∞`.  This is just a
 reformulation of tendsto_pow_div_factorial_atTop, which asserts the same for `a ^ n / n!`
 -/
-private lemma tendsto_pow_div_factorial_at_top_aux (a : ℝ) :
-    Tendsto (fun n => (a : ℝ) ^ (2 * n + 1) / n !) atTop (nhds 0) := by
+private lemma tendsto_pow_div_factorial_at_top_aux (a : ℝ)
+    : Tendsto (fun n => (a : ℝ) ^ (2 * n + 1) / n !) atTop (nhds 0) := by
   rw [← mul_zero a]
   refine ((FloorSemiring.tendsto_pow_div_factorial_atTop (a ^ 2)).const_mul a).congr (fun x => ?_)
   rw [← pow_mul, mul_div_assoc', _root_.pow_succ']
 
 /-- If `x` is rational, it can be written as `a / b` with `a : ℤ` and `b : ℕ` satisfying `b > 0`. -/
-private lemma not_irrational_exists_rep {x : ℝ} :
-    ¬Irrational x → ∃ (a : ℤ) (b : ℕ), 0 < b ∧ x = a / b := by
+private lemma not_irrational_exists_rep {x : ℝ}
+    : ¬ Irrational x → ∃ (a : ℤ) (b : ℕ), 0 < b ∧ x = a / b := by
   rw [Irrational, not_not, mem_range]
   rintro ⟨q, rfl⟩
   exact ⟨q.num, q.den, q.pos, by exact_mod_cast (Rat.num_div_den _).symm⟩
 
-@[simp] theorem irrational_pi : Irrational π := by
+@[simp]
+theorem irrational_pi : Irrational π := by
   apply Irrational.of_div_natCast 2
   rw [Nat.cast_two]
   by_contra h'
@@ -289,8 +303,8 @@ private lemma not_irrational_exists_rep {x : ℝ} :
     rwa [lt_div_iff₀ (by positivity), zero_mul] at this
   have k (n : ℕ) : 0 < (a : ℝ) ^ (2 * n + 1) / n ! := by positivity
   have j : ∀ᶠ n : ℕ in atTop, (a : ℝ) ^ (2 * n + 1) / n ! * I n (π / 2) < 1 := by
-    have := (tendsto_pow_div_factorial_at_top_aux a).eventually_lt_const
-      (show (0 : ℝ) < 1 / 2 by simp)
+    have :=
+      (tendsto_pow_div_factorial_at_top_aux a).eventually_lt_const (show (0 : ℝ) < 1 / 2 by simp)
     filter_upwards [this] with n hn
     rw [lt_div_iff₀ (zero_lt_two : (0 : ℝ) < 2)] at hn
     exact hn.trans_le' (mul_le_mul_of_nonneg_left (I_le _) (by positivity))
@@ -300,8 +314,8 @@ private lemma not_irrational_exists_rep {x : ℝ} :
     is_integer a b ((sinPoly_natDegree_le _).trans (by lia))
   have e := sinPoly_add_cosPoly_eval (π / 2) n
   rw [cos_pi_div_two, sin_pi_div_two, mul_zero, mul_one, add_zero] at e
-  have : a ^ (2 * n + 1) / n ! * I n (π / 2) =
-      eval₂ (Int.castRingHom ℝ) (π / 2) (sinPoly n) * b ^ (2 * n + 1) := by
+  have : a ^ (2 * n + 1) / n ! * I n (π / 2)
+      = eval₂ (Int.castRingHom ℝ) (π / 2) (sinPoly n) * b ^ (2 * n + 1) := by
     nth_rw 2 [h] at e
     simp [field, div_pow] at e ⊢
     linear_combination e

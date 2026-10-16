@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Category.Grp.EquivalenceGroupAddGroup
 public import Mathlib.CategoryTheory.Limits.Constructions.EpiMono
 public import Mathlib.GroupTheory.Coset.Basic
 public import Mathlib.GroupTheory.QuotientGroup.Defs
-
 import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
 
 /-!
@@ -20,7 +19,6 @@ epimorphisms are surjective homomorphisms.
 -/
 
 @[expose] public section
-
 
 noncomputable section
 
@@ -39,8 +37,9 @@ section
 variable [Group A] [Group B]
 
 @[to_additive]
-theorem ker_eq_bot_of_cancel {f : A →* B} (h : ∀ u v : f.ker →* A, f.comp u = f.comp v → u = v) :
-    f.ker = ⊥ := by simpa using congr(range $(h f.ker.subtype 1 (by cat_disch)))
+theorem ker_eq_bot_of_cancel {f : A →* B} (h : ∀ u v : f.ker →* A, f.comp u = f.comp v → u = v)
+    : f.ker = ⊥ := by
+  simpa using congr(range $(h f.ker.subtype 1 (by cat_disch)))
 
 end
 
@@ -49,8 +48,9 @@ section
 variable [CommGroup A] [CommGroup B]
 
 @[to_additive]
-theorem range_eq_top_of_cancel {f : A →* B}
-    (h : ∀ u v : B →* B ⧸ f.range, u.comp f = v.comp f → u = v) : f.range = ⊤ := by
+theorem range_eq_top_of_cancel
+    {f : A →* B} (h : ∀ u v : B →* B ⧸ f.range, u.comp f = v.comp f → u = v)
+    : f.range = ⊤ := by
   specialize h 1 (QuotientGroup.mk' _) _
   · ext1 x
     simp only [one_apply, coe_comp, coe_mk', Function.comp_apply]
@@ -74,13 +74,15 @@ variable {A B : GrpCat.{u}} (f : A ⟶ B)
 
 @[to_additive]
 theorem ker_eq_bot_of_mono [Mono f] : f.hom.ker = ⊥ :=
-  MonoidHom.ker_eq_bot_of_cancel fun u v h => ConcreteCategory.ext_iff.mp <|
-    (@cancel_mono _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 <| ConcreteCategory.ext h
+  MonoidHom.ker_eq_bot_of_cancel fun u v h =>
+    ConcreteCategory.ext_iff.mp <| (@cancel_mono _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 <|
+      ConcreteCategory.ext h
 
 @[to_additive]
-theorem mono_iff_ker_eq_bot : Mono f ↔ f.hom.ker = ⊥ :=
-  ⟨fun _ => ker_eq_bot_of_mono f, fun h =>
-    ConcreteCategory.mono_of_injective _ <| (MonoidHom.ker_eq_bot_iff f.hom).1 h⟩
+theorem mono_iff_ker_eq_bot : Mono f ↔ f.hom.ker = ⊥ := ⟨
+  fun _ => ker_eq_bot_of_mono f,
+  fun h => ConcreteCategory.mono_of_injective _ <| (MonoidHom.ker_eq_bot_iff f.hom).1 h
+⟩
 
 @[to_additive]
 theorem mono_iff_injective : Mono f ↔ Function.Injective f :=
@@ -90,8 +92,7 @@ namespace SurjectiveOfEpiAuxs
 
 local notation3 "X" => Set.range (· • (f.hom.range : Set B) : B → Set B)
 
-/-- Define `X'` to be the set of all left cosets with an extra point at "infinity".
--/
+/-- Define `X'` to be the set of all left cosets with an extra point at "infinity". -/
 inductive XWithInfinity
   | fromCoset : X → XWithInfinity
   | infinity : XWithInfinity
@@ -107,28 +108,35 @@ local notation "SX'" => Equiv.Perm X'
 instance : SMul B X' where
   smul b x :=
     match x with
-    | fromCoset y => fromCoset ⟨b • y, by
+    | fromCoset y =>
+      fromCoset ⟨
+        b • y,
+        by
           rw [← y.2.choose_spec, leftCoset_assoc]
           let b' : B := y.2.choose
-          use b * b'⟩
-    | ∞ => ∞
+          use b * b'
+      ⟩
+    | ∞ =>
+      ∞
 
 theorem mul_smul (b b' : B) (x : X') : (b * b') • x = b • b' • x :=
   match x with
   | fromCoset y => by
     change fromCoset _ = fromCoset _
     simp only [leftCoset_assoc]
-  | ∞ => rfl
+  | ∞ =>
+    rfl
 
 theorem one_smul (x : X') : (1 : B) • x = x :=
   match x with
   | fromCoset y => by
     change fromCoset _ = fromCoset _
     simp only [one_leftCoset]
-  | ∞ => rfl
+  | ∞ =>
+    rfl
 
-theorem fromCoset_eq_of_mem_range {b : B} (hb : b ∈ f.hom.range) :
-    fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
+theorem fromCoset_eq_of_mem_range {b : B} (hb : b ∈ f.hom.range)
+    : fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
   congr
   nth_rw 2 [show (f.hom.range : Set B) = (1 : B) • f.hom.range from (one_leftCoset _).symm]
   rw [leftCoset_eq_iff, mul_one]
@@ -137,21 +145,18 @@ theorem fromCoset_eq_of_mem_range {b : B} (hb : b ∈ f.hom.range) :
 example (G : Type) [Group G] (S : Subgroup G) : Set G := S
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem fromCoset_ne_of_nin_range {b : B} (hb : b ∉ f.hom.range) :
-    fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ ≠ fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
+theorem fromCoset_ne_of_nin_range {b : B} (hb : b ∉ f.hom.range)
+    : fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ ≠ fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
   intro r
   simp only [fromCoset.injEq, Subtype.mk.injEq] at r
   nth_rw 2 [show (f.hom.range : Set B) = (1 : B) • f.hom.range from (one_leftCoset _).symm] at r
   rw [leftCoset_eq_iff, mul_one] at r
   exact hb (inv_inv b ▸ Subgroup.inv_mem _ r)
 
-instance : DecidableEq X' :=
-  Classical.decEq _
+instance : DecidableEq X' := Classical.decEq _
 
-/-- Let `τ` be the permutation on `X'` exchanging `f.hom.range` and the point at infinity.
--/
-noncomputable def tau : SX' :=
-  Equiv.swap (fromCoset ⟨↑f.hom.range, ⟨1, one_leftCoset _⟩⟩) ∞
+/-- Let `τ` be the permutation on `X'` exchanging `f.hom.range` and the point at infinity. -/
+noncomputable def tau : SX' := Equiv.swap (fromCoset ⟨↑f.hom.range, ⟨1, one_leftCoset _⟩⟩) ∞
 
 local notation "τ" => tau f
 
@@ -161,31 +166,32 @@ theorem τ_apply_infinity : τ ∞ = fromCoset ⟨f.hom.range, 1, one_leftCoset 
 theorem τ_apply_fromCoset : τ (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) = ∞ :=
   Equiv.swap_apply_left _ _
 
-theorem τ_apply_fromCoset' (x : B) (hx : x ∈ f.hom.range) :
-    τ (fromCoset ⟨x • ↑f.hom.range, ⟨x, rfl⟩⟩) = ∞ :=
+theorem τ_apply_fromCoset' (x : B) (hx : x ∈ f.hom.range)
+    : τ (fromCoset ⟨x • ↑f.hom.range, ⟨x, rfl⟩⟩) = ∞ :=
   (fromCoset_eq_of_mem_range _ hx).symm ▸ τ_apply_fromCoset _
 
-theorem τ_symm_apply_fromCoset :
-    Equiv.symm τ (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) = ∞ := by
+theorem τ_symm_apply_fromCoset
+    : Equiv.symm τ (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) = ∞ := by
   rw [tau, Equiv.symm_swap, Equiv.swap_apply_left]
 
-theorem τ_symm_apply_infinity :
-    Equiv.symm τ ∞ = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
+theorem τ_symm_apply_infinity : Equiv.symm τ ∞ = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
   rw [tau, Equiv.symm_swap, Equiv.swap_apply_right]
 
-/-- Let `g : B ⟶ S(X')` be defined as such that, for any `β : B`, `g(β)` is the function sending
+/--
+Let `g : B ⟶ S(X')` be defined as such that, for any `β : B`, `g(β)` is the function sending
 point at infinity to point at infinity and sending coset `y` to `β • y`.
 -/
 def g : B →* SX' where
-  toFun β :=
-    { toFun := fun x => β • x
-      invFun := fun x => β⁻¹ • x
-      left_inv := fun x => by
-        dsimp only
-        rw [← mul_smul, inv_mul_cancel, one_smul]
-      right_inv := fun x => by
-        dsimp only
-        rw [← mul_smul, mul_inv_cancel, one_smul] }
+  toFun β := {
+    toFun := fun x => β • x
+    invFun := fun x => β⁻¹ • x
+    left_inv := fun x => by
+      dsimp only
+      rw [← mul_smul, inv_mul_cancel, one_smul]
+    right_inv := fun x => by
+      dsimp only
+      rw [← mul_smul, mul_inv_cancel, one_smul]
+  }
   map_one' := by
     ext
     simp [one_smul]
@@ -195,8 +201,7 @@ def g : B →* SX' where
 
 local notation "g" => g f
 
-/-- Define `h : B ⟶ S(X')` to be `τ g τ⁻¹`
--/
+/-- Define `h : B ⟶ S(X')` to be `τ g τ⁻¹` -/
 def h : B →* SX' where
   toFun β := ((τ).symm.trans (g β)).trans τ
   map_one' := by
@@ -216,10 +221,10 @@ The strategy is the following: assuming `epi f`
   `f.hom.range`.
 -/
 
-
-theorem g_apply_fromCoset (x : B) (y : X) :
-    g x (fromCoset y) = fromCoset ⟨x • ↑y,
-      by obtain ⟨z, hz⟩ := y.2; exact ⟨x * z, by simp [← hz, smul_smul]⟩⟩ := rfl
+theorem g_apply_fromCoset (x : B) (y : X)
+    : g x (fromCoset y)
+      = fromCoset ⟨x • ↑y, by obtain ⟨z, hz⟩ := y.2; exact ⟨x * z, by simp [← hz, smul_smul]⟩⟩ :=
+  rfl
 
 theorem g_apply_infinity (x : B) : (g x) ∞ = ∞ := rfl
 
@@ -229,18 +234,19 @@ theorem h_apply_infinity (x : B) (hx : x ∈ f.hom.range) : (h x) ∞ = ∞ := b
   rw [τ_symm_apply_infinity, g_apply_fromCoset]
   exact τ_apply_fromCoset' f x hx
 
-theorem h_apply_fromCoset (x : B) :
-    (h x) (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) =
-      fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
+theorem h_apply_fromCoset (x : B)
+    : (h x) (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩)
+      = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
   change ((τ).symm.trans (g x)).trans τ _ = _
   simp [-MonoidHom.coe_range, τ_symm_apply_fromCoset, g_apply_infinity, τ_apply_infinity]
 
-theorem h_apply_fromCoset' (x : B) (b : B) (hb : b ∈ f.hom.range) :
-    h x (fromCoset ⟨b • f.hom.range, b, rfl⟩) = fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ :=
+theorem h_apply_fromCoset' (x : B) (b : B) (hb : b ∈ f.hom.range)
+    : h x (fromCoset ⟨b • f.hom.range, b, rfl⟩) = fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ :=
   (fromCoset_eq_of_mem_range _ hb).symm ▸ h_apply_fromCoset f x
 
-theorem h_apply_fromCoset_nin_range (x : B) (hx : x ∈ f.hom.range) (b : B) (hb : b ∉ f.hom.range) :
-    h x (fromCoset ⟨b • f.hom.range, b, rfl⟩) = fromCoset ⟨(x * b) • ↑f.hom.range, x * b, rfl⟩ := by
+theorem h_apply_fromCoset_nin_range (x : B) (hx : x ∈ f.hom.range) (b : B) (hb : b ∉ f.hom.range)
+    : h x (fromCoset ⟨b • f.hom.range, b, rfl⟩)
+      = fromCoset ⟨(x * b) • ↑f.hom.range, x * b, rfl⟩ := by
   change ((τ).symm.trans (g x)).trans τ _ = _
   simp only [tau, Equiv.coe_trans, Function.comp_apply]
   rw [Equiv.symm_swap,
@@ -264,13 +270,15 @@ theorem agree : f.hom.range = { x | h x = g x } := by
       · rw [h_apply_fromCoset_nin_range f (f a) ⟨_, rfl⟩ _ m]
         simp only [leftCoset_assoc]
     · rw [g_apply_infinity, h_apply_infinity f (f a) ⟨_, rfl⟩]
-  · have eq1 : (h b) (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) =
-        fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
+  · have eq1
+        : (h b) (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩)
+          = fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩ := by
       change ((τ).symm.trans (g b)).trans τ _ = _
       dsimp [tau]
       simp [g_apply_infinity f]
-    have eq2 :
-        g b (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩) = fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ :=
+    have eq2
+        : g b (fromCoset ⟨f.hom.range, 1, one_leftCoset _⟩)
+          = fromCoset ⟨b • ↑f.hom.range, b, rfl⟩ :=
       rfl
     exact (fromCoset_ne_of_nin_range _ r).symm (by rw [← eq1, ← eq2, DFunLike.congr_fun hb])
 
@@ -286,8 +294,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 theorem g_ne_h (x : B) (hx : x ∉ f.hom.range) : g ≠ h := by
   intro r
   apply fromCoset_ne_of_nin_range _ hx
-  replace r :=
-    congr($r x (fromCoset ⟨f.hom.range, ⟨1, one_leftCoset _⟩⟩))
+  replace r := congr($r x (fromCoset ⟨f.hom.range, ⟨1, one_leftCoset _⟩⟩))
   simpa [g_apply_fromCoset, «h», tau, g_apply_infinity] using r
 
 end SurjectiveOfEpiAuxs
@@ -295,9 +302,9 @@ end SurjectiveOfEpiAuxs
 theorem surjective_of_epi [Epi f] : Function.Surjective f := by
   dsimp [Function.Surjective]
   by_contra! ⟨b, hb⟩
-  exact
-    SurjectiveOfEpiAuxs.g_ne_h f b (fun ⟨c, hc⟩ => hb _ hc)
-      congr($((cancel_epi f).1 (SurjectiveOfEpiAuxs.comp_eq f)).hom)
+  exact SurjectiveOfEpiAuxs.g_ne_h f b
+    (fun ⟨c, hc⟩ => hb _ hc)
+    congr($((cancel_epi f).1 (SurjectiveOfEpiAuxs.comp_eq f)).hom)
 
 theorem epi_iff_surjective : Epi f ↔ Function.Surjective f :=
   ⟨fun _ => surjective_of_epi f, ConcreteCategory.epi_of_surjective f⟩
@@ -308,7 +315,6 @@ theorem epi_iff_range_eq_top : Epi f ↔ f.hom.range = ⊤ :=
 end GrpCat
 
 namespace AddGrpCat
-
 
 variable {A B : AddGrpCat.{u}} (f : A ⟶ B)
 
@@ -325,7 +331,6 @@ end AddGrpCat
 
 namespace GrpCat
 
-
 variable {A B : GrpCat.{u}} (f : A ⟶ B)
 
 @[to_additive AddGrpCat.forget_grp_preserves_mono]
@@ -340,18 +345,19 @@ end GrpCat
 
 namespace CommGrpCat
 
-
 variable {A B : CommGrpCat.{u}} (f : A ⟶ B)
 
 @[to_additive]
 theorem ker_eq_bot_of_mono [Mono f] : f.hom.ker = ⊥ :=
-  MonoidHom.ker_eq_bot_of_cancel fun u v h => ConcreteCategory.ext_iff.mp <|
-    (@cancel_mono _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 <| ConcreteCategory.ext h
+  MonoidHom.ker_eq_bot_of_cancel fun u v h =>
+    ConcreteCategory.ext_iff.mp <| (@cancel_mono _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 <|
+      ConcreteCategory.ext h
 
 @[to_additive]
-theorem mono_iff_ker_eq_bot : Mono f ↔ f.hom.ker = ⊥ :=
-  ⟨fun _ => ker_eq_bot_of_mono f, fun h =>
-    ConcreteCategory.mono_of_injective _ <| (MonoidHom.ker_eq_bot_iff f.hom).1 h⟩
+theorem mono_iff_ker_eq_bot : Mono f ↔ f.hom.ker = ⊥ := ⟨
+  fun _ => ker_eq_bot_of_mono f,
+  fun h => ConcreteCategory.mono_of_injective _ <| (MonoidHom.ker_eq_bot_iff f.hom).1 h
+⟩
 
 @[to_additive]
 theorem mono_iff_injective : Mono f ↔ Function.Injective f :=
@@ -359,14 +365,17 @@ theorem mono_iff_injective : Mono f ↔ Function.Injective f :=
 
 @[to_additive]
 theorem range_eq_top_of_epi [Epi f] : f.hom.range = ⊤ :=
-  MonoidHom.range_eq_top_of_cancel fun u v h => ConcreteCategory.ext_iff.mp <|
-    (@cancel_epi _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 (ConcreteCategory.ext h)
+  MonoidHom.range_eq_top_of_cancel fun u v h =>
+    ConcreteCategory.ext_iff.mp <|
+      (@cancel_epi _ _ _ _ _ f _ (ofHom u) (ofHom v)).1 (ConcreteCategory.ext h)
 
 @[to_additive]
-theorem epi_iff_range_eq_top : Epi f ↔ f.hom.range = ⊤ :=
-  ⟨fun _ => range_eq_top_of_epi _, fun hf =>
-    ConcreteCategory.epi_of_surjective _ <| show Function.Surjective f.hom from
-      MonoidHom.range_eq_top.mp hf⟩
+theorem epi_iff_range_eq_top : Epi f ↔ f.hom.range = ⊤ := ⟨
+  fun _ => range_eq_top_of_epi _,
+  fun hf =>
+    ConcreteCategory.epi_of_surjective _ <|
+      show Function.Surjective f.hom from MonoidHom.range_eq_top.mp hf
+⟩
 
 @[to_additive]
 theorem epi_iff_surjective : Epi f ↔ Function.Surjective f := by

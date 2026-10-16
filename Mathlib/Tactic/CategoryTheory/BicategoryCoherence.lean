@@ -37,21 +37,27 @@ namespace Mathlib.Tactic.BicategoryCoherence
 
 /-- A typeclass carrying a choice of lift of a 1-morphism from `B` to `FreeBicategory B`. -/
 class LiftHom {a b : B} (f : a ⟶ b) where
-  /-- A lift of a morphism to the free bicategory.
-  This should only exist for "structural" morphisms. -/
+  /--
+  A lift of a morphism to the free bicategory.
+  This should only exist for "structural" morphisms.
+  -/
   lift : of.obj a ⟶ of.obj b
 
-instance liftHomId : LiftHom (𝟙 a) where lift := 𝟙 (of.obj a)
+instance liftHomId : LiftHom (𝟙 a) where
+  lift := 𝟙 (of.obj a)
 
 instance liftHomComp (f : a ⟶ b) (g : b ⟶ c) [LiftHom f] [LiftHom g] : LiftHom (f ≫ g) where
   lift := LiftHom.lift f ≫ LiftHom.lift g
 
-instance (priority := 100) liftHomOf (f : a ⟶ b) : LiftHom f where lift := of.map f
+instance (priority := 100) liftHomOf (f : a ⟶ b) : LiftHom f where
+  lift := of.map f
 
 /-- A typeclass carrying a choice of lift of a 2-morphism from `B` to `FreeBicategory B`. -/
 class LiftHom₂ {f g : a ⟶ b} [LiftHom f] [LiftHom g] (η : f ⟶ g) where
-  /-- A lift of a 2-morphism to the free bicategory.
-  This should only exist for "structural" 2-morphisms. -/
+  /--
+  A lift of a 2-morphism to the free bicategory.
+  This should only exist for "structural" 2-morphisms.
+  -/
   lift : LiftHom.lift f ⟶ LiftHom.lift g
 
 instance liftHom₂Id (f : a ⟶ b) [LiftHom f] : LiftHom₂ (𝟙 f) where
@@ -69,24 +75,30 @@ instance liftHom₂RightUnitorHom (f : a ⟶ b) [LiftHom f] : LiftHom₂ (ρ_ f)
 instance liftHom₂RightUnitorInv (f : a ⟶ b) [LiftHom f] : LiftHom₂ (ρ_ f).inv where
   lift := (ρ_ (LiftHom.lift f)).inv
 
-instance liftHom₂AssociatorHom (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) [LiftHom f] [LiftHom g]
-    [LiftHom h] : LiftHom₂ (α_ f g h).hom where
+instance liftHom₂AssociatorHom
+    (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) [LiftHom f] [LiftHom g] [LiftHom h]
+    : LiftHom₂ (α_ f g h).hom where
   lift := (α_ (LiftHom.lift f) (LiftHom.lift g) (LiftHom.lift h)).hom
 
-instance liftHom₂AssociatorInv (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) [LiftHom f] [LiftHom g]
-    [LiftHom h] : LiftHom₂ (α_ f g h).inv where
+instance liftHom₂AssociatorInv
+    (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) [LiftHom f] [LiftHom g] [LiftHom h]
+    : LiftHom₂ (α_ f g h).inv where
   lift := (α_ (LiftHom.lift f) (LiftHom.lift g) (LiftHom.lift h)).inv
 
-instance liftHom₂Comp {f g h : a ⟶ b} [LiftHom f] [LiftHom g] [LiftHom h] (η : f ⟶ g) (θ : g ⟶ h)
-    [LiftHom₂ η] [LiftHom₂ θ] : LiftHom₂ (η ≫ θ) where
+instance liftHom₂Comp
+    {f g h : a ⟶ b} [LiftHom f] [LiftHom g] [LiftHom h]
+    (η : f ⟶ g) (θ : g ⟶ h) [LiftHom₂ η] [LiftHom₂ θ]
+    : LiftHom₂ (η ≫ θ) where
   lift := LiftHom₂.lift η ≫ LiftHom₂.lift θ
 
-instance liftHom₂WhiskerLeft (f : a ⟶ b) [LiftHom f] {g h : b ⟶ c} (η : g ⟶ h) [LiftHom g]
-    [LiftHom h] [LiftHom₂ η] : LiftHom₂ (f ◁ η) where
+instance liftHom₂WhiskerLeft
+    (f : a ⟶ b) [LiftHom f] {g h : b ⟶ c} (η : g ⟶ h) [LiftHom g] [LiftHom h] [LiftHom₂ η]
+    : LiftHom₂ (f ◁ η) where
   lift := LiftHom.lift f ◁ LiftHom₂.lift η
 
-instance liftHom₂WhiskerRight {f g : a ⟶ b} (η : f ⟶ g) [LiftHom f] [LiftHom g] [LiftHom₂ η]
-    {h : b ⟶ c} [LiftHom h] : LiftHom₂ (η ▷ h) where
+instance liftHom₂WhiskerRight
+    {f g : a ⟶ b} (η : f ⟶ g) [LiftHom f] [LiftHom g] [LiftHom₂ η] {h : b ⟶ c} [LiftHom h]
+    : LiftHom₂ (η ▷ h) where
   lift := LiftHom₂.lift η ▷ LiftHom.lift h
 
 open Lean Elab Tactic Meta
@@ -113,54 +125,63 @@ meta def mkLiftMap₂LiftExpr (e : Expr) : TermElabM Expr := do
     none
 
 /-- Coherence tactic for bicategories. -/
-meta def bicategoryCoherence (g : MVarId) : TermElabM Unit := g.withContext do
-  withOptions (fun opts => synthInstance.maxSize.set opts
-    (max 256 (synthInstance.maxSize.get opts))) do
-  let thms := [``BicategoricalCoherence.iso, ``Iso.trans, ``Iso.symm, ``Iso.refl,
-    ``Bicategory.whiskerRightIso, ``Bicategory.whiskerLeftIso].foldl
-    (·.addDeclToUnfoldCore ·) {}
-  let (ty, _) ← dsimp (← g.getType) (← Simp.mkContext (simpTheorems := #[thms]))
-  let some (_, lhs, rhs) := (← whnfR ty).eq? | exception g "Not an equation of morphisms."
-  let lift_lhs ← mkLiftMap₂LiftExpr lhs
-  let lift_rhs ← mkLiftMap₂LiftExpr rhs
-  -- This new equation is defeq to the original by assumption
-  -- on the `LiftHom` instances.
-  let g₁ ← g.change (← mkEq lift_lhs lift_rhs)
-  let [g₂] ← g₁.applyConst ``congrArg
-    | exception g "congrArg failed in coherence"
-  let [] ← g₂.applyConst ``Subsingleton.elim
-    | exception g "This shouldn't happen; Subsingleton.elim does not create goals."
+meta def bicategoryCoherence (g : MVarId) : TermElabM Unit :=
+  g.withContext do
+    withOptions
+      (fun opts => synthInstance.maxSize.set opts (max 256 (synthInstance.maxSize.get opts)))
+      do
+        let thms :=
+          [
+            ``BicategoricalCoherence.iso, ``Iso.trans, ``Iso.symm, ``Iso.refl,
+            ``Bicategory.whiskerRightIso, ``Bicategory.whiskerLeftIso
+          ].foldl
+            (·.addDeclToUnfoldCore ·) {}
+        let (ty, _) ← dsimp (← g.getType) (← Simp.mkContext (simpTheorems := #[thms]))
+        let some (_, lhs, rhs) := (← whnfR ty).eq?
+          | exception g "Not an equation of morphisms."
+        let lift_lhs ← mkLiftMap₂LiftExpr lhs
+        let lift_rhs ← mkLiftMap₂LiftExpr rhs
+        -- This new equation is defeq to the original by assumption
+        -- on the `LiftHom` instances.
+        let g₁ ← g.change (← mkEq lift_lhs lift_rhs)
+        let [g₂] ← g₁.applyConst ``congrArg
+          | exception g "congrArg failed in coherence"
+        let [] ← g₂.applyConst ``Subsingleton.elim
+          | exception g "This shouldn't happen; Subsingleton.elim does not create goals."
 
 @[deprecated (since := "2026-05-27")] alias bicategory_coherence := bicategoryCoherence
 
 open Lean.Parser.Tactic
 
-/--
-Simp lemmas for rewriting a 2-morphism into a normal form.
--/
+/-- Simp lemmas for rewriting a 2-morphism into a normal form. -/
 syntax (name := whisker_simps) "whisker_simps" optConfig : tactic
 
 @[inherit_doc whisker_simps]
 elab_rules : tactic
-| `(tactic| whisker_simps $cfg) => do
-  evalTactic (← `(tactic|
-    simp $cfg only [Category.assoc,
-      Bicategory.comp_whiskerLeft, Bicategory.id_whiskerLeft,
-      Bicategory.whiskerRight_comp, Bicategory.whiskerRight_id,
-      Bicategory.whiskerLeft_comp, Bicategory.whiskerLeft_id,
-      Bicategory.comp_whiskerRight, Bicategory.id_whiskerRight, Bicategory.whisker_assoc]
-    ))
+  | `(tactic| whisker_simps $cfg) => do
+    evalTactic (← `(tactic|
+      simp $cfg only [Category.assoc,
+        Bicategory.comp_whiskerLeft, Bicategory.id_whiskerLeft,
+        Bicategory.whiskerRight_comp, Bicategory.whiskerRight_id,
+        Bicategory.whiskerLeft_comp, Bicategory.whiskerLeft_id,
+        Bicategory.comp_whiskerRight, Bicategory.id_whiskerRight, Bicategory.whisker_assoc]
+      ))
 
 -- We have unused typeclass arguments here.
 -- They are intentional, to ensure that `simp only [assoc_liftHom₂]` only left associates
 -- bicategorical structural morphisms.
-/-- Auxiliary simp lemma for the `coherence` tactic:
+/--
+Auxiliary simp lemma for the `coherence` tactic:
 this move brackets to the left in order to expose a maximal prefix
 built out of unitors and associators.
 -/
 @[nolint unusedArguments]
-theorem assoc_liftHom₂ {f g h i : a ⟶ b} [LiftHom f] [LiftHom g] [LiftHom h]
-    (η : f ⟶ g) (θ : g ⟶ h) (ι : h ⟶ i) [LiftHom₂ η] [LiftHom₂ θ] : η ≫ θ ≫ ι = (η ≫ θ) ≫ ι :=
+theorem assoc_liftHom₂
+    {f g h i : a ⟶ b} [LiftHom f] [LiftHom g] [LiftHom h]
+    (η : f ⟶ g) (θ : g ⟶ h)
+    (ι : h ⟶ i)
+    [LiftHom₂ η] [LiftHom₂ θ]
+    : η ≫ θ ≫ ι = (η ≫ θ) ≫ ι :=
   (Category.assoc _ _ _).symm
 
 end Mathlib.Tactic.BicategoryCoherence

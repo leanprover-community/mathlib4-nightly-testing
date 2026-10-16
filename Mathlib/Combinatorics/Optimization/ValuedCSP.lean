@@ -34,9 +34,11 @@ General-Valued CSP subsumes Min-Cost-Hom (including 3-SAT for example) and Finit
 
 @[expose] public section
 
-/-- A template for a valued CSP problem over a domain `D` with costs in `C`.
+/--
+A template for a valued CSP problem over a domain `D` with costs in `C`.
 Regarding `C` we want to support `Bool`, `Nat`, `ENat`, `Int`, `Rat`, `NNRat`,
-`Real`, `NNReal`, `EReal`, `ENNReal`, and tuples made of any of those types. -/
+`Real`, `NNReal`, `EReal`, `ENNReal`, and tuples made of any of those types.
+-/
 @[nolint unusedArguments]
 abbrev ValuedCSP (D C : Type*) [AddCommMonoid C] [PartialOrder C] [IsOrderedAddMonoid C] :=
   Set (Σ (n : ℕ), (Fin n → D) → C) -- Cost functions `D^n → C` for any `n`
@@ -55,56 +57,54 @@ structure ValuedCSP.Term (Γ : ValuedCSP D C) (ι : Type*) where
   app : Fin n → ι
 
 /-- Evaluation of a `Γ` term `t` for given solution `x`. -/
-def ValuedCSP.Term.evalSolution {Γ : ValuedCSP D C} {ι : Type*}
-    (t : Γ.Term ι) (x : ι → D) : C :=
+def ValuedCSP.Term.evalSolution {Γ : ValuedCSP D C} {ι : Type*} (t : Γ.Term ι) (x : ι → D) : C :=
   t.f (x ∘ t.app)
 
 /-- A valued CSP instance over the template `Γ` with variables indexed by `ι`. -/
-abbrev ValuedCSP.Instance (Γ : ValuedCSP D C) (ι : Type*) : Type _ :=
-  Multiset (Γ.Term ι)
+abbrev ValuedCSP.Instance (Γ : ValuedCSP D C) (ι : Type*) : Type _ := Multiset (Γ.Term ι)
 
 /-- Evaluation of a `Γ` instance `I` for given solution `x`. -/
-def ValuedCSP.Instance.evalSolution {Γ : ValuedCSP D C} {ι : Type*}
-    (I : Γ.Instance ι) (x : ι → D) : C :=
+def ValuedCSP.Instance.evalSolution {Γ : ValuedCSP D C} {ι : Type*} (I : Γ.Instance ι) (x : ι → D)
+    : C :=
   (I.map (·.evalSolution x)).sum
 
 /-- Condition for `x` being an optimum solution (min) to given `Γ` instance `I`. -/
-def ValuedCSP.Instance.IsOptimumSolution {Γ : ValuedCSP D C} {ι : Type*}
-    (I : Γ.Instance ι) (x : ι → D) : Prop :=
+def ValuedCSP.Instance.IsOptimumSolution
+    {Γ : ValuedCSP D C} {ι : Type*} (I : Γ.Instance ι) (x : ι → D)
+    : Prop :=
   ∀ y : ι → D, I.evalSolution x ≤ I.evalSolution y
 
-/-- Function `f` has Max-Cut property at labels `a` and `b` when `argmin f` is exactly
-`{ ![a, b], ![b, a] }`. -/
+/--
+Function `f` has Max-Cut property at labels `a` and `b` when `argmin f` is exactly
+`{ ![a, b], ![b, a] }`.
+-/
 def Function.HasMaxCutPropertyAt (f : (Fin 2 → D) → C) (a b : D) : Prop :=
-  f ![a, b] = f ![b, a] ∧
-    ∀ x y : D, f ![a, b] ≤ f ![x, y] ∧ (f ![a, b] = f ![x, y] → a = x ∧ b = y ∨ a = y ∧ b = x)
+  f ![a, b] = f ![b, a]
+    ∧ ∀ x y : D, f ![a, b] ≤ f ![x, y] ∧ (f ![a, b] = f ![x, y] → a = x ∧ b = y ∨ a = y ∧ b = x)
 
 /-- Function `f` has Max-Cut property at some two non-identical labels. -/
 def Function.HasMaxCutProperty (f : (Fin 2 → D) → C) : Prop :=
   ∃ a b : D, a ≠ b ∧ f.HasMaxCutPropertyAt a b
 
 /-- Fractional operation is a finite unordered collection of D^m → D possibly with duplicates. -/
-abbrev FractionalOperation (D : Type*) (m : ℕ) : Type _ :=
-  Multiset ((Fin m → D) → D)
+abbrev FractionalOperation (D : Type*) (m : ℕ) : Type _ := Multiset ((Fin m → D) → D)
 
 variable {m : ℕ}
 
 /-- Arity of the "output" of the fractional operation. -/
-@[simp]
-def FractionalOperation.size (ω : FractionalOperation D m) : ℕ := ω.card
+@[simp] def FractionalOperation.size (ω : FractionalOperation D m) : ℕ := ω.card
 
 /-- Fractional operation is valid iff nonempty. -/
-def FractionalOperation.IsValid (ω : FractionalOperation D m) : Prop :=
-  ω ≠ ∅
+def FractionalOperation.IsValid (ω : FractionalOperation D m) : Prop := ω ≠ ∅
 
 /-- Valid fractional operation contains an operation. -/
-lemma FractionalOperation.IsValid.contains {ω : FractionalOperation D m} (valid : ω.IsValid) :
-    ∃ g : (Fin m → D) → D, g ∈ ω :=
+lemma FractionalOperation.IsValid.contains {ω : FractionalOperation D m} (valid : ω.IsValid)
+    : ∃ g : (Fin m → D) → D, g ∈ ω :=
   Multiset.exists_mem_of_ne_zero valid
 
 /-- Fractional operation applied to a transposed table of values. -/
-def FractionalOperation.tt {ι : Type*} (ω : FractionalOperation D m) (x : Fin m → ι → D) :
-    Multiset (ι → D) :=
+def FractionalOperation.tt {ι : Type*} (ω : FractionalOperation D m) (x : Fin m → ι → D)
+    : Multiset (ι → D) :=
   ω.map (fun (g : (Fin m → D) → D) (i : ι) => g ((Function.swap x) i))
 
 /-- Cost function admits given fractional operation, i.e., `ω` improves `f` in the `≤` sense. -/
@@ -114,7 +114,8 @@ def Function.AdmitsFractional {n : ℕ} (f : (Fin n → D) → C) (ω : Fraction
 
 /-- Fractional operation is a fractional polymorphism for given VCSP template. -/
 def FractionalOperation.IsFractionalPolymorphismFor
-    (ω : FractionalOperation D m) (Γ : ValuedCSP D C) : Prop :=
+    (ω : FractionalOperation D m) (Γ : ValuedCSP D C)
+    : Prop :=
   ∀ f ∈ Γ, f.snd.AdmitsFractional ω
 
 /-- Fractional operation is symmetric. -/
@@ -123,14 +124,16 @@ def FractionalOperation.IsSymmetric (ω : FractionalOperation D m) : Prop :=
 
 /-- Fractional operation is a symmetric fractional polymorphism for given VCSP template. -/
 def FractionalOperation.IsSymmetricFractionalPolymorphismFor
-    (ω : FractionalOperation D m) (Γ : ValuedCSP D C) : Prop :=
+    (ω : FractionalOperation D m) (Γ : ValuedCSP D C)
+    : Prop :=
   ω.IsFractionalPolymorphismFor Γ ∧ ω.IsSymmetric
 
-lemma Function.HasMaxCutPropertyAt.rows_lt_aux {C : Type*} [PartialOrder C]
+lemma Function.HasMaxCutPropertyAt.rows_lt_aux
+    {C : Type*} [PartialOrder C]
     {f : (Fin 2 → D) → C} {a b : D} (mcf : f.HasMaxCutPropertyAt a b) (hab : a ≠ b)
     {ω : FractionalOperation D 2} (symmega : ω.IsSymmetric)
-    {r : Fin 2 → D} (rin : r ∈ (ω.tt ![![a, b], ![b, a]])) :
-    f ![a, b] < f r := by
+    {r : Fin 2 → D} (rin : r ∈ (ω.tt ![![a, b], ![b, a]]))
+    : f ![a, b] < f r := by
   rw [FractionalOperation.tt, Multiset.mem_map] at rin
   rw [show r = ![r 0, r 1] by simp [← List.ofFn_inj]]
   apply lt_of_le_of_ne (mcf.right (r 0) (r 1)).left
@@ -144,25 +147,25 @@ lemma Function.HasMaxCutPropertyAt.rows_lt_aux {C : Type*} [PartialOrder C]
   apply asymm
   obtain ⟨o, in_omega, rfl⟩ := rin
   change o (fun j => ![![a, b], ![b, a]] j 0) = o (fun j => ![![a, b], ![b, a]] j 1)
-  convert symmega ![a, b] ![b, a] (by simp [List.Perm.swap]) o in_omega using 2 <;>
-    simp [Matrix.const_fin1_eq]
+  convert symmega ![a, b] ![b, a] (by simp [List.Perm.swap]) o in_omega using 2
+    <;> simp [Matrix.const_fin1_eq]
 
 variable {C : Type*} [AddCommMonoid C] [PartialOrder C] [IsOrderedCancelAddMonoid C]
 
 lemma Function.HasMaxCutProperty.forbids_commutativeFractionalPolymorphism
     {f : (Fin 2 → D) → C} (mcf : f.HasMaxCutProperty)
-    {ω : FractionalOperation D 2} (valid : ω.IsValid) (symmega : ω.IsSymmetric) :
-    ¬ f.AdmitsFractional ω := by
+    {ω : FractionalOperation D 2} (valid : ω.IsValid) (symmega : ω.IsSymmetric)
+    : ¬ f.AdmitsFractional ω := by
   intro contr
   obtain ⟨a, b, hab, mcfab⟩ := mcf
   specialize contr ![![a, b], ![b, a]]
   rw [Fin.sum_univ_two', ← mcfab.left, ← two_nsmul] at contr
-  have sharp :
-    2 • ((ω.tt ![![a, b], ![b, a]]).map (fun _ => f ![a, b])).sum <
-    2 • ((ω.tt ![![a, b], ![b, a]]).map f).sum := by
-    have half_sharp :
-      ((ω.tt ![![a, b], ![b, a]]).map (fun _ => f ![a, b])).sum <
-      ((ω.tt ![![a, b], ![b, a]]).map f).sum := by
+  have sharp
+      : 2 • ((ω.tt ![![a, b], ![b, a]]).map (fun _ => f ![a, b])).sum
+        < 2 • ((ω.tt ![![a, b], ![b, a]]).map f).sum := by
+    have half_sharp
+        : ((ω.tt ![![a, b], ![b, a]]).map (fun _ => f ![a, b])).sum
+          < ((ω.tt ![![a, b], ![b, a]]).map f).sum := by
       apply Multiset.sum_lt_sum
       · intro r rin
         exact le_of_lt (mcfab.rows_lt_aux hab symmega rin)

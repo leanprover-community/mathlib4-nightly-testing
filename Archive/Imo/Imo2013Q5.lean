@@ -34,8 +34,9 @@ public section
 
 namespace Imo2013Q5
 
-theorem le_of_all_pow_lt_succ {x y : ℝ} (hx : 1 < x) (hy : 1 < y)
-    (h : ∀ n : ℕ, 0 < n → x ^ n - 1 < y ^ n) : x ≤ y := by
+theorem le_of_all_pow_lt_succ
+    {x y : ℝ} (hx : 1 < x) (hy : 1 < y) (h : ∀ n : ℕ, 0 < n → x ^ n - 1 < y ^ n)
+    : x ≤ y := by
   by_contra! hxy
   have hxmy : 0 < x - y := sub_pos.mpr hxy
   have hn : ∀ n : ℕ, 0 < n → (x - y) * (n : ℝ) ≤ x ^ n - y ^ n := by
@@ -47,7 +48,8 @@ theorem le_of_all_pow_lt_succ {x y : ℝ} (hx : 1 < x) (hy : 1 < y)
         _ = x ^ i * 1 := by ring
         _ ≤ x ^ i * y ^ (n - 1 - i) := by gcongr; apply one_le_pow₀ hy.le
     calc
-      (x - y) * (n : ℝ) = (n : ℝ) * (x - y) := by ring
+      (x - y) * (n : ℝ)
+        = (n : ℝ) * (x - y) := by ring
       _ = (∑ _i ∈ Finset.range n, (1 : ℝ)) * (x - y) := by
         simp only [mul_one, Finset.sum_const, nsmul_eq_mul, Finset.card_range]
       _ ≤ (∑ i ∈ Finset.range n, x ^ i * y ^ (n - 1 - i)) * (x - y) := by
@@ -63,10 +65,10 @@ theorem le_of_all_pow_lt_succ {x y : ℝ} (hx : 1 < x) (hy : 1 < y)
       _ ≤ x ^ N - y ^ N := hn N hNp
   linarith [h N hNp]
 
-/-- Like `le_of_all_pow_lt_succ`, but with a weaker assumption for `y`.
--/
-theorem le_of_all_pow_lt_succ' {x y : ℝ} (hx : 1 < x) (hy : 0 < y)
-    (h : ∀ n : ℕ, 0 < n → x ^ n - 1 < y ^ n) : x ≤ y := by
+/-- Like `le_of_all_pow_lt_succ`, but with a weaker assumption for `y`. -/
+theorem le_of_all_pow_lt_succ'
+    {x y : ℝ} (hx : 1 < x) (hy : 0 < y) (h : ∀ n : ℕ, 0 < n → x ^ n - 1 < y ^ n)
+    : x ≤ y := by
   refine le_of_all_pow_lt_succ hx ?_ h
   by_contra! hy'' : y ≤ 1
   -- Then there exists y' such that 0 < y ≤ 1 < y' < x.
@@ -77,17 +79,20 @@ theorem le_of_all_pow_lt_succ' {x y : ℝ} (hx : 1 < x) (hy : 0 < y)
   have hh : ∀ n, 0 < n → x ^ n - 1 < y' ^ n := by
     intro n hn
     calc
-      x ^ n - 1 < y ^ n := h n hn
+      x ^ n - 1
+        < y ^ n := h n hn
       _ ≤ y' ^ n := by gcongr
   exact h_y'_lt_x.not_ge (le_of_all_pow_lt_succ hx h1_lt_y' hh)
 
-theorem f_pos_of_pos {f : ℚ → ℝ} {q : ℚ} (hq : 0 < q)
-    (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n) :
-    0 < f q := by
+theorem f_pos_of_pos
+    {f : ℚ → ℝ} {q : ℚ} (hq : 0 < q) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+    (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n)
+    : 0 < f q := by
   have num_pos : 0 < q.num := Rat.num_pos.mpr hq
   have hmul_pos :=
     calc
-      (0 : ℝ) < q.num := Int.cast_pos.mpr num_pos
+      (0 : ℝ)
+        < q.num := Int.cast_pos.mpr num_pos
       _ = ((q.num.natAbs : ℤ) : ℝ) := congr($((Int.natAbs_of_nonneg num_pos.le).symm))
       _ ≤ f q.num.natAbs := (H4 q.num.natAbs ((@Int.natAbs_pos q.num).mpr num_pos.ne.symm))
       _ = f q.num := by rw [Nat.cast_natAbs, abs_of_nonneg num_pos.le]
@@ -95,31 +100,37 @@ theorem f_pos_of_pos {f : ℚ → ℝ} {q : ℚ} (hq : 0 < q)
       _ ≤ f q * f q.den := H1 q q.den hq (Nat.cast_pos.mpr q.pos)
   have h_f_denom_pos :=
     calc
-      (0 : ℝ) < q.den := Nat.cast_pos.mpr q.pos
+      (0 : ℝ)
+        < q.den := Nat.cast_pos.mpr q.pos
       _ ≤ f q.den := H4 q.den q.pos
   exact pos_of_mul_pos_left hmul_pos h_f_denom_pos.le
 
-theorem fx_gt_xm1 {f : ℚ → ℝ} {x : ℚ} (hx : 1 ≤ x)
-    (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
-    (H2 : ∀ x y, 0 < x → 0 < y → f x + f y ≤ f (x + y)) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n) :
-    (x - 1 : ℝ) < f x := by
+theorem fx_gt_xm1
+    {f : ℚ → ℝ} {x : ℚ} (hx : 1 ≤ x) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+    (H2 : ∀ x y, 0 < x → 0 < y → f x + f y ≤ f (x + y)) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n)
+    : (x - 1 : ℝ) < f x := by
   have hx0 :=
     calc
-      (x - 1 : ℝ) < ⌊x⌋₊ := mod_cast Nat.sub_one_lt_floor x
+      (x - 1 : ℝ)
+        < ⌊x⌋₊ := mod_cast Nat.sub_one_lt_floor x
       _ ≤ f ⌊x⌋₊ := H4 _ (Nat.floor_pos.2 hx)
   obtain h_eq | h_lt := (Nat.floor_le <| zero_le_one.trans hx).eq_or_lt
   · rwa [h_eq] at hx0
   calc
-    (x - 1 : ℝ) < f ⌊x⌋₊ := hx0
+    (x - 1 : ℝ)
+      < f ⌊x⌋₊ := hx0
     _ < f (x - ⌊x⌋₊) + f ⌊x⌋₊ := (lt_add_of_pos_left _ (f_pos_of_pos (sub_pos.mpr h_lt) H1 H4))
     _ ≤ f (x - ⌊x⌋₊ + ⌊x⌋₊) := (H2 _ _ (sub_pos.mpr h_lt) (Nat.cast_pos.2 (Nat.floor_pos.2 hx)))
     _ = f x := by ring_nf
 
-theorem pow_f_le_f_pow {f : ℚ → ℝ} {n : ℕ} (hn : 0 < n) {x : ℚ} (hx : 1 < x)
-    (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n) :
-    f (x ^ n) ≤ f x ^ n := by
+theorem pow_f_le_f_pow
+    {f : ℚ → ℝ} {n : ℕ} (hn : 0 < n)
+    {x : ℚ} (hx : 1 < x) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+    (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n)
+    : f (x ^ n) ≤ f x ^ n := by
   induction n with
-  | zero => exfalso; exact Nat.lt_asymm hn hn
+  | zero =>
+    exfalso; exact Nat.lt_asymm hn hn
   | succ pn hpn =>
     rcases pn with - | pn
     · norm_num
@@ -130,33 +141,39 @@ theorem pow_f_le_f_pow {f : ℚ → ℝ} {n : ℕ} (hn : 0 < n) {x : ℚ} (hx : 
       _ ≤ f (x ^ (pn + 1)) * f x := H1 (x ^ (pn + 1)) x (pow_pos hxp (pn + 1)) hxp
       _ ≤ f x ^ (pn + 1) * f x := by gcongr; exact (f_pos_of_pos hxp H1 H4).le
 
-theorem fixed_point_of_pos_nat_pow {f : ℚ → ℝ} {n : ℕ} (hn : 0 < n)
-    (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n)
-    (H5 : ∀ x : ℚ, 1 < x → (x : ℝ) ≤ f x) {a : ℚ} (ha1 : 1 < a) (hae : f a = a) :
-    f (a ^ n) = a ^ n := by
+theorem fixed_point_of_pos_nat_pow
+    {f : ℚ → ℝ} {n : ℕ} (hn : 0 < n) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+    (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n) (H5 : ∀ x : ℚ, 1 < x → (x : ℝ) ≤ f x)
+    {a : ℚ} (ha1 : 1 < a) (hae : f a = a)
+    : f (a ^ n) = a ^ n := by
   have hh0 : (a : ℝ) ^ n ≤ f (a ^ n) := mod_cast H5 (a ^ n) (one_lt_pow₀ ha1 hn.ne')
   have hh1 :=
     calc
-      f (a ^ n) ≤ f a ^ n := pow_f_le_f_pow hn ha1 H1 H4
+      f (a ^ n)
+        ≤ f a ^ n := pow_f_le_f_pow hn ha1 H1 H4
       _ = (a : ℝ) ^ n := by rw [← hae]
   exact mod_cast hh1.antisymm hh0
 
-theorem fixed_point_of_gt_1 {f : ℚ → ℝ} {x : ℚ} (hx : 1 < x)
-    (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+theorem fixed_point_of_gt_1
+    {f : ℚ → ℝ} {x : ℚ} (hx : 1 < x) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
     (H2 : ∀ x y, 0 < x → 0 < y → f x + f y ≤ f (x + y)) (H4 : ∀ n : ℕ, 0 < n → (n : ℝ) ≤ f n)
-    (H5 : ∀ x : ℚ, 1 < x → (x : ℝ) ≤ f x) {a : ℚ} (ha1 : 1 < a) (hae : f a = a) : f x = x := by
+    (H5 : ∀ x : ℚ, 1 < x → (x : ℝ) ≤ f x)
+    {a : ℚ} (ha1 : 1 < a) (hae : f a = a)
+    : f x = x := by
   -- Choose n such that 1 + x < a^n.
   obtain ⟨N, hN⟩ := pow_unbounded_of_one_lt (1 + x) ha1
   have h_big_enough : (1 : ℚ) < a ^ N - x := lt_sub_iff_add_lt.mpr hN
   have h1 :=
     calc
-      (x : ℝ) + (a ^ N - x : ℚ) ≤ f x + (a ^ N - x : ℚ) := by gcongr; exact H5 x hx
+      (x : ℝ) + (a ^ N - x : ℚ)
+        ≤ f x + (a ^ N - x : ℚ) := by gcongr; exact H5 x hx
       _ ≤ f x + f (a ^ N - x) := by gcongr; exact H5 _ h_big_enough
   have hxp : 0 < x := by positivity
   have hNp : 0 < N := by by_contra! H; rw [Nat.le_zero.mp H] at hN; linarith
   have h2 :=
     calc
-      f x + f (a ^ N - x) ≤ f (x + (a ^ N - x)) := H2 x (a ^ N - x) hxp (by positivity)
+      f x + f (a ^ N - x)
+        ≤ f (x + (a ^ N - x)) := H2 x (a ^ N - x) hxp (by positivity)
       _ = f (a ^ N) := by ring_nf
       _ = a ^ N := fixed_point_of_pos_nat_pow hNp H1 H4 H5 ha1 hae
       _ = x + (a ^ N - x) := by ring
@@ -167,19 +184,22 @@ end Imo2013Q5
 
 open Imo2013Q5
 
-theorem imo2013_q5 (f : ℚ → ℝ) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
-    (H2 : ∀ x y, 0 < x → 0 < y → f x + f y ≤ f (x + y)) (H_fixed_point : ∃ a, 1 < a ∧ f a = a) :
-    ∀ x, 0 < x → f x = x := by
+theorem imo2013_q5
+    (f : ℚ → ℝ) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y) ≤ f x * f y)
+    (H2 : ∀ x y, 0 < x → 0 < y → f x + f y ≤ f (x + y)) (H_fixed_point : ∃ a, 1 < a ∧ f a = a)
+    : ∀ x, 0 < x → f x = x := by
   obtain ⟨a, ha1, hae⟩ := H_fixed_point
   have H3 : ∀ x : ℚ, 0 < x → ∀ n : ℕ, 0 < n → ↑n * f x ≤ f (n * x) := by
     intro x hx n hn
     rcases n with - | n
     · exact (lt_irrefl 0 hn).elim
     induction n with
-    | zero => norm_num
+    | zero =>
+      norm_num
     | succ pn hpn =>
       calc
-        ↑(pn + 2) * f x = (↑pn + 1 + 1) * f x := by norm_cast
+        ↑(pn + 2) * f x
+          = (↑pn + 1 + 1) * f x := by norm_cast
         _ = (↑pn + 1) * f x + f x := by ring
         _ ≤ f (↑pn.succ * x) + f x := by norm_cast; grw [hpn pn.succ_pos]
         _ ≤ f ((↑pn + 1) * x + x) := by exact_mod_cast H2 _ _ (mul_pos pn.cast_add_one_pos hx) hx
@@ -191,13 +211,15 @@ theorem imo2013_q5 (f : ℚ → ℝ) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y
       have a_pos : (0 : ℝ) < a := Rat.cast_pos.mpr (zero_lt_one.trans ha1)
       suffices ↑a * 1 ≤ ↑a * f 1 by rwa [← mul_le_mul_iff_right₀ a_pos]
       calc
-        ↑a * 1 = ↑a := mul_one (a : ℝ)
+        ↑a * 1
+          = ↑a := mul_one (a : ℝ)
         _ = f a := hae.symm
         _ = f (a * 1) := by rw [mul_one]
         _ ≤ f a * f 1 := (H1 a 1) (zero_lt_one.trans ha1) zero_lt_one
         _ = ↑a * f 1 := by rw [hae]
     calc
-      (n : ℝ) = (n : ℝ) * 1 := (mul_one _).symm
+      (n : ℝ)
+        = (n : ℝ) * 1 := (mul_one _).symm
       _ ≤ (n : ℝ) * f 1 := by gcongr
       _ ≤ f (n * 1) := H3 1 zero_lt_one n hn
       _ = f n := by rw [mul_one]
@@ -206,8 +228,8 @@ theorem imo2013_q5 (f : ℚ → ℝ) (H1 : ∀ x y, 0 < x → 0 < y → f (x * y
     have hxnm1 : ∀ n : ℕ, 0 < n → (x : ℝ) ^ n - 1 < f x ^ n := by
       intro n hn
       calc
-        (x : ℝ) ^ n - 1 < f (x ^ n) :=
-            mod_cast fx_gt_xm1 (one_le_pow₀ hx.le) H1 H2 H4
+        (x : ℝ) ^ n - 1
+          < f (x ^ n) := mod_cast fx_gt_xm1 (one_le_pow₀ hx.le) H1 H2 H4
         _ ≤ f x ^ n := pow_f_le_f_pow hn hx H1 H4
     have hx' : 1 < (x : ℝ) := mod_cast hx
     have hxp : 0 < x := by positivity

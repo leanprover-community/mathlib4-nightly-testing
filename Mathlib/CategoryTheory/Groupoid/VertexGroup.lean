@@ -28,7 +28,6 @@ isotropy, vertex group, groupoid
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 namespace Groupoid
@@ -52,7 +51,8 @@ instance vertexGroup (c : C) : Group (c ⟶ c) where
 theorem vertexGroup.inv_eq_inv (c : C) (γ : c ⟶ c) : γ⁻¹ = CategoryTheory.inv γ :=
   Groupoid.inv_eq_inv γ
 
-/-- An arrow in the groupoid defines, by conjugation, an isomorphism of groups between
+/--
+An arrow in the groupoid defines, by conjugation, an isomorphism of groups between
 its endpoints.
 -/
 @[simps]
@@ -68,15 +68,14 @@ def vertexGroupIsomOfMap {c d : C} (f : c ⟶ d) : (c ⟶ c) ≃* (d ⟶ d) wher
   map_mul' γ₁ γ₂ := by
     simp only [vertexGroup_mul, inv_eq_inv, Category.assoc, IsIso.hom_inv_id_assoc]
 
-/-- A path in the groupoid defines an isomorphism between its endpoints.
--/
+/-- A path in the groupoid defines an isomorphism between its endpoints. -/
 def vertexGroupIsomOfPath {c d : C} (p : Quiver.Path c d) : (c ⟶ c) ≃* (d ⟶ d) :=
   vertexGroupIsomOfMap (composePath p)
 
 /-- A functor defines a morphism of vertex groups. -/
 @[simps]
-def _root_.CategoryTheory.Functor.mapVertexGroup {D : Type v} [Groupoid D] (φ : C ⥤ D) (c : C) :
-    (c ⟶ c) →* (φ.obj c ⟶ φ.obj c) where
+def _root_.CategoryTheory.Functor.mapVertexGroup {D : Type v} [Groupoid D] (φ : C ⥤ D) (c : C)
+    : (c ⟶ c) →* (φ.obj c ⟶ φ.obj c) where
   toFun := φ.map
   map_one' := φ.map_id c
   map_mul' := φ.map_comp

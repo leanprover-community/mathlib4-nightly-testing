@@ -49,9 +49,9 @@ where
   aux (proof : Expr) : MetaM (List Expr) := do
     match (← instantiateMVars (← inferType proof)).getAppFnArgs with
     | (``And, #[_, _]) =>
-      pure ((← aux (← mkAppM ``And.left #[proof])) ++
-        (← aux (← mkAppM ``And.right #[proof])))
-    | _ => pure [proof]
+      pure ((← aux (← mkAppM ``And.left #[proof])) ++ (← aux (← mkAppM ``And.right #[proof])))
+    | _ =>
+      pure [proof]
 
 /--
 Removes any expressions that are not proofs of inequalities, equalities, or negations thereof.
@@ -63,7 +63,8 @@ partial def filterComparisons : Preprocessor where
     let tp ← instantiateMVars (← inferType h)
     try
       match tp.not? with
-      | some p => match (← p.ineq?).1 with
+      | some p =>
+        match (← p.ineq?).1 with
         | .le => return [← mkAppM ``lt_of_not_ge #[h]]
         | .lt => return [← mkAppM ``le_of_not_gt #[h]]
         | .eq => return []
@@ -81,8 +82,10 @@ open Zify
 `isNatProp tp` is true iff `tp` is an inequality or equality between natural numbers
 or the negation thereof.
 -/
-partial def isNatProp (e : Expr) : MetaM Bool := succeeds do
-  let (_, _, .const ``Nat [], _, _) ← e.ineqOrNotIneq? | failure
+partial def isNatProp (e : Expr) : MetaM Bool :=
+  succeeds do
+    let (_, _, .const ``Nat [], _, _) ← e.ineqOrNotIneq?
+      | failure
 
 /-- If `e` is of the form `((n : ℕ) : C)`, `isNatCoe e` returns `⟨n, C⟩`. -/
 def isNatCoe (e : Expr) : Option (Expr × Expr) :=
@@ -95,8 +98,10 @@ def isNatCoe (e : Expr) : Option (Expr × Expr) :=
 -/
 partial def getNatComparisons (e : Expr) : List (Expr × Expr) :=
   match isNatCoe e with
-  | some x => [x]
-  | none => match e.getAppFnArgs with
+  | some x =>
+    [x]
+  | none =>
+    match e.getAppFnArgs with
     | (``HAdd.hAdd, #[_, _, _, _, a, b]) => getNatComparisons a ++ getNatComparisons b
     | (``HMul.hMul, #[_, _, _, _, a, b]) => getNatComparisons a ++ getNatComparisons b
     | (``HSub.hSub, #[_, _, _, _, a, b]) => getNatComparisons a ++ getNatComparisons b
@@ -106,7 +111,9 @@ partial def getNatComparisons (e : Expr) : List (Expr × Expr) :=
 /-- If `e : ℕ`, returns a proof of `0 ≤ (e : C)`. -/
 def mkNatCastNonnegProof? (p : Expr × Expr) : MetaM (Option Expr) :=
   match p with
-  | ⟨e, target⟩ => try commitIfNoEx (mkAppM ``natCast_nonneg #[target, e])
+  | ⟨e, target⟩ =>
+    try
+      commitIfNoEx (mkAppM ``natCast_nonneg #[target, e])
     catch e => do
       trace[linarith] "Got exception when using cast {e.toMessageData}"
       return none
@@ -122,35 +129,38 @@ To avoid adding the same nonnegativity facts many times, it is a global preproce
 def natToInt : GlobalBranchingPreprocessor where
   description := "move nats to ints"
   transform g l := do
-    let l ← l.mapM fun h => do
-      let t ← whnfR (← instantiateMVars (← inferType h))
-      if ← isNatProp t then
-        let (some (h', t'), _) ← Term.TermElabM.run' (run_for g (zifyProof none h t))
-          | throwError "zifyProof failed on {h}"
-        if ← succeeds t'.ineqOrNotIneq? then
-          pure h'
+    let l ←
+      l.mapM fun h => do
+        let t ← whnfR (← instantiateMVars (← inferType h))
+        if ← isNatProp t then
+          let (some (h', t'), _) ← Term.TermElabM.run' (run_for g (zifyProof none h t))
+            | throwError "zifyProof failed on {h}"
+          if ← succeeds t'.ineqOrNotIneq? then
+            pure h'
+          else
+            -- `zifyProof` turned our comparison into something that wasn't a comparison
+            -- probably replacing `n = n` with `True`, because of
+            -- https://github.com/leanprover-community/mathlib4/issues/741
+            -- so we just keep the original hypothesis.
+            pure h
         else
-          -- `zifyProof` turned our comparison into something that wasn't a comparison
-          -- probably replacing `n = n` with `True`, because of
-          -- https://github.com/leanprover-community/mathlib4/issues/741
-          -- so we just keep the original hypothesis.
           pure h
-      else
-        pure h
     withNewMCtxDepth <| AtomM.run .reducible do
-    let nonnegs ← l.foldlM (init := ∅) fun (es : TreeSet (Nat × Nat) lexOrd.compare) h => do
-      try
-        let (_, _, a, b) ← (← inferType h).ineq?
-        let getIndices (p : Expr × Expr) : AtomM (ℕ × ℕ) := do
-          return ((← AtomM.addAtom p.1).1, (← AtomM.addAtom p.2).1)
-        let indices_a ← (getNatComparisons a).mapM getIndices
-        let indices_b ← (getNatComparisons b).mapM getIndices
-        pure <| (es.insertMany indices_a).insertMany indices_b
-      catch _ => pure es
-    let atoms : Array Expr := (← get).atoms
-    let nonnegProofs : List Expr ← nonnegs.toList.filterMapM fun p => do
-      mkNatCastNonnegProof? (atoms[p.1]!, atoms[p.2]!)
-    pure [(g, nonnegProofs ++ l)]
+      let nonnegs ←
+        l.foldlM (init := ∅) fun (es : TreeSet (Nat × Nat) lexOrd.compare) h => do
+          try
+            let (_, _, a, b) ← (← inferType h).ineq?
+            let getIndices (p : Expr × Expr) : AtomM (ℕ × ℕ) := do
+              return ((← AtomM.addAtom p.1).1, (← AtomM.addAtom p.2).1)
+            let indices_a ← (getNatComparisons a).mapM getIndices
+            let indices_b ← (getNatComparisons b).mapM getIndices
+            pure <| (es.insertMany indices_a).insertMany indices_b
+          catch _ =>
+            pure es
+      let atoms : Array Expr := (← get).atoms
+      let nonnegProofs : List Expr ←
+        nonnegs.toList.filterMapM fun p => do mkNatCastNonnegProof? (atoms[p.1]!, atoms[p.2]!)
+      pure [(g, nonnegProofs ++ l)]
 
 end natToInt
 
@@ -168,12 +178,15 @@ def mkNonstrictIntProof? (pf : Expr) : MetaM (Option Expr) := do
   | (false, Ineq.le, .const ``Int [], a, b) =>
     return mkApp (← mkAppM ``Iff.mpr #[← mkAppOptM ``Int.add_one_le_iff #[b, a]])
       (← mkAppM ``lt_of_not_ge #[pf])
-  | _ => return none
+  | _ =>
+    return none
 
 @[deprecated (since := "2026-05-27")] alias mkNonstrictIntProof := mkNonstrictIntProof?
 
-/-- `strengthenStrictInt h` turns a proof `h` of a strict integer inequality `t1 < t2`
-into a proof of `t1 ≤ t2 + 1`. -/
+/--
+`strengthenStrictInt h` turns a proof `h` of a strict integer inequality `t1 < t2`
+into a proof of `t1 ≤ t2 + 1`.
+-/
 def strengthenStrictInt : Preprocessor where
   description := "strengthen strict inequalities over int"
   transform h := return [(← mkNonstrictIntProof? h).getD h]
@@ -223,8 +236,7 @@ def normalizeDenominatorsLHS (h lhs : Expr) : MetaM Expr := do
   try
     h''.rewriteType lhs'
   catch e =>
-    dbg_trace
-      s!"Error in Linarith.normalizeDenominatorsLHS: {← e.toMessageData.toString}"
+    dbg_trace s!"Error in Linarith.normalizeDenominatorsLHS: {← e.toMessageData.toString}"
     throw e
 
 /--
@@ -233,12 +245,13 @@ it tries to scale `t` to cancel out division by numerals.
 -/
 def cancelDenoms : Preprocessor where
   description := "cancel denominators"
-  transform := fun pf => (do
-      let (_, lhs) ← parseCompAndExpr (← inferType pf)
-      guard <| lhs.containsConst <| fun n =>
-        n = ``HDiv.hDiv || n = ``Div.div || n = ``Inv.inv || n == ``OfScientific.ofScientific
-      pure [← normalizeDenominatorsLHS pf lhs])
-    <|> return [pf]
+  transform := fun pf =>
+    (do
+        let (_, lhs) ← parseCompAndExpr (← inferType pf)
+        guard <| lhs.containsConst <| fun n =>
+          n = ``HDiv.hDiv || n = ``Div.div || n = ``Inv.inv || n == ``OfScientific.ofScientific
+        pure [← normalizeDenominatorsLHS pf lhs])
+      <|> return [pf]
 end cancelDenoms
 
 section nlinarith
@@ -246,45 +259,53 @@ section nlinarith
 `findSquares s e` collects all terms of the form `a ^ 2` and `a * a` that appear in `e`
 and adds them to the set `s`.
 A pair `(i, true)` is added to `s` when `atoms[i]^2` appears in `e`,
-and `(i, false)` is added to `s` when `atoms[i]*atoms[i]` appears in `e`. -/
-partial def findSquares (s : TreeSet (Nat × Bool) lexOrd.compare) (e : Expr) :
-    AtomM (TreeSet (Nat × Bool) lexOrd.compare) :=
+and `(i, false)` is added to `s` when `atoms[i]*atoms[i]` appears in `e`.
+-/
+partial def findSquares (s : TreeSet (Nat × Bool) lexOrd.compare) (e : Expr)
+    : AtomM (TreeSet (Nat × Bool) lexOrd.compare) :=
   -- Completely traversing the expression is non-ideal,
   -- as we can descend into expressions that could not possibly be seen by `linarith`.
   -- As a result we visit expressions with bvars, which then cause panics.
   -- Ideally this preprocessor would be reimplemented so it only visits things that could be atoms.
   -- In the meantime we just bail out if we ever encounter loose bvars.
-  if e.hasLooseBVars then return s else
-  match e.getAppFnArgs with
-  | (``HPow.hPow, #[_, _, _, _, a, b]) => match b.numeral? with
-    | some 2 => do
-      let s ← findSquares s a
+  if e.hasLooseBVars then
+    return s
+  else
+    match e.getAppFnArgs with
+    | (``HPow.hPow, #[_, _, _, _, a, b]) =>
+      match b.numeral? with
+      | some 2 => do
+        let s ← findSquares s a
+        let (ai, _) ← AtomM.addAtom a
+        return (s.insert (ai, true))
+      | _ =>
+        e.foldlM findSquares s
+    | (``HMul.hMul, #[_, _, _, _, a, b]) => do
       let (ai, _) ← AtomM.addAtom a
-      return (s.insert (ai, true))
-    | _ => e.foldlM findSquares s
-  | (``HMul.hMul, #[_, _, _, _, a, b]) => do
-    let (ai, _) ← AtomM.addAtom a
-    let (bi, _) ← AtomM.addAtom b
-    if ai = bi then do
-      let s ← findSquares s a
-      return (s.insert (ai, false))
-    else
+      let (bi, _) ← AtomM.addAtom b
+      if ai = bi then do
+        let s ← findSquares s a
+        return (s.insert (ai, false))
+      else
+        e.foldlM findSquares s
+    | _ =>
       e.foldlM findSquares s
-  | _ => e.foldlM findSquares s
 
 /-- Get proofs of `-x^2 ≤ 0` and `-(x*x) ≤ 0`, when those terms appear in `ls` -/
 private def nlinarithGetSquareProofs (ls : List Expr) : MetaM (List Expr) :=
   withTraceNode `linarith (fun _ => return m!" finding squares") do
-  -- find the squares in `AtomM` to ensure deterministic behavior
-  let s ← AtomM.run .reducible do
-    let si ← ls.foldrM (fun h s' => do findSquares s' (← instantiateMVars (← inferType h))) ∅
-    si.toList.mapM fun (i, is_sq) => return ((← get).atoms[i]!, is_sq)
-  let new_es ← s.filterMapM fun (e, is_sq) =>
-    observing? <| mkAppM (if is_sq then ``sq_nonneg else ``mul_self_nonneg) #[e]
-  let new_es ← compWithZero.globalize.transform new_es
-  trace[linarith] "found:{indentD <| toMessageData s}"
-  linarithTraceProofs "so we added proofs" new_es
-  return new_es
+    -- find the squares in `AtomM` to ensure deterministic behavior
+    let s ←
+      AtomM.run .reducible do
+        let si ← ls.foldrM (fun h s' => do findSquares s' (← instantiateMVars (← inferType h))) ∅
+        si.toList.mapM fun (i, is_sq) => return ((← get).atoms[i]!, is_sq)
+    let new_es ←
+      s.filterMapM fun (e, is_sq) =>
+        observing? <| mkAppM (if is_sq then ``sq_nonneg else ``mul_self_nonneg) #[e]
+    let new_es ← compWithZero.globalize.transform new_es
+    trace[linarith] "found:{indentD <| toMessageData s}"
+    linarithTraceProofs "so we added proofs" new_es
+    return new_es
 
 /--
 Get proofs for products of inequalities from `ls`.
@@ -294,27 +315,35 @@ amount of work for the linarith oracle.
 -/
 private def nlinarithGetProductsProofs (ls : List Expr) : MetaM (List Expr) :=
   withTraceNode `linarith (fun _ => return m!" adding product terms") do
-  let with_comps ← ls.mapM (fun e => do
-    let tp ← inferType e
-    try
-      let ⟨ine, _⟩ ← parseCompAndExpr tp
-      pure (ine, e)
-    catch _ => pure (Ineq.lt, e))
-  let products ← with_comps.mapDiagM fun (⟨posa, a⟩ : Ineq × Expr) ⟨posb, b⟩ =>
-    try
-      (some <$> match posa, posb with
-        | Ineq.eq, _ => mkAppM ``zero_mul_eq #[a, b]
-        | _, Ineq.eq => mkAppM ``mul_zero_eq #[a, b]
-        | Ineq.lt, Ineq.lt => mkAppM ``mul_pos_of_neg_of_neg #[a, b]
-        | Ineq.lt, Ineq.le => do
-            let a ← mkAppM ``le_of_lt #[a]
-            mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b]
-        | Ineq.le, Ineq.lt => do
-            let b ← mkAppM ``le_of_lt #[b]
-            mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b]
-        | Ineq.le, Ineq.le => mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b])
-    catch _ => pure none
-  compWithZero.globalize.transform products.reduceOption
+    let with_comps ←
+      ls.mapM (fun e => do
+        let tp ← inferType e
+        try
+          let ⟨ine, _⟩ ← parseCompAndExpr tp
+          pure (ine, e)
+        catch _ =>
+          pure (Ineq.lt, e))
+    let products ←
+      with_comps.mapDiagM fun (⟨posa, a⟩ : Ineq × Expr) ⟨posb, b⟩ =>
+        try
+          (some <$> match posa, posb with
+            | Ineq.eq, _ =>
+              mkAppM ``zero_mul_eq #[a, b]
+            | _, Ineq.eq =>
+              mkAppM ``mul_zero_eq #[a, b]
+            | Ineq.lt, Ineq.lt =>
+              mkAppM ``mul_pos_of_neg_of_neg #[a, b]
+            | Ineq.lt, Ineq.le => do
+              let a ← mkAppM ``le_of_lt #[a]
+              mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b]
+            | Ineq.le, Ineq.lt => do
+              let b ← mkAppM ``le_of_lt #[b]
+              mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b]
+            | Ineq.le, Ineq.le =>
+              mkAppM ``mul_nonneg_of_nonpos_of_nonpos #[a, b])
+        catch _ =>
+          pure none
+    compWithZero.globalize.transform products.reduceOption
 
 /--
 `nlinarithExtras` is the preprocessor corresponding to the `nlinarith` tactic.
@@ -341,17 +370,25 @@ turning it into `a < b ∨ a > b`, provided the type has a `LinearOrder` instanc
 This produces `2^n` branches when there are `n` such hypotheses in the input.
 -/
 partial def removeNeAux : MVarId → List Expr → MetaM (List Branch) := fun g hs => do
-  let some (e, α, a, b) ← hs.findSomeM? (fun e : Expr => do
-    let some (α, a, b) := (← instantiateMVars (← inferType e)).ne?' | return none
-    unless (← synthInstance? (← mkAppM ``LinearOrder #[α])).isSome do return none
-    return some (e, α, a, b)) | return [(g, hs)]
-  let [ng1, ng2] ← g.apply (← mkAppOptM ``Or.elim #[none, none, ← g.getType,
-      ← mkAppOptM ``lt_or_gt_of_ne #[α, none, a, b, e]]) | failure
+  let some (e, α, a, b) ←
+      hs.findSomeM? (fun e : Expr => do
+        let some (α, a, b) := (← instantiateMVars (← inferType e)).ne?'
+          | return none
+        unless (← synthInstance? (← mkAppM ``LinearOrder #[α])).isSome do
+          return none
+        return some (e, α, a, b))
+    | return [(g, hs)]
+  let [ng1, ng2] ←
+      g.apply (← mkAppOptM ``Or.elim #[
+        none, none, ← g.getType,
+        ← mkAppOptM ``lt_or_gt_of_ne #[α, none, a, b, e]
+      ])
+    | failure
   let do_goal : MVarId → MetaM (List Branch) := fun g => do
     let (f, h) ← g.intro1
     h.withContext do
       let ls ← removeNeAux h <| hs.removeAll [e]
-      return ls.map (fun b : Branch => (b.1, (.fvar f)::b.2))
+      return ls.map (fun b : Branch => (b.1, (.fvar f) :: b.2))
   return ((← do_goal ng1) ++ (← do_goal ng2))
 
 @[deprecated (since := "2026-06-06")] alias removeNe_aux := removeNeAux
@@ -373,17 +410,17 @@ initialize nnrealToRealTransform : IO.Ref (List Expr → MetaM (List Expr)) ← 
 If `h` is an equality or inequality between NNReals, `nnrealToReal` lifts this inequality to the
 Reals. It also adds the facts that the reals involved are nonnegative. To avoid adding the same
 nonnegativity facts many times, it is a global preprocessor. This preprocessor does nothing unless
-`Mathlib.Tactic.Linarith.NNRealPreprocessor` is imported -/
+`Mathlib.Tactic.Linarith.NNRealPreprocessor` is imported
+-/
 def nnrealToReal : GlobalPreprocessor where
   description := "move nnreals to reals"
   transform l := do (← nnrealToRealTransform.get) l
 
-/--
-The default list of preprocessors, in the order they should typically run.
--/
-def defaultPreprocessors : List GlobalBranchingPreprocessor :=
-  [filterComparisons, nnrealToReal, natToInt, strengthenStrictInt,
-    compWithZero, cancelDenoms]
+/-- The default list of preprocessors, in the order they should typically run. -/
+def defaultPreprocessors : List GlobalBranchingPreprocessor := [
+  filterComparisons, nnrealToReal, natToInt, strengthenStrictInt,
+  compWithZero, cancelDenoms
+]
 
 /--
 `preprocess pps l` takes a list `l` of proofs of propositions.
@@ -392,11 +429,10 @@ The preprocessors are run sequentially: each receives the output of the previous
 Note that a preprocessor may produce multiple or no expressions from each input expression,
 so the size of the list may change.
 -/
-def preprocess (pps : List GlobalBranchingPreprocessor) (g : MVarId) (l : List Expr) :
-    MetaM (List Branch) := do
-  withTraceNode `linarith (fun _ => return m!"Running preprocessors") <|
-    g.withContext <|
-      pps.foldlM (init := [(g, l)]) fun ls pp => do
-        return (← ls.mapM fun (g, l) => do pp.process g l).flatten
+def preprocess (pps : List GlobalBranchingPreprocessor) (g : MVarId) (l : List Expr)
+    : MetaM (List Branch) := do
+  withTraceNode `linarith (fun _ => return m!"Running preprocessors") <| g.withContext <|
+    pps.foldlM (init := [(g, l)]) fun ls pp => do
+      return (← ls.mapM fun (g, l) => do pp.process g l).flatten
 
 end Mathlib.Tactic.Linarith

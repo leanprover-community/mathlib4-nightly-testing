@@ -6,7 +6,6 @@ Authors: Gabriel Ebner
 module
 
 public import Mathlib.Util.TermReduce
-
 import Mathlib.Tactic.Eqns
 
 /-!
@@ -39,12 +38,13 @@ open Term Meta
 /-- `eta_helper f = (· + 3)` elabs to `∀ x, f x = x + 3` -/
 local elab "eta_helper " t:term : term => do
   let t ← elabTerm t none
-  let some (_, lhs, rhs) := t.eq? | throwError "not an equation: {t}"
+  let some (_, lhs, rhs) := t.eq?
+    | throwError "not an equation: {t}"
   synthesizeSyntheticMVars
   let rhs ← instantiateMVars rhs
   lambdaTelescope rhs fun xs rhs ↦ do
     let lhs := (mkAppN lhs xs).headBeta
-    mkForallFVars xs <|← mkEq lhs rhs
+    mkForallFVars xs <| ← mkEq lhs rhs
 
 /-- `val_proj x` elabs to the *primitive projection* `@x.val`. -/
 local elab "val_proj " e:term : term => do
@@ -57,7 +57,8 @@ and stops after the first error.
 In short, S-A-F-E.
 -/
 local syntax "stop_at_first_error" (ppLine command)* : command
-open Command in elab_rules : command
+open Command in
+elab_rules : command
   | `(stop_at_first_error $[$cmds]*) => do
     for cmd in cmds do
       elabCommand cmd.raw
@@ -71,26 +72,32 @@ Introduces an irreducible definition.
 a constant `foo : Nat` as well as
 a theorem `foo_def : foo = 42`.
 -/
-elab mods:declModifiers "irreducible_def" n_id:declId n_def:(irredDefLemma)?
-    declSig:ppIndent(optDeclSig) val:declVal :
-    command => do
+elab
+      mods:declModifiers "irreducible_def" n_id:declId n_def:(irredDefLemma)?
+      declSig:ppIndent(optDeclSig) val:declVal
+    : command => do
   let declSig : TSyntax ``Parser.Command.optDeclSig := ⟨declSig.raw⟩ -- HACK
-  let (n, us) ← match n_id with
+  let (n, us) ←
+    match n_id with
     | `(Parser.Command.declId| $n:ident $[.{$us,*}]?) => pure (n, us)
     | _ => throwUnsupportedSyntax
   let us' := us.getD { elemsAndSeps := #[] }
-  let n_def ← match n_def.getD ⟨mkNullNode⟩ with
-    | `(irredDefLemma| (lemma := $id)) => pure id
-    | _ => pure <| mkIdentFrom n <| (·.review) <|
-      let scopes := extractMacroScopes n.getId
-      { scopes with name := scopes.name.appendAfter "_def" }
+  let n_def ←
+    match n_def.getD ⟨mkNullNode⟩ with
+    | `(irredDefLemma| (lemma := $id)) =>
+      pure id
+    | _ =>
+      pure <| mkIdentFrom n <| (·.review) <|
+        let scopes := extractMacroScopes n.getId
+        { scopes with name := scopes.name.appendAfter "_def" }
   let `(Parser.Command.declModifiersF|
       $[$doc:docComment]? $[@[$attrs,*]]?
-      $[$vis]? $[$prot:protected]? $[$nc:noncomputable]? $[$uns:unsafe]?) := mods
+      $[$vis]? $[$prot:protected]? $[$nc:noncomputable]? $[$uns:unsafe]?) :=
+      mods
     | throwError "unsupported modifiers {format mods}"
   let attrs := attrs.getD {}
   let priv := vis.filter (· matches `(Parser.Command.visibility| private))
-  elabCommand <|<- `(stop_at_first_error
+  elabCommand <| <- `(stop_at_first_error
     $[$nc:noncomputable]? $[$uns]? def definition$[.{$us,*}]? $declSig:optDeclSig $val
     $[$nc:noncomputable]? $[$uns]? opaque wrapped$[.{$us,*}]? : Subtype (Eq @definition.{$us',*}) :=
       ⟨_, rfl⟩

@@ -53,7 +53,8 @@ namespace Topology.ClosureCompl
 
 variable {X : Type*} [TopologicalSpace X]
 
-/-- `IsObtainable s t` means that `t` can be obtained from `s` by taking closures and complements.
+/--
+`IsObtainable s t` means that `t` can be obtained from `s` by taking closures and complements.
 -/
 inductive IsObtainable (s : Set X) : Set X → Prop
   | base : IsObtainable s s
@@ -63,47 +64,55 @@ inductive IsObtainable (s : Set X) : Set X → Prop
 scoped notation "k" => closure
 scoped notation "i" => interior
 
-/-- The function `kckc` is idempotent: `kckckckc s = kckc s` for any set `s`.
-This is because `ckc = i` and `ki` is idempotent. -/
+/--
+The function `kckc` is idempotent: `kckckckc s = kckc s` for any set `s`.
+This is because `ckc = i` and `ki` is idempotent.
+-/
 theorem kckc_idem (s : Set X) : k (k (k (k sᶜ)ᶜ)ᶜ)ᶜ = k (k sᶜ)ᶜ := by simp
 
 /-- Cancelling the first applied complement we obtain `kckckck s = kck s` for any set `s`. -/
 theorem kckckck_eq_kck (s : Set X) : k (k (k (k s)ᶜ)ᶜ)ᶜ = k (k s)ᶜ := by simp
 
-/-- The at most fourteen sets that are obtainable from `s` are given by applying
-`id, c, k, ck, kc, ckc, kck, ckck, kckc, ckckc, kckck, ckckck, kckckc, ckckckc` to `s`. -/
-def theFourteen (s : Set X) : Multiset (Set X) :=
-  {s, sᶜ, k s, (k s)ᶜ, k sᶜ, (k sᶜ)ᶜ, k (k s)ᶜ, (k (k s)ᶜ)ᶜ,
-    k (k sᶜ)ᶜ, (k (k sᶜ)ᶜ)ᶜ, k (k (k s)ᶜ)ᶜ, (k (k (k s)ᶜ)ᶜ)ᶜ,
-    k (k (k sᶜ)ᶜ)ᶜ, (k (k (k sᶜ)ᶜ)ᶜ)ᶜ}
+/--
+The at most fourteen sets that are obtainable from `s` are given by applying
+`id, c, k, ck, kc, ckc, kck, ckck, kckc, ckckc, kckck, ckckck, kckckc, ckckckc` to `s`.
+-/
+def theFourteen (s : Set X) : Multiset (Set X) := {
+  s, sᶜ, k s, (k s)ᶜ, k sᶜ, (k sᶜ)ᶜ, k (k s)ᶜ, (k (k s)ᶜ)ᶜ,
+  k (k sᶜ)ᶜ, (k (k sᶜ)ᶜ)ᶜ, k (k (k s)ᶜ)ᶜ, (k (k (k s)ᶜ)ᶜ)ᶜ,
+  k (k (k sᶜ)ᶜ)ᶜ, (k (k (k sᶜ)ᶜ)ᶜ)ᶜ
+}
 
 /-- `theFourteen` has exactly 14 sets (possibly with repetition) in it. -/
 theorem card_theFourteen (s : Set X) : (theFourteen s).card = 14 := rfl
 
-/-- If `t` is obtainable from `s` by the closure and complement operations,
-then it is in the multiset `theFourteen s`. -/
+/--
+If `t` is obtainable from `s` by the closure and complement operations,
+then it is in the multiset `theFourteen s`.
+-/
 theorem IsObtainable.mem_theFourteen {s t : Set X} (h : IsObtainable s t) : t ∈ theFourteen s := by
-  induction h with | base => exact .head _ | closure _ mem => ?_ | complement _ mem => ?_
+  induction h with
+  | base => exact .head _
+  | closure _ mem => ?_
+  | complement _ mem => ?_
   all_goals repeat obtain _ | ⟨_, mem⟩ := mem; rotate_left
   all_goals simp [theFourteen]
 
 /-- A set `t` is obtainable by from `s` if and only if they are in the Multiset `theFourteen s`. -/
-theorem mem_theFourteen_iff_isObtainable {s t : Set X} :
-    t ∈ theFourteen s ↔ IsObtainable s t where
+theorem mem_theFourteen_iff_isObtainable {s t : Set X} : t ∈ theFourteen s ↔ IsObtainable s t where
   mp h := by
     repeat
       obtain _ | ⟨_, h⟩ := h
       rotate_left
     all_goals
-      repeat
-        first
-        | apply IsObtainable.complement
-        | apply IsObtainable.closure
+      repeat first | apply IsObtainable.complement | apply IsObtainable.closure
       exact IsObtainable.base
   mpr := (·.mem_theFourteen)
 
-/-- **Kuratowski's closure-complement theorem**: the number of obtainable sets via closure and
-complement operations from a single set `s` is at most 14. -/
+/--
+**Kuratowski's closure-complement theorem**: the number of obtainable sets via closure and
+complement operations from a single set `s` is at most 14.
+-/
 theorem ncard_isObtainable_le_fourteen (s : Set X) : {t | IsObtainable s t}.ncard ≤ 14 := by
   convert! Set.ncard_coe_finset _ ▸ (theFourteen s).toFinset_card_le
   simp [Set.ext_iff, mem_theFourteen_iff_isObtainable]

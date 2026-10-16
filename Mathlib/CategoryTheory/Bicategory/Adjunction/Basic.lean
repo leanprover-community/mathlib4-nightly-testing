@@ -41,12 +41,15 @@ open Category Bicategory
 
 universe w₁ w₂ v₁ v₂ u₁ u₂
 
-variable {B : Type u₁} [Bicategory.{w₁, v₁} B] {C : Type u₂} [Bicategory.{w₂, v₂} C]
+variable
+  {B : Type u₁} [Bicategory.{w₁, v₁} B]
+  {C : Type u₂} [Bicategory.{w₂, v₂} C]
   {a b c : B} {f : a ⟶ b} {g : b ⟶ a}
 
 namespace Bicategory
 
-/-- The 2-morphism defined by the following pasting diagram:
+/--
+The 2-morphism defined by the following pasting diagram:
 ```
 a －－－－－－ ▸ a
   ＼    η      ◥   ＼
@@ -55,10 +58,10 @@ a －－－－－－ ▸ a
         b －－－－－－ ▸ b
 ```
 -/
-abbrev leftZigzag (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) :=
-  η ▷ f ⊗≫ f ◁ ε
+abbrev leftZigzag (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) := η ▷ f ⊗≫ f ◁ ε
 
-/-- The 2-morphism defined by the following pasting diagram:
+/--
+The 2-morphism defined by the following pasting diagram:
 ```
         a －－－－－－ ▸ a
        ◥  ＼     η      ◥
@@ -67,22 +70,19 @@ abbrev leftZigzag (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) :=
 b －－－－－－ ▸ b
 ```
 -/
-abbrev rightZigzag (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) :=
-  g ◁ η ⊗≫ ε ▷ g
+abbrev rightZigzag (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) := g ◁ η ⊗≫ ε ▷ g
 
 theorem rightZigzag_idempotent_of_left_triangle
-    (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) (h : leftZigzag η ε = (λ_ _).hom ≫ (ρ_ _).inv) :
-    rightZigzag η ε ⊗≫ rightZigzag η ε = rightZigzag η ε := by
+    (η : 𝟙 a ⟶ f ≫ g) (ε : g ≫ f ⟶ 𝟙 b) (h : leftZigzag η ε = (λ_ _).hom ≫ (ρ_ _).inv)
+    : rightZigzag η ε ⊗≫ rightZigzag η ε = rightZigzag η ε := by
   dsimp only [rightZigzag]
   calc
-    _ = g ◁ η ⊗≫ ((ε ▷ g ▷ 𝟙 a) ≫ (𝟙 b ≫ g) ◁ η) ⊗≫ ε ▷ g := by
-      bicategory
+    _ = g ◁ η ⊗≫ ((ε ▷ g ▷ 𝟙 a) ≫ (𝟙 b ≫ g) ◁ η) ⊗≫ ε ▷ g := by bicategory
     _ = 𝟙 _ ⊗≫ g ◁ (η ▷ 𝟙 a ≫ (f ≫ g) ◁ η) ⊗≫ (ε ▷ (g ≫ f) ≫ 𝟙 b ◁ ε) ▷ g ⊗≫ 𝟙 _ := by
       rw [← whisker_exchange]; bicategory
     _ = g ◁ η ⊗≫ g ◁ leftZigzag η ε ▷ g ⊗≫ ε ▷ g := by
       rw [← whisker_exchange, ← whisker_exchange, leftZigzag]; bicategory
-    _ = g ◁ η ⊗≫ ε ▷ g := by
-      rw [h]; bicategory
+    _ = g ◁ η ⊗≫ ε ▷ g := by rw [h]; bicategory
 
 /-- Adjunction between two 1-morphisms. -/
 @[ext]
@@ -109,8 +109,7 @@ def id (a : B) : 𝟙 a ⊣ 𝟙 a where
   left_triangle := by bicategory_coherence
   right_triangle := by bicategory_coherence
 
-instance : Inhabited (Adjunction (𝟙 a) (𝟙 a)) :=
-  ⟨id a⟩
+instance : Inhabited (Adjunction (𝟙 a) (𝟙 a)) := ⟨id a⟩
 
 section Composition
 
@@ -126,35 +125,27 @@ def compUnit (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂) : 𝟙 a ⟶ (f�
 def compCounit (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂) : (g₂ ≫ g₁) ≫ f₁ ≫ f₂ ⟶ 𝟙 c :=
   𝟙 _ ⊗≫ g₂ ◁ adj₁.counit ▷ f₂ ⊗≫ adj₂.counit
 
-theorem comp_left_triangle_aux (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂) :
-    leftZigzag (compUnit adj₁ adj₂) (compCounit adj₁ adj₂) = (λ_ _).hom ≫ (ρ_ _).inv := by
+theorem comp_left_triangle_aux (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂)
+    : leftZigzag (compUnit adj₁ adj₂) (compCounit adj₁ adj₂) = (λ_ _).hom ≫ (ρ_ _).inv := by
   calc
-    _ = 𝟙 _ ⊗≫
-          adj₁.unit ▷ (f₁ ≫ f₂) ⊗≫
-            f₁ ◁ (adj₂.unit ▷ (g₁ ≫ f₁) ≫ (f₂ ≫ g₂) ◁ adj₁.counit) ▷ f₂ ⊗≫
-              (f₁ ≫ f₂) ◁ adj₂.counit ⊗≫ 𝟙 _ := by
+    _ = 𝟙 _ ⊗≫ adj₁.unit ▷ (f₁ ≫ f₂) ⊗≫ f₁ ◁ (adj₂.unit ▷ (g₁ ≫ f₁) ≫ (f₂ ≫ g₂) ◁ adj₁.counit) ▷ f₂
+        ⊗≫ (f₁ ≫ f₂) ◁ adj₂.counit ⊗≫ 𝟙 _ := by
       dsimp only [compUnit, compCounit]; bicategory
-    _ = 𝟙 _ ⊗≫
-          (leftZigzag adj₁.unit adj₁.counit) ▷ f₂ ⊗≫
-            f₁ ◁ (leftZigzag adj₂.unit adj₂.counit) ⊗≫ 𝟙 _ := by
+    _ = 𝟙 _ ⊗≫ (leftZigzag adj₁.unit adj₁.counit) ▷ f₂ ⊗≫ f₁ ◁ (leftZigzag adj₂.unit adj₂.counit)
+        ⊗≫ 𝟙 _ := by
       rw [← whisker_exchange]; bicategory
-    _ = _ := by
-      simp_rw [left_triangle]; bicategory
+    _ = _ := by simp_rw [left_triangle]; bicategory
 
-theorem comp_right_triangle_aux (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂) :
-    rightZigzag (compUnit adj₁ adj₂) (compCounit adj₁ adj₂) = (ρ_ _).hom ≫ (λ_ _).inv := by
+theorem comp_right_triangle_aux (adj₁ : f₁ ⊣ g₁) (adj₂ : f₂ ⊣ g₂)
+    : rightZigzag (compUnit adj₁ adj₂) (compCounit adj₁ adj₂) = (ρ_ _).hom ≫ (λ_ _).inv := by
   calc
-    _ = 𝟙 _ ⊗≫
-          (g₂ ≫ g₁) ◁ adj₁.unit ⊗≫
-            g₂ ◁ ((g₁ ≫ f₁) ◁ adj₂.unit ≫ adj₁.counit ▷ (f₂ ≫ g₂)) ▷ g₁ ⊗≫
-              adj₂.counit ▷ (g₂ ≫ g₁) ⊗≫ 𝟙 _ := by
+    _ = 𝟙 _ ⊗≫ (g₂ ≫ g₁) ◁ adj₁.unit ⊗≫ g₂ ◁ ((g₁ ≫ f₁) ◁ adj₂.unit ≫ adj₁.counit ▷ (f₂ ≫ g₂)) ▷ g₁
+        ⊗≫ adj₂.counit ▷ (g₂ ≫ g₁) ⊗≫ 𝟙 _ := by
       dsimp only [compUnit, compCounit]; bicategory
-    _ = 𝟙 _ ⊗≫
-          g₂ ◁ (rightZigzag adj₁.unit adj₁.counit) ⊗≫
-            (rightZigzag adj₂.unit adj₂.counit) ▷ g₁ ⊗≫ 𝟙 _ := by
+    _ = 𝟙 _ ⊗≫ g₂ ◁ (rightZigzag adj₁.unit adj₁.counit) ⊗≫ (rightZigzag adj₂.unit adj₂.counit) ▷ g₁
+        ⊗≫ 𝟙 _ := by
       rw [whisker_exchange]; bicategory
-    _ = _ := by
-      simp_rw [right_triangle]; bicategory
+    _ = _ := by simp_rw [right_triangle]; bicategory
 
 /-- Composition of adjunctions. -/
 @[simps]
@@ -180,13 +171,9 @@ abbrev leftZigzagIso (η : 𝟙 a ≅ f ≫ g) (ε : g ≫ f ≅ 𝟙 b) :=
 abbrev rightZigzagIso (η : 𝟙 a ≅ f ≫ g) (ε : g ≫ f ≅ 𝟙 b) :=
   whiskerLeftIso g η ≪⊗≫ whiskerRightIso ε g
 
-@[simp]
-theorem leftZigzagIso_hom : (leftZigzagIso η ε).hom = leftZigzag η.hom ε.hom :=
-  rfl
+@[simp] theorem leftZigzagIso_hom : (leftZigzagIso η ε).hom = leftZigzag η.hom ε.hom := rfl
 
-@[simp]
-theorem rightZigzagIso_hom : (rightZigzagIso η ε).hom = rightZigzag η.hom ε.hom :=
-  rfl
+@[simp] theorem rightZigzagIso_hom : (rightZigzagIso η ε).hom = rightZigzag η.hom ε.hom := rfl
 
 @[simp]
 theorem leftZigzagIso_inv : (leftZigzagIso η ε).inv = rightZigzag ε.inv η.inv := by
@@ -208,8 +195,8 @@ instance : IsIso (leftZigzag η.hom ε.hom) := inferInstanceAs <| IsIso (leftZig
 
 instance : IsIso (rightZigzag η.hom ε.hom) := inferInstanceAs <| IsIso (rightZigzagIso η ε).hom
 
-theorem right_triangle_of_left_triangle (h : leftZigzag η.hom ε.hom = (λ_ f).hom ≫ (ρ_ f).inv) :
-    rightZigzag η.hom ε.hom = (ρ_ g).hom ≫ (λ_ g).inv := by
+theorem right_triangle_of_left_triangle (h : leftZigzag η.hom ε.hom = (λ_ f).hom ≫ (ρ_ f).inv)
+    : rightZigzag η.hom ε.hom = (ρ_ g).hom ≫ (λ_ g).inv := by
   rw [← cancel_epi (rightZigzag η.hom ε.hom ≫ (λ_ g).hom ≫ (ρ_ g).inv)]
   calc
     _ = rightZigzag η.hom ε.hom ⊗≫ rightZigzag η.hom ε.hom := by bicategory
@@ -221,22 +208,19 @@ def adjointifyCounit (η : 𝟙 a ≅ f ≫ g) (ε : g ≫ f ≅ 𝟙 b) : g ≫
   whiskerLeftIso g ((ρ_ f).symm ≪≫ rightZigzagIso ε.symm η.symm ≪≫ λ_ f) ≪≫ ε
 
 set_option backward.defeqAttrib.useBackward true in
-theorem adjointifyCounit_left_triangle (η : 𝟙 a ≅ f ≫ g) (ε : g ≫ f ≅ 𝟙 b) :
-    leftZigzagIso η (adjointifyCounit η ε) = λ_ f ≪≫ (ρ_ f).symm := by
+theorem adjointifyCounit_left_triangle (η : 𝟙 a ≅ f ≫ g) (ε : g ≫ f ≅ 𝟙 b)
+    : leftZigzagIso η (adjointifyCounit η ε) = λ_ f ≪≫ (ρ_ f).symm := by
   apply Iso.ext
   dsimp [adjointifyCounit, bicategoricalIsoComp]
   calc
-    _ = 𝟙 _ ⊗≫ (η.hom ▷ (f ≫ 𝟙 b) ≫ (f ≫ g) ◁ f ◁ ε.inv) ⊗≫
-          f ◁ g ◁ η.inv ▷ f ⊗≫ f ◁ ε.hom := by
+    _ = 𝟙 _ ⊗≫ (η.hom ▷ (f ≫ 𝟙 b) ≫ (f ≫ g) ◁ f ◁ ε.inv) ⊗≫ f ◁ g ◁ η.inv ▷ f ⊗≫ f ◁ ε.hom := by
       bicategory
     _ = 𝟙 _ ⊗≫ f ◁ ε.inv ⊗≫ (η.hom ▷ (f ≫ g) ≫ (f ≫ g) ◁ η.inv) ▷ f ⊗≫ f ◁ ε.hom := by
       rw [← whisker_exchange η.hom (f ◁ ε.inv)]; bicategory
     _ = 𝟙 _ ⊗≫ f ◁ ε.inv ⊗≫ (η.inv ≫ η.hom) ▷ f ⊗≫ f ◁ ε.hom := by
       rw [← whisker_exchange η.hom η.inv]; bicategory
-    _ = 𝟙 _ ⊗≫ f ◁ (ε.inv ≫ ε.hom) := by
-      rw [Iso.inv_hom_id]; bicategory
-    _ = _ := by
-      rw [Iso.inv_hom_id]; bicategory
+    _ = 𝟙 _ ⊗≫ f ◁ (ε.inv ≫ ε.hom) := by rw [Iso.inv_hom_id]; bicategory
+    _ = _ := by rw [Iso.inv_hom_id]; bicategory
 
 /-- Adjoint equivalences between two objects. -/
 structure Equivalence (a b : B) where
@@ -260,16 +244,15 @@ def id (a : B) : a ≌ a := ⟨_, _, (ρ_ _).symm, ρ_ _, by ext; simp [bicatego
 
 instance : Inhabited (Equivalence a a) := ⟨id a⟩
 
-theorem left_triangle_hom (e : a ≌ b) :
-    leftZigzag e.unit.hom e.counit.hom = (λ_ e.hom).hom ≫ (ρ_ e.hom).inv :=
+theorem left_triangle_hom (e : a ≌ b)
+    : leftZigzag e.unit.hom e.counit.hom = (λ_ e.hom).hom ≫ (ρ_ e.hom).inv :=
   congrArg Iso.hom e.left_triangle
 
-theorem right_triangle (e : a ≌ b) :
-    rightZigzagIso e.unit e.counit = ρ_ e.inv ≪≫ (λ_ e.inv).symm :=
+theorem right_triangle (e : a ≌ b) : rightZigzagIso e.unit e.counit = ρ_ e.inv ≪≫ (λ_ e.inv).symm :=
   Iso.ext (right_triangle_of_left_triangle e.unit e.counit e.left_triangle_hom)
 
-theorem right_triangle_hom (e : a ≌ b) :
-    rightZigzag e.unit.hom e.counit.hom = (ρ_ e.inv).hom ≫ (λ_ e.inv).inv :=
+theorem right_triangle_hom (e : a ≌ b)
+    : rightZigzag e.unit.hom e.counit.hom = (ρ_ e.inv).hom ≫ (λ_ e.inv).inv :=
   congrArg Iso.hom e.right_triangle
 
 /-- Construct an adjoint equivalence from 2-isomorphisms by upgrading `ε` to a counit. -/
@@ -292,8 +275,7 @@ end Equivalence
 
 end
 
-noncomputable
-section
+noncomputable section
 
 /-- A structure giving a chosen right adjoint of a 1-morphism `left`. -/
 structure RightAdjoint (left : a ⟶ b) where
@@ -303,19 +285,18 @@ structure RightAdjoint (left : a ⟶ b) where
   adj : left ⊣ right
 
 /-- The existence of a right adjoint of `f`. -/
-class IsLeftAdjoint (left : a ⟶ b) : Prop where mk' ::
+class IsLeftAdjoint (left : a ⟶ b) : Prop where
+  mk' ::
   nonempty : Nonempty (RightAdjoint left)
 
-theorem IsLeftAdjoint.mk (adj : f ⊣ g) : IsLeftAdjoint f :=
-  ⟨⟨g, adj⟩⟩
+theorem IsLeftAdjoint.mk (adj : f ⊣ g) : IsLeftAdjoint f := ⟨⟨g, adj⟩⟩
 
 /-- Use the axiom of choice to extract a right adjoint from an `IsLeftAdjoint` instance. -/
 def getRightAdjoint (f : a ⟶ b) [IsLeftAdjoint f] : RightAdjoint f :=
   Classical.choice IsLeftAdjoint.nonempty
 
 /-- The right adjoint of a 1-morphism. -/
-def rightAdjoint (f : a ⟶ b) [IsLeftAdjoint f] : b ⟶ a :=
-  (getRightAdjoint f).right
+def rightAdjoint (f : a ⟶ b) [IsLeftAdjoint f] : b ⟶ a := (getRightAdjoint f).right
 
 /-- Evidence that `rightAdjoint f` is a right adjoint of `f`. -/
 def Adjunction.ofIsLeftAdjoint (f : a ⟶ b) [IsLeftAdjoint f] : f ⊣ rightAdjoint f :=
@@ -329,19 +310,18 @@ structure LeftAdjoint (right : b ⟶ a) where
   adj : left ⊣ right
 
 /-- The existence of a left adjoint of `right`. -/
-class IsRightAdjoint (right : b ⟶ a) : Prop where mk' ::
+class IsRightAdjoint (right : b ⟶ a) : Prop where
+  mk' ::
   nonempty : Nonempty (LeftAdjoint right)
 
-theorem IsRightAdjoint.mk (adj : f ⊣ g) : IsRightAdjoint g :=
-  ⟨⟨f, adj⟩⟩
+theorem IsRightAdjoint.mk (adj : f ⊣ g) : IsRightAdjoint g := ⟨⟨f, adj⟩⟩
 
 /-- Use the axiom of choice to extract a left adjoint from an `IsRightAdjoint` instance. -/
 def getLeftAdjoint (f : b ⟶ a) [IsRightAdjoint f] : LeftAdjoint f :=
   Classical.choice IsRightAdjoint.nonempty
 
 /-- The left adjoint of a 1-morphism. -/
-def leftAdjoint (f : b ⟶ a) [IsRightAdjoint f] : a ⟶ b :=
-  (getLeftAdjoint f).left
+def leftAdjoint (f : b ⟶ a) [IsRightAdjoint f] : a ⟶ b := (getLeftAdjoint f).left
 
 /-- Evidence that `leftAdjoint f` is a left adjoint of `f`. -/
 def Adjunction.ofIsRightAdjoint (f : b ⟶ a) [IsRightAdjoint f] : leftAdjoint f ⊣ f :=
@@ -355,20 +335,20 @@ namespace Pseudofunctor
 
 variable (F : Pseudofunctor B C) (adj : f ⊣ g)
 
-lemma leftZigzag_map :
-    leftZigzag ((F.mapId a).inv ≫ F.map₂ adj.unit ≫ (F.mapComp f g).hom)
-      ((F.mapComp g f).inv ≫ F.map₂ adj.counit ≫ (F.mapId b).hom) =
-    (F.mapId a).inv ▷ F.map f ⊗≫ (F.mapComp (𝟙 a) f).inv ≫
-      F.map₂ (leftZigzag adj.unit adj.counit) ≫
-        (F.mapComp f (𝟙 b)).hom ⊗≫ F.map f ◁ (F.mapId b).hom := by
+lemma leftZigzag_map
+    : leftZigzag ((F.mapId a).inv ≫ F.map₂ adj.unit ≫ (F.mapComp f g).hom)
+        ((F.mapComp g f).inv ≫ F.map₂ adj.counit ≫ (F.mapId b).hom)
+      = (F.mapId a).inv ▷ F.map f ⊗≫ (F.mapComp (𝟙 a) f).inv
+        ≫ F.map₂ (leftZigzag adj.unit adj.counit) ≫ (F.mapComp f (𝟙 b)).hom
+        ⊗≫ F.map f ◁ (F.mapId b).hom := by
   simp [leftZigzag, bicategoricalComp]
 
-lemma rightZigzag_map :
-    rightZigzag ((F.mapId a).inv ≫ F.map₂ adj.unit ≫ (F.mapComp f g).hom)
-      ((F.mapComp g f).inv ≫ F.map₂ adj.counit ≫ (F.mapId b).hom) =
-    F.map g ◁ (F.mapId a).inv ⊗≫ (F.mapComp g (𝟙 a)).inv ≫
-      F.map₂ (rightZigzag adj.unit adj.counit) ≫
-        (F.mapComp (𝟙 b) g).hom ⊗≫ (F.mapId b).hom ▷ F.map g := by
+lemma rightZigzag_map
+    : rightZigzag ((F.mapId a).inv ≫ F.map₂ adj.unit ≫ (F.mapComp f g).hom)
+        ((F.mapComp g f).inv ≫ F.map₂ adj.counit ≫ (F.mapId b).hom)
+      = F.map g ◁ (F.mapId a).inv ⊗≫ (F.mapComp g (𝟙 a)).inv
+        ≫ F.map₂ (rightZigzag adj.unit adj.counit) ≫ (F.mapComp (𝟙 b) g).hom
+        ⊗≫ (F.mapId b).hom ▷ F.map g := by
   simp [rightZigzag, bicategoricalComp, F.map₂_iso_inv]
 
 /-- A pseudofunctor carries an adjunction `f ⊣ g` to an adjunction `F.map f ⊣ F.map g`. -/
@@ -385,19 +365,20 @@ namespace StrictPseudofunctor
 
 variable (F : StrictPseudofunctor B C) (adj : f ⊣ g)
 
-/-- A strict pseudofunctor carries an adjunction `f ⊣ g` to an adjunction
-`F.map f ⊣ F.map g`. -/
-@[simps!]
-def mapAdjunction : F.map f ⊣ F.map g := F.toPseudofunctor.mapAdjunction adj
+/--
+A strict pseudofunctor carries an adjunction `f ⊣ g` to an adjunction
+`F.map f ⊣ F.map g`.
+-/
+@[simps!] def mapAdjunction : F.map f ⊣ F.map g := F.toPseudofunctor.mapAdjunction adj
 
-lemma mapAdjunction_unit' :
-    (F.mapAdjunction adj).unit =
-      eqToHom (F.map_id a).symm ≫ F.map₂ adj.unit ≫ eqToHom (F.map_comp f g) := by
+lemma mapAdjunction_unit'
+    : (F.mapAdjunction adj).unit
+      = eqToHom (F.map_id a).symm ≫ F.map₂ adj.unit ≫ eqToHom (F.map_comp f g) := by
   simp [F.mapId_eq_eqToIso, F.mapComp_eq_eqToIso]
 
-lemma mapAdjunction_counit' :
-    (F.mapAdjunction adj).counit =
-      eqToHom (F.map_comp g f).symm ≫ F.map₂ adj.counit ≫ eqToHom (F.map_id b) := by
+lemma mapAdjunction_counit'
+    : (F.mapAdjunction adj).counit
+      = eqToHom (F.map_comp g f).symm ≫ F.map₂ adj.counit ≫ eqToHom (F.map_id b) := by
   simp [F.mapId_eq_eqToIso, F.mapComp_eq_eqToIso]
 
 end StrictPseudofunctor

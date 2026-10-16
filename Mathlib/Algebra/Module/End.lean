@@ -27,38 +27,38 @@ section AddCommMonoid
 
 variable [Semiring R] [AddCommMonoid M] [Module R M] (r s : R) (x : M)
 
-theorem AddMonoid.End.natCast_def (n : ℕ) :
-    (↑n : AddMonoid.End M) = DistribMulAction.toAddMonoidEnd ℕ M n :=
+theorem AddMonoid.End.natCast_def (n : ℕ)
+    : (↑n : AddMonoid.End M) = DistribMulAction.toAddMonoidEnd ℕ M n :=
   rfl
 
 variable (R M)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- `(•)` as an `AddMonoidHom`.
+/--
+`(•)` as an `AddMonoidHom`.
 
-This is a stronger version of `DistribMulAction.toAddMonoidEnd` -/
+This is a stronger version of `DistribMulAction.toAddMonoidEnd`
+-/
 @[simps! apply_apply]
-def Module.toAddMonoidEnd : R →+* AddMonoid.End M :=
-  { DistribMulAction.toAddMonoidEnd R M with
-    map_zero' := AddMonoidHom.ext fun r => by simp
-    map_add' x y :=
-      AddMonoidHom.ext fun r => by simp [(AddMonoidHom.add_apply), add_smul] }
+def Module.toAddMonoidEnd : R →+* AddMonoid.End M := {
+  DistribMulAction.toAddMonoidEnd R M with
+  map_zero' := AddMonoidHom.ext fun r => by simp
+  map_add' x y := AddMonoidHom.ext fun r => by simp [(AddMonoidHom.add_apply), add_smul]
+}
 
-/-- A convenience alias for `Module.toAddMonoidEnd` as an `AddMonoidHom`, usually to allow the
-use of `AddMonoidHom.flip`. -/
-def smulAddHom : R →+ M →+ M :=
-  (Module.toAddMonoidEnd R M).toAddMonoidHom
+/--
+A convenience alias for `Module.toAddMonoidEnd` as an `AddMonoidHom`, usually to allow the
+use of `AddMonoidHom.flip`.
+-/
+def smulAddHom : R →+ M →+ M := (Module.toAddMonoidEnd R M).toAddMonoidHom
 
 variable {R M}
 
-@[simp]
-theorem smulAddHom_apply : smulAddHom R M r x = r • x :=
-  rfl
+@[simp] theorem smulAddHom_apply : smulAddHom R M r x = r • x := rfl
 
 variable {x}
 
-lemma IsAddUnit.smul_left [DistribSMul S M] (hx : IsAddUnit x) (s : S) :
-    IsAddUnit (s • x) :=
+lemma IsAddUnit.smul_left [DistribSMul S M] (hx : IsAddUnit x) (s : S) : IsAddUnit (s • x) :=
   hx.map (DistribSMul.toAddMonoidHom M s)
 
 variable {r} (x)
@@ -72,8 +72,8 @@ section AddCommGroup
 
 variable (R M) [Semiring R] [AddCommGroup M]
 
-theorem AddMonoid.End.intCast_def (z : ℤ) :
-    (↑z : AddMonoid.End M) = DistribMulAction.toAddMonoidEnd ℤ M z :=
+theorem AddMonoid.End.intCast_def (z : ℤ)
+    : (↑z : AddMonoid.End M) = DistribMulAction.toAddMonoidEnd ℤ M z :=
   rfl
 
 end AddCommGroup

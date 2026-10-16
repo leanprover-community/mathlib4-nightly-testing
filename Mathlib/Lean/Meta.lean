@@ -6,7 +6,6 @@ Authors: Mario Carneiro
 module
 
 public import Mathlib.Init
-
 import Lean.Elab.Tactic.Basic
 import Lean.Elab.Term
 import Lean.Meta.Tactic.Assert
@@ -21,27 +20,30 @@ open Lean Meta
 namespace Lean.MVarId
 
 /-- Add the hypothesis `h : t`, given `v : t`, and return the new `FVarId`. -/
-def «let» (g : MVarId) (h : Name) (v : Expr) (t : Option Expr := none) :
-    MetaM (FVarId × MVarId) := do
+def «let» (g : MVarId) (h : Name) (v : Expr) (t : Option Expr := none)
+    : MetaM (FVarId × MVarId) := do
   (← g.define h (← t.getDM (inferType v)) v).intro1P
 
-/-- Has the effect of `refine ⟨e₁,e₂,⋯, ?_⟩`.
--/
+/-- Has the effect of `refine ⟨e₁,e₂,⋯, ?_⟩`. -/
 def existsi (mvar : MVarId) (es : List Expr) : MetaM MVarId := do
-  es.foldlM (fun mv e ↦ do
-      let (subgoals,_) ← Elab.Term.TermElabM.run <| Elab.Tactic.run mv do
-        Elab.Tactic.evalTactic (← `(tactic| refine ⟨?_,?_⟩))
-      let [sg1, sg2] := subgoals | throwError "expected two subgoals"
+  es.foldlM
+    (fun mv e ↦ do
+      let (subgoals, _) ←
+        Elab.Term.TermElabM.run <|
+          Elab.Tactic.run mv do Elab.Tactic.evalTactic (← `(tactic| refine ⟨?_,?_⟩))
+      let [sg1, sg2] := subgoals
+        | throwError "expected two subgoals"
       sg1.assign e
       pure sg2)
     mvar
 
-/-- Applies `intro` repeatedly until it fails. We use this instead of
+/--
+Applies `intro` repeatedly until it fails. We use this instead of
 `Lean.MVarId.intros` to allowing unfolding.
 For example, if we want to do introductions for propositions like `¬p`,
-the `¬` needs to be unfolded into `→ False`, and `intros` does not do such unfolding. -/
-partial def intros! (mvarId : MVarId) : MetaM (Array FVarId × MVarId) :=
-  run #[] mvarId
+the `¬` needs to be unfolded into `→ False`, and `intros` does not do such unfolding.
+-/
+partial def intros! (mvarId : MVarId) : MetaM (Array FVarId × MVarId) := run #[] mvarId
 where
   /-- Implementation of `intros!`. -/
   run (acc : Array FVarId) (g : MVarId) :=
@@ -55,8 +57,10 @@ end Lean.MVarId
 
 namespace Lean.Meta
 
-/-- Get the type the given metavariable after instantiating metavariables and cleaning up
-annotations. -/
+/--
+Get the type the given metavariable after instantiating metavariables and cleaning up
+annotations.
+-/
 def _root_.Lean.MVarId.getType'' (mvarId : MVarId) : MetaM Expr :=
   return (← instantiateMVars (← mvarId.getType)).cleanupAnnotations
 
@@ -72,11 +76,12 @@ def liftMetaTactic' (tac : MVarId → MetaM MVarId) : TacticM Unit :=
 
 variable {α : Type}
 
-@[inline] private def TacticM.runCore (x : TacticM α) (ctx : Context) (s : State) :
-    TermElabM (α × State) :=
+@[inline]
+private def TacticM.runCore (x : TacticM α) (ctx : Context) (s : State) : TermElabM (α × State) :=
   x ctx |>.run s
 
-@[inline] private def TacticM.runCore' (x : TacticM α) (ctx : Context) (s : State) : TermElabM α :=
+@[inline]
+private def TacticM.runCore' (x : TacticM α) (ctx : Context) (s : State) : TermElabM α :=
   Prod.fst <$> x.runCore ctx s
 
 /-- Copy of `Lean.Elab.Tactic.run` that can return a value. -/
@@ -87,10 +92,12 @@ def run_for (mvarId : MVarId) (x : TacticM α) : TermElabM (Option α × List MV
     let pendingMVarsSaved := (← get).pendingMVars
     modify fun s => { s with pendingMVars := [] }
     let aux : TacticM (Option α × List MVarId) :=
-      /- Important: the following `try` does not backtrack the state.
-          This is intentional because we don't want to backtrack the error message
-          when we catch the "abort internal exception"
-          We must define `run` here because we define `MonadExcept` instance for `TacticM` -/
+      /-
+      Important: the following `try` does not backtrack the state.
+       This is intentional because we don't want to backtrack the error message
+       when we catch the "abort internal exception"
+       We must define `run` here because we define `MonadExcept` instance for `TacticM`
+      -/
       try
         let a ← x
         pure (a, ← getUnsolvedGoals)

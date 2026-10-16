@@ -139,7 +139,6 @@ public meta section
 open Lean Elab Parser Tactic Meta
 open Batteries
 
-
 namespace Mathlib.Tactic.Linarith
 
 /-! ### Config objects
@@ -153,8 +152,10 @@ section
 
 /-- A configuration object for `linarith`. -/
 structure LinarithConfig : Type where
-  /-- Discharger to prove that a candidate linear combination of hypothesis is zero.
-  In a tactic configuration, set using `(discharger := by ...)` notation. -/
+  /--
+  Discharger to prove that a candidate linear combination of hypothesis is zero.
+  In a tactic configuration, set using `(discharger := by ...)` notation.
+  -/
   -- TODO There should be a def for this, rather than calling `evalTactic`?
   discharger : TacticM Unit := do evalTactic (← `(tactic| ring1))
   -- We can't actually store a `Type` here,
@@ -170,13 +171,17 @@ structure LinarithConfig : Type where
   splitHypotheses : Bool := true
   /-- Split `≠` in hypotheses, by branching in cases `<` and `>`. -/
   splitNe : Bool := false
-  /-- If true, `linarith?` attempts to greedily remove unused hypotheses from its
-  suggestion. -/
+  /--
+  If true, `linarith?` attempts to greedily remove unused hypotheses from its
+  suggestion.
+  -/
   minimize : Bool := true
   /-- Override the list of preprocessors. -/
   preprocessors : List GlobalBranchingPreprocessor := defaultPreprocessors
-  /-- Specify an oracle for identifying candidate contradictions.
-  `.simplexAlgorithmSparse`, `.simplexAlgorithmSparse`, and `.fourierMotzkin` are available. -/
+  /--
+  Specify an oracle for identifying candidate contradictions.
+  `.simplexAlgorithmSparse`, `.simplexAlgorithmSparse`, and `.fourierMotzkin` are available.
+  -/
   oracle : CertificateOracle := .simplexAlgorithmSparse
 
 /--
@@ -184,11 +189,15 @@ structure LinarithConfig : Type where
 `default` if `reduce_default` is true. In this case, it also sets the discharger to `ring!`,
 since this is typically needed when using stronger unification.
 -/
-def LinarithConfig.updateReducibility (cfg : LinarithConfig) (reduce_default : Bool) :
-    LinarithConfig :=
-  if reduce_default then
-    { cfg with transparency := .default, discharger := do evalTactic (← `(tactic| ring1!)) }
-  else cfg
+def LinarithConfig.updateReducibility (cfg : LinarithConfig) (reduce_default : Bool)
+    : LinarithConfig :=
+  if reduce_default then {
+    cfg with
+    transparency := .default
+    discharger := do evalTactic (← `(tactic| ring1!))
+  }
+  else
+    cfg
 
 end
 
@@ -219,17 +228,23 @@ Otherwise returns `none`.
 def applyContrLemma (g : MVarId) : MetaM (Option (Expr × Expr) × MVarId) := do
   try
     let (nm, tp) ← getContrLemma (← withReducible g.getType')
-    let [g] ← g.apply (← mkConst' nm) | failure
+    let [g] ← g.apply (← mkConst' nm)
+      | failure
     let (f, g) ← g.intro1P
     return (some (tp, .fvar f), g)
-  catch _ => return (none, g)
+  catch _ =>
+    return (none, g)
 
-/-- A map of keys to values, where the keys are `Expr` up to defeq and one key can be
-associated to multiple values. -/
+/--
+A map of keys to values, where the keys are `Expr` up to defeq and one key can be
+associated to multiple values.
+-/
 abbrev ExprMultiMap α := Array (Expr × List α)
 
-/-- Retrieves the list of values at a key, as well as the index of the key for later modification.
-(If the key is not in the map it returns `self.size` as the index.) -/
+/--
+Retrieves the list of values at a key, as well as the index of the key for later modification.
+(If the key is not in the map it returns `self.size` as the index.)
+-/
 def ExprMultiMap.find {α : Type} (self : ExprMultiMap α) (k : Expr) : MetaM (Nat × List α) := do
   for h : i in [:self.size] do
     let (k', vs) := self[i]
@@ -237,13 +252,15 @@ def ExprMultiMap.find {α : Type} (self : ExprMultiMap α) (k : Expr) : MetaM (N
       return (i, vs)
   return (self.size, [])
 
-/-- Insert a new value into the map at key `k`. This does a defeq check with all other keys
-in the map. -/
-def ExprMultiMap.insert {α : Type} (self : ExprMultiMap α) (k : Expr) (v : α) :
-    MetaM (ExprMultiMap α) := do
+/--
+Insert a new value into the map at key `k`. This does a defeq check with all other keys
+in the map.
+-/
+def ExprMultiMap.insert {α : Type} (self : ExprMultiMap α) (k : Expr) (v : α)
+    : MetaM (ExprMultiMap α) := do
   for h : i in [:self.size] do
     if ← isDefEq self[i].1 k then
-      return self.modify i fun (k, vs) => (k, v::vs)
+      return self.modify i fun (k, vs) => (k, v :: vs)
   return self.push (k, [v])
 
 /--
@@ -263,8 +280,9 @@ succession, invoking `linarith` until one produces a contradiction. It returns t
 resulting proof of `False` together with the indices of the hypotheses that had
 nonzero coefficients in the final certificate.
 -/
-def findLinarithContradiction (cfg : LinarithConfig) (g : MVarId)
-    (ls : List (Expr × List (Expr × Nat))) : MetaM (Expr × List Nat) :=
+def findLinarithContradiction
+    (cfg : LinarithConfig) (g : MVarId) (ls : List (Expr × List (Expr × Nat)))
+    : MetaM (Expr × List Nat) :=
   try
     ls.firstM (fun ⟨α, L⟩ =>
       withTraceNode `linarith (fun _ => return m!" running on type {α}") do
@@ -272,7 +290,10 @@ def findLinarithContradiction (cfg : LinarithConfig) (g : MVarId)
           proveFalseByLinarith cfg.transparency cfg.oracle cfg.discharger g (L.map Prod.fst)
         let idxs := idxs.map fun i => L[i]!.2
         return (pf, idxs))
-  catch e => throwError "linarith failed to find a contradiction\n{g}\n{e.toMessageData}"
+  catch e =>
+    throwError "linarith failed to find a contradiction\
+      \n{g}\
+      \n{e.toMessageData}"
 
 /--
 Given a list `hyps` of proofs of comparisons, `runLinarith cfg prefType g hyps` preprocesses
@@ -287,12 +308,12 @@ On success, the metavariable `g` is assigned and the function returns the indice
 original hypotheses that were used with nonzero coefficient in the final proof.
 -/
 -- If it succeeds, the passed metavariable should have been assigned.
-def runLinarith (cfg : LinarithConfig) (prefType : Option Expr) (g : MVarId)
-    (hyps : List Expr) : MetaM (List Nat) := do
+def runLinarith (cfg : LinarithConfig) (prefType : Option Expr) (g : MVarId) (hyps : List Expr)
+    : MetaM (List Nat) := do
   let singleProcess (g : MVarId) (hyps : List (Expr × Nat)) : MetaM (Expr × List Nat) :=
     g.withContext do
-      linarithTraceProofs
-        s!"after preprocessing, linarith has {hyps.length} facts:" (hyps.map Prod.fst)
+      linarithTraceProofs s!"after preprocessing, linarith has {hyps.length} facts:"
+        (hyps.map Prod.fst)
       let mut hyp_set ← partitionByTypeIdx hyps
       trace[linarith] "hypotheses appear in {hyp_set.size} different types"
       -- If we have a preferred type, strip it from `hyp_set` and prepare a handler with a custom
@@ -301,12 +322,11 @@ def runLinarith (cfg : LinarithConfig) (prefType : Option Expr) (g : MVarId)
         if let some t := prefType then
           let (i, vs) ← hyp_set.find t
           hyp_set := hyp_set.eraseIdxIfInBounds i
-          pure <|
-            withTraceNode `linarith (fun _ => return m!" running on preferred type {t}") do
-              let (pf, idxs) ←
-                proveFalseByLinarith cfg.transparency cfg.oracle cfg.discharger g (vs.map Prod.fst)
-              let idxs := idxs.map fun j => vs[j]!.2
-              return (pf, idxs)
+          pure <| withTraceNode `linarith (fun _ => return m!" running on preferred type {t}") do
+            let (pf, idxs) ←
+              proveFalseByLinarith cfg.transparency cfg.oracle cfg.discharger g (vs.map Prod.fst)
+            let idxs := idxs.map fun j => vs[j]!.2
+            return (pf, idxs)
         else
           pure failure
       pref <|> findLinarithContradiction cfg g hyp_set.toList
@@ -348,52 +368,62 @@ were actually used (i.e. had a nonzero coefficient) in the final certificate.
 * If `cfg.transparency := semireducible`,
   it will unfold semireducible definitions when trying to match atomic expressions.
 -/
-partial def linarithUsedHyps (only_on : Bool) (hyps : List Expr)
-    (cfg : LinarithConfig := {}) (g : MVarId) : MetaM (List Expr) := g.withContext do
-  -- if the target is an equality, we run `linarith` twice, to prove ≤ and ≥.
-  if (← whnfR (← instantiateMVars (← g.getType))).isEq then
-    trace[linarith] "target is an equality: splitting"
-    if let some [g₁, g₂] ← try? (g.apply (← mkConst' ``eq_of_not_lt_of_not_gt)) then
-      let h₁ ← withTraceNode `linarith (fun _ => return m!" proving ≥") <|
-        linarithUsedHyps only_on hyps cfg g₁
-      let h₂ ← withTraceNode `linarith (fun _ => return m!" proving ≤") <|
-        linarithUsedHyps only_on hyps cfg g₂
-      return h₁ ++ h₂
+partial def linarithUsedHyps
+    (only_on : Bool) (hyps : List Expr) (cfg : LinarithConfig := {}) (g : MVarId)
+    : MetaM (List Expr) :=
+  g.withContext do
+    -- if the target is an equality, we run `linarith` twice, to prove ≤ and ≥.
+    if (← whnfR (← instantiateMVars (← g.getType))).isEq then
+      trace[linarith] "target is an equality: splitting"
+      if let some [g₁, g₂] ← try? (g.apply (← mkConst' ``eq_of_not_lt_of_not_gt)) then
+        let h₁ ←
+          withTraceNode `linarith (fun _ => return m!" proving ≥") <|
+            linarithUsedHyps only_on hyps cfg g₁
+        let h₂ ←
+          withTraceNode `linarith (fun _ => return m!" proving ≤") <|
+            linarithUsedHyps only_on hyps cfg g₂
+        return h₁ ++ h₂
 
-  /- If we are proving a comparison goal (and not just `False`), we consider the type of the
+    /-
+    If we are proving a comparison goal (and not just `False`), we consider the type of the
     elements in the comparison to be the "preferred" type. That is, if we find comparison
     hypotheses in multiple types, we will run `linarith` on the goal type first.
     In this case we also receive a new variable from moving the goal to a hypothesis.
     Otherwise, there is no preferred type and no new variable; we simply change the goal to `False`.
-  -/
+    -/
 
-  let (g, target_type, new_var) ← match ← applyContrLemma g with
-  | (none, g) =>
-    if cfg.exfalso then
-      trace[linarith] "using exfalso"
-      pure (← g.exfalso, none, none)
-    else
-      pure (g, none, none)
-  | (some (t, v), g) => pure (g, some t, some v)
+    let (g, target_type, new_var) ←
+      match ← applyContrLemma g with
+      | (none, g) =>
+        if cfg.exfalso then
+          trace[linarith] "using exfalso"
+          pure (← g.exfalso, none, none)
+        else
+          pure (g, none, none)
+      | (some (t, v), g) =>
+        pure (g, some t, some v)
 
-  g.withContext do
-    -- set up the list of hypotheses, considering the `only_on` and `restrict_type` options
-    let hyps ←
-      (if only_on then return new_var.toList ++ hyps
-        else return (← getLocalHyps).toList ++ hyps)
+    g.withContext do
+      -- set up the list of hypotheses, considering the `only_on` and `restrict_type` options
+      let hyps ←
+        (if only_on then
+           return new_var.toList ++ hyps
+         else
+           return (← getLocalHyps).toList ++ hyps)
 
-    -- TODO in mathlib3 we could specify a restriction to a single type.
-    -- I haven't done that here because I don't know how to store a `Type` in `LinarithConfig`.
-    -- There's only one use of the `restrict_type` configuration option in mathlib3,
-    -- and it can be avoided just by using `linarith only`.
+      -- TODO in mathlib3 we could specify a restriction to a single type.
+      -- I haven't done that here because I don't know how to store a `Type` in `LinarithConfig`.
+      -- There's only one use of the `restrict_type` configuration option in mathlib3,
+      -- and it can be avoided just by using `linarith only`.
 
-    linarithTraceProofs "linarith is running on the following hypotheses:" hyps
-    let usedIdxs ← runLinarith cfg target_type g hyps
-    let used := usedIdxs.filterMap (hyps[·]?)
-    let used := match new_var with
-      | some nv => used.filter (fun h => !(h == nv))
-      | none => used
-    return used
+      linarithTraceProofs "linarith is running on the following hypotheses:" hyps
+      let usedIdxs ← runLinarith cfg target_type g hyps
+      let used := usedIdxs.filterMap (hyps[·]?)
+      let used :=
+        match new_var with
+        | some nv => used.filter (fun h => !(h == nv))
+        | none => used
+      return used
 
 /--
 Run the core `linarith` procedure on the goal `g` using the hypotheses `hyps`.
@@ -401,8 +431,8 @@ If `only_on` is true, the search is restricted to `hyps`; otherwise all suitable
 local hypotheses are considered. This is the workhorse behind the user-facing
 `linarith` tactic.
 -/
-partial def linarith (only_on : Bool) (hyps : List Expr) (cfg : LinarithConfig := {})
-    (g : MVarId) : MetaM Unit := do
+partial def linarith (only_on : Bool) (hyps : List Expr) (cfg : LinarithConfig := {}) (g : MVarId)
+    : MetaM Unit := do
   discard <| linarithUsedHyps only_on hyps cfg g
 
 end Linarith
@@ -485,10 +515,10 @@ performed.
 -/
 syntax (name := linarith?) "linarith?" "!"? linarithArgsRest : tactic
 
-@[tactic_alt linarith] macro "linarith!" rest:linarithArgsRest : tactic =>
-  `(tactic| linarith ! $rest:linarithArgsRest)
-@[tactic_alt linarith?] macro "linarith?!" rest:linarithArgsRest : tactic =>
-  `(tactic| linarith? ! $rest:linarithArgsRest)
+@[tactic_alt linarith]
+macro "linarith!" rest:linarithArgsRest : tactic => `(tactic| linarith ! $rest:linarithArgsRest)
+@[tactic_alt linarith?]
+macro "linarith?!" rest:linarithArgsRest : tactic => `(tactic| linarith? ! $rest:linarithArgsRest)
 
 /--
 An extension of `linarith` with some preprocessing to allow it to solve some nonlinear arithmetic
@@ -503,8 +533,8 @@ in `linarith`. The preprocessing is as follows:
   where `R ∈ {<, ≤, =}` is the appropriate comparison derived from `R1, R2`.
 -/
 syntax (name := nlinarith) "nlinarith" "!"? linarithArgsRest : tactic
-@[tactic_alt nlinarith] macro "nlinarith!" rest:linarithArgsRest : tactic =>
-  `(tactic| nlinarith ! $rest:linarithArgsRest)
+@[tactic_alt nlinarith]
+macro "nlinarith!" rest:linarithArgsRest : tactic => `(tactic| nlinarith ! $rest:linarithArgsRest)
 
 section
 open scoped Lean.Elab.ConfigEval
@@ -514,65 +544,65 @@ private local derive_eval_expr_instance_using_meta_eval Linarith.LinarithConfig
 private local derive_eval_expr_instance_using_meta_eval Linarith.CertificateOracle
 -- Enable using Meta.evalExpr' for `(preprocessors := ...)` option
 private local derive_eval_expr_instance_using_meta_eval Linarith.GlobalBranchingPreprocessor
-/--
-Allow elaboration of `LinarithConfig` arguments to tactics.
--/
+/-- Allow elaboration of `LinarithConfig` arguments to tactics. -/
 declare_config_elab elabLinarithConfig Linarith.LinarithConfig where
   option discharger := fun cfg item => do
-    let discharger ← withRef item.value do
-      match item.value with
-      | `(by $tacs:tacticSeq) => pure (evalTactic (← `(tactic| ($tacs:tacticSeq))))
-      | _ => throwError "expecting `by ...` tactic for discharger"
+    let discharger ←
+      withRef item.value do
+        match item.value with
+        | `(by $tacs:tacticSeq) => pure (evalTactic (← `(tactic| ($tacs:tacticSeq))))
+        | _ => throwError "expecting `by ...` tactic for discharger"
     return { cfg with discharger }
 end
 
 elab_rules : tactic
-  | `(tactic| linarith $[!%$bang]? $cfg:optConfig $[only%$o]? $[[$args,*]]?) => withMainContext do
-    let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `linarith)
-    let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
-    commitIfNoEx do liftMetaFinishingTactic <| Linarith.linarith o.isSome args.toList cfg
+  | `(tactic| linarith $[!%$bang]? $cfg:optConfig $[only%$o]? $[[$args,*]]?) =>
+    withMainContext do
+      let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `linarith)
+      let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
+      commitIfNoEx do liftMetaFinishingTactic <| Linarith.linarith o.isSome args.toList cfg
 
-private meta partial def minimize (cfg : Linarith.LinarithConfig) (st : Tactic.SavedState)
-    (g : MVarId) (hs : List Expr) (i : Nat) : TacticM (List Expr) := do
+private meta partial def minimize
+    (cfg : Linarith.LinarithConfig) (st : Tactic.SavedState) (g : MVarId) (hs : List Expr) (i : Nat)
+    : TacticM (List Expr) := do
   if _h : i < hs.length then
     let rest := hs.eraseIdx i
     st.restore
     try
       let _ ← Linarith.linarith true rest cfg g
       minimize cfg st g rest i
-    catch _ => minimize cfg st g hs (i+1)
+    catch _ =>
+      minimize cfg st g hs (i + 1)
   else
     return hs
 
 elab_rules : tactic
   | `(tactic| linarith?%$tk $[!%$bang]? $cfg:optConfig $[only%$o]? $[[$args,*]]?) =>
-      withMainContext do
-        let args ←
-          ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `linarith)
-        let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
-        let g ← getMainGoal
-        let st ← saveState
-        try
-          let used₀ ← Linarith.linarithUsedHyps o.isSome args.toList cfg g
-          -- Check that all used hypotheses are fvars (not arbitrary terms)
-          if used₀.any (fun e => e.fvarId?.isNone) then
-            throwError "linarith? currently only supports named hypothesis, not terms"
-          let used ←
-            if cfg.minimize then
-              minimize cfg st g used₀ 0
-            else
-              pure used₀
-          st.restore
-          discard <| Linarith.linarith true used cfg g
-          replaceMainGoal []
-          -- TODO: we should check for, and deal with, shadowed names here.
-          let idsList ← used.mapM fun e => do
-            pure (Lean.mkIdent (← e.fvarId!.getUserName))
-          let sugg ← `(tactic| linarith only [$(idsList.toArray),*])
-          Lean.Meta.Tactic.TryThis.addSuggestion tk sugg
-        catch e =>
-          discard st.restore
-          throw e
+    withMainContext do
+      let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `linarith)
+      let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
+      let g ← getMainGoal
+      let st ← saveState
+      try
+        let used₀ ← Linarith.linarithUsedHyps o.isSome args.toList cfg g
+        -- Check that all used hypotheses are fvars (not arbitrary terms)
+        if used₀.any (fun e => e.fvarId?.isNone) then
+          throwError "linarith? currently only supports named hypothesis, not terms"
+        let used ←
+          if cfg.minimize then
+            minimize cfg st g used₀ 0
+          else
+            pure used₀
+        st.restore
+        discard <| Linarith.linarith true used cfg g
+        replaceMainGoal []
+        -- TODO: we should check for, and deal with, shadowed names here.
+        let idsList ← used.mapM fun e => do pure (Lean.mkIdent (← e.fvarId!.getUserName))
+        let sugg ← `(tactic| linarith only [$(idsList.toArray),*])
+        Lean.Meta.Tactic.TryThis.addSuggestion tk sugg
+      catch e =>
+        discard st.restore
+        throw e
 
 -- TODO restore this when `add_tactic_doc` is ported
 -- add_tactic_doc
@@ -584,12 +614,12 @@ elab_rules : tactic
 open Linarith
 
 elab_rules : tactic
-  | `(tactic| nlinarith $[!%$bang]? $cfg:optConfig $[only%$o]? $[[$args,*]]?) => withMainContext do
-    let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `nlinarith)
-    let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
-    let cfg := { cfg with
-      preprocessors := cfg.preprocessors.concat nlinarithExtras }
-    commitIfNoEx do liftMetaFinishingTactic <| Linarith.linarith o.isSome args.toList cfg
+  | `(tactic| nlinarith $[!%$bang]? $cfg:optConfig $[only%$o]? $[[$args,*]]?) =>
+    withMainContext do
+      let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `nlinarith)
+      let cfg := (← elabLinarithConfig cfg).updateReducibility bang.isSome
+      let cfg := { cfg with preprocessors := cfg.preprocessors.concat nlinarithExtras }
+      commitIfNoEx do liftMetaFinishingTactic <| Linarith.linarith o.isSome args.toList cfg
 
 -- TODO restore this when `add_tactic_doc` is ported
 -- add_tactic_doc

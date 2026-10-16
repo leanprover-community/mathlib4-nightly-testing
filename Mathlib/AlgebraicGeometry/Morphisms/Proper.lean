@@ -25,7 +25,6 @@ Note that we don't require quasi-compact, since this is implied by universally c
 
 public section
 
-
 noncomputable section
 
 open CategoryTheory
@@ -40,8 +39,9 @@ variable {X Y Z S : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z)
 @[mk_iff]
 class IsProper : Prop extends IsSeparated f, UniversallyClosed f, LocallyOfFiniteType f where
 
-lemma isProper_eq : @IsProper =
-    (@IsSeparated ⊓ @UniversallyClosed : MorphismProperty Scheme) ⊓ @LocallyOfFiniteType := by
+lemma isProper_eq
+    : @IsProper
+      = (@IsSeparated ⊓ @UniversallyClosed : MorphismProperty Scheme) ⊓ @LocallyOfFiniteType := by
   ext X Y f
   rw [isProper_iff, ← and_assoc]
   rfl
@@ -86,16 +86,15 @@ instance (f : X ⟶ Y) (V : Y.Opens) [IsProper f] : IsProper (f ∣_ V) where
 end IsProper
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma IsFinite.eq_isProper_inf_isAffineHom :
-    @IsFinite = (@IsProper ⊓ @IsAffineHom : MorphismProperty _) := by
+lemma IsFinite.eq_isProper_inf_isAffineHom
+    : @IsFinite = (@IsProper ⊓ @IsAffineHom : MorphismProperty _) := by
   have : (@IsAffineHom ⊓ @IsSeparated : MorphismProperty _) = @IsAffineHom :=
     inf_eq_left.mpr fun _ _ _ _ ↦ inferInstance
   rw [inf_comm, isProper_eq, inf_assoc, ← inf_assoc, this, eq_inf,
     IsIntegralHom.eq_universallyClosed_inf_isAffineHom, inf_assoc, inf_left_comm]
 
 variable {f} in
-lemma IsFinite.iff_isProper_and_isAffineHom :
-    IsFinite f ↔ IsProper f ∧ IsAffineHom f := by
+lemma IsFinite.iff_isProper_and_isAffineHom : IsFinite f ↔ IsProper f ∧ IsAffineHom f := by
   rw [eq_isProper_inf_isAffineHom]
   rfl
 
@@ -103,17 +102,17 @@ instance (priority := 100) [IsFinite f] : IsProper f :=
   (IsFinite.iff_isProper_and_isAffineHom.mp ‹_›).1
 
 instance : MorphismProperty.HasOfPostcompProperty @UniversallyClosed @IsSeparated :=
-  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr
-    fun _ _ _ _ ↦ inferInstanceAs (UniversallyClosed _)
+  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr fun _ _ _ _ ↦
+    inferInstanceAs (UniversallyClosed _)
 
 @[stacks 01W6 "(1)"]
-lemma UniversallyClosed.of_comp_of_isSeparated [UniversallyClosed (f ≫ g)] [IsSeparated g] :
-    UniversallyClosed f :=
+lemma UniversallyClosed.of_comp_of_isSeparated [UniversallyClosed (f ≫ g)] [IsSeparated g]
+    : UniversallyClosed f :=
   MorphismProperty.of_postcomp _ _ g ‹_› ‹_›
 
 instance : MorphismProperty.HasOfPostcompProperty @IsProper @IsSeparated :=
-  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr
-    fun _ _ _ _ ↦ inferInstanceAs (IsProper _)
+  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr fun _ _ _ _ ↦
+    inferInstanceAs (IsProper _)
 
 instance [UniversallyClosed f] : UniversallyClosed f.toImage :=
   have : UniversallyClosed (f.toImage ≫ f.imageι) := by simpa
@@ -123,8 +122,7 @@ instance [UniversallyClosed f] : UniversallyClosed f.toImage :=
 lemma IsProper.of_comp [IsProper (f ≫ g)] [IsSeparated g] : IsProper f :=
   MorphismProperty.of_postcomp _ _ g ‹_› ‹_›
 
-lemma IsProper.comp_iff {f : X ⟶ Y} {g : Y ⟶ Z} [IsProper g] :
-    IsProper (f ≫ g) ↔ IsProper f :=
+lemma IsProper.comp_iff {f : X ⟶ Y} {g : Y ⟶ Z} [IsProper g] : IsProper (f ≫ g) ↔ IsProper f :=
   ⟨fun _ ↦ .of_comp f g, fun _ ↦ inferInstance⟩
 
 section GlobalSection
@@ -132,10 +130,12 @@ section GlobalSection
 variable (K : Type u) [Field K]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `f : X ⟶ Y` is universally closed and `Y` is affine,
-then the map on global sections is integral. -/
-theorem isIntegral_appTop_of_universallyClosed (f : X ⟶ Y) [UniversallyClosed f] [IsAffine Y] :
-    f.appTop.hom.IsIntegral := by
+/--
+If `f : X ⟶ Y` is universally closed and `Y` is affine,
+then the map on global sections is integral.
+-/
+theorem isIntegral_appTop_of_universallyClosed (f : X ⟶ Y) [UniversallyClosed f] [IsAffine Y]
+    : f.appTop.hom.IsIntegral := by
   have : CompactSpace X := (quasiCompact_iff_compactSpace f).mp inferInstance
   have : UniversallyClosed (X.toSpecΓ ≫ Spec.map f.appTop) := by
     rwa [← Scheme.toSpecΓ_naturality,
@@ -144,10 +144,12 @@ theorem isIntegral_appTop_of_universallyClosed (f : X ⟶ Y) [UniversallyClosed 
   rw [← IsIntegralHom.SpecMap_iff, IsIntegralHom.iff_universallyClosed_and_isAffineHom]
   exact ⟨.of_comp_surjective X.toSpecΓ _, inferInstance⟩
 
-/-- If `X` is an integral scheme that is universally closed over `Spec K`,
-then `Γ(X, ⊤)` is a field. -/
-theorem isField_of_universallyClosed (f : X ⟶ Spec ↧K)
-    [IsIntegral X] [UniversallyClosed f] : IsField Γ(X, ⊤) := by
+/--
+If `X` is an integral scheme that is universally closed over `Spec K`,
+then `Γ(X, ⊤)` is a field.
+-/
+theorem isField_of_universallyClosed (f : X ⟶ Spec ↧K) [IsIntegral X] [UniversallyClosed f]
+    : IsField Γ(X, ⊤) := by
   let F := (Scheme.ΓSpecIso _).inv ≫ f.appTop
   have : F.hom.IsIntegral := by
     apply RingHom.isIntegral_respectsIso.2 (e := (Scheme.ΓSpecIso _).symm.commRingCatIsoToRingEquiv)
@@ -155,16 +157,18 @@ theorem isField_of_universallyClosed (f : X ⟶ Spec ↧K)
   algebraize [F.hom]
   exact isField_of_isIntegral_of_isField' (Field.toIsField K)
 
-/-- If `X` is an integral scheme that is universally closed and of finite type over `Spec K`,
-then `Γ(X, ⊤)` is a finite field extension over `K`. -/
-theorem finite_appTop_of_universallyClosed (f : X ⟶ Spec ↧K)
-    [IsIntegral X] [UniversallyClosed f] [LocallyOfFiniteType f] :
-    f.appTop.hom.Finite := by
+/--
+If `X` is an integral scheme that is universally closed and of finite type over `Spec K`,
+then `Γ(X, ⊤)` is a finite field extension over `K`.
+-/
+theorem finite_appTop_of_universallyClosed
+    (f : X ⟶ Spec ↧K) [IsIntegral X] [UniversallyClosed f] [LocallyOfFiniteType f]
+    : f.appTop.hom.Finite := by
   have x : X := Nonempty.some inferInstance
   obtain ⟨_, ⟨U, hU, rfl⟩, hxU, -⟩ :=
     X.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
-  let := ((Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.toMulEquiv.isField
-    (Field.toIsField K)).toField
+  let :=
+    ((Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.toMulEquiv.isField (Field.toIsField K)).toField
   let := (isField_of_universallyClosed K f).toField
   have : Nonempty U := ⟨⟨x, hxU⟩⟩
   apply RingHom.finite_of_algHom_finiteType_of_isJacobsonRing (A := Γ(X, U))

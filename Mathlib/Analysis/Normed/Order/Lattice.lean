@@ -32,7 +32,6 @@ normed, lattice, ordered, group
 
 public section
 
-
 /-!
 ### Normed lattice ordered groups
 
@@ -41,7 +40,8 @@ Motivated by the theory of Banach Lattices, this section introduces normed latti
 
 section SolidNorm
 
-/-- Let `α` be an `AddCommGroup` with a `Lattice` structure. A norm on `α` is *solid* if, for `a`
+/--
+Let `α` be an `AddCommGroup` with a `Lattice` structure. A norm on `α` is *solid* if, for `a`
 and `b` in `α`, with absolute values `|a|` and `|b|` respectively, `|a| ≤ |b|` implies `‖a‖ ≤ ‖b‖`.
 -/
 class HasSolidNorm (α : Type*) [NormedAddCommGroup α] [Lattice α] : Prop where
@@ -49,12 +49,11 @@ class HasSolidNorm (α : Type*) [NormedAddCommGroup α] [Lattice α] : Prop wher
 
 variable {α : Type*} [NormedAddCommGroup α] [Lattice α] [HasSolidNorm α]
 
-theorem norm_le_norm_of_abs_le_abs {a b : α} (h : |a| ≤ |b|) : ‖a‖ ≤ ‖b‖ :=
-  HasSolidNorm.solid h
+theorem norm_le_norm_of_abs_le_abs {a b : α} (h : |a| ≤ |b|) : ‖a‖ ≤ ‖b‖ := HasSolidNorm.solid h
 
 /-- If `α` has a solid norm, then the balls centered at the origin of `α` are solid sets. -/
-theorem LatticeOrderedAddCommGroup.isSolid_ball (r : ℝ) :
-    LatticeOrderedAddCommGroup.IsSolid (Metric.ball (0 : α) r) := fun _ hx _ hxy =>
+theorem LatticeOrderedAddCommGroup.isSolid_ball (r : ℝ)
+    : LatticeOrderedAddCommGroup.IsSolid (Metric.ball (0 : α) r) := fun _ hx _ hxy =>
   mem_ball_zero_iff.mpr ((HasSolidNorm.solid hxy).trans_lt (mem_ball_zero_iff.mp hx))
 
 instance : HasSolidNorm ℝ := ⟨fun _ _ => id⟩
@@ -65,8 +64,9 @@ instance Int.hasSolidNorm : HasSolidNorm ℤ where
   solid x y h := by simpa [← Int.norm_cast_real, ← Int.cast_abs] using h
 
 instance {ι : Type*} [Fintype ι] : HasSolidNorm (ι → ℝ) where
-  solid {_ y} h := (pi_norm_le_iff_of_nonneg (norm_nonneg y)).2 fun i ↦
-    (HasSolidNorm.solid (h i)).trans (norm_le_pi_norm y i)
+  solid {_ y} h :=
+    (pi_norm_le_iff_of_nonneg (norm_nonneg y)).2 fun i ↦
+      (HasSolidNorm.solid (h i)).trans (norm_le_pi_norm y i)
 
 end SolidNorm
 
@@ -84,22 +84,24 @@ theorem dual_solid (a b : α) (h : b ⊓ -b ≤ a ⊓ -a) : ‖a‖ ≤ ‖b‖ 
   rwa [← neg_inf, neg_le_neg_iff, inf_comm _ b, inf_comm _ a]
 
 -- see Note [lower instance priority]
-/-- Let `α` be a normed lattice ordered group, then the order dual is also a
+/--
+Let `α` be a normed lattice ordered group, then the order dual is also a
 normed lattice ordered group.
 -/
-instance (priority := 100) OrderDual.instHasSolidNorm :
-    HasSolidNorm αᵒᵈ :=
-  { solid := dual_solid (α := α) }
+instance (priority := 100) OrderDual.instHasSolidNorm : HasSolidNorm αᵒᵈ := {
+  solid := dual_solid (α := α)
+}
 
 theorem norm_abs_eq_norm (a : α) : ‖|a|‖ = ‖a‖ :=
   (solid (abs_abs a).le).antisymm (solid (abs_abs a).symm.le)
 
 theorem norm_inf_sub_inf_le_add_norm (a b c d : α) : ‖a ⊓ b - c ⊓ d‖ ≤ ‖a - c‖ + ‖b - d‖ := by
   rw [← norm_abs_eq_norm (a - c), ← norm_abs_eq_norm (b - d)]
-  refine le_trans (solid ?_) (norm_add_le |a - c| |b - d|)
+  refine le_trans (solid ?_) (norm_add_le (|a - c|) |b - d|)
   rw [abs_of_nonneg (add_nonneg (abs_nonneg (a - c)) (abs_nonneg (b - d)))]
   calc
-    |a ⊓ b - c ⊓ d| = |a ⊓ b - c ⊓ b + (c ⊓ b - c ⊓ d)| := by rw [sub_add_sub_cancel]
+    |a ⊓ b - c ⊓ d|
+      = |a ⊓ b - c ⊓ b + (c ⊓ b - c ⊓ d)| := by rw [sub_add_sub_cancel]
     _ ≤ |a ⊓ b - c ⊓ b| + |c ⊓ b - c ⊓ d| := abs_add_le _ _
     _ ≤ |a - c| + |b - d| := by
       gcongr ?_ + ?_
@@ -109,10 +111,11 @@ theorem norm_inf_sub_inf_le_add_norm (a b c d : α) : ‖a ⊓ b - c ⊓ d‖ �
 
 theorem norm_sup_sub_sup_le_add_norm (a b c d : α) : ‖a ⊔ b - c ⊔ d‖ ≤ ‖a - c‖ + ‖b - d‖ := by
   rw [← norm_abs_eq_norm (a - c), ← norm_abs_eq_norm (b - d)]
-  refine le_trans (solid ?_) (norm_add_le |a - c| |b - d|)
+  refine le_trans (solid ?_) (norm_add_le (|a - c|) |b - d|)
   rw [abs_of_nonneg (add_nonneg (abs_nonneg (a - c)) (abs_nonneg (b - d)))]
   calc
-    |a ⊔ b - c ⊔ d| = |a ⊔ b - c ⊔ b + (c ⊔ b - c ⊔ d)| := by rw [sub_add_sub_cancel]
+    |a ⊔ b - c ⊔ d|
+      = |a ⊔ b - c ⊔ b + (c ⊔ b - c ⊔ d)| := by rw [sub_add_sub_cancel]
     _ ≤ |a ⊔ b - c ⊔ b| + |c ⊔ b - c ⊔ d| := abs_add_le _ _
     _ ≤ |a - c| + |b - d| := by
       gcongr ?_ + ?_
@@ -129,8 +132,7 @@ theorem norm_sup_le_add (x y : α) : ‖x ⊔ y‖ ≤ ‖x‖ + ‖y‖ := by
   simpa only [sup_idem, sub_zero] using h
 
 -- see Note [lower instance priority]
-/-- Let `α` be a normed lattice ordered group. Then the infimum is jointly continuous.
--/
+/-- Let `α` be a normed lattice ordered group. Then the infimum is jointly continuous. -/
 instance (priority := 100) HasSolidNorm.continuousInf : ContinuousInf α := by
   refine ⟨continuous_iff_continuousAt.2 fun q => tendsto_iff_norm_sub_tendsto_zero.2 <| ?_⟩
   have : ∀ p : α × α, ‖p.1 ⊓ p.2 - q.1 ⊓ q.2‖ ≤ ‖p.1 - q.1‖ + ‖p.2 - q.2‖ := fun _ =>
@@ -142,8 +144,9 @@ instance (priority := 100) HasSolidNorm.continuousInf : ContinuousInf α := by
   simp
 
 -- see Note [lower instance priority]
-instance (priority := 100) HasSolidNorm.continuousSup {α : Type*}
-    [NormedAddCommGroup α] [Lattice α] [HasSolidNorm α] [IsOrderedAddMonoid α] : ContinuousSup α :=
+instance (priority := 100) HasSolidNorm.continuousSup
+    {α : Type*} [NormedAddCommGroup α] [Lattice α] [HasSolidNorm α] [IsOrderedAddMonoid α]
+    : ContinuousSup α :=
   OrderDual.continuousSup αᵒᵈ
 
 -- see Note [lower instance priority]
@@ -166,8 +169,7 @@ theorem lipschitzWith_sup_right (z : α) : LipschitzWith 1 fun x => x ⊔ z :=
     rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm]
     exact norm_sup_sub_sup_le_norm x y z
 
-lemma lipschitzWith_posPart : LipschitzWith 1 (posPart : α → α) :=
-  lipschitzWith_sup_right 0
+lemma lipschitzWith_posPart : LipschitzWith 1 (posPart : α → α) := lipschitzWith_sup_right 0
 
 lemma lipschitzWith_negPart : LipschitzWith 1 (negPart : α → α) := by
   simpa [Function.comp] using! lipschitzWith_posPart.comp LipschitzWith.id.neg
@@ -183,17 +185,18 @@ lemma isClosed_nonneg : IsClosed {x : α | 0 ≤ x} := by
   rw [this]
   exact isClosed_singleton.preimage continuous_negPart
 
-theorem isClosed_le_of_isClosed_nonneg {G}
-    [AddCommGroup G] [PartialOrder G] [IsOrderedAddMonoid G] [TopologicalSpace G]
-    [ContinuousSub G] (h : IsClosed { x : G | 0 ≤ x }) :
-    IsClosed { p : G × G | p.fst ≤ p.snd } := by
+theorem isClosed_le_of_isClosed_nonneg
+    {G}
+    [AddCommGroup G] [PartialOrder G] [IsOrderedAddMonoid G] [TopologicalSpace G] [ContinuousSub G]
+    (h : IsClosed { x : G | 0 ≤ x })
+    : IsClosed { p : G × G | p.fst ≤ p.snd } := by
   have : { p : G × G | p.fst ≤ p.snd } = (fun p : G × G ↦ p.snd - p.fst) ⁻¹' { x : G | 0 ≤ x } := by
     ext1 p; simp only [sub_nonneg, Set.preimage_ofPred_eq]
   rw [this]
   exact IsClosed.preimage (continuous_snd.sub continuous_fst) h
 
 -- See note [lower instance priority]
-instance (priority := 100) HasSolidNorm.orderClosedTopology {E}
-    [NormedAddCommGroup E] [Lattice E] [HasSolidNorm E] [IsOrderedAddMonoid E] :
-    OrderClosedTopology E :=
+instance (priority := 100) HasSolidNorm.orderClosedTopology
+    {E} [NormedAddCommGroup E] [Lattice E] [HasSolidNorm E] [IsOrderedAddMonoid E]
+    : OrderClosedTopology E :=
   ⟨isClosed_le_of_isClosed_nonneg isClosed_nonneg⟩

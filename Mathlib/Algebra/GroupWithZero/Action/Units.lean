@@ -56,8 +56,8 @@ end Units
 section GroupWithZero
 variable [GroupWithZero α] [MulAction α β] {a : α}
 
-@[simp] lemma inv_smul_smul₀ (ha : a ≠ 0) (x : β) : a⁻¹ • a • x = x :=
-  inv_smul_smul (Units.mk0 a ha) x
+@[simp]
+lemma inv_smul_smul₀ (ha : a ≠ 0) (x : β) : a⁻¹ • a • x = x := inv_smul_smul (Units.mk0 a ha) x
 
 @[simp]
 lemma smul_inv_smul₀ (ha : a ≠ 0) (x : β) : a • a⁻¹ • x = x := smul_inv_smul (Units.mk0 a ha) x
@@ -69,27 +69,32 @@ lemma eq_inv_smul_iff₀ (ha : a ≠ 0) {x y : β} : x = a⁻¹ • y ↔ a • 
   eq_inv_smul_iff (g := Units.mk0 a ha)
 
 @[simp]
-lemma SemiconjBy.smul_right_iff₀ [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y z : β}
-    (ha : a ≠ 0) : SemiconjBy x (a • y) (a • z) ↔ SemiconjBy x y z :=
+lemma SemiconjBy.smul_right_iff₀
+    [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y z : β} (ha : a ≠ 0)
+    : SemiconjBy x (a • y) (a • z) ↔ SemiconjBy x y z :=
   smul_right_iff (r := Units.mk0 a ha)
 
 @[simp]
-lemma SemiconjBy.smul_left_iff₀ [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y z : β}
-    (ha : a ≠ 0) : SemiconjBy (a • x) y z ↔ SemiconjBy x y z :=
+lemma SemiconjBy.smul_left_iff₀
+    [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y z : β} (ha : a ≠ 0)
+    : SemiconjBy (a • x) y z ↔ SemiconjBy x y z :=
   smul_left_iff (r := Units.mk0 a ha)
 
 @[simp]
-lemma Commute.smul_right_iff₀ [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y : β}
-    (ha : a ≠ 0) : Commute x (a • y) ↔ Commute x y :=
+lemma Commute.smul_right_iff₀
+    [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y : β} (ha : a ≠ 0)
+    : Commute x (a • y) ↔ Commute x y :=
   SemiconjBy.smul_right_iff₀ ha
 
 @[simp]
-lemma Commute.smul_left_iff₀ [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y : β}
-    (ha : a ≠ 0) : Commute (a • x) y ↔ Commute x y :=
+lemma Commute.smul_left_iff₀
+    [Mul β] [SMulCommClass α β β] [IsScalarTower α β β] {x y : β} (ha : a ≠ 0)
+    : Commute (a • x) y ↔ Commute x y :=
   SemiconjBy.smul_left_iff₀ ha
 
 /-- Right scalar multiplication as a bijection. -/
-@[simps] def Equiv.smulRight (ha : a ≠ 0) : β ≃ β where
+@[simps]
+def Equiv.smulRight (ha : a ≠ 0) : β ≃ β where
   toFun b := a • b
   invFun b := a⁻¹ • b
   left_inv := inv_smul_smul₀ ha
@@ -104,17 +109,17 @@ namespace Units
 instance instSMulZeroClass [Monoid M] [Zero α] [SMulZeroClass M α] : SMulZeroClass Mˣ α where
   smul_zero m := smul_zero (m : M)
 
-instance instDistribSMulUnits [Monoid M] [AddZeroClass α] [DistribSMul M α] :
-    DistribSMul Mˣ α where smul_add m := smul_add (m : M)
+instance instDistribSMulUnits [Monoid M] [AddZeroClass α] [DistribSMul M α] : DistribSMul Mˣ α where
+  smul_add m := smul_add (m : M)
 
-instance instDistribMulAction [Monoid M] [AddMonoid α] [DistribMulAction M α] :
-    DistribMulAction Mˣ α where
+instance instDistribMulAction [Monoid M] [AddMonoid α] [DistribMulAction M α]
+    : DistribMulAction Mˣ α where
   __ := instDistribSMulUnits
   one_smul := fun b => one_smul M b
   mul_smul := fun x y b => mul_smul (x : M) y b
 
-instance instMulDistribMulAction [Monoid M] [Monoid α] [MulDistribMulAction M α] :
-    MulDistribMulAction Mˣ α where
+instance instMulDistribMulAction [Monoid M] [Monoid α] [MulDistribMulAction M α]
+    : MulDistribMulAction Mˣ α where
   smul_mul m := smul_mul' (m : M)
   smul_one m := smul_one (m : M)
 

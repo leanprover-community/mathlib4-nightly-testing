@@ -25,15 +25,12 @@ namespace Algebra.FormallySmooth
 variable {R : Type*} {I : Type*} (A : I → Type*)
 variable [CommRing R] [∀ i, CommRing (A i)] [∀ i, Algebra R (A i)]
 
-theorem of_pi [FormallySmooth R (Π i, A i)] (i) :
-    FormallySmooth R (A i) := by
+theorem of_pi [FormallySmooth R (Π i, A i)] (i) : FormallySmooth R (A i) := by
   classical
   fapply FormallySmooth.of_split (Pi.evalAlgHom R A i)
-  · apply AlgHom.ofLinearMap
-      ((Ideal.Quotient.mkₐ R _).toLinearMap.comp (LinearMap.single _ _ i))
+  · apply AlgHom.ofLinearMap ((Ideal.Quotient.mkₐ R _).toLinearMap.comp (LinearMap.single _ _ i))
     · change Ideal.Quotient.mk _ (Pi.single i 1) = 1
-      rw [← (Ideal.Quotient.mk _).map_one, ← sub_eq_zero, ← map_sub,
-        Ideal.Quotient.eq_zero_iff_mem]
+      rw [← (Ideal.Quotient.mk _).map_one, ← sub_eq_zero, ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
       have : Pi.single i 1 - 1 ∈ RingHom.ker (Pi.evalAlgHom R A i).toRingHom := by
         simp [RingHom.mem_ker]
       convert neg_mem (Ideal.pow_mem_pow this 2) using 1
@@ -46,8 +43,7 @@ theorem of_pi [FormallySmooth R (Π i, A i)] (i) :
     simp
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem pi_iff [Finite I] :
-    FormallySmooth R (Π i, A i) ↔ ∀ i, FormallySmooth R (A i) := by
+theorem pi_iff [Finite I] : FormallySmooth R (Π i, A i) ↔ ∀ i, FormallySmooth R (A i) := by
   classical
   cases nonempty_fintype I
   constructor
@@ -57,16 +53,17 @@ theorem pi_iff [Finite I] :
       refine ⟨2, show x ^ 2 ∈ (⊥ : Ideal B) from ?_⟩
       rw [← hJ]
       exact Ideal.pow_mem_pow (by simpa using! hx) 2
-    obtain ⟨e, he, he'⟩ := ((CompleteOrthogonalIdempotents.single A).map
-      g.toRingHom).lift_of_isNilpotent_ker (Ideal.Quotient.mk J) hJ'
-        fun _ ↦ Ideal.Quotient.mk_surjective _
+    obtain ⟨e, he, he'⟩ :=
+      ((CompleteOrthogonalIdempotents.single A).map g.toRingHom).lift_of_isNilpotent_ker
+        (Ideal.Quotient.mk J) hJ' fun _ ↦ Ideal.Quotient.mk_surjective _
     replace he' : ∀ i, Ideal.Quotient.mk J (e i) = g (Pi.single i 1) := congr_fun he'
-    let iso : B ≃ₐ[R] ∀ i, B ⧸ Ideal.span {1 - e i} :=
-      { __ := AlgHom.pi fun i ↦ Ideal.Quotient.mkₐ R _
-        __ := Equiv.ofBijective _ he.bijective_pi }
+    let iso : B ≃ₐ[R] ∀ i, B ⧸ Ideal.span {1 - e i} := {
+      __ := AlgHom.pi fun i ↦ Ideal.Quotient.mkₐ R _
+      __ := Equiv.ofBijective _ he.bijective_pi
+    }
     let J' := fun i ↦ J.map (Ideal.Quotient.mk (Ideal.span {1 - e i}))
-    let ι : ∀ i, (B ⧸ J →ₐ[R] (B ⧸ _) ⧸ J' i) := fun i ↦ Ideal.quotientMapₐ _
-      (IsScalarTower.toAlgHom R B _) Ideal.le_comap_map
+    let ι : ∀ i, (B ⧸ J →ₐ[R] (B ⧸ _) ⧸ J' i) := fun i ↦
+      Ideal.quotientMapₐ _ (IsScalarTower.toAlgHom R B _) Ideal.le_comap_map
     have hι : ∀ i x, ι i x = 0 → (e i) * x = 0 := by
       intro i x hix
       have : x ∈ (Ideal.span {1 - e i}).map (Ideal.Quotient.mk J) := by
@@ -83,16 +80,18 @@ theorem pi_iff [Finite I] :
           rw [← (Ideal.Quotient.mk _).map_one, eq_comm, Ideal.Quotient.mk_eq_mk_iff_sub_mem,
             Ideal.mem_span_singleton]
         · intro x y; simp [Pi.single_mul]
-      obtain ⟨a, ha⟩ := FormallySmooth.comp_surjective _ _ (I := J' i)
-        (by rw [← Ideal.map_pow, hJ, Ideal.map_bot]) g'
+      obtain ⟨a, ha⟩ :=
+        FormallySmooth.comp_surjective _ _ (I := J' i) (by rw [← Ideal.map_pow, hJ, Ideal.map_bot])
+          g'
       exact ⟨a, AlgHom.congr_fun ha⟩
     choose a ha using this
     use iso.symm.toAlgHom.comp (AlgHom.pi fun i ↦ (a i).comp (Pi.evalAlgHom R A i))
-    ext x; rw [← AlgHom.toLinearMap_apply, ← AlgHom.toLinearMap_apply]; congr 1
+    ext x
+    rw [← AlgHom.toLinearMap_apply, ← AlgHom.toLinearMap_apply]
+    congr 1
     ext i x
-    simp only [AlgHom.comp_toLinearMap, AlgEquiv.toAlgHom_toLinearMap,
-      LinearMap.coe_comp, LinearMap.coe_single, Function.comp_apply, AlgHom.toLinearMap_apply,
-      Ideal.Quotient.mkₐ_eq_mk]
+    simp only [AlgHom.comp_toLinearMap, AlgEquiv.toAlgHom_toLinearMap, LinearMap.coe_comp,
+      LinearMap.coe_single, Function.comp_apply, AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk]
     obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (a i x)
     have hy' : Ideal.Quotient.mk (Ideal.span {1 - e i}) (y * e i) = a i x := by
       have : Ideal.Quotient.mk (Ideal.span {1 - e i}) (e i) = 1 := by
@@ -100,7 +99,9 @@ theorem pi_iff [Finite I] :
           Ideal.mem_span_singleton]
       rw [map_mul, this, hy, mul_one]
     trans Ideal.Quotient.mk J (y * e i)
-    · congr 1; apply iso.injective; ext j
+    · congr 1
+      apply iso.injective
+      ext j
       suffices a j (Pi.single i x j) = Ideal.Quotient.mk _ (y * e i) by simpa using! this
       by_cases hij : i = j
       · subst hij
@@ -116,7 +117,8 @@ theorem pi_iff [Finite I] :
       rw [← sub_eq_zero, ← map_sub] at this
       replace this := hι _ _ this
       rwa [mul_sub, ← map_mul, mul_comm, mul_assoc, (he.idem i).eq, he', ← map_mul, ← Pi.single_mul,
-        one_mul, sub_eq_zero] at this
+          one_mul, sub_eq_zero]
+        at this
 
 instance [Finite I] [∀ i, FormallySmooth R (A i)] : FormallySmooth R (Π i, A i) :=
   (pi_iff _).mpr ‹_›

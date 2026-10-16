@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Data.Finset.Basic
 /-!
 Tests that `List.choose` and friends all reduce appropriately.
@@ -9,7 +10,7 @@ Previously this was blocked by reducibility issues with `And.rec`
 
 namespace List
 
-lemma foo : ∃ x, x ∈ ([0,3] : List (Fin 5)) ∧ x = 3 := by
+lemma foo : ∃ x, x ∈ ([0, 3] : List (Fin 5)) ∧ x = 3 := by
   use 3
   simp
 

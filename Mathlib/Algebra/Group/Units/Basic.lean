@@ -12,7 +12,6 @@ public import Mathlib.Tactic.Attr.Core
 public import Mathlib.Tactic.Lift
 public import Mathlib.Tactic.Subsingleton
 
-
 /-!
 # Units (i.e., invertible elements) of a monoid
 
@@ -38,8 +37,7 @@ variable {α : Type u}
 section HasElem
 
 @[to_additive]
-theorem unique_one {α : Type*} [Unique α] [One α] : default = (1 : α) :=
-  Unique.default_eq 1
+theorem unique_one {α : Type*} [Unique α] [One α] : default = (1 : α) := Unique.default_eq 1
 
 end HasElem
 
@@ -58,14 +56,16 @@ theorem inv_mul_cancel_right (a : α) (b : αˣ) : a * ↑b⁻¹ * b = a := by
   rw [mul_assoc, inv_mul, mul_one]
 
 @[to_additive (attr := simp)]
-theorem mul_right_inj (a : αˣ) {b c : α} : (a : α) * b = a * c ↔ b = c :=
-  ⟨fun h => by simpa only [inv_mul_cancel_left] using congr_arg (fun x : α => ↑(a⁻¹ : αˣ) * x) h,
-    congr_arg _⟩
+theorem mul_right_inj (a : αˣ) {b c : α} : (a : α) * b = a * c ↔ b = c := ⟨
+  fun h => by simpa only [inv_mul_cancel_left] using congr_arg (fun x : α => ↑(a⁻¹ : αˣ) * x) h,
+  congr_arg _
+⟩
 
 @[to_additive (attr := simp)]
-theorem mul_left_inj (a : αˣ) {b c : α} : b * a = c * a ↔ b = c :=
-  ⟨fun h => by simpa only [mul_inv_cancel_right] using congr_arg (fun x : α => x * ↑(a⁻¹ : αˣ)) h,
-    congr_arg (· * a.val)⟩
+theorem mul_left_inj (a : αˣ) {b c : α} : b * a = c * a ↔ b = c := ⟨
+  fun h => by simpa only [mul_inv_cancel_right] using congr_arg (fun x : α => x * ↑(a⁻¹ : αˣ)) h,
+  congr_arg (· * a.val)
+⟩
 
 @[to_additive]
 theorem eq_mul_inv_iff_mul_eq {a b : α} : a = b * ↑c⁻¹ ↔ a * c = b :=
@@ -82,13 +82,15 @@ theorem mul_inv_eq_iff_eq_mul {a c : α} : a * ↑b⁻¹ = c ↔ a = c * b :=
 @[to_additive]
 protected theorem inv_eq_of_mul_eq_one_left {a : α} (h : a * u = 1) : ↑u⁻¹ = a :=
   calc
-    ↑u⁻¹ = 1 * ↑u⁻¹ := by rw [one_mul]
+    ↑u⁻¹
+      = 1 * ↑u⁻¹ := by rw [one_mul]
     _ = a := by rw [← h, mul_inv_cancel_right]
 
 @[to_additive]
 protected theorem inv_eq_of_mul_eq_one_right {a : α} (h : ↑u * a = 1) : ↑u⁻¹ = a :=
   calc
-    ↑u⁻¹ = ↑u⁻¹ * 1 := by rw [mul_one]
+    ↑u⁻¹
+      = ↑u⁻¹ * 1 := by rw [mul_one]
     _ = a := by rw [← h, inv_mul_cancel_left]
 
 @[to_additive]
@@ -143,9 +145,7 @@ section Monoid
 
 variable [Monoid α]
 
-@[simp]
-theorem divp_left_inj (u : αˣ) {a b : α} : a /ₚ u = b /ₚ u ↔ a = b :=
-  Units.mul_left_inj _
+@[simp] theorem divp_left_inj (u : αˣ) {a b : α} : a /ₚ u = b /ₚ u ↔ a = b := Units.mul_left_inj _
 
 theorem divp_eq_iff_mul_eq {x : α} {u : αˣ} {y : α} : x /ₚ u = y ↔ y * u = x :=
   u.mul_left_inj.symm.trans <| by rw [divp_mul_cancel]; exact ⟨Eq.symm, Eq.symm⟩
@@ -156,8 +156,7 @@ theorem eq_divp_iff_mul_eq {x : α} {u : αˣ} {y : α} : x = y /ₚ u ↔ x * u
 theorem divp_eq_one_iff_eq {a : α} {u : αˣ} : a /ₚ u = 1 ↔ a = u :=
   (Units.mul_left_inj u).symm.trans <| by rw [divp_mul_cancel, one_mul]
 
-theorem inv_eq_one_divp' (u : αˣ) : ((1 / u : αˣ) : α) = 1 /ₚ u := by
-  rw [one_div, one_divp]
+theorem inv_eq_one_divp' (u : αˣ) : ((1 / u : αˣ) : α) = 1 /ₚ u := by rw [one_div, one_divp]
 
 end Monoid
 
@@ -170,17 +169,17 @@ theorem eq_one_of_mul_right (h : a * b = 1) : a = 1 :=
   congr_arg Units.inv <| Subsingleton.elim (Units.mk _ _ (mul_eq_one_symm h) h) 1
 
 @[to_additive]
-theorem eq_one_of_mul_left (h : a * b = 1) : b = 1 := by
-  rwa [eq_one_of_mul_right h, one_mul] at h
+theorem eq_one_of_mul_left (h : a * b = 1) : b = 1 := by rwa [eq_one_of_mul_right h, one_mul] at h
 
 @[to_additive (attr := simp)]
-theorem mul_eq_one : a * b = 1 ↔ a = 1 ∧ b = 1 :=
-  ⟨fun h => ⟨eq_one_of_mul_right h, eq_one_of_mul_left h⟩, by
+theorem mul_eq_one : a * b = 1 ↔ a = 1 ∧ b = 1 := ⟨
+  fun h => ⟨eq_one_of_mul_right h, eq_one_of_mul_left h⟩,
+  by
     rintro ⟨rfl, rfl⟩
-    exact mul_one _⟩
+    exact mul_one _
+⟩
 
-@[to_additive]
-theorem mul_ne_one : a * b ≠ 1 ↔ a ≠ 1 ∨ b ≠ 1 := by rw [not_iff_comm]; simp
+@[to_additive] theorem mul_ne_one : a * b ≠ 1 ↔ a ≠ 1 ∨ b ≠ 1 := by rw [not_iff_comm]; simp
 
 @[to_additive (attr := deprecated (since := "2026-07-07"))]
 alias eq_one_of_mul_left' := eq_one_of_mul_left
@@ -215,7 +214,6 @@ end CommMonoid
 ### `IsUnit` predicate
 -/
 
-
 section IsUnit
 
 variable {M : Type*}
@@ -224,9 +222,7 @@ variable {M : Type*}
 theorem isUnit_of_subsingleton [Monoid M] [Subsingleton M] (a : M) : IsUnit a :=
   ⟨⟨a, a, by subsingleton, by subsingleton⟩, rfl⟩
 
-@[to_additive]
-instance [Monoid M] : CanLift M Mˣ Units.val IsUnit :=
-  { prf := fun _ ↦ id }
+@[to_additive] instance [Monoid M] : CanLift M Mˣ Units.val IsUnit := { prf := fun _ ↦ id }
 
 /-- A subsingleton `Monoid` has a unique unit. -/
 @[to_additive /-- A subsingleton `AddMonoid` has a unique additive unit. -/]
@@ -250,44 +246,60 @@ theorem mul_right_inj (h : IsUnit a) : a * b = a * c ↔ b = c :=
   hu ▸ u.mul_right_inj
 
 @[to_additive]
-protected theorem mul_left_cancel (h : IsUnit a) : a * b = a * c → b = c :=
-  h.mul_right_inj.1
+protected theorem mul_left_cancel (h : IsUnit a) : a * b = a * c → b = c := h.mul_right_inj.1
 
 @[to_additive]
-protected theorem mul_right_cancel (h : IsUnit b) : a * b = c * b → a = c :=
-  h.mul_left_inj.1
+protected theorem mul_right_cancel (h : IsUnit b) : a * b = c * b → a = c := h.mul_left_inj.1
 
 @[to_additive]
-theorem mul_eq_right (h : IsUnit b) : a * b = b ↔ a = 1 := calc
-  a * b = b ↔ a * b = 1 * b := by rw [one_mul]
+theorem mul_eq_right (h : IsUnit b) : a * b = b ↔ a = 1 :=
+  calc
+    a * b = b
+      ↔ a * b = 1 * b := by rw [one_mul]
     _ ↔ a = 1 := by rw [h.mul_left_inj]
 
 @[to_additive]
-theorem mul_eq_left (h : IsUnit a) : a * b = a ↔ b = 1 := calc
-  a * b = a ↔ a * b = a * 1 := by rw [mul_one]
+theorem mul_eq_left (h : IsUnit a) : a * b = a ↔ b = 1 :=
+  calc
+    a * b = a
+      ↔ a * b = a * 1 := by rw [mul_one]
     _ ↔ b = 1 := by rw [h.mul_right_inj]
 
 @[to_additive]
-protected theorem mul_right_injective (h : IsUnit a) : Injective (a * ·) :=
-  fun _ _ => h.mul_left_cancel
+protected theorem mul_right_injective (h : IsUnit a) : Injective (a * ·) := fun _ _ =>
+  h.mul_left_cancel
 
 @[to_additive]
-protected theorem mul_left_injective (h : IsUnit b) : Injective (· * b) :=
-  fun _ _ => h.mul_right_cancel
+protected theorem mul_left_injective (h : IsUnit b) : Injective (· * b) := fun _ _ =>
+  h.mul_right_cancel
 
 @[to_additive]
-theorem isUnit_iff_mulLeft_bijective {a : M} :
-    IsUnit a ↔ Function.Bijective (a * ·) :=
-  ⟨fun h ↦ ⟨h.mul_right_injective, fun y ↦ ⟨h.unit⁻¹ * y, by simp [← mul_assoc]⟩⟩, fun h ↦
-    ⟨⟨a, _, (h.2 1).choose_spec, h.1
-      (by simpa [mul_assoc] using congr_arg (· * a) (h.2 1).choose_spec)⟩, rfl⟩⟩
+theorem isUnit_iff_mulLeft_bijective {a : M} : IsUnit a ↔ Function.Bijective (a * ·) := ⟨
+  fun h ↦ ⟨h.mul_right_injective, fun y ↦ ⟨h.unit⁻¹ * y, by simp [← mul_assoc]⟩⟩,
+  fun h ↦ ⟨
+    ⟨
+      a,
+      _,
+      (h.2 1).choose_spec,
+      h.1 (by simpa [mul_assoc] using congr_arg (· * a) (h.2 1).choose_spec)
+    ⟩,
+    rfl
+  ⟩
+⟩
 
 @[to_additive]
-theorem isUnit_iff_mulRight_bijective {a : M} :
-    IsUnit a ↔ Function.Bijective (· * a) :=
-  ⟨fun h ↦ ⟨h.mul_left_injective, fun y ↦ ⟨y * h.unit⁻¹, by simp [mul_assoc]⟩⟩,
-    fun h ↦ ⟨⟨a, _, h.1 (by simpa [mul_assoc] using congr_arg (a * ·) (h.2 1).choose_spec),
-      (h.2 1).choose_spec⟩, rfl⟩⟩
+theorem isUnit_iff_mulRight_bijective {a : M} : IsUnit a ↔ Function.Bijective (· * a) := ⟨
+  fun h ↦ ⟨h.mul_left_injective, fun y ↦ ⟨y * h.unit⁻¹, by simp [mul_assoc]⟩⟩,
+  fun h ↦ ⟨
+    ⟨
+      a,
+      _,
+      h.1 (by simpa [mul_assoc] using congr_arg (a * ·) (h.2 1).choose_spec),
+      (h.2 1).choose_spec
+    ⟩,
+    rfl
+  ⟩
+⟩
 
 end Monoid
 
@@ -342,11 +354,9 @@ protected lemma div_mul_cancel (h : IsUnit b) (a : α) : a / b * b = a := by
 protected lemma mul_div_cancel_right (h : IsUnit b) (a : α) : a * b / b = a := by
   rw [div_eq_mul_inv, h.mul_inv_cancel_right]
 
-@[to_additive]
-protected lemma mul_one_div_cancel (h : IsUnit a) : a * (1 / a) = 1 := by simp [h]
+@[to_additive] protected lemma mul_one_div_cancel (h : IsUnit a) : a * (1 / a) = 1 := by simp [h]
 
-@[to_additive]
-protected lemma one_div_mul_cancel (h : IsUnit a) : 1 / a * a = 1 := by simp [h]
+@[to_additive] protected lemma one_div_mul_cancel (h : IsUnit a) : 1 / a * a = 1 := by simp [h]
 
 @[to_additive]
 protected lemma div_left_inj (h : IsUnit c) : a / c = b / c ↔ a = b := by
@@ -362,12 +372,10 @@ protected lemma eq_div_iff (h : IsUnit c) : a = b / c ↔ a * c = b := by
   rw [div_eq_mul_inv, h.eq_mul_inv_iff_mul_eq]
 
 @[to_additive]
-protected lemma div_eq_of_eq_mul (h : IsUnit b) : a = c * b → a / b = c :=
-  h.div_eq_iff.2
+protected lemma div_eq_of_eq_mul (h : IsUnit b) : a = c * b → a / b = c := h.div_eq_iff.2
 
 @[to_additive]
-protected lemma eq_div_of_mul_eq (h : IsUnit c) : a * c = b → a = b / c :=
-  h.eq_div_iff.2
+protected lemma eq_div_of_mul_eq (h : IsUnit c) : a * c = b → a = b / c := h.eq_div_iff.2
 
 @[to_additive]
 protected lemma div_eq_one_iff_eq (h : IsUnit b) : a / b = 1 ↔ a = b :=
@@ -398,24 +406,24 @@ protected lemma mul_div_cancel (h : IsUnit a) (b : α) : a * (b / a) = b := by
   rw [mul_comm, h.div_mul_cancel]
 
 @[to_additive]
-protected lemma mul_eq_mul_of_div_eq_div (hb : IsUnit b) (hd : IsUnit d)
-    (a c : α) (h : a / b = c / d) : a * d = c * b := by
+protected lemma mul_eq_mul_of_div_eq_div
+    (hb : IsUnit b) (hd : IsUnit d) (a c : α) (h : a / b = c / d)
+    : a * d = c * b := by
   rw [← mul_one a, ← hb.div_self, ← mul_comm_div, h, div_mul_eq_mul_div, hd.div_mul_cancel]
 
 @[to_additive]
-protected lemma div_eq_div_iff (hb : IsUnit b) (hd : IsUnit d) :
-    a / b = c / d ↔ a * d = c * b := by
+protected lemma div_eq_div_iff (hb : IsUnit b) (hd : IsUnit d) : a / b = c / d ↔ a * d = c * b := by
   rw [← (hb.mul hd).mul_left_inj, ← mul_assoc, hb.div_mul_cancel, ← mul_assoc, mul_right_comm,
     hd.div_mul_cancel]
 
 @[to_additive]
-protected lemma mul_inv_eq_mul_inv_iff (hb : IsUnit b) (hd : IsUnit d) :
-    a * b⁻¹ = c * d⁻¹ ↔ a * d = c * b := by
+protected lemma mul_inv_eq_mul_inv_iff (hb : IsUnit b) (hd : IsUnit d)
+    : a * b⁻¹ = c * d⁻¹ ↔ a * d = c * b := by
   rw [← div_eq_mul_inv, ← div_eq_mul_inv, hb.div_eq_div_iff hd]
 
 @[to_additive]
-protected lemma inv_mul_eq_inv_mul_iff (hb : IsUnit b) (hd : IsUnit d) :
-    b⁻¹ * a = d⁻¹ * c ↔ a * d = c * b := by
+protected lemma inv_mul_eq_inv_mul_iff (hb : IsUnit b) (hd : IsUnit d)
+    : b⁻¹ * a = d⁻¹ * c ↔ a * d = c * b := by
   rw [← div_eq_inv_mul, ← div_eq_inv_mul, hb.div_eq_div_iff hd]
 
 @[to_additive]

@@ -37,65 +37,60 @@ variable {α : Type*}
 
 namespace Nonneg
 
-instance isOrderedAddMonoid [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α] :
-    IsOrderedAddMonoid (Nonneg α) :=
+instance isOrderedAddMonoid [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α]
+    : IsOrderedAddMonoid (Nonneg α) :=
   Function.Injective.isOrderedAddMonoid Subtype.val Nonneg.coe_add .rfl
 
-instance isOrderedCancelAddMonoid [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α] :
-    IsOrderedCancelAddMonoid (Nonneg α) :=
+instance isOrderedCancelAddMonoid [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α]
+    : IsOrderedCancelAddMonoid (Nonneg α) :=
   Function.Injective.isOrderedCancelAddMonoid _ Nonneg.coe_add .rfl
 
-instance isOrderedRing [Semiring α] [PartialOrder α] [IsOrderedRing α] :
-    IsOrderedRing (Nonneg α) :=
+instance isOrderedRing [Semiring α] [PartialOrder α] [IsOrderedRing α] : IsOrderedRing (Nonneg α) :=
   Function.Injective.isOrderedRing Subtype.val Nonneg.coe_zero Nonneg.coe_one Nonneg.coe_add
     Nonneg.coe_mul .rfl
 
-instance isStrictOrderedRing [Semiring α] [PartialOrder α] [IsStrictOrderedRing α] :
-    IsStrictOrderedRing (Nonneg α) :=
+instance isStrictOrderedRing [Semiring α] [PartialOrder α] [IsStrictOrderedRing α]
+    : IsStrictOrderedRing (Nonneg α) :=
   Function.Injective.isStrictOrderedRing Subtype.val Nonneg.coe_zero Nonneg.coe_one Nonneg.coe_add
     Nonneg.coe_mul .rfl .rfl
 
-instance existsAddOfLE [Semiring α] [PartialOrder α] [IsStrictOrderedRing α] [ExistsAddOfLE α] :
-    ExistsAddOfLE (Nonneg α) :=
-  ⟨fun {a b} h ↦ by
-    rw [← Subtype.coe_le_coe] at h
-    obtain ⟨c, hc⟩ := exists_add_of_le h
-    refine ⟨⟨c, ?_⟩, by simp [Subtype.ext_iff, hc]⟩
-    rw [← add_zero a.val, hc] at h
-    exact le_of_add_le_add_left h⟩
+instance existsAddOfLE [Semiring α] [PartialOrder α] [IsStrictOrderedRing α] [ExistsAddOfLE α]
+    : ExistsAddOfLE (Nonneg α) := ⟨fun {a b} h ↦ by
+  rw [← Subtype.coe_le_coe] at h
+  obtain ⟨c, hc⟩ := exists_add_of_le h
+  refine ⟨⟨c, ?_⟩, by simp [Subtype.ext_iff, hc]⟩
+  rw [← add_zero a.val, hc] at h
+  exact le_of_add_le_add_left h⟩
 
-instance nontrivial [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    Nontrivial (Nonneg α) :=
+instance nontrivial [Semiring α] [LinearOrder α] [IsStrictOrderedRing α] : Nontrivial (Nonneg α) :=
   ⟨⟨0, 1, fun h => zero_ne_one congr($(h).val)⟩⟩
 
-instance [Nontrivial α] [AddGroup α] [LinearOrder α] [AddLeftMono α] :
-    Nontrivial (Nonneg α) := by
+instance [Nontrivial α] [AddGroup α] [LinearOrder α] [AddLeftMono α] : Nontrivial (Nonneg α) := by
   have ⟨a, ha⟩ := exists_ne (0 : α)
   obtain lt | lt := ha.lt_or_gt
   · exact ⟨0, ⟨-a, neg_nonneg.mpr lt.le⟩, Subtype.coe_ne_coe.mp (neg_ne_zero.mpr ha).symm⟩
   · exact ⟨0, ⟨a, lt.le⟩, Subtype.coe_ne_coe.mp ha.symm⟩
 
-instance linearOrderedCommMonoidWithZero [CommSemiring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    LinearOrderedCommMonoidWithZero (Nonneg α) where
+instance linearOrderedCommMonoidWithZero [CommSemiring α] [LinearOrder α] [IsStrictOrderedRing α]
+    : LinearOrderedCommMonoidWithZero (Nonneg α) where
   isBot_zero a := a.2
 
-instance canonicallyOrderedAdd [Ring α] [PartialOrder α] [IsOrderedRing α] :
-    CanonicallyOrderedAdd (Nonneg α) where
+instance canonicallyOrderedAdd [Ring α] [PartialOrder α] [IsOrderedRing α]
+    : CanonicallyOrderedAdd (Nonneg α) where
   le_add_self _ b := le_add_of_nonneg_left b.2
   le_self_add _ b := le_add_of_nonneg_right b.2
   exists_add_of_le := fun {a b} h =>
     ⟨⟨b - a, sub_nonneg_of_le h⟩, Subtype.ext (add_sub_cancel _ _).symm⟩
 
-instance noZeroDivisors [Semiring α] [PartialOrder α] [IsOrderedRing α] [NoZeroDivisors α] :
-    NoZeroDivisors (Nonneg α) :=
-  { eq_zero_or_eq_zero_of_mul_eq_zero := by
-      rintro ⟨a, ha⟩ ⟨b, hb⟩
-      simp only [mk_mul_mk, mk_eq_zero, mul_eq_zero, imp_self] }
+instance noZeroDivisors [Semiring α] [PartialOrder α] [IsOrderedRing α] [NoZeroDivisors α]
+    : NoZeroDivisors (Nonneg α) := {
+  eq_zero_or_eq_zero_of_mul_eq_zero := by
+    rintro ⟨a, ha⟩ ⟨b, hb⟩
+    simp only [mk_mul_mk, mk_eq_zero, mul_eq_zero, imp_self]
+}
 
-instance orderedSub [Ring α] [LinearOrder α] [IsStrictOrderedRing α] :
-    OrderedSub (Nonneg α) :=
-  ⟨by
-    rintro ⟨a, ha⟩ ⟨b, hb⟩ ⟨c, hc⟩
-    simp only [sub_le_iff_le_add, Subtype.mk_le_mk, mk_sub_mk, mk_add_mk, toNonneg_le]⟩
+instance orderedSub [Ring α] [LinearOrder α] [IsStrictOrderedRing α] : OrderedSub (Nonneg α) := ⟨by
+  rintro ⟨a, ha⟩ ⟨b, hb⟩ ⟨c, hc⟩
+  simp only [sub_le_iff_le_add, Subtype.mk_le_mk, mk_sub_mk, mk_add_mk, toNonneg_le]⟩
 
 end Nonneg

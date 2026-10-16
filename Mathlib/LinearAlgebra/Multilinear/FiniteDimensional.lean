@@ -22,7 +22,6 @@ there.
 
 public section
 
-
 namespace MultilinearMap
 
 variable {ι R M₂ : Type*} {M₁ : ι → Type*}
@@ -30,23 +29,25 @@ variable [Finite ι]
 variable [CommRing R] [AddCommGroup M₂] [Module R M₂]
 variable [Module.Finite R M₂] [Module.Free R M₂]
 
-private theorem free_and_finite_fin (n : ℕ) (N : Fin n → Type*) [∀ i, AddCommGroup (N i)]
-    [∀ i, Module R (N i)] [∀ i, Module.Finite R (N i)] [∀ i, Module.Free R (N i)] :
-    Module.Free R (MultilinearMap R N M₂) ∧ Module.Finite R (MultilinearMap R N M₂) := by
+private theorem free_and_finite_fin
+    (n : ℕ) (N : Fin n → Type*) [∀ i, AddCommGroup (N i)] [∀ i, Module R (N i)]
+    [∀ i, Module.Finite R (N i)] [∀ i, Module.Free R (N i)]
+    : Module.Free R (MultilinearMap R N M₂) ∧ Module.Finite R (MultilinearMap R N M₂) := by
   induction n with
   | zero =>
     have : IsEmpty (Fin Nat.zero) := inferInstanceAs (IsEmpty (Fin 0))
-    exact
-      ⟨Module.Free.of_equiv (constLinearEquivOfIsEmpty R R N M₂),
-        Module.Finite.equiv (constLinearEquivOfIsEmpty R R N M₂)⟩
+    exact ⟨
+      Module.Free.of_equiv (constLinearEquivOfIsEmpty R R N M₂),
+      Module.Finite.equiv (constLinearEquivOfIsEmpty R R N M₂)
+    ⟩
   | succ n ih =>
-    suffices
-      Module.Free R (N 0 →ₗ[R] MultilinearMap R (fun i : Fin n => N i.succ) M₂) ∧
-        Module.Finite R (N 0 →ₗ[R] MultilinearMap R (fun i : Fin n => N i.succ) M₂) by
+    suffices Module.Free R (N 0 →ₗ[R] MultilinearMap R (fun i : Fin n => N i.succ) M₂)
+        ∧ Module.Finite R (N 0 →ₗ[R] MultilinearMap R (fun i : Fin n => N i.succ) M₂) by
       cases this
-      exact
-        ⟨Module.Free.of_equiv (multilinearCurryLeftEquiv R N M₂).symm,
-          Module.Finite.equiv (multilinearCurryLeftEquiv R N M₂).symm⟩
+      exact ⟨
+        Module.Free.of_equiv (multilinearCurryLeftEquiv R N M₂).symm,
+        Module.Finite.equiv (multilinearCurryLeftEquiv R N M₂).symm
+      ⟩
     cases ih fun i => N i.succ
     exact ⟨Module.Free.linearMap _ _ _ _, Module.Finite.linearMap _ _ _ _⟩
 
@@ -54,11 +55,11 @@ variable [∀ i, AddCommGroup (M₁ i)] [∀ i, Module R (M₁ i)]
 variable [∀ i, Module.Finite R (M₁ i)] [∀ i, Module.Free R (M₁ i)]
 
 -- the induction requires us to show both at once
-private theorem free_and_finite :
-    Module.Free R (MultilinearMap R M₁ M₂) ∧ Module.Finite R (MultilinearMap R M₁ M₂) := by
+private theorem free_and_finite
+    : Module.Free R (MultilinearMap R M₁ M₂) ∧ Module.Finite R (MultilinearMap R M₁ M₂) := by
   cases nonempty_fintype ι
-  have := @free_and_finite_fin R M₂ _ _ _ _ _ (Fintype.card ι)
-    (fun x => M₁ ((Fintype.equivFin ι).symm x))
+  have :=
+    @free_and_finite_fin R M₂ _ _ _ _ _ (Fintype.card ι) (fun x => M₁ ((Fintype.equivFin ι).symm x))
   obtain ⟨l, r⟩ := this
   have e := domDomCongrLinearEquiv' R R M₁ M₂ (Fintype.equivFin ι)
   exact ⟨Module.Free.of_equiv e.symm, Module.Finite.equiv e.symm⟩

@@ -6,7 +6,6 @@ Authors: Sophie Morel
 module
 
 public import Mathlib.Algebra.Category.Grp.Colimits
-
 import Mathlib.Algebra.Module.CharacterModule
 
 /-!
@@ -36,8 +35,8 @@ set_option backward.isDefEq.respectTransparency false in
 If `c` is a cocone of `F` such that `Quot.desc F c` is bijective, then `c` is a colimit
 cocone of `F`.
 -/
-lemma isColimit_iff_bijective_desc [DecidableEq J] :
-     Nonempty (IsColimit c) ↔ Function.Bijective (Quot.desc F c) := by
+lemma isColimit_iff_bijective_desc [DecidableEq J]
+    : Nonempty (IsColimit c) ↔ Function.Bijective (Quot.desc F c) := by
   refine ⟨fun ⟨hc⟩ => ?_, fun h ↦ Nonempty.intro (isColimit_of_bijective_desc F c h)⟩
   change Function.Bijective (Quot.desc F c).toIntLinearMap
   rw [← CharacterModule.dual_bijective_iff_bijective]
@@ -70,8 +69,14 @@ lemma isColimit_iff_bijective_desc [DecidableEq J] :
 A functor `F : J ⥤ AddCommGrpCat.{w}` has a colimit if and only if `Colimits.Quot F` is
 `w`-small.
 -/
-lemma hasColimit_iff_small_quot [DecidableEq J] : HasColimit F ↔ Small.{w} (Quot F) :=
-  ⟨fun _ ↦ Small.mk ⟨_, ⟨(Equiv.ofBijective _ ((isColimit_iff_bijective_desc (colimit.cocone F)).mp
-    ⟨colimit.isColimit _⟩))⟩⟩, hasColimit_of_small_quot F⟩
+lemma hasColimit_iff_small_quot [DecidableEq J] : HasColimit F ↔ Small.{w} (Quot F) := ⟨
+  fun _ ↦
+    Small.mk ⟨
+      _,
+      ⟨(Equiv.ofBijective _
+        ((isColimit_iff_bijective_desc (colimit.cocone F)).mp ⟨colimit.isColimit _⟩))⟩
+    ⟩,
+  hasColimit_of_small_quot F
+⟩
 
 end AddCommGrpCat

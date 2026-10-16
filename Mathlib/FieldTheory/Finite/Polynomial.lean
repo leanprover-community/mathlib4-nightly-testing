@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Expand
 public import Mathlib.FieldTheory.Finite.Basic
-
 import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
@@ -17,15 +16,16 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 @[expose] public section
 
-
 namespace MvPolynomial
 
 variable {σ : Type*}
 
-/-- A polynomial over the integers is divisible by `n : ℕ`
-if and only if it is zero over `ZMod n`. -/
-theorem C_dvd_iff_zmod (n : ℕ) (φ : MvPolynomial σ ℤ) :
-    C (n : ℤ) ∣ φ ↔ map (Int.castRingHom (ZMod n)) φ = 0 :=
+/--
+A polynomial over the integers is divisible by `n : ℕ`
+if and only if it is zero over `ZMod n`.
+-/
+theorem C_dvd_iff_zmod (n : ℕ) (φ : MvPolynomial σ ℤ)
+    : C (n : ℤ) ∣ φ ↔ map (Int.castRingHom (ZMod n)) φ = 0 :=
   C_dvd_iff_map_hom_eq_zero _ _ (CharP.intCast_eq_zero_iff (ZMod n) n) _
 
 section frobenius
@@ -37,10 +37,10 @@ theorem frobenius_zmod (f : MvPolynomial σ (ZMod p)) : frobenius _ p f = expand
   · intro a; rw [expand_C, frobenius_def, ← C_pow, ZMod.pow_card]
   · simp only [map_add]; intro _ _ hf hg; rw [hf, hg]
   · simp only [expand_X, map_mul]
-    intro _ _ hf; rw [hf, frobenius_def]
+    intro _ _ hf
+    rw [hf, frobenius_def]
 
-theorem expand_zmod (f : MvPolynomial σ (ZMod p)) : expand p f = f ^ p :=
-  (frobenius_zmod _).symm
+theorem expand_zmod (f : MvPolynomial σ (ZMod p)) : expand p f = f ^ p := (frobenius_zmod _).symm
 
 end frobenius
 
@@ -72,8 +72,8 @@ theorem eval_indicator_apply_eq_one (a : σ → K) : eval a (indicator a) = 1 :=
   simp only [indicator, map_prod, map_sub, map_one, map_pow, eval_X, eval_C, sub_self,
     zero_pow this.ne', sub_zero, Finset.prod_const_one]
 
-theorem degrees_indicator (c : σ → K) :
-    degrees (indicator c) ≤ ∑ s : σ, (Fintype.card K - 1) • {s} := by
+theorem degrees_indicator (c : σ → K)
+    : degrees (indicator c) ≤ ∑ s : σ, (Fintype.card K - 1) • {s} := by
   rw [indicator]
   classical
   refine degrees_prod_le.trans <| Finset.sum_le_sum fun s _ ↦ degrees_sub_le.trans ?_
@@ -83,8 +83,8 @@ theorem degrees_indicator (c : σ → K) :
   rw [degrees_C, Multiset.union_zero]
   exact degrees_X' _
 
-theorem indicator_mem_restrictDegree (c : σ → K) :
-    indicator c ∈ restrictDegree σ K (Fintype.card K - 1) := by
+theorem indicator_mem_restrictDegree (c : σ → K)
+    : indicator c ∈ restrictDegree σ K (Fintype.card K - 1) := by
   classical
   rw [mem_restrictDegree_iff_sup, indicator]
   intro n
@@ -133,8 +133,8 @@ theorem map_restrict_dom_evalₗ : (restrictDegree σ K (Fintype.card K - 1)).ma
   · exact sum_mem fun c _ => smul_mem _ _ (indicator_mem_restrictDegree _)
   · ext n
     simp only [evalₗ_apply, map_sum, smul_eval]
-    rw [Finset.sum_eq_single n] <;>
-      aesop (add simp [eval_indicator_apply_eq_zero, eval_indicator_apply_eq_one, eq_comm])
+    rw [Finset.sum_eq_single n]
+      <;> aesop (add simp [eval_indicator_apply_eq_zero, eval_indicator_apply_eq_one, eq_comm])
 
 end
 
@@ -151,10 +151,11 @@ universe u
 
 variable (σ : Type u) (K : Type u) [Fintype K]
 
-/-- The submodule of multivariate polynomials whose degree of each variable is strictly less
-than the cardinality of K. -/
-def R [CommRing K] : Type u :=
-  restrictDegree σ K (Fintype.card K - 1)
+/--
+The submodule of multivariate polynomials whose degree of each variable is strictly less
+than the cardinality of K.
+-/
+def R [CommRing K] : Type u := restrictDegree σ K (Fintype.card K - 1)
 -- The `AddCommGroup, Module K, Inhabited` instances should be constructed by a deriving handler.
 
 noncomputable instance [CommRing K] : AddCommGroup (R σ K) :=
@@ -172,8 +173,8 @@ noncomputable def evalᵢ [CommRing K] : R σ K →ₗ[K] (σ → K) → K :=
 
 -- TODO: would be nice to replace this by suitable decidability assumptions
 open scoped Classical in
-noncomputable instance decidableRestrictDegree (m : ℕ) :
-    DecidablePred (· ∈ { n : σ →₀ ℕ | ∀ i, n i ≤ m }) := by
+noncomputable instance decidableRestrictDegree (m : ℕ)
+    : DecidablePred (· ∈ { n : σ →₀ ℕ | ∀ i, n i ≤ m }) := by
   simp only [Set.mem_ofPred_eq]; infer_instance
 
 variable [Field K]
@@ -181,16 +182,16 @@ variable [Field K]
 open scoped Classical in
 theorem rank_R [Fintype σ] : Module.rank K (R σ K) = Fintype.card (σ → K) :=
   calc
-    Module.rank K (R σ K) =
-        Module.rank K (↥{ s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 } →₀ K) :=
-      LinearEquiv.rank_eq
-        (AddMonoidAlgebra.supportedEquivFinsupp { s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 })
-    _ = #{ s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 } := by rw [rank_finsupp_self']
-    _ = #{ s : σ → ℕ | ∀ n : σ, s n < Fintype.card K } := by
+    Module.rank K (R σ K)
+        = Module.rank K (↥ { s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 } →₀ K) :=
+      LinearEquiv.rank_eq (AddMonoidAlgebra.supportedEquivFinsupp
+        { s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 })
+    _ = # { s : σ →₀ ℕ | ∀ n : σ, s n ≤ Fintype.card K - 1 } := by rw [rank_finsupp_self']
+    _ = # { s : σ → ℕ | ∀ n : σ, s n < Fintype.card K } := by
       refine Quotient.sound ⟨Equiv.subtypeEquiv Finsupp.equivFunOnFinite fun f => ?_⟩
       refine forall_congr' fun n => le_tsub_iff_right ?_
       exact Fintype.card_pos_iff.2 ⟨0⟩
-    _ = #(σ → { n // n < Fintype.card K }) :=
+    _ = #(σ → {n // n < Fintype.card K}) :=
       (@Equiv.subtypePiEquivPi σ (fun _ => ℕ) fun _ n => n < Fintype.card K).cardinal_eq
     _ = #(σ → Fin (Fintype.card K)) :=
       (Equiv.arrowCongr (Equiv.refl σ) Fin.equivSubtype.symm).cardinal_eq
@@ -217,8 +218,11 @@ theorem ker_evalₗ [Finite σ] : ker (evalᵢ σ K) = ⊥ := by
   classical
   rw [Module.finrank_fintype_fun_eq_card, finrank_R]
 
-theorem eq_zero_of_eval_eq_zero [Finite σ] (p : MvPolynomial σ K) (h : ∀ v : σ → K, eval v p = 0)
-    (hp : p ∈ restrictDegree σ K (Fintype.card K - 1)) : p = 0 :=
+theorem eq_zero_of_eval_eq_zero
+    [Finite σ]
+    (p : MvPolynomial σ K)
+    (h : ∀ v : σ → K, eval v p = 0) (hp : p ∈ restrictDegree σ K (Fintype.card K - 1))
+    : p = 0 :=
   let p' : R σ K := ⟨p, hp⟩
   have : p' ∈ ker (evalᵢ σ K) := funext h
   show p'.1 = (0 : R σ K).1 from congr_arg _ <| by rwa [ker_evalₗ, mem_bot] at this

@@ -20,7 +20,6 @@ as the category of types.
 
 public section
 
-
 universe v u
 
 namespace CategoryTheory
@@ -47,10 +46,11 @@ section
 
 attribute [local instance] isIso_of_mono_of_epi
 
-instance balanced_opposite [Balanced C] : Balanced Cᵒᵖ :=
-  { isIso_of_mono_of_epi := fun f fmono fepi => by
-      rw [← Quiver.Hom.op_unop f]
-      exact isIso_of_op _ }
+instance balanced_opposite [Balanced C] : Balanced Cᵒᵖ := {
+  isIso_of_mono_of_epi := fun f fmono fepi => by
+    rw [← Quiver.Hom.op_unop f]
+    exact isIso_of_op _
+}
 
 end
 

@@ -24,7 +24,6 @@ Binet's formula.
 
 @[expose] public section
 
-
 noncomputable section
 
 open Polynomial
@@ -43,17 +42,14 @@ abbrev goldenConj : ℝ := (1 - √5) / 2
 open scoped goldenRatio
 
 /-- The inverse of the golden ratio is the opposite of its conjugate. -/
-theorem inv_goldenRatio : φ⁻¹ = -ψ := by
-  grind
+theorem inv_goldenRatio : φ⁻¹ = -ψ := by grind
 
 /-- The opposite of the golden ratio is the inverse of its conjugate. -/
 theorem inv_goldenConj : ψ⁻¹ = -φ := by
   rw [inv_eq_iff_eq_inv, ← neg_inv, ← neg_eq_iff_eq_neg]
   exact inv_goldenRatio.symm
 
-@[simp]
-theorem goldenRatio_mul_goldenConj : φ * ψ = -1 := by
-  grind
+@[simp] theorem goldenRatio_mul_goldenConj : φ * ψ = -1 := by grind
 
 @[simp]
 theorem goldenConj_mul_goldenRatio : ψ * φ = -1 := by
@@ -65,45 +61,37 @@ theorem goldenRatio_add_goldenConj : φ + ψ = 1 := by
   rw [goldenRatio, goldenConj]
   ring
 
-theorem one_sub_goldenConj : 1 - φ = ψ := by
-  linarith [goldenRatio_add_goldenConj]
+theorem one_sub_goldenConj : 1 - φ = ψ := by linarith [goldenRatio_add_goldenConj]
 
-theorem one_sub_goldenRatio : 1 - ψ = φ := by
-  linarith [goldenRatio_add_goldenConj]
+theorem one_sub_goldenRatio : 1 - ψ = φ := by linarith [goldenRatio_add_goldenConj]
 
-@[simp]
-theorem goldenRatio_sub_goldenConj : φ - ψ = √5 := by ring
+@[simp] theorem goldenRatio_sub_goldenConj : φ - ψ = √5 := by ring
 
-theorem goldenRatio_pow_sub_goldenRatio_pow (n : ℕ) : φ ^ (n + 2) - φ ^ (n + 1) = φ ^ n := by
-  grind
+theorem goldenRatio_pow_sub_goldenRatio_pow (n : ℕ) : φ ^ (n + 2) - φ ^ (n + 1) = φ ^ n := by grind
 
 @[simp 1200]
-theorem goldenRatio_sq : φ ^ 2 = φ + 1 := by
-  grind
+theorem goldenRatio_sq : φ ^ 2 = φ + 1 := by grind
 
 @[simp 1200]
-theorem goldenConj_sq : ψ ^ 2 = ψ + 1 := by
-  grind
+theorem goldenConj_sq : ψ ^ 2 = ψ + 1 := by grind
 
-theorem goldenRatio_pos : 0 < φ :=
-  mul_pos (by apply add_pos <;> simp) <| inv_pos.2 zero_lt_two
+theorem goldenRatio_pos : 0 < φ := mul_pos (by apply add_pos <;> simp) <| inv_pos.2 zero_lt_two
 
-theorem goldenRatio_ne_zero : φ ≠ 0 :=
-  ne_of_gt goldenRatio_pos
+theorem goldenRatio_ne_zero : φ ≠ 0 := ne_of_gt goldenRatio_pos
 
 theorem one_lt_goldenRatio : 1 < φ := by
   refine lt_of_mul_lt_mul_left ?_ (le_of_lt goldenRatio_pos)
   simp [← sq, zero_lt_one]
 
-theorem goldenRatio_lt_two : φ < 2 := by calc
-  (1 + √5) / 2 < (1 + 3) / 2 := by gcongr; rw [sqrt_lt'] <;> norm_num
-  _ = 2 := by norm_num
+theorem goldenRatio_lt_two : φ < 2 := by
+  calc
+    (1 + √5) / 2
+      < (1 + 3) / 2 := by gcongr; rw [sqrt_lt'] <;> norm_num
+    _ = 2 := by norm_num
 
-theorem goldenConj_neg : ψ < 0 := by
-  linarith [one_sub_goldenConj, one_lt_goldenRatio]
+theorem goldenConj_neg : ψ < 0 := by linarith [one_sub_goldenConj, one_lt_goldenRatio]
 
-theorem goldenConj_ne_zero : ψ ≠ 0 :=
-  ne_of_lt goldenConj_neg
+theorem goldenConj_ne_zero : ψ ≠ 0 := ne_of_lt goldenConj_neg
 
 theorem neg_one_lt_goldenConj : -1 < ψ := by
   rw [neg_lt, ← inv_goldenRatio]
@@ -112,7 +100,6 @@ theorem neg_one_lt_goldenConj : -1 < ψ := by
 /-!
 ## Irrationality
 -/
-
 
 /-- The golden ratio is irrational. -/
 theorem goldenRatio_irrational : Irrational φ := by
@@ -148,8 +135,8 @@ section Poly
 open Polynomial
 
 /-- The characteristic polynomial of `fibRec` is `X² - (X + 1)`. -/
-theorem fibRec_charPoly_eq {β : Type*} [CommRing β] :
-    fibRec.charPoly = X ^ 2 - (X + (1 : β[X])) := by
+theorem fibRec_charPoly_eq {β : Type*} [CommRing β]
+    : fibRec.charPoly = X ^ 2 - (X + (1 : β[X])) := by
   rw [fibRec, LinearRecurrence.charPoly]
   simp [Finset.sum_fin_eq_sum_range, Finset.sum_range_succ', ← smul_X_eq_monomial]
 
@@ -176,8 +163,7 @@ theorem geom_goldenConj_isSol_fibRec : fibRec.IsSolution (ψ ^ ·) := by
 end Fibrec
 
 /-- Binet's formula as a function equality. -/
-theorem coe_fib_eq' :
-    (fun n => Nat.fib n : ℕ → ℝ) = fun n => (φ ^ n - ψ ^ n) / √5 := by
+theorem coe_fib_eq' : (fun n => Nat.fib n : ℕ → ℝ) = fun n => (φ ^ n - ψ ^ n) / √5 := by
   rw [fibRec.eq_iff_eqOn_range_order]
   · intro i hi
     norm_cast at hi
@@ -213,25 +199,31 @@ theorem fib_succ_sub_goldenRatio_mul_fib (n : ℕ) : Nat.fib (n + 1) - φ * Nat.
   have nz : √5 ≠ 0 := by simp
   rw [← (mul_inv_cancel₀ nz).symm, one_mul]
 
-/-- Relationship between the Fibonacci Sequence, the conjugate of the golden ratio,
-and its exponents. -/
+/--
+Relationship between the Fibonacci Sequence, the conjugate of the golden ratio,
+and its exponents.
+-/
 lemma goldenConj_mul_fib_succ_add_fib (n : ℕ) : ψ * Nat.fib (n + 1) + Nat.fib n = ψ ^ (n + 1) := by
   grind [fib_succ_sub_goldenRatio_mul_fib]
 
 /-- Relationship between the Fibonacci Sequence, the golden ratio, and its exponents. -/
 lemma goldenRatio_mul_fib_succ_add_fib (n : ℕ) : φ * Nat.fib (n + 1) + Nat.fib n = φ ^ (n + 1) := by
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     calc
       _ = φ * (Nat.fib n) + φ ^ 2 * (Nat.fib (n + 1)) := by
-        simp only [Nat.fib_add_one (Nat.succ_ne_zero n), Nat.succ_sub_succ_eq_sub,
-          Nat.cast_add, goldenRatio_sq, Nat.sub_zero]; ring
+        simp only [Nat.fib_add_one (Nat.succ_ne_zero n), Nat.succ_sub_succ_eq_sub, Nat.cast_add,
+          goldenRatio_sq, Nat.sub_zero]
+        ring
       _ = φ * ((Nat.fib n) + φ * (Nat.fib (n + 1))) := by ring
       _ = φ ^ (n + 2) := by rw [add_comm, ih]; ring
 
-/-- Relationship between the Fibonacci Sequence, exponents of the golden ratio,
-and its conjugate. -/
+/--
+Relationship between the Fibonacci Sequence, exponents of the golden ratio,
+and its conjugate.
+-/
 theorem fib_succ_sub_goldenConj_mul_fib (n : ℕ) : Nat.fib (n + 1) - ψ * Nat.fib n = φ ^ n := by
   grind [goldenRatio_mul_fib_succ_add_fib]
 

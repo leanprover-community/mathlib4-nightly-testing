@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Module.Shrink
 public import Mathlib.Algebra.Module.ULift
 public import Mathlib.Data.Finsupp.Fintype
 public import Mathlib.LinearAlgebra.Basis.Basic
-
 import Mathlib.Logic.Small.Basic
 
 /-!
@@ -50,15 +49,18 @@ lemma Free.exists_set [Free R M] : ∃ S : Set M, Nonempty (Basis S R M) :=
 theorem free_iff_set : Free R M ↔ ∃ S : Set M, Nonempty (Basis S R M) :=
   ⟨fun _ ↦ Free.exists_set .., fun ⟨S, hS⟩ ↦ ⟨nonempty_sigma.2 ⟨S, hS⟩⟩⟩
 
-/-- If `M` fits in universe `w`, then freeness is equivalent to existence of a basis in that
+/--
+If `M` fits in universe `w`, then freeness is equivalent to existence of a basis in that
 universe.
 
 Note that if `M` does not fit in `w`, the reverse direction of this implication is still true as
-`Module.Free.of_basis`. -/
+`Module.Free.of_basis`.
+-/
 theorem free_def [Small.{w, v} M] : Free R M ↔ ∃ I : Type w, Nonempty (Basis I R M) where
-  mp h :=
-    ⟨Shrink (Set.range h.exists_basis.some.2),
-      ⟨(Basis.reindexRange h.exists_basis.some.2).reindex (equivShrink _)⟩⟩
+  mp h := ⟨
+    Shrink (Set.range h.exists_basis.some.2),
+    ⟨(Basis.reindexRange h.exists_basis.some.2).reindex (equivShrink _)⟩
+  ⟩
   mpr h := ⟨(nonempty_sigma.2 h).map fun ⟨_, b⟩ => ⟨Set.range b, b.reindexRange⟩⟩
 
 variable {R M}
@@ -75,30 +77,37 @@ section Semiring
 variable [Semiring R] [AddCommMonoid M] [Module R M] [Module.Free R M]
 variable [AddCommMonoid N] [Module R N]
 
-/-- If `Module.Free R M` then `ChooseBasisIndex R M` is the `ι` which indexes the basis
-  `ι → M`. Note that this is defined such that this type is finite if `R` is trivial. -/
-def ChooseBasisIndex : Type _ :=
-  ((Module.free_iff_set R M).mp ‹_›).choose
+/--
+If `Module.Free R M` then `ChooseBasisIndex R M` is the `ι` which indexes the basis
+`ι → M`. Note that this is defined such that this type is finite if `R` is trivial.
+-/
+def ChooseBasisIndex : Type _ := ((Module.free_iff_set R M).mp ‹_›).choose
 
-/-- There is no hope of computing this, but we add the instance anyway to avoid fumbling with
-`open scoped Classical`. -/
+/--
+There is no hope of computing this, but we add the instance anyway to avoid fumbling with
+`open scoped Classical`.
+-/
 noncomputable instance : DecidableEq (ChooseBasisIndex R M) := Classical.decEq _
 
-/-- If `Module.Free R M` then `chooseBasis : ι → M` is the basis.
-Here `ι = ChooseBasisIndex R M`. -/
+/--
+If `Module.Free R M` then `chooseBasis : ι → M` is the basis.
+Here `ι = ChooseBasisIndex R M`.
+-/
 noncomputable def chooseBasis : Basis (ChooseBasisIndex R M) R M :=
   ((Module.free_iff_set R M).mp ‹_›).choose_spec.some
 
-/-- The universal property of free modules: giving a function `(ChooseBasisIndex R M) → N`, for `N`
+/--
+The universal property of free modules: giving a function `(ChooseBasisIndex R M) → N`, for `N`
 an `R`-module, is the same as giving an `R`-linear map `M →ₗ[R] N`.
 
 This definition is parameterized over an extra `Semiring S`,
 such that `SMulCommClass R S M'` holds.
 If `R` is commutative, you can set `S := R`; if `R` is not commutative,
 you can recover an `AddEquiv` by setting `S := ℕ`.
-See library note [bundled maps over different rings]. -/
-noncomputable def constr {S : Type z} [Semiring S] [Module S N] [SMulCommClass R S N] :
-    (ChooseBasisIndex R M → N) ≃ₗ[S] M →ₗ[R] N :=
+See library note [bundled maps over different rings].
+-/
+noncomputable def constr {S : Type z} [Semiring S] [Module S N] [SMulCommClass R S N]
+    : (ChooseBasisIndex R M → N) ≃ₗ[S] M →ₗ[R] N :=
   Basis.constr (chooseBasis R M) S
 
 instance (priority := 100) instIsTorsionFree : IsTorsionFree R M :=
@@ -111,37 +120,43 @@ instance [Nontrivial M] : Nonempty (Module.Free.ChooseBasisIndex R M) :=
 theorem infinite [Infinite R] [Nontrivial M] : Infinite M :=
   (Equiv.infinite_iff (chooseBasis R M).repr.toEquiv).mpr Finsupp.infinite_of_right
 
-instance [Nontrivial M] : FaithfulSMul R M :=
-  .of_injective _ (chooseBasis R M).repr.symm.injective
+instance [Nontrivial M] : FaithfulSMul R M := .of_injective _ (chooseBasis R M).repr.symm.injective
 
 variable {R M N}
 
-lemma of_equiv {R R' M M' : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
-    [Semiring R'] [AddCommMonoid M'] [Module R' M']
+lemma of_equiv
+    {R R' M M' : Type*}
+    [Semiring R] [AddCommMonoid M] [Module R M] [Semiring R'] [AddCommMonoid M'] [Module R' M']
     {σ : R →+* R'} {σ' : R' →+* R} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
-    (e₂ : M ≃ₛₗ[σ] M') [Module.Free R M] :
-    Module.Free R' M' := by
+    (e₂ : M ≃ₛₗ[σ] M')
+    [Module.Free R M]
+    : Module.Free R' M' := by
   let e₁ : R ≃+* R' := RingHomInvPair.toRingEquiv σ σ'
   let I := Module.Free.ChooseBasisIndex R M
   obtain ⟨e₃ : M ≃ₗ[R] I →₀ R⟩ := Module.Free.chooseBasis R M
   let e : M' ≃+ (I →₀ R') :=
     (e₂.symm.trans e₃).toAddEquiv.trans (Finsupp.mapRange.addEquiv (ι := I) e₁.toAddEquiv)
   have he (x) : e x = Finsupp.mapRange.addEquiv (ι := I) e₁.toAddEquiv (e₃ (e₂.symm x)) := rfl
-  let e' : M' ≃ₗ[R'] (I →₀ R') :=
-    { __ := e, map_smul' := fun m x ↦ Finsupp.ext fun i ↦ by simp [e₁, he, map_smulₛₗ] }
+  let e' : M' ≃ₗ[R'] (I →₀ R') := {
+    __ := e
+    map_smul' := fun m x ↦ Finsupp.ext fun i ↦ by simp [e₁, he, map_smulₛₗ]
+  }
   exact of_basis (.ofRepr e')
 
-/-- A variation of `of_equiv`: the assumption `Module.Free R P` here is explicit rather than an
-instance. -/
-theorem of_equiv' {P : Type v} [AddCommMonoid P] [Module R P] (_ : Module.Free R P)
-    (e : P ≃ₗ[R] N) : Module.Free R N :=
+/--
+A variation of `of_equiv`: the assumption `Module.Free R P` here is explicit rather than an
+instance.
+-/
+theorem of_equiv' {P : Type v} [AddCommMonoid P] [Module R P] (_ : Module.Free R P) (e : P ≃ₗ[R] N)
+    : Module.Free R N :=
   of_equiv e
 
-lemma iff_of_equiv {R R' M M'} [Semiring R] [AddCommMonoid M] [Module R M]
-    [Semiring R'] [AddCommMonoid M'] [Module R' M']
+lemma iff_of_equiv
+    {R R' M M'}
+    [Semiring R] [AddCommMonoid M] [Module R M] [Semiring R'] [AddCommMonoid M'] [Module R' M']
     {σ : R →+* R'} {σ' : R' →+* R} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
-    (e₂ : M ≃ₛₗ[σ] M') :
-    Module.Free R M ↔ Module.Free R' M' :=
+    (e₂ : M ≃ₛₗ[σ] M')
+    : Module.Free R M ↔ Module.Free R' M' :=
   ⟨fun _ ↦ of_equiv e₂, fun _ ↦ of_equiv e₂.symm⟩
 
 instance shrink [Small.{w} M] : Module.Free R (Shrink.{w} M) :=
@@ -153,8 +168,7 @@ set_option linter.dupNamespace false in
 variable (R M N)
 
 /-- The module structure provided by `Semiring.toModule` is free. -/
-instance self : Module.Free R R :=
-  of_basis (Basis.singleton Unit R)
+instance self : Module.Free R R := of_basis (Basis.singleton Unit R)
 
 instance ulift : Free R (ULift M) := of_equiv ULift.moduleEquiv.symm
 
@@ -176,10 +190,12 @@ namespace Basis
 variable {S : Type*} [CommRing R] [Ring S] [Algebra R S]
 
 variable {R} in
-/-- If `B` is a basis of the `R`-algebra `S` such that `B i = 1` for some index `i`, then
-each `r : R` gets represented as `s • B i` as an element of `S`. -/
-theorem repr_algebraMap {ι : Type*} {B : Basis ι R S} {i : ι} (hBi : B i = 1) (r : R) :
-    B.repr (algebraMap R S r) = Finsupp.single i r := by
+/--
+If `B` is a basis of the `R`-algebra `S` such that `B i = 1` for some index `i`, then
+each `r : R` gets represented as `s • B i` as an element of `S`.
+-/
+theorem repr_algebraMap {ι : Type*} {B : Basis ι R S} {i : ι} (hBi : B i = 1) (r : R)
+    : B.repr (algebraMap R S r) = Finsupp.single i r := by
   ext j; simp [Algebra.algebraMap_eq_smul_one, ← hBi]
 
 end Basis
@@ -187,8 +203,8 @@ end Basis
 namespace End
 variable {R M : Type*} [Semiring R] [AddCommMonoid M] [Module R M] [Free R M]
 
-theorem mem_center_iff {f : End R M} :
-    f ∈ Set.center (End R M) ↔ ∃ (α : R) (hα : α ∈ Set.center R), f = smulLeft α hα := by
+theorem mem_center_iff {f : End R M}
+    : f ∈ Set.center (End R M) ↔ ∃ (α : R) (hα : α ∈ Set.center R), f = smulLeft α hα := by
   simp only [Semigroup.mem_center_iff, LinearMap.ext_iff, mul_apply]
   refine ⟨fun h ↦ ?_, by simp_all⟩
   by_cases! Subsingleton M
@@ -198,13 +214,13 @@ theorem mem_center_iff {f : End R M} :
   have H x : f x = b.repr (f (b i)) i • x := by simpa using (h ((b.coord i).smulRight x) (b i)).symm
   exact ⟨b.coord i <| f <| b i, fun r ↦ by simpa using congr(b.coord i $(H <| r • b i)), H⟩
 
-theorem mem_submonoidCenter_iff {f : End R M} :
-    f ∈ Submonoid.center (End R M) ↔ ∃ (α : R) (hα : α ∈ Submonoid.center R), f = smulLeft α hα :=
+theorem mem_submonoidCenter_iff {f : End R M}
+    : f ∈ Submonoid.center (End R M) ↔ ∃ (α : R) (hα : α ∈ Submonoid.center R), f = smulLeft α hα :=
   mem_center_iff
 
-theorem mem_subsemigroupCenter_iff {f : End R M} :
-    f ∈ Subsemigroup.center (End R M) ↔
-      ∃ (α : R) (hα : α ∈ Subsemigroup.center R), f = smulLeft α hα :=
+theorem mem_subsemigroupCenter_iff {f : End R M}
+    : f ∈ Subsemigroup.center (End R M)
+      ↔ ∃ (α : R) (hα : α ∈ Subsemigroup.center R), f = smulLeft α hα :=
   mem_center_iff
 
 end Module.End

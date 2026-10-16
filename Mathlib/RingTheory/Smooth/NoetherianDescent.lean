@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Extension.Presentation.Core
 public import Mathlib.RingTheory.Smooth.StandardSmoothOfFree
-
 import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
@@ -29,9 +28,11 @@ variable {R : Type*} [CommRing R]
 variable {A : Type u} {B : Type*} [CommRing A] [Algebra R A] [CommRing B] [Algebra A B]
 
 variable (A B) in
-/-- (Implementation detail): If `S` is an `R`-algebra with presentation `P`
+/--
+(Implementation detail): If `S` is an `R`-algebra with presentation `P`
 and section `σ` of the projection `R[Xᵢ] ⧸ I^2 → S`, then a
-`DescentAux` structure contains the data necessary to reconstruct `σ`. -/
+`DescentAux` structure contains the data necessary to reconstruct `σ`.
+-/
 structure DescentAux where
   vars : Type
   rels : Type
@@ -56,10 +57,10 @@ variable (R)
 -- See https://github.com/leanprover/lean4/issues/14084.
 noncomputable def subalgebra (D : DescentAux A B) : Subalgebra R A :=
   Algebra.adjoin R
-    (D.P.coeffs ∪
-      ((⋃ i, (D.h i).coeffs) ∪
-       (⋃ i, ⋃ x ∈ (D.q i).coeffs, x.coeffs) ∪
-       (⋃ i, ⋃ x ∈ (D.p i).coeffs, x.coeffs)) : Set A)
+    (D.P.coeffs
+        ∪ ((⋃ i, (D.h i).coeffs) ∪ (⋃ i, ⋃ x ∈ (D.q i).coeffs, x.coeffs)
+          ∪ (⋃ i, ⋃ x ∈ (D.p i).coeffs, x.coeffs))
+      : Set A)
 
 -- Note: `Set` has no computational content, but Lean still attempts to compile it.
 -- See https://github.com/leanprover/lean4/issues/14084.
@@ -125,9 +126,9 @@ lemma coeffs_h_subset (i) : ↑(D.h i).coeffs ⊆ Set.range ⇑(algebraMap (D.su
   grind [subalgebra, Algebra.subset_adjoin]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma coeffs_p_subset (i) :
-    ↑(D.p i).coeffs ⊆
-      Set.range (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) := by
+lemma coeffs_p_subset (i)
+    : ↑(D.p i).coeffs
+      ⊆ Set.range (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) := by
   intro p hp
   have : (p.coeffs : Set A) ⊆ ⋃ i, ⋃ x ∈ (D.p i).coeffs, ↑x.coeffs :=
     Set.subset_iUnion_of_subset i (Set.subset_iUnion₂_of_subset p hp subset_rfl)
@@ -141,9 +142,9 @@ lemma coeffs_p_subset (i) :
   grind [subalgebra, Algebra.subset_adjoin]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma coeffs_q_subset (i) :
-    ↑(D.q i).coeffs ⊆
-      Set.range (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) := by
+lemma coeffs_q_subset (i)
+    : ↑(D.q i).coeffs
+      ⊆ Set.range (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) := by
   intro q hq
   have : (q.coeffs : Set A) ⊆ ⋃ i, ⋃ x ∈ (D.q i).coeffs, ↑(coeffs x) :=
     Set.subset_iUnion_of_subset i (Set.subset_iUnion₂_of_subset q hq subset_rfl)
@@ -157,21 +158,21 @@ lemma coeffs_q_subset (i) :
   grind [subalgebra, Algebra.subset_adjoin]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma exists_kerSquareLift_comp_eq_id :
-    ∃ (σ₀ : D.P.ModelOfHasCoeffs (D.subalgebra R) →ₐ[D.subalgebra R]
+lemma exists_kerSquareLift_comp_eq_id
+    : ∃ (σ₀ : D.P.ModelOfHasCoeffs (D.subalgebra R) →ₐ[D.subalgebra R]
         MvPolynomial D.vars (D.subalgebra R) ⧸ (RingHom.ker f₀ ^ 2)),
-      (AlgHom.kerSquareLift f₀).comp σ₀ =
-        .id (D.subalgebra R) (Presentation.ModelOfHasCoeffs (D.subalgebra R)) := by
+      (AlgHom.kerSquareLift f₀).comp σ₀
+        = .id (D.subalgebra R) (Presentation.ModelOfHasCoeffs (D.subalgebra R)) := by
   choose p hp using fun i ↦ (D.h i).mem_range_map_iff_coeffs_subset.mpr (D.coeffs_h_subset R i)
   refine ⟨?_, ?_⟩
   · refine Ideal.Quotient.liftₐ _ ((Ideal.Quotient.mkₐ _ _).comp <| aeval p) ?_
     simp_rw [← RingHom.mem_ker, ← IsConcreteLE.le_iff, Ideal.span_le, Set.range_subset_iff]
     intro i
     simp only [← AlgHom.comap_ker, Ideal.coe_comap, Set.mem_preimage, SetLike.mem_coe]
-    rw [← RingHom.ker_coe_toRingHom, Ideal.Quotient.mkₐ_ker,
-      ← RingHom.ker_coe_toRingHom, Ideal.Quotient.mkₐ_ker]
-    have hinj : Function.Injective
-        (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) :=
+    rw [← RingHom.ker_coe_toRingHom, Ideal.Quotient.mkₐ_ker, ← RingHom.ker_coe_toRingHom,
+      Ideal.Quotient.mkₐ_ker]
+    have hinj
+        : Function.Injective (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) :=
       map_injective _ (FaithfulSMul.algebraMap_injective (D.subalgebra R) A)
     rw [Ideal.mem_span_pow_iff_exists_isHomogeneous]
     obtain ⟨q, hq⟩ := (D.p i).mem_range_map_iff_coeffs_subset.mpr (D.coeffs_p_subset R i)
@@ -184,21 +185,22 @@ lemma exists_kerSquareLift_comp_eq_id :
   · have hf₀ : Function.Surjective f₀ := Ideal.Quotient.mk_surjective
     rw [← AlgHom.cancel_right hf₀]
     refine MvPolynomial.algHom_ext fun i ↦ ?_
-    suffices h : ∃ p', p'.IsHomogeneous 1 ∧ (eval (D.P.relationOfHasCoeffs (D.subalgebra R))) p' =
-        p i - X i by
+    suffices h
+        : ∃ p',
+          p'.IsHomogeneous 1 ∧ (eval (D.P.relationOfHasCoeffs (D.subalgebra R))) p' = p i - X i by
       -- Reducible def-eq issues caused by `RingHom.ker f.toRingHom` discrepancies
       -- Can be fixed after #25138.
       apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
       simpa [Ideal.mem_span_iff_exists_isHomogeneous, hp]
-    have hinj : Function.Injective
-        (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) :=
+    have hinj
+        : Function.Injective (MvPolynomial.map (σ := D.vars) (algebraMap (D.subalgebra R) A)) :=
       map_injective _ (FaithfulSMul.algebraMap_injective (D.subalgebra R) A)
     obtain ⟨t, ht⟩ := (D.q i).mem_range_map_iff_coeffs_subset.mpr (D.coeffs_q_subset R i)
     refine ⟨t, .of_map hinj ?_, hinj ?_⟩
     · rw [ht]
       exact D.hqhom i
-    · simp [MvPolynomial.map_eval, Function.comp_def,
-        Presentation.map_relationOfHasCoeffs, ht, hq, hp]
+    · simp [MvPolynomial.map_eval, Function.comp_def, Presentation.map_relationOfHasCoeffs, ht, hq,
+        hp]
 
 end DescentAux
 
@@ -212,13 +214,12 @@ Let `A` be an `R`-algebra. If `B` is a smooth `A`-algebra, there exists an
 `B ≃ₐ A ⊗[A₀] B₀`.
 See `Algebra.Smooth.exists_finiteType` for a version in terms of `Function.Injective`.
 -/
-public theorem exists_subalgebra_fg [Smooth A B] :
-    ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
+public theorem exists_subalgebra_fg [Smooth A B]
+    : ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
       A₀.FG ∧ Smooth A₀ B₀ ∧ Nonempty (B ≃ₐ[A] A ⊗[A₀] B₀) := by
   let P := Presentation.ofFinitePresentation A B
   let f : P.Ring →ₐ[A] B := IsScalarTower.toAlgHom _ _ _
-  have hkerf : RingHom.ker f = Ideal.span (.range P.relation) :=
-    P.span_range_relation_eq_ker.symm
+  have hkerf : RingHom.ker f = Ideal.span (.range P.relation) := P.span_range_relation_eq_ker.symm
   obtain ⟨(σ : B →ₐ[A] MvPolynomial _ A ⧸ RingHom.ker f ^ 2), hsig⟩ :=
     (FormallySmooth.iff_split_surjection f P.algebraMap_surjective).mp inferInstance
   have (i : _) := Ideal.Quotient.mk_surjective (σ <| P.val i)
@@ -238,19 +239,35 @@ public theorem exists_subalgebra_fg [Smooth A B] :
     -- Reducible def-eq issues caused by `RingHom.ker f.toRingHom` discrepancies
     -- Can be fixed after #25138.
     exact hh i ▸ congr($hsig (P.val i))
-  have (i : Fin (Presentation.ofFinitePresentationVars A B)) :
-      h i - X i ∈ Ideal.span (.range P.relation) := by
+  have (i : Fin (Presentation.ofFinitePresentationVars A B))
+      : h i - X i ∈ Ideal.span (.range P.relation) := by
     simpa [P.span_range_relation_eq_ker, sub_eq_zero, f] using hsig i
   simp_rw [Ideal.mem_span_iff_exists_isHomogeneous] at this
   choose q hqhom hq using this
-  let D : DescentAux A B :=
-    { vars := _, rels := _, P := P, σ := σ, p := p, h := h, hphom := homog, hp := hp,
-      q := q, hqhom := hqhom, hq := hq }
+  let D : DescentAux A B := {
+    vars := _
+    rels := _
+    P := P
+    σ := σ
+    p := p
+    h := h
+    hphom := homog
+    hp := hp
+    q := q
+    hqhom := hqhom
+    hq := hq
+  }
   have : P.HasCoeffs (D.subalgebra R) := D.hasCoeffs R
   obtain ⟨σ₀, hσ₀⟩ := D.exists_kerSquareLift_comp_eq_id R
-  exact ⟨D.subalgebra R, P.ModelOfHasCoeffs (D.subalgebra R), inferInstance, inferInstance,
-    D.fg_subalgebra R, ⟨.of_split _ σ₀ hσ₀, inferInstance⟩,
-    ⟨(P.tensorModelOfHasCoeffsEquiv (D.subalgebra R)).symm⟩⟩
+  exact ⟨
+    D.subalgebra R,
+    P.ModelOfHasCoeffs (D.subalgebra R),
+    inferInstance,
+    inferInstance,
+    D.fg_subalgebra R,
+    ⟨.of_split _ σ₀ hσ₀, inferInstance⟩,
+    ⟨(P.tensorModelOfHasCoeffsEquiv (D.subalgebra R)).symm⟩
+  ⟩
 
 /--
 Let `A` be an `R`-algebra. If `B` is a smooth `A`-algebra, there exists an
@@ -259,25 +276,31 @@ with `A₀ → A` injective.
 See `Algebra.Smooth.exists_subalgebra_fg` for a version in terms of `Subalgebra`.
 -/
 @[stacks 00TP]
-public theorem exists_finiteType [Smooth A B] :
-    ∃ (A₀ : Type u) (B₀ : Type u) (_ : CommRing A₀) (_ : CommRing B₀)
-      (_ : Algebra R A₀) (_ : Algebra A₀ A) (_ : Algebra A₀ B₀),
-      Function.Injective (algebraMap A₀ A) ∧ FiniteType R A₀ ∧ Smooth A₀ B₀ ∧
-      Nonempty (B ≃ₐ[A] A ⊗[A₀] B₀) := by
+public theorem exists_finiteType [Smooth A B]
+    : ∃ (A₀ : Type u) (B₀ : Type u) (_ : CommRing A₀) (_ : CommRing B₀) (_ : Algebra R A₀)
+        (_ : Algebra A₀ A) (_ : Algebra A₀ B₀),
+      Function.Injective (algebraMap A₀ A) ∧ FiniteType R A₀ ∧ Smooth A₀ B₀
+        ∧ Nonempty (B ≃ₐ[A] A ⊗[A₀] B₀) := by
   obtain ⟨A₀, B₀, _, _, hA₀, _, _⟩ := exists_subalgebra_fg R A B
   use A₀, B₀, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
     Subtype.val_injective, ⟨A₀.fg_top.mpr hA₀⟩, inferInstance
 
 public theorem _root_.Algebra.IsStandardSmoothOfRelativeDimension.exists_subalgebra_fg
-    (n : ℕ) [IsStandardSmoothOfRelativeDimension n A B] :
-    ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
+    (n : ℕ) [IsStandardSmoothOfRelativeDimension n A B]
+    : ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
       A₀.FG ∧ IsStandardSmoothOfRelativeDimension n A₀ B₀ ∧ Nonempty (B ≃ₐ[A] A ⊗[A₀] B₀) := by
   obtain ⟨ι, σ, _, _, P, hP⟩ := IsStandardSmoothOfRelativeDimension.out (n := n) (R := A) (S := B)
   let A₀ := Algebra.adjoin R P.coeffs
   have : P.HasCoeffs A₀ := ⟨by simp [A₀]⟩
-  exact ⟨A₀, (P.ModelOfHasCoeffs A₀:), inferInstance, inferInstance,
-    ⟨P.finite_coeffs.toFinset, by simp [A₀]⟩, ⟨_, _, _, inferInstance,
-      P.ofHasCoeffs A₀, hP⟩, ⟨(P.tensorModelOfHasCoeffsEquiv A₀).symm⟩⟩
+  exact ⟨
+    A₀,
+    (P.ModelOfHasCoeffs A₀ :),
+    inferInstance,
+    inferInstance,
+    ⟨P.finite_coeffs.toFinset, by simp [A₀]⟩,
+    ⟨_, _, _, inferInstance, P.ofHasCoeffs A₀, hP⟩,
+    ⟨(P.tensorModelOfHasCoeffsEquiv A₀).symm⟩
+  ⟩
 
 /--
 Let `A` be an `R`-algebra. If `B` is an etale `A`-algebra, there exists an
@@ -285,8 +308,8 @@ Let `A` be an `R`-algebra. If `B` is an etale `A`-algebra, there exists an
 `B ≃ₐ A ⊗[A₀] B₀`.
 -/
 @[stacks 00U2 "(8)"]
-public theorem _root_.Algebra.Etale.exists_subalgebra_fg [Etale A B] :
-    ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
+public theorem _root_.Algebra.Etale.exists_subalgebra_fg [Etale A B]
+    : ∃ (A₀ : Subalgebra R A) (B₀ : Type u) (_ : CommRing B₀) (_ : Algebra A₀ B₀),
       A₀.FG ∧ Etale A₀ B₀ ∧ Nonempty (B ≃ₐ[A] A ⊗[A₀] B₀) := by
   simp only [Etale.iff_isStandardSmoothOfRelativeDimension_zero] at *
   exact IsStandardSmoothOfRelativeDimension.exists_subalgebra_fg ..

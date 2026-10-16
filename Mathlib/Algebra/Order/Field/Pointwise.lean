@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Group.Action.Defs
 public import Mathlib.Algebra.Group.Pointwise.Set.Scalar
 public import Mathlib.Algebra.Order.Ring.Defs
 public import Mathlib.Order.Interval.Set.OrderIso
-
 import Mathlib.Algebra.Order.GroupWithZero.OrderIso
 
 /-!

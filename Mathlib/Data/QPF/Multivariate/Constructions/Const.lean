@@ -19,7 +19,6 @@ specification.
 
 @[expose] public section
 
-
 universe u
 
 namespace MvQPF
@@ -46,16 +45,15 @@ protected def mk (x : A) : Const n A α := x
 /-- Destructor for constant functor -/
 protected def get (x : Const n A α) : A := x
 
-@[simp]
-protected theorem mk_get (x : Const n A α) : Const.mk (Const.get x) = x := rfl
+@[simp] protected theorem mk_get (x : Const n A α) : Const.mk (Const.get x) = x := rfl
 
-@[simp]
-protected theorem get_mk (x : A) : Const.get (Const.mk x : Const n A α) = x := rfl
+@[simp] protected theorem get_mk (x : A) : Const.get (Const.mk x : Const n A α) = x := rfl
 
 /-- `map` for constant functor -/
 protected def map : Const n A α → Const n A β := fun x => x
 
-instance MvFunctor : MvFunctor (Const n A) where map _f := Const.map
+instance MvFunctor : MvFunctor (Const n A) where
+  map _f := Const.map
 
 theorem map_mk (x : A) : f <$$> Const.mk x = Const.mk x := rfl
 

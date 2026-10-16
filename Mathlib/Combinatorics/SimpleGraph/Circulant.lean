@@ -26,8 +26,7 @@ namespace SimpleGraph
 
 /-- Circulant graph over additive group `G` with jumps `s` -/
 @[simps!]
-def circulantGraph {G : Type*} [AddGroup G] (s : Set G) : SimpleGraph G :=
-  fromRel (· - · ∈ s)
+def circulantGraph {G : Type*} [AddGroup G] (s : Set G) : SimpleGraph G := fromRel (· - · ∈ s)
 
 variable {G : Type*} [AddGroup G] (s : Set G)
 
@@ -38,23 +37,24 @@ theorem circulantGraph_eq_erase_zero : circulantGraph s = circulantGraph (s \ {0
   apply Iff.intro
   · intro h1
     cases h1 with
-      | inl h1 => exact Or.inl ⟨h1, sub_ne_zero_of_ne h⟩
-      | inr h1 => exact Or.inr ⟨h1, sub_ne_zero_of_ne h.symm⟩
+    | inl h1 => exact Or.inl ⟨h1, sub_ne_zero_of_ne h⟩
+    | inr h1 => exact Or.inr ⟨h1, sub_ne_zero_of_ne h.symm⟩
   · intro h1
     cases h1 with
-      | inl h1 => exact Or.inl h1.left
-      | inr h1 => exact Or.inr h1.left
+    | inl h1 => exact Or.inl h1.left
+    | inr h1 => exact Or.inr h1.left
 
 theorem circulantGraph_eq_symm : circulantGraph s = circulantGraph (s ∪ (-s)) := by
   ext
   simp only [circulantGraph_adj, Set.mem_union, Set.mem_neg, neg_sub]
   grind
 
-instance [DecidableEq G] [DecidablePred (· ∈ s)] : DecidableRel (circulantGraph s).Adj :=
-  fun _ _ => inferInstanceAs (Decidable (_ ∧ _))
+instance [DecidableEq G] [DecidablePred (· ∈ s)] : DecidableRel (circulantGraph s).Adj := fun _ _ =>
+  inferInstanceAs (Decidable (_ ∧ _))
 
-theorem circulantGraph_adj_translate {s : Set G} {u v d : G} :
-    (circulantGraph s).Adj (u + d) (v + d) ↔ (circulantGraph s).Adj u v := by simp
+theorem circulantGraph_adj_translate {s : Set G} {u v d : G}
+    : (circulantGraph s).Adj (u + d) (v + d) ↔ (circulantGraph s).Adj u v := by
+  simp
 
 theorem cycleGraph_eq_circulantGraph (n : ℕ) : cycleGraph (n + 1) = circulantGraph {1} := by
   cases n

@@ -37,8 +37,7 @@ namespace Imo2002Q3
 variable {m n : ℕ} (hm : 3 ≤ m) (hn : 3 ≤ n)
 
 include hm in
-lemma natDegree_numerpol : (X ^ m + X - 1 : ℤ[X]).natDegree = m := by
-  compute_degree <;> grind
+lemma natDegree_numerpol : (X ^ m + X - 1 : ℤ[X]).natDegree = m := by compute_degree <;> grind
 
 include hm in
 lemma monic_numerpol : (X ^ m + X - 1 : ℤ[X]).Monic := by
@@ -53,8 +52,7 @@ lemma monic_numerpol : (X ^ m + X - 1 : ℤ[X]).Monic := by
       lia
 
 include hn in
-lemma natDegree_denompol : (X ^ n + X ^ 2 - 1 : ℤ[X]).natDegree = n := by
-  compute_degree <;> grind
+lemma natDegree_denompol : (X ^ n + X ^ 2 - 1 : ℤ[X]).natDegree = n := by compute_degree <;> grind
 
 include hn in
 lemma monic_denompol : (X ^ n + X ^ 2 - 1 : ℤ[X]).Monic := by
@@ -69,16 +67,17 @@ lemma monic_denompol : (X ^ n + X ^ 2 - 1 : ℤ[X]).Monic := by
       lia
 
 include hm hn in
-lemma proof_body (h : {a : ℤ | 0 < a ∧ a ^ n + a ^ 2 - 1 ∣ a ^ m + a - 1}.Infinite) :
-    m = 5 ∧ n = 3 := by
+lemma proof_body (h : {a : ℤ | 0 < a ∧ a ^ n + a ^ 2 - 1 ∣ a ^ m + a - 1}.Infinite)
+    : m = 5 ∧ n = 3 := by
   replace h : (X ^ n + X ^ 2 - 1 : ℤ[X]) ∣ X ^ m + X - 1 :=
     dvd_of_infinite_eval_dvd_eval (monic_denompol hn) (h.mono (by simp))
   -- Algebraic part: `n ≤ m - n + 1`
   have db := natDegree_le_of_dvd h (monic_numerpol hm).ne_zero
   rw [natDegree_numerpol hm, natDegree_denompol hn] at db
   replace h := dvd_sub_self_right.mpr (dvd_mul_of_dvd_left h (X + 1))
-  have rearr : ((X ^ m + X - 1) * (X + 1) - (X ^ n + X ^ 2 - 1) : ℤ[X]) =
-      X ^ n * (X ^ (m - n + 1) + X ^ (m - n) - 1) := by
+  have rearr
+      : ((X ^ m + X - 1) * (X + 1) - (X ^ n + X ^ 2 - 1) : ℤ[X])
+        = X ^ n * (X ^ (m - n + 1) + X ^ (m - n) - 1) := by
     nth_rw 1 [← Nat.sub_add_cancel db]
     ring
   rw [rearr] at h

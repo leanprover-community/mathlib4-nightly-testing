@@ -18,11 +18,13 @@ public import Mathlib.Order.Interval.Set.Defs
 assert_not_exists RelIso Ring
 
 namespace Submonoid
-variable (α) [MulZeroOneClass α] [PartialOrder α] [PosMulStrictMono α] [ZeroLEOneClass α]
-  [NeZero (1 : α)] {a : α}
+variable
+  (α) [MulZeroOneClass α] [PartialOrder α] [PosMulStrictMono α] [ZeroLEOneClass α] [NeZero (1 : α)]
+  {a : α}
 
 /-- The submonoid of positive elements. -/
-@[simps] def pos : Submonoid α where
+@[simps]
+def pos : Submonoid α where
   carrier := Set.Ioi 0
   one_mem' := zero_lt_one
   mul_mem' := mul_pos

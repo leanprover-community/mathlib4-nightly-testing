@@ -34,15 +34,16 @@ open scoped NormedField
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 
-@[simp]
-lemma NormedField.v_eq_valuation (x : K) : Valued.v x = NormedField.valuation x := rfl
+@[simp] lemma NormedField.v_eq_valuation (x : K) : Valued.v x = NormedField.valuation x := rfl
 
 namespace Valued.integer
 
 -- should we do this all in the Valuation namespace instead?
 
-/-- An element is in the valuation ring if the norm is bounded by 1. This is a variant of
-`Valuation.mem_integer_iff`, phrased using norms instead of the valuation. -/
+/--
+An element is in the valuation ring if the norm is bounded by 1. This is a variant of
+`Valuation.mem_integer_iff`, phrased using norms instead of the valuation.
+-/
 lemma mem_iff {x : K} : x ∈ 𝒪[K] ↔ ‖x‖ ≤ 1 := by
   simp [Valuation.mem_integer_iff, ← NNReal.coe_le_coe]
 
@@ -53,8 +54,7 @@ lemma norm_coe_unit (u : 𝒪[K]ˣ) : ‖((u : 𝒪[K]) : K)‖ = 1 := by
   simpa [← NNReal.coe_inj] using!
     (Valuation.integer.integers (NormedField.valuation (K := K))).valuation_unit u
 
-lemma norm_unit (u : 𝒪[K]ˣ) : ‖(u : 𝒪[K])‖ = 1 := by
-  simp
+lemma norm_unit (u : 𝒪[K]ˣ) : ‖(u : 𝒪[K])‖ = 1 := by simp
 
 lemma isUnit_iff_norm_eq_one {u : 𝒪[K]} : IsUnit u ↔ ‖u‖ = 1 := by
   simpa [← NNReal.coe_inj] using!
@@ -66,19 +66,19 @@ lemma norm_irreducible_lt_one {ϖ : 𝒪[K]} (h : Irreducible ϖ) : ‖ϖ‖ < 1
 lemma norm_irreducible_pos {ϖ : 𝒪[K]} (h : Irreducible ϖ) : 0 < ‖ϖ‖ :=
   Valuation.integer.v_irreducible_pos h
 
-lemma coe_span_singleton_eq_closedBall (x : 𝒪[K]) :
-    (Ideal.span {x} : Set 𝒪[K]) = Metric.closedBall 0 ‖x‖ := by
+lemma coe_span_singleton_eq_closedBall (x : 𝒪[K])
+    : (Ideal.span {x} : Set 𝒪[K]) = Metric.closedBall 0 ‖x‖ := by
   simp [Valuation.integer.coe_span_singleton_eq_setOfPred_le_v_coe, Set.ext_iff,
     ← NNReal.coe_le_coe]
 
-lemma _root_.Irreducible.maximalIdeal_eq_closedBall [IsDiscreteValuationRing 𝒪[K]]
-    {ϖ : 𝒪[K]} (h : Irreducible ϖ) :
-    (𝓂[K] : Set 𝒪[K]) = Metric.closedBall 0 ‖ϖ‖ := by
+lemma _root_.Irreducible.maximalIdeal_eq_closedBall
+    [IsDiscreteValuationRing 𝒪[K]] {ϖ : 𝒪[K]} (h : Irreducible ϖ)
+    : (𝓂[K] : Set 𝒪[K]) = Metric.closedBall 0 ‖ϖ‖ := by
   simp [h.maximalIdeal_eq_setOfPred_le_v_coe, Set.ext_iff, ← NNReal.coe_le_coe]
 
-lemma _root_.Irreducible.maximalIdeal_pow_eq_closedBall_pow [IsDiscreteValuationRing 𝒪[K]]
-    {ϖ : 𝒪[K]} (h : Irreducible ϖ) (n : ℕ) :
-    ((𝓂[K] ^ n : Ideal 𝒪[K]) : Set 𝒪[K]) = Metric.closedBall 0 (‖ϖ‖ ^ n) := by
+lemma _root_.Irreducible.maximalIdeal_pow_eq_closedBall_pow
+    [IsDiscreteValuationRing 𝒪[K]] {ϖ : 𝒪[K]} (h : Irreducible ϖ) (n : ℕ)
+    : ((𝓂[K] ^ n : Ideal 𝒪[K]) : Set 𝒪[K]) = Metric.closedBall 0 (‖ϖ‖ ^ n) := by
   simp [h.maximalIdeal_pow_eq_setOfPred_le_v_coe_pow, Set.ext_iff, ← NNReal.coe_le_coe]
 
 variable (K) in
@@ -88,12 +88,10 @@ lemma exists_norm_coe_lt_one : ∃ x : 𝒪[K], 0 < ‖(x : K)‖ ∧ ‖(x : K)
   simpa [hx', Subtype.ext_iff] using hx
 
 variable (K) in
-lemma exists_norm_lt_one : ∃ x : 𝒪[K], 0 < ‖x‖ ∧ ‖x‖ < 1 :=
-  exists_norm_coe_lt_one K
+lemma exists_norm_lt_one : ∃ x : 𝒪[K], 0 < ‖x‖ ∧ ‖x‖ < 1 := exists_norm_coe_lt_one K
 
 variable (K) in
-lemma exists_nnnorm_lt_one : ∃ x : 𝒪[K], 0 < ‖x‖₊ ∧ ‖x‖₊ < 1 :=
-  exists_norm_coe_lt_one K
+lemma exists_nnnorm_lt_one : ∃ x : 𝒪[K], 0 < ‖x‖₊ ∧ ‖x‖₊ < 1 := exists_norm_coe_lt_one K
 
 end Valued.integer
 
@@ -114,13 +112,13 @@ alias finite_quotient_maximalIdeal_pow_of_finite_residueField :=
 open scoped Valued
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma totallyBounded_iff_finite_residueField [(Valued.v : Valuation K Γ₀).RankOne]
-    [IsDiscreteValuationRing 𝒪[K]] :
-    TotallyBounded (Set.univ (α := 𝒪[K])) ↔ Finite 𝓀[K] := by
+lemma totallyBounded_iff_finite_residueField
+    [(Valued.v : Valuation K Γ₀).RankOne] [IsDiscreteValuationRing 𝒪[K]]
+    : TotallyBounded (Set.univ (α := 𝒪[K])) ↔ Finite 𝓀[K] := by
   constructor
   · intro H
     obtain ⟨p, hp⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[K]
-    have := Metric.finite_approx_of_totallyBounded H ‖p‖ (norm_pos_iff.mpr hp.ne_zero)
+    have := Metric.finite_approx_of_totallyBounded H (‖p‖) (norm_pos_iff.mpr hp.ne_zero)
     simp only [Set.subset_univ, Set.univ_subset_iff, true_and] at this
     obtain ⟨t, ht, ht'⟩ := this
     rw [← Set.finite_univ_iff]
@@ -135,7 +133,7 @@ lemma totallyBounded_iff_finite_residueField [(Valued.v : Valuation K Γ₀).Ran
     convert!
       (Ideal.Quotient.mk_eq_mk_iff_sub_mem (I := 𝓂[K]) y x).mpr
         _
-          -- TODO: make Valued.maximalIdeal abbreviations instead of def
+    -- TODO: make Valued.maximalIdeal abbreviations instead of def
 
     -- TODO: make Valued.maximalIdeal abbreviations instead of def
     rw [Valued.maximalIdeal, hp.maximalIdeal_eq, ← SetLike.mem_coe,
@@ -147,17 +145,17 @@ lemma totallyBounded_iff_finite_residueField [(Valued.v : Valuation K Γ₀).Ran
     intro ε εpos
     obtain ⟨p, hp⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[K]
     have hp' := Valuation.integer.v_irreducible_lt_one hp
-    obtain ⟨n, hn⟩ : ∃ n : ℕ, ‖(p : K)‖ ^ n < ε := exists_pow_lt_of_lt_one εpos
-      (toNormedField.norm_lt_one_iff.mpr hp')
+    obtain ⟨n, hn⟩ : ∃ n : ℕ, ‖(p : K)‖ ^ n < ε :=
+      exists_pow_lt_of_lt_one εpos (toNormedField.norm_lt_one_iff.mpr hp')
     have hF : Finite (𝒪[K] ⧸ 𝓂[K] ^ n) := inferInstance
     refine ⟨Quotient.out '' (Set.univ (α := 𝒪[K] ⧸ (𝓂[K] ^ n))), Set.toFinite _, ?_⟩
     have : {y : 𝒪[K] | v (y : K) ≤ v (p : K) ^ n} = Metric.closedBall 0 (‖p‖ ^ n) := by
       ext
       simp [← norm_pow]
     simp only [Ideal.univ_eq_iUnion_image_add (𝓂[K] ^ n),
-      hp.maximalIdeal_pow_eq_setOfPred_le_v_coe_pow,
-      this, AddSubgroupClass.coe_norm, Set.image_univ, Set.mem_range, Set.iUnion_exists,
-      Set.iUnion_iUnion_eq', Set.iUnion_subset_iff, Metric.vadd_closedBall, vadd_eq_add, add_zero]
+      hp.maximalIdeal_pow_eq_setOfPred_le_v_coe_pow, this, AddSubgroupClass.coe_norm,
+      Set.image_univ, Set.mem_range, Set.iUnion_exists, Set.iUnion_iUnion_eq',
+      Set.iUnion_subset_iff, Metric.vadd_closedBall, vadd_eq_add, add_zero]
     intro
     exact (Metric.closedBall_subset_ball hn).trans (Set.subset_iUnion_of_subset _ le_rfl)
 
@@ -167,8 +165,8 @@ section CompactDVR
 
 open Valued
 
-lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K]) :
-    Nonempty (LocallyFiniteOrder (MonoidHom.mrange (Valued.v : Valuation K Γ₀))ˣ) := by
+lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K])
+    : Nonempty (LocallyFiniteOrder (MonoidHom.mrange (Valued.v : Valuation K Γ₀))ˣ) := by
   -- This `change` line will become unnecessary once `MonoidHom.mrange` accepts `MonoidHom`
   -- directly instead of a `MonoidHomClass` instance.
   change Nonempty (LocallyFiniteOrder (MonoidHom.mrange Valued.v)ˣ)
@@ -178,8 +176,7 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
   refine LocallyFiniteOrder.ofFiniteIcc ?_
   -- We only need to show that we can construct a finite set for some set between
   -- a non-zero `z : Γ₀` and 1, because we can scale/invert this set to cover the whole group.
-  suffices ∀ z : (MonoidHom.mrange Valued.v)ˣ,
-      (Set.Icc z 1).Finite by
+  suffices ∀ z : (MonoidHom.mrange Valued.v)ˣ, (Set.Icc z 1).Finite by
     rintro x y
     rcases lt_trichotomy y x with hxy | rfl | hxy
     · rw [Set.Icc_eq_empty_of_lt]
@@ -197,8 +194,7 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
     · exact (this x).subset (Set.Icc_subset_Icc_right hy)
     · have H : (Set.Icc y⁻¹ 1).Finite := this _
       refine ((this x).union H.inv).subset (le_of_eq ?_)
-      rw [Set.inv_Icc, inv_one, Set.Icc_union_Icc_eq_Icc] <;>
-      simp [h, hy]
+      rw [Set.inv_Icc, inv_one, Set.Icc_union_Icc_eq_Icc] <;> simp [h, hy]
   -- We can construct a family of spheres at every single element of the valuation ring
   -- outside of a closed ball, which will cover.
   -- Since we are in a compact space, this cover has a finite subcover.
@@ -215,9 +211,11 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
   have a0 : 0 < v a := by simpa [← ha] using z0
   -- Construct our cover, which has an inner closed ball, and spheres for each element
   -- outside of the closed ball. These are all open sets by the nonarchimedean property.
-  let U : K → Set K := fun y ↦ if v (y : K) ≤ z
-    then {w | v (w : K) ≤ z}
-    else {w | v (w : K) = v (y : K)}
+  let U : K → Set K := fun y ↦
+    if v (y : K) ≤ z then
+      {w | v (w : K) ≤ z}
+    else
+      {w | v (w : K) = v (y : K)}
   have := hc.elim_finite_subcover U
   specialize this ?_ ?_
   · intro w
@@ -239,8 +237,7 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
     simp only [integer, SetLike.mem_coe, Valuation.mem_integer_iff, Set.mem_iUnion, U]
     intro hw
     use if v w ≤ z then a else w
-    split_ifs <;>
-    simp_all
+    split_ifs <;> simp_all
   -- For each element of the valuation ring that is bigger than our threshold element above,
   -- there must be something in the cover that has the precise valuation of the element,
   -- because it must be outside the inner closed ball, and thus is covered by some sphere.
@@ -266,14 +263,14 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
       rw [dite_eq_right hcj]
       simp [← hj', hc]
 
-lemma mulArchimedean_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K]) :
-    MulArchimedean (MonoidHom.mrange (Valued.v : Valuation K Γ₀)) := by
+lemma mulArchimedean_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K])
+    : MulArchimedean (MonoidHom.mrange (Valued.v : Valuation K Γ₀)) := by
   rw [← Units.mulArchimedean_iff]
   obtain ⟨_⟩ := locallyFiniteOrder_units_mrange_of_isCompact_integer hc
   exact MulArchimedean.of_locallyFiniteOrder
 
-lemma isPrincipalIdealRing_of_compactSpace [hc : CompactSpace 𝒪[K]] :
-    IsPrincipalIdealRing 𝒪[K] := by
+lemma isPrincipalIdealRing_of_compactSpace [hc : CompactSpace 𝒪[K]]
+    : IsPrincipalIdealRing 𝒪[K] := by
   -- The strategy to show that we have a PIR is by contradiction,
   -- assuming that the range of the valuation is densely ordered.
   have hi : Valuation.Integers (R := K) Valued.v 𝒪[K] := Valuation.integer.integers v
@@ -286,20 +283,23 @@ lemma isPrincipalIdealRing_of_compactSpace [hc : CompactSpace 𝒪[K]] :
   -- is a PIR iff the value group is not densely ordered.
   refine hi.isPrincipalIdealRing_iff_not_denselyOrdered_mrange.mpr fun _ ↦ ?_
   -- since we are densely ordered, we necessarily are nontrivial
-  exact not_subsingleton (MonoidHom.mrange (v : Valuation K Γ₀))ˣ
+  exact not_subsingleton ((MonoidHom.mrange (v : Valuation K Γ₀))ˣ)
     (LocallyFiniteOrder.denselyOrdered_iff_subsingleton.mp inferInstance)
 
-theorem _root_.Valuation.isNontrivial_iff_not_a_field {K Γ : Type*} [Field K]
-    [LinearOrderedCommGroupWithZero Γ] (v : Valuation K Γ) :
-    v.IsNontrivial ↔ IsLocalRing.maximalIdeal v.integer ≠ ⊥ := by
+theorem _root_.Valuation.isNontrivial_iff_not_a_field
+    {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ] (v : Valuation K Γ)
+    : v.IsNontrivial ↔ IsLocalRing.maximalIdeal v.integer ≠ ⊥ := by
   simp_rw [ne_eq, eq_bot_iff, v.isNontrivial_iff_exists_lt_one, IsConcreteLE.le_iff, Ideal.mem_bot,
     not_forall, exists_prop, IsLocalRing.notMem_maximalIdeal.not_right,
     Valuation.Integer.not_isUnit_iff_valuation_lt_one]
-  exact ⟨fun ⟨x, hx0, hx1⟩ ↦ ⟨⟨x, hx1.le⟩, by simp [Subtype.ext_iff, *]⟩,
-  fun ⟨x, hx1, hx0⟩ ↦ ⟨x, by simp [*]⟩⟩
+  exact ⟨
+    fun ⟨x, hx0, hx1⟩ ↦ ⟨⟨x, hx1.le⟩, by simp [Subtype.ext_iff, *]⟩,
+    fun ⟨x, hx1, hx0⟩ ↦ ⟨x, by simp [*]⟩
+  ⟩
 
-lemma isDiscreteValuationRing_of_compactSpace [hn : (Valued.v : Valuation K Γ₀).IsNontrivial]
-    [CompactSpace 𝒪[K]] : IsDiscreteValuationRing 𝒪[K] where
+lemma isDiscreteValuationRing_of_compactSpace
+    [hn : (Valued.v : Valuation K Γ₀).IsNontrivial] [CompactSpace 𝒪[K]]
+    : IsDiscreteValuationRing 𝒪[K] where
   -- To prove we have a DVR, we need to show it is
   -- a local ring (instance is directly inferred) and a PIR and not a field.
   __ := isPrincipalIdealRing_of_compactSpace
@@ -308,22 +308,23 @@ lemma isDiscreteValuationRing_of_compactSpace [hn : (Valued.v : Valuation K Γ�
 end CompactDVR
 
 lemma compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField
-    [(Valued.v : Valuation K Γ₀).RankOne] :
-    CompactSpace 𝒪[K] ↔ CompleteSpace 𝒪[K] ∧ IsDiscreteValuationRing 𝒪[K] ∧ Finite 𝓀[K] := by
+    [(Valued.v : Valuation K Γ₀).RankOne]
+    : CompactSpace 𝒪[K] ↔ CompleteSpace 𝒪[K] ∧ IsDiscreteValuationRing 𝒪[K] ∧ Finite 𝓀[K] := by
   refine ⟨fun h ↦ ?_, fun ⟨_, _, h⟩ ↦ ⟨?_⟩⟩
   · have : IsDiscreteValuationRing 𝒪[K] := isDiscreteValuationRing_of_compactSpace
     refine ⟨complete_of_compact, by assumption, ?_⟩
     rw [← isCompact_univ_iff, isCompact_iff_totallyBounded_isComplete,
-        totallyBounded_iff_finite_residueField] at h
+        totallyBounded_iff_finite_residueField]
+      at h
     exact h.left
   · rw [← totallyBounded_iff_finite_residueField] at h
     rw [isCompact_iff_totallyBounded_isComplete]
     exact ⟨h, completeSpace_iff_isComplete_univ.mp ‹_›⟩
 
-lemma properSpace_iff_compactSpace_integer [(Valued.v : Valuation K Γ₀).RankOne] :
-    ProperSpace K ↔ CompactSpace 𝒪[K] := by
+lemma properSpace_iff_compactSpace_integer [(Valued.v : Valuation K Γ₀).RankOne]
+    : ProperSpace K ↔ CompactSpace 𝒪[K] := by
   simp only [← isCompact_univ_iff, Subtype.isCompact_iff, Set.image_univ, Subtype.range_coe_subtype,
-             toNormedField.setOfPred_mem_integer_eq_closedBall]
+    toNormedField.setOfPred_mem_integer_eq_closedBall]
   constructor <;> intro h
   · exact isCompact_closedBall 0 1
   · suffices LocallyCompactSpace K from .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace K
@@ -331,13 +332,12 @@ lemma properSpace_iff_compactSpace_integer [(Valued.v : Valuation K Γ₀).RankO
       Metric.closedBall_mem_nhds 0 zero_lt_one
 
 lemma properSpace_iff_completeSpace_and_isDiscreteValuationRing_integer_and_finite_residueField
-    [(Valued.v : Valuation K Γ₀).RankOne] :
-    ProperSpace K ↔ CompleteSpace K ∧ IsDiscreteValuationRing 𝒪[K] ∧ Finite 𝓀[K] := by
+    [(Valued.v : Valuation K Γ₀).RankOne]
+    : ProperSpace K ↔ CompleteSpace K ∧ IsDiscreteValuationRing 𝒪[K] ∧ Finite 𝓀[K] := by
   simp only [properSpace_iff_compactSpace_integer,
-      compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField,
-      toNormedField.setOfPred_mem_integer_eq_closedBall,
-      completeSpace_iff_isComplete_univ (α := 𝒪[K]), Subtype.isComplete_iff,
-      NormedField.completeSpace_iff_isComplete_closedBall, Set.image_univ,
-      Subtype.range_coe_subtype]
+    compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField,
+    toNormedField.setOfPred_mem_integer_eq_closedBall,
+    completeSpace_iff_isComplete_univ (α := 𝒪[K]), Subtype.isComplete_iff,
+    NormedField.completeSpace_iff_isComplete_closedBall, Set.image_univ, Subtype.range_coe_subtype]
 
 end Valued.integer

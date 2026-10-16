@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.InnerProductSpace.Convex
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Combinatorics.Additive.AP.Three.Defs
-
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Combinatorics.Pigeonhole
 
@@ -54,13 +53,16 @@ open Nat hiding log
 open Finset Metric Real WithLp
 open scoped Pointwise
 
-/-- The frontier of a closed strictly convex set only contains trivial arithmetic progressions.
+/--
+The frontier of a closed strictly convex set only contains trivial arithmetic progressions.
 The idea is that an arithmetic progression is contained on a line and the frontier of a strictly
-convex set does not contain lines. -/
-lemma threeAPFree_frontier {𝕜 E : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    [TopologicalSpace E]
-    [AddCommMonoid E] [Module 𝕜 E] {s : Set E} (hs₀ : IsClosed s) (hs₁ : StrictConvex 𝕜 s) :
-    ThreeAPFree (frontier s) := by
+convex set does not contain lines.
+-/
+lemma threeAPFree_frontier
+    {𝕜 E : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] [TopologicalSpace E]
+    [AddCommMonoid E] [Module 𝕜 E]
+    {s : Set E} (hs₀ : IsClosed s) (hs₁ : StrictConvex 𝕜 s)
+    : ThreeAPFree (frontier s) := by
   intro a ha b hb c hc habc
   obtain rfl : (1 / 2 : 𝕜) • a + (1 / 2 : 𝕜) • c = b := by
     rwa [← smul_add, one_div, inv_smul_eq_iff₀ (show (2 : 𝕜) ≠ 0 by simp), two_smul]
@@ -71,8 +73,9 @@ lemma threeAPFree_frontier {𝕜 E : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsS
   ring_nf
   simp
 
-lemma threeAPFree_sphere {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [StrictConvexSpace ℝ E] (x : E) (r : ℝ) : ThreeAPFree (sphere x r) := by
+lemma threeAPFree_sphere
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [StrictConvexSpace ℝ E] (x : E) (r : ℝ)
+    : ThreeAPFree (sphere x r) := by
   obtain rfl | hr := eq_or_ne r 0
   · rw [sphere_zero]
     exact threeAPFree_singleton _
@@ -93,41 +96,38 @@ integer points. Because the $L^2$ closed ball is strictly convex, the $L^2$ sphe
 an additive monoid homomorphism.
 -/
 
-
 /-- The box `{0, ..., d - 1}^n` as a `Finset`. -/
-def box (n d : ℕ) : Finset (Fin n → ℕ) :=
-  Fintype.piFinset fun _ => range d
+def box (n d : ℕ) : Finset (Fin n → ℕ) := Fintype.piFinset fun _ => range d
 
 theorem mem_box : x ∈ box n d ↔ ∀ i, x i < d := by simp only [box, Fintype.mem_piFinset, mem_range]
 
-@[simp]
-theorem card_box : #(box n d) = d ^ n := by simp [box]
+@[simp] theorem card_box : #(box n d) = d ^ n := by simp [box]
 
-@[simp]
-theorem box_zero : box (n + 1) 0 = ∅ := by simp [box]
+@[simp] theorem box_zero : box (n + 1) 0 = ∅ := by simp [box]
 
-/-- The intersection of the sphere of radius `√k` with the integer points in the positive
-quadrant. -/
+/--
+The intersection of the sphere of radius `√k` with the integer points in the positive
+quadrant.
+-/
 def sphere (n d k : ℕ) : Finset (Fin n → ℕ) := {x ∈ box n d | ∑ i, x i ^ 2 = k}
 
 theorem sphere_zero_subset : sphere n d 0 ⊆ 0 := fun x => by simp [sphere, funext_iff]
 
-@[simp]
-theorem sphere_zero_right (n k : ℕ) : sphere (n + 1) 0 k = ∅ := by simp [sphere]
+@[simp] theorem sphere_zero_right (n k : ℕ) : sphere (n + 1) 0 k = ∅ := by simp [sphere]
 
-theorem sphere_subset_box : sphere n d k ⊆ box n d :=
-  filter_subset _ _
+theorem sphere_subset_box : sphere n d k ⊆ box n d := filter_subset _ _
 
-theorem norm_of_mem_sphere {x : Fin n → ℕ} (hx : x ∈ sphere n d k) :
-    ‖toLp 2 ((↑) ∘ x : Fin n → ℝ)‖ = √↑k := by
+theorem norm_of_mem_sphere {x : Fin n → ℕ} (hx : x ∈ sphere n d k)
+    : ‖toLp 2 ((↑) ∘ x : Fin n → ℝ)‖ = √ ↑k := by
   rw [EuclideanSpace.norm_eq]
   dsimp
   simp_rw [abs_cast, ← cast_pow, ← cast_sum, (mem_filter.1 hx).2]
 
-theorem sphere_subset_preimage_metric_sphere : (sphere n d k : Set (Fin n → ℕ)) ⊆
-    (fun x : Fin n → ℕ => toLp 2 ((↑) ∘ x : Fin n → ℝ)) ⁻¹'
-      Metric.sphere (0 : PiLp 2 fun _ : Fin n => ℝ) (√↑k) :=
-  fun x hx => by rw [Set.mem_preimage, mem_sphere_zero_iff_norm, norm_of_mem_sphere hx]
+theorem sphere_subset_preimage_metric_sphere
+    : (sphere n d k : Set (Fin n → ℕ))
+      ⊆ (fun x : Fin n → ℕ => toLp 2 ((↑) ∘ x : Fin n → ℝ))
+        ⁻¹' Metric.sphere (0 : PiLp 2 fun _ : Fin n => ℝ) (√ ↑k) := fun x hx => by
+  rw [Set.mem_preimage, mem_sphere_zero_iff_norm, norm_of_mem_sphere hx]
 
 /-- The map that appears in Behrend's bound on Roth numbers. -/
 @[simps]
@@ -138,12 +138,11 @@ def map (d : ℕ) : (Fin n → ℕ) →+ ℕ where
 
 theorem map_zero (d : ℕ) (a : Fin 0 → ℕ) : map d a = 0 := by simp [map]
 
-theorem map_succ (a : Fin (n + 1) → ℕ) :
-    map d a = a 0 + (∑ x : Fin n, a x.succ * d ^ (x : ℕ)) * d := by
+theorem map_succ (a : Fin (n + 1) → ℕ)
+    : map d a = a 0 + (∑ x : Fin n, a x.succ * d ^ (x : ℕ)) * d := by
   simp [map, Fin.sum_univ_succ, _root_.pow_succ, ← mul_assoc, ← sum_mul]
 
-theorem map_succ' (a : Fin (n + 1) → ℕ) : map d a = a 0 + map d (a ∘ Fin.succ) * d :=
-  map_succ _
+theorem map_succ' (a : Fin (n + 1) → ℕ) : map d a = a 0 + map d (a ∘ Fin.succ) * d := map_succ _
 
 set_option backward.defeqAttrib.useBackward true in
 theorem map_monotone (d : ℕ) : Monotone (map d : (Fin n → ℕ) → ℕ) := fun x y h => by
@@ -152,8 +151,8 @@ theorem map_monotone (d : ℕ) : Monotone (map d : (Fin n → ℕ) → ℕ) := f
 theorem map_mod (a : Fin n.succ → ℕ) : map d a % d = a 0 % d := by
   rw [map_succ, Nat.add_mul_mod_self_right]
 
-theorem map_eq_iff {x₁ x₂ : Fin n.succ → ℕ} (hx₁ : ∀ i, x₁ i < d) (hx₂ : ∀ i, x₂ i < d) :
-    map d x₁ = map d x₂ ↔ x₁ 0 = x₂ 0 ∧ map d (x₁ ∘ Fin.succ) = map d (x₂ ∘ Fin.succ) := by
+theorem map_eq_iff {x₁ x₂ : Fin n.succ → ℕ} (hx₁ : ∀ i, x₁ i < d) (hx₂ : ∀ i, x₂ i < d)
+    : map d x₁ = map d x₂ ↔ x₁ 0 = x₂ 0 ∧ map d (x₁ ∘ Fin.succ) = map d (x₂ ∘ Fin.succ) := by
   refine ⟨fun h => ?_, fun h => by rw [map_succ', map_succ', h.1, h.2]⟩
   have : x₁ 0 = x₂ 0 := by
     rw [← mod_eq_of_lt (hx₁ _), ← map_mod, ← mod_eq_of_lt (hx₂ _), ← map_mod, h]
@@ -163,14 +162,15 @@ theorem map_eq_iff {x₁ x₂ : Fin n.succ → ℕ} (hx₁ : ∀ i, x₁ i < d) 
 theorem map_injOn : {x : Fin n → ℕ | ∀ i, x i < d}.InjOn (map d) := by
   intro x₁ hx₁ x₂ hx₂ h
   induction n with
-  | zero => simp [eq_iff_true_of_subsingleton]
+  | zero =>
+    simp [eq_iff_true_of_subsingleton]
   | succ n ih =>
     ext i
     have x := (map_eq_iff hx₁ hx₂).1 h
     exact Fin.cases x.1 (congr_fun <| ih (fun _ => hx₁ _) (fun _ => hx₂ _) x.2) i
 
-theorem map_le_of_mem_box (hx : x ∈ box n d) :
-    map (2 * d - 1) x ≤ ∑ i : Fin n, (d - 1) * (2 * d - 1) ^ (i : ℕ) :=
+theorem map_le_of_mem_box (hx : x ∈ box n d)
+    : map (2 * d - 1) x ≤ ∑ i : Fin n, (d - 1) * (2 * d - 1) ^ (i : ℕ) :=
   map_monotone (2 * d - 1) fun _ => Nat.le_sub_one_of_lt <| mem_box.1 hx _
 
 nonrec theorem threeAPFree_sphere : ThreeAPFree (sphere n d k : Set (Fin n → ℕ)) := by
@@ -180,12 +180,12 @@ nonrec theorem threeAPFree_sphere : ThreeAPFree (sphere n d k : Set (Fin n → �
       map_add' := fun _ _ => PiLp.ext fun _ => cast_add _ _ }
   refine ThreeAPFree.of_image (AddHomClass.isAddFreimanHom f (Set.mapsTo_image _ _))
     ((toLp_injective 2).comp_injOn cast_injective.comp_left.injOn) (Set.subset_univ _) ?_
-  refine (threeAPFree_sphere 0 (√↑k)).mono (Set.image_subset_iff.2 fun x => ?_)
+  refine (threeAPFree_sphere 0 (√ ↑k)).mono (Set.image_subset_iff.2 fun x => ?_)
   rw [Set.mem_preimage, mem_sphere_zero_iff_norm]
   exact norm_of_mem_sphere
 
-theorem threeAPFree_image_sphere :
-    ThreeAPFree ((sphere n d k).image (map (2 * d - 1)) : Set ℕ) := by
+theorem threeAPFree_image_sphere
+    : ThreeAPFree ((sphere n d k).image (map (2 * d - 1)) : Set ℕ) := by
   rw [coe_image]
   apply ThreeAPFree.image' (α := Fin n → ℕ) (β := ℕ) (s := sphere n d k) (map (2 * d - 1))
     (map_injOn.mono _) threeAPFree_sphere
@@ -198,27 +198,25 @@ theorem threeAPFree_image_sphere :
 
 theorem sum_sq_le_of_mem_box (hx : x ∈ box n d) : ∑ i : Fin n, x i ^ 2 ≤ n * (d - 1) ^ 2 := by
   rw [mem_box] at hx
-  have : ∀ i, x i ^ 2 ≤ (d - 1) ^ 2 := fun i =>
-    Nat.pow_le_pow_left (Nat.le_sub_one_of_lt (hx i)) _
+  have : ∀ i, x i ^ 2 ≤ (d - 1) ^ 2 := fun i => Nat.pow_le_pow_left (Nat.le_sub_one_of_lt (hx i)) _
   exact (sum_le_card_nsmul univ _ _ fun i _ => this i).trans (by rw [Finset.card_fin, smul_eq_mul])
 
 theorem sum_eq : (∑ i : Fin n, d * (2 * d + 1) ^ (i : ℕ)) = ((2 * d + 1) ^ n - 1) / 2 := by
   refine (Nat.div_eq_of_eq_mul_left zero_lt_two ?_).symm
-  rw [← sum_range fun i => d * (2 * d + 1) ^ (i : ℕ), ← mul_sum, mul_right_comm, mul_comm d, ←
-    geom_sum_mul_add, add_tsub_cancel_right, mul_comm]
+  rw [← sum_range fun i => d * (2 * d + 1) ^ (i : ℕ), ← mul_sum, mul_right_comm, mul_comm d,
+    ← geom_sum_mul_add, add_tsub_cancel_right, mul_comm]
 
 theorem sum_lt : (∑ i : Fin n, d * (2 * d + 1) ^ (i : ℕ)) < (2 * d + 1) ^ n :=
   sum_eq.trans_lt <| (Nat.div_le_self _ 2).trans_lt <| pred_lt (pow_pos (succ_pos _) _).ne'
 
-theorem card_sphere_le_rothNumberNat (n d k : ℕ) :
-    #(sphere n d k) ≤ rothNumberNat ((2 * d - 1) ^ n) := by
+theorem card_sphere_le_rothNumberNat (n d k : ℕ)
+    : #(sphere n d k) ≤ rothNumberNat ((2 * d - 1) ^ n) := by
   cases n
   · dsimp; refine (card_le_univ _).trans_eq ?_; rfl
   cases d
   · simp
   apply threeAPFree_image_sphere.le_rothNumberNat _ _ (card_image_of_injOn _)
-  · simp only [mem_image, and_imp, forall_exists_index,
-      sphere, mem_filter]
+  · simp only [mem_image, and_imp, forall_exists_index, sphere, mem_filter]
     rintro _ x hx _ rfl
     exact (map_le_of_mem_box hx).trans_lt sum_lt
   apply map_injOn.mono fun x => ?_
@@ -234,17 +232,16 @@ that we then optimize by tweaking the parameters. The (almost) optimal parameter
 `Behrend.nValue` and `Behrend.dValue`.
 -/
 
-
-theorem exists_large_sphere_aux (n d : ℕ) : ∃ k ∈ range (n * (d - 1) ^ 2 + 1),
-    (↑(d ^ n) / ((n * (d - 1) ^ 2 :) + 1) : ℝ) ≤ #(sphere n d k) := by
+theorem exists_large_sphere_aux (n d : ℕ)
+    : ∃ k ∈ range (n * (d - 1) ^ 2 + 1),
+      (↑(d ^ n) / ((n * (d - 1) ^ 2 :) + 1) : ℝ) ≤ #(sphere n d k) := by
   refine exists_le_card_fiber_of_nsmul_le_card_of_maps_to (fun x hx => ?_) nonempty_range_add_one ?_
   · rw [mem_range, Nat.lt_succ_iff]
     exact sum_sq_le_of_mem_box hx
   · rw [card_range, nsmul_eq_mul, mul_div_assoc', cast_add_one, mul_div_cancel_left₀, card_box]
     exact (cast_add_one_pos _).ne'
 
-theorem exists_large_sphere (n d : ℕ) :
-    ∃ k, ((d ^ n :) / (n * d ^ 2 :) : ℝ) ≤ #(sphere n d k) := by
+theorem exists_large_sphere (n d : ℕ) : ∃ k, ((d ^ n :) / (n * d ^ 2 :) : ℝ) ≤ #(sphere n d k) := by
   obtain ⟨k, -, hk⟩ := exists_large_sphere_aux n d
   refine ⟨k, ?_⟩
   obtain rfl | hn := n.eq_zero_or_pos
@@ -264,8 +261,8 @@ theorem bound_aux' (n d : ℕ) : ((d ^ n :) / (n * d ^ 2 :) : ℝ) ≤ rothNumbe
   let ⟨_, h⟩ := exists_large_sphere n d
   h.trans <| cast_le.2 <| card_sphere_le_rothNumberNat _ _ _
 
-theorem bound_aux (hd : d ≠ 0) (hn : 2 ≤ n) :
-    (d ^ (n - 2 :) / n : ℝ) ≤ rothNumberNat ((2 * d - 1) ^ n) := by
+theorem bound_aux (hd : d ≠ 0) (hn : 2 ≤ n)
+    : (d ^ (n - 2 :) / n : ℝ) ≤ rothNumberNat ((2 * d - 1) ^ n) := by
   convert bound_aux' n d using 1
   rw [cast_mul, cast_pow, mul_comm, ← div_div, pow_sub₀ _ _ hn, ← div_eq_mul_inv, cast_pow]
   rwa [cast_ne_zero]
@@ -320,8 +317,8 @@ theorem div_lt_floor {x : ℝ} (hx : 2 / (1 - 2 / exp 1) ≤ x) : x / exp 1 < (�
   have : 0 < 1 - 2 / exp 1 := by
     rw [sub_pos, div_lt_one (exp_pos _)]
     exact exp_one_gt_two
-  rwa [le_sub_comm, div_eq_mul_one_div x, div_eq_mul_one_div x, ← mul_sub, div_sub', ←
-    div_eq_mul_one_div, mul_div_assoc', one_le_div, ← div_le_iff₀ this]
+  rwa [le_sub_comm, div_eq_mul_one_div x, div_eq_mul_one_div x, ← mul_sub, div_sub',
+    ← div_eq_mul_one_div, mul_div_assoc', one_le_div, ← div_le_iff₀ this]
   · exact zero_lt_two
   · exact two_ne_zero
 
@@ -329,15 +326,13 @@ theorem ceil_lt_mul {x : ℝ} (hx : 50 / 19 ≤ x) : (⌈x⌉₊ : ℝ) < 1.38 *
   refine (ceil_lt_add_one <| hx.trans' <| by norm_num).trans_le ?_
   rw [← le_sub_iff_add_le', ← sub_one_mul]
   have : (1.38 : ℝ) = 69 / 50 := by norm_num
-  rwa [this, show (69 / 50 - 1 : ℝ) = (50 / 19)⁻¹ by norm_num1, ←
-    div_eq_inv_mul, one_le_div]
+  rwa [this, show (69 / 50 - 1 : ℝ) = (50 / 19)⁻¹ by norm_num1, ← div_eq_inv_mul, one_le_div]
   norm_num1
 
 end NumericalBounds
 
 /-- The (almost) optimal value of `n` in `Behrend.bound_aux`. -/
-noncomputable def nValue (N : ℕ) : ℕ :=
-  ⌈√(log N)⌉₊
+noncomputable def nValue (N : ℕ) : ℕ := ⌈√(log N)⌉₊
 
 /-- The (almost) optimal value of `d` in `Behrend.bound_aux`. -/
 noncomputable def dValue (N : ℕ) : ℕ := ⌊(N : ℝ) ^ (nValue N : ℝ)⁻¹ / 2⌋₊
@@ -417,8 +412,8 @@ theorem bound (hN : 4096 ≤ N) : (N : ℝ) ^ (nValue N : ℝ)⁻¹ / exp 1 < dV
     exact exp_one_gt_two
   positivity
 
-theorem roth_lower_bound_explicit (hN : 4096 ≤ N) :
-    (N : ℝ) * exp (-4 * √(log N)) < rothNumberNat N := by
+theorem roth_lower_bound_explicit (hN : 4096 ≤ N)
+    : (N : ℝ) * exp (-4 * √(log N)) < rothNumberNat N := by
   let n := nValue N
   have hn : 0 < (n : ℝ) := cast_pos.2 (nValue_pos <| hN.trans' <| by norm_num1)
   have hd : 0 < dValue N := dValue_pos (hN.trans' <| by norm_num1)
@@ -431,8 +426,8 @@ theorem roth_lower_bound_explicit (hN : 4096 ≤ N) :
     _ ≤ rothNumberNat ((2 * dValue N - 1) ^ n) := bound_aux hd.ne' hn₂.le
     _ ≤ rothNumberNat N := mod_cast rothNumberNat.mono this
   rw [← rpow_natCast, div_rpow (rpow_nonneg hN₀.le _) (exp_pos _).le, ← rpow_mul hN₀.le,
-    inv_mul_eq_div, cast_sub hn₂.le, cast_two, same_sub_div hn.ne', exp_one_rpow,
-    div_div, rpow_sub hN₀, rpow_one, div_div, div_eq_mul_inv]
+    inv_mul_eq_div, cast_sub hn₂.le, cast_two, same_sub_div hn.ne', exp_one_rpow, div_div,
+    rpow_sub hN₀, rpow_one, div_div, div_eq_mul_inv]
   gcongr _ * ?_
   rw [mul_inv, mul_inv, ← exp_neg, ← rpow_neg (cast_nonneg _), neg_sub, ← div_eq_mul_inv]
   have : exp (-4 * √(log N)) = exp (-2 * √(log N)) * exp (-2 * √(log N)) := by
@@ -462,19 +457,17 @@ theorem four_zero_nine_six_lt_exp_sixteen : 4096 < exp 16 := by
     ← rpow_natCast, log_rpow zero_lt_two, cast_ofNat]
   linarith [log_two_lt_d9]
 
-theorem lower_bound_le_one' (hN : 2 ≤ N) (hN' : N ≤ 4096) :
-    (N : ℝ) * exp (-4 * √(log N)) ≤ 1 := by
+theorem lower_bound_le_one' (hN : 2 ≤ N) (hN' : N ≤ 4096) : (N : ℝ) * exp (-4 * √(log N)) ≤ 1 := by
   rw [← log_le_log_iff (mul_pos (cast_pos.2 (zero_lt_two.trans_le hN)) (exp_pos _)) zero_lt_one,
-    log_one, log_mul (cast_pos.2 (zero_lt_two.trans_le hN)).ne' (exp_pos _).ne', log_exp, neg_mul, ←
-    sub_eq_add_neg, sub_nonpos, ←
-    div_le_iff₀ (Real.sqrt_pos.2 <| log_pos <| one_lt_cast.2 <| one_lt_two.trans_le hN), div_sqrt,
+    log_one, log_mul (cast_pos.2 (zero_lt_two.trans_le hN)).ne' (exp_pos _).ne', log_exp, neg_mul,
+    ← sub_eq_add_neg, sub_nonpos,
+    ← div_le_iff₀ (Real.sqrt_pos.2 <| log_pos <| one_lt_cast.2 <| one_lt_two.trans_le hN), div_sqrt,
     sqrt_le_left zero_le_four, log_le_iff_le_exp (cast_pos.2 (zero_lt_two.trans_le hN))]
   norm_num1
   apply le_trans _ four_zero_nine_six_lt_exp_sixteen.le
   exact mod_cast hN'
 
-theorem lower_bound_le_one (hN : 1 ≤ N) (hN' : N ≤ 4096) :
-    (N : ℝ) * exp (-4 * √(log N)) ≤ 1 := by
+theorem lower_bound_le_one (hN : 1 ≤ N) (hN' : N ≤ 4096) : (N : ℝ) * exp (-4 * √(log N)) ≤ 1 := by
   obtain rfl | hN := hN.eq_or_lt
   · simp
   · exact lower_bound_le_one' hN hN'

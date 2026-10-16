@@ -47,11 +47,9 @@ theorem isHomeomorphicTrivialFiberBundle_re : IsHomeomorphicTrivialFiberBundle �
 theorem isHomeomorphicTrivialFiberBundle_im : IsHomeomorphicTrivialFiberBundle ℝ im :=
   ⟨equivRealProdCLM.toHomeomorph.trans (Homeomorph.prodComm ℝ ℝ), fun _ => rfl⟩
 
-theorem isOpenMap_re : IsOpenMap re :=
-  isHomeomorphicTrivialFiberBundle_re.isOpenMap_proj
+theorem isOpenMap_re : IsOpenMap re := isHomeomorphicTrivialFiberBundle_re.isOpenMap_proj
 
-theorem isOpenMap_im : IsOpenMap im :=
-  isHomeomorphicTrivialFiberBundle_im.isOpenMap_proj
+theorem isOpenMap_im : IsOpenMap im := isHomeomorphicTrivialFiberBundle_im.isOpenMap_proj
 
 theorem isQuotientMap_re : IsQuotientMap re :=
   isHomeomorphicTrivialFiberBundle_re.isQuotientMap_proj
@@ -189,25 +187,27 @@ alias frontier_setOf_lt_im := frontier_setOfPred_lt_im
 
 theorem closure_reProdIm (s t : Set ℝ) : closure (s ×ℂ t) = closure s ×ℂ closure t := by
   simpa only [← preimage_eq_preimage equivRealProdCLM.symm.toHomeomorph.surjective,
-    equivRealProdCLM.symm.toHomeomorph.preimage_closure] using! @closure_prod_eq _ _ _ _ s t
+      equivRealProdCLM.symm.toHomeomorph.preimage_closure]
+    using! @closure_prod_eq _ _ _ _ s t
 
 theorem interior_reProdIm (s t : Set ℝ) : interior (s ×ℂ t) = interior s ×ℂ interior t := by
   rw [reProdIm, reProdIm, interior_inter, interior_preimage_re, interior_preimage_im]
 
-theorem frontier_reProdIm (s t : Set ℝ) :
-    frontier (s ×ℂ t) = closure s ×ℂ frontier t ∪ frontier s ×ℂ closure t := by
+theorem frontier_reProdIm (s t : Set ℝ)
+    : frontier (s ×ℂ t) = closure s ×ℂ frontier t ∪ frontier s ×ℂ closure t := by
   simpa only [← preimage_eq_preimage equivRealProdCLM.symm.toHomeomorph.surjective,
-    equivRealProdCLM.symm.toHomeomorph.preimage_frontier] using! frontier_prod_eq s t
+      equivRealProdCLM.symm.toHomeomorph.preimage_frontier]
+    using! frontier_prod_eq s t
 
-theorem frontier_setOfPred_le_re_and_le_im (a b : ℝ) :
-    frontier { z | a ≤ re z ∧ b ≤ im z } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ b ≤ im z } := by
+theorem frontier_setOfPred_le_re_and_le_im (a b : ℝ)
+    : frontier { z | a ≤ re z ∧ b ≤ im z } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ b ≤ im z } := by
   simpa only [closure_Ici, frontier_Ici] using! frontier_reProdIm (Ici a) (Ici b)
 
 @[deprecated (since := "2026-07-09")]
 alias frontier_setOf_le_re_and_le_im := frontier_setOfPred_le_re_and_le_im
 
-theorem frontier_setOfPred_le_re_and_im_le (a b : ℝ) :
-    frontier { z | a ≤ re z ∧ im z ≤ b } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ im z ≤ b } := by
+theorem frontier_setOfPred_le_re_and_im_le (a b : ℝ)
+    : frontier { z | a ≤ re z ∧ im z ≤ b } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ im z ≤ b } := by
   simpa only [closure_Ici, closure_Iic, frontier_Ici, frontier_Iic] using!
     frontier_reProdIm (Ici a) (Iic b)
 
@@ -233,24 +233,24 @@ section continuity
 
 variable {α ι : Type*}
 
-protected lemma TendstoUniformlyOn.re {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} {K : Set α}
-    (hf : TendstoUniformlyOn f g p K) :
-    TendstoUniformlyOn (fun n x => (f n x).re) (fun y => (g y).re) p K := by
+protected lemma TendstoUniformlyOn.re
+    {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} {K : Set α} (hf : TendstoUniformlyOn f g p K)
+    : TendstoUniformlyOn (fun n x => (f n x).re) (fun y => (g y).re) p K := by
   apply UniformContinuous.comp_tendstoUniformlyOn uniformContinuous_re hf
 
-protected lemma TendstoUniformly.re {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ}
-    (hf : TendstoUniformly f g p) :
-    TendstoUniformly (fun n x => (f n x).re) (fun y => (g y).re) p := by
+protected lemma TendstoUniformly.re
+    {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} (hf : TendstoUniformly f g p)
+    : TendstoUniformly (fun n x => (f n x).re) (fun y => (g y).re) p := by
   apply UniformContinuous.comp_tendstoUniformly uniformContinuous_re hf
 
-protected lemma TendstoUniformlyOn.im {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} {K : Set α}
-    (hf : TendstoUniformlyOn f g p K) :
-    TendstoUniformlyOn (fun n x => (f n x).im) (fun y => (g y).im) p K := by
+protected lemma TendstoUniformlyOn.im
+    {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} {K : Set α} (hf : TendstoUniformlyOn f g p K)
+    : TendstoUniformlyOn (fun n x => (f n x).im) (fun y => (g y).im) p K := by
   apply UniformContinuous.comp_tendstoUniformlyOn uniformContinuous_im hf
 
-protected lemma TendstoUniformly.im {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ}
-    (hf : TendstoUniformly f g p) :
-    TendstoUniformly (fun n x => (f n x).im) (fun y => (g y).im) p := by
+protected lemma TendstoUniformly.im
+    {f : ι → α → ℂ} {p : Filter ι} {g : α → ℂ} (hf : TendstoUniformly f g p)
+    : TendstoUniformly (fun n x => (f n x).im) (fun y => (g y).im) p := by
   apply UniformContinuous.comp_tendstoUniformly uniformContinuous_im hf
 
 end continuity

@@ -26,7 +26,8 @@ universe v₁ v₂ v₃ u₁ u₂ u₃ w
 
 namespace CategoryTheory
 
-variable {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
+variable
+  {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
   {E : Type u₃} [Category.{v₃} E]
   (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
   (A : Type w) [AddMonoid A] [HasShift C A]
@@ -34,12 +35,16 @@ variable {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
 
 namespace MorphismProperty
 
-/-- A morphism property `W` on a category `C` is compatible with the shift by a
+/--
+A morphism property `W` on a category `C` is compatible with the shift by a
 monoid `A` when for all `a : A`, a morphism `f` belongs to `W`
-if and only if `f⟦a⟧'` does. -/
+if and only if `f⟦a⟧'` does.
+-/
 class IsCompatibleWithShift : Prop where
-  /-- the condition that for all `a : A`, the morphism property `W` is not changed when
-  we take its inverse image by the shift functor by `a` -/
+  /--
+  the condition that for all `a : A`, the morphism property `W` is not changed when
+  we take its inverse image by the shift functor by `a`
+  -/
   condition : ∀ (a : A), W.inverseImage (shiftFunctor C a) = W
 
 variable [W.IsCompatibleWithShift A] [W.IsCompatibleWithShift G]
@@ -52,8 +57,7 @@ lemma iff {X Y : C} (f : X ⟶ Y) (a : A) : W (f⟦a⟧') ↔ W f := by
   conv_rhs => rw [← @IsCompatibleWithShift.condition _ _ W A _ _ _ a]
   rfl
 
-lemma shiftFunctor_comp_inverts (a : A) :
-    W.IsInvertedBy (shiftFunctor C a ⋙ L) := fun _ _ f hf =>
+lemma shiftFunctor_comp_inverts (a : A) : W.IsInvertedBy (shiftFunctor C a ⋙ L) := fun _ _ f hf =>
   Localization.inverts L W _ (by simpa only [iff] using hf)
 
 end IsCompatibleWithShift
@@ -63,38 +67,47 @@ lemma shift {X Y : C} {f : X ⟶ Y} (hf : W f) (a : A) : W (f⟦a⟧') := by
   simpa only [IsCompatibleWithShift.iff W f a] using hf
 
 variable {A} in
-/-- The morphism of localizer from `W` to `W` given by the functor `shiftFunctor C a`
-when `a : A` and `W` is compatible with the shift by `A`. -/
+/--
+The morphism of localizer from `W` to `W` given by the functor `shiftFunctor C a`
+when `a : A` and `W` is compatible with the shift by `A`.
+-/
 abbrev shiftLocalizerMorphism (a : A) : LocalizerMorphism W W where
   functor := shiftFunctor C a
   map := by rw [MorphismProperty.IsCompatibleWithShift.condition]
 
 instance (g : G) : (W.shiftLocalizerMorphism g).IsLocalizedEquivalence :=
-  LocalizerMorphism.IsLocalizedEquivalence.of_equivalence _
-    (fun _ _ f hf ↦ ⟨_, _, f⟦-g⟧', (IsCompatibleWithShift.iff W f _).2 hf,
-      ⟨Arrow.isoOfNatIso (shiftEquiv C g).counitIso (Arrow.mk f)⟩⟩)
+  LocalizerMorphism.IsLocalizedEquivalence.of_equivalence _ (fun _ _ f hf ↦ ⟨
+    _,
+    _,
+    f⟦-g⟧',
+    (IsCompatibleWithShift.iff W f _).2 hf,
+    ⟨Arrow.isoOfNatIso (shiftEquiv C g).counitIso (Arrow.mk f)⟩
+  ⟩)
 
 end MorphismProperty
 
 section
 variable [W.IsCompatibleWithShift A]
 
-/-- When `L : C ⥤ D` is a localization functor with respect to a morphism property `W`
+/--
+When `L : C ⥤ D` is a localization functor with respect to a morphism property `W`
 that is compatible with the shift by a monoid `A` on `C`, this is the induced
-shift on the category `D`. -/
+shift on the category `D`.
+-/
 @[instance_reducible]
 noncomputable def HasShift.localized : HasShift D A :=
   have := Localization.full_whiskeringLeft L W D
   have := Localization.faithful_whiskeringLeft L W D
   HasShift.induced L A
-    (fun a => Localization.lift (shiftFunctor C a ⋙ L)
-      (MorphismProperty.IsCompatibleWithShift.shiftFunctor_comp_inverts L W a) L)
+    (fun a =>
+      Localization.lift (shiftFunctor C a ⋙ L)
+        (MorphismProperty.IsCompatibleWithShift.shiftFunctor_comp_inverts L W a) L)
     (fun _ => Localization.fac _ _ _)
 
 /-- The localization functor `L : C ⥤ D` is compatible with the shift. -/
 @[nolint unusedHavesSuffices, instance_reducible]
-noncomputable def Functor.CommShift.localized :
-    @Functor.CommShift _ _ _ _ L A _ _ (HasShift.localized L W A) :=
+noncomputable def Functor.CommShift.localized
+    : @Functor.CommShift _ _ _ _ L A _ _ (HasShift.localized L W A) :=
   have := Localization.full_whiskeringLeft L W D
   have := Localization.faithful_whiskeringLeft L W D
   Functor.CommShift.ofInduced _ _ _ _
@@ -102,13 +115,11 @@ noncomputable def Functor.CommShift.localized :
 attribute [irreducible] HasShift.localized Functor.CommShift.localized
 
 /-- The localized category `W.Localization` is endowed with the induced shift. -/
-noncomputable instance HasShift.localization :
-    HasShift W.Localization A :=
+noncomputable instance HasShift.localization : HasShift W.Localization A :=
   HasShift.localized W.Q W A
 
 /-- The localization functor `W.Q : C ⥤ W.Localization` is compatible with the shift. -/
-noncomputable instance MorphismProperty.commShift_Q :
-    W.Q.CommShift A :=
+noncomputable instance MorphismProperty.commShift_Q : W.Q.CommShift A :=
   Functor.CommShift.localized W.Q W A
 
 attribute [irreducible] HasShift.localization MorphismProperty.commShift_Q
@@ -116,13 +127,11 @@ attribute [irreducible] HasShift.localization MorphismProperty.commShift_Q
 variable [W.HasLocalization]
 
 /-- The localized category `W.Localization'` is endowed with the induced shift. -/
-noncomputable instance HasShift.localization' :
-    HasShift W.Localization' A :=
+noncomputable instance HasShift.localization' : HasShift W.Localization' A :=
   HasShift.localized W.Q' W A
 
 /-- The localization functor `W.Q' : C ⥤ W.Localization'` is compatible with the shift. -/
-noncomputable instance MorphismProperty.commShift_Q' :
-    W.Q'.CommShift A :=
+noncomputable instance MorphismProperty.commShift_Q' : W.Q'.CommShift A :=
   Functor.CommShift.localized W.Q' W A
 
 attribute [irreducible] HasShift.localization' MorphismProperty.commShift_Q'
@@ -133,8 +142,9 @@ section
 
 open Localization
 
-variable (F : C ⥤ E) (F' : D ⥤ E) [Lifting L W F F']
-  [HasShift D A] [HasShift E A] [L.CommShift A] [F.CommShift A]
+variable
+  (F : C ⥤ E) (F' : D ⥤ E)
+  [Lifting L W F F'] [HasShift D A] [HasShift E A] [L.CommShift A] [F.CommShift A]
 
 namespace Functor
 
@@ -143,40 +153,34 @@ namespace commShiftOfLocalization
 variable {A}
 
 /-- Auxiliary definition for `Functor.commShiftOfLocalization`. -/
-noncomputable def iso (a : A) :
-    shiftFunctor D a ⋙ F' ≅ F' ⋙ shiftFunctor E a :=
-  Localization.liftNatIso L W (L ⋙ shiftFunctor D a ⋙ F')
-    (L ⋙ F' ⋙ shiftFunctor E a) _ _
-      ((Functor.associator _ _ _).symm ≪≫
-        isoWhiskerRight (L.commShiftIso a).symm F' ≪≫
-        Functor.associator _ _ _ ≪≫
-        isoWhiskerLeft _ (Lifting.iso L W F F') ≪≫
-        F.commShiftIso a ≪≫
-        isoWhiskerRight (Lifting.iso L W F F').symm _ ≪≫ Functor.associator _ _ _)
+noncomputable def iso (a : A) : shiftFunctor D a ⋙ F' ≅ F' ⋙ shiftFunctor E a :=
+  Localization.liftNatIso L W (L ⋙ shiftFunctor D a ⋙ F') (L ⋙ F' ⋙ shiftFunctor E a) _ _
+    ((Functor.associator _ _ _).symm ≪≫ isoWhiskerRight (L.commShiftIso a).symm F'
+      ≪≫ Functor.associator _ _ _ ≪≫ isoWhiskerLeft _ (Lifting.iso L W F F') ≪≫ F.commShiftIso a
+      ≪≫ isoWhiskerRight (Lifting.iso L W F F').symm _ ≪≫ Functor.associator _ _ _)
 
 @[simp, reassoc]
-lemma iso_hom_app (a : A) (X : C) :
-    (commShiftOfLocalization.iso L W F F' a).hom.app (L.obj X) =
-      F'.map ((L.commShiftIso a).inv.app X) ≫
-      (Lifting.iso L W F F').hom.app (X⟦a⟧) ≫
-        (F.commShiftIso a).hom.app X ≫
-          (shiftFunctor E a).map ((Lifting.iso L W F F').inv.app X) := by
+lemma iso_hom_app (a : A) (X : C)
+    : (commShiftOfLocalization.iso L W F F' a).hom.app (L.obj X)
+      = F'.map ((L.commShiftIso a).inv.app X) ≫ (Lifting.iso L W F F').hom.app (X⟦a⟧)
+        ≫ (F.commShiftIso a).hom.app X
+        ≫ (shiftFunctor E a).map ((Lifting.iso L W F F').inv.app X) := by
   simp [commShiftOfLocalization.iso]
 
 @[simp, reassoc]
-lemma iso_inv_app (a : A) (X : C) :
-    (commShiftOfLocalization.iso L W F F' a).inv.app (L.obj X) =
-      (shiftFunctor E a).map ((Lifting.iso L W F F').hom.app X) ≫
-      (F.commShiftIso a).inv.app X ≫
-      (Lifting.iso L W F F').inv.app (X⟦a⟧) ≫
-      F'.map ((L.commShiftIso a).hom.app X) := by
+lemma iso_inv_app (a : A) (X : C)
+    : (commShiftOfLocalization.iso L W F F' a).inv.app (L.obj X)
+      = (shiftFunctor E a).map ((Lifting.iso L W F F').hom.app X) ≫ (F.commShiftIso a).inv.app X
+        ≫ (Lifting.iso L W F F').inv.app (X⟦a⟧) ≫ F'.map ((L.commShiftIso a).hom.app X) := by
   simp [commShiftOfLocalization.iso]
 
 end commShiftOfLocalization
 
-/-- In the context of localization of categories, if a functor
+/--
+In the context of localization of categories, if a functor
 is induced by a functor which commutes with the shift, then
-this functor commutes with the shift. -/
+this functor commutes with the shift.
+-/
 @[instance_reducible]
 noncomputable def commShiftOfLocalization : F'.CommShift A where
   commShiftIso := commShiftOfLocalization.iso L W F F'
@@ -189,8 +193,8 @@ noncomputable def commShiftOfLocalization : F'.CommShift A where
       CommShift.isoZero_inv_app, map_comp, CommShift.isoZero_hom_app, Category.assoc,
       ← NatTrans.naturality_assoc, ← NatTrans.naturality]
     dsimp
-    simp only [← Functor.map_comp_assoc, ← Functor.map_comp,
-      Iso.inv_hom_id_app, id_obj, map_id, Category.id_comp, Iso.hom_inv_id_app_assoc]
+    simp only [← Functor.map_comp_assoc, ← Functor.map_comp, Iso.inv_hom_id_app, id_obj, map_id,
+      Category.id_comp, Iso.hom_inv_id_app_assoc]
   commShiftIso_add a b := by
     ext1
     apply natTrans_ext L W
@@ -220,37 +224,34 @@ noncomputable def commShiftOfLocalization : F'.CommShift A where
 
 variable {A}
 
-lemma commShiftOfLocalization_iso_hom_app (a : A) (X : C) :
-    letI := Functor.commShiftOfLocalization L W A F F'
-    (F'.commShiftIso a).hom.app (L.obj X) =
-      F'.map ((L.commShiftIso a).inv.app X) ≫ (Lifting.iso L W F F').hom.app (X⟦a⟧) ≫
-        (F.commShiftIso a).hom.app X ≫
-          (shiftFunctor E a).map ((Lifting.iso L W F F').inv.app X) := by
+lemma commShiftOfLocalization_iso_hom_app (a : A) (X : C)
+    : letI := Functor.commShiftOfLocalization L W A F F'
+      (F'.commShiftIso a).hom.app (L.obj X)
+        = F'.map ((L.commShiftIso a).inv.app X) ≫ (Lifting.iso L W F F').hom.app (X⟦a⟧)
+          ≫ (F.commShiftIso a).hom.app X
+          ≫ (shiftFunctor E a).map ((Lifting.iso L W F F').inv.app X) := by
   apply commShiftOfLocalization.iso_hom_app
 
-lemma commShiftOfLocalization_iso_inv_app (a : A) (X : C) :
-    letI := Functor.commShiftOfLocalization L W A F F'
-    (F'.commShiftIso a).inv.app (L.obj X) =
-      (shiftFunctor E a).map ((Lifting.iso L W F F').hom.app X) ≫
-      (F.commShiftIso a).inv.app X ≫ (Lifting.iso L W F F').inv.app (X⟦a⟧) ≫
-      F'.map ((L.commShiftIso a).hom.app X) := by
+lemma commShiftOfLocalization_iso_inv_app (a : A) (X : C)
+    : letI := Functor.commShiftOfLocalization L W A F F'
+      (F'.commShiftIso a).inv.app (L.obj X)
+        = (shiftFunctor E a).map ((Lifting.iso L W F F').hom.app X) ≫ (F.commShiftIso a).inv.app X
+          ≫ (Lifting.iso L W F F').inv.app (X⟦a⟧) ≫ F'.map ((L.commShiftIso a).hom.app X) := by
   apply commShiftOfLocalization.iso_inv_app
 
 end Functor
 
-instance NatTrans.commShift_iso_hom_of_localization :
-    letI := Functor.commShiftOfLocalization L W A F F'
-    NatTrans.CommShift (Lifting.iso L W F F').hom A := by
+instance NatTrans.commShift_iso_hom_of_localization
+    : letI := Functor.commShiftOfLocalization L W A F F'
+      NatTrans.CommShift (Lifting.iso L W F F').hom A := by
   let := Functor.commShiftOfLocalization L W A F F'
   constructor
   intro a
   ext X
   simp only [comp_app, Functor.whiskerRight_app, Functor.whiskerLeft_app,
-    Functor.commShiftIso_comp_hom_app,
-    Functor.commShiftOfLocalization_iso_hom_app,
-    Category.assoc, ← Functor.map_comp, ← Functor.map_comp_assoc,
-    Iso.hom_inv_id_app, Functor.map_id, Iso.inv_hom_id_app,
-    Category.comp_id, Category.id_comp, Functor.comp_obj]
+    Functor.commShiftIso_comp_hom_app, Functor.commShiftOfLocalization_iso_hom_app, Category.assoc,
+    ← Functor.map_comp, ← Functor.map_comp_assoc, Iso.hom_inv_id_app, Functor.map_id,
+    Iso.inv_hom_id_app, Category.comp_id, Category.id_comp, Functor.comp_obj]
 
 end
 
@@ -258,51 +259,51 @@ namespace LocalizerMorphism
 
 open Localization
 
-variable {C₁ C₂ : Type*} [Category* C₁] [Category* C₂]
+variable
+  {C₁ C₂ : Type*} [Category* C₁] [Category* C₂]
   {W₁ : MorphismProperty C₁} {W₂ : MorphismProperty C₂} (Φ : LocalizerMorphism W₁ W₂)
-  {M : Type*} [AddMonoid M] [HasShift C₁ M] [HasShift C₂ M]
-  [Φ.functor.CommShift M]
+  {M : Type*} [AddMonoid M] [HasShift C₁ M] [HasShift C₂ M] [Φ.functor.CommShift M]
   {D₁ D₂ : Type*} [Category* D₁] [Category* D₂]
-  (L₁ : C₁ ⥤ D₁) [L₁.IsLocalization W₁] (L₂ : C₂ ⥤ D₂)
-  [HasShift D₁ M] [HasShift D₂ M] [L₁.CommShift M] [L₂.CommShift M]
+  (L₁ : C₁ ⥤ D₁) [L₁.IsLocalization W₁]
+  (L₂ : C₂ ⥤ D₂) [HasShift D₁ M] [HasShift D₂ M] [L₁.CommShift M] [L₂.CommShift M]
 
 section
 
 variable (G : D₁ ⥤ D₂) (e : Φ.functor ⋙ L₂ ≅ L₁ ⋙ G)
 
 variable (M) in
-/-- This is the commutation of a functor `G` to shifts by an additive monoid `M` when
+/--
+This is the commutation of a functor `G` to shifts by an additive monoid `M` when
 `e : Φ.functor ⋙ L₂ ≅ L₁ ⋙ G` is an isomorphism, `Φ` is a localizer morphism and
 `L₁` is a localization functor. We assume that all categories involved
-are equipped with shifts and that `L₁`, `L₂` and `Φ.functor` commute to them. -/
+are equipped with shifts and that `L₁`, `L₂` and `Φ.functor` commute to them.
+-/
 @[instance_reducible]
 noncomputable def commShift : G.CommShift M := by
   letI : Localization.Lifting L₁ W₁ (Φ.functor ⋙ L₂) G := ⟨e.symm⟩
   exact Functor.commShiftOfLocalization L₁ W₁ M (Φ.functor ⋙ L₂) G
 
 @[reassoc]
-lemma commShift_iso_hom_app (m : M) (X : C₁) :
-    letI := Φ.commShift M L₁ L₂ G e
-    (G.commShiftIso m).hom.app (L₁.obj X) =
-      G.map ((L₁.commShiftIso m).inv.app X) ≫ e.inv.app _ ≫
-        L₂.map ((Φ.functor.commShiftIso m).hom.app X) ≫
-        (L₂.commShiftIso m).hom.app _ ≫ (e.hom.app X)⟦m⟧' := by
-  simp [Functor.commShiftOfLocalization_iso_hom_app,
-    Functor.commShiftIso_comp_hom_app]
+lemma commShift_iso_hom_app (m : M) (X : C₁)
+    : letI := Φ.commShift M L₁ L₂ G e
+      (G.commShiftIso m).hom.app (L₁.obj X)
+        = G.map ((L₁.commShiftIso m).inv.app X) ≫ e.inv.app _
+          ≫ L₂.map ((Φ.functor.commShiftIso m).hom.app X) ≫ (L₂.commShiftIso m).hom.app _
+          ≫ (e.hom.app X)⟦m⟧' := by
+  simp [Functor.commShiftOfLocalization_iso_hom_app, Functor.commShiftIso_comp_hom_app]
 
 @[reassoc]
-lemma commShift_iso_inv_app (m : M) (X : C₁) :
-    letI := Φ.commShift M L₁ L₂ G e
-    (G.commShiftIso m).inv.app (L₁.obj X) =
-      (e.inv.app X)⟦m⟧' ≫ (L₂.commShiftIso m).inv.app _ ≫
-        L₂.map ((Φ.functor.commShiftIso m).inv.app X) ≫ e.hom.app _ ≫
-          G.map ((L₁.commShiftIso m).hom.app X) := by
-  simp [Functor.commShiftOfLocalization_iso_inv_app,
-    Functor.commShiftIso_comp_inv_app]
+lemma commShift_iso_inv_app (m : M) (X : C₁)
+    : letI := Φ.commShift M L₁ L₂ G e
+      (G.commShiftIso m).inv.app (L₁.obj X)
+        = (e.inv.app X)⟦m⟧' ≫ (L₂.commShiftIso m).inv.app _
+          ≫ L₂.map ((Φ.functor.commShiftIso m).inv.app X) ≫ e.hom.app _
+          ≫ G.map ((L₁.commShiftIso m).hom.app X) := by
+  simp [Functor.commShiftOfLocalization_iso_inv_app, Functor.commShiftIso_comp_inv_app]
 
-lemma natTransCommShift_hom :
-    letI := Φ.commShift M L₁ L₂ G e
-    NatTrans.CommShift e.hom M := by
+lemma natTransCommShift_hom
+    : letI := Φ.commShift M L₁ L₂ G e
+      NatTrans.CommShift e.hom M := by
   let := Φ.commShift M L₁ L₂ G e
   refine ⟨fun m ↦ ?_⟩
   ext X
@@ -310,15 +311,13 @@ lemma natTransCommShift_hom :
 
 end
 
-variable [W₁.IsCompatibleWithShift M] [W₂.IsCompatibleWithShift M]
-  [L₂.IsLocalization W₂]
+variable [W₁.IsCompatibleWithShift M] [W₂.IsCompatibleWithShift M] [L₂.IsLocalization W₂]
 
 noncomputable instance : (Φ.localizedFunctor L₁ L₂).CommShift M :=
   Φ.commShift M L₁ L₂ _ (CatCommSq.iso ..)
 
-instance :
-    NatTrans.CommShift (CatCommSq.iso Φ.functor W₁.Q W₂.Q
-      (Φ.localizedFunctor W₁.Q W₂.Q)).hom M :=
+instance
+    : NatTrans.CommShift (CatCommSq.iso Φ.functor W₁.Q W₂.Q (Φ.localizedFunctor W₁.Q W₂.Q)).hom M :=
   natTransCommShift_hom ..
 
 end LocalizerMorphism
@@ -333,18 +332,18 @@ instance : NatTrans.CommShift (Lifting.iso L W L (𝟭 D)).hom A := by
   dsimp [Lifting.iso]
   infer_instance
 
-instance liftNatTrans [HasShift E A]
+instance liftNatTrans
+    [HasShift E A]
     (F₁ F₂ : C ⥤ E) [F₁.CommShift A] [F₂.CommShift A]
-    (F₁' F₂' : D ⥤ E) [F₁'.CommShift A] [F₂'.CommShift A]
-    [Lifting L W F₁ F₁'] [Lifting L W F₂ F₂']
+    (F₁' F₂' : D ⥤ E) [F₁'.CommShift A] [F₂'.CommShift A] [Lifting L W F₁ F₁'] [Lifting L W F₂ F₂']
     [NatTrans.CommShift (Lifting.iso L W F₁ F₁').hom A]
     [NatTrans.CommShift (Lifting.iso L W F₂ F₂').hom A]
-    (τ : F₁ ⟶ F₂) [NatTrans.CommShift τ A] :
-    NatTrans.CommShift (Localization.liftNatTrans L W F₁ F₂ F₁' F₂' τ) A where
+    (τ : F₁ ⟶ F₂) [NatTrans.CommShift τ A]
+    : NatTrans.CommShift (Localization.liftNatTrans L W F₁ F₂ F₁' F₂' τ) A where
   shift_comm m :=
     Localization.natTrans_ext L W (fun X ↦ by
-      simp [← cancel_epi (F₁'.map ((L.commShiftIso m).hom.app X)),
-        shift_app, Functor.commShiftIso_comp_hom_app, Functor.commShiftIso_comp_inv_app,
+      simp [← cancel_epi (F₁'.map ((L.commShiftIso m).hom.app X)), shift_app,
+        Functor.commShiftIso_comp_hom_app, Functor.commShiftIso_comp_inv_app,
         ← Functor.map_comp_assoc])
 
 end NatTrans.CommShift

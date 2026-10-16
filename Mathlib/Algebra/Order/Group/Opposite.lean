@@ -25,8 +25,10 @@ variable [Preorder α]
 
 @[to_additive] instance : Preorder αᵐᵒᵖ := Preorder.lift unop
 
-@[to_additive (attr := simp)] lemma unop_le_unop {a b : αᵐᵒᵖ} : a.unop ≤ b.unop ↔ a ≤ b := .rfl
-@[to_additive (attr := simp)] lemma op_le_op {a b : α} : op a ≤ op b ↔ a ≤ b := .rfl
+@[to_additive (attr := simp)]
+lemma unop_le_unop {a b : αᵐᵒᵖ} : a.unop ≤ b.unop ↔ a ≤ b := .rfl
+@[to_additive (attr := simp)]
+lemma op_le_op {a b : α} : op a ≤ op b ↔ a ≤ b := .rfl
 
 end Preorder
 
@@ -35,13 +37,18 @@ end Preorder
 section OrderedCommMonoid
 variable [CommMonoid α] [PartialOrder α]
 
-@[to_additive] instance [IsOrderedMonoid α] : IsOrderedMonoid αᵐᵒᵖ where
+@[to_additive]
+instance [IsOrderedMonoid α] : IsOrderedMonoid αᵐᵒᵖ where
   mul_le_mul_left a b hab c := mul_le_mul_right (by simpa) c.unop
 
-@[to_additive (attr := simp)] lemma unop_le_one {a : αᵐᵒᵖ} : unop a ≤ 1 ↔ a ≤ 1 := .rfl
-@[to_additive (attr := simp)] lemma one_le_unop {a : αᵐᵒᵖ} : 1 ≤ unop a ↔ 1 ≤ a := .rfl
-@[to_additive (attr := simp)] lemma op_le_one {a : α} : op a ≤ 1 ↔ a ≤ 1 := .rfl
-@[to_additive (attr := simp)] lemma one_le_op {a : α} : 1 ≤ op a ↔ 1 ≤ a := .rfl
+@[to_additive (attr := simp)]
+lemma unop_le_one {a : αᵐᵒᵖ} : unop a ≤ 1 ↔ a ≤ 1 := .rfl
+@[to_additive (attr := simp)]
+lemma one_le_unop {a : αᵐᵒᵖ} : 1 ≤ unop a ↔ 1 ≤ a := .rfl
+@[to_additive (attr := simp)]
+lemma op_le_one {a : α} : op a ≤ 1 ↔ a ≤ 1 := .rfl
+@[to_additive (attr := simp)]
+lemma one_le_op {a : α} : 1 ≤ op a ↔ 1 ≤ a := .rfl
 
 end OrderedCommMonoid
 

@@ -34,12 +34,10 @@ namespace Hexagon
 variable (C)
 
 /-- The trifunctor `X₁ X₂ X₃ ↦ (X₁ ⊗ X₂) ⊗ X₃` -/
-@[simps!]
-def functor₁₂₃ : C ⥤ C ⥤ C ⥤ C := bifunctorComp₁₂ (curriedTensor C) (curriedTensor C)
+@[simps!] def functor₁₂₃ : C ⥤ C ⥤ C ⥤ C := bifunctorComp₁₂ (curriedTensor C) (curriedTensor C)
 
 /-- The trifunctor `X₁ X₂ X₃ ↦ X₁ ⊗ (X₂ ⊗ X₃)` -/
-@[simps!]
-def functor₁₂₃' : C ⥤ C ⥤ C ⥤ C := bifunctorComp₂₃ (curriedTensor C) (curriedTensor C)
+@[simps!] def functor₁₂₃' : C ⥤ C ⥤ C ⥤ C := bifunctorComp₂₃ (curriedTensor C) (curriedTensor C)
 
 /-- The trifunctor `X₁ X₂ X₃ ↦ (X₂ ⊗ X₃) ⊗ X₁` -/
 @[simps!]
@@ -50,8 +48,7 @@ def functor₂₃₁ : C ⥤ C ⥤ C ⥤ C := (bifunctorComp₂₃ (curriedTenso
 def functor₂₃₁' : C ⥤ C ⥤ C ⥤ C := (bifunctorComp₂₃ (curriedTensor C) (curriedTensor C)).flip.flip₁₃
 
 /-- The trifunctor `X₁ X₂ X₃ ↦ (X₂ ⊗ X₁) ⊗ X₃` -/
-@[simps!]
-def functor₂₁₃ : C ⥤ C ⥤ C ⥤ C := bifunctorComp₁₂ (curriedTensor C).flip (curriedTensor C)
+@[simps!] def functor₂₁₃ : C ⥤ C ⥤ C ⥤ C := bifunctorComp₁₂ (curriedTensor C).flip (curriedTensor C)
 
 /-- The trifunctor `X₁ X₂ X₃ ↦ X₂ ⊗ (X₁ ⊗ X₃)` -/
 @[simps!]
@@ -80,16 +77,19 @@ open Hexagon
 namespace ofBifunctor
 
 -- We use the following three defeq abuses, together with `F.flip.flip = F`
-example : (bifunctorComp₁₂ (curriedTensor C) (curriedTensor C)).flip =
-    (bifunctorComp₁₂ (curriedTensor C).flip (curriedTensor C)) := by
+example
+    : (bifunctorComp₁₂ (curriedTensor C) (curriedTensor C)).flip
+      = (bifunctorComp₁₂ (curriedTensor C).flip (curriedTensor C)) := by
   rfl
 
-example : (bifunctorComp₂₃ (curriedTensor C) (curriedTensor C)).flip =
-    (bifunctorComp₂₃ (curriedTensor C) (curriedTensor C).flip).flip.flip₁₃ := by
+example
+    : (bifunctorComp₂₃ (curriedTensor C) (curriedTensor C)).flip
+      = (bifunctorComp₂₃ (curriedTensor C) (curriedTensor C).flip).flip.flip₁₃ := by
   rfl
 
-example : (bifunctorComp₁₂ (curriedTensor C) (curriedTensor C)) =
-    (bifunctorComp₂₃ (curriedTensor C).flip (curriedTensor C)).flip.flip₂₃ := by
+example
+    : (bifunctorComp₁₂ (curriedTensor C) (curriedTensor C))
+      = (bifunctorComp₂₃ (curriedTensor C).flip (curriedTensor C)).flip.flip₂₃ := by
   rfl
 
 namespace Forward
@@ -188,8 +188,8 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- The middle left map in the reverse hexagon identity. -/
 @[simps!]
 def firstMap₂ (β : curriedTensor C ≅ (curriedTensor C).flip) : functor₁₂₃ C ⟶ functor₃₁₂' C :=
-  flip₂₃Functor.map ((flipFunctor _ _ _).map ((bifunctorComp₂₃Functor.map
-    ((flipFunctor _ _ _).map β.hom)).app _))
+  flip₂₃Functor.map ((flipFunctor _ _ _).map
+    ((bifunctorComp₂₃Functor.map ((flipFunctor _ _ _).map β.hom)).app _))
 
 variable (C) in
 /-- The bottom left map in the reverse hexagon identity. -/
@@ -226,13 +226,12 @@ end ofBifunctor
 
 open ofBifunctor
 
-variable (β : curriedTensor C ≅ (curriedTensor C).flip)
-  (hexagon_forward : (curriedAssociatorNatIso C).hom ≫
-    Forward.firstMap₂ β ≫ Forward.firstMap₃ C =
-    Forward.secondMap₁ β ≫ Forward.secondMap₂ C ≫ Forward.secondMap₃ β)
-  (hexagon_reverse : (curriedAssociatorNatIso C).inv ≫
-    Reverse.firstMap₂ β ≫ Reverse.firstMap₃ C =
-    Reverse.secondMap₁ β ≫ Reverse.secondMap₂ C ≫ Reverse.secondMap₃ β)
+variable
+  (β : curriedTensor C ≅ (curriedTensor C).flip)
+  (hexagon_forward : (curriedAssociatorNatIso C).hom ≫ Forward.firstMap₂ β ≫ Forward.firstMap₃ C
+    = Forward.secondMap₁ β ≫ Forward.secondMap₂ C ≫ Forward.secondMap₃ β)
+  (hexagon_reverse : (curriedAssociatorNatIso C).inv ≫ Reverse.firstMap₂ β ≫ Reverse.firstMap₃ C
+    = Reverse.secondMap₁ β ≫ Reverse.secondMap₂ C ≫ Reverse.secondMap₃ β)
 
 /--
 Given a braiding `β : curriedTensor C ≅ (curriedTensor C).flip` as a natural isomorphism between
@@ -244,10 +243,8 @@ def ofBifunctor : BraidedCategory C where
   braiding X Y := (β.app X).app Y
   braiding_naturality_right _ _ _ _ := (β.app _).hom.naturality _
   braiding_naturality_left _ _ := congr($(β.hom.naturality _).app _)
-  hexagon_forward X Y Z :=
-    congr((($(hexagon_forward).app X).app Y).app Z)
-  hexagon_reverse X Y Z :=
-    congr((($(hexagon_reverse).app X).app Y).app Z)
+  hexagon_forward X Y Z := congr((($(hexagon_forward).app X).app Y).app Z)
+  hexagon_reverse X Y Z := congr((($(hexagon_reverse).app X).app Y).app Z)
 
 end BraidedCategory
 
@@ -258,10 +255,11 @@ Alternative constructor for symmetric categories, where the symmetry of the brai
 as an equality of natural transformation of bifunctors.
 -/
 @[instance_reducible]
-def SymmetricCategory.ofCurried [BraidedCategory C]
-    (h : (curriedBraidingNatIso C).hom ≫ (flipFunctor _ _ _).map (curriedBraidingNatIso C).hom =
-      𝟙 _) :
-    SymmetricCategory C where
+def SymmetricCategory.ofCurried
+    [BraidedCategory C]
+    (h
+      : (curriedBraidingNatIso C).hom ≫ (flipFunctor _ _ _).map (curriedBraidingNatIso C).hom = 𝟙 _)
+    : SymmetricCategory C where
   symmetry X Y := congr(($(h).app X).app Y)
 
 end CategoryTheory

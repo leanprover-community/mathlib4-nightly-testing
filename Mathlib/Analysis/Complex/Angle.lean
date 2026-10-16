@@ -34,10 +34,12 @@ open scoped Real
 namespace Complex
 variable {a x y : ℂ}
 
-/-- The angle between two non-zero complex numbers is the absolute value of the argument of their
+/--
+The angle between two non-zero complex numbers is the absolute value of the argument of their
 quotient.
 
-Note that this does not hold when `x` or `y` is `0` as the LHS is `π / 2` while the RHS is `0`. -/
+Note that this does not hold when `x` or `y` is `0` as the LHS is `π / 2` while the RHS is `0`.
+-/
 lemma angle_eq_abs_arg (hx : x ≠ 0) (hy : y ≠ 0) : angle x y = |(x / y).arg| := by
   refine Real.arccos_eq_of_eq_cos (abs_nonneg _) (abs_arg_le_pi _) ?_
   rw [Real.cos_abs, Complex.cos_arg (div_ne_zero hx hy)]
@@ -47,11 +49,13 @@ lemma angle_eq_abs_arg (hx : x ≠ 0) (hy : y ≠ 0) : angle x y = |(x / y).arg|
 lemma angle_one_left (hy : y ≠ 0) : angle 1 y = |y.arg| := by simp [angle_eq_abs_arg, hy]
 lemma angle_one_right (hx : x ≠ 0) : angle x 1 = |x.arg| := by simp [angle_eq_abs_arg, hx]
 
-@[simp] lemma angle_mul_left (ha : a ≠ 0) (x y : ℂ) : angle (a * x) (a * y) = angle x y := by
-  obtain rfl | hx := eq_or_ne x 0 <;> obtain rfl | hy := eq_or_ne y 0 <;>
-    simp [angle_eq_abs_arg, mul_div_mul_left, *]
+@[simp]
+lemma angle_mul_left (ha : a ≠ 0) (x y : ℂ) : angle (a * x) (a * y) = angle x y := by
+  obtain rfl | hx := eq_or_ne x 0 <;> obtain rfl | hy := eq_or_ne y 0
+    <;> simp [angle_eq_abs_arg, mul_div_mul_left, *]
 
-@[simp] lemma angle_mul_right (ha : a ≠ 0) (x y : ℂ) : angle (x * a) (y * a) = angle x y := by
+@[simp]
+lemma angle_mul_right (ha : a ≠ 0) (x y : ℂ) : angle (x * a) (y * a) = angle x y := by
   simp [mul_comm, angle_mul_left ha]
 
 lemma angle_div_left_eq_angle_mul_right (a x y : ℂ) : angle (x / a) y = angle x (y * a) := by
@@ -62,8 +66,8 @@ lemma angle_div_left_eq_angle_mul_right (a x y : ℂ) : angle (x / a) y = angle 
 lemma angle_div_right_eq_angle_mul_left (a x y : ℂ) : angle x (y / a) = angle (x * a) y := by
   rw [angle_comm, angle_div_left_eq_angle_mul_right, angle_comm]
 
-lemma angle_exp_exp (x y : ℝ) :
-    angle (exp (x * I)) (exp (y * I)) = |toIocMod Real.two_pi_pos (-π) (x - y)| := by
+lemma angle_exp_exp (x y : ℝ)
+    : angle (exp (x * I)) (exp (y * I)) = |toIocMod Real.two_pi_pos (-π) (x - y)| := by
   simp_rw [angle_eq_abs_arg (exp_ne_zero _) (exp_ne_zero _), ← exp_sub, ← sub_mul, ← ofReal_sub,
     arg_exp_mul_I]
 
@@ -78,12 +82,11 @@ up to a factor of `π / 2`.
 -/
 
 /-- Chord-length is a multiple of arc-length up to constants. -/
-lemma norm_sub_mem_Icc_angle (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
-    ‖x - y‖ ∈ Icc (2 / π * angle x y) (angle x y) := by
+lemma norm_sub_mem_Icc_angle (hx : ‖x‖ = 1) (hy : ‖y‖ = 1)
+    : ‖x - y‖ ∈ Icc (2 / π * angle x y) (angle x y) := by
   wlog h : y = 1
   · have := @this (x / y) 1 (by simp only [norm_div, hx, hy, div_one]) norm_one rfl
-    rwa [angle_div_left_eq_angle_mul_right, div_sub_one, norm_div, hy, div_one, one_mul]
-      at this
+    rwa [angle_div_left_eq_angle_mul_right, div_sub_one, norm_div, hy, div_one, one_mul] at this
     rintro rfl
     simp at hy
   subst y
@@ -97,7 +100,7 @@ lemma norm_sub_mem_Icc_angle (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
       calc
         _ = 2 * (1 - (1 - 2 / π ^ 2 * θ ^ 2)) := by ring
         _ ≤ 2 * (1 - θ.cos) := by
-            gcongr; exact Real.cos_le_one_sub_mul_cos_sq <| abs_le.2 <| Ioc_subset_Icc_self hθ
+          gcongr; exact Real.cos_le_one_sub_mul_cos_sq <| abs_le.2 <| Ioc_subset_Icc_self hθ
         _ = _ := by linear_combination -θ.cos_sq_add_sin_sq
     · rw [Real.sqrt_le_left (by positivity), ← abs_pow, abs_sq]
       calc

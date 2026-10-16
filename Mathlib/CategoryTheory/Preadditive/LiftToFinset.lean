@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Limits.Constructions.Filtered
 public import Mathlib.CategoryTheory.Preadditive.Basic
-
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 /-!
@@ -23,7 +22,6 @@ public section
 
 universe w v u
 
-
 namespace CategoryTheory.Limits
 
 variable {C : Type u} [Category.{v} C] [Preadditive C]
@@ -33,9 +31,9 @@ namespace CoproductsFromFiniteFiltered
 variable [HasFiniteCoproducts C]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem finiteSubcoproductsCocone_ι_app_eq_sum {α : Type w} [DecidableEq α] (f : α → C)
-    [HasCoproduct f] (S : Finset (Discrete α)) :
-    (finiteSubcoproductsCocone f).ι.app S = ∑ a ∈ S.attach, Sigma.π _ a ≫ Sigma.ι _ a.1.as := by
+theorem finiteSubcoproductsCocone_ι_app_eq_sum
+    {α : Type w} [DecidableEq α] (f : α → C) [HasCoproduct f] (S : Finset (Discrete α))
+    : (finiteSubcoproductsCocone f).ι.app S = ∑ a ∈ S.attach, Sigma.π _ a ≫ Sigma.ι _ a.1.as := by
   dsimp only [liftToFinsetObj_obj, Discrete.functor_obj_eq_as, finiteSubcoproductsCocone_pt,
     Functor.const_obj_obj, finiteSubcoproductsCocone_ι_app]
   ext v
@@ -53,10 +51,10 @@ namespace ProductsFromFiniteCofiltered
 variable [HasFiniteProducts C]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem finiteSubproductsCocone_π_app_eq_sum {α : Type w} [DecidableEq α] (f : α → C) [HasProduct f]
-    (S : (Finset (Discrete α))ᵒᵖ) :
-    (finiteSubproductsCone f).π.app S =
-      ∑ a ∈ S.unop.attach, Pi.π f a.1.as ≫ Pi.ι (fun a => f a.1.as) a := by
+theorem finiteSubproductsCocone_π_app_eq_sum
+    {α : Type w} [DecidableEq α] (f : α → C) [HasProduct f] (S : (Finset (Discrete α))ᵒᵖ)
+    : (finiteSubproductsCone f).π.app S
+      = ∑ a ∈ S.unop.attach, Pi.π f a.1.as ≫ Pi.ι (fun a => f a.1.as) a := by
   dsimp only [finiteSubproductsCone_pt, Functor.const_obj_obj, liftToFinsetObj_obj,
     Discrete.functor_obj_eq_as, finiteSubproductsCone_π_app]
   ext v

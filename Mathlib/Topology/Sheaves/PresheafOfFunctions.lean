@@ -31,7 +31,8 @@ namespace TopCat
 
 variable (X : TopCat)
 
-/-- The presheaf of dependently typed functions on `X`, with fibres given by a type family `T`.
+/--
+The presheaf of dependently typed functions on `X`, with fibres given by a type family `T`.
 There is no requirement that the functions are continuous, here.
 -/
 def presheafToTypes (T : X → Type*) : X.Presheaf (Type _) where
@@ -39,13 +40,13 @@ def presheafToTypes (T : X → Type*) : X.Presheaf (Type _) where
   map {_ V} i := ↾fun (g) (x : V.unop) => g (i.unop x)
 
 @[simp]
-theorem presheafToTypes_obj {T : X → Type*} {U : (Opens X)ᵒᵖ} :
-    (presheafToTypes X T).obj U = ∀ x : U.unop, T x :=
+theorem presheafToTypes_obj {T : X → Type*} {U : (Opens X)ᵒᵖ}
+    : (presheafToTypes X T).obj U = ∀ x : U.unop, T x :=
   rfl
 
 @[simp]
-theorem presheafToTypes_map {T : X → Type*} {U V : (Opens X)ᵒᵖ} {i : U ⟶ V} {f} :
-    dsimp% (presheafToTypes X T).map i f = fun x => f (i.unop x) :=
+theorem presheafToTypes_map {T : X → Type*} {U V : (Opens X)ᵒᵖ} {i : U ⟶ V} {f}
+    : dsimp% (presheafToTypes X T).map i f = fun x => f (i.unop x) :=
   rfl
 
 -- We don't just define this in terms of `presheafToTypes`,
@@ -54,7 +55,8 @@ theorem presheafToTypes_map {T : X → Type*} {U V : (Opens X)ᵒᵖ} {i : U ⟶
 -- We don't use `@[simps]` to generate the projection lemmas here,
 -- as it turns out to be useful to have `presheafToType_map`
 -- written as an equality of functions (rather than being applied to some argument).
-/-- The presheaf of functions on `X` with values in a type `T`.
+/--
+The presheaf of functions on `X` with values in a type `T`.
 There is no requirement that the functions are continuous, here.
 -/
 def presheafToType (T : Type*) : X.Presheaf (Type _) where
@@ -62,23 +64,24 @@ def presheafToType (T : Type*) : X.Presheaf (Type _) where
   map {_ _} i := ↾fun g ↦ g ∘ i.unop
 
 @[simp]
-theorem presheafToType_obj {T : Type*} {U : (Opens X)ᵒᵖ} :
-    (presheafToType X T).obj U = (U.unop → T) :=
+theorem presheafToType_obj {T : Type*} {U : (Opens X)ᵒᵖ}
+    : (presheafToType X T).obj U = (U.unop → T) :=
   rfl
 
 @[simp]
-theorem presheafToType_map {T : Type*} {U V : (Opens X)ᵒᵖ} {i : U ⟶ V} {f} :
-    dsimp% (presheafToType X T).map i f = f ∘ i.unop :=
+theorem presheafToType_map {T : Type*} {U V : (Opens X)ᵒᵖ} {i : U ⟶ V} {f}
+    : dsimp% (presheafToType X T).map i f = f ∘ i.unop :=
   rfl
 
-/-- The presheaf of continuous functions on `X` with values in fixed target topological space
-`T`. -/
-def presheafToTop (T : TopCat) : X.Presheaf (Type _) :=
-  (Opens.toTopCat X).op ⋙ yoneda.obj T
+/--
+The presheaf of continuous functions on `X` with values in fixed target topological space
+`T`.
+-/
+def presheafToTop (T : TopCat) : X.Presheaf (Type _) := (Opens.toTopCat X).op ⋙ yoneda.obj T
 
 @[simp]
-theorem presheafToTop_obj (T : TopCat) (U : (Opens X)ᵒᵖ) :
-    (presheafToTop X T).obj U = ((Opens.toTopCat X).obj (unop U) ⟶ T) :=
+theorem presheafToTop_obj (T : TopCat) (U : (Opens X)ᵒᵖ)
+    : (presheafToTop X T).obj U = ((Opens.toTopCat X).obj (unop U) ⟶ T) :=
   rfl
 
 end TopCat

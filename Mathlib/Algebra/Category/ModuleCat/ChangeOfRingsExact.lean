@@ -32,19 +32,21 @@ section
 
 variable (f : R →+* R')
 
-lemma ModuleCat.restrictScalars_map_exact (S : ShortComplex (ModuleCat.{v} R')) (h : S.Exact) :
-    (S.map (ModuleCat.restrictScalars.{v} f)).Exact := by
+lemma ModuleCat.restrictScalars_map_exact (S : ShortComplex (ModuleCat.{v} R')) (h : S.Exact)
+    : (S.map (ModuleCat.restrictScalars.{v} f)).Exact := by
   rw [CategoryTheory.ShortComplex.ShortExact.moduleCat_exact_iff_function_exact] at h ⊢
   exact h
 
 instance : Limits.PreservesFiniteLimits (ModuleCat.restrictScalars.{v} f) := by
-  have := ((CategoryTheory.Functor.exact_tfae (ModuleCat.restrictScalars.{v} f)).out 2 4).mp
-    (ModuleCat.restrictScalars_map_exact f)
+  have :=
+    ((CategoryTheory.Functor.exact_tfae (ModuleCat.restrictScalars.{v} f)).out 2 4).mp
+      (ModuleCat.restrictScalars_map_exact f)
   exact this.1
 
 instance : Limits.PreservesFiniteColimits (ModuleCat.restrictScalars.{v} f) := by
-  have := ((CategoryTheory.Functor.exact_tfae (ModuleCat.restrictScalars.{v} f)).out 2 4).mp
-    (ModuleCat.restrictScalars_map_exact f)
+  have :=
+    ((CategoryTheory.Functor.exact_tfae (ModuleCat.restrictScalars.{v} f)).out 2 4).mp
+      (ModuleCat.restrictScalars_map_exact f)
   exact this.2
 
 end

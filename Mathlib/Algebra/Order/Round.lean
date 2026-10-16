@@ -45,30 +45,26 @@ variable [Ring α] [LinearOrder α] [FloorRing α]
 
 `round (0.5 : ℚ) = 1`.
 -/
-def round (x : α) : ℤ :=
-  if 2 * fract x < 1 then ⌊x⌋ else ⌈x⌉
+def round (x : α) : ℤ := if 2 * fract x < 1 then ⌊x⌋ else ⌈x⌉
+
+@[simp] theorem round_zero : round (0 : α) = 0 := by simp [round]
+
+@[simp] theorem round_one : round (1 : α) = 1 := by simp [round]
+
+@[simp] theorem round_natCast (n : ℕ) : round (n : α) = n := by simp [round]
 
 @[simp]
-theorem round_zero : round (0 : α) = 0 := by simp [round]
+theorem round_ofNat (n : ℕ) [n.AtLeastTwo] : round (ofNat(n) : α) = ofNat(n) := round_natCast n
 
-@[simp]
-theorem round_one : round (1 : α) = 1 := by simp [round]
-
-@[simp]
-theorem round_natCast (n : ℕ) : round (n : α) = n := by simp [round]
-
-@[simp]
-theorem round_ofNat (n : ℕ) [n.AtLeastTwo] : round (ofNat(n) : α) = ofNat(n) :=
-  round_natCast n
-
-@[simp]
-theorem round_intCast (n : ℤ) : round (n : α) = n := by simp [round]
+@[simp] theorem round_intCast (n : ℤ) : round (n : α) = n := by simp [round]
 
 variable [IsStrictOrderedRing α]
 
-/-- Formula for `round` in terms of `Int.floor`, a version that works over any ring.
+/--
+Formula for `round` in terms of `Int.floor`, a version that works over any ring.
 
-TODO: decide if we want to use this as a definition. It may be slightly faster over `ℚ`. -/
+TODO: decide if we want to use this as a definition. It may be slightly faster over `ℚ`.
+-/
 theorem round_eq_div (x : α) : round x = (⌊2 * x⌋ + 1) / 2 := by
   rw [← floor_add_fract x, round, fract_intCast_add, fract_fract, floor_intCast_add, mul_add,
     ← Int.cast_ofNat, ← Int.cast_mul, floor_intCast_add, ceil_intCast_add, add_assoc,
@@ -121,8 +117,8 @@ theorem round_add_natCast (x : α) (y : ℕ) : round (x + y) = round x + y :=
   mod_cast round_add_intCast x y
 
 @[simp]
-theorem round_add_ofNat (x : α) (n : ℕ) [n.AtLeastTwo] :
-    round (x + ofNat(n)) = round x + ofNat(n) :=
+theorem round_add_ofNat (x : α) (n : ℕ) [n.AtLeastTwo]
+    : round (x + ofNat(n)) = round x + ofNat(n) :=
   round_add_natCast x n
 
 @[simp]
@@ -130,8 +126,8 @@ theorem round_sub_natCast (x : α) (y : ℕ) : round (x - y) = round x - y :=
   mod_cast round_sub_intCast x y
 
 @[simp]
-theorem round_sub_ofNat (x : α) (n : ℕ) [n.AtLeastTwo] :
-    round (x - ofNat(n)) = round x - ofNat(n) :=
+theorem round_sub_ofNat (x : α) (n : ℕ) [n.AtLeastTwo]
+    : round (x - ofNat(n)) = round x - ofNat(n) :=
   round_sub_natCast x n
 
 @[simp]
@@ -143,8 +139,8 @@ theorem round_natCast_add (x : α) (y : ℕ) : round ((y : α) + x) = y + round 
   rw [add_comm, round_add_natCast, add_comm]
 
 @[simp]
-theorem round_ofNat_add (n : ℕ) [n.AtLeastTwo] (x : α) :
-    round (ofNat(n) + x) = ofNat(n) + round x :=
+theorem round_ofNat_add (n : ℕ) [n.AtLeastTwo] (x : α)
+    : round (ofNat(n) + x) = ofNat(n) + round x :=
   round_natCast_add x n
 
 theorem abs_sub_round_eq_min (x : α) : |x - round x| = min (fract x) (1 - fract x) := by
@@ -182,11 +178,9 @@ theorem round_eq (x : α) : round x = ⌊x + 1 / 2⌋ := by
 theorem round_eq_iff {x : α} {n : ℤ} : round x = n ↔ x ∈ Ico (n - 1 / 2 : α) (n + 1 / 2) := by
   norm_num [round_eq, floor_eq_iff, ← lt_sub_iff_add_lt, add_sub_assoc]
 
-@[simp]
-theorem round_two_inv : round (2⁻¹ : α) = 1 := by norm_num [round_eq_iff]
+@[simp] theorem round_two_inv : round (2⁻¹ : α) = 1 := by norm_num [round_eq_iff]
 
-@[simp]
-theorem round_neg_two_inv : round (-2⁻¹ : α) = 0 := by simp [round_eq_iff]
+@[simp] theorem round_neg_two_inv : round (-2⁻¹ : α) = 0 := by simp [round_eq_iff]
 
 @[simp]
 theorem round_eq_zero_iff {x : α} : round x = 0 ↔ x ∈ Ico (-(1 / 2)) ((1 : α) / 2) := by
@@ -198,12 +192,11 @@ theorem abs_sub_round (x : α) : |x - round x| ≤ 1 / 2 := by
   have := lt_floor_add_one (x + 1 / 2)
   constructor <;> linarith
 
-theorem abs_sub_round_div_natCast_eq {m n : ℕ} :
-    |(m : α) / n - round ((m : α) / n)| = ↑(min (m % n) (n - m % n)) / n := by
+theorem abs_sub_round_div_natCast_eq {m n : ℕ}
+    : |(m : α) / n - round ((m : α) / n)| = ↑(min (m % n) (n - m % n)) / n := by
   rcases n.eq_zero_or_pos with (rfl | hn)
   · simp
-  have hn' : 0 < (n : α) := by
-    norm_cast
+  have hn' : 0 < (n : α) := by norm_cast
   rw [abs_sub_round_eq_min, Nat.cast_min, ← min_div_div_right hn'.le,
     fract_div_natCast_eq_div_natCast_mod, Nat.cast_sub (m.mod_lt hn).le, sub_div, div_self hn'.ne']
 
@@ -223,8 +216,9 @@ end round
 
 namespace Int
 
-variable [Field α] [LinearOrder α] [IsStrictOrderedRing α]
-  [Field β] [LinearOrder β] [IsStrictOrderedRing β] [FloorRing α] [FloorRing β]
+variable
+  [Field α] [LinearOrder α] [IsStrictOrderedRing α] [Field β] [LinearOrder β]
+  [IsStrictOrderedRing β] [FloorRing α] [FloorRing β]
 variable [FunLike F α β] [RingHomClass F α β] {a : α}
 
 theorem map_round (f : F) (hf : StrictMono f) (a : α) : round (f a) = round a := by

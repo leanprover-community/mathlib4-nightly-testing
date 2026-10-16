@@ -25,21 +25,23 @@ open CategoryTheory Limits
 namespace AlgebraicGeometry
 
 set_option backward.defeqAttrib.useBackward true in
-lemma Scheme.isLocallyDirected_of_equifibered_of_injective {J : Type*} [Category J]
-    {F G : J ⥤ Scheme.{u}} (s : F ⟶ G) [Quiver.IsThin J] (hs : s.Equifibered)
-    (H : ∀ {i j} (hij : i ⟶ j), Function.Injective (F.map hij))
-    [(G ⋙ Scheme.forget).IsLocallyDirected] :
-    (F ⋙ Scheme.forget).IsLocallyDirected where
+lemma Scheme.isLocallyDirected_of_equifibered_of_injective
+    {J : Type*} [Category J]
+    {F G : J ⥤ Scheme.{u}} (s : F ⟶ G)
+    [Quiver.IsThin J]
+    (hs : s.Equifibered) (H : ∀ {i j} (hij : i ⟶ j), Function.Injective (F.map hij))
+    [(G ⋙ Scheme.forget).IsLocallyDirected]
+    : (F ⋙ Scheme.forget).IsLocallyDirected where
   cond {i j k} fi fj xi xj heq := by
     simp only [Functor.comp_obj, Scheme.forget_obj, Functor.comp_map, Scheme.forget_map] at heq
-    obtain ⟨l, fli, flj, x, hi, hj⟩ := (G ⋙ Scheme.forget).exists_map_eq_of_isLocallyDirected fi fj
-        (s.app i xi) (s.app j xj) <| by
-      simp only [Functor.comp_obj, forget_obj, Functor.comp_map, forget_map,
-        ConcreteCategory.hom_ofHom, TypeCat.Fun.coe_mk]
-      dsimp at heq
-      rw [← Scheme.Hom.comp_apply, ← s.naturality, Scheme.Hom.comp_apply, heq,
-        ← Scheme.Hom.comp_apply, s.naturality]
-      simp
+    obtain ⟨l, fli, flj, x, hi, hj⟩ :=
+      (G ⋙ Scheme.forget).exists_map_eq_of_isLocallyDirected fi fj (s.app i xi) (s.app j xj) <| by
+        simp only [Functor.comp_obj, forget_obj, Functor.comp_map, forget_map,
+          ConcreteCategory.hom_ofHom, TypeCat.Fun.coe_mk]
+        dsimp at heq
+        rw [← Scheme.Hom.comp_apply, ← s.naturality, Scheme.Hom.comp_apply, heq,
+          ← Scheme.Hom.comp_apply, s.naturality]
+        simp
     use l, fli, flj
     let e := (hs fli).isoPullback
     obtain ⟨z, h1, h2⟩ := Scheme.Pullback.exists_preimage_pullback xi x hi.symm
@@ -47,8 +49,8 @@ lemma Scheme.isLocallyDirected_of_equifibered_of_injective {J : Type*} [Category
     · simp [← h1, ← Scheme.Hom.comp_apply, e]
     · apply H fj
       simp only [Functor.comp_obj, forget_obj, Functor.comp_map, forget_map,
-        ConcreteCategory.hom_ofHom, TypeCat.Fun.coe_mk, ← Scheme.Hom.comp_apply,
-        Category.assoc, ← Functor.map_comp, show flj ≫ fj = fli ≫ fi by subsingleton]
+        ConcreteCategory.hom_ofHom, TypeCat.Fun.coe_mk, ← Scheme.Hom.comp_apply, Category.assoc,
+        ← Functor.map_comp, show flj ≫ fj = fli ≫ fi by subsingleton]
       dsimp at heq
       simp [e, Functor.map_comp, ← heq, h1]
 
@@ -99,30 +101,23 @@ structure map, see `AlgebraicGeometry.Scheme.Cover.RelativeGluingData.toBase` an
 with the preimages `AlgebraicGeometry.Scheme.Cover.RelativeGluingData.isPullback_natTrans_ι_toBase`.
 -/
 @[stacks 01LH]
-noncomputable abbrev glued : Scheme.{u} :=
-  colimit d.functor
+noncomputable abbrev glued : Scheme.{u} := colimit d.functor
 
 /-- The cover of the glued `Xᵢ` given by the `Xᵢ`. -/
-@[simps!]
-noncomputable def cover : OpenCover d.glued :=
-  Scheme.IsLocallyDirected.openCover _
+@[simps!] noncomputable def cover : OpenCover d.glued := Scheme.IsLocallyDirected.openCover _
 
-instance : Category d.cover.I₀ :=
-  inferInstanceAs <| Category 𝒰.I₀
+instance : Category d.cover.I₀ := inferInstanceAs <| Category 𝒰.I₀
 
 /-- The structure map from the colimit of the `Xᵢ` to `S`. -/
 noncomputable def toBase : d.glued ⟶ S :=
-  colimit.desc _
-    { pt := S
-      ι := d.natTrans ≫ 𝒰.functorOfLocallyDirectedHomBase }
+  colimit.desc _ { pt := S, ι := d.natTrans ≫ 𝒰.functorOfLocallyDirectedHomBase }
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-lemma ι_toBase (i : 𝒰.I₀) :
-    colimit.ι d.functor i ≫ d.toBase = d.natTrans.app i ≫ 𝒰.f i := by
+lemma ι_toBase (i : 𝒰.I₀) : colimit.ι d.functor i ≫ d.toBase = d.natTrans.app i ≫ 𝒰.f i := by
   simp [toBase]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -133,16 +128,17 @@ instance : d.cover.LocallyDirected where
     let xi := pullback.fst (d.cover.f i) _ x
     let xj := pullback.snd (d.cover.f i) _ x
     obtain ⟨k, fi, fj, uk, h1, h2⟩ :=
-        𝒰.exists_of_f_eq_f (d.natTrans.app i xi) (d.natTrans.app j xj) <| by
-      dsimp [functorOfLocallyDirected_obj, xi, xj]
-      rw [← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply, ← ι_toBase, pullback.condition_assoc]
-      simp
+      𝒰.exists_of_f_eq_f (d.natTrans.app i xi) (d.natTrans.app j xj) <| by
+        dsimp [functorOfLocallyDirected_obj, xi, xj]
+        rw [← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply, ← ι_toBase, pullback.condition_assoc]
+        simp
     use k, fi, fj
-    obtain ⟨xk, h1, h2⟩ := exists_preimage_of_isPullback (d.equifibered fj) xj uk <| by
-      apply (𝒰.f j).injective
-      dsimp only [functorOfLocallyDirected_obj, functorOfLocallyDirected_map]
-      rw [← Scheme.Hom.comp_apply]
-      simp [xj, h2]
+    obtain ⟨xk, h1, h2⟩ :=
+      exists_preimage_of_isPullback (d.equifibered fj) xj uk <| by
+        apply (𝒰.f j).injective
+        dsimp only [functorOfLocallyDirected_obj, functorOfLocallyDirected_map]
+        rw [← Scheme.Hom.comp_apply]
+        simp [xj, h2]
     use xk
     apply (pullback.snd (d.cover.f i) _).injective
     rw [← Scheme.Hom.comp_apply]
@@ -150,18 +146,20 @@ instance : d.cover.LocallyDirected where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma preimage_toBase_eq_range_ι (i : 𝒰.I₀) :
-    d.toBase ⁻¹' (Set.range <| 𝒰.f i) = Set.range (colimit.ι d.functor i) := by
+lemma preimage_toBase_eq_range_ι (i : 𝒰.I₀)
+    : d.toBase ⁻¹' (Set.range <| 𝒰.f i) = Set.range (colimit.ι d.functor i) := by
   ext x
   refine ⟨fun ⟨ui, h⟩ ↦ ?_, ?_⟩
   · obtain ⟨j, xj, rfl⟩ := IsLocallyDirected.ι_jointly_surjective _ x
-    obtain ⟨k, fi, fj, uk, rfl, h⟩ := 𝒰.exists_of_f_eq_f ui (d.natTrans.app j xj) <| by
-      simp only [h, functorOfLocallyDirected_obj, ← Scheme.Hom.comp_apply, ι_toBase]
-    obtain ⟨xk, rfl, h2⟩ := exists_preimage_of_isPullback (d.equifibered fj) xj uk <| by
-      apply (𝒰.f j).injective
-      simp only [functorOfLocallyDirected_obj, functorOfLocallyDirected_map]
-      rw [← Scheme.Hom.comp_apply, ← ι_toBase, Scheme.Hom.comp_apply, ← h]
-      simp [← Scheme.Hom.comp_apply]
+    obtain ⟨k, fi, fj, uk, rfl, h⟩ :=
+      𝒰.exists_of_f_eq_f ui (d.natTrans.app j xj) <| by
+        simp only [h, functorOfLocallyDirected_obj, ← Scheme.Hom.comp_apply, ι_toBase]
+    obtain ⟨xk, rfl, h2⟩ :=
+      exists_preimage_of_isPullback (d.equifibered fj) xj uk <| by
+        apply (𝒰.f j).injective
+        simp only [functorOfLocallyDirected_obj, functorOfLocallyDirected_map]
+        rw [← Scheme.Hom.comp_apply, ← ι_toBase, Scheme.Hom.comp_apply, ← h]
+        simp [← Scheme.Hom.comp_apply]
     use d.functor.map fi xk
     simp [← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply]
   · rintro ⟨y, rfl⟩
@@ -169,14 +167,14 @@ lemma preimage_toBase_eq_range_ι (i : 𝒰.I₀) :
     rw [← Scheme.Hom.comp_apply, ι_toBase]
     simp
 
-lemma toBase_preimage_eq_opensRange_ι (i : 𝒰.I₀) :
-    d.toBase ⁻¹ᵁ (𝒰.f i).opensRange = (colimit.ι d.functor i).opensRange :=
+lemma toBase_preimage_eq_opensRange_ι (i : 𝒰.I₀)
+    : d.toBase ⁻¹ᵁ (𝒰.f i).opensRange = (colimit.ι d.functor i).opensRange :=
   TopologicalSpace.Opens.coe_inj.mp (preimage_toBase_eq_range_ι d i)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma isPullback_natTrans_ι_toBase (i : 𝒰.I₀) :
-    IsPullback (d.natTrans.app i) (colimit.ι d.functor i) (𝒰.f i) d.toBase := by
+lemma isPullback_natTrans_ι_toBase (i : 𝒰.I₀)
+    : IsPullback (d.natTrans.app i) (colimit.ι d.functor i) (𝒰.f i) d.toBase := by
   refine ⟨by simp, ⟨PullbackCone.IsLimit.mk _ ?_ ?_ ?_ ?_⟩⟩
   · intro s
     apply IsOpenImmersion.lift (colimit.ι d.functor i) s.snd

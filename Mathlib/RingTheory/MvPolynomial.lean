@@ -19,7 +19,6 @@ finitely supported functions from the indexing set to `ℕ`.
 
 public section
 
-
 noncomputable section
 
 open Submodule
@@ -30,8 +29,8 @@ namespace MvPolynomial
 
 variable (σ : Type u) (K : Type v)
 
-theorem quotient_mk_comp_C_injective [Field K] (I : Ideal (MvPolynomial σ K)) (hI : I ≠ ⊤) :
-    Function.Injective ((Ideal.Quotient.mk I).comp MvPolynomial.C) := by
+theorem quotient_mk_comp_C_injective [Field K] (I : Ideal (MvPolynomial σ K)) (hI : I ≠ ⊤)
+    : Function.Injective ((Ideal.Quotient.mk I).comp MvPolynomial.C) := by
   refine (injective_iff_map_eq_zero _).2 fun x hx => ?_
   rw [RingHom.comp_apply, Ideal.Quotient.eq_zero_iff_mem] at hx
   refine _root_.by_contradiction fun hx0 => absurd (I.eq_top_iff_one.2 ?_) hI
@@ -47,8 +46,7 @@ theorem rank_eq_lift : Module.rank K (MvPolynomial σ K) = lift.{v} #(σ →₀ 
 theorem rank_eq {σ : Type v} : Module.rank K (MvPolynomial σ K) = #(σ →₀ ℕ) := by
   rw [← Cardinal.lift_inj, ← (basisMonomials σ K).mk_eq_rank]
 
-instance : Module K (MvPolynomial σ K) :=
-  inferInstanceAs <| Module K (AddMonoidAlgebra K (σ →₀ ℕ))
+instance : Module K (MvPolynomial σ K) := inferInstanceAs <| Module K (AddMonoidAlgebra K (σ →₀ ℕ))
 
 theorem finrank_eq_zero [Nonempty σ] : Module.finrank K (MvPolynomial σ K) = 0 :=
   (basisMonomials σ K).linearIndependent.finrank_eq_zero_of_infinite

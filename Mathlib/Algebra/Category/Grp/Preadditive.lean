@@ -57,15 +57,20 @@ instance : SMul ℤ (M ⟶ N) where
 @[simp] lemma hom_zsmul (n : ℤ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 instance (P Q : AddCommGrpCat) : AddCommGroup (P ⟶ Q) :=
-  Function.Injective.addCommGroup (Hom.hom) ConcreteCategory.hom_injective
-    rfl (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl)
+  Function.Injective.addCommGroup (Hom.hom) ConcreteCategory.hom_injective rfl
+    (fun _ _ => rfl)
+    (fun _ => rfl)
+    (fun _ _ => rfl)
+    (fun _ _ => rfl)
+    (fun _ _ => rfl)
 
 instance : Preadditive AddCommGrpCat where
 
 /-- `AddCommGrpCat.Hom.hom` bundled as an additive equivalence. -/
 @[simps!]
-def homAddEquiv : (M ⟶ N) ≃+ (M →+ N) :=
-  { ConcreteCategory.homEquiv (C := AddCommGrpCat) with
-    map_add' _ _ := rfl }
+def homAddEquiv : (M ⟶ N) ≃+ (M →+ N) := {
+  ConcreteCategory.homEquiv (C := AddCommGrpCat) with
+  map_add' _ _ := rfl
+}
 
 end AddCommGrpCat

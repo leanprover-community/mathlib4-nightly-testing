@@ -1,5 +1,6 @@
 -- tests for by_contra! tactic
 module
+
 import Mathlib.Tactic.ByContra
 import Mathlib.Tactic.Rename
 import Mathlib.Tactic.Set
@@ -14,7 +15,9 @@ example (a b : ℕ) (foo : False) : a < b := by
 
 example (a b : ℕ) (h : False) : a < b := by
   by_contra! foo
-  revert foo; change b ≤ a → False; intro;
+  revert foo
+  change b ≤ a → False
+  intro
   exact h
 
 example (a b : ℕ) (h : False) : a < b := by
@@ -27,14 +30,14 @@ example : 1 < 2 := by
   guard_hyp this : 2 ≤ 1
   contradiction
 
-example (p : Prop) (bar : False) : ¬ ¬ ¬ ¬ ¬ ¬ p := by
+example (p : Prop) (bar : False) : ¬ ¬ ¬ ¬ ¬ ¬p := by
   by_contra! foo : ¬ ¬ ¬ p -- normalises to ¬ p, as does ¬ (goal).
-  guard_hyp foo : ¬ ¬ ¬ p
+  guard_hyp foo : ¬ ¬ ¬p
   exact bar
 
-example (p : Prop) (bar : False) : ¬ ¬ ¬ ¬ ¬ ¬ p := by
+example (p : Prop) (bar : False) : ¬ ¬ ¬ ¬ ¬ ¬p := by
   by_contra! : ¬ ¬ ¬ p
-  guard_hyp this : ¬ ¬ ¬ p
+  guard_hyp this : ¬ ¬ ¬p
   exact bar
 
 /--
@@ -51,8 +54,7 @@ this : a ≤ b
 ⊢ False
 -/
 #guard_msgs in
-example (a b : ℕ) : a < b := by
-  by_contra! : a ≤ b
+example (a b : ℕ) : a < b := by by_contra! : a ≤ b
 
 example (P Q : Prop) (h' : False) : P ∧ Q := by
   fail_if_success by_contra! +fdsewfjdsk h
@@ -89,11 +91,11 @@ example (n : ℕ) (h : n ≠ 0) : n ≠ 0 := by
   by_contra! rfl
   simp only [Ne, not_true_eq_false] at h
 
-example (p q : Prop) (hnp : ¬ p) : ¬ p ∨ ¬ q := by
+example (p q : Prop) (hnp : ¬p) : ¬p ∨ ¬q := by
   by_contra! ⟨hp, _⟩
   exact hnp hp
 
-example (p q : Prop) (hnp : ¬ p) (hnq : ¬ q) : ¬ (p ∨ q) := by
+example (p q : Prop) (hnp : ¬p) (hnq : ¬q) : ¬(p ∨ q) := by
   by_contra! hp | hq
   · exact hnp hp
   · exact hnq hq

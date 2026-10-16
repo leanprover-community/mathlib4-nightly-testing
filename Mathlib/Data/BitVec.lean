@@ -29,8 +29,7 @@ variable {w : Nat}
 open Fin.CommRing in
 theorem ofFin_intCast (z : ℤ) : ofFin (z : Fin (2 ^ w)) = ↑z := by
   cases w
-  case zero =>
-    simp only [eq_nil]
+  case zero => simp only [eq_nil]
   case succ w =>
     apply BitVec.eq_of_toInt_eq
     rw [toInt_ofFin, Fin.val_intCast, Int.natCast_pow, Nat.cast_ofNat, Int.ofNat_toNat,
@@ -41,8 +40,7 @@ theorem ofFin_intCast (z : ℤ) : ofFin (z : Fin (2 ^ w)) = ↑z := by
     · omega
 
 open Fin.CommRing in
-@[simp] theorem toFin_intCast (z : ℤ) : (z : BitVec w).toFin = ↑z := by
-  rw [← ofFin_intCast]
+@[simp] theorem toFin_intCast (z : ℤ) : (z : BitVec w).toFin = ↑z := by rw [← ofFin_intCast]
 
 /-!
 ## Injectivity
@@ -80,25 +78,20 @@ lemma toFin_pow (x : BitVec w) (n : ℕ) : toFin (x ^ n) = x.toFin ^ n := by
 -/
 
 -- Verify that the `HPow` instance from Lean agrees definitionally with the instance via `Monoid`.
-example : @instHPow (Fin (2 ^ w)) ℕ NPow.toPow =
-    @instHPow (Fin (2 ^ w)) ℕ (@_root_.instPowNat _ Fin.instNatPow) := rfl
+example
+    : @instHPow (Fin (2 ^ w)) ℕ NPow.toPow
+      = @instHPow (Fin (2 ^ w)) ℕ (@_root_.instPowNat _ Fin.instNatPow) :=
+  rfl
 
 instance : CommSemiring (BitVec w) :=
   open Fin.CommRing in
-  toFin_injective.commSemiring _
-    toFin_zero
-    toFin_one
-    toFin_add
-    toFin_mul
-    toFin_nsmul
-    toFin_pow
+  toFin_injective.commSemiring _ toFin_zero toFin_one toFin_add toFin_mul toFin_nsmul toFin_pow
     toFin_natCast
 -- The statement in the new API would be: `n#(k.succ) = ((n / 2)#k).concat (n % 2 != 0)`
 
 instance : CommRing (BitVec w) :=
   open Fin.CommRing in
-  toFin_injective.commRing _
-    toFin_zero toFin_one toFin_add toFin_mul toFin_neg toFin_sub
+  toFin_injective.commRing _ toFin_zero toFin_one toFin_add toFin_mul toFin_neg toFin_sub
     toFin_nsmul toFin_zsmul toFin_pow toFin_natCast toFin_intCast
 
 /-- The ring `BitVec m` is isomorphic to `Fin (2 ^ m)`. -/

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jovan Gerbscheid
 -/
 module
+
 import Mathlib
 
 /-!
@@ -78,7 +79,6 @@ info: Unfolds for Function.Injective fun x => x:
 -/
 #guard_msgs in
 #unfold? Function.Injective (fun x : Nat => x)
-
 
 variable (A B : Set Nat) (n : Nat)
 

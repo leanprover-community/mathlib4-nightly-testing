@@ -23,7 +23,6 @@ This file defines prestructures and quotients of first-order structures.
 
 public section
 
-
 namespace FirstOrder
 
 namespace Language
@@ -34,8 +33,10 @@ open FirstOrder
 
 open Structure
 
-/-- A prestructure is a first-order structure with a `Setoid` equivalence relation on it,
-  such that quotienting by that equivalence relation is still a structure. -/
+/--
+A prestructure is a first-order structure with a `Setoid` equivalence relation on it,
+such that quotienting by that equivalence relation is still a structure.
+-/
 class Prestructure (s : Setoid M) where
   /-- The underlying first-order structure -/
   toStructure : L.Structure M
@@ -53,22 +54,20 @@ instance quotientStructure : L.Structure (Quotient s) where
 
 variable (s)
 
-theorem funMap_quotient_mk' {n : ℕ} (f : L.Functions n) (x : Fin n → M) :
-    (funMap f fun i => (⟦x i⟧ : Quotient s)) = ⟦@funMap _ _ ps.toStructure _ f x⟧ := by
-  change
-    Quotient.map (@funMap L M ps.toStructure n f) Prestructure.fun_equiv (Quotient.finChoice _) =
-      _
+theorem funMap_quotient_mk' {n : ℕ} (f : L.Functions n) (x : Fin n → M)
+    : (funMap f fun i => (⟦x i⟧ : Quotient s)) = ⟦@funMap _ _ ps.toStructure _ f x⟧ := by
+  change Quotient.map (@funMap L M ps.toStructure n f) Prestructure.fun_equiv (Quotient.finChoice _)
+    = _
   rw [Quotient.finChoice_eq, Quotient.map_mk]
 
-theorem relMap_quotient_mk' {n : ℕ} (r : L.Relations n) (x : Fin n → M) :
-    (RelMap r fun i => (⟦x i⟧ : Quotient s)) ↔ @RelMap _ _ ps.toStructure _ r x := by
+theorem relMap_quotient_mk' {n : ℕ} (r : L.Relations n) (x : Fin n → M)
+    : (RelMap r fun i => (⟦x i⟧ : Quotient s)) ↔ @RelMap _ _ ps.toStructure _ r x := by
   change
-    Quotient.lift (@RelMap L M ps.toStructure n r) Prestructure.rel_equiv (Quotient.finChoice _) ↔
-      _
+    Quotient.lift (@RelMap L M ps.toStructure n r) Prestructure.rel_equiv (Quotient.finChoice _) ↔ _
   rw [Quotient.finChoice_eq, Quotient.lift_mk]
 
-theorem Term.realize_quotient_mk' {β : Type*} (t : L.Term β) (x : β → M) :
-    (t.realize fun i => (⟦x i⟧ : Quotient s)) = ⟦@Term.realize _ _ ps.toStructure _ x t⟧ := by
+theorem Term.realize_quotient_mk' {β : Type*} (t : L.Term β) (x : β → M)
+    : (t.realize fun i => (⟦x i⟧ : Quotient s)) = ⟦@Term.realize _ _ ps.toStructure _ x t⟧ := by
   induction t with
   | var => rfl
   | func _ _ ih => simp only [ih, funMap_quotient_mk', Term.realize]

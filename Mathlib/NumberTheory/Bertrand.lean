@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 public import Mathlib.Data.Nat.Choose.Factorization
-
 import Mathlib.Analysis.Convex.SpecificFunctions.Deriv
 import Mathlib.NumberTheory.Primorial
 import Mathlib.Tactic.NormNum.Prime
@@ -44,18 +43,18 @@ open scoped Finset
 
 public section
 
-
 section Real
 
 open Real
 
 namespace Bertrand
 
-/-- A refined version of the `Bertrand.main_inequality` below.
+/--
+A refined version of the `Bertrand.main_inequality` below.
 This is not best possible: it actually holds for 464 ≤ x.
 -/
-theorem real_main_inequality {x : ℝ} (x_large : (512 : ℝ) ≤ x) :
-    x * (2 * x) ^ √(2 * x) * 4 ^ (2 * x / 3) ≤ 4 ^ x := by
+theorem real_main_inequality {x : ℝ} (x_large : (512 : ℝ) ≤ x)
+    : x * (2 * x) ^ √(2 * x) * 4 ^ (2 * x / 3) ≤ 4 ^ x := by
   let f : ℝ → ℝ := fun x => log x + √(2 * x) * log (2 * x) - log 4 / 3 * x
   have hf' : ∀ x, 0 < x → 0 < x * (2 * x) ^ √(2 * x) / 4 ^ (x / 3) := fun x h =>
     div_pos (mul_pos h (rpow_pos_of_pos (mul_pos two_pos h) _)) (rpow_pos_of_pos four_pos _)
@@ -66,8 +65,8 @@ theorem real_main_inequality {x : ℝ} (x_large : (512 : ℝ) ≤ x) :
     rw [log_div (mul_pos h5 h7).ne' (rpow_pos_of_pos four_pos _).ne', log_mul h5.ne' h7.ne',
       log_rpow h6, log_rpow zero_lt_four, ← mul_div_right_comm, ← mul_div, mul_comm x]
   have h5 : 0 < x := lt_of_lt_of_le (by norm_num1) x_large
-  rw [← div_le_one (rpow_pos_of_pos four_pos x), ← div_div_eq_mul_div, ← rpow_sub four_pos, ←
-    mul_div 2 x, mul_div_left_comm, ← mul_one_sub, (by norm_num1 : (1 : ℝ) - 2 / 3 = 1 / 3),
+  rw [← div_le_one (rpow_pos_of_pos four_pos x), ← div_div_eq_mul_div, ← rpow_sub four_pos,
+    ← mul_div 2 x, mul_div_left_comm, ← mul_one_sub, (by norm_num1 : (1 : ℝ) - 2 / 3 = 1 / 3),
     mul_one_div, ← log_nonpos_iff (hf' x h5).le, ← hf x h5]
   -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11083): the proof was rewritten, because it was too slow
   -- Original:
@@ -83,14 +82,14 @@ theorem real_main_inequality {x : ℝ} (x_large : (512 : ℝ) ≤ x) :
   have h : ConcaveOn ℝ (Set.Ioi 0.5) f := by
     apply ConcaveOn.sub
     · apply ConcaveOn.add
-      · exact strictConcaveOn_log_Ioi.concaveOn.subset
-          (Set.Ioi_subset_Ioi (by norm_num)) (convex_Ioi 0.5)
+      · exact strictConcaveOn_log_Ioi.concaveOn.subset (Set.Ioi_subset_Ioi (by norm_num))
+          (convex_Ioi 0.5)
       convert!
         ((strictConcaveOn_sqrt_mul_log_Ioi.concaveOn.comp_linearMap ((2 : ℝ) • LinearMap.id)))
         using 1
       ext x
-      simp only [Set.mem_Ioi, Set.mem_preimage, LinearMap.smul_apply,
-        LinearMap.id_coe, id_eq, smul_eq_mul]
+      simp only [Set.mem_Ioi, Set.mem_preimage, LinearMap.smul_apply, LinearMap.id_coe, id_eq,
+        smul_eq_mul]
       rw [← mul_lt_mul_iff_right₀ (two_pos)]
       norm_num1
       rfl
@@ -104,10 +103,9 @@ theorem real_main_inequality {x : ℝ} (x_large : (512 : ℝ) ≤ x) :
   · have : √(2 * 18 : ℝ) = 6 := (sqrt_eq_iff_mul_self_eq_of_pos (by norm_num1)).mpr (by norm_num1)
     rw [hf _ (by norm_num1), log_nonneg_iff (by positivity), this, one_le_div (by norm_num1)]
     norm_num1
-  · have : √(2 * 512) = 32 :=
-      (sqrt_eq_iff_mul_self_eq_of_pos (by norm_num1)).mpr (by norm_num1)
+  · have : √(2 * 512) = 32 := (sqrt_eq_iff_mul_self_eq_of_pos (by norm_num1)).mpr (by norm_num1)
     rw [hf _ (by norm_num1), log_nonpos_iff (hf' _ (by norm_num1)).le, this,
-        div_le_one (by positivity)]
+      div_le_one (by positivity)]
     conv in 512 => equals 2 ^ 9 => norm_num1
     conv in 2 * 512 => equals 2 ^ 10 => norm_num1
     conv in 32 => rw [← Nat.cast_ofNat]
@@ -125,10 +123,9 @@ section Nat
 
 open Nat
 
-/-- The inequality which contradicts Bertrand's postulate, for large enough `n`.
--/
-theorem bertrand_main_inequality {n : ℕ} (n_large : 512 ≤ n) :
-    n * (2 * n) ^ sqrt (2 * n) * 4 ^ (2 * n / 3) ≤ 4 ^ n := by
+/-- The inequality which contradicts Bertrand's postulate, for large enough `n`. -/
+theorem bertrand_main_inequality {n : ℕ} (n_large : 512 ≤ n)
+    : n * (2 * n) ^ sqrt (2 * n) * 4 ^ (2 * n / 3) ≤ 4 ^ n := by
   rw [← @cast_le ℝ]
   simp only [cast_mul, cast_pow, ← Real.rpow_natCast, cast_ofNat]
   refine _root_.trans ?_ (Bertrand.real_main_inequality (by exact_mod_cast n_large))
@@ -139,23 +136,26 @@ theorem bertrand_main_inequality {n : ℕ} (n_large : 512 ≤ n) :
   · norm_num1
   · exact cast_div_le.trans (by norm_cast)
 
-/-- A lemma that tells us that, in the case where Bertrand's postulate does not hold, the prime
+/--
+A lemma that tells us that, in the case where Bertrand's postulate does not hold, the prime
 factorization of the central binomial coefficient only has factors at most `2 * n / 3 + 1`.
 -/
-theorem centralBinom_factorization_small (n : ℕ) (n_large : 2 < n)
-    (no_prime : ∀ p : ℕ, p.Prime → n < p → 2 * n < p) :
-    centralBinom n = ∏ p ∈ Finset.range (2 * n / 3 + 1), p ^ (centralBinom n).factorization p := by
+theorem centralBinom_factorization_small
+    (n : ℕ) (n_large : 2 < n) (no_prime : ∀ p : ℕ, p.Prime → n < p → 2 * n < p)
+    : centralBinom n
+      = ∏ p ∈ Finset.range (2 * n / 3 + 1), p ^ (centralBinom n).factorization p := by
   refine (Eq.trans ?_ n.prod_pow_factorization_centralBinom).symm
   apply Finset.prod_subset
   · grw [Nat.div_le_self]
   intro x hx h2x
   rw [Finset.mem_range, Nat.lt_succ_iff] at hx h2x
   rw [not_le, div_lt_iff_lt_mul three_pos, mul_comm x] at h2x
-  obtain h | h : ¬ x.Prime ∨ x ≤ n := by simpa [imp_iff_not_or, hx.not_gt] using no_prime x
+  obtain h | h : ¬x.Prime ∨ x ≤ n := by simpa [imp_iff_not_or, hx.not_gt] using no_prime x
   · rw [factorization_eq_zero_of_not_prime n.centralBinom h, Nat.pow_zero]
   · rw [factorization_centralBinom_of_two_mul_self_lt_three_mul n_large h h2x, Nat.pow_zero]
 
-/-- An upper bound on the central binomial coefficient used in the proof of Bertrand's postulate.
+/--
+An upper bound on the central binomial coefficient used in the proof of Bertrand's postulate.
 The bound splits the prime factors of `centralBinom n` into those
 1. At most `sqrt (2 * n)`, which contribute at most `2 * n` for each such prime.
 2. Between `sqrt (2 * n)` and `2 * n / 3`, which contribute at most `4^(2 * n / 3)` in total.
@@ -163,19 +163,20 @@ The bound splits the prime factors of `centralBinom n` into those
 4. Between `n` and `2 * n`, which would not exist in the case where Bertrand's postulate is false.
 5. Above `2 * n`, which do not exist.
 -/
-theorem centralBinom_le_of_no_bertrand_prime (n : ℕ) (n_large : 2 < n)
-    (no_prime : ∀ p : ℕ, p.Prime → n < p → 2 * n < p) :
-    centralBinom n ≤ (2 * n) ^ sqrt (2 * n) * 4 ^ (2 * n / 3) := by
+theorem centralBinom_le_of_no_bertrand_prime
+    (n : ℕ) (n_large : 2 < n) (no_prime : ∀ p : ℕ, p.Prime → n < p → 2 * n < p)
+    : centralBinom n ≤ (2 * n) ^ sqrt (2 * n) * 4 ^ (2 * n / 3) := by
   have n_pos : 0 < n := (Nat.zero_le _).trans_lt n_large
   have n2_pos : 1 ≤ 2 * n := mul_pos (zero_lt_two' ℕ) n_pos
   let S := {p ∈ Finset.range (2 * n / 3 + 1) | Nat.Prime p}
   let f x := x ^ n.centralBinom.factorization x
   have : ∏ x ∈ S, f x = ∏ x ∈ Finset.range (2 * n / 3 + 1), f x := by
     refine Finset.prod_filter_of_ne fun p _ h => ?_
-    contrapose h; dsimp only [f]
+    contrapose h
+    dsimp only [f]
     rw [factorization_eq_zero_of_not_prime n.centralBinom h, _root_.pow_zero]
-  rw [centralBinom_factorization_small n n_large no_prime, ← this, ←
-    Finset.prod_filter_mul_prod_filter_not S (· ≤ sqrt (2 * n))]
+  rw [centralBinom_factorization_small n n_large no_prime, ← this,
+    ← Finset.prod_filter_mul_prod_filter_not S (· ≤ sqrt (2 * n))]
   apply mul_le_mul'
   · refine (Finset.prod_le_prod fun p _ => (?_ : f p ≤ 2 * n)).trans ?_
     · exact pow_factorization_choose_le (mul_pos two_pos n_pos)
@@ -194,10 +195,9 @@ theorem centralBinom_le_of_no_bertrand_prime (n : ℕ) (n_large : 2 < n)
 
 namespace Nat
 
-/-- Proves that **Bertrand's postulate** holds for all sufficiently large `n`.
--/
-theorem exists_prime_lt_and_le_two_mul_eventually (n : ℕ) (n_large : 512 ≤ n) :
-    ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n := by
+/-- Proves that **Bertrand's postulate** holds for all sufficiently large `n`. -/
+theorem exists_prime_lt_and_le_two_mul_eventually (n : ℕ) (n_large : 512 ≤ n)
+    : ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n := by
   have no_prime : 4 ^ n < n * n.centralBinom :=
     Nat.four_pow_lt_mul_centralBinom n (le_trans (by norm_num1) n_large)
   -- Assume there is no prime in the range.
@@ -209,21 +209,25 @@ theorem exists_prime_lt_and_le_two_mul_eventually (n : ℕ) (n_large : 512 ≤ n
     centralBinom_le_of_no_bertrand_prime n (lt_of_lt_of_le (by norm_num1) n_large) no_prime
   grw [this, ← mul_assoc, bertrand_main_inequality n_large]
 
-/-- Proves that Bertrand's postulate holds over all positive naturals less than n by identifying a
+/--
+Proves that Bertrand's postulate holds over all positive naturals less than n by identifying a
 descending list of primes, each no more than twice the next, such that the list contains a witness
 for each number ≤ n.
 -/
-theorem exists_prime_lt_and_le_two_mul_succ {n} (q) {p : ℕ} (prime_p : Nat.Prime p)
-    (covering : p ≤ 2 * q) (H : n < q → ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n) (hn : n < p) :
-    ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n := by
+theorem exists_prime_lt_and_le_two_mul_succ
+    {n}
+    (q)
+    {p : ℕ} (prime_p : Nat.Prime p) (covering : p ≤ 2 * q)
+    (H : n < q → ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n) (hn : n < p)
+    : ∃ p : ℕ, p.Prime ∧ n < p ∧ p ≤ 2 * n := by
   grind
 
 /--
 **Bertrand's Postulate**: For any positive natural number, there is a prime which is greater than
 it, but no more than twice as large.
 -/
-theorem exists_prime_lt_and_le_two_mul (n : ℕ) (hn0 : n ≠ 0) :
-    ∃ p, Nat.Prime p ∧ n < p ∧ p ≤ 2 * n := by
+theorem exists_prime_lt_and_le_two_mul (n : ℕ) (hn0 : n ≠ 0)
+    : ∃ p, Nat.Prime p ∧ n < p ∧ p ≤ 2 * n := by
   -- Split into cases whether `n` is large or small
   rcases lt_or_ge 511 n with h | h
   -- If `n` is large, apply the lemma derived from the inequalities on the central binomial
@@ -236,8 +240,8 @@ theorem exists_prime_lt_and_le_two_mul (n : ℕ) (hn0 : n ≠ 0) :
   run_tac do
     for i in [317, 163, 83, 43, 23, 13, 7, 5, 3, 2] do
       let i : Term := quote i
-      evalTactic <| ←
-        `(tactic| refine exists_prime_lt_and_le_two_mul_succ $i (by norm_num1) (by norm_num1) ?_)
+      evalTactic <|
+        ← `(tactic| refine exists_prime_lt_and_le_two_mul_succ $i (by norm_num1) (by norm_num1) ?_)
   exact fun h2 => ⟨2, prime_two, h2, Nat.mul_le_mul_left 2 (Nat.pos_of_ne_zero hn0)⟩
 
 alias bertrand := Nat.exists_prime_lt_and_le_two_mul

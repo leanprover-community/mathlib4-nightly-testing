@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Polynomial.Basic
 
 public section
 
-
 noncomputable section
 
 namespace Polynomial
@@ -23,16 +22,16 @@ universe u
 variable {R : Type u} {a : R} {m n : ℕ}
 variable [Semiring R] {r : R[X]}
 
-theorem monomial_one_eq_iff [Nontrivial R] {i j : ℕ} :
-    (monomial i 1 : R[X]) = monomial j 1 ↔ i = j := by
+theorem monomial_one_eq_iff [Nontrivial R] {i j : ℕ}
+    : (monomial i 1 : R[X]) = monomial j 1 ↔ i = j := by
   simp_rw [← ofFinsupp_single, ofFinsupp.injEq]
   exact AddMonoidAlgebra.of_injective.eq_iff
 
 instance infinite [Nontrivial R] : Infinite R[X] :=
   Infinite.of_injective (fun i => monomial i 1) fun m n h => by simpa [monomial_one_eq_iff] using h
 
-theorem card_support_le_one_iff_monomial {f : R[X]} :
-    Finset.card f.support ≤ 1 ↔ ∃ n a, f = monomial n a := by
+theorem card_support_le_one_iff_monomial {f : R[X]}
+    : Finset.card f.support ≤ 1 ↔ ∃ n a, f = monomial n a := by
   constructor
   · intro H
     rw [Finset.card_le_one_iff_subset_singleton] at H
@@ -50,8 +49,9 @@ theorem card_support_le_one_iff_monomial {f : R[X]} :
     apply Finset.card_le_card
     exact support_monomial_subset _ _
 
-theorem ringHom_ext {S} [Semiring S] {f g : R[X] →+* S} (h₁ : ∀ a, f (C a) = g (C a))
-    (h₂ : f X = g X) : f = g := by
+theorem ringHom_ext
+    {S} [Semiring S] {f g : R[X] →+* S} (h₁ : ∀ a, f (C a) = g (C a)) (h₂ : f X = g X)
+    : f = g := by
   set f' := f.comp (toFinsuppIso R).symm.toRingHom with hf'
   set g' := g.comp (toFinsuppIso R).symm.toRingHom with hg'
   have A : f' = g' := by
@@ -71,8 +71,8 @@ theorem ringHom_ext {S} [Semiring S] {f g : R[X] →+* S} (h₁ : ∀ a, f (C a)
   rw [B, C', A]
 
 @[ext high]
-theorem ringHom_ext' {S} [Semiring S] {f g : R[X] →+* S} (h₁ : f.comp C = g.comp C)
-    (h₂ : f X = g X) : f = g :=
+theorem ringHom_ext' {S} [Semiring S] {f g : R[X] →+* S} (h₁ : f.comp C = g.comp C) (h₂ : f X = g X)
+    : f = g :=
   ringHom_ext (RingHom.congr_fun h₁) h₂
 
 end Polynomial

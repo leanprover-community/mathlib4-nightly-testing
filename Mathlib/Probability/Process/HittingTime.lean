@@ -6,7 +6,6 @@ Authors: Kexing Ying, Rémy Degenne
 module
 
 public import Mathlib.Probability.Process.Stopping
-
 import Mathlib.Tactic.AdaptationNote
 
 /-!
@@ -35,7 +34,6 @@ we have only proved it for the discrete case so far).
 
 @[expose] public section
 
-
 open TopologicalSpace
 
 open scoped MeasureTheory NNReal ENNReal Topology
@@ -49,35 +47,44 @@ section Basic
 variable [Preorder ι] [InfSet ι] {u : ι → Ω → β}
 
 open scoped Classical in
-/-- Hitting time: given a stochastic process `u` and a set `s`, `hittingBtwn u s n m` is
+/--
+Hitting time: given a stochastic process `u` and a set `s`, `hittingBtwn u s n m` is
 the first time `u` is in `s` after time `n` and before time `m` (if `u` does not hit `s`
 after time `n` and before `m` then the hitting time is simply `m`).
 
-The hitting time is a stopping time if the process is strongly adapted and discrete. -/
-noncomputable def hittingBtwn (u : ι → Ω → β)
-    (s : Set β) (n m : ι) : Ω → ι :=
-  fun x => if ∃ j ∈ Set.Icc n m, u j x ∈ s
-    then sInf (Set.Icc n m ∩ {i : ι | u i x ∈ s}) else m
+The hitting time is a stopping time if the process is strongly adapted and discrete.
+-/
+noncomputable def hittingBtwn (u : ι → Ω → β) (s : Set β) (n m : ι) : Ω → ι := fun x =>
+  if ∃ j ∈ Set.Icc n m, u j x ∈ s then
+    sInf (Set.Icc n m ∩ {i : ι | u i x ∈ s})
+  else
+    m
 
 open scoped Classical in
-/-- Hitting time: given a stochastic process `u` and a set `s`, `hittingAfter u s n` is
+/--
+Hitting time: given a stochastic process `u` and a set `s`, `hittingAfter u s n` is
 the first time `u` is in `s` after time `n` (if `u` does not hit `s` after time `n` then the
-hitting time is `⊤`). -/
-noncomputable def hittingAfter (u : ι → Ω → β) (s : Set β) (n : ι) :
-    Ω → WithTop ι :=
-  fun x ↦ if ∃ j, n ≤ j ∧ u j x ∈ s then (sInf {i : ι | n ≤ i ∧ u i x ∈ s} : ι) else ⊤
+hitting time is `⊤`).
+-/
+noncomputable def hittingAfter (u : ι → Ω → β) (s : Set β) (n : ι) : Ω → WithTop ι := fun x ↦
+  if ∃ j, n ≤ j ∧ u j x ∈ s then (sInf {i : ι | n ≤ i ∧ u i x ∈ s} : ι) else ⊤
 
 open scoped Classical in
-theorem hittingBtwn_def (u : ι → Ω → β) (s : Set β) (n m : ι) :
-    hittingBtwn u s n m =
-    fun x => if ∃ j ∈ Set.Icc n m, u j x ∈ s then sInf (Set.Icc n m ∩ {i : ι | u i x ∈ s}) else m :=
+theorem hittingBtwn_def (u : ι → Ω → β) (s : Set β) (n m : ι)
+    : hittingBtwn u s n m
+      = fun x =>
+        if ∃ j ∈ Set.Icc n m, u j x ∈ s then sInf (Set.Icc n m ∩ {i : ι | u i x ∈ s}) else m :=
   rfl
 
 open scoped Classical in
-lemma hittingAfter_def (u : ι → Ω → β) (s : Set β) (n : ι) :
-    hittingAfter u s n =
-    fun x => if ∃ j, n ≤ j ∧ u j x ∈ s
-      then ((sInf {i : ι | n ≤ i ∧ u i x ∈ s} : ι) : WithTop ι) else ⊤ := rfl
+lemma hittingAfter_def (u : ι → Ω → β) (s : Set β) (n : ι)
+    : hittingAfter u s n
+      = fun x =>
+        if ∃ j, n ≤ j ∧ u j x ∈ s then
+          ((sInf {i : ι | n ≤ i ∧ u i x ∈ s} : ι) : WithTop ι)
+        else
+          ⊤ :=
+  rfl
 
 @[simp]
 lemma hittingBtwn_empty (n m : ι) : hittingBtwn u ∅ n m = fun _ ↦ m := by ext; simp [hittingBtwn]
@@ -86,15 +93,15 @@ lemma hittingBtwn_empty (n m : ι) : hittingBtwn u ∅ n m = fun _ ↦ m := by e
 lemma hittingAfter_empty (n : ι) : hittingAfter u ∅ n = fun _ ↦ ⊤ := by ext; simp [hittingAfter]
 
 @[simp]
-lemma hittingBtwn_univ {ι : Type*} [ConditionallyCompleteLinearOrder ι] {u : ι → Ω → β} (n m : ι) :
-    hittingBtwn u .univ n m = fun _ ↦ min n m := by
+lemma hittingBtwn_univ {ι : Type*} [ConditionallyCompleteLinearOrder ι] {u : ι → Ω → β} (n m : ι)
+    : hittingBtwn u .univ n m = fun _ ↦ min n m := by
   ext ω
   simp only [hittingBtwn_def, Set.mem_Icc, Set.mem_univ, and_true, Set.ofPred_true, Set.inter_univ]
   by_cases hnm : n ≤ m <;> simp [hnm] <;> grind
 
 @[simp]
-lemma hittingAfter_univ {ι : Type*} [ConditionallyCompleteLattice ι] {u : ι → Ω → β} (n : ι) :
-    hittingAfter u .univ n = fun _ ↦ (n : WithTop ι) := by
+lemma hittingAfter_univ {ι : Type*} [ConditionallyCompleteLattice ι] {u : ι → Ω → β} (n : ι)
+    : hittingAfter u .univ n = fun _ ↦ (n : WithTop ι) := by
   ext ω
   classical
   simp only [hittingAfter_def, Set.mem_univ, and_true]
@@ -119,22 +126,23 @@ theorem hittingBtwn_le {m : ι} (ω : Ω) : hittingBtwn u s n m ω ≤ m := by
     exact (csInf_le (BddBelow.inter_of_left bddBelow_Icc) (Set.mem_inter hj₁ hj₂)).trans hj₁.2
   · exact le_rfl
 
-theorem notMem_of_lt_hittingBtwn {m k : ι} (hk₁ : k < hittingBtwn u s n m ω) (hk₂ : n ≤ k) :
-    u k ω ∉ s := by
+theorem notMem_of_lt_hittingBtwn {m k : ι} (hk₁ : k < hittingBtwn u s n m ω) (hk₂ : n ≤ k)
+    : u k ω ∉ s := by
   intro h
   have hexists : ∃ j ∈ Set.Icc n m, u j ω ∈ s := ⟨k, ⟨hk₂, le_trans hk₁.le <| hittingBtwn_le _⟩, h⟩
   refine not_le.2 hk₁ ?_
   simp_rw [hittingBtwn, ite_eq_left hexists]
   exact csInf_le bddBelow_Icc.inter_of_left ⟨⟨hk₂, le_trans hk₁.le <| hittingBtwn_le _⟩, h⟩
 
-theorem notMem_of_lt_hittingAfter {k : ι} (hk₁ : k < hittingAfter u s n ω) (hk₂ : n ≤ k) :
-    u k ω ∉ s := by
+theorem notMem_of_lt_hittingAfter {k : ι} (hk₁ : k < hittingAfter u s n ω) (hk₂ : n ≤ k)
+    : u k ω ∉ s := by
   refine fun h ↦ not_le.2 hk₁ ?_
   rw [hittingAfter, ite_eq_left ⟨k, hk₂, h⟩]
   exact_mod_cast csInf_le (s := {i | n ≤ i ∧ u i ω ∈ s}) ⟨n, fun j hj => hj.1⟩ ⟨hk₂, h⟩
 
-theorem hittingBtwn_eq_end_iff {m : ι} : hittingBtwn u s n m ω = m ↔
-    (∃ j ∈ Set.Icc n m, u j ω ∈ s) → sInf (Set.Icc n m ∩ {i : ι | u i ω ∈ s}) = m := by
+theorem hittingBtwn_eq_end_iff {m : ι}
+    : hittingBtwn u s n m ω = m
+      ↔ (∃ j ∈ Set.Icc n m, u j ω ∈ s) → sInf (Set.Icc n m ∩ {i : ι | u i ω ∈ s}) = m := by
   classical
   rw [hittingBtwn, ite_eq_right_iff]
 
@@ -167,8 +175,8 @@ lemma le_hittingAfter (ω : Ω) : n ≤ hittingAfter u s n ω := by
   · exact_mod_cast le_csInf (s := {i | n ≤ i ∧ u i ω ∈ s}) h fun b hb => hb.1
   · simp
 
-theorem le_hittingBtwn_of_exists {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :
-    n ≤ hittingBtwn u s n m ω := by
+theorem le_hittingBtwn_of_exists {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s)
+    : n ≤ hittingBtwn u s n m ω := by
   refine le_hittingBtwn ?_ ω
   by_contra h
   rw [Set.Icc_eq_empty_of_lt (not_le.mp h)] at h_exists
@@ -177,8 +185,8 @@ theorem le_hittingBtwn_of_exists {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j
 theorem hittingBtwn_mem_Icc {m : ι} (hnm : n ≤ m) (ω : Ω) : hittingBtwn u s n m ω ∈ Set.Icc n m :=
   ⟨le_hittingBtwn hnm ω, hittingBtwn_le ω⟩
 
-theorem hittingBtwn_mem_set [WellFoundedLT ι] {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :
-    u (hittingBtwn u s n m ω) ω ∈ s := by
+theorem hittingBtwn_mem_set [WellFoundedLT ι] {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s)
+    : u (hittingBtwn u s n m ω) ω ∈ s := by
   simp_rw [hittingBtwn, ite_eq_left h_exists]
   have h_nonempty : (Set.Icc n m ∩ {i : ι | u i ω ∈ s}).Nonempty := by
     obtain ⟨k, hk₁, hk₂⟩ := h_exists
@@ -187,46 +195,45 @@ theorem hittingBtwn_mem_set [WellFoundedLT ι] {m : ι} (h_exists : ∃ j ∈ Se
   rw [Set.mem_inter_iff] at h_mem
   exact h_mem.2
 
-lemma hittingAfter_mem_set [WellFoundedLT ι] (h_exists : ∃ j, n ≤ j ∧ u j ω ∈ s) :
-    u (hittingAfter u s n ω).untopA ω ∈ s := by
+lemma hittingAfter_mem_set [WellFoundedLT ι] (h_exists : ∃ j, n ≤ j ∧ u j ω ∈ s)
+    : u (hittingAfter u s n ω).untopA ω ∈ s := by
   rw [hittingAfter, ite_eq_left h_exists]
   have h_nonempty : {i : ι | n ≤ i ∧ u i ω ∈ s}.Nonempty := by
     obtain ⟨k, hk₁, hk₂⟩ := h_exists
     exact ⟨k, hk₁, hk₂⟩
   exact (csInf_mem h_nonempty).2
 
-theorem hittingBtwn_mem_set_of_hittingBtwn_lt [WellFoundedLT ι] {m : ι}
-    (hl : hittingBtwn u s n m ω < m) :
-    u (hittingBtwn u s n m ω) ω ∈ s := by
+theorem hittingBtwn_mem_set_of_hittingBtwn_lt
+    [WellFoundedLT ι] {m : ι} (hl : hittingBtwn u s n m ω < m)
+    : u (hittingBtwn u s n m ω) ω ∈ s := by
   by_cases h : ∃ j ∈ Set.Icc n m, u j ω ∈ s
   · exact hittingBtwn_mem_set h
   · simp_rw [hittingBtwn, ite_eq_right h] at hl
     exact False.elim (hl.ne rfl)
 
-lemma hittingAfter_mem_set_of_ne_top [WellFoundedLT ι] (hl : hittingAfter u s n ω ≠ ⊤) :
-    u (hittingAfter u s n ω).untopA ω ∈ s := by
+lemma hittingAfter_mem_set_of_ne_top [WellFoundedLT ι] (hl : hittingAfter u s n ω ≠ ⊤)
+    : u (hittingAfter u s n ω).untopA ω ∈ s := by
   simp only [ne_eq, hittingAfter_eq_top_iff, not_forall, not_not] at hl
   obtain ⟨j, hj₁, hj₂⟩ := hl
   exact hittingAfter_mem_set ⟨j, hj₁, hj₂⟩
 
-theorem hittingBtwn_le_of_mem {m : ι} (hin : n ≤ i) (him : i ≤ m) (his : u i ω ∈ s) :
-    hittingBtwn u s n m ω ≤ i := by
+theorem hittingBtwn_le_of_mem {m : ι} (hin : n ≤ i) (him : i ≤ m) (his : u i ω ∈ s)
+    : hittingBtwn u s n m ω ≤ i := by
   have h_exists : ∃ k ∈ Set.Icc n m, u k ω ∈ s := ⟨i, ⟨hin, him⟩, his⟩
   simp_rw [hittingBtwn, ite_eq_left h_exists]
   exact csInf_le (BddBelow.inter_of_left bddBelow_Icc) (Set.mem_inter ⟨hin, him⟩ his)
 
-lemma hittingAfter_le_of_mem (hin : n ≤ i) (his : u i ω ∈ s) :
-    hittingAfter u s n ω ≤ i := by
+lemma hittingAfter_le_of_mem (hin : n ≤ i) (his : u i ω ∈ s) : hittingAfter u s n ω ≤ i := by
   have h_exists : ∃ k, n ≤ k ∧ u k ω ∈ s := ⟨i, hin, his⟩
   rw [hittingAfter, ite_eq_left h_exists]
   exact_mod_cast csInf_le (s := {i | n ≤ i ∧ u i ω ∈ s}) ⟨n, fun j hj => hj.1⟩ ⟨hin, his⟩
 
-theorem hittingBtwn_le_iff_of_exists [WellFoundedLT ι] {m : ι}
-    (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :
-    hittingBtwn u s n m ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
+theorem hittingBtwn_le_iff_of_exists
+    [WellFoundedLT ι] {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s)
+    : hittingBtwn u s n m ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
   constructor <;> intro h'
-  · exact ⟨hittingBtwn u s n m ω, ⟨le_hittingBtwn_of_exists h_exists, h'⟩,
-      hittingBtwn_mem_set h_exists⟩
+  · exact
+      ⟨hittingBtwn u s n m ω, ⟨le_hittingBtwn_of_exists h_exists, h'⟩, hittingBtwn_mem_set h_exists⟩
   · have h'' : ∃ k ∈ Set.Icc n (min m i), u k ω ∈ s := by
       obtain ⟨k₁, hk₁_mem, hk₁_s⟩ := h_exists
       obtain ⟨k₂, hk₂_mem, hk₂_s⟩ := h'
@@ -236,8 +243,8 @@ theorem hittingBtwn_le_iff_of_exists [WellFoundedLT ι] {m : ι}
     refine le_trans ?_ (hk₁.2.trans (min_le_right _ _))
     exact hittingBtwn_le_of_mem hk₁.1 (hk₁.2.trans (min_le_left _ _)) hk₂
 
-lemma hittingAfter_le_iff [WellFoundedLT ι] :
-    hittingAfter u s n ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
+lemma hittingAfter_le_iff [WellFoundedLT ι]
+    : hittingAfter u s n ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
   constructor <;> intro h'
   · have h_top : hittingAfter u s n ω ≠ ⊤ := fun h ↦ by simp [h] at h'
     have h_le := le_hittingAfter (u := u) (s := s) (n := n) ω
@@ -248,8 +255,8 @@ lemma hittingAfter_le_iff [WellFoundedLT ι] :
     refine le_trans ?_ (mod_cast hj₁.2 : (j : WithTop ι) ≤ i)
     exact hittingAfter_le_of_mem hj₁.1 hj₂
 
-theorem hittingBtwn_le_iff_of_lt [WellFoundedLT ι] {m : ι} (i : ι) (hi : i < m) :
-    hittingBtwn u s n m ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
+theorem hittingBtwn_le_iff_of_lt [WellFoundedLT ι] {m : ι} (i : ι) (hi : i < m)
+    : hittingBtwn u s n m ω ≤ i ↔ ∃ j ∈ Set.Icc n i, u j ω ∈ s := by
   by_cases h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s
   · rw [hittingBtwn_le_iff_of_exists h_exists]
   · simp_rw [hittingBtwn, ite_eq_right h_exists]
@@ -257,8 +264,8 @@ theorem hittingBtwn_le_iff_of_lt [WellFoundedLT ι] {m : ι} (i : ι) (hi : i < 
     simp only [not_le.mpr hi, Set.mem_Icc, false_iff, not_exists, not_and, and_imp]
     exact fun k hkn hki => h_exists k ⟨hkn, hki.trans hi.le⟩
 
-theorem hittingBtwn_lt_iff {m : ι} (i : ι) (hi : i ≤ m) :
-    hittingBtwn u s n m ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by
+theorem hittingBtwn_lt_iff {m : ι} (i : ι) (hi : i ≤ m)
+    : hittingBtwn u s n m ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by
   constructor <;> intro h'
   · have h : ∃ j ∈ Set.Icc n m, u j ω ∈ s := by
       by_contra h
@@ -277,8 +284,7 @@ theorem hittingBtwn_lt_iff {m : ι} (i : ι) (hi : i ≤ m) :
     refine lt_of_le_of_lt ?_ hk₁.2
     exact hittingBtwn_le_of_mem hk₁.1 (hk₁.2.le.trans hi) hk₂
 
-lemma hittingAfter_lt_iff :
-    hittingAfter u s n ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by
+lemma hittingAfter_lt_iff : hittingAfter u s n ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by
   constructor <;> intro h'
   · have h_top : hittingAfter u s n ω ≠ ⊤ := fun h ↦ by simp [h] at h'
     have h_exists : ∃ j, n ≤ j ∧ u j ω ∈ s := by
@@ -299,8 +305,9 @@ lemma hittingAfter_lt_iff :
     refine lt_of_le_of_lt ?_ (mod_cast hj₁.2 : (j : WithTop ι) < i)
     exact hittingAfter_le_of_mem hj₁.1 hj₂
 
-theorem hittingBtwn_eq_hittingBtwn_of_exists {m₁ m₂ : ι} (h : m₁ ≤ m₂)
-    (h' : ∃ j ∈ Set.Icc n m₁, u j ω ∈ s) : hittingBtwn u s n m₁ ω = hittingBtwn u s n m₂ ω := by
+theorem hittingBtwn_eq_hittingBtwn_of_exists
+    {m₁ m₂ : ι} (h : m₁ ≤ m₂) (h' : ∃ j ∈ Set.Icc n m₁, u j ω ∈ s)
+    : hittingBtwn u s n m₁ ω = hittingBtwn u s n m₂ ω := by
   simp only [hittingBtwn, ite_eq_left h']
   obtain ⟨j, hj₁, hj₂⟩ := h'
   rw [ite_eq_left]
@@ -338,15 +345,15 @@ lemma hittingAfter_anti (u : ι → Ω → β) (n : ι) : Antitone (hittingAfter
     exact absurd ⟨t, ht.1, hEF ht.2⟩ hF
   · simp
 
-lemma hittingBtwn_apply_anti (u : ι → Ω → β) (n m : ι) (ω : Ω) :
-    Antitone (hittingBtwn u · n m ω) := fun _ _ hEF ↦ hittingBtwn_anti u n m hEF ω
+lemma hittingBtwn_apply_anti (u : ι → Ω → β) (n m : ι) (ω : Ω) : Antitone (hittingBtwn u · n m ω) :=
+  fun _ _ hEF ↦ hittingBtwn_anti u n m hEF ω
 
-lemma hittingAfter_apply_anti (u : ι → Ω → β) (n : ι) (ω : Ω) :
-    Antitone (hittingAfter u · n ω) := fun _ _ hst ↦ hittingAfter_anti u n hst ω
+lemma hittingAfter_apply_anti (u : ι → Ω → β) (n : ι) (ω : Ω) : Antitone (hittingAfter u · n ω) :=
+  fun _ _ hst ↦ hittingAfter_anti u n hst ω
 
 /-- `hittingBtwn` is monotone with respect to the maximal time. -/
-theorem hittingBtwn_mono_right (u : ι → Ω → β) (s : Set β) (n : ι) :
-    Monotone (hittingBtwn u s n · ω) := by
+theorem hittingBtwn_mono_right (u : ι → Ω → β) (s : Set β) (n : ι)
+    : Monotone (hittingBtwn u s n · ω) := by
   intro m₁ m₂ hm
   by_cases h : ∃ j ∈ Set.Icc n m₁, u j ω ∈ s
   · exact (hittingBtwn_eq_hittingBtwn_of_exists hm h).le
@@ -359,8 +366,8 @@ theorem hittingBtwn_mono_right (u : ι → Ω → β) (s : Set β) (n : ι) :
     · exact hm
 
 /-- `hittingBtwn` is monotone with respect to the minimal time. -/
-lemma hittingBtwn_mono_left (u : ι → Ω → β) (s : Set β) (m : ι) :
-    Monotone (hittingBtwn u s · m) := by
+lemma hittingBtwn_mono_left (u : ι → Ω → β) (s : Set β) (m : ι)
+    : Monotone (hittingBtwn u s · m) := by
   intro n n' hnn' ω
   simp only [hittingBtwn]
   split_ifs with h_n h_n' h_n'
@@ -385,62 +392,73 @@ lemma hittingAfter_mono (u : ι → Ω → β) (s : Set β) : Monotone (hittingA
     exact absurd ⟨t, hnm.trans ht.1, ht.2⟩ h_n
   · simp
 
-lemma hittingBtwn_apply_mono_right (u : ι → Ω → β) (s : Set β) (n : ι) (ω : Ω) :
-    Monotone (hittingBtwn u s n · ω) := fun _ _ hnn' ↦ hittingBtwn_mono_right u s n hnn'
+lemma hittingBtwn_apply_mono_right (u : ι → Ω → β) (s : Set β) (n : ι) (ω : Ω)
+    : Monotone (hittingBtwn u s n · ω) := fun _ _ hnn' ↦
+  hittingBtwn_mono_right u s n hnn'
 
-lemma hittingBtwn_apply_mono_left (u : ι → Ω → β) (s : Set β) (m : ι) (ω : Ω) :
-    Monotone (hittingBtwn u s · m ω) := fun _ _ hnn' ↦ hittingBtwn_mono_left u s m hnn' ω
+lemma hittingBtwn_apply_mono_left (u : ι → Ω → β) (s : Set β) (m : ι) (ω : Ω)
+    : Monotone (hittingBtwn u s · m ω) := fun _ _ hnn' ↦
+  hittingBtwn_mono_left u s m hnn' ω
 
-lemma hittingAfter_apply_mono (u : ι → Ω → β) (s : Set β) (ω : Ω) :
-    Monotone (hittingAfter u s · ω) := fun _ _ hnm ↦ hittingAfter_mono u s hnm ω
+lemma hittingAfter_apply_mono (u : ι → Ω → β) (s : Set β) (ω : Ω)
+    : Monotone (hittingAfter u s · ω) := fun _ _ hnm ↦
+  hittingAfter_mono u s hnm ω
 
 end Inequalities
 
 /-- A discrete hitting time is a stopping time. -/
-theorem Adapted.isStoppingTime_hittingBtwn [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι]
-    [Countable ι] {_ : MeasurableSpace β} {f : Filtration ι m} {u : ι → Ω → β} {s : Set β}
-    {n n' : ι} (hu : Adapted f u) (hs : MeasurableSet s) :
-    IsStoppingTime f (fun ω ↦ (hittingBtwn u s n n' ω : ι)) := by
+theorem Adapted.isStoppingTime_hittingBtwn
+    [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι] [Countable ι] {_ : MeasurableSpace β}
+    {f : Filtration ι m} {u : ι → Ω → β} {s : Set β} {n n' : ι}
+    (hu : Adapted f u) (hs : MeasurableSet s)
+    : IsStoppingTime f (fun ω ↦ (hittingBtwn u s n n' ω : ι)) := by
   intro i
   rcases le_or_gt n' i with hi | hi
   · have h_le : ∀ ω, hittingBtwn u s n n' ω ≤ i := fun x => (hittingBtwn_le x).trans hi
     simp [h_le]
   · have h_set_eq_Union : {ω | hittingBtwn u s n n' ω ≤ i} = ⋃ j ∈ Set.Icc n i, u j ⁻¹' s := by
       ext; simp [hittingBtwn_le_iff_of_lt _ hi]
-    simpa [h_set_eq_Union] using MeasurableSet.iUnion fun j =>
-      MeasurableSet.iUnion fun hj => f.mono hj.2 _ ((hu j) hs)
+    simpa [h_set_eq_Union] using
+      MeasurableSet.iUnion fun j => MeasurableSet.iUnion fun hj => f.mono hj.2 _ ((hu j) hs)
 
-theorem Adapted.isStoppingTime_hittingAfter [ConditionallyCompleteLinearOrder ι]
-    [WellFoundedLT ι] [Countable ι] {_ : MeasurableSpace β} {f : Filtration ι m} {u : ι → Ω → β}
-    {s : Set β} {n : ι} (hu : Adapted f u) (hs : MeasurableSet s) :
-    IsStoppingTime f (hittingAfter u s n) := by
+theorem Adapted.isStoppingTime_hittingAfter
+    [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι] [Countable ι] {_ : MeasurableSpace β}
+    {f : Filtration ι m} {u : ι → Ω → β} {s : Set β} {n : ι}
+    (hu : Adapted f u) (hs : MeasurableSet s)
+    : IsStoppingTime f (hittingAfter u s n) := by
   intro i
   have h_set_eq_Union : {ω | hittingAfter u s n ω ≤ i} = ⋃ j ∈ Set.Icc n i, u j ⁻¹' s := by
     ext; simp [hittingAfter_le_iff]
-  simpa [h_set_eq_Union] using MeasurableSet.iUnion fun j =>
-    MeasurableSet.iUnion fun hj => f.mono hj.2 _ ((hu j) hs)
+  simpa [h_set_eq_Union] using
+    MeasurableSet.iUnion fun j => MeasurableSet.iUnion fun hj => f.mono hj.2 _ ((hu j) hs)
 
-theorem stoppedValue_hittingBtwn_mem [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι]
-    {u : ι → Ω → β} {s : Set β} {n m : ι} {ω : Ω} (h : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :
-    stoppedValue u (fun ω ↦ (hittingBtwn u s n m ω : ι)) ω ∈ s := by
+theorem stoppedValue_hittingBtwn_mem
+    [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι]
+    {u : ι → Ω → β} {s : Set β} {n m : ι} {ω : Ω} (h : ∃ j ∈ Set.Icc n m, u j ω ∈ s)
+    : stoppedValue u (fun ω ↦ (hittingBtwn u s n m ω : ι)) ω ∈ s := by
   simp only [stoppedValue, hittingBtwn, ite_eq_left h]
   obtain ⟨j, hj₁, hj₂⟩ := h
   have : sInf (Set.Icc n m ∩ {i | u i ω ∈ s}) ∈ Set.Icc n m ∩ {i | u i ω ∈ s} :=
     csInf_mem (Set.nonempty_of_mem ⟨hj₁, hj₂⟩)
   exact this.2
 
-/-- The hitting time of a discrete process with the starting time indexed by a stopping time
-is a stopping time. -/
-theorem Adapted.isStoppingTime_hittingBtwn_isStoppingTime [ConditionallyCompleteLinearOrder ι]
-    [WellFoundedLT ι] [Countable ι] [TopologicalSpace ι] [OrderTopology ι]
-    [FirstCountableTopology ι] [MeasurableSpace β] {f : Filtration ι m} {u : ι → Ω → β}
-    {τ : Ω → WithTop ι} (hτ : IsStoppingTime f τ)
-    {N : ι} (hτbdd : ∀ x, τ x ≤ N) {s : Set β} (hs : MeasurableSet s) (hf : Adapted f u) :
-    IsStoppingTime f fun x ↦ (hittingBtwn u s (τ x).untopA N x : ι) := by
+/--
+The hitting time of a discrete process with the starting time indexed by a stopping time
+is a stopping time.
+-/
+theorem Adapted.isStoppingTime_hittingBtwn_isStoppingTime
+    [ConditionallyCompleteLinearOrder ι] [WellFoundedLT ι] [Countable ι] [TopologicalSpace ι]
+    [OrderTopology ι] [FirstCountableTopology ι] [MeasurableSpace β]
+    {f : Filtration ι m} {u : ι → Ω → β} {τ : Ω → WithTop ι} (hτ : IsStoppingTime f τ)
+    {N : ι} (hτbdd : ∀ x, τ x ≤ N)
+    {s : Set β} (hs : MeasurableSet s)
+    (hf : Adapted f u)
+    : IsStoppingTime f fun x ↦ (hittingBtwn u s (τ x).untopA N x : ι) := by
   intro n
-  have h₁ : {x | hittingBtwn u s (τ x).untopA N x ≤ n} =
-    (⋃ i ≤ n, {x | τ x = i} ∩ {x | hittingBtwn u s i N x ≤ n}) ∪
-      ⋃ i > n, {x | τ x = i} ∩ {x | hittingBtwn u s i N x ≤ n} := by
+  have h₁
+      : {x | hittingBtwn u s (τ x).untopA N x ≤ n}
+        = (⋃ i ≤ n, {x | τ x = i} ∩ {x | hittingBtwn u s i N x ≤ n})
+          ∪ ⋃ i > n, {x | τ x = i} ∩ {x | hittingBtwn u s i N x ≤ n} := by
     ext x
     simp only [Set.mem_ofPred_eq, gt_iff_lt, Set.mem_union, Set.mem_iUnion, Set.mem_inter_iff,
       exists_and_left, exists_prop]
@@ -459,8 +477,8 @@ theorem Adapted.isStoppingTime_hittingBtwn_isStoppingTime [ConditionallyComplete
     rw [hτ] at hτbdd
     exact mod_cast hτbdd
   simp only [WithTop.coe_le_coe, h₁, h₂, Set.union_empty]
-  refine MeasurableSet.iUnion fun i => MeasurableSet.iUnion fun hi =>
-    (f.mono hi _ (hτ.measurableSet_eq i)).inter ?_
+  refine MeasurableSet.iUnion fun i =>
+    MeasurableSet.iUnion fun hi => (f.mono hi _ (hτ.measurableSet_eq i)).inter ?_
   simpa using hf.isStoppingTime_hittingBtwn hs n
 
 section CompleteLattice
@@ -468,18 +486,19 @@ section CompleteLattice
 variable [CompleteLattice ι] {u : ι → Ω → β} {s : Set β}
 
 theorem hittingBtwn_eq_sInf (ω : Ω) : hittingBtwn u s ⊥ ⊤ ω = sInf {i : ι | u i ω ∈ s} := by
-  simp only [hittingBtwn, Set.Icc_bot,
-    Set.Iic_top, Set.univ_inter, ite_eq_left_iff, not_exists]
+  simp only [hittingBtwn, Set.Icc_bot, Set.Iic_top, Set.univ_inter, ite_eq_left_iff, not_exists]
   intro h_notMem_s
   symm
   rw [sInf_eq_top]
   simp only [Set.mem_univ, true_and] at h_notMem_s
   exact fun i hi_mem_s => absurd hi_mem_s (h_notMem_s i)
 
-lemma hittingAfter_eq_sInf [∀ ω, Decidable (∃ j, u j ω ∈ s)] (ω : Ω) :
-    hittingAfter u s ⊥ ω
-      = if ∃ j, u j ω ∈ s then ((sInf {i : ι | u i ω ∈ s} : ι) : WithTop ι)
-        else (⊤ : WithTop ι) := by
+lemma hittingAfter_eq_sInf [∀ ω, Decidable (∃ j, u j ω ∈ s)] (ω : Ω)
+    : hittingAfter u s ⊥ ω
+      = if ∃ j, u j ω ∈ s then
+          ((sInf {i : ι | u i ω ∈ s} : ι) : WithTop ι)
+        else
+          (⊤ : WithTop ι) := by
   simp [hittingAfter]
 
 end CompleteLattice
@@ -489,8 +508,8 @@ section ConditionallyCompleteLinearOrderBot
 variable [ConditionallyCompleteLinearOrderBot ι] [WellFoundedLT ι]
 variable {u : ι → Ω → β} {s : Set β}
 
-theorem hittingBtwn_bot_le_iff {i n : ι} {ω : Ω} (hx : ∃ j, j ≤ n ∧ u j ω ∈ s) :
-    hittingBtwn u s ⊥ n ω ≤ i ↔ ∃ j ≤ i, u j ω ∈ s := by
+theorem hittingBtwn_bot_le_iff {i n : ι} {ω : Ω} (hx : ∃ j, j ≤ n ∧ u j ω ∈ s)
+    : hittingBtwn u s ⊥ n ω ≤ i ↔ ∃ j ≤ i, u j ω ∈ s := by
   rcases lt_or_ge i n with hi | hi
   · rw [hittingBtwn_le_iff_of_lt _ hi]
     simp
@@ -498,8 +517,8 @@ theorem hittingBtwn_bot_le_iff {i n : ι} {ω : Ω} (hx : ∃ j, j ≤ n ∧ u j
     obtain ⟨j, hj₁, hj₂⟩ := hx
     exact ⟨j, hj₁.trans hi, hj₂⟩
 
-theorem hittingAfter_bot_le_iff {i : ι} {ω : Ω} :
-    hittingAfter u s ⊥ ω ≤ i ↔ ∃ j ≤ i, u j ω ∈ s := by
+theorem hittingAfter_bot_le_iff {i : ι} {ω : Ω}
+    : hittingAfter u s ⊥ ω ≤ i ↔ ∃ j ≤ i, u j ω ∈ s := by
   simp [hittingAfter_le_iff]
 
 end ConditionallyCompleteLinearOrderBot

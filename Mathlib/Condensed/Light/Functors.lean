@@ -38,8 +38,7 @@ abbrev LightProfinite.toCondensed (S : LightProfinite.{u}) : LightCondSet.{u} :=
   lightProfiniteToLightCondSet.obj S
 
 /-- `lightProfiniteToLightCondSet` is fully faithful. -/
-abbrev lightProfiniteToLightCondSetFullyFaithful :
-    lightProfiniteToLightCondSet.FullyFaithful :=
+abbrev lightProfiniteToLightCondSetFullyFaithful : lightProfiniteToLightCondSet.FullyFaithful :=
   (coherentTopology LightProfinite).yonedaFullyFaithful
 
 instance : lightProfiniteToLightCondSet.Full :=
@@ -49,31 +48,25 @@ instance : lightProfiniteToLightCondSet.Faithful :=
   inferInstanceAs ((coherentTopology LightProfinite).yoneda).Faithful
 
 set_option backward.isDefEq.respectTransparency.types false in
-/--
-The functor from `LightProfinite` to `LightCondSet` factors through `TopCat`.
--/
+/-- The functor from `LightProfinite` to `LightCondSet` factors through `TopCat`. -/
 @[simps!]
-noncomputable def lightProfiniteToLightCondSetIsoTopCatToLightCondSet :
-    lightProfiniteToLightCondSet.{u} ≅ LightProfinite.toTopCat.{u} ⋙ topCatToLightCondSet.{u} :=
+noncomputable def lightProfiniteToLightCondSetIsoTopCatToLightCondSet
+    : lightProfiniteToLightCondSet.{u} ≅ LightProfinite.toTopCat.{u} ⋙ topCatToLightCondSet.{u} :=
   dsimp% NatIso.ofComponents fun X ↦ FullyFaithful.preimageIso (fullyFaithfulSheafToPresheaf _ _) <|
     NatIso.ofComponents fun S ↦ {
       hom := ↾fun f ↦ { toFun := f.hom }
       inv := ↾fun f ↦ InducedCategory.homMk (TopCat.ofHom f) }
 
-/--
-The functor from `LightProfinite` to `LightCondSet` preserves countable limits.
--/
-instance {J : Type} [SmallCategory J] [CountableCategory J] : PreservesLimitsOfShape J
-    lightProfiniteToLightCondSet.{u} :=
+/-- The functor from `LightProfinite` to `LightCondSet` preserves countable limits. -/
+instance {J : Type} [SmallCategory J] [CountableCategory J]
+    : PreservesLimitsOfShape J lightProfiniteToLightCondSet.{u} :=
   haveI : Functor.IsRightAdjoint topCatToLightCondSet.{u} :=
     LightCondSet.topCatAdjunction.isRightAdjoint
   haveI : PreservesLimitsOfShape J LightProfinite.toTopCat.{u} :=
     inferInstanceAs (PreservesLimitsOfShape J (lightToProfinite ⋙ Profinite.toTopCat))
   preservesLimitsOfShape_of_natIso lightProfiniteToLightCondSetIsoTopCatToLightCondSet.symm
 
-/--
-The functor from `LightProfinite` to `LightCondSet` preserves finite limits.
--/
+/-- The functor from `LightProfinite` to `LightCondSet` preserves finite limits. -/
 instance : PreservesFiniteLimits lightProfiniteToLightCondSet.{u} where
   preservesFiniteLimits _ := inferInstance
 

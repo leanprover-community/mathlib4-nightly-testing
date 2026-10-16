@@ -34,19 +34,19 @@ noncomputable section
 
 variable {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]
 
-/-- A vertex operator over a commutative ring `R` is an `R`-linear map from an `R`-module `V` to
+/--
+A vertex operator over a commutative ring `R` is an `R`-linear map from an `R`-module `V` to
 Laurent series with coefficients in `V`.  We write this as a specialization of the heterogeneous
-case. -/
-abbrev VertexOperator (R : Type*) (V : Type*) [CommRing R] [AddCommGroup V]
-    [Module R V] := HVertexOperator ℤ R V V
+case.
+-/
+abbrev VertexOperator (R : Type*) (V : Type*) [CommRing R] [AddCommGroup V] [Module R V] :=
+  HVertexOperator ℤ R V V
 
 namespace VertexOperator
 
 open HVertexOperator
 
-@[ext]
-theorem ext (A B : VertexOperator R V) (h : ∀ v : V, A v = B v) :
-    A = B := LinearMap.ext h
+@[ext] theorem ext (A B : VertexOperator R V) (h : ∀ v : V, A v = B v) : A = B := LinearMap.ext h
 
 /-- The coefficient of a vertex operator under normalized indexing. -/
 def ncoeff : VertexOperator R V →ₗ[R] ℤ → Module.End R V where
@@ -54,44 +54,50 @@ def ncoeff : VertexOperator R V →ₗ[R] ℤ → Module.End R V where
   map_add' _ _ := by ext; simp
   map_smul' _ _ := by ext; simp
 
-theorem ncoeff_apply (A : VertexOperator R V) (n : ℤ) : ncoeff A n = coeff A (-n - 1) :=
-  rfl
+theorem ncoeff_apply (A : VertexOperator R V) (n : ℤ) : ncoeff A n = coeff A (-n - 1) := rfl
 
 /-- In the literature, the `n`th normalized coefficient of a vertex operator `A` is written as
 either `Aₙ` or `A(n)`. -/
 scoped[VertexOperator] notation A "[[" n "]]" => ncoeff A n
 
 @[simp]
-theorem coeff_eq_ncoeff (A : VertexOperator R V)
-    (n : ℤ) : HVertexOperator.coeff A n = A[[-n - 1]] := by
+theorem coeff_eq_ncoeff (A : VertexOperator R V) (n : ℤ)
+    : HVertexOperator.coeff A n = A[[-n - 1]] := by
   rw [ncoeff_apply, neg_sub, Int.sub_neg, add_sub_cancel_left]
 
-theorem ncoeff_eq_zero_of_lt_order (A : VertexOperator R V) (n : ℤ) (x : V)
-    (h : -n - 1 < HahnSeries.order ((HahnModule.of R).symm (A x))) : (A[[n]]) x = 0 := by
+theorem ncoeff_eq_zero_of_lt_order
+    (A : VertexOperator R V) (n : ℤ) (x : V)
+    (h : -n - 1 < HahnSeries.order ((HahnModule.of R).symm (A x)))
+    : (A[[n]]) x = 0 := by
   simp only [ncoeff, HVertexOperator.coeff, LinearMap.coe_mk, AddHom.coe_mk]
   exact HahnSeries.coeff_eq_zero_of_lt_order h
 
-theorem coeff_eq_zero_of_lt_order (A : VertexOperator R V) (n : ℤ) (x : V)
-    (h : n < HahnSeries.order ((HahnModule.of R).symm (A x))) : coeff A n x = 0 := by
+theorem coeff_eq_zero_of_lt_order
+    (A : VertexOperator R V) (n : ℤ) (x : V)
+    (h : n < HahnSeries.order ((HahnModule.of R).symm (A x)))
+    : coeff A n x = 0 := by
   rw [coeff_eq_ncoeff, ncoeff_eq_zero_of_lt_order A (-n - 1) x]
   lia
 
-/-- Given an endomorphism-valued function on integers satisfying a pointwise bounded-pole condition,
-we produce a vertex operator. -/
-noncomputable def of_coeff (f : ℤ → Module.End R V)
-    (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x)) : VertexOperator R V :=
+/--
+Given an endomorphism-valued function on integers satisfying a pointwise bounded-pole condition,
+we produce a vertex operator.
+-/
+noncomputable def of_coeff
+    (f : ℤ → Module.End R V) (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x))
+    : VertexOperator R V :=
   HVertexOperator.of_coeff f fun x ↦ (BddBelow.isWF (hf x)).isPWO
 
 @[simp]
-theorem of_coeff_apply_coeff (f : ℤ → Module.End R V)
-    (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x)) (x : V) (n : ℤ) :
-    ((HahnModule.of R).symm ((of_coeff f hf) x)).coeff n = (f n) x := by
+theorem of_coeff_apply_coeff
+    (f : ℤ → Module.End R V) (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x)) (x : V) (n : ℤ)
+    : ((HahnModule.of R).symm ((of_coeff f hf) x)).coeff n = (f n) x := by
   rfl
 
 @[simp]
-theorem ncoeff_of_coeff (f : ℤ → Module.End R V)
-    (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x)) (n : ℤ) :
-    (of_coeff f hf)[[n]] = f (-n - 1) := by
+theorem ncoeff_of_coeff
+    (f : ℤ → Module.End R V) (hf : ∀ x, BddBelow (Function.support fun y ↦ f y x)) (n : ℤ)
+    : (of_coeff f hf)[[n]] = f (-n - 1) := by
   ext v
   rw [ncoeff_apply, coeff_apply_apply, of_coeff_apply_coeff]
 

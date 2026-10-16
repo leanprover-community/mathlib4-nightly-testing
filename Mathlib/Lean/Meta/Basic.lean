@@ -6,7 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Init
-
 import Lean.Meta.AppBuilder
 import Lean.Meta.Coe
 
@@ -18,9 +17,7 @@ Likely these already exist somewhere. Pointers welcome.
 
 public section
 
-/--
-Restore the metavariable context after execution.
--/
+/-- Restore the metavariable context after execution. -/
 def Lean.Meta.preservingMCtx {α : Type} (x : MetaM α) : MetaM α := do
   let mctx ← getMCtx
   try x finally setMCtx mctx
@@ -40,12 +37,14 @@ This function returns a triple `(mvs, bis, out)` where
 - `out` is `e` but instantiated with the `mvs`.
 -/
 def Lean.Meta.forallMetaTelescopeReducingUntilDefEq
-    (e t : Expr) (kind : MetavarKind := MetavarKind.natural) :
-    MetaM (Array Expr × Array BinderInfo × Expr) := do
+    (e t : Expr) (kind : MetavarKind := MetavarKind.natural)
+    : MetaM (Array Expr × Array BinderInfo × Expr) := do
   let (ms, bs, tp) ← forallMetaTelescopeReducing e (some 1) kind
   unless ms.size == 1 do
-    if ms.size == 0 then throwError m!"Failed: {← ppExpr e} is not the type of a function."
-    else throwError m!"Failed"
+    if ms.size == 0 then
+      throwError m!"Failed: {← ppExpr e} is not the type of a function."
+    else
+      throwError m!"Failed"
   let mut mvs := ms
   let mut bis := bs
   let mut out : Expr := tp
@@ -58,12 +57,12 @@ def Lean.Meta.forallMetaTelescopeReducingUntilDefEq
     out := tp
   return (mvs, bis, out)
 
-/-- `pureIsDefEq e₁ e₂` is short for `withNewMCtxDepth <| isDefEq e₁ e₂`.
+/--
+`pureIsDefEq e₁ e₂` is short for `withNewMCtxDepth <| isDefEq e₁ e₂`.
 Determines whether two expressions are definitionally equal to each other
-when metavariables are not assignable. -/
-@[inline]
-def Lean.Meta.pureIsDefEq (e₁ e₂ : Expr) : MetaM Bool :=
-  withNewMCtxDepth <| isDefEq e₁ e₂
+when metavariables are not assignable.
+-/
+@[inline] def Lean.Meta.pureIsDefEq (e₁ e₂ : Expr) : MetaM Bool := withNewMCtxDepth <| isDefEq e₁ e₂
 
 /-- `mkRel n lhs rhs` is `mkAppM n #[lhs, rhs]`, but with optimizations for `Eq` and `Iff`. -/
 def Lean.Meta.mkRel (n : Name) (lhs rhs : Expr) : MetaM Expr :=
@@ -85,8 +84,8 @@ We can add `inst` as a local instance to deal with this.
 However, if the instance is synthesizable, we prefer running `k` directly
 so that the local instance doesn't affect typeclass inference.
 -/
-def Lean.Meta.withEnsuringLocalInstance {α : Type} (inst : MVarId) (k : MetaM (Expr × α)) :
-    MetaM (Expr × α) := do
+def Lean.Meta.withEnsuringLocalInstance {α : Type} (inst : MVarId) (k : MetaM (Expr × α))
+    : MetaM (Expr × α) := do
   let instE := mkMVar inst
   match ← trySynthInstance (← inferType instE) with
   | .some e =>
@@ -100,27 +99,44 @@ def Lean.Meta.withEnsuringLocalInstance {α : Type} (inst : MVarId) (k : MetaM (
       let e' := (← e.abstractM #[inst']).instantiate1 instE
       return (e', v)
 
-/-- Checks that `e` has type `expectedType` (i.e. that its type is defeq to `expectedType`
+/--
+Checks that `e` has type `expectedType` (i.e. that its type is defeq to `expectedType`
 at the current transparency). If not, coerces `e` to this type
-or fails with a descriptive error. -/
+or fails with a descriptive error.
+-/
 def Lean.Meta.ensureHasType (e expectedType : Expr) : MetaM Expr := do
   let ty ← inferType e
-  if ← withNewMCtxDepth (isDefEq ty expectedType) then return e else
-    (← coerceSimple? e expectedType).toOption.getDM <|
-      throwError "Expected{indentD e}\nto have type{indentD ty}\n or to be coercible to it"
+  if ← withNewMCtxDepth (isDefEq ty expectedType) then
+    return e
+  else
+    (← coerceSimple? e expectedType).toOption.getDM <| throwError "Expected{indentD e}\
+      \nto have type{indentD ty}\
+      \n or to be coercible to it"
 
-/-- Checks that `e` is a function (i.e. that its type is a `.forallE` after `instantiateMVars` and
-`whnf`). If not, coerces `e` to a function or fails with a descriptive error. -/
+/--
+Checks that `e` is a function (i.e. that its type is a `.forallE` after `instantiateMVars` and
+`whnf`). If not, coerces `e` to a function or fails with a descriptive error.
+-/
 def Lean.Meta.ensureIsFunction (e : Expr) : MetaM Expr := do
   let ty ← whnf <| ← instantiateMVars <| ← inferType e
-  if ty.isForall then return e else (← coerceToFunction? e).getDM <|
-    throwError "Expected{indentD e}\nof type{indentD ty}\nto be a function, or to be coercible to \
+  if ty.isForall then
+    return e
+  else
+    (← coerceToFunction? e).getDM <| throwError "Expected{indentD e}\
+      \nof type{indentD ty}\
+      \nto be a function, or to be coercible to \
       a function"
 
-/-- Checks that `e` is a type (i.e. that its type is a `Sort` after `instantiateMVars` and
-`whnf`). If not, coerces `e` to a Sort or fails with a descriptive error. -/
+/--
+Checks that `e` is a type (i.e. that its type is a `Sort` after `instantiateMVars` and
+`whnf`). If not, coerces `e` to a Sort or fails with a descriptive error.
+-/
 def Lean.Meta.ensureIsSort (e : Expr) : MetaM Expr := do
   let ty ← whnf <| ← instantiateMVars <| ← inferType e
-  if ty.isSort then return e else (← coerceToSort? e).getDM <|
-    throwError "Expected{indentD e}\nof type{indentD ty}\nto be a Sort, or to be coercible to \
+  if ty.isSort then
+    return e
+  else
+    (← coerceToSort? e).getDM <| throwError "Expected{indentD e}\
+      \nof type{indentD ty}\
+      \nto be a Sort, or to be coercible to \
       a Sort"

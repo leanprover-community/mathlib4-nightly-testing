@@ -34,7 +34,7 @@ def maxPowDvdDiv (p n : ℕ) : ℕ × ℕ :=
     go p H
   else
     (0, n)
-  where
+where
   /-- Auxiliary definition for `Nat.maxPowDvdDiv`. -/
   go (p : ℕ) (hp : 1 < p ∧ n ≠ 0) :=
     if hmod : n % p = 0 then
@@ -53,8 +53,8 @@ def maxPowDvdDiv (p n : ℕ) : ℕ × ℕ :=
 /-- Divide `n` by the maximal power of `p` that divides `n`. -/
 def divMaxPow (n p : ℕ) : ℕ := (maxPowDvdDiv p n).snd
 
-theorem maxPowDvdDiv.go_spec {n p : ℕ} (hnp) :
-    (go n p hnp).2 * p ^ (go n p hnp).1 = n ∧ ¬p ∣ (go n p hnp).2 := by
+theorem maxPowDvdDiv.go_spec {n p : ℕ} (hnp)
+    : (go n p hnp).2 * p ^ (go n p hnp).1 = n ∧ ¬ p ∣ (go n p hnp).2 := by
   fun_induction go with
   | case1 p hp hmod e q heq hqp ih =>
     rw [heq] at ih
@@ -76,34 +76,32 @@ theorem maxPowDvdDiv_of_base_le_one {p : ℕ} (hp : p ≤ 1) (n : ℕ) : maxPowD
 theorem maxPowDvdDiv_zero_left (n : ℕ) : maxPowDvdDiv 0 n = (0, n) :=
   maxPowDvdDiv_of_base_le_one (Nat.zero_le _) _
 
-@[simp]
-theorem divMaxPow_zero_right (n : ℕ) : divMaxPow n 0 = n := by simp [divMaxPow]
+@[simp] theorem divMaxPow_zero_right (n : ℕ) : divMaxPow n 0 = n := by simp [divMaxPow]
 
 @[simp]
 theorem maxPowDvdDiv_one_left (n : ℕ) : maxPowDvdDiv 1 n = (0, n) :=
   maxPowDvdDiv_of_base_le_one (Nat.le_refl _) _
 
-@[simp]
-theorem divMaxPow_one_right (n : ℕ) : divMaxPow n 1 = n := by simp [divMaxPow]
+@[simp] theorem divMaxPow_one_right (n : ℕ) : divMaxPow n 1 = n := by simp [divMaxPow]
 
 @[simp]
 theorem maxPowDvdDiv_zero_right (p : ℕ) : maxPowDvdDiv p 0 = (0, 0) := by simp [maxPowDvdDiv]
 
-@[simp]
-theorem divMaxPow_zero_left (p : ℕ) : divMaxPow 0 p = 0 := by simp [divMaxPow]
+@[simp] theorem divMaxPow_zero_left (p : ℕ) : divMaxPow 0 p = 0 := by simp [divMaxPow]
 
-theorem not_dvd_divMaxPow {p n : ℕ} (hp : 1 < p) (hn : n ≠ 0) : ¬p ∣ divMaxPow n p := by
+theorem not_dvd_divMaxPow {p n : ℕ} (hp : 1 < p) (hn : n ≠ 0) : ¬ p ∣ divMaxPow n p := by
   simp [divMaxPow, maxPowDvdDiv, maxPowDvdDiv.go_spec, *]
 
-private theorem pow_dvd_iff_le_of_spec {p k n a b : ℕ} (hp : 1 < p) (hn : n ≠ 0)
-    (hab : p ^ a * b = n) (hb : ¬p ∣ b) : p ^ k ∣ n ↔ k ≤ a := by
+private theorem pow_dvd_iff_le_of_spec
+    {p k n a b : ℕ} (hp : 1 < p) (hn : n ≠ 0) (hab : p ^ a * b = n) (hb : ¬ p ∣ b)
+    : p ^ k ∣ n ↔ k ≤ a := by
   subst hab
   cases Nat.lt_or_ge a k with
   | inl hlt =>
     refine iff_of_false (fun hdvd ↦ ?_) (Nat.not_le_of_lt hlt)
     obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_lt hlt
-    rw [Nat.add_assoc, Nat.pow_add,
-      Nat.mul_dvd_mul_iff_left (Nat.pow_pos (Nat.zero_lt_of_lt hp))] at hdvd
+    rw [Nat.add_assoc, Nat.pow_add, Nat.mul_dvd_mul_iff_left (Nat.pow_pos (Nat.zero_lt_of_lt hp))]
+      at hdvd
     exact hb <| Nat.dvd_of_pow_dvd (Nat.le_add_left 1 l) hdvd
   | inr hle =>
     refine iff_of_true (Nat.dvd_mul_right_of_dvd ?_ _) hle

@@ -21,7 +21,6 @@ We also provide a fully faithful functor
 
 @[expose] public section
 
-
 open CategoryTheory
 
 open CategoryTheory.Category
@@ -37,44 +36,44 @@ namespace Idempotents
 variable {J C : Type*} [Category* J] [Category* C] (P Q : Karoubi (J ⥤ C)) (f : P ⟶ Q) (X : J)
 
 @[reassoc (attr := simp)]
-theorem app_idem : P.p.app X ≫ P.p.app X = P.p.app X :=
-  congr_app P.idem X
+theorem app_idem : P.p.app X ≫ P.p.app X = P.p.app X := congr_app P.idem X
 
 variable {P Q}
 
 @[reassoc (attr := simp)]
-theorem app_p_comp : P.p.app X ≫ f.f.app X = f.f.app X :=
-  congr_app (p_comp f) X
+theorem app_p_comp : P.p.app X ≫ f.f.app X = f.f.app X := congr_app (p_comp f) X
 
 @[reassoc (attr := simp)]
-theorem app_comp_p : f.f.app X ≫ Q.p.app X = f.f.app X :=
-  congr_app (comp_p f) X
+theorem app_comp_p : f.f.app X ≫ Q.p.app X = f.f.app X := congr_app (comp_p f) X
 
 @[reassoc]
-theorem app_p_comm : P.p.app X ≫ f.f.app X = f.f.app X ≫ Q.p.app X :=
-  congr_app (p_comm f) X
+theorem app_p_comm : P.p.app X ≫ f.f.app X = f.f.app X ≫ Q.p.app X := congr_app (p_comm f) X
 
 variable (J C)
 
-instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
-    IsIdempotentComplete (J ⥤ C) := by
+instance functor_category_isIdempotentComplete [IsIdempotentComplete C]
+    : IsIdempotentComplete (J ⥤ C) := by
   refine ⟨fun F p hp => ?_⟩
   have hC := (isIdempotentComplete_iff_hasEqualizer_of_id_and_idempotent C).mp inferInstance
   have : ∀ j : J, HasEqualizer (𝟙 _) (p.app j) := fun j => hC _ _ (congr_app hp j)
-  /- We construct the direct factor `Y` associated to `p : F ⟶ F` by computing
-      the equalizer of the identity and `p.app j` on each object `(j : J)`. -/
-  let Y : J ⥤ C :=
-    { obj := fun j => Limits.equalizer (𝟙 _) (p.app j)
-      map := fun {j j'} φ =>
-        equalizer.lift (Limits.equalizer.ι (𝟙 _) (p.app j) ≫ F.map φ)
-          (by rw [comp_id, assoc, p.naturality φ, ← assoc, ← Limits.equalizer.condition, comp_id]) }
-  let i : Y ⟶ F :=
-    { app := fun j => equalizer.ι _ _
-      naturality := fun _ _ _ => by rw [equalizer.lift_ι] }
-  let e : F ⟶ Y :=
-    { app := fun j =>
-        equalizer.lift (p.app j) (by simpa only [comp_id] using! (congr_app hp j).symm)
-      naturality := fun j j' φ => equalizer.hom_ext (by simp [Y]) }
+  /-
+  We construct the direct factor `Y` associated to `p : F ⟶ F` by computing
+   the equalizer of the identity and `p.app j` on each object `(j : J)`.
+  -/
+  let Y : J ⥤ C := {
+    obj := fun j => Limits.equalizer (𝟙 _) (p.app j)
+    map := fun {j j'} φ =>
+      equalizer.lift (Limits.equalizer.ι (𝟙 _) (p.app j) ≫ F.map φ)
+        (by rw [comp_id, assoc, p.naturality φ, ← assoc, ← Limits.equalizer.condition, comp_id])
+  }
+  let i : Y ⟶ F := {
+    app := fun j => equalizer.ι _ _
+    naturality := fun _ _ _ => by rw [equalizer.lift_ι]
+  }
+  let e : F ⟶ Y := {
+    app := fun j => equalizer.lift (p.app j) (by simpa only [comp_id] using! (congr_app hp j).symm)
+    naturality := fun j j' φ => equalizer.hom_ext (by simp [Y])
+  }
   use Y, i, e
   constructor
   · ext j
@@ -86,19 +85,22 @@ namespace KaroubiFunctorCategoryEmbedding
 
 variable {J C}
 
-/-- On objects, the functor which sends a formal direct factor `P` of a
+/--
+On objects, the functor which sends a formal direct factor `P` of a
 functor `F : J ⥤ C` to the functor `J ⥤ Karoubi C` which sends `(j : J)` to
-the corresponding direct factor of `F.obj j`. -/
+the corresponding direct factor of `F.obj j`.
+-/
 @[simps]
 def obj (P : Karoubi (J ⥤ C)) : J ⥤ Karoubi C where
   obj j := ⟨P.X.obj j, P.p.app j, congr_app P.idem j⟩
-  map {j j'} φ :=
-    { f := P.p.app j ≫ P.X.map φ
-      comm := by
-        simp only [NatTrans.naturality, assoc]
-        have h := congr_app P.idem j
-        rw [NatTrans.comp_app] at h
-        rw [reassoc_of% h, reassoc_of% h] }
+  map {j j'} φ := {
+    f := P.p.app j ≫ P.X.map φ
+    comm := by
+      simp only [NatTrans.naturality, assoc]
+      have h := congr_app P.idem j
+      rw [NatTrans.comp_app] at h
+      rw [reassoc_of% h, reassoc_of% h]
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Tautological action on maps of the functor `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`. -/
@@ -117,20 +119,25 @@ def karoubiFunctorCategoryEmbedding : Karoubi (J ⥤ C) ⥤ J ⥤ Karoubi C wher
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : (karoubiFunctorCategoryEmbedding J C).Full where
-  map_surjective {P Q} f :=
-    ⟨{f :=
-        { app := fun j => (f.app j).f
-          naturality := fun j j' φ => by
-            rw [← Karoubi.comp_p_assoc]
-            have h := hom_ext_iff.mp (f.naturality φ)
-            dsimp [karoubiFunctorCategoryEmbedding] at h
-            simp only [assoc, h.symm, karoubiFunctorCategoryEmbedding_obj,
-              KaroubiFunctorCategoryEmbedding.obj_obj_p]
-            rw [← P.p.naturality_assoc]
-            exact congrArg _ (p_comp (f.app _)).symm }
+  map_surjective {P Q} f := ⟨
+    {
+      f := {
+        app := fun j => (f.app j).f
+        naturality := fun j j' φ => by
+          rw [← Karoubi.comp_p_assoc]
+          have h := hom_ext_iff.mp (f.naturality φ)
+          dsimp [karoubiFunctorCategoryEmbedding] at h
+          simp only [assoc, h.symm, karoubiFunctorCategoryEmbedding_obj,
+            KaroubiFunctorCategoryEmbedding.obj_obj_p]
+          rw [← P.p.naturality_assoc]
+          exact congrArg _ (p_comp (f.app _)).symm
+      }
       comm := by
         ext j
-        exact (f.app j).comm }, rfl⟩
+        exact (f.app j).comm
+    },
+    rfl
+  ⟩
 
 instance : (karoubiFunctorCategoryEmbedding J C).Faithful where
   map_injective h := by
@@ -139,12 +146,14 @@ instance : (karoubiFunctorCategoryEmbedding J C).Faithful where
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The composition of `(J ⥤ C) ⥤ Karoubi (J ⥤ C)` and `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`
+/--
+The composition of `(J ⥤ C) ⥤ Karoubi (J ⥤ C)` and `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`
 equals the functor `(J ⥤ C) ⥤ (J ⥤ Karoubi C)` given by the composition with
-`toKaroubi C : C ⥤ Karoubi C`. -/
-theorem toKaroubi_comp_karoubiFunctorCategoryEmbedding :
-    toKaroubi _ ⋙ karoubiFunctorCategoryEmbedding J C =
-      (Functor.whiskeringRight J _ _).obj (toKaroubi C) := by
+`toKaroubi C : C ⥤ Karoubi C`.
+-/
+theorem toKaroubi_comp_karoubiFunctorCategoryEmbedding
+    : toKaroubi _ ⋙ karoubiFunctorCategoryEmbedding J C
+      = (Functor.whiskeringRight J _ _).obj (toKaroubi C) := by
   apply Functor.ext
   · intro X Y f
     ext j

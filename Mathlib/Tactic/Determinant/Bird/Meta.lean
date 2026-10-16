@@ -30,11 +30,12 @@ open Mathlib.Tactic.Ring
 namespace Mathlib.Tactic.Determinant
 
 /-- Construct a `CommSemiring` instance expression from a `CommRing` instance expression -/
-abbrev commSemiringOfCommRing {u : Level} {α : Q(Type u)}
-    (rα : Q(CommRing $α)) : Q(CommSemiring $α) :=
+abbrev commSemiringOfCommRing {u : Level} {α : Q(Type u)} (rα : Q(CommRing $α))
+    : Q(CommSemiring $α) :=
   q(CommRing.toCommSemiring (α := $α) (s := $rα))
 
-/-- Parse an array literal into an array of element expressions.
+/--
+Parse an array literal into an array of element expressions.
 
 Compared to `getArrayLit?`, this also performs `whnf`.
 -/
@@ -91,26 +92,16 @@ def reifyBirdDet (e : Expr) : MetaM ReifiedBirdDet := do
   unless arrayEntries.size == dimension * dimension do
     throwError "matrix size mismatch: array has {arrayEntries.size} entries, \
       expected {dimension * dimension}"
-  let arrayEntries ← arrayEntries.mapM fun entry => do
-    let some entry ← checkTypeQ entry α
-      | throwError "expected array entry to have type {α}"
-    return entry
+  let arrayEntries ←
+    arrayEntries.mapM fun entry => do
+      let some entry ← checkTypeQ entry α
+        | throwError "expected array entry to have type {α}"
+      return entry
   let sα := commSemiringOfCommRing rα
-  let cα : Common.Cache sα := {
-    rα := some rα
-    dsα := none
-    czα := none
-  }
+  let cα : Common.Cache sα := { rα := some rα, dsα := none, czα := none }
   return {
     rα
-    ctx := {
-      cα
-      rc := ringCompute cα
-      dimension
-      dimensionLit
-      arrayExpr
-      arrayEntries
-    }
+    ctx := { cα, rc := ringCompute cα, dimension, dimensionLit, arrayExpr, arrayEntries }
   }
 
 end Mathlib.Tactic.Determinant

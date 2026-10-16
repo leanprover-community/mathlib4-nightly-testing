@@ -96,28 +96,34 @@ def mkIVar (iExpr : IExpr) (cover? : Option Expr := none) : InclusionM IVar := d
   if ← isTracingEnabledFor `Tactic.inclusion then
     let iVarDisplayExpr := mkIVarDisplay iExpr setVar
     modify fun state => {
-      state with iVarDisplays := state.iVarDisplays.insert setVar iVarDisplayExpr }
+      state with
+      iVarDisplays := state.iVarDisplays.insert setVar iVarDisplayExpr
+    }
   return iVar
 
 /-- Construct an inclusion extension for making non dependently typed inclusion variables. -/
-def mkNDIVarExt (family : Name) (iType : IType)
-    (mkCover? : InclusionM (Option Expr) := pure none)
-    (priority : Nat := eval_prio low) (name : Name := by exact decl_name%) : InclusionExt where
+def mkNDIVarExt
+    (family : Name) (iType : IType)
+    (mkCover? : InclusionM (Option Expr) := pure none) (priority : Nat := eval_prio low)
+    (name : Name := by exact decl_name%)
+    : InclusionExt where
   declName := name
   family := family
   priority := priority
   derive e := do
     let eType ← inferType e
-    unless ← isDefEq eType iType.elemType do failure
+    unless ← isDefEq eType iType.elemType do
+      failure
     let iExpr : IExpr := ⟨iType, e⟩
     return (← mkIVar iExpr (← mkCover?)).toExprInclusionBody
 
 /-- Return the inclusion variable registered for `e`, if there is one. -/
-def findIVar? (e : Expr) : HypothesisM (Option IVar) := do
-  return (← read).iVarsMap[e]?
+def findIVar? (e : Expr) : HypothesisM (Option IVar) := do return (← read).iVarsMap[e]?
 
-/-- Check that two inclusion types are definitionally equal, including their chosen `ToSet`
-instances. -/
+/--
+Check that two inclusion types are definitionally equal, including their chosen `ToSet`
+instances.
+-/
 def ensureOutputType (type expectedType : IType) : MetaM Unit := do
   unless ← pureIsDefEq type.elemType expectedType.elemType do
     throwError "Inclusion has expression type {type.elemType}, expected {expectedType.elemType}"
@@ -142,8 +148,12 @@ def mkHypExprInclusionBody (e : Expr) : HypothesisM ExprInclusionBody := do
 /-- Add the inclusion hypothesis `body` for `iExpr`. -/
 def addInclusionHyp (iExpr : IExpr) (body : ExprInclusionBody) : HypothesisM Unit := do
   ensureOutputType (← body.inferIType iExpr.expr) iExpr.iType
-  modify fun state => { state with inclusions := state.inclusions.alter iExpr.expr fun
-    | some hyps => hyps.push body
-    | none => #[body] }
+  modify fun state => {
+    state with
+    inclusions :=
+      state.inclusions.alter iExpr.expr fun
+        | some hyps => hyps.push body
+        | none => #[body]
+  }
 
 end Inclusion

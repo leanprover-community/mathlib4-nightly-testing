@@ -10,7 +10,6 @@ public import Mathlib.Data.Fintype.BigOperators
 public import Mathlib.Topology.Separation.Regular
 public import Mathlib.Topology.Sets.Closeds
 public import Mathlib.Topology.Sets.OpenCover
-
 import Mathlib.Order.Disjointed
 
 /-!
@@ -34,12 +33,13 @@ open scoped Function Finset Topology
 
 namespace TopologicalSpace.IsOpenCover
 
-variable {ι X : Type*}
-  [TopologicalSpace X] [CompactSpace X] [ZeroDimensionalSpace X] {U : ι → Opens X}
+variable
+  {ι X : Type*} [TopologicalSpace X] [CompactSpace X] [ZeroDimensionalSpace X] {U : ι → Opens X}
 
 /-- Any open cover of a profinite space can be refined to a finite cover by clopens. -/
-lemma exists_finite_clopen_cover (hU : IsOpenCover U) : ∃ (n : ℕ) (V : Fin n → Clopens X),
-    (∀ j, ∃ i, (V j : Set X) ⊆ U i) ∧ univ ⊆ ⋃ j, (V j : Set X) := by
+lemma exists_finite_clopen_cover (hU : IsOpenCover U)
+    : ∃ (n : ℕ) (V : Fin n → Clopens X),
+      (∀ j, ∃ i, (V j : Set X) ⊆ U i) ∧ univ ⊆ ⋃ j, (V j : Set X) := by
   -- Choose an index `r x` for each point in `X` such that `∀ x, x ∈ U (r x)`.
   choose r hr using hU.exists_mem
   -- Choose a clopen neighbourhood `V x` of each `x` contained in `U (r x)`.
@@ -52,11 +52,14 @@ lemma exists_finite_clopen_cover (hU : IsOpenCover U) : ∃ (n : ℕ) (V : Fin n
   obtain ⟨m, hm, hm'⟩ := mem_iUnion₂.mp (ht hx)
   exact Set.mem_iUnion_of_mem (t.equivFin ⟨m, hm⟩) (by simpa)
 
-/-- Any open cover of a profinite space can be refined to a finite cover by pairwise disjoint
-nonempty clopens. -/
-lemma exists_finite_nonempty_disjoint_clopen_cover (hU : IsOpenCover U) :
-    ∃ (n : ℕ) (W : Fin n → Clopens X), (∀ j, W j ≠ ⊥ ∧ ∃ i, (W j : Set X) ⊆ U i)
-    ∧ (univ : Set X) ⊆ ⋃ j, ↑(W j) ∧ Pairwise (Disjoint on W) := by
+/--
+Any open cover of a profinite space can be refined to a finite cover by pairwise disjoint
+nonempty clopens.
+-/
+lemma exists_finite_nonempty_disjoint_clopen_cover (hU : IsOpenCover U)
+    : ∃ (n : ℕ) (W : Fin n → Clopens X),
+      (∀ j, W j ≠ ⊥ ∧ ∃ i, (W j : Set X) ⊆ U i) ∧ (univ : Set X) ⊆ ⋃ j, ↑(W j)
+        ∧ Pairwise (Disjoint on W) := by
   classical
   obtain ⟨n, V, hVle, hVun⟩ := hU.exists_finite_clopen_cover
   obtain ⟨W, hWle, hWun, hWd⟩ := Fintype.exists_disjointed_le V
@@ -64,7 +67,8 @@ lemma exists_finite_nonempty_disjoint_clopen_cover (hU : IsOpenCover U) :
   let t : Finset (Fin n) := {j | W j ≠ ⊥}
   refine ⟨#t, fun k ↦ W (t.equivFin.symm k), fun k ↦ ⟨?_, ?_⟩, fun x hx ↦ ?_, ?_⟩
   · exact (Finset.mem_filter.mp (t.equivFin.symm k).2).2
-  · exact match hVle (t.equivFin.symm k) with | ⟨i, hi⟩ => ⟨i, subset_trans (hWle _) hi⟩
+  · exact match hVle (t.equivFin.symm k) with
+      | ⟨i, hi⟩ => ⟨i, subset_trans (hWle _) hi⟩
   · obtain ⟨j, hj⟩ := mem_iUnion.mp <| (hWun ▸ hVun) hx
     have : W j ≠ ⊥ := by simpa [← SetLike.coe_ne_coe, ← Set.nonempty_iff_ne_empty] using ⟨x, hj⟩
     exact mem_iUnion.mpr ⟨t.equivFin ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, this⟩⟩, by simpa⟩
@@ -75,24 +79,27 @@ end TopologicalSpace.IsOpenCover
 namespace TopologicalSpace
 variable {X : Type*} [TopologicalSpace X] {S : Set (X × X)}
 
-/-- If `S` is any neighbourhood of the diagonal in a topological space `X`, any point of `X` has an
-open neighbourhood `U` such that `U ×ˢ U ⊆ S`. -/
-lemma exists_open_prod_subset_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal X)) (x : X) :
-    ∃ U : Set X, IsOpen U ∧ x ∈ U ∧ U ×ˢ U ⊆ S := by
+/--
+If `S` is any neighbourhood of the diagonal in a topological space `X`, any point of `X` has an
+open neighbourhood `U` such that `U ×ˢ U ⊆ S`.
+-/
+lemma exists_open_prod_subset_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal X)) (x : X)
+    : ∃ U : Set X, IsOpen U ∧ x ∈ U ∧ U ×ˢ U ⊆ S := by
   have : S ∈ 𝓝 (x, x) := mem_nhdsSet_iff_forall.mp hS _ rfl
   obtain ⟨u, v, huo, hux, hvo, hvx, H⟩ := by rwa [mem_nhds_prod_iff'] at this
   exact ⟨_, huo.inter hvo, ⟨hux, hvx⟩, fun p hp ↦ H ⟨hp.1.1, hp.2.2⟩⟩
 
 variable [CompactSpace X]
 
-/-- If `S` is any neighbourhood of the diagonal in a compact topological space `X`, then there
+/--
+If `S` is any neighbourhood of the diagonal in a compact topological space `X`, then there
 exists a finite cover of `X` by opens `U i` such that `U i ×ˢ U i ⊆ S` for all `i`.
 
 That the indexing set is a finset of `X` is an artifact of the proof; it could be any finite type.
 -/
 lemma exists_finite_open_cover_prod_subset_of_mem_nhds_diagonal_of_compact
-    (hS : S ∈ nhdsSet (diagonal X)) :
-    ∃ (t : Finset X) (U : t → Opens X), IsOpenCover U ∧ ∀ i, (U i : Set X) ×ˢ U i ⊆ S := by
+    (hS : S ∈ nhdsSet (diagonal X))
+    : ∃ (t : Finset X) (U : t → Opens X), IsOpenCover U ∧ ∀ i, (U i : Set X) ×ˢ U i ⊆ S := by
   choose U hUo hUx hUp using exists_open_prod_subset_of_mem_nhds_diagonal hS
   obtain ⟨t, ht⟩ := isCompact_univ.elim_finite_subcover _ hUo (fun x _ ↦ mem_iUnion.mpr ⟨_, hUx x⟩)
   refine ⟨t, fun i ↦ ⟨_, hUo i⟩, .of_sets _ ?_, (hUp ·)⟩
@@ -100,34 +107,41 @@ lemma exists_finite_open_cover_prod_subset_of_mem_nhds_diagonal_of_compact
 
 variable [TotallyDisconnectedSpace X] [T2Space X]
 
-/-- If `S` is any neighbourhood of the diagonal in a profinite topological space `X`, then there
+/--
+If `S` is any neighbourhood of the diagonal in a profinite topological space `X`, then there
 exists a finite cover of `X` by disjoint nonempty clopens `U i` with `U i ×ˢ U i ⊆ S` for all `i`.
 -/
 private lemma exists_finite_disjoint_nonempty_clopen_cover_of_mem_nhds_diagonal_of_profinite
-    (hS : S ∈ nhdsSet (diagonal X)) :
-    ∃ (n : ℕ) (D : Fin n → Clopens X), (∀ i, D i ≠ ⊥) ∧ (∀ i, ∀ y ∈ D i, ∀ z ∈ D i, (y, z) ∈ S)
-    ∧ (univ : Set X) ⊆ ⋃ i, D i ∧ Pairwise (Disjoint on D) := by
+    (hS : S ∈ nhdsSet (diagonal X))
+    : ∃ (n : ℕ) (D : Fin n → Clopens X),
+      (∀ i, D i ≠ ⊥) ∧ (∀ i, ∀ y ∈ D i, ∀ z ∈ D i, (y, z) ∈ S) ∧ (univ : Set X) ⊆ ⋃ i, D i
+        ∧ Pairwise (Disjoint on D) := by
   obtain ⟨t, U, hUc, hUS⟩ := exists_finite_open_cover_prod_subset_of_mem_nhds_diagonal_of_compact hS
   -- Now refine it to a disjoint covering.
   obtain ⟨n, W, hW₁, hW₂, hW₃⟩ := hUc.exists_finite_nonempty_disjoint_clopen_cover
   refine ⟨n, W, fun j ↦ (hW₁ j).1, fun j y hy z hz ↦ ?_, hW₂, hW₃⟩
-  exact match (hW₁ j).2 with | ⟨i, hi⟩ => hUS i ⟨hi hy, hi hz⟩
+  exact match (hW₁ j).2 with
+    | ⟨i, hi⟩ => hUS i ⟨hi hy, hi hz⟩
 
 end TopologicalSpace
 
 namespace ContinuousMap
 
-variable {X V : Type*} [TopologicalSpace X] [TopologicalSpace V] [TotallyDisconnectedSpace X]
-  [T2Space X] [CompactSpace X] {S : Set (V × V)} (f : C(X, V))
+variable
+  {X V : Type*} [TopologicalSpace X] [TopologicalSpace V] [TotallyDisconnectedSpace X] [T2Space X]
+  [CompactSpace X]
+  {S : Set (V × V)}
+  (f : C(X, V))
 
 /--
 For any continuous function `f : X → V`, with `X` profinite, and `S` a neighbourhood of the
 diagonal in `V × V`, there exists a finite cover of `X` by pairwise-disjoint nonempty clopens, on
 each of which `f` varies within `S`.
 -/
-lemma exists_disjoint_nonempty_clopen_cover_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal V)) :
-    ∃ (n : ℕ) (D : Fin n → Clopens X), (∀ i, D i ≠ ⊥) ∧ (∀ i, ∀ y ∈ D i, ∀ z ∈ D i, (f y, f z) ∈ S)
-    ∧ (univ : Set X) ⊆ ⋃ i, D i ∧ Pairwise (Disjoint on D) := by
+lemma exists_disjoint_nonempty_clopen_cover_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal V))
+    : ∃ (n : ℕ) (D : Fin n → Clopens X),
+      (∀ i, D i ≠ ⊥) ∧ (∀ i, ∀ y ∈ D i, ∀ z ∈ D i, (f y, f z) ∈ S) ∧ (univ : Set X) ⊆ ⋃ i, D i
+        ∧ Pairwise (Disjoint on D) := by
   have : (f.prodMap f) ⁻¹' S ∈ nhdsSet (diagonal X) := by
     rw [mem_nhdsSet_iff_forall] at hS ⊢
     rintro ⟨x, y⟩ (rfl : x = y)
@@ -137,9 +151,10 @@ lemma exists_disjoint_nonempty_clopen_cover_of_mem_nhds_diagonal (hS : S ∈ nhd
 /--
 For any continuous function `f : X → V`, with `X` profinite, and `S` a neighbourhood of the
 diagonal in `V × V`, the function `f` can be `S`-approximated by a function factoring through
-`Fin n`, for some `n`. -/
-lemma exists_finite_approximation_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal V)) :
-    ∃ (n : ℕ) (g : X → Fin n) (h : Fin n → V), Continuous g ∧ ∀ x, (f x, h (g x)) ∈ S := by
+`Fin n`, for some `n`.
+-/
+lemma exists_finite_approximation_of_mem_nhds_diagonal (hS : S ∈ nhdsSet (diagonal V))
+    : ∃ (n : ℕ) (g : X → Fin n) (h : Fin n → V), Continuous g ∧ ∀ x, (f x, h (g x)) ∈ S := by
   obtain ⟨n, E, hEne, hES, hEuniv, hEdis⟩ :=
     exists_disjoint_nonempty_clopen_cover_of_mem_nhds_diagonal f hS
   have h_uniq (x) : ∃! i, x ∈ E i := by
@@ -165,10 +180,10 @@ commutative additive monoid structure, then we can approximate `f` by finite sum
 functions of clopen sets.
 
 (Note no compatibility is assumed between the monoid structure on `V` and the topology.) -/]
-lemma exists_finite_sum_const_mulIndicator_approximation_of_mem_nhds_diagonal [CommMonoid V]
-    (hS : S ∈ nhdsSet (diagonal V)) :
-    ∃ (n : ℕ) (U : Fin n → Clopens X) (v : Fin n → V),
-    ∀ x, (f x, ∏ n, mulIndicator (U n) (fun _ ↦ v n) x) ∈ S := by
+lemma exists_finite_sum_const_mulIndicator_approximation_of_mem_nhds_diagonal
+    [CommMonoid V] (hS : S ∈ nhdsSet (diagonal V))
+    : ∃ (n : ℕ) (U : Fin n → Clopens X) (v : Fin n → V), ∀ x,
+      (f x, ∏ n, mulIndicator (U n) (fun _ ↦ v n) x) ∈ S := by
   obtain ⟨n, g, h, hg, hgh⟩ := exists_finite_approximation_of_mem_nhds_diagonal f hS
   refine ⟨n, fun i ↦ ⟨_, (isClopen_discrete {i}).preimage hg⟩, h, fun x ↦ ?_⟩
   convert hgh x

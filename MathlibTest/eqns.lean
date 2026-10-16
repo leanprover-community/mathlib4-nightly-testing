@@ -6,10 +6,14 @@ theorem transpose_apply {m n} (A : m → n → Nat) (i j) : transpose A i j = A 
 
 attribute [eqns transpose_apply] transpose
 
-theorem transpose_const {m n} (c : Nat) :
-    transpose (fun (_i : m) (_j : n) => c) = fun _j _i => c := by
-  fail_if_success {rw [transpose]}
-  fail_if_success {simp [transpose]}
+theorem transpose_const {m n} (c : Nat)
+    : transpose (fun (_i : m) (_j : n) => c) = fun _j _i => c := by
+  fail_if_success {
+    rw [transpose]
+  }
+  fail_if_success {
+    simp [transpose]
+  }
   funext i j -- the rw below does not work without this line
   rw [transpose]
 
@@ -26,9 +30,7 @@ theorem t_def' : t = 1 := by rw [t]
 -- #guard_msgs(error) in
 -- attribute [eqns t_def] t
 
-/--
-warning: declaration uses `sorry`
--/
+/-- warning: declaration uses `sorry` -/
 #guard_msgs in
 -- the above should error as the above equation would not have changed the output of the below
 example (n : Nat) : t = n := by

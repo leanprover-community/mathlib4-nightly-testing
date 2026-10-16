@@ -17,7 +17,6 @@ This defines `Born`, the category of bornologies.
 
 public section
 
-
 universe u
 
 open CategoryTheory
@@ -34,11 +33,9 @@ attribute [instance] Born.str
 
 namespace Born
 
-instance : CoeSort Born Type* :=
-  ⟨carrier⟩
+instance : CoeSort Born Type* := ⟨carrier⟩
 
-instance : Inhabited Born :=
-  ⟨of PUnit⟩
+instance : Inhabited Born := ⟨of PUnit⟩
 
 instance : LargeCategory.{u} Born where
   Hom X Y := LocallyBoundedMap X Y

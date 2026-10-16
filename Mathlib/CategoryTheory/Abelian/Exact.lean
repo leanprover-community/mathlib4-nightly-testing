@@ -49,8 +49,7 @@ attribute [local instance] hasEqualizers_of_hasKernels
 theorem exact_iff_epi_imageToKernel' : S.Exact ↔ Epi (imageToKernel' S.f S.g S.zero) := by
   rw [S.exact_iff_epi_kernel_lift]
   have : factorThruImage S.f ≫ imageToKernel' S.f S.g S.zero = kernel.lift S.g S.f S.zero := by
-    simp only [← cancel_mono (kernel.ι _), kernel.lift_ι, imageToKernel',
-      Category.assoc, image.fac]
+    simp only [← cancel_mono (kernel.ι _), kernel.lift_ι, imageToKernel', Category.assoc, image.fac]
   constructor
   · intro
     exact epi_of_epi_fac this
@@ -83,7 +82,8 @@ lemma Exact.isIso_imageToKernel (hS : S.Exact) : IsIso (imageToKernel S.f S.g S.
 lemma Exact.isIso_imageToKernel' (hS : S.Exact) : IsIso (imageToKernel' S.f S.g S.zero) :=
   S.exact_iff_isIso_imageToKernel'.1 hS
 
-/-- In an abelian category, a short complex `S` is exact
+/--
+In an abelian category, a short complex `S` is exact
 iff `imageSubobject S.f = kernelSubobject S.g`.
 -/
 theorem exact_iff_image_eq_kernel : S.Exact ↔ imageSubobject S.f = kernelSubobject S.g := by
@@ -94,8 +94,9 @@ theorem exact_iff_image_eq_kernel : S.Exact ↔ imageSubobject S.f = kernelSubob
   · intro h
     exact ⟨Subobject.ofLE _ _ h.ge, by ext; simp, by ext; simp⟩
 
-theorem exact_iff_of_forks {cg : KernelFork S.g} (hg : IsLimit cg) {cf : CokernelCofork S.f}
-    (hf : IsColimit cf) : S.Exact ↔ cg.ι ≫ cf.π = 0 := by
+theorem exact_iff_of_forks
+    {cg : KernelFork S.g} (hg : IsLimit cg) {cf : CokernelCofork S.f} (hf : IsColimit cf)
+    : S.Exact ↔ cg.ι ≫ cf.π = 0 := by
   rw [exact_iff_kernel_ι_comp_cokernel_π_zero]
   let e₁ := IsLimit.conePointUniqueUpToIso (kernelIsKernel S.g) hg
   let e₂ := IsColimit.coconePointUniqueUpToIso (cokernelIsCokernel S.f) hf
@@ -104,36 +105,39 @@ theorem exact_iff_of_forks {cg : KernelFork S.g} (hg : IsLimit cg) {cf : Cokerne
     have eq₂ := IsColimit.comp_coconePointUniqueUpToIso_hom (cokernelIsCokernel S.f) hf (.one)
     dsimp at eq₁ eq₂
     rw [← eq₁, ← eq₂, Category.assoc]
-  rw [this, IsIso.comp_left_eq_zero e₁.inv, ← Category.assoc,
-    IsIso.comp_right_eq_zero _ e₂.hom]
+  rw [this, IsIso.comp_left_eq_zero e₁.inv, ← Category.assoc, IsIso.comp_right_eq_zero _ e₂.hom]
 
 variable {S}
 
 /-- If `(f, g)` is exact, then `Abelian.image.ι S.f` is a kernel of `S.g`. -/
-def Exact.isLimitImage (h : S.Exact) :
-    IsLimit (KernelFork.ofι (Abelian.image.ι S.f)
-      (Abelian.image_ι_comp_eq_zero S.zero) : KernelFork S.g) := by
+def Exact.isLimitImage (h : S.Exact)
+    : IsLimit
+      (KernelFork.ofι (Abelian.image.ι S.f) (Abelian.image_ι_comp_eq_zero S.zero)
+        : KernelFork S.g) := by
   rw [exact_iff_kernel_ι_comp_cokernel_π_zero] at h
   exact KernelFork.IsLimit.ofι _ _
-    (fun u hu ↦ kernel.lift (cokernel.π S.f) u
-      (by rw [← kernel.lift_ι S.g u hu, Category.assoc, h, comp_zero])) (by simp)
+    (fun u hu ↦
+      kernel.lift (cokernel.π S.f) u
+        (by rw [← kernel.lift_ι S.g u hu, Category.assoc, h, comp_zero]))
+    (by simp)
     (fun _ _ _ hm => by rw [← cancel_mono (Abelian.image.ι S.f), hm, kernel.lift_ι])
 
 /-- If `(f, g)` is exact, then `image.ι f` is a kernel of `g`. -/
-def Exact.isLimitImage' (h : S.Exact) :
-    IsLimit (KernelFork.ofι (Limits.image.ι S.f)
-      (image_ι_comp_eq_zero S.zero) : KernelFork S.g) :=
+def Exact.isLimitImage' (h : S.Exact)
+    : IsLimit
+      (KernelFork.ofι (Limits.image.ι S.f) (image_ι_comp_eq_zero S.zero) : KernelFork S.g) :=
   IsKernel.isoKernel _ _ h.isLimitImage (Abelian.imageIsoImage S.f).symm <| IsImage.lift_fac _ _
 
 /-- If `(f, g)` is exact, then `Abelian.coimage.π g` is a cokernel of `f`. -/
-def Exact.isColimitCoimage (h : S.Exact) :
-    IsColimit
-      (CokernelCofork.ofπ (Abelian.coimage.π S.g) (Abelian.comp_coimage_π_eq_zero S.zero) :
-        CokernelCofork S.f) := by
+def Exact.isColimitCoimage (h : S.Exact)
+    : IsColimit
+      (CokernelCofork.ofπ (Abelian.coimage.π S.g) (Abelian.comp_coimage_π_eq_zero S.zero)
+        : CokernelCofork S.f) := by
   rw [exact_iff_kernel_ι_comp_cokernel_π_zero] at h
   refine CokernelCofork.IsColimit.ofπ _ _
-    (fun u hu => cokernel.desc (kernel.ι S.g) u
-      (by rw [← cokernel.π_desc S.f u hu, ← Category.assoc, h, zero_comp]))
+    (fun u hu =>
+      cokernel.desc (kernel.ι S.g) u
+        (by rw [← cokernel.π_desc S.f u hu, ← Category.assoc, h, zero_comp]))
     (by simp) ?_
   intro _ _ _ _ hm
   ext
@@ -141,46 +145,47 @@ def Exact.isColimitCoimage (h : S.Exact) :
 
 set_option backward.isDefEq.respectTransparency false in
 /-- If `(f, g)` is exact, then `factorThruImage g` is a cokernel of `f`. -/
-def Exact.isColimitImage (h : S.Exact) :
-    IsColimit (CokernelCofork.ofπ (Limits.factorThruImage S.g)
-        (comp_factorThruImage_eq_zero S.zero)) :=
+def Exact.isColimitImage (h : S.Exact)
+    : IsColimit (CokernelCofork.ofπ (Limits.factorThruImage S.g)
+      (comp_factorThruImage_eq_zero S.zero)) :=
   IsCokernel.cokernelIso _ _ h.isColimitCoimage (Abelian.coimageIsoImage' S.g) <|
     (cancel_mono (Limits.image.ι S.g)).1 <| by simp
 
-theorem exact_kernel {X Y : C} (f : X ⟶ Y) :
-    (ShortComplex.mk (kernel.ι f) f (by simp)).Exact :=
+theorem exact_kernel {X Y : C} (f : X ⟶ Y) : (ShortComplex.mk (kernel.ι f) f (by simp)).Exact :=
   exact_of_f_is_kernel _ (kernelIsKernel f)
 
-theorem exact_cokernel {X Y : C} (f : X ⟶ Y) :
-    (ShortComplex.mk f (cokernel.π f) (by simp)).Exact :=
+theorem exact_cokernel {X Y : C} (f : X ⟶ Y) : (ShortComplex.mk f (cokernel.π f) (by simp)).Exact :=
   exact_of_g_is_cokernel _ (cokernelIsCokernel f)
 
 variable (S)
 
-theorem exact_iff_exact_image_ι :
-    S.Exact ↔ (ShortComplex.mk (Abelian.image.ι S.f) S.g
-      (Abelian.image_ι_comp_eq_zero S.zero)).Exact :=
-  ShortComplex.exact_iff_of_epi_of_isIso_of_mono
-    { τ₁ := Abelian.factorThruImage S.f
-      τ₂ := 𝟙 _
-      τ₃ := 𝟙 _ }
+theorem exact_iff_exact_image_ι
+    : S.Exact
+      ↔ (ShortComplex.mk (Abelian.image.ι S.f) S.g (Abelian.image_ι_comp_eq_zero S.zero)).Exact :=
+  ShortComplex.exact_iff_of_epi_of_isIso_of_mono {
+    τ₁ := Abelian.factorThruImage S.f
+    τ₂ := 𝟙 _
+    τ₃ := 𝟙 _
+  }
 
-theorem exact_iff_exact_coimage_π :
-    S.Exact ↔ (ShortComplex.mk S.f (Abelian.coimage.π S.g)
-      (Abelian.comp_coimage_π_eq_zero S.zero)).Exact := by
+theorem exact_iff_exact_coimage_π
+    : S.Exact
+      ↔ (ShortComplex.mk S.f (Abelian.coimage.π S.g)
+        (Abelian.comp_coimage_π_eq_zero S.zero)).Exact := by
   symm
-  exact ShortComplex.exact_iff_of_epi_of_isIso_of_mono
-    { τ₁ := 𝟙 _
-      τ₂ := 𝟙 _
-      τ₃ := Abelian.factorThruCoimage S.g }
+  exact ShortComplex.exact_iff_of_epi_of_isIso_of_mono {
+    τ₁ := 𝟙 _
+    τ₂ := 𝟙 _
+    τ₃ := Abelian.factorThruCoimage S.g
+  }
 
 end ShortComplex
 
 section
 
 open List in
-theorem Abelian.tfae_mono {X Y : C} (f : X ⟶ Y) (Z : C) :
-    TFAE [Mono f, kernel.ι f = 0, (ShortComplex.mk (0 : Z ⟶ X) f zero_comp).Exact] := by
+theorem Abelian.tfae_mono {X Y : C} (f : X ⟶ Y) (Z : C)
+    : TFAE [Mono f, kernel.ι f = 0, (ShortComplex.mk (0 : Z ⟶ X) f zero_comp).Exact] := by
   tfae_have 2 → 1 := mono_of_kernel_ι_eq_zero _
   tfae_have 1 → 2
   | _ => by rw [← cancel_mono f, kernel.condition, zero_comp]
@@ -188,8 +193,8 @@ theorem Abelian.tfae_mono {X Y : C} (f : X ⟶ Y) (Z : C) :
   tfae_finish
 
 open List in
-theorem Abelian.tfae_epi {X Y : C} (f : X ⟶ Y) (Z : C) :
-    TFAE [Epi f, cokernel.π f = 0, (ShortComplex.mk f (0 : Y ⟶ Z) comp_zero).Exact] := by
+theorem Abelian.tfae_epi {X Y : C} (f : X ⟶ Y) (Z : C)
+    : TFAE [Epi f, cokernel.π f = 0, (ShortComplex.mk f (0 : Y ⟶ Z) comp_zero).Exact] := by
   tfae_have 2 → 1 := epi_of_cokernel_π_eq_zero _
   tfae_have 1 → 2
   | _ => by rw [← cancel_epi f, cokernel.condition, comp_zero]
@@ -206,8 +211,8 @@ variable {D : Type u₂} [Category.{v₂} D] [Abelian D]
 variable (F : C ⥤ D) [PreservesZeroMorphisms F]
 
 set_option backward.defeqAttrib.useBackward true in
-lemma reflects_exact_of_faithful [F.Faithful] (S : ShortComplex C) (hS : (S.map F).Exact) :
-    S.Exact := by
+lemma reflects_exact_of_faithful [F.Faithful] (S : ShortComplex C) (hS : (S.map F).Exact)
+    : S.Exact := by
   rw [ShortComplex.exact_iff_kernel_ι_comp_cokernel_π_zero] at hS ⊢
   dsimp at hS
   apply F.zero_of_map_zero
@@ -283,36 +288,40 @@ section
 
 set_option backward.defeqAttrib.useBackward true in
 /-- A functor preserving zero morphisms, monos, and cokernels preserves homology. -/
-lemma preservesHomology_of_preservesMonos_and_cokernels [PreservesZeroMorphisms L]
-    [PreservesMonomorphisms L] [∀ {X Y} (f : X ⟶ Y), PreservesColimit (parallelPair f 0) L] :
-    PreservesHomology L := by
+lemma preservesHomology_of_preservesMonos_and_cokernels
+    [PreservesZeroMorphisms L] [PreservesMonomorphisms L]
+    [∀ {X Y} (f : X ⟶ Y), PreservesColimit (parallelPair f 0) L]
+    : PreservesHomology L := by
   apply preservesHomology_of_map_exact
   intro S hS
-  let φ : (ShortComplex.mk _ _ (Abelian.comp_coimage_π_eq_zero S.zero)).map L ⟶ S.map L :=
-    { τ₁ := 𝟙 _
-      τ₂ := 𝟙 _
-      τ₃ := L.map (Abelian.factorThruCoimage S.g)
-      comm₂₃ := by
-        dsimp
-        rw [Category.id_comp, ← L.map_comp, cokernel.π_desc] }
+  let φ : (ShortComplex.mk _ _ (Abelian.comp_coimage_π_eq_zero S.zero)).map L ⟶ S.map L := {
+    τ₁ := 𝟙 _
+    τ₂ := 𝟙 _
+    τ₃ := L.map (Abelian.factorThruCoimage S.g)
+    comm₂₃ := by
+      dsimp
+      rw [Category.id_comp, ← L.map_comp, cokernel.π_desc]
+  }
   apply (ShortComplex.exact_iff_of_epi_of_isIso_of_mono φ).1
   apply ShortComplex.exact_of_g_is_cokernel
   exact CokernelCofork.mapIsColimit _ ((S.exact_iff_exact_coimage_π).1 hS).gIsCokernel L
 
 set_option backward.defeqAttrib.useBackward true in
 /-- A functor preserving zero morphisms, epis, and kernels preserves homology. -/
-lemma preservesHomology_of_preservesEpis_and_kernels [PreservesZeroMorphisms L]
-    [PreservesEpimorphisms L] [∀ {X Y} (f : X ⟶ Y), PreservesLimit (parallelPair f 0) L] :
-    PreservesHomology L := by
+lemma preservesHomology_of_preservesEpis_and_kernels
+    [PreservesZeroMorphisms L] [PreservesEpimorphisms L]
+    [∀ {X Y} (f : X ⟶ Y), PreservesLimit (parallelPair f 0) L]
+    : PreservesHomology L := by
   apply preservesHomology_of_map_exact
   intro S hS
-  let φ : S.map L ⟶ (ShortComplex.mk _ _ (Abelian.image_ι_comp_eq_zero S.zero)).map L :=
-    { τ₁ := L.map (Abelian.factorThruImage S.f)
-      τ₂ := 𝟙 _
-      τ₃ := 𝟙 _
-      comm₁₂ := by
-        dsimp
-        rw [Category.comp_id, ← L.map_comp, kernel.lift_ι] }
+  let φ : S.map L ⟶ (ShortComplex.mk _ _ (Abelian.image_ι_comp_eq_zero S.zero)).map L := {
+    τ₁ := L.map (Abelian.factorThruImage S.f)
+    τ₂ := 𝟙 _
+    τ₃ := 𝟙 _
+    comm₁₂ := by
+      dsimp
+      rw [Category.comp_id, ← L.map_comp, kernel.lift_ι]
+  }
   apply (ShortComplex.exact_iff_of_epi_of_isIso_of_mono φ).2
   apply ShortComplex.exact_of_f_is_kernel
   exact KernelFork.mapIsLimit _ ((S.exact_iff_exact_image_ι).1 hS).fIsKernel L

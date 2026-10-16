@@ -18,14 +18,16 @@ statement.
 
 public section
 
-
 open Set
 
-/-- **Zorn's lemma**: A partial order is coatomic if every nonempty chain `c`, `⊤ ∉ c`, has an upper
-bound not equal to `⊤`. -/
-theorem IsCoatomic.of_isChain_bounded {α : Type*} [PartialOrder α] [OrderTop α]
-    (h : ∀ c : Set α, IsChain (· ≤ ·) c → c.Nonempty → ⊤ ∉ c → ∃ x ≠ ⊤, x ∈ upperBounds c) :
-    IsCoatomic α := by
+/--
+**Zorn's lemma**: A partial order is coatomic if every nonempty chain `c`, `⊤ ∉ c`, has an upper
+bound not equal to `⊤`.
+-/
+theorem IsCoatomic.of_isChain_bounded
+    {α : Type*} [PartialOrder α] [OrderTop α]
+    (h : ∀ c : Set α, IsChain (· ≤ ·) c → c.Nonempty → ⊤ ∉ c → ∃ x ≠ ⊤, x ∈ upperBounds c)
+    : IsCoatomic α := by
   refine ⟨fun x => le_top.eq_or_lt.imp_right fun hx => ?_⟩
   have := zorn_le_nonempty₀ (Ico x ⊤) (fun c hxc hc y hy => ?_) x (left_mem_Ico.2 hx)
   · obtain ⟨y, hxy, hmax⟩ := this
@@ -34,11 +36,12 @@ theorem IsCoatomic.of_isChain_bounded {α : Type*} [PartialOrder α] [OrderTop �
   rcases h c hc ⟨y, hy⟩ fun h => (hxc h).2.ne rfl with ⟨z, hz, hcz⟩
   exact ⟨z, ⟨le_trans (hxc hy).1 (hcz hy), hz.lt_top⟩, hcz⟩
 
-/-- **Zorn's lemma**: A partial order is atomic if every nonempty chain `c`, `⊥ ∉ c`, has a lower
-bound not equal to `⊥`. -/
-theorem IsAtomic.of_isChain_bounded {α : Type*} [PartialOrder α] [OrderBot α]
-    (h :
-      ∀ c : Set α,
-        IsChain (· ≤ ·) c → c.Nonempty → ⊥ ∉ c → ∃ x ≠ ⊥, x ∈ lowerBounds c) :
-    IsAtomic α :=
+/--
+**Zorn's lemma**: A partial order is atomic if every nonempty chain `c`, `⊥ ∉ c`, has a lower
+bound not equal to `⊥`.
+-/
+theorem IsAtomic.of_isChain_bounded
+    {α : Type*} [PartialOrder α] [OrderBot α]
+    (h : ∀ c : Set α, IsChain (· ≤ ·) c → c.Nonempty → ⊥ ∉ c → ∃ x ≠ ⊥, x ∈ lowerBounds c)
+    : IsAtomic α :=
   isCoatomic_dual_iff_isAtomic.mp <| IsCoatomic.of_isChain_bounded fun c hc => h c hc.symm

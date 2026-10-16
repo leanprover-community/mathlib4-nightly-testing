@@ -31,64 +31,67 @@ namespace HomotopicalAlgebra
 
 namespace ModelCategory
 
-variable {C : Type*} [Category* C]
-  [CategoryWithCofibrations C] [CategoryWithFibrations C] [CategoryWithWeakEquivalences C]
-  [(weakEquivalences C).HasTwoOutOfThreeProperty]
+variable
+  {C : Type*} [Category* C] [CategoryWithCofibrations C] [CategoryWithFibrations C]
+  [CategoryWithWeakEquivalences C] [(weakEquivalences C).HasTwoOutOfThreeProperty]
 
-/-- Joyal's trick: that cofibrations have the left lifting property
+/--
+Joyal's trick: that cofibrations have the left lifting property
 with respect to trivial fibrations follows from the left lifting property
 of trivial cofibrations with respect to fibrations and a few other
-consequences of the model categories axioms. -/
+consequences of the model categories axioms.
+-/
 lemma hasLiftingProperty_of_joyalTrick
     [HasFactorization (cofibrations C) (trivialFibrations C)] [HasPushouts C]
     [(cofibrations C).IsStableUnderComposition] [(cofibrations C).IsStableUnderCobaseChange]
-    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y)
-      [Cofibration i] [WeakEquivalence i] [Fibration p], HasLiftingProperty i p)
-    {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y)
-    [Cofibration i] [Fibration p] [WeakEquivalence p] :
-    HasLiftingProperty i p where
+    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [WeakEquivalence i] [Fibration p],
+      HasLiftingProperty i p)
+    {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [Fibration p] [WeakEquivalence p]
+    : HasLiftingProperty i p where
   sq_hasLift {f g} sq := by
-    let h := factorizationData (cofibrations C) (trivialFibrations C)
-      (pushout.desc p g sq.w)
+    let h := factorizationData (cofibrations C) (trivialFibrations C) (pushout.desc p g sq.w)
     have sq' : CommSq (𝟙 X) (pushout.inl _ _ ≫ h.i) p h.p := .mk
     have h₁ : WeakEquivalence ((pushout.inl f i ≫ h.i) ≫ h.p) := by simpa
-    have h₂ := comp_mem _ _ _ ((cofibrations C).of_isPushout
-      (IsPushout.of_hasPushout f i) (mem_cofibrations i)) h.hi
+    have h₂ :=
+      comp_mem _ _ _
+        ((cofibrations C).of_isPushout (IsPushout.of_hasPushout f i) (mem_cofibrations i)) h.hi
     rw [← cofibration_iff] at h₂
     have : WeakEquivalence (pushout.inl f i ≫ h.i) := by
       rw [weakEquivalence_iff] at h₁ ⊢
       exact of_postcomp _ _ _ h.hp.2 h₁
-    exact ⟨⟨{ l := pushout.inr f i ≫ h.i ≫ sq'.lift
-              fac_left := by
-                simpa only [assoc, comp_id, pushout.condition_assoc] using
-                  f ≫= sq'.fac_left }⟩⟩
+    exact ⟨⟨{
+      l := pushout.inr f i ≫ h.i ≫ sq'.lift
+      fac_left := by simpa only [assoc, comp_id, pushout.condition_assoc] using f ≫= sq'.fac_left
+    }⟩⟩
 
-/-- Joyal's trick (dual): that trivial cofibrations have the left lifting
+/--
+Joyal's trick (dual): that trivial cofibrations have the left lifting
 property with respect to fibrations follows from the left lifting property
 of cofibrations with respect to trivial fibrations and a few other
-consequences of the model categories axioms. -/
+consequences of the model categories axioms.
+-/
 lemma hasLiftingProperty_of_joyalTrickDual
     [HasFactorization (trivialCofibrations C) (fibrations C)] [HasPullbacks C]
     [(fibrations C).IsStableUnderComposition] [(fibrations C).IsStableUnderBaseChange]
-    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y)
-      [Cofibration i] [WeakEquivalence p] [Fibration p], HasLiftingProperty i p)
-    {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y)
-    [Cofibration i] [Fibration p] [WeakEquivalence i] :
-    HasLiftingProperty i p where
+    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [WeakEquivalence p] [Fibration p],
+      HasLiftingProperty i p)
+    {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [Fibration p] [WeakEquivalence i]
+    : HasLiftingProperty i p where
   sq_hasLift {f g} sq := by
-    let h := factorizationData (trivialCofibrations C) (fibrations C)
-      (pullback.lift f i sq.w)
+    let h := factorizationData (trivialCofibrations C) (fibrations C) (pullback.lift f i sq.w)
     have sq' : CommSq h.i i (h.p ≫ pullback.snd _ _) (𝟙 B) := .mk
     have h₁ : WeakEquivalence (h.i ≫ h.p ≫ pullback.snd p g) := by simpa
-    have h₂ := comp_mem _ _ _ h.hp ((fibrations C).of_isPullback
-      (IsPullback.of_hasPullback p g) (mem_fibrations p))
+    have h₂ :=
+      comp_mem _ _ _ h.hp
+        ((fibrations C).of_isPullback (IsPullback.of_hasPullback p g) (mem_fibrations p))
     rw [← fibration_iff] at h₂
     have : WeakEquivalence (h.p ≫ pullback.snd p g) := by
       rw [weakEquivalence_iff] at h₁ ⊢
       exact of_precomp _ _ _ h.hi.2 h₁
-    exact ⟨⟨{ l := sq'.lift ≫ h.p ≫ pullback.fst p g
-              fac_right := by
-                rw [assoc, assoc, pullback.condition, reassoc_of% sq'.fac_right] }⟩⟩
+    exact ⟨⟨{
+      l := sq'.lift ≫ h.p ≫ pullback.fst p g
+      fac_right := by rw [assoc, assoc, pullback.condition, reassoc_of% sq'.fac_right]
+    }⟩⟩
 
 end ModelCategory
 

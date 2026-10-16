@@ -27,9 +27,9 @@ variable {C : Type*} [Category* C] [FinitaryPreExtensive C]
 
 namespace CategoryTheory
 
-lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve X) :
-    S ∈ (extensiveTopology C) X ↔
-      (∃ (α : Type) (_ : Finite α) (Y : α → C) (π : (a : α) → (Y a ⟶ X)),
+lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve X)
+    : S ∈ (extensiveTopology C) X
+      ↔ (∃ (α : Type) (_ : Finite α) (Y : α → C) (π : (a : α) → (Y a ⟶ X)),
         Nonempty (IsColimit (Cofan.mk X π)) ∧ (∀ a : α, (S.arrows) (π a))) := by
   constructor
   · intro h
@@ -50,9 +50,14 @@ lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve
     | transitive X R S _ _ a b =>
       obtain ⟨α, w, Y₁, π, h, h'⟩ := a
       choose β _ Y_n π_n H using fun a => b (h' a)
-      exact ⟨(Σ a, β a), inferInstance, fun ⟨a,b⟩ => Y_n a b, fun ⟨a, b⟩ => (π_n a b) ≫ (π a),
+      exact ⟨
+        (Σ a, β a),
+        inferInstance,
+        fun ⟨a, b⟩ => Y_n a b,
+        fun ⟨a, b⟩ => (π_n a b) ≫ (π a),
         ⟨Limits.Cofan.isColimitTrans _ h.some _ (fun a ↦ (H a).1.some)⟩,
-        fun c => (H c.fst).2 c.snd⟩
+        fun c => (H c.fst).2 c.snd
+      ⟩
   · intro ⟨α, _, Y, π, h, h'⟩
     apply (extensiveCoverage C).mem_toGrothendieck_sieves_of_superset (R := Presieve.ofArrows Y π)
     · exact fun _ _ hh ↦ by cases hh; exact h' _

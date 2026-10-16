@@ -23,11 +23,13 @@ variable {α : Type*}
 
 section DenselyOrdered
 
-variable [TopologicalSpace α] [LinearOrder α] [OrderTopology α] [DenselyOrdered α] {a b : α}
-  {s : Set α}
+variable
+  [TopologicalSpace α] [LinearOrder α] [OrderTopology α] [DenselyOrdered α] {a b : α} {s : Set α}
 
-/-- The closure of the interval `(a, +∞)` is the closed interval `[a, +∞)`, unless `a` is a top
-element. -/
+/--
+The closure of the interval `(a, +∞)` is the closed interval `[a, +∞)`, unless `a` is a top
+element.
+-/
 @[to_dual /-- The closure of the interval `(-∞, a)` is the closed interval `(∞, a]`,
 unless `a` is a bot element. -/]
 theorem closure_Ioi' {a : α} (h : (Ioi a).Nonempty) : closure (Ioi a) = Ici a := by
@@ -38,22 +40,22 @@ theorem closure_Ioi' {a : α} (h : (Ioi a).Nonempty) : closure (Ioi a) = Ici a :
 
 /-- The closure of the interval `(a, +∞)` is the closed interval `[a, +∞)`. -/
 @[to_dual (attr := simp) /-- The closure of the interval `(-∞, a)` is the interval `(-∞, a]`. -/]
-theorem closure_Ioi (a : α) [NoMaxOrder α] : closure (Ioi a) = Ici a :=
-  closure_Ioi' nonempty_Ioi
+theorem closure_Ioi (a : α) [NoMaxOrder α] : closure (Ioi a) = Ici a := closure_Ioi' nonempty_Ioi
 
 @[to_dual of_disjoint_nhds_Iio]
-theorem IsMax.of_disjoint_nhds_Ioi {x : α} {u : Set α} (hu : u ∈ nhds x)
-    (hd : Disjoint u (Set.Ioi x)) : IsMax x := by
+theorem IsMax.of_disjoint_nhds_Ioi
+    {x : α} {u : Set α} (hu : u ∈ nhds x) (hd : Disjoint u (Set.Ioi x))
+    : IsMax x := by
   by_contra hx
   exact (mem_closure_iff_nhds.mp (closure_Ioi' (not_isMax_iff.mp hx) ▸ self_mem_Ici) u hu).ne_empty
     (disjoint_iff.mp hd)
 
 @[to_dual]
-theorem nonempty_nhds_inter_Ioi {x : α} {u : Set α} (hu : u ∈ nhds x) (hx : ¬IsMax x) :
-    (u ∩ Set.Ioi x).Nonempty := by
+theorem nonempty_nhds_inter_Ioi {x : α} {u : Set α} (hu : u ∈ nhds x) (hx : ¬ IsMax x)
+    : (u ∩ Set.Ioi x).Nonempty := by
   by_contra h
-  exact hx (IsMax.of_disjoint_nhds_Ioi hu (Set.disjoint_iff_inter_eq_empty.mpr
-    (Set.not_nonempty_iff_eq_empty.mp h)))
+  exact hx (IsMax.of_disjoint_nhds_Ioi hu
+    (Set.disjoint_iff_inter_eq_empty.mpr (Set.not_nonempty_iff_eq_empty.mp h)))
 
 /-- The closure of the open interval `(a, b)` is the closed interval `[a, b]`. -/
 @[to_dual none, simp]
@@ -97,16 +99,15 @@ theorem interior_Ici' {a : α} (ha : (Iio a).Nonempty) : interior (Ici a) = Ioi 
   rw [← compl_Iio, interior_compl, closure_Iio' ha, compl_Iic]
 
 @[to_dual]
-theorem interior_Ici [NoMinOrder α] {a : α} : interior (Ici a) = Ioi a :=
-  interior_Ici' nonempty_Iio
+theorem interior_Ici [NoMinOrder α] {a : α} : interior (Ici a) = Ioi a := interior_Ici' nonempty_Iio
 
 @[simp]
 theorem interior_Icc [NoMinOrder α] [NoMaxOrder α] {a b : α} : interior (Icc a b) = Ioo a b := by
   rw [← Ici_inter_Iic, interior_inter, interior_Ici, interior_Iic, Ioi_inter_Iio]
 
 @[simp]
-theorem Icc_mem_nhds_iff [NoMinOrder α] [NoMaxOrder α] {a b x : α} :
-    Icc a b ∈ 𝓝 x ↔ x ∈ Ioo a b := by
+theorem Icc_mem_nhds_iff [NoMinOrder α] [NoMaxOrder α] {a b x : α}
+    : Icc a b ∈ 𝓝 x ↔ x ∈ Ioo a b := by
   rw [← interior_Icc, mem_interior_iff_mem_nhds]
 
 @[to_dual (attr := simp)]
@@ -118,18 +119,19 @@ theorem Ico_mem_nhds_iff [NoMinOrder α] {a b x : α} : Ico a b ∈ 𝓝 x ↔ x
   rw [← interior_Ico, mem_interior_iff_mem_nhds]
 
 theorem closure_interior_Icc {a b : α} (h : a ≠ b) : closure (interior (Icc a b)) = Icc a b :=
-  (closure_minimal interior_subset isClosed_Icc).antisymm <|
-    calc
-      Icc a b = closure (Ioo a b) := (closure_Ioo h).symm
-      _ ⊆ closure (interior (Icc a b)) :=
-        closure_mono (interior_maximal Ioo_subset_Icc_self isOpen_Ioo)
+  (closure_minimal interior_subset isClosed_Icc).antisymm <| calc
+    Icc a b
+      = closure (Ioo a b) := (closure_Ioo h).symm
+    _ ⊆ closure (interior (Icc a b)) :=
+      closure_mono (interior_maximal Ioo_subset_Icc_self isOpen_Ioo)
 
 @[to_dual]
 theorem Ioc_subset_closure_interior (a b : α) : Ioc a b ⊆ closure (interior (Ioc a b)) := by
   rcases eq_or_ne a b with (rfl | h)
   · simp
   · calc
-      Ioc a b ⊆ Icc a b := Ioc_subset_Icc_self
+      Ioc a b
+        ⊆ Icc a b := Ioc_subset_Icc_self
       _ = closure (Ioo a b) := (closure_Ioo h).symm
       _ ⊆ closure (interior (Ioc a b)) :=
         closure_mono (interior_maximal Ioo_subset_Ioc_self isOpen_Ioo)
@@ -139,20 +141,19 @@ theorem frontier_Ici' {a : α} (ha : (Iio a).Nonempty) : frontier (Ici a) = {a} 
   simp [frontier, ha]
 
 @[to_dual]
-theorem frontier_Ici [NoMinOrder α] {a : α} : frontier (Ici a) = {a} :=
-  frontier_Ici' nonempty_Iio
+theorem frontier_Ici [NoMinOrder α] {a : α} : frontier (Ici a) = {a} := frontier_Ici' nonempty_Iio
 
 @[to_dual (attr := simp)]
 theorem frontier_Ioi' {a : α} (ha : (Ioi a).Nonempty) : frontier (Ioi a) = {a} := by
   simp [frontier, closure_Ioi' ha]
 
 @[to_dual]
-theorem frontier_Ioi [NoMaxOrder α] {a : α} : frontier (Ioi a) = {a} :=
-  frontier_Ioi' nonempty_Ioi
+theorem frontier_Ioi [NoMaxOrder α] {a : α} : frontier (Ioi a) = {a} := frontier_Ioi' nonempty_Ioi
 
 @[simp]
-theorem frontier_Icc [NoMinOrder α] [NoMaxOrder α] {a b : α} (h : a ≤ b) :
-    frontier (Icc a b) = {a, b} := by simp [frontier, h, Icc_sdiff_Ioo_same]
+theorem frontier_Icc [NoMinOrder α] [NoMaxOrder α] {a b : α} (h : a ≤ b)
+    : frontier (Icc a b) = {a, b} := by
+  simp [frontier, h, Icc_sdiff_Ioo_same]
 
 @[simp]
 theorem frontier_Ioo {a b : α} (h : a < b) : frontier (Ioo a b) = {a, b} := by
@@ -167,8 +168,7 @@ theorem frontier_Ioc [NoMaxOrder α] {a b : α} (h : a < b) : frontier (Ioc a b)
   rw [frontier, closure_Ioc h.ne, interior_Ioc, Icc_sdiff_Ioo_same h.le]
 
 @[to_dual]
-theorem nhdsWithin_Ioi_neBot' {a b : α} (H₁ : (Ioi a).Nonempty) (H₂ : a ≤ b) :
-    NeBot (𝓝[Ioi a] b) :=
+theorem nhdsWithin_Ioi_neBot' {a b : α} (H₁ : (Ioi a).Nonempty) (H₂ : a ≤ b) : NeBot (𝓝[Ioi a] b) :=
   mem_closure_iff_nhdsWithin_neBot.1 <| by rwa [closure_Ioi' H₁]
 
 @[to_dual]
@@ -200,10 +200,12 @@ instance (x : α) [Nontrivial α] : NeBot (𝓝[≠] x) := by
   obtain ⟨z, hz⟩ : ∃ z, a < z ∧ z < x := exists_between hy.1
   exact ⟨z, us ⟨hab ⟨hz.1, hz.2.trans hy.2⟩, hz.2.ne⟩⟩
 
-/-- If the order topology for a dense linear ordering is discrete, the space has at most one point.
+/--
+If the order topology for a dense linear ordering is discrete, the space has at most one point.
 
 We would prefer for this to be an instance but even at `(priority := 100)` this was problematic so
-we have deferred this issue. TODO Promote this to an `instance`! -/
+we have deferred this issue. TODO Promote this to an `instance`!
+-/
 lemma DenselyOrdered.subsingleton_of_discreteTopology [DiscreteTopology α] : Subsingleton α := by
   suffices ∀ a b : α, b ≤ a from ⟨fun a b ↦ le_antisymm (this b a) (this a b)⟩
   intro a b
@@ -211,12 +213,14 @@ lemma DenselyOrdered.subsingleton_of_discreteTopology [DiscreteTopology α] : Su
   have : Ioo a b = Icc a b := by rw [← closure_discrete (Ioo a b), closure_Ioo contra.ne]
   grind => have : b ∈ Ioo a b; finish
 
-/-- Let `s` be a dense set in a nontrivial dense linear order `α`. If `s` is a
+/--
+Let `s` be a dense set in a nontrivial dense linear order `α`. If `s` is a
 separable space (e.g., if `α` has a second countable topology), then there exists a countable
-dense subset `t ⊆ s` such that `t` does not contain bottom/top elements of `α`. -/
-theorem Dense.exists_countable_dense_subset_no_bot_top [Nontrivial α] {s : Set α} [SeparableSpace s]
-    (hs : Dense s) :
-    ∃ t, t ⊆ s ∧ t.Countable ∧ Dense t ∧ (∀ x, IsBot x → x ∉ t) ∧ ∀ x, IsTop x → x ∉ t := by
+dense subset `t ⊆ s` such that `t` does not contain bottom/top elements of `α`.
+-/
+theorem Dense.exists_countable_dense_subset_no_bot_top
+    [Nontrivial α] {s : Set α} [SeparableSpace s] (hs : Dense s)
+    : ∃ t, t ⊆ s ∧ t.Countable ∧ Dense t ∧ (∀ x, IsBot x → x ∉ t) ∧ ∀ x, IsTop x → x ∉ t := by
   rcases hs.exists_countable_dense_subset with ⟨t, hts, htc, htd⟩
   refine ⟨t \ ({ x | IsBot x } ∪ { x | IsTop x }), ?_, ?_, ?_, fun x hx => ?_, fun x hx => ?_⟩
   · exact sdiff_subset.trans hts
@@ -226,12 +230,14 @@ theorem Dense.exists_countable_dense_subset_no_bot_top [Nontrivial α] {s : Set 
   · simp [hx]
 
 variable (α) in
-/-- If `α` is a nontrivial separable dense linear order, then there exists a
+/--
+If `α` is a nontrivial separable dense linear order, then there exists a
 countable dense set `s : Set α` that contains neither top nor bottom elements of `α`.
 For a dense set containing both bot and top elements, see
-`exists_countable_dense_bot_top`. -/
-theorem exists_countable_dense_no_bot_top [SeparableSpace α] [Nontrivial α] :
-    ∃ s : Set α, s.Countable ∧ Dense s ∧ (∀ x, IsBot x → x ∉ s) ∧ ∀ x, IsTop x → x ∉ s := by
+`exists_countable_dense_bot_top`.
+-/
+theorem exists_countable_dense_no_bot_top [SeparableSpace α] [Nontrivial α]
+    : ∃ s : Set α, s.Countable ∧ Dense s ∧ (∀ x, IsBot x → x ∉ s) ∧ ∀ x, IsTop x → x ∉ s := by
   simpa using dense_univ.exists_countable_dense_subset_no_bot_top
 
 /-- `Set.Ico a b` is only closed if it is empty. -/

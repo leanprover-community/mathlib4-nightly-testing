@@ -11,9 +11,9 @@ set_option linter.unusedDecidableInType true
 
 -- Silenceable
 set_option linter.unusedDecidableInType false in
-theorem foo [DecidablePred Nonempty] [DecidableEq (Nat → Nat)] :
-    UsesInstanceOf (DecidableEq (Nat → Nat)) → True :=
-  fun _ => trivial
+theorem foo [DecidablePred Nonempty] [DecidableEq (Nat → Nat)]
+    : UsesInstanceOf (DecidableEq (Nat → Nat)) → True := fun _ =>
+  trivial
 
 set_option linter.unusedDecidableInType false
 
@@ -28,10 +28,10 @@ Note: This linter can be disabled with `set_option linter.unusedDecidableInType 
 -/
 #guard_msgs in
 set_option linter.unusedDecidableInType true in
-/-- Same as `foo`.-/
-theorem foo' [DecidablePred Nonempty] [DecidableEq (Nat → Nat)] :
-    UsesInstanceOf (DecidableEq (Nat → Nat)) → True :=
-  fun _ => trivial
+/-- Same as `foo`. -/
+theorem foo' [DecidablePred Nonempty] [DecidableEq (Nat → Nat)]
+    : UsesInstanceOf (DecidableEq (Nat → Nat)) → True := fun _ =>
+  trivial
 
 end decidableTest
 
@@ -41,8 +41,7 @@ set_option linter.unusedFintypeInType true
 
 -- Silenceable
 set_option linter.unusedFintypeInType false in
-theorem foo [Fintype Bool] [Fintype (Nat → Nat)] :
-    UsesInstanceOf (Fintype (Nat → Nat)) → True :=
+theorem foo [Fintype Bool] [Fintype (Nat → Nat)] : UsesInstanceOf (Fintype (Nat → Nat)) → True :=
   fun _ => trivial
 
 set_option linter.unusedFintypeInType false
@@ -58,7 +57,6 @@ Note: This linter can be disabled with `set_option linter.unusedFintypeInType fa
 -/
 #guard_msgs in
 set_option linter.unusedFintypeInType true in
-/-- Same as `foo'`.-/
-theorem foo' [Fintype Bool] [Fintype (Nat → Nat)] :
-    UsesInstanceOf (Fintype (Nat → Nat)) → True :=
+/-- Same as `foo'`. -/
+theorem foo' [Fintype Bool] [Fintype (Nat → Nat)] : UsesInstanceOf (Fintype (Nat → Nat)) → True :=
   fun _ => trivial

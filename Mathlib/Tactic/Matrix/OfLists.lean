@@ -40,9 +40,12 @@ variable {α : Type*}
 -- directly (`Matrix.ofArray` or its list form) and drop `ofList` and `ofLists`.
 /-- Construct a vector from the first `n` elements of a list, padded with `0`. -/
 def ofList [Zero α] : (n : ℕ) → List α → Fin n → α
-  | 0, _ => ![]
-  | n + 1, [] => vecCons 0 (ofList n [])
-  | n + 1, a :: l => vecCons a (ofList n l)
+  | 0, _ =>
+    ![]
+  | n + 1, [] =>
+    vecCons 0 (ofList n [])
+  | n + 1, a :: l =>
+    vecCons a (ofList n l)
 
 @[simp]
 theorem ofList_apply [Zero α] (n : ℕ) (l : List α) (i : Fin n) : ofList n l i = l.getD i 0 := by
@@ -50,39 +53,45 @@ theorem ofList_apply [Zero α] (n : ℕ) (l : List α) (i : Fin n) : ofList n l 
   | zero => exact i.elim0
   | succ n ih => cases l <;> refine Fin.cases ?_ ?_ i <;> simp [ofList, ih]
 
-/-- The first `n` elements of the first `m` lists as a function of two indices, padded with
-`0`. -/
+/--
+The first `n` elements of the first `m` lists as a function of two indices, padded with
+`0`.
+-/
 def ofListsFun [Zero α] : (m n : ℕ) → List (List α) → Fin m → Fin n → α
-  | 0, _, _ => ![]
-  | m + 1, n, [] => vecCons (ofList n []) (ofListsFun m n [])
-  | m + 1, n, row :: rows => vecCons (ofList n row) (ofListsFun m n rows)
+  | 0, _, _ =>
+    ![]
+  | m + 1, n, [] =>
+    vecCons (ofList n []) (ofListsFun m n [])
+  | m + 1, n, row :: rows =>
+    vecCons (ofList n row) (ofListsFun m n rows)
 
 /-- Construct a matrix from the first `n` elements of the first `m` lists, padded with `0`. -/
 def ofLists [Zero α] (m n : ℕ) (rows : List (List α)) : Matrix (Fin m) (Fin n) α :=
   of (ofListsFun m n rows)
 
 @[simp]
-theorem ofLists_apply [Zero α] (m n : ℕ) (rows : List (List α)) (i : Fin m) :
-    ofLists m n rows i = ofList n (rows.getD i []) := by
+theorem ofLists_apply [Zero α] (m n : ℕ) (rows : List (List α)) (i : Fin m)
+    : ofLists m n rows i = ofList n (rows.getD i []) := by
   induction m generalizing rows with
   | zero => exact i.elim0
   | succ m ih => cases rows <;> exact Fin.cases rfl (ih _) i
 
 @[simp]
-theorem ListMatrix.dotProduct_eq [Mul α] [AddCommMonoid α] (n : ℕ) (l₁ l₂ : List α) :
-    ListMatrix.dotProduct n l₁ l₂ = ofList n l₁ ⬝ᵥ ofList n l₂ := by
+theorem ListMatrix.dotProduct_eq [Mul α] [AddCommMonoid α] (n : ℕ) (l₁ l₂ : List α)
+    : ListMatrix.dotProduct n l₁ l₂ = ofList n l₁ ⬝ᵥ ofList n l₂ := by
   induction n generalizing l₁ l₂ with
   | zero => simp [ListMatrix.dotProduct_zero]
   | succ n ih => cases l₁ <;> cases l₂ <;> simp [ofList, ListMatrix.dotProduct_add_one, ← ih]
 
 @[simp]
-theorem ofLists_transpose [Zero α] (m n : ℕ) (rows : List (List α)) :
-    ofLists n m (ListMatrix.transpose n rows) = (ofLists m n rows)ᵀ := by
+theorem ofLists_transpose [Zero α] (m n : ℕ) (rows : List (List α))
+    : ofLists n m (ListMatrix.transpose n rows) = (ofLists m n rows)ᵀ := by
   ext j i
   simpa using ListMatrix.getD_transpose rows i j.isLt
 
-theorem ofLists_mul [Mul α] [AddCommMonoid α] {l m n : ℕ} {A B C : List (List α)}
-    (h : ListMatrix.mul l m n A B = C) : ofLists l m A * ofLists m n B = ofLists l n C := by
+theorem ofLists_mul
+    [Mul α] [AddCommMonoid α] {l m n : ℕ} {A B C : List (List α)} (h : ListMatrix.mul l m n A B = C)
+    : ofLists l m A * ofLists m n B = ofLists l n C := by
   subst h
   ext i j
   rw [mul_apply', ← col_apply' (ofLists m n B) j]

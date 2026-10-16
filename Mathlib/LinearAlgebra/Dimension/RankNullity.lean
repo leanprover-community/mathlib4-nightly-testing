@@ -47,20 +47,22 @@ See `DivisionRing.hasRankNullity` and `IsDomain.hasRankNullity`.
 -/
 @[pp_with_univ]
 class HasRankNullity (R : Type v) [inst : Ring R] : Prop where
-  exists_set_linearIndependent : ∀ (M : Type u) [AddCommGroup M] [Module R M],
-    ∃ s : Set M, #s = Module.rank R M ∧ LinearIndepOn R id s
-  rank_quotient_add_rank : ∀ {M : Type u} [AddCommGroup M] [Module R M] (N : Submodule R M),
-    Module.rank R (M ⧸ N) + Module.rank R N = Module.rank R M
+  exists_set_linearIndependent
+    : ∀ (M : Type u) [AddCommGroup M] [Module R M], ∃ s : Set M,
+      #s = Module.rank R M ∧ LinearIndepOn R id s
+  rank_quotient_add_rank
+    : ∀ {M : Type u} [AddCommGroup M] [Module R M] (N : Submodule R M),
+      Module.rank R (M ⧸ N) + Module.rank R N = Module.rank R M
 
 variable [HasRankNullity.{u} R]
 
-lemma Submodule.rank_quotient_add_rank (N : Submodule R M) :
-    Module.rank R (M ⧸ N) + Module.rank R N = Module.rank R M :=
+lemma Submodule.rank_quotient_add_rank (N : Submodule R M)
+    : Module.rank R (M ⧸ N) + Module.rank R N = Module.rank R M :=
   HasRankNullity.rank_quotient_add_rank N
 
 variable (R M) in
-lemma exists_set_linearIndependent :
-    ∃ s : Set M, #s = Module.rank R M ∧ LinearIndependent (ι := s) R Subtype.val :=
+lemma exists_set_linearIndependent
+    : ∃ s : Set M, #s = Module.rank R M ∧ LinearIndependent (ι := s) R Subtype.val :=
   HasRankNullity.exists_set_linearIndependent M
 
 instance (priority := 100) : Nontrivial R := by
@@ -72,30 +74,30 @@ variable (R) in
 @[deprecated "use infer_instance instead" (since := "2026-10-08")]
 theorem nontrivial_of_hasRankNullity : Nontrivial R := inferInstance
 
-theorem LinearMap.lift_rank_range_add_rank_ker (f : M →ₗ[R] M') :
-    lift.{u} (Module.rank R (LinearMap.range f)) + lift.{v} (Module.rank R (LinearMap.ker f)) =
-      lift.{v} (Module.rank R M) := by
+theorem LinearMap.lift_rank_range_add_rank_ker (f : M →ₗ[R] M')
+    : lift.{u} (Module.rank R (LinearMap.range f)) + lift.{v} (Module.rank R (LinearMap.ker f))
+      = lift.{v} (Module.rank R M) := by
   have := fun p : Submodule R M => Classical.decEq (M ⧸ p)
   rw [← f.quotKerEquivRange.lift_rank_eq, ← lift_add, rank_quotient_add_rank]
 
 /-- The **rank-nullity theorem** -/
-theorem LinearMap.rank_range_add_rank_ker (f : M →ₗ[R] M₁) :
-    Module.rank R (LinearMap.range f) + Module.rank R (LinearMap.ker f) = Module.rank R M := by
+theorem LinearMap.rank_range_add_rank_ker (f : M →ₗ[R] M₁)
+    : Module.rank R (LinearMap.range f) + Module.rank R (LinearMap.ker f) = Module.rank R M := by
   have := fun p : Submodule R M => Classical.decEq (M ⧸ p)
   rw [← f.quotKerEquivRange.rank_eq, rank_quotient_add_rank]
 
-theorem LinearMap.lift_rank_eq_of_surjective {f : M →ₗ[R] M'} (h : Surjective f) :
-    lift.{v} (Module.rank R M) =
-      lift.{u} (Module.rank R M') + lift.{v} (Module.rank R (LinearMap.ker f)) := by
+theorem LinearMap.lift_rank_eq_of_surjective {f : M →ₗ[R] M'} (h : Surjective f)
+    : lift.{v} (Module.rank R M)
+      = lift.{u} (Module.rank R M') + lift.{v} (Module.rank R (LinearMap.ker f)) := by
   rw [← lift_rank_range_add_rank_ker f, ← rank_range_of_surjective f h]
 
-theorem LinearMap.rank_eq_of_surjective {f : M →ₗ[R] M₁} (h : Surjective f) :
-    Module.rank R M = Module.rank R M₁ + Module.rank R (LinearMap.ker f) := by
+theorem LinearMap.rank_eq_of_surjective {f : M →ₗ[R] M₁} (h : Surjective f)
+    : Module.rank R M = Module.rank R M₁ + Module.rank R (LinearMap.ker f) := by
   rw [← rank_range_add_rank_ker f, ← rank_range_of_surjective f h]
 
-theorem LinearMap.lift_rank_comap_le {f : M →ₗ[R] M'} (p : Submodule R M') :
-    lift.{v} (Module.rank R (comap f p)) ≤
-      lift.{u} (Module.rank R p) + lift.{v} (Module.rank R f.ker) := by
+theorem LinearMap.lift_rank_comap_le {f : M →ₗ[R] M'} (p : Submodule R M')
+    : lift.{v} (Module.rank R (comap f p))
+      ≤ lift.{u} (Module.rank R p) + lift.{v} (Module.rank R f.ker) := by
   let f' : comap f p →ₗ[R] p := f.restrict (by aesop)
   have hk : Module.rank R f'.ker ≤ Module.rank R f.ker := by
     rw [← rank_map_eq (injective_subtype (comap f p))]
@@ -105,15 +107,15 @@ theorem LinearMap.lift_rank_comap_le {f : M →ₗ[R] M'} (p : Submodule R M') :
   gcongr <;> rwa [lift_le]
 
 omit [HasRankNullity.{u} R] in
-lemma LinearMap.rank_quot_submodule_map_eq [HasRankNullity.{v} R]
-    {f : M →ₗ[R] M'} (p : Submodule R M) :
-    Module.rank R (M' ⧸ map f p) =
-      Module.rank R (M' ⧸ f.range) + Module.rank R (f.range ⧸ map f.rangeRestrict p) := by
+lemma LinearMap.rank_quot_submodule_map_eq
+    [HasRankNullity.{v} R] {f : M →ₗ[R] M'} (p : Submodule R M)
+    : Module.rank R (M' ⧸ map f p)
+      = Module.rank R (M' ⧸ f.range) + Module.rank R (f.range ⧸ map f.rangeRestrict p) := by
   let f' : M' ⧸ map f p →ₗ[R] M' ⧸ f.range := factor map_le_range
   let +nondep e : (f.range ⧸ map f.rangeRestrict p) ≃ₗ[R] f'.ker := by
     let g : f.range →ₗ[R] f'.ker :=
-      (LinearEquiv.ofEq (map (map f p).mkQ f.range) f'.ker) (by rw [ker_mapQ]; rfl) ∘ₗ
-        (map f p).mkQ.submoduleMap f.range
+      (LinearEquiv.ofEq (map (map f p).mkQ f.range) f'.ker) (by rw [ker_mapQ]; rfl)
+        ∘ₗ (map f p).mkQ.submoduleMap f.range
     have g_surj : Surjective g := by simpa [g] using submoduleMap_surjective (map f p).mkQ f.range
     have g_ker : g.ker = map f.rangeRestrict p := by
       simp [g, submoduleMap, ker_restrict, map_codRestrict]
@@ -123,18 +125,18 @@ lemma LinearMap.rank_quot_submodule_map_eq [HasRankNullity.{v} R]
   rwa [← e.rank_eq] at this
 
 omit [HasRankNullity.{u} R] in
-theorem LinearMap.lift_rank_quot_map_le [HasRankNullity.{v} R]
-    {f : M →ₗ[R] M'} (p : Submodule R M) :
-    lift.{u} (Module.rank R (M' ⧸ map f p)) ≤
-      lift.{u} (Module.rank R (M' ⧸ f.range)) + lift.{v} (Module.rank R (M ⧸ p)) := by
-  rw [rank_quot_submodule_map_eq, lift_add]; gcongr
+theorem LinearMap.lift_rank_quot_map_le [HasRankNullity.{v} R] {f : M →ₗ[R] M'} (p : Submodule R M)
+    : lift.{u} (Module.rank R (M' ⧸ map f p))
+      ≤ lift.{u} (Module.rank R (M' ⧸ f.range)) + lift.{v} (Module.rank R (M ⧸ p)) := by
+  rw [rank_quot_submodule_map_eq, lift_add]
+  gcongr
   let f' : M ⧸ p →ₗ[R] f.range ⧸ map f.rangeRestrict p :=
     mapQ p (map f.rangeRestrict p) f.rangeRestrict <| by rw [comap_map_eq]; exact le_sup_left
   exact lift_rank_le_of_surjective f' <| by rw [← range_eq_top, range_mapQ]; simp
 
-theorem exists_linearIndepOn_of_lt_rank [StrongRankCondition R]
-    {s : Set M} (hs : LinearIndepOn R id s) :
-    ∃ t, s ⊆ t ∧ #t = Module.rank R M ∧ LinearIndepOn R id t := by
+theorem exists_linearIndepOn_of_lt_rank
+    [StrongRankCondition R] {s : Set M} (hs : LinearIndepOn R id s)
+    : ∃ t, s ⊆ t ∧ #t = Module.rank R M ∧ LinearIndepOn R id t := by
   obtain ⟨t, ht, ht'⟩ := exists_set_linearIndependent R (M ⧸ Submodule.span R s)
   choose sec hsec using Submodule.mkQ_surjective (Submodule.span R s)
   have hsec' : (Submodule.mkQ _) ∘ sec = _root_.id := funext hsec
@@ -149,44 +151,58 @@ theorem exists_linearIndepOn_of_lt_rank [StrongRankCondition R]
       ← rank_quotient_add_rank (Submodule.span R s), add_comm, rank_span_set hs]
     exact HasLeftInverse.injective ⟨Submodule.Quotient.mk, hsec⟩
   · apply LinearIndepOn.union_id_of_quotient Submodule.subset_span hs
-    rwa [linearIndepOn_iff_image (hsec'.symm ▸ injective_id).injOn.image_of_comp,
-      ← image_comp, hsec', image_id]
+    rwa [linearIndepOn_iff_image (hsec'.symm ▸ injective_id).injOn.image_of_comp, ← image_comp,
+      hsec', image_id]
 
-/-- Given a family of `n` linearly independent vectors in a space of dimension `> n`, one may extend
-the family by another vector while retaining linear independence. -/
-theorem exists_linearIndependent_cons_of_lt_rank [StrongRankCondition R] {n : ℕ} {v : Fin n → M}
-    (hv : LinearIndependent R v) (h : n < Module.rank R M) :
-    ∃ (x : M), LinearIndependent R (Fin.cons x v) := by
+/--
+Given a family of `n` linearly independent vectors in a space of dimension `> n`, one may extend
+the family by another vector while retaining linear independence.
+-/
+theorem exists_linearIndependent_cons_of_lt_rank
+    [StrongRankCondition R]
+    {n : ℕ} {v : Fin n → M} (hv : LinearIndependent R v) (h : n < Module.rank R M)
+    : ∃ (x : M), LinearIndependent R (Fin.cons x v) := by
   obtain ⟨t, h₁, h₂, h₃⟩ := exists_linearIndepOn_of_lt_rank hv.linearIndepOn_id
   have : range v ≠ t := by
     refine fun e ↦ h.ne ?_
     rw [← e, ← lift_injective.eq_iff, mk_range_eq_of_injective hv.injective] at h₂
     simpa only [mk_fintype, Fintype.card_fin, lift_natCast, lift_id'] using h₂
   obtain ⟨x, hx, hx'⟩ := nonempty_of_ssubset (h₁.ssubset_of_ne this)
-  exact ⟨x, (linearIndepOn_id_range_iff (Fin.cons_injective_iff.mpr ⟨hx', hv.injective⟩)).mp
-    (h₃.mono (Fin.range_cons x v ▸ insert_subset hx h₁))⟩
+  exact ⟨
+    x,
+    (linearIndepOn_id_range_iff (Fin.cons_injective_iff.mpr ⟨hx', hv.injective⟩)).mp
+      (h₃.mono (Fin.range_cons x v ▸ insert_subset hx h₁))
+  ⟩
 
-/-- Given a family of `n` linearly independent vectors in a space of dimension `> n`, one may extend
-the family by another vector while retaining linear independence. -/
-theorem exists_linearIndependent_snoc_of_lt_rank [StrongRankCondition R] {n : ℕ} {v : Fin n → M}
-    (hv : LinearIndependent R v) (h : n < Module.rank R M) :
-    ∃ (x : M), LinearIndependent R (Fin.snoc v x) := by
+/--
+Given a family of `n` linearly independent vectors in a space of dimension `> n`, one may extend
+the family by another vector while retaining linear independence.
+-/
+theorem exists_linearIndependent_snoc_of_lt_rank
+    [StrongRankCondition R]
+    {n : ℕ} {v : Fin n → M} (hv : LinearIndependent R v) (h : n < Module.rank R M)
+    : ∃ (x : M), LinearIndependent R (Fin.snoc v x) := by
   simp only [Fin.snoc_eq_cons_rotate]
   have ⟨x, hx⟩ := exists_linearIndependent_cons_of_lt_rank hv h
   exact ⟨x, hx.comp _ (finRotate _).injective⟩
 
-/-- Given a nonzero vector in a space of dimension `> 1`, one may find another vector linearly
-independent of the first one. -/
-theorem exists_linearIndependent_pair_of_one_lt_rank [IsDomain R] [StrongRankCondition R]
-    [IsTorsionFree R M] (h : 1 < Module.rank R M) {x : M} (hx : x ≠ 0) :
-    ∃ y, LinearIndependent R ![x, y] := by
+/--
+Given a nonzero vector in a space of dimension `> 1`, one may find another vector linearly
+independent of the first one.
+-/
+theorem exists_linearIndependent_pair_of_one_lt_rank
+    [IsDomain R] [StrongRankCondition R] [IsTorsionFree R M]
+    (h : 1 < Module.rank R M)
+    {x : M} (hx : x ≠ 0)
+    : ∃ y, LinearIndependent R ![x, y] := by
   obtain ⟨y, hy⟩ := exists_linearIndependent_snoc_of_lt_rank (.of_subsingleton (v := ![x]) 0 hx) h
-  have : Fin.snoc ![x] y = ![x, y] := by simp
+  have : Fin.snoc (![x]) y = ![x, y] := by simp
   rw [this] at hy
   exact ⟨y, hy⟩
 
-theorem Submodule.exists_smul_notMem_of_rank_lt {N : Submodule R M}
-    (h : Module.rank R N < Module.rank R M) : ∃ m : M, ∀ r : R, r ≠ 0 → r • m ∉ N := by
+theorem Submodule.exists_smul_notMem_of_rank_lt
+    {N : Submodule R M} (h : Module.rank R N < Module.rank R M)
+    : ∃ m : M, ∀ r : R, r ≠ 0 → r • m ∉ N := by
   have : Module.rank R (M ⧸ N) ≠ 0 := by
     intro e
     rw [← rank_quotient_add_rank N, e, zero_add] at h
@@ -198,19 +214,19 @@ theorem Submodule.exists_smul_notMem_of_rank_lt {N : Submodule R M}
 
 open Cardinal Submodule Function LinearMap
 
-theorem Submodule.rank_sup_add_rank_inf_eq (s t : Submodule R M) :
-    Module.rank R (s ⊔ t : Submodule R M) + Module.rank R (s ⊓ t : Submodule R M) =
-    Module.rank R s + Module.rank R t := by
+theorem Submodule.rank_sup_add_rank_inf_eq (s t : Submodule R M)
+    : Module.rank R (s ⊔ t : Submodule R M) + Module.rank R (s ⊓ t : Submodule R M)
+      = Module.rank R s + Module.rank R t := by
   conv_rhs => enter [2]; rw [show t = (s ⊔ t) ⊓ t by simp]
   rw [← rank_quotient_add_rank ((s ⊓ t).comap s.subtype),
-    ← rank_quotient_add_rank (t.comap (s ⊔ t).subtype),
-    comap_inf, (quotientInfEquivSupQuotient s t).rank_eq, ← comap_inf,
+    ← rank_quotient_add_rank (t.comap (s ⊔ t).subtype), comap_inf,
+    (quotientInfEquivSupQuotient s t).rank_eq, ← comap_inf,
     (equivSubtypeMap s (comap _ (s ⊓ t))).rank_eq, Submodule.map_comap_subtype,
-    (equivSubtypeMap (s ⊔ t) (comap _ t)).rank_eq, Submodule.map_comap_subtype,
-    ← inf_assoc, inf_idem, add_right_comm]
+    (equivSubtypeMap (s ⊔ t) (comap _ t)).rank_eq, Submodule.map_comap_subtype, ← inf_assoc,
+    inf_idem, add_right_comm]
 
-theorem Submodule.rank_add_le_rank_add_rank (s t : Submodule R M) :
-    Module.rank R (s ⊔ t : Submodule R M) ≤ Module.rank R s + Module.rank R t := by
+theorem Submodule.rank_add_le_rank_add_rank (s t : Submodule R M)
+    : Module.rank R (s ⊔ t : Submodule R M) ≤ Module.rank R s + Module.rank R t := by
   rw [← Submodule.rank_sup_add_rank_inf_eq]
   exact self_le_add_right _ _
 
@@ -220,44 +236,55 @@ open Submodule Module
 
 variable [StrongRankCondition R]
 
-/-- Given a family of `n` linearly independent vectors in a finite-dimensional space of
-dimension `> n`, one may extend the family by another vector while retaining linear independence. -/
-theorem exists_linearIndependent_snoc_of_lt_finrank {n : ℕ} {v : Fin n → M}
-    (hv : LinearIndependent R v) (h : n < finrank R M) :
-    ∃ (x : M), LinearIndependent R (Fin.snoc v x) :=
+/--
+Given a family of `n` linearly independent vectors in a finite-dimensional space of
+dimension `> n`, one may extend the family by another vector while retaining linear independence.
+-/
+theorem exists_linearIndependent_snoc_of_lt_finrank
+    {n : ℕ} {v : Fin n → M} (hv : LinearIndependent R v) (h : n < finrank R M)
+    : ∃ (x : M), LinearIndependent R (Fin.snoc v x) :=
   exists_linearIndependent_snoc_of_lt_rank hv (lt_rank_of_lt_finrank h)
 
-/-- Given a family of `n` linearly independent vectors in a finite-dimensional space of
-dimension `> n`, one may extend the family by another vector while retaining linear independence. -/
-theorem exists_linearIndependent_cons_of_lt_finrank {n : ℕ} {v : Fin n → M}
-    (hv : LinearIndependent R v) (h : n < finrank R M) :
-    ∃ (x : M), LinearIndependent R (Fin.cons x v) :=
+/--
+Given a family of `n` linearly independent vectors in a finite-dimensional space of
+dimension `> n`, one may extend the family by another vector while retaining linear independence.
+-/
+theorem exists_linearIndependent_cons_of_lt_finrank
+    {n : ℕ} {v : Fin n → M} (hv : LinearIndependent R v) (h : n < finrank R M)
+    : ∃ (x : M), LinearIndependent R (Fin.cons x v) :=
   exists_linearIndependent_cons_of_lt_rank hv (lt_rank_of_lt_finrank h)
 
-/-- Given a nonzero vector in a finite-dimensional space of dimension `> 1`, one may find another
-vector linearly independent of the first one. -/
-theorem exists_linearIndependent_pair_of_one_lt_finrank [IsDomain R] [Module.IsTorsionFree R M]
-    (h : 1 < finrank R M) {x : M} (hx : x ≠ 0) :
-    ∃ y, LinearIndependent R ![x, y] :=
+/--
+Given a nonzero vector in a finite-dimensional space of dimension `> 1`, one may find another
+vector linearly independent of the first one.
+-/
+theorem exists_linearIndependent_pair_of_one_lt_finrank
+    [IsDomain R] [Module.IsTorsionFree R M] (h : 1 < finrank R M) {x : M} (hx : x ≠ 0)
+    : ∃ y, LinearIndependent R ![x, y] :=
   exists_linearIndependent_pair_of_one_lt_rank (one_lt_rank_of_one_lt_finrank h) hx
 
 /-- Rank-nullity theorem using `finrank`. -/
-lemma Submodule.finrank_quotient_add_finrank [Module.Finite R M] (N : Submodule R M) :
-    finrank R (M ⧸ N) + finrank R N = finrank R M := by
+lemma Submodule.finrank_quotient_add_finrank [Module.Finite R M] (N : Submodule R M)
+    : finrank R (M ⧸ N) + finrank R N = finrank R M := by
   rw [← Nat.cast_inj (R := Cardinal), Module.finrank_eq_rank, Nat.cast_add, Module.finrank_eq_rank,
     Submodule.finrank_eq_rank]
   exact HasRankNullity.rank_quotient_add_rank _
 
 /-- Rank-nullity theorem using `finrank` and subtraction. -/
-lemma Submodule.finrank_quotient [Module.Finite R M] {S : Type*} [Ring S] [SMul R S] [Module S M]
-    [IsScalarTower R S M] (N : Submodule S M) : finrank R (M ⧸ N) = finrank R M - finrank R N := by
+lemma Submodule.finrank_quotient
+    [Module.Finite R M]
+    {S : Type*} [Ring S] [SMul R S] [Module S M] [IsScalarTower R S M]
+    (N : Submodule S M)
+    : finrank R (M ⧸ N) = finrank R M - finrank R N := by
   rw [← (N.restrictScalars R).finrank_quotient_add_finrank]
   exact Nat.eq_sub_of_add_eq rfl
 
-lemma Submodule.disjoint_ker_of_finrank_le [IsDomain R] [IsTorsionFree R M] {N : Type*}
-    [AddCommGroup N] [Module R N] {L : Submodule R M} [Module.Finite R L] (f : M →ₗ[R] N)
-    (h : finrank R L ≤ finrank R (L.map f)) :
-    Disjoint L (LinearMap.ker f) := by
+lemma Submodule.disjoint_ker_of_finrank_le
+    [IsDomain R] [IsTorsionFree R M]
+    {N : Type*} [AddCommGroup N] [Module R N]
+    {L : Submodule R M} [Module.Finite R L]
+    (f : M →ₗ[R] N) (h : finrank R L ≤ finrank R (L.map f))
+    : Disjoint L (LinearMap.ker f) := by
   refine LinearMap.injective_domRestrict_iff.mp <| LinearMap.ker_eq_bot.mp <|
     Submodule.rank_eq_zero.mp ?_
   rw [← Submodule.finrank_eq_rank, Nat.cast_eq_zero]
@@ -274,16 +301,17 @@ open Submodule Module
 
 variable [StrongRankCondition R] [Module.Finite R M]
 
-lemma Submodule.exists_of_finrank_lt (N : Submodule R M) (h : finrank R N < finrank R M) :
-    ∃ m : M, ∀ r : R, r ≠ 0 → r • m ∉ N := by
-  obtain ⟨s, hs, hs'⟩ :=
-    exists_finset_linearIndependent_of_le_finrank (R := R) (M := M ⧸ N) le_rfl
-  obtain ⟨v, hv⟩ : s.Nonempty := by rwa [Finset.nonempty_iff_ne_empty, ne_eq, ← Finset.card_eq_zero,
-    hs, finrank_quotient, tsub_eq_zero_iff_le, not_le]
+lemma Submodule.exists_of_finrank_lt (N : Submodule R M) (h : finrank R N < finrank R M)
+    : ∃ m : M, ∀ r : R, r ≠ 0 → r • m ∉ N := by
+  obtain ⟨s, hs, hs'⟩ := exists_finset_linearIndependent_of_le_finrank (R := R) (M := M ⧸ N) le_rfl
+  obtain ⟨v, hv⟩ : s.Nonempty := by
+    rwa [Finset.nonempty_iff_ne_empty, ne_eq, ← Finset.card_eq_zero, hs, finrank_quotient,
+      tsub_eq_zero_iff_le, not_le]
   obtain ⟨v, rfl⟩ := N.mkQ_surjective v
   refine ⟨v, fun r hr ↦ mt ?_ hr⟩
   have := linearIndependent_iff.mp hs' (Finsupp.single ⟨_, hv⟩ r)
-  rwa [Finsupp.linearCombination_single, Finsupp.single_eq_zero, ← map_smul,
-    Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at this
+  rwa [Finsupp.linearCombination_single, Finsupp.single_eq_zero, ← map_smul, Submodule.mkQ_apply,
+      Submodule.Quotient.mk_eq_zero]
+    at this
 
 end

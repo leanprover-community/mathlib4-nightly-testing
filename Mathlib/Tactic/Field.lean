@@ -8,7 +8,6 @@ module
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Ring.Basic
 
-
 /-! # A tactic for proving algebraic goals in a field
 
 This file contains the `field` tactic, a finishing tactic which roughly consists of running
@@ -61,32 +60,31 @@ example {a b : ℚ} (H : b + a ≠ 0) : a / (a + b) + b / (b + a) = 1 := by
   ring_nf at *
   field
 ```
-
 -/
 elab (name := field) "field" d:(ppSpace discharger)? args:(ppSpace simpArgs)? : tactic =>
-    withMainContext do
-  let disch ← parseDischarger d args
-  let s0 ← saveState
-  -- run `field_simp` (only at the top level, not recursively)
-  liftMetaTactic1 (transformAtTarget ((AtomM.run .reducible ∘ reduceProp disch) ·) "field"
-    (ifUnchanged := .silent) · default)
-  let s1 ← saveState
-  try
-    -- run `ring1`
-    liftMetaFinishingTactic fun g ↦ AtomM.run .reducible <| Ring.proveEq g
-  catch e =>
+  withMainContext do
+    let disch ← parseDischarger d args
+    let s0 ← saveState
+    -- run `field_simp` (only at the top level, not recursively)
+    liftMetaTactic1 (transformAtTarget ((AtomM.run .reducible ∘ reduceProp disch) ·) "field"
+      (ifUnchanged := .silent) · default)
+    let s1 ← saveState
     try
-      -- If `field` doesn't solve the goal, we first backtrack to the situation at the time of the
-      -- `field_simp` call, and suggest `field_simp` if `field_simp` does anything useful.
-      s0.restore
-      let tacticStx ← `(tactic| field_simp $(d)? $(args)?)
-      evalTactic tacticStx
-      Meta.Tactic.TryThis.addSuggestion (← getRef) tacticStx
-    catch _ =>
-      -- If `field_simp` also doesn't do anything useful (maybe there are no denominators in the
-      -- goal), then we backtrack to where the `ring1` call failed, and report that error message.
-      s1.restore
-      throw e
+      -- run `ring1`
+      liftMetaFinishingTactic fun g ↦ AtomM.run .reducible <| Ring.proveEq g
+    catch e =>
+      try
+        -- If `field` doesn't solve the goal, we first backtrack to the situation at the time of the
+        -- `field_simp` call, and suggest `field_simp` if `field_simp` does anything useful.
+        s0.restore
+        let tacticStx ← `(tactic| field_simp $(d)? $(args)?)
+        evalTactic tacticStx
+        Meta.Tactic.TryThis.addSuggestion (← getRef) tacticStx
+      catch _ =>
+        -- If `field_simp` also doesn't do anything useful (maybe there are no denominators in the
+        -- goal), then we backtrack to where the `ring1` call failed, and report that error message.
+        s1.restore
+        throw e
 
 end Mathlib.Tactic.FieldSimp
 

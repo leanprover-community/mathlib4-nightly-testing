@@ -6,7 +6,6 @@ Authors: Johannes Hölzl
 module
 
 public import Mathlib.LinearAlgebra.Dimension.RankNullity
-
 import Mathlib.Algebra.Module.Projective
 import Mathlib.LinearAlgebra.Basis.VectorSpace
 import Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition
@@ -19,7 +18,6 @@ import Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition
 -/
 
 public section
-
 
 noncomputable section
 
@@ -37,14 +35,11 @@ variable [Semiring K] [AddCommMonoid V] [Module K V] [AddCommMonoid V₁] [Modul
 variable [AddCommMonoid V'] [Module K V']
 
 /-- `rank f` is the rank of a `LinearMap` `f`, defined as the dimension of `f.range`. -/
-abbrev rank (f : V →ₗ[K] V') : Cardinal :=
-  Module.rank K (LinearMap.range f)
+abbrev rank (f : V →ₗ[K] V') : Cardinal := Module.rank K (LinearMap.range f)
 
-theorem rank_le_range (f : V →ₗ[K] V') : rank f ≤ Module.rank K V' :=
-  Submodule.rank_le _
+theorem rank_le_range (f : V →ₗ[K] V') : rank f ≤ Module.rank K V' := Submodule.rank_le _
 
-theorem rank_le_domain (f : V →ₗ[K] V₁) : rank f ≤ Module.rank K V :=
-  rank_range_le _
+theorem rank_le_domain (f : V →ₗ[K] V₁) : rank f ≤ Module.rank K V := rank_range_le _
 
 @[simp]
 theorem rank_zero [Nontrivial K] : rank (0 : V →ₗ[K] V') = 0 := by
@@ -57,14 +52,14 @@ theorem rank_comp_le_left (g : V →ₗ[K] V') (f : V' →ₗ[K] V'') : rank (f.
   rw [LinearMap.range_comp]
   exact LinearMap.map_le_range
 
-theorem lift_rank_comp_le_right (g : V →ₗ[K] V') (f : V' →ₗ[K] V'') :
-    Cardinal.lift.{v'} (rank (f.comp g)) ≤ Cardinal.lift.{v''} (rank g) := by
+theorem lift_rank_comp_le_right (g : V →ₗ[K] V') (f : V' →ₗ[K] V'')
+    : Cardinal.lift.{v'} (rank (f.comp g)) ≤ Cardinal.lift.{v''} (rank g) := by
   rw [rank, rank, LinearMap.range_comp]; exact lift_rank_map_le _ _
 
 /-- The rank of the composition of two maps is less than the minimum of their ranks. -/
-theorem lift_rank_comp_le (g : V →ₗ[K] V') (f : V' →ₗ[K] V'') :
-    Cardinal.lift.{v'} (rank (f.comp g)) ≤
-      min (Cardinal.lift.{v'} (rank f)) (Cardinal.lift.{v''} (rank g)) :=
+theorem lift_rank_comp_le (g : V →ₗ[K] V') (f : V' →ₗ[K] V'')
+    : Cardinal.lift.{v'} (rank (f.comp g))
+      ≤ min (Cardinal.lift.{v'} (rank f)) (Cardinal.lift.{v''} (rank g)) :=
   le_min (Cardinal.lift_le.mpr <| rank_comp_le_left _ _) (lift_rank_comp_le_right _ _)
 
 variable [AddCommGroup V'₁] [Module K V'₁]
@@ -72,19 +67,22 @@ variable [AddCommGroup V'₁] [Module K V'₁]
 theorem rank_comp_le_right (g : V →ₗ[K] V') (f : V' →ₗ[K] V'₁) : rank (f.comp g) ≤ rank g := by
   simpa only [Cardinal.lift_id] using lift_rank_comp_le_right g f
 
-/-- The rank of the composition of two maps is less than the minimum of their ranks.
+/--
+The rank of the composition of two maps is less than the minimum of their ranks.
 
-See `lift_rank_comp_le` for the universe-polymorphic version. -/
-theorem rank_comp_le (g : V →ₗ[K] V') (f : V' →ₗ[K] V'₁) :
-    rank (f.comp g) ≤ min (rank f) (rank g) := by
+See `lift_rank_comp_le` for the universe-polymorphic version.
+-/
+theorem rank_comp_le (g : V →ₗ[K] V') (f : V' →ₗ[K] V'₁)
+    : rank (f.comp g) ≤ min (rank f) (rank g) := by
   simpa only [Cardinal.lift_id] using lift_rank_comp_le g f
 
 end Semiring
 
 section HasRankNullity
 
-variable [Ring K] [HasRankNullity.{v'} K] [AddCommGroup V] [Module K V] [AddCommGroup V₁]
-  [Module K V₁] [AddCommGroup V'] [Module K V']
+variable
+  [Ring K] [HasRankNullity.{v'} K] [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K V₁]
+  [AddCommGroup V'] [Module K V']
 
 theorem rank_add_le (f g : V →ₗ[K] V') : rank (f + g) ≤ rank f + rank g :=
   calc
@@ -92,13 +90,17 @@ theorem rank_add_le (f g : V →ₗ[K] V') : rank (f + g) ≤ rank f + rank g :=
       refine Submodule.rank_mono ?_
       exact LinearMap.range_le_iff_comap.2 <| eq_top_iff'.2 fun x =>
         show f x + g x ∈ (LinearMap.range f ⊔ LinearMap.range g : Submodule K V') from
-        mem_sup.2 ⟨_, ⟨x, rfl⟩, _, ⟨x, rfl⟩, rfl⟩
+          mem_sup.2 ⟨_, ⟨x, rfl⟩, _, ⟨x, rfl⟩, rfl⟩
     _ ≤ rank f + rank g := Submodule.rank_add_le_rank_add_rank _ _
 
-theorem rank_finsetSum_le {η} (s : Finset η) (f : η → V →ₗ[K] V') :
-    rank (∑ d ∈ s, f d) ≤ ∑ d ∈ s, rank (f d) :=
-  @Finset.sum_hom_rel _ _ _ _ _ (fun a b => rank a ≤ b) f (fun d => rank (f d)) s
-    (le_of_eq rank_zero) fun _ _ _ h => le_trans (rank_add_le _ _) (by gcongr)
+theorem rank_finsetSum_le {η} (s : Finset η) (f : η → V →ₗ[K] V')
+    : rank (∑ d ∈ s, f d) ≤ ∑ d ∈ s, rank (f d) :=
+  @Finset.sum_hom_rel _ _ _ _ _
+    (fun a b => rank a ≤ b)
+    f
+    (fun d => rank (f d))
+    s (le_of_eq rank_zero)
+    fun _ _ _ h => le_trans (rank_add_le _ _) (by gcongr)
 
 @[deprecated (since := "2026-04-08")] alias rank_finset_sum_le := rank_finsetSum_le
 
@@ -109,9 +111,9 @@ section DivisionRing
 variable [DivisionRing K] [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K V₁]
 variable [AddCommGroup V'] [Module K V']
 
-theorem le_rank_iff_exists_linearIndependent {c : Cardinal} {f : V →ₗ[K] V'} :
-    c ≤ rank f ↔ ∃ s : Set V,
-    Cardinal.lift.{v'} #s = Cardinal.lift.{v} c ∧ LinearIndepOn K f s := by
+theorem le_rank_iff_exists_linearIndependent {c : Cardinal} {f : V →ₗ[K] V'}
+    : c ≤ rank f
+      ↔ ∃ s : Set V, Cardinal.lift.{v'} #s = Cardinal.lift.{v} c ∧ LinearIndepOn K f s := by
   rcases f.rangeRestrict.exists_rightInverse_of_surjective f.range_rangeRestrict with ⟨g, hg⟩
   have fg : LeftInverse f.rangeRestrict g := LinearMap.congr_fun hg
   refine ⟨fun h => ?_, ?_⟩
@@ -130,8 +132,9 @@ theorem le_rank_iff_exists_linearIndependent {c : Cardinal} {f : V →ₗ[K] V'}
     rw [← Cardinal.lift_inj, ← hsc, Cardinal.mk_image_eq_of_injOn_lift]
     exact injOn_iff_injective.2 this.injective
 
-theorem le_rank_iff_exists_linearIndependent_finset {n : ℕ} {f : V →ₗ[K] V'} :
-    ↑n ≤ rank f ↔ ∃ s : Finset V, s.card = n ∧ LinearIndependent K fun x : (s : Set V) => f x := by
+theorem le_rank_iff_exists_linearIndependent_finset {n : ℕ} {f : V →ₗ[K] V'}
+    : ↑n ≤ rank f
+      ↔ ∃ s : Finset V, s.card = n ∧ LinearIndependent K fun x : (s : Set V) => f x := by
   simp only [le_rank_iff_exists_linearIndependent, Cardinal.lift_natCast, Cardinal.lift_eq_nat_iff,
     Cardinal.mk_set_eq_nat_iff_finset]
   constructor

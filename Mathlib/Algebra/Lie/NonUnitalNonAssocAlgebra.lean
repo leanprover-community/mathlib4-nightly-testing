@@ -36,15 +36,16 @@ lie algebra, non-unital, non-associative
 
 @[expose] public section
 
-
 universe u v w
 
 variable (R : Type u) (L : Type v) [CommRing R] [LieRing L] [LieAlgebra R L]
 
-/-- Type synonym for turning a `LieRing` into a `NonUnitalNonAssocRing`.
+/--
+Type synonym for turning a `LieRing` into a `NonUnitalNonAssocRing`.
 
 A `LieRing` can be regarded as a `NonUnitalNonAssocRing` by turning its
-`Bracket` (denoted `⁅, ⁆`) into a `Mul` (denoted `*`). -/
+`Bracket` (denoted `⁅, ⁆`) into a `Mul` (denoted `*`).
+-/
 def CommutatorRing (L : Type v) : Type v := L
 
 instance : NonUnitalNonAssocRing (CommutatorRing L) :=
@@ -61,13 +62,17 @@ instance : LieRing (CommutatorRing L) := inferInstanceAs <| LieRing L
 
 instance : LieAlgebra R (CommutatorRing L) := inferInstanceAs <| LieAlgebra R L
 
-/-- Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
-reinterpret the `smul_lie` law as an `IsScalarTower`. -/
+/--
+Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
+reinterpret the `smul_lie` law as an `IsScalarTower`.
+-/
 instance isScalarTower : IsScalarTower R (CommutatorRing L) (CommutatorRing L) :=
   ⟨smul_lie (L := L) (M := L)⟩
 
-/-- Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
-reinterpret the `lie_smul` law as an `SMulCommClass`. -/
+/--
+Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
+reinterpret the `lie_smul` law as an `SMulCommClass`.
+-/
 instance smulCommClass : SMulCommClass R (CommutatorRing L) (CommutatorRing L) :=
   ⟨fun t x y => (lie_smul t x y).symm⟩
 
@@ -78,17 +83,20 @@ namespace LieHom
 variable {R L}
 variable {L₂ : Type w} [LieRing L₂] [LieAlgebra R L₂]
 
-/-- Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
-regard a `LieHom` as a `NonUnitalAlgHom`. -/
+/--
+Regarding the `LieRing` of a `LieAlgebra` as a `NonUnitalNonAssocRing`, we can
+regard a `LieHom` as a `NonUnitalAlgHom`.
+-/
 @[simps toFun]
-def toNonUnitalAlgHom (f : L →ₗ⁅R⁆ L₂) : CommutatorRing L →ₙₐ[R] CommutatorRing L₂ :=
-  { f with
-    toFun := f
-    map_zero' := f.toLinearMap.map_zero
-    map_mul' := f.map_lie }
+def toNonUnitalAlgHom (f : L →ₗ⁅R⁆ L₂) : CommutatorRing L →ₙₐ[R] CommutatorRing L₂ := {
+  f with
+  toFun := f
+  map_zero' := f.toLinearMap.map_zero
+  map_mul' := f.map_lie
+}
 
-theorem toNonUnitalAlgHom_injective :
-    Function.Injective (toNonUnitalAlgHom : _ → CommutatorRing L →ₙₐ[R] CommutatorRing L₂) :=
+theorem toNonUnitalAlgHom_injective
+    : Function.Injective (toNonUnitalAlgHom : _ → CommutatorRing L →ₙₐ[R] CommutatorRing L₂) :=
   fun _ _ h => ext <| NonUnitalAlgHom.congr_fun h
 
 end LieHom

@@ -71,14 +71,18 @@ open Set
 class TopologicalSpace (X : Type u) where
   /-- A predicate saying that a set is an open set. Use `IsOpen` in the root namespace instead. -/
   protected IsOpen : Set X → Prop
-  /-- The set representing the whole space is an open set.
-  Use `isOpen_univ` in the root namespace instead. -/
+  /--
+  The set representing the whole space is an open set.
+  Use `isOpen_univ` in the root namespace instead.
+  -/
   protected isOpen_univ : IsOpen univ
   /-- The intersection of two open sets is an open set. Use `IsOpen.inter` instead. -/
   protected isOpen_inter : ∀ s t, IsOpen s → IsOpen t → IsOpen (s ∩ t)
-  /-- The union of a family of open sets is an open set.
-  Use `isOpen_sUnion` in the root namespace instead. -/
-  protected isOpen_sUnion : ∀ s, (∀ t ∈ s, IsOpen t) → IsOpen (⋃₀ s)
+  /--
+  The union of a family of open sets is an open set.
+  Use `isOpen_sUnion` in the root namespace instead.
+  -/
+  protected isOpen_sUnion : ∀ s, (∀ t ∈ s, IsOpen t) → IsOpen (⋃₀s)
 
 variable {X : Type u} {Y : Type v}
 
@@ -97,7 +101,7 @@ def IsOpen : Set X → Prop := TopologicalSpace.IsOpen
 theorem IsOpen.inter (hs : IsOpen s) (ht : IsOpen t) : IsOpen (s ∩ t) :=
   TopologicalSpace.isOpen_inter s t hs ht
 
-theorem isOpen_sUnion {s : Set (Set X)} (h : ∀ t ∈ s, IsOpen t) : IsOpen (⋃₀ s) :=
+theorem isOpen_sUnion {s : Set (Set X)} (h : ∀ t ∈ s, IsOpen t) : IsOpen (⋃₀s) :=
   TopologicalSpace.isOpen_sUnion s h
 
 /-- A set is closed if its complement is open -/
@@ -108,8 +112,7 @@ class IsClosed (s : Set X) : Prop where
 
 /-- A set is clopen if it is both closed and open. -/
 @[wikidata Q320369]
-def IsClopen (s : Set X) : Prop :=
-  IsClosed s ∧ IsOpen s
+def IsClopen (s : Set X) : Prop := IsClosed s ∧ IsOpen s
 
 /--
 A set is locally closed if it is the intersection of some open set and some closed set.
@@ -119,18 +122,15 @@ def IsLocallyClosed (s : Set X) : Prop := ∃ (U Z : Set X), IsOpen U ∧ IsClos
 
 /-- The interior of a set `s` is the largest open subset of `s`. -/
 @[wikidata Q862761]
-def interior (s : Set X) : Set X :=
-  ⋃₀ { t | IsOpen t ∧ t ⊆ s }
+def interior (s : Set X) : Set X := ⋃₀ { t | IsOpen t ∧ t ⊆ s }
 
 /-- The closure of `s` is the smallest closed set containing `s`. -/
 @[wikidata Q320346]
-def closure (s : Set X) : Set X :=
-  ⋂₀ { t | IsClosed t ∧ s ⊆ t }
+def closure (s : Set X) : Set X := ⋂₀ { t | IsClosed t ∧ s ⊆ t }
 
 /-- The frontier of a set is the set of points between the closure and interior. -/
 @[wikidata Q875399]
-def frontier (s : Set X) : Set X :=
-  closure s \ interior s
+def frontier (s : Set X) : Set X := closure s \ interior s
 
 /--
 The coborder is defined as the complement of `closure s \ s`,
@@ -141,36 +141,43 @@ This is the largest set in which `s` is closed, and `s` is locally closed if and
 This is unnamed in the literature, and this name is due to the fact that `coborder s = (border sᶜ)ᶜ`
 where `border s = s \ interior s` is the border in the sense of Hausdorff.
 -/
-def coborder (s : Set X) : Set X :=
-  (closure s \ s)ᶜ
+def coborder (s : Set X) : Set X := (closure s \ s)ᶜ
 
 /-- A set is dense in a topological space if every point belongs to its closure. -/
 @[wikidata Q673444]
-def Dense (s : Set X) : Prop :=
-  ∀ x, x ∈ closure s
+def Dense (s : Set X) : Prop := ∀ x, x ∈ closure s
 
 /-- `f : α → X` has dense range if its range (image) is a dense subset of `X`. -/
 def DenseRange {α : Type*} (f : α → X) := Dense (range f)
 
-/-- A function between topological spaces is continuous if the preimage
-  of every open set is open. Registered as a structure to make sure it is not unfolded by Lean. -/
+/--
+A function between topological spaces is continuous if the preimage
+of every open set is open. Registered as a structure to make sure it is not unfolded by Lean.
+-/
 @[fun_prop, wikidata Q170058]
 structure Continuous (f : X → Y) : Prop where
-  /-- The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage`
-  instead. -/
+  /--
+  The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage`
+  instead.
+  -/
   isOpen_preimage : ∀ s, IsOpen s → IsOpen (f ⁻¹' s)
 
-/-- A map `f : X → Y` is said to be an *open map*,
-if the image of any open `U : Set X` is open in `Y`. -/
+/--
+A map `f : X → Y` is said to be an *open map*,
+if the image of any open `U : Set X` is open in `Y`.
+-/
 @[wikidata Q56653513]
 def IsOpenMap (f : X → Y) : Prop := ∀ U : Set X, IsOpen U → IsOpen (f '' U)
 
-/-- A map `f : X → Y` is said to be a *closed map*,
-if the image of any closed `U : Set X` is closed in `Y`. -/
+/--
+A map `f : X → Y` is said to be a *closed map*,
+if the image of any closed `U : Set X` is closed in `Y`.
+-/
 @[wikidata Q3754530]
 def IsClosedMap (f : X → Y) : Prop := ∀ U : Set X, IsClosed U → IsClosed (f '' U)
 
-/-- An open quotient map is an open map `f : X → Y` which is both an open map and a quotient map.
+/--
+An open quotient map is an open map `f : X → Y` which is both an open map and a quotient map.
 Equivalently, it is a surjective continuous open map.
 We use the latter characterization as a definition.
 
@@ -211,13 +218,13 @@ scoped notation (name := IsClopen_of) "IsClopen[" t "]" => @IsClopen _ t
 scoped notation (name := closure_of) "closure[" t "]" => @closure _ t
 
 /-- Notation for `Continuous` with respect to non-standard topologies. -/
-scoped notation (name := Continuous_of) "Continuous[" t₁ ", " t₂ "]" =>
-  @Continuous _ _ t₁ t₂
+scoped notation (name := Continuous_of) "Continuous[" t₁ ", " t₂ "]" => @Continuous _ _ t₁ t₂
 
 open Lean.PrettyPrinter.Delaborator Delab.Noncanonical
 
 /-- Delaborator for `IsOpen[_]`. -/
-@[scoped app_delab IsOpen] meta def delabIsOpen : Delab := delabUnary 2 1 fun x ↦ `(IsOpen[$x])
+@[scoped app_delab IsOpen]
+meta def delabIsOpen : Delab := delabUnary 2 1 fun x ↦ `(IsOpen[$x])
 
 /-- Delaborator for `IsClosed[_]`. -/
 @[scoped app_delab IsClosed]
@@ -228,19 +235,21 @@ meta def delabIsClosed : Delab := delabUnary 2 1 fun x ↦ `(IsClosed[$x])
 meta def delabIsClopen : Delab := delabUnary 2 1 fun x ↦ `(IsClopen[$x])
 
 /-- Delaborator for `closure[_]`. -/
-@[scoped app_delab closure] meta def delabClosure : Delab := delabUnary 2 1 fun x ↦ `(closure[$x])
+@[scoped app_delab closure]
+meta def delabClosure : Delab := delabUnary 2 1 fun x ↦ `(closure[$x])
 
 /-- Delaborator for `Continuous[_, _]`. -/
 @[scoped app_delab Continuous]
-meta def delabContinuous : Delab :=
-  delabBinary 4 2 3 (fun x y ↦ `(Continuous[$x, $y]))
+meta def delabContinuous : Delab := delabBinary 4 2 3 (fun x y ↦ `(Continuous[$x, $y]))
 
 end Topology
 
-/-- The property `BaireSpace α` means that the topological space `α` has the Baire property:
+/--
+The property `BaireSpace α` means that the topological space `α` has the Baire property:
 any countable intersection of open dense subsets is dense.
 Formulated here when the source space is ℕ.
-Use `dense_iInter_of_isOpen` which works for any countable index type instead. -/
+Use `dense_iInter_of_isOpen` which works for any countable index type instead.
+-/
 @[mk_iff, wikidata Q1150180, pibase topology P000064]
 class BaireSpace (X : Type*) [TopologicalSpace X] : Prop where
   baire_property : ∀ f : ℕ → Set X, (∀ n, IsOpen (f n)) → (∀ n, Dense (f n)) → Dense (⋂ n, f n)
@@ -257,8 +266,10 @@ section Notation
 
 open Lean.PrettyPrinter.Delaborator
 
-/-- This prevents `toTopology t x` being printed as `{ ofTopology := x }`
-by `delabStructureInstance`. -/
+/--
+This prevents `toTopology t x` being printed as `{ ofTopology := x }`
+by `delabStructureInstance`.
+-/
 @[app_delab WithTopology.toTopology]
 meta def WithTopology.delabToTopology : Delab := delabApp
 

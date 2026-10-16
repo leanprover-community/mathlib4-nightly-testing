@@ -8,7 +8,6 @@ module
 public import Mathlib.AlgebraicGeometry.Morphisms.FiniteType
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiSeparated
 public import Mathlib.RingTheory.Spectrum.Prime.Chevalley
-
 import Mathlib.AlgebraicGeometry.Properties
 import Mathlib.RingTheory.RingHom.FinitePresentation
 
@@ -29,7 +28,6 @@ We show that these properties are local, and are stable under compositions.
 
 public section
 
-
 noncomputable section
 
 open CategoryTheory Topology
@@ -40,12 +38,14 @@ namespace AlgebraicGeometry
 
 variable {X Y : Scheme.{u}} (f : X ⟶ Y)
 
-/-- A morphism of schemes `f : X ⟶ Y` is locally of finite presentation if for each affine `U ⊆ Y`
-and `V ⊆ f ⁻¹' U`, The induced map `Γ(Y, U) ⟶ Γ(X, V)` is of finite presentation. -/
+/--
+A morphism of schemes `f : X ⟶ Y` is locally of finite presentation if for each affine `U ⊆ Y`
+and `V ⊆ f ⁻¹' U`, The induced map `Γ(Y, U) ⟶ Γ(X, V)` is of finite presentation.
+-/
 @[mk_iff]
 class LocallyOfFinitePresentation (f : X ⟶ Y) : Prop where
-  finitePresentation_appLE (f) :
-    ∀ {U : Y.Opens} (_ : IsAffineOpen U) {V : X.Opens} (_ : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U),
+  finitePresentation_appLE (f)
+    : ∀ {U : Y.Opens} (_ : IsAffineOpen U) {V : X.Opens} (_ : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U),
       (f.appLE U V e).hom.FinitePresentation
 
 alias Scheme.Hom.finitePresentation_appLE := LocallyOfFinitePresentation.finitePresentation_appLE
@@ -56,8 +56,8 @@ instance : HasRingHomProperty @LocallyOfFinitePresentation RingHom.FinitePresent
     ext X Y f
     rw [locallyOfFinitePresentation_iff, affineLocally_iff_forall_isAffineOpen]
 
-instance (priority := 900) locallyOfFinitePresentation_of_isOpenImmersion [IsOpenImmersion f] :
-    LocallyOfFinitePresentation f :=
+instance (priority := 900) locallyOfFinitePresentation_of_isOpenImmersion [IsOpenImmersion f]
+    : LocallyOfFinitePresentation f :=
   HasRingHomProperty.of_isOpenImmersion
     RingHom.finitePresentation_holdsForLocalizationAway.containsIdentities
 
@@ -65,45 +65,46 @@ instance : MorphismProperty.IsStableUnderComposition @LocallyOfFinitePresentatio
   HasRingHomProperty.stableUnderComposition RingHom.finitePresentation_stableUnderComposition
 
 @[simp]
-lemma LocallyOfFinitePresentation.SpecMap_iff {R S : CommRingCat.{u}} (f : R ⟶ S) :
-    LocallyOfFinitePresentation (Spec.map f) ↔ f.hom.FinitePresentation :=
+lemma LocallyOfFinitePresentation.SpecMap_iff {R S : CommRingCat.{u}} (f : R ⟶ S)
+    : LocallyOfFinitePresentation (Spec.map f) ↔ f.hom.FinitePresentation :=
   HasRingHomProperty.Spec_iff
 
-lemma Scheme.Hom.finitePresentation_appTop {X Y : Scheme.{u}} (f : X ⟶ Y) [IsAffine X] [IsAffine Y]
-    [LocallyOfFinitePresentation f] :
-    f.appTop.hom.FinitePresentation :=
+lemma Scheme.Hom.finitePresentation_appTop
+    {X Y : Scheme.{u}} (f : X ⟶ Y) [IsAffine X] [IsAffine Y] [LocallyOfFinitePresentation f]
+    : f.appTop.hom.FinitePresentation :=
   HasRingHomProperty.appTop (P := @LocallyOfFinitePresentation) _ inferInstance
 
-instance locallyOfFinitePresentation_comp {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z)
-    [hf : LocallyOfFinitePresentation f] [hg : LocallyOfFinitePresentation g] :
-    LocallyOfFinitePresentation (f ≫ g) :=
+instance locallyOfFinitePresentation_comp
+    {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z)
+    [hf : LocallyOfFinitePresentation f] [hg : LocallyOfFinitePresentation g]
+    : LocallyOfFinitePresentation (f ≫ g) :=
   MorphismProperty.comp_mem _ f g hf hg
 
-instance locallyOfFinitePresentation_isStableUnderBaseChange :
-    MorphismProperty.IsStableUnderBaseChange @LocallyOfFinitePresentation :=
+instance locallyOfFinitePresentation_isStableUnderBaseChange
+    : MorphismProperty.IsStableUnderBaseChange @LocallyOfFinitePresentation :=
   HasRingHomProperty.isStableUnderBaseChange RingHom.finitePresentation_isStableUnderBaseChange
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [LocallyOfFinitePresentation g] :
-    LocallyOfFinitePresentation (Limits.pullback.fst f g) :=
+instance {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [LocallyOfFinitePresentation g]
+    : LocallyOfFinitePresentation (Limits.pullback.fst f g) :=
   MorphismProperty.pullback_fst _ _ inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [LocallyOfFinitePresentation f] :
-    LocallyOfFinitePresentation (Limits.pullback.snd f g) :=
+instance {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [LocallyOfFinitePresentation f]
+    : LocallyOfFinitePresentation (Limits.pullback.snd f g) :=
   MorphismProperty.pullback_snd _ _ inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (f : X ⟶ Y) (V : Y.Opens) [LocallyOfFinitePresentation f] :
-    LocallyOfFinitePresentation (f ∣_ V) :=
+instance (f : X ⟶ Y) (V : Y.Opens) [LocallyOfFinitePresentation f]
+    : LocallyOfFinitePresentation (f ∣_ V) :=
   IsZariskiLocalAtTarget.restrict ‹_› V
 
-instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [LocallyOfFinitePresentation f] :
-    LocallyOfFinitePresentation (f.resLE V U e) := by
+instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [LocallyOfFinitePresentation f]
+    : LocallyOfFinitePresentation (f.resLE V U e) := by
   delta Scheme.Hom.resLE; infer_instance
 
-instance {X Y : Scheme.{u}} (f : X ⟶ Y) [hf : LocallyOfFinitePresentation f] :
-    LocallyOfFiniteType f := by
+instance {X Y : Scheme.{u}} (f : X ⟶ Y) [hf : LocallyOfFinitePresentation f]
+    : LocallyOfFiniteType f := by
   rw [HasRingHomProperty.eq_affineLocally @LocallyOfFinitePresentation] at hf
   rw [HasRingHomProperty.eq_affineLocally @LocallyOfFiniteType]
   refine affineLocally_le (fun hf ↦ ?_) f hf
@@ -111,14 +112,16 @@ instance {X Y : Scheme.{u}} (f : X ⟶ Y) [hf : LocallyOfFinitePresentation f] :
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- **Chevalley's Theorem**: The image of a locally constructible set under a
-morphism of finite presentation is locally constructible. -/
+/--
+**Chevalley's Theorem**: The image of a locally constructible set under a
+morphism of finite presentation is locally constructible.
+-/
 @[stacks 054K]
 -- `nonrec` is needed for `wlog`
-nonrec lemma Scheme.Hom.isLocallyConstructible_image (f : X ⟶ Y)
-    [hf : LocallyOfFinitePresentation f] [QuasiCompact f]
-    {s : Set X} (hs : IsLocallyConstructible s) :
-    IsLocallyConstructible (f '' s) := by
+nonrec lemma Scheme.Hom.isLocallyConstructible_image
+    (f : X ⟶ Y) [hf : LocallyOfFinitePresentation f] [QuasiCompact f]
+    {s : Set X} (hs : IsLocallyConstructible s)
+    : IsLocallyConstructible (f '' s) := by
   wlog hY : ∃ R, Y = Spec R
   · refine .of_isOpenCover Y.affineCover.isOpenCover_opensRange fun i ↦ ?_
     have inst : LocallyOfFinitePresentation (Y.affineCover.pullbackHom f i) :=
@@ -135,8 +138,9 @@ nonrec lemma Scheme.Hom.isLocallyConstructible_image (f : X ⟶ Y)
     apply Set.image_injective.mpr Subtype.val_injective
     rw [Set.image_preimage_eq_inter_range, ← Set.image_comp, ← Set.image_comp,
       Subtype.range_coe_subtype, Set.ofPred_mem_eq]
-    change _ = (Y.affineCover.pullbackHom f i ≫
-      (Y.affineCover.f i).isoOpensRange.hom ≫ Opens.ι _).base.hom '' _
+    change _
+      = (Y.affineCover.pullbackHom f i ≫ (Y.affineCover.f i).isoOpensRange.hom ≫ Opens.ι _).base.hom
+        '' _
     rw [Scheme.Hom.isoOpensRange_hom_ι, Cover.pullbackHom_map, Scheme.Hom.comp_base,
       TopCat.hom_comp, ContinuousMap.coe_comp, Set.image_comp, Set.image_preimage_eq_inter_range]
     simp [IsOpenImmersion.range_pullbackFst, Set.image_inter_preimage]
@@ -156,22 +160,24 @@ nonrec lemma Scheme.Hom.isLocallyConstructible_image (f : X ⟶ Y)
   rw [HasRingHomProperty.Spec_iff (P := @LocallyOfFinitePresentation)] at hf
   exact (PrimeSpectrum.isConstructible_comap_image hf hs.isConstructible).isLocallyConstructible
 
-/-- **Chevalley's Theorem**: The image of a constructible set under a
-morphism of finite presentation into a qcqs scheme is constructible. -/
+/--
+**Chevalley's Theorem**: The image of a constructible set under a
+morphism of finite presentation into a qcqs scheme is constructible.
+-/
 @[stacks 054J]
-lemma Scheme.Hom.isConstructible_image (f : X ⟶ Y)
+lemma Scheme.Hom.isConstructible_image
+    (f : X ⟶ Y)
     [LocallyOfFinitePresentation f] [QuasiCompact f] [CompactSpace Y] [QuasiSeparatedSpace Y]
-    {s : Set X} (hs : IsConstructible s) :
-    IsConstructible (f '' s) :=
+    {s : Set X} (hs : IsConstructible s)
+    : IsConstructible (f '' s) :=
   (f.isLocallyConstructible_image hs.isLocallyConstructible).isConstructible
 
 @[stacks 054I]
-lemma Scheme.Hom.isConstructible_preimage (f : X ⟶ Y) {s : Set Y} (hs : IsConstructible s) :
-    IsConstructible (f ⁻¹' s) :=
-  hs.preimage f.continuous fun t ht ht' ↦ IsRetrocompact_iff_isSpectralMap_subtypeVal.mpr
-    (quasiCompact_iff_isSpectralMap.mp
-    (MorphismProperty.of_isPullback (P := @QuasiCompact)
-    (isPullback_morphismRestrict f ⟨t, ht⟩)
-    (quasiCompact_iff_isSpectralMap.mpr (IsRetrocompact_iff_isSpectralMap_subtypeVal.mp ht'))))
+lemma Scheme.Hom.isConstructible_preimage (f : X ⟶ Y) {s : Set Y} (hs : IsConstructible s)
+    : IsConstructible (f ⁻¹' s) :=
+  hs.preimage f.continuous fun t ht ht' ↦
+    IsRetrocompact_iff_isSpectralMap_subtypeVal.mpr (quasiCompact_iff_isSpectralMap.mp
+      (MorphismProperty.of_isPullback (P := @QuasiCompact) (isPullback_morphismRestrict f ⟨t, ht⟩)
+        (quasiCompact_iff_isSpectralMap.mpr (IsRetrocompact_iff_isSpectralMap_subtypeVal.mp ht'))))
 
 end AlgebraicGeometry

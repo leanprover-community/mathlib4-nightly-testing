@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Measure.Sub
 public import Mathlib.MeasureTheory.Measure.WithDensity
-
 import Mathlib.MeasureTheory.Integral.Lebesgue.Sub
 import Mathlib.MeasureTheory.Measure.Decomposition.Hahn
 
@@ -48,22 +47,23 @@ lemma sub_le_iff_le_add [IsFiniteMeasure μ] [IsFiniteMeasure ν] : μ - ν ≤ 
   rw [← restrict_add_restrict_compl (μ := μ) hs.measurableSet,
     ← restrict_add_restrict_compl (μ := ξ) hs.measurableSet,
     ← restrict_add_restrict_compl (μ := ν) hs.measurableSet]
-  suffices μ.restrict s + μ.restrict sᶜ ≤
-    ξ.restrict s + ν.restrict s + (ξ.restrict sᶜ + ν.restrict sᶜ) from this.trans_eq (by abel)
+  suffices μ.restrict s + μ.restrict sᶜ
+      ≤ ξ.restrict s + ν.restrict s + (ξ.restrict sᶜ + ν.restrict sᶜ) from
+    this.trans_eq (by abel)
   gcongr
 
-lemma withDensity_sub_of_le {f g : α → ℝ≥0∞} [IsFiniteMeasure (μ.withDensity g)]
-    (hg : Measurable g) (hgf : g ≤ᵐ[μ] f) :
-    μ.withDensity (f - g) = μ.withDensity f - μ.withDensity g := by
+lemma withDensity_sub_of_le
+    {f g : α → ℝ≥0∞} [IsFiniteMeasure (μ.withDensity g)] (hg : Measurable g) (hgf : g ≤ᵐ[μ] f)
+    : μ.withDensity (f - g) = μ.withDensity f - μ.withDensity g := by
   ext s hs
   rw [sub_apply hs (withDensity_mono hgf), withDensity_apply _ hs, withDensity_apply _ hs,
     withDensity_apply _ hs, ← lintegral_sub hg _ (ae_restrict_of_ae hgf)]
   · simp
   · simp [← withDensity_apply _ hs]
 
-lemma withDensity_sub {f g : α → ℝ≥0∞} [IsFiniteMeasure (μ.withDensity g)]
-    (hf : Measurable f) (hg : Measurable g) :
-    μ.withDensity (f - g) = μ.withDensity f - μ.withDensity g := by
+lemma withDensity_sub
+    {f g : α → ℝ≥0∞} [IsFiniteMeasure (μ.withDensity g)] (hf : Measurable f) (hg : Measurable g)
+    : μ.withDensity (f - g) = μ.withDensity f - μ.withDensity g := by
   refine le_antisymm ?_ ?_
   · let t := {x | f x ≤ g x}
     have ht : MeasurableSet t := measurableSet_le hf hg
@@ -75,8 +75,9 @@ lemma withDensity_sub {f g : α → ℝ≥0∞} [IsFiniteMeasure (μ.withDensity
       refine ae_restrict_of_forall_mem ht fun x hx ↦ ?_
       simpa [tsub_eq_zero_iff_le]
     rw [h_zero, zero_add]
-    suffices (μ.withDensity (f - g)).restrict tᶜ ≤
-      (μ.withDensity f - μ.withDensity g).restrict tᶜ from this.trans (Measure.le_add_left le_rfl)
+    suffices (μ.withDensity (f - g)).restrict tᶜ
+        ≤ (μ.withDensity f - μ.withDensity g).restrict tᶜ from
+      this.trans (Measure.le_add_left le_rfl)
     rw [restrict_sub_eq_restrict_sub_restrict ht.compl]
     simp_rw [restrict_withDensity ht.compl]
     have : IsFiniteMeasure ((μ.restrict tᶜ).withDensity g) := by

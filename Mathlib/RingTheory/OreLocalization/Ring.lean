@@ -32,14 +32,18 @@ variable {R : Type*} [Semiring R] {S : Submonoid R} [OreSet S]
 variable {X : Type*} [AddCommMonoid X] [Module R X]
 
 protected theorem zero_smul (x : X[S⁻¹]) : (0 : R[S⁻¹]) • x = 0 := by
-  induction x with | _ r s
-  rw [OreLocalization.zero_def, oreDiv_smul_char 0 r 1 s 0 1 (by simp)]; simp
+  induction x with
+  | _ r s
+  rw [OreLocalization.zero_def, oreDiv_smul_char 0 r 1 s 0 1 (by simp)]
+  simp
 
-protected theorem add_smul (y z : R[S⁻¹]) (x : X[S⁻¹]) :
-    (y + z) • x = y • x + z • x := by
-  induction x with | _ r₁ s₁
-  induction y with | _ r₂ s₂
-  induction z with | _ r₃ s₃
+protected theorem add_smul (y z : R[S⁻¹]) (x : X[S⁻¹]) : (y + z) • x = y • x + z • x := by
+  induction x with
+  | _ r₁ s₁
+  induction y with
+  | _ r₂ s₂
+  induction z with
+  | _ r₃ s₃
   rcases oreDivAddChar' r₂ r₃ s₂ s₃ with ⟨ra, sa, ha, q⟩
   rw [q]
   clear q
@@ -89,16 +93,16 @@ instance : Module R[S⁻¹] X[S⁻¹] where
   add_smul := OreLocalization.add_smul
   zero_smul := OreLocalization.zero_smul
 
-instance {R₀} [Semiring R₀] [Module R₀ X] [Module R₀ R]
-    [IsScalarTower R₀ R X] [IsScalarTower R₀ R R] :
-    Module R₀ X[S⁻¹] where
+instance
+    {R₀} [Semiring R₀] [Module R₀ X] [Module R₀ R] [IsScalarTower R₀ R X] [IsScalarTower R₀ R R]
+    : Module R₀ X[S⁻¹] where
   add_smul r s x := by simp only [← smul_one_oreDiv_one_smul, add_smul, ← add_oreDiv]
   zero_smul x := by rw [← smul_one_oreDiv_one_smul, zero_smul, zero_oreDiv, zero_smul]
 
 @[simp]
-lemma nsmul_eq_nsmul (n : ℕ) (x : X[S⁻¹]) :
-    letI inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℕ) (R := R) (X := X) (S := S)
-    HSMul.hSMul (self := @instHSMul _ _ inst.toSMul) n x = n • x := by
+lemma nsmul_eq_nsmul (n : ℕ) (x : X[S⁻¹])
+    : letI inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℕ) (R := R) (X := X) (S := S)
+      HSMul.hSMul (self := @instHSMul _ _ inst.toSMul) n x = n • x := by
   let inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℕ) (R := R) (X := X) (S := S)
   congrm $(AddCommMonoid.uniqueNatModule.2 inst).smul n x
 
@@ -113,7 +117,8 @@ instance {R₀} [CommSemiring R₀] [Algebra R₀ R] : Algebra R₀ R[S⁻¹] wh
   __ := (inferInstance : Module R₀ R[S⁻¹])
   algebraMap := numeratorRingHom.comp (algebraMap R₀ R)
   commutes' r x := by
-    induction x using OreLocalization.ind with | _ r₁ s₁
+    induction x using OreLocalization.ind with
+    | _ r₁ s₁
     dsimp
     rw [mul_div_one, oreDiv_mul_char _ _ _ _ (algebraMap R₀ R r) s₁ (Algebra.commutes _ _).symm,
       Algebra.commutes, mul_one]
@@ -127,47 +132,50 @@ variable {T : Type*} [Semiring T]
 variable (f : R →+* T) (fS : S →* Units T)
 variable (hf : ∀ s : S, f s = fS s)
 
-/-- The universal lift from a ring homomorphism `f : R →+* T`, which maps elements in `S` to
+/--
+The universal lift from a ring homomorphism `f : R →+* T`, which maps elements in `S` to
 units of `T`, to a ring homomorphism `R[S⁻¹] →+* T`. This extends the construction on
-monoids. -/
-def universalHom : R[S⁻¹] →+* T :=
-  { universalMulHom f.toMonoidHom fS hf with
-    map_zero' := by
-      simp only [RingHom.toMonoidHom_eq_coe, OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe]
-      rw [OreLocalization.zero_def, universalMulHom_apply]
-      simp
-    map_add' := fun x y => by
-      simp only [RingHom.toMonoidHom_eq_coe, OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe]
-      induction x with | _ r₁ s₁
-      induction y with | _ r₂ s₂
-      rcases oreDivAddChar' r₁ r₂ s₁ s₂ with ⟨r₃, s₃, h₃, h₃'⟩
-      rw [h₃']
-      clear h₃'
-      simp only [smul_eq_mul, universalMulHom_apply, MonoidHom.coe_ofClass,
-        Submonoid.smul_def]
-      simp only [mul_inv_rev, map_mul, map_add, map_mul, Units.val_mul]
-      rw [mul_add, mul_assoc, ← mul_assoc _ (f s₃), hf, ← Units.val_mul]
-      simp only [one_mul, inv_mul_cancel, Units.val_one]
-      congr 1
-      rw [← mul_assoc]
-      congr 1
-      norm_cast at h₃
-      have h₃' := Subtype.coe_eq_of_eq_mk h₃
-      rw [← Units.val_mul, ← mul_inv_rev, ← fS.map_mul, h₃']
-      rw [Units.inv_mul_eq_iff_eq_mul, Units.eq_mul_inv_iff_mul_eq, ← hf, ← hf]
-      simp only [map_mul] }
+monoids.
+-/
+def universalHom : R[S⁻¹] →+* T := {
+  universalMulHom f.toMonoidHom fS hf with
+  map_zero' := by
+    simp only [RingHom.toMonoidHom_eq_coe, OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe]
+    rw [OreLocalization.zero_def, universalMulHom_apply]
+    simp
+  map_add' := fun x y => by
+    simp only [RingHom.toMonoidHom_eq_coe, OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe]
+    induction x with
+    | _ r₁ s₁
+    induction y with
+    | _ r₂ s₂
+    rcases oreDivAddChar' r₁ r₂ s₁ s₂ with ⟨r₃, s₃, h₃, h₃'⟩
+    rw [h₃']
+    clear h₃'
+    simp only [smul_eq_mul, universalMulHom_apply, MonoidHom.coe_ofClass, Submonoid.smul_def]
+    simp only [mul_inv_rev, map_mul, map_add, map_mul, Units.val_mul]
+    rw [mul_add, mul_assoc, ← mul_assoc _ (f s₃), hf, ← Units.val_mul]
+    simp only [one_mul, inv_mul_cancel, Units.val_one]
+    congr 1
+    rw [← mul_assoc]
+    congr 1
+    norm_cast at h₃
+    have h₃' := Subtype.coe_eq_of_eq_mk h₃
+    rw [← Units.val_mul, ← mul_inv_rev, ← fS.map_mul, h₃']
+    rw [Units.inv_mul_eq_iff_eq_mul, Units.eq_mul_inv_iff_mul_eq, ← hf, ← hf]
+    simp only [map_mul]
+}
 
-theorem universalHom_apply {r : R} {s : S} :
-    universalHom f fS hf (r /ₒ s) = ((fS s)⁻¹ : Units T) * f r :=
+theorem universalHom_apply {r : R} {s : S}
+    : universalHom f fS hf (r /ₒ s) = ((fS s)⁻¹ : Units T) * f r :=
   rfl
 
 theorem universalHom_commutes {r : R} : universalHom f fS hf (numeratorHom r) = f r := by
   simp [numeratorHom_apply, universalHom_apply]
 
-theorem universalHom_unique (φ : R[S⁻¹] →+* T) (huniv : ∀ r : R, φ (numeratorHom r) = f r) :
-    φ = universalHom f fS hf :=
-  RingHom.toMonoidHom_injective <|
-    universalMulHom_unique (RingHom.toMonoidHom f) fS hf (↑φ) huniv
+theorem universalHom_unique (φ : R[S⁻¹] →+* T) (huniv : ∀ r : R, φ (numeratorHom r) = f r)
+    : φ = universalHom f fS hf :=
+  RingHom.toMonoidHom_injective <| universalMulHom_unique (RingHom.toMonoidHom f) fS hf (↑φ) huniv
 
 end UMP
 
@@ -183,17 +191,16 @@ instance : Ring R[S⁻¹] where
   __ := (inferInstance : AddGroup R[S⁻¹])
 
 @[simp]
-lemma zsmul_eq_zsmul (n : ℤ) (x : X[S⁻¹]) :
-    letI inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℤ) (R := R) (X := X) (S := S)
-    HSMul.hSMul (self := @instHSMul _ _ inst.toSMul) n x = n • x := by
+lemma zsmul_eq_zsmul (n : ℤ) (x : X[S⁻¹])
+    : letI inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℤ) (R := R) (X := X) (S := S)
+      HSMul.hSMul (self := @instHSMul _ _ inst.toSMul) n x = n • x := by
   let inst := OreLocalization.instModuleOfIsScalarTower (R₀ := ℤ) (R := R) (X := X) (S := S)
   congrm $(AddCommGroup.uniqueIntModule.2 inst).smul n x
 
 open nonZeroDivisors
 
-theorem numeratorHom_inj (hS : S ≤ nonZeroDivisorsLeft R) :
-    Function.Injective (numeratorHom : R → R[S⁻¹]) :=
-  fun r₁ r₂ h => by
+theorem numeratorHom_inj (hS : S ≤ nonZeroDivisorsLeft R)
+    : Function.Injective (numeratorHom : R → R[S⁻¹]) := fun r₁ r₂ h => by
   rw [numeratorHom_apply, numeratorHom_apply, oreDiv_eq_iff] at h
   rcases h with ⟨u, v, h₁, h₂⟩
   simp only [S.coe_one, mul_one, Submonoid.smul_def, smul_eq_mul] at h₁ h₂
@@ -244,8 +251,7 @@ open nonZeroDivisors
 
 variable {R : Type*} [CommRing R] [Nontrivial R] [NoZeroDivisors R] [OreSet R⁰]
 
-noncomputable
-instance : Field R[R⁰⁻¹] where
+noncomputable instance : Field R[R⁰⁻¹] where
   __ := (inferInstance : DivisionRing R[R⁰⁻¹])
   __ := (inferInstance : CommMonoid R[R⁰⁻¹])
 

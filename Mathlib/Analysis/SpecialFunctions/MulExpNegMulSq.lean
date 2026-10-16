@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.Topology.ContinuousMap.Bounded.Normed
-
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
@@ -44,8 +43,7 @@ namespace Real
 Mapping `fun ε x => x * Real.exp (- (ε * x * x))`. By composition, it can be used to transform
 functions into bounded functions.
 -/
-noncomputable
-def mulExpNegMulSq (ε x : ℝ) := x * exp (-(ε * x * x))
+noncomputable def mulExpNegMulSq (ε x : ℝ) := x * exp (-(ε * x * x))
 
 theorem mulExpNegSq_apply (ε x : ℝ) : mulExpNegMulSq ε x = x * exp (-(ε * x * x)) := rfl
 
@@ -72,34 +70,38 @@ theorem continuous_mulExpNegMulSq : Continuous (fun x => mulExpNegMulSq ε x) :=
   Continuous.mul continuous_id (by fun_prop)
 
 @[continuity, fun_prop]
-theorem _root_.Continuous.mulExpNegMulSq {α : Type*} [TopologicalSpace α] {f : α → ℝ}
-    (hf : Continuous f) : Continuous (fun x => mulExpNegMulSq ε (f x)) :=
+theorem _root_.Continuous.mulExpNegMulSq
+    {α : Type*} [TopologicalSpace α] {f : α → ℝ} (hf : Continuous f)
+    : Continuous (fun x => mulExpNegMulSq ε (f x)) :=
   continuous_mulExpNegMulSq.comp hf
 
-theorem differentiableAt_mulExpNegMulSq (y : ℝ) :
-    DifferentiableAt ℝ (mulExpNegMulSq ε) y :=
+theorem differentiableAt_mulExpNegMulSq (y : ℝ) : DifferentiableAt ℝ (mulExpNegMulSq ε) y :=
   DifferentiableAt.mul differentiableAt_fun_id (by fun_prop)
 
-@[fun_prop] theorem differentiable_mulExpNegMulSq : Differentiable ℝ (mulExpNegMulSq ε) :=
-  fun _ => differentiableAt_mulExpNegMulSq _
+@[fun_prop]
+theorem differentiable_mulExpNegMulSq : Differentiable ℝ (mulExpNegMulSq ε) := fun _ =>
+  differentiableAt_mulExpNegMulSq _
 
-theorem hasDerivAt_mulExpNegMulSq (y : ℝ) :
-    HasDerivAt (mulExpNegMulSq ε)
-    (exp (-(ε * y * y)) + y * (exp (-(ε * y * y)) * (-2 * ε * y))) y := by
+theorem hasDerivAt_mulExpNegMulSq (y : ℝ)
+    : HasDerivAt (mulExpNegMulSq ε) (exp (-(ε * y * y)) + y * (exp (-(ε * y * y)) * (-2 * ε * y)))
+      y := by
   nth_rw 1 [← one_mul (exp (-(ε * y * y)))]
   apply HasDerivAt.mul (hasDerivAt_id' y)
-  apply HasDerivAt.exp (HasDerivAt.congr_deriv (HasDerivAt.neg
-    (HasDerivAt.mul (HasDerivAt.const_mul ε (hasDerivAt_id' y)) (hasDerivAt_id' y))) (by ring))
+  apply HasDerivAt.exp (HasDerivAt.congr_deriv
+    (HasDerivAt.neg (HasDerivAt.mul (HasDerivAt.const_mul ε (hasDerivAt_id' y)) (hasDerivAt_id' y)))
+    (by ring))
 
-theorem deriv_mulExpNegMulSq (y : ℝ) : deriv (mulExpNegMulSq ε) y =
-    exp (-(ε * y * y)) + y * (exp (-(ε * y * y)) * (-2 * ε * y)) :=
+theorem deriv_mulExpNegMulSq (y : ℝ)
+    : deriv (mulExpNegMulSq ε) y = exp (-(ε * y * y)) + y * (exp (-(ε * y * y)) * (-2 * ε * y)) :=
   HasDerivAt.deriv (hasDerivAt_mulExpNegMulSq y)
 
-theorem norm_deriv_mulExpNegMulSq_le_one (hε : 0 < ε) (x : ℝ) :
-    ‖deriv (mulExpNegMulSq ε) x‖ ≤ 1 := by
+theorem norm_deriv_mulExpNegMulSq_le_one (hε : 0 < ε) (x : ℝ)
+    : ‖deriv (mulExpNegMulSq ε) x‖ ≤ 1 := by
   rw [norm_eq_abs, deriv_mulExpNegMulSq]
-  have heq : exp (-(ε * x * x)) + x * (exp (-(ε * x * x)) * (-2 * ε * x))
-      = exp (-(ε * x * x)) * (1 - 2 * (ε * x * x)) := by ring
+  have heq
+      : exp (-(ε * x * x)) + x * (exp (-(ε * x * x)) * (-2 * ε * x))
+        = exp (-(ε * x * x)) * (1 - 2 * (ε * x * x)) := by
+    ring
   rw [heq, abs_mul, abs_exp]
   set y := ε * x * x with hy
   have hynonneg : 0 ≤ y := by
@@ -110,19 +112,18 @@ theorem norm_deriv_mulExpNegMulSq_le_one (hε : 0 < ε) (x : ℝ) :
   refine ⟨le_trans two_mul_le_exp ((le_add_iff_nonneg_left (exp y)).mpr zero_le_one), ?_⟩
   exact le_trans (one_le_exp hynonneg) (le_add_of_nonneg_right (by simp [hynonneg]))
 
-theorem nnnorm_deriv_mulExpNegMulSq_le_one (hε : 0 < ε) (x : ℝ) :
-    ‖deriv (mulExpNegMulSq ε) x‖₊ ≤ 1 := by
+theorem nnnorm_deriv_mulExpNegMulSq_le_one (hε : 0 < ε) (x : ℝ)
+    : ‖deriv (mulExpNegMulSq ε) x‖₊ ≤ 1 := by
   rw [← NNReal.coe_le_coe, coe_nnnorm]
   exact norm_deriv_mulExpNegMulSq_le_one hε x
 
 /-- For fixed `ε > 0`, the mapping `mulExpNegMulSq ε` is Lipschitz with constant `1` -/
-theorem lipschitzWith_one_mulExpNegMulSq (hε : 0 < ε) :
-    LipschitzWith 1 (mulExpNegMulSq ε) := by
+theorem lipschitzWith_one_mulExpNegMulSq (hε : 0 < ε) : LipschitzWith 1 (mulExpNegMulSq ε) := by
   apply lipschitzWith_of_nnnorm_deriv_le differentiable_mulExpNegMulSq
   exact nnnorm_deriv_mulExpNegMulSq_le_one hε
 
-theorem mulExpNegMulSq_eq_sqrt_mul_mulExpNegMulSq_one (hε : 0 < ε) (x : ℝ) :
-    mulExpNegMulSq ε x = (√ε)⁻¹ * mulExpNegMulSq 1 (sqrt ε * x) := by
+theorem mulExpNegMulSq_eq_sqrt_mul_mulExpNegMulSq_one (hε : 0 < ε) (x : ℝ)
+    : mulExpNegMulSq ε x = (√ε)⁻¹ * mulExpNegMulSq 1 (sqrt ε * x) := by
   grind [mulExpNegMulSq]
 
 /-- For fixed `ε > 0`, the mapping `x ↦ mulExpNegMulSq ε x` is bounded by `(√ε)⁻¹`. -/
@@ -132,30 +133,31 @@ theorem abs_mulExpNegMulSq_le (hε : 0 < ε) {x : ℝ} : |mulExpNegMulSq ε x| �
   · positivity
   · exact abs_mulExpNegMulSq_one_le_one (√ε * x)
 
-theorem dist_mulExpNegMulSq_le_two_mul_sqrt (hε : 0 < ε) (x y : ℝ) :
-    dist (mulExpNegMulSq ε x) (mulExpNegMulSq ε y) ≤ 2 * (√ε)⁻¹ := by
+theorem dist_mulExpNegMulSq_le_two_mul_sqrt (hε : 0 < ε) (x y : ℝ)
+    : dist (mulExpNegMulSq ε x) (mulExpNegMulSq ε y) ≤ 2 * (√ε)⁻¹ := by
   apply le_trans (dist_triangle (mulExpNegMulSq ε x) 0 (mulExpNegMulSq ε y))
   simp only [dist_zero_right, norm_eq_abs, dist_zero_left, two_mul]
   exact add_le_add (abs_mulExpNegMulSq_le hε) (abs_mulExpNegMulSq_le hε)
 
-theorem dist_mulExpNegMulSq_le_dist (hε : 0 < ε) {x y : ℝ} :
-    dist (mulExpNegMulSq ε x) (mulExpNegMulSq ε y) ≤ dist x y := by
+theorem dist_mulExpNegMulSq_le_dist (hε : 0 < ε) {x y : ℝ}
+    : dist (mulExpNegMulSq ε x) (mulExpNegMulSq ε y) ≤ dist x y := by
   have h := lipschitzWith_one_mulExpNegMulSq hε x y
   rwa [ENNReal.coe_one, one_mul, ← (toReal_le_toReal (edist_ne_top _ _) (edist_ne_top _ _))] at h
 
 /-- For fixed `x : ℝ`, the mapping `mulExpNegMulSq ε x` converges pointwise to `x` as `ε → 0` -/
-theorem tendsto_mulExpNegMulSq {x : ℝ} :
-    Tendsto (fun ε => mulExpNegMulSq ε x) (𝓝 0) (𝓝 x) := by
+theorem tendsto_mulExpNegMulSq {x : ℝ} : Tendsto (fun ε => mulExpNegMulSq ε x) (𝓝 0) (𝓝 x) := by
   have : x = (fun ε : ℝ => mulExpNegMulSq ε x) 0 := by
     simp only [mulExpNegMulSq, zero_mul, neg_zero, exp_zero, mul_one]
   nth_rw 2 [this]
   apply Continuous.tendsto (Continuous.mul continuous_const (by fun_prop))
 
-/-- For a fixed bounded function `g`, `mulExpNegMulSq ε ∘ g` is bounded by `norm g`,
-uniformly in `ε ≥ 0`. -/
-theorem abs_mulExpNegMulSq_comp_le_norm {E : Type*} [TopologicalSpace E] {x : E}
-    (g : BoundedContinuousFunction E ℝ) (hε : 0 ≤ ε) :
-    |(mulExpNegMulSq ε ∘ g) x| ≤ ‖g‖ := by
+/--
+For a fixed bounded function `g`, `mulExpNegMulSq ε ∘ g` is bounded by `norm g`,
+uniformly in `ε ≥ 0`.
+-/
+theorem abs_mulExpNegMulSq_comp_le_norm
+    {E : Type*} [TopologicalSpace E] {x : E} (g : BoundedContinuousFunction E ℝ) (hε : 0 ≤ ε)
+    : |(mulExpNegMulSq ε ∘ g) x| ≤ ‖g‖ := by
   simp only [Function.comp_apply, mulExpNegMulSq, abs_mul, abs_exp]
   apply le_trans (mul_le_of_le_one_right (abs_nonneg (g x)) _) (g.norm_coe_le_norm x)
   rw [exp_le_one_iff, Left.neg_nonpos_iff, mul_assoc]

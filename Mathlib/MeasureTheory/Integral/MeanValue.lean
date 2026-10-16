@@ -28,18 +28,20 @@ public section
 
 open MeasureTheory
 
-variable {α : Type*} [TopologicalSpace α] [MeasurableSpace α]
-  {s : Set α} {f g : α → ℝ} {μ : Measure α}
+variable
+  {α : Type*} [TopologicalSpace α] [MeasurableSpace α] {s : Set α} {f g : α → ℝ} {μ : Measure α}
 
-/-- **First mean value theorem for set integrals (a.e. nonnegativity).**
+/--
+**First mean value theorem for set integrals (a.e. nonnegativity).**
 Let `s` be a connected measurable set. If `f` is continuous on `s`, `g` is integrable on `s`,
 `f * g` is integrable on `s`, and `g` is nonnegative a.e. on `s` w.r.t. `μ.restrict s`, then
-`∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ)`. -/
+`∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ)`.
+-/
 theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
     (hs_conn : IsConnected s) (hs_meas : MeasurableSet s) (hf : ContinuousOn f s)
     (hg : IntegrableOn g s μ) (hfg : IntegrableOn (fun x ↦ f x * g x) s μ)
-    (hg0 : ∀ᵐ x ∂(μ.restrict s), 0 ≤ g x) :
-    ∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ) := by
+    (hg0 : ∀ᵐ x ∂(μ.restrict s), 0 ≤ g x)
+    : ∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ) := by
   let ρ := fun x ↦ ENNReal.ofReal (g x)
   let ν := μ.withDensity ρ
   have hρ_ae : AEMeasurable ρ (μ.restrict s) := by
@@ -61,8 +63,8 @@ theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
         have h := setIntegral_withDensity_eq_setIntegral_toReal_smul₀ hρ_ae hρ_top f hs_meas
         simp [ν, h]
   have hg1 : ∫ x in s, g x ∂μ = ∫ x in s, (1 : ℝ) ∂ν := by
-    have h := setIntegral_withDensity_eq_setIntegral_toReal_smul₀
-      hρ_ae hρ_top (fun _ ↦ (1 : ℝ)) hs_meas
+    have h :=
+      setIntegral_withDensity_eq_setIntegral_toReal_smul₀ hρ_ae hρ_top (fun _ ↦ (1 : ℝ)) hs_meas
     calc
       _ = ∫ x in s, (ρ x).toReal ∂μ := by rw [integral_congr_ae h_toReal_ae]
       _ = _ := by simp [ν, h]
@@ -109,15 +111,16 @@ theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
         field_simp
       _ = _ := by simp [hg1]
 
-/-- **First mean value theorem for set integrals (pointwise nonnegativity).**
+/--
+**First mean value theorem for set integrals (pointwise nonnegativity).**
 Let `s` be a connected measurable set. If `f` is continuous on `s`, `g` is integrable on `s`,
 `f * g` is integrable on `s`, and `g` is nonnegative on `s`, then
-`∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ)` -/
+`∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ)`
+-/
 theorem exists_eq_const_mul_setIntegral_of_nonneg
     (hs_conn : IsConnected s) (hs_meas : MeasurableSet s) (hf : ContinuousOn f s)
-    (hg : IntegrableOn g s μ) (hfg : IntegrableOn (fun x ↦ f x * g x) s μ)
-    (hg0 : ∀ x ∈ s, 0 ≤ g x) :
-    ∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ) := by
+    (hg : IntegrableOn g s μ) (hfg : IntegrableOn (fun x ↦ f x * g x) s μ) (hg0 : ∀ x ∈ s, 0 ≤ g x)
+    : ∃ c ∈ s, (∫ x in s, f x * g x ∂μ) = f c * (∫ x in s, g x ∂μ) := by
   have hg0_ae : ∀ᵐ x ∂(μ.restrict s), 0 ≤ g x := by
     rw [ae_restrict_iff' hs_meas]
     exact ae_of_all μ hg0

@@ -8,7 +8,6 @@ module
 public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 public import Mathlib.Analysis.Complex.UnitDisc.Basic
 public import Mathlib.Topology.Connected.LocallyPathConnected
-
 import Mathlib.Analysis.Complex.CoveringMap
 import Mathlib.Topology.Homotopy.Lifting
 
@@ -28,14 +27,17 @@ namespace Complex
 
 variable {X : Type*} [TopologicalSpace X] [LocallyPathConnectedSpace X] {U : Set X}
 
-/-- If `g : X → ℂ` defined on a locally path connected space
+/--
+If `g : X → ℂ` defined on a locally path connected space
 is continuous on an open simply connected set `U` and `0 ∉ g '' U`,
 then there exists a continuous branch of `log ∘ g` on `U`.
 More precisely, there exists a function `f : X → ℂ` continuous on `U`
-such that `exp (f x) = g x` for all `x ∈ U`. -/
-theorem exists_continuousOn_eqOn_exp_comp (hUc : IsSimplyConnected U) (hUo : IsOpen U)
-    {g : X → ℂ} (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U) :
-    ∃ f : X → ℂ, ContinuousOn f U ∧ EqOn (exp ∘ f) g U := by
+such that `exp (f x) = g x` for all `x ∈ U`.
+-/
+theorem exists_continuousOn_eqOn_exp_comp
+    (hUc : IsSimplyConnected U) (hUo : IsOpen U)
+    {g : X → ℂ} (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U)
+    : ∃ f : X → ℂ, ContinuousOn f U ∧ EqOn (exp ∘ f) g U := by
   classical
   have := hUc.simplyConnectedSpace
   have := hUo.locallyPathConnectedSpace
@@ -43,8 +45,9 @@ theorem exists_continuousOn_eqOn_exp_comp (hUc : IsSimplyConnected U) (hUo : IsO
   have hx₀ : g x₀ ≠ 0 := ne_of_mem_of_not_mem (mem_image_of_mem g hx₀U) hU₀
   lift x₀ to U using hx₀U
   rcases isCoveringMapOn_exp.existsUnique_continuousMap_lifts
-    ⟨U.domRestrict g, continuousOn_iff_continuous_domRestrict.mp hgc⟩ (exp_log hx₀)
-    (fun x ↦ ne_of_mem_of_not_mem (mem_image_of_mem g x.2) hU₀) with ⟨f, ⟨-, hf⟩, -⟩
+      ⟨U.domRestrict g, continuousOn_iff_continuous_domRestrict.mp hgc⟩ (exp_log hx₀)
+      (fun x ↦ ne_of_mem_of_not_mem (mem_image_of_mem g x.2) hU₀)
+    with ⟨f, ⟨-, hf⟩, -⟩
   obtain ⟨g, hg⟩ : ∃ g : X → ℂ, ∀ z : U, g z = f z :=
     ⟨fun z ↦ if hz : z ∈ U then f ⟨z, hz⟩ else 0, by simp⟩
   refine ⟨g, ?hg_cont, ?hg_inv⟩
@@ -58,14 +61,18 @@ theorem exists_continuousOn_eqOn_exp_comp (hUc : IsSimplyConnected U) (hUo : IsO
     lift x to U using hx
     simpa [hg] using congr($hf x)
 
-/-- If `g : X → ℂ` defined on a locally path connected space
+/--
+If `g : X → ℂ` defined on a locally path connected space
 is continuous on an open simply connected set `U` and `0 ∉ g '' U`,
 then for any `n ≠ 0`, there exists a continuous branch of `ⁿ√g` on `U`.
 More precisely, there exists a function `f : X → ℂ` continuous on `U`
-such that `(f x) ^ n = g x` for all `x`. -/
-theorem exists_continuousOn_pow_eq (hUc : IsSimplyConnected U) (hUo : IsOpen U)
-    {g : X → ℂ} (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U) {n : ℕ} (hn : n ≠ 0) :
-    ∃ f : X → ℂ, ContinuousOn f U ∧ ∀ x, f x ^ n = g x := by
+such that `(f x) ^ n = g x` for all `x`.
+-/
+theorem exists_continuousOn_pow_eq
+    (hUc : IsSimplyConnected U) (hUo : IsOpen U)
+    {g : X → ℂ} (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U)
+    {n : ℕ} (hn : n ≠ 0)
+    : ∃ f : X → ℂ, ContinuousOn f U ∧ ∀ x, f x ^ n = g x := by
   classical
   rcases exists_continuousOn_eqOn_exp_comp hUc hUo hgc hU₀ with ⟨f, hfc, hf⟩
   refine ⟨U.piecewise (exp <| f · / n) (g · ^ (1 / n : ℂ)), ?_, fun z ↦ ?_⟩
@@ -79,18 +86,21 @@ theorem exists_continuousOn_pow_eq (hUc : IsSimplyConnected U) (hUo : IsOpen U)
 
 namespace UnitDisc
 
-/-- If `g : X → 𝔻` defined on a locally path connected space
+/--
+If `g : X → 𝔻` defined on a locally path connected space
 is continuous on an open simply connected set `U` and `0 ∉ g '' U`,
 then for any `n ≠ 0`, there exists a continuous branch of `ⁿ√g` on `U`.
 More precisely, there exists a function `f : X → 𝔻` continuous on `U`
-such that `(f x) ^ n = g x` for all `x`. -/
+such that `(f x) ^ n = g x` for all `x`.
+-/
 protected theorem exists_continuousOn_pow_eq
-    (hUc : IsSimplyConnected U) (hUo : IsOpen U) {g : X → 𝔻}
-    (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U) (n : ℕ+) :
-    ∃ f : X → 𝔻, ContinuousOn f U ∧ ∀ x, f x ^ n = g x := by
-  rcases exists_continuousOn_pow_eq hUc hUo
-    (continuous_coe.comp_continuousOn hgc)
-    (by simpa using hU₀) n.ne_zero with ⟨f, hfc, hf⟩
+    (hUc : IsSimplyConnected U) (hUo : IsOpen U)
+    {g : X → 𝔻} (hgc : ContinuousOn g U) (hU₀ : 0 ∉ g '' U)
+    (n : ℕ+)
+    : ∃ f : X → 𝔻, ContinuousOn f U ∧ ∀ x, f x ^ n = g x := by
+  rcases exists_continuousOn_pow_eq hUc hUo (continuous_coe.comp_continuousOn hgc)
+      (by simpa using hU₀) n.ne_zero
+    with ⟨f, hfc, hf⟩
   suffices ∀ x, ‖f x‖ < 1 by
     lift f to X → 𝔻 using this
     refine ⟨f, isEmbedding_coe.continuousOn_iff.mpr hfc, fun x ↦ ?_⟩

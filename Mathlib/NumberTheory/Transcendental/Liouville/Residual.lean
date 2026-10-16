@@ -6,7 +6,6 @@ Authors: Yury Kudryashov
 module
 
 public import Mathlib.NumberTheory.Transcendental.Liouville.Basic
-
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.Instances.Irrational
 
@@ -19,15 +18,14 @@ similar statement about irrational numbers.
 
 public section
 
-
 open scoped Filter
 
 open Filter Set Metric
 
-theorem setOfPred_liouville_eq_iInter_iUnion :
-    { x | Liouville x } =
-      ⋂ n : ℕ, ⋃ (a : ℤ) (b : ℤ) (_ : 1 < b),
-      ball ((a : ℝ) / b) (1 / (b : ℝ) ^ n) \ {(a : ℝ) / b} := by
+theorem setOfPred_liouville_eq_iInter_iUnion
+    : { x | Liouville x }
+      = ⋂ n : ℕ, ⋃ (a : ℤ) (b : ℤ) (_ : 1 < b),
+        ball ((a : ℝ) / b) (1 / (b : ℝ) ^ n) \ {(a : ℝ) / b} := by
   ext x
   simp only [mem_iInter, mem_iUnion, Liouville, mem_ofPred_eq, exists_prop, Set.mem_sdiff,
     mem_singleton_iff, mem_ball, Real.dist_eq, and_comm]
@@ -44,10 +42,10 @@ theorem IsGδ.setOfPred_liouville : IsGδ { x | Liouville x } := by
 @[deprecated (since := "2026-07-09")]
 alias IsGδ.setOf_liouville := IsGδ.setOfPred_liouville
 
-theorem setOfPred_liouville_eq_irrational_inter_iInter_iUnion :
-    { x | Liouville x } =
-      { x | Irrational x } ∩ ⋂ n : ℕ, ⋃ (a : ℤ) (b : ℤ) (_ : 1 < b),
-      ball (a / b) (1 / (b : ℝ) ^ n) := by
+theorem setOfPred_liouville_eq_irrational_inter_iInter_iUnion
+    : { x | Liouville x }
+      = { x | Irrational x } ∩ ⋂ n : ℕ, ⋃ (a : ℤ) (b : ℤ) (_ : 1 < b),
+        ball (a / b) (1 / (b : ℝ) ^ n) := by
   refine Subset.antisymm ?_ ?_
   · refine subset_inter (fun x hx => hx.irrational) ?_
     rw [setOfPred_liouville_eq_iInter_iUnion]
@@ -66,8 +64,9 @@ theorem eventually_residual_liouville : ∀ᶠ x in residual ℝ, Liouville x :=
   rw [Filter.Eventually, setOfPred_liouville_eq_irrational_inter_iInter_iUnion]
   refine eventually_residual_irrational.and ?_
   refine residual_of_dense_Gδ ?_ (Rat.isDenseEmbedding_coe_real.dense.mono ?_)
-  · exact .iInter fun n => IsOpen.isGδ <|
-          isOpen_iUnion fun a => isOpen_iUnion fun b => isOpen_iUnion fun _hb => isOpen_ball
+  · exact .iInter fun n =>
+      IsOpen.isGδ <|
+        isOpen_iUnion fun a => isOpen_iUnion fun b => isOpen_iUnion fun _hb => isOpen_ball
   · rintro _ ⟨r, rfl⟩
     simp only [mem_iInter, mem_iUnion]
     refine fun n => ⟨r.num * 2, r.den * 2, ?_, ?_⟩

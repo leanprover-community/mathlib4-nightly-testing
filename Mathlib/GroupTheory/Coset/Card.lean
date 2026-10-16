@@ -30,19 +30,17 @@ namespace QuotientGroup
 instance fintype [Fintype α] (s : Subgroup α) [DecidableRel (leftRel s).r] : Fintype (α ⧸ s) :=
   Quotient.fintype (leftRel s)
 
-@[to_additive]
-instance (priority := 100) finite [Finite α] : Finite (α ⧸ s) :=
-  Quotient.finite _
+@[to_additive] instance (priority := 100) finite [Finite α] : Finite (α ⧸ s) := Quotient.finite _
 
 @[to_additive]
-instance fintypeQuotientRightRel [Fintype (α ⧸ s)] :
-    Fintype (Quotient (QuotientGroup.rightRel s)) :=
+instance fintypeQuotientRightRel [Fintype (α ⧸ s)]
+    : Fintype (Quotient (QuotientGroup.rightRel s)) :=
   .ofEquiv (α ⧸ s) (QuotientGroup.quotientRightRelEquivQuotientLeftRel s).symm
 
 variable (s) in
 @[to_additive]
-lemma card_quotient_rightRel [Fintype (α ⧸ s)] :
-    Fintype.card (Quotient (QuotientGroup.rightRel s)) = Fintype.card (α ⧸ s) :=
+lemma card_quotient_rightRel [Fintype (α ⧸ s)]
+    : Fintype.card (Quotient (QuotientGroup.rightRel s)) = Fintype.card (α ⧸ s) :=
   Fintype.ofEquiv_card (QuotientGroup.quotientRightRelEquivQuotientLeftRel s).symm
 
 end QuotientGroup
@@ -50,13 +48,13 @@ end QuotientGroup
 namespace Subgroup
 
 @[to_additive AddSubgroup.card_eq_card_quotient_mul_card_addSubgroup]
-theorem card_eq_card_quotient_mul_card_subgroup (s : Subgroup α) :
-    Nat.card α = Nat.card (α ⧸ s) * Nat.card s := by
+theorem card_eq_card_quotient_mul_card_subgroup (s : Subgroup α)
+    : Nat.card α = Nat.card (α ⧸ s) * Nat.card s := by
   rw [← Nat.card_prod]; exact Nat.card_congr Subgroup.groupEquivQuotientProdSubgroup
 
 @[to_additive]
-lemma card_mul_eq_card_subgroup_mul_card_quotient (s : Subgroup α) (t : Set α) :
-    Nat.card (t * s : Set α) = Nat.card s * Nat.card (t.image (↑) : Set (α ⧸ s)) := by
+lemma card_mul_eq_card_subgroup_mul_card_quotient (s : Subgroup α) (t : Set α)
+    : Nat.card (t * s : Set α) = Nat.card s * Nat.card (t.image (↑) : Set (α ⧸ s)) := by
   rw [← Nat.card_prod, Nat.card_congr]
   apply Equiv.trans _ (QuotientGroup.preimageMkEquivSubgroupProdSet _ _)
   rw [QuotientGroup.preimage_image_mk]
@@ -76,21 +74,23 @@ theorem card_quotient_dvd_card (s : Subgroup α) : Nat.card (α ⧸ s) ∣ Nat.c
 variable {H : Type*} [Group H]
 
 @[to_additive]
-theorem card_dvd_of_injective (f : α →* H) (hf : Function.Injective f) :
-    Nat.card α ∣ Nat.card H := by
+theorem card_dvd_of_injective (f : α →* H) (hf : Function.Injective f)
+    : Nat.card α ∣ Nat.card H := by
   calc
-      Nat.card α = Nat.card (f.range : Subgroup H) := Nat.card_congr (Equiv.ofInjective f hf)
-      _ ∣ Nat.card H := card_subgroup_dvd_card _
+    Nat.card α
+      = Nat.card (f.range : Subgroup H) := Nat.card_congr (Equiv.ofInjective f hf)
+    _ ∣ Nat.card H := card_subgroup_dvd_card _
 
 @[to_additive]
 theorem card_dvd_of_le {H K : Subgroup α} (hHK : H ≤ K) : Nat.card H ∣ Nat.card K :=
   card_dvd_of_injective (inclusion hHK) (inclusion_injective hHK)
 
 @[to_additive]
-theorem card_comap_dvd_of_injective (K : Subgroup H) (f : α →* H)
-    (hf : Function.Injective f) : Nat.card (K.comap f) ∣ Nat.card K :=
-  calc Nat.card (K.comap f) = Nat.card ((K.comap f).map f) :=
-      Nat.card_congr (equivMapOfInjective _ _ hf).toEquiv
+theorem card_comap_dvd_of_injective (K : Subgroup H) (f : α →* H) (hf : Function.Injective f)
+    : Nat.card (K.comap f) ∣ Nat.card K :=
+  calc
+    Nat.card (K.comap f)
+      = Nat.card ((K.comap f).map f) := Nat.card_congr (equivMapOfInjective _ _ hf).toEquiv
     _ ∣ Nat.card K := card_dvd_of_le (map_comap_le _ _)
 
 end Subgroup

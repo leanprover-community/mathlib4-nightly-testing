@@ -30,7 +30,8 @@ namespace CategoryTheory
 
 open MonoidalCategory
 
-variable {C : Type u₁} [Category.{v₁} C] [MonoidalCategory C]
+variable
+  {C : Type u₁} [Category.{v₁} C] [MonoidalCategory C]
   {D : Type u₂} [Category.{v₂} D] [MonoidalCategory D]
   {E : Type u₃} [Category.{v₃} E] [MonoidalCategory E]
   {E' : Type u₄} [Category.{v₄} E'] [MonoidalCategory E']
@@ -41,8 +42,10 @@ namespace NatTrans
 
 open Functor.LaxMonoidal
 
-/-- A natural transformation between (lax) monoidal functors is monoidal if it satisfies
-`ε F ≫ τ.app (𝟙_ C) = ε G` and `μ F X Y ≫ app (X ⊗ Y) = (app X ⊗ₘ app Y) ≫ μ G X Y`. -/
+/--
+A natural transformation between (lax) monoidal functors is monoidal if it satisfies
+`ε F ≫ τ.app (𝟙_ C) = ε G` and `μ F X Y ≫ app (X ⊗ Y) = (app X ⊗ₘ app Y) ≫ μ G X Y`.
+-/
 class IsMonoidal : Prop where
   unit : ε F₁ ≫ τ.app (𝟙_ C) = ε F₂ := by cat_disch
   tensor (X Y : C) : μ F₁ _ _ ≫ τ.app (X ⊗ Y) = (τ.app X ⊗ₘ τ.app Y) ≫ μ F₂ _ _ := by cat_disch
@@ -53,27 +56,27 @@ attribute [reassoc (attr := simp)] unit tensor
 
 instance id : IsMonoidal (𝟙 F₁) where
 
-instance comp (τ' : F₂ ⟶ F₃) [IsMonoidal τ] [IsMonoidal τ'] :
-    IsMonoidal (τ ≫ τ') where
+instance comp (τ' : F₂ ⟶ F₃) [IsMonoidal τ] [IsMonoidal τ'] : IsMonoidal (τ ≫ τ') where
 
 set_option backward.defeqAttrib.useBackward true in
-instance hcomp {G₁ G₂ : D ⥤ E} [G₁.LaxMonoidal] [G₂.LaxMonoidal] (τ' : G₁ ⟶ G₂)
-    [IsMonoidal τ] [IsMonoidal τ'] : IsMonoidal (τ ◫ τ') where
+instance hcomp
+    {G₁ G₂ : D ⥤ E} [G₁.LaxMonoidal] [G₂.LaxMonoidal] (τ' : G₁ ⟶ G₂) [IsMonoidal τ] [IsMonoidal τ']
+    : IsMonoidal (τ ◫ τ') where
   unit := by
     simp only [comp_obj, comp_ε, hcomp_app, assoc, naturality_assoc, unit_assoc, ← map_comp, unit]
   tensor X Y := by
-    simp only [comp_obj, comp_μ, hcomp_app, assoc, naturality_assoc,
-      tensor_assoc, ← tensorHom_comp_tensorHom, μ_natural_assoc]
+    simp only [comp_obj, comp_μ, hcomp_app, assoc, naturality_assoc, tensor_assoc,
+      ← tensorHom_comp_tensorHom, μ_natural_assoc]
     simp only [← map_comp, tensor]
 
-instance whiskerRight {G₁ : D ⥤ E} [G₁.LaxMonoidal] [IsMonoidal τ] :
-    IsMonoidal (Functor.whiskerRight τ G₁) := by
+instance whiskerRight {G₁ : D ⥤ E} [G₁.LaxMonoidal] [IsMonoidal τ]
+    : IsMonoidal (Functor.whiskerRight τ G₁) := by
   rw [← Functor.hcomp_id]
   infer_instance
 
-instance whiskerLeft {G₁ G₂ : D ⥤ E} [G₁.LaxMonoidal] [G₂.LaxMonoidal]
-    (τ' : G₁ ⟶ G₂) [IsMonoidal τ'] :
-    IsMonoidal (Functor.whiskerLeft F₁ τ') := by
+instance whiskerLeft
+    {G₁ G₂ : D ⥤ E} [G₁.LaxMonoidal] [G₂.LaxMonoidal] (τ' : G₁ ⟶ G₂) [IsMonoidal τ']
+    : IsMonoidal (Functor.whiskerLeft F₁ τ') := by
   rw [← Functor.id_hcomp]
   infer_instance
 
@@ -84,31 +87,31 @@ set_option backward.defeqAttrib.useBackward true in
 instance (F : C ⥤ D) [F.LaxMonoidal] : NatTrans.IsMonoidal F.rightUnitor.hom where
 
 set_option backward.defeqAttrib.useBackward true in
-instance (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') [F.LaxMonoidal] [G.LaxMonoidal] [H.LaxMonoidal] :
-    NatTrans.IsMonoidal (Functor.associator F G H).hom where
+instance (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') [F.LaxMonoidal] [G.LaxMonoidal] [H.LaxMonoidal]
+    : NatTrans.IsMonoidal (Functor.associator F G H).hom where
   unit := by
     simp only [comp_obj, comp_ε, assoc, Functor.map_comp, associator_hom_app, comp_id,
       Functor.comp_map]
   tensor X Y := by
-    simp only [comp_obj, comp_μ, associator_hom_app, Functor.comp_map, map_comp,
-      comp_id, tensorHom_id, id_whiskerRight, assoc, id_comp]
+    simp only [comp_obj, comp_μ, associator_hom_app, Functor.comp_map, map_comp, comp_id,
+      tensorHom_id, id_whiskerRight, assoc, id_comp]
 
 end IsMonoidal
 
-instance {F G : C ⥤ D} {H K : C ⥤ E} (α : F ⟶ G) (β : H ⟶ K)
-    [F.LaxMonoidal] [G.LaxMonoidal] [IsMonoidal α]
-    [H.LaxMonoidal] [K.LaxMonoidal] [IsMonoidal β] :
-    IsMonoidal (NatTrans.prod' α β) where
+instance
+    {F G : C ⥤ D} {H K : C ⥤ E} (α : F ⟶ G) (β : H ⟶ K)
+    [F.LaxMonoidal] [G.LaxMonoidal] [IsMonoidal α] [H.LaxMonoidal] [K.LaxMonoidal] [IsMonoidal β]
+    : IsMonoidal (NatTrans.prod' α β) where
   unit := by
     ext
     · rw [prod_comp_fst, prod'_ε_fst, prod'_ε_fst, prod'_app_fst, IsMonoidal.unit]
     · rw [prod_comp_snd, prod'_ε_snd, prod'_ε_snd, prod'_app_snd, IsMonoidal.unit]
   tensor X Y := by
     ext
-    · simp only [prod_comp_fst, prod'_μ_fst, prod'_app_fst,
-        prodMonoidal_tensorHom, IsMonoidal.tensor]
-    · simp only [prod_comp_snd, prod'_μ_snd, prod'_app_snd,
-        prodMonoidal_tensorHom, IsMonoidal.tensor]
+    · simp only [prod_comp_fst, prod'_μ_fst, prod'_app_fst, prodMonoidal_tensorHom,
+        IsMonoidal.tensor]
+    · simp only [prod_comp_snd, prod'_μ_snd, prod'_app_snd, prodMonoidal_tensorHom,
+        IsMonoidal.tensor]
 
 end NatTrans
 
@@ -120,8 +123,8 @@ instance : NatTrans.IsMonoidal e.inv where
   unit := by rw [← NatTrans.IsMonoidal.unit (τ := e.hom), assoc, hom_inv_id_app, comp_id]
   tensor X Y := by
     rw [← cancel_mono (e.hom.app (X ⊗ Y)), assoc, assoc, inv_hom_id_app, comp_id,
-      NatTrans.IsMonoidal.tensor, MonoidalCategory.tensorHom_comp_tensorHom_assoc,
-      inv_hom_id_app, inv_hom_id_app, tensorHom_id, id_whiskerRight, id_comp]
+      NatTrans.IsMonoidal.tensor, MonoidalCategory.tensorHom_comp_tensorHom_assoc, inv_hom_id_app,
+      inv_hom_id_app, tensorHom_id, id_whiskerRight, id_comp]
 
 end Iso
 
@@ -160,8 +163,7 @@ namespace Equivalence
 
 variable (e : C ≌ D) [e.functor.Monoidal] [e.inverse.Monoidal] [e.IsMonoidal]
 
-instance : NatTrans.IsMonoidal e.unit :=
-  inferInstanceAs (NatTrans.IsMonoidal e.toAdjunction.unit)
+instance : NatTrans.IsMonoidal e.unit := inferInstanceAs (NatTrans.IsMonoidal e.toAdjunction.unit)
 
 instance : NatTrans.IsMonoidal e.counit :=
   inferInstanceAs (NatTrans.IsMonoidal e.toAdjunction.counit)
@@ -185,12 +187,12 @@ instance : Category (LaxMonoidalFunctor C D) where
   comp α β := ⟨α.1 ≫ β.1, by have := α.2; have := β.2; infer_instance⟩
   id _ := ⟨𝟙 _, inferInstance⟩
 
-@[simp]
-lemma id_hom (F : LaxMonoidalFunctor C D) : Hom.hom (𝟙 F) = 𝟙 _ := rfl
+@[simp] lemma id_hom (F : LaxMonoidalFunctor C D) : Hom.hom (𝟙 F) = 𝟙 _ := rfl
 
 @[reassoc, simp]
-lemma comp_hom {F G H : LaxMonoidalFunctor C D} (α : F ⟶ G) (β : G ⟶ H) :
-    (α ≫ β).hom = α.hom ≫ β.hom := rfl
+lemma comp_hom {F G H : LaxMonoidalFunctor C D} (α : F ⟶ G) (β : G ⟶ H)
+    : (α ≫ β).hom = α.hom ≫ β.hom :=
+  rfl
 
 @[ext]
 lemma hom_ext {F G : LaxMonoidalFunctor C D} {α β : F ⟶ G} (h : α.hom = β.hom) : α = β := by
@@ -198,14 +200,14 @@ lemma hom_ext {F G : LaxMonoidalFunctor C D} {α β : F ⟶ G} (h : α.hom = β.
 
 /-- Constructor for morphisms in the category `LaxMonoidalFunctor C D`. -/
 @[simps]
-def homMk {F G : LaxMonoidalFunctor C D} (f : F.toFunctor ⟶ G.toFunctor) [NatTrans.IsMonoidal f] :
-    F ⟶ G := ⟨f, inferInstance⟩
+def homMk {F G : LaxMonoidalFunctor C D} (f : F.toFunctor ⟶ G.toFunctor) [NatTrans.IsMonoidal f]
+    : F ⟶ G :=
+  ⟨f, inferInstance⟩
 
 /-- Constructor for isomorphisms in the category `LaxMonoidalFunctor C D`. -/
 @[simps]
-def isoMk {F G : LaxMonoidalFunctor C D} (e : F.toFunctor ≅ G.toFunctor)
-    [NatTrans.IsMonoidal e.hom] :
-    F ≅ G where
+def isoMk {F G : LaxMonoidalFunctor C D} (e : F.toFunctor ≅ G.toFunctor) [NatTrans.IsMonoidal e.hom]
+    : F ≅ G where
   hom := homMk e.hom
   inv := homMk e.inv
 
@@ -213,13 +215,15 @@ open Functor.LaxMonoidal
 
 /-- Constructor for isomorphisms between lax monoidal functors. -/
 @[simps!]
-def isoOfComponents {F G : LaxMonoidalFunctor C D} (e : ∀ X, F.obj X ≅ G.obj X)
+def isoOfComponents
+    {F G : LaxMonoidalFunctor C D} (e : ∀ X, F.obj X ≅ G.obj X)
     (naturality : ∀ {X Y : C} (f : X ⟶ Y), F.map f ≫ (e Y).hom = (e X).hom ≫ G.map f := by
       cat_disch)
     (unit : ε F.toFunctor ≫ (e (𝟙_ C)).hom = ε G.toFunctor := by cat_disch)
-    (tensor : ∀ X Y, μ F.toFunctor X Y ≫ (e (X ⊗ Y)).hom =
-      ((e X).hom ⊗ₘ (e Y).hom) ≫ μ G.toFunctor X Y := by cat_disch) :
-    F ≅ G :=
+    (tensor : ∀ X Y,
+        μ F.toFunctor X Y ≫ (e (X ⊗ Y)).hom = ((e X).hom ⊗ₘ (e Y).hom) ≫ μ G.toFunctor X Y := by
+      cat_disch)
+    : F ≅ G :=
   @isoMk _ _ _ _ _ _ _ _ (NatIso.ofComponents e naturality) (by constructor <;> assumption)
 
 end LaxMonoidalFunctor
@@ -230,9 +234,9 @@ namespace Functor.Monoidal
 Transporting a monoidal structure along a natural isomorphism of functors makes the isomorphism
 a monoidal natural transformation.
 -/
-lemma natTransIsMonoidal_of_transport {F G : C ⥤ D} [F.Monoidal] (e : F ≅ G) :
-    letI : G.Monoidal := transport e
-    e.hom.IsMonoidal := by
+lemma natTransIsMonoidal_of_transport {F G : C ⥤ D} [F.Monoidal] (e : F ≅ G)
+    : letI : G.Monoidal := transport e
+      e.hom.IsMonoidal := by
   let : G.Monoidal := transport e
   refine ⟨rfl, fun X Y ↦ ?_⟩
   simp [transport_μ, tensorHom_comp_tensorHom_assoc]

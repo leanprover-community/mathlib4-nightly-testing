@@ -101,48 +101,64 @@ initialize registerTraceClass `congr!.synthesize
 
 /-- The configuration for the `congr!` tactic. -/
 structure Congr!.Config where
-  /-- If `closePre := true`, then try to close goals before applying congruence lemmas
+  /--
+  If `closePre := true`, then try to close goals before applying congruence lemmas
   using tactics such as `rfl` and `assumption`. These tactics are applied with the
-  transparency level specified by `preTransparency`, which is `.reducible` by default. -/
+  transparency level specified by `preTransparency`, which is `.reducible` by default.
+  -/
   closePre : Bool := true
-  /-- If `closePost := true`, then try to close goals that remain after no more congruence
+  /--
+  If `closePost := true`, then try to close goals that remain after no more congruence
   lemmas can be applied, using the same tactics as `closePre`. These tactics are applied
   with the transparency level specified by `postTransparency`, which is currently default
-  transparency but in the future will become `.reducible` by default. -/
+  transparency but in the future will become `.reducible` by default.
+  -/
   closePost : Bool := true
-  /-- The transparency level to use when applying a congruence theorem.
-  By default this is `.reducible`, which prevents unfolding of most definitions. -/
+  /--
+  The transparency level to use when applying a congruence theorem.
+  By default this is `.reducible`, which prevents unfolding of most definitions.
+  -/
   transparency : TransparencyMode := TransparencyMode.reducible
-  /-- The transparency level to use when trying to close goals before applying congruence lemmas.
+  /--
+  The transparency level to use when trying to close goals before applying congruence lemmas.
   This includes trying to prove the goal by `rfl` and using the `assumption` tactic.
-  By default this is `.reducible`, which prevents unfolding of most definitions. -/
+  By default this is `.reducible`, which prevents unfolding of most definitions.
+  -/
   preTransparency : TransparencyMode := TransparencyMode.reducible
-  /-- The transparency level to use when trying to close goals after no more congruence lemmas can
+  /--
+  The transparency level to use when trying to close goals after no more congruence lemmas can
   be applied. This includes trying to prove the goal by `rfl` and using the `assumption` tactic.
   For backwards compatibility this is set to `.default`, which will be changed in the future to
   `.reducible`.
   -/
   postTransparency : TransparencyMode := TransparencyMode.default
-  /-- For passes that synthesize a congruence lemma using one side of the equality,
+  /--
+  For passes that synthesize a congruence lemma using one side of the equality,
   we run the pass both for the left-hand side and the right-hand side. If `preferLHS` is `true`
   then we start with the left-hand side.
 
   This can be used to control which side's definitions are expanded when applying the
-  congruence lemma (if `preferLHS = true` then the RHS can be expanded). -/
+  congruence lemma (if `preferLHS = true` then the RHS can be expanded).
+  -/
   preferLHS : Bool := true
-  /-- Allow both sides to be partial applications, and allow overapplications.
+  /--
+  Allow both sides to be partial applications, and allow overapplications.
   When false, given an equality `f a b = g x y z` this means we never consider
   proving `f a = g x y`.
 
   In this case, we might still consider `f = g x` if a pass generates a congruence lemma using the
   left-hand side. Use `sameFun := true` to ensure both sides are applications
-  of the same function (making it be similar to the `congr` tactic). -/
+  of the same function (making it be similar to the `congr` tactic).
+  -/
   partialApp : Bool := true
-  /-- Whether to require that both sides of an equality be applications of defeq functions.
+  /--
+  Whether to require that both sides of an equality be applications of defeq functions.
   That is, if true, `f a = g x` is only considered if `f` and `g` are defeq (making it be similar
-  to the `congr` tactic). -/
+  to the `congr` tactic).
+  -/
   sameFun : Bool := false
-  /-- The maximum number of arguments to consider when doing congruence of function applications.
+  /--
+  The maximum number of arguments to consider when doing congruence of function applications.
   For example, with `f a b c = g w x y z`, setting `maxArgs := some 2` means it will only consider
   either `f a b = g w x y` and `c = z` or `f a = g w x`, `b = y`, and `c = z`. Setting
   `maxArgs := none` (the default) means no limit.
@@ -153,9 +169,11 @@ structure Congr!.Config where
 
   When there aren't such dependency issues, setting `maxArgs := some 1` causes `congr!` to
   do congruence on a single argument at a time. This can be used in conjunction with the
-  iteration limit to control exactly how many arguments are to be processed by congruence. -/
+  iteration limit to control exactly how many arguments are to be processed by congruence.
+  -/
   maxArgs : Option Nat := none
-  /-- For type arguments that are implicit or have forward dependencies, whether or not `congr!`
+  /--
+  For type arguments that are implicit or have forward dependencies, whether or not `congr!`
   should generate equalities even if the types do not look plausibly equal.
 
   We have a heuristic in the main congruence generator that types
@@ -176,24 +194,34 @@ structure Congr!.Config where
   The way this is implemented is that when the congruence generator is comparing arguments when
   looking at an equality of function applications, it marks a function parameter as "fixed" if the
   provided arguments are types that are not plausibly equal. The effect of this is that congruence
-  succeeds only if those arguments are defeq at `transparency` transparency. -/
+  succeeds only if those arguments are defeq at `transparency` transparency.
+  -/
   typeEqs : Bool := false
-  /-- As a last pass, perform eta expansion of both sides of an equality. For example,
-  this transforms a bare `HAdd.hAdd` into `fun x y => x + y`. -/
+  /--
+  As a last pass, perform eta expansion of both sides of an equality. For example,
+  this transforms a bare `HAdd.hAdd` into `fun x y => x + y`.
+  -/
   etaExpand : Bool := false
-  /-- Whether to use the congruence generator that is used by `simp` and `congr`. This generator
+  /--
+  Whether to use the congruence generator that is used by `simp` and `congr`. This generator
   is more strict, and it does not respect all configuration settings. It does respect
   `preferLHS`, `partialApp` and `maxArgs` and transparency settings. It acts as if `sameFun := true`
-  and it ignores `typeEqs`. -/
+  and it ignores `typeEqs`.
+  -/
   useCongrSimp : Bool := false
-  /-- Whether to use a special congruence lemma for `BEq` instances.
-  This synthesizes `LawfulBEq` instances to discharge equalities of `BEq` instances. -/
+  /--
+  Whether to use a special congruence lemma for `BEq` instances.
+  This synthesizes `LawfulBEq` instances to discharge equalities of `BEq` instances.
+  -/
   beqEq : Bool := true
 
-/-- A configuration option that makes `congr!` do the sorts of aggressive unfoldings that `congr`
+/--
+A configuration option that makes `congr!` do the sorts of aggressive unfoldings that `congr`
 does while also similarly preventing `congr!` from considering partial applications or congruences
-between different functions being applied. -/
-@[expose] def Congr!.Config.unfoldSameFun : Congr!.Config where
+between different functions being applied.
+-/
+@[expose]
+def Congr!.Config.unfoldSameFun : Congr!.Config where
   partialApp := false
   sameFun := true
   transparency := .default
@@ -215,21 +243,23 @@ Return the `fvarId` for the new hypothesis and the new subgoals.
 We apply it with transparency settings specified by `Congr!.Config.transparency`.
 -/
 private def applyCongrThm?
-    (config : Congr!.Config) (mvarId : MVarId) (congrThmType congrThmProof : Expr) :
-    MetaM (List MVarId) := do
+    (config : Congr!.Config) (mvarId : MVarId) (congrThmType congrThmProof : Expr)
+    : MetaM (List MVarId) := do
   trace[congr!] "trying to apply congr lemma {congrThmType}"
   try
     let mvarId ← mvarId.assert (← mkFreshUserName `h_congr_thm) congrThmType congrThmProof
     let (fvarId, mvarId) ← mvarId.intro1P
-    let mvarIds ← withTransparency config.transparency <|
-      mvarId.apply (mkFVar fvarId) { synthAssignedInstances := false }
+    let mvarIds ←
+      withTransparency config.transparency <|
+        mvarId.apply (mkFVar fvarId) { synthAssignedInstances := false }
     mvarIds.mapM fun mvarId => mvarId.tryClear fvarId
   catch e =>
     withTraceNode `congr! (fun _ => pure m!"failed to apply congr lemma") do
       trace[congr!] "{e.toMessageData}"
     throw e
 
-/-- Returns whether or not it's reasonable to consider an equality between types `ty1` and `ty2`.
+/--
+Returns whether or not it's reasonable to consider an equality between types `ty1` and `ty2`.
 The heuristic is the following:
 
 - If `ty1` and `ty2` are in `Prop`, then yes.
@@ -240,10 +270,12 @@ The heuristic is the following:
 This helps keep congr from going too far and generating hypotheses like `ℝ = ℤ`.
 
 To keep things from going out of control, there is a `maxDepth`. Additionally, if we do the check
-with `maxDepth = 0` then the heuristic answers "no". -/
+with `maxDepth = 0` then the heuristic answers "no".
+-/
 def Congr!.plausiblyEqualTypes (ty1 ty2 : Expr) (maxDepth : Nat := 5) : MetaM Bool :=
   match maxDepth with
-  | 0 => return false
+  | 0 =>
+    return false
   | maxDepth + 1 => do
     -- Props are plausibly equal
     if (← isProp ty1) && (← isProp ty2) then
@@ -277,14 +309,14 @@ of the target, generates the congruence lemma, then tries applying it. This can 
 with higher transparency settings. To help the unifier, in this mode it assumes both sides have the
 exact same function.
 -/
-partial
-def Lean.MVarId.smartHCongr? (config : Congr!.Config) (mvarId : MVarId) :
-    MetaM (Option (List MVarId)) :=
+partial def Lean.MVarId.smartHCongr? (config : Congr!.Config) (mvarId : MVarId)
+    : MetaM (Option (List MVarId)) :=
   mvarId.withContext do
     mvarId.checkNotAssigned `congr!
     commitWhenSome? do
       let mvarId ← mvarId.eqOfHEq
-      let some (_, lhs, _, rhs) := (← withReducible mvarId.getType').heq? | return none
+      let some (_, lhs, _, rhs) := (← withReducible mvarId.getType').heq?
+        | return none
       if let some mvars ← loop mvarId 0 lhs rhs [] [] then
         return mvars
       -- The "correct" behavior failed. However, it's often useful
@@ -301,8 +333,8 @@ def Lean.MVarId.smartHCongr? (config : Congr!.Config) (mvarId : MVarId) :
       else
         return none
 where
-  loop (mvarId : MVarId) (numArgs : Nat) (lhs rhs : Expr) (lhsArgs rhsArgs : List Expr) :
-      MetaM (Option (List MVarId)) :=
+  loop (mvarId : MVarId) (numArgs : Nat) (lhs rhs : Expr) (lhsArgs rhsArgs : List Expr)
+      : MetaM (Option (List MVarId)) :=
     match lhs.cleanupAnnotations, rhs.cleanupAnnotations with
     | .app f a, .app f' b => do
       if not (config.numArgsOk (numArgs + 1)) then
@@ -336,23 +368,24 @@ where
               fixed := fixed.push true
               continue
         fixed := fixed.push (← withReducible <| withNewMCtxDepth <| isDefEq larg rarg)
-      let cthm ← mkRichHCongr (forceHEq := true) (← inferType f) info
-                  (fixedFun := funDefEq) (fixedParams := fixed)
+      let cthm ←
+        mkRichHCongr (forceHEq := true) (← inferType f) info (fixedFun := funDefEq)
+          (fixedParams := fixed)
       -- Now see if the congruence theorem actually applies in this situation by applying it!
       let (congrThm', congrProof') :=
         if funDefEq then
           (cthm.type.bindingBody!.instantiate1 f, cthm.proof.beta #[f])
         else
-          (cthm.type.bindingBody!.bindingBody!.instantiateRev #[f, f'],
-           cthm.proof.beta #[f, f'])
+          (cthm.type.bindingBody!.bindingBody!.instantiateRev #[f, f'], cthm.proof.beta #[f, f'])
       observing? <| applyCongrThm? config mvarId congrThm' congrProof'
-    | _, _ => return none
+    | _, _ =>
+      return none
   forSide (mvarId : MVarId) (side : Expr) : MetaM (Option (List MVarId)) := do
     let side := side.cleanupAnnotations
     if not side.isApp then return none
     let numArgs := config.maxArgsFor side.getAppNumArgs
     if not config.partialApp && numArgs < side.getAppNumArgs then
-        return none
+      return none
     let mut f := side
     for _ in [:numArgs] do
       f := f.appFn!'
@@ -373,8 +406,8 @@ where
           fixed := fixed.push false
         else
           fixed := fixed.push true
-    let cthm ← mkRichHCongr (forceHEq := true) (← inferType f) info
-                (fixedFun := true) (fixedParams := fixed)
+    let cthm ←
+      mkRichHCongr (forceHEq := true) (← inferType f) info (fixedFun := true) (fixedParams := fixed)
     let congrThm' := cthm.type.bindingBody!.instantiate1 f
     let congrProof' := cthm.proof.beta #[f]
     observing? <| applyCongrThm? config mvarId congrThm' congrProof'
@@ -387,11 +420,12 @@ It uses `Lean.Meta.mkCongrSimp?` to generate a congruence lemma, like in the `co
 
 Applies the congruence generated congruence lemmas according to `config`.
 -/
-def Lean.MVarId.congrSimp? (config : Congr!.Config) (mvarId : MVarId) :
-    MetaM (Option (List MVarId)) :=
+def Lean.MVarId.congrSimp? (config : Congr!.Config) (mvarId : MVarId)
+    : MetaM (Option (List MVarId)) :=
   mvarId.withContext do
     mvarId.checkNotAssigned `congrSimp?
-    let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq? | return none
+    let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq?
+      | return none
     let (fst, snd) := if config.preferLHS then (lhs, rhs) else (rhs, lhs)
     if let some mvars ← forSide mvarId fst then
       return mvars
@@ -417,8 +451,7 @@ where
   mkCongrSimpNArgs (f : Expr) (nArgs : Nat) : MetaM (Option CongrTheorem) := do
     let f := (← Lean.instantiateMVars f).cleanupAnnotations
     let info ← getFunInfoNArgs f nArgs
-    mkCongrSimpCore? f info
-      (← getCongrSimpKinds f info) (subsingletonInstImplicitRhs := false)
+    mkCongrSimpCore? f info (← getCongrSimpKinds f info) (subsingletonInstImplicitRhs := false)
 
 /--
 Try applying user-provided congruence lemmas. If any are applicable,
@@ -426,11 +459,12 @@ returns a list of new goals.
 
 Tries a congruence lemma associated to the LHS and then, if that failed, the RHS.
 -/
-def Lean.MVarId.userCongr? (config : Congr!.Config) (mvarId : MVarId) :
-    MetaM (Option (List MVarId)) :=
+def Lean.MVarId.userCongr? (config : Congr!.Config) (mvarId : MVarId)
+    : MetaM (Option (List MVarId)) :=
   mvarId.withContext do
     mvarId.checkNotAssigned `userCongr?
-    let some (lhs, rhs) := (← withReducible mvarId.getType').eqOrIff? | return none
+    let some (lhs, rhs) := (← withReducible mvarId.getType').eqOrIff?
+      | return none
     let (fst, snd) := if config.preferLHS then (lhs, rhs) else (rhs, lhs)
     if let some mvars ← forSide fst then
       return mvars
@@ -442,23 +476,23 @@ where
   forSide (side : Expr) : MetaM (Option (List MVarId)) := do
     let side := side.cleanupAnnotations
     if not side.isApp then return none
-    let some name := side.getAppFn.constName? | return none
+    let some name := side.getAppFn.constName?
+      | return none
     let congrTheorems := (← getSimpCongrTheorems).get name
     -- Note: congruence theorems are provided in decreasing order of priority.
     for congrTheorem in congrTheorems do
-      let res ← observing? do
-        let cinfo ← getConstInfo congrTheorem.theoremName
-        let us ← cinfo.levelParams.mapM fun _ => mkFreshLevelMVar
-        let proof := mkConst congrTheorem.theoremName us
-        let ptype ← instantiateTypeLevelParams cinfo.toConstantVal us
-        applyCongrThm? config mvarId ptype proof
+      let res ←
+        observing? do
+          let cinfo ← getConstInfo congrTheorem.theoremName
+          let us ← cinfo.levelParams.mapM fun _ => mkFreshLevelMVar
+          let proof := mkConst congrTheorem.theoremName us
+          let ptype ← instantiateTypeLevelParams cinfo.toConstantVal us
+          applyCongrThm? config mvarId ptype proof
       if let some mvars := res then
         return mvars
     return none
 
-/--
-Try to apply `pi_congr`. This is similar to `Lean.MVar.congrImplies?`.
--/
+/-- Try to apply `pi_congr`. This is similar to `Lean.MVar.congrImplies?`. -/
 def Lean.MVarId.congrPi? (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   observing? do withReducible <| mvarId.apply (← mkConstWithFreshMVarLevels `pi_congr)
 
@@ -471,7 +505,8 @@ doing congruence we don't want to apply `funext` unnecessarily.
 -/
 def Lean.MVarId.obviousFunext? (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   mvarId.withContext <| observing? do
-    let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq? | failure
+    let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq?
+      | failure
     if not lhs.cleanupAnnotations.isLambda && not rhs.cleanupAnnotations.isLambda then failure
     mvarId.apply (← mkConstWithFreshMVarLevels ``funext)
 
@@ -484,20 +519,25 @@ Need to have `Mathlib/Logic/Function/Basic.lean` imported for this to succeed.
 -/
 def Lean.MVarId.obviousHfunext? (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   mvarId.withContext <| observing? do
-    let some (_, lhs, _, rhs) := (← withReducible mvarId.getType').heq? | failure
+    let some (_, lhs, _, rhs) := (← withReducible mvarId.getType').heq?
+      | failure
     if not lhs.cleanupAnnotations.isLambda && not rhs.cleanupAnnotations.isLambda then failure
     mvarId.apply (← mkConstWithFreshMVarLevels `Function.hfunext)
 
-/-- Like `implies_congr` but provides an additional assumption to the second hypothesis.
-This is a non-dependent version of `pi_congr` that allows the domains to be different. -/
-private theorem implies_congr' {α α' : Sort u} {β β' : Sort v} (h : α = α') (h' : α' → β = β') :
-    (α → β) = (α' → β') := by
+/--
+Like `implies_congr` but provides an additional assumption to the second hypothesis.
+This is a non-dependent version of `pi_congr` that allows the domains to be different.
+-/
+private theorem implies_congr' {α α' : Sort u} {β β' : Sort v} (h : α = α') (h' : α' → β = β')
+    : (α → β) = (α' → β') := by
   cases h
   change (∀ (x : α), (fun _ => β) x) = _
   rw [funext h']
 
-/-- A version of `Lean.MVarId.congrImplies?` that uses `implies_congr'`
-instead of `implies_congr`. -/
+/--
+A version of `Lean.MVarId.congrImplies?` that uses `implies_congr'`
+instead of `implies_congr`.
+-/
 def Lean.MVarId.congrImplies?' (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   observing? do
     let [mvarId₁, mvarId₂] ← mvarId.apply (← mkConstWithFreshMVarLevels ``implies_congr')
@@ -513,7 +553,8 @@ If successful, this reduces proving `@HEq α x β y` to proving `α = β`.
 def Lean.MVarId.subsingletonHelim? (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   mvarId.withContext <| observing? do
     mvarId.checkNotAssigned `subsingletonHelim
-    let some (α, lhs, β, rhs) := (← withReducible mvarId.getType').heq? | failure
+    let some (α, lhs, β, rhs) := (← withReducible mvarId.getType').heq?
+      | failure
     withSubsingletonAsFast fun elim => do
       let eqmvar ← mkFreshExprSyntheticOpaqueMVar (← mkEq α β) (← mvarId.getTag)
       -- First try synthesizing using the left-hand side for the Subsingleton instance
@@ -534,27 +575,29 @@ by synthesizing `LawfulBEq` instances for both.
 def Lean.MVarId.beqInst? (mvarId : MVarId) : MetaM (Option (List MVarId)) :=
   observing? do withReducible <| mvarId.applyConst ``lawful_beq_subsingleton
 
-/--
-A list of all the congruence strategies used by `Lean.MVarId.congrCore!`.
--/
-def Lean.MVarId.congrPasses! :
-    List (String × (Congr!.Config → MVarId → MetaM (Option (List MVarId)))) :=
-  [("user congr", userCongr?),
-   ("hcongr lemma", smartHCongr?),
-   ("congr simp lemma", when (·.useCongrSimp) congrSimp?),
-   ("Subsingleton.helim", fun _ => subsingletonHelim?),
-   ("BEq instances", when (·.beqEq) fun _ => beqInst?),
-   ("obvious funext", fun _ => obviousFunext?),
-   ("obvious hfunext", fun _ => obviousHfunext?),
-   ("congr_implies", fun _ => congrImplies?'),
-   ("congr_pi", fun _ => congrPi?)]
+/-- A list of all the congruence strategies used by `Lean.MVarId.congrCore!`. -/
+def Lean.MVarId.congrPasses!
+    : List (String × (Congr!.Config → MVarId → MetaM (Option (List MVarId)))) := [
+  ("user congr", userCongr?),
+  ("hcongr lemma", smartHCongr?),
+  ("congr simp lemma", when (·.useCongrSimp) congrSimp?),
+  ("Subsingleton.helim", fun _ => subsingletonHelim?),
+  ("BEq instances", when (·.beqEq) fun _ => beqInst?),
+  ("obvious funext", fun _ => obviousFunext?),
+  ("obvious hfunext", fun _ => obviousHfunext?),
+  ("congr_implies", fun _ => congrImplies?'),
+  ("congr_pi", fun _ => congrPi?)
+]
 where
   /--
   Conditionally runs a congruence strategy depending on the predicate `b` applied to the config.
   -/
-  when (b : Congr!.Config → Bool) (f : Congr!.Config → MVarId → MetaM (Option (List MVarId)))
-      (config : Congr!.Config) (mvar : MVarId) : MetaM (Option (List MVarId)) := do
-    unless b config do return none
+  when
+      (b : Congr!.Config → Bool) (f : Congr!.Config → MVarId → MetaM (Option (List MVarId)))
+      (config : Congr!.Config) (mvar : MVarId)
+      : MetaM (Option (List MVarId)) := do
+    unless b config do
+      return none
     f config mvar
 
 structure CongrState where
@@ -569,17 +612,19 @@ abbrev CongrMetaM := StateRefT CongrState MetaM
 def CongrMetaM.nextPattern : CongrMetaM (Option (TSyntax `rintroPat)) := do
   modifyGet fun s =>
     if let p :: ps := s.patterns then
-      (p, {s with patterns := ps})
+      (p, { s with patterns := ps })
     else
       (none, s)
 
-private theorem heq_imp_of_eq_imp {α : Sort*} {x y : α} {p : x ≍ y → Prop}
-    (h : (he : x = y) → p (heq_of_eq he)) (he : x ≍ y) : p he := by
+private theorem heq_imp_of_eq_imp
+    {α : Sort*} {x y : α} {p : x ≍ y → Prop} (h : (he : x = y) → p (heq_of_eq he)) (he : x ≍ y)
+    : p he := by
   cases he
   exact h rfl
 
-private theorem eq_imp_of_iff_imp {x y : Prop} {p : x = y → Prop}
-    (h : (he : x ↔ y) → p (propext he)) (he : x = y) : p he := by
+private theorem eq_imp_of_iff_imp
+    {x y : Prop} {p : x = y → Prop} (h : (he : x ↔ y) → p (propext he)) (he : x = y)
+    : p he := by
   cases he
   exact h Iff.rfl
 
@@ -594,17 +639,17 @@ Cleaning up includes:
 - converting `x ≍ y` to `x = y` if possible.
 - converting `x = y` to `x ↔ y` if possible.
 -/
-partial
-def Lean.MVarId.introsClean (mvarId : MVarId) : CongrMetaM (List MVarId) :=
-  loop mvarId
+partial def Lean.MVarId.introsClean (mvarId : MVarId) : CongrMetaM (List MVarId) := loop mvarId
 where
   heqImpOfEqImp (mvarId : MVarId) : MetaM (Option MVarId) :=
     observing? <| withReducible do
-      let [mvarId] ← mvarId.apply (← mkConstWithFreshMVarLevels ``heq_imp_of_eq_imp) | failure
+      let [mvarId] ← mvarId.apply (← mkConstWithFreshMVarLevels ``heq_imp_of_eq_imp)
+        | failure
       return mvarId
   eqImpOfIffImp (mvarId : MVarId) : MetaM (Option MVarId) :=
     observing? <| withReducible do
-      let [mvarId] ← mvarId.apply (← mkConstWithFreshMVarLevels ``eq_imp_of_iff_imp) | failure
+      let [mvarId] ← mvarId.apply (← mkConstWithFreshMVarLevels ``eq_imp_of_iff_imp)
+        | failure
       return mvarId
   loop (mvarId : MVarId) : CongrMetaM (List MVarId) :=
     mvarId.withContext do
@@ -614,9 +659,8 @@ where
         let mvarId := (← eqImpOfIffImp mvarId).getD mvarId
         let ty ← withReducible mvarId.getType'
         if ty.isArrow then
-          if ← (isTrivialType ty.bindingDomain!
-                <||> (← getLCtx).anyM (fun decl => do
-                        return (← Lean.instantiateMVars decl.type) == ty.bindingDomain!)) then
+          if ← (isTrivialType ty.bindingDomain! <||> (← getLCtx).anyM
+              (fun decl => do return (← Lean.instantiateMVars decl.type) == ty.bindingDomain!)) then
             -- Don't intro, clear it
             let mvar ← mkFreshExprSyntheticOpaqueMVar ty.bindingBody! (← mvarId.getTag)
             mvarId.assign <| .lam .anonymous ty.bindingDomain! mvar .default
@@ -642,9 +686,11 @@ where
         return true
     return false
 
-/-- Convert a goal into an `Eq` goal if possible (since we have a better shot at those).
+/--
+Convert a goal into an `Eq` goal if possible (since we have a better shot at those).
 Also, if `tryClose := true`, then try to close the goal using an assumption, `Subsingleton.Elim`,
-or definitional equality. -/
+or definitional equality.
+-/
 def Lean.MVarId.preCongr! (mvarId : MVarId) (tryClose : Bool) : MetaM (Option MVarId) := do
   -- Next, turn `HEq` and `Iff` into `Eq`
   let mvarId ← mvarId.heqOfEq
@@ -662,12 +708,14 @@ def Lean.MVarId.preCongr! (mvarId : MVarId) (tryClose : Bool) : MetaM (Option MV
     if ← mvarId.proofIrrelHeq then return none
   return some mvarId
 
-def Lean.MVarId.congrCore! (config : Congr!.Config) (mvarId : MVarId) :
-    MetaM (Option (List MVarId)) := do
+def Lean.MVarId.congrCore! (config : Congr!.Config) (mvarId : MVarId)
+    : MetaM (Option (List MVarId)) := do
   mvarId.checkNotAssigned `congr!
   let s ← saveState
-  /- We do `liftReflToEq` here rather than in `preCongr!` since we don't want to commit to it
-     if there are no relevant congr lemmas. -/
+  /-
+  We do `liftReflToEq` here rather than in `preCongr!` since we don't want to commit to it
+  if there are no relevant congr lemmas.
+  -/
   let mvarId ← Mathlib.Tactic.liftReflToEq mvarId
   for (passName, pass) in congrPasses! do
     try
@@ -678,8 +726,7 @@ def Lean.MVarId.congrCore! (config : Congr!.Config) (mvarId : MVarId) :
       throwTacticEx `congr! mvarId
         m!"internal error in congruence pass {passName}, {e.toMessageData}"
     if ← mvarId.isAssigned then
-      throwTacticEx `congr! mvarId
-        s!"congruence pass {passName} assigned metavariable but failed"
+      throwTacticEx `congr! mvarId s!"congruence pass {passName} assigned metavariable but failed"
   restoreState s
   trace[congr!] "no passes succeeded"
   return none
@@ -687,55 +734,59 @@ def Lean.MVarId.congrCore! (config : Congr!.Config) (mvarId : MVarId) :
 /-- A pass to clean up after `Lean.MVarId.preCongr!` and `Lean.MVarId.congrCore!`. -/
 def Lean.MVarId.postCongr! (config : Congr!.Config) (mvarId : MVarId) : MetaM (Option MVarId) :=
   withTransparency config.postTransparency do
-  let some mvarId ← mvarId.preCongr! config.closePost | return none
-  -- Convert `p = q` to `p ↔ q`, which is likely the more useful form:
-  let mvarId ← mvarId.propext
-  if config.closePost then
-    -- `preCongr` sees `p = q`, but now we've put it back into `p ↔ q` form.
-    if ← mvarId.assumptionCore then return none
-  if config.etaExpand then
-    if let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq? then
-      let lhs' ← Meta.etaExpand lhs
-      let rhs' ← Meta.etaExpand rhs
-      return ← mvarId.change (← mkEq lhs' rhs')
-  return mvarId
+    let some mvarId ← mvarId.preCongr! config.closePost
+      | return none
+    -- Convert `p = q` to `p ↔ q`, which is likely the more useful form:
+    let mvarId ← mvarId.propext
+    if config.closePost then
+      -- `preCongr` sees `p = q`, but now we've put it back into `p ↔ q` form.
+      if ← mvarId.assumptionCore then return none
+    if config.etaExpand then
+      if let some (_, lhs, rhs) := (← withReducible mvarId.getType').eq? then
+        let lhs' ← Meta.etaExpand lhs
+        let rhs' ← Meta.etaExpand rhs
+        return ← mvarId.change (← mkEq lhs' rhs')
+    return mvarId
 
-/-- A more insistent version of `Lean.MVarId.congrN`.
+/--
+A more insistent version of `Lean.MVarId.congrN`.
 See the documentation on the `congr!` syntax.
 
 The `depth?` argument controls the depth of the recursion. If `none`, then it uses a reasonably
-large bound that is linear in the expression depth. -/
-def Lean.MVarId.congrN! (mvarId : MVarId)
+large bound that is linear in the expression depth.
+-/
+def Lean.MVarId.congrN!
+    (mvarId : MVarId)
     (depth? : Option Nat := none) (config : Congr!.Config := {})
-    (patterns : List (TSyntax `rintroPat) := []) :
-    MetaM (List MVarId) := do
+    (patterns : List (TSyntax `rintroPat) := [])
+    : MetaM (List MVarId) := do
   let ty ← withReducible mvarId.getType'
   -- A reasonably large yet practically bounded default recursion depth.
   let defaultDepth := min 1000000 (8 * (1 + ty.approxDepth.toNat))
   let depth := depth?.getD defaultDepth
-  let (_, s) ← go depth depth mvarId |>.run {goals := #[], patterns := patterns}
+  let (_, s) ← go depth depth mvarId |>.run { goals := #[], patterns := patterns }
   return s.goals.toList
 where
   post (mvarId : MVarId) : CongrMetaM Unit := do
     for mvarId in ← mvarId.introsClean do
       if let some mvarId ← mvarId.postCongr! config then
-        modify (fun s => {s with goals := s.goals.push mvarId})
+        modify (fun s => { s with goals := s.goals.push mvarId })
       else
         trace[congr!] "Dispatched goal by post-processing step."
   go (depth : Nat) (n : Nat) (mvarId : MVarId) : CongrMetaM Unit := do
     for mvarId in ← mvarId.introsClean do
-      if let some mvarId ← withTransparency config.preTransparency <|
-                              mvarId.preCongr! config.closePre then
+      if let some mvarId ←
+          withTransparency config.preTransparency <| mvarId.preCongr! config.closePre then
         match n with
-          | 0 =>
-            trace[congr!] "At level {depth - n}, doing post-processing. {mvarId}"
+        | 0 =>
+          trace[congr!] "At level {depth - n}, doing post-processing. {mvarId}"
+          post mvarId
+        | n + 1 =>
+          trace[congr!] "At level {depth - n}, trying congrCore!. {mvarId}"
+          if let some mvarIds ← mvarId.congrCore! config then
+            mvarIds.forM (go depth n)
+          else
             post mvarId
-          | n + 1 =>
-            trace[congr!] "At level {depth - n}, trying congrCore!. {mvarId}"
-            if let some mvarIds ← mvarId.congrCore! config then
-              mvarIds.forM (go depth n)
-            else
-              post mvarId
 
 namespace Congr!
 
@@ -761,15 +812,16 @@ The `congr!` tactic is used by the `convert` and `convert_to` tactics.
 * `congr! (config := cfg)` uses the configuration options in `cfg` to control the congruence
   rules (see `Congr!.Config`).
 -/
-syntax (name := congr!) "congr!" Parser.Tactic.optConfig (ppSpace num)?
-  (" with" (ppSpace colGt rintroPat)*)? : tactic
+syntax (name := congr!)
+  "congr!" Parser.Tactic.optConfig (ppSpace num)? (" with" (ppSpace colGt rintroPat)*)?
+  : tactic
 
 elab_rules : tactic
-| `(tactic| congr! $cfg:optConfig $[$n]? $[with $ps?*]?) => do
-  let config ← elabConfig cfg
-  let patterns := (ps?.getD #[]).toList
-  liftMetaTactic fun g ↦
-    let depth := n.map (·.getNat)
-    g.congrN! depth config patterns
+  | `(tactic| congr! $cfg:optConfig $[$n]? $[with $ps?*]?) => do
+    let config ← elabConfig cfg
+    let patterns := (ps?.getD #[]).toList
+    liftMetaTactic fun g ↦
+      let depth := n.map (·.getNat)
+      g.congrN! depth config patterns
 
 end Congr!

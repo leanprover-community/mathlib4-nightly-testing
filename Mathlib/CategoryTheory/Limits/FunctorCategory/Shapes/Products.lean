@@ -22,8 +22,7 @@ universe w v v₁ v₂ u u₁ u₂
 
 namespace CategoryTheory.Limits
 
-variable {C : Type u} [Category.{v} C] {D : Type u₁} [Category.{v₁} D]
-  {α : Type w}
+variable {C : Type u} [Category.{v} C] {D : Type u₁} [Category.{v₁} D] {α : Type w}
 
 section Product
 
@@ -31,19 +30,19 @@ variable [HasLimitsOfShape (Discrete α) C]
 
 /-- Evaluating a product of functors amounts to taking the product of the evaluations. -/
 noncomputable def piObjIso (f : α → D ⥤ C) (d : D) : (∏ᶜ f).obj d ≅ ∏ᶜ (fun s => (f s).obj d) :=
-  limitObjIsoLimitCompEvaluation (Discrete.functor f) d ≪≫
-    HasLimit.isoOfNatIso (Discrete.compNatIsoDiscrete _ _)
+  limitObjIsoLimitCompEvaluation (Discrete.functor f) d
+    ≪≫ HasLimit.isoOfNatIso (Discrete.compNatIsoDiscrete _ _)
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-theorem piObjIso_hom_comp_π (f : α → D ⥤ C) (d : D) (s : α) :
-    (piObjIso f d).hom ≫ Pi.π (fun s => (f s).obj d) s = (Pi.π f s).app d := by
+theorem piObjIso_hom_comp_π (f : α → D ⥤ C) (d : D) (s : α)
+    : (piObjIso f d).hom ≫ Pi.π (fun s => (f s).obj d) s = (Pi.π f s).app d := by
   simp [piObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-theorem piObjIso_inv_comp_π (f : α → D ⥤ C) (d : D) (s : α) :
-    (piObjIso f d).inv ≫ (Pi.π f s).app d = Pi.π (fun s => (f s).obj d) s := by
+theorem piObjIso_inv_comp_π (f : α → D ⥤ C) (d : D) (s : α)
+    : (piObjIso f d).inv ≫ (Pi.π f s).app d = Pi.π (fun s => (f s).obj d) s := by
   simp [piObjIso]
 
 end Product
@@ -54,19 +53,19 @@ variable [HasColimitsOfShape (Discrete α) C]
 
 /-- Evaluating a coproduct of functors amounts to taking the coproduct of the evaluations. -/
 noncomputable def sigmaObjIso (f : α → D ⥤ C) (d : D) : (∐ f).obj d ≅ ∐ (fun s => (f s).obj d) :=
-  colimitObjIsoColimitCompEvaluation (Discrete.functor f) d ≪≫
-    HasColimit.isoOfNatIso (Discrete.compNatIsoDiscrete _ _)
+  colimitObjIsoColimitCompEvaluation (Discrete.functor f) d
+    ≪≫ HasColimit.isoOfNatIso (Discrete.compNatIsoDiscrete _ _)
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-theorem ι_comp_sigmaObjIso_hom (f : α → D ⥤ C) (d : D) (s : α) :
-    (Sigma.ι f s).app d ≫ (sigmaObjIso f d).hom = Sigma.ι (fun s => (f s).obj d) s := by
+theorem ι_comp_sigmaObjIso_hom (f : α → D ⥤ C) (d : D) (s : α)
+    : (Sigma.ι f s).app d ≫ (sigmaObjIso f d).hom = Sigma.ι (fun s => (f s).obj d) s := by
   simp [sigmaObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-theorem ι_comp_sigmaObjIso_inv (f : α → D ⥤ C) (d : D) (s : α) :
-    Sigma.ι (fun s => (f s).obj d) s ≫ (sigmaObjIso f d).inv = (Sigma.ι f s).app d := by
+theorem ι_comp_sigmaObjIso_inv (f : α → D ⥤ C) (d : D) (s : α)
+    : Sigma.ι (fun s => (f s).obj d) s ≫ (sigmaObjIso f d).inv = (Sigma.ι f s).app d := by
   simp [sigmaObjIso]
 
 end Coproduct

@@ -19,13 +19,11 @@ This file contains two equivalences:
 
 @[expose] public section
 
-
 open CategoryTheory
 
 namespace GrpCat
 
-/-- The functor `GrpCat ⥤ AddGrpCat` by sending `X ↦ Additive X` and `f ↦ f`.
--/
+/-- The functor `GrpCat ⥤ AddGrpCat` by sending `X ↦ Additive X` and `f ↦ f`. -/
 @[simps]
 def toAddGrp : GrpCat ⥤ AddGrpCat where
   obj X := ↧(Additive X)
@@ -35,8 +33,7 @@ end GrpCat
 
 namespace CommGrpCat
 
-/-- The functor `CommGrpCat ⥤ AddCommGrpCat` by sending `X ↦ Additive X` and `f ↦ f`.
--/
+/-- The functor `CommGrpCat ⥤ AddCommGrpCat` by sending `X ↦ Additive X` and `f ↦ f`. -/
 @[simps]
 def toAddCommGrp : CommGrpCat ⥤ AddCommGrpCat where
   obj X := ↧(Additive X)
@@ -46,8 +43,7 @@ end CommGrpCat
 
 namespace AddGrpCat
 
-/-- The functor `AddGrpCat ⥤ GrpCat` by sending `X ↦ Multiplicative X` and `f ↦ f`.
--/
+/-- The functor `AddGrpCat ⥤ GrpCat` by sending `X ↦ Multiplicative X` and `f ↦ f`. -/
 @[simps]
 def toGrp : AddGrpCat ⥤ GrpCat where
   obj X := ↧(Multiplicative X)
@@ -57,8 +53,7 @@ end AddGrpCat
 
 namespace AddCommGrpCat
 
-/-- The functor `AddCommGrpCat ⥤ CommGrpCat` by sending `X ↦ Multiplicative X` and `f ↦ f`.
--/
+/-- The functor `AddCommGrpCat ⥤ CommGrpCat` by sending `X ↦ Multiplicative X` and `f ↦ f`. -/
 @[simps]
 def toCommGrp : AddCommGrpCat ⥤ CommGrpCat where
   obj X := ↧(Multiplicative X)
@@ -66,8 +61,7 @@ def toCommGrp : AddCommGrpCat ⥤ CommGrpCat where
 
 end AddCommGrpCat
 
-/-- The equivalence of categories between `GrpCat` and `AddGrpCat`
--/
+/-- The equivalence of categories between `GrpCat` and `AddGrpCat` -/
 @[simps]
 def groupAddGroupEquivalence : GrpCat ≌ AddGrpCat where
   functor := GrpCat.toAddGrp
@@ -75,8 +69,7 @@ def groupAddGroupEquivalence : GrpCat ≌ AddGrpCat where
   unitIso := Iso.refl _
   counitIso := Iso.refl _
 
-/-- The equivalence of categories between `CommGrpCat` and `AddCommGrpCat`.
--/
+/-- The equivalence of categories between `CommGrpCat` and `AddCommGrpCat`. -/
 @[simps]
 def commGroupAddCommGroupEquivalence : CommGrpCat ≌ AddCommGrpCat where
   functor := CommGrpCat.toAddCommGrp

@@ -43,8 +43,8 @@ You can override this definition to set a better def-eq.
 class Preorder (α : Type*) extends LE α, LT α where
   protected le_refl : ∀ a : α, a ≤ a
   protected le_trans : ∀ a b c : α, a ≤ b → b ≤ c → a ≤ c
-  lt := fun a b => a ≤ b ∧ ¬b ≤ a
-  protected lt_iff_le_not_ge : ∀ a b : α, a < b ↔ a ≤ b ∧ ¬b ≤ a := by intros; rfl
+  lt := fun a b => a ≤ b ∧ ¬ b ≤ a
+  protected lt_iff_le_not_ge : ∀ a b : α, a < b ↔ a ≤ b ∧ ¬ b ≤ a := by intros; rfl
 
 attribute [to_dual self (reorder := le_trans (a c, 4 5), lt_iff_le_not_ge (a b))] Preorder.mk
 attribute [to_dual self (reorder := a c, 6 7)] Preorder.le_trans
@@ -70,20 +70,24 @@ lemma le_rfl : a ≤ a := le_refl a
 lemma le_trans : a ≤ b → b ≤ c → a ≤ c := Preorder.le_trans _ _ _
 
 @[to_dual self]
-lemma lt_iff_le_not_ge : a < b ↔ a ≤ b ∧ ¬b ≤ a := Preorder.lt_iff_le_not_ge _ _
+lemma lt_iff_le_not_ge : a < b ↔ a ≤ b ∧ ¬ b ≤ a := Preorder.lt_iff_le_not_ge _ _
 
 @[to_dual self]
 lemma lt_of_le_not_ge (hab : a ≤ b) (hba : ¬ b ≤ a) : a < b := lt_iff_le_not_ge.2 ⟨hab, hba⟩
 
-@[to_dual ge_of_eq] lemma le_of_eq (hab : a = b) : a ≤ b := by rw [hab]
-@[to_dual self] lemma le_of_lt (hab : a < b) : a ≤ b := (lt_iff_le_not_ge.1 hab).1
-@[to_dual self] lemma not_le_of_gt (hab : a < b) : ¬ b ≤ a := (lt_iff_le_not_ge.1 hab).2
-@[to_dual self] lemma not_lt_of_ge (hab : a ≤ b) : ¬ b < a := imp_not_comm.1 not_le_of_gt hab
+@[to_dual ge_of_eq]
+lemma le_of_eq (hab : a = b) : a ≤ b := by rw [hab]
+@[to_dual self]
+lemma le_of_lt (hab : a < b) : a ≤ b := (lt_iff_le_not_ge.1 hab).1
+@[to_dual self]
+lemma not_le_of_gt (hab : a < b) : ¬ b ≤ a := (lt_iff_le_not_ge.1 hab).2
+@[to_dual self]
+lemma not_lt_of_ge (hab : a ≤ b) : ¬ b < a := imp_not_comm.1 not_le_of_gt hab
 
 @[to_dual self] alias LT.lt.not_ge := not_le_of_gt
 @[to_dual self] alias LE.le.not_gt := not_lt_of_ge
 
-lemma lt_irrefl (a : α) : ¬a < a := fun h ↦ not_le_of_gt h le_rfl
+lemma lt_irrefl (a : α) : ¬ a < a := fun h ↦ not_le_of_gt h le_rfl
 
 @[to_dual lt_of_lt_of_le']
 lemma lt_of_lt_of_le (hab : a < b) (hbc : b ≤ c) : a < c :=
@@ -99,7 +103,7 @@ lemma lt_trans : a < b → b < c → a < c := fun h₁ h₂ => lt_of_lt_of_le h�
 @[to_dual ne_of_gt]
 lemma ne_of_lt (h : a < b) : a ≠ b := fun he => absurd h (he ▸ lt_irrefl a)
 @[to_dual self]
-lemma lt_asymm (h : a < b) : ¬b < a := fun h1 : b < a => lt_irrefl a (lt_trans h h1)
+lemma lt_asymm (h : a < b) : ¬ b < a := fun h1 : b < a => lt_irrefl a (lt_trans h h1)
 
 @[to_dual self] alias not_lt_of_gt := lt_asymm
 
@@ -109,16 +113,13 @@ lemma le_of_lt_or_eq (h : a < b ∨ a = b) : a ≤ b := h.elim le_of_lt le_of_eq
 lemma le_of_eq_or_lt (h : a = b ∨ a < b) : a ≤ b := h.elim le_of_eq le_of_lt
 
 @[to_dual self]
-lemma lt_iff_gt_iff_le_iff_ge : (a < b ↔ b < a) ↔ (a ≤ b ↔ b ≤ a) := by
-  grind [= lt_iff_le_not_ge]
+lemma lt_iff_gt_iff_le_iff_ge : (a < b ↔ b < a) ↔ (a ≤ b ↔ b ≤ a) := by grind [= lt_iff_le_not_ge]
 
 @[to_dual self]
-lemma lt_iff_le_iff_gt_iff_ge : (a < b ↔ a ≤ b) ↔ (b < a ↔ b ≤ a) := by
-  grind [= lt_iff_le_not_ge]
+lemma lt_iff_le_iff_gt_iff_ge : (a < b ↔ a ≤ b) ↔ (b < a ↔ b ≤ a) := by grind [= lt_iff_le_not_ge]
 
 @[to_dual self]
-lemma lt_iff_ge_iff_gt_iff_le : (a < b ↔ b ≤ a) ↔ (b < a ↔ a ≤ b) := by
-  grind [= lt_iff_le_not_ge]
+lemma lt_iff_ge_iff_gt_iff_le : (a < b ↔ b ≤ a) ↔ (b < a ↔ a ≤ b) := by grind [= lt_iff_le_not_ge]
 
 instance instTransLE : @Trans α α α LE.le LE.le LE.le := ⟨le_trans⟩
 instance instTransLT : @Trans α α α LT.lt LT.lt LT.lt := ⟨lt_trans⟩
@@ -137,31 +138,30 @@ instance instTransGEGT : @Trans α α α GE.ge GT.gt GT.gt := ⟨lt_of_le_of_lt'
 
 /-- `<` is decidable if `≤` is. -/
 @[instance_reducible]
-def decidableLTOfDecidableLE [DecidableLE α] : DecidableLT α :=
-  fun _ _ => decidable_of_iff _ lt_iff_le_not_ge.symm
+def decidableLTOfDecidableLE [DecidableLE α] : DecidableLT α := fun _ _ =>
+  decidable_of_iff _ lt_iff_le_not_ge.symm
 
-/-- `WCovBy a b` means that `a = b` or `b` covers `a`.
+/--
+`WCovBy a b` means that `a = b` or `b` covers `a`.
 This means that `a ≤ b` and there is no element in between. This is denoted `a ⩿ b`.
 -/
 @[to_dual self (reorder := 3 4)]
-def WCovBy (a b : α) : Prop :=
-  a ≤ b ∧ ∀ ⦃c⦄, a < c → ¬c < b
+def WCovBy (a b : α) : Prop := a ≤ b ∧ ∀ ⦃c⦄, a < c → ¬ c < b
 
 to_dual_insert_cast WCovBy := by grind
 
-@[inherit_doc]
-infixl:50 " ⩿ " => WCovBy
+@[inherit_doc] infixl:50 " ⩿ " => WCovBy
 
-/-- `CovBy a b` means that `b` covers `a`. This means that `a < b` and there is no element in
-between. This is denoted `a ⋖ b`. -/
+/--
+`CovBy a b` means that `b` covers `a`. This means that `a < b` and there is no element in
+between. This is denoted `a ⋖ b`.
+-/
 @[to_dual self (reorder := 3 4)]
-def CovBy {α : Type*} [LT α] (a b : α) : Prop :=
-  a < b ∧ ∀ ⦃c⦄, a < c → ¬c < b
+def CovBy {α : Type*} [LT α] (a b : α) : Prop := a < b ∧ ∀ ⦃c⦄, a < c → ¬ c < b
 
 to_dual_insert_cast CovBy := by grind
 
-@[inherit_doc]
-infixl:50 " ⋖ " => CovBy
+@[inherit_doc] infixl:50 " ⋖ " => CovBy
 
 end Preorder
 
@@ -209,7 +209,8 @@ def decidableEqOfDecidableLE [DecidableLE α] : DecidableEq α
   | a, b =>
     if hab : a ≤ b then
       if hba : b ≤ a then isTrue (le_antisymm hab hba) else isFalse fun heq => hba (heq ▸ le_refl _)
-    else isFalse fun heq => hab (heq ▸ le_refl _)
+    else
+      isFalse fun heq => hab (heq ▸ le_refl _)
 
 -- See Note [decidable namespace]
 @[to_dual Decidable.lt_or_eq_of_le']
@@ -221,8 +222,12 @@ protected lemma Decidable.le_iff_lt_or_eq [DecidableLE α] : a ≤ b ↔ a < b �
   ⟨Decidable.lt_or_eq_of_le, le_of_lt_or_eq⟩
 
 @[to_dual lt_or_eq_of_le']
-lemma lt_or_eq_of_le : a ≤ b → a < b ∨ a = b := open scoped Classical in Decidable.lt_or_eq_of_le
+lemma lt_or_eq_of_le : a ≤ b → a < b ∨ a = b :=
+  open scoped Classical in
+  Decidable.lt_or_eq_of_le
 @[to_dual le_iff_lt_or_eq']
-lemma le_iff_lt_or_eq : a ≤ b ↔ a < b ∨ a = b := open scoped Classical in Decidable.le_iff_lt_or_eq
+lemma le_iff_lt_or_eq : a ≤ b ↔ a < b ∨ a = b :=
+  open scoped Classical in
+  Decidable.le_iff_lt_or_eq
 
 end PartialOrder

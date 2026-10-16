@@ -21,7 +21,6 @@ derivative, support
 
 public section
 
-
 universe u v
 
 variable {𝕜 : Type u} [NontriviallyNormedField 𝕜]
@@ -29,7 +28,6 @@ variable {E : Type v} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {f : 𝕜 → E} {x : 𝕜}
 
 /-! ### Support of derivatives -/
-
 
 section Support
 
@@ -42,8 +40,8 @@ theorem HasStrictDerivAt.of_notMem_tsupport (h : x ∉ tsupport f) : HasStrictDe
 theorem HasDerivAt.of_notMem_tsupport (h : x ∉ tsupport f) : HasDerivAt f 0 x :=
   (HasStrictDerivAt.of_notMem_tsupport h).hasDerivAt
 
-theorem HasDerivWithinAt.of_notMem_tsupport {s : Set 𝕜} (h : x ∉ tsupport f) :
-    HasDerivWithinAt f 0 s x :=
+theorem HasDerivWithinAt.of_notMem_tsupport {s : Set 𝕜} (h : x ∉ tsupport f)
+    : HasDerivWithinAt f 0 s x :=
   (HasDerivAt.of_notMem_tsupport h).hasDerivWithinAt
 
 theorem deriv_of_notMem_tsupport (h : x ∉ tsupport f) : deriv f x = 0 := by
@@ -57,8 +55,8 @@ theorem support_deriv_subset : support (deriv f) ⊆ tsupport f := fun x ↦ by
 theorem tsupport_deriv_subset : tsupport (deriv f) ⊆ tsupport f :=
   closure_minimal support_deriv_subset isClosed_closure
 
-protected theorem HasCompactSupport.deriv (hf : HasCompactSupport f) :
-    HasCompactSupport (deriv f) :=
+protected theorem HasCompactSupport.deriv (hf : HasCompactSupport f)
+    : HasCompactSupport (deriv f) :=
   hf.mono' support_deriv_subset
 
 end Support

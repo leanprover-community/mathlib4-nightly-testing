@@ -56,14 +56,12 @@ inductive Γ'
   | bra
   | ket
   | comma
-  deriving DecidableEq, Fintype
+deriving DecidableEq, Fintype
 
-instance inhabitedΓ' : Inhabited Γ' :=
-  ⟨Γ'.blank⟩
+instance inhabitedΓ' : Inhabited Γ' := ⟨Γ'.blank⟩
 
 /-- The natural inclusion of `Bool` in `Γ'`. -/
-def inclusionBoolΓ' : Bool → Γ' :=
-  Γ'.bit
+def inclusionBoolΓ' : Bool → Γ' := Γ'.bit
 
 /-- An arbitrary section of the natural inclusion of `Bool` in `Γ'`. -/
 def sectionΓ'Bool : Γ' → Bool
@@ -89,13 +87,12 @@ def encodeNum : Num → List Bool
   | Num.pos n => encodePosNum n
 
 /-- An encoding function of `ℕ` in `Bool`. -/
-def encodeNat (n : ℕ) : List Bool :=
-  encodeNum n
+def encodeNat (n : ℕ) : List Bool := encodeNum n
 
 /-- A decoding function from `List Bool` to the positive binary numbers. -/
 def decodePosNum : List Bool → PosNum
   | false :: l => PosNum.bit0 (decodePosNum l)
-  | true  :: l => ite (l = []) PosNum.one (PosNum.bit1 (decodePosNum l))
+  | true :: l => ite (l = []) PosNum.one (PosNum.bit1 (decodePosNum l))
   | _ => PosNum.one
 
 /-- A decoding function from `List Bool` to the binary numbers. -/
@@ -105,25 +102,31 @@ def decodeNum : List Bool → Num := fun l => ite (l = []) Num.zero <| decodePos
 def decodeNat : List Bool → Nat := fun l => decodeNum l
 
 theorem encodePosNum_nonempty (n : PosNum) : encodePosNum n ≠ [] :=
-  PosNum.casesOn n (List.cons_ne_nil _ _) (fun _m => List.cons_ne_nil _ _) fun _m =>
-    List.cons_ne_nil _ _
+  PosNum.casesOn n (List.cons_ne_nil _ _)
+    (fun _m => List.cons_ne_nil _ _)
+    fun _m => List.cons_ne_nil _ _
 
-@[simp] theorem decode_encodePosNum (n) : decodePosNum (encodePosNum n) = n := by
+@[simp]
+theorem decode_encodePosNum (n) : decodePosNum (encodePosNum n) = n := by
   induction n with unfold encodePosNum decodePosNum
-  | one => rfl
+  | one =>
+    rfl
   | bit1 m hm =>
     rw [hm]
     exact ite_eq_right (encodePosNum_nonempty m)
-  | bit0 m hm => congrm PosNum.bit0 $hm
+  | bit0 m hm =>
+    congrm PosNum.bit0 $hm
 
-@[simp] theorem decode_encodeNum (n) : decodeNum (encodeNum n) = n := by
+@[simp]
+theorem decode_encodeNum (n) : decodeNum (encodeNum n) = n := by
   obtain - | n := n <;> unfold encodeNum decodeNum
   · rfl
   rw [decode_encodePosNum n]
   rw [PosNum.cast_to_num]
   exact ite_eq_right (encodePosNum_nonempty n)
 
-@[simp] theorem decode_encodeNat (n) : decodeNat (encodeNat n) = n := by
+@[simp]
+theorem decode_encodeNat (n) : decodeNat (encodeNat n) = n := by
   conv_rhs => rw [← Num.to_of_nat n]
   congrm $(decode_encodeNum n)
 
@@ -145,10 +148,10 @@ def unaryEncodeNat : Nat → List Bool
   | n + 1 => true :: unaryEncodeNat n
 
 /-- A unary decoding function from `List Bool` to `ℕ`. -/
-def unaryDecodeNat : List Bool → Nat :=
-  List.length
+def unaryDecodeNat : List Bool → Nat := List.length
 
-@[simp] theorem unary_decode_encode_nat : ∀ n, unaryDecodeNat (unaryEncodeNat n) = n := fun n =>
+@[simp]
+theorem unary_decode_encode_nat : ∀ n, unaryDecodeNat (unaryEncodeNat n) = n := fun n =>
   Nat.rec rfl (fun (_m : ℕ) hm => congr($(hm.symm).succ).symm) n
 
 /-- A unary `Encoding` of `ℕ` in `Bool`. -/
@@ -173,15 +176,13 @@ def encodingBoolBool : Encoding Bool Bool where
   decode x := some (decodeBool x)
   decode_encode x := congr_arg _ (decode_encodeBool x)
 
-instance inhabitedEncoding : Inhabited (Encoding Bool Bool) :=
-  ⟨encodingBoolBool⟩
+instance inhabitedEncoding : Inhabited (Encoding Bool Bool) := ⟨encodingBoolBool⟩
 
-theorem Encoding.card_le_card_list {α : Type u} {Γ : Type v} (e : Encoding α Γ) :
-    Cardinal.lift.{v} #α ≤ Cardinal.lift.{u} #(List Γ) :=
+theorem Encoding.card_le_card_list {α : Type u} {Γ : Type v} (e : Encoding α Γ)
+    : Cardinal.lift.{v} #α ≤ Cardinal.lift.{u} #(List Γ) :=
   Cardinal.lift_mk_le'.2 ⟨⟨e.encode, e.encode_injective⟩⟩
 
-theorem Encoding.card_le_aleph0 {α Γ} (e : Encoding α Γ) [Countable Γ] :
-    #α ≤ ℵ₀ :=
+theorem Encoding.card_le_aleph0 {α Γ} (e : Encoding α Γ) [Countable Γ] : #α ≤ ℵ₀ :=
   haveI : Countable α := e.encode_injective.countable
   Cardinal.mk_le_aleph0
 
@@ -198,10 +199,11 @@ constructs an `Encoding` of `α × β` by concatenating the encodings,
 mapping the symbols from the first encoding with `Sum.inl`
 and those from the second with `Sum.inr`.
 -/
-def encodingProd {α β Γ₁ Γ₂ : Type*} (ea : Encoding α Γ₁) (eb : Encoding β Γ₂) :
-    Encoding (α × β) (Γ₁ ⊕ Γ₂) where
+def encodingProd {α β Γ₁ Γ₂ : Type*} (ea : Encoding α Γ₁) (eb : Encoding β Γ₂)
+    : Encoding (α × β) (Γ₁ ⊕ Γ₂) where
   encode x := (ea.encode x.1).map .inl ++ (eb.encode x.2).map .inr
-  decode x := Option.map₂ Prod.mk (ea.decode (x.filterMap Sum.getLeft?))
+  decode x :=
+    Option.map₂ Prod.mk (ea.decode (x.filterMap Sum.getLeft?))
       (eb.decode (x.filterMap Sum.getRight?))
   decode_encode x := by simp
 
@@ -220,14 +222,13 @@ def Encoding.Γ {α : Type u} {Γ : Type v} (_ : Encoding α Γ) : Type v := Γ
 /-- Deprecated: Use `inferInstanceAs (Fintype Γ)` instead. -/
 @[reducible, nolint unusedArguments,
   deprecated "Use `inferInstanceAs (Fintype Γ)` instead" (since := "2026-05-07")]
-def FinEncoding.ΓFin {α : Type u} {Γ : Type v} [h : Fintype Γ]
-    (_ : Encoding α Γ) : Fintype Γ := h
+def FinEncoding.ΓFin {α : Type u} {Γ : Type v} [h : Fintype Γ] (_ : Encoding α Γ) : Fintype Γ := h
 
 /-- Deprecated: Use the encoding directly. -/
-@[reducible, nolint unusedArguments,
-  deprecated "Use the encoding directly" (since := "2026-05-07")]
-def FinEncoding.toEncoding {α : Type u} {Γ : Type v} [Fintype Γ]
-    (e : Encoding α Γ) : Encoding α Γ := e
+@[reducible, nolint unusedArguments, deprecated "Use the encoding directly" (since := "2026-05-07")]
+def FinEncoding.toEncoding {α : Type u} {Γ : Type v} [Fintype Γ] (e : Encoding α Γ)
+    : Encoding α Γ :=
+  e
 
 /-- Deprecated alias for `encodingNatBool`. -/
 @[deprecated encodingNatBool (since := "2026-05-07")]
@@ -246,15 +247,13 @@ abbrev unaryFinEncodingNat := unaryEncodingNat
 abbrev finEncodingBoolBool := encodingBoolBool
 
 /-- Deprecated alias for `encodingList`. -/
-@[reducible, nolint unusedArguments,
-  deprecated encodingList +typeChanged (since := "2026-05-07")]
+@[reducible, nolint unusedArguments, deprecated encodingList +typeChanged (since := "2026-05-07")]
 def finEncodingList (α : Type) [Fintype α] := encodingList α
 
 /-- Deprecated alias for `encodingProd`. -/
-@[reducible, nolint unusedArguments,
-  deprecated encodingProd +typeChanged (since := "2026-05-07")]
-def finEncodingPair {α β Γ₁ Γ₂ : Type*} [Fintype Γ₁] [Fintype Γ₂]
-    (ea : Encoding α Γ₁) (eb : Encoding β Γ₂) :=
+@[reducible, nolint unusedArguments, deprecated encodingProd +typeChanged (since := "2026-05-07")]
+def finEncodingPair
+    {α β Γ₁ Γ₂ : Type*} [Fintype Γ₁] [Fintype Γ₂] (ea : Encoding α Γ₁) (eb : Encoding β Γ₂) :=
   encodingProd ea eb
 
 /-- Deprecated alias for `Encoding.card_le_aleph0`. -/

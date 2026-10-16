@@ -16,7 +16,6 @@ Transfer algebraic instances from `R` to `Rᵒᵈ` and `Lex R`.
 
 public section
 
-
 variable {R : Type*}
 
 /-! ### Order dual -/
@@ -80,22 +79,15 @@ end OrderDual
 
 open OrderDual
 
-@[simp]
-theorem toDual_natCast [NatCast R] (n : ℕ) : toDual (n : R) = n :=
-  rfl
+@[simp] theorem toDual_natCast [NatCast R] (n : ℕ) : toDual (n : R) = n := rfl
 
 @[simp]
-theorem toDual_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
-    (toDual (ofNat(n) : R)) = ofNat(n) :=
-  rfl
+theorem toDual_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] : (toDual (ofNat(n) : R)) = ofNat(n) := rfl
+
+@[simp] theorem ofDual_natCast [NatCast R] (n : ℕ) : (ofDual n : R) = n := rfl
 
 @[simp]
-theorem ofDual_natCast [NatCast R] (n : ℕ) : (ofDual n : R) = n :=
-  rfl
-
-@[simp]
-theorem ofDual_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
-    (ofDual (ofNat(n) : Rᵒᵈ)) = ofNat(n) :=
+theorem ofDual_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] : (ofDual (ofNat(n) : Rᵒᵈ)) = ofNat(n) :=
   rfl
 
 @[simp] lemma toDual_intCast [IntCast R] (n : ℤ) : toDual (n : R) = n := rfl
@@ -161,22 +153,15 @@ instance [Ring R] [IsDomain R] : IsDomain (Lex R) := inferInstanceAs <| IsDomain
 
 end Lex
 
-@[simp]
-theorem toLex_natCast [NatCast R] (n : ℕ) : toLex (n : R) = n :=
-  rfl
+@[simp] theorem toLex_natCast [NatCast R] (n : ℕ) : toLex (n : R) = n := rfl
 
 @[simp]
-theorem toLex_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
-    toLex (ofNat(n) : R) = OfNat.ofNat n :=
-  rfl
+theorem toLex_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] : toLex (ofNat(n) : R) = OfNat.ofNat n := rfl
+
+@[simp] theorem ofLex_natCast [NatCast R] (n : ℕ) : (ofLex n : R) = n := rfl
 
 @[simp]
-theorem ofLex_natCast [NatCast R] (n : ℕ) : (ofLex n : R) = n :=
-  rfl
-
-@[simp]
-theorem ofLex_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
-    ofLex (ofNat(n) : Lex R) = OfNat.ofNat n :=
+theorem ofLex_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] : ofLex (ofNat(n) : Lex R) = OfNat.ofNat n :=
   rfl
 @[simp] lemma toLex_intCast [IntCast R] (n : ℤ) : toLex (n : R) = n := rfl
 

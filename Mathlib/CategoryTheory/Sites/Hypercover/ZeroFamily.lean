@@ -38,29 +38,29 @@ structure PreZeroHypercoverFamily where
   property ⦃X : C⦄ : ObjectProperty (PreZeroHypercover.{max u v} X)
   iff_shrink {X : C} {E : PreZeroHypercover.{max u v} X} : property E ↔ property E.shrink
 
-instance : CoeFun (PreZeroHypercoverFamily C)
-    fun _ ↦ ⦃X : C⦄ → (E : PreZeroHypercover.{max u v} X) → Prop where
+instance
+    : CoeFun (PreZeroHypercoverFamily C) fun _ ↦
+      ⦃X : C⦄ → (E : PreZeroHypercover.{max u v} X) → Prop where
   coe P := P.property
 
 /-- The induced condition on presieves in `C`, given by a pre-`0`-hypercover family. -/
-inductive PreZeroHypercoverFamily.presieve (P : PreZeroHypercoverFamily C) {X : C} :
-    Presieve X → Prop where
+inductive PreZeroHypercoverFamily.presieve (P : PreZeroHypercoverFamily C) {X : C}
+    : Presieve X → Prop where
   | mk (E : PreZeroHypercover.{max u v} X) : P E → presieve P E.presieve₀
 
 /-- The associated precoverage to a pre-`0`-hypercover family. -/
-def PreZeroHypercoverFamily.precoverage (P : PreZeroHypercoverFamily C) :
-    Precoverage C where
+def PreZeroHypercoverFamily.precoverage (P : PreZeroHypercoverFamily C) : Precoverage C where
   coverings _ := {R | P.presieve R}
 
-lemma PreZeroHypercoverFamily.mem_precoverage_iff {P : PreZeroHypercoverFamily C} {X : C}
-    {R : Presieve X} :
-    R ∈ P.precoverage X ↔ ∃ (E : PreZeroHypercover.{max u v} X), P E ∧ R = E.presieve₀ :=
+lemma PreZeroHypercoverFamily.mem_precoverage_iff
+    {P : PreZeroHypercoverFamily C} {X : C} {R : Presieve X}
+    : R ∈ P.precoverage X ↔ ∃ (E : PreZeroHypercover.{max u v} X), P E ∧ R = E.presieve₀ :=
   ⟨fun ⟨E, hE⟩ ↦ ⟨E, hE, rfl⟩, fun ⟨_, hE, h⟩ ↦ h ▸ ⟨_, hE⟩⟩
 
 @[simp]
-lemma PreZeroHypercover.presieve₀_mem_precoverage_iff {P : PreZeroHypercoverFamily C} {X : C}
-    {E : PreZeroHypercover.{max u v} X} :
-    E.presieve₀ ∈ P.precoverage X ↔ P E := by
+lemma PreZeroHypercover.presieve₀_mem_precoverage_iff
+    {P : PreZeroHypercoverFamily C} {X : C} {E : PreZeroHypercover.{max u v} X}
+    : E.presieve₀ ∈ P.precoverage X ↔ P E := by
   refine ⟨fun h ↦ ?_, fun h ↦ .mk _ h⟩
   rw [PreZeroHypercoverFamily.mem_precoverage_iff] at h
   obtain ⟨F, h, heq⟩ := h
@@ -69,16 +69,16 @@ lemma PreZeroHypercover.presieve₀_mem_precoverage_iff {P : PreZeroHypercoverFa
 
 /-- The associated pre-`0`-hypercover family to a precoverage. -/
 @[simps]
-def Precoverage.preZeroHypercoverFamily (K : Precoverage C) :
-    PreZeroHypercoverFamily C where
+def Precoverage.preZeroHypercoverFamily (K : Precoverage C) : PreZeroHypercoverFamily C where
   property X E := E.presieve₀ ∈ K X
   iff_shrink {X} E := by simp
 
 variable (C) in
-/-- Giving a precoverage on a category is the same as giving a predicate
-on every pre-`0`-hypercover that is stable under deduplication. -/
-def Precoverage.equivPreZeroHypercoverFamily :
-    Precoverage C ≃ PreZeroHypercoverFamily C where
+/--
+Giving a precoverage on a category is the same as giving a predicate
+on every pre-`0`-hypercover that is stable under deduplication.
+-/
+def Precoverage.equivPreZeroHypercoverFamily : Precoverage C ≃ PreZeroHypercoverFamily C where
   toFun K := K.preZeroHypercoverFamily
   invFun P := P.precoverage
   left_inv K := by
@@ -87,9 +87,9 @@ def Precoverage.equivPreZeroHypercoverFamily :
     simp
   right_inv P := by cat_disch
 
-lemma Precoverage.HasIsos.of_preZeroHypercoverFamily {P : PreZeroHypercoverFamily C}
-    (h : ∀ ⦃X Y : C⦄ (f : X ⟶ Y) [IsIso f], P (.singleton f)) :
-    P.precoverage.HasIsos where
+lemma Precoverage.HasIsos.of_preZeroHypercoverFamily
+    {P : PreZeroHypercoverFamily C} (h : ∀ ⦃X Y : C⦄ (f : X ⟶ Y) [IsIso f], P (.singleton f))
+    : P.precoverage.HasIsos where
   mem_coverings_of_isIso {S T} f hf := by
     rw [← PreZeroHypercover.presieve₀_singleton.{_, _, max u v}]
     refine .mk _ (h _)
@@ -97,17 +97,16 @@ lemma Precoverage.HasIsos.of_preZeroHypercoverFamily {P : PreZeroHypercoverFamil
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Precoverage.IsStableUnderBaseChange.of_preZeroHypercoverFamily_of_isClosedUnderIsomorphisms
-    {P : PreZeroHypercoverFamily C}
-    (h₁ : ∀ {X : C}, (P (X := X)).IsClosedUnderIsomorphisms)
+    {P : PreZeroHypercoverFamily C} (h₁ : ∀ {X : C}, (P (X := X)).IsClosedUnderIsomorphisms)
     (h₂ : ∀ {X Y : C} (f : X ⟶ Y) (E : PreZeroHypercover.{max u v} Y)
-      [∀ (i : E.I₀), HasPullback f (E.f i)], P E → P (E.pullback₁ f)) :
-    Precoverage.IsStableUnderBaseChange P.precoverage where
+        [∀ (i : E.I₀), HasPullback f (E.f i)],
+      P E → P (E.pullback₁ f))
+    : Precoverage.IsStableUnderBaseChange P.precoverage where
   mem_coverings_of_isPullback {ι} S X f hf Y g Z p₁ p₂ h := by
     let E : PreZeroHypercover S := ⟨ι, X, f⟩
     have (i : E.I₀) : HasPullback g (E.f i) := (h i).hasPullback
     let F : PreZeroHypercover Y := ⟨_, _, p₁⟩
-    let e : F ≅ E.pullback₁ g :=
-      PreZeroHypercover.isoMk (Equiv.refl _) (fun i ↦ (h i).isoPullback)
+    let e : F ≅ E.pullback₁ g := PreZeroHypercover.isoMk (Equiv.refl _) (fun i ↦ (h i).isoPullback)
     change F.presieve₀ ∈ _
     rw [F.presieve₀_mem_precoverage_iff, (P (X := Y)).prop_iff_of_iso e]
     refine h₂ _ _ ?_
@@ -116,9 +115,9 @@ lemma Precoverage.IsStableUnderBaseChange.of_preZeroHypercoverFamily_of_isClosed
 lemma Precoverage.IsStableUnderComposition.of_preZeroHypercoverFamily
     {P : PreZeroHypercoverFamily C}
     (h : ∀ {X : C} (E : PreZeroHypercover.{max u v} X)
-      (F : ∀ i, PreZeroHypercover.{max u v} (E.X i)),
-      P E → (∀ i, P (F i)) → P (E.bind F)) :
-    Precoverage.IsStableUnderComposition P.precoverage where
+        (F : ∀ i, PreZeroHypercover.{max u v} (E.X i)),
+      P E → (∀ i, P (F i)) → P (E.bind F))
+    : Precoverage.IsStableUnderComposition P.precoverage where
   comp_mem_coverings {ι} S X f hf σ Y g hg := by
     let E : PreZeroHypercover S := ⟨_, _, f⟩
     let F (i : ι) : PreZeroHypercover (E.X i) := ⟨_, _, g i⟩
@@ -129,9 +128,8 @@ lemma Precoverage.IsStableUnderComposition.of_preZeroHypercoverFamily
 
 lemma Precoverage.IsStableUnderSup.of_preZeroHypercoverFamily
     {P : PreZeroHypercoverFamily C}
-    (h : ∀ ⦃X : C⦄ ⦃E F : PreZeroHypercover.{max u v} X⦄,
-      P E → P F → P (E.sum F)) :
-    P.precoverage.IsStableUnderSup where
+    (h : ∀ ⦃X : C⦄ ⦃E F : PreZeroHypercover.{max u v} X⦄, P E → P F → P (E.sum F))
+    : P.precoverage.IsStableUnderSup where
   sup_mem_coverings {X} R S hR hS := by
     obtain ⟨E, rfl⟩ := R.exists_eq_preZeroHypercover
     obtain ⟨F, rfl⟩ := S.exists_eq_preZeroHypercover

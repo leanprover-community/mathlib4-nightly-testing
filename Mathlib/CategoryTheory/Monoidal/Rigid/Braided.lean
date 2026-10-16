@@ -21,8 +21,8 @@ variable {C : Type*} [Category* C] [MonoidalCategory C] [BraidedCategory C] {X Y
 namespace CategoryTheory.BraidedCategory
 
 /-- `coevaluation_evaluation'` field of `ExactPairing Y X` in a braided category -/
-private theorem coevaluation_evaluation_braided' [inst : ExactPairing X Y] :
-    X ◁ (η_ X Y ≫ (β_ Y X).inv) ≫ (α_ X Y X).inv ≫ ((β_ X Y).hom ≫ ε_ X Y) ▷ X
+private theorem coevaluation_evaluation_braided' [inst : ExactPairing X Y]
+    : X ◁ (η_ X Y ≫ (β_ Y X).inv) ≫ (α_ X Y X).inv ≫ ((β_ X Y).hom ≫ ε_ X Y) ▷ X
       = (ρ_ X).hom ≫ (λ_ X).inv := by
   /- Rearrange into _ = 𝟙 _ -/
   rw [Iso.eq_comp_inv, ← Iso.inv_comp_eq_id]
@@ -30,8 +30,10 @@ private theorem coevaluation_evaluation_braided' [inst : ExactPairing X Y] :
   calc
     _ = 𝟙 X ⊗≫ X ◁ η_ X Y ⊗≫ (X ◁ (β_ Y X).inv ⊗≫ (β_ X Y).hom ▷ X) ⊗≫ ε_ X Y ▷ X ⊗≫ 𝟙 X := by
       monoidal
-    _ = 𝟙 X ⊗≫ X ◁ η_ X Y ⊗≫ (𝟙 (X ⊗ X ⊗ Y) ⊗≫ (β_ X X).hom ▷ Y ⊗≫ X ◁ (β_ X Y).hom
-          ⊗≫ (β_ Y X).inv ▷ X ⊗≫ Y ◁ (β_ X X).inv ⊗≫ 𝟙 ((Y ⊗ X) ⊗ X)) ⊗≫ ε_ X Y ▷ X ⊗≫ 𝟙 X := by
+    _ = 𝟙 X ⊗≫ X ◁ η_ X Y
+        ⊗≫ (𝟙 (X ⊗ X ⊗ Y) ⊗≫ (β_ X X).hom ▷ Y ⊗≫ X ◁ (β_ X Y).hom ⊗≫ (β_ Y X).inv ▷ X
+          ⊗≫ Y ◁ (β_ X X).inv ⊗≫ 𝟙 ((Y ⊗ X) ⊗ X))
+        ⊗≫ ε_ X Y ▷ X ⊗≫ 𝟙 X := by
       congr 3
       simp only [monoidalComp, MonoidalCoherence.assoc'_iso, MonoidalCoherence.whiskerRight_iso,
         MonoidalCoherence.refl_iso, whiskerRightIso_refl, Iso.refl_trans, Iso.symm_hom,
@@ -47,15 +49,17 @@ private theorem coevaluation_evaluation_braided' [inst : ExactPairing X Y] :
       simp [monoidalComp]
 
 /-- `evaluation_coevaluation'` field of `ExactPairing Y X` in a braided category -/
-private theorem evaluation_coevaluation_braided' [inst : ExactPairing X Y] :
-    (η_ X Y ≫ (β_ Y X).inv) ▷ Y ≫ (α_ Y X Y).hom ≫ Y ◁ ((β_ X Y).hom ≫ ε_ X Y) =
-      (λ_ Y).hom ≫ (ρ_ Y).inv := by
+private theorem evaluation_coevaluation_braided' [inst : ExactPairing X Y]
+    : (η_ X Y ≫ (β_ Y X).inv) ▷ Y ≫ (α_ Y X Y).hom ≫ Y ◁ ((β_ X Y).hom ≫ ε_ X Y)
+      = (λ_ Y).hom ≫ (ρ_ Y).inv := by
   rw [Iso.eq_comp_inv, ← Iso.inv_comp_eq_id]
   calc
     _ = 𝟙 Y ⊗≫ η_ X Y ▷ Y ⊗≫ ((β_ Y X).inv ▷ Y ⊗≫ Y ◁ (β_ X Y).hom) ≫ Y ◁ ε_ X Y ⊗≫ 𝟙 Y := by
       monoidal
-    _ = 𝟙 Y ⊗≫ η_ X Y ▷ Y ⊗≫ (𝟙 ((X ⊗ Y) ⊗ Y) ⊗≫ X ◁ (β_ Y Y).hom ⊗≫ (β_ X Y).hom ▷ Y
-        ⊗≫ Y ◁ (β_ Y X).inv ⊗≫ (β_ Y Y).inv ▷ X ⊗≫ 𝟙 (Y ⊗ Y ⊗ X)) ⊗≫ Y ◁ ε_ X Y ⊗≫ 𝟙 Y := by
+    _ = 𝟙 Y ⊗≫ η_ X Y ▷ Y
+        ⊗≫ (𝟙 ((X ⊗ Y) ⊗ Y) ⊗≫ X ◁ (β_ Y Y).hom ⊗≫ (β_ X Y).hom ▷ Y ⊗≫ Y ◁ (β_ Y X).inv
+          ⊗≫ (β_ Y Y).inv ▷ X ⊗≫ 𝟙 (Y ⊗ Y ⊗ X))
+        ⊗≫ Y ◁ ε_ X Y ⊗≫ 𝟙 Y := by
       congr 3
       on_goal 2 => simp [monoidalComp]
       simp only [monoidalComp, MonoidalCoherence.assoc_iso, MonoidalCoherence.whiskerRight_iso,
@@ -71,8 +75,10 @@ private theorem evaluation_coevaluation_braided' [inst : ExactPairing X Y] :
       rw [braiding_naturality_left, ← braiding_inv_naturality_left]
       simp [monoidalComp]
 
-/-- If `X` and `Y` forms an exact pairing in a braided category, then so does `Y` and `X`
-by composing the coevaluation and evaluation morphisms with associators. -/
+/--
+If `X` and `Y` forms an exact pairing in a braided category, then so does `Y` and `X`
+by composing the coevaluation and evaluation morphisms with associators.
+-/
 @[instance_reducible]
 def exactPairing_swap (X Y : C) [ExactPairing X Y] : ExactPairing Y X where
   coevaluation' := η_ X Y ≫ (β_ Y X).inv
@@ -92,27 +98,35 @@ def hasRightDualOfHasLeftDual [HasLeftDual X] : HasRightDual X where
   rightDual := ᘁX
   exact := exactPairing_swap ᘁX X
 
-/-- If a braided category is right-rigid, then it is left-rigid.
-Not registered as an instance as this is not canonical enough. -/
+/--
+If a braided category is right-rigid, then it is left-rigid.
+Not registered as an instance as this is not canonical enough.
+-/
 @[instance_reducible]
 def leftRigidCategoryOfRightRigidCategory [RightRigidCategory C] : LeftRigidCategory C where
   leftDual X := hasLeftDualOfHasRightDual (X := X)
 
-/-- If a braided category is left-rigid, then it is right-rigid.
-Not registered as an instance as this is not canonical enough. -/
+/--
+If a braided category is left-rigid, then it is right-rigid.
+Not registered as an instance as this is not canonical enough.
+-/
 @[instance_reducible]
 def rightRigidCategoryOfLeftRigidCategory [LeftRigidCategory C] : RightRigidCategory C where
   rightDual X := hasRightDualOfHasLeftDual (X := X)
 
-/-- If `C` is a braided and right rigid category, then it is a rigid category.
-Not registered as an instance as this is not canonical enough. -/
+/--
+If `C` is a braided and right rigid category, then it is a rigid category.
+Not registered as an instance as this is not canonical enough.
+-/
 @[instance_reducible]
 def rigidCategoryOfRightRigidCategory [RightRigidCategory C] : RigidCategory C where
   rightDual := inferInstance
   leftDual X := hasLeftDualOfHasRightDual (X := X)
 
-/-- If `C` is a braided and left rigid category, then it is a rigid category.
-Not registered as an instance as this is not canonical enough. -/
+/--
+If `C` is a braided and left rigid category, then it is a rigid category.
+Not registered as an instance as this is not canonical enough.
+-/
 @[instance_reducible]
 def rigidCategoryOfLeftRigidCategory [LeftRigidCategory C] : RigidCategory C where
   rightDual X := hasRightDualOfHasLeftDual (X := X)

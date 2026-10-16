@@ -46,10 +46,11 @@ instance instOrderedSub : OrderedSub ℕ := by
 variable {α : Type*} {n : ℕ} {f : α → ℕ}
 
 /-- See also `pow_left_strictMonoOn₀`. -/
-protected lemma pow_left_strictMono (hn : n ≠ 0) : StrictMono (· ^ n : ℕ → ℕ) :=
-  fun _ _ h ↦ Nat.pow_lt_pow_left h hn
+protected lemma pow_left_strictMono (hn : n ≠ 0) : StrictMono (· ^ n : ℕ → ℕ) := fun _ _ h ↦
+  Nat.pow_lt_pow_left h hn
 
-lemma _root_.StrictMono.nat_pow [Preorder α] (hn : n ≠ 0) (hf : StrictMono f) :
-    StrictMono (f · ^ n) := (Nat.pow_left_strictMono hn).comp hf
+lemma _root_.StrictMono.nat_pow [Preorder α] (hn : n ≠ 0) (hf : StrictMono f)
+    : StrictMono (f · ^ n) :=
+  (Nat.pow_left_strictMono hn).comp hf
 
 end Nat

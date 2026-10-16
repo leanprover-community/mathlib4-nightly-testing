@@ -34,13 +34,15 @@ structure MulEquiv (M N : Type u) [Mul M] [Mul N] extends M ≃ N, M →ₙ* N
 infixl:25 " ≃* " => MulEquiv
 
 @[symm]
-def foo_symm {M N : Type _} [Mul M] [Mul N] (h : M ≃* N) : N ≃* M :=
-  { h.toEquiv.symm with map_mul' :=
-    (h.toMulHom.inverse h.toEquiv.symm h.left_inv h.right_inv).map_mul }
+def foo_symm {M N : Type _} [Mul M] [Mul N] (h : M ≃* N) : N ≃* M := {
+  h.toEquiv.symm with
+  map_mul' := (h.toMulHom.inverse h.toEquiv.symm h.left_inv h.right_inv).map_mul
+}
 
 def MyEq (n m : Nat) := ∃ k, n + k = m ∧ m + k = n
 
-@[symm] lemma MyEq.symm {n m : Nat} (h : MyEq n m) : MyEq m n := by
+@[symm]
+lemma MyEq.symm {n m : Nat} (h : MyEq n m) : MyEq m n := by
   rcases h with ⟨k, h1, h2⟩
   exact ⟨k, h2, h1⟩
 

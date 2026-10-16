@@ -28,71 +28,80 @@ universe w t v u
 
 namespace CategoryTheory.Limits.FormalCoproduct
 
-variable {C : Type u} [Category.{v} C] [HasFiniteProducts C]
-  (U : FormalCoproduct.{w} C) {T : C} (hT : IsTerminal T)
+variable
+  {C : Type u} [Category.{v} C] [HasFiniteProducts C]
+  (U : FormalCoproduct.{w} C)
+  {T : C} (hT : IsTerminal T)
 
 set_option backward.defeqAttrib.useBackward true in
-instance (n : ℕ) :
-    HasWidePullback (Arrow.mk ((isTerminalIncl T hT).from U)).right
+instance (n : ℕ)
+    : HasWidePullback (Arrow.mk ((isTerminalIncl T hT).from U)).right
       (fun (_ : Fin (n + 1)) ↦ (Arrow.mk ((isTerminalIncl T hT).from U)).left)
       fun _ ↦ (Arrow.mk ((isTerminalIncl T hT).from U)).hom := by
   dsimp
   have : HasProduct fun (x : Fin (n + 1)) ↦ U := ⟨⟨_, U.isLimitPowerFan (Fin (n + 1))⟩⟩
   exact hasWidePullback_of_isTerminal _ (isTerminalIncl _ hT)
 
-instance (n : SimplexCategory) :
-    HasLimit (WidePullbackShape.wideCospan ((incl C).obj T) _
-      fun (_ : ToType n) ↦ (isTerminalIncl T hT).from U) :=
-  ⟨⟨_, WidePullbackCone.isLimitOfFan  _ (U.isLimitPowerFan _)
-    (isTerminalIncl T hT)⟩⟩
+instance (n : SimplexCategory)
+    : HasLimit (WidePullbackShape.wideCospan ((incl C).obj T) _ fun (_ : ToType n) ↦
+      (isTerminalIncl T hT).from U) :=
+  ⟨⟨_, WidePullbackCone.isLimitOfFan _ (U.isLimitPowerFan _) (isTerminalIncl T hT)⟩⟩
 
 /-- Auxiliary definition for `cechIsoCechNerve`. -/
-noncomputable def cechIsoCechNerveApp (n : SimplexCategoryᵒᵖ) :
-    U.cech.obj n ≅ (Arrow.cechNerve (Arrow.mk ((isTerminalIncl _ hT).from U))).obj n :=
-  IsLimit.conePointUniqueUpToIso (WidePullbackCone.isLimitOfFan
-    (arrows := fun _ ↦ (isTerminalIncl _ hT).from U)
-    (U.isLimitPowerFan (ToType n.unop)) (isTerminalIncl _ hT)) (limit.isLimit _)
+noncomputable def cechIsoCechNerveApp (n : SimplexCategoryᵒᵖ)
+    : U.cech.obj n ≅ (Arrow.cechNerve (Arrow.mk ((isTerminalIncl _ hT).from U))).obj n :=
+  IsLimit.conePointUniqueUpToIso
+    (WidePullbackCone.isLimitOfFan
+      (arrows := fun _ ↦ (isTerminalIncl _ hT).from U)
+      (U.isLimitPowerFan (ToType n.unop)) (isTerminalIncl _ hT))
+    (limit.isLimit _)
 
 @[reassoc (attr := simp)]
-lemma cechIsoCechNerveApp_hom_π (n : SimplexCategoryᵒᵖ) (i : ToType n.unop) :
-    (U.cechIsoCechNerveApp hT n).hom ≫
-      WidePullback.π (fun _ ↦ (isTerminalIncl T hT).from U) i = U.powerπ i :=
+lemma cechIsoCechNerveApp_hom_π (n : SimplexCategoryᵒᵖ) (i : ToType n.unop)
+    : (U.cechIsoCechNerveApp hT n).hom ≫ WidePullback.π (fun _ ↦ (isTerminalIncl T hT).from U) i
+      = U.powerπ i :=
   IsLimit.conePointUniqueUpToIso_hom_comp _ _ _
 
 @[reassoc (attr := simp)]
-lemma cechIsoCechNerveApp_inv_π (n : SimplexCategoryᵒᵖ) (i : ToType n.unop) :
-    (U.cechIsoCechNerveApp hT n).inv ≫ U.powerπ i =
-      WidePullback.π (fun _ ↦ (isTerminalIncl T hT).from U) i := by
+lemma cechIsoCechNerveApp_inv_π (n : SimplexCategoryᵒᵖ) (i : ToType n.unop)
+    : (U.cechIsoCechNerveApp hT n).inv ≫ U.powerπ i
+      = WidePullback.π (fun _ ↦ (isTerminalIncl T hT).from U) i := by
   rw [← U.cechIsoCechNerveApp_hom_π hT, Iso.inv_hom_id_assoc]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The Cech construction for `FormalCoproduct` is isomorphic
+/--
+The Cech construction for `FormalCoproduct` is isomorphic
 to the general `Arrow.cechNerve` construction applied to the morphism
-to the terminal object. -/
+to the terminal object.
+-/
 @[simps! hom_app inv_app]
-noncomputable def cechIsoCechNerve :
-    U.cech ≅ Arrow.cechNerve (Arrow.mk ((isTerminalIncl _ hT).from U)) :=
-  NatIso.ofComponents (fun _ ↦ cechIsoCechNerveApp _ _ _)
+noncomputable def cechIsoCechNerve
+    : U.cech ≅ Arrow.cechNerve (Arrow.mk ((isTerminalIncl _ hT).from U)) :=
+  NatIso.ofComponents
+    (fun _ ↦ cechIsoCechNerveApp _ _ _)
     (fun f ↦ WidePullback.hom_ext _ _ _ (by simp) ((isTerminalIncl _ hT).hom_ext _ _))
 
-/-- The Cech construction for `FormalCoproduct` is isomorphic
+/--
+The Cech construction for `FormalCoproduct` is isomorphic
 to the general `Arrow.augmentedCechNerve` construction applied to the morphism
-to the terminal object. -/
+to the terminal object.
+-/
 @[simps! hom_left inv_left hom_right inv_left]
-noncomputable def cechIsoAugmentedCechNerve :
-    U.cech.augmentOfIsTerminal (isTerminalIncl _ hT) ≅
-      Arrow.augmentedCechNerve (Arrow.mk ((isTerminalIncl _ hT).from U)) :=
+noncomputable def cechIsoAugmentedCechNerve
+    : U.cech.augmentOfIsTerminal (isTerminalIncl _ hT)
+      ≅ Arrow.augmentedCechNerve (Arrow.mk ((isTerminalIncl _ hT).from U)) :=
   Comma.isoMk (U.cechIsoCechNerve hT) (Iso.refl _) (by
     ext : 1
     apply (isTerminalIncl _ hT).hom_ext)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The Cech object of `U : FormalCoproduct C` has an extra degeneracy
-when there is a morphism `T ⟶ U.obj i₀` from the terminal object. -/
-noncomputable def extraDegeneracyCech {i₀ : U.I} (d : T ⟶ U.obj i₀) :
-    (U.cech.augmentOfIsTerminal (isTerminalIncl _ hT)).ExtraDegeneracy :=
+/--
+The Cech object of `U : FormalCoproduct C` has an extra degeneracy
+when there is a morphism `T ⟶ U.obj i₀` from the terminal object.
+-/
+noncomputable def extraDegeneracyCech {i₀ : U.I} (d : T ⟶ U.obj i₀)
+    : (U.cech.augmentOfIsTerminal (isTerminalIncl _ hT)).ExtraDegeneracy :=
   .ofIso (U.cechIsoAugmentedCechNerve hT).symm
-    (Arrow.AugmentedCechNerve.extraDegeneracy _
-      { section_ := Hom.fromIncl i₀ d })
+    (Arrow.AugmentedCechNerve.extraDegeneracy _ { section_ := Hom.fromIncl i₀ d })
 
 end CategoryTheory.Limits.FormalCoproduct

@@ -42,27 +42,38 @@ open Lean Elab Term Meta PrettyPrinter Delaborator SubExpr
 
 namespace OfNotation
 
-/-- The number of explicit arguments of a declaration of type `ty`, together with the index of the
+/--
+The number of explicit arguments of a declaration of type `ty`, together with the index of the
 last one among *all* of its arguments.
 
-Metadata is ignored. Returns `none` if `ty` takes no explicit argument. -/
-def explicitArgs? (ty : Expr) : Option (Nat × Nat) := go ty 0 0 none where
-  /-- Walk down the binders of `ty`, where `idx` is the index of the current argument, `num` the
-  number of explicit arguments seen so far and `lastIdx?` the index of the last one. -/
+Metadata is ignored. Returns `none` if `ty` takes no explicit argument.
+-/
+def explicitArgs? (ty : Expr) : Option (Nat × Nat) := go ty 0 0 none
+where
+  /--
+  Walk down the binders of `ty`, where `idx` is the index of the current argument, `num` the
+  number of explicit arguments seen so far and `lastIdx?` the index of the last one.
+  -/
   go : Expr → Nat → Nat → Option Nat → Option (Nat × Nat)
-    | .mdata _ ty, idx, num, lastIdx? => go ty idx num lastIdx?
+    | .mdata _ ty, idx, num, lastIdx? =>
+      go ty idx num lastIdx?
     | .forallE _ _ body bi, idx, num, lastIdx? =>
-      if bi.isExplicit then go body (idx + 1) (num + 1) (some idx)
-      else go body (idx + 1) num lastIdx?
-    | _, _, num, lastIdx? => lastIdx?.map (num, ·)
+      if bi.isExplicit then
+        go body (idx + 1) (num + 1) (some idx)
+      else
+        go body (idx + 1) num lastIdx?
+    | _, _, num, lastIdx? =>
+      lastIdx?.map (num, ·)
 
-/-- Find the bundling map `FooCat.of` to use for the type `ty`, along with its number of explicit
+/--
+Find the bundling map `FooCat.of` to use for the type `ty`, along with its number of explicit
 arguments.
 
 Before unfolding `ty`, we check its head constant `FooCat`, since a category can be reducibly
 defined in terms of another one while still having its own `of`: `Profinite` reduces to
 `CompHausLike _`, yet `↧X : Profinite` should be `Profinite.of X`, not `CompHausLike.of _ X`.
-If no `.of` is found for the non-unfolded `ty`, we unfold it and try again. -/
+If no `.of` is found for the non-unfolded `ty`, we unfold it and try again.
+-/
 partial def findOf? (ty : Expr) : MetaM (Option (Name × Nat)) := do
   let ty ← whnfCore ty
   if let .const declName _ := ty.getAppFn then
@@ -78,7 +89,8 @@ end OfNotation
 
 open OfNotation
 
-/-- `↧X` is the object of a concrete category corresponding to the type `X`, i.e. `FooCat.of X`
+/--
+`↧X` is the object of a concrete category corresponding to the type `X`, i.e. `FooCat.of X`
 where the category `FooCat` is determined by the expected type.
 
 `↧X` elaborates to a literal application of `FooCat.of`.
@@ -86,7 +98,8 @@ where the category `FooCat` is determined by the expected type.
 * `(↧M : ModuleCat R)` is `ModuleCat.of R M`,
 * `(↧A : CommAlgCat R)` is `CommAlgCat.of R A`.
 
-The expected type must be known. -/
+The expected type must be known.
+-/
 syntax:max "↧" term:max : term
 
 elab_rules : term <= expectedType
@@ -94,13 +107,14 @@ elab_rules : term <= expectedType
     let ty ← instantiateMVars expectedType
     if ty.getAppFn.isMVar then
       throwError "`↧` failed: the expected type must be known, but it is{indentExpr ty}"
-    let some (ofName, num) ← findOf? ty |
-      throwError "`↧` failed: no bundling map found for the expected type{indentExpr ty}\n\
-        Expected a type whose head constant `FooCat` has an associated declaration `FooCat.of`."
+    let some (ofName, num) ← findOf? ty
+      | throwError "`↧` failed: no bundling map found for the expected type{indentExpr ty}\n\
+          Expected a type whose head constant `FooCat` has an associated declaration `FooCat.of`."
     let holes ← (Array.range (num - 1)).mapM fun _ => `(_)
     elabTerm (← `($(mkCIdent ofName) $holes* $x)) expectedType
 
-/-- Delaborate `FooCat.of … X` to `↧X`.
+/--
+Delaborate `FooCat.of … X` to `↧X`.
 
 Tag `FooCat.of` with this to make it print using the `↧` notation:
 ```
@@ -108,14 +122,19 @@ Tag `FooCat.of` with this to make it print using the `↧` notation:
 ```
 This falls back to `delabApp`, so that `FooCat.of X` doesn't get printed as `{ carrier := X, … }`
 by `delabStructureInstance` even if delaboration fails in case `FooCat.of` is the constructor of
-`structure FooCat`. -/
-def delabOf : Delab := go <|> delabApp where
+`structure FooCat`.
+-/
+def delabOf : Delab := go <|> delabApp
+where
   /-- Delaborate `FooCat.of … X` to `↧X`, failing if the `↧` notation does not apply. -/
-  go := whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
-    let e ← getExpr
-    let .const declName _ := e.getAppFn | failure
-    let some (_, lastIdx) := explicitArgs? (← getConstInfo declName).type | failure
-    guard <| lastIdx < e.getAppNumArgs
-    withNaryArg lastIdx do `(↧$(← delab))
+  go :=
+    whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
+      let e ← getExpr
+      let .const declName _ := e.getAppFn
+        | failure
+      let some (_, lastIdx) := explicitArgs? (← getConstInfo declName).type
+        | failure
+      guard <| lastIdx < e.getAppNumArgs
+      withNaryArg lastIdx do `(↧$(← delab))
 
 end CategoryTheory

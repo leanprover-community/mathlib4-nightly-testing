@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
 module
+
 import Mathlib.Tactic.NormNum.BigOperators
 import Mathlib.Tactic.NormNum.GCD
 import Mathlib.Tactic.NormNum.IsCoprime
@@ -53,8 +54,8 @@ example : Nat.sqrt 100 = 10 := by norm_num1
 example : Nat.sqrt 120 = 10 := by norm_num1
 example : Nat.sqrt 121 = 11 := by norm_num1
 example : Nat.sqrt 122 = 11 := by norm_num1
-example : Nat.sqrt (123456^2) = 123456 := by norm_num1
-example : Nat.sqrt (123456^2 + 123456) = 123456 := by norm_num1
+example : Nat.sqrt (123456 ^ 2) = 123456 := by norm_num1
+example : Nat.sqrt (123456 ^ 2 + 123456) = 123456 := by norm_num1
 
 theorem ex11 : Nat.Coprime 1 2 := by norm_num1
 theorem ex12 : Nat.Coprime 2 1 := by norm_num1
@@ -68,21 +69,21 @@ theorem ex17 : ¬ Nat.Coprime 2 4 := by norm_num1
 example : IsSquare 0 := by norm_num1
 example : IsSquare 1 := by norm_num1
 example : IsSquare 1024 := by norm_num1
-example : ¬IsSquare 2048 := by norm_num1
-example : ¬IsSquare (5 : ℤ) := by norm_num1
+example : ¬ IsSquare 2048 := by norm_num1
+example : ¬ IsSquare (5 : ℤ) := by norm_num1
 example : IsSquare (-0 : ℤ) := by norm_num1
-example : ¬IsSquare (-5 : ℤ) := by norm_num1
-example : IsSquare (2^20 : ℤ) := by norm_num1
-example : ¬IsSquare (2 ^ 200 + 1 : ℤ) := by norm_num1
+example : ¬ IsSquare (-5 : ℤ) := by norm_num1
+example : IsSquare (2 ^ 20 : ℤ) := by norm_num1
+example : ¬ IsSquare (2 ^ 200 + 1 : ℤ) := by norm_num1
 example : IsSquare (0 : ℚ) := by norm_num1
 example : IsSquare (4 : ℚ) := by norm_num1
-example : ¬IsSquare (5 : ℚ) := by norm_num1
-example : ¬IsSquare (-1 : ℚ) := by norm_num1
+example : ¬ IsSquare (5 : ℚ) := by norm_num1
+example : ¬ IsSquare (-1 : ℚ) := by norm_num1
 example : IsSquare (8 / 18 : ℚ) := by norm_num1
 example : IsSquare (2 ^ 100 / 3 ^ 200 : ℚ) := by norm_num1
-example : ¬IsSquare (5 / 4 : ℚ) := by norm_num1
-example : ¬IsSquare (4 / 5 : ℚ) := by norm_num1
-example : ¬IsSquare (-1 / 4 : ℚ) := by norm_num1
+example : ¬ IsSquare (5 / 4 : ℚ) := by norm_num1
+example : ¬ IsSquare (4 / 5 : ℚ) := by norm_num1
+example : ¬ IsSquare (-1 / 4 : ℚ) := by norm_num1
 
 theorem ex21 : Nat.gcd 1 2 = 1 := by norm_num1
 theorem ex22 : Nat.gcd 2 1 = 1 := by norm_num1
@@ -111,11 +112,11 @@ theorem ex53 : Int.lcm 2 (-3) = 6 := by norm_num1
 theorem ex54 : Int.lcm (-2) (-3) = 6 := by norm_num1
 
 theorem ex61 : Nat.gcd (553105253 * 776531401) (553105253 * 920419823) = 553105253 := by norm_num1
-theorem ex62 : Nat.gcd (2^1000 - 1) (2^1001 - 1) = 1 := by norm_num1
-theorem ex62' : Nat.gcd (2^1001 - 1) (2^1000 - 1) = 1 := by norm_num1
-theorem ex63 : Nat.gcd (2^500 - 1) (2^510 - 1) = 2^10 - 1 := by norm_num1
-theorem ex64 : Int.gcd (1 - 2^500) (2^510 - 1) = 2^10 - 1 := by norm_num1
-theorem ex64' : Int.gcd (1 - 2^500) (2^510 - 1) + 1 = 2^10 := by norm_num1
+theorem ex62 : Nat.gcd (2 ^ 1000 - 1) (2 ^ 1001 - 1) = 1 := by norm_num1
+theorem ex62' : Nat.gcd (2 ^ 1001 - 1) (2 ^ 1000 - 1) = 1 := by norm_num1
+theorem ex63 : Nat.gcd (2 ^ 500 - 1) (2 ^ 510 - 1) = 2 ^ 10 - 1 := by norm_num1
+theorem ex64 : Int.gcd (1 - 2 ^ 500) (2 ^ 510 - 1) = 2 ^ 10 - 1 := by norm_num1
+theorem ex64' : Int.gcd (1 - 2 ^ 500) (2 ^ 510 - 1) + 1 = 2 ^ 10 := by norm_num1
 
 example : IsCoprime (1 : ℤ) 2 := by norm_num1
 example : IsCoprime (2 : ℤ) 1 := by norm_num1
@@ -150,7 +151,6 @@ example : Nat.minFac 4 = 2 := by norm_num1
 example : Nat.minFac 121 = 11 := by norm_num1
 example : Nat.minFac 221 = 13 := by norm_num1
 example : Nat.minFac (2 ^ 19 - 1) = 2 ^ 19 - 1 := by norm_num1
-
 
 -- randomized tests
 example : Nat.gcd 35 29 = 1 := by norm_num1
@@ -386,25 +386,24 @@ example : ([1, 2, 1, 3]).sum = 7 := by norm_num +decide only
 example : (List.range 10).sum = 45 := by norm_num +decide only
 example : (List.finRange 10).sum = 45 := by norm_num +decide only
 
-example : (([1, 2, 1, 3] : List ℚ).map (fun i => i^2)).sum = 15 := by norm_num
+example : (([1, 2, 1, 3] : List ℚ).map (fun i => i ^ 2)).sum = 15 := by norm_num
 
 -- Multisets:
 -- `by decide` closes the three goals below.
 example : (1 ::ₘ 2 ::ₘ 1 ::ₘ 3 ::ₘ {}).sum = 7 := by norm_num +decide only
-example : ((1 ::ₘ 2 ::ₘ 1 ::ₘ 3 ::ₘ {}).map (fun i => i^2)).sum = 15 := by
-  norm_num +decide only
+example : ((1 ::ₘ 2 ::ₘ 1 ::ₘ 3 ::ₘ {}).map (fun i => i ^ 2)).sum = 15 := by norm_num +decide only
 example : (Multiset.range 10).sum = 45 := by norm_num +decide only
 example : (↑[1, 2, 1, 3] : Multiset ℕ).sum = 7 := by norm_num +decide only
 
-example : (({1, 2, 1, 3} : Multiset ℚ).map (fun i => i^2)).sum = 15 := by
-  norm_num
+example : (({1, 2, 1, 3} : Multiset ℚ).map (fun i => i ^ 2)).sum = 15 := by norm_num
 
 -- Finsets:
 example : Finset.prod (Finset.cons 2 ∅ (Finset.notMem_empty _)) (fun x ↦ x) = 2 := by norm_num1
-example : Finset.prod
-    (Finset.cons 6 (Finset.cons 2 ∅ (Finset.notMem_empty _)) (by norm_num))
-    (fun x ↦ x) =
-  12 := by norm_num1
+example
+    : Finset.prod (Finset.cons 6 (Finset.cons 2 ∅ (Finset.notMem_empty _)) (by norm_num))
+        (fun x ↦ x)
+      = 12 := by
+  norm_num1
 
 example (f : ℕ → α) : ∏ i ∈ Finset.range 0, f i = 1 := by norm_num1
 example (f : Fin 0 → α) : ∏ i : Fin 0, f i = 1 := by norm_num1
@@ -469,7 +468,6 @@ example : Int.fract (2 : R) = 0 := by norm_num1
 example : round (-3 : R) = -3 := by norm_num1
 example : Int.fract (-3 : R) = 0 := by norm_num1
 
-
 end Ring
 
 section Semifield
@@ -512,8 +510,11 @@ example : J(-2345 | 6789) = -1 := by norm_num1
 example : J(-1 | 1655801) = 1 := by norm_num1
 example : J(-102334155 | 165580141) = -1 := by norm_num1
 
-example : J(58378362899022564339483801989973056405585914719065 |
-            53974350278769849773003214636618718468638750007307) = -1 := by norm_num1
+example
+    : J(58378362899022564339483801989973056405585914719065 |
+        53974350278769849773003214636618718468638750007307)
+      = -1 := by
+  norm_num1
 
 example : J(3 + 4 | 3 * 5) = -1 := by norm_num1
 example : J(J(-1 | 7) | 11) = -1 := by norm_num1
@@ -526,18 +527,18 @@ end jacobi
 section even_odd
 
 example : Even 16 := by norm_num1
-example : ¬Even 17 := by norm_num1
+example : ¬ Even 17 := by norm_num1
 example : Even (16 : ℤ) := by norm_num1
-example : ¬Even (17 : ℤ) := by norm_num1
+example : ¬ Even (17 : ℤ) := by norm_num1
 example : Even (-20 : ℤ) := by norm_num1
-example : ¬Even (-21 : ℤ) := by norm_num1
+example : ¬ Even (-21 : ℤ) := by norm_num1
 
 example : Odd 5 := by norm_num1
-example : ¬Odd 4 := by norm_num1
+example : ¬ Odd 4 := by norm_num1
 example : Odd (5 : ℤ) := by norm_num1
-example : ¬Odd (4 : ℤ) := by norm_num1
+example : ¬ Odd (4 : ℤ) := by norm_num1
 example : Odd (-5 : ℤ) := by norm_num1
-example : ¬Odd (-4 : ℤ) := by norm_num1
+example : ¬ Odd (-4 : ℤ) := by norm_num1
 
 end even_odd
 
@@ -566,17 +567,17 @@ example : (553105253 : ℤ) ∣ 553105253 * 776531401 := by norm_num1
 example : ¬ (553105253 : ℤ) ∣ 553105253 * 776531401 + 1 := by norm_num1
 
 example : 10 ≡ 7 [MOD 3] := by norm_num1
-example : ¬ (10 ≡ 7 [MOD 5]) := by norm_num1
+example : ¬(10 ≡ 7 [MOD 5]) := by norm_num1
 
 example : 10 ≡ 7 [ZMOD 3] := by norm_num1
-example : ¬ (10 ≡ 7 [ZMOD 5]) := by norm_num1
+example : ¬(10 ≡ 7 [ZMOD 5]) := by norm_num1
 example : -3 ≡ 7 [ZMOD 5] := by norm_num1
-example : ¬ (-3 ≡ 7 [ZMOD 50]) := by norm_num1
+example : ¬(-3 ≡ 7 [ZMOD 50]) := by norm_num1
 
 example : 10 ≡ 7 [ZMOD -3] := by norm_num1
-example : ¬ (10 ≡ 7 [ZMOD -5]) := by norm_num1
+example : ¬(10 ≡ 7 [ZMOD -5]) := by norm_num1
 example : -3 ≡ 7 [ZMOD -5] := by norm_num1
-example : ¬ (-3 ≡ 7 [ZMOD -50]) := by norm_num1
+example : ¬(-3 ≡ 7 [ZMOD -50]) := by norm_num1
 
 end mod
 
@@ -594,7 +595,7 @@ section real_sqrt
 
 example : Real.sqrt 25 = 5 := by norm_num
 example : Real.sqrt (25 / 16) = 5 / 4 := by norm_num
-example : Real.sqrt (0.25) = 1/2 := by norm_num
+example : Real.sqrt (0.25) = 1 / 2 := by norm_num
 example : NNReal.sqrt 25 = 5 := by norm_num
 example : NNReal.sqrt (25 / 16) = 5 / 4 := by norm_num
 example : Real.sqrt (-37) = 0 := by norm_num
@@ -631,21 +632,22 @@ section irrational
 
 example : Irrational √2 := by norm_num1
 example : Irrational √(5 - 2) := by norm_num1
-example : Irrational √(7/4) := by norm_num1
-example : Irrational √(4/7) := by norm_num1
-example : Irrational √(1/2 + 1/2 + 1/3) := by norm_num1
-example : Irrational (100 ^ (1/3 : ℝ)) := by norm_num1
-example : Irrational ((27/38) ^ (1/3 : ℝ)) := by norm_num1
-example : Irrational ((87/6) ^ (54/321 : ℝ)) := by norm_num1
+example : Irrational √(7 / 4) := by norm_num1
+example : Irrational √(4 / 7) := by norm_num1
+example : Irrational √(1 / 2 + 1 / 2 + 1 / 3) := by norm_num1
+example : Irrational (100 ^ (1 / 3 : ℝ)) := by norm_num1
+example : Irrational ((27 / 38) ^ (1 / 3 : ℝ)) := by norm_num1
+example : Irrational ((87 / 6) ^ (54 / 321 : ℝ)) := by norm_num1
 
 -- Large prime number
 -- The current implementation should run in O(log n) time
-example : Irrational
-  √5210644015679228794060694325390955853335898483908056458352183851018372555735221 := by norm_num1
+example
+    : Irrational
+      √5210644015679228794060694325390955853335898483908056458352183851018372555735221 := by
+  norm_num1
 
 -- Large numerator does not affect performance.
 -- We only need to check that it is coprime with the denominator.
-example : Irrational (100 ^ ((10^1000 + 10^500) / 3 : ℝ)) := by norm_num1
-
+example : Irrational (100 ^ ((10 ^ 1000 + 10 ^ 500) / 3 : ℝ)) := by norm_num1
 
 end irrational

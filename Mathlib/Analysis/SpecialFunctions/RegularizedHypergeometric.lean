@@ -72,81 +72,83 @@ local notation "C" => regularizedHGFunCoeff
 attribute [grind .] Nat.factorial_ne_zero
 
 @[grind =]
-theorem regularizedHGFunCoeff_eq_zero_iff :
-    C a b n = 0 ↔ (∃ j ∈ a, ∃ k < n, j = -k) ∨ ∃ j ∈ b, ∃ (m : ℕ), j + n = -m := by
+theorem regularizedHGFunCoeff_eq_zero_iff
+    : C a b n = 0 ↔ (∃ j ∈ a, ∃ k < n, j = -k) ∨ ∃ j ∈ b, ∃ (m : ℕ), j + n = -m := by
   unfold regularizedHGFunCoeff
   simp
   grind
 
 variable (a b n m) in
-theorem regularizedHGFunCoeff_eq_zero_right (hb : -(n : ℂ) - m ∈ b := by grind) :
-    C a b n = 0 := by grind
+theorem regularizedHGFunCoeff_eq_zero_right (hb : -(n : ℂ) - m ∈ b := by grind) : C a b n = 0 := by
+  grind
 
 variable (a b n m) in
-theorem regularizedHGFunCoeff_eq_zero_left (ha : -(m : ℂ) ∈ a := by grind)
-    (hm : m < n := by grind) :
-  C a b n = 0 := by grind
+theorem regularizedHGFunCoeff_eq_zero_left (ha : -(m : ℂ) ∈ a := by grind) (hm : m < n := by grind)
+    : C a b n = 0 := by
+  grind
 
-/-- Recursion formula for the coefficients of the hypergeometric series.
+/--
+Recursion formula for the coefficients of the hypergeometric series.
 
-This is mainly used to calculate the convergence radius. -/
-theorem regularizedHGFunCoeff_add_one (hb : ∀ k ∈ b, k ≠ -n) :
-    C a b (n + 1) = C a b n *
-      ((a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod  * (n + 1))) := calc
-  _ = (a.map fun i ↦ ((ascPochhammer ℂ n).eval i) * (i + n)).prod /
-      (n ! * (n + 1) * (b.map fun j ↦ Gamma (j + n) * (j + n)).prod) := by
-    unfold regularizedHGFunCoeff
-    congrm ((a.map ?_).prod / (?_ * Multiset.prod ?_))
-    · ext j
-      simp [ascPochhammer_succ_right]
-    · rw [Nat.factorial_succ]
-      grind
-    · refine Multiset.map_congr rfl (fun j hj ↦ ?_)
-      simp only [Nat.cast_add, Nat.cast_one, ← add_assoc]
-      grind
-  _ = _ := by
-    unfold regularizedHGFunCoeff
-    simp_rw [div_mul_div_comm, Multiset.prod_map_mul]
-    ring
+This is mainly used to calculate the convergence radius.
+-/
+theorem regularizedHGFunCoeff_add_one (hb : ∀ k ∈ b, k ≠ -n)
+    : C a b (n + 1)
+      = C a b n * ((a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod * (n + 1))) :=
+  calc
+    _ = (a.map fun i ↦ ((ascPochhammer ℂ n).eval i) * (i + n)).prod
+        / (n ! * (n + 1) * (b.map fun j ↦ Gamma (j + n) * (j + n)).prod) := by
+      unfold regularizedHGFunCoeff
+      congrm ((a.map ?_).prod / (?_ * Multiset.prod ?_))
+      · ext j
+        simp [ascPochhammer_succ_right]
+      · rw [Nat.factorial_succ]
+        grind
+      · refine Multiset.map_congr rfl (fun j hj ↦ ?_)
+        simp only [Nat.cast_add, Nat.cast_one, ← add_assoc]
+        grind
+    _ = _ := by
+      unfold regularizedHGFunCoeff
+      simp_rw [div_mul_div_comm, Multiset.prod_map_mul]
+      ring
 
-/-- Recursion formula for the coefficients of the hypergeometric series.
+/--
+Recursion formula for the coefficients of the hypergeometric series.
 
-This is mainly used to calculate the convergence radius. -/
-theorem regularizedHGFunCoeff_add_one_div_self (h : C a b n ≠ 0) :
-    C a b (n + 1) / C a b n =
-      (a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod * (n + 1)) := by
+This is mainly used to calculate the convergence radius.
+-/
+theorem regularizedHGFunCoeff_add_one_div_self (h : C a b n ≠ 0)
+    : C a b (n + 1) / C a b n
+      = (a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod * (n + 1)) := by
   by_cases! hb : ∀ k ∈ b, k ≠ -n
   · rw [regularizedHGFunCoeff_add_one hb]
     field_simp
   · obtain ⟨j, hj⟩ := hb
-    have h₁ : (b.map (· + (n : ℂ))).prod = 0 := by
-      grind [Multiset.prod_eq_zero, Multiset.mem_map]
+    have h₁ : (b.map (· + (n : ℂ))).prod = 0 := by grind [Multiset.prod_eq_zero, Multiset.mem_map]
     simp [regularizedHGFunCoeff_eq_zero_right a b n 0, h₁]
 
 @[simp]
-theorem regularizedHGFunCoeff_zero_neg_nat_add_one (n i : ℕ) :
-    C 0 {-(n : ℂ) + 1} (i + n) = C 0 {(n : ℂ) + 1} i := by
+theorem regularizedHGFunCoeff_zero_neg_nat_add_one (n i : ℕ)
+    : C 0 {-(n : ℂ) + 1} (i + n) = C 0 {(n : ℂ) + 1} i := by
   simp [regularizedHGFunCoeff, ← Gamma_nat_eq_factorial]
   grind
 
-private theorem multiset_prod_eq_pow_mul_multiset_prod (a : Multiset ℂ) (hn : n ≠ 0) :
-    (a.map (· + (n : ℂ))).prod = n ^ a.card * (a.map (· / (n : ℂ) + 1)).prod := calc
-  _ = (a.map (fun j ↦ n * (j / (n : ℂ) + 1))).prod := by
-    congr; ext; field_simp
-  _ = _ := by
-    simp [Multiset.prod_map_mul]
+private theorem multiset_prod_eq_pow_mul_multiset_prod (a : Multiset ℂ) (hn : n ≠ 0)
+    : (a.map (· + (n : ℂ))).prod = n ^ a.card * (a.map (· / (n : ℂ) + 1)).prod :=
+  calc
+    _ = (a.map (fun j ↦ n * (j / (n : ℂ) + 1))).prod := by congr; ext; field_simp
+    _ = _ := by simp [Multiset.prod_map_mul]
 
-private
-theorem multiset_prod_div_multiset_prod_mul (a : Multiset ℂ) (b : Multiset ℂ) (hn : n ≠ 0) :
-    (a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod * (n + 1)) =
-      n ^ (a.card - (b.card : ℤ) - 1) * (a.map (· / (n : ℂ) + 1)).prod /
-      ((b.map (· / (n : ℂ) + 1)).prod * (1 + (n : ℂ)⁻¹)) := by
+private theorem multiset_prod_div_multiset_prod_mul (a : Multiset ℂ) (b : Multiset ℂ) (hn : n ≠ 0)
+    : (a.map (· + (n : ℂ))).prod / ((b.map (· + (n : ℂ))).prod * (n + 1))
+      = n ^ (a.card - (b.card : ℤ) - 1) * (a.map (· / (n : ℂ) + 1)).prod
+        / ((b.map (· / (n : ℂ) + 1)).prod * (1 + (n : ℂ)⁻¹)) := by
   rw [multiset_prod_eq_pow_mul_multiset_prod a hn, multiset_prod_eq_pow_mul_multiset_prod b hn]
   field_simp
   congr 1
   calc
-    _ = n * n ^ b.card * n ^ (a.card - b.card - (1 : ℤ)) *
-        (a.map (fun x : ℂ ↦ (x + n) / n)).prod := by
+    _ = n * n ^ b.card * n ^ (a.card - b.card - (1 : ℤ))
+        * (a.map (fun x : ℂ ↦ (x + n) / n)).prod := by
       congr 1
       rw [← pow_succ', ← zpow_natCast, ← zpow_natCast, ← zpow_add' (by left; norm_cast)]
       grind
@@ -154,18 +156,16 @@ theorem multiset_prod_div_multiset_prod_mul (a : Multiset ℂ) (b : Multiset ℂ
 
 variable (a b) in
 /-- The regularized hypergeometric series. -/
-def regularizedHGFunSeries : FormalMultilinearSeries ℂ ℂ ℂ :=
-  .ofScalars ℂ (C a b)
+def regularizedHGFunSeries : FormalMultilinearSeries ℂ ℂ ℂ := .ofScalars ℂ (C a b)
 
 @[simp]
-theorem regularizedHGFunSeries_coeff :
-    (regularizedHGFunSeries a b).coeff = C a b := by
+theorem regularizedHGFunSeries_coeff : (regularizedHGFunSeries a b).coeff = C a b := by
   unfold regularizedHGFunSeries
-  ext; simp
+  ext
+  simp
 
 @[simp, grind =]
-theorem regularizedHGFunSeries_eq_zero :
-    regularizedHGFunSeries a b n = 0 ↔ C a b n = 0 := by
+theorem regularizedHGFunSeries_eq_zero : regularizedHGFunSeries a b n = 0 ↔ C a b n = 0 := by
   apply FormalMultilinearSeries.ofScalars_eq_zero
 
 variable (a b) in
@@ -177,20 +177,24 @@ theorem regularizedHGFun_zero : regularizedHGFun a b 0 = C a b 0 := by
   rw [regularizedHGFun, regularizedHGFunSeries, ← FormalMultilinearSeries.ofScalarsSum]
   simp
 
-/-- If there exists `j` and `k : ℕ`, such that `a j = -k`, then the hypergeometric series is finite
-and has convergence radius `∞`. -/
-theorem radius_regularizedHGFunSeries_eq_top_of_finite (ha : j ∈ a) (hj : j = -n) :
-    (regularizedHGFunSeries a b).radius = ⊤ := by
+/--
+If there exists `j` and `k : ℕ`, such that `a j = -k`, then the hypergeometric series is finite
+and has convergence radius `∞`.
+-/
+theorem radius_regularizedHGFunSeries_eq_top_of_finite (ha : j ∈ a) (hj : j = -n)
+    : (regularizedHGFunSeries a b).radius = ⊤ := by
   apply FormalMultilinearSeries.radius_eq_top_of_eventually_eq_zero
   apply eventually_atTop.mpr
   use n + 1
   grind
 
 variable (b) in
-/-- If for all `j` and `k : ℕ`, `a j ≠ -k`, then the coefficients of the hypergeometric series
-are eventually non-vanishing. -/
-theorem eventually_atTop_regularizedHGFunCoeff_ne_zero (h : ∀ j ∈ a, ∀ (k : ℕ), j ≠ -↑k) :
-    ∀ᶠ (n : ℕ) in atTop, C a b n ≠ 0 := by
+/--
+If for all `j` and `k : ℕ`, `a j ≠ -k`, then the coefficients of the hypergeometric series
+are eventually non-vanishing.
+-/
+theorem eventually_atTop_regularizedHGFunCoeff_ne_zero (h : ∀ j ∈ a, ∀ (k : ℕ), j ≠ - ↑k)
+    : ∀ᶠ (n : ℕ) in atTop, C a b n ≠ 0 := by
   rw [Filter.eventually_atTop]
   use b.toFinset.sup (⌈-re ·⌉₊) + 1
   intro n hn h'
@@ -202,33 +206,37 @@ theorem eventually_atTop_regularizedHGFunCoeff_ne_zero (h : ∀ j ∈ a, ∀ (k 
       have h : j = -m - n := by grind
       simpa [h] using this
     calc
-      -j.re ≤ ⌈-j.re⌉₊ := Nat.le_ceil (-j.re)
+      -j.re
+        ≤ ⌈-j.re⌉₊ := Nat.le_ceil (-j.re)
       _ ≤ b.toFinset.sup (⌈-re ·⌉₊) := mod_cast Finset.le_sup (by grind) (f := (⌈-re ·⌉₊))
       _ < n := by norm_cast
 
 variable (a) in
-private theorem tendsto_multiset_prod_div_add_one :
-    Tendsto (fun n : ℕ ↦ (a.map (· / (n : ℂ) + 1)).prod) atTop (𝓝 1) := by
+private theorem tendsto_multiset_prod_div_add_one
+    : Tendsto (fun n : ℕ ↦ (a.map (· / (n : ℂ) + 1)).prod) atTop (𝓝 1) := by
   suffices ∀ i ∈ a, Tendsto (fun n : ℕ ↦ (i / n + 1)) atTop (𝓝 <| (fun _ : _ ↦ 1) i) by
     simpa using tendsto_multiset_prod _ this
   intro i hi
   simpa using (tendsto_const_div_atTop_nhds_zero_nat i).add_const 1
 
 variable (a b) in
-private theorem tendsto_multiset_prod_div_multiset_prod_mul :
-    Tendsto (fun n : ℕ ↦ (a.map (· / (n : ℂ) + 1)).prod /
-      ((b.map (· / (n : ℂ) + 1)).prod * (1 + (n : ℂ)⁻¹))) atTop (𝓝 1) := by
+private theorem tendsto_multiset_prod_div_multiset_prod_mul
+    : Tendsto
+      (fun n : ℕ ↦
+        (a.map (· / (n : ℂ) + 1)).prod / ((b.map (· / (n : ℂ) + 1)).prod * (1 + (n : ℂ)⁻¹)))
+      atTop (𝓝 1) := by
   have h : Tendsto (fun n : ℕ ↦ (n : ℂ)⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_nhds_zero_nat
-  have := (tendsto_multiset_prod_div_add_one a).div
-    ((tendsto_multiset_prod_div_add_one b).mul <| h.const_add 1) (by simp)
+  have :=
+    (tendsto_multiset_prod_div_add_one a).div
+      ((tendsto_multiset_prod_div_add_one b).mul <| h.const_add 1) (by simp)
   simp only [add_zero, mul_one, ne_eq, one_ne_zero, not_false_eq_true, div_self] at this
   apply this.congr
   simp
 
 /-- If `a.card ≤ b.card`, then the hypergeometric series has infinite convergence radius. -/
 @[grind =]
-theorem radius_regularizedHGFunSeries_eq_top (h : a.card ≤ b.card) :
-    (regularizedHGFunSeries a b).radius = ⊤ := by
+theorem radius_regularizedHGFunSeries_eq_top (h : a.card ≤ b.card)
+    : (regularizedHGFunSeries a b).radius = ⊤ := by
   by_cases! ha : ∃ j ∈ a, ∃ k : ℕ, j = -k
   · obtain ⟨j, hj, k, ha⟩ := ha
     apply radius_regularizedHGFunSeries_eq_top_of_finite hj ha
@@ -255,13 +263,13 @@ theorem radius_regularizedHGFunSeries_eq_top (h : a.card ≤ b.card) :
 theorem radius_regularizedHGFunSeries_zero_eq_top : (regularizedHGFunSeries 0 b).radius = ⊤ :=
   radius_regularizedHGFunSeries_eq_top (by simp)
 
-theorem analyticOnNhd_regularizedHGFun_of_card_le (h : a.card ≤ b.card) :
-    AnalyticOnNhd ℂ (regularizedHGFun a b) .univ := by
+theorem analyticOnNhd_regularizedHGFun_of_card_le (h : a.card ≤ b.card)
+    : AnalyticOnNhd ℂ (regularizedHGFun a b) .univ := by
   convert! (regularizedHGFunSeries a b).analyticOnNhd
   simp [radius_regularizedHGFunSeries_eq_top h]
 
-theorem analyticAt_regularizedHGFun_of_card_le (h : a.card ≤ b.card) (z : ℂ) :
-    AnalyticAt ℂ (regularizedHGFun a b) z :=
+theorem analyticAt_regularizedHGFun_of_card_le (h : a.card ≤ b.card) (z : ℂ)
+    : AnalyticAt ℂ (regularizedHGFun a b) z :=
   analyticOnNhd_regularizedHGFun_of_card_le h z (by simp)
 
 @[fun_prop]
@@ -272,14 +280,17 @@ theorem analyticOnNhd_regularizedHGFun_zero : AnalyticOnNhd ℂ (regularizedHGFu
 theorem analyticAt_regularizedHGFun_zero (z : ℂ) : AnalyticAt ℂ (regularizedHGFun 0 b) z :=
   analyticAt_regularizedHGFun_of_card_le (by simp) z
 
-/-- If `a.card = b.card + 1`, then the hypergeometric series has convergence radius `1`, unless it
-is a polynomial. -/
+/--
+If `a.card = b.card + 1`, then the hypergeometric series has convergence radius `1`, unless it
+is a polynomial.
+-/
 @[grind =]
-theorem radius_regularizedHGFunSeries_eq_one (h : a.card = b.card + 1)
-    (h' : ∀ j ∈ a, ∀ k : ℕ, j ≠ -k) :
-    (regularizedHGFunSeries a b).radius = 1 := by
-  have : Tendsto (fun n ↦ ‖regularizedHGFunCoeff a b n.succ‖ / ‖regularizedHGFunCoeff a b n‖) atTop
-      (𝓝 1) := by
+theorem radius_regularizedHGFunSeries_eq_one
+    (h : a.card = b.card + 1) (h' : ∀ j ∈ a, ∀ k : ℕ, j ≠ -k)
+    : (regularizedHGFunSeries a b).radius = 1 := by
+  have : Tendsto
+      (fun n ↦ ‖regularizedHGFunCoeff a b n.succ‖ / ‖regularizedHGFunCoeff a b n‖)
+      atTop (𝓝 1) := by
     have := (tendsto_multiset_prod_div_multiset_prod_mul a b).norm
     simp only [norm_one] at this
     apply this.congr'
@@ -290,32 +301,34 @@ theorem radius_regularizedHGFunSeries_eq_one (h : a.card = b.card + 1)
   have := FormalMultilinearSeries.ofScalars_radius_eq_inv_of_tendsto (r := 1) ℂ _ (by simp) this
   simpa
 
-/-- If `a.card = b.card + 1`, then the hypergeometric series has convergence radius greater or equal
-to `1`. -/
-theorem radius_regularizedHGFunSeries_ge_one (h : a.card = b.card + 1) :
-    1 ≤ (regularizedHGFunSeries a b).radius := by
+/--
+If `a.card = b.card + 1`, then the hypergeometric series has convergence radius greater or equal
+to `1`.
+-/
+theorem radius_regularizedHGFunSeries_ge_one (h : a.card = b.card + 1)
+    : 1 ≤ (regularizedHGFunSeries a b).radius := by
   by_cases! h' : ∀ j ∈ a, ∀ k : ℕ, j ≠ -k
   · grind
   · obtain ⟨j, hj, k, h'⟩ := h'
     rw [radius_regularizedHGFunSeries_eq_top_of_finite hj h']
     simp
 
-theorem analyticOnNhd_regularizedHGFun_of_card_eq_add_one (h : a.card = b.card + 1) :
-    AnalyticOnNhd ℂ (regularizedHGFun a b) (Metric.eball 0 1) := by
+theorem analyticOnNhd_regularizedHGFun_of_card_eq_add_one (h : a.card = b.card + 1)
+    : AnalyticOnNhd ℂ (regularizedHGFun a b) (Metric.eball 0 1) := by
   apply (regularizedHGFunSeries a b).analyticOnNhd.mono
   exact Metric.eball_subset_eball (radius_regularizedHGFunSeries_ge_one h)
 
-theorem analyticAt_regularizedHGFun_of_card_eq_add_one (h : a.card = b.card + 1) {z : ℂ}
-    (hz : ‖z‖ < 1) :
-    AnalyticAt ℂ (regularizedHGFun a b) z := by
+theorem analyticAt_regularizedHGFun_of_card_eq_add_one
+    (h : a.card = b.card + 1) {z : ℂ} (hz : ‖z‖ < 1)
+    : AnalyticAt ℂ (regularizedHGFun a b) z := by
   apply analyticOnNhd_regularizedHGFun_of_card_eq_add_one h
   rwa [Metric.mem_eball, edist_zero_right, ← ofReal_norm, ENNReal.ofReal_lt_one]
 
-theorem regularizedHGFun_zero_singleton_neg_nat_add_one (n : ℕ) (z : ℂ) :
-    regularizedHGFun 0 {-(n : ℂ) + 1} z = z ^ n * regularizedHGFun 0 {(n : ℂ) + 1} z :=
+theorem regularizedHGFun_zero_singleton_neg_nat_add_one (n : ℕ) (z : ℂ)
+    : regularizedHGFun 0 {-(n : ℂ) + 1} z = z ^ n * regularizedHGFun 0 {(n : ℂ) + 1} z :=
   calc
-    _ = ∑ i ∈ Finset.range n, z ^ i * C 0 {-(n : ℂ) + 1} i +
-        ∑' i, z ^ (i + n) * C 0 {-(n : ℂ) + 1} (i + n) := by
+    _ = ∑ i ∈ Finset.range n, z ^ i * C 0 {-(n : ℂ) + 1} i
+        + ∑' i, z ^ (i + n) * C 0 {-(n : ℂ) + 1} (i + n) := by
       rw [regularizedHGFun, FormalMultilinearSeries.sum,
         ← ((regularizedHGFunSeries 0 {-(n : ℂ) + 1}).summable (by simp)).sum_add_tsum_nat_add n]
       simp
@@ -329,15 +342,14 @@ theorem regularizedHGFun_zero_singleton_neg_nat_add_one (n : ℕ) (z : ℂ) :
       simp_rw [zero_add, ← tsum_mul_left]
       congr with i
       ring
-    _ = _ := by
-      simp [regularizedHGFun, FormalMultilinearSeries.sum]
+    _ = _ := by simp [regularizedHGFun, FormalMultilinearSeries.sum]
 
 section ZeroZero
 
 /-- The regularized hypergeometric series with `a = b = 0` is exponential series. -/
 @[simp, grind =]
-theorem regularizedHGFunSeries_zero_zero :
-    regularizedHGFunSeries 0 0 = NormedSpace.expSeries ℂ ℂ := by
+theorem regularizedHGFunSeries_zero_zero
+    : regularizedHGFunSeries 0 0 = NormedSpace.expSeries ℂ ℂ := by
   ext n
   simp [regularizedHGFunCoeff, NormedSpace.expSeries]
 
@@ -357,38 +369,36 @@ def regularizedGaussHGFunSeries (a b c : ℂ) : FormalMultilinearSeries ℂ ℂ 
   regularizedHGFunSeries {a, b} {c}
 
 /-- The regularized Gaussian hypergeometric function. -/
-def regularizedGaussHGFun (a b c z : ℂ) : ℂ :=
-  (regularizedGaussHGFunSeries a b c).sum z
+def regularizedGaussHGFun (a b c z : ℂ) : ℂ := (regularizedGaussHGFunSeries a b c).sum z
 
 variable {a b c z : ℂ}
 
 variable (a b c) in
-theorem regularizedGaussHGFunSeries_symm :
-    regularizedGaussHGFunSeries a b c = regularizedGaussHGFunSeries b a c := by
+theorem regularizedGaussHGFunSeries_symm
+    : regularizedGaussHGFunSeries a b c = regularizedGaussHGFunSeries b a c := by
   unfold regularizedGaussHGFunSeries
   rw [Multiset.pair_comm]
 
 variable (a b c) in
-theorem regularizedGaussHGFun_symm :
-    regularizedGaussHGFun a b c = regularizedGaussHGFun b a c := by
+theorem regularizedGaussHGFun_symm : regularizedGaussHGFun a b c = regularizedGaussHGFun b a c := by
   unfold regularizedGaussHGFun
   rw [regularizedGaussHGFunSeries_symm]
 
-theorem coeff_regularizedGaussHGFunSeries :
-    (a.regularizedGaussHGFunSeries b c).coeff n =
-    ((ascPochhammer ℂ n).eval a * (ascPochhammer ℂ n).eval b) / (n ! * Gamma (c + n)) := by
+theorem coeff_regularizedGaussHGFunSeries
+    : (a.regularizedGaussHGFunSeries b c).coeff n
+      = ((ascPochhammer ℂ n).eval a * (ascPochhammer ℂ n).eval b) / (n ! * Gamma (c + n)) := by
   simp [regularizedGaussHGFunSeries, regularizedHGFunCoeff]
 
-theorem Gamma_inv_mul_ordinaryHypergeometricSeries_eq (hc : ∀ k : ℕ, c ≠ -k) {n : ℕ} :
-    (Gamma c)⁻¹ * (ordinaryHypergeometricSeries ℂ a b c).coeff n =
-      (a.regularizedGaussHGFunSeries b c).coeff n := by
+theorem Gamma_inv_mul_ordinaryHypergeometricSeries_eq (hc : ∀ k : ℕ, c ≠ -k) {n : ℕ}
+    : (Gamma c)⁻¹ * (ordinaryHypergeometricSeries ℂ a b c).coeff n
+      = (a.regularizedGaussHGFunSeries b c).coeff n := by
   rw [coeff_regularizedGaussHGFunSeries, ordinaryHypergeometricSeries,
     FormalMultilinearSeries.coeff_ofScalars, ordinaryHypergeometricCoefficient,
     ← Gamma_add_nat_div_Gamma_eq c hc]
   grind
 
-theorem ordinaryHypergeometric_div_Gamma_eq (hc : ∀ k : ℕ, c ≠ -k) :
-    ordinaryHypergeometric a b c z / Gamma c = regularizedGaussHGFun a b c z := by
+theorem ordinaryHypergeometric_div_Gamma_eq (hc : ∀ k : ℕ, c ≠ -k)
+    : ordinaryHypergeometric a b c z / Gamma c = regularizedGaussHGFun a b c z := by
   rw [regularizedGaussHGFun, ordinaryHypergeometric, div_eq_inv_mul, ← smul_eq_mul,
     FormalMultilinearSeries.const_smul_sum_apply]
   congr
@@ -397,25 +407,25 @@ theorem ordinaryHypergeometric_div_Gamma_eq (hc : ∀ k : ℕ, c ≠ -k) :
 
 variable (b c) in
 @[simp]
-theorem radius_regularizedGaussHGFunSeries_eq_top_of_left (k : ℕ) :
-    (regularizedGaussHGFunSeries (-k) b c).radius = ⊤ :=
+theorem radius_regularizedGaussHGFunSeries_eq_top_of_left (k : ℕ)
+    : (regularizedGaussHGFunSeries (-k) b c).radius = ⊤ :=
   radius_regularizedHGFunSeries_eq_top_of_finite (j := -(k : ℂ)) (by simp) rfl
 
 variable (a c) in
 @[simp]
-theorem radius_regularizedGaussHGFunSeries_eq_top_of_right (k : ℕ) :
-    (regularizedGaussHGFunSeries a (-k) c).radius = ⊤ :=
+theorem radius_regularizedGaussHGFunSeries_eq_top_of_right (k : ℕ)
+    : (regularizedGaussHGFunSeries a (-k) c).radius = ⊤ :=
   radius_regularizedHGFunSeries_eq_top_of_finite (j := -(k : ℂ)) (by simp) rfl
 
 variable (c) in
 @[grind =]
-theorem radius_regularizedGaussHGFunSeries_eq_one (h : ∀ k : ℕ, a ≠ -k ∧ b ≠ -k) :
-    (regularizedGaussHGFunSeries a b c).radius = 1 :=
+theorem radius_regularizedGaussHGFunSeries_eq_one (h : ∀ k : ℕ, a ≠ -k ∧ b ≠ -k)
+    : (regularizedGaussHGFunSeries a b c).radius = 1 :=
   radius_regularizedHGFunSeries_eq_one rfl (by simp; grind)
 
 variable (a b c) in
-theorem radius_regularizedGaussHGFunSeries_ge_one :
-    1 ≤ (regularizedGaussHGFunSeries a b c).radius :=
+theorem radius_regularizedGaussHGFunSeries_ge_one
+    : 1 ≤ (regularizedGaussHGFunSeries a b c).radius :=
   radius_regularizedHGFunSeries_ge_one rfl
 
 end Gaussian

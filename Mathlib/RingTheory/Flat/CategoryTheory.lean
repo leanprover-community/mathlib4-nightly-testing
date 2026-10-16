@@ -38,40 +38,43 @@ namespace Module.Flat
 
 variable {R : Type u} [CommRing R] (M : ModuleCat.{u} R)
 
-lemma lTensor_shortComplex_exact [Flat R M] (C : ShortComplex <| ModuleCat R) (hC : C.Exact) :
-    C.map (tensorLeft M) |>.Exact := by
+lemma lTensor_shortComplex_exact [Flat R M] (C : ShortComplex <| ModuleCat R) (hC : C.Exact)
+    : C.map (tensorLeft M) |>.Exact := by
   rw [moduleCat_exact_iff_function_exact] at hC ⊢
   exact lTensor_exact M hC
 
-lemma rTensor_shortComplex_exact [Flat R M] (C : ShortComplex <| ModuleCat R) (hC : C.Exact) :
-    C.map (tensorRight M) |>.Exact := by
+lemma rTensor_shortComplex_exact [Flat R M] (C : ShortComplex <| ModuleCat R) (hC : C.Exact)
+    : C.map (tensorRight M) |>.Exact := by
   rw [moduleCat_exact_iff_function_exact] at hC ⊢
   exact rTensor_exact M hC
 
-lemma iff_lTensor_preserves_shortComplex_exact :
-    Flat R M ↔
-    ∀ (C : ShortComplex <| ModuleCat R) (_ : C.Exact), (C.map (tensorLeft M) |>.Exact) :=
-  ⟨fun _ _ ↦ lTensor_shortComplex_exact _ _, fun H ↦ iff_lTensor_exact.2
-    fun _ _ _ _ _ _ _ _ _ f g h ↦
-      moduleCat_exact_iff_function_exact _ |>.1 <|
-      H (.mk (ModuleCat.ofHom f) (ModuleCat.ofHom g)
-        (ModuleCat.hom_ext (DFunLike.ext _ _ h.apply_apply_eq_zero)))
-          (moduleCat_exact_iff_function_exact _ |>.2 h)⟩
+lemma iff_lTensor_preserves_shortComplex_exact
+    : Flat R M
+      ↔ ∀ (C : ShortComplex <| ModuleCat R) (_ : C.Exact), (C.map (tensorLeft M) |>.Exact) := ⟨
+  fun _ _ ↦ lTensor_shortComplex_exact _ _,
+  fun H ↦
+    iff_lTensor_exact.2 fun _ _ _ _ _ _ _ _ _ f g h ↦
+      moduleCat_exact_iff_function_exact _ |>.1 <| H
+        (.mk (ModuleCat.ofHom f) (ModuleCat.ofHom g)
+          (ModuleCat.hom_ext (DFunLike.ext _ _ h.apply_apply_eq_zero)))
+        (moduleCat_exact_iff_function_exact _ |>.2 h)
+⟩
 
-lemma iff_rTensor_preserves_shortComplex_exact :
-    Flat R M ↔
-    ∀ (C : ShortComplex <| ModuleCat R) (_ : C.Exact), (C.map (tensorRight M) |>.Exact) :=
-  ⟨fun _ _ ↦ rTensor_shortComplex_exact _ _, fun H ↦ iff_rTensor_exact.2
-    fun _ _ _ _ _ _ _ _ _ f g h ↦
-      moduleCat_exact_iff_function_exact _ |>.1 <|
-      H (.mk (ModuleCat.ofHom f) (ModuleCat.ofHom g)
-        (ModuleCat.hom_ext (DFunLike.ext _ _ h.apply_apply_eq_zero)))
-          (moduleCat_exact_iff_function_exact _ |>.2 h)⟩
+lemma iff_rTensor_preserves_shortComplex_exact
+    : Flat R M
+      ↔ ∀ (C : ShortComplex <| ModuleCat R) (_ : C.Exact), (C.map (tensorRight M) |>.Exact) := ⟨
+  fun _ _ ↦ rTensor_shortComplex_exact _ _,
+  fun H ↦
+    iff_rTensor_exact.2 fun _ _ _ _ _ _ _ _ _ f g h ↦
+      moduleCat_exact_iff_function_exact _ |>.1 <| H
+        (.mk (ModuleCat.ofHom f) (ModuleCat.ofHom g)
+          (ModuleCat.hom_ext (DFunLike.ext _ _ h.apply_apply_eq_zero)))
+        (moduleCat_exact_iff_function_exact _ |>.2 h)
+⟩
 
 open Limits
 
-lemma iff_preservesFiniteLimits_tensorLeft :
-    Flat R M ↔ PreservesFiniteLimits (tensorLeft M) := by
+lemma iff_preservesFiniteLimits_tensorLeft : Flat R M ↔ PreservesFiniteLimits (tensorLeft M) := by
   rw [Module.Flat.iff_lTensor_preserves_shortComplex_exact,
     ((Functor.exact_tfae <| tensorLeft M).out 2 4 :)]
   simp [show PreservesFiniteColimits (tensorLeft M) from inferInstance]
@@ -80,8 +83,7 @@ instance [Module.Flat R M] : PreservesFiniteLimits <| tensorLeft M := by
   rw [← iff_preservesFiniteLimits_tensorLeft]
   infer_instance
 
-lemma iff_preservesFiniteLimits_tensorRight :
-    Flat R M ↔ PreservesFiniteLimits (tensorRight M) where
+lemma iff_preservesFiniteLimits_tensorRight : Flat R M ↔ PreservesFiniteLimits (tensorRight M) where
   mp _ := preservesFiniteLimits_of_natIso (BraidedCategory.tensorLeftIsoTensorRight M)
   mpr _ := by
     rw [iff_preservesFiniteLimits_tensorLeft]

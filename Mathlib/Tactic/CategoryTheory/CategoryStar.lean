@@ -46,12 +46,13 @@ meta def insertAfterLevels (us : Array Name) (levelNames : List Name) (newLevel 
 The syntax `Category* C` creates a new distinct implicit universe parameter `v`, placed
 just before any parameters appearing in `C` and its type, and elaborates to `Category.{v} C`.
 -/
-elab "Category*" ppSpace C:term:arg : term => commitIfNoEx <| withoutErrToSorry do
-  let u ← mkFreshLevelMVar
-  let cExpr ← instantiateMVars <| ← elabTermEnsuringType C (some <| .sort <| .succ u)
-  let tpCExpr ← instantiateMVars <| ← Meta.inferType cExpr
-  let us := (collectLevelParams (collectLevelParams {} cExpr) tpCExpr).params
-  let v ← mkFreshLevelParam `v (insertAfterLevels us)
-  return .app (.const `CategoryTheory.Category [v, u]) cExpr
+elab "Category*" ppSpace C:term:arg : term =>
+  commitIfNoEx <| withoutErrToSorry do
+    let u ← mkFreshLevelMVar
+    let cExpr ← instantiateMVars <| ← elabTermEnsuringType C (some <| .sort <| .succ u)
+    let tpCExpr ← instantiateMVars <| ← Meta.inferType cExpr
+    let us := (collectLevelParams (collectLevelParams {} cExpr) tpCExpr).params
+    let v ← mkFreshLevelParam `v (insertAfterLevels us)
+    return .app (.const `CategoryTheory.Category [v, u]) cExpr
 
 end Mathlib.Tactic.CategoryStar

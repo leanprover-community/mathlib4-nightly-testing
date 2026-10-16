@@ -18,12 +18,12 @@ namespace Rat
 
 open IsFractionRing
 
-theorem isLocalizationIsInteger_iff (q : ℚ) :
-    IsLocalization.IsInteger ℤ q ↔ q ∈ Set.range Int.cast := by
+theorem isLocalizationIsInteger_iff (q : ℚ)
+    : IsLocalization.IsInteger ℤ q ↔ q ∈ Set.range Int.cast := by
   simp [IsLocalization.IsInteger]
 
-theorem associated_num_den (q : ℚ) :
-    Associated (IsFractionRing.num ℤ q) q.num ∧ Associated (IsFractionRing.den ℤ q : ℤ) q.den :=
+theorem associated_num_den (q : ℚ)
+    : Associated (IsFractionRing.num ℤ q) q.num ∧ Associated (IsFractionRing.den ℤ q : ℤ) q.den :=
   num_den_unique ℤ q q.num ⟨q.den, by simp⟩
     (by simpa [isRelPrime_iff_isCoprime, Int.isCoprime_iff_nat_coprime] using q.reduced)
     (by simp [Rat.num_div_den])

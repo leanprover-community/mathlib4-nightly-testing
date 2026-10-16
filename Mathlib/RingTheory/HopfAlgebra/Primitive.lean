@@ -33,15 +33,15 @@ variable {R A : Type*} [CommSemiring R] [Ring A] [HopfAlgebra R A] {a : A}
 namespace Bialgebra.IsPrimitiveElem
 
 /-- See Proposition 1.4.17 in [GrinbergReiner2020]. -/
-@[simp] theorem antipode_eq_neg (ha : IsPrimitiveElem R a) : antipode R a = -a :=
+@[simp]
+theorem antipode_eq_neg (ha : IsPrimitiveElem R a) : antipode R a = -a :=
   eq_neg_of_add_eq_zero_right <| by
-    simpa [ha.comul_eq_tmul_add_tmul, ha.counit_eq_zero]
-      using mul_antipode_rTensor_comul_apply (R := R) a
+    simpa [ha.comul_eq_tmul_add_tmul, ha.counit_eq_zero] using
+      mul_antipode_rTensor_comul_apply (R := R) a
 
 protected lemma antipode (ha : IsPrimitiveElem R a) : IsPrimitiveElem R (antipode R a) :=
   ha.antipode_eq_neg ▸ ha.neg
 
-lemma antipode_antipode (ha : IsPrimitiveElem R a) : antipode R (antipode R a) = a := by
-  simp [ha]
+lemma antipode_antipode (ha : IsPrimitiveElem R a) : antipode R (antipode R a) = a := by simp [ha]
 
 end Bialgebra.IsPrimitiveElem

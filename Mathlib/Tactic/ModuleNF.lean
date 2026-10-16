@@ -116,10 +116,12 @@ open Qq Parser.Tactic Elab.Tactic Meta
 
 namespace Mathlib.Tactic.ModuleNF
 
-/-- Infer the scalar ring over which the scalar rings appearing in `es` should be normalized.
+/--
+Infer the scalar ring over which the scalar rings appearing in `es` should be normalized.
 
 This is similar to `Mathlib.Tactic.Algebra.inferBase` which infers a base using the ring / field
-structure of the ambient type. -/
+structure of the ambient type.
+-/
 def inferBase (es : Array Expr) : MetaM (Σ u : Level, Q(Type u)) := do
   let rings := (← es.toList.mapM Algebra.collectScalarRings).flatten
   let rings ← rings.eraseDups.mapM getLevelQ'
@@ -127,19 +129,23 @@ def inferBase (es : Array Expr) : MetaM (Σ u : Level, Q(Type u)) := do
   | [] => return ⟨0, q(ℕ)⟩
   | r :: rs => rs.foldlM Algebra.pickLargerRing r
 
-/-- Infer a common base scalar ring across all locations targeted by `loc`.
+/--
+Infer a common base scalar ring across all locations targeted by `loc`.
 
 The locations read are exactly those that `transformAtNondepPropLocation` rewrites when the
-tactic runs, so the inferred ring reflects the rewrite set. -/
+tactic runs, so the inferred ring reflects the rewrite set.
+-/
 def inferBaseAtLocation (loc : Location) : TacticM (Σ u : Level, Q(Type u)) :=
   withMainContext do
     inferBase (← (← mapNondepPropLocation loc (fun fvarId => fvarId.getType) getMainTarget).mapM
       (whnf ·))
 
-/-- Rewrite `e`, an expression in some `AddCommMonoid`, into `module`'s internal normal form using
-`Mathlib.Tactic.Module.eval`. -/
-def evalExpr (base : Σ u : Level, Q(Type u)) (postCtx : Simp.Context) (e : Expr) :
-    AtomM Simp.Result := do
+/--
+Rewrite `e`, an expression in some `AddCommMonoid`, into `module`'s internal normal form using
+`Mathlib.Tactic.Module.eval`.
+-/
+def evalExpr (base : Σ u : Level, Q(Type u)) (postCtx : Simp.Context) (e : Expr)
+    : AtomM Simp.Result := do
   let e ← withReducible <| whnf e
   -- An expression that is not an application must necessarily be an atom.
   -- `Module.eval` also checks for atoms, but this check avoids instance search and `Module.parse`.
@@ -150,27 +156,34 @@ def evalExpr (base : Σ u : Level, Q(Type u)) (postCtx : Simp.Context) (e : Expr
 
 /-- The `Simp.Context` used by `ModuleNF.cleanup`. -/
 def cleanupCtx : MetaM Simp.Context := do
-  let thms ← [``one_smul, ``zero_smul, ``add_zero, ``zero_add, ``mul_one,
-    ``one_mul, ``neg_one_smul, ``algebraMap_smul].foldlM (·.addConst ·) ({} : SimpTheorems)
-  Simp.mkContext { failIfUnchanged := false }
-    (simpTheorems := #[thms]) (congrTheorems := ← getSimpCongrTheorems)
+  let thms ←
+    [
+      ``one_smul, ``zero_smul, ``add_zero, ``zero_add, ``mul_one,
+      ``one_mul, ``neg_one_smul, ``algebraMap_smul
+    ].foldlM
+      (·.addConst ·) ({} : SimpTheorems)
+  Simp.mkContext { failIfUnchanged := false } (simpTheorems := #[thms])
+    (congrTheorems := ← getSimpCongrTheorems)
 
 /-- Clean up a rewritten expression with the `cleanupCtx` lemmas. -/
 def cleanup (ctx : Simp.Context) (r : Simp.Result) : MetaM Simp.Result := do
   r.mkEqTrans (← Simp.main r.expr ctx (methods := Simp.mkDefaultMethodsCore {})).1
 
-/-- Run the `module_nf` rewrite on the expression `e`.
+/--
+Run the `module_nf` rewrite on the expression `e`.
 
 `s` is a reference to the `AtomM` state, shared between all locations visited by a single
-`module_nf` call. This ensures they normalize with a consistent atom ordering. -/
-def moduleNFCore (s : IO.Ref AtomM.State) (base : Σ u : Level, Q(Type u)) (e : Expr) :
-    ReaderT Simp.Context MetaM Simp.Result := do
+`module_nf` call. This ensures they normalize with a consistent atom ordering.
+-/
+def moduleNFCore (s : IO.Ref AtomM.State) (base : Σ u : Level, Q(Type u)) (e : Expr)
+    : ReaderT Simp.Context MetaM Simp.Result := do
   let postCtx ← read
   let cleanCtx ← cleanupCtx
   AtomM.recurse s { red := .instances } (wellBehavedDischarge := true) (evalExpr base postCtx)
     (cleanup cleanCtx) e
 
-/-- `module_nf` normalizes the goal, by rewriting every linear combination `a • x + ... + b • y`
+/--
+`module_nf` normalizes the goal, by rewriting every linear combination `a • x + ... + b • y`
 into a normal form, collecting the scalars of common terms and normalizing them with `ring_nf`. If
 the goal is an equality and the two sides have the same normal form, `module_nf` closes the goal.
 Otherwise the rewritten goal is left open, and `module_nf` can be used non-terminally.
@@ -204,18 +217,21 @@ example [AddCommGroup M] (x : M) (P : M → Prop) (h : P ((2 : ℤ) • x)) :
 syntax (name := moduleNF) "module_nf" (" with " term)? (location)? : tactic
 
 elab_rules : tactic
-  | `(tactic| module_nf $[with $R:term]? $[$loc:location]?) => withMainContext do
-    let loc := expandOptLocation (mkOptionalNode loc)
-    let base ← match R with
-      | some R => do
-        let ⟨u, B⟩ ← getLevelQ' (← elabTerm R none)
-        unless (← trySynthInstance q(Semiring.{u} $B)) matches .some _ do
-          throwError "module_nf failed: {B} is not a semiring"
-        pure ⟨u, B⟩
-      | none => inferBaseAtLocation loc
-    let s ← IO.mkRef {}
-    let postCtx ← Mathlib.Tactic.Module.postprocessCtx
-    transformAtNondepPropLocation (moduleNFCore s base) "module_nf" loc .error false postCtx
+  | `(tactic| module_nf $[with $R:term]? $[$loc:location]?) =>
+    withMainContext do
+      let loc := expandOptLocation (mkOptionalNode loc)
+      let base ←
+        match R with
+        | some R => do
+          let ⟨u, B⟩ ← getLevelQ' (← elabTerm R none)
+          unless (← trySynthInstance q(Semiring.{u} $B)) matches .some _ do
+            throwError "module_nf failed: {B} is not a semiring"
+          pure ⟨u, B⟩
+        | none =>
+          inferBaseAtLocation loc
+      let s ← IO.mkRef {}
+      let postCtx ← Mathlib.Tactic.Module.postprocessCtx
+      transformAtNondepPropLocation (moduleNFCore s base) "module_nf" loc .error false postCtx
 
 end Mathlib.Tactic.ModuleNF
 

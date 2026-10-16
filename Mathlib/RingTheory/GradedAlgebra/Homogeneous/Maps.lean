@@ -20,24 +20,26 @@ namespace HomogeneousIdeal
 
 section arbitrary_grading
 
-variable {A B C σ τ ω ι : Type*}
-  [Semiring A] [Semiring B] [Semiring C]
-  [SetLike σ A] [SetLike τ B] [SetLike ω C]
-  [AddSubmonoidClass σ A] [AddSubmonoidClass τ B] [AddSubmonoidClass ω C]
+variable
+  {A B C σ τ ω ι : Type*} [Semiring A] [Semiring B] [Semiring C] [SetLike σ A] [SetLike τ B]
+  [SetLike ω C] [AddSubmonoidClass σ A] [AddSubmonoidClass τ B] [AddSubmonoidClass ω C]
   [DecidableEq ι] [AddMonoid ι]
-  {𝒜 : ι → σ} {ℬ : ι → τ} {𝒞 : ι → ω}
-  [GradedRing 𝒜] [GradedRing ℬ] [GradedRing 𝒞]
+  {𝒜 : ι → σ} {ℬ : ι → τ} {𝒞 : ι → ω} [GradedRing 𝒜] [GradedRing ℬ] [GradedRing 𝒞]
   (f : 𝒜 →+*ᵍ ℬ) (g : ℬ →+*ᵍ 𝒞)
 
-/-- Map a homogeneous ideal along a graded ring homomorphism. The underlying ideal is
-(definitionally) equal to `Ideal.map`. -/
+/--
+Map a homogeneous ideal along a graded ring homomorphism. The underlying ideal is
+(definitionally) equal to `Ideal.map`.
+-/
 def map (I : HomogeneousIdeal 𝒜) : HomogeneousIdeal ℬ where
   __ := I.toIdeal.map f
   is_homogeneous' i b hb := by
     rw [Ideal.map] at hb
     induction hb using Submodule.span_induction generalizing i with
-    | zero => simp
-    | add => simp [*, Ideal.add_mem]
+    | zero =>
+      simp
+    | add =>
+      simp [*, Ideal.add_mem]
     | mem a ha =>
       obtain ⟨a, ha, rfl⟩ := ha
       rw [← f.map_directSumDecompose]
@@ -46,26 +48,27 @@ def map (I : HomogeneousIdeal 𝒜) : HomogeneousIdeal ℬ where
       classical rw [smul_eq_mul, DirectSum.decompose_mul, DirectSum.coe_mul_apply]
       exact sum_mem fun ij hij ↦ Ideal.mul_mem_left _ _ <| ih _
 
-/-- Pull back a homogeneous ideal along a graded ring homomorphism.
+/--
+Pull back a homogeneous ideal along a graded ring homomorphism.
 The underlying ideal is (definitionally) equal to `Ideal.comap`, whose underlying set is
-definitionally equal to the preimage. -/
+definitionally equal to the preimage.
+-/
 def comap (I : HomogeneousIdeal ℬ) : HomogeneousIdeal 𝒜 where
   __ := I.toIdeal.comap f
   is_homogeneous' n a ha := by
     rw [Ideal.mem_comap, HomogeneousIdeal.mem_iff, f.map_directSumDecompose]
     exact I.2 _ ha
 
-variable {I : HomogeneousIdeal 𝒜} {J : HomogeneousIdeal ℬ}
-  {K : HomogeneousIdeal 𝒞}
+variable {I : HomogeneousIdeal 𝒜} {J : HomogeneousIdeal ℬ} {K : HomogeneousIdeal 𝒞}
 
 lemma map_le_iff_le_comap : I.map f ≤ J ↔ I ≤ J.comap f := Ideal.map_le_iff_le_comap
 
 alias ⟨le_comap_of_map_le, map_le_of_le_comap⟩ := map_le_iff_le_comap
 
-theorem gc_map_comap : GaloisConnection (map f) (comap f) := fun _ _ ↦
-  map_le_iff_le_comap f
+theorem gc_map_comap : GaloisConnection (map f) (comap f) := fun _ _ ↦ map_le_iff_le_comap f
 
-@[mono, aesop safe apply] lemma map_mono : Monotone (map f) := (gc_map_comap f).monotone_l
+@[mono, aesop safe apply]
+lemma map_mono : Monotone (map f) := (gc_map_comap f).monotone_l
 
 @[gcongr, mono] lemma comap_mono : Monotone (comap f) := (gc_map_comap f).monotone_u
 
@@ -92,17 +95,15 @@ end arbitrary_grading
 
 section canonical_grading
 
-variable {A B C σ τ ω ι : Type*}
-  [Semiring A] [Semiring B] [Semiring C]
-  [SetLike σ A] [SetLike τ B] [SetLike ω C]
-  [AddSubmonoidClass σ A] [AddSubmonoidClass τ B] [AddSubmonoidClass ω C]
+variable
+  {A B C σ τ ω ι : Type*} [Semiring A] [Semiring B] [Semiring C] [SetLike σ A] [SetLike τ B]
+  [SetLike ω C] [AddSubmonoidClass σ A] [AddSubmonoidClass τ B] [AddSubmonoidClass ω C]
   [DecidableEq ι] [AddCommMonoid ι] [PartialOrder ι] [CanonicallyOrderedAdd ι]
-  {𝒜 : ι → σ} {ℬ : ι → τ} {𝒞 : ι → ω}
-  [GradedRing 𝒜] [GradedRing ℬ] [GradedRing 𝒞]
+  {𝒜 : ι → σ} {ℬ : ι → τ} {𝒞 : ι → ω} [GradedRing 𝒜] [GradedRing ℬ] [GradedRing 𝒞]
   {f : 𝒜 →+*ᵍ ℬ} {g : ℬ →+*ᵍ 𝒞}
 
-theorem irrelevant_le_map_comp
-    (hf : ℬ₊ ≤ 𝒜₊.map f) (hg : 𝒞₊ ≤ ℬ₊.map g) : 𝒞₊ ≤ 𝒜₊.map (g.comp f) := by
+theorem irrelevant_le_map_comp (hf : ℬ₊ ≤ 𝒜₊.map f) (hg : 𝒞₊ ≤ ℬ₊.map g)
+    : 𝒞₊ ≤ 𝒜₊.map (g.comp f) := by
   rw [map_comp]
   exact hg.trans <| map_mono _ hf
 

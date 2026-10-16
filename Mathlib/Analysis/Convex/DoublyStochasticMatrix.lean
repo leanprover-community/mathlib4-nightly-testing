@@ -39,9 +39,9 @@ variable [Semiring R] [PartialOrder R] [IsOrderedRing R] {M : Matrix n n R}
 A square matrix is doubly stochastic iff all entries are nonnegative, and left or right
 multiplication by the vector of all 1s gives the vector of all 1s.
 -/
-def doublyStochastic (R n : Type*) [Fintype n] [DecidableEq n] [Semiring R] [PartialOrder R]
-    [IsOrderedRing R] :
-    Submonoid (Matrix n n R) where
+def doublyStochastic
+    (R n : Type*) [Fintype n] [DecidableEq n] [Semiring R] [PartialOrder R] [IsOrderedRing R]
+    : Submonoid (Matrix n n R) where
   carrier := {M | (∀ i j, 0 ≤ M i j) ∧ M *ᵥ 1 = 1 ∧ 1 ᵥ* M = 1 }
   mul_mem' {M N} hM hN := by
     refine ⟨fun i j => sum_nonneg fun i _ => mul_nonneg (hM.1 _ _) (hN.1 _ _), ?_, ?_⟩
@@ -49,27 +49,29 @@ def doublyStochastic (R n : Type*) [Fintype n] [DecidableEq n] [Semiring R] [Par
     next => rw [← vecMul_vecMul, hM.2.2, hN.2.2]
   one_mem' := by simp [zero_le_one_elem]
 
-lemma mem_doublyStochastic :
-    M ∈ doublyStochastic R n ↔ (∀ i j, 0 ≤ M i j) ∧ M *ᵥ 1 = 1 ∧ 1 ᵥ* M = 1 :=
+lemma mem_doublyStochastic
+    : M ∈ doublyStochastic R n ↔ (∀ i j, 0 ≤ M i j) ∧ M *ᵥ 1 = 1 ∧ 1 ᵥ* M = 1 :=
   Iff.rfl
 
-lemma mem_doublyStochastic_iff_sum :
-    M ∈ doublyStochastic R n ↔
-      (∀ i j, 0 ≤ M i j) ∧ (∀ i, ∑ j, M i j = 1) ∧ ∀ j, ∑ i, M i j = 1 := by
+lemma mem_doublyStochastic_iff_sum
+    : M ∈ doublyStochastic R n
+      ↔ (∀ i j, 0 ≤ M i j) ∧ (∀ i, ∑ j, M i j = 1) ∧ ∀ j, ∑ i, M i j = 1 := by
   simp [funext_iff, doublyStochastic, mulVec, vecMul, dotProduct]
 
-/-- A matrix is doubly stochastic if and only if it is both row and
-column stochastic. -/
+/--
+A matrix is doubly stochastic if and only if it is both row and
+column stochastic.
+-/
 @[local grind =]
-lemma doublyStochastic_eq_rowStochastic_inf_colStochastic :
-    doublyStochastic R n = rowStochastic R n ⊓ colStochastic R n := by
+lemma doublyStochastic_eq_rowStochastic_inf_colStochastic
+    : doublyStochastic R n = rowStochastic R n ⊓ colStochastic R n := by
   ext M
   simp only [rowStochastic, colStochastic, Submonoid.mem_inf, Submonoid.mem_mk, Subsemigroup.mem_mk,
     Set.mem_ofPred_eq, doublyStochastic]
   grind
 
-lemma mem_doublyStochastic_iff_mem_rowStochastic_and_mem_colStochastic {M : Matrix n n R} :
-    M ∈ doublyStochastic R n ↔ M ∈ rowStochastic R n ∧ M ∈ colStochastic R n := by
+lemma mem_doublyStochastic_iff_mem_rowStochastic_and_mem_colStochastic {M : Matrix n n R}
+    : M ∈ doublyStochastic R n ↔ M ∈ rowStochastic R n ∧ M ∈ colStochastic R n := by
   rw [doublyStochastic_eq_rowStochastic_inf_colStochastic, Submonoid.mem_inf]
 
 /-- Every entry of a doubly stochastic matrix is nonnegative. -/
@@ -93,8 +95,7 @@ lemma one_vecMul_of_mem_doublyStochastic (hM : M ∈ doublyStochastic R n) : 1 �
   (mem_doublyStochastic.1 hM).2.2
 
 /-- Every entry of a doubly stochastic matrix is less than or equal to 1. -/
-lemma le_one_of_mem_doublyStochastic (hM : M ∈ doublyStochastic R n) {i j : n} :
-    M i j ≤ 1 := by
+lemma le_one_of_mem_doublyStochastic (hM : M ∈ doublyStochastic R n) {i j : n} : M i j ≤ 1 := by
   rw [← sum_row_of_mem_doublyStochastic hM i]
   exact single_le_sum (fun k _ => hM.1 _ k) (mem_univ j)
 
@@ -106,29 +107,35 @@ lemma convex_doublyStochastic : Convex R (doublyStochastic R n : Set (Matrix n n
 
 /-- Any permutation matrix is doubly stochastic. -/
 @[simp, grind ←]
-lemma permMatrix_mem_doublyStochastic {σ : Equiv.Perm n} :
-    σ.permMatrix R ∈ doublyStochastic R n := by grind
+lemma permMatrix_mem_doublyStochastic {σ : Equiv.Perm n}
+    : σ.permMatrix R ∈ doublyStochastic R n := by
+  grind
 
 /-- A matrix is doubly stochastic iff its transpose is doubly stochastic -/
 @[grind =]
-lemma transpose_mem_doublyStochastic_iff :
-    Mᵀ ∈ doublyStochastic R n ↔ M ∈ doublyStochastic R n := by grind
+lemma transpose_mem_doublyStochastic_iff
+    : Mᵀ ∈ doublyStochastic R n ↔ M ∈ doublyStochastic R n := by
+  grind
 
 /-- Reindexing a matrix preserves double stochasticity. -/
 @[aesop safe apply]
-lemma reindex_mem_doublyStochastic {m : Type*} [Fintype m] [DecidableEq m] {M : Matrix n n R}
-    {e₁ e₂ : n ≃ m} (hM : M ∈ doublyStochastic R n) : M.reindex e₁ e₂ ∈ doublyStochastic R m := by
+lemma reindex_mem_doublyStochastic
+    {m : Type*} [Fintype m] [DecidableEq m]
+    {M : Matrix n n R} {e₁ e₂ : n ≃ m} (hM : M ∈ doublyStochastic R n)
+    : M.reindex e₁ e₂ ∈ doublyStochastic R m := by
   grind
 
 /-- Reindexing a matrix preserves double stochasticity. -/
 @[grind =]
-lemma reindex_mem_doublyStochastic_iff {m : Type*} [Fintype m] [DecidableEq m] {M : Matrix n n R}
-    {e₁ e₂ : n ≃ m} : M.reindex e₁ e₂ ∈ doublyStochastic R m ↔ M ∈ doublyStochastic R n := by
+lemma reindex_mem_doublyStochastic_iff
+    {m : Type*} [Fintype m] [DecidableEq m] {M : Matrix n n R} {e₁ e₂ : n ≃ m}
+    : M.reindex e₁ e₂ ∈ doublyStochastic R m ↔ M ∈ doublyStochastic R n := by
   grind
 
 /-- Applying a doubly stochastic matrix to a vector preserves its sum. -/
-lemma sum_mulVec_of_mem_doublyStochastic {M : Matrix n n R} {x : n → R}
-    (hA : M ∈ doublyStochastic R n) : ∑ i, (M *ᵥ x) i = ∑ i, x i := by
+lemma sum_mulVec_of_mem_doublyStochastic
+    {M : Matrix n n R} {x : n → R} (hA : M ∈ doublyStochastic R n)
+    : ∑ i, (M *ᵥ x) i = ∑ i, x i := by
   apply sum_mulVec_of_mem_colStochastic
   grind
 
@@ -145,9 +152,9 @@ column sums are equal to `s`.
 This lemma is useful for the proof of Birkhoff's theorem - in particular because it allows scaling
 by nonnegative factors rather than positive ones only.
 -/
-lemma exists_mem_doublyStochastic_eq_smul_iff {M : Matrix n n R} {s : R} (hs : 0 ≤ s) :
-    (∃ M' ∈ doublyStochastic R n, M = s • M') ↔
-      (∀ i j, 0 ≤ M i j) ∧ (∀ i, ∑ j, M i j = s) ∧ (∀ j, ∑ i, M i j = s) := by
+lemma exists_mem_doublyStochastic_eq_smul_iff {M : Matrix n n R} {s : R} (hs : 0 ≤ s)
+    : (∃ M' ∈ doublyStochastic R n, M = s • M')
+      ↔ (∀ i j, 0 ≤ M i j) ∧ (∀ i, ∑ j, M i j = s) ∧ (∀ j, ∑ i, M i j = s) := by
   constructor
   case mp =>
     rintro ⟨M', hM', rfl⟩

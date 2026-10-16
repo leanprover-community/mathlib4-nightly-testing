@@ -30,9 +30,8 @@ open Limits Opposite
 variable {C : Type u} [Category.{v} C] {κ : Cardinal.{w}} [Fact κ.IsRegular]
 
 variable (C κ) in
-lemma isCardinalFilteredGenerator_isCardinalPresentable
-    [IsCardinalAccessibleCategory C κ] :
-    (isCardinalPresentable C κ).IsCardinalFilteredGenerator κ := by
+lemma isCardinalFilteredGenerator_isCardinalPresentable [IsCardinalAccessibleCategory C κ]
+    : (isCardinalPresentable C κ).IsCardinalFilteredGenerator κ := by
   obtain ⟨P, _, hP⟩ := HasCardinalFilteredGenerator.exists_generator C κ
   refine hP.of_le_isoClosure ?_ le_rfl
   rw [ObjectProperty.isoClosure_eq_self]
@@ -41,30 +40,29 @@ lemma isCardinalFilteredGenerator_isCardinalPresentable
 namespace IsCardinalAccessibleCategory
 
 instance final_toCostructuredArrow
-    {J : Type u'} [Category.{v'} J] [EssentiallySmall.{w} J]
-    [IsCardinalFiltered J κ] {X : C}
-    (p : (isCardinalPresentable C κ).ColimitOfShape J X) :
-    p.toCostructuredArrow.Final := by
+    {J : Type u'} [Category.{v'} J] [EssentiallySmall.{w} J] [IsCardinalFiltered J κ]
+    {X : C} (p : (isCardinalPresentable C κ).ColimitOfShape J X)
+    : p.toCostructuredArrow.Final := by
   have := isFiltered_of_isCardinalFiltered J κ
   rw [Functor.final_iff_of_isFiltered]
   refine ⟨fun f ↦ ?_, fun {f j} g₁ g₂ ↦ ?_⟩
   · obtain ⟨j, g, hg⟩ := IsCardinalPresentable.exists_hom_of_isColimit κ p.isColimit f.hom
     exact ⟨j, ⟨CostructuredArrow.homMk (ObjectProperty.homMk g)⟩⟩
-  · obtain ⟨k, a, h⟩ := IsCardinalPresentable.exists_eq_of_isColimit' κ p.isColimit
-      g₁.left.hom g₂.left.hom ((CostructuredArrow.w g₁).trans (CostructuredArrow.w g₂).symm)
+  · obtain ⟨k, a, h⟩ :=
+      IsCardinalPresentable.exists_eq_of_isColimit' κ p.isColimit g₁.left.hom g₂.left.hom
+        ((CostructuredArrow.w g₁).trans (CostructuredArrow.w g₂).symm)
     exact ⟨k, a, by cat_disch⟩
 
 set_option backward.defeqAttrib.useBackward true in
-instance [IsCardinalAccessibleCategory C κ] :
-    (isCardinalPresentable C κ).ι.IsDense where
+instance [IsCardinalAccessibleCategory C κ] : (isCardinalPresentable C κ).ι.IsDense where
   isDenseAt X := by
     obtain ⟨J, _, _, ⟨p⟩⟩ :=
       (isCardinalFilteredGenerator_isCardinalPresentable C κ).exists_colimitsOfShape X
     exact ⟨(Functor.Final.isColimitWhiskerEquiv (F := p.toCostructuredArrow) _).1
       (IsColimit.ofIsoColimit p.isColimit (Cocone.ext (Iso.refl _)))⟩
 
-instance [IsCardinalAccessibleCategory C κ] (X : C) :
-    IsCardinalFiltered (CostructuredArrow (isCardinalPresentable C κ).ι X) κ := by
+instance [IsCardinalAccessibleCategory C κ] (X : C)
+    : IsCardinalFiltered (CostructuredArrow (isCardinalPresentable C κ).ι X) κ := by
   obtain ⟨J, _, _, ⟨p⟩⟩ :=
     (isCardinalFilteredGenerator_isCardinalPresentable C κ).exists_colimitsOfShape X
   exact IsCardinalFiltered.of_final p.toCostructuredArrow κ
@@ -73,19 +71,19 @@ end IsCardinalAccessibleCategory
 
 namespace IsFinitelyAccessibleCategory
 
-instance [IsFinitelyAccessibleCategory.{w} C] (X : C) :
-    IsFiltered (CostructuredArrow (ObjectProperty.isFinitelyPresentable.{w} C).ι X) := by
+instance [IsFinitelyAccessibleCategory.{w} C] (X : C)
+    : IsFiltered (CostructuredArrow (ObjectProperty.isFinitelyPresentable.{w} C).ι X) := by
   rw [← CategoryTheory.isCardinalFiltered_aleph0_iff.{w},
     ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]
   infer_instance
 
-instance [IsFinitelyAccessibleCategory.{w} C] :
-    (ObjectProperty.isFinitelyPresentable.{w} C).ι.IsDense := by
+instance [IsFinitelyAccessibleCategory.{w} C]
+    : (ObjectProperty.isFinitelyPresentable.{w} C).ι.IsDense := by
   rw [ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]
   infer_instance
 
-instance [IsFinitelyAccessibleCategory.{w} C] :
-    ObjectProperty.EssentiallySmall.{w} (ObjectProperty.isFinitelyPresentable.{w} C) := by
+instance [IsFinitelyAccessibleCategory.{w} C]
+    : ObjectProperty.EssentiallySmall.{w} (ObjectProperty.isFinitelyPresentable.{w} C) := by
   rw [ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]
   infer_instance
 

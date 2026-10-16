@@ -33,8 +33,8 @@ section HasZeroMorphisms
 
 variable [HasZeroMorphisms C]
 
-instance locallySmall [LocallySmall.{w} C] [Small.{w} ι] :
-    LocallySmall.{w} (HomologicalComplex C c) where
+instance locallySmall [LocallySmall.{w} C] [Small.{w} ι]
+    : LocallySmall.{w} (HomologicalComplex C c) where
   hom_small K L := by
     let emb (f : K ⟶ L) (i : Shrink.{w} ι) := (equivShrink.{w} _) (f.f ((equivShrink _).symm i))
     have hemb : Function.Injective emb := fun f g h ↦ by
@@ -43,31 +43,30 @@ instance locallySmall [LocallySmall.{w} C] [Small.{w} ι] :
       simpa [emb] using congr($h i)
     apply small_of_injective hemb
 
-instance [HasFilteredColimitsOfSize.{w, w'} C] :
-    HasFilteredColimitsOfSize.{w, w'} (HomologicalComplex C c) where
+instance [HasFilteredColimitsOfSize.{w, w'} C]
+    : HasFilteredColimitsOfSize.{w, w'} (HomologicalComplex C c) where
   HasColimitsOfShape J _ _ := by infer_instance
 
-instance hasExactColimitsOfShape (J : Type w) [Category.{w'} J] [HasFiniteLimits C]
-    [HasColimitsOfShape J C] [HasExactColimitsOfShape J C] :
-    HasExactColimitsOfShape J (HomologicalComplex C c) where
-  preservesFiniteLimits :=
-    ⟨fun K _ _ ↦ ⟨fun {F} ↦ ⟨fun hc ↦ ⟨isLimitOfEval _ _ (fun i ↦ by
+instance hasExactColimitsOfShape
+    (J : Type w)
+    [Category.{w'} J] [HasFiniteLimits C] [HasColimitsOfShape J C] [HasExactColimitsOfShape J C]
+    : HasExactColimitsOfShape J (HomologicalComplex C c) where
+  preservesFiniteLimits := ⟨fun K _ _ ↦ ⟨fun {F} ↦ ⟨fun hc ↦
+    ⟨isLimitOfEval _ _ (fun i ↦ by
       let e := preservesColimitNatIso (J := J) (eval C c i)
       exact (IsLimit.postcomposeHomEquiv (Functor.isoWhiskerLeft F e) _).1
         (IsLimit.ofIsoLimit
           (isLimitOfPreserves ((Functor.whiskeringRight J _ _).obj (eval C c i) ⋙ colim) hc)
           (Cone.ext (e.symm.app _) (fun k ↦ (NatIso.naturality_2 e.symm _).symm))))⟩⟩⟩⟩
 
-instance ab5OfSize [HasFilteredColimitsOfSize.{w', w} C] [HasFiniteLimits C]
-    [AB5OfSize.{w', w} C] :
-    AB5OfSize.{w', w} (HomologicalComplex C c) where
+instance ab5OfSize [HasFilteredColimitsOfSize.{w', w} C] [HasFiniteLimits C] [AB5OfSize.{w', w} C]
+    : AB5OfSize.{w', w} (HomologicalComplex C c) where
   ofShape J _ _ := by infer_instance
 
 end HasZeroMorphisms
 
-instance isGrothendieckAbelian [Abelian C] [IsGrothendieckAbelian.{w} C]
-    [c.HasNoLoop] [Small.{w} ι] :
-    IsGrothendieckAbelian.{w} (HomologicalComplex C c) where
+instance isGrothendieckAbelian [Abelian C] [IsGrothendieckAbelian.{w} C] [c.HasNoLoop] [Small.{w} ι]
+    : IsGrothendieckAbelian.{w} (HomologicalComplex C c) where
   hasSeparator := by
     have : HasCoproductsOfShape ι C :=
       hasColimitsOfShape_of_equivalence (Discrete.equivalence (equivShrink.{w} ι)).symm

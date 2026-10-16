@@ -30,19 +30,20 @@ public def Lean.Name.isLocal (env : Environment) (decl : Name) : Bool :=
 
 open Mathlib.Command.MinImports
 
-/-- Does the declaration with this name depend on definitions in the current file?
+/--
+Does the declaration with this name depend on definitions in the current file?
 
 Here, "definition" means everything that is not a theorem, and so includes `def`,
 `structure`, `inductive`, etc.
 -/
-def Lean.Environment.localDefinitionDependencies (env : Environment) (stx id : Syntax) :
-    CommandElabM Bool := do
+def Lean.Environment.localDefinitionDependencies (env : Environment) (stx id : Syntax)
+    : CommandElabM Bool := do
   let declName ← getDeclName stx
   let immediateDeps ← getAllDependencies stx id
 
   -- Drop all the unresolvable constants, otherwise `transitivelyUsedConstants` fails.
-  let immediateDeps : NameSet := immediateDeps.foldl (init := ∅) fun s n =>
-    if (env.find? n).isSome then s.insert n else s
+  let immediateDeps : NameSet :=
+    immediateDeps.foldl (init := ∅) fun s n => if (env.find? n).isSome then s.insert n else s
 
   let deps ← liftCoreM immediateDeps.transitivelyUsedConstants
   let constInfos := deps.toList.filterMap env.find?
@@ -84,9 +85,7 @@ public register_option linter.upstreamableDecl.defs : Bool := {
   descr := "upstreamableDecl warns on definitions"
 }
 
-/--
-If set to `true`, the `upstreamableDecl` linter will add warnings on private declarations.
--/
+/-- If set to `true`, the `upstreamableDecl` linter will add warnings on private declarations. -/
 public register_option linter.upstreamableDecl.private : Bool := {
   defValue := false
   descr := "upstreamableDecl warns on private declarations"
@@ -95,33 +94,38 @@ public register_option linter.upstreamableDecl.private : Bool := {
 namespace DoubleImports
 
 @[inherit_doc Mathlib.Linter.linter.upstreamableDecl]
-def upstreamableDeclLinter : Linter where run := withSetOptionIn fun stx ↦ do
-    unless getLinterValue linter.upstreamableDecl (← getLinterOptions) do
-      return
-    if (← get).messages.hasErrors then
-      return
-    let skipDef := !getLinterValue linter.upstreamableDecl.defs (← getLinterOptions)
-    let skipPrivate := !getLinterValue linter.upstreamableDecl.private (← getLinterOptions)
-    if stx == (← `(command| set_option $(mkIdent `linter.upstreamableDecl) true)) then return
-    let env ← getEnv
-    let id ← getId stx
-    if id != .missing then
-      -- Skip defs and private decls by default.
-      let name ← getDeclName stx
-      if (skipDef && if let some constInfo := env.find? name
-         then !(constInfo matches .thmInfo _ | .ctorInfo _)
-         else true) ||
-       (skipPrivate && isPrivateName name) then
+def upstreamableDeclLinter : Linter where
+  run :=
+    withSetOptionIn fun stx ↦ do
+      unless getLinterValue linter.upstreamableDecl (← getLinterOptions) do
         return
+      if (← get).messages.hasErrors then
+        return
+      let skipDef := ! getLinterValue linter.upstreamableDecl.defs (← getLinterOptions)
+      let skipPrivate := ! getLinterValue linter.upstreamableDecl.private (← getLinterOptions)
+      if stx == (← `(command| set_option $(mkIdent `linter.upstreamableDecl) true)) then return
+      let env ← getEnv
+      let id ← getId stx
+      if id != .missing then
+        -- Skip defs and private decls by default.
+        let name ← getDeclName stx
+        if (skipDef
+              && if let some constInfo := env.find? name then
+                   !(constInfo matches .thmInfo _ | .ctorInfo _)
+                 else
+                   true)
+            || (skipPrivate && isPrivateName name) then
+          return
 
-      let minImports := getIrredundantImports env (← getAllImports stx id)
-      match minImports.size, minImports.min? with
-      | 1, some upstream => do
-        if !(← env.localDefinitionDependencies stx id) then
-          let modWidget ← liftCoreM <| ImportGraph.Widget.goToModule upstream
-          Linter.logLint linter.upstreamableDecl id
-            m!"Consider moving this declaration to the module {modWidget}."
-      | _, _ => pure ()
+        let minImports := getIrredundantImports env (← getAllImports stx id)
+        match minImports.size, minImports.min? with
+        | 1, some upstream => do
+          if !(← env.localDefinitionDependencies stx id) then
+            let modWidget ← liftCoreM <| ImportGraph.Widget.goToModule upstream
+            Linter.logLint linter.upstreamableDecl id
+              m!"Consider moving this declaration to the module {modWidget}."
+        | _, _ =>
+          pure ()
 
 initialize addLinter upstreamableDeclLinter
 

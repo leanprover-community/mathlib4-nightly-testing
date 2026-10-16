@@ -34,8 +34,10 @@ universe v u
 
 namespace Quiver
 
-/-- A quiver is an arborescence when there is a unique path from the default vertex
-to every other vertex. -/
+/--
+A quiver is an arborescence when there is a unique path from the default vertex
+to every other vertex.
+-/
 class Arborescence (V : Type u) [Quiver.{v} V] : Type max u v where
   /-- The root of the arborescence. -/
   root : V
@@ -43,34 +45,39 @@ class Arborescence (V : Type u) [Quiver.{v} V] : Type max u v where
   uniquePath : ∀ b : V, Unique (Path root b)
 
 /-- The root of an arborescence. -/
-def root (V : Type u) [Quiver V] [Arborescence V] : V :=
-  Arborescence.root
+def root (V : Type u) [Quiver V] [Arborescence V] : V := Arborescence.root
 
 instance {V : Type u} [Quiver V] [Arborescence V] (b : V) : Unique (Path (root V) b) :=
   Arborescence.uniquePath b
 
-/-- To show that `[Quiver V]` is an arborescence with root `r : V`, it suffices to
-  - provide a height function `V → ℕ` such that every arrow goes from a
-    lower vertex to a higher vertex,
-  - show that every vertex has at most one arrow to it, and
-  - show that every vertex other than `r` has an arrow to it. -/
+/--
+To show that `[Quiver V]` is an arborescence with root `r : V`, it suffices to
+- provide a height function `V → ℕ` such that every arrow goes from a
+  lower vertex to a higher vertex,
+- show that every vertex has at most one arrow to it, and
+- show that every vertex other than `r` has an arrow to it.
+-/
 @[instance_reducible]
-noncomputable def arborescenceMk {V : Type u} [Quiver V] (r : V) (height : V → ℕ)
-    (height_lt : ∀ ⦃a b⦄, (a ⟶ b) → height a < height b)
+noncomputable def arborescenceMk
+    {V : Type u} [Quiver V]
+    (r : V)
+    (height : V → ℕ) (height_lt : ∀ ⦃a b⦄, (a ⟶ b) → height a < height b)
     (unique_arrow : ∀ ⦃a b c : V⦄ (e : a ⟶ c) (f : b ⟶ c), a = b ∧ e ≍ f)
-    (root_or_arrow : ∀ b, b = r ∨ ∃ a, Nonempty (a ⟶ b)) :
-    Arborescence V where
+    (root_or_arrow : ∀ b, b = r ∨ ∃ a, Nonempty (a ⟶ b))
+    : Arborescence V where
   root := r
-  uniquePath b :=
-    ⟨Classical.inhabited_of_nonempty (by
+  uniquePath b := ⟨
+    Classical.inhabited_of_nonempty (by
       rcases show ∃ n, height b < n from ⟨_, Nat.lt_add_one _⟩ with ⟨n, hn⟩
       induction n generalizing b with
-      | zero => exact False.elim (Nat.not_lt_zero _ hn)
+      | zero =>
+        exact False.elim (Nat.not_lt_zero _ hn)
       | succ n ih =>
-      rcases root_or_arrow b with (⟨⟨⟩⟩ | ⟨a, ⟨e⟩⟩)
-      · exact ⟨Path.nil⟩
-      · rcases ih a (lt_of_lt_of_le (height_lt e) (Nat.lt_succ_iff.mp hn)) with ⟨p⟩
-        exact ⟨p.cons e⟩), by
+        rcases root_or_arrow b with (⟨⟨⟩⟩ | ⟨a, ⟨e⟩⟩)
+        · exact ⟨Path.nil⟩
+        · rcases ih a (lt_of_lt_of_le (height_lt e) (Nat.lt_succ_iff.mp hn)) with ⟨p⟩
+          exact ⟨p.cons e⟩),
+    by
       have height_le : ∀ {a b}, Path a b → height a ≤ height b := by
         intro a b p
         induction p with
@@ -89,7 +96,8 @@ noncomputable def arborescenceMk {V : Type u} [Quiver V] (r : V) (height : V →
         rcases q with _ | ⟨q, f⟩
         · exact False.elim (lt_irrefl _ (lt_of_le_of_lt (height_le p) (height_lt e)))
         · rcases unique_arrow e f with ⟨⟨⟩, ⟨⟩⟩
-          rw [ih]⟩
+          rw [ih]
+  ⟩
 
 /-- `RootedConnected r` means that there is a path from `r` to any other vertex. -/
 class RootedConnected {V : Type u} [Quiver V] (r : V) : Prop where
@@ -115,7 +123,8 @@ def geodesicSubtree : WideSubquiver V := fun a b =>
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable instance geodesicArborescence : Arborescence (geodesicSubtree r) :=
-  arborescenceMk r (fun a => (shortestPath r a).length)
+  arborescenceMk r
+    (fun a => (shortestPath r a).length)
     (by
       rintro a b ⟨e, p, h⟩
       simp_rw [h, Path.length_cons, Nat.lt_succ_iff]

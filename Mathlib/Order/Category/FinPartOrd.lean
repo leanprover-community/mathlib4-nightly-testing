@@ -23,11 +23,9 @@ bounded.
 
 @[expose] public section
 
-
 universe u v
 
 open CategoryTheory
-
 
 /-- The category of finite partial orders with monotone functions. -/
 structure FinPartOrd extends PartOrd where
@@ -35,11 +33,9 @@ structure FinPartOrd extends PartOrd where
 
 namespace FinPartOrd
 
-instance : CoeSort FinPartOrd Type* :=
-  ⟨fun X => X.toPartOrd⟩
+instance : CoeSort FinPartOrd Type* := ⟨fun X => X.toPartOrd⟩
 
-instance (X : FinPartOrd) : PartialOrder X :=
-  X.toPartOrd.str
+instance (X : FinPartOrd) : PartialOrder X := X.toPartOrd.str
 
 attribute [instance] FinPartOrd.isFintype
 
@@ -52,8 +48,7 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab FinPartOrd.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-instance : Inhabited FinPartOrd :=
-  ⟨of PUnit⟩
+instance : Inhabited FinPartOrd := ⟨of PUnit⟩
 
 instance largeCategory : LargeCategory FinPartOrd :=
   inferInstanceAs <| Category (InducedCategory _ toPartOrd)
@@ -69,37 +64,35 @@ instance hasForgetToFintype : HasForget₂ FinPartOrd FintypeCat where
   forget₂.map f := FintypeCat.homMk f.hom
 
 /-- Typecheck a `OrderHom` as a morphism in `FinPartOrd`. -/
-abbrev ofHom {X Y : Type u} [PartialOrder X] [Fintype X] [PartialOrder Y] [Fintype Y] (f : X →o Y) :
-    of X ⟶ of Y :=
+abbrev ofHom {X Y : Type u} [PartialOrder X] [Fintype X] [PartialOrder Y] [Fintype Y] (f : X →o Y)
+    : of X ⟶ of Y :=
   ConcreteCategory.ofHom (C := FinPartOrd) f
 
-@[simp]
-lemma hom_hom_id {X : FinPartOrd} : (𝟙 X : X ⟶ X).hom.hom = OrderHom.id := rfl
+@[simp] lemma hom_hom_id {X : FinPartOrd} : (𝟙 X : X ⟶ X).hom.hom = OrderHom.id := rfl
 
 /- Provided for rewriting. -/
-lemma id_apply (X : FinPartOrd) (x : X) :
-    (𝟙 X : X ⟶ X) x = x := by simp
+lemma id_apply (X : FinPartOrd) (x : X) : (𝟙 X : X ⟶ X) x = x := by simp
 
 @[simp]
-lemma hom_hom_comp {X Y Z : FinPartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom.hom = g.hom.hom.comp f.hom.hom := rfl
+lemma hom_hom_comp {X Y Z : FinPartOrd} (f : X ⟶ Y) (g : Y ⟶ Z)
+    : (f ≫ g).hom.hom = g.hom.hom.comp f.hom.hom :=
+  rfl
 
 /- Provided for rewriting. -/
-lemma comp_apply {X Y Z : FinPartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-    (f ≫ g) x = g (f x) := by simp
+lemma comp_apply {X Y Z : FinPartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) : (f ≫ g) x = g (f x) := by
+  simp
 
 @[ext]
 lemma hom_ext {X Y : FinPartOrd} {f g : X ⟶ Y} (hf : f.hom.hom = g.hom.hom) : f = g :=
   InducedCategory.hom_ext (ConcreteCategory.ext hf)
 
 @[simp]
-lemma hom_hom_ofHom {X Y : Type u} [PartialOrder X] [Fintype X] [PartialOrder Y] [Fintype Y]
-    (f : X →o Y) :
-  (ofHom f).hom.hom = f := rfl
+lemma hom_hom_ofHom
+    {X Y : Type u} [PartialOrder X] [Fintype X] [PartialOrder Y] [Fintype Y] (f : X →o Y)
+    : (ofHom f).hom.hom = f :=
+  rfl
 
-@[simp]
-lemma ofHom_hom_hom {X Y : FinPartOrd} (f : X ⟶ Y) :
-    ofHom f.hom.hom = f := rfl
+@[simp] lemma ofHom_hom_hom {X Y : FinPartOrd} (f : X ⟶ Y) : ofHom f.hom.hom = f := rfl
 
 /-- Constructs an isomorphism of finite partial orders from an order isomorphism between them. -/
 @[simps]
@@ -123,6 +116,6 @@ def dualEquiv : FinPartOrd ≌ FinPartOrd where
 
 end FinPartOrd
 
-theorem FinPartOrd_dual_comp_forget_to_partOrd :
-    FinPartOrd.dual ⋙ forget₂ FinPartOrd PartOrd =
-      forget₂ FinPartOrd PartOrd ⋙ PartOrd.dual := rfl
+theorem FinPartOrd_dual_comp_forget_to_partOrd
+    : FinPartOrd.dual ⋙ forget₂ FinPartOrd PartOrd = forget₂ FinPartOrd PartOrd ⋙ PartOrd.dual :=
+  rfl

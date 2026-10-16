@@ -73,9 +73,9 @@ theorem zero_left (x : M) : B 0 x = 0 := map_zero₂ _ _
 
 theorem zero_right (x : M) : B x 0 = 0 := map_zero _
 
-theorem neg_left (x y : M₁) : B₁ (-x) y = -B₁ x y := map_neg₂ _ _ _
+theorem neg_left (x y : M₁) : B₁ (-x) y = - B₁ x y := map_neg₂ _ _ _
 
-theorem neg_right (x y : M₁) : B₁ x (-y) = -B₁ x y := map_neg _ _
+theorem neg_right (x y : M₁) : B₁ x (-y) = - B₁ x y := map_neg _ _
 
 theorem sub_left (x y z : M₁) : B₁ (x - y) z = B₁ x z - B₁ y z := map_sub₂ _ _ _ _
 
@@ -90,33 +90,24 @@ lemma smul_right_of_tower (r : S) (x y : M) : B x (r • y) = r • B x y := by
 variable {D : BilinForm R M} {D₁ : BilinForm R₁ M₁}
 
 -- TODO: instantiate `FunLike`
-theorem coe_injective : Function.Injective ((fun B x y => B x y) : BilinForm R M → M → M → R) :=
-  fun B D h => by
-    ext x y
-    apply congrFun₂ h
+theorem coe_injective
+    : Function.Injective ((fun B x y => B x y) : BilinForm R M → M → M → R) := fun B D h => by
+  ext x y
+  apply congrFun₂ h
 
-@[ext]
-theorem ext (H : ∀ x y : M, B x y = D x y) : B = D := ext₂ H
+@[ext] theorem ext (H : ∀ x y : M, B x y = D x y) : B = D := ext₂ H
 
 theorem congr_fun (h : B = D) (x y : M) : B x y = D x y := congr_fun₂ h _ _
 
-@[simp]
-theorem zero_apply (x y : M) : (0 : BilinForm R M) x y = 0 :=
-  rfl
+@[simp] theorem zero_apply (x y : M) : (0 : BilinForm R M) x y = 0 := rfl
 
 variable (B D B₁ D₁)
 
-@[simp]
-theorem add_apply (x y : M) : (B + D) x y = B x y + D x y :=
-  rfl
+@[simp] theorem add_apply (x y : M) : (B + D) x y = B x y + D x y := rfl
 
-@[simp]
-theorem neg_apply (x y : M₁) : (-B₁) x y = -B₁ x y :=
-  rfl
+@[simp] theorem neg_apply (x y : M₁) : (-B₁) x y = - B₁ x y := rfl
 
-@[simp]
-theorem sub_apply (x y : M₁) : (B₁ - D₁) x y = B₁ x y - D₁ x y :=
-  rfl
+@[simp] theorem sub_apply (x y : M₁) : (B₁ - D₁) x y = B₁ x y - D₁ x y := rfl
 
 /-- `coeFn` as an `AddMonoidHom` -/
 @[simps]
@@ -130,19 +121,17 @@ section flip
 /-- The flip of a bilinear form, obtained by exchanging the left and right arguments. -/
 def flipHom : BilinForm R M ≃ₗ[R] BilinForm R M := LinearMap.lflip
 
-@[simp]
-theorem flip_apply (A : BilinForm R M) (x y : M) : flipHom A x y = A y x :=
-  rfl
+@[simp] theorem flip_apply (A : BilinForm R M) (x y : M) : flipHom A x y = A y x := rfl
 
-theorem flip_flip :
-    flipHom.trans flipHom = LinearEquiv.refl R (BilinForm R M) := by
+theorem flip_flip : flipHom.trans flipHom = LinearEquiv.refl R (BilinForm R M) := by
   ext A
   simp
 
-/-- The `flip` of a bilinear form over a commutative ring, obtained by exchanging the left and
-right arguments. -/
-abbrev flip (B : BilinForm R M) :=
-  flipHom B
+/--
+The `flip` of a bilinear form over a commutative ring, obtained by exchanging the left and
+right arguments.
+-/
+abbrev flip (B : BilinForm R M) := flipHom B
 
 end flip
 
@@ -153,7 +142,6 @@ def restrict (B : BilinForm R M) (W : Submodule R M) : BilinForm R W :=
 
 end BilinForm
 
-@[simp]
-theorem lsmul_flip_apply (m : M) : (lsmul R M).flip m = toSpanSingleton R M m := rfl
+@[simp] theorem lsmul_flip_apply (m : M) : (lsmul R M).flip m = toSpanSingleton R M m := rfl
 
 end LinearMap

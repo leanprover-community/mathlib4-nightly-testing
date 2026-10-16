@@ -36,7 +36,6 @@ As in other polynomial files, we typically use the notation:
 
 @[expose] public section
 
-
 noncomputable section
 
 open Function Finsupp
@@ -56,16 +55,12 @@ variable {p q : MvPolynomial σ R}
 
 variable (σ a a')
 
-@[simp]
-theorem C_sub : (C (a - a') : MvPolynomial σ R) = C a - C a' :=
-  map_sub _ _ _
+@[simp] theorem C_sub : (C (a - a') : MvPolynomial σ R) = C a - C a' := map_sub _ _ _
+
+@[simp] theorem C_neg : (C (-a) : MvPolynomial σ R) = - C a := map_neg _ _
 
 @[simp]
-theorem C_neg : (C (-a) : MvPolynomial σ R) = -C a :=
-  map_neg _ _
-
-@[simp]
-theorem coeff_neg (m : σ →₀ ℕ) (p : MvPolynomial σ R) : (-p).coeff m = -p.coeff m :=
+theorem coeff_neg (m : σ →₀ ℕ) (p : MvPolynomial σ R) : (-p).coeff m = - p.coeff m :=
   Finsupp.neg_apply _ _
 
 @[simp, grind =]
@@ -74,26 +69,30 @@ theorem coeff_sub (m : σ →₀ ℕ) (p q : MvPolynomial σ R) : (p - q).coeff 
 
 @[simp] lemma support_neg : (-p).support = p.support := by ext; simp
 
-theorem support_sub [DecidableEq σ] (p q : MvPolynomial σ R) :
-    (p - q).support ⊆ p.support ∪ q.support :=
+theorem support_sub [DecidableEq σ] (p q : MvPolynomial σ R)
+    : (p - q).support ⊆ p.support ∪ q.support :=
   Finsupp.support_sub
 
 variable {σ} (p)
 
-/-- Subtracting `monomial d c - monomial d' c` from `p`, where `c = coeff d p` and `d ≠ d'`,
-removes `d` from the support. -/
-theorem notMem_support_sub_monomial_sub_monomial (d d' : σ →₀ ℕ) (c : R)
-    (hdd' : d ≠ d') (hc : p.coeff d = c) :
-    d ∉ (p - (monomial d c - monomial d' c)).support := by
+/--
+Subtracting `monomial d c - monomial d' c` from `p`, where `c = coeff d p` and `d ≠ d'`,
+removes `d` from the support.
+-/
+theorem notMem_support_sub_monomial_sub_monomial
+    (d d' : σ →₀ ℕ) (c : R) (hdd' : d ≠ d') (hc : p.coeff d = c)
+    : d ∉ (p - (monomial d c - monomial d' c)).support := by
   classical
-  rw [notMem_support_iff, coeff_sub, coeff_sub, coeff_monomial, coeff_monomial,
-    ite_eq_left rfl, ite_eq_right hdd'.symm, sub_zero, hc, sub_self]
+  rw [notMem_support_iff, coeff_sub, coeff_sub, coeff_monomial, coeff_monomial, ite_eq_left rfl,
+    ite_eq_right hdd'.symm, sub_zero, hc, sub_self]
 
-/-- Subtracting `monomial d c - monomial d' c` from `p`, where `c = coeff d p` and `d ≠ d'`,
-leaves the support inside `p.support.erase d ∪ {d'}`. -/
-theorem support_sub_monomial_sub_monomial_subset [DecidableEq σ] (d d' : σ →₀ ℕ) (c : R)
-    (hdd' : d ≠ d') (hc : p.coeff d = c) :
-    (p - (monomial d c - monomial d' c)).support ⊆ p.support.erase d ∪ {d'} := by
+/--
+Subtracting `monomial d c - monomial d' c` from `p`, where `c = coeff d p` and `d ≠ d'`,
+leaves the support inside `p.support.erase d ∪ {d'}`.
+-/
+theorem support_sub_monomial_sub_monomial_subset
+    [DecidableEq σ] (d d' : σ →₀ ℕ) (c : R) (hdd' : d ≠ d') (hc : p.coeff d = c)
+    : (p - (monomial d c - monomial d' c)).support ⊆ p.support.erase d ∪ {d'} := by
   classical
   intro x hx
   have hd_not := notMem_support_sub_monomial_sub_monomial p d d' c hdd' hc
@@ -117,8 +116,8 @@ section Degrees
 theorem degrees_neg (p : MvPolynomial σ R) : (-p).degrees = p.degrees := by
   rw [degrees, support_neg]; rfl
 
-theorem degrees_sub_le [DecidableEq σ] {p q : MvPolynomial σ R} :
-    (p - q).degrees ≤ p.degrees ∪ q.degrees := by
+theorem degrees_sub_le [DecidableEq σ] {p q : MvPolynomial σ R}
+    : (p - q).degrees ≤ p.degrees ∪ q.degrees := by
   simpa [degrees_def] using! AddMonoidAlgebra.supDegree_sub_le
 
 end Degrees
@@ -129,23 +128,22 @@ section Degrees
 theorem degreeOf_neg (i : σ) (p : MvPolynomial σ R) : degreeOf i (-p) = degreeOf i p := by
   rw [degreeOf, degreeOf, degrees_neg]
 
-theorem degreeOf_sub_le (i : σ) (p q : MvPolynomial σ R) :
-    degreeOf i (p - q) ≤ max (degreeOf i p) (degreeOf i q) := by
+theorem degreeOf_sub_le (i : σ) (p q : MvPolynomial σ R)
+    : degreeOf i (p - q) ≤ max (degreeOf i p) (degreeOf i q) := by
   simpa only [sub_eq_add_neg, degreeOf_neg] using degreeOf_add_le i p (-q)
 
 end Degrees
 
 section Vars
 
-@[simp]
-theorem vars_neg : (-p).vars = p.vars := by simp [vars, degrees_neg]
+@[simp] theorem vars_neg : (-p).vars = p.vars := by simp [vars, degrees_neg]
 
 theorem vars_sub_subset [DecidableEq σ] : (p - q).vars ⊆ p.vars ∪ q.vars := by
   convert vars_add_subset p (-q) using 2 <;> simp [sub_eq_add_neg]
 
 @[simp]
-theorem vars_sub_of_disjoint [DecidableEq σ] (hpq : Disjoint p.vars q.vars) :
-    (p - q).vars = p.vars ∪ q.vars := by
+theorem vars_sub_of_disjoint [DecidableEq σ] (hpq : Disjoint p.vars q.vars)
+    : (p - q).vars = p.vars ∪ q.vars := by
   rw [← vars_neg q] at hpq
   convert vars_add_of_disjoint hpq using 2 <;> simp [sub_eq_add_neg]
 
@@ -157,27 +155,23 @@ variable [CommRing S]
 variable (f : R →+* S) (g : σ → S)
 
 @[simp]
-theorem eval₂_sub : (p - q).eval₂ f g = p.eval₂ f g - q.eval₂ f g :=
-  (eval₂Hom f g).map_sub _ _
+theorem eval₂_sub : (p - q).eval₂ f g = p.eval₂ f g - q.eval₂ f g := (eval₂Hom f g).map_sub _ _
 
-theorem eval_sub (f : σ → R) : eval f (p - q) = eval f p - eval f q :=
-  eval₂_sub _ _ _
+theorem eval_sub (f : σ → R) : eval f (p - q) = eval f p - eval f q := eval₂_sub _ _ _
 
+@[simp] theorem eval₂_neg : (-p).eval₂ f g = - p.eval₂ f g := (eval₂Hom f g).map_neg _
+
+theorem eval_neg (f : σ → R) : eval f (-p) = - eval f p := eval₂_neg _ _ _
+
+theorem hom_C (f : MvPolynomial σ ℤ →+* S) (n : ℤ) : f (C n) = (n : S) := eq_intCast (f.comp C) n
+
+/--
+A ring homomorphism `f : Z[X_1, X_2, ...] → R`
+is determined by the evaluations `f(X_1)`, `f(X_2)`, ...
+-/
 @[simp]
-theorem eval₂_neg : (-p).eval₂ f g = -p.eval₂ f g :=
-  (eval₂Hom f g).map_neg _
-
-theorem eval_neg (f : σ → R) : eval f (-p) = -eval f p :=
-  eval₂_neg _ _ _
-
-theorem hom_C (f : MvPolynomial σ ℤ →+* S) (n : ℤ) : f (C n) = (n : S) :=
-  eq_intCast (f.comp C) n
-
-/-- A ring homomorphism `f : Z[X_1, X_2, ...] → R`
-is determined by the evaluations `f(X_1)`, `f(X_2)`, ... -/
-@[simp]
-theorem eval₂Hom_X {R : Type u} (c : ℤ →+* S) (f : MvPolynomial R ℤ →+* S) (x : MvPolynomial R ℤ) :
-    eval₂ c (f ∘ X) x = f x := by
+theorem eval₂Hom_X {R : Type u} (c : ℤ →+* S) (f : MvPolynomial R ℤ →+* S) (x : MvPolynomial R ℤ)
+    : eval₂ c (f ∘ X) x = f x := by
   apply MvPolynomial.induction_on x
     (fun n => by
       rw [hom_C f, eval₂_C]
@@ -189,8 +183,10 @@ theorem eval₂Hom_X {R : Type u} (c : ℤ →+* S) (f : MvPolynomial R ℤ →+
       rw [eval₂_mul, eval₂_X, hp]
       exact (f.map_mul _ _).symm)
 
-/-- Ring homomorphisms out of integer polynomials on a type `σ` are the same as
-functions out of the type `σ`. -/
+/--
+Ring homomorphisms out of integer polynomials on a type `σ` are the same as
+functions out of the type `σ`.
+-/
 def homEquiv : (MvPolynomial σ ℤ →+* S) ≃ (σ → S) where
   toFun f := f ∘ X
   invFun f := eval₂Hom (Int.castRingHom S) f
@@ -201,10 +197,11 @@ end Eval
 
 section DegreeOf
 
-theorem degreeOf_sub_lt {x : σ} {f g : MvPolynomial σ R} {k : ℕ} (h : 0 < k)
-    (hf : ∀ m : σ →₀ ℕ, m ∈ f.support → k ≤ m x → f.coeff m = g.coeff m)
-    (hg : ∀ m : σ →₀ ℕ, m ∈ g.support → k ≤ m x → f.coeff m = g.coeff m) :
-    degreeOf x (f - g) < k := by
+theorem degreeOf_sub_lt
+    {x : σ} {f g : MvPolynomial σ R} {k : ℕ}
+    (h : 0 < k) (hf : ∀ m : σ →₀ ℕ, m ∈ f.support → k ≤ m x → f.coeff m = g.coeff m)
+    (hg : ∀ m : σ →₀ ℕ, m ∈ g.support → k ≤ m x → f.coeff m = g.coeff m)
+    : degreeOf x (f - g) < k := by
   rw [degreeOf_lt_iff h]
   grind [degreeOf_lt_iff]
 
@@ -216,15 +213,16 @@ section TotalDegree
 theorem totalDegree_neg (a : MvPolynomial σ R) : (-a).totalDegree = a.totalDegree := by
   simp only [totalDegree, support_neg]
 
-theorem totalDegree_sub (a b : MvPolynomial σ R) :
-    (a - b).totalDegree ≤ max a.totalDegree b.totalDegree :=
+theorem totalDegree_sub (a b : MvPolynomial σ R)
+    : (a - b).totalDegree ≤ max a.totalDegree b.totalDegree :=
   calc
-    (a - b).totalDegree = (a + -b).totalDegree := by rw [sub_eq_add_neg]
+    (a - b).totalDegree
+      = (a + -b).totalDegree := by rw [sub_eq_add_neg]
     _ ≤ max a.totalDegree (-b).totalDegree := totalDegree_add a (-b)
     _ = max a.totalDegree b.totalDegree := by rw [totalDegree_neg]
 
-theorem totalDegree_sub_C_le (p : MvPolynomial σ R) (r : R) :
-    totalDegree (p - C r) ≤ totalDegree p :=
+theorem totalDegree_sub_C_le (p : MvPolynomial σ R) (r : R)
+    : totalDegree (p - C r) ≤ totalDegree p :=
   (totalDegree_sub _ _).trans_eq <| by rw [totalDegree_C, Nat.max_zero]
 
 end TotalDegree

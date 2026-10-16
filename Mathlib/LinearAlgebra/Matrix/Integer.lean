@@ -38,66 +38,65 @@ suitable types are bare functions, not ring homs, so we cannot apply `Matrix.map
 them.
 -/
 
-lemma map_mul_natCast {α : Type*} [NonAssocSemiring α] (A B : Matrix n n ℕ) :
-    map (A * B) ((↑) : ℕ → α) = map A (↑) * map B (↑) :=
+lemma map_mul_natCast {α : Type*} [NonAssocSemiring α] (A B : Matrix n n ℕ)
+    : map (A * B) ((↑) : ℕ → α) = map A (↑) * map B (↑) :=
   Matrix.map_mul (f := Nat.castRingHom α)
 
-lemma map_mul_intCast {α : Type*} [NonAssocRing α] (A B : Matrix n n ℤ) :
-    map (A * B) ((↑) : ℤ → α) = map A (↑) * map B (↑) :=
+lemma map_mul_intCast {α : Type*} [NonAssocRing α] (A B : Matrix n n ℤ)
+    : map (A * B) ((↑) : ℤ → α) = map A (↑) * map B (↑) :=
   Matrix.map_mul (f := Int.castRingHom α)
 
-lemma map_mul_ratCast {α : Type*} [DivisionRing α] [CharZero α] (A B : Matrix n n ℚ) :
-    map (A * B) ((↑) : ℚ → α) = map A (↑) * map B (↑) :=
+lemma map_mul_ratCast {α : Type*} [DivisionRing α] [CharZero α] (A B : Matrix n n ℚ)
+    : map (A * B) ((↑) : ℚ → α) = map A (↑) * map B (↑) :=
   Matrix.map_mul (f := Rat.castHom α)
 
 /-!
 ## Denominator of a rational matrix
 -/
 
-/-- The denominator of a matrix of rationals (as a `Nat`, defined as the LCM of the denominators of
-the entries). -/
+/--
+The denominator of a matrix of rationals (as a `Nat`, defined as the LCM of the denominators of
+the entries).
+-/
 protected def den (A : Matrix m n ℚ) : ℕ := Finset.univ.lcm (fun P : m × n ↦ (A P.1 P.2).den)
 
-/-- The numerator of a matrix of rationals (a matrix of integers, defined so that
-`A.num / A.den = A`). -/
+/--
+The numerator of a matrix of rationals (a matrix of integers, defined so that
+`A.num / A.den = A`).
+-/
 protected def num (A : Matrix m n ℚ) : Matrix m n ℤ := ((A.den : ℚ) • A).map Rat.num
 
-lemma den_ne_zero (A : Matrix m n ℚ) : A.den ≠ 0 := by
-  simp [Matrix.den, Finset.lcm_eq_zero_iff]
+lemma den_ne_zero (A : Matrix m n ℚ) : A.den ≠ 0 := by simp [Matrix.den, Finset.lcm_eq_zero_iff]
 
 lemma num_eq_zero_iff (A : Matrix m n ℚ) : A.num = 0 ↔ A = 0 := by
   simp [Matrix.num, ← ext_iff, A.den_ne_zero]
 
-lemma den_dvd_iff {A : Matrix m n ℚ} {r : ℕ} :
-    A.den ∣ r ↔ ∀ i j, (A i j).den ∣ r := by
+lemma den_dvd_iff {A : Matrix m n ℚ} {r : ℕ} : A.den ∣ r ↔ ∀ i j, (A i j).den ∣ r := by
   simp [Matrix.den]
 
-lemma num_div_den (A : Matrix m n ℚ) (i : m) (j : n) :
-    A.num i j / A.den = A i j := by
+lemma num_div_den (A : Matrix m n ℚ) (i : m) (j : n) : A.num i j / A.den = A i j := by
   obtain ⟨k, hk⟩ := den_dvd_iff.mp (dvd_refl A.den) i j
   rw [Matrix.num, map_apply, smul_apply, smul_eq_mul, mul_comm,
     div_eq_iff <| Nat.cast_ne_zero.mpr A.den_ne_zero, hk, Nat.cast_mul, ← mul_assoc,
     Rat.mul_den_eq_num, ← Int.cast_natCast k, ← Int.cast_mul, Rat.num_intCast]
 
-lemma inv_denom_smul_num (A : Matrix m n ℚ) :
-    (A.den⁻¹ : ℚ) • A.num.map (↑) = A := by
+lemma inv_denom_smul_num (A : Matrix m n ℚ) : (A.den⁻¹ : ℚ) • A.num.map (↑) = A := by
   ext
   simp [← Matrix.num_div_den A, div_eq_inv_mul]
 
 @[simp]
-lemma den_neg (A : Matrix m n ℚ) : (-A).den = A.den :=
-  eq_of_forall_dvd <| by simp [den_dvd_iff]
+lemma den_neg (A : Matrix m n ℚ) : (-A).den = A.den := eq_of_forall_dvd <| by simp [den_dvd_iff]
 
 @[simp]
 lemma num_neg (A : Matrix m n ℚ) : (-A).num = -A.num := by
   ext
   simp [Matrix.num]
 
-@[simp] lemma den_transpose (A : Matrix m n ℚ) : (Aᵀ).den = A.den :=
+@[simp]
+lemma den_transpose (A : Matrix m n ℚ) : (Aᵀ).den = A.den :=
   eq_of_forall_dvd fun _ ↦ by simpa [den_dvd_iff] using forall_comm
 
-@[simp] lemma num_transpose (A : Matrix m n ℚ) : (Aᵀ).num = (A.num)ᵀ := by
-  ext; simp [Matrix.num]
+@[simp] lemma num_transpose (A : Matrix m n ℚ) : (Aᵀ).num = (A.num)ᵀ := by ext; simp [Matrix.num]
 
 /-!
 ### Compatibility with `map`
@@ -132,13 +131,11 @@ lemma num_natCast [DecidableEq m] (a : ℕ) : (a : Matrix m m ℚ).num = a := by
   simpa [← diagonal_natCast] using num_map_natCast (a : Matrix m m ℕ)
 
 @[simp]
-lemma den_ofNat [DecidableEq m] (a : ℕ) [a.AtLeastTwo] :
-    (ofNat(a) : Matrix m m ℚ).den = 1 :=
+lemma den_ofNat [DecidableEq m] (a : ℕ) [a.AtLeastTwo] : (ofNat(a) : Matrix m m ℚ).den = 1 :=
   den_natCast a
 
 @[simp]
-lemma num_ofNat [DecidableEq m] (a : ℕ) [a.AtLeastTwo] :
-    (ofNat(a) : Matrix m m ℚ).num = a :=
+lemma num_ofNat [DecidableEq m] (a : ℕ) [a.AtLeastTwo] : (ofNat(a) : Matrix m m ℚ).num = a :=
   num_natCast a
 
 @[simp]
@@ -149,20 +146,12 @@ lemma den_intCast [DecidableEq m] (a : ℤ) : (a : Matrix m m ℚ).den = 1 := by
 lemma num_intCast [DecidableEq m] (a : ℤ) : (a : Matrix m m ℚ).num = a := by
   simpa [← diagonal_intCast] using num_map_intCast (a : Matrix m m ℤ)
 
-@[simp]
-lemma den_zero : (0 : Matrix m n ℚ).den = 1 :=
-  den_map_natCast 0
+@[simp] lemma den_zero : (0 : Matrix m n ℚ).den = 1 := den_map_natCast 0
 
-@[simp]
-lemma num_zero : (0 : Matrix m n ℚ).num = 0 :=
-  num_map_natCast 0
+@[simp] lemma num_zero : (0 : Matrix m n ℚ).num = 0 := num_map_natCast 0
 
-@[simp]
-lemma den_one [DecidableEq m] : (1 : Matrix m m ℚ).den = 1 :=
-  den_natCast 1
+@[simp] lemma den_one [DecidableEq m] : (1 : Matrix m m ℚ).den = 1 := den_natCast 1
 
-@[simp]
-lemma num_one [DecidableEq m] : (1 : Matrix m m ℚ).num = 1 :=
-  num_natCast 1
+@[simp] lemma num_one [DecidableEq m] : (1 : Matrix m m ℚ).num = 1 := num_natCast 1
 
 end Matrix

@@ -8,7 +8,6 @@ module
 public import Mathlib.NumberTheory.LSeries.AbstractFuncEq
 public import Mathlib.NumberTheory.LSeries.MellinEqDirichlet
 public import Mathlib.NumberTheory.ModularForms.Bounds
-
 import Mathlib.Analysis.PSeries
 
 /-!
@@ -21,14 +20,18 @@ open UpperHalfPlane hiding I
 open scoped Real Topology
 open Filter Complex Asymptotics
 
-variable {Γ : Subgroup (GL (Fin 2) ℝ)} [Γ.IsArithmetic]
-  {k : ℤ} (hk : 0 < k) {F : Type*} [FunLike F ℍ ℂ] (f : F) {s : ℂ}
+variable
+  {Γ : Subgroup (GL (Fin 2) ℝ)} [Γ.IsArithmetic]
+  {k : ℤ} (hk : 0 < k)
+  {F : Type*} [FunLike F ℍ ℂ]
+  (f : F)
+  {s : ℂ}
 
 local notation "h" => Subgroup.strictWidthInfty
 
 open ConjAct Pointwise in
-private local instance :
-    Subgroup.IsArithmetic (toConjAct (ModularGroup.S : GL (Fin 2) ℝ)⁻¹ • Γ) := by
+private local instance
+    : Subgroup.IsArithmetic (toConjAct (ModularGroup.S : GL (Fin 2) ℝ)⁻¹ • Γ) := by
   convert Subgroup.IsArithmetic.conj Γ ↑(ModularGroup.S⁻¹)
   simp only [ModularGroup.S_inv, ← map_inv]
   ext i j
@@ -40,16 +43,16 @@ variable [ModularFormClass F Γ k]
 
 section asymptotics -- private lemmas about aymptotics along `I * ℝ`
 
-private lemma tendsto_ofComplex_I_mul_atTop_atImInfty :
-    Tendsto (fun t : ℝ ↦ ofComplex (I * t)) atTop atImInfty := by
+private lemma tendsto_ofComplex_I_mul_atTop_atImInfty
+    : Tendsto (fun t : ℝ ↦ ofComplex (I * t)) atTop atImInfty := by
   rw [atImInfty, tendsto_comap_iff]
   refine tendsto_id.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with t ht
   simp [ofComplex_apply_of_im_pos, ht, ← coe_im]
 
 include F k Γ in -- conclusion doesn't explicitly refer these
-private lemma isBigO_comp_ofComplex_I_mul_sub_valueAtInfty (r : ℝ) :
-    (fun t : ℝ ↦ f (ofComplex (I * t)) - valueAtInfty f) =O[atTop] (fun t ↦ t ^ r) := by
+private lemma isBigO_comp_ofComplex_I_mul_sub_valueAtInfty (r : ℝ)
+    : (fun t : ℝ ↦ f (ofComplex (I * t)) - valueAtInfty f) =O[atTop] (fun t ↦ t ^ r) := by
   obtain ⟨C, hCpos, hCO⟩ := ModularFormClass.exp_decay_sub_atImInfty' f
   refine (hCO.comp_tendsto tendsto_ofComplex_I_mul_atTop_atImInfty).trans ?_
   refine (EventuallyEq.isBigO ?_).trans (isLittleO_exp_neg_mul_rpow_atTop hCpos r).isBigO
@@ -59,7 +62,8 @@ private lemma isBigO_comp_ofComplex_I_mul_sub_valueAtInfty (r : ℝ) :
 end asymptotics
 
 /-- A `WeakFEPair` structure associated to a modular form. -/
-@[simps] noncomputable def weakFEPair : WeakFEPair ℂ where
+@[simps]
+noncomputable def weakFEPair : WeakFEPair ℂ where
   f t := f (ofComplex (I * t))
   g t := translate f ModularGroup.S (ofComplex (I * t))
   k := k
@@ -72,12 +76,12 @@ end asymptotics
   hg_int := ContinuousOn.locallyIntegrableOn (by fun_prop) measurableSet_Ioi
   h_feq t (ht : 0 < t) := by
     rw [coe_translate, slash_def]
-    suffices f (ofComplex (I * t⁻¹)) = I ^ k * t ^ k *
-        (f ((ModularGroup.S : GL (Fin 2) ℝ) • ofComplex (I * t)) * ofComplex (I * t) ^ (-k)) by
+    suffices f (ofComplex (I * t⁻¹))
+        = I ^ k * t ^ k
+          * (f ((ModularGroup.S : GL (Fin 2) ℝ) • ofComplex (I * t)) * ofComplex (I * t) ^ (-k)) by
       simpa [σ, denom]
-    rw [ofComplex_apply_of_im_pos (by simpa), ofComplex_apply_of_im_pos (by simpa),
-      mul_comm (f _), ← mul_assoc, ← mul_zpow, zpow_neg,
-      mul_inv_cancel₀ (zpow_ne_zero _ (by aesop))]
+    rw [ofComplex_apply_of_im_pos (by simpa), ofComplex_apply_of_im_pos (by simpa), mul_comm (f _),
+      ← mul_assoc, ← mul_zpow, zpow_neg, mul_inv_cancel₀ (zpow_ne_zero _ (by aesop))]
     simp only [one_mul]
     congr 1
     ext
@@ -92,12 +96,14 @@ end asymptotics
 noncomputable def Λ : ℂ → ℂ := (weakFEPair hk f).Λ
 
 /-- Shared Dirichlet-series summability argument for modular and cusp forms. -/
-private lemma hasSum_Λ_of_qExpansion_isBigO {r : ℝ}
+private lemma hasSum_Λ_of_qExpansion_isBigO
+    {r : ℝ}
     (hpos : 0 < s.re) (hs : r + 1 < s.re)
     (hΛ : Λ hk f s = mellin (fun t ↦ (weakFEPair hk f).f t - (weakFEPair hk f).f₀) s)
-    (hcoeff : (fun n ↦ (qExpansion (h Γ) f).coeff n) =O[atTop] fun n ↦ (n : ℝ) ^ r) :
-    HasSum (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n /
-      ↑(2 * n / h Γ : ℝ) ^ s) (Λ hk f s) := by
+    (hcoeff : (fun n ↦ (qExpansion (h Γ) f).coeff n) =O[atTop] fun n ↦ (n : ℝ) ^ r)
+    : HasSum
+      (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s)
+      (Λ hk f s) := by
   rw [hΛ]
   have hh := Γ.strictWidthInfty_pos
   have hΓ := Γ.strictWidthInfty_mem_strictPeriods
@@ -123,15 +129,17 @@ private lemma hasSum_Λ_of_qExpansion_isBigO {r : ℝ}
     apply IsBigO.mul _ (isBigO_refl _ _)
     simpa using hcoeff.norm_left
 
-lemma hasSum_Λ (hs : k + 1 < s.re) :
-    HasSum (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n /
-      ↑(2 * n / h Γ : ℝ) ^ s) (Λ hk f s) := by
+lemma hasSum_Λ (hs : k + 1 < s.re)
+    : HasSum
+      (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s)
+      (Λ hk f s) := by
   refine hasSum_Λ_of_qExpansion_isBigO hk f (r := k)
     (by linarith [show (0 : ℝ) < k from mod_cast hk]) (by exact_mod_cast hs) ?_ ?_
   · rw [Λ, ← ((weakFEPair hk f).hasMellin <| by grind [weakFEPair]).2]
   · simpa using ModularFormClass.qExpansion_isBigO hk.le f
 
-/-- The `L`-function of a modular form `f` of weight `k`: the completed `L`-function `ModularForm.Λ`
+/--
+The `L`-function of a modular form `f` of weight `k`: the completed `L`-function `ModularForm.Λ`
 without its Archimedean factor `Gammaℂ s / 2 = (2 * π) ^ (-s) * Gamma s`, i.e.
 `L hk f s = Λ hk f s * (2 / Gammaℂ s)` for `s ≠ 0` (`ModularForm.L_apply_of_ne_zero`).
 
@@ -144,43 +152,52 @@ of `f` in `q = exp (2πiτ / h)`. This is `ModularForm.hasSum_L`, stated as
 At `s = 0`, `Λ hk f` has at most a simple pole, with residue `-valueAtInfty f`, which cancels the
 zero of `1 / Gammaℂ`. As for `riemannZeta`, we define `L hk f 0` to be the limit `-valueAtInfty f`
 (`ModularForm.L_apply_zero`, `ModularForm.tendsto_L_nhdsNE_zero`). Use these lemmas rather than
-unfolding `L`. -/
+unfolding `L`.
+-/
 noncomputable def L : ℂ → ℂ :=
-  Function.update (fun s ↦ Λ hk f s * (2 / Gammaℂ s)) 0 (-valueAtInfty f)
+  Function.update (fun s ↦ Λ hk f s * (2 / Gammaℂ s)) 0 (- valueAtInfty f)
 
-/-- For `s ≠ 0`, `L hk f s` is the completed `L`-function `Λ hk f s` divided by its Archimedean
+/--
+For `s ≠ 0`, `L hk f s` is the completed `L`-function `Λ hk f s` divided by its Archimedean
 factor `Gammaℂ s / 2`. At `s = 0` use `ModularForm.L_apply_zero` instead: there the right-hand side
-is `0` (as `Gammaℂ 0 = 0`), whereas `L hk f 0 = -valueAtInfty f`. -/
+is `0` (as `Gammaℂ 0 = 0`), whereas `L hk f 0 = -valueAtInfty f`.
+-/
 lemma L_apply_of_ne_zero (hs : s ≠ 0) : L hk f s = Λ hk f s * (2 / Gammaℂ s) :=
   Function.update_of_ne hs ..
 
-/-- The value of `L hk f` at `s = 0`: `L(f, 0) = -a₀`, where `a₀ = valueAtInfty f` is the constant
+/--
+The value of `L hk f` at `s = 0`: `L(f, 0) = -a₀`, where `a₀ = valueAtInfty f` is the constant
 term of the `q`-expansion of `f` (`UpperHalfPlane.qExpansion_coeff_zero`); in particular it is `0`
 for cusp forms. It is the limit of `L hk f s` as `s → 0` (`ModularForm.tendsto_L_nhdsNE_zero`),
-so `L hk f` is continuous at `0` (`ModularForm.continuousAt_L_zero`). -/
-@[simp]
-lemma L_apply_zero : L hk f 0 = -valueAtInfty f :=
-  Function.update_self ..
+so `L hk f` is continuous at `0` (`ModularForm.continuousAt_L_zero`).
+-/
+@[simp] lemma L_apply_zero : L hk f 0 = - valueAtInfty f := Function.update_self ..
 
-/-- The limit `lim_{s → 0} L hk f s = -valueAtInfty f`, which is the value `L hk f 0`
-(`ModularForm.L_apply_zero`). -/
-lemma tendsto_L_nhdsNE_zero : Tendsto (L hk f) (𝓝[≠] 0) (𝓝 (-valueAtInfty f)) := by
+/--
+The limit `lim_{s → 0} L hk f s = -valueAtInfty f`, which is the value `L hk f 0`
+(`ModularForm.L_apply_zero`).
+-/
+lemma tendsto_L_nhdsNE_zero : Tendsto (L hk f) (𝓝[≠] 0) (𝓝 (- valueAtInfty f)) := by
   -- for `s ≠ 0`, `L hk f s = s • Λ hk f s / (s * Gammaℂ s / 2)`, which tends to `-a₀ / 1`
   have := (weakFEPair hk f).Λ_residue_zero.div (Gammaℂ_residue_zero.div_const 2) <| by simp
   refine tendsto_nhdsWithin_congr (fun s (hs : s ≠ 0) ↦ ?_) <| by simpa using this
   simp [L_apply_of_ne_zero hk f hs, Λ, field]
 
-/-- `L hk f` is continuous at `s = 0`: its value `L hk f 0 = -valueAtInfty f` is not a junk value
-but fills in the removable singularity of `Λ hk f s * (2 / Gammaℂ s)` at `s = 0`. -/
+/--
+`L hk f` is continuous at `s = 0`: its value `L hk f 0 = -valueAtInfty f` is not a junk value
+but fills in the removable singularity of `Λ hk f s * (2 / Gammaℂ s)` at `s = 0`.
+-/
 @[fun_prop]
 lemma continuousAt_L_zero : ContinuousAt (L hk f) 0 :=
   continuousAt_iff_punctured_nhds.2 <| L_apply_zero hk f ▸ tendsto_L_nhdsNE_zero hk f
 
 /-- Shared conversion from the completed `Λ`-series to the ordinary `L`-series. -/
-private lemma hasSum_L_of_hasSum_Λ (hs : 0 < s.re)
-    (hΛ : HasSum (fun n ↦ π ^ (-s) * Gamma s *
-      (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s) (Λ hk f s)) :
-    HasSum (fun i ↦ (qExpansion (h Γ) f).coeff i / ↑i ^ s) (h Γ ^ (-s) * L hk f s) := by
+private lemma hasSum_L_of_hasSum_Λ
+    (hs : 0 < s.re)
+    (hΛ : HasSum
+      (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s)
+      (Λ hk f s))
+    : HasSum (fun i ↦ (qExpansion (h Γ) f).coeff i / ↑i ^ s) (h Γ ^ (-s) * L hk f s) := by
   convert hΛ.mul_right (2 / Gammaℂ s * h Γ ^ (-s)) using 1
   · ext n
     generalize (PowerSeries.coeff n) (qExpansion (h Γ) f) = p
@@ -197,8 +214,8 @@ private lemma hasSum_L_of_hasSum_Λ (hs : 0 < s.re)
     field_simp
   · rw [L_apply_of_ne_zero hk f (ne_zero_of_re_pos hs), mul_rotate']
 
-theorem hasSum_L (hs : k + 1 < s.re) :
-    HasSum (fun n ↦ (qExpansion (h Γ) f).coeff n / n ^ s) (h Γ ^ (-s) * L hk f s) :=
+theorem hasSum_L (hs : k + 1 < s.re)
+    : HasSum (fun n ↦ (qExpansion (h Γ) f).coeff n / n ^ s) (h Γ ^ (-s) * L hk f s) :=
   hasSum_L_of_hasSum_Λ hk f (by linarith [show (0 : ℝ) < k from mod_cast hk]) (hasSum_Λ hk f hs)
 
 end ModularForm
@@ -215,14 +232,13 @@ lemma isStrongFEPair : IsStrongFEPair (weakFEPair hk f) where
   hg₀ := (CuspFormClass.zero_at_infty <| translate f ModularGroup.S).valueAtInfty_eq_zero
 
 @[fun_prop]
-lemma differentiable_Λ : Differentiable ℂ (Λ hk f) :=
-  (isStrongFEPair hk f).differentiable_Λ
+lemma differentiable_Λ : Differentiable ℂ (Λ hk f) := (isStrongFEPair hk f).differentiable_Λ
 
-lemma Λ_eq_mellin : Λ hk f = mellin (fun t ↦ f (ofComplex (I * t))) :=
-  (isStrongFEPair hk f).Λ_eq
+lemma Λ_eq_mellin : Λ hk f = mellin (fun t ↦ f (ofComplex (I * t))) := (isStrongFEPair hk f).Λ_eq
 
-lemma hasSum_Λ (hk : 0 < k) (hs : k / 2 + 1 < s.re) :
-    HasSum (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s)
+lemma hasSum_Λ (hk : 0 < k) (hs : k / 2 + 1 < s.re)
+    : HasSum
+      (fun n ↦ π ^ (-s) * Gamma s * (qExpansion (h Γ) f).coeff n / ↑(2 * n / h Γ : ℝ) ^ s)
       (Λ hk f s) := by
   refine hasSum_Λ_of_qExpansion_isBigO hk f (r := k / 2)
     (by linarith [show (0 : ℝ) < k from mod_cast hk]) hs ?_ ?_
@@ -232,13 +248,14 @@ lemma hasSum_Λ (hk : 0 < k) (hs : k / 2 + 1 < s.re) :
 @[fun_prop]
 lemma differentiable_L : Differentiable ℂ (L hk f) := by
   -- for cusp forms the update at `0` is trivial, since `valueAtInfty f = 0 = Gammaℂ 0`
-  rw [L, Function.update_eq_self_iff.2 <| by
-    simp [(CuspFormClass.zero_at_infty f).valueAtInfty_eq_zero, Gammaℂ]]
+  rw [L,
+    Function.update_eq_self_iff.2 <| by
+      simp [(CuspFormClass.zero_at_infty f).valueAtInfty_eq_zero, Gammaℂ]]
   simp only [div_eq_mul_inv]
   fun_prop
 
-theorem hasSum_L (hs : k / 2 + 1 < s.re) :
-    HasSum (fun n ↦ (qExpansion (h Γ) f).coeff n / n ^ s) (h Γ ^ (-s) * L hk f s) :=
+theorem hasSum_L (hs : k / 2 + 1 < s.re)
+    : HasSum (fun n ↦ (qExpansion (h Γ) f).coeff n / n ^ s) (h Γ ^ (-s) * L hk f s) :=
   hasSum_L_of_hasSum_Λ hk f (by linarith [show (0 : ℝ) < k from mod_cast hk]) (hasSum_Λ f hk hs)
 
 end CuspForm

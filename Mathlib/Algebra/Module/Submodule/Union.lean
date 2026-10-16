@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.Dual.Defs
 public import Mathlib.SetTheory.Cardinal.Finite
-
 import Mathlib.LinearAlgebra.Dual.Lemmas
 
 /-!
@@ -27,13 +26,14 @@ open Function Set
 
 variable {ι K M : Type*} [Field K] [AddCommGroup M] [Module K M]
 
-lemma Submodule.iUnion_ssubset_of_forall_ne_top_of_card_lt (s : Finset ι) (p : ι → Submodule K M)
-    (h₁ : ∀ i, p i ≠ ⊤) (h₂ : s.card < ENat.card K) :
-    ⋃ i ∈ s, (p i : Set M) ⊂ univ := by
+lemma Submodule.iUnion_ssubset_of_forall_ne_top_of_card_lt
+    (s : Finset ι) (p : ι → Submodule K M) (h₁ : ∀ i, p i ≠ ⊤) (h₂ : s.card < ENat.card K)
+    : ⋃ i ∈ s, (p i : Set M) ⊂ univ := by
   -- Following https://mathoverflow.net/a/14241
   classical
   induction s using Finset.induction_on with
-  | empty => simp
+  | empty =>
+    simp
   | insert j s hj hj' =>
     simp only [ssubset_univ_iff] at hj' ⊢
     rcases s.eq_empty_or_nonempty with rfl | hs
@@ -65,12 +65,21 @@ lemma Submodule.iUnion_ssubset_of_forall_ne_top_of_card_lt (s : Finset ι) (p : 
       have hf' : MapsTo f univ s := fun z _ ↦ by specialize hf z; aesop
       suffices ∃ z₁ z₂, z₁ ≠ z₂ ∧ f z₁ = f z₂ by
         obtain ⟨z₁, z₂, hne, heq⟩ := this
-        exact ⟨f z₁, hf' (mem_univ _), z₁, z₁.property, z₂, z₂.property,
-          Subtype.coe_ne_coe.mpr hne, by specialize hf z₁; simp_all, by specialize hf z₂; aesop⟩
+        exact ⟨
+          f z₁,
+          hf' (mem_univ _),
+          z₁,
+          z₁.property,
+          z₂,
+          z₂.property,
+          Subtype.coe_ne_coe.mpr hne,
+          by specialize hf z₁; simp_all,
+          by specialize hf z₂; aesop
+        ⟩
       have key : s.card < sxy.encard := by
         refine lt_of_add_lt_add_right <| lt_of_lt_of_le h₂ ?_
-        have : Injective (fun t : K ↦ x + t • y) :=
-          fun t₁ t₂ ht ↦ smul_left_injective K hy₀ <| by simpa using! ht
+        have : Injective (fun t : K ↦ x + t • y) := fun t₁ t₂ ht ↦
+          smul_left_injective K hy₀ <| by simpa using! ht
         have aux : sxy = ((fun t : K ↦ x + t • y) '' {t | t ≠ 0}) := by ext; simp [sxy]
         rw [aux, this.encard_image, encard_ne_add_one]
       obtain ⟨z₁, -, z₂, -, h⟩ := exists_ne_map_eq_of_encard_lt_of_maps_to (by simpa) hf'
@@ -84,32 +93,34 @@ lemma Submodule.iUnion_ssubset_of_forall_ne_top_of_card_lt (s : Finset ι) (p : 
 
 variable [Finite ι] [Infinite K]
 
-lemma Submodule.exists_forall_notMem_of_forall_ne_top (p : ι → Submodule K M) (h : ∀ i, p i ≠ ⊤) :
-    ∃ x, ∀ i, x ∉ p i := by
+lemma Submodule.exists_forall_notMem_of_forall_ne_top (p : ι → Submodule K M) (h : ∀ i, p i ≠ ⊤)
+    : ∃ x, ∀ i, x ∉ p i := by
   let _i : Fintype ι := Fintype.ofFinite ι
   suffices ⋃ i, (p i : Set M) ⊂ univ by simpa [ssubset_univ_iff, iUnion_eq_univ_iff] using this
   simpa using iUnion_ssubset_of_forall_ne_top_of_card_lt Finset.univ p h (by simp)
 
 lemma Module.Dual.exists_forall_ne_zero_of_forall_exists
-    (f : ι → Dual K M) (h : ∀ i, ∃ x, f i x ≠ 0) :
-    ∃ x, ∀ i, f i x ≠ 0 := by
+    (f : ι → Dual K M) (h : ∀ i, ∃ x, f i x ≠ 0)
+    : ∃ x, ∀ i, f i x ≠ 0 := by
   let p i := LinearMap.ker (f i)
   replace h i : p i ≠ ⊤ := by specialize h i; aesop
   obtain ⟨x, hx⟩ := Submodule.exists_forall_notMem_of_forall_ne_top p h
   exact ⟨x, by simpa [p] using hx⟩
 
-/-- A convenience variation of `Module.Dual.exists_forall_ne_zero_of_forall_exists` where we are
-concerned only about behaviour on a fixed submodule. -/
-lemma Module.Dual.exists_forall_mem_ne_zero_of_forall_exists (p : Submodule K M)
-    (f : ι → Dual K M) (h : ∀ i, ∃ x ∈ p, f i x ≠ 0) :
-    ∃ x ∈ p, ∀ i, f i x ≠ 0 := by
+/--
+A convenience variation of `Module.Dual.exists_forall_ne_zero_of_forall_exists` where we are
+concerned only about behaviour on a fixed submodule.
+-/
+lemma Module.Dual.exists_forall_mem_ne_zero_of_forall_exists
+    (p : Submodule K M) (f : ι → Dual K M) (h : ∀ i, ∃ x ∈ p, f i x ≠ 0)
+    : ∃ x ∈ p, ∀ i, f i x ≠ 0 := by
   let f' (i : ι) : Dual K p := (f i).domRestrict p
   replace h (i : ι) : ∃ x : p, f' i x ≠ 0 := by obtain ⟨x, hxp, hx₀⟩ := h i; exact ⟨⟨x, hxp⟩, hx₀⟩
   obtain ⟨⟨x, hxp⟩, hx₀⟩ := exists_forall_ne_zero_of_forall_exists f' h
   exact ⟨x, hxp, hx₀⟩
 
-lemma Module.exists_dual_forall_apply_ne_zero (v : ι → M) (hv : ∀ i, v i ≠ 0) :
-    ∃ f : Dual K M, ∀ i, f (v i) ≠ 0 := by
+lemma Module.exists_dual_forall_apply_ne_zero (v : ι → M) (hv : ∀ i, v i ≠ 0)
+    : ∃ f : Dual K M, ∀ i, f (v i) ≠ 0 := by
   refine Dual.exists_forall_ne_zero_of_forall_exists (fun i ↦ Dual.eval K M (v i)) fun i ↦ ?_
   by_contra! contra
   simp_rw [Dual.eval_apply, forall_dual_apply_eq_zero_iff] at contra

@@ -6,7 +6,6 @@ Authors: Thomas Browning, Christian Merten
 module
 
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
-
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 /-!
@@ -38,9 +37,11 @@ variable {C : Type*} [Category* C] [CartesianMonoidalCategory C]
 
 open MonObj GrpObj MonoidalCategory CartesianMonoidalCategory
 
-/-- A morphism `φ : H ⟶ G` of additive group objects is a normal monoid homomorphism if it is a
+/--
+A morphism `φ : H ⟶ G` of additive group objects is a normal monoid homomorphism if it is a
 monoid homomorphism that is mono and such that the conjugation map `(g, h) ↦ g + h - g`
-factors through `φ`. -/
+factors through `φ`.
+-/
 class IsAddMonHom.Normal {G H : C} [AddGrpObj G] [AddGrpObj H] (φ : H ⟶ G) : Prop where
   mono : Mono φ := by infer_instance
   isAddMonHom : IsAddMonHom φ := by infer_instance
@@ -52,9 +53,11 @@ namespace IsMonHom
 
 variable {G H : C} [GrpObj G] [GrpObj H] {φ : H ⟶ G}
 
-/-- A morphism `φ : H ⟶ G` of group objects is a normal monoid homomorphism if it is a
+/--
+A morphism `φ : H ⟶ G` of group objects is a normal monoid homomorphism if it is a
 monoid homomorphism that is mono and such that the conjugation map `(g, h) ↦ g * h * g⁻¹`
-factors through `φ`. -/
+factors through `φ`.
+-/
 @[to_additive]
 class Normal (φ : H ⟶ G) : Prop where
   mono : Mono φ := by infer_instance
@@ -77,12 +80,14 @@ instance : Normal η[G] where
 lemma isNormalHom_iff [IsMonHom φ] [Mono φ] : Normal φ ↔ ∃ ψ : G ⊗ H ⟶ H, ψ ≫ φ = G ◁ φ ≫ conj G :=
   ⟨fun h ↦ h.exists_comp_eq_conj, fun h ↦ ⟨‹_›, ‹_›, h⟩⟩
 
-/-- If `φ` is mono, it is a normal group homomorphism if and only if for all `X` the image of
-`H(X)` in `G(X)` is a normal subgroup. -/
+/--
+If `φ` is mono, it is a normal group homomorphism if and only if for all `X` the image of
+`H(X)` in `G(X)` is a normal subgroup.
+-/
 @[to_additive /-- If `φ` is mono, it is a normal additive group homomorphism if and only if for all
 `X` the image of `H(X)` in `G(X)` is a normal additive subgroup. -/]
-theorem normal_iff_normal_monoidHom [IsMonHom φ] [Mono φ] :
-    Normal φ ↔ ∀ (X : C), (monoidHom φ X).range.Normal := by
+theorem normal_iff_normal_monoidHom [IsMonHom φ] [Mono φ]
+    : Normal φ ↔ ∀ (X : C), (monoidHom φ X).range.Normal := by
   rw [isNormalHom_iff]
   refine ⟨?_, ?_⟩
   · intro ⟨ψ, hψ⟩ X
@@ -102,14 +107,14 @@ theorem normal_iff_normal_monoidHom [IsMonHom φ] [Mono φ] :
       simp [hh', conj, comp_mul, comp_inv]
 
 @[to_additive]
-instance (priority := low) [BraidedCategory C] [IsCommMonObj G] [IsMonHom φ] [Mono φ] :
-    Normal φ := by
+instance (priority := low) [BraidedCategory C] [IsCommMonObj G] [IsMonHom φ] [Mono φ]
+    : Normal φ := by
   simp [isNormalHom_iff, conj_eq_snd_of_isCommMonObj]
 
 @[to_additive]
-lemma Normal.of_isPullback_η [IsMonHom φ] {P : C} (p : G ⟶ P) [GrpObj P] [IsMonHom p]
-    (h : IsPullback φ (toUnit _) p η) :
-    Normal φ where
+lemma Normal.of_isPullback_η
+    [IsMonHom φ] {P : C} (p : G ⟶ P) [GrpObj P] [IsMonHom p] (h : IsPullback φ (toUnit _) p η)
+    : Normal φ where
   mono := h.mono_fst_of_mono
   exists_comp_eq_conj := by
     refine ⟨h.lift (G ◁ φ ≫ conj G) (toUnit _) ?_, ?_⟩

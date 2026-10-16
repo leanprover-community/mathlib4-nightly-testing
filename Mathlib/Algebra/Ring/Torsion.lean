@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.CharZero.Defs
 public import Mathlib.Algebra.Ring.Commute
-
 import Mathlib.Algebra.Group.Torsion
 
 /-!
@@ -22,8 +21,7 @@ namespace IsDomain
 
 -- This instance is potentially expensive, and is known to slow down grind.
 -- Please keep it as a scoped instance.
-scoped instance (R : Type*) [Semiring R] [IsDomain R] [CharZero R] :
-    HasUniqueDiv R where
+scoped instance (R : Type*) [Semiring R] [IsDomain R] [CharZero R] : HasUniqueDiv R where
   nsmul_right_injective n h a b w := by
     simp only [nsmul_eq_mul, mul_eq_mul_left_iff, Nat.cast_eq_zero] at w
     grind

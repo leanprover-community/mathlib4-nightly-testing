@@ -46,70 +46,79 @@ def addInclusionParam (declName : Name) (kind : AttributeKind) : AttrM Unit := d
   inclusionParamExt.add (declName, decl) kind
   recordRegisteringModule kind
 
-initialize registerBuiltinAttribute {
-  name := `inclusionParamAttr
-  descr := "registers an inclusion-tactic parameter"
-  applicationTime := .afterCompilation
-  add := fun declName _ kind => addInclusionParam declName kind
-}
+initialize
+  registerBuiltinAttribute {
+    name := `inclusionParamAttr
+    descr := "registers an inclusion-tactic parameter"
+    applicationTime := .afterCompilation
+    add := fun declName _ kind => addInclusionParam declName kind
+  }
 
 /-- Syntax for declaring an inclusion extension using the `inclusion_ext` attribute. -/
 syntax (name := inclusionExtAttr) "inclusion_ext" term,+ : attr
 
 /-- Add the inclusion extension `declName` under `keys`. -/
-def addInclusionExt (declName : Name) (keys : Array (Array DiscrTree.Key))
-    (kind : AttributeKind) : AttrM Unit := do
+def addInclusionExt (declName : Name) (keys : Array (Array DiscrTree.Key)) (kind : AttributeKind)
+    : AttrM Unit := do
   let ext ← evalDecl InclusionExt ``InclusionExt declName
   let family ← getInclusionFamily ext.family
   family.inclusionExt.register ((keys, declName), ext) kind
 
-initialize registerBuiltinAttribute {
-  name := `inclusionExtAttr
-  descr := "adds an inclusion extension"
-  applicationTime := .afterCompilation
-  add := fun declName stx kind => match stx with
-    | `(attr| inclusion_ext $es,*) => do
-      let env ← getEnv
-      ensureAttrDeclIsMeta `inclusion_ext declName kind
-      unless (env.getModuleIdxFor? declName).isNone do
-        throwAttrDeclInImportedModule `inclusion_ext declName
-      if (IR.getSorryDep env declName).isSome then return
-      let keys ← elabExtKeys (es.getElems.map (·.raw))
-      addInclusionExt declName keys kind
-    | _ => throwUnsupportedSyntax
-  erase := fun _ => throwError "Inclusion extensions cannot be erased by declaration"
-}
+initialize
+  registerBuiltinAttribute {
+    name := `inclusionExtAttr
+    descr := "adds an inclusion extension"
+    applicationTime := .afterCompilation
+    add := fun declName stx kind =>
+      match stx with
+      | `(attr| inclusion_ext $es,*) => do
+        let env ← getEnv
+        ensureAttrDeclIsMeta `inclusion_ext declName kind
+        unless (env.getModuleIdxFor? declName).isNone do
+          throwAttrDeclInImportedModule `inclusion_ext declName
+        if (IR.getSorryDep env declName).isSome then return
+        let keys ← elabExtKeys (es.getElems.map (·.raw))
+        addInclusionExt declName keys kind
+      | _ =>
+        throwUnsupportedSyntax
+    erase := fun _ => throwError "Inclusion extensions cannot be erased by declaration"
+  }
 
 /-- Syntax for declaring a hypothesis extension using the `hypothesis_ext` attribute. -/
 syntax (name := hypothesisExtAttr) "hypothesis_ext" term,+ : attr
 
 /-- Add the hypothesis extension `declName` under `keys`. -/
-def addHypothesisExt (declName : Name) (keys : Array (Array DiscrTree.Key))
-    (kind : AttributeKind) : AttrM Unit := do
+def addHypothesisExt (declName : Name) (keys : Array (Array DiscrTree.Key)) (kind : AttributeKind)
+    : AttrM Unit := do
   let ext ← evalDecl HypothesisExt ``HypothesisExt declName
   let family ← getInclusionFamily ext.family
   family.hypothesisExt.register ((keys, declName), ext) kind
 
 /-- Register the `hypothesis_ext` attribute. -/
-initialize registerBuiltinAttribute {
-  name := `hypothesisExtAttr
-  descr := "adds a hypothesis extension"
-  applicationTime := .afterCompilation
-  add := fun declName stx kind => match stx with
-    | `(attr| hypothesis_ext $es,*) => do
-      let env ← getEnv
-      ensureAttrDeclIsMeta `hypothesis_ext declName kind
-      unless (env.getModuleIdxFor? declName).isNone do
-        throwAttrDeclInImportedModule `hypothesis_ext declName
-      if (IR.getSorryDep env declName).isSome then return
-      let keys ← elabExtKeys (es.getElems.map (·.raw))
-      addHypothesisExt declName keys kind
-    | _ => throwUnsupportedSyntax
-  erase := fun _ => throwError "Hypothesis extensions cannot be erased by declaration"
-}
+initialize
+  registerBuiltinAttribute {
+    name := `hypothesisExtAttr
+    descr := "adds a hypothesis extension"
+    applicationTime := .afterCompilation
+    add := fun declName stx kind =>
+      match stx with
+      | `(attr| hypothesis_ext $es,*) => do
+        let env ← getEnv
+        ensureAttrDeclIsMeta `hypothesis_ext declName kind
+        unless (env.getModuleIdxFor? declName).isNone do
+          throwAttrDeclInImportedModule `hypothesis_ext declName
+        if (IR.getSorryDep env declName).isSome then return
+        let keys ← elabExtKeys (es.getElems.map (·.raw))
+        addHypothesisExt declName keys kind
+      | _ =>
+        throwUnsupportedSyntax
+    erase := fun _ => throwError "Hypothesis extensions cannot be erased by declaration"
+  }
 
-/-- The argument indices of an element `x`, a set `s`, and an inclusion hypothesis `x ∈ s`
-in some theorem statement. -/
+/--
+The argument indices of an element `x`, a set `s`, and an inclusion hypothesis `x ∈ s`
+in some theorem statement.
+-/
 structure HypArg where
   /-- The index of the element argument. -/
   elemIdx : Nat
@@ -117,7 +126,7 @@ structure HypArg where
   setIdx : Nat
   /-- The index of the membership proof argument. -/
   proofIdx : Nat
-  deriving Inhabited, ToExpr
+deriving Inhabited, ToExpr
 
 /-- The name of an inclusion parameter and its index in some theorem statement. -/
 structure ParamArg where
@@ -125,23 +134,31 @@ structure ParamArg where
   name : Name
   /-- The index of the corresponding theorem argument. -/
   idx : Nat
-  deriving Inhabited, ToExpr
+deriving Inhabited, ToExpr
 
-/-- Apply the inclusion theorem `theoremName` to `e`, recursively constructing the inclusion bodies
-specified by `hypArgs` and filling the registered parameter arguments specified by `paramArgs`. -/
-def deriveInclusionOp (theoremName : Name) (hypArgs : Array HypArg) (paramArgs : Array ParamArg)
-    (e : Expr) : InclusionM ExprInclusionBody := do
+/--
+Apply the inclusion theorem `theoremName` to `e`, recursively constructing the inclusion bodies
+specified by `hypArgs` and filling the registered parameter arguments specified by `paramArgs`.
+-/
+def deriveInclusionOp
+    (theoremName : Name) (hypArgs : Array HypArg) (paramArgs : Array ParamArg) (e : Expr)
+    : InclusionM ExprInclusionBody := do
   let theoremExpr ← mkConstWithFreshMVarLevels theoremName
   let (args, binderInfos, conclusion) ← forallMetaTelescopeReducing (← inferType theoremExpr)
-  let some (expr, inclusionBody, _) := toSetMem? conclusion | failure
-  unless ← isDefEq expr e do failure
+  let some (expr, inclusionBody, _) := toSetMem? conclusion
+    | failure
+  unless ← isDefEq expr e do
+    failure
   for ⟨name, idx⟩ in paramArgs do
-    unless ← isDefEq args[idx]! (← InclusionM.getParam name) do failure
+    unless ← isDefEq args[idx]! (← InclusionM.getParam name) do
+      failure
   for ⟨elemIdx, setIdx, proofIdx⟩ in hypArgs do
     let inputExpr ← instantiateMVars args[elemIdx]!
     let body ← mkExprInclusionBody inputExpr
-    unless ← isDefEq args[setIdx]! body.inclusionBody do failure
-    unless ← isDefEq args[proofIdx]! body.proofBody do failure
+    unless ← isDefEq args[setIdx]! body.inclusionBody do
+      failure
+    unless ← isDefEq args[proofIdx]! body.proofBody do
+      failure
   for h : i in [:args.size] do
     let argId := args[i].mvarId!
     unless ← argId.isAssigned do
@@ -154,27 +171,37 @@ def deriveInclusionOp (theoremName : Name) (hypArgs : Array HypArg) (paramArgs :
   let proofBody ← instantiateMVars (mkAppN theoremExpr args)
   return { inclusionBody, proofBody }
 
-/-- Apply the hypothesis theorem `theoremName` to `h` as its source hypothesis at `sourceIdx`,
+/--
+Apply the hypothesis theorem `theoremName` to `h` as its source hypothesis at `sourceIdx`,
 recursively constructing the closed inclusion bodies specified by `hypArgs` and filling the
-registered parameter arguments specified by `paramArgs`. -/
-def deriveHypothesisOp (theoremName : Name) (sourceIdx : Nat) (hypArgs : Array HypArg)
-    (paramArgs : Array ParamArg) (h : Expr) : HypothesisM Unit := do
+registered parameter arguments specified by `paramArgs`.
+-/
+def deriveHypothesisOp
+    (theoremName : Name) (sourceIdx : Nat) (hypArgs : Array HypArg) (paramArgs : Array ParamArg)
+    (h : Expr)
+    : HypothesisM Unit := do
   let hypType ← instantiateMVars (← inferType h)
   let theoremExpr ← mkConstWithFreshMVarLevels theoremName
   let (args, binderInfos, conclusion) ← forallMetaTelescopeReducing (← inferType theoremExpr)
   let sourceId := args[sourceIdx]!.mvarId!
-  unless ← isDefEq (← sourceId.getType) hypType do failure
+  unless ← isDefEq (← sourceId.getType) hypType do
+    failure
   sourceId.assign h
-  let some (e, s, _) := toSetMem? conclusion | failure
+  let some (e, s, _) := toSetMem? conclusion
+    | failure
   let e ← instantiateMVars e
-  let some iVar ← findIVar? e | failure
+  let some iVar ← findIVar? e
+    | failure
   for ⟨name, idx⟩ in paramArgs do
-    unless ← isDefEq args[idx]! (← HypothesisM.getParam name) do failure
+    unless ← isDefEq args[idx]! (← HypothesisM.getParam name) do
+      failure
   for ⟨elemIdx, setIdx, proofIdx⟩ in hypArgs do
     let inputExpr ← instantiateMVars args[elemIdx]!
     let body ← mkHypExprInclusionBody inputExpr
-    unless ← isDefEq args[setIdx]! body.inclusionBody do failure
-    unless ← isDefEq args[proofIdx]! body.proofBody do failure
+    unless ← isDefEq args[setIdx]! body.inclusionBody do
+      failure
+    unless ← isDefEq args[proofIdx]! body.proofBody do
+      failure
   for h : i in [:args.size] do
     let argId := args[i].mvarId!
     unless ← argId.isAssigned do
@@ -188,9 +215,9 @@ def deriveHypothesisOp (theoremName : Name) (sourceIdx : Nat) (hypArgs : Array H
   addInclusionHyp iVar.iExpr { inclusionBody, proofBody }
 
 /-- Extract the `HypArg` and `ParamArg` metadata from a theorem declaration. -/
-private def getOpArgInfo (declName : Name) (matchExpr : Expr)
-    (args : Array Expr) (sourceIdx? : Option Nat := none) :
-    MetaM (Array HypArg × Array ParamArg) := do
+private def getOpArgInfo
+    (declName : Name) (matchExpr : Expr) (args : Array Expr) (sourceIdx? : Option Nat := none)
+    : MetaM (Array HypArg × Array ParamArg) := do
   let registeredParams := inclusionParamExt.getState (← getEnv)
   let mut hypArgs := #[]
   let mut params := #[]
@@ -223,8 +250,8 @@ private def getOpArgInfo (declName : Name) (matchExpr : Expr)
   return (hypArgs, params)
 
 /-- Validate an inclusion theorem and return its discrimination-tree path and argument metadata. -/
-private def getInclusionOpInfo (declName : Name) :
-    MetaM (Array DiscrTree.Key × Array HypArg × Array ParamArg) := do
+private def getInclusionOpInfo (declName : Name)
+    : MetaM (Array DiscrTree.Key × Array HypArg × Array ParamArg) := do
   let theoremExpr ← mkConstWithFreshMVarLevels declName
   let (args, _, conclusion) ← forallMetaTelescopeReducing (← inferType theoremExpr)
   let some (e, _, _) := toSetMem? conclusion
@@ -234,37 +261,43 @@ private def getInclusionOpInfo (declName : Name) :
   return (← DiscrTree.mkPath e, hypArgs, params)
 
 /-- Generate and register an inclusion extension from `theoremName` in `familyName`. -/
-private def addInclusionOp (theoremName familyName : Name) (priority : Nat)
-    (kind : AttributeKind) : AttrM Unit := do
+private def addInclusionOp (theoremName familyName : Name) (priority : Nat) (kind : AttributeKind)
+    : AttrM Unit := do
   let (path, hypArgs, params) ← MetaM.run' <| getInclusionOpInfo theoremName
   let extName ← withDeclNameForAuxNaming theoremName do mkAuxDeclName `_inclusionExt
-  let derive := mkAppN (mkConst ``deriveInclusionOp)
-    #[toExpr theoremName, toExpr hypArgs, toExpr params]
-  let value := mkAppN (mkConst ``InclusionExt.mk)
-    #[toExpr extName, toExpr familyName, toExpr theoremName, derive, toExpr priority]
+  let derive :=
+    mkAppN (mkConst ``deriveInclusionOp) #[toExpr theoremName, toExpr hypArgs, toExpr params]
+  let value :=
+    mkAppN (mkConst ``InclusionExt.mk)
+      #[toExpr extName, toExpr familyName, toExpr theoremName, derive, toExpr priority]
   let decl ← mkDefinitionValInferringUnsafe extName [] (mkConst ``InclusionExt) value .opaque
   addAndCompile (.defnDecl decl) (markMeta := true)
   addInclusionExt extName #[path] kind
 
-/-- Syntax for registering an inclusion extension from a theorem using the `inclusion_op`
-attribute. -/
+/--
+Syntax for registering an inclusion extension from a theorem using the `inclusion_op`
+attribute.
+-/
 syntax (name := inclusionOpAttr) "inclusion_op " ident (prio)? : attr
 
-initialize registerBuiltinAttribute {
-  name := `inclusionOpAttr
-  descr := "adds an inclusion operation"
-  applicationTime := .afterCompilation
-  add := fun declName stx kind => match stx with
-    | `(attr| inclusion_op $familyName:ident $[$_prio:prio]?) => do
-      if (IR.getSorryDep (← getEnv) declName).isSome then return
-      addInclusionOp declName familyName.getId (← getAttrParamOptPrio stx[2]) kind
-    | _ => throwUnsupportedSyntax
-  erase := fun _ => throwError "Inclusion operations cannot be erased by declaration"
-}
+initialize
+  registerBuiltinAttribute {
+    name := `inclusionOpAttr
+    descr := "adds an inclusion operation"
+    applicationTime := .afterCompilation
+    add := fun declName stx kind =>
+      match stx with
+      | `(attr| inclusion_op $familyName:ident $[$_prio:prio]?) => do
+        if (IR.getSorryDep (← getEnv) declName).isSome then return
+        addInclusionOp declName familyName.getId (← getAttrParamOptPrio stx[2]) kind
+      | _ =>
+        throwUnsupportedSyntax
+    erase := fun _ => throwError "Inclusion operations cannot be erased by declaration"
+  }
 
 /-- Validate a hypothesis theorem and return its discrimination-tree path and argument metadata. -/
-private def getHypothesisOpInfo (declName : Name) :
-    MetaM (Array DiscrTree.Key × Nat × Array HypArg × Array ParamArg) := do
+private def getHypothesisOpInfo (declName : Name)
+    : MetaM (Array DiscrTree.Key × Nat × Array HypArg × Array ParamArg) := do
   let theoremExpr ← mkConstWithFreshMVarLevels declName
   let (args, binderInfos, conclusion) ← forallMetaTelescopeReducing (← inferType theoremExpr)
   let some (e, s, _) := toSetMem? conclusion
@@ -296,32 +329,39 @@ private def getHypothesisOpInfo (declName : Name) :
   return (← DiscrTree.mkPath sourceType, sourceIdx, hypArgs, params)
 
 /-- Generate and register a hypothesis extension from `theoremName` in `familyName`. -/
-private def addHypothesisOp (theoremName familyName : Name) (priority : Nat)
-    (kind : AttributeKind) : AttrM Unit := do
+private def addHypothesisOp (theoremName familyName : Name) (priority : Nat) (kind : AttributeKind)
+    : AttrM Unit := do
   let (path, sourceIdx, hypArgs, params) ← MetaM.run' <| getHypothesisOpInfo theoremName
   let extName ← withDeclNameForAuxNaming theoremName do mkAuxDeclName `_hypothesisExt
-  let derive := mkAppN (mkConst ``deriveHypothesisOp)
-    #[toExpr theoremName, toExpr sourceIdx, toExpr hypArgs, toExpr params]
-  let value := mkAppN (mkConst ``HypothesisExt.mk)
-    #[toExpr extName, toExpr familyName, toExpr theoremName, derive, toExpr priority]
+  let derive :=
+    mkAppN (mkConst ``deriveHypothesisOp)
+      #[toExpr theoremName, toExpr sourceIdx, toExpr hypArgs, toExpr params]
+  let value :=
+    mkAppN (mkConst ``HypothesisExt.mk)
+      #[toExpr extName, toExpr familyName, toExpr theoremName, derive, toExpr priority]
   let decl ← mkDefinitionValInferringUnsafe extName [] (mkConst ``HypothesisExt) value .opaque
   addAndCompile (.defnDecl decl) (markMeta := true)
   addHypothesisExt extName #[path] kind
 
-/-- Syntax for registering a hypothesis extension from a theorem using the `hypothesis_op`
-attribute. -/
+/--
+Syntax for registering a hypothesis extension from a theorem using the `hypothesis_op`
+attribute.
+-/
 syntax (name := hypothesisOpAttr) "hypothesis_op " ident (prio)? : attr
 
-initialize registerBuiltinAttribute {
-  name := `hypothesisOpAttr
-  descr := "adds an inclusion-hypothesis operation"
-  applicationTime := .afterCompilation
-  add := fun declName stx kind => match stx with
-    | `(attr| hypothesis_op $familyName:ident $[$_prio:prio]?) => do
-      if (IR.getSorryDep (← getEnv) declName).isSome then return
-      addHypothesisOp declName familyName.getId (← getAttrParamOptPrio stx[2]) kind
-    | _ => throwUnsupportedSyntax
-  erase := fun _ => throwError "Hypothesis operations cannot be erased by declaration"
-}
+initialize
+  registerBuiltinAttribute {
+    name := `hypothesisOpAttr
+    descr := "adds an inclusion-hypothesis operation"
+    applicationTime := .afterCompilation
+    add := fun declName stx kind =>
+      match stx with
+      | `(attr| hypothesis_op $familyName:ident $[$_prio:prio]?) => do
+        if (IR.getSorryDep (← getEnv) declName).isSome then return
+        addHypothesisOp declName familyName.getId (← getAttrParamOptPrio stx[2]) kind
+      | _ =>
+        throwUnsupportedSyntax
+    erase := fun _ => throwError "Hypothesis operations cannot be erased by declaration"
+  }
 
 end Inclusion

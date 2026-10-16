@@ -17,13 +17,13 @@ local instance : Category (Type u) where
   comp_id _ := rfl
   assoc _ _ _ := rfl
 
-example {f g : Nat ⟶ Bool}: f = g → (f ≫ 𝟙 Bool) = (g ≫ 𝟙 Bool) := by
+example {f g : Nat ⟶ Bool} : f = g → (f ≫ 𝟙 Bool) = (g ≫ 𝟙 Bool) := by
   with_panel_widgets [GoalTypePanel]
     intro h
     exact h
 
-example {fButActuallyTheNameIsReallyLong g : Nat ⟶ Bool}: fButActuallyTheNameIsReallyLong = g →
-    fButActuallyTheNameIsReallyLong = (g ≫ 𝟙 Bool) := by
+example {fButActuallyTheNameIsReallyLong g : Nat ⟶ Bool}
+    : fButActuallyTheNameIsReallyLong = g → fButActuallyTheNameIsReallyLong = (g ≫ 𝟙 Bool) := by
   with_panel_widgets [GoalTypePanel]
     intro h
     conv =>
@@ -33,9 +33,8 @@ example {fButActuallyTheNameIsReallyLong g : Nat ⟶ Bool}: fButActuallyTheNameI
     rfl
 
 -- from Sina Hazratpour
-example {X Y Z : Type} {f g : X ⟶ Y} {k : Y ⟶ Y} {f' : Y ⟶ Z} {i : X ⟶ Z}
-    (h' : g ≫ f' = i) :
-    (f ≫ k) = g → ((f ≫ k) ≫ f') = (g ≫ 𝟙 Y ≫ f') := by
+example {X Y Z : Type} {f g : X ⟶ Y} {k : Y ⟶ Y} {f' : Y ⟶ Z} {i : X ⟶ Z} (h' : g ≫ f' = i)
+    : (f ≫ k) = g → ((f ≫ k) ≫ f') = (g ≫ 𝟙 Y ≫ f') := by
   with_panel_widgets [GoalTypePanel]
     intro h
     rw [
@@ -45,11 +44,8 @@ example {X Y Z : Type} {f g : X ⟶ Y} {k : Y ⟶ Y} {f' : Y ⟶ Z} {i : X ⟶ Z
       Category.comp_id g, h'
     ]
 
-example {X Y Z : Type} {f i : X ⟶ Y}
-    {g j : Y ⟶ Z} {h : X ⟶ Z} :
-    h = f ≫ g →
-    i ≫ j = h →
-    f ≫ g = i ≫ j := by
+example {X Y Z : Type} {f i : X ⟶ Y} {g j : Y ⟶ Z} {h : X ⟶ Z}
+    : h = f ≫ g → i ≫ j = h → f ≫ g = i ≫ j := by
   with_panel_widgets [SelectionPanel]
     intro h₁ h₂
     rw [← h₁, h₂]

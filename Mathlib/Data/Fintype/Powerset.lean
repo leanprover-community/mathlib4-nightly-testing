@@ -14,7 +14,6 @@ public import Mathlib.Data.Fintype.EquivFin
 
 public section
 
-
 variable {α : Type*}
 
 open Finset
@@ -29,13 +28,15 @@ theorem Fintype.card_finset [Fintype α] : Fintype.card (Finset α) = 2 ^ Fintyp
 namespace Finset
 variable [Fintype α] {s : Finset α} {k : ℕ}
 
-@[simp] lemma powerset_univ : (univ : Finset α).powerset = univ :=
-  coe_injective <| by simp [-coe_eq_univ]
+@[simp]
+lemma powerset_univ : (univ : Finset α).powerset = univ := coe_injective <| by simp [-coe_eq_univ]
 
-lemma filter_subset_univ [DecidableEq α] (s : Finset α) :
-    ({t | t ⊆ s} : Finset _) = powerset s := by ext; simp
+lemma filter_subset_univ [DecidableEq α] (s : Finset α)
+    : ({t | t ⊆ s} : Finset _) = powerset s := by
+  ext; simp
 
-@[simp] lemma powerset_eq_univ : s.powerset = univ ↔ s = univ := by
+@[simp]
+lemma powerset_eq_univ : s.powerset = univ ↔ s = univ := by
   rw [← Finset.powerset_univ, powerset_inj]
 
 lemma mem_powersetCard_univ : s ∈ powersetCard k (univ : Finset α) ↔ #s = k :=
@@ -43,21 +44,24 @@ lemma mem_powersetCard_univ : s ∈ powersetCard k (univ : Finset α) ↔ #s = k
 
 variable (α)
 
-@[simp] lemma univ_filter_card_eq (k : ℕ) :
-    ({s | #s = k} : Finset (Finset α)) = univ.powersetCard k := by ext; simp
+@[simp]
+lemma univ_filter_card_eq (k : ℕ) : ({s | #s = k} : Finset (Finset α)) = univ.powersetCard k := by
+  ext; simp
 
 end Finset
 
 @[simp]
-theorem Fintype.card_finset_len [Fintype α] (k : ℕ) :
-    Fintype.card { s : Finset α // #s = k } = Nat.choose (Fintype.card α) k := by
+theorem Fintype.card_finset_len [Fintype α] (k : ℕ)
+    : Fintype.card {s : Finset α // #s = k} = Nat.choose (Fintype.card α) k := by
   simp [Fintype.subtype_card, Finset.card_univ]
 
-instance Set.fintype [Fintype α] : Fintype (Set α) :=
-  ⟨(@Finset.univ (Finset α) _).map coeEmb.1, fun s => by
+instance Set.fintype [Fintype α] : Fintype (Set α) := ⟨
+  (@Finset.univ (Finset α) _).map coeEmb.1,
+  fun s => by
     classical
     refine mem_map.2 ⟨({a | a ∈ s} : Finset _), Finset.mem_univ _, (coe_filter _ _).trans ?_⟩
-    simp⟩
+    simp
+⟩
 
 -- Not to be confused with `Set.Finite`, the predicate
 instance Set.instFinite [Finite α] : Finite (Set α) := by

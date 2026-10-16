@@ -6,7 +6,6 @@ Authors: Anne Baanen
 module
 
 public meta import Lean.Meta.Tactic.Simp.Attr
-
 import Mathlib.Init
 
 /-!
@@ -19,8 +18,10 @@ public meta section
 
 open Lean Meta
 
-/-- `@[reduce_mod_char]` is an attribute that tags lemmas for preprocessing and cleanup in the
-`reduce_mod_char` tactic -/
+/--
+`@[reduce_mod_char]` is an attribute that tags lemmas for preprocessing and cleanup in the
+`reduce_mod_char` tactic
+-/
 initialize reduceModCharExt : SimpExtension ←
   registerSimpAttr `reduce_mod_char
     "lemmas for preprocessing and cleanup in the `reduce_mod_char` tactic"

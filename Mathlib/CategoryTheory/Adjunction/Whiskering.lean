@@ -18,7 +18,6 @@ and the functor categories `E ⥤ C` and `D ⥤ C`.
 
 @[expose] public section
 
-
 namespace CategoryTheory.Adjunction
 
 open CategoryTheory CategoryTheory.Functor
@@ -26,32 +25,34 @@ open CategoryTheory CategoryTheory.Functor
 variable (C : Type*) {D E : Type*} [Category* C] [Category* D] [Category* E] {F : D ⥤ E} {G : E ⥤ D}
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Given an adjunction `F ⊣ G`, this provides the natural adjunction
-  `(whiskeringRight C _ _).obj F ⊣ (whiskeringRight C _ _).obj G`. -/
+/--
+Given an adjunction `F ⊣ G`, this provides the natural adjunction
+`(whiskeringRight C _ _).obj F ⊣ (whiskeringRight C _ _).obj G`.
+-/
 @[simps! unit_app_app counit_app_app]
-protected def whiskerRight (adj : F ⊣ G) :
-    (whiskeringRight C D E).obj F ⊣ (whiskeringRight C E D).obj G where
-  unit :=
-    { app := fun X =>
-        (rightUnitor _).inv ≫ whiskerLeft X adj.unit ≫ (associator _ _ _).inv
-      naturality := by intros; ext; simp }
-  counit :=
-    { app := fun X =>
-        (associator _ _ _).hom ≫ whiskerLeft X adj.counit ≫ (rightUnitor _).hom
-      naturality := by intros; ext; simp }
+protected def whiskerRight (adj : F ⊣ G)
+    : (whiskeringRight C D E).obj F ⊣ (whiskeringRight C E D).obj G where
+  unit := {
+    app := fun X => (rightUnitor _).inv ≫ whiskerLeft X adj.unit ≫ (associator _ _ _).inv
+    naturality := by intros; ext; simp
+  }
+  counit := {
+    app := fun X => (associator _ _ _).hom ≫ whiskerLeft X adj.counit ≫ (rightUnitor _).hom
+    naturality := by intros; ext; simp
+  }
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Given an adjunction `F ⊣ G`, this provides the natural adjunction
-  `(whiskeringLeft _ _ C).obj G ⊣ (whiskeringLeft _ _ C).obj F`. -/
+/--
+Given an adjunction `F ⊣ G`, this provides the natural adjunction
+`(whiskeringLeft _ _ C).obj G ⊣ (whiskeringLeft _ _ C).obj F`.
+-/
 @[simps! unit_app_app counit_app_app]
-protected def whiskerLeft (adj : F ⊣ G) :
-    (whiskeringLeft E D C).obj G ⊣ (whiskeringLeft D E C).obj F where
-  unit :=
-    { app := fun X =>
-        (leftUnitor _).inv ≫ whiskerRight adj.unit X ≫ (associator _ _ _).hom }
-  counit :=
-    { app := fun X =>
-        (associator _ _ _).inv ≫ whiskerRight adj.counit X ≫ (leftUnitor _).hom }
+protected def whiskerLeft (adj : F ⊣ G)
+    : (whiskeringLeft E D C).obj G ⊣ (whiskeringLeft D E C).obj F where
+  unit := { app := fun X => (leftUnitor _).inv ≫ whiskerRight adj.unit X ≫ (associator _ _ _).hom }
+  counit := {
+    app := fun X => (associator _ _ _).inv ≫ whiskerRight adj.counit X ≫ (leftUnitor _).hom
+  }
   left_triangle_components X := by ext; simp [← X.map_comp]
   right_triangle_components X := by ext; simp [← X.map_comp]
 

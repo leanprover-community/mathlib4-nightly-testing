@@ -29,21 +29,26 @@ namespace SSet
 
 variable (X : SSet.{u})
 
-/-- The canonical splitting of a simplicial set that is given
-by the nondegenerate simplices. -/
+/--
+The canonical splitting of a simplicial set that is given
+by the nondegenerate simplices.
+-/
 @[simps]
 noncomputable def splitting : X.Splitting where
   N n := X.nonDegenerate n
   ι n := ↾Subtype.val
-  isColimit' := fun ⟨⟨n⟩⟩ ↦ Nonempty.some (by
-    rw [← Limits.Cofan.isColimit_cofanTypes_iff]
-    refine CofanTypes.isColimit_mk _ (fun x ↦ ?_) (fun ⟨⟨⟨m⟩⟩, f, _⟩ x y h ↦ ?_)
-      (fun ⟨⟨⟨m⟩⟩, f, _⟩ ⟨⟨⟨p⟩⟩, g, _⟩ x y h ↦ ?_)
-    · obtain ⟨m, f, _, y, rfl⟩ := X.exists_nonDegenerate x
-      exact ⟨.mk f, y, rfl⟩
-    · exact unique_nonDegenerate_simplex _ _ _ _ rfl _ _ h
-    · obtain rfl : m = p := unique_nonDegenerate_dim _ _ _ _ rfl _ _ h
-      obtain rfl : f = g := unique_nonDegenerate_map _ _ _ _ rfl _ _ h
-      dsimp)
+  isColimit' := fun ⟨⟨n⟩⟩ ↦
+    Nonempty.some (by
+      rw [← Limits.Cofan.isColimit_cofanTypes_iff]
+      refine CofanTypes.isColimit_mk _
+        (fun x ↦ ?_)
+        (fun ⟨⟨⟨m⟩⟩, f, _⟩ x y h ↦ ?_)
+        (fun ⟨⟨⟨m⟩⟩, f, _⟩ ⟨⟨⟨p⟩⟩, g, _⟩ x y h ↦ ?_)
+      · obtain ⟨m, f, _, y, rfl⟩ := X.exists_nonDegenerate x
+        exact ⟨.mk f, y, rfl⟩
+      · exact unique_nonDegenerate_simplex _ _ _ _ rfl _ _ h
+      · obtain rfl : m = p := unique_nonDegenerate_dim _ _ _ _ rfl _ _ h
+        obtain rfl : f = g := unique_nonDegenerate_map _ _ _ _ rfl _ _ h
+        dsimp)
 
 end SSet

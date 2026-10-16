@@ -39,28 +39,29 @@ section
 
 variable (R : Type u) {A : Type v} [CommRing R] [Ring A] [Algebra R A]
 
-/-- An element of an R-algebra is algebraic over R if it is a root of a nonzero polynomial
-with coefficients in R. -/
+/--
+An element of an R-algebra is algebraic over R if it is a root of a nonzero polynomial
+with coefficients in R.
+-/
 @[stacks 09GC "Algebraic elements"]
-def IsAlgebraic (x : A) : Prop :=
-  ∃ p : R[X], p ≠ 0 ∧ aeval x p = 0
+def IsAlgebraic (x : A) : Prop := ∃ p : R[X], p ≠ 0 ∧ aeval x p = 0
 
 /-- An element of an R-algebra is transcendental over R if it is not algebraic over R. -/
-def Transcendental (x : A) : Prop :=
-  ¬IsAlgebraic R x
+def Transcendental (x : A) : Prop := ¬ IsAlgebraic R x
 
 variable {R}
 
-/-- An element `x` is transcendental over `R` if and only if for any polynomial `p`,
-`Polynomial.aeval x p = 0` implies `p = 0`. This is similar to `algebraicIndependent_iff`. -/
-theorem transcendental_iff {x : A} :
-    Transcendental R x ↔ ∀ p : R[X], aeval x p = 0 → p = 0 := by
+/--
+An element `x` is transcendental over `R` if and only if for any polynomial `p`,
+`Polynomial.aeval x p = 0` implies `p = 0`. This is similar to `algebraicIndependent_iff`.
+-/
+theorem transcendental_iff {x : A} : Transcendental R x ↔ ∀ p : R[X], aeval x p = 0 → p = 0 := by
   rw [Transcendental, IsAlgebraic, not_exists]
-  congr! 1; tauto
+  congr! 1
+  tauto
 
 /-- A subalgebra is algebraic if all its elements are algebraic. -/
-protected def Subalgebra.IsAlgebraic (S : Subalgebra R A) : Prop :=
-  ∀ x ∈ S, IsAlgebraic R x
+protected def Subalgebra.IsAlgebraic (S : Subalgebra R A) : Prop := ∀ x ∈ S, IsAlgebraic R x
 
 variable (R A) in
 /-- An algebra is algebraic if all its elements are algebraic. -/
@@ -84,13 +85,13 @@ lemma Algebra.isAlgebraic_def : Algebra.IsAlgebraic R A ↔ ∀ x : A, IsAlgebra
 lemma Algebra.transcendental_def : Algebra.Transcendental R A ↔ ∃ x : A, Transcendental R x :=
   ⟨fun ⟨h⟩ ↦ h, fun h ↦ ⟨h⟩⟩
 
-theorem Algebra.transcendental_iff_not_isAlgebraic :
-    Algebra.Transcendental R A ↔ ¬ Algebra.IsAlgebraic R A := by
+theorem Algebra.transcendental_iff_not_isAlgebraic
+    : Algebra.Transcendental R A ↔ ¬ Algebra.IsAlgebraic R A := by
   simp [isAlgebraic_def, transcendental_def, Transcendental]
 
 /-- A subalgebra is algebraic if and only if it is algebraic as an algebra. -/
-theorem Subalgebra.isAlgebraic_iff (S : Subalgebra R A) :
-    S.IsAlgebraic ↔ Algebra.IsAlgebraic R S := by
+theorem Subalgebra.isAlgebraic_iff (S : Subalgebra R A)
+    : S.IsAlgebraic ↔ Algebra.IsAlgebraic R S := by
   delta Subalgebra.IsAlgebraic
   rw [Subtype.forall', Algebra.isAlgebraic_def]
   refine forall_congr' fun x => exists_congr fun p => and_congr Iff.rfl ?_

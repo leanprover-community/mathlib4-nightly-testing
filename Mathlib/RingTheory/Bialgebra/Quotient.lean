@@ -47,35 +47,36 @@ def comulAlgHom : (A ⧸ I) →ₐ[R] (A ⧸ I) ⊗[R] (A ⧸ I) :=
       (Bialgebra.comulAlgHom R A))
     (Submodule.IsCoideal.map_mkQ_comul_eq_zero (I := I.restrictScalars R))
 
-lemma counit_comp_mkₐ :
-    (counitAlgHom I).toLinearMap ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap = counit := rfl
+lemma counit_comp_mkₐ
+    : (counitAlgHom I).toLinearMap ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap = counit :=
+  rfl
 
-lemma comul_comp_mkₐ :
-    (comulAlgHom (R := R) I).toLinearMap ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap =
-      map (Ideal.Quotient.mkₐ R I).toLinearMap (Ideal.Quotient.mkₐ R I).toLinearMap ∘ₗ comul := rfl
+lemma comul_comp_mkₐ
+    : (comulAlgHom (R := R) I).toLinearMap ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap
+      = map (Ideal.Quotient.mkₐ R I).toLinearMap (Ideal.Quotient.mkₐ R I).toLinearMap ∘ₗ comul :=
+  rfl
 
 /-- The bialgebra structure on `A ⧸ I` when `I` is a biideal. -/
 instance : Bialgebra R (A ⧸ I) := by
-  refine .ofAlgHom (comulAlgHom I) (counitAlgHom I) ?_ ?_ ?_ <;>
-    refine Ideal.Quotient.algHom_ext R (AlgHom.toLinearMap_injective ?_) <;>
-    simp only [coassoc_simps, AlgHom.comp_toLinearMap, Algebra.TensorProduct.toLinearMap_map,
+  refine .ofAlgHom (comulAlgHom I) (counitAlgHom I) ?_ ?_ ?_
+    <;> refine Ideal.Quotient.algHom_ext R (AlgHom.toLinearMap_injective ?_)
+    <;> simp only [coassoc_simps, AlgHom.comp_toLinearMap, Algebra.TensorProduct.toLinearMap_map,
       comul_comp_mkₐ, counit_comp_mkₐ]
   · simp [coassoc_simps]
   · rw [CoassocSimps.map_counit_comp_comul_left]; rfl
   · rw [CoassocSimps.map_counit_comp_comul_right]; rfl
 
-@[simp] lemma counit_mk (a : A) :
-    counit (R := R) (Ideal.Quotient.mk I a) = counit a := rfl
+@[simp] lemma counit_mk (a : A) : counit (R := R) (Ideal.Quotient.mk I a) = counit a := rfl
 
-@[simp] lemma comul_mk (a : A) :
-    comul (R := R) (Ideal.Quotient.mk I a) =
-      map (Ideal.Quotient.mkₐ R I).toLinearMap (Ideal.Quotient.mkₐ R I).toLinearMap (comul a) :=
+@[simp]
+lemma comul_mk (a : A)
+    : comul (R := R) (Ideal.Quotient.mk I a)
+      = map (Ideal.Quotient.mkₐ R I).toLinearMap (Ideal.Quotient.mkₐ R I).toLinearMap (comul a) :=
   rfl
 
 /-- `Ideal.Quotient.mkₐ` as a bialgebra homomorphism. -/
 def mkBialgHom : A →ₐc[R] A ⧸ I := .ofAlgHom (Ideal.Quotient.mkₐ R I) rfl rfl
 
-@[simp] lemma mkBialgHom_apply (a : A) :
-    mkBialgHom (R := R) I a = Ideal.Quotient.mk I a := rfl
+@[simp] lemma mkBialgHom_apply (a : A) : mkBialgHom (R := R) I a = Ideal.Quotient.mk I a := rfl
 
 end Bialgebra.Quotient

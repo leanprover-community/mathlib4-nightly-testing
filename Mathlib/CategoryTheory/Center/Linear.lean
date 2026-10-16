@@ -49,48 +49,57 @@ section
 variable {R C}
 variable (φ : R →+* CatCenter C) (X Y : C)
 
-/-- The scalar multiplication by `R` on the type `X ⟶ Y` of morphisms in
-a category `C` equipped with a ring morphism `R →+* CatCenter C`. -/
+/--
+The scalar multiplication by `R` on the type `X ⟶ Y` of morphisms in
+a category `C` equipped with a ring morphism `R →+* CatCenter C`.
+-/
 @[instance_reducible]
 def smulOfRingMorphism : SMul R (X ⟶ Y) where
   smul a f := (φ a).app X ≫ f
 
 variable {X Y}
 
-lemma smulOfRingMorphism_smul_eq (a : R) (f : X ⟶ Y) :
-    letI := smulOfRingMorphism φ X Y
-    a • f = (φ a).app X ≫ f := rfl
+lemma smulOfRingMorphism_smul_eq (a : R) (f : X ⟶ Y)
+    : letI := smulOfRingMorphism φ X Y
+      a • f = (φ a).app X ≫ f :=
+  rfl
 
 /-- `a • f = f ≫ (φ a).app Y`. -/
-lemma smulOfRingMorphism_smul_eq' (a : R) (f : X ⟶ Y) :
-    letI := smulOfRingMorphism φ X Y
-    a • f = f ≫ (φ a).app Y := by
+lemma smulOfRingMorphism_smul_eq' (a : R) (f : X ⟶ Y)
+    : letI := smulOfRingMorphism φ X Y
+      a • f = f ≫ (φ a).app Y := by
   rw [smulOfRingMorphism_smul_eq]
   exact ((φ a).naturality f).symm
 
 variable (X Y)
 
-/-- The `R`-module structure on the type `X ⟶ Y` of morphisms in
-a category `C` equipped with a ring morphism `R →+* CatCenter C`. -/
+/--
+The `R`-module structure on the type `X ⟶ Y` of morphisms in
+a category `C` equipped with a ring morphism `R →+* CatCenter C`.
+-/
 @[instance_reducible]
 def homModuleOfRingMorphism : Module R (X ⟶ Y) := by
   letI := smulOfRingMorphism φ X Y
-  exact
-  { one_smul _ := by simp [smulOfRingMorphism_smul_eq]
+  exact {
+    one_smul _ := by simp [smulOfRingMorphism_smul_eq]
     mul_smul _ _ _ := by simp [smulOfRingMorphism_smul_eq, CatCenter.mul_app]
     smul_zero _ := by simp only [smulOfRingMorphism_smul_eq, comp_zero]
     zero_smul _ := by simp [smulOfRingMorphism_smul_eq]
     smul_add _ _ := by simp [smulOfRingMorphism_smul_eq]
-    add_smul _ _ _ := by simp [smulOfRingMorphism_smul_eq] }
+    add_smul _ _ _ := by simp [smulOfRingMorphism_smul_eq]
+  }
 
-/-- The `R`-linear structure on a preadditive category `C` equipped with
-a ring morphism `R →+* CatCenter C`. -/
+/--
+The `R`-linear structure on a preadditive category `C` equipped with
+a ring morphism `R →+* CatCenter C`.
+-/
 @[instance_reducible]
 def ofRingMorphism : Linear R C := by
   letI := homModuleOfRingMorphism φ
-  exact
-    { smul_comp := fun X Y Z r f g => by simp only [smulOfRingMorphism_smul_eq, assoc]
-      comp_smul := fun X Y Z f r g => by simp only [smulOfRingMorphism_smul_eq', assoc] }
+  exact {
+    smul_comp := fun X Y Z r f g => by simp only [smulOfRingMorphism_smul_eq, assoc]
+    comp_smul := fun X Y Z f r g => by simp only [smulOfRingMorphism_smul_eq', assoc]
+  }
 
 end
 

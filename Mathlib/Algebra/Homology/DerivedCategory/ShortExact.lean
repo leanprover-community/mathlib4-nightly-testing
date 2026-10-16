@@ -29,56 +29,61 @@ open CategoryTheory Category Pretriangulated
 
 namespace DerivedCategory
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasDerivedCategory.{w} C]
+variable
+  {C : Type u} [Category.{v} C] [Abelian C] [HasDerivedCategory.{w} C]
   {S : ShortComplex (CochainComplex C ℤ)} (hS : S.ShortExact)
 
-/-- The connecting homomorphism `Q.obj (S.X₃) ⟶ (Q.obj S.X₁)⟦(1 : ℤ)⟧`
+/--
+The connecting homomorphism `Q.obj (S.X₃) ⟶ (Q.obj S.X₁)⟦(1 : ℤ)⟧`
 in the derived category when `S` is a short exact short complex of
-cochain complexes in an abelian category. -/
-noncomputable def triangleOfSESδ :
-    Q.obj (S.X₃) ⟶ (Q.obj S.X₁)⟦(1 : ℤ)⟧ :=
+cochain complexes in an abelian category.
+-/
+noncomputable def triangleOfSESδ : Q.obj (S.X₃) ⟶ (Q.obj S.X₁)⟦(1 : ℤ)⟧ :=
   have := CochainComplex.mappingCone.quasiIso_descShortComplex hS
-  inv (Q.map (CochainComplex.mappingCone.descShortComplex S)) ≫
-    Q.map (CochainComplex.mappingCone.triangle S.f).mor₃ ≫
-    (Q.commShiftIso (1 : ℤ)).hom.app S.X₁
+  inv (Q.map (CochainComplex.mappingCone.descShortComplex S))
+    ≫ Q.map (CochainComplex.mappingCone.triangle S.f).mor₃ ≫ (Q.commShiftIso (1 : ℤ)).hom.app S.X₁
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-lemma descShortComplex_triangleOfSESδ :
-    dsimp% Q.map (CochainComplex.mappingCone.descShortComplex S) ≫ triangleOfSESδ hS =
-    Q.map (CochainComplex.mappingCone.triangle S.f).mor₃ ≫
-      (Functor.commShiftIso Q 1).hom.app S.X₁ := by
+lemma descShortComplex_triangleOfSESδ
+    : dsimp% Q.map (CochainComplex.mappingCone.descShortComplex S) ≫ triangleOfSESδ hS =
+      Q.map (CochainComplex.mappingCone.triangle S.f).mor₃ ≫
+        (Functor.commShiftIso Q 1).hom.app S.X₁ := by
   simp [triangleOfSESδ]
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
-lemma triangleOfSESδ_naturality {S₁ S₂ : ShortComplex (CochainComplex C ℤ)}
-    (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact) (f : S₁ ⟶ S₂) :
-    triangleOfSESδ hS₁ ≫ (Q.map f.τ₁)⟦1⟧' = Q.map f.τ₃ ≫ triangleOfSESδ hS₂ := by
-  simp only [triangleOfSESδ, Category.assoc,
-    IsIso.inv_comp_eq]
+lemma triangleOfSESδ_naturality
+    {S₁ S₂ : ShortComplex (CochainComplex C ℤ)}
+    (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact) (f : S₁ ⟶ S₂)
+    : triangleOfSESδ hS₁ ≫ (Q.map f.τ₁)⟦1⟧' = Q.map f.τ₃ ≫ triangleOfSESδ hS₂ := by
+  simp only [triangleOfSESδ, Category.assoc, IsIso.inv_comp_eq]
   rw [← Functor.comp_map, ← (Q.commShiftIso (1 : ℤ)).hom.naturality, ← Category.assoc,
-    ← Category.assoc, ← Category.assoc, ← Category.assoc, ← Iso.app_hom,
-    Iso.cancel_iso_hom_right, ← Q.map_comp]
+    ← Category.assoc, ← Category.assoc, ← Category.assoc, ← Iso.app_hom, Iso.cancel_iso_hom_right,
+    ← Q.map_comp]
   simp only [Functor.comp_map, ← CochainComplex.mappingCone.descShortComplex_naturality f,
     Functor.map_comp, Category.assoc, IsIso.hom_inv_id, Category.comp_id]
   rw [← Q.map_comp, ← Q.map_comp]
   congr 1
   exact (CochainComplex.mappingCone.triangleMap S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm).comm₃
 
-/-- The distinguished triangle in the derived category associated to a short
-exact sequence of cochain complexes. -/
+/--
+The distinguished triangle in the derived category associated to a short
+exact sequence of cochain complexes.
+-/
 @[simps!]
 noncomputable def triangleOfSES : Triangle (DerivedCategory C) :=
   Triangle.mk (Q.map S.f) (Q.map S.g) (triangleOfSESδ hS)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The triangle `triangleOfSES` attached to a short exact sequence `S` of cochain
+/--
+The triangle `triangleOfSES` attached to a short exact sequence `S` of cochain
 complexes is isomorphic to the standard distinguished triangle associated to
-the morphism `S.f`. -/
-noncomputable def triangleOfSESIso :
-    triangleOfSES hS ≅ Q.mapTriangle.obj (CochainComplex.mappingCone.triangle S.f) := by
+the morphism `S.f`.
+-/
+noncomputable def triangleOfSESIso
+    : triangleOfSES hS ≅ Q.mapTriangle.obj (CochainComplex.mappingCone.triangle S.f) := by
   have := CochainComplex.mappingCone.quasiIso_descShortComplex hS
   refine Iso.symm (Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _)
     (asIso (Q.map (CochainComplex.mappingCone.descShortComplex S))) ?_ ?_ ?_)
@@ -89,15 +94,15 @@ noncomputable def triangleOfSESIso :
   · dsimp [triangleOfSESδ]
     rw [CategoryTheory.Functor.map_id, comp_id, IsIso.hom_inv_id_assoc]
 
-lemma triangleOfSES_distinguished :
-    triangleOfSES hS ∈ distTriang (DerivedCategory C) := by
+lemma triangleOfSES_distinguished : triangleOfSES hS ∈ distTriang (DerivedCategory C) := by
   rw [mem_distTriang_iff]
   exact ⟨_, _, S.f, ⟨triangleOfSESIso hS⟩⟩
 
 section map
 
-variable {S₁ S₂ : ShortComplex (CochainComplex C ℤ)} (h₁ : S₁.ShortExact) (h₂ : S₂.ShortExact)
-  (f : S₁ ⟶ S₂)
+variable
+  {S₁ S₂ : ShortComplex (CochainComplex C ℤ)}
+  (h₁ : S₁.ShortExact) (h₂ : S₂.ShortExact) (f : S₁ ⟶ S₂)
 
 set_option backward.defeqAttrib.useBackward true in
 /--
@@ -114,10 +119,10 @@ noncomputable def triangleOfSES.map : triangleOfSES h₁ ⟶ triangleOfSES h₂ 
   comm₃ := by
     dsimp [triangleOfSES, triangleOfSESδ]
     rw [assoc, assoc, IsIso.inv_comp_eq,
-      ← CochainComplex.mappingCone.map_descShortComplex_map_assoc,
-      IsIso.hom_inv_id_assoc, ← Functor.commShiftIso_hom_naturality]
-    exact (CochainComplex.mappingCone.triangleMap S₁.f S₂.f f.τ₁ f.τ₂
-      f.comm₁₂.symm).comm₃_map_assoc _ _
+      ← CochainComplex.mappingCone.map_descShortComplex_map_assoc, IsIso.hom_inv_id_assoc,
+      ← Functor.commShiftIso_hom_naturality]
+    exact (CochainComplex.mappingCone.triangleMap S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm).comm₃_map_assoc
+      _ _
 
 end map
 

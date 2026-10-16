@@ -26,23 +26,24 @@ open CategoryTheory Limits
 
 namespace SSet.Subcomplex
 
-/-- The evaluation functor `X.Subcomplex ⥤ Set (X.obj j)` when `X : SSet`
-and `j : SimplexCategoryᵒᵖ`. -/
+/--
+The evaluation functor `X.Subcomplex ⥤ Set (X.obj j)` when `X : SSet`
+and `j : SimplexCategoryᵒᵖ`.
+-/
 @[simps]
-def evaluation (X : SSet.{u}) (j : SimplexCategoryᵒᵖ) :
-    X.Subcomplex ⥤ Set (X.obj j) where
+def evaluation (X : SSet.{u}) (j : SimplexCategoryᵒᵖ) : X.Subcomplex ⥤ Set (X.obj j) where
   obj A := A.obj j
   map f := CategoryTheory.homOfLE (leOfHom f j)
 
-instance {J : Type*} [Category* J] {X : SSet.{u}} [IsFilteredOrEmpty J] :
-    PreservesColimitsOfShape J (Subcomplex.toSSetFunctor (X := X)) where
+instance {J : Type*} [Category* J] {X : SSet.{u}} [IsFilteredOrEmpty J]
+    : PreservesColimitsOfShape J (Subcomplex.toSSetFunctor (X := X)) where
   preservesColimit {F} :=
     preservesColimit_of_preserves_colimit_cocone
       (Preorder.colimitCoconeOfIsLUB F isLUB_iSup).isColimit
-        (evaluationJointlyReflectsColimits _ (fun j ↦ IsColimit.ofIsoColimit
+      (evaluationJointlyReflectsColimits _ (fun j ↦
+        IsColimit.ofIsoColimit
           (isColimitOfPreserves Set.functorToTypes
-              ((Preorder.colimitCoconeOfIsLUB (F ⋙ evaluation _ j) isLUB_iSup).isColimit))
-                (Cocone.ext (Set.functorToTypes.mapIso
-                  (CategoryTheory.eqToIso (by cat_disch))))))
+            ((Preorder.colimitCoconeOfIsLUB (F ⋙ evaluation _ j) isLUB_iSup).isColimit))
+          (Cocone.ext (Set.functorToTypes.mapIso (CategoryTheory.eqToIso (by cat_disch))))))
 
 end SSet.Subcomplex

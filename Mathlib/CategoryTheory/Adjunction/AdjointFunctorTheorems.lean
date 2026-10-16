@@ -6,7 +6,6 @@ Authors: Bhavik Mehta
 module
 
 public import Mathlib.CategoryTheory.Generator.Basic
-
 import Mathlib.CategoryTheory.Limits.ConeCategory
 import Mathlib.CategoryTheory.Limits.Constructions.WeaklyInitial
 import Mathlib.CategoryTheory.Subobject.Comma
@@ -40,7 +39,6 @@ Finally, we prove the following corollaries of the special adjoint functor theor
 
 @[expose] public section
 
-
 universe w v v₁ u u₁ u'
 
 namespace CategoryTheory
@@ -49,7 +47,8 @@ open Limits
 
 variable {C : Type u} [Category.{v} C]
 
-/-- The functor `G : D ⥤ C` satisfies the *solution set condition* if for every `A : C`, there is a
+/--
+The functor `G : D ⥤ C` satisfies the *solution set condition* if for every `A : C`, there is a
 family of morphisms `{f_i : A ⟶ G (B_i) // i ∈ ι}` such that given any morphism `h : A ⟶ G X`,
 there is some `i ∈ ι` such that `h` factors through `f_i`.
 
@@ -58,9 +57,9 @@ universe of morphisms of the category: this is the "smallness" condition which a
 adjoint functor theorem to go through.
 -/
 def SolutionSetCondition {D : Type u₁} [Category.{v₁} D] (G : D ⥤ C) : Prop :=
-  ∀ A : C,
-    ∃ (ι : Type w) (B : ι → D) (f : ∀ i : ι, A ⟶ G.obj (B i)),
-      ∀ (X) (h : A ⟶ G.obj X), ∃ (i : ι) (g : B i ⟶ X), f i ≫ G.map g = h
+  ∀ A : C, ∃ (ι : Type w) (B : ι → D) (f : ∀ i : ι, A ⟶ G.obj (B i)), ∀ (X) (h : A ⟶ G.obj X),
+    ∃ (i : ι) (g : B i ⟶ X),
+      f i ≫ G.map g = h
 
 section GeneralAdjointFunctorTheorem
 
@@ -76,12 +75,15 @@ theorem solutionSetCondition_of_isRightAdjoint [G.IsRightAdjoint] : SolutionSetC
   refine ⟨PUnit.unit, ((Adjunction.ofIsRightAdjoint G).homEquiv _ _).symm h, ?_⟩
   rw [← Adjunction.homEquiv_unit, Equiv.apply_symm_apply]
 
-/-- The general adjoint functor theorem says that if `G : D ⥤ C` preserves limits and `D` has them,
+/--
+The general adjoint functor theorem says that if `G : D ⥤ C` preserves limits and `D` has them,
 if `G` satisfies the solution set condition then `G` is a right adjoint.
 -/
-lemma isRightAdjoint_of_preservesLimits_of_solutionSetCondition [HasLimitsOfSize.{w, w} D]
-    [PreservesLimitsOfSize.{w, w} G] (hG : SolutionSetCondition.{w} G)
-    [LocallySmall.{w} D] : G.IsRightAdjoint := by
+lemma isRightAdjoint_of_preservesLimits_of_solutionSetCondition
+    [HasLimitsOfSize.{w, w} D] [PreservesLimitsOfSize.{w, w} G]
+    (hG : SolutionSetCondition.{w} G)
+    [LocallySmall.{w} D]
+    : G.IsRightAdjoint := by
   apply +allowSynthFailures isRightAdjointOfStructuredArrowInitials
   intro A
   choose ι B f g using hG A
@@ -99,28 +101,32 @@ section SpecialAdjointFunctorTheorem
 
 variable {D : Type u₁} [Category.{v₁} D]
 
-/-- The special adjoint functor theorem: if `G : D ⥤ C` preserves limits and `D` is complete,
+/--
+The special adjoint functor theorem: if `G : D ⥤ C` preserves limits and `D` is complete,
 well-powered and has a small coseparating set, then `G` has a left adjoint.
 -/
-lemma isRightAdjoint_of_preservesLimits_of_isCoseparating [HasLimitsOfSize.{w, w} D]
-    [LocallySmall.{w} C] [LocallySmall.{w} D] [WellPowered.{w} D]
+lemma isRightAdjoint_of_preservesLimits_of_isCoseparating
+    [HasLimitsOfSize.{w, w} D] [LocallySmall.{w} C] [LocallySmall.{w} D] [WellPowered.{w} D]
     {P : ObjectProperty D} [ObjectProperty.Small.{w} P]
-    (hP : P.IsCoseparating) (G : D ⥤ C) [PreservesLimitsOfSize.{w, w} G] :
-    G.IsRightAdjoint := by
+    (hP : P.IsCoseparating)
+    (G : D ⥤ C) [PreservesLimitsOfSize.{w, w} G]
+    : G.IsRightAdjoint := by
   have := hasFiniteLimits_of_hasLimitsOfSize D
   have := PreservesLimitsOfSize.preservesFiniteLimits G
   have (A : C) : HasInitial (StructuredArrow A G) :=
     hasInitial_of_isCoseparating (StructuredArrow.isCoseparating_inverseImage_proj A G hP)
   exact isRightAdjointOfStructuredArrowInitials _
 
-/-- The special adjoint functor theorem: if `F : C ⥤ D` preserves colimits and `C` is cocomplete,
+/--
+The special adjoint functor theorem: if `F : C ⥤ D` preserves colimits and `C` is cocomplete,
 well-copowered and has a small separating set, then `F` has a right adjoint.
 -/
-lemma isLeftAdjoint_of_preservesColimits_of_isSeparating [HasColimitsOfSize.{w, w} C]
-    [LocallySmall.{w} C] [LocallySmall.{w} D] [WellPowered.{w} Cᵒᵖ]
+lemma isLeftAdjoint_of_preservesColimits_of_isSeparating
+    [HasColimitsOfSize.{w, w} C] [LocallySmall.{w} C] [LocallySmall.{w} D] [WellPowered.{w} Cᵒᵖ]
     {P : ObjectProperty C} [ObjectProperty.Small.{w} P]
-    (h𝒢 : P.IsSeparating) (F : C ⥤ D) [PreservesColimitsOfSize.{w, w} F] :
-    F.IsLeftAdjoint :=
+    (h𝒢 : P.IsSeparating)
+    (F : C ⥤ D) [PreservesColimitsOfSize.{w, w} F]
+    : F.IsLeftAdjoint :=
   have := hasFiniteColimits_of_hasColimitsOfSize C
   have := PreservesColimitsOfSize.preservesFiniteColimits F
   have (A : D) : HasTerminal (CostructuredArrow F A) :=
@@ -131,38 +137,50 @@ end SpecialAdjointFunctorTheorem
 
 namespace Limits
 
-/-- A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
-    has a small coseparating set, then it is cocomplete. -/
+/--
+A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
+has a small coseparating set, then it is cocomplete.
+-/
 theorem hasColimits_of_hasLimits_of_isCoseparating
     [HasLimitsOfSize.{w, w} C] [LocallySmall.{w} C] [WellPowered.{w} C]
-    {P : ObjectProperty C} [ObjectProperty.Small.{w} P] (hP : P.IsCoseparating) :
-    HasColimitsOfSize.{w, w} C :=
-  { has_colimits_of_shape := fun _ _ =>
-      hasColimitsOfShape_iff_isRightAdjoint_const.2
-        (isRightAdjoint_of_preservesLimits_of_isCoseparating hP _) }
+    {P : ObjectProperty C} [ObjectProperty.Small.{w} P]
+    (hP : P.IsCoseparating)
+    : HasColimitsOfSize.{w, w} C := {
+  has_colimits_of_shape := fun _ _ =>
+    hasColimitsOfShape_iff_isRightAdjoint_const.2
+      (isRightAdjoint_of_preservesLimits_of_isCoseparating hP _)
+}
 
-/-- A consequence of the special adjoint functor theorem: if `C` is cocomplete, well-copowered and
-    has a small separating set, then it is complete. -/
+/--
+A consequence of the special adjoint functor theorem: if `C` is cocomplete, well-copowered and
+has a small separating set, then it is complete.
+-/
 theorem hasLimits_of_hasColimits_of_isSeparating
     [HasColimitsOfSize.{w, w} C] [LocallySmall.{w} C] [WellPowered.{w} Cᵒᵖ]
-    {P : ObjectProperty C} [ObjectProperty.Small.{w} P] (hP : P.IsSeparating) :
-    HasLimitsOfSize.{w, w} C :=
-  { has_limits_of_shape := fun _ _ =>
-      hasLimitsOfShape_iff_isLeftAdjoint_const.2
-        (isLeftAdjoint_of_preservesColimits_of_isSeparating hP _) }
+    {P : ObjectProperty C} [ObjectProperty.Small.{w} P]
+    (hP : P.IsSeparating)
+    : HasLimitsOfSize.{w, w} C := {
+  has_limits_of_shape := fun _ _ =>
+    hasLimitsOfShape_iff_isLeftAdjoint_const.2 (isLeftAdjoint_of_preservesColimits_of_isSeparating
+      hP _)
+}
 
-/-- A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
-    has a separator, then it is complete. -/
+/--
+A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
+has a separator, then it is complete.
+-/
 theorem hasLimits_of_hasColimits_of_hasSeparator
-    [HasColimitsOfSize.{w, w} C] [HasSeparator C] [LocallySmall.{w} C]
-    [WellPowered.{w} Cᵒᵖ] : HasLimitsOfSize.{w, w} C :=
+    [HasColimitsOfSize.{w, w} C] [HasSeparator C] [LocallySmall.{w} C] [WellPowered.{w} Cᵒᵖ]
+    : HasLimitsOfSize.{w, w} C :=
   hasLimits_of_hasColimits_of_isSeparating <| isSeparator_separator C
 
-/-- A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
-    has a coseparator, then it is cocomplete. -/
+/--
+A consequence of the special adjoint functor theorem: if `C` is complete, well-powered and
+has a coseparator, then it is cocomplete.
+-/
 theorem hasColimits_of_hasLimits_of_hasCoseparator
-    [HasLimitsOfSize.{w, w} C] [HasCoseparator C] [LocallySmall.{w} C]
-    [WellPowered.{w} C] : HasColimitsOfSize.{w, w} C :=
+    [HasLimitsOfSize.{w, w} C] [HasCoseparator C] [LocallySmall.{w} C] [WellPowered.{w} C]
+    : HasColimitsOfSize.{w, w} C :=
   hasColimits_of_hasLimits_of_isCoseparating <| isCoseparator_coseparator C
 
 end Limits

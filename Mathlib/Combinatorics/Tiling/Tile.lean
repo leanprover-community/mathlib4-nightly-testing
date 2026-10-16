@@ -62,7 +62,6 @@ be used with the theory here.
   conjecture*][GreenfeldTao2024]
 -/
 
-
 @[expose] public section
 
 namespace DiscreteTiling
@@ -73,13 +72,18 @@ open scoped Pointwise
 variable {G X ιₚ : Type*} [Group G] [MulAction G X]
 
 variable (G X) in
-/-- A `Prototile G X` describes a tile in `X`, copies of which under elements of `G` may be used in
+/--
+A `Prototile G X` describes a tile in `X`, copies of which under elements of `G` may be used in
 tilings. Two copies related by an element of `symmetries` are considered the same; two copies not so
-related, even if they have the same points, are considered distinct. -/
-@[ext] structure Prototile where
-  /-- The points in the prototile. Use the coercion to `Set X`, or `∈` on the `Prototile`, rather
-      than using `carrier` directly. The coercion cannot use `SetLike` because it does not satisfy
-      `coe_injective`. -/
+related, even if they have the same points, are considered distinct.
+-/
+@[ext]
+structure Prototile where
+  /--
+  The points in the prototile. Use the coercion to `Set X`, or `∈` on the `Prototile`, rather
+  than using `carrier` directly. The coercion cannot use `SetLike` because it does not satisfy
+  `coe_injective`.
+  -/
   carrier : Set X
   /-- The group elements considered to be symmetries of the prototile. -/
   symmetries : Subgroup (MulAction.stabilizer G carrier)
@@ -104,12 +108,17 @@ lemma coe_mk (c s) : (⟨c, s⟩ : Prototile G X) = c := rfl
 end Prototile
 
 variable (G X ιₚ) in
-/-- A `Protoset G X ιₚ` is an indexed family of `Prototile G X`. This is a separate definition
+/--
+A `Protoset G X ιₚ` is an indexed family of `Prototile G X`. This is a separate definition
 rather than just using plain functions to facilitate defining associated API that can be used with
-dot notation. -/
-@[ext] structure Protoset where
-  /-- The tiles in the protoset. Use the coercion to a function rather than using `tiles`
-      directly. -/
+dot notation.
+-/
+@[ext]
+structure Protoset where
+  /--
+  The tiles in the protoset. Use the coercion to a function rather than using `tiles`
+  directly.
+  -/
   tiles : ιₚ → Prototile G X
 
 namespace Protoset
@@ -124,22 +133,25 @@ attribute [coe] tiles
 
 lemma coe_mk (t) : (⟨t⟩ : Protoset G X ιₚ) = t := rfl
 
-@[simp, norm_cast] lemma coe_inj {ps₁ ps₂ : Protoset G X ιₚ} :
-    (ps₁ : ιₚ → Prototile G X) = ps₂ ↔ ps₁ = ps₂ :=
+@[simp, norm_cast]
+lemma coe_inj {ps₁ ps₂ : Protoset G X ιₚ} : (ps₁ : ιₚ → Prototile G X) = ps₂ ↔ ps₁ = ps₂ :=
   Protoset.ext_iff.symm
 
-lemma coe_injective : Injective (Protoset.tiles : Protoset G X ιₚ → ιₚ → Prototile G X) :=
-  fun _ _ ↦ coe_inj.1
+lemma coe_injective : Injective (Protoset.tiles : Protoset G X ιₚ → ιₚ → Prototile G X) := fun _ _ ↦
+  coe_inj.1
 
 end Protoset
 
 variable {ps : Protoset G X ιₚ}
 
 variable (ps) in
-/-- A `PlacedTile ps` is an image of a tile in the protoset `p` under an element of the group `G`.
+/--
+A `PlacedTile ps` is an image of a tile in the protoset `p` under an element of the group `G`.
 This is represented using a quotient so that images under group elements differing only by a
-symmetry of the tile are equal. -/
-@[ext] structure PlacedTile where
+symmetry of the tile are equal.
+-/
+@[ext]
+structure PlacedTile where
   /-- The index of the tile in the protoset. -/
   index : ιₚ
   /-- The group elements under which this tile is an image. -/
@@ -149,18 +161,24 @@ namespace PlacedTile
 
 instance [Nonempty ιₚ] : Nonempty (PlacedTile ps) := ⟨⟨Classical.arbitrary _, (1 : G)⟩⟩
 
-/-- An induction principle to deduce results for `PlacedTile` from those given an index and an
-element of `G`, used with `induction pt using PlacedTile.induction_on`. -/
-@[elab_as_elim] protected lemma induction_on {ppt : PlacedTile ps → Prop} (pt : PlacedTile ps)
-    (h : ∀ i : ιₚ, ∀ gx : G, ppt ⟨i, gx⟩) : ppt pt := by
+/--
+An induction principle to deduce results for `PlacedTile` from those given an index and an
+element of `G`, used with `induction pt using PlacedTile.induction_on`.
+-/
+@[elab_as_elim]
+protected lemma induction_on
+    {ppt : PlacedTile ps → Prop} (pt : PlacedTile ps) (h : ∀ i : ιₚ, ∀ gx : G, ppt ⟨i, gx⟩)
+    : ppt pt := by
   rcases pt with ⟨i, gx⟩
   induction gx using Quotient.inductionOn
   apply h
 
-/-- An alternative extensionality principle for `PlacedTile` that avoids `HEq`, using existence of a
-common group element. -/
-lemma ext_iff_of_exists {pt₁ pt₂ : PlacedTile ps} :
-    pt₁ = pt₂ ↔ pt₁.index = pt₂.index ∧ ∃ g, ⟦g⟧ = pt₁.groupElts ∧ ⟦g⟧ = pt₂.groupElts := by
+/--
+An alternative extensionality principle for `PlacedTile` that avoids `HEq`, using existence of a
+common group element.
+-/
+lemma ext_iff_of_exists {pt₁ pt₂ : PlacedTile ps}
+    : pt₁ = pt₂ ↔ pt₁.index = pt₂.index ∧ ∃ g, ⟦g⟧ = pt₁.groupElts ∧ ⟦g⟧ = pt₂.groupElts := by
   refine ⟨fun h ↦ ?_, fun ⟨h, g, hg₁, hg₂⟩ ↦ ?_⟩
   · subst h
     simp only [and_self, true_and]
@@ -174,11 +192,14 @@ lemma ext_iff_of_exists {pt₁ pt₂ : PlacedTile ps} :
     · rfl
     · exact heq_of_eq (hg₁.symm.trans hg₂)
 
-/-- An alternative extensionality principle for `PlacedTile` that avoids `HEq`, using equality of
-quotient preimages. -/
-lemma ext_iff_of_preimage {pt₁ pt₂ : PlacedTile ps} :
-    pt₁ = pt₂ ↔ pt₁.index = pt₂.index ∧
-      (Quotient.mk _) ⁻¹' {pt₁.groupElts} = (Quotient.mk _) ⁻¹' {pt₂.groupElts} := by
+/--
+An alternative extensionality principle for `PlacedTile` that avoids `HEq`, using equality of
+quotient preimages.
+-/
+lemma ext_iff_of_preimage {pt₁ pt₂ : PlacedTile ps}
+    : pt₁ = pt₂
+      ↔ pt₁.index = pt₂.index
+        ∧ (Quotient.mk _) ⁻¹' {pt₁.groupElts} = (Quotient.mk _) ⁻¹' {pt₂.groupElts} := by
   refine ⟨fun h ↦ ?_, fun ⟨hi, hq⟩ ↦ ?_⟩
   · subst h
     simp only [and_self]
@@ -191,10 +212,14 @@ lemma ext_iff_of_preimage {pt₁ pt₂ : PlacedTile ps} :
     · exact heq_of_eq (Set.singleton_eq_singleton_iff.1
         ((Set.preimage_eq_preimage Quotient.mk''_surjective).1 hq))
 
-/-- Coercion from a `PlacedTile` to a set of points. Use the coercion rather than using `coeSet`
-directly. -/
-@[coe] def coeSet (pt : PlacedTile ps) : Set X :=
-  Quotient.liftOn' pt.groupElts (fun g ↦ g • (ps pt.index : Set X))
+/--
+Coercion from a `PlacedTile` to a set of points. Use the coercion rather than using `coeSet`
+directly.
+-/
+@[coe]
+def coeSet (pt : PlacedTile ps) : Set X :=
+  Quotient.liftOn' pt.groupElts
+    (fun g ↦ g • (ps pt.index : Set X))
     fun a b r ↦ by
       rw [QuotientGroup.leftRel_eq] at r
       rw [eq_comm, ← inv_smul_eq_iff, smul_smul, ← MulAction.mem_stabilizer_iff]
@@ -212,46 +237,50 @@ lemma coe_mk_mk (i : ιₚ) (g : G) : (⟨i, ⟦g⟧⟩ : PlacedTile ps) = g •
 
 lemma coe_mk_coe (i : ιₚ) (g : G) : (⟨i, g⟩ : PlacedTile ps) = g • (ps i : Set X) := rfl
 
-lemma coe_nonempty_iff {pt : PlacedTile ps} :
-    (pt : Set X).Nonempty ↔ (ps pt.index : Set X).Nonempty := by
+lemma coe_nonempty_iff {pt : PlacedTile ps}
+    : (pt : Set X).Nonempty ↔ (ps pt.index : Set X).Nonempty := by
   rcases pt with ⟨index, groupElts⟩
   simp only [coeSet]
   rw [← groupElts.out_eq', Quotient.liftOn'_mk'']
   simp
 
-@[simp] lemma coe_mk_nonempty_iff {i : ιₚ} (g) :
-    ((⟨i, g⟩ : PlacedTile ps) : Set X).Nonempty ↔ (ps i : Set X).Nonempty :=
+@[simp]
+lemma coe_mk_nonempty_iff {i : ιₚ} (g)
+    : ((⟨i, g⟩ : PlacedTile ps) : Set X).Nonempty ↔ (ps i : Set X).Nonempty :=
   coe_nonempty_iff
 
-lemma coe_finite_iff {pt : PlacedTile ps} :
-    (pt : Set X).Finite ↔ (ps pt.index : Set X).Finite := by
+lemma coe_finite_iff {pt : PlacedTile ps} : (pt : Set X).Finite ↔ (ps pt.index : Set X).Finite := by
   rcases pt with ⟨index, groupElts⟩
   simp only [coeSet]
   rw [← groupElts.out_eq', Quotient.liftOn'_mk'']
   simp
 
-@[simp] lemma coe_mk_finite_iff {i : ιₚ} (g) :
-    ((⟨i, g⟩ : PlacedTile ps) : Set X).Finite ↔ (ps i : Set X).Finite :=
+@[simp]
+lemma coe_mk_finite_iff {i : ιₚ} (g)
+    : ((⟨i, g⟩ : PlacedTile ps) : Set X).Finite ↔ (ps i : Set X).Finite :=
   coe_finite_iff
 
 instance : SMul G (PlacedTile ps) where
-  smul g pt := Quotient.liftOn' pt.groupElts (fun h ↦ ⟨pt.index, g * h⟩)
-    fun a b r ↦ by
-      rw [QuotientGroup.leftRel_eq] at r
-      refine PlacedTile.ext rfl ?_
-      simpa [QuotientGroup.eq, ← mul_assoc] using r
+  smul g pt :=
+    Quotient.liftOn' pt.groupElts
+      (fun h ↦ ⟨pt.index, g * h⟩)
+      fun a b r ↦ by
+        rw [QuotientGroup.leftRel_eq] at r
+        refine PlacedTile.ext rfl ?_
+        simpa [QuotientGroup.eq, ← mul_assoc] using r
 
 @[simp] lemma smul_mk_mk (g h : G) (i : ιₚ) : g • (⟨i, ⟦h⟧⟩ : PlacedTile ps) = ⟨i, g * h⟩ := rfl
 
 @[simp] lemma smul_mk_coe (g h : G) (i : ιₚ) : g • (⟨i, h⟩ : PlacedTile ps) = ⟨i, g * h⟩ := rfl
 
-@[simp] lemma smul_index (g : G) (pt : PlacedTile ps) : (g • pt).index = pt.index := by
+@[simp]
+lemma smul_index (g : G) (pt : PlacedTile ps) : (g • pt).index = pt.index := by
   induction pt using PlacedTile.induction_on
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-@[simp] lemma coe_smul (g : G) (pt : PlacedTile ps) :
-    (g • pt : PlacedTile ps) = g • (pt : Set X) := by
+@[simp]
+lemma coe_smul (g : G) (pt : PlacedTile ps) : (g • pt : PlacedTile ps) = g • (pt : Set X) := by
   induction pt using PlacedTile.induction_on
   simp [coeSet, mul_smul]
 
@@ -264,15 +293,16 @@ instance : MulAction G (PlacedTile ps) where
     induction pt using PlacedTile.induction_on
     simp [mul_assoc]
 
-@[simp] lemma smul_mem_smul_iff (g : G) {x : X} {pt : PlacedTile ps} : g • x ∈ g • pt ↔ x ∈ pt := by
+@[simp]
+lemma smul_mem_smul_iff (g : G) {x : X} {pt : PlacedTile ps} : g • x ∈ g • pt ↔ x ∈ pt := by
   rw [← mem_coe, coe_smul, Set.smul_mem_smul_set_iff, mem_coe]
 
-lemma mem_smul_iff_smul_inv_mem {g : G} {x : X} {pt : PlacedTile ps} :
-    x ∈ g • pt ↔ g⁻¹ • x ∈ pt := by
+lemma mem_smul_iff_smul_inv_mem {g : G} {x : X} {pt : PlacedTile ps}
+    : x ∈ g • pt ↔ g⁻¹ • x ∈ pt := by
   simp_rw [← mem_coe, coe_smul, Set.mem_smul_set_iff_inv_smul_mem]
 
-lemma mem_inv_smul_iff_smul_mem {g : G} {x : X} {pt : PlacedTile ps} :
-    x ∈ g⁻¹ • pt ↔ g • x ∈ pt := by
+lemma mem_inv_smul_iff_smul_mem {g : G} {x : X} {pt : PlacedTile ps}
+    : x ∈ g⁻¹ • pt ↔ g • x ∈ pt := by
   simp_rw [← mem_coe, coe_smul, Set.mem_inv_smul_set_iff]
 
 end PlacedTile

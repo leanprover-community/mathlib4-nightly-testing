@@ -28,8 +28,10 @@ def knownNamedOpts : List String :=
 /-- The flag options supported by the CLI. -/
 def knownFlagOpts : List String := ["help", "unsafe"]
 
-/-- Parses an optional `--foo=bar` option. Returns the value for the
-last-mentioned occurrence (so a later `--foo=` overrides an earlier one). -/
+/--
+Parses an optional `--foo=bar` option. Returns the value for the
+last-mentioned occurrence (so a later `--foo=` overrides an earlier one).
+-/
 def parseNamedOpt (opt : String) (args : List String) : BaseIO (Option String) := do
   let pref := s!"--{opt}="
   if let some a := args.findRev? (fun a => a.startsWith pref) then
@@ -37,16 +39,18 @@ def parseNamedOpt (opt : String) (args : List String) : BaseIO (Option String) :
     return some val.toString
   return none
 
-/-- Parses a boolean `--foo` flag. True iff the bare token `--foo` appears
-anywhere in `args`. -/
-def parseFlagOpt (opt : String) (args : List String) : Bool :=
-  args.elem s!"--{opt}"
+/--
+Parses a boolean `--foo` flag. True iff the bare token `--foo` appears
+anywhere in `args`.
+-/
+def parseFlagOpt (opt : String) (args : List String) : Bool := args.elem s!"--{opt}"
 
-/-- Check whether `opt` (e.g. `"--repo=foo"` or `"--help"`) is a recognized
+/--
+Check whether `opt` (e.g. `"--repo=foo"` or `"--help"`) is a recognized
 option. The caller rejects unknown `--`-prefixed tokens with an error, so a
-typo like `--scoop=` does not pass silently. -/
+typo like `--scoop=` does not pass silently.
+-/
 def isKnownOpt (opt : String) : Bool :=
-  knownNamedOpts.any (opt.startsWith s!"--{·}=") ||
-  knownFlagOpts.any (opt == s!"--{·}")
+  knownNamedOpts.any (opt.startsWith s!"--{·}=") || knownFlagOpts.any (opt == s!"--{·}")
 
 end Cache.Cli

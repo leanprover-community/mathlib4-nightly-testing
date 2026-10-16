@@ -16,24 +16,19 @@ lemma.
 
 @[expose] public section
 
-
 universe u
 
 open Set
 
 /-- **Szpilrajn extension theorem**: any partial order can be extended to a linear order. -/
-theorem extend_partialOrder {α : Type u} (r : α → α → Prop) [IsPartialOrder α r] :
-    ∃ s : α → α → Prop, IsLinearOrder α s ∧ r ≤ s := by
+theorem extend_partialOrder {α : Type u} (r : α → α → Prop) [IsPartialOrder α r]
+    : ∃ s : α → α → Prop, IsLinearOrder α s ∧ r ≤ s := by
   let S := { s | IsPartialOrder α s }
   have hS : ∀ c, c ⊆ S → IsChain (· ≤ ·) c → ∀ y ∈ c, ∃ ub ∈ S, ∀ z ∈ c, z ≤ ub := by
     rintro c hc₁ hc₂ s hs
     have := (hc₁ hs).1
     refine ⟨sSup c, ?_, fun z hz => le_sSup hz⟩
-    refine
-        { refl := ?_
-          trans := ?_
-          antisymm := ?_ } <;>
-      simp_rw [binary_relation_sSup_iff]
+    refine { refl := ?_, trans := ?_, antisymm := ?_ } <;> simp_rw [binary_relation_sSup_iff]
     · intro x
       exact ⟨s, hs, refl x⟩
     · rintro x y z ⟨s₁, h₁s₁, h₂s₁⟩ ⟨s₂, h₁s₂, h₂s₂⟩
@@ -50,17 +45,14 @@ theorem extend_partialOrder {α : Type u} (r : α → α → Prop) [IsPartialOrd
       · apply antisymm h₂s₁ (h _ _ h₂s₂)
   obtain ⟨s, hrs, hs⟩ := zorn_le_nonempty₀ S hS r ‹_›
   have : IsPartialOrder α s := hs.prop
-  refine ⟨s,
-    { total := ?_, refl := hs.1.refl, trans := hs.1.trans, antisymm := hs.1.antisymm }, hrs⟩
+  refine
+    ⟨s, { total := ?_, refl := hs.1.refl, trans := hs.1.trans, antisymm := hs.1.antisymm }, hrs⟩
   intro x y
   by_contra! h
   let s' x' y' := s x' y' ∨ s x' x ∧ s y y'
   rw [hs.eq_of_le (y := s') ?_ fun _ _ ↦ Or.inl] at h
   · apply h.1 (Or.inr ⟨refl _, refl _⟩)
-  · refine
-    { refl := fun x ↦ Or.inl (refl _)
-      trans := ?_
-      antisymm := ?_ }
+  · refine { refl := fun x ↦ Or.inl (refl _), trans := ?_, antisymm := ?_ }
     · rintro a b c (ab | ⟨ax : s a x, yb : s y b⟩) (bc | ⟨bx : s b x, yc : s y c⟩)
       · exact Or.inl (_root_.trans ab bc)
       · exact Or.inr ⟨_root_.trans ab bx, yc⟩
@@ -73,8 +65,7 @@ theorem extend_partialOrder {α : Type u} (r : α → α → Prop) [IsPartialOrd
     · exact (h.2 (_root_.trans yb bx)).elim
 
 /-- A type alias for `α`, intended to extend a partial order on `α` to a linear order. -/
-def LinearExtension (α : Type u) : Type u :=
-  α
+def LinearExtension (α : Type u) : Type u := α
 
 noncomputable instance {α : Type u} [PartialOrder α] : LinearOrder (LinearExtension α) where
   le := (extend_partialOrder ((· ≤ ·) : α → α → Prop)).choose
@@ -89,5 +80,4 @@ noncomputable def toLinearExtension {α : Type u} [PartialOrder α] : α →o Li
   toFun x := x
   monotone' := (extend_partialOrder ((· ≤ ·) : α → α → Prop)).choose_spec.2
 
-instance {α : Type u} [Inhabited α] : Inhabited (LinearExtension α) :=
-  ⟨(default : α)⟩
+instance {α : Type u} [Inhabited α] : Inhabited (LinearExtension α) := ⟨(default : α)⟩

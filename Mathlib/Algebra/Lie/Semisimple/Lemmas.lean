@@ -34,13 +34,13 @@ namespace LieAlgebra
 
 open LieModule LieSubmodule Module Set
 
-variable (k L M : Type*) [Field k] [CharZero k]
-  [LieRing L] [LieAlgebra k L] [Module.Finite k L]
+variable
+  (k L M : Type*) [Field k] [CharZero k] [LieRing L] [LieAlgebra k L] [Module.Finite k L]
   [AddCommGroup M] [Module k M] [LieRingModule L M] [LieModule k L M] [Module.Finite k M]
   [IsIrreducible k L M] [IsFaithful k L M] [IsTriangularizable k L M]
 
-lemma hasCentralRadical_and_of_isIrreducible_of_isFaithful :
-    HasCentralRadical k L ∧ (∀ x, x ∈ center k L ↔ toEnd k L M x ∈ k ∙ LinearMap.id) := by
+lemma hasCentralRadical_and_of_isIrreducible_of_isFaithful
+    : HasCentralRadical k L ∧ (∀ x, x ∈ center k L ↔ toEnd k L M x ∈ k ∙ LinearMap.id) := by
   have _i := nontrivial_of_isIrreducible k L M
   obtain ⟨χ, hχ⟩ : ∃ χ : Module.Dual k (radical k L), Nontrivial (weightSpace M χ) :=
     exists_nontrivial_weightSpace_of_isSolvable k (radical k L) M
@@ -65,7 +65,8 @@ lemma hasCentralRadical_and_of_isIrreducible_of_isFaithful :
       (toEnd k L M y).commute_id_right.lie_eq]
 
 theorem hasTrivialRadical_of_isIrreducible_of_isFaithful
-    (h : ∀ x, LinearMap.trace k _ (toEnd k L M x) = 0) : HasTrivialRadical k L := by
+    (h : ∀ x, LinearMap.trace k _ (toEnd k L M x) = 0)
+    : HasTrivialRadical k L := by
   have : finrank k M ≠ 0 := (finrank_pos_iff.mpr <| nontrivial_of_isIrreducible k L M).ne'
   obtain ⟨_i, h'⟩ := hasCentralRadical_and_of_isIrreducible_of_isFaithful k L M
   rw [hasTrivialRadical_iff, (hasCentralRadical_iff k L).mp inferInstance, LieSubmodule.eq_bot_iff]
@@ -80,9 +81,10 @@ variable {k L M}
 variable {R : Type*} [CommRing R] [LieAlgebra R L] [Module R M] [LieModule R L M]
 
 open LinearMap in
-lemma trace_toEnd_eq_zero {s : Set L} (hs : ∀ x ∈ s, LinearMap.trace R _ (toEnd R _ M x) = 0)
-    {x : L} (hx : x ∈ LieSubalgebra.lieSpan R L s) :
-    trace R _ (toEnd R _ M x) = 0 := by
+lemma trace_toEnd_eq_zero
+    {s : Set L} (hs : ∀ x ∈ s, LinearMap.trace R _ (toEnd R _ M x) = 0)
+    {x : L} (hx : x ∈ LieSubalgebra.lieSpan R L s)
+    : trace R _ (toEnd R _ M x) = 0 := by
   induction hx using LieSubalgebra.lieSpan_induction with
   | mem u hu => simpa using hs u hu
   | zero => simp

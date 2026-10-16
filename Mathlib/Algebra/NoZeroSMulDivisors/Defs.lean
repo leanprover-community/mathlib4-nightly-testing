@@ -25,7 +25,8 @@ assert_not_exists RelIso Multiset Set.indicator Pi.single_smul₀
 
 variable {R M G : Type*}
 
-/-- `NoZeroSMulDivisors R M` states that a scalar multiple is `0` only if either argument is `0`.
+/--
+`NoZeroSMulDivisors R M` states that a scalar multiple is `0` only if either argument is `0`.
 This is a version of saying that `M` is torsion free, without assuming `R` is zero-divisor free.
 
 The main application of `NoZeroSMulDivisors R M`, when `M` is a module,
@@ -41,39 +42,40 @@ class NoZeroSMulDivisors (R M : Type*) [Zero R] [Zero M] [SMul R M] : Prop where
 export NoZeroSMulDivisors (eq_zero_or_eq_zero_of_smul_eq_zero)
 
 /-- Pullback a `NoZeroSMulDivisors` instance along an injective function. -/
-theorem Function.Injective.noZeroSMulDivisors {R M N : Type*} [Zero R] [Zero M] [Zero N]
-    [SMul R M] [SMul R N] [NoZeroSMulDivisors R N] (f : M → N) (hf : Function.Injective f)
-    (h0 : f 0 = 0) (hs : ∀ (c : R) (x : M), f (c • x) = c • f x) : NoZeroSMulDivisors R M :=
-  ⟨fun {_ _} h =>
-    Or.imp_right (@hf _ _) <| h0.symm ▸ eq_zero_or_eq_zero_of_smul_eq_zero (by rw [← hs, h, h0])⟩
+theorem Function.Injective.noZeroSMulDivisors
+    {R M N : Type*} [Zero R] [Zero M] [Zero N] [SMul R M] [SMul R N] [NoZeroSMulDivisors R N]
+    (f : M → N)
+    (hf : Function.Injective f) (h0 : f 0 = 0) (hs : ∀ (c : R) (x : M), f (c • x) = c • f x)
+    : NoZeroSMulDivisors R M := ⟨fun {_ _} h =>
+  Or.imp_right (@hf _ _) <| h0.symm ▸ eq_zero_or_eq_zero_of_smul_eq_zero (by rw [← hs, h, h0])⟩
 
 -- See note [lower instance priority]
-instance (priority := 100) NoZeroDivisors.toNoZeroSMulDivisors [Zero R] [Mul R]
-    [NoZeroDivisors R] : NoZeroSMulDivisors R R :=
+instance (priority := 100) NoZeroDivisors.toNoZeroSMulDivisors [Zero R] [Mul R] [NoZeroDivisors R]
+    : NoZeroSMulDivisors R R :=
   ⟨fun {_ _} => eq_zero_or_eq_zero_of_mul_eq_zero⟩
 
-instance [Semiring R] [IsDomain R] [AddCommGroup M] [Module R M] [NoZeroSMulDivisors R M] :
-    Module.IsTorsionFree R M where
+instance [Semiring R] [IsDomain R] [AddCommGroup M] [Module R M] [NoZeroSMulDivisors R M]
+    : Module.IsTorsionFree R M where
   isSMulRegular r hr m₁ m₂ hm := by
     dsimp at hm
     rw [← sub_eq_zero, ← smul_sub] at hm
     simpa [hr.ne_zero, sub_eq_zero] using eq_zero_or_eq_zero_of_smul_eq_zero hm
 
-theorem noZeroSMulDivisors_iff_right_eq_zero_of_smul [Zero R] [Zero M] [SMul R M] :
-    NoZeroSMulDivisors R M ↔ ∀ r : R, r ≠ 0 → ∀ m : M, r • m = 0 → m = 0 := by
+theorem noZeroSMulDivisors_iff_right_eq_zero_of_smul [Zero R] [Zero M] [SMul R M]
+    : NoZeroSMulDivisors R M ↔ ∀ r : R, r ≠ 0 → ∀ m : M, r • m = 0 → m = 0 := by
   simp_rw [noZeroSMulDivisors_iff, or_iff_not_imp_left]
   exact ⟨fun h r hr m eq ↦ h eq hr, fun h r m eq hr ↦ h r hr m eq⟩
 
-instance HasUniqueDiv.to_noZeroSMulDivisors_nat [AddMonoid M] [HasUniqueDiv M] :
-    NoZeroSMulDivisors ℕ M where
+instance HasUniqueDiv.to_noZeroSMulDivisors_nat [AddMonoid M] [HasUniqueDiv M]
+    : NoZeroSMulDivisors ℕ M where
   eq_zero_or_eq_zero_of_smul_eq_zero {n x} hx := by
     contrapose! hx; simpa using (nsmul_right_injective hx.1).ne hx.2
 
 @[deprecated (since := "2026-09-29")] alias IsAddTorsionFree.to_noZeroSMulDivisors_nat :=
   HasUniqueDiv.to_noZeroSMulDivisors_nat
 
-instance HasUniqueDiv.to_noZeroSMulDivisors_int [AddGroup G] [HasUniqueDiv G] :
-    NoZeroSMulDivisors ℤ G where
+instance HasUniqueDiv.to_noZeroSMulDivisors_int [AddGroup G] [HasUniqueDiv G]
+    : NoZeroSMulDivisors ℤ G where
   eq_zero_or_eq_zero_of_smul_eq_zero {n x} hx := by
     contrapose! hx; simpa using (zsmul_right_injective hx.1).ne hx.2
 

@@ -21,14 +21,16 @@ section PathComponentOne
 
 variable (G : Type*) [TopologicalSpace G]
 
-/-- The path component of the identity in a locally path connected topological group,
-as an open normal subgroup. It is, in fact, clopen. -/
+/--
+The path component of the identity in a locally path connected topological group,
+as an open normal subgroup. It is, in fact, clopen.
+-/
 @[to_additive (attr := simps!)
-/-- The path component of the identity in a locally path connected additive topological group,
+  /-- The path component of the identity in a locally path connected additive topological group,
 as an open normal additive subgroup. It is, in fact, clopen. -/]
-def OpenNormalSubgroup.pathComponentOne [Group G]
-    [IsTopologicalGroup G] [LocallyPathConnectedSpace G] :
-    OpenNormalSubgroup G where
+def OpenNormalSubgroup.pathComponentOne
+    [Group G] [IsTopologicalGroup G] [LocallyPathConnectedSpace G]
+    : OpenNormalSubgroup G where
   toSubgroup := .pathComponentOne G
   isOpen' := .pathComponent 1
   isNormal' := .pathComponentOne G
@@ -36,8 +38,8 @@ def OpenNormalSubgroup.pathComponentOne [Group G]
 namespace OpenNormalSubgroup
 
 @[to_additive]
-instance [Group G] [IsTopologicalGroup G] [LocallyPathConnectedSpace G] :
-    IsClosed (OpenNormalSubgroup.pathComponentOne G : Set G) :=
+instance [Group G] [IsTopologicalGroup G] [LocallyPathConnectedSpace G]
+    : IsClosed (OpenNormalSubgroup.pathComponentOne G : Set G) :=
   .pathComponent 1
 
 end OpenNormalSubgroup

@@ -46,12 +46,11 @@ example {x : ℤ} (hx : x ≥ 12) : x ≥ 12 := by gcongr
 
 example {x y : ℤ} (hx : x ≥ 12) : y + 8 * x ≥ y + 8 * 12 := by gcongr
 
-example {a b x c d : ℝ} (h1 : a ≤ b) (h2 : c ≤ d) : x ^ 2 * a + c ≤ x ^ 2 * b + d := by
-  rel [h1, h2]
+example {a b x c d : ℝ} (h1 : a ≤ b) (h2 : c ≤ d) : x ^ 2 * a + c ≤ x ^ 2 * b + d := by rel [h1, h2]
 
 -- not solved by `nlinarith` because of the cube and the absolute value
-example {a b c x y : ℤ} (hb : b ≥ 4) (hxy : x ≤ y) :
-    c + (3 * |a| ^ 3 * b + b * 7 + 14) * x ≤ c + (3 * |a| ^ 3 * b + b * 7 + 14) * y := by
+example {a b c x y : ℤ} (hb : b ≥ 4) (hxy : x ≤ y)
+    : c + (3 * |a| ^ 3 * b + b * 7 + 14) * x ≤ c + (3 * |a| ^ 3 * b + b * 7 + 14) * y := by
   gcongr
 
 example {x y : ℤ} (hy : 3 ≤ y) (hx : x ≥ 9) : y + 2 * x ≥ 3 + 2 * 9 := by gcongr
@@ -122,18 +121,17 @@ example {a b x c d : ℝ} (h1 : a ≤ b) (h2 : c ≤ d) (h3 : 1 ≤ x + 1) : x *
 -- test for a missing `withContext`
 example {x y : ℚ} {n : ℕ} (hx : 0 ≤ x) (hn : 0 < n) : y ≤ x := by
   have h : x < y := test_sorry
-  have _this : x ^ n < y ^ n := by
-    rel [h] -- before bugfix: complained "unknown identifier 'h'"
+  have _this : x ^ n < y ^ n := by rel [h] -- before bugfix: complained "unknown identifier 'h'"
   exact test_sorry
 
 /-! ## Non-finishing examples -/
 
-example {a b x c d : ℝ} (h1 : a + 1 ≤ b + 1) (h2 : c + 2 ≤ d + 2) :
-    x ^ 2 * a + c ≤ x ^ 2 * b + d := by
+example {a b x c d : ℝ} (h1 : a + 1 ≤ b + 1) (h2 : c + 2 ≤ d + 2)
+    : x ^ 2 * a + c ≤ x ^ 2 * b + d := by
   gcongr <;> linarith
 
-example {a b c d x : ℝ} (h : a + c + 1 ≤ b + d + 1) :
-    x ^ 2 * (a + c) + 5 ≤ x ^ 2 * (b + d) + 5 := by
+example {a b c d x : ℝ} (h : a + c + 1 ≤ b + d + 1)
+    : x ^ 2 * (a + c) + 5 ≤ x ^ 2 * (b + d) + 5 := by
   gcongr x ^ 2 * ?_ + 5
   linarith
 
@@ -152,15 +150,15 @@ example {n' : ℕ} (hn' : 6 ≤ n') : 2 ^ ((n' + 1) * (n' + 1)) ≤ 2 ^ (n' * n'
   gcongr
   linarith
 
-example {F : ℕ → ℕ} (le_sum : ∀ {N : ℕ}, 6 ≤ N → 15 ≤ F N) {n' : ℕ} (hn' : 6 ≤ n') :
-    let A := F n';
-    A ! * (15 + 1) ^ n' ≤ A ! * (A + 1) ^ n' := by
+example {F : ℕ → ℕ} (le_sum : ∀ {N : ℕ}, 6 ≤ N → 15 ≤ F N) {n' : ℕ} (hn' : 6 ≤ n')
+    : let A := F n'
+      A ! * (15 + 1) ^ n' ≤ A ! * (A + 1) ^ n' := by
   intro A
   gcongr
   exact le_sum hn'
 
-example {a : ℤ} {n : ℕ} (ha : ∀ i < n, 2 ^ i ≤ a) :
-    ∏ i ∈ range n, (a - 2 ^ i) ≤ ∏ _i ∈ range n, a := by
+example {a : ℤ} {n : ℕ} (ha : ∀ i < n, 2 ^ i ≤ a)
+    : ∏ i ∈ range n, (a - 2 ^ i) ≤ ∏ _i ∈ range n, a := by
   gcongr with i
   · intro i hi
     simp only [mem_range] at hi
@@ -169,32 +167,32 @@ example {a : ℤ} {n : ℕ} (ha : ∀ i < n, 2 ^ i ≤ a) :
     linarith
 
 -- this tests that the match goes only as deep as is indicated by the template
-example {a b c d e : ℝ} (_h1 : 0 ≤ b) (_h2 : 0 ≤ c) (hac : a * b + 1 ≤ c * d + 1) (_hbd : b ≤ d) :
-    a * b + e ≤ c * d + e := by
+example {a b c d e : ℝ} (_h1 : 0 ≤ b) (_h2 : 0 ≤ c) (hac : a * b + 1 ≤ c * d + 1) (_hbd : b ≤ d)
+    : a * b + e ≤ c * d + e := by
   gcongr ?_ + _
   guard_target =ₛ a * b ≤ c * d
   linarith
 
 -- test big operators
-example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ≤ g i) :
-    ∑ i ∈ s, (3 + f i ^ 2) ≤ ∑ i ∈ s, (3 + g i ^ 2) := by
+example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ≤ g i)
+    : ∑ i ∈ s, (3 + f i ^ 2) ≤ ∑ i ∈ s, (3 + g i ^ 2) := by
   gcongr with i hi
   exact h i hi
 
 -- this tests templates with binders
-example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1) :
-    ∑ i ∈ s, f i ^ 2 ≤ ∑ i ∈ s, g i ^ 2 := by
+example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1)
+    : ∑ i ∈ s, f i ^ 2 ≤ ∑ i ∈ s, g i ^ 2 := by
   gcongr ∑ _i ∈ s, ?_ with i hi
   linarith [h i hi]
 
 -- this tests templates with binders
-example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1) :
-    ∑ i ∈ s, (3 + f i ^ 2) ≤ ∑ i ∈ s, (3 + g i ^ 2) := by
+example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1)
+    : ∑ i ∈ s, (3 + f i ^ 2) ≤ ∑ i ∈ s, (3 + g i ^ 2) := by
   gcongr ∑ _i ∈ s, (3 + ?_) with i hi
   linarith [h i hi]
 
-example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1) :
-    ∑ i ∈ s, (f i ^ 2 / 5) ≤ ∑ i ∈ s, (g i ^ 2 / 5) := by
+example (f g : ℕ → ℕ) (s : Finset ℕ) (h : ∀ i ∈ s, f i ^ 2 + 1 ≤ g i ^ 2 + 1)
+    : ∑ i ∈ s, (f i ^ 2 / 5) ≤ ∑ i ∈ s, (g i ^ 2 / 5) := by
   gcongr 2 with i hi
   linarith [h i hi]
 
@@ -227,8 +225,10 @@ example (s : Finset ℕ) (h : ∀ i ∈ s, f i ≤ f (2 * i)) : ∑ i ∈ s, f i
   assumption
 
 def dontUnfoldMe : Nat → List Bool → Nat
-  | 0, _ => 0
-  | n + 1, l => dontUnfoldMe n (true::l) + dontUnfoldMe n (false::l)
+  | 0, _ =>
+    0
+  | n + 1, l =>
+    dontUnfoldMe n (true :: l) + dontUnfoldMe n (false :: l)
 
 -- times out if a certain reducibility setting in `gcongr`'s implementation is not correct
 example {x y : ℕ} (h : x ≤ y) (l) : dontUnfoldMe 14 l + x ≤ 0 + y := by
@@ -238,14 +238,16 @@ example {x y : ℕ} (h : x ≤ y) (l) : dontUnfoldMe 14 l + x ≤ 0 + y := by
 
 /-! Test that `gcongr` works well with proof arguments -/
 
-example {α β : Type*} [SemilatticeSup α] (f : β → α)
-    {s₁ s₂ : Finset β} (h : s₁ ⊆ s₂) (h₁ : s₁.Nonempty) :
-    s₁.sup' h₁ f ≤ s₂.sup' (h₁.mono h) f := by
+example
+    {α β : Type*} [SemilatticeSup α] (f : β → α) {s₁ s₂ : Finset β} (h : s₁ ⊆ s₂) (h₁ : s₁.Nonempty)
+    : s₁.sup' h₁ f ≤ s₂.sup' (h₁.mono h) f := by
   gcongr
 
-example {α β : Type*} [SemilatticeSup α] (f : β → α)
-    {s₁ s₂ : Finset β} (h : s₁ ⊆ s₂) (h₁ : s₁.Nonempty) (h₂ : s₂.Nonempty) :
-    s₁.sup' h₁ f ≤ s₂.sup' h₂ f := by
+example
+    {α β : Type*} [SemilatticeSup α]
+    (f : β → α)
+    {s₁ s₂ : Finset β} (h : s₁ ⊆ s₂) (h₁ : s₁.Nonempty) (h₂ : s₂.Nonempty)
+    : s₁.sup' h₁ f ≤ s₂.sup' h₂ f := by
   gcongr
 
 /-! Test that `gcongr` can solve side goals of the form `∀ i, f i` when `f i` is in scope for
@@ -260,11 +262,11 @@ example {ι : Type*} [Fintype ι] {f g : ι → ℝ} : ∏ i, f i ^ 2 ≤ ∏ i,
 
 /-! Test that `gcongr` can deal with `_ ≤ _ → _ ≤ _` and `_ < _ → _ < _` -/
 
-example {a b : ℕ} (h1 : a ≤ 0) (h2 : 0 ≤ b)  : b ≤ a + 1 → 0 ≤ 0 + 1 := by gcongr
+example {a b : ℕ} (h1 : a ≤ 0) (h2 : 0 ≤ b) : b ≤ a + 1 → 0 ≤ 0 + 1 := by gcongr
 example {a b : ℕ} (h1 : a ≤ 0) (_h2 : 0 ≤ b) : b ≤ a + 1 → b ≤ 0 + 1 := by gcongr
 example {a b : ℕ} (_h1 : a ≤ 0) (h2 : 0 ≤ b) : b ≤ a + 1 → 0 ≤ a + 1 := by gcongr
 
-example {a b : ℕ} (h1 : a ≤ 0) (h2 : 0 ≤ b)  : b < a + 1 → 0 < 0 + 1 := by gcongr
+example {a b : ℕ} (h1 : a ≤ 0) (h2 : 0 ≤ b) : b < a + 1 → 0 < 0 + 1 := by gcongr
 example {a b : ℕ} (h1 : a ≤ 0) (_h2 : 0 ≤ b) : b < a + 1 → b < 0 + 1 := by gcongr
 example {a b : ℕ} (_h1 : a ≤ 0) (h2 : 0 ≤ b) : b < a + 1 → 0 < a + 1 := by gcongr
 
@@ -282,47 +284,38 @@ theorem myCons_monotoneOn : MonotoneOn myCons (Set.Ioi 0) := fun _ _ _ _ _ => le
 theorem myCons_antitoneOn : AntitoneOn myCons (Set.Ioi 0) := fun _ _ _ _ _ => le_rfl
 
 attribute [local gcongr] myCons_monotone in
-example : myCons 4 ≤ myCons 5 := by
-  gcongr; simp
+example : myCons 4 ≤ myCons 5 := by gcongr; simp
 
 attribute [local gcongr] myCons_monotone' in
-example : myCons 4 ≤ myCons 5 := by
-  gcongr; simp
+example : myCons 4 ≤ myCons 5 := by gcongr; simp
 
 attribute [local gcongr] myCons_antitone in
-example : myCons 6 ≤ myCons 5 := by
-  gcongr; simp
+example : myCons 6 ≤ myCons 5 := by gcongr; simp
 
 attribute [local gcongr] myCons_monotoneOn in
-example : myCons 4 ≤ myCons 5 := by
-  gcongr <;> simp
+example : myCons 4 ≤ myCons 5 := by gcongr <;> simp
 
 attribute [local gcongr] myCons_antitoneOn in
-example : myCons 6 ≤ myCons 5 := by
-  gcongr <;> simp
+example : myCons 6 ≤ myCons 5 := by gcongr <;> simp
 
 def myMono (n : Nat) : Nat := n
 theorem myMono_strictMono : StrictMono myMono := fun _ _ => id
 theorem myMono_strictMonoOn : StrictMonoOn myMono (Set.Ioi 0) := fun _ _ _ _ => id
 
 attribute [local gcongr] myMono_strictMono in
-example : myMono 4 < myMono 5 := by
-  gcongr; simp
+example : myMono 4 < myMono 5 := by gcongr; simp
 
 attribute [local gcongr] myMono_strictMonoOn in
-example : myMono 4 < myMono 5 := by
-  gcongr <;> simp
+example : myMono 4 < myMono 5 := by gcongr <;> simp
 
 def myAnti (n : Int) : Int := -n
 theorem myAnti_strictAnti : StrictAnti myAnti := fun _ _ => neg_lt_neg
 theorem myAnti_strictAntiOn : StrictAntiOn myAnti (Set.Ioi 0) := fun _ _ _ _ => neg_lt_neg
 
 attribute [local gcongr] myAnti_strictAnti in
-example : myAnti 6 < myAnti 5 := by
-  gcongr; simp
+example : myAnti 6 < myAnti 5 := by gcongr; simp
 
 attribute [local gcongr] myAnti_strictAntiOn in
-example : myAnti 6 < myAnti 5 := by
-  gcongr <;> simp
+example : myAnti 6 < myAnti 5 := by gcongr <;> simp
 
 end GCongrTests

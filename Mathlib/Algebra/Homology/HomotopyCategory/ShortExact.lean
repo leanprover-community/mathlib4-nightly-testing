@@ -36,33 +36,33 @@ namespace CochainComplex
 set_option backward.isDefEq.respectTransparency false in -- Needed in homologySequenceδ_triangleh
 @[reassoc]
 lemma homologySequenceδ_quotient_mapTriangle_obj
-    (T : Triangle (CochainComplex C ℤ)) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) :
-    (homologyFunctor C (up ℤ) 0).homologySequenceδ
-        ((quotient C (up ℤ)).mapTriangle.obj T) n₀ n₁ h =
-      (homologyFunctorFactors C (up ℤ) n₀).hom.app _ ≫
-        (HomologicalComplex.homologyFunctor C (up ℤ) 0).shiftMap T.mor₃ n₀ n₁ (by lia) ≫
-        (homologyFunctorFactors C (up ℤ) n₁).inv.app _ := by
+    (T : Triangle (CochainComplex C ℤ)) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁)
+    : (homologyFunctor C (up ℤ) 0).homologySequenceδ ((quotient C (up ℤ)).mapTriangle.obj T) n₀ n₁ h
+      = (homologyFunctorFactors C (up ℤ) n₀).hom.app _
+        ≫ (HomologicalComplex.homologyFunctor C (up ℤ) 0).shiftMap T.mor₃ n₀ n₁ (by lia)
+        ≫ (homologyFunctorFactors C (up ℤ) n₁).inv.app _ := by
   apply homologyFunctor_shiftMap
 
 namespace mappingCone
 
 variable (S : ShortComplex (CochainComplex C ℤ)) (hS : S.ShortExact)
 
-/-- The canonical morphism `mappingCone S.f ⟶ S.X₃` when `S` is a short complex
-of cochain complexes. -/
+/--
+The canonical morphism `mappingCone S.f ⟶ S.X₃` when `S` is a short complex
+of cochain complexes.
+-/
 noncomputable def descShortComplex : mappingCone S.f ⟶ S.X₃ := desc S.f 0 S.g (by simp)
 
 @[reassoc (attr := simp)]
-lemma inr_descShortComplex : inr S.f ≫ descShortComplex S = S.g := by
-  simp [descShortComplex]
+lemma inr_descShortComplex : inr S.f ≫ descShortComplex S = S.g := by simp [descShortComplex]
 
 @[reassoc (attr := simp)]
 lemma inr_f_descShortComplex_f (n : ℤ) : (inr S.f).f n ≫ (descShortComplex S).f n = S.g.f n := by
   simp [descShortComplex]
 
 @[reassoc (attr := simp)]
-lemma inl_v_descShortComplex_f (i j : ℤ) (h : i + (-1) = j) :
-    (inl S.f).v i j h ≫ (descShortComplex S).f j = 0 := by
+lemma inl_v_descShortComplex_f (i j : ℤ) (h : i + (-1) = j)
+    : (inl S.f).v i j h ≫ (descShortComplex S).f j = 0 := by
   simp [descShortComplex]
 
 section
@@ -70,11 +70,10 @@ section
 variable (S₁ S₂ : ShortComplex (CochainComplex C ℤ)) (f : S₁ ⟶ S₂)
 
 @[map (attr := reassoc)]
-lemma map_descShortComplex : map S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm ≫ descShortComplex S₂ =
-    descShortComplex S₁ ≫ f.τ₃ := by
+lemma map_descShortComplex
+    : map S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm ≫ descShortComplex S₂ = descShortComplex S₁ ≫ f.τ₃ := by
   ext i
-  simpa [mappingCone.ext_from_iff _ _ _ rfl, map] using
-    congr($(f.comm₂₃).f i)
+  simpa [mappingCone.ext_from_iff _ _ _ rfl, map] using congr($(f.comm₂₃).f i)
 
 end
 
@@ -82,17 +81,19 @@ variable {S}
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma homologySequenceδ_triangleh (n₀ : ℤ) (n₁ : ℤ) (h : n₀ + 1 = n₁) :
-    (homologyFunctor C (up ℤ) 0).homologySequenceδ (triangleh S.f) n₀ n₁ h =
-      (homologyFunctorFactors C (up ℤ) n₀).hom.app _ ≫
-        HomologicalComplex.homologyMap (descShortComplex S) n₀ ≫ hS.δ n₀ n₁ h ≫
-          (homologyFunctorFactors C (up ℤ) n₁).inv.app _ := by
-  /- We proceed by diagram chase. We test the identity on
-     cocycles `x' : A' ⟶ (mappingCone S.f).X n₀` -/
+lemma homologySequenceδ_triangleh (n₀ : ℤ) (n₁ : ℤ) (h : n₀ + 1 = n₁)
+    : (homologyFunctor C (up ℤ) 0).homologySequenceδ (triangleh S.f) n₀ n₁ h
+      = (homologyFunctorFactors C (up ℤ) n₀).hom.app _
+        ≫ HomologicalComplex.homologyMap (descShortComplex S) n₀ ≫ hS.δ n₀ n₁ h
+        ≫ (homologyFunctorFactors C (up ℤ) n₁).inv.app _ := by
+  /-
+  We proceed by diagram chase. We test the identity on
+  cocycles `x' : A' ⟶ (mappingCone S.f).X n₀`
+  -/
   dsimp
-  rw [← cancel_mono ((homologyFunctorFactors C (up ℤ) n₁).hom.app _),
-    assoc, assoc, assoc, Iso.inv_hom_id_app,
-    ← cancel_epi ((homologyFunctorFactors C (up ℤ) n₀).inv.app _), Iso.inv_hom_id_app_assoc]
+  rw [← cancel_mono ((homologyFunctorFactors C (up ℤ) n₁).hom.app _), assoc, assoc, assoc,
+    Iso.inv_hom_id_app, ← cancel_epi ((homologyFunctorFactors C (up ℤ) n₀).inv.app _),
+    Iso.inv_hom_id_app_assoc]
   apply yoneda.map_injective
   ext ⟨A⟩ (x : A ⟶ _)
   obtain ⟨A', π, _, x', w, hx'⟩ :=
@@ -106,14 +107,17 @@ lemma homologySequenceδ_triangleh (n₀ : ℤ) (n₁ : ℤ) (h : n₀ + 1 = n�
   rw [← cancel_epi π, reassoc_of% hx', reassoc_of% hx',
     HomologicalComplex.homologyπ_naturality_assoc,
     HomologicalComplex.liftCycles_comp_cyclesMap_assoc]
-  /- We decompose the cocycle `x'` into two morphisms `a : A' ⟶ S.X₁.X n₁`
-     and `b : A' ⟶ S.X₂.X n₀` satisfying certain relations. -/
+  /-
+  We decompose the cocycle `x'` into two morphisms `a : A' ⟶ S.X₁.X n₁`
+  and `b : A' ⟶ S.X₂.X n₀` satisfying certain relations.
+  -/
   obtain ⟨a, b, hab⟩ := decomp_to _ x' n₁ h
-  rw [hab, ext_to_iff _ n₁ (n₁ + 1) rfl, add_comp, assoc, assoc, inr_f_d, add_comp, assoc,
-    assoc, assoc, assoc, inr_f_fst_v, comp_zero, comp_zero, add_zero, zero_comp,
-    d_fst_v _ _ _ _ h, comp_neg, inl_v_fst_v_assoc, comp_neg, neg_eq_zero,
-    add_comp, assoc, assoc, assoc, assoc, inr_f_snd_v, comp_id, zero_comp,
-    d_snd_v _ _ _ h, comp_add, inl_v_fst_v_assoc, inl_v_snd_v_assoc, zero_comp, add_zero] at w
+  rw [hab, ext_to_iff _ n₁ (n₁ + 1) rfl, add_comp, assoc, assoc, inr_f_d, add_comp, assoc, assoc,
+      assoc, assoc, inr_f_fst_v, comp_zero, comp_zero, add_zero, zero_comp, d_fst_v _ _ _ _ h,
+      comp_neg, inl_v_fst_v_assoc, comp_neg, neg_eq_zero, add_comp, assoc, assoc, assoc, assoc,
+      inr_f_snd_v, comp_id, zero_comp, d_snd_v _ _ _ h, comp_add, inl_v_fst_v_assoc,
+      inl_v_snd_v_assoc, zero_comp, add_zero]
+    at w
   /- We simplify the RHS. -/
   conv_rhs => simp only [hab, add_comp, assoc, inr_f_descShortComplex_f,
     inl_v_descShortComplex_f, comp_zero, zero_add]
@@ -126,9 +130,8 @@ lemma homologySequenceδ_triangleh (n₀ : ℤ) (n₁ : ℤ) (h : n₀ + 1 = n�
     S.X₁.liftCycles_shift_homologyπ_assoc _ _ _ _ n₁ (by lia) (n₁ + 1) (by simp),
     Iso.inv_hom_id_app]
   dsimp [homologyFunctor_shift]
-  simp only [hab, add_comp, assoc, inl_v_triangle_mor₃_f_assoc,
-    shiftFunctorObjXIso, neg_comp, Iso.inv_hom_id, comp_neg, comp_id,
-    inr_f_triangle_mor₃_f_assoc, zero_comp, comp_zero, add_zero]
+  simp only [hab, add_comp, assoc, inl_v_triangle_mor₃_f_assoc, shiftFunctorObjXIso, neg_comp,
+    Iso.inv_hom_id, comp_neg, comp_id, inr_f_triangle_mor₃_f_assoc, zero_comp, comp_zero, add_zero]
 
 open ComposableArrows
 
@@ -138,12 +141,14 @@ include hS in
 lemma quasiIso_descShortComplex : QuasiIso (descShortComplex S) where
   quasiIsoAt n := by
     rw [quasiIsoAt_iff_isIso_homologyMap]
-    let φ : ((homologyFunctor C (up ℤ) 0).homologySequenceComposableArrows₅
-        (triangleh S.f) n _ rfl).δlast ⟶ (composableArrows₅ hS n _ rfl).δlast :=
+    let φ
+        : ((homologyFunctor C (up ℤ) 0).homologySequenceComposableArrows₅ (triangleh S.f) n _
+            rfl).δlast
+          ⟶ (composableArrows₅ hS n _ rfl).δlast :=
       homMk₄ ((homologyFunctorFactors C (up ℤ) _).hom.app _)
         ((homologyFunctorFactors C (up ℤ) _).hom.app _)
-        ((homologyFunctorFactors C (up ℤ) _).hom.app _ ≫
-          HomologicalComplex.homologyMap (descShortComplex S) n)
+        ((homologyFunctorFactors C (up ℤ) _).hom.app _
+          ≫ HomologicalComplex.homologyMap (descShortComplex S) n)
         ((homologyFunctorFactors C (up ℤ) _).hom.app _)
         ((homologyFunctorFactors C (up ℤ) _).hom.app _)
         ((homologyFunctorFactors C (up ℤ) _).hom.naturality S.f)
@@ -159,8 +164,9 @@ lemma quasiIso_descShortComplex : QuasiIso (descShortComplex S) where
           simp only [Functor.comp_obj, HomologicalComplex.homologyFunctor_obj, assoc,
             Iso.inv_hom_id_app, comp_id])
         ((homologyFunctorFactors C (up ℤ) _).hom.naturality S.f)
-    have : IsIso ((homologyFunctorFactors C (up ℤ) n).hom.app (mappingCone S.f) ≫
-        HomologicalComplex.homologyMap (descShortComplex S) n) := by
+    have : IsIso
+        ((homologyFunctorFactors C (up ℤ) n).hom.app (mappingCone S.f)
+          ≫ HomologicalComplex.homologyMap (descShortComplex S) n) := by
       apply Abelian.isIso_of_epi_of_isIso_of_isIso_of_mono
         ((homologyFunctor C (up ℤ) 0).homologySequenceComposableArrows₅_exact _
           (mappingCone_triangleh_distinguished S.f) n _ rfl).δlast
@@ -169,8 +175,8 @@ lemma quasiIso_descShortComplex : QuasiIso (descShortComplex S) where
     apply IsIso.of_isIso_comp_left ((homologyFunctorFactors C (up ℤ) n).hom.app (mappingCone S.f))
 
 @[reassoc]
-lemma descShortComplex_naturality {S₁ S₂ : ShortComplex (CochainComplex C ℤ)} (f : S₁ ⟶ S₂) :
-    map S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm ≫ descShortComplex S₂ = descShortComplex S₁ ≫ f.τ₃ := by
+lemma descShortComplex_naturality {S₁ S₂ : ShortComplex (CochainComplex C ℤ)} (f : S₁ ⟶ S₂)
+    : map S₁.f S₂.f f.τ₁ f.τ₂ f.comm₁₂.symm ≫ descShortComplex S₂ = descShortComplex S₁ ≫ f.τ₃ := by
   ext n
   apply ext_from _ (n + 1) n rfl
   · simp [map]
@@ -180,11 +186,11 @@ variable {D : Type*} [Category* D] [Abelian D]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-lemma mapHomologicalComplexIso_hom_descShortComplex (F : C ⥤ D) [F.Additive]
-    (S : ShortComplex (CochainComplex C ℤ)) :
-    (mapHomologicalComplexIso _ _).hom ≫
-      descShortComplex (S.map (F.mapHomologicalComplex (.up ℤ))) =
-    (F.mapHomologicalComplex (.up ℤ)).map (descShortComplex S) := by
+lemma mapHomologicalComplexIso_hom_descShortComplex
+    (F : C ⥤ D) [F.Additive] (S : ShortComplex (CochainComplex C ℤ))
+    : (mapHomologicalComplexIso _ _).hom
+        ≫ descShortComplex (S.map (F.mapHomologicalComplex (.up ℤ)))
+      = (F.mapHomologicalComplex (.up ℤ)).map (descShortComplex S) := by
   symm
   ext n
   simp [mapHomologicalComplexIso, descShortComplex, mapHomologicalComplexXIso,

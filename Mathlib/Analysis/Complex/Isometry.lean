@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Complex.Circle
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
-
 import Mathlib.Tactic.SuppressCompilation
 
 /-!
@@ -32,7 +31,6 @@ The proof of `linear_isometry_complex_aux` is separated in the following parts:
 
 @[expose] public section
 
-
 noncomputable section
 suppress_compilation -- needed to avoid a panic!
 
@@ -45,19 +43,19 @@ open scoped ComplexConjugate
 local notation "|" x "|" => Complex.abs x
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- An element of the unit circle defines a `LinearIsometryEquiv` from `ℂ` to itself, by
-rotation. -/
+/--
+An element of the unit circle defines a `LinearIsometryEquiv` from `ℂ` to itself, by
+rotation.
+-/
 def rotation : Circle →* ℂ ≃ₗᵢ[ℝ] ℂ where
-  toFun a :=
-    { DistribMulAction.toLinearEquiv ℝ ℂ a with
-      norm_map' x := show ‖a * x‖ = ‖x‖ by
-        rw [norm_mul, Circle.norm_coe, one_mul] }
+  toFun a := {
+    DistribMulAction.toLinearEquiv ℝ ℂ a with
+    norm_map' x := show ‖a * x‖ = ‖x‖ by rw [norm_mul, Circle.norm_coe, one_mul]
+  }
   map_one' := LinearIsometryEquiv.ext <| by simp
   map_mul' a b := LinearIsometryEquiv.ext <| mul_smul a b
 
-@[simp]
-theorem rotation_apply (a : Circle) (z : ℂ) : rotation a z = a * z :=
-  rfl
+@[simp] theorem rotation_apply (a : Circle) (z : ℂ) : rotation a z = a * z := rfl
 
 @[simp]
 theorem rotation_symm (a : Circle) : (rotation a).symm = rotation a⁻¹ :=
@@ -76,33 +74,35 @@ theorem rotation_ne_conjLIE (a : Circle) : rotation a ≠ conjLIE := by
   rw [rotation_apply, conj_I, ← neg_one_mul, mul_left_inj' I_ne_zero, h1, eq_neg_self_iff] at hI
   exact one_ne_zero hI
 
-/-- Takes an element of `ℂ ≃ₗᵢ[ℝ] ℂ` and checks if it is a rotation, returns an element of the
-unit circle. -/
-@[simps]
-def rotationOf (e : ℂ ≃ₗᵢ[ℝ] ℂ) : Circle :=
-  ⟨e 1 / ‖e 1‖, by simp [Submonoid.unitSphere]⟩
+/--
+Takes an element of `ℂ ≃ₗᵢ[ℝ] ℂ` and checks if it is a rotation, returns an element of the
+unit circle.
+-/
+@[simps] def rotationOf (e : ℂ ≃ₗᵢ[ℝ] ℂ) : Circle := ⟨e 1 / ‖e 1‖, by simp [Submonoid.unitSphere]⟩
 
 @[simp]
-theorem rotationOf_rotation (a : Circle) : rotationOf (rotation a) = a :=
-  Subtype.ext <| by simp
+theorem rotationOf_rotation (a : Circle) : rotationOf (rotation a) = a := Subtype.ext <| by simp
 
 theorem rotation_injective : Function.Injective rotation :=
   Function.LeftInverse.injective rotationOf_rotation
 
-theorem LinearIsometry.re_apply_eq_re_of_add_conj_eq (f : ℂ →ₗᵢ[ℝ] ℂ)
-    (h₃ : ∀ z, z + conj z = f z + conj (f z)) (z : ℂ) : (f z).re = z.re := by
-  simpa [Complex.ext_iff, add_re, add_im, conj_re, conj_im, ← two_mul,
-    show (2 : ℝ) ≠ 0 by simp] using (h₃ z).symm
+theorem LinearIsometry.re_apply_eq_re_of_add_conj_eq
+    (f : ℂ →ₗᵢ[ℝ] ℂ) (h₃ : ∀ z, z + conj z = f z + conj (f z)) (z : ℂ)
+    : (f z).re = z.re := by
+  simpa [Complex.ext_iff, add_re, add_im, conj_re, conj_im, ← two_mul, show (2 : ℝ) ≠ 0 by simp]
+    using (h₃ z).symm
 
-theorem LinearIsometry.im_apply_eq_im_or_neg_of_re_apply_eq_re {f : ℂ →ₗᵢ[ℝ] ℂ}
-    (h₂ : ∀ z, (f z).re = z.re) (z : ℂ) : (f z).im = z.im ∨ (f z).im = -z.im := by
+theorem LinearIsometry.im_apply_eq_im_or_neg_of_re_apply_eq_re
+    {f : ℂ →ₗᵢ[ℝ] ℂ} (h₂ : ∀ z, (f z).re = z.re) (z : ℂ)
+    : (f z).im = z.im ∨ (f z).im = -z.im := by
   have h₁ := f.norm_map z
   simp only [norm_def] at h₁
-  rwa [Real.sqrt_inj (normSq_nonneg _) (normSq_nonneg _), normSq_apply (f z), normSq_apply z,
-    h₂, add_left_cancel_iff, mul_self_eq_mul_self_iff] at h₁
+  rwa [Real.sqrt_inj (normSq_nonneg _) (normSq_nonneg _), normSq_apply (f z), normSq_apply z, h₂,
+      add_left_cancel_iff, mul_self_eq_mul_self_iff]
+    at h₁
 
-theorem LinearIsometry.im_apply_eq_im {f : ℂ →ₗᵢ[ℝ] ℂ} (h : f 1 = 1) (z : ℂ) :
-    z + conj z = f z + conj (f z) := by
+theorem LinearIsometry.im_apply_eq_im {f : ℂ →ₗᵢ[ℝ] ℂ} (h : f 1 = 1) (z : ℂ)
+    : z + conj z = f z + conj (f z) := by
   have hsq : ‖f z - 1‖ ^ 2 = ‖z - 1‖ ^ 2 := by simpa [h] using f.norm_map (z - 1)
   simp_rw [← normSq_eq_norm_sq, Complex.normSq_sub] at hsq
   simpa [normSq_eq_norm_sq, Complex.add_conj, LinearIsometry.norm_map] using hsq.symm
@@ -111,8 +111,8 @@ theorem LinearIsometry.re_apply_eq_re {f : ℂ →ₗᵢ[ℝ] ℂ} (h : f 1 = 1)
   apply LinearIsometry.re_apply_eq_re_of_add_conj_eq
   apply LinearIsometry.im_apply_eq_im h
 
-theorem linear_isometry_complex_aux {f : ℂ ≃ₗᵢ[ℝ] ℂ} (h : f 1 = 1) :
-    f = LinearIsometryEquiv.refl ℝ ℂ ∨ f = conjLIE := by
+theorem linear_isometry_complex_aux {f : ℂ ≃ₗᵢ[ℝ] ℂ} (h : f 1 = 1)
+    : f = LinearIsometryEquiv.refl ℝ ℂ ∨ f = conjLIE := by
   have h0 : f I = I ∨ f I = -I := by
     simp only [Complex.ext_iff, ← and_or_left, neg_re, I_re, neg_im, neg_zero]
     constructor
@@ -121,15 +121,15 @@ theorem linear_isometry_complex_aux {f : ℂ ≃ₗᵢ[ℝ] ℂ} (h : f 1 = 1) :
     · apply @LinearIsometry.im_apply_eq_im_or_neg_of_re_apply_eq_re f.toLinearIsometry
       intro z
       rw [@LinearIsometry.re_apply_eq_re f.toLinearIsometry h]
-  refine h0.imp (fun h' : f I = I => ?_) fun h' : f I = -I => ?_ <;>
-    · apply LinearIsometryEquiv.toLinearEquiv_injective
-      apply Complex.basisOneI.ext'
-      intro i
-      fin_cases i <;> simp [h, h']
+  refine h0.imp (fun h' : f I = I => ?_) fun h' : f I = -I => ?_
+    <;> · apply LinearIsometryEquiv.toLinearEquiv_injective
+          apply Complex.basisOneI.ext'
+          intro i
+          fin_cases i <;> simp [h, h']
 
 set_option backward.isDefEq.respectTransparency false in
-theorem linear_isometry_complex (f : ℂ ≃ₗᵢ[ℝ] ℂ) :
-    ∃ a : Circle, f = rotation a ∨ f = conjLIE.trans (rotation a) := by
+theorem linear_isometry_complex (f : ℂ ≃ₗᵢ[ℝ] ℂ)
+    : ∃ a : Circle, f = rotation a ∨ f = conjLIE.trans (rotation a) := by
   let a : Circle := ⟨f 1, by simp [Submonoid.unitSphere, f.norm_map]⟩
   use a
   have : (f.trans (rotation a).symm) 1 = 1 := by simpa [a] using rotation_apply a⁻¹ (f 1)
@@ -137,11 +137,13 @@ theorem linear_isometry_complex (f : ℂ ≃ₗᵢ[ℝ] ℂ) :
   · simpa using eq_mul_of_inv_mul_eq h₁
   · exact eq_mul_of_inv_mul_eq h₂
 
-/-- The matrix representation of `rotation a` is equal to the conformal matrix
-`!![re a, -im a; im a, re a]`. -/
-theorem toMatrix_rotation (a : Circle) :
-    LinearMap.toMatrix basisOneI basisOneI (rotation a).toLinearEquiv =
-      Matrix.planeConformalMatrix (re a) (im a) (by simp [pow_two, ← normSq_apply]) := by
+/--
+The matrix representation of `rotation a` is equal to the conformal matrix
+`!![re a, -im a; im a, re a]`.
+-/
+theorem toMatrix_rotation (a : Circle)
+    : LinearMap.toMatrix basisOneI basisOneI (rotation a).toLinearEquiv
+      = Matrix.planeConformalMatrix (re a) (im a) (by simp [pow_two, ← normSq_apply]) := by
   ext i j
   simp only [LinearMap.toMatrix_apply, coe_basisOneI, LinearEquiv.coe_coe,
     LinearIsometryEquiv.coe_toLinearEquiv, rotation_apply, coe_basisOneI_repr, mul_re, mul_im,

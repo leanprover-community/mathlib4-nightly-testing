@@ -10,26 +10,27 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 
 section
 
-variable {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H]
+  (I : ModelWithCorners 𝕜 E H)
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
 
-variable (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+variable
+  (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F]
   -- `F` model fiber
   (n : WithTop ℕ∞)
-  (V : M → Type*) [TopologicalSpace (TotalSpace F V)]
-  [∀ x, AddCommGroup (V x)] [∀ x, Module 𝕜 (V x)]
-  [∀ x : M, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
-  [∀ x, ContinuousSMul 𝕜 (V x)]
-  [FiberBundle F V] [VectorBundle 𝕜 F V]
-  -- `V` vector bundle
+  (V : M → Type*) [TopologicalSpace (TotalSpace F V)] [∀ x, AddCommGroup (V x)]
+  [∀ x, Module 𝕜 (V x)] [∀ x : M, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
+  [∀ x, ContinuousSMul 𝕜 (V x)] [FiberBundle F V] [VectorBundle 𝕜 F V]
+-- `V` vector bundle
 
 /-! Tests for the `T%` elaborator, inserting calls to `TotalSpace.mk'` automatically. -/
 section TotalSpace
 
-variable {σ : Π x : M, V x}
-  {σ' : (x : E) → Trivial E E' x} {σ'' : (y : E) → Trivial E E' y} {s : E → E'}
+variable
+  {σ : Π x : M, V x} {σ' : (x : E) → Trivial E E' x} {σ'' : (y : E) → Trivial E E' y} {s : E → E'}
 
 /-- info: (T% σ) : M → TotalSpace F V -/
 #guard_msgs in
@@ -177,8 +178,10 @@ end
 section
 -- Check minimal assumptions to find a model fiber.
 
-variable {B F Z : Type*} [TopologicalSpace B] [TopologicalSpace F]
-  {E : B → Type*} [TopologicalSpace (TotalSpace F E)] (σ : (b : B) → E b)
+variable
+  {B F Z : Type*} [TopologicalSpace B] [TopologicalSpace F]
+  {E : B → Type*} [TopologicalSpace (TotalSpace F E)]
+  (σ : (b : B) → E b)
 /-- info: (T% σ) : B → TotalSpace F E -/
 #guard_msgs in
 #check T% σ
@@ -188,8 +191,8 @@ end
 -- This used to silently do nothing; now there is a helpful error.
 section
 
-variable {B F Z : Type*} [TopologicalSpace B] [TopologicalSpace F]
-  {E : B → Type*} (σ : (b : B) → E b)
+variable
+  {B F Z : Type*} [TopologicalSpace B] [TopologicalSpace F] {E : B → Type*} (σ : (b : B) → E b)
 /--
 error: could not find a `FiberBundle` instance on `E`:
 `σ` is a function into `E`
@@ -216,8 +219,10 @@ set_option pp.notation false
 /-! Tests for the elaborators for `MDifferentiable{WithinAt,At,On}`. -/
 section differentiability
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
 
 /-! Some basic tests: a simple function, both in applied and unapplied form -/
@@ -411,7 +416,6 @@ info: MDifferentiableWithinAt (modelWithCornersSelf 𝕜 E) (modelWithCornersSel
 /-- info: MDifferentiableOn (modelWithCornersSelf 𝕜 E) (modelWithCornersSelf 𝕜 E') f s : Prop -/
 #guard_msgs in
 #check MDiff[s] f
-
 
 -- Normed space to a field.
 variable {f : E → 𝕜} {s : Set E} {x : E}
@@ -617,8 +621,10 @@ section smoothness
 
 -- Copy-pasted the tests for differentiability mutatis mutandis.
 -- Start with some basic tests: a simple function, both in applied and unapplied form.
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
 
 -- TODO: add tests for the error message when smoothness hypotheses are missing
@@ -841,7 +847,10 @@ end coercions
 section dependent
 
 variable {σ : Π x : M, V x} {σ' : (x : E) → Trivial E E' x} {s : E → E'}
-variable {ι : Type*} {i : ι} (X : (m : M) → TangentSpace I m) [IsManifold I 1 M]
+variable
+  {ι : Type*} {i : ι}
+  (X : (m : M) → TangentSpace I m)
+  [IsManifold I 1 M]
   (X' : ι → (m : M) → TangentSpace I m)
 
 /--
@@ -1017,8 +1026,10 @@ end smoothness
 /-! Inferring the type of `x` for all ContMDiff/MDifferentiable{Within}At elaborators. -/
 section
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
   {f : M → M'} {s : Set M}
 
@@ -1060,8 +1071,9 @@ section
 open scoped ContDiff
 
 -- This does not require any `IsManifold` hypothesis, ...
-variable {X Y : Type*} [TopologicalSpace X] [ChartedSpace ℝ X]
-  [TopologicalSpace Y] [ChartedSpace ℝ Y] {f : X → Y}
+variable
+  {X Y : Type*} [TopologicalSpace X] [ChartedSpace ℝ X] [TopologicalSpace Y] [ChartedSpace ℝ Y]
+  {f : X → Y}
 
 /--
 info: ContMDiff (modelWithCornersSelf Real Real) (modelWithCornersSelf Real Real) Top.top f : Prop
@@ -1069,10 +1081,12 @@ info: ContMDiff (modelWithCornersSelf Real Real) (modelWithCornersSelf Real Real
 #guard_msgs in
 #check CMDiff ω f
 
-variable {f : X → ℝ} in /--
+variable {f : X → ℝ} in
+/--
 info: MDifferentiable (modelWithCornersSelf Real Real) (modelWithCornersSelf Real Real) f : Prop
 -/
-#guard_msgs in #check MDiff f
+#guard_msgs in
+#check MDiff f
 
 variable {X : Type*} [TopologicalSpace X] [ChartedSpace F X] {f : X → 𝕜} in
 /-- info: MDifferentiable (modelWithCornersSelf 𝕜 F) (modelWithCornersSelf 𝕜 𝕜) f : Prop -/
@@ -1091,11 +1105,12 @@ Hint: failures to find a model with corners can be debugged with the command `se
 #check MDiff f
 
 -- ... but also works with an `IsManifold` hypothesis in context.
-variable [IsManifold 𝓘(ℝ) n X] [IsManifold 𝓘(ℝ) ω Y]
+variable [IsManifold (𝓘(ℝ)) n X] [IsManifold (𝓘(ℝ)) ω Y]
 /--
 info: MDifferentiable (modelWithCornersSelf Real Real) (modelWithCornersSelf Real Real) f : Prop
 -/
-#guard_msgs in #check MDiff f
+#guard_msgs in
+#check MDiff f
 
 end
 
@@ -1129,8 +1144,10 @@ end
 /-! Products of models with corners: TODO, add lots of further tests -/
 section
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
   {f g : M → M'} {h h₂ : M → 𝕜} {h' : E → M'} {k k' : M × E → M'} {φ φ' : OpenPartialHomeomorph M H}
   {f' : E → M} {g' : EM' → M'} {h' k' : F → M'}
@@ -1401,7 +1418,8 @@ info: MDifferentiable (I.prod (modelWithCornersSelf 𝕜 E)) (I'.prod I)
   (Sum.map (Prod.map (Sum.map f f) (Sum.map f' g')) (Prod.map (Sum.map f f) (Sum.map f' g'))) : Prop
 -/
 #guard_msgs in
-#check MDiff (Sum.map (Prod.map (Sum.map f f) (Sum.map f' g')) (Prod.map (Sum.map f f) (Sum.map f' g'))) -- domain: (M ⊕ M) × (E ⊕ E) ⊕ (M ⊕ M) × (E ⊕ E)
+#check
+  MDiff (Sum.map (Prod.map (Sum.map f f) (Sum.map f' g')) (Prod.map (Sum.map f f) (Sum.map f' g'))) -- domain: (M ⊕ M) × (E ⊕ E) ⊕ (M ⊕ M) × (E ⊕ E)
 
 section opens
 

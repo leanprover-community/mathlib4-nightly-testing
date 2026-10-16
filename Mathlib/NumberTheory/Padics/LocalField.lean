@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.NumberTheory.Padics.ValuativeRel
-
 import Mathlib.NumberTheory.Padics.ProperSpace
 
 /-!
@@ -20,6 +19,8 @@ public section
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- The `p`-adic numbers form a non-archimedean local field: the topology comes from the valuative
-relation, `ℚ_[p]` is locally compact, and the valuation is nontrivial. -/
+/--
+The `p`-adic numbers form a non-archimedean local field: the topology comes from the valuative
+relation, `ℚ_[p]` is locally compact, and the valuation is nontrivial.
+-/
 instance : IsNonarchimedeanLocalField ℚ_[p] := ⟨⟩

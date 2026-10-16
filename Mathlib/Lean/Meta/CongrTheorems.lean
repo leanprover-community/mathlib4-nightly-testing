@@ -20,7 +20,8 @@ namespace Lean.Meta
 
 initialize registerTraceClass `Meta.CongrTheorems
 
-/-- Generates a congruence lemma for a function `f` for `numArgs` of its arguments.
+/--
+Generates a congruence lemma for a function `f` for `numArgs` of its arguments.
 The only `Lean.Meta.CongrArgKind` kinds that appear in such a lemma
 are `.eq`, `.heq`, and `.subsingletonInst`.
 The resulting lemma proves either an `Eq` or a `HEq` depending on whether the types
@@ -31,7 +32,8 @@ It transforms the resulting congruence lemma by trying to automatically prove hy
 using subsingleton lemmas, and if they are so provable they are recorded with `.subsingletonInst`.
 Note that this is slightly abusing `.subsingletonInst` since
 (1) the argument might not be for a `Decidable` instance and
-(2) the argument might not even be an instance. -/
+(2) the argument might not even be an instance.
+-/
 def mkHCongrWithArity' (f : Expr) (numArgs : Nat) : MetaM CongrTheorem := do
   let thm ← mkHCongrWithArity f numArgs
   process thm thm.type thm.argKinds.toList #[] #[] #[] #[]
@@ -48,24 +50,27 @@ where
   - `args` is the list of arguments (fvars) to supply to `cthm.proof` before abstracting `params`.
   - `letArgs` records `(fvar, expr)` assignments for each `fvar` that was solved for by `prove`.
   -/
-  process (cthm : CongrTheorem) (type : Expr) (argKinds : List CongrArgKind)
-      (argKinds' : Array CongrArgKind) (params args : Array Expr)
-      (letArgs : Array (Expr × Expr)) : MetaM CongrTheorem := do
+  process
+      (cthm : CongrTheorem) (type : Expr) (argKinds : List CongrArgKind)
+      (argKinds' : Array CongrArgKind) (params args : Array Expr) (letArgs : Array (Expr × Expr))
+      : MetaM CongrTheorem := do
     match argKinds with
     | [] =>
       if letArgs.isEmpty then
         -- Then we didn't prove anything, so we can use the CongrTheorem as-is.
         return cthm
       else
-        let proof := letArgs.foldr (init := mkAppN cthm.proof args) (fun (fvar, val) proof =>
-          (proof.abstract #[fvar]).instantiate1 val)
+        let proof :=
+          letArgs.foldr (init := mkAppN cthm.proof args)
+            (fun (fvar, val) proof => (proof.abstract #[fvar]).instantiate1 val)
         let pf' ← mkLambdaFVars params proof
-        return {proof := pf', type := ← inferType pf', argKinds := argKinds'}
+        return { proof := pf', type := ← inferType pf', argKinds := argKinds' }
     | argKind :: argKinds =>
       match argKind with
       | .eq | .heq =>
         forallBoundedTelescope type (some 3) fun params' type' => do
-          let #[x, y, eq] := params' | unreachable!
+          let #[x, y, eq] := params'
+            | unreachable!
           -- See if we can prove `Eq` from previous parameters.
           let g := (← mkFreshExprMVar (← inferType eq)).mvarId!
           let g ← g.clear eq.fvarId!
@@ -75,17 +80,18 @@ where
               (params := params ++ #[x, y]) (args := args ++ params')
               (letArgs := letArgs.push (eq, eqPf))
           else
-            process cthm type' argKinds (argKinds'.push argKind)
-              (params := params ++ params') (args := args ++ params')
-              (letArgs := letArgs)
-      | _ => panic! "Unexpected CongrArgKind"
+            process cthm type' argKinds (argKinds'.push argKind) (params := params ++ params')
+              (args := args ++ params') (letArgs := letArgs)
+      | _ =>
+        panic! "Unexpected CongrArgKind"
   /-- Close the goal given only the fvars in `params`, or else fails. -/
   prove (g : MVarId) (params : Array Expr) : MetaM Unit := do
     -- Prune the local context.
     let g ← g.cleanup
     -- Substitute equalities that come from only this congruence lemma.
-    let [g] ← g.casesRec fun localDecl => do
-      return (localDecl.type.isEq || localDecl.type.isHEq) && params.contains localDecl.toExpr
+    let [g] ←
+        g.casesRec fun localDecl => do
+          return (localDecl.type.isEq || localDecl.type.isHEq) && params.contains localDecl.toExpr
       | failure
     try g.refl; return catch _ => pure ()
     try g.hrefl; return catch _ => pure ()
@@ -110,8 +116,9 @@ class FastIsEmpty (α : Sort u) : Prop where
 protected theorem FastSubsingleton.elim {α : Sort u} [h : FastSubsingleton α] : (a b : α) → a = b :=
   h.inst.allEq
 
-protected theorem FastSubsingleton.helim {α β : Sort u} [FastSubsingleton α]
-    (h₂ : α = β) (a : α) (b : β) : a ≍ b := by
+protected theorem FastSubsingleton.helim
+    {α β : Sort u} [FastSubsingleton α] (h₂ : α = β) (a : α) (b : β)
+    : a ≍ b := by
   have : Subsingleton α := FastSubsingleton.inst
   exact Subsingleton.helim h₂ a b
 
@@ -132,12 +139,12 @@ instance : FastIsEmpty False := {}
 
 instance : FastIsEmpty (Fin 0) := {}
 
-instance {α : Sort u} [inst : FastIsEmpty α] {β : (x : α) → Sort v} :
-    FastSubsingleton ((x : α) → β x) where
+instance {α : Sort u} [inst : FastIsEmpty α] {β : (x : α) → Sort v}
+    : FastSubsingleton ((x : α) → β x) where
   inst.allEq _ _ := funext fun a => (inst.inst.false a).elim
 
-instance {α : Sort u} {β : (x : α) → Sort v} [inst : ∀ x, FastSubsingleton (β x)] :
-    FastSubsingleton ((x : α) → β x) where
+instance {α : Sort u} {β : (x : α) → Sort v} [inst : ∀ x, FastSubsingleton (β x)]
+    : FastSubsingleton ((x : α) → β x) where
   inst := have := fun x ↦ (inst x).inst; inferInstance
 
 /--
@@ -152,8 +159,9 @@ def withSubsingletonAsFast {α : Type} [Inhabited α] (mx : (Expr → Expr) → 
   let mkInst (f : Name) (inst : Expr) : MetaM Expr := do
     forallTelescopeReducing (← inferType inst) fun args _ => do
       mkLambdaFVars args <| ← mkAppOptM f #[none, mkAppN inst args]
-  let vals := (← insts1.mapM fun inst => mkInst ``FastSubsingleton.mk inst.fvar)
-    ++ (← insts2.mapM fun inst => mkInst ``FastIsEmpty.mk inst.fvar)
+  let vals :=
+    (← insts1.mapM fun inst => mkInst ``FastSubsingleton.mk inst.fvar)
+      ++ (← insts2.mapM fun inst => mkInst ``FastIsEmpty.mk inst.fvar)
   let tys ← vals.mapM inferType
   withLocalDeclsD (tys.map fun ty => (`inst, fun _ => pure ty)) fun args =>
     withNewLocalInstances args 0 do
@@ -163,15 +171,17 @@ def withSubsingletonAsFast {α : Type} [Inhabited α] (mx : (Expr → Expr) → 
 /-- Like `subsingletonElim` but uses `FastSubsingleton` to fail fast. -/
 def fastSubsingletonElim (mvarId : MVarId) : MetaM Bool :=
   mvarId.withContext do
-    let res ← observing? do
-      mvarId.checkNotAssigned `fastSubsingletonElim
-      let tgt ← withReducible mvarId.getType'
-      let some (_, lhs, rhs) := tgt.eq? | failure
-      -- Note: `mkAppM` uses `withNewMCtxDepth`, which prevents `Sort _` from specializing to `Prop`
-      let pf ← withSubsingletonAsFast fun elim =>
-        elim <$> mkAppM ``FastSubsingleton.elim #[lhs, rhs]
-      mvarId.assign pf
-      return true
+    let res ←
+      observing? do
+        mvarId.checkNotAssigned `fastSubsingletonElim
+        let tgt ← withReducible mvarId.getType'
+        let some (_, lhs, rhs) := tgt.eq?
+          | failure
+        -- Note: `mkAppM` uses `withNewMCtxDepth`, which prevents `Sort _` from specializing to `Prop`
+        let pf ←
+          withSubsingletonAsFast fun elim => elim <$> mkAppM ``FastSubsingleton.elim #[lhs, rhs]
+        mvarId.assign pf
+        return true
     return res.getD false
 
 /--
@@ -216,10 +226,10 @@ This is the interpretation of the `CongrArgKind`s in the generated congruence th
 
 Note that the first entry in this array is for the function itself.
 -/
-partial def mkRichHCongr (fType : Expr) (info : FunInfo)
-    (fixedFun : Bool := false) (fixedParams : Array Bool := #[])
-    (forceHEq : Bool := false) :
-    MetaM CongrTheorem := do
+partial def mkRichHCongr
+    (fType : Expr) (info : FunInfo)
+    (fixedFun : Bool := false) (fixedParams : Array Bool := #[]) (forceHEq : Bool := false)
+    : MetaM CongrTheorem := do
   trace[Meta.CongrTheorems] "ftype: {fType}"
   trace[Meta.CongrTheorems] "deps: {info.paramInfo.map (fun p => p.backDeps)}"
   trace[Meta.CongrTheorems] "fixedFun={fixedFun}, fixedParams={fixedParams}"
@@ -228,71 +238,79 @@ partial def mkRichHCongr (fType : Expr) (info : FunInfo)
     trace[Meta.CongrTheorems] "ys = {ys}"
     trace[Meta.CongrTheorems] "computed fixedParams={fixedParams}"
     let lctx := (← getLCtx) -- checkpoint for a local context that only has the parameters
-    withLocalDeclD `f fType fun ef => withLocalDeclD `f' fType fun pef' => do
-    let ef' := if fixedFun then ef else pef'
-    withLocalDeclD `e (← mkEq ef ef') fun ee => do
-    withNewEqs xs ys fixedParams fun kinds eqs => do
-      let fParams := if fixedFun then #[ef] else #[ef, ef', ee]
-      let mut hs := fParams     -- parameters to the basic congruence lemma
-      let mut hs' := fParams    -- parameters to the richer congruence lemma
-      let mut vals' := fParams  -- how to calculate the basic parameters from the richer ones
-      for i in [0 : info.getArity] do
-        hs := hs.push xs[i]!
-        hs' := hs'.push xs[i]!
-        vals' := vals'.push xs[i]!
-        if let some (eq, eq', val) := eqs[i]! then
-          -- Not a fixed argument
-          hs := hs.push ys[i]! |>.push eq
-          hs' := hs'.push ys[i]! |>.push eq'
-          vals' := vals'.push ys[i]! |>.push val
-      -- Generate the theorem with respect to the simpler hypotheses
-      let mkConcl := if forceHEq then mkHEq else mkEqHEq
-      let congrType ← mkForallFVars hs (← mkConcl (mkAppN ef xs) (mkAppN ef' ys))
-      trace[Meta.CongrTheorems] "simple congrType: {congrType}"
-      let some proof ← withLCtx lctx (← getLocalInstances) <| trySolve congrType
-        | throwError "Internal error when constructing congruence lemma proof"
-      -- At this point, `mkLambdaFVars hs' (mkAppN proof vals')` is the richer proof.
-      -- We try to precompute some of the arguments using `trySolve`.
-      let mut hs'' := #[] -- eq' parameters that are actually used beyond those in `fParams`
-      let mut pfVars := #[] -- eq' parameters that can be solved for already
-      let mut pfVals := #[] -- the values to use for these parameters
-      let mut kinds' : Array CongrArgKind := #[if fixedFun then .fixed else .eq]
-      for i in [0 : info.getArity] do
-        hs'' := hs''.push xs[i]!
-        if let some (_, eq', _) := eqs[i]! then
-          -- Not a fixed argument
-          hs'' := hs''.push ys[i]!
-          let pf? ← withLCtx lctx (← getLocalInstances) <| trySolve (← inferType eq')
-          if let some pf := pf? then
-            pfVars := pfVars.push eq'
-            pfVals := pfVals.push pf
-            kinds' := kinds'.push .subsingletonInst
-          else
-            hs'' := hs''.push eq'
-            kinds' := kinds'.push kinds[i]!
-        else
-          kinds' := kinds'.push .fixed
-      trace[Meta.CongrTheorems] "CongrArgKinds: {repr kinds'}"
-      -- Take `proof`, abstract the pfVars and provide the solved-for proofs (as an
-      -- optimization for proof term size) then abstract the remaining variables.
-      -- The `usedOnly` probably has no affect.
-      -- Note that since we are doing `proof.beta vals'` there is technically some quadratic
-      -- complexity, but it shouldn't be too bad since they're some applications of just variables.
-      let proof' ← mkLambdaFVars fParams (← mkLambdaFVars (usedOnly := true) hs''
-                    (mkAppN (← mkLambdaFVars pfVars (proof.beta vals')) pfVals))
-      let congrType' ← inferType proof'
-      trace[Meta.CongrTheorems] "rich congrType: {congrType'}"
-      return {proof := proof', type := congrType', argKinds := kinds'}
+    withLocalDeclD `f fType fun ef =>
+      withLocalDeclD `f' fType fun pef' => do
+        let ef' := if fixedFun then ef else pef'
+        withLocalDeclD `e (← mkEq ef ef') fun ee => do
+          withNewEqs xs ys fixedParams fun kinds eqs => do
+            let fParams := if fixedFun then #[ef] else #[ef, ef', ee]
+            let mut hs := fParams -- parameters to the basic congruence lemma
+            let mut hs' := fParams -- parameters to the richer congruence lemma
+            let mut vals' := fParams -- how to calculate the basic parameters from the richer ones
+            for i in [0:info.getArity] do
+              hs := hs.push xs[i]!
+              hs' := hs'.push xs[i]!
+              vals' := vals'.push xs[i]!
+              if let some (eq, eq', val) := eqs[i]! then
+                -- Not a fixed argument
+                hs := hs.push ys[i]! |>.push eq
+                hs' := hs'.push ys[i]! |>.push eq'
+                vals' := vals'.push ys[i]! |>.push val
+            -- Generate the theorem with respect to the simpler hypotheses
+            let mkConcl := if forceHEq then mkHEq else mkEqHEq
+            let congrType ← mkForallFVars hs (← mkConcl (mkAppN ef xs) (mkAppN ef' ys))
+            trace[Meta.CongrTheorems] "simple congrType: {congrType}"
+            let some proof ← withLCtx lctx (← getLocalInstances) <| trySolve congrType
+              | throwError "Internal error when constructing congruence lemma proof"
+            -- At this point, `mkLambdaFVars hs' (mkAppN proof vals')` is the richer proof.
+            -- We try to precompute some of the arguments using `trySolve`.
+            let mut hs'' := #[] -- eq' parameters that are actually used beyond those in `fParams`
+            let mut pfVars := #[] -- eq' parameters that can be solved for already
+            let mut pfVals := #[] -- the values to use for these parameters
+            let mut kinds' : Array CongrArgKind := #[if fixedFun then .fixed else .eq]
+            for i in [0:info.getArity] do
+              hs'' := hs''.push xs[i]!
+              if let some (_, eq', _) := eqs[i]! then
+                -- Not a fixed argument
+                hs'' := hs''.push ys[i]!
+                let pf? ← withLCtx lctx (← getLocalInstances) <| trySolve (← inferType eq')
+                if let some pf := pf? then
+                  pfVars := pfVars.push eq'
+                  pfVals := pfVals.push pf
+                  kinds' := kinds'.push .subsingletonInst
+                else
+                  hs'' := hs''.push eq'
+                  kinds' := kinds'.push kinds[i]!
+              else
+                kinds' := kinds'.push .fixed
+            trace[Meta.CongrTheorems] "CongrArgKinds: {repr kinds'}"
+            -- Take `proof`, abstract the pfVars and provide the solved-for proofs (as an
+            -- optimization for proof term size) then abstract the remaining variables.
+            -- The `usedOnly` probably has no affect.
+            -- Note that since we are doing `proof.beta vals'` there is technically some quadratic
+            -- complexity, but it shouldn't be too bad since they're some applications of just variables.
+            let proof' ←
+              mkLambdaFVars fParams
+                (← mkLambdaFVars (usedOnly := true) hs''
+                  (mkAppN (← mkLambdaFVars pfVars (proof.beta vals')) pfVals))
+            let congrType' ← inferType proof'
+            trace[Meta.CongrTheorems] "rich congrType: {congrType'}"
+            return { proof := proof', type := congrType', argKinds := kinds' }
 where
-  /-- Similar to doing `forallBoundedTelescope` twice, but makes use of the `fixed` array, which
+  /--
+  Similar to doing `forallBoundedTelescope` twice, but makes use of the `fixed` array, which
   is used as a hint for whether both variables should be the same. This is only a hint though,
   since we respect it only if the binding domains are equal.
   We affix `'` to the second list of variables, and all the variables are introduced
-  with default binder info. Calls `k` with the xs, ys, and a revised `fixed` array -/
-  doubleTelescope {α} (fty : Expr) (numVars : Nat) (fixed : Array Bool)
-      (k : Array Expr → Array Expr → Array Bool → MetaM α) : MetaM α := do
-    let rec loop (i : Nat)
-        (ftyx ftyy : Expr) (xs ys : Array Expr) (fixed' : Array Bool) : MetaM α := do
+  with default binder info. Calls `k` with the xs, ys, and a revised `fixed` array
+  -/
+  doubleTelescope
+      {α}
+      (fty : Expr) (numVars : Nat) (fixed : Array Bool)
+      (k : Array Expr → Array Expr → Array Bool → MetaM α)
+      : MetaM α := do
+    let rec loop (i : Nat) (ftyx ftyy : Expr) (xs ys : Array Expr) (fixed' : Array Bool)
+        : MetaM α := do
       if i < numVars then
         let ftyx ← whnfD ftyx
         let ftyy ← whnfD ftyy
@@ -313,33 +331,40 @@ where
       else
         k xs ys fixed'
     loop 0 fty fty #[] #[] #[]
-  /-- Introduce variables for equalities between the arrays of variables. Uses `fixedParams`
+  /--
+  Introduce variables for equalities between the arrays of variables. Uses `fixedParams`
   to control whether to introduce an equality for each pair. The array of triples passed to `k`
   consists of (1) the simple congr lemma HEq arg, (2) the richer HEq arg, and (3) how to
-  compute 1 in terms of 2. -/
-  withNewEqs {α} (xs ys : Array Expr) (fixedParams : Array Bool)
-      (k : Array CongrArgKind → Array (Option (Expr × Expr × Expr)) → MetaM α) : MetaM α :=
-    let rec loop (i : Nat)
-        (kinds : Array CongrArgKind) (eqs : Array (Option (Expr × Expr × Expr))) := do
+  compute 1 in terms of 2.
+  -/
+  withNewEqs
+      {α}
+      (xs ys : Array Expr) (fixedParams : Array Bool)
+      (k : Array CongrArgKind → Array (Option (Expr × Expr × Expr)) → MetaM α)
+      : MetaM α :=
+    let rec loop
+        (i : Nat) (kinds : Array CongrArgKind) (eqs : Array (Option (Expr × Expr × Expr))) := do
       if i < xs.size then
         let x := xs[i]!
         let y := ys[i]!
         if fixedParams[i]! then
-          loop (i+1) (kinds.push .fixed) (eqs.push none)
+          loop (i + 1) (kinds.push .fixed) (eqs.push none)
         else
           let deps := info.paramInfo[i]!.backDeps.filterMap (fun j => eqs[j]!)
           let eq' ← mkForallFVars (deps.map fun (eq, _, _) => eq) (← mkEqHEq x y)
-          withLocalDeclD ((`e).appendIndexAfter (i+1)) (← mkEqHEq x y) fun h =>
-          withLocalDeclD ((`e').appendIndexAfter (i+1)) eq' fun h' => do
-            let v := mkAppN h' (deps.map fun (_, _, val) => val)
-            let kind := if (← inferType h).eq?.isSome then .eq else .heq
-            loop (i+1) (kinds.push kind) (eqs.push (h, h', v))
+          withLocalDeclD ((`e).appendIndexAfter (i + 1)) (← mkEqHEq x y) fun h =>
+            withLocalDeclD ((`e').appendIndexAfter (i + 1)) eq' fun h' => do
+              let v := mkAppN h' (deps.map fun (_, _, val) => val)
+              let kind := if (← inferType h).eq?.isSome then .eq else .heq
+              loop (i + 1) (kinds.push kind) (eqs.push (h, h', v))
       else
         k kinds eqs
     loop 0 #[] #[]
-  /-- Given a type that is a bunch of equalities implying a goal (for example, a basic
+  /--
+  Given a type that is a bunch of equalities implying a goal (for example, a basic
   congruence lemma), prove it if possible. Basic congruence lemmas should be provable by this.
-  There are some extra tricks for handling arguments to richer congruence lemmas. -/
+  There are some extra tricks for handling arguments to richer congruence lemmas.
+  -/
   trySolveCore (mvarId : MVarId) : MetaM Unit := do
     -- First cleanup the context since we're going to do `substEqs` and we don't want to
     -- accidentally use variables not actually used by the theorem.
@@ -355,13 +380,14 @@ where
     -- We have no more tricks.
     throwError "was not able to solve for proof"
   /-- Driver for `trySolveCore`. -/
-  trySolve (ty : Expr) : MetaM (Option Expr) := observing? do
-    let mvar ← mkFreshExprMVar ty
-    trace[Meta.CongrTheorems] "trySolve {mvar.mvarId!}"
-    -- The proofs we generate shouldn't require unfolding anything.
-    withReducible <| trySolveCore mvar.mvarId!
-    trace[Meta.CongrTheorems] "trySolve success!"
-    let pf ← instantiateMVars mvar
-    return pf
+  trySolve (ty : Expr) : MetaM (Option Expr) :=
+    observing? do
+      let mvar ← mkFreshExprMVar ty
+      trace[Meta.CongrTheorems] "trySolve {mvar.mvarId!}"
+      -- The proofs we generate shouldn't require unfolding anything.
+      withReducible <| trySolveCore mvar.mvarId!
+      trace[Meta.CongrTheorems] "trySolve success!"
+      let pf ← instantiateMVars mvar
+      return pf
 
 end Lean.Meta

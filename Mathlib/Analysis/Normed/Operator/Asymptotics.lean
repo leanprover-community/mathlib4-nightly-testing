@@ -18,37 +18,34 @@ public section
 
 open Asymptotics
 
-
 variable {𝕜 𝕜₂ 𝕜₃ E F G : Type*}
 variable [SeminormedAddCommGroup E] [SeminormedAddCommGroup F] [SeminormedAddCommGroup G]
-variable [NontriviallyNormedField 𝕜] [NontriviallyNormedField 𝕜₂] [NontriviallyNormedField 𝕜₃]
-  [NormedSpace 𝕜 E] [NormedSpace 𝕜₂ F] [NormedSpace 𝕜₃ G] {σ₁₂ : 𝕜 →+* 𝕜₂} {σ₂₃ : 𝕜₂ →+* 𝕜₃}
+variable
+  [NontriviallyNormedField 𝕜] [NontriviallyNormedField 𝕜₂] [NontriviallyNormedField 𝕜₃]
+  [NormedSpace 𝕜 E] [NormedSpace 𝕜₂ F] [NormedSpace 𝕜₃ G]
+  {σ₁₂ : 𝕜 →+* 𝕜₂} {σ₂₃ : 𝕜₂ →+* 𝕜₃}
 
 namespace ContinuousLinearMap
 
 variable [RingHomIsometric σ₁₂] (f : E →SL[σ₁₂] F) (l : Filter E)
 
-theorem isBigOWith_id : IsBigOWith ‖f‖ l f fun x => x :=
-  isBigOWith_of_le' _ f.le_opNorm
+theorem isBigOWith_id : IsBigOWith (‖f‖) l f fun x => x := isBigOWith_of_le' _ f.le_opNorm
 
-theorem isBigO_id : f =O[l] fun x => x :=
-  (f.isBigOWith_id l).isBigO
+theorem isBigO_id : f =O[l] fun x => x := (f.isBigOWith_id l).isBigO
 
-theorem isBigOWith_comp [RingHomIsometric σ₂₃] {α : Type*} (g : F →SL[σ₂₃] G) (f : α → F)
-    (l : Filter α) : IsBigOWith ‖g‖ l (fun x' => g (f x')) f :=
+theorem isBigOWith_comp
+    [RingHomIsometric σ₂₃] {α : Type*} (g : F →SL[σ₂₃] G) (f : α → F) (l : Filter α)
+    : IsBigOWith (‖g‖) l (fun x' => g (f x')) f :=
   (g.isBigOWith_id ⊤).comp_tendsto le_top
 
-theorem isBigO_comp [RingHomIsometric σ₂₃] {α : Type*} (g : F →SL[σ₂₃] G) (f : α → F)
-    (l : Filter α) : (fun x' => g (f x')) =O[l] f :=
+theorem isBigO_comp [RingHomIsometric σ₂₃] {α : Type*} (g : F →SL[σ₂₃] G) (f : α → F) (l : Filter α)
+    : (fun x' => g (f x')) =O[l] f :=
   (g.isBigOWith_comp f l).isBigO
 
-theorem isBigOWith_sub (x : E) :
-    IsBigOWith ‖f‖ l (fun x' => f (x' - x)) fun x' => x' - x :=
+theorem isBigOWith_sub (x : E) : IsBigOWith (‖f‖) l (fun x' => f (x' - x)) fun x' => x' - x :=
   f.isBigOWith_comp _ l
 
-theorem isBigO_sub (x : E) :
-    (fun x' => f (x' - x)) =O[l] fun x' => x' - x :=
-  f.isBigO_comp _ l
+theorem isBigO_sub (x : E) : (fun x' => f (x' - x)) =O[l] fun x' => x' - x := f.isBigO_comp _ l
 
 end ContinuousLinearMap
 

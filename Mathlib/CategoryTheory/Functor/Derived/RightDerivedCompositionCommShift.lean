@@ -41,23 +41,20 @@ namespace CategoryTheory
 
 namespace Functor
 
-variable {C₁ C₂ C₃ D₁ D₂ D₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
-  [Category* D₁] [Category* D₂] [Category* D₃]
+variable
+  {C₁ C₂ C₃ D₁ D₂ D₃ : Type*}
+  [Category* C₁] [Category* C₂] [Category* C₃] [Category* D₁] [Category* D₂] [Category* D₃]
   {F₁₂ : C₁ ⥤ C₂} {F₂₃ : C₂ ⥤ C₃} {F₁₃ : C₁ ⥤ C₃} (e : F₁₂ ⋙ F₂₃ ≅ F₁₃)
-  (L₁ : C₁ ⥤ D₁) (L₂ : C₂ ⥤ D₂) (L₃ : C₃ ⥤ D₃)
+  (L₁ : C₁ ⥤ D₁)
+  (L₂ : C₂ ⥤ D₂) (L₃ : C₃ ⥤ D₃)
   (W₁ : MorphismProperty C₁) [L₁.IsLocalization W₁]
-  {RF₁₂ : D₁ ⥤ D₂} {RF₂₃ : D₂ ⥤ D₃} {RF₁₃ : D₁ ⥤ D₃}
-  (α₁₂ : F₁₂ ⋙ L₂ ⟶ L₁ ⋙ RF₁₂)
-  (α₂₃ : F₂₃ ⋙ L₃ ⟶ L₂ ⋙ RF₂₃)
-  (α₁₃ : F₁₃ ⋙ L₃ ⟶ L₁ ⋙ RF₁₃) [RF₁₃.IsRightDerivedFunctor α₁₃ W₁]
-  (A : Type*) [AddGroup A]
-  [HasShift C₁ A] [HasShift C₂ A] [HasShift C₃ A]
-  [HasShift D₁ A] [HasShift D₂ A] [HasShift D₃ A]
-  [W₁.IsCompatibleWithShift A]
-  [L₁.CommShift A] [L₂.CommShift A] [L₃.CommShift A]
-  [F₁₂.CommShift A] [F₂₃.CommShift A] [F₁₃.CommShift A]
-  [RF₁₂.CommShift A] [RF₂₃.CommShift A] [RF₁₃.CommShift A]
-  [e.hom.CommShift A] [α₁₂.CommShift A] [α₂₃.CommShift A] [α₁₃.CommShift A]
+  {RF₁₂ : D₁ ⥤ D₂} {RF₂₃ : D₂ ⥤ D₃} {RF₁₃ : D₁ ⥤ D₃} (α₁₂ : F₁₂ ⋙ L₂ ⟶ L₁ ⋙ RF₁₂)
+  (α₂₃ : F₂₃ ⋙ L₃ ⟶ L₂ ⋙ RF₂₃) (α₁₃ : F₁₃ ⋙ L₃ ⟶ L₁ ⋙ RF₁₃) [RF₁₃.IsRightDerivedFunctor α₁₃ W₁]
+  (A : Type*)
+  [AddGroup A] [HasShift C₁ A] [HasShift C₂ A] [HasShift C₃ A] [HasShift D₁ A] [HasShift D₂ A]
+  [HasShift D₃ A] [W₁.IsCompatibleWithShift A] [L₁.CommShift A] [L₂.CommShift A] [L₃.CommShift A]
+  [F₁₂.CommShift A] [F₂₃.CommShift A] [F₁₃.CommShift A] [RF₁₂.CommShift A] [RF₂₃.CommShift A]
+  [RF₁₃.CommShift A] [e.hom.CommShift A] [α₁₂.CommShift A] [α₂₃.CommShift A] [α₁₃.CommShift A]
 
 instance : (natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃).CommShift A :=
   NatTrans.CommShift.of_isRightDerivedFunctor _ _ _ W₁

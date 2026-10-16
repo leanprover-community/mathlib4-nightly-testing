@@ -24,7 +24,7 @@ open Real
 lemma two_sin_pi_div_seven_ne_zero : 2 * sin (π / 7) ≠ 0 := by
   apply mul_ne_zero two_ne_zero (Real.sin_pos_of_pos_of_lt_pi _ _).ne' <;> linarith [pi_pos]
 
-lemma sin_pi_mul_neg_div (a b : ℝ) : sin (π * (- a / b)) = - sin (π * (a / b)) := by
+lemma sin_pi_mul_neg_div (a b : ℝ) : sin (π * (-a / b)) = - sin (π * (a / b)) := by
   ring_nf
   exact sin_neg _
 

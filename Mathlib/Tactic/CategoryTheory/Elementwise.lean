@@ -45,22 +45,25 @@ section theorems
 
 universe u
 
-theorem hom_elementwise {C : Type*} [Category* C]
+theorem hom_elementwise
+    {C : Type*} [Category* C]
     {FC : outParam <| C → C → Type*} {CC : outParam <| C → Type*}
     {_ : outParam <| ∀ X Y, FunLike (FC X Y) (CC X) (CC Y)} [ConcreteCategory C FC]
-    {X Y : C} {f g : X ⟶ Y} (h : f = g) (x : CC X) : f x = g x := by rw [h]
+    {X Y : C} {f g : X ⟶ Y} (h : f = g) (x : CC X)
+    : f x = g x := by
+  rw [h]
 
 end theorems
 
 /-- List of simp lemmas to apply to the elementwise theorem. -/
-def elementwiseThms : List Name :=
-  [ -- ConcreteCategory lemmas
-    ``ConcreteCategory.coe_id, ``ConcreteCategory.coe_comp,
-    ``CategoryTheory.comp_apply, ``CategoryTheory.id_apply,
-    ``CategoryTheory.hom_id, ``CategoryTheory.hom_comp, ``id_eq, ``Function.comp_apply,
-    -- simp can itself simplify trivial equalities into `true`. Adding this lemma makes it
-    -- easier to detect when this has occurred.
-    ``implies_true]
+def elementwiseThms : List Name := [ -- ConcreteCategory lemmas
+  ``ConcreteCategory.coe_id, ``ConcreteCategory.coe_comp,
+  ``CategoryTheory.comp_apply, ``CategoryTheory.id_apply,
+  ``CategoryTheory.hom_id, ``CategoryTheory.hom_comp, ``id_eq, ``Function.comp_apply,
+  -- simp can itself simplify trivial equalities into `true`. Adding this lemma makes it
+  -- easier to detect when this has occurred.
+  ``implies_true
+]
 
 /--
 Given an equation `f = g` between morphisms `X ⟶ Y` in a category `C`
@@ -74,8 +77,8 @@ for the first universe parameter to `ConcreteCategory`.
 The `simpSides` option controls whether to simplify both sides of the equality, for simpNF
 purposes.
 -/
-def elementwiseExpr (src : Name) (pf : Expr) (simpSides := true) :
-    MetaM (Expr × Option (Level × Level)) := do
+def elementwiseExpr (src : Name) (pf : Expr) (simpSides := true)
+    : MetaM (Expr × Option (Level × Level)) := do
   let type := (← instantiateMVars (← inferType pf)).cleanupAnnotations
   forallTelescope type fun fvars type' => do
     mkHomElementwise type' (mkAppN pf fvars) fun eqPf instConcr? => do
@@ -101,19 +104,29 @@ def elementwiseExpr (src : Name) (pf : Expr) (simpSides := true) :
       else
         return (← Meta.mkLambdaFVars fvars eqPf', none)
 where
-  /-- Given an equality, extract a `Category` instance from it or raise an error.
-  Returns the name of the category and its instance. -/
+  /--
+  Given an equality, extract a `Category` instance from it or raise an error.
+  Returns the name of the category and its instance.
+  -/
   extractCatInstance (eqTy : Expr) : MetaM (Expr × Expr) := do
-    let some (α, _, _) := eqTy.cleanupAnnotations.eq? | failure
-    let (``Quiver.Hom, #[_, instQuiv, _, _]) := α.getAppFnArgs | failure
-    let (``CategoryTheory.CategoryStruct.toQuiver, #[_, instCS]) := instQuiv.getAppFnArgs | failure
-    let (``CategoryTheory.Category.toCategoryStruct, #[C, instC]) := instCS.getAppFnArgs | failure
+    let some (α, _, _) := eqTy.cleanupAnnotations.eq?
+      | failure
+    let (``Quiver.Hom, #[_, instQuiv, _, _]) := α.getAppFnArgs
+      | failure
+    let (``CategoryTheory.CategoryStruct.toQuiver, #[_, instCS]) := instQuiv.getAppFnArgs
+      | failure
+    let (``CategoryTheory.Category.toCategoryStruct, #[C, instC]) := instCS.getAppFnArgs
+      | failure
     return (C, instC)
-  mkHomElementwise {α} [Inhabited α] (eqTy eqPf : Expr)
-      (k : Expr → Option (Level × Level × Array Expr) → MetaM α) :
-      MetaM α := do
-    let (C, instC) ← try extractCatInstance eqTy catch _ =>
-      throwError "elementwise expects equality of morphisms in a category"
+  mkHomElementwise
+      {α} [Inhabited α]
+      (eqTy eqPf : Expr) (k : Expr → Option (Level × Level × Array Expr) → MetaM α)
+      : MetaM α := do
+    let (C, instC) ←
+      try
+        extractCatInstance eqTy
+      catch _ =>
+        throwError "elementwise expects equality of morphisms in a category"
     -- First try being optimistic that there is already a `ConcreteCategory` instance.
     if let some eqPf' ← observing? (mkAppM ``hom_elementwise #[eqPf]) then
       k eqPf' none
@@ -127,19 +140,26 @@ where
       -- Give a type to the `FunLike` instance on `F`
       let fty (F carrier : Expr) : Expr :=
         -- I *think* this is right, but it certainly doesn't feel like I'm doing it right.
-        .forallE `X C (.forallE `Y C (mkApp3
-          (.const ``FunLike [.succ uF, .succ w, .succ w])
-          (mkApp2 F (.bvar 1) (.bvar 0))
-          (mkApp carrier (.bvar 1)) (mkApp carrier (.bvar 0))) default) default
+        .forallE `X C
+          (.forallE `Y C
+            (mkApp3 (.const ``FunLike [.succ uF, .succ w, .succ w]) (mkApp2 F (.bvar 1) (.bvar 0))
+              (mkApp carrier (.bvar 1)) (mkApp carrier (.bvar 0)))
+            default)
+          default
       -- Give a type to the `ConcreteCategory` instance on `C`
       let cty (F carrier instFunLike : Expr) : Expr :=
         mkApp5 (.const ``ConcreteCategory [w, v, u, uF]) C instC F carrier instFunLike
       withLocalDecls
-        #[(`F, .implicit, fun _ => pure <| .forallE `X C (.forallE `Y C
-            (.sort (.succ uF)) default) default),
+        #[
+          (
+            `F,
+            .implicit,
+            fun _ => pure <| .forallE `X C (.forallE `Y C (.sort (.succ uF)) default) default
+          ),
           (`carrier, .implicit, fun _ => pure <| .forallE `X C (.sort (.succ w)) default),
           (`instFunLike, .implicit, fun decls => pure <| fty decls[0]! decls[1]!),
-          (`inst, .instImplicit, fun decls => pure <| cty decls[0]! decls[1]! decls[2]!)]
+          (`inst, .instImplicit, fun decls => pure <| cty decls[0]! decls[1]! decls[2]!)
+        ]
         fun cfvars => do
           let eqPf' ← mkAppM ``hom_elementwise #[eqPf]
           k eqPf' (some (w, uF, cfvars))
@@ -157,7 +177,8 @@ private partial def mkUnusedName (names : List Name) (baseName : Name) : Name :=
         w
     loop 1
 
-/-- The `elementwise` attribute can be added to a lemma proving an equation of morphisms, and it
+/--
+The `elementwise` attribute can be added to a lemma proving an equation of morphisms, and it
 creates a new lemma for a `ConcreteCategory` giving an equation with those morphisms applied
 to some value.
 
@@ -197,28 +218,34 @@ If `simp` is added first, the generated lemma will also have the `simp` attribut
 -/
 syntax (name := elementwise) "elementwise" " nosimp"? optAttrArg : attr
 
-initialize registerBuiltinAttribute {
-  name := `elementwise
-  descr := ""
-  applicationTime := .afterCompilation
-  add := fun src ref kind => match ref with
-  | `(attr| elementwise $[nosimp%$nosimp?]? $optAttr) => MetaM.run' do
-    if (kind != AttributeKind.global) then
-      throwError "`elementwise` can only be used as a global attribute"
-    addRelatedDecl src (src.appendAfter "_apply") ref optAttr fun value levels => do
-      let (newValue, level?) ← elementwiseExpr src value (simpSides := nosimp?.isNone)
-      let newLevels ← if let some (levelW, levelUF) := level? then do
-        let w := mkUnusedName levels `w
-        let uF := mkUnusedName levels `uF
-        unless ← isLevelDefEq levelW (mkLevelParam w) do
-          throwError "Could not create level parameter `w` for ConcreteCategory instance"
-        unless ← isLevelDefEq levelUF (mkLevelParam uF) do
-          throwError "Could not create level parameter `uF` for ConcreteCategory instance"
-        pure <| uF :: w :: levels
-      else
-        pure levels
-      pure (newValue, newLevels)
-  | _ => throwUnsupportedSyntax }
+initialize
+  registerBuiltinAttribute {
+    name := `elementwise
+    descr := ""
+    applicationTime := .afterCompilation
+    add := fun src ref kind =>
+      match ref with
+      | `(attr| elementwise $[nosimp%$nosimp?]? $optAttr) =>
+        MetaM.run' do
+          if (kind != AttributeKind.global) then
+            throwError "`elementwise` can only be used as a global attribute"
+          addRelatedDecl src (src.appendAfter "_apply") ref optAttr fun value levels => do
+            let (newValue, level?) ← elementwiseExpr src value (simpSides := nosimp?.isNone)
+            let newLevels ←
+              if let some (levelW, levelUF) := level? then do
+                let w := mkUnusedName levels `w
+                let uF := mkUnusedName levels `uF
+                unless ← isLevelDefEq levelW (mkLevelParam w) do
+                  throwError "Could not create level parameter `w` for ConcreteCategory instance"
+                unless ← isLevelDefEq levelUF (mkLevelParam uF) do
+                  throwError "Could not create level parameter `uF` for ConcreteCategory instance"
+                pure <| uF :: w :: levels
+              else
+                pure levels
+            pure (newValue, newLevels)
+      | _ =>
+        throwUnsupportedSyntax
+  }
 
 /--
 `elementwise_of% h`, where `h` is a proof of an equation `f = g` between

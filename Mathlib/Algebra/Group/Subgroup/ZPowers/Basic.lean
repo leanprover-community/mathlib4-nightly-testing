@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Int.Defs
 public import Mathlib.Algebra.Group.Subgroup.Map
-
 import Mathlib.Algebra.Divisibility.Basic
 
 /-!
@@ -35,12 +34,10 @@ def zpowers (g : G) : Subgroup G where
   inv_mem' := by rintro _ ⟨a, rfl⟩; exact ⟨-a, zpow_neg ..⟩
 
 @[to_additive (attr := simp)]
-theorem mem_zpowers (g : G) : g ∈ zpowers g :=
-  ⟨1, zpow_one _⟩
+theorem mem_zpowers (g : G) : g ∈ zpowers g := ⟨1, zpow_one _⟩
 
 @[to_additive (attr := norm_cast)] -- TODO: simp?
-theorem coe_zpowers (g : G) : ↑(zpowers g) = Set.range (g ^ · : ℤ → G) :=
-  rfl
+theorem coe_zpowers (g : G) : ↑(zpowers g) = Set.range (g ^ · : ℤ → G) := rfl
 
 @[to_additive] -- TODO: delete?
 noncomputable instance decidableMemZPowers {a : G} : DecidablePred (· ∈ Subgroup.zpowers a) :=
@@ -51,13 +48,10 @@ theorem zpowers_eq_closure (g : G) : zpowers g = closure {g} := by
   ext
   exact mem_closure_singleton.symm
 
-@[to_additive]
-theorem mem_zpowers_iff {g h : G} : h ∈ zpowers g ↔ ∃ k : ℤ, g ^ k = h :=
-  Iff.rfl
+@[to_additive] theorem mem_zpowers_iff {g h : G} : h ∈ zpowers g ↔ ∃ k : ℤ, g ^ k = h := Iff.rfl
 
 @[to_additive (attr := simp)]
-theorem zpow_mem_zpowers (g : G) (k : ℤ) : g ^ k ∈ zpowers g :=
-  mem_zpowers_iff.mpr ⟨k, rfl⟩
+theorem zpow_mem_zpowers (g : G) (k : ℤ) : g ^ k ∈ zpowers g := mem_zpowers_iff.mpr ⟨k, rfl⟩
 
 @[to_additive (attr := simp)]
 theorem npow_mem_zpowers (g : G) (k : ℕ) : g ^ k ∈ zpowers g :=
@@ -84,8 +78,8 @@ theorem exists_mem_zpowers {x : G} {p : G → Prop} : (∃ g ∈ zpowers x, p g)
 end Subgroup
 
 @[to_additive (attr := simp)]
-theorem MonoidHom.map_zpowers (f : G →* N) (x : G) :
-    (Subgroup.zpowers x).map f = Subgroup.zpowers (f x) := by
+theorem MonoidHom.map_zpowers (f : G →* N) (x : G)
+    : (Subgroup.zpowers x).map f = Subgroup.zpowers (f x) := by
   rw [Subgroup.zpowers_eq_closure, Subgroup.zpowers_eq_closure, f.map_closure, Set.image_singleton]
 
 theorem Int.mem_zmultiples_iff {a b : ℤ} : b ∈ AddSubgroup.zmultiples a ↔ a ∣ b :=
@@ -96,14 +90,15 @@ lemma Int.zmultiples_one : AddSubgroup.zmultiples (1 : ℤ) = ⊤ := by
   ext z
   simp [Int.mem_zmultiples_iff]
 
-theorem ofMul_image_zpowers_eq_zmultiples_ofMul {x : G} :
-    Additive.ofMul '' (Subgroup.zpowers x : Set G) = AddSubgroup.zmultiples (Additive.ofMul x) := by
+theorem ofMul_image_zpowers_eq_zmultiples_ofMul {x : G}
+    : Additive.ofMul '' (Subgroup.zpowers x : Set G)
+      = AddSubgroup.zmultiples (Additive.ofMul x) := by
   ext
   exact Set.mem_image_iff_of_inverse (congrFun rfl) (congrFun rfl)
 
-theorem ofAdd_image_zmultiples_eq_zpowers_ofAdd {x : A} :
-    Multiplicative.ofAdd '' (AddSubgroup.zmultiples x : Set A) =
-      Subgroup.zpowers (Multiplicative.ofAdd x) := by
+theorem ofAdd_image_zmultiples_eq_zpowers_ofAdd {x : A}
+    : Multiplicative.ofAdd '' (AddSubgroup.zmultiples x : Set A)
+      = Subgroup.zpowers (Multiplicative.ofAdd x) := by
   symm
   rw [Equiv.eq_image_iff_symm_image_eq]
   exact ofMul_image_zpowers_eq_zmultiples_ofMul
@@ -126,13 +121,10 @@ alias ⟨_, zpowers_le_of_mem⟩ := zpowers_le
 @[to_additive (attr := simp)]
 theorem zpowers_eq_bot {g : G} : zpowers g = ⊥ ↔ g = 1 := by rw [eq_bot_iff, zpowers_le, mem_bot]
 
-@[to_additive]
-theorem zpowers_ne_bot : zpowers g ≠ ⊥ ↔ g ≠ 1 :=
-  zpowers_eq_bot.not
+@[to_additive] theorem zpowers_ne_bot : zpowers g ≠ ⊥ ↔ g ≠ 1 := zpowers_eq_bot.not
 
 @[to_additive (attr := simp)]
-theorem zpowers_one_eq_bot : Subgroup.zpowers (1 : G) = ⊥ :=
-  Subgroup.zpowers_eq_bot.mpr rfl
+theorem zpowers_one_eq_bot : Subgroup.zpowers (1 : G) = ⊥ := Subgroup.zpowers_eq_bot.mpr rfl
 
 @[to_additive (attr := simp)]
 theorem zpowers_inv : zpowers g⁻¹ = zpowers g :=
@@ -146,14 +138,15 @@ theorem zpowers_mul_le_sup (g h : G) : zpowers (g * h) ≤ zpowers g ⊔ zpowers
 
 end Subgroup
 
-theorem Int.zmultiples_le_zmultiples_iff {a b : ℤ} :
-    AddSubgroup.zmultiples a ≤ AddSubgroup.zmultiples b ↔ b ∣ a := by
+theorem Int.zmultiples_le_zmultiples_iff {a b : ℤ}
+    : AddSubgroup.zmultiples a ≤ AddSubgroup.zmultiples b ↔ b ∣ a := by
   rw [AddSubgroup.zmultiples_le, Int.mem_zmultiples_iff]
 
-theorem Int.zmultiples_natAbs (a : ℤ) :
-    AddSubgroup.zmultiples (a.natAbs : ℤ) = AddSubgroup.zmultiples a := by
+theorem Int.zmultiples_natAbs (a : ℤ)
+    : AddSubgroup.zmultiples (a.natAbs : ℤ) = AddSubgroup.zmultiples a := by
   simp [le_antisymm_iff, Int.mem_zmultiples_iff, Int.dvd_natAbs, Int.natAbs_dvd]
 
-@[simp] lemma Int.addSubgroupClosure_one : AddSubgroup.closure ({1} : Set ℤ) = ⊤ := by
+@[simp]
+lemma Int.addSubgroupClosure_one : AddSubgroup.closure ({1} : Set ℤ) = ⊤ := by
   ext
   simp [AddSubgroup.mem_closure_singleton]

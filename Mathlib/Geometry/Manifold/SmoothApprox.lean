@@ -68,70 +68,76 @@ open scoped Topology ContDiff Manifold
 
 section Manifold
 
-variable {E F H M : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-  [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+variable
+  {E F H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace H]
+  (I : ModelWithCorners ℝ E H)
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 variable {f : M → F} {ε : M → ℝ}
 
-theorem Continuous.exists_contMDiff_approx_and_eqOn (n : ℕ∞)
+theorem Continuous.exists_contMDiff_approx_and_eqOn
+    (n : ℕ∞)
     (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x)
-    {S U : Set M} (hS : IsClosed S) (hU : U ∈ 𝓝ˢ S) (hfU : CMDiff[U] n f) :
-    ∃ g : C^n⟮I, M; 𝓘(ℝ, F), F⟯,
+    {S U : Set M} (hS : IsClosed S) (hU : U ∈ 𝓝ˢ S) (hfU : CMDiff[U] n f)
+    : ∃ g : C^n⟮I, M; 𝓘(ℝ, F), F⟯,
       (∀ x, dist (g x) (f x) < ε x) ∧ EqOn g f S ∧ support g ⊆ support f := by
   have dist_f_f : ∀ x, dist (f x) (f x) < ε x := by simpa only [dist_self] using ε_pos
   let t : M → Set F := fun x ↦ {y | dist y (f x) < ε x ∧ (x ∈ S → y = f x) ∧ (f x = 0 → y = 0)}
   suffices ∃ g : C^n⟮I, M; 𝓘(ℝ, F), F⟯, ∀ x, g x ∈ t x by
     rcases this with ⟨g, hg⟩
     exact ⟨g, fun x ↦ (hg x).1, fun x ↦ (hg x).2.1, fun x ↦ mt (hg x).2.2⟩
-  have t_conv (x) : Convex ℝ (t x) := (convex_ball (f x) (ε x)).inter <|
-    (convex_singleton _).setOfPred_const_imp.inter (convex_singleton _).setOfPred_const_imp
+  have t_conv (x) : Convex ℝ (t x) :=
+    (convex_ball (f x) (ε x)).inter <|
+      (convex_singleton _).setOfPred_const_imp.inter (convex_singleton _).setOfPred_const_imp
   apply exists_contMDiffMap_forall_mem_convex_of_local I t_conv
   intro x
   by_cases hx : x ∈ S
   · refine ⟨U, mem_nhdsSet_iff_forall.mp hU x hx, ?_⟩
     exact ⟨f, hfU, fun y _ ↦ ⟨dist_f_f y, fun _ ↦ rfl, id⟩⟩
-  · have : ∀ᶠ y in 𝓝 x, y ∉ S ∧ dist (f x) (f y) < ε y := (hS.isOpen_compl.eventually_mem hx).and
-      ((continuous_const.dist f_cont).continuousAt.eventually_lt ε_cont.continuousAt (dist_f_f x))
+  · have : ∀ᶠ y in 𝓝 x, y ∉ S ∧ dist (f x) (f y) < ε y :=
+      (hS.isOpen_compl.eventually_mem hx).and
+        ((continuous_const.dist f_cont).continuousAt.eventually_lt ε_cont.continuousAt (dist_f_f x))
     have : ∀ᶠ y in 𝓝 x, (y ∉ S ∧ dist (f x) (f y) < ε y) ∧ (f y = 0 → f x = 0) := by
       by_cases hx' : f x = 0
       · simpa [hx'] using this
       · simpa [hx'] using this.and (f_cont.continuousAt.eventually_ne hx')
     exact ⟨_, this, (fun _ ↦ f x), contMDiffOn_const, fun y hy ↦ ⟨hy.1.2, by simp [hy.1.1], hy.2⟩⟩
 
-theorem Continuous.exists_contMDiff_approx (n : ℕ∞)
-    (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x) :
-    ∃ g : C^n⟮I, M; 𝓘(ℝ, F), F⟯, (∀ x, dist (g x) (f x) < ε x) ∧ support g ⊆ support f := by
-  obtain ⟨g, g_approx, -, g_supp⟩ := f_cont.exists_contMDiff_approx_and_eqOn I n ε_cont ε_pos
-    isClosed_empty mem_nhdsSet_empty contMDiffOn_empty
+theorem Continuous.exists_contMDiff_approx
+    (n : ℕ∞) (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x)
+    : ∃ g : C^n⟮I, M; 𝓘(ℝ, F), F⟯, (∀ x, dist (g x) (f x) < ε x) ∧ support g ⊆ support f := by
+  obtain ⟨g, g_approx, -, g_supp⟩ :=
+    f_cont.exists_contMDiff_approx_and_eqOn I n ε_cont ε_pos isClosed_empty mem_nhdsSet_empty
+      contMDiffOn_empty
   exact ⟨g, g_approx, g_supp⟩
 
 end Manifold
 
 section NormedSpace
 
-variable {E F : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable
+  {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 variable {f : E → F} {ε : E → ℝ}
 
-theorem Continuous.exists_contDiff_approx_and_eqOn (n : ℕ∞)
+theorem Continuous.exists_contDiff_approx_and_eqOn
+    (n : ℕ∞)
     (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x)
-    {S U : Set E} (hS : IsClosed S) (hU : U ∈ 𝓝ˢ S) (hfU : ContDiffOn ℝ n f U) :
-    ∃ g : E → F, ContDiff ℝ n g ∧
-      (∀ x, dist (g x) (f x) < ε x) ∧ EqOn g f S ∧ support g ⊆ support f := by
-  obtain ⟨g, g_approx, g_eqOn, g_supp⟩ := f_cont.exists_contMDiff_approx_and_eqOn 𝓘(ℝ, E) n
-    ε_cont ε_pos hS hU hfU.contMDiffOn
+    {S U : Set E} (hS : IsClosed S) (hU : U ∈ 𝓝ˢ S) (hfU : ContDiffOn ℝ n f U)
+    : ∃ g : E → F,
+      ContDiff ℝ n g ∧ (∀ x, dist (g x) (f x) < ε x) ∧ EqOn g f S ∧ support g ⊆ support f := by
+  obtain ⟨g, g_approx, g_eqOn, g_supp⟩ :=
+    f_cont.exists_contMDiff_approx_and_eqOn (𝓘(ℝ, E)) n ε_cont ε_pos hS hU hfU.contMDiffOn
   exact ⟨g, g.contMDiff.contDiff, g_approx, g_eqOn, g_supp⟩
 
-theorem Continuous.exists_contDiff_approx (n : ℕ∞)
-    (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x) :
-    ∃ g : E → F, ContDiff ℝ n g ∧ (∀ x, dist (g x) (f x) < ε x) ∧ support g ⊆ support f := by
-  obtain ⟨g, g_contDiff, g_approx, -, g_supp⟩ := f_cont.exists_contDiff_approx_and_eqOn n
-    ε_cont ε_pos isClosed_empty mem_nhdsSet_empty contDiffOn_empty
+theorem Continuous.exists_contDiff_approx
+    (n : ℕ∞) (f_cont : Continuous f) (ε_cont : Continuous ε) (ε_pos : ∀ x, 0 < ε x)
+    : ∃ g : E → F, ContDiff ℝ n g ∧ (∀ x, dist (g x) (f x) < ε x) ∧ support g ⊆ support f := by
+  obtain ⟨g, g_contDiff, g_approx, -, g_supp⟩ :=
+    f_cont.exists_contDiff_approx_and_eqOn n ε_cont ε_pos isClosed_empty mem_nhdsSet_empty
+      contDiffOn_empty
   exact ⟨g, g_contDiff, g_approx, g_supp⟩
 
 end NormedSpace

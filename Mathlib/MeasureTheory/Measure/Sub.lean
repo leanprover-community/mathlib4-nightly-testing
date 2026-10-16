@@ -26,12 +26,14 @@ namespace MeasureTheory
 
 namespace Measure
 
-/-- The measure `μ - ν` is defined to be the least measure `τ` such that `μ ≤ τ + ν`.
+/--
+The measure `μ - ν` is defined to be the least measure `τ` such that `μ ≤ τ + ν`.
 It is equivalent to `(μ - ν) ⊔ 0` if `μ` and `ν` were signed measures.
 Compare with `ENNReal.instSub`.
 Specifically, note that if you have `α = {1,2}`, and `μ {1} = 2`, `μ {2} = 0`, and
 `ν {2} = 2`, `ν {1} = 0`, then `(μ - ν) {1, 2} = 2`. However, if `μ ≤ ν`, and
-`ν univ ≠ ∞`, then `(μ - ν) + ν = μ`. -/
+`ν univ ≠ ∞`, then `(μ - ν) + ν = μ`.
+-/
 noncomputable instance instSub {α : Type*} [MeasurableSpace α] : Sub (Measure α) :=
   ⟨fun μ ν => sInf { τ | μ ≤ τ + ν }⟩
 
@@ -39,26 +41,18 @@ variable {α : Type*} {m : MeasurableSpace α} {μ ν ξ : Measure α} {s : Set 
 
 theorem sub_def : μ - ν = sInf { d | μ ≤ d + ν } := rfl
 
-theorem sub_le_of_le_add {d} (h : μ ≤ d + ν) : μ - ν ≤ d :=
-  sInf_le h
+theorem sub_le_of_le_add {d} (h : μ ≤ d + ν) : μ - ν ≤ d := sInf_le h
 
 theorem sub_eq_zero_of_le (h : μ ≤ ν) : μ - ν = 0 :=
   nonpos_iff_eq_zero'.1 <| sub_le_of_le_add <| by rwa [zero_add]
 
-theorem sub_le : μ - ν ≤ μ :=
-  sub_le_of_le_add <| Measure.le_add_right le_rfl
+theorem sub_le : μ - ν ≤ μ := sub_le_of_le_add <| Measure.le_add_right le_rfl
 
-@[simp]
-theorem sub_top : μ - ⊤ = 0 :=
-  sub_eq_zero_of_le le_top
+@[simp] theorem sub_top : μ - ⊤ = 0 := sub_eq_zero_of_le le_top
 
-@[simp]
-protected theorem zero_sub : 0 - μ = 0 :=
-  sub_eq_zero_of_le μ.zero_le
+@[simp] protected theorem zero_sub : 0 - μ = 0 := sub_eq_zero_of_le μ.zero_le
 
-@[simp]
-protected theorem sub_self : μ - μ = 0 :=
-  sub_eq_zero_of_le le_rfl
+@[simp] protected theorem sub_self : μ - μ = 0 := sub_eq_zero_of_le le_rfl
 
 @[simp]
 protected theorem sub_zero : μ - 0 = μ := by
@@ -67,18 +61,22 @@ protected theorem sub_zero : μ - 0 = μ := by
   · simp [sInf_le]
   · simp
 
-/-- This application lemma only works in special circumstances. Given knowledge of
-when `μ ≤ ν` and `ν ≤ μ`, a more general application lemma can be written. -/
-theorem sub_apply [IsFiniteMeasure ν] (h₁ : MeasurableSet s) (h₂ : ν ≤ μ) :
-    (μ - ν) s = μ s - ν s := by
+/--
+This application lemma only works in special circumstances. Given knowledge of
+when `μ ≤ ν` and `ν ≤ μ`, a more general application lemma can be written.
+-/
+theorem sub_apply [IsFiniteMeasure ν] (h₁ : MeasurableSet s) (h₂ : ν ≤ μ)
+    : (μ - ν) s = μ s - ν s := by
   -- We begin by defining `measure_sub`, which will be equal to `(μ - ν)`.
-  let measure_sub : Measure α := MeasureTheory.Measure.ofMeasurable
-    (fun (t : Set α) (_ : MeasurableSet t) => μ t - ν t) (by simp)
-    (fun g h_meas h_disj ↦ by
-      simp only [measure_iUnion h_disj h_meas]
-      rw [ENNReal.tsum_sub _ (h₂ <| g ·)]
-      rw [← measure_iUnion h_disj h_meas]
-      apply measure_ne_top)
+  let measure_sub : Measure α :=
+    MeasureTheory.Measure.ofMeasurable
+      (fun (t : Set α) (_ : MeasurableSet t) => μ t - ν t)
+      (by simp)
+      (fun g h_meas h_disj ↦ by
+        simp only [measure_iUnion h_disj h_meas]
+        rw [ENNReal.tsum_sub _ (h₂ <| g ·)]
+        rw [← measure_iUnion h_disj h_meas]
+        apply measure_ne_top)
   -- Now, we demonstrate `μ - ν = measure_sub`, and apply it.
   have h_measure_sub_add : ν + measure_sub = μ := by
     ext1 t h_t_measurable_set
@@ -107,8 +105,8 @@ protected lemma add_sub_cancel [IsFiniteMeasure ν] : μ + ν - ν = μ := by
   rw [sub_apply hs (Measure.le_add_left (le_refl _)), add_apply,
     ENNReal.add_sub_cancel_right (measure_ne_top ν s)]
 
-theorem restrict_sub_eq_restrict_sub_restrict (h_meas_s : MeasurableSet s) :
-    (μ - ν).restrict s = μ.restrict s - ν.restrict s := by
+theorem restrict_sub_eq_restrict_sub_restrict (h_meas_s : MeasurableSet s)
+    : (μ - ν).restrict s = μ.restrict s - ν.restrict s := by
   repeat rw [sub_def]
   have h_nonempty : { d | μ ≤ d + ν }.Nonempty := ⟨μ, Measure.le_add_right le_rfl⟩
   rw [restrict_sInf_eq_sInf_restrict h_nonempty h_meas_s]
@@ -124,8 +122,7 @@ theorem restrict_sub_eq_restrict_sub_restrict (h_meas_s : MeasurableSet s) :
       refine add_le_add ?_ ?_
       · rw [add_apply, add_apply]
         apply le_add_right _
-        rw [← restrict_eq_self μ inter_subset_right,
-          ← restrict_eq_self ν inter_subset_right]
+        rw [← restrict_eq_self μ inter_subset_right, ← restrict_eq_self ν inter_subset_right]
         apply h_ν'_in
       · rw [add_apply, restrict_apply (h_meas_t.diff h_meas_s), sdiff_eq, inter_assoc, inter_self,
           ← add_apply]
@@ -138,15 +135,18 @@ theorem restrict_sub_eq_restrict_sub_restrict (h_meas_s : MeasurableSet s) :
     rw [Set.mem_ofPred_eq, ← restrict_add]
     exact restrict_mono Subset.rfl h_t_in
 
-theorem sub_apply_eq_zero_of_restrict_le_restrict (h_le : μ.restrict s ≤ ν.restrict s)
-    (h_meas_s : MeasurableSet s) : (μ - ν) s = 0 := by
+theorem sub_apply_eq_zero_of_restrict_le_restrict
+    (h_le : μ.restrict s ≤ ν.restrict s) (h_meas_s : MeasurableSet s)
+    : (μ - ν) s = 0 := by
   rw [← restrict_apply_self, restrict_sub_eq_restrict_sub_restrict, sub_eq_zero_of_le] <;> simp [*]
 
 instance isFiniteMeasure_sub [IsFiniteMeasure μ] : IsFiniteMeasure (μ - ν) :=
   isFiniteMeasure_of_le μ sub_le
 
-/-- See `sub_le_iff_le_add` for the case where both measures are finite, which does not need the
-hypothesis `ν ≤ μ`. -/
+/--
+See `sub_le_iff_le_add` for the case where both measures are finite, which does not need the
+hypothesis `ν ≤ μ`.
+-/
 lemma sub_le_iff_le_add_of_le [IsFiniteMeasure ν] (h_le : ν ≤ μ) : μ - ν ≤ ξ ↔ μ ≤ ξ + ν := by
   refine ⟨fun h ↦ ?_, Measure.sub_le_of_le_add⟩
   simpa [sub_add_cancel_of_le h_le] using add_le_add_left h ν

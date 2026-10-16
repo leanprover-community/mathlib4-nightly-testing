@@ -12,7 +12,6 @@ public import Mathlib.Data.ZMod.ValMinAbs
 public import Mathlib.FieldTheory.Finiteness
 public import Mathlib.FieldTheory.Galois.Notation
 public import Mathlib.FieldTheory.Perfect
-
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 
 /-!
@@ -50,7 +49,6 @@ diamonds, as `Fintype` carries data.
 
 @[expose] public section
 
-
 variable {K : Type*} {R : Type*}
 
 local notation "q" => Fintype.card K
@@ -67,55 +65,61 @@ variable [CommRing R] [IsDomain R]
 
 open Polynomial
 
-/-- The cardinality of a field is at most `n` times the cardinality of the image of a degree `n`
-  polynomial -/
-theorem card_image_polynomial_eval [DecidableEq R] [Fintype R] {p : R[X]} (hp : 0 < p.degree) :
-    Fintype.card R ≤ natDegree p * #(univ.image fun x => eval x p) :=
+/--
+The cardinality of a field is at most `n` times the cardinality of the image of a degree `n`
+polynomial
+-/
+theorem card_image_polynomial_eval [DecidableEq R] [Fintype R] {p : R[X]} (hp : 0 < p.degree)
+    : Fintype.card R ≤ natDegree p * #(univ.image fun x => eval x p) :=
   Finset.card_le_mul_card_image _ _ (fun a _ =>
     calc
-      _ = #(p - C a).roots.toFinset :=
-        congr(card $(by simp [Finset.ext_iff, ← mem_roots_sub_C hp]))
+      _ = #(p - C a).roots.toFinset := congr(card $(by simp [Finset.ext_iff, ← mem_roots_sub_C hp]))
       _ ≤ Multiset.card (p - C a).roots := Multiset.toFinset_card_le _
       _ ≤ _ := card_roots_sub_C' hp)
 
 /-- If `f` and `g` are quadratic polynomials, then the `f.eval a + g.eval b = 0` has a solution. -/
-theorem exists_root_sum_quadratic [Fintype R] {f g : R[X]} (hf2 : degree f = 2) (hg2 : degree g = 2)
-    (hR : Fintype.card R % 2 = 1) : ∃ a b, f.eval a + g.eval b = 0 :=
+theorem exists_root_sum_quadratic
+    [Fintype R] {f g : R[X]} (hf2 : degree f = 2) (hg2 : degree g = 2) (hR : Fintype.card R % 2 = 1)
+    : ∃ a b, f.eval a + g.eval b = 0 :=
   letI := Classical.decEq R
-  suffices ¬Disjoint (univ.image fun x : R => eval x f)
-    (univ.image fun x : R => eval x (-g)) by
+  suffices ¬ Disjoint (univ.image fun x : R => eval x f) (univ.image fun x : R => eval x (-g)) by
     simp only [disjoint_left, mem_image] at this
     push Not at this
     rcases this with ⟨x, ⟨a, _, ha⟩, ⟨b, _, hb⟩⟩
     exact ⟨a, b, by rw [ha, ← hb, eval_neg, neg_add_cancel]⟩
   fun hd : Disjoint _ _ =>
-  lt_irrefl (2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g))) <|
-    calc 2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g))
-        ≤ 2 * Fintype.card R := Nat.mul_le_mul_left _ (Finset.card_le_univ _)
-      _ = Fintype.card R + Fintype.card R := two_mul _
-      _ < natDegree f * #(univ.image fun x : R => eval x f) +
-            natDegree (-g) * #(univ.image fun x : R => eval x (-g)) :=
-        (add_lt_add_of_lt_of_le
-          (lt_of_le_of_ne (card_image_polynomial_eval (by rw [hf2]; decide))
-            (mt (congr_arg (· % 2)) (by simp [natDegree_eq_of_degree_eq_some hf2, hR])))
-          (card_image_polynomial_eval (by rw [degree_neg, hg2]; decide)))
-      _ = 2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g)) := by
-        rw [card_union_of_disjoint hd]
-        simp [natDegree_eq_of_degree_eq_some hf2, natDegree_eq_of_degree_eq_some hg2, mul_add]
+    lt_irrefl (2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g))) <|
+      calc
+        2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g))
+          ≤ 2 * Fintype.card R := Nat.mul_le_mul_left _ (Finset.card_le_univ _)
+        _ = Fintype.card R + Fintype.card R := two_mul _
+        _ < natDegree f * #(univ.image fun x : R => eval x f)
+            + natDegree (-g) * #(univ.image fun x : R => eval x (-g)) :=
+          (add_lt_add_of_lt_of_le
+            (lt_of_le_of_ne (card_image_polynomial_eval (by rw [hf2]; decide))
+              (mt (congr_arg (· % 2)) (by simp [natDegree_eq_of_degree_eq_some hf2, hR])))
+            (card_image_polynomial_eval (by rw [degree_neg, hg2]; decide)))
+        _ = 2 * #((univ.image fun x : R => eval x f) ∪ univ.image fun x : R => eval x (-g)) := by
+          rw [card_union_of_disjoint hd]
+          simp [natDegree_eq_of_degree_eq_some hf2, natDegree_eq_of_degree_eq_some hg2, mul_add]
 
 end Polynomial
 
-theorem prod_univ_units_id_eq_neg_one [CommRing K] [IsDomain K] [Fintype Kˣ] :
-    ∏ x : Kˣ, x = (-1 : Kˣ) := by
+theorem prod_univ_units_id_eq_neg_one [CommRing K] [IsDomain K] [Fintype Kˣ]
+    : ∏ x : Kˣ, x = (-1 : Kˣ) := by
   classical
-    have : (∏ x ∈ (@univ Kˣ _).erase (-1), x) = 1 :=
-      prod_involution (fun x _ => x⁻¹) (by simp)
-        (fun a => by simp +contextual [Units.inv_eq_self_iff])
-        (fun a => by simp [@inv_eq_iff_eq_inv _ _ a]) (by simp)
-    rw [← insert_erase (mem_univ (-1 : Kˣ)), prod_insert (notMem_erase _ _), this, mul_one]
+  have : (∏ x ∈ (@univ Kˣ _).erase (-1), x) = 1 :=
+    prod_involution
+      (fun x _ => x⁻¹)
+      (by simp)
+      (fun a => by simp +contextual [Units.inv_eq_self_iff])
+      (fun a => by simp [@inv_eq_iff_eq_inv _ _ a])
+      (by simp)
+  rw [← insert_erase (mem_univ (-1 : Kˣ)), prod_insert (notMem_erase _ _), this, mul_one]
 
-theorem card_cast_subgroup_card_ne_zero [Ring K] [NoZeroDivisors K] [Nontrivial K]
-    (G : Subgroup Kˣ) [Fintype G] : (Fintype.card G : K) ≠ 0 := by
+theorem card_cast_subgroup_card_ne_zero
+    [Ring K] [NoZeroDivisors K] [Nontrivial K] (G : Subgroup Kˣ) [Fintype G]
+    : (Fintype.card G : K) ≠ 0 := by
   let n := Fintype.card G
   intro nzero
   have ⟨p, char_p⟩ := CharP.exists K
@@ -141,9 +145,9 @@ theorem card_cast_subgroup_card_ne_zero [Ring K] [NoZeroDivisors K] [Nontrivial 
     rw [← hu, h, orderOf_one]
 
 /-- The sum of a nontrivial subgroup of the units of a field is zero. -/
-theorem sum_subgroup_units_eq_zero [Ring K] [NoZeroDivisors K]
-    {G : Subgroup Kˣ} [Fintype G] (hg : G ≠ ⊥) :
-    ∑ x : G, (x.val : K) = 0 := by
+theorem sum_subgroup_units_eq_zero
+    [Ring K] [NoZeroDivisors K] {G : Subgroup Kˣ} [Fintype G] (hg : G ≠ ⊥)
+    : ∑ x : G, (x.val : K) = 0 := by
   rw [Subgroup.ne_bot_iff_exists_ne_one] at hg
   rcases hg with ⟨a, ha⟩
   -- The action of a on G as an embedding
@@ -155,7 +159,8 @@ theorem sum_subgroup_units_eq_zero [Ring K] [NoZeroDivisors K]
   -- ... and the former is the sum of x over G.
   -- By algebraic manipulation, we have Σ G, x = ∑ G, a x = a ∑ G, x
   simp only [h_unchanged, mulLeftEmbedding_apply, Subgroup.coe_mul, Units.val_mul, ← mul_sum,
-    a_mul_emb] at h_sum_map
+      a_mul_emb]
+    at h_sum_map
   -- thus one of (a - 1) or ∑ G, x is zero
   have hzero : (((a : Kˣ) : K) - 1) = 0 ∨ ∑ x : ↥G, ((x : Kˣ) : K) = 0 := by
     rw [← mul_eq_zero, sub_mul, ← h_sum_map, one_mul, sub_self]
@@ -166,45 +171,52 @@ theorem sum_subgroup_units_eq_zero [Ring K] [NoZeroDivisors K]
 
 /-- The sum of a subgroup of the units of a field is 1 if the subgroup is trivial and 1 otherwise -/
 @[simp]
-theorem sum_subgroup_units [Ring K] [NoZeroDivisors K]
-    {G : Subgroup Kˣ} [Fintype G] [Decidable (G = ⊥)] :
-    ∑ x : G, (x.val : K) = if G = ⊥ then 1 else 0 := by
+theorem sum_subgroup_units
+    [Ring K] [NoZeroDivisors K] {G : Subgroup Kˣ} [Fintype G] [Decidable (G = ⊥)]
+    : ∑ x : G, (x.val : K) = if G = ⊥ then 1 else 0 := by
   by_cases G_bot : G = ⊥
   · subst G_bot
-    simp only [univ_unique, sum_singleton, ↓reduceIte, Units.val_eq_one, OneMemClass.coe_eq_one]
+    simp only [univ_unique, sum_singleton, ↓ reduceIte, Units.val_eq_one, OneMemClass.coe_eq_one]
     rw [Set.default_coe_singleton]
     rfl
   · simp only [G_bot, ite_false]
     exact sum_subgroup_units_eq_zero G_bot
 
 @[simp]
-theorem sum_subgroup_pow_eq_zero [CommRing K] [NoZeroDivisors K]
-    {G : Subgroup Kˣ} [Fintype G] {k : ℕ} (k_pos : k ≠ 0) (k_lt_card_G : k < Fintype.card G) :
-    ∑ x : G, ((x : Kˣ) : K) ^ k = 0 := by
+theorem sum_subgroup_pow_eq_zero
+    [CommRing K] [NoZeroDivisors K]
+    {G : Subgroup Kˣ} [Fintype G]
+    {k : ℕ} (k_pos : k ≠ 0) (k_lt_card_G : k < Fintype.card G)
+    : ∑ x : G, ((x : Kˣ) : K) ^ k = 0 := by
   rw [← Nat.card_eq_fintype_card] at k_lt_card_G
   nontriviality K
   have := NoZeroDivisors.to_isDomain K
   rcases (exists_pow_ne_one_of_isCyclic k_pos k_lt_card_G) with ⟨a, ha⟩
   rw [Finset.sum_eq_multiset_sum]
-  have h_multiset_map :
-    Finset.univ.val.map (fun x : G => ((x : Kˣ) : K) ^ k) =
-      Finset.univ.val.map (fun x : G => ((x : Kˣ) : K) ^ k * ((a : Kˣ) : K) ^ k) := by
+  have h_multiset_map
+      : Finset.univ.val.map (fun x : G => ((x : Kˣ) : K) ^ k)
+        = Finset.univ.val.map (fun x : G => ((x : Kˣ) : K) ^ k * ((a : Kˣ) : K) ^ k) := by
     simp_rw [← mul_pow]
-    have as_comp :
-      (fun x : ↥G => (((x : Kˣ) : K) * ((a : Kˣ) : K)) ^ k)
-        = (fun x : ↥G => ((x : Kˣ) : K) ^ k) ∘ fun x : ↥G => x * a := by
+    have as_comp
+        : (fun x : ↥G => (((x : Kˣ) : K) * ((a : Kˣ) : K)) ^ k)
+          = (fun x : ↥G => ((x : Kˣ) : K) ^ k) ∘ fun x : ↥G => x * a := by
       funext x
       simp only [Function.comp_apply, Subgroup.coe_mul, Units.val_mul]
     rw [as_comp, ← Multiset.map_map]
     congr
     rw [eq_comm]
     exact Multiset.map_univ_val_equiv (Equiv.mulRight a)
-  have h_multiset_map_sum : (Multiset.map (fun x : G => ((x : Kˣ) : K) ^ k) Finset.univ.val).sum =
-    (Multiset.map (fun x : G => ((x : Kˣ) : K) ^ k * ((a : Kˣ) : K) ^ k) Finset.univ.val).sum := by
+  have h_multiset_map_sum
+      : (Multiset.map (fun x : G => ((x : Kˣ) : K) ^ k) Finset.univ.val).sum
+        = (Multiset.map
+          (fun x : G => ((x : Kˣ) : K) ^ k * ((a : Kˣ) : K) ^ k)
+          Finset.univ.val).sum := by
     rw [h_multiset_map]
   rw [Multiset.sum_map_mul_right] at h_multiset_map_sum
-  have hzero : (((a : Kˣ) : K) ^ k - 1 : K)
-                  * (Multiset.map (fun i : G => (i.val : K) ^ k) Finset.univ.val).sum = 0 := by
+  have hzero
+      : (((a : Kˣ) : K) ^ k - 1 : K)
+          * (Multiset.map (fun i : G => (i.val : K) ^ k) Finset.univ.val).sum
+        = 0 := by
     rw [sub_mul, mul_comm, ← h_multiset_map_sum, one_mul, sub_self]
   rw [mul_eq_zero] at hzero
   refine hzero.resolve_left fun h => ha ?_
@@ -222,11 +234,12 @@ theorem pow_card_sub_one_eq_one (a : K) (ha : a ≠ 0) : a ^ (q - 1) = 1 := by
       rw [Units.val_pow_eq_pow_val, Units.val_mk0]
     _ = 1 := by
       classical
-        rw [← Fintype.card_units, pow_card_eq_one]
-        rfl
+      rw [← Fintype.card_units, pow_card_eq_one]
+      rfl
 
 theorem pow_card (a : K) : a ^ q = a := by
-  by_cases h : a = 0; · rw [h]; apply zero_pow Fintype.card_ne_zero
+  by_cases h : a = 0
+  · rw [h]; apply zero_pow Fintype.card_ne_zero
   rw [← Nat.succ_pred_eq_of_pos Fintype.card_pos, pow_succ, Nat.pred_eq_sub_one,
     pow_card_sub_one_eq_one a h, one_mul]
 
@@ -272,8 +285,7 @@ lemma isPrimePow_card : IsPrimePow (Fintype.card K) := by
   obtain ⟨p, _, n, hp, hn⟩ := card' K
   exact ⟨p, n, Nat.prime_iff.mp hp, n.prop, hn.symm⟩
 
-theorem cast_card_eq_zero : (q : K) = 0 := by
-  simp
+theorem cast_card_eq_zero : (q : K) = 0 := by simp
 
 theorem forall_pow_eq_one_iff (i : ℕ) : (∀ x : Kˣ, x ^ i = 1) ↔ q - 1 ∣ i := by
   obtain ⟨x, hx⟩ := IsCyclic.exists_generator (α := Kˣ)
@@ -286,52 +298,64 @@ theorem forall_pow_eq_one_iff (i : ℕ) : (∀ x : Kˣ, x ^ i = 1) ↔ q - 1 ∣
     rcases hx y with ⟨j, rfl⟩
     rw [← pow_mul, mul_comm, pow_mul, h, one_pow]
 
-/-- The sum of `x ^ i` as `x` ranges over the units of a finite field of cardinality `q`
-is equal to `0` unless `(q - 1) ∣ i`, in which case the sum is `q - 1`. -/
-theorem sum_pow_units [DecidableEq K] (i : ℕ) :
-    (∑ x : Kˣ, (x ^ i : K)) = if q - 1 ∣ i then -1 else 0 := by
-  let φ : Kˣ →* K :=
-    { toFun := fun x => x ^ i
-      map_one' := by simp
-      map_mul' := by simp [mul_pow] }
-  have : Decidable (φ = 1) := by classical infer_instance
-  calc (∑ x : Kˣ, φ x) = if φ = 1 then Fintype.card Kˣ else 0 := sum_hom_units φ
-      _ = if q - 1 ∣ i then -1 else 0 := by
-        suffices q - 1 ∣ i ↔ φ = 1 by
-          simp only [this]
-          split_ifs; swap
-          · exact Nat.cast_zero
-          · rw [Fintype.card_units, Nat.cast_sub,
-              cast_card_eq_zero, Nat.cast_one, zero_sub]
-            show 1 ≤ q; exact Fintype.card_pos_iff.mpr ⟨0⟩
-        rw [← forall_pow_eq_one_iff, DFunLike.ext_iff]
-        apply forall_congr'; intro x; simp [φ, Units.ext_iff]
+/--
+The sum of `x ^ i` as `x` ranges over the units of a finite field of cardinality `q`
+is equal to `0` unless `(q - 1) ∣ i`, in which case the sum is `q - 1`.
+-/
+theorem sum_pow_units [DecidableEq K] (i : ℕ)
+    : (∑ x : Kˣ, (x ^ i : K)) = if q - 1 ∣ i then -1 else 0 := by
+  let φ : Kˣ →* K := { toFun := fun x => x ^ i, map_one' := by simp, map_mul' := by simp [mul_pow] }
+  have : Decidable (φ = 1) := by
+    classical
+    infer_instance
+  calc
+    (∑ x : Kˣ, φ x)
+      = if φ = 1 then Fintype.card Kˣ else 0 := sum_hom_units φ
+    _ = if q - 1 ∣ i then -1 else 0 := by
+      suffices q - 1 ∣ i ↔ φ = 1 by
+        simp only [this]
+        split_ifs
+        swap
+        · exact Nat.cast_zero
+        · rw [Fintype.card_units, Nat.cast_sub, cast_card_eq_zero, Nat.cast_one, zero_sub]
+          show 1 ≤ q
+          exact Fintype.card_pos_iff.mpr ⟨0⟩
+      rw [← forall_pow_eq_one_iff, DFunLike.ext_iff]
+      apply forall_congr'
+      intro x
+      simp [φ, Units.ext_iff]
 
-/-- The sum of `x ^ i` as `x` ranges over a finite field of cardinality `q`
-is equal to `0` if `i < q - 1`. -/
+/--
+The sum of `x ^ i` as `x` ranges over a finite field of cardinality `q`
+is equal to `0` if `i < q - 1`.
+-/
 theorem sum_pow_lt_card_sub_one (i : ℕ) (h : i < q - 1) : ∑ x : K, x ^ i = 0 := by
   by_cases hi : i = 0
   · simp only [hi, nsmul_one, sum_const, pow_zero, card_univ, cast_card_eq_zero]
   classical
-    have hiq : ¬q - 1 ∣ i := by contrapose! h; exact Nat.le_of_dvd (Nat.pos_of_ne_zero hi) h
-    let φ : Kˣ ↪ K := ⟨fun x ↦ x, Units.val_injective⟩
-    have : univ.map φ = univ \ {0} := by
-      ext x
-      simpa only [mem_map, mem_univ, Function.Embedding.coeFn_mk, true_and, mem_sdiff,
-        mem_singleton, φ] using! isUnit_iff_ne_zero
-    calc
-      ∑ x : K, x ^ i = ∑ x ∈ univ \ {(0 : K)}, x ^ i := by
-        rw [← sum_sdiff ({0} : Finset K).subset_univ, sum_singleton, zero_pow hi, add_zero]
-      _ = ∑ x : Kˣ, (x ^ i : K) := by simp [φ, ← this, univ.sum_map φ]
-      _ = 0 := by rw [sum_pow_units K i, ite_eq_right]; exact hiq
+  have hiq : ¬ q - 1 ∣ i := by contrapose! h; exact Nat.le_of_dvd (Nat.pos_of_ne_zero hi) h
+  let φ : Kˣ ↪ K := ⟨fun x ↦ x, Units.val_injective⟩
+  have : univ.map φ = univ \ {0} := by
+    ext x
+    simpa only [mem_map, mem_univ, Function.Embedding.coeFn_mk, true_and, mem_sdiff, mem_singleton,
+        φ]
+      using! isUnit_iff_ne_zero
+  calc
+    ∑ x : K, x ^ i = ∑ x ∈ univ \ {(0 : K)}, x ^ i := by
+      rw [← sum_sdiff ({0} : Finset K).subset_univ, sum_singleton, zero_pow hi, add_zero]
+    _ = ∑ x : Kˣ, (x ^ i : K) := by simp [φ, ← this, univ.sum_map φ]
+    _ = 0 := by rw [sum_pow_units K i, ite_eq_right]; exact hiq
 
 section frobenius
 
 variable (R) [CommRing R] [Algebra K R]
 
-/-- If `R` is an algebra over a finite field `K`, the Frobenius `K`-algebra endomorphism of `R` is
-  given by raising every element of `R` to its `#K`-th power. -/
-@[simps!] def frobeniusAlgHom : R →ₐ[K] R where
+/--
+If `R` is an algebra over a finite field `K`, the Frobenius `K`-algebra endomorphism of `R` is
+given by raising every element of `R` to its `#K`-th power.
+-/
+@[simps!]
+def frobeniusAlgHom : R →ₐ[K] R where
   __ := powMonoidHom q
   map_zero' := zero_pow Fintype.card_pos.ne'
   map_add' _ _ := by
@@ -345,9 +369,12 @@ variable (R) [CommRing R] [Algebra K R]
 
 theorem coe_frobeniusAlgHom : ⇑(frobeniusAlgHom K R) = (· ^ q) := rfl
 
-/-- If `R` is a perfect ring and an algebra over a finite field `K`, the Frobenius `K`-algebra
-  endomorphism of `R` is an automorphism. -/
-@[simps!] noncomputable def frobeniusAlgEquiv (p : ℕ) [ExpChar R p] [PerfectRing R p] : R ≃ₐ[K] R :=
+/--
+If `R` is a perfect ring and an algebra over a finite field `K`, the Frobenius `K`-algebra
+endomorphism of `R` is an automorphism.
+-/
+@[simps!]
+noncomputable def frobeniusAlgEquiv (p : ℕ) [ExpChar R p] [PerfectRing R p] : R ≃ₐ[K] R :=
   .ofBijective (frobeniusAlgHom K R) <| by
     obtain ⟨p', _, n, hp, card_eq⟩ := card' K
     rw [coe_frobeniusAlgHom, card_eq]
@@ -359,16 +386,20 @@ theorem coe_frobeniusAlgHom : ⇑(frobeniusAlgHom K R) = (· ^ q) := rfl
 
 variable (L : Type*) [Field L] [Algebra K L]
 
-/-- If `L/K` is an algebraic extension of a finite field, the Frobenius `K`-algebra endomorphism
-  of `L` is an automorphism. -/
-@[simps!] noncomputable def frobeniusAlgEquivOfAlgebraic [Algebra.IsAlgebraic K L] : Gal(L/K) :=
+/--
+If `L/K` is an algebraic extension of a finite field, the Frobenius `K`-algebra endomorphism
+of `L` is an automorphism.
+-/
+@[simps!]
+noncomputable def frobeniusAlgEquivOfAlgebraic [Algebra.IsAlgebraic K L] : Gal(L/K) :=
   (Algebra.IsAlgebraic.algEquivEquivAlgHom K L).symm (frobeniusAlgHom K L)
 
-theorem coe_frobeniusAlgEquivOfAlgebraic [Algebra.IsAlgebraic K L] :
-    ⇑(frobeniusAlgEquivOfAlgebraic K L) = (· ^ q) := rfl
+theorem coe_frobeniusAlgEquivOfAlgebraic [Algebra.IsAlgebraic K L]
+    : ⇑(frobeniusAlgEquivOfAlgebraic K L) = (· ^ q) :=
+  rfl
 
-lemma coe_frobeniusAlgEquivOfAlgebraic_iterate [Algebra.IsAlgebraic K L] (n : ℕ) :
-    (⇑(frobeniusAlgEquivOfAlgebraic K L))^[n] = (· ^ (Fintype.card K ^ n)) :=
+lemma coe_frobeniusAlgEquivOfAlgebraic_iterate [Algebra.IsAlgebraic K L] (n : ℕ)
+    : (⇑(frobeniusAlgEquivOfAlgebraic K L))^[n] = (· ^ (Fintype.card K ^ n)) :=
   pow_iterate (Fintype.card K) n
 
 variable [Finite L]
@@ -380,29 +411,33 @@ theorem orderOf_frobeniusAlgHom : orderOf (frobeniusAlgHom K L) = Module.finrank
     refine ⟨DFunLike.ext _ _ fun x ↦ ?_, fun m lt pos eq ↦ ?_⟩
     · simp_rw [AlgHom.coe_pow, coe_frobeniusAlgHom, pow_iterate, AlgHom.one_apply,
         ← Module.card_eq_pow_finrank, pow_card]
-    have := card_le_degree_of_subset_roots (R := L) (p := X ^ q ^ m - X) (Z := univ) fun x _ ↦ by
-      simp_rw [mem_roots', IsRoot, eval_sub, eval_pow, eval_X]
-      have := congr($eq x)
-      rw [AlgHom.coe_pow, coe_frobeniusAlgHom, pow_iterate, AlgHom.one_apply, ← sub_eq_zero] at this
-      refine ⟨fun h ↦ ?_, this⟩
-      simpa [Fintype.one_lt_card.ne, pos.ne, eqComm] using congr(coeff $h 1)
+    have :=
+      card_le_degree_of_subset_roots (R := L) (p := X ^ q ^ m - X) (Z := univ) fun x _ ↦ by
+        simp_rw [mem_roots', IsRoot, eval_sub, eval_pow, eval_X]
+        have := congr($eq x)
+        rw [AlgHom.coe_pow, coe_frobeniusAlgHom, pow_iterate, AlgHom.one_apply, ← sub_eq_zero]
+          at this
+        refine ⟨fun h ↦ ?_, this⟩
+        simpa [Fintype.one_lt_card.ne, pos.ne, eqComm] using congr(coeff $h 1)
     refine this.not_gt (((natDegree_sub_le ..).trans_eq ?_).trans_lt <|
       (Nat.pow_lt_pow_right Fintype.one_lt_card lt).trans_eq Module.card_eq_pow_finrank.symm)
     simp [Nat.one_le_pow _ _ Fintype.card_pos]
 
-theorem orderOf_frobeniusAlgEquivOfAlgebraic :
-    orderOf (frobeniusAlgEquivOfAlgebraic K L) = Module.finrank K L := by
+theorem orderOf_frobeniusAlgEquivOfAlgebraic
+    : orderOf (frobeniusAlgEquivOfAlgebraic K L) = Module.finrank K L := by
   simpa [orderOf_eq_iff Module.finrank_pos, DFunLike.ext_iff] using! orderOf_frobeniusAlgHom K L
 
-theorem bijective_frobeniusAlgHom_pow :
-    Function.Bijective fun n : Fin (Module.finrank K L) ↦ frobeniusAlgHom K L ^ n.1 :=
-  let e := (finCongr <| orderOf_frobeniusAlgHom K L).symm.trans <|
-    finEquivPowers (orderOf_pos_iff.mp <| orderOf_frobeniusAlgHom K L ▸ Module.finrank_pos)
+theorem bijective_frobeniusAlgHom_pow
+    : Function.Bijective fun n : Fin (Module.finrank K L) ↦ frobeniusAlgHom K L ^ n.1 :=
+  let e :=
+    (finCongr <| orderOf_frobeniusAlgHom K L).symm.trans <|
+      finEquivPowers (orderOf_pos_iff.mp <| orderOf_frobeniusAlgHom K L ▸ Module.finrank_pos)
   (Subtype.val_injective.comp e.injective).bijective_of_nat_card_le
     ((card_algHom_le_finrank K L L).trans_eq <| by simp)
 
-theorem bijective_frobeniusAlgEquivOfAlgebraic_pow :
-    Function.Bijective fun n : Fin (Module.finrank K L) ↦ frobeniusAlgEquivOfAlgebraic K L ^ n.1 :=
+theorem bijective_frobeniusAlgEquivOfAlgebraic_pow
+    : Function.Bijective fun n : Fin (Module.finrank K L) ↦
+      frobeniusAlgEquivOfAlgebraic K L ^ n.1 :=
   ((Algebra.IsAlgebraic.algEquivEquivAlgHom K L).bijective.of_comp_iff' _).mp <| by
     simpa only [Function.comp_def, map_pow] using! bijective_frobeniusAlgHom_pow K L
 
@@ -410,19 +445,23 @@ instance (K L) [Finite L] [Field K] [Field L] [Algebra K L] : IsCyclic Gal(L/K) 
   exists_zpow_surjective :=
     have := Finite.of_injective _ (algebraMap K L).injective
     have := Fintype.ofFinite K
-    ⟨frobeniusAlgEquivOfAlgebraic K L,
-      fun f ↦ have ⟨n, hn⟩ := (bijective_frobeniusAlgEquivOfAlgebraic_pow K L).2 f; ⟨n, hn⟩⟩
+    ⟨
+      frobeniusAlgEquivOfAlgebraic K L,
+      fun f ↦ have ⟨n, hn⟩ := (bijective_frobeniusAlgEquivOfAlgebraic_pow K L).2 f; ⟨n, hn⟩
+    ⟩
 
 open Polynomial in
-theorem minpoly_frobeniusAlgHom :
-    minpoly K (frobeniusAlgHom K L).toLinearMap = X ^ Module.finrank K L - 1 :=
+theorem minpoly_frobeniusAlgHom
+    : minpoly K (frobeniusAlgHom K L).toLinearMap = X ^ Module.finrank K L - 1 :=
   minpoly.eq_of_linearIndependent _ _ (leadingCoeff_X_pow_sub_one Module.finrank_pos)
-    (LinearMap.ext fun x ↦ by
-      simpa [sub_eq_zero, Module.End.coe_pow, orderOf_frobeniusAlgHom] using!
-        congr($(pow_orderOf_eq_one (frobeniusAlgHom K L)) x)) _
-    (degree_X_pow_sub_C Module.finrank_pos _) <| by
-      simpa [← AlgHom.toEnd_apply, ← map_pow] using! (linearIndependent_algHom_toLinearMap K L L
-        |>.restrict_scalars' K).comp _ (bijective_frobeniusAlgHom_pow K L).1
+      (LinearMap.ext fun x ↦ by
+        simpa [sub_eq_zero, Module.End.coe_pow, orderOf_frobeniusAlgHom] using!
+          congr($(pow_orderOf_eq_one (frobeniusAlgHom K L)) x))
+      _ (degree_X_pow_sub_C Module.finrank_pos _) <|
+    by
+      simpa [← AlgHom.toEnd_apply, ← map_pow] using!
+        (linearIndependent_algHom_toLinearMap K L L |>.restrict_scalars' K).comp _
+          (bijective_frobeniusAlgHom_pow K L).1
 
 end frobenius
 
@@ -438,15 +477,14 @@ theorem X_pow_card_sub_X_natDegree_eq (hp : 1 < p) : (X ^ p - X : K'[X]).natDegr
     exact mod_cast hp
   rw [natDegree_eq_of_degree_eq (degree_sub_eq_left_of_degree_lt h1), natDegree_X_pow]
 
-theorem X_pow_card_pow_sub_X_natDegree_eq (hn : n ≠ 0) (hp : 1 < p) :
-    (X ^ p ^ n - X : K'[X]).natDegree = p ^ n :=
+theorem X_pow_card_pow_sub_X_natDegree_eq (hn : n ≠ 0) (hp : 1 < p)
+    : (X ^ p ^ n - X : K'[X]).natDegree = p ^ n :=
   X_pow_card_sub_X_natDegree_eq K' <| Nat.one_lt_pow hn hp
 
 theorem X_pow_card_sub_X_ne_zero (hp : 1 < p) : (X ^ p - X : K'[X]) ≠ 0 :=
-  ne_zero_of_natDegree_gt <|
-    calc
-      1 < _ := hp
-      _ = _ := (X_pow_card_sub_X_natDegree_eq K' hp).symm
+  ne_zero_of_natDegree_gt <| calc
+    1 < _ := hp
+    _ = _ := (X_pow_card_sub_X_natDegree_eq K' hp).symm
 
 theorem X_pow_card_pow_sub_X_ne_zero (hn : n ≠ 0) (hp : 1 < p) : (X ^ p ^ n - X : K'[X]) ≠ 0 :=
   X_pow_card_sub_X_ne_zero K' <| Nat.one_lt_pow hn hp
@@ -455,27 +493,29 @@ end
 
 theorem roots_X_pow_card_sub_X : roots (X ^ q - X : K[X]) = Finset.univ.val := by
   classical
-    have aux : (X ^ q - X : K[X]) ≠ 0 := X_pow_card_sub_X_ne_zero K Fintype.one_lt_card
-    have : (roots (X ^ q - X : K[X])).toFinset = Finset.univ := by
-      rw [eq_univ_iff_forall]
-      intro x
-      rw [Multiset.mem_toFinset, mem_roots aux, IsRoot.def, eval_sub, eval_pow, eval_X,
-        sub_eq_zero, pow_card]
-    rw [← this, Multiset.toFinset_val, eq_comm, Multiset.dedup_eq_self]
-    apply nodup_roots
-    rw [separable_def]
-    convert isCoprime_one_right.neg_right (R := K[X]) using 1
-    rw [derivative_sub, derivative_X, derivative_X_pow, Nat.cast_card_eq_zero K, C_0,
-      zero_mul, zero_sub]
+  have aux : (X ^ q - X : K[X]) ≠ 0 := X_pow_card_sub_X_ne_zero K Fintype.one_lt_card
+  have : (roots (X ^ q - X : K[X])).toFinset = Finset.univ := by
+    rw [eq_univ_iff_forall]
+    intro x
+    rw [Multiset.mem_toFinset, mem_roots aux, IsRoot.def, eval_sub, eval_pow, eval_X, sub_eq_zero,
+      pow_card]
+  rw [← this, Multiset.toFinset_val, eq_comm, Multiset.dedup_eq_self]
+  apply nodup_roots
+  rw [separable_def]
+  convert isCoprime_one_right.neg_right (R := K[X]) using 1
+  rw [derivative_sub, derivative_X, derivative_X_pow, Nat.cast_card_eq_zero K, C_0, zero_mul,
+    zero_sub]
 
 variable {K}
 
-theorem frobenius_pow {p : ℕ} [Fact p.Prime] [CharP K p] {n : ℕ} (hcard : q = p ^ n) :
-    frobenius K p ^ n = 1 := by
-  ext x; conv_rhs => rw [RingHom.one_def, RingHom.id_apply, ← pow_card x, hcard]
+theorem frobenius_pow {p : ℕ} [Fact p.Prime] [CharP K p] {n : ℕ} (hcard : q = p ^ n)
+    : frobenius K p ^ n = 1 := by
+  ext x
+  conv_rhs => rw [RingHom.one_def, RingHom.id_apply, ← pow_card x, hcard]
   clear hcard
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n hn =>
     rw [pow_succ', pow_succ, pow_mul, RingHom.mul_def, RingHom.comp_apply, frobenius_def, hn]
 
@@ -486,8 +526,8 @@ theorem Polynomial.expand_card (f : K[X]) : expand K q f = f ^ q := by
   rcases FiniteField.card K p with ⟨⟨n, npos⟩, ⟨hp, hn⟩⟩
   have : Fact p.Prime := ⟨hp⟩
   dsimp at hn
-  rw [hn, ← map_iterateFrobenius_expand, iterateFrobenius_eq_pow,
-    frobenius_pow hn, RingHom.one_def, map_id]
+  rw [hn, ← map_iterateFrobenius_expand, iterateFrobenius_eq_pow, frobenius_pow hn, RingHom.one_def,
+    map_id]
 
 @[deprecated (since := "2026-05-11")]
 alias expand_card := Polynomial.expand_card
@@ -516,30 +556,39 @@ theorem sq_add_sq (p : ℕ) [hp : Fact p.Prime] (x : ZMod p) : ∃ a b : ZMod p,
 
 end ZMod
 
-/-- If `p` is a prime natural number and `x` is an integer number, then there exist natural numbers
+/--
+If `p` is a prime natural number and `x` is an integer number, then there exist natural numbers
 `a ≤ p / 2` and `b ≤ p / 2` such that `a ^ 2 + b ^ 2 ≡ x [ZMOD p]`. This is a version of
-`ZMod.sq_add_sq` with estimates on `a` and `b`. -/
-theorem Nat.sq_add_sq_zmodEq (p : ℕ) [Fact p.Prime] (x : ℤ) :
-    ∃ a b : ℕ, a ≤ p / 2 ∧ b ≤ p / 2 ∧ (a : ℤ) ^ 2 + (b : ℤ) ^ 2 ≡ x [ZMOD p] := by
+`ZMod.sq_add_sq` with estimates on `a` and `b`.
+-/
+theorem Nat.sq_add_sq_zmodEq (p : ℕ) [Fact p.Prime] (x : ℤ)
+    : ∃ a b : ℕ, a ≤ p / 2 ∧ b ≤ p / 2 ∧ (a : ℤ) ^ 2 + (b : ℤ) ^ 2 ≡ x [ZMOD p] := by
   rcases ZMod.sq_add_sq p x with ⟨a, b, hx⟩
-  refine ⟨a.valMinAbs.natAbs, b.valMinAbs.natAbs, ZMod.natAbs_valMinAbs_le _,
-    ZMod.natAbs_valMinAbs_le _, ?_⟩
+  refine ⟨
+    a.valMinAbs.natAbs,
+    b.valMinAbs.natAbs,
+    ZMod.natAbs_valMinAbs_le _,
+    ZMod.natAbs_valMinAbs_le _,
+    ?_
+  ⟩
   rw [← a.coe_valMinAbs, ← b.coe_valMinAbs] at hx
   push_cast
   rw [sq_abs, sq_abs, ← ZMod.intCast_eq_intCast_iff]
   exact mod_cast hx
 
-/-- If `p` is a prime natural number and `x` is a natural number, then there exist natural numbers
+/--
+If `p` is a prime natural number and `x` is a natural number, then there exist natural numbers
 `a ≤ p / 2` and `b ≤ p / 2` such that `a ^ 2 + b ^ 2 ≡ x [MOD p]`. This is a version of
-`ZMod.sq_add_sq` with estimates on `a` and `b`. -/
-theorem Nat.sq_add_sq_modEq (p : ℕ) [Fact p.Prime] (x : ℕ) :
-    ∃ a b : ℕ, a ≤ p / 2 ∧ b ≤ p / 2 ∧ a ^ 2 + b ^ 2 ≡ x [MOD p] := by
+`ZMod.sq_add_sq` with estimates on `a` and `b`.
+-/
+theorem Nat.sq_add_sq_modEq (p : ℕ) [Fact p.Prime] (x : ℕ)
+    : ∃ a b : ℕ, a ≤ p / 2 ∧ b ≤ p / 2 ∧ a ^ 2 + b ^ 2 ≡ x [MOD p] := by
   simpa only [← Int.natCast_modEq_iff] using! Nat.sq_add_sq_zmodEq p x
 
 namespace CharP
 
-theorem sq_add_sq (R : Type*) [Ring R] [IsDomain R] (p : ℕ) [NeZero p] [CharP R p] (x : ℤ) :
-    ∃ a b : ℕ, ((a : R) ^ 2 + (b : R) ^ 2) = x := by
+theorem sq_add_sq (R : Type*) [Ring R] [IsDomain R] (p : ℕ) [NeZero p] [CharP R p] (x : ℤ)
+    : ∃ a b : ℕ, ((a : R) ^ 2 + (b : R) ^ 2) = x := by
   have := char_is_prime_of_pos R p
   obtain ⟨a, b, hab⟩ := ZMod.sq_add_sq p x
   refine ⟨a.val, b.val, ?_⟩
@@ -551,23 +600,27 @@ open scoped Nat
 
 open ZMod
 
-/-- The **Fermat-Euler totient theorem**. `Nat.ModEq.pow_totient` is an alternative statement
-  of the same theorem. -/
+/--
+The **Fermat-Euler totient theorem**. `Nat.ModEq.pow_totient` is an alternative statement
+of the same theorem.
+-/
 @[simp]
 theorem ZMod.pow_totient {n : ℕ} (x : (ZMod n)ˣ) : x ^ φ n = 1 := by
   cases n
   · rw [Nat.totient_zero, pow_zero]
   · rw [← card_units_eq_totient, pow_card_eq_one]
 
-/-- The **Fermat-Euler totient theorem**. `ZMod.pow_totient` is an alternative statement
-  of the same theorem. -/
+/--
+The **Fermat-Euler totient theorem**. `ZMod.pow_totient` is an alternative statement
+of the same theorem.
+-/
 theorem Nat.ModEq.pow_totient {x n : ℕ} (h : Nat.Coprime x n) : x ^ φ n ≡ 1 [MOD n] := by
   rw [← ZMod.natCast_eq_natCast_iff]
   let x' : Units (ZMod n) := ZMod.unitOfCoprime _ h
   have := ZMod.pow_totient x'
   apply_fun ((fun (x : Units (ZMod n)) => (x : ZMod n)) : Units (ZMod n) → ZMod n) at this
-  simpa only [Nat.succ_eq_add_one, Nat.cast_pow, Units.val_one, Nat.cast_one,
-    coe_unitOfCoprime, Units.val_pow_eq_pow_val]
+  simpa only [Nat.succ_eq_add_one, Nat.cast_pow, Units.val_one, Nat.cast_one, coe_unitOfCoprime,
+    Units.val_pow_eq_pow_val]
 
 open FiniteField
 
@@ -577,11 +630,11 @@ variable {p : ℕ} [Fact p.Prime]
 
 instance : Subsingleton (Subfield (ZMod p)) :=
   subsingleton_of_bot_eq_top <| top_unique (a := ⊥) fun n _ ↦
-  have := zsmul_mem (one_mem (⊥ : Subfield (ZMod p))) n.val
-  by rwa [natCast_zsmul, Nat.smul_one_eq_cast, ZMod.natCast_zmod_val] at this
+    have := zsmul_mem (one_mem (⊥ : Subfield (ZMod p))) n.val
+    by rwa [natCast_zsmul, Nat.smul_one_eq_cast, ZMod.natCast_zmod_val] at this
 
-theorem fieldRange_castHom_eq_bot (p : ℕ) [Fact p.Prime] [DivisionRing K] [CharP K p] :
-    (ZMod.castHom (m := p) dvd_rfl K).fieldRange = (⊥ : Subfield K) := by
+theorem fieldRange_castHom_eq_bot (p : ℕ) [Fact p.Prime] [DivisionRing K] [CharP K p]
+    : (ZMod.castHom (m := p) dvd_rfl K).fieldRange = (⊥ : Subfield K) := by
   rw [RingHom.fieldRange_eq_map, ← Subfield.map_bot (K := ZMod p), Subsingleton.elim ⊥]
 
 /-- A variation on Fermat's little theorem. See `ZMod.pow_card_sub_one_eq_one` -/
@@ -609,13 +662,11 @@ theorem units_pow_card_sub_one_eq_one (p : ℕ) [Fact p.Prime] (a : (ZMod p)ˣ) 
   rw [← card_units p, pow_card_eq_one]
 
 /-- **Fermat's Little Theorem**: for all nonzero `a : ZMod p`, we have `a ^ (p - 1) = 1`. -/
-theorem pow_card_sub_one_eq_one {a : ZMod p} (ha : a ≠ 0) :
-    a ^ (p - 1) = 1 := by
+theorem pow_card_sub_one_eq_one {a : ZMod p} (ha : a ≠ 0) : a ^ (p - 1) = 1 := by
   have h := FiniteField.pow_card_sub_one_eq_one a ha
   rwa [ZMod.card p] at h
 
-lemma pow_card_sub_one (a : ZMod p) :
-    a ^ (p - 1) = if a ≠ 0 then 1 else 0 := by
+lemma pow_card_sub_one (a : ZMod p) : a ^ (p - 1) = if a ≠ 0 then 1 else 0 := by
   split_ifs with ha
   · exact pow_card_sub_one_eq_one ha
   · simp [of_not_not ha, (Fact.out : p.Prime).one_lt, tsub_eq_zero_iff_le]
@@ -623,31 +674,31 @@ lemma pow_card_sub_one (a : ZMod p) :
 theorem orderOf_units_dvd_card_sub_one (u : (ZMod p)ˣ) : orderOf u ∣ p - 1 :=
   orderOf_dvd_of_pow_eq_one <| units_pow_card_sub_one_eq_one _ _
 
-theorem orderOf_dvd_card_sub_one {a : ZMod p} (ha : a ≠ 0) :
-    orderOf a ∣ p - 1 :=
+theorem orderOf_dvd_card_sub_one {a : ZMod p} (ha : a ≠ 0) : orderOf a ∣ p - 1 :=
   orderOf_dvd_of_pow_eq_one <| pow_card_sub_one_eq_one ha
 
 open Polynomial
 
-theorem expand_card (f : Polynomial (ZMod p)) :
-    expand (ZMod p) p f = f ^ p := by
+theorem expand_card (f : Polynomial (ZMod p)) : expand (ZMod p) p f = f ^ p := by
   have h := FiniteField.Polynomial.expand_card f
   rwa [ZMod.card p] at h
 
 end ZMod
 
-/-- **Fermat's Little Theorem**: for all `a : ℤ` coprime to `p`, we have
-`a ^ (p - 1) ≡ 1 [ZMOD p]`. -/
-theorem Int.ModEq.pow_card_sub_one_eq_one {p : ℕ} (hp : Nat.Prime p) {n : ℤ} (hpn : IsCoprime n p) :
-    n ^ (p - 1) ≡ 1 [ZMOD p] := by
+/--
+**Fermat's Little Theorem**: for all `a : ℤ` coprime to `p`, we have
+`a ^ (p - 1) ≡ 1 [ZMOD p]`.
+-/
+theorem Int.ModEq.pow_card_sub_one_eq_one {p : ℕ} (hp : Nat.Prime p) {n : ℤ} (hpn : IsCoprime n p)
+    : n ^ (p - 1) ≡ 1 [ZMOD p] := by
   have : Fact p.Prime := ⟨hp⟩
-  have : ¬(n : ZMod p) = 0 := by
+  have : ¬ (n : ZMod p) = 0 := by
     rw [CharP.intCast_eq_zero_iff _ p, ← (Nat.prime_iff_prime_int.mp hp).coprime_iff_not_dvd]
     exact hpn.symm
   simpa [← ZMod.intCast_eq_intCast_iff] using ZMod.pow_card_sub_one_eq_one this
 
-theorem Int.prime_dvd_pow_sub_one {p : ℕ} (hp : Nat.Prime p) {n : ℤ} (hpn : IsCoprime n p) :
-    (p : ℤ) ∣ n ^ (p - 1) - 1 :=
+theorem Int.prime_dvd_pow_sub_one {p : ℕ} (hp : Nat.Prime p) {n : ℤ} (hpn : IsCoprime n p)
+    : (p : ℤ) ∣ n ^ (p - 1) - 1 :=
   (ModEq.pow_card_sub_one_eq_one hp hpn).symm.dvd
 
 theorem Int.ModEq.pow_prime_eq_self {p : ℕ} (hp : Nat.Prime p) (n : ℤ) : n ^ p ≡ n [ZMOD p] := by
@@ -657,8 +708,9 @@ theorem Int.ModEq.pow_prime_eq_self {p : ℕ} (hp : Nat.Prime p) (n : ℤ) : n ^
 theorem Int.prime_dvd_pow_self_sub {p : ℕ} (hp : Nat.Prime p) (n : ℤ) : (p : ℤ) ∣ n ^ p - n :=
   (ModEq.pow_prime_eq_self hp n).symm.dvd
 
-theorem Int.ModEq.pow_eq_pow {p x y : ℕ} (hp : Nat.Prime p) (h : p - 1 ∣ x - y) (hxy : y ≤ x)
-    (hy : 0 < y) (n : ℤ) : n ^ x ≡ n ^ y [ZMOD p] := by
+theorem Int.ModEq.pow_eq_pow
+    {p x y : ℕ} (hp : Nat.Prime p) (h : p - 1 ∣ x - y) (hxy : y ≤ x) (hy : 0 < y) (n : ℤ)
+    : n ^ x ≡ n ^ y [ZMOD p] := by
   rw [← Nat.mul_div_eq_iff_dvd] at h
   by_cases hn : n ≡ 0 [ZMOD p]
   · grw [hn, zero_pow (hy.trans_le hxy).ne', zero_pow hy.ne']
@@ -666,28 +718,33 @@ theorem Int.ModEq.pow_eq_pow {p x y : ℕ} (hp : Nat.Prime p) (h : p - 1 ∣ x -
     grw [← pow_sub_mul_pow n hxy, ← h, pow_mul, Int.ModEq.pow_card_sub_one_eq_one hp hn.symm,
       one_pow, one_mul]
 
-/-- **Fermat's Little Theorem**: for all `n : ℕ` coprime to `p`, we have
-`n ^ (p - 1) ≡ 1 [MOD p]`. -/
-theorem Nat.ModEq.pow_card_sub_one_eq_one {p : ℕ} (hp : p.Prime) {n : ℕ} (hpn : n.Coprime p) :
-    n ^ (p - 1) ≡ 1 [MOD p] := by
+/--
+**Fermat's Little Theorem**: for all `n : ℕ` coprime to `p`, we have
+`n ^ (p - 1) ≡ 1 [MOD p]`.
+-/
+theorem Nat.ModEq.pow_card_sub_one_eq_one {p : ℕ} (hp : p.Prime) {n : ℕ} (hpn : n.Coprime p)
+    : n ^ (p - 1) ≡ 1 [MOD p] := by
   rw [← Int.natCast_modEq_iff, Nat.cast_pow, Nat.cast_one]
   exact Int.ModEq.pow_card_sub_one_eq_one hp (isCoprime_iff_coprime.mpr hpn)
 
-/-- **Fermat's Little Theorem**: for all `n : ℕ` coprime to `p`, we have
-`(n ^ (p - 1) - 1) % p = 0`. -/
-theorem Nat.pow_card_sub_one_sub_one_mod_card {p : ℕ} (hp : p.Prime) {n : ℕ} (hpn : n.Coprime p) :
-    (n ^ (p - 1) - 1) % p = 0 :=
+/--
+**Fermat's Little Theorem**: for all `n : ℕ` coprime to `p`, we have
+`(n ^ (p - 1) - 1) % p = 0`.
+-/
+theorem Nat.pow_card_sub_one_sub_one_mod_card {p : ℕ} (hp : p.Prime) {n : ℕ} (hpn : n.Coprime p)
+    : (n ^ (p - 1) - 1) % p = 0 :=
   Nat.sub_mod_eq_zero_of_mod_eq (Nat.ModEq.pow_card_sub_one_eq_one hp hpn)
 
 theorem pow_pow_modEq_one (p m a : ℕ) : (1 + p * a) ^ (p ^ m) ≡ 1 [MOD p ^ m] := by
   induction m with
-  | zero => exact Nat.modEq_one
+  | zero =>
+    exact Nat.modEq_one
   | succ m hm =>
     rw [Nat.ModEq.comm, add_comm, Nat.modEq_iff_dvd' (Nat.one_le_pow' _ _)] at hm
     obtain ⟨d, hd⟩ := hm
     rw [tsub_eq_iff_eq_add_of_le (Nat.one_le_pow' _ _), add_comm] at hd
-    rw [pow_succ, pow_mul, hd, add_pow, Finset.sum_range_succ', pow_zero, one_mul, one_pow,
-      one_mul, Nat.choose_zero_right, Nat.cast_one]
+    rw [pow_succ, pow_mul, hd, add_pow, Finset.sum_range_succ', pow_zero, one_mul, one_pow, one_mul,
+      Nat.choose_zero_right, Nat.cast_one]
     refine Nat.ModEq.add_right 1 (Nat.modEq_zero_iff_dvd.mpr ?_)
     simp_rw [one_pow, mul_one, pow_succ', mul_assoc, ← Finset.mul_sum]
     refine mul_dvd_mul_left (p ^ m) (dvd_mul_of_dvd_right (Finset.dvd_sum fun k hk ↦ ?_) d)
@@ -696,8 +753,9 @@ theorem pow_pow_modEq_one (p m a : ℕ) : (1 + p * a) ^ (p ^ m) ≡ 1 [MOD p ^ m
       cases k <;> simp [← hd, mul_assoc, pow_succ']
     · cases k <;> simp [mul_assoc, pow_succ']
 
-theorem ZMod.eq_one_or_isUnit_sub_one {n p k : ℕ} [Fact p.Prime] (hn : n = p ^ k) (a : ZMod n)
-    (ha : (orderOf a).Coprime n) : a = 1 ∨ IsUnit (a - 1) := by
+theorem ZMod.eq_one_or_isUnit_sub_one
+    {n p k : ℕ} [Fact p.Prime] (hn : n = p ^ k) (a : ZMod n) (ha : (orderOf a).Coprime n)
+    : a = 1 ∨ IsUnit (a - 1) := by
   rcases eq_or_ne n 0 with rfl | hn0
   · exact Or.inl (orderOf_eq_one_iff.mp ((orderOf a).coprime_zero_right.mp ha))
   rcases eq_or_ne a 0 with rfl | ha0
@@ -719,8 +777,8 @@ section prime_subfield
 
 variable {F : Type*} [Field F]
 
-theorem mem_bot_iff_intCast (p : ℕ) [Fact p.Prime] (K) [DivisionRing K] [CharP K p] {x : K} :
-    x ∈ (⊥ : Subfield K) ↔ ∃ n : ℤ, n = x := by
+theorem mem_bot_iff_intCast (p : ℕ) [Fact p.Prime] (K) [DivisionRing K] [CharP K p] {x : K}
+    : x ∈ (⊥ : Subfield K) ↔ ∃ n : ℤ, n = x := by
   simp [← fieldRange_castHom_eq_bot p, ZMod.intCast_surjective.exists]
 
 variable (F) (p : ℕ) [Fact p.Prime] [CharP F p]
@@ -732,28 +790,28 @@ theorem Subfield.card_bot : Nat.card (⊥ : Subfield F) = p := by
 /-- The prime subfield is finite. -/
 @[instance_reducible]
 def Subfield.fintypeBot : Fintype (⊥ : Subfield F) :=
-  Fintype.subtype (univ.map ⟨_, (ZMod.castHom (m := p) dvd_rfl F).injective⟩)
-    fun _ ↦ by simp_rw [Finset.mem_map, mem_univ, true_and, ← fieldRange_castHom_eq_bot p]; rfl
+  Fintype.subtype (univ.map ⟨_, (ZMod.castHom (m := p) dvd_rfl F).injective⟩) fun _ ↦ by
+    simp_rw [Finset.mem_map, mem_univ, true_and, ← fieldRange_castHom_eq_bot p]; rfl
 
 open Polynomial
 
-theorem Subfield.roots_X_pow_char_sub_X_bot :
-    letI := Subfield.fintypeBot F p
-    (X ^ p - X : (⊥ : Subfield F)[X]).roots = Finset.univ.val := by
+theorem Subfield.roots_X_pow_char_sub_X_bot
+    : letI := Subfield.fintypeBot F p
+      (X ^ p - X : (⊥ : Subfield F)[X]).roots = Finset.univ.val := by
   let _ := Subfield.fintypeBot F p
   conv_lhs => rw [← card_bot F p, ← Fintype.card_eq_nat_card]
   exact FiniteField.roots_X_pow_card_sub_X _
 
-theorem Subfield.splits_bot :
-    Splits (X ^ p - X : (⊥ : Subfield F)[X]) := by
+theorem Subfield.splits_bot : Splits (X ^ p - X : (⊥ : Subfield F)[X]) := by
   let _ := Subfield.fintypeBot F p
   rw [splits_iff_card_roots, roots_X_pow_char_sub_X_bot, ← Finset.card_def, Finset.card_univ,
     FiniteField.X_pow_card_sub_X_natDegree_eq _ (Fact.out (p := p.Prime)).one_lt,
     Fintype.card_eq_nat_card, card_bot F p]
 
 theorem Subfield.mem_bot_iff_pow_eq_self {x : F} : x ∈ (⊥ : Subfield F) ↔ x ^ p = x := by
-  have := roots_X_pow_char_sub_X_bot F p ▸
-      (splits_bot F p).roots_map (Subfield.subtype _) ▸ Multiset.mem_map (b := x)
+  have :=
+    roots_X_pow_char_sub_X_bot F p ▸ (splits_bot F p).roots_map (Subfield.subtype _)
+      ▸ Multiset.mem_map (b := x)
   simpa [sub_eq_zero, iff_comm, FiniteField.X_pow_card_sub_X_ne_zero F (Fact.out : p.Prime).one_lt]
 
 end prime_subfield
@@ -772,9 +830,9 @@ theorem isSquare_of_char_two (hF : ringChar F = 2) (a : F) : IsSquare a :=
   isSquare_of_charTwo' a
 
 /-- In a finite field of odd characteristic, not every element is a square. -/
-theorem exists_nonsquare (hF : ringChar F ≠ 2) : ∃ a : F, ¬IsSquare a := by
+theorem exists_nonsquare (hF : ringChar F ≠ 2) : ∃ a : F, ¬ IsSquare a := by
   -- Idea: the squaring map on `F` is not injective, hence not surjective
-  have h : ¬Function.Injective fun x : F ↦ x * x := fun h ↦
+  have h : ¬ Function.Injective fun x : F ↦ x * x := fun h ↦
     h.ne (Ring.neg_one_ne_one_of_char_ne_two hF) <| by simp
   simpa [Finite.injective_iff_surjective, Function.Surjective, IsSquare, eq_comm] using h
 
@@ -795,17 +853,20 @@ theorem odd_card_of_char_ne_two (hF : ringChar F ≠ 2) : Fintype.card F % 2 = 1
   Nat.mod_two_ne_zero.mp (mt even_card_iff_char_two.mpr hF)
 
 /-- If `F` has odd characteristic, then for nonzero `a : F`, we have that `a ^ (#F / 2) = ±1`. -/
-theorem pow_dichotomy (hF : ringChar F ≠ 2) {a : F} (ha : a ≠ 0) :
-    a ^ (Fintype.card F / 2) = 1 ∨ a ^ (Fintype.card F / 2) = -1 := by
+theorem pow_dichotomy (hF : ringChar F ≠ 2) {a : F} (ha : a ≠ 0)
+    : a ^ (Fintype.card F / 2) = 1 ∨ a ^ (Fintype.card F / 2) = -1 := by
   have h₁ := FiniteField.pow_card_sub_one_eq_one a ha
   rw [← Nat.two_mul_odd_div_two (FiniteField.odd_card_of_char_ne_two hF), mul_comm, pow_mul,
-    pow_two] at h₁
+      pow_two]
+    at h₁
   exact mul_self_eq_one_iff.mp h₁
 
-/-- A unit `a` of a finite field `F` of odd characteristic is a square
-if and only if `a ^ (#F / 2) = 1`. -/
-theorem unit_isSquare_iff (hF : ringChar F ≠ 2) (a : Fˣ) :
-    IsSquare a ↔ a ^ (Fintype.card F / 2) = 1 := by
+/--
+A unit `a` of a finite field `F` of odd characteristic is a square
+if and only if `a ^ (#F / 2) = 1`.
+-/
+theorem unit_isSquare_iff (hF : ringChar F ≠ 2) (a : Fˣ)
+    : IsSquare a ↔ a ^ (Fintype.card F / 2) = 1 := by
   obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := Fˣ)
   obtain ⟨n, hn⟩ : a ∈ Submonoid.powers g := by rw [mem_powers_iff_mem_zpowers]; apply hg
   have hodd := Nat.two_mul_odd_div_two (FiniteField.odd_card_of_char_ne_two hF)
@@ -815,7 +876,8 @@ theorem unit_isSquare_iff (hF : ringChar F ≠ 2) (a : Fˣ) :
     apply_fun Units.val using Units.val_injective
     push_cast
     exact FiniteField.pow_card_sub_one_eq_one (y : F) (Units.ne_zero y)
-  · subst a; intro h
+  · subst a
+    intro h
     rw [← Nat.card_eq_fintype_card] at hodd h
     have key : 2 * (Nat.card F / 2) ∣ n * (Nat.card F / 2) := by
       rw [← pow_mul] at h
@@ -828,15 +890,16 @@ theorem unit_isSquare_iff (hF : ringChar F ≠ 2) (a : Fˣ) :
     rw [mul_comm, pow_mul, pow_two]
 
 /-- A non-zero `a : F` is a square if and only if `a ^ (#F / 2) = 1`. -/
-theorem isSquare_iff (hF : ringChar F ≠ 2) {a : F} (ha : a ≠ 0) :
-    IsSquare a ↔ a ^ (Fintype.card F / 2) = 1 := by
-  apply
-    (iff_congr _ (by simp [Units.ext_iff])).mp (FiniteField.unit_isSquare_iff hF (Units.mk0 a ha))
+theorem isSquare_iff (hF : ringChar F ≠ 2) {a : F} (ha : a ≠ 0)
+    : IsSquare a ↔ a ^ (Fintype.card F / 2) = 1 := by
+  apply (iff_congr _ (by simp [Units.ext_iff])).mp
+    (FiniteField.unit_isSquare_iff hF (Units.mk0 a ha))
   simp only [IsSquare, Units.ext_iff, Units.val_mk0, Units.val_mul]
   constructor
   · rintro ⟨y, hy⟩; exact ⟨y, hy⟩
   · rintro ⟨y, rfl⟩
     have hy : y ≠ 0 := by rintro rfl; simp at ha
-    refine ⟨Units.mk0 y hy, ?_⟩; simp
+    refine ⟨Units.mk0 y hy, ?_⟩
+    simp
 
 end FiniteField

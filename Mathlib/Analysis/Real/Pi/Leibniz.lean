@@ -6,7 +6,6 @@ Authors: Benjamin Davidson, Jeremy Tan
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
-
 import Mathlib.Analysis.Complex.AbelLimit
 
 /-! # Leibniz's series for `π` -/
@@ -19,16 +18,18 @@ open Filter Finset
 
 open scoped Topology
 
-/-- **Leibniz's series for `π`**. The alternating sum of odd number reciprocals is `π / 4`,
-proved by using Abel's limit theorem to extend the Maclaurin series of `arctan` to 1. -/
-theorem tendsto_sum_pi_div_four :
-    Tendsto (fun k => ∑ i ∈ range k, (-1 : ℝ) ^ i / (2 * i + 1)) atTop (𝓝 (π / 4)) := by
+/--
+**Leibniz's series for `π`**. The alternating sum of odd number reciprocals is `π / 4`,
+proved by using Abel's limit theorem to extend the Maclaurin series of `arctan` to 1.
+-/
+theorem tendsto_sum_pi_div_four
+    : Tendsto (fun k => ∑ i ∈ range k, (-1 : ℝ) ^ i / (2 * i + 1)) atTop (𝓝 (π / 4)) := by
   -- The series is alternating with terms of decreasing magnitude, so it converges to some limit
-  obtain ⟨l, h⟩ :
-      ∃ l, Tendsto (fun n ↦ ∑ i ∈ range n, (-1 : ℝ) ^ i / (2 * i + 1)) atTop (𝓝 l) := by
+  obtain ⟨l, h⟩ : ∃ l, Tendsto (fun n ↦ ∑ i ∈ range n, (-1 : ℝ) ^ i / (2 * i + 1)) atTop (𝓝 l) := by
     apply Antitone.tendsto_alternating_series_of_tendsto_zero
     · exact antitone_iff_forall_lt.mpr fun _ _ _ ↦ by gcongr
-    · apply Tendsto.inv_tendsto_atTop; apply tendsto_atTop_add_const_right
+    · apply Tendsto.inv_tendsto_atTop
+      apply tendsto_atTop_add_const_right
       exact tendsto_natCast_atTop_atTop.const_mul_atTop zero_lt_two
   -- Abel's limit theorem states that the corresponding power series has the same limit as `x → 1⁻`
   have abel := tendsto_tsum_powerSeries_nhdsWithin_lt h
@@ -40,8 +41,10 @@ theorem tendsto_sum_pi_div_four :
       exact Tendsto.pow ‹_› _
     · rw [eventually_iff_exists_mem]
       use Set.Ioo (-1) 1
-      exact ⟨Ioo_mem_nhdsLT <| by simp,
-        fun _ _ ↦ by rwa [Set.mem_Iio, sq_lt_one_iff_abs_lt_one, abs_lt, ← Set.mem_Ioo]⟩
+      exact ⟨
+        Ioo_mem_nhdsLT <| by simp,
+        fun _ _ ↦ by rwa [Set.mem_Iio, sq_lt_one_iff_abs_lt_one, abs_lt, ← Set.mem_Ioo]
+      ⟩
   replace abel := (abel.comp q).mul m
   rw [mul_one] at abel
   -- ...so that we can replace the tsum with the real arctangent function

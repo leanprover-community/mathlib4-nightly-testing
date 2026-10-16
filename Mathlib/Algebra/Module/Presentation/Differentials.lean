@@ -40,11 +40,14 @@ namespace Algebra.Presentation
 
 open KaehlerDifferential
 
-variable {R : Type u} {S : Type v} {ι : Type w} {σ : Type t} [CommRing R] [CommRing S] [Algebra R S]
+variable
+  {R : Type u} {S : Type v} {ι : Type w} {σ : Type t} [CommRing R] [CommRing S] [Algebra R S]
   (pres : Algebra.Presentation R S ι σ)
 
-/-- The shape of the presentation by generators and relations of the `S`-module `Ω[S⁄R]`
-that is obtained from a presentation of `S` as an `R`-algebra. -/
+/--
+The shape of the presentation by generators and relations of the `S`-module `Ω[S⁄R]`
+that is obtained from a presentation of `S` as an `R`-algebra.
+-/
 @[simps G R]
 noncomputable def differentialsRelations : Module.Relations S where
   G := ι
@@ -65,8 +68,9 @@ sequence shall follow from the exactness of the second which is
 `Algebra.Extension.exact_cotangentComplex_toKaehler`. -/
 
 /-- Same as `comm₂₃` below, but here we have not yet constructed `differentialsSolution`. -/
-lemma comm₂₃' : pres.toExtension.toKaehler.comp pres.cotangentSpaceBasis.repr.symm.toLinearMap =
-    Finsupp.linearCombination S (fun g ↦ D _ _ (pres.val g)) := by
+lemma comm₂₃'
+    : pres.toExtension.toKaehler.comp pres.cotangentSpaceBasis.repr.symm.toLinearMap
+      = Finsupp.linearCombination S (fun g ↦ D _ _ (pres.val g)) := by
   ext
   simp
 
@@ -78,8 +82,8 @@ noncomputable def hom₁ : (σ →₀ S) →ₗ[S] pres.toExtension.Cotangent :=
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma hom₁_single (r : σ) :
-    hom₁ pres (Finsupp.single r 1) = Extension.Cotangent.mk ⟨pres.relation r, by simp⟩ := by
+lemma hom₁_single (r : σ)
+    : hom₁ pres (Finsupp.single r 1) = Extension.Cotangent.mk ⟨pres.relation r, by simp⟩ := by
   simp [hom₁]
 
 #adaptation_note
@@ -111,18 +115,20 @@ set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma surjective_hom₁ : Function.Surjective (hom₁ pres) := by
-  let φ : (σ →₀ S) →ₗ[pres.Ring] pres.toExtension.Cotangent :=
-    { toFun := hom₁ pres
-      map_add' := by simp
-      map_smul' := by simp }
+  let φ : (σ →₀ S) →ₗ[pres.Ring] pres.toExtension.Cotangent := {
+    toFun := hom₁ pres
+    map_add' := by simp
+    map_smul' := by simp
+  }
   change Function.Surjective φ
   have h₁ := Algebra.Extension.Cotangent.mk_surjective (P := pres.toExtension)
-  have h₂ : Submodule.span pres.Ring
-      (Set.range (fun r ↦ (⟨pres.relation r, by simp⟩ : pres.ker))) = ⊤ := by
+  have h₂
+      : Submodule.span pres.Ring (Set.range (fun r ↦ (⟨pres.relation r, by simp⟩ : pres.ker)))
+        = ⊤ := by
     refine Submodule.map_injective_of_injective (f := Submodule.subtype pres.ker)
       Subtype.coe_injective ?_
-    rw [Submodule.map_top, Submodule.range_subtype, Submodule.map_span,
-      Submodule.coe_subtype, Ideal.submodule_span_eq]
+    rw [Submodule.map_top, Submodule.range_subtype, Submodule.map_span, Submodule.coe_subtype,
+      Ideal.submodule_span_eq]
     simp only [← pres.span_range_relation_eq_ker]
     congr
     aesop
@@ -138,17 +144,18 @@ lemma surjective_hom₁ : Function.Surjective (hom₁ pres) := by
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma comm₁₂_single (r : σ) :
-    pres.toExtension.cotangentComplex (hom₁ pres (Finsupp.single r 1)) =
-      pres.cotangentSpaceBasis.repr.symm ((differentialsRelations pres).relation r) := by
+lemma comm₁₂_single (r : σ)
+    : pres.toExtension.cotangentComplex (hom₁ pres (Finsupp.single r 1))
+      = pres.cotangentSpaceBasis.repr.symm ((differentialsRelations pres).relation r) := by
   simp only [hom₁, Finsupp.linearCombination_single, one_smul, differentialsRelations,
     Basis.repr_symm_apply, Extension.cotangentComplex_mk]
   exact pres.cotangentSpaceBasis.repr.injective (by ext; simp)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma comm₁₂ : pres.toExtension.cotangentComplex.comp (hom₁ pres) =
-    pres.cotangentSpaceBasis.repr.symm.comp (differentialsRelations pres).map := by
+lemma comm₁₂
+    : pres.toExtension.cotangentComplex.comp (hom₁ pres)
+      = pres.cotangentSpaceBasis.repr.symm.comp (differentialsRelations pres).map := by
   ext r
   have := (differentialsRelations pres).map_single
   dsimp at this ⊢
@@ -158,42 +165,43 @@ end differentials
 
 set_option backward.isDefEq.respectTransparency false in
 open differentials in
-/-- The `S`-module `Ω[S⁄R]` contains an obvious solution to the system of linear
+/--
+The `S`-module `Ω[S⁄R]` contains an obvious solution to the system of linear
 equations `pres.differentialsRelations.Solution` when `pres` is a presentation
-of `S` as an `R`-algebra. -/
-noncomputable def differentialsSolution :
-    pres.differentialsRelations.Solution Ω[S⁄R] where
+of `S` as an `R`-algebra.
+-/
+noncomputable def differentialsSolution : pres.differentialsRelations.Solution Ω[S⁄R] where
   var g := D _ _ (pres.val g)
   linearCombination_var_relation r := by
-    simp only [LinearMap.coe_comp, LinearEquiv.coe_coe,
-      Function.comp_apply, ← comm₂₃', ← comm₁₂_single]
+    simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, ← comm₂₃',
+      ← comm₁₂_single]
     apply DFunLike.congr_fun (Function.Exact.linearMap_comp_eq_zero
       (pres.toExtension.exact_cotangentComplex_toKaehler))
 
-lemma differentials.comm₂₃ :
-    pres.toExtension.toKaehler.comp pres.cotangentSpaceBasis.repr.symm.toLinearMap =
-      pres.differentialsSolution.π :=
+lemma differentials.comm₂₃
+    : pres.toExtension.toKaehler.comp pres.cotangentSpaceBasis.repr.symm.toLinearMap
+      = pres.differentialsSolution.π :=
   comm₂₃' pres
 
 set_option backward.isDefEq.respectTransparency.types false in
 open differentials in
-lemma differentialsSolution_isPresentation :
-    pres.differentialsSolution.IsPresentation := by
+lemma differentialsSolution_isPresentation : pres.differentialsSolution.IsPresentation := by
   rw [Module.Relations.Solution.isPresentation_iff]
   constructor
   · rw [← Module.Relations.Solution.surjective_π_iff_span_eq_top, ← comm₂₃]
     exact Extension.toKaehler_surjective.comp pres.cotangentSpaceBasis.repr.symm.surjective
   · rw [← Module.Relations.range_map]
     exact Function.Exact.linearMap_ker_eq
-      ((LinearMap.exact_iff_of_surjective_of_bijective_of_injective
-      _ _ _ _ (hom₁ pres)
-      pres.cotangentSpaceBasis.repr.symm.toLinearMap .id
-      (comm₁₂ pres) (by simpa using comm₂₃ pres) (surjective_hom₁ pres)
-        (LinearEquiv.bijective _) (Equiv.refl _).injective).2
+      ((LinearMap.exact_iff_of_surjective_of_bijective_of_injective _ _ _ _ (hom₁ pres)
+          pres.cotangentSpaceBasis.repr.symm.toLinearMap .id (comm₁₂ pres)
+          (by simpa using comm₂₃ pres) (surjective_hom₁ pres) (LinearEquiv.bijective _)
+          (Equiv.refl _).injective).2
         pres.toExtension.exact_cotangentComplex_toKaehler)
 
-/-- The presentation of the `S`-module `Ω[S⁄R]` deduced from a presentation
-of `S` as an `R`-algebra. -/
+/--
+The presentation of the `S`-module `Ω[S⁄R]` deduced from a presentation
+of `S` as an `R`-algebra.
+-/
 noncomputable def differentials : Module.Presentation S Ω[S⁄R] where
   G := ι
   R := σ

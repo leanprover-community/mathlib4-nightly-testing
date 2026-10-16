@@ -37,7 +37,6 @@ submultiplicative: for a composition of maps, we have only `‖f.comp g‖ ≤ �
 
 @[expose] public section
 
-
 namespace ContinuousAffineMap
 
 variable {𝕜 R V W W₂ Q : Type*}
@@ -50,24 +49,23 @@ variable [PseudoMetricSpace Q] [NormedAddTorsor W Q]
 
 variable (f : V →ᴬ[𝕜] W)
 
-/-- Note that unlike the operator norm for linear maps, this norm is _not_ submultiplicative:
-we do _not_ necessarily have `‖f.comp g‖ ≤ ‖f‖ * ‖g‖`. See `norm_comp_le` for what we can say. -/
-noncomputable instance hasNorm : Norm (V →ᴬ[𝕜] W) :=
-  ⟨fun f => max ‖f 0‖ ‖f.contLinear‖⟩
+/--
+Note that unlike the operator norm for linear maps, this norm is _not_ submultiplicative:
+we do _not_ necessarily have `‖f.comp g‖ ≤ ‖f‖ * ‖g‖`. See `norm_comp_le` for what we can say.
+-/
+noncomputable instance hasNorm : Norm (V →ᴬ[𝕜] W) := ⟨fun f => max (‖f 0‖) ‖f.contLinear‖⟩
 
-theorem norm_def : ‖f‖ = max ‖f 0‖ ‖f.contLinear‖ :=
-  rfl
+theorem norm_def : ‖f‖ = max (‖f 0‖) ‖f.contLinear‖ := rfl
 
-theorem norm_contLinear_le : ‖f.contLinear‖ ≤ ‖f‖ :=
-  le_max_right _ _
+theorem norm_contLinear_le : ‖f.contLinear‖ ≤ ‖f‖ := le_max_right _ _
 
-theorem norm_image_zero_le : ‖f 0‖ ≤ ‖f‖ :=
-  le_max_left _ _
+theorem norm_image_zero_le : ‖f 0‖ ≤ ‖f‖ := le_max_left _ _
 
 @[simp]
 theorem norm_eq (h : f 0 = 0) : ‖f‖ = ‖f.contLinear‖ :=
   calc
-    ‖f‖ = max ‖f 0‖ ‖f.contLinear‖ := by rw [norm_def]
+    ‖f‖
+      = max (‖f 0‖) ‖f.contLinear‖ := by rw [norm_def]
     _ = max 0 ‖f.contLinear‖ := by rw [h, norm_zero]
     _ = ‖f.contLinear‖ := max_eq_right (norm_nonneg _)
 
@@ -87,7 +85,8 @@ theorem norm_comp_le (g : W₂ →ᴬ[𝕜] V) : ‖f.comp g‖ ≤ ‖f‖ * �
   rw [norm_def, max_le_iff]
   constructor
   · calc
-      ‖f.comp g 0‖ = ‖f (g 0)‖ := by simp
+      ‖f.comp g 0‖
+        = ‖f (g 0)‖ := by simp
       _ = ‖f.contLinear (g 0) + f 0‖ := by rw [f.decomp]; simp
       _ ≤ ‖f.contLinear‖ * ‖g 0‖ + ‖f 0‖ := by grw [norm_add_le, f.contLinear.le_opNorm]
       _ ≤ ‖f‖ * ‖g‖ + ‖f 0‖ := by grw [f.norm_contLinear_le, g.norm_image_zero_le]
@@ -99,31 +98,33 @@ theorem norm_comp_le (g : W₂ →ᴬ[𝕜] V) : ‖f.comp g‖ ≤ ‖f‖ * �
 
 variable (𝕜 R V W) [Ring R] [Module R W] [ContinuousConstSMul R W] [SMulCommClass 𝕜 R W]
 
-/-- The space of affine maps between two normed spaces is linearly isometric to the product of the
+/--
+The space of affine maps between two normed spaces is linearly isometric to the product of the
 codomain with the space of linear maps, by taking the value of the affine map at `(0 : V)` and the
-linear part. -/
+linear part.
+-/
 def decompLinearIsometryEquiv : (V →ᴬ[𝕜] W) ≃ₗᵢ[R] W × (V →L[𝕜] W) where
   __ := decompLinearEquiv 𝕜 R V W
   norm_map' _ := rfl
 
 @[simp]
-theorem fst_decompLinearIsometryEquiv (f : V →ᴬ[𝕜] W) :
-    (decompLinearIsometryEquiv 𝕜 R V W f).1 = f 0 :=
+theorem fst_decompLinearIsometryEquiv (f : V →ᴬ[𝕜] W)
+    : (decompLinearIsometryEquiv 𝕜 R V W f).1 = f 0 :=
   rfl
 
 @[simp]
-theorem snd_decompLinearIsometryEquiv (f : V →ᴬ[𝕜] W) :
-    (decompLinearIsometryEquiv 𝕜 R V W f).2 = f.contLinear :=
+theorem snd_decompLinearIsometryEquiv (f : V →ᴬ[𝕜] W)
+    : (decompLinearIsometryEquiv 𝕜 R V W f).2 = f.contLinear :=
   rfl
 
 @[simp]
-theorem decompLinearIsometryEquiv_symm_apply (p : W × (V →L[𝕜] W)) (x : V) :
-    (decompLinearIsometryEquiv 𝕜 R V W).symm p x = p.2 x + p.1 :=
+theorem decompLinearIsometryEquiv_symm_apply (p : W × (V →L[𝕜] W)) (x : V)
+    : (decompLinearIsometryEquiv 𝕜 R V W).symm p x = p.2 x + p.1 :=
   rfl
 
 @[simp]
-theorem decompLinearIsometryEquiv_symm_contLinear (p : W × (V →L[𝕜] W)) :
-    ((decompLinearIsometryEquiv 𝕜 R V W).symm p).contLinear = p.2 := by
+theorem decompLinearIsometryEquiv_symm_contLinear (p : W × (V →L[𝕜] W))
+    : ((decompLinearIsometryEquiv 𝕜 R V W).symm p).contLinear = p.2 := by
   rw [decompLinearIsometryEquiv, ← LinearIsometryEquiv.coe_symm_toLinearEquiv,
     decompLinearEquiv_symm_contLinear]
 

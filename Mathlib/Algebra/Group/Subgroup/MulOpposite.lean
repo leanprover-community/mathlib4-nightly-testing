@@ -24,7 +24,7 @@ namespace Subgroup
 
 /-- Pull a subgroup back to an opposite subgroup along `MulOpposite.unop` -/
 @[to_additive (attr := simps)
-/-- Pull an additive subgroup back to an opposite additive subgroup along `AddOpposite.unop` -/]
+  /-- Pull an additive subgroup back to an opposite additive subgroup along `AddOpposite.unop` -/]
 protected def op (H : Subgroup G) : Subgroup Gᵐᵒᵖ where
   carrier := MulOpposite.unop ⁻¹' (H : Set G)
   one_mem' := H.one_mem
@@ -34,17 +34,15 @@ protected def op (H : Subgroup G) : Subgroup Gᵐᵒᵖ where
 @[to_additive (attr := simp)]
 theorem mem_op {x : Gᵐᵒᵖ} {S : Subgroup G} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
 
-@[to_additive (attr := simp)] lemma op_toSubmonoid (H : Subgroup G) :
-    H.op.toSubmonoid = H.toSubmonoid.op :=
-  rfl
+@[to_additive (attr := simp)]
+lemma op_toSubmonoid (H : Subgroup G) : H.op.toSubmonoid = H.toSubmonoid.op := rfl
 
-@[to_additive] lemma op_toSubsemigroup (H : Subgroup G) :
-    H.op.toSubsemigroup = H.toSubsemigroup.op := by
-  dsimp
+@[to_additive]
+lemma op_toSubsemigroup (H : Subgroup G) : H.op.toSubsemigroup = H.toSubsemigroup.op := by dsimp
 
 /-- Pull an opposite subgroup back to a subgroup along `MulOpposite.op` -/
 @[to_additive (attr := simps)
-/-- Pull an opposite additive subgroup back to an additive subgroup along `AddOpposite.op` -/]
+  /-- Pull an opposite additive subgroup back to an additive subgroup along `AddOpposite.op` -/]
 protected def unop (H : Subgroup Gᵐᵒᵖ) : Subgroup G where
   carrier := MulOpposite.op ⁻¹' (H : Set Gᵐᵒᵖ)
   one_mem' := H.one_mem
@@ -54,12 +52,11 @@ protected def unop (H : Subgroup Gᵐᵒᵖ) : Subgroup G where
 @[to_additive (attr := simp)]
 theorem mem_unop {x : G} {S : Subgroup Gᵐᵒᵖ} : x ∈ S.unop ↔ MulOpposite.op x ∈ S := Iff.rfl
 
-@[to_additive (attr := simp)] lemma unop_toSubmonoid (H : Subgroup Gᵐᵒᵖ) :
-    H.unop.toSubmonoid = H.toSubmonoid.unop :=
-  rfl
+@[to_additive (attr := simp)]
+lemma unop_toSubmonoid (H : Subgroup Gᵐᵒᵖ) : H.unop.toSubmonoid = H.toSubmonoid.unop := rfl
 
-@[to_additive] lemma unop_toSubsemigroup (H : Subgroup Gᵐᵒᵖ) :
-    H.unop.toSubsemigroup = H.toSubsemigroup.unop := by
+@[to_additive]
+lemma unop_toSubsemigroup (H : Subgroup Gᵐᵒᵖ) : H.unop.toSubsemigroup = H.toSubsemigroup.unop := by
   dsimp
 
 @[to_additive (attr := simp)]
@@ -96,11 +93,9 @@ def opEquiv : Subgroup G ≃o Subgroup Gᵐᵒᵖ where
   right_inv := op_unop
   map_rel_iff' := op_le_op_iff
 
-@[to_additive]
-theorem op_injective : (@Subgroup.op G _).Injective := opEquiv.injective
+@[to_additive] theorem op_injective : (@Subgroup.op G _).Injective := opEquiv.injective
 
-@[to_additive]
-theorem unop_injective : (@Subgroup.unop G _).Injective := opEquiv.symm.injective
+@[to_additive] theorem unop_injective : (@Subgroup.unop G _).Injective := opEquiv.symm.injective
 
 @[to_additive (attr := simp)]
 theorem op_inj {S T : Subgroup G} : S.op = T.op ↔ S = T := opEquiv.eq_iff_eq
@@ -110,8 +105,7 @@ theorem unop_inj {S T : Subgroup Gᵐᵒᵖ} : S.unop = T.unop ↔ S = T := opEq
 
 /-- Bijection between a subgroup `H` and its opposite. -/
 @[to_additive (attr := simps!) /-- Bijection between an additive subgroup `H` and its opposite. -/]
-def equivOp (H : Subgroup G) : H ≃ H.op :=
-  MulOpposite.opEquiv.subtypeEquiv fun _ => Iff.rfl
+def equivOp (H : Subgroup G) : H ≃ H.op := MulOpposite.opEquiv.subtypeEquiv fun _ => Iff.rfl
 
 @[to_additive]
 theorem op_normalizer (H : Subgroup G) : (normalizer H : Subgroup G).op = normalizer H.op := by
@@ -120,8 +114,8 @@ theorem op_normalizer (H : Subgroup G) : (normalizer H : Subgroup G).op = normal
   simp [iff_comm]
 
 @[to_additive]
-theorem unop_normalizer (H : Subgroup Gᵐᵒᵖ) :
-    (normalizer H).unop = normalizer (H.unop : Set G) := by
+theorem unop_normalizer (H : Subgroup Gᵐᵒᵖ)
+    : (normalizer H).unop = normalizer (H.unop : Set G) := by
   rw [← op_inj, op_unop, op_normalizer, op_unop]
 
 end Subgroup

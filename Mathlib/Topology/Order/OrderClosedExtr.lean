@@ -27,20 +27,26 @@ public section
 
 open Set
 
-/-- If `f` is monotone on `Ioc a b` and antitone on `Ico b c` then `f` has
-a local maximum at `b`. -/
+/--
+If `f` is monotone on `Ioc a b` and antitone on `Ico b c` then `f` has
+a local maximum at `b`.
+-/
 lemma isLocalMax_of_mono_anti
     {α : Type*} [TopologicalSpace α] [LinearOrder α] [OrderClosedTopology α]
     {β : Type*} [Preorder β]
-    {a b c : α} (g₀ : a < b) (g₁ : b < c) {f : α → β}
-    (h₀ : MonotoneOn f (Ioc a b))
-    (h₁ : AntitoneOn f (Ico b c)) : IsLocalMax f b :=
+    {a b c : α} (g₀ : a < b) (g₁ : b < c)
+    {f : α → β} (h₀ : MonotoneOn f (Ioc a b)) (h₁ : AntitoneOn f (Ico b c))
+    : IsLocalMax f b :=
   (isMaxOn_Ioo_of_mono_anti h₀ h₁).isLocalMax (Ioo_mem_nhds g₀ g₁)
 
-/-- If `f` is antitone on `Ioc a b` and monotone on `Ico b c` then `f` has
-a local minimum at `b`. -/
+/--
+If `f` is antitone on `Ioc a b` and monotone on `Ico b c` then `f` has
+a local minimum at `b`.
+-/
 lemma isLocalMin_of_anti_mono
     {α : Type*} [TopologicalSpace α] [LinearOrder α] [OrderClosedTopology α]
-    {β : Type*} [Preorder β] {a b c : α} (g₀ : a < b) (g₁ : b < c) {f : α → β}
-    (h₀ : AntitoneOn f (Ioc a b)) (h₁ : MonotoneOn f (Ico b c)) : IsLocalMin f b :=
+    {β : Type*} [Preorder β]
+    {a b c : α} (g₀ : a < b) (g₁ : b < c)
+    {f : α → β} (h₀ : AntitoneOn f (Ioc a b)) (h₁ : MonotoneOn f (Ico b c))
+    : IsLocalMin f b :=
   isLocalMax_of_mono_anti (β := βᵒᵈ) g₀ g₁ h₀ h₁

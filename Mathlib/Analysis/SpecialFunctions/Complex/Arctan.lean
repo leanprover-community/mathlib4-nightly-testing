@@ -6,7 +6,6 @@ Authors: Jeremy Tan
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-
 import Mathlib.Algebra.Order.Interval.Set.Group
 
 /-!
@@ -21,7 +20,6 @@ is proved in `Complex.hasSum_arctan`.
 
 @[expose] public section
 
-
 namespace Complex
 
 open scoped Real
@@ -33,8 +31,8 @@ theorem tan_arctan {z : ℂ} (h₁ : z ≠ I) (h₂ : z ≠ -I) : tan (arctan z)
   unfold tan sin cos
   rw [div_div_eq_mul_div, div_mul_cancel₀ _ two_ne_zero, ← div_mul_eq_mul_div,
     -- multiply top and bottom by `exp (arctan z * I)`
-    ← mul_div_mul_right _ _ (exp_ne_zero (arctan z * I)), sub_mul, add_mul,
-    ← exp_add, neg_mul, neg_add_cancel, exp_zero, ← exp_add, ← two_mul]
+    ← mul_div_mul_right _ _ (exp_ne_zero (arctan z * I)), sub_mul, add_mul, ← exp_add, neg_mul,
+    neg_add_cancel, exp_zero, ← exp_add, ← two_mul]
   have z₁ : 1 + z * I ≠ 0 := by
     contrapose h₁
     rw [add_eq_zero_iff_neg_eq, ← div_eq_iff I_ne_zero, div_I, neg_one_mul, neg_neg] at h₁
@@ -44,22 +42,26 @@ theorem tan_arctan {z : ℂ} (h₁ : z ≠ I) (h₂ : z ≠ -I) : tan (arctan z)
     rw [sub_eq_zero, ← div_eq_iff I_ne_zero, div_I, one_mul] at h₂
     exact h₂.symm
   have key : exp (2 * (arctan z * I)) = (1 + z * I) / (1 - z * I) := by
-    rw [arctan, ← mul_rotate, ← mul_assoc,
-      show 2 * (I * (-I / 2)) = 1 by simp [field], one_mul, exp_log]
+    rw [arctan, ← mul_rotate, ← mul_assoc, show 2 * (I * (-I / 2)) = 1 by simp [field], one_mul,
+      exp_log]
     exact div_ne_zero z₁ z₂
   -- multiply top and bottom by `1 - z * I`
   rw [key, ← mul_div_mul_right _ _ z₂, sub_mul, add_mul, div_mul_cancel₀ _ z₂, one_mul,
     show _ / _ * I = -(I * I) * z by ring, I_mul_I, neg_neg, one_mul]
 
-/-- `cos z` is nonzero when the bounds in `arctan_tan` are met (`z` lies in the vertical strip
-`-π / 2 < z.re < π / 2` and `z ≠ π / 2`). -/
-lemma cos_ne_zero_of_arctan_bounds {z : ℂ} (h₀ : z ≠ π / 2) (h₁ : -(π / 2) < z.re)
-    (h₂ : z.re ≤ π / 2) : cos z ≠ 0 := by
+/--
+`cos z` is nonzero when the bounds in `arctan_tan` are met (`z` lies in the vertical strip
+`-π / 2 < z.re < π / 2` and `z ≠ π / 2`).
+-/
+lemma cos_ne_zero_of_arctan_bounds
+    {z : ℂ} (h₀ : z ≠ π / 2) (h₁ : -(π / 2) < z.re) (h₂ : z.re ≤ π / 2)
+    : cos z ≠ 0 := by
   refine cos_ne_zero_iff.mpr (fun k ↦ ?_)
   rw [ne_eq, Complex.ext_iff, not_and_or] at h₀ ⊢
   norm_cast at h₀ ⊢
   rcases h₀ with nr | ni
-  · left; contrapose nr
+  · left
+    contrapose nr
     rw [nr, mul_div_assoc, neg_eq_neg_one_mul, mul_lt_mul_iff_of_pos_right (by positivity)] at h₁
     rw [nr, ← one_mul (π / 2), mul_div_assoc, mul_le_mul_iff_of_pos_right (by positivity)] at h₂
     norm_cast at h₁ h₂
@@ -67,8 +69,8 @@ lemma cos_ne_zero_of_arctan_bounds {z : ℂ} (h₀ : z ≠ π / 2) (h₁ : -(π 
     rwa [show 2 * k + 1 = 1 by lia, Int.cast_one, one_mul] at nr
   · exact Or.inr ni
 
-theorem arctan_tan {z : ℂ} (h₀ : z ≠ π / 2) (h₁ : -(π / 2) < z.re) (h₂ : z.re ≤ π / 2) :
-    arctan (tan z) = z := by
+theorem arctan_tan {z : ℂ} (h₀ : z ≠ π / 2) (h₁ : -(π / 2) < z.re) (h₂ : z.re ≤ π / 2)
+    : arctan (tan z) = z := by
   have h := cos_ne_zero_of_arctan_bounds h₀ h₁ h₂
   unfold arctan tan
   -- multiply top and bottom by `cos z`
@@ -96,10 +98,12 @@ lemma arg_one_add_mem_Ioo {z : ℂ} (hz : ‖z‖ < 1) : (1 + z).arg ∈ Set.Ioo
   rw [Set.mem_Ioo, ← abs_lt, abs_arg_lt_pi_div_two_iff, add_re, one_re, ← neg_lt_iff_pos_add']
   exact Or.inl (abs_lt.mp ((abs_re_le_norm z).trans_lt hz)).1
 
-/-- We can combine the logs in `log (1 + z * I) + -log (1 - z * I)` into one.
-This is only used in `hasSum_arctan`. -/
-lemma hasSum_arctan_aux {z : ℂ} (hz : ‖z‖ < 1) :
-    log (1 + z * I) + -log (1 - z * I) = log ((1 + z * I) / (1 - z * I)) := by
+/--
+We can combine the logs in `log (1 + z * I) + -log (1 - z * I)` into one.
+This is only used in `hasSum_arctan`.
+-/
+lemma hasSum_arctan_aux {z : ℂ} (hz : ‖z‖ < 1)
+    : log (1 + z * I) + - log (1 - z * I) = log ((1 + z * I) / (1 - z * I)) := by
   have z₁ := mem_slitPlane_iff_arg.mp (mem_slitPlane_of_norm_lt_one (z := z * I) (by simpa))
   have z₂ := mem_slitPlane_iff_arg.mp (mem_slitPlane_of_norm_lt_one (z := -(z * I)) (by simpa))
   rw [← sub_eq_add_neg] at z₂
@@ -119,10 +123,12 @@ lemma hasSum_arctan_aux {z : ℂ} (hz : ‖z‖ < 1) :
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The power series expansion of `Complex.arctan`, valid on the open unit disc. -/
-theorem hasSum_arctan {z : ℂ} (hz : ‖z‖ < 1) :
-    HasSum (fun n : ℕ ↦ (-1) ^ n * z ^ (2 * n + 1) / ↑(2 * n + 1)) (arctan z) := by
-  have := ((hasSum_taylorSeries_log (z := z * I) (by simpa)).add
-    (hasSum_taylorSeries_neg_log (z := z * I) (by simpa))).mul_left (-I / 2)
+theorem hasSum_arctan {z : ℂ} (hz : ‖z‖ < 1)
+    : HasSum (fun n : ℕ ↦ (-1) ^ n * z ^ (2 * n + 1) / ↑(2 * n + 1)) (arctan z) := by
+  have :=
+    ((hasSum_taylorSeries_log (z := z * I) (by simpa)).add
+        (hasSum_taylorSeries_neg_log (z := z * I) (by simpa))).mul_left
+      (-I / 2)
   simp_rw [← add_div, ← add_one_mul, hasSum_arctan_aux hz] at this
   replace := (Nat.divModEquiv 2).symm.hasSum_iff.mpr this
   dsimp [Function.comp_def] at this
@@ -141,6 +147,6 @@ theorem hasSum_arctan {z : ℂ} (hz : ‖z‖ < 1) :
 end Complex
 
 /-- The power series expansion of `Real.arctan`, valid on `-1 < x < 1`. -/
-theorem Real.hasSum_arctan {x : ℝ} (hx : ‖x‖ < 1) :
-    HasSum (fun n : ℕ => (-1) ^ n * x ^ (2 * n + 1) / ↑(2 * n + 1)) (arctan x) :=
+theorem Real.hasSum_arctan {x : ℝ} (hx : ‖x‖ < 1)
+    : HasSum (fun n : ℕ => (-1) ^ n * x ^ (2 * n + 1) / ↑(2 * n + 1)) (arctan x) :=
   mod_cast Complex.hasSum_arctan (z := x) (by simpa)

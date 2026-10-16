@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.LocalProperties.Basic
 public import Mathlib.RingTheory.Localization.InvSubmonoid
-
 import Mathlib.RingTheory.FiniteStability
 import Mathlib.RingTheory.Finiteness.FiniteTypeLocal
 
@@ -61,11 +60,13 @@ theorem finiteType_isStableUnderBaseChange : IsStableUnderBaseChange @FiniteType
 theorem finiteType_localizationPreserves : RingHom.LocalizationPreserves @RingHom.FiniteType :=
   finiteType_isStableUnderBaseChange.localizationPreserves
 
-theorem localization_away_map_finiteType (R S R' S' : Type u) [CommRing R] [CommRing S]
-    [CommRing R'] [CommRing S'] [Algebra R R'] (f : R →+* S) [Algebra S S']
-    (r : R) [IsLocalization.Away r R']
-    [IsLocalization.Away (f r) S'] (hf : f.FiniteType) :
-    (IsLocalization.Away.map R' S' f r).FiniteType :=
+theorem localization_away_map_finiteType
+    (R S R' S' : Type u) [CommRing R] [CommRing S] [CommRing R'] [CommRing S'] [Algebra R R']
+    (f : R →+* S)
+    [Algebra S S']
+    (r : R) [IsLocalization.Away r R'] [IsLocalization.Away (f r) S']
+    (hf : f.FiniteType)
+    : (IsLocalization.Away.map R' S' f r).FiniteType :=
   finiteType_localizationPreserves.away _ r _ _ hf
 
 theorem finiteType_ofLocalizationSpan : RingHom.OfLocalizationSpan @RingHom.FiniteType := by
@@ -82,17 +83,22 @@ theorem finiteType_ofLocalizationSpanTarget : OfLocalizationSpanTarget @FiniteTy
   introv R hs H
   algebraize [f]
   replace H : ∀ r ∈ s, Algebra.FiniteType R (Localization.Away (r : S)) := by
-    intro r hr; simp_rw [RingHom.FiniteType] at H; convert! H ⟨r, hr⟩; ext
-    simp_rw [Algebra.smul_def]; rfl
+    intro r hr
+    simp_rw [RingHom.FiniteType] at H
+    convert! H ⟨r, hr⟩
+    ext
+    simp_rw [Algebra.smul_def]
+    rfl
   exact Algebra.FiniteType.of_span_eq_top_target s hs H
 
-theorem finiteType_isLocal : PropertyIsLocal @FiniteType :=
-  ⟨finiteType_localizationPreserves.away,
-    finiteType_ofLocalizationSpanTarget,
-    finiteType_ofLocalizationSpanTarget.ofLocalizationSpan
-      (finiteType_stableUnderComposition.stableUnderCompositionWithLocalizationAway
-        finiteType_holdsForLocalizationAway).left,
+theorem finiteType_isLocal : PropertyIsLocal @FiniteType := ⟨
+  finiteType_localizationPreserves.away,
+  finiteType_ofLocalizationSpanTarget,
+  finiteType_ofLocalizationSpanTarget.ofLocalizationSpan
     (finiteType_stableUnderComposition.stableUnderCompositionWithLocalizationAway
-      finiteType_holdsForLocalizationAway).right⟩
+      finiteType_holdsForLocalizationAway).left,
+  (finiteType_stableUnderComposition.stableUnderCompositionWithLocalizationAway
+    finiteType_holdsForLocalizationAway).right
+⟩
 
 end RingHom

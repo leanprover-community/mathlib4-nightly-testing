@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Azumaya.Defs
 public import Mathlib.Algebra.Central.TensorProduct
-
 import Mathlib.Algebra.Central.End
 
 /-!
@@ -38,16 +37,17 @@ namespace IsAzumaya
 
 variable (R A B : Type*) [CommSemiring R] [Ring A] [Ring B] [Algebra R A] [Algebra R B]
 
-lemma AlgHom.mulLeftRight_bij [h : IsAzumaya R A] :
-    Function.Bijective (AlgHom.mulLeftRight R A) := h.bij
+lemma AlgHom.mulLeftRight_bij [h : IsAzumaya R A] : Function.Bijective (AlgHom.mulLeftRight R A) :=
+  h.bij
 
-/-- The "canonical" isomorphism between `R ⊗ Rᵒᵖ` and `End R R` which is equal
-  to `AlgHom.mulLeftRight R R`. -/
+/--
+The "canonical" isomorphism between `R ⊗ Rᵒᵖ` and `End R R` which is equal
+to `AlgHom.mulLeftRight R R`.
+-/
 abbrev tensorEquivEnd : R ⊗[R] Rᵐᵒᵖ ≃ₐ[R] Module.End R R :=
   Algebra.TensorProduct.lid R Rᵐᵒᵖ |>.trans <| .moduleEndSelf R
 
-lemma coe_tensorEquivEnd : tensorEquivEnd R = AlgHom.mulLeftRight R R := by
-  ext; simp
+lemma coe_tensorEquivEnd : tensorEquivEnd R = AlgHom.mulLeftRight R R := by ext; simp
 
 instance id : IsAzumaya R R where
   bij := by rw [← coe_tensorEquivEnd]; exact tensorEquivEnd R |>.bijective
@@ -66,9 +66,9 @@ End R A   ------------> End R B
           e.conj
 ```
 -/
-lemma mulLeftRight_comp_congr (e : A ≃ₐ[R] B) :
-    (AlgHom.mulLeftRight R B).comp (Algebra.TensorProduct.congr e e.op).toAlgHom =
-    (e.toLinearEquiv.conjAlgEquiv R).toAlgHom.comp (AlgHom.mulLeftRight R A) := by
+lemma mulLeftRight_comp_congr (e : A ≃ₐ[R] B)
+    : (AlgHom.mulLeftRight R B).comp (Algebra.TensorProduct.congr e e.op).toAlgHom
+      = (e.toLinearEquiv.conjAlgEquiv R).toAlgHom.comp (AlgHom.mulLeftRight R A) := by
   ext <;> simp
 
 theorem of_AlgEquiv (e : A ≃ₐ[R] B) [IsAzumaya R A] : IsAzumaya R B :=
@@ -76,14 +76,17 @@ theorem of_AlgEquiv (e : A ≃ₐ[R] B) [IsAzumaya R A] : IsAzumaya R B :=
   let _ : FaithfulSMul R B := .of_injective e e.injective
   let _ : Module.Finite R B := .equiv e.toLinearEquiv
   ⟨Function.Bijective.of_comp_iff (AlgHom.mulLeftRight R B)
-    (Algebra.TensorProduct.congr e e.op).bijective |>.1 <| by
-    rw [← AlgEquiv.coe_toAlgHom, ← AlgHom.coe_comp, mulLeftRight_comp_congr]
-    simp [AlgHom.mulLeftRight_bij]⟩
+        (Algebra.TensorProduct.congr e e.op).bijective
+      |>.1 <|
+    by
+      rw [← AlgEquiv.coe_toAlgHom, ← AlgHom.coe_comp, mulLeftRight_comp_congr]
+      simp [AlgHom.mulLeftRight_bij]⟩
 
 end IsAzumaya
 
 /-- An Azumaya algebra is a central algebra. -/
-instance Algebra.IsCentral.instIsAzumaya {R A : Type*} [CommSemiring R] [Semiring A]
-    [Algebra R A] [Module.Free R A] [IsAzumaya R A] : IsCentral R A :=
+instance Algebra.IsCentral.instIsAzumaya
+    {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] [Module.Free R A] [IsAzumaya R A]
+    : IsCentral R A :=
   have := of_algEquiv R _ _ (AlgEquiv.ofBijective (.mulLeftRight R A) IsAzumaya.bij).symm
   left_of_tensor R A Aᵐᵒᵖ <| FaithfulSMul.algebraMap_injective _ _

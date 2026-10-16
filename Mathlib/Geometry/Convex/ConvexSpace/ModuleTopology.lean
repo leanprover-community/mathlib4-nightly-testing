@@ -17,14 +17,14 @@ open Topology
 
 namespace Convexity.StdSimplex
 
-variable {R E ι : Type*} [Ring R] [PartialOrder R] [IsStrictOrderedRing R]
-  [AddCommGroup E] [Module R E] [ConvexSpace R E]
-  [TopologicalSpace E] [IsTopologicalAddGroup E] [TopologicalSpace R]
+variable
+  {R E ι : Type*} [Ring R] [PartialOrder R] [IsStrictOrderedRing R] [AddCommGroup E] [Module R E]
+  [ConvexSpace R E] [TopologicalSpace E] [IsTopologicalAddGroup E] [TopologicalSpace R]
   [IsTopologicalRing R] [ContinuousSMul R E] [IsModuleConvexSpace R E]
 
 @[fun_prop]
-public lemma continuous_of_affineMap (f : ConvexSpace.AffineMap R (StdSimplex R ι) E) :
-    Continuous f := by
+public lemma continuous_of_affineMap (f : ConvexSpace.AffineMap R (StdSimplex R ι) E)
+    : Continuous f := by
   wlog hι : Finite ι generalizing ι
   · rw [StdSimplex.continuous_iff]
     intro ι' _ g
@@ -34,8 +34,8 @@ public lemma continuous_of_affineMap (f : ConvexSpace.AffineMap R (StdSimplex R 
   rw [StdSimplex.coe_affineMapMk_of_fintype]
   fun_prop
 
-public lemma continuous_of_isAffineMap (f : StdSimplex R ι → E) (hf : IsAffineMap R f) :
-    Continuous f :=
+public lemma continuous_of_isAffineMap (f : StdSimplex R ι → E) (hf : IsAffineMap R f)
+    : Continuous f :=
   continuous_of_affineMap ⟨f, hf⟩
 
 end Convexity.StdSimplex

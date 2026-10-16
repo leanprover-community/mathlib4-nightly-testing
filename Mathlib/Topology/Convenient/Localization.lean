@@ -34,22 +34,24 @@ namespace TopCat
 
 variable {ι : Type t} (X : ι → Type u) [∀ i, TopologicalSpace (X i)]
 
-/-- Given a family of topological spaces `X`, this is the family of morphisms in `TopCat`
+/--
+Given a family of topological spaces `X`, this is the family of morphisms in `TopCat`
 corresponding to the continuous maps `WithGeneratedByTopology X Z → Z` for
-all topological spaces `Z`. -/
+all topological spaces `Z`.
+-/
 def morphismPropertyWithGeneratedByTopologyEquiv : MorphismProperty TopCat.{v} :=
   MorphismProperty.ofHoms (GeneratedByTopCat.adjCounit (X := X)).app
 
-instance : (TopCat.toContinuousGeneratedByCat.{v} X).IsLocalization
-    (TopCat.morphismPropertyWithGeneratedByTopologyEquiv X) :=
-  ContinuousGeneratedByCat.adj.isLocalization_rightAdjoint _
-    (by rintro _ _ _ ⟨Z⟩; infer_instance)
+instance
+    : (TopCat.toContinuousGeneratedByCat.{v} X).IsLocalization
+      (TopCat.morphismPropertyWithGeneratedByTopologyEquiv X) :=
+  ContinuousGeneratedByCat.adj.isLocalization_rightAdjoint _ (by rintro _ _ _ ⟨Z⟩; infer_instance)
     (fun _ ↦ by constructor)
 
-instance : (TopCat.toGeneratedByTopCat.{v} (X := X)).IsLocalization
-    (TopCat.morphismPropertyWithGeneratedByTopologyEquiv X) :=
-  GeneratedByTopCat.adj.isLocalization_rightAdjoint _
-    (by rintro _ _ _ ⟨Z⟩; infer_instance)
+instance
+    : (TopCat.toGeneratedByTopCat.{v} (X := X)).IsLocalization
+      (TopCat.morphismPropertyWithGeneratedByTopologyEquiv X) :=
+  GeneratedByTopCat.adj.isLocalization_rightAdjoint _ (by rintro _ _ _ ⟨Z⟩; infer_instance)
     (fun _ ↦ by constructor)
 
 end TopCat

@@ -33,13 +33,11 @@ variable (G) [SMul G α] [SMul G β]
 
 /-- A set `s` supports `b` if `g • b = b` whenever `g • a = a` for all `a ∈ s`. -/
 @[to_additive /-- A set `s` supports `b` if `g +ᵥ b = b` whenever `g +ᵥ a = a` for all `a ∈ s`. -/]
-def Supports (s : Set α) (b : β) :=
-  ∀ g : G, (∀ ⦃a⦄, a ∈ s → g • a = a) → g • b = b
+def Supports (s : Set α) (b : β) := ∀ g : G, (∀ ⦃a⦄, a ∈ s → g • a = a) → g • b = b
 
 variable {s t : Set α} {a : α} {b : β}
 
-@[to_additive]
-theorem supports_of_mem (ha : a ∈ s) : Supports G s a := fun _ h => h ha
+@[to_additive] theorem supports_of_mem (ha : a ∈ s) : Supports G s a := fun _ h => h ha
 
 variable {G}
 
@@ -49,8 +47,10 @@ theorem Supports.mono (h : s ⊆ t) (hs : Supports G s b) : Supports G t b := fu
 
 end SMul
 
-variable [Group H] [SMul G α] [SMul G β] [MulAction H α] [SMul H β] [SMulCommClass G H β]
-  [SMulCommClass G H α] {s : Set α} {b : β}
+variable
+  [Group H] [SMul G α] [SMul G β] [MulAction H α] [SMul H β] [SMulCommClass G H β]
+  [SMulCommClass G H α]
+  {s : Set α} {b : β}
 
 -- TODO: This should work without `SMulCommClass`
 @[to_additive]

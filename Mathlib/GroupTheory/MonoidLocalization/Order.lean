@@ -23,14 +23,16 @@ variable {α : Type*}
 
 section OrderedCancelCommMonoid
 
-variable [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α] {s : Submonoid α}
-  {a₁ b₁ : α} {a₂ b₂ : s}
+variable
+  [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
+  {s : Submonoid α} {a₁ b₁ : α} {a₂ b₂ : s}
 
 @[to_additive]
-instance le : LE (Localization s) :=
-  ⟨fun a b =>
-    Localization.liftOn₂ a b (fun a₁ a₂ b₁ b₂ => ↑b₂ * a₁ ≤ a₂ * b₁)
-      fun {a₁ b₁ a₂ b₂ c₁ d₁ c₂ d₂} hab hcd => propext <| by
+instance le : LE (Localization s) := ⟨fun a b =>
+  Localization.liftOn₂ a b
+    (fun a₁ a₂ b₁ b₂ => ↑b₂ * a₁ ≤ a₂ * b₁)
+    fun {a₁ b₁ a₂ b₂ c₁ d₁ c₂ d₂} hab hcd =>
+      propext <| by
         obtain ⟨e, he⟩ := r_iff_exists.1 hab
         obtain ⟨f, hf⟩ := r_iff_exists.1 hcd
         simp only [mul_right_inj] at he hf
@@ -39,10 +41,11 @@ instance le : LE (Localization s) :=
           mul_left_comm (b₂ : α), mul_le_mul_iff_left]⟩
 
 @[to_additive]
-instance lt : LT (Localization s) :=
-  ⟨fun a b =>
-    Localization.liftOn₂ a b (fun a₁ a₂ b₁ b₂ => ↑b₂ * a₁ < a₂ * b₁)
-      fun {a₁ b₁ a₂ b₂ c₁ d₁ c₂ d₂} hab hcd => propext <| by
+instance lt : LT (Localization s) := ⟨fun a b =>
+  Localization.liftOn₂ a b
+    (fun a₁ a₂ b₁ b₂ => ↑b₂ * a₁ < a₂ * b₁)
+    fun {a₁ b₁ a₂ b₂ c₁ d₁ c₂ d₂} hab hcd =>
+      propext <| by
         obtain ⟨e, he⟩ := r_iff_exists.1 hab
         obtain ⟨f, hf⟩ := r_iff_exists.1 hcd
         simp only [mul_right_inj] at he hf
@@ -50,13 +53,9 @@ instance lt : LT (Localization s) :=
           mul_lt_mul_iff_right, ← mul_lt_mul_iff_left, mul_left_comm, he, mul_left_comm,
           mul_left_comm (b₂ : α), mul_lt_mul_iff_left]⟩
 
-@[to_additive]
-theorem mk_le_mk : mk a₁ a₂ ≤ mk b₁ b₂ ↔ ↑b₂ * a₁ ≤ a₂ * b₁ :=
-  Iff.rfl
+@[to_additive] theorem mk_le_mk : mk a₁ a₂ ≤ mk b₁ b₂ ↔ ↑b₂ * a₁ ≤ a₂ * b₁ := Iff.rfl
 
-@[to_additive]
-theorem mk_lt_mk : mk a₁ a₂ < mk b₁ b₂ ↔ ↑b₂ * a₁ < a₂ * b₁ :=
-  Iff.rfl
+@[to_additive] theorem mk_lt_mk : mk a₁ a₂ < mk b₁ b₂ ↔ ↑b₂ * a₁ < a₂ * b₁ := Iff.rfl
 
 -- declaring this separately to the instance below makes things faster
 @[to_additive]
@@ -109,14 +108,15 @@ def mkOrderEmbedding (b : s) : α ↪o Localization s where
 end OrderedCancelCommMonoid
 
 @[to_additive]
-instance [CommMonoid α] [LinearOrder α] [IsOrderedCancelMonoid α] {s : Submonoid α} :
-    LinearOrder (Localization s) :=
-  { le_total := fun a b =>
-      Localization.induction_on₂ a b fun _ _ => by
-        simp_rw [mk_le_mk]
-        exact le_total _ _
-    toDecidableLE := Localization.decidableLE
-    toDecidableLT := Localization.decidableLT
-    toDecidableEq := Localization.decidableEq }
+instance [CommMonoid α] [LinearOrder α] [IsOrderedCancelMonoid α] {s : Submonoid α}
+    : LinearOrder (Localization s) := {
+  le_total := fun a b =>
+    Localization.induction_on₂ a b fun _ _ => by
+      simp_rw [mk_le_mk]
+      exact le_total _ _
+  toDecidableLE := Localization.decidableLE
+  toDecidableLT := Localization.decidableLT
+  toDecidableEq := Localization.decidableEq
+}
 
 end Localization

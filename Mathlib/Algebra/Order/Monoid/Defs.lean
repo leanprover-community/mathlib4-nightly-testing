@@ -16,7 +16,6 @@ This file provides the definitions of ordered monoids.
 
 public section
 
-
 open Function
 
 variable {α : Type*}
@@ -62,28 +61,32 @@ instance (priority := 900) IsOrderedMonoid.toMulRightMono : MulRightMono α wher
 
 end IsOrderedMonoid
 
-/-- An ordered cancellative additive monoid is an ordered additive
-monoid in which addition is cancellative and monotone. -/
-class IsOrderedCancelAddMonoid (α : Type*) [AddCommMonoid α] [Preorder α] extends
-    IsOrderedAddMonoid α where
+/--
+An ordered cancellative additive monoid is an ordered additive
+monoid in which addition is cancellative and monotone.
+-/
+class IsOrderedCancelAddMonoid (α : Type*) [AddCommMonoid α] [Preorder α]
+    extends IsOrderedAddMonoid α where
   protected le_of_add_le_add_left : ∀ a b c : α, a + b ≤ a + c → b ≤ c
   protected le_of_add_le_add_right : ∀ a b c : α, b + a ≤ c + a → b ≤ c := fun a b c h ↦ by
     rw [add_comm _ a, add_comm _ a] at h; exact le_of_add_le_add_left a b c h
 
-/-- An ordered cancellative monoid is an ordered monoid in which
-multiplication is cancellative and monotone. -/
+/--
+An ordered cancellative monoid is an ordered monoid in which
+multiplication is cancellative and monotone.
+-/
 @[to_additive IsOrderedCancelAddMonoid]
-class IsOrderedCancelMonoid (α : Type*) [CommMonoid α] [Preorder α] extends
-    IsOrderedMonoid α where
+class IsOrderedCancelMonoid (α : Type*) [CommMonoid α] [Preorder α] extends IsOrderedMonoid α where
   protected le_of_mul_le_mul_left : ∀ a b c : α, a * b ≤ a * c → b ≤ c
   protected le_of_mul_le_mul_right : ∀ a b c : α, b * a ≤ c * a → b ≤ c := fun a b c h ↦ by
     rw [mul_comm _ a, mul_comm _ a] at h; exact le_of_mul_le_mul_left a b c h
 
-instance [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α] :
-    Lean.Grind.OrderedAdd α where
+instance [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α]
+    : Lean.Grind.OrderedAdd α where
   add_le_left_iff {a b} c := ⟨
     fun h ↦ IsOrderedAddMonoid.add_le_add_left a b h c,
-    IsOrderedCancelAddMonoid.le_of_add_le_add_right c a b⟩
+    IsOrderedCancelAddMonoid.le_of_add_le_add_right c a b
+  ⟩
 
 section IsOrderedCancelMonoid
 variable [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
@@ -91,7 +94,8 @@ variable [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
 -- See note [lower instance priority]
 @[to_additive]
 instance (priority := 200) IsOrderedCancelMonoid.toMulLeftReflectLE
-  {α : Type*} [CommMonoid α] [Preorder α] [IsOrderedCancelMonoid α] : MulLeftReflectLE α where
+    {α : Type*} [CommMonoid α] [Preorder α] [IsOrderedCancelMonoid α]
+    : MulLeftReflectLE α where
   le_of_mul_le_mul_left' := IsOrderedCancelMonoid.le_of_mul_le_mul_left _ _ _
 
 @[to_additive]
@@ -99,20 +103,19 @@ instance (priority := 900) IsOrderedCancelMonoid.toMulLeftReflectLT : MulLeftRef
   elim := contravariant_lt_of_contravariant_le α α _ fun _ ↦ MulLeftReflectLE.le_of_mul_le_mul_left'
 
 @[to_additive]
-theorem IsOrderedCancelMonoid.toMulRightReflectLT : MulRightReflectLT α :=
-  inferInstance
+theorem IsOrderedCancelMonoid.toMulRightReflectLT : MulRightReflectLT α := inferInstance
 
 -- See note [lower instance priority]
 @[to_additive]
 instance (priority := 100) IsOrderedCancelMonoid.toIsCancelMul : IsCancelMul α where
-  mul_left_cancel _ _ _ h :=
-    (le_of_mul_le_mul_left' h.le).antisymm <| le_of_mul_le_mul_left' h.ge
+  mul_left_cancel _ _ _ h := (le_of_mul_le_mul_left' h.le).antisymm <| le_of_mul_le_mul_left' h.ge
   mul_right_cancel _ _ _ h :=
     (le_of_mul_le_mul_right' h.le).antisymm <| le_of_mul_le_mul_right' h.ge
 
 @[to_additive]
-theorem IsOrderedCancelMonoid.of_mul_lt_mul_left {α : Type*} [CommMonoid α] [LinearOrder α]
-    (hmul : ∀ a b c : α, b < c → a * b < a * c) : IsOrderedCancelMonoid α where
+theorem IsOrderedCancelMonoid.of_mul_lt_mul_left
+    {α : Type*} [CommMonoid α] [LinearOrder α] (hmul : ∀ a b c : α, b < c → a * b < a * c)
+    : IsOrderedCancelMonoid α where
   mul_le_mul_left a b h c := by
     obtain rfl | h := eq_or_lt_of_le h
     · simp

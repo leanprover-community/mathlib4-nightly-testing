@@ -28,7 +28,6 @@ As opposed to `List.inter`, `List.bagInter` copes well with multiplicity. For ex
 
 public section
 
-
 open Nat
 
 namespace List
@@ -36,7 +35,6 @@ namespace List
 variable {α : Type*} {l₁ l₂ : List α} {p : α → Prop} {a : α}
 
 /-! ### `Disjoint` -/
-
 
 section Disjoint
 
@@ -51,25 +49,21 @@ variable [DecidableEq α]
 
 /-! ### `union` -/
 
-
 section Union
 
-theorem mem_union_left (h : a ∈ l₁) (l₂ : List α) : a ∈ l₁ ∪ l₂ :=
-  mem_union_iff.2 (Or.inl h)
+theorem mem_union_left (h : a ∈ l₁) (l₂ : List α) : a ∈ l₁ ∪ l₂ := mem_union_iff.2 (Or.inl h)
 
-theorem mem_union_right (l₁ : List α) (h : a ∈ l₂) : a ∈ l₁ ∪ l₂ :=
-  mem_union_iff.2 (Or.inr h)
+theorem mem_union_right (l₁ : List α) (h : a ∈ l₂) : a ∈ l₁ ∪ l₂ := mem_union_iff.2 (Or.inr h)
 
 theorem sublist_suffix_of_union : ∀ l₁ l₂ : List α, ∃ t, t <+ l₁ ∧ t ++ l₂ = l₁ ∪ l₂
-  | [], _ => ⟨[], by rfl, rfl⟩
+  | [], _ =>
+    ⟨[], by rfl, rfl⟩
   | a :: l₁, l₂ =>
     let ⟨t, s, e⟩ := sublist_suffix_of_union l₁ l₂
     if h : a ∈ l₁ ∪ l₂ then
-      ⟨t, sublist_cons_of_sublist _ s, by
-        simp only [e, cons_union, insert_of_mem h]⟩
+      ⟨t, sublist_cons_of_sublist _ s, by simp only [e, cons_union, insert_of_mem h]⟩
     else
-      ⟨a :: t, s.cons_cons _, by
-        simp only [cons_append, cons_union, e, insert_of_not_mem h]⟩
+      ⟨a :: t, s.cons_cons _, by simp only [cons_append, cons_union, e, insert_of_not_mem h]⟩
 
 theorem suffix_union_right (l₁ l₂ : List α) : l₂ <:+ l₁ ∪ l₂ :=
   (sublist_suffix_of_union l₁ l₂).imp fun _ => And.right
@@ -89,7 +83,8 @@ theorem forall_mem_of_forall_mem_union_right (h : ∀ x ∈ l₁ ∪ l₂, p x) 
 
 theorem Subset.union_eq_right {xs ys : List α} (h : xs ⊆ ys) : xs ∪ ys = ys := by
   induction xs with
-  | nil => simp
+  | nil =>
+    simp
   | cons x xs ih =>
     rw [cons_union, insert_of_mem <| mem_union_right _ <| h mem_cons_self,
       ih <| subset_of_cons_subset h]
@@ -98,12 +93,10 @@ end Union
 
 /-! ### `inter` -/
 
-
 section Inter
 
 @[simp, grind =]
-theorem inter_nil (l : List α) : [] ∩ l = [] :=
-  rfl
+theorem inter_nil (l : List α) : [] ∩ l = [] := rfl
 
 @[simp]
 theorem inter_cons_of_mem (l₁ : List α) (h : a ∈ l₂) : (a :: l₁) ∩ l₂ = a :: l₁ ∩ l₂ := by
@@ -114,24 +107,20 @@ theorem inter_cons_of_notMem (l₁ : List α) (h : a ∉ l₂) : (a :: l₁) ∩
   simp [Inter.inter, List.inter, h]
 
 @[grind =]
-theorem inter_cons (l₁ : List α) :
-    (a :: l₁) ∩ l₂ = if a ∈ l₂ then a :: l₁ ∩ l₂ else l₁ ∩ l₂ := by
+theorem inter_cons (l₁ : List α) : (a :: l₁) ∩ l₂ = if a ∈ l₂ then a :: l₁ ∩ l₂ else l₁ ∩ l₂ := by
   split_ifs <;> simp_all
 
 @[simp, grind =]
-theorem inter_nil' (l : List α) : l ∩ [] = [] := by
-  induction l with grind
+theorem inter_nil' (l : List α) : l ∩ [] = [] := by induction l with grind
 
-theorem mem_of_mem_inter_left : a ∈ l₁ ∩ l₂ → a ∈ l₁ :=
-  mem_of_mem_filter
+theorem mem_of_mem_inter_left : a ∈ l₁ ∩ l₂ → a ∈ l₁ := mem_of_mem_filter
 
 theorem mem_of_mem_inter_right (h : a ∈ l₁ ∩ l₂) : a ∈ l₂ := by simpa using of_mem_filter h
 
 theorem mem_inter_of_mem_of_mem (h₁ : a ∈ l₁) (h₂ : a ∈ l₂) : a ∈ l₁ ∩ l₂ :=
   mem_filter_of_mem h₁ <| by simpa using h₂
 
-theorem inter_subset_left {l₁ l₂ : List α} : l₁ ∩ l₂ ⊆ l₁ :=
-  filter_subset_self _
+theorem inter_subset_left {l₁ l₂ : List α} : l₁ ∩ l₂ ⊆ l₁ := filter_subset_self _
 
 theorem inter_subset_right {l₁ l₂ : List α} : l₁ ∩ l₂ ⊆ l₂ := fun _ => mem_of_mem_inter_right
 
@@ -144,12 +133,12 @@ theorem inter_eq_nil_iff_disjoint : l₁ ∩ l₂ = [] ↔ Disjoint l₁ l₂ :=
 
 alias ⟨_, Disjoint.inter_eq_nil⟩ := inter_eq_nil_iff_disjoint
 
-theorem forall_mem_inter_of_forall_left (h : ∀ x ∈ l₁, p x) (l₂ : List α) :
-    ∀ x, x ∈ l₁ ∩ l₂ → p x :=
+theorem forall_mem_inter_of_forall_left (h : ∀ x ∈ l₁, p x) (l₂ : List α)
+    : ∀ x, x ∈ l₁ ∩ l₂ → p x :=
   BAll.imp_left (fun _ => mem_of_mem_inter_left) h
 
-theorem forall_mem_inter_of_forall_right (l₁ : List α) (h : ∀ x ∈ l₂, p x) :
-    ∀ x, x ∈ l₁ ∩ l₂ → p x :=
+theorem forall_mem_inter_of_forall_right (l₁ : List α) (h : ∀ x ∈ l₂, p x)
+    : ∀ x, x ∈ l₁ ∩ l₂ → p x :=
   BAll.imp_left (fun _ => mem_of_mem_inter_right) h
 
 @[simp]
@@ -159,18 +148,17 @@ theorem inter_reverse {xs ys : List α} : xs ∩ ys.reverse = xs ∩ ys := by
 theorem Subset.inter_eq_left {xs ys : List α} (h : xs ⊆ ys) : xs ∩ ys = xs :=
   List.filter_eq_self.mpr fun _ ha => elem_eq_true_of_mem (h ha)
 
-theorem Sublist.inter_left {l₁ l₂ l₃ : List α} (h : l₂.Sublist l₃) :
-    (l₁ ∩ l₂).Sublist (l₁ ∩ l₃) := by
+theorem Sublist.inter_left {l₁ l₂ l₃ : List α} (h : l₂.Sublist l₃)
+    : (l₁ ∩ l₂).Sublist (l₁ ∩ l₃) := by
   grind [inter_def, monotone_filter_right]
 
-theorem Sublist.inter_right {l₁ l₂ l₃ : List α} (h : l₁.Sublist l₂) :
-    (l₁ ∩ l₃).Sublist (l₂ ∩ l₃) := by
+theorem Sublist.inter_right {l₁ l₂ l₃ : List α} (h : l₁.Sublist l₂)
+    : (l₁ ∩ l₃).Sublist (l₂ ∩ l₃) := by
   grind [inter_def]
 
 end Inter
 
 /-! ### `bagInter` -/
-
 
 section BagInter
 
@@ -181,16 +169,16 @@ theorem nil_bagInter (l : List α) : [].bagInter l = [] := by cases l <;> rfl
 theorem bagInter_nil (l : List α) : l.bagInter [] = [] := by cases l <;> rfl
 
 @[simp]
-theorem cons_bagInter_of_mem (l₁ : List α) (h : a ∈ l₂) :
-    (a :: l₁).bagInter l₂ = a :: l₁.bagInter (l₂.erase a) := by
+theorem cons_bagInter_of_mem (l₁ : List α) (h : a ∈ l₂)
+    : (a :: l₁).bagInter l₂ = a :: l₁.bagInter (l₂.erase a) := by
   cases l₂ with grind [List.bagInter]
 
 @[deprecated (since := "2026-05-13")]
 alias cons_bagInter_of_pos := cons_bagInter_of_mem
 
 @[simp]
-theorem cons_bagInter_of_notMem (l₁ : List α) (h : a ∉ l₂) :
-    (a :: l₁).bagInter l₂ = l₁.bagInter l₂ := by
+theorem cons_bagInter_of_notMem (l₁ : List α) (h : a ∉ l₂)
+    : (a :: l₁).bagInter l₂ = l₁.bagInter l₂ := by
   cases l₂ with grind [List.bagInter]
 
 @[deprecated (since := "2026-09-28")] alias cons_bagInter_of_not_mem := cons_bagInter_of_notMem
@@ -199,16 +187,16 @@ theorem cons_bagInter_of_notMem (l₁ : List α) (h : a ∉ l₂) :
 alias cons_bagInter_of_neg := cons_bagInter_of_notMem
 
 @[grind =]
-theorem cons_bagInter :
-    (a :: l₁).bagInter l₂ = if a ∈ l₂ then a :: l₁.bagInter (l₂.erase a) else l₁.bagInter l₂ := by
+theorem cons_bagInter
+    : (a :: l₁).bagInter l₂ = if a ∈ l₂ then a :: l₁.bagInter (l₂.erase a) else l₁.bagInter l₂ := by
   split_ifs <;> simp_all
 
 @[deprecated (since := "2026-05-13")]
 alias cons_bagInteger := cons_bagInter
 
 @[simp]
-theorem bagInter_cons_of_notMem (l₂ : List α) (h : a ∉ l₁) :
-    l₁.bagInter (a :: l₂) = l₁.bagInter l₂ := by
+theorem bagInter_cons_of_notMem (l₂ : List α) (h : a ∉ l₁)
+    : l₁.bagInter (a :: l₂) = l₁.bagInter l₂ := by
   induction l₁ generalizing l₂ <;> grind
 
 @[deprecated (since := "2026-09-28")] alias bagInter_cons_of_not_mem := bagInter_cons_of_notMem
@@ -218,35 +206,33 @@ theorem mem_bagInter {a : α} {l₁ l₂ : List α} : a ∈ l₁.bagInter l₂ �
   fun_induction List.bagInter with grind
 
 @[simp]
-theorem count_bagInter {a : α} {l₁ l₂ : List α} :
-    count a (l₁.bagInter l₂) = min (count a l₁) (count a l₂) := by
+theorem count_bagInter {a : α} {l₁ l₂ : List α}
+    : count a (l₁.bagInter l₂) = min (count a l₁) (count a l₂) := by
   fun_induction List.bagInter with grind
 
 theorem bagInter_sublist_left {l₁ l₂ : List α} : l₁.bagInter l₂ <+ l₁ := by
   fun_induction List.bagInter with grind
 
-theorem singleton_bagInter (a : α) : [a].bagInter l₁ = if a ∈ l₁ then [a] else [] := by
-  grind
+theorem singleton_bagInter (a : α) : [a].bagInter l₁ = if a ∈ l₁ then [a] else [] := by grind
 
 theorem bagInter_singleton (a : α) : l₁.bagInter [a] = if a ∈ l₁ then [a] else [] := by
   induction l₁ <;> grind
 
 @[simp]
-theorem bagInter_erase_of_notMem (h : a ∉ l₁) :
-    l₁.bagInter (l₂.erase a) = l₁.bagInter l₂ := by
+theorem bagInter_erase_of_notMem (h : a ∉ l₁) : l₁.bagInter (l₂.erase a) = l₁.bagInter l₂ := by
   induction l₁ generalizing l₂ <;> grind
 
 @[deprecated (since := "2026-09-28")] alias bagInter_erase_of_not_mem := bagInter_erase_of_notMem
 
 @[simp]
-theorem erase_bagInter_of_notMem (h : a ∉ l₂) :
-    (l₁.erase a).bagInter l₂ = l₁.bagInter l₂ := by
+theorem erase_bagInter_of_notMem (h : a ∉ l₂) : (l₁.erase a).bagInter l₂ = l₁.bagInter l₂ := by
   induction l₁ generalizing l₂ <;> grind
 
 @[deprecated (since := "2026-09-28")] alias erase_bagInter_of_not_mem := erase_bagInter_of_notMem
 
 theorem bagInter_nil_iff_inter_nil : ∀ l₁ l₂ : List α, l₁.bagInter l₂ = [] ↔ l₁ ∩ l₂ = []
-  | [], l₂ => by simp
+  | [], l₂ => by
+    simp
   | b :: l₁, l₂ => by
     by_cases h : b ∈ l₂
     · simp [h]
@@ -264,7 +250,8 @@ theorem Nodup.bagInter_left (h : l₂.Nodup) : (l₁.bagInter l₂).Nodup :=
 
 theorem Sublist.bagInter_inter : (l₁.bagInter l₂).Sublist (l₁ ∩ l₂) := by
   induction l₁ generalizing l₂ with
-  | nil => simp
+  | nil =>
+    simp
   | cons _ _ ih =>
     rw [cons_bagInter]
     split

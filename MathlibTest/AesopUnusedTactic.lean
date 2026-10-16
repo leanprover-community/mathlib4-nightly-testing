@@ -15,8 +15,5 @@ Aesop's `add_aesop_rules` command...
 -/
 add_aesop_rules safe (by simp)
 
-/-
-... or in an `add` clause.
--/
-example : True := by
-  aesop (add safe (by simp))
+/- ... or in an `add` clause. -/
+example : True := by aesop (add safe (by simp))

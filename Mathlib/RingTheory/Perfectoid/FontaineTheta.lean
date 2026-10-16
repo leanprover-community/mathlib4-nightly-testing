@@ -8,7 +8,6 @@ module
 public import Mathlib.RingTheory.AdicCompletion.RingHom
 public import Mathlib.RingTheory.Perfectoid.Untilt
 public import Mathlib.RingTheory.WittVector.TeichmullerSeries
-
 import Mathlib.RingTheory.AdicCompletion.Functoriality
 
 /-!
@@ -81,10 +80,10 @@ v                   v
 ```
 -/
 
-theorem ker_map_le_ker_mk_comp_ghostComponent (n : ℕ) :
-    RingHom.ker (WittVector.map (Ideal.Quotient.mk 𝔭)) ≤
-    RingHom.ker (((Ideal.Quotient.mk (𝔭 ^ (n + 1)))).comp
-    (WittVector.ghostComponent (p := p) n)) := by
+theorem ker_map_le_ker_mk_comp_ghostComponent (n : ℕ)
+    : RingHom.ker (WittVector.map (Ideal.Quotient.mk 𝔭))
+      ≤ RingHom.ker (((Ideal.Quotient.mk (𝔭 ^ (n + 1)))).comp
+        (WittVector.ghostComponent (p := p) n)) := by
   intro x
   simp only [RingHom.mem_ker, map_eq_zero_iff, RingHom.comp_apply]
   intro h
@@ -101,30 +100,34 @@ The lift ring map `gh_n : 𝕎(R/𝔭) →+* R/𝔭^(n+1)` of the `n`-th ghost c
 -/
 def ghostComponentModPPow (n : ℕ) : 𝕎 (R ⧸ 𝔭) →+* R ⧸ 𝔭 ^ (n + 1) :=
   RingHom.liftOfSurjective (WittVector.map (Ideal.Quotient.mk 𝔭))
-    (map_surjective _ Ideal.Quotient.mk_surjective) ⟨((Ideal.Quotient.mk (𝔭 ^ (n + 1)))).comp
-      (WittVector.ghostComponent n), ker_map_le_ker_mk_comp_ghostComponent n⟩
+    (map_surjective _ Ideal.Quotient.mk_surjective)
+    ⟨
+      ((Ideal.Quotient.mk (𝔭 ^ (n + 1)))).comp (WittVector.ghostComponent n),
+      ker_map_le_ker_mk_comp_ghostComponent n
+    ⟩
 
 @[simp]
-theorem ghostComponentModPPow_map_mk (n : ℕ) (x : 𝕎 R) :
-    ghostComponentModPPow n (WittVector.map (Ideal.Quotient.mk 𝔭) x) =
-    WittVector.ghostComponent n x :=
+theorem ghostComponentModPPow_map_mk (n : ℕ) (x : 𝕎 R)
+    : ghostComponentModPPow n (WittVector.map (Ideal.Quotient.mk 𝔭) x)
+      = WittVector.ghostComponent n x :=
   RingHom.liftOfSurjective_comp_apply ..
 
 @[simp]
-theorem quotEquivOfEq_ghostComponentModPPow (x : 𝕎 (R ⧸ 𝔭)) (h : 𝔭 ^ (0 + 1) = 𝔭) :
-    quotEquivOfEq h (ghostComponentModPPow 0 x) = ghostComponent 0 x := by
+theorem quotEquivOfEq_ghostComponentModPPow (x : 𝕎 (R ⧸ 𝔭)) (h : 𝔭 ^ (0 + 1) = 𝔭)
+    : quotEquivOfEq h (ghostComponentModPPow 0 x) = ghostComponent 0 x := by
   obtain ⟨y, hy⟩ := map_surjective _ Ideal.Quotient.mk_surjective x
   simp [← hy, ghostComponent_apply]
 
-variable [Fact ¬IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
+variable [Fact ¬ IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
 -- local notation 𝔭 does not work in [IsAdicComplete (span {(p : R)}) R]
 
 @[simp]
-theorem ghostComponentModPPow_teichmuller_coeff (n : ℕ) (x : R♭) :
-    ghostComponentModPPow n (teichmuller p (PreTilt.coeff n x)) =
-    Ideal.Quotient.mk (𝔭 ^ (n + 1)) x.untilt := by
-  simpa using ghostComponentModPPow_map_mk n
-    (teichmuller p ((((_root_.frobeniusEquiv _ p).symm ^ n) x).untilt))
+theorem ghostComponentModPPow_teichmuller_coeff (n : ℕ) (x : R♭)
+    : ghostComponentModPPow n (teichmuller p (PreTilt.coeff n x))
+      = Ideal.Quotient.mk (𝔭 ^ (n + 1)) x.untilt := by
+  simpa using
+    ghostComponentModPPow_map_mk n
+      (teichmuller p ((((_root_.frobeniusEquiv _ p).symm ^ n) x).untilt))
 
 variable (R p) in
 /--
@@ -133,27 +136,27 @@ It is the composition of the following ring homomorphisms.
 `𝕎 R♭ --𝕎(Frob^-n)-> 𝕎 R♭ --𝕎(coeff 0)-> 𝕎(R/p) --gh_n-> R/p^(n+1)`
 -/
 def fontaineThetaModPPow (n : ℕ) : 𝕎 R♭ →+* R ⧸ 𝔭 ^ (n + 1) :=
-  (ghostComponentModPPow n).comp (((WittVector.map (PreTilt.coeff 0))).comp
-    (WittVector.map ((_root_.frobeniusEquiv (R♭) p).symm ^ n : R♭ →+* R♭)))
+  (ghostComponentModPPow n).comp
+    (((WittVector.map (PreTilt.coeff 0))).comp
+      (WittVector.map ((_root_.frobeniusEquiv (R♭) p).symm ^ n : R♭ →+* R♭)))
 
 @[simp]
-theorem fontaineThetaModPPow_teichmuller (n : ℕ) (x : R♭) :
-    fontaineThetaModPPow R p n (teichmuller p x) = Ideal.Quotient.mk _ x.untilt := by
+theorem fontaineThetaModPPow_teichmuller (n : ℕ) (x : R♭)
+    : fontaineThetaModPPow R p n (teichmuller p x) = Ideal.Quotient.mk _ x.untilt := by
   simp [fontaineThetaModPPow]
 
-theorem factorPowSucc_comp_fontaineThetaModPPow (n : ℕ) :
-    (factorPowSucc _ _).comp (fontaineThetaModPPow R p (n + 1)) = fontaineThetaModPPow R p n := by
+theorem factorPowSucc_comp_fontaineThetaModPPow (n : ℕ)
+    : (factorPowSucc _ _).comp (fontaineThetaModPPow R p (n + 1)) = fontaineThetaModPPow R p n := by
   apply eq_of_apply_teichmuller_eq ((factorPowSucc _ _).comp (fontaineThetaModPPow R p (n + 1)))
     (fontaineThetaModPPow R p n)
   · use n + 1
-    have : p = Ideal.Quotient.mk (𝔭 ^ (n + 1)) p := by
-      simp [map_natCast]
+    have : p = Ideal.Quotient.mk (𝔭 ^ (n + 1)) p := by simp [map_natCast]
     rw [this, ← map_pow, Ideal.Quotient.eq_zero_iff_mem]
     exact Ideal.pow_mem_pow (mem_span_singleton_self _) _
   simp [fontaineThetaModPPow]
 
-theorem factorPowSucc_fontaineThetaModPPow_eq (n : ℕ) (x : 𝕎 R♭) :
-    factorPowSucc _ _ ((fontaineThetaModPPow R p (n + 1)) x) = fontaineThetaModPPow R p n x := by
+theorem factorPowSucc_fontaineThetaModPPow_eq (n : ℕ) (x : 𝕎 R♭)
+    : factorPowSucc _ _ ((fontaineThetaModPPow R p (n + 1)) x) = fontaineThetaModPPow R p n x := by
   simp [← factorPowSucc_comp_fontaineThetaModPPow n]
 
 open IsAdicComplete
@@ -166,12 +169,12 @@ It is the limit of the ring maps `fontaineThetaModPPow n` from `𝕎 R♭` to `R
 def fontaineTheta : 𝕎 R♭ →+* R :=
   Order.succ_strictMono.liftRingHom 𝔭 _ (factorPowSucc_comp_fontaineThetaModPPow _)
 
-theorem mk_pow_fontaineTheta (n : ℕ) (x : 𝕎 R♭) :
-    Ideal.Quotient.mk (𝔭 ^ (n + 1)) (fontaineTheta R p x) = fontaineThetaModPPow R p n x :=
+theorem mk_pow_fontaineTheta (n : ℕ) (x : 𝕎 R♭)
+    : Ideal.Quotient.mk (𝔭 ^ (n + 1)) (fontaineTheta R p x) = fontaineThetaModPPow R p n x :=
   Order.succ_strictMono.mk_liftRingHom 𝔭 _ (factorPowSucc_comp_fontaineThetaModPPow _) x
 
-theorem mk_fontaineTheta (x : 𝕎 R♭) :
-    Ideal.Quotient.mk 𝔭 (fontaineTheta R p x) = PreTilt.coeff 0 (x.coeff 0) := by
+theorem mk_fontaineTheta (x : 𝕎 R♭)
+    : Ideal.Quotient.mk 𝔭 (fontaineTheta R p x) = PreTilt.coeff 0 (x.coeff 0) := by
   have := mk_pow_fontaineTheta 0 x
   simp only [Nat.reduceAdd] at this
   apply_fun Ideal.quotEquivOfEq (pow_one (p : R) ▸ Ideal.span_singleton_pow (p : R) 1) at this
@@ -190,13 +193,12 @@ theorem fontaineTheta_teichmuller (x : R♭) : fontaineTheta R p (teichmuller p 
 
 end WittVector
 
-variable [Fact ¬IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
+variable [Fact ¬ IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
 
 /-- If the Frobenius map is surjective on `R/pR`, then the Fontaine's θ map is surjective. -/
-theorem surjective_fontaineTheta (hF : Function.Surjective (frobenius (ModP R p) p)) :
-    Function.Surjective (fontaineTheta R p) := by
-  have : Ideal.map (fontaineTheta R p) (span {(p : 𝕎 R♭)}) = 𝔭 := by
-    simp [map_span]
+theorem surjective_fontaineTheta (hF : Function.Surjective (frobenius (ModP R p) p))
+    : Function.Surjective (fontaineTheta R p) := by
+  have : Ideal.map (fontaineTheta R p) (span {(p : 𝕎 R♭)}) = 𝔭 := by simp [map_span]
   have _ : IsHausdorff ((span {(p : 𝕎 R♭)}).map (fontaineTheta R p)) R := by
     rw [this]
     infer_instance
@@ -204,8 +206,8 @@ theorem surjective_fontaineTheta (hF : Function.Surjective (frobenius (ModP R p)
   simp only [RingHom.coe_comp]
   suffices h : Function.Surjective (Ideal.Quotient.mk 𝔭 ∘ fontaineTheta R p) by
     rwa [Ideal.map_span, Set.image_singleton, map_natCast]
-  have : Ideal.Quotient.mk 𝔭 ∘ fontaineTheta R p = (fun x ↦
-      PreTilt.coeff 0 x) ∘ fun (x : 𝕎 R♭) ↦ (x.coeff 0) := by
+  have : Ideal.Quotient.mk 𝔭 ∘ fontaineTheta R p
+      = (fun x ↦ PreTilt.coeff 0 x) ∘ fun (x : 𝕎 R♭) ↦ (x.coeff 0) := by
     ext
     simp [mk_fontaineTheta]
   rw [this]

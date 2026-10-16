@@ -58,21 +58,18 @@ instance : FunLike (PseudoMetric X R) X (X → R) where
 @[simp, norm_cast]
 lemma coe_mk (d : X → X → R) (refl symm triangle) : mk d refl symm triangle = d := rfl
 
-lemma mk_apply (d : X → X → R) (refl symm triangle) (x y : X) :
-    mk d refl symm triangle x y = d x y :=
+lemma mk_apply (d : X → X → R) (refl symm triangle) (x y : X)
+    : mk d refl symm triangle x y = d x y :=
   rfl
 
-@[simp]
-protected lemma refl (x : X) : d x x = 0 := d.refl' x
+@[simp] protected lemma refl (x : X) : d x x = 0 := d.refl' x
 protected lemma symm (x y : X) : d x y = d y x := d.symm' x y
 protected lemma triangle (x y z : X) : d x z ≤ d x y + d y z := d.triangle' x y z
 
 instance : LE (PseudoMetric X R) := ⟨fun d d' ↦ ⇑d ≤ d'⟩
 
 @[simp, norm_cast]
-protected lemma coe_le_coe {d d' : PseudoMetric X R} :
-    (d : X → X → R) ≤ d' ↔ d ≤ d' :=
-  Iff.rfl
+protected lemma coe_le_coe {d d' : PseudoMetric X R} : (d : X → X → R) ≤ d' ↔ d ≤ d' := Iff.rfl
 
 end Basic
 
@@ -85,16 +82,15 @@ instance [AddZeroClass R] [Preorder R] : Bot (PseudoMetric X R) where
   bot.symm' _ _ := rfl
   bot.triangle' _ _ _ := by simp
 
-@[simp, norm_cast]
-lemma coe_bot [AddZeroClass R] [Preorder R] : ⇑(⊥ : PseudoMetric X R) = 0 := rfl
+@[simp, norm_cast] lemma coe_bot [AddZeroClass R] [Preorder R] : ⇑(⊥ : PseudoMetric X R) = 0 := rfl
 
 @[simp]
-protected lemma bot_apply [AddZeroClass R] [Preorder R] (x y : X) :
-    (⊥ : PseudoMetric X R) x y = 0 :=
+protected lemma bot_apply [AddZeroClass R] [Preorder R] (x y : X)
+    : (⊥ : PseudoMetric X R) x y = 0 :=
   rfl
 
-instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R] :
-    Max (PseudoMetric X R) where
+instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
+    : Max (PseudoMetric X R) where
   max d d' := {
     toFun := fun x y ↦ (d x y) ⊔ (d' x y)
     refl' _ := by simp
@@ -102,23 +98,25 @@ instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R] :
     triangle' := by
       intro x y z
       simp only [sup_le_iff]
-      refine ⟨(d.triangle x y z).trans ?_, (d'.triangle x y z).trans ?_⟩ <;>
-      apply add_le_add <;> simp
+      refine ⟨(d.triangle x y z).trans ?_, (d'.triangle x y z).trans ?_⟩ <;> apply add_le_add
+        <;> simp
   }
 
 @[simp, push_cast]
-lemma coe_sup [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
-    (d d' : PseudoMetric X R) :
-    ((d ⊔ d' : PseudoMetric X R) : X → X → R) = (d : X → X → R) ⊔ d' := rfl
-
-@[simp]
-protected lemma sup_apply [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
-    (d d' : PseudoMetric X R) (x y : X) :
-    (d ⊔ d') x y = d x y ⊔ d' x y :=
+lemma coe_sup
+    [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R] (d d' : PseudoMetric X R)
+    : ((d ⊔ d' : PseudoMetric X R) : X → X → R) = (d : X → X → R) ⊔ d' :=
   rfl
 
-instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R] :
-    SemilatticeSup (PseudoMetric X R) where
+@[simp]
+protected lemma sup_apply
+    [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
+    (d d' : PseudoMetric X R) (x y : X)
+    : (d ⊔ d') x y = d x y ⊔ d' x y :=
+  rfl
+
+instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
+    : SemilatticeSup (PseudoMetric X R) where
   sup := max
   le_sup_left := by simp [← PseudoMetric.coe_le_coe]
   le_sup_right := by simp [← PseudoMetric.coe_le_coe]
@@ -131,7 +129,9 @@ variable [AddCommMonoid R] [LinearOrder R] [AddLeftStrictMono R]
 protected lemma nonneg (d : PseudoMetric X R) (x y : X) : 0 ≤ d x y := by
   by_contra! H
   have : d x x < 0 := by
-    calc d x x ≤ d x y + d y x := d.triangle' x y x
+    calc
+      d x x
+        ≤ d x y + d y x := d.triangle' x y x
       _ < 0 + 0 := by refine add_lt_add H (d.symm x y ▸ H)
       _ = 0 := by simp
   exact this.ne (d.refl x)
@@ -140,14 +140,16 @@ instance : OrderBot (PseudoMetric X R) where
   bot_le f _ _ := f.nonneg _ _
 
 @[simp, push_cast]
-lemma coe_finsetSup [IsOrderedAddMonoid R] {Y : Type*} {f : Y → PseudoMetric X R} {s : Finset Y}
-    (hs : s.Nonempty) :
-    ⇑(s.sup f) = s.sup' hs (f ·) := by
+lemma coe_finsetSup
+    [IsOrderedAddMonoid R] {Y : Type*} {f : Y → PseudoMetric X R} {s : Finset Y} (hs : s.Nonempty)
+    : ⇑(s.sup f) = s.sup' hs (f ·) := by
   simpa using (Finset.sup'_eq_sup hs (f ·)).symm
 
-lemma finsetSup_apply [IsOrderedAddMonoid R] {Y : Type*} {f : Y → PseudoMetric X R}
-    {s : Finset Y} (hs : s.Nonempty) (x y : X) :
-    s.sup f x y = s.sup' hs fun i ↦ f i x y := by
+lemma finsetSup_apply
+    [IsOrderedAddMonoid R]
+    {Y : Type*} {f : Y → PseudoMetric X R} {s : Finset Y} (hs : s.Nonempty)
+    (x y : X)
+    : s.sup f x y = s.sup' hs fun i ↦ f i x y := by
   induction hs using Finset.Nonempty.cons_induction with
   | singleton i => simp
   | cons a s ha hs ih => simp [hs, ih]
@@ -156,31 +158,38 @@ end OrderBot
 
 section IsUltra
 
-/-- A pseudometric can be nonarchimedean (or ultrametric), with a stronger triangle
-inequality such that `d x z ≤ max (d x y) (d y z)`. -/
+/--
+A pseudometric can be nonarchimedean (or ultrametric), with a stronger triangle
+inequality such that `d x z ≤ max (d x y) (d y z)`.
+-/
 class IsUltra [Zero R] [Add R] [LE R] [Max R] (d : PseudoMetric X R) : Prop where
   /-- Strong triangle inequality of an ultrametric. -/
   le_sup' : ∀ x y z, d x z ≤ d x y ⊔ d y z
 
-lemma IsUltra.le_sup [Zero R] [Add R] [LE R] [Max R] {d : PseudoMetric X R} [hd : IsUltra d]
-    {x y z : X} : d x z ≤ d x y ⊔ d y z :=
+lemma IsUltra.le_sup
+    [Zero R] [Add R] [LE R] [Max R] {d : PseudoMetric X R} [hd : IsUltra d] {x y z : X}
+    : d x z ≤ d x y ⊔ d y z :=
   hd.le_sup' x y z
 
-instance IsUltra.bot [AddZeroClass R] [SemilatticeSup R] :
-    IsUltra (⊥ : PseudoMetric X R) where
+instance IsUltra.bot [AddZeroClass R] [SemilatticeSup R] : IsUltra (⊥ : PseudoMetric X R) where
   le_sup' := by simp
 
-instance IsUltra.sup [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
-    {d d' : PseudoMetric X R} [IsUltra d] [IsUltra d'] : IsUltra (d ⊔ d') := by
+instance IsUltra.sup
+    [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
+    {d d' : PseudoMetric X R} [IsUltra d] [IsUltra d']
+    : IsUltra (d ⊔ d') := by
   constructor
   intro x y z
   simp only [PseudoMetric.sup_apply]
-  calc d x z ⊔ d' x z ≤ d x y ⊔ d y z ⊔ (d' x y ⊔ d' y z) := sup_le_sup le_sup le_sup
-  _ ≤ d x y ⊔ d' x y ⊔ (d y z ⊔ d' y z) := by simp [sup_comm, sup_left_comm]
+  calc
+    d x z ⊔ d' x z
+      ≤ d x y ⊔ d y z ⊔ (d' x y ⊔ d' y z) := sup_le_sup le_sup le_sup
+    _ ≤ d x y ⊔ d' x y ⊔ (d y z ⊔ d' y z) := by simp [sup_comm, sup_left_comm]
 
-lemma IsUltra.finsetSup {Y : Type*} [AddCommMonoid R] [LinearOrder R] [AddLeftStrictMono R]
-    [IsOrderedAddMonoid R] {f : Y → PseudoMetric X R} {s : Finset Y} (h : ∀ d ∈ s, IsUltra (f d)) :
-    IsUltra (s.sup f) := by
+lemma IsUltra.finsetSup
+    {Y : Type*} [AddCommMonoid R] [LinearOrder R] [AddLeftStrictMono R] [IsOrderedAddMonoid R]
+    {f : Y → PseudoMetric X R} {s : Finset Y} (h : ∀ d ∈ s, IsUltra (f d))
+    : IsUltra (s.sup f) := by
   constructor
   intro x y z
   rcases s.eq_empty_or_nonempty with rfl | hs
@@ -191,30 +200,28 @@ lemma IsUltra.finsetSup {Y : Type*} [AddCommMonoid R] [LinearOrder R] [AddLeftSt
   intro i hi
   have h := (h i hi).le_sup' x y z
   simp only [le_sup_iff] at h
-  refine h.imp ?_ ?_ <;>
-  intro H <;>
-  exact ⟨i, hi, H⟩
+  refine h.imp ?_ ?_ <;> intro H <;> exact ⟨i, hi, H⟩
 
 end IsUltra
 
 section ball
 
-instance isSymm_ball [Add R] [Zero R] [Preorder R] (d : PseudoMetric X R) {ε : R} :
-    SetRel.IsSymm {xy | d xy.1 xy.2 < ε} where
+instance isSymm_ball [Add R] [Zero R] [Preorder R] (d : PseudoMetric X R) {ε : R}
+    : SetRel.IsSymm {xy | d xy.1 xy.2 < ε} where
   symm := by simp [d.symm]
 
-instance isSymm_closedBall [Add R] [Zero R] [LE R] (d : PseudoMetric X R) {ε : R} :
-    SetRel.IsSymm {xy | d xy.1 xy.2 ≤ ε} where
+instance isSymm_closedBall [Add R] [Zero R] [LE R] (d : PseudoMetric X R) {ε : R}
+    : SetRel.IsSymm {xy | d xy.1 xy.2 ≤ ε} where
   symm := by simp [d.symm]
 
-instance IsUltra.isTrans_ball [Add R] [Zero R] [LinearOrder R] (d : PseudoMetric X R)
-    [d.IsUltra] {ε : R} :
-      SetRel.IsTrans {xy | d xy.1 xy.2 < ε} where
-    trans _ _ _ hxy hyz := le_sup.trans_lt (max_lt hxy hyz)
+instance IsUltra.isTrans_ball
+    [Add R] [Zero R] [LinearOrder R] (d : PseudoMetric X R) [d.IsUltra] {ε : R}
+    : SetRel.IsTrans {xy | d xy.1 xy.2 < ε} where
+  trans _ _ _ hxy hyz := le_sup.trans_lt (max_lt hxy hyz)
 
-instance IsUltra.isTrans_closedBall [Add R] [Zero R] [SemilatticeSup R] (d : PseudoMetric X R)
-    [d.IsUltra] {ε : R} :
-    SetRel.IsTrans {xy | d xy.1 xy.2 ≤ ε} where
+instance IsUltra.isTrans_closedBall
+    [Add R] [Zero R] [SemilatticeSup R] (d : PseudoMetric X R) [d.IsUltra] {ε : R}
+    : SetRel.IsTrans {xy | d xy.1 xy.2 ≤ ε} where
   trans _ _ _ hxy hyz := le_sup.trans (sup_le hxy hyz)
 
 end ball

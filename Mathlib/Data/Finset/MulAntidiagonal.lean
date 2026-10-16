@@ -17,7 +17,6 @@ given that `s` and `t` are well-ordered. -/
 
 @[expose] public section
 
-
 namespace Set
 
 open scoped Pointwise
@@ -25,20 +24,20 @@ open scoped Pointwise
 variable {α : Type*} {s t : Set α}
 
 @[to_additive]
-theorem IsPWO.mul [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
-    (hs : s.IsPWO) (ht : t.IsPWO) : IsPWO (s * t) := by
+theorem IsPWO.mul
+    [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α] (hs : s.IsPWO) (ht : t.IsPWO)
+    : IsPWO (s * t) := by
   rw [← image_mul_prod]
   exact (hs.prod ht).image_of_monotone (monotone_fst.mul' monotone_snd)
 
 variable [CommMonoid α] [LinearOrder α] [IsOrderedCancelMonoid α]
 
 @[to_additive]
-theorem IsWF.mul (hs : s.IsWF) (ht : t.IsWF) : IsWF (s * t) :=
-  (hs.isPWO.mul ht.isPWO).isWF
+theorem IsWF.mul (hs : s.IsWF) (ht : t.IsWF) : IsWF (s * t) := (hs.isPWO.mul ht.isPWO).isWF
 
 @[to_additive]
-theorem IsWF.min_mul (hs : s.IsWF) (ht : t.IsWF) (hsn : s.Nonempty) (htn : t.Nonempty) :
-    (hs.mul ht).min (hsn.mul htn) = hs.min hsn * ht.min htn := by
+theorem IsWF.min_mul (hs : s.IsWF) (ht : t.IsWF) (hsn : s.Nonempty) (htn : t.Nonempty)
+    : (hs.mul ht).min (hsn.mul htn) = hs.min hsn * ht.min htn := by
   refine le_antisymm (IsWF.min_le _ _ (mem_mul.2 ⟨_, hs.min_mem _, _, ht.min_mem _, rfl⟩)) ?_
   rw [IsWF.le_min_iff]
   rintro _ ⟨x, hx, y, hy, rfl⟩
@@ -51,12 +50,16 @@ namespace Finset
 open scoped Pointwise
 
 variable {α : Type*}
-variable [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
-  {s t : Set α} (hs : s.IsPWO) (ht : t.IsPWO) (a : α)
+variable
+  [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α]
+  {s t : Set α} (hs : s.IsPWO) (ht : t.IsPWO)
+  (a : α)
 
-/-- `Finset.mulAntidiagonal hs ht a` is the set of all pairs of an element in `s` and an
+/--
+`Finset.mulAntidiagonal hs ht a` is the set of all pairs of an element in `s` and an
 element in `t` that multiply to `a`, but its construction requires proofs that `s` and `t` are
-well-ordered. -/
+well-ordered.
+-/
 @[to_additive /-- `Finset.antidiagonal hs ht a` is the set of all pairs of an element in
 `s` and an element in `t` that add to `a`, but its construction requires proofs that `s` and `t` are
 well-ordered. -/]
@@ -74,18 +77,18 @@ theorem mulAntidiagonal_mono_left (h : u ⊆ s) : mulAntidiagonal hu ht a ⊆ mu
   Set.Finite.toFinset_mono <| Set.mulAntidiagonal_mono_left h
 
 @[to_additive]
-theorem mulAntidiagonal_mono_right (h : u ⊆ t) :
-    mulAntidiagonal hs hu a ⊆ mulAntidiagonal hs ht a :=
+theorem mulAntidiagonal_mono_right (h : u ⊆ t)
+    : mulAntidiagonal hs hu a ⊆ mulAntidiagonal hs ht a :=
   Set.Finite.toFinset_mono <| Set.mulAntidiagonal_mono_right h
 
 @[to_additive]
-theorem swap_mem_mulAntidiagonal :
-    x.swap ∈ Finset.mulAntidiagonal hs ht a ↔ x ∈ Finset.mulAntidiagonal ht hs a := by
+theorem swap_mem_mulAntidiagonal
+    : x.swap ∈ Finset.mulAntidiagonal hs ht a ↔ x ∈ Finset.mulAntidiagonal ht hs a := by
   simp
 
 @[to_additive]
-theorem support_mulAntidiagonal_subset_mul : { a | (mulAntidiagonal hs ht a).Nonempty } ⊆ s * t :=
-  fun a ⟨b, hb⟩ => by
+theorem support_mulAntidiagonal_subset_mul
+    : { a | (mulAntidiagonal hs ht a).Nonempty } ⊆ s * t := fun a ⟨b, hb⟩ => by
   rw [mem_mulAntidiagonal] at hb
   exact ⟨b.1, hb.1, b.2, hb.2⟩
 
@@ -94,9 +97,10 @@ theorem isPWO_support_mulAntidiagonal : { a | (mulAntidiagonal hs ht a).Nonempty
   (hs.mul ht).mono support_mulAntidiagonal_subset_mul
 
 @[to_additive]
-theorem mulAntidiagonal_min_mul_min {α} [CommMonoid α] [LinearOrder α] [IsOrderedCancelMonoid α]
-    {s t : Set α} (hs : s.IsWF) (ht : t.IsWF) (hns : s.Nonempty) (hnt : t.Nonempty) :
-    mulAntidiagonal hs.isPWO ht.isPWO (hs.min hns * ht.min hnt) = {(hs.min hns, ht.min hnt)} := by
+theorem mulAntidiagonal_min_mul_min
+    {α} [CommMonoid α] [LinearOrder α] [IsOrderedCancelMonoid α]
+    {s t : Set α} (hs : s.IsWF) (ht : t.IsWF) (hns : s.Nonempty) (hnt : t.Nonempty)
+    : mulAntidiagonal hs.isPWO ht.isPWO (hs.min hns * ht.min hnt) = {(hs.min hns, ht.min hnt)} := by
   ext ⟨a, b⟩
   simp only [mem_mulAntidiagonal, mem_singleton, Prod.ext_iff]
   constructor

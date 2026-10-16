@@ -6,7 +6,6 @@ Authors: Alex J. Best
 module
 
 public meta import Lean.Elab.Tactic.Basic
-
 import Mathlib.Init
 
 /-!
@@ -19,13 +18,15 @@ manner.
 public meta section
 open Lean Elab
 
-/-- A low level command to sleep for at least a given number of heartbeats by running in a loop
+/--
+A low level command to sleep for at least a given number of heartbeats by running in a loop
 until the desired number of heartbeats is hit.
 Warning: this function relies on interpreter / compiler
 behaviour that is not guaranteed to function in the way that is relied upon here.
 As such this function is not to be considered reliable, especially after future updates to Lean.
 This should be used with caution and basically only for demo / testing purposes
-and not in compiled code without further testing. -/
+and not in compiled code without further testing.
+-/
 def sleepAtLeastHeartbeats (n : Nat) : BaseIO Unit := do
   -- TODO: adjust docstring
   IO.addHeartbeats n
@@ -33,7 +34,7 @@ def sleepAtLeastHeartbeats (n : Nat) : BaseIO Unit := do
 /-- do nothing for at least n heartbeats -/
 elab "sleep_heartbeats " n:num : tactic => do
   match Syntax.isNatLit? n with
-  | none    => throwIllFormedSyntax
+  | none => throwIllFormedSyntax
   /-
   We multiply by `1000` to convert the user-facing heartbeat count to the
   internal heartbeat counter used by `IO.getNumHeartbeats`.

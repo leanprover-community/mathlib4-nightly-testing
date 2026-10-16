@@ -8,7 +8,6 @@ module
 public import Mathlib.Data.SubtypeNeLift
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Mathlib.LinearAlgebra.TensorProduct.Map
-
 import Mathlib.Data.Set.Card
 import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.SetTheory.Cardinal.Finite
@@ -36,13 +35,16 @@ variable (R : Type*)
 
 section equivPiTensorComplSingletonTensor
 
-variable {ι : Type*} [DecidableEq ι] (M : ι → Type*)
-  [CommSemiring R] [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
+variable
+  {ι : Type*} [DecidableEq ι]
+  (M : ι → Type*) [CommSemiring R] [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
 
-/-- The linear equivalence between `⨂[R] i, M i` and the tensor product of
-the pi tensor product indexed by the complement of `{i₀}` and `M i₀`. -/
-noncomputable def equivPiTensorComplSingletonTensor (i₀ : ι) :
-    (⨂[R] i, M i) ≃ₗ[R] ((⨂[R] (i : ({i₀}ᶜ : Set ι)), M i) ⊗[R] M i₀) :=
+/--
+The linear equivalence between `⨂[R] i, M i` and the tensor product of
+the pi tensor product indexed by the complement of `{i₀}` and `M i₀`.
+-/
+noncomputable def equivPiTensorComplSingletonTensor (i₀ : ι)
+    : (⨂[R] i, M i) ≃ₗ[R] ((⨂[R] (i : ({i₀}ᶜ : Set ι)), M i) ⊗[R] M i₀) :=
   (reindex R (s := M) (Equiv.subtypeNeSumPUnit.{0} i₀).symm).trans
     ((tmulEquivDep R (fun i ↦ M (Equiv.subtypeNeSumPUnit i₀ i))).symm.trans
       (LinearEquiv.lTensor _ (subsingletonEquiv Unit.unit)))
@@ -92,24 +94,25 @@ Then both backward compatibility options can go: first `respectTransparency fals
 set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-lemma equivPiTensorComplSingletonTensor_tprod (i₀ : ι) (m : ∀ i, M i) :
-    equivPiTensorComplSingletonTensor R M i₀ (⨂ₜ[R] i, m i) =
-      (⨂ₜ[R] (j : ((Set.singleton i₀)ᶜ : Set ι)), m j) ⊗ₜ m i₀:= by
+lemma equivPiTensorComplSingletonTensor_tprod (i₀ : ι) (m : ∀ i, M i)
+    : equivPiTensorComplSingletonTensor R M i₀ (⨂ₜ[R] i, m i)
+      = (⨂ₜ[R] (j : ((Set.singleton i₀)ᶜ : Set ι)), m j) ⊗ₜ m i₀ := by
   dsimp [equivPiTensorComplSingletonTensor]
-  have : (reindex R M (Equiv.subtypeNeSumPUnit.{0} i₀).symm) (⨂ₜ[R] (i : ι), m i) =
-      ⨂ₜ[R] j, m ((Equiv.subtypeNeSumPUnit.{0} i₀) j) := by
+  have : (reindex R M (Equiv.subtypeNeSumPUnit.{0} i₀).symm) (⨂ₜ[R] (i : ι), m i)
+      = ⨂ₜ[R] j, m ((Equiv.subtypeNeSumPUnit.{0} i₀) j) := by
     simp_rw [reindex_tprod (R := R) (s := M), Equiv.symm_symm]
-  rw [dsimp% this, dsimp% tmulEquivDep_symm_apply R
-    (fun i ↦ M ((Equiv.subtypeNeSumPUnit.{0} i₀) i))]
+  rw [dsimp% this,
+    dsimp% tmulEquivDep_symm_apply R
+      (fun i ↦ M ((Equiv.subtypeNeSumPUnit.{0} i₀) i))]
   exact (LinearEquiv.lTensor_tmul _ _ _ _).trans (by congr; simp)
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-lemma equivPiTensorComplSingletonTensor_symm_tmul (i₀ : ι)
-    (m : ∀ (i : ((Set.singleton i₀)ᶜ : Set ι)), M i) (x : M i₀) :
-    (equivPiTensorComplSingletonTensor R M i₀).symm
-      ((⨂ₜ[R] (j : ((Set.singleton i₀)ᶜ : Set ι)), m j) ⊗ₜ x) =
-    (⨂ₜ[R] i, Function.subtypeNeLift i₀ m x i) := by
+lemma equivPiTensorComplSingletonTensor_symm_tmul
+    (i₀ : ι) (m : ∀ (i : ((Set.singleton i₀)ᶜ : Set ι)), M i) (x : M i₀)
+    : (equivPiTensorComplSingletonTensor R M i₀).symm
+        ((⨂ₜ[R] (j : ((Set.singleton i₀)ᶜ : Set ι)), m j) ⊗ₜ x)
+      = (⨂ₜ[R] i, Function.subtypeNeLift i₀ m x i) := by
   apply (equivPiTensorComplSingletonTensor R M i₀).injective
   simp only [LinearEquiv.apply_symm_apply, equivPiTensorComplSingletonTensor_tprod,
     Function.subtypeNeLift_self]
@@ -124,13 +127,12 @@ variable {R} {ι : Type*} [Finite ι] {M : ι → Type*} {N : Type*} {γ : ι �
 
 section AddCommMonoid
 
-variable [CommSemiring R] [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
-  [AddCommMonoid N] [Module R N] {g : ⦃i : ι⦄ → (j : γ i) → M i}
+variable
+  [CommSemiring R] [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)] [AddCommMonoid N] [Module R N]
+  {g : ⦃i : ι⦄ → (j : γ i) → M i}
 
-lemma submodule_span_eq_top
-    (hg : ∀ i, Submodule.span R (Set.range (@g i)) = ⊤) :
-    Submodule.span R (Set.range (fun j : ((i : ι) → γ i) ↦
-      ⨂ₜ[R] (i : ι), g (j i))) = ⊤ := by
+lemma submodule_span_eq_top (hg : ∀ i, Submodule.span R (Set.range (@g i)) = ⊤)
+    : Submodule.span R (Set.range (fun j : ((i : ι) → γ i) ↦ ⨂ₜ[R] (i : ι), g (j i))) = ⊤ := by
   classical
   have := Fintype.ofFinite ι
   simp_rw [eq_top_iff, ← span_tprod_eq_top, Submodule.span_le, Set.subset_def, SetLike.mem_coe]
@@ -143,16 +145,15 @@ lemma submodule_span_eq_top
 lemma ext_of_span_eq_top
     (hg : ∀ i, Submodule.span R (Set.range (@g i)) = ⊤)
     {φ φ' : (⨂[R] i, M i) →ₗ[R] N}
-    (h : ∀ (j : (i : ι) → γ i),
-      φ (tprod R (fun i ↦ g (j i))) = φ' (tprod R (fun i ↦ g (j i)))) :
-    φ = φ' :=
+    (h : ∀ (j : (i : ι) → γ i), φ (tprod R (fun i ↦ g (j i))) = φ' (tprod R (fun i ↦ g (j i))))
+    : φ = φ' :=
   LinearMap.ext_on_range (submodule_span_eq_top hg) h
 
 lemma _root_.MultilinearMap.ext_of_span_eq_top
     (hg : ∀ i, Submodule.span R (Set.range (@g i)) = ⊤)
     {φ φ' : MultilinearMap R M N}
-    (h : ∀ (j : (i : ι) → γ i), φ (fun i ↦ g (j i)) = φ' (fun i ↦ g (j i))) :
-    φ = φ' := by
+    (h : ∀ (j : (i : ι) → γ i), φ (fun i ↦ g (j i)) = φ' (fun i ↦ g (j i)))
+    : φ = φ' := by
   suffices lift φ = lift φ' by
     ext m
     simpa using congr($this (tprod _ m))

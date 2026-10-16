@@ -11,12 +11,10 @@ info: `rfl` can be replaced with `aesop`
 Note: This linter can be disabled with `set_option linter.tacticAnalysis.tryAtEachStepAesop false`
 -/
 #guard_msgs in
-theorem foo : 2 + 2 = 4 := by
-  rfl
+theorem foo : 2 + 2 = 4 := by rfl
 
 -- Set the fraction sufficiently high that nothing will ever run.
 set_option linter.tacticAnalysis.tryAtEachStep.fraction 1_000_000_000_000
 
 #guard_msgs in
-theorem bar : 2 + 2 = 4 := by
-  rfl
+theorem bar : 2 + 2 = 4 := by rfl

@@ -9,7 +9,7 @@ public meta import Lean.Meta.Hint
 public import Lean.Meta.TryThis
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public import Mathlib.Tactic.Linter.Header  -- shake: keep
+public import Mathlib.Tactic.Linter.Header -- shake: keep
 
 /-!
 # The `haveI`/`letI` linter
@@ -38,9 +38,11 @@ open Lean Elab Meta Parser.Term Tactic Linter
 
 namespace Mathlib.Linter.HaveILetI
 
-/-- The `haveILetI` linter flags uses of the `haveI` or `letI` tactic in a proof of a
+/--
+The `haveILetI` linter flags uses of the `haveI` or `letI` tactic in a proof of a
 proposition. Since proofs are irrelevant, the value-inlining behaviour of `haveI`/`letI`
-can have no effect there, and `have`/`let` should be used instead. -/
+can have no effect there, and `have`/`let` should be used instead.
+-/
 public register_option linter.style.haveILetI : Bool := {
   defValue := true
   descr := "enable the `haveILetI` linter"
@@ -51,12 +53,14 @@ def runHaveI (tk : Syntax) (c : TSyntax ``letConfig) (d : TSyntax ``letDecl) : T
   evalTactic (← `(tactic| haveI $c:letConfig $d:letDecl))
   if getLinterValue linter.style.haveILetI (← getLinterOptions) then
     withMainContext do
-    if ← isProp (← getMainTarget) then
-      let suggs ← Hint.mkSuggestionsMessage #[{toTryThisSuggestion := "have"}] tk none false
-      logLint linter.style.haveILetI (← getRef) m!"Try this: {suggs}\n\n\
-        The goal is a proposition, so `have` is preferred over `haveI`.\n\
-        The difference between `have` and `haveI` is that `haveI` inlines the value.\n\
-        But this is not relevant for proofs because of proof irrelevance."
+      if ← isProp (← getMainTarget) then
+        let suggs ← Hint.mkSuggestionsMessage #[{ toTryThisSuggestion := "have" }] tk none false
+        logLint linter.style.haveILetI (← getRef)
+          m!"Try this: {suggs}\
+            \n\n\
+            The goal is a proposition, so `have` is preferred over `haveI`.\n\
+            The difference between `have` and `haveI` is that `haveI` inlines the value.\n\
+            But this is not relevant for proofs because of proof irrelevance."
 
 @[tactic_alt Parser.Tactic.tacticHaveI__]
 elab (priority := high) tk:"haveI" c:letConfig d:letDecl : tactic => runHaveI tk c d
@@ -66,12 +70,14 @@ def runLetI (tk : Syntax) (c : TSyntax ``letConfig) (d : TSyntax ``letDecl) : Ta
   evalTactic (← `(tactic| letI $c:letConfig $d:letDecl))
   if getLinterValue linter.style.haveILetI (← getLinterOptions) then
     withMainContext do
-    if ← isProp (← getMainTarget) then
-      let suggs ← Hint.mkSuggestionsMessage #[{toTryThisSuggestion := "let"}] tk none false
-      logLint linter.style.haveILetI (← getRef) m!"Try this: {suggs}\n\n\
-        The goal is a proposition, so `let` is preferred over `letI`.\n\
-        The difference between `let` and `letI` is that `letI` inlines the value.\n\
-        But this is not relevant for proofs because of proof irrelevance."
+      if ← isProp (← getMainTarget) then
+        let suggs ← Hint.mkSuggestionsMessage #[{ toTryThisSuggestion := "let" }] tk none false
+        logLint linter.style.haveILetI (← getRef)
+          m!"Try this: {suggs}\
+            \n\n\
+            The goal is a proposition, so `let` is preferred over `letI`.\n\
+            The difference between `let` and `letI` is that `letI` inlines the value.\n\
+            But this is not relevant for proofs because of proof irrelevance."
 
 @[tactic_alt Parser.Tactic.tacticLetI__]
 elab (priority := high) tk:"letI" c:letConfig d:letDecl : tactic => runLetI tk c d

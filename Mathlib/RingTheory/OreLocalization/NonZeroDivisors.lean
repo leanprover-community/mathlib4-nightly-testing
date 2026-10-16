@@ -22,34 +22,36 @@ section MonoidWithZero
 
 variable {R : Type*} [MonoidWithZero R] {S : Submonoid R} [OreSet S]
 
-theorem nontrivial_of_nonZeroDivisorsLeft [Nontrivial R] (hS : S ≤ nonZeroDivisorsLeft R) :
-    Nontrivial R[S⁻¹] :=
+theorem nontrivial_of_nonZeroDivisorsLeft [Nontrivial R] (hS : S ≤ nonZeroDivisorsLeft R)
+    : Nontrivial R[S⁻¹] :=
   nontrivial_iff.mpr (fun e ↦ one_ne_zero <| hS e 1 (zero_mul _))
 
-theorem nontrivial_of_nonZeroDivisorsRight [Nontrivial R] (hS : S ≤ nonZeroDivisorsRight R) :
-    Nontrivial R[S⁻¹] :=
+theorem nontrivial_of_nonZeroDivisorsRight [Nontrivial R] (hS : S ≤ nonZeroDivisorsRight R)
+    : Nontrivial R[S⁻¹] :=
   nontrivial_iff.mpr (fun e ↦ one_ne_zero <| hS e 1 (mul_zero _))
 
-theorem nontrivial_of_nonZeroDivisors [Nontrivial R] (hS : S ≤ R⁰) :
-    Nontrivial R[S⁻¹] :=
+theorem nontrivial_of_nonZeroDivisors [Nontrivial R] (hS : S ≤ R⁰) : Nontrivial R[S⁻¹] :=
   nontrivial_of_nonZeroDivisorsLeft (hS.trans inf_le_left)
 
 variable [Nontrivial R] [OreSet R⁰]
 
-instance nontrivial : Nontrivial R[R⁰⁻¹] :=
-  nontrivial_of_nonZeroDivisors (refl R⁰)
+instance nontrivial : Nontrivial R[R⁰⁻¹] := nontrivial_of_nonZeroDivisors (refl R⁰)
 
 variable [NoZeroDivisors R]
 
 open scoped Classical in
-/-- The inversion of Ore fractions for a ring without zero divisors, satisfying `0⁻¹ = 0` and
-`(r /ₒ r')⁻¹ = r' /ₒ r` for `r ≠ 0`. -/
+/--
+The inversion of Ore fractions for a ring without zero divisors, satisfying `0⁻¹ = 0` and
+`(r /ₒ r')⁻¹ = r' /ₒ r` for `r ≠ 0`.
+-/
 @[irreducible]
 protected noncomputable def inv : R[R⁰⁻¹] → R[R⁰⁻¹] :=
   liftExpand
     (fun r s =>
-      if hr : r = (0 : R) then (0 : R[R⁰⁻¹])
-      else s /ₒ ⟨r, mem_nonZeroDivisors_of_ne_zero hr⟩)
+      if hr : r = (0 : R) then
+        (0 : R[R⁰⁻¹])
+      else
+        s /ₒ ⟨r, mem_nonZeroDivisors_of_ne_zero hr⟩)
     (by
       intro r t s hst
       by_cases hr : r = 0
@@ -61,18 +63,20 @@ protected noncomputable def inv : R[R⁰⁻¹] → R[R⁰⁻¹] :=
         · simp only [hr, ht, dite_eq_right, not_false_iff, or_self_iff, mul_eq_zero, smul_eq_mul]
           apply OreLocalization.expand)
 
-noncomputable instance inv' : Inv R[R⁰⁻¹] :=
-  ⟨OreLocalization.inv⟩
+noncomputable instance inv' : Inv R[R⁰⁻¹] := ⟨OreLocalization.inv⟩
 
 open scoped Classical in
-protected theorem inv_def {r : R} {s : R⁰} :
-    (r /ₒ s)⁻¹ =
-      if hr : r = (0 : R) then (0 : R[R⁰⁻¹])
-      else s /ₒ ⟨r, mem_nonZeroDivisors_of_ne_zero hr⟩ := by
+protected theorem inv_def {r : R} {s : R⁰}
+    : (r /ₒ s)⁻¹
+      = if hr : r = (0 : R) then
+          (0 : R[R⁰⁻¹])
+        else
+          s /ₒ ⟨r, mem_nonZeroDivisors_of_ne_zero hr⟩ := by
   with_unfolding_all rfl
 
 protected theorem mul_inv_cancel (x : R[R⁰⁻¹]) (h : x ≠ 0) : x * x⁻¹ = 1 := by
-  induction x with | _ r s
+  induction x with
+  | _ r s
   rw [OreLocalization.inv_def, OreLocalization.one_def]
   have hr : r ≠ 0 := by
     rintro rfl

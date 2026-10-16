@@ -27,7 +27,8 @@ variable {ι M : Type*} [Zero M]
 section LE
 variable [LE M] {f g : ι →₀ M}
 
-instance instLE : LE (ι →₀ M) where le f g := ∀ i, f i ≤ g i
+instance instLE : LE (ι →₀ M) where
+  le f g := ∀ i, f i ≤ g i
 
 lemma le_def : f ≤ g ↔ ∀ i, f i ≤ g i := .rfl
 
@@ -88,8 +89,7 @@ instance semilatticeSup : SemilatticeSup (ι →₀ M) where
   le_sup_right _f _g _i := le_sup_right
   sup_le _f _g _h hf hg i := sup_le (hf i) (hg i)
 
-@[simp]
-lemma sup_apply (f g : ι →₀ M) (i : ι) : (f ⊔ g) i = f i ⊔ g i := rfl
+@[simp] lemma sup_apply (f g : ι →₀ M) (i : ι) : (f ⊔ g) i = f i ⊔ g i := rfl
 
 end SemilatticeSup
 

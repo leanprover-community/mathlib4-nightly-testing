@@ -30,21 +30,19 @@ variable {C : Type u} [Category.{v} C]
 namespace Injective
 
 lemma hasLiftingProperty_of_isZero
-    {A B I Z : C} (i : A ⟶ B) [Mono i] [Injective I] (p : I ⟶ Z) (hZ : IsZero Z) :
-    HasLiftingProperty i p where
-  sq_hasLift {f g} sq := ⟨⟨{
-    l := Injective.factorThru f i
-    fac_right := hZ.eq_of_tgt _ _ }⟩⟩
+    {A B I Z : C} (i : A ⟶ B) [Mono i] [Injective I] (p : I ⟶ Z) (hZ : IsZero Z)
+    : HasLiftingProperty i p where
+  sq_hasLift {f g} sq := ⟨⟨{ l := Injective.factorThru f i, fac_right := hZ.eq_of_tgt _ _ }⟩⟩
 
-instance {A B I : C} (i : A ⟶ B) [Mono i] [Injective I] [HasZeroObject C] (p : I ⟶ 0) :
-    HasLiftingProperty i (p : I ⟶ 0) :=
+instance {A B I : C} (i : A ⟶ B) [Mono i] [Injective I] [HasZeroObject C] (p : I ⟶ 0)
+    : HasLiftingProperty i (p : I ⟶ 0) :=
   Injective.hasLiftingProperty_of_isZero i p (isZero_zero C)
 
 end Injective
 
 lemma injective_iff_rlp_monomorphisms_of_isZero
-    [HasZeroMorphisms C] {I Z : C} (p : I ⟶ Z) (hZ : IsZero Z) :
-    Injective I ↔ (MorphismProperty.monomorphisms C).rlp p := by
+    [HasZeroMorphisms C] {I Z : C} (p : I ⟶ Z) (hZ : IsZero Z)
+    : Injective I ↔ (MorphismProperty.monomorphisms C).rlp p := by
   obtain rfl := hZ.eq_of_tgt p 0
   constructor
   · intro _ A B i (_ : Mono i)
@@ -56,9 +54,8 @@ lemma injective_iff_rlp_monomorphisms_of_isZero
     have sq : CommSq f i (0 : I ⟶ Z) 0 := ⟨by simp⟩
     exact ⟨sq.lift, by simp⟩
 
-lemma injective_iff_rlp_monomorphisms_zero
-    [HasZeroMorphisms C] [HasZeroObject C] (I : C) :
-    Injective I ↔ (MorphismProperty.monomorphisms C).rlp (0 : I ⟶ 0) :=
+lemma injective_iff_rlp_monomorphisms_zero [HasZeroMorphisms C] [HasZeroObject C] (I : C)
+    : Injective I ↔ (MorphismProperty.monomorphisms C).rlp (0 : I ⟶ 0) :=
   injective_iff_rlp_monomorphisms_of_isZero _ (isZero_zero C)
 
 end CategoryTheory

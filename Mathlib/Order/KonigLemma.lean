@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Order.Atoms.Finite
 public import Mathlib.Order.Grade
-
 import Mathlib.Data.Fintype.Pigeonhole
 
 /-!
@@ -59,30 +58,35 @@ section Sequence
 
 variable {α : Type*} [PartialOrder α] [IsStronglyAtomic α] {b : α}
 
-/-- **Kőnig's infinity lemma** : if each element in a strongly atomic order
+/--
+**Kőnig's infinity lemma** : if each element in a strongly atomic order
 is covered by only finitely many others, and `b` is an element with infinitely many things above it,
-then there is a sequence starting with `b` in which each element is covered by the next. -/
-theorem exists_seq_covby_of_forall_covby_finite (hfin : ∀ (a : α), {x | a ⋖ x}.Finite)
-    (hb : (Ici b).Infinite) : ∃ f : ℕ → α, f 0 = b ∧ ∀ i, f i ⋖ f (i + 1) :=
+then there is a sequence starting with `b` in which each element is covered by the next.
+-/
+theorem exists_seq_covby_of_forall_covby_finite
+    (hfin : ∀ (a : α), {x | a ⋖ x}.Finite) (hb : (Ici b).Infinite)
+    : ∃ f : ℕ → α, f 0 = b ∧ ∀ i, f i ⋖ f (i + 1) :=
   let h := fun a : {a : α // (Ici a).Infinite} ↦
     exists_covby_infinite_Ici_of_infinite_Ici a.2 (hfin a)
   let ks : ℕ → {a : α // (Ici a).Infinite} := Nat.rec ⟨b, hb⟩ fun _ a ↦ ⟨_, (h a).choose_spec.2⟩
   ⟨fun i ↦ (ks i).1, by simp [ks], fun i ↦ by simpa using (h (ks i)).choose_spec.1⟩
 
 /-- The sequence given by Kőnig's lemma as an order embedding -/
-theorem exists_orderEmbedding_covby_of_forall_covby_finite (hfin : ∀ (a : α), {x | a ⋖ x}.Finite)
-    (hb : (Ici b).Infinite) : ∃ f : ℕ ↪o α, f 0 = b ∧ ∀ i, f i ⋖ f (i + 1) := by
+theorem exists_orderEmbedding_covby_of_forall_covby_finite
+    (hfin : ∀ (a : α), {x | a ⋖ x}.Finite) (hb : (Ici b).Infinite)
+    : ∃ f : ℕ ↪o α, f 0 = b ∧ ∀ i, f i ⋖ f (i + 1) := by
   obtain ⟨f, hf⟩ := exists_seq_covby_of_forall_covby_finite hfin hb
   exact ⟨OrderEmbedding.ofStrictMono f (strictMono_nat_of_lt_succ (fun i ↦ (hf.2 i).lt)), hf⟩
 
 /-- A version of Kőnig's lemma where the sequence starts at the minimum of an infinite order. -/
-theorem exists_orderEmbedding_covby_of_forall_covby_finite_of_bot [OrderBot α] [Infinite α]
-    (hfin : ∀ (a : α), {x | a ⋖ x}.Finite) : ∃ f : ℕ ↪o α, f 0 = ⊥ ∧ ∀ i, f i ⋖ f (i + 1) :=
+theorem exists_orderEmbedding_covby_of_forall_covby_finite_of_bot
+    [OrderBot α] [Infinite α] (hfin : ∀ (a : α), {x | a ⋖ x}.Finite)
+    : ∃ f : ℕ ↪o α, f 0 = ⊥ ∧ ∀ i, f i ⋖ f (i + 1) :=
   exists_orderEmbedding_covby_of_forall_covby_finite hfin (by simpa using infinite_univ)
 
 theorem GradeMinOrder.exists_nat_orderEmbedding_of_forall_covby_finite
-    [GradeMinOrder ℕ α] [OrderBot α] [Infinite α] (hfin : ∀ (a : α), {x | a ⋖ x}.Finite) :
-    ∃ f : ℕ ↪o α, f 0 = ⊥ ∧ (∀ i, f i ⋖ f (i + 1)) ∧ ∀ i, grade ℕ (f i) = i := by
+    [GradeMinOrder ℕ α] [OrderBot α] [Infinite α] (hfin : ∀ (a : α), {x | a ⋖ x}.Finite)
+    : ∃ f : ℕ ↪o α, f 0 = ⊥ ∧ (∀ i, f i ⋖ f (i + 1)) ∧ ∀ i, grade ℕ (f i) = i := by
   obtain ⟨f, h0, hf⟩ := exists_orderEmbedding_covby_of_forall_covby_finite_of_bot hfin
   refine ⟨f, h0, hf, fun i ↦ ?_⟩
   induction i with
@@ -93,7 +97,8 @@ end Sequence
 
 section Graded
 
-/-- A formulation of Kőnig's infinity lemma, useful in applications.
+/--
+A formulation of Kőnig's infinity lemma, useful in applications.
 Given a sequence `α 0, α 1, ...` of nonempty types with `α 0` finite,
 and a well-behaved family of projections `π : α j → α i` for all `i ≤ j`,
 if each term in each `α i` is the projection of only finitely many terms in `α (i+1)`,
@@ -105,19 +110,21 @@ and `π hij (f : α j)` is the restriction of the domain of `f` to that of `α i
 In this case, the sequence given by the lemma is essentially a function whose domain
 is the limit of the `α i`.
 
-See also `nonempty_sections_of_finite_cofiltered_system`. -/
-theorem exists_seq_forall_proj_of_forall_finite {α : ℕ → Type*} [Finite (α 0)] [∀ i, Nonempty (α i)]
-    (π : {i j : ℕ} → (hij : i ≤ j) → α j → α i)
-    (π_refl : ∀ ⦃i⦄ (a : α i), π rfl.le a = a)
+See also `nonempty_sections_of_finite_cofiltered_system`.
+-/
+theorem exists_seq_forall_proj_of_forall_finite
+    {α : ℕ → Type*} [Finite (α 0)] [∀ i, Nonempty (α i)]
+    (π : {i j : ℕ} → (hij : i ≤ j) → α j → α i) (π_refl : ∀ ⦃i⦄ (a : α i), π rfl.le a = a)
     (π_trans : ∀ ⦃i j k⦄ (hij : i ≤ j) (hjk : j ≤ k) a, π hij (π hjk a) = π (hij.trans hjk) a)
-    (hfin : ∀ i a, {b : α (i+1) | π (Nat.le_add_right i 1) b = a}.Finite) :
-    ∃ f : (i : ℕ) → α i, ∀ ⦃i j⦄ (hij : i ≤ j), π hij (f j) = f i := by
+    (hfin : ∀ i a, {b : α (i+1) | π (Nat.le_add_right i 1) b = a}.Finite)
+    : ∃ f : (i : ℕ) → α i, ∀ ⦃i j⦄ (hij : i ≤ j), π hij (f j) = f i := by
   set αs := (i : ℕ) × α i
   let _ : PartialOrder αs := {
     le := fun a b ↦ ∃ h, π h b.2 = a.2
     le_refl := fun a ↦ ⟨rfl.le, π_refl _⟩
     le_trans := fun _ _ c h h' ↦ ⟨h.1.trans h'.1, by rw [← π_trans h.1 h'.1 c.2, h'.2, h.2]⟩
-    le_antisymm := by grind }
+    le_antisymm := by grind
+  }
   have hcovby : ∀ {a b : αs}, a ⋖ b ↔ a ≤ b ∧ a.1 + 1 = b.1 := by
     simp only [αs, covBy_iff_lt_and_eq_or_eq, lt_iff_le_and_ne, ne_eq, Sigma.forall, and_assoc,
       and_congr_right_iff, or_iff_not_imp_left]
@@ -150,7 +157,6 @@ theorem exists_seq_forall_proj_of_forall_finite {α : ℕ → Type*} [Finite (α
   have hr : ∀ i, (f i).1 = i :=
     Nat.rec (by rw [hf0, ha₀]) (fun i ih ↦ by rw [← (hcovby.1 (hf i)).2, ih])
   refine ⟨fun i ↦ by rw [← hr i]; exact (f i).2, fun i j hij ↦ ?_⟩
-  convert! (f.monotone hij).2 <;>
-  simp [hr]
+  convert! (f.monotone hij).2 <;> simp [hr]
 
 end Graded

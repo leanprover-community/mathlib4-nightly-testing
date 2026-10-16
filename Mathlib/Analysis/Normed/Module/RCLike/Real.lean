@@ -27,26 +27,30 @@ public section
 open Metric Set Function Filter
 open scoped NNReal Topology
 
-/-- If `E` is a nontrivial topological module over `ℝ`, then `E` has no isolated points.
-This is a particular case of `Module.punctured_nhds_neBot`. -/
-instance Real.punctured_nhds_module_neBot {E : Type*} [AddCommGroup E] [TopologicalSpace E]
-    [ContinuousAdd E] [Nontrivial E] [Module ℝ E] [ContinuousSMul ℝ E] (x : E) : NeBot (𝓝[≠] x) :=
+/--
+If `E` is a nontrivial topological module over `ℝ`, then `E` has no isolated points.
+This is a particular case of `Module.punctured_nhds_neBot`.
+-/
+instance Real.punctured_nhds_module_neBot
+    {E : Type*} [AddCommGroup E] [TopologicalSpace E] [ContinuousAdd E] [Nontrivial E] [Module ℝ E]
+    [ContinuousSMul ℝ E]
+    (x : E)
+    : NeBot (𝓝[≠] x) :=
   Module.punctured_nhds_neBot ℝ E x
 
 section Seminormed
 
 variable {E : Type*} [SeminormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem inv_norm_smul_mem_unitClosedBall (x : E) :
-    ‖x‖⁻¹ • x ∈ closedBall (0 : E) 1 := by
+theorem inv_norm_smul_mem_unitClosedBall (x : E) : ‖x‖⁻¹ • x ∈ closedBall (0 : E) 1 := by
   simp only [mem_closedBall_zero_iff, norm_smul, norm_inv, norm_norm, ← div_eq_inv_mul,
     div_self_le_one]
 
 theorem norm_smul_of_nonneg {t : ℝ} (ht : 0 ≤ t) (x : E) : ‖t • x‖ = t * ‖x‖ := by
   rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht]
 
-theorem dist_smul_add_one_sub_smul_le {r : ℝ} {x y : E} (h : r ∈ Icc 0 1) :
-    dist (r • x + (1 - r) • y) x ≤ dist y x :=
+theorem dist_smul_add_one_sub_smul_le {r : ℝ} {x y : E} (h : r ∈ Icc 0 1)
+    : dist (r • x + (1 - r) • y) x ≤ dist y x :=
   calc
     dist (r • x + (1 - r) • y) x = ‖1 - r‖ * ‖x - y‖ := by
       simp_rw [dist_eq_norm', ← norm_smul, sub_smul, one_smul, smul_sub, ← sub_sub, ← sub_add,
@@ -69,12 +73,11 @@ theorem closure_ball (x : E) {r : ℝ} (hr : r ≠ 0) : closure (ball x r) = clo
     replace hr : 0 < r := ((norm_nonneg _).trans hy).lt_of_ne hr.symm
     apply mul_lt_mul' <;> assumption
 
-theorem frontier_ball (x : E) {r : ℝ} (hr : r ≠ 0) :
-    frontier (ball x r) = sphere x r := by
+theorem frontier_ball (x : E) {r : ℝ} (hr : r ≠ 0) : frontier (ball x r) = sphere x r := by
   rw [frontier, closure_ball x hr, isOpen_ball.interior_eq, closedBall_sdiff_ball]
 
-theorem interior_closedBall (x : E) {r : ℝ} (hr : r ≠ 0) :
-    interior (closedBall x r) = ball x r := by
+theorem interior_closedBall (x : E) {r : ℝ} (hr : r ≠ 0)
+    : interior (closedBall x r) = ball x r := by
   rcases hr.lt_or_gt with hr | hr
   · rw [closedBall_eq_empty.2 hr, ball_eq_empty.2 hr.le, interior_empty]
   refine Subset.antisymm ?_ ball_subset_interior_closedBall
@@ -90,8 +93,8 @@ theorem interior_closedBall (x : E) {r : ℝ} (hr : r ≠ 0) :
   rw [mem_Icc, ← abs_le, ← Real.norm_eq_abs, ← mul_le_mul_iff_left₀ hr]
   simpa [f, dist_eq_norm, norm_smul] using hc
 
-theorem frontier_closedBall (x : E) {r : ℝ} (hr : r ≠ 0) :
-    frontier (closedBall x r) = sphere x r := by
+theorem frontier_closedBall (x : E) {r : ℝ} (hr : r ≠ 0)
+    : frontier (closedBall x r) = sphere x r := by
   rw [frontier, closure_closedBall, interior_closedBall x hr, closedBall_sdiff_ball]
 
 theorem interior_sphere (x : E) {r : ℝ} (hr : r ≠ 0) : interior (sphere x r) = ∅ := by
@@ -117,13 +120,13 @@ theorem range_norm : range (norm : E → ℝ) = Ici 0 :=
 theorem nnnorm_surjective : Surjective (nnnorm : E → ℝ≥0) := fun c =>
   (exists_norm_eq E c.coe_nonneg).imp fun _ h => NNReal.eq h
 
-@[simp]
-theorem range_nnnorm : range (nnnorm : E → ℝ≥0) = univ :=
-  (nnnorm_surjective E).range_eq
+@[simp] theorem range_nnnorm : range (nnnorm : E → ℝ≥0) = univ := (nnnorm_surjective E).range_eq
 
 variable {E} in
-/-- In a nontrivial real normed space, a sphere is nonempty if and only if its radius is
-nonnegative. -/
+/--
+In a nontrivial real normed space, a sphere is nonempty if and only if its radius is
+nonnegative.
+-/
 @[simp]
 theorem NormedSpace.sphere_nonempty {x : E} {r : ℝ} : (sphere x r).Nonempty ↔ 0 ≤ r := by
   refine ⟨fun h => nonempty_closedBall.1 (h.mono sphere_subset_closedBall), fun hr => ?_⟩

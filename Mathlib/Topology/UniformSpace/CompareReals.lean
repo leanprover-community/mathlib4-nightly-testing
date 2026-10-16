@@ -53,13 +53,14 @@ real numbers, completion, uniform spaces
 
 @[expose] public section
 
-
 open Set Function Filter CauSeq UniformSpace
 
-/-- The metric space uniform structure on ℚ (which presupposes the existence
-of real numbers) agrees with the one coming directly from (abs : ℚ → ℚ). -/
-theorem Rat.uniformSpace_eq :
-    (AbsoluteValue.abs : AbsoluteValue ℚ ℚ).uniformSpace = PseudoMetricSpace.toUniformSpace := by
+/--
+The metric space uniform structure on ℚ (which presupposes the existence
+of real numbers) agrees with the one coming directly from (abs : ℚ → ℚ).
+-/
+theorem Rat.uniformSpace_eq
+    : (AbsoluteValue.abs : AbsoluteValue ℚ ℚ).uniformSpace = PseudoMetricSpace.toUniformSpace := by
   ext s
   rw [(AbsoluteValue.hasBasis_uniformity _).mem_iff, Metric.uniformity_basis_dist_rat.mem_iff]
   simp only [Rat.dist_eq, AbsoluteValue.abs_apply, ← Rat.cast_sub, ← Rat.cast_abs, Rat.cast_lt,
@@ -67,12 +68,8 @@ theorem Rat.uniformSpace_eq :
 
 /-- Cauchy reals packaged as a completion of ℚ using the absolute value route. -/
 def rationalCauSeqPkg : @AbstractCompletion ℚ (@AbsoluteValue.abs ℚ _).uniformSpace :=
-  @AbstractCompletion.mk
-    (space := ℝ)
-    (coe := ((↑) : ℚ → ℝ))
-    (uniformStruct := by infer_instance)
-    (complete := by infer_instance)
-    (separation := by infer_instance)
+  @AbstractCompletion.mk (space := ℝ) (coe := ((↑) : ℚ → ℝ)) (uniformStruct := by infer_instance)
+    (complete := by infer_instance) (separation := by infer_instance)
     (isUniformInducing := by
       rw [Rat.uniformSpace_eq]
       exact Rat.isUniformEmbedding_coe_real.isUniformInducing)
@@ -80,30 +77,28 @@ def rationalCauSeqPkg : @AbstractCompletion ℚ (@AbsoluteValue.abs ℚ _).unifo
 
 namespace CompareReals
 
-/-- Type wrapper around ℚ to make sure the absolute value uniform space instance is picked up
+/--
+Type wrapper around ℚ to make sure the absolute value uniform space instance is picked up
 instead of the metric space one. We proved in `Rat.uniformSpace_eq` that they are equal,
 but they are not definitionally equal, so it would confuse the type class system (and probably
-also human readers). -/
-def Q :=
-  ℚ deriving CommRing, Inhabited
+also human readers).
+-/
+def Q := ℚ
+deriving CommRing, Inhabited
 
-instance uniformSpace : UniformSpace Q :=
-  fast_instance% (@AbsoluteValue.abs ℚ _).uniformSpace
+instance uniformSpace : UniformSpace Q := fast_instance% (@AbsoluteValue.abs ℚ _).uniformSpace
 
 /-- Real numbers constructed as in Bourbaki. -/
-def Bourbakiℝ : Type :=
-  Completion Q deriving Inhabited
+def Bourbakiℝ : Type := Completion Q
+deriving Inhabited
 
-instance Bourbaki.uniformSpace : UniformSpace Bourbakiℝ :=
-  fast_instance% Completion.uniformSpace Q
+instance Bourbaki.uniformSpace : UniformSpace Bourbakiℝ := fast_instance% Completion.uniformSpace Q
 
 /-- Bourbaki reals packaged as a completion of Q using the general theory. -/
-def bourbakiPkg : AbstractCompletion Q :=
-  Completion.cPkg
+def bourbakiPkg : AbstractCompletion Q := Completion.cPkg
 
 /-- The uniform bijection between Bourbaki and Cauchy reals. -/
-noncomputable def compareEquiv : Bourbakiℝ ≃ᵤ ℝ :=
-  bourbakiPkg.compareEquiv rationalCauSeqPkg
+noncomputable def compareEquiv : Bourbakiℝ ≃ᵤ ℝ := bourbakiPkg.compareEquiv rationalCauSeqPkg
 
 theorem compare_uc : UniformContinuous compareEquiv :=
   bourbakiPkg.uniformContinuous_compareEquiv rationalCauSeqPkg

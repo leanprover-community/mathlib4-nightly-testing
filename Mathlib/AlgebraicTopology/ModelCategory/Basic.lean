@@ -37,9 +37,11 @@ open CategoryTheory Limits
 
 variable (C : Type u) [Category.{v} C]
 
-/-- A model category is a category equipped with classes of morphisms named cofibrations,
+/--
+A model category is a category equipped with classes of morphisms named cofibrations,
 fibrations and weak equivalences which satisfy the axioms CM1/CM2/CM3/CM4/CM5
-of (closed) model categories. -/
+of (closed) model categories.
+-/
 class ModelCategory where
   categoryWithFibrations : CategoryWithFibrations C := by infer_instance
   categoryWithCofibrations : CategoryWithCofibrations C := by infer_instance
@@ -50,10 +52,12 @@ class ModelCategory where
   cm3a : (weakEquivalences C).IsStableUnderRetracts := by infer_instance
   cm3b : (fibrations C).IsStableUnderRetracts := by infer_instance
   cm3c : (cofibrations C).IsStableUnderRetracts := by infer_instance
-  cm4a {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [WeakEquivalence i] [Fibration p] :
-      HasLiftingProperty i p := by intros; infer_instance
-  cm4b {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [Fibration p] [WeakEquivalence p] :
-      HasLiftingProperty i p := by intros; infer_instance
+  cm4a {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [WeakEquivalence i] [Fibration p]
+      : HasLiftingProperty i p := by
+    intros; infer_instance
+  cm4b {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) [Cofibration i] [Fibration p] [WeakEquivalence p]
+      : HasLiftingProperty i p := by
+    intros; infer_instance
   cm5a : MorphismProperty.HasFactorization (trivialCofibrations C) (fibrations C) := by
     infer_instance
   cm5b : MorphismProperty.HasFactorization (cofibrations C) (trivialFibrations C) := by
@@ -63,8 +67,9 @@ namespace ModelCategory
 
 attribute [instance_reducible]
   categoryWithFibrations categoryWithCofibrations categoryWithWeakEquivalences
-attribute [instance] categoryWithFibrations categoryWithCofibrations categoryWithWeakEquivalences
-  cm1a cm1b cm2 cm3a cm3b cm3c cm4a cm4b cm5a cm5b
+attribute [instance]
+  categoryWithFibrations categoryWithCofibrations categoryWithWeakEquivalences cm1a cm1b cm2 cm3a
+  cm3b cm3c cm4a cm4b cm5a cm5b
 
 section
 
@@ -91,13 +96,14 @@ section mk'
 open MorphismProperty
 
 variable {C} in
-private lemma mk'.cm3a_aux [CategoryWithFibrations C] [CategoryWithCofibrations C]
-    [CategoryWithWeakEquivalences C]
+private lemma mk'.cm3a_aux
+    [CategoryWithFibrations C] [CategoryWithCofibrations C] [CategoryWithWeakEquivalences C]
     [(weakEquivalences C).HasTwoOutOfThreeProperty]
     [IsWeakFactorizationSystem (trivialCofibrations C) (fibrations C)]
-    [IsWeakFactorizationSystem (cofibrations C) (trivialFibrations C)] {A B X Y : C}
-    {f : A ⟶ B} {w : X ⟶ Y} [Fibration f] [WeakEquivalence w]
-    (h : RetractArrow f w) : WeakEquivalence f := by
+    [IsWeakFactorizationSystem (cofibrations C) (trivialFibrations C)]
+    {A B X Y : C} {f : A ⟶ B} {w : X ⟶ Y} [Fibration f] [WeakEquivalence w]
+    (h : RetractArrow f w)
+    : WeakEquivalence f := by
   have hw := factorizationData (trivialCofibrations C) (fibrations C) w
   have : (trivialFibrations C).IsStableUnderRetracts := by
     rw [← cofibrations_rlp]
@@ -105,38 +111,39 @@ private lemma mk'.cm3a_aux [CategoryWithFibrations C] [CategoryWithCofibrations 
   have sq : CommSq h.r.left hw.i f (hw.p ≫ h.r.right) := ⟨by simp⟩
   have hf : fibrations C f := by rwa [← fibration_iff]
   have : HasLiftingProperty hw.i f := hasLiftingProperty_of_wfs _ _ hw.hi hf
-  have : RetractArrow f hw.p :=
-    { i := Arrow.homMk (h.i.left ≫ hw.i) h.i.right
-      r := Arrow.homMk sq.lift h.r.right }
+  have : RetractArrow f hw.p := {
+    i := Arrow.homMk (h.i.left ≫ hw.i) h.i.right
+    r := Arrow.homMk sq.lift h.r.right
+  }
   have h' : trivialFibrations C hw.p :=
     ⟨hw.hp, (weakEquivalence_iff _).1 (weakEquivalence_of_precomp_of_fac hw.fac)⟩
   simpa only [weakEquivalence_iff] using (of_retract this h').2
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Constructor for `ModelCategory C` which assumes a formulation of axioms
-using weak factorization systems. -/
+/--
+Constructor for `ModelCategory C` which assumes a formulation of axioms
+using weak factorization systems.
+-/
 @[instance_reducible]
-def mk' [CategoryWithFibrations C] [CategoryWithCofibrations C]
-    [CategoryWithWeakEquivalences C] [HasFiniteLimits C] [HasFiniteColimits C]
-    [(weakEquivalences C).HasTwoOutOfThreeProperty]
+def mk'
+    [CategoryWithFibrations C] [CategoryWithCofibrations C] [CategoryWithWeakEquivalences C]
+    [HasFiniteLimits C] [HasFiniteColimits C] [(weakEquivalences C).HasTwoOutOfThreeProperty]
     [IsWeakFactorizationSystem (cofibrations C) (trivialFibrations C)]
-    [IsWeakFactorizationSystem (trivialCofibrations C) (fibrations C)] :
-    ModelCategory C where
+    [IsWeakFactorizationSystem (trivialCofibrations C) (fibrations C)]
+    : ModelCategory C where
   cm3a := ⟨fun {A B X Y f w h hw} ↦ by
     rw [← weakEquivalence_iff] at hw
     have hf := factorizationData (trivialCofibrations C) (fibrations C) f
-    have : Cofibration hf.i := by
-      simpa only [cofibration_iff] using hf.hi.1
-    have : WeakEquivalence hf.i := by
-      simpa only [weakEquivalence_iff] using hf.hi.2
-    let φ : pushout hf.i h.i.left ⟶ Y :=
-      pushout.desc (hf.p ≫ h.i.right) w (by simp)
+    have : Cofibration hf.i := by simpa only [cofibration_iff] using hf.hi.1
+    have : WeakEquivalence hf.i := by simpa only [weakEquivalence_iff] using hf.hi.2
+    let φ : pushout hf.i h.i.left ⟶ Y := pushout.desc (hf.p ≫ h.i.right) w (by simp)
     have : Fibration hf.p := by simpa only [fibration_iff] using hf.hp
     have : WeakEquivalence (pushout.inr _ _ ≫ φ) := by simpa [φ]
     have := weakEquivalence_of_precomp (pushout.inr _ _) φ
-    have hp : RetractArrow hf.p φ :=
-      { i := Arrow.homMk (pushout.inl _ _) h.i.right
-        r := Arrow.homMk (pushout.desc (𝟙 _) (h.r.left ≫ hf.i) (by simp)) h.r.right }
+    have hp : RetractArrow hf.p φ := {
+      i := Arrow.homMk (pushout.inl _ _) h.i.right
+      r := Arrow.homMk (pushout.desc (𝟙 _) (h.r.left ≫ hf.i) (by simp)) h.r.right
+    }
     have := mk'.cm3a_aux hp
     rw [← weakEquivalence_iff, ← hf.fac]
     infer_instance⟩

@@ -29,25 +29,28 @@ public section
 open Set
 
 /-- Rational numbers are dense in a linear ordered archimedean field. -/
-theorem Rat.denseRange_cast {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    [TopologicalSpace 𝕜] [OrderTopology 𝕜]
-    [Archimedean 𝕜] : DenseRange ((↑) : ℚ → 𝕜) :=
+theorem Rat.denseRange_cast
+    {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] [TopologicalSpace 𝕜] [OrderTopology 𝕜]
+    [Archimedean 𝕜]
+    : DenseRange ((↑) : ℚ → 𝕜) :=
   dense_of_exists_between fun _ _ h => Set.exists_range_iff.2 <| exists_rat_btwn h
 
 namespace Subgroup
 
-variable {G : Type*} [CommGroup G] [LinearOrder G] [IsOrderedMonoid G]
-  [TopologicalSpace G] [OrderTopology G]
-  [MulArchimedean G]
+variable
+  {G : Type*} [CommGroup G] [LinearOrder G] [IsOrderedMonoid G] [TopologicalSpace G]
+  [OrderTopology G] [MulArchimedean G]
 
-/-- A subgroup of an archimedean linear ordered multiplicative commutative group with order
+/--
+A subgroup of an archimedean linear ordered multiplicative commutative group with order
 topology is dense provided that for all `ε > 1` there exists an element of the subgroup
-that belongs to `(1, ε)`. -/
+that belongs to `(1, ε)`.
+-/
 @[to_additive /-- An additive subgroup of an archimedean linear ordered additive commutative group
 with order topology is dense provided that for all positive `ε` there exists a positive element of
 the subgroup that is less than `ε`. -/]
-theorem dense_of_not_isolated_one (S : Subgroup G) (hS : ∀ ε > 1, ∃ g ∈ S, g ∈ Ioo 1 ε) :
-    Dense (S : Set G) := by
+theorem dense_of_not_isolated_one (S : Subgroup G) (hS : ∀ ε > 1, ∃ g ∈ S, g ∈ Ioo 1 ε)
+    : Dense (S : Set G) := by
   cases subsingleton_or_nontrivial G
   · refine fun x => _root_.subset_closure ?_
     rw [Subsingleton.elim x 1]
@@ -59,14 +62,17 @@ theorem dense_of_not_isolated_one (S : Subgroup G) (hS : ∀ ε > 1, ∃ g ∈ S
   refine ⟨g ^ m, zpow_mem hgS _, hm.1, hm.2.trans_lt ?_⟩
   rwa [lt_div_iff_mul_lt'] at hg
 
-/-- Let `S` be a nontrivial subgroup in an archimedean linear ordered multiplicative commutative
+/--
+Let `S` be a nontrivial subgroup in an archimedean linear ordered multiplicative commutative
 group `G` with order topology. If the set of elements of `S` that are greater than one
-does not have a minimal element, then `S` is dense `G`. -/
+does not have a minimal element, then `S` is dense `G`.
+-/
 @[to_additive /-- Let `S` be a nontrivial additive subgroup in an archimedean linear ordered
 additive commutative group `G` with order topology. If the set of positive elements of `S` does not
 have a minimal element, then `S` is dense `G`. -/]
-theorem dense_of_no_min (S : Subgroup G) (hbot : S ≠ ⊥)
-    (H : ¬∃ a : G, IsLeast { g : G | g ∈ S ∧ 1 < g } a) : Dense (S : Set G) := by
+theorem dense_of_no_min
+    (S : Subgroup G) (hbot : S ≠ ⊥) (H : ¬ ∃ a : G, IsLeast ({ g : G | g ∈ S ∧ 1 < g }) a)
+    : Dense (S : Set G) := by
   refine S.dense_of_not_isolated_one fun ε ε1 => ?_
   contrapose! H
   exact exists_isLeast_one_lt hbot ε1 (disjoint_left.2 H)

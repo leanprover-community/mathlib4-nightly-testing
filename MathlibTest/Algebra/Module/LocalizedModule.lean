@@ -1,12 +1,12 @@
 module
+
 import Mathlib
 
 /-! We test that the instances on `LocalizedModule` and `Localization` are reducibly equal. -/
 
 variable {R : Type*} [CommRing R] {S : Submonoid R}
 
-example : Localization S = LocalizedModule S R := by
-  with_reducible rfl
+example : Localization S = LocalizedModule S R := by with_reducible rfl
 
 set_option backward.isDefEq.respectTransparency false in
 example : OreLocalization.instMonoid = LocalizedModule.instMonoid (A := R) (S := S) := by
@@ -17,6 +17,7 @@ example : (LocalizedModule.instCommRing : CommRing R[S⁻¹]) = OreLocalization.
   with_reducible_and_instances rfl
 
 set_option backward.isDefEq.respectTransparency false in
-example : (LocalizedModule.algebra' : Algebra R (LocalizedModule S R)) =
-    OreLocalization.instAlgebra := by
+example
+    : (LocalizedModule.algebra' : Algebra R (LocalizedModule S R))
+      = OreLocalization.instAlgebra := by
   with_reducible_and_instances rfl

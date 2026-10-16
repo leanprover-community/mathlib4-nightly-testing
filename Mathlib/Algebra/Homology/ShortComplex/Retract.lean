@@ -21,21 +21,23 @@ open Limits
 
 namespace ShortComplex
 
-variable {C : Type*} [Category* C] [HasZeroMorphisms C]
-  {S₁ T₁ S₂ T₂ : ShortComplex C}
-  [S₁.HasHomology] [T₁.HasHomology] [S₂.HasHomology] [T₂.HasHomology]
+variable
+  {C : Type*} [Category* C] [HasZeroMorphisms C]
+  {S₁ T₁ S₂ T₂ : ShortComplex C} [S₁.HasHomology] [T₁.HasHomology] [S₂.HasHomology] [T₂.HasHomology]
   {f₁ : S₁ ⟶ T₁} {f₂ : S₂ ⟶ T₂}
 
 set_option backward.defeqAttrib.useBackward true in
-lemma quasiIso_of_retract (h : RetractArrow f₁ f₂) [hf₂ : QuasiIso f₂] :
-    QuasiIso f₁ := by
+lemma quasiIso_of_retract (h : RetractArrow f₁ f₂) [hf₂ : QuasiIso f₂] : QuasiIso f₁ := by
   rw [quasiIso_iff] at hf₂ ⊢
-  have h : RetractArrow (homologyMap f₁) (homologyMap f₂) :=
-    { i := Arrow.homMk (u := homologyMap (show S₁ ⟶ S₂ from h.i.left))
+  have h : RetractArrow (homologyMap f₁) (homologyMap f₂) := {
+    i :=
+      Arrow.homMk (u := homologyMap (show S₁ ⟶ S₂ from h.i.left))
         (v := homologyMap (show T₁ ⟶ T₂ from h.i.right)) (by simp [← homologyMap_comp])
-      r := Arrow.homMk (u := homologyMap (show S₂ ⟶ S₁ from h.r.left))
+    r :=
+      Arrow.homMk (u := homologyMap (show S₂ ⟶ S₁ from h.r.left))
         (v := homologyMap (show T₂ ⟶ T₁ from h.r.right)) (by simp [← homologyMap_comp])
-      retract := by ext <;> simp [← homologyMap_comp] }
+    retract := by ext <;> simp [← homologyMap_comp]
+  }
   exact (MorphismProperty.isomorphisms C).of_retract h hf₂
 
 end ShortComplex

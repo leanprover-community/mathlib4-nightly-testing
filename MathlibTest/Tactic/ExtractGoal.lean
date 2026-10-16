@@ -26,8 +26,8 @@ info: theorem _example.extracted_1.{v, u} {α : Type u} {β : Type v} [h : Sub �
   f a - b = f a - b := sorry
 -/
 #guard_msgs in
-example {α : Type u} {β : Type v} [Add α] [h : Sub β] (f : α → β) ⦃_g : ℤ⦄ (a : α) {b : β} :
-    f a - b = f a - b := by
+example {α : Type u} {β : Type v} [Add α] [h : Sub β] (f : α → β) ⦃_g : ℤ⦄ (a : α) {b : β}
+    : f a - b = f a - b := by
   extract_goal
   rfl
 
@@ -81,8 +81,7 @@ example (n : ℕ) : True := by
 
 /-- error: Unknown identifier `k` -/
 #guard_msgs in
-example (n : ℕ) : True := by
-  extract_goal k
+example (n : ℕ) : True := by extract_goal k
 
 /--
 info: theorem _example.extracted_1 (n : ℕ) : True := sorry

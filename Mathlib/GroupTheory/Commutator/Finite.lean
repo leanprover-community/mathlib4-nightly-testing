@@ -7,7 +7,6 @@ module
 
 public import Mathlib.GroupTheory.Index
 public import Mathlib.GroupTheory.Rank
-
 import Mathlib.Algebra.Group.Subgroup.Finite
 
 /-!
@@ -22,26 +21,28 @@ variable {G : Type*} [Group G]
 
 namespace Subgroup
 
-/-- The commutator of a finite direct product is contained in the direct product of the commutators.
+/--
+The commutator of a finite direct product is contained in the direct product of the commutators.
 -/
 @[to_additive /-- The commutator of a finite direct product is contained in the direct product of
 the commutators. -/]
-theorem commutator_pi_pi_of_finite {η : Type*} [Finite η] {Gs : η → Type*} [∀ i, Group (Gs i)]
-    (H K : ∀ i, Subgroup (Gs i)) : ⁅Subgroup.pi Set.univ H, Subgroup.pi Set.univ K⁆ =
-    Subgroup.pi Set.univ fun i => ⁅H i, K i⁆ := by
+theorem commutator_pi_pi_of_finite
+    {η : Type*} [Finite η] {Gs : η → Type*} [∀ i, Group (Gs i)] (H K : ∀ i, Subgroup (Gs i))
+    : ⁅Subgroup.pi Set.univ H, Subgroup.pi Set.univ K⁆
+      = Subgroup.pi Set.univ fun i => ⁅H i, K i⁆ := by
   classical
-    apply le_antisymm (commutator_pi_pi_le H K)
-    rw [pi_le_iff]
-    intro i hi
-    rw [map_commutator]
-    apply commutator_mono <;>
-      · rw [le_pi_iff]
-        intro j _hj
-        rintro _ ⟨x, hx, rfl⟩
-        by_cases h : j = i
-        · subst h
-          simpa using hx
-        · simp [h, one_mem]
+  apply le_antisymm (commutator_pi_pi_le H K)
+  rw [pi_le_iff]
+  intro i hi
+  rw [map_commutator]
+  apply commutator_mono
+    <;> · rw [le_pi_iff]
+          intro j _hj
+          rintro _ ⟨x, hx, rfl⟩
+          by_cases h : j = i
+          · subst h
+            simpa using hx
+          · simp [h, one_mem]
 
 variable [Finite (commutatorSet G)]
 
@@ -71,15 +72,16 @@ section commutatorRepresentatives
 
 open Subgroup
 
-lemma card_commutatorSet_closureCommutatorRepresentatives :
-    Nat.card (commutatorSet (closureCommutatorRepresentatives G)) = Nat.card (commutatorSet G) := by
+lemma card_commutatorSet_closureCommutatorRepresentatives
+    : Nat.card (commutatorSet (closureCommutatorRepresentatives G))
+      = Nat.card (commutatorSet G) := by
   rw [← image_commutatorSet_closureCommutatorRepresentatives G]
   exact Nat.card_congr (Equiv.Set.image _ _ (subtype_injective _))
 
-lemma card_commutator_closureCommutatorRepresentatives :
-    Nat.card (commutator (closureCommutatorRepresentatives G)) = Nat.card (commutator G) := by
-  rw [commutator_eq_closure G, ← image_commutatorSet_closureCommutatorRepresentatives, ←
-    MonoidHom.map_closure, ← commutator_eq_closure]
+lemma card_commutator_closureCommutatorRepresentatives
+    : Nat.card (commutator (closureCommutatorRepresentatives G)) = Nat.card (commutator G) := by
+  rw [commutator_eq_closure G, ← image_commutatorSet_closureCommutatorRepresentatives,
+    ← MonoidHom.map_closure, ← commutator_eq_closure]
   exact Nat.card_congr (Equiv.Set.image _ _ (subtype_injective _))
 
 variable [Finite (commutatorSet G)]
@@ -90,14 +92,13 @@ instance closureCommutatorRepresentatives_fg : Group.FG (closureCommutatorRepres
   Group.closure_finite_fg _
 
 variable (G) in
-lemma rank_closureCommutatorRepresentatives_le :
-    Group.rank (closureCommutatorRepresentatives G) ≤ 2 * Nat.card (commutatorSet G) := by
+lemma rank_closureCommutatorRepresentatives_le
+    : Group.rank (closureCommutatorRepresentatives G) ≤ 2 * Nat.card (commutatorSet G) := by
   rw [two_mul]
-  exact
-    (Subgroup.rank_closure_finite_le_nat_card _).trans
-      ((Set.card_union_le _ _).trans
-        (add_le_add ((Finite.card_image_le _).trans (Finite.card_range_le _))
-          ((Finite.card_image_le _).trans (Finite.card_range_le _))))
+  exact (Subgroup.rank_closure_finite_le_nat_card _).trans
+    ((Set.card_union_le _ _).trans
+      (add_le_add ((Finite.card_image_le _).trans (Finite.card_range_le _))
+        ((Finite.card_image_le _).trans (Finite.card_range_le _))))
 
 instance : Finite (commutatorSet (closureCommutatorRepresentatives G)) := by
   apply Nat.finite_of_card_ne_zero

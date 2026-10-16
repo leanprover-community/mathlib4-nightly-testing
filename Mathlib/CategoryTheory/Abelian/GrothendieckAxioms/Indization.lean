@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
 public import Mathlib.CategoryTheory.Abelian.Indization
-
 import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.FunctorCategory
 import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Types
 import Mathlib.CategoryTheory.Generator.Indization
@@ -29,8 +28,8 @@ section
 
 variable {C : Type u} [Category.{v} C]
 
-instance {J : Type v} [SmallCategory J] [IsFiltered J] [HasFiniteLimits C] :
-    HasExactColimitsOfShape J (Ind C) :=
+instance {J : Type v} [SmallCategory J] [IsFiltered J] [HasFiniteLimits C]
+    : HasExactColimitsOfShape J (Ind C) :=
   HasExactColimitsOfShape.domain_of_functor J (Ind.inclusion C)
 
 instance [HasFiniteLimits C] : AB5 (Ind C) where

@@ -19,13 +19,13 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example: True := trivial
+example : True := trivial
 
 -- Constructs that are ignored by the linter, and (former) false positives.
 section noFalsePositives
 
 -- Explicit name literals: used to error (and the suggested replacement is invalid syntax).
-structure foo (name: Lean.Name) where
+structure foo (name : Lean.Name) where
 
 #guard_msgs in
 def bar (_param : List (foo ``String)) := 1
@@ -53,18 +53,18 @@ Note: This linter can be disabled with `set_option linter.style.whitespace false
 -/
 #guard_msgs in
 structure A where
-  field1     : Nat
+  field1 : Nat
   field2 : Nat
 
 -- TODO: this is not linted yet!
 structure B where
   field1 : Nat
-  field2     : Nat
+  field2 : Nat
 
 -- TODO: this is not linted yet!
 structure C where
-  field1 :     Nat
-  field2     : Nat
+  field1 : Nat
+  field2 : Nat
 
 -- Note that the linter does not attempt to recognise or respect manual alignment of fields:
 -- this is often brittle and should usually be removed.
@@ -81,8 +81,8 @@ Note: This linter can be disabled with `set_option linter.style.whitespace false
 -/
 #guard_msgs in
 structure D where
-  field1    :     Nat
-  field2    : Nat
+  field1 : Nat
+  field2 : Nat
 
 -- This also applies to consecutive declarations.
 /--
@@ -99,7 +99,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-instance   {R} : Add R := sorry
+instance {R} : Add R := sorry
 
 -- TODO: right now, defining a second private `Add` instance causes an error
 -- Once the fix for lean4#11385 lands in mathlib; revert this to an `Add` instance
@@ -117,19 +117,21 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-instance   {R} : Sub R := sorry
+instance {R} : Sub R := sorry
 
 -- Strings are ignored by the linter.
 variable (a : String := "  ")
 
 -- The linter skips double-quoted names.
-variable (d : Lean.Name := ``Nat) in open Nat
+variable (d : Lean.Name := ``Nat) in
+open Nat
 
 -- Code inside `run_cmd` is not checked at all.
 run_cmd
   for _ in [0] do
-    let _ ← `(
-      end)
+    let _ ←
+      `(
+        end)
 
 def Card : Type → Nat := fun _ => 0
 
@@ -139,8 +141,7 @@ inductive Symbol (T N : Type)
   | terminal (t : T) : Symbol T N
   /-- Nonterminal symbols (must not be present when the word being generated is finalized) -/
   | nonterminal (n : N) : Symbol T N
-deriving
-  DecidableEq, Repr
+deriving DecidableEq, Repr
 
 -- embedded comments do not cause problems!
 #guard_msgs in
@@ -150,13 +151,13 @@ example : True := trivial
 -- embedded comments do not cause problems!
 #guard_msgs in
 open Nat in
- -- hi
+-- hi
 example : True := trivial
 
 -- embedded comments do not cause problems!
 #guard_msgs in
 open Nat in
-  -- hi
+-- hi
 example : True := trivial
 
 structure X where
@@ -167,7 +168,7 @@ open Nat in /- hi -/
 example : True := trivial
 
 -- The notation `0::[]` disables the linter
-variable (h : 0::[] = [])
+variable (h : 0 :: [] = [])
 
 /-- A doc string -/
 -- comment
@@ -189,7 +190,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-lemma F  : True := trivial
+lemma F : True := trivial
 
 namespace List
 
@@ -270,7 +271,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-variable    [ h    : Add Nat   ] [ Add Nat]
+variable [h : Add Nat] [Add Nat]
 
 /--
 warning: extra space in the source
@@ -294,10 +295,10 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-omit  [h : Add Nat]  [Add Nat]
+omit [h : Add Nat] [Add Nat]
 
 -- Include statements are not linted.
-include     h
+include h
 
 set_option linter.overlappingInstances false in
 /--
@@ -312,7 +313,8 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-@[aesop  (rule_sets := [builtin]) safe apply] example : True := trivial
+@[aesop  (rule_sets := [builtin]) safe apply]
+example : True := trivial
 
 end misc
 
@@ -322,7 +324,7 @@ warning: 'section' starts on column 1, but all commands should start at the begi
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
- section
+section
 
 /--
 warning: extra space in the source
@@ -336,11 +338,11 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example    : True := trivial
+example : True := trivial
 
 -- Additional spaces after the colon are not linted yet.
 #guard_msgs in
-example :     True := trivial
+example : True := trivial
 
 /--
 warning: extra space in the source
@@ -354,7 +356,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example  :  True :=trivial
+example : True := trivial
 
 /--
 warning: missing space in the source
@@ -368,7 +370,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-variable (a: Nat)
+variable (a : Nat)
 
 /--
 warning: missing space in the source
@@ -382,7 +384,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example (_a: Nat) : True := trivial
+example (_a : Nat) : True := trivial
 
 /--
 warning: missing space in the source
@@ -396,13 +398,14 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example {a: Nat} : a = a := rfl
+example {a : Nat} : a = a := rfl
 
 /--
 a
 b
 c
-d -/
+d
+-/
 example (_a : Nat) (_b : Int) : True := trivial
 
 /--
@@ -417,7 +420,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example {a :Nat} : a = a := rfl
+example {a : Nat} : a = a := rfl
 
 /--
 warning: extra space in the source
@@ -441,7 +444,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example  {a :Nat} : a = a := rfl
+example {a : Nat} : a = a := rfl
 
 /--
 warning: Variable name `b` is not explicitly referenced.
@@ -462,7 +465,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example {a : Nat}{b : Nat} : a = a := rfl
+example {a : Nat} {b : Nat} : a = a := rfl
 
 /--
 warning: extra space in the source
@@ -476,7 +479,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example {a : Nat}  : a = a := rfl
+example {a : Nat} : a = a := rfl
 
 /--
 warning: extra space in the source
@@ -490,7 +493,7 @@ should be written as
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
 -/
 #guard_msgs in
-example {alpha} [Neg alpha   ] {a : Nat} : a = a := rfl
+example {alpha} [Neg alpha] {a : Nat} : a = a := rfl
 
 /--
 warning: extra space in the source
@@ -505,7 +508,7 @@ Note: This linter can be disabled with `set_option linter.style.whitespace false
 -/
 #guard_msgs in
 /-- Check that doc/strings do not get removed as comments. -/
-example  : True := trivial
+example : True := trivial
 
 -- Unit tests for internal functions in the linter.
 section internal
@@ -530,8 +533,9 @@ info: #[srcNat: 19, srcPos: 19, fmtPos: 21, msg: extra space, length: 1
 #guard_msgs in
 #eval
   let s := "example  :   True :=trivial"
-  let t := "example : True :=
-    trivial"
+  let t :=
+    "example : True :=\
+      \n    trivial"
   Mathlib.Linter.parallelScan s t
 
 /--

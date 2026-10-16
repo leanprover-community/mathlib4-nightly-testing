@@ -13,7 +13,8 @@ import Mathlib.Tactic.GRewrite
 import Mathlib.Tactic.GCongr
 import Mathlib.Tactic.NormNum
 
-/- In many examples in this module, we rewrite expressions which do not make it into the final term.
+/-
+In many examples in this module, we rewrite expressions which do not make it into the final term.
 
 This only happens because we are writing tests where we resolve the goal with a universal axiom, it
 would not happen in real proofs, so we disable the resulting linter warnings.
@@ -123,8 +124,8 @@ hf : ∀ (i : ℕ), 0 ≤ f i
 ⊢ ∑ j ∈ {z | z < b}.toFinset, f j ≤ ∑ i ∈ {x | x < b}.toFinset, f i
 -/
 #guard_msgs in
-example {a b : Nat} (h : a < b) (f : Nat → Nat) (hf : ∀ i, 0 ≤ f i) :
-    ∑ j ∈ ({z | z ≤ a} : Set Nat), f j ≤ ∑ i ∈ ({x | x < b} : Set Nat), f i := by
+example {a b : Nat} (h : a < b) (f : Nat → Nat) (hf : ∀ i, 0 ≤ f i)
+    : ∑ j ∈ ({z | z ≤ a} : Set Nat), f j ≤ ∑ i ∈ ({x | x < b} : Set Nat), f i := by
   grewrite [h]
   trace_state
   rfl
@@ -138,14 +139,15 @@ X Y Z W : Set α
 example : ∀ {α : Type*} [LinearOrder α] (a b : α), min a b ≤ max a b := by
   grw [@inf_le_sup]
   trace_state
-  intros; rfl
+  intros
+  rfl
 
 end subsets
 
 section rationals
 
-example (x x' y z w : ℚ) (h0 : x' = x) (h₁ : x < z) (h₂ : w ≤ y + 4) (h₃ : z + 1 < 5 * w) :
-    x' + 1 < 5 * (y + 4) := by
+example (x x' y z w : ℚ) (h0 : x' = x) (h₁ : x < z) (h₂ : w ≤ y + 4) (h₃ : z + 1 < 5 * w)
+    : x' + 1 < 5 * (y + 4) := by
   grw [h0, h₁, ← h₂]
   exact le_of_lt h₃
 
@@ -165,8 +167,8 @@ section modeq
 
 example {n : ℤ} (hn : n ≡ 1 [ZMOD 3]) : n ^ 3 + 7 * n ≡ 2 [ZMOD 3] := by grw [hn]; decide
 
-example {a b : ℤ} (h1 : a ≡ 3 [ZMOD 5]) (h2 : b ≡ a ^ 2 + 1 [ZMOD 5]) :
-    a ^ 2 + b ^ 2 ≡ 4 [ZMOD 5] := by
+example {a b : ℤ} (h1 : a ≡ 3 [ZMOD 5]) (h2 : b ≡ a ^ 2 + 1 [ZMOD 5])
+    : a ^ 2 + b ^ 2 ≡ 4 [ZMOD 5] := by
   grw [h1] at h2 ⊢
   guard_hyp h2 :ₛ b ≡ 3 ^ 2 + 1 [ZMOD 5]
   guard_target =ₛ 3 ^ 2 + b ^ 2 ≡ 4 [ZMOD 5]
@@ -194,8 +196,8 @@ Having `grw [h] at *` rewrite at `h` itself is a bit weird, but is consistent wi
 `rw` (for the equivalence relation `=`).
 -/
 
-example {a b : ℤ} (h1 : a ≡ 3 [ZMOD 5]) (h2 : b ≡ a ^ 2 + 1 [ZMOD 5]) :
-    a ^ 2 + b ^ 2 ≡ 4 [ZMOD 5] := by
+example {a b : ℤ} (h1 : a ≡ 3 [ZMOD 5]) (h2 : b ≡ a ^ 2 + 1 [ZMOD 5])
+    : a ^ 2 + b ^ 2 ≡ 4 [ZMOD 5] := by
   grw [h1] at *
   guard_hyp h1 :ₛ 3 ≡ 3 [ZMOD 5] -- `grw [h1] at *` rewrites at `h1`
   guard_hyp h2 :ₛ b ≡ 3 ^ 2 + 1 [ZMOD 5]
@@ -217,8 +219,7 @@ section nontransitive_grw_lemmas
 example {s s' t : Set ℕ} (h : s' ⊆ s) (h2 : BddAbove (s ∩ t)) : BddAbove (s' ∩ t) := by
   grw [h]; exact h2
 
-example {s s' : Set ℕ} (h : s' ⊆ s) (h2 : BddAbove s) : BddAbove s' := by
-  grw [h]; exact h2
+example {s s' : Set ℕ} (h : s' ⊆ s) (h2 : BddAbove s) : BddAbove s' := by grw [h]; exact h2
 
 example {s s' t : Set α} (h : s ⊆ s') : (s' ∩ t).Nonempty := by
   grw [← h]
@@ -246,8 +247,7 @@ h : x ≥ y
 ⊢ 2 * x ≤ b
 -/
 #guard_msgs in
-example {x y b : ℚ} (h : x ≥ y) : 2 * x ≤ b := by
-  grw [h]
+example {x y b : ℚ} (h : x ≥ y) : 2 * x ≤ b := by grw [h]
 
 example {s s' t : Set α} (h : s' ⊆ s) : (s' ∩ t).Nonempty := by
   fail_if_success grw [h]
@@ -255,8 +255,7 @@ example {s s' t : Set α} (h : s' ⊆ s) : (s' ∩ t).Nonempty := by
 
 end
 
-example {x y a b : ℤ} (h1 : |x| ≤ a) (h2 : |y| ≤ b) :
-    |x ^ 2 + 2 * x * y| ≤ a ^ 2 + 2 * a * b := by
+example {x y a b : ℤ} (h1 : |x| ≤ a) (h2 : |y| ≤ b) : |x ^ 2 + 2 * x * y| ≤ a ^ 2 + 2 * a * b := by
   have : 0 ≤ a := by grw [← h1]; positivity
   grw [abs_add_le, abs_mul, abs_mul, abs_pow, h1, h2, abs_of_nonneg]
   norm_num
@@ -291,15 +290,15 @@ section apply
 
 variable {p q r s : Prop}
 
-example (n : Nat) (h : p → n=1) (h' : p) : n = 1 := by
+example (n : Nat) (h : p → n = 1) (h' : p) : n = 1 := by
   apply_rw [← h]
   exact h'
 
-example (n : Nat) (h : p → n=1) (h' : r → s) : p ∧ r → n = 1 ∧ s := by
+example (n : Nat) (h : p → n = 1) (h' : r → s) : p ∧ r → n = 1 ∧ s := by
   apply_rw [h, h']
   exact id
 
-example (n : Nat) (h : p → n=1) (h' : r → s) : p ∧ r → n = 1 ∧ s := by
+example (n : Nat) (h : p → n = 1) (h' : r → s) : p ∧ r → n = 1 ∧ s := by
   grw [h]
   apply_rw [h']
   gcongr
@@ -355,8 +354,7 @@ section zmod
 
 variable {a b c d n : ℤ}
 
-example (h : a ≡ b [ZMOD n]) : a ^ 2 ≡ b ^ 2 [ZMOD n] := by
-  grw [h]
+example (h : a ≡ b [ZMOD n]) : a ^ 2 ≡ b ^ 2 [ZMOD n] := by grw [h]
 
 example (h₁ : a ∣ b) (h₂ : b ∣ a * d) : a ∣ b * d := by
   grw [h₁] at h₂ ⊢
@@ -372,14 +370,11 @@ local infix:50 " ≈ " => AntisymmRel (· ≤ ·)
 
 axiom f : α → α
 
-@[gcongr]
-axiom f_congr' : a ≤ b → f a ≤ f b
+@[gcongr] axiom f_congr' : a ≤ b → f a ≤ f b
 
-example (h : a ≈ b) : f a ≤ f b := by
-  grw [h]
+example (h : a ≈ b) : f a ≤ f b := by grw [h]
 
-example (h : b ≈ a) : f a ≤ f b := by
-  grw [h]
+example (h : b ≈ a) : f a ≤ f b := by grw [h]
 
 end AntiSymmRelTest
 
@@ -388,8 +383,7 @@ example (a b : Nat) (h : Nat → no_index (a ≤ b)) : a ≤ b := by
   grw [h]
   exact 0
 
-example (a b : Nat) (h : Nat → no_index (a ≤ b)) : a ≤ b := by
-  grw [h 0]
+example (a b : Nat) (h : Nat → no_index (a ≤ b)) : a ≤ b := by grw [h 0]
 
 section erw
 
@@ -418,15 +412,14 @@ h : double 2 ≤ 10
 ⊢ 4 ≤ 20
 -/
 #guard_msgs in
-example (h : double 2 ≤ 10) : 4 ≤ 20 := by
-  grw (transparency := default) [h]
+example (h : double 2 ≤ 10) : 4 ≤ 20 := by grw (transparency := default) [h]
 
 end erw
 
 section binders
 
-lemma biSup_inf_le {α β : Type*} [CompleteLattice β] (f : α → β) (s : Set α) (b : β) :
-    ⨆ a ∈ s, (f a ⊓ b) ≤ (⨆ a ∈ s, f a) ⊓ b := by
+lemma biSup_inf_le {α β : Type*} [CompleteLattice β] (f : α → β) (s : Set α) (b : β)
+    : ⨆ a ∈ s, (f a ⊓ b) ≤ (⨆ a ∈ s, f a) ⊓ b := by
   grw [iSup_inf_le_iSup_inf, iSup_inf_le_iSup_inf]
 
 example : ∅ ∪ { a : Int | a - 1 > 5 } ⊆ { b : Int | b - 1 < 5 } := by
@@ -464,17 +457,13 @@ section strict
 
 variable {α : Type u} [LinearOrder α] {a b c d : α}
 
-example (h₁ : a < b) (h₂ : b ≤ c) : a < c := by
-  grw [h₁, h₂]
+example (h₁ : a < b) (h₂ : b ≤ c) : a < c := by grw [h₁, h₂]
 
-example (h₁ : a < b) (h₂ : b ≤ c) : a < c := by
-  grw [← h₂, ← h₁]
+example (h₁ : a < b) (h₂ : b ≤ c) : a < c := by grw [← h₂, ← h₁]
 
-example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by
-  grw [h₁, h₂]
+example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by grw [h₁, h₂]
 
-example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by
-  grw [← h₂, ← h₁]
+example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by grw [← h₂, ← h₁]
 
 example (h₁ : a < b) (h₂ : b ≤ c) : a < c := by
   by_contra!; grw [h₁, h₂] at this; contrapose! this; rfl
@@ -488,15 +477,12 @@ example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by
 example (h₁ : a ≤ b) (h₂ : b < c) : a < c := by
   by_contra!; grw [← h₂, ← h₁] at this; contrapose! this; rfl
 
-example (h₁ : a < b) (h₂ : b ≤ c) : c > a := by
-  grw [h₁, h₂]
+example (h₁ : a < b) (h₂ : b ≤ c) : c > a := by grw [h₁, h₂]
 
-example (h₁ : a < b) (h₂ : b ≤ c) : c > a := by
-  grw [← h₂, ← h₁]
+example (h₁ : a < b) (h₂ : b ≤ c) : c > a := by grw [← h₂, ← h₁]
 
 -- Strict inequalities can also be used as non-strict ones:
-example (h₁ : a < b) (h₂ : b < c) : a ≤ c := by
-  grw [h₁, h₂]
+example (h₁ : a < b) (h₂ : b < c) : a ≤ c := by grw [h₁, h₂]
 
 variable [CommRing α] [IsStrictOrderedRing α] in
 example (h : a < b) (_ : 0 ≤ a) : 1 + 2 * a ^ 2 < 9 := by
@@ -504,17 +490,13 @@ example (h : a < b) (_ : 0 ≤ a) : 1 + 2 * a ^ 2 < 9 := by
   guard_target = 1 + 2 * b ^ 2 ≤ 9
   exact test_sorry
 
-example (h₁ : a < b) (h₂ : c < d) : Set.Icc b c ⊆ Set.Ioo a d := by
-  grw [h₁, h₂]
+example (h₁ : a < b) (h₂ : c < d) : Set.Icc b c ⊆ Set.Ioo a d := by grw [h₁, h₂]
 
-example (h₁ : a < b) (h₂ : c < d) : Set.Icc b c ⊆ Set.Ioo a d := by
-  grw [h₂, h₁]
+example (h₁ : a < b) (h₂ : c < d) : Set.Icc b c ⊆ Set.Ioo a d := by grw [h₂, h₁]
 
-example (h₁ : a < b) : Set.Iic a ⊆ Set.Iio b := by
-  grw [h₁]
+example (h₁ : a < b) : Set.Iic a ⊆ Set.Iio b := by grw [h₁]
 
-example (h₁ : a < b) : Set.Ici b ⊆ Set.Ioi a := by
-  grw [h₁]
+example (h₁ : a < b) : Set.Ici b ⊆ Set.Ioi a := by grw [h₁]
 
 end strict
 
@@ -530,19 +512,16 @@ axiom liftLE : Cardinal.{u} → Cardinal.{v} → Prop
 variable {a : Cardinal.{u}} {b : Cardinal.{v}} {c : Cardinal.{w}} {d : Cardinal.{w'}}
 
 @[gcongr]
-axiom liftLE_imp_liftLE_of_liftLE_of_liftLE (h₁ : liftLE a b) (h₂ : liftLE c d) :
-    liftLE b c → liftLE a d
+axiom liftLE_imp_liftLE_of_liftLE_of_liftLE (h₁ : liftLE a b) (h₂ : liftLE c d)
+  : liftLE b c → liftLE a d
 
-@[refl]
-axiom liftEq_rfl : liftEq a a
+@[refl] axiom liftEq_rfl : liftEq a a
 
-@[symm]
-axiom liftEq.comm (h : liftEq a b) : liftEq b a
+@[symm] axiom liftEq.comm (h : liftEq a b) : liftEq b a
 
 axiom liftLE_of_liftEq (h : liftEq a b) : liftLE a b
 
-@[refl]
-theorem liftLE_rfl : liftLE a a := liftLE_of_liftEq liftEq_rfl
+@[refl] theorem liftLE_rfl : liftLE a a := liftLE_of_liftEq liftEq_rfl
 namespace Mathlib.Tactic.GCongr
 
 /-- See if the term is `AntisymmRel r a b` and the goal is `r a b`. -/
@@ -552,10 +531,8 @@ public meta def exactLiftLEOfLiftEq : ForwardExt where
 
 end Mathlib.Tactic.GCongr
 
-example (h : liftEq a b) (h' : liftLE b c) : liftLE a c := by
-  grw [h, h']
+example (h : liftEq a b) (h' : liftLE b c) : liftLE a c := by grw [h, h']
 
-example (h : liftEq b a) (h' : liftLE b c) : liftLE a c := by
-  grw [← h, ← h']
+example (h : liftEq b a) (h' : liftLE b c) : liftLE a c := by grw [← h, ← h']
 
 end universePolymorphic

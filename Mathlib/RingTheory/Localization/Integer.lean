@@ -29,7 +29,6 @@ open scoped Finset
 
 @[expose] public section
 
-
 variable {R : Type*} [CommSemiring R] {M : Submonoid R} {S : Type*} [CommSemiring S]
 variable [Algebra R S]
 
@@ -42,18 +41,17 @@ section
 variable (R)
 
 -- TODO: define a subalgebra of `IsInteger`s
-/-- Given `a : S`, `S` a localization of `R`, `IsInteger R a` iff `a` is in the image of
-the localization map from `R` to `S`. -/
-def IsInteger (a : S) : Prop :=
-  a ∈ (algebraMap R S).rangeS
+/--
+Given `a : S`, `S` a localization of `R`, `IsInteger R a` iff `a` is in the image of
+the localization map from `R` to `S`.
+-/
+def IsInteger (a : S) : Prop := a ∈ (algebraMap R S).rangeS
 
 end
 
-theorem isInteger_zero : IsInteger R (0 : S) :=
-  Subsemiring.zero_mem _
+theorem isInteger_zero : IsInteger R (0 : S) := Subsemiring.zero_mem _
 
-theorem isInteger_one : IsInteger R (1 : S) :=
-  Subsemiring.one_mem _
+theorem isInteger_one : IsInteger R (1 : S) := Subsemiring.one_mem _
 
 theorem isInteger_add {a b : S} (ha : IsInteger R a) (hb : IsInteger R b) : IsInteger R (a + b) :=
   Subsemiring.add_mem _ ha hb
@@ -69,7 +67,8 @@ theorem isInteger_smul {a : R} {b : S} (hb : IsInteger R b) : IsInteger R (a •
 variable (M)
 variable [IsLocalization M S]
 
-/-- Each element `a : S` has an `M`-multiple which is an integer.
+/--
+Each element `a : S` has an `M`-multiple which is an integer.
 
 This version multiplies `a` on the right, matching the argument order in `LocalizationMap.surj`.
 -/
@@ -77,7 +76,8 @@ theorem exists_integer_multiple' (a : S) : ∃ b : M, IsInteger R (a * algebraMa
   let ⟨⟨Num, denom⟩, h⟩ := IsLocalization.surj _ a
   ⟨denom, Set.mem_range.mpr ⟨Num, h.symm⟩⟩
 
-/-- Each element `a : S` has an `M`-multiple which is an integer.
+/--
+Each element `a : S` has an `M`-multiple which is an integer.
 
 This version multiplies `a` on the left, matching the argument order in the `SMul` instance.
 -/
@@ -86,8 +86,8 @@ theorem exists_integer_multiple (a : S) : ∃ b : M, IsInteger R ((b : R) • a)
   apply exists_integer_multiple'
 
 /-- We can clear the denominators of a `Finset`-indexed family of fractions. -/
-theorem exist_integer_multiples {ι : Type*} (s : Finset ι) (f : ι → S) :
-    ∃ b : M, ∀ i ∈ s, IsLocalization.IsInteger R ((b : R) • f i) := by
+theorem exist_integer_multiples {ι : Type*} (s : Finset ι) (f : ι → S)
+    : ∃ b : M, ∀ i ∈ s, IsLocalization.IsInteger R ((b : R) • f i) := by
   have := Classical.propDecidable
   refine ⟨∏ i ∈ s, (sec M (f i)).2, fun i hi => ⟨?_, ?_⟩⟩
   · exact (∏ j ∈ s.erase i, (sec M (f j)).2) * (sec M (f i)).1
@@ -101,33 +101,35 @@ theorem exist_integer_multiples {ι : Type*} (s : Finset ι) (f : ι → S) :
   rfl
 
 /-- We can clear the denominators of a finite indexed family of fractions. -/
-theorem exist_integer_multiples_of_finite {ι : Type*} [Finite ι] (f : ι → S) :
-    ∃ b : M, ∀ i, IsLocalization.IsInteger R ((b : R) • f i) := by
+theorem exist_integer_multiples_of_finite {ι : Type*} [Finite ι] (f : ι → S)
+    : ∃ b : M, ∀ i, IsLocalization.IsInteger R ((b : R) • f i) := by
   cases nonempty_fintype ι
   obtain ⟨b, hb⟩ := exist_integer_multiples M Finset.univ f
   exact ⟨b, fun i => hb i (Finset.mem_univ _)⟩
 
 /-- We can clear the denominators of a finite set of fractions. -/
-theorem exist_integer_multiples_of_finset (s : Finset S) :
-    ∃ b : M, ∀ a ∈ s, IsInteger R ((b : R) • a) :=
+theorem exist_integer_multiples_of_finset (s : Finset S)
+    : ∃ b : M, ∀ a ∈ s, IsInteger R ((b : R) • a) :=
   exist_integer_multiples M s id
 
 /-- A choice of a common multiple of the denominators of a `Finset`-indexed family of fractions. -/
 noncomputable def commonDenom {ι : Type*} (s : Finset ι) (f : ι → S) : M :=
   (exist_integer_multiples M s f).choose
 
-/-- The numerator of a fraction after clearing the denominators
-of a `Finset`-indexed family of fractions. -/
+/--
+The numerator of a fraction after clearing the denominators
+of a `Finset`-indexed family of fractions.
+-/
 noncomputable def integerMultiple {ι : Type*} (s : Finset ι) (f : ι → S) (i : s) : R :=
   ((exist_integer_multiples M s f).choose_spec i i.prop).choose
 
 @[simp]
-theorem map_integerMultiple {ι : Type*} (s : Finset ι) (f : ι → S) (i : s) :
-    algebraMap R S (integerMultiple M s f i) = commonDenom M s f • f i :=
+theorem map_integerMultiple {ι : Type*} (s : Finset ι) (f : ι → S) (i : s)
+    : algebraMap R S (integerMultiple M s f i) = commonDenom M s f • f i :=
   ((exist_integer_multiples M s f).choose_spec _ i.prop).choose_spec
 
-theorem integerMultiple_injective {ι : Type*} (s : Finset ι) (f : ι → S)
-    (hf : Function.Injective f) : Function.Injective (integerMultiple M s f) := by
+theorem integerMultiple_injective {ι : Type*} (s : Finset ι) (f : ι → S) (hf : Function.Injective f)
+    : Function.Injective (integerMultiple M s f) := by
   intro i j h
   rw [← SetLike.coe_eq_coe, ← hf.eq_iff,
     ← (IsLocalization.smul_bijective S (commonDenom M s f)).injective.eq_iff,
@@ -137,8 +139,7 @@ theorem integerMultiple_injective {ι : Type*} (s : Finset ι) (f : ι → S)
   integerMultiple_injective
 
 /-- A choice of a common multiple of the denominators of a finite set of fractions. -/
-noncomputable def commonDenomOfFinset (s : Finset S) : M :=
-  commonDenom M s id
+noncomputable def commonDenomOfFinset (s : Finset S) : M := commonDenom M s id
 
 /-- The finset of numerators after clearing the denominators of a finite set of fractions. -/
 noncomputable def finsetIntegerMultiple [DecidableEq R] (s : Finset S) : Finset R :=
@@ -146,8 +147,8 @@ noncomputable def finsetIntegerMultiple [DecidableEq R] (s : Finset S) : Finset 
 
 open scoped Pointwise
 
-theorem finsetIntegerMultiple_image [DecidableEq R] (s : Finset S) :
-    algebraMap R S '' finsetIntegerMultiple M s = commonDenomOfFinset M s • (s : Set S) := by
+theorem finsetIntegerMultiple_image [DecidableEq R] (s : Finset S)
+    : algebraMap R S '' finsetIntegerMultiple M s = commonDenomOfFinset M s • (s : Set S) := by
   delta finsetIntegerMultiple commonDenom
   rw [Finset.coe_image]
   ext
@@ -159,8 +160,8 @@ theorem finsetIntegerMultiple_image [DecidableEq R] (s : Finset S) :
     exact ⟨_, ⟨⟨x, hx⟩, s.mem_attach _, rfl⟩, map_integerMultiple M s id _⟩
 
 @[simp]
-theorem card_finsetIntegerMultiple [DecidableEq R] (s : Finset S) :
-    #(finsetIntegerMultiple M s) = #s :=
+theorem card_finsetIntegerMultiple [DecidableEq R] (s : Finset S)
+    : #(finsetIntegerMultiple M s) = #s :=
   (Finset.card_image_of_injective _ (integerMultiple_injective M s id injective_id)).trans
     Finset.card_attach
 

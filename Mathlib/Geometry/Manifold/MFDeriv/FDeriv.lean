@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel, Floris van Doorn
 module
 
 public import Mathlib.Geometry.Manifold.MFDeriv.Basic
-
 import Mathlib.Geometry.Manifold.Notation
 
 /-!
@@ -21,14 +20,16 @@ public section
 
 open scoped Manifold
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {f : E → E'}
-  {s : Set E} {x : E}
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+  {f : E → E'} {s : Set E} {x : E}
 
 section MFDerivFDeriv
 
-theorem uniqueMDiffWithinAt_iff_uniqueDiffWithinAt :
-    UniqueMDiffAt[s] x ↔ UniqueDiffWithinAt 𝕜 s x := by
+theorem uniqueMDiffWithinAt_iff_uniqueDiffWithinAt
+    : UniqueMDiffAt[s] x ↔ UniqueDiffWithinAt 𝕜 s x := by
   simp only [UniqueMDiffWithinAt, mfld_simps]
 
 alias ⟨UniqueMDiffWithinAt.uniqueDiffWithinAt, UniqueDiffWithinAt.uniqueMDiffWithinAt⟩ :=
@@ -39,19 +40,18 @@ theorem uniqueMDiffOn_iff_uniqueDiffOn : UniqueMDiff[s] ↔ UniqueDiffOn 𝕜 s 
 
 alias ⟨UniqueMDiffOn.uniqueDiffOn, UniqueDiffOn.uniqueMDiffOn⟩ := uniqueMDiffOn_iff_uniqueDiffOn
 
-theorem ModelWithCorners.uniqueMDiffOn {H : Type*} [TopologicalSpace H]
-    (I : ModelWithCorners 𝕜 E H) : UniqueMDiff[Set.range I] :=
+theorem ModelWithCorners.uniqueMDiffOn {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
+    : UniqueMDiff[Set.range I] :=
   I.uniqueDiffOn.uniqueMDiffOn
 
 @[simp, mfld_simps]
-theorem writtenInExtChartAt_model_space : writtenInExtChartAt 𝓘(𝕜, E) 𝓘(𝕜, E') x f = f :=
-  rfl
+theorem writtenInExtChartAt_model_space : writtenInExtChartAt (𝓘(𝕜, E)) (𝓘(𝕜, E')) x f = f := rfl
 
 variable {f' : TangentSpace 𝓘(𝕜, E) x →L[𝕜] TangentSpace 𝓘(𝕜, E') (f x)}
 
 set_option backward.isDefEq.respectTransparency false in
-theorem hasMFDerivWithinAt_iff_hasFDerivWithinAt :
-    HasMFDerivAt[s] f x f' ↔ HasFDerivWithinAt f f' s x := by
+theorem hasMFDerivWithinAt_iff_hasFDerivWithinAt
+    : HasMFDerivAt[s] f x f' ↔ HasFDerivWithinAt f f' s x := by
   simp only [HasMFDerivWithinAt, mfld_simps]
   exact ⟨fun h ↦ h.2, fun h ↦ ⟨h.continuousWithinAt, h⟩⟩
 
@@ -64,10 +64,12 @@ theorem hasMFDerivAt_iff_hasFDerivAt : HasMFDerivAt% f x f' ↔ HasFDerivAt f f'
 
 alias ⟨HasMFDerivAt.hasFDerivAt, HasFDerivAt.hasMFDerivAt⟩ := hasMFDerivAt_iff_hasFDerivAt
 
-/-- For maps between vector spaces, `MDifferentiableWithinAt` and `DifferentiableWithinAt`
-coincide -/
-theorem mdifferentiableWithinAt_iff_differentiableWithinAt :
-    MDiffAt[s] f x ↔ DifferentiableWithinAt 𝕜 f s x := by
+/--
+For maps between vector spaces, `MDifferentiableWithinAt` and `DifferentiableWithinAt`
+coincide
+-/
+theorem mdifferentiableWithinAt_iff_differentiableWithinAt
+    : MDiffAt[s] f x ↔ DifferentiableWithinAt 𝕜 f s x := by
   simp only [mdifferentiableWithinAt_iff', mfld_simps]
   exact ⟨fun H => H.2, fun H => ⟨H.continuousWithinAt, H⟩⟩
 
@@ -76,8 +78,7 @@ alias ⟨MDifferentiableWithinAt.differentiableWithinAt,
   mdifferentiableWithinAt_iff_differentiableWithinAt
 
 /-- For maps between vector spaces, `MDifferentiableAt` and `DifferentiableAt` coincide -/
-theorem mdifferentiableAt_iff_differentiableAt :
-    MDiffAt f x ↔ DifferentiableAt 𝕜 f x := by
+theorem mdifferentiableAt_iff_differentiableAt : MDiffAt f x ↔ DifferentiableAt 𝕜 f x := by
   simp only [mdifferentiableAt_iff, differentiableWithinAt_univ, mfld_simps]
   exact ⟨fun H => H.2, fun H => ⟨H.continuousAt, H⟩⟩
 
@@ -85,8 +86,7 @@ alias ⟨MDifferentiableAt.differentiableAt, DifferentiableAt.mdifferentiableAt�
   mdifferentiableAt_iff_differentiableAt
 
 /-- For maps between vector spaces, `MDifferentiableOn` and `DifferentiableOn` coincide -/
-theorem mdifferentiableOn_iff_differentiableOn :
-    MDiff[s] f ↔ DifferentiableOn 𝕜 f s := by
+theorem mdifferentiableOn_iff_differentiableOn : MDiff[s] f ↔ DifferentiableOn 𝕜 f s := by
   simp only [MDifferentiableOn, DifferentiableOn,
     mdifferentiableWithinAt_iff_differentiableWithinAt]
 

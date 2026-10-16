@@ -37,8 +37,9 @@ open Metric Set
 namespace Topology
 
 /-- A CW complex is finite dimensional if `cell C n` is empty for all but finitely many `n`. -/
-class RelCWComplex.FiniteDimensional.{u} {X : Type u} [TopologicalSpace X] (C : Set X) {D : Set X}
-    [RelCWComplex C D] : Prop where
+class RelCWComplex.FiniteDimensional.{u}
+    {X : Type u} [TopologicalSpace X] (C : Set X) {D : Set X} [RelCWComplex C D]
+    : Prop where
   /-- For some natural number `n`, the type `cell C m` is empty for all `m ≥ n`. -/
   eventually_isEmpty_cell : ∀ᶠ n in Filter.atTop, IsEmpty (cell C n)
 
@@ -46,22 +47,24 @@ alias CWComplex.FiniteDimensional.eventually_isEmpty_cell :=
   RelCWComplex.FiniteDimensional.eventually_isEmpty_cell
 
 /-- A CW complex is of finite type if `cell C n` is finite for every `n`. -/
-class RelCWComplex.FiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X) {D : Set X}
-    [RelCWComplex C D] : Prop where
+class RelCWComplex.FiniteType.{u}
+    {X : Type u} [TopologicalSpace X] (C : Set X) {D : Set X} [RelCWComplex C D]
+    : Prop where
   /-- `cell C n` is finite for every `n`. -/
   finite_cell (n : ℕ) : Finite (cell C n)
 
 alias CWComplex.FiniteType.finite_cell := RelCWComplex.FiniteType.finite_cell
 
 /-- A CW complex is finite if it is finite dimensional and of finite type. -/
-class RelCWComplex.Finite {X : Type*} [TopologicalSpace X] (C : Set X) {D : Set X}
-    [RelCWComplex C D] extends FiniteDimensional C, FiniteType C
+class RelCWComplex.Finite
+  {X : Type*} [TopologicalSpace X] (C : Set X) {D : Set X} [RelCWComplex C D]
+  extends FiniteDimensional C, FiniteType C
 
 variable {X : Type*} [TopologicalSpace X] (C : Set X) {D : Set X} [RelCWComplex C D]
 
 @[alias_in CWComplex]
-lemma RelCWComplex.finite_of_finiteDimensional_finiteType [FiniteDimensional C]
-    [FiniteType C] : Finite C where
+lemma RelCWComplex.finite_of_finiteDimensional_finiteType [FiniteDimensional C] [FiniteType C]
+    : Finite C where
   eventually_isEmpty_cell := FiniteDimensional.eventually_isEmpty_cell
   finite_cell n := FiniteType.finite_cell n
 
@@ -71,26 +74,28 @@ export RelCWComplex (FiniteDimensional FiniteType Finite)
 
 end CWComplex
 
-/-- If we want to construct a relative CW complex of finite type, we can add the condition
-`finite_cell` and relax the condition `mapsTo`. -/
+/--
+If we want to construct a relative CW complex of finite type, we can add the condition
+`finite_cell` and relax the condition `mapsTo`.
+-/
 @[simps -isSimp, instance_reducible]
-def RelCWComplex.mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (D : outParam (Set X))
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+def RelCWComplex.mkFiniteType.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (D : outParam (Set X)) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (disjointBase' : ∀ (n : ℕ) (i : cell n), Disjoint (map n i '' ball 0 1) D)
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (D ∪ ⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
     (closed' : ∀ (A : Set X) (_ : A ⊆ C),
       ((∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) ∧ IsClosed (A ∩ D)) → IsClosed A)
-    (isClosedBase : IsClosed D)
-    (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    RelCWComplex C D where
+    (isClosedBase : IsClosed D) (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : RelCWComplex C D where
   cell := cell
   map := map
   source_eq := source_eq
@@ -107,46 +112,52 @@ def RelCWComplex.mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
   union' := union'
 
 /-- A CW complex that was constructed using `RelCWComplex.mkFiniteType` is of finite type. -/
-lemma RelCWComplex.finiteType_mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (D : outParam (Set X))
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+lemma RelCWComplex.finiteType_mkFiniteType.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (D : outParam (Set X)) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (disjointBase' : ∀ (n : ℕ) (i : cell n), Disjoint (map n i '' ball 0 1) D)
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (D ∪ ⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
     (closed' : ∀ (A : Set X) (_ : A ⊆ C),
       ((∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) ∧ IsClosed (A ∩ D)) → IsClosed A)
-    (isClosedBase : IsClosed D)
-    (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    letI := mkFiniteType C D cell map finite_cell source_eq continuousOn continuousOn_symm
-      pairwiseDisjoint' disjointBase' mapsTo closed' isClosedBase union'
-    FiniteType C :=
-  letI := mkFiniteType C D cell map finite_cell source_eq continuousOn continuousOn_symm
-      pairwiseDisjoint' disjointBase' mapsTo closed' isClosedBase union'
+    (isClosedBase : IsClosed D) (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : letI :=
+        mkFiniteType C D cell map finite_cell source_eq continuousOn continuousOn_symm
+          pairwiseDisjoint' disjointBase' mapsTo closed' isClosedBase union'
+      FiniteType C :=
+  letI :=
+    mkFiniteType C D cell map finite_cell source_eq continuousOn continuousOn_symm pairwiseDisjoint'
+      disjointBase' mapsTo closed' isClosedBase union'
   { finite_cell := finite_cell }
 
-/-- If we want to construct a CW complex of finite type, we can add the condition `finite_cell` and
-relax the condition `mapsTo`. -/
+/--
+If we want to construct a CW complex of finite type, we can add the condition `finite_cell` and
+relax the condition `mapsTo`.
+-/
 @[simps -isSimp, instance_reducible]
-def CWComplex.mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+def CWComplex.mkFiniteType.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (closed' : ∀ (A : Set X) (_ : A ⊆ C),
-    (∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) → IsClosed A)
-    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    CWComplex C where
+    (closed'
+      : ∀ (A : Set X) (_ : A ⊆ C), (∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) → IsClosed A)
+    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : CWComplex C where
   cell := cell
   map := map
   source_eq := source_eq
@@ -161,31 +172,39 @@ def CWComplex.mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
   union' := union'
 
 /-- A CW complex that was constructed using `CWComplex.mkFiniteType` is of finite type. -/
-lemma CWComplex.finiteType_mkFiniteType.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+lemma CWComplex.finiteType_mkFiniteType.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (closed' : ∀ (A : Set X) (_ : A ⊆ C),
-      (∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) → IsClosed A)
-    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    letI := mkFiniteType C cell map finite_cell source_eq continuousOn continuousOn_symm
-      pairwiseDisjoint' mapsTo closed' union'
-    FiniteType C :=
-  letI := mkFiniteType C cell map finite_cell source_eq continuousOn continuousOn_symm
-      pairwiseDisjoint' mapsTo closed' union'
+    (closed'
+      : ∀ (A : Set X) (_ : A ⊆ C), (∀ n j, IsClosed (A ∩ map n j '' closedBall 0 1)) → IsClosed A)
+    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : letI :=
+        mkFiniteType C cell map finite_cell source_eq continuousOn continuousOn_symm
+          pairwiseDisjoint' mapsTo closed' union'
+      FiniteType C :=
+  letI :=
+    mkFiniteType C cell map finite_cell source_eq continuousOn continuousOn_symm pairwiseDisjoint'
+      mapsTo closed' union'
   { finite_cell := finite_cell }
 
-/-- If we want to construct a finite relative CW complex we can add the conditions
+/--
+If we want to construct a finite relative CW complex we can add the conditions
 `eventually_isEmpty_cell` and `finite_cell`, relax the condition `mapsTo` and remove the condition
-`closed'`. -/
+`closed'`.
+-/
 @[simps -isSimp, instance_reducible]
-def RelCWComplex.mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
+def RelCWComplex.mkFinite.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X)
     (D : outParam (Set X)) (cell : (n : ℕ) → Type u)
     (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (eventually_isEmpty_cell : ∀ᶠ n in Filter.atTop, IsEmpty (cell n))
@@ -193,14 +212,13 @@ def RelCWComplex.mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (disjointBase' : ∀ (n : ℕ) (i : cell n), Disjoint (map n i '' ball 0 1) D)
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (D ∪ ⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (isClosedBase : IsClosed D)
-    (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    RelCWComplex C D where
+    (isClosedBase : IsClosed D) (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : RelCWComplex C D where
   cell := cell
   map := map
   source_eq := source_eq
@@ -234,7 +252,9 @@ def RelCWComplex.mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
   union' := union'
 
 /-- A CW complex that was constructed using `RelCWComplex.mkFinite` is finite. -/
-lemma RelCWComplex.finite_mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
+lemma RelCWComplex.finite_mkFinite.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X)
     (D : outParam (Set X)) (cell : (n : ℕ) → Type u)
     (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (eventually_isEmpty_cell : ∀ᶠ n in Filter.atTop, IsEmpty (cell n))
@@ -242,75 +262,79 @@ lemma RelCWComplex.finite_mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Se
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (disjointBase' : ∀ (n : ℕ) (i : cell n), Disjoint (map n i '' ball 0 1) D)
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (D ∪ ⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (isClosedBase : IsClosed D)
-    (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    letI := mkFinite C D cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
+    (isClosedBase : IsClosed D) (union' : D ∪ ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : letI :=
+        mkFinite C D cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
+          continuousOn_symm pairwiseDisjoint' disjointBase' mapsTo isClosedBase union'
+      Finite C :=
+  letI :=
+    mkFinite C D cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
       continuousOn_symm pairwiseDisjoint' disjointBase' mapsTo isClosedBase union'
-    Finite C :=
-  letI := mkFinite C D cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
-      continuousOn_symm pairwiseDisjoint' disjointBase' mapsTo isClosedBase union'
-  { eventually_isEmpty_cell := eventually_isEmpty_cell
-    finite_cell := finite_cell }
+  { eventually_isEmpty_cell := eventually_isEmpty_cell, finite_cell := finite_cell }
 
-/-- If we want to construct a finite CW complex we can add the conditions `eventually_isEmpty_cell`
-and `finite_cell`, relax the condition `mapsTo` and remove the condition `closed'`. -/
+/--
+If we want to construct a finite CW complex we can add the conditions `eventually_isEmpty_cell`
+and `finite_cell`, relax the condition `mapsTo` and remove the condition `closed'`.
+-/
 @[simps! -isSimp, instance_reducible]
-def CWComplex.mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+def CWComplex.mkFinite.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (eventually_isEmpty_cell : ∀ᶠ n in Filter.atTop, IsEmpty (cell n))
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (mapsTo_iff_image_subset : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    CWComplex C := (RelCWComplex.mkFinite C ∅
-  (cell := cell)
-  (map := map)
-  (eventually_isEmpty_cell := eventually_isEmpty_cell)
-  (finite_cell := finite_cell)
-  (source_eq := source_eq)
-  (continuousOn := continuousOn)
-  (continuousOn_symm := continuousOn_symm)
-  (pairwiseDisjoint' := pairwiseDisjoint')
-  (disjointBase' := by simp only [disjoint_empty, implies_true])
-  (mapsTo := by simpa only [empty_union])
-  (isClosedBase := isClosed_empty)
-  (union' := by simpa only [empty_union])).toCWComplex
+    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : CWComplex C :=
+  (RelCWComplex.mkFinite C ∅ (cell := cell) (map := map)
+    (eventually_isEmpty_cell := eventually_isEmpty_cell) (finite_cell := finite_cell)
+    (source_eq := source_eq) (continuousOn := continuousOn) (continuousOn_symm := continuousOn_symm)
+    (pairwiseDisjoint' := pairwiseDisjoint')
+    (disjointBase' := by simp only [disjoint_empty, implies_true])
+    (mapsTo := by simpa only [empty_union]) (isClosedBase := isClosed_empty)
+    (union' := by simpa only [empty_union])).toCWComplex
 
 /-- A CW complex that was constructed using `CWComplex.mkFinite` is finite. -/
-lemma CWComplex.finite_mkFinite.{u} {X : Type u} [TopologicalSpace X] (C : Set X)
-    (cell : (n : ℕ) → Type u) (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
+lemma CWComplex.finite_mkFinite.{u}
+    {X : Type u} [TopologicalSpace X]
+    (C : Set X) (cell : (n : ℕ) → Type u)
+    (map : (n : ℕ) → (i : cell n) → PartialEquiv (Fin n → ℝ) X)
     (eventually_isEmpty_cell : ∀ᶠ n in Filter.atTop, IsEmpty (cell n))
     (finite_cell : ∀ (n : ℕ), _root_.Finite (cell n))
     (source_eq : ∀ (n : ℕ) (i : cell n), (map n i).source = ball 0 1)
     (continuousOn : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i) (closedBall 0 1))
     (continuousOn_symm : ∀ (n : ℕ) (i : cell n), ContinuousOn (map n i).symm (map n i).target)
-    (pairwiseDisjoint' :
-      (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
+    (pairwiseDisjoint'
+      : (univ : Set (Σ n, cell n)).PairwiseDisjoint (fun ni ↦ map ni.1 ni.2 '' ball 0 1))
     (mapsTo : ∀ (n : ℕ) (i : cell n),
       MapsTo (map n i) (sphere 0 1) (⋃ (m < n) (j : cell m), map m j '' closedBall 0 1))
-    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C) :
-    letI := mkFinite C cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
-      continuousOn_symm pairwiseDisjoint' mapsTo union'
-    Finite C :=
-  letI := mkFinite C cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
-      continuousOn_symm pairwiseDisjoint' mapsTo union'
-  { eventually_isEmpty_cell := eventually_isEmpty_cell
-    finite_cell := finite_cell }
+    (union' : ⋃ (n : ℕ) (j : cell n), map n j '' closedBall 0 1 = C)
+    : letI :=
+        mkFinite C cell map eventually_isEmpty_cell finite_cell source_eq continuousOn
+          continuousOn_symm pairwiseDisjoint' mapsTo union'
+      Finite C :=
+  letI :=
+    mkFinite C cell map eventually_isEmpty_cell finite_cell source_eq continuousOn continuousOn_symm
+      pairwiseDisjoint' mapsTo union'
+  { eventually_isEmpty_cell := eventually_isEmpty_cell, finite_cell := finite_cell }
 
 variable {X : Type*} [TopologicalSpace X] {C D : Set X} [RelCWComplex C D]
 
-/-- If the collection of all cells (of any dimension) of a relative CW complex `C` is finite, then
-`C` is finite as a CW complex. -/
+/--
+If the collection of all cells (of any dimension) of a relative CW complex `C` is finite, then
+`C` is finite as a CW complex.
+-/
 @[alias_in CWComplex]
 lemma RelCWComplex.finite_of_finite_cells (finite : _root_.Finite (Σ n, cell C n)) : Finite C where
   eventually_isEmpty_cell := by
@@ -332,8 +356,10 @@ lemma RelCWComplex.finite_of_finite_cells (finite : _root_.Finite (Σ n, cell C 
     linarith [A.le_max' m hmA]
   finite_cell _ := Finite.of_injective (Sigma.mk _) sigma_mk_injective
 
-/-- If `C` is finite as a CW complex then the collection of all cells (of any dimension) is
-finite. -/
+/--
+If `C` is finite as a CW complex then the collection of all cells (of any dimension) is
+finite.
+-/
 @[alias_in CWComplex]
 lemma RelCWComplex.finite_cells_of_finite [finite : Finite C] : _root_.Finite (Σ n, cell C n) := by
   -- We show that there is a bijection between `Σ n, cell C n` and
@@ -349,7 +375,8 @@ lemma RelCWComplex.finite_cells_of_finite [finite : Finite C] : _root_.Finite (�
     toFun := fun ⟨m, j⟩ ↦ ⟨m, j⟩
     invFun := fun ⟨m, j⟩ ↦ ⟨⟨m, this m j⟩, j⟩
     left_inv := by simp [Function.LeftInverse]
-    right_inv := by simp [Function.RightInverse, Function.LeftInverse] }
+    right_inv := by simp [Function.RightInverse, Function.LeftInverse]
+  }
   rw [← Equiv.finite_iff f]
   exact Finite.instSigma
 

@@ -31,10 +31,12 @@ open Lean Meta Elab Tactic
 def forEachComposition (e : Expr) (f : Expr → MetaM Unit) : MetaM Unit := do
   e.forEach (fun e ↦ if e.isAppOfArity ``CategoryStruct.comp 7 then f e else pure ())
 
-/-- Given a composition `CategoryStruct.comp _ _ X Y Z f g`,
+/--
+Given a composition `CategoryStruct.comp _ _ X Y Z f g`,
 infer the types of `f` and `g` and check whether their sources and targets agree,
 at "instances and reducible" transparency, with `X`, `Y`, and `Z`,
-reporting any discrepancies. -/
+reporting any discrepancies.
+-/
 def checkComposition (e : Expr) : MetaM Unit := do
   match_expr e with
   | CategoryStruct.comp _ _ X Y Z f g =>
@@ -44,36 +46,52 @@ def checkComposition (e : Expr) : MetaM Unit := do
         if !(← isDefEq X' X) then
           let (X', X) ← addPPExplicitToExposeDiff X' X
           logInfo m!"In composition{indentD e}\n\
-            the source of{indentD f}\nis{indentD X'}\nbut should be{indentD X}"
+            the source of{indentD f}\
+            \nis{indentD X'}\
+            \nbut should be{indentD X}"
         if !(← isDefEq Y' Y) then
           let (Y', Y) ← addPPExplicitToExposeDiff Y' Y
           logInfo m!"In composition{indentD e}\n\
-            the target of{indentD f}\nis{indentD Y'}\nbut should be{indentD Y}"
-    | _ => throwError "In composition{indentD e}\nthe type of{indentD f}\nis not a morphism."
+            the target of{indentD f}\
+            \nis{indentD Y'}\
+            \nbut should be{indentD Y}"
+    | _ =>
+      throwError "In composition{indentD e}\
+        \nthe type of{indentD f}\
+        \nis not a morphism."
     match_expr ← inferType g with
     | Quiver.Hom _ _ Y' Z' =>
       withReducibleAndInstances do
         if !(← isDefEq Y' Y) then
           let (Y', Y) ← addPPExplicitToExposeDiff Y' Y
           logInfo m!"In composition{indentD e}\n\
-            the source of{indentD g}\nis{indentD Y'}\nbut should be{indentD Y}"
+            the source of{indentD g}\
+            \nis{indentD Y'}\
+            \nbut should be{indentD Y}"
         if !(← isDefEq Z' Z) then
           let (Z', Z) ← addPPExplicitToExposeDiff Z' Z
           logInfo m!"In composition{indentD e}\n\
-            the target of{indentD g}\nis{indentD Z'}\nbut should be{indentD Z}"
-    | _ => throwError "In composition{indentD e}\nthe type of{indentD g}\nis not a morphism."
-  | _ => throwError "{e} is not a composition."
+            the target of{indentD g}\
+            \nis{indentD Z'}\
+            \nbut should be{indentD Z}"
+    | _ =>
+      throwError "In composition{indentD e}\
+        \nthe type of{indentD g}\
+        \nis not a morphism."
+  | _ =>
+    throwError "{e} is not a composition."
 
 /-- Check the typing of categorical compositions in an expression. -/
-def checkCompositions (e : Expr) : MetaM Unit := do
-  forEachComposition e checkComposition
+def checkCompositions (e : Expr) : MetaM Unit := do forEachComposition e checkComposition
 
 /-- Check the typing of categorical compositions in the goal. -/
-def checkCompositionsTac : TacticM Unit := withMainContext do
-  let e ← getMainTarget
-  checkCompositions e
+def checkCompositionsTac : TacticM Unit :=
+  withMainContext do
+    let e ← getMainTarget
+    checkCompositions e
 
-/-- For each composition `f ≫ g` in the goal,
+/--
+For each composition `f ≫ g` in the goal,
 which internally is represented as `CategoryStruct.comp C inst X Y Z f g`,
 infer the types of `f` and `g` and check whether their sources and targets agree
 with `X`, `Y`, and `Z` at "instances and reducible" transparency,

@@ -23,27 +23,33 @@ open CategoryTheory
 
 variable {C : Type u} [Category.{v} C]
 
-instance (F : C ⥤ GrpCat.{w'}) [∀ X, Small.{w} (F.obj X)] :
-    FunctorToTypes.Small.{w} (F ⋙ forget _) :=
-  fun X ↦ inferInstanceAs <| Small.{w} (F.obj X)
+instance (F : C ⥤ GrpCat.{w'}) [∀ X, Small.{w} (F.obj X)]
+    : FunctorToTypes.Small.{w} (F ⋙ forget _) := fun X ↦
+  inferInstanceAs <| Small.{w} (F.obj X)
 
-/-- A functor `F : C ⥤ GrpCat.{w'}` factors through `GrpCat.{w}` if all the
-monoids are `w`-small. -/
+/--
+A functor `F : C ⥤ GrpCat.{w'}` factors through `GrpCat.{w}` if all the
+monoids are `w`-small.
+-/
 @[simps, pp_with_univ]
-noncomputable def GrpCat.shrinkFunctor (F : C ⥤ GrpCat.{w'}) [∀ X, Small.{w} (F.obj X)] :
-    C ⥤ GrpCat.{w} where
+noncomputable def GrpCat.shrinkFunctor (F : C ⥤ GrpCat.{w'}) [∀ X, Small.{w} (F.obj X)]
+    : C ⥤ GrpCat.{w} where
   obj X := ↧(Shrink.{w} (F.obj X))
-  map {X Y} f := GrpCat.ofHom <|
-    (Shrink.mulEquiv.symm.toMonoidHom.comp (F.map f).hom).comp Shrink.mulEquiv.toMonoidHom
+  map {X Y} f :=
+    GrpCat.ofHom <|
+      (Shrink.mulEquiv.symm.toMonoidHom.comp (F.map f).hom).comp Shrink.mulEquiv.toMonoidHom
 
-/-- The natural transformation `GrpCat.shrinkFunctor.{w} F ⟶ GrpCat.shrinkFunctor.{w} G`
-induces by a natural transformation `τ : F ⟶ G` between `w`-small functors to monoids. -/
+/--
+The natural transformation `GrpCat.shrinkFunctor.{w} F ⟶ GrpCat.shrinkFunctor.{w} G`
+induces by a natural transformation `τ : F ⟶ G` between `w`-small functors to monoids.
+-/
 @[simps]
-noncomputable def GrpCat.shrinkFunctorMap {F G : C ⥤ GrpCat.{w'}} (τ : F ⟶ G)
-    [∀ X, Small.{w} (F.obj X)] [∀ X, Small.{w} (G.obj X)] :
-    GrpCat.shrinkFunctor.{w} F ⟶ GrpCat.shrinkFunctor.{w} G where
-  app X := GrpCat.ofHom <|
-    (Shrink.mulEquiv.symm.toMonoidHom.comp (τ.app X).hom).comp Shrink.mulEquiv.toMonoidHom
+noncomputable def GrpCat.shrinkFunctorMap
+    {F G : C ⥤ GrpCat.{w'}} (τ : F ⟶ G) [∀ X, Small.{w} (F.obj X)] [∀ X, Small.{w} (G.obj X)]
+    : GrpCat.shrinkFunctor.{w} F ⟶ GrpCat.shrinkFunctor.{w} G where
+  app X :=
+    GrpCat.ofHom <|
+      (Shrink.mulEquiv.symm.toMonoidHom.comp (τ.app X).hom).comp Shrink.mulEquiv.toMonoidHom
   naturality X Y f := by
     ext x
     exact

@@ -24,27 +24,31 @@ open TensorProduct PiTensorProduct
 
 variable (R : Type*) (M : Type*) [CommRing R] [AddCommGroup M] [Module R M]
 
-/-- The linear map from the `n`th exterior power to the `n`th tensor power obtained by
-`MultilinearMap.alternatization`. -/
+/--
+The linear map from the `n`th exterior power to the `n`th tensor power obtained by
+`MultilinearMap.alternatization`.
+-/
 noncomputable def toTensorPower (n : ℕ) : ⋀[R]^n M →ₗ[R] ⨂[R]^n M :=
   alternatingMapLinearEquiv (MultilinearMap.alternatization (PiTensorProduct.tprod R))
 
 variable {M} in
 open Equiv in
 @[simp]
-lemma toTensorPower_apply_ιMulti {n : ℕ} (v : Fin n → M) :
-    toTensorPower R M n (ιMulti R n v) =
-      ∑ σ : Perm (Fin n), Perm.sign σ • PiTensorProduct.tprod R (fun i ↦ v (σ i)) := by
+lemma toTensorPower_apply_ιMulti {n : ℕ} (v : Fin n → M)
+    : toTensorPower R M n (ιMulti R n v)
+      = ∑ σ : Perm (Fin n), Perm.sign σ • PiTensorProduct.tprod R (fun i ↦ v (σ i)) := by
   dsimp [toTensorPower]
-  simp only [alternatingMapLinearEquiv_apply_ιMulti,
-    MultilinearMap.alternatization_apply, MultilinearMap.domDomCongr_apply]
+  simp only [alternatingMapLinearEquiv_apply_ιMulti, MultilinearMap.alternatization_apply,
+    MultilinearMap.domDomCongr_apply]
 
-/-- The canonical `n`-alternating map from the dual of the `R`-module `M`
-to the dual of `⋀[R]^n M`. -/
-noncomputable def alternatingMapToDual (n : ℕ) :
-    AlternatingMap R (Module.Dual R M) (Module.Dual R (⋀[R]^n M)) (Fin n) where
-  toMultilinearMap := (toTensorPower R M n).dualMap.compMultilinearMap
-    (TensorPower.multilinearMapToDual R M n)
+/--
+The canonical `n`-alternating map from the dual of the `R`-module `M`
+to the dual of `⋀[R]^n M`.
+-/
+noncomputable def alternatingMapToDual (n : ℕ)
+    : AlternatingMap R (Module.Dual R M) (Module.Dual R (⋀[R]^n M)) (Fin n) where
+  toMultilinearMap :=
+    (toTensorPower R M n).dualMap.compMultilinearMap (TensorPower.multilinearMapToDual R M n)
   map_eq_zero_of_eq' f i j hf hij := by
     ext v
     suffices Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) = 0 by
@@ -54,23 +58,22 @@ noncomputable def alternatingMapToDual (n : ℕ) :
 variable {R M} in
 open Equiv in
 @[simp]
-theorem alternatingMapToDual_apply_ιMulti {n : ℕ}
-    (f : (_ : Fin n) → Module.Dual R M) (v : Fin n → M) :
-    alternatingMapToDual R M n f (ιMulti _ _ v) =
-      Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by
+theorem alternatingMapToDual_apply_ιMulti
+    {n : ℕ} (f : (_ : Fin n) → Module.Dual R M) (v : Fin n → M)
+    : alternatingMapToDual R M n f (ιMulti _ _ v)
+      = Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by
   simp [alternatingMapToDual, Matrix.det_apply]
 
 /-- The linear map from the exterior power of the dual to the dual of the exterior power. -/
-noncomputable def pairingDual (n : ℕ) :
-    ⋀[R]^n (Module.Dual R M) →ₗ[R] Module.Dual R (⋀[R]^n M) :=
+noncomputable def pairingDual (n : ℕ) : ⋀[R]^n (Module.Dual R M) →ₗ[R] Module.Dual R (⋀[R]^n M) :=
   alternatingMapLinearEquiv (alternatingMapToDual R M n)
 
 variable {R M} in
 open Equiv in
 @[simp]
-lemma pairingDual_ιMulti_ιMulti {n : ℕ} (f : (_ : Fin n) → Module.Dual R M) (v : Fin n → M) :
-    pairingDual R M n (ιMulti _ _ f) (ιMulti _ _ v) =
-      Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by
+lemma pairingDual_ιMulti_ιMulti {n : ℕ} (f : (_ : Fin n) → Module.Dual R M) (v : Fin n → M)
+    : pairingDual R M n (ιMulti _ _ f) (ιMulti _ _ v)
+      = Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by
   simp [pairingDual]
 
 section Deprecated
@@ -86,14 +89,16 @@ These results were added with the intention of using them to prove that exterior
 modules are free. However this result has since been established by other means (see
 `Module.Basis.exteriorPower`) and so this work is now deprecated. -/
 
-variable {R M} {ι : Type*} [LinearOrder ι]
+variable
+  {R M} {ι : Type*} [LinearOrder ι]
   (x : ι → M) (f : ι → Module.Dual R M)
-  (h₁ : ∀ i, f i (x i) = 1) (h₀ : ∀ ⦃i j⦄, i ≠ j → f i (x j) = 0) (n : ℕ)
+  (h₁ : ∀ i, f i (x i) = 1) (h₀ : ∀ ⦃i j⦄, i ≠ j → f i (x j) = 0)
+  (n : ℕ)
 
 include h₁ h₀ in
 @[deprecated "no replacement" (since := "2026-08-23")]
-lemma pairingDual_apply_apply_eq_one (a : Fin n ↪o ι) :
-    pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ a)) = 1 := by
+lemma pairingDual_apply_apply_eq_one (a : Fin n ↪o ι)
+    : pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ a)) = 1 := by
   simp only [pairingDual_ιMulti_ιMulti, Function.comp_apply]
   rw [← Matrix.det_one (n := Fin n)]
   congr
@@ -106,8 +111,8 @@ lemma pairingDual_apply_apply_eq_one (a : Fin n ↪o ι) :
 
 include h₀ in
 @[deprecated "no replacement" (since := "2026-08-23")]
-lemma pairingDual_apply_apply_eq_one_zero (a b : Fin n ↪o ι) (h : a ≠ b) :
-    pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ b)) = 0 := by
+lemma pairingDual_apply_apply_eq_one_zero (a b : Fin n ↪o ι) (h : a ≠ b)
+    : pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ b)) = 0 := by
   simp only [pairingDual_ιMulti_ιMulti, Function.comp_apply, Matrix.det_apply]
   refine Finset.sum_eq_zero (fun σ _ ↦ ?_)
   simp only [Matrix.of_apply, smul_eq_iff_eq_inv_smul, smul_zero]

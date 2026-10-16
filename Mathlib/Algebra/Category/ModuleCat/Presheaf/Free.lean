@@ -37,8 +37,10 @@ variable {C : Type u₁} [Category.{v₁} C] (R : Cᵒᵖ ⥤ RingCat.{u})
 
 set_option backward.isDefEq.respectTransparency.types false in
 variable {R} in
-/-- Given a presheaf of types `F : Cᵒᵖ ⥤ Type u`, this is the presheaf
-of modules over `R` which sends `X : Cᵒᵖ` to the free `R.obj X`-module on `F.obj X`. -/
+/--
+Given a presheaf of types `F : Cᵒᵖ ⥤ Type u`, this is the presheaf
+of modules over `R` which sends `X : Cᵒᵖ` to the free `R.obj X`-module on `F.obj X`.
+-/
 @[simps]
 noncomputable def freeObj (F : Cᵒᵖ ⥤ Type u) : PresheafOfModules.{u} R where
   obj X := (ModuleCat.free (R.obj X)).obj (F.obj X)
@@ -61,8 +63,10 @@ variable {F : Cᵒᵖ ⥤ Type u} {G : PresheafOfModules.{u} R}
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The morphism of presheaves of modules `freeObj F ⟶ G` corresponding to
-a morphism `F ⟶ G.presheaf ⋙ forget _` of presheaves of types. -/
+/--
+The morphism of presheaves of modules `freeObj F ⟶ G` corresponding to
+a morphism `F ⟶ G.presheaf ⋙ forget _` of presheaves of types.
+-/
 @[simps]
 noncomputable def freeObjDesc (φ : F ⟶ G.presheaf ⋙ forget _) : freeObj F ⟶ G where
   app X := ModuleCat.freeDesc (φ.app X)
@@ -82,31 +86,38 @@ noncomputable def freeAdjunctionUnit : F ⟶ (freeObj (R := R) F).presheaf ⋙ f
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The bijection `(freeObj F ⟶ G) ≃ (F ⟶ G.presheaf ⋙ forget _)` when
-`F` is a presheaf of types and `G` a presheaf of modules. -/
+/--
+The bijection `(freeObj F ⟶ G) ≃ (F ⟶ G.presheaf ⋙ forget _)` when
+`F` is a presheaf of types and `G` a presheaf of modules.
+-/
 noncomputable def freeHomEquiv : (freeObj F ⟶ G) ≃ (F ⟶ G.presheaf ⋙ forget _) where
   toFun ψ := freeAdjunctionUnit R F ≫ Functor.whiskerRight ((toPresheaf _).map ψ) _
   invFun φ := freeObjDesc φ
   left_inv ψ := by ext1 X; dsimp; ext x; simp [toPresheaf]
   right_inv φ := by ext; simp [toPresheaf]
 
-lemma free_hom_ext {ψ ψ' : freeObj F ⟶ G}
-    (h : freeAdjunctionUnit R F ≫ Functor.whiskerRight ((toPresheaf _).map ψ) _ =
-      freeAdjunctionUnit R F ≫ Functor.whiskerRight ((toPresheaf _).map ψ') _) : ψ = ψ' :=
+lemma free_hom_ext
+    {ψ ψ' : freeObj F ⟶ G}
+    (h : freeAdjunctionUnit R F ≫ Functor.whiskerRight ((toPresheaf _).map ψ) _
+      = freeAdjunctionUnit R F ≫ Functor.whiskerRight ((toPresheaf _).map ψ') _)
+    : ψ = ψ' :=
   freeHomEquiv.injective h
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (R) in
-/-- The free presheaf of modules functor is left adjoint to the forget functor
-`PresheafOfModules.{u} R ⥤ Cᵒᵖ ⥤ Type u`. -/
-noncomputable def freeAdjunction :
-    free.{u} R ⊣ (toPresheaf R ⋙ (Functor.whiskeringRight _ _ _).obj (forget Ab)) :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv := fun _ _ ↦ freeHomEquiv
-      homEquiv_naturality_left_symm := fun {F₁ F₂ G} f g ↦
-        free_hom_ext (by ext; simp [freeHomEquiv, toPresheaf])
-      homEquiv_naturality_right := fun {F G₁ G₂} f g ↦ rfl }
+/--
+The free presheaf of modules functor is left adjoint to the forget functor
+`PresheafOfModules.{u} R ⥤ Cᵒᵖ ⥤ Type u`.
+-/
+noncomputable def freeAdjunction
+    : free.{u} R ⊣ (toPresheaf R ⋙ (Functor.whiskeringRight _ _ _).obj (forget Ab)) :=
+  Adjunction.mkOfHomEquiv {
+    homEquiv := fun _ _ ↦ freeHomEquiv
+    homEquiv_naturality_left_symm := fun {F₁ F₂ G} f g ↦
+      free_hom_ext (by ext; simp [freeHomEquiv, toPresheaf])
+    homEquiv_naturality_right := fun {F G₁ G₂} f g ↦ rfl
+  }
 
 set_option backward.isDefEq.respectTransparency.types false in
 variable (F G) in
@@ -116,8 +127,7 @@ lemma freeAdjunction_homEquiv : (freeAdjunction R).homEquiv F G = freeHomEquiv :
 
 variable (R F) in
 @[simp]
-lemma freeAdjunction_unit_app :
-    (freeAdjunction R).unit.app F = freeAdjunctionUnit R F := rfl
+lemma freeAdjunction_unit_app : (freeAdjunction R).unit.app F = freeAdjunctionUnit R F := rfl
 
 end
 

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Tactic.Positivity.Core
 public import Mathlib.Util.DischargerAsTactic
-
 import all Lean.Meta.Tactic.Simp.Rewrite -- for `Simp.dischargeUsingAssumption?`
 
 /-!
@@ -46,11 +45,12 @@ open Lean Elab.Tactic Parser.Tactic Lean.Meta
 open Qq
 
 /-- Constructs a trace message for the `discharge` function. -/
-private def dischargerTraceMessage {ε : Type*} (prop : Expr) :
-    Except ε (Option Expr) → SimpM MessageData
-| _ => return m!"discharge {prop}"
+private def dischargerTraceMessage {ε : Type*} (prop : Expr)
+    : Except ε (Option Expr) → SimpM MessageData
+  | _ => return m!"discharge {prop}"
 
-/-- Default discharge strategy for `field` and `field_simp`: try to solve the (in)equality `prop`,
+/--
+Default discharge strategy for `field` and `field_simp`: try to solve the (in)equality `prop`,
 of the form `t = 0` or `t > 0`, by one of the following strategies:
 
 * Use an assumption from the context.
@@ -72,8 +72,9 @@ partial def discharge (prop : Expr) : SimpM (Option Expr) :=
 
     -- Discharge strategy 2: Normalize inequalities using NormNum
     let prop : Q(Prop) ← (do pure prop)
-    let pf? ← match prop with
-    | ~q(($e : $α) ≠ $b) =>
+    let pf? ←
+      match prop with
+      | ~q(($e : $α) ≠ $b) =>
         try
           let res ← Mathlib.Meta.NormNum.derive prop
           match res with
@@ -81,13 +82,16 @@ partial def discharge (prop : Expr) : SimpM (Option Expr) :=
           | _ => pure none
         catch _ =>
           pure none
-    | _ => pure none
+      | _ =>
+        pure none
     if let some pf := pf? then return some pf
 
     -- Discharge strategy 3: Use positivity
     let pf? ←
-      try some <$> Mathlib.Meta.Positivity.solve prop
-      catch _ => pure none
+      try
+        some <$> Mathlib.Meta.Positivity.solve prop
+      catch _ =>
+        pure none
     if let some pf := pf? then return some pf
 
     -- Discharge strategy 4: Use the simplifier
@@ -95,10 +99,13 @@ partial def discharge (prop : Expr) : SimpM (Option Expr) :=
       let ctx ← readThe Simp.Context
       -- these lemmas allow `simp` to function as a cheap approximation to `positivity` in fields
       -- where `positivity` is not available (e.g. through lack of a `≤`)
-      let lems := [``two_ne_zero, ``three_ne_zero, ``four_ne_zero, ``mul_ne_zero, ``pow_ne_zero,
-        ``zpow_ne_zero, ``Nat.cast_add_one_ne_zero]
-      let ctx' := ctx.setSimpTheorems <| ctx.simpTheorems.push <|
-        ← lems.foldlM (SimpTheorems.addConst · · (post := false)) {}
+      let lems := [
+        ``two_ne_zero, ``three_ne_zero, ``four_ne_zero, ``mul_ne_zero, ``pow_ne_zero,
+        ``zpow_ne_zero, ``Nat.cast_add_one_ne_zero
+      ]
+      let ctx' :=
+        ctx.setSimpTheorems <| ctx.simpTheorems.push <|
+          ← lems.foldlM (SimpTheorems.addConst · · (post := false)) {}
       let stats : Simp.Stats := { (← get) with }
 
       -- Porting note: mathlib3's analogous field_simp discharger `field_simp.ne_zero`
@@ -107,9 +114,7 @@ partial def discharge (prop : Expr) : SimpM (Option Expr) :=
       --   1) Lean 3 simp dischargers automatically call `simp` recursively. (Do they?),
       --   2) mathlib3 norm_num1 is able to handle any needed discharging, or
       --   3) some other reason?
-      let ⟨simpResult, stats'⟩ ←
-        simp prop ctx' #[(← Simp.getSimprocs)]
-          discharge stats
+      let ⟨simpResult, stats'⟩ ← simp prop ctx' #[(← Simp.getSimprocs)] discharge stats
       set { (← get) with usedTheorems := stats'.usedTheorems, diag := stats'.diag }
       if simpResult.expr.isConstOf ``True then
         try

@@ -21,8 +21,7 @@ variable {α : Type*} {β : Type*}
 
 -- `x` and `y` are explicit here, as they are often needed to guide typechecking of `h`.
 @[to_dual self]
-theorem nontrivial_of_lt [Preorder α] (x y : α) (h : x < y) : Nontrivial α :=
-  ⟨⟨x, y, ne_of_lt h⟩⟩
+theorem nontrivial_of_lt [Preorder α] (x y : α) (h : x < y) : Nontrivial α := ⟨⟨x, y, ne_of_lt h⟩⟩
 
 @[to_dual none]
 theorem exists_pair_lt (α : Type*) [Nontrivial α] [LinearOrder α] : ∃ x y : α, x < y := by
@@ -33,21 +32,22 @@ theorem exists_pair_lt (α : Type*) [Nontrivial α] [LinearOrder α] : ∃ x y :
 theorem nontrivial_iff_lt [LinearOrder α] : Nontrivial α ↔ ∃ x y : α, x < y :=
   ⟨fun h ↦ @exists_pair_lt α h _, fun ⟨x, y, h⟩ ↦ nontrivial_of_lt x y h⟩
 
-theorem Subtype.nontrivial_iff_exists_ne (p : α → Prop) (x : Subtype p) :
-    Nontrivial (Subtype p) ↔ ∃ (y : α) (_ : p y), y ≠ x := by
+theorem Subtype.nontrivial_iff_exists_ne (p : α → Prop) (x : Subtype p)
+    : Nontrivial (Subtype p) ↔ ∃ (y : α) (_ : p y), y ≠ x := by
   simp only [_root_.nontrivial_iff_exists_ne x, Subtype.exists, Ne, Subtype.ext_iff]
 
 open scoped Classical in
 /-- An inhabited type is either nontrivial, or has a unique element. -/
-noncomputable def nontrivialPSumUnique (α : Type*) [Inhabited α] :
-    Nontrivial α ⊕' Unique α :=
-  if h : Nontrivial α then PSum.inl h
+noncomputable def nontrivialPSumUnique (α : Type*) [Inhabited α] : Nontrivial α ⊕' Unique α :=
+  if h : Nontrivial α then
+    PSum.inl h
   else
-    PSum.inr
-      { default := default,
-        uniq := fun x : α ↦ by
-          by_contra H
-          exact h ⟨_, _, H⟩ }
+    PSum.inr {
+      default := default
+      uniq := fun x : α ↦ by
+        by_contra H
+        exact h ⟨_, _, H⟩
+    }
 
 instance Option.nontrivial [Nonempty α] : Nontrivial (Option α) := by
   inhabit α
@@ -72,33 +72,40 @@ instance [Nonempty α] [Nonempty β] : Nontrivial (α ⊕ β) :=
 
 instance [Subsingleton α] [IsEmpty β] : Subsingleton (α ⊕ β) where
   allEq
-  | .inr a, _ => ‹IsEmpty β›.elim a
-  | _, .inr b => ‹IsEmpty β›.elim b
-  | .inl a, .inl b => congrArg _ <| Subsingleton.elim a b
+    | .inr a, _ =>
+      ‹IsEmpty β›.elim a
+    | _, .inr b =>
+      ‹IsEmpty β›.elim b
+    | .inl a, .inl b =>
+      congrArg _ <| Subsingleton.elim a b
 
 instance [IsEmpty α] [Subsingleton β] : Subsingleton (α ⊕ β) where
   allEq
-  | .inl a, _ => ‹IsEmpty α›.elim a
-  | _, .inl b => ‹IsEmpty α›.elim b
-  | .inr a, .inr b => congrArg _ <| Subsingleton.elim a b
+    | .inl a, _ =>
+      ‹IsEmpty α›.elim a
+    | _, .inl b =>
+      ‹IsEmpty α›.elim b
+    | .inr a, .inr b =>
+      congrArg _ <| Subsingleton.elim a b
 
 namespace Pi
 
 variable {I : Type*} {f : I → Type*}
 
 /-- A pi type is nontrivial if it's nonempty everywhere and nontrivial somewhere. -/
-theorem nontrivial_at (i' : I) [inst : ∀ i, Nonempty (f i)] [Nontrivial (f i')] :
-    Nontrivial (∀ i : I, f i) := by
+theorem nontrivial_at (i' : I) [inst : ∀ i, Nonempty (f i)] [Nontrivial (f i')]
+    : Nontrivial (∀ i : I, f i) := by
   classical
   let := Classical.decEq (∀ i : I, f i)
   exact (Function.update_injective (fun i ↦ Classical.choice (inst i)) i').nontrivial
 
-/-- As a convenience, provide an instance automatically if `(f default)` is nontrivial.
+/--
+As a convenience, provide an instance automatically if `(f default)` is nontrivial.
 
 If a different index has the non-trivial type, then use `haveI := nontrivial_at that_index`.
 -/
-instance nontrivial [Inhabited I] [∀ i, Nonempty (f i)] [Nontrivial (f default)] :
-    Nontrivial (∀ i : I, f i) :=
+instance nontrivial [Inhabited I] [∀ i, Nonempty (f i)] [Nontrivial (f default)]
+    : Nontrivial (∀ i : I, f i) :=
   nontrivial_at default
 
 end Pi

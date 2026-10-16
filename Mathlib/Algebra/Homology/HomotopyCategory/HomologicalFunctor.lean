@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Homology.HomotopyCategory.DegreewiseSplit
 public import Mathlib.CategoryTheory.Triangulated.HomologicalFunctor
-
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 import Mathlib.Algebra.Homology.HomologySequence
 
@@ -36,9 +35,13 @@ instance (n : ℤ) : (homologyFunctor C (ComplexShape.up ℤ) n).IsHomological :
   Functor.IsHomological.mk' _ (fun T hT => by
     rw [distinguished_iff_iso_trianglehOfDegreewiseSplit] at hT
     obtain ⟨S, σ, ⟨e⟩⟩ := hT
-    have hS := HomologicalComplex.shortExact_of_degreewise_shortExact S
-      (fun n => (σ n).shortExact)
-    exact ⟨_, e, (ShortComplex.exact_iff_of_iso
-      (S.mapNatIso (homologyFunctorFactors C (ComplexShape.up ℤ) n))).2 (hS.homology_exact₂ n)⟩)
+    have hS := HomologicalComplex.shortExact_of_degreewise_shortExact S (fun n => (σ n).shortExact)
+    exact ⟨
+      _,
+      e,
+      (ShortComplex.exact_iff_of_iso (S.mapNatIso (homologyFunctorFactors C (ComplexShape.up ℤ)
+          n))).2
+        (hS.homology_exact₂ n)
+    ⟩)
 
 end HomotopyCategory

@@ -48,76 +48,69 @@ protected def map (f : G →g G') {u v : V} : G.Walk u v → G'.Walk (f u) (f v)
 
 variable (f : G →g G') (f' : G' →g G'') {u v u' v' w : V} (p : G.Walk u v)
 
-@[simp]
-theorem map_nil : (nil : G.Walk u u).map f = nil := rfl
+@[simp] theorem map_nil : (nil : G.Walk u u).map f = nil := rfl
 
 @[simp]
 theorem map_cons {w : V} (h : G.Adj w u) : (cons h p).map f = cons (f.map_adj h) (p.map f) := rfl
 
 @[simp]
-theorem map_copy (hu : u = u') (hv : v = v') :
-    (p.copy hu hv).map f = (p.map f).copy (hu ▸ rfl) (hv ▸ rfl) := by
+theorem map_copy (hu : u = u') (hv : v = v')
+    : (p.copy hu hv).map f = (p.map f).copy (hu ▸ rfl) (hv ▸ rfl) := by
   subst_vars
   rfl
 
-@[simp]
-theorem map_id (p : G.Walk u v) : p.map Hom.id = p := by
-  induction p <;> simp [*]
+@[simp] theorem map_id (p : G.Walk u v) : p.map Hom.id = p := by induction p <;> simp [*]
 
-@[simp]
-theorem map_map : (p.map f).map f' = p.map (f'.comp f) := by
-  induction p <;> simp [*]
+@[simp] theorem map_map : (p.map f).map f' = p.map (f'.comp f) := by induction p <;> simp [*]
 
-/-- Unlike categories, for graphs vertex equality is an important notion, so needing to be able to
-work with equality of graph homomorphisms is a necessary evil. -/
-theorem map_eq_of_eq {f : G →g G'} (f' : G →g G') (h : f = f') :
-    p.map f = (p.map f').copy (h ▸ rfl) (h ▸ rfl) := by
+/--
+Unlike categories, for graphs vertex equality is an important notion, so needing to be able to
+work with equality of graph homomorphisms is a necessary evil.
+-/
+theorem map_eq_of_eq {f : G →g G'} (f' : G →g G') (h : f = f')
+    : p.map f = (p.map f').copy (h ▸ rfl) (h ▸ rfl) := by
   subst_vars
   rfl
 
 variable {p} in
-@[simp]
-theorem nil_map_iff : (p.map f).Nil ↔ p.Nil := by
-  cases p <;> simp
+@[simp] theorem nil_map_iff : (p.map f).Nil ↔ p.Nil := by cases p <;> simp
 
 @[deprecated nil_map_iff +typeChanged (since := "2026-05-12")]
 theorem map_eq_nil_iff {p : G.Walk u u} : p.map f = nil ↔ p = nil := by cases p <;> simp
 
-@[simp]
-theorem length_map : (p.map f).length = p.length := by induction p <;> simp [*]
+@[simp] theorem length_map : (p.map f).length = p.length := by induction p <;> simp [*]
 
 @[simp]
-theorem map_append {u v w : V} (p : G.Walk u v) (q : G.Walk v w) :
-    (p.append q).map f = (p.map f).append (q.map f) := by induction p <;> simp [*]
+theorem map_append {u v w : V} (p : G.Walk u v) (q : G.Walk v w)
+    : (p.append q).map f = (p.map f).append (q.map f) := by
+  induction p <;> simp [*]
 
 @[simp]
 theorem reverse_map : (p.map f).reverse = p.reverse.map f := by induction p <;> simp [map_append, *]
 
-@[simp]
-theorem support_map : (p.map f).support = p.support.map f := by induction p <;> simp [*]
+@[simp] theorem support_map : (p.map f).support = p.support.map f := by induction p <;> simp [*]
+
+@[simp] theorem darts_map : (p.map f).darts = p.darts.map f.mapDart := by induction p <;> simp [*]
 
 @[simp]
-theorem darts_map : (p.map f).darts = p.darts.map f.mapDart := by induction p <;> simp [*]
+theorem edges_map : (p.map f).edges = p.edges.map (Sym2.map f) := by induction p <;> simp [*]
 
-@[simp]
-theorem edges_map : (p.map f).edges = p.edges.map (Sym2.map f) := by
-  induction p <;> simp [*]
-
-@[simp]
-theorem edgeSet_map : (p.map f).edgeSet = Sym2.map f '' p.edgeSet := by ext; simp
+@[simp] theorem edgeSet_map : (p.map f).edgeSet = Sym2.map f '' p.edgeSet := by ext; simp
 
 @[simp]
 theorem getVert_map (n : ℕ) : (p.map f).getVert n = f (p.getVert n) := by
   induction p generalizing n <;> cases n <;> simp [*]
 
-theorem map_injective_of_injective {f : G →g G'} (hinj : Function.Injective f) (u v : V) :
-    Function.Injective (Walk.map f : G.Walk u v → G'.Walk (f u) (f v)) := by
+theorem map_injective_of_injective {f : G →g G'} (hinj : Function.Injective f) (u v : V)
+    : Function.Injective (Walk.map f : G.Walk u v → G'.Walk (f u) (f v)) := by
   intro p p' h
   induction p with
-  | nil => cases p' <;> simp at h ⊢
+  | nil =>
+    cases p' <;> simp at h ⊢
   | cons _ _ ih =>
     cases p' with
-    | nil => simp at h
+    | nil =>
+      simp at h
     | cons _ _ =>
       simp only [map_cons, cons.injEq] at h
       grind
@@ -127,26 +120,20 @@ section mapLe
 variable {G' : SimpleGraph V} (h : G ≤ G') {u v : V} (p : G.Walk u v)
 
 /-- The specialization of `SimpleGraph.Walk.map` for mapping walks to supergraphs. -/
-abbrev mapLe : G'.Walk u v :=
-  p.map (.ofLE h)
+abbrev mapLe : G'.Walk u v := p.map (.ofLE h)
 
-theorem length_mapLe : (p.mapLe h).length = p.length := by
-  simp
+theorem length_mapLe : (p.mapLe h).length = p.length := by simp
 
-lemma support_mapLe_eq_support : (p.mapLe h).support = p.support := by
-  simp
+lemma support_mapLe_eq_support : (p.mapLe h).support = p.support := by simp
 
-lemma edges_mapLe_eq_edges : (p.mapLe h).edges = p.edges := by
-  simp
+lemma edges_mapLe_eq_edges : (p.mapLe h).edges = p.edges := by simp
 
-lemma edgeSet_mapLe_eq_edgeSet : (p.mapLe h).edgeSet = p.edgeSet := by
-  simp
+lemma edgeSet_mapLe_eq_edgeSet : (p.mapLe h).edgeSet = p.edgeSet := by simp
 
-theorem reverse_mapLe : (p.mapLe h).reverse = p.reverse.mapLe h := by
-  simp
+theorem reverse_mapLe : (p.mapLe h).reverse = p.reverse.mapLe h := by simp
 
-theorem mapLe_append {u v w : V} (p : G.Walk u v) (q : G.Walk v w) :
-    (p.append q).mapLe h = (p.mapLe h).append (q.mapLe h) := by
+theorem mapLe_append {u v w : V} (p : G.Walk u v) (q : G.Walk v w)
+    : (p.append q).mapLe h = (p.mapLe h).append (q.mapLe h) := by
   simp
 
 end mapLe
@@ -155,15 +142,14 @@ end mapLe
 
 /-- The walk `p` transferred to lie in `H`, given that `H` contains its edges. -/
 @[simp]
-protected def transfer {u v : V} (p : G.Walk u v)
-    (H : SimpleGraph V) (h : ∀ e, e ∈ p.edges → e ∈ H.edgeSet) : H.Walk u v :=
+protected def transfer
+    {u v : V} (p : G.Walk u v) (H : SimpleGraph V) (h : ∀ e, e ∈ p.edges → e ∈ H.edgeSet)
+    : H.Walk u v :=
   match p with
   | nil => nil
-  | cons' u v w _ p =>
-    cons (h s(u, v) (by simp)) (p.transfer H fun e he => h e (by simp [he]))
+  | cons' u v w _ p => cons (h (s(u, v)) (by simp)) (p.transfer H fun e he => h e (by simp [he]))
 
-theorem transfer_self : p.transfer G p.edges_subset_edgeSet = p := by
-  induction p <;> simp [*]
+theorem transfer_self : p.transfer G p.edges_subset_edgeSet = p := by induction p <;> simp [*]
 
 variable {H : SimpleGraph V}
 
@@ -174,46 +160,42 @@ theorem transfer_eq_mapLe (hp) (GH : G ≤ H) : p.transfer H hp = p.mapLe GH := 
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem nil_transfer {G H : SimpleGraph V} {u v : V} {p : G.Walk u v} {h} :
-    (p.transfer H h).Nil ↔ p.Nil := by
+theorem nil_transfer {G H : SimpleGraph V} {u v : V} {p : G.Walk u v} {h}
+    : (p.transfer H h).Nil ↔ p.Nil := by
   cases p <;> simp
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem edges_transfer (hp) : (p.transfer H hp).edges = p.edges := by
-  induction p <;> simp [*]
+theorem edges_transfer (hp) : (p.transfer H hp).edges = p.edges := by induction p <;> simp [*]
 
-@[simp]
-theorem edgeSet_transfer (hp) : (p.transfer H hp).edgeSet = p.edgeSet := by ext; simp
+@[simp] theorem edgeSet_transfer (hp) : (p.transfer H hp).edgeSet = p.edgeSet := by ext; simp
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem support_transfer (hp) : (p.transfer H hp).support = p.support := by
-  induction p <;> simp [*]
+theorem support_transfer (hp) : (p.transfer H hp).support = p.support := by induction p <;> simp [*]
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem length_transfer (hp) : (p.transfer H hp).length = p.length := by
-  induction p <;> simp [*]
+theorem length_transfer (hp) : (p.transfer H hp).length = p.length := by induction p <;> simp [*]
 
 @[simp]
-theorem transfer_transfer (hp) {K : SimpleGraph V} (hp') :
-    (p.transfer H hp).transfer K hp' = p.transfer K (p.edges_transfer hp ▸ hp') := by
+theorem transfer_transfer (hp) {K : SimpleGraph V} (hp')
+    : (p.transfer H hp).transfer K hp' = p.transfer K (p.edges_transfer hp ▸ hp') := by
   induction p <;> simp [*]
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem transfer_append {w : V} (q : G.Walk v w) (hpq) :
-    (p.append q).transfer H hpq =
-      (p.transfer H fun e he => hpq _ (by simp [he])).append
+theorem transfer_append {w : V} (q : G.Walk v w) (hpq)
+    : (p.append q).transfer H hpq
+      = (p.transfer H fun e he => hpq _ (by simp [he])).append
         (q.transfer H fun e he => hpq _ (by simp [he])) := by
   induction p <;> simp [*]
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem reverse_transfer (hp) :
-    (p.transfer H hp).reverse =
-      p.reverse.transfer H (by simp only [edges_reverse, List.mem_reverse]; exact hp) := by
+theorem reverse_transfer (hp)
+    : (p.transfer H hp).reverse
+      = p.reverse.transfer H (by simp only [edges_reverse, List.mem_reverse]; exact hp) := by
   induction p <;> simp [*]
 
 /-! ### Inducing a walk -/
@@ -222,63 +204,81 @@ variable {s s' : Set V}
 
 variable (s) in
 /-- A walk in `G` which is fully contained in a set `s` of vertices lifts to a walk of `G[s]`. -/
-protected def induce {u v : V} :
-    ∀ (w : G.Walk u v) (hw : ∀ x ∈ w.support, x ∈ s),
+protected def induce {u v : V}
+    : ∀ (w : G.Walk u v) (hw : ∀ x ∈ w.support, x ∈ s),
       (G.induce s).Walk ⟨u, hw _ w.start_mem_support⟩ ⟨v, hw _ w.end_mem_support⟩
-  | nil, hw => nil
-  | cons (v := u') huu' w, hw => .cons (induce_adj.2 huu') <| w.induce <| by simp_all
+  | nil, hw =>
+    nil
+  | cons (v := u') huu' w, hw =>
+    .cons (induce_adj.2 huu') <| w.induce <| by simp_all
 
 @[simp] lemma induce_nil (hw) : (.nil : G.Walk u u).induce s hw = .nil := rfl
 
-@[simp] lemma induce_cons (huu' : G.Adj u u') (w : G.Walk u' v) (hw) :
-    (w.cons huu').induce s hw = .cons (induce_adj.2 huu') (w.induce s <| by simp_all) := rfl
+@[simp]
+lemma induce_cons (huu' : G.Adj u u') (w : G.Walk u' v) (hw)
+    : (w.cons huu').induce s hw = .cons (induce_adj.2 huu') (w.induce s <| by simp_all) :=
+  rfl
 
-@[simp] lemma support_induce {u v : V} :
-    ∀ (w : G.Walk u v) (hw), (w.induce s hw).support = w.support.attachWith _ hw
-  | .nil, hw => rfl
-  | .cons (v := u') hu w, hw => by simp [support_induce]
+@[simp]
+lemma support_induce {u v : V}
+    : ∀ (w : G.Walk u v) (hw), (w.induce s hw).support = w.support.attachWith _ hw
+  | .nil, hw =>
+    rfl
+  | .cons (v := u') hu w, hw => by
+    simp [support_induce]
 
-@[simp] lemma map_induce {u v : V} :
-    ∀ (w : G.Walk u v) (hw), (w.induce s hw).map (Embedding.induce _).toHom = w
-  | .nil, hw => rfl
-  | .cons (v := u') huu' w, hw => by simp [map_induce]
+@[simp]
+lemma map_induce {u v : V}
+    : ∀ (w : G.Walk u v) (hw), (w.induce s hw).map (Embedding.induce _).toHom = w
+  | .nil, hw =>
+    rfl
+  | .cons (v := u') huu' w, hw => by
+    simp [map_induce]
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma map_induce_induceHomOfLE (hs : s ⊆ s') {u v : V} : ∀ (w : G.Walk u v) (hw),
-    (w.induce s hw).map (G.induceHomOfLE hs).toHom = w.induce s' (fun x hx ↦ hs (hw x hx))
-  | .nil, hw => rfl
-  | .cons (v := u') huu' w, hw => by simp [map_induce_induceHomOfLE]
+lemma map_induce_induceHomOfLE (hs : s ⊆ s') {u v : V}
+    : ∀ (w : G.Walk u v) (hw),
+      (w.induce s hw).map (G.induceHomOfLE hs).toHom = w.induce s' (fun x hx ↦ hs (hw x hx))
+  | .nil, hw =>
+    rfl
+  | .cons (v := u') huu' w, hw => by
+    simp [map_induce_induceHomOfLE]
 
 /-! ## Deleting edges -/
 
-/-- Given a walk that avoids a set of edges, produce a walk in the graph
-with those edges deleted. -/
-abbrev toDeleteEdges (s : Set (Sym2 V)) {v w : V} (p : G.Walk v w)
-    (hp : ∀ e, e ∈ p.edges → e ∉ s) : (G.deleteEdges s).Walk v w :=
+/--
+Given a walk that avoids a set of edges, produce a walk in the graph
+with those edges deleted.
+-/
+abbrev toDeleteEdges (s : Set (Sym2 V)) {v w : V} (p : G.Walk v w) (hp : ∀ e, e ∈ p.edges → e ∉ s)
+    : (G.deleteEdges s).Walk v w :=
   p.transfer _ <| by
     simp only [edgeSet_deleteEdges, Set.mem_sdiff]
     exact fun e ep => ⟨edges_subset_edgeSet p ep, hp e ep⟩
 
 @[simp]
-theorem toDeleteEdges_nil (s : Set (Sym2 V)) {v : V} (hp) :
-    (Walk.nil : G.Walk v v).toDeleteEdges s hp = Walk.nil := rfl
+theorem toDeleteEdges_nil (s : Set (Sym2 V)) {v : V} (hp)
+    : (Walk.nil : G.Walk v v).toDeleteEdges s hp = Walk.nil :=
+  rfl
 
 @[simp]
-theorem toDeleteEdges_cons (s : Set (Sym2 V)) {u v w : V} (h : G.Adj u v) (p : G.Walk v w) (hp) :
-    (Walk.cons h p).toDeleteEdges s hp =
-      Walk.cons (deleteEdges_adj.mpr ⟨h, hp _ (List.Mem.head _)⟩)
+theorem toDeleteEdges_cons (s : Set (Sym2 V)) {u v w : V} (h : G.Adj u v) (p : G.Walk v w) (hp)
+    : (Walk.cons h p).toDeleteEdges s hp
+      = Walk.cons (deleteEdges_adj.mpr ⟨h, hp _ (List.Mem.head _)⟩)
         (p.toDeleteEdges s fun _ he => hp _ <| List.Mem.tail _ he) :=
   rfl
 
-/-- Given a walk that avoids an edge, create a walk in the subgraph with that edge deleted.
-This is an abbreviation for `SimpleGraph.Walk.toDeleteEdges`. -/
-abbrev toDeleteEdge (e : Sym2 V) (p : G.Walk v w) (hp : e ∉ p.edges) :
-    (G.deleteEdges {e}).Walk v w :=
+/--
+Given a walk that avoids an edge, create a walk in the subgraph with that edge deleted.
+This is an abbreviation for `SimpleGraph.Walk.toDeleteEdges`.
+-/
+abbrev toDeleteEdge (e : Sym2 V) (p : G.Walk v w) (hp : e ∉ p.edges)
+    : (G.deleteEdges {e}).Walk v w :=
   p.toDeleteEdges {e} (fun _ ↦ by contrapose; simp +contextual [hp])
 
 @[simp]
-theorem mapLe_toDeleteEdges_eq (s : Set (Sym2 V)) {p : G.Walk v w} (hp) :
-    (p.toDeleteEdges s hp).mapLe (G.deleteEdges_le s) = p := by
+theorem mapLe_toDeleteEdges_eq (s : Set (Sym2 V)) {p : G.Walk v w} (hp)
+    : (p.toDeleteEdges s hp).mapLe (G.deleteEdges_le s) = p := by
   rw [← transfer_eq_mapLe, transfer_transfer, transfer_self]
   apply edges_transfer _ _ ▸ p.edges_subset_edgeSet
 

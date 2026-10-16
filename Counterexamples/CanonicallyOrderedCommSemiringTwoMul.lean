@@ -41,10 +41,12 @@ namespace Nxzmod2
 
 variable {a b : ℕ × ZMod 2}
 
-/-- The preorder relation on `ℕ × ℤ/2ℤ` where we only compare the first coordinate,
+/--
+The preorder relation on `ℕ × ℤ/2ℤ` where we only compare the first coordinate,
 except that we leave incomparable each pair of elements with the same first component.
 For instance, `∀ α, β ∈ ℤ/2ℤ`, the inequality `(1,α) ≤ (2,β)` holds,
-whereas, `∀ n ∈ ℤ`, the elements `(n,0)` and `(n,1)` are incomparable. -/
+whereas, `∀ n ∈ ℤ`, the elements `(n,0)` and `(n,1)` are incomparable.
+-/
 instance preN2 : PartialOrder (ℕ × ZMod 2) where
   le x y := x = y ∨ x.1 < y.1
   le_refl a := Or.inl rfl
@@ -64,8 +66,10 @@ instance preN2 : PartialOrder (ℕ × ZMod 2) where
 
 instance csrN2 : CommSemiring (ℕ × ZMod 2) := by infer_instance
 
-instance csrN21 : AddCancelCommMonoid (ℕ × ZMod 2) :=
-  { Nxzmod2.csrN2 with add_left_cancel := fun a _ _ h => (add_right_inj a).mp h }
+instance csrN21 : AddCancelCommMonoid (ℕ × ZMod 2) := {
+  Nxzmod2.csrN2 with
+  add_left_cancel := fun a _ _ h => (add_right_inj a).mp h
+}
 
 /-- A strict inequality forces the first components to be different. -/
 @[simp]
@@ -78,8 +82,7 @@ theorem lt_def : a < b ↔ a.1 < b.1 := by
   rw [k] at h
   exact Nat.lt_asymm h h
 
-instance : ZeroLEOneClass (ℕ × ZMod 2) :=
-  ⟨by dsimp only [LE.le]; decide⟩
+instance : ZeroLEOneClass (ℕ × ZMod 2) := ⟨by dsimp only [LE.le]; decide⟩
 
 instance : PosMulStrictMono (ℕ × ZMod 2) where
   mul_lt_mul_of_pos_left a ha b c hbc := by rw [lt_def] at *; exact mul_lt_mul_of_pos_left hbc ha
@@ -104,8 +107,7 @@ namespace ExL
 open Nxzmod2 Subtype
 
 /-- Initially, `L` was defined as the subsemiring closure of `(1,0)`. -/
-def L : Type :=
-  { l : ℕ × ZMod 2 // l ≠ (0, 1) }
+def L : Type := {l : ℕ × ZMod 2 // l ≠ (0, 1)}
 
 theorem add_L {a b : ℕ × ZMod 2} (ha : a ≠ (0, 1)) (hb : b ≠ (0, 1)) : a + b ≠ (0, 1) := by
   rcases a with ⟨a, a2⟩
@@ -122,13 +124,13 @@ theorem mul_L {a b : ℕ × ZMod 2} (ha : a ≠ (0, 1)) (hb : b ≠ (0, 1)) : a 
   rcases a with ⟨a, a2⟩
   rcases b with ⟨b, b2⟩
   cases b
-  · rcases mem_zmod_2 b2 with (rfl | rfl) <;> rcases mem_zmod_2 a2 with (rfl | rfl) <;>
-      simp only [Prod.mk_mul_mk, mul_zero, mul_one, ne_eq, Prod.mk.injEq, zero_ne_one, and_false,
-        not_false_eq_true, not_true_eq_false]
+  · rcases mem_zmod_2 b2 with (rfl | rfl) <;> rcases mem_zmod_2 a2 with (rfl | rfl)
+      <;> simp only [Prod.mk_mul_mk, mul_zero, mul_one, ne_eq, Prod.mk.injEq, zero_ne_one,
+        and_false, not_false_eq_true, not_true_eq_false]
     exact hb rfl
   cases a
-  · rcases mem_zmod_2 b2 with (rfl | rfl) <;> rcases mem_zmod_2 a2 with (rfl | rfl) <;>
-      simp only [Prod.mk_mul_mk, mul_zero, zero_mul, mul_one, ne_eq, Prod.mk.injEq, zero_ne_one,
+  · rcases mem_zmod_2 b2 with (rfl | rfl) <;> rcases mem_zmod_2 a2 with (rfl | rfl)
+      <;> simp only [Prod.mk_mul_mk, mul_zero, zero_mul, mul_one, ne_eq, Prod.mk.injEq, zero_ne_one,
         and_false, not_false_eq_true, not_true_eq_false]
     exact ha rfl
   · simp [mul_ne_zero _ _, Nat.succ_ne_zero _]
@@ -141,17 +143,13 @@ def lSubsemiring : Subsemiring (ℕ × ZMod 2) where
   add_mem' := add_L
   mul_mem' := mul_L
 
-instance : CommSemiring L :=
-  lSubsemiring.toCommSemiring
+instance : CommSemiring L := lSubsemiring.toCommSemiring
 
-instance : PartialOrder L :=
-  Subtype.partialOrder _
+instance : PartialOrder L := Subtype.partialOrder _
 
-instance : IsOrderedRing L :=
-  lSubsemiring.toIsOrderedRing
+instance : IsOrderedRing L := lSubsemiring.toIsOrderedRing
 
-instance inhabited : Inhabited L :=
-  ⟨1⟩
+instance inhabited : Inhabited L := ⟨1⟩
 
 theorem bot_le : ∀ a : L, 0 ≤ a := by
   rintro ⟨⟨an, a2⟩, ha⟩
@@ -169,9 +167,10 @@ instance orderBot : OrderBot L where
 theorem exists_add_of_le : ∀ a b : L, a ≤ b → ∃ c, b = a + c := by
   rintro a ⟨b, _⟩ (⟨rfl, rfl⟩ | h)
   · exact ⟨0, (add_zero _).symm⟩
-  · exact
-      ⟨⟨b - a.1, fun H => (tsub_pos_of_lt h).ne' (Prod.mk_inj.1 H).1⟩,
-        Subtype.ext <| Prod.ext (add_tsub_cancel_of_le h.le).symm (add_sub_cancel _ _).symm⟩
+  · exact ⟨
+      ⟨b - a.1, fun H => (tsub_pos_of_lt h).ne' (Prod.mk_inj.1 H).1⟩,
+      Subtype.ext <| Prod.ext (add_tsub_cancel_of_le h.le).symm (add_sub_cancel _ _).symm
+    ⟩
 
 theorem le_self_add : ∀ a b : L, a ≤ a + b := by
   rintro a ⟨⟨bn, b2⟩, hb⟩
@@ -210,8 +209,7 @@ instance : CanonicallyOrderedAdd L where
 instance : NoZeroDivisors L where
   eq_zero_or_eq_zero_of_mul_eq_zero := @eq_zero_or_eq_zero_of_mul_eq_zero
 
-/-- The elements `(1,0)` and `(1,1)` of `L` are different, but their doubles coincide.
--/
+/-- The elements `(1,0)` and `(1,1)` of `L` are different, but their doubles coincide. -/
 example : ∃ a b : L, a ≠ b ∧ 2 * a = 2 * b := by
   refine ⟨⟨(1, 0), by simp⟩, 1, fun h : (⟨(1, 0), _⟩ : L) = ⟨⟨1, 1⟩, _⟩ => ?_, rfl⟩
   cases congr($h.1.2)

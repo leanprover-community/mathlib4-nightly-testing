@@ -19,7 +19,6 @@ normed group
 
 public section
 
-
 variable {E : Type*}
 
 open Filter
@@ -54,31 +53,28 @@ variable {r : ℝ}
 instance norm : Norm ℝ where
   norm r := |r|
 
-@[simp]
-theorem norm_eq_abs (r : ℝ) : ‖r‖ = |r| :=
-  rfl
+@[simp] theorem norm_eq_abs (r : ℝ) : ‖r‖ = |r| := rfl
 
 instance normedAddCommGroup : NormedAddCommGroup ℝ :=
   ⟨fun _r _y => by rw [Real.dist_eq, ← abs_neg, neg_sub, add_comm, sub_eq_add_neg, norm_eq_abs]⟩
 
-theorem norm_of_nonneg (hr : 0 ≤ r) : ‖r‖ = r :=
-  abs_of_nonneg hr
+theorem norm_of_nonneg (hr : 0 ≤ r) : ‖r‖ = r := abs_of_nonneg hr
 
-theorem norm_of_nonpos (hr : r ≤ 0) : ‖r‖ = -r :=
-  abs_of_nonpos hr
+theorem norm_of_nonpos (hr : r ≤ 0) : ‖r‖ = -r := abs_of_nonpos hr
 
-theorem le_norm_self (r : ℝ) : r ≤ ‖r‖ :=
-  le_abs_self r
+theorem le_norm_self (r : ℝ) : r ≤ ‖r‖ := le_abs_self r
 
 lemma norm_natCast (n : ℕ) : ‖(n : ℝ)‖ = n := abs_of_nonneg n.cast_nonneg
-@[simp 1100] lemma nnnorm_natCast (n : ℕ) : ‖(n : ℝ)‖₊ = n := NNReal.eq <| norm_natCast _
-@[simp 1100] lemma enorm_natCast (n : ℕ) : ‖(n : ℝ)‖ₑ = n := by simp [enorm]
+@[simp 1100]
+lemma nnnorm_natCast (n : ℕ) : ‖(n : ℝ)‖₊ = n := NNReal.eq <| norm_natCast _
+@[simp 1100]
+lemma enorm_natCast (n : ℕ) : ‖(n : ℝ)‖ₑ = n := by simp [enorm]
 
-@[simp 1100] lemma norm_ofNat (n : ℕ) [n.AtLeastTwo] :
-    ‖(ofNat(n) : ℝ)‖ = ofNat(n) := norm_natCast n
+@[simp 1100]
+lemma norm_ofNat (n : ℕ) [n.AtLeastTwo] : ‖(ofNat(n) : ℝ)‖ = ofNat(n) := norm_natCast n
 
-@[simp 1100] lemma nnnorm_ofNat (n : ℕ) [n.AtLeastTwo] :
-    ‖(ofNat(n) : ℝ)‖₊ = ofNat(n) := nnnorm_natCast n
+@[simp 1100]
+lemma nnnorm_ofNat (n : ℕ) [n.AtLeastTwo] : ‖(ofNat(n) : ℝ)‖₊ = ofNat(n) := nnnorm_natCast n
 
 lemma norm_two : ‖(2 : ℝ)‖ = 2 := abs_of_pos zero_lt_two
 lemma nnnorm_two : ‖(2 : ℝ)‖₊ = 2 := NNReal.eq <| by simp
@@ -91,8 +87,7 @@ lemma nnnorm_nnratCast (q : ℚ≥0) : ‖(q : ℝ)‖₊ = q := by
   simp [nnnorm]
   rfl
 
-theorem nnnorm_of_nonneg (hr : 0 ≤ r) : ‖r‖₊ = .mk r hr :=
-  NNReal.eq <| norm_of_nonneg hr
+theorem nnnorm_of_nonneg (hr : 0 ≤ r) : ‖r‖₊ = .mk r hr := NNReal.eq <| norm_of_nonneg hr
 
 lemma enorm_of_nonneg (hr : 0 ≤ r) : ‖r‖ₑ = .ofReal r := by
   simp [enorm, nnnorm_of_nonneg hr, ENNReal.ofReal, toNNReal, hr]
@@ -103,11 +98,10 @@ lemma enorm_ofReal_of_nonneg {a : ℝ} (ha : 0 ≤ a) : ‖ENNReal.ofReal a‖�
 @[simp] lemma nnnorm_abs (r : ℝ) : ‖|r|‖₊ = ‖r‖₊ := by simp [nnnorm]
 @[simp] lemma enorm_abs (r : ℝ) : ‖|r|‖ₑ = ‖r‖ₑ := by simp [enorm]
 
-theorem enorm_eq_ofReal (hr : 0 ≤ r) : ‖r‖ₑ = .ofReal r := by
-  rw [← ofReal_norm, norm_of_nonneg hr]
+theorem enorm_eq_ofReal (hr : 0 ≤ r) : ‖r‖ₑ = .ofReal r := by rw [← ofReal_norm, norm_of_nonneg hr]
 
-@[simp] lemma enorm_toReal {a : ℝ≥0∞} (ha : a ≠ ∞) : ‖a.toReal‖ₑ = a := by
-  simp [enorm_eq_ofReal, ha]
+@[simp]
+lemma enorm_toReal {a : ℝ≥0∞} (ha : a ≠ ∞) : ‖a.toReal‖ₑ = a := by simp [enorm_eq_ofReal, ha]
 
 theorem enorm_eq_ofReal_abs (r : ℝ) : ‖r‖ₑ = ENNReal.ofReal |r| := by
   rw [← enorm_eq_ofReal (abs_nonneg _), enorm_abs]

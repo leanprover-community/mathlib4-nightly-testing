@@ -30,40 +30,47 @@ universe v u
 
 open CategoryTheory ModuleCat
 
-/-- The pseudofunctor from `LocallyDiscrete CommRingCatᵒᵖ` to `Cat` which sends
+/--
+The pseudofunctor from `LocallyDiscrete CommRingCatᵒᵖ` to `Cat` which sends
 a commutative ring `R` to its category of modules. The functoriality is given by
-the restriction of scalars. -/
+the restriction of scalars.
+-/
 @[simps! obj map mapId mapComp]
-noncomputable def CommRingCat.moduleCatRestrictScalarsPseudofunctor :
-    Pseudofunctor (LocallyDiscrete CommRingCat.{u}ᵒᵖ) Cat :=
+noncomputable def CommRingCat.moduleCatRestrictScalarsPseudofunctor
+    : Pseudofunctor (LocallyDiscrete CommRingCat.{u}ᵒᵖ) Cat :=
   LocallyDiscrete.mkPseudofunctor
     (fun R ↦ ↧(ModuleCat.{v} R.unop))
     (fun f ↦ (restrictScalars f.unop.hom).toCatHom)
     (fun R ↦ Cat.Hom.isoMk (restrictScalarsId R.unop))
     (fun f g ↦ Cat.Hom.isoMk <| restrictScalarsComp g.unop.hom f.unop.hom)
 
-/-- The pseudofunctor from `LocallyDiscrete RingCatᵒᵖ` to `Cat` which sends a ring `R`
-to its category of modules. The functoriality is given by the restriction of scalars. -/
+/--
+The pseudofunctor from `LocallyDiscrete RingCatᵒᵖ` to `Cat` which sends a ring `R`
+to its category of modules. The functoriality is given by the restriction of scalars.
+-/
 @[simps! obj map mapId mapComp]
-noncomputable def RingCat.moduleCatRestrictScalarsPseudofunctor :
-    Pseudofunctor (LocallyDiscrete RingCat.{u}ᵒᵖ) Cat :=
+noncomputable def RingCat.moduleCatRestrictScalarsPseudofunctor
+    : Pseudofunctor (LocallyDiscrete RingCat.{u}ᵒᵖ) Cat :=
   LocallyDiscrete.mkPseudofunctor
     (fun R ↦ ↧(ModuleCat.{v} R.unop))
     (fun f ↦ (restrictScalars f.unop.hom).toCatHom)
     (fun R ↦ Cat.Hom.isoMk <| restrictScalarsId R.unop)
     (fun f g ↦ Cat.Hom.isoMk <| restrictScalarsComp g.unop.hom f.unop.hom)
 
-/-- The pseudofunctor from `LocallyDiscrete CommRingCat` to `Cat` which sends
+/--
+The pseudofunctor from `LocallyDiscrete CommRingCat` to `Cat` which sends
 a commutative ring `R` to its category of modules. The functoriality is given by
-the extension of scalars. -/
+the extension of scalars.
+-/
 @[simps! obj map mapId mapComp]
-noncomputable def CommRingCat.moduleCatExtendScalarsPseudofunctor :
-    Pseudofunctor (LocallyDiscrete CommRingCat.{u}) Cat := by
+noncomputable def CommRingCat.moduleCatExtendScalarsPseudofunctor
+    : Pseudofunctor (LocallyDiscrete CommRingCat.{u}) Cat := by
   refine LocallyDiscrete.mkPseudofunctor
     (fun R ↦ ↧(ModuleCat.{u} R))
     (fun f ↦ (extendScalars f.hom).toCatHom)
     (fun R ↦ Cat.Hom.isoMk <| extendScalarsId R)
-    (fun f g ↦ Cat.Hom.isoMk <| extendScalarsComp f.hom g.hom) ?_ ?_ ?_
+    (fun f g ↦ Cat.Hom.isoMk <| extendScalarsComp f.hom g.hom)
+    ?_ ?_ ?_
   · intros; ext1; apply extendScalars_assoc'
   · intros; ext1; apply extendScalars_id_comp
   · intros; ext1; apply extendScalars_comp_id

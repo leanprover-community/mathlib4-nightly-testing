@@ -22,32 +22,32 @@ attribute [local ext] PiTensorProduct.ext
 
 open PiTensorProduct Module TensorProduct
 
-variable {ι R : Type*} {M : ι → Type*} {κ : ι → Type*} [CommSemiring R] [∀ i, AddCommMonoid (M i)]
-  [∀ i, Module R (M i)]
+variable
+  {ι R : Type*} {M : ι → Type*} {κ : ι → Type*}
+  [CommSemiring R] [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
 
 open scoped Classical in
-/-- Let `ι` be a `Finite` type and `M` be a family of modules indexed by `ι`. If `b i : κ i → M i`
+/--
+Let `ι` be a `Finite` type and `M` be a family of modules indexed by `ι`. If `b i : κ i → M i`
 is a basis for every `i` in `ι`, then `fun (p : Π i, κ i) ↦ ⨂ₜ[R] i, b i (p i)` is a basis
 of `⨂[R] i, M i`.
 -/
-noncomputable def Basis.piTensorProduct [Finite ι] (b : Π i, Basis (κ i) R (M i)) :
-    Basis (Π i, κ i) R (⨂[R] i, M i) :=
+noncomputable def Basis.piTensorProduct [Finite ι] (b : Π i, Basis (κ i) R (M i))
+    : Basis (Π i, κ i) R (⨂[R] i, M i) :=
   haveI := Fintype.ofFinite ι
-  Finsupp.basisSingleOne.map
-    ((PiTensorProduct.congr (fun i ↦ (b i).repr)) ≪≫ₗ
-      ofFinsuppEquiv ≪≫ₗ
-      Finsupp.lcongr (Equiv.refl _) (constantBaseRingEquiv _ R).toLinearEquiv).symm
+  Finsupp.basisSingleOne.map ((PiTensorProduct.congr (fun i ↦ (b i).repr)) ≪≫ₗ ofFinsuppEquiv
+    ≪≫ₗ Finsupp.lcongr (Equiv.refl _) (constantBaseRingEquiv _ R).toLinearEquiv).symm
 
 @[simp]
-theorem Basis.piTensorProduct_repr_tprod_apply [Fintype ι] (b : Π i, Basis (κ i) R (M i))
-    (x : Π i, M i) (p : Π i, κ i) :
-    (Basis.piTensorProduct b).repr (tprod R x) p = ∏ i : ι, (b i).repr (x i) (p i) := by
+theorem Basis.piTensorProduct_repr_tprod_apply
+    [Fintype ι] (b : Π i, Basis (κ i) R (M i)) (x : Π i, M i) (p : Π i, κ i)
+    : (Basis.piTensorProduct b).repr (tprod R x) p = ∏ i : ι, (b i).repr (x i) (p i) := by
   rw [piTensorProduct, Subsingleton.elim (Fintype.ofFinite ι) ‹_›]
   simp
 
 @[simp]
-theorem Basis.piTensorProduct_apply [Finite ι] (b : Π i, Basis (κ i) R (M i)) (p : Π i, κ i) :
-    Basis.piTensorProduct b p = ⨂ₜ[R] i, (b i) (p i) := by
+theorem Basis.piTensorProduct_apply [Finite ι] (b : Π i, Basis (κ i) R (M i)) (p : Π i, κ i)
+    : Basis.piTensorProduct b p = ⨂ₜ[R] i, (b i) (p i) := by
   have := Fintype.ofFinite ι
   classical
   refine (Basis.piTensorProduct b).ext_elem (fun q ↦ ?_)

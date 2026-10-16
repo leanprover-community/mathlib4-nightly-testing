@@ -19,5 +19,4 @@ variable {G : Type*} [Group G]
 instance [Fintype G] [DecidablePred (· ∈ commutator G)] : Fintype (Abelianization G) :=
   QuotientGroup.fintype (commutator G)
 
-instance [Finite G] : Finite (Abelianization G) :=
-  Quotient.finite _
+instance [Finite G] : Finite (Abelianization G) := Quotient.finite _

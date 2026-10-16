@@ -32,7 +32,6 @@ can be shown that this construction gives a quasi-inverse to the whiskering oper
 
 open CategoryTheory MonoidalCategory Limits
 
-
 universe v v' u u'
 
 namespace AddCommGrpCat
@@ -55,10 +54,10 @@ private noncomputable local instance : BraidedCategory C := .ofCartesianMonoidal
 
 /-- Implementation, see `leftExactFunctorForgetEquivalence`. -/
 noncomputable def inverseAux : (C ⥤ₗ Type v) ⥤ C ⥤ AddCommGrpCat.{v} :=
-  Functor.mapCommGrpFunctor ⋙
-    (Functor.whiskeringLeft _ _ _).obj Preadditive.commGrpEquivalence.functor ⋙
-      (Functor.whiskeringRight _ _ _).obj
-        (commGrpTypeEquivalenceCommGrp.functor ⋙ commGroupAddCommGroupEquivalence.functor)
+  Functor.mapCommGrpFunctor
+    ⋙ (Functor.whiskeringLeft _ _ _).obj Preadditive.commGrpEquivalence.functor
+    ⋙ (Functor.whiskeringRight _ _ _).obj
+      (commGrpTypeEquivalenceCommGrp.functor ⋙ commGroupAddCommGroupEquivalence.functor)
 
 instance (F : C ⥤ₗ Type v) : PreservesFiniteLimits (inverseAux.obj F) where
   preservesFiniteLimits J _ _ :=
@@ -75,26 +74,29 @@ open scoped MonObj
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Functor.LaxMonoidal.comp Functor.Monoidal.instComp in
-/-- Implementation, see `leftExactFunctorForgetEquivalence`.
+/--
+Implementation, see `leftExactFunctorForgetEquivalence`.
 This is the complicated bit, where we show that forgetting the group structure in the image of
-`F` and then reconstructing it recovers the group structure we started with. -/
-noncomputable def unitIsoAux (F : C ⥤ AddCommGrpCat.{v}) [PreservesFiniteLimits F] (X : C) :
-    letI : (F ⋙ forget AddCommGrpCat).Braided := .ofChosenFiniteProducts _
-    commGrpTypeEquivalenceCommGrp.inverse.obj (AddCommGrpCat.toCommGrp.obj (F.obj X)) ≅
-      (F ⋙ forget AddCommGrpCat).mapCommGrp.obj (Preadditive.commGrpEquivalence.functor.obj X) := by
+`F` and then reconstructing it recovers the group structure we started with.
+-/
+noncomputable def unitIsoAux (F : C ⥤ AddCommGrpCat.{v}) [PreservesFiniteLimits F] (X : C)
+    : letI : (F ⋙ forget AddCommGrpCat).Braided := .ofChosenFiniteProducts _
+      commGrpTypeEquivalenceCommGrp.inverse.obj (AddCommGrpCat.toCommGrp.obj (F.obj X))
+        ≅ (F ⋙ forget AddCommGrpCat).mapCommGrp.obj
+          (Preadditive.commGrpEquivalence.functor.obj X) := by
   letI : (F ⋙ forget AddCommGrpCat).Braided := .ofChosenFiniteProducts _
   letI : F.Monoidal := .ofChosenFiniteProducts _
-  refine CommGrp.mkIso Multiplicative.toAdd.toIso (by
-    rw [Functor.obj.η_def X (F := F ⋙ forget AddCommGrpCat)]
-    cat_disch) ?_
+  refine CommGrp.mkIso Multiplicative.toAdd.toIso
+    (by
+      rw [Functor.obj.η_def X (F := F ⋙ forget AddCommGrpCat)]
+      cat_disch)
+    ?_
   dsimp [-Functor.comp_map, -ConcreteCategory.forget_map_eq_ofHom]
   have : F.Additive := Functor.additive_of_preserves_binary_products _
   simp only [Category.id_comp]
-  rw [Functor.obj.μ_def X (F := F ⋙ forget AddCommGrpCat), Preadditive.mul_def X,
-    Functor.comp_map, F.map_add,
-    Functor.Monoidal.μ_comp F (forget AddCommGrpCat) X X,
-    Category.assoc, ← Functor.map_comp, Preadditive.comp_add, Functor.Monoidal.μ_fst,
-    Functor.Monoidal.μ_snd]
+  rw [Functor.obj.μ_def X (F := F ⋙ forget AddCommGrpCat), Preadditive.mul_def X, Functor.comp_map,
+    F.map_add, Functor.Monoidal.μ_comp F (forget AddCommGrpCat) X X, Category.assoc,
+    ← Functor.map_comp, Preadditive.comp_add, Functor.Monoidal.μ_fst, Functor.Monoidal.μ_snd]
   ext
   -- `simp [types_tensorObj_def]` says
   simp only [types_tensorObj_def, TypeCat.Fun.toFun_apply, CategoryTheory.comp_apply,
@@ -104,22 +106,25 @@ noncomputable def unitIsoAux (F : C ⥤ AddCommGrpCat.{v}) [PreservesFiniteLimit
   rfl
 
 /-- Implementation, see `leftExactFunctorForgetEquivalence`. -/
-noncomputable def unitIso : 𝟭 (C ⥤ₗ AddCommGrpCat) ≅
-    (LeftExactFunctor.whiskeringRight _ _ _).obj (LeftExactFunctor.of (forget _)) ⋙ inverse :=
-  NatIso.ofComponents (fun F => InducedCategory.isoMk (NatIso.ofComponents (fun X =>
-    commGroupAddCommGroupEquivalence.counitIso.app _ ≪≫
-      (CommGrpCat.toAddCommGrp.mapIso (commGrpTypeEquivalenceCommGrp.counitIso.app
-        (AddCommGrpCat.toCommGrp.obj (F.obj.obj X)))).symm ≪≫
-      CommGrpCat.toAddCommGrp.mapIso
-        (CommGrpTypeEquivalenceCommGrp.functor.mapIso (unitIsoAux F.obj X)))))
+noncomputable def unitIso
+    : 𝟭 (C ⥤ₗ AddCommGrpCat)
+      ≅ (LeftExactFunctor.whiskeringRight _ _ _).obj (LeftExactFunctor.of (forget _)) ⋙ inverse :=
+  NatIso.ofComponents (fun F =>
+    InducedCategory.isoMk (NatIso.ofComponents (fun X =>
+      commGroupAddCommGroupEquivalence.counitIso.app _
+        ≪≫ (CommGrpCat.toAddCommGrp.mapIso (commGrpTypeEquivalenceCommGrp.counitIso.app
+          (AddCommGrpCat.toCommGrp.obj (F.obj.obj X)))).symm
+        ≪≫ CommGrpCat.toAddCommGrp.mapIso (CommGrpTypeEquivalenceCommGrp.functor.mapIso (unitIsoAux
+          F.obj X)))))
 
 end leftExactFunctorForgetEquivalence
 
 variable (C) in
-/-- If `C` is an additive category, the forgetful functor `(C ⥤ₗ AddCommGroup) ⥤ (C ⥤ₗ Type v)` is
-an equivalence. -/
-noncomputable def leftExactFunctorForgetEquivalence :
-    (C ⥤ₗ AddCommGrpCat.{v}) ≌ (C ⥤ₗ Type v) where
+/--
+If `C` is an additive category, the forgetful functor `(C ⥤ₗ AddCommGroup) ⥤ (C ⥤ₗ Type v)` is
+an equivalence.
+-/
+noncomputable def leftExactFunctorForgetEquivalence : (C ⥤ₗ AddCommGrpCat.{v}) ≌ (C ⥤ₗ Type v) where
   functor := (LeftExactFunctor.whiskeringRight _ _ _).obj (LeftExactFunctor.of (forget _))
   inverse := leftExactFunctorForgetEquivalence.inverse
   unitIso := leftExactFunctorForgetEquivalence.unitIso

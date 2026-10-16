@@ -39,15 +39,13 @@ lemma continuous_enorm : Continuous fun a : E ↦ ‖a‖ₑ := ContinuousENorm.
 
 variable {X : Type*} [TopologicalSpace X] {f : X → E} {s : Set X} {a : X}
 
-@[fun_prop]
-lemma Continuous.enorm : Continuous f → Continuous (‖f ·‖ₑ) :=
-  continuous_enorm.comp
+@[fun_prop] lemma Continuous.enorm : Continuous f → Continuous (‖f ·‖ₑ) := continuous_enorm.comp
 
 lemma ContinuousAt.enorm {a : X} (h : ContinuousAt f a) : ContinuousAt (‖f ·‖ₑ) a := by fun_prop
 
 @[fun_prop]
-lemma ContinuousWithinAt.enorm {s : Set X} {a : X} (h : ContinuousWithinAt f s a) :
-    ContinuousWithinAt (‖f ·‖ₑ) s a :=
+lemma ContinuousWithinAt.enorm {s : Set X} {a : X} (h : ContinuousWithinAt f s a)
+    : ContinuousWithinAt (‖f ·‖ₑ) s a :=
   (ContinuousENorm.continuous_enorm.continuousWithinAt).comp (t := Set.univ) h
     (fun _ _ ↦ by trivial)
 
@@ -58,50 +56,55 @@ lemma ContinuousOn.enorm (h : ContinuousOn f s) : ContinuousOn (‖f ·‖ₑ) s
 end ContinuousENorm
 
 @[to_additive]
-theorem tendsto_iff_norm_inv_mul_tendsto_zero {f : α → E} {a : Filter α} {b : E} :
-    Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖(f e)⁻¹ * b‖) a (𝓝 0) := by
+theorem tendsto_iff_norm_inv_mul_tendsto_zero {f : α → E} {a : Filter α} {b : E}
+    : Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖(f e)⁻¹ * b‖) a (𝓝 0) := by
   simp only [← dist_eq_norm_inv_mul, ← tendsto_iff_dist_tendsto_zero]
 
 @[to_additive]
-theorem tendsto_one_iff_norm_tendsto_zero {f : α → E} {a : Filter α} :
-    Tendsto f a (𝓝 1) ↔ Tendsto (‖f ·‖) a (𝓝 0) :=
+theorem tendsto_one_iff_norm_tendsto_zero {f : α → E} {a : Filter α}
+    : Tendsto f a (𝓝 1) ↔ Tendsto (‖f ·‖) a (𝓝 0) :=
   tendsto_iff_norm_inv_mul_tendsto_zero.trans <| by simp
 
 @[to_additive]
-theorem tendsto_iff_enorm_inv_mul_tendsto_zero {f : α → E} {a : Filter α} {b : E} :
-    Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖(f e)⁻¹ * b‖ₑ) a (𝓝 0) := by
+theorem tendsto_iff_enorm_inv_mul_tendsto_zero {f : α → E} {a : Filter α} {b : E}
+    : Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖(f e)⁻¹ * b‖ₑ) a (𝓝 0) := by
   simp only [← edist_eq_enorm_inv_mul, ← tendsto_iff_edist_tendsto_0]
 
 @[to_additive]
-theorem tendsto_one_iff_enorm_tendsto_zero {f : α → E} {a : Filter α} :
-    Tendsto f a (𝓝 1) ↔ Tendsto (‖f ·‖ₑ) a (𝓝 0) :=
+theorem tendsto_one_iff_enorm_tendsto_zero {f : α → E} {a : Filter α}
+    : Tendsto f a (𝓝 1) ↔ Tendsto (‖f ·‖ₑ) a (𝓝 0) :=
   tendsto_iff_enorm_inv_mul_tendsto_zero.trans <| by simp
 
 @[to_additive (attr := simp 1100)]
 theorem comap_norm_nhds_one : comap norm (𝓝 0) = 𝓝 (1 : E) := by
   simpa only [dist_one_right] using nhds_comap_dist (1 : E)
 
-/-- Special case of the sandwich theorem: if the norm of `f` is eventually bounded by a real
+/--
+Special case of the sandwich theorem: if the norm of `f` is eventually bounded by a real
 function `a` which tends to `0`, then `f` tends to `1` (neutral element of `SeminormedGroup`).
 In this pair of lemmas (`squeeze_one_norm'` and `squeeze_one_norm`), following a convention of
 similar lemmas in `Topology.MetricSpace.Basic` and `Topology.Algebra.Order`, the `'` version is
-phrased using "eventually" and the non-`'` version is phrased absolutely. -/
+phrased using "eventually" and the non-`'` version is phrased absolutely.
+-/
 @[to_additive /-- Special case of the sandwich theorem: if the norm of `f` is eventually bounded by
 a real function `a` which tends to `0`, then `f` tends to `0`. In this pair of lemmas
 (`squeeze_zero_norm'` and `squeeze_zero_norm`), following a convention of similar lemmas in
 `Topology.MetricSpace.Pseudo.Defs` and `Topology.Algebra.Order`, the `'` version is phrased using
 "eventually" and the non-`'` version is phrased absolutely. -/]
-theorem squeeze_one_norm' {f : α → E} {a : α → ℝ} {t₀ : Filter α} (h : ∀ᶠ n in t₀, ‖f n‖ ≤ a n)
-    (h' : Tendsto a t₀ (𝓝 0)) : Tendsto f t₀ (𝓝 1) :=
+theorem squeeze_one_norm'
+    {f : α → E} {a : α → ℝ} {t₀ : Filter α} (h : ∀ᶠ n in t₀, ‖f n‖ ≤ a n) (h' : Tendsto a t₀ (𝓝 0))
+    : Tendsto f t₀ (𝓝 1) :=
   tendsto_one_iff_norm_tendsto_zero.2 <|
     squeeze_zero' (Eventually.of_forall fun _n => norm_nonneg' _) h h'
 
-/-- Special case of the sandwich theorem: if the norm of `f` is bounded by a real function `a` which
-tends to `0`, then `f` tends to `1`. -/
+/--
+Special case of the sandwich theorem: if the norm of `f` is bounded by a real function `a` which
+tends to `0`, then `f` tends to `1`.
+-/
 @[to_additive /-- Special case of the sandwich theorem: if the norm of `f` is bounded by a real
 function `a` which tends to `0`, then `f` tends to `0`. -/]
-theorem squeeze_one_norm {f : α → E} {a : α → ℝ} {t₀ : Filter α} (h : ∀ n, ‖f n‖ ≤ a n) :
-    Tendsto a t₀ (𝓝 0) → Tendsto f t₀ (𝓝 1) :=
+theorem squeeze_one_norm {f : α → E} {a : α → ℝ} {t₀ : Filter α} (h : ∀ n, ‖f n‖ ≤ a n)
+    : Tendsto a t₀ (𝓝 0) → Tendsto f t₀ (𝓝 1) :=
   squeeze_one_norm' <| Eventually.of_forall h
 
 @[to_additive]
@@ -127,8 +130,7 @@ theorem continuous_norm' : Continuous fun a : E => ‖a‖ := by
   simpa using continuous_id.dist (continuous_const : Continuous fun _a => (1 : E))
 
 @[to_additive (attr := continuity, fun_prop) continuous_nnnorm]
-theorem continuous_nnnorm' : Continuous fun a : E => ‖a‖₊ :=
-  continuous_norm'.subtype_mk _
+theorem continuous_nnnorm' : Continuous fun a : E => ‖a‖₊ := continuous_norm'.subtype_mk _
 
 end SeminormedGroup
 
@@ -141,8 +143,8 @@ instance SeminormedGroup.toESeminormedMonoid [SeminormedGroup E] : ESeminormedMo
   enorm_mul_le := by simp [enorm_eq_nnnorm, ← coe_add, nnnorm_mul_le']
 
 @[to_additive]
-instance SeminormedCommGroup.toESeminormedCommMonoid [SeminormedCommGroup E] :
-    ESeminormedCommMonoid E where
+instance SeminormedCommGroup.toESeminormedCommMonoid [SeminormedCommGroup E]
+  : ESeminormedCommMonoid E where
 
 @[to_additive]
 instance NormedGroup.toENormedMonoid {F : Type*} [NormedGroup F] : ENormedMonoid F where
@@ -169,8 +171,9 @@ set_option linter.docPrime false in
 theorem Inseparable.nnnorm_eq_nnnorm' {u v : E} (h : Inseparable u v) : ‖u‖₊ = ‖v‖₊ :=
   h.map continuous_nnnorm' |>.eq
 
-theorem Inseparable.enorm_eq_enorm {E : Type*} [TopologicalSpace E] [ContinuousENorm E]
-    {u v : E} (h : Inseparable u v) : ‖u‖ₑ = ‖v‖ₑ :=
+theorem Inseparable.enorm_eq_enorm
+    {E : Type*} [TopologicalSpace E] [ContinuousENorm E] {u v : E} (h : Inseparable u v)
+    : ‖u‖ₑ = ‖v‖ₑ :=
   h.map continuous_enorm |>.eq
 
 @[to_additive]
@@ -193,7 +196,6 @@ theorem Filter.Tendsto.norm' (h : Tendsto f l (𝓝 a)) : Tendsto (fun x => ‖f
 theorem Filter.Tendsto.nnnorm' (h : Tendsto f l (𝓝 a)) : Tendsto (fun x => ‖f x‖₊) l (𝓝 ‖a‖₊) :=
   Tendsto.comp continuous_nnnorm'.continuousAt h
 
-
 end
 
 section
@@ -201,12 +203,10 @@ section
 variable [TopologicalSpace α] {f : α → E} {a : α}
 
 @[to_additive (attr := fun_prop) Continuous.norm]
-theorem Continuous.norm' : Continuous f → Continuous fun x => ‖f x‖ :=
-  continuous_norm'.comp
+theorem Continuous.norm' : Continuous f → Continuous fun x => ‖f x‖ := continuous_norm'.comp
 
 @[to_additive (attr := fun_prop) Continuous.nnnorm]
-theorem Continuous.nnnorm' : Continuous f → Continuous fun x => ‖f x‖₊ :=
-  continuous_nnnorm'.comp
+theorem Continuous.nnnorm' : Continuous f → Continuous fun x => ‖f x‖₊ := continuous_nnnorm'.comp
 
 end
 end SeminormedGroup
@@ -237,13 +237,13 @@ theorem ContinuousAt.nnnorm' {a : α} (h : ContinuousAt f a) : ContinuousAt (fun
   Tendsto.nnnorm' h
 
 @[to_additive ContinuousWithinAt.norm]
-theorem ContinuousWithinAt.norm' {s : Set α} {a : α} (h : ContinuousWithinAt f s a) :
-    ContinuousWithinAt (fun x => ‖f x‖) s a :=
+theorem ContinuousWithinAt.norm' {s : Set α} {a : α} (h : ContinuousWithinAt f s a)
+    : ContinuousWithinAt (fun x => ‖f x‖) s a :=
   Tendsto.norm' h
 
 @[to_additive ContinuousWithinAt.nnnorm]
-theorem ContinuousWithinAt.nnnorm' {s : Set α} {a : α} (h : ContinuousWithinAt f s a) :
-    ContinuousWithinAt (fun x => ‖f x‖₊) s a :=
+theorem ContinuousWithinAt.nnnorm' {s : Set α} {a : α} (h : ContinuousWithinAt f s a)
+    : ContinuousWithinAt (fun x => ‖f x‖₊) s a :=
   Tendsto.nnnorm' h
 
 @[to_additive (attr := fun_prop) ContinuousOn.norm]
@@ -251,50 +251,51 @@ theorem ContinuousOn.norm' {s : Set α} (h : ContinuousOn f s) : ContinuousOn (f
   fun x hx => (h x hx).norm'
 
 @[to_additive (attr := fun_prop) ContinuousOn.nnnorm]
-theorem ContinuousOn.nnnorm' {s : Set α} (h : ContinuousOn f s) :
-    ContinuousOn (fun x => ‖f x‖₊) s := fun x hx => (h x hx).nnnorm'
+theorem ContinuousOn.nnnorm' {s : Set α} (h : ContinuousOn f s)
+    : ContinuousOn (fun x => ‖f x‖₊) s := fun x hx =>
+  (h x hx).nnnorm'
 
 end
 
 /-- If `‖y‖ → ∞`, then we can assume `y ≠ x` for any fixed `x`. -/
 @[to_additive eventually_ne_of_tendsto_norm_atTop /-- If `‖y‖→∞`, then we can assume `y≠x` for any
 fixed `x` -/]
-theorem eventually_ne_of_tendsto_norm_atTop' {l : Filter α} {f : α → E}
-    (h : Tendsto (fun y => ‖f y‖) l atTop) (x : E) : ∀ᶠ y in l, f y ≠ x :=
+theorem eventually_ne_of_tendsto_norm_atTop'
+    {l : Filter α} {f : α → E} (h : Tendsto (fun y => ‖f y‖) l atTop) (x : E)
+    : ∀ᶠ y in l, f y ≠ x :=
   (h.eventually_ne_atTop _).mono fun _x => ne_of_apply_ne norm
 
 @[to_additive]
-theorem SeminormedGroup.mem_closure_iff :
-    a ∈ closure s ↔ ∀ ε, 0 < ε → ∃ b ∈ s, ‖a⁻¹ * b‖ < ε := by
+theorem SeminormedGroup.mem_closure_iff : a ∈ closure s ↔ ∀ ε, 0 < ε → ∃ b ∈ s, ‖a⁻¹ * b‖ < ε := by
   simp [Metric.mem_closure_iff, dist_eq_norm_inv_mul]
 
 @[to_additive]
-theorem SeminormedGroup.tendstoUniformlyOn_one {f : ι → κ → G} {s : Set κ} {l : Filter ι} :
-    TendstoUniformlyOn f 1 l s ↔ ∀ ε > 0, ∀ᶠ i in l, ∀ x ∈ s, ‖f i x‖ < ε := by
+theorem SeminormedGroup.tendstoUniformlyOn_one {f : ι → κ → G} {s : Set κ} {l : Filter ι}
+    : TendstoUniformlyOn f 1 l s ↔ ∀ ε > 0, ∀ᶠ i in l, ∀ x ∈ s, ‖f i x‖ < ε := by
   simp only [tendstoUniformlyOn_iff, Pi.one_apply, dist_one_left]
 
 @[to_additive]
-theorem SeminormedGroup.uniformCauchySeqOnFilter_iff_tendstoUniformlyOnFilter_one {f : ι → κ → G}
-    {l : Filter ι} {l' : Filter κ} :
-    UniformCauchySeqOnFilter f l l' ↔ TendstoUniformlyOnFilter
-      (fun n : ι × ι => fun z => (f n.fst z)⁻¹ * f n.snd z) 1 (l ×ˢ l) l' := by
+theorem SeminormedGroup.uniformCauchySeqOnFilter_iff_tendstoUniformlyOnFilter_one
+    {f : ι → κ → G} {l : Filter ι} {l' : Filter κ}
+    : UniformCauchySeqOnFilter f l l'
+      ↔ TendstoUniformlyOnFilter
+        (fun n : ι × ι => fun z => (f n.fst z)⁻¹ * f n.snd z)
+        1 (l ×ˢ l) l' := by
   refine ⟨fun hf u hu => ?_, fun hf u hu => ?_⟩
   · obtain ⟨ε, hε, H⟩ := uniformity_basis_dist.mem_uniformity_iff.mp hu
-    refine
-      (hf { p : G × G | dist p.fst p.snd < ε } <| dist_mem_uniformity hε).mono fun x hx =>
-        H 1 ((f x.fst.fst x.snd)⁻¹ * f x.fst.snd x.snd) ?_
+    refine (hf { p : G × G | dist p.fst p.snd < ε } <| dist_mem_uniformity hε).mono fun x hx =>
+      H 1 ((f x.fst.fst x.snd)⁻¹ * f x.fst.snd x.snd) ?_
     simpa [dist_eq_norm_inv_mul, norm_div_rev] using hx
   · obtain ⟨ε, hε, H⟩ := uniformity_basis_dist.mem_uniformity_iff.mp hu
-    refine
-      (hf { p : G × G | dist p.fst p.snd < ε } <| dist_mem_uniformity hε).mono fun x hx =>
-        H (f x.fst.fst x.snd) (f x.fst.snd x.snd) ?_
+    refine (hf { p : G × G | dist p.fst p.snd < ε } <| dist_mem_uniformity hε).mono fun x hx =>
+      H (f x.fst.fst x.snd) (f x.fst.snd x.snd) ?_
     simpa [dist_eq_norm_inv_mul, norm_div_rev] using hx
 
 @[to_additive]
-theorem SeminormedGroup.uniformCauchySeqOn_iff_tendstoUniformlyOn_one {f : ι → κ → G} {s : Set κ}
-    {l : Filter ι} :
-    UniformCauchySeqOn f l s ↔
-      TendstoUniformlyOn (fun n : ι × ι => fun z => (f n.fst z)⁻¹ * f n.snd z) 1 (l ×ˢ l) s := by
+theorem SeminormedGroup.uniformCauchySeqOn_iff_tendstoUniformlyOn_one
+    {f : ι → κ → G} {s : Set κ} {l : Filter ι}
+    : UniformCauchySeqOn f l s
+      ↔ TendstoUniformlyOn (fun n : ι × ι => fun z => (f n.fst z)⁻¹ * f n.snd z) 1 (l ×ˢ l) s := by
   rw [tendstoUniformlyOn_iff_tendstoUniformlyOnFilter,
     uniformCauchySeqOn_iff_uniformCauchySeqOnFilter,
     SeminormedGroup.uniformCauchySeqOnFilter_iff_tendstoUniformlyOnFilter_one]
@@ -306,18 +307,18 @@ section SeminormedCommGroup
 variable [SeminormedCommGroup E] [SeminormedCommGroup F] {a b : E}
 
 @[to_additive]
-theorem tendsto_iff_norm_div_tendsto_zero {f : α → E} {a : Filter α} {b : E} :
-    Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖f e / b‖) a (𝓝 0) := by
+theorem tendsto_iff_norm_div_tendsto_zero {f : α → E} {a : Filter α} {b : E}
+    : Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖f e / b‖) a (𝓝 0) := by
   simp only [← dist_eq_norm_div, ← tendsto_iff_dist_tendsto_zero]
 
 @[to_additive]
-theorem tendsto_iff_enorm_div_tendsto_zero {f : α → E} {a : Filter α} {b : E} :
-    Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖f e / b‖ₑ) a (𝓝 0) := by
+theorem tendsto_iff_enorm_div_tendsto_zero {f : α → E} {a : Filter α} {b : E}
+    : Tendsto f a (𝓝 b) ↔ Tendsto (fun e => ‖f e / b‖ₑ) a (𝓝 0) := by
   simp only [← edist_eq_enorm_div, ← tendsto_iff_edist_tendsto_0]
 
 @[to_additive]
-theorem SeminormedCommGroup.mem_closure_iff {s : Set E} :
-    a ∈ closure s ↔ ∀ ε, 0 < ε → ∃ b ∈ s, ‖a / b‖ < ε := by
+theorem SeminormedCommGroup.mem_closure_iff {s : Set E}
+    : a ∈ closure s ↔ ∀ ε, 0 < ε → ∃ b ∈ s, ‖a / b‖ < ε := by
   simp [Metric.mem_closure_iff, dist_eq_norm_div]
 
 @[to_additive]
@@ -332,11 +333,11 @@ theorem tendsto_norm_div_self_nhdsGE (x : E) : Tendsto (fun a ↦ ‖a / x‖) (
 open Finset
 
 @[to_additive]
-theorem controlled_prod_of_mem_closure {s : Subgroup E} (hg : a ∈ closure (s : Set E)) {b : ℕ → ℝ}
-    (b_pos : ∀ n, 0 < b n) :
-    ∃ v : ℕ → E,
-      Tendsto (fun n => ∏ i ∈ range (n + 1), v i) atTop (𝓝 a) ∧
-        (∀ n, v n ∈ s) ∧ ‖(v 0)⁻¹ * a‖ < b 0 ∧ ∀ n, 0 < n → ‖v n‖ < b n := by
+theorem controlled_prod_of_mem_closure
+    {s : Subgroup E} (hg : a ∈ closure (s : Set E)) {b : ℕ → ℝ} (b_pos : ∀ n, 0 < b n)
+    : ∃ v : ℕ → E,
+      Tendsto (fun n => ∏ i ∈ range (n + 1), v i) atTop (𝓝 a) ∧ (∀ n, v n ∈ s) ∧ ‖(v 0)⁻¹ * a‖ < b 0
+        ∧ ∀ n, 0 < n → ‖v n‖ < b n := by
   obtain ⟨u : ℕ → E, u_in : ∀ n, u n ∈ s, lim_u : Tendsto u atTop (𝓝 a)⟩ :=
     mem_closure_iff_seq_limit.mp hg
   obtain ⟨n₀, hn₀⟩ : ∃ n₀, ∀ n ≥ n₀, ‖(u n)⁻¹ * a‖ < b 0 :=
@@ -358,7 +359,7 @@ theorem controlled_prod_of_mem_closure {s : Subgroup E} (hg : a ∈ closure (s :
     rw [Finset.prod_range_succ']
     have : ∏ k ∈ range n, v (k + 1) = (v 0)⁻¹ * w n := by
       apply prod_range_induction _ _ (by simp [v]) _ (fun k hk ↦ ?_)
-      simp only [↓reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_false, add_tsub_cancel_right, v]
+      simp only [↓ reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_false, add_tsub_cancel_right, v]
       group
     simp [this]
   · rintro ⟨⟩
@@ -368,21 +369,24 @@ theorem controlled_prod_of_mem_closure {s : Subgroup E} (hg : a ∈ closure (s :
   · intro l hl
     obtain ⟨k, rfl⟩ : ∃ k, l = k + 1 := Nat.exists_eq_succ_of_ne_zero hl.ne'
     rw [← norm_inv']
-    simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte, add_tsub_cancel_right,
+    simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓ reduceIte, add_tsub_cancel_right,
       mul_inv_rev, inv_inv, v]
     apply hφ
 
 @[to_additive]
-theorem controlled_prod_of_mem_closure_range {j : E →* F} {b : F}
-    (hb : b ∈ closure (j.range : Set F)) {f : ℕ → ℝ} (b_pos : ∀ n, 0 < f n) :
-    ∃ a : ℕ → E,
-      Tendsto (fun n => ∏ i ∈ range (n + 1), j (a i)) atTop (𝓝 b) ∧
-        ‖(j (a 0))⁻¹ * b‖ < f 0 ∧ ∀ n, 0 < n → ‖j (a n)‖ < f n := by
+theorem controlled_prod_of_mem_closure_range
+    {j : E →* F} {b : F} (hb : b ∈ closure (j.range : Set F)) {f : ℕ → ℝ} (b_pos : ∀ n, 0 < f n)
+    : ∃ a : ℕ → E,
+      Tendsto (fun n => ∏ i ∈ range (n + 1), j (a i)) atTop (𝓝 b) ∧ ‖(j (a 0))⁻¹ * b‖ < f 0
+        ∧ ∀ n, 0 < n → ‖j (a n)‖ < f n := by
   obtain ⟨v, sum_v, v_in, hv₀, hv_pos⟩ := controlled_prod_of_mem_closure hb b_pos
   choose g hg using v_in
-  exact
-    ⟨g, by simpa [← hg] using sum_v, by simpa [hg 0] using hv₀,
-      fun n hn => by simpa [hg] using hv_pos n hn⟩
+  exact ⟨
+    g,
+    by simpa [← hg] using sum_v,
+    by simpa [hg 0] using hv₀,
+    fun n hn => by simpa [hg] using hv_pos n hn
+  ⟩
 
 end SeminormedCommGroup
 
@@ -396,23 +400,24 @@ lemma tendsto_norm_nhdsNE_one : Tendsto (norm : E → ℝ) (𝓝[≠] 1) (𝓝[>
   tendsto_norm_one.inf <| tendsto_principal_principal.2 fun _ hx ↦ norm_pos_iff'.2 hx
 
 @[to_additive]
-theorem tendsto_norm_inv_mul_self_nhdsNE (a : E) :
-    Tendsto (fun x => ‖x⁻¹ * a‖) (𝓝[≠] a) (𝓝[>] 0) :=
+theorem tendsto_norm_inv_mul_self_nhdsNE (a : E) : Tendsto (fun x => ‖x⁻¹ * a‖) (𝓝[≠] a) (𝓝[>] 0) :=
   (tendsto_norm_inv_mul_self a).inf <| by simp [inv_mul_eq_one]
 
 variable (E)
 
-/-- In a normed group, the pullback under the norm of `𝓝[>] 0` is the punctured neighborhood
-of `1`. -/
+/--
+In a normed group, the pullback under the norm of `𝓝[>] 0` is the punctured neighborhood
+of `1`.
+-/
 @[to_additive comap_norm_nhdsGT_zero
-/-- In a normed additive group, the pullback under the norm of `𝓝[>] 0` is the punctured
+  /-- In a normed additive group, the pullback under the norm of `𝓝[>] 0` is the punctured
 neighborhood of `0`. -/]
 lemma comap_norm_nhdsGT_zero' : comap norm (𝓝[>] 0) = 𝓝[≠] (1 : E) := by
   simp [nhdsWithin, comap_norm_nhds_one, Set.preimage, Set.compl_def]
 
 @[to_additive]
-theorem tendsto_norm_div_self_nhdsNE {E : Type*} [NormedCommGroup E] (a : E) :
-    Tendsto (fun x => ‖x / a‖) (𝓝[≠] a) (𝓝[>] 0) := by
+theorem tendsto_norm_div_self_nhdsNE {E : Type*} [NormedCommGroup E] (a : E)
+    : Tendsto (fun x => ‖x / a‖) (𝓝[≠] a) (𝓝[>] 0) := by
   simp_rw [← norm_inv_mul]
   exact tendsto_norm_inv_mul_self_nhdsNE a
 

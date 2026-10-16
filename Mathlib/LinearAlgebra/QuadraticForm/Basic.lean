@@ -89,15 +89,14 @@ variable [CommRing R] [AddCommGroup M] [AddCommGroup N]
 
 namespace QuadraticMap
 
-/-- Up to a factor 2, `Q.polar` is the associated bilinear map for a quadratic map `Q`.
+/--
+Up to a factor 2, `Q.polar` is the associated bilinear map for a quadratic map `Q`.
 
 Source of this name: https://en.wikipedia.org/wiki/Quadratic_form#Generalization
 -/
-def polar (f : M → N) (x y : M) :=
-  f (x + y) - f x - f y
+def polar (f : M → N) (x y : M) := f (x + y) - f x - f y
 
-protected theorem map_add (f : M → N) (x y : M) :
-    f (x + y) = f x + f y + polar f x y := by
+protected theorem map_add (f : M → N) (x y : M) : f (x + y) = f x + f y + polar f x y := by
   rw [polar]
   abel
 
@@ -105,49 +104,54 @@ theorem polar_add (f g : M → N) (x y : M) : polar (f + g) x y = polar f x y + 
   simp only [polar, Pi.add_apply]
   abel
 
-theorem polar_neg (f : M → N) (x y : M) : polar (-f) x y = -polar f x y := by
+theorem polar_neg (f : M → N) (x y : M) : polar (-f) x y = - polar f x y := by
   simp only [polar, Pi.neg_apply, sub_eq_add_neg, neg_add]
 
-theorem polar_smul [Monoid S] [DistribMulAction S N] (f : M → N) (s : S) (x y : M) :
-    polar (s • f) x y = s • polar f x y := by simp only [polar, Pi.smul_apply, smul_sub]
+theorem polar_smul [Monoid S] [DistribMulAction S N] (f : M → N) (s : S) (x y : M)
+    : polar (s • f) x y = s • polar f x y := by
+  simp only [polar, Pi.smul_apply, smul_sub]
 
 theorem polar_comm (f : M → N) (x y : M) : polar f x y = polar f y x := by
   rw [polar, polar, add_comm, sub_sub, sub_sub, add_comm (f x) (f y)]
 
 /-- Auxiliary lemma to express bilinearity of `QuadraticMap.polar` without subtraction. -/
-theorem polar_add_left_iff {f : M → N} {x x' y : M} :
-    polar f (x + x') y = polar f x y + polar f x' y ↔
-      f (x + x' + y) + (f x + f x' + f y) = f (x + x') + f (x' + y) + f (y + x) := by
+theorem polar_add_left_iff {f : M → N} {x x' y : M}
+    : polar f (x + x') y = polar f x y + polar f x' y
+      ↔ f (x + x' + y) + (f x + f x' + f y) = f (x + x') + f (x' + y) + f (y + x) := by
   simp only [← add_assoc]
   simp only [polar, sub_eq_iff_eq_add, eq_sub_iff_add_eq, sub_add_eq_add_sub, add_sub]
   simp only [add_right_comm _ (f y) _, add_right_comm _ (f x') (f x)]
   rw [add_comm y x, add_right_comm _ _ (f (x + y)), add_comm _ (f (x + y)),
     add_right_comm (f (x + y)), add_left_inj]
 
-theorem polar_comp {F : Type*} [AddCommGroup S] [FunLike F N S] [AddMonoidHomClass F N S]
-    (f : M → N) (g : F) (x y : M) :
-    polar (g ∘ f) x y = g (polar f x y) := by
+theorem polar_comp
+    {F : Type*} [AddCommGroup S] [FunLike F N S] [AddMonoidHomClass F N S]
+    (f : M → N) (g : F) (x y : M)
+    : polar (g ∘ f) x y = g (polar f x y) := by
   simp only [polar, Function.comp_apply, map_sub]
 
 /-- `QuadraticMap.polar` as a function from `Sym2`. -/
-def polarSym2 (f : M → N) : Sym2 M → N :=
-  Sym2.lift ⟨polar f, polar_comm _⟩
+def polarSym2 (f : M → N) : Sym2 M → N := Sym2.lift ⟨polar f, polar_comm _⟩
 
-@[simp]
-lemma polarSym2_sym2Mk (f : M → N) (x y : M) : polarSym2 f s(x, y) = polar f x y := rfl
+@[simp] lemma polarSym2_sym2Mk (f : M → N) (x y : M) : polarSym2 f s(x, y) = polar f x y := rfl
 
 end QuadraticMap
 
 end Polar
 
-/-- A quadratic map on a module.
+/--
+A quadratic map on a module.
 
-For a more familiar constructor when `R` is a ring, see `QuadraticMap.ofPolar`. -/
-structure QuadraticMap (R : Type u) (M : Type v) (N : Type w) [CommSemiring R] [AddCommMonoid M]
-    [Module R M] [AddCommMonoid N] [Module R N] where
-  /-- The underlying function.
+For a more familiar constructor when `R` is a ring, see `QuadraticMap.ofPolar`.
+-/
+structure QuadraticMap
+    (R : Type u) (M : Type v) (N : Type w)
+    [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N] where
+  /--
+  The underlying function.
 
-  Do NOT use directly. Use the coercion instead. -/
+  Do NOT use directly. Use the coercion instead.
+  -/
   toFun : M → N
   toFun_smul : ∀ (a : R) (x : M), toFun (a • x) = (a * a) • toFun x
   exists_companion' : ∃ B : BilinMap R M N, ∀ x y, toFun (x + y) = toFun x + toFun y + B x y
@@ -176,36 +180,33 @@ instance instFunLike : FunLike (QuadraticMap R M N) M N where
 variable (Q)
 
 /-- The `simp` normal form for a quadratic map is `DFunLike.coe`, not `toFun`. -/
-@[simp]
-theorem toFun_eq_coe : Q.toFun = ⇑Q :=
-  rfl
+@[simp] theorem toFun_eq_coe : Q.toFun = ⇑Q := rfl
 
 @[simp]
-theorem coe_mk (toFun : M → N) (toFun_smul exists_companion') :
-    ⇑({toFun, toFun_smul, exists_companion'} : QuadraticMap R M N) = toFun := rfl
+theorem coe_mk (toFun : M → N) (toFun_smul exists_companion')
+    : ⇑({ toFun, toFun_smul, exists_companion' } : QuadraticMap R M N) = toFun :=
+  rfl
 
 -- this must come after the instFunLike definition
 initialize_simps_projections QuadraticMap (toFun → apply)
 
 variable {Q}
 
-@[ext]
-theorem ext (H : ∀ x : M, Q x = Q' x) : Q = Q' :=
-  DFunLike.ext _ _ H
+@[ext] theorem ext (H : ∀ x : M, Q x = Q' x) : Q = Q' := DFunLike.ext _ _ H
 
-theorem congr_fun (h : Q = Q') (x : M) : Q x = Q' x :=
-  congr($h _)
+theorem congr_fun (h : Q = Q') (x : M) : Q x = Q' x := congr($h _)
 
-/-- Copy of a `QuadraticMap` with a new `toFun` equal to the old one. Useful to fix definitional
-equalities. -/
+/--
+Copy of a `QuadraticMap` with a new `toFun` equal to the old one. Useful to fix definitional
+equalities.
+-/
 protected def copy (Q : QuadraticMap R M N) (Q' : M → N) (h : Q' = ⇑Q) : QuadraticMap R M N where
   toFun := Q'
   toFun_smul := h.symm ▸ Q.toFun_smul
   exists_companion' := h.symm ▸ Q.exists_companion'
 
 @[simp]
-theorem coe_copy (Q : QuadraticMap R M N) (Q' : M → N) (h : Q' = ⇑Q) : ⇑(Q.copy Q' h) = Q' :=
-  rfl
+theorem coe_copy (Q : QuadraticMap R M N) (Q' : M → N) (h : Q' = ⇑Q) : ⇑(Q.copy Q' h) = Q' := rfl
 
 theorem copy_eq (Q : QuadraticMap R M N) (Q' : M → N) (h : Q' = ⇑Q) : Q.copy Q' h = Q :=
   DFunLike.ext' h
@@ -217,14 +218,13 @@ section CommSemiring
 variable [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
 variable (Q : QuadraticMap R M N)
 
-protected theorem map_smul (a : R) (x : M) : Q (a • x) = (a * a) • Q x :=
-  Q.toFun_smul a x
+protected theorem map_smul (a : R) (x : M) : Q (a • x) = (a * a) • Q x := Q.toFun_smul a x
 
 theorem exists_companion : ∃ B : BilinMap R M N, ∀ x y, Q (x + y) = Q x + Q y + B x y :=
   Q.exists_companion'
 
-theorem map_add_add_add_map (x y z : M) :
-    Q (x + y + z) + (Q x + Q y + Q z) = Q (x + y) + Q (y + z) + Q (z + x) := by
+theorem map_add_add_add_map (x y z : M)
+    : Q (x + y + z) + (Q x + Q y + Q z) = Q (x + y) + Q (y + z) + Q (z + x) := by
   obtain ⟨B, h⟩ := Q.exists_companion
   rw [add_comm z x]
   simp only [h, LinearMap.map_add₂]
@@ -238,19 +238,25 @@ theorem map_add_self (x : M) : Q (x + x) = 4 • Q x := by
 protected theorem map_zero : Q 0 = 0 := by
   rw [← @zero_smul R _ _ _ _ (0 : M), Q.map_smul, zero_mul, zero_smul]
 
-instance zeroHomClass : ZeroHomClass (QuadraticMap R M N) M N :=
-  { QuadraticMap.instFunLike (R := R) (M := M) (N := N) with map_zero := QuadraticMap.map_zero }
+instance zeroHomClass : ZeroHomClass (QuadraticMap R M N) M N := {
+  QuadraticMap.instFunLike (R := R) (M := M) (N := N) with
+  map_zero := QuadraticMap.map_zero
+}
 
-theorem map_smul_of_tower [CommSemiring S] [Algebra S R] [SMul S M] [IsScalarTower S R M]
-    [Module S N] [IsScalarTower S R N] (a : S)
-    (x : M) : Q (a • x) = (a * a) • Q x := by
+theorem map_smul_of_tower
+    [CommSemiring S] [Algebra S R] [SMul S M] [IsScalarTower S R M] [Module S N]
+    [IsScalarTower S R N]
+    (a : S) (x : M)
+    : Q (a • x) = (a * a) • Q x := by
   rw [← IsScalarTower.algebraMap_smul R a x, Q.map_smul, ← map_mul, algebraMap_smul]
 
 /-- Restrict the domain of a quadratic map -/
-@[simps] def restrict (Q : QuadraticMap R M N) (V : Submodule R M) : QuadraticMap R V N where
+@[simps]
+def restrict (Q : QuadraticMap R M N) (V : Submodule R M) : QuadraticMap R V N where
   toFun v := Q v
   toFun_smul a v := Q.toFun_smul a v.val
-  exists_companion' := match Q.exists_companion with
+  exists_companion' :=
+    match Q.exists_companion with
     | ⟨b, hb⟩ => ⟨b.domRestrict₁₂ V V, fun x y ↦ hb x.val y.val⟩
 
 end CommSemiring
@@ -280,7 +286,7 @@ theorem polar_smul_left (a : R) (x y : M) : polar Q (a • x) y = a • polar Q 
   simp_rw [polar, h, Q.map_smul, LinearMap.map_smul₂, sub_sub, add_sub_cancel_left]
 
 @[simp]
-theorem polar_neg_left (x y : M) : polar Q (-x) y = -polar Q x y := by
+theorem polar_neg_left (x y : M) : polar Q (-x) y = - polar Q x y := by
   rw [← neg_one_smul R x, polar_smul_left, neg_one_smul]
 
 @[simp]
@@ -300,7 +306,7 @@ theorem polar_smul_right (a : R) (x y : M) : polar Q x (a • y) = a • polar Q
   rw [polar_comm Q x, polar_comm Q x, polar_smul_left]
 
 @[simp]
-theorem polar_neg_right (x y : M) : polar Q x (-y) = -polar Q x y := by
+theorem polar_neg_right (x y : M) : polar Q x (-y) = - polar Q x y := by
   rw [← neg_one_smul R y, polar_smul_right, neg_one_smul]
 
 @[simp]
@@ -316,14 +322,15 @@ theorem polar_self (x : M) : polar Q x x = 2 • Q x := by
 @[simps!]
 def polarBilin : BilinMap R M N :=
   LinearMap.mk₂ R (polar Q) (polar_add_left Q) (polar_smul_left Q) (polar_add_right Q)
-  (polar_smul_right Q)
+    (polar_smul_right Q)
 
-lemma polarSym2_map_smul {ι} (Q : QuadraticMap R M N) (g : ι → M) (l : ι → R) (p : Sym2 ι) :
-    polarSym2 Q (p.map (l • g)) = (p.map l).mul • polarSym2 Q (p.map g) := by
+lemma polarSym2_map_smul {ι} (Q : QuadraticMap R M N) (g : ι → M) (l : ι → R) (p : Sym2 ι)
+    : polarSym2 Q (p.map (l • g)) = (p.map l).mul • polarSym2 Q (p.map g) := by
   obtain ⟨_, _⟩ := p; simp [← smul_assoc, mul_comm]
 
-variable [CommSemiring S] [Algebra S R] [Module S M] [IsScalarTower S R M] [Module S N]
-    [IsScalarTower S R N]
+variable
+  [CommSemiring S] [Algebra S R] [Module S M] [IsScalarTower S R M] [Module S N]
+  [IsScalarTower S R N]
 
 @[simp]
 theorem polar_smul_left_of_tower (a : S) (x y : M) : polar Q (a • x) y = a • polar Q x y := by
@@ -335,30 +342,34 @@ theorem polar_smul_right_of_tower (a : S) (x y : M) : polar Q x (a • y) = a �
 
 /-- An alternative constructor to `QuadraticMap.mk`, for rings where `polar` can be used. -/
 @[simps]
-def ofPolar (toFun : M → N) (toFun_smul : ∀ (a : R) (x : M), toFun (a • x) = (a * a) • toFun x)
+def ofPolar
+    (toFun : M → N) (toFun_smul : ∀ (a : R) (x : M), toFun (a • x) = (a * a) • toFun x)
     (polar_add_left : ∀ x x' y : M, polar toFun (x + x') y = polar toFun x y + polar toFun x' y)
-    (polar_smul_left : ∀ (a : R) (x y : M), polar toFun (a • x) y = a • polar toFun x y) :
-    QuadraticMap R M N :=
-  { toFun
-    toFun_smul
-    exists_companion' := ⟨LinearMap.mk₂ R (polar toFun) (polar_add_left) (polar_smul_left)
+    (polar_smul_left : ∀ (a : R) (x y : M), polar toFun (a • x) y = a • polar toFun x y)
+    : QuadraticMap R M N := {
+  toFun
+  toFun_smul
+  exists_companion' := ⟨
+    LinearMap.mk₂ R (polar toFun) (polar_add_left) (polar_smul_left)
       (fun x _ _ ↦ by simp_rw [polar_comm _ x, polar_add_left])
       (fun _ _ _ ↦ by rw [polar_comm, polar_smul_left, polar_comm]),
-      fun _ _ ↦ by
-        simp only [LinearMap.mk₂_apply]
-        rw [polar, sub_sub, add_sub_cancel]⟩ }
+    fun _ _ ↦ by
+      simp only [LinearMap.mk₂_apply]
+      rw [polar, sub_sub, add_sub_cancel]
+  ⟩
+}
 
 /-- In a ring the companion bilinear form is unique and equal to `QuadraticMap.polar`. -/
 theorem choose_exists_companion : Q.exists_companion.choose = polarBilin Q :=
   LinearMap.ext₂ fun x y => by
-    rw [polarBilin_apply_apply, polar, Q.exists_companion.choose_spec, sub_sub,
-      add_sub_cancel_left]
+    rw [polarBilin_apply_apply, polar, Q.exists_companion.choose_spec, sub_sub, add_sub_cancel_left]
 
-protected theorem map_sum {ι} [DecidableEq ι] (Q : QuadraticMap R M N) (s : Finset ι) (f : ι → M) :
-    Q (∑ i ∈ s, f i) = ∑ i ∈ s, Q (f i)
-      + ∑ ij ∈ s.sym2 with ¬ ij.IsDiag, polarSym2 Q (ij.map f) := by
+protected theorem map_sum {ι} [DecidableEq ι] (Q : QuadraticMap R M N) (s : Finset ι) (f : ι → M)
+    : Q (∑ i ∈ s, f i)
+      = ∑ i ∈ s, Q (f i) + ∑ ij ∈ s.sym2 with ¬ ij.IsDiag, polarSym2 Q (ij.map f) := by
   induction s using Finset.cons_induction with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s ha ih =>
     simp_rw [Finset.sum_cons, QuadraticMap.map_add, ih, add_assoc, Finset.sym2_cons,
       Finset.sum_filter, Finset.sum_disjUnion, Finset.sum_map, Finset.sum_cons,
@@ -370,10 +381,11 @@ protected theorem map_sum {ι} [DecidableEq ι] (Q : QuadraticMap R M N) (s : Fi
     congr! with i hi
     rw [ite_eq_left (ne_of_mem_of_not_mem hi ha).symm]
 
-protected theorem map_sum' {ι} (Q : QuadraticMap R M N) (s : Finset ι) (f : ι → M) :
-    Q (∑ i ∈ s, f i) = ∑ ij ∈ s.sym2, polarSym2 Q (ij.map f) - ∑ i ∈ s, Q (f i) := by
+protected theorem map_sum' {ι} (Q : QuadraticMap R M N) (s : Finset ι) (f : ι → M)
+    : Q (∑ i ∈ s, f i) = ∑ ij ∈ s.sym2, polarSym2 Q (ij.map f) - ∑ i ∈ s, Q (f i) := by
   induction s using Finset.cons_induction with
-  | empty => simp
+  | empty =>
+    simp
   | cons a s ha ih =>
     simp_rw [Finset.sum_cons, QuadraticMap.map_add Q, ih, add_assoc, Finset.sym2_cons,
       Finset.sum_disjUnion, Finset.sum_map, Finset.sum_cons, Sym2.mkEmbedding_apply,
@@ -392,18 +404,19 @@ section SMul
 variable [Monoid S] [Monoid T] [DistribMulAction S N] [DistribMulAction T N]
 variable [SMulCommClass S R N] [SMulCommClass T R N]
 
-/-- `QuadraticMap R M N` inherits the scalar action from any algebra over `R`.
+/--
+`QuadraticMap R M N` inherits the scalar action from any algebra over `R`.
 
-This provides an `R`-action via `Algebra.id`. -/
-instance : SMul S (QuadraticMap R M N) :=
-  ⟨fun a Q =>
-    { toFun := a • ⇑Q
-      toFun_smul := fun b x => by
-        rw [Pi.smul_apply, Q.map_smul, Pi.smul_apply, smul_comm]
-      exists_companion' :=
-        let ⟨B, h⟩ := Q.exists_companion
-        letI := SMulCommClass.symm S R N
-        ⟨a • B, by simp [h]⟩ }⟩
+This provides an `R`-action via `Algebra.id`.
+-/
+instance : SMul S (QuadraticMap R M N) := ⟨fun a Q => {
+  toFun := a • ⇑Q
+  toFun_smul := fun b x => by rw [Pi.smul_apply, Q.map_smul, Pi.smul_apply, smul_comm]
+  exists_companion' :=
+    let ⟨B, h⟩ := Q.exists_companion
+    letI := SMulCommClass.symm S R N
+    ⟨a • B, by simp [h]⟩
+}⟩
 
 instance : IsSMulApply S (QuadraticMap R M N) where
 
@@ -411,18 +424,18 @@ instance : IsSMulApply S (QuadraticMap R M N) where
 
 @[deprecated (since := "2026-07-27")] protected alias smul_apply := smul_apply
 
-instance [SMulCommClass S T N] : SMulCommClass S T (QuadraticMap R M N) :=
-  FunLike.smulCommClass
+instance [SMulCommClass S T N] : SMulCommClass S T (QuadraticMap R M N) := FunLike.smulCommClass
 
 instance [SMul S T] [IsScalarTower S T N] : IsScalarTower S T (QuadraticMap R M N) :=
   FunLike.isScalarTower
 
 end SMul
 
-instance : Zero (QuadraticMap R M N) :=
-  ⟨{  toFun := fun _ => 0
-      toFun_smul := fun a _ => by simp only [smul_zero]
-      exists_companion' := ⟨0, fun _ _ => by simp only [add_zero, LinearMap.zero_apply]⟩ }⟩
+instance : Zero (QuadraticMap R M N) := ⟨{
+  toFun := fun _ => 0
+  toFun_smul := fun a _ => by simp only [smul_zero]
+  exists_companion' := ⟨0, fun _ _ => by simp only [add_zero, LinearMap.zero_apply]⟩
+}⟩
 
 instance : IsZeroApply (QuadraticMap R M N) where
 
@@ -430,18 +443,16 @@ instance : IsZeroApply (QuadraticMap R M N) where
 
 @[deprecated (since := "2026-07-27")] protected alias zero_apply := zero_apply
 
-instance : Inhabited (QuadraticMap R M N) :=
-  ⟨0⟩
+instance : Inhabited (QuadraticMap R M N) := ⟨0⟩
 
-instance : Add (QuadraticMap R M N) :=
-  ⟨fun Q Q' =>
-    { toFun := Q + Q'
-      toFun_smul := fun a x => by simp only [Pi.add_apply, smul_add, QuadraticMap.map_smul]
-      exists_companion' :=
-        let ⟨B, h⟩ := Q.exists_companion
-        let ⟨B', h'⟩ := Q'.exists_companion
-        ⟨B + B', fun x y => by
-          simp_rw [Pi.add_apply, h, h', LinearMap.add_apply, add_add_add_comm]⟩ }⟩
+instance : Add (QuadraticMap R M N) := ⟨fun Q Q' => {
+  toFun := Q + Q'
+  toFun_smul := fun a x => by simp only [Pi.add_apply, smul_add, QuadraticMap.map_smul]
+  exists_companion' :=
+    let ⟨B, h⟩ := Q.exists_companion
+    let ⟨B', h'⟩ := Q'.exists_companion
+    ⟨B + B', fun x y => by simp_rw [Pi.add_apply, h, h', LinearMap.add_apply, add_add_add_comm]⟩
+}⟩
 
 instance : IsAddApply (QuadraticMap R M N) where
 
@@ -464,11 +475,12 @@ def evalAddMonoidHom (m : M) : QuadraticMap R M N →+ N :=
 
 @[deprecated (since := "2026-07-27")] protected alias sum_apply := sum_apply
 
-instance [Monoid S] [DistribMulAction S N] [SMulCommClass S R N] :
-    DistribMulAction S (QuadraticMap R M N) := fast_instance% FunLike.distribMulAction
+instance [Monoid S] [DistribMulAction S N] [SMulCommClass S R N]
+    : DistribMulAction S (QuadraticMap R M N) :=
+  fast_instance% FunLike.distribMulAction
 
-instance [Semiring S] [Module S N] [SMulCommClass S R N] :
-    Module S (QuadraticMap R M N) := fast_instance% FunLike.module
+instance [Semiring S] [Module S N] [SMulCommClass S R N] : Module S (QuadraticMap R M N) :=
+  fast_instance% FunLike.module
 
 end SemiringOperators
 
@@ -476,13 +488,13 @@ section RingOperators
 
 variable [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
 
-instance : Neg (QuadraticMap R M N) :=
-  ⟨fun Q =>
-    { toFun := -Q
-      toFun_smul := fun a x => by simp only [Pi.neg_apply, Q.map_smul, smul_neg]
-      exists_companion' :=
-        let ⟨B, h⟩ := Q.exists_companion
-        ⟨-B, fun x y => by simp_rw [Pi.neg_apply, h, LinearMap.neg_apply, neg_add]⟩ }⟩
+instance : Neg (QuadraticMap R M N) := ⟨fun Q => {
+  toFun := -Q
+  toFun_smul := fun a x => by simp only [Pi.neg_apply, Q.map_smul, smul_neg]
+  exists_companion' :=
+    let ⟨B, h⟩ := Q.exists_companion
+    ⟨-B, fun x y => by simp_rw [Pi.neg_apply, h, LinearMap.neg_apply, neg_add]⟩
+}⟩
 
 instance : IsNegApply (QuadraticMap R M N) where
 
@@ -490,8 +502,7 @@ instance : IsNegApply (QuadraticMap R M N) where
 
 @[deprecated (since := "2026-07-27")] protected alias neg_apply := neg_apply
 
-instance : Sub (QuadraticMap R M N) :=
-  ⟨fun Q Q' => (Q + -Q').copy (Q - Q') (sub_eq_add_neg _ _)⟩
+instance : Sub (QuadraticMap R M N) := ⟨fun Q Q' => (Q + -Q').copy (Q - Q') (sub_eq_add_neg _ _)⟩
 
 instance : IsSubApply (QuadraticMap R M N) where
 
@@ -505,21 +516,25 @@ end RingOperators
 
 section restrictScalars
 
-variable [CommSemiring R] [CommSemiring S] [AddCommMonoid M] [Module R M] [AddCommMonoid N]
-  [Module R N] [Module S M] [Module S N] [Algebra S R]
+variable
+  [CommSemiring R] [CommSemiring S] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
+  [Module S M] [Module S N] [Algebra S R]
 variable [IsScalarTower S R M] [IsScalarTower S R N]
 
-/-- If `Q : M → N` is a quadratic map of `R`-modules and `R` is an `S`-algebra,
-then the restriction of scalars is a quadratic map of `S`-modules. -/
+/--
+If `Q : M → N` is a quadratic map of `R`-modules and `R` is an `S`-algebra,
+then the restriction of scalars is a quadratic map of `S`-modules.
+-/
 @[simps!]
 def restrictScalars (Q : QuadraticMap R M N) : QuadraticMap S M N where
   toFun x := Q x
-  toFun_smul a x := by
-    simp [map_smul_of_tower]
+  toFun_smul a x := by simp [map_smul_of_tower]
   exists_companion' :=
     let ⟨B, h⟩ := Q.exists_companion
-    ⟨B.restrictScalars₁₂ (S := R) (R' := S) (S' := S), fun x y => by
-      simp only [LinearMap.restrictScalars₁₂_apply_apply, h]⟩
+    ⟨
+      B.restrictScalars₁₂ (S := R) (R' := S) (S' := S),
+      fun x y => by simp only [LinearMap.restrictScalars₁₂_apply_apply, h]
+    ⟩
 
 end restrictScalars
 
@@ -537,13 +552,12 @@ def comp (Q : QuadraticMap R N P) (f : M →ₗ[R] N) : QuadraticMap R M P where
     ⟨B.compl₁₂ f f, fun x y => by simp_rw [f.map_add]; exact h (f x) (f y)⟩
 
 @[simp]
-theorem comp_apply (Q : QuadraticMap R N P) (f : M →ₗ[R] N) (x : M) : (Q.comp f) x = Q (f x) :=
-  rfl
+theorem comp_apply (Q : QuadraticMap R N P) (f : M →ₗ[R] N) (x : M) : (Q.comp f) x = Q (f x) := rfl
 
 /-- Compose a quadratic map with a linear function on the left. -/
 @[simps +simpRhs]
-def _root_.LinearMap.compQuadraticMap (f : N →ₗ[R] P) (Q : QuadraticMap R M N) :
-    QuadraticMap R M P where
+def _root_.LinearMap.compQuadraticMap (f : N →ₗ[R] P) (Q : QuadraticMap R M N)
+    : QuadraticMap R M P where
   toFun x := f (Q x)
   toFun_smul b x := by simp only [Q.map_smul, map_smul]
   exists_companion' :=
@@ -552,18 +566,22 @@ def _root_.LinearMap.compQuadraticMap (f : N →ₗ[R] P) (Q : QuadraticMap R M 
 
 /-- Compose a quadratic map with a linear function on the left. -/
 @[simps! +simpRhs]
-def _root_.LinearMap.compQuadraticMap' [CommSemiring S] [Algebra S R] [Module S N] [Module S M]
-    [IsScalarTower S R N] [IsScalarTower S R M] [Module S P]
-    (f : N →ₗ[S] P) (Q : QuadraticMap R M N) : QuadraticMap S M P :=
+def _root_.LinearMap.compQuadraticMap'
+    [CommSemiring S] [Algebra S R] [Module S N] [Module S M] [IsScalarTower S R N]
+    [IsScalarTower S R M] [Module S P]
+    (f : N →ₗ[S] P) (Q : QuadraticMap R M N)
+    : QuadraticMap S M P :=
   _root_.LinearMap.compQuadraticMap f Q.restrictScalars
 
-/-- When `N` and `P` are equivalent, quadratic maps on `M` into `N` are equivalent to quadratic
+/--
+When `N` and `P` are equivalent, quadratic maps on `M` into `N` are equivalent to quadratic
 maps on `M` into `P`.
 
-See `LinearMap.BilinMap.congr₂` for the bilinear map version. -/
+See `LinearMap.BilinMap.congr₂` for the bilinear map version.
+-/
 @[simps apply]
-def _root_.LinearEquiv.congrQuadraticMap (e : N ≃ₗ[R] P) :
-    QuadraticMap R M N ≃ₗ[R] QuadraticMap R M P where
+def _root_.LinearEquiv.congrQuadraticMap (e : N ≃ₗ[R] P)
+    : QuadraticMap R M N ≃ₗ[R] QuadraticMap R M P where
   toFun Q := e.compQuadraticMap Q
   invFun Q := e.symm.compQuadraticMap Q
   left_inv _ := ext fun _ => e.symm_apply_apply _
@@ -572,12 +590,14 @@ def _root_.LinearEquiv.congrQuadraticMap (e : N ≃ₗ[R] P) :
   map_smul' _ _ := ext fun _ => e.map_smul _ _
 
 @[simp]
-theorem _root_.LinearEquiv.congrQuadraticMap_refl :
-    LinearEquiv.congrQuadraticMap (.refl R N) = .refl R (QuadraticMap R M N) := rfl
+theorem _root_.LinearEquiv.congrQuadraticMap_refl
+    : LinearEquiv.congrQuadraticMap (.refl R N) = .refl R (QuadraticMap R M N) :=
+  rfl
 
 @[simp]
-theorem _root_.LinearEquiv.congrQuadraticMap_symm (e : N ≃ₗ[R] P) :
-    (LinearEquiv.congrQuadraticMap e (M := M)).symm = e.symm.congrQuadraticMap := rfl
+theorem _root_.LinearEquiv.congrQuadraticMap_symm (e : N ≃ₗ[R] P)
+    : (LinearEquiv.congrQuadraticMap e (M := M)).symm = e.symm.congrQuadraticMap :=
+  rfl
 
 end Comp
 
@@ -592,15 +612,15 @@ def linMulLin (f g : M →ₗ[R] A) : QuadraticMap R M A where
   toFun_smul a x := by
     rw [Pi.mul_apply, Pi.mul_apply, map_smulₛₗ, RingHom.id_apply, map_smulₛₗ, RingHom.id_apply,
       smul_mul_assoc, mul_smul_comm, ← smul_assoc, smul_eq_mul]
-  exists_companion' :=
-    ⟨(LinearMap.mul R A).compl₁₂ f g + (LinearMap.mul R A).flip.compl₁₂ g f, fun x y => by
+  exists_companion' := ⟨
+    (LinearMap.mul R A).compl₁₂ f g + (LinearMap.mul R A).flip.compl₁₂ g f,
+    fun x y => by
       simp only [Pi.mul_apply, map_add, left_distrib, right_distrib, LinearMap.add_apply,
         LinearMap.compl₁₂_apply, LinearMap.mul_apply', LinearMap.flip_apply]
-      abel_nf⟩
+      abel_nf
+  ⟩
 
-@[simp]
-theorem linMulLin_apply (f g : M →ₗ[R] A) (x) : linMulLin f g x = f x * g x :=
-  rfl
+@[simp] theorem linMulLin_apply (f g : M →ₗ[R] A) (x) : linMulLin f g x = f x * g x := rfl
 
 @[simp]
 theorem add_linMulLin (f g h : M →ₗ[R] A) : linMulLin (f + g) h = linMulLin f h + linMulLin g h :=
@@ -613,24 +633,20 @@ theorem linMulLin_add (f g h : M →ₗ[R] A) : linMulLin f (g + h) = linMulLin 
 variable {N' : Type*} [AddCommMonoid N'] [Module R N']
 
 @[simp]
-theorem linMulLin_comp (f g : M →ₗ[R] A) (h : N' →ₗ[R] M) :
-    (linMulLin f g).comp h = linMulLin (f.comp h) (g.comp h) :=
+theorem linMulLin_comp (f g : M →ₗ[R] A) (h : N' →ₗ[R] M)
+    : (linMulLin f g).comp h = linMulLin (f.comp h) (g.comp h) :=
   rfl
 
 variable {n : Type*}
 
 /-- `sq` is the quadratic map sending the vector `x : A` to `x * x` -/
-@[simps!]
-def sq : QuadraticMap R A A :=
-  linMulLin LinearMap.id LinearMap.id
+@[simps!] def sq : QuadraticMap R A A := linMulLin LinearMap.id LinearMap.id
 
 /-- `proj i j` is the quadratic map sending the vector `x : n → R` to `x i * x j` -/
 def proj (i j : n) : QuadraticMap R (n → A) A :=
   linMulLin (@LinearMap.proj _ _ _ (fun _ => A) _ _ i) (@LinearMap.proj _ _ _ (fun _ => A) _ _ j)
 
-@[simp]
-theorem proj_apply (i j : n) (x : n → A) : proj (R := R) i j x = x i * x j :=
-  rfl
+@[simp] theorem proj_apply (i j : n) (x : n → A) : proj (R := R) i j x = x i * x j := rfl
 
 end NonUnitalNonAssocSemiring
 
@@ -670,31 +686,30 @@ def toQuadraticMap (B : BilinMap R M N) : QuadraticMap R M N where
   exists_companion' := ⟨B + LinearMap.flip B, fun x y => by simp [add_add_add_comm, add_comm]⟩
 
 @[simp]
-theorem toQuadraticMap_apply (B : BilinMap R M N) (x : M) : B.toQuadraticMap x = B x x :=
-  rfl
+theorem toQuadraticMap_apply (B : BilinMap R M N) (x : M) : B.toQuadraticMap x = B x x := rfl
 
-theorem toQuadraticMap_comp_same (B : BilinMap R M N) (f : N' →ₗ[R] M) :
-    BilinMap.toQuadraticMap (B.compl₁₂ f f) = B.toQuadraticMap.comp f := rfl
+theorem toQuadraticMap_comp_same (B : BilinMap R M N) (f : N' →ₗ[R] M)
+    : BilinMap.toQuadraticMap (B.compl₁₂ f f) = B.toQuadraticMap.comp f :=
+  rfl
 
 section
 
 variable (R M)
 
-@[simp]
-theorem toQuadraticMap_zero : (0 : BilinMap R M N).toQuadraticMap = 0 :=
-  rfl
+@[simp] theorem toQuadraticMap_zero : (0 : BilinMap R M N).toQuadraticMap = 0 := rfl
 
 end
 
 @[simp]
-theorem toQuadraticMap_add (B₁ B₂ : BilinMap R M N) :
-    (B₁ + B₂).toQuadraticMap = B₁.toQuadraticMap + B₂.toQuadraticMap :=
+theorem toQuadraticMap_add (B₁ B₂ : BilinMap R M N)
+    : (B₁ + B₂).toQuadraticMap = B₁.toQuadraticMap + B₂.toQuadraticMap :=
   rfl
 
 @[simp]
-theorem toQuadraticMap_smul [Monoid S] [DistribMulAction S N] [SMulCommClass S R N]
-    [SMulCommClass R S N] (a : S)
-    (B : BilinMap R M N) : (a • B).toQuadraticMap = a • B.toQuadraticMap :=
+theorem toQuadraticMap_smul
+    [Monoid S] [DistribMulAction S N] [SMulCommClass S R N] [SMulCommClass R S N]
+    (a : S) (B : BilinMap R M N)
+    : (a • B).toQuadraticMap = a • B.toQuadraticMap :=
   rfl
 
 section
@@ -710,8 +725,8 @@ def toQuadraticMapAddMonoidHom : (BilinMap R M N) →+ QuadraticMap R M N where
 
 /-- `LinearMap.BilinMap.toQuadraticMap` as a linear map -/
 @[simps]
-def toQuadraticMapLinearMap [Semiring S] [Module S N] [SMulCommClass S R N] [SMulCommClass R S N] :
-    (BilinMap R M N) →ₗ[S] QuadraticMap R M N where
+def toQuadraticMapLinearMap [Semiring S] [Module S N] [SMulCommClass S R N] [SMulCommClass R S N]
+    : (BilinMap R M N) →ₗ[S] QuadraticMap R M N where
   toFun := toQuadraticMap
   map_smul' := toQuadraticMap_smul
   map_add' := toQuadraticMap_add
@@ -719,23 +734,22 @@ def toQuadraticMapLinearMap [Semiring S] [Module S N] [SMulCommClass S R N] [SMu
 end
 
 @[simp]
-theorem toQuadraticMap_list_sum (B : List (BilinMap R M N)) :
-    B.sum.toQuadraticMap = (B.map toQuadraticMap).sum :=
+theorem toQuadraticMap_list_sum (B : List (BilinMap R M N))
+    : B.sum.toQuadraticMap = (B.map toQuadraticMap).sum :=
   map_list_sum (toQuadraticMapAddMonoidHom R M) B
 
 @[simp]
-theorem toQuadraticMap_multiset_sum (B : Multiset (BilinMap R M N)) :
-    B.sum.toQuadraticMap = (B.map toQuadraticMap).sum :=
+theorem toQuadraticMap_multiset_sum (B : Multiset (BilinMap R M N))
+    : B.sum.toQuadraticMap = (B.map toQuadraticMap).sum :=
   map_multiset_sum (toQuadraticMapAddMonoidHom R M) B
 
 @[simp]
-theorem toQuadraticMap_sum {ι : Type*} (s : Finset ι) (B : ι → (BilinMap R M N)) :
-    (∑ i ∈ s, B i).toQuadraticMap = ∑ i ∈ s, (B i).toQuadraticMap :=
+theorem toQuadraticMap_sum {ι : Type*} (s : Finset ι) (B : ι → (BilinMap R M N))
+    : (∑ i ∈ s, B i).toQuadraticMap = ∑ i ∈ s, (B i).toQuadraticMap :=
   map_sum (toQuadraticMapAddMonoidHom R M) B s
 
 @[simp]
-theorem toQuadraticMap_eq_zero {B : BilinMap R M N} :
-    B.toQuadraticMap = 0 ↔ B.IsAlt :=
+theorem toQuadraticMap_eq_zero {B : BilinMap R M N} : B.toQuadraticMap = 0 ↔ B.IsAlt :=
   QuadraticMap.ext_iff
 
 end Semiring
@@ -746,12 +760,11 @@ variable [CommRing R] [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N
 variable {B : BilinMap R M N}
 
 @[simp]
-theorem toQuadraticMap_neg (B : BilinMap R M N) : (-B).toQuadraticMap = -B.toQuadraticMap :=
-  rfl
+theorem toQuadraticMap_neg (B : BilinMap R M N) : (-B).toQuadraticMap = -B.toQuadraticMap := rfl
 
 @[simp]
-theorem toQuadraticMap_sub (B₁ B₂ : BilinMap R M N) :
-    (B₁ - B₂).toQuadraticMap = B₁.toQuadraticMap - B₂.toQuadraticMap :=
+theorem toQuadraticMap_sub (B₁ B₂ : BilinMap R M N)
+    : (B₁ - B₂).toQuadraticMap = B₁.toQuadraticMap - B₂.toQuadraticMap :=
   rfl
 
 theorem polar_toQuadraticMap (x y : M) : polar (toQuadraticMap B) x y = B x y + B y x := by
@@ -761,12 +774,13 @@ theorem polar_toQuadraticMap (x y : M) : polar (toQuadraticMap B) x y = B x y + 
 theorem polarBilin_toQuadraticMap : polarBilin (toQuadraticMap B) = B + flip B :=
   LinearMap.ext₂ polar_toQuadraticMap
 
-@[simp] theorem _root_.QuadraticMap.toQuadraticMap_polarBilin (Q : QuadraticMap R M N) :
-    toQuadraticMap (polarBilin Q) = 2 • Q :=
+@[simp]
+theorem _root_.QuadraticMap.toQuadraticMap_polarBilin (Q : QuadraticMap R M N)
+    : toQuadraticMap (polarBilin Q) = 2 • Q :=
   QuadraticMap.ext fun x => (polar_self _ x).trans <| by simp
 
-theorem _root_.QuadraticMap.polarBilin_injective (h : IsUnit (2 : R)) :
-    Function.Injective (polarBilin : QuadraticMap R M N → _) := by
+theorem _root_.QuadraticMap.polarBilin_injective (h : IsUnit (2 : R))
+    : Function.Injective (polarBilin : QuadraticMap R M N → _) := by
   intro Q₁ Q₂ h₁₂
   apply h.smul_left_cancel.mp
   rw [show (2 : R) = (2 : ℕ) by rfl]
@@ -777,23 +791,25 @@ section
 
 variable {N' : Type*} [AddCommGroup N'] [Module R N']
 
-theorem _root_.QuadraticMap.polarBilin_comp (Q : QuadraticMap R N' N) (f : M →ₗ[R] N') :
-    polarBilin (Q.comp f) = LinearMap.compl₁₂ (polarBilin Q) f f :=
+theorem _root_.QuadraticMap.polarBilin_comp (Q : QuadraticMap R N' N) (f : M →ₗ[R] N')
+    : polarBilin (Q.comp f) = LinearMap.compl₁₂ (polarBilin Q) f f :=
   LinearMap.ext₂ <| fun x y => by simp [polar]
 
 end
 
 variable {N' : Type*} [AddCommGroup N']
 
-theorem _root_.LinearMap.compQuadraticMap_polar [CommSemiring S] [Algebra S R] [Module S N]
-    [Module S N'] [IsScalarTower S R N] [Module S M] [IsScalarTower S R M] (f : N →ₗ[S] N')
-    (Q : QuadraticMap R M N) (x y : M) : polar (f.compQuadraticMap' Q) x y = f (polar Q x y) := by
+theorem _root_.LinearMap.compQuadraticMap_polar
+    [CommSemiring S] [Algebra S R] [Module S N] [Module S N'] [IsScalarTower S R N] [Module S M]
+    [IsScalarTower S R M]
+    (f : N →ₗ[S] N') (Q : QuadraticMap R M N) (x y : M)
+    : polar (f.compQuadraticMap' Q) x y = f (polar Q x y) := by
   simp [polar]
 
 variable [Module R N']
 
-theorem _root_.LinearMap.compQuadraticMap_polarBilin (f : N →ₗ[R] N') (Q : QuadraticMap R M N) :
-    (f.compQuadraticMap' Q).polarBilin = Q.polarBilin.compr₂ f := by
+theorem _root_.LinearMap.compQuadraticMap_polarBilin (f : N →ₗ[R] N') (Q : QuadraticMap R M N)
+    : (f.compQuadraticMap' Q).polarBilin = Q.polarBilin.compr₂ f := by
   ext
   rw [polarBilin_apply_apply, compr₂_apply, polarBilin_apply_apply,
     LinearMap.compQuadraticMap_polar]
@@ -814,8 +830,9 @@ variable [Semiring R] [AddCommMonoid M] [Module R M]
 
 /-- If `2` is invertible in `R`, then it is also invertible in `End R M`. -/
 instance [Invertible (2 : R)] : Invertible (2 : Module.End R M) where
-  invOf := (⟨⅟2, Set.invOf_mem_center (Set.ofNat_mem_center _ _)⟩ : Submonoid.center R) •
-    (1 : Module.End R M)
+  invOf :=
+    (⟨⅟2, Set.invOf_mem_center (Set.ofNat_mem_center _ _)⟩ : Submonoid.center R)
+      • (1 : Module.End R M)
   invOf_mul_self := by
     ext m
     dsimp [Submonoid.smul_def]
@@ -825,11 +842,13 @@ instance [Invertible (2 : R)] : Invertible (2 : Module.End R M) where
     dsimp [Submonoid.smul_def]
     rw [← ofNat_smul_eq_nsmul R, smul_invOf_smul (2 : R) m]
 
-/-- If `2` is invertible in `R`, then applying the inverse of `2` in `End R M` to an element
-of `M` is the same as multiplying by the inverse of `2` in `R`. -/
+/--
+If `2` is invertible in `R`, then applying the inverse of `2` in `End R M` to an element
+of `M` is the same as multiplying by the inverse of `2` in `R`.
+-/
 @[simp]
-lemma half_moduleEnd_apply_eq_half_smul [Invertible (2 : R)] (x : M) :
-    ⅟(2 : Module.End R M) x = ⅟(2 : R) • x :=
+lemma half_moduleEnd_apply_eq_half_smul [Invertible (2 : R)] (x : M)
+    : ⅟(2 : Module.End R M) x = ⅟(2 : R) • x :=
   rfl
 
 end
@@ -843,13 +862,15 @@ variable (S) [CommSemiring S] [Algebra S R] [Module S N] [IsScalarTower S R N]
 -- the requirement that multiplication by `2` is invertible on the target module `N`
 variable [Invertible (2 : Module.End R N)]
 
-/-- `associatedHom` is the map that sends a quadratic map on a module `M` over `R` to its
+/--
+`associatedHom` is the map that sends a quadratic map on a module `M` over `R` to its
 associated symmetric bilinear map.  As provided here, this has the structure of an `S`-linear map
 where `S` is a commutative ring and `R` is an `S`-algebra.
 
 Over a commutative ring, use `QuadraticMap.associated`, which gives an `R`-linear map.  Over a
 general ring with no nontrivial distinguished commutative subring, use `QuadraticMap.associated'`,
-which gives an additive homomorphism (or more precisely a `ℤ`-linear map.) -/
+which gives an additive homomorphism (or more precisely a `ℤ`-linear map.)
+-/
 def associatedHom : QuadraticMap R M N →ₗ[S] (BilinMap R M N) where
   toFun Q := ⅟(2 : Module.End R N) • polarBilin Q
   map_add' _ _ := LinearMap.ext₂ fun _ _ ↦ by simp [polar_add]
@@ -857,52 +878,56 @@ def associatedHom : QuadraticMap R M N →ₗ[S] (BilinMap R M N) where
 
 variable (Q : QuadraticMap R M N)
 
-theorem associated_apply (x y : M) :
-    associatedHom S Q x y = ⅟(2 : Module.End R N) • (Q (x + y) - Q x - Q y) := rfl
+theorem associated_apply (x y : M)
+    : associatedHom S Q x y = ⅟(2 : Module.End R N) • (Q (x + y) - Q x - Q y) :=
+  rfl
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Twice the associated bilinear map of `Q` is the same as the polar of `Q`. -/
-@[simp] theorem two_nsmul_associated : 2 • associatedHom S Q = Q.polarBilin := by
+@[simp]
+theorem two_nsmul_associated : 2 • associatedHom S Q = Q.polarBilin := by
   ext
   dsimp [associated_apply]
   rw [← LinearMap.smul_apply, nsmul_eq_mul, Nat.cast_ofNat, mul_invOf_self', Module.End.one_apply,
     polar]
 
-theorem associated_isSymm (Q : QuadraticMap R M N) (x y : M) :
-    associatedHom S Q x y = associatedHom S Q y x := by
+theorem associated_isSymm (Q : QuadraticMap R M N) (x y : M)
+    : associatedHom S Q x y = associatedHom S Q y x := by
   simp only [associated_apply, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
 
-theorem _root_.QuadraticForm.associated_isSymm (Q : QuadraticForm R M) [Invertible (2 : R)] :
-    (associatedHom S Q).IsSymm :=
+theorem _root_.QuadraticForm.associated_isSymm (Q : QuadraticForm R M) [Invertible (2 : R)]
+    : (associatedHom S Q).IsSymm :=
   ⟨QuadraticMap.associated_isSymm S Q⟩
 
-/-- A version of `QuadraticMap.associated_isSymm` for general targets
-(using `flip` because `IsSymm` does not apply here). -/
+/--
+A version of `QuadraticMap.associated_isSymm` for general targets
+(using `flip` because `IsSymm` does not apply here).
+-/
 lemma associated_flip : (associatedHom S Q).flip = associatedHom S Q := by
   ext
   simp only [LinearMap.flip_apply, associated_apply, add_comm, sub_eq_add_neg, add_left_comm,
     add_assoc]
 
 @[simp]
-theorem associated_comp {N' : Type*} [AddCommGroup N'] [Module R N'] (f : N' →ₗ[R] M) :
-    associatedHom S (Q.comp f) = (associatedHom S Q).compl₁₂ f f := by
+theorem associated_comp {N' : Type*} [AddCommGroup N'] [Module R N'] (f : N' →ₗ[R] M)
+    : associatedHom S (Q.comp f) = (associatedHom S Q).compl₁₂ f f := by
   ext
   simp only [associated_apply, comp_apply, map_add, LinearMap.compl₁₂_apply]
 
-theorem associated_toQuadraticMap (B : BilinMap R M N) (x y : M) :
-    associatedHom S B.toQuadraticMap x y = ⅟(2 : Module.End R N) • (B x y + B y x) := by
+theorem associated_toQuadraticMap (B : BilinMap R M N) (x y : M)
+    : associatedHom S B.toQuadraticMap x y = ⅟(2 : Module.End R N) • (B x y + B y x) := by
   simp only [associated_apply, BilinMap.toQuadraticMap_apply, map_add, LinearMap.add_apply,
     Module.End.smul_def, map_sub]
   abel_nf
 
-theorem associated_left_inverse {B₁ : BilinMap R M N} (h : ∀ x y, B₁ x y = B₁ y x) :
-    associatedHom S B₁.toQuadraticMap = B₁ :=
+theorem associated_left_inverse {B₁ : BilinMap R M N} (h : ∀ x y, B₁ x y = B₁ y x)
+    : associatedHom S B₁.toQuadraticMap = B₁ :=
   LinearMap.ext₂ fun x y ↦ by
     rw [associated_toQuadraticMap, ← h x y, ← two_smul R, invOf_smul_eq_iff, two_smul, two_smul]
 
 /-- A version of `QuadraticMap.associated_left_inverse` for general targets. -/
-lemma associated_left_inverse' {B₁ : BilinMap R M N} (hB₁ : B₁.flip = B₁) :
-    associatedHom S B₁.toQuadraticMap = B₁ := by
+lemma associated_left_inverse' {B₁ : BilinMap R M N} (hB₁ : B₁.flip = B₁)
+    : associatedHom S B₁.toQuadraticMap = B₁ := by
   ext _ y
   rw [associated_toQuadraticMap, ← LinearMap.flip_apply _ y, hB₁, invOf_smul_eq_iff, two_smul]
 
@@ -916,31 +941,35 @@ theorem toQuadraticMap_associated : (associatedHom S Q).toQuadraticMap = Q :=
 
 -- note: usually `rightInverse` lemmas are named the other way around, but this is consistent
 -- with historical naming in this file.
-theorem associated_rightInverse :
-    Function.RightInverse (associatedHom S) (BilinMap.toQuadraticMap : _ → QuadraticMap R M N) :=
+theorem associated_rightInverse
+    : Function.RightInverse (associatedHom S) (BilinMap.toQuadraticMap : _ → QuadraticMap R M N) :=
   toQuadraticMap_associated S
 
-/-- `associated'` is the `ℤ`-linear map that sends a quadratic form on a module `M` over `R` to its
-associated symmetric bilinear form. -/
-abbrev associated' : QuadraticMap R M N →ₗ[ℤ] BilinMap R M N :=
-  associatedHom ℤ
+/--
+`associated'` is the `ℤ`-linear map that sends a quadratic form on a module `M` over `R` to its
+associated symmetric bilinear form.
+-/
+abbrev associated' : QuadraticMap R M N →ₗ[ℤ] BilinMap R M N := associatedHom ℤ
 
 /-- Symmetric bilinear forms can be lifted to quadratic forms -/
-instance canLift [Invertible (2 : R)] :
-    CanLift (BilinMap R M R) (QuadraticForm R M) (associatedHom ℕ) LinearMap.IsSymm where
+instance canLift [Invertible (2 : R)]
+    : CanLift (BilinMap R M R) (QuadraticForm R M) (associatedHom ℕ) LinearMap.IsSymm where
   prf B := fun ⟨hB⟩ ↦ ⟨B.toQuadraticMap, associated_left_inverse _ hB⟩
 
 /-- Symmetric bilinear maps can be lifted to quadratic maps -/
-instance canLift' :
-    CanLift (BilinMap R M N) (QuadraticMap R M N) (associatedHom ℕ) fun B ↦ B.flip = B where
+instance canLift'
+    : CanLift (BilinMap R M N) (QuadraticMap R M N) (associatedHom ℕ) fun B ↦ B.flip = B where
   prf B hB := ⟨B.toQuadraticMap, associated_left_inverse' _ hB⟩
 
-/-- There exists a non-null vector with respect to any quadratic form `Q` whose associated
-bilinear form is non-zero, i.e. there exists `x` such that `Q x ≠ 0`. -/
-theorem exists_quadraticMap_ne_zero {Q : QuadraticMap R M N}
+/--
+There exists a non-null vector with respect to any quadratic form `Q` whose associated
+bilinear form is non-zero, i.e. there exists `x` such that `Q x ≠ 0`.
+-/
+theorem exists_quadraticMap_ne_zero
+    {Q : QuadraticMap R M N}
     -- Porting note: added implicit argument
-    (hB₁ : associated' (N := N) Q ≠ 0) :
-    ∃ x, Q x ≠ 0 := by
+    (hB₁ : associated' (N := N) Q ≠ 0)
+    : ∃ x, Q x ≠ 0 := by
   rw [← not_forall]
   intro h
   apply hB₁
@@ -957,21 +986,22 @@ variable [Invertible (2 : Module.End R N)]
 -- Note:  When possible, rather than writing lemmas about `associated`, write a lemma applying to
 -- the more general `associatedHom` and place it in the previous section.
 
-/-- `associated` is the linear map that sends a quadratic map over a commutative ring to its
-associated symmetric bilinear map. -/
-abbrev associated : QuadraticMap R M N →ₗ[R] BilinMap R M N :=
-  associatedHom R
+/--
+`associated` is the linear map that sends a quadratic map over a commutative ring to its
+associated symmetric bilinear map.
+-/
+abbrev associated : QuadraticMap R M N →ₗ[R] BilinMap R M N := associatedHom R
 
 variable (S) in
-theorem coe_associatedHom :
-    ⇑(associatedHom S : QuadraticMap R M N →ₗ[S] BilinMap R M N) = associated :=
+theorem coe_associatedHom
+    : ⇑(associatedHom S : QuadraticMap R M N →ₗ[S] BilinMap R M N) = associated :=
   rfl
 
 open LinearMap in
 @[simp]
-theorem associated_linMulLin [Invertible (2 : R)] (f g : M →ₗ[R] R) :
-    associated (R := R) (N := R) (linMulLin f g) =
-      ⅟(2 : R) • ((mul R R).compl₁₂ f g + (mul R R).compl₁₂ g f) := by
+theorem associated_linMulLin [Invertible (2 : R)] (f g : M →ₗ[R] R)
+    : associated (R := R) (N := R) (linMulLin f g)
+      = ⅟(2 : R) • ((mul R R).compl₁₂ f g + (mul R R).compl₁₂ g f) := by
   ext
   simp only [associated_apply, linMulLin_apply, map_add, smul_add, LinearMap.add_apply,
     LinearMap.smul_apply, compl₁₂_apply, mul_apply', smul_eq_mul, invOf_smul_eq_iff]
@@ -993,12 +1023,12 @@ section IsOrtho
 /-! ### Orthogonality -/
 
 section CommSemiring
-variable [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
+variable
+  [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
   {Q : QuadraticMap R M N}
 
 /-- The proposition that two elements of a quadratic map space are orthogonal. -/
-def IsOrtho (Q : QuadraticMap R M N) (x y : M) : Prop :=
-  Q (x + y) = Q x + Q y
+def IsOrtho (Q : QuadraticMap R M N) (x y : M) : Prop := Q (x + y) = Q x + Q y
 
 theorem isOrtho_def {Q : QuadraticMap R M N} {x y : M} : Q.IsOrtho x y ↔ Q (x + y) = Q x + Q y :=
   Iff.rfl
@@ -1009,17 +1039,17 @@ theorem IsOrtho.zero_left (x : M) : IsOrtho Q (0 : M) x := by simp [isOrtho_def]
 
 theorem IsOrtho.zero_right (x : M) : IsOrtho Q x (0 : M) := by simp [isOrtho_def]
 
-theorem ne_zero_of_not_isOrtho_self {Q : QuadraticMap R M N} (x : M) (hx₁ : ¬Q.IsOrtho x x) :
-    x ≠ 0 :=
-  fun hx₂ => hx₁ (hx₂.symm ▸ .zero_left _)
+theorem ne_zero_of_not_isOrtho_self {Q : QuadraticMap R M N} (x : M) (hx₁ : ¬ Q.IsOrtho x x)
+    : x ≠ 0 := fun hx₂ =>
+  hx₁ (hx₂.symm ▸ .zero_left _)
 
 theorem isOrtho_comm {x y : M} : IsOrtho Q x y ↔ IsOrtho Q y x := by simp_rw [isOrtho_def, add_comm]
 
 alias ⟨IsOrtho.symm, _⟩ := isOrtho_comm
 
-theorem _root_.LinearMap.BilinForm.toQuadraticMap_isOrtho [IsCancelAdd R]
-    [NoZeroDivisors R] [CharZero R] {B : BilinMap R M R} {x y : M} (h : B.IsSymm) :
-    B.toQuadraticMap.IsOrtho x y ↔ B x y = 0 := by
+theorem _root_.LinearMap.BilinForm.toQuadraticMap_isOrtho
+    [IsCancelAdd R] [NoZeroDivisors R] [CharZero R] {B : BilinMap R M R} {x y : M} (h : B.IsSymm)
+    : B.toQuadraticMap.IsOrtho x y ↔ B x y = 0 := by
   let : AddCancelMonoid R := { ‹IsCancelAdd R›, (inferInstance : AddCommMonoid R) with }
   simp_rw [isOrtho_def, B.toQuadraticMap_apply, map_add,
     LinearMap.add_apply, add_comm _ (B y y), add_add_add_comm _ _ (B y y), add_comm (B y y)]
@@ -1028,8 +1058,8 @@ theorem _root_.LinearMap.BilinForm.toQuadraticMap_isOrtho [IsCancelAdd R]
 end CommSemiring
 
 section CommRing
-variable [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
-  {Q : QuadraticMap R M N}
+variable
+  [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N] {Q : QuadraticMap R M N}
 
 theorem isOrtho_polarBilin {x y : M} : Q.polarBilin x y = 0 ↔ IsOrtho Q x y := by
   simp_rw [isOrtho_def, polarBilin_apply_apply, polar, sub_sub, sub_eq_zero]
@@ -1038,8 +1068,8 @@ theorem IsOrtho.polar_eq_zero {x y : M} (h : IsOrtho Q x y) : polar Q x y = 0 :=
   isOrtho_polarBilin.mpr h
 
 @[simp]
-theorem associated_isOrtho [Invertible (2 : R)] {x y : M} :
-    Q.associated x y = 0 ↔ Q.IsOrtho x y := by
+theorem associated_isOrtho [Invertible (2 : R)] {x y : M}
+    : Q.associated x y = 0 ↔ Q.IsOrtho x y := by
   simp_rw [isOrtho_def, associated_apply, invOf_smul_eq_iff, smul_zero, sub_sub, sub_eq_zero]
 
 end CommRing
@@ -1053,15 +1083,14 @@ section Semiring
 variable [CommSemiring R] [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module R N]
 
 /-- An anisotropic quadratic map is zero only on zero vectors. -/
-def Anisotropic (Q : QuadraticMap R M N) : Prop :=
-  ∀ x, Q x = 0 → x = 0
+def Anisotropic (Q : QuadraticMap R M N) : Prop := ∀ x, Q x = 0 → x = 0
 
-theorem not_anisotropic_iff_exists (Q : QuadraticMap R M N) :
-    ¬Anisotropic Q ↔ ∃ x, x ≠ 0 ∧ Q x = 0 := by
+theorem not_anisotropic_iff_exists (Q : QuadraticMap R M N)
+    : ¬ Anisotropic Q ↔ ∃ x, x ≠ 0 ∧ Q x = 0 := by
   simp only [Anisotropic, not_forall, exists_prop, and_comm]
 
-theorem Anisotropic.eq_zero_iff {Q : QuadraticMap R M N} (h : Anisotropic Q) {x : M} :
-    Q x = 0 ↔ x = 0 :=
+theorem Anisotropic.eq_zero_iff {Q : QuadraticMap R M N} (h : Anisotropic Q) {x : M}
+    : Q x = 0 ↔ x = 0 :=
   ⟨h x, fun h => h.symm ▸ map_zero Q⟩
 
 end Semiring
@@ -1071,12 +1100,13 @@ section Ring
 variable [CommRing R] [AddCommGroup M] [Module R M]
 
 /-- The associated bilinear form of an anisotropic quadratic form is nondegenerate. -/
-theorem separatingLeft_of_anisotropic [Invertible (2 : R)] (Q : QuadraticMap R M R)
-    (hB : Q.Anisotropic) :
+theorem separatingLeft_of_anisotropic
+    [Invertible (2 : R)] (Q : QuadraticMap R M R) (hB : Q.Anisotropic)
     -- Porting note: added implicit argument
-    (QuadraticMap.associated' (N := R) Q).SeparatingLeft := fun x hx ↦ hB _ <| by
-  rw [← hx x]
-  exact (associated_eq_self_apply _ _ x).symm
+    : (QuadraticMap.associated' (N := R) Q).SeparatingLeft := fun x hx ↦
+  hB _ <| by
+    rw [← hx x]
+    exact (associated_eq_self_apply _ _ x).symm
 
 end Ring
 
@@ -1089,50 +1119,50 @@ variable [PartialOrder N] [AddCommMonoid N] [Module R₂ N]
 variable {Q₂ : QuadraticMap R₂ M N}
 
 /-- A positive definite quadratic form is positive on nonzero vectors. -/
-def PosDef (Q₂ : QuadraticMap R₂ M N) : Prop :=
-  ∀ x, x ≠ 0 → 0 < Q₂ x
+def PosDef (Q₂ : QuadraticMap R₂ M N) : Prop := ∀ x, x ≠ 0 → 0 < Q₂ x
 
-
-theorem PosDef.smul {R} [CommSemiring R] [PartialOrder R]
-    [Module R M] [Module R N] [PosSMulStrictMono R N]
-    {Q : QuadraticMap R M N} (h : PosDef Q) {a : R} (a_pos : 0 < a) : PosDef (a • Q) :=
-  fun x hx => smul_pos a_pos (h x hx)
+theorem PosDef.smul
+    {R} [CommSemiring R] [PartialOrder R] [Module R M] [Module R N] [PosSMulStrictMono R N]
+    {Q : QuadraticMap R M N} (h : PosDef Q)
+    {a : R} (a_pos : 0 < a)
+    : PosDef (a • Q) := fun x hx =>
+  smul_pos a_pos (h x hx)
 
 variable {n : Type*}
 
 theorem PosDef.nonneg {Q : QuadraticMap R₂ M N} (hQ : PosDef Q) (x : M) : 0 ≤ Q x :=
   (eq_or_ne x 0).elim (fun h => h.symm ▸ (map_zero Q).symm.le) fun h => (hQ _ h).le
 
-theorem PosDef.anisotropic {Q : QuadraticMap R₂ M N} (hQ : Q.PosDef) : Q.Anisotropic :=
-  fun x hQx => by_contradiction fun hx =>
+theorem PosDef.anisotropic {Q : QuadraticMap R₂ M N} (hQ : Q.PosDef) : Q.Anisotropic := fun x hQx =>
+  by_contradiction fun hx =>
     lt_irrefl (0 : N) <| by
       have := hQ _ hx
       rw [hQx] at this
       exact this
 
-theorem PosDef.le_zero_iff {Q : QuadraticMap R₂ M N} (hQ : PosDef Q) {x : M} :
-    Q x ≤ 0 ↔ x = 0 := by
+theorem PosDef.le_zero_iff {Q : QuadraticMap R₂ M N} (hQ : PosDef Q) {x : M} : Q x ≤ 0 ↔ x = 0 := by
   refine ⟨fun h ↦ ?_, fun h ↦ by simp [h]⟩
   have : Q x = 0 := le_antisymm h (hQ.nonneg x)
   rwa [← hQ.anisotropic]
 
-theorem posDef_of_nonneg {Q : QuadraticMap R₂ M N} (h : ∀ x, 0 ≤ Q x) (h0 : Q.Anisotropic) :
-    PosDef Q :=
-  fun x hx => lt_of_le_of_ne (h x) (Ne.symm fun hQx => hx <| h0 _ hQx)
+theorem posDef_of_nonneg {Q : QuadraticMap R₂ M N} (h : ∀ x, 0 ≤ Q x) (h0 : Q.Anisotropic)
+    : PosDef Q := fun x hx =>
+  lt_of_le_of_ne (h x) (Ne.symm fun hQx => hx <| h0 _ hQx)
 
 theorem posDef_iff_nonneg {Q : QuadraticMap R₂ M N} : PosDef Q ↔ (∀ x, 0 ≤ Q x) ∧ Q.Anisotropic :=
   ⟨fun h => ⟨h.nonneg, h.anisotropic⟩, fun ⟨n, a⟩ => posDef_of_nonneg n a⟩
 
-theorem PosDef.add [AddLeftStrictMono N]
-    (Q Q' : QuadraticMap R₂ M N) (hQ : PosDef Q) (hQ' : PosDef Q') :
-    PosDef (Q + Q') :=
-  fun x hx => add_pos (hQ x hx) (hQ' x hx)
+theorem PosDef.add
+    [AddLeftStrictMono N] (Q Q' : QuadraticMap R₂ M N) (hQ : PosDef Q) (hQ' : PosDef Q')
+    : PosDef (Q + Q') := fun x hx =>
+  add_pos (hQ x hx) (hQ' x hx)
 
-theorem linMulLinSelfPosDef {R} [CommSemiring R] [Module R M]
-    [Semiring A] [LinearOrder A] [IsStrictOrderedRing A]
-    [ExistsAddOfLE A] [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] (f : M →ₗ[R] A)
-    (hf : LinearMap.ker f = ⊥) : PosDef (linMulLin (A := A) f f) :=
-  fun _x hx => mul_self_pos.2 fun h => hx <| LinearMap.ker_eq_bot'.mp hf _ h
+theorem linMulLinSelfPosDef
+    {R} [CommSemiring R] [Module R M] [Semiring A] [LinearOrder A] [IsStrictOrderedRing A]
+    [ExistsAddOfLE A] [Module R A] [SMulCommClass R A A] [IsScalarTower R A A]
+    (f : M →ₗ[R] A) (hf : LinearMap.ker f = ⊥)
+    : PosDef (linMulLin (A := A) f f) := fun _x hx =>
+  mul_self_pos.2 fun h => hx <| LinearMap.ker_eq_bot'.mp hf _ h
 
 end PosDef
 
@@ -1164,14 +1194,15 @@ namespace QuadraticForm
 
 section Rn
 
-/-- A matrix representation of a quadratic form `Q : QuadraticForm R (n → R)`.
-  See also `QuadraticForm.toMatrix` which gives the matrix in a given basis of a quadratic form on
-  an abstract vector space. -/
-def toMatrix' (Q : QuadraticForm R (n → R)) : Matrix n n R :=
-  LinearMap.toMatrix₂' R Q.associated
+/--
+A matrix representation of a quadratic form `Q : QuadraticForm R (n → R)`.
+See also `QuadraticForm.toMatrix` which gives the matrix in a given basis of a quadratic form on
+an abstract vector space.
+-/
+def toMatrix' (Q : QuadraticForm R (n → R)) : Matrix n n R := LinearMap.toMatrix₂' R Q.associated
 
-theorem toMatrix'_smul (a : R) (Q : QuadraticForm R (n → R)) :
-    (a • Q).toMatrix' = a • Q.toMatrix' := by
+theorem toMatrix'_smul (a : R) (Q : QuadraticForm R (n → R))
+    : (a • Q).toMatrix' = a • Q.toMatrix' := by
   simp [toMatrix']
 
 theorem isSymm_toMatrix' (Q : QuadraticForm R (n → R)) : Q.toMatrix'.IsSymm := by
@@ -1184,9 +1215,9 @@ variable {m : Type w} [DecidableEq m] [Fintype m]
 open Matrix
 
 @[simp]
-theorem toMatrix'_comp (Q : QuadraticForm R (m → R)) (f : (n → R) →ₗ[R] m → R) :
-    QuadraticForm.toMatrix' (Q.comp f) =
-      (LinearMap.toMatrix' f)ᵀ * Q.toMatrix' * (LinearMap.toMatrix' f) := by
+theorem toMatrix'_comp (Q : QuadraticForm R (m → R)) (f : (n → R) →ₗ[R] m → R)
+    : QuadraticForm.toMatrix' (Q.comp f)
+      = (LinearMap.toMatrix' f)ᵀ * Q.toMatrix' * (LinearMap.toMatrix' f) := by
   simp only [QuadraticMap.associated_comp, LinearMap.toMatrix₂'_compl₁₂, toMatrix']
 
 @[deprecated (since := "2026-05-15")] alias QuadraticMap.toMatrix' := QuadraticForm.toMatrix'
@@ -1204,19 +1235,20 @@ open Module
 
 variable [AddCommGroup N] [Module R N] (b : Basis n R N) (Q : QuadraticForm R N)
 
-/-- A matrix representation of the quadratic form `Q : QuadraticForm R N` with respect to a
-  given basis. See also `QuadraticForm.toMatrix'` for the special case of `N = n → R` with
-  the standard basis. -/
-noncomputable def toMatrix : Matrix n n R :=
-  LinearMap.toMatrix₂ b b (Q.associated)
+/--
+A matrix representation of the quadratic form `Q : QuadraticForm R N` with respect to a
+given basis. See also `QuadraticForm.toMatrix'` for the special case of `N = n → R` with
+the standard basis.
+-/
+noncomputable def toMatrix : Matrix n n R := LinearMap.toMatrix₂ b b (Q.associated)
 
-lemma toMatrix_eq_toMatrix' (Q : QuadraticForm R (n → R)) :
-    Q.toMatrix (Pi.basisFun R n) = Q.toMatrix' := by
+lemma toMatrix_eq_toMatrix' (Q : QuadraticForm R (n → R))
+    : Q.toMatrix (Pi.basisFun R n) = Q.toMatrix' := by
   simp only [toMatrix, toMatrix']
   exact LinearEquiv.congr_arg rfl
 
-theorem toMatrix_smul (a : R) (Q : QuadraticForm R N) :
-    (a • Q).toMatrix b = a • (Q.toMatrix b) := by
+theorem toMatrix_smul (a : R) (Q : QuadraticForm R N)
+    : (a • Q).toMatrix b = a • (Q.toMatrix b) := by
   simp [toMatrix]
 
 theorem isSymm_toMatrix (Q : QuadraticForm R N) : (Q.toMatrix b).IsSymm := by
@@ -1228,9 +1260,9 @@ variable {m : Type w} [DecidableEq m] [Fintype m] [AddCommGroup P] [Module R P]
 
 open Matrix
 
-theorem toMatrix_comp (b' : Basis m R P) (Q : QuadraticForm R P) (f : N →ₗ[R] P) :
-    QuadraticForm.toMatrix b (Q.comp f) =
-      (f.toMatrix b b')ᵀ * (Q.toMatrix b') * (f.toMatrix b b') := by
+theorem toMatrix_comp (b' : Basis m R P) (Q : QuadraticForm R P) (f : N →ₗ[R] P)
+    : QuadraticForm.toMatrix b (Q.comp f)
+      = (f.toMatrix b b')ᵀ * (Q.toMatrix b') * (f.toMatrix b b') := by
   simp only [QuadraticMap.associated_comp, LinearMap.toMatrix₂_compl₁₂ b' b', toMatrix]
 
 end Basis
@@ -1239,18 +1271,19 @@ section Discriminant
 
 section Rn
 
-/-- The discriminant of a quadratic form `Q : QuadraticForm R (n → R)` generalizes the discriminant
-  of a quadratic polynomial. -/
-def discr' (Q : QuadraticForm R (n → R)) : R :=
-  Q.toMatrix'.det
+/--
+The discriminant of a quadratic form `Q : QuadraticForm R (n → R)` generalizes the discriminant
+of a quadratic polynomial.
+-/
+def discr' (Q : QuadraticForm R (n → R)) : R := Q.toMatrix'.det
 
 variable {Q : QuadraticForm R (n → R)}
 
 theorem discr'_smul (a : R) : (a • Q).discr' = a ^ Fintype.card n * Q.discr' := by
   simp [discr', toMatrix'_smul]
 
-theorem discr'_comp (f : (n → R) →ₗ[R] n → R) :
-    QuadraticForm.discr' (Q.comp f) = f.toMatrix'.det * f.toMatrix'.det * Q.discr' := by
+theorem discr'_comp (f : (n → R) →ₗ[R] n → R)
+    : QuadraticForm.discr' (Q.comp f) = f.toMatrix'.det * f.toMatrix'.det * Q.discr' := by
   simp [mul_left_comm, toMatrix'_comp, mul_comm, discr']
 
 @[deprecated (since := "2026-05-15")] alias QuadraticMap.discr := QuadraticForm.discr'
@@ -1267,8 +1300,10 @@ open Module
 
 variable [AddCommGroup N] [Module R N] (b : Basis n R N) (Q : QuadraticForm R N)
 
-/-- The discriminant of a quadratic form `Q : QuadraticForm R N` generalizes the discriminant
-  of a quadratic polynomial. -/
+/--
+The discriminant of a quadratic form `Q : QuadraticForm R N` generalizes the discriminant
+of a quadratic polynomial.
+-/
 noncomputable def discr : R := (Q.toMatrix b).det
 
 variable {b Q}
@@ -1276,14 +1311,13 @@ variable {b Q}
 theorem discr_smul (a : R) : (a • Q).discr b = a ^ Fintype.card n * (Q.discr b) := by
   simp [discr, toMatrix_smul]
 
-theorem discr_comp [AddCommGroup P] [Module R P] (b' : Basis n R P) (Q : QuadraticForm R P)
-    (f : N →ₗ[R] P) :
-    QuadraticForm.discr b (Q.comp f) =
-      (f.toMatrix b b').det * (f.toMatrix b b').det * (Q.discr b') := by
+theorem discr_comp
+    [AddCommGroup P] [Module R P] (b' : Basis n R P) (Q : QuadraticForm R P) (f : N →ₗ[R] P)
+    : QuadraticForm.discr b (Q.comp f)
+      = (f.toMatrix b b').det * (f.toMatrix b b').det * (Q.discr b') := by
   simp [mul_left_comm, toMatrix_comp b b', mul_comm, discr]
 
-lemma discr_eq_discr' (Q : QuadraticForm R (n → R)) :
-    Q.discr (Pi.basisFun R n)  = Q.discr' := by
+lemma discr_eq_discr' (Q : QuadraticForm R (n → R)) : Q.discr (Pi.basisFun R n) = Q.discr' := by
   rw [discr, discr', toMatrix_eq_toMatrix']
 
 end Basis
@@ -1307,18 +1341,22 @@ variable [CommSemiring R] [AddCommMonoid M] [Module R M]
 /--
 A bilinear form is separating left if the quadratic form it is associated with is anisotropic.
 -/
-theorem separatingLeft_of_anisotropic {B : BilinForm R M} (hB : B.toQuadraticMap.Anisotropic) :
-    B.SeparatingLeft := fun x hx => hB _ (hx x)
+theorem separatingLeft_of_anisotropic {B : BilinForm R M} (hB : B.toQuadraticMap.Anisotropic)
+    : B.SeparatingLeft := fun x hx =>
+  hB _ (hx x)
 
 end Semiring
 
 variable [CommRing R] [AddCommGroup M] [Module R M]
 
-/-- There exists a non-null vector with respect to any symmetric, nonzero bilinear form `B`
+/--
+There exists a non-null vector with respect to any symmetric, nonzero bilinear form `B`
 on a module `M` over a ring `R` with invertible `2`, i.e. there exists some
-`x : M` such that `B x x ≠ 0`. -/
-theorem exists_bilinForm_self_ne_zero [htwo : Invertible (2 : R)] {B : BilinForm R M}
-    (hB₁ : B ≠ 0) (hB₂ : B.IsSymm) : ∃ x, B x x ≠ 0 := by
+`x : M` such that `B x x ≠ 0`.
+-/
+theorem exists_bilinForm_self_ne_zero
+    [htwo : Invertible (2 : R)] {B : BilinForm R M} (hB₁ : B ≠ 0) (hB₂ : B.IsSymm)
+    : ∃ x, B x x ≠ 0 := by
   lift B to QuadraticForm R M using hB₂ with Q
   obtain ⟨x, hx⟩ := QuadraticMap.exists_quadraticMap_ne_zero hB₁
   exact ⟨x, fun h => hx (Q.associated_eq_self_apply ℕ x ▸ h)⟩
@@ -1328,52 +1366,57 @@ open Module
 variable {V : Type u} {K : Type v} [Field K] [AddCommGroup V] [Module K V]
 variable [FiniteDimensional K V]
 
-/-- Given a symmetric bilinear form `B` on some vector space `V` over a field `K`
-in which `2` is invertible, there exists an orthogonal basis with respect to `B`. -/
-theorem exists_orthogonal_basis [hK : Invertible (2 : K)] {B : LinearMap.BilinForm K V}
-    (hB₂ : B.IsSymm) : ∃ v : Basis (Fin (finrank K V)) K V, B.IsOrthoᵢ v := by
+/--
+Given a symmetric bilinear form `B` on some vector space `V` over a field `K`
+in which `2` is invertible, there exists an orthogonal basis with respect to `B`.
+-/
+theorem exists_orthogonal_basis
+    [hK : Invertible (2 : K)] {B : LinearMap.BilinForm K V} (hB₂ : B.IsSymm)
+    : ∃ v : Basis (Fin (finrank K V)) K V, B.IsOrthoᵢ v := by
   suffices ∀ d, finrank K V = d → ∃ v : Basis (Fin d) K V, B.IsOrthoᵢ v by exact this _ rfl
   intro d hd
   induction d generalizing V with
-  | zero => exact ⟨basisOfFinrankZero hd, fun _ _ _ => map_zero _⟩
+  | zero =>
+    exact ⟨basisOfFinrankZero hd, fun _ _ _ => map_zero _⟩
   | succ d ih =>
-  -- either the bilinear form is trivial or we can pick a non-null `x`
-  obtain rfl | hB₁ := eq_or_ne B 0
-  · let b := Module.finBasis K V
-    rw [hd] at b
-    exact ⟨b, fun i j _ => rfl⟩
-  obtain ⟨x, hx⟩ := exists_bilinForm_self_ne_zero hB₁ hB₂
-  rw [← Submodule.finrank_add_eq_of_isCompl (isCompl_span_singleton_orthogonal hx).symm,
-    finrank_span_singleton (ne_zero_of_map hx)] at hd
-  let B' := B.domRestrict₁₂ ((K ∙ x).orthogonalBilin B) ((K ∙ x).orthogonalBilin B)
-  obtain ⟨v', hv₁⟩ := ih (hB₂.domRestrict _ : B'.IsSymm) (Nat.succ.inj hd)
-  -- concatenate `x` with the basis obtained by induction
-  let b :=
-    Basis.mkFinCons x v'
-      (by
-        rintro c y hy hc
-        rw [add_eq_zero_iff_neg_eq] at hc
-        rw [← hc, Submodule.neg_mem_iff] at hy
-        have := (isCompl_span_singleton_orthogonal hx).disjoint
-        rw [Submodule.disjoint_def] at this
-        have := this (c • x) (Submodule.smul_mem _ _ <| Submodule.mem_span_singleton_self _) hy
-        exact (smul_eq_zero.1 this).resolve_right fun h => hx <| h.symm ▸ map_zero _)
-      (by
-        intro y
-        refine ⟨-B x y / B x x, fun z hz => ?_⟩
-        obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hz
-        rw [map_smul, smul_apply, map_add, map_smul, smul_eq_mul, smul_eq_mul,
-          div_mul_cancel₀ _ hx, add_neg_cancel, mul_zero])
-  refine ⟨b, ?_⟩
-  rw [Basis.coe_mkFinCons]
-  intro j i
-  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j <;> intro hij <;>
-    simp only [Function.onFun, Fin.cons_zero, Fin.cons_succ, Function.comp_apply]
-  · exact (hij rfl).elim
-  · rw [← hB₂.eq]
-    exact (v' j).prop _ (Submodule.mem_span_singleton_self x)
-  · exact (v' i).prop _ (Submodule.mem_span_singleton_self x)
-  · exact hv₁ (ne_of_apply_ne _ hij)
+    -- either the bilinear form is trivial or we can pick a non-null `x`
+    obtain rfl | hB₁ := eq_or_ne B 0
+    · let b := Module.finBasis K V
+      rw [hd] at b
+      exact ⟨b, fun i j _ => rfl⟩
+    obtain ⟨x, hx⟩ := exists_bilinForm_self_ne_zero hB₁ hB₂
+    rw [← Submodule.finrank_add_eq_of_isCompl (isCompl_span_singleton_orthogonal hx).symm,
+        finrank_span_singleton (ne_zero_of_map hx)]
+      at hd
+    let B' := B.domRestrict₁₂ ((K ∙ x).orthogonalBilin B) ((K ∙ x).orthogonalBilin B)
+    obtain ⟨v', hv₁⟩ := ih (hB₂.domRestrict _ : B'.IsSymm) (Nat.succ.inj hd)
+    -- concatenate `x` with the basis obtained by induction
+    let b :=
+      Basis.mkFinCons x v'
+        (by
+          rintro c y hy hc
+          rw [add_eq_zero_iff_neg_eq] at hc
+          rw [← hc, Submodule.neg_mem_iff] at hy
+          have := (isCompl_span_singleton_orthogonal hx).disjoint
+          rw [Submodule.disjoint_def] at this
+          have := this (c • x) (Submodule.smul_mem _ _ <| Submodule.mem_span_singleton_self _) hy
+          exact (smul_eq_zero.1 this).resolve_right fun h => hx <| h.symm ▸ map_zero _)
+        (by
+          intro y
+          refine ⟨- B x y / B x x, fun z hz => ?_⟩
+          obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hz
+          rw [map_smul, smul_apply, map_add, map_smul, smul_eq_mul, smul_eq_mul,
+            div_mul_cancel₀ _ hx, add_neg_cancel, mul_zero])
+    refine ⟨b, ?_⟩
+    rw [Basis.coe_mkFinCons]
+    intro j i
+    refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j <;> intro hij
+      <;> simp only [Function.onFun, Fin.cons_zero, Fin.cons_succ, Function.comp_apply]
+    · exact (hij rfl).elim
+    · rw [← hB₂.eq]
+      exact (v' j).prop _ (Submodule.mem_span_singleton_self x)
+    · exact (v' i).prop _ (Submodule.mem_span_singleton_self x)
+    · exact hv₁ (ne_of_apply_ne _ hij)
 
 end BilinForm
 
@@ -1387,13 +1430,13 @@ variable [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Modu
 variable {ι : Type*}
 
 /-- Given a quadratic map `Q` and a basis, `basisRepr` is the basis representation of `Q`. -/
-noncomputable def basisRepr [Finite ι] (Q : QuadraticMap R M N) (v : Basis ι R M) :
-    QuadraticMap R (ι → R) N :=
+noncomputable def basisRepr [Finite ι] (Q : QuadraticMap R M N) (v : Basis ι R M)
+    : QuadraticMap R (ι → R) N :=
   Q.comp v.equivFun.symm
 
 @[simp]
-theorem basisRepr_apply [Fintype ι] {v : Basis ι R M} (Q : QuadraticMap R M N) (w : ι → R) :
-    Q.basisRepr v w = Q (∑ i : ι, w i • v i) := by
+theorem basisRepr_apply [Fintype ι] {v : Basis ι R M} (Q : QuadraticMap R M N) (w : ι → R)
+    : Q.basisRepr v w = Q (∑ i : ι, w i • v i) := by
   rw [← v.equivFun_symm_apply]
   rfl
 
@@ -1403,33 +1446,35 @@ section
 
 variable (R)
 
-/-- The weighted sum of squares with respect to some weight as a quadratic form.
+/--
+The weighted sum of squares with respect to some weight as a quadratic form.
 
 The weights are applied using `•`; typically this definition is used either with `S = R` or
-`[Algebra S R]`, although this is stated more generally. -/
-def weightedSumSquares [Monoid S] [DistribMulAction S R] [SMulCommClass S R R] (w : ι → S) :
-    QuadraticMap R (ι → R) R :=
+`[Algebra S R]`, although this is stated more generally.
+-/
+def weightedSumSquares [Monoid S] [DistribMulAction S R] [SMulCommClass S R R] (w : ι → S)
+    : QuadraticMap R (ι → R) R :=
   ∑ i : ι, w i • (proj (R := R) (n := ι) i i)
 
 end
 
 @[simp]
-theorem weightedSumSquares_apply [Monoid S] [DistribMulAction S R] [SMulCommClass S R R]
-    (w : ι → S) (v : ι → R) :
-    weightedSumSquares R w v = ∑ i : ι, w i • (v i * v i) :=
+theorem weightedSumSquares_apply
+    [Monoid S] [DistribMulAction S R] [SMulCommClass S R R] (w : ι → S) (v : ι → R)
+    : weightedSumSquares R w v = ∑ i : ι, w i • (v i * v i) :=
   sum_apply _ _ _
 
 /-- On an orthogonal basis, the basis representation of `Q` is just a sum of squares. -/
-theorem basisRepr_eq_of_iIsOrtho {R M} [CommRing R] [AddCommGroup M] [Module R M]
-    [Invertible (2 : R)] (Q : QuadraticForm R M) (v : Basis ι R M)
-    (hv₂ : (associated (R := R) Q).IsOrthoᵢ v) :
-    Q.basisRepr v = weightedSumSquares _ fun i => Q (v i) := by
+theorem basisRepr_eq_of_iIsOrtho
+    {R M} [CommRing R] [AddCommGroup M] [Module R M] [Invertible (2 : R)]
+    (Q : QuadraticForm R M) (v : Basis ι R M) (hv₂ : (associated (R := R) Q).IsOrthoᵢ v)
+    : Q.basisRepr v = weightedSumSquares _ fun i => Q (v i) := by
   ext w
   rw [basisRepr_apply, ← @associated_eq_self_apply R, map_sum, weightedSumSquares_apply]
   refine sum_congr rfl fun j hj => ?_
   rw [← @associated_eq_self_apply R, LinearMap.map_sum₂, sum_eq_single_of_mem j hj]
-  · rw [map_smul, LinearMap.map_smul₂, smul_eq_mul, associated_apply, smul_eq_mul,
-      smul_eq_mul, Module.End.smul_def, half_moduleEnd_apply_eq_half_smul]
+  · rw [map_smul, LinearMap.map_smul₂, smul_eq_mul, associated_apply, smul_eq_mul, smul_eq_mul,
+      Module.End.smul_def, half_moduleEnd_apply_eq_half_smul]
     ring_nf
   · intro i _ hij
     rw [map_smul, LinearMap.map_smul₂, hv₂ hij]

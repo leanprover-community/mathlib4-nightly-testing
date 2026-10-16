@@ -57,8 +57,7 @@ theorem measurableSet_coe : MeasurableSet (I : Set (ι → ℝ)) := by
   rw [coe_eq_pi]
   exact MeasurableSet.univ_pi fun i => measurableSet_Ioc
 
-theorem measurableSet_Icc : MeasurableSet (Box.Icc I) :=
-  _root_.measurableSet_Icc
+theorem measurableSet_Icc : MeasurableSet (Box.Icc I) := _root_.measurableSet_Icc
 
 theorem measurableSet_Ioo : MeasurableSet (Box.Ioo I) :=
   MeasurableSet.univ_pi fun _ => _root_.measurableSet_Ioo
@@ -71,14 +70,13 @@ theorem coe_ae_eq_Icc : (I : Set (ι → ℝ)) =ᵐ[volume] Box.Icc I := by
   rw [coe_eq_pi]
   exact Measure.univ_pi_Ioc_ae_eq_Icc
 
-theorem Ioo_ae_eq_Icc : Box.Ioo I =ᵐ[volume] Box.Icc I :=
-  Measure.univ_pi_Ioo_ae_eq_Icc
+theorem Ioo_ae_eq_Icc : Box.Ioo I =ᵐ[volume] Box.Icc I := Measure.univ_pi_Ioo_ae_eq_Icc
 
 end Box
 
-theorem Prepartition.measure_iUnion_toReal [Finite ι] {I : Box ι} (π : Prepartition I)
-    (μ : Measure (ι → ℝ)) [IsLocallyFiniteMeasure μ] :
-    μ.real π.iUnion = ∑ J ∈ π.boxes, μ.real J := by
+theorem Prepartition.measure_iUnion_toReal
+    [Finite ι] {I : Box ι} (π : Prepartition I) (μ : Measure (ι → ℝ)) [IsLocallyFiniteMeasure μ]
+    : μ.real π.iUnion = ∑ J ∈ π.boxes, μ.real J := by
   simp only [measureReal_def]
   rw [← ENNReal.toReal_sum (fun J _ => (J.measure_coe_lt_top μ).ne), π.iUnion_def]
   simp only [← mem_boxes]
@@ -93,8 +91,10 @@ namespace MeasureTheory
 
 namespace Measure
 
-/-- If `μ` is a locally finite measure on `ℝⁿ`, then `fun J ↦ μ.real J` is a box-additive
-function. -/
+/--
+If `μ` is a locally finite measure on `ℝⁿ`, then `fun J ↦ μ.real J` is a box-additive
+function.
+-/
 @[simps]
 def toBoxAdditive [Finite ι] (μ : Measure (ι → ℝ)) [IsLocallyFiniteMeasure μ] : ι →ᵇᵃ[⊤] ℝ where
   toFun J := μ.real J
@@ -114,19 +114,19 @@ variable [Fintype ι]
 
 -- This is not a `simp` lemma because the left-hand side simplifies already.
 -- See `volume_apply'` for the relevant `simp` lemma.
-theorem volume_apply (I : Box ι) :
-    (volume : Measure (ι → ℝ)).toBoxAdditive I = ∏ i, (I.upper i - I.lower i) := by
+theorem volume_apply (I : Box ι)
+    : (volume : Measure (ι → ℝ)).toBoxAdditive I = ∏ i, (I.upper i - I.lower i) := by
   rw [Measure.toBoxAdditive_apply, coe_eq_pi, measureReal_def,
     Real.volume_pi_Ioc_toReal I.lower_le_upper]
 
 @[simp]
-theorem volume_apply' (I : Box ι) :
-    ((volume : Measure (ι → ℝ)) I).toReal = ∏ i, (I.upper i - I.lower i) := by
+theorem volume_apply' (I : Box ι)
+    : ((volume : Measure (ι → ℝ)) I).toReal = ∏ i, (I.upper i - I.lower i) := by
   rw [coe_eq_pi, Real.volume_pi_Ioc_toReal I.lower_le_upper]
 
-theorem volume_face_mul {n} (i : Fin (n + 1)) (I : Box (Fin (n + 1))) :
-    (∏ j, ((I.face i).upper j - (I.face i).lower j)) * (I.upper i - I.lower i) =
-      ∏ j, (I.upper j - I.lower j) := by
+theorem volume_face_mul {n} (i : Fin (n + 1)) (I : Box (Fin (n + 1)))
+    : (∏ j, ((I.face i).upper j - (I.face i).lower j)) * (I.upper i - I.lower i)
+      = ∏ j, (I.upper j - I.lower j) := by
   simp only [face_lower, face_upper, Fin.prod_univ_succAbove _ i, mul_comm]
 
 end Box
@@ -135,13 +135,15 @@ namespace BoxAdditiveMap
 
 variable [Fintype ι]
 
-/-- Box-additive map sending each box `I` to the continuous linear endomorphism
-`x ↦ (volume I).toReal • x`. -/
+/--
+Box-additive map sending each box `I` to the continuous linear endomorphism
+`x ↦ (volume I).toReal • x`.
+-/
 protected def volume {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] : ι →ᵇᵃ E →L[ℝ] E :=
   (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
 
-theorem volume_apply {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (I : Box ι) (x : E) :
-    BoxAdditiveMap.volume I x = (∏ j, (I.upper j - I.lower j)) • x := by
+theorem volume_apply {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (I : Box ι) (x : E)
+    : BoxAdditiveMap.volume I x = (∏ j, (I.upper j - I.lower j)) • x := by
   rw [BoxAdditiveMap.volume, toSMul_apply]
   congrm $I.volume_apply • _
 

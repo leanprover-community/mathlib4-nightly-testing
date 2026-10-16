@@ -70,28 +70,30 @@ class NonnegHomClass (F : Type*) (α β : outParam Type*) [Zero β] [LE β] [Fun
   apply_nonneg (f : F) : ∀ a, 0 ≤ f a
 
 /-- `SubadditiveHomClass F α β` states that `F` is a type of subadditive morphisms. -/
-class SubadditiveHomClass (F : Type*) (α β : outParam Type*)
-    [Add α] [Add β] [LE β] [FunLike F α β] : Prop where
+class SubadditiveHomClass (F : Type*) (α β : outParam Type*) [Add α] [Add β] [LE β] [FunLike F α β]
+    : Prop where
   /-- the image of a sum is less or equal than the sum of the images. -/
   map_add_le_add (f : F) : ∀ a b, f (a + b) ≤ f a + f b
 
 /-- `SubmultiplicativeHomClass F α β` states that `F` is a type of submultiplicative morphisms. -/
 @[to_additive SubadditiveHomClass]
-class SubmultiplicativeHomClass (F : Type*) (α β : outParam (Type*)) [Mul α] [Mul β] [LE β]
-    [FunLike F α β] : Prop where
+class SubmultiplicativeHomClass
+    (F : Type*) (α β : outParam (Type*)) [Mul α] [Mul β] [LE β] [FunLike F α β]
+    : Prop where
   /-- the image of a product is less or equal than the product of the images. -/
   map_mul_le_mul (f : F) : ∀ a b, f (a * b) ≤ f a * f b
 
 /-- `MulLEAddHomClass F α β` states that `F` is a type of subadditive morphisms. -/
 @[to_additive SubadditiveHomClass]
-class MulLEAddHomClass (F : Type*) (α β : outParam Type*) [Mul α] [Add β] [LE β] [FunLike F α β] :
-    Prop where
+class MulLEAddHomClass (F : Type*) (α β : outParam Type*) [Mul α] [Add β] [LE β] [FunLike F α β]
+    : Prop where
   /-- the image of a product is less or equal than the sum of the images. -/
   map_mul_le_add (f : F) : ∀ a b, f (a * b) ≤ f a + f b
 
 /-- `NonarchimedeanHomClass F α β` states that `F` is a type of non-archimedean morphisms. -/
-class NonarchimedeanHomClass (F : Type*) (α β : outParam Type*)
-    [Add α] [LinearOrder β] [FunLike F α β] : Prop where
+class NonarchimedeanHomClass
+    (F : Type*) (α β : outParam Type*) [Add α] [LinearOrder β] [FunLike F α β]
+    : Prop where
   /-- the image of a sum is less or equal than the maximum of the images. -/
   map_add_le_max (f : F) : ∀ a b, f (a + b) ≤ max (f a) (f b)
 
@@ -110,27 +112,31 @@ attribute [simp] apply_nonneg
 variable [FunLike F α β]
 
 /-- The value at zero of a zero-preserving nonnegative homomorphism is a minimum. -/
-theorem map_zero_le [Zero α] [Zero β] [LE β] [ZeroHomClass F α β] [NonnegHomClass F α β] (f : F)
-    (a : α) : f 0 ≤ f a := by
+theorem map_zero_le
+    [Zero α] [Zero β] [LE β] [ZeroHomClass F α β] [NonnegHomClass F α β] (f : F) (a : α)
+    : f 0 ≤ f a := by
   rw [map_zero]
   exact apply_nonneg f a
 
 @[to_additive]
-theorem le_map_mul_map_div [Group α] [CommMagma β] [LE β] [SubmultiplicativeHomClass F α β]
-    (f : F) (a b : α) : f a ≤ f b * f (a / b) := by
+theorem le_map_mul_map_div
+    [Group α] [CommMagma β] [LE β] [SubmultiplicativeHomClass F α β] (f : F) (a b : α)
+    : f a ≤ f b * f (a / b) := by
   simpa only [mul_comm, div_mul_cancel] using map_mul_le_mul f (a / b) b
 
 @[to_additive existing]
-theorem le_map_add_map_div [Group α] [AddCommMagma β] [LE β] [MulLEAddHomClass F α β] (f : F)
-    (a b : α) : f a ≤ f b + f (a / b) := by
+theorem le_map_add_map_div
+    [Group α] [AddCommMagma β] [LE β] [MulLEAddHomClass F α β] (f : F) (a b : α)
+    : f a ≤ f b + f (a / b) := by
   simpa only [add_comm, div_mul_cancel] using map_mul_le_add f (a / b) b
 
 @[to_additive]
-theorem le_map_div_mul_map_div [Group α] [Mul β] [LE β] [SubmultiplicativeHomClass F α β]
-    (f : F) (a b c : α) : f (a / c) ≤ f (a / b) * f (b / c) := by
+theorem le_map_div_mul_map_div
+    [Group α] [Mul β] [LE β] [SubmultiplicativeHomClass F α β] (f : F) (a b c : α)
+    : f (a / c) ≤ f (a / b) * f (b / c) := by
   simpa only [div_mul_div_cancel] using map_mul_le_mul f (a / b) (b / c)
 
 @[to_additive existing]
-theorem le_map_div_add_map_div [Group α] [Add β] [LE β] [MulLEAddHomClass F α β]
-    (f : F) (a b c : α) : f (a / c) ≤ f (a / b) + f (b / c) := by
-    simpa only [div_mul_div_cancel] using map_mul_le_add f (a / b) (b / c)
+theorem le_map_div_add_map_div [Group α] [Add β] [LE β] [MulLEAddHomClass F α β] (f : F) (a b c : α)
+    : f (a / c) ≤ f (a / b) + f (b / c) := by
+  simpa only [div_mul_div_cancel] using map_mul_le_add f (a / b) (b / c)

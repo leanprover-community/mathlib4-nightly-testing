@@ -20,8 +20,10 @@ set_option doc.verso true
 
 set_option doc.verso.suggestions true
 
-/- Test that the module header linter correctly complains about missing headers,
-even if we have a lot of `set_option`s above. -/
+/-
+Test that the module header linter correctly complains about missing headers,
+even if we have a lot of `set_option`s above.
+-/
 
 /--
 warning: The module doc-string for a file should be the first command after the imports
@@ -36,5 +38,4 @@ Note: This linter can be disabled with `set_option linter.style.header false`
 #guard_msgs in
 set_option linter.style.header true in
 set_option doc.verso true in
-
 def foo := 37

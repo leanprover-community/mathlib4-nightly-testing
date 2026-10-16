@@ -28,20 +28,22 @@ public section
 
 namespace MeasureTheory
 
-variable {M F : Type*} [Monoid M] {mM : MeasurableSpace M} [MeasurableMul₂ M]
-  [NormedAddCommGroup F] {μ ν : Measure M} {f : M → F}
+variable
+  {M F : Type*} [Monoid M]
+  {mM : MeasurableSpace M} [MeasurableMul₂ M] [NormedAddCommGroup F]
+  {μ ν : Measure M} {f : M → F}
 
 @[to_additive]
-lemma integrable_mconv_iff [SFinite ν] (hf : AEStronglyMeasurable f (μ ∗ₘ ν)) :
-    Integrable f (μ ∗ₘ ν)
+lemma integrable_mconv_iff [SFinite ν] (hf : AEStronglyMeasurable f (μ ∗ₘ ν))
+    : Integrable f (μ ∗ₘ ν)
       ↔ (∀ᵐ x ∂μ, Integrable (fun y ↦ f (x * y)) ν)
         ∧ Integrable (fun x ↦ ∫ y, ‖f (x * y)‖ ∂ν) μ := by
   simp [Measure.mconv, integrable_map_measure hf (by fun_prop),
     integrable_prod_iff (hf.comp_measurable (by fun_prop))]
 
 @[to_additive]
-lemma integral_mconv [NormedSpace ℝ F] [SFinite μ] [SFinite ν] (hf : Integrable f (μ ∗ₘ ν)) :
-    ∫ x, f x ∂(μ ∗ₘ ν) = ∫ x, ∫ y, f (x * y) ∂ν ∂μ := by
+lemma integral_mconv [NormedSpace ℝ F] [SFinite μ] [SFinite ν] (hf : Integrable f (μ ∗ₘ ν))
+    : ∫ x, f x ∂(μ ∗ₘ ν) = ∫ x, ∫ y, f (x * y) ∂ν ∂μ := by
   unfold Measure.mconv
   rw [integral_map (by fun_prop) hf.1, integral_prod]
   exact (integrable_map_measure hf.1 (by fun_prop)).mp hf

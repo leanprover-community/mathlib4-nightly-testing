@@ -22,7 +22,8 @@ namespace GroupWithZero
 
 variable {α : Type*} [GroupWithZero α] {a b : α}
 
-@[simp] lemma isConj_iff₀ : IsConj a b ↔ ∃ c : α, c ≠ 0 ∧ c * a * c⁻¹ = b := by
+@[simp]
+lemma isConj_iff₀ : IsConj a b ↔ ∃ c : α, c ≠ 0 ∧ c * a * c⁻¹ = b := by
   rw [IsConj, Units.exists_iff_ne_zero (p := (SemiconjBy · a b))]
   congr! 2 with c
   exact and_congr_right (mul_inv_eq_iff_eq_mul₀ · |>.symm)

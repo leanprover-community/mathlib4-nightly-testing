@@ -17,7 +17,6 @@ intervals as finsets and fintypes.
 
 public section
 
-
 open Finset Function PNat
 
 namespace PNat
@@ -27,17 +26,13 @@ variable (a b : ℕ+)
 instance instLocallyFiniteOrder : LocallyFiniteOrder ℕ+ :=
   inferInstanceAs <| LocallyFiniteOrder (Subtype _)
 
-theorem Icc_eq_finset_subtype : Icc a b = (Icc (a : ℕ) b).subtype fun n : ℕ => 0 < n :=
-  rfl
+theorem Icc_eq_finset_subtype : Icc a b = (Icc (a : ℕ) b).subtype fun n : ℕ => 0 < n := rfl
 
-theorem Ico_eq_finset_subtype : Ico a b = (Ico (a : ℕ) b).subtype fun n : ℕ => 0 < n :=
-  rfl
+theorem Ico_eq_finset_subtype : Ico a b = (Ico (a : ℕ) b).subtype fun n : ℕ => 0 < n := rfl
 
-theorem Ioc_eq_finset_subtype : Ioc a b = (Ioc (a : ℕ) b).subtype fun n : ℕ => 0 < n :=
-  rfl
+theorem Ioc_eq_finset_subtype : Ioc a b = (Ioc (a : ℕ) b).subtype fun n : ℕ => 0 < n := rfl
 
-theorem Ioo_eq_finset_subtype : Ioo a b = (Ioo (a : ℕ) b).subtype fun n : ℕ => 0 < n :=
-  rfl
+theorem Ioo_eq_finset_subtype : Ioo a b = (Ioo (a : ℕ) b).subtype fun n : ℕ => 0 < n := rfl
 
 theorem uIcc_eq_finset_subtype : uIcc a b = (uIcc (a : ℕ) b).subtype fun n : ℕ => 0 < n := rfl
 

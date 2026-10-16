@@ -23,7 +23,6 @@ This file contains `Nat` and `List` as examples of W types.
 
 @[expose] public section
 
-
 universe u v
 
 namespace WType
@@ -37,16 +36,14 @@ inductive Natα : Type
   | zero : Natα
   | succ : Natα
 
-instance : Inhabited Natα :=
-  ⟨Natα.zero⟩
+instance : Inhabited Natα := ⟨Natα.zero⟩
 
 /-- The arity of the constructors for the naturals, `zero` takes no arguments, `succ` takes one -/
 def Natβ : Natα → Type
   | Natα.zero => Empty
   | Natα.succ => Unit
 
-instance : Inhabited (Natβ Natα.succ) :=
-  ⟨()⟩
+instance : Inhabited (Natβ Natα.succ) := ⟨()⟩
 
 /-- The isomorphism from the naturals to its corresponding `WType` -/
 @[simp]
@@ -83,7 +80,8 @@ def equivNat : WType Natβ ≃ ℕ where
 
 open Sum PUnit
 
-/-- `WType.Natα` is equivalent to `PUnit ⊕ PUnit`.
+/--
+`WType.Natα` is equivalent to `PUnit ⊕ PUnit`.
 This is useful when considering the associated polynomial endofunctor.
 -/
 @[simps]
@@ -111,7 +109,8 @@ section List
 
 variable (γ : Type u)
 
-/-- The constructors for lists.
+/--
+The constructors for lists.
 There is "one constructor `cons x` for each `x : γ`",
 since we view `List γ` as
 ```
@@ -125,16 +124,14 @@ inductive Listα : Type u
   | nil : Listα
   | cons : γ → Listα
 
-instance : Inhabited (Listα γ) :=
-  ⟨Listα.nil⟩
+instance : Inhabited (Listα γ) := ⟨Listα.nil⟩
 
 /-- The arities of each constructor for lists, `nil` takes no arguments, `cons hd` takes one -/
 def Listβ : Listα γ → Type u
   | Listα.nil => PEmpty
   | Listα.cons _ => PUnit
 
-instance (hd : γ) : Inhabited (Listβ γ (Listα.cons hd)) :=
-  ⟨PUnit.unit⟩
+instance (hd : γ) : Inhabited (Listβ γ (Listα.cons hd)) := ⟨PUnit.unit⟩
 
 /-- The isomorphism from lists to the `WType` construction of lists -/
 @[simp]
@@ -169,7 +166,8 @@ def equivList : WType (Listβ γ) ≃ List γ where
   left_inv := leftInverse_list _
   right_inv := rightInverse_list _
 
-/-- `WType.Listα` is equivalent to `γ` with an extra point.
+/--
+`WType.Listα` is equivalent to `γ` with an extra point.
 This is useful when considering the associated polynomial endofunctor
 -/
 def ListαEquivPUnitSum : Listα γ ≃ PUnit.{v + 1} ⊕ γ where

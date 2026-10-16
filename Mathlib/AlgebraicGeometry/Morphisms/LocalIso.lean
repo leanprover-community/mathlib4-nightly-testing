@@ -23,8 +23,10 @@ namespace AlgebraicGeometry
 
 variable {X Y : Scheme.{u}}
 
-/-- A local isomorphism of schemes is a morphism that is (Zariski-)source-locally an
-open immersion. -/
+/--
+A local isomorphism of schemes is a morphism that is (Zariski-)source-locally an
+open immersion.
+-/
 @[mk_iff]
 class IsLocalIso (f : X ⟶ Y) : Prop where
   exists_isOpenImmersion (x : X) : ∃ (U : X.Opens), x ∈ U ∧ IsOpenImmersion (U.ι ≫ f)
@@ -33,8 +35,8 @@ namespace IsLocalIso
 
 variable (f : X ⟶ Y)
 
-lemma eq_sourceLocalClosure_isOpenImmersion :
-    @IsLocalIso = sourceLocalClosure IsOpenImmersion IsOpenImmersion := by
+lemma eq_sourceLocalClosure_isOpenImmersion
+    : @IsLocalIso = sourceLocalClosure IsOpenImmersion IsOpenImmersion := by
   ext
   rw [isLocalIso_iff, sourceLocalClosure.iff_forall_exists]
 
@@ -51,8 +53,9 @@ instance : IsStableUnderBaseChange @IsLocalIso := by
   infer_instance
 
 /-- `IsLocalIso` is weaker than every source-Zariski-local property containing identities. -/
-lemma le_of_isZariskiLocalAtSource (P : MorphismProperty Scheme.{u}) [P.ContainsIdentities]
-    [IsZariskiLocalAtSource P] : @IsLocalIso ≤ P := by
+lemma le_of_isZariskiLocalAtSource
+    (P : MorphismProperty Scheme.{u}) [P.ContainsIdentities] [IsZariskiLocalAtSource P]
+    : @IsLocalIso ≤ P := by
   intro X Y f hf
   obtain ⟨𝒰, h⟩ := eq_sourceLocalClosure_isOpenImmersion ▸ hf
   rw [IsZariskiLocalAtSource.iff_of_openCover 𝒰 (P := P)]
@@ -60,9 +63,10 @@ lemma le_of_isZariskiLocalAtSource (P : MorphismProperty Scheme.{u}) [P.Contains
 
 set_option backward.isDefEq.respectTransparency false in
 /-- `IsLocalIso` is the weakest source-Zariski-local property containing identities. -/
-lemma eq_iInf :
-    @IsLocalIso = ⨅ (P : MorphismProperty Scheme.{u}) (_ : P.ContainsIdentities)
-      (_ : IsZariskiLocalAtSource P), P := by
+lemma eq_iInf
+    : @IsLocalIso
+      = ⨅ (P : MorphismProperty Scheme.{u}) (_ : P.ContainsIdentities)
+        (_ : IsZariskiLocalAtSource P), P := by
   refine le_antisymm ?_ ?_
   · simp only [le_iInf_iff]
     apply le_of_isZariskiLocalAtSource

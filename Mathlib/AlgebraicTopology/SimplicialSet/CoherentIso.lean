@@ -60,15 +60,16 @@ lemma eq_iso_hom (f : zero.{w} ⟶ one) : f = iso.{w}.hom := Codiscrete.eq_iso_h
 lemma eq_iso_inv (f : one.{w} ⟶ zero) : f = iso.{w}.inv := Codiscrete.eq_iso_inv f
 
 /-- Functors out of `WalkingIso` define isomorphisms in the target category. -/
-@[simps!]
-def toIso (F : WalkingIso.{w} ⥤ C) : F.obj zero ≅ F.obj one := F.mapIso iso
+@[simps!] def toIso (F : WalkingIso.{w} ⥤ C) : F.obj zero ≅ F.obj one := F.mapIso iso
 
 section induction
 
 variable {motive : WalkingIso.{u} → Sort*} (zero : motive zero) (one : motive one)
 
-/-- The recursor for WalkingIso, which constructs a term of `∏ (x : WalkingIso), A x` from
-a term of `A zero` and a term of `A one`. -/
+/--
+The recursor for WalkingIso, which constructs a term of `∏ (x : WalkingIso), A x` from
+a term of `A zero` and a term of `A one`.
+-/
 @[elab_as_elim, induction_eliminator]
 protected def rec : ∀ a, motive a
   | .mk (.up false) => zero
@@ -80,8 +81,10 @@ protected def rec : ∀ a, motive a
 end induction
 
 set_option backward.isDefEq.respectTransparency false in
-/-- From an isomorphism in a category, we can build a functor out of `WalkingIso` to
-that category. -/
+/--
+From an isomorphism in a category, we can build a functor out of `WalkingIso` to
+that category.
+-/
 def fromIso {X Y : C} (e : X ≅ Y) : WalkingIso.{w} ⥤ C where
   obj x := by induction x; exacts [X, Y]
   map {x y} _ := by induction x <;> induction y; exacts [𝟙 X, e.hom, e.inv, 𝟙 Y]
@@ -92,23 +95,17 @@ section
 
 variable {X Y : C} (e : X ≅ Y)
 
-@[simp]
-lemma fromIso_zero : (fromIso.{w} e).obj .zero = X := rfl
+@[simp] lemma fromIso_zero : (fromIso.{w} e).obj .zero = X := rfl
 
-@[simp]
-lemma fromIso_one : (fromIso.{w} e).obj .one = Y := rfl
+@[simp] lemma fromIso_one : (fromIso.{w} e).obj .one = Y := rfl
 
-@[simp]
-lemma fromIso_map_zero_zero (f : zero ⟶ zero) : (fromIso.{w} e).map f = 𝟙 X := rfl
+@[simp] lemma fromIso_map_zero_zero (f : zero ⟶ zero) : (fromIso.{w} e).map f = 𝟙 X := rfl
 
-@[simp]
-lemma fromIso_hom (f : zero ⟶ one) : (fromIso.{w} e).map f = e.hom := rfl
+@[simp] lemma fromIso_hom (f : zero ⟶ one) : (fromIso.{w} e).map f = e.hom := rfl
 
-@[simp]
-lemma fromIso_inv (f : one ⟶ zero) : (fromIso.{w} e).map f = e.inv := rfl
+@[simp] lemma fromIso_inv (f : one ⟶ zero) : (fromIso.{w} e).map f = e.inv := rfl
 
-@[simp]
-lemma fromIso_map_one_one (f : one ⟶ one) : (fromIso.{w} e).map f = 𝟙 Y := rfl
+@[simp] lemma fromIso_map_one_one (f : one ⟶ one) : (fromIso.{w} e).map f = 𝟙 Y := rfl
 
 end
 
@@ -119,12 +116,10 @@ def equiv : (WalkingIso.{w} ⥤ C) ≃ Σ (X : C) (Y : C), (X ≅ Y) where
   toFun F := ⟨F.obj zero, F.obj one, toIso F⟩
   invFun p := fromIso p.2.2
   right_inv := fun ⟨X, Y, e⟩ ↦ rfl
-  left_inv F := Functor.ext (by rintro (_ | _) <;> rfl) <| by
+  left_inv F :=
+    Functor.ext (by rintro (_ | _) <;> rfl) <| by
       intro X Y f
-      induction X <;>
-      induction Y <;>
-      simp [Codiscrete.eq_id] <;>
-      rfl
+      induction X <;> induction Y <;> simp [Codiscrete.eq_id] <;> rfl
 
 end
 
@@ -136,19 +131,19 @@ namespace SSet
 
 open scoped Simplicial
 
-/-- The simplicial set that encodes a single isomorphism.
-Its n-simplices are formal compositions of arrows in WalkingIso. -/
+/--
+The simplicial set that encodes a single isomorphism.
+Its n-simplices are formal compositions of arrows in WalkingIso.
+-/
 abbrev coherentIso : SSet := nerve WalkingIso.{u}
 
 namespace coherentIso
 
 /-- The source vertex of `coherentIso`. -/
-def x₀ : coherentIso.{u} _⦋0⦌ :=
-  ComposableArrows.mk₀ WalkingIso.zero
+def x₀ : coherentIso.{u} _⦋0⦌ := ComposableArrows.mk₀ WalkingIso.zero
 
 /-- The target vertex of `coherentIso`. -/
-def x₁ : coherentIso.{u} _⦋0⦌ :=
-  ComposableArrows.mk₀ WalkingIso.one
+def x₁ : coherentIso.{u} _⦋0⦌ := ComposableArrows.mk₀ WalkingIso.one
 
 /-- The forwards edge of `coherentIso`. -/
 def hom : Edge.{u} x₀ x₁ where
@@ -183,13 +178,14 @@ def invStructHom : Edge.InvStruct.{u} coherentIso.hom where
   homInvId := homInvId
   invHomId := invHomId
 
-/-- For a simplicial set `X`, if an edge in `X` is equal to the image of `hom`
-under a morphism of simplicial sets, this edge has an inverse. -/
-abbrev invStructOfEqMapHom {X : SSet.{u}} {x₀ x₁ : X _⦋0⦌}
-    {f : Edge x₀ x₁}
-    {g : coherentIso ⟶ X}
-    (hfg : f.edge = g.app _ hom.edge) :
-    f.InvStruct :=
+/--
+For a simplicial set `X`, if an edge in `X` is equal to the image of `hom`
+under a morphism of simplicial sets, this edge has an inverse.
+-/
+abbrev invStructOfEqMapHom
+    {X : SSet.{u}} {x₀ x₁ : X _⦋0⦌} {f : Edge x₀ x₁} {g : coherentIso ⟶ X}
+    (hfg : f.edge = g.app _ hom.edge)
+    : f.InvStruct :=
   (invStructHom.map g).ofEq hfg.symm
 
 end coherentIso

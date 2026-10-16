@@ -22,7 +22,6 @@ We define subfunctors of a type-valued functors.
 
 @[expose] public section
 
-
 universe w v u
 
 open Opposite CategoryTheory ConcreteCategory
@@ -31,15 +30,21 @@ namespace CategoryTheory
 
 variable {C : Type u} [Category.{v} C]
 
-/-- A subfunctor of a functor consists of a subset of `F.obj U` for every `U`,
-compatible with the restriction maps `F.map i`. -/
+/--
+A subfunctor of a functor consists of a subset of `F.obj U` for every `U`,
+compatible with the restriction maps `F.map i`.
+-/
 @[ext]
 structure Subfunctor (F : C ⥤ Type w) where
-  /-- If `G` is a subfunctor of `F`, then the sections of `G` on `U` forms a subset of sections of
-  `F` on `U`. -/
+  /--
+  If `G` is a subfunctor of `F`, then the sections of `G` on `U` forms a subset of sections of
+  `F` on `U`.
+  -/
   obj : ∀ U, Set (F.obj U)
-  /-- If `G` is a subfunctor of `F` and `i : U ⟶ V`, then for each `G`-sections on `U` `x`,
-  `F i x` is in `F(V)`. -/
+  /--
+  If `G` is a subfunctor of `F` and `i : U ⟶ V`, then for each `G`-sections on `U` `x`,
+  `F i x` is in `F(V)`.
+  -/
   map : ∀ {U V : C} (i : U ⟶ V), obj U ⊆ F.map i ⁻¹' obj V
 
 variable {F F' : C ⥤ Type w} (G G' : Subfunctor F)
@@ -48,45 +53,42 @@ instance : PartialOrder (Subfunctor F) :=
   PartialOrder.lift Subfunctor.obj (fun _ _ => Subfunctor.ext)
 
 instance : CompleteLattice (Subfunctor F) where
-  sup F G :=
-    { obj U := F.obj U ⊔ G.obj U
-      map _ _ := by
-        rintro (h | h)
-        · exact Or.inl (F.map _ h)
-        · exact Or.inr (G.map _ h) }
+  sup F G := {
+    obj U := F.obj U ⊔ G.obj U
+    map _ _ := by
+      rintro (h | h)
+      · exact Or.inl (F.map _ h)
+      · exact Or.inr (G.map _ h)
+  }
   le_sup_left _ _ _ := by simp
   le_sup_right _ _ _ := by simp
   sup_le F G H h₁ h₂ U := by
     rintro x (h | h)
     · exact h₁ _ h
     · exact h₂ _ h
-  inf S T :=
-    { obj U := S.obj U ⊓ T.obj U
-      map _ _ h := ⟨S.map _ h.1, T.map _ h.2⟩}
+  inf S T := { obj U := S.obj U ⊓ T.obj U, map _ _ h := ⟨S.map _ h.1, T.map _ h.2⟩ }
   inf_le_left _ _ _ _ h := h.1
   inf_le_right _ _ _ _ h := h.2
   le_inf _ _ _ h₁ h₂ _ _ h := ⟨h₁ _ h, h₂ _ h⟩
-  sSup S :=
-    { obj U := sSup (Set.image (fun T ↦ T.obj U) S)
-      map f x hx := by
-        obtain ⟨_, ⟨F, h, rfl⟩, h'⟩ := hx
-        simp only [Set.sSup_eq_sUnion, Set.sUnion_image, Set.preimage_iUnion,
-          Set.mem_iUnion, Set.mem_preimage, exists_prop]
-        exact ⟨_, h, F.map f h'⟩ }
+  sSup S := {
+    obj U := sSup (Set.image (fun T ↦ T.obj U) S)
+    map f x hx := by
+      obtain ⟨_, ⟨F, h, rfl⟩, h'⟩ := hx
+      simp only [Set.sSup_eq_sUnion, Set.sUnion_image, Set.preimage_iUnion, Set.mem_iUnion,
+        Set.mem_preimage, exists_prop]
+      exact ⟨_, h, F.map f h'⟩
+  }
   isLUB_sSup _ := ⟨fun _ _ _ _ ↦ by aesop, fun _ _ _ ↦ by aesop⟩
-  sInf S :=
-    { obj U := sInf (Set.image (fun T ↦ T.obj U) S)
-      map f x hx := by
-        rintro _ ⟨F, h, rfl⟩
-        exact F.map f (hx _ ⟨_, h, rfl⟩) }
+  sInf S := {
+    obj U := sInf (Set.image (fun T ↦ T.obj U) S)
+    map f x hx := by
+      rintro _ ⟨F, h, rfl⟩
+      exact F.map f (hx _ ⟨_, h, rfl⟩)
+  }
   isGLB_sInf _ := ⟨fun _ _ _ _ ↦ by aesop, fun _ _ _ ↦ by aesop⟩
-  bot :=
-    { obj U := ⊥
-      map := by simp }
+  bot := { obj U := ⊥, map := by simp }
   bot_le _ _ := bot_le
-  top :=
-    { obj U := ⊤
-      map := by simp }
+  top := { obj U := ⊤, map := by simp }
   le_top _ _ := le_top
 
 namespace Subfunctor
@@ -100,40 +102,35 @@ variable (F)
 
 variable {F}
 
-lemma sSup_obj (S : Set (Subfunctor F)) (U : C) :
-    (sSup S).obj U = sSup (Set.image (fun T ↦ T.obj U) S) := rfl
+lemma sSup_obj (S : Set (Subfunctor F)) (U : C)
+    : (sSup S).obj U = sSup (Set.image (fun T ↦ T.obj U) S) :=
+  rfl
 
-lemma sInf_obj (S : Set (Subfunctor F)) (U : C) :
-    (sInf S).obj U = sInf (Set.image (fun T ↦ T.obj U) S) := rfl
+lemma sInf_obj (S : Set (Subfunctor F)) (U : C)
+    : (sInf S).obj U = sInf (Set.image (fun T ↦ T.obj U) S) :=
+  rfl
 
 @[simp]
-lemma iSup_obj {ι : Sort*} (S : ι → Subfunctor F) (U : C) :
-    (⨆ i, S i).obj U = ⋃ i, (S i).obj U := by
+lemma iSup_obj {ι : Sort*} (S : ι → Subfunctor F) (U : C)
+    : (⨆ i, S i).obj U = ⋃ i, (S i).obj U := by
   simp [iSup, sSup_obj]
 
 @[simp]
-lemma iInf_obj {ι : Sort*} (S : ι → Subfunctor F) (U : C) :
-    (⨅ i, S i).obj U = ⋂ i, (S i).obj U := by
+lemma iInf_obj {ι : Sort*} (S : ι → Subfunctor F) (U : C)
+    : (⨅ i, S i).obj U = ⋂ i, (S i).obj U := by
   simp [iInf, sInf_obj]
 
-@[simp]
-lemma max_obj (S T : Subfunctor F) (i : C) :
-    (S ⊔ T).obj i = S.obj i ∪ T.obj i := rfl
+@[simp] lemma max_obj (S T : Subfunctor F) (i : C) : (S ⊔ T).obj i = S.obj i ∪ T.obj i := rfl
 
-@[simp]
-lemma min_obj (S T : Subfunctor F) (i : C) :
-    (S ⊓ T).obj i = S.obj i ∩ T.obj i := rfl
+@[simp] lemma min_obj (S T : Subfunctor F) (i : C) : (S ⊓ T).obj i = S.obj i ∩ T.obj i := rfl
 
-lemma max_min (S₁ S₂ T : Subfunctor F) :
-    (S₁ ⊔ S₂) ⊓ T = (S₁ ⊓ T) ⊔ (S₂ ⊓ T) := by
+lemma max_min (S₁ S₂ T : Subfunctor F) : (S₁ ⊔ S₂) ⊓ T = (S₁ ⊓ T) ⊔ (S₂ ⊓ T) := by aesop
+
+lemma iSup_min {ι : Sort*} (S : ι → Subfunctor F) (T : Subfunctor F)
+    : (⨆ i, S i) ⊓ T = ⨆ i, S i ⊓ T := by
   aesop
 
-lemma iSup_min {ι : Sort*} (S : ι → Subfunctor F) (T : Subfunctor F) :
-    (⨆ i, S i) ⊓ T = ⨆ i, S i ⊓ T := by
-  aesop
-
-instance : Nonempty (Subfunctor F) :=
-  inferInstance
+instance : Nonempty (Subfunctor F) := inferInstance
 
 /-- The subfunctor as a functor. -/
 @[implicit_reducible, simps obj map]
@@ -146,7 +143,8 @@ instance {U} : CoeHead (G.toFunctor.obj U) (F.obj U) where
 
 /-- The inclusion of a subfunctor to the original functor. -/
 @[simps]
-def ι : G.toFunctor ⟶ F where app _ := ↾fun x ↦ x
+def ι : G.toFunctor ⟶ F where
+  app _ := ↾fun x ↦ x
 
 instance : Mono G.ι :=
   ⟨@fun _ _ _ e =>
@@ -157,13 +155,13 @@ instance : Mono G.ι :=
 def homOfLe {G G' : Subfunctor F} (h : G ≤ G') : G.toFunctor ⟶ G'.toFunctor where
   app U := ↾fun x ↦ ⟨x, h U x.prop⟩
 
-instance {G G' : Subfunctor F} (h : G ≤ G') : Mono (Subfunctor.homOfLe h) :=
-  ⟨fun _ _ e => NatTrans.ext <| funext fun U => hom_ext _ _ fun x => by
-    exact Subtype.ext (congr_arg Subtype.val (congr_hom (congr_app e U) x) :)⟩
+instance {G G' : Subfunctor F} (h : G ≤ G') : Mono (Subfunctor.homOfLe h) := ⟨fun _ _ e =>
+  NatTrans.ext <| funext fun U =>
+    hom_ext _ _ fun x => by
+      exact Subtype.ext (congr_arg Subtype.val (congr_hom (congr_app e U) x) :)⟩
 
 @[reassoc (attr := simp)]
-theorem homOfLe_ι {G G' : Subfunctor F} (h : G ≤ G') :
-    Subfunctor.homOfLe h ≫ G'.ι = G.ι := by
+theorem homOfLe_ι {G G' : Subfunctor F} (h : G ≤ G') : Subfunctor.homOfLe h ≫ G'.ι = G.ι := by
   ext
   rfl
 
@@ -183,8 +181,8 @@ theorem eq_top_iff_isIso : G = ⊤ ↔ IsIso G.ι := by
     rw [← IsIso.inv_hom_id_apply (G.ι.app U) x]
     exact ((inv (G.ι.app U)) x).2
 
-theorem nat_trans_naturality (f : F' ⟶ G.toFunctor) {U V : C} (i : U ⟶ V)
-    (x : F'.obj U) : (f.app V (F'.map i x)).1 = F.map i (f.app U x).1 :=
+theorem nat_trans_naturality (f : F' ⟶ G.toFunctor) {U V : C} (i : U ⟶ V) (x : F'.obj U)
+    : (f.app V (F'.map i x)).1 = F.map i (f.app U x).1 :=
   congrArg Subtype.val (NatTrans.naturality_apply f i x)
 
 end Subfunctor

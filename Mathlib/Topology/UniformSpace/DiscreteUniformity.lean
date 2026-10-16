@@ -30,13 +30,12 @@ class DiscreteUniformity (X : Type*) [u : UniformSpace X] : Prop where
 namespace DiscreteUniformity
 
 /-- The bot uniformity is the discrete uniformity. -/
-instance (X : Type*) : @DiscreteUniformity X ⊥ :=
-  @DiscreteUniformity.mk X ⊥ rfl
+instance (X : Type*) : @DiscreteUniformity X ⊥ := @DiscreteUniformity.mk X ⊥ rfl
 
 variable (X : Type*) [u : UniformSpace X] [DiscreteUniformity X]
 
-theorem _root_.discreteUniformity_iff_eq_principal_setRelId {X : Type*} [UniformSpace X] :
-    DiscreteUniformity X ↔ uniformity X = 𝓟 SetRel.id := by
+theorem _root_.discreteUniformity_iff_eq_principal_setRelId {X : Type*} [UniformSpace X]
+    : DiscreteUniformity X ↔ uniformity X = 𝓟 SetRel.id := by
   rw [discreteUniformity_iff_eq_bot, UniformSpace.ext_iff, Filter.ext_iff, bot_uniformity]
 
 theorem eq_principal_setRelId : uniformity X = 𝓟 SetRel.id :=
@@ -44,18 +43,16 @@ theorem eq_principal_setRelId : uniformity X = 𝓟 SetRel.id :=
 
 /-- The discrete uniformity induces the discrete topology. -/
 instance : DiscreteTopology X where
-  eq_bot := by
-    rw [DiscreteUniformity.eq_bot (X := X), UniformSpace.toTopologicalSpace_bot]
+  eq_bot := by rw [DiscreteUniformity.eq_bot (X := X), UniformSpace.toTopologicalSpace_bot]
 
-theorem _root_.discreteUniformity_iff_setRelId_mem_uniformity {X : Type*} [UniformSpace X] :
-    DiscreteUniformity X ↔ SetRel.id ∈ uniformity X := by
+theorem _root_.discreteUniformity_iff_setRelId_mem_uniformity {X : Type*} [UniformSpace X]
+    : DiscreteUniformity X ↔ SetRel.id ∈ uniformity X := by
   rw [← uniformSpace_eq_bot, discreteUniformity_iff_eq_bot]
 
 theorem relId_mem_uniformity : SetRel.id ∈ uniformity X :=
   discreteUniformity_iff_setRelId_mem_uniformity.mp inferInstance
 
-instance {Y : Type*} [Finite Y] [UniformSpace Y] [DiscreteTopology Y] :
-    DiscreteUniformity Y := by
+instance {Y : Type*} [Finite Y] [UniformSpace Y] [DiscreteTopology Y] : DiscreteUniformity Y := by
   have h : SetRel.id = ⋂ y : Y, {p | p.2 = y → p.1 ∈ ({y} : Set Y)} := by
     ext x
     simp [SetRel.id]
@@ -65,15 +62,13 @@ instance {Y : Type*} [Finite Y] [UniformSpace Y] [DiscreteTopology Y] :
 
 variable {X} in
 /-- A product of spaces with discrete uniformity has a discrete uniformity. -/
-instance {Y : Type*} [UniformSpace Y] [DiscreteUniformity Y] :
-    DiscreteUniformity (X × Y) := by
+instance {Y : Type*} [UniformSpace Y] [DiscreteUniformity Y] : DiscreteUniformity (X × Y) := by
   simp [discreteUniformity_iff_eq_principal_setRelId, uniformity_prod_eq_comap_prod,
     eq_principal_setRelId, SetRel.id, Set.prod_eq, Prod.ext_iff, Set.ofPred_and]
 
 variable {x} in
 /-- On a space with a discrete uniformity, any function is uniformly continuous. -/
-theorem uniformContinuous {Y : Type*} [UniformSpace Y] (f : X → Y) :
-    UniformContinuous f := by
+theorem uniformContinuous {Y : Type*} [UniformSpace Y] (f : X → Y) : UniformContinuous f := by
   simp only [uniformContinuous_iff_le_comap, DiscreteUniformity.eq_bot, bot_le]
 
 end DiscreteUniformity

@@ -6,7 +6,6 @@ Authors: Jou Glasheen, Kevin Buzzard
 module
 
 public import Mathlib.NumberTheory.Padics.RingHoms
-
 import Mathlib.Analysis.Normed.Field.ProperSpace
 
 /-!

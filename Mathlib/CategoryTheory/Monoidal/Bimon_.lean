@@ -57,8 +57,8 @@ attribute [reassoc (attr := simp)] mul_comul one_comul mul_counit one_counit
 end BimonObj
 
 /-- The property that a morphism between bimonoid objects is a bimonoid morphism. -/
-class IsBimonHom {M N : C} [BimonObj M] [BimonObj N] (f : M ⟶ N) : Prop extends
-    IsMonHom f, IsComonHom f
+class IsBimonHom {M N : C} [BimonObj M] [BimonObj N] (f : M ⟶ N) : Prop
+  extends IsMonHom f, IsComonHom f
 
 variable (C) in
 /--
@@ -71,14 +71,14 @@ namespace Bimon
 
 instance : Category (Bimon C) := inferInstanceAs (Category (Comon (Mon C)))
 
-@[ext] lemma ext {X Y : Bimon C} {f g : X ⟶ Y} (w : f.hom.hom = g.hom.hom) : f = g :=
+@[ext]
+lemma ext {X Y : Bimon C} {f g : X ⟶ Y} (w : f.hom.hom = g.hom.hom) : f = g :=
   Comon.Hom.ext (Mon.Hom.ext w)
 
 @[simp] theorem id_hom' (M : Bimon C) : Comon.Hom.hom (𝟙 M) = 𝟙 M.X := rfl
 
 @[simp]
-theorem comp_hom' {M N K : Bimon C} (f : M ⟶ N) (g : N ⟶ K) : (f ≫ g).hom = f.hom ≫ g.hom :=
-  rfl
+theorem comp_hom' {M N K : Bimon C} (f : M ⟶ N) (g : N ⟶ K) : (f ≫ g).hom = f.hom ≫ g.hom := rfl
 
 variable (C)
 
@@ -88,15 +88,12 @@ abbrev toMon : Bimon C ⥤ Mon C := Comon.forget (Mon C)
 /-- The forgetful functor from bimonoid objects to the underlying category. -/
 def forget : Bimon C ⥤ C := toMon C ⋙ Mon.forget C
 
-@[simp]
-theorem toMon_forget : toMon C ⋙ Mon.forget C = forget C := rfl
+@[simp] theorem toMon_forget : toMon C ⋙ Mon.forget C = forget C := rfl
 
 /-- The forgetful functor from bimonoid objects to comonoid objects. -/
-@[simps!]
-def toComon : Bimon C ⥤ Comon C := (Mon.forget C).mapComon
+@[simps!] def toComon : Bimon C ⥤ Comon C := (Mon.forget C).mapComon
 
-@[simp]
-theorem toComon_forget : toComon C ⋙ Comon.forget C = forget C := rfl
+@[simp] theorem toComon_forget : toComon C ⋙ Comon.forget C = forget C := rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -123,13 +120,12 @@ variable {C}
 def ofMonComonObjX (M : Mon (Comon C)) : Mon C := (Comon.forget C).mapMon.obj M
 
 @[simp]
-theorem ofMonComonObjX_one (M : Mon (Comon C)) :
-    η[(ofMonComonObjX M).X] = 𝟙 (𝟙_ C) ≫ η[M.X].hom :=
+theorem ofMonComonObjX_one (M : Mon (Comon C)) : η[(ofMonComonObjX M).X] = 𝟙 (𝟙_ C) ≫ η[M.X].hom :=
   rfl
 
 @[simp]
-theorem ofMonComonObjX_mul (M : Mon (Comon C)) :
-    μ[(ofMonComonObjX M).X] = 𝟙 (M.X.X ⊗ M.X.X) ≫ μ[M.X].hom :=
+theorem ofMonComonObjX_mul (M : Mon (Comon C))
+    : μ[(ofMonComonObjX M).X] = 𝟙 (M.X.X ⊗ M.X.X) ≫ μ[M.X].hom :=
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
@@ -151,19 +147,18 @@ def ofMonComon : Mon (Comon C) ⥤ Bimon C where
   map f := .mk' ((Comon.forget C).mapMon.map f)
 
 @[simp]
-theorem toMonComon_ofMonComon_obj_one (M : Bimon C) :
-    η[((toMonComon C ⋙ ofMonComon C).obj M).X.X] = 𝟙 _ ≫ η[M.X.X] :=
+theorem toMonComon_ofMonComon_obj_one (M : Bimon C)
+    : η[((toMonComon C ⋙ ofMonComon C).obj M).X.X] = 𝟙 _ ≫ η[M.X.X] :=
   rfl
 
 @[simp]
-theorem toMonComon_ofMonComon_obj_mul (M : Bimon C) :
-    μ[((toMonComon C ⋙ ofMonComon C).obj M).X.X] = 𝟙 _ ≫ μ[M.X.X] :=
+theorem toMonComon_ofMonComon_obj_mul (M : Bimon C)
+    : μ[((toMonComon C ⋙ ofMonComon C).obj M).X.X] = 𝟙 _ ≫ μ[M.X.X] :=
   rfl
 
 /-- Auxiliary definition for `equivMonComonUnitIsoApp`. -/
 @[simps!]
-def equivMonComonUnitIsoAppXAux (M : Bimon C) :
-    M.X.X ≅ ((toMonComon C ⋙ ofMonComon C).obj M).X.X :=
+def equivMonComonUnitIsoAppXAux (M : Bimon C) : M.X.X ≅ ((toMonComon C ⋙ ofMonComon C).obj M).X.X :=
   Iso.refl _
 
 set_option backward.isDefEq.respectTransparency false in
@@ -172,8 +167,7 @@ instance (M : Bimon C) : IsMonHom (equivMonComonUnitIsoAppXAux M).hom where
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `equivMonComonUnitIsoApp`. -/
 @[simps!]
-def equivMonComonUnitIsoAppX (M : Bimon C) :
-    M.X ≅ ((toMonComon C ⋙ ofMonComon C).obj M).X :=
+def equivMonComonUnitIsoAppX (M : Bimon C) : M.X ≅ ((toMonComon C ⋙ ofMonComon C).obj M).X :=
   Mon.mkIso (equivMonComonUnitIsoAppXAux M)
 
 set_option backward.isDefEq.respectTransparency false in
@@ -181,18 +175,17 @@ instance (M : Bimon C) : IsComonHom (equivMonComonUnitIsoAppX M).hom where
 
 /-- The unit for the equivalence `Comon (Mon C) ≌ Mon (Comon C)`. -/
 @[simps!]
-def equivMonComonUnitIsoApp (M : Bimon C) :
-    M ≅ (toMonComon C ⋙ ofMonComon C).obj M :=
+def equivMonComonUnitIsoApp (M : Bimon C) : M ≅ (toMonComon C ⋙ ofMonComon C).obj M :=
   Comon.mkIso' (equivMonComonUnitIsoAppX M)
 
 @[simp]
-theorem ofMonComon_toMonComon_obj_counit (M : Mon (Comon C)) :
-    ε[((ofMonComon C ⋙ toMonComon C).obj M).X.X] = ε[M.X.X] ≫ 𝟙 _ :=
+theorem ofMonComon_toMonComon_obj_counit (M : Mon (Comon C))
+    : ε[((ofMonComon C ⋙ toMonComon C).obj M).X.X] = ε[M.X.X] ≫ 𝟙 _ :=
   rfl
 
 @[simp]
-theorem ofMonComon_toMonComon_obj_comul (M : Mon (Comon C)) :
-    Δ[((ofMonComon C ⋙ toMonComon C).obj M).X.X] = Δ[M.X.X] ≫ 𝟙 _ :=
+theorem ofMonComon_toMonComon_obj_comul (M : Mon (Comon C))
+    : Δ[((ofMonComon C ⋙ toMonComon C).obj M).X.X] = Δ[M.X.X] ≫ 𝟙 _ :=
   rfl
 
 #adaptation_note
@@ -200,8 +193,8 @@ theorem ofMonComon_toMonComon_obj_comul (M : Mon (Comon C)) :
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `equivMonComonCounitIsoApp`. -/
 @[simps!]
-def equivMonComonCounitIsoAppXAux (M : Mon (Comon C)) :
-    ((ofMonComon C ⋙ toMonComon C).obj M).X.X ≅ M.X.X :=
+def equivMonComonCounitIsoAppXAux (M : Mon (Comon C))
+    : ((ofMonComon C ⋙ toMonComon C).obj M).X.X ≅ M.X.X :=
   Iso.refl _
 
 set_option backward.isDefEq.respectTransparency false in
@@ -212,8 +205,8 @@ instance (M : Mon (Comon C)) : IsComonHom (equivMonComonCounitIsoAppXAux M).hom 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `equivMonComonCounitIsoApp`. -/
 @[simps!]
-def equivMonComonCounitIsoAppX (M : Mon (Comon C)) :
-    ((ofMonComon C ⋙ toMonComon C).obj M).X ≅ M.X :=
+def equivMonComonCounitIsoAppX (M : Mon (Comon C))
+    : ((ofMonComon C ⋙ toMonComon C).obj M).X ≅ M.X :=
   Comon.mkIso' (equivMonComonCounitIsoAppXAux M)
 
 set_option backward.isDefEq.respectTransparency false in
@@ -222,8 +215,7 @@ instance (M : Mon (Comon C)) : IsMonHom (equivMonComonCounitIsoAppX M).hom where
 set_option backward.isDefEq.respectTransparency false in
 /-- The counit for the equivalence `Comon (Mon C) ≌ Mon (Comon C)`. -/
 @[simps!]
-def equivMonComonCounitIsoApp (M : Mon (Comon C)) :
-    (ofMonComon C ⋙ toMonComon C).obj M ≅ M :=
+def equivMonComonCounitIsoApp (M : Mon (Comon C)) : (ofMonComon C ⋙ toMonComon C).obj M ≅ M :=
   Mon.mkIso (equivMonComonCounitIsoAppX M)
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -238,14 +230,11 @@ def equivMonComon : Bimon C ≌ Mon (Comon C) where
 
 variable (C) in
 /-- The trivial bimonoid object. -/
-@[simps!]
-def trivial : Bimon C := Comon.trivial (Mon C)
+@[simps!] def trivial : Bimon C := Comon.trivial (Mon C)
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The bimonoid morphism from the trivial bimonoid to any bimonoid. -/
-@[simps]
-def trivialTo (A : Bimon C) : trivial C ⟶ A :=
-  .mk' (default : Mon.trivial C ⟶ A.X)
+@[simps] def trivialTo (A : Bimon C) : trivial C ⟶ A := .mk' (default : Mon.trivial C ⟶ A.X)
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The bimonoid morphism from any bimonoid to the trivial bimonoid. -/
@@ -256,45 +245,34 @@ def toTrivial (A : Bimon C) : A ⟶ trivial C :=
 /-! ### Additional lemmas -/
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem BimonObjAux_counit (M : Bimon C) :
-    ε[((toComon C).obj M).X] = ε[M.X].hom :=
+theorem BimonObjAux_counit (M : Bimon C) : ε[((toComon C).obj M).X] = ε[M.X].hom :=
   Category.comp_id _
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem BimonObjAux_comul (M : Bimon C) :
-    Δ[((toComon C).obj M).X] = Δ[M.X].hom :=
+theorem BimonObjAux_comul (M : Bimon C) : Δ[((toComon C).obj M).X] = Δ[M.X].hom :=
   Category.comp_id _
 
 set_option backward.isDefEq.respectTransparency false in
 instance (M : Bimon C) : BimonObj M.X.X where
   counit := ε[M.X].hom
   comul := Δ[M.X].hom
-  counit_comul := by
-    rw [← BimonObjAux_counit, ← BimonObjAux_comul, ComonObj.counit_comul]
-  comul_counit := by
-    rw [← BimonObjAux_counit, ← BimonObjAux_comul, ComonObj.comul_counit]
-  comul_assoc := by
-    simp_rw [← BimonObjAux_comul, ComonObj.comul_assoc]
+  counit_comul := by rw [← BimonObjAux_counit, ← BimonObjAux_comul, ComonObj.counit_comul]
+  comul_counit := by rw [← BimonObjAux_counit, ← BimonObjAux_comul, ComonObj.comul_counit]
+  comul_assoc := by simp_rw [← BimonObjAux_comul, ComonObj.comul_assoc]
 
 attribute [local simp] MonObj.tensorObj.one_def in
 @[reassoc]
-theorem one_comul (M : C) [BimonObj M] :
-    η[M] ≫ Δ[M] = (λ_ _).inv ≫ (η[M] ⊗ₘ η[M]) := by
-  simp
+theorem one_comul (M : C) [BimonObj M] : η[M] ≫ Δ[M] = (λ_ _).inv ≫ (η[M] ⊗ₘ η[M]) := by simp
 
 @[reassoc]
-theorem mul_counit (M : C) [BimonObj M] :
-    μ[M] ≫ ε[M] = (ε[M] ⊗ₘ ε[M]) ≫ (λ_ _).hom := by
-  simp
+theorem mul_counit (M : C) [BimonObj M] : μ[M] ≫ ε[M] = (ε[M] ⊗ₘ ε[M]) ≫ (λ_ _).hom := by simp
 
 /-- Compatibility of the monoid and comonoid structures, in terms of morphisms in `C`. -/
-@[reassoc (attr := simp)] theorem compatibility (M : C) [BimonObj M] :
-    (Δ[M] ⊗ₘ Δ[M]) ≫
-      (α_ _ _ (M ⊗ M)).hom ≫ M ◁ (α_ _ _ _).inv ≫
-      M ◁ (β_ M M).hom ▷ M ≫
-      M ◁ (α_ _ _ _).hom ≫ (α_ _ _ _).inv ≫
-      (μ[M] ⊗ₘ μ[M]) =
-    μ[M] ≫ Δ[M] := by
+@[reassoc (attr := simp)]
+theorem compatibility (M : C) [BimonObj M]
+    : (Δ[M] ⊗ₘ Δ[M]) ≫ (α_ _ _ (M ⊗ M)).hom ≫ M ◁ (α_ _ _ _).inv ≫ M ◁ (β_ M M).hom ▷ M
+        ≫ M ◁ (α_ _ _ _).hom ≫ (α_ _ _ _).inv ≫ (μ[M] ⊗ₘ μ[M])
+      = μ[M] ≫ Δ[M] := by
   simp only [BimonObj.mul_comul, tensorμ, Category.assoc]
 
 /-- Auxiliary definition for `Bimon.mk'`. -/
@@ -306,9 +284,7 @@ set_option backward.isDefEq.respectTransparency false in
 @[simps X]
 def mk' (X : C) [BimonObj X] : Bimon C where
   X := mk'X X
-  comon :=
-    { counit := .mk' (ε : X ⟶ 𝟙_ C)
-      comul := .mk' (Δ : X ⟶ X ⊗ X) }
+  comon := { counit := .mk' (ε : X ⟶ 𝟙_ C), comul := .mk' (Δ : X ⟶ X ⊗ X) }
 
 end Bimon
 end CategoryTheory

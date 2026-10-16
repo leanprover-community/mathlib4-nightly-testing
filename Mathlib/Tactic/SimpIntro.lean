@@ -6,7 +6,6 @@ Authors: Mario Carneiro
 module
 
 public meta import Lean.Elab.Tactic.Simp
-
 import Lean.Elab.Tactic.Simp
 import Mathlib.Init
 
@@ -25,37 +24,49 @@ Main loop of the `simp_intro` tactic.
 * `more`: if true, we will keep introducing binders as long as we can
 * `ids`: the list of binder identifiers
 -/
-partial def simpIntroCore (g : MVarId) (ctx : Simp.Context) (simprocs : Simp.SimprocsArray := #[])
-    (discharge? : Option Simp.Discharge) (more : Bool) (ids : List (TSyntax ``binderIdent)) :
-    TermElabM (Option MVarId) := do
+partial def simpIntroCore
+    (g : MVarId) (ctx : Simp.Context)
+    (simprocs : Simp.SimprocsArray := #[])
+    (discharge? : Option Simp.Discharge) (more : Bool) (ids : List (TSyntax ``binderIdent))
+    : TermElabM (Option MVarId) := do
   let done := return (← simpTargetCore g ctx simprocs discharge?).1
-  let (transp, var, ids') ← match ids with
+  let (transp, var, ids') ←
+    match ids with
     | [] => if more then pure (.reducible, mkHole (← getRef) |>.raw, []) else return ← done
-    | v::ids => pure (.default, v.raw[0], ids)
+    | v :: ids => pure (.default, v.raw[0], ids)
   let t ← withTransparency transp g.getType'
   let n := if var.isIdent then var.getId else `_
-  let withFVar := fun (fvar, g) ↦ g.withContext do
-    Term.addLocalVarInfo var (mkFVar fvar)
-    let ctx : Simp.Context ←
-      if (← Meta.isProp <| ← fvar.getType) then
-        let simpTheorems ← ctx.simpTheorems.addTheorem (.fvar fvar) (.fvar fvar)
-        pure <| ctx.setSimpTheorems simpTheorems
-      else
-        pure ctx
-    simpIntroCore g ctx simprocs discharge? more ids'
+  let withFVar := fun (fvar, g) ↦
+    g.withContext do
+      Term.addLocalVarInfo var (mkFVar fvar)
+      let ctx : Simp.Context ←
+        if (← Meta.isProp <| ← fvar.getType) then
+          let simpTheorems ← ctx.simpTheorems.addTheorem (.fvar fvar) (.fvar fvar)
+          pure <| ctx.setSimpTheorems simpTheorems
+        else
+          pure ctx
+      simpIntroCore g ctx simprocs discharge? more ids'
   match t with
-  | .letE .. => withFVar (← g.intro n)
+  | .letE .. =>
+    withFVar (← g.intro n)
   | .forallE (body := body) .. =>
     let (fvar, g) ← g.intro n
-    if body.hasLooseBVars then withFVar (fvar, g) else
-    match (← simpLocalDecl g fvar ctx simprocs discharge?).1 with
-    | none =>
-      g.withContext <| Term.addLocalVarInfo var (mkFVar fvar)
-      return none
-    | some g' => withFVar g'
+    if body.hasLooseBVars then
+      withFVar (fvar, g)
+    else
+      match (← simpLocalDecl g fvar ctx simprocs discharge?).1 with
+      | none =>
+        g.withContext <| Term.addLocalVarInfo var (mkFVar fvar)
+        return none
+      | some g' =>
+        withFVar g'
   | _ =>
-    if more && ids.isEmpty then done else
-    throwErrorAt var "simp_intro failed to introduce {var}\n{g}"
+    if more && ids.isEmpty then
+      done
+    else
+      throwErrorAt var
+        "simp_intro failed to introduce {var}\
+          \n{g}"
 
 open Parser.Tactic
 /--
@@ -73,8 +84,10 @@ and the goal.
     sorry
   ```
 -/
-elab "simp_intro" cfg:optConfig disch:(discharger)?
-    ids:(ppSpace colGt binderIdent)* more:" .."? only:(&" only")? args:(simpArgs)? : tactic => do
+elab
+      "simp_intro" cfg:optConfig disch:(discharger)? ids:(ppSpace colGt binderIdent)* more:" .."?
+      only:(&" only")? args:(simpArgs)?
+    : tactic => do
   let args := args.map fun args ↦ ⟨args.raw[1].getArgs⟩
   let stx ← `(tactic| simp $cfg:optConfig $(disch)? $[only%$only]? $[[$args,*]]?)
   let { ctx, simprocs, dischargeWrapper, .. } ←

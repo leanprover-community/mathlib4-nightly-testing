@@ -8,7 +8,6 @@ module
 public import Mathlib.Logic.Embedding.Set
 public import Mathlib.Order.Directed
 public import Mathlib.Order.RelIso.Basic
-
 import Mathlib.Logic.Equiv.Set
 
 /-!
@@ -20,7 +19,6 @@ in files further down the import graph.
 
 @[expose] public section
 
-
 open Function
 
 universe u v w
@@ -31,22 +29,25 @@ namespace RelHomClass
 
 variable {F : Type*}
 
-theorem map_inf [SemilatticeInf α] [LinearOrder β] [FunLike F β α]
-    [RelHomClass F (· < ·) (· < ·)] (a : F) (m n : β) :
-    a (m ⊓ n) = a m ⊓ a n :=
+theorem map_inf
+    [SemilatticeInf α] [LinearOrder β] [FunLike F β α] [RelHomClass F (· < ·) (· < ·)]
+    (a : F) (m n : β)
+    : a (m ⊓ n) = a m ⊓ a n :=
   (StrictMono.monotone fun _ _ => map_rel a).map_inf m n
 
-theorem map_sup [SemilatticeSup α] [LinearOrder β] [FunLike F β α]
-    [RelHomClass F (· > ·) (· > ·)] (a : F) (m n : β) :
-    a (m ⊔ n) = a m ⊔ a n :=
+theorem map_sup
+    [SemilatticeSup α] [LinearOrder β] [FunLike F β α] [RelHomClass F (· > ·) (· > ·)]
+    (a : F) (m n : β)
+    : a (m ⊔ n) = a m ⊔ a n :=
   map_inf (α := αᵒᵈ) (β := βᵒᵈ) _ _ _
 
-theorem directed [FunLike F α β] [RelHomClass F r s] {ι : Sort*} {a : ι → α} {f : F}
-    (ha : Directed r a) : Directed s (f ∘ a) :=
+theorem directed
+    [FunLike F α β] [RelHomClass F r s] {ι : Sort*} {a : ι → α} {f : F} (ha : Directed r a)
+    : Directed s (f ∘ a) :=
   ha.mono_comp _ fun _ _ h ↦ map_rel f h
 
-theorem directedOn [FunLike F α β] [RelHomClass F r s] {f : F}
-    {t : Set α} (hs : DirectedOn r t) : DirectedOn s (f '' t) :=
+theorem directedOn [FunLike F α β] [RelHomClass F r s] {f : F} {t : Set α} (hs : DirectedOn r t)
+    : DirectedOn s (f '' t) :=
   hs.mono_comp fun _ _ h ↦ map_rel f h
 
 end RelHomClass
@@ -57,16 +58,16 @@ theorem range_eq (e : r ≃r s) : Set.range e = Set.univ := by simp
 
 end RelIso
 
-/-- `Subrel r p` is the inherited relation on a subtype.
+/--
+`Subrel r p` is the inherited relation on a subtype.
 
 We could also consider a Set.Subrel r s variant for dot notation, but this ends up interacting
-poorly with `simpNF`. -/
-def Subrel (r : α → α → Prop) (p : α → Prop) : Subtype p → Subtype p → Prop :=
-  Subtype.val ⁻¹'o r
+poorly with `simpNF`.
+-/
+def Subrel (r : α → α → Prop) (p : α → Prop) : Subtype p → Subtype p → Prop := Subtype.val ⁻¹'o r
 
 @[simp]
-theorem subrel_val (r : α → α → Prop) (p : α → Prop) {a b} : Subrel r p a b ↔ r a.1 b.1 :=
-  Iff.rfl
+theorem subrel_val (r : α → α → Prop) (p : α → Prop) {a b} : Subrel r p a b ↔ r a.1 b.1 := Iff.rfl
 
 namespace Subrel
 
@@ -74,20 +75,18 @@ namespace Subrel
 protected def relEmbedding (r : α → α → Prop) (p : α → Prop) : Subrel r p ↪r r :=
   ⟨Embedding.subtype _, Iff.rfl⟩
 
-@[simp]
-theorem relEmbedding_apply (r : α → α → Prop) (p a) : Subrel.relEmbedding r p a = a.1 :=
-  rfl
+@[simp] theorem relEmbedding_apply (r : α → α → Prop) (p a) : Subrel.relEmbedding r p a = a.1 := rfl
 
 /-- `Set.inclusion` as a relation embedding. -/
-protected def inclusionEmbedding (r : α → α → Prop) {s t : Set α} (h : s ⊆ t) :
-    Subrel r (· ∈ s) ↪r Subrel r (· ∈ t) where
+protected def inclusionEmbedding (r : α → α → Prop) {s t : Set α} (h : s ⊆ t)
+    : Subrel r (· ∈ s) ↪r Subrel r (· ∈ t) where
   toFun := Set.inclusion h
   inj' _ _ h := (Set.inclusion_inj _).mp h
   map_rel_iff' := Iff.rfl
 
 @[simp]
-theorem coe_inclusionEmbedding (r : α → α → Prop) {s t : Set α} (h : s ⊆ t) :
-    (Subrel.inclusionEmbedding r h : s → t) = Set.inclusion h :=
+theorem coe_inclusionEmbedding (r : α → α → Prop) {s t : Set α} (h : s ⊆ t)
+    : (Subrel.inclusionEmbedding r h : s → t) = Set.inclusion h :=
   rfl
 
 instance (r : α → α → Prop) [Std.Refl r] (p : α → Prop) : Std.Refl (Subrel r p) :=
@@ -117,8 +116,10 @@ instance (r : α → α → Prop) [IsWellOrder α r] (p : α → Prop) : IsWellO
 
 end Subrel
 
-/-- If a proposition holds for all elements, then the `Subrel` is equivalent to the original
-relation. -/
+/--
+If a proposition holds for all elements, then the `Subrel` is equivalent to the original
+relation.
+-/
 @[simps! apply symm_apply]
 def RelIso.subrelUnivIso {p : α → Prop} (h : ∀ x, p x) : Subrel r p ≃r r where
   toEquiv := Equiv.subtypeUnivEquiv h
@@ -129,8 +130,8 @@ def RelEmbedding.codRestrict (p : Set β) (f : r ↪r s) (H : ∀ a, f a ∈ p) 
   ⟨f.toEmbedding.codRestrict p H, f.map_rel_iff'⟩
 
 @[simp]
-theorem RelEmbedding.codRestrict_apply (p) (f : r ↪r s) (H a) :
-    RelEmbedding.codRestrict p f H a = ⟨f a, H a⟩ :=
+theorem RelEmbedding.codRestrict_apply (p) (f : r ↪r s) (H a)
+    : RelEmbedding.codRestrict p f H a = ⟨f a, H a⟩ :=
   rfl
 
 section image
@@ -143,13 +144,16 @@ theorem RelIso.preimage_eq_image_symm (e : r ≃r s) (t : Set β) : e ⁻¹' t =
 
 end image
 
-theorem Acc.of_subrel {r : α → α → Prop} [IsTrans α r] {b : α} (a : { a // r a b })
-    (h : Acc (Subrel r (r · b)) a) : Acc r a.1 :=
+theorem Acc.of_subrel
+    {r : α → α → Prop} [IsTrans α r] {b : α} (a : {a // r a b}) (h : Acc (Subrel r (r · b)) a)
+    : Acc r a.1 :=
   h.recOn fun a _ IH ↦ ⟨_, fun _ hb ↦ IH ⟨_, _root_.trans hb a.2⟩ hb⟩
 
-/-- A relation `r` is well-founded iff every downward-interval `{ a | r a b }` of it is
-well-founded. -/
-theorem wellFounded_iff_wellFounded_subrel {r : α → α → Prop} [IsTrans α r] :
-    WellFounded r ↔ ∀ b, WellFounded (Subrel r (r · b)) where
+/--
+A relation `r` is well-founded iff every downward-interval `{ a | r a b }` of it is
+well-founded.
+-/
+theorem wellFounded_iff_wellFounded_subrel {r : α → α → Prop} [IsTrans α r]
+    : WellFounded r ↔ ∀ b, WellFounded (Subrel r (r · b)) where
   mp h _ := InvImage.wf Subtype.val h
   mpr h := ⟨fun a ↦ ⟨_, fun b hr ↦ ((h a).apply _).of_subrel ⟨b, hr⟩⟩⟩

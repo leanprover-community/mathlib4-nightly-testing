@@ -62,7 +62,8 @@ instance : IsDomain NatMaxAdd := NatMaxAdd.mulEquiv.isDomain
 
 theorem natCast_eq_one (n : ℕ) : ∀ [NeZero n], (n : NatMaxAdd) = 1 := by
   induction n with
-  | zero => intro; exact (NeZero.ne 0 rfl).elim
+  | zero =>
+    intro; exact (NeZero.ne 0 rfl).elim
   | succ n ih =>
     obtain _ | n := n
     · intro; rfl
@@ -77,6 +78,6 @@ theorem noZeroDivisors_polynomial : NoZeroDivisors NatMaxAdd[X] := inferInstance
 
 end NatMaxAdd
 
-theorem not_isDomain_commSemiring_imp_isDomain_polynomial :
-    ¬ ∀ (R : Type) [CommSemiring R] [IsDomain R], IsDomain R[X] :=
-  fun h ↦ NatMaxAdd.not_isDomain_polynomial (h _)
+theorem not_isDomain_commSemiring_imp_isDomain_polynomial
+    : ¬ ∀ (R : Type) [CommSemiring R] [IsDomain R], IsDomain R[X] := fun h ↦
+  NatMaxAdd.not_isDomain_polynomial (h _)

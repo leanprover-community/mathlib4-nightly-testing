@@ -47,8 +47,8 @@ namespace Imo2021Q1
 
 -- We will later make use of the fact that there exists `l : ℕ` such that
 -- `n ≤ 2 * l ^ 2 - 4 * l` and `2 * l ^ 2 + 4 * l ≤ 2 * n` for `n ≥ 100`.
-lemma exists_numbers_in_interval {n : ℕ} (hn : 100 ≤ n) :
-    ∃ l : ℕ, n + 4 * l ≤ 2 * l ^ 2 ∧ 2 * l ^ 2 + 4 * l ≤ 2 * n := by
+lemma exists_numbers_in_interval {n : ℕ} (hn : 100 ≤ n)
+    : ∃ l : ℕ, n + 4 * l ≤ 2 * l ^ 2 ∧ 2 * l ^ 2 + 4 * l ≤ 2 * n := by
   have hn' : 1 ≤ Nat.sqrt (n + 1) := by
     rw [Nat.le_sqrt]
     apply Nat.le_add_left
@@ -60,29 +60,38 @@ lemma exists_numbers_in_interval {n : ℕ} (hn : 100 ≤ n) :
   rw [← Nat.sub_add_cancel hn'] at h₁ h₂ h₃
   set l := (n + 1).sqrt - 1
   refine ⟨l, ?_, ?_⟩
-  · calc n + 4 * l ≤ (l ^ 2 + 4 * l + 2) + 4 * l := by linarith only [h₂]
+  · calc
+      n + 4 * l
+        ≤ (l ^ 2 + 4 * l + 2) + 4 * l := by linarith only [h₂]
       _ ≤ 2 * l ^ 2 := by nlinarith only [h₃]
   · linarith only [h₁]
 
-lemma exists_triplet_summing_to_squares {n : ℕ} (hn : 100 ≤ n) :
-    ∃ a b c : ℕ, n ≤ a ∧ a < b ∧ b < c ∧ c ≤ 2 * n ∧
-      IsSquare (a + b) ∧ IsSquare (c + a) ∧ IsSquare (b + c) := by
+lemma exists_triplet_summing_to_squares {n : ℕ} (hn : 100 ≤ n)
+    : ∃ a b c : ℕ,
+      n ≤ a ∧ a < b ∧ b < c ∧ c ≤ 2 * n ∧ IsSquare (a + b) ∧ IsSquare (c + a)
+        ∧ IsSquare (b + c) := by
   obtain ⟨l, hl1, hl2⟩ := exists_numbers_in_interval hn
   have hl : 1 < l := by contrapose! hl1; interval_cases l <;> linarith
   have h₁ : 4 * l ≤ 2 * l ^ 2 := by lia
   have h₂ : 1 ≤ 2 * l := by lia
-  refine ⟨2 * l ^ 2 - 4 * l, 2 * l ^ 2 + 1, 2 * l ^ 2 + 4 * l, ?_, ?_, ?_,
-    ⟨?_, ⟨2 * l - 1, ?_⟩, ⟨2 * l, ?_⟩, 2 * l + 1, ?_⟩⟩
+  refine ⟨
+    2 * l ^ 2 - 4 * l,
+    2 * l ^ 2 + 1,
+    2 * l ^ 2 + 4 * l,
+    ?_,
+    ?_,
+    ?_,
+    ⟨?_, ⟨2 * l - 1, ?_⟩, ⟨2 * l, ?_⟩, 2 * l + 1, ?_⟩
+  ⟩
   all_goals zify [h₁, h₂]; linarith
 
 -- Since it will be more convenient to work with sets later on, we will translate the above claim
 -- to state that there always exists a set B ⊆ [n, 2n] of cardinality at least 3, such that each
 -- pair of pairwise unequal elements of B sums to a perfect square.
-lemma exists_finset_3_le_card_with_pairs_summing_to_squares {n : ℕ} (hn : 100 ≤ n) :
-    ∃ B : Finset ℕ,
-      2 * 1 + 1 ≤ #B ∧
-      (∀ a ∈ B, ∀ b ∈ B, a ≠ b → IsSquare (a + b)) ∧
-      ∀ c ∈ B, n ≤ c ∧ c ≤ 2 * n := by
+lemma exists_finset_3_le_card_with_pairs_summing_to_squares {n : ℕ} (hn : 100 ≤ n)
+    : ∃ B : Finset ℕ,
+      2 * 1 + 1 ≤ #B ∧ (∀ a ∈ B, ∀ b ∈ B, a ≠ b → IsSquare (a + b))
+        ∧ ∀ c ∈ B, n ≤ c ∧ c ≤ 2 * n := by
   obtain ⟨a, b, c, hna, hab, hbc, hcn, h₁, h₂, h₃⟩ := exists_triplet_summing_to_squares hn
   refine ⟨{a, b, c}, ?_, ?_, ?_⟩
   · suffices a ∉ {b, c} ∧ b ∉ {c} by
@@ -98,10 +107,13 @@ end Imo2021Q1
 
 open Imo2021Q1
 
-theorem imo2021_q1 :
-    ∀ n : ℕ, 100 ≤ n → ∀ A ⊆ Finset.Icc n (2 * n),
-    (∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ IsSquare (a + b)) ∨
-    ∃ a ∈ Finset.Icc n (2 * n) \ A, ∃ b ∈ Finset.Icc n (2 * n) \ A, a ≠ b ∧ IsSquare (a + b) := by
+theorem imo2021_q1
+    : ∀ n : ℕ,
+      100 ≤ n
+        → ∀ A ⊆ Finset.Icc n (2 * n),
+          (∃ a ∈ A, ∃ b ∈ A, a ≠ b ∧ IsSquare (a + b))
+            ∨ ∃ a ∈ Finset.Icc n (2 * n) \ A, ∃ b ∈ Finset.Icc n (2 * n) \ A,
+              a ≠ b ∧ IsSquare (a + b) := by
   intro n hn A hA
   -- For each n ∈ ℕ such that 100 ≤ n, there exists a pairwise unequal triplet {a, b, c} ⊆ [n, 2n]
   -- such that all pairwise sums are perfect squares. In practice, it will be easier to use
@@ -122,5 +134,5 @@ theorem imo2021_q1 :
   rcases hC with ⟨a, ha, b, hb, hab⟩
   simp only [Finset.subset_iff, Finset.mem_inter] at hCA
   -- Now we split into the two cases C ⊆ [n, 2n] \ A and C ⊆ A, which can be dealt with identically.
-  rcases hCA with hCA | hCA <;> [right; left] <;>
-    exact ⟨a, (hCA ha).2, b, (hCA hb).2, hab, h₁ a (hCA ha).1 b (hCA hb).1 hab⟩
+  rcases hCA with hCA | hCA <;> [right; left]
+    <;> exact ⟨a, (hCA ha).2, b, (hCA hb).2, hab, h₁ a (hCA ha).1 b (hCA hb).1 hab⟩

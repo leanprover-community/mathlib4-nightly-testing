@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.MellinTransform
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-
 import Mathlib.Analysis.Complex.HalfPlane
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 
@@ -31,7 +30,6 @@ Gamma
 
 public section
 
-
 open Filter Set Real Asymptotics
 open scoped Topology
 
@@ -39,17 +37,19 @@ namespace Complex
 
 /-! Now check that the `Γ` function is differentiable, wherever this makes sense. -/
 
-
 section GammaHasDeriv
 
 /-- Rewrite the Gamma integral as an example of a Mellin transform. -/
 theorem GammaIntegral_eq_mellin : GammaIntegral = mellin fun x => ↑(Real.exp (-x)) :=
   funext fun s => by simp only [mellin, GammaIntegral, smul_eq_mul, mul_comm]
 
-/-- The derivative of the `Γ` integral, at any `s ∈ ℂ` with `1 < re s`, is given by the Mellin
-transform of `log t * exp (-t)`. -/
-theorem hasDerivAt_GammaIntegral {s : ℂ} (hs : 0 < s.re) :
-    HasDerivAt GammaIntegral (∫ t : ℝ in Ioi 0, t ^ (s - 1) * (Real.log t * Real.exp (-t))) s := by
+/--
+The derivative of the `Γ` integral, at any `s ∈ ℂ` with `1 < re s`, is given by the Mellin
+transform of `log t * exp (-t)`.
+-/
+theorem hasDerivAt_GammaIntegral {s : ℂ} (hs : 0 < s.re)
+    : HasDerivAt GammaIntegral (∫ t : ℝ in Ioi 0, t ^ (s - 1) * (Real.log t * Real.exp (-t)))
+      s := by
   rw [GammaIntegral_eq_mellin]
   convert! (mellin_hasDerivAt_of_isBigO_rpow (E := ℂ) _ _ (lt_add_one _) _ hs).2
   · refine (Continuous.continuousOn ?_).locallyIntegrableOn measurableSet_Ioi
@@ -62,13 +62,13 @@ theorem hasDerivAt_GammaIntegral {s : ℂ} (hs : 0 < s.re) :
     rw [(by simp : (1 : ℂ) = Real.exp (-0))]
     exact (continuous_ofReal.comp (Real.continuous_exp.comp continuous_neg)).continuousWithinAt
 
-theorem hasDerivAt_Gamma_of_re_pos {s : ℂ} (hs : 0 < s.re) :
-    HasDerivAt Gamma (∫ t : ℝ in Ioi 0, t ^ (s - 1) * (Real.log t * Real.exp (-t))) s := by
+theorem hasDerivAt_Gamma_of_re_pos {s : ℂ} (hs : 0 < s.re)
+    : HasDerivAt Gamma (∫ t : ℝ in Ioi 0, t ^ (s - 1) * (Real.log t * Real.exp (-t))) s := by
   apply (hasDerivAt_GammaIntegral hs).congr_of_eventuallyEq
   filter_upwards [(isOpen_re_gt 0).mem_nhds hs] with a using Gamma_eq_integral
 
-theorem deriv_Gamma_one_eq_integral_log :
-    deriv Gamma 1 = ∫ t : ℝ in Ioi 0, (Real.log t : ℂ) * Real.exp (-t) := by
+theorem deriv_Gamma_one_eq_integral_log
+    : deriv Gamma 1 = ∫ t : ℝ in Ioi 0, (Real.log t : ℂ) * Real.exp (-t) := by
   simp [(hasDerivAt_Gamma_of_re_pos (s := 1) (by simp)).deriv]
 
 @[fun_prop]
@@ -78,7 +78,8 @@ theorem differentiableAt_Gamma (s : ℂ) (hs : ∀ m : ℕ, s ≠ -m) : Differen
     this (⌊-s.re⌋₊ + 1) s (by grind [Nat.lt_floor_add_one (-s.re)]) hs
   intro n s hsre hs
   induction n generalizing s with
-  | zero => exact (hasDerivAt_Gamma_of_re_pos (by simpa using hsre)).differentiableAt
+  | zero =>
+    exact (hasDerivAt_Gamma_of_re_pos (by simpa using hsre)).differentiableAt
   | succ n IH =>
     -- Induction step: use recurrence relation
     have hsne : s ≠ 0 := by grind [hs 0]
@@ -93,8 +94,7 @@ theorem differentiableAt_Gamma_one : DifferentiableAt ℂ Gamma 1 :=
 theorem continuousAt_Gamma (s : ℂ) (hs : ∀ m : ℕ, s ≠ -m) : ContinuousAt Gamma s :=
   (differentiableAt_Gamma s hs).continuousAt
 
-theorem continuousAt_Gamma_one : ContinuousAt Gamma 1 :=
-  differentiableAt_Gamma_one.continuousAt
+theorem continuousAt_Gamma_one : ContinuousAt Gamma 1 := differentiableAt_Gamma_one.continuousAt
 
 /-- At `s = 0`, the Gamma function has a simple pole with residue 1. -/
 theorem tendsto_self_mul_Gamma_nhds_zero : Tendsto (fun z : ℂ => z * Gamma z) (𝓝[≠] 0) (𝓝 1) := by
@@ -103,8 +103,8 @@ theorem tendsto_self_mul_Gamma_nhds_zero : Tendsto (fun z : ℂ => z * Gamma z) 
   exact ContinuousAt.comp' (by simp [continuousAt_Gamma_one]) (continuous_add_const 1).continuousAt
 
 theorem not_continuousAt_Gamma_zero : ¬ ContinuousAt Gamma 0 :=
-  tendsto_self_mul_Gamma_nhds_zero.not_tendsto (by simp) ∘
-    continuousAt_iff_punctured_nhds.mp ∘ continuousAt_id.mul
+  tendsto_self_mul_Gamma_nhds_zero.not_tendsto (by simp) ∘ continuousAt_iff_punctured_nhds.mp
+    ∘ continuousAt_id.mul
 
 theorem not_differentiableAt_Gamma_zero : ¬ DifferentiableAt ℂ Gamma 0 :=
   mt DifferentiableAt.continuousAt not_continuousAt_Gamma_zero
@@ -123,13 +123,14 @@ theorem not_continuousAt_Gamma_neg_nat (n : ℕ) : ¬ ContinuousAt Gamma (-n) :=
     rw [← neg_add']
     have h0 : -(n + 1) ≠ (0 : ℂ) := neg_ne_zero.mpr n.cast_add_one_ne_zero
     exact ((continuousAt_id.mul ih).continuousWithinAt.congr Gamma_add_one
-      (Gamma_add_one (-(n + 1)) h0)).continuousAt (compl_singleton_mem_nhds h0)
+        (Gamma_add_one (-(n + 1)) h0)).continuousAt
+      (compl_singleton_mem_nhds h0)
 
 theorem not_differentiableAt_Gamma_neg_nat (n : ℕ) : ¬ DifferentiableAt ℂ Gamma (-n) :=
   mt DifferentiableAt.continuousAt (not_continuousAt_Gamma_neg_nat n)
 
-theorem deriv_Gamma_add_one (s : ℂ) (hs : s ≠ 0) :
-    deriv Gamma (s + 1) = Gamma s + s * deriv Gamma s := by
+theorem deriv_Gamma_add_one (s : ℂ) (hs : s ≠ 0)
+    : deriv Gamma (s + 1) = Gamma s + s * deriv Gamma s := by
   by_cases! h : ∃ m : ℕ, s = -m
   · obtain ⟨m, rfl⟩ := h
     rw [← sub_neg_eq_add, ← neg_sub', ← Nat.cast_one, ← Nat.cast_sub,
@@ -141,8 +142,9 @@ theorem deriv_Gamma_add_one (s : ℂ) (hs : s ≠ 0) :
       rw [← deriv_comp_add_const]
       exact (this.hasDerivAt (compl_singleton_mem_nhds hs)).deriv
     refine HasDerivWithinAt.congr ?_ Gamma_add_one (Gamma_add_one s hs)
-    simpa using! HasDerivWithinAt.mul (hasDerivWithinAt_id s {0}ᶜ)
-      (differentiableAt_Gamma s h).hasDerivAt.hasDerivWithinAt
+    simpa using!
+      HasDerivWithinAt.mul (hasDerivWithinAt_id s {0}ᶜ)
+        (differentiableAt_Gamma s h).hasDerivAt.hasDerivWithinAt
 
 end GammaHasDeriv
 
@@ -152,8 +154,8 @@ namespace Real
 
 open Complex MeasureTheory
 
-theorem hasDerivAt_Gamma_of_pos {s : ℝ} (hs : 0 < s) :
-    HasDerivAt Gamma (∫ t in Ioi 0, t ^ (s - 1) * (log t * exp (-t))) s := by
+theorem hasDerivAt_Gamma_of_pos {s : ℝ} (hs : 0 < s)
+    : HasDerivAt Gamma (∫ t in Ioi 0, t ^ (s - 1) * (log t * exp (-t))) s := by
   convert (Complex.hasDerivAt_Gamma_of_re_pos (RCLike.ofReal_pos.mp hs)).real_of_complex
   · simp [Gamma_ofReal]
   convert (ofReal_re ?_).symm
@@ -167,29 +169,32 @@ theorem hasDerivAt_Gamma_of_pos {s : ℝ} (hs : 0 < s) :
 theorem deriv_Gamma_one_eq_integral_log : deriv Gamma 1 = ∫ t in Ioi 0, log t * exp (-t) := by
   simp [(hasDerivAt_Gamma_of_pos one_pos).deriv]
 
-theorem integrableOn_log_log_mul_rpow {s : ℝ} (hs : 1 < s) :
-    IntegrableOn (fun t ↦ log (log t) * t ^ (-s)) (Ioi 1) := by
+theorem integrableOn_log_log_mul_rpow {s : ℝ} (hs : 1 < s)
+    : IntegrableOn (fun t ↦ log (log t) * t ^ (-s)) (Ioi 1) := by
   rw [← exp_zero, ← integrableOn_comp_exp_Ioi]
-  apply Integrable.mono' (g := fun x ↦ (2 * x ^ (- (1 : ℝ) / 2) + x) * exp (-(s - 1) * x))
+  apply Integrable.mono' (g := fun x ↦ (2 * x ^ (-(1 : ℝ) / 2) + x) * exp (-(s - 1) * x))
   · simp only [add_mul, mul_assoc]
     refine (Integrable.const_mul ?_ _).add ?_
-    · simpa [IntegrableOn] using integrableOn_rpow_mul_exp_neg_mul_rpow
-        (by norm_num : -1 < (-1 : ℝ) / 2) one_pos (by linarith : 0 < s - 1)
-    · simpa [IntegrableOn] using integrableOn_rpow_mul_exp_neg_mul_rpow
-        (by norm_num : -1 < (1 : ℝ)) one_pos (by linarith : 0 < s - 1)
+    · simpa [IntegrableOn] using
+        integrableOn_rpow_mul_exp_neg_mul_rpow (by norm_num : -1 < (-1 : ℝ) / 2) one_pos
+          (by linarith : 0 < s - 1)
+    · simpa [IntegrableOn] using
+        integrableOn_rpow_mul_exp_neg_mul_rpow (by norm_num : -1 < (1 : ℝ)) one_pos
+          (by linarith : 0 < s - 1)
   · fun_prop
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x (hx : 0 < x)
   simp only [log_exp, smul_eq_mul, norm_mul, norm_eq_abs, abs_exp, neg_sub, ← exp_mul]
   rw [mul_comm, mul_assoc, ← exp_add]
   gcongr
-  · rw [abs_le]; constructor
+  · rw [abs_le]
+    constructor
     · linarith [neg_rpow_div_le_log hx.le one_half_pos, hx.le]
     · grw [log_le_self hx.le, le_add_iff_nonneg_left]
       positivity
   grind
 
-theorem deriv_Gamma_one_eq_integral_log_log {s : ℝ} (hs : 1 < s) :
-    deriv Gamma 1 = (s - 1) * (∫ t in Ioi 1, log (log t) * t ^ (-s)) + log (s - 1) := by
+theorem deriv_Gamma_one_eq_integral_log_log {s : ℝ} (hs : 1 < s)
+    : deriv Gamma 1 = (s - 1) * (∫ t in Ioi 1, log (log t) * t ^ (-s)) + log (s - 1) := by
   rw [deriv_Gamma_one_eq_integral_log, ← mul_zero (s - 1),
     ← integral_comp_mul_left_Ioi' _ _ (by linarith), ← log_one,
     ← integral_comp_log_Ioi _ zero_lt_one, smul_eq_mul]
@@ -203,13 +208,16 @@ theorem deriv_Gamma_one_eq_integral_log_log {s : ℝ} (hs : 1 < s) :
       rw [log_mul hs' (log_pos hx).ne', smul_eq_mul, neg_mul_eq_neg_mul, mul_comm _ (log x),
         ← rpow_def_of_pos (by linarith), this]
       grind
-    _ = (s - 1) * ((∫ t in Ioi 1, log (log t) * t ^ (-s)) + log (s - 1) * (s - 1)⁻¹)  := by
+    _ = (s - 1) * ((∫ t in Ioi 1, log (log t) * t ^ (-s)) + log (s - 1) * (s - 1)⁻¹) := by
       congr
       simp_rw [add_mul]
       convert integral_add (integrableOn_log_log_mul_rpow hs) (.const_mul ?_ _)
-      · rw [integral_const_mul]; congr; symm
+      · rw [integral_const_mul]
+        congr
+        symm
         convert integral_Ioi_rpow_of_lt (a := -s) (c := 1) (by linarith) zero_lt_one using 1
-        simp; grind
+        simp
+        grind
       exact integrableOn_Ioi_rpow_of_lt (by linarith) zero_lt_one
     _ = _ := by grind
 
@@ -219,7 +227,7 @@ theorem differentiableAt_Gamma {s : ℝ} (hs : ∀ m : ℕ, s ≠ -m) : Differen
   simp_rw [← ofReal_natCast, ← ofReal_neg, Ne, ofReal_inj]
   exact hs
 
-theorem differentiableOn_Gamma_Ioi : DifferentiableOn ℝ Gamma (Ioi 0) :=
-  fun _ h ↦ (differentiableAt_Gamma <| by bound [mem_Ioi.mp h]).differentiableWithinAt
+theorem differentiableOn_Gamma_Ioi : DifferentiableOn ℝ Gamma (Ioi 0) := fun _ h ↦
+  (differentiableAt_Gamma <| by bound [mem_Ioi.mp h]).differentiableWithinAt
 
 end Real

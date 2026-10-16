@@ -29,24 +29,23 @@ open CategoryTheory MorphismProperty Limits
 namespace AlgebraicGeometry.Scheme
 
 /-- Big étale site: the étale precoverage on the category of schemes. -/
-def etalePrecoverage : Precoverage Scheme.{u} :=
-  precoverage @Etale
+def etalePrecoverage : Precoverage Scheme.{u} := precoverage @Etale
 
 /-- Big étale site: the étale pretopology on the category of schemes. -/
-def etalePretopology : Pretopology Scheme.{u} :=
-  pretopology @Etale
+def etalePretopology : Pretopology Scheme.{u} := pretopology @Etale
 
 /-- Big étale site: the étale topology on the category of schemes. -/
-abbrev etaleTopology : GrothendieckTopology Scheme.{u} :=
-  grothendieckTopology @Etale
+abbrev etaleTopology : GrothendieckTopology Scheme.{u} := grothendieckTopology @Etale
 
 lemma zariskiTopology_le_etaleTopology : zariskiTopology ≤ etaleTopology := by
   apply grothendieckTopology_monotone
   intro X Y f hf
   infer_instance
 
-/-- The small étale site of a scheme is the Grothendieck topology on the
-category of schemes étale over `X` induced from the étale topology on `Scheme.{u}`. -/
+/--
+The small étale site of a scheme is the Grothendieck topology on the
+category of schemes étale over `X` induced from the étale topology on `Scheme.{u}`.
+-/
 def smallEtaleTopology (X : Scheme.{u}) : GrothendieckTopology X.Etale :=
   X.smallGrothendieckTopology (P := @Etale)
 
@@ -58,10 +57,8 @@ def smallEtalePretopology (X : Scheme.{u}) : Pretopology X.Etale :=
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma ofArrows_mem_smallEtaleTopology_iff
-    {X : Scheme.{u}} {W : X.Etale} {ι : Type*}
-    {Z : ι → X.Etale} (f : ∀ i, Z i ⟶ W) :
-    Sieve.ofArrows _ f ∈ smallEtaleTopology _ _ ↔
-      ⋃ i, Set.range (f i).left = .univ := by
+    {X : Scheme.{u}} {W : X.Etale} {ι : Type*} {Z : ι → X.Etale} (f : ∀ i, Z i ⟶ W)
+    : Sieve.ofArrows _ f ∈ smallEtaleTopology _ _ ↔ ⋃ i, Set.range (f i).left = .univ := by
   refine ⟨fun hf ↦ ?_, fun hf ↦ (mem_smallGrothendieckTopology _ _).2 ?_⟩
   · obtain ⟨U, _, _, hU⟩ := (mem_smallGrothendieckTopology _ _).1 hf
     ext y
@@ -76,11 +73,12 @@ lemma ofArrows_mem_smallEtaleTopology_iff
       simpa [← hf]
     choose i z hz using this
     let V : Cover (precoverage @Etale) W.left :=
-      Cover.mkOfCovers W.left (fun w ↦ (Z (i w)).left)
-        (fun w ↦ (f (i w)).left) (fun w ↦ ⟨_, _, hz w⟩) inferInstance
-    let : Cover.Over X V :=
-      { over w := ⟨(Z (i w)).hom⟩
-        isOver_map w := by cat_disch }
+      Cover.mkOfCovers W.left
+        (fun w ↦ (Z (i w)).left)
+        (fun w ↦ (f (i w)).left)
+        (fun w ↦ ⟨_, _, hz w⟩)
+        inferInstance
+    let : Cover.Over X V := { over w := ⟨(Z (i w)).hom⟩, isOver_map w := by cat_disch }
     have (w : W.left) : Etale (V.X w ↘ X) := (Z (i w)).prop
     refine ⟨V, inferInstance, inferInstance, ?_⟩
     rintro _ _ ⟨w⟩
@@ -90,10 +88,11 @@ instance {S : Scheme.{u}} (𝒰 : S.Cover (precoverage @Etale)) (i : 𝒰.I₀) 
   𝒰.map_prop i
 
 set_option backward.isDefEq.respectTransparency false in
-/-- A separably closed field `Ω` defines a point on the étale topology by the fiber
-functor `X ↦ Hom(Spec Ω, X)`. -/
-noncomputable
-def geometricFiber (Ω : Type u) [Field Ω] [IsSepClosed Ω] : etaleTopology.Point where
+/--
+A separably closed field `Ω` defines a point on the étale topology by the fiber
+functor `X ↦ Hom(Spec Ω, X)`.
+-/
+noncomputable def geometricFiber (Ω : Type u) [Field Ω] [IsSepClosed Ω] : etaleTopology.Point where
   fiber := coyoneda.obj ⟨Spec (.of Ω)⟩
   jointly_surjective {S} R hR (f : Spec (.of Ω) ⟶ S) := by
     obtain ⟨⟨x, a⟩, rfl⟩ := (Scheme.SpecToEquivOfField Ω S).symm.surjective f
@@ -102,11 +101,9 @@ def geometricFiber (Ω : Type u) [Field Ω] [IsSepClosed Ω] : etaleTopology.Poi
     obtain ⟨i, y, rfl⟩ := 𝒰.exists_eq x
     refine ⟨𝒰.X i, 𝒰.f i, hle _ _ ⟨i⟩, ?_⟩
     let k := (𝒰.X i).residueField y
-    let m : S.residueField (𝒰.f i y) ⟶ (𝒰.X i).residueField y :=
-      (𝒰.f i).residueFieldMap y
+    let m : S.residueField (𝒰.f i y) ⟶ (𝒰.X i).residueField y := (𝒰.f i).residueFieldMap y
     algebraize [((𝒰.f i).residueFieldMap y).hom, a.hom]
-    let b : (𝒰.X i).residueField y →ₐ[S.residueField (𝒰.f i y)] Ω :=
-      IsSepClosed.lift
+    let b : (𝒰.X i).residueField y →ₐ[S.residueField (𝒰.f i y)] Ω := IsSepClosed.lift
     have hfac : (𝒰.f i).residueFieldMap y ≫ CommRingCat.ofHom b.toRingHom = a := by
       ext1; exact b.comp_algebraMap
     use Spec.map (CommRingCat.ofHom b.toRingHom) ≫ (𝒰.X i).fromSpecResidueField y

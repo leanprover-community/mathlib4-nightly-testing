@@ -16,28 +16,32 @@ whose forgetful functors both reflect isomorphisms, itself reflects isomorphisms
 
 public section
 
-
 universe t₁ t₂ w
 
 namespace CategoryTheory
 
-instance : (forget Type*).ReflectsIsomorphisms where reflects _ _ _ {i} := i
+instance : (forget Type*).ReflectsIsomorphisms where
+  reflects _ _ _ {i} := i
 
-variable (C : Type*) [Category* C]
-    {FC : outParam <| C → C → Type t₁} {CC : outParam <| C → Type w}
-    [outParam <| ∀ X Y, FunLike (FC X Y) (CC X) (CC Y)] [ConcreteCategory.{w} C FC]
-variable (D : Type*) [Category* D]
-    {FD : outParam <| D → D → Type t₂} {CD : outParam <| D → Type w}
-    [outParam <| ∀ X Y, FunLike (FD X Y) (CD X) (CD Y)] [ConcreteCategory.{w} D FD]
+variable
+  (C : Type*) [Category* C]
+  {FC : outParam <| C → C → Type t₁} {CC : outParam <| C → Type w}
+  [outParam <| ∀ X Y, FunLike (FC X Y) (CC X) (CC Y)] [ConcreteCategory.{w} C FC]
+variable
+  (D : Type*) [Category* D]
+  {FD : outParam <| D → D → Type t₂} {CD : outParam <| D → Type w}
+  [outParam <| ∀ X Y, FunLike (FD X Y) (CD X) (CD Y)] [ConcreteCategory.{w} D FD]
 
-/-- A `forget₂ C D` forgetful functor between concrete categories `C` and `D`
-where `forget C` reflects isomorphisms, itself reflects isomorphisms. -/
-instance reflectsIsomorphisms_forget₂ [HasForget₂ C D] [(forget C).ReflectsIsomorphisms] :
-    (forget₂ C D).ReflectsIsomorphisms :=
-  { reflects := fun X Y f {i} => by
-      have i' : IsIso ((forget D).map ((forget₂ C D).map f)) := Functor.map_isIso (forget D) _
-      have : IsIso ((forget C).map f) := by
-        rwa [← @HasForget₂.forget_comp (C := C) (D := D)]
-      apply isIso_of_reflects_iso f (forget C) }
+/--
+A `forget₂ C D` forgetful functor between concrete categories `C` and `D`
+where `forget C` reflects isomorphisms, itself reflects isomorphisms.
+-/
+instance reflectsIsomorphisms_forget₂ [HasForget₂ C D] [(forget C).ReflectsIsomorphisms]
+    : (forget₂ C D).ReflectsIsomorphisms := {
+  reflects := fun X Y f {i} => by
+    have i' : IsIso ((forget D).map ((forget₂ C D).map f)) := Functor.map_isIso (forget D) _
+    have : IsIso ((forget C).map f) := by rwa [← @HasForget₂.forget_comp (C := C) (D := D)]
+    apply isIso_of_reflects_iso f (forget C)
+}
 
 end CategoryTheory

@@ -23,7 +23,6 @@ open scoped Manifold Topology ContDiff
 
 /-! ### The groupoid of `C^n`, fiberwise-linear maps -/
 
-
 variable {𝕜 B F : Type*} [TopologicalSpace B]
 variable [NontriviallyNormedField 𝕜] [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 
@@ -31,12 +30,15 @@ namespace FiberwiseLinear
 
 variable {φ φ' : B → F ≃L[𝕜] F} {U U' : Set B}
 
-/-- For `B` a topological space and `F` a `𝕜`-normed space, a map from `U : Set B` to `F ≃L[𝕜] F`
-determines an open partial homeomorphism from `B × F` to itself by its action fiberwise. -/
-def openPartialHomeomorph (φ : B → F ≃L[𝕜] F) (hU : IsOpen U)
-    (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
-    (h2φ : ContinuousOn (fun x => (φ x).symm : B → F →L[𝕜] F) U) :
-    OpenPartialHomeomorph (B × F) (B × F) where
+/--
+For `B` a topological space and `F` a `𝕜`-normed space, a map from `U : Set B` to `F ≃L[𝕜] F`
+determines an open partial homeomorphism from `B × F` to itself by its action fiberwise.
+-/
+def openPartialHomeomorph
+    (φ : B → F ≃L[𝕜] F)
+    (hU : IsOpen U) (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
+    (h2φ : ContinuousOn (fun x => (φ x).symm : B → F →L[𝕜] F) U)
+    : OpenPartialHomeomorph (B × F) (B × F) where
   toFun x := (x.1, φ x.1 x.2)
   invFun x := (x.1, (φ x.1).symm x.2)
   source := U ×ˢ univ
@@ -56,66 +58,78 @@ def openPartialHomeomorph (φ : B → F ≃L[𝕜] F) (hU : IsOpen U)
       h2φ.prodMap continuousOn_id
     continuousOn_fst.prodMk (isBoundedBilinearMap_apply.continuous.comp_continuousOn this)
 
-/-- Compute the composition of two open partial homeomorphisms induced by fiberwise linear
-equivalences. -/
-theorem trans_openPartialHomeomorph_apply (hU : IsOpen U)
-    (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
+/--
+Compute the composition of two open partial homeomorphisms induced by fiberwise linear
+equivalences.
+-/
+theorem trans_openPartialHomeomorph_apply
+    (hU : IsOpen U) (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
     (h2φ : ContinuousOn (fun x => (φ x).symm : B → F →L[𝕜] F) U) (hU' : IsOpen U')
     (hφ' : ContinuousOn (fun x => φ' x : B → F →L[𝕜] F) U')
-    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U') (b : B) (v : F) :
-    (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ ≫ₕ
-      FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ')
-        ⟨b, v⟩ =
-      ⟨b, φ' b (φ b v)⟩ :=
+    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U') (b : B) (v : F)
+    : (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ
+          ≫ₕ FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ')
+        ⟨b, v⟩
+      = ⟨b, φ' b (φ b v)⟩ :=
   rfl
 
-/-- Compute the source of the composition of two open partial homeomorphisms induced by fiberwise
-linear equivalences. -/
-theorem source_trans_openPartialHomeomorph (hU : IsOpen U)
-    (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
+/--
+Compute the source of the composition of two open partial homeomorphisms induced by fiberwise
+linear equivalences.
+-/
+theorem source_trans_openPartialHomeomorph
+    (hU : IsOpen U) (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
     (h2φ : ContinuousOn (fun x => (φ x).symm : B → F →L[𝕜] F) U) (hU' : IsOpen U')
     (hφ' : ContinuousOn (fun x => φ' x : B → F →L[𝕜] F) U')
-    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U') :
-    (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ ≫ₕ
-          FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ').source =
-      (U ∩ U') ×ˢ univ := by
+    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U')
+    : (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ
+        ≫ₕ FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ').source
+      = (U ∩ U') ×ˢ univ := by
   dsimp only [FiberwiseLinear.openPartialHomeomorph]; mfld_set_tac
 
-/-- Compute the target of the composition of two open partial homeomorphisms induced by fiberwise
-linear equivalences. -/
-theorem target_trans_openPartialHomeomorph (hU : IsOpen U)
-    (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
+/--
+Compute the target of the composition of two open partial homeomorphisms induced by fiberwise
+linear equivalences.
+-/
+theorem target_trans_openPartialHomeomorph
+    (hU : IsOpen U) (hφ : ContinuousOn (fun x => φ x : B → F →L[𝕜] F) U)
     (h2φ : ContinuousOn (fun x => (φ x).symm : B → F →L[𝕜] F) U) (hU' : IsOpen U')
     (hφ' : ContinuousOn (fun x => φ' x : B → F →L[𝕜] F) U')
-    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U') :
-    (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ ≫ₕ
-          FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ').target =
-      (U ∩ U') ×ˢ univ := by
+    (h2φ' : ContinuousOn (fun x => (φ' x).symm : B → F →L[𝕜] F) U')
+    : (FiberwiseLinear.openPartialHomeomorph φ hU hφ h2φ
+        ≫ₕ FiberwiseLinear.openPartialHomeomorph φ' hU' hφ' h2φ').target
+      = (U ∩ U') ×ˢ univ := by
   dsimp only [FiberwiseLinear.openPartialHomeomorph]; mfld_set_tac
 
 end FiberwiseLinear
 
-variable {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB] {HB : Type*}
-  [TopologicalSpace HB] [ChartedSpace HB B] {IB : ModelWithCorners 𝕜 EB HB}
+variable
+  {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB]
+  {HB : Type*} [TopologicalSpace HB] [ChartedSpace HB B]
+  {IB : ModelWithCorners 𝕜 EB HB}
 
-/-- Let `e` be an open partial homeomorphism of `B × F`.  Suppose that at every point `p` in the
+/--
+Let `e` be an open partial homeomorphism of `B × F`.  Suppose that at every point `p` in the
 source of `e`, there is some neighbourhood `s` of `p` on which `e` is equal to a bi-`C^n` fiberwise
 linear open partial homeomorphism.
 Then the source of `e` is of the form `U ×ˢ univ`, for some set `U` in `B`, and, at any point `x` in
 `U`, admits a neighbourhood `u` of `x` such that `e` is equal on `u ×ˢ univ` to some bi-`C^n`
-fiberwise linear open partial homeomorphism. -/
+fiberwise linear open partial homeomorphism.
+-/
 theorem ContMDiffFiberwiseLinear.locality_aux₁
     (n : ℕ∞ω) (e : OpenPartialHomeomorph (B × F) (B × F))
-    (h : ∀ p ∈ e.source, ∃ s : Set (B × F), IsOpen s ∧ p ∈ s ∧
-      ∃ (φ : B → F ≃L[𝕜] F) (u : Set B) (hu : IsOpen u)
-        (hφ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x : F →L[𝕜] F)) u)
-        (h2φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
+    (h : ∀ p ∈ e.source, ∃ s : Set (B × F),
+      IsOpen s ∧ p ∈ s
+        ∧ ∃ (φ : B → F ≃L[𝕜] F) (u : Set B) (hu : IsOpen u)
+            (hφ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (φ x : F →L[𝕜] F)) u)
+            (h2φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
           (e.restr s).EqOnSource
-            (FiberwiseLinear.openPartialHomeomorph φ hu hφ.continuousOn h2φ.continuousOn)) :
-    ∃ U : Set B, e.source = U ×ˢ univ ∧ ∀ x ∈ U,
-        ∃ (φ : B → F ≃L[𝕜] F) (u : Set B) (hu : IsOpen u) (_huU : u ⊆ U) (_hux : x ∈ u),
-          ∃ (hφ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x : F →L[𝕜] F)) u)
-            (h2φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
+            (FiberwiseLinear.openPartialHomeomorph φ hu hφ.continuousOn h2φ.continuousOn))
+    : ∃ U : Set B,
+      e.source = U ×ˢ univ
+        ∧ ∀ x ∈ U, ∃ (φ : B → F ≃L[𝕜] F) (u : Set B) (hu : IsOpen u) (_huU : u ⊆ U) (_hux : x ∈ u),
+          ∃ (hφ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (φ x : F →L[𝕜] F)) u)
+              (h2φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
             (e.restr (u ×ˢ univ)).EqOnSource
               (FiberwiseLinear.openPartialHomeomorph φ hu hφ.continuousOn h2φ.continuousOn) := by
   rw [SetCoe.forall'] at h
@@ -145,7 +159,8 @@ theorem ContMDiffFiberwiseLinear.locality_aux₁
   · intro y hy; exact ⟨(y, 0), heu ⟨p, hp⟩ ⟨_, _⟩ hy, rfl⟩
   · rw [← hesu, e.restr_source_inter]; exact heφ ⟨p, hp⟩
 
-/-- Let `e` be an open partial homeomorphism of `B × F` whose source is `U ×ˢ univ`, for some set
+/--
+Let `e` be an open partial homeomorphism of `B × F` whose source is `U ×ˢ univ`, for some set
 `U` in `B`, and which, at any point `x` in `U`, admits a neighbourhood `u` of `x` such that `e` is
 equal on `u ×ˢ univ` to some bi-`C^n` fiberwise linear open partial homeomorphism.  Then `e` itself
 is equal to some bi-`C^n` fiberwise linear open partial homeomorphism.
@@ -156,21 +171,21 @@ gluing together the various bi-`C^n` fiberwise linear open partial homeomorphism
 locally.
 
 The `U` in the conclusion is the same `U` as in the hypothesis. We state it like this, because this
-is exactly what we need for `contMDiffFiberwiseLinear`. -/
+is exactly what we need for `contMDiffFiberwiseLinear`.
+-/
 theorem ContMDiffFiberwiseLinear.locality_aux₂
-    (n : ℕ∞ω) (e : OpenPartialHomeomorph (B × F) (B × F)) (U : Set B)
-    (hU : e.source = U ×ˢ univ)
+    (n : ℕ∞ω) (e : OpenPartialHomeomorph (B × F) (B × F)) (U : Set B) (hU : e.source = U ×ˢ univ)
     (h : ∀ x ∈ U,
       ∃ (φ : B → F ≃L[𝕜] F) (u : Set B) (hu : IsOpen u) (_hUu : u ⊆ U) (_hux : x ∈ u)
-        (hφ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x : F →L[𝕜] F)) u)
-        (h2φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
-          (e.restr (u ×ˢ univ)).EqOnSource
-            (FiberwiseLinear.openPartialHomeomorph φ hu hφ.continuousOn h2φ.continuousOn)) :
-    ∃ (Φ : B → F ≃L[𝕜] F) (U : Set B) (hU₀ : IsOpen U) (hΦ :
-      ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (Φ x : F →L[𝕜] F)) U) (h2Φ :
-      ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => ((Φ x).symm : F →L[𝕜] F)) U),
-      e.EqOnSource
-      (FiberwiseLinear.openPartialHomeomorph Φ hU₀ hΦ.continuousOn h2Φ.continuousOn) := by
+          (hφ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (φ x : F →L[𝕜] F)) u)
+          (h2φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => ((φ x).symm : F →L[𝕜] F)) u),
+        (e.restr (u ×ˢ univ)).EqOnSource
+          (FiberwiseLinear.openPartialHomeomorph φ hu hφ.continuousOn h2φ.continuousOn))
+    : ∃ (Φ : B → F ≃L[𝕜] F) (U : Set B) (hU₀ : IsOpen U)
+        (hΦ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (Φ x : F →L[𝕜] F)) U)
+        (h2Φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => ((Φ x).symm : F →L[𝕜] F)) U),
+      e.EqOnSource (FiberwiseLinear.openPartialHomeomorph Φ hU₀ hΦ.continuousOn
+        h2Φ.continuousOn) := by
   classical
   rw [SetCoe.forall'] at h
   choose! φ u hu hUu hux hφ h2φ heφ using h
@@ -200,14 +215,14 @@ theorem ContMDiffFiberwiseLinear.locality_aux₂
     intro x y hyu
     refine (hΦ y (hUu x hyu)).trans ?_
     exact iUnionLift_mk ⟨y, hyu⟩ _
-  have hΦ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun y => (Φ y : F →L[𝕜] F)) U := by
+  have hΦ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun y => (Φ y : F →L[𝕜] F)) U := by
     apply contMDiffOn_of_locally_contMDiffOn
     intro x hx
     refine ⟨u ⟨x, hx⟩, hu ⟨x, hx⟩, hux _, ?_⟩
     refine (ContMDiffOn.congr (hφ ⟨x, hx⟩) ?_).mono inter_subset_right
     intro y hy
     rw [hΦφ ⟨x, hx⟩ y hy]
-  have h2Φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun y => ((Φ y).symm : F →L[𝕜] F)) U := by
+  have h2Φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun y => ((Φ y).symm : F →L[𝕜] F)) U := by
     apply contMDiffOn_of_locally_contMDiffOn
     intro x hx
     refine ⟨u ⟨x, hx⟩, hu ⟨x, hx⟩, hux _, ?_⟩
@@ -224,25 +239,27 @@ theorem ContMDiffFiberwiseLinear.locality_aux₂
 -- Having this private lemma speeds up `simp` calls below a lot.
 -- TODO: understand why and fix the underlying issue (relatedly, the `simp` calls
 -- in `contMDiffFiberwiseLinear` are quite slow, even with this change)
-private theorem mem_aux {e : OpenPartialHomeomorph (B × F) (B × F)} {n : ℕ∞ω} :
-    (e ∈ ⋃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
-      (hφ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => φ x : B → F →L[𝕜] F) U)
-      (h2φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x).symm : B → F →L[𝕜] F) U),
-        {e | e.EqOnSource (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn
-          h2φ.continuousOn)}) ↔
-      ∃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
+private theorem mem_aux {e : OpenPartialHomeomorph (B × F) (B × F)} {n : ℕ∞ω}
+    : (e ∈ ⋃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
         (hφ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => φ x : B → F →L[𝕜] F) U)
         (h2φ : ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x).symm : B → F →L[𝕜] F) U),
-          e.EqOnSource
-            (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn h2φ.continuousOn) := by
+          {e | e.EqOnSource (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn
+            h2φ.continuousOn)})
+      ↔ ∃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
+          (hφ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => φ x : B → F →L[𝕜] F) U)
+          (h2φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (φ x).symm : B → F →L[𝕜] F) U),
+        e.EqOnSource (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn
+          h2φ.continuousOn) := by
   simp only [mem_iUnion, mem_ofPred_eq]
 
 variable (F B IB)
 
-/-- For `B` a manifold and `F` a normed space, the groupoid on `B × F` consisting of local
+/--
+For `B` a manifold and `F` a normed space, the groupoid on `B × F` consisting of local
 homeomorphisms which are bi-`C^n` and fiberwise linear, and induce the identity on `B`.
 When a (topological) vector bundle is `C^n`, then the composition of charts associated
-to the vector bundle belong to this groupoid. -/
+to the vector bundle belong to this groupoid.
+-/
 def contMDiffFiberwiseLinear (n : ℕ∞ω) : StructureGroupoid (B × F) where
   members :=
     ⋃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
@@ -253,16 +270,21 @@ def contMDiffFiberwiseLinear (n : ℕ∞ω) : StructureGroupoid (B × F) where
   trans' := by
     simp only [mem_aux]
     rintro e e' ⟨φ, U, hU, hφ, h2φ, heφ⟩ ⟨φ', U', hU', hφ', h2φ', heφ'⟩
-    refine ⟨fun b => (φ b).trans (φ' b), _, hU.inter hU', ?_, ?_,
-      Setoid.trans (OpenPartialHomeomorph.EqOnSource.trans' heφ heφ') ⟨?_, ?_⟩⟩
-    · change
-        ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n
-          (fun x : B => (φ' x).toContinuousLinearMap ∘L (φ x).toContinuousLinearMap) (U ∩ U')
+    refine ⟨
+      fun b => (φ b).trans (φ' b),
+      _,
+      hU.inter hU',
+      ?_,
+      ?_,
+      Setoid.trans (OpenPartialHomeomorph.EqOnSource.trans' heφ heφ') ⟨?_, ?_⟩
+    ⟩
+    · change ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n
+        (fun x : B => (φ' x).toContinuousLinearMap ∘L (φ x).toContinuousLinearMap)
+        (U ∩ U')
       exact (hφ'.mono inter_subset_right).clm_comp (hφ.mono inter_subset_left)
-    · change
-        ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n
-          (fun x : B => (φ x).symm.toContinuousLinearMap ∘L (φ' x).symm.toContinuousLinearMap)
-          (U ∩ U')
+    · change ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n
+        (fun x : B => (φ x).symm.toContinuousLinearMap ∘L (φ' x).symm.toContinuousLinearMap)
+        (U ∩ U')
       exact (h2φ.mono inter_subset_left).clm_comp (h2φ'.mono inter_subset_right)
     · apply FiberwiseLinear.source_trans_openPartialHomeomorph
     · rintro ⟨b, v⟩ -; apply FiberwiseLinear.trans_openPartialHomeomorph_apply
@@ -274,8 +296,14 @@ def contMDiffFiberwiseLinear (n : ℕ∞ω) : StructureGroupoid (B × F) where
     exact hφ
   id_mem' := by
     simp_rw [mem_aux]
-    refine ⟨fun _ ↦ ContinuousLinearEquiv.refl 𝕜 F, univ, isOpen_univ, contMDiffOn_const,
-      contMDiffOn_const, ⟨?_, fun b _hb ↦ rfl⟩⟩
+    refine ⟨
+      fun _ ↦ ContinuousLinearEquiv.refl 𝕜 F,
+      univ,
+      isOpen_univ,
+      contMDiffOn_const,
+      contMDiffOn_const,
+      ⟨?_, fun b _hb ↦ rfl⟩
+    ⟩
     simp only [FiberwiseLinear.openPartialHomeomorph, OpenPartialHomeomorph.refl_partialEquiv,
       PartialEquiv.refl_source, univ_prod_univ]
   locality' := by
@@ -290,12 +318,11 @@ def contMDiffFiberwiseLinear (n : ℕ∞ω) : StructureGroupoid (B × F) where
     exact ⟨φ, U, hU, hφ, h2φ, Setoid.trans hee' heφ⟩
 
 @[simp]
-theorem mem_contMDiffFiberwiseLinear_iff {n : ℕ∞ω}
-    (e : OpenPartialHomeomorph (B × F) (B × F)) :
-    e ∈ contMDiffFiberwiseLinear B F IB n ↔
-      ∃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U) (hφ :
-        ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => φ x : B → F →L[𝕜] F) U) (h2φ :
-        ContMDiffOn IB 𝓘(𝕜, F →L[𝕜] F) n (fun x => (φ x).symm : B → F →L[𝕜] F) U),
-        e.EqOnSource
-        (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn h2φ.continuousOn) :=
+theorem mem_contMDiffFiberwiseLinear_iff {n : ℕ∞ω} (e : OpenPartialHomeomorph (B × F) (B × F))
+    : e ∈ contMDiffFiberwiseLinear B F IB n
+      ↔ ∃ (φ : B → F ≃L[𝕜] F) (U : Set B) (hU : IsOpen U)
+          (hφ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => φ x : B → F →L[𝕜] F) U)
+          (h2φ : ContMDiffOn IB (𝓘(𝕜, F →L[𝕜] F)) n (fun x => (φ x).symm : B → F →L[𝕜] F) U),
+        e.EqOnSource (FiberwiseLinear.openPartialHomeomorph φ hU hφ.continuousOn
+          h2φ.continuousOn) :=
   mem_aux

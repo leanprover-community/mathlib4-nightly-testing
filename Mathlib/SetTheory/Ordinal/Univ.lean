@@ -31,54 +31,56 @@ universe u v w
 set_option linter.checkUnivs false in
 open Ordinal in
 -- intended to be used with explicit universe parameters
-/-- The ordinal `univ.{u, v}` is the order type of `Ordinal.{u}` or `Cardinal.{u}`, as an element of
-`Ordinal.{v}` (when `u < v`). -/
-@[pp_with_univ]
-def Ordinal.univ : Ordinal.{max (u + 1) v} :=
-  lift.{v, u + 1} (typeLT Ordinal)
+/--
+The ordinal `univ.{u, v}` is the order type of `Ordinal.{u}` or `Cardinal.{u}`, as an element of
+`Ordinal.{v}` (when `u < v`).
+-/
+@[pp_with_univ] def Ordinal.univ : Ordinal.{max (u + 1) v} := lift.{v, u + 1} (typeLT Ordinal)
 
 set_option linter.checkUnivs false in
 open Cardinal in
 -- intended to be used with explicit universe parameters
-/-- The cardinal `univ.{u, v}` is the cardinality of `Ordinal.{u}` or `Cardinal.{u}`, as an element
-of `Cardinal.{v}` (when `u < v`). -/
-@[pp_with_univ]
-def Cardinal.univ : Cardinal.{max (u + 1) v} :=
-  lift.{v, u + 1} #Ordinal
+/--
+The cardinal `univ.{u, v}` is the cardinality of `Ordinal.{u}` or `Cardinal.{u}`, as an element
+of `Cardinal.{v}` (when `u < v`).
+-/
+@[pp_with_univ] def Cardinal.univ : Cardinal.{max (u + 1) v} := lift.{v, u + 1} #Ordinal
 
 /-! ### Universal ordinal -/
 
 namespace Ordinal
 
-@[simp]
-theorem type_lt_ordinal : typeLT Ordinal = univ.{u, u + 1} :=
-  (lift_id _).symm
+@[simp] theorem type_lt_ordinal : typeLT Ordinal = univ.{u, u + 1} := (lift_id _).symm
 
-@[simp]
-theorem lift_univ : lift.{w} univ.{u, v} = univ.{u, max v w} :=
-  lift_lift _
+@[simp] theorem lift_univ : lift.{w} univ.{u, v} = univ.{u, max v w} := lift_lift _
 
-theorem univ_umax : univ.{u, max (u + 1) v} = univ.{u, v} :=
-  congr($lift_umax _)
+theorem univ_umax : univ.{u, max (u + 1) v} = univ.{u, v} := congr($lift_umax _)
 
-/-- Principal segment version of the lift operation on ordinals, embedding `Ordinal.{u}` in
-`Ordinal.{v}` as a principal segment when `u < v`. -/
-def liftPrincipalSeg : Ordinal.{u} <i Ordinal.{max (u + 1) v} :=
-  ⟨liftInitialSeg.{max (u + 1) v, u}, univ.{u, v}, by
-    refine fun b => inductionOn b ?_; intro β s _
-    rw [univ, ← lift_umax]; constructor <;> intro h
+/--
+Principal segment version of the lift operation on ordinals, embedding `Ordinal.{u}` in
+`Ordinal.{v}` as a principal segment when `u < v`.
+-/
+def liftPrincipalSeg : Ordinal.{u} <i Ordinal.{max (u + 1) v} := ⟨
+  liftInitialSeg.{max (u + 1) v, u},
+  univ.{u, v},
+  by
+    refine fun b => inductionOn b ?_
+    intro β s _
+    rw [univ, ← lift_umax]
+    constructor <;> intro h
     · obtain ⟨a, e⟩ := h
       rw [← e]
       refine inductionOn a ?_
       intro α r _
       exact lift_type_lt.{u, u + 1, max (u + 1) v}.2 ⟨typein r⟩
     · rw [← lift_id (type s)] at h ⊢
-      obtain ⟨f⟩ := lift_type_lt.{_,_,v}.1 h
+      obtain ⟨f⟩ := lift_type_lt.{_, _, v}.1 h
       obtain ⟨f, a, hf⟩ := f
       exists a
-      induction a using inductionOn with | type α r
-      refine lift_type_eq.{u, max (u + 1) v, max (u + 1) v}.2
-        ⟨(RelIso.ofSurjective (RelEmbedding.ofMonotone ?_ ?_) ?_).symm⟩
+      induction a using inductionOn with
+      | type α r
+      refine lift_type_eq.{u, max (u + 1) v, max (u + 1) v}.2 ⟨(RelIso.ofSurjective
+        (RelEmbedding.ofMonotone ?_ ?_) ?_).symm⟩
       · exact fun b => enum r ⟨f b, (hf _).1 ⟨_, rfl⟩⟩
       · refine fun a b h => (typein_lt_typein r).1 ?_
         rw [typein_enum, typein_enum]
@@ -87,20 +89,17 @@ def liftPrincipalSeg : Ordinal.{u} <i Ordinal.{max (u + 1) v} :=
         obtain ⟨b, e⟩ := (hf _).2 (typein_lt_type _ a')
         exists b
         simp only [RelEmbedding.ofMonotone_coe]
-        simp [e]⟩
+        simp [e]
+⟩
 
 @[simp]
-theorem liftPrincipalSeg_coe :
-    (liftPrincipalSeg.{u, v} : Ordinal → Ordinal) = lift.{max (u + 1) v} :=
+theorem liftPrincipalSeg_coe
+    : (liftPrincipalSeg.{u, v} : Ordinal → Ordinal) = lift.{max (u + 1) v} :=
   rfl
 
-@[simp]
-theorem liftPrincipalSeg_top : (liftPrincipalSeg.{u, v}).top = univ.{u, v} :=
-  rfl
+@[simp] theorem liftPrincipalSeg_top : (liftPrincipalSeg.{u, v}).top = univ.{u, v} := rfl
 
-@[simp]
-theorem card_univ : card univ.{u, v} = Cardinal.univ.{u, v} :=
-  rfl
+@[simp] theorem card_univ : card univ.{u, v} = Cardinal.univ.{u, v} := rfl
 
 end Ordinal
 
@@ -108,45 +107,31 @@ end Ordinal
 
 namespace Cardinal
 
-@[simp]
-theorem mk_ordinal : #Ordinal = univ.{u, u + 1} :=
-  (lift_id _).symm
+@[simp] theorem mk_ordinal : #Ordinal = univ.{u, u + 1} := (lift_id _).symm
 
 @[deprecated mk_ordinal +typeChanged (since := "2026-04-22")]
-theorem univ_id : univ.{u, u + 1} = #Ordinal :=
-  lift_id _
+theorem univ_id : univ.{u, u + 1} = #Ordinal := lift_id _
 
-@[simp]
-theorem lift_univ : lift.{w} univ.{u, v} = univ.{u, max v w} :=
-  lift_lift _
+@[simp] theorem lift_univ : lift.{w} univ.{u, v} = univ.{u, max v w} := lift_lift _
 
-theorem univ_umax : univ.{u, max (u + 1) v} = univ.{u, v} :=
-  congr($lift_umax _)
+theorem univ_umax : univ.{u, max (u + 1) v} = univ.{u, v} := congr($lift_umax _)
 
 theorem lift_lt_univ (c : Cardinal) : lift.{u + 1, u} c < univ.{u, u + 1} := by
-  simpa only [Ordinal.liftPrincipalSeg_coe, lift_ord, Cardinal.lift_succ, ord_le,
-    Order.succ_le_iff] using!
-    le_of_lt (Ordinal.liftPrincipalSeg.{u, u + 1}.lt_top (Order.succ c).ord)
+  simpa only [Ordinal.liftPrincipalSeg_coe, lift_ord, Cardinal.lift_succ, ord_le, Order.succ_le_iff]
+    using! le_of_lt (Ordinal.liftPrincipalSeg.{u, u + 1}.lt_top (Order.succ c).ord)
 
 theorem lift_lt_univ' (c : Cardinal) : lift.{max (u + 1) v, u} c < univ.{u, v} := by
   have := lift_lt.{_, max (u + 1) v}.2 (lift_lt_univ c)
   rw [lift_lift, lift_univ, univ_umax.{u, v}] at this
   exact this
 
-@[simp]
-theorem aleph0_lt_univ : ℵ₀ < univ.{u, v} := by
-  simpa using lift_lt_univ' ℵ₀
+@[simp] theorem aleph0_lt_univ : ℵ₀ < univ.{u, v} := by simpa using lift_lt_univ' ℵ₀
 
-@[simp]
-theorem nat_lt_univ (n : ℕ) : n < univ.{u, v} := natCast_lt_aleph0.trans aleph0_lt_univ
+@[simp] theorem nat_lt_univ (n : ℕ) : n < univ.{u, v} := natCast_lt_aleph0.trans aleph0_lt_univ
 
-@[simp]
-theorem univ_pos : 0 < univ.{u, v} :=
-  aleph0_lt_univ.pos
+@[simp] theorem univ_pos : 0 < univ.{u, v} := aleph0_lt_univ.pos
 
-@[simp]
-theorem univ_ne_zero : univ.{u, v} ≠ 0 :=
-  univ_pos.ne'
+@[simp] theorem univ_ne_zero : univ.{u, v} ≠ 0 := univ_pos.ne'
 
 @[simp]
 theorem ord_univ : ord univ.{u, v} = Ordinal.univ.{u, v} := by
@@ -156,27 +141,31 @@ theorem ord_univ : ord univ.{u, v} = Ordinal.univ.{u, v} := by
   rw [← h', Ordinal.liftPrincipalSeg_coe, ← Ordinal.lift_card]
   apply lift_lt_univ'
 
-theorem lt_univ {c} : c < univ.{u, u + 1} ↔ ∃ c', c = lift.{u + 1, u} c' :=
-  ⟨fun h => by
+theorem lt_univ {c} : c < univ.{u, u + 1} ↔ ∃ c', c = lift.{u + 1, u} c' := ⟨
+  fun h => by
     have := ord_lt_ord.2 h
     rw [ord_univ] at this
     obtain ⟨o, e⟩ := Ordinal.liftPrincipalSeg.mem_range_of_rel_top (by simpa)
     have := card_ord c
     rw [← e, Ordinal.liftPrincipalSeg_coe, ← Ordinal.lift_card] at this
-    exact ⟨_, this.symm⟩, fun ⟨_, e⟩ => e.symm ▸ lift_lt_univ _⟩
+    exact ⟨_, this.symm⟩,
+  fun ⟨_, e⟩ => e.symm ▸ lift_lt_univ _
+⟩
 
-theorem lt_univ' {c} : c < univ.{u, v} ↔ ∃ c', c = lift.{max (u + 1) v, u} c' :=
-  ⟨fun h => by
+theorem lt_univ' {c} : c < univ.{u, v} ↔ ∃ c', c = lift.{max (u + 1) v, u} c' := ⟨
+  fun h => by
     let ⟨a, h', e⟩ := lt_lift_iff.1 h
     rw [mk_ordinal] at h'
     rcases lt_univ.{u}.1 h' with ⟨c', rfl⟩
-    exact ⟨c', by simp only [e.symm, lift_lift]⟩, fun ⟨_, e⟩ => e.symm ▸ lift_lt_univ' _⟩
+    exact ⟨c', by simp only [e.symm, lift_lift]⟩,
+  fun ⟨_, e⟩ => e.symm ▸ lift_lt_univ' _
+⟩
 
 theorem IsStrongLimit.univ : IsStrongLimit univ.{u, v} :=
   ⟨univ_ne_zero, fun c h ↦ let ⟨w, h⟩ := lt_univ'.1 h; lt_univ'.2 ⟨2 ^ w, by simp [h]⟩⟩
 
-theorem small_iff_lift_mk_lt_univ {α : Type u} :
-    Small.{v} α ↔ lift.{v + 1, u} #α < univ.{v, max u (v + 1)} := by
+theorem small_iff_lift_mk_lt_univ {α : Type u}
+    : Small.{v} α ↔ lift.{v + 1, u} #α < univ.{v, max u (v + 1)} := by
   rw [lt_univ']
   constructor
   · rintro ⟨β, e⟩
@@ -184,13 +173,14 @@ theorem small_iff_lift_mk_lt_univ {α : Type u} :
   · rintro ⟨c, hc⟩
     exact ⟨⟨c.out, lift_mk_eq.{u, _, v + 1}.1 (hc.trans (congr rfl c.mk_out.symm))⟩⟩
 
-theorem small_of_lift_mk_le_lift {α : Type u} {c : Cardinal.{v}}
-    (hα : lift.{v} #α ≤ lift.{u} c) : Small.{v} α := by
-  induction c using inductionOn with | mk α
+theorem small_of_lift_mk_le_lift {α : Type u} {c : Cardinal.{v}} (hα : lift.{v} #α ≤ lift.{u} c)
+    : Small.{v} α := by
+  induction c using inductionOn with
+  | mk α
   exact small_of_injective (lift_mk_le'.1 hα).some.injective
 
-theorem small_iff_exists_lift_mk_le_lift {α : Type u} :
-    Small.{v} α ↔ ∃ c : Cardinal.{v}, lift.{v} #α ≤ lift.{u} c :=
+theorem small_iff_exists_lift_mk_le_lift {α : Type u}
+    : Small.{v} α ↔ ∃ c : Cardinal.{v}, lift.{v} #α ≤ lift.{u} c :=
   ⟨fun ⟨c, ⟨e⟩⟩ => ⟨#c, lift_mk_le'.2 ⟨e⟩⟩, fun ⟨_, hc⟩ => small_of_lift_mk_le_lift hc⟩
 
 end Cardinal

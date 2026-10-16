@@ -36,54 +36,47 @@ instance Prop.instBoundedOrder : BoundedOrder Prop where
   bot := False
   bot_le := @False.elim
 
-@[simp]
-theorem Prop.bot_eq_false : (⊥ : Prop) = False :=
-  rfl
+@[simp] theorem Prop.bot_eq_false : (⊥ : Prop) = False := rfl
 
-@[simp]
-theorem Prop.top_eq_true : (⊤ : Prop) = True :=
-  rfl
+@[simp] theorem Prop.top_eq_true : (⊤ : Prop) = True := rfl
 
-instance Prop.le_total : @Std.Total Prop (· ≤ ·) :=
-  ⟨fun p q => by by_cases h : q <;> simp [h]⟩
+instance Prop.le_total : @Std.Total Prop (· ≤ ·) := ⟨fun p q => by by_cases h : q <;> simp [h]⟩
 
-/-- The order on `Prop` is a `LinearOrder`.
+/--
+The order on `Prop` is a `LinearOrder`.
 
 This is not an instance since `LinearOrder` includes decidability instances, which we want to avoid
-for `Prop`. -/
+for `Prop`.
+-/
 @[expose, instance_reducible]
 noncomputable def Prop.linearOrder : LinearOrder Prop := by
   classical
   exact Lattice.toLinearOrder Prop
 
-@[simp]
-theorem sup_Prop_eq : (· ⊔ ·) = (· ∨ ·) :=
-  rfl
+@[simp] theorem sup_Prop_eq : (· ⊔ ·) = (· ∨ ·) := rfl
 
-@[simp]
-theorem inf_Prop_eq : (· ⊓ ·) = (· ∧ ·) :=
-  rfl
+@[simp] theorem inf_Prop_eq : (· ⊓ ·) = (· ∧ ·) := rfl
 
 namespace Pi
 
 variable {ι α : Type*} {α' : ι → Type*} [∀ i, PartialOrder (α' i)]
 
-theorem disjoint_iff [∀ i, OrderBot (α' i)] {f g : ∀ i, α' i} :
-    Disjoint f g ↔ ∀ i, Disjoint (f i) (g i) := by
+theorem disjoint_iff [∀ i, OrderBot (α' i)] {f g : ∀ i, α' i}
+    : Disjoint f g ↔ ∀ i, Disjoint (f i) (g i) := by
   classical
   constructor
   · intro h i x hf hg
-    exact (update_le_iff.mp <| h (update_le_iff.mpr ⟨hf, fun _ _ => bot_le⟩)
-      (update_le_iff.mpr ⟨hg, fun _ _ => bot_le⟩)).1
+    exact (update_le_iff.mp <|
+      h (update_le_iff.mpr ⟨hf, fun _ _ => bot_le⟩) (update_le_iff.mpr ⟨hg, fun _ _ => bot_le⟩)).1
   · intro h x hf hg i
     apply h i (hf i) (hg i)
 
-theorem codisjoint_iff [∀ i, OrderTop (α' i)] {f g : ∀ i, α' i} :
-    Codisjoint f g ↔ ∀ i, Codisjoint (f i) (g i) :=
+theorem codisjoint_iff [∀ i, OrderTop (α' i)] {f g : ∀ i, α' i}
+    : Codisjoint f g ↔ ∀ i, Codisjoint (f i) (g i) :=
   @disjoint_iff _ (fun i => (α' i)ᵒᵈ) _ _ _ _
 
-theorem isCompl_iff [∀ i, BoundedOrder (α' i)] {f g : ∀ i, α' i} :
-    IsCompl f g ↔ ∀ i, IsCompl (f i) (g i) := by
+theorem isCompl_iff [∀ i, BoundedOrder (α' i)] {f g : ∀ i, α' i}
+    : IsCompl f g ↔ ∀ i, IsCompl (f i) (g i) := by
   simp_rw [_root_.isCompl_iff, disjoint_iff, codisjoint_iff, forall_and]
 
 instance (α : Type*) : Std.Symm (α := α) ⊤ where
@@ -97,15 +90,13 @@ theorem eq_top_iff_refl_of_subsingleton [Subsingleton α] {r : α → α → Pro
   ⟨fun h ↦ ⟨by simp [h]⟩, fun _ ↦ funext₂ <| by simp [rel_of_subsingleton]⟩
 
 @[nontriviality]
-theorem eq_bot_iff_irrefl_of_subsingleton [Subsingleton α] {r : α → α → Prop} :
-    r = ⊥ ↔ Std.Irrefl r :=
+theorem eq_bot_iff_irrefl_of_subsingleton [Subsingleton α] {r : α → α → Prop}
+    : r = ⊥ ↔ Std.Irrefl r :=
   ⟨fun h ↦ ⟨by simp [h]⟩, fun _ ↦ funext₂ <| by simp [not_rel_of_subsingleton]⟩
 
 end Pi
 
-@[simp]
-theorem Prop.disjoint_iff {P Q : Prop} : Disjoint P Q ↔ ¬(P ∧ Q) :=
-  disjoint_iff_inf_le
+@[simp] theorem Prop.disjoint_iff {P Q : Prop} : Disjoint P Q ↔ ¬(P ∧ Q) := disjoint_iff_inf_le
 
 @[simp]
 theorem Prop.codisjoint_iff {P Q : Prop} : Codisjoint P Q ↔ P ∨ Q :=

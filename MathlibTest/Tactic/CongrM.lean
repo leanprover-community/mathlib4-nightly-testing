@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Algebra.Ring.Nat
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic.CongrM
@@ -12,8 +13,8 @@ section docs
 
 /-! These are the examples from the tactic documentation -/
 
-example {a b c d : ℕ} :
-    Nat.pred a.succ * (d + (c + a.pred)) = Nat.pred b.succ * (b + (c + d.pred)) := by
+example {a b c d : ℕ}
+    : Nat.pred a.succ * (d + (c + a.pred)) = Nat.pred b.succ * (b + (c + d.pred)) := by
   congrm Nat.pred (Nat.succ ?h1) * (?h2 + ?h3)
   case h1 =>
     guard_target = a = b
@@ -45,8 +46,7 @@ example (f : α → Prop) (h : ∀ a, f a = True) : (∀ a : α, f a) ↔ (∀ _
 example (f : α → Prop) (h : ∀ a, f a ↔ True) : (∀ a : α, f a) ↔ (∀ _ : α, True) := by
   congrm ∀ x, $(h _)
 
-example (f : α → α → Prop) (h : ∀ a b, f a b ↔ True) :
-    (∀ a b, f a b) ↔ (∀ _ _ : α, True) := by
+example (f : α → α → Prop) (h : ∀ a b, f a b ↔ True) : (∀ a b, f a b) ↔ (∀ _ _ : α, True) := by
   congrm ∀ x y, ?_
   exact h x y
 
@@ -89,8 +89,8 @@ example {p q r s : Prop} (pr : p ↔ r) (qs : q ↔ s) : p ∧ q ↔ r ∧ s := 
   case h1 => guard_target = p ↔ r; assumption
   case h2 => guard_target = q ↔ s; assumption
 
-example {f : ℕ → Prop} :
-    (∃ k, f (3 + 2 + k) ∨ f (8 + 1 + k)) ↔ ∃ k, f (1 + 4 + k) ∨ f (2 + 7 + k) := by
+example {f : ℕ → Prop}
+    : (∃ k, f (3 + 2 + k) ∨ f (8 + 1 + k)) ↔ ∃ k, f (1 + 4 + k) ∨ f (2 + 7 + k) := by
   congrm (∃ k, f (?_ + k) ∨ f (?_ + k))
   · guard_target =ₛ 3 + 2 = 1 + 4; simp
   · guard_target =ₛ 8 + 1 = 2 + 7; simp
@@ -104,8 +104,7 @@ example (a b c : ℕ) (h : b = c) : a = b ↔ a = c := by
   congrm _ = ?_
   exact h
 
-example (a b c : ℕ) (h : b = c) : a = b ↔ a = c := by
-  congrm _ = $h
+example (a b c : ℕ) (h : b = c) : a = b ↔ a = c := by congrm _ = $h
 
 example (f : α → Prop) (h : ∀ a, f a ↔ True) : (∀ a : α, f a) ↔ (∀ _ : α, True) := by
   fail_if_success congrm f ?_

@@ -6,7 +6,6 @@ Authors: Robin Carlier, Jovan Gerbscheid
 module
 
 public import Mathlib.Init
-
 import Lean.Elab.Tactic.Simp
 
 /-!
@@ -40,8 +39,10 @@ rw [foo]
 ```
 one can write `rw [dsimp% foo]`.
 -/
-syntax (name := dsimpPercent) "dsimp%" optConfig (discharger)? (&" only")?
-  (" [" withoutPosition((simpErase <|> simpLemma),*,?) "]")? ppSpace term : term
+syntax (name := dsimpPercent)
+  "dsimp%" optConfig (discharger)? (&" only")?
+  (" [" withoutPosition((simpErase <|> simpLemma),*,?) "]")? ppSpace term
+  : term
 
 @[term_elab dsimpPercent, inherit_doc dsimpPercent]
 def dsimpPercentElaborator : TermElab := fun stx expectedType => do

@@ -21,8 +21,8 @@ public section
 namespace ZMod
 
 /-- For `r ≠ 0`, the reduction `ZMod (n ^ r) →+* ZMod n` is a local ring homomorphism. -/
-theorem isLocalHom_castHom_pow {n r : ℕ} [NeZero n] (hr : r ≠ 0) :
-    IsLocalHom (castHom (dvd_pow_self n hr) (ZMod n)) where
+theorem isLocalHom_castHom_pow {n r : ℕ} [NeZero n] (hr : r ≠ 0)
+    : IsLocalHom (castHom (dvd_pow_self n hr) (ZMod n)) where
   map_nonunit x := by
     obtain ⟨_, rfl⟩ := natCast_zmod_surjective x
     simp [isUnit_iff_coprime, Nat.coprime_pow_right_iff (Nat.pos_of_ne_zero hr)]

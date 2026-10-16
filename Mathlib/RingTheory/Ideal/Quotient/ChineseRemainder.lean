@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.TensorProduct.Pi
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
-
 import Mathlib.LinearAlgebra.TensorProduct.RightExactness
 
 /-! # Module version of Chinese remainder theorem
@@ -25,9 +24,10 @@ namespace Ideal
 
 open TensorProduct LinearMap
 
-lemma pi_mkQ_rTensor [Fintype ι] [DecidableEq ι] :
-    (LinearMap.pi fun i ↦ (I i).mkQ).rTensor M = (piLeft ..).symm.toLinearMap ∘ₗ
-      .pi (fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1) ∘ₗ TensorProduct.lid R M := by
+lemma pi_mkQ_rTensor [Fintype ι] [DecidableEq ι]
+    : (LinearMap.pi fun i ↦ (I i).mkQ).rTensor M
+      = (piLeft ..).symm.toLinearMap ∘ₗ .pi (fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1)
+        ∘ₗ TensorProduct.lid R M := by
   ext; simp [LinearMap.pi, LinearEquiv.piCongrRight]
 
 variable [Finite ι]
@@ -35,24 +35,28 @@ include hI
 
 attribute [local instance] Fintype.ofFinite
 
-/-- A form of Chinese remainder theorem for modules, part I: if ideals `Iᵢ` of `R` are pairwise
-coprime, then for any `R`-module `M`, the natural map `M → Πᵢ (R ⧸ Iᵢ) ⊗[R] M` is surjective. -/
-theorem pi_tensorProductMk_quotient_surjective :
-    Surjective (LinearMap.pi fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1) := by
+/--
+A form of Chinese remainder theorem for modules, part I: if ideals `Iᵢ` of `R` are pairwise
+coprime, then for any `R`-module `M`, the natural map `M → Πᵢ (R ⧸ Iᵢ) ⊗[R] M` is surjective.
+-/
+theorem pi_tensorProductMk_quotient_surjective
+    : Surjective (LinearMap.pi fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1) := by
   have := rTensor_surjective M (pi_mkQ_surjective hI)
   classical rw [pi_mkQ_rTensor] at this
   simpa using this
 
-/-- A form of Chinese remainder theorem for modules, part II: if ideals `Iᵢ` of `R` are pairwise
+/--
+A form of Chinese remainder theorem for modules, part II: if ideals `Iᵢ` of `R` are pairwise
 coprime, then for any `R`-module `M`, the kernel of `M → Πᵢ (R ⧸ Iᵢ) ⊗[R] M` equals `(⋂ᵢ Iᵢ) • M`.
 -/
-theorem ker_tensorProductMk_quotient :
-    ker (LinearMap.pi fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1) =
-      (⨅ i, I i) • (⊤ : Submodule R M) := by
+theorem ker_tensorProductMk_quotient
+    : ker (LinearMap.pi fun i ↦ TensorProduct.mk R (R ⧸ I i) M 1)
+      = (⨅ i, I i) • (⊤ : Submodule R M) := by
   have := rTensor_exact M (exact_subtype_ker_map _) (pi_mkQ_surjective hI)
   rw [← (TensorProduct.lid R M).conj_exact_iff_exact, exact_iff] at this
   convert this
-  · classical simp [pi_mkQ_rTensor, LinearMap.comp_assoc]
+  · classical
+    simp [pi_mkQ_rTensor, LinearMap.comp_assoc]
   refine le_antisymm (Submodule.smul_le.mpr fun r hr m _ ↦ ⟨⟨r, ?_⟩ ⊗ₜ m, rfl⟩) ?_
   · simpa only [ker_pi, Submodule.ker_mkQ]
   rintro _ ⟨x, rfl⟩

@@ -45,9 +45,10 @@ variable (R : Type*) [Ring R] {J : Type w} [Category.{r} J]
 section zero
 
 theorem colimit_rep_eq_zero
-    (F : J ⥤ ModuleCat.{max t w} R) [PreservesColimit F (forget (ModuleCat R))] [IsFiltered J]
-    [HasColimit F] (j : J) (x : F.obj j) (hx : colimit.ι F j x = 0) :
-    ∃ (j' : J) (i : j ⟶ j'), (F.map i).hom x = 0 := by
+    (F : J ⥤ ModuleCat.{max t w} R)
+    [PreservesColimit F (forget (ModuleCat R))] [IsFiltered J] [HasColimit F]
+    (j : J) (x : F.obj j) (hx : colimit.ι F j x = 0)
+    : ∃ (j' : J) (i : j ⟶ j'), (F.map i).hom x = 0 := by
   rw [show 0 = colimit.ι F j 0 by simp, colimit_rep_eq_iff_exists] at hx
   obtain ⟨j', i, y, g⟩ := hx
   exact ⟨j', i, g ▸ by simp⟩
@@ -61,21 +62,23 @@ If `r` has no zero smul divisors for all small-enough sections, then `r` has no 
 in the colimit.
 -/
 lemma colimit_no_zero_smul_divisor
-    (F : J ⥤ ModuleCat.{max t w} R) [PreservesColimit F (forget (ModuleCat R))]
-    [IsFiltered J] [HasColimit F]
+    (F : J ⥤ ModuleCat.{max t w} R)
+    [PreservesColimit F (forget (ModuleCat R))] [IsFiltered J] [HasColimit F]
     (r : R) (H : ∃ (j' : J), ∀ (j : J) (_ : j' ⟶ j), ∀ (c : F.obj j), r • c = 0 → c = 0)
-    (x : ToType (colimit F)) (hx : r • x = 0) : x = 0 := by
+    (x : ToType (colimit F)) (hx : r • x = 0)
+    : x = 0 := by
   classical
   obtain ⟨j, x, rfl⟩ := Concrete.colimit_exists_rep F x
   rw [← map_smul (colimit.ι F j).hom] at hx
   obtain ⟨j', i, h⟩ := Concrete.colimit_rep_eq_zero (hx := hx)
   obtain ⟨j'', H⟩ := H
-  simpa [elementwise_of% (colimit.w F), map_zero] using congr(colimit.ι F _
-    $(H (IsFiltered.sup {j, j', j''} { ⟨j, j', by simp, by simp, i⟩ })
-      (IsFiltered.toSup _ _ <| by simp)
-      (F.map (IsFiltered.toSup _ _ <| by simp) x)
-      (by rw [← IsFiltered.toSup_commutes (f := i) (mY := by simp) (mf := by simp), F.map_comp,
-        ModuleCat.comp_apply, ← map_smul, ← map_smul, h, map_zero])))
+  simpa [elementwise_of% (colimit.w F), map_zero] using
+    congr(colimit.ι F _
+      $(H (IsFiltered.sup {j, j', j''} { ⟨j, j', by simp, by simp, i⟩ })
+        (IsFiltered.toSup _ _ <| by simp)
+        (F.map (IsFiltered.toSup _ _ <| by simp) x)
+        (by rw [← IsFiltered.toSup_commutes (f := i) (mY := by simp) (mf := by simp), F.map_comp,
+          ModuleCat.comp_apply, ← map_smul, ← map_smul, h, map_zero])))
 
 end module
 

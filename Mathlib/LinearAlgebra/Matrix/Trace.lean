@@ -24,7 +24,6 @@ matrix, trace, diagonal
 
 @[expose] public section
 
-
 open Matrix
 
 namespace Matrix
@@ -36,22 +35,22 @@ section AddCommMonoid
 
 variable [AddCommMonoid R]
 
-/-- The trace of a square matrix. For more bundled versions, see:
+/--
+The trace of a square matrix. For more bundled versions, see:
 * `Matrix.traceAddMonoidHom`
 * `Matrix.traceLinearMap`
 -/
-def trace (A : Matrix n n R) : R :=
-  ∑ i, diag A i
+def trace (A : Matrix n n R) : R := ∑ i, diag A i
 
-@[simp] lemma trace_diagonal {o} [Fintype o] [DecidableEq o] (d : o → R) :
-    trace (diagonal d) = ∑ i, d i := by
+@[simp]
+lemma trace_diagonal {o} [Fintype o] [DecidableEq o] (d : o → R)
+    : trace (diagonal d) = ∑ i, d i := by
   simp only [trace, diag_apply, diagonal_apply_eq]
 
 variable (n R)
 
 @[simp]
-theorem trace_zero : trace (0 : Matrix n n R) = 0 :=
-  (Finset.sum_const (0 : R)).trans <| smul_zero _
+theorem trace_zero : trace (0 : Matrix n n R) = 0 := (Finset.sum_const (0 : R)).trans <| smul_zero _
 
 variable {n R}
 
@@ -59,17 +58,13 @@ variable {n R}
 lemma trace_eq_zero_of_isEmpty [IsEmpty n] (A : Matrix n n R) : trace A = 0 := by simp [trace]
 
 @[simp]
-theorem trace_add (A B : Matrix n n R) : trace (A + B) = trace A + trace B :=
-  Finset.sum_add_distrib
+theorem trace_add (A B : Matrix n n R) : trace (A + B) = trace A + trace B := Finset.sum_add_distrib
 
 @[simp]
-theorem trace_smul [DistribSMul α R] (r : α) (A : Matrix n n R) :
-    trace (r • A) = r • trace A :=
+theorem trace_smul [DistribSMul α R] (r : α) (A : Matrix n n R) : trace (r • A) = r • trace A :=
   Finset.smul_sum.symm
 
-@[simp]
-theorem trace_transpose (A : Matrix n n R) : trace Aᵀ = trace A :=
-  rfl
+@[simp] theorem trace_transpose (A : Matrix n n R) : trace Aᵀ = trace A := rfl
 
 @[simp]
 theorem trace_conjTranspose [StarAddMonoid R] (A : Matrix n n R) : trace Aᴴ = star (trace A) :=
@@ -102,22 +97,24 @@ theorem trace_multiset_sum (s : Multiset (Matrix n n R)) : trace s.sum = (s.map 
   map_multiset_sum (traceAddMonoidHom n R) s
 
 @[simp]
-theorem trace_sum (s : Finset ι) (f : ι → Matrix n n R) :
-    trace (∑ i ∈ s, f i) = ∑ i ∈ s, trace (f i) :=
+theorem trace_sum (s : Finset ι) (f : ι → Matrix n n R)
+    : trace (∑ i ∈ s, f i) = ∑ i ∈ s, trace (f i) :=
   map_sum (traceAddMonoidHom n R) f s
 
-theorem _root_.AddMonoidHom.map_trace [AddCommMonoid S] {F : Type*} [FunLike F R S]
-    [AddMonoidHomClass F R S] (f : F) (A : Matrix n n R) :
-    f (trace A) = trace (A.map f) :=
+theorem _root_.AddMonoidHom.map_trace
+    [AddCommMonoid S]
+    {F : Type*} [FunLike F R S] [AddMonoidHomClass F R S]
+    (f : F) (A : Matrix n n R)
+    : f (trace A) = trace (A.map f) :=
   map_sum f (fun i => diag A i) Finset.univ
 
-lemma trace_blockDiagonal [DecidableEq p] (M : p → Matrix n n R) :
-    trace (blockDiagonal M) = ∑ i, trace (M i) := by
+lemma trace_blockDiagonal [DecidableEq p] (M : p → Matrix n n R)
+    : trace (blockDiagonal M) = ∑ i, trace (M i) := by
   simp [blockDiagonal, trace, Finset.sum_comm (γ := n), Fintype.sum_prod_type]
 
-lemma trace_blockDiagonal' [DecidableEq p] {m : p → Type*} [∀ i, Fintype (m i)]
-    (M : ∀ i, Matrix (m i) (m i) R) :
-    trace (blockDiagonal' M) = ∑ i, trace (M i) := by
+lemma trace_blockDiagonal'
+    [DecidableEq p] {m : p → Type*} [∀ i, Fintype (m i)] (M : ∀ i, Matrix (m i) (m i) R)
+    : trace (blockDiagonal' M) = ∑ i, trace (M i) := by
   simp [blockDiagonal', trace, Finset.sum_sigma']
 
 end AddCommMonoid
@@ -130,9 +127,7 @@ variable [AddCommGroup R]
 theorem trace_sub (A B : Matrix n n R) : trace (A - B) = trace A - trace B :=
   Finset.sum_sub_distrib ..
 
-@[simp]
-theorem trace_neg (A : Matrix n n R) : trace (-A) = -trace A :=
-  Finset.sum_neg_distrib ..
+@[simp] theorem trace_neg (A : Matrix n n R) : trace (-A) = - trace A := Finset.sum_neg_distrib ..
 
 end AddCommGroup
 
@@ -149,37 +144,40 @@ end One
 section Mul
 
 @[simp]
-theorem trace_transpose_mul [AddCommMonoid R] [Mul R] (A : Matrix m n R) (B : Matrix n m R) :
-    trace (Aᵀ * Bᵀ) = trace (A * B) :=
+theorem trace_transpose_mul [AddCommMonoid R] [Mul R] (A : Matrix m n R) (B : Matrix n m R)
+    : trace (Aᵀ * Bᵀ) = trace (A * B) :=
   Finset.sum_comm
 
-theorem trace_mul_comm [AddCommMonoid R] [CommMagma R] (A : Matrix m n R) (B : Matrix n m R) :
-    trace (A * B) = trace (B * A) := by rw [← trace_transpose, ← trace_transpose_mul, transpose_mul]
+theorem trace_mul_comm [AddCommMonoid R] [CommMagma R] (A : Matrix m n R) (B : Matrix n m R)
+    : trace (A * B) = trace (B * A) := by
+  rw [← trace_transpose, ← trace_transpose_mul, transpose_mul]
 
-theorem trace_mul_cycle [NonUnitalCommSemiring R] (A : Matrix m n R) (B : Matrix n p R)
-    (C : Matrix p m R) : trace (A * B * C) = trace (C * A * B) := by
+theorem trace_mul_cycle
+    [NonUnitalCommSemiring R] (A : Matrix m n R) (B : Matrix n p R) (C : Matrix p m R)
+    : trace (A * B * C) = trace (C * A * B) := by
   rw [trace_mul_comm, Matrix.mul_assoc]
 
-theorem trace_mul_cycle' [NonUnitalCommSemiring R] (A : Matrix m n R) (B : Matrix n p R)
-    (C : Matrix p m R) : trace (A * (B * C)) = trace (C * (A * B)) := by
+theorem trace_mul_cycle'
+    [NonUnitalCommSemiring R] (A : Matrix m n R) (B : Matrix n p R) (C : Matrix p m R)
+    : trace (A * (B * C)) = trace (C * (A * B)) := by
   rw [← Matrix.mul_assoc, trace_mul_comm]
 
 @[simp]
-theorem trace_replicateCol_mul_replicateRow {ι : Type*} [Unique ι] [NonUnitalNonAssocSemiring R]
-    (a b : n → R) : trace (replicateCol ι a * replicateRow ι b) = a ⬝ᵥ b := by
+theorem trace_replicateCol_mul_replicateRow
+    {ι : Type*} [Unique ι] [NonUnitalNonAssocSemiring R] (a b : n → R)
+    : trace (replicateCol ι a * replicateRow ι b) = a ⬝ᵥ b := by
   apply Finset.sum_congr rfl
   simp [mul_apply]
 
 @[simp]
-theorem trace_vecMulVec [NonUnitalNonAssocSemiring R] (a b : n → R) :
-    trace (vecMulVec a b) = a ⬝ᵥ b := by
+theorem trace_vecMulVec [NonUnitalNonAssocSemiring R] (a b : n → R)
+    : trace (vecMulVec a b) = a ⬝ᵥ b := by
   rw [vecMulVec_eq Unit, trace_replicateCol_mul_replicateRow]
 
 end Mul
 
-lemma trace_submatrix_succ {n : ℕ} [AddCommMonoid R]
-    (M : Matrix (Fin n.succ) (Fin n.succ) R) :
-    M 0 0 + trace (submatrix M Fin.succ Fin.succ) = trace M := by
+lemma trace_submatrix_succ {n : ℕ} [AddCommMonoid R] (M : Matrix (Fin n.succ) (Fin n.succ) R)
+    : M 0 0 + trace (submatrix M Fin.succ Fin.succ) = trace M := by
   delta trace
   rw [← (finSuccEquiv n).symm.sum_comp]
   simp
@@ -189,14 +187,14 @@ section CommSemiring
 variable [DecidableEq m] [CommSemiring R]
 
 -- TODO(https://github.com/leanprover-community/mathlib4/issues/6607): fix elaboration so that the ascription isn't needed
-theorem trace_units_conj (M : (Matrix m m R)ˣ) (N : Matrix m m R) :
-    trace ((M : Matrix _ _ _) * N * (↑M⁻¹ : Matrix _ _ _)) = trace N := by
+theorem trace_units_conj (M : (Matrix m m R)ˣ) (N : Matrix m m R)
+    : trace ((M : Matrix _ _ _) * N * (↑M⁻¹ : Matrix _ _ _)) = trace N := by
   rw [trace_mul_cycle, Units.inv_mul, one_mul]
 
 set_option linter.docPrime false in
 -- TODO(https://github.com/leanprover-community/mathlib4/issues/6607): fix elaboration so that the ascription isn't needed
-theorem trace_units_conj' (M : (Matrix m m R)ˣ) (N : Matrix m m R) :
-    trace ((↑M⁻¹ : Matrix _ _ _) * N * (↑M : Matrix _ _ _)) = trace N :=
+theorem trace_units_conj' (M : (Matrix m m R)ˣ) (N : Matrix m m R)
+    : trace ((↑M⁻¹ : Matrix _ _ _) * N * (↑M : Matrix _ _ _)) = trace N :=
   trace_units_conj M⁻¹ N
 
 end CommSemiring
@@ -208,12 +206,9 @@ variable [AddCommMonoid R]
 /-! ### Special cases for `Fin n` for low values of `n`
 -/
 
-@[simp]
-theorem trace_fin_zero (A : Matrix (Fin 0) (Fin 0) R) : trace A = 0 :=
-  rfl
+@[simp] theorem trace_fin_zero (A : Matrix (Fin 0) (Fin 0) R) : trace A = 0 := rfl
 
-theorem trace_fin_one (A : Matrix (Fin 1) (Fin 1) R) : trace A = A 0 0 :=
-  add_zero _
+theorem trace_fin_one (A : Matrix (Fin 1) (Fin 1) R) : trace A = A 0 0 := add_zero _
 
 theorem trace_fin_two (A : Matrix (Fin 2) (Fin 2) R) : trace A = A 0 0 + A 1 1 :=
   congr(_ + $(add_zero (A 1 1)))
@@ -222,17 +217,13 @@ theorem trace_fin_three (A : Matrix (Fin 3) (Fin 3) R) : trace A = A 0 0 + A 1 1
   rw [← add_zero (A 2 2), add_assoc]
   rfl
 
-@[simp]
-theorem trace_fin_one_of (a : R) : trace !![a] = a :=
-  trace_fin_one _
+@[simp] theorem trace_fin_one_of (a : R) : trace !![a] = a := trace_fin_one _
+
+@[simp] theorem trace_fin_two_of (a b c d : R) : trace !![a, b; c, d] = a + d := trace_fin_two _
 
 @[simp]
-theorem trace_fin_two_of (a b c d : R) : trace !![a, b; c, d] = a + d :=
-  trace_fin_two _
-
-@[simp]
-theorem trace_fin_three_of (a b c d e f g h i : R) :
-    trace !![a, b, c; d, e, f; g, h, i] = a + e + i :=
+theorem trace_fin_three_of (a b c d e f g h i : R)
+    : trace !![a, b, c; d, e, f; g, h, i] = a + e + i :=
   trace_fin_three _
 
 end Fin
@@ -242,43 +233,39 @@ section single
 variable {m n : Type*} {R α : Type*} [DecidableEq m] [DecidableEq n]
 variable [Fintype n] [AddCommMonoid α] (i j : n) (c : α)
 
-@[simp]
-theorem trace_single_eq_of_ne (h : i ≠ j) : trace (single i j c) = 0 := by
-  simp [trace, h]
+@[simp] theorem trace_single_eq_of_ne (h : i ≠ j) : trace (single i j c) = 0 := by simp [trace, h]
 
-@[simp]
-theorem trace_single_eq_same : trace (single i i c) = c := by
-  simp [trace]
+@[simp] theorem trace_single_eq_same : trace (single i i c) = c := by simp [trace]
 
-theorem trace_single_mul [NonUnitalNonAssocSemiring R] [Fintype m]
-    (i : n) (j : m) (a : R) (x : Matrix m n R) :
-    (single i j a * x).trace = a • x j i := by
+theorem trace_single_mul
+    [NonUnitalNonAssocSemiring R] [Fintype m] (i : n) (j : m) (a : R) (x : Matrix m n R)
+    : (single i j a * x).trace = a • x j i := by
   simp [trace, mul_apply, single, ite_and]
 
-theorem trace_mul_single [NonUnitalNonAssocSemiring R] [Fintype m]
-    (x : Matrix m n R) (i : n) (j : m) (a : R) :
-    (x * single i j a).trace = MulOpposite.op a • x j i := by
+theorem trace_mul_single
+    [NonUnitalNonAssocSemiring R] [Fintype m] (x : Matrix m n R) (i : n) (j : m) (a : R)
+    : (x * single i j a).trace = MulOpposite.op a • x j i := by
   simp [trace, mul_apply, single, ite_and]
 
 end single
 
-theorem trace_surjective [AddCommMonoid R] [Nonempty n] :
-    Function.Surjective (trace : Matrix n n R → R) := fun r ↦ by
+theorem trace_surjective [AddCommMonoid R] [Nonempty n]
+    : Function.Surjective (trace : Matrix n n R → R) := fun r ↦ by
   classical
   inhabit n
   exact ⟨single default default r, trace_single_eq_same default r⟩
 
 /-- Matrices `A` and `B` are equal iff `(x * A).trace = (x * B).trace` for all `x`. -/
-theorem ext_iff_trace_mul_left [NonAssocSemiring R] {A B : Matrix m n R} :
-    A = B ↔ ∀ x, (x * A).trace = (x * B).trace := by
+theorem ext_iff_trace_mul_left [NonAssocSemiring R] {A B : Matrix m n R}
+    : A = B ↔ ∀ x, (x * A).trace = (x * B).trace := by
   refine ⟨fun h x => h ▸ rfl, fun h => ?_⟩
   ext i j
   classical
   simpa [trace_single_mul] using h (single j i (1 : R))
 
 /-- Matrices `A` and `B` are equal iff `(A * x).trace = (B * x).trace` for all `x`. -/
-theorem ext_iff_trace_mul_right [NonAssocSemiring R] {A B : Matrix m n R} :
-    A = B ↔ ∀ x, (A * x).trace = (B * x).trace := by
+theorem ext_iff_trace_mul_right [NonAssocSemiring R] {A B : Matrix m n R}
+    : A = B ↔ ∀ x, (A * x).trace = (B * x).trace := by
   refine ⟨fun h x => h ▸ rfl, fun h => ?_⟩
   ext i j
   classical

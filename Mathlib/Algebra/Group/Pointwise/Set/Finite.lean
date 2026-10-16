@@ -26,8 +26,7 @@ section One
 variable [One α]
 
 @[to_additive (attr := simp)]
-theorem finite_one : (1 : Set α).Finite :=
-  finite_singleton _
+theorem finite_one : (1 : Set α).Finite := finite_singleton _
 
 end One
 
@@ -35,9 +34,7 @@ section Mul
 
 variable [Mul α] {s t : Set α}
 
-@[to_additive]
-theorem Finite.mul : s.Finite → t.Finite → (s * t).Finite :=
-  Finite.image2 _
+@[to_additive] theorem Finite.mul : s.Finite → t.Finite → (s * t).Finite := Finite.image2 _
 
 /-- Multiplication preserves finiteness. -/
 @[to_additive /-- Addition preserves finiteness. -/]
@@ -51,12 +48,13 @@ section Monoid
 variable [Monoid α] {s t : Set α}
 
 @[to_additive]
-instance decidableMemMul [Fintype α] [DecidableEq α] [DecidablePred (· ∈ s)]
-    [DecidablePred (· ∈ t)] : DecidablePred (· ∈ s * t) := fun _ ↦ decidable_of_iff _ mem_mul.symm
+instance decidableMemMul [Fintype α] [DecidableEq α] [DecidablePred (· ∈ s)] [DecidablePred (· ∈ t)]
+    : DecidablePred (· ∈ s * t) := fun _ ↦
+  decidable_of_iff _ mem_mul.symm
 
 @[to_additive]
-instance decidableMemPow [Fintype α] [DecidableEq α] [DecidablePred (· ∈ s)] (n : ℕ) :
-    DecidablePred (· ∈ s ^ n) := by
+instance decidableMemPow [Fintype α] [DecidableEq α] [DecidablePred (· ∈ s)] (n : ℕ)
+    : DecidablePred (· ∈ s ^ n) := by
   induction n with
   | zero =>
     simp only [pow_zero, mem_one]
@@ -71,9 +69,7 @@ section SMul
 
 variable [SMul α β] {s : Set α} {t : Set β}
 
-@[to_additive]
-theorem Finite.smul : s.Finite → t.Finite → (s • t).Finite :=
-  Finite.image2 _
+@[to_additive] theorem Finite.smul : s.Finite → t.Finite → (s • t).Finite := Finite.image2 _
 
 end SMul
 
@@ -81,13 +77,9 @@ section HasSMulSet
 
 variable [SMul α β] {s : Set β} {a : α}
 
-@[to_additive]
-theorem Finite.smul_set : s.Finite → (a • s).Finite :=
-  Finite.image _
+@[to_additive] theorem Finite.smul_set : s.Finite → (a • s).Finite := Finite.image _
 
-@[to_additive]
-theorem Infinite.of_smul_set : (a • s).Infinite → s.Infinite :=
-  Infinite.of_image _
+@[to_additive] theorem Infinite.of_smul_set : (a • s).Infinite → s.Infinite := Infinite.of_image _
 
 end HasSMulSet
 
@@ -96,8 +88,7 @@ section SDiv
 variable [SDiv α β] {s t : Set β}
 
 @[to_additive]
-theorem Finite.sdiv (hs : s.Finite) (ht : t.Finite) : Set.Finite (s /ₛ t) :=
-  hs.image2 _ ht
+theorem Finite.sdiv (hs : s.Finite) (ht : t.Finite) : Set.Finite (s /ₛ t) := hs.image2 _ ht
 
 end SDiv
 
@@ -118,10 +109,12 @@ end Cancel
 section InvolutiveInv
 variable [InvolutiveInv α] {s : Set α}
 
-@[to_additive (attr := simp)] lemma finite_inv : s⁻¹.Finite ↔ s.Finite := by
+@[to_additive (attr := simp)]
+lemma finite_inv : s⁻¹.Finite ↔ s.Finite := by
   rw [← image_inv_eq_inv, finite_image_iff inv_injective.injOn]
 
-@[to_additive (attr := simp)] lemma infinite_inv : s⁻¹.Infinite ↔ s.Infinite := finite_inv.not
+@[to_additive (attr := simp)]
+lemma infinite_inv : s⁻¹.Infinite ↔ s.Infinite := finite_inv.not
 
 @[to_additive] alias ⟨Finite.of_inv, Finite.inv⟩ := finite_inv
 
@@ -162,21 +155,24 @@ namespace Group
 variable {G : Type*} [Group G] [Fintype G] (S : Set G)
 
 @[to_additive]
-theorem card_pow_eq_card_pow_card_univ [∀ k : ℕ, DecidablePred (· ∈ S ^ k)] :
-    ∀ k, Fintype.card G ≤ k → Fintype.card (↥(S ^ k)) = Fintype.card (↥(S ^ Fintype.card G)) := by
+theorem card_pow_eq_card_pow_card_univ [∀ k : ℕ, DecidablePred (· ∈ S ^ k)]
+    : ∀ k, Fintype.card G ≤ k → Fintype.card (↥(S ^ k)) = Fintype.card (↥(S ^ Fintype.card G)) := by
   have hG : 0 < Fintype.card G := Fintype.card_pos
   rcases S.eq_empty_or_nonempty with (rfl | ⟨a, ha⟩)
   · refine fun k hk ↦ Fintype.card_congr ?_
     rw [empty_pow (hG.trans_le hk).ne', empty_pow (ne_of_gt hG)]
-  have key : ∀ (a) (s t : Set G) [Fintype s] [Fintype t],
-      (∀ b : G, b ∈ s → b * a ∈ t) → Fintype.card s ≤ Fintype.card t := by
+  have key
+      : ∀ (a) (s t : Set G) [Fintype s] [Fintype t],
+        (∀ b : G, b ∈ s → b * a ∈ t) → Fintype.card s ≤ Fintype.card t := by
     refine fun a s t _ _ h ↦ Fintype.card_le_of_injective (fun ⟨b, hb⟩ ↦ ⟨b * a, h b hb⟩) ?_
     rintro ⟨b, hb⟩ ⟨c, hc⟩ hbc
     exact Subtype.ext (mul_right_cancel (Subtype.ext_iff.mp hbc))
   have mono : Monotone (fun n ↦ Fintype.card (↥(S ^ n)) : ℕ → ℕ) :=
     monotone_nat_of_le_succ fun n ↦ key a _ _ fun b hb ↦ Set.mul_mem_mul hb ha
-  refine fun _ ↦ Nat.stabilises_of_monotone mono (fun n ↦ set_fintype_card_le_univ (S ^ n))
-    fun n h ↦ le_antisymm (mono (n + 1).le_succ) (key a⁻¹ (S ^ (n + 2)) (S ^ (n + 1)) ?_)
+  refine fun _ ↦
+    Nat.stabilises_of_monotone mono
+      (fun n ↦ set_fintype_card_le_univ (S ^ n))
+      fun n h ↦ le_antisymm (mono (n + 1).le_succ) (key a⁻¹ (S ^ (n + 2)) (S ^ (n + 1)) ?_)
   replace h₂ : S ^ n * {a} = S ^ (n + 1) := by
     have : Fintype (S ^ n * Set.singleton a) := by
       classical

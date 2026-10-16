@@ -29,16 +29,20 @@ open CategoryTheory
 
 namespace Mathlib.Tactic.Reassoc
 
-theorem Iso.eq_whisker {C : Type*} [Category* C]
-    {X Y : C} {f g : X ≅ Y} (w : f = g) {Z : C} (h : Y ≅ Z) :
-    f ≪≫ h = g ≪≫ h := by rw [w]
+theorem Iso.eq_whisker
+    {C : Type*} [Category* C] {X Y : C} {f g : X ≅ Y} (w : f = g) {Z : C} (h : Y ≅ Z)
+    : f ≪≫ h = g ≪≫ h := by
+  rw [w]
 
 /-- Simplify an expression using only the axioms of a groupoid. -/
 def categoryIsoSimp (e : Expr) : MetaM Simp.Result :=
-  simpOnlyNames [``Iso.trans_symm, ``Iso.trans_refl, ``Iso.refl_trans, ``Iso.trans_assoc,
-    ``Iso.symm_self_id, ``Iso.self_symm_id, ``Iso.symm_self_id_assoc, ``Iso.self_symm_id_assoc,
-    ``Functor.mapIso_trans, ``Functor.mapIso_symm, ``Functor.mapIso_refl, ``Functor.id_obj] e
-    (config := { decide := false })
+  simpOnlyNames
+    [
+      ``Iso.trans_symm, ``Iso.trans_refl, ``Iso.refl_trans, ``Iso.trans_assoc,
+      ``Iso.symm_self_id, ``Iso.self_symm_id, ``Iso.symm_self_id_assoc, ``Iso.self_symm_id_assoc,
+      ``Functor.mapIso_trans, ``Functor.mapIso_symm, ``Functor.mapIso_refl, ``Functor.id_obj
+    ]
+    e (config := { decide := false })
 
 /--
 Given an equation `f = g` between isomorphisms `X ≅ Y` in a category,

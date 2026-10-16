@@ -18,7 +18,6 @@ The initial intended application is tensor product of presheaves.
 
 @[expose] public section
 
-
 universe v₁ v₂ u₁ u₂
 
 open CategoryTheory
@@ -36,7 +35,8 @@ namespace FunctorCategory
 
 variable (F G F' G' : C ⥤ D)
 
-/-- (An auxiliary definition for `functorCategoryMonoidal`.)
+/--
+(An auxiliary definition for `functorCategoryMonoidal`.)
 Tensor product of functors `C ⥤ D`, when `D` is monoidal.
 -/
 @[simps]
@@ -48,7 +48,8 @@ variable {F G F' G'}
 variable (α : F ⟶ G) (β : F' ⟶ G')
 
 set_option backward.defeqAttrib.useBackward true in
-/-- (An auxiliary definition for `functorCategoryMonoidal`.)
+/--
+(An auxiliary definition for `functorCategoryMonoidal`.)
 Tensor product of natural transformations into `D`, when `D` is monoidal.
 -/
 @[simps]
@@ -78,7 +79,8 @@ end FunctorCategory
 open CategoryTheory.Monoidal.FunctorCategory
 
 set_option backward.defeqAttrib.useBackward true in
-/-- When `C` is any category, and `D` is a monoidal category,
+/--
+When `C` is any category, and `D` is a monoidal category,
 the functor category `C ⥤ D` has a natural pointwise monoidal structure,
 where `(F ⊗ G).obj X = F.obj X ⊗ G.obj X`.
 -/
@@ -92,68 +94,60 @@ instance functorCategoryMonoidalStruct : MonoidalCategoryStruct (C ⥤ D) where
   rightUnitor F := NatIso.ofComponents fun X => ρ_ (F.obj X)
   associator F G H := NatIso.ofComponents fun X => α_ (F.obj X) (G.obj X) (H.obj X)
 
+@[simp] theorem tensorUnit_obj {X} : (𝟙_ (C ⥤ D)).obj X = 𝟙_ D := rfl
+
+@[simp] theorem tensorUnit_map {X Y} {f : X ⟶ Y} : (𝟙_ (C ⥤ D)).map f = 𝟙 (𝟙_ D) := rfl
+
+@[simp] theorem tensorObj_obj {F G : C ⥤ D} {X} : (F ⊗ G).obj X = F.obj X ⊗ G.obj X := rfl
+
 @[simp]
-theorem tensorUnit_obj {X} : (𝟙_ (C ⥤ D)).obj X = 𝟙_ D :=
+theorem tensorObj_map {F G : C ⥤ D} {X Y} {f : X ⟶ Y} : (F ⊗ G).map f = F.map f ⊗ₘ G.map f := rfl
+
+@[simp]
+theorem tensorHom_app {F G F' G' : C ⥤ D} {α : F ⟶ G} {β : F' ⟶ G'} {X}
+    : (α ⊗ₘ β).app X = α.app X ⊗ₘ β.app X :=
   rfl
 
 @[simp]
-theorem tensorUnit_map {X Y} {f : X ⟶ Y} : (𝟙_ (C ⥤ D)).map f = 𝟙 (𝟙_ D) :=
+theorem whiskerLeft_app {F F' G' : C ⥤ D} {β : F' ⟶ G'} {X} : (F ◁ β).app X = F.obj X ◁ β.app X :=
   rfl
 
 @[simp]
-theorem tensorObj_obj {F G : C ⥤ D} {X} : (F ⊗ G).obj X = F.obj X ⊗ G.obj X :=
+theorem whiskerRight_app {F G F' : C ⥤ D} {α : F ⟶ G} {X} : (α ▷ F').app X = α.app X ▷ F'.obj X :=
   rfl
 
 @[simp]
-theorem tensorObj_map {F G : C ⥤ D} {X Y} {f : X ⟶ Y} : (F ⊗ G).map f = F.map f ⊗ₘ G.map f :=
+theorem leftUnitor_hom_app {F : C ⥤ D} {X}
+    : ((λ_ F).hom : 𝟙_ _ ⊗ F ⟶ F).app X = (λ_ (F.obj X)).hom :=
   rfl
 
 @[simp]
-theorem tensorHom_app {F G F' G' : C ⥤ D} {α : F ⟶ G} {β : F' ⟶ G'} {X} :
-    (α ⊗ₘ β).app X = α.app X ⊗ₘ β.app X :=
+theorem leftUnitor_inv_app {F : C ⥤ D} {X}
+    : ((λ_ F).inv : F ⟶ 𝟙_ _ ⊗ F).app X = (λ_ (F.obj X)).inv :=
   rfl
 
 @[simp]
-theorem whiskerLeft_app {F F' G' : C ⥤ D} {β : F' ⟶ G'} {X} :
-    (F ◁ β).app X = F.obj X ◁ β.app X :=
+theorem rightUnitor_hom_app {F : C ⥤ D} {X}
+    : ((ρ_ F).hom : F ⊗ 𝟙_ _ ⟶ F).app X = (ρ_ (F.obj X)).hom :=
   rfl
 
 @[simp]
-theorem whiskerRight_app {F G F' : C ⥤ D} {α : F ⟶ G} {X} :
-    (α ▷ F').app X = α.app X ▷ F'.obj X :=
+theorem rightUnitor_inv_app {F : C ⥤ D} {X}
+    : ((ρ_ F).inv : F ⟶ F ⊗ 𝟙_ _).app X = (ρ_ (F.obj X)).inv :=
   rfl
 
 @[simp]
-theorem leftUnitor_hom_app {F : C ⥤ D} {X} :
-    ((λ_ F).hom : 𝟙_ _ ⊗ F ⟶ F).app X = (λ_ (F.obj X)).hom :=
+theorem associator_hom_app {F G H : C ⥤ D} {X}
+    : ((α_ F G H).hom : (F ⊗ G) ⊗ H ⟶ F ⊗ G ⊗ H).app X = (α_ (F.obj X) (G.obj X) (H.obj X)).hom :=
   rfl
 
 @[simp]
-theorem leftUnitor_inv_app {F : C ⥤ D} {X} :
-    ((λ_ F).inv : F ⟶ 𝟙_ _ ⊗ F).app X = (λ_ (F.obj X)).inv :=
+theorem associator_inv_app {F G H : C ⥤ D} {X}
+    : ((α_ F G H).inv : F ⊗ G ⊗ H ⟶ (F ⊗ G) ⊗ H).app X = (α_ (F.obj X) (G.obj X) (H.obj X)).inv :=
   rfl
 
-@[simp]
-theorem rightUnitor_hom_app {F : C ⥤ D} {X} :
-    ((ρ_ F).hom : F ⊗ 𝟙_ _ ⟶ F).app X = (ρ_ (F.obj X)).hom :=
-  rfl
-
-@[simp]
-theorem rightUnitor_inv_app {F : C ⥤ D} {X} :
-    ((ρ_ F).inv : F ⟶ F ⊗ 𝟙_ _).app X = (ρ_ (F.obj X)).inv :=
-  rfl
-
-@[simp]
-theorem associator_hom_app {F G H : C ⥤ D} {X} :
-    ((α_ F G H).hom : (F ⊗ G) ⊗ H ⟶ F ⊗ G ⊗ H).app X = (α_ (F.obj X) (G.obj X) (H.obj X)).hom :=
-  rfl
-
-@[simp]
-theorem associator_inv_app {F G H : C ⥤ D} {X} :
-    ((α_ F G H).inv : F ⊗ G ⊗ H ⟶ (F ⊗ G) ⊗ H).app X = (α_ (F.obj X) (G.obj X) (H.obj X)).inv :=
-  rfl
-
-/-- When `C` is any category, and `D` is a monoidal category,
+/--
+When `C` is any category, and `D` is a monoidal category,
 the functor category `C ⥤ D` has a natural pointwise monoidal structure,
 where `(F ⊗ G).obj X = F.obj X ⊗ G.obj X`.
 -/
@@ -168,7 +162,8 @@ open CategoryTheory.BraidedCategory
 variable [BraidedCategory.{v₂} D]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- When `C` is any category, and `D` is a braided monoidal category,
+/--
+When `C` is any category, and `D` is a braided monoidal category,
 the natural pointwise monoidal structure on the functor category `C ⥤ D`
 is also braided.
 -/
@@ -177,8 +172,7 @@ instance functorCategoryBraided : BraidedCategory (C ⥤ D) where
   hexagon_forward F G H := by ext X; apply hexagon_forward
   hexagon_reverse F G H := by ext X; apply hexagon_reverse
 
-example : BraidedCategory (C ⥤ D) :=
-  CategoryTheory.Monoidal.functorCategoryBraided
+example : BraidedCategory (C ⥤ D) := CategoryTheory.Monoidal.functorCategoryBraided
 
 end BraidedCategory
 
@@ -188,7 +182,8 @@ open CategoryTheory.SymmetricCategory
 
 variable [SymmetricCategory.{v₂} D]
 
-/-- When `C` is any category, and `D` is a symmetric monoidal category,
+/--
+When `C` is any category, and `D` is a symmetric monoidal category,
 the natural pointwise monoidal structure on the functor category `C ⥤ D`
 is also symmetric.
 -/
@@ -202,47 +197,50 @@ end Monoidal
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance Functor.LaxMonoidal.whiskeringRight
-    {C D E : Type*} [Category* C] [Category* D] [Category* E] [MonoidalCategory D]
-    [MonoidalCategory E] (L : D ⥤ E) [L.LaxMonoidal] :
-    ((Functor.whiskeringRight C D E).obj L).LaxMonoidal where
+    {C D E : Type*}
+    [Category* C] [Category* D] [Category* E] [MonoidalCategory D] [MonoidalCategory E]
+    (L : D ⥤ E) [L.LaxMonoidal]
+    : ((Functor.whiskeringRight C D E).obj L).LaxMonoidal where
   ε := { app X := Functor.LaxMonoidal.ε L }
   μ F G := { app X := Functor.LaxMonoidal.μ L (F.obj X) (G.obj X) }
 
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance Functor.OplaxMonoidal.whiskeringRight
-    {C D E : Type*} [Category* C] [Category* D] [Category* E] [MonoidalCategory D]
-    [MonoidalCategory E] (L : D ⥤ E) [L.OplaxMonoidal] :
-    ((Functor.whiskeringRight C D E).obj L).OplaxMonoidal where
+    {C D E : Type*}
+    [Category* C] [Category* D] [Category* E] [MonoidalCategory D] [MonoidalCategory E]
+    (L : D ⥤ E) [L.OplaxMonoidal]
+    : ((Functor.whiskeringRight C D E).obj L).OplaxMonoidal where
   η := { app X := Functor.OplaxMonoidal.η L }
   δ F G := { app X := Functor.OplaxMonoidal.δ L (F.obj X) (G.obj X) }
   oplax_left_unitality := by aesop
   oplax_right_unitality := by aesop
 
 set_option backward.defeqAttrib.useBackward true in
-instance {C D E : Type*} [Category* C] [Category* D] [Category* E] [MonoidalCategory D]
-    [MonoidalCategory E] (L : D ⥤ E) [L.Monoidal] :
-    ((Functor.whiskeringRight C D E).obj L).Monoidal where
+instance
+  {C D E : Type*}
+  [Category* C] [Category* D] [Category* E] [MonoidalCategory D] [MonoidalCategory E]
+  (L : D ⥤ E) [L.Monoidal]
+  : ((Functor.whiskeringRight C D E).obj L).Monoidal where
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps!]
-instance Functor.Monoidal.whiskeringLeft
-    (E : Type*) [Category* E] [MonoidalCategory E] (F : C ⥤ D) :
-    ((whiskeringLeft _ _ E).obj F).Monoidal :=
+instance Functor.Monoidal.whiskeringLeft (E : Type*) [Category* E] [MonoidalCategory E] (F : C ⥤ D)
+    : ((whiskeringLeft _ _ E).obj F).Monoidal :=
   CoreMonoidal.toMonoidal { εIso := Iso.refl _, μIso _ _ := Iso.refl _ }
 
-instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D) :
-    (e.congrLeft (E := E)).functor.Monoidal :=
+instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D)
+    : (e.congrLeft (E := E)).functor.Monoidal :=
   inferInstanceAs ((Functor.whiskeringLeft _ _ E).obj e.inverse).Monoidal
 
-instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D) :
-    (e.congrLeft (E := E)).inverse.Monoidal :=
+instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D)
+    : (e.congrLeft (E := E)).inverse.Monoidal :=
   inferInstanceAs ((Functor.whiskeringLeft _ _ E).obj e.functor).Monoidal
 
 set_option backward.defeqAttrib.useBackward true in
-instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D) :
-    (e.congrLeft (E := E)).IsMonoidal where
+instance (E : Type*) [Category* E] [MonoidalCategory E] (e : C ≌ D)
+    : (e.congrLeft (E := E)).IsMonoidal where
   leftAdjoint_μ X Y := by
     ext
     simp [← Functor.map_comp]

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Heather Macbeth
 -/
 module
+
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
@@ -85,13 +86,13 @@ example : x + y + (z + w - x) = y + z + w := by module
 example : x + y + z + (z - x - x) = (-1) • x + y + 2 • z := by module
 example : -x + x = 0 := by module
 example : x - (0 - 0) = x := by module
-example : x + (y - x) = y  := by module
+example : x + (y - x) = y := by module
 example : -y + (z - x) = z - y - x := by module
 
-example : x + y = y + x ∧ (↑((1:ℕ) + 1) : ℚ) = 2 := by
+example : x + y = y + x ∧ (↑((1 : ℕ) + 1) : ℚ) = 2 := by
   constructor
   module -- do not focus this tactic: the double goal is the point of the test
-  guard_target =ₐ (↑((1:ℕ) + 1) : ℚ) = 2
+  guard_target =ₐ (↑((1 : ℕ) + 1) : ℚ) = 2
   norm_cast
 
 -- https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/Interaction.20of.20abel.20with.20casting/near/319895001
@@ -130,8 +131,7 @@ inst✝ : AddCommGroup V
 ⊢ -1 + 1 = 0
 -/
 #guard_msgs in
-example : -x + x = 0 := by
-  match_scalars
+example : -x + x = 0 := by match_scalars
 
 /-! ### Commutative ring -/
 
@@ -157,8 +157,7 @@ example (h : a = b) : a • x = b • x := by
   match_scalars
   linear_combination h
 
-example (h : a = b) : a • x = b • x := by
-  linear_combination (norm := module) h • x
+example (h : a = b) : a • x = b • x := by linear_combination (norm := module) h • x
 
 example (h : a ^ 2 + b ^ 2 = 1) : a • (a • x - b • y) + (b • a • y + b • b • x) = x := by
   match_scalars
@@ -168,21 +167,20 @@ example (h : a ^ 2 + b ^ 2 = 1) : a • (a • x - b • y) + (b • a • y + b
 example (h : a ^ 2 + b ^ 2 = 1) : a • (a • x - b • y) + (b • a • y + b • b • x) = x := by
   linear_combination (norm := module) h • x
 
-example (h1 : a • x + b • y = 0) (h2 : a • μ • x + b • ν • y = 0) :
-    (μ - ν) • a • x = 0 ∧ (μ - ν) • b • y = 0 := by
+example (h1 : a • x + b • y = 0) (h2 : a • μ • x + b • ν • y = 0)
+    : (μ - ν) • a • x = 0 ∧ (μ - ν) • b • y = 0 := by
   constructor
   · linear_combination (norm := module) h2 - ν • h1
   · linear_combination (norm := module) μ • h1 - h2
 
-example (h1 : 0 • z + a • x + b • y = 0) (h2 : 0 • ρ • z + a • μ • x + b • ν • y = 0) :
-    (μ - ν) • a • x = 0 := by
+example (h1 : 0 • z + a • x + b • y = 0) (h2 : 0 • ρ • z + a • μ • x + b • ν • y = 0)
+    : (μ - ν) • a • x = 0 := by
   linear_combination (norm := module) h2 - ν • h1
 
 example
-    (h1 : a • x + b • y + c • z = 0)
-    (h2 : a • μ • x + b • ν • y + c • ρ • z = 0)
-    (h3 : a • μ • μ • x + b • ν • ν • y + c • ρ • ρ • z = 0) :
-    (μ - ν) • (μ - ρ) • a • x = 0 ∧ (μ - ν) • (ν - ρ) • b • y = 0
+    (h1 : a • x + b • y + c • z = 0) (h2 : a • μ • x + b • ν • y + c • ρ • z = 0)
+    (h3 : a • μ • μ • x + b • ν • ν • y + c • ρ • ρ • z = 0)
+    : (μ - ν) • (μ - ρ) • a • x = 0 ∧ (μ - ν) • (ν - ρ) • b • y = 0
       ∧ (μ - ρ) • (ν - ρ) • c • z = 0 := by
   refine ⟨?_, ?_, ?_⟩
   · linear_combination (norm := module) h3 - (ν + ρ) • h2 + ν • ρ • h1
@@ -215,7 +213,7 @@ example : a • x + b • x = (b + a) • x := by
   -- the coefficient goal `a + b = b + a` is purely additive
   abel
 
-example : 2 • a • x = a • (2:ℤ) • x := by
+example : 2 • a • x = a • (2 : ℤ) • x := by
   match_scalars
   noncomm_ring
 
@@ -234,7 +232,7 @@ end Ring
 section CharZeroField
 variable [Field K] [CharZero K] [Module K V]
 
-example : (2:K)⁻¹ • x + (3:K)⁻¹ • x + (6:K)⁻¹ • x = x := by module
+example : (2 : K)⁻¹ • x + (3 : K)⁻¹ • x + (6 : K)⁻¹ • x = x := by module
 
 example (h₁ : t - u = -(v - w)) (h₂ : t + u = v + w) : t = w := by
   linear_combination (norm := module) (2:K)⁻¹ • h₁ + (2:K)⁻¹ • h₂
@@ -246,8 +244,8 @@ end CharZeroField
 section LinearOrderedField
 variable [Field K] [LinearOrder K] [IsStrictOrderedRing K] [Module K V]
 
-example (ha : 0 ≤ a) (hb : 0 < b) :
-    x = (a / (a + b)) • y + (b / (a + b)) • (x + (a / b) • (x - y)) := by
+example (ha : 0 ≤ a) (hb : 0 < b)
+    : x = (a / (a + b)) • y + (b / (a + b)) • (x + (a / b) • (x - y)) := by
   match_scalars
   · field_simp
     ring
@@ -255,21 +253,21 @@ example (ha : 0 ≤ a) (hb : 0 < b) :
     ring
 
 -- From Analysis.Convex.StoneSeparation
-example (hab : 0 < a * b + c * d) :
-    (a * b / (a * b + c * d) * e) • u + (c * d / (a * b + c * d) * f) • v +
-      ((a * b / (a * b + c * d)) • d • x + (c * d / (a * b + c * d)) • b • y) =
-      (a * b + c * d)⁻¹ • ((a * b * e) • u + ((c * d * f) • v +
-        ((a * b) • d • x + (c * d) • b • y))) := by
+example (hab : 0 < a * b + c * d)
+    : (a * b / (a * b + c * d) * e) • u + (c * d / (a * b + c * d) * f) • v
+        + ((a * b / (a * b + c * d)) • d • x + (c * d / (a * b + c * d)) • b • y)
+      = (a * b + c * d)⁻¹
+        • ((a * b * e) • u + ((c * d * f) • v + ((a * b) • d • x + (c * d) • b • y))) := by
   match_scalars
   · field_simp
   · field_simp
   · field_simp
   · field_simp
 
-example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0) :
-    ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • (4:K) • ((2 / (1 - a)) • y)
-    + ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • ((2 / (1 - a)) ^ 2 * b ^ 2 - 4) • x
-    = a • x + y := by
+example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0)
+    : ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • (4 : K) • ((2 / (1 - a)) • y)
+        + ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • ((2 / (1 - a)) ^ 2 * b ^ 2 - 4) • x
+      = a • x + y := by
   linear_combination (norm := skip) (h₁ * (b ^ 2 + (1 - a) ^ 2)⁻¹) • (y + (a - 1) • x)
   match_scalars
   · field_simp
@@ -277,10 +275,10 @@ example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0) :
   · field_simp
     ring
 
-example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0) :
-    ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • (4:K) • ((2 / (1 - a)) • y)
-    + ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • ((2 / (1 - a)) ^ 2 * b ^ 2 - 4) • x
-    = a • x + y := by
+example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0)
+    : ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • (4 : K) • ((2 / (1 - a)) • y)
+        + ((2 / (1 - a)) ^ 2 * b ^ 2 + 4)⁻¹ • ((2 / (1 - a)) ^ 2 * b ^ 2 - 4) • x
+      = a • x + y := by
   match_scalars
   · field_simp
     linear_combination 4 * h₁

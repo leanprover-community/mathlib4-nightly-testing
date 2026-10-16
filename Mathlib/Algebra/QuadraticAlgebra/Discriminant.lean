@@ -6,7 +6,6 @@ Authors: Xavier Roblot
 module
 
 public import Mathlib.Algebra.QuadraticAlgebra.AlgHom
-
 import Mathlib.Data.Nat.Prime.Int
 
 /-!
@@ -47,130 +46,147 @@ variable {R : Type*}
 
 section discr
 
-/-- The discriminant of the quadratic algebra `QuadraticAlgebra R a b`, that is, the
-discriminant `b ^ 2 + 4 * a` of the polynomial `X ^ 2 - b * X - a`. -/
+/--
+The discriminant of the quadratic algebra `QuadraticAlgebra R a b`, that is, the
+discriminant `b ^ 2 + 4 * a` of the polynomial `X ^ 2 - b * X - a`.
+-/
 def discr [CommSemiring R] (a b : R) : R := b ^ 2 + 4 * a
 
 theorem discr_def [CommSemiring R] (a b : R) : discr a b = b ^ 2 + 4 * a := by rfl
 
 /-- `z.im ^ 2` times the discriminant of the algebra equals `trace z ^ 2 - 4 * norm z`. -/
-theorem im_sq_mul_discr [CommRing R] {a b : R} (z : QuadraticAlgebra R a b) :
-    z.im ^ 2 * discr a b = trace z ^ 2 - 4 * norm z := by
+theorem im_sq_mul_discr [CommRing R] {a b : R} (z : QuadraticAlgebra R a b)
+    : z.im ^ 2 * discr a b = trace z ^ 2 - 4 * norm z := by
   rw [trace_def, norm_def, discr_def]; ring
 
 /-- The discriminant commutes with a base change `R → S`. -/
 @[simp]
-theorem discr_algebraMap {S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S] (a b : R) :
-    discr (algebraMap R S a) (algebraMap R S b) = algebraMap R S (discr a b) := by
+theorem discr_algebraMap {S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S] (a b : R)
+    : discr (algebraMap R S a) (algebraMap R S b) = algebraMap R S (discr a b) := by
   simp [discr_def, map_ofNat]
 
 /-- The discriminant commutes with the coercion from `ℤ`. -/
 theorem discr_intCast [CommRing R] (a b : ℤ) : discr (a : R) (b : R) = discr a b := by
   simp [discr_def]
 
-/-- Under the change of generator `ω ↦ u • ω + k` (see `QuadraticAlgebra.changeGenerator`), the
-discriminant is multiplied by `u ^ 2`. -/
-theorem discr_changeGenerator [CommRing R] (a b u k : R) :
-    discr (u ^ 2 * a - u * b * k - k ^ 2) (u * b + 2 * k) = u ^ 2 * discr a b := by
+/--
+Under the change of generator `ω ↦ u • ω + k` (see `QuadraticAlgebra.changeGenerator`), the
+discriminant is multiplied by `u ^ 2`.
+-/
+theorem discr_changeGenerator [CommRing R] (a b u k : R)
+    : discr (u ^ 2 * a - u * b * k - k ^ 2) (u * b + 2 * k) = u ^ 2 * discr a b := by
   rw [discr_def, discr_def]; ring
 
 @[deprecated (since := "2026-08-14")] alias discr_map := discr_changeGenerator
 
 /-- The discriminant is the square of the different `ω - star ω`. -/
-theorem algebraMap_discr [CommRing R] (a b : R) :
-    algebraMap R (QuadraticAlgebra R a b) (discr a b) = (ω - star ω) ^ 2 := by
+theorem algebraMap_discr [CommRing R] (a b : R)
+    : algebraMap R (QuadraticAlgebra R a b) (discr a b) = (ω - star ω) ^ 2 := by
   rw [discr_def]; ext <;> simp [sq] <;> ring
 
 -- The `a = 1` case of `Mathlib.Algebra.QuadraticDiscriminant`, reproved to avoid its heavy
 -- transitive import of `Mathlib.Order.Filter.AtTopBot.Field`.
-/-- If `2` is invertible, the polynomial `X ^ 2 - b * X - a` has a root if and only if the
-discriminant is a square. -/
-theorem exists_sq_eq_iff_isSquare_discr [CommRing R] [Invertible (2 : R)] {a b : R} :
-    (∃ r : R, r ^ 2 = a + b * r) ↔ IsSquare (discr a b) := by
+/--
+If `2` is invertible, the polynomial `X ^ 2 - b * X - a` has a root if and only if the
+discriminant is a square.
+-/
+theorem exists_sq_eq_iff_isSquare_discr [CommRing R] [Invertible (2 : R)] {a b : R}
+    : (∃ r : R, r ^ 2 = a + b * r) ↔ IsSquare (discr a b) := by
   rw [isSquare_iff_exists_sq, discr_def]
-  exact ⟨fun ⟨r, hr⟩ ↦ ⟨2 * r - b, by grind⟩,
-    fun ⟨r, hr⟩ ↦ ⟨⅟2 * (b + r), by grind [mul_invOf_self (2 : R)]⟩⟩
+  exact ⟨
+    fun ⟨r, hr⟩ ↦ ⟨2 * r - b, by grind⟩,
+    fun ⟨r, hr⟩ ↦ ⟨⅟2 * (b + r), by grind [mul_invOf_self (2 : R)]⟩
+  ⟩
 
 end discr
 
 section classification
 
-variable [CommRing R] {a b a' b' : R}
-  (f : QuadraticAlgebra R a b →ₐ[R] QuadraticAlgebra R a' b')
+variable [CommRing R] {a b a' b' : R} (f : QuadraticAlgebra R a b →ₐ[R] QuadraticAlgebra R a' b')
 
 /-- The transformation law for an injective algebra map. -/
-theorem discr_eq_im_sq_mul_discr (hf : Function.Injective f) :
-    discr a b = (f ω).im ^ 2 * discr a' b' := by
+theorem discr_eq_im_sq_mul_discr (hf : Function.Injective f)
+    : discr a b = (f ω).im ^ 2 * discr a' b' := by
   grind [im_sq_mul_discr, trace_algHom_omega, norm_algHom_omega, discr]
 
-/-- If `2` is a unit, `QuadraticAlgebra R a b` is isomorphic to the standard form
-`QuadraticAlgebra R (discr a b) 0`. -/
-def algEquivDiscrZero [Invertible (2 : R)] (a b : R) :
-    QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R (discr a b) 0 :=
+/--
+If `2` is a unit, `QuadraticAlgebra R a b` is isomorphic to the standard form
+`QuadraticAlgebra R (discr a b) 0`.
+-/
+def algEquivDiscrZero [Invertible (2 : R)] (a b : R)
+    : QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R (discr a b) 0 :=
   (changeGeneratorEquiv a b (unitOfInvertible (2 : R)) (-b)
     (by grind [discr_def, val_unitOfInvertible]) (by grind [val_unitOfInvertible])).symm
 
 @[simp]
-theorem algEquivDiscrZero_re [Invertible (2 : R)] (z : QuadraticAlgebra R a b) :
-    (algEquivDiscrZero a b z).re = z.re + ⅟2 * b * z.im := by
+theorem algEquivDiscrZero_re [Invertible (2 : R)] (z : QuadraticAlgebra R a b)
+    : (algEquivDiscrZero a b z).re = z.re + ⅟2 * b * z.im := by
   simp [algEquivDiscrZero, mul_comm]
 
 @[simp]
-theorem algEquivDiscrZero_im [Invertible (2 : R)] (z : QuadraticAlgebra R a b) :
-    (algEquivDiscrZero a b z).im = ⅟2 * z.im := by
+theorem algEquivDiscrZero_im [Invertible (2 : R)] (z : QuadraticAlgebra R a b)
+    : (algEquivDiscrZero a b z).im = ⅟2 * z.im := by
   simp [algEquivDiscrZero, mul_comm]
 
 @[simp]
-theorem algEquivDiscrZero_symm_re [Invertible (2 : R)]
-    (z : QuadraticAlgebra R (discr a b) 0) :
-    ((algEquivDiscrZero a b).symm z).re = z.re - b * z.im := by
+theorem algEquivDiscrZero_symm_re [Invertible (2 : R)] (z : QuadraticAlgebra R (discr a b) 0)
+    : ((algEquivDiscrZero a b).symm z).re = z.re - b * z.im := by
   simp [algEquivDiscrZero, mul_comm, sub_eq_add_neg]
 
 @[simp]
-theorem algEquivDiscrZero_symm_im [Invertible (2 : R)]
-    (z : QuadraticAlgebra R (discr a b) 0) :
-    ((algEquivDiscrZero a b).symm z).im = 2 * z.im := by
+theorem algEquivDiscrZero_symm_im [Invertible (2 : R)] (z : QuadraticAlgebra R (discr a b) 0)
+    : ((algEquivDiscrZero a b).symm z).im = 2 * z.im := by
   simp [algEquivDiscrZero, mul_comm]
 
 @[simp]
-theorem algEquivDiscrZero_add_smul [Invertible (2 : R)] (x y : R) :
-    algEquivDiscrZero a b (x • 1 + y • ω) = (x + ⅟2 * b * y) • 1 + (⅟2 * y) • ω := by
+theorem algEquivDiscrZero_add_smul [Invertible (2 : R)] (x y : R)
+    : algEquivDiscrZero a b (x • 1 + y • ω) = (x + ⅟2 * b * y) • 1 + (⅟2 * y) • ω := by
   ext <;> simp [mul_comm]
 
 @[simp]
-theorem algEquivDiscrZero_symm_add_smul [Invertible (2 : R)] (x y : R) :
-    (algEquivDiscrZero a b).symm (x • 1 + y • ω) = (x - b * y) • 1 + (2 * y) • ω := by
+theorem algEquivDiscrZero_symm_add_smul [Invertible (2 : R)] (x y : R)
+    : (algEquivDiscrZero a b).symm (x • 1 + y • ω) = (x - b * y) • 1 + (2 * y) • ω := by
   ext <;> simp [mul_comm, sub_eq_add_neg]
 
-/-- If `2` is regular, `QuadraticAlgebra R a b` and `QuadraticAlgebra R a' b'` are isomorphic
-iff `discr a b = u ^ 2 * discr a' b'` for some unit `u` with `2 ∣ b - u * b'`. -/
-theorem nonempty_algEquiv_iff (h : IsRegular (2 : R)) :
-    Nonempty (QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R a' b') ↔
-      ∃ u : Rˣ, discr a b = (u : R) ^ 2 * discr a' b' ∧ 2 ∣ (b - u * b') := by
+/--
+If `2` is regular, `QuadraticAlgebra R a b` and `QuadraticAlgebra R a' b'` are isomorphic
+iff `discr a b = u ^ 2 * discr a' b'` for some unit `u` with `2 ∣ b - u * b'`.
+-/
+theorem nonempty_algEquiv_iff (h : IsRegular (2 : R))
+    : Nonempty (QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R a' b')
+      ↔ ∃ u : Rˣ, discr a b = (u : R) ^ 2 * discr a' b' ∧ 2 ∣ (b - u * b') := by
   refine ⟨fun ⟨e⟩ ↦ ?_, fun ⟨u, hu, ⟨k, hk⟩⟩ ↦ ⟨changeGeneratorEquiv a' b' u k ?_ (by grind)⟩⟩
-  · refine ⟨(isUnit_im_omega_of_algEquiv e).unit,
-      by rw [discr_eq_im_sq_mul_discr e.toAlgHom e.injective, AlgEquiv.toAlgHom_apply,
-        IsUnit.unit_spec], ⟨(e ω).re, ?_⟩⟩
+  · refine ⟨
+      (isUnit_im_omega_of_algEquiv e).unit,
+      by
+        rw [discr_eq_im_sq_mul_discr e.toAlgHom e.injective, AlgEquiv.toAlgHom_apply,
+          IsUnit.unit_spec],
+      ⟨(e ω).re, ?_⟩
+    ⟩
     rw [IsUnit.unit_spec, sub_eq_iff_eq_add', add_comm, mul_comm _ b', ← trace_def, eq_comm]
     exact trace_algHom_omega e.toAlgHom e.injective
   · rw [← h.left.eq_iff, ← h.left.eq_iff]
     grind [discr]
 
-/-- If `2` is invertible, the discriminant classifies quadratic algebras up to
-isomorphism, modulo squares of units. -/
-theorem nonempty_algEquiv_iff_of_invertible_two [Invertible (2 : R)] :
-    Nonempty (QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R a' b') ↔
-      ∃ u : Rˣ, discr a b = (u : R) ^ 2 * discr a' b' := by
+/--
+If `2` is invertible, the discriminant classifies quadratic algebras up to
+isomorphism, modulo squares of units.
+-/
+theorem nonempty_algEquiv_iff_of_invertible_two [Invertible (2 : R)]
+    : Nonempty (QuadraticAlgebra R a b ≃ₐ[R] QuadraticAlgebra R a' b')
+      ↔ ∃ u : Rˣ, discr a b = (u : R) ^ 2 * discr a' b' := by
   rw [nonempty_algEquiv_iff (isUnit_of_invertible (2 : R)).isRegular]
   simp [(isUnit_of_invertible (2 : R)).dvd]
 
 section Int
 
-/-- Over `ℤ` the discriminant is a complete invariant of quadratic algebras up to
-isomorphism. -/
-theorem nonempty_algEquiv_int_iff {a b a' b' : ℤ} :
-    Nonempty (QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ a' b') ↔
-      discr a b = discr a' b' := by
+/--
+Over `ℤ` the discriminant is a complete invariant of quadratic algebras up to
+isomorphism.
+-/
+theorem nonempty_algEquiv_int_iff {a b a' b' : ℤ}
+    : Nonempty (QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ a' b')
+      ↔ discr a b = discr a' b' := by
   rw [nonempty_algEquiv_iff (IsRegular.of_ne_zero two_ne_zero)]
   refine ⟨fun ⟨u, hu, _⟩ ↦ by rwa [Int.isUnit_sq u.isUnit, one_mul] at hu, fun h ↦ ?_⟩
   obtain _ | _ : 2 ∣ (b + b') ∨ 2 ∣ (b - b') := by
@@ -180,14 +196,15 @@ theorem nonempty_algEquiv_int_iff {a b a' b' : ℤ} :
   · exact ⟨-1, by simpa, by simpa⟩
   · exact ⟨1, by simpa, by simpa⟩
 
-/-- For `D ≡ 0, 1 mod 4`, the canonical representative `QuadraticAlgebra ℤ (D / 4) (D % 4)` has
-discriminant `D`. -/
-theorem discr_ediv_emod {D : ℤ} (hD : D % 4 = 0 ∨ D % 4 = 1) :
-    discr (D / 4) (D % 4) = D := by
+/--
+For `D ≡ 0, 1 mod 4`, the canonical representative `QuadraticAlgebra ℤ (D / 4) (D % 4)` has
+discriminant `D`.
+-/
+theorem discr_ediv_emod {D : ℤ} (hD : D % 4 = 0 ∨ D % 4 = 1) : discr (D / 4) (D % 4) = D := by
   grind [discr_def]
 
-private theorem algEquivEdivEmod_aux {a b : ℤ} :
-    a = discr a b / 4 - discr a b % 4 * (b / 2) - (b / 2) ^ 2 := by
+private theorem algEquivEdivEmod_aux {a b : ℤ}
+    : a = discr a b / 4 - discr a b % 4 * (b / 2) - (b / 2) ^ 2 := by
   rw [discr_def]
   have : (b % 2) * (b / 2) = b ^ 2 / 4 - (b / 2) ^ 2 := by
     obtain ⟨k, rfl | rfl⟩ := b.even_or_odd'
@@ -198,25 +215,28 @@ private theorem algEquivEdivEmod_aux {a b : ℤ} :
   grind [Units.val_one, Int.mul_ediv_cancel_left _ (NeZero.ne 4), Int.add_mul_emod_self_left,
     Int.sq_emod_four]
 
-/-- Every quadratic algebra over `ℤ` is isomorphic to the canonical representative of its
-discriminant, obtained by translating `ω` by the integer `⌊b / 2⌋`. -/
+/--
+Every quadratic algebra over `ℤ` is isomorphic to the canonical representative of its
+discriminant, obtained by translating `ω` by the integer `⌊b / 2⌋`.
+-/
 @[simps!]
-def algEquivEdivEmod (a b : ℤ) :
-    QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ (discr a b / 4) (discr a b % 4) :=
+def algEquivEdivEmod (a b : ℤ)
+    : QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ (discr a b / 4) (discr a b % 4) :=
   changeGeneratorEquiv (discr a b / 4) (discr a b % 4) 1 (b / 2)
     (by simpa using algEquivEdivEmod_aux)
     (by simpa [discr_def, Int.sq_emod_four, add_comm] using (Int.mul_ediv_add_emod b 2).symm)
 
 @[simp]
-theorem algEquivEdivEmod_omega (a b : ℤ) :
-    algEquivEdivEmod a b ω = (b / 2) • 1 + ω := by
+theorem algEquivEdivEmod_omega (a b : ℤ) : algEquivEdivEmod a b ω = (b / 2) • 1 + ω := by
   ext <;> simp
 
-/-- For `D ≡ 0, 1 mod 4`, a quadratic algebra over `ℤ` is isomorphic to the canonical
-representative `QuadraticAlgebra ℤ (D / 4) (D % 4)` iff its discriminant is `D`. -/
-theorem nonempty_algEquiv_int_iff_discr_eq {a b D : ℤ} (hD : D % 4 = 0 ∨ D % 4 = 1) :
-    Nonempty (QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ (D / 4) (D % 4)) ↔
-      discr a b = D := by
+/--
+For `D ≡ 0, 1 mod 4`, a quadratic algebra over `ℤ` is isomorphic to the canonical
+representative `QuadraticAlgebra ℤ (D / 4) (D % 4)` iff its discriminant is `D`.
+-/
+theorem nonempty_algEquiv_int_iff_discr_eq {a b D : ℤ} (hD : D % 4 = 0 ∨ D % 4 = 1)
+    : Nonempty (QuadraticAlgebra ℤ a b ≃ₐ[ℤ] QuadraticAlgebra ℤ (D / 4) (D % 4))
+      ↔ discr a b = D := by
   rw [nonempty_algEquiv_int_iff, discr_ediv_emod hD]
 
 end Int
@@ -228,16 +248,16 @@ section field
 -- This `Fact (∀ r, r ^ 2 ≠ …)` instance is the bridge that lets the `Field` instance on
 -- `QuadraticAlgebra K a b` fire from `¬ IsSquare (discr a b)` alone (the `b = 0` bridge from
 -- `¬ IsSquare a` lives in `Basic.lean`).
-instance {K : Type*} [Field K] {a b : K} [NeZero (2 : K)] [Fact (¬ IsSquare (discr a b))] :
-    Fact (∀ r : K, r ^ 2 ≠ a + b * r) :=
+instance {K : Type*} [Field K] {a b : K} [NeZero (2 : K)] [Fact (¬ IsSquare (discr a b))]
+    : Fact (∀ r : K, r ^ 2 ≠ a + b * r) :=
   letI : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
   ⟨not_exists.mp <| exists_sq_eq_iff_isSquare_discr.not.mpr Fact.out⟩
 
 variable {K : Type*} [Field K]
 
 /-- If `discr a b` is a square, `QuadraticAlgebra K a b` is not a field. -/
-theorem not_isField_of_isSquare_discr [NeZero (2 : K)] {a b : K}
-    (h : IsSquare (discr a b)) : ¬ IsField (QuadraticAlgebra K a b) := by
+theorem not_isField_of_isSquare_discr [NeZero (2 : K)] {a b : K} (h : IsSquare (discr a b))
+    : ¬ IsField (QuadraticAlgebra K a b) := by
   let : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
   obtain ⟨r, hr⟩ := exists_sq_eq_iff_isSquare_discr.mpr h
   intro hfield
@@ -247,10 +267,12 @@ theorem not_isField_of_isSquare_discr [NeZero (2 : K)] {a b : K}
   rw [← norm_mem_nonZeroDivisors_iff, show norm ⟨r, -1⟩ = 0 by rw [norm_def]; grind] at this
   exact zero_notMem_nonZeroDivisors this
 
-/-- If `2 ≠ 0` in the field `K`, `QuadraticAlgebra K a b` is a field iff `discr a b` is
-not a square. -/
-theorem isField_iff_not_isSquare_discr [NeZero (2 : K)] {a b : K} :
-    IsField (QuadraticAlgebra K a b) ↔ ¬ IsSquare (discr a b) := by
+/--
+If `2 ≠ 0` in the field `K`, `QuadraticAlgebra K a b` is a field iff `discr a b` is
+not a square.
+-/
+theorem isField_iff_not_isSquare_discr [NeZero (2 : K)] {a b : K}
+    : IsField (QuadraticAlgebra K a b) ↔ ¬ IsSquare (discr a b) := by
   let : Invertible (2 : K) := invertibleOfNonzero two_ne_zero
   refine ⟨fun hfield h ↦ not_isField_of_isSquare_discr h hfield, fun h ↦ ?_⟩
   have : Fact (¬ IsSquare (discr a b)) := ⟨h⟩

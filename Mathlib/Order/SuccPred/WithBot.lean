@@ -31,17 +31,21 @@ lemma succ_eq_succ : ∀ a : WithBot α, succ a = Order.succ a
   | ⊥ => rfl
   | (a : α) => rfl
 
-lemma lt_succ [NoMaxOrder α] (x : WithBot α) : x < x.succ :=
-  succ_eq_succ x ▸ Order.lt_succ x
+lemma lt_succ [NoMaxOrder α] (x : WithBot α) : x < x.succ := succ_eq_succ x ▸ Order.lt_succ x
 
 lemma succ_mono : Monotone (succ : WithBot α → α)
-  | ⊥, _, _ => by simp
-  | (a : α), ⊥, hab => by simp at hab
-  | (a : α), (b : α), hab => Order.succ_le_succ (by simpa using hab)
+  | ⊥, _, _ => by
+    simp
+  | (a : α), ⊥, hab => by
+    simp at hab
+  | (a : α), (b : α), hab =>
+    Order.succ_le_succ (by simpa using hab)
 
 lemma succ_strictMono [NoMaxOrder α] : StrictMono (succ : WithBot α → α)
-  | ⊥, (b : α), hab => by simp
-  | (a : α), (b : α), hab => Order.succ_lt_succ (by simpa using hab)
+  | ⊥, (b : α), hab => by
+    simp
+  | (a : α), (b : α), hab =>
+    Order.succ_lt_succ (by simpa using hab)
 
 @[gcongr] lemma succ_le_succ (hxy : x ≤ y) : x.succ ≤ y.succ := succ_mono hxy
 @[gcongr] lemma succ_lt_succ [NoMaxOrder α] (hxy : x < y) : x.succ < y.succ := succ_strictMono hxy
@@ -76,13 +80,18 @@ lemma pred_eq_pred : ∀ a : WithTop α, pred a = Order.pred a
   | (a : α) => rfl
 
 lemma pred_mono : Monotone (pred : WithTop α → α)
-  | _, ⊤, _ => by simp
-  | ⊤, (a : α), hab => by simp at hab
-  | (a : α), (b : α), hab => Order.pred_le_pred (by simpa using hab)
+  | _, ⊤, _ => by
+    simp
+  | ⊤, (a : α), hab => by
+    simp at hab
+  | (a : α), (b : α), hab =>
+    Order.pred_le_pred (by simpa using hab)
 
 lemma pred_strictMono [NoMinOrder α] : StrictMono (pred : WithTop α → α)
-  | (b : α), ⊤, hab => by simp
-  | (a : α), (b : α), hab => Order.pred_lt_pred (by simpa using hab)
+  | (b : α), ⊤, hab => by
+    simp
+  | (a : α), (b : α), hab =>
+    Order.pred_lt_pred (by simpa using hab)
 
 @[gcongr] lemma pred_le_pred (hxy : x ≤ y) : x.pred ≤ y.pred := pred_mono hxy
 @[gcongr] lemma pred_lt_pred [NoMinOrder α] (hxy : x < y) : x.pred < y.pred := pred_strictMono hxy

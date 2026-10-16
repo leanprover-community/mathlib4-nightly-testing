@@ -20,8 +20,7 @@ public section
 open scoped unitInterval
 
 /-- There is a continuous function on `ℝ` that maps the Cantor set to the square. -/
-lemma exists_long_peano_curve :
-    ∃ f : C(ℝ, I × I), Set.SurjOn f cantorSet Set.univ := by
+lemma exists_long_peano_curve : ∃ f : C(ℝ, I × I), Set.SurjOn f cantorSet Set.univ := by
   -- Take a continuous surjection from the Cantor set to the square
   obtain ⟨g, hg1, hg2⟩ := exists_nat_bool_continuous_surjective_of_compact (I × I)
   let g' : C(cantorSet, I × I) :=
@@ -34,8 +33,7 @@ lemma exists_long_peano_curve :
   simp only [Set.surjOn_iff_surjective, ← ContinuousMap.coe_restrict, hf, hg']
 
 /-- There is a continuous surjection from the interval to the square. -/
-theorem exists_peano_curve :
-    ∃ f : C(I, I × I), Function.Surjective f := by
+theorem exists_peano_curve : ∃ f : C(I, I × I), Function.Surjective f := by
   obtain ⟨f, hf⟩ := exists_long_peano_curve
   -- Restrict the map from `exists_long_peano_curve` to the interval
   use ContinuousMap.restrict I f

@@ -39,20 +39,16 @@ attribute [local instance] splits_ℚ_ℂ
 variable (R : Type*) [CommRing R] (a b : ℕ)
 
 /-- A quintic polynomial that we will show is irreducible -/
-noncomputable def Φ : R[X] :=
-  X ^ 5 - C (a : R) * X + C (b : R)
+noncomputable def Φ : R[X] := X ^ 5 - C (a : R) * X + C (b : R)
 
 variable {R}
 
 @[simp]
 theorem map_Phi {S : Type*} [CommRing S] (f : R →+* S) : (Φ R a b).map f = Φ S a b := by simp [Φ]
 
-@[simp]
-theorem coeff_zero_Phi : (Φ R a b).coeff 0 = (b : R) := by simp [Φ, coeff_X_pow]
+@[simp] theorem coeff_zero_Phi : (Φ R a b).coeff 0 = (b : R) := by simp [Φ, coeff_X_pow]
 
-@[simp]
-theorem coeff_five_Phi : (Φ R a b).coeff 5 = 1 := by
-  simp [Φ, -map_natCast]
+@[simp] theorem coeff_five_Phi : (Φ R a b).coeff 5 = 1 := by simp [Φ, -map_natCast]
 
 variable [Nontrivial R]
 
@@ -63,17 +59,15 @@ theorem degree_Phi : (Φ R a b).degree = ((5 : ℕ) : WithBot ℕ) := by
   rw [degree_sub_eq_left_of_degree_lt] <;> rw [degree_X_pow]
   exact (degree_C_mul_X_le (a : R)).trans_lt (WithBot.coe_lt_coe.mpr (show 1 < 5 by simp))
 
-theorem natDegree_Phi : (Φ R a b).natDegree = 5 :=
-  natDegree_eq_of_degree_eq_some (degree_Phi a b)
+theorem natDegree_Phi : (Φ R a b).natDegree = 5 := natDegree_eq_of_degree_eq_some (degree_Phi a b)
 
 theorem leadingCoeff_Phi : (Φ R a b).leadingCoeff = 1 := by
   rw [Polynomial.leadingCoeff, natDegree_Phi, coeff_five_Phi]
 
-theorem monic_Phi : (Φ R a b).Monic :=
-  leadingCoeff_Phi a b
+theorem monic_Phi : (Φ R a b).Monic := leadingCoeff_Phi a b
 
-theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) :
-    Irreducible (Φ ℚ a b) := by
+theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬ p ^ 2 ∣ b)
+    : Irreducible (Φ ℚ a b) := by
   rw [← map_Phi a b (Int.castRingHom ℚ), ← IsPrimitive.Int.irreducible_iff_irreducible_map_cast]
   on_goal 1 =>
     apply irreducible_of_eisenstein_criterion
@@ -101,11 +95,10 @@ theorem real_roots_Phi_le : Fintype.card ((Φ ℚ a b).rootSet ℝ) ≤ 3 := by
   suffices (Polynomial.rootSet (C (20 : ℚ) * X ^ 3) ℝ).Subsingleton by
     norm_num [Fintype.card_le_one_iff_subsingleton, ← mul_assoc] at *
     exact this
-  rw [rootSet_C_mul_X_pow] <;>
-  norm_num
+  rw [rootSet_C_mul_X_pow] <;> norm_num
 
-theorem real_roots_Phi_ge_aux (hab : b < a) :
-    ∃ x y : ℝ, x ≠ y ∧ aeval x (Φ ℚ a b) = 0 ∧ aeval y (Φ ℚ a b) = 0 := by
+theorem real_roots_Phi_ge_aux (hab : b < a)
+    : ∃ x y : ℝ, x ≠ y ∧ aeval x (Φ ℚ a b) = 0 ∧ aeval y (Φ ℚ a b) = 0 := by
   let f : ℝ → ℝ := fun x : ℝ => aeval x (Φ ℚ a b)
   have hf : f = fun x : ℝ => x ^ 5 - a * x + b := by simp [f, Φ]
   have hc : ∀ s : Set ℝ, ContinuousOn f s := fun s => (Φ ℚ a b).continuousOn_aeval
@@ -127,7 +120,7 @@ theorem real_roots_Phi_ge_aux (hab : b < a) :
         f (-a) = (a : ℝ) ^ 2 - (a : ℝ) ^ 5 + b := by
           norm_num [hf, ← sq, sub_eq_add_neg, add_comm, Odd.neg_pow (by decide : Odd 5)]
         _ ≤ (a : ℝ) ^ 2 - (a : ℝ) ^ 3 + (a - 1) := by gcongr <;> linarith
-        _ = -((a : ℝ) - 1) ^ 2 * (a + 1) := by ring
+        _ = - ((a : ℝ) - 1) ^ 2 * (a + 1) := by ring
         _ ≤ 0 := by nlinarith
     have ha' := neg_nonpos.mpr (hle.trans ha)
     obtain ⟨x, ⟨-, hx1⟩, hx2⟩ := intermediate_value_Icc ha' (hc _) (Set.mem_Icc.mpr ⟨hfa, hf0⟩)
@@ -145,8 +138,8 @@ theorem real_roots_Phi_ge (hab : b < a) : 2 ≤ Fintype.card ((Φ ℚ a b).rootS
 theorem complex_roots_Phi (h : (Φ ℚ a b).Separable) : Fintype.card ((Φ ℚ a b).rootSet ℂ) = 5 :=
   (card_rootSet_eq_natDegree h (IsAlgClosed.splits _)).trans (natDegree_Phi a b)
 
-theorem gal_Phi (hab : b < a) (h_irred : Irreducible (Φ ℚ a b)) :
-    Bijective (galActionHom (Φ ℚ a b) ℂ) := by
+theorem gal_Phi (hab : b < a) (h_irred : Irreducible (Φ ℚ a b))
+    : Bijective (galActionHom (Φ ℚ a b) ℂ) := by
   apply galActionHom_bijective_of_prime_degree' h_irred
   · simp only [natDegree_Phi]; decide
   · rw [complex_roots_Phi a b h_irred.separable, Nat.succ_le_succ_iff]
@@ -154,8 +147,11 @@ theorem gal_Phi (hab : b < a) (h_irred : Irreducible (Φ ℚ a b)) :
   · simp_rw [complex_roots_Phi a b h_irred.separable, Nat.succ_le_succ_iff]
     exact real_roots_Phi_ge a b hab
 
-theorem not_solvable_by_rad (p : ℕ) (x : ℂ) (hx : aeval x (Φ ℚ a b) = 0) (hab : b < a)
-    (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) : x ∉ solvableByRad ℚ ℂ := by
+theorem not_solvable_by_rad
+    (p : ℕ)
+    (x : ℂ) (hx : aeval x (Φ ℚ a b) = 0)
+    (hab : b < a) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬ p ^ 2 ∣ b)
+    : x ∉ solvableByRad ℚ ℂ := by
   have h_irred := irreducible_Phi a b p hp hpa hpb hp2b
   apply mt (isSolvable_gal_of_irreducible · h_irred hx)
   intro h

@@ -18,9 +18,13 @@ public section
 variable {R : Type*}
 
 /-- A variant of `List.prod_pos` for `CanonicallyOrderedAdd`. -/
-@[simp] lemma CanonicallyOrderedAdd.list_prod_pos {α : Type*}
-    [CommSemiring α] [PartialOrder α] [CanonicallyOrderedAdd α] [NoZeroDivisors α] [Nontrivial α] :
-    ∀ {l : List α}, 0 < l.prod ↔ (∀ x ∈ l, (0 : α) < x)
-  | [] => by simp
-  | (x :: xs) => by simp_rw [List.prod_cons, List.forall_mem_cons, CanonicallyOrderedAdd.mul_pos,
-    list_prod_pos]
+@[simp]
+lemma CanonicallyOrderedAdd.list_prod_pos
+    {α : Type*}
+    [CommSemiring α] [PartialOrder α] [CanonicallyOrderedAdd α] [NoZeroDivisors α] [Nontrivial α]
+    : ∀ {l : List α}, 0 < l.prod ↔ (∀ x ∈ l, (0 : α) < x)
+  | [] => by
+    simp
+  | (x :: xs) => by
+    simp_rw [List.prod_cons, List.forall_mem_cons, CanonicallyOrderedAdd.mul_pos,
+      list_prod_pos]

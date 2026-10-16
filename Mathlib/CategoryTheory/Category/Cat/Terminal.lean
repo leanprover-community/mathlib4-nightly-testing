@@ -31,9 +31,10 @@ open CategoryTheory Limits Functor
 namespace CategoryTheory.Cat
 
 /-- A discrete category with a unique object is terminal. -/
-def isTerminalOfUniqueOfIsDiscrete {T : Type u} [Category.{v} T] [Unique T] [IsDiscrete T] :
-    IsTerminal (Cat.of T) :=
-  IsTerminal.ofUniqueHom (fun X ↦ ((const X).obj (default : T)).toCatHom)
+def isTerminalOfUniqueOfIsDiscrete {T : Type u} [Category.{v} T] [Unique T] [IsDiscrete T]
+    : IsTerminal (Cat.of T) :=
+  IsTerminal.ofUniqueHom
+    (fun X ↦ ((const X).obj (default : T)).toCatHom)
     (fun _ _ ↦ Cat.Hom.ext <| Functor.ext (by simp [eq_iff_true_of_subsingleton]))
 
 instance : HasTerminal Cat.{v, u} := by
@@ -45,16 +46,16 @@ instance : HasTerminal Cat.{v, u} := by
 
 /-- Any `T : Cat.{u, u}` with a unique object and discrete homs is isomorphic to `⊤_ Cat.{u, u}.` -/
 noncomputable def terminalIsoOfUniqueOfIsDiscrete
-    {T : Type u} [Category.{v} T] [Unique T] [IsDiscrete T] : ⊤_ Cat.{v, u} ≅ ↧T :=
+    {T : Type u} [Category.{v} T] [Unique T] [IsDiscrete T]
+    : ⊤_ Cat.{v, u} ≅ ↧T :=
   terminalIsoIsTerminal isTerminalOfUniqueOfIsDiscrete
 
 /-- The discrete category on `PUnit` is terminal. -/
-def isTerminalDiscretePUnit : IsTerminal (Cat.of (Discrete PUnit)) :=
-  isTerminalOfUniqueOfIsDiscrete
+def isTerminalDiscretePUnit : IsTerminal (Cat.of (Discrete PUnit)) := isTerminalOfUniqueOfIsDiscrete
 
 /-- Any terminal object `T : Cat.{u, u}` is isomorphic to `Cat.of (Discrete PUnit)`. -/
-def isoDiscretePUnitOfIsTerminal {T : Type u} [Category.{u} T] (hT : IsTerminal (Cat.of T)) :
-    Cat.of T ≅ Cat.of (Discrete PUnit) :=
+def isoDiscretePUnitOfIsTerminal {T : Type u} [Category.{u} T] (hT : IsTerminal (Cat.of T))
+    : Cat.of T ≅ Cat.of (Discrete PUnit) :=
   IsTerminal.uniqueUpToIso hT isTerminalDiscretePUnit
 
 end CategoryTheory.Cat

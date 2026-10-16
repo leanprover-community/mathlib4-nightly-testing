@@ -43,34 +43,28 @@ variable (R : Type u) [CommRing R] (k : Type u) [Field k]
 section
 
 /-- The object property of finite `R`-algebras. -/
-abbrev finite : ObjectProperty (CommAlgCat.{v} R) :=
-  fun S ↦ Module.Finite R S
+abbrev finite : ObjectProperty (CommAlgCat.{v} R) := fun S ↦ Module.Finite R S
 
 /-- The object property of étale `R`-algebras. -/
-abbrev etale : ObjectProperty (CommAlgCat.{v} R) :=
-  fun S ↦ Algebra.Etale R S
+abbrev etale : ObjectProperty (CommAlgCat.{v} R) := fun S ↦ Algebra.Etale R S
 
 /-- The object property of finite étale `R`-algebras. -/
-abbrev finiteEtale : ObjectProperty (CommAlgCat.{v} R) :=
-  finite R ⊓ etale R
+abbrev finiteEtale : ObjectProperty (CommAlgCat.{v} R) := finite R ⊓ etale R
 
 /-- The category of finite étale `R`-algebras. -/
-abbrev FiniteEtale (R : Type u) [CommRing R] : Type _ :=
-  (finiteEtale.{v} R).FullSubcategory
+abbrev FiniteEtale (R : Type u) [CommRing R] : Type _ := (finiteEtale.{v} R).FullSubcategory
 
 instance : CoeSort (FiniteEtale.{v} R) (Type v) := ⟨fun R ↦ R.obj⟩
 
-instance (S : FiniteEtale.{v} R) : Algebra.Etale R S :=
-  S.property.right
+instance (S : FiniteEtale.{v} R) : Algebra.Etale R S := S.property.right
 
-instance (S : FiniteEtale.{v} R) : Module.Finite R S :=
-  S.property.left
+instance (S : FiniteEtale.{v} R) : Module.Finite R S := S.property.left
 
 /-- Construct a term of `FiniteEtale R` from a finite étale `R`-algebra. -/
 @[simps obj]
-abbrev FiniteEtale.of (S : Type v) [CommRing S] [Algebra R S]
-    [Module.Finite R S] [Algebra.Etale R S] :
-    FiniteEtale.{v} R where
+abbrev FiniteEtale.of
+    (S : Type v) [CommRing S] [Algebra R S] [Module.Finite R S] [Algebra.Etale R S]
+    : FiniteEtale.{v} R where
   obj := ↧S
   property := ⟨‹_›, ‹_›⟩
 
@@ -78,15 +72,15 @@ variable {R}
 
 /-- Construct a morphism in `FiniteEtale R` from an algebra map. -/
 @[simps]
-abbrev FiniteEtale.ofHom {S T : Type v} [CommRing S] [CommRing T]
-    [Algebra R S] [Algebra R T] [Module.Finite R S] [Algebra.Etale R S] [Module.Finite R T]
-    [Algebra.Etale R T] (f : S →ₐ[R] T) :
-    FiniteEtale.of R S ⟶ FiniteEtale.of R T where
+abbrev FiniteEtale.ofHom
+    {S T : Type v} [CommRing S] [CommRing T] [Algebra R S] [Algebra R T] [Module.Finite R S]
+    [Algebra.Etale R S] [Module.Finite R T] [Algebra.Etale R T]
+    (f : S →ₐ[R] T)
+    : FiniteEtale.of R S ⟶ FiniteEtale.of R T where
   hom := CommAlgCat.ofHom f
 
 /-- Construct an isomorphism in `FiniteEtale R` from an algebra equivalence. -/
-abbrev FiniteEtale.isoMk {S T : FiniteEtale R} (e : S.obj ≃ₐ[R] T.obj) :
-    S ≅ T :=
+abbrev FiniteEtale.isoMk {S T : FiniteEtale R} (e : S.obj ≃ₐ[R] T.obj) : S ≅ T :=
   ObjectProperty.isoMk _ (CommAlgCat.isoMk e)
 
 end
@@ -95,7 +89,8 @@ instance (R : FiniteEtale k) : IsArtinianRing R :=
   have := Algebra.FormallyUnramified.finite_of_free k R
   isArtinian_of_tower k inferInstance
 
-variable (Ω : Type w) [Field Ω] [Algebra R Ω]
+variable
+  (Ω : Type w) [Field Ω] [Algebra R Ω]
   (S : Type w) [CommRing S] [Algebra R S] [Algebra S Ω] [IsScalarTower R S Ω]
 
 /-- If `S` is an `R`-algebra, this is the base change functor `A ↦ S ⊗[R] A`. -/
@@ -112,55 +107,67 @@ def FiniteEtale.baseChangeSelfIso : baseChange R R ≅ 𝟭 (FiniteEtale R) :=
     ext
     simp
 
-/-- The fiber functor for finite étale `R`-algebras at the geometric point `Ω`: This is the
-functor sending `S` to `R`-algebra homomorphisms `S →ₐ[R] Ω`. -/
+/--
+The fiber functor for finite étale `R`-algebras at the geometric point `Ω`: This is the
+functor sending `S` to `R`-algebra homomorphisms `S →ₐ[R] Ω`.
+-/
 @[expose, simps]
-def FiniteEtale.fiber (R : Type u) [CommRing R] (Ω : Type w) [Field Ω] [Algebra R Ω] :
-    (FiniteEtale.{v} R)ᵒᵖ ⥤ FintypeCat.{max v w} where
+def FiniteEtale.fiber (R : Type u) [CommRing R] (Ω : Type w) [Field Ω] [Algebra R Ω]
+    : (FiniteEtale.{v} R)ᵒᵖ ⥤ FintypeCat.{max v w} where
   obj S := ↧(S.unop →ₐ[R] Ω)
   map {S T} f := FintypeCat.homMk (·.comp f.unop.hom.hom)
 
-/-- If `k` is a field, this is the `Spec` functor sending a finite étale `k`-algebra `R`
-to its finite prime spectrum. -/
+/--
+If `k` is a field, this is the `Spec` functor sending a finite étale `k`-algebra `R`
+to its finite prime spectrum.
+-/
 @[expose, simps]
 def FiniteEtale.finiteSpec (k : Type u) [Field k] : (FiniteEtale.{v} k)ᵒᵖ ⥤ FintypeCat.{v} where
   obj R := ↧(PrimeSpectrum R.unop.obj)
   map f := FintypeCat.homMk (PrimeSpectrum.comap f.unop.hom.hom)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If the geometric point `Ω` factors through `S`, the fiber can be computed after base change
-to `S`. -/
+/--
+If the geometric point `Ω` factors through `S`, the fiber can be computed after base change
+to `S`.
+-/
 @[expose]
-def FiniteEtale.fiberIsoBaseChangeFiber :
-    FiniteEtale.fiber.{v} R Ω ≅
-      (FiniteEtale.baseChange.{v} R S).op ⋙ FiniteEtale.fiber S Ω :=
-  NatIso.ofComponents
-    (fun A ↦ FintypeCat.equivEquivIso (Algebra.TensorProduct.liftEquivRight _ _ _ _))
+def FiniteEtale.fiberIsoBaseChangeFiber
+    : FiniteEtale.fiber.{v} R Ω ≅ (FiniteEtale.baseChange.{v} R S).op ⋙ FiniteEtale.fiber S Ω :=
+  NatIso.ofComponents (fun A ↦
+    FintypeCat.equivEquivIso (Algebra.TensorProduct.liftEquivRight _ _ _ _))
 
-/-- If `Ω` is separably closed, the fiber functor for finite étale `Ω`-algebras
-is naturally isomorphic to the (finite) `Spec` functor. -/
+/--
+If `Ω` is separably closed, the fiber functor for finite étale `Ω`-algebras
+is naturally isomorphic to the (finite) `Spec` functor.
+-/
 @[expose]
-noncomputable def FiniteEtale.fiberIsoFiniteSpec [IsSepClosed Ω] :
-    FiniteEtale.fiber Ω Ω ≅ FiniteEtale.finiteSpec Ω :=
-  NatIso.ofComponents
-    fun R ↦ FintypeCat.equivEquivIso (Algebra.IsFiniteSplit.algHomEquivPrimeSpectrum _ _)
+noncomputable def FiniteEtale.fiberIsoFiniteSpec [IsSepClosed Ω]
+    : FiniteEtale.fiber Ω Ω ≅ FiniteEtale.finiteSpec Ω :=
+  NatIso.ofComponents fun R ↦
+    FintypeCat.equivEquivIso (Algebra.IsFiniteSplit.algHomEquivPrimeSpectrum _ _)
 
-/-- If `Ω` is separably closed, the fiber `S →ₐ[R] Ω`
-is isomorphic to the prime spectrum of the base change `Ω ⊗[R] S`. -/
+/--
+If `Ω` is separably closed, the fiber `S →ₐ[R] Ω`
+is isomorphic to the prime spectrum of the base change `Ω ⊗[R] S`.
+-/
 @[expose]
-noncomputable def FiniteEtale.fiberIsoComp [IsSepClosed Ω] :
-    FiniteEtale.fiber.{v} R Ω ≅
-      (FiniteEtale.baseChange.{v} R Ω).op ⋙ FiniteEtale.finiteSpec.{max w v} Ω :=
+noncomputable def FiniteEtale.fiberIsoComp [IsSepClosed Ω]
+    : FiniteEtale.fiber.{v} R Ω
+      ≅ (FiniteEtale.baseChange.{v} R Ω).op ⋙ FiniteEtale.finiteSpec.{max w v} Ω :=
   fiberIsoBaseChangeFiber _ _ Ω ≪≫ Functor.isoWhiskerLeft _ (fiberIsoFiniteSpec _)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- If `Ω` is a separably closed field, the category of finite étale `Ω`-algebras is
-anti-equivalent to `FintypeCat`. -/
+/--
+If `Ω` is a separably closed field, the category of finite étale `Ω`-algebras is
+anti-equivalent to `FintypeCat`.
+-/
 @[expose, simps! functor inverse_obj inverse_map]
-noncomputable def FiniteEtale.equivOfIsSepClosed (Ω : Type u) [Field Ω] [IsSepClosed Ω] :
-    (FiniteEtale.{u} Ω)ᵒᵖ ≌ FintypeCat.{u} := .symm
-  { functor.obj X := .op ↧(X → Ω)
+noncomputable def FiniteEtale.equivOfIsSepClosed (Ω : Type u) [Field Ω] [IsSepClosed Ω]
+    : (FiniteEtale.{u} Ω)ᵒᵖ ≌ FintypeCat.{u} :=
+  .symm {
+    functor.obj X := .op ↧(X → Ω)
     functor.map {X Y} f := .op (FiniteEtale.ofHom <| AlgHom.pi fun i ↦ Pi.evalAlgHom _ _ (f i))
     inverse := FiniteEtale.finiteSpec Ω
     counitIso :=
@@ -170,9 +177,10 @@ noncomputable def FiniteEtale.equivOfIsSepClosed (Ω : Type u) [Field Ω] [IsSep
           apply Quiver.Hom.unop_inj
           ext x
           exact funext fun p ↦ Algebra.FormallyEtale.equivPiOfIsSepClosed_comap _ _ _
-    unitIso := NatIso.ofComponents
-      fun X ↦ FintypeCat.equivEquivIso <|
-        (Equiv.sigmaUnique _ _).symm.trans (PrimeSpectrum.sigmaToPiHomeo _).toEquiv
+    unitIso :=
+      NatIso.ofComponents fun X ↦
+        FintypeCat.equivEquivIso <|
+          (Equiv.sigmaUnique _ _).symm.trans (PrimeSpectrum.sigmaToPiHomeo _).toEquiv
     functor_unitIso_comp X := by
       dsimp [FiniteEtale.finiteSpec]
       apply Quiver.Hom.unop_inj
@@ -182,7 +190,8 @@ noncomputable def FiniteEtale.equivOfIsSepClosed (Ω : Type u) [Field Ω] [IsSep
       dsimp
       rw [← Pi.coe_evalAlgHom Ω]
       simp [Algebra.FormallyEtale.equivPiOfIsSepClosed_comap,
-        Algebra.FormallyEtale.equivPiOfIsSepClosed_self_apply] }
+        Algebra.FormallyEtale.equivPiOfIsSepClosed_self_apply]
+  }
 
 instance (Ω : Type u) [Field Ω] [IsSepClosed Ω] : (FiniteEtale.finiteSpec.{u} Ω).IsEquivalence :=
   (FiniteEtale.equivOfIsSepClosed.{u} Ω).isEquivalence_functor

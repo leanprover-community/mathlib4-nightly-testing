@@ -21,8 +21,8 @@ public section
 open Set
 
 namespace Order
-variable {α β : Type*}
-  [LinearOrder α] [WellFoundedLT α] [TopologicalSpace α] [OrderTopology α]
+variable
+  {α β : Type*} [LinearOrder α] [WellFoundedLT α] [TopologicalSpace α] [OrderTopology α]
   [LinearOrder β] [WellFoundedLT β] [TopologicalSpace β] [OrderTopology β]
 
 attribute [local instance]
@@ -40,10 +40,12 @@ theorem IsNormal.continuous {f : α → β} (hf : IsNormal f) : Continuous f := 
       rw [hf.preimage_Iic h (ha ▸ bddAbove_Iio)]
       exact isClosed_Iic
 
-/-- A normal function between well-orders is equivalent to a strictly monotone,
-continuous function. -/
-theorem isNormal_iff_strictMono_and_continuous {f : α → β} :
-    IsNormal f ↔ StrictMono f ∧ Continuous f where
+/--
+A normal function between well-orders is equivalent to a strictly monotone,
+continuous function.
+-/
+theorem isNormal_iff_strictMono_and_continuous {f : α → β}
+    : IsNormal f ↔ StrictMono f ∧ Continuous f where
   mp hf := ⟨hf.strictMono, hf.continuous⟩
   mpr := by
     rintro ⟨hs, hc⟩

@@ -73,22 +73,22 @@ attribute [local instance 100] LieRing.ofAssociativeRing
 local notation "φ" => LieModule.toEnd R L M
 
 set_option backward.privateInPublic true in
-/-- Let `x` and `y` be elements of a Lie `R`-algebra `L`, and `M` a Lie module over `L`.
+/--
+Let `x` and `y` be elements of a Lie `R`-algebra `L`, and `M` a Lie module over `L`.
 Then the characteristic polynomials of the family of endomorphisms `⁅r • y + x, _⁆` of `M`
 have coefficients that are polynomial in `r : R`.
 In other words, we obtain a polynomial over `R[X]`
 that specializes to the characteristic polynomial of `⁅r • y + x, _⁆` under the map `X ↦ r`.
-This polynomial is captured in `lieCharpoly R M x y`. -/
-private noncomputable
-def lieCharpoly : Polynomial R[X] :=
+This polynomial is captured in `lieCharpoly R M x y`.
+-/
+private noncomputable def lieCharpoly : Polynomial R[X] :=
   letI bL := chooseBasis R L
   (polyCharpoly (LieHom.toLinearMap φ) bL).map <| RingHomClass.toRingHom <|
     MvPolynomial.aeval fun i ↦ C (bL.repr y i) * X + C (bL.repr x i)
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-lemma lieCharpoly_monic : (lieCharpoly R M x y).Monic :=
-  (polyCharpoly_monic _ _).map _
+lemma lieCharpoly_monic : (lieCharpoly R M x y).Monic := (polyCharpoly_monic _ _).map _
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
@@ -98,8 +98,8 @@ lemma lieCharpoly_natDegree [Nontrivial R] : (lieCharpoly R M x y).natDegree = f
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 variable {R} in
-lemma lieCharpoly_map_eval (r : R) :
-    (lieCharpoly R M x y).map (evalRingHom r) = (φ (r • y + x)).charpoly := by
+lemma lieCharpoly_map_eval (r : R)
+    : (lieCharpoly R M x y).map (evalRingHom r) = (φ (r • y + x)).charpoly := by
   rw [lieCharpoly, map_map]
   set b := chooseBasis R L
   have aux : (fun i ↦ (b.repr y) i * r + (b.repr x) i) = b.repr (r • y + x) := by
@@ -110,8 +110,8 @@ lemma lieCharpoly_map_eval (r : R) :
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-lemma lieCharpoly_coeff_natDegree [Nontrivial R] (i j : ℕ) (hij : i + j = finrank R M) :
-    ((lieCharpoly R M x y).coeff i).natDegree ≤ j := by
+lemma lieCharpoly_coeff_natDegree [Nontrivial R] (i j : ℕ) (hij : i + j = finrank R M)
+    : ((lieCharpoly R M x y).coeff i).natDegree ≤ j := by
   rw [← mul_one j, lieCharpoly, coeff_map]
   apply MvPolynomial.aeval_natDegree_le
   · apply (polyCharpoly_coeff_isHomogeneous φ (chooseBasis R L) _ _ hij).totalDegree_le
@@ -128,15 +128,18 @@ variable {K L : Type*} [Field K] [LieRing L] [LieAlgebra K L] [Module.Finite K L
 
 open Module LieSubalgebra LieSubmodule Polynomial Cardinal LieModule engel_isBot_of_isMin
 
-/-- Let `L` be a Lie algebra of dimension `n` over a field `K` with at least `n` elements.
+/--
+Let `L` be a Lie algebra of dimension `n` over a field `K` with at least `n` elements.
 Given a Lie subalgebra `U` of `L`, and an element `x ∈ U` such that `U ≤ engel K x`.
 Suppose that `engel K x` is minimal amongst the Engel subalgebras `engel K y` for `y ∈ U`.
 Then `engel K x ≤ engel K y` for all `y ∈ U`.
 
-Lemma 2 in [barnes1967]. -/
-lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
-    (E : {engel K x | x ∈ U}) (hUle : U ≤ E) (hmin : IsMin E) :
-    IsBot E := by
+Lemma 2 in [barnes1967].
+-/
+lemma engel_isBot_of_isMin
+    (hLK : finrank K L ≤ #K)
+    (U : LieSubalgebra K L) (E : {engel K x | x ∈ U}) (hUle : U ≤ E) (hmin : IsMin E)
+    : IsBot E := by
   rcases E with ⟨_, x, hxU, rfl⟩
   rintro ⟨_, y, hyU, rfl⟩
   -- It will be useful to repackage the Engel subalgebras
@@ -146,9 +149,10 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
   replace hmin : ∀ E, E ≤ Ex → Ex ≤ E := @hmin
   -- We also repackage the Engel subalgebra `engel K x`
   -- as Lie submodule `E` of `L` over the Lie algebra `U`.
-  let E : LieSubmodule K U L :=
-  { engel K x with
-    lie_mem := by rintro ⟨u, hu⟩ y hy; exact (engel K x).lie_mem (hUle hu) hy }
+  let E : LieSubmodule K U L := {
+    engel K x with
+    lie_mem := by rintro ⟨u, hu⟩ y hy; exact (engel K x).lie_mem (hUle hu) hy
+  }
   -- We may and do assume that `x ≠ 0`, since otherwise the statement is trivial.
   obtain rfl | hx₀ := eq_or_ne x 0
   · simpa [Ex, Ey] using hmin Ey
@@ -210,8 +214,8 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
     intro α
     -- We want to show that `α` is a root of `coeff χ 0`.
     -- So we need to show that there is a `z ≠ 0` in `E` satisfying `⁅α • u + x, z⁆ = 0`.
-    rw [← coe_evalRingHom, ← coeff_map, lieCharpoly_map_eval,
-      ← constantCoeff_apply, LinearMap.charpoly_constantCoeff_eq_zero_iff]
+    rw [← coe_evalRingHom, ← coeff_map, lieCharpoly_map_eval, ← constantCoeff_apply,
+      LinearMap.charpoly_constantCoeff_eq_zero_iff]
     -- We consider `z = α • u + x`, and split into the cases `z = 0` and `z ≠ 0`.
     let z := α • u + x'
     obtain hz₀ | hz₀ := eq_or_ne z 0
@@ -240,10 +244,10 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
       -- then `0` is a root of the characteristic polynomial of `⁅0 • u + x, _⁆` acting on `Q`,
       -- and hence we find an eigenvector `z` as desired.
       apply_fun (evalRingHom 0) at H
-      rw [constantCoeff_apply, ← coeff_map, lieCharpoly_map_eval,
-        ← constantCoeff_apply, map_zero, LinearMap.charpoly_constantCoeff_eq_zero_iff] at H
-      simpa only [coe_bracket_of_module, ne_eq, zero_smul, zero_add, toEnd_apply_apply]
-        using H
+      rw [constantCoeff_apply, ← coeff_map, lieCharpoly_map_eval, ← constantCoeff_apply, map_zero,
+          LinearMap.charpoly_constantCoeff_eq_zero_iff]
+        at H
+      simpa only [coe_bracket_of_module, ne_eq, zero_smul, zero_add, toEnd_apply_apply] using H
     -- It suffices to show `z = 0` (in `Q`) to obtain a contradiction.
     apply hz0
     -- We replace `z : Q` by a representative in `L`.
@@ -254,7 +258,8 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
     -- On the other hand, our goal is to show `z = 0` in `Q`,
     -- which is equivalent to showing that `⁅x, _⁆ ^ n` vanishes on `z`, for some `n`.
     simp only [LieSubmodule.mem_mk_iff', LieSubalgebra.mem_toSubmodule, mem_engel_iff,
-      LieSubmodule.Quotient.mk'_apply, LieSubmodule.Quotient.mk_eq_zero', E, Q] at this ⊢
+        LieSubmodule.Quotient.mk'_apply, LieSubmodule.Quotient.mk_eq_zero', E, Q]
+      at this ⊢
     -- Hence we win.
     obtain ⟨n, hn⟩ := this
     use n + 1
@@ -298,8 +303,8 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
   -- We need to show that for all `α ∈ s`, the polynomial `coeff χ i` evaluates to zero at `α`.
   intro α hα
   -- Once again, we are left with showing that `⁅y, _⁆` acts nilpotently on `E`.
-  rw [← coe_evalRingHom, ← coeff_map, lieCharpoly_map_eval,
-    (LinearMap.charpoly_eq_X_pow_iff _).mpr, coeff_X_pow, ite_eq_right hi.ne]
+  rw [← coe_evalRingHom, ← coeff_map, lieCharpoly_map_eval, (LinearMap.charpoly_eq_X_pow_iff _).mpr,
+    coeff_X_pow, ite_eq_right hi.ne]
   -- To do so, it suffices to show that the Engel subalgebra of `v = a • u + x` is contained in `E`.
   let v := α • u + x'
   suffices engel K (v : L) ≤ engel K x by
@@ -341,7 +346,8 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
   specialize hsψ α hα
   -- Hence `⁅v, _⁆` acts injectively on `Q`.
   rw [← coe_evalRingHom, constantCoeff_apply, ← coeff_map, lieCharpoly_map_eval,
-    ← constantCoeff_apply, ne_eq, LinearMap.charpoly_constantCoeff_eq_zero_iff] at hsψ
+      ← constantCoeff_apply, ne_eq, LinearMap.charpoly_constantCoeff_eq_zero_iff]
+    at hsψ
   -- We deduce from this that `z' = 0`, arguing by contraposition.
   contrapose! hsψ
   -- Indeed `⁅v, _⁆` kills `⁅v, _⁆ ^ k` applied to `z'`.
@@ -353,8 +359,8 @@ lemma engel_isBot_of_isMin (hLK : finrank K L ≤ #K) (U : LieSubalgebra K L)
 
 variable (K L)
 
-lemma exists_isCartanSubalgebra_engel_of_finrank_le_card (h : finrank K L ≤ #K) :
-    ∃ x : L, IsCartanSubalgebra (engel K x) := by
+lemma exists_isCartanSubalgebra_engel_of_finrank_le_card (h : finrank K L ≤ #K)
+    : ∃ x : L, IsCartanSubalgebra (engel K x) := by
   obtain ⟨x, hx⟩ := exists_isRegular_of_finrank_le_card K L h
   use x
   refine ⟨?_, normalizer_engel _ _⟩
@@ -371,8 +377,7 @@ lemma exists_isCartanSubalgebra_engel_of_finrank_le_card (h : finrank K L ≤ #K
   rw [(isRegular_iff_finrank_engel_eq_rank K x).mp hx]
   apply rank_le_finrank_engel
 
-lemma exists_isCartanSubalgebra_engel [Infinite K] :
-    ∃ x : L, IsCartanSubalgebra (engel K x) := by
+lemma exists_isCartanSubalgebra_engel [Infinite K] : ∃ x : L, IsCartanSubalgebra (engel K x) := by
   apply exists_isCartanSubalgebra_engel_of_finrank_le_card
   exact natCast_le_aleph0.trans <| Cardinal.infinite_iff.mp ‹Infinite K›
 

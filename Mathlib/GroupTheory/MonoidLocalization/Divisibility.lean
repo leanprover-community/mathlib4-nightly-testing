@@ -6,7 +6,6 @@ Authors: Junyan Xu
 module
 
 public import Mathlib.GroupTheory.MonoidLocalization.Basic
-
 import Mathlib.Algebra.Divisibility.Hom
 import Mathlib.Algebra.Divisibility.Units
 

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.Factors
 public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors
-
 import Mathlib.Data.ENat.Basic
 import Mathlib.Data.ENat.Monoid
 
@@ -46,7 +45,8 @@ instance instUniqueFactorizationMonoid : UniqueFactorizationMonoid ℕ where
 open UniqueFactorizationMonoid
 
 lemma factors_eq : ∀ n : ℕ, normalizedFactors n = n.primeFactorsList
-  | 0 => by simp
+  | 0 => by
+    simp
   | n + 1 => by
     rw [← Multiset.rel_eq, ← associated_eq_eq]
     apply UniqueFactorizationMonoid.factors_unique irreducible_of_normalized_factor _
@@ -56,8 +56,8 @@ lemma factors_eq : ∀ n : ℕ, normalizedFactors n = n.primeFactorsList
       rw [Nat.irreducible_iff_prime, ← Nat.prime_iff]
       exact Nat.prime_of_mem_primeFactorsList hx
 
-lemma factors_multiset_prod_of_irreducible {s : Multiset ℕ} (h : ∀ x : ℕ, x ∈ s → Irreducible x) :
-    normalizedFactors s.prod = s := by
+lemma factors_multiset_prod_of_irreducible {s : Multiset ℕ} (h : ∀ x : ℕ, x ∈ s → Irreducible x)
+    : normalizedFactors s.prod = s := by
   rw [← Multiset.rel_eq, ← associated_eq_eq]
   apply UniqueFactorizationMonoid.factors_unique irreducible_of_normalized_factor h
     (prod_normalizedFactors _)

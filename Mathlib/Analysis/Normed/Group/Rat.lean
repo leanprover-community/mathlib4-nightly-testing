@@ -22,8 +22,7 @@ instance instNormedAddCommGroup : NormedAddCommGroup ℚ where
     abel_nf
 
 @[norm_cast, simp high] -- increase priority to prevent the left-hand side from simplifying
-theorem norm_cast_real (r : ℚ) : ‖(r : ℝ)‖ = ‖r‖ :=
-  rfl
+theorem norm_cast_real (r : ℚ) : ‖(r : ℝ)‖ = ‖r‖ := rfl
 
 @[norm_cast, simp]
 theorem _root_.Int.norm_cast_rat (m : ℤ) : ‖(m : ℚ)‖ = ‖m‖ := by

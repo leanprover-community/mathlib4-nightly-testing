@@ -39,9 +39,11 @@ local notation "𝕎" => WittVector p
 
 variable {R : Type*} [CommRing R]
 
-theorem sum_coeff_eq_coeff_sum {α : Type*} {S : Finset α} (x : α → 𝕎 R)
-    (h : ∀ (n : ℕ), Subsingleton {r | r ∈ S ∧ (x r).coeff n ≠ 0}) (n : ℕ) :
-    (∑ s ∈ S, x s).coeff n = ∑ (s ∈ S), (x s).coeff n := by
+theorem sum_coeff_eq_coeff_sum
+    {α : Type*} {S : Finset α}
+    (x : α → 𝕎 R) (h : ∀ (n : ℕ), Subsingleton {r | r ∈ S ∧ (x r).coeff n ≠ 0})
+    (n : ℕ)
+    : (∑ s ∈ S, x s).coeff n = ∑ (s ∈ S), (x s).coeff n := by
   classical
   induction S using Finset.induction generalizing n with
   | empty =>
@@ -51,7 +53,7 @@ theorem sum_coeff_eq_coeff_sum {α : Type*} {S : Finset α} (x : α → 𝕎 R)
       refine fun n ↦ ⟨fun b c ↦ ?_⟩
       ext
       exact congrArg (fun x ↦ x.1) <|
-          (h n).allEq ⟨b.1, S'.subset_insert a b.2.1, b.2.2⟩ ⟨c.1, S'.subset_insert a c.2.1, c.2.2⟩
+        (h n).allEq ⟨b.1, S'.subset_insert a b.2.1, b.2.2⟩ ⟨c.1, S'.subset_insert a c.2.1, c.2.2⟩
     replace hind := hind this
     simp only [ha, not_false_eq_true, Finset.sum_insert]
     have : ∀ (n : ℕ), (x a).coeff n = 0 ∨ (∑ s ∈ S', x s).coeff n = 0 := by
@@ -69,12 +71,12 @@ theorem sum_coeff_eq_coeff_sum {α : Type*} {S : Finset α} (x : α → 𝕎 R)
 variable [CharP R p]
 
 @[simp]
-theorem teichmuller_mul_pow_coeff (n : ℕ) (x : R) :
-    (teichmuller p x * p ^ n).coeff n = x ^ p ^ n := by
+theorem teichmuller_mul_pow_coeff (n : ℕ) (x : R)
+    : (teichmuller p x * p ^ n).coeff n = x ^ p ^ n := by
   simpa using WittVector.mul_pow_charP_coeff_succ (teichmuller p x) (m := 0)
 
-theorem teichmuller_mul_pow_coeff_of_ne (x : R)
-    {m n : ℕ} (h : m ≠ n) : (teichmuller p x * p ^ n).coeff m = 0 := by
+theorem teichmuller_mul_pow_coeff_of_ne (x : R) {m n : ℕ} (h : m ≠ n)
+    : (teichmuller p x * p ^ n).coeff m = 0 := by
   cases Nat.lt_or_lt_of_ne h with
   | inl h =>
     exact WittVector.mul_pow_charP_coeff_zero (teichmuller p x) h
@@ -89,11 +91,12 @@ variable [PerfectRing R p]
 `p ^ (n + 1)` divides
 `x` minus the summation of the first `n + 1` terms of the Teichmuller series.
 -/
-theorem dvd_sub_sum_teichmuller_iterateFrobeniusEquiv_coeff (x : 𝕎 R) (n : ℕ) :
-    (p : 𝕎 R) ^ (n + 1) ∣ x - ∑ (i ≤ n), (teichmuller p
+theorem dvd_sub_sum_teichmuller_iterateFrobeniusEquiv_coeff (x : 𝕎 R) (n : ℕ)
+    : (p : 𝕎 R) ^ (n + 1)
+      ∣ x - ∑ (i ≤ n), (teichmuller p
         (((_root_.frobeniusEquiv R p).symm ^ i) (x.coeff i)) * p ^ i) := by
   rw [← Ideal.mem_span_singleton, mem_span_p_pow_iff_le_coeff_eq_zero,
-      ← le_coeff_eq_iff_le_sub_coeff_eq_zero]
+    ← le_coeff_eq_iff_le_sub_coeff_eq_zero]
   intro i hi
   rw [WittVector.sum_coeff_eq_coeff_sum]
   · rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_Iic.mpr (Nat.lt_succ_iff.mp hi))]
@@ -115,22 +118,32 @@ and two ring maps `f g : 𝕎 R →+* S`, if they coincide on the teichmuller re
 then they are equal.
 -/
 theorem eq_of_apply_teichmuller_eq
-    {S : Type*} [CommRing S] (f g : 𝕎 R →+* S) (hp : IsNilpotent (p : S))
-    (h : ∀ (x : R), f (teichmuller p x) = g (teichmuller p x)) : f = g := by
+    {S : Type*} [CommRing S]
+    (f g : 𝕎 R →+* S)
+    (hp : IsNilpotent (p : S)) (h : ∀ (x : R), f (teichmuller p x) = g (teichmuller p x))
+    : f = g := by
   obtain ⟨n, hn⟩ := hp
   ext x
   obtain ⟨c, hc⟩ := (dvd_sub_sum_teichmuller_iterateFrobeniusEquiv_coeff x n)
   calc
-    f x = f (x - ∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
-        (x.coeff i)) * p ^ i) + f (∑ (i ≤ n), teichmuller p
-        (((_root_.frobeniusEquiv R p).symm ^ i) (x.coeff i)) * p ^ i) := by simp
+    f x = f
+          (x - ∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
+            (x.coeff i)) * p ^ i)
+        + f (∑ (i ≤ n), teichmuller p
+          (((_root_.frobeniusEquiv R p).symm ^ i) (x.coeff i)) * p ^ i) := by
+      simp
     _ = ∑ (i ≤ n), f (teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
-        (x.coeff i))) * p ^ i := by rw [hc]; simp [pow_succ, hn]
+        (x.coeff i))) * p ^ i := by
+      rw [hc]; simp [pow_succ, hn]
     _ = ∑ (i ≤ n), g (teichmuller p
-        (((_root_.frobeniusEquiv R p).symm ^ i) (x.coeff i))) * p ^ i := by simp [h]
-    _ = g (x - ∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
-        (x.coeff i)) * p ^ i) + g (∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
-        (x.coeff i)) * p ^ i) := by rw [hc]; simp [pow_succ, hn]
+        (((_root_.frobeniusEquiv R p).symm ^ i) (x.coeff i))) * p ^ i := by
+      simp [h]
+    _ = g
+          (x - ∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
+            (x.coeff i)) * p ^ i)
+        + g (∑ (i ≤ n), teichmuller p (((_root_.frobeniusEquiv R p).symm ^ i)
+          (x.coeff i)) * p ^ i) := by
+      rw [hc]; simp [pow_succ, hn]
     _ = g x := by simp
 
 end WittVector

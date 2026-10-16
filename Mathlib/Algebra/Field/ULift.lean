@@ -24,8 +24,10 @@ variable {α : Type u}
 
 namespace ULift
 
-instance instNNRatCast [NNRatCast α] : NNRatCast (ULift α) where nnratCast q := up q
-instance instRatCast [RatCast α] : RatCast (ULift α) where ratCast q := up q
+instance instNNRatCast [NNRatCast α] : NNRatCast (ULift α) where
+  nnratCast q := up q
+instance instRatCast [RatCast α] : RatCast (ULift α) where
+  ratCast q := up q
 
 @[simp, norm_cast] lemma up_nnratCast [NNRatCast α] (q : ℚ≥0) : up (q : α) = q := rfl
 @[simp, norm_cast] lemma down_nnratCast [NNRatCast α] (q : ℚ≥0) : down (q : ULift α) = q := rfl
@@ -37,8 +39,9 @@ instance divisionSemiring [DivisionSemiring α] : DivisionSemiring (ULift α) wh
   nnqsmul_def _ _ := congrArg up <| DivisionSemiring.nnqsmul_def _ _
   nnratCast_def _ := congrArg up <| DivisionSemiring.nnratCast_def _
 
-instance semifield [Semifield α] : Semifield (ULift α) :=
-  { ULift.divisionSemiring, ULift.commGroupWithZero with }
+instance semifield [Semifield α] : Semifield (ULift α) := {
+  ULift.divisionSemiring, ULift.commGroupWithZero with
+}
 
 instance divisionRing [DivisionRing α] : DivisionRing (ULift α) where
   toRing := ring

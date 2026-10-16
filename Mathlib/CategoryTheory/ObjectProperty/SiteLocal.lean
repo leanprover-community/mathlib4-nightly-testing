@@ -6,7 +6,6 @@ Authors: Christian Merten
 module
 
 public import Mathlib.CategoryTheory.Sites.Hypercover.Zero
-
 import Mathlib.CategoryTheory.ObjectProperty.CompleteLattice
 
 /-!
@@ -33,8 +32,10 @@ namespace CategoryTheory.ObjectProperty
 
 variable {C : Type u} [Category.{v} C]
 
-/-- An object property is local if it holds for `X` if and only if it holds for all `Uᵢ` where
-`{Uᵢ}` is a `K`-cover of `X`. -/
+/--
+An object property is local if it holds for `X` if and only if it holds for all `Uᵢ` where
+`{Uᵢ}` is a `K`-cover of `X`.
+-/
 class IsLocal (P : ObjectProperty C) (K : Precoverage C) extends IsClosedUnderIsomorphisms P where
   component {X : C} {R : Presieve X} (hR : R ∈ K X) {Y : C} (f : Y ⟶ X) (hf : R f) : P X → P Y
   of_presieve {X : C} {R : Presieve X} (hR : R ∈ K X) (H : ∀ ⦃Y : C⦄ ⦃f : Y ⟶ X⦄, R f → P Y) : P X
@@ -43,16 +44,16 @@ export IsLocal (of_presieve)
 
 variable {P : ObjectProperty C} {K L : Precoverage C}
 
-lemma iff_of_presieve [P.IsLocal K] {X : C} {R : Presieve X} (hR : R ∈ K X) :
-    P X ↔ ∀ ⦃Y : C⦄ ⦃f : Y ⟶ X⦄, R f → P Y :=
+lemma iff_of_presieve [P.IsLocal K] {X : C} {R : Presieve X} (hR : R ∈ K X)
+    : P X ↔ ∀ ⦃Y : C⦄ ⦃f : Y ⟶ X⦄, R f → P Y :=
   ⟨fun h _ _ hf ↦ IsLocal.component hR _ hf h, fun h ↦ of_presieve hR h⟩
 
 namespace IsLocal
 
-lemma mk_of_zeroHypercover [P.IsClosedUnderIsomorphisms]
-    (H : ∀ ⦃X : C⦄ (𝒰 : Precoverage.ZeroHypercover.{max u v} K X),
-      P X ↔ ∀ i, P (𝒰.X i)) :
-    P.IsLocal K where
+lemma mk_of_zeroHypercover
+    [P.IsClosedUnderIsomorphisms]
+    (H : ∀ ⦃X : C⦄ (𝒰 : Precoverage.ZeroHypercover.{max u v} K X), P X ↔ ∀ i, P (𝒰.X i))
+    : P.IsLocal K where
   component {X R} hR Y f hf hX := by
     rw [CategoryTheory.Precoverage.mem_iff_exists_zeroHypercover] at hR
     obtain ⟨𝒰, rfl⟩ := hR
@@ -74,8 +75,7 @@ instance top : IsLocal (⊤ : ObjectProperty C) K where
   component := by simp
   of_presieve := by simp
 
-instance inf (P Q : ObjectProperty C) [IsLocal P K] [IsLocal Q K] :
-    IsLocal (P ⊓ Q) K where
+instance inf (P Q : ObjectProperty C) [IsLocal P K] [IsLocal Q K] : IsLocal (P ⊓ Q) K where
   component hR _ _ hf h := ⟨component hR _ hf h.1, component hR _ hf h.2⟩
   of_presieve hR h := ⟨of_presieve hR fun _ _ hf ↦ (h hf).1, of_presieve hR fun _ _ hf ↦ (h hf).2⟩
 
@@ -84,8 +84,7 @@ end IsLocal
 lemma of_zeroHypercover [P.IsLocal K] {X : C} (𝒰 : K.ZeroHypercover X) (h : ∀ i, P (𝒰.X i)) : P X :=
   P.of_presieve 𝒰.mem₀ fun _ f ⟨i⟩ ↦ h i
 
-lemma iff_of_zeroHypercover [P.IsLocal K] {X : C} (𝒰 : K.ZeroHypercover X) :
-    P X ↔ ∀ i, P (𝒰.X i) :=
+lemma iff_of_zeroHypercover [P.IsLocal K] {X : C} (𝒰 : K.ZeroHypercover X) : P X ↔ ∀ i, P (𝒰.X i) :=
   ⟨fun h i ↦ IsLocal.component 𝒰.mem₀ _ ⟨i⟩ h, fun h ↦ of_zeroHypercover 𝒰 h⟩
 
 end CategoryTheory.ObjectProperty

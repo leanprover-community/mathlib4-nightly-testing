@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Algebra.Homology.Embedding.Basic
-
 import Mathlib.Algebra.Homology.HomologicalComplex
 
 /-!
@@ -43,42 +42,41 @@ namespace Embedding
 
 variable {ι ι' : Type*} {c : ComplexShape ι} {c' : ComplexShape ι'} (e : Embedding c c')
 
-/-- The lower boundary of an embedding `e : Embedding c c'`, as a predicate on `ι`.
+/--
+The lower boundary of an embedding `e : Embedding c c'`, as a predicate on `ι`.
 It is satisfied by `j : ι` when there exists `i' : ι'` not in the image of `e.f`
-such that `c'.Rel i' (e.f j)`. -/
-def BoundaryGE (j : ι) : Prop :=
-  c'.Rel (c'.prev (e.f j)) (e.f j) ∧ ∀ i, ¬c'.Rel (e.f i) (e.f j)
+such that `c'.Rel i' (e.f j)`.
+-/
+def BoundaryGE (j : ι) : Prop := c'.Rel (c'.prev (e.f j)) (e.f j) ∧ ∀ i, ¬ c'.Rel (e.f i) (e.f j)
 
-lemma boundaryGE {i' : ι'} {j : ι} (hj : c'.Rel i' (e.f j)) (hi' : ∀ i, e.f i ≠ i') :
-    e.BoundaryGE j := by
+lemma boundaryGE {i' : ι'} {j : ι} (hj : c'.Rel i' (e.f j)) (hi' : ∀ i, e.f i ≠ i')
+    : e.BoundaryGE j := by
   constructor
   · simpa only [c'.prev_eq' hj] using hj
   · intro i hi
     apply hi' i
     rw [← c'.prev_eq' hj, c'.prev_eq' hi]
 
-lemma not_boundaryGE_next [e.IsRelIff] {j k : ι} (hk : c.Rel j k) :
-    ¬ e.BoundaryGE k := by
+lemma not_boundaryGE_next [e.IsRelIff] {j k : ι} (hk : c.Rel j k) : ¬ e.BoundaryGE k := by
   dsimp [BoundaryGE]
   simp only [not_and, not_forall, not_not]
   intro
   exact ⟨j, by simpa only [e.rel_iff] using hk⟩
 
-lemma not_boundaryGE_next' [e.IsRelIff] {j k : ι} (hj : ¬ e.BoundaryGE j) (hk : c.next j = k) :
-    ¬ e.BoundaryGE k := by
+lemma not_boundaryGE_next' [e.IsRelIff] {j k : ι} (hj : ¬ e.BoundaryGE j) (hk : c.next j = k)
+    : ¬ e.BoundaryGE k := by
   by_cases hjk : c.Rel j k
   · exact e.not_boundaryGE_next hjk
   · subst hk
     simpa only [c.next_eq_self j hjk] using hj
 
 variable {e} in
-lemma BoundaryGE.notMem {j : ι} (hj : e.BoundaryGE j) {i' : ι'} (hi' : c'.Rel i' (e.f j))
-    (a : ι) : e.f a ≠ i' := fun ha =>
+lemma BoundaryGE.notMem {j : ι} (hj : e.BoundaryGE j) {i' : ι'} (hi' : c'.Rel i' (e.f j)) (a : ι)
+    : e.f a ≠ i' := fun ha =>
   hj.2 a (by simpa only [ha] using hi')
 
-lemma prev_f_of_not_boundaryGE [e.IsRelIff] {i j : ι} (hij : c.prev j = i)
-    (hj : ¬ e.BoundaryGE j) :
-    c'.prev (e.f j) = e.f i := by
+lemma prev_f_of_not_boundaryGE [e.IsRelIff] {i j : ι} (hij : c.prev j = i) (hj : ¬ e.BoundaryGE j)
+    : c'.prev (e.f j) = e.f i := by
   by_cases hij' : c.Rel i j
   · exact c'.prev_eq' (by simpa only [e.rel_iff] using hij')
   · obtain rfl : j = i := by
@@ -96,42 +94,41 @@ lemma BoundaryGE.false_of_isTruncLE {j : ι} (hj : e.BoundaryGE j) [e.IsTruncLE]
   obtain ⟨i, hi⟩ := e.mem_prev hj.1
   exact hj.2 i (by simpa only [hi] using hj.1)
 
-/-- The upper boundary of an embedding `e : Embedding c c'`, as a predicate on `ι`.
+/--
+The upper boundary of an embedding `e : Embedding c c'`, as a predicate on `ι`.
 It is satisfied by `j : ι` when there exists `k' : ι'` not in the image of `e.f`
-such that `c'.Rel (e.f j) k'`. -/
-def BoundaryLE (j : ι) : Prop :=
-  c'.Rel (e.f j) (c'.next (e.f j)) ∧ ∀ k, ¬c'.Rel (e.f j) (e.f k)
+such that `c'.Rel (e.f j) k'`.
+-/
+def BoundaryLE (j : ι) : Prop := c'.Rel (e.f j) (c'.next (e.f j)) ∧ ∀ k, ¬ c'.Rel (e.f j) (e.f k)
 
-lemma boundaryLE {k' : ι'} {j : ι} (hj : c'.Rel (e.f j) k') (hk' : ∀ i, e.f i ≠ k') :
-    e.BoundaryLE j := by
+lemma boundaryLE {k' : ι'} {j : ι} (hj : c'.Rel (e.f j) k') (hk' : ∀ i, e.f i ≠ k')
+    : e.BoundaryLE j := by
   constructor
   · simpa only [c'.next_eq' hj] using hj
   · intro k hk
     apply hk' k
     rw [← c'.next_eq' hj, c'.next_eq' hk]
 
-lemma not_boundaryLE_prev [e.IsRelIff] {i j : ι} (hi : c.Rel i j) :
-    ¬ e.BoundaryLE i := by
+lemma not_boundaryLE_prev [e.IsRelIff] {i j : ι} (hi : c.Rel i j) : ¬ e.BoundaryLE i := by
   dsimp [BoundaryLE]
   simp only [not_and, not_forall, not_not]
   intro
   exact ⟨j, by simpa only [e.rel_iff] using hi⟩
 
-lemma not_boundaryLE_prev' [e.IsRelIff] {i j : ι} (hj : ¬ e.BoundaryLE j) (hk : c.prev j = i) :
-    ¬ e.BoundaryLE i := by
+lemma not_boundaryLE_prev' [e.IsRelIff] {i j : ι} (hj : ¬ e.BoundaryLE j) (hk : c.prev j = i)
+    : ¬ e.BoundaryLE i := by
   by_cases hij : c.Rel i j
   · exact e.not_boundaryLE_prev hij
   · subst hk
     simpa only [c.prev_eq_self j hij] using hj
 
 variable {e} in
-lemma BoundaryLE.notMem {j : ι} (hj : e.BoundaryLE j) {k' : ι'} (hk' : c'.Rel (e.f j) k')
-    (a : ι) : e.f a ≠ k' := fun ha =>
+lemma BoundaryLE.notMem {j : ι} (hj : e.BoundaryLE j) {k' : ι'} (hk' : c'.Rel (e.f j) k') (a : ι)
+    : e.f a ≠ k' := fun ha =>
   hj.2 a (by simpa only [ha] using hk')
 
-lemma next_f_of_not_boundaryLE [e.IsRelIff] {j k : ι} (hjk : c.next j = k)
-    (hj : ¬ e.BoundaryLE j) :
-    c'.next (e.f j) = e.f k := by
+lemma next_f_of_not_boundaryLE [e.IsRelIff] {j k : ι} (hjk : c.next j = k) (hj : ¬ e.BoundaryLE j)
+    : c'.next (e.f j) = e.f k := by
   by_cases hjk' : c.Rel j k
   · exact c'.next_eq' (by simpa only [e.rel_iff] using hjk')
   · obtain rfl : j = k := by
@@ -169,8 +166,8 @@ lemma BoundaryLE.false_of_isTruncGE {j : ι} (hj : e.BoundaryLE j) [e.IsTruncGE]
 end Embedding
 
 set_option backward.defeqAttrib.useBackward true in
-lemma boundaryGE_embeddingUpIntGE_iff (p : ℤ) (n : ℕ) :
-    (embeddingUpIntGE p).BoundaryGE n ↔ n = 0 := by
+lemma boundaryGE_embeddingUpIntGE_iff (p : ℤ) (n : ℕ)
+    : (embeddingUpIntGE p).BoundaryGE n ↔ n = 0 := by
   constructor
   · intro h
     obtain _ | n := n
@@ -186,8 +183,8 @@ lemma boundaryGE_embeddingUpIntGE_iff (p : ℤ) (n : ℕ) :
       lia
 
 set_option backward.defeqAttrib.useBackward true in
-lemma boundaryLE_embeddingUpIntLE_iff (p : ℤ) (n : ℕ) :
-    (embeddingUpIntLE p).BoundaryLE n ↔ n = 0 := by
+lemma boundaryLE_embeddingUpIntLE_iff (p : ℤ) (n : ℕ)
+    : (embeddingUpIntLE p).BoundaryLE n ↔ n = 0 := by
   constructor
   · intro h
     obtain _ | n := n

@@ -36,12 +36,10 @@ and shows how that polynomial interacts with `MvPolynomial.bind₁`.
 
 @[expose] public section
 
-
 variable {p : ℕ} (n : ℕ) {R : Type*} [CommRing R]
 
 -- type as `\bbW`
 local notation "𝕎" => WittVector p
-
 
 namespace WittVector
 
@@ -52,24 +50,24 @@ noncomputable section
 section
 
 open scoped Classical in
-/-- `WittVector.select P x`, for a predicate `P : ℕ → Prop` is the Witt vector
+/--
+`WittVector.select P x`, for a predicate `P : ℕ → Prop` is the Witt vector
 whose `n`-th coefficient is `x.coeff n` if `P n` is true, and `0` otherwise.
 -/
-def select (P : ℕ → Prop) (x : 𝕎 R) : 𝕎 R :=
-  mk p fun n => if P n then x.coeff n else 0
+def select (P : ℕ → Prop) (x : 𝕎 R) : 𝕎 R := mk p fun n => if P n then x.coeff n else 0
 
 section Select
 
 variable (P : ℕ → Prop)
 
 open scoped Classical in
-/-- The polynomial that witnesses that `WittVector.select` is a polynomial function.
-`selectPoly n` is `X n` if `P n` holds, and `0` otherwise. -/
-def selectPoly (n : ℕ) : MvPolynomial ℕ ℤ :=
-  if P n then X n else 0
+/--
+The polynomial that witnesses that `WittVector.select` is a polynomial function.
+`selectPoly n` is `X n` if `P n` holds, and `0` otherwise.
+-/
+def selectPoly (n : ℕ) : MvPolynomial ℕ ℤ := if P n then X n else 0
 
-theorem coeff_select (x : 𝕎 R) (n : ℕ) :
-    (select P x).coeff n = aeval x.coeff (selectPoly P n) := by
+theorem coeff_select (x : 𝕎 R) (n : ℕ) : (select P x).coeff n = aeval x.coeff (selectPoly P n) := by
   dsimp [select, selectPoly]
   split_ifs with hi <;> simp
 
@@ -81,18 +79,17 @@ instance select_isPoly {P : ℕ → Prop} : IsPoly p fun _ _ x => select P x := 
 
 variable [hp : Fact p.Prime]
 
-theorem select_add_select_not : ∀ x : 𝕎 R, select P x + select (fun i => ¬P i) x = x := by
+theorem select_add_select_not : ∀ x : 𝕎 R, select P x + select (fun i => ¬ P i) x = x := by
   -- Porting note: TC search was insufficient to find this instance, even though all required
   -- instances exist. See zulip: [https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/WittVector.20saga/near/370073526]
-  have : IsPoly p fun {R} [CommRing R] x ↦ select P x + select (fun i ↦ ¬P i) x :=
+  have : IsPoly p fun {R} [CommRing R] x ↦ select P x + select (fun i ↦ ¬ P i) x :=
     IsPoly₂.diag (hf := IsPoly₂.comp)
   ghost_calc x
   intro n
   simp only [map_add]
-  suffices
-    (bind₁ (selectPoly P)) (wittPolynomial p ℤ n) +
-        (bind₁ (selectPoly fun i => ¬P i)) (wittPolynomial p ℤ n) =
-      wittPolynomial p ℤ n by
+  suffices (bind₁ (selectPoly P)) (wittPolynomial p ℤ n)
+        + (bind₁ (selectPoly fun i => ¬ P i)) (wittPolynomial p ℤ n)
+      = wittPolynomial p ℤ n by
     apply_fun aeval x.coeff at this
     simpa only [map_add, aeval_bind₁, ← coeff_select]
   simp only [wittPolynomial_eq_sum_C_mul_X_pow, selectPoly, map_sum, map_pow, map_mul,
@@ -104,23 +101,26 @@ theorem select_add_select_not : ∀ x : 𝕎 R, select P x + select (fun i => ¬
   · rw [ite_eq_left Pm, ite_eq_right <| not_not_intro Pm, zero_pow Fin.pos'.ne', add_zero]
   · rwa [ite_eq_right Pm, ite_eq_left, zero_add]
 
-theorem coeff_add_of_disjoint (x y : 𝕎 R) (h : ∀ n, x.coeff n = 0 ∨ y.coeff n = 0) :
-    (x + y).coeff n = x.coeff n + y.coeff n := by
+theorem coeff_add_of_disjoint (x y : 𝕎 R) (h : ∀ n, x.coeff n = 0 ∨ y.coeff n = 0)
+    : (x + y).coeff n = x.coeff n + y.coeff n := by
   let P : ℕ → Prop := fun n => y.coeff n = 0
   have : DecidablePred P := Classical.decPred P
   set z := mk p fun n => if P n then x.coeff n else y.coeff n
   have hx : select P z = x := by
-    ext1 n; rw [select, coeff_mk, coeff_mk]
+    ext1 n
+    rw [select, coeff_mk, coeff_mk]
     split_ifs with hn
     · rfl
     · rw [(h n).resolve_right hn]
-  have hy : select (fun i => ¬P i) z = y := by
-    ext1 n; rw [select, coeff_mk, coeff_mk]
+  have hy : select (fun i => ¬ P i) z = y := by
+    ext1 n
+    rw [select, coeff_mk, coeff_mk]
     split_ifs with hn
     · exact hn.symm
     · rfl
   calc
-    (x + y).coeff n = z.coeff n := by rw [← hx, ← hy, select_add_select_not P z]
+    (x + y).coeff n
+      = z.coeff n := by rw [← hx, ← hy, select_add_select_not P z]
     _ = x.coeff n + y.coeff n := by
       simp only [z, mk.eq_1]
       split_ifs with y0
@@ -131,18 +131,19 @@ end Select
 
 variable [Fact p.Prime]
 
-/-- `WittVector.init n x` is the Witt vector of which the first `n` coefficients are those from `x`
+/--
+`WittVector.init n x` is the Witt vector of which the first `n` coefficients are those from `x`
 and all other coefficients are `0`.
 See `WittVector.tail` for the complementary part.
 -/
-def init (n : ℕ) : 𝕎 R → 𝕎 R :=
-  select fun i => i < n
+def init (n : ℕ) : 𝕎 R → 𝕎 R := select fun i => i < n
 
-/-- `WittVector.tail n x` is the Witt vector of which the first `n` coefficients are `0`
+/--
+`WittVector.tail n x` is the Witt vector of which the first `n` coefficients are `0`
 and all other coefficients are those from `x`.
-See `WittVector.init` for the complementary part. -/
-def tail (n : ℕ) : 𝕎 R → 𝕎 R :=
-  select fun i => n ≤ i
+See `WittVector.init` for the complementary part.
+-/
+def tail (n : ℕ) : 𝕎 R → 𝕎 R := select fun i => n ≤ i
 
 @[simp]
 theorem init_add_tail (x : 𝕎 R) (n : ℕ) : init n x + tail n x = x := by
@@ -159,31 +160,31 @@ syntax (name := initRing) "init_ring" (" using " term)? : tactic
 -- TODO: make this tactic hygienic.
 open Lean Elab Elab.Tactic in
 elab_rules : tactic
-| `(tactic| init_ring $[ using $a:term]?) => withMainContext <| set_option hygiene false in do
-  evalTactic <|← `(tactic|(
-    rw [WittVector.ext_iff]
-    intro i
-    simp only [WittVector.init, WittVector.select, WittVector.coeff_mk]
-    split_ifs with hi <;> try {rfl}
-    ))
-  if let some e := a then
-    evalTactic <|← `(tactic|(
-      simp only [WittVector.add_coeff, WittVector.mul_coeff, WittVector.neg_coeff,
-        WittVector.sub_coeff, WittVector.nsmul_coeff, WittVector.zsmul_coeff, WittVector.pow_coeff]
-      apply MvPolynomial.eval₂Hom_congr' (RingHom.ext_int _ _) _ rfl
-      rintro ⟨b, k⟩ h -
-      replace h := $e:term p _ h
-      simp only [Finset.mem_range, Finset.mem_product, true_and, Finset.mem_univ] at h
-      have hk : k < n := by lia
-      fin_cases b <;> simp only [Function.uncurry, Matrix.cons_val_zero, Matrix.head_cons,
-        WittVector.coeff_mk, Matrix.cons_val_one, WittVector.mk, Fin.mk_zero, Matrix.cons_val',
-        Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.cons_val_zero,
-        hk, ite_true]
-    ))
+  | `(tactic| init_ring $[ using $a:term]?) =>
+    withMainContext <| set_option hygiene false in
+      do
+        evalTactic <| ← `(tactic|(
+          rw [WittVector.ext_iff]
+          intro i
+          simp only [WittVector.init, WittVector.select, WittVector.coeff_mk]
+          split_ifs with hi <;> try {rfl}
+          ))
+        if let some e := a then
+          evalTactic <| ← `(tactic|(
+              simp only [WittVector.add_coeff, WittVector.mul_coeff, WittVector.neg_coeff,
+                WittVector.sub_coeff, WittVector.nsmul_coeff, WittVector.zsmul_coeff, WittVector.pow_coeff]
+              apply MvPolynomial.eval₂Hom_congr' (RingHom.ext_int _ _) _ rfl
+              rintro ⟨b, k⟩ h -
+              replace h := $e:term p _ h
+              simp only [Finset.mem_range, Finset.mem_product, true_and, Finset.mem_univ] at h
+              have hk : k < n := by lia
+              fin_cases b <;> simp only [Function.uncurry, Matrix.cons_val_zero, Matrix.head_cons,
+                WittVector.coeff_mk, Matrix.cons_val_one, WittVector.mk, Fin.mk_zero, Matrix.cons_val',
+                Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.cons_val_zero,
+                hk, ite_true]
+            ))
 
-@[simp]
-theorem init_init (x : 𝕎 R) (n : ℕ) : init n (init n x) = init n x := by
-  init_ring
+@[simp] theorem init_init (x : 𝕎 R) (n : ℕ) : init n (init n x) = init n x := by init_ring
 
 section
 variable [Fact p.Prime]
@@ -194,7 +195,7 @@ theorem init_add (x y : 𝕎 R) (n : ℕ) : init n (x + y) = init n (init n x + 
 theorem init_mul (x y : 𝕎 R) (n : ℕ) : init n (x * y) = init n (init n x * init n y) := by
   init_ring using wittMul_vars
 
-theorem init_neg (x : 𝕎 R) (n : ℕ) : init n (-x) = init n (-init n x) := by
+theorem init_neg (x : 𝕎 R) (n : ℕ) : init n (-x) = init n (- init n x) := by
   init_ring using wittNeg_vars
 
 theorem init_sub (x y : 𝕎 R) (n : ℕ) : init n (x - y) = init n (init n x - init n y) := by
@@ -215,8 +216,7 @@ section
 variable (p)
 
 /-- `WittVector.init n x` is polynomial in the coefficients of `x`. -/
-theorem init_isPoly (n : ℕ) : IsPoly p fun _ _ => init n :=
-  select_isPoly (P := fun i => i < n)
+theorem init_isPoly (n : ℕ) : IsPoly p fun _ _ => init n := select_isPoly (P := fun i => i < n)
 
 end
 

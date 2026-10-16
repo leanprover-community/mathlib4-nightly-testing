@@ -41,16 +41,22 @@ register_simp_attr parity_simps
 /-- "Simp attribute for lemmas about `RCLike`" -/
 register_simp_attr rclike_simps
 
-/-- The simpset `rify_simps` is used by the tactic `rify` to move expressions from `ℕ`, `ℤ`, or
-`ℚ` to `ℝ`. -/
+/--
+The simpset `rify_simps` is used by the tactic `rify` to move expressions from `ℕ`, `ℤ`, or
+`ℚ` to `ℝ`.
+-/
 register_simp_attr rify_simps
 
-/-- The simpset `qify_simps` is used by the tactic `qify` to move expressions from `ℕ` or `ℤ` to `ℚ`
-which gives a well-behaved division. -/
+/--
+The simpset `qify_simps` is used by the tactic `qify` to move expressions from `ℕ` or `ℤ` to `ℚ`
+which gives a well-behaved division.
+-/
 register_simp_attr qify_simps
 
-/-- The simpset `zify_simps` is used by the tactic `zify` to move expressions from `ℕ` to `ℤ`
-which gives a well-behaved subtraction. -/
+/--
+The simpset `zify_simps` is used by the tactic `zify` to move expressions from `ℕ` to `ℤ`
+which gives a well-behaved subtraction.
+-/
 register_simp_attr zify_simps
 
 /--
@@ -93,9 +99,11 @@ register_simp_attr typevec
 /-- Simplification rules for ghost equations. -/
 register_simp_attr ghost_simps
 
-/-- The `@[nontriviality]` simp set is used by the `nontriviality` tactic to automatically
+/--
+The `@[nontriviality]` simp set is used by the `nontriviality` tactic to automatically
 discharge theorems about the trivial case (where we know `Subsingleton α` and many theorems
-in e.g. groups are trivially true). -/
+in e.g. groups are trivially true).
+-/
 register_simp_attr nontriviality
 
 /-- A stub attribute for `is_poly`. -/
@@ -113,7 +121,8 @@ register_simp_attr enat_to_nat_coe
 /-- A simp set for the `pnat_to_nat` tactic. -/
 register_simp_attr pnat_to_nat_coe
 
-/-- `mon_tauto` is a simp set to prove tautologies about morphisms from some (tensor) power of `M`
+/--
+`mon_tauto` is a simp set to prove tautologies about morphisms from some (tensor) power of `M`
 to `M`, where `M` is a (commutative) monoid object in a (braided) monoidal category.
 
 **This `simp` set is incompatible with the standard simp set.**

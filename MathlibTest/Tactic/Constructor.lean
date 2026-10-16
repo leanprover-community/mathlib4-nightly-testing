@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Constructor
 
 structure Foo where
@@ -9,9 +10,9 @@ structure Foo where
 example : Foo := by
   fconstructor
   exact Nat
-  exact [0,1,2]
+  exact [0, 1, 2]
 
 -- econstructor
 example : Foo := by
   econstructor
-  exact [0,1,2]
+  exact [0, 1, 2]

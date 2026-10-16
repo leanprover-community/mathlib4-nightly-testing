@@ -16,42 +16,47 @@ public section
 
 variable {α : Type*}
 
-lemma lt_add_one [One α] [AddZeroClass α] [PartialOrder α] [ZeroLEOneClass α]
-    [NeZero (1 : α)] [AddLeftStrictMono α] (a : α) : a < a + 1 :=
+lemma lt_add_one
+    [One α] [AddZeroClass α] [PartialOrder α] [ZeroLEOneClass α] [NeZero (1 : α)]
+    [AddLeftStrictMono α]
+    (a : α)
+    : a < a + 1 :=
   lt_add_of_pos_right _ zero_lt_one
 
-lemma lt_one_add [One α] [AddZeroClass α] [PartialOrder α] [ZeroLEOneClass α]
-    [NeZero (1 : α)] [AddRightStrictMono α] (a : α) : a < 1 + a :=
+lemma lt_one_add
+    [One α] [AddZeroClass α] [PartialOrder α] [ZeroLEOneClass α] [NeZero (1 : α)]
+    [AddRightStrictMono α]
+    (a : α)
+    : a < 1 + a :=
   lt_add_of_pos_left _ zero_lt_one
 
 variable [AddMonoidWithOne α]
 
-lemma zero_le_two [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] :
-    (0 : α) ≤ 2 := by
+lemma zero_le_two [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] : (0 : α) ≤ 2 := by
   rw [← one_add_one_eq_two]
   exact add_nonneg zero_le_one zero_le_one
 
-lemma zero_le_three [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] :
-    (0 : α) ≤ 3 := by
+lemma zero_le_three [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] : (0 : α) ≤ 3 := by
   rw [← two_add_one_eq_three]
   exact add_nonneg zero_le_two zero_le_one
 
-lemma zero_le_four [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] :
-    (0 : α) ≤ 4 := by
+lemma zero_le_four [Preorder α] [ZeroLEOneClass α] [AddLeftMono α] : (0 : α) ≤ 4 := by
   rw [← three_add_one_eq_four]
   exact add_nonneg zero_le_three zero_le_one
 
-lemma one_le_two [LE α] [ZeroLEOneClass α] [AddLeftMono α] :
-    (1 : α) ≤ 2 :=
-  calc (1 : α) = 1 + 0 := (add_zero 1).symm
-     _ ≤ 1 + 1 := by gcongr; exact zero_le_one
-     _ = 2 := one_add_one_eq_two
+lemma one_le_two [LE α] [ZeroLEOneClass α] [AddLeftMono α] : (1 : α) ≤ 2 :=
+  calc
+    (1 : α)
+      = 1 + 0 := (add_zero 1).symm
+    _ ≤ 1 + 1 := by gcongr; exact zero_le_one
+    _ = 2 := one_add_one_eq_two
 
-lemma one_le_two' [LE α] [ZeroLEOneClass α] [AddRightMono α] :
-    (1 : α) ≤ 2 :=
-  calc (1 : α) = 0 + 1 := (zero_add 1).symm
-     _ ≤ 1 + 1 := by gcongr; exact zero_le_one
-     _ = 2 := one_add_one_eq_two
+lemma one_le_two' [LE α] [ZeroLEOneClass α] [AddRightMono α] : (1 : α) ≤ 2 :=
+  calc
+    (1 : α)
+      = 0 + 1 := (zero_add 1).symm
+    _ ≤ 1 + 1 := by gcongr; exact zero_le_one
+    _ = 2 := one_add_one_eq_two
 
 section
 variable [PartialOrder α] [ZeroLEOneClass α] [NeZero (1 : α)]
@@ -63,12 +68,14 @@ variable [AddLeftMono α]
 @[simp] lemma zero_lt_two : (0 : α) < 2 := zero_lt_one.trans_le one_le_two
 
 /-- See `zero_lt_three'` for a version with the type explicit. -/
-@[simp] lemma zero_lt_three : (0 : α) < 3 := by
+@[simp]
+lemma zero_lt_three : (0 : α) < 3 := by
   rw [← two_add_one_eq_three]
   exact lt_add_of_lt_of_nonneg zero_lt_two zero_le_one
 
 /-- See `zero_lt_four'` for a version with the type explicit. -/
-@[simp] lemma zero_lt_four : (0 : α) < 4 := by
+@[simp]
+lemma zero_lt_four : (0 : α) < 4 := by
   rw [← three_add_one_eq_four]
   exact lt_add_of_lt_of_nonneg zero_lt_three zero_le_one
 

@@ -46,8 +46,7 @@ lemma measurePreserving_coe : MeasurePreserving ((↑) : I → ℝ) volume (volu
 instance : NullSingletonClass (volume : Measure I) where
   measure_singleton x := by simp [volume_apply]
 
-@[fun_prop]
-theorem measurable_symm : Measurable σ := continuous_symm.measurable
+@[fun_prop] theorem measurable_symm : Measurable σ := continuous_symm.measurable
 
 /-- `unitInterval.symm` bundled as a measurable equivalence. -/
 @[simps apply]
@@ -57,11 +56,9 @@ def symmMeasurableEquiv : I ≃ᵐ I where
   left_inv := symm_symm
   right_inv := symm_symm
 
-@[simp]
-lemma symm_symmMeasurableEquiv : symmMeasurableEquiv.symm = symmMeasurableEquiv := rfl
+@[simp] lemma symm_symmMeasurableEquiv : symmMeasurableEquiv.symm = symmMeasurableEquiv := rfl
 
-@[simp]
-lemma coe_symmMeasurableEquiv : symmMeasurableEquiv = σ := rfl
+@[simp] lemma coe_symmMeasurableEquiv : symmMeasurableEquiv = σ := rfl
 
 lemma measurePreserving_symm : MeasurePreserving symm volume volume where
   measurable := measurable_symm
@@ -116,7 +113,6 @@ lemma volume_Ioc : volume (Ioc x y) = .ofReal (y - x) := by
 lemma volume_uIoc : volume (uIoc x y) = edist y x := by
   simp only [uIoc, volume_apply, image_subtype_val_Ioc, Icc.coe_inf, Icc.coe_sup, Real.volume_Ioc,
     max_sub_min_eq_abs, edist_dist, Subtype.dist_eq, Real.dist_eq]
-
 
 @[simp]
 lemma volume_Ioo : volume (Ioo x y) = .ofReal (y - x) := by

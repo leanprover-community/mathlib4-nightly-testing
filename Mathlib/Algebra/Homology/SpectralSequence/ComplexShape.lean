@@ -31,26 +31,32 @@ be used for spectral sequences associated to a *finite* filtration.)
 
 namespace ComplexShape
 
-/-- For `u : ℤ × ℤ`, this is the complex shape on `ℕ × ℕ`, which
-connects `a` to `b` when the equality `a + u = b` holds in `ℤ × ℤ`. -/
+/--
+For `u : ℤ × ℤ`, this is the complex shape on `ℕ × ℕ`, which
+connects `a` to `b` when the equality `a + u = b` holds in `ℤ × ℤ`.
+-/
 def spectralSequenceNat (u : ℤ × ℤ) : ComplexShape (ℕ × ℕ) where
   Rel a b := a.1 + u.1 = b.1 ∧ a.2 + u.2 = b.2
   next_eq _ _ := by ext <;> lia
   prev_eq _ _ := by ext <;> lia
 
 @[simp]
-lemma spectralSequenceNat_rel_iff (u : ℤ × ℤ) (a b : ℕ × ℕ) :
-    (spectralSequenceNat u).Rel a b ↔ a.1 + u.1 = b.1 ∧ a.2 + u.2 = b.2 := Iff.rfl
+lemma spectralSequenceNat_rel_iff (u : ℤ × ℤ) (a b : ℕ × ℕ)
+    : (spectralSequenceNat u).Rel a b ↔ a.1 + u.1 = b.1 ∧ a.2 + u.2 = b.2 :=
+  Iff.rfl
 
-/-- For `l : ℕ` and `u : ℤ × ℤ`, this is the complex shape on `ℤ × Fin l`, which
-connects `a` to `b` when the equality `a + u = b` holds in `ℤ × ℤ`. -/
+/--
+For `l : ℕ` and `u : ℤ × ℤ`, this is the complex shape on `ℤ × Fin l`, which
+connects `a` to `b` when the equality `a + u = b` holds in `ℤ × ℤ`.
+-/
 def spectralSequenceFin (l : ℕ) (u : ℤ × ℤ) : ComplexShape (ℤ × Fin l) where
   Rel a b := a.1 + u.1 = b.1 ∧ a.2.1 + u.2 = b.2.1
   next_eq _ _ := by ext <;> lia
   prev_eq _ _ := by ext <;> lia
 
 @[simp]
-lemma spectralSequenceFin_rel_iff {l : ℕ} (u : ℤ × ℤ) (a b : ℤ × Fin l) :
-    (spectralSequenceFin l u).Rel a b ↔ a.1 + u.1 = b.1 ∧ a.2 + u.2 = b.2 := Iff.rfl
+lemma spectralSequenceFin_rel_iff {l : ℕ} (u : ℤ × ℤ) (a b : ℤ × Fin l)
+    : (spectralSequenceFin l u).Rel a b ↔ a.1 + u.1 = b.1 ∧ a.2 + u.2 = b.2 :=
+  Iff.rfl
 
 end ComplexShape

@@ -6,7 +6,6 @@ Authors: Peter Nelson, Junyan Xu
 module
 
 public import Mathlib.Combinatorics.Matroid.Rank.ENat
-
 import Mathlib.SetTheory.Cardinal.Arithmetic
 
 /-!
@@ -74,12 +73,16 @@ section Rank
 
 variable {κ : Cardinal}
 
-/-- The rank (supremum of the cardinalities of bases) of a matroid `M` as a `Cardinal`.
-See `Matroid.eRank` for a better-behaved `ℕ∞`-valued version. -/
+/--
+The rank (supremum of the cardinalities of bases) of a matroid `M` as a `Cardinal`.
+See `Matroid.eRank` for a better-behaved `ℕ∞`-valued version.
+-/
 noncomputable def cRank (M : Matroid α) := ⨆ B : {B // M.IsBase B}, #B
 
-/-- The rank (supremum of the cardinalities of bases) of a set `X` in a matroid `M`,
-as a `Cardinal`. See `Matroid.eRk` for a better-behaved `ℕ∞`-valued version. -/
+/--
+The rank (supremum of the cardinalities of bases) of a set `X` in a matroid `M`,
+as a `Cardinal`. See `Matroid.eRk` for a better-behaved `ℕ∞`-valued version.
+-/
 noncomputable def cRk (M : Matroid α) (X : Set α) := (M ↾ X).cRank
 
 theorem IsBase.cardinalMk_le_cRank (hB : M.IsBase B) : #B ≤ M.cRank :=
@@ -114,8 +117,8 @@ theorem Indep.cardinalMk_le_cRk_of_subset (hI : M.Indep I) (hIX : I ⊆ X) : #I 
 theorem cRk_le_cardinalMk (M : Matroid α) (X : Set α) : M.cRk X ≤ #X :=
   ciSup_le fun ⟨_, hI⟩ ↦ mk_le_mk_of_subset hI.subset_ground
 
-@[simp] theorem cRk_ground (M : Matroid α) : M.cRk M.E = M.cRank := by
-  rw [cRk, restrict_ground_eq_self]
+@[simp]
+theorem cRk_ground (M : Matroid α) : M.cRk M.E = M.cRank := by rw [cRk, restrict_ground_eq_self]
 
 @[simp] theorem cRank_restrict (M : Matroid α) (X : Set α) : (M ↾ X).cRank = M.cRk X := rfl
 
@@ -125,12 +128,12 @@ theorem cRk_mono (M : Matroid α) : Monotone M.cRk := by
   obtain ⟨J, hJ, hIJ⟩ := hIX.indep.subset_isBasis'_of_subset (hIX.subset.trans hXY)
   exact (mk_le_mk_of_subset hIJ).trans hJ.cardinalMk_le_cRk
 
-theorem cRk_le_of_subset (M : Matroid α) (hXY : X ⊆ Y) : M.cRk X ≤ M.cRk Y :=
-  M.cRk_mono hXY
+theorem cRk_le_of_subset (M : Matroid α) (hXY : X ⊆ Y) : M.cRk X ≤ M.cRk Y := M.cRk_mono hXY
 
-@[simp] theorem cRk_inter_ground (M : Matroid α) (X : Set α) : M.cRk (X ∩ M.E) = M.cRk X :=
-  (M.cRk_le_of_subset inter_subset_left).antisymm <| cRk_le_iff.2
-    fun _ h ↦ h.isBasis_inter_ground.cardinalMk_le_cRk
+@[simp]
+theorem cRk_inter_ground (M : Matroid α) (X : Set α) : M.cRk (X ∩ M.E) = M.cRk X :=
+  (M.cRk_le_of_subset inter_subset_left).antisymm <|
+    cRk_le_iff.2 fun _ h ↦ h.isBasis_inter_ground.cardinalMk_le_cRk
 
 theorem cRk_restrict_subset (M : Matroid α) (hYX : Y ⊆ X) : (M ↾ X).cRk Y = M.cRk Y := by
   have aux : ∀ ⦃I⦄, M.IsBasis' I Y ↔ (M ↾ X).IsBasis' I Y := by
@@ -140,14 +143,15 @@ theorem cRk_restrict_subset (M : Matroid α) (hYX : Y ⊆ X) : (M ↾ X).cRk Y =
   exact ⟨fun I hI ↦ (aux.2 hI).cardinalMk_le_cRk, fun I hI ↦ (aux.1 hI).cardinalMk_le_cRk⟩
 
 theorem cRk_restrict (M : Matroid α) (X Y : Set α) : (M ↾ X).cRk Y = M.cRk (X ∩ Y) := by
-  rw [← cRk_inter_ground, restrict_ground_eq, cRk_restrict_subset _ inter_subset_right,
-    inter_comm]
+  rw [← cRk_inter_ground, restrict_ground_eq, cRk_restrict_subset _ inter_subset_right, inter_comm]
 
 theorem Indep.cRk_eq_cardinalMk (hI : M.Indep I) : #I = M.cRk I :=
   (M.cRk_le_cardinalMk I).antisymm' (hI.isBasis_self.cardinalMk_le_cRk)
 
-@[simp] theorem cRk_map_image_lift (M : Matroid α) (hf : InjOn f M.E) (X : Set α)
-    (hX : X ⊆ M.E := by aesop_mat) : lift.{u, v} ((M.map f hf).cRk (f '' X)) = lift (M.cRk X) := by
+@[simp]
+theorem cRk_map_image_lift
+    (M : Matroid α) (hf : InjOn f M.E) (X : Set α) (hX : X ⊆ M.E := by aesop_mat)
+    : lift.{u, v} ((M.map f hf).cRk (f '' X)) = lift (M.cRk X) := by
   nth_rw 1 [cRk, cRank, le_antisymm_iff, lift_iSup bddAbove_of_small, cRk, cRank, cRk, cRank]
   nth_rw 2 [lift_iSup bddAbove_of_small]
   simp only [ciSup_le_iff bddAbove_of_small, Subtype.forall, isBase_restrict_iff',
@@ -160,17 +164,22 @@ theorem Indep.cRk_eq_cardinalMk (hI : M.Indep I) : #I = M.cRk I :=
   rw [← mk_image_eq_of_injOn_lift _ _ (hf.mono hI.indep.subset_ground), lift_le]
   exact (hI.map hf).cardinalMk_le_cRk
 
-@[simp] theorem cRk_map_image {β : Type u} {f : α → β} (M : Matroid α) (hf : InjOn f M.E)
-    (X : Set α) (hX : X ⊆ M.E := by aesop_mat) : (M.map f hf).cRk (f '' X) = M.cRk X :=
+@[simp]
+theorem cRk_map_image
+    {β : Type u} {f : α → β}
+    (M : Matroid α) (hf : InjOn f M.E)
+    (X : Set α) (hX : X ⊆ M.E := by aesop_mat)
+    : (M.map f hf).cRk (f '' X) = M.cRk X :=
   lift_inj.1 <| M.cRk_map_image_lift ..
 
-theorem cRk_map_eq {β : Type u} {f : α → β} {X : Set β} (M : Matroid α) (hf : InjOn f M.E) :
-    (M.map f hf).cRk X = M.cRk (f ⁻¹' X) := by
+theorem cRk_map_eq {β : Type u} {f : α → β} {X : Set β} (M : Matroid α) (hf : InjOn f M.E)
+    : (M.map f hf).cRk X = M.cRk (f ⁻¹' X) := by
   rw [← M.cRk_inter_ground, ← M.cRk_map_image hf _, image_preimage_inter, ← map_ground _ _ hf,
     cRk_inter_ground]
 
-@[simp] theorem cRk_comap_lift (M : Matroid β) (f : α → β) (X : Set α) :
-    lift.{v, u} ((M.comap f).cRk X) = lift (M.cRk (f '' X)) := by
+@[simp]
+theorem cRk_comap_lift (M : Matroid β) (f : α → β) (X : Set α)
+    : lift.{v, u} ((M.comap f).cRk X) = lift (M.cRk (f '' X)) := by
   nth_rw 1 [cRk, cRank, le_antisymm_iff, lift_iSup bddAbove_of_small, cRk, cRank, cRk, cRank]
   nth_rw 2 [lift_iSup bddAbove_of_small]
   simp only [ciSup_le_iff bddAbove_of_small, Subtype.forall, isBase_restrict_iff',
@@ -178,47 +187,51 @@ theorem cRk_map_eq {β : Type u} {f : α → β} {X : Set β} (M : Matroid α) (
   refine ⟨fun I hI hfI hIX ↦ ?_, fun I hIX ↦ ?_⟩
   · rw [← mk_image_eq_of_injOn_lift _ _ hfI, lift_le]
     exact hI.cardinalMk_le_cRk
-  obtain ⟨I₀, hI₀X, rfl, hfI₀⟩ := show ∃ I₀ ⊆ X, f '' I₀ = I ∧ InjOn f I₀ by
-    obtain ⟨I₀, hI₀ss, hbij⟩ := exists_subset_bijOn (f ⁻¹' I ∩ X) f
-    refine ⟨I₀, hI₀ss.trans inter_subset_right, ?_, hbij.injOn⟩
-    rw [hbij.image_eq, image_preimage_inter, inter_eq_self_of_subset_left hIX.subset]
+  obtain ⟨I₀, hI₀X, rfl, hfI₀⟩ :=
+    show ∃ I₀ ⊆ X, f '' I₀ = I ∧ InjOn f I₀ by
+      obtain ⟨I₀, hI₀ss, hbij⟩ := exists_subset_bijOn (f ⁻¹' I ∩ X) f
+      refine ⟨I₀, hI₀ss.trans inter_subset_right, ?_, hbij.injOn⟩
+      rw [hbij.image_eq, image_preimage_inter, inter_eq_self_of_subset_left hIX.subset]
   rw [mk_image_eq_of_injOn_lift _ _ hfI₀, lift_le]
   exact IsBasis'.cardinalMk_le_cRk <| comap_isBasis'_iff.2 ⟨hIX, hfI₀, hI₀X⟩
 
-@[simp] theorem cRk_comap {β : Type u} (M : Matroid β) (f : α → β) (X : Set α) :
-    (M.comap f).cRk X = M.cRk (f '' X) :=
+@[simp]
+theorem cRk_comap {β : Type u} (M : Matroid β) (f : α → β) (X : Set α)
+    : (M.comap f).cRk X = M.cRk (f '' X) :=
   lift_inj.1 <| M.cRk_comap_lift ..
 
 end Rank
 
 section Invariant
 
-/-- A class stating that cardinality-valued rank is well-defined
+/--
+A class stating that cardinality-valued rank is well-defined
 (i.e. all bases are equicardinal) for a matroid `M` and its minors.
-Notably, this holds for `Finitary` matroids; see `Matroid.invariantCardinalRank_of_finitary`. -/
+Notably, this holds for `Finitary` matroids; see `Matroid.invariantCardinalRank_of_finitary`.
+-/
 @[mk_iff]
 class InvariantCardinalRank (M : Matroid α) : Prop where
-  forall_card_isBasis_diff :
-    ∀ ⦃I J X⦄, M.IsBasis I X → M.IsBasis J X → #(I \ J : Set α) = #(J \ I : Set α)
+  forall_card_isBasis_diff
+    : ∀ ⦃I J X⦄, M.IsBasis I X → M.IsBasis J X → #(I \ J : Set α) = #(J \ I : Set α)
 
 variable [InvariantCardinalRank M]
 
-theorem IsBasis.cardinalMk_sdiff_comm (hIX : M.IsBasis I X) (hJX : M.IsBasis J X) :
-    #(I \ J : Set α) = #(J \ I : Set α) :=
+theorem IsBasis.cardinalMk_sdiff_comm (hIX : M.IsBasis I X) (hJX : M.IsBasis J X)
+    : #(I \ J : Set α) = #(J \ I : Set α) :=
   InvariantCardinalRank.forall_card_isBasis_diff hIX hJX
 
 @[deprecated (since := "2026-06-03")]
 alias IsBasis.cardinalMk_diff_comm := IsBasis.cardinalMk_sdiff_comm
 
-theorem IsBasis'.cardinalMk_sdiff_comm (hIX : M.IsBasis' I X) (hJX : M.IsBasis' J X) :
-    #(I \ J : Set α) = #(J \ I : Set α) :=
+theorem IsBasis'.cardinalMk_sdiff_comm (hIX : M.IsBasis' I X) (hJX : M.IsBasis' J X)
+    : #(I \ J : Set α) = #(J \ I : Set α) :=
   hIX.isBasis_inter_ground.cardinalMk_sdiff_comm hJX.isBasis_inter_ground
 
 @[deprecated (since := "2026-06-03")]
 alias IsBasis'.cardinalMk_diff_comm := IsBasis'.cardinalMk_sdiff_comm
 
-theorem IsBase.cardinalMk_sdiff_comm (hB : M.IsBase B) (hB' : M.IsBase B') :
-    #(B \ B' : Set α) = #(B' \ B : Set α) :=
+theorem IsBase.cardinalMk_sdiff_comm (hB : M.IsBase B) (hB' : M.IsBase B')
+    : #(B \ B' : Set α) = #(B' \ B : Set α) :=
   hB.isBasis_ground.cardinalMk_sdiff_comm hB'.isBasis_ground
 
 @[deprecated (since := "2026-06-03")]
@@ -228,8 +241,8 @@ theorem IsBasis.cardinalMk_eq (hIX : M.IsBasis I X) (hJX : M.IsBasis J X) : #I =
   rw [← sdiff_union_inter I J,
     mk_union_of_disjoint (disjoint_sdiff_left.mono_right inter_subset_right),
     hIX.cardinalMk_sdiff_comm hJX,
-    ← mk_union_of_disjoint (disjoint_sdiff_left.mono_right inter_subset_left),
-    inter_comm, sdiff_union_inter]
+    ← mk_union_of_disjoint (disjoint_sdiff_left.mono_right inter_subset_left), inter_comm,
+    sdiff_union_inter]
 
 theorem IsBasis'.cardinalMk_eq (hIX : M.IsBasis' I X) (hJX : M.IsBasis' J X) : #I = #J :=
   hIX.isBasis_inter_ground.cardinalMk_eq hJX.isBasis_inter_ground
@@ -241,13 +254,12 @@ theorem Indep.cardinalMk_le_isBase (hI : M.Indep I) (hB : M.IsBase B) : #I ≤ #
   have ⟨_B', hB', hIB'⟩ := hI.exists_isBase_superset
   hB'.cardinalMk_eq hB ▸ mk_le_mk_of_subset hIB'
 
-theorem Indep.cardinalMk_le_isBasis' (hI : M.Indep I) (hJ : M.IsBasis' J X) (hIX : I ⊆ X) :
-    #I ≤ #J :=
+theorem Indep.cardinalMk_le_isBasis' (hI : M.Indep I) (hJ : M.IsBasis' J X) (hIX : I ⊆ X)
+    : #I ≤ #J :=
   have ⟨_J', hJ', hIJ'⟩ := hI.subset_isBasis'_of_subset hIX
   hJ'.cardinalMk_eq hJ ▸ mk_le_mk_of_subset hIJ'
 
-theorem Indep.cardinalMk_le_isBasis (hI : M.Indep I) (hJ : M.IsBasis J X) (hIX : I ⊆ X) :
-    #I ≤ #J :=
+theorem Indep.cardinalMk_le_isBasis (hI : M.Indep I) (hJ : M.IsBasis J X) (hIX : I ⊆ X) : #I ≤ #J :=
   hI.cardinalMk_le_isBasis' hJ.isBasis' hIX
 
 theorem IsBase.cardinalMk_eq_cRank (hB : M.IsBase B) : #B = M.cRank := by
@@ -266,8 +278,9 @@ theorem IsBasis'.cardinalMk_eq_cRk (hIX : M.IsBasis' I X) : #I = M.cRk X := by
 theorem IsBasis.cardinalMk_eq_cRk (hIX : M.IsBasis I X) : #I = M.cRk X :=
   hIX.isBasis'.cardinalMk_eq_cRk
 
-@[simp] theorem cRk_closure (M : Matroid α) [InvariantCardinalRank M] (X : Set α) :
-    M.cRk (M.closure X) = M.cRk X := by
+@[simp]
+theorem cRk_closure (M : Matroid α) [InvariantCardinalRank M] (X : Set α)
+    : M.cRk (M.closure X) = M.cRk X := by
   obtain ⟨I, hI⟩ := M.exists_isBasis' X
   rw [← hI.isBasis_closure_right.cardinalMk_eq_cRk, ← hI.cardinalMk_eq_cRk]
 
@@ -280,28 +293,29 @@ theorem Spanning.cRank_le_cardinalMk (h : M.Spanning X) : M.cRank ≤ #X :=
 
 variable (M : Matroid α) [InvariantCardinalRank M] (e : α) (X Y : Set α)
 
-@[simp] theorem cRk_union_closure_right_eq : M.cRk (X ∪ M.closure Y) = M.cRk (X ∪ Y) :=
+@[simp]
+theorem cRk_union_closure_right_eq : M.cRk (X ∪ M.closure Y) = M.cRk (X ∪ Y) :=
   M.cRk_closure_congr (M.closure_union_closure_right_eq _ _)
 
-@[simp] theorem cRk_union_closure_left_eq : M.cRk (M.closure X ∪ Y) = M.cRk (X ∪ Y) :=
+@[simp]
+theorem cRk_union_closure_left_eq : M.cRk (M.closure X ∪ Y) = M.cRk (X ∪ Y) :=
   M.cRk_closure_congr (M.closure_union_closure_left_eq _ _)
 
-@[simp] theorem cRk_insert_closure_eq : M.cRk (insert e (M.closure X)) = M.cRk (insert e X) := by
+@[simp]
+theorem cRk_insert_closure_eq : M.cRk (insert e (M.closure X)) = M.cRk (insert e X) := by
   rw [← union_singleton, cRk_union_closure_left_eq, union_singleton]
 
-theorem cRk_union_closure_eq : M.cRk (M.closure X ∪ M.closure Y) = M.cRk (X ∪ Y) := by
-  simp
+theorem cRk_union_closure_eq : M.cRk (M.closure X ∪ M.closure Y) = M.cRk (X ∪ Y) := by simp
 
 /-- The `Cardinal` rank function is submodular. -/
 theorem cRk_inter_add_cRk_union_le : M.cRk (X ∩ Y) + M.cRk (X ∪ Y) ≤ M.cRk X + M.cRk Y := by
   obtain ⟨Ii, hIi⟩ := M.exists_isBasis' (X ∩ Y)
-  obtain ⟨IX, hIX, hIX'⟩ :=
-    hIi.indep.subset_isBasis'_of_subset (hIi.subset.trans inter_subset_left)
+  obtain ⟨IX, hIX, hIX'⟩ := hIi.indep.subset_isBasis'_of_subset (hIi.subset.trans inter_subset_left)
   obtain ⟨IY, hIY, hIY'⟩ :=
     hIi.indep.subset_isBasis'_of_subset (hIi.subset.trans inter_subset_right)
   rw [← cRk_union_closure_eq, ← hIX.closure_eq_closure, ← hIY.closure_eq_closure,
-    cRk_union_closure_eq, ← hIi.cardinalMk_eq_cRk, ← hIX.cardinalMk_eq_cRk,
-    ← hIY.cardinalMk_eq_cRk, ← mk_union_add_mk_inter, add_comm]
+    cRk_union_closure_eq, ← hIi.cardinalMk_eq_cRk, ← hIX.cardinalMk_eq_cRk, ← hIY.cardinalMk_eq_cRk,
+    ← mk_union_add_mk_inter, add_comm]
   exact add_le_add (M.cRk_le_cardinalMk _) (mk_le_mk_of_subset (subset_inter hIX' hIY'))
 
 end Invariant
@@ -310,10 +324,12 @@ section Instances
 
 /-- `Finitary` matroids have a cardinality-valued rank function. -/
 instance invariantCardinalRank_of_finitary [Finitary M] : InvariantCardinalRank M := by
-  suffices aux : ∀ ⦃B B'⦄ ⦃N : Matroid α⦄, Finitary N → N.IsBase B → N.IsBase B' →
-      #(B \ B' : Set α) ≤ #(B' \ B : Set α) from
-    ⟨fun I J X hI hJ ↦ (aux (restrict_finitary X) hI.isBase_restrict hJ.isBase_restrict).antisymm
-      (aux (restrict_finitary X) hJ.isBase_restrict hI.isBase_restrict)⟩
+  suffices aux
+      : ∀ ⦃B B'⦄ ⦃N : Matroid α⦄,
+        Finitary N → N.IsBase B → N.IsBase B' → #(B \ B' : Set α) ≤ #(B' \ B : Set α) from
+    ⟨fun I J X hI hJ ↦
+      (aux (restrict_finitary X) hI.isBase_restrict hJ.isBase_restrict).antisymm
+        (aux (restrict_finitary X) hJ.isBase_restrict hI.isBase_restrict)⟩
   intro B B' N hfin hB hB'
   by_cases h : (B' \ B).Finite
   · rw [← cast_ncard h, ← cast_ncard, hB.ncard_sdiff_comm hB']
@@ -322,13 +338,14 @@ instance invariantCardinalRank_of_finitary [Finitary M] : InvariantCardinalRank 
   have (a : α) (ha : a ∈ B' \ B) : ∃ S : Set α, Finite S ∧ S ⊆ B ∧ ¬ N.Indep (insert a S) := by
     have := (hB.insert_dep ⟨hB'.subset_ground ha.1, ha.2⟩).1
     contrapose! this
-    exact Finitary.indep_of_forall_finite _ fun J hJ fin ↦ (this (J \ {a}) fin.sdiff.to_subtype <|
-      sdiff_singleton_subset_iff.mpr hJ).subset (subset_insert_sdiff_singleton ..)
+    exact Finitary.indep_of_forall_finite _ fun J hJ fin ↦
+      (this (J \ {a}) fin.sdiff.to_subtype <| sdiff_singleton_subset_iff.mpr hJ).subset
+        (subset_insert_sdiff_singleton ..)
   choose S S_fin hSB dep using this
   let U := ⋃ a : ↥(B' \ B), S a a.2
   suffices B \ B' ⊆ U by
-    refine (mk_le_mk_of_subset this).trans <| (mk_iUnion_le ..).trans
-      <| (mul_le_max_of_aleph0_le_left (by simp)).trans ?_
+    refine (mk_le_mk_of_subset this).trans <| (mk_iUnion_le ..).trans <|
+      (mul_le_max_of_aleph0_le_left (by simp)).trans ?_
     simp only [sup_le_iff, le_refl, true_and]
     exact ciSup_le' fun e ↦ (lt_aleph0_of_finite _).le.trans <| by simp
   rw [← sdiff_inter_self_eq_sdiff, sdiff_subset_iff, inter_comm]
@@ -340,8 +357,8 @@ instance invariantCardinalRank_of_finitary [Finitary M] : InvariantCardinalRank 
   refine dep a this (ind.subset <| insert_subset_insert <| .trans ?_ subset_union_right)
   exact subset_iUnion_of_subset ⟨a, this⟩ subset_rfl
 
-instance invariantCardinalRank_map (M : Matroid α) [InvariantCardinalRank M] (hf : InjOn f M.E) :
-    InvariantCardinalRank (M.map f hf) := by
+instance invariantCardinalRank_map (M : Matroid α) [InvariantCardinalRank M] (hf : InjOn f M.E)
+    : InvariantCardinalRank (M.map f hf) := by
   refine ⟨fun I J X hI hJ ↦ ?_⟩
   obtain ⟨I, X, hIX, rfl, rfl⟩ := map_isBasis_iff'.1 hI
   obtain ⟨J, X', hJX, rfl, h'⟩ := map_isBasis_iff'.1 hJ
@@ -349,25 +366,25 @@ instance invariantCardinalRank_map (M : Matroid α) [InvariantCardinalRank M] (h
     rwa [InjOn.image_eq_image_iff hf hIX.subset_ground hJX.subset_ground] at h'
   have hcard := hIX.cardinalMk_sdiff_comm hJX
   rwa [← lift_inj.{u, v},
-    ← mk_image_eq_of_injOn_lift _ _ (hf.mono ((hIX.indep.sdiff _).subset_ground)),
-    ← mk_image_eq_of_injOn_lift _ _ (hf.mono ((hJX.indep.sdiff _).subset_ground)),
-    lift_inj, (hf.mono hIX.indep.subset_ground).image_sdiff,
-    (hf.mono hJX.indep.subset_ground).image_sdiff, inter_comm,
-    hf.image_inter hJX.indep.subset_ground hIX.indep.subset_ground,
-    sdiff_inter_self_eq_sdiff, sdiff_self_inter] at hcard
+      ← mk_image_eq_of_injOn_lift _ _ (hf.mono ((hIX.indep.sdiff _).subset_ground)),
+      ← mk_image_eq_of_injOn_lift _ _ (hf.mono ((hJX.indep.sdiff _).subset_ground)), lift_inj,
+      (hf.mono hIX.indep.subset_ground).image_sdiff, (hf.mono hJX.indep.subset_ground).image_sdiff,
+      inter_comm, hf.image_inter hJX.indep.subset_ground hIX.indep.subset_ground,
+      sdiff_inter_self_eq_sdiff, sdiff_self_inter]
+    at hcard
 
-instance invariantCardinalRank_comap (M : Matroid β) [InvariantCardinalRank M] (f : α → β) :
-    InvariantCardinalRank (M.comap f) := by
+instance invariantCardinalRank_comap (M : Matroid β) [InvariantCardinalRank M] (f : α → β)
+    : InvariantCardinalRank (M.comap f) := by
   refine ⟨fun I J X hI hJ ↦ ?_⟩
   obtain ⟨hI, hfI, hIX⟩ := comap_isBasis_iff.1 hI
   obtain ⟨hJ, hfJ, hJX⟩ := comap_isBasis_iff.1 hJ
   rw [← lift_inj.{u, v}, ← mk_image_eq_of_injOn_lift _ _ (hfI.mono sdiff_subset),
-    ← mk_image_eq_of_injOn_lift _ _ (hfJ.mono sdiff_subset), lift_inj, hfI.image_sdiff,
-    hfJ.image_sdiff, ← sdiff_union_sdiff_cancel inter_subset_left (image_inter_subset f I J),
-    inter_comm, sdiff_inter_self_eq_sdiff, mk_union_of_disjoint, hI.cardinalMk_sdiff_comm hJ,
-    ← sdiff_union_sdiff_cancel inter_subset_left (image_inter_subset f J I), inter_comm,
-    sdiff_inter_self_eq_sdiff, mk_union_of_disjoint, inter_comm J I] <;>
-  exact disjoint_sdiff_left.mono_right (sdiff_subset.trans inter_subset_left)
+      ← mk_image_eq_of_injOn_lift _ _ (hfJ.mono sdiff_subset), lift_inj, hfI.image_sdiff,
+      hfJ.image_sdiff, ← sdiff_union_sdiff_cancel inter_subset_left (image_inter_subset f I J),
+      inter_comm, sdiff_inter_self_eq_sdiff, mk_union_of_disjoint, hI.cardinalMk_sdiff_comm hJ,
+      ← sdiff_union_sdiff_cancel inter_subset_left (image_inter_subset f J I), inter_comm,
+      sdiff_inter_self_eq_sdiff, mk_union_of_disjoint, inter_comm J I]
+    <;> exact disjoint_sdiff_left.mono_right (sdiff_subset.trans inter_subset_left)
 
 end Instances
 
@@ -385,24 +402,26 @@ theorem rankInfinite_iff_aleph0_le_cRank : M.RankInfinite ↔ ℵ₀ ≤ M.cRank
 theorem isRkFinite_iff_cRk_lt_aleph0 : M.IsRkFinite X ↔ M.cRk X < ℵ₀ := by
   rw [IsRkFinite, rankFinite_iff_cRank_lt_aleph0, cRank_restrict]
 
-theorem Indep.isBase_of_cRank_le [M.RankFinite] (ind : M.Indep I) (le : M.cRank ≤ #I) :
-    M.IsBase I :=
-  ind.isBase_of_maximal fun _J ind_J hIJ ↦ ind.finite.eq_of_subset_of_encard_le hIJ <|
-    toENat.monotone' <| ind_J.cardinalMk_le_cRank.trans le
+theorem Indep.isBase_of_cRank_le [M.RankFinite] (ind : M.Indep I) (le : M.cRank ≤ #I)
+    : M.IsBase I :=
+  ind.isBase_of_maximal fun _J ind_J hIJ ↦
+    ind.finite.eq_of_subset_of_encard_le hIJ <| toENat.monotone' <|
+      ind_J.cardinalMk_le_cRank.trans le
 
-theorem Spanning.isBase_of_le_cRank [M.RankFinite] (h : M.Spanning X) (le : #X ≤ M.cRank) :
-    M.IsBase X := by
+theorem Spanning.isBase_of_le_cRank [M.RankFinite] (h : M.Spanning X) (le : #X ≤ M.cRank)
+    : M.IsBase X := by
   have ⟨B, hB, hBX⟩ := h.exists_isBase_subset
   rwa [← hB.finite.eq_of_subset_of_encard_le hBX
     (toENat.monotone' <| le.trans hB.cardinalMk_eq_cRank.ge)]
 
-theorem Indep.isBase_of_cRank_le_of_finite (ind : M.Indep I)
-    (le : M.cRank ≤ #I) (fin : I.Finite) : M.IsBase I :=
+theorem Indep.isBase_of_cRank_le_of_finite (ind : M.Indep I) (le : M.cRank ≤ #I) (fin : I.Finite)
+    : M.IsBase I :=
   have := rankFinite_iff_cRank_lt_aleph0.mpr (le.trans_lt <| lt_aleph0_iff_finite.mpr fin)
   ind.isBase_of_cRank_le le
 
-theorem Spanning.isBase_of_le_cRank_of_finite (h : M.Spanning X)
-    (le : #X ≤ M.cRank) (fin : X.Finite) : M.IsBase X :=
+theorem Spanning.isBase_of_le_cRank_of_finite
+    (h : M.Spanning X) (le : #X ≤ M.cRank) (fin : X.Finite)
+    : M.IsBase X :=
   have ⟨_B, hB, hBX⟩ := h.exists_isBase_subset
   have := hB.rankFinite_of_finite (fin.subset hBX)
   h.isBase_of_le_cRank le

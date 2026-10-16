@@ -66,25 +66,34 @@ namespace CategoryTheory
 
 open Category MonoidalCategory Limits Iso
 
-/-- A monoidal category with binary coproducts is left distributive
-if the left tensor product functor preserves binary coproducts. -/
-class IsMonoidalLeftDistrib (C : Type u) [Category.{v} C]
-    [MonoidalCategory C] [HasBinaryCoproducts C] : Prop where
-  preservesBinaryCoproducts_tensorLeft (X : C) :
-    PreservesColimitsOfShape (Discrete WalkingPair) (tensorLeft X) := by infer_instance
+/--
+A monoidal category with binary coproducts is left distributive
+if the left tensor product functor preserves binary coproducts.
+-/
+class IsMonoidalLeftDistrib
+    (C : Type u) [Category.{v} C] [MonoidalCategory C] [HasBinaryCoproducts C]
+    : Prop where
+  preservesBinaryCoproducts_tensorLeft (X : C)
+      : PreservesColimitsOfShape (Discrete WalkingPair) (tensorLeft X) := by
+    infer_instance
 
-/-- A monoidal category with binary coproducts is right distributive
-if the right tensor product functor preserves binary coproducts. -/
-class IsMonoidalRightDistrib (C : Type u) [Category.{v} C]
-    [MonoidalCategory C] [HasBinaryCoproducts C] : Prop where
-  preservesBinaryCoproducts_tensorRight (X : C) :
-    PreservesColimitsOfShape (Discrete WalkingPair) (tensorRight X) := by infer_instance
+/--
+A monoidal category with binary coproducts is right distributive
+if the right tensor product functor preserves binary coproducts.
+-/
+class IsMonoidalRightDistrib
+    (C : Type u) [Category.{v} C] [MonoidalCategory C] [HasBinaryCoproducts C]
+    : Prop where
+  preservesBinaryCoproducts_tensorRight (X : C)
+      : PreservesColimitsOfShape (Discrete WalkingPair) (tensorRight X) := by
+    infer_instance
 
-/-- A monoidal category with binary coproducts is distributive
-if it is both left and right distributive. -/
-class IsMonoidalDistrib (C : Type u) [Category.{v} C]
-    [MonoidalCategory C] [HasBinaryCoproducts C] extends
-  IsMonoidalLeftDistrib C, IsMonoidalRightDistrib C
+/--
+A monoidal category with binary coproducts is distributive
+if it is both left and right distributive.
+-/
+class IsMonoidalDistrib (C : Type u) [Category.{v} C] [MonoidalCategory C] [HasBinaryCoproducts C]
+  extends IsMonoidalLeftDistrib C, IsMonoidalRightDistrib C
 
 variable {C} [Category.{v} C] [MonoidalCategory C] [HasBinaryCoproducts C]
 
@@ -93,8 +102,7 @@ section IsMonoidalLeftDistrib
 attribute [instance] IsMonoidalLeftDistrib.preservesBinaryCoproducts_tensorLeft
 
 /-- The canonical left distributivity isomorphism -/
-def leftDistrib [IsMonoidalLeftDistrib C] (X Y Z : C) :
-    (X ⊗ Y) ⨿ (X ⊗ Z) ≅ X ⊗ (Y ⨿ Z) :=
+def leftDistrib [IsMonoidalLeftDistrib C] (X Y Z : C) : (X ⊗ Y) ⨿ (X ⊗ Z) ≅ X ⊗ (Y ⨿ Z) :=
   PreservesColimitPair.iso (tensorLeft X) Y Z
 
 end IsMonoidalLeftDistrib
@@ -109,40 +117,48 @@ end Distributive
 open Distributive
 
 lemma IsMonoidalLeftDistrib.of_isIso_coprodComparisonTensorLeft
-    [i : ∀ {X Y Z : C}, IsIso (coprodComparison (tensorLeft X) Y Z)] : IsMonoidalLeftDistrib C where
+    [i : ∀ {X Y Z : C}, IsIso (coprodComparison (tensorLeft X) Y Z)]
+    : IsMonoidalLeftDistrib C where
   preservesBinaryCoproducts_tensorLeft X :=
     preservesBinaryCoproducts_of_isIso_coprodComparison (tensorLeft X)
 
-/-- The forward direction of the left distributivity isomorphism is the cogap morphism
-`coprod.desc (_ ◁ coprod.inl) (_ ◁ coprod.inr) : (X ⊗ Y) ⨿ (X ⊗ Z) ⟶ X ⊗ (Y ⨿ Z)`. -/
-lemma leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C} :
-    (∂L X Y Z).hom = coprod.desc (_ ◁ coprod.inl) (_ ◁ coprod.inr) := by rfl
+/--
+The forward direction of the left distributivity isomorphism is the cogap morphism
+`coprod.desc (_ ◁ coprod.inl) (_ ◁ coprod.inr) : (X ⊗ Y) ⨿ (X ⊗ Z) ⟶ X ⊗ (Y ⨿ Z)`.
+-/
+lemma leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C}
+    : (∂L X Y Z).hom = coprod.desc (_ ◁ coprod.inl) (_ ◁ coprod.inr) := by
+  rfl
 
 @[reassoc (attr := simp)]
-lemma coprod_inl_leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C} :
-    coprod.inl ≫ (∂L X Y Z).hom = X ◁ coprod.inl := by
+lemma coprod_inl_leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C}
+    : coprod.inl ≫ (∂L X Y Z).hom = X ◁ coprod.inl := by
   rw [leftDistrib_hom, coprod.inl_desc]
 
 @[reassoc (attr := simp)]
-lemma coprod_inr_leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C} :
-    coprod.inr ≫ (∂L X Y Z).hom = X ◁ coprod.inr := by
+lemma coprod_inr_leftDistrib_hom [IsMonoidalLeftDistrib C] {X Y Z : C}
+    : coprod.inr ≫ (∂L X Y Z).hom = X ◁ coprod.inr := by
   rw [leftDistrib_hom, coprod.inr_desc]
 
-/-- The composite of `(X ◁ coprod.inl) : X ⊗ Y ⟶ X ⊗ (Y ⨿ Z)` and
+/--
+The composite of `(X ◁ coprod.inl) : X ⊗ Y ⟶ X ⊗ (Y ⨿ Z)` and
 `(∂L X Y Z).inv :  X ⊗ (Y ⨿ Z) ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`
-is equal to the left coprojection `coprod.inl : X ⊗ Y ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`. -/
+is equal to the left coprojection `coprod.inl : X ⊗ Y ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`.
+-/
 @[reassoc (attr := simp)]
-lemma whiskerLeft_coprod_inl_leftDistrib_inv [IsMonoidalLeftDistrib C] {X Y Z : C} :
-    (X ◁ coprod.inl) ≫ (∂L X Y Z).inv = coprod.inl := by
+lemma whiskerLeft_coprod_inl_leftDistrib_inv [IsMonoidalLeftDistrib C] {X Y Z : C}
+    : (X ◁ coprod.inl) ≫ (∂L X Y Z).inv = coprod.inl := by
   apply (cancel_iso_hom_right _ _ (∂L X Y Z)).mp
   rw [assoc, Iso.inv_hom_id, comp_id, coprod_inl_leftDistrib_hom]
 
-/-- The composite of `(X ◁ coprod.inr) : X ⊗ Z ⟶ X ⊗ (Y ⨿ Z)` and
+/--
+The composite of `(X ◁ coprod.inr) : X ⊗ Z ⟶ X ⊗ (Y ⨿ Z)` and
 `(∂L X Y Z).inv :  X ⊗ (Y ⨿ Z) ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`
-is equal to the right coprojection `coprod.inr : X ⊗ Z ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`. -/
+is equal to the right coprojection `coprod.inr : X ⊗ Z ⟶ (X ⊗ Y) ⨿ (X ⊗ Z)`.
+-/
 @[reassoc (attr := simp)]
-lemma whiskerLeft_coprod_inr_leftDistrib_inv [IsMonoidalLeftDistrib C] {X Y Z : C} :
-    (X ◁ coprod.inr) ≫ (∂L X Y Z).inv = coprod.inr := by
+lemma whiskerLeft_coprod_inr_leftDistrib_inv [IsMonoidalLeftDistrib C] {X Y Z : C}
+    : (X ◁ coprod.inr) ≫ (∂L X Y Z).inv = coprod.inr := by
   apply (cancel_iso_hom_right _ _ (∂L X Y Z)).mp
   rw [assoc, Iso.inv_hom_id, comp_id, coprod_inr_leftDistrib_hom]
 
@@ -164,90 +180,101 @@ scoped notation "∂R" => rightDistrib
 end Distributive
 
 lemma IsMonoidalRightDistrib.of_isIso_coprodComparisonTensorRight
-    [i : ∀ {X Y Z : C}, IsIso (coprodComparison (tensorRight X) Y Z)] :
-    IsMonoidalRightDistrib C where
+    [i : ∀ {X Y Z : C}, IsIso (coprodComparison (tensorRight X) Y Z)]
+    : IsMonoidalRightDistrib C where
   preservesBinaryCoproducts_tensorRight _ :=
     ⟨preservesBinaryCoproducts_of_isIso_coprodComparison _ |>.preservesColimit⟩
 
-/-- The forward direction of the right distributivity isomorphism is equal to the cogap morphism
-`coprod.desc (coprod.inl ▷ _) (coprod.inr ▷ _) : (Y ⊗ X) ⨿ (Z ⊗ X) ⟶ (Y ⨿ Z) ⊗ X`. -/
-lemma rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C} :
-    (∂R X Y Z).hom = coprod.desc (coprod.inl ▷ _) (coprod.inr ▷ _) := by rfl
+/--
+The forward direction of the right distributivity isomorphism is equal to the cogap morphism
+`coprod.desc (coprod.inl ▷ _) (coprod.inr ▷ _) : (Y ⊗ X) ⨿ (Z ⊗ X) ⟶ (Y ⨿ Z) ⊗ X`.
+-/
+lemma rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C}
+    : (∂R X Y Z).hom = coprod.desc (coprod.inl ▷ _) (coprod.inr ▷ _) := by
+  rfl
 
 @[reassoc (attr := simp)]
-lemma coprod_inl_rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C} :
-    coprod.inl ≫ (∂R X Y Z).hom = coprod.inl ▷ X := by
+lemma coprod_inl_rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C}
+    : coprod.inl ≫ (∂R X Y Z).hom = coprod.inl ▷ X := by
   rw [rightDistrib_hom, coprod.inl_desc]
 
 @[reassoc (attr := simp)]
-lemma coprod_inr_rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C} :
-    coprod.inr ≫ (∂R X Y Z).hom = coprod.inr ▷ X := by
+lemma coprod_inr_rightDistrib_hom [IsMonoidalRightDistrib C] {X Y Z : C}
+    : coprod.inr ≫ (∂R X Y Z).hom = coprod.inr ▷ X := by
   rw [rightDistrib_hom, coprod.inr_desc]
 
-/-- The composite of `(coprod.inl ▷ X) : Y ⊗ X ⟶ (Y ⨿ Z) ⊗ X` and
+/--
+The composite of `(coprod.inl ▷ X) : Y ⊗ X ⟶ (Y ⨿ Z) ⊗ X` and
 `(∂R X Y Z).inv :  (Y ⨿ Z) ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)` is equal to the left coprojection
-`coprod.inl : Y ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)`. -/
+`coprod.inl : Y ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)`.
+-/
 @[reassoc (attr := simp)]
-lemma whiskerRight_coprod_inl_rightDistrib_inv [IsMonoidalRightDistrib C] {X Y Z : C} :
-    (coprod.inl ▷ X) ≫ (∂R X Y Z).inv = coprod.inl := by
+lemma whiskerRight_coprod_inl_rightDistrib_inv [IsMonoidalRightDistrib C] {X Y Z : C}
+    : (coprod.inl ▷ X) ≫ (∂R X Y Z).inv = coprod.inl := by
   apply (cancel_iso_hom_right _ _ (∂R X Y Z)).mp
   rw [assoc, Iso.inv_hom_id, comp_id, coprod_inl_rightDistrib_hom]
 
-/-- The composite of `(coprod.inr ▷ X) : Z ⊗ X ⟶ (Y ⨿ Z) ⊗ X` and
+/--
+The composite of `(coprod.inr ▷ X) : Z ⊗ X ⟶ (Y ⨿ Z) ⊗ X` and
 `(∂R X Y Z).inv :  (Y ⨿ Z) ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)` is equal to the right coprojection
-`coprod.inr : Z ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)`. -/
+`coprod.inr : Z ⊗ X ⟶ (Y ⊗ X) ⨿ (Z ⊗ X)`.
+-/
 @[reassoc (attr := simp)]
-lemma whiskerRight_coprod_inr_rightDistrib_inv [IsMonoidalRightDistrib C] {X Y Z : C} :
-    (coprod.inr ▷ X) ≫ (∂R X Y Z).inv = coprod.inr := by
+lemma whiskerRight_coprod_inr_rightDistrib_inv [IsMonoidalRightDistrib C] {X Y Z : C}
+    : (coprod.inr ▷ X) ≫ (∂R X Y Z).inv = coprod.inr := by
   apply (cancel_iso_hom_right _ _ (∂R X Y Z)).mp
   rw [assoc, Iso.inv_hom_id, comp_id, coprod_inr_rightDistrib_hom]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- In a symmetric monoidal category, the left distributivity is equal to
-the right distributivity up to braiding isomorphisms. -/
+/--
+In a symmetric monoidal category, the left distributivity is equal to
+the right distributivity up to braiding isomorphisms.
+-/
 @[simp]
-lemma coprodComparison_tensorLeft_braiding_hom [BraidedCategory C] {X Y Z : C} :
-    (coprodComparison (tensorLeft X) Y Z) ≫ (β_ X (Y ⨿ Z)).hom =
-    (coprod.map (β_ X Y).hom (β_ X Z).hom) ≫ (coprodComparison (tensorRight X) Y Z) := by
+lemma coprodComparison_tensorLeft_braiding_hom [BraidedCategory C] {X Y Z : C}
+    : (coprodComparison (tensorLeft X) Y Z) ≫ (β_ X (Y ⨿ Z)).hom
+      = (coprod.map (β_ X Y).hom (β_ X Z).hom) ≫ (coprodComparison (tensorRight X) Y Z) := by
   simp [coprodComparison]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- In a symmetric monoidal category, the right distributivity is equal to
-the left distributivity up to braiding isomorphisms. -/
+/--
+In a symmetric monoidal category, the right distributivity is equal to
+the left distributivity up to braiding isomorphisms.
+-/
 @[simp]
-lemma coprodComparison_tensorRight_braiding_hom [SymmetricCategory C] {X Y Z : C} :
-    (coprodComparison (tensorRight X) Y Z) ≫ (β_ (Y ⨿ Z) X).hom =
-    (coprod.map (β_ Y X).hom (β_ Z X).hom) ≫ (coprodComparison (tensorLeft X) Y Z) := by
+lemma coprodComparison_tensorRight_braiding_hom [SymmetricCategory C] {X Y Z : C}
+    : (coprodComparison (tensorRight X) Y Z) ≫ (β_ (Y ⨿ Z) X).hom
+      = (coprod.map (β_ Y X).hom (β_ Z X).hom) ≫ (coprodComparison (tensorLeft X) Y Z) := by
   simp [coprodComparison]
 
 /-- A left distributive symmetric monoidal category is distributive. -/
 lemma SymmetricCategory.isMonoidalDistrib_of_isMonoidalLeftDistrib
-    [SymmetricCategory C] [IsMonoidalLeftDistrib C] : IsMonoidalDistrib C where
-      preservesBinaryCoproducts_tensorRight X :=
+    [SymmetricCategory C] [IsMonoidalLeftDistrib C]
+    : IsMonoidalDistrib C where
+  preservesBinaryCoproducts_tensorRight X :=
     preservesColimitsOfShape_of_natIso (BraidedCategory.tensorLeftIsoTensorRight X)
 
-/-- The right distributivity isomorphism of the a left distributive symmetric monoidal category
-is given by `(β_ (Y ⨿ Z) X).hom ≫ (∂L X Y Z).inv ≫ (coprod.map (β_ X Y).hom (β_ X Z).hom)`. -/
+/--
+The right distributivity isomorphism of the a left distributive symmetric monoidal category
+is given by `(β_ (Y ⨿ Z) X).hom ≫ (∂L X Y Z).inv ≫ (coprod.map (β_ X Y).hom (β_ X Z).hom)`.
+-/
 @[simp]
 lemma SymmetricCategory.rightDistrib_of_leftDistrib
-    [SymmetricCategory C] [IsMonoidalDistrib C] {X Y Z : C} :
-    ∂R X Y Z = (coprod.mapIso (β_ Y X) (β_ Z X)) ≪≫ (∂L X Y Z) ≪≫ (β_ X (Y ⨿ Z)) := by
+    [SymmetricCategory C] [IsMonoidalDistrib C] {X Y Z : C}
+    : ∂R X Y Z = (coprod.mapIso (β_ Y X) (β_ Z X)) ≪≫ (∂L X Y Z) ≪≫ (β_ X (Y ⨿ Z)) := by
   ext <;> simp [leftDistrib_hom, rightDistrib_hom]
 
 /-- A closed monoidal category is left distributive. -/
-instance MonoidalClosed.isMonoidalLeftDistrib [MonoidalClosed C] :
-    IsMonoidalLeftDistrib C where
-  preservesBinaryCoproducts_tensorLeft X := by
-    infer_instance
+instance MonoidalClosed.isMonoidalLeftDistrib [MonoidalClosed C] : IsMonoidalLeftDistrib C where
+  preservesBinaryCoproducts_tensorLeft X := by infer_instance
 
-instance isMonoidalDistrib.of_symmetric_monoidal_closed [SymmetricCategory C] [MonoidalClosed C] :
-    IsMonoidalDistrib C := by
+instance isMonoidalDistrib.of_symmetric_monoidal_closed [SymmetricCategory C] [MonoidalClosed C]
+    : IsMonoidalDistrib C := by
   apply SymmetricCategory.isMonoidalDistrib_of_isMonoidalLeftDistrib
 
 /-- The inverse of distributivity isomorphism from the closed monoidal structure -/
-lemma MonoidalClosed.leftDistrib_inv [MonoidalClosed C] {X Y Z : C} :
-    (leftDistrib X Y Z).inv =
-      uncurry (coprod.desc (curry coprod.inl) (curry coprod.inr)) := by
+lemma MonoidalClosed.leftDistrib_inv [MonoidalClosed C] {X Y Z : C}
+    : (leftDistrib X Y Z).inv = uncurry (coprod.desc (curry coprod.inl) (curry coprod.inr)) := by
   rw [← curry_eq_iff]
   ext <;> simp [← curry_natural_left]
 
@@ -264,13 +291,14 @@ end Endofunctors
 
 section MonoidalPreadditive
 
-attribute [local instance] preservesBinaryBiproducts_of_preservesBiproducts
+attribute [local instance]
+  preservesBinaryBiproducts_of_preservesBiproducts
   preservesBinaryCoproducts_of_preservesBinaryBiproducts
 
 /-- A preadditive monoidal category with binary biproducts is distributive. -/
-instance IsMonoidalDistrib.of_MonoidalPreadditive_with_binary_coproducts [Preadditive C]
-    [MonoidalPreadditive C] :
-    IsMonoidalDistrib C where
+instance IsMonoidalDistrib.of_MonoidalPreadditive_with_binary_coproducts
+  [Preadditive C] [MonoidalPreadditive C]
+  : IsMonoidalDistrib C where
 
 end MonoidalPreadditive
 

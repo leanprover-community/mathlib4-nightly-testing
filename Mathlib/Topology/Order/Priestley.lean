@@ -31,15 +31,16 @@ We do not include compactness in the definition, so a Priestley space is to be d
 
 public section
 
-
 open Set
 
 variable {α : Type*}
 
-/-- A Priestley space is an ordered topological space such that any two distinct points can be
-separated by a clopen upper set. Compactness is often assumed, but we do not include it here. -/
+/--
+A Priestley space is an ordered topological space such that any two distinct points can be
+separated by a clopen upper set. Compactness is often assumed, but we do not include it here.
+-/
 class PriestleySpace (α : Type*) [Preorder α] [TopologicalSpace α] : Prop where
-  priestley {x y : α} : ¬x ≤ y → ∃ U : Set α, IsClopen U ∧ IsUpperSet U ∧ x ∈ U ∧ y ∉ U
+  priestley {x y : α} : ¬ x ≤ y → ∃ U : Set α, IsClopen U ∧ IsUpperSet U ∧ x ∈ U ∧ y ∉ U
 
 variable [TopologicalSpace α]
 
@@ -47,12 +48,12 @@ section Preorder
 
 variable [Preorder α] [PriestleySpace α] {x y : α}
 
-theorem exists_isClopen_upper_of_not_le :
-    ¬x ≤ y → ∃ U : Set α, IsClopen U ∧ IsUpperSet U ∧ x ∈ U ∧ y ∉ U :=
+theorem exists_isClopen_upper_of_not_le
+    : ¬ x ≤ y → ∃ U : Set α, IsClopen U ∧ IsUpperSet U ∧ x ∈ U ∧ y ∉ U :=
   PriestleySpace.priestley
 
-theorem exists_isClopen_lower_of_not_le (h : ¬x ≤ y) :
-    ∃ U : Set α, IsClopen U ∧ IsLowerSet U ∧ x ∉ U ∧ y ∈ U :=
+theorem exists_isClopen_lower_of_not_le (h : ¬ x ≤ y)
+    : ∃ U : Set α, IsClopen U ∧ IsLowerSet U ∧ x ∉ U ∧ y ∈ U :=
   let ⟨U, hU, hU', hx, hy⟩ := exists_isClopen_upper_of_not_le h
   ⟨Uᶜ, hU.compl, hU'.compl, Classical.not_not.2 hx, hy⟩
 
@@ -62,8 +63,8 @@ section PartialOrder
 
 variable [PartialOrder α] [PriestleySpace α] {x y : α}
 
-theorem exists_isClopen_upper_or_lower_of_ne (h : x ≠ y) :
-    ∃ U : Set α, IsClopen U ∧ (IsUpperSet U ∨ IsLowerSet U) ∧ x ∈ U ∧ y ∉ U := by
+theorem exists_isClopen_upper_or_lower_of_ne (h : x ≠ y)
+    : ∃ U : Set α, IsClopen U ∧ (IsUpperSet U ∨ IsLowerSet U) ∧ x ∈ U ∧ y ∉ U := by
   obtain h | h := h.not_le_or_not_ge
   · exact (exists_isClopen_upper_of_not_le h).imp fun _ ↦ And.imp_right <| And.imp_left Or.inl
   · obtain ⟨U, hU, hU', hy, hx⟩ := exists_isClopen_lower_of_not_le h
@@ -72,8 +73,15 @@ theorem exists_isClopen_upper_or_lower_of_ne (h : x ≠ y) :
 -- See note [lower instance priority]
 instance (priority := 100) PriestleySpace.toTotallySeparatedSpace : TotallySeparatedSpace α where
   isTotallySeparated_univ _ _ _ _ h :=
-    (exists_isClopen_upper_or_lower_of_ne h).elim fun U ⟨hU, _, hx, hy⟩ =>
-      ⟨U, Uᶜ, hU.isOpen, hU.compl.isOpen, hx, hy,
-        union_compl_self U ▸ subset_rfl, disjoint_compl_right⟩
+    (exists_isClopen_upper_or_lower_of_ne h).elim fun U ⟨hU, _, hx, hy⟩ => ⟨
+      U,
+      Uᶜ,
+      hU.isOpen,
+      hU.compl.isOpen,
+      hx,
+      hy,
+      union_compl_self U ▸ subset_rfl,
+      disjoint_compl_right
+    ⟩
 
 end PartialOrder

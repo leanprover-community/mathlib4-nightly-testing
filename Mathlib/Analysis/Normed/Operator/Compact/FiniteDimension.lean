@@ -19,18 +19,21 @@ is that `Mathlib.Topology.Algebra.Module.FiniteDimension` is quite a heavy impor
 
 public section
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
-  {E : Type*} [AddCommGroup E] [Module 𝕜 E]
-  [TopologicalSpace E] [T2Space E] [IsTopologicalAddGroup E] [ContinuousSMul 𝕜 E]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+  {E : Type*} [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [T2Space E]
+  [IsTopologicalAddGroup E] [ContinuousSMul 𝕜 E]
 
-theorem isCompactOperator_id_iff_finiteDimensional [LocallyCompactSpace 𝕜] :
-    IsCompactOperator (_root_.id : E → E) ↔ FiniteDimensional 𝕜 E :=
+theorem isCompactOperator_id_iff_finiteDimensional [LocallyCompactSpace 𝕜]
+    : IsCompactOperator (_root_.id : E → E) ↔ FiniteDimensional 𝕜 E :=
   isCompactOperator_id_iff_locallyCompactSpace.trans
     ⟨fun _ ↦ .of_locallyCompactSpace 𝕜, fun _ ↦ .of_finiteDimensional_of_complete 𝕜 E⟩
 
-/-- If the identity operator of a Banach space over a nontrivially normed field is compact,
-then the space is finite dimensional. -/
-lemma FiniteDimensional.of_isCompactOperator_id (h : IsCompactOperator (id : E → E)) :
-    FiniteDimensional 𝕜 E := by
+/--
+If the identity operator of a Banach space over a nontrivially normed field is compact,
+then the space is finite dimensional.
+-/
+lemma FiniteDimensional.of_isCompactOperator_id (h : IsCompactOperator (id : E → E))
+    : FiniteDimensional 𝕜 E := by
   have := LocallyCompactSpace.of_isCompactOperator_id h
   exact FiniteDimensional.of_locallyCompactSpace 𝕜

@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Category.Grp.Biproducts
 public import Mathlib.Algebra.Category.Grp.FilteredColimits
 public import Mathlib.Algebra.Homology.ShortComplex.Ab
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
-
 import Mathlib.CategoryTheory.Limits.FunctorCategory.EpiMono
 
 /-!
@@ -26,14 +25,13 @@ universe u v w
 open CategoryTheory Limits
 
 set_option backward.defeqAttrib.useBackward true in
-instance {J C : Type*} [Category* J] [Category* C] [HasColimitsOfShape J C] [Preadditive C] :
-    (colim (J := J) (C := C)).Additive where
+instance {J C : Type*} [Category* J] [Category* C] [HasColimitsOfShape J C] [Preadditive C]
+  : (colim (J := J) (C := C)).Additive where
 
 variable {J : Type u} [SmallCategory J] [IsFiltered J]
 
 set_option backward.defeqAttrib.useBackward true in
-noncomputable instance :
-    (colim (J := J) (C := AddCommGrpCat.{u})).PreservesHomology :=
+noncomputable instance : (colim (J := J) (C := AddCommGrpCat.{u})).PreservesHomology :=
   Functor.preservesHomology_of_map_exact _ (fun S hS ↦ by
     replace hS := fun j => hS.map ((evaluation _ _).obj j)
     simp only [ShortComplex.ab_exact_iff_ker_le_range] at hS ⊢
@@ -41,7 +39,8 @@ noncomputable instance :
     dsimp at hx
     rcases Concrete.colimit_exists_rep S.X₂ x with ⟨j, y, rfl⟩
     rw [← ConcreteCategory.comp_apply, colimMap_eq, colimit.ι_map, ConcreteCategory.comp_apply,
-      ← map_zero (colimit.ι S.X₃ j).hom] at hx
+        ← map_zero (colimit.ι S.X₃ j).hom]
+      at hx
     rcases Concrete.colimit_exists_of_rep_eq.{u, u, u} S.X₃ _ _ hx with ⟨k, e₁, e₂, hk⟩
     rw [map_zero, ← ConcreteCategory.comp_apply, ← NatTrans.naturality, ConcreteCategory.comp_apply]
       at hk
@@ -50,8 +49,7 @@ noncomputable instance :
     erw [← ConcreteCategory.comp_apply, colimit.ι_map, ConcreteCategory.comp_apply, ht]
     exact colimit.w_apply S.X₂ e₁ y)
 
-noncomputable instance :
-    PreservesFiniteLimits <| colim (J := J) (C := AddCommGrpCat.{u}) := by
+noncomputable instance : PreservesFiniteLimits <| colim (J := J) (C := AddCommGrpCat.{u}) := by
   apply Functor.preservesFiniteLimits_of_preservesHomology
 
 instance : HasFilteredColimits (AddCommGrpCat.{u}) where
@@ -67,8 +65,7 @@ variable [UnivLE.{u, v}] [UnivLE.{u, w}] [UnivLE.{v, w}]
 instance Ab.hasFilteredColimitsOfSize : HasFilteredColimitsOfSize.{u, v} Ab.{w} :=
   hasFilteredColimitsOfSize_of_univLE.{u, v, w}
 
-instance Ab.ab5OfSize : AB5OfSize.{u, v} Ab.{w} :=
-  AB5OfSize_of_univLE.{u, v, w, w} Ab.{w}
+instance Ab.ab5OfSize : AB5OfSize.{u, v} Ab.{w} := AB5OfSize_of_univLE.{u, v, w, w} Ab.{w}
 
 end UnivLE
 
@@ -81,10 +78,12 @@ instance : HasExactLimitsOfShape (Discrete J) (AddCommGrpCat.{u}) := by
   apply +allowSynthFailures hasExactLimitsOfShape_of_preservesEpi
   exact {
     preserves {X Y} f hf := by
-      let iX : limit X ≅ ↧((i : J) → X.obj ⟨i⟩) := (Pi.isoLimit X).symm ≪≫
-        (limit.isLimit _).conePointUniqueUpToIso (AddCommGrpCat.HasLimit.productLimitCone _).isLimit
-      let iY : limit Y ≅ ↧((i : J) → Y.obj ⟨i⟩) := (Pi.isoLimit Y).symm ≪≫
-        (limit.isLimit _).conePointUniqueUpToIso (AddCommGrpCat.HasLimit.productLimitCone _).isLimit
+      let iX : limit X ≅ ↧((i : J) → X.obj ⟨i⟩) :=
+        (Pi.isoLimit X).symm ≪≫ (limit.isLimit _).conePointUniqueUpToIso
+          (AddCommGrpCat.HasLimit.productLimitCone _).isLimit
+      let iY : limit Y ≅ ↧((i : J) → Y.obj ⟨i⟩) :=
+        (Pi.isoLimit Y).symm ≪≫ (limit.isLimit _).conePointUniqueUpToIso
+          (AddCommGrpCat.HasLimit.productLimitCone _).isLimit
       have : Pi.map (fun i ↦ f.app ⟨i⟩) = iX.inv ≫ lim.map f ≫ iY.hom := by
         simp only [Discrete.functor_obj_eq_as, Discrete.mk_as, Pi.isoLimit,
           IsLimit.conePointUniqueUpToIso, limit.cone, AddCommGrpCat.HasLimit.productLimitCone,
@@ -94,8 +93,8 @@ instance : HasExactLimitsOfShape (Discrete J) (AddCommGrpCat.{u}) := by
           AddCommGrpCat.HasLimit.lift, Category.assoc, limit.lift_map_assoc, iX, iY]
         ext g j
         change _ = (_ ≫ limit.π (Discrete.functor fun j ↦ Y.obj { as := j }) ⟨j⟩) _
-        simp only [Discrete.functor_obj_eq_as, productIsProduct', limit.lift_π,
-          Fan.mk_π_app, Pi.map_apply]
+        simp only [Discrete.functor_obj_eq_as, productIsProduct', limit.lift_π, Fan.mk_π_app,
+          Pi.map_apply]
         change _ = (_ ≫ _ ≫ limit.π Y ⟨j⟩) _
         simp
       suffices Epi (iX.hom ≫ (iX.inv ≫ lim.map f ≫ iY.hom) ≫ iY.inv) by simpa using this
@@ -104,7 +103,8 @@ instance : HasExactLimitsOfShape (Discrete J) (AddCommGrpCat.{u}) := by
       simp_rw [CategoryTheory.NatTrans.epi_iff_epi_app, AddCommGrpCat.epi_iff_surjective] at hf
       refine fun b ↦ ⟨fun i ↦ (hf ⟨i⟩ (b i)).choose, ?_⟩
       funext i
-      exact (hf ⟨i⟩ (b i)).choose_spec }
+      exact (hf ⟨i⟩ (b i)).choose_spec
+  }
 
 instance : AB4Star AddCommGrpCat.{u} where
   ofShape _ := inferInstance
@@ -112,9 +112,15 @@ instance : AB4Star AddCommGrpCat.{u} where
 instance : HasSeparator AddCommGrpCat.{u} where
   hasSeparator := by
     use ↧(ULift ℤ)
-    intro A B f g h; simp_all only [ObjectProperty.singleton_iff, AddCommGrpCat.ext_iff,
-      AddCommGrpCat.hom_comp, AddMonoidHom.coe_comp, Function.comp_apply, forall_eq', ULift.forall]
-    (intro x; specialize h (AddCommGrpCat.ofHom
-    (AddMonoidHom.mk' (fun y => y • x) fun y z => by simp only [add_smul])) 1; aesop)
+    intro A B f g h
+    simp_all only [ObjectProperty.singleton_iff, AddCommGrpCat.ext_iff, AddCommGrpCat.hom_comp,
+      AddMonoidHom.coe_comp, Function.comp_apply, forall_eq', ULift.forall]
+    (
+      intro x
+      specialize h
+        (AddCommGrpCat.ofHom (AddMonoidHom.mk' (fun y => y • x) fun y z => by simp only [add_smul]))
+        1
+      aesop
+    )
 
 instance : IsGrothendieckAbelian.{u} AddCommGrpCat.{u} where

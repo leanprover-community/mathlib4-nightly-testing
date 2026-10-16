@@ -37,27 +37,31 @@ section LinearOrderedCommGroupWithZero
 
 variable (v : Valuation R Γ) [hv : v.IsRankOneDiscrete]
 
-/-- An order-preserving isomorphism between the `ValueGroup₀` of a discrete valuation and `ℤᵐ⁰`.
-TODO: rename this into lowerCamelCase. -/
+/--
+An order-preserving isomorphism between the `ValueGroup₀` of a discrete valuation and `ℤᵐ⁰`.
+TODO: rename this into lowerCamelCase.
+-/
 @[simps!]
 noncomputable def valueGroup₀_equiv_withZeroMulInt : v.ValueGroup₀ ≃*o ℤᵐ⁰ where
-  __ := MulEquiv.withZero (intEquivOfZPowersEqTop _
-    (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)).symm
+  __ :=
+    MulEquiv.withZero (intEquivOfZPowersEqTop _
+      (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)).symm
   map_le_map_iff' {x y} := by
     rw [(WithZero.map'_strictMono (MulEquiv.strictMono_symm (mulintEquivOfZPowersEqTop_strictMono
-    (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)
-    (Left.one_lt_inv_iff.mpr hv.generator'_lt_one)))).le_iff_le]
+      (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)
+      (Left.one_lt_inv_iff.mpr hv.generator'_lt_one)))).le_iff_le]
 
-lemma valueGroup₀_equiv_withZeroMulInt_apply_zero :
-    valueGroup₀_equiv_withZeroMulInt v 0 = 0 := by simp
+lemma valueGroup₀_equiv_withZeroMulInt_apply_zero : valueGroup₀_equiv_withZeroMulInt v 0 = 0 := by
+  simp
 
-lemma valueGroup₀_equiv_withZeroMulInt_apply_zpow (k : ℤ) :
-    valueGroup₀_equiv_withZeroMulInt v (hv.generator' ^ k) = WithZero.exp (- k) := by
-  simp [WithZero.exp, ← mulintEquivOfZPowersEqTop_symm_apply_zpow
-    (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)]
+lemma valueGroup₀_equiv_withZeroMulInt_apply_zpow (k : ℤ)
+    : valueGroup₀_equiv_withZeroMulInt v (hv.generator' ^ k) = WithZero.exp (-k) := by
+  simp [WithZero.exp,
+    ← mulintEquivOfZPowersEqTop_symm_apply_zpow
+      (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)]
 
-lemma valueGroup₀_equiv_withZeroMulInt_strictMono :
-    StrictMono (valueGroup₀_equiv_withZeroMulInt v) := by
+lemma valueGroup₀_equiv_withZeroMulInt_strictMono
+    : StrictMono (valueGroup₀_equiv_withZeroMulInt v) := by
   intro x y hxy
   rwa [(WithZero.map'_strictMono (MulEquiv.strictMono_symm (mulintEquivOfZPowersEqTop_strictMono
     (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top)
@@ -76,16 +80,16 @@ section WithZeroMulInt
 
 variable {v : Valuation R ℤᵐ⁰} [hv : v.IsRankOneDiscrete]
 
-lemma valueGroup₀_equiv_withZeroMulInt_restrict_apply_of_surjective (hsurj : Function.Surjective v)
-    (x : R) : (valueGroup₀_equiv_withZeroMulInt v) (v.restrict x) = v x := by
+lemma valueGroup₀_equiv_withZeroMulInt_restrict_apply_of_surjective
+    (hsurj : Function.Surjective v) (x : R)
+    : (valueGroup₀_equiv_withZeroMulInt v) (v.restrict x) = v x := by
   simp only [Valuation.restrict_def, ValueGroup₀.restrict₀_apply,
     valueGroup₀_equiv_withZeroMulInt_apply]
-  split_ifs with h0 <;>
-  simp only [coe_toMonoidWithZeroHom] at h0
+  split_ifs with h0 <;> simp only [coe_toMonoidWithZeroHom] at h0
   · simp [h0]
   · rw [WithZero.map'_coe, ← coe_unzero h0, WithZero.coe_inj,
-    ← (MulEquiv.injective (intEquivOfZPowersEqTop _
-    (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top))).eq_iff]
+      ← (MulEquiv.injective (intEquivOfZPowersEqTop _
+        (Subgroup.zpowers_inv (g := hv.generator') ▸ hv.generator'_zpowers_eq_top))).eq_iff]
     ext
     simp [generator', generator_eq_exp_neg_one_of_surjective hsurj, toAdd_unzero_eq_log h0,
       exp_log h0]

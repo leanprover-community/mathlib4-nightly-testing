@@ -52,10 +52,12 @@ def BasedCategory.ofFunctor {𝒳 : Type u₂} [Category.{v₂} 𝒳] (p : 𝒳 
   obj := 𝒳
   p := p
 
-/-- A functor between based categories is a functor between the underlying categories that commutes
-with the projections. -/
-structure BasedFunctor (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮) extends
-    𝒳.obj ⥤ 𝒴.obj where
+/--
+A functor between based categories is a functor between the underlying categories that commutes
+with the projections.
+-/
+structure BasedFunctor (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮)
+    extends 𝒳.obj ⥤ 𝒴.obj where
   w : toFunctor ⋙ 𝒴.p = 𝒳.p := by cat_disch
 
 /-- Notation for `BasedFunctor`. -/
@@ -84,17 +86,15 @@ def comp {𝒵 : BasedCategory.{v₄, u₄} 𝒮} (F : 𝒳 ⥤ᵇ 𝒴) (G : �
 /-- Notation for composition of based functors. -/
 scoped infixr:80 " ⋙ " => BasedFunctor.comp
 
-@[simp]
-lemma comp_id (F : 𝒳 ⥤ᵇ 𝒴) : F ⋙ 𝟭 𝒴 = F :=
-  rfl
+@[simp] lemma comp_id (F : 𝒳 ⥤ᵇ 𝒴) : F ⋙ 𝟭 𝒴 = F := rfl
+
+@[simp] lemma id_comp (F : 𝒳 ⥤ᵇ 𝒴) : 𝟭 𝒳 ⋙ F = F := rfl
 
 @[simp]
-lemma id_comp (F : 𝒳 ⥤ᵇ 𝒴) : 𝟭 𝒳 ⋙ F = F :=
-  rfl
-
-@[simp]
-lemma comp_assoc {𝒵 : BasedCategory.{v₄, u₄} 𝒮} {𝒜 : BasedCategory.{v₅, u₅} 𝒮} (F : 𝒳 ⥤ᵇ 𝒴)
-    (G : 𝒴 ⥤ᵇ 𝒵) (H : 𝒵 ⥤ᵇ 𝒜) : (F ⋙ G) ⋙ H = F ⋙ (G ⋙ H) :=
+lemma comp_assoc
+    {𝒵 : BasedCategory.{v₄, u₄} 𝒮} {𝒜 : BasedCategory.{v₅, u₅} 𝒮}
+    (F : 𝒳 ⥤ᵇ 𝒴) (G : 𝒴 ⥤ᵇ 𝒵) (H : 𝒵 ⥤ᵇ 𝒜)
+    : (F ⋙ G) ⋙ H = F ⋙ (G ⋙ H) :=
   rfl
 
 @[simp]
@@ -109,8 +109,10 @@ section
 variable (F : 𝒳 ⥤ᵇ 𝒴) {R S : 𝒮} {a b : 𝒳.obj} (f : R ⟶ S) (φ : a ⟶ b)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- For a based functor `F : 𝒳 ⟶ 𝒴`, then whenever an arrow `φ` in `𝒳` lifts some `f` in `𝒮`,
-then `F(φ)` also lifts `f`. -/
+/--
+For a based functor `F : 𝒳 ⟶ 𝒴`, then whenever an arrow `φ` in `𝒳` lifts some `f` in `𝒮`,
+then `F(φ)` also lifts `f`.
+-/
 instance preserves_isHomLift [IsHomLift 𝒳.p f φ] : IsHomLift 𝒴.p f (F.map φ) := by
   apply of_fac 𝒴.p f (F.map φ) (Eq.trans (F.w_obj a) (domain_eq 𝒳.p f φ))
     (Eq.trans (F.w_obj b) (codomain_eq 𝒳.p f φ))
@@ -118,8 +120,10 @@ instance preserves_isHomLift [IsHomLift 𝒳.p f φ] : IsHomLift 𝒴.p f (F.map
   simpa using (fac 𝒳.p f φ)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- For a based functor `F : 𝒳 ⟶ 𝒴`, and an arrow `φ` in `𝒳`, then `φ` lifts an arrow `f` in `𝒮`
-if `F(φ)` does. -/
+/--
+For a based functor `F : 𝒳 ⟶ 𝒴`, and an arrow `φ` in `𝒳`, then `φ` lifts an arrow `f` in `𝒮`
+if `F(φ)` does.
+-/
 lemma isHomLift_map [IsHomLift 𝒴.p f (F.map φ)] : IsHomLift 𝒳.p f φ := by
   apply of_fac 𝒳.p f φ (F.w_obj a ▸ domain_eq 𝒴.p f (F.map φ))
     (F.w_obj b ▸ codomain_eq 𝒴.p f (F.map φ))
@@ -132,11 +136,12 @@ end
 
 end BasedFunctor
 
-
-/-- A `BasedNatTrans` between two `BasedFunctor`s is a natural transformation `α` between the
-underlying functors, such that for all `a : 𝒳`, `α.app a` lifts `𝟙 S` whenever `𝒳.p.obj a = S`. -/
-structure BasedNatTrans {𝒳 : BasedCategory.{v₂, u₂} 𝒮} {𝒴 : BasedCategory.{v₃, u₃} 𝒮}
-    (F G : 𝒳 ⥤ᵇ 𝒴) extends CategoryTheory.NatTrans F.toFunctor G.toFunctor where
+/--
+A `BasedNatTrans` between two `BasedFunctor`s is a natural transformation `α` between the
+underlying functors, such that for all `a : 𝒳`, `α.app a` lifts `𝟙 S` whenever `𝒳.p.obj a = S`.
+-/
+structure BasedNatTrans {𝒳 : BasedCategory.{v₂, u₂} 𝒮} {𝒴 : BasedCategory.{v₃, u₃} 𝒮} (F G : 𝒳 ⥤ᵇ 𝒴)
+    extends CategoryTheory.NatTrans F.toFunctor G.toFunctor where
   isHomLift' : ∀ (a : 𝒳.obj), IsHomLift 𝒴.p (𝟙 (𝒳.p.obj a)) (toNatTrans.app a) := by cat_disch
 
 namespace BasedNatTrans
@@ -158,8 +163,8 @@ lemma ext (β : BasedNatTrans F G) (h : α.toNatTrans = β.toNatTrans) : α = β
 instance app_isHomLift (a : 𝒳.obj) : IsHomLift 𝒴.p (𝟙 (𝒳.p.obj a)) (α.toNatTrans.app a) :=
   α.isHomLift' a
 
-lemma isHomLift {a : 𝒳.obj} {S : 𝒮} (ha : 𝒳.p.obj a = S) :
-    IsHomLift 𝒴.p (𝟙 S) (α.toNatTrans.app a) := by
+lemma isHomLift {a : 𝒳.obj} {S : 𝒮} (ha : 𝒳.p.obj a = S)
+    : IsHomLift 𝒴.p (𝟙 S) (α.toNatTrans.app a) := by
   subst ha; infer_instance
 
 end
@@ -170,8 +175,10 @@ def id (F : 𝒳 ⥤ᵇ 𝒴) : BasedNatTrans F F where
   toNatTrans := CategoryTheory.NatTrans.id F.toFunctor
   isHomLift' := fun a ↦ of_fac 𝒴.p _ _ (w_obj F a) (w_obj F a) (by simp)
 
-/-- Composition of `BasedNatTrans`, given by composition of the underlying natural
-transformations. -/
+/--
+Composition of `BasedNatTrans`, given by composition of the underlying natural
+transformations.
+-/
 @[simps]
 def comp {F G H : 𝒳 ⥤ᵇ 𝒴} (α : BasedNatTrans F G) (β : BasedNatTrans G H) : BasedNatTrans F H where
   toNatTrans := CategoryTheory.NatTrans.vcomp α.toNatTrans β.toNatTrans
@@ -181,8 +188,8 @@ def comp {F G H : 𝒳 ⥤ᵇ 𝒴} (α : BasedNatTrans F G) (β : BasedNatTrans
     infer_instance
 
 @[simps]
-instance homCategory (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮) :
-    Category (𝒳 ⥤ᵇ 𝒴) where
+instance homCategory (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮)
+    : Category (𝒳 ⥤ᵇ 𝒴) where
   Hom := BasedNatTrans
   id := BasedNatTrans.id
   comp := BasedNatTrans.comp
@@ -191,11 +198,13 @@ instance homCategory (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCateg
 lemma homCategory.ext {F G : 𝒳 ⥤ᵇ 𝒴} (α β : F ⟶ G) (h : α.toNatTrans = β.toNatTrans) : α = β :=
   BasedNatTrans.ext α β h
 
-/-- The forgetful functor from the category of based functors `𝒳 ⥤ᵇ 𝒴` to the category of
-functors of underlying categories, `𝒳.obj ⥤ 𝒴.obj`. -/
+/--
+The forgetful functor from the category of based functors `𝒳 ⥤ᵇ 𝒴` to the category of
+functors of underlying categories, `𝒳.obj ⥤ 𝒴.obj`.
+-/
 @[simps]
-def forgetful (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮) :
-    (𝒳 ⥤ᵇ 𝒴) ⥤ (𝒳.obj ⥤ 𝒴.obj) where
+def forgetful (𝒳 : BasedCategory.{v₂, u₂} 𝒮) (𝒴 : BasedCategory.{v₃, u₃} 𝒮)
+    : (𝒳 ⥤ᵇ 𝒴) ⥤ (𝒳.obj ⥤ 𝒴.obj) where
   obj := fun F ↦ F.toFunctor
   map := fun α ↦ α.toNatTrans
 
@@ -228,17 +237,22 @@ def id (F : 𝒳 ⥤ᵇ 𝒴) : F ≅ F where
 
 variable {F G : 𝒳 ⥤ᵇ 𝒴}
 
-/-- The inverse of a based natural transformation whose underlying natural transformation is an
-isomorphism. -/
-def mkNatIso (α : F.toFunctor ≅ G.toFunctor)
-    (isHomLift' : ∀ a : 𝒳.obj, IsHomLift 𝒴.p (𝟙 (𝒳.p.obj a)) (α.hom.app a)) : F ≅ G where
+/--
+The inverse of a based natural transformation whose underlying natural transformation is an
+isomorphism.
+-/
+def mkNatIso
+    (α : F.toFunctor ≅ G.toFunctor)
+    (isHomLift' : ∀ a : 𝒳.obj, IsHomLift 𝒴.p (𝟙 (𝒳.p.obj a)) (α.hom.app a))
+    : F ≅ G where
   hom := { toNatTrans := α.hom }
   inv := {
     toNatTrans := α.inv
     isHomLift' := fun a ↦ by
       have : 𝒴.p.IsHomLift (𝟙 (𝒳.p.obj a)) (α.app a).hom := (Iso.app_hom α a) ▸ isHomLift' a
       rw [← Iso.app_inv]
-      apply IsHomLift.lift_id_inv }
+      apply IsHomLift.lift_id_inv
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 lemma isIso_of_toNatTrans_isIso (α : F ⟶ G) [IsIso (X := F.toFunctor) α.toNatTrans] : IsIso α :=
@@ -255,19 +269,23 @@ section
 
 variable {𝒳 : BasedCategory.{v₂, u₂} 𝒮} {𝒴 : BasedCategory.{v₃, u₃} 𝒮}
 
-/-- Left-whiskering in the bicategory `BasedCategory` is given by whiskering the underlying functors
-and natural transformations. -/
+/--
+Left-whiskering in the bicategory `BasedCategory` is given by whiskering the underlying functors
+and natural transformations.
+-/
 @[simps]
-def whiskerLeft {𝒵 : BasedCategory.{v₄, u₄} 𝒮} (F : 𝒳 ⥤ᵇ 𝒴) {G H : 𝒴 ⥤ᵇ 𝒵} (α : G ⟶ H) :
-    F ⋙ G ⟶ F ⋙ H where
+def whiskerLeft {𝒵 : BasedCategory.{v₄, u₄} 𝒮} (F : 𝒳 ⥤ᵇ 𝒴) {G H : 𝒴 ⥤ᵇ 𝒵} (α : G ⟶ H)
+    : F ⋙ G ⟶ F ⋙ H where
   toNatTrans := Functor.whiskerLeft F.toFunctor α.toNatTrans
   isHomLift' := fun a ↦ α.isHomLift (F.w_obj a)
 
-/-- Right-whiskering in the bicategory `BasedCategory` is given by whiskering the underlying
-functors and natural transformations. -/
+/--
+Right-whiskering in the bicategory `BasedCategory` is given by whiskering the underlying
+functors and natural transformations.
+-/
 @[simps]
-def whiskerRight {𝒵 : BasedCategory.{v₄, u₄} 𝒮} {F G : 𝒳 ⥤ᵇ 𝒴} (α : F ⟶ G) (H : 𝒴 ⥤ᵇ 𝒵) :
-    F ⋙ H ⟶ G ⋙ H where
+def whiskerRight {𝒵 : BasedCategory.{v₄, u₄} 𝒮} {F G : 𝒳 ⥤ᵇ 𝒴} (α : F ⟶ G) (H : 𝒴 ⥤ᵇ 𝒵)
+    : F ⋙ H ⟶ G ⋙ H where
   toNatTrans := Functor.whiskerRight α.toNatTrans H.toFunctor
   isHomLift' := fun _ ↦ BasedFunctor.preserves_isHomLift _ _ _
 

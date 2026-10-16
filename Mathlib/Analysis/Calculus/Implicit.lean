@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Mathlib.Analysis.Normed.Module.Complemented
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
-
 import Mathlib.Analysis.Calculus.FDeriv.Add
 
 /-!
@@ -91,17 +90,19 @@ This version of the theorem is used to prove the other versions and can be used 
 needs to have a complete control over the choice of the implicit function.
 -/
 
-
-/-- Data for the general version of the implicit function theorem. It holds two functions
+/--
+Data for the general version of the implicit function theorem. It holds two functions
 `f : E → F` and `g : E → G` (named `leftFun` and `rightFun`) and a point `a` (named `pt`) such that
 
 * both functions are strictly differentiable at `a`;
 * the derivatives are surjective;
-* the kernels of the derivatives are complementary subspaces of `E`. -/
-structure ImplicitFunctionData (𝕜 : Type*) [NontriviallyNormedField 𝕜] (E : Type*)
-    [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E] (F : Type*) [NormedAddCommGroup F]
-    [NormedSpace 𝕜 F] [CompleteSpace F] (G : Type*) [NormedAddCommGroup G] [NormedSpace 𝕜 G]
-    [CompleteSpace G] where
+* the kernels of the derivatives are complementary subspaces of `E`.
+-/
+structure ImplicitFunctionData
+    (𝕜 : Type*) [NontriviallyNormedField 𝕜]
+    (E : Type*) [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+    (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F] [CompleteSpace F]
+    (G : Type*) [NormedAddCommGroup G] [NormedSpace 𝕜 G] [CompleteSpace G] where
   /-- Left function -/
   leftFun : E → F
   /-- Derivative of the left function -/
@@ -120,24 +121,23 @@ structure ImplicitFunctionData (𝕜 : Type*) [NontriviallyNormedField 𝕜] (E 
 
 namespace ImplicitFunctionData
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] [CompleteSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
-  [CompleteSpace F] {G : Type*} [NormedAddCommGroup G] [NormedSpace 𝕜 G] [CompleteSpace G]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [CompleteSpace F]
+  {G : Type*} [NormedAddCommGroup G] [NormedSpace 𝕜 G] [CompleteSpace G]
   (φ : ImplicitFunctionData 𝕜 E F G)
 
 /-- The function given by `x ↦ (leftFun x, rightFun x)`. -/
-def prodFun (x : E) : F × G :=
-  (φ.leftFun x, φ.rightFun x)
+def prodFun (x : E) : F × G := (φ.leftFun x, φ.rightFun x)
 
-@[simp]
-theorem prodFun_apply (x : E) : φ.prodFun x = (φ.leftFun x, φ.rightFun x) := by
-  rfl
+@[simp] theorem prodFun_apply (x : E) : φ.prodFun x = (φ.leftFun x, φ.rightFun x) := by rfl
 
-protected theorem hasStrictFDerivAt :
-    HasStrictFDerivAt φ.prodFun
+protected theorem hasStrictFDerivAt
+    : HasStrictFDerivAt φ.prodFun
       (φ.leftDeriv.equivProdOfSurjectiveOfIsCompl φ.rightDeriv φ.range_leftDeriv φ.range_rightDeriv
-          φ.isCompl_ker :
-        E →L[𝕜] F × G)
+          φ.isCompl_ker
+        : E →L[𝕜] F × G)
       φ.pt :=
   φ.hasStrictFDerivAt_leftFun.prodMk φ.hasStrictFDerivAt_rightFun
 
@@ -145,71 +145,75 @@ theorem isInvertible_fderiv_prodFun : (fderiv 𝕜 φ.prodFun φ.pt).IsInvertibl
   rw [φ.hasStrictFDerivAt.hasFDerivAt.fderiv]
   exact ContinuousLinearMap.isInvertible_equiv
 
-/-- Implicit function theorem. If `f : E → F` and `g : E → G` are two maps strictly differentiable
+/--
+Implicit function theorem. If `f : E → F` and `g : E → G` are two maps strictly differentiable
 at `a`, their derivatives `f'`, `g'` are surjective, and the kernels of these derivatives are
 complementary subspaces of `E`, then `x ↦ (f x, g x)` defines an open partial homeomorphism between
-`E` and `F × G`. In particular, `{x | f x = f a}` is locally homeomorphic to `G`. -/
+`E` and `F × G`. In particular, `{x | f x = f a}` is locally homeomorphic to `G`.
+-/
 def toOpenPartialHomeomorph : OpenPartialHomeomorph E (F × G) :=
   φ.hasStrictFDerivAt.toOpenPartialHomeomorph _
 
-/-- Implicit function theorem. If `f : E → F` and `g : E → G` are two maps strictly differentiable
+/--
+Implicit function theorem. If `f : E → F` and `g : E → G` are two maps strictly differentiable
 at `a`, their derivatives `f'`, `g'` are surjective, and the kernels of these derivatives are
 complementary subspaces of `E`, then `implicitFunction` is the unique (germ of a) map
-`φ : F → G → E` such that `f (φ y z) = y` and `g (φ y z) = z`. -/
-def implicitFunction : F → G → E :=
-  Function.curry φ.toOpenPartialHomeomorph.symm
+`φ : F → G → E` such that `f (φ y z) = y` and `g (φ y z) = z`.
+-/
+def implicitFunction : F → G → E := Function.curry φ.toOpenPartialHomeomorph.symm
 
-theorem implicitFunction_def :
-    implicitFunction φ = Function.curry (φ.hasStrictFDerivAt.toOpenPartialHomeomorph _).symm := by
+theorem implicitFunction_def
+    : implicitFunction φ = Function.curry (φ.hasStrictFDerivAt.toOpenPartialHomeomorph _).symm := by
   rfl
 
-lemma implicitFunction_apply {x : F} {y : G} :
-    φ.implicitFunction x y = φ.toOpenPartialHomeomorph.symm (x, y) := by
+lemma implicitFunction_apply {x : F} {y : G}
+    : φ.implicitFunction x y = φ.toOpenPartialHomeomorph.symm (x, y) := by
   rfl
 
-@[simp]
-theorem toOpenPartialHomeomorph_coe : ⇑φ.toOpenPartialHomeomorph = φ.prodFun := by
-  rfl
+@[simp] theorem toOpenPartialHomeomorph_coe : ⇑φ.toOpenPartialHomeomorph = φ.prodFun := by rfl
 
-theorem toOpenPartialHomeomorph_apply (x : E) :
-    φ.toOpenPartialHomeomorph x = (φ.leftFun x, φ.rightFun x) := by
+theorem toOpenPartialHomeomorph_apply (x : E)
+    : φ.toOpenPartialHomeomorph x = (φ.leftFun x, φ.rightFun x) := by
   rfl
 
 theorem pt_mem_toOpenPartialHomeomorph_source : φ.pt ∈ φ.toOpenPartialHomeomorph.source :=
   φ.hasStrictFDerivAt.mem_toOpenPartialHomeomorph_source
 
-theorem map_pt_mem_toOpenPartialHomeomorph_target :
-    (φ.leftFun φ.pt, φ.rightFun φ.pt) ∈ φ.toOpenPartialHomeomorph.target :=
+theorem map_pt_mem_toOpenPartialHomeomorph_target
+    : (φ.leftFun φ.pt, φ.rightFun φ.pt) ∈ φ.toOpenPartialHomeomorph.target :=
   φ.toOpenPartialHomeomorph.map_source φ.pt_mem_toOpenPartialHomeomorph_source
 
-theorem prodFun_implicitFunction :
-    ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.prodFun (φ.implicitFunction p.1 p.2) = p :=
+theorem prodFun_implicitFunction
+    : ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.prodFun (φ.implicitFunction p.1 p.2) = p :=
   φ.hasStrictFDerivAt.eventually_right_inverse.mono fun ⟨_, _⟩ h => h
 
-theorem leftFun_implicitFunction :
-    ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.leftFun (φ.implicitFunction p.1 p.2) = p.1 :=
+theorem leftFun_implicitFunction
+    : ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.leftFun (φ.implicitFunction p.1 p.2) = p.1 :=
   φ.prodFun_implicitFunction.mono fun _ => congr_arg Prod.fst
 
-theorem rightFun_implicitFunction :
-    ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.rightFun (φ.implicitFunction p.1 p.2) = p.2 :=
+theorem rightFun_implicitFunction
+    : ∀ᶠ p : F × G in 𝓝 (φ.prodFun φ.pt), φ.rightFun (φ.implicitFunction p.1 p.2) = p.2 :=
   φ.prodFun_implicitFunction.mono fun _ => congr_arg Prod.snd
 
-theorem implicitFunction_apply_image :
-    ∀ᶠ x in 𝓝 φ.pt, φ.implicitFunction (φ.leftFun x) (φ.rightFun x) = x :=
+theorem implicitFunction_apply_image
+    : ∀ᶠ x in 𝓝 φ.pt, φ.implicitFunction (φ.leftFun x) (φ.rightFun x) = x :=
   φ.hasStrictFDerivAt.eventually_left_inverse
 
-theorem leftFun_implicitFunction_eq_leftFun : ∀ᶠ x in 𝓝 φ.pt,
-    φ.leftFun (φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x)) = φ.leftFun φ.pt := by
+theorem leftFun_implicitFunction_eq_leftFun
+    : ∀ᶠ x in 𝓝 φ.pt,
+      φ.leftFun (φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x)) = φ.leftFun φ.pt := by
   have := φ.leftFun_implicitFunction.curry_nhds.self_of_nhds.prod_inr_nhds (φ.leftFun φ.pt)
   rwa [← prodFun_apply, ← φ.hasStrictFDerivAt.map_nhds_eq_of_equiv, eventually_map] at this
 
-theorem rightFun_implicitFunction_eq_rightFun : ∀ᶠ x in 𝓝 φ.pt,
-    φ.rightFun (φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x)) = φ.rightFun x := by
+theorem rightFun_implicitFunction_eq_rightFun
+    : ∀ᶠ x in 𝓝 φ.pt,
+      φ.rightFun (φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x)) = φ.rightFun x := by
   have := φ.rightFun_implicitFunction.curry_nhds.self_of_nhds.prod_inr_nhds (φ.leftFun φ.pt)
   rwa [← prodFun_apply, ← φ.hasStrictFDerivAt.map_nhds_eq_of_equiv, eventually_map] at this
 
-theorem leftFun_eq_iff_implicitFunction : ∀ᶠ x in 𝓝 φ.pt,
-    φ.leftFun x = φ.leftFun φ.pt ↔ φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x) = x := by
+theorem leftFun_eq_iff_implicitFunction
+    : ∀ᶠ x in 𝓝 φ.pt,
+      φ.leftFun x = φ.leftFun φ.pt ↔ φ.implicitFunction (φ.leftFun φ.pt) (φ.rightFun x) = x := by
   filter_upwards [φ.implicitFunction_apply_image, φ.leftFun_implicitFunction_eq_leftFun] with x _ _
   constructor <;> exact fun h => by rwa [← h]
 
@@ -218,53 +222,58 @@ theorem map_nhds_eq : map φ.leftFun (𝓝 φ.pt) = 𝓝 (φ.leftFun φ.pt) :=
     rw [← map_map, φ.hasStrictFDerivAt.map_nhds_eq_of_equiv, map_fst_nhds]
 
 /-- The implicit function is strictly differentiable. -/
-theorem hasStrictFDerivAt_implicitFunction_fderiv :
-    HasStrictFDerivAt (φ.implicitFunction (φ.leftFun φ.pt))
+theorem hasStrictFDerivAt_implicitFunction_fderiv
+    : HasStrictFDerivAt (φ.implicitFunction (φ.leftFun φ.pt))
       (fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt)) (φ.rightFun φ.pt) := by
-  have := φ.hasStrictFDerivAt.to_localInverse.comp (φ.rightFun φ.pt)
-    ((hasStrictFDerivAt_const _ _).prodMk (hasStrictFDerivAt_id _))
+  have :=
+    φ.hasStrictFDerivAt.to_localInverse.comp (φ.rightFun φ.pt)
+      ((hasStrictFDerivAt_const _ _).prodMk (hasStrictFDerivAt_id _))
   convert! this
   exact this.hasFDerivAt.fderiv
 
-theorem differentiableAt_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G) :
-    DifferentiableAt 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) :=
+theorem differentiableAt_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G)
+    : DifferentiableAt 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) :=
   φ.hasStrictFDerivAt_implicitFunction_fderiv.hasFDerivAt.differentiableAt
 
-theorem fderiv_implicitFunction_apply_eq_iff (φ : ImplicitFunctionData 𝕜 E F G) {x : G} {y : E} :
-    fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x = y ↔
-      φ.leftDeriv y = 0 ∧ φ.rightDeriv y = x := by
+theorem fderiv_implicitFunction_apply_eq_iff (φ : ImplicitFunctionData 𝕜 E F G) {x : G} {y : E}
+    : fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x = y
+      ↔ φ.leftDeriv y = 0 ∧ φ.rightDeriv y = x := by
   unfold implicitFunction Function.curry toOpenPartialHomeomorph
   simp only [← HasStrictFDerivAt.localInverse_def]
   rw [φ.hasStrictFDerivAt.to_localInverse.comp (φ.rightFun φ.pt)
-    ((hasStrictFDerivAt_const _ _).prodMk (hasStrictFDerivAt_id _)) |>.hasFDerivAt |>.fderiv]
+      ((hasStrictFDerivAt_const _ _).prodMk (hasStrictFDerivAt_id _))
+    |>.hasFDerivAt
+    |>.fderiv]
   simp [ContinuousLinearEquiv.symm_apply_eq, @eq_comm _ (φ.leftDeriv _),
     @eq_comm _ (φ.rightDeriv _)]
 
 @[simp]
-theorem leftDeriv_fderiv_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G) (x : G) :
-    φ.leftDeriv (fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x) = 0 := by
+theorem leftDeriv_fderiv_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G) (x : G)
+    : φ.leftDeriv (fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x) = 0 := by
   exact φ.fderiv_implicitFunction_apply_eq_iff.mp rfl |>.left
 
 @[simp]
-theorem rightDeriv_fderiv_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G) (x : G) :
-    φ.rightDeriv (fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x) = x := by
+theorem rightDeriv_fderiv_implicitFunction (φ : ImplicitFunctionData 𝕜 E F G) (x : G)
+    : φ.rightDeriv (fderiv 𝕜 (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt) x) = x := by
   exact φ.fderiv_implicitFunction_apply_eq_iff.mp rfl |>.right
 
-theorem hasStrictFDerivAt_implicitFunction (g'inv : G →L[𝕜] E)
-    (hg'inv : φ.rightDeriv.comp g'inv = ContinuousLinearMap.id 𝕜 G)
-    (hg'invf : φ.leftDeriv.comp g'inv = 0) :
-    HasStrictFDerivAt (φ.implicitFunction (φ.leftFun φ.pt)) g'inv (φ.rightFun φ.pt) := by
+theorem hasStrictFDerivAt_implicitFunction
+    (g'inv : G →L[𝕜] E) (hg'inv : φ.rightDeriv.comp g'inv = ContinuousLinearMap.id 𝕜 G)
+    (hg'invf : φ.leftDeriv.comp g'inv = 0)
+    : HasStrictFDerivAt (φ.implicitFunction (φ.leftFun φ.pt)) g'inv (φ.rightFun φ.pt) := by
   convert φ.hasStrictFDerivAt_implicitFunction_fderiv
   ext1 x
   rw [eq_comm, fderiv_implicitFunction_apply_eq_iff]
   simp_all [DFunLike.ext_iff]
 
-theorem map_implicitFunction_nhdsWithin_preimage (φ : ImplicitFunctionData 𝕜 E F G)
-    (s : Set E) :
-    (𝓝[φ.implicitFunction (φ.leftFun φ.pt) ⁻¹' s] (φ.rightFun φ.pt)).map
-      (φ.implicitFunction (φ.leftFun φ.pt)) = 𝓝[s ∩ φ.leftFun ⁻¹' {φ.leftFun φ.pt}] φ.pt := by
-  have H : φ.implicitFunction (φ.leftFun φ.pt) =
-      φ.toOpenPartialHomeomorph.symm ∘ (φ.leftFun φ.pt, ·) := rfl
+theorem map_implicitFunction_nhdsWithin_preimage (φ : ImplicitFunctionData 𝕜 E F G) (s : Set E)
+    : (𝓝[φ.implicitFunction (φ.leftFun φ.pt) ⁻¹' s] (φ.rightFun φ.pt)).map
+        (φ.implicitFunction (φ.leftFun φ.pt))
+      = 𝓝[s ∩ φ.leftFun ⁻¹' {φ.leftFun φ.pt}] φ.pt := by
+  have H
+      : φ.implicitFunction (φ.leftFun φ.pt)
+        = φ.toOpenPartialHomeomorph.symm ∘ (φ.leftFun φ.pt, ·) :=
+    rfl
   rw [H, ← Filter.map_map, (isInducing_prodMkRight _).map_nhdsWithin_eq, ← Set.singleton_prod,
     OpenPartialHomeomorph.map_nhdsWithin_eq, ← prodFun_apply, ← toOpenPartialHomeomorph_coe,
     φ.toOpenPartialHomeomorph.leftInvOn φ.pt_mem_toOpenPartialHomeomorph_source,
@@ -274,17 +283,17 @@ theorem map_implicitFunction_nhdsWithin_preimage (φ : ImplicitFunctionData 𝕜
         φ.pt_mem_toOpenPartialHomeomorph_source]
     congr 1
     ext x
-    suffices x ∈ φ.toOpenPartialHomeomorph.source → φ.leftFun x = φ.leftFun φ.pt →
-        (φ.toOpenPartialHomeomorph.symm (φ.leftFun φ.pt, φ.rightFun x) ∈ s ↔ x ∈ s) by
+    suffices x ∈ φ.toOpenPartialHomeomorph.source → φ.leftFun x = φ.leftFun φ.pt
+        → (φ.toOpenPartialHomeomorph.symm (φ.leftFun φ.pt, φ.rightFun x) ∈ s ↔ x ∈ s) by
       simpa [@and_comm (_ = _)]
     intro hxs hx_eq
     rw [← hx_eq, ← prodFun_apply, ← toOpenPartialHomeomorph_coe,
       φ.toOpenPartialHomeomorph.leftInvOn hxs]
   · exact φ.toOpenPartialHomeomorph.mapsTo φ.pt_mem_toOpenPartialHomeomorph_source
 
-theorem eventuallyEq_implicitFunction {ψ : F → G → E}
-    (h : ∀ᶠ x in 𝓝 φ.pt, ψ (φ.leftFun x) (φ.rightFun x) = x) :
-    Function.uncurry ψ =ᶠ[𝓝 (φ.prodFun φ.pt)] Function.uncurry φ.implicitFunction :=
+theorem eventuallyEq_implicitFunction
+    {ψ : F → G → E} (h : ∀ᶠ x in 𝓝 φ.pt, ψ (φ.leftFun x) (φ.rightFun x) = x)
+    : Function.uncurry ψ =ᶠ[𝓝 (φ.prodFun φ.pt)] Function.uncurry φ.implicitFunction :=
   HasStrictFDerivAt.localInverse_unique _ h
 
 end ImplicitFunctionData
@@ -307,19 +316,24 @@ Note that a map with these properties is not unique. E.g., different choices of 
 complementary to `ker f'` lead to different maps `φ`.
 -/
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] [CompleteSpace E] {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
-  [CompleteSpace F] {f : E → F} {f' : E →L[𝕜] F} {a : E}
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [CompleteSpace F]
+  {f : E → F} {f' : E →L[𝕜] F} {a : E}
 
 section Defs
 
 variable (f f')
 
-/-- Data used to apply the generic implicit function theorem to the case of a strictly
-differentiable map such that its derivative is surjective and has a complemented kernel. -/
+/--
+Data used to apply the generic implicit function theorem to the case of a strictly
+differentiable map such that its derivative is surjective and has a complemented kernel.
+-/
 @[simp]
-def implicitFunctionDataOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (hker : f'.ker.ClosedComplemented) : ImplicitFunctionData 𝕜 E F f'.ker where
+def implicitFunctionDataOfComplemented
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : ImplicitFunctionData 𝕜 E F f'.ker where
   leftFun := f
   leftDeriv := f'
   rightFun x := Classical.choose hker (x - a)
@@ -332,88 +346,94 @@ def implicitFunctionDataOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' : f'
   range_rightDeriv := LinearMap.range_eq_of_proj (Classical.choose_spec hker)
   isCompl_ker := LinearMap.isCompl_of_proj (Classical.choose_spec hker)
 
-/-- An open partial homeomorphism between `E` and `F × f'.ker` sending level surfaces of `f`
-to vertical subspaces. -/
-def implicitToOpenPartialHomeomorphOfComplemented (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
-    OpenPartialHomeomorph E (F × f'.ker) :=
+/--
+An open partial homeomorphism between `E` and `F × f'.ker` sending level surfaces of `f`
+to vertical subspaces.
+-/
+def implicitToOpenPartialHomeomorphOfComplemented
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : OpenPartialHomeomorph E (F × f'.ker) :=
   (implicitFunctionDataOfComplemented f f' hf hf' hker).toOpenPartialHomeomorph
 
 /-- Implicit function `g` defined by `f (g z y) = z`. -/
-def implicitFunctionOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (hker : f'.ker.ClosedComplemented) : F → f'.ker → E :=
+def implicitFunctionOfComplemented
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : F → f'.ker → E :=
   (implicitFunctionDataOfComplemented f f' hf hf' hker).implicitFunction
 
 end Defs
 
 @[simp]
-theorem implicitToOpenPartialHomeomorphOfComplemented_fst (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) (x : E) :
-    (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker x).fst = f x := by
+theorem implicitToOpenPartialHomeomorphOfComplemented_fst
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) (x : E)
+    : (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker x).fst = f x := by
   rfl
 
-theorem implicitToOpenPartialHomeomorphOfComplemented_apply (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) (y : E) :
-    hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker y =
-      (f y, Classical.choose hker (y - a)) := by
+theorem implicitToOpenPartialHomeomorphOfComplemented_apply
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) (y : E)
+    : hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker y
+      = (f y, Classical.choose hker (y - a)) := by
   rfl
 
 @[simp]
-theorem implicitToOpenPartialHomeomorphOfComplemented_apply_ker (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) (y : f'.ker) :
-    hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker (y + a) = (f (y + a), y) := by
+theorem implicitToOpenPartialHomeomorphOfComplemented_apply_ker
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    (y : f'.ker)
+    : hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker (y + a) = (f (y + a), y) := by
   simp only [implicitToOpenPartialHomeomorphOfComplemented_apply, add_sub_cancel_right,
     Classical.choose_spec hker]
 
 @[simp]
-theorem implicitToOpenPartialHomeomorphOfComplemented_self (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
-    hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker a = (f a, 0) := by
+theorem implicitToOpenPartialHomeomorphOfComplemented_self
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker a = (f a, 0) := by
   simp [hf.implicitToOpenPartialHomeomorphOfComplemented_apply]
 
-theorem mem_implicitToOpenPartialHomeomorphOfComplemented_source (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
-    a ∈ (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).source :=
+theorem mem_implicitToOpenPartialHomeomorphOfComplemented_source
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : a ∈ (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).source :=
   ImplicitFunctionData.pt_mem_toOpenPartialHomeomorph_source _
 
-theorem mem_implicitToOpenPartialHomeomorphOfComplemented_target (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
-    (f a, (0 : f'.ker)) ∈
-      (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).target := by
+theorem mem_implicitToOpenPartialHomeomorphOfComplemented_target
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : (f a, (0 : f'.ker))
+      ∈ (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).target := by
   simpa only [implicitToOpenPartialHomeomorphOfComplemented_self] using
     (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).map_source <|
       hf.mem_implicitToOpenPartialHomeomorphOfComplemented_source hf' hker
 
 /-- `HasStrictFDerivAt.implicitFunctionOfComplemented` sends `(z, y)` to a point in `f ⁻¹' z`. -/
-theorem map_implicitFunctionOfComplemented_eq (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (hker : f'.ker.ClosedComplemented) :
-    ∀ᶠ p : F × f'.ker in 𝓝 (f a, 0),
-      f (hf.implicitFunctionOfComplemented f f' hf' hker p.1 p.2) = p.1 :=
+theorem map_implicitFunctionOfComplemented_eq
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : ∀ᶠ p : F × f'.ker in 𝓝 (f a, 0),
+        f (hf.implicitFunctionOfComplemented f f' hf' hker p.1 p.2) = p.1 :=
   ((hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).eventually_right_inverse <|
-        hf.mem_implicitToOpenPartialHomeomorphOfComplemented_target hf' hker).mono
+      hf.mem_implicitToOpenPartialHomeomorphOfComplemented_target hf' hker).mono
     fun ⟨_, _⟩ h => congr($(h).fst)
 
-/-- Any point in some neighborhood of `a` can be represented as
-`HasStrictFDerivAt.implicitFunctionOfComplemented` of some point. -/
-theorem eq_implicitFunctionOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (hker : f'.ker.ClosedComplemented) :
-    ∀ᶠ x in 𝓝 a, hf.implicitFunctionOfComplemented f f' hf' hker (f x)
-      (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker x).snd = x :=
+/--
+Any point in some neighborhood of `a` can be represented as
+`HasStrictFDerivAt.implicitFunctionOfComplemented` of some point.
+-/
+theorem eq_implicitFunctionOfComplemented
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : ∀ᶠ x in 𝓝 a, hf.implicitFunctionOfComplemented f f' hf' hker (f x)
+        (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker x).snd = x :=
   (implicitFunctionDataOfComplemented f f' hf hf' hker).implicitFunction_apply_image
 
 @[simp]
-theorem implicitFunctionOfComplemented_apply_image (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
-    hf.implicitFunctionOfComplemented f f' hf' hker (f a) 0 = a := by
+theorem implicitFunctionOfComplemented_apply_image
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : hf.implicitFunctionOfComplemented f f' hf' hker (f a) 0 = a := by
   simpa only [implicitToOpenPartialHomeomorphOfComplemented_self] using!
-      (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).left_inv
+    (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).left_inv
       (hf.mem_implicitToOpenPartialHomeomorphOfComplemented_source hf' hker)
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem to_implicitFunctionOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (hker : f'.ker.ClosedComplemented) :
-    HasStrictFDerivAt (hf.implicitFunctionOfComplemented f f' hf' hker (f a))
-      f'.ker.subtypeL 0 := by
+theorem to_implicitFunctionOfComplemented
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented)
+    : HasStrictFDerivAt (hf.implicitFunctionOfComplemented f f' hf' hker (f a)) f'.ker.subtypeL
+      0 := by
   convert!
     (implicitFunctionDataOfComplemented f f' hf hf' hker).hasStrictFDerivAt_implicitFunction
       f'.ker.subtypeL _ _
@@ -449,14 +469,19 @@ complementary to `ker f'` lead to different maps `φ`.
 
 section FiniteDimensional
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜] {E : Type*}
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E] {F : Type*} [NormedAddCommGroup F]
-  [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F] (f : E → F) (f' : E →L[𝕜] F) {a : E}
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
+  (f : E → F) (f' : E →L[𝕜] F)
+  {a : E}
 
-/-- Given a map `f : E → F` to a finite-dimensional space with a surjective derivative `f'`,
-returns an open partial homeomorphism between `E` and `F × ker f'`. -/
-def implicitToOpenPartialHomeomorph (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    OpenPartialHomeomorph E (F × f'.ker) :=
+/--
+Given a map `f : E → F` to a finite-dimensional space with a surjective derivative `f'`,
+returns an open partial homeomorphism between `E` and `F × ker f'`.
+-/
+def implicitToOpenPartialHomeomorph (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : OpenPartialHomeomorph E (F × f'.ker) :=
   have := FiniteDimensional.complete 𝕜 F
   hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf'
     f'.ker_closedComplemented_of_finiteDimensional_range
@@ -468,67 +493,73 @@ def implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) : F 
 variable {f f'}
 
 @[simp]
-theorem implicitToOpenPartialHomeomorph_fst (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
-    (x : E) : (hf.implicitToOpenPartialHomeomorph f f' hf' x).fst = f x := by
+theorem implicitToOpenPartialHomeomorph_fst
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (x : E)
+    : (hf.implicitToOpenPartialHomeomorph f f' hf' x).fst = f x := by
   rfl
 
 @[simp]
-theorem implicitToOpenPartialHomeomorph_apply_ker (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) (y : f'.ker) :
-    hf.implicitToOpenPartialHomeomorph f f' hf' (y + a) = (f (y + a), y) :=
+theorem implicitToOpenPartialHomeomorph_apply_ker
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) (y : f'.ker)
+    : hf.implicitToOpenPartialHomeomorph f f' hf' (y + a) = (f (y + a), y) :=
   have := FiniteDimensional.complete 𝕜 F
   implicitToOpenPartialHomeomorphOfComplemented_apply_ker ..
 
 @[simp]
-theorem implicitToOpenPartialHomeomorph_self (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    hf.implicitToOpenPartialHomeomorph f f' hf' a = (f a, 0) :=
+theorem implicitToOpenPartialHomeomorph_self (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : hf.implicitToOpenPartialHomeomorph f f' hf' a = (f a, 0) :=
   have := FiniteDimensional.complete 𝕜 F
   implicitToOpenPartialHomeomorphOfComplemented_self ..
 
-theorem mem_implicitToOpenPartialHomeomorph_source (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) : a ∈ (hf.implicitToOpenPartialHomeomorph f f' hf').source :=
+theorem mem_implicitToOpenPartialHomeomorph_source
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : a ∈ (hf.implicitToOpenPartialHomeomorph f f' hf').source :=
   have := FiniteDimensional.complete 𝕜 F
   ImplicitFunctionData.pt_mem_toOpenPartialHomeomorph_source _
 
-theorem mem_implicitToOpenPartialHomeomorph_target (hf : HasStrictFDerivAt f f' a)
-    (hf' : f'.range = ⊤) :
-    (f a, (0 : f'.ker)) ∈ (hf.implicitToOpenPartialHomeomorph f f' hf').target :=
+theorem mem_implicitToOpenPartialHomeomorph_target
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : (f a, (0 : f'.ker)) ∈ (hf.implicitToOpenPartialHomeomorph f f' hf').target :=
   have := FiniteDimensional.complete 𝕜 F
   mem_implicitToOpenPartialHomeomorphOfComplemented_target ..
 
-theorem tendsto_implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) {α : Type*}
-    {l : Filter α} {g₁ : α → F} {g₂ : α → f'.ker} (h₁ : Tendsto g₁ l (𝓝 <| f a))
-    (h₂ : Tendsto g₂ l (𝓝 0)) :
-    Tendsto (fun t => hf.implicitFunction f f' hf' (g₁ t) (g₂ t)) l (𝓝 a) := by
+theorem tendsto_implicitFunction
+    (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    {α : Type*} {l : Filter α} {g₁ : α → F} {g₂ : α → f'.ker}
+    (h₁ : Tendsto g₁ l (𝓝 <| f a)) (h₂ : Tendsto g₂ l (𝓝 0))
+    : Tendsto (fun t => hf.implicitFunction f f' hf' (g₁ t) (g₂ t)) l (𝓝 a) := by
   refine ((hf.implicitToOpenPartialHomeomorph f f' hf').tendsto_symm
-    (hf.mem_implicitToOpenPartialHomeomorph_source hf')).comp ?_
+      (hf.mem_implicitToOpenPartialHomeomorph_source hf')).comp
+    ?_
   rw [implicitToOpenPartialHomeomorph_self]
   exact h₁.prodMk_nhds h₂
 
 alias _root_.Filter.Tendsto.implicitFunction := tendsto_implicitFunction
 
 /-- `HasStrictFDerivAt.implicitFunction` sends `(z, y)` to a point in `f ⁻¹' z`. -/
-theorem map_implicitFunction_eq (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    ∀ᶠ p : F × f'.ker in 𝓝 (f a, 0), f (hf.implicitFunction f f' hf' p.1 p.2) = p.1 :=
+theorem map_implicitFunction_eq (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : ∀ᶠ p : F × f'.ker in 𝓝 (f a, 0), f (hf.implicitFunction f f' hf' p.1 p.2) = p.1 :=
   have := FiniteDimensional.complete 𝕜 F
   map_implicitFunctionOfComplemented_eq ..
 
 @[simp]
-theorem implicitFunction_apply_image (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    hf.implicitFunction f f' hf' (f a) 0 = a := by
+theorem implicitFunction_apply_image (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : hf.implicitFunction f f' hf' (f a) 0 = a := by
   have := FiniteDimensional.complete 𝕜 F
   apply implicitFunctionOfComplemented_apply_image
 
-/-- Any point in some neighborhood of `a` can be represented as `HasStrictFDerivAt.implicitFunction`
-of some point. -/
-theorem eq_implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    ∀ᶠ x in 𝓝 a,
-      hf.implicitFunction f f' hf' (f x) (hf.implicitToOpenPartialHomeomorph f f' hf' x).snd = x :=
+/--
+Any point in some neighborhood of `a` can be represented as `HasStrictFDerivAt.implicitFunction`
+of some point.
+-/
+theorem eq_implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : ∀ᶠ x in 𝓝 a,
+        hf.implicitFunction f f' hf' (f x) (hf.implicitToOpenPartialHomeomorph f f' hf' x).snd = x :=
   have := FiniteDimensional.complete 𝕜 F
   eq_implicitFunctionOfComplemented ..
 
-theorem to_implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤) :
-    HasStrictFDerivAt (hf.implicitFunction f f' hf' (f a)) f'.ker.subtypeL 0 :=
+theorem to_implicitFunction (hf : HasStrictFDerivAt f f' a) (hf' : f'.range = ⊤)
+    : HasStrictFDerivAt (hf.implicitFunction f f' hf' (f a)) f'.ker.subtypeL 0 :=
   have := FiniteDimensional.complete 𝕜 F
   to_implicitFunctionOfComplemented ..
 

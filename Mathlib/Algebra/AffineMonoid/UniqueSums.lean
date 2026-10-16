@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.UniqueProds.Basic
 public import Mathlib.GroupTheory.Finiteness
-
 import Mathlib.Algebra.AffineMonoid.Embedding
 import Mathlib.Algebra.FreeAbelianGroup.UniqueSums
 
@@ -22,11 +21,13 @@ public section
 
 variable {M : Type*}
 
-instance (priority := low) AffineAddMonoid.to_twoUniqueSums [AddCancelCommMonoid M] [AddMonoid.FG M]
-    [HasUniqueDiv M] : TwoUniqueSums M :=
+instance (priority := low) AffineAddMonoid.to_twoUniqueSums
+    [AddCancelCommMonoid M] [AddMonoid.FG M] [HasUniqueDiv M]
+    : TwoUniqueSums M :=
   .of_injective_addHom (embedding M).toAddHom embedding_injective inferInstance
 
 @[to_additive existing AffineAddMonoid.to_twoUniqueSums]
-instance (priority := low) AffineMonoid.to_twoUniqueProds [CancelCommMonoid M] [Monoid.FG M]
-    [HasUniqueRoots M] : TwoUniqueProds M :=
+instance (priority := low) AffineMonoid.to_twoUniqueProds
+    [CancelCommMonoid M] [Monoid.FG M] [HasUniqueRoots M]
+    : TwoUniqueProds M :=
   Multiplicative.instTwoUniqueProdsOfTwoUniqueSums (M := Additive M)

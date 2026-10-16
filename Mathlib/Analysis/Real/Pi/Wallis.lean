@@ -33,7 +33,6 @@ algebraic manipulation.
 
 @[expose] public section
 
-
 open scoped Real Topology Nat
 
 open Filter Finset intervalIntegral
@@ -42,24 +41,24 @@ namespace Real
 
 namespace Wallis
 
-
 /-- The product of the first `k` terms in Wallis' formula for `π`. -/
 noncomputable def W (k : ℕ) : ℝ :=
   ∏ i ∈ range k, (2 * i + 2) / (2 * i + 1) * ((2 * i + 2) / (2 * i + 3))
 
-theorem W_succ (k : ℕ) :
-    W (k + 1) = W k * ((2 * k + 2) / (2 * k + 1) * ((2 * k + 2) / (2 * k + 3))) :=
+theorem W_succ (k : ℕ)
+    : W (k + 1) = W k * ((2 * k + 2) / (2 * k + 1) * ((2 * k + 2) / (2 * k + 3))) :=
   prod_range_succ _ _
 
 theorem W_pos (k : ℕ) : 0 < W k := by
   induction k with
-  | zero => unfold W; simp
+  | zero =>
+    unfold W; simp
   | succ k hk =>
     rw [W_succ]
     refine mul_pos hk (mul_pos (div_pos ?_ ?_) (div_pos ?_ ?_)) <;> positivity
 
-theorem W_eq_factorial_ratio (n : ℕ) :
-    W n = 2 ^ (4 * n) * n ! ^ 4 / ((2 * n)! ^ 2 * (2 * n + 1)) := by
+theorem W_eq_factorial_ratio (n : ℕ)
+    : W n = 2 ^ (4 * n) * n ! ^ 4 / ((2 * n)! ^ 2 * (2 * n + 1)) := by
   induction n with
   | zero =>
     simp only [W, prod_range_zero, Nat.factorial_zero, mul_zero, pow_zero]
@@ -73,8 +72,9 @@ theorem W_eq_factorial_ratio (n : ℕ) :
     push_cast
     ring_nf
 
-theorem W_eq_integral_sin_pow_div_integral_sin_pow (k : ℕ) : (π / 2)⁻¹ * W k =
-    (∫ x : ℝ in 0..π, sin x ^ (2 * k + 1)) / ∫ x : ℝ in 0..π, sin x ^ (2 * k) := by
+theorem W_eq_integral_sin_pow_div_integral_sin_pow (k : ℕ)
+    : (π / 2)⁻¹ * W k
+      = (∫ x : ℝ in 0..π, sin x ^ (2 * k + 1)) / ∫ x : ℝ in 0..π, sin x ^ (2 * k) := by
   rw [integral_sin_pow_even, integral_sin_pow_odd, mul_div_mul_comm, ← prod_div_distrib, inv_div]
   simp_rw [div_div_div_comm, div_div_eq_mul_div, mul_div_assoc]
   rfl
@@ -98,9 +98,11 @@ theorem tendsto_W_nhds_pi_div_two : Tendsto W atTop (𝓝 <| π / 2) := by
   refine Tendsto.mul ?_ tendsto_const_nhds
   have h : ∀ n : ℕ, ((2 : ℝ) * n + 1) / (2 * n + 2) = 1 - 1 / (2 * n + 2) := by
     intro n
-    rw [sub_div' (ne_of_gt (add_pos_of_nonneg_of_pos (mul_nonneg
-      (two_pos : 0 < (2 : ℝ)).le (Nat.cast_nonneg _)) two_pos)), one_mul]
-    congr 1; ring
+    rw [sub_div' (ne_of_gt (add_pos_of_nonneg_of_pos
+        (mul_nonneg (two_pos : 0 < (2 : ℝ)).le (Nat.cast_nonneg _)) two_pos)),
+      one_mul]
+    congr 1
+    ring
   simp_rw [h]
   refine (tendsto_const_nhds.div_atTop ?_).const_sub _
   refine Tendsto.atTop_add ?_ tendsto_const_nhds
@@ -111,7 +113,8 @@ end Wallis
 end Real
 
 /-- Wallis' product formula for `π / 2`. -/
-theorem Real.tendsto_prod_pi_div_two :
-    Tendsto (fun k => ∏ i ∈ range k, ((2 : ℝ) * i + 2) / (2 * i + 1) * ((2 * i + 2) / (2 * i + 3)))
+theorem Real.tendsto_prod_pi_div_two
+    : Tendsto
+      (fun k => ∏ i ∈ range k, ((2 : ℝ) * i + 2) / (2 * i + 1) * ((2 * i + 2) / (2 * i + 3)))
       atTop (𝓝 (π / 2)) :=
   Real.Wallis.tendsto_W_nhds_pi_div_two

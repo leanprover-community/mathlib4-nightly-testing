@@ -28,15 +28,16 @@ blowup in the future.
 
 @[expose] public section
 
-
 universe u v
 
 variable {R : Type u} [CommRing R] (I : Ideal R)
 
 open Polynomial
 
-/-- The Rees algebra of an ideal `I`, defined as the subalgebra of `R[X]` whose `i`-th coefficient
-falls in `I ^ i`. -/
+/--
+The Rees algebra of an ideal `I`, defined as the subalgebra of `R[X]` whose `i`-th coefficient
+falls in `I ^ i`.
+-/
 def reesAlgebra : Subalgebra R R[X] where
   carrier := { f | ∀ i, f.coeff i ∈ I ^ i }
   mul_mem' hf hg i := by
@@ -62,33 +63,32 @@ def reesAlgebra : Subalgebra R R[X] where
       simp
     · simp
 
-theorem mem_reesAlgebra_iff (f : R[X]) : f ∈ reesAlgebra I ↔ ∀ i, f.coeff i ∈ I ^ i :=
-  Iff.rfl
+theorem mem_reesAlgebra_iff (f : R[X]) : f ∈ reesAlgebra I ↔ ∀ i, f.coeff i ∈ I ^ i := Iff.rfl
 
-theorem mem_reesAlgebra_iff_support (f : R[X]) :
-    f ∈ reesAlgebra I ↔ ∀ i ∈ f.support, f.coeff i ∈ I ^ i := by
+theorem mem_reesAlgebra_iff_support (f : R[X])
+    : f ∈ reesAlgebra I ↔ ∀ i ∈ f.support, f.coeff i ∈ I ^ i := by
   apply forall_congr'
   intro a
   rw [mem_support_iff, Iff.comm, Classical.imp_iff_right_iff, Ne, ← imp_iff_not_or]
   exact fun e => e.symm ▸ (I ^ a).zero_mem
 
-theorem reesAlgebra.monomial_mem {I : Ideal R} {i : ℕ} {r : R} :
-    monomial i r ∈ reesAlgebra I ↔ r ∈ I ^ i := by
-  simp +contextual [mem_reesAlgebra_iff_support, coeff_monomial, ←
-    imp_iff_not_or]
+theorem reesAlgebra.monomial_mem {I : Ideal R} {i : ℕ} {r : R}
+    : monomial i r ∈ reesAlgebra I ↔ r ∈ I ^ i := by
+  simp +contextual [mem_reesAlgebra_iff_support, coeff_monomial, ← imp_iff_not_or]
 
-lemma reesAlgebra.monomial_coeff_mem {I : Ideal R} (f : reesAlgebra I) (i : ℕ) :
-    (monomial i) (f.1.coeff i) ∈ reesAlgebra I :=
+lemma reesAlgebra.monomial_coeff_mem {I : Ideal R} (f : reesAlgebra I) (i : ℕ)
+    : (monomial i) (f.1.coeff i) ∈ reesAlgebra I :=
   reesAlgebra.monomial_mem.mpr ((mem_reesAlgebra_iff I _).mp f.2 i)
 
-lemma reesAlgebra.as_sum_support {I : Ideal R} (f : reesAlgebra I) :
-    f = ∑ i ∈ f.1.support, ⟨monomial i (f.1.coeff i), reesAlgebra.monomial_coeff_mem f i⟩ :=
+lemma reesAlgebra.as_sum_support {I : Ideal R} (f : reesAlgebra I)
+    : f = ∑ i ∈ f.1.support, ⟨monomial i (f.1.coeff i), reesAlgebra.monomial_coeff_mem f i⟩ :=
   SetCoe.ext (by simpa using f.1.as_sum_support)
 
-theorem monomial_mem_adjoin_monomial {I : Ideal R} {n : ℕ} {r : R} (hr : r ∈ I ^ n) :
-    monomial n r ∈ Algebra.adjoin R (Submodule.map (monomial 1 : R →ₗ[R] R[X]) I : Set R[X]) := by
+theorem monomial_mem_adjoin_monomial {I : Ideal R} {n : ℕ} {r : R} (hr : r ∈ I ^ n)
+    : monomial n r ∈ Algebra.adjoin R (Submodule.map (monomial 1 : R →ₗ[R] R[X]) I : Set R[X]) := by
   induction n generalizing r with
-  | zero => exact Subalgebra.algebraMap_mem _ _
+  | zero =>
+    exact Subalgebra.algebraMap_mem _ _
   | succ n hn =>
     rw [pow_succ'] at hr
     refine Submodule.smul_induction_on hr ?_ ?_
@@ -99,8 +99,9 @@ theorem monomial_mem_adjoin_monomial {I : Ideal R} {n : ℕ} {r : R} (hr : r ∈
       rw [map_add]
       exact Subalgebra.add_mem _ hx hy
 
-theorem adjoin_monomial_eq_reesAlgebra :
-    Algebra.adjoin R (Submodule.map (monomial 1 : R →ₗ[R] R[X]) I : Set R[X]) = reesAlgebra I := by
+theorem adjoin_monomial_eq_reesAlgebra
+    : Algebra.adjoin R (Submodule.map (monomial 1 : R →ₗ[R] R[X]) I : Set R[X])
+      = reesAlgebra I := by
   apply le_antisymm
   · apply Algebra.adjoin_le _
     rintro _ ⟨r, hr, rfl⟩
@@ -115,15 +116,13 @@ variable {I}
 
 theorem reesAlgebra.fg (hI : I.FG) : (reesAlgebra I).FG := by
   classical
-    obtain ⟨s, hs⟩ := hI
-    rw [← adjoin_monomial_eq_reesAlgebra, ← hs]
-    use s.image (monomial 1)
-    rw [Finset.coe_image]
-    change
-      _ =
-        Algebra.adjoin R
-          (Submodule.map (monomial 1 : R →ₗ[R] R[X]) (Submodule.span R ↑s) : Set R[X])
-    rw [Submodule.map_span, Algebra.adjoin_span]
+  obtain ⟨s, hs⟩ := hI
+  rw [← adjoin_monomial_eq_reesAlgebra, ← hs]
+  use s.image (monomial 1)
+  rw [Finset.coe_image]
+  change _
+    = Algebra.adjoin R (Submodule.map (monomial 1 : R →ₗ[R] R[X]) (Submodule.span R ↑s) : Set R[X])
+  rw [Submodule.map_span, Algebra.adjoin_span]
 
 instance [IsNoetherianRing R] : Algebra.FiniteType R (reesAlgebra I) :=
   ⟨(reesAlgebra I).fg_top.mpr (reesAlgebra.fg <| IsNoetherian.noetherian I)⟩
@@ -132,36 +131,38 @@ instance [IsNoetherianRing R] : IsNoetherianRing (reesAlgebra I) :=
   Algebra.FiniteType.isNoetherianRing R _
 
 open TensorProduct in
-lemma tensorProduct_reesAlgebra_isNoetherian_of_fg [IsNoetherianRing (R ⧸ I)] (fg : I.FG) :
-    IsNoetherianRing ((R ⧸ I) ⊗[R] (reesAlgebra I)) := by
+lemma tensorProduct_reesAlgebra_isNoetherian_of_fg [IsNoetherianRing (R ⧸ I)] (fg : I.FG)
+    : IsNoetherianRing ((R ⧸ I) ⊗[R] (reesAlgebra I)) := by
   have : Algebra.FiniteType R (reesAlgebra I) := ⟨(reesAlgebra I).fg_top.mpr (reesAlgebra.fg fg)⟩
   have := this.baseChange (R ⧸ I)
   exact Algebra.FiniteType.isNoetherianRing (R ⧸ I) _
 
-lemma isNoetherianRing_reesAlgebra_quotient [IsNoetherianRing (R ⧸ I)] (fg : I.FG) :
-    IsNoetherianRing ((reesAlgebra I) ⧸ I.map (algebraMap R (reesAlgebra I))) := by
+lemma isNoetherianRing_reesAlgebra_quotient [IsNoetherianRing (R ⧸ I)] (fg : I.FG)
+    : IsNoetherianRing ((reesAlgebra I) ⧸ I.map (algebraMap R (reesAlgebra I))) := by
   have := tensorProduct_reesAlgebra_isNoetherian_of_fg fg
   exact isNoetherianRing_of_ringEquiv _
-     (Algebra.TensorProduct.quotIdealMapEquivQuotTensor (reesAlgebra I) I).symm.toRingEquiv
+    (Algebra.TensorProduct.quotIdealMapEquivQuotTensor (reesAlgebra I) I).symm.toRingEquiv
 
-lemma mem_map_algebraMap_reesAlgebra_iff (f : reesAlgebra I) :
-    f ∈ I.map (algebraMap R (reesAlgebra I)) ↔ ∀ n, f.1.coeff n ∈ I ^ (n + 1) := by
+lemma mem_map_algebraMap_reesAlgebra_iff (f : reesAlgebra I)
+    : f ∈ I.map (algebraMap R (reesAlgebra I)) ↔ ∀ n, f.1.coeff n ∈ I ^ (n + 1) := by
   refine ⟨fun h n ↦ ?_, fun h ↦ ?_⟩
   · rw [← Submodule.restrictScalars_mem R, ← Ideal.smul_top_eq_map] at h
     induction h using Submodule.smul_induction_on' with
     | smul r hr m hm =>
       simpa [pow_succ'] using Ideal.mul_mem_mul hr ((mem_reesAlgebra_iff I _).mp m.2 n)
-    | add x hx y hy memx memy => simpa using add_mem memx memy
+    | add x hx y hy memx memy =>
+      simpa using add_mem memx memy
   · rw [reesAlgebra.as_sum_support f]
     apply sum_mem (fun i hi ↦ ?_)
-    have {r : R} (h' : r ∈ I * I ^ i) :
-      ⟨monomial i r, reesAlgebra.monomial_mem.mpr (Ideal.mul_le_right h')⟩
-        ∈ I.map (algebraMap R (reesAlgebra I)) := by
+    have {r : R} (h' : r ∈ I * I ^ i)
+        : ⟨monomial i r, reesAlgebra.monomial_mem.mpr (Ideal.mul_le_right h')⟩
+          ∈ I.map (algebraMap R (reesAlgebra I)) := by
       induction h' using Submodule.mul_induction_on' with
       | mem_mul_mem s hs t ht =>
         simp_rw [← smul_eq_mul s t, ← smul_monomial,
           ← SetLike.mk_smul_mk (hx := reesAlgebra.monomial_mem.mpr ht), Algebra.smul_def]
         exact Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ hs)
-      | add s1 hs1 s2 hs2 mem1 mem2 => simpa using add_mem mem1 mem2
+      | add s1 hs1 s2 hs2 mem1 mem2 =>
+        simpa using add_mem mem1 mem2
     apply this
     simpa [pow_succ'] using h i

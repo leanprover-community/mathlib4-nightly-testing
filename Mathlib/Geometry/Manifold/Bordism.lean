@@ -6,7 +6,6 @@ Authors: Michael Rothgang
 module
 
 public import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
-
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
@@ -100,17 +99,22 @@ open Module
 
 suppress_compilation
 
-/-- A **singular manifold** on a topological space `X` is a pair `(M, f)` of a closed
+/--
+A **singular manifold** on a topological space `X` is a pair `(M, f)` of a closed
 `C^k`-manifold `M` modelled on `I` together with a continuous map `M → X`.
 If we wish to emphasize the model, we will speak of a singular `I`-manifold.
 
 In practice, one commonly wants to take `k=∞` (as then e.g. the intersection form is a powerful tool
 to compute bordism groups; for the definition, this makes no difference.)
 
-This is parametrised on the universe `M` lives in; ensure `u` is the first universe argument. -/
-structure SingularManifold.{u} (X : Type*) [TopologicalSpace X] (k : WithTop ℕ∞)
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [TopologicalSpace H] (I : ModelWithCorners ℝ E H) where
+This is parametrised on the universe `M` lives in; ensure `u` is the first universe argument.
+-/
+structure SingularManifold.{u}
+    (X : Type*) [TopologicalSpace X]
+    (k : WithTop ℕ∞)
+    {E H : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H]
+    (I : ModelWithCorners ℝ E H) where
   /-- The manifold `M` of a singular `n`-manifold `(M, f)` -/
   M : Type u
   /-- The manifold `M` is a topological space. -/
@@ -127,11 +131,12 @@ structure SingularManifold.{u} (X : Type*) [TopologicalSpace X] (k : WithTop ℕ
 
 namespace SingularManifold
 
-variable {X Y Z : Type*} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
-  {k : WithTop ℕ∞}
-  {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I k M] [CompactSpace M] [BoundarylessManifold I M]
+variable
+  {X Y Z : Type*} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
+  {k : WithTop ℕ∞} {E H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I k M]
+  [CompactSpace M] [BoundarylessManifold I M]
 
 instance {s : SingularManifold X k I} : TopologicalSpace s.M := s.topSpaceM
 
@@ -145,27 +150,28 @@ instance {s : SingularManifold X k I} : BoundarylessManifold I s.M := s.boundary
 
 /-- A map of topological spaces induces a corresponding map of singular manifolds. -/
 -- This is part of proving functoriality of the bordism groups.
-@[expose] def map.{u} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {k : WithTop ℕ∞}
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [TopologicalSpace H] {I : ModelWithCorners ℝ E H} (s : SingularManifold.{u} X k I)
-    {φ : X → Y} (hφ : Continuous φ) : SingularManifold.{u} Y k I where
+@[expose]
+def map.{u}
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {k : WithTop ℕ∞} {E H : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H} (s : SingularManifold.{u} X k I)
+    {φ : X → Y} (hφ : Continuous φ)
+    : SingularManifold.{u} Y k I where
   M := s.M
   f := φ ∘ s.f
   hf := hφ.comp s.hf
 
 @[simp, mfld_simps]
-lemma map_f (s : SingularManifold X k I) {φ : X → Y} (hφ : Continuous φ) :
-    (s.map hφ).f = φ ∘ s.f :=
+lemma map_f (s : SingularManifold X k I) {φ : X → Y} (hφ : Continuous φ) : (s.map hφ).f = φ ∘ s.f :=
   rfl
 
 @[simp, mfld_simps]
-lemma map_M (s : SingularManifold X k I) {φ : X → Y} (hφ : Continuous φ) :
-    (s.map hφ).M = s.M :=
-  rfl
+lemma map_M (s : SingularManifold X k I) {φ : X → Y} (hφ : Continuous φ) : (s.map hφ).M = s.M := rfl
 
-lemma map_comp (s : SingularManifold X k I)
-    {φ : X → Y} {ψ : Y → Z} (hφ : Continuous φ) (hψ : Continuous ψ) :
-    ((s.map hφ).map hψ).f = (ψ ∘ φ) ∘ s.f := by
+lemma map_comp
+    (s : SingularManifold X k I) {φ : X → Y} {ψ : Y → Z} (hφ : Continuous φ) (hψ : Continuous ψ)
+    : ((s.map hφ).map hψ).f = (ψ ∘ φ) ∘ s.f := by
   simp [Function.comp_def]
 
 variable {E' H' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
@@ -177,28 +183,34 @@ noncomputable def refl : SingularManifold M k I where
   f := id
   hf := continuous_id
 
-/-- If `(N, f)` is a singular manifold on `X` and `M` another `C^k` manifold,
-a continuous map `φ : M → N` induces a singular manifold structure `(M, f ∘ φ)` on `X`. -/
-@[expose] noncomputable def comap (s : SingularManifold X k I)
-    {φ : M → s.M} (hφ : Continuous φ) : SingularManifold X k I where
+/--
+If `(N, f)` is a singular manifold on `X` and `M` another `C^k` manifold,
+a continuous map `φ : M → N` induces a singular manifold structure `(M, f ∘ φ)` on `X`.
+-/
+@[expose]
+noncomputable def comap (s : SingularManifold X k I) {φ : M → s.M} (hφ : Continuous φ)
+    : SingularManifold X k I where
   M := M
   f := s.f ∘ φ
   hf := s.hf.comp hφ
 
 @[simp, mfld_simps]
-lemma comap_M (s : SingularManifold X k I) {φ : M → s.M} (hφ : Continuous φ) :
-    (s.comap hφ).M = M := by
+lemma comap_M (s : SingularManifold X k I) {φ : M → s.M} (hφ : Continuous φ)
+    : (s.comap hφ).M = M := by
   rfl
 
 @[simp, mfld_simps]
-lemma comap_f (s : SingularManifold X k I) {φ : M → s.M} (hφ : Continuous φ) :
-    (s.comap hφ).f = s.f ∘ φ :=
+lemma comap_f (s : SingularManifold X k I) {φ : M → s.M} (hφ : Continuous φ)
+    : (s.comap hφ).f = s.f ∘ φ :=
   rfl
 
 variable (X) in
 /-- The canonical singular manifold associated to the empty set (seen as a smooth manifold) -/
-@[expose] def empty.{u} (M : Type u) [TopologicalSpace M] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H) [IsManifold I k M] [IsEmpty M] : SingularManifold X k I where
+@[expose]
+def empty.{u}
+    (M : Type u) [TopologicalSpace M] [ChartedSpace H M]
+    (I : ModelWithCorners ℝ E H) [IsManifold I k M] [IsEmpty M]
+    : SingularManifold X k I where
   M := M
   f x := (IsEmpty.false x).elim
   hf := by
@@ -206,15 +218,15 @@ variable (X) in
     exact fun x ↦ (IsEmpty.false x).elim
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
-@[simp, mfld_simps]
-lemma empty_M [IsEmpty M] : (empty X M I (k := k)).M = M := (rfl)
+@[simp, mfld_simps] lemma empty_M [IsEmpty M] : (empty X M I (k := k)).M = M := (rfl)
 
 instance [IsEmpty M] : IsEmpty (SingularManifold.empty X M I (k := k)).M :=
   inferInstanceAs <| IsEmpty M
 
 variable (M I) in
 /-- A smooth manifold induces a singular manifold on the one-point space. -/
-@[expose] def toPUnit : SingularManifold PUnit k I where
+@[expose]
+def toPUnit : SingularManifold PUnit k I where
   M := M
   f := fun _ ↦ PUnit.unit
   hf := continuous_const
@@ -236,8 +248,9 @@ with its induced map into `X`.
 arbitrarily small perturbation `f'` so `f'` and `g` are transverse. One can prove that different
 perturbations yield bordant manifolds.)
 -/
-@[expose] def prod (s : SingularManifold PUnit k I) (t : SingularManifold PUnit k I') :
-    SingularManifold PUnit k (I.prod I') where
+@[expose]
+def prod (s : SingularManifold PUnit k I) (t : SingularManifold PUnit k I')
+    : SingularManifold PUnit k (I.prod I') where
   M := s.M × t.M
   f := fun _ ↦ PUnit.unit
   hf := continuous_const
@@ -245,13 +258,13 @@ perturbations yield bordant manifolds.)
 variable (s t : SingularManifold X k I)
 
 /-- The disjoint union of two singular `I`-manifolds on `X` is a singular `I`-manifold on `X`. -/
-@[expose] def sum (s t : SingularManifold X k I) : SingularManifold X k I where
+@[expose]
+def sum (s t : SingularManifold X k I) : SingularManifold X k I where
   M := s.M ⊕ t.M
   f := Sum.elim s.f t.f
   hf := s.hf.sumElim t.hf
 
-@[simp, mfld_simps]
-lemma sum_M (s t : SingularManifold X k I) : (s.sum t).M = (s.M ⊕ t.M) := (rfl)
+@[simp, mfld_simps] lemma sum_M (s t : SingularManifold X k I) : (s.sum t).M = (s.M ⊕ t.M) := (rfl)
 
 @[simp, mfld_simps]
 lemma sum_f (s t : SingularManifold X k I) : (s.sum t).f = Sum.elim s.f t.f := (rfl)

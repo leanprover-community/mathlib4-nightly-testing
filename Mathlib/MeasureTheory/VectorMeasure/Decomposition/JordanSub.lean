@@ -42,46 +42,48 @@ variable {X : Type*} {mX : MeasurableSpace X}
 variable {s : Set X}
 variable {μ ν : Measure X}
 
-lemma sub_apply_eq_zero_of_isHahnDecomposition
-    (hs : IsHahnDecomposition μ ν s) : (μ - ν) s = 0 := by
+lemma sub_apply_eq_zero_of_isHahnDecomposition (hs : IsHahnDecomposition μ ν s)
+    : (μ - ν) s = 0 := by
   rw [← restrict_eq_zero, restrict_sub_eq_restrict_sub_restrict hs.measurableSet]
   exact sub_eq_zero_of_le hs.le_on
 
 variable [IsFiniteMeasure μ] [IsFiniteMeasure ν]
 
-theorem mutually_singular_measure_sub :
-    (μ - ν).MutuallySingular (ν - μ) := by
+theorem mutually_singular_measure_sub : (μ - ν).MutuallySingular (ν - μ) := by
   obtain ⟨s, hs⟩ := exists_isHahnDecomposition μ ν
-  exact ⟨s, hs.measurableSet,
+  exact ⟨
+    s,
+    hs.measurableSet,
     sub_apply_eq_zero_of_isHahnDecomposition hs,
-    sub_apply_eq_zero_of_isHahnDecomposition hs.compl⟩
+    sub_apply_eq_zero_of_isHahnDecomposition hs.compl
+  ⟩
 
-lemma toSignedMeasure_restrict_sub (hs : IsHahnDecomposition μ ν s) :
-    ((ν - μ).restrict s).toSignedMeasure =
-      ν.toSignedMeasure.restrict s - μ.toSignedMeasure.restrict s := by
+lemma toSignedMeasure_restrict_sub (hs : IsHahnDecomposition μ ν s)
+    : ((ν - μ).restrict s).toSignedMeasure
+      = ν.toSignedMeasure.restrict s - μ.toSignedMeasure.restrict s := by
   have hmeas := hs.measurableSet
   rw [eq_sub_iff_add_eq, toSignedMeasure_restrict_eq_restrict_toSignedMeasure _ _ hmeas,
     ← toSignedMeasure_add]
   simp only [restrict_sub_eq_restrict_sub_restrict, hmeas, sub_add_cancel_of_le hs.le_on]
   exact (toSignedMeasure_restrict_eq_restrict_toSignedMeasure _ _ hmeas).symm
 
-theorem sub_toSignedMeasure_eq_toSignedMeasure_sub :
-    μ.toSignedMeasure - ν.toSignedMeasure =
-      (μ - ν).toSignedMeasure - (ν - μ).toSignedMeasure := by
+theorem sub_toSignedMeasure_eq_toSignedMeasure_sub
+    : μ.toSignedMeasure - ν.toSignedMeasure
+      = (μ - ν).toSignedMeasure - (ν - μ).toSignedMeasure := by
   obtain ⟨s, hs⟩ := exists_isHahnDecomposition μ ν
   have hsc := hs.compl
   have h₁ := toSignedMeasure_restrict_sub hs
   have h₂ := toSignedMeasure_restrict_sub hsc
-  have h₁' := toSignedMeasure_congr <| restrict_eq_zero.mpr <|
-    sub_apply_eq_zero_of_isHahnDecomposition hs
-  have h₂' := toSignedMeasure_congr <| restrict_eq_zero.mpr <|
-  sub_apply_eq_zero_of_isHahnDecomposition hsc
-  have partition₁ := VectorMeasure.restrict_add_restrict_compl (v := (μ - ν).toSignedMeasure)
-    hs.measurableSet
-  have partition₂ := VectorMeasure.restrict_add_restrict_compl (v := (ν - μ).toSignedMeasure)
-    hs.measurableSet
+  have h₁' :=
+    toSignedMeasure_congr <| restrict_eq_zero.mpr <| sub_apply_eq_zero_of_isHahnDecomposition hs
+  have h₂' :=
+    toSignedMeasure_congr <| restrict_eq_zero.mpr <| sub_apply_eq_zero_of_isHahnDecomposition hsc
+  have partition₁ :=
+    VectorMeasure.restrict_add_restrict_compl (v := (μ - ν).toSignedMeasure) hs.measurableSet
+  have partition₂ :=
+    VectorMeasure.restrict_add_restrict_compl (v := (ν - μ).toSignedMeasure) hs.measurableSet
   rw [toSignedMeasure_restrict_eq_restrict_toSignedMeasure _ _ hs.measurableSet,
-    toSignedMeasure_restrict_eq_restrict_toSignedMeasure _ _ hs.measurableSet.compl]
+      toSignedMeasure_restrict_eq_restrict_toSignedMeasure _ _ hs.measurableSet.compl]
     at partition₁ partition₂
   rw [h₁', h₂] at partition₁
   rw [h₁, h₂'] at partition₂
@@ -91,31 +93,36 @@ theorem sub_toSignedMeasure_eq_toSignedMeasure_sub :
     ← partition₁, ← partition₂]
   abel
 
-/-- The Jordan decomposition associated to the pair of mutually singular measures `μ - ν`
-and `ν - μ`. -/
+/--
+The Jordan decomposition associated to the pair of mutually singular measures `μ - ν`
+and `ν - μ`.
+-/
 def jordanDecompositionOfToSignedMeasureSub
-    (μ ν : Measure X) [IsFiniteMeasure μ] [IsFiniteMeasure ν] : JordanDecomposition X where
+    (μ ν : Measure X) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    : JordanDecomposition X where
   posPart := μ - ν
   negPart := ν - μ
   mutuallySingular := mutually_singular_measure_sub
 
-lemma jordanDecompositionOfToSignedMeasureSub_posPart :
-    (jordanDecompositionOfToSignedMeasureSub μ ν).posPart = μ - ν := rfl
+lemma jordanDecompositionOfToSignedMeasureSub_posPart
+    : (jordanDecompositionOfToSignedMeasureSub μ ν).posPart = μ - ν :=
+  rfl
 
-lemma jordanDecompositionOfToSignedMeasureSub_negPart :
-    (jordanDecompositionOfToSignedMeasureSub μ ν).negPart = ν - μ := rfl
+lemma jordanDecompositionOfToSignedMeasureSub_negPart
+    : (jordanDecompositionOfToSignedMeasureSub μ ν).negPart = ν - μ :=
+  rfl
 
-lemma jordanDecompositionOfToSignedMeasureSub_toSignedMeasure :
-    (jordanDecompositionOfToSignedMeasureSub μ ν).toSignedMeasure =
-    μ.toSignedMeasure - ν.toSignedMeasure := by
+lemma jordanDecompositionOfToSignedMeasureSub_toSignedMeasure
+    : (jordanDecompositionOfToSignedMeasureSub μ ν).toSignedMeasure
+      = μ.toSignedMeasure - ν.toSignedMeasure := by
   simp_rw [JordanDecomposition.toSignedMeasure, jordanDecompositionOfToSignedMeasureSub_posPart,
     jordanDecompositionOfToSignedMeasureSub_negPart, ← sub_toSignedMeasure_eq_toSignedMeasure_sub]
 
 /-- The Jordan decomposition of `μ.toSignedMeasure - ν.toSignedMeasure` is `(μ - ν, ν - μ)`. -/
 @[simp]
-theorem toJordanDecomposition_toSignedMeasure_sub :
-    (μ.toSignedMeasure - ν.toSignedMeasure).toJordanDecomposition =
-      jordanDecompositionOfToSignedMeasureSub μ ν := by
+theorem toJordanDecomposition_toSignedMeasure_sub
+    : (μ.toSignedMeasure - ν.toSignedMeasure).toJordanDecomposition
+      = jordanDecompositionOfToSignedMeasureSub μ ν := by
   apply JordanDecomposition.toSignedMeasure_injective
   rw [SignedMeasure.toSignedMeasure_toJordanDecomposition,
     jordanDecompositionOfToSignedMeasureSub_toSignedMeasure]

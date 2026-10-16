@@ -34,31 +34,30 @@ namespace Limits
 
 section HasColimit
 
-variable {J : Type u₁} [Category.{v₁} J]
-    {F G : J ⥤ C} [HasColimit F] [HasColimit G]
+variable {J : Type u₁} [Category.{v₁} J] {F G : J ⥤ C} [HasColimit F] [HasColimit G]
 
 @[reassoc (attr := simp)]
-lemma HasColimit.whiskerLeft_isoOfNatIso_ι_hom (w : F ≅ G) (j : J) {Q : C} :
-    Q ◁ colimit.ι F j ≫ Q ◁ (HasColimit.isoOfNatIso w).hom =
-      Q ◁ w.hom.app j ≫ Q ◁ colimit.ι G j := by
+lemma HasColimit.whiskerLeft_isoOfNatIso_ι_hom (w : F ≅ G) (j : J) {Q : C}
+    : Q ◁ colimit.ι F j ≫ Q ◁ (HasColimit.isoOfNatIso w).hom
+      = Q ◁ w.hom.app j ≫ Q ◁ colimit.ι G j := by
   simp [← MonoidalCategory.whiskerLeft_comp]
 
 @[reassoc (attr := simp)]
-lemma HasColimit.isoOfNatIso_ι_hom_whiskerRight (w : F ≅ G) (j : J) {Q : C} :
-    colimit.ι F j ▷ Q ≫ (HasColimit.isoOfNatIso w).hom ▷ Q =
-      w.hom.app j ▷ Q ≫ colimit.ι G j ▷ Q := by
+lemma HasColimit.isoOfNatIso_ι_hom_whiskerRight (w : F ≅ G) (j : J) {Q : C}
+    : colimit.ι F j ▷ Q ≫ (HasColimit.isoOfNatIso w).hom ▷ Q
+      = w.hom.app j ▷ Q ≫ colimit.ι G j ▷ Q := by
   simp [← MonoidalCategory.comp_whiskerRight]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-lemma colimit.whiskerLeft_ι_desc (c : Cocone F) (j : J) {Q : C} :
-    Q ◁ colimit.ι F j ≫ Q ◁ colimit.desc F c = Q ◁ c.ι.app j := by
+lemma colimit.whiskerLeft_ι_desc (c : Cocone F) (j : J) {Q : C}
+    : Q ◁ colimit.ι F j ≫ Q ◁ colimit.desc F c = Q ◁ c.ι.app j := by
   simp [← MonoidalCategory.whiskerLeft_comp]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
-lemma colimit.ι_desc_whiskerRight (c : Cocone F) (j : J) {Q : C} :
-    colimit.ι F j ▷ Q ≫ colimit.desc F c ▷ Q = c.ι.app j ▷ Q := by
+lemma colimit.ι_desc_whiskerRight (c : Cocone F) (j : J) {Q : C}
+    : colimit.ι F j ▷ Q ≫ colimit.desc F c ▷ Q = c.ι.app j ▷ Q := by
   simp [← comp_whiskerRight]
 
 end HasColimit

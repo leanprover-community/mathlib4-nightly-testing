@@ -25,8 +25,10 @@ public section
 
 open CategoryTheory
 
-variable {R : Type*} [Semiring R] {C D : Type*} [Category* C] [Preadditive C]
-  [Category* D] [Preadditive D] [CategoryTheory.Linear R C] [CategoryTheory.Linear R D]
+variable
+  {R : Type*} [Semiring R]
+  {C D : Type*} [Category* C] [Preadditive C] [Category* D] [Preadditive D]
+  [CategoryTheory.Linear R C] [CategoryTheory.Linear R D]
   {ι : Type*} {c : ComplexShape ι}
 
 namespace HomologicalComplex
@@ -36,11 +38,9 @@ variable {X Y : HomologicalComplex C c}
 instance : SMul R (X ⟶ Y) where
   smul r f := { f := fun n => r • f.f n }
 
-@[simp]
-lemma smul_f_apply (r : R) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
+@[simp] lemma smul_f_apply (r : R) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
 
-@[simp]
-lemma units_smul_f_apply (r : Rˣ) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
+@[simp] lemma units_smul_f_apply (r : Rˣ) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
 
 instance (X Y : HomologicalComplex C c) : Module R (X ⟶ Y) where
   one_smul a := by cat_disch
@@ -55,5 +55,5 @@ instance : Linear R (HomologicalComplex C c) where
 end HomologicalComplex
 
 instance CategoryTheory.Functor.mapHomologicalComplex_linear
-    (F : C ⥤ D) [F.Additive] [Functor.Linear R F] (c : ComplexShape ι) :
-    Functor.Linear R (F.mapHomologicalComplex c) where
+  (F : C ⥤ D) [F.Additive] [Functor.Linear R F] (c : ComplexShape ι)
+  : Functor.Linear R (F.mapHomologicalComplex c) where

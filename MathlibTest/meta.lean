@@ -24,30 +24,32 @@ def eNatOne := mkApp (Expr.const ``Nat.succ []) eNatZero
 
 #guard Expr.getAppApps (.const `f []) == #[]
 #guard Expr.getAppApps (mkAppN (.const `f []) #[eTrue]) == #[.app (.const `f []) eTrue]
-#guard Expr.getAppApps (mkAppN (.const `f []) #[eTrue, eFalse]) ==
-        #[.app (.const `f []) eTrue, .app (.app (.const `f []) eTrue) eFalse]
+#guard Expr.getAppApps (mkAppN (.const `f []) #[eTrue, eFalse])
+  == #[.app (.const `f []) eTrue, .app (.app (.const `f []) eTrue) eFalse]
 
 /-! ### `Lean.Expr.reduceProjStruct?` -/
 
 /-- info: none -/
-#guard_msgs in #eval Expr.reduceProjStruct? eTrue
+#guard_msgs in
+#eval Expr.reduceProjStruct? eTrue
 /-- info: none -/
-#guard_msgs in #eval Expr.reduceProjStruct? (.const ``Prod.fst [.one, .one])
+#guard_msgs in
+#eval Expr.reduceProjStruct? (.const ``Prod.fst [.one, .one])
 /-- info: some (Lean.Expr.app (Lean.Expr.const `Nat.succ []) (Lean.Expr.const `Nat.zero [])) -/
-#guard_msgs in #eval Expr.reduceProjStruct? <|
-  mkAppN (.const ``Prod.fst [.one, .one])
-    #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat, eNatOne, eNatZero]]
+#guard_msgs in
+#eval Expr.reduceProjStruct? <| mkAppN (.const ``Prod.fst [.one, .one])
+  #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat, eNatOne, eNatZero]]
 /-- info: some (Lean.Expr.const `Nat.zero []) -/
-#guard_msgs in #eval Expr.reduceProjStruct? <|
-  mkAppN (.const ``Prod.snd [.one, .one])
-    #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat, eNatOne, eNatZero]]
+#guard_msgs in
+#eval Expr.reduceProjStruct? <| mkAppN (.const ``Prod.snd [.one, .one])
+  #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat, eNatOne, eNatZero]]
 /--
 error: ill-formed expression, Prod.fst is the 1-th projection function
 but Prod.mk does not have enough arguments
 -/
-#guard_msgs (error, drop info) in #eval Expr.reduceProjStruct? <|
-  mkAppN (.const ``Prod.fst [.one, .one])
-    #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat]]
+#guard_msgs (error, drop info) in
+#eval Expr.reduceProjStruct? <| mkAppN (.const ``Prod.fst [.one, .one])
+  #[eNat, eNat, mkAppN (.const ``Prod.mk [.one, .one]) #[eNat, eNat]]
 
 /-! ### `Lean.Expr.forallNot_of_notExists` -/
 
@@ -55,9 +57,11 @@ open Elab Tactic in
 elab "test_forallNot_of_notExists" t:term : tactic => do
   let e ← elabTerm t none
   let ety ← instantiateMVars (← inferType e)
-  let .app (.const ``Not []) ety' := ety | throwError "Type of expression must be not"
+  let .app (.const ``Not []) ety' := ety
+    | throwError "Type of expression must be not"
   let (ety', e') ← Expr.forallNot_of_notExists ety' e
-  unless ← isDefEq ety' (← inferType e') do throwError "bad proof"
+  unless ← isDefEq ety' (← inferType e') do
+    throwError "bad proof"
   logInfo m!"{ety'}"
 
 set_option linter.unusedTactic false
@@ -77,8 +81,7 @@ example (h : ¬ ∃ x y : Nat, y < x) : False := by
 
 /-- error: failed -/
 #guard_msgs in
-example (h : ¬ 0 < 1) : False := by
-  test_forallNot_of_notExists h
+example (h : ¬ 0 < 1) : False := by test_forallNot_of_notExists h
 
 /-! ### `Lean.Meta.mkRel` -/
 
@@ -104,16 +107,20 @@ example (h : ¬ 0 < 1) : False := by
 info: some (`Eq, Lean.Expr.const `Nat.zero [],
 Lean.Expr.app (Lean.Expr.const `Nat.succ []) (Lean.Expr.const `Nat.zero []))
 -/
-#guard_msgs in #eval do Expr.relSidesIfRefl? (← mkRel ``Eq eNatZero eNatOne)
+#guard_msgs in
+#eval do Expr.relSidesIfRefl? (← mkRel ``Eq eNatZero eNatOne)
 
 /-- info: some (`Iff, Lean.Expr.const `True [], Lean.Expr.const `False []) -/
-#guard_msgs in #eval do Expr.relSidesIfRefl? (← mkRel ``Iff eTrue eFalse)
+#guard_msgs in
+#eval do Expr.relSidesIfRefl? (← mkRel ``Iff eTrue eFalse)
 
 /-- info: some (`HEq, Lean.Expr.const `True [], Lean.Expr.const `False []) -/
-#guard_msgs in #eval do Expr.relSidesIfRefl? (← mkRel ``HEq eTrue eFalse)
+#guard_msgs in
+#eval do Expr.relSidesIfRefl? (← mkRel ``HEq eTrue eFalse)
 
 /-- info: none -/
-#guard_msgs in #eval do Expr.relSidesIfRefl? (← mkRel ``LT.lt eNatZero eNatOne)
+#guard_msgs in
+#eval do Expr.relSidesIfRefl? (← mkRel ``LT.lt eNatZero eNatOne)
 
 attribute [refl] Nat.le_refl
 
@@ -121,6 +128,7 @@ attribute [refl] Nat.le_refl
 info: some (`LE.le, Lean.Expr.const `Nat.zero [],
 Lean.Expr.app (Lean.Expr.const `Nat.succ []) (Lean.Expr.const `Nat.zero []))
 -/
-#guard_msgs in #eval do Expr.relSidesIfRefl? (← mkRel ``LE.le eNatZero eNatOne)
+#guard_msgs in
+#eval do Expr.relSidesIfRefl? (← mkRel ``LE.le eNatZero eNatOne)
 
 end Tests

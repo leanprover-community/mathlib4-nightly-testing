@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Abelian.Projective.Basic
 public import Mathlib.CategoryTheory.Generator.Preadditive
-
 import Mathlib.Algebra.Category.Grp.Abelian
 import Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four
 import Mathlib.CategoryTheory.Limits.Preserves.Opposites
@@ -36,9 +35,9 @@ attribute [local instance] preservesFiniteLimits_op
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem preadditiveCoyonedaObj_map_surjective {G : C} [Projective G] (hG : IsSeparator G) {X : C}
-    (p : G ⟶ X) [Epi p] {Y : C} :
-    Function.Surjective ((preadditiveCoyonedaObj G).map : (X ⟶ Y) → _) := by
+theorem preadditiveCoyonedaObj_map_surjective
+    {G : C} [Projective G] (hG : IsSeparator G) {X : C} (p : G ⟶ X) [Epi p] {Y : C}
+    : Function.Surjective ((preadditiveCoyonedaObj G).map : (X ⟶ Y) → _) := by
   rw [← Functor.coe_mapAddHom, ← AddCommGrpCat.hom_ofHom (preadditiveCoyonedaObj G).mapAddHom,
     ← AddCommGrpCat.epi_iff_surjective]
   let cm : ShortComplex C := ⟨kernel.ι p, p, by simp⟩
@@ -51,18 +50,22 @@ theorem preadditiveCoyonedaObj_map_surjective {G : C} [Projective G] (hG : IsSep
   · simp only [ShortComplex.map_f]
     infer_instance
   · suffices φ.map.Surjective by simpa [AddCommGrpCat.epi_iff_surjective, Functor.coe_mapAddHom]
-    exact fun f => ⟨f (𝟙 G), by
-      ext x
-      convert! (f.hom.map_smul (.op (.of x)) (𝟙 G)).symm
-      exact (Category.comp_id _).symm⟩
+    exact fun f => ⟨
+      f (𝟙 G),
+      by
+        ext x
+        convert! (f.hom.map_smul (.op (.of x)) (𝟙 G)).symm
+        exact (Category.comp_id _).symm
+    ⟩
   · simp [AddCommGrpCat.mono_iff_injective, Functor.coe_mapAddHom, Functor.map_injective]
 
 end
 
 variable {D : Type u'} [Category.{v'} D] (F : D ⥤ C)
 
-theorem full_comp_preadditiveCoyonedaObj [F.Full] {G : C} [Projective G] (hG : IsSeparator G)
-    (hG₂ : ∀ X, ∃ (p : G ⟶ F.obj X), Epi p) : (F ⋙ preadditiveCoyonedaObj G).Full where
+theorem full_comp_preadditiveCoyonedaObj
+    [F.Full] {G : C} [Projective G] (hG : IsSeparator G) (hG₂ : ∀ X, ∃ (p : G ⟶ F.obj X), Epi p)
+    : (F ⋙ preadditiveCoyonedaObj G).Full where
   map_surjective {X Y} f := by
     obtain ⟨p, _⟩ := hG₂ X
     obtain ⟨f, rfl⟩ := preadditiveCoyonedaObj_map_surjective hG p f

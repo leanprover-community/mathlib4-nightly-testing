@@ -9,7 +9,6 @@ module
 public import Mathlib.Algebra.Group.Opposite
 public import Mathlib.Tactic.Attr.Core
 public import Mathlib.Tactic.Common
-
 import Batteries.Tactic.SeqFocus
 
 /-!
@@ -35,30 +34,27 @@ divisibility, divides
 
 @[expose] public section
 
-
 variable {α : Type*}
 
 section Semigroup
 
 variable [Semigroup α] {a b c : α}
 
-/-- There are two possible conventions for divisibility, which coincide in a `CommMonoid`.
-This matches the convention for ordinals. -/
-instance (priority := 100) semigroupDvd : Dvd α :=
-  Dvd.mk fun a b => ∃ c, b = a * c
+/--
+There are two possible conventions for divisibility, which coincide in a `CommMonoid`.
+This matches the convention for ordinals.
+-/
+instance (priority := 100) semigroupDvd : Dvd α := Dvd.mk fun a b => ∃ c, b = a * c
 
 -- TODO: this used to not have `c` explicit, but that seems to be important
 --       for use with tactics, similar to `Exists.intro`
-theorem Dvd.intro (c : α) (h : a * c = b) : a ∣ b :=
-  Exists.intro c h.symm
+theorem Dvd.intro (c : α) (h : a * c = b) : a ∣ b := Exists.intro c h.symm
 
 alias dvd_of_mul_right_eq := Dvd.intro
 
-theorem exists_eq_mul_right_of_dvd (h : a ∣ b) : ∃ c, b = a * c :=
-  h
+theorem exists_eq_mul_right_of_dvd (h : a ∣ b) : ∃ c, b = a * c := h
 
-theorem dvd_def : a ∣ b ↔ ∃ c, b = a * c :=
-  Iff.rfl
+theorem dvd_def : a ∣ b ↔ ∃ c, b = a * c := Iff.rfl
 
 alias dvd_iff_exists_eq_mul_right := dvd_def
 
@@ -74,34 +70,35 @@ theorem dvd_trans : a ∣ b → b ∣ c → a ∣ c
 alias Dvd.dvd.trans := dvd_trans
 
 /-- Transitivity of `|` for use in `calc` blocks. -/
-instance : IsTrans α Dvd.dvd :=
-  ⟨fun _ _ _ => dvd_trans⟩
+instance : IsTrans α Dvd.dvd := ⟨fun _ _ _ => dvd_trans⟩
 
-@[simp]
-theorem dvd_mul_right (a b : α) : a ∣ a * b :=
-  Dvd.intro b rfl
+@[simp] theorem dvd_mul_right (a b : α) : a ∣ a * b := Dvd.intro b rfl
 
-theorem dvd_mul_of_dvd_left (h : a ∣ b) (c : α) : a ∣ b * c :=
-  h.trans (dvd_mul_right b c)
+theorem dvd_mul_of_dvd_left (h : a ∣ b) (c : α) : a ∣ b * c := h.trans (dvd_mul_right b c)
 
 alias Dvd.dvd.mul_right := dvd_mul_of_dvd_left
 
-theorem dvd_of_mul_right_dvd (h : a * b ∣ c) : a ∣ c :=
-  (dvd_mul_right a b).trans h
+theorem dvd_of_mul_right_dvd (h : a * b ∣ c) : a ∣ c := (dvd_mul_right a b).trans h
 
-/-- An element `a` in a semigroup is primal if whenever `a` is a divisor of `b * c`, it can be
-factored as the product of a divisor of `b` and a divisor of `c`. -/
+/--
+An element `a` in a semigroup is primal if whenever `a` is a divisor of `b * c`, it can be
+factored as the product of a divisor of `b` and a divisor of `c`.
+-/
 def IsPrimal (a : α) : Prop := ∀ ⦃b c⦄, a ∣ b * c → ∃ a₁ a₂, a₁ ∣ b ∧ a₂ ∣ c ∧ a = a₁ * a₂
 
 variable (α) in
-/-- A monoid is a decomposition monoid if every element is primal. An integral domain whose
+/--
+A monoid is a decomposition monoid if every element is primal. An integral domain whose
 multiplicative monoid is a decomposition monoid, is called a pre-Schreier domain; it is a
-Schreier domain if it is moreover integrally closed. -/
-@[mk_iff] class DecompositionMonoid : Prop where
+Schreier domain if it is moreover integrally closed.
+-/
+@[mk_iff]
+class DecompositionMonoid : Prop where
   primal (a : α) : IsPrimal a
 
-theorem exists_dvd_and_dvd_of_dvd_mul [DecompositionMonoid α] {b c a : α} (H : a ∣ b * c) :
-    ∃ a₁ a₂, a₁ ∣ b ∧ a₂ ∣ c ∧ a = a₁ * a₂ := DecompositionMonoid.primal a H
+theorem exists_dvd_and_dvd_of_dvd_mul [DecompositionMonoid α] {b c a : α} (H : a ∣ b * c)
+    : ∃ a₁ a₂, a₁ ∣ b ∧ a₂ ∣ c ∧ a = a₁ * a₂ :=
+  DecompositionMonoid.primal a H
 
 @[gcongr]
 theorem mul_dvd_mul_left (a : α) (h : b ∣ c) : a * b ∣ a * c := by
@@ -112,30 +109,26 @@ theorem mul_dvd_mul_left (a : α) (h : b ∣ c) : a * b ∣ a * c := by
 theorem IsLeftRegular.dvd_cancel_left (h : IsLeftRegular a) : a * b ∣ a * c ↔ b ∣ c :=
   ⟨fun dvd ↦ have ⟨d, eq⟩ := dvd; ⟨d, h (eq.trans <| mul_assoc ..)⟩, mul_dvd_mul_left a⟩
 
-/-- Right divisibility relation. `RightDvd a b` means `a` right-divides `b`,
-i.e., `∃ c, b = c * a`. -/
+/--
+Right divisibility relation. `RightDvd a b` means `a` right-divides `b`,
+i.e., `∃ c, b = c * a`.
+-/
 def RightDvd (a b : α) : Prop := ∃ c, b = c * a
 
-@[inherit_doc]
-infix:50 " ∣ᵣ " => RightDvd
+@[inherit_doc] infix:50 " ∣ᵣ " => RightDvd
 
 @[trans]
 protected theorem RightDvd.trans : a ∣ᵣ b → b ∣ᵣ c → a ∣ᵣ c
   | ⟨d, h₁⟩, ⟨e, h₂⟩ => ⟨e * d, h₁ ▸ h₂.trans <| (mul_assoc e d a).symm⟩
 
 /-- Transitivity of `RightDvd` for use in `calc` blocks. -/
-instance : IsTrans α RightDvd :=
-  ⟨fun _ _ _ => RightDvd.trans⟩
+instance : IsTrans α RightDvd := ⟨fun _ _ _ => RightDvd.trans⟩
 
-@[simp]
-theorem RightDvd.mul_self (a b : α) : a ∣ᵣ b * a :=
-  ⟨b, rfl⟩
+@[simp] theorem RightDvd.mul_self (a b : α) : a ∣ᵣ b * a := ⟨b, rfl⟩
 
-theorem RightDvd.mul_left (h : a ∣ᵣ b) (c : α) : a ∣ᵣ c * b :=
-  h.trans (RightDvd.mul_self b c)
+theorem RightDvd.mul_left (h : a ∣ᵣ b) (c : α) : a ∣ᵣ c * b := h.trans (RightDvd.mul_self b c)
 
-theorem RightDvd.of_mul_left (h : b * a ∣ᵣ c) : a ∣ᵣ c :=
-  (RightDvd.mul_self a b).trans h
+theorem RightDvd.of_mul_left (h : b * a ∣ᵣ c) : a ∣ᵣ c := (RightDvd.mul_self a b).trans h
 
 @[gcongr]
 theorem RightDvd.mul_const (a : α) (h : b ∣ᵣ c) : b * a ∣ᵣ c * a := by
@@ -143,10 +136,12 @@ theorem RightDvd.mul_const (a : α) (h : b ∣ᵣ c) : b * a ∣ᵣ c * a := by
   use d
   rw [mul_assoc]
 
-theorem IsRightRegular.rightDvd_cancel_right (h : IsRightRegular a) :
-    b * a ∣ᵣ c * a ↔ b ∣ᵣ c :=
-  ⟨fun dvd ↦ have ⟨d, eq⟩ := dvd
-    ⟨d, h (eq.trans (mul_assoc ..).symm)⟩, RightDvd.mul_const a⟩
+theorem IsRightRegular.rightDvd_cancel_right (h : IsRightRegular a) : b * a ∣ᵣ c * a ↔ b ∣ᵣ c := ⟨
+  fun dvd ↦
+    have ⟨d, eq⟩ := dvd
+    ⟨d, h (eq.trans (mul_assoc ..).symm)⟩,
+  RightDvd.mul_const a
+⟩
 
 open MulOpposite in
 /-- Left divisibility in the opposite semigroup is equivalent to right divisibility. -/
@@ -161,8 +156,7 @@ lemma op_rightDvd_op_iff : op a ∣ᵣ op b ↔ a ∣ b :=
   ⟨fun ⟨c, hc⟩ ↦ ⟨unop c, op_injective hc⟩, fun ⟨c, hc⟩ ↦ ⟨op c, congrArg op hc⟩⟩
 
 @[deprecated op_dvd_op_iff +typeChanged (since := "2026-09-30")]
-theorem rightDvd_iff_op_dvd_op : a ∣ᵣ b ↔ MulOpposite.op a ∣ MulOpposite.op b :=
-  op_dvd_op_iff.symm
+theorem rightDvd_iff_op_dvd_op : a ∣ᵣ b ↔ MulOpposite.op a ∣ MulOpposite.op b := op_dvd_op_iff.symm
 
 end Semigroup
 
@@ -179,17 +173,14 @@ end RightCancelSemigroup
 section Monoid
 variable [Monoid α] {a b : α} {m n : ℕ}
 
-@[refl, simp]
-theorem dvd_refl (a : α) : a ∣ a :=
-  Dvd.intro 1 (mul_one a)
+@[refl, simp] theorem dvd_refl (a : α) : a ∣ a := Dvd.intro 1 (mul_one a)
 
 theorem dvd_rfl : ∀ {a : α}, a ∣ a := fun {a} => dvd_refl a
 
 instance : IsPreorder α (· ∣ ·) where
   refl := dvd_refl
 
-theorem one_dvd (a : α) : 1 ∣ a :=
-  Dvd.intro a (one_mul a)
+theorem one_dvd (a : α) : 1 ∣ a := Dvd.intro a (one_mul a)
 
 theorem dvd_of_eq (h : a = b) : a ∣ b := by rw [h]
 
@@ -200,16 +191,16 @@ lemma pow_dvd_pow (a : α) (h : m ≤ n) : a ^ m ∣ a ^ n :=
   ⟨a ^ (n - m), by rw [← pow_add, Nat.add_comm, Nat.sub_add_cancel h]⟩
 
 lemma dvd_pow (hab : a ∣ b) : ∀ {n : ℕ} (_ : n ≠ 0), a ∣ b ^ n
-  | 0, hn => (hn rfl).elim
-  | n + 1, _ => by rw [pow_succ']; exact hab.mul_right _
+  | 0, hn =>
+    (hn rfl).elim
+  | n + 1, _ => by
+    rw [pow_succ']; exact hab.mul_right _
 
 alias Dvd.dvd.pow := dvd_pow
 
 lemma dvd_pow_self (a : α) {n : ℕ} (hn : n ≠ 0) : a ∣ a ^ n := dvd_rfl.pow hn
 
-@[refl, simp]
-protected theorem RightDvd.refl (a : α) : a ∣ᵣ a :=
-  ⟨1, (one_mul a).symm⟩
+@[refl, simp] protected theorem RightDvd.refl (a : α) : a ∣ᵣ a := ⟨1, (one_mul a).symm⟩
 
 protected theorem RightDvd.rfl {a : α} : a ∣ᵣ a := .refl _
 
@@ -234,17 +225,17 @@ alias dvd_of_mul_left_eq := Dvd.intro_left
 theorem exists_eq_mul_left_of_dvd (h : a ∣ b) : ∃ c, b = c * a :=
   Dvd.elim h fun c => fun H1 : b = a * c => Exists.intro c (Eq.trans H1 (mul_comm a c))
 
-theorem dvd_iff_exists_eq_mul_left : a ∣ b ↔ ∃ c, b = c * a :=
-  ⟨exists_eq_mul_left_of_dvd, by
+theorem dvd_iff_exists_eq_mul_left : a ∣ b ↔ ∃ c, b = c * a := ⟨
+  exists_eq_mul_left_of_dvd,
+  by
     rintro ⟨c, rfl⟩
-    exact ⟨c, mul_comm _ _⟩⟩
+    exact ⟨c, mul_comm _ _⟩
+⟩
 
 theorem Dvd.elim_left {P : Prop} (h₁ : a ∣ b) (h₂ : ∀ c, b = c * a → P) : P :=
   Exists.elim (exists_eq_mul_left_of_dvd h₁) fun c => fun h₃ : b = c * a => h₂ c h₃
 
-@[simp]
-theorem dvd_mul_left (a b : α) : a ∣ b * a :=
-  Dvd.intro b (mul_comm a b)
+@[simp] theorem dvd_mul_left (a b : α) : a ∣ b * a := Dvd.intro b (mul_comm a b)
 
 theorem dvd_mul_of_dvd_right (h : a ∣ b) (c : α) : a ∣ c * b := by
   rw [mul_comm]; exact h.mul_right _
@@ -260,15 +251,13 @@ theorem mul_dvd_mul : ∀ {a b c d : α}, a ∣ b → c ∣ d → a * c ∣ b * 
 theorem dvd_of_mul_left_dvd (h : a * b ∣ c) : b ∣ c :=
   Dvd.elim h fun d ceq => Dvd.intro (a * d) (by simp [ceq])
 
-theorem dvd_mul [DecompositionMonoid α] {k m n : α} :
-    k ∣ m * n ↔ ∃ d₁ d₂, d₁ ∣ m ∧ d₂ ∣ n ∧ k = d₁ * d₂ := by
+theorem dvd_mul [DecompositionMonoid α] {k m n : α}
+    : k ∣ m * n ↔ ∃ d₁ d₂, d₁ ∣ m ∧ d₂ ∣ n ∧ k = d₁ * d₂ := by
   refine ⟨exists_dvd_and_dvd_of_dvd_mul, ?_⟩
   rintro ⟨d₁, d₂, hy, hz, rfl⟩
   gcongr
 
-@[simp]
-theorem rightDvd_iff_dvd : a ∣ᵣ b ↔ a ∣ b :=
-  exists_congr fun c ↦ by rw [mul_comm]
+@[simp] theorem rightDvd_iff_dvd : a ∣ᵣ b ↔ a ∣ b := exists_congr fun c ↦ by rw [mul_comm]
 
 end CommSemigroup
 
@@ -276,12 +265,12 @@ section CommMonoid
 
 variable [CommMonoid α] {a b : α}
 
-theorem mul_dvd_mul_right (h : a ∣ b) (c : α) : a * c ∣ b * c := by
-  gcongr
+theorem mul_dvd_mul_right (h : a ∣ b) (c : α) : a * c ∣ b * c := by gcongr
 
 theorem pow_dvd_pow_of_dvd (h : a ∣ b) (n : ℕ) : a ^ n ∣ b ^ n := by
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ =>
     rw [pow_succ, pow_succ]
     gcongr

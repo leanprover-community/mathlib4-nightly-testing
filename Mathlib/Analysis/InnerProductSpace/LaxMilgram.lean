@@ -32,7 +32,6 @@ dual, Lax-Milgram
 
 @[expose] public section
 
-
 noncomputable section
 
 open RCLike LinearMap ContinuousLinearMap InnerProductSpace
@@ -57,7 +56,8 @@ theorem bounded_below (coercive : IsCoercive B) : ∃ C, 0 < C ∧ ∀ v, C * �
   by_cases h : 0 < ‖v‖
   · refine (mul_le_mul_iff_left₀ h).mp ?_
     calc
-      C * ‖v‖ * ‖v‖ ≤ B v v := coercivity v
+      C * ‖v‖ * ‖v‖
+        ≤ B v v := coercivity v
       _ = ⟪B♯ v, v⟫_ℝ := (continuousLinearMapOfBilin_apply B v v).symm
       _ ≤ ‖B♯ v‖ * ‖v‖ := real_inner_le_norm (B♯ v) v
   · have : v = 0 := by simpa using h
@@ -87,17 +87,18 @@ theorem range_eq_top (coercive : IsCoercive B) : B♯.range = ⊤ := by
   intro v w mem_w_orthogonal
   rcases coercive with ⟨C, C_pos, coercivity⟩
   obtain rfl : w = 0 := by
-    rw [← norm_eq_zero, ← mul_self_eq_zero, ← mul_right_inj' C_pos.ne', mul_zero, ←
-      mul_assoc]
+    rw [← norm_eq_zero, ← mul_self_eq_zero, ← mul_right_inj' C_pos.ne', mul_zero, ← mul_assoc]
     apply le_antisymm
     · calc
-        C * ‖w‖ * ‖w‖ ≤ B w w := coercivity w
+        C * ‖w‖ * ‖w‖
+          ≤ B w w := coercivity w
         _ = ⟪B♯ w, w⟫_ℝ := (continuousLinearMapOfBilin_apply B w w).symm
         _ = 0 := mem_w_orthogonal _ ⟨w, rfl⟩
     · positivity
   exact inner_zero_left _
 
-/-- The Lax-Milgram equivalence of a coercive bounded bilinear operator:
+/--
+The Lax-Milgram equivalence of a coercive bounded bilinear operator:
 for all `v : V`, `continuousLinearEquivOfBilin B v` is the unique element `V`
 such that `continuousLinearEquivOfBilin B v, w⟫ = B v w`.
 The Lax-Milgram theorem states that this is a continuous equivalence.
@@ -106,12 +107,13 @@ def continuousLinearEquivOfBilin (coercive : IsCoercive B) : V ≃L[ℝ] V :=
   ContinuousLinearEquiv.ofBijective B♯ coercive.ker_eq_bot coercive.range_eq_top
 
 @[simp]
-theorem continuousLinearEquivOfBilin_apply (coercive : IsCoercive B) (v w : V) :
-    ⟪coercive.continuousLinearEquivOfBilin v, w⟫_ℝ = B v w :=
+theorem continuousLinearEquivOfBilin_apply (coercive : IsCoercive B) (v w : V)
+    : ⟪coercive.continuousLinearEquivOfBilin v, w⟫_ℝ = B v w :=
   continuousLinearMapOfBilin_apply B v w
 
-theorem unique_continuousLinearEquivOfBilin (coercive : IsCoercive B) {v f : V}
-    (is_lax_milgram : ∀ w, ⟪f, w⟫_ℝ = B v w) : f = coercive.continuousLinearEquivOfBilin v :=
+theorem unique_continuousLinearEquivOfBilin
+    (coercive : IsCoercive B) {v f : V} (is_lax_milgram : ∀ w, ⟪f, w⟫_ℝ = B v w)
+    : f = coercive.continuousLinearEquivOfBilin v :=
   unique_continuousLinearMapOfBilin B is_lax_milgram
 
 end IsCoercive

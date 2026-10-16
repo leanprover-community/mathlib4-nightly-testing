@@ -50,49 +50,55 @@ public section
 
 open MeasureTheory Measure Module Topology
 
-variable {E F G W : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F]
+variable
+  {E F G W : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F]
   [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G] [NormedAddCommGroup W]
-  [NormedSpace ℝ W] [MeasurableSpace E] {μ : Measure E}
+  [NormedSpace ℝ W] [MeasurableSpace E]
+  {μ : Measure E}
 
-lemma integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable_aux1 [SigmaFinite μ]
+lemma integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable_aux1
+    [SigmaFinite μ]
     {f f' : E × ℝ → F} {g g' : E × ℝ → G} {B : F →L[ℝ] G →L[ℝ] W}
     (hf'g : Integrable (fun x ↦ B (f' x) (g x)) (μ.prod volume))
     (hfg' : Integrable (fun x ↦ B (f x) (g' x)) (μ.prod volume))
     (hfg : Integrable (fun x ↦ B (f x) (g x)) (μ.prod volume))
     (hf : ∀ x ∈ tsupport g, HasLineDerivAt ℝ f (f' x) x (0, 1))
-    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x (0, 1)) :
-    ∫ x, B (f x) (g' x) ∂(μ.prod volume) = - ∫ x, B (f' x) (g x) ∂(μ.prod volume) := calc
-  ∫ x, B (f x) (g' x) ∂(μ.prod volume)
-    = ∫ x, (∫ t, B (f (x, t)) (g' (x, t))) ∂μ := integral_prod _ hfg'
-  _ = ∫ x, (- ∫ t, B (f' (x, t)) (g (x, t))) ∂μ := by
-    apply integral_congr_ae
-    filter_upwards [hf'g.prod_right_ae, hfg'.prod_right_ae, hfg.prod_right_ae]
-      with x hf'gx hfg'x hfgx
-    apply integral_bilinear_hasDerivAt_right_eq_neg_left_of_integrable ?_ ?_ hfg'x hf'gx hfgx
-    · intro t ht
-      have : (x, t) ∈ tsupport g :=
-        tsupport_comp_subset_preimage (f := fun y ↦ (x, y)) g (by fun_prop) ht
-      convert! (hf (x, t) this).scomp_of_eq t ((hasDerivAt_id t).add (hasDerivAt_const t (-t)))
-        (by simp) <;> simp
-    · intro t ht
-      have : (x, t) ∈ tsupport f :=
-        tsupport_comp_subset_preimage (f := fun y ↦ (x, y)) f (by fun_prop) ht
-      convert!
-        (hg (x, t) this).scomp_of_eq t ((hasDerivAt_id t).add (hasDerivAt_const t (-t)))
-          (by simp) <;> simp
-  _ = - ∫ x, B (f' x) (g x) ∂(μ.prod volume) := by rw [integral_neg, integral_prod _ hf'g]
+    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x (0, 1))
+    : ∫ x, B (f x) (g' x) ∂(μ.prod volume) = - ∫ x, B (f' x) (g x) ∂(μ.prod volume) :=
+  calc
+    ∫ x, B (f x) (g' x) ∂(μ.prod volume)
+      = ∫ x, (∫ t, B (f (x, t)) (g' (x, t))) ∂μ := integral_prod _ hfg'
+    _ = ∫ x, (- ∫ t, B (f' (x, t)) (g (x, t))) ∂μ := by
+      apply integral_congr_ae
+      filter_upwards [hf'g.prod_right_ae, hfg'.prod_right_ae, hfg.prod_right_ae]
+        with x hf'gx hfg'x hfgx
+      apply integral_bilinear_hasDerivAt_right_eq_neg_left_of_integrable ?_ ?_ hfg'x hf'gx hfgx
+      · intro t ht
+        have : (x, t) ∈ tsupport g :=
+          tsupport_comp_subset_preimage (f := fun y ↦ (x, y)) g (by fun_prop) ht
+        convert! (hf (x, t) this).scomp_of_eq t ((hasDerivAt_id t).add (hasDerivAt_const t (-t)))
+          (by simp)
+          <;> simp
+      · intro t ht
+        have : (x, t) ∈ tsupport f :=
+          tsupport_comp_subset_preimage (f := fun y ↦ (x, y)) f (by fun_prop) ht
+        convert!
+          (hg (x, t) this).scomp_of_eq t ((hasDerivAt_id t).add (hasDerivAt_const t (-t)))
+            (by simp)
+          <;> simp
+    _ = - ∫ x, B (f' x) (g x) ∂(μ.prod volume) := by rw [integral_neg, integral_prod _ hf'g]
 
 variable [BorelSpace E]
 
 lemma integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable_aux2
-    [FiniteDimensional ℝ E] {μ : Measure (E × ℝ)} [IsAddHaarMeasure μ]
+    [FiniteDimensional ℝ E]
+    {μ : Measure (E × ℝ)} [IsAddHaarMeasure μ]
     {f f' : E × ℝ → F} {g g' : E × ℝ → G} {B : F →L[ℝ] G →L[ℝ] W}
-    (hf'g : Integrable (fun x ↦ B (f' x) (g x)) μ)
-    (hfg' : Integrable (fun x ↦ B (f x) (g' x)) μ)
+    (hf'g : Integrable (fun x ↦ B (f' x) (g x)) μ) (hfg' : Integrable (fun x ↦ B (f x) (g' x)) μ)
     (hfg : Integrable (fun x ↦ B (f x) (g x)) μ)
     (hf : ∀ x ∈ tsupport g, HasLineDerivAt ℝ f (f' x) x (0, 1))
-    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x (0, 1)) :
-    ∫ x, B (f x) (g' x) ∂μ = - ∫ x, B (f' x) (g x) ∂μ := by
+    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x (0, 1))
+    : ∫ x, B (f x) (g' x) ∂μ = - ∫ x, B (f' x) (g x) ∂μ := by
   let ν : Measure E := addHaar
   have A : ν.prod volume = (addHaarScalarFactor (ν.prod volume) μ) • μ :=
     isAddLeftInvariant_eq_smul _ _
@@ -107,18 +113,21 @@ lemma integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable_aux2
 
 variable [FiniteDimensional ℝ E] [IsAddHaarMeasure μ]
 
-/-- **Integration by parts for line derivatives**
+/--
+**Integration by parts for line derivatives**
 Version with a general bilinear form `B`.
 If `B f g` is integrable, as well as `B f' g` and `B f g'` where `f'` and `g'` are derivatives
-of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`. -/
+of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`.
+-/
 theorem integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable
     {f f' : E → F} {g g' : E → G} {v : E} {B : F →L[ℝ] G →L[ℝ] W}
     (hf'g : Integrable (fun x ↦ B (f' x) (g x)) μ) (hfg' : Integrable (fun x ↦ B (f x) (g' x)) μ)
     (hfg : Integrable (fun x ↦ B (f x) (g x)) μ)
     (hf : ∀ x ∈ tsupport g, HasLineDerivAt ℝ f (f' x) x v)
-    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x v) :
-    ∫ x, B (f x) (g' x) ∂μ = - ∫ x, B (f' x) (g x) ∂μ := by
-  by_cases hW : CompleteSpace W; swap
+    (hg : ∀ x ∈ tsupport f, HasLineDerivAt ℝ g (g' x) x v)
+    : ∫ x, B (f x) (g' x) ∂μ = - ∫ x, B (f' x) (g x) ∂μ := by
+  by_cases hW : CompleteSpace W
+  swap
   · simp [integral, hW]
   rcases eq_or_ne v 0 with rfl | hv
   · have Hf' x : B (f' x) (g x) = 0 := by
@@ -142,8 +151,9 @@ theorem integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable
       · simp
     exact ⟨L₀.trans M, by simp [hM]⟩
   let ν := Measure.map L μ
-  suffices H : ∫ (x : E' × ℝ), (B (f (L.symm x))) (g' (L.symm x)) ∂ν =
-      -∫ (x : E' × ℝ), (B (f' (L.symm x))) (g (L.symm x)) ∂ν by
+  suffices H
+      : ∫ (x : E' × ℝ), (B (f (L.symm x))) (g' (L.symm x)) ∂ν
+        = - ∫ (x : E' × ℝ), (B (f' (L.symm x))) (g (L.symm x)) ∂ν by
     have : μ = Measure.map L.symm ν := by
       simp [ν, Measure.map_map L.symm.continuous.measurable L.continuous.measurable]
     have hL : IsClosedEmbedding L.symm := L.symm.toHomeomorph.isClosedEmbedding
@@ -172,64 +182,61 @@ theorem integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable
     · simp
     · simp [← hL]
 
-/-- **Integration by parts for Fréchet derivatives**
+/--
+**Integration by parts for Fréchet derivatives**
 Version with a general bilinear form `B`.
 If `B f g` is integrable, as well as `B f' g` and `B f g'` where `f'` and `g'` are derivatives
-of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`. -/
+of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`.
+-/
 theorem integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable
-    {f : E → F} {f' : E → (E →L[ℝ] F)}
-    {g : E → G} {g' : E → (E →L[ℝ] G)} {v : E} {B : F →L[ℝ] G →L[ℝ] W}
-    (hf'g : Integrable (fun x ↦ B (f' x v) (g x)) μ)
-    (hfg' : Integrable (fun x ↦ B (f x) (g' x v)) μ)
-    (hfg : Integrable (fun x ↦ B (f x) (g x)) μ)
-    (hf : ∀ x ∈ tsupport g, HasFDerivAt f (f' x) x)
-    (hg : ∀ x ∈ tsupport f, HasFDerivAt g (g' x) x) :
-    ∫ x, B (f x) (g' x v) ∂μ = - ∫ x, B (f' x v) (g x) ∂μ :=
+    {f : E → F} {f' : E → (E →L[ℝ] F)} {g : E → G} {g' : E → (E →L[ℝ] G)} {v : E}
+    {B : F →L[ℝ] G →L[ℝ] W} (hf'g : Integrable (fun x ↦ B (f' x v) (g x)) μ)
+    (hfg' : Integrable (fun x ↦ B (f x) (g' x v)) μ) (hfg : Integrable (fun x ↦ B (f x) (g x)) μ)
+    (hf : ∀ x ∈ tsupport g, HasFDerivAt f (f' x) x) (hg : ∀ x ∈ tsupport f, HasFDerivAt g (g' x) x)
+    : ∫ x, B (f x) (g' x v) ∂μ = - ∫ x, B (f' x v) (g x) ∂μ :=
   integral_bilinear_hasLineDerivAt_right_eq_neg_left_of_integrable hf'g hfg' hfg
     (hf · · |>.hasLineDerivAt v) (hg · · |>.hasLineDerivAt v)
 
-/-- **Integration by parts for Fréchet derivatives**
+/--
+**Integration by parts for Fréchet derivatives**
 Version with a general bilinear form `B`.
 If `B f g` is integrable, as well as `B f' g` and `B f g'` where `f'` and `g'` are the derivatives
-of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`. -/
+of `f` and `g` in a given direction `v`, then `∫ B f g' = - ∫ B f' g`.
+-/
 theorem integral_bilinear_fderiv_right_eq_neg_left_of_integrable
     {f : E → F} {g : E → G} {v : E} {B : F →L[ℝ] G →L[ℝ] W}
     (hf'g : Integrable (fun x ↦ B (fderiv ℝ f x v) (g x)) μ)
     (hfg' : Integrable (fun x ↦ B (f x) (fderiv ℝ g x v)) μ)
-    (hfg : Integrable (fun x ↦ B (f x) (g x)) μ)
-    (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x)
-    (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x) :
-    ∫ x, B (f x) (fderiv ℝ g x v) ∂μ = - ∫ x, B (fderiv ℝ f x v) (g x) ∂μ :=
+    (hfg : Integrable (fun x ↦ B (f x) (g x)) μ) (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x)
+    (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x)
+    : ∫ x, B (f x) (fderiv ℝ g x v) ∂μ = - ∫ x, B (fderiv ℝ f x v) (g x) ∂μ :=
   integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable hf'g hfg' hfg
     (hf · · |>.hasFDerivAt) (hg · · |>.hasFDerivAt)
 
-variable {𝕜 : Type*} [NormedField 𝕜] [NormedAlgebra ℝ 𝕜]
-    [NormedSpace 𝕜 G] [IsScalarTower ℝ 𝕜 G]
+variable {𝕜 : Type*} [NormedField 𝕜] [NormedAlgebra ℝ 𝕜] [NormedSpace 𝕜 G] [IsScalarTower ℝ 𝕜 G]
 
-/-- **Integration by parts for Fréchet derivatives**
+/--
+**Integration by parts for Fréchet derivatives**
 Version with a scalar function: `∫ f • g' = - ∫ f' • g` when `f • g'` and `f' • g` and `f • g`
-are integrable, where `f'` and `g'` are the derivatives of `f` and `g` in a given direction `v`. -/
+are integrable, where `f'` and `g'` are the derivatives of `f` and `g` in a given direction `v`.
+-/
 theorem integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable
-    {f : E → 𝕜} {g : E → G} {v : E}
-    (hf'g : Integrable (fun x ↦ fderiv ℝ f x v • g x) μ)
-    (hfg' : Integrable (fun x ↦ f x • fderiv ℝ g x v) μ)
-    (hfg : Integrable (fun x ↦ f x • g x) μ)
-    (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x)
-    (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x) :
-    ∫ x, f x • fderiv ℝ g x v ∂μ = - ∫ x, fderiv ℝ f x v • g x ∂μ :=
-  integral_bilinear_fderiv_right_eq_neg_left_of_integrable
-    (B := ContinuousLinearMap.lsmul ℝ 𝕜) hf'g hfg' hfg hf hg
+    {f : E → 𝕜} {g : E → G} {v : E} (hf'g : Integrable (fun x ↦ fderiv ℝ f x v • g x) μ)
+    (hfg' : Integrable (fun x ↦ f x • fderiv ℝ g x v) μ) (hfg : Integrable (fun x ↦ f x • g x) μ)
+    (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x) (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x)
+    : ∫ x, f x • fderiv ℝ g x v ∂μ = - ∫ x, fderiv ℝ f x v • g x ∂μ :=
+  integral_bilinear_fderiv_right_eq_neg_left_of_integrable (B := ContinuousLinearMap.lsmul ℝ 𝕜) hf'g
+    hfg' hfg hf hg
 
-/-- **Integration by parts for Fréchet derivatives**
+/--
+**Integration by parts for Fréchet derivatives**
 Version with two scalar functions: `∫ f * g' = - ∫ f' * g` when `f * g'` and `f' * g` and `f * g`
-are integrable, where `f'` and `g'` are the derivatives of `f` and `g` in a given direction `v`. -/
+are integrable, where `f'` and `g'` are the derivatives of `f` and `g` in a given direction `v`.
+-/
 theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
-    {f : E → 𝕜} {g : E → 𝕜} {v : E}
-    (hf'g : Integrable (fun x ↦ fderiv ℝ f x v * g x) μ)
-    (hfg' : Integrable (fun x ↦ f x * fderiv ℝ g x v) μ)
-    (hfg : Integrable (fun x ↦ f x * g x) μ)
-    (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x)
-    (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x) :
-    ∫ x, f x * fderiv ℝ g x v ∂μ = - ∫ x, fderiv ℝ f x v * g x ∂μ :=
-  integral_bilinear_fderiv_right_eq_neg_left_of_integrable
-    (B := ContinuousLinearMap.mul ℝ 𝕜) hf'g hfg' hfg hf hg
+    {f : E → 𝕜} {g : E → 𝕜} {v : E} (hf'g : Integrable (fun x ↦ fderiv ℝ f x v * g x) μ)
+    (hfg' : Integrable (fun x ↦ f x * fderiv ℝ g x v) μ) (hfg : Integrable (fun x ↦ f x * g x) μ)
+    (hf : ∀ x ∈ tsupport g, DifferentiableAt ℝ f x) (hg : ∀ x ∈ tsupport f, DifferentiableAt ℝ g x)
+    : ∫ x, f x * fderiv ℝ g x v ∂μ = - ∫ x, fderiv ℝ f x v * g x ∂μ :=
+  integral_bilinear_fderiv_right_eq_neg_left_of_integrable (B := ContinuousLinearMap.mul ℝ 𝕜) hf'g
+    hfg' hfg hf hg

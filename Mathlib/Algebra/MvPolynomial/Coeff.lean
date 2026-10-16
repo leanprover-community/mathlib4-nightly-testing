@@ -25,10 +25,10 @@ open Finsupp
 
 variable {R σ : Type*} [CommSemiring R] {s : σ →₀ ℕ}
 
-private lemma coeff_linearCombination_X_pow_of_eq (a : σ →₀ R) {n : ℕ}
-    (hs : s.sum (fun _ m ↦ m) = n) :
-    ((a.linearCombination R X : MvPolynomial σ R) ^ n).coeff s =
-      s.multinomial * s.prod (fun r m ↦ a r ^ m) := by
+private lemma coeff_linearCombination_X_pow_of_eq
+    (a : σ →₀ R) {n : ℕ} (hs : s.sum (fun _ m ↦ m) = n)
+    : ((a.linearCombination R X : MvPolynomial σ R) ^ n).coeff s
+      = s.multinomial * s.prod (fun r m ↦ a r ^ m) := by
   classical
   simp only [sum, linearCombination_apply, Finset.sum_pow_eq_sum_piAntidiag, coeff_sum,
     ← C_eq_coe_nat, coeff_C_mul, smul_eq_C_mul, mul_pow, Finset.prod_mul_distrib, ← map_pow,
@@ -55,9 +55,9 @@ private lemma coeff_linearCombination_X_pow_of_eq (a : σ →₀ R) {n : ℕ}
       rw [← hs, sum_of_support_subset _ hs'' _ (by simp)]
     · grind
 
-private lemma coeff_linearCombination_X_pow_of_ne (a : σ →₀ R) {n : ℕ}
-    (hs : s.sum (fun _ m ↦ m) ≠ n) :
-    (((a.linearCombination R X : MvPolynomial σ R)) ^ n).coeff s = 0 := by
+private lemma coeff_linearCombination_X_pow_of_ne
+    (a : σ →₀ R) {n : ℕ} (hs : s.sum (fun _ m ↦ m) ≠ n)
+    : (((a.linearCombination R X : MvPolynomial σ R)) ^ n).coeff s = 0 := by
   classical
   simp only [sum, linearCombination_apply, Finset.sum_pow_eq_sum_piAntidiag, coeff_sum, ← map_pow,
     ← C_eq_coe_nat, coeff_C_mul, smul_eq_C_mul, mul_pow, Finset.prod_mul_distrib, ← map_prod,
@@ -74,30 +74,30 @@ private lemma coeff_linearCombination_X_pow_of_ne (a : σ →₀ R) {n : ℕ}
   · simp [Finsupp.indicator_of_mem hi]
   · grind [Finsupp.indicator_of_notMem hi]
 
-lemma coeff_linearCombination_X_pow (a : σ →₀ R) (s : σ →₀ ℕ) (n : ℕ) :
-    ((a.linearCombination R X : MvPolynomial σ R) ^ n).coeff s =
-      if s.sum (fun _ m ↦ m) = n then s.multinomial * s.prod (fun r m ↦ a r ^ m) else 0 := by
+lemma coeff_linearCombination_X_pow (a : σ →₀ R) (s : σ →₀ ℕ) (n : ℕ)
+    : ((a.linearCombination R X : MvPolynomial σ R) ^ n).coeff s
+      = if s.sum (fun _ m ↦ m) = n then s.multinomial * s.prod (fun r m ↦ a r ^ m) else 0 := by
   split_ifs with hs
   · exact coeff_linearCombination_X_pow_of_eq a hs
   · exact coeff_linearCombination_X_pow_of_ne a hs
 
-lemma coeff_linearCombination_X_pow_of_fintype [Fintype σ] (a : σ → R) (s : σ →₀ ℕ) (n : ℕ) :
-    ((∑ i, a i • X i : MvPolynomial σ R) ^ n).coeff s =
-      if s.sum (fun _ m ↦ m) = n then s.multinomial * s.prod (fun r m ↦ a r ^ m) else 0 := by
-  rw [← ofSupportFinite_coe (f := a) (hf := Set.toFinite _),
-    prod_congr (fun r _ ↦ rfl), ← coeff_linearCombination_X_pow]
+lemma coeff_linearCombination_X_pow_of_fintype [Fintype σ] (a : σ → R) (s : σ →₀ ℕ) (n : ℕ)
+    : ((∑ i, a i • X i : MvPolynomial σ R) ^ n).coeff s
+      = if s.sum (fun _ m ↦ m) = n then s.multinomial * s.prod (fun r m ↦ a r ^ m) else 0 := by
+  rw [← ofSupportFinite_coe (f := a) (hf := Set.toFinite _), prod_congr (fun r _ ↦ rfl),
+    ← coeff_linearCombination_X_pow]
   simp [linearCombination_apply, sum_of_support_subset (s := Finset.univ)]
 
-lemma coeff_sum_X_pow_of_fintype [Fintype σ] (d : σ →₀ ℕ) (n : ℕ) :
-    ((∑ i, X i : MvPolynomial σ R) ^ n).coeff d =
-      if d.sum (fun _ m ↦ m) = n then d.multinomial else 0 := by
+lemma coeff_sum_X_pow_of_fintype [Fintype σ] (d : σ →₀ ℕ) (n : ℕ)
+    : ((∑ i, X i : MvPolynomial σ R) ^ n).coeff d
+      = if d.sum (fun _ m ↦ m) = n then d.multinomial else 0 := by
   have : (∑ i, X i : MvPolynomial σ R) = ∑ i, (1 : σ → R) i • X i := by simp
   simp [this, coeff_linearCombination_X_pow_of_fintype]
 
 /-- The formula for the `d`th coefficient of `(X 0 + X 1) ^ n`. -/
-theorem coeff_add_pow (d : Fin 2 →₀ ℕ) (n : ℕ) :
-    ((X 0 + X 1 : MvPolynomial (Fin 2) R) ^ n).coeff d =
-      if (d 0, d 1) ∈ Finset.antidiagonal n then n.choose (d 0) else 0 := by
+theorem coeff_add_pow (d : Fin 2 →₀ ℕ) (n : ℕ)
+    : ((X 0 + X 1 : MvPolynomial (Fin 2) R) ^ n).coeff d
+      = if (d 0, d 1) ∈ Finset.antidiagonal n then n.choose (d 0) else 0 := by
   rw [← Fin.sum_univ_two, coeff_sum_X_pow_of_fintype]
   congr 1
   have : d.sum (fun x m ↦ m) = d 0 + d 1 := by
@@ -109,8 +109,7 @@ theorem coeff_add_pow (d : Fin 2 →₀ ℕ) (n : ℕ) :
   · rfl
 
 /-- A monomial in two variables equals `C a * X 0 ^ d 0 * X 1 ^ d 1`. -/
-theorem monomial_fin_two (d : Fin 2 →₀ ℕ) (a : R) :
-    monomial d a = C a * X 0 ^ d 0 * X 1 ^ d 1 := by
+theorem monomial_fin_two (d : Fin 2 →₀ ℕ) (a : R) : monomial d a = C a * X 0 ^ d 0 * X 1 ^ d 1 := by
   rw [monomial_eq, mul_assoc, d.prod_fintype _ fun _ ↦ pow_zero _, Fin.prod_univ_two]
 
 end MvPolynomial

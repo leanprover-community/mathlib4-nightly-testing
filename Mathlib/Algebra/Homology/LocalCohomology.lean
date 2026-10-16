@@ -60,15 +60,19 @@ section
 
 variable {R : Type u} [CommRing R] {D : Type u₁} [Category.{v₁} D]
 
-/-- The directed system of `R`-modules of the form `R/J`, where `J` is an ideal of `R`,
-determined by the functor `I` -/
+/--
+The directed system of `R`-modules of the form `R/J`, where `J` is an ideal of `R`,
+determined by the functor `I`
+-/
 @[implicit_reducible, simps]
 def ringModIdeals (I : D ⥤ Ideal R) : D ⥤ ModuleCat.{u} R where
   obj t := ModuleCat.of R <| R ⧸ I.obj t
   map w := ModuleCat.ofHom <| Submodule.mapQ _ _ LinearMap.id (leOfHom (I.map w))
 
-/-- The diagram we will take the colimit of to define local cohomology, corresponding to the
-directed system determined by the functor `I` -/
+/--
+The diagram we will take the colimit of to define local cohomology, corresponding to the
+directed system determined by the functor `I`
+-/
 abbrev diagram (I : D ⥤ Ideal R) (i : ℕ) : Dᵒᵖ ⥤ ModuleCat.{u} R ⥤ ModuleCat.{u} R :=
   (ringModIdeals I).op ⋙ Ext R (ModuleCat.{u} R) i
 
@@ -78,8 +82,10 @@ section
 variable {R : Type u} [CommRing R] {D : Type u₁} [Category.{v₁} D]
 variable {E : Type u₂} [Category.{v₂} E] (I' : E ⥤ D) (I : D ⥤ Ideal R)
 
-/-- The diagram `ringModIdeals (I' ⋙ I)` is isomorphism (in fact, definitionally equal)
-to the the diagram `I' ⋙ ringModIdeals I`. -/
+/--
+The diagram `ringModIdeals (I' ⋙ I)` is isomorphism (in fact, definitionally equal)
+to the the diagram `I' ⋙ ringModIdeals I`.
+-/
 def ringModIdealComp : ringModIdeals (I' ⋙ I) ≅ I' ⋙ ringModIdeals I :=
   NatIso.ofComponents (fun _ ↦ .refl _)
 
@@ -98,11 +104,13 @@ will be where `I` is (cofinal with) the diagram of powers of a single given idea
 Below, we give two equivalent definitions of the usual local cohomology with support
 in an ideal `J`, `localCohomology` and `localCohomology.ofSelfLERadical`.
 -/
-/-- `localCohomology.ofDiagram I i` is the functor sending a module `M` over a commutative
+/--
+`localCohomology.ofDiagram I i` is the functor sending a module `M` over a commutative
 ring `R` to the direct limit of `Ext^i(R/J, M)`, where `J` ranges over a collection of ideals
-of `R`, represented as a functor `I`. -/
-abbrev ofDiagram (I : D ⥤ Ideal R) (i : ℕ) [HasColimit (diagram I i)] :
-    ModuleCat.{u} R ⥤ ModuleCat.{u} R :=
+of `R`, represented as a functor `I`.
+-/
+abbrev ofDiagram (I : D ⥤ Ideal R) (i : ℕ) [HasColimit (diagram I i)]
+    : ModuleCat.{u} R ⥤ ModuleCat.{u} R :=
   colimit (diagram I i)
 
 end
@@ -115,7 +123,8 @@ variable {E : Type u₂} [Category.{v₂} E] (I' : E ⥤ D) (I : D ⥤ Ideal R)
 /-- Local cohomology along a composition of diagrams. -/
 def diagramComp (i : ℕ) : diagram (I' ⋙ I) i ≅ I'.op ⋙ diagram I i :=
   -- Iso.refl _ could work but would be very slow.
-  calc diagram (I' ⋙ I) i
+  calc
+    diagram (I' ⋙ I) i
     _ ≅ (I' ⋙ ringModIdeals I).op ⋙ Ext R (ModuleCat.{u} R) i :=
       Functor.isoWhiskerRight (NatIso.op (ringModIdealComp I' I)) _
     _ ≅ (I'.op ⋙ (ringModIdeals I).op) ⋙ Ext R (ModuleCat.{u} R) i :=
@@ -123,9 +132,9 @@ def diagramComp (i : ℕ) : diagram (I' ⋙ I) i ≅ I'.op ⋙ diagram I i :=
     _ ≅ I'.op ⋙ diagram I i := Functor.associator _ _ _
 
 /-- Local cohomology agrees along precomposition with a cofinal diagram. -/
-abbrev isoOfFinal [Functor.Initial I'] (i : ℕ)
-    [HasColimit (diagram (I' ⋙ I) i)] [HasColimit (diagram I i)] :
-    ofDiagram.{u} (I' ⋙ I) i ≅ ofDiagram I i :=
+abbrev isoOfFinal
+    [Functor.Initial I'] (i : ℕ) [HasColimit (diagram (I' ⋙ I) i)] [HasColimit (diagram I i)]
+    : ofDiagram.{u} (I' ⋙ I) i ≅ ofDiagram I i :=
   HasColimit.isoOfNatIso (diagramComp.{u} I' I i) ≪≫ Functor.Final.colimitIso _ _
 
 end
@@ -147,10 +156,11 @@ deriving Category
 instance SelfLERadical.inhabited (J : Ideal R) : Inhabited (SelfLERadical J) where
   default := ⟨J, Ideal.le_radical⟩
 
-/-- The diagram of all ideals with radical containing `J`, represented as a functor.
-This is the "largest" diagram that computes local cohomology with support in `J`. -/
-def selfLERadicalDiagram (J : Ideal R) : SelfLERadical J ⥤ Ideal R :=
-  ObjectProperty.ι _
+/--
+The diagram of all ideals with radical containing `J`, represented as a functor.
+This is the "largest" diagram that computes local cohomology with support in `J`.
+-/
+def selfLERadicalDiagram (J : Ideal R) : SelfLERadical J ⥤ Ideal R := ObjectProperty.ι _
 
 end Diagrams
 
@@ -160,21 +170,24 @@ end localCohomology
 the powers of `J` (`localCohomology`), then in terms of *all* ideals with radical
 containing `J` (`localCohomology.ofSelfLERadical`). -/
 
-
 section ModelsForLocalCohomology
 
 open localCohomology
 
 variable {R : Type u} [CommRing R]
 
-/-- `localCohomology J i` is `i`-th the local cohomology module of a module `M` over
+/--
+`localCohomology J i` is `i`-th the local cohomology module of a module `M` over
 a commutative ring `R` with support in the ideal `J` of `R`, defined as the direct limit
-of `Ext^i(R/J^t, M)` over all powers `t : ℕ`. -/
+of `Ext^i(R/J^t, M)` over all powers `t : ℕ`.
+-/
 def localCohomology (J : Ideal R) (i : ℕ) : ModuleCat.{u} R ⥤ ModuleCat.{u} R :=
   ofDiagram (idealPowersDiagram J) i
 
-/-- Local cohomology as the direct limit of `Ext^i(R/J', M)` over *all* ideals `J'` with radical
-containing `J`. -/
+/--
+Local cohomology as the direct limit of `Ext^i(R/J', M)` over *all* ideals `J'` with radical
+containing `J`.
+-/
 def localCohomology.ofSelfLERadical (J : Ideal R) (i : ℕ) : ModuleCat.{u} R ⥤ ModuleCat.{u} R :=
   ofDiagram.{u} (selfLERadicalDiagram.{u} J) i
 
@@ -194,8 +207,10 @@ section LocalCohomologyEquiv
 
 variable {R : Type u} [CommRing R]
 
-/-- Lifting `idealPowersDiagram J` from a diagram valued in `ideals R` to a diagram
-valued in `SelfLERadical J`. -/
+/--
+Lifting `idealPowersDiagram J` from a diagram valued in `ideals R` to a diagram
+valued in `SelfLERadical J`.
+-/
 def idealPowersToSelfLERadical (J : Ideal R) : ℕᵒᵖ ⥤ SelfLERadical J :=
   ObjectProperty.lift _ (idealPowersDiagram J) fun k => by
     change _ ≤ (J ^ unop k).radical
@@ -205,10 +220,12 @@ def idealPowersToSelfLERadical (J : Ideal R) : ℕᵒᵖ ⥤ SelfLERadical J :=
 
 variable {J K : Ideal R}
 
-/-- The diagram of powers of `J` is initial in the diagram of all ideals with
-radical containing `J`. This uses Noetherianness. -/
-instance ideal_powers_initial [hR : IsNoetherian R R] :
-    Functor.Initial (idealPowersToSelfLERadical J) where
+/--
+The diagram of powers of `J` is initial in the diagram of all ideals with
+radical containing `J`. This uses Noetherianness.
+-/
+instance ideal_powers_initial [hR : IsNoetherian R R]
+    : Functor.Initial (idealPowersToSelfLERadical J) where
   out J' := by
     apply +allowSynthFailures zigzag_isConnected
     · obtain ⟨k, hk⟩ := Ideal.exists_pow_le_of_le_radical_of_fg J'.2 (isNoetherian_def.mp hR _)
@@ -222,44 +239,52 @@ instance ideal_powers_initial [hR : IsNoetherian R R] :
       · left; exact ⟨CostructuredArrow.homMk (homOfLE h).op rfl⟩
 
 example : HasColimitsOfSize.{0, 0, u, u + 1} (ModuleCat.{u, u} R) := inferInstance
-/-- Local cohomology (defined in terms of powers of `J`) agrees with local
-cohomology computed over all ideals with radical containing `J`. -/
-def isoSelfLERadical (J : Ideal.{u} R) [IsNoetherian.{u, u} R R] (i : ℕ) :
-    localCohomology.ofSelfLERadical.{u} J i ≅ localCohomology.{u} J i :=
+/--
+Local cohomology (defined in terms of powers of `J`) agrees with local
+cohomology computed over all ideals with radical containing `J`.
+-/
+def isoSelfLERadical (J : Ideal.{u} R) [IsNoetherian.{u, u} R R] (i : ℕ)
+    : localCohomology.ofSelfLERadical.{u} J i ≅ localCohomology.{u} J i :=
   (localCohomology.isoOfFinal.{u, u, 0} (idealPowersToSelfLERadical.{u} J)
-    (selfLERadicalDiagram.{u} J) i).symm ≪≫
-      HasColimit.isoOfNatIso.{0, 0, u + 1, u + 1} (Iso.refl.{u + 1, u + 1} _)
+      (selfLERadicalDiagram.{u} J) i).symm
+    ≪≫ HasColimit.isoOfNatIso.{0, 0, u + 1, u + 1} (Iso.refl.{u + 1, u + 1} _)
 
-/-- Casting from the full subcategory of ideals with radical containing `J` to the full
-subcategory of ideals with radical containing `K`. -/
+/--
+Casting from the full subcategory of ideals with radical containing `J` to the full
+subcategory of ideals with radical containing `K`.
+-/
 def SelfLERadical.cast (hJK : J.radical = K.radical) : SelfLERadical J ⥤ SelfLERadical K :=
   ObjectProperty.ιOfLE fun L hL => by
     rw [← Ideal.radical_le_radical_iff] at hL ⊢
     exact hJK.symm.trans_le hL
 
 -- TODO generalize this to the equivalence of full categories for any `iff`.
-/-- The equivalence of categories `SelfLERadical J ≌ SelfLERadical K`
-when `J.radical = K.radical`. -/
-def SelfLERadical.castEquivalence (hJK : J.radical = K.radical) :
-    SelfLERadical J ≌ SelfLERadical K where
+/--
+The equivalence of categories `SelfLERadical J ≌ SelfLERadical K`
+when `J.radical = K.radical`.
+-/
+def SelfLERadical.castEquivalence (hJK : J.radical = K.radical)
+    : SelfLERadical J ≌ SelfLERadical K where
   functor := SelfLERadical.cast hJK
   inverse := SelfLERadical.cast hJK.symm
   unitIso := Iso.refl _
   counitIso := Iso.refl _
 
-instance SelfLERadical.cast_isEquivalence (hJK : J.radical = K.radical) :
-    (SelfLERadical.cast hJK).IsEquivalence :=
+instance SelfLERadical.cast_isEquivalence (hJK : J.radical = K.radical)
+    : (SelfLERadical.cast hJK).IsEquivalence :=
   (castEquivalence hJK).isEquivalence_functor
 
-/-- The natural isomorphism between local cohomology defined using the `of_self_le_radical`
-diagram, assuming `J.radical = K.radical`. -/
-def SelfLERadical.isoOfSameRadical (hJK : J.radical = K.radical) (i : ℕ) :
-    ofSelfLERadical J i ≅ ofSelfLERadical K i :=
+/--
+The natural isomorphism between local cohomology defined using the `of_self_le_radical`
+diagram, assuming `J.radical = K.radical`.
+-/
+def SelfLERadical.isoOfSameRadical (hJK : J.radical = K.radical) (i : ℕ)
+    : ofSelfLERadical J i ≅ ofSelfLERadical K i :=
   (isoOfFinal.{u, u, u} (SelfLERadical.cast hJK.symm) _ _).symm
 
 /-- Local cohomology agrees on ideals with the same radical. -/
-def isoOfSameRadical [IsNoetherian R R] (hJK : J.radical = K.radical) (i : ℕ) :
-    localCohomology J i ≅ localCohomology K i :=
+def isoOfSameRadical [IsNoetherian R R] (hJK : J.radical = K.radical) (i : ℕ)
+    : localCohomology J i ≅ localCohomology K i :=
   (isoSelfLERadical J i).symm ≪≫ SelfLERadical.isoOfSameRadical hJK i ≪≫ isoSelfLERadical K i
 
 end LocalCohomologyEquiv

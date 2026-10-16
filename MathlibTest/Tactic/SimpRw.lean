@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Anne Baanen, Mario Carneiro
 -/
 module
+
 import Mathlib.Tactic.SimpRw
 
 private axiom test_sorry : ∀ {α}, α
@@ -28,10 +29,10 @@ example (p : Nat → Prop) (a b : Nat) (h₁ : p (b + a) → p (a + b)) (h₂ : 
   simp_rw [Nat.add_comm a b] at *; exact h₁ h₂
 
 -- `simp` and `rw`, alone, can't close this goal. But `simp_rw` can
-example {a : Nat}
-  (h1 : ∀ a b : Nat, a - 1 ≤ b ↔ a ≤ b + 1)
-  (h2 : ∀ a b : Nat, a ≤ b ↔ ∀ c, c < a → c < b) :
-  (∀ b, a - 1 ≤ b) = ∀ b c : Nat, c < a → c < b + 1 := by
+example
+    {a : Nat}
+    (h1 : ∀ a b : Nat, a - 1 ≤ b ↔ a ≤ b + 1) (h2 : ∀ a b : Nat, a ≤ b ↔ ∀ c, c < a → c < b)
+    : (∀ b, a - 1 ≤ b) = ∀ b c : Nat, c < a → c < b + 1 := by
   simp_rw [h1, h2]
 
 set_option linter.unusedTactic false in
@@ -43,11 +44,9 @@ example : 1 = 2 := by
   guard_target =ₛ 1 = a
   exact test_sorry
 
-/--
-error: No goals to be solved
--/
+/-- error: No goals to be solved -/
 -- check that `simp_rw` does not "spill over" goals
 #guard_msgs in
 example {n : Nat} (hn : n = 0) : (n = 0) ∧ (n = 0) := by
   constructor
-  simp_rw [hn, hn]  -- does this work?
+  simp_rw [hn, hn] -- does this work?

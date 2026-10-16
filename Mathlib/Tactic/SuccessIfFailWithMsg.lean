@@ -25,34 +25,49 @@ open Lean Meta Elab Tactic
 
 namespace Mathlib.Tactic
 
-/-- `success_if_fail_with_msg msg tacs` runs `tacs` and succeeds only if they fail with the message
+/--
+`success_if_fail_with_msg msg tacs` runs `tacs` and succeeds only if they fail with the message
 `msg`.
 
-`msg` can be any term that evaluates to an explicit `String`. -/
+`msg` can be any term that evaluates to an explicit `String`.
+-/
 syntax (name := successIfFailWithMsg) "success_if_fail_with_msg " term:max tacticSeq : tactic
 
-/-- Evaluates `tacs` and succeeds only if `tacs` both fails and throws an error equal (as a string)
-to `msg`. -/
-def successIfFailWithMessage {s α : Type} {m : Type → Type} [Monad m] [MonadLiftT BaseIO m]
-    [MonadLiftT CoreM m] [MonadBacktrack s m] [MonadError m] (msg : String) (tacs : m α)
-    (msgref : Option Syntax := none) (ref : Option Syntax := none) : m Unit := do
+/--
+Evaluates `tacs` and succeeds only if `tacs` both fails and throws an error equal (as a string)
+to `msg`.
+-/
+def successIfFailWithMessage
+    {s α : Type} {m : Type → Type}
+    [Monad m] [MonadLiftT BaseIO m] [MonadLiftT CoreM m] [MonadBacktrack s m] [MonadError m]
+    (msg : String) (tacs : m α)
+    (msgref : Option Syntax := none) (ref : Option Syntax := none)
+    : m Unit := do
   let s ← saveState
   let err ←
-    try _ ← tacs; pure none
-    catch err => pure (some (← err.toMessageData.toString))
+    try
+      _ ← tacs; pure none
+    catch err =>
+      pure (some (← err.toMessageData.toString))
   restoreState s
   if let some err := err then
     unless msg.trimAscii == err.trimAscii do
       if let some msgref := msgref then
-        let suggestion : TryThis.Suggestion :=
-          { suggestion := s!"\"{err.trimAscii}\""
-            toCodeActionTitle? := some (fun _ => "Update with tactic error message")}
+        let suggestion : TryThis.Suggestion := {
+          suggestion := s!"\"{err.trimAscii}\""
+          toCodeActionTitle? := some (fun _ => "Update with tactic error message")
+        }
         TryThis.addSuggestion msgref suggestion (header := "Update with tactic error message: ")
 
       if let some ref := ref then
-        throwErrorAt ref "tactic '{ref}' failed, but got different error message:\n\n{err}"
+        throwErrorAt ref
+          "tactic '{ref}' failed, but got different error message:\
+            \n\
+            \n{err}"
       else
-        throwError "tactic failed, but got different error message:\n\n{err}"
+        throwError "tactic failed, but got different error message:\
+          \n\
+          \n{err}"
   else
     if let some ref := ref then
       throwErrorAt ref "tactic '{ref}' succeeded, but was expected to fail"
@@ -60,9 +75,9 @@ def successIfFailWithMessage {s α : Type} {m : Type → Type} [Monad m] [MonadL
       throwError "tactic succeeded, but was expected to fail"
 
 elab_rules : tactic
-| `(tactic| success_if_fail_with_msg $msg:term $tacs:tacticSeq) =>
-  Term.withoutErrToSorry <| withoutRecover do
-    let msg' ← unsafe Term.evalTerm String (.const ``String []) msg
-    successIfFailWithMessage msg' (evalTacticSeq tacs) msg tacs
+  | `(tactic| success_if_fail_with_msg $msg:term $tacs:tacticSeq) =>
+    Term.withoutErrToSorry <| withoutRecover do
+      let msg' ← unsafe Term.evalTerm String (.const ``String []) msg
+      successIfFailWithMessage msg' (evalTacticSeq tacs) msg tacs
 
 end Mathlib.Tactic

@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Data.Nat.Notation
 import Mathlib.Tactic.Basic
 import Mathlib.Tactic.ApplyFun
@@ -148,8 +149,12 @@ example (a b : ℕ) (h : a ≠ b) : a + 1 ≠ b + 1 := by
 --   apply_fun (fun n ↦ n+1) at h
 --   exact h
 
-example {n : Type} [Fintype n] {X : Type} [Semiring X]
-  (f : Matrix n n X → Matrix n n X) (A B : Matrix n n X) (h : A * B = 0) : f (A * B) = f 0 := by
+example
+    {n : Type} [Fintype n]
+    {X : Type} [Semiring X]
+    (f : Matrix n n X → Matrix n n X)
+    (A B : Matrix n n X) (h : A * B = 0)
+    : f (A * B) = f 0 := by
   apply_fun f at h
   -- check that our β-reduction didn't mess things up:
   -- (previously `apply_fun` was producing `f (A.mul B) = f 0`)
@@ -208,15 +213,21 @@ example (f : {i : Nat} → Fin i → ℕ) (a b : Fin 37) (h : a = b) : True := b
   guard_hyp h : f a = f b
   trivial
 
-example (f : (p : Prop) → [Decidable p] → Nat) (p q : Prop) (h : p = q)
-    (h' : {n m : Nat} → n = m → True) : True := by
+example
+    (f : (p : Prop) → [Decidable p] → Nat)
+    (p q : Prop) (h : p = q)
+    (h' : {n m : Nat} → n = m → True)
+    : True := by
   classical
   apply_fun f at h
   apply h'
   exact h
 
-example (f : (p : Prop) → [Decidable p] → Nat) (p q : Prop) (h : p = q)
-    (h' : {n m : Nat} → n = m → True) : True := by
+example
+    (f : (p : Prop) → [Decidable p] → Nat)
+    (p q : Prop) (h : p = q)
+    (h' : {n m : Nat} → n = m → True)
+    : True := by
   classical
   apply_fun (fun x [Decidable x] => f x) at h
   apply h'
@@ -259,7 +270,6 @@ example : 1 = 1 := by
   apply_fun f using (g f)
   rfl
 
-
 def funFamily (_i : ℕ) : Bool → Bool := id
 
 -- `apply_fun` should not silence errors in `assumption`
@@ -270,6 +280,6 @@ use `set_option maxRecDepth <num>` to increase limit
 use `set_option diagnostics true` to get diagnostic information
 -/
 #guard_msgs (error) in
-example (_h₁ : Function.Injective (funFamily ((List.range 128).map (fun _ => 0)).sum)) :
-    true = true := by
+example (_h₁ : Function.Injective (funFamily ((List.range 128).map (fun _ => 0)).sum))
+    : true = true := by
   apply_fun funFamily 0

@@ -29,13 +29,13 @@ open scoped ENNReal symmDiff Topology
 
 namespace MeasureTheory
 
-variable {α X Y Z : Type*}
-  [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X] [R1Space X]
-  [TopologicalSpace Y] [MeasurableSpace Y] [BorelSpace Y] [R1Space Y]
-  [TopologicalSpace Z]
+variable
+  {α X Y Z : Type*} [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X] [R1Space X]
+  [TopologicalSpace Y] [MeasurableSpace Y] [BorelSpace Y] [R1Space Y] [TopologicalSpace Z]
   {μ : Measure X} {ν : Measure Y} [μ.InnerRegularCompactLTTop] [IsLocallyFiniteMeasure ν]
 
-/-- Let `X` and `Y` be R₁ topological spaces
+/--
+Let `X` and `Y` be R₁ topological spaces
 with Borel σ-algebras and measures `μ` and `ν`, respectively.
 Suppose that `μ` is inner regular for finite measure sets with respect to compact sets
 and `ν` is a locally finite measure.
@@ -45,12 +45,13 @@ Suppose that `g` is a measure-preserving map
 and `f a` is a measure-preserving map eventually along `l`.
 Then for any finite measure measurable set `s`,
 the preimages `f a ⁻¹' s` tend to the preimage `g ⁻¹' s` in measure.
-More precisely, the measure of the symmetric difference of these two sets tends to zero. -/
+More precisely, the measure of the symmetric difference of these two sets tends to zero.
+-/
 theorem tendsto_measure_symmDiff_preimage_nhds_zero
-    {l : Filter α} {f : α → C(X, Y)} {g : C(X, Y)} {s : Set Y} (hfg : Tendsto f l (𝓝 g))
-    (hf : ∀ᶠ a in l, MeasurePreserving (f a) μ ν) (hg : MeasurePreserving g μ ν)
-    (hs : NullMeasurableSet s ν) (hνs : ν s ≠ ∞) :
-    Tendsto (fun a ↦ μ ((f a ⁻¹' s) ∆ (g ⁻¹' s))) l (𝓝 0) := by
+    {l : Filter α} {f : α → C(X, Y)} {g : C(X, Y)} {s : Set Y}
+    (hfg : Tendsto f l (𝓝 g)) (hf : ∀ᶠ a in l, MeasurePreserving (f a) μ ν)
+    (hg : MeasurePreserving g μ ν) (hs : NullMeasurableSet s ν) (hνs : ν s ≠ ∞)
+    : Tendsto (fun a ↦ μ ((f a ⁻¹' s) ∆ (g ⁻¹' s))) l (𝓝 0) := by
   have : ν.InnerRegularCompactLTTop := by
     rw [← hg.map_eq]
     exact .map_of_continuous (map_continuous _)
@@ -67,8 +68,8 @@ theorem tendsto_measure_symmDiff_preimage_nhds_zero
     filter_upwards [hf, this hmU hU.ne _ H hUo] with a hfa ha
     calc
       μ ((f a ⁻¹' s) ∆ (g ⁻¹' s))
-        ≤ μ ((f a ⁻¹' s) ∆ (f a ⁻¹' U)) + μ ((f a ⁻¹' U) ∆ (g ⁻¹' U))
-          + μ ((g ⁻¹' U) ∆ (g ⁻¹' s)) := by
+          ≤ μ ((f a ⁻¹' s) ∆ (f a ⁻¹' U)) + μ ((f a ⁻¹' U) ∆ (g ⁻¹' U))
+            + μ ((g ⁻¹' U) ∆ (g ⁻¹' s)) := by
         refine (measure_symmDiff_le _ (g ⁻¹' U) _).trans ?_
         gcongr
         apply measure_symmDiff_le
@@ -80,8 +81,8 @@ theorem tendsto_measure_symmDiff_preimage_nhds_zero
   -- Take a compact closed subset `K ⊆ g ⁻¹' s` of almost full measure,
   -- `μ (g ⁻¹' s \ K) < ε / 2`.
   have hνs' : μ (g ⁻¹' s) ≠ ∞ := by rwa [hg.measure_preimage hs]
-  obtain ⟨K, hKg, hKco, hKcl, hKμ⟩ :
-      ∃ K, MapsTo g K s ∧ IsCompact K ∧ IsClosed K ∧ μ (g ⁻¹' s \ K) < ε / 2 :=
+  obtain ⟨K, hKg, hKco, hKcl, hKμ⟩
+      : ∃ K, MapsTo g K s ∧ IsCompact K ∧ IsClosed K ∧ μ (g ⁻¹' s \ K) < ε / 2 :=
     (hg.measurable hso.measurableSet).exists_isCompact_isClosed_sdiff_lt hνs' <| by simp [hε.ne']
   have hKm : NullMeasurableSet K μ := hKcl.nullMeasurableSet
   -- Take `a` such that `f a` is measure preserving and maps `K` to `s`.
@@ -98,7 +99,8 @@ theorem tendsto_measure_symmDiff_preimage_nhds_zero
     ← hg.measure_preimage hs, ← measure_sdiff_le_iff_le_add hKm hKg.subset_preimage hK']
   exact hKμ.le
 
-/-- Let `f : Z → C(X, Y)` be a continuous (in the compact open topology) family
+/--
+Let `f : Z → C(X, Y)` be a continuous (in the compact open topology) family
 of continuous measure-preserving maps.
 Let `t : Set Y` be a null measurable set of finite measure.
 Then for any `s`, the set of parameters `z`
@@ -106,11 +108,13 @@ such that the preimage of `t` under `f_z` is a.e. equal to `s`
 is a closed set.
 
 In particular, if `X = Y` and `s = t`,
-then we see that the a.e. stabilizer of a set is a closed set. -/
-theorem isClosed_setOfPred_preimage_ae_eq {f : Z → C(X, Y)} (hf : Continuous f)
-    (hfm : ∀ z, MeasurePreserving (f z) μ ν) (s : Set X)
-    {t : Set Y} (htm : NullMeasurableSet t ν) (ht : ν t ≠ ∞) :
-    IsClosed {z | f z ⁻¹' t =ᵐ[μ] s} := by
+then we see that the a.e. stabilizer of a set is a closed set.
+-/
+theorem isClosed_setOfPred_preimage_ae_eq
+    {f : Z → C(X, Y)} (hf : Continuous f) (hfm : ∀ z, MeasurePreserving (f z) μ ν)
+    (s : Set X)
+    {t : Set Y} (htm : NullMeasurableSet t ν) (ht : ν t ≠ ∞)
+    : IsClosed {z | f z ⁻¹' t =ᵐ[μ] s} := by
   rw [← isOpen_compl_iff, isOpen_iff_mem_nhds]
   intro z hz
   replace hz : ∀ᶠ ε : ℝ≥0∞ in 𝓝 0, ε < μ ((f z ⁻¹' t) ∆ s) := by

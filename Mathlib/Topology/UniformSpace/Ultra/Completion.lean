@@ -24,32 +24,32 @@ variable {X Y : Type*} [UniformSpace X] [UniformSpace Y]
 
 open Filter Set
 
-lemma IsUniformInducing.isUltraUniformity [IsUltraUniformity Y] {f : X → Y}
-    (hf : IsUniformInducing f) : IsUltraUniformity X :=
+lemma IsUniformInducing.isUltraUniformity
+    [IsUltraUniformity Y] {f : X → Y} (hf : IsUniformInducing f)
+    : IsUltraUniformity X :=
   hf.comap_uniformSpace ▸ .comap inferInstance f
 
 instance CauchyFilter.isSymm_gen {s : SetRel X X} [s.IsSymm] : (gen s).IsSymm where
   symm _ := by simp [CauchyFilter.gen, s.mem_filter_prod_comm]
 
-
 instance CauchyFilter.isTrans_gen {s : SetRel X X} [s.IsTrans] : (gen s).IsTrans where
   trans _ _ _ := IsTransitiveRel.mem_filter_prod_trans
 
-instance IsUltraUniformity.cauchyFilter [IsUltraUniformity X] :
-    IsUltraUniformity (CauchyFilter X) := by
+instance IsUltraUniformity.cauchyFilter [IsUltraUniformity X]
+    : IsUltraUniformity (CauchyFilter X) := by
   apply mk_of_hasBasis (CauchyFilter.basis_uniformity IsUltraUniformity.hasBasis)
   · exact fun _ ⟨_, hU, _⟩ ↦ by simpa using CauchyFilter.isSymm_gen
   · exact fun _ ⟨_, _, hU⟩ ↦ by simpa using CauchyFilter.isTrans_gen
 
-@[simp] lemma IsUltraUniformity.cauchyFilter_iff :
-    IsUltraUniformity (CauchyFilter X) ↔ IsUltraUniformity X :=
-  ⟨fun _ ↦ CauchyFilter.isUniformInducing_pureCauchy.isUltraUniformity,
-   fun _ ↦ inferInstance⟩
+@[simp]
+lemma IsUltraUniformity.cauchyFilter_iff
+    : IsUltraUniformity (CauchyFilter X) ↔ IsUltraUniformity X :=
+  ⟨fun _ ↦ CauchyFilter.isUniformInducing_pureCauchy.isUltraUniformity, fun _ ↦ inferInstance⟩
 
-instance IsUltraUniformity.separationQuotient [IsUltraUniformity X] :
-    IsUltraUniformity (SeparationQuotient X) := by
-  have := IsUltraUniformity.hasBasis.map
-    (Prod.map SeparationQuotient.mk (SeparationQuotient.mk (X := X)))
+instance IsUltraUniformity.separationQuotient [IsUltraUniformity X]
+    : IsUltraUniformity (SeparationQuotient X) := by
+  have :=
+    IsUltraUniformity.hasBasis.map (Prod.map SeparationQuotient.mk (SeparationQuotient.mk (X := X)))
   rw [← SeparationQuotient.uniformity_eq] at this
   apply mk_of_hasBasis this
   · exact fun _ ⟨_, hU, _⟩ ↦ by rw [id_eq]; infer_instance
@@ -60,21 +60,22 @@ instance IsUltraUniformity.separationQuotient [IsUltraUniformity X] :
       forall_exists_index, and_imp]
     rintro a b hab rfl rfl c d hcd hc rfl
     have hbc : (b, c) ∈ U := by
-      rw [eq_comm, SeparationQuotient.mk_eq_mk, inseparable_iff_ker_uniformity,
-          Filter.mem_ker] at hc
+      rw [eq_comm, SeparationQuotient.mk_eq_mk, inseparable_iff_ker_uniformity, Filter.mem_ker]
+        at hc
       exact hc _ hU'
     exact ⟨a, d, U.trans (U.trans hab hbc) hcd, by simp, by simp⟩
 
-@[simp] lemma IsUltraUniformity.separationQuotient_iff :
-    IsUltraUniformity (SeparationQuotient X) ↔ IsUltraUniformity X :=
-  ⟨fun _ ↦ SeparationQuotient.isUniformInducing_mk.isUltraUniformity,
-   fun _ ↦ inferInstance⟩
+@[simp]
+lemma IsUltraUniformity.separationQuotient_iff
+    : IsUltraUniformity (SeparationQuotient X) ↔ IsUltraUniformity X :=
+  ⟨fun _ ↦ SeparationQuotient.isUniformInducing_mk.isUltraUniformity, fun _ ↦ inferInstance⟩
 
-@[simp] lemma IsUltraUniformity.completion_iff :
-    IsUltraUniformity (UniformSpace.Completion X) ↔ IsUltraUniformity X := by
+@[simp]
+lemma IsUltraUniformity.completion_iff
+    : IsUltraUniformity (UniformSpace.Completion X) ↔ IsUltraUniformity X := by
   rw [iff_comm, ← cauchyFilter_iff, ← separationQuotient_iff]
   exact Iff.rfl
 
-instance IsUltraUniformity.completion [IsUltraUniformity X] :
-    IsUltraUniformity (UniformSpace.Completion X) :=
+instance IsUltraUniformity.completion [IsUltraUniformity X]
+    : IsUltraUniformity (UniformSpace.Completion X) :=
   completion_iff.2 inferInstance

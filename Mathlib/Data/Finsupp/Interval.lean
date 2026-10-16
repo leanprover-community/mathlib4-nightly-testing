@@ -48,8 +48,7 @@ def rangeSingleton (f : ι →₀ α) : ι →₀ Finset α where
     rw [← not_iff_not, notMem_support_iff, not_ne_iff]
     exact singleton_injective.eq_iff.symm
 
-theorem mem_rangeSingleton_apply_iff : a ∈ f.rangeSingleton i ↔ a = f i :=
-  mem_singleton
+theorem mem_rangeSingleton_apply_iff : a ∈ f.rangeSingleton i ↔ a = f i := mem_singleton
 
 end RangeSingleton
 
@@ -70,8 +69,7 @@ def rangeIcc (f g : ι →₀ α) : ι →₀ Finset α where
 lemma coe_rangeIcc (f g : ι →₀ α) : rangeIcc f g i = Icc (f i) (g i) := rfl
 
 @[simp]
-theorem rangeIcc_support (f g : ι →₀ α) :
-    (rangeIcc f g).support = f.support ∪ g.support := rfl
+theorem rangeIcc_support (f g : ι →₀ α) : (rangeIcc f g).support = f.support ∪ g.support := rfl
 
 theorem mem_rangeIcc_apply_iff : a ∈ f.rangeIcc g i ↔ f i ≤ a ∧ a ≤ g i := mem_Icc
 
@@ -83,7 +81,8 @@ variable [PartialOrder α] [Zero α] [LocallyFiniteOrder α] [DecidableEq ι] [D
 variable (f g : ι →₀ α)
 
 instance instLocallyFiniteOrder : LocallyFiniteOrder (ι →₀ α) :=
-  LocallyFiniteOrder.ofIcc (ι →₀ α) (fun f g => (f.support ∪ g.support).finsupp <| f.rangeIcc g)
+  LocallyFiniteOrder.ofIcc (ι →₀ α)
+    (fun f g => (f.support ∪ g.support).finsupp <| f.rangeIcc g)
     fun f g x => by
       refine
         (mem_finsupp_iff_of_support_subset <| Finset.subset_of_eq <| rangeIcc_support _ _).trans ?_
@@ -110,16 +109,14 @@ section Lattice
 variable [Lattice α] [Zero α] [LocallyFiniteOrder α] (f g : ι →₀ α)
 
 open scoped Classical in
-theorem card_uIcc :
-    #(uIcc f g) = ∏ i ∈ f.support ∪ g.support, #(uIcc (f i) (g i)) := by
+theorem card_uIcc : #(uIcc f g) = ∏ i ∈ f.support ∪ g.support, #(uIcc (f i) (g i)) := by
   rw [← support_inf_union_support_sup]; exact card_Icc (_ : ι →₀ α) _
 
 end Lattice
 
 section IsBotZeroClass
 
-variable [AddCommMonoid α] [PartialOrder α] [IsBotZeroClass α]
-  [OrderBot α] [LocallyFiniteOrder α]
+variable [AddCommMonoid α] [PartialOrder α] [IsBotZeroClass α] [OrderBot α] [LocallyFiniteOrder α]
 variable [DecidableEq ι] [DecidableEq α] (f : ι →₀ α)
 
 theorem card_Iic : #(Iic f) = ∏ i ∈ f.support, #(Iic (f i)) := by

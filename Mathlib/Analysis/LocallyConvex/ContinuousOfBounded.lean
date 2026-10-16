@@ -6,7 +6,6 @@ Authors: Moritz Doll
 module
 
 public import Mathlib.Analysis.LocallyConvex.Bounded
-
 import Mathlib.Analysis.SpecificLimits.Normed
 
 /-!
@@ -24,7 +23,6 @@ if `E` is first countable, then every locally bounded linear map `E →ₛₗ[σ
 
 @[expose] public section
 
-
 open TopologicalSpace Bornology Filter Pointwise
 
 open scoped Topology
@@ -39,11 +37,16 @@ variable [NontriviallyNormedField 𝕜] [Module 𝕜 E] [ContinuousSMul 𝕜 E]
 variable [NormedField 𝕜'] [Module 𝕜' F]
 variable {σ : 𝕜 →+* 𝕜'} [RingHomIsometric σ]
 
-/-- Construct a continuous linear map from a linear map `f : E →ₛₗ[σ] F` and the existence of a
-neighborhood of zero that gets mapped into a bounded set in `F`. -/
-def LinearMap.clmOfExistsBoundedImage [IsTopologicalAddGroup F] (f : E →ₛₗ[σ] F)
-    (h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V)) : E →SL[σ] F :=
-  ⟨f, by
+/--
+Construct a continuous linear map from a linear map `f : E →ₛₗ[σ] F` and the existence of a
+neighborhood of zero that gets mapped into a bounded set in `F`.
+-/
+def LinearMap.clmOfExistsBoundedImage
+    [IsTopologicalAddGroup F]
+    (f : E →ₛₗ[σ] F) (h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V))
+    : E →SL[σ] F := ⟨
+  f,
+  by
     -- It suffices to show that `f` is continuous at `0`.
     refine continuous_of_continuousAt_zero f ?_
     rw [continuousAt_def, f.map_zero]
@@ -58,28 +61,33 @@ def LinearMap.clmOfExistsBoundedImage [IsTopologicalAddGroup F] (f : E →ₛₗ
     have x_ne := norm_pos_iff.mp (hr.trans hx)
     have : x⁻¹ • V ⊆ f ⁻¹' U :=
       calc
-        x⁻¹ • V ⊆ x⁻¹ • f ⁻¹' f '' V := Set.smul_set_mono (Set.subset_preimage_image (⇑f) V)
+        x⁻¹ • V
+          ⊆ x⁻¹ • f ⁻¹' f '' V := Set.smul_set_mono (Set.subset_preimage_image (⇑f) V)
         _ ⊆ x⁻¹ • f ⁻¹' (σ x • U) := Set.smul_set_mono (Set.preimage_mono h)
         _ = f ⁻¹' U := by rw [x_ne.isUnit.preimage_smul_setₛₗ _, inv_smul_smul₀ x_ne _]
     -- Using this inclusion, it suffices to show that `x⁻¹ • V` is in `𝓝 0`, which is trivial.
     grw [← this]
-    rwa [set_smul_mem_nhds_zero_iff (inv_ne_zero x_ne)]⟩
+    rwa [set_smul_mem_nhds_zero_iff (inv_ne_zero x_ne)]
+⟩
 
-theorem LinearMap.clmOfExistsBoundedImage_coe [IsTopologicalAddGroup F] {f : E →ₛₗ[σ] F}
-    {h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V)} :
-    (f.clmOfExistsBoundedImage h : E →ₛₗ[σ] F) = f :=
+theorem LinearMap.clmOfExistsBoundedImage_coe
+    [IsTopologicalAddGroup F]
+    {f : E →ₛₗ[σ] F} {h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V)}
+    : (f.clmOfExistsBoundedImage h : E →ₛₗ[σ] F) = f :=
   rfl
 
 @[simp]
-theorem LinearMap.clmOfExistsBoundedImage_apply [IsTopologicalAddGroup F] {f : E →ₛₗ[σ] F}
-    {h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V)} {x : E} :
-    f.clmOfExistsBoundedImage h x = f x :=
+theorem LinearMap.clmOfExistsBoundedImage_apply
+    [IsTopologicalAddGroup F]
+    {f : E →ₛₗ[σ] F} {h : ∃ V ∈ 𝓝 (0 : E), Bornology.IsVonNBounded 𝕜' (f '' V)} {x : E}
+    : f.clmOfExistsBoundedImage h x = f x :=
   rfl
 
 variable [FirstCountableTopology E]
 
-theorem LinearMap.continuousAt_zero_of_locally_bounded (f : E →ₛₗ[σ] F)
-    (hf : ∀ s, IsVonNBounded 𝕜 s → IsVonNBounded 𝕜' (f '' s)) : ContinuousAt f 0 := by
+theorem LinearMap.continuousAt_zero_of_locally_bounded
+    (f : E →ₛₗ[σ] F) (hf : ∀ s, IsVonNBounded 𝕜 s → IsVonNBounded 𝕜' (f '' s))
+    : ContinuousAt f 0 := by
   -- We pick `c : 𝕜` nonzero of norm `< 1`.
   obtain ⟨c, hc0, hc1⟩ := NormedField.exists_norm_lt_one 𝕜
   have c_ne := norm_pos_iff.mp hc0
@@ -123,8 +131,10 @@ theorem LinearMap.continuousAt_zero_of_locally_bounded (f : E →ₛₗ[σ] F)
   filter_upwards [this.eventually_mem hV] using hu'
 
 /-- If `E` is first countable, then every locally bounded linear map `E →ₛₗ[σ] F` is continuous. -/
-theorem LinearMap.continuous_of_locally_bounded [IsTopologicalAddGroup F] (f : E →ₛₗ[σ] F)
-    (hf : ∀ s, IsVonNBounded 𝕜 s → IsVonNBounded 𝕜' (f '' s)) : Continuous f :=
+theorem LinearMap.continuous_of_locally_bounded
+    [IsTopologicalAddGroup F]
+    (f : E →ₛₗ[σ] F) (hf : ∀ s, IsVonNBounded 𝕜 s → IsVonNBounded 𝕜' (f '' s))
+    : Continuous f :=
   continuous_of_continuousAt_zero f (f.continuousAt_zero_of_locally_bounded hf)
 
 end NontriviallyNormedField

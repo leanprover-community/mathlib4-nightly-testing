@@ -9,7 +9,8 @@ syntax (name := duplicate1) "duplicate" : tactic
 syntax (name := duplicate2) "duplicate" "only" ident* : tactic
 -- Limitation: both `duplicate1` and `duplicate2` currently cause a linter warning.
 
-/-- `no_duplicate` is a tactic.
+/--
+`no_duplicate` is a tactic.
 
 * `no_duplicate only t1 t2 ... tn` is an alternative form of this tactic.
 -/

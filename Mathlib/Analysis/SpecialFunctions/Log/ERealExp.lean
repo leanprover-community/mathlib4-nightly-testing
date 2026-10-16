@@ -35,19 +35,17 @@ open scoped ENNReal
 section Definition
 
 /-- Exponential as a function from `EReal` to `ℝ≥0∞`. -/
-noncomputable
-def exp (x : EReal) : ℝ≥0∞ := EReal.rec 0 (fun x => ENNReal.ofReal (Real.exp x)) ∞ x
+noncomputable def exp (x : EReal) : ℝ≥0∞ := EReal.rec 0 (fun x => ENNReal.ofReal (Real.exp x)) ∞ x
 
 @[simp] lemma exp_bot : exp ⊥ = 0 := rfl
 @[simp] lemma exp_zero : exp 0 = 1 := by simp [exp, ← coe_zero]
 @[simp] lemma exp_top : exp ⊤ = ∞ := rfl
 @[simp] lemma exp_coe (x : ℝ) : exp x = ENNReal.ofReal (Real.exp x) := rfl
 
-@[simp] lemma exp_eq_zero_iff {x : EReal} : exp x = 0 ↔ x = ⊥ := by
-  induction x <;> simp [Real.exp_pos]
+@[simp]
+lemma exp_eq_zero_iff {x : EReal} : exp x = 0 ↔ x = ⊥ := by induction x <;> simp [Real.exp_pos]
 
-@[simp] lemma exp_eq_top_iff {x : EReal} : exp x = ∞ ↔ x = ⊤ := by
-  induction x <;> simp
+@[simp] lemma exp_eq_top_iff {x : EReal} : exp x = ∞ ↔ x = ⊤ := by induction x <;> simp
 
 end Definition
 
@@ -67,8 +65,7 @@ lemma exp_strictMono : StrictMono exp := by
     · simp
   · exact (not_top_lt h).elim
 
-@[gcongr]
-lemma exp_monotone : Monotone exp := exp_strictMono.monotone
+@[gcongr] lemma exp_monotone : Monotone exp := exp_strictMono.monotone
 
 @[simp] lemma exp_lt_exp_iff {a b : EReal} : exp a < exp b ↔ a < b := exp_strictMono.lt_iff_lt
 

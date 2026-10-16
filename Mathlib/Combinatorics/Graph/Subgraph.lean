@@ -45,8 +45,8 @@ graphs, subgraph, induced subgraph, spanning subgraph, closed subgraph
 
 public section
 
-variable {α β : Type*} {x y u v : α} {e : β} {G G₁ G₂ H H₁ H₂ K : Graph α β} {F₁ F₂ : Set β}
-  {X : Set α}
+variable
+  {α β : Type*} {x y u v : α} {e : β} {G G₁ G₂ H H₁ H₂ K : Graph α β} {F₁ F₂ : Set β} {X : Set α}
 
 open Set
 
@@ -56,8 +56,10 @@ namespace Graph
 
 section Subgraph
 
-/-- `IsSubgraph H G` is NOT the preferred spelling for the subgraph relation. Please use
-`H ≤ G` instead. -/
+/--
+`IsSubgraph H G` is NOT the preferred spelling for the subgraph relation. Please use
+`H ≤ G` instead.
+-/
 @[mk_iff]
 structure IsSubgraph (H G : Graph α β) : Prop where
   vertexSet_mono : V(H) ⊆ V(G) := by aesop
@@ -71,19 +73,19 @@ lemma IsSubgraph.trans (h₁ : H.IsSubgraph G) (h₂ : G.IsSubgraph G₁) : H.Is
 lemma IsSubgraph.antisymm (h₁ : H.IsSubgraph G) (h₂ : G.IsSubgraph H) : H = G :=
   Graph.ext (h₁.1.antisymm h₂.1) fun _ _ _ ↦ ⟨(h₁.2 ·), (h₂.2 ·)⟩
 
-/-- `H ≤ G` means `H` is a subgraph of `G`. It is defined as `V(H) ⊆ V(G)` and every link of `H`
-being a link of `G`. -/
+/--
+`H ≤ G` means `H` is a subgraph of `G`. It is defined as `V(H) ⊆ V(G)` and every link of `H`
+being a link of `G`.
+-/
 instance : PartialOrder (Graph α β) where
   le := IsSubgraph
   le_refl _ := ⟨le_rfl, fun _ _ _ h ↦ h⟩
   le_trans _ _ _ h₁ h₂ := h₁.trans h₂
   le_antisymm G H h₁ h₂ := h₁.antisymm h₂
 
-@[simp]
-lemma isSubgraph_iff_le : H.IsSubgraph G ↔ H ≤ G := .rfl
+@[simp] lemma isSubgraph_iff_le : H.IsSubgraph G ↔ H ≤ G := .rfl
 
-@[gcongr]
-lemma IsLink.mono (hHG : H ≤ G) (h : H.IsLink e x y) : G.IsLink e x y := hHG.2 h
+@[gcongr] lemma IsLink.mono (hHG : H ≤ G) (h : H.IsLink e x y) : G.IsLink e x y := hHG.2 h
 
 @[gcongr, grind →]
 lemma IsSubgraph.edgeSet_mono (h : H ≤ G) : E(H) ⊆ E(G) := by
@@ -91,8 +93,8 @@ lemma IsSubgraph.edgeSet_mono (h : H ≤ G) : E(H) ⊆ E(G) := by
   obtain ⟨x, y, h'⟩ := exists_isLink_of_mem_edgeSet he
   exact (h'.mono h).edge_mem
 
-private lemma IsLink.anti_of_mem (h : G.IsLink e x y) (hHG : H ≤ G) (he : e ∈ E(H)) :
-    H.IsLink e x y := by
+private lemma IsLink.anti_of_mem (h : G.IsLink e x y) (hHG : H ≤ G) (he : e ∈ E(H))
+    : H.IsLink e x y := by
   obtain ⟨u, v, huv⟩ := exists_isLink_of_mem_edgeSet he
   obtain ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ := (huv.mono hHG).eq_and_eq_or_eq_and_eq h
   · assumption
@@ -110,8 +112,8 @@ lemma IsSubgraph.isLink_iff' (hHG : H ≤ G) : H.IsLink e x y ↔ G.IsLink e x y
   grind [hHG.isLink_iff, IsLink.edge_mem]
 
 /-- Two subgraphs of the same graph are compatible. -/
-lemma Compatible.of_le_le (hH₁G : H₁ ≤ G) (hH₂G : H₂ ≤ G) : H₁.Compatible H₂ :=
-  fun _ he₁ he₂ _ _ ↦ hH₁G.isLink_iff he₁ |>.trans <| (hH₂G.isLink_iff he₂).symm
+lemma Compatible.of_le_le (hH₁G : H₁ ≤ G) (hH₂G : H₂ ≤ G) : H₁.Compatible H₂ := fun _ he₁ he₂ _ _ ↦
+  hH₁G.isLink_iff he₁ |>.trans <| (hH₂G.isLink_iff he₂).symm
 
 lemma Compatible.of_le (hHG : H ≤ G) : H.Compatible G := .of_le_le hHG le_rfl
 lemma Compatible.of_ge (hHG : G ≤ H) : H.Compatible G := .of_le_le le_rfl hHG
@@ -129,8 +131,7 @@ lemma Compatible.anti (hG₁G : G₁ ≤ G) (hH₁H : H₁ ≤ H) (h : G.Compati
   (h.anti_left hG₁G).anti_right hH₁H
 
 @[gcongr]
-lemma Inc.mono (hHG : H ≤ G) (h : H.Inc e x) : G.Inc e x :=
-  (h.choose_spec.mono hHG).inc_left
+lemma Inc.mono (hHG : H ≤ G) (h : H.Inc e x) : G.Inc e x := (h.choose_spec.mono hHG).inc_left
 
 lemma IsSubgraph.inc_congr (hHG : H ≤ G) (he : e ∈ E(H)) : H.Inc e x ↔ G.Inc e x := by
   simp_rw [Graph.Inc, hHG.isLink_iff he]
@@ -140,11 +141,10 @@ lemma IsSubgraph.inc_eqOn (hHG : H ≤ G) : EqOn H.Inc G.Inc E(H) := by
   ext x
   exact hHG.inc_congr he
 
-lemma IsLoopAt.mono (hHG : H ≤ G) (h : H.IsLoopAt e x) : G.IsLoopAt e x :=
-  IsLink.mono hHG h
+lemma IsLoopAt.mono (hHG : H ≤ G) (h : H.IsLoopAt e x) : G.IsLoopAt e x := IsLink.mono hHG h
 
-lemma IsSubgraph.isLoopAt_congr (hHG : H ≤ G) (he : e ∈ E(H)) :
-    H.IsLoopAt e x ↔ G.IsLoopAt e x := by
+lemma IsSubgraph.isLoopAt_congr (hHG : H ≤ G) (he : e ∈ E(H))
+    : H.IsLoopAt e x ↔ G.IsLoopAt e x := by
   unfold Graph.IsLoopAt
   rw [hHG.isLink_iff he]
 
@@ -157,8 +157,8 @@ lemma IsNonloopAt.mono (hHG : H ≤ G) (h : H.IsNonloopAt e x) : G.IsNonloopAt e
   obtain ⟨y, hxy, he⟩ := h
   exact ⟨y, hxy, he.mono hHG⟩
 
-lemma IsSubgraph.isNonloopAt_congr (hHG : H ≤ G) (he : e ∈ E(H)) :
-    H.IsNonloopAt e x ↔ G.IsNonloopAt e x := by
+lemma IsSubgraph.isNonloopAt_congr (hHG : H ≤ G) (he : e ∈ E(H))
+    : H.IsNonloopAt e x ↔ G.IsNonloopAt e x := by
   simp_rw [Graph.IsNonloopAt, hHG.isLink_iff he]
 
 lemma IsSubgraph.isNonloopAt_eqOn (hHG : H ≤ G) : EqOn H.IsNonloopAt G.IsNonloopAt E(H) := by
@@ -166,13 +166,12 @@ lemma IsSubgraph.isNonloopAt_eqOn (hHG : H ≤ G) : EqOn H.IsNonloopAt G.IsNonlo
   ext x
   exact hHG.isNonloopAt_congr he
 
-@[gcongr]
-lemma Adj.mono (hHG : H ≤ G) (h : H.Adj x y) : G.Adj x y :=
-  (h.choose_spec.mono hHG).adj
+@[gcongr] lemma Adj.mono (hHG : H ≤ G) (h : H.Adj x y) : G.Adj x y := (h.choose_spec.mono hHG).adj
 
-lemma le_iff_compatible_subset_subset : G ≤ H ↔ Compatible G H ∧ V(G) ⊆ V(H) ∧ E(G) ⊆ E(H) :=
-  ⟨fun h ↦ ⟨.of_le h, h.1, h.edgeSet_mono⟩, fun ⟨h, hV, hE⟩ ↦
-    ⟨hV, fun _ _ _ hxy ↦ h hxy.edge_mem (hE hxy.edge_mem) .. |>.mp hxy⟩⟩
+lemma le_iff_compatible_subset_subset : G ≤ H ↔ Compatible G H ∧ V(G) ⊆ V(H) ∧ E(G) ⊆ E(H) := ⟨
+  fun h ↦ ⟨.of_le h, h.1, h.edgeSet_mono⟩,
+  fun ⟨h, hV, hE⟩ ↦ ⟨hV, fun _ _ _ hxy ↦ h hxy.edge_mem (hE hxy.edge_mem) .. |>.mp hxy⟩
+⟩
 
 lemma Compatible.le_iff (hH : Compatible H₁ H₂) : H₁ ≤ H₂ ↔ V(H₁) ⊆ V(H₂) ∧ E(H₁) ⊆ E(H₂) :=
   le_iff_compatible_subset_subset.trans (by tauto)
@@ -190,9 +189,10 @@ lemma vertexSet_ssubset_or_edgeSet_ssubset_of_lt (hGH : G < H) : V(G) ⊂ V(H) �
 lemma noEdge_le_iff : noEdge X β ≤ G ↔ X ⊆ V(G) := ⟨(·.vertexSet_mono), fun h ↦ ⟨h, by simp⟩⟩
 
 @[simp]
-lemma le_noEdge_iff : G ≤ noEdge X β ↔ V(G) ⊆ X ∧ E(G) = ∅ :=
-  ⟨fun h ↦ ⟨h.vertexSet_mono, subset_empty_iff.1 h.edgeSet_mono⟩,
-    fun h ↦ ⟨h.1, fun e x y he ↦ by simpa [h] using he.edge_mem⟩⟩
+lemma le_noEdge_iff : G ≤ noEdge X β ↔ V(G) ⊆ X ∧ E(G) = ∅ := ⟨
+  fun h ↦ ⟨h.vertexSet_mono, subset_empty_iff.1 h.edgeSet_mono⟩,
+  fun h ↦ ⟨h.1, fun e x y he ↦ by simpa [h] using he.edge_mem⟩
+⟩
 
 end Subgraph
 
@@ -228,8 +228,7 @@ lemma mono_left (hHK : H ≤ K) (hKG : K ≤ G) (h : H ≤s G) : K ≤s G where
   le := hKG
   vertexSet_eq := hKG.vertexSet_mono.antisymm <| h.vertexSet_eq.symm.le.trans hHK.vertexSet_mono
 
-lemma ext_of_edgeSet (hE : E(H) = E(G)) (h : H ≤s G) : H = G :=
-  h.compatible.ext h.vertexSet_eq hE
+lemma ext_of_edgeSet (hE : E(H) = E(G)) (h : H ≤s G) : H = G := h.compatible.ext h.vertexSet_eq hE
 
 @[gcongr]
 lemma banana_mono (hF : F₁ ⊆ F₂) : banana u v F₁ ≤s banana u v F₂ where
@@ -243,8 +242,10 @@ section InducedSubgraph
 
 /-! ### Induced Subgraphs -/
 
-/-- `H ≤i G` (`Graph.IsInducedSubgraph`) is a subgraph of `G` such that every link of `G`
-involving two vertices of `H` is also a link of `H`. -/
+/--
+`H ≤i G` (`Graph.IsInducedSubgraph`) is a subgraph of `G` such that every link of `G`
+involving two vertices of `H` is also a link of `H`.
+-/
 @[mk_iff]
 structure IsInducedSubgraph (H G : Graph α β) : Prop extends le : H ≤ G where
   isLink_of_mem_mem : ∀ ⦃e x y⦄, G.IsLink e x y → x ∈ V(H) → y ∈ V(H) → H.IsLink e x y
@@ -254,9 +255,12 @@ scoped infixl:50 " ≤i " => Graph.IsInducedSubgraph
 
 namespace IsInducedSubgraph
 
-protected lemma trans (h₁ : G ≤i G₁) (h₂ : G₁ ≤i G₂) : G ≤i G₂ :=
-  ⟨h₁.le.trans h₂.le, fun _ _ _ h hx hy ↦ h₁.isLink_of_mem_mem
-    (h₂.isLink_of_mem_mem h (h₁.vertexSet_mono hx) (h₁.vertexSet_mono hy)) hx hy⟩
+protected lemma trans (h₁ : G ≤i G₁) (h₂ : G₁ ≤i G₂) : G ≤i G₂ := ⟨
+  h₁.le.trans h₂.le,
+  fun _ _ _ h hx hy ↦
+    h₁.isLink_of_mem_mem (h₂.isLink_of_mem_mem h (h₁.vertexSet_mono hx) (h₁.vertexSet_mono hy)) hx
+      hy
+⟩
 
 instance : IsPartialOrder (Graph α β) (· ≤i ·) where
   refl G := ⟨le_refl G, by tauto⟩
@@ -265,8 +269,7 @@ instance : IsPartialOrder (Graph α β) (· ≤i ·) where
 
 @[simp] protected lemma rfl : G ≤i G := refl G
 
-lemma isLink_congr (hx : x ∈ V(H)) (hy : y ∈ V(H)) (h : H ≤i G) :
-    H.IsLink e x y ↔ G.IsLink e x y :=
+lemma isLink_congr (hx : x ∈ V(H)) (hy : y ∈ V(H)) (h : H ≤i G) : H.IsLink e x y ↔ G.IsLink e x y :=
   ⟨(·.mono h.le), fun hxy ↦ h.isLink_of_mem_mem hxy hx hy⟩
 
 lemma adj_congr (hx : x ∈ V(H)) (hy : y ∈ V(H)) (h : H ≤i G) : H.Adj x y ↔ G.Adj x y :=
@@ -288,11 +291,14 @@ lemma ext_of_vertexSet (hV : V(H) = V(G)) (h : H ≤i G) : H = G :=
 
 end IsInducedSubgraph
 
-lemma IsSubgraph.not_isInducedSubgraph_iff (hHG : H ≤ G) :
-    ¬ H ≤i G ↔ ∃ e x y, G.IsLink e x y ∧ x ∈ V(H) ∧ y ∈ V(H) ∧ e ∉ E(H) := by
-  contrapose!; symm
-  exact ⟨fun hnind ↦ ⟨hHG, fun e x y hxy hx hy => hxy.anti_of_mem hHG (hnind e x y hxy hx hy)⟩,
-    fun hind _ _ _ hexy hx hy ↦ hind.isLink_of_mem_mem hexy hx hy |>.edge_mem⟩
+lemma IsSubgraph.not_isInducedSubgraph_iff (hHG : H ≤ G)
+    : ¬ H ≤i G ↔ ∃ e x y, G.IsLink e x y ∧ x ∈ V(H) ∧ y ∈ V(H) ∧ e ∉ E(H) := by
+  contrapose!
+  symm
+  exact ⟨
+    fun hnind ↦ ⟨hHG, fun e x y hxy hx hy => hxy.anti_of_mem hHG (hnind e x y hxy hx hy)⟩,
+    fun hind _ _ _ hexy hx hy ↦ hind.isLink_of_mem_mem hexy hx hy |>.edge_mem
+  ⟩
 
 end InducedSubgraph
 
@@ -302,8 +308,8 @@ section ClosedSubgraph
 
 /-- `H ≤c G` (`Graph.IsClosedSubgraph`) is a union of components of `G`. -/
 @[mk_iff]
-structure IsClosedSubgraph (H G : Graph α β) : Prop extends
-  isInducedSubgraph : IsInducedSubgraph H G where
+structure IsClosedSubgraph (H G : Graph α β) : Prop
+    extends isInducedSubgraph : IsInducedSubgraph H G where
   closed : ∀ ⦃e x⦄, G.Inc e x → x ∈ V(H) → e ∈ E(H)
 
 @[inherit_doc IsClosedSubgraph]
@@ -317,8 +323,8 @@ lemma mk' (hHG : H ≤ G) (hclosed : ∀ ⦃e x⦄, G.Inc e x → x ∈ V(H) →
   closed _ _ he hx := hclosed he hx
 
 protected lemma trans (h₁ : G ≤c G₁) (h₂ : G₁ ≤c G₂) : G ≤c G₂ :=
-  mk' (h₁.le.trans h₂.le) fun _ _ h hx ↦ h₁.closed (h.of_compatible h₂.compatible'
-    (h₂.closed h (h₁.vertexSet_mono hx))) hx
+  mk' (h₁.le.trans h₂.le) fun _ _ h hx ↦
+    h₁.closed (h.of_compatible h₂.compatible' (h₂.closed h (h₁.vertexSet_mono hx))) hx
 
 instance : IsPartialOrder (Graph α β) (· ≤c ·) where
   refl _ := mk' le_rfl fun _ _ h _ ↦ h.edge_mem
@@ -338,8 +344,8 @@ lemma mem_iff_of_isLink (he : G.IsLink e x y) (hHG : H ≤c G) : x ∈ V(H) ↔ 
   on_goal 2 => rw [isLink_comm] at he
   all_goals rw [← hHG.isLink_congr hin] at he; exact he.right_mem
 
-lemma mem_tfae_of_isLink (he : G.IsLink e x y) (hHG : H ≤c G) :
-    List.TFAE [x ∈ V(H), y ∈ V(H), e ∈ E(H)] := by
+lemma mem_tfae_of_isLink (he : G.IsLink e x y) (hHG : H ≤c G)
+    : List.TFAE [x ∈ V(H), y ∈ V(H), e ∈ E(H)] := by
   tfae_have 1 → 2 := (hHG.mem_iff_of_isLink he).mp
   tfae_have 2 → 3 := (hHG.isLink_congr · |>.mpr he.symm |>.edge_mem)
   tfae_have 3 → 1 := (he.anti_of_mem hHG.le · |>.left_mem)
@@ -356,15 +362,20 @@ lemma anti_right (hHG₁ : H ≤ G₁) (hG₁ : G₁ ≤ G) (hHG : H ≤c G) : H
 
 end IsClosedSubgraph
 
-lemma IsInducedSubgraph.not_isClosedSubgraph_iff_exists_adj (hHG : H ≤i G) :
-    ¬ H ≤c G ↔ ∃ x y, G.Adj x y ∧ x ∈ V(H) ∧ y ∉ V(H) := by
-  contrapose!; symm
-  exact ⟨fun hncl ↦ ⟨hHG, fun e x ⟨y, hexy⟩ hxH =>
-    hHG.isLink_of_mem_mem hexy hxH (hncl x y ⟨e, hexy⟩ hxH) |>.edge_mem⟩,
-    fun hcl _ _ hexy ↦ (hcl.mem_iff_of_adj hexy).mp⟩
+lemma IsInducedSubgraph.not_isClosedSubgraph_iff_exists_adj (hHG : H ≤i G)
+    : ¬ H ≤c G ↔ ∃ x y, G.Adj x y ∧ x ∈ V(H) ∧ y ∉ V(H) := by
+  contrapose!
+  symm
+  exact ⟨
+    fun hncl ↦ ⟨
+      hHG,
+      fun e x ⟨y, hexy⟩ hxH => hHG.isLink_of_mem_mem hexy hxH (hncl x y ⟨e, hexy⟩ hxH) |>.edge_mem
+    ⟩,
+    fun hcl _ _ hexy ↦ (hcl.mem_iff_of_adj hexy).mp
+  ⟩
 
-lemma IsInducedSubgraph.not_isClosedSubgraph_iff_exists_isLink (hHG : H ≤i G) :
-    ¬ H ≤c G ↔ ∃ e x y, G.IsLink e x y ∧ x ∈ V(H) ∧ y ∉ V(H) := by
+lemma IsInducedSubgraph.not_isClosedSubgraph_iff_exists_isLink (hHG : H ≤i G)
+    : ¬ H ≤c G ↔ ∃ e x y, G.IsLink e x y ∧ x ∈ V(H) ∧ y ∉ V(H) := by
   rw [hHG.not_isClosedSubgraph_iff_exists_adj]
   unfold Adj
   tauto
@@ -380,7 +391,8 @@ instance : OrderBot (Graph α β) where
 instance : Inhabited (Graph α β) where
   default := ⊥
 
-@[simp, grind =] lemma noEdge_empty : Graph.noEdge (∅ : Set α) β = ⊥ := rfl
+@[simp, grind =]
+lemma noEdge_empty : Graph.noEdge (∅ : Set α) β = ⊥ := rfl
 
 @[simp] lemma vertexSet_bot : V((⊥ : Graph α β)) = ∅ := rfl
 
@@ -389,8 +401,9 @@ instance : Inhabited (Graph α β) where
 @[simp] lemma bot_isClosedSubgraph (G : Graph α β) : ⊥ ≤c G := IsClosedSubgraph.mk' bot_le (by simp)
 
 lemma eq_bot_or_vertexSet_nonempty (G : Graph α β) : G = ⊥ ∨ V(G).Nonempty := by
-  refine (em (V(G) = ∅)).elim (fun he ↦ .inl (Graph.ext he fun e x y ↦ ?_)) (Or.inr ∘
-    nonempty_iff_ne_empty.mpr)
+  refine (em (V(G) = ∅)).elim
+    (fun he ↦ .inl (Graph.ext he fun e x y ↦ ?_))
+    (Or.inr ∘ nonempty_iff_ne_empty.mpr)
   simp only [edgeSet_bot, mem_empty_iff_false, not_false_eq_true, not_isLink_of_notMem_edgeSet,
     iff_false]
   exact fun h ↦ by simpa [he] using h.left_mem
@@ -404,7 +417,7 @@ lemma ne_bot_iff : G ≠ ⊥ ↔ V(G).Nonempty :=
   not_iff_not.mp <| by simp [vertexSet_eq_empty_iff, not_nonempty_iff_eq_empty]
 
 @[push, simp]
-lemma vertexSet_not_nonempty_iff : ¬ V(G).Nonempty ↔ G = ⊥ := by
+lemma vertexSet_not_nonempty_iff : ¬V(G).Nonempty ↔ G = ⊥ := by
   simp [vertexSet_eq_empty_iff, not_nonempty_iff_eq_empty]
 
 lemma ne_bot_of_mem_vertexSet (h : x ∈ V(G)) : G ≠ ⊥ := ne_bot_iff.mpr ⟨x, h⟩
@@ -414,12 +427,10 @@ lemma isSpanningSubgraph_bot_iff : G ≤s ⊥ ↔ G = ⊥ :=
   ⟨fun h => le_bot_iff.mp h.le, fun h => h ▸ .rfl⟩
 
 @[simp]
-lemma isInducedSubgraph_bot_iff : G ≤i ⊥ ↔ G = ⊥ :=
-  ⟨fun h => le_bot_iff.mp h.le, fun h => h ▸ .rfl⟩
+lemma isInducedSubgraph_bot_iff : G ≤i ⊥ ↔ G = ⊥ := ⟨fun h => le_bot_iff.mp h.le, fun h => h ▸ .rfl⟩
 
 @[simp]
-lemma isClosedSubgraph_bot_iff : G ≤c ⊥ ↔ G = ⊥ :=
-  ⟨fun h => le_bot_iff.mp h.le, fun h => h ▸ .rfl⟩
+lemma isClosedSubgraph_bot_iff : G ≤c ⊥ ↔ G = ⊥ := ⟨fun h => le_bot_iff.mp h.le, fun h => h ▸ .rfl⟩
 
 lemma not_disjoint_of_mem_mem (h : x ∈ V(G)) (h' : x ∈ V(H)) : ¬ Disjoint G H := by
   simp only [Disjoint, le_bot_iff, not_forall, ne_eq, ne_bot_iff]

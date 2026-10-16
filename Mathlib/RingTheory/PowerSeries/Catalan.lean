@@ -36,8 +36,7 @@ namespace PowerSeries
 def catalanSeries : PowerSeries ℕ := PowerSeries.mk catalan
 
 @[simp]
-lemma catalanSeries_coeff (n : ℕ) : (coeff n) catalanSeries = catalan n := by
-  simp [catalanSeries]
+lemma catalanSeries_coeff (n : ℕ) : (coeff n) catalanSeries = catalan n := by simp [catalanSeries]
 
 @[simp]
 lemma catalanSeries_constantCoeff : constantCoeff catalanSeries = 1 := by
@@ -47,7 +46,8 @@ lemma catalanSeries_constantCoeff : constantCoeff catalanSeries = 1 := by
 theorem catalanSeries_sq_mul_X_add_one : catalanSeries ^ 2 * X + 1 = catalanSeries := by
   ext n
   cases n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n =>
     simp_rw [add_comm, map_add, coeff_one, ite_eq_right n.succ_ne_zero, zero_add, coeff_succ_mul_X,
       sq, coeff_mul, catalanSeries_coeff, catalan_succ']

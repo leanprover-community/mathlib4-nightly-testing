@@ -4,7 +4,6 @@ import Mathlib.Tactic.Linarith
 # Test that tactics respond to a cancellation request
 -/
 
-
 variable {α}
 
 open Lean Elab Tactic
@@ -28,11 +27,12 @@ def Tactic.withTimeout (ms : UInt32) (t : TacticM α) : TacticM (α ⊕ Nat) := 
   let tk ← IO.CancelToken.new
   withTheReader Core.Context (fun s => { s with cancelTk? := some tk }) do
     let t0 ← IO.monoMsNow
-    let watchdog ← IO.asTask do
-      IO.sleep ms
-      tk.set
-    let r ← Tactic.tryCatchAll (.inl <$> t)
-      (fun e => do
+    let watchdog ←
+      IO.asTask do
+        IO.sleep ms
+        tk.set
+    let r ←
+      Tactic.tryCatchAll (.inl <$> t) (fun e => do
         IO.cancel watchdog
         if !e.isInterrupt || !(← tk.isSet) then
           throw e
@@ -57,15 +57,17 @@ example : True := by
     sleep 1000
     trivial
 
-example: True := by
+example : True := by
   with_timeout 500 =>
     sleep 100
     trivial
 
 end test_infra
 
-/-- `check_timeouts 100 => tac` checks that `tac` never goes longer than `100ms` without checking
-for cancellation. -/
+/--
+`check_timeouts 100 => tac` checks that `tac` never goes longer than `100ms` without checking
+for cancellation.
+-/
 elab "check_timeouts " tol_ms:num "=>" tac:tacticSeq : tactic => do
   let mut t := 0
   let tol_ms := tol_ms.getNat
@@ -83,16 +85,10 @@ set_option linter.unusedTactic false
 set_option linter.unusedVariables false
 
 theorem linear_combination_with_10_terms
-    (a b c d e f g h i j : Int)
-    (h0 : -e + g + -h + i = 0)
-    (h1 : b + -d + -e + f + g + i = 0)
-    (h2 : -b + j = 0)
-    (h3 : c + d + -f + -i = 0)
-    (h4 : b + c + e + -g + -h + i + j = 0)
-    (h5 : -a + b + d + f + -h + -i = 0)
-    (h6 : a + d + e + -g + -h = 0)
-    (h7 : -a + d + -f + -h + j = 0)
-    (h8 : a + -d + e + f + g + h + -i + j = 0)
-    (h9 : -a + b + c + -e + -f + h + j = 0) :
-      -2*a + b + 2*c + d + -3*f + -g + 3*h + -3*i = 0 := by
+    (a b c d e f g h i j : Int) (h0 : -e + g + -h + i = 0) (h1 : b + -d + -e + f + g + i = 0)
+    (h2 : -b + j = 0) (h3 : c + d + -f + -i = 0) (h4 : b + c + e + -g + -h + i + j = 0)
+    (h5 : -a + b + d + f + -h + -i = 0) (h6 : a + d + e + -g + -h = 0)
+    (h7 : -a + d + -f + -h + j = 0) (h8 : a + -d + e + f + g + h + -i + j = 0)
+    (h9 : -a + b + c + -e + -f + h + j = 0)
+    : -2 * a + b + 2 * c + d + -3 * f + -g + 3 * h + -3 * i = 0 := by
   check_timeouts 250 => nlinarith

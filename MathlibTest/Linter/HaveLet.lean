@@ -2,7 +2,6 @@ import Mathlib.Data.Nat.Basic
 import Mathlib.Tactic.Linter.HaveLetLinter
 import Mathlib.Tactic.Tauto
 
-
 -- #adaptation_note
 -- The haveLet linter started failing after https://github.com/leanprover/lean4/pull/6299
 -- Disabling async elaboration fixes it, but of course we're not going to do that globally.
@@ -122,7 +121,7 @@ Note: This linter can be disabled with `set_option linter.haveLet 0`
 -/
 #guard_msgs in
 example : True := by
-  have := Nat.succ ?_;
+  have := Nat.succ ?_
   noise
   exact .intro
   exact 0
@@ -154,5 +153,5 @@ Note: This linter can be disabled with `set_option linter.haveLet 0`
 #guard_msgs in
 theorem ghi : True := by
   noise
-  have : Nat := Nat.succ 1;
+  have : Nat := Nat.succ 1
   exact .intro

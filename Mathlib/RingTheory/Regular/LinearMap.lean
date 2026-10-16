@@ -6,7 +6,6 @@ Authors: Nailin Guan, Yi Song
 module
 
 public import Mathlib.RingTheory.Support
-
 import Mathlib.Algebra.Module.FinitePresentation
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
@@ -37,17 +36,18 @@ namespace IsSMulRegular
 
 variable {R M N : Type*} [CommRing R] [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
 
-lemma linearMap_subsingleton_of_mem_annihilator {r : R} (reg : IsSMulRegular M r)
-    (mem_ann : r ∈ Module.annihilator R N) : Subsingleton (N →ₗ[R] M) := by
+lemma linearMap_subsingleton_of_mem_annihilator
+    {r : R} (reg : IsSMulRegular M r) (mem_ann : r ∈ Module.annihilator R N)
+    : Subsingleton (N →ₗ[R] M) := by
   apply subsingleton_of_forall_eq 0 (fun f ↦ ext fun x ↦ ?_)
   have : r • (f x) = r • 0 := by
     rw [smul_zero, ← map_smul, Module.mem_annihilator.mp mem_ann x, map_zero]
   simpa using reg this
 
-lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Module.Finite R N] :
-    Subsingleton (N →ₗ[R] M) ↔ ∃ r ∈ Module.annihilator R N, IsSMulRegular M r := by
-  refine ⟨fun hom0 ↦ ?_, fun ⟨r, mem_ann, reg⟩ ↦
-    linearMap_subsingleton_of_mem_annihilator reg mem_ann⟩
+lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Module.Finite R N]
+    : Subsingleton (N →ₗ[R] M) ↔ ∃ r ∈ Module.annihilator R N, IsSMulRegular M r := by
+  refine
+    ⟨fun hom0 ↦ ?_, fun ⟨r, mem_ann, reg⟩ ↦ linearMap_subsingleton_of_mem_annihilator reg mem_ann⟩
   cases subsingleton_or_nontrivial M
   · exact ⟨0, ⟨Submodule.zero_mem (Module.annihilator R N), IsSMulRegular.zero⟩⟩
   · by_contra! h
@@ -73,8 +73,9 @@ lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Modul
     let Mₚ' := Mₚ ⧸ (IsLocalRing.maximalIdeal (Localization.AtPrime p)) • (⊤ : Submodule Rₚ Mₚ)
     let _ : Module p.ResidueField Nₚ' :=
       Module.instQuotientIdealSubmoduleHSMulTop Nₚ (maximalIdeal (Localization.AtPrime p))
-    have := isAssociatedPrime_iff.mp <| AssociatedPrimes.mem_iff.mp
-      (associatedPrimes.mem_associatedPrimes_atPrime_of_mem_associatedPrimes pass)
+    have :=
+      isAssociatedPrime_iff.mp <| AssociatedPrimes.mem_iff.mp
+        (associatedPrimes.mem_associatedPrimes_atPrime_of_mem_associatedPrimes pass)
     rcases this.2 with ⟨x, hx⟩
     have : Nontrivial (Module.Dual p.ResidueField Nₚ') := by simpa using ntr
     rcases exists_ne (α := Module.Dual p.ResidueField Nₚ') 0 with ⟨g, hg⟩
@@ -82,7 +83,8 @@ lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Modul
       __ := g
       map_smul' r x := by
         simp only [AddHom.toFun_eq_coe, coe_toAddHom, RingHom.id_apply]
-        convert! g.map_smul (Ideal.Quotient.mk _ r) x }
+        convert! g.map_smul (Ideal.Quotient.mk _ r) x
+    }
     let to_res : Nₚ →ₗ[Rₚ] p.ResidueField :=
       to_res'.comp ((maximalIdeal (Localization.AtPrime p)) • (⊤ : Submodule Rₚ Nₚ)).mkQ
     replace hx : maximalIdeal (Localization.AtPrime p) = (toSpanSingleton _ _ x).ker :=
@@ -97,7 +99,8 @@ lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Modul
       absurd hg
       apply LinearMap.ext
       intro np'
-      induction np' using Submodule.Quotient.induction_on with | _ np
+      induction np' using Submodule.Quotient.induction_on with
+      | _ np
       change to_res np = 0
       apply inj1
       change f np = _
@@ -106,6 +109,7 @@ lemma subsingleton_linearMap_iff [IsNoetherianRing R] [Module.Finite R M] [Modul
     let _ := Module.finitePresentation_of_finite R N
     contrapose f_ne0
     exact (Module.FinitePresentation.linearEquivMapExtendScalars
-      p'.asIdeal.primeCompl).symm.map_eq_zero_iff.mp (Subsingleton.eq_zero _)
+        p'.asIdeal.primeCompl).symm.map_eq_zero_iff.mp
+      (Subsingleton.eq_zero _)
 
 end IsSMulRegular

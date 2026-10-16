@@ -25,13 +25,15 @@ open CategoryTheory MonoidalCategory Limits Opposite
 
 namespace CategoryTheory.Functor.PushoutObjObj
 
-variable {C : Type*} [Category* C] [MonoidalCategory C] [BraidedCategory C]
-  {X₁ Y₁ X₂ Y₂ : C} {f₁ : X₁ ⟶ Y₁} {f₂ : X₂ ⟶ Y₂}
-  (sq : (curriedTensor C).PushoutObjObj f₁ f₂)
+variable
+  {C : Type*} [Category* C] [MonoidalCategory C] [BraidedCategory C]
+  {X₁ Y₁ X₂ Y₂ : C} {f₁ : X₁ ⟶ Y₁} {f₂ : X₂ ⟶ Y₂} (sq : (curriedTensor C).PushoutObjObj f₁ f₂)
 
-/-- In a braided monoidal category, from a `Functor.PushoutObjObj` structure for
+/--
+In a braided monoidal category, from a `Functor.PushoutObjObj` structure for
 the bifunctor `curriedTensor` and two morphism `f₁` and `f₂`, one may
-obtain a similar structure for `f₂` and `f₁`. -/
+obtain a similar structure for `f₂` and `f₁`.
+-/
 @[simps!]
 def flipTensor : (curriedTensor C).PushoutObjObj f₂ f₁ :=
   sq.flip.ofNatIso (BraidedCategory.curriedBraidingNatIso _).symm

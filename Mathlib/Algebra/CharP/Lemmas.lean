@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.Data.Nat.Multiplicity
-
 import Mathlib.Data.Nat.Choose.Sum
 
 /-!
@@ -27,51 +26,53 @@ namespace Commute
 variable [Semiring R] {p : ℕ} (hp : p.Prime) {x y : R}
 include hp
 
-protected lemma add_pow_prime_pow_eq' (h : Commute x y) (n : ℕ) :
-    (x + y) ^ p ^ n =
-      x ^ p ^ n + y ^ p ^ n +
-        p * ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * ↑((p ^ n).choose k / p) := calc
-  _ = ∑ k ∈ Icc 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * (p ^ n).choose k := by
-    rw [h.add_pow, ← Nat.Ico_zero_eq_range, Ico_add_one_right_eq_Icc]
-  _ = x ^ p ^ n + y ^ p ^ n + ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * (p ^ n).choose k := by
-    simp_rw [Icc_eq_cons_Ico zero_le, Ico_eq_cons_Ioo (pow_pos hp.pos _)]
-    simp [-cons_eq_insert, add_assoc]
-  _ = _ := by
-    simp_rw [mul_sum]
-    congr! 2 with k hk
-    obtain ⟨hk₀, hk⟩ := mem_Ioo.1 hk
-    -- The maths is over now. We just commute things to their place.
-    rw [Nat.cast_comm, mul_assoc (_ * _)]
-    norm_cast
-    rw [Nat.div_mul_cancel (hp.dvd_choose_pow _ _)] <;> lia
+protected lemma add_pow_prime_pow_eq' (h : Commute x y) (n : ℕ)
+    : (x + y) ^ p ^ n
+      = x ^ p ^ n + y ^ p ^ n
+        + p * ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * ↑((p ^ n).choose k / p) :=
+  calc
+    _ = ∑ k ∈ Icc 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * (p ^ n).choose k := by
+      rw [h.add_pow, ← Nat.Ico_zero_eq_range, Ico_add_one_right_eq_Icc]
+    _ = x ^ p ^ n + y ^ p ^ n
+        + ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * (p ^ n).choose k := by
+      simp_rw [Icc_eq_cons_Ico zero_le, Ico_eq_cons_Ioo (pow_pos hp.pos _)]
+      simp [-cons_eq_insert, add_assoc]
+    _ = _ := by
+      simp_rw [mul_sum]
+      congr! 2 with k hk
+      obtain ⟨hk₀, hk⟩ := mem_Ioo.1 hk
+      -- The maths is over now. We just commute things to their place.
+      rw [Nat.cast_comm, mul_assoc (_ * _)]
+      norm_cast
+      rw [Nat.div_mul_cancel (hp.dvd_choose_pow _ _)] <;> lia
 
-protected lemma add_pow_prime_pow_eq (h : Commute x y) (n : ℕ) :
-    (x + y) ^ p ^ n =
-      x ^ p ^ n + y ^ p ^ n +
-        p * x * y *
-          ∑ k ∈ Ioo 0 (p ^ n), x ^ (k - 1) * y ^ (p ^ n - k - 1) * ↑((p ^ n).choose k / p) := by
+protected lemma add_pow_prime_pow_eq (h : Commute x y) (n : ℕ)
+    : (x + y) ^ p ^ n
+      = x ^ p ^ n + y ^ p ^ n
+        + p * x * y
+          * ∑ k ∈ Ioo 0 (p ^ n), x ^ (k - 1) * y ^ (p ^ n - k - 1) * ↑((p ^ n).choose k / p) := by
   rw [h.add_pow_prime_pow_eq' hp, mul_assoc _ x, mul_assoc, mul_sum _ _ (_ * _)]
   congr! 3 with k hk
   obtain ⟨hk₀, hk⟩ := mem_Ioo.1 hk
   rw [← mul_pow_sub_one (by lia), ← mul_pow_sub_one (n := p ^ n - k) (by lia)]
   rw [(h.pow_left _).mul_mul_mul_comm, mul_assoc (x * y)]
 
-protected lemma add_pow_prime_eq' (h : Commute x y) :
-    (x + y) ^ p = x ^ p + y ^ p + p * ∑ k ∈ Ioo 0 p, x ^ k * y ^ (p - k) * ↑(p.choose k / p) := by
+protected lemma add_pow_prime_eq' (h : Commute x y)
+    : (x + y) ^ p = x ^ p + y ^ p + p * ∑ k ∈ Ioo 0 p, x ^ k * y ^ (p - k) * ↑(p.choose k / p) := by
   simpa using h.add_pow_prime_pow_eq' hp 1
 
-protected lemma add_pow_prime_eq (h : Commute x y) :
-    (x + y) ^ p =
-      x ^ p + y ^ p + p * x * y *
-        ∑ k ∈ Ioo 0 p, x ^ (k - 1) * y ^ (p - k - 1) * ↑(p.choose k / p) := by
+protected lemma add_pow_prime_eq (h : Commute x y)
+    : (x + y) ^ p
+      = x ^ p + y ^ p
+        + p * x * y * ∑ k ∈ Ioo 0 p, x ^ (k - 1) * y ^ (p - k - 1) * ↑(p.choose k / p) := by
   simpa using h.add_pow_prime_pow_eq hp 1
 
-protected theorem exists_add_pow_prime_pow_eq (h : Commute x y) (n : ℕ) :
-    ∃ r, (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n + p * x * y * r :=
+protected theorem exists_add_pow_prime_pow_eq (h : Commute x y) (n : ℕ)
+    : ∃ r, (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n + p * x * y * r :=
   ⟨_, h.add_pow_prime_pow_eq hp n⟩
 
-protected theorem exists_add_pow_prime_eq (h : Commute x y) :
-    ∃ r, (x + y) ^ p = x ^ p + y ^ p + p * x * y * r :=
+protected theorem exists_add_pow_prime_eq (h : Commute x y)
+    : ∃ r, (x + y) ^ p = x ^ p + y ^ p + p * x * y * r :=
   ⟨_, h.add_pow_prime_eq hp⟩
 
 end Commute
@@ -81,31 +82,31 @@ section CommSemiring
 variable [CommSemiring R] {p : ℕ} (hp : p.Prime) (x y : R) (n : ℕ)
 include hp
 
-lemma add_pow_prime_pow_eq' :
-    (x + y) ^ p ^ n =
-      x ^ p ^ n + y ^ p ^ n +
-        p * ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * ↑((p ^ n).choose k / p) :=
+lemma add_pow_prime_pow_eq'
+    : (x + y) ^ p ^ n
+      = x ^ p ^ n + y ^ p ^ n
+        + p * ∑ k ∈ Ioo 0 (p ^ n), x ^ k * y ^ (p ^ n - k) * ↑((p ^ n).choose k / p) :=
   (Commute.all x y).add_pow_prime_pow_eq' hp n
 
-lemma add_pow_prime_pow_eq :
-    (x + y) ^ p ^ n =
-      x ^ p ^ n + y ^ p ^ n +
-        p * x * y *
-          ∑ k ∈ Ioo 0 (p ^ n), x ^ (k - 1) * y ^ (p ^ n - k - 1) * ↑((p ^ n).choose k / p) :=
+lemma add_pow_prime_pow_eq
+    : (x + y) ^ p ^ n
+      = x ^ p ^ n + y ^ p ^ n
+        + p * x * y
+          * ∑ k ∈ Ioo 0 (p ^ n), x ^ (k - 1) * y ^ (p ^ n - k - 1) * ↑((p ^ n).choose k / p) :=
   (Commute.all x y).add_pow_prime_pow_eq hp n
 
-lemma add_pow_prime_eq' :
-    (x + y) ^ p = x ^ p + y ^ p + p * ∑ k ∈ Ioo 0 p, x ^ k * y ^ (p - k) * ↑(p.choose k / p) :=
+lemma add_pow_prime_eq'
+    : (x + y) ^ p = x ^ p + y ^ p + p * ∑ k ∈ Ioo 0 p, x ^ k * y ^ (p - k) * ↑(p.choose k / p) :=
   (Commute.all x y).add_pow_prime_eq' hp
 
-theorem add_pow_prime_eq :
-    (x + y) ^ p =
-      x ^ p + y ^ p + p * x * y *
-        ∑ k ∈ Ioo 0 p, x ^ (k - 1) * y ^ (p - k - 1) * ↑(p.choose k / p) :=
+theorem add_pow_prime_eq
+    : (x + y) ^ p
+      = x ^ p + y ^ p
+        + p * x * y * ∑ k ∈ Ioo 0 p, x ^ (k - 1) * y ^ (p - k - 1) * ↑(p.choose k / p) :=
   (Commute.all x y).add_pow_prime_eq hp
 
-theorem exists_add_pow_prime_pow_eq :
-    ∃ r, (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n + p * x * y * r :=
+theorem exists_add_pow_prime_pow_eq
+    : ∃ r, (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n + p * x * y * r :=
   (Commute.all x y).exists_add_pow_prime_pow_eq hp n
 
 theorem exists_add_pow_prime_eq : ∃ r, (x + y) ^ p = x ^ p + y ^ p + p * x * y * r :=
@@ -125,15 +126,15 @@ lemma add_pow_expChar_of_commute (h : Commute x y) : (x + y) ^ p = x ^ p + y ^ p
   · let ⟨r, hr⟩ := h.exists_add_pow_prime_eq hprime
     simp [hr]
 
-lemma add_pow_expChar_pow_of_commute (h : Commute x y) :
-    (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n := by
+lemma add_pow_expChar_pow_of_commute (h : Commute x y)
+    : (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n := by
   obtain _ | hprime := hR
   · simp only [one_pow, pow_one]
   · let ⟨r, hr⟩ := h.exists_add_pow_prime_pow_eq hprime n
     simp [hr]
 
-lemma add_pow_eq_mul_pow_add_pow_div_expChar_of_commute (h : Commute x y) :
-    (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) := by
+lemma add_pow_eq_mul_pow_add_pow_div_expChar_of_commute (h : Commute x y)
+    : (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) := by
   rw [← add_pow_expChar_of_commute _ h, ← pow_mul, ← pow_add, Nat.mod_add_div]
 
 end ExpChar
@@ -147,8 +148,8 @@ lemma add_pow_char_of_commute (h : Commute x y) : (x + y) ^ p = x ^ p + y ^ p :=
 lemma add_pow_char_pow_of_commute (h : Commute x y) : (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n :=
   add_pow_expChar_pow_of_commute _ _ h
 
-lemma add_pow_eq_mul_pow_add_pow_div_char_of_commute (h : Commute x y) :
-    (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
+lemma add_pow_eq_mul_pow_add_pow_div_char_of_commute (h : Commute x y)
+    : (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
   add_pow_eq_mul_pow_add_pow_div_expChar_of_commute _ _ h
 
 end CharP
@@ -165,8 +166,8 @@ lemma add_pow_expChar : (x + y) ^ p = x ^ p + y ^ p := add_pow_expChar_of_commut
 lemma add_pow_expChar_pow : (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n :=
   add_pow_expChar_pow_of_commute _ _ <| .all ..
 
-lemma add_pow_eq_mul_pow_add_pow_div_expChar :
-    (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
+lemma add_pow_eq_mul_pow_add_pow_div_expChar
+    : (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
   add_pow_eq_mul_pow_add_pow_div_expChar_of_commute _ _ <| .all ..
 
 end ExpChar
@@ -177,8 +178,8 @@ variable [hp : Fact p.Prime] [CharP R p]
 lemma add_pow_char : (x + y) ^ p = x ^ p + y ^ p := add_pow_expChar ..
 lemma add_pow_char_pow : (x + y) ^ p ^ n = x ^ p ^ n + y ^ p ^ n := add_pow_expChar_pow ..
 
-lemma add_pow_eq_mul_pow_add_pow_div_char :
-    (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
+lemma add_pow_eq_mul_pow_add_pow_div_char
+    : (x + y) ^ n = (x + y) ^ (n % p) * (x ^ p + y ^ p) ^ (n / p) :=
   add_pow_eq_mul_pow_add_pow_div_expChar ..
 
 end CharP
@@ -194,12 +195,12 @@ include hR
 lemma sub_pow_expChar_of_commute (h : Commute x y) : (x - y) ^ p = x ^ p - y ^ p := by
   simp [eq_sub_iff_add_eq, ← add_pow_expChar_of_commute _ (h.sub_left rfl)]
 
-lemma sub_pow_expChar_pow_of_commute (h : Commute x y) :
-    (x - y) ^ p ^ n = x ^ p ^ n - y ^ p ^ n := by
+lemma sub_pow_expChar_pow_of_commute (h : Commute x y)
+    : (x - y) ^ p ^ n = x ^ p ^ n - y ^ p ^ n := by
   simp [eq_sub_iff_add_eq, ← add_pow_expChar_pow_of_commute _ _ (h.sub_left rfl)]
 
-lemma sub_pow_eq_mul_pow_sub_pow_div_expChar_of_commute (h : Commute x y) :
-    (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) := by
+lemma sub_pow_eq_mul_pow_sub_pow_div_expChar_of_commute (h : Commute x y)
+    : (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) := by
   rw [← sub_pow_expChar_of_commute _ h, ← pow_mul, ← pow_add, Nat.mod_add_div]
 
 variable (R)
@@ -233,8 +234,8 @@ lemma neg_one_pow_char : (-1 : R) ^ p = -1 := neg_one_pow_expChar ..
 
 lemma neg_one_pow_char_pow : (-1 : R) ^ p ^ n = -1 := neg_one_pow_expChar_pow ..
 
-lemma sub_pow_eq_mul_pow_sub_pow_div_char_of_commute (h : Commute x y) :
-    (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
+lemma sub_pow_eq_mul_pow_sub_pow_div_char_of_commute (h : Commute x y)
+    : (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
   sub_pow_eq_mul_pow_sub_pow_div_expChar_of_commute _ _ h
 
 end CharP
@@ -251,8 +252,8 @@ lemma sub_pow_expChar : (x - y) ^ p = x ^ p - y ^ p := sub_pow_expChar_of_commut
 lemma sub_pow_expChar_pow : (x - y) ^ p ^ n = x ^ p ^ n - y ^ p ^ n :=
   sub_pow_expChar_pow_of_commute _ _ <| .all ..
 
-lemma sub_pow_eq_mul_pow_sub_pow_div_expChar :
-    (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
+lemma sub_pow_eq_mul_pow_sub_pow_div_expChar
+    : (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
   sub_pow_eq_mul_pow_sub_pow_div_expChar_of_commute _ _ <| .all ..
 
 end ExpChar
@@ -263,19 +264,19 @@ variable [hp : Fact p.Prime] [CharP R p]
 lemma sub_pow_char : (x - y) ^ p = x ^ p - y ^ p := sub_pow_expChar ..
 lemma sub_pow_char_pow : (x - y) ^ p ^ n = x ^ p ^ n - y ^ p ^ n := sub_pow_expChar_pow ..
 
-lemma sub_pow_eq_mul_pow_sub_pow_div_char :
-    (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
+lemma sub_pow_eq_mul_pow_sub_pow_div_char
+    : (x - y) ^ n = (x - y) ^ (n % p) * (x ^ p - y ^ p) ^ (n / p) :=
   sub_pow_eq_mul_pow_sub_pow_div_expChar ..
 
 end CharP
 
-lemma Nat.Prime.dvd_add_pow_sub_pow_of_dvd (hpri : p.Prime) {r : R} (h₁ : r ∣ x ^ p)
-    (h₂ : r ∣ p * x) : r ∣ (x + y) ^ p - y ^ p := by
+lemma Nat.Prime.dvd_add_pow_sub_pow_of_dvd
+    (hpri : p.Prime) {r : R} (h₁ : r ∣ x ^ p) (h₂ : r ∣ p * x)
+    : r ∣ (x + y) ^ p - y ^ p := by
   rw [add_pow_prime_eq hpri, add_right_comm, add_assoc, add_sub_assoc, add_sub_cancel_right]
   exact dvd_add h₁ (h₂.trans <| (dvd_mul_right ..).trans <| dvd_mul_right ..)
 
 end CommRing
-
 
 namespace CharP
 
@@ -344,11 +345,12 @@ lemma sum_pow_char {ι : Type*} (s : Finset ι) (f : ι → R) : (∑ i ∈ s, f
 lemma list_sum_pow_char_pow (l : List R) : l.sum ^ p ^ n = (l.map (· ^ p ^ n : R → R)).sum :=
   map_list_sum (iterateFrobenius R p n) _
 
-lemma multiset_sum_pow_char_pow (s : Multiset R) :
-    s.sum ^ p ^ n = (s.map (· ^ p ^ n : R → R)).sum :=
+lemma multiset_sum_pow_char_pow (s : Multiset R)
+    : s.sum ^ p ^ n = (s.map (· ^ p ^ n : R → R)).sum :=
   map_multiset_sum (iterateFrobenius R p n) _
 
-lemma sum_pow_char_pow {ι : Type*} (s : Finset ι) (f : ι → R) :
-    (∑ i ∈ s, f i) ^ p ^ n = ∑ i ∈ s, f i ^ p ^ n := map_sum (iterateFrobenius R p n) _ _
+lemma sum_pow_char_pow {ι : Type*} (s : Finset ι) (f : ι → R)
+    : (∑ i ∈ s, f i) ^ p ^ n = ∑ i ∈ s, f i ^ p ^ n :=
+  map_sum (iterateFrobenius R p n) _ _
 
 end Frobenius

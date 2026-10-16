@@ -42,7 +42,8 @@ variable {E : Type u₃} [Category.{v₃} E] {E' : Type u₄} [Category.{v₄} E
 variable {F G H I : C ⥤ D}
 
 attribute [local grind =] NatTrans.id_app' in
-/-- `Functor.category C D` gives the category structure on functors and natural transformations
+/--
+`Functor.category C D` gives the category structure on functors and natural transformations
 between categories `C` and `D`.
 
 Notice that if `C` and `D` are both small categories at the same universe level,
@@ -73,39 +74,39 @@ theorem congr_app {α β : F ⟶ G} (h : α = β) (X : C) : α.app X = β.app X 
 theorem id_app (F : C ⥤ D) (X : C) : (𝟙 F : F ⟶ F).app X = 𝟙 (F.obj X) := rfl
 
 @[simp, grind _=_, to_dual self, map (attr := reassoc)]
-theorem comp_app {F G H : C ⥤ D} (α : F ⟶ G) (β : G ⟶ H) (X : C) :
-    (α ≫ β).app X = α.app X ≫ β.app X := rfl
+theorem comp_app {F G H : C ⥤ D} (α : F ⟶ G) (β : G ⟶ H) (X : C)
+    : (α ≫ β).app X = α.app X ≫ β.app X :=
+  rfl
 
 @[to_dual none, reassoc]
-theorem app_naturality {F G : C ⥤ D ⥤ E} (T : F ⟶ G) (X : C) {Y Z : D} (f : Y ⟶ Z) :
-    (F.obj X).map f ≫ (T.app X).app Z = (T.app X).app Y ≫ (G.obj X).map f :=
+theorem app_naturality {F G : C ⥤ D ⥤ E} (T : F ⟶ G) (X : C) {Y Z : D} (f : Y ⟶ Z)
+    : (F.obj X).map f ≫ (T.app X).app Z = (T.app X).app Y ≫ (G.obj X).map f :=
   (T.app X).naturality f
 
 @[to_dual none, map (attr := reassoc (attr := simp))]
-theorem naturality_app {F G : C ⥤ D ⥤ E} (T : F ⟶ G) (Z : D) {X Y : C} (f : X ⟶ Y) :
-    (F.map f).app Z ≫ (T.app Y).app Z = (T.app X).app Z ≫ (G.map f).app Z :=
+theorem naturality_app {F G : C ⥤ D ⥤ E} (T : F ⟶ G) (Z : D) {X Y : C} (f : X ⟶ Y)
+    : (F.map f).app Z ≫ (T.app Y).app Z = (T.app X).app Z ≫ (G.map f).app Z :=
   congr(app $(T.naturality f) Z)
 
 @[to_dual none, reassoc]
-theorem naturality_app_app {F G : C ⥤ D ⥤ E ⥤ E'}
-    (α : F ⟶ G) {X₁ Y₁ : C} (f : X₁ ⟶ Y₁) (X₂ : D) (X₃ : E) :
-    ((F.map f).app X₂).app X₃ ≫ ((α.app Y₁).app X₂).app X₃ =
-      ((α.app X₁).app X₂).app X₃ ≫ ((G.map f).app X₂).app X₃ :=
+theorem naturality_app_app
+    {F G : C ⥤ D ⥤ E ⥤ E'} (α : F ⟶ G) {X₁ Y₁ : C} (f : X₁ ⟶ Y₁) (X₂ : D) (X₃ : E)
+    : ((F.map f).app X₂).app X₃ ≫ ((α.app Y₁).app X₂).app X₃
+      = ((α.app X₁).app X₂).app X₃ ≫ ((G.map f).app X₂).app X₃ :=
   congr_app (NatTrans.naturality_app α X₂ f) X₃
 
 @[reassoc]
-lemma naturality_inv {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (f : X ⟶ Y) [IsIso (α.app X)]
-    [IsIso (α.app Y)] :
-    inv (α.app X) ≫ F.map f = G.map f ≫ inv (α.app Y) := by
+lemma naturality_inv
+    {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (f : X ⟶ Y) [IsIso (α.app X)] [IsIso (α.app Y)]
+    : inv (α.app X) ≫ F.map f = G.map f ≫ inv (α.app Y) := by
   rw [IsIso.inv_comp_eq, ← Category.assoc, IsIso.eq_comp_inv]
   exact α.naturality f
 
 /-- A natural transformation is an epimorphism if each component is. -/
 @[to_dual /-- A natural transformation is a monomorphism if each component is. -/]
-theorem epi_of_epi_app (α : F ⟶ G) [∀ X : C, Epi (α.app X)] : Epi α :=
-  ⟨fun g h eq => by
-    ext X
-    rw [← cancel_epi (α.app X), ← comp_app, eq, comp_app]⟩
+theorem epi_of_epi_app (α : F ⟶ G) [∀ X : C, Epi (α.app X)] : Epi α := ⟨fun g h eq => by
+  ext X
+  rw [← cancel_epi (α.app X), ← comp_app, eq, comp_app]⟩
 
 /-- The monoid of natural transformations of the identity is commutative. -/
 @[to_dual self]
@@ -113,11 +114,13 @@ lemma id_comm (α β : (𝟭 C) ⟶ (𝟭 C)) : α ≫ β = β ≫ α := by
   ext X
   exact (α.naturality (β.app X)).symm
 
-/-- `hcomp α β` is the horizontal composition of natural transformations.
+/--
+`hcomp α β` is the horizontal composition of natural transformations.
 
 There are two possible definitions that are equivalent and dual to each other.
 This is inconvenient for `to_dual`, so we `no_expose` the definition,
-and instead rely on `hcomp_app` or `hcomp_app'` to unfold it. -/
+and instead rely on `hcomp_app` or `hcomp_app'` to unfold it.
+-/
 @[no_expose, to_dual self]
 def hcomp {H I : D ⥤ E} (α : F ⟶ G) (β : H ⟶ I) : F ⋙ H ⟶ G ⋙ I where
   app := fun X : C => β.app (F.obj X) ≫ I.map (α.app X)
@@ -126,15 +129,14 @@ def hcomp {H I : D ⥤ E} (α : F ⟶ G) (β : H ⟶ I) : F ⋙ H ⟶ G ⋙ I wh
 infixl:80 " ◫ " => hcomp
 
 @[simp, grind =]
-theorem hcomp_app {H I : D ⥤ E} (α : F ⟶ G) (β : H ⟶ I) (X : C) :
-    (α ◫ β).app X = β.app (F.obj X) ≫ I.map (α.app X) :=
+theorem hcomp_app {H I : D ⥤ E} (α : F ⟶ G) (β : H ⟶ I) (X : C)
+    : (α ◫ β).app X = β.app (F.obj X) ≫ I.map (α.app X) :=
   (rfl)
 
 to_dual_for hcomp_app := by simp
 
 @[to_dual self]
-theorem hcomp_id_app {H : D ⥤ E} (α : F ⟶ G) (X : C) : (α ◫ 𝟙 H).app X = H.map (α.app X) := by
-  simp
+theorem hcomp_id_app {H : D ⥤ E} (α : F ⟶ G) (X : C) : (α ◫ 𝟙 H).app X = H.map (α.app X) := by simp
 
 @[to_dual self]
 theorem id_hcomp_app {H : E ⥤ C} (α : F ⟶ G) (X : E) : (𝟙 H ◫ α).app X = α.app _ := by simp
@@ -144,8 +146,8 @@ theorem id_hcomp_app {H : E ⥤ C} (α : F ⟶ G) (X : E) : (𝟙 H ◫ α).app 
 -- because functor composition is definitionally associative,
 -- but relying on the definitional equality causes bad problems with elaboration later.)
 @[to_dual self]
-theorem exchange {I J K : D ⥤ E} (α : F ⟶ G) (β : G ⟶ H) (γ : I ⟶ J) (δ : J ⟶ K) :
-    (α ≫ β) ◫ (γ ≫ δ) = (α ◫ γ) ≫ β ◫ δ := by
+theorem exchange {I J K : D ⥤ E} (α : F ⟶ G) (β : G ⟶ H) (γ : I ⟶ J) (δ : J ⟶ K)
+    : (α ≫ β) ◫ (γ ≫ δ) = (α ◫ γ) ≫ β ◫ δ := by
   cat_disch
 
 end NatTrans
@@ -155,45 +157,40 @@ namespace Functor
 /-- Flip the arguments of a bifunctor. See also `Currying.lean`. -/
 @[implicit_reducible, simps (attr := grind =) obj_obj obj_map]
 protected def flip (F : C ⥤ D ⥤ E) : D ⥤ C ⥤ E where
-  obj k :=
-    { obj := fun j => (F.obj j).obj k,
-      map := fun f => (F.map f).app k, }
+  obj k := { obj := fun j => (F.obj j).obj k, map := fun f => (F.map f).app k }
   map f := { app := fun j => (F.obj j).map f }
 
 -- `@[simps]` doesn't produce a nicely stated lemma here:
 -- the implicit arguments for `app` use the definition of `flip`, rather than `flip` itself.
-@[simp, grind =] theorem flip_map_app (F : C ⥤ D ⥤ E) {d d' : D} (f : d ⟶ d') (c : C) :
-    (F.flip.map f).app c = (F.obj c).map f := rfl
+@[simp, grind =]
+theorem flip_map_app (F : C ⥤ D ⥤ E) {d d' : D} (f : d ⟶ d') (c : C)
+    : (F.flip.map f).app c = (F.obj c).map f :=
+  rfl
 
-/-- The left unitor, a natural isomorphism `((𝟭 _) ⋙ F) ≅ F`.
--/
+/-- The left unitor, a natural isomorphism `((𝟭 _) ⋙ F) ≅ F`. -/
 @[implicit_reducible, simps]
-def leftUnitor (F : C ⥤ D) :
-    𝟭 C ⋙ F ≅ F where
+def leftUnitor (F : C ⥤ D) : 𝟭 C ⋙ F ≅ F where
   hom := { app := fun X => 𝟙 (F.obj X) }
   inv := { app := fun X => 𝟙 (F.obj X) }
 
-/-- The right unitor, a natural isomorphism `(F ⋙ (𝟭 B)) ≅ F`.
--/
+/-- The right unitor, a natural isomorphism `(F ⋙ (𝟭 B)) ≅ F`. -/
 @[implicit_reducible, simps]
-def rightUnitor (F : C ⥤ D) :
-    F ⋙ 𝟭 D ≅ F where
+def rightUnitor (F : C ⥤ D) : F ⋙ 𝟭 D ≅ F where
   hom := { app := fun X => 𝟙 (F.obj X) }
   inv := { app := fun X => 𝟙 (F.obj X) }
 
-/-- The associator for functors, a natural isomorphism `((F ⋙ G) ⋙ H) ≅ (F ⋙ (G ⋙ H))`.
+/--
+The associator for functors, a natural isomorphism `((F ⋙ G) ⋙ H) ≅ (F ⋙ (G ⋙ H))`.
 
 (In fact, `iso.refl _` will work here, but it tends to make Lean slow later,
 and it's usually best to insert explicit associators.)
 -/
 @[implicit_reducible, simps]
-def associator (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') :
-    (F ⋙ G) ⋙ H ≅ F ⋙ G ⋙ H where
+def associator (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') : (F ⋙ G) ⋙ H ≅ F ⋙ G ⋙ H where
   hom := { app := fun _ => 𝟙 _ }
   inv := { app := fun _ => 𝟙 _ }
 
-protected theorem assoc (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') : (F ⋙ G) ⋙ H = F ⋙ G ⋙ H :=
-  rfl
+protected theorem assoc (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') : (F ⋙ G) ⋙ H = F ⋙ G ⋙ H := rfl
 
 end Functor
 
@@ -202,28 +199,27 @@ variable (C D E) in
 @[implicit_reducible, simps]
 def flipFunctor : (C ⥤ D ⥤ E) ⥤ D ⥤ C ⥤ E where
   obj F := F.flip
-  map {F₁ F₂} φ :=
-    { app := fun Y =>
-      { app := fun X => (φ.app X).app Y } }
+  map {F₁ F₂} φ := { app := fun Y => { app := fun X => (φ.app X).app Y } }
 
 namespace Iso
 
 @[reassoc (attr := simp)]
-theorem map_hom_inv_id_app {X Y : C} (e : X ≅ Y) (F : C ⥤ D ⥤ E) (Z : D) :
-    (F.map e.hom).app Z ≫ (F.map e.inv).app Z = 𝟙 _ := by
+theorem map_hom_inv_id_app {X Y : C} (e : X ≅ Y) (F : C ⥤ D ⥤ E) (Z : D)
+    : (F.map e.hom).app Z ≫ (F.map e.inv).app Z = 𝟙 _ := by
   cat_disch
 
 @[reassoc (attr := simp)]
-theorem map_inv_hom_id_app {X Y : C} (e : X ≅ Y) (F : C ⥤ D ⥤ E) (Z : D) :
-    (F.map e.inv).app Z ≫ (F.map e.hom).app Z = 𝟙 _ := by
+theorem map_inv_hom_id_app {X Y : C} (e : X ≅ Y) (F : C ⥤ D ⥤ E) (Z : D)
+    : (F.map e.inv).app Z ≫ (F.map e.hom).app Z = 𝟙 _ := by
   cat_disch
 
 end Iso
 
-/-- The natural transformation `G.flip.obj Y ⟶ G'.flip.obj Y` induced by
-a natural transformation `τ : G ⟶ G'` between bifunctors. -/
-abbrev NatTrans.flipApp {G G' : C ⥤ D ⥤ E} (τ : G ⟶ G') (Y : D) :
-    G.flip.obj Y ⟶ G'.flip.obj Y :=
+/--
+The natural transformation `G.flip.obj Y ⟶ G'.flip.obj Y` induced by
+a natural transformation `τ : G ⟶ G'` between bifunctors.
+-/
+abbrev NatTrans.flipApp {G G' : C ⥤ D ⥤ E} (τ : G ⟶ G') (Y : D) : G.flip.obj Y ⟶ G'.flip.obj Y :=
   ((flipFunctor _ _ _).map τ).app Y
 
 end CategoryTheory

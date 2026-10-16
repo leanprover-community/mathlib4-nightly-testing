@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.RingTheory.Polynomial.Chebyshev
-
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv
 import Mathlib.MeasureTheory.Integral.IntegrableOn
@@ -48,25 +47,24 @@ open scoped NNReal
 
 /-- Lebesgue measure scaled by √(1 - x ^ 2)⁻¹. -/
 noncomputable def measureT : Measure ℝ :=
-  (volume.withDensity
-    fun x ↦ ENNReal.ofNNReal (.mk (√(1 - x ^ 2)⁻¹) (by positivity))).restrict (Set.Ioc (-1) 1)
+  (volume.withDensity fun x ↦ ENNReal.ofNNReal (.mk (√(1 - x ^ 2)⁻¹) (by positivity))).restrict
+    (Set.Ioc (-1) 1)
 
-theorem integral_measureT (f : ℝ → ℝ) :
-    ∫ x, f x ∂measureT = ∫ x in -1..1, f x * √(1 - x ^ 2)⁻¹ := by
-  rw [integral_of_le (by simp), measureT,
-    restrict_withDensity (by measurability),
+theorem integral_measureT (f : ℝ → ℝ)
+    : ∫ x, f x ∂measureT = ∫ x in -1..1, f x * √(1 - x ^ 2)⁻¹ := by
+  rw [integral_of_le (by simp), measureT, restrict_withDensity (by measurability),
     integral_withDensity_eq_integral_smul (by fun_prop)]
   congr! 2 with x hx
   simp [NNReal.smul_def, mul_comm]
 
-theorem intervalIntegrable_sqrt_one_sub_sq_inv :
-    IntervalIntegrable (fun x ↦ √(1 - x ^ 2)⁻¹) volume (-1) 1 := by
+theorem intervalIntegrable_sqrt_one_sub_sq_inv
+    : IntervalIntegrable (fun x ↦ √(1 - x ^ 2)⁻¹) volume (-1) 1 := by
   rw [intervalIntegrable_iff]
   refine integrableOn_deriv_of_nonneg continuous_arccos.neg.continuousOn (fun x hx ↦ ?_) (by simp)
   simpa using! (hasDerivAt_arccos (by aesop) (by aesop)).neg
 
-theorem integrable_measureT {f : ℝ → ℝ} (hf : ContinuousOn f (Set.Icc (-1) 1)) :
-    Integrable f measureT := by
+theorem integrable_measureT {f : ℝ → ℝ} (hf : ContinuousOn f (Set.Icc (-1) 1))
+    : Integrable f measureT := by
   replace hf : ContinuousOn f (Set.uIcc (-1) 1) := by rwa [Set.uIcc_of_lt (by simp)]
   have := intervalIntegrable_sqrt_one_sub_sq_inv.continuousOn_mul hf
   rw [intervalIntegrable_iff, Set.uIoc_of_le (by simp)] at this
@@ -76,27 +74,28 @@ theorem integrable_measureT {f : ℝ → ℝ} (hf : ContinuousOn f (Set.Icc (-1)
   convert! this
 
 open Set in
-theorem integral_measureT_eq_integral_cos {f : ℝ → ℝ} :
-    ∫ x, f x ∂measureT = ∫ θ in 0..π, f (cos θ) := calc
-  ∫ x, f x ∂measureT = ∫ x in -1..1, f x * √(1 - x ^ 2)⁻¹ := integral_measureT f
-  _ = ∫ x in 1..-1, f x * -(√(1 - x ^ 2)⁻¹) := by
-    rw [integral_symm, ← intervalIntegral.integral_neg]
-    simp
-  _ = ∫ θ in (arccos 1)..(arccos (-1)), f (cos θ) := by
-    rw [← integral_comp_mul_deriv_of_deriv_nonpos (f' := fun x => -(1 / √(1 - x ^ 2)))]
-    · simp_rw [Function.comp_apply]
-      exact integral_congr <| fun x hx => by simp [cos_arccos (x := x) (by aesop) (by aesop)]
-    · fun_prop
-    · exact fun x hx ↦ (hasDerivAt_arccos (by aesop) (by aesop))
-    · simp
-  _ = ∫ θ in 0..π, f (cos θ) := by simp
+theorem integral_measureT_eq_integral_cos {f : ℝ → ℝ}
+    : ∫ x, f x ∂measureT = ∫ θ in 0..π, f (cos θ) :=
+  calc
+    ∫ x, f x ∂measureT
+      = ∫ x in -1..1, f x * √(1 - x ^ 2)⁻¹ := integral_measureT f
+    _ = ∫ x in 1..-1, f x * -(√(1 - x ^ 2)⁻¹) := by
+      rw [integral_symm, ← intervalIntegral.integral_neg]
+      simp
+    _ = ∫ θ in (arccos 1)..(arccos (-1)), f (cos θ) := by
+      rw [← integral_comp_mul_deriv_of_deriv_nonpos (f' := fun x => -(1 / √(1 - x ^ 2)))]
+      · simp_rw [Function.comp_apply]
+        exact integral_congr <| fun x hx => by simp [cos_arccos (x := x) (by aesop) (by aesop)]
+      · fun_prop
+      · exact fun x hx ↦ (hasDerivAt_arccos (by aesop) (by aesop))
+      · simp
+    _ = ∫ θ in 0..π, f (cos θ) := by simp
 
-theorem integral_eval_T_real_measureT_zero :
-    ∫ x, (T ℝ 0).eval x ∂measureT = π := by
+theorem integral_eval_T_real_measureT_zero : ∫ x, (T ℝ 0).eval x ∂measureT = π := by
   rw [integral_measureT_eq_integral_cos]; simp
 
-theorem integral_eval_T_real_measureT_of_ne_zero {n : ℤ} (hn : n ≠ 0) :
-    ∫ x, (T ℝ n).eval x ∂measureT = 0 := by
+theorem integral_eval_T_real_measureT_of_ne_zero {n : ℤ} (hn : n ≠ 0)
+    : ∫ x, (T ℝ n).eval x ∂measureT = 0 := by
   have hn' : (n : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hn
   suffices ∫ θ in 0..n * π, cos θ = 0 by
     rw [integral_measureT_eq_integral_cos]
@@ -112,34 +111,32 @@ theorem integral_eval_T_real_measureT_of_ne_zero {n : ℤ} (hn : n ≠ 0) :
     · simp
     exact mul_nonpos_of_nonpos_of_nonneg (Int.cast_nonpos.mpr <| le_of_lt hn) pi_nonneg
 
-theorem integral_eval_T_real_mul_eval_T_real_measureT (n m : ℤ) :
-    ∫ x, (T ℝ n).eval x * (T ℝ m).eval x ∂measureT =
-    ((∫ x, (T ℝ (n + m)).eval x ∂measureT) +
-     (∫ x, (T ℝ (n - m)).eval x ∂measureT)) / 2 := by
-  suffices ∫ x, (2 * T ℝ n * T ℝ m).eval x ∂measureT =
-      (∫ x, (T ℝ (n + m)).eval x ∂measureT) +
-      (∫ x, (T ℝ (n - m)).eval x ∂measureT) by
+theorem integral_eval_T_real_mul_eval_T_real_measureT (n m : ℤ)
+    : ∫ x, (T ℝ n).eval x * (T ℝ m).eval x ∂measureT
+      = ((∫ x, (T ℝ (n + m)).eval x ∂measureT) + (∫ x, (T ℝ (n - m)).eval x ∂measureT)) / 2 := by
+  suffices ∫ x, (2 * T ℝ n * T ℝ m).eval x ∂measureT
+      = (∫ x, (T ℝ (n + m)).eval x ∂measureT) + (∫ x, (T ℝ (n - m)).eval x ∂measureT) by
     simp_rw [eval_mul, eval_ofNat, mul_assoc] at this
     rw [MeasureTheory.integral_const_mul] at this
     grind
   simp_rw [T_mul_T, eval_add]
-  rw [MeasureTheory.integral_add
-    (integrable_measureT (by fun_prop)) (integrable_measureT (by fun_prop))]
+  rw [MeasureTheory.integral_add (integrable_measureT (by fun_prop))
+    (integrable_measureT (by fun_prop))]
 
-theorem integral_eval_T_real_mul_eval_T_real_measureT_of_ne {n m : ℕ} (h : n ≠ m) :
-    ∫ x, (T ℝ n).eval x * (T ℝ m).eval x ∂measureT = 0 := by
+theorem integral_eval_T_real_mul_eval_T_real_measureT_of_ne {n m : ℕ} (h : n ≠ m)
+    : ∫ x, (T ℝ n).eval x * (T ℝ m).eval x ∂measureT = 0 := by
   rw [integral_eval_T_real_mul_eval_T_real_measureT,
     integral_eval_T_real_measureT_of_ne_zero (by grind),
     integral_eval_T_real_measureT_of_ne_zero (by grind)]
   simp
 
-theorem integral_eval_T_real_mul_self_measureT_zero :
-    ∫ x, (T ℝ 0).eval x * (T ℝ 0).eval x ∂measureT = π := by
+theorem integral_eval_T_real_mul_self_measureT_zero
+    : ∫ x, (T ℝ 0).eval x * (T ℝ 0).eval x ∂measureT = π := by
   simp_rw [← eval_mul, show (T ℝ 0) * (T ℝ 0) = T ℝ 0 by simp]
   exact integral_eval_T_real_measureT_zero
 
-theorem integral_T_real_mul_self_measureT_of_ne_zero {n : ℕ} (hn : n ≠ 0) :
-    ∫ x, (T ℝ n).eval x * (T ℝ n).eval x ∂measureT = π / 2 := by
+theorem integral_T_real_mul_self_measureT_of_ne_zero {n : ℕ} (hn : n ≠ 0)
+    : ∫ x, (T ℝ n).eval x * (T ℝ n).eval x ∂measureT = π / 2 := by
   rw [integral_eval_T_real_mul_eval_T_real_measureT,
     integral_eval_T_real_measureT_of_ne_zero (by grind), sub_self,
     integral_eval_T_real_measureT_zero, zero_add]

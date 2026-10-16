@@ -24,9 +24,11 @@ variable (R : Type u) [Ring R]
 
 open CategoryTheory
 
-/-- A (category-theoretically) small version of `FGModuleCat R`. This is used to prove that
+/--
+A (category-theoretically) small version of `FGModuleCat R`. This is used to prove that
 `FGModuleCat R` is essentially small. For actual use, it might be recommended to use the canonical
-`CategoryTheory.SmallModel` instead of this construction. -/
+`CategoryTheory.SmallModel` instead of this construction.
+-/
 structure FGModuleRepr : Type u where
   /-- The natural number `n` that defines the module as a quotient of `Fin n → R` (i.e. `R^n`). -/
   (n : ℕ)
@@ -38,17 +40,16 @@ namespace FGModuleRepr
 variable (M : Type v) [AddCommGroup M] [Module R M] [Module.Finite R M]
 
 variable {R} in
-/-- The finite module represented by an object of the type `FGModuleRepr R`, which is the quotient
-of `Fin n → R` (i.e. `Rⁿ`) by the submodule `S` provided. -/
-def repr (x : FGModuleRepr R) : Type u :=
-  _ ⧸ x.S
+/--
+The finite module represented by an object of the type `FGModuleRepr R`, which is the quotient
+of `Fin n → R` (i.e. `Rⁿ`) by the submodule `S` provided.
+-/
+def repr (x : FGModuleRepr R) : Type u := _ ⧸ x.S
 deriving AddCommGroup, Module R
 
-instance : CoeSort (FGModuleRepr R) (Type u) :=
-  ⟨repr⟩
+instance : CoeSort (FGModuleRepr R) (Type u) := ⟨repr⟩
 
-instance (x : FGModuleRepr R) : Module.Finite R x :=
-  inferInstanceAs <| Module.Finite R (_ ⧸ x.S)
+instance (x : FGModuleRepr R) : Module.Finite R x := inferInstanceAs <| Module.Finite R (_ ⧸ x.S)
 
 /-- A non-canonical representation of a finite module (as a quotient of `Rⁿ`). -/
 @[instance_reducible]
@@ -56,27 +57,29 @@ noncomputable def ofFinite : FGModuleRepr R where
   n := (Module.Finite.exists_fin_quot_equiv R M).choose
   S := (Module.Finite.exists_fin_quot_equiv R M).choose_spec.choose
 
-/-- The non-canonical representation `ofFinite` of a finite module is actually isomorphic to
-the given module. -/
+/--
+The non-canonical representation `ofFinite` of a finite module is actually isomorphic to
+the given module.
+-/
 noncomputable def ofFiniteEquiv : ofFinite R M ≃ₗ[R] M :=
   Classical.choice (Module.Finite.exists_fin_quot_equiv R M).choose_spec.choose_spec
 
 instance : Category (FGModuleRepr R) :=
-  inferInstanceAs (Category (InducedCategory _
-    (fun x : FGModuleRepr R ↦ FGModuleCat.of R x)))
+  inferInstanceAs (Category (InducedCategory _ (fun x : FGModuleRepr R ↦ FGModuleCat.of R x)))
 
 instance : SmallCategory (FGModuleRepr R) where
 
-/-- The canonical embedding of this small category to the canonical (large) category
-`FGModuleCat R`. -/
-def embed : FGModuleRepr.{u} R ⥤ FGModuleCat.{max u v} R :=
-  inducedFunctor _ ⋙ FGModuleCat.ulift R
+/--
+The canonical embedding of this small category to the canonical (large) category
+`FGModuleCat R`.
+-/
+def embed : FGModuleRepr.{u} R ⥤ FGModuleCat.{max u v} R := inducedFunctor _ ⋙ FGModuleCat.ulift R
 
 instance : (embed R).IsEquivalence where
   faithful := (fullyFaithfulInducedFunctor _).faithful.comp _ _
   full := (fullyFaithfulInducedFunctor _).full.comp _ _
-  essSurj := ⟨fun M ↦ ⟨ofFinite R M,
-    ⟨(ULift.moduleEquiv.trans <| ofFiniteEquiv R M).toFGModuleCatIso⟩⟩⟩
+  essSurj :=
+    ⟨fun M ↦ ⟨ofFinite R M, ⟨(ULift.moduleEquiv.trans <| ofFiniteEquiv R M).toFGModuleCatIso⟩⟩⟩
 
 end FGModuleRepr
 
@@ -88,5 +91,7 @@ instance : EssentiallySmall.{u} (FGModuleCat.{v} R) :=
 open FGModuleRepr in
 -- There is probably a proof using `embedIsEquivalence` or `EssentiallySmall`.
 instance : (FGModuleCat.ulift.{max u v, w} R).IsEquivalence where
-  essSurj := ⟨fun M ↦ ⟨(embed R).obj (ofFinite R M),
-    ⟨(ULift.moduleEquiv.trans <| ULift.moduleEquiv.trans <| ofFiniteEquiv R M).toFGModuleCatIso⟩⟩⟩
+  essSurj := ⟨fun M ↦ ⟨
+    (embed R).obj (ofFinite R M),
+    ⟨(ULift.moduleEquiv.trans <| ULift.moduleEquiv.trans <| ofFiniteEquiv R M).toFGModuleCatIso⟩
+  ⟩⟩

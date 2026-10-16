@@ -23,7 +23,6 @@ public import Mathlib.RingTheory.Polynomial.Basic
 
 @[expose] public section
 
-
 universe u v w
 
 open Polynomial
@@ -37,11 +36,12 @@ section CommSemiring
 variable (R : Type u) [CommSemiring R] {S : Type v} [CommSemiring S] (p q : ℕ)
 
 /-- Expand the polynomial by a factor of p, so `∑ aₙ xⁿ` becomes `∑ aₙ xⁿᵖ`. -/
-noncomputable def expand : R[X] →ₐ[R] R[X] :=
-  { (eval₂RingHom C (X ^ p) : R[X] →+* R[X]) with commutes' := fun _ => eval₂_C _ _ }
+noncomputable def expand : R[X] →ₐ[R] R[X] := {
+  (eval₂RingHom C (X ^ p) : R[X] →+* R[X]) with
+  commutes' := fun _ => eval₂_C _ _
+}
 
-theorem coe_expand : (expand R p : R[X] → R[X]) = eval₂ C (X ^ p) :=
-  rfl
+theorem coe_expand : (expand R p : R[X] → R[X]) = eval₂ C (X ^ p) := rfl
 
 variable {R}
 
@@ -51,45 +51,43 @@ set_option backward.isDefEq.respectTransparency false in
 theorem expand_eq_sum {f : R[X]} : expand R p f = f.sum fun e a => C a * (X ^ p) ^ e := by
   simp [expand, eval₂_eq_sum]
 
-@[simp]
-theorem expand_C (r : R) : expand R p (C r) = C r :=
-  eval₂_C _ _
+@[simp] theorem expand_C (r : R) : expand R p (C r) = C r := eval₂_C _ _
 
-@[simp]
-theorem expand_X : expand R p X = X ^ p :=
-  eval₂_X _ _
+@[simp] theorem expand_X : expand R p X = X ^ p := eval₂_X _ _
 
 @[simp]
 theorem expand_monomial (r : R) : expand R p (monomial q r) = monomial (q * p) r := by
   simp_rw [← smul_X_eq_monomial, map_smul, map_pow, expand_X, mul_comm, pow_mul]
 
 theorem expand_expand (f : R[X]) : expand R p (expand R q f) = expand R (p * q) f :=
-  Polynomial.induction_on f (fun r => by simp_rw [expand_C])
-    (fun f g ihf ihg => by simp_rw [map_add, ihf, ihg]) fun n r _ => by
-    simp_rw [map_mul, expand_C, map_pow, expand_X, map_pow, expand_X, pow_mul]
+  Polynomial.induction_on f
+    (fun r => by simp_rw [expand_C])
+    (fun f g ihf ihg => by simp_rw [map_add, ihf, ihg])
+    fun n r _ => by simp_rw [map_mul, expand_C, map_pow, expand_X, map_pow, expand_X, pow_mul]
 
 theorem expand_mul (f : R[X]) : expand R (p * q) f = expand R p (expand R q f) :=
   (expand_expand p q f).symm
 
-@[simp]
-theorem expand_zero (f : R[X]) : expand R 0 f = C (eval 1 f) := by simp [expand]
+@[simp] theorem expand_zero (f : R[X]) : expand R 0 f = C (eval 1 f) := by simp [expand]
 
 @[simp]
 theorem expand_one (f : R[X]) : expand R 1 f = f :=
-  Polynomial.induction_on f (fun r => by rw [expand_C])
-    (fun f g ihf ihg => by rw [map_add, ihf, ihg]) fun n r _ => by
-    rw [map_mul, expand_C, map_pow, expand_X, pow_one]
+  Polynomial.induction_on f
+    (fun r => by rw [expand_C])
+    (fun f g ihf ihg => by rw [map_add, ihf, ihg])
+    fun n r _ => by rw [map_mul, expand_C, map_pow, expand_X, pow_one]
 
 theorem expand_pow (f : R[X]) : expand R (p ^ q) f = (expand R p)^[q] f :=
   Nat.recOn q (by rw [pow_zero, expand_one, Function.iterate_zero, id]) fun n ih => by
     rw [Function.iterate_succ_apply', pow_succ', expand_mul, ih]
 
-theorem derivative_expand (f : R[X]) : Polynomial.derivative (expand R p f) =
-    expand R p (Polynomial.derivative f) * (p * (X ^ (p - 1) : R[X])) := by
+theorem derivative_expand (f : R[X])
+    : Polynomial.derivative (expand R p f)
+      = expand R p (Polynomial.derivative f) * (p * (X ^ (p - 1) : R[X])) := by
   rw [coe_expand, derivative_eval₂_C, derivative_pow, C_eq_natCast, derivative_X, mul_one]
 
-theorem coeff_expand {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ) :
-    (expand R p f).coeff n = if p ∣ n then f.coeff (n / p) else 0 := by
+theorem coeff_expand {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ)
+    : (expand R p f).coeff n = if p ∣ n then f.coeff (n / p) else 0 := by
   simp only [expand_eq_sum]
   simp_rw [coeff_sum, ← pow_mul, C_mul_X_pow_eq_monomial, coeff_monomial, sum]
   split_ifs with h
@@ -108,13 +106,14 @@ theorem coeff_expand {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ) :
     exact fun hkn => h ⟨k, hkn.symm⟩
 
 @[simp]
-theorem coeff_expand_mul {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ) :
-    (expand R p f).coeff (n * p) = f.coeff n := by
+theorem coeff_expand_mul {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ)
+    : (expand R p f).coeff (n * p) = f.coeff n := by
   rw [coeff_expand hp, ite_eq_left (dvd_mul_left _ _), Nat.mul_div_cancel _ hp]
 
 @[simp]
-theorem coeff_expand_mul' {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ) :
-    (expand R p f).coeff (p * n) = f.coeff n := by rw [mul_comm, coeff_expand_mul hp]
+theorem coeff_expand_mul' {p : ℕ} (hp : 0 < p) (f : R[X]) (n : ℕ)
+    : (expand R p f).coeff (p * n) = f.coeff n := by
+  rw [mul_comm, coeff_expand_mul hp]
 
 /-- Expansion is injective. -/
 theorem expand_injective {n : ℕ} (hn : 0 < n) : Function.Injective (expand R n) := fun g g' H =>
@@ -152,8 +151,8 @@ theorem natDegree_expand (p : ℕ) (f : R[X]) : (expand R p f).natDegree = f.nat
     rw [coeff_expand_mul hp, ← leadingCoeff]
     exact mt leadingCoeff_eq_zero.1 hf
 
-theorem leadingCoeff_expand {p : ℕ} {f : R[X]} (hp : 0 < p) :
-    (expand R p f).leadingCoeff = f.leadingCoeff := by
+theorem leadingCoeff_expand {p : ℕ} {f : R[X]} (hp : 0 < p)
+    : (expand R p f).leadingCoeff = f.leadingCoeff := by
   simp_rw [leadingCoeff, natDegree_expand, coeff_expand_mul hp]
 
 theorem monic_expand_iff {p : ℕ} {f : R[X]} (hp : 0 < p) : (expand R p f).Monic ↔ f.Monic := by
@@ -161,8 +160,8 @@ theorem monic_expand_iff {p : ℕ} {f : R[X]} (hp : 0 < p) : (expand R p f).Moni
 
 alias ⟨_, Monic.expand⟩ := monic_expand_iff
 
-theorem map_expand {p : ℕ} {f : R →+* S} {q : R[X]} :
-    map f (expand R p q) = expand S p (map f q) := by
+theorem map_expand {p : ℕ} {f : R →+* S} {q : R[X]}
+    : map f (expand R p q) = expand S p (map f q) := by
   by_cases hp : p = 0
   · simp [hp]
   ext
@@ -175,8 +174,8 @@ theorem expand_eval (p : ℕ) (P : R[X]) (r : R) : eval r (expand R p P) = eval 
   rw [map_add, eval_add, eval_add, hf, hg]
 
 @[simp]
-theorem expand_aeval {A : Type*} [Semiring A] [Algebra R A] (p : ℕ) (P : R[X]) (r : A) :
-    aeval r (expand R p P) = aeval (r ^ p) P := by
+theorem expand_aeval {A : Type*} [Semiring A] [Algebra R A] (p : ℕ) (P : R[X]) (r : A)
+    : aeval r (expand R p P) = aeval (r ^ p) P := by
   refine Polynomial.induction_on P (fun a => by simp) (fun f g hf hg => ?_) fun n a _ => by simp
   rw [map_add, aeval_add, aeval_add, hf, hg]
 
@@ -184,20 +183,21 @@ theorem expand_aeval {A : Type*} [Semiring A] [Algebra R A] (p : ℕ) (P : R[X])
 noncomputable def contract (p : ℕ) (f : R[X]) : R[X] :=
   ∑ n ∈ range (f.natDegree + 1), monomial n (f.coeff (n * p))
 
-theorem coeff_contract {p : ℕ} (hp : p ≠ 0) (f : R[X]) (n : ℕ) :
-    (contract p f).coeff n = f.coeff (n * p) := by
+theorem coeff_contract {p : ℕ} (hp : p ≠ 0) (f : R[X]) (n : ℕ)
+    : (contract p f).coeff n = f.coeff (n * p) := by
   simp only [contract, coeff_monomial, sum_ite_eq', finsetSum_coeff, mem_range, not_lt,
     ite_eq_left_iff]
   intro hn
   apply (coeff_eq_zero_of_natDegree_lt _).symm
   calc
-    f.natDegree < f.natDegree + 1 := Nat.lt_succ_self _
+    f.natDegree
+      < f.natDegree + 1 := Nat.lt_succ_self _
     _ ≤ n * 1 := by simpa only [mul_one] using hn
     _ ≤ n * p := by gcongr; exact hp.bot_lt
 
-theorem map_contract {p : ℕ} (hp : p ≠ 0) {f : R →+* S} {q : R[X]} :
-    (q.contract p).map f = (q.map f).contract p := ext fun n ↦ by
-  simp only [coeff_map, coeff_contract hp]
+theorem map_contract {p : ℕ} (hp : p ≠ 0) {f : R →+* S} {q : R[X]}
+    : (q.contract p).map f = (q.map f).contract p :=
+  ext fun n ↦ by simp only [coeff_map, coeff_contract hp]
 
 theorem contract_expand {f : R[X]} (hp : p ≠ 0) : contract p (expand R p f) = f := by
   ext
@@ -208,15 +208,15 @@ theorem contract_one {f : R[X]} : contract 1 f = f :=
 
 @[simp] theorem contract_C (r : R) : contract p (C r) = C r := by simp [contract]
 
-theorem contract_add {p : ℕ} (hp : p ≠ 0) (f g : R[X]) :
-    contract p (f + g) = contract p f + contract p g := by
+theorem contract_add {p : ℕ} (hp : p ≠ 0) (f g : R[X])
+    : contract p (f + g) = contract p f + contract p g := by
   ext; simp_rw [coeff_add, coeff_contract hp, coeff_add]
 
-theorem contract_mul_expand {p : ℕ} (hp : p ≠ 0) (f g : R[X]) :
-    contract p (f * expand R p g) = contract p f * g := by
+theorem contract_mul_expand {p : ℕ} (hp : p ≠ 0) (f g : R[X])
+    : contract p (f * expand R p g) = contract p f * g := by
   ext n
-  rw [coeff_contract hp, coeff_mul, coeff_mul, ← sum_subset
-    (s₁ := (antidiagonal n).image fun x ↦ (x.1 * p, x.2 * p)), sum_image]
+  rw [coeff_contract hp, coeff_mul, coeff_mul,
+    ← sum_subset (s₁ := (antidiagonal n).image fun x ↦ (x.1 * p, x.2 * p)), sum_image]
   · simp_rw [coeff_expand_mul hp.bot_lt, coeff_contract hp]
   · intro x hx y hy eq; simpa only [Prod.ext_iff, Nat.mul_right_cancel_iff hp.bot_lt] using eq
   · simp_rw [subset_iff, mem_image, mem_antidiagonal]; rintro _ ⟨x, rfl, rfl⟩; simp_rw [add_mul]
@@ -229,15 +229,22 @@ theorem contract_mul_expand {p : ℕ} (hp : p ≠ 0) (f g : R[X]) :
     rw [← eq, mul_comm, mul_add]
   · rw [coeff_expand hp.bot_lt, ite_eq_right h, mul_zero]
 
-@[simp] theorem isCoprime_expand {f g : R[X]} {p : ℕ} (hp : p ≠ 0) :
-    IsCoprime (expand R p f) (expand R p g) ↔ IsCoprime f g :=
-  ⟨fun ⟨a, b, eq⟩ ↦ ⟨contract p a, contract p b, by
-    simp_rw [← contract_mul_expand hp, ← contract_add hp, eq, ← C_1, contract_C]⟩, (·.map _)⟩
+@[simp]
+theorem isCoprime_expand {f g : R[X]} {p : ℕ} (hp : p ≠ 0)
+    : IsCoprime (expand R p f) (expand R p g) ↔ IsCoprime f g := ⟨
+  fun ⟨a, b, eq⟩ ↦ ⟨
+    contract p a,
+    contract p b,
+    by simp_rw [← contract_mul_expand hp, ← contract_add hp, eq, ← C_1, contract_C]
+  ⟩,
+  (·.map _)
+⟩
 
 section ExpChar
 
-theorem expand_contract [CharP R p] [NoZeroDivisors R] {f : R[X]} (hf : Polynomial.derivative f = 0)
-    (hp : p ≠ 0) : expand R p (contract p f) = f := by
+theorem expand_contract
+    [CharP R p] [NoZeroDivisors R] {f : R[X]} (hf : Polynomial.derivative f = 0) (hp : p ≠ 0)
+    : expand R p (contract p f) = f := by
   ext n
   rw [coeff_expand hp.bot_lt, coeff_contract hp]
   split_ifs with h
@@ -254,8 +261,8 @@ theorem expand_contract [CharP R p] [NoZeroDivisors R] {f : R[X]} (hf : Polynomi
 
 variable [ExpChar R p]
 
-theorem expand_contract' [NoZeroDivisors R] {f : R[X]} (hf : Polynomial.derivative f = 0) :
-    expand R p (contract p f) = f := by
+theorem expand_contract' [NoZeroDivisors R] {f : R[X]} (hf : Polynomial.derivative f = 0)
+    : expand R p (contract p f) = f := by
   obtain _ | @⟨_, hprime, hchar⟩ := ‹ExpChar R p›
   · rw [expand_one, contract_one]
   · have := Fact.mk hchar; exact expand_contract p hf hprime.ne_zero
@@ -267,10 +274,11 @@ theorem map_frobenius_expand (f : R[X]) : map (frobenius R p) (expand R p f) = f
       mul_pow, ← C.map_pow, frobenius_def]
     ring
 
-theorem map_iterateFrobenius_expand (f : R[X]) (n : ℕ) :
-    map (iterateFrobenius R p n) (expand R (p ^ n) f) = f ^ p ^ n := by
+theorem map_iterateFrobenius_expand (f : R[X]) (n : ℕ)
+    : map (iterateFrobenius R p n) (expand R (p ^ n) f) = f ^ p ^ n := by
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ k n_ih =>
     symm
     conv_lhs => rw [pow_succ, pow_mul, ← n_ih]
@@ -285,17 +293,18 @@ section rootMultiplicity
 
 variable {R : Type u} [CommRing R] {p n : ℕ} [ExpChar R p] {f : R[X]} {r : R}
 
-theorem rootMultiplicity_expand_pow :
-    (expand R (p ^ n) f).rootMultiplicity r = p ^ n * f.rootMultiplicity (r ^ p ^ n) := by
-  obtain rfl | h0 := eq_or_ne f 0; · simp
+theorem rootMultiplicity_expand_pow
+    : (expand R (p ^ n) f).rootMultiplicity r = p ^ n * f.rootMultiplicity (r ^ p ^ n) := by
+  obtain rfl | h0 := eq_or_ne f 0
+  · simp
   obtain ⟨g, hg, ndvd⟩ := f.exists_eq_pow_rootMultiplicity_mul_and_not_dvd h0 (r ^ p ^ n)
   rw [dvd_iff_isRoot, ← eval_X (x := r), ← eval_pow, ← isRoot_comp, ← expand_eq_comp_X_pow] at ndvd
   conv_lhs => rw [hg, map_mul, map_pow, map_sub, expand_X, expand_C, map_pow, ← sub_pow_expChar_pow,
     ← pow_mul, mul_comm, rootMultiplicity_mul_X_sub_C_pow (expand_ne_zero (expChar_pow_pos R p n)
       |>.mpr <| right_ne_zero_of_mul <| hg ▸ h0), rootMultiplicity_eq_zero ndvd, zero_add]
 
-theorem rootMultiplicity_expand :
-    (expand R p f).rootMultiplicity r = p * f.rootMultiplicity (r ^ p) := by
+theorem rootMultiplicity_expand
+    : (expand R p f).rootMultiplicity r = p * f.rootMultiplicity (r ^ p) := by
   rw [← pow_one p, rootMultiplicity_expand_pow]
 
 end rootMultiplicity
@@ -308,21 +317,25 @@ theorem isLocalHom_expand {p : ℕ} (hp : 0 < p) : IsLocalHom (expand R p) := by
   refine ⟨fun f hf1 => ?_⟩
   have hf2 := eq_C_of_degree_eq_zero (degree_eq_zero_of_isUnit hf1)
   rw [coeff_expand hp, ite_eq_left (dvd_zero _), p.zero_div] at hf2
-  rw [hf2, isUnit_C] at hf1; rw [expand_eq_C hp] at hf2; rwa [hf2, isUnit_C]
+  rw [hf2, isUnit_C] at hf1
+  rw [expand_eq_C hp] at hf2
+  rwa [hf2, isUnit_C]
 
 variable {R}
 
-theorem of_irreducible_expand {p : ℕ} (hp : p ≠ 0) {f : R[X]} (hf : Irreducible (expand R p f)) :
-    Irreducible f :=
+theorem of_irreducible_expand {p : ℕ} (hp : p ≠ 0) {f : R[X]} (hf : Irreducible (expand R p f))
+    : Irreducible f :=
   let _ := isLocalHom_expand R hp.bot_lt
   hf.of_map
 
-theorem of_irreducible_expand_pow {p : ℕ} (hp : p ≠ 0) {f : R[X]} {n : ℕ} :
-    Irreducible (expand R (p ^ n) f) → Irreducible f :=
-  Nat.recOn n (fun hf => by rwa [pow_zero, expand_one] at hf) fun n ih hf =>
-    ih <| of_irreducible_expand hp <| by
-      rw [pow_succ'] at hf
-      rwa [expand_expand]
+theorem of_irreducible_expand_pow {p : ℕ} (hp : p ≠ 0) {f : R[X]} {n : ℕ}
+    : Irreducible (expand R (p ^ n) f) → Irreducible f :=
+  Nat.recOn n
+    (fun hf => by rwa [pow_zero, expand_one] at hf)
+    fun n ih hf =>
+      ih <| of_irreducible_expand hp <| by
+        rw [pow_succ'] at hf
+        rwa [expand_expand]
 
 end IsDomain
 

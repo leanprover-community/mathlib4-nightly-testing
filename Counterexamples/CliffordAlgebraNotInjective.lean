@@ -47,10 +47,9 @@ def kIdeal : Ideal (MvPolynomial (Fin 3) (ZMod 2)) :=
   Ideal.span (Set.range fun i =>
     (MvPolynomial.X i * MvPolynomial.X i : MvPolynomial (Fin 3) (ZMod 2)))
 
-theorem mem_kIdeal_iff (x : MvPolynomial (Fin 3) (ZMod 2)) :
-    x ∈ kIdeal ↔ ∀ m : Fin 3 →₀ ℕ, m ∈ x.support → ∃ i, 2 ≤ m i := by
-  have :
-      kIdeal = Ideal.span ((monomial · (1 : ZMod 2)) '' Set.range (Finsupp.single · 2)) := by
+theorem mem_kIdeal_iff (x : MvPolynomial (Fin 3) (ZMod 2))
+    : x ∈ kIdeal ↔ ∀ m : Fin 3 →₀ ℕ, m ∈ x.support → ∃ i, 2 ≤ m i := by
+  have : kIdeal = Ideal.span ((monomial · (1 : ZMod 2)) '' Set.range (Finsupp.single · 2)) := by
     simp_rw [kIdeal, MvPolynomial.X, monomial_mul_monomial, one_mul, ← Finsupp.single_add,
       ← Set.range_comp, Function.comp_def]
   rw [this, mem_ideal_span_monomial_image]
@@ -63,8 +62,9 @@ theorem X_Y_Z_notMem_kIdeal : (X * Y * Z : MvPolynomial (Fin 3) (ZMod 2)) ∉ kI
     ← Finsupp.equivFunOnFinite_symm_eq_sum] at h
   contradiction
 
-theorem mul_self_mem_kIdeal_of_X_Y_Z_mul_mem {x : MvPolynomial (Fin 3) (ZMod 2)}
-    (h : X * Y * Z * x ∈ kIdeal) : x * x ∈ kIdeal := by
+theorem mul_self_mem_kIdeal_of_X_Y_Z_mul_mem
+    {x : MvPolynomial (Fin 3) (ZMod 2)} (h : X * Y * Z * x ∈ kIdeal)
+    : x * x ∈ kIdeal := by
   rw [mem_kIdeal_iff] at h
   have : x ∈ Ideal.span ((MvPolynomial.X : Fin 3 → MvPolynomial _ (ZMod 2)) '' Set.univ) := by
     rw [mem_ideal_span_X_image]
@@ -133,7 +133,8 @@ theorem sq_zero_of_αβγ_mul {x : K} : α * β * γ * x = 0 → x * x = 0 := by
 theorem αβγ_ne_zero : α * β * γ ≠ 0 := fun h =>
   X_Y_Z_notMem_kIdeal <| Ideal.Quotient.eq_zero_iff_mem.1 h
 
-/-- The 1-form on $K^3$, the kernel of which we will take a quotient by.
+/--
+The 1-form on $K^3$, the kernel of which we will take a quotient by.
 
 Our source uses $αx - βy - γz$, though since this is characteristic two we just use $αx + βy + γz$.
 -/
@@ -149,18 +150,17 @@ abbrev L : Type _ := _ ⧸ LinearMap.ker lFunc
 def sq {ι R : Type*} [CommRing R] (i : ι) : QuadraticForm R (ι → R) :=
   QuadraticMap.sq.comp <| LinearMap.proj i
 
-theorem sq_map_add_char_two {ι R : Type*} [CommRing R] [CharP R 2] (i : ι) (a b : ι → R) :
-    sq i (a + b) = sq i a + sq i b :=
+theorem sq_map_add_char_two {ι R : Type*} [CommRing R] [CharP R 2] (i : ι) (a b : ι → R)
+    : sq i (a + b) = sq i a + sq i b :=
   CharTwo.add_mul_self _ _
 
-theorem sq_map_sub_char_two {ι R : Type*} [CommRing R] [CharP R 2] (i : ι) (a b : ι → R) :
-    sq i (a - b) = sq i a - sq i b := by
+theorem sq_map_sub_char_two {ι R : Type*} [CommRing R] [CharP R 2] (i : ι) (a b : ι → R)
+    : sq i (a - b) = sq i a - sq i b := by
   have : Nonempty ι := ⟨i⟩
   rw [CharTwo.sub_eq_add, CharTwo.sub_eq_add, sq_map_add_char_two]
 
 /-- The quadratic form (metric) is just Euclidean -/
-def Q' : QuadraticForm K (Fin 3 → K) :=
-  ∑ i, sq i
+def Q' : QuadraticForm K (Fin 3 → K) := ∑ i, sq i
 
 theorem Q'_add (x y : Fin 3 → K) : Q' (x + y) = Q' x + Q' y := by
   simp only [Q', sum_apply, sq_map_add_char_two, Finset.sum_add_distrib]
@@ -170,13 +170,14 @@ theorem Q'_sub (x y : Fin 3 → K) : Q' (x - y) = Q' x - Q' y := by
 
 theorem Q'_apply (a : Fin 3 → K) : Q' a = a 0 * a 0 + a 1 * a 1 + a 2 * a 2 :=
   calc
-    Q' a = a 0 * a 0 + (a 1 * a 1 + (a 2 * a 2 + 0)) := rfl
+    Q' a
+      = a 0 * a 0 + (a 1 * a 1 + (a 2 * a 2 + 0)) := rfl
     _ = _ := by ring
 
 theorem Q'_apply_single (i : Fin 3) (x : K) : Q' (Pi.single i x) = x * x :=
   calc
-    Q' (Pi.single i x) = ∑ j : Fin 3, (Pi.single i x * Pi.single i x : Fin 3 → K) j := by
-      simp [Q', sq]
+    Q' (Pi.single i x)
+      = ∑ j : Fin 3, (Pi.single i x * Pi.single i x : Fin 3 → K) j := by simp [Q', sq]
     _ = _ := by simp_rw [← Pi.single_mul, Finset.sum_pi_single', Finset.mem_univ, ite_eq_left]
 
 theorem Q'_zero_under_ideal (v : Fin 3 → K) (hv : v ∈ LinearMap.ker lFunc) : Q' v = 0 := by
@@ -245,7 +246,8 @@ theorem αβγ_smul_eq_zero : (α * β * γ) • (1 : CliffordAlgebra Q) = 0 := 
     have := congr((β * γ) • $this)
     simp_rw [smul_sub, smul_smul] at this
     rwa [mul_assoc β γ γ, mul_right_comm β γ β, mul_right_comm β γ α, mul_comm β α, X_sq, X_sq,
-      zero_mul, mul_zero, zero_smul, zero_smul, sub_zero, sub_zero, smul_zero] at this
+        zero_mul, mul_zero, zero_smul, zero_smul, sub_zero, sub_zero, smul_zero]
+      at this
   have : (α • x' - β • y' - γ • z') * x' = α • 1 - β • (y' * x') - γ • (z' * x') := by
     simp_rw [sub_mul, smul_mul_assoc, gen_mul_gen]
   rw [← this]
@@ -254,9 +256,11 @@ theorem αβγ_smul_eq_zero : (α * β * γ) • (1 : CliffordAlgebra Q) = 0 := 
 theorem algebraMap_αβγ_eq_zero : algebraMap K (CliffordAlgebra Q) (α * β * γ) = 0 := by
   rw [Algebra.algebraMap_eq_smul_one, αβγ_smul_eq_zero]
 
-/-- Our final result: for the quadratic form `Q60596.Q`, the algebra map to the Clifford algebra
-is not injective, as it sends the non-zero `α * β * γ` to zero. -/
-theorem algebraMap_not_injective : ¬Function.Injective (algebraMap K <| CliffordAlgebra Q) :=
+/--
+Our final result: for the quadratic form `Q60596.Q`, the algebra map to the Clifford algebra
+is not injective, as it sends the non-zero `α * β * γ` to zero.
+-/
+theorem algebraMap_not_injective : ¬ Function.Injective (algebraMap K <| CliffordAlgebra Q) :=
   fun h => αβγ_ne_zero <| h <| by rw [algebraMap_αβγ_eq_zero, map_zero]
 
 /-- Bonus counterexample: `Q` is a quadratic form that has no bilinear form. -/
@@ -273,11 +277,12 @@ end Q60596
 
 open Q60596 in
 /-- The general statement: not every Clifford algebra over a module has an injective algebra map. -/
-theorem CliffordAlgebra.not_forall_algebraMap_injective.{v} :
+theorem CliffordAlgebra.not_forall_algebraMap_injective.{v}
     -- TODO: make `R` universe polymorphic
-    ¬∀ (R : Type) (M : Type v) [CommRing R] [AddCommGroup M] [Module R M] (Q : QuadraticForm R M),
-      Function.Injective (algebraMap R <| CliffordAlgebra Q) :=
-  fun h => algebraMap_not_injective fun x y hxy => by
+    : ¬ ∀ (R : Type) (M : Type v) [CommRing R] [AddCommGroup M] [Module R M]
+        (Q : QuadraticForm R M),
+      Function.Injective (algebraMap R <| CliffordAlgebra Q) := fun h =>
+  algebraMap_not_injective fun x y hxy => by
     let uU := ULift.moduleEquiv (R := K) (M := L)
     let uQ := Q.comp uU.toLinearMap
     let f : Q →qᵢ uQ := { uU.symm with map_app' := fun _ => rfl }
@@ -288,11 +293,11 @@ theorem CliffordAlgebra.not_forall_algebraMap_injective.{v} :
 
 open Q60596 in
 /-- The general bonus statement: not every quadratic form is the diagonal of a bilinear form. -/
-theorem LinearMap.BilinMap.not_forall_toQuadraticMap_surjective.{v} :
+theorem LinearMap.BilinMap.not_forall_toQuadraticMap_surjective.{v}
     -- TODO: make `R` universe polymorphic
-    ¬∀ (R : Type) (M : Type v) [CommRing R] [AddCommGroup M] [Module R M],
-      Function.Surjective (BilinMap.toQuadraticMap : BilinForm R M → QuadraticForm R M) :=
-  fun h => Q_not_in_range_toQuadraticForm <| by
+    : ¬ ∀ (R : Type) (M : Type v) [CommRing R] [AddCommGroup M] [Module R M],
+      Function.Surjective (BilinMap.toQuadraticMap : BilinForm R M → QuadraticForm R M) := fun h =>
+  Q_not_in_range_toQuadraticForm <| by
     let uU := ULift.moduleEquiv (R := K) (M := L)
     obtain ⟨x, hx⟩ := h K (ULift L) (Q.comp uU)
     refine ⟨x.compl₁₂ uU.symm uU.symm, ?_⟩

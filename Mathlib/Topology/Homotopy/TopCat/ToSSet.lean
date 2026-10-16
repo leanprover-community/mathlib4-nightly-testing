@@ -31,10 +31,12 @@ universe u
 
 open CategoryTheory MonoidalCategory Functor.LaxMonoidal
 
-/-- If two morphisms `f : X ⟶ Y` and `g : X ⟶ Y` in `TopCat` are homotopic, then so
-are their images by the functor `TopCat.toSSet : TopCat ⥤ SSet`. -/
-noncomputable def TopCat.Homotopy.toSSet {X Y : TopCat.{u}} {f g : X ⟶ Y} (h : Homotopy f g) :
-    SSet.Homotopy (toSSet.map f) (toSSet.map g) where
+/--
+If two morphisms `f : X ⟶ Y` and `g : X ⟶ Y` in `TopCat` are homotopic, then so
+are their images by the functor `TopCat.toSSet : TopCat ⥤ SSet`.
+-/
+noncomputable def TopCat.Homotopy.toSSet {X Y : TopCat.{u}} {f g : X ⟶ Y} (h : Homotopy f g)
+    : SSet.Homotopy (toSSet.map f) (toSSet.map g) where
   h := _ ◁ SSet.stdSimplex.toSSetObjI ≫ μ TopCat.toSSet _ _ ≫ TopCat.toSSet.map h.h
   h₀ := by simp [← Functor.map_comp]
   h₁ := by simp [← Functor.map_comp]

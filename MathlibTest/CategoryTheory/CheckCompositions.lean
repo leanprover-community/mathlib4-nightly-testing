@@ -1,4 +1,5 @@
 module
+
 import Mathlib.CategoryTheory.Limits.Preserves.Limits
 import Mathlib.Tactic.CategoryTheory.CheckCompositions
 
@@ -6,8 +7,12 @@ universe v₁ v₂ v₃ v u₁ u₂ u₃ u
 
 open CategoryTheory Limits
 
-variable {J : Type u} [Category.{v} J] {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
-    {E : Type u₃} [Category.{v₃} E] (F : J ⥤ C) (G : C ⥤ D) (H : D ⥤ E)
+variable
+  {J : Type u} [Category.{v} J]
+  {C : Type u₁} [Category.{v₁} C]
+  {D : Type u₂} [Category.{v₂} D]
+  {E : Type u₃} [Category.{v₃} E]
+  (F : J ⥤ C) (G : C ⥤ D) (H : D ⥤ E)
 
 variable [HasColimitsOfShape J C] [HasColimitsOfShape J E] [PreservesColimit F (G ⋙ H)]
 
@@ -23,10 +28,9 @@ but should be
 -/
 #guard_msgs in
 set_option linter.unusedTactic false in
-example (j : J) :
-    colimit.ι ((F ⋙ G) ⋙ H) j ≫ (preservesColimitIso (G ⋙ H) F).inv =
-      H.map (G.map (colimit.ι F j)) := by
-
+example (j : J)
+    : colimit.ι ((F ⋙ G) ⋙ H) j ≫ (preservesColimitIso (G ⋙ H) F).inv
+      = H.map (G.map (colimit.ι F j)) := by
   -- We know which lemma we want to use, and it's even a simp lemma, but `rw` won't let us apply it
   fail_if_success rw [ι_preservesColimitIso_inv]
   fail_if_success rw [ι_preservesColimitIso_inv (G ⋙ H)]

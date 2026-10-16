@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Set.Card.Arithmetic
 public import Mathlib.Topology.Separation.Connected
-
 import Mathlib.Topology.LocalAtTarget
 
 /-!
@@ -32,24 +31,32 @@ open ConnectedComponents
 
 section
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {f : X → Y} (hf₁ : IsOpenMap f)
-  (hf₂ : IsClosedMap f)
+variable
+  {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  {f : X → Y} (hf₁ : IsOpenMap f) (hf₂ : IsClosedMap f)
 
 include hf₁ hf₂
 
-/-- If `f : X → Y` is an open and closed map and `Y` is connected, the number of connected
-components of `X` is bounded by the cardinality of the fiber of any point. -/
+/--
+If `f : X → Y` is an open and closed map and `Y` is connected, the number of connected
+components of `X` is bounded by the cardinality of the fiber of any point.
+-/
 @[stacks 07VB]
-lemma IsOpenMap.enatCard_connectedComponents_le_encard_preimage_singleton [ConnectedSpace Y]
-    (y : Y) : ENat.card (ConnectedComponents X) ≤ (f ⁻¹' {y}).encard := by
-  suffices h : ∀ {n : ℕ} (U : Fin n → Set X) (hU₁ : ∀ i, IsClopen (U i)) (hU₂ : ∀ i, (U i).Nonempty)
-      (hU₃ : Pairwise (Disjoint on U)) (hU₄ : ⋃ i, U i = Set.univ),
-      n ≤ (f ⁻¹' {y}).encard by
+lemma IsOpenMap.enatCard_connectedComponents_le_encard_preimage_singleton [ConnectedSpace Y] (y : Y)
+    : ENat.card (ConnectedComponents X) ≤ (f ⁻¹' {y}).encard := by
+  suffices h
+      : ∀ {n : ℕ} (U : Fin n → Set X) (hU₁ : ∀ i, IsClopen (U i)) (hU₂ : ∀ i, (U i).Nonempty)
+          (hU₃ : Pairwise (Disjoint on U)) (hU₄ : ⋃ i, U i = Set.univ),
+        n ≤ (f ⁻¹' {y}).encard by
     obtain (hy | hy) := finite_or_infinite (ConnectedComponents X)
     · cases nonempty_fintype (ConnectedComponents X)
       simp only [ENat.card_eq_coe_fintype_card]
-      refine h (fun i ↦ ConnectedComponents.mk ⁻¹' {(Fintype.equivFin _).symm i}) (fun i ↦ ?_)
-          (fun i ↦ ?_) (fun i j hij ↦ Disjoint.preimage _ (by simp [hij])) ?_
+      refine h
+        (fun i ↦ ConnectedComponents.mk ⁻¹' {(Fintype.equivFin _).symm i})
+        (fun i ↦ ?_)
+        (fun i ↦ ?_)
+        (fun i j hij ↦ Disjoint.preimage _ (by simp [hij]))
+        ?_
       · exact (isClopen_discrete _).preimage continuous_coe
       · exact (Set.singleton_nonempty _).preimage surjective_coe
       · simp [← Set.preimage_iUnion]
@@ -69,17 +76,19 @@ lemma IsOpenMap.enatCard_connectedComponents_le_encard_preimage_singleton [Conne
     exact IsClopen.eq_univ ⟨hf₂ _ (hU1 i).1, hf₁ _ (hU1 i).2⟩ ((hU2 i).image f)
 
 lemma IsOpenMap.finite_connectedComponents_of_finite_preimage_singleton_of_connectedSpace
-    [ConnectedSpace Y] {y : Y} (hy : (f ⁻¹' {y}).Finite) :
-    Finite (ConnectedComponents X) := by
+    [ConnectedSpace Y] {y : Y} (hy : (f ⁻¹' {y}).Finite)
+    : Finite (ConnectedComponents X) := by
   rw [← ENat.card_lt_top]
   exact lt_of_le_of_lt (hf₁.enatCard_connectedComponents_le_encard_preimage_singleton hf₂ y)
     hy.encard_lt_top
 
-/-- If `f : X → Y` is continuous, open and closed with finite fibers and `Y` has finitely many
-connected components, so does `X`. -/
+/--
+If `f : X → Y` is continuous, open and closed with finite fibers and `Y` has finitely many
+connected components, so does `X`.
+-/
 lemma IsOpenMap.finite_connectedComponents_of_finite_preimage_singleton
-    [Finite (ConnectedComponents Y)] (hfc : Continuous f) (h : ∀ y, (f ⁻¹' {y}).Finite) :
-    Finite (ConnectedComponents X) := by
+    [Finite (ConnectedComponents Y)] (hfc : Continuous f) (h : ∀ y, (f ⁻¹' {y}).Finite)
+    : Finite (ConnectedComponents X) := by
   suffices h : ∀ (y : ConnectedComponents Y), Finite (ConnectedComponents (f ⁻¹' mk ⁻¹' {y})) by
     refine .of_equiv _ (equivOfIsClopen (U := fun y ↦ f ⁻¹' mk ⁻¹' {y}) ?_ ?_ ?_).symm
     · exact fun y ↦ (isClopen_discrete {y}).preimage (continuous_coe.comp hfc)

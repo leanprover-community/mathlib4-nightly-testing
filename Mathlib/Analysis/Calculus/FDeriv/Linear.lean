@@ -42,45 +42,33 @@ This section deals with the first form, see below for the unbundled version
 -/
 
 protected theorem hasFDerivAtFilter : HasFDerivAtFilter f f L :=
-  .of_isLittleOTVS <| (IsLittleOTVS.zero _ _).congr_left fun x => by
-    simp only [f.map_sub, sub_self, Pi.zero_apply]
+  .of_isLittleOTVS <|
+    (IsLittleOTVS.zero _ _).congr_left fun x => by simp only [f.map_sub, sub_self, Pi.zero_apply]
 
-@[fun_prop]
-protected theorem hasStrictFDerivAt : HasStrictFDerivAt f f x :=
-  f.hasFDerivAtFilter
+@[fun_prop] protected theorem hasStrictFDerivAt : HasStrictFDerivAt f f x := f.hasFDerivAtFilter
 
-@[fun_prop]
-protected theorem hasFDerivWithinAt : HasFDerivWithinAt f f s x :=
-  f.hasFDerivAtFilter
+@[fun_prop] protected theorem hasFDerivWithinAt : HasFDerivWithinAt f f s x := f.hasFDerivAtFilter
 
-@[fun_prop]
-protected theorem hasFDerivAt : HasFDerivAt f f x :=
-  f.hasFDerivAtFilter
+@[fun_prop] protected theorem hasFDerivAt : HasFDerivAt f f x := f.hasFDerivAtFilter
 
 @[simp, fun_prop]
-protected theorem differentiableAt : DifferentiableAt 𝕜 f x :=
-  f.hasFDerivAt.differentiableAt
+protected theorem differentiableAt : DifferentiableAt 𝕜 f x := f.hasFDerivAt.differentiableAt
 
 @[fun_prop]
 protected theorem differentiableWithinAt : DifferentiableWithinAt 𝕜 f s x :=
   f.differentiableAt.differentiableWithinAt
 
 @[simp, fun_prop]
-protected theorem differentiable : Differentiable 𝕜 f := fun _ =>
-  f.differentiableAt
+protected theorem differentiable : Differentiable 𝕜 f := fun _ => f.differentiableAt
 
 @[fun_prop]
-protected theorem differentiableOn : DifferentiableOn 𝕜 f s :=
-  f.differentiable.differentiableOn
+protected theorem differentiableOn : DifferentiableOn 𝕜 f s := f.differentiable.differentiableOn
 
 variable [ContinuousAdd E] [ContinuousSMul 𝕜 E] [ContinuousAdd F] [ContinuousSMul 𝕜 F] [T2Space F]
 
-@[simp]
-protected theorem fderiv : fderiv 𝕜 f x = f :=
-  f.hasFDerivAt.fderiv
+@[simp] protected theorem fderiv : fderiv 𝕜 f x = f := f.hasFDerivAt.fderiv
 
-protected theorem fderivWithin (hxs : UniqueDiffWithinAt 𝕜 s x) :
-    fderivWithin 𝕜 f s x = f := by
+protected theorem fderivWithin (hxs : UniqueDiffWithinAt 𝕜 s x) : fderivWithin 𝕜 f s x = f := by
   rw [DifferentiableAt.fderivWithin f.differentiableAt hxs]
   exact f.fderiv
 
@@ -97,18 +85,17 @@ variable {x : E}
 variable {s : Set E}
 variable {L : Filter (E × E)}
 
-theorem hasFDerivAtFilter (h : IsBoundedLinearMap 𝕜 f) :
-    HasFDerivAtFilter f h.toContinuousLinearMap L :=
+theorem hasFDerivAtFilter (h : IsBoundedLinearMap 𝕜 f)
+    : HasFDerivAtFilter f h.toContinuousLinearMap L :=
   h.toContinuousLinearMap.hasFDerivAtFilter
 
 @[fun_prop]
-theorem hasFDerivWithinAt (h : IsBoundedLinearMap 𝕜 f) :
-    HasFDerivWithinAt f h.toContinuousLinearMap s x :=
+theorem hasFDerivWithinAt (h : IsBoundedLinearMap 𝕜 f)
+    : HasFDerivWithinAt f h.toContinuousLinearMap s x :=
   h.hasFDerivAtFilter
 
 @[fun_prop]
-theorem hasFDerivAt (h : IsBoundedLinearMap 𝕜 f) :
-    HasFDerivAt f h.toContinuousLinearMap x :=
+theorem hasFDerivAt (h : IsBoundedLinearMap 𝕜 f) : HasFDerivAt f h.toContinuousLinearMap x :=
   h.hasFDerivAtFilter
 
 @[fun_prop]
@@ -116,22 +103,20 @@ theorem differentiableAt (h : IsBoundedLinearMap 𝕜 f) : DifferentiableAt 𝕜
   h.hasFDerivAt.differentiableAt
 
 @[fun_prop]
-theorem differentiableWithinAt (h : IsBoundedLinearMap 𝕜 f) :
-    DifferentiableWithinAt 𝕜 f s x :=
+theorem differentiableWithinAt (h : IsBoundedLinearMap 𝕜 f) : DifferentiableWithinAt 𝕜 f s x :=
   h.differentiableAt.differentiableWithinAt
 
-protected theorem fderiv (h : IsBoundedLinearMap 𝕜 f) :
-    fderiv 𝕜 f x = h.toContinuousLinearMap :=
+protected theorem fderiv (h : IsBoundedLinearMap 𝕜 f) : fderiv 𝕜 f x = h.toContinuousLinearMap :=
   HasFDerivAt.fderiv h.hasFDerivAt
 
-protected theorem fderivWithin (h : IsBoundedLinearMap 𝕜 f)
-    (hxs : UniqueDiffWithinAt 𝕜 s x) : fderivWithin 𝕜 f s x = h.toContinuousLinearMap := by
+protected theorem fderivWithin (h : IsBoundedLinearMap 𝕜 f) (hxs : UniqueDiffWithinAt 𝕜 s x)
+    : fderivWithin 𝕜 f s x = h.toContinuousLinearMap := by
   rw [DifferentiableAt.fderivWithin h.differentiableAt hxs]
   exact h.fderiv
 
 @[fun_prop]
-theorem differentiable (h : IsBoundedLinearMap 𝕜 f) : Differentiable 𝕜 f :=
-  fun _ => h.differentiableAt
+theorem differentiable (h : IsBoundedLinearMap 𝕜 f) : Differentiable 𝕜 f := fun _ =>
+  h.differentiableAt
 
 @[fun_prop]
 theorem differentiableOn (h : IsBoundedLinearMap 𝕜 f) : DifferentiableOn 𝕜 f s :=

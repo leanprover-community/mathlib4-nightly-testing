@@ -6,7 +6,6 @@ Authors: Chris Hughes, Johannes Hölzl, Kim Morrison, Jens Wagemaker
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Defs
-
 import Mathlib.Algebra.Polynomial.Monomial
 
 /-!
@@ -34,8 +33,8 @@ lemma natDegree_le_pred (hf : p.natDegree ≤ n) (hn : p.coeff n = 0) : p.natDeg
     rw [← Nat.succ_eq_add_one, ← h, coeff_natDegree, leadingCoeff_eq_zero] at hn
     simp_all
 
-theorem monomial_natDegree_leadingCoeff_eq_self (h : #p.support ≤ 1) :
-    monomial p.natDegree p.leadingCoeff = p := by
+theorem monomial_natDegree_leadingCoeff_eq_self (h : #p.support ≤ 1)
+    : monomial p.natDegree p.leadingCoeff = p := by
   classical
   rcases card_support_le_one_iff_monomial.1 h with ⟨n, a, rfl⟩
   by_cases ha : a = 0 <;> simp [ha]

@@ -22,8 +22,10 @@ Prove that $a*b + c*d$ is not prime.
 
 variable {a b c d : ℤ}
 
-public theorem imo2001_q6 (hd : 0 < d) (hdc : d < c) (hcb : c < b) (hba : b < a)
-    (h : a * c + b * d = (a + b - c + d) * (-a + b + c + d)) : ¬Prime (a * b + c * d) := by
+public theorem imo2001_q6
+    (hd : 0 < d) (hdc : d < c) (hcb : c < b) (hba : b < a)
+    (h : a * c + b * d = (a + b - c + d) * (-a + b + c + d))
+    : ¬ Prime (a * b + c * d) := by
   intro (h0 : Prime (a * b + c * d))
   have ha : 0 < a := by lia
   have hb : 0 < b := by lia

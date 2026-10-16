@@ -36,8 +36,9 @@ variable {p : ℕ} [Fact p.Prime]
 open WithZero UniformSpace
 
 open MonoidWithZeroHom.ValueGroup₀ in
-lemma isUniformInducing_cast_withVal : IsUniformInducing ((Rat.castHom ℚ_[p]).comp
-    (WithVal.equiv (Rat.padicValuation p)).toRingHom) := by
+lemma isUniformInducing_cast_withVal
+    : IsUniformInducing ((Rat.castHom ℚ_[p]).comp
+      (WithVal.equiv (Rat.padicValuation p)).toRingHom) := by
   have hp0' : 0 < (p : ℚ) := by simp [Nat.Prime.pos Fact.out]
   have hp0 : 0 < (p : ℝ)⁻¹ := by simp [Nat.Prime.pos Fact.out]
   have hp1' : 1 < (p : ℚ) := by simp [Nat.Prime.one_lt Fact.out]
@@ -49,8 +50,7 @@ lemma isUniformInducing_cast_withVal : IsUniformInducing ((Rat.castHom ℚ_[p]).
     ← map_sub, Padic.eq_padicNorm, true_and, forall_const]
   constructor
   · intro n
-    have hn : Valued.v (R := (WithVal (Rat.padicValuation p))) (p ^ n) =
-      exp (-n : ℤ) := by
+    have hn : Valued.v (R := (WithVal (Rat.padicValuation p))) (p ^ n) = exp (-n : ℤ) := by
       simp only [← WithVal.val_apply_equiv, map_pow, map_natCast, Rat.padicValuation_self,
         Int.reduceNeg, exp_neg, inv_pow, ← exp_nsmul, nsmul_eq_mul, mul_one]
     use Units.mk0 (Valued.v.restrict (p ^ n)) (by
@@ -63,10 +63,11 @@ lemma isUniformInducing_cast_withVal : IsUniformInducing ((Rat.castHom ℚ_[p]).
     rw [← Nat.cast_pow, ← Rat.cast_natCast, ← Rat.cast_inv_of_ne_zero, Rat.cast_le]
     · rw [map_sub, ← hx, ← hy]
       simp only [Rat.padicValuation, Valuation.coe_mk, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk,
-        padicNorm, zpow_neg, Nat.cast_pow] at h ⊢
+          padicNorm, zpow_neg, Nat.cast_pow]
+        at h ⊢
       split_ifs with H
       · simp
-      · simp only [H, ↓reduceIte, exp_lt_exp, neg_lt_neg_iff] at h
+      · simp only [H, ↓ reduceIte, exp_lt_exp, neg_lt_neg_iff] at h
         simpa [hp0', zpow_pos, pow_pos, inv_le_inv₀] using
           zpow_right_mono₀ (by exact_mod_cast (Nat.Prime.one_le Fact.out)) h.le
     · simp [Nat.Prime.ne_zero Fact.out]
@@ -89,8 +90,9 @@ lemma isUniformInducing_cast_withVal : IsUniformInducing ((Rat.castHom ℚ_[p]).
           Int.lt_iff_add_one_le]
     · simp [Nat.Prime.ne_zero Fact.out]
 
-lemma isDenseInducing_cast_withVal : IsDenseInducing ((Rat.castHom ℚ_[p]).comp
-    (WithVal.equiv (Rat.padicValuation p)).toRingHom) := by
+lemma isDenseInducing_cast_withVal
+    : IsDenseInducing ((Rat.castHom ℚ_[p]).comp
+      (WithVal.equiv (Rat.padicValuation p)).toRingHom) := by
   refine Padic.isUniformInducing_cast_withVal.isDenseInducing ?_
   intro
   -- nhds_discrete causes timeouts on TC search
@@ -98,20 +100,21 @@ lemma isDenseInducing_cast_withVal : IsDenseInducing ((Rat.castHom ℚ_[p]).comp
 
 open Completion in
 open scoped Valued in
-/-- The `p`-adic numbers are isomorphic as a field to the completion of the rationals at
-the `p`-adic valuation. -/
-noncomputable
-def withValRingEquiv :
-    (Rat.padicValuation p).Completion ≃+* ℚ_[p] where
-  toFun := (extensionHom ((Rat.castHom ℚ_[p]).comp (WithVal.equiv (Rat.padicValuation p)).toRingHom)
-    Padic.isUniformInducing_cast_withVal.uniformContinuous.continuous)
+/--
+The `p`-adic numbers are isomorphic as a field to the completion of the rationals at
+the `p`-adic valuation.
+-/
+noncomputable def withValRingEquiv : (Rat.padicValuation p).Completion ≃+* ℚ_[p] where
+  toFun :=
+    (extensionHom ((Rat.castHom ℚ_[p]).comp (WithVal.equiv (Rat.padicValuation p)).toRingHom)
+      Padic.isUniformInducing_cast_withVal.uniformContinuous.continuous)
   invFun := Padic.isDenseInducing_cast_withVal.extend coe'
   left_inv y := by
     induction y using induction_on
     · generalize_proofs _ _ _ H
       refine isClosed_eq ?_ continuous_id
       exact (uniformContinuous_uniformly_extend Padic.isUniformInducing_cast_withVal
-        Padic.isDenseInducing_cast_withVal.dense (uniformContinuous_coe _)).continuous.comp
+          Padic.isDenseInducing_cast_withVal.dense (uniformContinuous_coe _)).continuous.comp
         (continuous_extension)
     · rw [extensionHom_coe]
       apply IsDenseInducing.extend_eq
@@ -122,8 +125,9 @@ def withValRingEquiv :
       refine continuous_extension.comp ?_
       exact (uniformContinuous_uniformly_extend Padic.isUniformInducing_cast_withVal
         Padic.isDenseInducing_cast_withVal.dense (uniformContinuous_coe _)).continuous
-    · have : ∀ q : ℚ, Padic.isDenseInducing_cast_withVal.extend coe' q = coe'
-        ((WithVal.equiv (Rat.padicValuation p)).symm q) := by
+    · have : ∀ q : ℚ,
+          Padic.isDenseInducing_cast_withVal.extend coe' q
+            = coe' ((WithVal.equiv (Rat.padicValuation p)).symm q) := by
         intro q
         apply IsDenseInducing.extend_eq
         exact continuous_coe _
@@ -132,57 +136,60 @@ def withValRingEquiv :
   map_mul' := map_mul _
   map_add' := map_add _
 
+@[simp]
+lemma coe_withValRingEquiv
+    : ⇑(Padic.withValRingEquiv (p := p))
+      = Completion.extension ((↑) ∘ (WithVal.equiv (Rat.padicValuation p))) :=
+  rfl
 
 @[simp]
-lemma coe_withValRingEquiv :
-    ⇑(Padic.withValRingEquiv (p := p)) = Completion.extension
-      ((↑) ∘ (WithVal.equiv (Rat.padicValuation p))) := rfl
+lemma coe_withValRingEquiv_symm
+    : ⇑(Padic.withValRingEquiv (p := p)).symm
+      = Padic.isDenseInducing_cast_withVal.extend Completion.coe' :=
+  rfl
 
-@[simp]
-lemma coe_withValRingEquiv_symm :
-    ⇑(Padic.withValRingEquiv (p := p)).symm =
-      Padic.isDenseInducing_cast_withVal.extend Completion.coe' := rfl
-
-/-- The `p`-adic numbers are isomorphic as uniform spaces to the completion of the rationals at
-the `p`-adic valuation. -/
-noncomputable
-def withValUniformEquiv :
-    (Rat.padicValuation p).Completion ≃ᵤ ℚ_[p] :=
+/--
+The `p`-adic numbers are isomorphic as uniform spaces to the completion of the rationals at
+the `p`-adic valuation.
+-/
+noncomputable def withValUniformEquiv : (Rat.padicValuation p).Completion ≃ᵤ ℚ_[p] :=
   UniformEquiv.symm <| Padic.withValRingEquiv.symm.toUniformEquivOfIsUniformInducing <|
     isDenseInducing_cast_withVal.isUniformInducing_extend isUniformInducing_cast_withVal
       (Completion.isUniformInducing_coe _)
 
 @[simp]
-lemma toEquiv_withValUniformEquiv_eq_toEquiv_withValRingEquiv :
-    (withValUniformEquiv (p := p) : (Rat.padicValuation p).Completion ≃ ℚ_[p]) =
-      (withValRingEquiv (p := p) :) := rfl
+lemma toEquiv_withValUniformEquiv_eq_toEquiv_withValRingEquiv
+    : (withValUniformEquiv (p := p) : (Rat.padicValuation p).Completion ≃ ℚ_[p])
+      = (withValRingEquiv (p := p) :) :=
+  rfl
 
 open UniformSpace.Completion in
 @[simp]
-theorem withValUniformEquiv_cast_apply (x : WithVal (Rat.padicValuation p)) :
-    Padic.withValUniformEquiv (p := p) x = WithVal.equiv (Rat.padicValuation p) x := by
+theorem withValUniformEquiv_cast_apply (x : WithVal (Rat.padicValuation p))
+    : Padic.withValUniformEquiv (p := p) x = WithVal.equiv (Rat.padicValuation p) x := by
   simpa [Equiv.toUniformEquivOfIsUniformInducing] using!
     extension_coe (Padic.isUniformInducing_cast_withVal (p := p)).uniformContinuous _
 
 open PadicInt in
-theorem norm_rat_le_one_iff_padicValuation_le_one (p : ℕ) [Fact p.Prime] {x : ℚ} :
-    ‖(x : ℚ_[p])‖ ≤ 1 ↔ Rat.padicValuation p x ≤ 1 := by
+theorem norm_rat_le_one_iff_padicValuation_le_one (p : ℕ) [Fact p.Prime] {x : ℚ}
+    : ‖(x : ℚ_[p])‖ ≤ 1 ↔ Rat.padicValuation p x ≤ 1 := by
   rw [Rat.padicValuation_le_one_iff]
   refine ⟨fun h ↦ ?_, fun h ↦ Padic.norm_rat_le_one h⟩
   simpa [Nat.Prime.coprime_iff_not_dvd Fact.out] using isUnit_iff.1 <| isUnit_den _ h
 
-theorem withValUniformEquiv_norm_le_one_iff {p : ℕ} [Fact p.Prime]
-    (x : (Rat.padicValuation p).Completion) :
-    ‖Padic.withValUniformEquiv x‖ ≤ 1 ↔ Valued.v x ≤ 1 := by
+theorem withValUniformEquiv_norm_le_one_iff
+    {p : ℕ} [Fact p.Prime] (x : (Rat.padicValuation p).Completion)
+    : ‖Padic.withValUniformEquiv x‖ ≤ 1 ↔ Valued.v x ≤ 1 := by
   induction x using UniformSpace.Completion.induction_on with
   | hp =>
     have : {x : (Rat.padicValuation p).Completion |
-          ‖Padic.withValUniformEquiv x‖ ≤ 1 ↔ Valued.v x ≤ 1} =
-        {x | Valued.v x ≤ 1 ↔ ‖Padic.withValUniformEquiv x‖ ≤ 1} :=
+          ‖Padic.withValUniformEquiv x‖ ≤ 1 ↔ Valued.v x ≤ 1}
+        = {x | Valued.v x ≤ 1 ↔ ‖Padic.withValUniformEquiv x‖ ≤ 1} :=
       Set.ext fun _ ↦ Iff.comm
     rw [this]
     simp_rw [← Valuation.restrict_le_one_iff Valued.v]
-    apply withValUniformEquiv.toHomeomorph.isClosed_setOfPred_iff (q := fun x ↦ ‖x‖ ≤ 1)
+    apply withValUniformEquiv.toHomeomorph.isClosed_setOfPred_iff
+      (q := fun x ↦ ‖x‖ ≤ 1)
       (Valued.isClopen_closedBall _ one_ne_zero)
     simpa [Metric.closedBall] using IsUltrametricDist.isClopen_closedBall (0 : ℚ_[p]) one_ne_zero
   | ih a =>
@@ -197,14 +204,18 @@ open Padic Valued
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- The `p`-adic integers are ring isomorphic to the integers of the uniform completion
-of the rationals at the `p`-adic valuation. -/
-noncomputable def withValIntegersRingEquiv {p : ℕ} [Fact p.Prime] :
-    𝒪[(Rat.padicValuation p).Completion] ≃+* ℤ_[p] :=
+/--
+The `p`-adic integers are ring isomorphic to the integers of the uniform completion
+of the rationals at the `p`-adic valuation.
+-/
+noncomputable def withValIntegersRingEquiv {p : ℕ} [Fact p.Prime]
+    : 𝒪[(Rat.padicValuation p).Completion] ≃+* ℤ_[p] :=
   withValRingEquiv.restrict _ (subring p) fun _ ↦ (withValUniformEquiv_norm_le_one_iff _).symm
 
-/-- The `p`-adic integers are isomorphic as uniform spaces to the integers of the uniform completion
-of the rationals at the `p`-adic valuation. -/
+/--
+The `p`-adic integers are isomorphic as uniform spaces to the integers of the uniform completion
+of the rationals at the `p`-adic valuation.
+-/
 noncomputable def withValIntegersUniformEquiv : 𝒪[(Rat.padicValuation p).Completion] ≃ᵤ ℤ_[p] :=
   withValUniformEquiv.subtype fun _ ↦ (withValUniformEquiv_norm_le_one_iff _).symm
 

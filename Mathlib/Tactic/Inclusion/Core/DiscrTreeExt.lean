@@ -49,7 +49,7 @@ abbrev Entry := Array (Array DiscrTree.Key) × Name
 structure State (α : Type) where
   /-- The discrimination tree of the extension. -/
   tree : DiscrTree α := {}
-  deriving Inhabited
+deriving Inhabited
 
 /-- A scoped environment extension containing declaration values indexed by expression patterns. -/
 abbrev EnvExt (α : Type) := ScopedEnvExtension Entry (Entry × α) (State α)
@@ -59,7 +59,8 @@ variable {α : Type}
 /-- Return the declaration values whose `DiscrTree` keys match `e`. -/
 def State.getMatch (state : State α) (e : Expr) : MetaM (Array α) := state.tree.getMatch e
 
-/-- When the current module registers an attribute, record for `shake` that modules importing
+/--
+When the current module registers an attribute, record for `shake` that modules importing
 the current one should continue to do so.
 
 `kind` indicates the scope at which the attribute is registered.
@@ -72,10 +73,12 @@ def recordRegisteringModule (kind : AttributeKind) : CoreM Unit := do
   unless kind == .local do
     recordExtraRevUseOfCurrentModule
 
-/-- Create a scoped environment extension whose declarations have type `typeName`. By default, the
-environment extension is named after the declaration in which this function is called. -/
-def initializeEnvExt (typeName : Name)
-    (envExtName : Name := by exact decl_name%) : IO (EnvExt α) := do
+/--
+Create a scoped environment extension whose declarations have type `typeName`. By default, the
+environment extension is named after the declaration in which this function is called.
+-/
+def initializeEnvExt (typeName : Name) (envExtName : Name := by exact decl_name%)
+    : IO (EnvExt α) := do
   -- we prevent any deduplication in the DiscrTree
   have : BEq α := ⟨fun _ _ ↦ false⟩
   let insert kss v dt := kss.foldl (fun dt ks ↦ dt.insertKeyValue ks v) dt
@@ -84,27 +87,28 @@ def initializeEnvExt (typeName : Name)
     mkInitial := pure {}
     ofOLeanEntry := fun _ e@(_, n) ↦ return (e, ← evalDecl α typeName n)
     toOLeanEntry := (·.1)
-    addEntry := fun state ((kss, _), ext) ↦
-      { tree := insert kss ext state.tree }
+    addEntry := fun state ((kss, _), ext) ↦ { tree := insert kss ext state.tree }
   }
 
-/-- Register `entry` in `ext`, recording the current module as one `shake` should preserve.
+/--
+Register `entry` in `ext`, recording the current module as one `shake` should preserve.
 
 Prefer this over `ScopedEnvExtension.add` when adding an entry from an attribute handler, so that
-the registration and the `shake` bookkeeping cannot drift apart. -/
-def EnvExt.register (ext : EnvExt α) (entry : Entry × α) (kind : AttributeKind) :
-    CoreM Unit := do
+the registration and the `shake` bookkeeping cannot drift apart.
+-/
+def EnvExt.register (ext : EnvExt α) (entry : Entry × α) (kind : AttributeKind) : CoreM Unit := do
   ext.add entry kind
   recordRegisteringModule kind
 
 /-- Elaborate expression patterns into `DiscrTree` paths. -/
 def elabExtKeys (patterns : Array Syntax) : CoreM (Array (Array DiscrTree.Key)) :=
   MetaM.run' <| patterns.mapM fun stx => do
-    let e ← TermElabM.run' <| withSaveInfoContext <| withAutoBoundImplicit <|
-      withReader ({ · with ignoreTCFailures := true }) do
-        let e ← elabTerm stx none
-        let (_, _, e) ← lambdaMetaTelescope (← mkLambdaFVars (← getLCtx).getFVars e)
-        return e
+    let e ←
+      TermElabM.run' <| withSaveInfoContext <| withAutoBoundImplicit <|
+        withReader ({ · with ignoreTCFailures := true }) do
+          let e ← elabTerm stx none
+          let (_, _, e) ← lambdaMetaTelescope (← mkLambdaFVars (← getLCtx).getFVars e)
+          return e
     DiscrTree.mkPath e
 
 end DiscrTreeExt

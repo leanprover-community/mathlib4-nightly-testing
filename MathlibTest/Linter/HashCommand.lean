@@ -106,9 +106,7 @@ info: `#`-commands, such as '#eval', are not allowed in 'Mathlib' [linter.hashCo
 #guard_msgs in
 #eval 0
 
-/--
-info: `#`-commands, such as '#guard', are not allowed in 'Mathlib' [linter.hashCommand]
--/
+/-- info: `#`-commands, such as '#guard', are not allowed in 'Mathlib' [linter.hashCommand] -/
 #guard_msgs in
 #guard true
 

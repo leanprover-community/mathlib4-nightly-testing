@@ -65,11 +65,13 @@ variable {α β}
 protected theorem NoetherianSpace.isCompact [NoetherianSpace α] (s : Set α) : IsCompact s := by
   refine isCompact_iff_finite_subcover.2 fun U hUo hs => ?_
   rcases ((noetherianSpace_iff_opens α).mp ‹_› ⟨⋃ i, U i, isOpen_iUnion hUo⟩).elim_finite_subcover U
-    hUo Set.Subset.rfl with ⟨t, ht⟩
+      hUo Set.Subset.rfl
+    with ⟨t, ht⟩
   exact ⟨t, hs.trans ht⟩
 
-protected theorem _root_.Topology.IsInducing.noetherianSpace [NoetherianSpace α] {i : β → α}
-    (hi : IsInducing i) : NoetherianSpace β :=
+protected theorem _root_.Topology.IsInducing.noetherianSpace
+    [NoetherianSpace α] {i : β → α} (hi : IsInducing i)
+    : NoetherianSpace β :=
   (noetherianSpace_iff_opens _).2 fun _ => hi.isCompact_iff.2 (NoetherianSpace.isCompact _)
 
 @[stacks 0052 "(1)"]
@@ -78,11 +80,13 @@ instance NoetherianSpace.set [NoetherianSpace α] (s : Set α) : NoetherianSpace
 
 variable (α) in
 open List in
-theorem noetherianSpace_TFAE :
-    TFAE [NoetherianSpace α,
+theorem noetherianSpace_TFAE
+    : TFAE [
+      NoetherianSpace α,
       WellFoundedLT (Closeds α),
       ∀ s : Set α, IsCompact s,
-      ∀ s : Opens α, IsCompact (s : Set α)] := by
+      ∀ s : Opens α, IsCompact (s : Set α)
+    ] := by
   tfae_have 1 ↔ 2 := by
     exact Opens.compl_bijective.2.wellFounded_iff (@OrderIso.compl (Set α)).lt_iff_lt.symm
   tfae_have 1 ↔ 4 := noetherianSpace_iff_opens α
@@ -105,22 +109,23 @@ instance {α} : NoetherianSpace (CofiniteTopology α) := by
     exact ⟨a, ha, Or.inr hf⟩
   · exact ⟨a, hs, Or.inl le_rfl⟩
 
-theorem noetherianSpace_of_surjective [NoetherianSpace α] (f : α → β) (hf : Continuous f)
-    (hf' : Function.Surjective f) : NoetherianSpace β :=
-  noetherianSpace_iff_isCompact.2 <| (Set.image_surjective.mpr hf').forall.2 fun s =>
-    (NoetherianSpace.isCompact s).image hf
+theorem noetherianSpace_of_surjective
+    [NoetherianSpace α] (f : α → β) (hf : Continuous f) (hf' : Function.Surjective f)
+    : NoetherianSpace β :=
+  noetherianSpace_iff_isCompact.2 <|
+    (Set.image_surjective.mpr hf').forall.2 fun s => (NoetherianSpace.isCompact s).image hf
 
-theorem noetherianSpace_iff_of_homeomorph (f : α ≃ₜ β) : NoetherianSpace α ↔ NoetherianSpace β :=
-  ⟨fun _ => noetherianSpace_of_surjective f f.continuous f.surjective,
-    fun _ => noetherianSpace_of_surjective f.symm f.symm.continuous f.symm.surjective⟩
+theorem noetherianSpace_iff_of_homeomorph (f : α ≃ₜ β) : NoetherianSpace α ↔ NoetherianSpace β := ⟨
+  fun _ => noetherianSpace_of_surjective f f.continuous f.surjective,
+  fun _ => noetherianSpace_of_surjective f.symm f.symm.continuous f.symm.surjective
+⟩
 
-theorem NoetherianSpace.range [NoetherianSpace α] (f : α → β) (hf : Continuous f) :
-    NoetherianSpace (Set.range f) :=
+theorem NoetherianSpace.range [NoetherianSpace α] (f : α → β) (hf : Continuous f)
+    : NoetherianSpace (Set.range f) :=
   noetherianSpace_of_surjective (Set.rangeFactorization f) (hf.subtype_mk _)
     Set.rangeFactorization_surjective
 
-theorem noetherianSpace_set_iff (s : Set α) :
-    NoetherianSpace s ↔ ∀ t, t ⊆ s → IsCompact t := by
+theorem noetherianSpace_set_iff (s : Set α) : NoetherianSpace s ↔ ∀ t, t ⊆ s → IsCompact t := by
   simp only [noetherianSpace_iff_isCompact, IsEmbedding.subtypeVal.isCompact_iff,
     Subtype.forall_set_subtype]
 
@@ -128,8 +133,9 @@ theorem noetherianSpace_set_iff (s : Set α) :
 theorem noetherian_univ_iff : NoetherianSpace (Set.univ : Set α) ↔ NoetherianSpace α :=
   noetherianSpace_iff_of_homeomorph (Homeomorph.Set.univ α)
 
-theorem NoetherianSpace.iUnion {ι : Type*} (f : ι → Set α) [Finite ι]
-    [hf : ∀ i, NoetherianSpace (f i)] : NoetherianSpace (⋃ i, f i) := by
+theorem NoetherianSpace.iUnion
+    {ι : Type*} (f : ι → Set α) [Finite ι] [hf : ∀ i, NoetherianSpace (f i)]
+    : NoetherianSpace (⋃ i, f i) := by
   simp_rw [noetherianSpace_set_iff] at hf ⊢
   intro t ht
   rw [← Set.inter_eq_left.mpr ht, Set.inter_iUnion]
@@ -153,15 +159,17 @@ instance (priority := 100) [IndiscreteTopology α] : NoetherianSpace α :=
     CofiniteTopology.of.symm.surjective
 
 /-- In a Noetherian space, every closed set is a finite union of irreducible closed sets. -/
-theorem NoetherianSpace.exists_finite_set_closeds_irreducible [NoetherianSpace α] (s : Closeds α) :
-    ∃ S : Set (Closeds α), S.Finite ∧ (∀ t ∈ S, IsIrreducible (t : Set α)) ∧ s = sSup S := by
-  apply wellFounded_lt.induction s; clear s
+theorem NoetherianSpace.exists_finite_set_closeds_irreducible [NoetherianSpace α] (s : Closeds α)
+    : ∃ S : Set (Closeds α), S.Finite ∧ (∀ t ∈ S, IsIrreducible (t : Set α)) ∧ s = sSup S := by
+  apply wellFounded_lt.induction s
+  clear s
   intro s H
   rcases eq_or_ne s ⊥ with rfl | h₀
   · use ∅; simp
   · by_cases h₁ : IsPreirreducible (s : Set α)
     · replace h₁ : IsIrreducible (s : Set α) := ⟨Closeds.coe_nonempty.2 h₀, h₁⟩
-      use {s}; simp [h₁]
+      use {s}
+      simp [h₁]
     · simp only [isPreirreducible_iff_isClosed_union_isClosed, not_forall, not_or] at h₁
       obtain ⟨z₁, z₂, hz₁, hz₂, h, hz₁', hz₂'⟩ := h₁
       lift z₁ to Closeds α using hz₁
@@ -172,25 +180,26 @@ theorem NoetherianSpace.exists_finite_set_closeds_irreducible [NoetherianSpace �
       rwa [sSup_union, ← h₁, ← h₂, ← inf_sup_left, left_eq_inf]
 
 /-- In a Noetherian space, every closed set is a finite union of irreducible closed sets. -/
-theorem NoetherianSpace.exists_finite_set_isClosed_irreducible [NoetherianSpace α]
-    {s : Set α} (hs : IsClosed s) : ∃ S : Set (Set α), S.Finite ∧
-      (∀ t ∈ S, IsClosed t) ∧ (∀ t ∈ S, IsIrreducible t) ∧ s = ⋃₀ S := by
+theorem NoetherianSpace.exists_finite_set_isClosed_irreducible
+    [NoetherianSpace α] {s : Set α} (hs : IsClosed s)
+    : ∃ S : Set (Set α),
+      S.Finite ∧ (∀ t ∈ S, IsClosed t) ∧ (∀ t ∈ S, IsIrreducible t) ∧ s = ⋃₀S := by
   lift s to Closeds α using hs
   rcases NoetherianSpace.exists_finite_set_closeds_irreducible s with ⟨S, hSf, hS, rfl⟩
-  refine ⟨(↑) '' S, hSf.image _, Set.forall_mem_image.2 fun S _ ↦ S.2, Set.forall_mem_image.2 hS,
-    ?_⟩
+  refine
+    ⟨(↑) '' S, hSf.image _, Set.forall_mem_image.2 fun S _ ↦ S.2, Set.forall_mem_image.2 hS, ?_⟩
   lift S to Finset (Closeds α) using hSf
   simp [← Finset.sup_id_eq_sSup, Closeds.coe_finset_sup]
 
 /-- In a Noetherian space, every closed set is a finite union of irreducible closed sets. -/
-theorem NoetherianSpace.exists_finset_irreducible [NoetherianSpace α] (s : Closeds α) :
-    ∃ S : Finset (Closeds α), (∀ k : S, IsIrreducible (k : Set α)) ∧ s = S.sup id := by
-  simpa [Set.exists_finite_iff_finset, Finset.sup_id_eq_sSup]
-    using NoetherianSpace.exists_finite_set_closeds_irreducible s
+theorem NoetherianSpace.exists_finset_irreducible [NoetherianSpace α] (s : Closeds α)
+    : ∃ S : Finset (Closeds α), (∀ k : S, IsIrreducible (k : Set α)) ∧ s = S.sup id := by
+  simpa [Set.exists_finite_iff_finset, Finset.sup_id_eq_sSup] using
+    NoetherianSpace.exists_finite_set_closeds_irreducible s
 
 @[stacks 0052 "(2)"]
-theorem NoetherianSpace.finite_irreducibleComponents [NoetherianSpace α] :
-    (irreducibleComponents α).Finite := by
+theorem NoetherianSpace.finite_irreducibleComponents [NoetherianSpace α]
+    : (irreducibleComponents α).Finite := by
   obtain ⟨S : Set (Set α), hSf, hSc, hSi, hSU⟩ :=
     NoetherianSpace.exists_finite_set_isClosed_irreducible isClosed_univ (α := α)
   refine hSf.subset fun s hs => ?_
@@ -199,26 +208,27 @@ theorem NoetherianSpace.finite_irreducibleComponents [NoetherianSpace α] :
   rwa [ht.antisymm (hs.2 (hSi _ htS) ht)]
 
 @[stacks 0052 "(3)"]
-theorem NoetherianSpace.exists_isOpen_nonempty_subset_irreducibleComponent [NoetherianSpace α]
-    (Z : Set α) (H : Z ∈ irreducibleComponents α) :
-    ∃ o : Set α, IsOpen o ∧ o.Nonempty ∧ o ⊆ Z := by
+theorem NoetherianSpace.exists_isOpen_nonempty_subset_irreducibleComponent
+    [NoetherianSpace α] (Z : Set α) (H : Z ∈ irreducibleComponents α)
+    : ∃ o : Set α, IsOpen o ∧ o.Nonempty ∧ o ⊆ Z := by
   have hα : (irreducibleComponents α).Finite := finite_irreducibleComponents
   have hZ := closure_sUnion_irreducibleComponents_sdiff_singleton hα Z H
-  refine ⟨(⋃₀ (irreducibleComponents α \ {Z}))ᶜ, ?_, ?_, subset_closure.trans hZ.le⟩
+  refine ⟨(⋃₀(irreducibleComponents α \ {Z}))ᶜ, ?_, ?_, subset_closure.trans hZ.le⟩
   · rw [Set.sUnion_eq_biUnion, isOpen_compl_iff]
     exact hα.sdiff.isClosed_biUnion fun W hW ↦ isClosed_of_mem_irreducibleComponents W hW.1
   · contrapose! hZ
     rw [hZ, closure_empty, ← Set.nonempty_iff_empty_ne]
     exact H.1.nonempty
 
-lemma NoetherianSpace.of_subset {W V : Set α} [NoetherianSpace W]
-    (h : V ⊆ W) : NoetherianSpace V :=
+lemma NoetherianSpace.of_subset {W V : Set α} [NoetherianSpace W] (h : V ⊆ W) : NoetherianSpace V :=
   Topology.IsInducing.noetherianSpace (Topology.IsEmbedding.inclusion h).isInducing
 
-lemma NoetherianSpace.inter_of_left (W V : Set α) [NoetherianSpace W] :
-    NoetherianSpace (W ∩ V : Set α) := .of_subset Set.inter_subset_left
+lemma NoetherianSpace.inter_of_left (W V : Set α) [NoetherianSpace W]
+    : NoetherianSpace (W ∩ V : Set α) :=
+  .of_subset Set.inter_subset_left
 
-lemma NoetherianSpace.inter_of_right (W V : Set α) [NoetherianSpace V] :
-    NoetherianSpace (W ∩ V : Set α) := .of_subset Set.inter_subset_right
+lemma NoetherianSpace.inter_of_right (W V : Set α) [NoetherianSpace V]
+    : NoetherianSpace (W ∩ V : Set α) :=
+  .of_subset Set.inter_subset_right
 
 end TopologicalSpace

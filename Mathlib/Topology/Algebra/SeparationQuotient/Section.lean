@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Module.Projective
 public import Mathlib.Topology.Algebra.SeparationQuotient.Basic
-
 import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 /-!
@@ -24,23 +23,28 @@ open Topology
 namespace SeparationQuotient
 section VectorSpace
 
-variable (K E : Type*) [DivisionRing K] [AddCommGroup E] [Module K E]
-  [TopologicalSpace E] [IsTopologicalAddGroup E] [ContinuousConstSMul K E]
+variable
+  (K E : Type*) [DivisionRing K] [AddCommGroup E] [Module K E] [TopologicalSpace E]
+  [IsTopologicalAddGroup E] [ContinuousConstSMul K E]
 
-/-- There exists a continuous `K`-linear map from `SeparationQuotient E` to `E`
+/--
+There exists a continuous `K`-linear map from `SeparationQuotient E` to `E`
 such that `mk (outCLM x) = x` for all `x`.
 
 Note that continuity of this map comes for free, because `mk` is a topology inducing map.
 -/
-theorem exists_out_continuousLinearMap :
-    ∃ f : SeparationQuotient E →L[K] E, mkCLM K E ∘L f = .id K (SeparationQuotient E) := by
+theorem exists_out_continuousLinearMap
+    : ∃ f : SeparationQuotient E →L[K] E, mkCLM K E ∘L f = .id K (SeparationQuotient E) := by
   rcases (mkCLM K E).toLinearMap.exists_rightInverse_of_surjective
-    (LinearMap.range_eq_top.mpr surjective_mk) with ⟨f, hf⟩
+      (LinearMap.range_eq_top.mpr surjective_mk)
+    with ⟨f, hf⟩
   replace hf : mk ∘ f = id := congr($hf)
   exact ⟨⟨f, isInducing_mk.continuous_iff.2 (by continuity)⟩, DFunLike.ext' hf⟩
 
-/-- A continuous `K`-linear map from `SeparationQuotient E` to `E`
-such that `mk (outCLM x) = x` for all `x`. -/
+/--
+A continuous `K`-linear map from `SeparationQuotient E` to `E`
+such that `mk (outCLM x) = x` for all `x`.
+-/
 noncomputable def outCLM : SeparationQuotient E →L[K] E :=
   (exists_out_continuousLinearMap K E).choose
 
@@ -53,13 +57,14 @@ variable {E} in
 theorem mk_outCLM (x : SeparationQuotient E) : mk (outCLM K E x) = x :=
   congr($(mkCLM_comp_outCLM K E) x)
 
-@[simp]
-theorem mk_comp_outCLM : mk ∘ outCLM K E = id := funext (mk_outCLM K)
+@[simp] theorem mk_comp_outCLM : mk ∘ outCLM K E = id := funext (mk_outCLM K)
 
 variable {K} in
-theorem postcomp_mkCLM_surjective {L : Type*} [Semiring L] (σ : L →+* K)
-    (F : Type*) [AddCommMonoid F] [Module L F] [TopologicalSpace F] :
-    Function.Surjective ((mkCLM K E).comp : (F →SL[σ] E) → (F →SL[σ] SeparationQuotient E)) := by
+theorem postcomp_mkCLM_surjective
+    {L : Type*} [Semiring L]
+    (σ : L →+* K)
+    (F : Type*) [AddCommMonoid F] [Module L F] [TopologicalSpace F]
+    : Function.Surjective ((mkCLM K E).comp : (F →SL[σ] E) → (F →SL[σ] SeparationQuotient E)) := by
   intro f
   use (outCLM K E).comp f
   rw [← ContinuousLinearMap.comp_assoc, mkCLM_comp_outCLM, ContinuousLinearMap.id_comp]
@@ -68,15 +73,15 @@ theorem postcomp_mkCLM_surjective {L : Type*} [Semiring L] (σ : L →+* K)
 theorem isEmbedding_outCLM : IsEmbedding (outCLM K E) :=
   Function.LeftInverse.isEmbedding (mk_outCLM K) continuous_mk (map_continuous _)
 
-theorem outCLM_injective : Function.Injective (outCLM K E) :=
-  (isEmbedding_outCLM K E).injective
+theorem outCLM_injective : Function.Injective (outCLM K E) := (isEmbedding_outCLM K E).injective
 
 end VectorSpace
 
 section VectorSpaceUniform
 
-variable (K E : Type*) [DivisionRing K] [AddCommGroup E] [Module K E]
-    [UniformSpace E] [IsUniformAddGroup E] [ContinuousConstSMul K E]
+variable
+  (K E : Type*) [DivisionRing K] [AddCommGroup E] [Module K E] [UniformSpace E]
+  [IsUniformAddGroup E] [ContinuousConstSMul K E]
 
 @[fun_prop]
 theorem outCLM_isUniformInducing : IsUniformInducing (outCLM K E) := by

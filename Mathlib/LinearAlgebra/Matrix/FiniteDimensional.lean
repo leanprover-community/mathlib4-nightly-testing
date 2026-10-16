@@ -6,7 +6,6 @@ Authors: Johannes Hölzl, Patrick Massot, Casper Putz, Anne Baanen
 module
 
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 
 /-!
@@ -29,7 +28,6 @@ matrix, finite dimensional, findim, finrank
 
 public section
 
-
 universe u v
 
 namespace Matrix
@@ -51,14 +49,16 @@ variable {K : Type*} [Field K]
 variable {V : Type*} [AddCommGroup V] [Module K V] [FiniteDimensional K V]
 variable {W : Type*} [AddCommGroup W] [Module K W] [FiniteDimensional K W]
 
-instance finiteDimensional : FiniteDimensional K (V →ₗ[K] W) :=
-  Module.Finite.linearMap _ _ _ _
+instance finiteDimensional : FiniteDimensional K (V →ₗ[K] W) := Module.Finite.linearMap _ _ _ _
 
-variable {A : Type*} [Ring A] [Algebra K A] [Module A V] [IsScalarTower K A V] [Module A W]
-  [IsScalarTower K A W]
+variable
+  {A : Type*}
+  [Ring A] [Algebra K A] [Module A V] [IsScalarTower K A V] [Module A W] [IsScalarTower K A W]
 
-/-- Linear maps over a `k`-algebra are finite dimensional (over `k`) if both the source and
-target are, as they form a subspace of all `k`-linear maps. -/
+/--
+Linear maps over a `k`-algebra are finite dimensional (over `k`) if both the source and
+target are, as they form a subspace of all `k`-linear maps.
+-/
 instance finiteDimensional' : FiniteDimensional K (V →ₗ[A] W) :=
   FiniteDimensional.of_injective (restrictScalarsₗ K A V W K) (restrictScalars_injective _)
 

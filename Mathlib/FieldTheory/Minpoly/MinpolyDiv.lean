@@ -7,7 +7,6 @@ module
 
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 public import Mathlib.FieldTheory.PrimitiveElement
-
 import Mathlib.FieldTheory.Minpoly.Finite
 
 /-!
@@ -33,63 +32,65 @@ variable (x : S)
 /-- `minpolyDiv R x : S[X]` for `x : S` is the polynomial `minpoly R x / (X - C x)`. -/
 noncomputable def minpolyDiv : S[X] := (minpoly R x).map (algebraMap R S) /ₘ (X - C x)
 
-lemma minpolyDiv_spec :
-    minpolyDiv R x * (X - C x) = (minpoly R x).map (algebraMap R S) := by
+lemma minpolyDiv_spec : minpolyDiv R x * (X - C x) = (minpoly R x).map (algebraMap R S) := by
   delta minpolyDiv
   rw [mul_comm, mul_divByMonic_eq_iff_isRoot, IsRoot, eval_map_algebraMap, minpoly.aeval]
 
-lemma coeff_minpolyDiv (i) : coeff (minpolyDiv R x) i =
-    algebraMap R S (coeff (minpoly R x) (i + 1)) + coeff (minpolyDiv R x) (i + 1) * x := by
+lemma coeff_minpolyDiv (i)
+    : coeff (minpolyDiv R x) i
+      = algebraMap R S (coeff (minpoly R x) (i + 1)) + coeff (minpolyDiv R x) (i + 1) * x := by
   rw [← coeff_map, ← minpolyDiv_spec R x]; simp [mul_sub]
 
 variable {R x}
 
-lemma minpolyDiv_eq_zero (hx : ¬IsIntegral R x) : minpolyDiv R x = 0 := by
+lemma minpolyDiv_eq_zero (hx : ¬ IsIntegral R x) : minpolyDiv R x = 0 := by
   delta minpolyDiv minpoly
   rw [dite_eq_right hx, Polynomial.map_zero, zero_divByMonic]
 
 lemma eval_minpolyDiv_self : (minpolyDiv R x).eval x = aeval x (derivative <| minpoly R x) := by
   rw [← eval_map_algebraMap, ← derivative_map, ← minpolyDiv_spec R x]; simp
 
-lemma minpolyDiv_eval_eq_zero_of_ne_of_aeval_eq_zero [IsDomain S]
-    {y} (hxy : y ≠ x) (hy : aeval y (minpoly R x) = 0) : (minpolyDiv R x).eval y = 0 := by
+lemma minpolyDiv_eval_eq_zero_of_ne_of_aeval_eq_zero
+    [IsDomain S] {y} (hxy : y ≠ x) (hy : aeval y (minpoly R x) = 0)
+    : (minpolyDiv R x).eval y = 0 := by
   rw [← eval_map_algebraMap, ← minpolyDiv_spec R x] at hy
   simp only [eval_mul, eval_sub, eval_X, eval_C, mul_eq_zero] at hy
   exact hy.resolve_right (by rwa [sub_eq_zero])
 
-lemma eval₂_minpolyDiv_of_eval₂_eq_zero {T} [CommRing T]
-    [IsDomain T] [DecidableEq T] {x y}
-    (σ : S →+* T) (hy : eval₂ (σ.comp (algebraMap R S)) y (minpoly R x) = 0) :
-    eval₂ σ y (minpolyDiv R x) =
-      if σ x = y then σ (aeval x (derivative <| minpoly R x)) else 0 := by
+lemma eval₂_minpolyDiv_of_eval₂_eq_zero
+    {T} [CommRing T] [IsDomain T] [DecidableEq T]
+    {x y} (σ : S →+* T) (hy : eval₂ (σ.comp (algebraMap R S)) y (minpoly R x) = 0)
+    : eval₂ σ y (minpolyDiv R x)
+      = if σ x = y then σ (aeval x (derivative <| minpoly R x)) else 0 := by
   split_ifs with h
   · rw [← h, eval₂_hom, eval_minpolyDiv_self]
   · rw [← eval₂_map, ← minpolyDiv_spec] at hy
     simpa [sub_eq_zero, Ne.symm h] using hy
 
-lemma eval₂_minpolyDiv_self {T} [CommRing T] [Algebra R T] [IsDomain T] [DecidableEq T] (x : S)
-    (σ₁ σ₂ : S →ₐ[R] T) :
-    eval₂ σ₁ (σ₂ x) (minpolyDiv R x) =
-      if σ₁ x = σ₂ x then σ₁ (aeval x (derivative <| minpoly R x)) else 0 := by
+lemma eval₂_minpolyDiv_self
+    {T} [CommRing T] [Algebra R T] [IsDomain T] [DecidableEq T] (x : S) (σ₁ σ₂ : S →ₐ[R] T)
+    : eval₂ σ₁ (σ₂ x) (minpolyDiv R x)
+      = if σ₁ x = σ₂ x then σ₁ (aeval x (derivative <| minpoly R x)) else 0 := by
   apply eval₂_minpolyDiv_of_eval₂_eq_zero
   rw [AlgHom.comp_algebraMap, ← σ₂.comp_algebraMap, ← eval₂_map, ← RingHom.coe_coe, eval₂_hom,
     eval_map_algebraMap, minpoly.aeval, map_zero]
 
-lemma eval_minpolyDiv_of_aeval_eq_zero [IsDomain S] [DecidableEq S]
-    {y} (hy : aeval y (minpoly R x) = 0) :
-    (minpolyDiv R x).eval y = if x = y then aeval x (derivative <| minpoly R x) else 0 := by
+lemma eval_minpolyDiv_of_aeval_eq_zero
+    [IsDomain S] [DecidableEq S] {y} (hy : aeval y (minpoly R x) = 0)
+    : (minpolyDiv R x).eval y = if x = y then aeval x (derivative <| minpoly R x) else 0 := by
   rw [eval, eval₂_minpolyDiv_of_eval₂_eq_zero, RingHom.id_apply, RingHom.id_apply]
   simpa [aeval_def] using hy
 
-
-lemma coeff_minpolyDiv_mem_adjoin (x : S) (i) :
-    coeff (minpolyDiv R x) i ∈ R[x] := by
+lemma coeff_minpolyDiv_mem_adjoin (x : S) (i) : coeff (minpolyDiv R x) i ∈ R[x] := by
   by_contra H
   have : ∀ j, coeff (minpolyDiv R x) (i + j) ∉ R[x] := by
-    intro j; induction j with
-    | zero => exact H
+    intro j
+    induction j with
+    | zero =>
+      exact H
     | succ j IH =>
-      intro H; apply IH
+      intro H
+      apply IH
       rw [coeff_minpolyDiv]
       refine add_mem ?_ (mul_mem H (self_mem_adjoin_singleton R x))
       exact Subalgebra.algebraMap_mem _ _
@@ -115,29 +116,31 @@ lemma minpolyDiv_monic : Monic (minpolyDiv R x) := by
   · simpa using! this
   · simpa using! minpolyDiv_ne_zero hx
 
-lemma natDegree_minpolyDiv_succ [Nontrivial S] :
-    natDegree (minpolyDiv R x) + 1 = natDegree (minpoly R x) := by
+lemma natDegree_minpolyDiv_succ [Nontrivial S]
+    : natDegree (minpolyDiv R x) + 1 = natDegree (minpoly R x) := by
   rw [← (minpoly.monic hx).natDegree_map (algebraMap R S), ← minpolyDiv_spec, natDegree_mul']
   · simp
   · simpa using minpolyDiv_ne_zero hx
 
-lemma natDegree_minpolyDiv_lt [Nontrivial S] :
-    natDegree (minpolyDiv R x) < natDegree (minpoly R x) := by
+lemma natDegree_minpolyDiv_lt [Nontrivial S]
+    : natDegree (minpolyDiv R x) < natDegree (minpoly R x) := by
   rw [← natDegree_minpolyDiv_succ hx]
   exact Nat.lt_succ_self _
 
-lemma minpolyDiv_eq_of_isIntegrallyClosed [IsDomain R] [IsIntegrallyClosed R] [IsDomain S]
-    [Algebra R K] [Algebra K S] [IsScalarTower R K S] [IsFractionRing R K] :
-    minpolyDiv R x = minpolyDiv K x := by
+lemma minpolyDiv_eq_of_isIntegrallyClosed
+    [IsDomain R] [IsIntegrallyClosed R] [IsDomain S] [Algebra R K] [Algebra K S]
+    [IsScalarTower R K S] [IsFractionRing R K]
+    : minpolyDiv R x = minpolyDiv K x := by
   delta minpolyDiv
   rw [IsScalarTower.algebraMap_eq R K S, ← map_map,
     ← minpoly.isIntegrallyClosed_eq_field_fractions' _ hx]
 
-lemma coeff_minpolyDiv_sub_pow_mem_span {i} (hi : i ≤ natDegree (minpolyDiv R x)) :
-    coeff (minpolyDiv R x) (natDegree (minpolyDiv R x) - i) - x ^ i ∈
-      Submodule.span R ((x ^ ·) '' Set.Iio i) := by
+lemma coeff_minpolyDiv_sub_pow_mem_span {i} (hi : i ≤ natDegree (minpolyDiv R x))
+    : coeff (minpolyDiv R x) (natDegree (minpolyDiv R x) - i) - x ^ i
+      ∈ Submodule.span R ((x ^ ·) '' Set.Iio i) := by
   induction i with
-  | zero => simp [(minpolyDiv_monic hx).leadingCoeff]
+  | zero =>
+    simp [(minpolyDiv_monic hx).leadingCoeff]
   | succ i IH =>
     rw [coeff_minpolyDiv, add_sub_assoc, pow_succ, ← sub_mul, Algebra.algebraMap_eq_smul_one]
     refine add_mem ?_ ?_
@@ -154,9 +157,8 @@ lemma coeff_minpolyDiv_sub_pow_mem_span {i} (hi : i ≤ natDegree (minpolyDiv R 
       rw [Set.mem_Iio] at hj
       exact ⟨j + 1, Nat.add_lt_of_lt_sub hj, pow_succ x j⟩
 
-lemma span_coeff_minpolyDiv :
-    Submodule.span R (Set.range (coeff (minpolyDiv R x))) =
-      Subalgebra.toSubmodule (R[x]) := by
+lemma span_coeff_minpolyDiv
+    : Submodule.span R (Set.range (coeff (minpolyDiv R x))) = Subalgebra.toSubmodule (R[x]) := by
   nontriviality S
   apply le_antisymm
   · rw [Submodule.span_le]
@@ -166,10 +168,11 @@ lemma span_coeff_minpolyDiv :
       Submodule.span_le]
     simp only [Finset.coe_image, Finset.coe_range, Set.image_subset_iff]
     intro i
-    induction i using Nat.strongRecOn with | ind i hi => ?_
+    induction i using Nat.strongRecOn with
+    | ind i hi => ?_
     intro hi'
-    have : coeff (minpolyDiv R x) (natDegree (minpolyDiv R x) - i) ∈
-        Submodule.span R (Set.range (coeff (minpolyDiv R x))) :=
+    have : coeff (minpolyDiv R x) (natDegree (minpolyDiv R x) - i)
+        ∈ Submodule.span R (Set.range (coeff (minpolyDiv R x))) :=
       Submodule.subset_span (Set.mem_range_self _)
     rw [Set.mem_preimage, SetLike.mem_coe, ← Submodule.sub_mem_iff_right _ this]
     refine mem_of_le_of_mem ?_ (coeff_minpolyDiv_sub_pow_mem_span hx ?_)
@@ -180,23 +183,23 @@ lemma span_coeff_minpolyDiv :
 
 end IsIntegral
 
-lemma natDegree_minpolyDiv :
-    natDegree (minpolyDiv R x) = natDegree (minpoly R x) - 1 := by
+lemma natDegree_minpolyDiv : natDegree (minpolyDiv R x) = natDegree (minpoly R x) - 1 := by
   nontriviality S
   by_cases hx : IsIntegral R x
   · rw [← natDegree_minpolyDiv_succ hx]; rfl
   · rw [minpolyDiv_eq_zero hx, minpoly.eq_zero hx]; rfl
 
-
 section PowerBasis
 
 variable {K}
 
-lemma sum_smul_minpolyDiv_eq_X_pow (E) [Field E] [Algebra K E] [IsAlgClosed E]
-    [FiniteDimensional K L] [Algebra.IsSeparable K L]
-    {x : L} (hxL : K[x] = ⊤) {r : ℕ} (hr : r < finrank K L) :
-    ∑ σ : L →ₐ[K] E, ((x ^ r / aeval x (derivative <| minpoly K x)) •
-      minpolyDiv K x).map σ = (X ^ r : E[X]) := by
+lemma sum_smul_minpolyDiv_eq_X_pow
+    (E) [Field E] [Algebra K E] [IsAlgClosed E] [FiniteDimensional K L] [Algebra.IsSeparable K L]
+    {x : L} (hxL : K[x] = ⊤)
+    {r : ℕ} (hr : r < finrank K L)
+    : ∑ σ : L →ₐ[K] E, ((x ^ r / aeval x (derivative <| minpoly K x)) •
+        minpolyDiv K x).map σ
+      = (X ^ r : E[X]) := by
   classical
   rw [← sub_eq_zero]
   have : Function.Injective (fun σ : L →ₐ[K] E ↦ σ x) := fun _ _ h =>
@@ -211,8 +214,7 @@ lemma sum_smul_minpolyDiv_eq_X_pow (E) [Field E] [Algebra K E] [IsAlgClosed E]
     exact (IsSeparable.isSeparable _ _).aeval_derivative_ne_zero (minpoly.aeval _ _)
   · refine (Polynomial.natDegree_sub_le _ _).trans_lt
       (max_lt ((Polynomial.natDegree_sum_le _ _).trans_lt ?_) ?_)
-    · simp only [Polynomial.map_smul,
-        map_div₀, map_pow, RingHom.coe_coe, Function.comp_apply,
+    · simp only [Polynomial.map_smul, map_div₀, map_pow, RingHom.coe_coe, Function.comp_apply,
         Finset.mem_univ, forall_true_left, Finset.fold_max_lt, AlgHom.card]
       refine ⟨finrank_pos, ?_⟩
       intro σ

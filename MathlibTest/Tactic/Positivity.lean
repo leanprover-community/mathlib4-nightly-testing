@@ -102,15 +102,14 @@ example {a b : ℤ} (h : 0 ≤ a + b) : 0 ≤ a + b := by positivity
 
 example {a : ℤ} (hlt : 0 ≤ a) (hne : a ≠ 0) : 0 < a := by positivity
 
-example {a b c d : ℤ} (ha : c < a) (hb : d < b) : 0 < (a - c) * (b - d) := by
-  positivity
+example {a b c d : ℤ} (ha : c < a) (hb : d < b) : 0 < (a - c) * (b - d) := by positivity
 
 section
 
 variable [Field α] [LinearOrder α] [IsStrictOrderedRing α]
 
-example : (1/4 - 2/3 : ℚ) ≠ 0 := by positivity
-example : (1/4 - 2/3 : α) ≠ 0 := by positivity
+example : (1 / 4 - 2 / 3 : ℚ) ≠ 0 := by positivity
+example : (1 / 4 - 2 / 3 : α) ≠ 0 := by positivity
 
 end
 
@@ -131,8 +130,8 @@ example : 0 ≤ 0 := by apply le_trans _ (le_refl _); positivity
 -- Test for a bug in the Nat.cast extension: if a natural number is positive
 -- and applying `cast_pos'` fails (e.g., because our ring could be trivial),
 -- we still prove non-negativity.
-example [Ring α] [PartialOrder α] [AddLeftMono α] [ZeroLEOneClass α] (b : ℕ) (_hb : 0 < b) :
-    (0 : α) ≤ ↑b := by
+example [Ring α] [PartialOrder α] [AddLeftMono α] [ZeroLEOneClass α] (b : ℕ) (_hb : 0 < b)
+    : (0 : α) ≤ ↑b := by
   positivity
 
 /- ## Tests of the @[positivity] plugin tactics (addition, multiplication, division) -/
@@ -228,18 +227,21 @@ example {a : ℤ} {b : ℚ} (ha : a ≠ 0) (hb : 0 < b) : a • b ≠ 0 := by po
 example {a : ℤ} {b : ℚ} (ha : a ≠ 0) (hb : b ≠ 0) : a • b ≠ 0 := by positivity
 
 -- Test that the positivity extension for `a • b` can handle universe polymorphism.
-example {R M : Type*} [Semiring R] [PartialOrder R] [IsOrderedRing R]
-    [Semiring M] [PartialOrder M] [IsStrictOrderedRing M]
-    [SMulWithZero R M] [PosSMulStrictMono R M] {a : R} {b : M} (ha : 0 < a) (hb : 0 < b) :
-    0 < a • b := by positivity
+example
+    {R M : Type*} [Semiring R] [PartialOrder R] [IsOrderedRing R] [Semiring M] [PartialOrder M]
+    [IsStrictOrderedRing M] [SMulWithZero R M] [PosSMulStrictMono R M]
+    {a : R} {b : M} (ha : 0 < a) (hb : 0 < b)
+    : 0 < a • b := by
+  positivity
 
 example {a : ℤ} (ha : 3 < a) : 0 ≤ a + a := by positivity
 
 example {a b : ℤ} (ha : 3 < a) (hb : 4 ≤ b) : 0 ≤ 3 + a + b + b + 14 := by positivity
 
-example {H : Type*} [AddCommGroup H] [LinearOrder H] [IsOrderedAddMonoid H]
-    {a b : H} (ha : 0 < a) (hb : 0 ≤ b) :
-    0 ≤ a + a + b := by
+example
+    {H : Type*} [AddCommGroup H] [LinearOrder H] [IsOrderedAddMonoid H]
+    {a b : H} (ha : 0 < a) (hb : 0 ≤ b)
+    : 0 ≤ a + a + b := by
   positivity
 
 example {a : ℤ} (ha : 3 < a) : 0 < a + a := by positivity
@@ -304,7 +306,9 @@ example (ha : a ≠ 0) : 0 ≤ a * b := by positivity
 example : 0 ≤ a.toReal := by positivity
 example {a' : ℝ≥0} : 0 ≤ ENNReal.ofNNReal a' := by positivity
 
-/- https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Adding.20superfluous.20hypotheses.20makes.20positivity.20fail/with/568774307 -/
+/-
+https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Adding.20superfluous.20hypotheses.20makes.20positivity.20fail/with/568774307
+-/
 example {x y : ℝ≥0∞} : x + y + 1 ≠ 0 := by positivity
 example {x y : ℝ≥0∞} (hx : x ≠ 0) : x + y + 1 ≠ 0 := by positivity
 
@@ -338,25 +342,28 @@ end EReal
 
 section Powers
 
-example [Semiring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α]
-    (a : α) : 0 < a ^ 0 := by positivity
-example [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
-    (a : α) : 0 ≤ a ^ 18 := by positivity
-example [Semiring α] [PartialOrder α] [IsOrderedRing α]
-    {a : α} {n : ℕ} (ha : 0 ≤ a) : 0 ≤ a ^ n := by positivity
-example [Semiring α] [PartialOrder α] [IsStrictOrderedRing α]
-    {a : α} {n : ℕ} (ha : 0 < a) : 0 < a ^ n := by positivity
+example [Semiring α] [PartialOrder α] [IsOrderedRing α] [Nontrivial α] (a : α) : 0 < a ^ 0 := by
+  positivity
+example [Ring α] [LinearOrder α] [IsStrictOrderedRing α] (a : α) : 0 ≤ a ^ 18 := by positivity
+example [Semiring α] [PartialOrder α] [IsOrderedRing α] {a : α} {n : ℕ} (ha : 0 ≤ a)
+    : 0 ≤ a ^ n := by
+  positivity
+example [Semiring α] [PartialOrder α] [IsStrictOrderedRing α] {a : α} {n : ℕ} (ha : 0 < a)
+    : 0 < a ^ n := by
+  positivity
 
-example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α]
-    (a : α) : 0 < a ^ (0 : ℤ) := by positivity
-example [Field α] [LinearOrder α] [IsStrictOrderedRing α]
-    (a : α) : 0 ≤ a ^ (18 : ℤ) := by positivity
-example [Field α] [LinearOrder α] [IsStrictOrderedRing α]
-    (a : α) : 0 ≤ a ^ (-34 : ℤ) := by positivity
-example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α]
-    {a : α} {n : ℤ} (ha : 0 ≤ a) : 0 ≤ a ^ n := by positivity
-example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α]
-    {a : α} {n : ℤ} (ha : 0 < a) : 0 < a ^ n := by positivity
+example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α] (a : α) : 0 < a ^ (0 : ℤ) := by
+  positivity
+example [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a : α) : 0 ≤ a ^ (18 : ℤ) := by
+  positivity
+example [Field α] [LinearOrder α] [IsStrictOrderedRing α] (a : α) : 0 ≤ a ^ (-34 : ℤ) := by
+  positivity
+example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α] {a : α} {n : ℤ} (ha : 0 ≤ a)
+    : 0 ≤ a ^ n := by
+  positivity
+example [Semifield α] [LinearOrder α] [IsStrictOrderedRing α] {a : α} {n : ℤ} (ha : 0 < a)
+    : 0 < a ^ n := by
+  positivity
 
 -- example {a b : Cardinal.{u}} (ha : 0 < a) : 0 < a ^ b := by positivity
 -- example {a b : Ordinal.{u}} (ha : 0 < a) : 0 < a ^ b := by positivity
@@ -373,8 +380,7 @@ example {a : ℝ≥0∞} {b : ℝ} (ha : 0 < a) (hat : a ≠ ⊤) : 0 < a ^ b :=
 example {a : ℝ} : 0 < a ^ 0 := by positivity
 
 example {a : ℝ≥0∞} {b : ℝ} (ha : 0 < a) (hat : a ≠ ⊤) : 0 < a ^ b := by positivity []
-example {a b c d : ℝ} (hab : 0 < a * b) (hb : 0 ≤ b) (hcd : c < d) :
-    0 < a ^ c + 1 / (d - c) := by
+example {a b c d : ℝ} (hab : 0 < a * b) (hb : 0 ≤ b) (hcd : c < d) : 0 < a ^ c + 1 / (d - c) := by
   positivity [pos_of_mul_pos_left hab hb]
 
 example {a : ℤ} (ha : 3 < a) : 0 ≤ a ^ 2 + a := by positivity
@@ -424,14 +430,18 @@ end Abs
 
 -- -- test that the tactic can ignore arithmetic operations whose associated extension tactic
 -- -- requires more typeclass assumptions than are available
-example {R : Type*} [Zero R] [Div R] [LinearOrder R] {a b c : R} (_h1 : 0 < a) (_h2 : 0 < b)
-  (h3 : 0 < c) :
-  0 < max (a / b) c := by positivity
+example
+    {R : Type*} [Zero R] [Div R] [LinearOrder R]
+    {a b c : R} (_h1 : 0 < a) (_h2 : 0 < b) (h3 : 0 < c)
+    : 0 < max (a / b) c := by
+  positivity
 
 example
-    [Semiring α] [PartialOrder α] [IsOrderedRing α]
-    [AddCommMonoid β] [PartialOrder β] [IsOrderedAddMonoid β] [SMulWithZero α β]
-    [PosSMulMono α β] {a : α} (ha : 0 < a) {b : β} (hb : 0 < b) : 0 ≤ a • b := by
+    [Semiring α] [PartialOrder α] [IsOrderedRing α] [AddCommMonoid β] [PartialOrder β]
+    [IsOrderedAddMonoid β] [SMulWithZero α β] [PosSMulMono α β]
+    {a : α} (ha : 0 < a)
+    {b : β} (hb : 0 < b)
+    : 0 ≤ a • b := by
   positivity
 
 example (n : ℕ) : 0 < n.succ := by positivity
@@ -566,13 +576,14 @@ section Integral
 
 open MeasureTheory
 
-variable {D : Type*} [NormedAddCommGroup D] [NormedSpace ℝ D]
+variable
+  {D : Type*} [NormedAddCommGroup D] [NormedSpace ℝ D]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace D] [BorelSpace D]
   (μ : Measure D)
 
 example (f : D → E) : 0 ≤ ∫ x, ‖f x‖ ∂μ := by positivity
 example (f g : D → E) : 0 ≤ ∫ x, ‖f x‖ + ‖g x‖ ∂μ := by positivity
-example (f : D → E) (c : ℝ) (hc : 0 < c): 0 ≤ ∫ x, c * ‖f x‖ ∂μ := by positivity
+example (f : D → E) (c : ℝ) (hc : 0 < c) : 0 ≤ ∫ x, c * ‖f x‖ ∂μ := by positivity
 
 end Integral
 
@@ -580,9 +591,10 @@ end Integral
 
 example (f : ℕ → ℝ) : 0 ≤ ∑' n, f n ^ 2 := by positivity
 example (f : ℕ → ℝ≥0) (c : ℝ) (hc : 0 < c) : 0 ≤ ∑' n, c * f n := by positivity
-example [Field α] [LinearOrder α] [IsStrictOrderedRing α]
-    [TopologicalSpace α] [OrderClosedTopology α] (f : ℚ → α) :
-    0 ≤ ∑' q, (f q)^2 := by
+example
+    [Field α] [LinearOrder α] [IsStrictOrderedRing α] [TopologicalSpace α] [OrderClosedTopology α]
+    (f : ℚ → α)
+    : 0 ≤ ∑' q, (f q)^2 := by
   positivity
 
 -- Make sure that the extension doesn't produce an invalid term by accidentally unifying `?n` with
@@ -627,19 +639,23 @@ example (f : ℕ → ℕ) (hf : 0 ≤ f 0) : 0 ≤ ∏ n ∈ Finset.range 10, f 
 
 -- Make sure that `positivity` isn't too greedy by trying to prove that a product is positive
 -- because its body is even if multiplication isn't strictly monotone
-example [CommSemiring α] [PartialOrder α] [IsOrderedRing α]
-    {a : α} (ha : 0 < a) : 0 ≤ ∏ _i ∈ {(0 : α)}, a := by positivity
+example [CommSemiring α] [PartialOrder α] [IsOrderedRing α] {a : α} (ha : 0 < a)
+    : 0 ≤ ∏ _i ∈ {(0 : α)}, a := by
+  positivity
 
 end BigOperators
 
 /- ## Other extensions -/
 
-example [Zero β] [PartialOrder β] [FunLike F α β] [NonnegHomClass F α β]
-    (f : F) (x : α) : 0 ≤ f x := by positivity
+example [Zero β] [PartialOrder β] [FunLike F α β] [NonnegHomClass F α β] (f : F) (x : α)
+    : 0 ≤ f x := by
+  positivity
 
-example [Semiring S] [PartialOrder S] [IsOrderedRing S] [Semiring R]
-    (abv : R → S) [IsAbsoluteValue abv] (x : R) :
-    0 ≤ abv x := by
+example
+    [Semiring S] [PartialOrder S] [IsOrderedRing S] [Semiring R]
+    (abv : R → S) [IsAbsoluteValue abv]
+    (x : R)
+    : 0 ≤ abv x := by
   positivity
 
 /- ## Nonzeroness -/
@@ -651,18 +667,20 @@ example {α : Type*} [Zero α] {a : α} (ha : 0 ≠ a) : a ≠ 0 := by positivit
 example {α : Type*} [Semifield α] {x : α} (hx : x ≠ 0) : x⁻¹ ≠ 0 := by positivity
 example {α : Type*} [Semifield α] {x y : α} (hx : x ≠ 0) (hy : y ≠ 0) : x / y ≠ 0 := by positivity
 
-example {α : Type*} [MonoidWithZero α] [NoZeroDivisors α] {x : α} (hx : x ≠ 0) (n : ℕ) :
-    x ^ n ≠ 0 := by positivity
+example {α : Type*} [MonoidWithZero α] [NoZeroDivisors α] {x : α} (hx : x ≠ 0) (n : ℕ)
+    : x ^ n ≠ 0 := by
+  positivity
 
-example {α : Type*} [MonoidWithZero α] [NoZeroDivisors α] {x y : α}
-    (hx : x ≠ 0) (hy : y ≠ 0) : x * y ≠ 0 := by positivity
+example {α : Type*} [MonoidWithZero α] [NoZeroDivisors α] {x y : α} (hx : x ≠ 0) (hy : y ≠ 0)
+    : x * y ≠ 0 := by
+  positivity
 
-example {α : Type*} [AddMonoidWithOne α] [CharZero α] {n : ℕ} (hn : n ≠ 0) :
-    (n : α) ≠ 0 := by positivity
-example {α : Type*} [AddGroupWithOne α] [CharZero α] {z : ℤ} (hz : z ≠ 0) :
-    (z : α) ≠ 0 := by positivity
-example {α : Type*} [DivisionRing α] [CharZero α] {q : ℚ} (hq : q ≠ 0) :
-    (q : α) ≠ 0 := by positivity
+example {α : Type*} [AddMonoidWithOne α] [CharZero α] {n : ℕ} (hn : n ≠ 0) : (n : α) ≠ 0 := by
+  positivity
+example {α : Type*} [AddGroupWithOne α] [CharZero α] {z : ℤ} (hz : z ≠ 0) : (z : α) ≠ 0 := by
+  positivity
+example {α : Type*} [DivisionRing α] [CharZero α] {q : ℚ} (hq : q ≠ 0) : (q : α) ≠ 0 := by
+  positivity
 
 example {α : Type*} [Semiring α] [Nontrivial α] (a : α) : a ^ 0 ≠ 0 := by positivity
 

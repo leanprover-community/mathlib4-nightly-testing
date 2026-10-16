@@ -26,10 +26,12 @@ Dickson, order, partial well order
 -/
 
 public section
-/-- A version of **Dickson's lemma**: `σ →₀ α` is well-quasi-ordered when `σ` is `Finite` and `α` is
+/--
+A version of **Dickson's lemma**: `σ →₀ α` is well-quasi-ordered when `σ` is `Finite` and `α` is
 well-quasi-ordered.
 This version uses finsupps on a finite type as it is intended for use with `MVPowerSeries`.
 -/
-instance Finsupp.wellQuasiOrderedLE {α σ : Type*} [Zero α] [Preorder α] [WellQuasiOrderedLE α]
-    [Finite σ] : WellQuasiOrderedLE (σ →₀ α) :=
+instance Finsupp.wellQuasiOrderedLE
+    {α σ : Type*} [Zero α] [Preorder α] [WellQuasiOrderedLE α] [Finite σ]
+    : WellQuasiOrderedLE (σ →₀ α) :=
   orderIsoFunOnFinite.wellQuasiOrderedLE_iff.2 inferInstance

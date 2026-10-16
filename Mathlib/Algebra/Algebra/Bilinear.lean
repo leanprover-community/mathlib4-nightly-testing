@@ -29,40 +29,38 @@ section NonUnitalNonAssoc
 variable (R A) [CommSemiring R] [NonUnitalNonAssocSemiring A] [Module R A]
 variable [SMulCommClass R A A] [IsScalarTower R A A]
 
-/-- The multiplication in a non-unital non-associative algebra is a bilinear map.
+/--
+The multiplication in a non-unital non-associative algebra is a bilinear map.
 
-A weaker version of this for semirings exists as `AddMonoidHom.mul`. -/
+A weaker version of this for semirings exists as `AddMonoidHom.mul`.
+-/
 @[instance_reducible, simps!]
-def mul : A →ₗ[R] A →ₗ[R] A :=
-  LinearMap.mk₂ R (· * ·) add_mul smul_mul_assoc mul_add mul_smul_comm
+def mul : A →ₗ[R] A →ₗ[R] A := LinearMap.mk₂ R (· * ·) add_mul smul_mul_assoc mul_add mul_smul_comm
 
 /-- The multiplication map on a non-unital algebra, as an `R`-linear map from `A ⊗[R] A` to `A`. -/
-def mul' : A ⊗[R] A →ₗ[R] A :=
-  TensorProduct.lift (mul R A)
+def mul' : A ⊗[R] A →ₗ[R] A := TensorProduct.lift (mul R A)
 
 @[inherit_doc] scoped[RingTheory.LinearMap] notation "μ" => LinearMap.mul' _ _
 @[inherit_doc] scoped[RingTheory.LinearMap] notation "μ[" R "]" => LinearMap.mul' R _
 
 variable {A R}
 
-@[simp]
-theorem mul_apply' (a b : A) : mul R A a b = a * b :=
-  rfl
+@[simp] theorem mul_apply' (a b : A) : mul R A a b = a * b := rfl
 
-@[simp]
-theorem mul'_apply {a b : A} : mul' R A (a ⊗ₜ b) = a * b :=
-  rfl
+@[simp] theorem mul'_apply {a b : A} : mul' R A (a ⊗ₜ b) = a * b := rfl
 
-lemma restrictScalars_mul {S : Type*} [CommSemiring S] [Module S A] [SMulCommClass S A A]
-    [IsScalarTower S A A] [CompatibleSMul A A R S] (a : A) :
-    LinearMap.restrictScalars R (LinearMap.mul S A a) = LinearMap.mul R A a := by
+lemma restrictScalars_mul
+    {S : Type*} [CommSemiring S] [Module S A] [SMulCommClass S A A] [IsScalarTower S A A]
+    [CompatibleSMul A A R S]
+    (a : A)
+    : LinearMap.restrictScalars R (LinearMap.mul S A a) = LinearMap.mul R A a := by
   ext x
   simp
 
 variable {M : Type*} [AddCommMonoid M] [Module R M]
 
-theorem lift_lsmul_mul_eq_lsmul_lift_lsmul {r : R} :
-    lift (lsmul R M ∘ₗ mul R R r) = lsmul R M r ∘ₗ lift (lsmul R M) := by
+theorem lift_lsmul_mul_eq_lsmul_lift_lsmul {r : R}
+    : lift (lsmul R M ∘ₗ mul R R r) = lsmul R M r ∘ₗ lift (lsmul R M) := by
   apply TensorProduct.ext'
   intro x a
   simp [← mul_smul, mul_comm]
@@ -76,30 +74,33 @@ variable [SMulCommClass R A A] [IsScalarTower R A A]
 variable [SMulCommClass R B B] [IsScalarTower R B B]
 
 variable (R A) in
-/-- The multiplication in a non-unital algebra is a bilinear map.
+/--
+The multiplication in a non-unital algebra is a bilinear map.
 
-A weaker version of this for non-unital non-associative algebras exists as `LinearMap.mul`. -/
+A weaker version of this for non-unital non-associative algebras exists as `LinearMap.mul`.
+-/
 def _root_.NonUnitalAlgHom.lmul : A →ₙₐ[R] End R A where
   __ := mul R A
   map_mul' := mulLeft_mul _ _
   map_zero' := mulLeft_zero_eq_zero _ _
 
 @[simp]
-theorem _root_.NonUnitalAlgHom.coe_lmul_eq_mul : ⇑(NonUnitalAlgHom.lmul R A) = mul R A :=
-  rfl
+theorem _root_.NonUnitalAlgHom.coe_lmul_eq_mul : ⇑(NonUnitalAlgHom.lmul R A) = mul R A := rfl
 
 theorem commute_mulLeft_right (a b : A) : Commute (mulLeft R a) (mulRight R b) := by
   ext c
   exact (mul_assoc a c b).symm
 
-/-- A `LinearMap` preserves multiplication if pre- and post- composition with `LinearMap.mul` are
+/--
+A `LinearMap` preserves multiplication if pre- and post- composition with `LinearMap.mul` are
 equivalent. By converting the statement into an equality of `LinearMap`s, this lemma allows various
 specialized `ext` lemmas about `→ₗ[R]` to then be applied.
 
-This is the `LinearMap` version of `AddMonoidHom.map_mul_iff`. -/
-theorem map_mul_iff (f : A →ₗ[R] B) :
-    (∀ x y, f (x * y) = f x * f y) ↔
-      (LinearMap.mul R A).compr₂ f = (LinearMap.mul R B ∘ₗ f).compl₂ f :=
+This is the `LinearMap` version of `AddMonoidHom.map_mul_iff`.
+-/
+theorem map_mul_iff (f : A →ₗ[R] B)
+    : (∀ x y, f (x * y) = f x * f y)
+      ↔ (LinearMap.mul R A).compr₂ f = (LinearMap.mul R B ∘ₗ f).compl₂ f :=
   Iff.symm LinearMap.ext_iff₂
 
 end NonUnital
@@ -136,10 +137,12 @@ end one_side
 
 variable [CommSemiring R] [Semiring A] [Algebra R A]
 
-/-- The multiplication in an algebra is an algebra homomorphism into the endomorphisms on
+/--
+The multiplication in an algebra is an algebra homomorphism into the endomorphisms on
 the algebra.
 
-A weaker version of this for non-unital algebras exists as `NonUnitalAlgHom.lmul`. -/
+A weaker version of this for non-unital algebras exists as `NonUnitalAlgHom.lmul`.
+-/
 def _root_.Algebra.lmul : A →ₐ[R] End R A where
   __ := NonUnitalAlgHom.lmul R A
   map_one' := mulLeft_one _ _
@@ -147,33 +150,34 @@ def _root_.Algebra.lmul : A →ₐ[R] End R A where
 
 variable {R A}
 
-@[simp]
-theorem _root_.Algebra.coe_lmul_eq_mul : ⇑(Algebra.lmul R A) = mul R A :=
-  rfl
+@[simp] theorem _root_.Algebra.coe_lmul_eq_mul : ⇑(Algebra.lmul R A) = mul R A := rfl
 
-theorem _root_.Algebra.lmul_injective : Function.Injective (Algebra.lmul R A) :=
-  fun a₁ a₂ h ↦ by simpa using congr($h 1)
+theorem _root_.Algebra.lmul_injective : Function.Injective (Algebra.lmul R A) := fun a₁ a₂ h ↦ by
+  simpa using congr($h 1)
 
-theorem _root_.Algebra.lmul_isUnit_iff {x : A} :
-    IsUnit (Algebra.lmul R A x) ↔ IsUnit x := by
+theorem _root_.Algebra.lmul_isUnit_iff {x : A} : IsUnit (Algebra.lmul R A x) ↔ IsUnit x := by
   rw [Module.End.isUnit_iff, Iff.comm]
   exact IsUnit.isUnit_iff_mulLeft_bijective
 
-theorem toSpanSingleton_one_eq_algebraLinearMap :
-    toSpanSingleton R A 1 = Algebra.linearMap R A := by ext; simp
+theorem toSpanSingleton_one_eq_algebraLinearMap
+    : toSpanSingleton R A 1 = Algebra.linearMap R A := by
+  ext; simp
 
 variable (R A) in
 /-- The multiplication map on an `R`-algebra, as an `A`-linear map from `A ⊗[R] A` to `A`. -/
-@[simps!] def mul'' : A ⊗[R] A →ₗ[A] A where
+@[simps!]
+def mul'' : A ⊗[R] A →ₗ[A] A where
   __ := mul' R A
-  map_smul' a x := x.inductionOn (by simp +contextual [mul', smul_tmul', mul_assoc])
-    (by simp +contextual [mul_add])
+  map_smul' a x :=
+    x.inductionOn (by simp +contextual [mul', smul_tmul', mul_assoc])
+      (by simp +contextual [mul_add])
 
 end Semiring
 
 section CommSemiring
-variable [CommSemiring R] [NonUnitalNonAssocCommSemiring A]
-  [Module R A] [SMulCommClass R A A] [IsScalarTower R A A]
+variable
+  [CommSemiring R] [NonUnitalNonAssocCommSemiring A] [Module R A] [SMulCommClass R A A]
+  [IsScalarTower R A A]
 
 @[simp] lemma flip_mul : (mul R A).flip = mul R A := by ext; simp [mul_comm]
 
@@ -189,9 +193,10 @@ end LinearMap
 open scoped RingTheory.LinearMap
 
 namespace NonUnitalAlgHom
-variable [CommSemiring R]
-  [NonUnitalNonAssocSemiring A] [Module R A] [SMulCommClass R A A] [IsScalarTower R A A]
-  [NonUnitalNonAssocSemiring B] [Module R B] [SMulCommClass R B B] [IsScalarTower R B B]
+variable
+  [CommSemiring R] [NonUnitalNonAssocSemiring A] [Module R A] [SMulCommClass R A A]
+  [IsScalarTower R A A] [NonUnitalNonAssocSemiring B] [Module R B] [SMulCommClass R B B]
+  [IsScalarTower R B B]
 
 lemma comp_mul' (f : A →ₙₐ[R] B) : (f : A →ₗ[R] B) ∘ₗ μ = μ[R] ∘ₗ (f ⊗ₘ f) :=
   TensorProduct.ext' <| by simp

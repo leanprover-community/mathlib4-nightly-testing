@@ -27,8 +27,8 @@ instance [ContinuousStar R] : ContinuousInv (unitary R) where
 
 instance [ContinuousMul R] [ContinuousStar R] : IsTopologicalGroup (unitary R) where
 
-lemma isClosed_unitary [T1Space R] [ContinuousStar R] [ContinuousMul R] :
-    IsClosed (unitary R : Set R) := by
+lemma isClosed_unitary [T1Space R] [ContinuousStar R] [ContinuousMul R]
+    : IsClosed (unitary R : Set R) := by
   let f (u : R) : R × R := (star u * u, u * star u)
   have hf : f ⁻¹' {(1, 1)} = unitary R := by ext u; simp [f, Unitary.mem_iff]
   rw [← hf]

@@ -23,12 +23,13 @@ public section
 
 open TensorProduct
 
-lemma exists_fg_and_mem_baseChange {R A B : Type*} [CommSemiring R]
-    [CommSemiring A] [Semiring B] [Algebra R A] [Algebra R B] (x : A ⊗[R] B) :
-    ∃ C : Subalgebra R B, C.FG ∧ x ∈ C.baseChange A := by
+lemma exists_fg_and_mem_baseChange
+    {R A B : Type*} [CommSemiring R] [CommSemiring A] [Semiring B] [Algebra R A] [Algebra R B]
+    (x : A ⊗[R] B)
+    : ∃ C : Subalgebra R B, C.FG ∧ x ∈ C.baseChange A := by
   obtain ⟨S, hS⟩ := TensorProduct.exists_finset x
   classical
   refine ⟨Algebra.adjoin R (S.image fun j ↦ j.2), ?_, ?_⟩
   · exact Subalgebra.fg_adjoin_finset _
-  · exact hS ▸ Subalgebra.sum_mem _ fun s hs ↦ (Subalgebra.tmul_mem_baseChange
-      (Algebra.subset_adjoin (Finset.mem_image_of_mem _ hs)) s.1)
+  · exact hS ▸ Subalgebra.sum_mem _ fun s hs ↦
+      (Subalgebra.tmul_mem_baseChange (Algebra.subset_adjoin (Finset.mem_image_of_mem _ hs)) s.1)

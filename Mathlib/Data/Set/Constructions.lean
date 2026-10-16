@@ -26,7 +26,6 @@ set of subsets of `α` which is closed under finite intersections.
 
 public section
 
-
 variable {α : Type*} (S : Set (Set α))
 
 /-- A structure encapsulating the fact that a set of sets is closed under finite intersection. -/
@@ -38,13 +37,14 @@ structure FiniteInter : Prop where
 
 namespace FiniteInter
 
-/-- The property of belonging to the smallest set of sets containing `S` which is closed under
-finite intersections. -/
+/--
+The property of belonging to the smallest set of sets containing `S` which is closed under
+finite intersections.
+-/
 private inductive MemFiniteInterClosure : Set α → Prop
   | basic {s} : s ∈ S → MemFiniteInterClosure s
   | univ : MemFiniteInterClosure Set.univ
-  | inter {s t} : MemFiniteInterClosure s → MemFiniteInterClosure t →
-      MemFiniteInterClosure (s ∩ t)
+  | inter {s t} : MemFiniteInterClosure s → MemFiniteInterClosure t → MemFiniteInterClosure (s ∩ t)
 
 /-- The smallest set of sets containing `S` which is closed under finite intersections. -/
 def finiteInterClosure : Set (Set α) := {s | MemFiniteInterClosure S s}
@@ -53,76 +53,87 @@ def finiteInterClosure : Set (Set α) := {s | MemFiniteInterClosure S s}
 
 theorem finiteInterClosure_finiteInter : FiniteInter (finiteInterClosure S) where
   univ_mem := .univ
-  inter_mem _ h _  := .inter h
+  inter_mem _ h _ := .inter h
 
 variable {S}
 
-/-- An induction principle for membership of `finiteInterClosure S`. If `motive` holds of all
+/--
+An induction principle for membership of `finiteInterClosure S`. If `motive` holds of all
 elements of `S` and of `Set.univ`, and is preserved under binary intersections, then it holds of all
-elements of `finiteInterClosure S`. -/
+elements of `finiteInterClosure S`.
+-/
 @[elab_as_elim]
-lemma finiteInterClosure_induction {motive : ∀ s, s ∈ finiteInterClosure S → Prop}
+lemma finiteInterClosure_induction
+    {motive : ∀ s, s ∈ finiteInterClosure S → Prop}
     (basic : ∀ (s) (hs : s ∈ S), motive s (subset_finiteInterClosure S hs))
     (univ : motive Set.univ (finiteInterClosure_finiteInter S).univ_mem)
-    (inter : ∀ s t hs ht, motive s hs → motive t ht →
-      motive (s ∩ t) ((finiteInterClosure_finiteInter S).inter_mem hs ht))
-    {s : Set α} (hs : s ∈ finiteInterClosure S) : motive s hs := by
+    (inter : ∀ s t hs ht,
+      motive s hs → motive t ht
+        → motive (s ∩ t) ((finiteInterClosure_finiteInter S).inter_mem hs ht))
+    {s : Set α} (hs : s ∈ finiteInterClosure S)
+    : motive s hs := by
   induction hs with
   | basic h => exact basic _ h
   | univ => exact univ
   | inter _ _ ih₁ ih₂ => exact inter _ _ _ _ ih₁ ih₂
 
-/-- `finiteInterClosure S` is the smallest set of sets containing `S` which is closed under finite
-intersections. -/
-lemma finiteInterClosure_min {T : Set (Set α)} (hST : S ⊆ T) (hT : FiniteInter T) :
-    finiteInterClosure S ⊆ T := by
+/--
+`finiteInterClosure S` is the smallest set of sets containing `S` which is closed under finite
+intersections.
+-/
+lemma finiteInterClosure_min {T : Set (Set α)} (hST : S ⊆ T) (hT : FiniteInter T)
+    : finiteInterClosure S ⊆ T := by
   intro s hs
   induction hs using finiteInterClosure_induction with
   | basic _ hs => exact hST hs
   | univ => exact hT.univ_mem
   | inter _ _ _ _ ihs iht => exact hT.inter_mem ihs iht
 
-theorem finiteInter_mem (cond : FiniteInter S) (F : Finset (Set α)) :
-    ↑F ⊆ S → ⋂₀ (↑F : Set (Set α)) ∈ S := by
+theorem finiteInter_mem (cond : FiniteInter S) (F : Finset (Set α))
+    : ↑F ⊆ S → ⋂₀(↑F : Set (Set α)) ∈ S := by
   refine Finset.induction_on F (fun _ => ?_) ?_
   · simp [cond.univ_mem]
   · intro a s _ h1 h2
     suffices a ∩ ⋂₀ ↑s ∈ S by simpa
-    exact
-      cond.inter_mem (h2 (Finset.mem_insert_self a s))
-        (h1 fun x hx => h2 <| Finset.mem_insert_of_mem hx)
+    exact cond.inter_mem (h2 (Finset.mem_insert_self a s))
+      (h1 fun x hx => h2 <| Finset.mem_insert_of_mem hx)
 
-theorem finiteInterClosure_insert {A : Set α} (cond : FiniteInter S) (P)
-    (H : P ∈ finiteInterClosure (insert A S)) : P ∈ S ∨ ∃ Q ∈ S, P = A ∩ Q := by
+theorem finiteInterClosure_insert
+    {A : Set α} (cond : FiniteInter S) (P) (H : P ∈ finiteInterClosure (insert A S))
+    : P ∈ S ∨ ∃ Q ∈ S, P = A ∩ Q := by
   induction H using finiteInterClosure_induction with
   | basic _ h =>
     cases h
     · exact Or.inr ⟨Set.univ, cond.univ_mem, by simpa⟩
     · exact Or.inl (by assumption)
-  | univ => exact Or.inl cond.univ_mem
+  | univ =>
+    exact Or.inl cond.univ_mem
   | inter T1 T2 _ _ h1 h2 =>
     rcases h1 with (h | ⟨Q, hQ, rfl⟩) <;> rcases h2 with (i | ⟨R, hR, rfl⟩)
     · exact Or.inl (cond.inter_mem h i)
-    · exact
-        Or.inr ⟨T1 ∩ R, cond.inter_mem h hR, by simp only [← Set.inter_assoc, Set.inter_comm _ A]⟩
+    · exact Or.inr
+        ⟨T1 ∩ R, cond.inter_mem h hR, by simp only [← Set.inter_assoc, Set.inter_comm _ A]⟩
     · exact Or.inr ⟨Q ∩ T2, cond.inter_mem hQ i, by simp only [Set.inter_assoc]⟩
-    · exact
-        Or.inr
-          ⟨Q ∩ R, cond.inter_mem hQ hR, by
-            ext x
-            constructor <;> simp +contextual⟩
+    · exact Or.inr ⟨
+        Q ∩ R,
+        cond.inter_mem hQ hR,
+        by
+          ext x
+          constructor <;> simp +contextual
+      ⟩
 
 open Set
 
-theorem mk₂ (h : ∀ ⦃s⦄, s ∈ S → ∀ ⦃t⦄, t ∈ S → s ∩ t ∈ S) :
-    FiniteInter (insert (univ : Set α) S) where
+theorem mk₂ (h : ∀ ⦃s⦄, s ∈ S → ∀ ⦃t⦄, t ∈ S → s ∩ t ∈ S)
+    : FiniteInter (insert (univ : Set α) S) where
   univ_mem := Set.mem_insert Set.univ S
   inter_mem s hs t ht := by aesop
 
 end FiniteInter
 
-/-- This is a hybrid of `Set.biUnion_empty` and `Finset.biUnion_empty` (the index set on the LHS is
-the empty finset, but `s` is a family of sets, not finsets). -/
-theorem Set.biUnion_empty_finset {ι X : Type*} {s : ι → Set X} :
-    ⋃ i ∈ (∅ : Finset ι), s i = ∅ := by
+/--
+This is a hybrid of `Set.biUnion_empty` and `Finset.biUnion_empty` (the index set on the LHS is
+the empty finset, but `s` is a family of sets, not finsets).
+-/
+theorem Set.biUnion_empty_finset {ι X : Type*} {s : ι → Set X} : ⋃ i ∈ (∅ : Finset ι), s i = ∅ := by
   simp

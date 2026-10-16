@@ -45,9 +45,10 @@ variable {α : Type*} {a b c d : α}
 
 /-- A partial order where any two elements are comparable is a linear order. -/
 @[instance_reducible]
-def Relation.linearOrderOfSymmGen [PartialOrder α]
-    [decLE : DecidableLE α] [decLT : DecidableLT α] [decEq : DecidableEq α]
-    (h : ∀ a b : α, Relation.SymmGen (· ≤ ·) a b) : LinearOrder α where
+def Relation.linearOrderOfSymmGen
+    [PartialOrder α] [decLE : DecidableLE α] [decLT : DecidableLT α] [decEq : DecidableEq α]
+    (h : ∀ a b : α, Relation.SymmGen (· ≤ ·) a b)
+    : LinearOrder α where
   le_total := h
   toDecidableLE := decLE
   toDecidableEq := decEq
@@ -60,33 +61,23 @@ section Relation
 variable (r : α → α → Prop)
 
 /-- The incomparability relation `IncompRel r a b` means `¬ r a b` and `¬ r b a`. -/
-def IncompRel (a b : α) : Prop :=
-  ¬ r a b ∧ ¬ r b a
+def IncompRel (a b : α) : Prop := ¬ r a b ∧ ¬ r b a
+
+@[simp] theorem antisymmRel_compl : AntisymmRel rᶜ = IncompRel r := rfl
+
+theorem antisymmRel_compl_apply : AntisymmRel rᶜ a b ↔ IncompRel r a b := .rfl
 
 @[simp]
-theorem antisymmRel_compl : AntisymmRel rᶜ = IncompRel r :=
-  rfl
+theorem incompRel_compl : IncompRel rᶜ = AntisymmRel r := by simp [← antisymmRel_compl, compl]
 
-theorem antisymmRel_compl_apply : AntisymmRel rᶜ a b ↔ IncompRel r a b :=
-  .rfl
+@[simp] theorem incompRel_compl_apply : IncompRel rᶜ a b ↔ AntisymmRel r a b := by simp
 
-@[simp]
-theorem incompRel_compl : IncompRel rᶜ = AntisymmRel r := by
-  simp [← antisymmRel_compl, compl]
+theorem incompRel_swap : IncompRel (swap r) = IncompRel r := antisymmRel_swap rᶜ
 
-@[simp]
-theorem incompRel_compl_apply : IncompRel rᶜ a b ↔ AntisymmRel r a b := by
-  simp
-
-theorem incompRel_swap : IncompRel (swap r) = IncompRel r :=
-  antisymmRel_swap rᶜ
-
-theorem incompRel_swap_apply : IncompRel (swap r) a b ↔ IncompRel r a b :=
-  antisymmRel_swap_apply rᶜ
+theorem incompRel_swap_apply : IncompRel (swap r) a b ↔ IncompRel r a b := antisymmRel_swap_apply rᶜ
 
 @[simp, refl]
-theorem IncompRel.refl [Std.Irrefl r] (a : α) : IncompRel r a a :=
-  AntisymmRel.refl rᶜ a
+theorem IncompRel.refl [Std.Irrefl r] (a : α) : IncompRel r a a := AntisymmRel.refl rᶜ a
 
 variable {r}
 
@@ -95,24 +86,19 @@ theorem IncompRel.rfl [Std.Irrefl r] {a : α} : IncompRel r a a := .refl ..
 instance [Std.Irrefl r] : Std.Refl (IncompRel r) where
   refl := .refl r
 
-@[symm]
-theorem IncompRel.symm : IncompRel r a b → IncompRel r b a :=
-  And.symm
+@[symm] theorem IncompRel.symm : IncompRel r a b → IncompRel r b a := And.symm
 
 instance : Std.Symm (IncompRel r) where
   symm _ _ := IncompRel.symm
 
-theorem incompRel_comm {a b : α} : IncompRel r a b ↔ IncompRel r b a :=
-  comm
+theorem incompRel_comm {a b : α} : IncompRel r a b ↔ IncompRel r b a := comm
 
-instance IncompRel.decidableRel [DecidableRel r] : DecidableRel (IncompRel r) :=
-  fun _ _ ↦ inferInstanceAs (Decidable (¬ _ ∧ ¬ _))
+instance IncompRel.decidableRel [DecidableRel r] : DecidableRel (IncompRel r) := fun _ _ ↦
+  inferInstanceAs (Decidable (¬_ ∧ ¬_))
 
-theorem IncompRel.not_antisymmRel (h : IncompRel r a b) : ¬ AntisymmRel r a b :=
-  fun h' ↦ h.1 h'.1
+theorem IncompRel.not_antisymmRel (h : IncompRel r a b) : ¬ AntisymmRel r a b := fun h' ↦ h.1 h'.1
 
-theorem AntisymmRel.not_incompRel (h : AntisymmRel r a b) : ¬ IncompRel r a b :=
-  fun h' ↦ h'.1 h.1
+theorem AntisymmRel.not_incompRel (h : AntisymmRel r a b) : ¬ IncompRel r a b := fun h' ↦ h'.1 h.1
 
 theorem not_symmGen_iff : ¬ Relation.SymmGen r a b ↔ IncompRel r a b := by
   simp [Relation.SymmGen, IncompRel]
@@ -154,14 +140,15 @@ theorem not_le_iff_lt_or_incompRel : ¬ b ≤ a ↔ a < b ∨ IncompRel (· ≤ 
   tauto
 
 /-- Exactly one of the following is true. -/
-theorem lt_or_antisymmRel_or_gt_or_incompRel (a b : α) :
-    a < b ∨ AntisymmRel (· ≤ ·) a b ∨ b < a ∨ IncompRel (· ≤ ·) a b := by
+theorem lt_or_antisymmRel_or_gt_or_incompRel (a b : α)
+    : a < b ∨ AntisymmRel (· ≤ ·) a b ∨ b < a ∨ IncompRel (· ≤ ·) a b := by
   simp_rw [lt_iff_le_not_ge]
   tauto
 
 @[trans]
 theorem incompRel_of_incompRel_of_antisymmRel
-    (h₁ : IncompRel (· ≤ ·) a b) (h₂ : AntisymmRel (· ≤ ·) b c) : IncompRel (· ≤ ·) a c :=
+    (h₁ : IncompRel (· ≤ ·) a b) (h₂ : AntisymmRel (· ≤ ·) b c)
+    : IncompRel (· ≤ ·) a c :=
   ⟨fun h ↦ h₁.not_le (h.trans h₂.ge), fun h ↦ h₁.not_ge (h₂.le.trans h)⟩
 
 alias IncompRel.trans_antisymmRel := incompRel_of_incompRel_of_antisymmRel
@@ -171,7 +158,8 @@ instance : @Trans α α α (IncompRel (· ≤ ·)) (AntisymmRel (· ≤ ·)) (In
 
 @[trans]
 theorem incompRel_of_antisymmRel_of_incompRel
-    (h₁ : AntisymmRel (· ≤ ·) a b) (h₂ : IncompRel (· ≤ ·) b c) : IncompRel (· ≤ ·) a c :=
+    (h₁ : AntisymmRel (· ≤ ·) a b) (h₂ : IncompRel (· ≤ ·) b c)
+    : IncompRel (· ≤ ·) a c :=
   (h₂.symm.trans_antisymmRel h₁.symm).symm
 
 alias AntisymmRel.trans_incompRel := incompRel_of_antisymmRel_of_incompRel
@@ -179,22 +167,22 @@ alias AntisymmRel.trans_incompRel := incompRel_of_antisymmRel_of_incompRel
 instance : @Trans α α α (AntisymmRel (· ≤ ·)) (IncompRel (· ≤ ·)) (IncompRel (· ≤ ·)) where
   trans := incompRel_of_antisymmRel_of_incompRel
 
-theorem AntisymmRel.incompRel_congr (h₁ : AntisymmRel (· ≤ ·) a b) (h₂ : AntisymmRel (· ≤ ·) c d) :
-    IncompRel (· ≤ ·) a c ↔ IncompRel (· ≤ ·) b d where
+theorem AntisymmRel.incompRel_congr (h₁ : AntisymmRel (· ≤ ·) a b) (h₂ : AntisymmRel (· ≤ ·) c d)
+    : IncompRel (· ≤ ·) a c ↔ IncompRel (· ≤ ·) b d where
   mp h := (h₁.symm.trans_incompRel h).trans_antisymmRel h₂
   mpr h := (h₁.trans_incompRel h).trans_antisymmRel h₂.symm
 
-theorem AntisymmRel.incompRel_congr_left (h : AntisymmRel (· ≤ ·) a b) :
-    IncompRel (· ≤ ·) a c ↔ IncompRel (· ≤ ·) b c :=
+theorem AntisymmRel.incompRel_congr_left (h : AntisymmRel (· ≤ ·) a b)
+    : IncompRel (· ≤ ·) a c ↔ IncompRel (· ≤ ·) b c :=
   h.incompRel_congr AntisymmRel.rfl
 
-theorem AntisymmRel.incompRel_congr_right (h : AntisymmRel (· ≤ ·) b c) :
-    IncompRel (· ≤ ·) a b ↔ IncompRel (· ≤ ·) a c :=
+theorem AntisymmRel.incompRel_congr_right (h : AntisymmRel (· ≤ ·) b c)
+    : IncompRel (· ≤ ·) a b ↔ IncompRel (· ≤ ·) a c :=
   AntisymmRel.rfl.incompRel_congr h
 
 end Preorder
 
 /-- Exactly one of the following is true. -/
-theorem lt_or_eq_or_gt_or_incompRel [PartialOrder α] (a b : α) :
-    a < b ∨ a = b ∨ b < a ∨ IncompRel (· ≤ ·) a b := by
+theorem lt_or_eq_or_gt_or_incompRel [PartialOrder α] (a b : α)
+    : a < b ∨ a = b ∨ b < a ∨ IncompRel (· ≤ ·) a b := by
   simpa using lt_or_antisymmRel_or_gt_or_incompRel a b

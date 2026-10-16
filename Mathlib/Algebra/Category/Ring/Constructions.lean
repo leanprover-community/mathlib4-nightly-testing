@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Category.Ring.Limits
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 public import Mathlib.CategoryTheory.Limits.Shapes.StrictInitial
 public import Mathlib.RingTheory.Localization.BaseChange
-
 import Mathlib.Algebra.Ring.Subring.Units
 import Mathlib.CategoryTheory.Adjunction.Limits
 import Mathlib.RingTheory.FreeCommRing
@@ -44,8 +43,9 @@ variable (R A B : Type u) [CommRing R] [CommRing A] [CommRing B]
 variable [Algebra R A] [Algebra R B]
 
 /-- The explicit cocone with tensor products as the fibered product in `CommRingCat`. -/
-def pushoutCocone : Limits.PushoutCocone
-    (CommRingCat.ofHom (algebraMap R A)) (CommRingCat.ofHom (algebraMap R B)) := by
+def pushoutCocone
+    : Limits.PushoutCocone (CommRingCat.ofHom (algebraMap R A))
+      (CommRingCat.ofHom (algebraMap R B)) := by
   fapply Limits.PushoutCocone.mk
   · exact ↧(A ⊗[R] B)
   · exact ofHom <| Algebra.TensorProduct.includeLeftRingHom (A := A)
@@ -56,33 +56,30 @@ def pushoutCocone : Limits.PushoutCocone
     · exact (Algebra.TensorProduct.includeRight.commutes (R := R) r).symm
 
 @[simp]
-theorem pushoutCocone_inl :
-    (pushoutCocone R A B).inl = ofHom (Algebra.TensorProduct.includeLeftRingHom (A := A)) :=
+theorem pushoutCocone_inl
+    : (pushoutCocone R A B).inl = ofHom (Algebra.TensorProduct.includeLeftRingHom (A := A)) :=
   rfl
 
 @[simp]
-theorem pushoutCocone_inr :
-    (pushoutCocone R A B).inr = ofHom (Algebra.TensorProduct.includeRight.toRingHom (A := B)) :=
+theorem pushoutCocone_inr
+    : (pushoutCocone R A B).inr = ofHom (Algebra.TensorProduct.includeRight.toRingHom (A := B)) :=
   rfl
 
-@[simp]
-theorem pushoutCocone_pt :
-    (pushoutCocone R A B).pt = ↧(A ⊗[R] B) :=
-  rfl
+@[simp] theorem pushoutCocone_pt : (pushoutCocone R A B).pt = ↧(A ⊗[R] B) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Verify that the `pushout_cocone` is indeed the colimit. -/
 def pushoutCoconeIsColimit : Limits.IsColimit (pushoutCocone R A B) :=
   Limits.PushoutCocone.isColimitAux' _ fun s => by
     letI := RingHom.toAlgebra (s.inl.hom.comp (algebraMap R A))
-    let f' : A →ₐ[R] s.pt :=
-      { s.inl.hom with
-        commutes' := fun r => rfl }
-    let g' : B →ₐ[R] s.pt :=
-      { s.inr.hom with
-        commutes' := DFunLike.congr_fun <| congrArg Hom.hom
+    let f' : A →ₐ[R] s.pt := { s.inl.hom with commutes' := fun r => rfl }
+    let g' : B →ₐ[R] s.pt := {
+      s.inr.hom with
+      commutes' :=
+        DFunLike.congr_fun <| congrArg Hom.hom
           ((s.ι.naturality Limits.WalkingSpan.Hom.snd).trans
-            (s.ι.naturality Limits.WalkingSpan.Hom.fst).symm) }
+            (s.ι.naturality Limits.WalkingSpan.Hom.fst).symm)
+    }
     letI : Algebra R (pushoutCocone R A B).pt := show Algebra R (A ⊗[R] B) by infer_instance
     -- The factor map is a ⊗ b ↦ f(a) * g(b).
     use ofHom (AlgHom.toRingHom (Algebra.TensorProduct.productMap f' g'))
@@ -94,13 +91,14 @@ def pushoutCoconeIsColimit : Limits.IsColimit (pushoutCocone R A B) :=
     · ext x
       exact Algebra.TensorProduct.productMap_right_apply (B := B) _ _ x
     intro h eq1 eq2
-    let h' : A ⊗[R] B →ₐ[R] s.pt :=
-      { h.hom with
-        commutes' := fun r => by
-          change h (algebraMap R A r ⊗ₜ[R] 1) = s.inl (algebraMap R A r)
-          rw [← eq1]
-          simp only [pushoutCocone_pt, coe_of]
-          rfl }
+    let h' : A ⊗[R] B →ₐ[R] s.pt := {
+      h.hom with
+      commutes' := fun r => by
+        change h (algebraMap R A r ⊗ₜ[R] 1) = s.inl (algebraMap R A r)
+        rw [← eq1]
+        simp only [pushoutCocone_pt, coe_of]
+        rfl
+    }
     suffices h' = Algebra.TensorProduct.productMap f' g' by
       ext x
       change h' x = Algebra.TensorProduct.productMap f' g' x
@@ -113,9 +111,9 @@ def pushoutCoconeIsColimit : Limits.IsColimit (pushoutCocone R A B) :=
     rw [← h.hom.map_mul, Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
     rfl
 
-lemma isPushout_tensorProduct (R A B : Type u) [CommRing R] [CommRing A] [CommRing B]
-    [Algebra R A] [Algebra R B] :
-    IsPushout (ofHom <| algebraMap R A) (ofHom <| algebraMap R B)
+lemma isPushout_tensorProduct
+    (R A B : Type u) [CommRing R] [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]
+    : IsPushout (ofHom <| algebraMap R A) (ofHom <| algebraMap R B)
       (ofHom (S := A ⊗[R] B) Algebra.TensorProduct.includeLeftRingHom)
       (ofHom (S := A ⊗[R] B) Algebra.TensorProduct.includeRight.toRingHom) where
   w := by
@@ -123,47 +121,55 @@ lemma isPushout_tensorProduct (R A B : Type u) [CommRing R] [CommRing A] [CommRi
     simp
   isColimit' := ⟨pushoutCoconeIsColimit R A B⟩
 
-lemma isPushout_of_isPushout (R S A B : Type u) [CommRing R] [CommRing S]
-    [CommRing A] [CommRing B] [Algebra R S] [Algebra S B] [Algebra R A] [Algebra A B] [Algebra R B]
-    [IsScalarTower R A B] [IsScalarTower R S B] [Algebra.IsPushout R S A B] :
-    IsPushout (ofHom (algebraMap R S)) (ofHom (algebraMap R A))
-      (ofHom (algebraMap S B)) (ofHom (algebraMap A B)) :=
+lemma isPushout_of_isPushout
+    (R S A B : Type u) [CommRing R] [CommRing S] [CommRing A] [CommRing B] [Algebra R S]
+    [Algebra S B] [Algebra R A] [Algebra A B] [Algebra R B] [IsScalarTower R A B]
+    [IsScalarTower R S B] [Algebra.IsPushout R S A B]
+    : IsPushout (ofHom (algebraMap R S)) (ofHom (algebraMap R A)) (ofHom (algebraMap S B))
+      (ofHom (algebraMap A B)) :=
   (isPushout_tensorProduct R S A).of_iso (Iso.refl _) (Iso.refl _) (Iso.refl _)
     (Algebra.IsPushout.equiv R S A B).toCommRingCatIso (by simp) (by simp)
     (by ext; simp [Algebra.IsPushout.equiv_tmul]) (by ext; simp [Algebra.IsPushout.equiv_tmul])
 
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
-lemma isPushout_iff_isPushout {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+lemma isPushout_iff_isPushout
+    {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
     {R' S' : Type u} [CommRing R'] [CommRing S'] [Algebra R R'] [Algebra S S'] [Algebra R' S']
-    [Algebra R S'] [IsScalarTower R R' S'] [IsScalarTower R S S'] :
-    IsPushout (ofHom <| algebraMap R R') (ofHom <| algebraMap R S)
-      (ofHom <| algebraMap R' S') (ofHom <| algebraMap S S') ↔ Algebra.IsPushout R R' S S' := by
+    [Algebra R S'] [IsScalarTower R R' S'] [IsScalarTower R S S']
+    : IsPushout (ofHom <| algebraMap R R') (ofHom <| algebraMap R S) (ofHom <| algebraMap R' S')
+        (ofHom <| algebraMap S S')
+      ↔ Algebra.IsPushout R R' S S' := by
   refine ⟨fun h ↦ ?_, fun h ↦ isPushout_of_isPushout ..⟩
-  let e : R' ⊗[R] S ≃+* S' := ((CommRingCat.isPushout_tensorProduct R R' S).isoPushout ≪≫
-      h.isoPushout.symm).commRingCatIsoToRingEquiv
-  have h2 (r : R') : (CommRingCat.isPushout_tensorProduct R R' S).isoPushout.hom
-      (r ⊗ₜ 1) = (pushout.inl (ofHom _) (ofHom _)) r :=
+  let e : R' ⊗[R] S ≃+* S' :=
+    ((CommRingCat.isPushout_tensorProduct R R' S).isoPushout
+      ≪≫ h.isoPushout.symm).commRingCatIsoToRingEquiv
+  have h2 (r : R')
+      : (CommRingCat.isPushout_tensorProduct R R' S).isoPushout.hom (r ⊗ₜ 1)
+        = (pushout.inl (ofHom _) (ofHom _)) r :=
     congr($((CommRingCat.isPushout_tensorProduct R R' S).inl_isoPushout_hom).hom r)
   have h3 (x : R') := congr($h.inl_isoPushout_inv x)
   dsimp only [hom_comp, RingHom.coe_comp, Function.comp_apply, hom_ofHom] at h3
   let e' : R' ⊗[R] S ≃ₐ[R'] S' := {
     __ := e
-    commutes' r := by simp [Iso.commRingCatIsoToRingEquiv, h2, e, h3] }
+    commutes' r := by simp [Iso.commRingCatIsoToRingEquiv, h2, e, h3]
+  }
   refine Algebra.IsPushout.of_equiv e' ?_
   ext s
-  have h1 : (CommRingCat.isPushout_tensorProduct R R' S).isoPushout.hom
-      (algebraMap S (R' ⊗[R] S) s) = (pushout.inr (ofHom _) (ofHom _)) s :=
+  have h1
+      : (CommRingCat.isPushout_tensorProduct R R' S).isoPushout.hom (algebraMap S (R' ⊗[R] S) s)
+        = (pushout.inr (ofHom _) (ofHom _)) s :=
     congr($((CommRingCat.isPushout_tensorProduct R R' S).inr_isoPushout_hom).hom s)
   have h4 (x : S) := congr($h.inr_isoPushout_inv x)
   dsimp only [hom_comp, RingHom.coe_comp, Function.comp_apply, hom_ofHom] at h4
   simp [Iso.commRingCatIsoToRingEquiv, h1, e', e, h4]
 
-lemma isPushout_of_isLocalization {R S Rₘ Sₘ : Type u}
+lemma isPushout_of_isLocalization
+    {R S Rₘ Sₘ : Type u}
     [CommRing R] [CommRing Rₘ] [Algebra R Rₘ] [CommRing S] [CommRing Sₘ] [Algebra S Sₘ]
     (f : R →+* S) (fₘ : Rₘ →+* Sₘ) (H : fₘ.comp (algebraMap _ _) = (algebraMap _ _).comp f)
-    (M : Submonoid R) [IsLocalization M Rₘ] [IsLocalization (M.map f) Sₘ] :
-    IsPushout (CommRingCat.ofHom f) (CommRingCat.ofHom (algebraMap R Rₘ))
+    (M : Submonoid R) [IsLocalization M Rₘ] [IsLocalization (M.map f) Sₘ]
+    : IsPushout (CommRingCat.ofHom f) (CommRingCat.ofHom (algebraMap R Rₘ))
       (CommRingCat.ofHom (algebraMap S Sₘ)) (CommRingCat.ofHom fₘ) := by
   algebraize [f, fₘ, fₘ.comp (algebraMap R Rₘ)]
   have : IsScalarTower R S Sₘ := .of_algebraMap_eq' H
@@ -172,8 +178,8 @@ lemma isPushout_of_isLocalization {R S Rₘ Sₘ : Type u}
 
 lemma closure_range_union_range_eq_top_of_isPushout
     {R A B X : CommRingCat.{u}} {f : R ⟶ A} {g : R ⟶ B} {a : A ⟶ X} {b : B ⟶ X}
-    (H : IsPushout f g a b) :
-    Subring.closure (Set.range a ∪ Set.range b) = ⊤ := by
+    (H : IsPushout f g a b)
+    : Subring.closure (Set.range a ∪ Set.range b) = ⊤ := by
   algebraize [f.hom, g.hom]
   let e := ((isPushout_tensorProduct R A B).isoIsPushout A B H).commRingCatIsoToRingEquiv
   rw [← Subring.comap_map_eq_self_of_injective e.symm.injective (.closure _), RingHom.map_closure,
@@ -192,17 +198,18 @@ variable (A B : CommRingCat.{u})
 /-- The tensor product `A ⊗[ℤ] B` forms a cocone for `A` and `B`. -/
 @[simps! pt ι]
 def coproductCocone : BinaryCofan A B :=
-  BinaryCofan.mk
-    (ofHom (Algebra.TensorProduct.includeLeft (S := ℤ)).toRingHom : A ⟶ of (A ⊗[ℤ] B))
+  BinaryCofan.mk (ofHom (Algebra.TensorProduct.includeLeft (S := ℤ)).toRingHom : A ⟶ of (A ⊗[ℤ] B))
     (ofHom (Algebra.TensorProduct.includeRight (R := ℤ)).toRingHom : B ⟶ of (A ⊗[ℤ] B))
 
 @[simp]
-theorem coproductCocone_inl :
-    (coproductCocone A B).inl = ofHom (Algebra.TensorProduct.includeLeft (S := ℤ)).toRingHom := rfl
+theorem coproductCocone_inl
+    : (coproductCocone A B).inl = ofHom (Algebra.TensorProduct.includeLeft (S := ℤ)).toRingHom :=
+  rfl
 
 @[simp]
-theorem coproductCocone_inr :
-    (coproductCocone A B).inr = ofHom (Algebra.TensorProduct.includeRight (R := ℤ)).toRingHom := rfl
+theorem coproductCocone_inr
+    : (coproductCocone A B).inr = ofHom (Algebra.TensorProduct.includeRight (R := ℤ)).toRingHom :=
+  rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -227,11 +234,9 @@ def coproductCoconeIsColimit : IsColimit (coproductCocone A B) where
       simp [map_one, ← hm (Discrete.mk WalkingPair.right)]
 
 /-- The limit cone of the tensor product `A ⊗[ℤ] B` in `CommRingCat`. -/
-def coproductColimitCocone : Limits.ColimitCocone (pair A B) :=
-  ⟨_, coproductCoconeIsColimit A B⟩
+def coproductColimitCocone : Limits.ColimitCocone (pair A B) := ⟨_, coproductCoconeIsColimit A B⟩
 
 end BinaryCoproduct
-
 
 section Terminal
 
@@ -239,8 +244,7 @@ instance (X : CommRingCat.{u}) : Unique (X ⟶ CommRingCat.of.{u} PUnit) :=
   ⟨⟨ofHom ⟨1, rfl, by simp⟩⟩, fun f ↦ by ext⟩
 
 /-- The trivial ring is the (strict) terminal object of `CommRingCat`. -/
-def punitIsTerminal : IsTerminal (CommRingCat.of.{u} PUnit) :=
-  IsTerminal.ofUnique _
+def punitIsTerminal : IsTerminal (CommRingCat.of.{u} PUnit) := IsTerminal.ofUnique _
 
 instance commRingCat_hasStrictTerminalObjects : HasStrictTerminalObjects CommRingCat.{u} := by
   apply hasStrictTerminalObjects_of_terminal_is_strict ↧PUnit
@@ -248,8 +252,7 @@ instance commRingCat_hasStrictTerminalObjects : HasStrictTerminalObjects CommRin
   refine ⟨ofHom ⟨1, rfl, by simp⟩, ?_, ?_⟩
   · ext
   · ext x
-    have e : (0 : X) = 1 := by
-      rw [← f.hom.map_one, ← f.hom.map_zero]
+    have e : (0 : X) = 1 := by rw [← f.hom.map_one, ← f.hom.map_zero]
     replace e : 0 * x = 1 * x := congr($e * x)
     rw [one_mul, zero_mul, ← f.hom.map_zero] at e
     exact e
@@ -260,17 +263,19 @@ theorem subsingleton_of_isTerminal {X : CommRingCat} (hX : IsTerminal X) : Subsi
 
 /-- `ℤ` is the initial object of `CommRingCat`. -/
 def zIsInitial : IsInitial (CommRingCat.of ℤ) :=
-  IsInitial.ofUnique (h := fun R => ⟨⟨ofHom <| Int.castRingHom R⟩,
-    fun a => hom_ext <| a.hom.ext_int _⟩)
+  IsInitial.ofUnique (h := fun R =>
+    ⟨⟨ofHom <| Int.castRingHom R⟩, fun a => hom_ext <| a.hom.ext_int _⟩)
 
 /-- `ULift.{u} ℤ` is initial in `CommRingCat`. -/
 def isInitial : IsInitial (CommRingCat.of (ULift.{u} ℤ)) :=
-  IsInitial.ofUnique (h := fun R ↦ ⟨⟨ofHom <| (Int.castRingHom R).comp ULift.ringEquiv.toRingHom⟩,
+  IsInitial.ofUnique (h := fun R ↦ ⟨
+    ⟨ofHom <| (Int.castRingHom R).comp ULift.ringEquiv.toRingHom⟩,
     fun _ ↦ by
       ext : 1
       rw [← RingHom.cancel_right (f := (ULift.ringEquiv.{0, u} (R := ℤ)).symm.toRingHom)
         (hf := ULift.ringEquiv.symm.surjective)]
-      apply RingHom.ext_int⟩)
+      apply RingHom.ext_int
+  ⟩)
 
 end Terminal
 
@@ -290,15 +295,13 @@ def prodFanIsLimit : IsLimit (prodFan A B) where
   lift c := ofHom <| RingHom.prod (c.π.app ⟨WalkingPair.left⟩).hom (c.π.app ⟨WalkingPair.right⟩).hom
   fac c j := by
     ext
-    rcases j with ⟨⟨⟩⟩ <;>
-    simp only [pair_obj_left, prodFan_pt, BinaryFan.π_app_left, BinaryFan.π_app_right] <;> rfl
+    rcases j with ⟨⟨⟩⟩
+      <;> simp only [pair_obj_left, prodFan_pt, BinaryFan.π_app_left, BinaryFan.π_app_right] <;> rfl
   uniq s m h := by
     ext x
     change m x = (BinaryFan.fst s x, BinaryFan.snd s x)
-    have eq1 : (m ≫ (A.prodFan B).fst) x = (BinaryFan.fst s) x :=
-      congr($(h ⟨WalkingPair.left⟩) x)
-    have eq2 : (m ≫ (A.prodFan B).snd) x = (BinaryFan.snd s) x :=
-      congr($(h ⟨WalkingPair.right⟩) x)
+    have eq1 : (m ≫ (A.prodFan B).fst) x = (BinaryFan.fst s) x := congr($(h ⟨WalkingPair.left⟩) x)
+    have eq2 : (m ≫ (A.prodFan B).snd) x = (BinaryFan.snd s) x := congr($(h ⟨WalkingPair.right⟩) x)
     rw [← eq1, ← eq2]
     simp [prodFan]
 
@@ -308,33 +311,22 @@ section Pi
 
 variable {ι : Type u} (R : ι → CommRingCat.{u})
 
-/--
-The categorical product of rings is the Cartesian product of rings. This is its `Fan`.
--/
+/-- The categorical product of rings is the Cartesian product of rings. This is its `Fan`. -/
 @[simps! pt]
-def piFan : Fan R :=
-  Fan.mk ↧((i : ι) → R i) (fun i ↦ ofHom <| Pi.evalRingHom _ i)
+def piFan : Fan R := Fan.mk (↧((i : ι) → R i)) (fun i ↦ ofHom <| Pi.evalRingHom _ i)
 
-/--
-The categorical product of rings is the Cartesian product of rings.
--/
+/-- The categorical product of rings is the Cartesian product of rings. -/
 def piFanIsLimit : IsLimit (piFan R) where
   lift s := ofHom <| RingHom.pi fun i ↦ (s.π.1 ⟨i⟩).hom
   fac s i := by rfl
-  uniq _ _ h := hom_ext <| DFunLike.ext _ _ fun x ↦ funext fun i ↦
-    congr($(h ⟨i⟩).hom x)
+  uniq _ _ h := hom_ext <| DFunLike.ext _ _ fun x ↦ funext fun i ↦ congr($(h ⟨i⟩).hom x)
 
-/--
-The categorical product and the usual product agree
--/
-noncomputable def piIsoPi : ∏ᶜ R ≅ ↧((i : ι) → R i) :=
-  limit.isoLimitCone ⟨_, piFanIsLimit R⟩
+/-- The categorical product and the usual product agree -/
+noncomputable def piIsoPi : ∏ᶜ R ≅ ↧((i : ι) → R i) := limit.isoLimitCone ⟨_, piFanIsLimit R⟩
 
-/--
-The categorical product and the usual product agree
--/
-noncomputable def _root_.RingEquiv.piEquivPi (R : ι → Type u) [∀ i, CommRing (R i)] :
-    (∏ᶜ (fun i : ι ↦ ↧(R i)) : CommRingCat.{u}) ≃+* ((i : ι) → R i) :=
+/-- The categorical product and the usual product agree -/
+noncomputable def _root_.RingEquiv.piEquivPi (R : ι → Type u) [∀ i, CommRing (R i)]
+    : (∏ᶜ (fun i : ι ↦ ↧(R i)) : CommRingCat.{u}) ≃+* ((i : ι) → R i) :=
   (piIsoPi (CommRingCat.of <| R ·)).commRingCatIsoToRingEquiv
 
 end Pi
@@ -343,43 +335,58 @@ namespace Limits
 
 variable {J : Type u'} [SmallCategory J] (F : J ⥤ CommRingCat.{u}) {c : Cone F}
 
-theorem isUnit_iff_forall_isUnit (hc : IsLimit c) (r : c.pt) : IsUnit r ↔
-    ∀ (j : J), IsUnit (c.π.app j r) := by
+theorem isUnit_iff_forall_isUnit (hc : IsLimit c) (r : c.pt)
+    : IsUnit r ↔ ∀ (j : J), IsUnit (c.π.app j r) := by
   refine ⟨fun h _ ↦ h.map _, fun h ↦ ?_⟩
   simp only [isUnit_iff_exists_inv] at h ⊢
   choose inv h_inv using h
   have map_inv {j k : J} (f : j ⟶ k) : F.map f (inv j) = inv k := by
     have h := congr(F.map f $(h_inv j))
-    have : F.map f (c.π.app j r) = c.π.app k r :=
-      congr($(c.w f).hom r)
+    have : F.map f (c.π.app j r) = c.π.app k r := congr($(c.w f).hom r)
     rw [map_mul, map_one, this] at h
     rw [← mul_one (F.map f (inv j)), ← h_inv k, ← mul_assoc]
-    nth_rw 2 [mul_comm]; rw [h, one_mul]
-  let inv_r : Cone F := .mk ↧(FreeCommRing PUnit) {
-    app j := ConcreteCategory.ofHom (FreeCommRing.lift (fun _ ↦ inv j))
-    naturality j k f := by
-      ext1; change FreeCommRing.lift (fun _ => inv k) = _
-      ext; simp [map_inv f] }
+    nth_rw 2 [mul_comm]
+    rw [h, one_mul]
+  let inv_r : Cone F :=
+    .mk (↧(FreeCommRing PUnit)) {
+      app j := ConcreteCategory.ofHom (FreeCommRing.lift (fun _ ↦ inv j))
+      naturality j k f := by
+        ext1
+        change FreeCommRing.lift (fun _ => inv k) = _
+        ext
+        simp [map_inv f]
+    }
   use hc.lift inv_r (FreeCommRing.of PUnit.unit)
   refine Concrete.isLimit_ext _ hc _ _ fun j ↦ ?_
-  rw [RingHom.map_mul, RingHom.map_one]; convert h_inv j
+  rw [RingHom.map_mul, RingHom.map_one]
+  convert h_inv j
   change (hc.lift inv_r ≫ c.π.app j) (FreeCommRing.of PUnit.unit) = inv j
-  rw [IsLimit.fac]; exact FreeCommRing.lift_of ..
+  rw [IsLimit.fac]
+  exact FreeCommRing.lift_of ..
 
 -- The assumption `hj` can be generalized to a zigzag-like assumption of finite steps.
-theorem π_isLocalHom (hc : IsLimit c) (j : J) (hj : ∀ (x : c.pt), IsUnit (c.π.app j x) →
-    ∀ (i : J), ∃ (k : J) (f : i ⟶ k) (g : j ⟶ k), IsLocalHom (F.map f).hom ∧
-      F.map f (c.π.app i x) = F.map g (c.π.app j x)) :
-    IsLocalHom (c.π.app j).hom := by
+theorem π_isLocalHom
+    (hc : IsLimit c)
+    (j : J)
+    (hj : ∀ (x : c.pt),
+      IsUnit (c.π.app j x)
+        → ∀ (i : J), ∃ (k : J) (f : i ⟶ k) (g : j ⟶ k),
+          IsLocalHom (F.map f).hom ∧ F.map f (c.π.app i x) = F.map g (c.π.app j x))
+    : IsLocalHom (c.π.app j).hom := by
   refine ⟨fun (x : c.pt) hx ↦ (?_ : IsUnit x)⟩
-  rw [isUnit_iff_forall_isUnit F hc]; intro i
+  rw [isUnit_iff_forall_isUnit F hc]
+  intro i
   obtain ⟨k, f, g, lh, eq⟩ := hj x hx i
   exact lh.map_nonunit _ (eq ▸ hx.map _)
 
-theorem isLocalRing (hc : IsLimit c) (j : J) [IsLocalRing (F.obj j)]
-    (hj : ∀ (x : c.pt), IsUnit (c.π.app j x) → ∀ (i : J), ∃ (k : J) (f : i ⟶ k) (g : j ⟶ k),
-      IsLocalHom (F.map f).hom ∧ F.map f (c.π.app i x) = F.map g (c.π.app j x)) :
-    IsLocalRing c.pt := by
+theorem isLocalRing
+    (hc : IsLimit c)
+    (j : J) [IsLocalRing (F.obj j)]
+    (hj : ∀ (x : c.pt),
+      IsUnit (c.π.app j x)
+        → ∀ (i : J), ∃ (k : J) (f : i ⟶ k) (g : j ⟶ k),
+          IsLocalHom (F.map f).hom ∧ F.map f (c.π.app i x) = F.map g (c.π.app j x))
+    : IsLocalRing c.pt := by
   have := π_isLocalHom F hc j hj
   apply RingHom.domain_isLocalRing (c.π.app j).hom
 
@@ -392,8 +399,8 @@ variable {A B : CommRingCat.{u}} (f g : A ⟶ B)
 /-- The equalizer in `CommRingCat` is the equalizer as sets. This is the equalizer fork. -/
 def equalizerFork : Fork f g :=
   Fork.ofι (CommRingCat.ofHom (RingHom.eqLocus f.hom g.hom).subtype) <| by
-      ext ⟨x, e⟩
-      simpa using e
+    ext ⟨x, e⟩
+    simpa using e
 
 /-- The equalizer in `CommRingCat` is the equalizer as sets. -/
 def equalizerForkIsLimit : IsLimit (equalizerFork f g) := by
@@ -412,8 +419,8 @@ instance : IsLocalHom (equalizerFork f g).ι.hom :=
 
 open WalkingParallelPair WalkingParallelPairHom Opposite
 
-instance equalizer_ι_isLocalHom (F : WalkingParallelPair ⥤ CommRingCat.{u}) :
-    IsLocalHom (limit.π F WalkingParallelPair.zero).hom := by
+instance equalizer_ι_isLocalHom (F : WalkingParallelPair ⥤ CommRingCat.{u})
+    : IsLocalHom (limit.π F WalkingParallelPair.zero).hom := by
   refine Limits.π_isLocalHom _ (limit.isLimit _) zero fun x hx i ↦ ?_
   rcases i with _ | _
   · exact ⟨zero, 𝟙 _, 𝟙 _, inferInstance, by simp⟩
@@ -421,17 +428,17 @@ instance equalizer_ι_isLocalHom (F : WalkingParallelPair ⥤ CommRingCat.{u}) :
     simp only [CategoryTheory.Functor.map_id, hom_id, limit.cone_x, limit.cone_π, RingHom.id_apply]
     exact (limit.w_apply F left x).symm
 
-theorem equalizer_limit_isLocalRing (F : WalkingParallelPair ⥤ CommRingCat.{u})
-    [IsLocalRing (F.obj zero)] : IsLocalRing ↑(limit F) :=
+theorem equalizer_limit_isLocalRing
+    (F : WalkingParallelPair ⥤ CommRingCat.{u}) [IsLocalRing (F.obj zero)]
+    : IsLocalRing ↑(limit F) :=
   RingHom.domain_isLocalRing (limit.π F WalkingParallelPair.zero).hom
 
-instance equalizer_ι_isLocalHom' (F : WalkingParallelPairᵒᵖ ⥤ CommRingCat.{u}) :
-    IsLocalHom (limit.π F (op one)).hom := by
+instance equalizer_ι_isLocalHom' (F : WalkingParallelPairᵒᵖ ⥤ CommRingCat.{u})
+    : IsLocalHom (limit.π F (op one)).hom := by
   refine Limits.π_isLocalHom _ (limit.isLimit _) (op one) fun x hx i ↦ ?_
   rcases i with _ | _
   · refine ⟨op zero, 𝟙 _, op left, inferInstance, ?_⟩
-    simp only [CategoryTheory.Functor.map_id, hom_id, limit.cone_x, limit.cone_π,
-      RingHom.id_apply]
+    simp only [CategoryTheory.Functor.map_id, hom_id, limit.cone_x, limit.cone_π, RingHom.id_apply]
     exact (limit.w_apply F (op left) x).symm
   · exact ⟨op one, 𝟙 _, 𝟙 _, inferInstance, by simp⟩
 
@@ -441,24 +448,22 @@ section Pullback
 
 variable {A B C : CommRingCat.{u}}
 
-/-- In the category of `CommRingCat`, the pullback of `f : A ⟶ C` and `g : B ⟶ C` is the `eqLocus`
+/--
+In the category of `CommRingCat`, the pullback of `f : A ⟶ C` and `g : B ⟶ C` is the `eqLocus`
 of the two maps `A × B ⟶ C`. This is the constructed pullback cone.
 -/
 def pullbackCone (f : A ⟶ C) (g : B ⟶ C) : PullbackCone f g :=
   PullbackCone.mk
-    (CommRingCat.ofHom <|
-      (RingHom.fst A B).comp
-        (RingHom.eqLocus (f.hom.comp (RingHom.fst A B)) (g.hom.comp (RingHom.snd A B))).subtype)
-    (CommRingCat.ofHom <|
-      (RingHom.snd A B).comp
-        (RingHom.eqLocus (f.hom.comp (RingHom.fst A B)) (g.hom.comp (RingHom.snd A B))).subtype)
+    (CommRingCat.ofHom <| (RingHom.fst A B).comp
+      (RingHom.eqLocus (f.hom.comp (RingHom.fst A B)) (g.hom.comp (RingHom.snd A B))).subtype)
+    (CommRingCat.ofHom <| (RingHom.snd A B).comp
+      (RingHom.eqLocus (f.hom.comp (RingHom.fst A B)) (g.hom.comp (RingHom.snd A B))).subtype)
     (by
       ext ⟨x, e⟩
       simpa [CommRingCat.ofHom] using e)
 
 /-- The constructed pullback cone is indeed the limit. -/
-def pullbackConeIsLimit (f : A ⟶ C) (g : B ⟶ C) :
-    IsLimit (pullbackCone f g) := by
+def pullbackConeIsLimit (f : A ⟶ C) (g : B ⟶ C) : IsLimit (pullbackCone f g) := by
   fapply PullbackCone.IsLimit.mk
   · intro s
     refine ofHom ((s.fst.hom.prod s.snd.hom).codRestrict _ ?_)
@@ -480,8 +485,8 @@ def pullbackConeIsLimit (f : A ⟶ C) (g : B ⟶ C) :
 
 open WalkingCospan
 
-instance pullbackFst_isLocalHom (f : A ⟶ C) (g : B ⟶ C) [IsLocalHom g.hom] :
-    IsLocalHom (pullback.fst f g).hom := by
+instance pullbackFst_isLocalHom (f : A ⟶ C) (g : B ⟶ C) [IsLocalHom g.hom]
+    : IsLocalHom (pullback.fst f g).hom := by
   refine Limits.π_isLocalHom _ (limit.isLimit _) left fun x hx i ↦ ?_
   rcases i with _ | _ | _
   · exact ⟨one, 𝟙 _, Hom.inl, inferInstance, by simp⟩
@@ -489,8 +494,8 @@ instance pullbackFst_isLocalHom (f : A ⟶ C) (g : B ⟶ C) [IsLocalHom g.hom] :
   · refine ⟨one, Hom.inr, Hom.inl, ‹_›, ?_⟩
     exact congr($(pullback.condition (f := f) (g := g)).hom x) |>.symm
 
-theorem pullback_isLocalRing (f : A ⟶ C) (g : B ⟶ C) [IsLocalHom g.hom] [IsLocalRing A] :
-    IsLocalRing ↑(pullback f g) :=
+theorem pullback_isLocalRing (f : A ⟶ C) (g : B ⟶ C) [IsLocalHom g.hom] [IsLocalRing A]
+    : IsLocalRing ↑(pullback f g) :=
   RingHom.domain_isLocalRing (pullback.fst f g).hom
 
 end Pullback

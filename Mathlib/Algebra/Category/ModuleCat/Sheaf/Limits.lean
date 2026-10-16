@@ -24,22 +24,22 @@ universe v v₁ v₂ u₁ u₂ u
 
 open CategoryTheory Category Limits
 
-variable {C : Type u₁} [Category.{v₁} C] {J : GrothendieckTopology C}
-  {D : Type u₂} [Category.{v₂} D]
+variable
+  {C : Type u₁} [Category.{v₁} C] {J : GrothendieckTopology C} {D : Type u₂} [Category.{v₂} D]
 
 namespace PresheafOfModules
 
-variable {R : Cᵒᵖ ⥤ RingCat.{u}}
-  {F : D ⥤ PresheafOfModules.{v} R}
+variable
+  {R : Cᵒᵖ ⥤ RingCat.{u}} {F : D ⥤ PresheafOfModules.{v} R}
   [∀ X, Small.{v} ((F ⋙ evaluation R X) ⋙ forget _).sections]
-  {c : Cone F}
-  [HasLimitsOfShape D AddCommGrpCat.{v}]
+  {c : Cone F} [HasLimitsOfShape D AddCommGrpCat.{v}]
 
-lemma isSheaf_of_isLimit (hc : IsLimit c) (hF : ∀ j, Presheaf.IsSheaf J (F.obj j).presheaf) :
-    Presheaf.IsSheaf J (c.pt.presheaf) := by
-  let G : D ⥤ Sheaf J AddCommGrpCat.{v} :=
-    { obj := fun j => ⟨(F.obj j).presheaf, hF j⟩
-      map := fun φ => ⟨(PresheafOfModules.toPresheaf R).map (F.map φ)⟩ }
+lemma isSheaf_of_isLimit (hc : IsLimit c) (hF : ∀ j, Presheaf.IsSheaf J (F.obj j).presheaf)
+    : Presheaf.IsSheaf J (c.pt.presheaf) := by
+  let G : D ⥤ Sheaf J AddCommGrpCat.{v} := {
+    obj := fun j => ⟨(F.obj j).presheaf, hF j⟩
+    map := fun φ => ⟨(PresheafOfModules.toPresheaf R).map (F.map φ)⟩
+  }
   exact Sheaf.isSheaf_of_isLimit G _ (isLimitOfPreserves (toPresheaf R) hc)
 
 end PresheafOfModules
@@ -50,24 +50,26 @@ variable {R : Sheaf J RingCat.{u}}
 
 section Limits
 
-variable (F : D ⥤ SheafOfModules.{v} R)
+variable
+  (F : D ⥤ SheafOfModules.{v} R)
   [∀ X, Small.{v} ((F ⋙ evaluation R X) ⋙ CategoryTheory.forget _).sections]
   [HasLimitsOfShape D AddCommGrpCat.{v}]
 
-instance (X : Cᵒᵖ) : Small.{v} (((F ⋙ forget _) ⋙ PresheafOfModules.evaluation _ X) ⋙
-    CategoryTheory.forget _).sections := by
+instance (X : Cᵒᵖ)
+    : Small.{v} (((F ⋙ forget _) ⋙ PresheafOfModules.evaluation _ X)
+      ⋙ CategoryTheory.forget _).sections := by
   solve_by_elim
 
 noncomputable instance createsLimit : CreatesLimit F (forget _) :=
   createsLimitOfFullyFaithfulOfIso' (limit.isLimit (F ⋙ forget _))
     (mk (limit (F ⋙ forget _))
       (PresheafOfModules.isSheaf_of_isLimit (limit.isLimit (F ⋙ forget _))
-        (fun j => (F.obj j).isSheaf))) (Iso.refl _)
+        (fun j => (F.obj j).isSheaf)))
+    (Iso.refl _)
 
 instance hasLimit : HasLimit F := hasLimit_of_created F (forget _)
 
-noncomputable instance evaluationPreservesLimit (X : Cᵒᵖ) :
-    PreservesLimit F (evaluation R X) := by
+noncomputable instance evaluationPreservesLimit (X : Cᵒᵖ) : PreservesLimit F (evaluation R X) := by
   dsimp [evaluation]
   infer_instance
 
@@ -81,37 +83,34 @@ variable [Small.{v} D]
 
 instance hasLimitsOfShape : HasLimitsOfShape D (SheafOfModules.{v} R) where
 
-noncomputable instance evaluationPreservesLimitsOfShape (X : Cᵒᵖ) :
-    PreservesLimitsOfShape D (evaluation R X : SheafOfModules.{v} R ⥤ _) where
+noncomputable instance evaluationPreservesLimitsOfShape (X : Cᵒᵖ)
+  : PreservesLimitsOfShape D (evaluation R X : SheafOfModules.{v} R ⥤ _) where
 
-noncomputable instance forgetPreservesLimitsOfShape :
-    PreservesLimitsOfShape D (forget.{v} R) where
+noncomputable instance forgetPreservesLimitsOfShape : PreservesLimitsOfShape D (forget.{v} R) where
 
 end Small
 
 namespace Finite
 
-instance hasFiniteLimits : HasFiniteLimits (SheafOfModules.{v} R) :=
-  ⟨fun _ => inferInstance⟩
+instance hasFiniteLimits : HasFiniteLimits (SheafOfModules.{v} R) := ⟨fun _ => inferInstance⟩
 
-noncomputable instance evaluationPreservesFiniteLimits (X : Cᵒᵖ) :
-    PreservesFiniteLimits (evaluation.{v} R X) where
+noncomputable instance evaluationPreservesFiniteLimits (X : Cᵒᵖ)
+  : PreservesFiniteLimits (evaluation.{v} R X) where
 
-noncomputable instance forgetPreservesFiniteLimits :
-    PreservesFiniteLimits (forget.{v} R) where
+noncomputable instance forgetPreservesFiniteLimits : PreservesFiniteLimits (forget.{v} R) where
 
 end Finite
 
 instance hasLimitsOfSize : HasLimitsOfSize.{v₂, v} (SheafOfModules.{v} R) where
 
-noncomputable instance evaluationPreservesLimitsOfSize (X : Cᵒᵖ) :
-    PreservesLimitsOfSize.{v₂, v} (evaluation R X : SheafOfModules.{v} R ⥤ _) where
+noncomputable instance evaluationPreservesLimitsOfSize (X : Cᵒᵖ)
+  : PreservesLimitsOfSize.{v₂, v} (evaluation R X : SheafOfModules.{v} R ⥤ _) where
 
-noncomputable instance forgetPreservesLimitsOfSize :
-    PreservesLimitsOfSize.{v₂, v} (forget.{v} R) where
+noncomputable instance forgetPreservesLimitsOfSize
+  : PreservesLimitsOfSize.{v₂, v} (forget.{v} R) where
 
-noncomputable instance :
-     PreservesFiniteLimits (SheafOfModules.toSheaf.{v} R ⋙ sheafToPresheaf _ _) :=
+noncomputable instance
+    : PreservesFiniteLimits (SheafOfModules.toSheaf.{v} R ⋙ sheafToPresheaf _ _) :=
   comp_preservesFiniteLimits (SheafOfModules.forget.{v} R) (PresheafOfModules.toPresheaf R.obj)
 
 noncomputable instance : PreservesFiniteLimits (SheafOfModules.toSheaf.{v} R) :=

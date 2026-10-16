@@ -6,7 +6,6 @@ Authors: Jiedong Jiang, Christian Merten
 module
 
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
-
 import Mathlib.AlgebraicGeometry.Morphisms.Immersion
 
 /-!
@@ -51,8 +50,8 @@ namespace WeaklyEtale
 
 attribute [instance] flat flat_diagonal
 
-theorem weaklyEtale_eq_flat_inf_diagonal_flat :
-    @WeaklyEtale = (@Flat ⊓ MorphismProperty.diagonal @Flat : MorphismProperty Scheme.{u}) := by
+theorem weaklyEtale_eq_flat_inf_diagonal_flat
+    : @WeaklyEtale = (@Flat ⊓ MorphismProperty.diagonal @Flat : MorphismProperty Scheme.{u}) := by
   ext
   exact weaklyEtale_iff _
 
@@ -89,24 +88,26 @@ instance : IsZariskiLocalAtTarget @WeaklyEtale := by
   infer_instance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [WeaklyEtale g] :
-    WeaklyEtale (pullback.fst f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [WeaklyEtale g]
+    : WeaklyEtale (pullback.fst f g) :=
   MorphismProperty.pullback_fst f g inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [WeaklyEtale f] :
-    WeaklyEtale (pullback.snd f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [WeaklyEtale f]
+    : WeaklyEtale (pullback.snd f g) :=
   MorphismProperty.pullback_snd f g inferInstance
 
 instance (f : X ⟶ Y) (V : Y.Opens) [WeaklyEtale f] : WeaklyEtale (f ∣_ V) :=
   IsZariskiLocalAtTarget.restrict ‹_› V
 
-instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [WeaklyEtale f] :
-    WeaklyEtale (f.resLE V U e) := by
+instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [WeaklyEtale f]
+    : WeaklyEtale (f.resLE V U e) := by
   delta Scheme.Hom.resLE; infer_instance
 
-/-- This proof is by `inferInstance` and the argument goes through
-`IsImmersion (diagonal f) → Mono (diagonal f) → IsIso (diagonal (diagonal f))`. -/
+/--
+This proof is by `inferInstance` and the argument goes through
+`IsImmersion (diagonal f) → Mono (diagonal f) → IsIso (diagonal (diagonal f))`.
+-/
 instance (f : X ⟶ Y) [WeaklyEtale f] : WeaklyEtale (pullback.diagonal f) where
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -121,7 +122,6 @@ lemma of_comp (f : X ⟶ Y) (g : Y ⟶ Z) [WeaklyEtale (f ≫ g)] [WeaklyEtale g
 
 end WeaklyEtale
 
-lemma etale_le_weaklyEtale : @Etale ≤ @WeaklyEtale :=
-  fun _ _ _ _ ↦ inferInstance
+lemma etale_le_weaklyEtale : @Etale ≤ @WeaklyEtale := fun _ _ _ _ ↦ inferInstance
 
 end AlgebraicGeometry

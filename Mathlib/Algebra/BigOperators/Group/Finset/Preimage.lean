@@ -23,8 +23,8 @@ namespace Finset
 variable [CommMonoid β]
 
 @[to_additive]
-lemma prod_preimage' (f : ι → κ) [DecidablePred (· ∈ Set.range f)] (s : Finset κ) (hf) (g : κ → β) :
-    ∏ x ∈ s.preimage f hf, g (f x) = ∏ x ∈ s with x ∈ Set.range f, g x := by
+lemma prod_preimage' (f : ι → κ) [DecidablePred (· ∈ Set.range f)] (s : Finset κ) (hf) (g : κ → β)
+    : ∏ x ∈ s.preimage f hf, g (f x) = ∏ x ∈ s with x ∈ Set.range f, g x := by
   classical
   calc
     ∏ x ∈ preimage s f hf, g (f x) = ∏ x ∈ image f (preimage s f hf), g x :=
@@ -32,14 +32,15 @@ lemma prod_preimage' (f : ι → κ) [DecidablePred (· ∈ Set.range f)] (s : F
     _ = ∏ x ∈ s with x ∈ Set.range f, g x := by rw [image_preimage]
 
 @[to_additive]
-lemma prod_preimage (f : ι → κ) (s : Finset κ) (hf) (g : κ → β)
-    (hg : ∀ x ∈ s, x ∉ Set.range f → g x = 1) :
-    ∏ x ∈ s.preimage f hf, g (f x) = ∏ x ∈ s, g x := by
-  classical rw [prod_preimage', prod_filter_of_ne]; exact fun x hx ↦ Not.imp_symm (hg x hx)
+lemma prod_preimage
+    (f : ι → κ) (s : Finset κ) (hf) (g : κ → β) (hg : ∀ x ∈ s, x ∉ Set.range f → g x = 1)
+    : ∏ x ∈ s.preimage f hf, g (f x) = ∏ x ∈ s, g x := by
+  classical
+  rw [prod_preimage', prod_filter_of_ne]; exact fun x hx ↦ Not.imp_symm (hg x hx)
 
 @[to_additive]
-lemma prod_preimage_of_bij (f : ι → κ) (s : Finset κ) (hf : Set.BijOn f (f ⁻¹' ↑s) ↑s) (g : κ → β) :
-    ∏ x ∈ s.preimage f hf.injOn, g (f x) = ∏ x ∈ s, g x :=
+lemma prod_preimage_of_bij (f : ι → κ) (s : Finset κ) (hf : Set.BijOn f (f ⁻¹' ↑s) ↑s) (g : κ → β)
+    : ∏ x ∈ s.preimage f hf.injOn, g (f x) = ∏ x ∈ s, g x :=
   prod_preimage _ _ hf.injOn g fun _ hs h_f ↦ (h_f <| hf.subset_range hs).elim
 
 end Finset

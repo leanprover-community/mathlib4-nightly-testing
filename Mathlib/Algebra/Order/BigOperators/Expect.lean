@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.BigOperators.Expect
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Algebra.Order.Module.Rat
-
 import Mathlib.Algebra.Module.Rat
 import Mathlib.Algebra.Module.Torsion.Field
 import Mathlib.Algebra.Order.Module.Field
@@ -29,15 +28,16 @@ local notation a " /ℚ " q => (q : ℚ≥0)⁻¹ • a
 
 namespace Finset
 section OrderedAddCommMonoid
-variable [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α] [Module ℚ≥0 α]
+variable
+  [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α] [Module ℚ≥0 α]
   {s : Finset ι} {f g : ι → α}
 
-lemma expect_eq_zero_iff_of_nonneg (hf : ∀ i ∈ s, 0 ≤ f i) :
-    𝔼 i ∈ s, f i = 0 ↔ ∀ i ∈ s, f i = 0 := by
+lemma expect_eq_zero_iff_of_nonneg (hf : ∀ i ∈ s, 0 ≤ f i)
+    : 𝔼 i ∈ s, f i = 0 ↔ ∀ i ∈ s, f i = 0 := by
   simp +contextual [expect, sum_eq_zero_iff_of_nonneg hf]
 
-lemma expect_eq_zero_iff_of_nonpos (hf : ∀ i ∈ s, f i ≤ 0) :
-    𝔼 i ∈ s, f i = 0 ↔ ∀ i ∈ s, f i = 0 := by
+lemma expect_eq_zero_iff_of_nonpos (hf : ∀ i ∈ s, f i ≤ 0)
+    : 𝔼 i ∈ s, f i = 0 ↔ ∀ i ∈ s, f i = 0 := by
   simp +contextual [expect, sum_eq_zero_iff_of_nonpos hf]
 
 section PosSMulMono
@@ -61,68 +61,84 @@ lemma expect_nonneg (hf : ∀ i ∈ s, 0 ≤ f i) : 0 ≤ 𝔼 i ∈ s, f i :=
 end PosSMulMono
 
 section PosSMulMono
-variable {M N : Type*} [AddCommMonoid M] [Module ℚ≥0 M]
-  [AddCommMonoid N] [PartialOrder N] [IsOrderedAddMonoid N] [Module ℚ≥0 N]
-  [PosSMulMono ℚ≥0 N] {m : M → N} {p : M → Prop} {f : ι → M} {s : Finset ι}
+variable
+  {M N : Type*} [AddCommMonoid M] [Module ℚ≥0 M] [AddCommMonoid N] [PartialOrder N]
+  [IsOrderedAddMonoid N] [Module ℚ≥0 N] [PosSMulMono ℚ≥0 N]
+  {m : M → N} {p : M → Prop} {f : ι → M} {s : Finset ι}
 
-/-- Let `{a | p a}` be an additive subsemigroup of an additive commutative monoid `M`. If `m` is a
+/--
+Let `{a | p a}` be an additive subsemigroup of an additive commutative monoid `M`. If `m` is a
 subadditive function (`m (a + b) ≤ m a + m b`) preserved under division by a natural, `f` is a
 function valued in that subsemigroup and `s` is a nonempty set, then
-`m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`. -/
-lemma le_expect_nonempty_of_subadditive_on_pred (h_add : ∀ a b, p a → p b → m (a + b) ≤ m a + m b)
-    (hp_add : ∀ a b, p a → p b → p (a + b)) (h_div : ∀ (n : ℕ) a, p a → m (a /ℚ n) = m a /ℚ n)
-    (hs_nonempty : s.Nonempty) (hs : ∀ i ∈ s, p (f i)) :
-    m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) := by
-  simp only [expect, h_div _ _ (sum_induction_nonempty _ _ hp_add hs_nonempty hs)]
-  exact smul_le_smul_of_nonneg_left
-    (le_sum_nonempty_of_subadditive_on_pred _ _ h_add hp_add _ _ hs_nonempty hs) <| by positivity
-
-/-- If `m : M → N` is a subadditive function (`m (a + b) ≤ m a + m b`) and `s` is a nonempty set,
-then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`. -/
-lemma le_expect_nonempty_of_subadditive (m : M → N) (h_mul : ∀ a b, m (a + b) ≤ m a + m b)
-    (h_div : ∀ (n : ℕ) a, m (a /ℚ n) = m a /ℚ n) (hs : s.Nonempty) :
-    m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) :=
-  le_expect_nonempty_of_subadditive_on_pred (p := fun _ ↦ True) (by simpa) (by simp) (by simpa) hs
-    (by simp)
-
-/-- Let `{a | p a}` be a subsemigroup of a commutative monoid `M`. If `m` is a subadditive function
-(`m (x + y) ≤ m x + m y`, `m 0 = 0`) preserved under division by a natural and `f` is a function
-valued in that subsemigroup, then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`. -/
-lemma le_expect_of_subadditive_on_pred (h_zero : m 0 = 0)
+`m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`.
+-/
+lemma le_expect_nonempty_of_subadditive_on_pred
     (h_add : ∀ a b, p a → p b → m (a + b) ≤ m a + m b) (hp_add : ∀ a b, p a → p b → p (a + b))
-    (h_div : ∀ (n : ℕ) a, p a → m (a /ℚ n) = m a /ℚ n)
-    (hs : ∀ i ∈ s, p (f i)) : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) := by
+    (h_div : ∀ (n : ℕ) a, p a → m (a /ℚ n) = m a /ℚ n) (hs_nonempty : s.Nonempty)
+    (hs : ∀ i ∈ s, p (f i))
+    : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) := by
+  simp only [expect, h_div _ _ (sum_induction_nonempty _ _ hp_add hs_nonempty hs)]
+  exact smul_le_smul_of_nonneg_left (le_sum_nonempty_of_subadditive_on_pred _ _ h_add hp_add _ _
+      hs_nonempty hs) <|
+    by positivity
+
+/--
+If `m : M → N` is a subadditive function (`m (a + b) ≤ m a + m b`) and `s` is a nonempty set,
+then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`.
+-/
+lemma le_expect_nonempty_of_subadditive
+    (m : M → N) (h_mul : ∀ a b, m (a + b) ≤ m a + m b) (h_div : ∀ (n : ℕ) a, m (a /ℚ n) = m a /ℚ n)
+    (hs : s.Nonempty)
+    : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) :=
+  le_expect_nonempty_of_subadditive_on_pred
+    (p := fun _ ↦ True)
+    (by simpa) (by simp) (by simpa) hs (by simp)
+
+/--
+Let `{a | p a}` be a subsemigroup of a commutative monoid `M`. If `m` is a subadditive function
+(`m (x + y) ≤ m x + m y`, `m 0 = 0`) preserved under division by a natural and `f` is a function
+valued in that subsemigroup, then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`.
+-/
+lemma le_expect_of_subadditive_on_pred
+    (h_zero : m 0 = 0) (h_add : ∀ a b, p a → p b → m (a + b) ≤ m a + m b)
+    (hp_add : ∀ a b, p a → p b → p (a + b)) (h_div : ∀ (n : ℕ) a, p a → m (a /ℚ n) = m a /ℚ n)
+    (hs : ∀ i ∈ s, p (f i))
+    : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) := by
   obtain rfl | hs_nonempty := s.eq_empty_or_nonempty
   · simp [h_zero]
   · exact le_expect_nonempty_of_subadditive_on_pred h_add hp_add h_div hs_nonempty hs
 
 -- TODO: Contribute back better docstring to `le_prod_of_submultiplicative`
-/-- If `m` is a subadditive function (`m (x + y) ≤ m x + m y`, `m 0 = 0`) preserved under division
-by a natural, then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`. -/
-lemma le_expect_of_subadditive (h_zero : m 0 = 0) (h_add : ∀ a b, m (a + b) ≤ m a + m b)
-    (h_div : ∀ (n : ℕ) a, m (a /ℚ n) = m a /ℚ n) : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) :=
-  le_expect_of_subadditive_on_pred (p := fun _ ↦ True) h_zero (by simpa) (by simp) (by simpa)
-    (by simp)
+/--
+If `m` is a subadditive function (`m (x + y) ≤ m x + m y`, `m 0 = 0`) preserved under division
+by a natural, then `m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i)`.
+-/
+lemma le_expect_of_subadditive
+    (h_zero : m 0 = 0) (h_add : ∀ a b, m (a + b) ≤ m a + m b)
+    (h_div : ∀ (n : ℕ) a, m (a /ℚ n) = m a /ℚ n)
+    : m (𝔼 i ∈ s, f i) ≤ 𝔼 i ∈ s, m (f i) :=
+  le_expect_of_subadditive_on_pred (p := fun _ ↦ True) h_zero (by simpa) (by simp) (by simpa) (by
+    simp)
 
 end PosSMulMono
 end OrderedAddCommMonoid
 
 section OrderedCancelAddCommMonoid
-variable [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α] [Module ℚ≥0 α]
-  [PosSMulStrictMono ℚ≥0 α] {s : Finset ι} {f g : ι → α} {a : α}
+variable
+  [AddCommMonoid α] [PartialOrder α] [IsOrderedCancelAddMonoid α] [Module ℚ≥0 α]
+  [PosSMulStrictMono ℚ≥0 α]
+  {s : Finset ι} {f g : ι → α} {a : α}
 
-lemma expect_lt_expect (hfg : ∀ i ∈ s, f i ≤ g i) (hfg' : ∃ i ∈ s, f i < g i) :
-    𝔼 i ∈ s, f i < 𝔼 i ∈ s, g i :=
+lemma expect_lt_expect (hfg : ∀ i ∈ s, f i ≤ g i) (hfg' : ∃ i ∈ s, f i < g i)
+    : 𝔼 i ∈ s, f i < 𝔼 i ∈ s, g i :=
   smul_lt_smul_of_pos_left (sum_lt_sum hfg hfg')
     (by obtain ⟨i, hi, -⟩ := hfg'; have : s.Nonempty := ⟨i, hi⟩; simpa)
 
-lemma expect_lt (hle : ∀ x ∈ s, f x ≤ a) (hlt : ∃ x ∈ s, f x < a) :
-    𝔼 i ∈ s, f i < a := by
+lemma expect_lt (hle : ∀ x ∈ s, f x ≤ a) (hlt : ∃ x ∈ s, f x < a) : 𝔼 i ∈ s, f i < a := by
   rw [← expect_const (hlt.imp (fun _ => And.left)) a]
   exact expect_lt_expect hle hlt
 
-lemma lt_expect (hle : ∀ x ∈ s, a ≤ f x) (hlt : ∃ x ∈ s, a < f x) :
-    a < 𝔼 i ∈ s, f i := by
+lemma lt_expect (hle : ∀ x ∈ s, a ≤ f x) (hlt : ∃ x ∈ s, a < f x) : a < 𝔼 i ∈ s, f i := by
   rw [← expect_const (hlt.imp (fun _ => And.left)) a]
   exact expect_lt_expect hle hlt
 
@@ -135,12 +151,11 @@ lemma expect_pos (hf : ∀ i ∈ s, 0 < f i) (hs : s.Nonempty) : 0 < 𝔼 i ∈ 
 end OrderedCancelAddCommMonoid
 
 section LinearOrderedAddCommMonoid
-variable [AddCommMonoid α] [LinearOrder α] [IsOrderedAddMonoid α] [Module ℚ≥0 α]
-  [PosSMulMono ℚ≥0 α] {s : Finset ι}
-  {f g : ι → α} {a : α}
+variable
+  [AddCommMonoid α] [LinearOrder α] [IsOrderedAddMonoid α] [Module ℚ≥0 α] [PosSMulMono ℚ≥0 α]
+  {s : Finset ι} {f g : ι → α} {a : α}
 
-lemma exists_lt_of_expect_lt_expect (h : 𝔼 i ∈ s, g i < 𝔼 i ∈ s, f i) :
-    ∃ x ∈ s, g x < f x := by
+lemma exists_lt_of_expect_lt_expect (h : 𝔼 i ∈ s, g i < 𝔼 i ∈ s, f i) : ∃ x ∈ s, g x < f x := by
   contrapose! h; exact expect_le_expect h
 
 lemma exists_lt_of_lt_expect (hs : s.Nonempty) (h : a < 𝔼 i ∈ s, f i) : ∃ x ∈ s, a < f x := by
@@ -152,11 +167,12 @@ lemma exists_lt_of_expect_lt (hs : s.Nonempty) (h : 𝔼 i ∈ s, f i < a) : ∃
 end LinearOrderedAddCommMonoid
 
 section LinearOrderedCancelAddMonoid
-variable [AddCommMonoid α] [LinearOrder α] [IsOrderedCancelAddMonoid α] [Module ℚ≥0 α]
+variable
+  [AddCommMonoid α] [LinearOrder α] [IsOrderedCancelAddMonoid α] [Module ℚ≥0 α]
   {a : α} {s : Finset ι} {f g : ι → α}
 
-lemma exists_le_of_expect_le_expect (hs : s.Nonempty) (h : 𝔼 i ∈ s, g i ≤ 𝔼 i ∈ s, f i) :
-    ∃ x ∈ s, g x ≤ f x :=
+lemma exists_le_of_expect_le_expect (hs : s.Nonempty) (h : 𝔼 i ∈ s, g i ≤ 𝔼 i ∈ s, f i)
+    : ∃ x ∈ s, g x ≤ f x :=
   exists_le_of_sum_le hs <| by rw [← card_smul_expect, ← card_smul_expect]; gcongr
 
 lemma exists_le_of_le_expect (hs : s.Nonempty) (h : a ≤ 𝔼 i ∈ s, f i) : ∃ x ∈ s, a ≤ f x :=
@@ -176,12 +192,13 @@ lemma abs_expect_le (s : Finset ι) (f : ι → α) : |𝔼 i ∈ s, f i| ≤ �
 end LinearOrderedAddCommGroup
 
 section LinearOrderedCommSemiring
-variable [CommSemiring R] [LinearOrder R] [IsStrictOrderedRing R] [ExistsAddOfLE R] [Module ℚ≥0 R]
+variable
+  [CommSemiring R] [LinearOrder R] [IsStrictOrderedRing R] [ExistsAddOfLE R] [Module ℚ≥0 R]
   [PosSMulMono ℚ≥0 R]
 
 /-- **Cauchy-Schwarz inequality** in terms of `Finset.expect`. -/
-lemma expect_mul_sq_le_sq_mul_sq (s : Finset ι) (f g : ι → R) :
-    (𝔼 i ∈ s, f i * g i) ^ 2 ≤ (𝔼 i ∈ s, f i ^ 2) * 𝔼 i ∈ s, g i ^ 2 := by
+lemma expect_mul_sq_le_sq_mul_sq (s : Finset ι) (f g : ι → R)
+    : (𝔼 i ∈ s, f i * g i) ^ 2 ≤ (𝔼 i ∈ s, f i ^ 2) * 𝔼 i ∈ s, g i ^ 2 := by
   simp only [expect, smul_pow, inv_pow, smul_mul_smul_comm, ← sq]
   gcongr
   exact sum_mul_sq_le_sq_mul_sq ..
@@ -217,35 +234,44 @@ open scoped BigOperators
 attribute [local instance] monadLiftOptionMetaM in
 /-- Positivity extension for `Finset.expect`. -/
 @[positivity Finset.expect _ _]
-meta def evalFinsetExpect : PositivityExt where eval {u α} zα pα? e :=
-  match pα? with | none => pure .none | some pα => do
-  match e with
-  | ~q(@Finset.expect $ι _ $instα $instmod $s $f) =>
-    let i : Q($ι) ← mkFreshExprMVarQ q($ι) .syntheticOpaque
-    have body : Q($α) := .betaRev f #[i]
-    let rbody ← core zα pα body
-    let p_pos : Option Q(0 < $e) ← do
-      let .positive pbody := rbody | pure none -- Fail if the body is not provably positive
-      let some ps ← proveFinsetNonempty s | pure none
-      let .some pα' ← trySynthInstanceQ q(IsOrderedCancelAddMonoid $α) | pure none
-      let .some instαordsmul ← trySynthInstanceQ q(PosSMulStrictMono ℚ≥0 $α) | pure none
-      assumeInstancesCommute
-      let pr : Q(∀ i, 0 < $f i) ← mkLambdaFVars #[i] pbody
-      pure <| some
-        q(@expect_pos $ι $α $instα $pα $pα' $instmod $instαordsmul $s $f (fun i _ ↦ $pr i) $ps)
-    -- Try to show that the sum is positive
-    if let some p_pos := p_pos then
-      return .positive p_pos
-    -- Fall back to showing that the sum is nonnegative
-    else
-      let pbody ← rbody.toNonneg
-      let pr : Q(∀ i, 0 ≤ $f i) ← mkLambdaFVars #[i] pbody
-      let instαordmon ← synthInstanceQ q(IsOrderedAddMonoid $α)
-      let instαordsmul ← synthInstanceQ q(PosSMulMono ℚ≥0 $α)
-      assumeInstancesCommute
-      return .nonnegative
-        q(@expect_nonneg $ι $α $instα $pα $instαordmon $instmod $s $f $instαordsmul fun i _ ↦ $pr i)
-  | _ => throwError "not Finset.expect"
+meta def evalFinsetExpect : PositivityExt where
+  eval {u α} zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some pα => do
+      match e with
+      | ~q(@Finset.expect $ι _ $instα $instmod $s $f) =>
+        let i : Q($ι) ← mkFreshExprMVarQ (q($ι)) .syntheticOpaque
+        have body : Q($α) := .betaRev f #[i]
+        let rbody ← core zα pα body
+        let p_pos : Option Q(0 < $e) ← do
+          let .positive pbody := rbody
+            | pure none -- Fail if the body is not provably positive
+          let some ps ← proveFinsetNonempty s
+            | pure none
+          let .some pα' ← trySynthInstanceQ q(IsOrderedCancelAddMonoid $α)
+            | pure none
+          let .some instαordsmul ← trySynthInstanceQ q(PosSMulStrictMono ℚ≥0 $α)
+            | pure none
+          assumeInstancesCommute
+          let pr : Q(∀ i, 0 < $f i) ← mkLambdaFVars #[i] pbody
+          pure <| some
+            q(@expect_pos $ι $α $instα $pα $pα' $instmod $instαordsmul $s $f (fun i _ ↦ $pr i) $ps)
+        -- Try to show that the sum is positive
+        if let some p_pos := p_pos then
+          return .positive p_pos
+        -- Fall back to showing that the sum is nonnegative
+        else
+          let pbody ← rbody.toNonneg
+          let pr : Q(∀ i, 0 ≤ $f i) ← mkLambdaFVars #[i] pbody
+          let instαordmon ← synthInstanceQ q(IsOrderedAddMonoid $α)
+          let instαordsmul ← synthInstanceQ q(PosSMulMono ℚ≥0 $α)
+          assumeInstancesCommute
+          return .nonnegative
+            q(@expect_nonneg $ι $α $instα $pα $instαordmon $instmod $s $f $instαordsmul fun i _ ↦ $pr i)
+      | _ =>
+        throwError "not Finset.expect"
 
 example (n : ℕ) (a : ℕ → ℚ) : 0 ≤ 𝔼 j ∈ range n, a j ^ 2 := by positivity
 example (a : ULift.{2} ℕ → ℚ) (s : Finset (ULift.{2} ℕ)) : 0 ≤ 𝔼 j ∈ s, a j ^ 2 := by positivity

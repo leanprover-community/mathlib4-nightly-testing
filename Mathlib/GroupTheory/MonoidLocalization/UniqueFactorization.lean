@@ -25,8 +25,9 @@ namespace Submonoid.LocalizationMap
 
 variable [CommMonoidWithZero M] [CommMonoidWithZero N] {S : Submonoid M}
 
-theorem map_prime (f : S.LocalizationMap N) {m : M} (prime : Prime m)
-    (n0 : f m ≠ 0) (nu : ¬ IsUnit (f m)) : Prime (f m) := by
+theorem map_prime
+    (f : S.LocalizationMap N) {m : M} (prime : Prime m) (n0 : f m ≠ 0) (nu : ¬ IsUnit (f m))
+    : Prime (f m) := by
   refine ⟨n0, nu, fun n₁ n₂ dvd ↦ ?_⟩
   have ⟨⟨m₁, s₁⟩, eq₁⟩ := f.surj n₁
   have ⟨⟨m₂, s₂⟩, eq₂⟩ := f.surj n₂
@@ -40,11 +41,14 @@ theorem map_prime (f : S.LocalizationMap N) {m : M} (prime : Prime m)
     exact .inl this
   · rw [← eq₂, (f.map_units s₂).dvd_mul_right] at this; exact .inr this
 
-theorem eq_isUnit_map_mul_irreducible_of_irreducible_map [WfDvdMonoid M] (f : S.LocalizationMap N)
-    {m : M} (hm : Irreducible (f m)) : ∃ u m' : M, IsUnit (f u) ∧ Irreducible m' ∧ m = u * m' := by
+theorem eq_isUnit_map_mul_irreducible_of_irreducible_map
+    [WfDvdMonoid M] (f : S.LocalizationMap N) {m : M} (hm : Irreducible (f m))
+    : ∃ u m' : M, IsUnit (f u) ∧ Irreducible m' ∧ m = u * m' := by
   induction m using WfDvdMonoid.induction_on_irreducible with
-  | zero => exact (hm.ne_zero f.map_zero).elim
-  | unit u hu => exact (hm.not_isUnit (hu.map f)).elim
+  | zero =>
+    exact (hm.ne_zero f.map_zero).elim
+  | unit u hu =>
+    exact (hm.not_isUnit (hu.map f)).elim
   | mul a i ha0 hi ha =>
     rw [map_mul, irreducible_mul_iff] at hm
     obtain hia | hai := hm
@@ -53,8 +57,8 @@ theorem eq_isUnit_map_mul_irreducible_of_irreducible_map [WfDvdMonoid M] (f : S.
       exact ⟨u * i, m', by simpa using hu.mul hai.2, hm', by ac_rfl⟩
 
 open UniqueFactorizationMonoid in
-theorem uniqueFactorizationMonoid (f : S.LocalizationMap N)
-    [UniqueFactorizationMonoid M] : UniqueFactorizationMonoid N :=
+theorem uniqueFactorizationMonoid (f : S.LocalizationMap N) [UniqueFactorizationMonoid M]
+    : UniqueFactorizationMonoid N :=
   have := f.isCancelMulZero
   .of_exists_prime_factors fun n hn ↦ by
     classical
@@ -66,9 +70,12 @@ theorem uniqueFactorizationMonoid (f : S.LocalizationMap N)
       obtain ⟨p, hp, rfl⟩ := hx.1
       exact f.map_prime (prime_of_factor _ hp)
         (mt (fun h ↦ eq_zero_of_zero_dvd <| h ▸ map_dvd f (dvd_of_mem_factors hp)) hn) hx.2
-    · exact .trans (.trans (associated_unit_mul_right _ _ <|
-        IsUnit.multisetProd_iff.mpr fun x hx ↦ (Multiset.mem_filter.mp hx).2) <| .of_eq <|
-        (Multiset.prod_filter_mul_prod_filter_not _).trans (f.toMonoidHom.map_multiset_prod _).symm)
+    · exact .trans
+        (.trans (associated_unit_mul_right _ _ <|
+            IsUnit.multisetProd_iff.mpr fun x hx ↦ (Multiset.mem_filter.mp hx).2) <|
+          .of_eq <|
+            (Multiset.prod_filter_mul_prod_filter_not _).trans
+              (f.toMonoidHom.map_multiset_prod _).symm)
         ((factors_prod (mt (by simp [·]) hn)).map f)
 
 end Submonoid.LocalizationMap
@@ -76,8 +83,9 @@ end Submonoid.LocalizationMap
 variable [CommSemiring M] (S : Submonoid M)
 
 /-- A localization of a unique factorization monoid is still a unique factorization monoid. -/
-theorem UniqueFactorizationMonoid.of_isLocalization (N : Type*) [CommSemiring N] [Algebra M N]
-    [IsLocalization S N] [UniqueFactorizationMonoid M] : UniqueFactorizationMonoid N :=
+theorem UniqueFactorizationMonoid.of_isLocalization
+    (N : Type*) [CommSemiring N] [Algebra M N] [IsLocalization S N] [UniqueFactorizationMonoid M]
+    : UniqueFactorizationMonoid N :=
   (IsLocalization.toLocalizationMap S N).uniqueFactorizationMonoid
 
 instance [UniqueFactorizationMonoid M] : UniqueFactorizationMonoid (Localization S) :=

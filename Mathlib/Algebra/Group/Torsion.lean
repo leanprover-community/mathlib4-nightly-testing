@@ -66,8 +66,7 @@ section HasUniqueRoots
 variable [HasUniqueRoots M] {n : ℕ} {a b : M}
 
 @[to_additive nsmul_right_inj]
-lemma pow_left_inj (hn : n ≠ 0) : a ^ n = b ^ n ↔ a = b :=
-  (pow_left_injective hn).eq_iff
+lemma pow_left_inj (hn : n ≠ 0) : a ^ n = b ^ n ↔ a = b := (pow_left_injective hn).eq_iff
 
 end HasUniqueRoots
 
@@ -81,8 +80,8 @@ section IsMulTorsionFree
 variable [IsMulTorsionFree G]
 
 @[to_additive]
-lemma Commute.eq_of_zpow_eq_zpow (hab : Commute a b) (hn : n ≠ 0) (habn : a ^ n = b ^ n) :
-    a = b := by
+lemma Commute.eq_of_zpow_eq_zpow (hab : Commute a b) (hn : n ≠ 0) (habn : a ^ n = b ^ n)
+    : a = b := by
   cases n
   · exact hab.eq_of_pow_eq_pow (by simpa using hn) (by simpa using habn)
   · exact hab.eq_of_pow_eq_pow (Nat.add_one_ne_zero _) (by simpa using habn)
@@ -125,8 +124,7 @@ lemma zpow_left_injective (hn : n ≠ 0) : Injective fun a : G ↦ a ^ n := by
     exact inv_injective.comp (pow_left_injective (Nat.add_one_ne_zero _))
 
 @[to_additive zsmul_right_inj]
-lemma zpow_left_inj (hn : n ≠ 0) : a ^ n = b ^ n ↔ a = b :=
-  (zpow_left_injective hn).eq_iff
+lemma zpow_left_inj (hn : n ≠ 0) : a ^ n = b ^ n ↔ a = b := (zpow_left_injective hn).eq_iff
 
 @[to_additive (attr := deprecated (since := "2026-09-30"))] alias zpow_eq_zpow_iff' := zpow_left_inj
 

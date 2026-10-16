@@ -69,7 +69,8 @@ namespace GenContFract
 -- Fix a carrier `K`.
 variable (K : Type*)
 
-/-- We collect an integer part `b = ⌊v⌋` and fractional part `fr = v - ⌊v⌋` of a value `v` in a pair
+/--
+We collect an integer part `b = ⌊v⌋` and fractional part `fr = v - ⌊v⌋` of a value `v` in a pair
 `⟨b, fr⟩`.
 -/
 structure IntFractPair where
@@ -80,40 +81,34 @@ variable {K}
 
 /-! Interlude: define some expected coercions and instances. -/
 
-
 namespace IntFractPair
 
 /-- Make an `IntFractPair` printable. -/
 instance [Repr K] : Repr (IntFractPair K) :=
   ⟨fun p _ => "(b : " ++ repr p.b ++ ", fract : " ++ repr p.fr ++ ")"⟩
 
-instance inhabited [Inhabited K] : Inhabited (IntFractPair K) :=
-  ⟨⟨0, default⟩⟩
+instance inhabited [Inhabited K] : Inhabited (IntFractPair K) := ⟨⟨0, default⟩⟩
 
-/-- Maps a function `f` on the fractional components of a given pair.
--/
-def mapFr {β : Type*} (f : K → β) (gp : IntFractPair K) : IntFractPair β :=
-  ⟨gp.b, f gp.fr⟩
+/-- Maps a function `f` on the fractional components of a given pair. -/
+def mapFr {β : Type*} (f : K → β) (gp : IntFractPair K) : IntFractPair β := ⟨gp.b, f gp.fr⟩
 
 section coe
 
 /-! Interlude: define some expected coercions. -/
 
-
 -- Fix another type `β` which we will convert to.
 variable {β : Type*} [Coe K β]
 
 /-- The coercion between integer-fraction pairs happens componentwise. -/
-@[coe]
-def coeFn : IntFractPair K → IntFractPair β := mapFr (↑)
+@[coe] def coeFn : IntFractPair K → IntFractPair β := mapFr (↑)
 
 /-- Coerce a pair by coercing the fractional component. -/
 instance coe : Coe (IntFractPair K) (IntFractPair β) where
   coe := coeFn
 
 @[simp, norm_cast]
-theorem coe_to_intFractPair {b : ℤ} {fr : K} :
-    (↑(IntFractPair.mk b fr) : IntFractPair β) = IntFractPair.mk b (↑fr : β) :=
+theorem coe_to_intFractPair {b : ℤ} {fr : K}
+    : (↑(IntFractPair.mk b fr) : IntFractPair β) = IntFractPair.mk b (↑fr : β) :=
   rfl
 
 end coe
@@ -122,10 +117,10 @@ end coe
 variable [DivisionRing K] [LinearOrder K] [FloorRing K]
 
 /-- Creates the integer and fractional part of a value `v`, i.e. `⟨⌊v⌋, v - ⌊v⌋⟩`. -/
-protected def of (v : K) : IntFractPair K :=
-  ⟨⌊v⌋, Int.fract v⟩
+protected def of (v : K) : IntFractPair K := ⟨⌊v⌋, Int.fract v⟩
 
-/-- Creates the stream of integer and fractional parts of a value `v` needed to obtain the continued
+/--
+Creates the stream of integer and fractional parts of a value `v` needed to obtain the continued
 fraction representation of `v` in `GenContFract.of`. More precisely, given a value `v : K`, it
 recursively computes a stream of option `ℤ × K` pairs as follows:
 - `stream v 0 = some ⟨⌊v⌋, v - ⌊v⌋⟩`
@@ -140,12 +135,14 @@ For example, let `(v : ℚ) := 3.4`. The process goes as follows:
 - `stream v n = none`, for `n ≥ 3`
 -/
 protected def stream (v : K) : Stream' <| Option (IntFractPair K)
-  | 0 => some (IntFractPair.of v)
+  | 0 =>
+    some (IntFractPair.of v)
   | n + 1 =>
     (IntFractPair.stream v n).bind fun ap_n =>
       if ap_n.fr = 0 then none else some (IntFractPair.of ap_n.fr⁻¹)
 
-/-- Shows that `IntFractPair.stream` has the sequence property, that is once we return `none` at
+/--
+Shows that `IntFractPair.stream` has the sequence property, that is once we return `none` at
 position `n`, we also return `none` at `n + 1`.
 -/
 theorem stream_isSeq (v : K) : (IntFractPair.stream v).IsSeq := by
@@ -161,17 +158,21 @@ This is just an intermediate representation and users should not (need to) direc
 it. The setup of rewriting/simplification lemmas that make the definitions easy to use is done in
 `Mathlib/Algebra/ContinuedFractions/Computation/Translations.lean`.
 -/
-protected def seq1 (v : K) : Stream'.Seq1 <| IntFractPair K :=
-  ⟨IntFractPair.of v, -- the head
-    -- take the tail of `IntFractPair.stream` since the first element is already in the head
-    Stream'.Seq.tail
-      -- create a sequence from `IntFractPair.stream`
-      ⟨IntFractPair.stream v, -- the underlying stream
-        stream_isSeq v⟩⟩ -- the proof that the stream is a sequence
+protected def seq1 (v : K) : Stream'.Seq1 <| IntFractPair K := ⟨
+  IntFractPair.of v, -- the head
+  -- take the tail of `IntFractPair.stream` since the first element is already in the head
+  Stream'.Seq.tail
+    -- create a sequence from `IntFractPair.stream`
+    ⟨
+      IntFractPair.stream v, -- the underlying stream
+      stream_isSeq v
+    ⟩
+⟩ -- the proof that the stream is a sequence
 
 end IntFractPair
 
-/-- Returns the `GenContFract` of a value. In fact, the returned gcf is also a `ContFract` that
+/--
+Returns the `GenContFract` of a value. In fact, the returned gcf is also a `ContFract` that
 terminates if and only if `v` is rational
 (see `Mathlib/Algebra/ContinuedFractions/Computation/TerminatesIffRat.lean`).
 
@@ -184,8 +185,10 @@ fraction. Refer to said function for more details about the computation process.
 -/
 protected def of [DivisionRing K] [LinearOrder K] [FloorRing K] (v : K) : GenContFract K :=
   let ⟨h, s⟩ := IntFractPair.seq1 v -- get the sequence of integer and fractional parts.
-  ⟨h.b, -- the head is just the first integer part
-    s.map fun p => ⟨1, p.b⟩⟩ -- the sequence consists of the remaining integer parts as the partial
-                            -- denominators; all partial numerators are simply 1
+  ⟨
+    h.b, -- the head is just the first integer part
+    s.map fun p => ⟨1, p.b⟩
+  ⟩ -- the sequence consists of the remaining integer parts as the partial
+-- denominators; all partial numerators are simply 1
 
 end GenContFract

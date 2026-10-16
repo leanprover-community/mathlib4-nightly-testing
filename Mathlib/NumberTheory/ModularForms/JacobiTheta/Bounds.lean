@@ -45,8 +45,8 @@ namespace HurwitzKernelBounds
 
 section lemmas
 
-lemma isBigO_exp_neg_mul_of_le {c d : ℝ} (hcd : c ≤ d) :
-    (fun t ↦ exp (-d * t)) =O[atTop] fun t ↦ exp (-c * t) := by
+lemma isBigO_exp_neg_mul_of_le {c d : ℝ} (hcd : c ≤ d)
+    : (fun t ↦ exp (-d * t)) =O[atTop] fun t ↦ exp (-c * t) := by
   apply Eventually.isBigO
   filter_upwards [eventually_gt_atTop 0] with t ht
   rw [norm_of_nonneg (exp_pos _).le]
@@ -55,14 +55,13 @@ lemma isBigO_exp_neg_mul_of_le {c d : ℝ} (hcd : c ≤ d) :
 private lemma exp_lt_aux {t : ℝ} (ht : 0 < t) : rexp (-π * t) < 1 := by
   simpa only [exp_lt_one_iff, neg_mul, neg_lt_zero] using mul_pos pi_pos ht
 
-private lemma isBigO_one_aux :
-    IsBigO atTop (fun t : ℝ ↦ (1 - rexp (-π * t))⁻¹) (fun _ ↦ (1 : ℝ)) := by
+private lemma isBigO_one_aux
+    : IsBigO atTop (fun t : ℝ ↦ (1 - rexp (-π * t))⁻¹) (fun _ ↦ (1 : ℝ)) := by
   refine ((Tendsto.const_sub _ ?_).inv₀ (by simp)).isBigO_one ℝ (c := ((1 - 0)⁻¹ : ℝ))
-  simpa only [neg_mul, tendsto_exp_comp_nhds_zero, tendsto_neg_atBot_iff]
-    using! tendsto_id.const_mul_atTop pi_pos
+  simpa only [neg_mul, tendsto_exp_comp_nhds_zero, tendsto_neg_atBot_iff] using!
+    tendsto_id.const_mul_atTop pi_pos
 
 end lemmas
-
 
 section nat
 
@@ -72,8 +71,8 @@ def f_nat (k : ℕ) (a t : ℝ) (n : ℕ) : ℝ := (n + a) ^ k * exp (-π * (n +
 /-- An upper bound for the summand when `0 ≤ a`. -/
 def g_nat (k : ℕ) (a t : ℝ) (n : ℕ) : ℝ := (n + a) ^ k * exp (-π * (n + a ^ 2) * t)
 
-lemma f_le_g_nat (k : ℕ) {a t : ℝ} (ha : 0 ≤ a) (ht : 0 < t) (n : ℕ) :
-    ‖f_nat k a t n‖ ≤ g_nat k a t n := by
+lemma f_le_g_nat (k : ℕ) {a t : ℝ} (ha : 0 ≤ a) (ht : 0 < t) (n : ℕ)
+    : ‖f_nat k a t n‖ ≤ g_nat k a t n := by
   rw [f_nat, norm_of_nonneg (by positivity), g_nat]
   simp only [neg_mul, add_sq]
   gcongr
@@ -87,13 +86,16 @@ def F_nat (k : ℕ) (a t : ℝ) : ℝ := ∑' n, f_nat k a t n
 lemma summable_f_nat (k : ℕ) (a : ℝ) {t : ℝ} (ht : 0 < t) : Summable (f_nat k a t) := by
   have : Summable fun n : ℕ ↦ n ^ k * exp (-π * (n + a) ^ 2 * t) := by
     refine (((summable_pow_mul_jacobiTheta₂_term_bound (|a| * t) ht k).mul_right
-      (rexp (-π * a ^ 2 * t))).comp_injective Nat.cast_injective).of_norm_bounded (fun n ↦ ?_)
+          (rexp (-π * a ^ 2 * t))).comp_injective
+        Nat.cast_injective).of_norm_bounded
+      (fun n ↦ ?_)
     simp_rw [mul_assoc, Function.comp_apply, ← Real.exp_add, norm_mul, norm_pow, Int.cast_abs,
       Int.cast_natCast, norm_eq_abs, Nat.abs_cast, abs_exp]
     gcongr
     rw [← sub_nonneg]
     rw [show -π * (t * n ^ 2 - 2 * (|a| * (t * n))) + -π * (a ^ 2 * t) - -π * ((n + a) ^ 2 * t)
-         = π * t * n * (|a| + a) * 2 by ring]
+        = π * t * n * (|a| + a) * 2 by
+      ring]
     refine mul_nonneg (mul_nonneg (by positivity) ?_) two_pos.le
     rw [← neg_le_iff_add_nonneg]
     apply neg_le_abs
@@ -112,8 +114,8 @@ section k_eq_zero
 Here we use direct comparison with a geometric series.
 -/
 
-lemma F_nat_zero_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
-    ‖F_nat 0 a t‖ ≤ rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t)) := by
+lemma F_nat_zero_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t)
+    : ‖F_nat 0 a t‖ ≤ rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t)) := by
   refine tsum_of_norm_bounded ?_ (f_le_g_nat 0 ha ht)
   convert! (hasSum_geometric_of_lt_one (exp_pos _).le <| exp_lt_aux ht).mul_left _ using 1
   ext1 n
@@ -121,16 +123,17 @@ lemma F_nat_zero_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
   rw [← Real.exp_nat_mul, ← Real.exp_add]
   ring_nf
 
-lemma F_nat_zero_zero_sub_le {t : ℝ} (ht : 0 < t) :
-    ‖F_nat 0 0 t - 1‖ ≤ rexp (-π * t) / (1 - rexp (-π * t)) := by
+lemma F_nat_zero_zero_sub_le {t : ℝ} (ht : 0 < t)
+    : ‖F_nat 0 0 t - 1‖ ≤ rexp (-π * t) / (1 - rexp (-π * t)) := by
   convert F_nat_zero_le zero_le_one ht using 2
   · rw [F_nat, (summable_f_nat 0 0 ht).tsum_eq_zero_add, f_nat, Nat.cast_zero, add_zero, pow_zero,
       one_mul, pow_two, mul_zero, mul_zero, zero_mul, exp_zero, add_comm, add_sub_cancel_right]
     simp_rw [F_nat, f_nat, Nat.cast_add, Nat.cast_one, add_zero]
   · rw [one_pow, mul_one]
 
-lemma isBigO_atTop_F_nat_zero_sub {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
-    (fun t ↦ F_nat 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
+lemma isBigO_atTop_F_nat_zero_sub {a : ℝ} (ha : 0 ≤ a)
+    : ∃ p,
+      0 < p ∧ (fun t ↦ F_nat 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
   split_ifs with h
   · rw [h]
     have : (fun t ↦ F_nat 0 0 t - 1) =O[atTop] fun t ↦ rexp (-π * t) / (1 - rexp (-π * t)) := by
@@ -157,15 +160,15 @@ section k_eq_one
 Here we use comparison with the series `∑ n * r ^ n`, where `r = exp (-π * t)`.
 -/
 
-lemma F_nat_one_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
-    ‖F_nat 1 a t‖ ≤ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2
-      + a * rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t)) := by
+lemma F_nat_one_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t)
+    : ‖F_nat 1 a t‖
+      ≤ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2
+        + a * rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t)) := by
   refine tsum_of_norm_bounded ?_ (f_le_g_nat 1 ha ht)
   unfold g_nat
   simp_rw [pow_one, add_mul]
   apply HasSum.add
-  · have h0' : ‖rexp (-π * t)‖ < 1 := by
-      simpa only [norm_eq_abs, abs_exp] using exp_lt_aux ht
+  · have h0' : ‖rexp (-π * t)‖ < 1 := by simpa only [norm_eq_abs, abs_exp] using exp_lt_aux ht
     convert (hasSum_coe_mul_geometric_of_norm_lt_one h0').mul_left (exp (-π * a ^ 2 * t)) using 1
     · ext1 n
       rw [mul_comm (exp _), ← Real.exp_nat_mul, mul_assoc (n : ℝ), ← Real.exp_add]
@@ -176,10 +179,11 @@ lemma F_nat_one_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
     rw [← Real.exp_nat_mul, mul_assoc _ (exp _), ← Real.exp_add]
     ring_nf
 
-lemma isBigO_atTop_F_nat_one {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
-    F_nat 1 a =O[atTop] fun t ↦ exp (-p * t) := by
-  suffices ∃ p, 0 < p ∧ (fun t ↦ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2
-      + a * rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t))) =O[atTop] fun t ↦ exp (-p * t) by
+lemma isBigO_atTop_F_nat_one {a : ℝ} (ha : 0 ≤ a)
+    : ∃ p, 0 < p ∧ F_nat 1 a =O[atTop] fun t ↦ exp (-p * t) := by
+  suffices ∃ p,
+      0 < p ∧ (fun t ↦ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2
+        + a * rexp (-π * a ^ 2 * t) / (1 - rexp (-π * t))) =O[atTop] fun t ↦ exp (-p * t) by
     let ⟨p, hp, hp'⟩ := this
     refine ⟨p, hp, (Eventually.isBigO ?_).trans hp'⟩
     filter_upwards [eventually_gt_atTop 0] with t ht
@@ -187,8 +191,13 @@ lemma isBigO_atTop_F_nat_one {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
   have aux' : IsBigO atTop (fun t : ℝ ↦ ((1 - rexp (-π * t)) ^ 2)⁻¹) (fun _ ↦ (1 : ℝ)) := by
     simpa only [inv_pow, one_pow] using! isBigO_one_aux.pow 2
   rcases eq_or_lt_of_le ha with rfl | ha'
-  · exact ⟨_, pi_pos, by simpa only [zero_pow two_ne_zero, zero_add, mul_one, zero_mul, zero_div,
-      add_zero] using! (isBigO_refl _ _).mul aux'⟩
+  · exact ⟨
+      _,
+      pi_pos,
+      by
+        simpa only [zero_pow two_ne_zero, zero_add, mul_one, zero_mul, zero_div, add_zero] using!
+          (isBigO_refl _ _).mul aux'
+    ⟩
   · refine ⟨π * a ^ 2, mul_pos pi_pos <| pow_pos ha' _, IsBigO.add ?_ ?_⟩
     · conv_rhs => enter [t]; rw [← mul_one (rexp _)]
       refine (Eventually.isBigO ?_).mul aux'
@@ -208,13 +217,15 @@ section int
 /-- Summand in the sum to be bounded (`ℤ` version). -/
 def f_int (k : ℕ) (a t : ℝ) (n : ℤ) : ℝ := |n + a| ^ k * exp (-π * (n + a) ^ 2 * t)
 
-lemma f_int_ofNat (k : ℕ) {a : ℝ} (ha : 0 ≤ a) (t : ℝ) (n : ℕ) :
-    f_int k a t (Int.ofNat n) = f_nat k a t n := by
+lemma f_int_ofNat (k : ℕ) {a : ℝ} (ha : 0 ≤ a) (t : ℝ) (n : ℕ)
+    : f_int k a t (Int.ofNat n) = f_nat k a t n := by
   rw [f_int, f_nat, Int.ofNat_eq_natCast, Int.cast_natCast, abs_of_nonneg (by positivity)]
 
-lemma f_int_negSucc (k : ℕ) {a : ℝ} (ha : a ≤ 1) (t : ℝ) (n : ℕ) :
-    f_int k a t (Int.negSucc n) = f_nat k (1 - a) t n := by
-  have : (Int.negSucc n) + a = -(n + (1 - a)) := by { push_cast; ring }
+lemma f_int_negSucc (k : ℕ) {a : ℝ} (ha : a ≤ 1) (t : ℝ) (n : ℕ)
+    : f_int k a t (Int.negSucc n) = f_nat k (1 - a) t n := by
+  have : (Int.negSucc n) + a = -(n + (1 - a)) := by {
+    push_cast; ring
+  }
   rw [f_int, f_nat, this, abs_neg, neg_sq, abs_of_nonneg (by linarith)]
 
 lemma summable_f_int (k : ℕ) (a : ℝ) {t : ℝ} (ht : 0 < t) : Summable (f_int k a t) := by
@@ -227,17 +238,22 @@ lemma summable_f_int (k : ℕ) (a : ℝ) {t : ℝ} (ht : 0 < t) : Summable (f_in
   · simp only [f_int, f_nat, Int.ofNat_eq_natCast, Int.cast_natCast, norm_mul, norm_eq_abs, abs_pow,
       abs_abs]
   · simp only [f_int, f_nat, Int.cast_negSucc, norm_mul, norm_eq_abs, abs_pow, abs_abs,
-      (by { push_cast; ring } : -↑(m + 1) + a = -(m + (1 - a))), abs_neg, neg_sq]
+      (by {
+          push_cast; ring
+        }
+        : - ↑(m + 1) + a = -(m + (1 - a))),
+      abs_neg, neg_sq]
 
 /-- The sum to be bounded (`ℤ` version). -/
 def F_int (k : ℕ) (a : UnitAddCircle) (t : ℝ) : ℝ :=
   (show Function.Periodic (fun b ↦ ∑' (n : ℤ), f_int k b t n) 1 by
-    intro b
-    simp_rw [← (Equiv.addRight (1 : ℤ)).tsum_eq (f := fun n ↦ f_int k b t n)]
-    simp only [f_int, ← add_assoc, add_comm, Equiv.coe_addRight, Int.cast_add, Int.cast_one]).lift a
+      intro b
+      simp_rw [← (Equiv.addRight (1 : ℤ)).tsum_eq (f := fun n ↦ f_int k b t n)]
+      simp only [f_int, ← add_assoc, add_comm, Equiv.coe_addRight, Int.cast_add, Int.cast_one]).lift
+    a
 
-lemma F_int_eq_of_mem_Icc (k : ℕ) {a : ℝ} (ha : a ∈ Icc 0 1) {t : ℝ} (ht : 0 < t) :
-    F_int k a t = (F_nat k a t) + (F_nat k (1 - a) t) := by
+lemma F_int_eq_of_mem_Icc (k : ℕ) {a : ℝ} (ha : a ∈ Icc 0 1) {t : ℝ} (ht : 0 < t)
+    : F_int k a t = (F_nat k a t) + (F_nat k (1 - a) t) := by
   simp only [F_int, F_nat, Function.Periodic.lift_coe]
   convert!
     ((summable_f_nat k a ht).hasSum.int_rec (summable_f_nat k (1 - a) ht).hasSum).tsum_eq using
@@ -246,8 +262,9 @@ lemma F_int_eq_of_mem_Icc (k : ℕ) {a : ℝ} (ha : a ∈ Icc 0 1) {t : ℝ} (ht
   · rw [f_int_ofNat _ ha.1]
   · rw [f_int_negSucc _ ha.2]
 
-lemma isBigO_atTop_F_int_zero_sub (a : UnitAddCircle) : ∃ p, 0 < p ∧
-    (fun t ↦ F_int 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
+lemma isBigO_atTop_F_int_zero_sub (a : UnitAddCircle)
+    : ∃ p,
+      0 < p ∧ (fun t ↦ F_int 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
   obtain ⟨a, ha, rfl⟩ := a.eq_coe_Ico
   obtain ⟨p, hp, hp'⟩ := isBigO_atTop_F_nat_zero_sub ha.1
   obtain ⟨q, hq, hq'⟩ := isBigO_atTop_F_nat_zero_sub (sub_nonneg.mpr ha.2.le)
@@ -259,12 +276,11 @@ lemma isBigO_atTop_F_int_zero_sub (a : UnitAddCircle) : ∃ p, 0 < p ∧
     filter_upwards [eventually_gt_atTop 0] with t ht
     rw [F_int_eq_of_mem_Icc 0 (Ico_subset_Icc_self ha) ht]
     ring
-  refine this.isBigO.trans ((hp'.trans ?_).add (hq'.trans ?_)) <;>
-  apply isBigO_exp_neg_mul_of_le
+  refine this.isBigO.trans ((hp'.trans ?_).add (hq'.trans ?_)) <;> apply isBigO_exp_neg_mul_of_le
   exacts [min_le_left .., min_le_right ..]
 
-lemma isBigO_atTop_F_int_one (a : UnitAddCircle) : ∃ p, 0 < p ∧
-    F_int 1 a =O[atTop] fun t ↦ exp (-p * t) := by
+lemma isBigO_atTop_F_int_one (a : UnitAddCircle)
+    : ∃ p, 0 < p ∧ F_int 1 a =O[atTop] fun t ↦ exp (-p * t) := by
   obtain ⟨a, ha, rfl⟩ := a.eq_coe_Ico
   obtain ⟨p, hp, hp'⟩ := isBigO_atTop_F_nat_one ha.1
   obtain ⟨q, hq, hq'⟩ := isBigO_atTop_F_nat_one (sub_nonneg.mpr ha.2.le)
@@ -272,8 +288,7 @@ lemma isBigO_atTop_F_int_one (a : UnitAddCircle) : ∃ p, 0 < p ∧
   have : F_int 1 a =ᶠ[atTop] fun t ↦ F_nat 1 a t + F_nat 1 (1 - a) t := by
     filter_upwards [eventually_gt_atTop 0] with t ht
     exact F_int_eq_of_mem_Icc 1 (Ico_subset_Icc_self ha) ht
-  refine this.isBigO.trans ((hp'.trans ?_).add (hq'.trans ?_)) <;>
-  apply isBigO_exp_neg_mul_of_le
+  refine this.isBigO.trans ((hp'.trans ?_).add (hq'.trans ?_)) <;> apply isBigO_exp_neg_mul_of_le
   exacts [min_le_left .., min_le_right ..]
 
 end int

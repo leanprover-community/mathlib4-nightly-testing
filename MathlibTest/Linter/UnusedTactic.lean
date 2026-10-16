@@ -1,4 +1,5 @@
 module
+
 import Batteries.Tactic.PermuteGoals
 import Mathlib.Tactic.Linter.UnusedTactic
 import Mathlib.Tactic.AdaptationNote
@@ -29,8 +30,7 @@ example : True := by
   exact .intro
 
 -- `;` is unseen by the linter
-example : True ∧ True := by
-  constructor; all_goals trivial;
+example : True ∧ True := by constructor; all_goals trivial
 
 set_option linter.unusedTactic true
 /--
@@ -101,8 +101,7 @@ warning: Unused tactic linter: `rfl` does nothing.
 Note: This linter can be disabled with `set_option linter.unusedTactic false`
 -/
 #guard_msgs in
-example : True := by
-  first | rfl | simp
+example : True := by first | rfl | simp
 
 -- The linter works correctly with `try`
 /--
@@ -224,8 +223,10 @@ warning: Unused tactic linter: `congr` does nothing.
 
 Note: This linter can be disabled with `set_option linter.unusedTactic false`
 -/
-#guard_msgs in doEmitWarning congr
+#guard_msgs in
+doEmitWarning congr
 
-#guard_msgs in doNotEmitWarning congr
+#guard_msgs in
+doNotEmitWarning congr
 
 end ignore_tactic_kind

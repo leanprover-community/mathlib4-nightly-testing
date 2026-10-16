@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-
 import Mathlib.Algebra.Order.Field.GeomSum
 
 /-!
@@ -26,20 +25,27 @@ open Filter Finset
 
 open scoped Topology
 
-/-- If a monotone sequence `u` is such that `u n / n` tends to a limit `l` along subsequences with
-exponential growth rate arbitrarily close to `1`, then `u n / n` tends to `l`. -/
-theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (l : ℝ)
-    (hmono : Monotone u)
-    (hlim : ∀ a : ℝ, 1 < a → ∃ c : ℕ → ℕ, (∀ᶠ n in atTop, (c (n + 1) : ℝ) ≤ a * c n) ∧
-      Tendsto c atTop atTop ∧ Tendsto (fun n => u (c n) / c n) atTop (𝓝 l)) :
-    Tendsto (fun n => u n / n) atTop (𝓝 l) := by
-  /- To check the result up to some `ε > 0`, we use a sequence `c` for which the ratio
-    `c (N+1) / c N` is bounded by `1 + ε`. Sandwiching a given `n` between two consecutive values of
-    `c`, say `c N` and `c (N+1)`, one can then bound `u n / n` from above by `u (c N) / c (N - 1)`
-    and from below by `u (c (N - 1)) / c N` (using that `u` is monotone), which are both comparable
-    to the limit `l` up to `1 + ε`.
-    We give a version of this proof by clearing out denominators first, to avoid discussing the sign
-    of different quantities. -/
+/--
+If a monotone sequence `u` is such that `u n / n` tends to a limit `l` along subsequences with
+exponential growth rate arbitrarily close to `1`, then `u n / n` tends to `l`.
+-/
+theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div
+    (u : ℕ → ℝ) (l : ℝ) (hmono : Monotone u)
+    (hlim : ∀ a : ℝ,
+      1 < a
+        → ∃ c : ℕ → ℕ,
+          (∀ᶠ n in atTop, (c (n + 1) : ℝ) ≤ a * c n) ∧ Tendsto c atTop atTop
+            ∧ Tendsto (fun n => u (c n) / c n) atTop (𝓝 l))
+    : Tendsto (fun n => u n / n) atTop (𝓝 l) := by
+  /-
+  To check the result up to some `ε > 0`, we use a sequence `c` for which the ratio
+  `c (N+1) / c N` is bounded by `1 + ε`. Sandwiching a given `n` between two consecutive values of
+  `c`, say `c N` and `c (N+1)`, one can then bound `u n / n` from above by `u (c N) / c (N - 1)`
+  and from below by `u (c (N - 1)) / c N` (using that `u` is monotone), which are both comparable
+  to the limit `l` up to `1 + ε`.
+  We give a version of this proof by clearing out denominators first, to avoid discussing the sign
+  of different quantities.
+  -/
   have lnonneg : 0 ≤ l := by
     rcases hlim 2 one_lt_two with ⟨c, _, ctop, clim⟩
     have : Tendsto (fun n => u 0 / c n) atTop (𝓝 0) :=
@@ -51,18 +57,19 @@ theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (
     intro ε εpos
     rcases hlim (1 + ε) ((lt_add_iff_pos_right _).2 εpos) with ⟨c, cgrowth, ctop, clim⟩
     have L : ∀ᶠ n in atTop, u (c n) - c n * l ≤ ε * c n := by
-      rw [← tendsto_sub_nhds_zero_iff, ← Asymptotics.isLittleO_one_iff ℝ,
-        Asymptotics.isLittleO_iff] at clim
+      rw [← tendsto_sub_nhds_zero_iff, ← Asymptotics.isLittleO_one_iff ℝ, Asymptotics.isLittleO_iff]
+        at clim
       filter_upwards [clim εpos, ctop (Ioi_mem_atTop 0)] with n hn cnpos'
       have cnpos : 0 < c n := cnpos'
       calc
-        u (c n) - c n * l = (u (c n) / c n - l) * c n := by field
+        u (c n) - c n * l
+          = (u (c n) / c n - l) * c n := by field
         _ ≤ ε * c n := by
           gcongr
           refine (le_abs_self _).trans ?_
           simpa using hn
-    obtain ⟨a, ha⟩ :
-      ∃ a : ℕ, ∀ b : ℕ, a ≤ b → (c (b + 1) : ℝ) ≤ (1 + ε) * c b ∧ u (c b) - c b * l ≤ ε * c b :=
+    obtain ⟨a, ha⟩
+        : ∃ a : ℕ, ∀ b : ℕ, a ≤ b → (c (b + 1) : ℝ) ≤ (1 + ε) * c b ∧ u (c b) - c b * l ≤ ε * c b :=
       eventually_atTop.1 (cgrowth.and L)
     let M := ((Finset.range (a + 1)).image fun i => c i).max' (by simp)
     filter_upwards [Ici_mem_atTop M] with n hn
@@ -88,7 +95,8 @@ theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (
       have := (ha _ A).1
       rwa [B] at this
     calc
-      u n - n * l ≤ u (c N) - c (N - 1) * l := by gcongr; exact hmono ncN.le
+      u n - n * l
+        ≤ u (c N) - c (N - 1) * l := by gcongr; exact hmono ncN.le
       _ = u (c N) - c N * l + (c N - c (N - 1)) * l := by ring
       _ ≤ ε * c N + ε * c (N - 1) * l := by
         gcongr
@@ -101,19 +109,20 @@ theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (
     intro ε εpos
     rcases hlim (1 + ε) ((lt_add_iff_pos_right _).2 εpos) with ⟨c, cgrowth, ctop, clim⟩
     have L : ∀ᶠ n : ℕ in atTop, (c n : ℝ) * l - u (c n) ≤ ε * c n := by
-      rw [← tendsto_sub_nhds_zero_iff, ← Asymptotics.isLittleO_one_iff ℝ,
-        Asymptotics.isLittleO_iff] at clim
+      rw [← tendsto_sub_nhds_zero_iff, ← Asymptotics.isLittleO_one_iff ℝ, Asymptotics.isLittleO_iff]
+        at clim
       filter_upwards [clim εpos, ctop (Ioi_mem_atTop 0)] with n hn cnpos'
       have cnpos : 0 < c n := cnpos'
       calc
-        (c n : ℝ) * l - u (c n) = -(u (c n) / c n - l) * c n := by field
+        (c n : ℝ) * l - u (c n)
+          = -(u (c n) / c n - l) * c n := by field
         _ ≤ ε * c n := by
           gcongr
           refine le_trans (neg_le_abs _) ?_
           simpa using hn
-    obtain ⟨a, ha⟩ :
-      ∃ a : ℕ,
-        ∀ b : ℕ, a ≤ b → (c (b + 1) : ℝ) ≤ (1 + ε) * c b ∧ (c b : ℝ) * l - u (c b) ≤ ε * c b :=
+    obtain ⟨a, ha⟩
+        : ∃ a : ℕ, ∀ b : ℕ,
+          a ≤ b → (c (b + 1) : ℝ) ≤ (1 + ε) * c b ∧ (c b : ℝ) * l - u (c b) ≤ ε * c b :=
       eventually_atTop.1 (cgrowth.and L)
     let M := ((Finset.range (a + 1)).image fun i => c i).max' (by simp)
     filter_upwards [Ici_mem_atTop M] with n hn
@@ -165,36 +174,44 @@ theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (
   · obtain ⟨ε, hε, εpos⟩ : ∃ ε : ℝ, l + ε * (1 + ε + l) < d ∧ 0 < ε := by
       have L : Tendsto (fun ε => l + ε * (1 + ε + l)) (𝓝[>] 0) (𝓝 (l + 0 * (1 + 0 + l))) := by
         apply Tendsto.mono_left _ nhdsWithin_le_nhds
-        exact
-          tendsto_const_nhds.add
-            (tendsto_id.mul ((tendsto_const_nhds.add tendsto_id).add tendsto_const_nhds))
+        exact tendsto_const_nhds.add (tendsto_id.mul ((tendsto_const_nhds.add tendsto_id).add
+          tendsto_const_nhds))
       simp only [zero_mul, add_zero] at L
       exact (((tendsto_order.1 L).2 d hd).and self_mem_nhdsWithin).exists
     filter_upwards [A ε εpos, Ioi_mem_atTop 0] with n hn (npos : 0 < n)
     calc
-      u n / n ≤ (n * l + ε * (1 + ε + l) * n) / n := by gcongr; linarith only [hn]
+      u n / n
+        ≤ (n * l + ε * (1 + ε + l) * n) / n := by gcongr; linarith only [hn]
       _ = (l + ε * (1 + ε + l)) := by field
       _ < d := hε
 
-/-- If a monotone sequence `u` is such that `u ⌊c^n⌋₊ / ⌊c^n⌋₊` converges to a limit `l` for all
+/--
+If a monotone sequence `u` is such that `u ⌊c^n⌋₊ / ⌊c^n⌋₊` converges to a limit `l` for all
 `c > 1`, then `u n / n` tends to `l`. It is even enough to have the assumption for a sequence of
-`c`s converging to `1`. -/
-theorem tendsto_div_of_monotone_of_tendsto_div_floor_pow (u : ℕ → ℝ) (l : ℝ) (hmono : Monotone u)
+`c`s converging to `1`.
+-/
+theorem tendsto_div_of_monotone_of_tendsto_div_floor_pow
+    (u : ℕ → ℝ)
+    (l : ℝ)
+    (hmono : Monotone u)
     (c : ℕ → ℝ) (cone : ∀ k, 1 < c k) (clim : Tendsto c atTop (𝓝 1))
-    (hc : ∀ k, Tendsto (fun n : ℕ => u ⌊c k ^ n⌋₊ / ⌊c k ^ n⌋₊) atTop (𝓝 l)) :
-    Tendsto (fun n => u n / n) atTop (𝓝 l) := by
+    (hc : ∀ k, Tendsto (fun n : ℕ => u ⌊c k ^ n⌋₊ / ⌊c k ^ n⌋₊) atTop (𝓝 l))
+    : Tendsto (fun n => u n / n) atTop (𝓝 l) := by
   apply tendsto_div_of_monotone_of_exists_subseq_tendsto_div u l hmono
   intro a ha
   obtain ⟨k, hk⟩ : ∃ k, c k < a := ((tendsto_order.1 clim).2 a ha).exists
-  refine
-    ⟨fun n => ⌊c k ^ n⌋₊, ?_,
-      (tendsto_nat_floor_atTop (α := ℝ)).comp (tendsto_pow_atTop_atTop_of_one_lt (cone k)), hc k⟩
+  refine ⟨
+    fun n => ⌊c k ^ n⌋₊,
+    ?_,
+    (tendsto_nat_floor_atTop (α := ℝ)).comp (tendsto_pow_atTop_atTop_of_one_lt (cone k)),
+    hc k
+  ⟩
   have H : ∀ n : ℕ, (0 : ℝ) < ⌊c k ^ n⌋₊ := by
     intro n
     refine zero_lt_one.trans_le ?_
     simp only [Nat.one_le_cast, Nat.one_le_floor_iff, one_le_pow₀ (cone k).le]
-  have A :
-    Tendsto (fun n : ℕ => (⌊c k ^ (n + 1)⌋₊ : ℝ) / c k ^ (n + 1) * c k / (⌊c k ^ n⌋₊ / c k ^ n))
+  have A : Tendsto
+      (fun n : ℕ => (⌊c k ^ (n + 1)⌋₊ : ℝ) / c k ^ (n + 1) * c k / (⌊c k ^ n⌋₊ / c k ^ n))
       atTop (𝓝 (1 * c k / 1)) := by
     refine Tendsto.div (Tendsto.mul ?_ tendsto_const_nhds) ?_ one_ne_zero
     · refine tendsto_nat_floor_div_atTop.comp ?_
@@ -209,10 +226,12 @@ theorem tendsto_div_of_monotone_of_tendsto_div_floor_pow (u : ℕ → ℝ) (l : 
   filter_upwards [(tendsto_order.1 B).2 a hk] with n hn
   exact (div_le_iff₀ (H n)).1 hn.le
 
-/-- The sum of `1/(c^i)^2` above a threshold `j` is comparable to `1/j^2`, up to a multiplicative
-constant. -/
-theorem sum_div_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc : 1 < c) :
-    (∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (c ^ i) ^ 2) ≤ c ^ 3 * (c - 1)⁻¹ / j ^ 2 := by
+/--
+The sum of `1/(c^i)^2` above a threshold `j` is comparable to `1/j^2`, up to a multiplicative
+constant.
+-/
+theorem sum_div_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc : 1 < c)
+    : (∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (c ^ i) ^ 2) ≤ c ^ 3 * (c - 1)⁻¹ / j ^ 2 := by
   have cpos : 0 < c := zero_lt_one.trans hc
   have A : (0 : ℝ) < c⁻¹ ^ 2 := sq_pos_of_pos (inv_pos.2 cpos)
   have B : c ^ 2 * ((1 : ℝ) - c⁻¹ ^ 2)⁻¹ ≤ c ^ 3 * (c - 1)⁻¹ := by
@@ -225,8 +244,8 @@ theorem sum_div_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc 
     simpa using pow_right_mono₀ hc.le one_le_two
   have C : c⁻¹ ^ 2 < 1 := pow_lt_one₀ (inv_nonneg.2 cpos.le) (inv_lt_one_of_one_lt₀ hc) two_ne_zero
   calc
-    (∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (c ^ i) ^ 2) ≤
-        ∑ i ∈ Ico ⌊Real.log j / Real.log c⌋₊ N, (1 : ℝ) / (c ^ i) ^ 2 := by
+    (∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (c ^ i) ^ 2)
+        ≤ ∑ i ∈ Ico ⌊Real.log j / Real.log c⌋₊ N, (1 : ℝ) / (c ^ i) ^ 2 := by
       gcongr
       intro i hi
       simp only [mem_filter, mem_range] at hi
@@ -235,8 +254,7 @@ theorem sum_div_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc 
       apply le_of_lt
       rw [div_lt_iff₀ (Real.log_pos hc), ← Real.log_pow]
       exact Real.log_lt_log hj hi.2
-    _ = ∑ i ∈ Ico ⌊Real.log j / Real.log c⌋₊ N, (c⁻¹ ^ 2) ^ i := by
-      simp [← pow_mul, mul_comm]
+    _ = ∑ i ∈ Ico ⌊Real.log j / Real.log c⌋₊ N, (c⁻¹ ^ 2) ^ i := by simp [← pow_mul, mul_comm]
     _ ≤ (c⁻¹ ^ 2) ^ ⌊Real.log j / Real.log c⌋₊ / ((1 : ℝ) - c⁻¹ ^ 2) :=
       geom_sum_Ico_le_of_lt_one (sq_nonneg _) C
     _ ≤ (c⁻¹ ^ 2) ^ (Real.log j / Real.log c - 1) / ((1 : ℝ) - c⁻¹ ^ 2) := by
@@ -260,26 +278,30 @@ theorem mul_pow_le_nat_floor_pow {c : ℝ} (hc : 1 < c) (i : ℕ) : (1 - c⁻¹)
   rcases eq_or_ne i 0 with (rfl | hi)
   · simp only [pow_zero, Nat.floor_one, Nat.cast_one, mul_one, sub_le_self_iff, inv_nonneg, cpos.le]
   calc
-    (1 - c⁻¹) * c ^ i = c ^ i - c ^ i * c⁻¹ := by ring
+    (1 - c⁻¹) * c ^ i
+      = c ^ i - c ^ i * c⁻¹ := by ring
     _ ≤ c ^ i - 1 := by
       gcongr
       simpa only [← div_eq_mul_inv, one_le_div cpos, pow_one] using le_self_pow₀ hc.le hi
     _ ≤ ⌊c ^ i⌋₊ := (Nat.sub_one_lt_floor _).le
 
-/-- The sum of `1/⌊c^i⌋₊^2` above a threshold `j` is comparable to `1/j^2`, up to a multiplicative
-constant. -/
-theorem sum_div_nat_floor_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc : 1 < c) :
-    (∑ i ∈ range N with j < ⌊c ^ i⌋₊, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2) ≤
-      c ^ 5 * (c - 1)⁻¹ ^ 3 / j ^ 2 := by
+/--
+The sum of `1/⌊c^i⌋₊^2` above a threshold `j` is comparable to `1/j^2`, up to a multiplicative
+constant.
+-/
+theorem sum_div_nat_floor_pow_sq_le_div_sq (N : ℕ) {j : ℝ} (hj : 0 < j) {c : ℝ} (hc : 1 < c)
+    : (∑ i ∈ range N with j < ⌊c ^ i⌋₊, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2)
+      ≤ c ^ 5 * (c - 1)⁻¹ ^ 3 / j ^ 2 := by
   have cpos : 0 < c := zero_lt_one.trans hc
   have A : 0 < 1 - c⁻¹ := sub_pos.2 (inv_lt_one_of_one_lt₀ hc)
   calc
-    (∑ i ∈ range N with j < ⌊c ^ i⌋₊, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2) ≤
-        ∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2 := by
+    (∑ i ∈ range N with j < ⌊c ^ i⌋₊, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2)
+        ≤ ∑ i ∈ range N with j < c ^ i, (1 : ℝ) / (⌊c ^ i⌋₊ : ℝ) ^ 2 := by
       gcongr with k hk; exact Nat.floor_le (by positivity)
     _ ≤ ∑ i ∈ range N with j < c ^ i, (1 - c⁻¹)⁻¹ ^ 2 * ((1 : ℝ) / (c ^ i) ^ 2) := by
       gcongr with i
-      rw [mul_div_assoc', mul_one, div_le_div_iff₀]; rotate_left
+      rw [mul_div_assoc', mul_one, div_le_div_iff₀]
+      rotate_left
       · apply sq_pos_of_pos
         refine zero_lt_one.trans_le ?_
         simp only [Nat.le_floor, one_le_pow₀, hc.le, Nat.one_le_cast, Nat.cast_one]

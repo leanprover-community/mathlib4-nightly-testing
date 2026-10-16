@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.BigOperators.Finsupp.Basic
 public import Mathlib.Algebra.Group.Pointwise.Finset.Basic
-
 import Mathlib.Data.Fintype.BigOperators
 
 /-!
@@ -30,7 +29,6 @@ to be precisely what we want here too.
 
 @[expose] public section
 
-
 noncomputable section
 
 open Finsupp
@@ -46,8 +44,8 @@ open scoped Classical in
 protected def finsupp (s : Finset ι) (t : ι → Finset α) : Finset (ι →₀ α) :=
   (s.pi t).map ⟨indicator s, indicator_injective s⟩
 
-theorem mem_finsupp_iff {t : ι → Finset α} :
-    f ∈ s.finsupp t ↔ f.support ⊆ s ∧ ∀ i ∈ s, f i ∈ t i := by
+theorem mem_finsupp_iff {t : ι → Finset α}
+    : f ∈ s.finsupp t ↔ f.support ⊆ s ∧ ∀ i ∈ s, f i ∈ t i := by
   classical
   refine mem_map.trans ⟨?_, ?_⟩
   · rintro ⟨f, hf, rfl⟩
@@ -60,14 +58,12 @@ theorem mem_finsupp_iff {t : ι → Finset α} :
 
 /-- When `t` is supported on `s`, `f ∈ s.finsupp t` precisely means that `f` is pointwise in `t`. -/
 @[simp]
-theorem mem_finsupp_iff_of_support_subset {t : ι →₀ Finset α} (ht : t.support ⊆ s) :
-    f ∈ s.finsupp t ↔ ∀ i, f i ∈ t i := by
-  refine
-    mem_finsupp_iff.trans
-      (forall_and.symm.trans <|
-        forall_congr' fun i =>
-          ⟨fun h => ?_, fun h =>
-            ⟨fun hi => ht <| mem_support_iff.2 fun H => mem_support_iff.1 hi ?_, fun _ => h⟩⟩)
+theorem mem_finsupp_iff_of_support_subset {t : ι →₀ Finset α} (ht : t.support ⊆ s)
+    : f ∈ s.finsupp t ↔ ∀ i, f i ∈ t i := by
+  refine mem_finsupp_iff.trans (forall_and.symm.trans <| forall_congr' fun i => ⟨
+    fun h => ?_,
+    fun h => ⟨fun hi => ht <| mem_support_iff.2 fun H => mem_support_iff.1 hi ?_, fun _ => h⟩
+  ⟩)
   · by_cases hi : i ∈ s
     · exact h.2 hi
     · rw [notMem_support_iff.1 (mt h.1 hi), notMem_support_iff.1 fun H => hi <| ht H]
@@ -76,7 +72,8 @@ theorem mem_finsupp_iff_of_support_subset {t : ι →₀ Finset α} (ht : t.supp
 
 @[simp]
 theorem card_finsupp (s : Finset ι) (t : ι → Finset α) : #(s.finsupp t) = ∏ i ∈ s, #(t i) := by
-  classical exact (card_map _).trans <| card_pi _ _
+  classical
+  exact (card_map _).trans <| card_pi _ _
 
 end Finset
 
@@ -84,10 +81,11 @@ open Finset
 
 namespace Finsupp
 
-/-- Given a finitely supported function `f : ι →₀ Finset α`, one can define the finset
-`f.pi` of all finitely supported functions whose value at `i` is in `f i` for all `i`. -/
-def pi (f : ι →₀ Finset α) : Finset (ι →₀ α) :=
-  f.support.finsupp f
+/--
+Given a finitely supported function `f : ι →₀ Finset α`, one can define the finset
+`f.pi` of all finitely supported functions whose value at `i` is in `f i` for all `i`.
+-/
+def pi (f : ι →₀ Finset α) : Finset (ι →₀ α) := f.support.finsupp f
 
 @[simp]
 theorem mem_pi {f : ι →₀ Finset α} {g : ι →₀ α} : g ∈ f.pi ↔ ∀ i, g i ∈ f i :=

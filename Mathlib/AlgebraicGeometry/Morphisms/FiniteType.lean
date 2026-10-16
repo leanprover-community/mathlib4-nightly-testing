@@ -35,13 +35,14 @@ namespace AlgebraicGeometry
 
 variable {X Y : Scheme.{u}} (f : X ⟶ Y)
 
-/-- A morphism of schemes `f : X ⟶ Y` is locally of finite type if for each affine `U ⊆ Y` and
+/--
+A morphism of schemes `f : X ⟶ Y` is locally of finite type if for each affine `U ⊆ Y` and
 `V ⊆ f ⁻¹' U`, The induced map `Γ(Y, U) ⟶ Γ(X, V)` is of finite type.
 -/
 @[mk_iff]
 class LocallyOfFiniteType (f : X ⟶ Y) : Prop where
-  finiteType_appLE (f) :
-    ∀ {U : Y.Opens} (_ : IsAffineOpen U) {V : X.Opens} (_ : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U),
+  finiteType_appLE (f)
+    : ∀ {U : Y.Opens} (_ : IsAffineOpen U) {V : X.Opens} (_ : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U),
       (f.appLE U V e).hom.FiniteType
 
 alias Scheme.Hom.finiteType_appLE := LocallyOfFiniteType.finiteType_appLE
@@ -52,55 +53,60 @@ instance : HasRingHomProperty @LocallyOfFiniteType RingHom.FiniteType where
     ext X Y f
     rw [locallyOfFiniteType_iff, affineLocally_iff_forall_isAffineOpen]
 
-instance (priority := 900) locallyOfFiniteType_of_isOpenImmersion [IsOpenImmersion f] :
-    LocallyOfFiniteType f :=
+instance (priority := 900) locallyOfFiniteType_of_isOpenImmersion [IsOpenImmersion f]
+    : LocallyOfFiniteType f :=
   HasRingHomProperty.of_isOpenImmersion
     RingHom.finiteType_holdsForLocalizationAway.containsIdentities
 
 instance : MorphismProperty.IsStableUnderComposition @LocallyOfFiniteType :=
   HasRingHomProperty.stableUnderComposition RingHom.finiteType_stableUnderComposition
 
-instance locallyOfFiniteType_comp {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z)
-    [hf : LocallyOfFiniteType f] [hg : LocallyOfFiniteType g] : LocallyOfFiniteType (f ≫ g) :=
+instance locallyOfFiniteType_comp
+    {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z)
+    [hf : LocallyOfFiniteType f] [hg : LocallyOfFiniteType g]
+    : LocallyOfFiniteType (f ≫ g) :=
   MorphismProperty.comp_mem _ f g hf hg
 
-theorem locallyOfFiniteType_of_comp {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z)
-    [LocallyOfFiniteType (f ≫ g)] : LocallyOfFiniteType f :=
+theorem locallyOfFiniteType_of_comp
+    {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [LocallyOfFiniteType (f ≫ g)]
+    : LocallyOfFiniteType f :=
   HasRingHomProperty.of_comp (fun _ _ ↦ RingHom.FiniteType.of_comp_finiteType) ‹_›
 
 instance : MorphismProperty.IsMultiplicative @LocallyOfFiniteType where
   id_mem _ := inferInstance
 
 open scoped TensorProduct in
-instance locallyOfFiniteType_isStableUnderBaseChange :
-    MorphismProperty.IsStableUnderBaseChange @LocallyOfFiniteType :=
+instance locallyOfFiniteType_isStableUnderBaseChange
+    : MorphismProperty.IsStableUnderBaseChange @LocallyOfFiniteType :=
   HasRingHomProperty.isStableUnderBaseChange RingHom.finiteType_isStableUnderBaseChange
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [LocallyOfFiniteType g] :
-    LocallyOfFiniteType (pullback.fst f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [LocallyOfFiniteType g]
+    : LocallyOfFiniteType (pullback.fst f g) :=
   MorphismProperty.pullback_fst f g inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [LocallyOfFiniteType f] :
-    LocallyOfFiniteType (pullback.snd f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [LocallyOfFiniteType f]
+    : LocallyOfFiniteType (pullback.snd f g) :=
   MorphismProperty.pullback_snd f g inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
 instance (f : X ⟶ Y) (V : Y.Opens) [LocallyOfFiniteType f] : LocallyOfFiniteType (f ∣_ V) :=
   IsZariskiLocalAtTarget.restrict ‹_› V
 
-instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [LocallyOfFiniteType f] :
-    LocallyOfFiniteType (f.resLE V U e) := by
+instance (f : X ⟶ Y) (U : X.Opens) (V : Y.Opens) (e) [LocallyOfFiniteType f]
+    : LocallyOfFiniteType (f.resLE V U e) := by
   delta Scheme.Hom.resLE; infer_instance
 
-lemma LocallyOfFiniteType.stalkMap [LocallyOfFiniteType f] (x : X) :
-    (f.stalkMap x).hom.EssFiniteType :=
+lemma LocallyOfFiniteType.stalkMap [LocallyOfFiniteType f] (x : X)
+    : (f.stalkMap x).hom.EssFiniteType :=
   HasRingHomProperty.stalkMap_of_respectsIso RingHom.EssFiniteType.respectsIso
-    (fun f hf _ _ ↦ RingHom.EssFiniteType.holdsForLocalization.localRingHom
-      RingHom.EssFiniteType.stableUnderComposition
-      RingHom.EssFiniteType.isStableUnderBaseChange.localizationPreserves _
-      (RingHom.FiniteType.essFiniteType hf)) ‹_› x
+    (fun f hf _ _ ↦
+      RingHom.EssFiniteType.holdsForLocalization.localRingHom
+        RingHom.EssFiniteType.stableUnderComposition
+        RingHom.EssFiniteType.isStableUnderBaseChange.localizationPreserves _
+        (RingHom.FiniteType.essFiniteType hf))
+    ‹_› x
 
 instance {R} [CommRing R] [IsJacobsonRing R] : JacobsonSpace <| Spec <| .of R :=
   inferInstanceAs (JacobsonSpace (PrimeSpectrum R))
@@ -109,8 +115,8 @@ instance {R : CommRingCat} [IsJacobsonRing R] : JacobsonSpace (Spec R) :=
   inferInstanceAs (JacobsonSpace (PrimeSpectrum R))
 
 set_option backward.isDefEq.respectTransparency.types false in
-nonrec lemma LocallyOfFiniteType.jacobsonSpace
-    (f : X ⟶ Y) [LocallyOfFiniteType f] [JacobsonSpace Y] : JacobsonSpace X := by
+nonrec lemma LocallyOfFiniteType.jacobsonSpace (f : X ⟶ Y) [LocallyOfFiniteType f] [JacobsonSpace Y]
+    : JacobsonSpace X := by
   wlog hY : ∃ S, Y = Spec S
   · rw [(Scheme.OpenCover.isOpenCover_opensRange (Y.affineCover.pullback₁ f)).jacobsonSpace_iff]
     intro i
@@ -144,8 +150,8 @@ The category of affine schemes locally of finite type over a fixed base scheme i
 TODO: extend this to (relatively) quasi-compact schemes.
 -/
 lemma essentiallySmall_costructuredArrow_Spec
-    (P : MorphismProperty Scheme.{u}) (hP : P ≤ @LocallyOfFiniteType) [P.RespectsIso] :
-    EssentiallySmall.{u} (P.CostructuredArrow ⊤ Scheme.Spec X) := by
+    (P : MorphismProperty Scheme.{u}) (hP : P ≤ @LocallyOfFiniteType) [P.RespectsIso]
+    : EssentiallySmall.{u} (P.CostructuredArrow ⊤ Scheme.Spec X) := by
   let F := MorphismProperty.CostructuredArrow.forget P ⊤ Scheme.Spec X ⋙ CostructuredArrow.proj _ _
   refine .of_functor F ?_ ?_
   · let Q' : ObjectProperty CommRingCat.{u} := fun S ↦
@@ -157,25 +163,39 @@ lemma essentiallySmall_costructuredArrow_Spec
       exact fun R ⟨S, e⟩ ↦ ⟨_, ⟨S, rfl⟩, ⟨e.some.unop⟩⟩
     refine CommRingCat.essentiallySmall_of_localizationAway (Q := Q'.isoClosure) ?_
     rintro _ ⟨S, rfl⟩
-    have (q : Spec (F.obj S).unop) : ∃ f, q ∈ PrimeSpectrum.basicOpen f ∧
-        Q' Γ(Spec (F.obj S).unop, PrimeSpectrum.basicOpen f) := by
+    have (q : Spec (F.obj S).unop)
+        : ∃ f,
+          q ∈ PrimeSpectrum.basicOpen f ∧ Q' Γ(Spec (F.obj S).unop, PrimeSpectrum.basicOpen f) := by
       obtain ⟨_, ⟨U, hU, rfl⟩, hqU, -⟩ :=
         X.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ <| S.hom q) isOpen_univ
       obtain ⟨_, ⟨_, ⟨f, rfl⟩, rfl⟩, hqf, hfU⟩ :=
         PrimeSpectrum.isBasis_basic_opens.exists_subset_of_mem_open hqU (S.hom ⁻¹ᵁ U).isOpen
       have : LocallyOfFiniteType S.hom := hP _ S.prop
-      exact ⟨f, hqf, _, ⟨U, rfl⟩, S.hom.appLE _ _ hfU,
-        (S.hom.finiteType_appLE hU (.Spec_basicOpen _)) _⟩
+      exact ⟨
+        f,
+        hqf,
+        _,
+        ⟨U, rfl⟩,
+        S.hom.appLE _ _ hfU,
+        (S.hom.finiteType_appLE hU (.Spec_basicOpen _)) _
+      ⟩
     choose f hqf hf using this
     refine ⟨Set.range f, PrimeSpectrum.iSup_basicOpen_eq_top_iff.mp ?_, Set.forall_mem_range.mpr ?_⟩
     · exact top_le_iff.mp fun x _ ↦ TopologicalSpace.Opens.mem_iSup.mpr ⟨x, hqf _⟩
     · dsimp
-      exact fun q ↦ ⟨_, hf q, ⟨(IsLocalization.algEquiv (.powers (f q)) _
-        ((Spec.structureSheaf _).obj.obj (op _))).toRingEquiv.toCommRingCatIso⟩⟩
+      exact fun q ↦ ⟨
+        _,
+        hf q,
+        ⟨(IsLocalization.algEquiv (.powers (f q)) _
+          ((Spec.structureSheaf _).obj.obj (op _))).toRingEquiv.toCommRingCatIso⟩
+      ⟩
   · intro R
-    refine ⟨.ofObj fun f : { f : Spec R.unop ⟶ X // P f } ↦ .mk _ f.1 f.2, inferInstance, ?_⟩
-    refine fun S ⟨e⟩ ↦ ⟨_, .mk ⟨Spec.map e.inv.unop ≫ S.hom, ?_⟩,
-      ⟨MorphismProperty.CostructuredArrow.isoMk e trivial trivial ?_⟩⟩
+    refine ⟨.ofObj fun f : {f : Spec R.unop ⟶ X // P f} ↦ .mk _ f.1 f.2, inferInstance, ?_⟩
+    refine fun S ⟨e⟩ ↦ ⟨
+      _,
+      .mk ⟨Spec.map e.inv.unop ≫ S.hom, ?_⟩,
+      ⟨MorphismProperty.CostructuredArrow.isoMk e trivial trivial ?_⟩
+    ⟩
     · simp [← Spec.map_comp_assoc, F]
     · exact (P.cancel_left_of_respectsIso _ _).mpr S.prop
 

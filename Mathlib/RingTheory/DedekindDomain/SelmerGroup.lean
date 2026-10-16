@@ -75,25 +75,26 @@ open scoped WithZero nonZeroDivisors
 
 universe u v
 
-variable {R : Type u} [CommRing R] [IsDedekindDomain R] {K : Type v} [Field K]
-  [Algebra R K] [IsFractionRing R K] (v : HeightOneSpectrum R)
+variable
+  {R : Type u} [CommRing R] [IsDedekindDomain R]
+  {K : Type v} [Field K] [Algebra R K] [IsFractionRing R K]
+  (v : HeightOneSpectrum R)
 
 /-! ### Valuations of non-zero elements -/
-
 
 namespace HeightOneSpectrum
 
 /-- The multiplicative `v`-adic valuation on `Kˣ`. -/
 def valuationOfNeZeroToFun (x : Kˣ) : Multiplicative ℤ :=
-  let hx := IsLocalization.sec R⁰ (x : K)
+  let hx := IsLocalization.sec (R⁰) (x : K)
   Multiplicative.ofAdd <|
-    (-(Associates.mk v.asIdeal).count (Associates.mk <| Ideal.span {hx.fst}).factors : ℤ) -
-      (-(Associates.mk v.asIdeal).count (Associates.mk <| Ideal.span {(hx.snd : R)}).factors : ℤ)
+    (- (Associates.mk v.asIdeal).count (Associates.mk <| Ideal.span {hx.fst}).factors : ℤ)
+      - (- (Associates.mk v.asIdeal).count (Associates.mk <| Ideal.span {(hx.snd : R)}).factors : ℤ)
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem valuationOfNeZeroToFun_eq (x : Kˣ) :
-    (v.valuationOfNeZeroToFun x : ℤᵐ⁰) = v.valuation K x := by
+theorem valuationOfNeZeroToFun_eq (x : Kˣ)
+    : (v.valuationOfNeZeroToFun x : ℤᵐ⁰) = v.valuation K x := by
   classical
   rw [show v.valuation K x = _ * _ by rw [valuation_def]; rfl]
   rw [Units.val_inv_eq_inv_val]
@@ -109,20 +110,21 @@ def valuationOfNeZero : Kˣ →* Multiplicative ℤ where
   map_one' := by rw [← WithZero.coe_inj, valuationOfNeZeroToFun_eq]; exact map_one _
   map_mul' _ _ := by
     rw [← WithZero.coe_inj, WithZero.coe_mul]
-    simp only [valuationOfNeZeroToFun_eq]; exact map_mul _ _ _
+    simp only [valuationOfNeZeroToFun_eq]
+    exact map_mul _ _ _
 
 @[simp]
 theorem valuationOfNeZero_eq (x : Kˣ) : (v.valuationOfNeZero x : ℤᵐ⁰) = v.valuation K x :=
   valuationOfNeZeroToFun_eq v x
 
 @[simp]
-theorem valuation_of_unit_eq (x : Rˣ) :
-    v.valuationOfNeZero (Units.map (algebraMap R K : R →* K) x) = 1 := by
+theorem valuation_of_unit_eq (x : Rˣ)
+    : v.valuationOfNeZero (Units.map (algebraMap R K : R →* K) x) = 1 := by
   rw [← WithZero.coe_inj, valuationOfNeZero_eq, Units.coe_map, eq_iff_le_not_lt]
   constructor
   · exact v.valuation_le_one x
   · obtain ⟨x, _, hx, _⟩ := x
-    change ¬v.valuation K (algebraMap R K x) < 1
+    change ¬ v.valuation K (algebraMap R K x) < 1
     apply_fun v.intValuation at hx
     rw [map_one, map_mul] at hx
     rw [not_lt, ← hx, ← mul_one <| v.valuation _ _, valuation_of_algebraMap]
@@ -133,27 +135,24 @@ theorem valuation_of_unit_eq (x : Rˣ) :
 def valuationOfNeZeroMod (n : ℕ) : (K / n) →* Multiplicative (ZMod n) :=
   -- TODO: this definition does a lot of defeq abuse between `Multiplicative` and `Additive`,
   -- so we need `erw` below.
-  (Int.quotientZMultiplesNatEquivZMod n).toMultiplicative.toMonoidHom.comp <|
-    QuotientGroup.map (powMonoidHom n : Kˣ →* Kˣ).range
-      (AddSubgroup.toSubgroup (AddSubgroup.zmultiples (n : ℤ)))
-      v.valuationOfNeZero
-      (by
-        rintro _ ⟨x, rfl⟩
-        exact
-          ⟨v.valuationOfNeZero x, by simp only [powMonoidHom_apply, map_pow, Int.toAdd_pow]; rfl⟩)
+  (Int.quotientZMultiplesNatEquivZMod n).toMultiplicative.toMonoidHom.comp <| QuotientGroup.map
+    (powMonoidHom n : Kˣ →* Kˣ).range (AddSubgroup.toSubgroup (AddSubgroup.zmultiples (n : ℤ)))
+    v.valuationOfNeZero
+    (by
+      rintro _ ⟨x, rfl⟩
+      exact ⟨v.valuationOfNeZero x, by simp only [powMonoidHom_apply, map_pow, Int.toAdd_pow]; rfl⟩)
 
 @[simp]
-theorem valuation_of_unit_mod_eq (n : ℕ) (x : Rˣ) :
-    v.valuationOfNeZeroMod n (Units.map (algebraMap R K : R →* K) x : K / n) = 1 := by
+theorem valuation_of_unit_mod_eq (n : ℕ) (x : Rˣ)
+    : v.valuationOfNeZeroMod n (Units.map (algebraMap R K : R →* K) x : K / n) = 1 := by
   -- This used to be `rw`, but we need `erw` after https://github.com/leanprover/lean4/pull/2644
   erw [valuationOfNeZeroMod, MonoidHom.comp_apply, ← QuotientGroup.coe_mk',
-    QuotientGroup.map_mk' (G := Kˣ) (N := MonoidHom.range (powMonoidHom n)),
-    valuation_of_unit_eq, QuotientGroup.mk_one, map_one]
+    QuotientGroup.map_mk' (G := Kˣ) (N := MonoidHom.range (powMonoidHom n)), valuation_of_unit_eq,
+    QuotientGroup.mk_one, map_one]
 
 end HeightOneSpectrum
 
 /-! ### Selmer groups -/
-
 
 variable {S S' : Set <| HeightOneSpectrum R} {n : ℕ}
 
@@ -177,8 +176,8 @@ def valuation : K⟮S,n⟯ →* S → Multiplicative (ZMod n) where
   map_one' := funext fun _ => map_one _
   map_mul' x y := by simp only [Subgroup.coe_mul, map_mul]; rfl
 
-theorem valuation_ker_eq :
-    valuation.ker = K⟮(∅ : Set <| HeightOneSpectrum R),n⟯.subgroupOf (K⟮S,n⟯) := by
+theorem valuation_ker_eq
+    : valuation.ker = K⟮(∅ : Set <| HeightOneSpectrum R),n⟯.subgroupOf (K⟮S,n⟯) := by
   ext ⟨_, hx⟩
   constructor
   · intro hx' v _
@@ -189,15 +188,16 @@ theorem valuation_ker_eq :
 
 /-- The natural homomorphism from `Rˣ` to `K⟮∅, n⟯`. -/
 def fromUnit {n : ℕ} : Rˣ →* K⟮(∅ : Set <| HeightOneSpectrum R),n⟯ where
-  toFun x :=
-    ⟨QuotientGroup.mk <| Units.map (algebraMap R K).toMonoidHom x, fun v _ =>
-      v.valuation_of_unit_mod_eq n x⟩
+  toFun x := ⟨
+    QuotientGroup.mk <| Units.map (algebraMap R K).toMonoidHom x,
+    fun v _ => v.valuation_of_unit_mod_eq n x
+  ⟩
   map_one' := by simp only [map_one, QuotientGroup.mk_one, Subgroup.mk_eq_one]
-  map_mul' _ _ := by simp only [RingHom.toMonoidHom_eq_coe, map_mul, QuotientGroup.mk_mul,
-    MulMemClass.mk_mul_mk]
+  map_mul' _ _ := by
+    simp only [RingHom.toMonoidHom_eq_coe, map_mul, QuotientGroup.mk_mul, MulMemClass.mk_mul_mk]
 
-theorem fromUnit_ker [hn : Fact <| 0 < n] :
-    (@fromUnit R _ _ K _ _ _ n).ker = (powMonoidHom n : Rˣ →* Rˣ).range := by
+theorem fromUnit_ker [hn : Fact <| 0 < n]
+    : (@fromUnit R _ _ K _ _ _ n).ker = (powMonoidHom n : Rˣ →* Rˣ).range := by
   ext ⟨_, _, _, _⟩
   constructor
   · intro hx
@@ -207,29 +207,34 @@ theorem fromUnit_ker [hn : Fact <| 0 < n] :
     rw [Units.val_pow_eq_pow_val] at hv
     rw [← inv_pow, Units.inv_mk, Units.val_pow_eq_pow_val] at hi
     rcases IsIntegrallyClosed.exists_algebraMap_eq_of_isIntegral_pow (R := R) (x := v) hn.out
-        (hv.symm ▸ isIntegral_algebraMap) with
-      ⟨v', rfl⟩
+        (hv.symm ▸ isIntegral_algebraMap)
+      with ⟨v', rfl⟩
     rcases IsIntegrallyClosed.exists_algebraMap_eq_of_isIntegral_pow (R := R) (x := i) hn.out
-        (hi.symm ▸ isIntegral_algebraMap) with
-      ⟨i', rfl⟩
+        (hi.symm ▸ isIntegral_algebraMap)
+      with ⟨i', rfl⟩
     rw [← map_mul, map_eq_one_iff _ <| FaithfulSMul.algebraMap_injective R K] at vi
     rw [← map_mul, map_eq_one_iff _ <| FaithfulSMul.algebraMap_injective R K] at iv
     rw [Units.val_mk, ← map_pow] at hv
-    exact ⟨⟨v', i', vi, iv⟩, by
-      simpa only [Units.ext_iff, powMonoidHom_apply, Units.val_pow_eq_pow_val] using
-         FaithfulSMul.algebraMap_injective R K hv⟩
+    exact ⟨
+      ⟨v', i', vi, iv⟩,
+      by
+        simpa only [Units.ext_iff, powMonoidHom_apply, Units.val_pow_eq_pow_val] using
+          FaithfulSMul.algebraMap_injective R K hv
+    ⟩
   · rintro ⟨x, hx⟩
     rw [← hx]
-    exact Subtype.mk_eq_mk.mpr <| (QuotientGroup.eq_one_iff _).mpr ⟨Units.map (algebraMap R K) x,
-      by simp only [powMonoidHom_apply, RingHom.toMonoidHom_eq_coe, map_pow]⟩
+    exact Subtype.mk_eq_mk.mpr <| (QuotientGroup.eq_one_iff _).mpr ⟨
+      Units.map (algebraMap R K) x,
+      by simp only [powMonoidHom_apply, RingHom.toMonoidHom_eq_coe, map_pow]
+    ⟩
 
 /-- The injection induced by the natural homomorphism from `Rˣ` to `K⟮∅, n⟯`. -/
 def fromUnitLift [Fact <| 0 < n] : (R / n) →* K⟮(∅ : Set <| HeightOneSpectrum R),n⟯ :=
   (QuotientGroup.kerLift _).comp
     (QuotientGroup.quotientMulEquivOfEq (fromUnit_ker (R := R))).symm.toMonoidHom
 
-theorem fromUnitLift_injective [Fact <| 0 < n] :
-    Function.Injective <| @fromUnitLift R _ _ K _ _ _ n _ := by
+theorem fromUnitLift_injective [Fact <| 0 < n]
+    : Function.Injective <| @fromUnitLift R _ _ K _ _ _ n _ := by
   dsimp only [fromUnitLift, MonoidHom.coe_comp, MulEquiv.coe_toMonoidHom]
   exact Function.Injective.comp (QuotientGroup.kerLift_injective _) (MulEquiv.injective _)
 

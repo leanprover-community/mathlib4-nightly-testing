@@ -36,7 +36,8 @@ open scoped Pointwise Topology
 
 namespace Complex
 
-/-- Proof of the Riemann Mapping Theorem, step 1.
+/--
+Proof of the Riemann Mapping Theorem, step 1.
 
 If `U` is an open simply connected subset of `ℂ` that is not the whole `ℂ`,
 then there exists a function `f : ℂ → ℂ` such that
@@ -47,9 +48,9 @@ then there exists a function `f : ℂ → ℂ` such that
 
 E.g., one can choose `a ∉ U`, then take `f z` to be the square root of `z - a`.
 -/
-theorem exists_injective_not_dense_image_deriv_ne_zero {U : Set ℂ} (hUo : IsOpen U)
-    (hUc : IsSimplyConnected U) (hU : U ≠ univ) :
-    ∃ f : ℂ → ℂ, Injective f ∧ ¬Dense (f '' U) ∧ ∀ z ∈ U, deriv f z ≠ 0 := by
+theorem exists_injective_not_dense_image_deriv_ne_zero
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsSimplyConnected U) (hU : U ≠ univ)
+    : ∃ f : ℂ → ℂ, Injective f ∧ ¬ Dense (f '' U) ∧ ∀ z ∈ U, deriv f z ≠ 0 := by
   -- WLOG, `0 ∉ U`, otherwise we choose `a ∉ U` and replace `U` with `-a +ᵥ U`
   wlog hU₀ : 0 ∉ U
   · rw [ne_univ_iff_exists_notMem] at hU
@@ -62,8 +63,8 @@ theorem exists_injective_not_dense_image_deriv_ne_zero {U : Set ℂ} (hUo : IsOp
     · simpa [Function.comp_def, deriv_comp_const_add] using hdf (-a + z) (mapsTo_image _ _ hz)
   -- Choose a continuous branch of `√z` on `U`.
   -- This is the function we're looking for.
-  rcases exists_continuousOn_pow_eq hUc hUo continuousOn_id (by rwa [image_id]) two_ne_zero
-    with ⟨f, hfc, hf_inv⟩
+  rcases exists_continuousOn_pow_eq hUc hUo continuousOn_id (by rwa [image_id]) two_ne_zero with
+    ⟨f, hfc, hf_inv⟩
   replace hf_inv : LeftInverse (· ^ 2) f := hf_inv
   -- Then `0 ∉ f '' U`
   have hf₀ : ∀ z ∈ U, f z ≠ 0 := by
@@ -104,7 +105,8 @@ theorem exists_injective_not_dense_image_deriv_ne_zero {U : Set ℂ} (hUo : IsOp
     linear_combination hab / 2
   · simpa [(hdf z hz).hasDerivAt.deriv] using hf₀ z hz
 
-/-- Proof of the Riemann Mapping Theorem, step 2.
+/--
+Proof of the Riemann Mapping Theorem, step 2.
 
 If `U` is an open simply connected subset of `ℂ` which is not the whole field,
 then there exists a map `f : ℂ → ℂ` such that
@@ -116,9 +118,9 @@ then there exists a map `f : ℂ → ℂ` such that
 Once the proof of the Riemann Mapping Theorem gets merged into Mathlib,
 this lemma will be made private.
 -/
-lemma exists_mapsTo_unitBall_injOn_deriv_ne_zero {U : Set ℂ} (hUo : IsOpen U)
-    (hUc : IsSimplyConnected U) (hU : U ≠ univ) :
-    ∃ f : ℂ → ℂ, MapsTo f U (ball 0 1) ∧ InjOn f U ∧ ∀ z ∈ U, deriv f z ≠ 0 := by
+lemma exists_mapsTo_unitBall_injOn_deriv_ne_zero
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsSimplyConnected U) (hU : U ≠ univ)
+    : ∃ f : ℂ → ℂ, MapsTo f U (ball 0 1) ∧ InjOn f U ∧ ∀ z ∈ U, deriv f z ≠ 0 := by
   -- Take a continuous branch of the square root on `U`.
   -- It is injective, differentiable function on `U`, and `f '' U` isn't dense in `ℂ`.
   rcases exists_injective_not_dense_image_deriv_ne_zero hUo hUc hU with ⟨f, hf_inj, hfd, hdf⟩
@@ -140,7 +142,7 @@ lemma exists_mapsTo_unitBall_injOn_deriv_ne_zero {U : Set ℂ} (hUo : IsOpen U)
   case deriv =>
     intro z hz
     have hdz : DifferentiableAt ℂ f z := differentiableAt_of_deriv_ne_zero (hdf z hz)
-    rw [(hasDerivAt_const _ _).fun_div (hdz.hasDerivAt.sub_const _) _ |>.deriv] <;>
-      simp [*, ne_of_gt, sub_eq_zero]
+    rw [(hasDerivAt_const _ _).fun_div (hdz.hasDerivAt.sub_const _) _ |>.deriv]
+      <;> simp [*, ne_of_gt, sub_eq_zero]
 
 end Complex

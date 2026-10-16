@@ -15,7 +15,6 @@ Presheaves on `PUnit` satisfy sheaf condition iff its value at empty set is a te
 
 public section
 
-
 namespace TopCat.Presheaf
 
 universe u v w
@@ -24,8 +23,9 @@ open CategoryTheory CategoryTheory.Limits TopCat Opposite
 
 variable {C : Type u} [Category.{v} C]
 
-theorem isSheaf_of_isTerminal_of_indiscrete {X : TopCat.{w}} (hind : X.str = ⊤) (F : Presheaf C X)
-    (it : IsTerminal <| F.obj <| op ⊥) : F.IsSheaf := fun c U s hs => by
+theorem isSheaf_of_isTerminal_of_indiscrete
+    {X : TopCat.{w}} (hind : X.str = ⊤) (F : Presheaf C X) (it : IsTerminal <| F.obj <| op ⊥)
+    : F.IsSheaf := fun c U s hs => by
   have : IndiscreteTopology X := ⟨hind⟩
   obtain rfl | hne := eq_or_ne U ⊥
   · intro _ _
@@ -44,17 +44,18 @@ theorem isSheaf_of_isTerminal_of_indiscrete {X : TopCat.{w}} (hind : X.str = ⊤
     · cases hm
     · convert hf
 
-theorem isSheaf_iff_isTerminal_of_indiscrete {X : TopCat.{w}} (hind : X.str = ⊤)
-    (F : Presheaf C X) : F.IsSheaf ↔ Nonempty (IsTerminal <| F.obj <| op ⊥) :=
-  ⟨fun h => ⟨Sheaf.isTerminalOfEmpty ⟨F, h⟩⟩, fun ⟨it⟩ =>
-    isSheaf_of_isTerminal_of_indiscrete hind F it⟩
+theorem isSheaf_iff_isTerminal_of_indiscrete {X : TopCat.{w}} (hind : X.str = ⊤) (F : Presheaf C X)
+    : F.IsSheaf ↔ Nonempty (IsTerminal <| F.obj <| op ⊥) := ⟨
+  fun h => ⟨Sheaf.isTerminalOfEmpty ⟨F, h⟩⟩,
+  fun ⟨it⟩ => isSheaf_of_isTerminal_of_indiscrete hind F it
+⟩
 
-theorem isSheaf_on_punit_of_isTerminal (F : Presheaf C ↧PUnit)
-    (it : IsTerminal <| F.obj <| op ⊥) : F.IsSheaf :=
+theorem isSheaf_on_punit_of_isTerminal (F : Presheaf C ↧PUnit) (it : IsTerminal <| F.obj <| op ⊥)
+    : F.IsSheaf :=
   isSheaf_of_isTerminal_of_indiscrete (@Subsingleton.elim (TopologicalSpace PUnit) _ _ _) F it
 
-theorem isSheaf_on_punit_iff_isTerminal (F : Presheaf C ↧PUnit) :
-    F.IsSheaf ↔ Nonempty (IsTerminal <| F.obj <| op ⊥) :=
+theorem isSheaf_on_punit_iff_isTerminal (F : Presheaf C ↧PUnit)
+    : F.IsSheaf ↔ Nonempty (IsTerminal <| F.obj <| op ⊥) :=
   ⟨fun h => ⟨Sheaf.isTerminalOfEmpty ⟨F, h⟩⟩, fun ⟨it⟩ => isSheaf_on_punit_of_isTerminal F it⟩
 
 end TopCat.Presheaf

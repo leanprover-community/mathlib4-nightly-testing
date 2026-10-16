@@ -31,13 +31,17 @@ universe u v w x
 
 variable {α : Type u} {β : Type v}
 
-/-- A group topology on a group `α` is a topology for which multiplication and inversion
-are continuous. -/
+/--
+A group topology on a group `α` is a topology for which multiplication and inversion
+are continuous.
+-/
 structure GroupTopology (α : Type u) [Group α] : Type u
   extends TopologicalSpace α, IsTopologicalGroup α
 
-/-- An additive group topology on an additive group `α` is a topology for which addition and
-negation are continuous. -/
+/--
+An additive group topology on an additive group `α` is a topology for which addition and
+negation are continuous.
+-/
 structure AddGroupTopology (α : Type u) [AddGroup α] : Type u
   extends TopologicalSpace α, IsTopologicalAddGroup α
 
@@ -49,36 +53,38 @@ variable [Group α]
 
 /-- A version of the global `continuous_mul` suitable for dot notation. -/
 @[to_additive /-- A version of the global `continuous_add` suitable for dot notation. -/]
-theorem continuous_mul' (g : GroupTopology α) :
-    haveI := g.toTopologicalSpace
-    Continuous fun p : α × α => p.1 * p.2 := by
+theorem continuous_mul' (g : GroupTopology α)
+    : haveI := g.toTopologicalSpace
+      Continuous fun p : α × α => p.1 * p.2 := by
   let := g.toTopologicalSpace
   have := g.toIsTopologicalGroup
   exact continuous_mul
 
 /-- A version of the global `continuous_inv` suitable for dot notation. -/
 @[to_additive /-- A version of the global `continuous_neg` suitable for dot notation. -/]
-theorem continuous_inv' (g : GroupTopology α) :
-    haveI := g.toTopologicalSpace
-    Continuous (Inv.inv : α → α) := by
+theorem continuous_inv' (g : GroupTopology α)
+    : haveI := g.toTopologicalSpace
+      Continuous (Inv.inv : α → α) := by
   let := g.toTopologicalSpace
   have := g.toIsTopologicalGroup
   exact continuous_inv
 
 @[to_additive]
-theorem toTopologicalSpace_injective :
-    Function.Injective (toTopologicalSpace : GroupTopology α → TopologicalSpace α) :=
-  fun f g h => by
-    cases f
-    cases g
-    congr
+theorem toTopologicalSpace_injective
+    : Function.Injective
+      (toTopologicalSpace : GroupTopology α → TopologicalSpace α) := fun f g h => by
+  cases f
+  cases g
+  congr
 
 @[to_additive (attr := ext)]
 theorem ext' {f g : GroupTopology α} (h : f.IsOpen = g.IsOpen) : f = g :=
   toTopologicalSpace_injective <| TopologicalSpace.ext h
 
-/-- The ordering on group topologies on the group `γ`. `t ≤ s` if every set open in `s` is also open
-in `t` (`t` is finer than `s`). -/
+/--
+The ordering on group topologies on the group `γ`. `t ≤ s` if every set open in `s` is also open
+in `t` (`t` is finer than `s`).
+-/
 @[to_additive
   /-- The ordering on group topologies on the group `γ`. `t ≤ s` if every set open in `s`
   is also open in `t` (`t` is finer than `s`). -/]
@@ -86,31 +92,30 @@ instance : PartialOrder (GroupTopology α) :=
   PartialOrder.lift toTopologicalSpace toTopologicalSpace_injective
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_le {x y : GroupTopology α} :
-    x.toTopologicalSpace ≤ y.toTopologicalSpace ↔ x ≤ y :=
+theorem toTopologicalSpace_le {x y : GroupTopology α}
+    : x.toTopologicalSpace ≤ y.toTopologicalSpace ↔ x ≤ y :=
   Iff.rfl
 
 @[to_additive]
 instance : Top (GroupTopology α) :=
   let _t : TopologicalSpace α := ⊤
-  ⟨{  continuous_mul := continuous_top
-      continuous_inv := continuous_top }⟩
+  ⟨{ continuous_mul := continuous_top, continuous_inv := continuous_top }⟩
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_top : (⊤ : GroupTopology α).toTopologicalSpace = ⊤ :=
-  rfl
+theorem toTopologicalSpace_top : (⊤ : GroupTopology α).toTopologicalSpace = ⊤ := rfl
 
 @[to_additive]
 instance : Bot (GroupTopology α) :=
   let _t : TopologicalSpace α := ⊥
-  ⟨{  continuous_mul := by
-        have := discreteTopology_bot α
-        fun_prop
-      continuous_inv := continuous_bot }⟩
+  ⟨{
+    continuous_mul := by
+      have := discreteTopology_bot α
+      fun_prop
+    continuous_inv := continuous_bot
+  }⟩
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_bot : (⊥ : GroupTopology α).toTopologicalSpace = ⊥ :=
-  rfl
+theorem toTopologicalSpace_bot : (⊥ : GroupTopology α).toTopologicalSpace = ⊥ := rfl
 
 @[to_additive]
 instance : BoundedOrder (GroupTopology α) where
@@ -118,20 +123,19 @@ instance : BoundedOrder (GroupTopology α) where
   bot_le x := show ⊥ ≤ x.toTopologicalSpace from bot_le
 
 @[to_additive]
-instance : Min (GroupTopology α) where min x y := ⟨x.1 ⊓ y.1, isTopologicalGroup_inf x.2 y.2⟩
+instance : Min (GroupTopology α) where
+  min x y := ⟨x.1 ⊓ y.1, isTopologicalGroup_inf x.2 y.2⟩
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_inf (x y : GroupTopology α) :
-    (x ⊓ y).toTopologicalSpace = x.toTopologicalSpace ⊓ y.toTopologicalSpace :=
+theorem toTopologicalSpace_inf (x y : GroupTopology α)
+    : (x ⊓ y).toTopologicalSpace = x.toTopologicalSpace ⊓ y.toTopologicalSpace :=
   rfl
 
 @[to_additive]
 instance : SemilatticeInf (GroupTopology α) :=
   toTopologicalSpace_injective.semilatticeInf _ .rfl .rfl toTopologicalSpace_inf
 
-@[to_additive]
-instance : Inhabited (GroupTopology α) :=
-  ⟨⊤⟩
+@[to_additive] instance : Inhabited (GroupTopology α) := ⟨⊤⟩
 
 /-- Infimum of a collection of group topologies. -/
 @[to_additive /-- Infimum of a collection of additive group topologies -/]
@@ -140,22 +144,25 @@ instance : InfSet (GroupTopology α) where
     ⟨sInf (toTopologicalSpace '' S), isTopologicalGroup_sInf <| forall_mem_image.2 fun t _ => t.2⟩
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_sInf (s : Set (GroupTopology α)) :
-    (sInf s).toTopologicalSpace = sInf (toTopologicalSpace '' s) := rfl
+theorem toTopologicalSpace_sInf (s : Set (GroupTopology α))
+    : (sInf s).toTopologicalSpace = sInf (toTopologicalSpace '' s) :=
+  rfl
 
 @[to_additive (attr := simp)]
-theorem toTopologicalSpace_iInf {ι} (s : ι → GroupTopology α) :
-    (⨅ i, s i).toTopologicalSpace = ⨅ i, (s i).toTopologicalSpace :=
+theorem toTopologicalSpace_iInf {ι} (s : ι → GroupTopology α)
+    : (⨅ i, s i).toTopologicalSpace = ⨅ i, (s i).toTopologicalSpace :=
   congr(sInf $((range_comp ..).symm))
 
-/-- Group topologies on `γ` form a complete lattice, with `⊥` the discrete topology and `⊤` the
+/--
+Group topologies on `γ` form a complete lattice, with `⊥` the discrete topology and `⊤` the
 indiscrete topology.
 
 The infimum of a collection of group topologies is the topology generated by all their open sets
 (which is a group topology).
 
 The supremum of two group topologies `s` and `t` is the infimum of the family of all group
-topologies contained in the intersection of `s` and `t`. -/
+topologies contained in the intersection of `s` and `t`.
+-/
 @[to_additive
   /-- Group topologies on `γ` form a complete lattice, with `⊥` the discrete topology and
   `⊤` the indiscrete topology.
@@ -165,20 +172,23 @@ topologies contained in the intersection of `s` and `t`. -/
 
   The supremum of two group topologies `s` and `t` is the infimum of the family of all group
   topologies contained in the intersection of `s` and `t`. -/]
-instance : CompleteSemilatticeInf (GroupTopology α) :=
-  { (inferInstance : InfSet (GroupTopology α)),
-    (inferInstance : PartialOrder (GroupTopology α)) with
-    isGLB_sInf _ := .of_image toTopologicalSpace_le (isGLB_sInf _) }
+instance : CompleteSemilatticeInf (GroupTopology α) := {
+  (inferInstance : InfSet (GroupTopology α)), (inferInstance : PartialOrder (GroupTopology α)) with
+  isGLB_sInf _ := .of_image toTopologicalSpace_le (isGLB_sInf _)
+}
 
 @[to_additive]
-instance : CompleteLattice (GroupTopology α) :=
-  { (inferInstance : BoundedOrder (GroupTopology α)),
-    (inferInstance : SemilatticeInf (GroupTopology α)),
-    completeLatticeOfCompleteSemilatticeInf _ with
-    inf := (· ⊓ ·) }
+instance : CompleteLattice (GroupTopology α) := {
+  (inferInstance : BoundedOrder (GroupTopology α)),
+  (inferInstance : SemilatticeInf (GroupTopology α)),
+  completeLatticeOfCompleteSemilatticeInf _ with
+  inf := (· ⊓ ·)
+}
 
-/-- Given `f : α → β` and a topology on `α`, the coinduced group topology on `β` is the finest
-topology such that `f` is continuous and `β` is a topological group. -/
+/--
+Given `f : α → β` and a topology on `α`, the coinduced group topology on `β` is the finest
+topology such that `f` is continuous and `β` is a topological group.
+-/
 @[to_additive
   /-- Given `f : α → β` and a topology on `α`, the coinduced additive group topology on `β`
   is the finest topology such that `f` is continuous and `β` is a topological additive group. -/]
@@ -187,8 +197,8 @@ def coinduced {α β : Type*} [t : TopologicalSpace α] [Group β] (f : α → �
 
 set_option backward.isDefEq.respectTransparency false in
 @[to_additive]
-theorem coinduced_continuous {α β : Type*} [t : TopologicalSpace α] [Group β] (f : α → β) :
-    Continuous[t, (coinduced f).toTopologicalSpace] f := by
+theorem coinduced_continuous {α β : Type*} [t : TopologicalSpace α] [Group β] (f : α → β)
+    : Continuous[t, (coinduced f).toTopologicalSpace] f := by
   rw [continuous_sInf_rng]
   rintro _ ⟨t', ht', rfl⟩
   exact continuous_iff_coinduced_le.2 ht'

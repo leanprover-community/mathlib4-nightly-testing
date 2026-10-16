@@ -26,31 +26,35 @@ meta section
 namespace Batteries.Tactic.Lint
 open Lean Meta
 
-/--
-Linter that checks whether a structure should be in Prop.
--/
-@[env_linter] public def structureInType : Linter where
+/-- Linter that checks whether a structure should be in Prop. -/
+@[env_linter]
+public def structureInType : Linter where
   noErrorsFound := "no structures that should be in Prop found."
   errorsFound := "FOUND STRUCTURES THAT SHOULD BE IN PROP."
   test declName := do
-    unless isStructure (← getEnv) declName do return none
+    unless isStructure (← getEnv) declName do
+      return none
     -- remark: using `Lean.Meta.isProp` doesn't suffice here, because it doesn't (always?)
     -- recognize predicates as propositional.
-    let isProp ← forallTelescopeReducing (← inferType (← mkConstWithLevelParams declName))
-      fun _ ty ↦ return ty == .sort .zero
+    let isProp ←
+      forallTelescopeReducing (← inferType (← mkConstWithLevelParams declName)) fun _ ty ↦
+        return ty == .sort .zero
     if isProp then return none
     let projs := (getStructureInfo? (← getEnv) declName).get!.fieldNames
     if projs.isEmpty then return none -- don't flag empty structures
     let allProofs ← projs.allM (do isProof <| ← mkConstWithLevelParams <| declName ++ ·)
-    unless allProofs do return none
+    unless allProofs do
+      return none
     return m!"all fields are propositional but the structure isn't."
 
 /-- Linter that check that all `deprecated` tags come with `since` dates. -/
-@[env_linter] public def deprecatedNoSince : Linter where
+@[env_linter]
+public def deprecatedNoSince : Linter where
   noErrorsFound := "no `deprecated` tags without `since` dates."
   errorsFound := "FOUND `deprecated` tags without `since` dates."
   test declName := do
-    let some info := Lean.Linter.deprecatedAttr.getParam? (← getEnv) declName | return none
+    let some info := Lean.Linter.deprecatedAttr.getParam? (← getEnv) declName
+      | return none
     match info.since? with
     | some _ => return none -- TODO: enforce `YYYY-MM-DD` format
     | none => return m!"`deprecated` attribute without `since` date"
@@ -86,30 +90,33 @@ namespace DupNamespaceLinter
 open Lean Parser Elab Command Meta Linter
 
 @[inherit_doc linter.dupNamespace]
-def dupNamespace : Linter where run := withSetOptionIn fun stx ↦ do
-  if getLinterValue linter.dupNamespace (← getLinterOptions) then
-    let mut aliases := #[]
-    if let some exp := stx.find? (·.isOfKind `Lean.Parser.Command.export) then
-      aliases ← getAliasSyntax exp
-    for id in (← getNamesFrom (stx.getPos?.getD default)) ++ aliases do
-      let declName := id.getId
-      -- We intentionally *do* lint deprecated declarations:
-      -- this is important since people can forget to add a `_root_` when adding deprecations.
-      if declName.hasMacroScopes || isPrivateName declName then continue
-      let nm := declName.components
-      -- Collect distinct components which appear more than once.
-      let duplicated := List.eraseDups <| nm.filter (fun comp ↦ nm.count comp > 1)
-      match duplicated with
-      | [] => continue
-      | [ns] =>
-        Linter.logLint linter.dupNamespace id
-          m!"The namespace `{ns}` is duplicated in the declaration \
-          `{.ofConstName (fullNames := true) declName}`."
-      | dup =>
-        let ns := MessageData.andList (duplicated.map (m!"`{·}`"))
-        Linter.logLint linter.dupNamespace id
-          m!"The namespaces {ns} are duplicated in the declaration \
-          `{.ofConstName (fullNames := true) declName}`."
+def dupNamespace : Linter where
+  run :=
+    withSetOptionIn fun stx ↦ do
+      if getLinterValue linter.dupNamespace (← getLinterOptions) then
+        let mut aliases := #[]
+        if let some exp := stx.find? (·.isOfKind `Lean.Parser.Command.export) then
+          aliases ← getAliasSyntax exp
+        for id in (← getNamesFrom (stx.getPos?.getD default)) ++ aliases do
+          let declName := id.getId
+          -- We intentionally *do* lint deprecated declarations:
+          -- this is important since people can forget to add a `_root_` when adding deprecations.
+          if declName.hasMacroScopes || isPrivateName declName then continue
+          let nm := declName.components
+          -- Collect distinct components which appear more than once.
+          let duplicated := List.eraseDups <| nm.filter (fun comp ↦ nm.count comp > 1)
+          match duplicated with
+          | [] =>
+            continue
+          | [ns] =>
+            Linter.logLint linter.dupNamespace id
+              m!"The namespace `{ns}` is duplicated in the declaration \
+                `{.ofConstName (fullNames := true) declName}`."
+          | dup =>
+            let ns := MessageData.andList (duplicated.map (m!"`{·}`"))
+            Linter.logLint linter.dupNamespace id
+              m!"The namespaces {ns} are duplicated in the declaration \
+                `{.ofConstName (fullNames := true) declName}`."
 
 initialize addLinter dupNamespace
 

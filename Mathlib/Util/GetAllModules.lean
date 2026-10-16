@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Kim Morrison, Damiano Testa
 module
 
 public meta import Lean.Util.Path
-
 import Mathlib.Init
 
 /-!
@@ -22,7 +21,8 @@ public meta section
 
 open Lean System.FilePath
 
-/-- `getAllFiles git ml` takes all `.lean` files in the directory `ml`
+/--
+`getAllFiles git ml` takes all `.lean` files in the directory `ml`
 (recursing into sub-directories) and returns the `Array` of `String`s
 ```
 #[file₁, ..., fileₙ]
@@ -34,10 +34,10 @@ The input `git` is a `Bool`ean flag:
 * `false` means that the command recursively scans all dirs searching for `.lean` files.
 -/
 def getAllFiles (git : Bool) (ml : String) : IO (Array System.FilePath) := do
-  let ml.lean := addExtension ⟨ml⟩ "lean"  -- for example, `Mathlib.lean`
+  let ml.lean := addExtension ⟨ml⟩ "lean" -- for example, `Mathlib.lean`
   let allModules : Array System.FilePath ← (do
     if git then
-      let mlDir := ml.push pathSeparator   -- for example, `Mathlib/`
+      let mlDir := ml.push pathSeparator -- for example, `Mathlib/`
       let allLean ← IO.Process.run { cmd := "git", args := #["ls-files", mlDir ++ "*.lean"] }
       return (((allLean.dropEndWhile (· == '\n')).copy.splitOn "\n").map (⟨·⟩)).toArray
     else do
@@ -45,15 +45,15 @@ def getAllFiles (git : Bool) (ml : String) : IO (Array System.FilePath) := do
       return all.filter (·.extension == some "lean"))
   -- Filter out all files which do not exist.
   -- This check is helpful in case the `git` option is on and a local file has been removed.
-  return ← (allModules.erase ml.lean).filterMapM (fun f ↦ do
-    if ← pathExists f then pure (some f) else pure none
-  )
+  return ← (allModules.erase ml.lean).filterMapM
+    (fun f ↦ do if ← pathExists f then pure (some f) else pure none)
 
-/-- Like `getAllFiles`, but return an array of *module* names instead,
+/--
+Like `getAllFiles`, but return an array of *module* names instead,
 i.e. names of the form `Mathlib/Algebra/Algebra/Basic.lean`.
-In addition, these names are sorted in a platform-independent order. -/
+In addition, these names are sorted in a platform-independent order.
+-/
 def getAllModulesSorted (git : Bool) (ml : String) : IO (Array String) := do
   let files ← getAllFiles git ml
-  let names ← files.mapM fun f => do
-     return (← moduleNameOfFileName f none).toString
+  let names ← files.mapM fun f => do return (← moduleNameOfFileName f none).toString
   return names.qsort (· < ·)

@@ -39,7 +39,6 @@ likely to be very useful.
 
 @[expose] public section
 
-
 variable {k G : Type*} [Semiring k]
 
 namespace AddMonoidAlgebra
@@ -66,17 +65,15 @@ variable [IsCancelAdd G]
 @[deprecated (since := "2026-06-18")] alias divOf_apply := coeff_divOf
 
 @[simp]
-theorem support_coeff_divOf (g : G) (x : k[G]) :
-    (x /ᵒᶠ g).coeff.support = x.coeff.support.preimage (g + ·) (add_right_injective g).injOn :=
+theorem support_coeff_divOf (g : G) (x : k[G])
+    : (x /ᵒᶠ g).coeff.support = x.coeff.support.preimage (g + ·) (add_right_injective g).injOn :=
   rfl
 
 @[deprecated (since := "2026-06-18")] alias support_divOf := support_coeff_divOf
 
-@[simp]
-theorem zero_divOf (g : G) : (0 : k[G]) /ᵒᶠ g = 0 := by ext; simp
+@[simp] theorem zero_divOf (g : G) : (0 : k[G]) /ᵒᶠ g = 0 := by ext; simp
 
-@[simp]
-theorem divOf_zero (x : k[G]) : x /ᵒᶠ 0 = x := by ext; simp
+@[simp] theorem divOf_zero (x : k[G]) : x /ᵒᶠ 0 = x := by ext; simp
 
 theorem add_divOf (x y : k[G]) (g : G) : (x + y) /ᵒᶠ g = x /ᵒᶠ g + y /ᵒᶠ g := by ext; simp
 
@@ -85,15 +82,14 @@ theorem divOf_add (x : k[G]) (a b : G) : x /ᵒᶠ (a + b) = x /ᵒᶠ a /ᵒᶠ
 /-- A bundled version of `AddMonoidAlgebra.divOf`. -/
 @[simps]
 noncomputable def divOfHom : Multiplicative G →* AddMonoid.End k[G] where
-  toFun g :=
-    { toFun := fun x => divOf x g.toAdd
-      map_zero' := zero_divOf _
-      map_add' := fun x y => add_divOf x y g.toAdd }
+  toFun g := {
+    toFun := fun x => divOf x g.toAdd
+    map_zero' := zero_divOf _
+    map_add' := fun x y => add_divOf x y g.toAdd
+  }
   map_one' := AddMonoidHom.ext divOf_zero
   map_mul' g₁ g₂ :=
-    AddMonoidHom.ext fun _x =>
-      (congr_arg _ (add_comm g₁.toAdd g₂.toAdd)).trans
-        (divOf_add _ _ _)
+    AddMonoidHom.ext fun _x => (congr_arg _ (add_comm g₁.toAdd g₂.toAdd)).trans (divOf_add _ _ _)
 
 theorem of'_mul_divOf (a : G) (x : k[G]) : of' k G a * x /ᵒᶠ a = x := by
   ext; simp only [of'_apply, coeff_divOf, coeff_single_mul_add, one_mul]
@@ -109,22 +105,24 @@ end divOf
 /-- The remainder upon division by `of' k G g`. -/
 noncomputable def modOf (x : k[G]) (g : G) : k[G] :=
   letI := Classical.decPred fun g₁ => ∃ g₂, g₁ = g + g₂
-  .ofCoeff <| x.coeff.filter fun g₁ => ¬∃ g₂, g₁ = g + g₂
+  .ofCoeff <| x.coeff.filter fun g₁ => ¬ ∃ g₂, g₁ = g + g₂
 
 local infixl:70 " %ᵒᶠ " => modOf
 
 @[simp]
-theorem coeff_modOf_of_not_exists_add (x : k[G]) (g : G) (g' : G) (h : ¬∃ d, g' = g + d) :
-    (x %ᵒᶠ g).coeff g' = x.coeff g' := by
-  classical exact Finsupp.filter_apply_pos _ _ h
+theorem coeff_modOf_of_not_exists_add (x : k[G]) (g : G) (g' : G) (h : ¬ ∃ d, g' = g + d)
+    : (x %ᵒᶠ g).coeff g' = x.coeff g' := by
+  classical
+  exact Finsupp.filter_apply_pos _ _ h
 
 @[deprecated (since := "2026-06-18")]
 alias modOf_apply_of_not_exists_add := coeff_modOf_of_not_exists_add
 
 @[simp]
-theorem coeff_modOf_of_exists_add (x : k[G]) (g : G) (g' : G) (h : ∃ d, g' = g + d) :
-    (x %ᵒᶠ g).coeff g' = 0 := by
-  classical exact Finsupp.filter_apply_neg _ _ <| by rwa [Classical.not_not]
+theorem coeff_modOf_of_exists_add (x : k[G]) (g : G) (g' : G) (h : ∃ d, g' = g + d)
+    : (x %ᵒᶠ g).coeff g' = 0 := by
+  classical
+  exact Finsupp.filter_apply_neg _ _ <| by rwa [Classical.not_not]
 
 @[deprecated (since := "2026-06-18")] alias modOf_apply_of_exists_add := coeff_modOf_of_exists_add
 
@@ -158,8 +156,8 @@ theorem mul_of'_modOf (x : k[G]) (g : G) : x * of' k G g %ᵒᶠ g = 0 := by
 theorem of'_modOf (g : G) : of' k G g %ᵒᶠ g = 0 := by
   simpa only [one_mul] using mul_of'_modOf (1 : k[G]) g
 
-theorem divOf_add_modOf [IsCancelAdd G] (x : k[G]) (g : G) :
-    of' k G g * (x /ᵒᶠ g) + x %ᵒᶠ g = x := by
+theorem divOf_add_modOf [IsCancelAdd G] (x : k[G]) (g : G)
+    : of' k G g * (x /ᵒᶠ g) + x %ᵒᶠ g = x := by
   ext g'
   dsimp only [coeff_add, of'_apply, Finsupp.add_apply]
   obtain ⟨d, rfl⟩ | h := em (∃ d, g' = g + d)
@@ -167,12 +165,12 @@ theorem divOf_add_modOf [IsCancelAdd G] (x : k[G]) (g : G) :
   · rw [coeff_modOf_of_not_exists_add x _ _ h, coeff_single_mul_of_forall_add_ne, zero_add]
     simpa [eq_comm] using h
 
-theorem modOf_add_divOf [IsCancelAdd G] (x : k[G]) (g : G) :
-    x %ᵒᶠ g + of' k G g * (x /ᵒᶠ g) = x := by
+theorem modOf_add_divOf [IsCancelAdd G] (x : k[G]) (g : G)
+    : x %ᵒᶠ g + of' k G g * (x /ᵒᶠ g) = x := by
   rw [add_comm, divOf_add_modOf]
 
-theorem of'_dvd_iff_modOf_eq_zero [IsCancelAdd G] {x : k[G]} {g : G} :
-    of' k G g ∣ x ↔ x %ᵒᶠ g = 0 := by
+theorem of'_dvd_iff_modOf_eq_zero [IsCancelAdd G] {x : k[G]} {g : G}
+    : of' k G g ∣ x ↔ x %ᵒᶠ g = 0 := by
   constructor
   · rintro ⟨x, rfl⟩
     rw [of'_mul_modOf]

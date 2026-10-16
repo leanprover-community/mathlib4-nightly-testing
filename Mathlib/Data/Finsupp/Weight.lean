@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Finsupp.Order
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-
 import Mathlib.Algebra.Group.TypeTags.Pointwise
 import Mathlib.Data.Finsupp.Antidiagonal
 
@@ -77,24 +76,23 @@ namespace Finsupp
 section AddCommMonoid
 
 variable [AddCommMonoid M] [Module R M]
-/-- The `weight` of the finitely supported function `f : σ →₀ R`
-with respect to `w : σ → M` is the sum `∑ i, f i • w i`. -/
-noncomputable def weight : (σ →₀ R) →+ M :=
-  (Finsupp.linearCombination R w).toAddMonoidHom
+/--
+The `weight` of the finitely supported function `f : σ →₀ R`
+with respect to `w : σ → M` is the sum `∑ i, f i • w i`.
+-/
+noncomputable def weight : (σ →₀ R) →+ M := (Finsupp.linearCombination R w).toAddMonoidHom
 
-theorem weight_apply (f : σ →₀ R) :
-    weight w f = Finsupp.sum f (fun i c => c • w i) := rfl
+theorem weight_apply (f : σ →₀ R) : weight w f = Finsupp.sum f (fun i c => c • w i) := rfl
 
-theorem weight_single_index [DecidableEq σ] (s : σ) (c : M) (f : σ →₀ R) :
-    weight (Pi.single s c) f = f s • c :=
+theorem weight_single_index [DecidableEq σ] (s : σ) (c : M) (f : σ →₀ R)
+    : weight (Pi.single s c) f = f s • c :=
   linearCombination_single_index σ M R c s f
 
-theorem weight_single_one_apply [DecidableEq σ] (s : σ) (f : σ →₀ R) :
-    weight (Pi.single s 1) f = f s := by
+theorem weight_single_one_apply [DecidableEq σ] (s : σ) (f : σ →₀ R)
+    : weight (Pi.single s 1) f = f s := by
   rw [weight_single_index, smul_eq_mul, mul_one]
 
-theorem weight_single (s : σ) (r : R) :
-    weight w (Finsupp.single s r) = r • w s :=
+theorem weight_single (s : σ) (r : R) : weight w (Finsupp.single s r) = r • w s :=
   Finsupp.linearCombination_single _ _ _
 
 theorem weight_eq_sum [Fintype σ] (f : σ →₀ R) : weight w f = ∑ i, f i • w i := by
@@ -107,22 +105,22 @@ class NonTorsionWeight (w : σ → M) : Prop where
 
 variable (R) in
 /-- Without zero divisors, nonzero weight is a `NonTorsionWeight` -/
-theorem nonTorsionWeight_of [IsDomain R] [IsTorsionFree R M] (hw : ∀ i : σ, w i ≠ 0) :
-    NonTorsionWeight R w where
+theorem nonTorsionWeight_of [IsDomain R] [IsTorsionFree R M] (hw : ∀ i : σ, w i ≠ 0)
+    : NonTorsionWeight R w where
   eq_zero_of_smul_eq_zero {n s} h := by
     rw [smul_eq_zero, or_iff_not_imp_right] at h
     exact h (hw s)
 
 variable (R) in
-theorem NonTorsionWeight.ne_zero [Nontrivial R] [NonTorsionWeight R w] (s : σ) :
-    w s ≠ 0 := fun h ↦ by
+theorem NonTorsionWeight.ne_zero [Nontrivial R] [NonTorsionWeight R w] (s : σ)
+    : w s ≠ 0 := fun h ↦ by
   rw [← one_smul R (w s)] at h
   apply zero_ne_one.symm (α := R)
   exact NonTorsionWeight.eq_zero_of_smul_eq_zero h
 
 variable {w} in
-lemma weight_sub_single_add {f : σ →₀ ℕ} {i : σ} (hi : f i ≠ 0) :
-    (f - single i 1).weight w + w i = f.weight w := by
+lemma weight_sub_single_add {f : σ →₀ ℕ} {i : σ} (hi : f i ≠ 0)
+    : (f - single i 1).weight w + w i = f.weight w := by
   conv_rhs => rw [← sub_add_single_one_cancel hi, weight_apply]
   rw [sum_add_index', sum_single_index, one_smul, weight_apply]
   exacts [zero_smul .., fun _ ↦ zero_smul .., fun _ _ _ ↦ add_smul ..]
@@ -131,8 +129,7 @@ end AddCommMonoid
 
 section OrderedAddCommMonoid
 
-theorem le_weight (w : σ → ℕ) {s : σ} (hs : w s ≠ 0) (f : σ →₀ ℕ) :
-    f s ≤ weight w f := by
+theorem le_weight (w : σ → ℕ) {s : σ} (hs : w s ≠ 0) (f : σ →₀ ℕ) : f s ≤ weight w f := by
   classical
   simp only [weight_apply, Finsupp.sum]
   by_cases h : s ∈ f.support
@@ -147,8 +144,8 @@ theorem le_weight (w : σ → ℕ) {s : σ} (hs : w s ≠ 0) (f : σ →₀ ℕ)
 variable [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M] (w : σ → M)
 
 variable {w} in
-theorem le_weight_of_ne_zero (hw : ∀ s, 0 ≤ w s) {s : σ} {f : σ →₀ ℕ} (hs : f s ≠ 0) :
-    w s ≤ weight w f := by
+theorem le_weight_of_ne_zero (hw : ∀ s, 0 ≤ w s) {s : σ} {f : σ →₀ ℕ} (hs : f s ≠ 0)
+    : w s ≤ weight w f := by
   classical
   simp only [weight_apply, Finsupp.sum]
   trans f s • w s
@@ -156,23 +153,22 @@ theorem le_weight_of_ne_zero (hw : ∀ s, 0 ≤ w s) {s : σ} {f : σ →₀ ℕ
     exact Nat.one_le_iff_ne_zero.mpr hs
   · rw [← Finsupp.mem_support_iff] at hs
     rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hs]
-    exact le_add_of_nonneg_right <| Finset.sum_nonneg <|
-      fun i _ ↦ nsmul_nonneg (hw i) (f i)
+    exact le_add_of_nonneg_right <| Finset.sum_nonneg <| fun i _ ↦ nsmul_nonneg (hw i) (f i)
 
 end OrderedAddCommMonoid
 
 section CanonicallyOrderedAddCommMonoid
 
-variable {M : Type*} [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M]
-  [CanonicallyOrderedAdd M] (w : σ → M)
+variable
+  {M : Type*} [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M] [CanonicallyOrderedAdd M]
+  (w : σ → M)
 
 theorem le_weight_of_ne_zero' {s : σ} {f : σ →₀ ℕ} (hs : f s ≠ 0) : w s ≤ weight w f :=
   le_weight_of_ne_zero (fun _ ↦ zero_le) hs
 
 /-- If `M` is a `CanonicallyOrderedAddCommMonoid`, then `weight f` is zero iff `f = 0`. -/
-theorem weight_eq_zero_iff_eq_zero
-    (w : σ → M) [NonTorsionWeight ℕ w] {f : σ →₀ ℕ} :
-    weight w f = 0 ↔ f = 0 := by
+theorem weight_eq_zero_iff_eq_zero (w : σ → M) [NonTorsionWeight ℕ w] {f : σ →₀ ℕ}
+    : weight w f = 0 ↔ f = 0 := by
   constructor
   · intro h
     ext s
@@ -184,28 +180,28 @@ theorem weight_eq_zero_iff_eq_zero
   · intro h
     rw [h, map_zero]
 
-theorem finite_of_nat_weight_le [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ) :
-    {d : σ →₀ ℕ | weight w d ≤ n}.Finite := by
+theorem finite_of_nat_weight_le [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ)
+    : {d : σ →₀ ℕ | weight w d ≤ n}.Finite := by
   classical
   set fg := Finset.antidiagonal (Finsupp.equivFunOnFinite.symm (Function.const σ n)) with hfg
   suffices {d : σ →₀ ℕ | weight w d ≤ n} ⊆ ↑(fg.image fun uv => uv.fst) by
     exact Set.Finite.subset (Finset.finite_toSet _) this
   intro d hd
   rw [hfg]
-  simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe,
-    Finset.mem_antidiagonal, Prod.exists, exists_and_right, exists_eq_right]
+  simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Finset.mem_antidiagonal, Prod.exists,
+    exists_and_right, exists_eq_right]
   use Finsupp.equivFunOnFinite.symm (Function.const σ n) - d
   ext x
   dsimp at hd
   grw [← le_weight _ (hw x)] at hd
   simp [*]
 
-theorem finite_of_nat_weight_lt [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ) :
-    {d : σ →₀ ℕ | weight w d < n}.Finite :=
+theorem finite_of_nat_weight_lt [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ)
+    : {d : σ →₀ ℕ | weight w d < n}.Finite :=
   Set.Finite.subset (finite_of_nat_weight_le w hw n) (by grind)
 
-theorem finite_of_nat_weight_eq [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ) :
-    {d : σ →₀ ℕ | weight w d = n}.Finite :=
+theorem finite_of_nat_weight_eq [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ)
+    : {d : σ →₀ ℕ | weight w d = n}.Finite :=
   Set.Finite.subset (finite_of_nat_weight_le w hw n) (by grind)
 
 end CanonicallyOrderedAddCommMonoid
@@ -227,29 +223,26 @@ theorem degree_eq_sum [Fintype σ] (f : σ →₀ R) : f.degree = ∑ i, f i := 
 theorem degree_single (a : σ) (r : R) : (Finsupp.single a r).degree = r :=
   Finsupp.sum_single_index (h := fun _ => id) rfl
 
-lemma degree_eq_zero_iff {R : Type*}
-    [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R]
-    (d : σ →₀ R) :
-    degree d = 0 ↔ d = 0 := by
+lemma degree_eq_zero_iff
+    {R : Type*} [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R] (d : σ →₀ R)
+    : degree d = 0 ↔ d = 0 := by
   simp only [degree_apply, Finset.sum_eq_zero_iff, mem_support_iff, ne_eq, _root_.not_imp_self,
     DFunLike.ext_iff, coe_zero, Pi.zero_apply]
 
-theorem le_degree {R : Type*}
-    [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R]
-    (s : σ) (f : σ →₀ R) :
-    f s ≤ degree f := by
+theorem le_degree
+    {R : Type*} [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R] (s : σ) (f : σ →₀ R)
+    : f s ≤ degree f := by
   by_cases h : s ∈ f.support
   · exact Finset.single_le_sum_of_canonicallyOrdered h
   · simp only [notMem_support_iff] at h
     simp only [h, zero_le]
 
-theorem degree_eq_weight_one {R : Type*} [Semiring R] :
-    degree (R := R) (σ := σ) = weight (fun _ ↦ 1) := by
+theorem degree_eq_weight_one {R : Type*} [Semiring R]
+    : degree (R := R) (σ := σ) = weight (fun _ ↦ 1) := by
   ext d
   simp [weight_apply, smul_eq_mul, mul_one]
 
-theorem finite_of_degree_le [Finite σ] (n : ℕ) :
-    {f : σ →₀ ℕ | degree f ≤ n}.Finite := by
+theorem finite_of_degree_le [Finite σ] (n : ℕ) : {f : σ →₀ ℕ | degree f ≤ n}.Finite := by
   simp_rw [degree_eq_weight_one]
   refine finite_of_nat_weight_le (Function.const σ 1) ?_ n
   intro _
@@ -261,8 +254,7 @@ lemma finite_of_degree_lt [Finite σ] (n : ℕ) : {f : σ →₀ ℕ | degree f 
 lemma finite_of_degree_eq [Finite σ] (n : ℕ) : {f : σ →₀ ℕ | f.degree = n}.Finite :=
   Set.Finite.subset (finite_of_degree_le n) (by grind)
 
-lemma range_single_one :
-    Set.range (fun a : σ ↦ Finsupp.single a 1) = { d | d.degree = 1 } := by
+lemma range_single_one : Set.range (fun a : σ ↦ Finsupp.single a 1) = { d | d.degree = 1 } := by
   refine subset_antisymm ?_ ?_
   · simp [Set.range_subset_iff]
   · intro p (hp : p.sum (fun a k ↦ k) = 1)
@@ -270,8 +262,8 @@ lemma range_single_one :
     use a
 
 @[simp]
-theorem degree_mapDomain {τ : Type*} (f : σ → τ) [AddCommMonoid M] (x : σ →₀ M) :
-    degree (x.mapDomain f) = degree x := by
+theorem degree_mapDomain {τ : Type*} (f : σ → τ) [AddCommMonoid M] (x : σ →₀ M)
+    : degree (x.mapDomain f) = degree x := by
   simp [mapDomain, sum]
   dsimp [degree_apply]
 
@@ -279,22 +271,23 @@ theorem degree_mapDomain {τ : Type*} (f : σ → τ) [AddCommMonoid M] (x : σ 
 alias degree_mapDomain_eq_of_subsingletonAddUnits := degree_mapDomain
 
 set_option backward.isDefEq.respectTransparency false in
-theorem degree_comapDomain_le_of_canonicallyOrderedAdd {τ : Type*} {f : σ → τ} [AddCommMonoid M]
-    [PartialOrder M] [CanonicallyOrderedAdd M] {x : τ →₀ M} (hf : Set.InjOn f (f ⁻¹' x.support)) :
-      degree (x.comapDomain f hf) ≤ degree x := by
+theorem degree_comapDomain_le_of_canonicallyOrderedAdd
+    {τ : Type*} {f : σ → τ} [AddCommMonoid M] [PartialOrder M] [CanonicallyOrderedAdd M]
+    {x : τ →₀ M} (hf : Set.InjOn f (f ⁻¹' x.support))
+    : degree (x.comapDomain f hf) ≤ degree x := by
   classical
   simpa [degree, comapDomain, Finset.sum_preimage' f x.support hf x] using
     Finset.sum_le_sum_of_subset (Finset.filter_subset ..)
 
-lemma degree_mono {R : Type*} [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R] :
-    Monotone (Finsupp.degree (σ := σ) (R := R)) :=
-  fun _ _ e ↦
-    (Finset.sum_le_sum_of_subset (support_mono e)).trans (Finset.sum_le_sum fun _ _ ↦ e _)
+lemma degree_mono {R : Type*} [AddCommMonoid R] [PartialOrder R] [CanonicallyOrderedAdd R]
+    : Monotone (Finsupp.degree (σ := σ) (R := R)) := fun _ _ e ↦
+  (Finset.sum_le_sum_of_subset (support_mono e)).trans (Finset.sum_le_sum fun _ _ ↦ e _)
 
-lemma exists_le_degree_eq {σ : Type*} (f : σ →₀ ℕ) (n : ℕ) (hn : n ≤ f.degree) :
-    ∃ g ≤ f, g.degree = n := by
+lemma exists_le_degree_eq {σ : Type*} (f : σ →₀ ℕ) (n : ℕ) (hn : n ≤ f.degree)
+    : ∃ g ≤ f, g.degree = n := by
   induction n with
-  | zero => simp [degree_eq_zero_iff]
+  | zero =>
+    simp [degree_eq_zero_iff]
   | succ n IH =>
     obtain ⟨g, hgf, rfl⟩ := IH (by lia)
     obtain ⟨f, rfl⟩ := le_iff_exists_add.mp hgf
@@ -302,8 +295,8 @@ lemma exists_le_degree_eq {σ : Type*} (f : σ →₀ ℕ) (n : ℕ) (hn : n ≤
     exact ⟨g + .single i 1, add_le_add_right (by simp; grind) _, by simp⟩
 
 open scoped Pointwise in
-lemma degree_preimage_add {σ : Type*} (s t : Set ℕ) :
-    degree (σ := σ) ⁻¹' (s + t) = degree (σ := σ) ⁻¹' s + degree (σ := σ) ⁻¹' t := by
+lemma degree_preimage_add {σ : Type*} (s t : Set ℕ)
+    : degree (σ := σ) ⁻¹' (s + t) = degree (σ := σ) ⁻¹' s + degree (σ := σ) ⁻¹' t := by
   refine (Set.preimage_add_preimage_subset ..).antisymm' ?_
   rintro f ⟨m, hm, n, hn, e : m + n = _⟩
   obtain ⟨g, hgf, rfl⟩ := exists_le_degree_eq f m (by grind)
@@ -311,37 +304,45 @@ lemma degree_preimage_add {σ : Type*} (s t : Set ℕ) :
   exact Set.add_mem_add hm (by simp_all)
 
 open scoped Pointwise in
-lemma degree_preimage_nsmul {σ : Type*} (s : Set ℕ) (n : ℕ) (hn : n ≠ 0) :
-    degree (σ := σ) ⁻¹' (n • s) = n • degree (σ := σ) ⁻¹' s := by
-  obtain (_ | n) := n; · contradiction
+lemma degree_preimage_nsmul {σ : Type*} (s : Set ℕ) (n : ℕ) (hn : n ≠ 0)
+    : degree (σ := σ) ⁻¹' (n • s) = n • degree (σ := σ) ⁻¹' s := by
+  obtain (_ | n) := n
+  · contradiction
   induction n <;> simp_all [succ_nsmul, degree_preimage_add]
 
 open scoped Pointwise in
-lemma nsmul_single_one_image {α : Type*} {n : ℕ} {s : Set α} :
-    n • (single · 1) '' s = {x : α →₀ ℕ | x.degree = n ∧ ↑x.support ⊆ s} := by
+lemma nsmul_single_one_image {α : Type*} {n : ℕ} {s : Set α}
+    : n • (single · 1) '' s = {x : α →₀ ℕ | x.degree = n ∧ ↑x.support ⊆ s} := by
   classical
   induction n with
-  | zero => aesop (add simp degree_eq_zero_iff)
+  | zero =>
+    aesop (add simp degree_eq_zero_iff)
   | succ n ih =>
     rw [succ_nsmul, ih]
     refine subset_antisymm ?_ fun f ⟨f_deg, f_supp⟩ ↦ ?_
     · simp [Set.subset_def, Set.mem_add, @forall_comm (α →₀ ℕ)]; grind
     obtain ⟨i, hi⟩ : f.support.Nonempty := by aesop
-    obtain ⟨x, hx⟩ := le_iff_exists_add'.mp
-      (show single i 1 ≤ f by simpa [Nat.one_le_iff_ne_zero] using hi)
+    obtain ⟨x, hx⟩ :=
+      le_iff_exists_add'.mp (show single i 1 ≤ f by simpa [Nat.one_le_iff_ne_zero] using hi)
     exact ⟨x, by aesop (add simp Set.subset_def), _, ⟨_, f_supp (by simp_all), rfl⟩, hx.symm⟩
 
 set_option backward.isDefEq.respectTransparency false in
 open scoped Pointwise in
-theorem image_pow_eq_finsuppProd_image {α β : Type*} [CommMonoid β] {f : α → β} {n} {s : Set α} :
-    (f '' s) ^ n = (·.prod (f · ^ ·)) '' {x : α →₀ ℕ | x.degree = n ∧ ↑x.support ⊆ s} := by
+theorem image_pow_eq_finsuppProd_image {α β : Type*} [CommMonoid β] {f : α → β} {n} {s : Set α}
+    : (f '' s) ^ n = (·.prod (f · ^ ·)) '' {x : α →₀ ℕ | x.degree = n ∧ ↑x.support ⊆ s} := by
   classical
   suffices ∀ (s : Set (α →₀ ℕ)), ((·.prod (f · ^ ·)) '' s) ^ n = (·.prod (f · ^ ·)) '' (n • s) by
     simp [← nsmul_single_one_image, ← this, Set.image_image]
   intro s
-  refine (Set.image_pow (⟨⟨(·.prod (f · ^ ·)) ∘ Multiplicative.toAdd, by simp⟩,
-    by simp [Finsupp.prod_add_index, pow_add]⟩ : Multiplicative (α →₀ ℕ) →* β) _ _).symm.trans ?_
-  simp [-Function.comp_apply, Set.image_comp, show Multiplicative.toAdd '' s = s from
-    Set.image_id _]
+  refine (Set.image_pow
+      (⟨
+         ⟨(·.prod (f · ^ ·)) ∘ Multiplicative.toAdd, by simp⟩,
+         by simp [Finsupp.prod_add_index, pow_add]
+       ⟩
+        : Multiplicative (α →₀ ℕ) →* β)
+      _ _).symm.trans
+    ?_
+  simp [-Function.comp_apply, Set.image_comp,
+    show Multiplicative.toAdd '' s = s from Set.image_id _]
 
 end Finsupp

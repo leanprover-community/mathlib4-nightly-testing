@@ -69,10 +69,12 @@ and adding to that the sum of assumptions 1 and 2.
 `cs.flatten` maps `1 ↦ 1, 2 ↦ 6`.
 -/
 def CompSource.flatten : CompSource → Std.HashMap Nat Nat
-  | (CompSource.assump n) => (∅ : Std.HashMap Nat Nat).insert n 1
+  | (CompSource.assump n) =>
+    (∅ : Std.HashMap Nat Nat).insert n 1
   | (CompSource.add c1 c2) =>
-      (CompSource.flatten c1).mergeWith (fun _ b b' => b + b') (CompSource.flatten c2)
-  | (CompSource.scale n c) => (CompSource.flatten c).map (fun _ v => v * n)
+    (CompSource.flatten c1).mergeWith (fun _ b b' => b + b') (CompSource.flatten c2)
+  | (CompSource.scale n c) =>
+    (CompSource.flatten c).map (fun _ v => v * n)
 
 /-- Formats a `CompSource` for printing. -/
 def CompSource.toString : CompSource → String
@@ -80,8 +82,7 @@ def CompSource.toString : CompSource → String
   | (CompSource.add c1 c2) => CompSource.toString c1 ++ " + " ++ CompSource.toString c2
   | (CompSource.scale n c) => ToString.toString n ++ " * " ++ CompSource.toString c
 
-instance : ToFormat CompSource :=
-  ⟨fun a => CompSource.toString a⟩
+instance : ToFormat CompSource := ⟨fun a => CompSource.toString a⟩
 
 /--
 A `PComp` stores a linear comparison `Σ cᵢ*xᵢ R 0`,
@@ -109,20 +110,28 @@ sets. During the variable elimination process, a `PComp` with non-minimal histor
 structure PComp : Type where
   /-- The comparison `Σ cᵢ*xᵢ R 0`. -/
   c : Comp
-  /-- We track how the comparison was constructed by adding and scaling previous comparisons,
-  back to the original assumptions. -/
+  /--
+  We track how the comparison was constructed by adding and scaling previous comparisons,
+  back to the original assumptions.
+  -/
   src : CompSource
   /-- The set of original assumptions which have been used in constructing this comparison. -/
   history : TreeSet ℕ Ord.compare
-  /-- The variables which have been *effectively eliminated*,
-  i.e. by running the elimination algorithm on that variable. -/
+  /--
+  The variables which have been *effectively eliminated*,
+  i.e. by running the elimination algorithm on that variable.
+  -/
   effective : TreeSet ℕ Ord.compare
-  /-- The variables which have been *implicitly eliminated*.
+  /--
+  The variables which have been *implicitly eliminated*.
   These are variables that appear in the historical set,
-  do not appear in `c` itself, and are not in `effective`. -/
+  do not appear in `c` itself, and are not in `effective`.
+  -/
   implicit : TreeSet ℕ Ord.compare
-  /-- The union of all variables appearing in those original assumptions
-  which appear in the `history` set. -/
+  /--
+  The union of all variables appearing in those original assumptions
+  which appear in the `history` set.
+  -/
   vars : TreeSet ℕ Ord.compare
 
 /--
@@ -156,8 +165,7 @@ comparison, with different sources, are considered equivalent.
 def PComp.cmp (p1 p2 : PComp) : Ordering := p1.c.cmp p2.c
 
 /-- `PComp.scale c n` scales the coefficients of `c` by `n` and notes this in the `CompSource`. -/
-def PComp.scale (c : PComp) (n : ℕ) : PComp :=
-  { c with c := c.c.scale n, src := c.src.scale n }
+def PComp.scale (c : PComp) (n : ℕ) : PComp := { c with c := c.c.scale n, src := c.src.scale n }
 
 /--
 `PComp.add c1 c2 elimVar` creates the result of summing the linear comparisons `c1` and `c2`,
@@ -202,26 +210,27 @@ def PComp.assump (c : Comp) (n : ℕ) : PComp where
   implicit := .empty
   vars := .ofList c.vars _
 
-instance : ToFormat PComp :=
-  ⟨fun p => format p.c.coeffs ++ toString p.c.str ++ "0"⟩
+instance : ToFormat PComp := ⟨fun p => format p.c.coeffs ++ toString p.c.str ++ "0"⟩
 
-instance : ToString PComp :=
-  ⟨fun p => toString p.c.coeffs ++ toString p.c.str ++ "0"⟩
+instance : ToString PComp := ⟨fun p => toString p.c.coeffs ++ toString p.c.str ++ "0"⟩
 
 /-- A collection of comparisons. -/
 abbrev PCompSet := TreeSet PComp PComp.cmp
 
 /-! ### Elimination procedure -/
 
-/-- If `c1` and `c2` both contain variable `a` with opposite coefficients,
-produces `v1` and `v2` such that `a` has been cancelled in `v1*c1 + v2*c2`. -/
+/--
+If `c1` and `c2` both contain variable `a` with opposite coefficients,
+produces `v1` and `v2` such that `a` has been cancelled in `v1*c1 + v2*c2`.
+-/
 def elimVar (c1 c2 : Comp) (a : ℕ) : Option (ℕ × ℕ) :=
   let v1 := c1.coeffOf a
   let v2 := c2.coeffOf a
   if v1 * v2 < 0 then
     let vlcm := Nat.lcm v1.natAbs v2.natAbs
     some ⟨vlcm / v1.natAbs, vlcm / v2.natAbs⟩
-  else none
+  else
+    none
 
 /--
 `pelimVar p1 p2` calls `elimVar` on the `Comp` components of `p1` and `p2`.
@@ -232,9 +241,7 @@ def pelimVar (p1 p2 : PComp) (a : ℕ) : Option PComp := do
   let (n1, n2) ← elimVar p1.c p2.c a
   return (p1.scale n1).add (p2.scale n2) a
 
-/--
-A `PComp` represents a contradiction if its `Comp` field represents a contradiction.
--/
+/-- A `PComp` represents a contradiction if its `Comp` field represents a contradiction. -/
 def PComp.isContr (p : PComp) : Bool := p.c.isContr
 
 /--
@@ -242,10 +249,12 @@ def PComp.isContr (p : PComp) : Bool := p.c.isContr
 for every `p' ∈ comps`.
 -/
 def elimWithSet (a : ℕ) (p : PComp) (comps : PCompSet) : PCompSet :=
-  comps.foldl (fun s pc =>
-  match pelimVar p pc a with
-  | some pc => if pc.maybeMinimal a then s.insert pc else s
-  | none => s) TreeSet.empty
+  comps.foldl
+    (fun s pc =>
+      match pelimVar p pc a with
+      | some pc => if pc.maybeMinimal a then s.insert pc else s
+      | none => s)
+    TreeSet.empty
 
 /--
 The state for the elimination monad.
@@ -265,16 +274,13 @@ structure LinarithData : Type where
 The linarith monad extends an exceptional monad with a `LinarithData` state.
 An exception produces a contradictory `PComp`.
 -/
-abbrev LinarithM : Type → Type :=
-  StateT LinarithData (ExceptT PComp Lean.Core.CoreM)
+abbrev LinarithM : Type → Type := StateT LinarithData (ExceptT PComp Lean.Core.CoreM)
 
 /-- Returns the current max variable. -/
-def getMaxVar : LinarithM ℕ :=
-  LinarithData.maxVar <$> get
+def getMaxVar : LinarithM ℕ := LinarithData.maxVar <$> get
 
 /-- Return the current comparison set. -/
-def getPCompSet : LinarithM PCompSet :=
-  LinarithData.comps <$> get
+def getPCompSet : LinarithM PCompSet := LinarithData.comps <$> get
 
 /-- Throws an exception if a contradictory `PComp` is contained in the current state. -/
 def validate : LinarithM Unit := do
@@ -299,11 +305,15 @@ def update (maxVar : ℕ) (comps : PCompSet) : LinarithM Unit := do
 Returns `(pos, neg, notPresent)`.
 -/
 def splitSetByVarSign (a : ℕ) (comps : PCompSet) : PCompSet × PCompSet × PCompSet :=
-  comps.foldl (fun ⟨pos, neg, notPresent⟩ pc =>
-    let n := pc.c.coeffOf a
-    if n > 0 then ⟨pos.insert pc, neg, notPresent⟩
-    else if n < 0 then ⟨pos, neg.insert pc, notPresent⟩
-    else ⟨pos, neg, notPresent.insert pc⟩)
+  comps.foldl
+    (fun ⟨pos, neg, notPresent⟩ pc =>
+      let n := pc.c.coeffOf a
+      if n > 0 then
+        ⟨pos.insert pc, neg, notPresent⟩
+      else if n < 0 then
+        ⟨pos, neg.insert pc, notPresent⟩
+      else
+        ⟨pos, neg, notPresent.insert pc⟩)
     ⟨TreeSet.empty, TreeSet.empty, TreeSet.empty⟩
 
 /--
@@ -315,11 +325,14 @@ def elimVarM (a : ℕ) : LinarithM Unit := do
   if (a ≤ vs) then
     Lean.Core.checkSystem decl_name%.toString
     let ⟨pos, neg, notPresent⟩ := splitSetByVarSign a (← getPCompSet)
-    update (vs - 1) (← pos.foldlM (fun s p => do
-      Lean.Core.checkSystem decl_name%.toString
-      -- FIXME: `.foldl .insert` should be equivalent to `.union`, but this breaks the test from
-      -- https://github.com/leanprover-community/mathlib4/issues/8875
-      pure ((elimWithSet a p neg).foldl .insert s)) notPresent)
+    update (vs - 1)
+      (← pos.foldlM
+        (fun s p => do
+          Lean.Core.checkSystem decl_name%.toString
+          -- FIXME: `.foldl .insert` should be equivalent to `.union`, but this breaks the test from
+          -- https://github.com/leanprover-community/mathlib4/issues/8875
+          pure ((elimWithSet a p neg).foldl .insert s))
+        notPresent)
   else
     pure ()
 
@@ -340,7 +353,7 @@ def mkLinarithData (hyps : List Comp) (maxVar : ℕ) : LinarithData :=
 
 /-- An oracle that uses Fourier-Motzkin elimination. -/
 def CertificateOracle.fourierMotzkin : CertificateOracle where
-  produceCertificate hyps maxVar :=  do
+  produceCertificate hyps maxVar := do
     let linarithData := mkLinarithData hyps maxVar
     let result ←
       (ExceptT.run (StateT.run (do validate; elimAllVarsM : LinarithM Unit) linarithData) :)

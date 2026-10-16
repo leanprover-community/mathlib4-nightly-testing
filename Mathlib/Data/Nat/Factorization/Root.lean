@@ -37,7 +37,8 @@ open Finsupp
 namespace Nat
 variable {a b n : ℕ}
 
-/-- Flooring root of a natural number. This divides the valuation of every prime number rounding
+/--
+Flooring root of a natural number. This divides the valuation of every prime number rounding
 down.
 
 Eg if `n = 2`, `a = 2^3 * 3^2 * 5`, then `floorRoot n a = 2 * 3`.
@@ -53,37 +54,44 @@ we special-case the following values:
 def floorRoot (n a : ℕ) : ℕ :=
   if n = 0 ∨ a = 0 then 0 else a.factorization.prod fun p k ↦ p ^ (k / n)
 
-/-- The RHS is a noncomputable version of `Nat.floorRoot` with better order-theoretic
-properties. -/
-lemma floorRoot_def :
-    floorRoot n a = if n = 0 ∨ a = 0 then 0 else (a.factorization ⌊/⌋ n).prod (· ^ ·) := by
+/--
+The RHS is a noncomputable version of `Nat.floorRoot` with better order-theoretic
+properties.
+-/
+lemma floorRoot_def
+    : floorRoot n a = if n = 0 ∨ a = 0 then 0 else (a.factorization ⌊/⌋ n).prod (· ^ ·) := by
   unfold floorRoot; split_ifs with h <;> simp [Finsupp.floorDiv_def, prod_mapRange_index pow_zero]
 
 @[simp] lemma floorRoot_zero_left (a : ℕ) : floorRoot 0 a = 0 := by simp [floorRoot]
 @[simp] lemma floorRoot_zero_right (n : ℕ) : floorRoot n 0 = 0 := by simp [floorRoot]
-@[simp] lemma floorRoot_one_left (a : ℕ) : floorRoot 1 a = a := by
-  simp [floorRoot]; split_ifs <;> simp [*]
+@[simp]
+lemma floorRoot_one_left (a : ℕ) : floorRoot 1 a = a := by simp [floorRoot]; split_ifs <;> simp [*]
 @[simp] lemma floorRoot_one_right (hn : n ≠ 0) : floorRoot n 1 = 1 := by simp [floorRoot, hn]
 
-@[simp] lemma floorRoot_pow_self (hn : n ≠ 0) (a : ℕ) : floorRoot n (a ^ n) = a := by
+@[simp]
+lemma floorRoot_pow_self (hn : n ≠ 0) (a : ℕ) : floorRoot n (a ^ n) = a := by
   simp [floorRoot_def, pos_iff_ne_zero.2, hn]; split_ifs <;> simp [*]
 
 lemma floorRoot_ne_zero : floorRoot n a ≠ 0 ↔ n ≠ 0 ∧ a ≠ 0 := by
   simp +contextual [floorRoot, not_or]
 
-@[simp] lemma floorRoot_eq_zero : floorRoot n a = 0 ↔ n = 0 ∨ a = 0 :=
+@[simp]
+lemma floorRoot_eq_zero : floorRoot n a = 0 ↔ n = 0 ∨ a = 0 :=
   floorRoot_ne_zero.not_right.trans <| by simp only [not_and_or, ne_eq, not_not]
 
-@[simp] lemma factorization_floorRoot (n a : ℕ) :
-    (floorRoot n a).factorization = a.factorization ⌊/⌋ n := by
+@[simp]
+lemma factorization_floorRoot (n a : ℕ)
+    : (floorRoot n a).factorization = a.factorization ⌊/⌋ n := by
   rw [floorRoot_def]
   split_ifs with h
   · obtain rfl | rfl := h <;> simp
   apply a.factorization_prod_pow_eq_self_of_le_factorization
   exact le_self_nsmul (by simp) (by lia) |>.trans <| smul_floorDiv_le (by lia)
 
-/-- Galois connection between `a ↦ a ^ n : ℕ → ℕ` and `floorRoot n : ℕ → ℕ` where `ℕ` is ordered
-by divisibility. -/
+/--
+Galois connection between `a ↦ a ^ n : ℕ → ℕ` and `floorRoot n : ℕ → ℕ` where `ℕ` is ordered
+by divisibility.
+-/
 lemma pow_dvd_iff_dvd_floorRoot : a ^ n ∣ b ↔ a ∣ floorRoot n b := by
   obtain rfl | hn := eq_or_ne n 0
   · simp
@@ -97,7 +105,8 @@ lemma pow_dvd_iff_dvd_floorRoot : a ^ n ∣ b ↔ a ∣ floorRoot n b := by
 
 lemma floorRoot_pow_dvd : floorRoot n a ^ n ∣ a := pow_dvd_iff_dvd_floorRoot.2 dvd_rfl
 
-/-- Ceiling root of a natural number. This divides the valuation of every prime number rounding up.
+/--
+Ceiling root of a natural number. This divides the valuation of every prime number rounding up.
 
 Eg if `n = 3`, `a = 2^4 * 3^2 * 5`, then `ceilRoot n a = 2^2 * 3 * 5`.
 
@@ -112,44 +121,50 @@ we special-case the following values:
 def ceilRoot (n a : ℕ) : ℕ :=
   if n = 0 ∨ a = 0 then 0 else a.factorization.prod fun p k ↦ p ^ ((k + n - 1) / n)
 
-/-- The RHS is a noncomputable version of `Nat.ceilRoot` with better order-theoretic
-properties. -/
-lemma ceilRoot_def :
-    ceilRoot n a = if n = 0 ∨ a = 0 then 0 else (a.factorization ⌈/⌉ n).prod (· ^ ·) := by
+/--
+The RHS is a noncomputable version of `Nat.ceilRoot` with better order-theoretic
+properties.
+-/
+lemma ceilRoot_def
+    : ceilRoot n a = if n = 0 ∨ a = 0 then 0 else (a.factorization ⌈/⌉ n).prod (· ^ ·) := by
   unfold ceilRoot
-  split_ifs with h <;>
-    simp [Finsupp.ceilDiv_def, prod_mapRange_index pow_zero, Nat.ceilDiv_eq_add_pred_div]
+  split_ifs with h
+    <;> simp [Finsupp.ceilDiv_def, prod_mapRange_index pow_zero, Nat.ceilDiv_eq_add_pred_div]
 
 @[simp] lemma ceilRoot_zero_left (a : ℕ) : ceilRoot 0 a = 0 := by simp [ceilRoot]
 @[simp] lemma ceilRoot_zero_right (n : ℕ) : ceilRoot n 0 = 0 := by simp [ceilRoot]
-@[simp] lemma ceilRoot_one_left (a : ℕ) : ceilRoot 1 a = a := by
-  simp [ceilRoot]; split_ifs <;> simp [*]
+@[simp]
+lemma ceilRoot_one_left (a : ℕ) : ceilRoot 1 a = a := by simp [ceilRoot]; split_ifs <;> simp [*]
 @[simp] lemma ceilRoot_one_right (hn : n ≠ 0) : ceilRoot n 1 = 1 := by simp [ceilRoot, hn]
 
-@[simp] lemma ceilRoot_pow_self (hn : n ≠ 0) (a : ℕ) : ceilRoot n (a ^ n) = a := by
+@[simp]
+lemma ceilRoot_pow_self (hn : n ≠ 0) (a : ℕ) : ceilRoot n (a ^ n) = a := by
   simp [ceilRoot_def, pos_iff_ne_zero.2, hn]; split_ifs <;> simp [*]
 
 lemma ceilRoot_ne_zero : ceilRoot n a ≠ 0 ↔ n ≠ 0 ∧ a ≠ 0 := by
   simp +contextual [ceilRoot_def, not_or]
 
-@[simp] lemma ceilRoot_eq_zero : ceilRoot n a = 0 ↔ n = 0 ∨ a = 0 :=
+@[simp]
+lemma ceilRoot_eq_zero : ceilRoot n a = 0 ↔ n = 0 ∨ a = 0 :=
   ceilRoot_ne_zero.not_right.trans <| by simp only [not_and_or, ne_eq, not_not]
 
-@[simp] lemma factorization_ceilRoot (n a : ℕ) :
-    (ceilRoot n a).factorization = a.factorization ⌈/⌉ n := by
+@[simp]
+lemma factorization_ceilRoot (n a : ℕ) : (ceilRoot n a).factorization = a.factorization ⌈/⌉ n := by
   rw [ceilRoot_def]
   split_ifs with h
   · obtain rfl | rfl := h <;> simp
   refine factorization_prod_pow_eq_self fun p hp ↦ ?_
-  have : p.Prime ∧ p ∣ a ∧ ¬a = 0 := by simpa using support_ceilDiv_subset hp
+  have : p.Prime ∧ p ∣ a ∧ ¬ a = 0 := by simpa using support_ceilDiv_subset hp
   exact this.1
 
-/-- Galois connection between `ceilRoot n : ℕ → ℕ` and `a ↦ a ^ n : ℕ → ℕ` where `ℕ` is ordered
+/--
+Galois connection between `ceilRoot n : ℕ → ℕ` and `a ↦ a ^ n : ℕ → ℕ` where `ℕ` is ordered
 by divisibility.
 
 Note that this cannot possibly hold for `n = 0`, regardless of the value of `ceilRoot 0 a`, because
 the statement reduces to `a = 1 ↔ ceilRoot 0 a ∣ b`, which is false for e.g. `a = 0`,
-`b = ceilRoot 0 a`. -/
+`b = ceilRoot 0 a`.
+-/
 lemma dvd_pow_iff_ceilRoot_dvd (hn : n ≠ 0) : a ∣ b ^ n ↔ ceilRoot n a ∣ b := by
   obtain rfl | ha := eq_or_ne a 0
   · aesop

@@ -48,7 +48,6 @@ weak-star, weak dual, duality
 
 @[expose] public section
 
-
 noncomputable section
 
 open Filter
@@ -61,26 +60,36 @@ section WeakTopology
 
 /-- The space `E` equipped with the weak topology induced by the bilinear form `B`. -/
 @[nolint unusedArguments]
-def WeakBilin [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
-    (_ : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) := E
+def WeakBilin
+    [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
+    (_ : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) :=
+  E
 
 namespace WeakBilin
 
-variable [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
-  (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) [CommSemiring 𝕝] [Module 𝕝 E] in
+variable
+  [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
+  (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜)
+  [CommSemiring 𝕝] [Module 𝕝 E] in
 deriving instance SMul 𝕝, AddCommMonoid, Module 𝕝 for WeakBilin B
 
-instance instAddCommGroup [CommSemiring 𝕜] [AddCommGroup E] [Module 𝕜 E] [AddCommMonoid F]
-    [Module 𝕜 F] (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) : AddCommGroup (WeakBilin B) :=
+instance instAddCommGroup
+    [CommSemiring 𝕜] [AddCommGroup E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
+    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜)
+    : AddCommGroup (WeakBilin B) :=
   inferInstanceAs <| AddCommGroup E
 
-instance [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
-    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) : Module 𝕜 (WeakBilin B) :=
+instance
+    [CommSemiring 𝕜] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
+    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜)
+    : Module 𝕜 (WeakBilin B) :=
   inferInstance
 
-instance instIsScalarTower [CommSemiring 𝕜] [CommSemiring 𝕝] [AddCommMonoid E] [Module 𝕜 E]
-    [AddCommMonoid F] [Module 𝕜 F] [SMul 𝕝 𝕜] [Module 𝕝 E] [IsScalarTower 𝕝 𝕜 E]
-    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) : IsScalarTower 𝕝 𝕜 (WeakBilin B) :=
+instance instIsScalarTower
+    [CommSemiring 𝕜] [CommSemiring 𝕝] [AddCommMonoid E] [Module 𝕜 E] [AddCommMonoid F] [Module 𝕜 F]
+    [SMul 𝕝 𝕜] [Module 𝕝 E] [IsScalarTower 𝕝 𝕜 E]
+    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜)
+    : IsScalarTower 𝕝 𝕜 (WeakBilin B) :=
   inferInstanceAs <| IsScalarTower 𝕝 𝕜 E
 
 section Semiring
@@ -94,25 +103,25 @@ instance instTopologicalSpace : TopologicalSpace (WeakBilin B) :=
   TopologicalSpace.induced (fun x y => B x y) Pi.topologicalSpace
 
 /-- The coercion `(fun x y => B x y) : E → (F → 𝕜)` is continuous. -/
-theorem coeFn_continuous : Continuous fun (x : WeakBilin B) y => B x y :=
-  continuous_induced_dom
+theorem coeFn_continuous : Continuous fun (x : WeakBilin B) y => B x y := continuous_induced_dom
 
 @[fun_prop]
 theorem eval_continuous (y : F) : Continuous fun x : WeakBilin B => B x y :=
   (continuous_pi_iff.mp (coeFn_continuous B)) y
 
-theorem continuous_of_continuous_eval [TopologicalSpace α] {g : α → WeakBilin B}
-    (h : ∀ y, Continuous fun a => B (g a) y) : Continuous g :=
+theorem continuous_of_continuous_eval
+    [TopologicalSpace α] {g : α → WeakBilin B} (h : ∀ y, Continuous fun a => B (g a) y)
+    : Continuous g :=
   continuous_induced_rng.2 (continuous_pi_iff.mpr h)
 
 /-- The coercion `(fun x y => B x y) : E → (F → 𝕜)` is an embedding. -/
-theorem isEmbedding {B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜} (hB : Function.Injective B) :
-    IsEmbedding fun (x : WeakBilin B) y => B x y :=
+theorem isEmbedding {B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜} (hB : Function.Injective B)
+    : IsEmbedding fun (x : WeakBilin B) y => B x y :=
   Function.Injective.isEmbedding_induced <| LinearMap.coe_injective.comp hB
 
-theorem tendsto_iff_forall_eval_tendsto {l : Filter α} {f : α → WeakBilin B} {x : WeakBilin B}
-    (hB : Function.Injective B) :
-    Tendsto f l (𝓝 x) ↔ ∀ y, Tendsto (fun i => B (f i) y) l (𝓝 (B x y)) := by
+theorem tendsto_iff_forall_eval_tendsto
+    {l : Filter α} {f : α → WeakBilin B} {x : WeakBilin B} (hB : Function.Injective B)
+    : Tendsto f l (𝓝 x) ↔ ∀ y, Tendsto (fun i => B (f i) y) l (𝓝 (B x y)) := by
   rw [← tendsto_pi_nhds, (isEmbedding hB).tendsto_nhds_iff]
   rfl
 
@@ -120,9 +129,8 @@ set_option backward.isDefEq.respectTransparency false in
 /-- Addition in `WeakBilin B` is continuous. -/
 instance instContinuousAdd [ContinuousAdd 𝕜] : ContinuousAdd (WeakBilin B) := by
   refine ⟨continuous_induced_rng.2 ?_⟩
-  refine
-    cast (congr_arg _ ?_)
-      (((coeFn_continuous B).comp continuous_fst).add ((coeFn_continuous B).comp continuous_snd))
+  refine cast (congr_arg _ ?_)
+    (((coeFn_continuous B).comp continuous_fst).add ((coeFn_continuous B).comp continuous_snd))
   ext
   simp only [Function.comp_apply, Pi.add_apply, map_add, LinearMap.add_apply]
 
@@ -135,11 +143,8 @@ instance instContinuousSMul [ContinuousSMul 𝕜 𝕜] : ContinuousSMul 𝕜 (We
   simp only [Function.comp_apply, Pi.smul_apply, map_smulₛₗ, RingHom.id_apply, LinearMap.smul_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-/--
-Map `F` into the topological dual of `E` with the weak topology induced by `F`
--/
-def eval [ContinuousAdd 𝕜] [ContinuousConstSMul 𝕜 𝕜] :
-    F →ₗ[𝕜] StrongDual 𝕜 (WeakBilin B) where
+/-- Map `F` into the topological dual of `E` with the weak topology induced by `F` -/
+def eval [ContinuousAdd 𝕜] [ContinuousConstSMul 𝕜 𝕜] : F →ₗ[𝕜] StrongDual 𝕜 (WeakBilin B) where
   toFun f := ⟨B.flip f, by fun_prop⟩
   map_add' _ _ := by ext; simp
   map_smul' _ _ := by ext; simp
@@ -152,12 +157,13 @@ variable [TopologicalSpace 𝕜] [CommRing 𝕜]
 variable [AddCommGroup E] [Module 𝕜 E]
 variable [AddCommGroup F] [Module 𝕜 F]
 
-
 variable (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- `WeakBilin B` is a `IsTopologicalAddGroup`, meaning that addition and negation are
-continuous. -/
+/--
+`WeakBilin B` is a `IsTopologicalAddGroup`, meaning that addition and negation are
+continuous.
+-/
 instance instIsTopologicalAddGroup [ContinuousAdd 𝕜] : IsTopologicalAddGroup (WeakBilin B) where
   toContinuousAdd := by infer_instance
   continuous_neg := by

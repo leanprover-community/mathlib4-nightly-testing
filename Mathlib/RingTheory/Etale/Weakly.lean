@@ -29,8 +29,10 @@ namespace Algebra
 
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
-/-- `S` is a weakly-étale `R`-algebra if both `R → S` and `S ⊗[R] S → R` are flat.
-This is also called absolutely flat. -/
+/--
+`S` is a weakly-étale `R`-algebra if both `R → S` and `S ⊗[R] S → R` are flat.
+This is also called absolutely flat.
+-/
 @[stacks 092B, mk_iff]
 class WeaklyEtale (R S : Type*) [CommRing R] [CommRing S] [Algebra R S] where
   flat : Module.Flat R S := by infer_instance
@@ -58,14 +60,12 @@ instance (priority := low) [Etale R S] : WeaklyEtale R S where
     exact Smooth.flat (S ⊗[R] S) S
 
 @[stacks 092H "(2)"]
-instance {T : Type*} [CommRing T] [Algebra R T] [WeaklyEtale R S] :
-    WeaklyEtale T (T ⊗[R] S) where
+instance {T : Type*} [CommRing T] [Algebra R T] [WeaklyEtale R S] : WeaklyEtale T (T ⊗[R] S) where
   flat_lmul' := by
     let e : T ⊗[R] S ⊗[T] (T ⊗[R] S) ≃ₐ[T] T ⊗[R] (S ⊗[R] S) :=
-      (Algebra.TensorProduct.cancelBaseChange _ _ T _ _).trans
-        (TensorProduct.assoc ..)
-    have : TensorProduct.lmul' T (S := T ⊗[R] S) =
-        (TensorProduct.map (.id T T) (TensorProduct.lmul' R)).comp e.toAlgHom := by
+      (Algebra.TensorProduct.cancelBaseChange _ _ T _ _).trans (TensorProduct.assoc ..)
+    have : TensorProduct.lmul' T (S := T ⊗[R] S)
+        = (TensorProduct.map (.id T T) (TensorProduct.lmul' R)).comp e.toAlgHom := by
       ext <;> simp [e, TensorProduct.one_def]
     rw [this]
     refine .comp (.of_bijective e.bijective) (.tensorProductMap ?_ ?_)
@@ -75,20 +75,25 @@ instance {T : Type*} [CommRing T] [Algebra R T] [WeaklyEtale R S] :
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] TensorProduct.rightAlgebra ULift.algebra' in
 @[stacks 092J "(2)"]
-lemma trans (R : Type u₁) (S : Type u₂) [CommRing R] [CommRing S] [Algebra R S]
-    (T : Type u₃) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower R S T]
-    [WeaklyEtale R S] [WeaklyEtale S T] : WeaklyEtale R T := by
+lemma trans
+    (R : Type u₁) (S : Type u₂) [CommRing R] [CommRing S] [Algebra R S]
+    (T : Type u₃) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower R S T] [WeaklyEtale R S]
+    [WeaklyEtale S T]
+    : WeaklyEtale R T := by
   rw [← ulift_iff.{max u₁ u₂ u₃, max u₁ u₂ u₃}] at *
   refine ⟨.trans _ (ULift.{max u₁ u₂ u₃} S) _, ?_⟩
-  have heq : TensorProduct.lmul' (S := ULift.{max u₁ u₂ u₃} T) (ULift R) =
-      AlgHom.comp ((TensorProduct.lmul' (S := ULift.{max u₁ u₂ u₃} T)
-        (ULift.{max u₁ u₂ u₃} S)).restrictScalars (ULift.{max u₁ u₂ u₃} R))
-        (TensorProduct.mapOfCompatibleSMul ..) := by
+  have heq
+      : TensorProduct.lmul' (S := ULift.{max u₁ u₂ u₃} T) (ULift R)
+        = AlgHom.comp
+          ((TensorProduct.lmul' (S := ULift.{max u₁ u₂ u₃} T)
+              (ULift.{max u₁ u₂ u₃} S)).restrictScalars
+            (ULift.{max u₁ u₂ u₃} R))
+          (TensorProduct.mapOfCompatibleSMul ..) := by
     ext <;> simp
   rw [heq]
   refine .comp ?_ ?_
-  · exact (flat_lmul' (ULift R) (ULift S)).mapOfCompatibleSMul
-      (ULift.{max u₁ u₂ u₃} T) (ULift.{max u₁ u₂ u₃} T)
+  · exact (flat_lmul' (ULift R) (ULift S)).mapOfCompatibleSMul (ULift.{max u₁ u₂ u₃} T)
+      (ULift.{max u₁ u₂ u₃} T)
   · exact WeaklyEtale.flat_lmul' (ULift S) (ULift T)
 
 end WeaklyEtale

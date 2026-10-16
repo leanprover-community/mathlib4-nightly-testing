@@ -35,7 +35,7 @@ partial def findRange (args : List String) : IO UInt32 := do
     let targetCol := colStr.toNat!
     let contents ← IO.FS.readFile filePath
     initSearchPath (← findSysroot)
-    let env ← importModules #[{module := `Init}] {}
+    let env ← importModules #[{ module := `Init }] {}
     let inputCtx := mkInputContext contents filePath
     let (_, mps, msgs) ← parseHeader inputCtx
     let pmctx : ParserModuleContext := { env, options := {} }
@@ -68,10 +68,11 @@ partial def findRange (args : List String) : IO UInt32 := do
           -- Only merge if contiguous (no gap)
           if prevEnd != mergedStart then break
           -- Only merge if the previous command looks like an attribute or doc comment
-          let prevContent := (contents.toUTF8.extract prevStart.byteIdx prevEnd.byteIdx |> String.fromUTF8!)
+          let prevContent :=
+            (contents.toUTF8.extract prevStart.byteIdx prevEnd.byteIdx |> String.fromUTF8!)
           let prevTrimmed := prevContent.trimAsciiStart.toString
-          if prevTrimmed.startsWith "@[" || prevTrimmed.startsWith "/--" ||
-             prevTrimmed.startsWith "#adaptation_note" then
+          if prevTrimmed.startsWith "@[" || prevTrimmed.startsWith "/--"
+              || prevTrimmed.startsWith "#adaptation_note" then
             mergedStart := prevStart
           else
             break

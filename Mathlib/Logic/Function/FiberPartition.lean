@@ -67,11 +67,12 @@ lemma fiber_nonempty (f : Y → Z) (a : Fiber f) : Set.Nonempty a.val := by
   refine ⟨preimage f a, ?_⟩
   rw [mem_iff_eq_image, ← map_preimage_eq_image]
 
-lemma map_preimage_eq_image_map {W : Type*} (f : Y → Z) (g : Z → W) (a : Fiber (g ∘ f)) :
-    g (f a.preimage) = a.image := by rw [← map_preimage_eq_image, comp_apply]
+lemma map_preimage_eq_image_map {W : Type*} (f : Y → Z) (g : Z → W) (a : Fiber (g ∘ f))
+    : g (f a.preimage) = a.image := by
+  rw [← map_preimage_eq_image, comp_apply]
 
-lemma image_eq_image_mk (f : Y → Z) (g : X → Y) (a : Fiber (f ∘ g)) :
-    a.image = (Fiber.mk f (g (a.preimage _))).image := by
+lemma image_eq_image_mk (f : Y → Z) (g : X → Y) (a : Fiber (f ∘ g))
+    : a.image = (Fiber.mk f (g (a.preimage _))).image := by
   rw [← map_preimage_eq_image_map _ _ a, mk_image]
 
 end Function.Fiber

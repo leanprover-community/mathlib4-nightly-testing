@@ -24,8 +24,10 @@ public meta section
 open Lean Meta Server
 
 open Lean.SubExpr in
-/-- Given a `Array GoalsLocation` return the array of `SubExpr.Pos` for all locations
-in the targets of the relevant goals. -/
+/--
+Given a `Array GoalsLocation` return the array of `SubExpr.Pos` for all locations
+in the targets of the relevant goals.
+-/
 def getGoalLocations (locations : Array GoalsLocation) : Array SubExpr.Pos := Id.run do
   let mut res := #[]
   for location in locations do
@@ -40,10 +42,12 @@ def insertMetaVar (e : Expr) (pos : SubExpr.Pos) : MetaM Expr :=
 /-- Replace all meta-variable names by `"?_"`. -/
 def String.renameMetaVar (s : String) : String :=
   match s.splitOn "?m." with
-  | [] => ""
-  | [s] => s
-  | head::tail => head ++ "?_" ++
-      "?_".toSlice.intercalate (tail.map fun s ↦ s.dropWhile Char.isDigit)
+  | [] =>
+    ""
+  | [s] =>
+    s
+  | head :: tail =>
+    head ++ "?_" ++ "?_".toSlice.intercalate (tail.map fun s ↦ s.dropWhile Char.isDigit)
 
 open ProofWidgets
 
@@ -57,10 +61,11 @@ structure SelectInsertParams where
   selectedLocations : Array SubExpr.GoalsLocation
   /-- The range in the source document where the command will be inserted. -/
   replaceRange : Lsp.Range
-  deriving SelectInsertParamsClass, RpcEncodable
+deriving SelectInsertParamsClass, RpcEncodable
 
 open SelectInsertParamsClass Lean.SubExpr in
-/-- Helper function to create a widget allowing to select parts of the main goal
+/--
+Helper function to create a widget allowing to select parts of the main goal
 and then display a link that will insert some tactic call.
 
 The main argument is `mkCmdStr` which is a function creating the link text and the tactic call text.
@@ -78,43 +83,43 @@ Note that the `pos` and `goalType` arguments to `mkCmdStr` could be extracted fo
 argument but that extraction would happen in every example, hence it is factored out here.
 We also make sure `mkCmdStr` is executed in the right context.
 -/
-def mkSelectionPanelRPC {Params : Type} [SelectInsertParamsClass Params]
-    (mkCmdStr : (pos : Array GoalsLocation) → (goalType : Expr) → Params →
-    MetaM (String × String × Option (String.Pos.Raw × String.Pos.Raw)))
-    (helpMsg : String) (title : String) (onlyGoal := true) (onlyOne := false) :
-    (params : Params) → RequestM (RequestTask Html) :=
-  fun params ↦ RequestM.asTask do
-  let doc ← RequestM.readDoc
-  if h : 0 < (goals params).size then
-    let mainGoal := (goals params)[0]
-    let mainGoalName := mainGoal.mvarId.name
-    let all := if onlyOne then "The selected sub-expression" else "All selected sub-expressions"
-    let be_where := if onlyGoal then "in the main goal." else "in the main goal or its context."
-    let errorMsg := s!"{all} should be {be_where}"
-    let inner : Html ← (do
-      if onlyOne && (selectedLocations params).size > 1 then
-        return jsx%{<span>You should select only one sub-expression</span>}
-      for selectedLocation in selectedLocations params do
-        if selectedLocation.mvarId.name != mainGoalName then
-          return jsx%{<span>{.text errorMsg}</span>}
-        else if onlyGoal then
-          if !(selectedLocation.loc matches (.target _)) then
+def mkSelectionPanelRPC
+    {Params : Type} [SelectInsertParamsClass Params]
+    (mkCmdStr : (pos : Array GoalsLocation) → (goalType : Expr) → Params
+      → MetaM (String × String × Option (String.Pos.Raw × String.Pos.Raw)))
+    (helpMsg : String) (title : String)
+    (onlyGoal := true) (onlyOne := false)
+    : (params : Params) → RequestM (RequestTask Html) := fun params ↦
+  RequestM.asTask do
+    let doc ← RequestM.readDoc
+    if h : 0 < (goals params).size then
+      let mainGoal := (goals params)[0]
+      let mainGoalName := mainGoal.mvarId.name
+      let all := if onlyOne then "The selected sub-expression" else "All selected sub-expressions"
+      let be_where := if onlyGoal then "in the main goal." else "in the main goal or its context."
+      let errorMsg := s!"{all} should be {be_where}"
+      let inner : Html ← (do
+        if onlyOne && (selectedLocations params).size > 1 then
+          return jsx%{<span>You should select only one sub-expression</span>}
+        for selectedLocation in selectedLocations params do
+          if selectedLocation.mvarId.name != mainGoalName then
             return jsx%{<span>{.text errorMsg}</span>}
-      if (selectedLocations params).isEmpty then
-        return jsx%{<span>{.text helpMsg}</span>}
-      mainGoal.ctx.val.runMetaM {} do
-        let md ← mainGoal.mvarId.getDecl
-        let lctx := md.lctx |>.sanitizeNames.run' {options := (← getOptions)}
-        Meta.withLCtx lctx md.localInstances do
-          let (linkText, newCode, range?) ← mkCmdStr (selectedLocations params) md.type.consumeMData
-            params
-          return .ofComponent
-            MakeEditLink
-            (.ofReplaceRange doc.meta (replaceRange params) newCode range?)
-            #[ .text linkText ])
-    return jsx%{<details open={true}>
+          else if onlyGoal then
+            if !(selectedLocation.loc matches (.target _)) then
+              return jsx%{<span>{.text errorMsg}</span>}
+        if (selectedLocations params).isEmpty then
+          return jsx%{<span>{.text helpMsg}</span>}
+        mainGoal.ctx.val.runMetaM {} do
+          let md ← mainGoal.mvarId.getDecl
+          let lctx := md.lctx |>.sanitizeNames.run' { options := (← getOptions) }
+          Meta.withLCtx lctx md.localInstances do
+            let (linkText, newCode, range?) ←
+              mkCmdStr (selectedLocations params) md.type.consumeMData params
+            return .ofComponent MakeEditLink
+              (.ofReplaceRange doc.meta (replaceRange params) newCode range?) #[.text linkText])
+      return jsx%{<details open={true}>
         <summary className="mv2 pointer">{.text title}</summary>
         <div className="ml1">{inner}</div>
       </details>}
-  else
-    return jsx%{<span>There is no goal to solve!</span>} -- This shouldn't happen.
+    else
+      return jsx%{<span>There is no goal to solve!</span>} -- This shouldn't happen.

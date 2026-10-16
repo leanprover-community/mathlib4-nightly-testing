@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Field.IsField
 public import Mathlib.Basic.Finite.Defs
-
 import Mathlib.Algebra.GroupWithZero.Action.Center
 import Mathlib.GroupTheory.ClassEquation
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
@@ -47,8 +46,7 @@ namespace LittleWedderburn
 
 variable (D : Type*) [DivisionRing D]
 
-def InductionHyp : Prop :=
-  ∀ {R : Subring D}, R < ⊤ → ∀ ⦃x y⦄, x ∈ R → y ∈ R → x * y = y * x
+def InductionHyp : Prop := ∀ {R : Subring D}, R < ⊤ → ∀ ⦃x y⦄, x ∈ R → y ∈ R → x * y = y * x
 
 namespace InductionHyp
 
@@ -57,11 +55,13 @@ open Module Polynomial
 variable {D}
 
 @[instance_reducible]
-def field (hD : InductionHyp D) {R : Subring D} (hR : R < ⊤)
-    [Fintype D] [DecidableEq D] [DecidablePred (· ∈ R)] :
-    Field R :=
-  { show DivisionRing R from Fintype.divisionRingOfIsDomain R with
-    mul_comm := fun x y ↦ Subtype.ext <| hD hR x.2 y.2 }
+def field
+    (hD : InductionHyp D)
+    {R : Subring D} (hR : R < ⊤) [Fintype D] [DecidableEq D] [DecidablePred (· ∈ R)]
+    : Field R := {
+  show DivisionRing R from Fintype.divisionRingOfIsDomain R with
+  mul_comm := fun x y ↦ Subtype.ext <| hD hR x.2 y.2
+}
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- We prove that if every subring of `D` is central, then so is `D`. -/
@@ -81,8 +81,9 @@ theorem center_eq_top [Finite D] (hD : InductionHyp D) : Subring.center D = ⊤ 
   -- `q ^ n - 1 = q - 1 + ∑ x : conjugacy classes (D ∖ Dˣ), |x|`.
   -- The next few lines gets the equation into basically this form over `ℤ`.
   have key := Group.card_center_add_sum_card_noncenter_eq_card (Dˣ)
-  rw [card_congr (show _ ≃* Zˣ from Subgroup.centerUnitsEquivUnitsCenter D).toEquiv,
-      card_units, ← card_Z, card_units, card_D] at key
+  rw [card_congr (show _ ≃* Zˣ from Subgroup.centerUnitsEquivUnitsCenter D).toEquiv, card_units,
+      ← card_Z, card_units, card_D]
+    at key
   -- By properties of the cyclotomic function, we have that `Φₙ(q) ∣ q ^ n - 1`; however, when
   -- `n ≠ 1`, then `¬Φₙ(q) | q - 1`; so if the sum over the conjugacy classes is divisible by
   -- `Φₙ(q)`, then `n = 1`, and therefore the vector space is trivial, as desired.
@@ -114,8 +115,8 @@ theorem center_eq_top [Finite D] (hD : InductionHyp D) : Subring.center D = ⊤ 
   -- We therefore get that `|x| = (q ^ n - 1) / (q ^ d - 1)`, and as `d` is a strict divisor of `n`,
   -- we do have that `Φₙ(q) | (q ^ n - 1) / (q ^ d - 1)`; extending this over the whole sum
   -- gives us the desired contradiction..
-  rw [Set.toFinset_card, ConjClasses.card_carrier, ← card_congr
-        (show Zxˣ ≃* _ from unitsCentralizerEquiv _ x).toEquiv, card_units, card_D]
+  rw [Set.toFinset_card, ConjClasses.card_carrier,
+    ← card_congr (show Zxˣ ≃* _ from unitsCentralizerEquiv _ x).toEquiv, card_units, card_D]
   have hZx : Zx ≠ ⊤ := by
     by_contra hZx
     refine (ConjClasses.mk_bijOn (Dˣ)).mapsTo (Set.subset_center_units ?_) hx
@@ -145,7 +146,8 @@ end InductionHyp
 theorem center_eq_top [Finite D] : Subring.center D = ⊤ := by
   classical
   cases nonempty_fintype D
-  induction hn : Fintype.card D using Nat.strong_induction_on generalizing D with | _ n IH
+  induction hn : Fintype.card D using Nat.strong_induction_on generalizing D with
+  | _ n IH
   apply InductionHyp.center_eq_top
   intro R hR x y hx hy
   suffices (⟨y, hy⟩ : R) ∈ Subring.center R by
@@ -163,12 +165,15 @@ public section
 
 open LittleWedderburn
 
-/-- A finite division ring is a field. See `Finite.isDomain_to_isField` and
+/--
+A finite division ring is a field. See `Finite.isDomain_to_isField` and
 `Fintype.divisionRingOfIsDomain` for more general statements, but these create data, and therefore
-may cause diamonds if used improperly. -/
-instance (priority := 100) littleWedderburn (D : Type*) [DivisionRing D] [Finite D] : Field D :=
-  { ‹DivisionRing D› with
-    mul_comm := fun x y ↦ by simp [Subring.mem_center_iff.mp ?_ x, center_eq_top D] }
+may cause diamonds if used improperly.
+-/
+instance (priority := 100) littleWedderburn (D : Type*) [DivisionRing D] [Finite D] : Field D := {
+  ‹DivisionRing D› with
+  mul_comm := fun x y ↦ by simp [Subring.mem_center_iff.mp ?_ x, center_eq_top D]
+}
 
 alias Finite.divisionRing_to_field := littleWedderburn
 

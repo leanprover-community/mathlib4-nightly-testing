@@ -6,7 +6,6 @@ Authors: Yaël Dillies, Zichen Wang
 module
 
 public import Mathlib.Analysis.Convex.Intrinsic
-
 import Mathlib.Analysis.Normed.Affine.Convex
 
 /-!
@@ -21,15 +20,16 @@ public section
 open FiniteDimensional Metric Set List Bornology
 open scoped Topology
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {C : Set E} {f : E → ℝ} {x₀ : E} {ε r r' M : ℝ}
 
-lemma ConvexOn.lipschitzOnWith_of_abs_le (hf : ConvexOn ℝ (ball x₀ r) f) (hε : 0 < ε)
-    (hM : ∀ a, dist a x₀ < r → |f a| ≤ M) :
-    LipschitzOnWith (2 * M / ε).toNNReal f (ball x₀ (r - ε)) := by
+lemma ConvexOn.lipschitzOnWith_of_abs_le
+    (hf : ConvexOn ℝ (ball x₀ r) f) (hε : 0 < ε) (hM : ∀ a, dist a x₀ < r → |f a| ≤ M)
+    : LipschitzOnWith (2 * M / ε).toNNReal f (ball x₀ (r - ε)) := by
   set K := 2 * M / ε with hK
-  have oneside {x y : E} (hx : x ∈ ball x₀ (r - ε)) (hy : y ∈ ball x₀ (r - ε)) :
-      f x - f y ≤ K * ‖x - y‖ := by
+  have oneside {x y : E} (hx : x ∈ ball x₀ (r - ε)) (hy : y ∈ ball x₀ (r - ε))
+      : f x - f y ≤ K * ‖x - y‖ := by
     obtain rfl | hxy := eq_or_ne x y
     · simp
     have hx₀r : ball x₀ (r - ε) ⊆ ball x₀ r := ball_subset_ball <| by linarith
@@ -37,14 +37,15 @@ lemma ConvexOn.lipschitzOnWith_of_abs_le (hf : ConvexOn ℝ (ball x₀ r) f) (h�
     have hy' : y ∈ ball x₀ r := hx₀r hy
     let z := x + (ε / ‖x - y‖) • (x - y)
     replace hxy : 0 < ‖x - y‖ := by rwa [norm_sub_pos_iff]
-    have hz : z ∈ ball x₀ r := mem_ball_iff_norm.2 <| by
-      calc
-        _ = ‖(x - x₀) + (ε / ‖x - y‖) • (x - y)‖ := by simp only [z, add_sub_right_comm]
-        _ ≤ ‖x - x₀‖ + ‖(ε / ‖x - y‖) • (x - y)‖ := norm_add_le ..
-        _ < r - ε + ε :=
-          add_lt_add_of_lt_of_le (mem_ball_iff_norm.1 hx) <| by
-            simp [norm_smul, abs_of_nonneg, hε.le, hxy.ne']
-        _ = r := by simp
+    have hz : z ∈ ball x₀ r :=
+      mem_ball_iff_norm.2 <| by
+        calc
+          _ = ‖(x - x₀) + (ε / ‖x - y‖) • (x - y)‖ := by simp only [z, add_sub_right_comm]
+          _ ≤ ‖x - x₀‖ + ‖(ε / ‖x - y‖) • (x - y)‖ := norm_add_le ..
+          _ < r - ε + ε :=
+            add_lt_add_of_lt_of_le (mem_ball_iff_norm.1 hx) <| by
+              simp [norm_smul, abs_of_nonneg, hε.le, hxy.ne']
+          _ = r := by simp
     let a := ε / (ε + ‖x - y‖)
     let b := ‖x - y‖ / (ε + ‖x - y‖)
     have hab : a + b = 1 := by simp [field, a, b]
@@ -68,27 +69,30 @@ lemma ConvexOn.lipschitzOnWith_of_abs_le (hf : ConvexOn ℝ (ball x₀ r) f) (h�
   simp_rw [dist_eq_norm_sub, Real.norm_eq_abs, abs_sub_le_iff]
   exact ⟨oneside hx hy, norm_sub_rev x _ ▸ oneside hy hx⟩
 
-lemma ConcaveOn.lipschitzOnWith_of_abs_le (hf : ConcaveOn ℝ (ball x₀ r) f) (hε : 0 < ε)
-    (hM : ∀ a, dist a x₀ < r → |f a| ≤ M) :
-    LipschitzOnWith (2 * M / ε).toNNReal f (ball x₀ (r - ε)) := by
+lemma ConcaveOn.lipschitzOnWith_of_abs_le
+    (hf : ConcaveOn ℝ (ball x₀ r) f) (hε : 0 < ε) (hM : ∀ a, dist a x₀ < r → |f a| ≤ M)
+    : LipschitzOnWith (2 * M / ε).toNNReal f (ball x₀ (r - ε)) := by
   simpa using hf.neg.lipschitzOnWith_of_abs_le hε <| by simpa using hM
 
-lemma ConvexOn.exists_lipschitzOnWith_of_isBounded (hf : ConvexOn ℝ (ball x₀ r) f) (hr : r' < r)
-    (hf' : IsBounded (f '' ball x₀ r)) : ∃ K, LipschitzOnWith K f (ball x₀ r') := by
+lemma ConvexOn.exists_lipschitzOnWith_of_isBounded
+    (hf : ConvexOn ℝ (ball x₀ r) f) (hr : r' < r) (hf' : IsBounded (f '' ball x₀ r))
+    : ∃ K, LipschitzOnWith K f (ball x₀ r') := by
   rw [isBounded_iff_subset_ball 0] at hf'
   simp only [Set.subset_def, mem_image, mem_ball, dist_zero_right, Real.norm_eq_abs,
-    forall_exists_index, and_imp, forall_apply_eq_imp_iff₂] at hf'
+      forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
+    at hf'
   obtain ⟨M, hM⟩ := hf'
   rw [← sub_sub_cancel r r']
   exact ⟨_, hf.lipschitzOnWith_of_abs_le (sub_pos.2 hr) fun a ha ↦ (hM a ha).le⟩
 
-lemma ConcaveOn.exists_lipschitzOnWith_of_isBounded (hf : ConcaveOn ℝ (ball x₀ r) f) (hr : r' < r)
-    (hf' : IsBounded (f '' ball x₀ r)) : ∃ K, LipschitzOnWith K f (ball x₀ r') := by
+lemma ConcaveOn.exists_lipschitzOnWith_of_isBounded
+    (hf : ConcaveOn ℝ (ball x₀ r) f) (hr : r' < r) (hf' : IsBounded (f '' ball x₀ r))
+    : ∃ K, LipschitzOnWith K f (ball x₀ r') := by
   replace hf' : IsBounded ((-f) '' ball x₀ r) := by convert hf'.neg; ext; simp [neg_eq_iff_eq_neg]
   simpa using hf.neg.exists_lipschitzOnWith_of_isBounded hr hf'
 
-lemma ConvexOn.isBoundedUnder_abs (hf : ConvexOn ℝ C f) {x₀ : E} (hC : C ∈ 𝓝 x₀) :
-    (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f| ↔ (𝓝 x₀).IsBoundedUnder (· ≤ ·) f := by
+lemma ConvexOn.isBoundedUnder_abs (hf : ConvexOn ℝ C f) {x₀ : E} (hC : C ∈ 𝓝 x₀)
+    : (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f| ↔ (𝓝 x₀).IsBoundedUnder (· ≤ ·) f := by
   refine ⟨fun h ↦ h.mono_le <| .of_forall fun x ↦ le_abs_self _, ?_⟩
   rintro ⟨r, hr⟩
   refine ⟨|r| + 2 * |f x₀|, ?_⟩
@@ -99,26 +103,30 @@ lemma ConvexOn.isBoundedUnder_abs (hf : ConvexOn ℝ C f) {x₀ : E} (hC : C ∈
   refine ⟨hfr.trans <| (le_abs_self _).trans <| by simp, ?_⟩
   rw [← sub_le_iff_le_add, neg_sub_comm, sub_le_iff_le_add', ← abs_two, ← abs_mul]
   calc
-    -|2 * f x₀| ≤ 2 * f x₀ := neg_abs_le _
+    - |2 * f x₀|
+      ≤ 2 * f x₀ := neg_abs_le _
     _ ≤ f y + f (2 • x₀ - y) := by
       have := hf.2 hx' hx (by positivity) (by positivity) (add_halves _)
       simp only [one_div, ← Nat.cast_smul_eq_nsmul ℝ, Nat.cast_ofNat, smul_sub, ne_eq,
-        OfNat.ofNat_ne_zero, not_false_eq_true, inv_smul_smul₀, add_sub_cancel, smul_eq_mul] at this
+          OfNat.ofNat_ne_zero, not_false_eq_true, inv_smul_smul₀, add_sub_cancel, smul_eq_mul]
+        at this
       cancel_denoms at this
       rwa [← Nat.cast_two, Nat.cast_smul_eq_nsmul] at this
     _ ≤ f y + |r| := by gcongr; exact hfr'.trans (le_abs_self _)
 
-lemma ConcaveOn.isBoundedUnder_abs (hf : ConcaveOn ℝ C f) {x₀ : E} (hC : C ∈ 𝓝 x₀) :
-    (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f| ↔ (𝓝 x₀).IsBoundedUnder (· ≥ ·) f := by
+lemma ConcaveOn.isBoundedUnder_abs (hf : ConcaveOn ℝ C f) {x₀ : E} (hC : C ∈ 𝓝 x₀)
+    : (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f| ↔ (𝓝 x₀).IsBoundedUnder (· ≥ ·) f := by
   simpa [Pi.neg_def, Pi.abs_def] using hf.neg.isBoundedUnder_abs hC
 
-lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConvexOn ℝ C f) : TFAE [
-    LocallyLipschitzOn C f,
-    ContinuousOn f C,
-    ∃ x₀ ∈ C, ContinuousAt f x₀,
-    ∃ x₀ ∈ C, (𝓝 x₀).IsBoundedUnder (· ≤ ·) f,
-    ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) f,
-    ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f|] := by
+lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConvexOn ℝ C f)
+    : TFAE [
+      LocallyLipschitzOn C f,
+      ContinuousOn f C,
+      ∃ x₀ ∈ C, ContinuousAt f x₀,
+      ∃ x₀ ∈ C, (𝓝 x₀).IsBoundedUnder (· ≤ ·) f,
+      ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) f,
+      ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f|
+    ] := by
   tfae_have 1 → 2 := LocallyLipschitzOn.continuousOn
   tfae_have 2 → 3 := by
     obtain ⟨x₀, hx₀⟩ := hC'
@@ -160,55 +168,59 @@ lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : Convex
     exact ⟨K, _, ball_mem_nhds _ (by simpa), hK⟩
   tfae_finish
 
-lemma ConcaveOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConcaveOn ℝ C f) : TFAE [
-    LocallyLipschitzOn C f,
-    ContinuousOn f C,
-    ∃ x₀ ∈ C, ContinuousAt f x₀,
-    ∃ x₀ ∈ C, (𝓝 x₀).IsBoundedUnder (· ≥ ·) f,
-    ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≥ ·) f,
-    ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f|] := by
+lemma ConcaveOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConcaveOn ℝ C f)
+    : TFAE [
+      LocallyLipschitzOn C f,
+      ContinuousOn f C,
+      ∃ x₀ ∈ C, ContinuousAt f x₀,
+      ∃ x₀ ∈ C, (𝓝 x₀).IsBoundedUnder (· ≥ ·) f,
+      ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≥ ·) f,
+      ∀ ⦃x₀⦄, x₀ ∈ C → (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f|
+    ] := by
   have := hf.neg.continuousOn_tfae hC hC'
   simp only [locallyLipschitzOn_neg_iff, continuousOn_neg_iff, continuousAt_neg_iff, abs_neg]
     at this
   convert! this using 8 <;> exact (Equiv.neg ℝ).exists_congr (by simp)
 
-lemma ConvexOn.locallyLipschitzOn_iff_continuousOn (hC : IsOpen C) (hf : ConvexOn ℝ C f) :
-    LocallyLipschitzOn C f ↔ ContinuousOn f C := by
+lemma ConvexOn.locallyLipschitzOn_iff_continuousOn (hC : IsOpen C) (hf : ConvexOn ℝ C f)
+    : LocallyLipschitzOn C f ↔ ContinuousOn f C := by
   obtain rfl | hC' := C.eq_empty_or_nonempty
   · simp
   · exact (hf.continuousOn_tfae hC hC').out 1 2
 
-lemma ConcaveOn.locallyLipschitzOn_iff_continuousOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f) :
-    LocallyLipschitzOn C f ↔ ContinuousOn f C := by
+lemma ConcaveOn.locallyLipschitzOn_iff_continuousOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f)
+    : LocallyLipschitzOn C f ↔ ContinuousOn f C := by
   simpa using hf.neg.locallyLipschitzOn_iff_continuousOn hC
 
 variable [FiniteDimensional ℝ E]
 
-protected lemma ConvexOn.locallyLipschitzOn (hC : IsOpen C) (hf : ConvexOn ℝ C f) :
-    LocallyLipschitzOn C f := by
+protected lemma ConvexOn.locallyLipschitzOn (hC : IsOpen C) (hf : ConvexOn ℝ C f)
+    : LocallyLipschitzOn C f := by
   obtain rfl | ⟨x₀, hx₀⟩ := C.eq_empty_or_nonempty
   · simp
   · obtain ⟨b, hx₀b, hbC⟩ := exists_mem_interior_convexHull_affineBasis (hC.mem_nhds hx₀)
     refine ((hf.continuousOn_tfae hC ⟨x₀, hx₀⟩).out 4 1).mp ?_
     refine ⟨x₀, hx₀, BddAbove.isBoundedUnder (IsOpen.mem_nhds isOpen_interior hx₀b) ?_⟩
     exact (hf.bddAbove_convexHull ((subset_convexHull ..).trans hbC)
-      ((finite_range _).image _).bddAbove).mono (by gcongr; exact interior_subset)
+        ((finite_range _).image _).bddAbove).mono
+      (by gcongr; exact interior_subset)
 
-protected lemma ConcaveOn.locallyLipschitzOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f) :
-    LocallyLipschitzOn C f := by simpa using hf.neg.locallyLipschitzOn hC
+protected lemma ConcaveOn.locallyLipschitzOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f)
+    : LocallyLipschitzOn C f := by
+  simpa using hf.neg.locallyLipschitzOn hC
 
-protected lemma ConvexOn.continuousOn (hC : IsOpen C) (hf : ConvexOn ℝ C f) :
-    ContinuousOn f C := (hf.locallyLipschitzOn hC).continuousOn
+protected lemma ConvexOn.continuousOn (hC : IsOpen C) (hf : ConvexOn ℝ C f) : ContinuousOn f C :=
+  (hf.locallyLipschitzOn hC).continuousOn
 
-protected lemma ConcaveOn.continuousOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f) :
-    ContinuousOn f C := (hf.locallyLipschitzOn hC).continuousOn
+protected lemma ConcaveOn.continuousOn (hC : IsOpen C) (hf : ConcaveOn ℝ C f) : ContinuousOn f C :=
+  (hf.locallyLipschitzOn hC).continuousOn
 
-lemma ConvexOn.locallyLipschitzOn_interior (hf : ConvexOn ℝ C f) :
-    LocallyLipschitzOn (interior C) f :=
+lemma ConvexOn.locallyLipschitzOn_interior (hf : ConvexOn ℝ C f)
+    : LocallyLipschitzOn (interior C) f :=
   (hf.subset interior_subset hf.1.interior).locallyLipschitzOn isOpen_interior
 
-lemma ConcaveOn.locallyLipschitzOn_interior (hf : ConcaveOn ℝ C f) :
-    LocallyLipschitzOn (interior C) f :=
+lemma ConcaveOn.locallyLipschitzOn_interior (hf : ConcaveOn ℝ C f)
+    : LocallyLipschitzOn (interior C) f :=
   (hf.subset interior_subset hf.1.interior).locallyLipschitzOn isOpen_interior
 
 lemma ConvexOn.continuousOn_interior (hf : ConvexOn ℝ C f) : ContinuousOn f (interior C) :=
@@ -223,39 +235,40 @@ protected lemma ConvexOn.locallyLipschitz (hf : ConvexOn ℝ univ f) : LocallyLi
 protected lemma ConcaveOn.locallyLipschitz (hf : ConcaveOn ℝ univ f) : LocallyLipschitz f := by
   simpa using hf.locallyLipschitzOn_interior
 
-lemma ConvexOn.locallyLipschitzOn_intrinsicInterior (hf : ConvexOn ℝ C f) :
-    LocallyLipschitzOn (intrinsicInterior ℝ C) f := by
+lemma ConvexOn.locallyLipschitzOn_intrinsicInterior (hf : ConvexOn ℝ C f)
+    : LocallyLipschitzOn (intrinsicInterior ℝ C) f := by
   obtain rfl | ⟨p, hp⟩ := C.eq_empty_or_nonempty
   · simp
   have : Nonempty (affineSpan ℝ C) := ⟨⟨p, subset_affineSpan ℝ C hp⟩⟩
   set ψ := (AffineIsometryEquiv.constVSub ℝ (⟨p, subset_affineSpan ℝ C hp⟩ : affineSpan ℝ C)).symm
   have hiso : Isometry (Subtype.val ∘ ⇑ψ) := isometry_subtype_coe.comp ψ.isometry
-  have hL := (hf.comp_affineMap
-    ((affineSpan ℝ C).subtype.comp ψ.toAffineEquiv.toAffineMap)).locallyLipschitzOn_interior
+  have hL :=
+    (hf.comp_affineMap ((affineSpan ℝ C).subtype.comp
+      ψ.toAffineEquiv.toAffineMap)).locallyLipschitzOn_interior
   refine (hiso.locallyLipschitzOn_image (by simpa using hL)).mono ?_
   rw [Set.preimage_comp]
   rintro x hx
   obtain ⟨w, hw, rfl⟩ := mem_intrinsicInterior.1 hx
-  exact ⟨ψ.symm w, preimage_interior_subset_interior_preimage ψ.continuous (by simpa using hw),
-    by simp⟩
+  exact
+    ⟨ψ.symm w, preimage_interior_subset_interior_preimage ψ.continuous (by simpa using hw), by simp⟩
 
-lemma ConcaveOn.locallyLipschitzOn_intrinsicInterior (hf : ConcaveOn ℝ C f) :
-    LocallyLipschitzOn (intrinsicInterior ℝ C) f := by
+lemma ConcaveOn.locallyLipschitzOn_intrinsicInterior (hf : ConcaveOn ℝ C f)
+    : LocallyLipschitzOn (intrinsicInterior ℝ C) f := by
   simpa using hf.neg.locallyLipschitzOn_intrinsicInterior
 
-lemma ConvexOn.continuousOn_intrinsicInterior (hf : ConvexOn ℝ C f) :
-    ContinuousOn f (intrinsicInterior ℝ C) :=
+lemma ConvexOn.continuousOn_intrinsicInterior (hf : ConvexOn ℝ C f)
+    : ContinuousOn f (intrinsicInterior ℝ C) :=
   hf.locallyLipschitzOn_intrinsicInterior.continuousOn
 
-lemma ConcaveOn.continuousOn_intrinsicInterior (hf : ConcaveOn ℝ C f) :
-    ContinuousOn f (intrinsicInterior ℝ C) :=
+lemma ConcaveOn.continuousOn_intrinsicInterior (hf : ConcaveOn ℝ C f)
+    : ContinuousOn f (intrinsicInterior ℝ C) :=
   hf.locallyLipschitzOn_intrinsicInterior.continuousOn
 
 section Intervals
 
-lemma ConvexOn.continuousOn_Ici {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn ℝ (Ici y) f)
-    (hf_cont : ContinuousWithinAt f (Ici y) y) :
-    ContinuousOn f (Ici y) := by
+lemma ConvexOn.continuousOn_Ici
+    {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn ℝ (Ici y) f) (hf_cont : ContinuousWithinAt f (Ici y) y)
+    : ContinuousOn f (Ici y) := by
   intro x hx
   rcases eq_or_lt_of_le (α := ℝ) hx with rfl | hxy
   · exact hf_cont
@@ -264,14 +277,14 @@ lemma ConvexOn.continuousOn_Ici {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn �
     rw [continuousWithinAt_iff_continuousAt (Ioi_mem_nhds hxy)] at h
     exact (h hxy).continuousWithinAt
 
-lemma ConcaveOn.continuousOn_Ici {f : ℝ → ℝ} {y : ℝ} (hf_cnv : ConcaveOn ℝ (Ici y) f)
-    (hf_cont : ContinuousWithinAt f (Ici y) y) :
-    ContinuousOn f (Ici y) := by
+lemma ConcaveOn.continuousOn_Ici
+    {f : ℝ → ℝ} {y : ℝ} (hf_cnv : ConcaveOn ℝ (Ici y) f) (hf_cont : ContinuousWithinAt f (Ici y) y)
+    : ContinuousOn f (Ici y) := by
   simpa using hf_cnv.neg.continuousOn_Ici hf_cont.neg
 
-lemma ConvexOn.continuousOn_Iic {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn ℝ (Iic y) f)
-    (hf_cont : ContinuousWithinAt f (Iic y) y) :
-    ContinuousOn f (Iic y) := by
+lemma ConvexOn.continuousOn_Iic
+    {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn ℝ (Iic y) f) (hf_cont : ContinuousWithinAt f (Iic y) y)
+    : ContinuousOn f (Iic y) := by
   intro x hx
   rcases eq_or_lt_of_le (α := ℝ) hx with rfl | hxy
   · exact hf_cont
@@ -280,14 +293,15 @@ lemma ConvexOn.continuousOn_Iic {f : ℝ → ℝ} {y : ℝ} (hf_cvx : ConvexOn �
     rw [continuousWithinAt_iff_continuousAt (Iio_mem_nhds hxy)] at h
     exact (h hxy).continuousWithinAt
 
-lemma ConcaveOn.continuousOn_Iic {f : ℝ → ℝ} {y : ℝ} (hf_cnv : ConcaveOn ℝ (Iic y) f)
-    (hf_cont : ContinuousWithinAt f (Iic y) y) :
-    ContinuousOn f (Iic y) := by
+lemma ConcaveOn.continuousOn_Iic
+    {f : ℝ → ℝ} {y : ℝ} (hf_cnv : ConcaveOn ℝ (Iic y) f) (hf_cont : ContinuousWithinAt f (Iic y) y)
+    : ContinuousOn f (Iic y) := by
   simpa using hf_cnv.neg.continuousOn_Iic hf_cont.neg
 
-lemma ConvexOn.continuousOn_Ioc {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn ℝ (Ioc y z) f)
-    (hf_cont : ContinuousWithinAt f (Iic z) z) :
-    ContinuousOn f (Ioc y z) := by
+lemma ConvexOn.continuousOn_Ioc
+    {f : ℝ → ℝ} {y z : ℝ}
+    (hf_cvx : ConvexOn ℝ (Ioc y z) f) (hf_cont : ContinuousWithinAt f (Iic z) z)
+    : ContinuousOn f (Ioc y z) := by
   intro x hx
   rcases eq_or_lt_of_le (α := ℝ) hx.2 with rfl | hxz
   · rw [continuousWithinAt_Ioc_iff_Iic hx.1]
@@ -297,14 +311,16 @@ lemma ConvexOn.continuousOn_Ioc {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn
     rw [continuousWithinAt_iff_continuousAt (Ioo_mem_nhds hx.1 hxz)] at h
     exact h.continuousWithinAt
 
-lemma ConcaveOn.continuousOn_Ioc {f : ℝ → ℝ} {y z : ℝ} (hf_cnv : ConcaveOn ℝ (Ioc y z) f)
-    (hf_cont : ContinuousWithinAt f (Iic z) z) :
-    ContinuousOn f (Ioc y z) := by
+lemma ConcaveOn.continuousOn_Ioc
+    {f : ℝ → ℝ} {y z : ℝ}
+    (hf_cnv : ConcaveOn ℝ (Ioc y z) f) (hf_cont : ContinuousWithinAt f (Iic z) z)
+    : ContinuousOn f (Ioc y z) := by
   simpa using hf_cnv.neg.continuousOn_Ioc hf_cont.neg
 
-lemma ConvexOn.continuousOn_Ico {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn ℝ (Ico y z) f)
-    (hf_cont : ContinuousWithinAt f (Ici y) y) :
-    ContinuousOn f (Ico y z) := by
+lemma ConvexOn.continuousOn_Ico
+    {f : ℝ → ℝ} {y z : ℝ}
+    (hf_cvx : ConvexOn ℝ (Ico y z) f) (hf_cont : ContinuousWithinAt f (Ici y) y)
+    : ContinuousOn f (Ico y z) := by
   intro x hx
   rcases eq_or_lt_of_le (α := ℝ) hx.1 with rfl | hyx
   · rw [continuousWithinAt_Ico_iff_Ici hx.2]
@@ -314,15 +330,16 @@ lemma ConvexOn.continuousOn_Ico {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn
     rw [continuousWithinAt_iff_continuousAt (Ioo_mem_nhds hyx hx.2)] at h
     exact h.continuousWithinAt
 
-lemma ConcaveOn.continuousOn_Ico {f : ℝ → ℝ} {y z : ℝ} (hf_cnv : ConcaveOn ℝ (Ico y z) f)
-    (hf_cont : ContinuousWithinAt f (Ici y) y) :
-    ContinuousOn f (Ico y z) := by
+lemma ConcaveOn.continuousOn_Ico
+    {f : ℝ → ℝ} {y z : ℝ}
+    (hf_cnv : ConcaveOn ℝ (Ico y z) f) (hf_cont : ContinuousWithinAt f (Ici y) y)
+    : ContinuousOn f (Ico y z) := by
   simpa using hf_cnv.neg.continuousOn_Ico hf_cont.neg
 
-lemma ConvexOn.continuousOn_Icc {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn ℝ (Icc y z) f)
-    (hyz : y < z)
-    (hfy : ContinuousWithinAt f (Ici y) y) (hfz : ContinuousWithinAt f (Iic z) z) :
-    ContinuousOn f (Icc y z) := by
+lemma ConvexOn.continuousOn_Icc
+    {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn ℝ (Icc y z) f) (hyz : y < z)
+    (hfy : ContinuousWithinAt f (Ici y) y) (hfz : ContinuousWithinAt f (Iic z) z)
+    : ContinuousOn f (Icc y z) := by
   suffices ContinuousOn f (Ico y z) ∧ ContinuousOn f (Ioc y z) by
     intro x hx
     rcases eq_or_lt_of_le (α := ℝ) hx.1 with rfl | hyx
@@ -336,10 +353,10 @@ lemma ConvexOn.continuousOn_Icc {f : ℝ → ℝ} {y z : ℝ} (hf_cvx : ConvexOn
   · exact hf_cvx.subset Ico_subset_Icc_self (convex_Ico y z)
   · exact hf_cvx.subset Ioc_subset_Icc_self (convex_Ioc y z)
 
-lemma ConcaveOn.continuousOn_Icc {f : ℝ → ℝ} {y z : ℝ} (hf_cnv : ConcaveOn ℝ (Icc y z) f)
-    (hyz : y < z)
-    (hfy : ContinuousWithinAt f (Ici y) y) (hfz : ContinuousWithinAt f (Iic z) z) :
-    ContinuousOn f (Icc y z) := by
+lemma ConcaveOn.continuousOn_Icc
+    {f : ℝ → ℝ} {y z : ℝ} (hf_cnv : ConcaveOn ℝ (Icc y z) f) (hyz : y < z)
+    (hfy : ContinuousWithinAt f (Ici y) y) (hfz : ContinuousWithinAt f (Iic z) z)
+    : ContinuousOn f (Icc y z) := by
   simpa using hf_cnv.neg.continuousOn_Icc hyz hfy.neg hfz.neg
 
 end Intervals

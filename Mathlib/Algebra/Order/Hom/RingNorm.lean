@@ -9,7 +9,6 @@ public import Mathlib.Algebra.GroupWithZero.Hom
 public import Mathlib.Algebra.Order.Hom.GroupNorm
 public import Mathlib.Algebra.Order.Ring.Defs
 
-
 /-!
 # Algebraic order homomorphism classes
 
@@ -44,57 +43,80 @@ variable [FunLike F α β]
 
 /-! ### Ring (semi)norms -/
 
-/-- `RingSeminormClass F α` states that `F` is a type of `β`-valued seminorms on the ring `α`.
+/--
+`RingSeminormClass F α` states that `F` is a type of `β`-valued seminorms on the ring `α`.
 
-You should extend this class when you extend `RingSeminorm`. -/
-class RingSeminormClass (F : Type*) (α β : outParam Type*)
-    [NonUnitalNonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β] : Prop
+You should extend this class when you extend `RingSeminorm`.
+-/
+class RingSeminormClass
+  (F : Type*) (α β : outParam Type*)
+  [NonUnitalNonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β]
+  : Prop
   extends AddGroupSeminormClass F α β, SubmultiplicativeHomClass F α β
 
-/-- `RingNormClass F α` states that `F` is a type of `β`-valued norms on the ring `α`.
+/--
+`RingNormClass F α` states that `F` is a type of `β`-valued norms on the ring `α`.
 
-You should extend this class when you extend `RingNorm`. -/
-class RingNormClass (F : Type*) (α β : outParam Type*)
-    [NonUnitalNonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β] : Prop
+You should extend this class when you extend `RingNorm`.
+-/
+class RingNormClass
+  (F : Type*) (α β : outParam Type*)
+  [NonUnitalNonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β]
+  : Prop
   extends RingSeminormClass F α β, AddGroupNormClass F α β
 
-/-- `MulRingSeminormClass F α` states that `F` is a type of `β`-valued multiplicative seminorms
+/--
+`MulRingSeminormClass F α` states that `F` is a type of `β`-valued multiplicative seminorms
 on the ring `α`.
 
-You should extend this class when you extend `MulRingSeminorm`. -/
-class MulRingSeminormClass (F : Type*) (α β : outParam Type*)
-    [NonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β] : Prop
+You should extend this class when you extend `MulRingSeminorm`.
+-/
+class MulRingSeminormClass
+  (F : Type*) (α β : outParam Type*) [NonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β]
+  : Prop
   extends AddGroupSeminormClass F α β, MonoidWithZeroHomClass F α β
 
 -- Lower the priority of these instances since they require synthesizing an order structure.
 attribute [instance 50]
   MulRingSeminormClass.toMonoidHomClass MulRingSeminormClass.toMonoidWithZeroHomClass
 
-/-- `MulRingNormClass F α` states that `F` is a type of `β`-valued multiplicative norms on the
+/--
+`MulRingNormClass F α` states that `F` is a type of `β`-valued multiplicative norms on the
 ring `α`.
 
-You should extend this class when you extend `MulRingNorm`. -/
-class MulRingNormClass (F : Type*) (α β : outParam Type*)
-    [NonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β] : Prop
+You should extend this class when you extend `MulRingNorm`.
+-/
+class MulRingNormClass
+  (F : Type*) (α β : outParam Type*) [NonAssocRing α] [Semiring β] [PartialOrder β] [FunLike F α β]
+  : Prop
   extends MulRingSeminormClass F α β, AddGroupNormClass F α β
 
 -- See note [out-param inheritance]
 -- See note [lower instance priority]
-instance (priority := 100) RingSeminormClass.toNonnegHomClass [NonUnitalNonAssocRing α]
-    [Semiring β] [LinearOrder β] [IsOrderedAddMonoid β] [RingSeminormClass F α β] :
-    NonnegHomClass F α β :=
+instance (priority := 100) RingSeminormClass.toNonnegHomClass
+    [NonUnitalNonAssocRing α] [Semiring β] [LinearOrder β] [IsOrderedAddMonoid β]
+    [RingSeminormClass F α β]
+    : NonnegHomClass F α β :=
   AddGroupSeminormClass.toNonnegHomClass
 
 -- See note [lower instance priority]
-instance (priority := 100) MulRingSeminormClass.toRingSeminormClass [NonAssocRing α]
-    [Semiring β] [PartialOrder β] [MulRingSeminormClass F α β] : RingSeminormClass F α β :=
-  { ‹MulRingSeminormClass F α β› with map_mul_le_mul := fun _ _ _ => (map_mul _ _ _).le }
+instance (priority := 100) MulRingSeminormClass.toRingSeminormClass
+    [NonAssocRing α] [Semiring β] [PartialOrder β] [MulRingSeminormClass F α β]
+    : RingSeminormClass F α β := {
+  ‹MulRingSeminormClass F α β› with
+  map_mul_le_mul := fun _ _ _ => (map_mul _ _ _).le
+}
 
 -- See note [lower instance priority]
-instance (priority := 100) MulRingNormClass.toRingNormClass [NonAssocRing α]
-    [Semiring β] [PartialOrder β] [MulRingNormClass F α β] : RingNormClass F α β :=
-  { ‹MulRingNormClass F α β›, MulRingSeminormClass.toRingSeminormClass with }
+instance (priority := 100) MulRingNormClass.toRingNormClass
+    [NonAssocRing α] [Semiring β] [PartialOrder β] [MulRingNormClass F α β]
+    : RingNormClass F α β := {
+  ‹MulRingNormClass F α β›, MulRingSeminormClass.toRingSeminormClass with
+}
 
-theorem one_le_map_one [NonAssocRing α] [Nontrivial α] [Semiring β] [LinearOrder β]
-    [IsStrictOrderedRing β] [RingNormClass F α β] (f : F) : 1 ≤ f 1 := by
+theorem one_le_map_one
+    [NonAssocRing α] [Nontrivial α] [Semiring β] [LinearOrder β] [IsStrictOrderedRing β]
+    [RingNormClass F α β]
+    (f : F)
+    : 1 ≤ f 1 := by
   simpa [map_pos_of_ne_zero f one_ne_zero] using map_mul_le_mul f 1 1

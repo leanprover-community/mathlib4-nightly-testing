@@ -40,18 +40,20 @@ section
 
 variable [Semiring k] [NonUnitalNonAssocSemiring R]
 
-/-- A non-commutative version of `MonoidAlgebra.lift`: given an additive homomorphism `f : k →+ R`
+/--
+A non-commutative version of `MonoidAlgebra.lift`: given an additive homomorphism `f : k →+ R`
 and a homomorphism `g : G → R`, returns the additive homomorphism from
 `k[G]` such that `liftNC f g (single a b) = f b * g a`. If `f` is a ring homomorphism
 and the range of either `f` or `g` is in center of `R`, then the result is a ring homomorphism.  If
 `R` is a `k`-algebra and `f = algebraMap k R`, then the result is an algebra homomorphism called
-`MonoidAlgebra.lift`. -/
+`MonoidAlgebra.lift`.
+-/
 def liftNC (f : k →+ R) (g : G → R) : k[G] →+ R :=
   (liftAddHom fun x ↦ .comp (.mulRight (g x)) f).comp coeffAddEquiv.toAddMonoidHom
 
 @[simp]
-theorem liftNC_single (f : k →+ R) (g : G → R) (a : G) (b : k) :
-    liftNC f g (single a b) = f b * g a :=
+theorem liftNC_single (f : k →+ R) (g : G → R) (a : G) (b : k)
+    : liftNC f g (single a b) = f b * g a :=
   liftAddHom_apply_single _ _ _
 
 end
@@ -60,10 +62,11 @@ section Mul
 
 variable [Semiring k] [Mul G] [Semiring R]
 
-theorem liftNC_mul {g_hom : Type*} [FunLike g_hom G R] [MulHomClass g_hom G R]
+theorem liftNC_mul
+    {g_hom : Type*} [FunLike g_hom G R] [MulHomClass g_hom G R]
     (f : k →+* R) (g : g_hom) (a b : k[G])
-    (h_comm : ∀ {x y}, y ∈ a.coeff.support → Commute (f (b.coeff x)) (g y)) :
-    liftNC (f : k →+ R) g (a * b) = liftNC (f : k →+ R) g a * liftNC (f : k →+ R) g b := by
+    (h_comm : ∀ {x y}, y ∈ a.coeff.support → Commute (f (b.coeff x)) (g y))
+    : liftNC (f : k →+ R) g (a * b) = liftNC (f : k →+ R) g a * liftNC (f : k →+ R) g b := by
   conv_rhs => rw [← sum_coeff_single a, ← sum_coeff_single b]
   simp_rw [mul_def, map_finsuppSum, liftNC_single, Finsupp.sum_mul, Finsupp.mul_sum]
   refine Finset.sum_congr rfl fun y hy => Finset.sum_congr rfl fun x _hx => ?_
@@ -76,9 +79,10 @@ section One
 variable [NonAssocSemiring R] [Semiring k] [One G]
 
 @[simp]
-theorem liftNC_one {g_hom : Type*} [FunLike g_hom G R] [OneHomClass g_hom G R]
-    (f : k →+* R) (g : g_hom) :
-    liftNC (f : k →+ R) g 1 = 1 := by simp [one_def]
+theorem liftNC_one
+    {g_hom : Type*} [FunLike g_hom G R] [OneHomClass g_hom G R] (f : k →+* R) (g : g_hom)
+    : liftNC (f : k →+ R) g 1 = 1 := by
+  simp [one_def]
 
 end One
 
@@ -88,14 +92,15 @@ section Semiring
 variable [Semiring k] [Monoid G] [Semiring R]
 
 /-- `liftNC` as a `RingHom`, for when `f x` and `g y` commute -/
-def liftNCRingHom (f : k →+* R) (g : G →* R) (h_comm : ∀ x y, Commute (f x) (g y)) : k[G] →+* R :=
-  { liftNC (f : k →+ R) g with
-    map_one' := liftNC_one _ _
-    map_mul' := fun _a _b => liftNC_mul _ _ _ _ fun {_ _} _ => h_comm _ _ }
+def liftNCRingHom (f : k →+* R) (g : G →* R) (h_comm : ∀ x y, Commute (f x) (g y)) : k[G] →+* R := {
+  liftNC (f : k →+ R) g with
+  map_one' := liftNC_one _ _
+  map_mul' := fun _a _b => liftNC_mul _ _ _ _ fun {_ _} _ => h_comm _ _
+}
 
 @[simp]
-lemma liftNCRingHom_single (f : k →+* R) (g : G →* R) (h_comm) (a : G) (b : k) :
-    liftNCRingHom f g h_comm (single a b) = f b * g a :=
+lemma liftNCRingHom_single (f : k →+* R) (g : G →* R) (h_comm) (a : G) (b : k)
+    : liftNCRingHom f g h_comm (single a b) = f b * g a :=
   liftNC_single _ _ _ _
 
 end Semiring
@@ -112,18 +117,20 @@ section
 
 variable [Semiring k] [NonUnitalNonAssocSemiring R]
 
-/-- A non-commutative version of `AddMonoidAlgebra.lift`: given an additive homomorphism
+/--
+A non-commutative version of `AddMonoidAlgebra.lift`: given an additive homomorphism
 `f : k →+ R` and a map `g : Multiplicative G → R`, returns the additive
 homomorphism from `k[G]` such that `liftNC f g (single a b) = f b * g a`. If `f`
 is a ring homomorphism and the range of either `f` or `g` is in center of `R`, then the result is a
 ring homomorphism.  If `R` is a `k`-algebra and `f = algebraMap k R`, then the result is an algebra
-homomorphism called `AddMonoidAlgebra.lift`. -/
+homomorphism called `AddMonoidAlgebra.lift`.
+-/
 def liftNC (f : k →+ R) (g : Multiplicative G → R) : k[G] →+ R :=
   (liftAddHom fun x ↦ .comp (.mulRight (g <| .ofAdd x)) f).comp coeffAddEquiv.toAddMonoidHom
 
 @[simp]
-theorem liftNC_single (f : k →+ R) (g : Multiplicative G → R) (a : G) (b : k) :
-    liftNC f g (single a b) = f b * g (Multiplicative.ofAdd a) :=
+theorem liftNC_single (f : k →+ R) (g : Multiplicative G → R) (a : G) (b : k)
+    : liftNC f g (single a b) = f b * g (Multiplicative.ofAdd a) :=
   liftAddHom_apply_single _ _ _
 
 end
@@ -132,11 +139,11 @@ section Mul
 
 variable [Semiring k] [Add G] [Semiring R]
 
-theorem liftNC_mul {g_hom : Type*}
-    [FunLike g_hom (Multiplicative G) R] [MulHomClass g_hom (Multiplicative G) R]
+theorem liftNC_mul
+    {g_hom : Type*} [FunLike g_hom (Multiplicative G) R] [MulHomClass g_hom (Multiplicative G) R]
     (f : k →+* R) (g : g_hom) (a b : k[G])
-    (h_comm : ∀ {x y}, y ∈ a.coeff.support → Commute (f (b.coeff x)) (g <| .ofAdd y)) :
-    liftNC (f : k →+ R) g (a * b) = liftNC (f : k →+ R) g a * liftNC (f : k →+ R) g b := by
+    (h_comm : ∀ {x y}, y ∈ a.coeff.support → Commute (f (b.coeff x)) (g <| .ofAdd y))
+    : liftNC (f : k →+ R) g (a * b) = liftNC (f : k →+ R) g a * liftNC (f : k →+ R) g b := by
   conv_rhs => rw [← sum_coeff_single a, ← sum_coeff_single b]
   simp_rw [mul_def, map_finsuppSum, liftNC_single, Finsupp.sum_mul, Finsupp.mul_sum]
   refine Finset.sum_congr rfl fun y hy => Finset.sum_congr rfl fun x _hx => ?_
@@ -149,9 +156,10 @@ section One
 variable [Semiring k] [Zero G] [NonAssocSemiring R]
 
 @[simp]
-theorem liftNC_one {g_hom : Type*}
-    [FunLike g_hom (Multiplicative G) R] [OneHomClass g_hom (Multiplicative G) R]
-    (f : k →+* R) (g : g_hom) : liftNC (f : k →+ R) g 1 = 1 :=
+theorem liftNC_one
+    {g_hom : Type*} [FunLike g_hom (Multiplicative G) R] [OneHomClass g_hom (Multiplicative G) R]
+    (f : k →+* R) (g : g_hom)
+    : liftNC (f : k →+ R) g 1 = 1 :=
   MonoidAlgebra.liftNC_one f g
 
 end One
@@ -162,15 +170,16 @@ section Semiring
 variable [Semiring k] [AddMonoid G] [Semiring R]
 
 /-- `liftNC` as a `RingHom`, for when `f` and `g` commute -/
-def liftNCRingHom (f : k →+* R) (g : Multiplicative G →* R) (h_comm : ∀ x y, Commute (f x) (g y)) :
-    k[G] →+* R :=
-  { liftNC (f : k →+ R) g with
-    map_one' := liftNC_one _ _
-    map_mul' := fun _a _b => liftNC_mul _ _ _ _ fun {_ _} _ => h_comm _ _ }
+def liftNCRingHom (f : k →+* R) (g : Multiplicative G →* R) (h_comm : ∀ x y, Commute (f x) (g y))
+    : k[G] →+* R := {
+  liftNC (f : k →+ R) g with
+  map_one' := liftNC_one _ _
+  map_mul' := fun _a _b => liftNC_mul _ _ _ _ fun {_ _} _ => h_comm _ _
+}
 
 @[simp]
-lemma liftNCRingHom_single (f : k →+* R) (g : Multiplicative G →* R) (h_comm) (a : G) (b : k) :
-    liftNCRingHom f g h_comm (single a b) = f b * g (.ofAdd a) :=
+lemma liftNCRingHom_single (f : k →+* R) (g : Multiplicative G →* R) (h_comm) (a : G) (b : k)
+    : liftNCRingHom f g h_comm (single a b) = f b * g (.ofAdd a) :=
   liftNC_single _ _ _ _
 
 end Semiring

@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Order.Ring.Nat
 public import Mathlib.Data.Set.Equitable
 public import Mathlib.Logic.Equiv.Fin.Basic
 public import Mathlib.Order.Partition.Finpartition
-
 import Mathlib.Tactic.ApplyFun
 
 /-!
@@ -28,7 +27,6 @@ difference of `1`.
 
 @[expose] public section
 
-
 open Finset Fintype
 
 namespace Finpartition
@@ -36,96 +34,105 @@ namespace Finpartition
 variable {α : Type*} [DecidableEq α] {s t : Finset α} (P : Finpartition s)
 
 /-- An equipartition is a partition whose parts are all the same size, up to a difference of `1`. -/
-def IsEquipartition : Prop :=
-  (P.parts : Set (Finset α)).EquitableOn card
+def IsEquipartition : Prop := (P.parts : Set (Finset α)).EquitableOn card
 
-theorem isEquipartition_iff_card_parts_eq_average :
-    P.IsEquipartition ↔
-      ∀ a : Finset α, a ∈ P.parts → #a = #s / #P.parts ∨ #a = #s / #P.parts + 1 := by
+theorem isEquipartition_iff_card_parts_eq_average
+    : P.IsEquipartition
+      ↔ ∀ a : Finset α, a ∈ P.parts → #a = #s / #P.parts ∨ #a = #s / #P.parts + 1 := by
   simp_rw [IsEquipartition, Finset.equitableOn_iff, P.sum_card_parts]
 
 variable {P}
 
-lemma not_isEquipartition :
-    ¬P.IsEquipartition ↔ ∃ a ∈ P.parts, ∃ b ∈ P.parts, #b + 1 < #a := Set.not_equitableOn
+lemma not_isEquipartition : ¬P.IsEquipartition ↔ ∃ a ∈ P.parts, ∃ b ∈ P.parts, #b + 1 < #a :=
+  Set.not_equitableOn
 
-theorem _root_.Set.Subsingleton.isEquipartition (h : (P.parts : Set (Finset α)).Subsingleton) :
-    P.IsEquipartition :=
+theorem _root_.Set.Subsingleton.isEquipartition (h : (P.parts : Set (Finset α)).Subsingleton)
+    : P.IsEquipartition :=
   Set.Subsingleton.equitableOn h _
 
-theorem IsEquipartition.card_parts_eq_average (hP : P.IsEquipartition) (ht : t ∈ P.parts) :
-    #t = #s / #P.parts ∨ #t = #s / #P.parts + 1 :=
+theorem IsEquipartition.card_parts_eq_average (hP : P.IsEquipartition) (ht : t ∈ P.parts)
+    : #t = #s / #P.parts ∨ #t = #s / #P.parts + 1 :=
   P.isEquipartition_iff_card_parts_eq_average.1 hP _ ht
 
-theorem IsEquipartition.card_part_eq_average_iff (hP : P.IsEquipartition) (ht : t ∈ P.parts) :
-    #t = #s / #P.parts ↔ #t ≠ #s / #P.parts + 1 := by
+theorem IsEquipartition.card_part_eq_average_iff (hP : P.IsEquipartition) (ht : t ∈ P.parts)
+    : #t = #s / #P.parts ↔ #t ≠ #s / #P.parts + 1 := by
   have a := hP.card_parts_eq_average ht
   lia
 
-theorem IsEquipartition.average_le_card_part (hP : P.IsEquipartition) (ht : t ∈ P.parts) :
-    #s / #P.parts ≤ #t := by
+theorem IsEquipartition.average_le_card_part (hP : P.IsEquipartition) (ht : t ∈ P.parts)
+    : #s / #P.parts ≤ #t := by
   rw [← P.sum_card_parts]
   exact Finset.EquitableOn.le hP ht
 
-theorem IsEquipartition.card_part_le_average_add_one (hP : P.IsEquipartition) (ht : t ∈ P.parts) :
-    #t ≤ #s / #P.parts + 1 := by
+theorem IsEquipartition.card_part_le_average_add_one (hP : P.IsEquipartition) (ht : t ∈ P.parts)
+    : #t ≤ #s / #P.parts + 1 := by
   rw [← P.sum_card_parts]
   exact Finset.EquitableOn.le_add_one hP ht
 
-theorem IsEquipartition.filter_ne_average_add_one_eq_average (hP : P.IsEquipartition) :
-    {p ∈ P.parts | ¬#p = #s / #P.parts + 1} = {p ∈ P.parts | #p = #s / #P.parts} := by
+theorem IsEquipartition.filter_ne_average_add_one_eq_average (hP : P.IsEquipartition)
+    : {p ∈ P.parts | ¬#p = #s / #P.parts + 1} = {p ∈ P.parts | #p = #s / #P.parts} := by
   ext p
   simp only [mem_filter, and_congr_right_iff]
   exact fun hp ↦ (hP.card_part_eq_average_iff hp).symm
 
-/-- An equipartition of a finset with `n` elements into `k` parts has
-`n % k` parts of size `n / k + 1`. -/
-theorem IsEquipartition.card_large_parts_eq_mod (hP : P.IsEquipartition) :
-    #{p ∈ P.parts | #p = #s / #P.parts + 1} = #s % #P.parts := by
+/--
+An equipartition of a finset with `n` elements into `k` parts has
+`n % k` parts of size `n / k + 1`.
+-/
+theorem IsEquipartition.card_large_parts_eq_mod (hP : P.IsEquipartition)
+    : # {p ∈ P.parts | #p = #s / #P.parts + 1} = #s % #P.parts := by
   have z := P.sum_card_parts
   rw [← sum_filter_add_sum_filter_not (s := P.parts) (p := fun x ↦ #x = #s / #P.parts + 1),
-    hP.filter_ne_average_add_one_eq_average, sum_const_nat (m := #s / #P.parts + 1) (by simp),
-    sum_const_nat (m := #s / #P.parts) (by simp), ← hP.filter_ne_average_add_one_eq_average,
-    mul_add, add_comm, ← add_assoc, ← add_mul, mul_one, add_comm #_,
-    card_filter_add_card_filter_not, add_comm] at z
+      hP.filter_ne_average_add_one_eq_average, sum_const_nat (m := #s / #P.parts + 1) (by simp),
+      sum_const_nat (m := #s / #P.parts) (by simp), ← hP.filter_ne_average_add_one_eq_average,
+      mul_add, add_comm, ← add_assoc, ← add_mul, mul_one, add_comm #_,
+      card_filter_add_card_filter_not, add_comm]
+    at z
   rw [← add_left_inj, Nat.mod_add_div, z]
 
-/-- An equipartition of a finset with `n` elements into `k` parts has
-`n - n % k` parts of size `n / k`. -/
-theorem IsEquipartition.card_small_parts_eq_mod (hP : P.IsEquipartition) :
-    #{p ∈ P.parts | #p = #s / #P.parts} = #P.parts - #s % #P.parts := by
+/--
+An equipartition of a finset with `n` elements into `k` parts has
+`n - n % k` parts of size `n / k`.
+-/
+theorem IsEquipartition.card_small_parts_eq_mod (hP : P.IsEquipartition)
+    : # {p ∈ P.parts | #p = #s / #P.parts} = #P.parts - #s % #P.parts := by
   conv_rhs =>
     arg 1
     rw [← card_filter_add_card_filter_not (p := fun p ↦ #p = #s / #P.parts + 1)]
   rw [hP.card_large_parts_eq_mod, add_tsub_cancel_left, hP.filter_ne_average_add_one_eq_average]
 
-/-- There exists an enumeration of an equipartition's parts where
-larger parts map to smaller numbers and vice versa. -/
-theorem IsEquipartition.exists_partsEquiv (hP : P.IsEquipartition) :
-    ∃ f : P.parts ≃ Fin #P.parts, ∀ t, #t.1 = #s / #P.parts + 1 ↔ f t < #s % #P.parts := by
+/--
+There exists an enumeration of an equipartition's parts where
+larger parts map to smaller numbers and vice versa.
+-/
+theorem IsEquipartition.exists_partsEquiv (hP : P.IsEquipartition)
+    : ∃ f : P.parts ≃ Fin #P.parts, ∀ t, #t.1 = #s / #P.parts + 1 ↔ f t < #s % #P.parts := by
   let el := {p ∈ P.parts | #p = #s / #P.parts + 1}.equivFin
   let es := {p ∈ P.parts | #p = #s / #P.parts}.equivFin
   simp_rw [mem_filter, hP.card_large_parts_eq_mod] at el
   simp_rw [mem_filter, hP.card_small_parts_eq_mod] at es
-  let sneg :
-      {x // x ∈ P.parts ∧ ¬#x = #s / #P.parts + 1} ≃ {x // x ∈ P.parts ∧ #x = #s / #P.parts} := by
+  let sneg
+      : {x // x ∈ P.parts ∧ ¬ #x = #s / #P.parts + 1}
+        ≃ {x // x ∈ P.parts ∧ #x = #s / #P.parts} := by
     apply (Equiv.refl _).subtypeEquiv
     simp only [Equiv.refl_apply, and_congr_right_iff]
     exact fun _ ha ↦ by rw [hP.card_part_eq_average_iff ha, ne_eq]
-  replace el : { x : P.parts // #x.1 = #s / #P.parts + 1 } ≃
-      Fin (#s % #P.parts) := (Equiv.Set.sep ..).symm.trans el
-  replace es : { x : P.parts // ¬#x.1 = #s / #P.parts + 1 } ≃
-      Fin (#P.parts - #s % #P.parts) := (Equiv.Set.sep ..).symm.trans (sneg.trans es)
+  replace el : {x : P.parts // #x.1 = #s / #P.parts + 1} ≃ Fin (#s % #P.parts) :=
+    (Equiv.Set.sep ..).symm.trans el
+  replace es : {x : P.parts // ¬ #x.1 = #s / #P.parts + 1} ≃ Fin (#P.parts - #s % #P.parts) :=
+    (Equiv.Set.sep ..).symm.trans (sneg.trans es)
   let f := (Equiv.sumCompl _).symm.trans ((el.sumCongr es).trans finSumFinEquiv)
   use f.trans (finCongr (Nat.add_sub_of_le P.card_mod_card_parts_le))
   intro ⟨p, _⟩
   simp_rw [f, Equiv.trans_apply, Equiv.sumCongr_apply, finCongr_apply, Fin.val_cast]
   by_cases hc : #p = #s / #P.parts + 1 <;> simp [hc]
 
-/-- Given a finset equipartitioned into `k` parts, its elements can be enumerated such that
-elements in the same part have congruent indices modulo `k`. -/
-theorem IsEquipartition.exists_partPreservingEquiv (hP : P.IsEquipartition) : ∃ f : s ≃ Fin #s,
-    ∀ a b : s, P.part a = P.part b ↔ f a % #P.parts = f b % #P.parts := by
+/--
+Given a finset equipartitioned into `k` parts, its elements can be enumerated such that
+elements in the same part have congruent indices modulo `k`.
+-/
+theorem IsEquipartition.exists_partPreservingEquiv (hP : P.IsEquipartition)
+    : ∃ f : s ≃ Fin #s, ∀ a b : s, P.part a = P.part b ↔ f a % #P.parts = f b % #P.parts := by
   obtain ⟨f, hf⟩ := P.exists_enumeration
   obtain ⟨g, hg⟩ := hP.exists_partsEquiv
   let z := fun a ↦ #P.parts * (f a).2 + g (f a).1
@@ -154,7 +161,6 @@ theorem IsEquipartition.exists_partPreservingEquiv (hP : P.IsEquipartition) : �
     Nat.mod_eq_of_lt (gl a), Nat.mod_eq_of_lt (gl b), Fin.val_eq_val, g.apply_eq_iff_eq]
 
 /-! ### Discrete and indiscrete finpartitions -/
-
 
 variable (s)
 

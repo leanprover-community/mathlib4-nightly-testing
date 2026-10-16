@@ -13,7 +13,6 @@ public import Mathlib.CategoryTheory.Functor.Basic
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 -- declare the `v`'s first; see `CategoryTheory.Category` for an explanation
@@ -25,36 +24,37 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 -- immediate plan.
 /-- An unbundled functor. -/
 class Functorial (F : C → D) : Type max v₁ v₂ u₁ u₂ where
-  /-- If `F : C → D` (just a function) has `[Functorial F]`,
-  we can write `map F f : F X ⟶ F Y` for the action of `F` on a morphism `f : X ⟶ Y`. -/
+  /--
+  If `F : C → D` (just a function) has `[Functorial F]`,
+  we can write `map F f : F X ⟶ F Y` for the action of `F` on a morphism `f : X ⟶ Y`.
+  -/
   map (F) : ∀ {X Y : C}, (X ⟶ Y) → (F X ⟶ F Y)
   /-- A functorial map preserves identities. -/
   map_id : ∀ {X : C}, map (𝟙 X) = 𝟙 (F X) := by cat_disch
   /-- A functorial map preserves composition of morphisms. -/
-  map_comp : ∀ {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z}, map (f ≫ g) = map f ≫ map g := by
-    cat_disch
+  map_comp : ∀ {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z}, map (f ≫ g) = map f ≫ map g := by cat_disch
 
 attribute [simp, grind =] Functorial.map_id Functorial.map_comp
 export Functorial (map)
 
 namespace Functor
 
-/-- Bundle a functorial function as a functor.
--/
-def of (F : C → D) [I : Functorial.{v₁, v₂} F] : C ⥤ D :=
-  { I with obj := F
-           map := Functorial.map F }
+/-- Bundle a functorial function as a functor. -/
+def of (F : C → D) [I : Functorial.{v₁, v₂} F] : C ⥤ D := {
+  I with
+  obj := F
+  map := Functorial.map F
+}
 
 end Functor
 
-instance (F : C ⥤ D) : Functorial.{v₁, v₂} F.obj :=
-  { F with map := F.map }
+instance (F : C ⥤ D) : Functorial.{v₁, v₂} F.obj := { F with map := F.map }
 
 @[simp, grind =]
-theorem map_functorial_obj (F : C ⥤ D) {X Y : C} (f : X ⟶ Y) : map F.obj f = F.map f :=
-  rfl
+theorem map_functorial_obj (F : C ⥤ D) {X Y : C} (f : X ⟶ Y) : map F.obj f = F.map f := rfl
 
-instance functorial_id : Functorial.{v₁, v₁} (id : C → C) where map f := f
+instance functorial_id : Functorial.{v₁, v₁} (id : C → C) where
+  map f := f
 
 section
 
@@ -63,12 +63,13 @@ variable {E : Type u₃} [Category.{v₃} E]
 -- This is no longer viable as an instance in Lean 3.7,
 -- #lint reports an instance loop
 -- Will this be a problem?
-/-- `G ∘ F` is a functorial if both `F` and `G` are.
--/
+/-- `G ∘ F` is a functorial if both `F` and `G` are. -/
 @[instance_reducible]
-def functorial_comp (F : C → D) [Functorial.{v₁, v₂} F] (G : D → E) [Functorial.{v₂, v₃} G] :
-    Functorial.{v₁, v₃} (G ∘ F) :=
-  { Functor.of F ⋙ Functor.of G with map := fun f => map G (map F f) }
+def functorial_comp (F : C → D) [Functorial.{v₁, v₂} F] (G : D → E) [Functorial.{v₂, v₃} G]
+    : Functorial.{v₁, v₃} (G ∘ F) := {
+  Functor.of F ⋙ Functor.of G with
+  map := fun f => map G (map F f)
+}
 
 end
 

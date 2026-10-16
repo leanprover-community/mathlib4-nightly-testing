@@ -6,7 +6,6 @@ Authors: Ansar Azhdarov
 module
 
 public import Mathlib.Data.Set.Finite.Lattice
-
 import Mathlib.Order.Zorn
 
 /-!
@@ -38,20 +37,25 @@ variable {α : Type*} (F : Set (Set α))
 
 namespace Order
 
-/-- A family of sets $F$ is of finite character iff for every set $X$, $X ∈ F$ iff every finite
-subset of $X$ is in $F$ -/
+/--
+A family of sets $F$ is of finite character iff for every set $X$, $X ∈ F$ iff every finite
+subset of $X$ is in $F$
+-/
 def IsOfFiniteCharacter := ∀ x, x ∈ F ↔ ∀ y ⊆ x, y.Finite → y ∈ F
 
 /-- **Teichmuller-Tukey lemma**. Every nonempty family of finite character has a maximal element. -/
-theorem IsOfFiniteCharacter.exists_maximal {F} (hF : IsOfFiniteCharacter F) {x : Set α}
-    (xF : x ∈ F) : ∃ m, x ⊆ m ∧ Maximal (· ∈ F) m := by
+theorem IsOfFiniteCharacter.exists_maximal {F} (hF : IsOfFiniteCharacter F) {x : Set α} (xF : x ∈ F)
+    : ∃ m, x ⊆ m ∧ Maximal (· ∈ F) m := by
   /- Apply Zorn's lemma. Take the union of the elements of a chain as its upper bound. -/
-  refine zorn_subset_nonempty F (fun c cF cch cne ↦
-    ⟨sUnion c, ?_, fun s sc ↦ subset_sUnion_of_mem sc⟩) x xF
+  refine zorn_subset_nonempty F
+    (fun c cF cch cne ↦ ⟨sUnion c, ?_, fun s sc ↦ subset_sUnion_of_mem sc⟩)
+    x xF
   /- Prove that the union belongs to `F`. -/
   refine (hF (sUnion c)).mpr fun s sc sfin ↦ ?_
-  /- Use the finite character property and the fact that any finite subset of the union is also a
-  subset of some element of the chain. -/
+  /-
+  Use the finite character property and the fact that any finite subset of the union is also a
+  subset of some element of the chain.
+  -/
   obtain ⟨t, tc, st⟩ := cch.directedOn.exists_mem_subset_of_finite_of_subset_sUnion cne sfin sc
   exact (hF t).mp (cF tc) s st sfin
 

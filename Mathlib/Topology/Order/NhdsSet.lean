@@ -21,7 +21,6 @@ Finally, we prove a few lemmas about filter bases of `𝓝ˢ (Iic a)` and `𝓝�
 
 public section
 
-
 open Set Filter OrderDual
 open scoped Topology
 
@@ -70,13 +69,11 @@ theorem Ici_mem_nhdsSet_Ici (h : a < b) : Ici a ∈ 𝓝ˢ (Ici b) :=
 ### Lemmas about `Iix _ ∈ 𝓝ˢ (Set.Iic _)`
 -/
 
-theorem Iio_mem_nhdsSet_Iic_iff : Iio b ∈ 𝓝ˢ (Iic a) ↔ a < b :=
-  Ioi_mem_nhdsSet_Ici_iff (α := αᵒᵈ)
+theorem Iio_mem_nhdsSet_Iic_iff : Iio b ∈ 𝓝ˢ (Iic a) ↔ a < b := Ioi_mem_nhdsSet_Ici_iff (α := αᵒᵈ)
 
 alias ⟨_, Iio_mem_nhdsSet_Iic⟩ := Iio_mem_nhdsSet_Iic_iff
 
-theorem Iic_mem_nhdsSet_Iic (h : a < b) : Iic b ∈ 𝓝ˢ (Iic a) :=
-  Ici_mem_nhdsSet_Ici (α := αᵒᵈ) h
+theorem Iic_mem_nhdsSet_Iic (h : a < b) : Iic b ∈ 𝓝ˢ (Iic a) := Ici_mem_nhdsSet_Ici (α := αᵒᵈ) h
 
 /-!
 ### Lemmas about `Ixx _ ?_ ∈ 𝓝ˢ (Set.Icc _ _)`
@@ -170,19 +167,18 @@ end OrderClosedTopology
 
 variable {α : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
 
-theorem hasBasis_nhdsSet_Iic_Iio (a : α) [h : Nonempty (Ioi a)] :
-    HasBasis (𝓝ˢ (Iic a)) (a < ·) Iio := by
+theorem hasBasis_nhdsSet_Iic_Iio (a : α) [h : Nonempty (Ioi a)]
+    : HasBasis (𝓝ˢ (Iic a)) (a < ·) Iio := by
   refine ⟨fun s ↦ ⟨fun hs ↦ ?_, fun ⟨b, hab, hb⟩ ↦ mem_of_superset (Iio_mem_nhdsSet_Iic hab) hb⟩⟩
   rw [nhdsSet_Iic, mem_sup, mem_principal] at hs
   rcases exists_Ico_subset_of_mem_nhds hs.1 (Set.nonempty_coe_sort.1 h) with ⟨b, hab, hbs⟩
   exact ⟨b, hab, Iio_subset_Iio_union_Ico.trans (union_subset hs.2 hbs)⟩
 
-theorem hasBasis_nhdsSet_Iic_Iic (a : α) [NeBot (𝓝[>] a)] :
-    HasBasis (𝓝ˢ (Iic a)) (a < ·) Iic := by
+theorem hasBasis_nhdsSet_Iic_Iic (a : α) [NeBot (𝓝[>] a)] : HasBasis (𝓝ˢ (Iic a)) (a < ·) Iic := by
   have : Nonempty (Ioi a) :=
     (Filter.nonempty_of_mem (self_mem_nhdsWithin : Ioi a ∈ 𝓝[>] a)).to_subtype
-  refine (hasBasis_nhdsSet_Iic_Iio _).to_hasBasis
-    (fun c hc ↦ ?_) (fun _ h ↦ ⟨_, h, Iio_subset_Iic_self⟩)
+  refine
+    (hasBasis_nhdsSet_Iic_Iio _).to_hasBasis (fun c hc ↦ ?_) (fun _ h ↦ ⟨_, h, Iio_subset_Iic_self⟩)
   simpa only [Iic_subset_Iio] using! Filter.nonempty_of_mem (Ioo_mem_nhdsGT hc)
 
 @[simp]
@@ -190,12 +186,10 @@ theorem Iic_mem_nhdsSet_Iic_iff {a b : α} [NeBot (𝓝[>] b)] : Iic a ∈ 𝓝�
   (hasBasis_nhdsSet_Iic_Iic b).mem_iff.trans
     ⟨fun ⟨_c, hbc, hca⟩ ↦ hbc.trans_le (Iic_subset_Iic.1 hca), fun h ↦ ⟨_, h, Subset.rfl⟩⟩
 
-theorem hasBasis_nhdsSet_Ici_Ioi (a : α) [Nonempty (Iio a)] :
-    HasBasis (𝓝ˢ (Ici a)) (· < a) Ioi :=
+theorem hasBasis_nhdsSet_Ici_Ioi (a : α) [Nonempty (Iio a)] : HasBasis (𝓝ˢ (Ici a)) (· < a) Ioi :=
   have : Nonempty (Ioi (toDual a)) := ‹_›; hasBasis_nhdsSet_Iic_Iio (toDual a)
 
-theorem hasBasis_nhdsSet_Ici_Ici (a : α) [NeBot (𝓝[<] a)] :
-    HasBasis (𝓝ˢ (Ici a)) (· < a) Ici :=
+theorem hasBasis_nhdsSet_Ici_Ici (a : α) [NeBot (𝓝[<] a)] : HasBasis (𝓝ˢ (Ici a)) (· < a) Ici :=
   have : NeBot (𝓝[>] (toDual a)) := ‹_›; hasBasis_nhdsSet_Iic_Iic (toDual a)
 
 @[simp]

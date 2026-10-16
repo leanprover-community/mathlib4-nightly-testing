@@ -25,8 +25,9 @@ namespace MultilinearMap
 
 section freeFinsuppEquiv
 
-variable [DecidableEq ι] [Fintype ι] [CommSemiring R] [DecidableEq R]
-  [DecidableEq ι'] [∀ i, Fintype (κ i)] [∀ i, DecidableEq (κ i)]
+variable
+  [DecidableEq ι] [Fintype ι] [CommSemiring R] [DecidableEq R] [DecidableEq ι'] [∀ i, Fintype (κ i)]
+  [∀ i, DecidableEq (κ i)]
 
 /--
 The linear equivalence of multilinear maps on free modules over `R` indexed by `fun i => κ i` on
@@ -35,17 +36,18 @@ the domain and `ι'` on the codomain and the finitely supported maps from
 
 This is the `Finsupp` version of `MultilinearMap.freeDFinsuppEquiv`.
 -/
-noncomputable def freeFinsuppEquiv :
-    (((Π i, κ i) × ι') →₀ R) ≃ₗ[R] MultilinearMap R (fun i => (κ i →₀ R)) (ι' →₀ R) :=
-  (finsuppLequivDFinsupp R) ≪≫ₗ freeDFinsuppEquiv ≪≫ₗ
-  ((finsuppLequivDFinsupp R).multilinearMapCongrRight R).symm ≪≫ₗ
-  LinearEquiv.multilinearMapCongrLeft (fun _ => finsuppLequivDFinsupp R)
+noncomputable def freeFinsuppEquiv
+    : (((Π i, κ i) × ι') →₀ R) ≃ₗ[R] MultilinearMap R (fun i => (κ i →₀ R)) (ι' →₀ R) :=
+  (finsuppLequivDFinsupp R) ≪≫ₗ freeDFinsuppEquiv
+    ≪≫ₗ ((finsuppLequivDFinsupp R).multilinearMapCongrRight R).symm
+    ≪≫ₗ LinearEquiv.multilinearMapCongrLeft (fun _ => finsuppLequivDFinsupp R)
 
-theorem freeFinsuppEquiv_def (f : ((Π i, κ i) × ι') →₀ R) :
-    freeFinsuppEquiv f =
-      LinearEquiv.multilinearMapCongrLeft (fun _ => finsuppLequivDFinsupp R)
-      (((finsuppLequivDFinsupp R).multilinearMapCongrRight R).symm <|
-      freeDFinsuppEquiv (finsuppLequivDFinsupp R f)) :=
+theorem freeFinsuppEquiv_def (f : ((Π i, κ i) × ι') →₀ R)
+    : freeFinsuppEquiv f
+      = LinearEquiv.multilinearMapCongrLeft
+        (fun _ => finsuppLequivDFinsupp R)
+        (((finsuppLequivDFinsupp R).multilinearMapCongrRight R).symm <|
+          freeDFinsuppEquiv (finsuppLequivDFinsupp R f)) :=
   rfl
 
 /--
@@ -54,13 +56,12 @@ map sends inputs to a single value in the codomain, taking a product over images
 component of the domain.
 -/
 @[simp]
-theorem freeFinsuppEquiv_single (p : ((Π i, κ i) × ι')) (r : R) (x : Π i, (κ i →₀ R)) :
-    freeFinsuppEquiv (Finsupp.single p r) x = r • Finsupp.single p.2 ((∏ i, (x i) (p.1 i))) := by
+theorem freeFinsuppEquiv_single (p : ((Π i, κ i) × ι')) (r : R) (x : Π i, (κ i →₀ R))
+    : freeFinsuppEquiv (Finsupp.single p r) x = r • Finsupp.single p.2 ((∏ i, (x i) (p.1 i))) := by
   simp [freeFinsuppEquiv_def]
 
-theorem freeFinsuppEquiv_apply [Fintype ι']
-  (f : ((Π i, κ i) × ι') →₀ R) (x : Π i, (κ i →₀ R)) :
-  freeFinsuppEquiv f x = ∑ p, f p • Finsupp.single p.2 ((∏ i, (x i) (p.1 i))) := by
+theorem freeFinsuppEquiv_apply [Fintype ι'] (f : ((Π i, κ i) × ι') →₀ R) (x : Π i, (κ i →₀ R))
+    : freeFinsuppEquiv f x = ∑ p, f p • Finsupp.single p.2 ((∏ i, (x i) (p.1 i))) := by
   induction f using Finsupp.induction_linear with
   | zero => simp
   | add f g hf hg => simp [hf, hg, add_mul, Finset.sum_add_distrib]

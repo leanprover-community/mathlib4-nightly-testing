@@ -4,6 +4,7 @@
 -- `open Fin.CommRing ...` *does* introduce such a coercion.
 
 module
+
 import Mathlib
 
 -- We first verify that there is no global coercion from `Nat` to `Fin n`.
@@ -19,7 +20,8 @@ but is expected to have type
 ---
 info: fun n => sorry : (n : ℕ) → ?_ n
 -/
-#guard_msgs in #check fun (n : Nat) => (n : Fin 3)
+#guard_msgs in
+#check fun (n : Nat) => (n : Fin 3)
 
 -- This coercion is available via `open Fin.CommRing in ...`
 
@@ -29,7 +31,8 @@ open Fin.CommRing
 
 variable (m : Nat) (n : Fin 3)
 /-- info: n < ↑m : Prop -/
-#guard_msgs in #check n < m
+#guard_msgs in
+#check n < m
 
 end
 

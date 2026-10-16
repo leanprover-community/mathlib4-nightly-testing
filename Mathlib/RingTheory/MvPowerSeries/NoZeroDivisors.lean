@@ -6,7 +6,6 @@ Authors: Antoine Chambert-Loir
 module
 
 public import Mathlib.RingTheory.MvPowerSeries.Order
-
 import Mathlib.Data.Finsupp.WellFounded
 import Mathlib.RingTheory.MvPowerSeries.LexOrder
 
@@ -52,16 +51,16 @@ section Semiring
 
 variable [Semiring R]
 
-theorem mem_nonZeroDivisorsRight_of_constantCoeff {φ : MvPowerSeries σ R}
-    (hφ : constantCoeff φ ∈ nonZeroDivisorsRight R) :
-    φ ∈ nonZeroDivisorsRight (MvPowerSeries σ R) := by
+theorem mem_nonZeroDivisorsRight_of_constantCoeff
+    {φ : MvPowerSeries σ R} (hφ : constantCoeff φ ∈ nonZeroDivisorsRight R)
+    : φ ∈ nonZeroDivisorsRight (MvPowerSeries σ R) := by
   classical
   intro x hx
   ext d
   apply WellFoundedLT.induction d
   intro e he
-  rw [map_zero, ← mul_right_mem_nonZeroDivisorsRight_eq_zero_iff hφ,
-    ← map_zero (f := coeff e), ← hx]
+  rw [map_zero, ← mul_right_mem_nonZeroDivisorsRight_eq_zero_iff hφ, ← map_zero (f := coeff e),
+    ← hx]
   convert (coeff_mul e x φ).symm
   rw [Finset.sum_eq_single (e, 0), coeff_zero_eq_constantCoeff]
   · rintro ⟨u, _⟩ huv _
@@ -73,16 +72,15 @@ theorem mem_nonZeroDivisorsRight_of_constantCoeff {φ : MvPowerSeries σ R}
   · simp
 
 -- TODO: derive from `mem_nonZeroDivisorsRight_of_constantCoeff` using `MulOpposite`
-theorem mem_nonZeroDivisorsLeft_of_constantCoeff {φ : MvPowerSeries σ R}
-    (hφ : constantCoeff φ ∈ nonZeroDivisorsLeft R) :
-    φ ∈ nonZeroDivisorsLeft (MvPowerSeries σ R) := by
+theorem mem_nonZeroDivisorsLeft_of_constantCoeff
+    {φ : MvPowerSeries σ R} (hφ : constantCoeff φ ∈ nonZeroDivisorsLeft R)
+    : φ ∈ nonZeroDivisorsLeft (MvPowerSeries σ R) := by
   classical
   intro x hx
   ext d
   apply WellFoundedLT.induction d
   intro e he
-  rw [map_zero, ← mul_left_mem_nonZeroDivisorsLeft_eq_zero_iff hφ,
-    ← map_zero (f := coeff e), ← hx]
+  rw [map_zero, ← mul_left_mem_nonZeroDivisorsLeft_eq_zero_iff hφ, ← map_zero (f := coeff e), ← hx]
   convert (coeff_mul e φ x).symm
   rw [Finset.sum_eq_single (0, e), coeff_zero_eq_constantCoeff]
   · rintro ⟨_, u⟩ huv _
@@ -94,15 +92,16 @@ theorem mem_nonZeroDivisorsLeft_of_constantCoeff {φ : MvPowerSeries σ R}
   · simp only [mem_antidiagonal, zero_add, not_true_eq_false, coeff_zero_eq_constantCoeff,
       false_implies]
 
-/-- A multivariate power series is not a zero divisor
-  when its constant coefficient is not a zero divisor -/
-theorem mem_nonZeroDivisors_of_constantCoeff {φ : MvPowerSeries σ R}
-    (hφ : constantCoeff φ ∈ R⁰) :
-    φ ∈ (MvPowerSeries σ R)⁰ :=
+/--
+A multivariate power series is not a zero divisor
+when its constant coefficient is not a zero divisor
+-/
+theorem mem_nonZeroDivisors_of_constantCoeff {φ : MvPowerSeries σ R} (hφ : constantCoeff φ ∈ R⁰)
+    : φ ∈ (MvPowerSeries σ R)⁰ :=
   ⟨mem_nonZeroDivisorsLeft_of_constantCoeff hφ.1, mem_nonZeroDivisorsRight_of_constantCoeff hφ.2⟩
 
-lemma monomial_mem_nonZeroDivisorsLeft {n : σ →₀ ℕ} {r} :
-    monomial n r ∈ nonZeroDivisorsLeft (MvPowerSeries σ R) ↔ r ∈ nonZeroDivisorsLeft R := by
+lemma monomial_mem_nonZeroDivisorsLeft {n : σ →₀ ℕ} {r}
+    : monomial n r ∈ nonZeroDivisorsLeft (MvPowerSeries σ R) ↔ r ∈ nonZeroDivisorsLeft R := by
   constructor
   · intro H s hrs
     have := H (C s) (by rw [← monomial_zero_eq_C, monomial_mul_monomial]; ext; simp [hrs])
@@ -117,8 +116,8 @@ lemma monomial_mem_nonZeroDivisorsLeft {n : σ →₀ ℕ} {r} :
 alias monomial_mem_nonzeroDivisorsLeft := monomial_mem_nonZeroDivisorsLeft
 
 -- TODO: reduce duplication
-lemma monomial_mem_nonZeroDivisorsRight {n : σ →₀ ℕ} {r} :
-    monomial n r ∈ nonZeroDivisorsRight (MvPowerSeries σ R) ↔ r ∈ nonZeroDivisorsRight R := by
+lemma monomial_mem_nonZeroDivisorsRight {n : σ →₀ ℕ} {r}
+    : monomial n r ∈ nonZeroDivisorsRight (MvPowerSeries σ R) ↔ r ∈ nonZeroDivisorsRight R := by
   constructor
   · intro H s hrs
     have := H (C s) (by rw [← monomial_zero_eq_C, monomial_mul_monomial]; ext; simp [hrs])
@@ -132,15 +131,14 @@ lemma monomial_mem_nonZeroDivisorsRight {n : σ →₀ ℕ} {r} :
 @[deprecated (since := "2026-09-28")]
 alias monomial_mem_nonzeroDivisorsRight := monomial_mem_nonZeroDivisorsRight
 
-lemma monomial_mem_nonZeroDivisors {n : σ →₀ ℕ} {r} :
-    monomial n r ∈ (MvPowerSeries σ R)⁰ ↔ r ∈ R⁰ :=
+lemma monomial_mem_nonZeroDivisors {n : σ →₀ ℕ} {r}
+    : monomial n r ∈ (MvPowerSeries σ R)⁰ ↔ r ∈ R⁰ :=
   monomial_mem_nonZeroDivisorsLeft.and monomial_mem_nonZeroDivisorsRight
 
 @[deprecated (since := "2026-09-28")]
 alias monomial_mem_nonzeroDivisors := monomial_mem_nonZeroDivisors
 
-lemma X_mem_nonZeroDivisors {i : σ} :
-    X i ∈ (MvPowerSeries σ R)⁰ := by
+lemma X_mem_nonZeroDivisors {i : σ} : X i ∈ (MvPowerSeries σ R)⁰ := by
   rw [X, monomial_mem_nonZeroDivisors]
   exact Submonoid.one_mem R⁰
 
@@ -155,8 +153,8 @@ instance : NoZeroDivisors (MvPowerSeries σ R) where
     rcases exists_wellFoundedGT σ
     simpa only [← lexOrder_eq_top_iff_eq_zero, lexOrder_mul, WithTop.add_eq_top] using h
 
-theorem weightedOrder_mul (w : σ → ℕ) (f g : MvPowerSeries σ R) :
-    (f * g).weightedOrder w = f.weightedOrder w + g.weightedOrder w := by
+theorem weightedOrder_mul (w : σ → ℕ) (f g : MvPowerSeries σ R)
+    : (f * g).weightedOrder w = f.weightedOrder w + g.weightedOrder w := by
   apply le_antisymm _ (le_weightedOrder_mul w)
   by_cases hf : f.weightedOrder w < ⊤
   · by_cases hg : g.weightedOrder w < ⊤
@@ -169,13 +167,13 @@ theorem weightedOrder_mul (w : σ → ℕ) (f g : MvPowerSeries σ R) :
       have : f.weightedHomogeneousComponent w p * g.weightedHomogeneousComponent w q ≠ 0 := by
         simp only [ne_eq, mul_eq_zero]
         intro H
-        rcases H with H | H <;>
-        · refine weightedHomogeneousComponent_of_weightedOrder ?_ H
-          simp only [ENat.natCast_toNat_eq_self, ne_eq, weightedOrder_eq_top_iff, p, q]
-          rw [← ne_eq, ne_zero_iff_weightedOrder_finite w]
-          exact ENat.natCast_toNat (ne_top_of_lt (by simpa))
-      rw [← weightedHomogeneousComponent_mul_of_le_weightedOrder
-          (le_of_eq hp) (le_of_eq hq)] at this
+        rcases H with H | H
+          <;> · refine weightedHomogeneousComponent_of_weightedOrder ?_ H
+                simp only [ENat.natCast_toNat_eq_self, ne_eq, weightedOrder_eq_top_iff, p, q]
+                rw [← ne_eq, ne_zero_iff_weightedOrder_finite w]
+                exact ENat.natCast_toNat (ne_top_of_lt (by simpa))
+      rw [← weightedHomogeneousComponent_mul_of_le_weightedOrder (le_of_eq hp) (le_of_eq hq)]
+        at this
       rw [← hp, ← hq, ← Nat.cast_add, ← not_lt]
       intro H
       apply this
@@ -185,20 +183,23 @@ theorem weightedOrder_mul (w : σ → ℕ) (f g : MvPowerSeries σ R) :
   · rw [not_lt_top_iff] at hf
     simp [hf]
 
-theorem weightedOrder_prod {R : Type*} [CommSemiring R] [NoZeroDivisors R] [Nontrivial R]
-    {ι : Type*} (w : σ → ℕ) (f : ι → MvPowerSeries σ R) (s : Finset ι) :
-    (∏ i ∈ s, f i).weightedOrder w = ∑ i ∈ s, (f i).weightedOrder w := by
+theorem weightedOrder_prod
+    {R : Type*} [CommSemiring R] [NoZeroDivisors R] [Nontrivial R]
+    {ι : Type*}
+    (w : σ → ℕ) (f : ι → MvPowerSeries σ R) (s : Finset ι)
+    : (∏ i ∈ s, f i).weightedOrder w = ∑ i ∈ s, (f i).weightedOrder w := by
   induction s using Finset.cons_induction with
   | empty => simp
   | cons a s ha ih => rw [Finset.sum_cons ha, Finset.prod_cons ha, weightedOrder_mul, ih]
 
-theorem order_mul (f g : MvPowerSeries σ R) :
-    (f * g).order = f.order + g.order :=
+theorem order_mul (f g : MvPowerSeries σ R) : (f * g).order = f.order + g.order :=
   weightedOrder_mul _ f g
 
-theorem order_prod {R : Type*} [CommSemiring R] [NoZeroDivisors R] [Nontrivial R]
-    {ι : Type*} (f : ι → MvPowerSeries σ R) (s : Finset ι) :
-    (∏ i ∈ s, f i).order = ∑ i ∈ s, (f i).order := weightedOrder_prod _ _ _
+theorem order_prod
+    {R : Type*} [CommSemiring R] [NoZeroDivisors R] [Nontrivial R]
+    {ι : Type*} (f : ι → MvPowerSeries σ R) (s : Finset ι)
+    : (∏ i ∈ s, f i).order = ∑ i ∈ s, (f i).order :=
+  weightedOrder_prod _ _ _
 
 end MvPowerSeries
 

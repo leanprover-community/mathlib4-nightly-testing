@@ -41,10 +41,12 @@ variable {K : Type*} [Field K] [NumberField K]
 open Algebra
 
 open Function Ideal IsDedekindDomain HeightOneSpectrum in
-/-- For any non-zero `x` in `𝓞 K`, the product of `w x`, where `w` runs over `FinitePlace K`, is
-equal to the inverse of the absolute value of `Algebra.norm ℤ x`. -/
-theorem FinitePlace.prod_eq_inv_abs_norm_int {x : 𝓞 K} (h_x_nezero : x ≠ 0) :
-    ∏ᶠ w : FinitePlace K, w x = (|norm ℤ x| : ℝ)⁻¹ := by
+/--
+For any non-zero `x` in `𝓞 K`, the product of `w x`, where `w` runs over `FinitePlace K`, is
+equal to the inverse of the absolute value of `Algebra.norm ℤ x`.
+-/
+theorem FinitePlace.prod_eq_inv_abs_norm_int {x : 𝓞 K} (h_x_nezero : x ≠ 0)
+    : ∏ᶠ w : FinitePlace K, w x = (|norm ℤ x| : ℝ)⁻¹ := by
   simp only [← finprod_comp_equiv equivHeightOneSpectrum.symm, equivHeightOneSpectrum_symm_apply]
   refine (inv_eq_of_mul_eq_one_left ?_).symm
   norm_cast
@@ -59,24 +61,27 @@ theorem FinitePlace.prod_eq_inv_abs_norm_int {x : 𝓞 K} (h_x_nezero : x ≠ 0)
   have h_fin₁ : t₁.Finite := h_fin₀.subset <| by simp [norm_eq_one_iff_notMem, t₁, t₀]
   have h_fin₂ : t₂.Finite := by
     refine h_fin₀.subset ?_
-    simp only [mulSupport_subset_iff, Set.mem_ofPred_eq, t₂, t₀,
-      maxPowDividing, ← dvd_span_singleton]
+    simp only [mulSupport_subset_iff, Set.mem_ofPred_eq, t₂, t₀, maxPowDividing,
+      ← dvd_span_singleton]
     intro v hv
     simp only [map_pow, Nat.cast_pow, ← pow_zero (absNorm v.asIdeal : ℝ)] at hv
     refine (Associates.count_ne_zero_iff_dvd h_span_nezero (irreducible v)).1 <| fun h ↦ hv ?_
     congr
-  have h_prod : (absNorm (∏ᶠ (v : HeightOneSpectrum (𝓞 K)), v.maxPowDividing (span {x})) : ℝ) =
-      ∏ᶠ (v : HeightOneSpectrum (𝓞 K)), (absNorm (v.maxPowDividing (span {x})) : ℝ) :=
-    ((Nat.castRingHom ℝ).toMonoidHom.comp absNorm.toMonoidHom).map_finprod_of_preimage_one
-      (by simp) _
+  have h_prod
+      : (absNorm (∏ᶠ (v : HeightOneSpectrum (𝓞 K)), v.maxPowDividing (span {x})) : ℝ)
+        = ∏ᶠ (v : HeightOneSpectrum (𝓞 K)), (absNorm (v.maxPowDividing (span {x})) : ℝ) :=
+    ((Nat.castRingHom ℝ).toMonoidHom.comp absNorm.toMonoidHom).map_finprod_of_preimage_one (by simp)
+      _
   rw [h_prod, ← finprod_mul_distrib h_fin₁ h_fin₂]
   exact finprod_eq_one_of_forall_eq_one fun v ↦ embedding_mul_absNorm _ v h_x_nezero
 
-/-- For any non-zero `x` in `K`, the product of `w x`, where `w` runs over `FinitePlace K`, is
-equal to the inverse of the absolute value of `Algebra.norm ℚ x`. -/
-theorem FinitePlace.prod_eq_inv_abs_norm {x : K} (h_x_nezero : x ≠ 0) :
-    ∏ᶠ w : FinitePlace K, w x = |(Algebra.norm ℚ) x|⁻¹ := by
-  --reduce to 𝓞 K
+/--
+For any non-zero `x` in `K`, the product of `w x`, where `w` runs over `FinitePlace K`, is
+equal to the inverse of the absolute value of `Algebra.norm ℚ x`.
+-/
+theorem FinitePlace.prod_eq_inv_abs_norm {x : K} (h_x_nezero : x ≠ 0)
+    : ∏ᶠ w : FinitePlace K, w x = |(Algebra.norm ℚ) x|⁻¹ := by
+  -- reduce to 𝓞 K
   rcases IsFractionRing.div_surjective (𝓞 K) x with ⟨a, b, hb, rfl⟩
   apply nonZeroDivisors.ne_zero at hb
   have ha : a ≠ 0 := by
@@ -95,8 +100,8 @@ theorem FinitePlace.prod_eq_inv_abs_norm {x : K} (h_x_nezero : x ≠ 0) :
 
 open FinitePlace in
 /-- The Product Formula for the Number Field `K`. -/
-theorem prod_abs_eq_one {x : K} (h_x_nezero : x ≠ 0) :
-    (∏ w : InfinitePlace K, w x ^ w.mult) * ∏ᶠ w : FinitePlace K, w x = 1 := by
+theorem prod_abs_eq_one {x : K} (h_x_nezero : x ≠ 0)
+    : (∏ w : InfinitePlace K, w x ^ w.mult) * ∏ᶠ w : FinitePlace K, w x = 1 := by
   simp [prod_eq_inv_abs_norm, InfinitePlace.prod_eq_abs_norm, h_x_nezero]
 
 end NumberField

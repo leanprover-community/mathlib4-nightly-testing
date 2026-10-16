@@ -35,18 +35,22 @@ namespace SSet
 
 variable {X Y : SSet.{u}}
 
-/-- Morphisms relatively to the `⊥` subcomplexes of `X` and `Y`
-identify to morphisms `X ⟶ Y`. -/
+/--
+Morphisms relatively to the `⊥` subcomplexes of `X` and `Y`
+identify to morphisms `X ⟶ Y`.
+-/
 @[simps]
-def RelativeMorphism.botEquiv :
-    RelativeMorphism (⊥ : X.Subcomplex) (⊥ : Y.Subcomplex)
-      (Subcomplex.isInitialBot.to _) ≃ (X ⟶ Y) where
+def RelativeMorphism.botEquiv
+    : RelativeMorphism (⊥ : X.Subcomplex) (⊥ : Y.Subcomplex) (Subcomplex.isInitialBot.to _)
+      ≃ (X ⟶ Y) where
   toFun f := f.map
   invFun f := { map := f }
 
-/-- The type of homotopies between morphisms `X ⟶ Y` of simplicial sets.
+/--
+The type of homotopies between morphisms `X ⟶ Y` of simplicial sets.
 The data consists of a morphism `h : X ⊗ Δ[1] ⟶ Y` which induces
-both `f` and `g`, see the lemmas `SSet.Homotopy.h₀` and `SSet.Homotopy.h₁`. -/
+both `f` and `g`, see the lemmas `SSet.Homotopy.h₀` and `SSet.Homotopy.h₁`.
+-/
 def Homotopy (f g : X ⟶ Y) : Type u :=
   (RelativeMorphism.botEquiv.symm f).Homotopy (RelativeMorphism.botEquiv.symm g)
 
@@ -55,22 +59,23 @@ namespace Homotopy
 variable {f g : X ⟶ Y}
 
 @[reassoc (attr := simp high)]
-lemma h₀ (H : Homotopy f g) : ι₀ ≫ H.h = f :=
-  RelativeMorphism.Homotopy.h₀ H
+lemma h₀ (H : Homotopy f g) : ι₀ ≫ H.h = f := RelativeMorphism.Homotopy.h₀ H
 
 @[reassoc (attr := simp high)]
-lemma h₁ (H : Homotopy f g) : ι₁ ≫ H.h = g :=
-  RelativeMorphism.Homotopy.h₁ H
+lemma h₁ (H : Homotopy f g) : ι₁ ≫ H.h = g := RelativeMorphism.Homotopy.h₁ H
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `H : Homotopy f g` is a homotopy between morphisms of simplicial sets
+/--
+If `H : Homotopy f g` is a homotopy between morphisms of simplicial sets
 `f : X ⟶ Y` and `g : X ⟶ Y` (i.e. `H.h` is a morphism `X ⊗ Δ[1] ⟶ Y` inducing
 `f` and `g`), then this is the corresponding (combinatorial) homotopy of
-morphisms of simplicial objects between `f` and `g`. -/
-noncomputable def toSimplicialObjectHomotopy (H : Homotopy f g) :
-    SimplicialObject.Homotopy f g where
-  h i := ↾fun x ↦
-    (yonedaEquiv.symm x ▷ Δ[1] ≫ H.h).app _ (prodStdSimplex₁.nonDegenerateEquiv i).1
+morphisms of simplicial objects between `f` and `g`.
+-/
+noncomputable def toSimplicialObjectHomotopy (H : Homotopy f g)
+    : SimplicialObject.Homotopy f g where
+  h i :=
+    ↾fun x ↦
+      (yonedaEquiv.symm x ▷ Δ[1] ≫ H.h).app _ (prodStdSimplex₁.nonDegenerateEquiv i).1
   h_zero_comp_δ_zero n := by
     ext x
     simp only [TypeCat.Fun.toFun_apply, types_comp_apply, TypeCat.hom_ofHom, TypeCat.Fun.coe_mk,

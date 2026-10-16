@@ -51,14 +51,15 @@ def piRightHomBil : N →ₗ[S] (∀ i, M i) →ₗ[R] ∀ i, N ⊗[R] M i where
     simp
   map_smul' _ _ := rfl
 
-/-- For any `R`-module `N`, index type `ι` and family of `R`-modules `Mᵢ`, there is a natural
-linear map `N ⊗[R] (∀ i, M i) →ₗ ∀ i, N ⊗[R] M i`. This map is an isomorphism if `ι` is finite. -/
+/--
+For any `R`-module `N`, index type `ι` and family of `R`-modules `Mᵢ`, there is a natural
+linear map `N ⊗[R] (∀ i, M i) →ₗ ∀ i, N ⊗[R] M i`. This map is an isomorphism if `ι` is finite.
+-/
 def piRightHom : N ⊗[R] (∀ i, M i) →ₗ[S] ∀ i, N ⊗[R] M i :=
   AlgebraTensorModule.lift <| piRightHomBil R S N M
 
 @[simp]
-lemma piRightHom_tmul (x : N) (f : ∀ i, M i) :
-    piRightHom R S N M (x ⊗ₜ f) = (fun j ↦ x ⊗ₜ f j) :=
+lemma piRightHom_tmul (x : N) (f : ∀ i, M i) : piRightHom R S N M (x ⊗ₜ f) = (fun j ↦ x ⊗ₜ f j) :=
   rfl
 
 variable [Fintype ι] [DecidableEq ι]
@@ -69,8 +70,8 @@ def piRightInv : (∀ i, N ⊗[R] M i) →ₗ[S] N ⊗[R] ∀ i, M i :=
     AlgebraTensorModule.map LinearMap.id (single R M i)
 
 @[simp]
-private lemma piRightInv_apply (x : N) (m : ∀ i, M i) :
-    piRightInv R S N M (fun i ↦ x ⊗ₜ m i) = x ⊗ₜ m := by
+private lemma piRightInv_apply (x : N) (m : ∀ i, M i)
+    : piRightInv R S N M (fun i ↦ x ⊗ₜ m i) = x ⊗ₜ m := by
   simp only [piRightInv, lsum_apply, coe_sum, coe_comp, coe_proj, Finset.sum_apply,
     Function.comp_apply, Function.eval, AlgebraTensorModule.map_tmul, id_coe, id_eq, coe_single]
   rw [← tmul_sum]
@@ -79,8 +80,8 @@ private lemma piRightInv_apply (x : N) (m : ∀ i, M i) :
   simp
 
 @[simp]
-private lemma piRightInv_single (x : N) (i : ι) (m : M i) :
-    piRightInv R S N M (Pi.single i (x ⊗ₜ m)) = x ⊗ₜ Pi.single i m := by
+private lemma piRightInv_single (x : N) (i : ι) (m : M i)
+    : piRightInv R S N M (Pi.single i (x ⊗ₜ m)) = x ⊗ₜ Pi.single i m := by
   have : Pi.single i (x ⊗ₜ m) = fun j ↦ x ⊗ₜ[R] (Pi.single i m j) := by
     ext j
     rw [← tmul_single]
@@ -89,30 +90,28 @@ private lemma piRightInv_single (x : N) (i : ι) (m : M i) :
 
 /-- Tensor product commutes with finite products on the right. -/
 def piRight : N ⊗[R] (∀ i, M i) ≃ₗ[S] ∀ i, N ⊗[R] M i :=
-  LinearEquiv.ofLinearMap
-    (piRightHom R S N M)
-    (piRightInv R S N M)
-    (by ext i x m j; simp [tmul_single])
-    (by ext x j m; simp)
+  LinearEquiv.ofLinearMap (piRightHom R S N M) (piRightInv R S N M)
+    (by ext i x m j; simp [tmul_single]) (by ext x j m; simp)
 
 @[simp]
-lemma piRight_apply (x : N ⊗[R] (∀ i, M i)) :
-    piRight R S N M x = piRightHom R S N M x := by
-  rfl
+lemma piRight_apply (x : N ⊗[R] (∀ i, M i)) : piRight R S N M x = piRightHom R S N M x := by rfl
 
 @[simp]
-lemma piRight_symm_apply (x : N) (m : ∀ i, M i) :
-    (piRight R S N M).symm (fun i ↦ x ⊗ₜ m i) = x ⊗ₜ m := by
+lemma piRight_symm_apply (x : N) (m : ∀ i, M i)
+    : (piRight R S N M).symm (fun i ↦ x ⊗ₜ m i) = x ⊗ₜ m := by
   simp [piRight]
 
 @[simp]
-lemma piRight_symm_single (x : N) (i : ι) (m : M i) :
-    (piRight R S N M).symm (Pi.single i (x ⊗ₜ m)) = x ⊗ₜ Pi.single i m := by
+lemma piRight_symm_single (x : N) (i : ι) (m : M i)
+    : (piRight R S N M).symm (Pi.single i (x ⊗ₜ m)) = x ⊗ₜ Pi.single i m := by
   simp [piRight]
 
-/-- Tensor product commutes with finite products on the left.
-TODO: generalize to `S`-linear. -/
-@[simp] def piLeft : (∀ i, M i) ⊗[R] N ≃ₗ[R] ∀ i, M i ⊗[R] N :=
+/--
+Tensor product commutes with finite products on the left.
+TODO: generalize to `S`-linear.
+-/
+@[simp]
+def piLeft : (∀ i, M i) ⊗[R] N ≃ₗ[R] ∀ i, M i ⊗[R] N :=
   TensorProduct.comm .. ≪≫ₗ piRight .. ≪≫ₗ .piCongrRight fun _ ↦ TensorProduct.comm ..
 
 end
@@ -131,14 +130,16 @@ def piScalarRightHomBil : N →ₗ[S] (ι → R) →ₗ[R] (ι → N) where
     rw [← IsScalarTower.smul_assoc, _root_.Algebra.smul_def, mul_comm, mul_smul]
     simp
 
-/-- For any `R`-module `N` and index type `ι`, there is a natural
-linear map `N ⊗[R] (ι → R) →ₗ (ι → N)`. This map is an isomorphism if `ι` is finite. -/
+/--
+For any `R`-module `N` and index type `ι`, there is a natural
+linear map `N ⊗[R] (ι → R) →ₗ (ι → N)`. This map is an isomorphism if `ι` is finite.
+-/
 def piScalarRightHom : N ⊗[R] (ι → R) →ₗ[S] (ι → N) :=
   AlgebraTensorModule.lift <| piScalarRightHomBil R S N ι
 
 @[simp]
-lemma piScalarRightHom_tmul (x : N) (f : ι → R) :
-    piScalarRightHom R S N ι (x ⊗ₜ f) = (fun j ↦ f j • x) := by
+lemma piScalarRightHom_tmul (x : N) (f : ι → R)
+    : piScalarRightHom R S N ι (x ⊗ₜ f) = (fun j ↦ f j • x) := by
   ext j
   simp [piScalarRightHom, piScalarRightHomBil]
 
@@ -154,27 +155,26 @@ def piScalarRightInv : (ι → N) →ₗ[S] N ⊗[R] (ι → R) :=
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-private lemma piScalarRightInv_single (x : N) (i : ι) :
-    piScalarRightInv R S N ι (Pi.single i x) = x ⊗ₜ Pi.single i 1 := by
+private lemma piScalarRightInv_single (x : N) (i : ι)
+    : piScalarRightInv R S N ι (Pi.single i x) = x ⊗ₜ Pi.single i 1 := by
   simp [piScalarRightInv, Pi.single_apply, TensorProduct.ite_tmul]
 
-/-- For any `R`-module `N` and finite index type `ι`, `N ⊗[R] (ι → R)` is canonically
-isomorphic to `ι → N`. -/
+/--
+For any `R`-module `N` and finite index type `ι`, `N ⊗[R] (ι → R)` is canonically
+isomorphic to `ι → N`.
+-/
 def piScalarRight : N ⊗[R] (ι → R) ≃ₗ[S] (ι → N) :=
-  LinearEquiv.ofLinearMap
-    (piScalarRightHom R S N ι)
-    (piScalarRightInv R S N ι)
-    (by ext i x j; simp [Pi.single_apply])
-    (by ext x i; simp [Pi.single_apply_smul])
+  LinearEquiv.ofLinearMap (piScalarRightHom R S N ι) (piScalarRightInv R S N ι)
+    (by ext i x j; simp [Pi.single_apply]) (by ext x i; simp [Pi.single_apply_smul])
 
 @[simp]
-lemma piScalarRight_apply (x : N ⊗[R] (ι → R)) :
-    piScalarRight R S N ι x = piScalarRightHom R S N ι x := by
+lemma piScalarRight_apply (x : N ⊗[R] (ι → R))
+    : piScalarRight R S N ι x = piScalarRightHom R S N ι x := by
   rfl
 
 @[simp]
-lemma piScalarRight_symm_single (x : N) (i : ι) :
-    (piScalarRight R S N ι).symm (Pi.single i x) = x ⊗ₜ Pi.single i 1 := by
+lemma piScalarRight_symm_single (x : N) (i : ι)
+    : (piScalarRight R S N ι).symm (Pi.single i x) = x ⊗ₜ Pi.single i 1 := by
   simp [piScalarRight]
 
 -- See also `TensorProduct.piScalarRight_symm_algebraMap` in

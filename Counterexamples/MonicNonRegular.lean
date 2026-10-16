@@ -46,19 +46,28 @@ instance : One N₃ := ⟨one⟩
 /-- Truncated addition on `N₃`. -/
 instance : Add N₃ where
   add
-  | 0, x => x
-  | x, 0 => x
-  | 1, 1 => two
-  | _, _ => more
+    | 0, x =>
+      x
+    | x, 0 =>
+      x
+    | 1, 1 =>
+      two
+    | _, _ =>
+      more
 
 /-- Truncated multiplication on `N₃`. -/
 instance : Mul N₃ where
   mul
-  | 1, x => x
-  | x, 1 => x
-  | 0, _ => 0
-  | _, 0 => 0
-  | _, _ => more
+    | 1, x =>
+      x
+    | x, 1 =>
+      x
+    | 0, _ =>
+      0
+    | _, 0 =>
+      0
+    | _, _ =>
+      more
 
 instance : CommMonoid N₃ where
   mul_assoc := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
@@ -66,17 +75,18 @@ instance : CommMonoid N₃ where
   mul_one := by rintro ⟨⟩ <;> rfl
   mul_comm := by rintro ⟨⟩ ⟨⟩ <;> rfl
 
-instance : CommSemiring N₃ :=
-  { (inferInstance : CommMonoid N₃) with
-    add_assoc := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
-    zero_add := by rintro ⟨⟩ <;> rfl
-    add_zero := by rintro ⟨⟩ <;> rfl
-    add_comm := by rintro ⟨⟩ ⟨⟩ <;> rfl
-    left_distrib := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
-    right_distrib := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
-    zero_mul := by rintro ⟨⟩ <;> rfl
-    mul_zero := by rintro ⟨⟩ <;> rfl
-    nsmul := nsmulRec }
+instance : CommSemiring N₃ := {
+  (inferInstance : CommMonoid N₃) with
+  add_assoc := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
+  zero_add := by rintro ⟨⟩ <;> rfl
+  add_zero := by rintro ⟨⟩ <;> rfl
+  add_comm := by rintro ⟨⟩ ⟨⟩ <;> rfl
+  left_distrib := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
+  right_distrib := by rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
+  zero_mul := by rintro ⟨⟩ <;> rfl
+  mul_zero := by rintro ⟨⟩ <;> rfl
+  nsmul := nsmulRec
+}
 
 theorem X_add_two_mul_X_add_two : (X + C 2 : N₃[X]) * (X + C 2) = (X + C 2) * (X + C 3) := by
   simp only [mul_add, add_mul, X_mul, add_assoc]
@@ -102,9 +112,9 @@ theorem not_isLeftRegular_X_add_two : ¬ IsLeftRegular (X + C 2 : N₃[X]) := by
   cases H
 
 /-- The statement of the counterexample: not all monic polynomials over semirings are regular. -/
-theorem not_monic_implies_isLeftRegular :
-    ¬∀ {R : Type} [Semiring R] (p : R[X]), Monic p → IsLeftRegular p :=
-  fun h => not_isLeftRegular_X_add_two (h _ monic_X_add_two)
+theorem not_monic_implies_isLeftRegular
+    : ¬ ∀ {R : Type} [Semiring R] (p : R[X]), Monic p → IsLeftRegular p := fun h =>
+  not_isLeftRegular_X_add_two (h _ monic_X_add_two)
 
 end N₃
 

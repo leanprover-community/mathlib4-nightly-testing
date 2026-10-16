@@ -6,7 +6,6 @@ Authors: Manuel Candales, Benjamin Davidson
 module
 
 public import Mathlib.Geometry.Euclidean.Sphere.Power
-
 import Mathlib.Geometry.Euclidean.Triangle
 
 /-!
@@ -43,7 +42,6 @@ and so on.
 
 public section
 
-
 open Real
 
 open scoped EuclideanGeometry RealInnerProductSpace Real
@@ -54,9 +52,10 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 variable {P : Type*} [MetricSpace P] [NormedAddTorsor V P]
 
 /-- **Ptolemy’s Theorem**. -/
-theorem mul_dist_add_mul_dist_eq_mul_dist_of_cospherical {a b c d p : P}
-    (h : Cospherical ({a, b, c, d} : Set P)) (hapc : ∠ a p c = π) (hbpd : ∠ b p d = π) :
-    dist a b * dist c d + dist b c * dist d a = dist a c * dist b d := by
+theorem mul_dist_add_mul_dist_eq_mul_dist_of_cospherical
+    {a b c d p : P}
+    (h : Cospherical ({a, b, c, d} : Set P)) (hapc : ∠ a p c = π) (hbpd : ∠ b p d = π)
+    : dist a b * dist c d + dist b c * dist d a = dist a c * dist b d := by
   have h' : Cospherical ({a, c, b, d} : Set P) := by rwa [Set.insert_comm c b {d}]
   have hmul := mul_dist_eq_mul_dist_of_cospherical_of_angle_eq_pi h' hapc hbpd
   have hbp := left_dist_ne_zero_of_angle_eq_pi hbpd

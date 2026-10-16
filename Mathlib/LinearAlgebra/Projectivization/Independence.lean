@@ -37,14 +37,18 @@ variable {ι K V : Type*} [DivisionRing K] [AddCommGroup V] [Module K V] {f : ι
 
 namespace Projectivization
 
-/-- A linearly independent family of nonzero vectors gives an independent family of points
-in projective space. -/
+/--
+A linearly independent family of nonzero vectors gives an independent family of points
+in projective space.
+-/
 inductive Independent : (ι → ℙ K V) → Prop
-  | mk (f : ι → V) (hf : ∀ i : ι, f i ≠ 0) (hl : LinearIndependent K f) :
-    Independent fun i => mk K (f i) (hf i)
+  | mk (f : ι → V) (hf : ∀ i : ι, f i ≠ 0) (hl : LinearIndependent K f)
+    : Independent fun i => mk K (f i) (hf i)
 
-/-- A family of points in a projective space is independent if and only if the representative
-vectors determined by the family are linearly independent. -/
+/--
+A family of points in a projective space is independent if and only if the representative
+vectors determined by the family are linearly independent.
+-/
 theorem independent_iff : Independent f ↔ LinearIndependent K (Projectivization.rep ∘ f) := by
   refine ⟨?_, fun h => ?_⟩
   · rintro ⟨ff, hff, hh⟩
@@ -57,8 +61,10 @@ theorem independent_iff : Independent f ↔ LinearIndependent K (Projectivizatio
     · intro i
       apply rep_nonzero
 
-/-- A family of points in projective space is independent if and only if the family of
-submodules which the points determine is independent in the lattice-theoretic sense. -/
+/--
+A family of points in projective space is independent if and only if the family of
+submodules which the points determine is independent in the lattice-theoretic sense.
+-/
 theorem independent_iff_iSupIndep : Independent f ↔ iSupIndep fun i => (f i).submodule := by
   refine ⟨?_, fun h => ?_⟩
   · rintro ⟨f, hf, hi⟩
@@ -69,15 +75,19 @@ theorem independent_iff_iSupIndep : Independent f ↔ iSupIndep fun i => (f i).s
     · simpa only [Function.comp_apply, submodule_eq] using Submodule.mem_span_singleton_self _
     · exact rep_nonzero (f i)
 
-/-- A linearly dependent family of nonzero vectors gives a dependent family of points
-in projective space. -/
+/--
+A linearly dependent family of nonzero vectors gives a dependent family of points
+in projective space.
+-/
 inductive Dependent : (ι → ℙ K V) → Prop
-  | mk (f : ι → V) (hf : ∀ i : ι, f i ≠ 0) (h : ¬LinearIndependent K f) :
-    Dependent fun i => mk K (f i) (hf i)
+  | mk (f : ι → V) (hf : ∀ i : ι, f i ≠ 0) (h : ¬ LinearIndependent K f)
+    : Dependent fun i => mk K (f i) (hf i)
 
-/-- A family of points in a projective space is dependent if and only if their
-representatives are linearly dependent. -/
-theorem dependent_iff : Dependent f ↔ ¬LinearIndependent K (Projectivization.rep ∘ f) := by
+/--
+A family of points in a projective space is dependent if and only if their
+representatives are linearly dependent.
+-/
+theorem dependent_iff : Dependent f ↔ ¬ LinearIndependent K (Projectivization.rep ∘ f) := by
   refine ⟨?_, fun h => ?_⟩
   · rintro ⟨ff, hff, hh1⟩
     contrapose hh1
@@ -90,11 +100,11 @@ theorem dependent_iff : Dependent f ↔ ¬LinearIndependent K (Projectivization.
     · exact fun i => rep_nonzero (f i)
 
 /-- Dependence is the negation of independence. -/
-theorem dependent_iff_not_independent : Dependent f ↔ ¬Independent f := by
+theorem dependent_iff_not_independent : Dependent f ↔ ¬ Independent f := by
   rw [dependent_iff, independent_iff]
 
 /-- Independence is the negation of dependence. -/
-theorem independent_iff_not_dependent : Independent f ↔ ¬Dependent f := by
+theorem independent_iff_not_dependent : Independent f ↔ ¬ Dependent f := by
   rw [dependent_iff_not_independent, Classical.not_not]
 
 /-- Two points in a projective space are dependent if and only if they are equal. -/
@@ -112,8 +122,8 @@ theorem independent_pair_iff_ne (u v : ℙ K V) : Independent ![u, v] ↔ u ≠ 
   rw [independent_iff_not_dependent, dependent_pair_iff_eq u v]
 
 /-- Two points are independent if and only if their underlying vectors are linearly independent. -/
-lemma independent_mk_iff_LinearIndependent {u v : V} (hu : u ≠ 0) (hv : v ≠ 0) :
-    Independent ![mk K u hu, mk K v hv] ↔ LinearIndependent K ![u, v] := by
+lemma independent_mk_iff_LinearIndependent {u v : V} (hu : u ≠ 0) (hv : v ≠ 0)
+    : Independent ![mk K u hu, mk K v hv] ↔ LinearIndependent K ![u, v] := by
   rw [independent_pair_iff_ne, ne_eq, mk_eq_mk_iff' K u v hu hv, linearIndependent_fin2]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   exact ⟨fun h ↦ ⟨hv, fun a ha ↦ h ⟨a, ha⟩⟩, fun ⟨_, h⟩ ⟨a, ha⟩ ↦ h a ha⟩

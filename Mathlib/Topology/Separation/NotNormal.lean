@@ -28,10 +28,13 @@ variable {X : Type u} [TopologicalSpace X]
 
 namespace IsClosed
 
-/-- Let `s` be a closed set in a normal space and `d` be a dense set. If the induced topology on `s`
-is discrete, then `𝒫 s` has cardinality less than or equal to `𝒫 d`. -/
-theorem two_pow_mk_le_two_pow_mk_dense [NormalSpace X] {s d : Set X} (hs : IsClosed s)
-    [DiscreteTopology s] (hd : Dense d) : (2 : Cardinal) ^ #s ≤ 2 ^ #d := by
+/--
+Let `s` be a closed set in a normal space and `d` be a dense set. If the induced topology on `s`
+is discrete, then `𝒫 s` has cardinality less than or equal to `𝒫 d`.
+-/
+theorem two_pow_mk_le_two_pow_mk_dense
+    [NormalSpace X] {s d : Set X} (hs : IsClosed s) [DiscreteTopology s] (hd : Dense d)
+    : (2 : Cardinal) ^ #s ≤ 2 ^ #d := by
   have h_closed (t) (ht : t ∈ 𝒫 s) : IsClosed t := by
     rw [← inter_eq_self_of_subset_right ht, ← Subtype.image_preimage_val]
     exact hs.isClosedMap_subtype_val _ (isClosed_discrete _)
@@ -40,8 +43,9 @@ theorem two_pow_mk_le_two_pow_mk_dense [NormalSpace X] {s d : Set X} (hs : IsClo
   have hUd {t₁ t₂} (h : U t₁ ∩ d = U t₂ ∩ d) : t₁.1 ⊆ t₂.1 := by
     by_contra ht
     rw [← sdiff_nonempty] at ht
-    have hUVd := hd.inter_open_nonempty _ ((hU t₁).inter (hV t₂)) <| ht.mono <|
-      subset_inter (sdiff_subset.trans (hUs t₁)) ((sdiff_subset_sdiff_left t₁.2).trans (hVs t₂))
+    have hUVd :=
+      hd.inter_open_nonempty _ ((hU t₁).inter (hV t₂)) <| ht.mono <|
+        subset_inter (sdiff_subset.trans (hUs t₁)) ((sdiff_subset_sdiff_left t₁.2).trans (hVs t₂))
     rw [inter_right_comm, h] at hUVd
     exact hUVd.not_disjoint <| disjoint_of_subset_left inter_subset_left (hUV t₂)
   have h_inj : Injective (U · ∩ d) := fun _ _ h ↦ SetCoe.ext <| (hUd h).antisymm (hUd h.symm)
@@ -51,28 +55,37 @@ theorem two_pow_mk_le_two_pow_mk_dense [NormalSpace X] {s d : Set X} (hs : IsClo
   intro
   exact inter_subset_right
 
-theorem mk_lt_two_pow_mk_dense [NormalSpace X] {s d : Set X} (hs : IsClosed s)
-    [DiscreteTopology s] (hd : Dense d) : #s < 2 ^ #d :=
+theorem mk_lt_two_pow_mk_dense
+    [NormalSpace X] {s d : Set X} (hs : IsClosed s) [DiscreteTopology s] (hd : Dense d)
+    : #s < 2 ^ #d :=
   (#s).cantor.trans_le <| hs.two_pow_mk_le_two_pow_mk_dense hd
 
 variable [SeparableSpace X]
 
-theorem two_pow_mk_lt_continuum [NormalSpace X] {s : Set X} (hs : IsClosed s)
-    [DiscreteTopology s] : 2 ^ #s ≤ 𝔠 :=
+theorem two_pow_mk_lt_continuum [NormalSpace X] {s : Set X} (hs : IsClosed s) [DiscreteTopology s]
+    : 2 ^ #s ≤ 𝔠 :=
   have ⟨d, hd_countable, hd_dense⟩ := exists_countable_dense X
   calc
-    2 ^ #s ≤ 2 ^ #d := hs.two_pow_mk_le_two_pow_mk_dense hd_dense
+    2 ^ #s
+      ≤ 2 ^ #d := hs.two_pow_mk_le_two_pow_mk_dense hd_dense
     _ ≤ 2 ^ ℵ₀ := power_le_power_left two_ne_zero hd_countable.le_aleph0
     _ = 𝔠 := two_power_aleph0
 
-/-- Let `s` be a closed set in a separable normal space. If the induced topology on `s` is discrete,
-then `s` has cardinality less than continuum. -/
-theorem mk_lt_continuum [NormalSpace X] {s : Set X} (hs : IsClosed s)
-  [DiscreteTopology s] : #s < 𝔠 := (#s).cantor.trans_le hs.two_pow_mk_lt_continuum
+/--
+Let `s` be a closed set in a separable normal space. If the induced topology on `s` is discrete,
+then `s` has cardinality less than continuum.
+-/
+theorem mk_lt_continuum [NormalSpace X] {s : Set X} (hs : IsClosed s) [DiscreteTopology s]
+    : #s < 𝔠 :=
+  (#s).cantor.trans_le hs.two_pow_mk_lt_continuum
 
-/-- Let `s` be a closed set in a separable space. If the induced topology on `s` is discrete and `s`
-has cardinality at least continuum, then the ambient space is not a normal space. -/
-theorem not_normal_of_continuum_le_mk {s : Set X} (hs : IsClosed s) [DiscreteTopology s]
-    (hmk : 𝔠 ≤ #s) : ¬NormalSpace X := fun _ ↦ hs.mk_lt_continuum.not_ge hmk
+/--
+Let `s` be a closed set in a separable space. If the induced topology on `s` is discrete and `s`
+has cardinality at least continuum, then the ambient space is not a normal space.
+-/
+theorem not_normal_of_continuum_le_mk
+    {s : Set X} (hs : IsClosed s) [DiscreteTopology s] (hmk : 𝔠 ≤ #s)
+    : ¬ NormalSpace X := fun _ ↦
+  hs.mk_lt_continuum.not_ge hmk
 
 end IsClosed

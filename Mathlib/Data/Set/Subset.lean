@@ -57,14 +57,13 @@ lemma preimage_val_sUnion : A ↓∩ (⋃₀ S) = ⋃₀ { (A ↓∩ B) | B ∈ 
   rw [← Set.image, sUnion_image]
   simp_rw [sUnion_eq_biUnion, preimage_iUnion]
 
-@[simp]
-lemma preimage_val_iInter : A ↓∩ (⋂ i, s i) = ⋂ i, A ↓∩ s i := preimage_iInter
+@[simp] lemma preimage_val_iInter : A ↓∩ (⋂ i, s i) = ⋂ i, A ↓∩ s i := preimage_iInter
 
 lemma preimage_val_sInter : A ↓∩ (⋂₀ S) = ⋂₀ { (A ↓∩ B) | B ∈ S } := by
   rw [← Set.image, sInter_image]
   simp_rw [sInter_eq_biInter, preimage_iInter]
 
-lemma preimage_val_sInter_eq_sInter : A ↓∩ (⋂₀ S) = ⋂₀ ((A ↓∩ ·) '' S) := by
+lemma preimage_val_sInter_eq_sInter : A ↓∩ (⋂₀ S) = ⋂₀((A ↓∩ ·) '' S) := by
   simp only [preimage_sInter, sInter_image]
 
 lemma eq_of_preimage_val_eq_of_subset (hB : B ⊆ A) (hC : C ⊆ A) (h : A ↓∩ B = A ↓∩ C) : B = C := by
@@ -77,11 +76,9 @@ The following simp lemmas try to transform operations in the subtype into operat
 type, if possible.
 -/
 
-@[simp]
-lemma image_val_union : (↑(D ∪ E) : Set α) = ↑D ∪ ↑E := image_union _ _ _
+@[simp] lemma image_val_union : (↑(D ∪ E) : Set α) = ↑D ∪ ↑E := image_union _ _ _
 
-@[simp]
-lemma image_val_inter : (↑(D ∩ E) : Set α) = ↑D ∩ ↑E := image_inter Subtype.val_injective
+@[simp] lemma image_val_inter : (↑(D ∩ E) : Set α) = ↑D ∩ ↑E := image_inter Subtype.val_injective
 
 @[simp]
 lemma image_val_sdiff : (↑(D \ E) : Set α) = ↑D \ ↑E := image_sdiff Subtype.val_injective _ _
@@ -92,36 +89,25 @@ lemma image_val_sdiff : (↑(D \ E) : Set α) = ↑D \ ↑E := image_sdiff Subty
 lemma image_val_compl : ↑(Dᶜ) = A \ ↑D := by
   rw [compl_eq_univ_sdiff, image_val_sdiff, image_univ, Subtype.range_coe_subtype, ofPred_mem_eq]
 
-@[simp]
-lemma image_val_sUnion : ↑(⋃₀ T) = ⋃₀ { (B : Set α) | B ∈ T} := by
-  rw [image_sUnion, image]
+@[simp] lemma image_val_sUnion : ↑(⋃₀T) = ⋃₀ { (B : Set α) | B ∈ T} := by rw [image_sUnion, image]
+
+@[simp] lemma image_val_iUnion : ↑(⋃ i, t i) = ⋃ i, (t i : Set α) := image_iUnion
 
 @[simp]
-lemma image_val_iUnion : ↑(⋃ i, t i) = ⋃ i, (t i : Set α) := image_iUnion
-
-@[simp]
-lemma image_val_sInter (hT : T.Nonempty) : (↑(⋂₀ T) : Set α) = ⋂₀ { (↑B : Set α) | B ∈ T } := by
+lemma image_val_sInter (hT : T.Nonempty) : (↑(⋂₀T) : Set α) = ⋂₀ { (↑B : Set α) | B ∈ T } := by
   rw [← Set.image, sInter_image, sInter_eq_biInter, Subtype.val_injective.injOn.image_biInter_eq hT]
 
 @[simp]
 lemma image_val_iInter [Nonempty ι] : (↑(⋂ i, t i) : Set α) = ⋂ i, (↑(t i) : Set α) :=
   Subtype.val_injective.injOn.image_iInter_eq
 
-@[simp]
-lemma image_val_union_self_right_eq : A ∪ ↑D = A :=
-  union_eq_left.2 image_val_subset
+@[simp] lemma image_val_union_self_right_eq : A ∪ ↑D = A := union_eq_left.2 image_val_subset
 
-@[simp]
-lemma image_val_union_self_left_eq : ↑D ∪ A = A :=
-  union_eq_right.2 image_val_subset
+@[simp] lemma image_val_union_self_left_eq : ↑D ∪ A = A := union_eq_right.2 image_val_subset
 
-@[simp]
-lemma image_val_inter_self_right_eq_coe : A ∩ ↑D = ↑D :=
-  inter_eq_right.2 image_val_subset
+@[simp] lemma image_val_inter_self_right_eq_coe : A ∩ ↑D = ↑D := inter_eq_right.2 image_val_subset
 
-@[simp]
-lemma image_val_inter_self_left_eq_coe : ↑D ∩ A = ↑D :=
-  inter_eq_left.2 image_val_subset
+@[simp] lemma image_val_inter_self_left_eq_coe : ↑D ∩ A = ↑D := inter_eq_left.2 image_val_subset
 
 lemma subset_preimage_val_image_val_iff : D ⊆ A ↓∩ ↑E ↔ D ⊆ E := by
   rw [preimage_image_eq _ Subtype.val_injective]
@@ -143,8 +129,7 @@ lemma image_val_mono (h : D ⊆ E) : (↑D : Set α) ⊆ ↑E :=
 Relations between restriction and coercion.
 -/
 
-lemma image_val_preimage_val_subset_self : ↑(A ↓∩ B) ⊆ B :=
-  image_preimage_subset _ _
+lemma image_val_preimage_val_subset_self : ↑(A ↓∩ B) ⊆ B := image_preimage_subset _ _
 
 lemma preimage_val_image_val_eq_self : A ↓∩ ↑D = D :=
   Function.Injective.preimage_image Subtype.val_injective _

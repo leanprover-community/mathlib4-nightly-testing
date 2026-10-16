@@ -6,7 +6,6 @@ Authors: Nailin Guan
 module
 
 public import Mathlib.CategoryTheory.Abelian.Projective.Dimension
-
 import Mathlib.Algebra.Category.ModuleCat.Ext.DimensionShifting
 import Mathlib.Algebra.Category.ModuleCat.Projective
 import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
@@ -55,8 +54,9 @@ variable {M : ModuleCat.{v} R} {N : ModuleCat.{v'} R'}
 
 set_option backward.isDefEq.respectTransparency.types false in
 attribute [local instance] RingHomInvPair.of_ringEquiv in
-lemma hasProjectiveDimensionLE_of_semiLinearEquiv (e' : M ≃ₛₗ[RingHomClass.toRingHom e] N)
-    (n : ℕ) [HasProjectiveDimensionLE M n] : HasProjectiveDimensionLE N n := by
+lemma hasProjectiveDimensionLE_of_semiLinearEquiv
+    (e' : M ≃ₛₗ[RingHomClass.toRingHom e] N) (n : ℕ) [HasProjectiveDimensionLE M n]
+    : HasProjectiveDimensionLE N n := by
   induction n generalizing M N e' with
   | zero =>
     have : HasProjectiveDimensionLE M 0 := ‹_›
@@ -88,20 +88,24 @@ alias _root_.CategoryTheory.hasProjectiveDimensionLE_of_semiLinearEquiv :=
   hasProjectiveDimensionLE_of_semiLinearEquiv
 
 attribute [local instance] RingHomInvPair.of_ringEquiv in
-lemma projectiveDimension_eq_of_semiLinearEquiv (e' : M ≃ₛₗ[RingHomClass.toRingHom e] N) :
-    projectiveDimension M = projectiveDimension N := by
+lemma projectiveDimension_eq_of_semiLinearEquiv (e' : M ≃ₛₗ[RingHomClass.toRingHom e] N)
+    : projectiveDimension M = projectiveDimension N := by
   refine eq_of_forall_ge_iff (fun N ↦ ?_)
   induction N with
-  | bot => simpa [projectiveDimension_eq_bot_iff, ModuleCat.isZero_iff_subsingleton] using
+  | bot =>
+    simpa [projectiveDimension_eq_bot_iff, ModuleCat.isZero_iff_subsingleton] using
       e'.subsingleton_congr
   | coe n =>
     induction n with
-    | top => simp
+    | top =>
+      simp
     | coe n =>
       norm_cast
       simp only [projectiveDimension_le_iff]
-      exact ⟨fun h ↦ hasProjectiveDimensionLE_of_semiLinearEquiv e e' n,
-        fun h ↦ hasProjectiveDimensionLE_of_semiLinearEquiv e.symm e'.symm n⟩
+      exact ⟨
+        fun h ↦ hasProjectiveDimensionLE_of_semiLinearEquiv e e' n,
+        fun h ↦ hasProjectiveDimensionLE_of_semiLinearEquiv e.symm e'.symm n
+      ⟩
 
 @[deprecated (since := "2026-04-04")]
 alias _root_.CategoryTheory.projectiveDimension_eq_of_semiLinearEquiv :=
@@ -113,8 +117,8 @@ section
 
 variable [Small.{v} R] [Small.{v'} R] {M : ModuleCat.{v} R} {N : ModuleCat.{v'} R}
 
-lemma hasProjectiveDimensionLE_of_linearEquiv (e : M ≃ₗ[R] N)
-    (n : ℕ) [HasProjectiveDimensionLE M n] : HasProjectiveDimensionLE N n :=
+lemma hasProjectiveDimensionLE_of_linearEquiv (e : M ≃ₗ[R] N) (n : ℕ) [HasProjectiveDimensionLE M n]
+    : HasProjectiveDimensionLE N n :=
   #adaptation_note /-- 2026-05-20 (kmill) #13807, instances are more eager to apply, but the
   `univ_out_params` attribute for `Small` doesn't seem to restrict local instances, so the
   wrong universe levels are inferred. Added `.{v, v'}`. -/
@@ -124,8 +128,8 @@ lemma hasProjectiveDimensionLE_of_linearEquiv (e : M ≃ₗ[R] N)
 alias _root_.CategoryTheory.hasProjectiveDimensionLE_of_linearEquiv :=
   hasProjectiveDimensionLE_of_linearEquiv
 
-lemma projectiveDimension_eq_of_linearEquiv (e : M ≃ₗ[R] N) :
-    projectiveDimension M = projectiveDimension N :=
+lemma projectiveDimension_eq_of_linearEquiv (e : M ≃ₗ[R] N)
+    : projectiveDimension M = projectiveDimension N :=
   #adaptation_note /-- 2026-05-20 (kmill) #13807, instances are more eager to apply, but the
   `univ_out_params` attribute for `Small` doesn't seem to restrict local instances, so the
   wrong universe levels are inferred. Added `.{v, v'}`. -/
@@ -137,9 +141,10 @@ alias _root_.CategoryTheory.projectiveDimension_eq_of_linearEquiv :=
 
 end
 
-lemma projectiveDimension_eq_zero_of_projective (M : ModuleCat.{v} R) [Nontrivial M]
-    [Projective M] : projectiveDimension M = 0 := by
+lemma projectiveDimension_eq_zero_of_projective (M : ModuleCat.{v} R) [Nontrivial M] [Projective M]
+    : projectiveDimension M = 0 := by
   simpa [projectiveDimension_eq_zero_iff, ModuleCat.isZero_iff_subsingleton,
-    not_subsingleton_iff_nontrivial] using ⟨‹_›, ‹_›⟩
+      not_subsingleton_iff_nontrivial]
+    using ⟨‹_›, ‹_›⟩
 
 end ModuleCat

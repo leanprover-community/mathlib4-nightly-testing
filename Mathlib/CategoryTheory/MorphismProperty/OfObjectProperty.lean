@@ -6,7 +6,6 @@ Authors: Justus Springer
 module
 
 public import Mathlib.CategoryTheory.MorphismProperty.Basic
-
 import Mathlib.Data.Finset.Attr
 import Mathlib.Tactic.SetLike
 
@@ -25,34 +24,35 @@ namespace CategoryTheory.MorphismProperty
 
 variable {C : Type*} [Category* C]
 
-/-- Given two object properties `P` and `Q`, the property of morphisms whose source
-satisfies `P` and target satisfies `Q`. -/
+/--
+Given two object properties `P` and `Q`, the property of morphisms whose source
+satisfies `P` and target satisfies `Q`.
+-/
 def ofObjectProperty (P Q : ObjectProperty C) : MorphismProperty C := fun X Y _ => P X ∧ Q Y
 
 variable (P Q : ObjectProperty C)
 
-lemma ofObjectProperty_iff {X Y : C} (f : X ⟶ Y) :
-    ofObjectProperty P Q f ↔ P X ∧ Q Y := Iff.rfl
+lemma ofObjectProperty_iff {X Y : C} (f : X ⟶ Y) : ofObjectProperty P Q f ↔ P X ∧ Q Y := Iff.rfl
 
 variable {P} in
-lemma monotone_ofObjectProperty_left {P' : ObjectProperty C} (h : P ≤ P') :
-    ofObjectProperty P Q ≤ ofObjectProperty P' Q := by
+lemma monotone_ofObjectProperty_left {P' : ObjectProperty C} (h : P ≤ P')
+    : ofObjectProperty P Q ≤ ofObjectProperty P' Q := by
   intro _ _ _ ⟨hX, hY⟩
   exact ⟨h _ hX, hY⟩
 
 variable {Q} in
-lemma monotone_ofObjectProperty_right {Q' : ObjectProperty C} (h : Q ≤ Q') :
-    ofObjectProperty P Q ≤ ofObjectProperty P Q' := by
+lemma monotone_ofObjectProperty_right {Q' : ObjectProperty C} (h : Q ≤ Q')
+    : ofObjectProperty P Q ≤ ofObjectProperty P Q' := by
   intro _ _ _ ⟨hX, hY⟩
   exact ⟨hX, h _ hY⟩
 
-lemma ofObjectProperty_inverseImage {D : Type*} [Category* D] (F : D ⥤ C) :
-    ofObjectProperty (P.inverseImage F) (Q.inverseImage F) =
-    (ofObjectProperty P Q).inverseImage F := by
+lemma ofObjectProperty_inverseImage {D : Type*} [Category* D] (F : D ⥤ C)
+    : ofObjectProperty (P.inverseImage F) (Q.inverseImage F)
+      = (ofObjectProperty P Q).inverseImage F := by
   rfl
 
-lemma ofObjectProperty_map_le {D : Type*} [Category* D] (F : C ⥤ D) :
-    (ofObjectProperty P Q).map F ≤ ofObjectProperty (P.map F) (Q.map F) := by
+lemma ofObjectProperty_map_le {D : Type*} [Category* D] (F : C ⥤ D)
+    : (ofObjectProperty P Q).map F ≤ ofObjectProperty (P.map F) (Q.map F) := by
   intro X Y f ⟨X', Y', f', ⟨hX', hY'⟩, ⟨i⟩⟩
   exact ⟨⟨X', hX', ⟨Comma.leftIso i⟩⟩, ⟨Y', hY', ⟨Comma.rightIso i⟩⟩⟩
 

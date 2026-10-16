@@ -9,25 +9,23 @@ set_option eval.pp false
 
 section Rand
 
-/--
-info: 33
--/
+/-- info: 33 -/
 #guard_msgs in
 #eval do
-  IO.runRandWith 257 (show Rand _ from do
-    let i ← randBound Int 3 30 (by norm_num)
-    let j ← randBound Int 4 40 (by norm_num)
-    return i.1 + j.1)
+  IO.runRandWith 257
+    (show Rand _ from do
+      let i ← randBound Int 3 30 (by norm_num)
+      let j ← randBound Int 4 40 (by norm_num)
+      return i.1 + j.1)
 
 -- using higher universes
-/--
-info: ULift.up 19
--/
+/-- info: ULift.up 19 -/
 #guard_msgs in
 #eval do
-  IO.runRandWith 257 (show Rand _ from do
-    let i ← rand (ULift.{3} (Fin 20))
-    return i)
+  IO.runRandWith 257
+    (show Rand _ from do
+      let i ← rand (ULift.{3} (Fin 20))
+      return i)
 
 end Rand
 
@@ -81,9 +79,7 @@ info: 8
     IO.println s!"Got {i}"
     return i.1 + j.1)
 
-/--
-info: GOOD
--/
+/-- info: GOOD -/
 #guard_msgs in
 #eval show IO _ from do
   IO.runRandWith 257 do
@@ -95,9 +91,7 @@ info: GOOD
     else
       IO.println "BAD"
 
-/--
-info: GOOD
--/
+/-- info: GOOD -/
 #guard_msgs in
 #eval show IO _ from do
   IO.runRandWith 257 do
@@ -109,9 +103,7 @@ info: GOOD
     else
       IO.println "BAD"
 
-/--
-info: GOOD
--/
+/-- info: GOOD -/
 #guard_msgs in
 #eval show IO _ from do
   IO.runRandWith 257 do

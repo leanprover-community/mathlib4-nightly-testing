@@ -23,8 +23,8 @@ variable {C : Type u} [Category.{v} C] [Abelian C] [IsGrothendieckAbelian.{w} C]
 instance : HasCoseparator C := by
   suffices HasCoseparator (ShrinkHoms C) from
     HasCoseparator.of_equivalence (ShrinkHoms.equivalence.{w} C).symm
-  obtain ⟨G, -, hG⟩ := Abelian.has_injective_coseparator (separator (ShrinkHoms C))
-    (isSeparator_separator _)
+  obtain ⟨G, -, hG⟩ :=
+    Abelian.has_injective_coseparator (separator (ShrinkHoms C)) (isSeparator_separator _)
   exact ⟨G, hG⟩
 
 end CategoryTheory.IsGrothendieckAbelian

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.ContinuedFractions.Computation.Translations
 public import Mathlib.NumberTheory.DiophantineApproximation.Basic
-
 import Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries
 
 /-!
@@ -36,8 +35,7 @@ Our `convergent`s agree with `GenContFract.convs`.
 open GenContFract
 
 /-- The `n`th convergent of the `GenContFract.of ξ` agrees with `ξ.convergent n`. -/
-theorem convs_eq_convergent (ξ : ℝ) (n : ℕ) :
-    (GenContFract.of ξ).convs n = ξ.convergent n := by
+theorem convs_eq_convergent (ξ : ℝ) (n : ℕ) : (GenContFract.of ξ).convs n = ξ.convergent n := by
   induction n generalizing ξ with
   | zero => simp only [zeroth_conv_eq_h, of_h_eq_floor, convergent_zero, Rat.cast_intCast]
   | succ n ih => rw [convs_succ, ih (fract ξ)⁻¹, convergent_succ, one_div]; norm_cast
@@ -50,12 +48,14 @@ namespace Real
 
 variable {ξ : ℝ}
 
-/-- The main result, *Legendre's Theorem* on rational approximation:
+/--
+The main result, *Legendre's Theorem* on rational approximation:
 if `ξ` is a real number and `q` is a rational number such that `|ξ - q| < 1/(2*q.den^2)`,
 then `q` is a convergent of the continued fraction expansion of `ξ`.
-This is the version using `GenContFract.convs`. -/
-theorem exists_convs_eq_rat {q : ℚ}
-    (h : |ξ - q| < 1 / (2 * (q.den : ℝ) ^ 2)) : ∃ n, (GenContFract.of ξ).convs n = q := by
+This is the version using `GenContFract.convs`.
+-/
+theorem exists_convs_eq_rat {q : ℚ} (h : |ξ - q| < 1 / (2 * (q.den : ℝ) ^ 2))
+    : ∃ n, (GenContFract.of ξ).convs n = q := by
   obtain ⟨n, hn⟩ := exists_rat_eq_convergent h
   exact ⟨n, hn.symm ▸ convs_eq_convergent ξ n⟩
 

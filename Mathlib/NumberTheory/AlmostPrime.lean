@@ -34,20 +34,21 @@ open scoped ArithmeticFunction.Omega
 
 namespace Nat
 
-/-- `IsAlmostPrime k n` means that `n` is `k`-almost prime: it has exactly `k`
+/--
+`IsAlmostPrime k n` means that `n` is `k`-almost prime: it has exactly `k`
 prime factors, counted with multiplicity. The side condition excludes `0`, so `1` is
-`0`-almost prime. -/
-def IsAlmostPrime (k n : ℕ) : Prop :=
-  n ≠ 0 ∧ Ω n = k
+`0`-almost prime.
+-/
+def IsAlmostPrime (k n : ℕ) : Prop := n ≠ 0 ∧ Ω n = k
 
-/-- `IsAtMostAlmostPrime k n` means that `n` has at most `k` prime factors,
-counted with multiplicity. -/
-def IsAtMostAlmostPrime (k n : ℕ) : Prop :=
-  n ≠ 0 ∧ Ω n ≤ k
+/--
+`IsAtMostAlmostPrime k n` means that `n` has at most `k` prime factors,
+counted with multiplicity.
+-/
+def IsAtMostAlmostPrime (k n : ℕ) : Prop := n ≠ 0 ∧ Ω n ≤ k
 
 /-- A semiprime is a `2`-almost-prime number. -/
-abbrev IsSemiprime (n : ℕ) : Prop :=
-  IsAlmostPrime 2 n
+abbrev IsSemiprime (n : ℕ) : Prop := IsAlmostPrime 2 n
 
 variable {k l m n p q : ℕ}
 
@@ -65,23 +66,21 @@ theorem isAlmostPrime_one_iff : IsAlmostPrime 1 n ↔ n.Prime := by
 theorem Prime.isAlmostPrime_one (hp : p.Prime) : IsAlmostPrime 1 p := by
   simpa using isAlmostPrime_one_iff.mpr hp
 
-theorem IsAlmostPrime.mul (hm : IsAlmostPrime k m) (hn : IsAlmostPrime l n) :
-    IsAlmostPrime (k + l) (m * n) := by
+theorem IsAlmostPrime.mul (hm : IsAlmostPrime k m) (hn : IsAlmostPrime l n)
+    : IsAlmostPrime (k + l) (m * n) := by
   refine ⟨mul_ne_zero hm.1 hn.1, ?_⟩
   rw [ArithmeticFunction.cardFactors_mul hm.1 hn.1, hm.2, hn.2]
 
-theorem IsAtMostAlmostPrime.mul (hm : IsAtMostAlmostPrime k m) (hn : IsAtMostAlmostPrime l n) :
-    IsAtMostAlmostPrime (k + l) (m * n) := by
+theorem IsAtMostAlmostPrime.mul (hm : IsAtMostAlmostPrime k m) (hn : IsAtMostAlmostPrime l n)
+    : IsAtMostAlmostPrime (k + l) (m * n) := by
   refine ⟨mul_ne_zero hm.1 hn.1, ?_⟩
   rw [ArithmeticFunction.cardFactors_mul hm.1 hn.1]
   exact add_le_add hm.2 hn.2
 
-theorem IsAlmostPrime.isAtMost (hn : IsAlmostPrime k n) (hkl : k ≤ l) :
-    IsAtMostAlmostPrime l n :=
+theorem IsAlmostPrime.isAtMost (hn : IsAlmostPrime k n) (hkl : k ≤ l) : IsAtMostAlmostPrime l n :=
   ⟨hn.1, hn.2 ▸ hkl⟩
 
-theorem Prime.mul_isAlmostPrime_two (hp : p.Prime) (hq : q.Prime) :
-    IsAlmostPrime 2 (p * q) := by
+theorem Prime.mul_isAlmostPrime_two (hp : p.Prime) (hq : q.Prime) : IsAlmostPrime 2 (p * q) := by
   simpa using hp.isAlmostPrime_one.mul hq.isAlmostPrime_one
 
 theorem Prime.sq_isAlmostPrime_two (hp : p.Prime) : IsAlmostPrime 2 (p ^ 2) := by

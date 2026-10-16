@@ -63,11 +63,11 @@ theorem det_reflection : LinearMap.det K.reflection.toLinearMap = (-1) ^ finrank
     exact finrank_of_infinite_dimensional fun h ↦ hK (h.finiteDimensional_submodule _)
   let e := K.prodEquivOfIsCompl _ K.isCompl_orthogonal
   let b := (finBasis 𝕜 K).prod (finBasis 𝕜 Kᗮ)
-  have : LinearMap.toMatrix b b (e.symm ∘ₗ K.reflection.toLinearMap ∘ₗ e.symm.symm) =
-      Matrix.fromBlocks 1 0 0 (-1) := by
-    ext (_ | _) (_ | _) <;>
-    simp [LinearMap.toMatrix_apply, b, Matrix.one_apply, Finsupp.single_apply, e, eq_comm,
-      reflection_mem_subspace_eq_self, reflection_mem_subspace_orthogonalComplement_eq_neg]
+  have : LinearMap.toMatrix b b (e.symm ∘ₗ K.reflection.toLinearMap ∘ₗ e.symm.symm)
+      = Matrix.fromBlocks 1 0 0 (-1) := by
+    ext (_ | _) (_ | _)
+      <;> simp [LinearMap.toMatrix_apply, b, Matrix.one_apply, Finsupp.single_apply, e, eq_comm,
+        reflection_mem_subspace_eq_self, reflection_mem_subspace_orthogonalComplement_eq_neg]
   rw [← LinearMap.det_conj _ e.symm, ← LinearMap.det_toMatrix b, this, Matrix.det_fromBlocks_zero₂₁,
     Matrix.det_one, one_mul, Matrix.det_neg, Fintype.card_fin, Matrix.det_one, mul_one]
 
@@ -83,73 +83,91 @@ variable {K}
 
 open Module
 
-/-- Given a finite-dimensional subspace `K₂`, and a subspace `K₁`
+/--
+Given a finite-dimensional subspace `K₂`, and a subspace `K₁`
 contained in it, the dimensions of `K₁` and the intersection of its
-orthogonal subspace with `K₂` add to that of `K₂`. -/
-theorem finrank_add_inf_finrank_orthogonal {K₁ K₂ : Submodule 𝕜 E}
-    [FiniteDimensional 𝕜 K₂] (h : K₁ ≤ K₂) :
-    finrank 𝕜 K₁ + finrank 𝕜 (K₁ᗮ ⊓ K₂ : Submodule 𝕜 E) = finrank 𝕜 K₂ := by
+orthogonal subspace with `K₂` add to that of `K₂`.
+-/
+theorem finrank_add_inf_finrank_orthogonal
+    {K₁ K₂ : Submodule 𝕜 E} [FiniteDimensional 𝕜 K₂] (h : K₁ ≤ K₂)
+    : finrank 𝕜 K₁ + finrank 𝕜 (K₁ᗮ ⊓ K₂ : Submodule 𝕜 E) = finrank 𝕜 K₂ := by
   have : FiniteDimensional 𝕜 K₁ := Submodule.finiteDimensional_of_le h
   have hd := Submodule.finrank_sup_add_finrank_inf_eq K₁ (K₁ᗮ ⊓ K₂)
   rw [← inf_assoc, (Submodule.orthogonal_disjoint K₁).eq_bot, bot_inf_eq, finrank_bot,
-    Submodule.sup_orthogonal_inf_of_hasOrthogonalProjection h] at hd
+      Submodule.sup_orthogonal_inf_of_hasOrthogonalProjection h]
+    at hd
   rw [add_zero] at hd
   exact hd.symm
 
-/-- Given a finite-dimensional subspace `K₂`, and a subspace `K₁`
+/--
+Given a finite-dimensional subspace `K₂`, and a subspace `K₁`
 contained in it, the dimensions of `K₁` and the intersection of its
-orthogonal subspace with `K₂` add to that of `K₂`. -/
-theorem finrank_add_inf_finrank_orthogonal' {K₁ K₂ : Submodule 𝕜 E}
-    [FiniteDimensional 𝕜 K₂] (h : K₁ ≤ K₂) {n : ℕ} (h_dim : finrank 𝕜 K₁ + n = finrank 𝕜 K₂) :
-    finrank 𝕜 (K₁ᗮ ⊓ K₂ : Submodule 𝕜 E) = n := by
+orthogonal subspace with `K₂` add to that of `K₂`.
+-/
+theorem finrank_add_inf_finrank_orthogonal'
+    {K₁ K₂ : Submodule 𝕜 E} [FiniteDimensional 𝕜 K₂]
+    (h : K₁ ≤ K₂)
+    {n : ℕ} (h_dim : finrank 𝕜 K₁ + n = finrank 𝕜 K₂)
+    : finrank 𝕜 (K₁ᗮ ⊓ K₂ : Submodule 𝕜 E) = n := by
   rw [← add_right_inj (finrank 𝕜 K₁)]
   simp [Submodule.finrank_add_inf_finrank_orthogonal h, h_dim]
 
-/-- Given a finite-dimensional space `E` and subspace `K`, the dimensions of `K` and `Kᗮ` add to
-that of `E`. -/
-theorem finrank_add_finrank_orthogonal [FiniteDimensional 𝕜 E] (K : Submodule 𝕜 E) :
-    finrank 𝕜 K + finrank 𝕜 Kᗮ = finrank 𝕜 E := by
+/--
+Given a finite-dimensional space `E` and subspace `K`, the dimensions of `K` and `Kᗮ` add to
+that of `E`.
+-/
+theorem finrank_add_finrank_orthogonal [FiniteDimensional 𝕜 E] (K : Submodule 𝕜 E)
+    : finrank 𝕜 K + finrank 𝕜 Kᗮ = finrank 𝕜 E := by
   convert Submodule.finrank_add_inf_finrank_orthogonal (le_top : K ≤ ⊤) using 1
   · rw [inf_top_eq]
   · simp
 
-/-- Given a finite-dimensional space `E` and subspace `K`, the dimensions of `K` and `Kᗮ` add to
-that of `E`. -/
-theorem finrank_add_finrank_orthogonal' [FiniteDimensional 𝕜 E] {K : Submodule 𝕜 E}
-    {n : ℕ} (h_dim : finrank 𝕜 K + n = finrank 𝕜 E) : finrank 𝕜 Kᗮ = n := by
+/--
+Given a finite-dimensional space `E` and subspace `K`, the dimensions of `K` and `Kᗮ` add to
+that of `E`.
+-/
+theorem finrank_add_finrank_orthogonal'
+    [FiniteDimensional 𝕜 E] {K : Submodule 𝕜 E} {n : ℕ} (h_dim : finrank 𝕜 K + n = finrank 𝕜 E)
+    : finrank 𝕜 Kᗮ = n := by
   rw [← add_right_inj (finrank 𝕜 K)]
   simp [Submodule.finrank_add_finrank_orthogonal, h_dim]
 
-/-- In a finite-dimensional inner product space, the dimension of the orthogonal complement of the
-span of a nonzero vector is one less than the dimension of the space. -/
-theorem finrank_orthogonal_span_singleton {n : ℕ} [_i : Fact (finrank 𝕜 E = n + 1)] {v : E}
-    (hv : v ≠ 0) : finrank 𝕜 (𝕜 ∙ v)ᗮ = n := by
+/--
+In a finite-dimensional inner product space, the dimension of the orthogonal complement of the
+span of a nonzero vector is one less than the dimension of the space.
+-/
+theorem finrank_orthogonal_span_singleton
+    {n : ℕ} [_i : Fact (finrank 𝕜 E = n + 1)] {v : E} (hv : v ≠ 0)
+    : finrank 𝕜 (𝕜 ∙ v)ᗮ = n := by
   have : FiniteDimensional 𝕜 E := .of_fact_finrank_eq_succ n
-  exact finrank_add_finrank_orthogonal' <| by
-    simp [finrank_span_singleton hv, _i.elim, add_comm]
+  exact finrank_add_finrank_orthogonal' <| by simp [finrank_span_singleton hv, _i.elim, add_comm]
 
-/-- If a nonzero vector `w` and a vector `u` are both orthogonal to the same nonzero vector `v`
-in a two-dimensional inner product space, then `u` lies in the span of `w`. -/
+/--
+If a nonzero vector `w` and a vector `u` are both orthogonal to the same nonzero vector `v`
+in a two-dimensional inner product space, then `u` lies in the span of `w`.
+-/
 theorem mem_span_singleton_of_inner_eq_zero_of_inner_eq_zero
-    [Fact (finrank 𝕜 E = 2)] {u v w : E} (hv : v ≠ 0) (hw : w ≠ 0)
-    (huv : ⟪v, u⟫_𝕜 = 0) (hwv : ⟪v, w⟫_𝕜 = 0) :
-    u ∈ 𝕜 ∙ w := by
+    [Fact (finrank 𝕜 E = 2)]
+    {u v w : E} (hv : v ≠ 0) (hw : w ≠ 0) (huv : ⟪v, u⟫_𝕜 = 0) (hwv : ⟪v, w⟫_𝕜 = 0)
+    : u ∈ 𝕜 ∙ w := by
   have : FiniteDimensional 𝕜 E := .of_fact_finrank_eq_succ 1
   suffices heq : (𝕜 ∙ v)ᗮ = 𝕜 ∙ w by rwa [← heq, mem_orthogonal_singleton_iff_inner_right]
-  exact eq_span_singleton_of_mem_of_finrank_eq_one
-    (finrank_orthogonal_span_singleton (n := 1) hv)
+  exact eq_span_singleton_of_mem_of_finrank_eq_one (finrank_orthogonal_span_singleton (n := 1) hv)
     (mem_orthogonal_singleton_iff_inner_right.mpr hwv) hw
 
 end Submodule
 
 open Module Submodule
 
-/-- An element `φ` of the orthogonal group of `F` can be factored as a product of reflections, and
+/--
+An element `φ` of the orthogonal group of `F` can be factored as a product of reflections, and
 specifically at most as many reflections as the dimension of the complement of the fixed subspace
-of `φ`. -/
-theorem LinearIsometryEquiv.reflections_generate_dim_aux [FiniteDimensional ℝ F] {n : ℕ}
-    (φ : F ≃ₗᵢ[ℝ] F) (hn : finrank ℝ (ContinuousLinearMap.id ℝ F - φ).kerᗮ ≤ n) :
-    ∃ l : List F, l.length ≤ n ∧ φ = (l.map fun v => (ℝ ∙ v)ᗮ.reflection).prod := by
+of `φ`.
+-/
+theorem LinearIsometryEquiv.reflections_generate_dim_aux
+    [FiniteDimensional ℝ F]
+    {n : ℕ} (φ : F ≃ₗᵢ[ℝ] F) (hn : finrank ℝ (ContinuousLinearMap.id ℝ F - φ).kerᗮ ≤ n)
+    : ∃ l : List F, l.length ≤ n ∧ φ = (l.map fun v => (ℝ ∙ v)ᗮ.reflection).prod := by
   -- We prove this by strong induction on `n`, the dimension of the orthogonal complement of the
   -- fixed subspace of the endomorphism `φ`
   induction n generalizing φ with
@@ -161,7 +179,8 @@ theorem LinearIsometryEquiv.reflections_generate_dim_aux [FiniteDimensional ℝ 
     ext x
     have := congr($(LinearMap.ker_eq_top.mp this) x)
     simpa only [sub_eq_zero, ContinuousLinearMap.toLinearMap_sub, LinearMap.sub_apply,
-      LinearMap.zero_apply] using! this
+        LinearMap.zero_apply]
+      using! this
   | succ n IH =>
     -- Inductive step.  Let `W` be the fixed subspace of `φ`.  We suppose its complement to have
     -- dimension at most n + 1.
@@ -216,23 +235,25 @@ theorem LinearIsometryEquiv.reflections_generate_dim_aux [FiniteDimensional ℝ 
     obtain ⟨l, hl, hφl⟩ := IH (ρ * φ) this
     -- Prepend `ρ` to the factorization into reflections obtained for `φ.trans ρ`; this gives a
     -- factorization into reflections for `φ`.
-    refine ⟨x::l, Nat.succ_le_succ hl, ?_⟩
+    refine ⟨x :: l, Nat.succ_le_succ hl, ?_⟩
     rw [List.map_cons, List.prod_cons]
     have := congr_arg (ρ * ·) hφl
     rwa [← mul_assoc, reflection_mul_reflection, one_mul] at this
 
-/-- The orthogonal group of `F` is generated by reflections; specifically each element `φ` of the
+/--
+The orthogonal group of `F` is generated by reflections; specifically each element `φ` of the
 orthogonal group is a product of at most as many reflections as the dimension of `F`.
 
-Special case of the **Cartan–Dieudonné theorem**. -/
-theorem LinearIsometryEquiv.reflections_generate_dim [FiniteDimensional ℝ F] (φ : F ≃ₗᵢ[ℝ] F) :
-    ∃ l : List F, l.length ≤ finrank ℝ F ∧ φ = (l.map fun v => reflection (ℝ ∙ v)ᗮ).prod :=
+Special case of the **Cartan–Dieudonné theorem**.
+-/
+theorem LinearIsometryEquiv.reflections_generate_dim [FiniteDimensional ℝ F] (φ : F ≃ₗᵢ[ℝ] F)
+    : ∃ l : List F, l.length ≤ finrank ℝ F ∧ φ = (l.map fun v => reflection (ℝ ∙ v)ᗮ).prod :=
   let ⟨l, hl₁, hl₂⟩ := φ.reflections_generate_dim_aux le_rfl
   ⟨l, hl₁.trans (finrank_le _), hl₂⟩
 
 /-- The orthogonal group of `F` is generated by reflections. -/
-theorem LinearIsometryEquiv.reflections_generate [FiniteDimensional ℝ F] :
-    Subgroup.closure (Set.range fun v : F => reflection (ℝ ∙ v)ᗮ) = ⊤ := by
+theorem LinearIsometryEquiv.reflections_generate [FiniteDimensional ℝ F]
+    : Subgroup.closure (Set.range fun v : F => reflection (ℝ ∙ v)ᗮ) = ⊤ := by
   rw [Subgroup.eq_top_iff']
   intro φ
   rcases φ.reflections_generate_dim with ⟨l, _, rfl⟩
@@ -247,36 +268,45 @@ open Submodule
 
 variable {ι : Type*}
 
-/-- An orthogonal family of subspaces of `E` satisfies `DirectSum.IsInternal` (that is,
+/--
+An orthogonal family of subspaces of `E` satisfies `DirectSum.IsInternal` (that is,
 they provide an internal direct sum decomposition of `E`) if and only if their span has trivial
-orthogonal complement. -/
-theorem OrthogonalFamily.isInternal_iff_of_isComplete [DecidableEq ι] {V : ι → Submodule 𝕜 E}
-    (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
-    (hc : IsComplete (↑(iSup V) : Set E)) : DirectSum.IsInternal V ↔ (iSup V)ᗮ = ⊥ := by
+orthogonal complement.
+-/
+theorem OrthogonalFamily.isInternal_iff_of_isComplete
+    [DecidableEq ι]
+    {V : ι → Submodule 𝕜 E} (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
+    (hc : IsComplete (↑(iSup V) : Set E))
+    : DirectSum.IsInternal V ↔ (iSup V)ᗮ = ⊥ := by
   have : CompleteSpace (↥(iSup V)) := hc.completeSpace_coe
-  simp only [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top, hV.independent,
-    true_and, orthogonal_eq_bot_iff]
+  simp only [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top, hV.independent, true_and,
+    orthogonal_eq_bot_iff]
 
-/-- An orthogonal family of subspaces of `E` satisfies `DirectSum.IsInternal` (that is,
+/--
+An orthogonal family of subspaces of `E` satisfies `DirectSum.IsInternal` (that is,
 they provide an internal direct sum decomposition of `E`) if and only if their span has trivial
-orthogonal complement. -/
-theorem OrthogonalFamily.isInternal_iff [DecidableEq ι] [FiniteDimensional 𝕜 E]
-    {V : ι → Submodule 𝕜 E} (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) :
-    DirectSum.IsInternal V ↔ (iSup V)ᗮ = ⊥ :=
+orthogonal complement.
+-/
+theorem OrthogonalFamily.isInternal_iff
+    [DecidableEq ι] [FiniteDimensional 𝕜 E]
+    {V : ι → Submodule 𝕜 E} (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
+    : DirectSum.IsInternal V ↔ (iSup V)ᗮ = ⊥ :=
   haveI := FiniteDimensional.proper_rclike 𝕜 (↥(iSup V))
   hV.isInternal_iff_of_isComplete (completeSpace_coe_iff_isComplete.mp inferInstance)
 
 open DirectSum
 
 /-- If `x` lies within an orthogonal family `v`, it can be expressed as a sum of projections. -/
-theorem OrthogonalFamily.sum_projection_of_mem_iSup [Fintype ι] {V : ι → Submodule 𝕜 E}
-    [∀ i, CompleteSpace (V i)] (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
-    (x : E) (hx : x ∈ iSup V) : (∑ i, (V i).starProjection x) = x := by
+theorem OrthogonalFamily.sum_projection_of_mem_iSup
+    [Fintype ι]
+    {V : ι → Submodule 𝕜 E} [∀ i, CompleteSpace (V i)]
+    (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
+    (x : E) (hx : x ∈ iSup V)
+    : (∑ i, (V i).starProjection x) = x := by
   induction hx using iSup_induction' with
   | mem i x hx =>
-    refine
-      (Finset.sum_eq_single_of_mem i (Finset.mem_univ _) fun j _ hij => ?_).trans
-        (starProjection_eq_self_iff.mpr hx)
+    refine (Finset.sum_eq_single_of_mem i (Finset.mem_univ _) fun j _ hij => ?_).trans
+      (starProjection_eq_self_iff.mpr hx)
     rw [starProjection_apply, orthogonalProjectionOnto_apply_of_mem_orthogonal, Submodule.coe_zero]
     exact hV.isOrtho hij.symm hx
   | zero =>
@@ -285,14 +315,19 @@ theorem OrthogonalFamily.sum_projection_of_mem_iSup [Fintype ι] {V : ι → Sub
     simp_rw [map_add, Finset.sum_add_distrib]
     congrm $hx + $hy
 
-/-- If a family of submodules is orthogonal, then the `orthogonalProjection` on a direct sum
-is just the coefficient of that direct sum. -/
-theorem OrthogonalFamily.projection_directSum_coeAddHom [DecidableEq ι] {V : ι → Submodule 𝕜 E}
-    (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) (x : ⨁ i, V i) (i : ι)
-    [CompleteSpace (V i)] :
-    (V i).orthogonalProjectionOnto (DirectSum.coeAddMonoidHom V x) = x i := by
+/--
+If a family of submodules is orthogonal, then the `orthogonalProjection` on a direct sum
+is just the coefficient of that direct sum.
+-/
+theorem OrthogonalFamily.projection_directSum_coeAddHom
+    [DecidableEq ι]
+    {V : ι → Submodule 𝕜 E}
+    (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) (x : ⨁ i, V i)
+    (i : ι) [CompleteSpace (V i)]
+    : (V i).orthogonalProjectionOnto (DirectSum.coeAddMonoidHom V x) = x i := by
   induction x using DirectSum.induction_on with
-  | zero => simp
+  | zero =>
+    simp
   | of j x =>
     simp_rw [DirectSum.coeAddMonoidHom_of, DirectSum.of,
       -- Need to unfold `DirectSum` to see through the defeq abuse.
@@ -305,23 +340,27 @@ theorem OrthogonalFamily.projection_directSum_coeAddHom [DecidableEq ι] {V : ι
     simp_rw [map_add]
     congrm $hx + $hy
 
-/-- If a family of submodules is orthogonal and they span the whole space, then the orthogonal
+/--
+If a family of submodules is orthogonal and they span the whole space, then the orthogonal
 projection provides a means to decompose the space into its submodules.
 
 The projection function is `decompose V x i = (V i).orthogonalProjection x`.
 
-See note [reducible non-instances]. -/
+See note [reducible non-instances].
+-/
 noncomputable abbrev OrthogonalFamily.decomposition
-    [DecidableEq ι] [Fintype ι] {V : ι → Submodule 𝕜 E}
-    [∀ i, CompleteSpace (V i)] (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
-    (h : iSup V = ⊤) : DirectSum.Decomposition V where
+    [DecidableEq ι] [Fintype ι]
+    {V : ι → Submodule 𝕜 E} [∀ i, CompleteSpace (V i)]
+    (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) (h : iSup V = ⊤)
+    : DirectSum.Decomposition V where
   decompose' x := DFinsupp.equivFunOnFintype.symm fun i => (V i).orthogonalProjectionOnto x
   left_inv x := by
     dsimp only
     let := fun i => Classical.decEq (V i)
     rw [DirectSum.coeAddMonoidHom, DirectSum.toAddMonoid, DFinsupp.liftAddHom_apply]
     -- This used to be `rw`, but we need `erw` after https://github.com/leanprover/lean4/pull/2644
-    erw [DFinsupp.sumAddHom_apply]; rw [DFinsupp.sum_eq_sum_fintype]
+    erw [DFinsupp.sumAddHom_apply]
+    rw [DFinsupp.sum_eq_sum_fintype]
     · simp_rw [Equiv.apply_symm_apply, AddSubmonoidClass.coe_subtype]
       exact hV.sum_projection_of_mem_iSup _ ((h.ge :) Submodule.mem_top)
     · intro i
@@ -338,10 +377,12 @@ variable {v : Set E}
 
 open Module Submodule Set
 
-/-- An orthonormal set in an `InnerProductSpace` is maximal, if and only if the orthogonal
-complement of its span is empty. -/
-theorem maximal_orthonormal_iff_orthogonalComplement_eq_bot (hv : Orthonormal 𝕜 ((↑) : v → E)) :
-    (∀ u ⊇ v, Orthonormal 𝕜 ((↑) : u → E) → u = v) ↔ (span 𝕜 v)ᗮ = ⊥ := by
+/--
+An orthonormal set in an `InnerProductSpace` is maximal, if and only if the orthogonal
+complement of its span is empty.
+-/
+theorem maximal_orthonormal_iff_orthogonalComplement_eq_bot (hv : Orthonormal 𝕜 ((↑) : v → E))
+    : (∀ u ⊇ v, Orthonormal 𝕜 ((↑) : u → E) → u = v) ↔ (span 𝕜 v)ᗮ = ⊥ := by
   rw [Submodule.eq_bot_iff]
   constructor
   · contrapose!
@@ -391,18 +432,20 @@ theorem maximal_orthonormal_iff_orthogonalComplement_eq_bot (hv : Orthonormal �
     refine ((mt (h x)) (hu.ne_zero ⟨x, hxu⟩)).imp_symm ?_
     intro hxv y hy
     have hxv' : (⟨x, hxu⟩ : u) ∉ ((↑) ⁻¹' v : Set u) := by simp [hxv]
-    obtain ⟨l, hl, rfl⟩ :
-      ∃ l ∈ supported 𝕜 𝕜 ((↑) ⁻¹' v : Set u), (linearCombination 𝕜 ((↑) : u → E)) l = y := by
+    obtain ⟨l, hl, rfl⟩
+        : ∃ l ∈ supported 𝕜 𝕜 ((↑) ⁻¹' v : Set u), (linearCombination 𝕜 ((↑) : u → E)) l = y := by
       rw [← Finsupp.mem_span_image_iff_linearCombination]
       simp [huv, inter_eq_self_of_subset_right, hy]
     exact hu.inner_finsupp_eq_zero hxv' hl
 
 variable [FiniteDimensional 𝕜 E]
 
-/-- An orthonormal set in a finite-dimensional `InnerProductSpace` is maximal, if and only if it
-is a basis. -/
-theorem maximal_orthonormal_iff_basis_of_finiteDimensional (hv : Orthonormal 𝕜 ((↑) : v → E)) :
-    (∀ u ⊇ v, Orthonormal 𝕜 ((↑) : u → E) → u = v) ↔ ∃ b : Basis v 𝕜 E, ⇑b = ((↑) : v → E) := by
+/--
+An orthonormal set in a finite-dimensional `InnerProductSpace` is maximal, if and only if it
+is a basis.
+-/
+theorem maximal_orthonormal_iff_basis_of_finiteDimensional (hv : Orthonormal 𝕜 ((↑) : v → E))
+    : (∀ u ⊇ v, Orthonormal 𝕜 ((↑) : u → E) → u = v) ↔ ∃ b : Basis v 𝕜 E, ⇑b = ((↑) : v → E) := by
   rw [maximal_orthonormal_iff_orthogonalComplement_eq_bot hv]
   rw [Submodule.orthogonal_eq_bot_iff]
   have hv_coe : range ((↑) : v → E) = v := by simp

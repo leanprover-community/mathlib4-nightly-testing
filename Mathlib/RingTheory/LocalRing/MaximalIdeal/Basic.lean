@@ -27,9 +27,7 @@ section CommSemiring
 
 variable [CommSemiring R] [IsLocalRing R]
 
-@[simp]
-theorem mem_maximalIdeal (x) : x ∈ maximalIdeal R ↔ x ∈ nonunits R :=
-  Iff.rfl
+@[simp] theorem mem_maximalIdeal (x) : x ∈ maximalIdeal R ↔ x ∈ nonunits R := Iff.rfl
 
 variable (R)
 
@@ -48,8 +46,7 @@ theorem isMaximal_iff {I : Ideal R} : I.IsMaximal ↔ I = maximalIdeal R where
   mp hI := hI.eq_of_le (maximalIdeal.isMaximal R).1.1 fun _ h ↦ hI.1.1 ∘ I.eq_top_of_isUnit_mem h
   mpr e := e ▸ maximalIdeal.isMaximal R
 
-theorem maximal_ideal_unique : ∃! I : Ideal R, I.IsMaximal := by
-  simp [isMaximal_iff]
+theorem maximal_ideal_unique : ∃! I : Ideal R, I.IsMaximal := by simp [isMaximal_iff]
 
 variable {R}
 
@@ -63,11 +60,12 @@ instance : Unique (MaximalSpectrum R) where
 
 omit [IsLocalRing R] in
 /-- If the maximal spectrum of a ring is a singleton, then the ring is local. -/
-theorem of_singleton_maximalSpectrum [Subsingleton (MaximalSpectrum R)]
-    [Nonempty (MaximalSpectrum R)] : IsLocalRing R :=
+theorem of_singleton_maximalSpectrum
+    [Subsingleton (MaximalSpectrum R)] [Nonempty (MaximalSpectrum R)]
+    : IsLocalRing R :=
   let m := Classical.arbitrary (MaximalSpectrum R)
-  .of_unique_max_ideal ⟨m.asIdeal, m.isMaximal,
-    fun I hI ↦ MaximalSpectrum.mk.inj <| Subsingleton.elim ⟨I, hI⟩ m⟩
+  .of_unique_max_ideal
+    ⟨m.asIdeal, m.isMaximal, fun I hI ↦ MaximalSpectrum.mk.inj <| Subsingleton.elim ⟨I, hI⟩ m⟩
 
 theorem le_maximalIdeal {J : Ideal R} (hJ : J ≠ ⊤) : J ≤ maximalIdeal R := by
   rcases Ideal.exists_le_maximal J hJ with ⟨M, hM1, hM2⟩
@@ -84,9 +82,10 @@ theorem notMem_maximalIdeal {x : R} : x ∉ maximalIdeal R ↔ IsUnit x := by
   simp only [mem_maximalIdeal, mem_nonunits_iff, not_not]
 
 theorem isField_iff_maximalIdeal_eq : IsField R ↔ maximalIdeal R = ⊥ :=
-  not_iff_not.mp
-    ⟨Ring.ne_bot_of_isMaximal_of_not_isField inferInstance, fun h =>
-      Ring.not_isField_iff_exists_prime.mpr ⟨_, h, Ideal.IsMaximal.isPrime' _⟩⟩
+  not_iff_not.mp ⟨
+    Ring.ne_bot_of_isMaximal_of_not_isField inferInstance,
+    fun h => Ring.not_isField_iff_exists_prime.mpr ⟨_, h, Ideal.IsMaximal.isPrime' _⟩
+  ⟩
 
 end CommSemiring
 
@@ -94,14 +93,12 @@ section CommRing
 
 variable [CommRing R] [IsLocalRing R]
 
-theorem maximalIdeal_le_jacobson (I : Ideal R) :
-    IsLocalRing.maximalIdeal R ≤ I.jacobson :=
+theorem maximalIdeal_le_jacobson (I : Ideal R) : IsLocalRing.maximalIdeal R ≤ I.jacobson :=
   le_sInf fun _ ⟨_, h⟩ => le_of_eq (IsLocalRing.eq_maximalIdeal h).symm
 
-theorem jacobson_eq_maximalIdeal (I : Ideal R) (h : I ≠ ⊤) :
-    I.jacobson = IsLocalRing.maximalIdeal R :=
-  le_antisymm (sInf_le ⟨le_maximalIdeal h, maximalIdeal.isMaximal R⟩)
-              (maximalIdeal_le_jacobson I)
+theorem jacobson_eq_maximalIdeal (I : Ideal R) (h : I ≠ ⊤)
+    : I.jacobson = IsLocalRing.maximalIdeal R :=
+  le_antisymm (sInf_le ⟨le_maximalIdeal h, maximalIdeal.isMaximal R⟩) (maximalIdeal_le_jacobson I)
 
 variable (R) in
 theorem ringJacobson_eq_maximalIdeal : Ring.jacobson R = maximalIdeal R :=
@@ -113,8 +110,8 @@ section
 
 variable [CommRing R] [IsLocalRing R]
 
-theorem ker_eq_maximalIdeal [DivisionRing K] (φ : R →+* K) (hφ : Function.Surjective φ) :
-    RingHom.ker φ = maximalIdeal R :=
+theorem ker_eq_maximalIdeal [DivisionRing K] (φ : R →+* K) (hφ : Function.Surjective φ)
+    : RingHom.ker φ = maximalIdeal R :=
   IsLocalRing.eq_maximalIdeal <| (RingHom.ker_isMaximal_of_surjective φ) hφ
 
 end
@@ -124,14 +121,17 @@ theorem maximalIdeal_eq_bot {R : Type*} [Field R] : IsLocalRing.maximalIdeal R =
 
 end IsLocalRing
 
-lemma Subsemiring.isLocalRing_of_unit {R : Type*} [Semiring R] [IsLocalRing R] (S : Subsemiring R)
-    (h_unit : ∀ (x : R) (hx : x ∈ S), IsUnit x → IsUnit (⟨x, hx⟩ : S)) :
-    IsLocalRing S where
+lemma Subsemiring.isLocalRing_of_unit
+    {R : Type*} [Semiring R] [IsLocalRing R]
+    (S : Subsemiring R) (h_unit : ∀ (x : R) (hx : x ∈ S), IsUnit x → IsUnit (⟨x, hx⟩ : S))
+    : IsLocalRing S where
   isUnit_or_isUnit_of_add_one {x y} hxy :=
     (‹IsLocalRing R›.isUnit_or_isUnit_of_add_one congr(Subtype.val $hxy)).elim
-      (fun hx ↦ Or.inl (h_unit x.val x.prop hx)) (fun hy ↦ Or.inr (h_unit y.val y.prop hy))
+      (fun hx ↦ Or.inl (h_unit x.val x.prop hx))
+      (fun hy ↦ Or.inr (h_unit y.val y.prop hy))
 
-lemma Subring.isLocalRing_of_unit {R : Type*} [Ring R] [IsLocalRing R] (S : Subring R)
-    (h_unit : ∀ (x : R) (hx : x ∈ S), IsUnit x → IsUnit (⟨x, hx⟩ : S)) :
-    IsLocalRing S :=
+lemma Subring.isLocalRing_of_unit
+    {R : Type*} [Ring R] [IsLocalRing R]
+    (S : Subring R) (h_unit : ∀ (x : R) (hx : x ∈ S), IsUnit x → IsUnit (⟨x, hx⟩ : S))
+    : IsLocalRing S :=
   S.toSubsemiring.isLocalRing_of_unit h_unit

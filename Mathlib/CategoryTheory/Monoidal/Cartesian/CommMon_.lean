@@ -23,9 +23,9 @@ variable {C : Type u} [Category.{v} C] [CartesianMonoidalCategory C] [BraidedCat
 
 variable (X) in
 /-- If `X` represents a presheaf of commutative monoids, then `X` is a commutative monoid object. -/
-lemma IsCommMonObj.ofRepresentableBy (F : Cᵒᵖ ⥤ CommMonCat) (α : (F ⋙ forget _).RepresentableBy X) :
-    letI : MonObj X := .ofRepresentableBy X (F ⋙ forget₂ CommMonCat MonCat) α
-    IsCommMonObj X := by
+lemma IsCommMonObj.ofRepresentableBy (F : Cᵒᵖ ⥤ CommMonCat) (α : (F ⋙ forget _).RepresentableBy X)
+    : letI : MonObj X := .ofRepresentableBy X (F ⋙ forget₂ CommMonCat MonCat) α
+      IsCommMonObj X := by
   let : MonObj X := .ofRepresentableBy X (F ⋙ forget₂ CommMonCat MonCat) α
   have : μ = α.homEquiv'.symm (α.homEquiv' (fst X X) * α.homEquiv' (snd X X)) := rfl
   constructor

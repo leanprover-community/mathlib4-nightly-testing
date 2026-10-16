@@ -6,7 +6,6 @@ Authors: Damiano Testa
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Support
-
 import Mathlib.Tactic.NoncommRing
 
 /-! # Interactions between `R[X]` and `Rᵐᵒᵖ[X]`
@@ -16,7 +15,6 @@ This file contains the basic API for "pushing through" the isomorphism
 over a semiring and the polynomial ring over the opposite semiring. -/
 
 @[expose] public section
-
 
 open Polynomial
 
@@ -28,40 +26,39 @@ noncomputable section
 
 namespace Polynomial
 
-/-- Ring isomorphism between `R[X]ᵐᵒᵖ` and `Rᵐᵒᵖ[X]` sending each coefficient of a polynomial
-to the corresponding element of the opposite ring. -/
+/--
+Ring isomorphism between `R[X]ᵐᵒᵖ` and `Rᵐᵒᵖ[X]` sending each coefficient of a polynomial
+to the corresponding element of the opposite ring.
+-/
 def opRingEquiv (R : Type*) [Semiring R] : R[X]ᵐᵒᵖ ≃+* Rᵐᵒᵖ[X] :=
   ((toFinsuppIso R).op.trans <| AddMonoidAlgebra.opRingEquiv.trans <|
-    AddMonoidAlgebra.mapDomainRingEquiv _ AddOpposite.opAddEquiv.symm).trans (toFinsuppIso _).symm
+      AddMonoidAlgebra.mapDomainRingEquiv _ AddOpposite.opAddEquiv.symm).trans
+    (toFinsuppIso _).symm
 
 /-!  Lemmas to get started, using `opRingEquiv R` on the various expressions of
 `Finsupp.single`: `monomial`, `C a`, `X`, `C a * X ^ n`. -/
 
-
 @[simp]
-theorem opRingEquiv_op_monomial (n : ℕ) (r : R) :
-    opRingEquiv R (op (monomial n r : R[X])) = monomial n (op r) := by
+theorem opRingEquiv_op_monomial (n : ℕ) (r : R)
+    : opRingEquiv R (op (monomial n r : R[X])) = monomial n (op r) := by
   ext; simp [opRingEquiv, ← ofFinsupp_single]
 
 @[simp]
 theorem opRingEquiv_op_C (a : R) : opRingEquiv R (op (C a)) = C (op a) :=
   opRingEquiv_op_monomial 0 a
 
-@[simp]
-theorem opRingEquiv_op_X : opRingEquiv R (op (X : R[X])) = X :=
-  opRingEquiv_op_monomial 1 1
+@[simp] theorem opRingEquiv_op_X : opRingEquiv R (op (X : R[X])) = X := opRingEquiv_op_monomial 1 1
 
-theorem opRingEquiv_op_C_mul_X_pow (r : R) (n : ℕ) :
-    opRingEquiv R (op (C r * X ^ n : R[X])) = C (op r) * X ^ n := by
+theorem opRingEquiv_op_C_mul_X_pow (r : R) (n : ℕ)
+    : opRingEquiv R (op (C r * X ^ n : R[X])) = C (op r) * X ^ n := by
   simp only [X_pow_mul, op_mul, op_pow, map_mul, map_pow, opRingEquiv_op_X, opRingEquiv_op_C]
 
 /-!  Lemmas to get started, using `(opRingEquiv R).symm` on the various expressions of
 `Finsupp.single`: `monomial`, `C a`, `X`, `C a * X ^ n`. -/
 
-
 @[simp]
-theorem opRingEquiv_symm_monomial (n : ℕ) (r : Rᵐᵒᵖ) :
-    (opRingEquiv R).symm (monomial n r) = op (monomial n (unop r)) :=
+theorem opRingEquiv_symm_monomial (n : ℕ) (r : Rᵐᵒᵖ)
+    : (opRingEquiv R).symm (monomial n r) = op (monomial n (unop r)) :=
   (opRingEquiv R).injective (by simp)
 
 @[simp]
@@ -72,15 +69,16 @@ theorem opRingEquiv_symm_C (a : Rᵐᵒᵖ) : (opRingEquiv R).symm (C a) = op (C
 theorem opRingEquiv_symm_X : (opRingEquiv R).symm (X : Rᵐᵒᵖ[X]) = op X :=
   opRingEquiv_symm_monomial 1 1
 
-theorem opRingEquiv_symm_C_mul_X_pow (r : Rᵐᵒᵖ) (n : ℕ) :
-    (opRingEquiv R).symm (C r * X ^ n : Rᵐᵒᵖ[X]) = op (C (unop r) * X ^ n) := by
+theorem opRingEquiv_symm_C_mul_X_pow (r : Rᵐᵒᵖ) (n : ℕ)
+    : (opRingEquiv R).symm (C r * X ^ n : Rᵐᵒᵖ[X]) = op (C (unop r) * X ^ n) := by
   rw [C_mul_X_pow_eq_monomial, opRingEquiv_symm_monomial, C_mul_X_pow_eq_monomial]
 
 /-!  Lemmas about more global properties of polynomials and opposites. -/
 
 @[simp]
-theorem coeff_opRingEquiv (p : R[X]ᵐᵒᵖ) (n : ℕ) :
-    (opRingEquiv R p).coeff n = op ((unop p).coeff n) := by simp [opRingEquiv, coeff]
+theorem coeff_opRingEquiv (p : R[X]ᵐᵒᵖ) (n : ℕ)
+    : (opRingEquiv R p).coeff n = op ((unop p).coeff n) := by
+  simp [opRingEquiv, coeff]
 
 @[simp]
 theorem support_opRingEquiv (p : R[X]ᵐᵒᵖ) : (opRingEquiv R p).support = (unop p).support := by
@@ -94,31 +92,36 @@ theorem natDegree_opRingEquiv (p : R[X]ᵐᵒᵖ) : (opRingEquiv R p).natDegree 
       support_opRingEquiv, unop_eq_zero_iff]
 
 @[simp]
-theorem leadingCoeff_opRingEquiv (p : R[X]ᵐᵒᵖ) :
-    (opRingEquiv R p).leadingCoeff = op (unop p).leadingCoeff := by
+theorem leadingCoeff_opRingEquiv (p : R[X]ᵐᵒᵖ)
+    : (opRingEquiv R p).leadingCoeff = op (unop p).leadingCoeff := by
   rw [leadingCoeff, coeff_opRingEquiv, natDegree_opRingEquiv, leadingCoeff]
 
-theorem isLeftCancelMulZero_iff :
-    IsLeftCancelMulZero R[X] ↔ IsLeftCancelMulZero R ∧ IsCancelAdd R where
-  mp h := .intro (C_injective.isLeftCancelMulZero _ C_0 fun _ _ ↦ C_mul) <|
-    have : IsLeftCancelAdd R := .mk fun a b c eq ↦ by
-      nontriviality R
-      let trinomial (r : R) : R[X] := a • X ^ 2 + r • X + C a
-      have ht r : (X + C 1) * trinomial r = a • X ^ 3 + (a + r) • X ^ 2 + (a + r) • X + C a := by
-        simp only [trinomial, mul_add, add_mul, ← C_mul', C_1, one_mul, ← mul_assoc, X_mul_C, C_add]
-        noncomm_ring
-      simpa [trinomial] using congr_arg (coeff · 1) <|
-        h.1 (a₁ := trinomial b) (a₂ := trinomial c) (X_add_C_ne_zero 1) <| by simp_rw [ht, eq]
-    AddCommMagma.IsLeftCancelAdd.toIsCancelAdd R
+theorem isLeftCancelMulZero_iff
+    : IsLeftCancelMulZero R[X] ↔ IsLeftCancelMulZero R ∧ IsCancelAdd R where
+  mp h :=
+    .intro (C_injective.isLeftCancelMulZero _ C_0 fun _ _ ↦ C_mul) <|
+      have : IsLeftCancelAdd R :=
+        .mk fun a b c eq ↦ by
+          nontriviality R
+          let trinomial (r : R) : R[X] := a • X ^ 2 + r • X + C a
+          have ht r
+              : (X + C 1) * trinomial r = a • X ^ 3 + (a + r) • X ^ 2 + (a + r) • X + C a := by
+            simp only [trinomial, mul_add, add_mul, ← C_mul', C_1, one_mul, ← mul_assoc, X_mul_C,
+              C_add]
+            noncomm_ring
+          simpa [trinomial] using
+            congr_arg (coeff · 1) <|
+              h.1 (a₁ := trinomial b) (a₂ := trinomial c) (X_add_C_ne_zero 1) <| by simp_rw [ht, eq]
+      AddCommMagma.IsLeftCancelAdd.toIsCancelAdd R
   mpr := fun ⟨_, _⟩ ↦ inferInstance
 
-theorem isRightCancelMulZero_iff :
-    IsRightCancelMulZero R[X] ↔ IsRightCancelMulZero R ∧ IsCancelAdd R := by
+theorem isRightCancelMulZero_iff
+    : IsRightCancelMulZero R[X] ↔ IsRightCancelMulZero R ∧ IsCancelAdd R := by
   rw [← MulOpposite.isLeftCancelMulZero_iff, (opRingEquiv R).isLeftCancelMulZero_iff,
     isLeftCancelMulZero_iff, MulOpposite.isLeftCancelMulZero_iff, MulOpposite.isCancelAdd_iff]
 
-protected theorem isCancelMulZero_iff :
-    IsCancelMulZero R[X] ↔ IsCancelMulZero R ∧ IsCancelAdd R := by
+protected theorem isCancelMulZero_iff
+    : IsCancelMulZero R[X] ↔ IsCancelMulZero R ∧ IsCancelAdd R := by
   simp_rw [isCancelMulZero_iff, isLeftCancelMulZero_iff, isRightCancelMulZero_iff]
   rw [and_and_and_comm, and_self]
 

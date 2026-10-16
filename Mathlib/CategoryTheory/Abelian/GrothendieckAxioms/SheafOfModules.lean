@@ -21,13 +21,12 @@ open CategoryTheory
 
 namespace SheafOfModules
 
-public instance {C : Type u} [SmallCategory C] {J : GrothendieckTopology C}
-    (R : Sheaf J RingCat.{u}) :
-    IsGrothendieckAbelian.{u} (SheafOfModules.{u} R) where
+public instance
+    {C : Type u} [SmallCategory C] {J : GrothendieckTopology C} (R : Sheaf J RingCat.{u})
+    : IsGrothendieckAbelian.{u} (SheafOfModules.{u} R) where
   hasFilteredColimitsOfSize := ⟨fun _ ↦ ⟨fun _ ↦ inferInstance⟩⟩
-  ab5OfSize := ⟨fun K _ _ ↦
-    (PresheafOfModules.sheafificationAdjunction (𝟙 R.obj)).hasExactColimitsOfShape K⟩
-  hasSeparator :=
-    .of_adjunction (PresheafOfModules.sheafificationAdjunction (𝟙 R.obj))
+  ab5OfSize :=
+    ⟨fun K _ _ ↦ (PresheafOfModules.sheafificationAdjunction (𝟙 R.obj)).hasExactColimitsOfShape K⟩
+  hasSeparator := .of_adjunction (PresheafOfModules.sheafificationAdjunction (𝟙 R.obj))
 
 end SheafOfModules

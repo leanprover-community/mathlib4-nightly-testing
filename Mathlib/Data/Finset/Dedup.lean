@@ -34,9 +34,7 @@ variable {α : Type*} {β : Type*}
 
 namespace Finset
 
-@[simp]
-theorem dedup_eq_self [DecidableEq α] (s : Finset α) : dedup s.1 = s.1 :=
-  s.2.dedup
+@[simp] theorem dedup_eq_self [DecidableEq α] (s : Finset α) : dedup s.1 = s.1 := s.2.dedup
 
 end Finset
 
@@ -47,23 +45,20 @@ namespace Multiset
 variable [DecidableEq α] {s t : Multiset α}
 
 /-- `toFinset s` removes duplicates from the multiset `s` to produce a finset. -/
-def toFinset (s : Multiset α) : Finset α :=
-  ⟨_, nodup_dedup s⟩
+def toFinset (s : Multiset α) : Finset α := ⟨_, nodup_dedup s⟩
 
-@[simp]
-theorem toFinset_val (s : Multiset α) : s.toFinset.1 = s.dedup :=
-  rfl
+@[simp] theorem toFinset_val (s : Multiset α) : s.toFinset.1 = s.dedup := rfl
 
 theorem toFinset_eq {s : Multiset α} (n : Nodup s) : Finset.mk s n = s.toFinset :=
   Finset.val_inj.1 n.dedup.symm
 
-theorem Nodup.toFinset_inj {l l' : Multiset α} (hl : Nodup l) (hl' : Nodup l')
-    (h : l.toFinset = l'.toFinset) : l = l' := by
+theorem Nodup.toFinset_inj
+    {l l' : Multiset α} (hl : Nodup l) (hl' : Nodup l') (h : l.toFinset = l'.toFinset)
+    : l = l' := by
   simpa [← toFinset_eq hl, ← toFinset_eq hl'] using h
 
 @[simp, grind =]
-theorem mem_toFinset {a : α} {s : Multiset α} : a ∈ s.toFinset ↔ a ∈ s :=
-  mem_dedup
+theorem mem_toFinset {a : α} {s : Multiset α} : a ∈ s.toFinset ↔ a ∈ s := mem_dedup
 
 theorem coe_toFinset {s : Multiset α} : s.toFinset = {a | a ∈ s} := by
   ext
@@ -105,33 +100,24 @@ namespace List
 variable [DecidableEq α] {l l' : List α} {a : α} {s : Finset α}
 
 /-- `toFinset l` removes duplicates from the list `l` to produce a finset. -/
-def toFinset (l : List α) : Finset α :=
-  Multiset.toFinset l
+def toFinset (l : List α) : Finset α := Multiset.toFinset l
 
-@[simp]
-theorem toFinset_val (l : List α) : l.toFinset.1 = (l.dedup : Multiset α) :=
-  rfl
+@[simp] theorem toFinset_val (l : List α) : l.toFinset.1 = (l.dedup : Multiset α) := rfl
 
-@[simp]
-theorem toFinset_coe (l : List α) : (l : Multiset α).toFinset = l.toFinset :=
-  rfl
+@[simp] theorem toFinset_coe (l : List α) : (l : Multiset α).toFinset = l.toFinset := rfl
 
 theorem toFinset_eq (n : Nodup l) : @Finset.mk α l n = l.toFinset :=
   Multiset.toFinset_eq <| by rwa [Multiset.coe_nodup]
 
-@[simp]
-theorem mem_toFinset : a ∈ l.toFinset ↔ a ∈ l :=
-  mem_dedup
+@[simp] theorem mem_toFinset : a ∈ l.toFinset ↔ a ∈ l := mem_dedup
 
 @[simp, norm_cast]
 theorem coe_toFinset (l : List α) : (l.toFinset : Set α) = { a | a ∈ l } :=
   Set.ext fun _ => List.mem_toFinset
 
-@[simp]
-theorem toFinset_dedup : l.dedup.toFinset = l.toFinset :=
-  Finset.eq_of_veq <| by simp
+@[simp] theorem toFinset_dedup : l.dedup.toFinset = l.toFinset := Finset.eq_of_veq <| by simp
 
-theorem toFinset_surj_on : Set.SurjOn toFinset { l : List α | l.Nodup } Set.univ := by
+theorem toFinset_surj_on : Set.SurjOn toFinset ({ l : List α | l.Nodup }) Set.univ := by
   rintro ⟨⟨l⟩, hl⟩ _
   exact ⟨l, hl, (toFinset_eq hl).symm⟩
 
@@ -145,14 +131,14 @@ theorem toFinset_eq_iff_perm_dedup : l.toFinset = l'.toFinset ↔ l.dedup ~ l'.d
 theorem toFinset.ext_iff {a b : List α} : a.toFinset = b.toFinset ↔ ∀ x, x ∈ a ↔ x ∈ b := by
   simp only [Finset.ext_iff, mem_toFinset]
 
-theorem toFinset.ext : (∀ x, x ∈ l ↔ x ∈ l') → l.toFinset = l'.toFinset :=
-  toFinset.ext_iff.mpr
+theorem toFinset.ext : (∀ x, x ∈ l ↔ x ∈ l') → l.toFinset = l'.toFinset := toFinset.ext_iff.mpr
 
 theorem toFinset_eq_of_perm (l l' : List α) (h : l ~ l') : l.toFinset = l'.toFinset :=
   toFinset_eq_iff_perm_dedup.mpr h.dedup
 
-theorem perm_of_nodup_nodup_toFinset_eq (hl : Nodup l) (hl' : Nodup l')
-    (h : l.toFinset = l'.toFinset) : l ~ l' := by
+theorem perm_of_nodup_nodup_toFinset_eq
+    (hl : Nodup l) (hl' : Nodup l') (h : l.toFinset = l'.toFinset)
+    : l ~ l' := by
   rw [← Multiset.coe_eq_coe]
   exact Multiset.Nodup.toFinset_inj hl hl' h
 
@@ -167,33 +153,29 @@ namespace Finset
 section ToList
 
 /-- Produce a list of the elements in the finite set using choice. -/
-noncomputable def toList (s : Finset α) : List α :=
-  s.1.toList
+noncomputable def toList (s : Finset α) : List α := s.1.toList
 
 theorem nodup_toList (s : Finset α) : s.toList.Nodup := by
   rw [toList, ← Multiset.coe_nodup, Multiset.coe_toList]
   exact s.nodup
 
-@[simp]
-theorem mem_toList {a : α} {s : Finset α} : a ∈ s.toList ↔ a ∈ s :=
-  Multiset.mem_toList
+@[simp] theorem mem_toList {a : α} {s : Finset α} : a ∈ s.toList ↔ a ∈ s := Multiset.mem_toList
 
 @[simp, norm_cast]
-theorem coe_toList (s : Finset α) : (s.toList : Multiset α) = s.val :=
-  s.val.coe_toList
+theorem coe_toList (s : Finset α) : (s.toList : Multiset α) = s.val := s.val.coe_toList
 
 @[simp]
 theorem toList_toFinset [DecidableEq α] (s : Finset α) : s.toList.toFinset = s := by
   ext
   simp
 
-theorem _root_.List.toFinset_toList [DecidableEq α] {s : List α} (hs : s.Nodup) :
-    s.toFinset.toList.Perm s := by
+theorem _root_.List.toFinset_toList [DecidableEq α] {s : List α} (hs : s.Nodup)
+    : s.toFinset.toList.Perm s := by
   apply List.perm_of_nodup_nodup_toFinset_eq (nodup_toList _) hs
   rw [toList_toFinset]
 
-theorem exists_list_nodup_eq [DecidableEq α] (s : Finset α) :
-    ∃ l : List α, l.Nodup ∧ l.toFinset = s :=
+theorem exists_list_nodup_eq [DecidableEq α] (s : Finset α)
+    : ∃ l : List α, l.Nodup ∧ l.toFinset = s :=
   ⟨s.toList, s.nodup_toList, s.toList_toFinset⟩
 
 @[simp]

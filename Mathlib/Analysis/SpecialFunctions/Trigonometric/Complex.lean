@@ -20,7 +20,6 @@ functions, or require additional imports which are not available in that file.
 
 public section
 
-
 namespace Complex
 
 open Set Filter Finset
@@ -55,44 +54,47 @@ theorem sin_eq_zero_iff {θ : ℂ} : sin θ = 0 ↔ ∃ k : ℤ, θ = k * π := 
 theorem sin_ne_zero_iff {θ : ℂ} : sin θ ≠ 0 ↔ ∀ k : ℤ, θ ≠ k * π := by
   contrapose!; exact sin_eq_zero_iff
 
-/-- The tangent of a complex number is equal to zero
+/--
+The tangent of a complex number is equal to zero
 iff this number is equal to `k * π / 2` for an integer `k`.
 
 Note that this lemma takes into account that we use zero as the junk value for division by zero.
-See also `Complex.tan_eq_zero_iff'`. -/
+See also `Complex.tan_eq_zero_iff'`.
+-/
 theorem tan_eq_zero_iff {θ : ℂ} : tan θ = 0 ↔ ∃ k : ℤ, k * π / 2 = θ := by
-  rw [tan, div_eq_zero_iff, ← mul_eq_zero, ← mul_right_inj' two_ne_zero, mul_zero,
-    ← mul_assoc, ← sin_two_mul, sin_eq_zero_iff]
+  rw [tan, div_eq_zero_iff, ← mul_eq_zero, ← mul_right_inj' two_ne_zero, mul_zero, ← mul_assoc,
+    ← sin_two_mul, sin_eq_zero_iff]
   simp [field, mul_comm, eq_comm]
 
 theorem tan_ne_zero_iff {θ : ℂ} : tan θ ≠ 0 ↔ ∀ k : ℤ, (k * π / 2 : ℂ) ≠ θ := by
   contrapose!; exact tan_eq_zero_iff
 
-theorem tan_int_mul_pi_div_two (n : ℤ) : tan (n * π / 2) = 0 :=
-  tan_eq_zero_iff.mpr (by use n)
+theorem tan_int_mul_pi_div_two (n : ℤ) : tan (n * π / 2) = 0 := tan_eq_zero_iff.mpr (by use n)
 
-/-- If the tangent of a complex number is well-defined,
+/--
+If the tangent of a complex number is well-defined,
 then it is equal to zero iff the number is equal to `k * π` for an integer `k`.
 
-See also `Complex.tan_eq_zero_iff` for a version that takes into account junk values of `θ`. -/
+See also `Complex.tan_eq_zero_iff` for a version that takes into account junk values of `θ`.
+-/
 theorem tan_eq_zero_iff' {θ : ℂ} (hθ : cos θ ≠ 0) : tan θ = 0 ↔ ∃ k : ℤ, k * π = θ := by
   simp only [tan, hθ, div_eq_zero_iff, sin_eq_zero_iff]; simp [eq_comm]
 
 theorem cos_eq_cos_iff {x y : ℂ} : cos x = cos y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = 2 * k * π - x :=
   calc
-    cos x = cos y ↔ cos x - cos y = 0 := sub_eq_zero.symm
+    cos x = cos y
+      ↔ cos x - cos y = 0 := sub_eq_zero.symm
     _ ↔ -2 * sin ((x + y) / 2) * sin ((x - y) / 2) = 0 := by rw [cos_sub_cos]
     _ ↔ sin ((x + y) / 2) = 0 ∨ sin ((x - y) / 2) = 0 := by simp [(by simp : (2 : ℂ) ≠ 0)]
     _ ↔ sin ((x - y) / 2) = 0 ∨ sin ((x + y) / 2) = 0 := or_comm
     _ ↔ (∃ k : ℤ, y = 2 * k * π + x) ∨ ∃ k : ℤ, y = 2 * k * π - x := by
-      apply or_congr <;>
-        simp only [field, sin_eq_zero_iff, eq_sub_iff_add_eq',
-          sub_eq_iff_eq_add, mul_comm (2 : ℂ), mul_right_comm _ (2 : ℂ)]
+      apply or_congr <;> simp only [field, sin_eq_zero_iff, eq_sub_iff_add_eq', sub_eq_iff_eq_add,
+        mul_comm (2 : ℂ), mul_right_comm _ (2 : ℂ)]
       constructor <;> · rintro ⟨k, rfl⟩; use -k; simp
     _ ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = 2 * k * π - x := exists_or.symm
 
-theorem sin_eq_sin_iff {x y : ℂ} :
-    sin x = sin y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = (2 * k + 1) * π - x := by
+theorem sin_eq_sin_iff {x y : ℂ}
+    : sin x = sin y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = (2 * k + 1) * π - x := by
   simp only [← Complex.cos_sub_pi_div_two, cos_eq_cos_iff, sub_eq_iff_eq_add]
   refine exists_congr fun k => or_congr ?_ ?_ <;> refine Eq.congr rfl ?_ <;> simp [field] <;> ring
 
@@ -112,50 +114,53 @@ theorem sin_eq_neg_one_iff {x : ℂ} : sin x = -1 ↔ ∃ k : ℤ, -(π / 2) + k
   rw [← neg_eq_iff_eq_neg, ← cos_add_pi_div_two, cos_eq_one_iff]
   simp only [← sub_eq_neg_add, sub_eq_iff_eq_add]
 
-theorem tan_add {x y : ℂ}
-    (h : ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2) ∨
-      (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y = (2 * l + 1) * π / 2) :
-    tan (x + y) = (tan x + tan y) / (1 - tan x * tan y) := by
+theorem tan_add
+    {x y : ℂ}
+    (h : ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2)
+      ∨ (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y = (2 * l + 1) * π / 2)
+    : tan (x + y) = (tan x + tan y) / (1 - tan x * tan y) := by
   rcases h with (⟨h1, h2⟩ | ⟨⟨k, rfl⟩, ⟨l, rfl⟩⟩)
-  · rw [tan, sin_add, cos_add, ←
-      div_div_div_cancel_right₀ (mul_ne_zero (cos_ne_zero_iff.mpr h1) (cos_ne_zero_iff.mpr h2)),
+  · rw [tan, sin_add, cos_add,
+      ← div_div_div_cancel_right₀ (mul_ne_zero (cos_ne_zero_iff.mpr h1) (cos_ne_zero_iff.mpr h2)),
       add_div, sub_div]
     simp only [← div_mul_div_comm, tan, mul_one, one_mul, div_self (cos_ne_zero_iff.mpr h1),
       div_self (cos_ne_zero_iff.mpr h2)]
   · have t := tan_int_mul_pi_div_two
     obtain ⟨hx, hy, hxy⟩ := t (2 * k + 1), t (2 * l + 1), t (2 * k + 1 + (2 * l + 1))
     simp only [Int.cast_add, Int.cast_two, Int.cast_mul, Int.cast_one] at hx hy hxy
-    rw [hx, hy, add_zero, zero_div, mul_div_assoc, mul_div_assoc, ←
-      add_mul (2 * (k : ℂ) + 1) (2 * l + 1) (π / 2), ← mul_div_assoc, hxy]
+    rw [hx, hy, add_zero, zero_div, mul_div_assoc, mul_div_assoc,
+      ← add_mul (2 * (k : ℂ) + 1) (2 * l + 1) (π / 2), ← mul_div_assoc, hxy]
 
-theorem tan_add' {x y : ℂ}
-    (h : (∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2) :
-    tan (x + y) = (tan x + tan y) / (1 - tan x * tan y) :=
+theorem tan_add'
+    {x y : ℂ} (h : (∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2)
+    : tan (x + y) = (tan x + tan y) / (1 - tan x * tan y) :=
   tan_add (Or.inl h)
 
-theorem tan_sub {x y : ℂ}
-    (h : ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2) ∨
-      (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y = (2 * l + 1) * π / 2) :
-    tan (x - y) = (tan x - tan y) / (1 + tan x * tan y) := by
-  have := tan_add (x := x) (y := -y) <| by
-    rcases h with ⟨x_ne, minus_y_ne⟩ | ⟨x_eq, minus_y_eq⟩
-    · refine .inl ⟨x_ne, fun l => ?_⟩
-      rw [Ne, neg_eq_iff_eq_neg]
-      convert minus_y_ne (-l - 1) using 2
-      push_cast
-      ring
-    · refine .inr ⟨x_eq, ?_⟩
-      rcases minus_y_eq with ⟨l, rfl⟩
-      use -l - 1
-      push_cast
-      ring
+theorem tan_sub
+    {x y : ℂ}
+    (h : ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2)
+      ∨ (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y = (2 * l + 1) * π / 2)
+    : tan (x - y) = (tan x - tan y) / (1 + tan x * tan y) := by
+  have :=
+    tan_add (x := x) (y := -y) <| by
+      rcases h with ⟨x_ne, minus_y_ne⟩ | ⟨x_eq, minus_y_eq⟩
+      · refine .inl ⟨x_ne, fun l => ?_⟩
+        rw [Ne, neg_eq_iff_eq_neg]
+        convert minus_y_ne (-l - 1) using 2
+        push_cast
+        ring
+      · refine .inr ⟨x_eq, ?_⟩
+        rcases minus_y_eq with ⟨l, rfl⟩
+        use -l - 1
+        push_cast
+        ring
   rw [tan_neg] at this
   convert this using 2
   ring
 
-theorem tan_sub' {x y : ℂ}
-    (h : (∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2) :
-    tan (x - y) = (tan x - tan y) / (1 + tan x * tan y) :=
+theorem tan_sub'
+    {x y : ℂ} (h : (∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y ≠ (2 * l + 1) * π / 2)
+    : tan (x - y) = (tan x - tan y) / (1 + tan x * tan y) :=
   tan_sub (Or.inl h)
 
 theorem tan_two_mul {z : ℂ} : tan (2 * z) = (2 : ℂ) * tan z / ((1 : ℂ) - tan z ^ 2) := by
@@ -163,20 +168,19 @@ theorem tan_two_mul {z : ℂ} : tan (2 * z) = (2 : ℂ) * tan z / ((1 : ℂ) - t
   · rw [two_mul, two_mul, sq, tan_add (Or.inl ⟨h, h⟩)]
   · rw [two_mul, two_mul, sq, tan_add (Or.inr ⟨h, h⟩)]
 
-theorem tan_add_mul_I {x y : ℂ}
-    (h :
-      ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y * I ≠ (2 * l + 1) * π / 2) ∨
-        (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y * I = (2 * l + 1) * π / 2) :
-    tan (x + y * I) = (tan x + tanh y * I) / (1 - tan x * tanh y * I) := by
+theorem tan_add_mul_I
+    {x y : ℂ}
+    (h : ((∀ k : ℤ, x ≠ (2 * k + 1) * π / 2) ∧ ∀ l : ℤ, y * I ≠ (2 * l + 1) * π / 2)
+      ∨ (∃ k : ℤ, x = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, y * I = (2 * l + 1) * π / 2)
+    : tan (x + y * I) = (tan x + tanh y * I) / (1 - tan x * tanh y * I) := by
   rw [tan_add h, tan_mul_I, mul_assoc]
 
-theorem tan_eq {z : ℂ}
-    (h :
-      ((∀ k : ℤ, (z.re : ℂ) ≠ (2 * k + 1) * π / 2) ∧
-          ∀ l : ℤ, (z.im : ℂ) * I ≠ (2 * l + 1) * π / 2) ∨
-        (∃ k : ℤ, (z.re : ℂ) = (2 * k + 1) * π / 2) ∧
-          ∃ l : ℤ, (z.im : ℂ) * I = (2 * l + 1) * π / 2) :
-    tan z = (tan z.re + tanh z.im * I) / (1 - tan z.re * tanh z.im * I) := by
+theorem tan_eq
+    {z : ℂ}
+    (h : ((∀ k : ℤ, (z.re : ℂ) ≠ (2 * k + 1) * π / 2)
+        ∧ ∀ l : ℤ, (z.im : ℂ) * I ≠ (2 * l + 1) * π / 2)
+      ∨ (∃ k : ℤ, (z.re : ℂ) = (2 * k + 1) * π / 2) ∧ ∃ l : ℤ, (z.im : ℂ) * I = (2 * l + 1) * π / 2)
+    : tan z = (tan z.re + tanh z.im * I) / (1 - tan z.re * tanh z.im * I) := by
   convert tan_add_mul_I h; exact (re_add_im z).symm
 
 /-- `tan x` takes the junk value `0` when `cos x = 0` -/
@@ -186,8 +190,8 @@ lemma tan_eq_zero_of_cos_eq_zero {x} (h : cos x = 0) : tan x = 0 := by
 
 -- tangent half-angle substitution formulas
 
-theorem cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq (x : ℂ) (h : cos x ≠ -1) :
-    cos x = (1 - tan (x / 2) ^ 2) / (1 + tan (x / 2) ^ 2) := by
+theorem cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq (x : ℂ) (h : cos x ≠ -1)
+    : cos x = (1 - tan (x / 2) ^ 2) / (1 + tan (x / 2) ^ 2) := by
   conv_lhs => rw [← mul_div_cancel₀ x two_ne_zero, cos_two_mul']
   have : cos (x / 2) ≠ 0 := by grind [cos_ne_zero_iff, cos_eq_neg_one_iff]
   rw [div_eq_mul_inv (1 - tan (x / 2) ^ 2) (1 + tan (x / 2) ^ 2), inv_one_add_tan_sq this,
@@ -195,8 +199,8 @@ theorem cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq (x : ℂ) (h : cos x ≠
   ring
 
 /-- `tan (x / 2)` takes the junk value `0` when `sin x = 0` so this always holds. -/
-theorem sin_eq_two_mul_tan_half_div_one_add_tan_half_sq (x : ℂ) :
-    sin x = (2 * tan (x / 2)) / (1 + tan (x / 2) ^ 2) := by
+theorem sin_eq_two_mul_tan_half_div_one_add_tan_half_sq (x : ℂ)
+    : sin x = (2 * tan (x / 2)) / (1 + tan (x / 2) ^ 2) := by
   conv_lhs => rw [← mul_div_cancel₀ x two_ne_zero, sin_two_mul]
   by_cases h : cos (x / 2) = 0
   · simp [h, tan_eq_zero_of_cos_eq_zero]
@@ -204,8 +208,8 @@ theorem sin_eq_two_mul_tan_half_div_one_add_tan_half_sq (x : ℂ) :
       ← tan_mul_cos h]
     ring
 
-theorem tan_eq_one_sub_tan_half_sq_div_one_add_tan_half_sq (x : ℂ) :
-    tan x = (2 * tan (x / 2)) / (1 - tan (x / 2) ^ 2) := by
+theorem tan_eq_one_sub_tan_half_sq_div_one_add_tan_half_sq (x : ℂ)
+    : tan x = (2 * tan (x / 2)) / (1 - tan (x / 2) ^ 2) := by
   conv_lhs => rw [← mul_div_cancel₀ x two_ne_zero, tan_two_mul]
 
 open scoped Topology
@@ -217,8 +221,8 @@ theorem continuousOn_tan : ContinuousOn tan {x | cos x ≠ 0} :=
 theorem continuous_tan : Continuous fun x : {x | cos x ≠ 0} => tan x :=
   continuousOn_iff_continuous_domRestrict.1 continuousOn_tan
 
-theorem cos_eq_iff_quadratic {z w : ℂ} :
-    cos z = w ↔ exp (z * I) ^ 2 - 2 * w * exp (z * I) + 1 = 0 := by
+theorem cos_eq_iff_quadratic {z w : ℂ}
+    : cos z = w ↔ exp (z * I) ^ 2 - 2 * w * exp (z * I) + 1 = 0 := by
   rw [← sub_eq_zero]
   simpa [field, cos, exp_neg] using Eq.congr (by ring) rfl
 
@@ -226,8 +230,8 @@ theorem cos_surjective : Function.Surjective cos := by
   intro x
   obtain ⟨w, w₀, hw⟩ : ∃ w ≠ 0, 1 * (w * w) + -2 * x * w + 1 = 0 := by
     rcases exists_quadratic_eq_zero one_ne_zero
-        ⟨_, (cpow_nat_inv_pow _ two_ne_zero).symm.trans <| pow_two _⟩ with
-      ⟨w, hw⟩
+        ⟨_, (cpow_nat_inv_pow _ two_ne_zero).symm.trans <| pow_two _⟩
+      with ⟨w, hw⟩
     refine ⟨w, ?_, hw⟩
     rintro rfl
     simp only [zero_add, one_ne_zero, mul_zero] at hw
@@ -236,26 +240,23 @@ theorem cos_surjective : Function.Surjective cos := by
   convert hw using 1
   ring
 
-@[simp]
-theorem range_cos : Set.range cos = Set.univ :=
-  cos_surjective.range_eq
+@[simp] theorem range_cos : Set.range cos = Set.univ := cos_surjective.range_eq
 
 theorem sin_surjective : Function.Surjective sin := by
   intro x
   rcases cos_surjective x with ⟨z, rfl⟩
   exact ⟨z + π / 2, sin_add_pi_div_two z⟩
 
-@[simp]
-theorem range_sin : Set.range sin = Set.univ :=
-  sin_surjective.range_eq
+@[simp] theorem range_sin : Set.range sin = Set.univ := sin_surjective.range_eq
 
-theorem sin_mul_sum_sin (n : ℕ) (a b : ℂ) :
-    sin (a / 2) * ∑ i ∈ range n, sin (a * i + b) = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) := by
+theorem sin_mul_sum_sin (n : ℕ) (a b : ℂ)
+    : sin (a / 2) * ∑ i ∈ range n, sin (a * i + b)
+      = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) := by
   apply mul_left_cancel₀ (show (-2 : ℂ) ≠ 0 by simp)
   simp_rw [← mul_assoc, mul_sum]
   calc
     ∑ i ∈ range n, -2 * sin (a / 2) * sin (a * i + b)
-      = ∑ x ∈ range n, (cos (a * (↑(x + 1) - 1 / 2) + b) - cos (-(a * (x - 1 / 2) + b))) := by
+        = ∑ x ∈ range n, (cos (a * (↑(x + 1) - 1 / 2) + b) - cos (-(a * (x - 1 / 2) + b))) := by
       congr! 1 with x hx
       rw [cos_sub_cos]
       push_cast
@@ -264,18 +265,20 @@ theorem sin_mul_sum_sin (n : ℕ) (a b : ℂ) :
       simp_rw [cos_neg, sum_range_sub (fun i ↦ cos (a * (i - 1 / 2) + b)), cos_sub_cos]
       ring_nf
 
-theorem sum_sin (n : ℕ) {a : ℂ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℂ) :
-    ∑ i ∈ range n, sin (a * i + b) = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) / sin (a / 2) := by
+theorem sum_sin (n : ℕ) {a : ℂ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℂ)
+    : ∑ i ∈ range n, sin (a * i + b)
+      = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) / sin (a / 2) := by
   rw [← sin_mul_sum_sin]
   grind [sin_ne_zero_iff]
 
-theorem sin_mul_sum_cos (n : ℕ) (a b : ℂ) :
-    sin (a / 2) * ∑ i ∈ range n, cos (a * i + b) = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) := by
+theorem sin_mul_sum_cos (n : ℕ) (a b : ℂ)
+    : sin (a / 2) * ∑ i ∈ range n, cos (a * i + b)
+      = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) := by
   apply mul_left_cancel₀ (show (2 : ℂ) ≠ 0 by simp)
   simp_rw [← mul_assoc, mul_sum]
   calc
     ∑ i ∈ range n, 2 * sin (a / 2) * cos (a * i + b)
-      = ∑ x ∈ range n, (sin (a * (↑(x + 1) - 1 / 2) + b) - sin (a * (x - 1 / 2) + b)) := by
+        = ∑ x ∈ range n, (sin (a * (↑(x + 1) - 1 / 2) + b) - sin (a * (x - 1 / 2) + b)) := by
       congr! 1 with x hx
       rw [sin_sub_sin]
       push_cast
@@ -284,8 +287,9 @@ theorem sin_mul_sum_cos (n : ℕ) (a b : ℂ) :
       simp_rw [sum_range_sub (fun i ↦ sin (a * (i - 1 / 2) + b)), sin_sub_sin]
       ring_nf
 
-theorem sum_cos (n : ℕ) {a : ℂ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℂ) :
-    ∑ i ∈ range n, cos (a * i + b) = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) / sin (a / 2) := by
+theorem sum_cos (n : ℕ) {a : ℂ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℂ)
+    : ∑ i ∈ range n, cos (a * i + b)
+      = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) / sin (a / 2) := by
   rw [← sin_mul_sum_cos]
   grind [sin_ne_zero_iff]
 
@@ -305,15 +309,14 @@ theorem cos_ne_zero_iff {θ : ℝ} : cos θ ≠ 0 ↔ ∀ k : ℤ, θ ≠ (2 * k
 theorem cos_eq_cos_iff {x y : ℝ} : cos x = cos y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = 2 * k * π - x :=
   mod_cast @Complex.cos_eq_cos_iff x y
 
-theorem sin_eq_sin_iff {x y : ℝ} :
-    sin x = sin y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = (2 * k + 1) * π - x :=
+theorem sin_eq_sin_iff {x y : ℝ}
+    : sin x = sin y ↔ ∃ k : ℤ, y = 2 * k * π + x ∨ y = (2 * k + 1) * π - x :=
   mod_cast @Complex.sin_eq_sin_iff x y
 
 theorem cos_eq_neg_one_iff {x : ℝ} : cos x = -1 ↔ ∃ k : ℤ, π + k * (2 * π) = x :=
   mod_cast @Complex.cos_eq_neg_one_iff x
 
-lemma abs_cos_eq_one_iff {x : ℝ} :
-    |cos x| = 1 ↔ ∃ k : ℤ, k * π = x := by
+lemma abs_cos_eq_one_iff {x : ℝ} : |cos x| = 1 ↔ ∃ k : ℤ, k * π = x := by
   rw [← abs_one, abs_eq_abs, cos_eq_one_iff, cos_eq_neg_one_iff]
   constructor
   · rintro (⟨n, h⟩ | ⟨n, h⟩)
@@ -330,8 +333,7 @@ theorem sin_eq_one_iff {x : ℝ} : sin x = 1 ↔ ∃ k : ℤ, π / 2 + k * (2 * 
 theorem sin_eq_neg_one_iff {x : ℝ} : sin x = -1 ↔ ∃ k : ℤ, -(π / 2) + k * (2 * π) = x :=
   mod_cast @Complex.sin_eq_neg_one_iff x
 
-lemma abs_sin_eq_one_iff {x : ℝ} :
-    |sin x| = 1 ↔ ∃ k : ℤ, π / 2 + k * π = x := by
+lemma abs_sin_eq_one_iff {x : ℝ} : |sin x| = 1 ↔ ∃ k : ℤ, π / 2 + k * π = x := by
   rw [← abs_one, abs_eq_abs, sin_eq_one_iff, sin_eq_neg_one_iff]
   constructor
   · rintro (⟨n, h⟩ | ⟨n, h⟩)
@@ -358,34 +360,38 @@ lemma tan_eq_zero_of_cos_eq_zero {x} (h : cos x = 0) : tan x = 0 :=
 
 -- tangent half-angle substitution formulas
 
-theorem cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq (x : ℝ) (h : cos x ≠ -1) :
-    cos x = (1 - tan (x / 2) ^ 2) / (1 + tan (x / 2) ^ 2) :=
+theorem cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq (x : ℝ) (h : cos x ≠ -1)
+    : cos x = (1 - tan (x / 2) ^ 2) / (1 + tan (x / 2) ^ 2) :=
   mod_cast @Complex.cos_eq_two_mul_tan_half_div_one_sub_tan_half_sq x (mod_cast h)
 
 /-- `tan (x / 2)` takes the junk value `0` when `sin x = 0` so this always holds. -/
-theorem sin_eq_two_mul_tan_half_div_one_add_tan_half_sq (x : ℝ) :
-    sin x = (2 * tan (x / 2)) / (1 + tan (x / 2) ^ 2) :=
+theorem sin_eq_two_mul_tan_half_div_one_add_tan_half_sq (x : ℝ)
+    : sin x = (2 * tan (x / 2)) / (1 + tan (x / 2) ^ 2) :=
   mod_cast @Complex.sin_eq_two_mul_tan_half_div_one_add_tan_half_sq x
 
-theorem tan_eq_one_sub_tan_half_sq_div_one_add_tan_half_sq (x : ℝ) :
-    tan x = (2 * tan (x / 2)) / (1 - tan (x / 2) ^ 2) :=
+theorem tan_eq_one_sub_tan_half_sq_div_one_add_tan_half_sq (x : ℝ)
+    : tan x = (2 * tan (x / 2)) / (1 - tan (x / 2) ^ 2) :=
   mod_cast @Complex.tan_eq_one_sub_tan_half_sq_div_one_add_tan_half_sq x
 
-theorem sin_mul_sum_sin (n : ℕ) (a b : ℝ) :
-    sin (a / 2) * ∑ i ∈ range n, sin (a * i + b) = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) := by
+theorem sin_mul_sum_sin (n : ℕ) (a b : ℝ)
+    : sin (a / 2) * ∑ i ∈ range n, sin (a * i + b)
+      = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) := by
   exact_mod_cast congr($(Complex.sin_mul_sum_sin n a b).re)
 
-theorem sum_sin (n : ℕ) {a : ℝ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℝ) :
-    ∑ i ∈ range n, sin (a * i + b) = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) / sin (a / 2) := by
+theorem sum_sin (n : ℕ) {a : ℝ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℝ)
+    : ∑ i ∈ range n, sin (a * i + b)
+      = sin (n * a / 2) * sin ((n - 1) * a / 2 + b) / sin (a / 2) := by
   have h := Complex.sum_sin n (a := a) (by exact_mod_cast h) b
   exact_mod_cast congr($(h).re)
 
-theorem sin_mul_sum_cos (n : ℕ) (a b : ℝ) :
-    sin (a / 2) * ∑ i ∈ range n, cos (a * i + b) = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) := by
+theorem sin_mul_sum_cos (n : ℕ) (a b : ℝ)
+    : sin (a / 2) * ∑ i ∈ range n, cos (a * i + b)
+      = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) := by
   exact_mod_cast congr($(Complex.sin_mul_sum_cos n a b).re)
 
-theorem sum_cos (n : ℕ) {a : ℝ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℝ) :
-    ∑ i ∈ range n, cos (a * i + b) = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) / sin (a / 2) := by
+theorem sum_cos (n : ℕ) {a : ℝ} (h : ∀ k : ℤ, a ≠ k * (2 * π)) (b : ℝ)
+    : ∑ i ∈ range n, cos (a * i + b)
+      = sin (n * a / 2) * cos ((n - 1) * a / 2 + b) / sin (a / 2) := by
   have h := Complex.sum_cos n (a := a) (by exact_mod_cast h) b
   exact_mod_cast congr($(h).re)
 

@@ -36,7 +36,6 @@ Let `K` be a field, `A` be a `K`-algebra and `L` be a field extension of `K`.
 
 public section
 
-
 universe u
 
 variable (K L : Type*) (A : Type u) [Field K] [Field L] [CommRing A] [Algebra K L] [Algebra K A]
@@ -53,16 +52,17 @@ Use that instead.
 
 This is Iversen Corollary II.5.3.
 -/
-theorem of_isSeparable_aux [Algebra.IsSeparable K L] [EssFiniteType K L] :
-    FormallyEtale K L := by
+theorem of_isSeparable_aux [Algebra.IsSeparable K L] [EssFiniteType K L] : FormallyEtale K L := by
   -- We already know that for field extensions
   -- IsSeparable + EssFiniteType => FormallyUnramified + Finite
   have := FormallyUnramified.of_isSeparable K L
   have := FormallyUnramified.finite_of_free (R := K) (S := L)
   -- We shall show that any `f : L → B/I` can be lifted to `L → B` if `I^2 = ⊥`
   refine FormallyEtale.iff_comp_bijective.mpr fun B _ _ I h ↦ ?_
-  refine ⟨FormallyUnramified.iff_comp_injective_of_small.mp
-    (FormallyUnramified.of_isSeparable K L) I h, ?_⟩
+  refine ⟨
+    FormallyUnramified.iff_comp_injective_of_small.mp (FormallyUnramified.of_isSeparable K L) I h,
+    ?_
+  ⟩
   intro f
   -- By separability and finiteness, we may assume `L = K(α)` with `p` the minpoly of `α`.
   let pb := Field.powerBasisOfFiniteOfSeparable K L
@@ -75,8 +75,10 @@ theorem of_isSeparable_aux [Algebra.IsSeparable K L] [EssFiniteType K L] :
     rw [← helper, ← aeval_algHom_apply, helper, hx, aeval_algHom_apply, minpoly.aeval, map_zero]
   -- Since `p` is separable, `-p'(x)` is invertible in `B ⧸ I`,
   obtain ⟨u, hu⟩ : ∃ u, (aeval x) (derivative (minpoly K pb.gen)) * u + 1 ∈ I := by
-    have := (isUnit_iff_ne_zero.mpr ((Algebra.IsSeparable.isSeparable K
-      pb.gen).aeval_derivative_ne_zero (minpoly.aeval K _))).map f
+    have :=
+      (isUnit_iff_ne_zero.mpr ((Algebra.IsSeparable.isSeparable K pb.gen).aeval_derivative_ne_zero
+          (minpoly.aeval K _))).map
+        f
     rw [← aeval_algHom_apply, ← hx, ← helper, aeval_algHom_apply, helper] at this
     obtain ⟨u, hu⟩ := Ideal.Quotient.mk_surjective (-this.unit⁻¹ : B ⧸ I)
     use u
@@ -100,15 +102,18 @@ lemma of_isSeparable [Algebra.IsSeparable K L] : FormallyEtale K L := by
   refine FormallyEtale.iff_comp_bijective.mpr fun B _ _ I h ↦ ?_
   -- But we already know that there exists a unique lift for every finite subfield of `L`
   -- by `of_isSeparable_aux`, so we can glue them all together.
-  refine ⟨FormallyUnramified.iff_comp_injective_of_small.mp
-    (FormallyUnramified.of_isSeparable K L) I h, ?_⟩
+  refine ⟨
+    FormallyUnramified.iff_comp_injective_of_small.mp (FormallyUnramified.of_isSeparable K L) I h,
+    ?_
+  ⟩
   intro f
-  have : ∀ k : L, ∃! g : K⟮k⟯ →ₐ[K] B,
-      (Ideal.Quotient.mkₐ K I).comp g = f.comp (IsScalarTower.toAlgHom K _ L) := by
+  have : ∀ k : L,
+      ∃! g : K⟮k⟯ →ₐ[K] B,
+        (Ideal.Quotient.mkₐ K I).comp g = f.comp (IsScalarTower.toAlgHom K _ L) := by
     intro k
     have := IsSeparable.of_algHom _ _ (IsScalarTower.toAlgHom K (K⟮k⟯) L)
-    have := IntermediateField.adjoin.finiteDimensional
-      (Algebra.IsSeparable.isSeparable K k).isIntegral
+    have :=
+      IntermediateField.adjoin.finiteDimensional (Algebra.IsSeparable.isSeparable K k).isIntegral
     have := FormallyEtale.of_isSeparable_aux K (K⟮k⟯)
     have := FormallyEtale.comp_bijective (R := K) (A := K⟮k⟯) I h
     exact this.existsUnique _
@@ -128,13 +133,14 @@ lemma of_isSeparable [Algebra.IsSeparable K L] : FormallyEtale K L := by
     intro x y
     have : FiniteDimensional K K⟮x, y⟯ := by
       apply IntermediateField.finiteDimensional_adjoin
-      intro x _; exact (Algebra.IsSeparable.isSeparable K x).isIntegral
+      intro x _
+      exact (Algebra.IsSeparable.isSeparable K x).isIntegral
     have := IsSeparable.of_algHom _ _ (IsScalarTower.toAlgHom K (K⟮x, y⟯) L)
     obtain ⟨⟨α, hα⟩, e⟩ := Field.exists_primitive_element K K⟮x, y⟯
     apply_fun (IntermediateField.map (IntermediateField.val _)) at e
     rw [IntermediateField.adjoin_map, ← AlgHom.fieldRange_eq_map] at e
-    simp only [IntermediateField.coe_val, Set.image_singleton,
-      IntermediateField.fieldRange_val] at e
+    simp only [IntermediateField.coe_val, Set.image_singleton, IntermediateField.fieldRange_val]
+      at e
     have hx : x ∈ K⟮α⟯ := e ▸ IntermediateField.subset_adjoin K {x, y} (by simp)
     have hy : y ∈ K⟮α⟯ := e ▸ IntermediateField.subset_adjoin K {x, y} (by simp)
     exact ⟨α, hx, hy⟩
@@ -155,12 +161,11 @@ lemma of_isSeparable [Algebra.IsSeparable K L] : FormallyEtale K L := by
   · ext x
     simpa using congr($(hg₁ x) (IntermediateField.AdjoinSimple.gen K x))
 
-theorem iff_isSeparable [EssFiniteType K L] :
-    FormallyEtale K L ↔ Algebra.IsSeparable K L :=
+theorem iff_isSeparable [EssFiniteType K L] : FormallyEtale K L ↔ Algebra.IsSeparable K L :=
   ⟨fun _ ↦ FormallyUnramified.isSeparable K L, fun _ ↦ of_isSeparable K L⟩
 
-instance [EssFiniteType K A] [FormallyEtale K A] (p : Ideal A) [p.IsPrime] :
-    Algebra.IsSeparable K (A ⧸ p) := by
+instance [EssFiniteType K A] [FormallyEtale K A] (p : Ideal A) [p.IsPrime]
+    : Algebra.IsSeparable K (A ⧸ p) := by
   have := Algebra.FormallyUnramified.finite_of_free K A
   have : IsArtinianRing A := isArtinian_of_tower K inferInstance
   have := Algebra.FormallyUnramified.isReduced_of_field K A
@@ -172,8 +177,8 @@ instance [EssFiniteType K A] [FormallyEtale K A] (p : Ideal A) [p.IsPrime] :
   exact this ⟨p, inferInstance⟩
 
 attribute [local instance] Ideal.Quotient.field FormallyUnramified.finite_of_free in
-lemma of_formallyUnramified_of_field [EssFiniteType K A] [FormallyUnramified K A] :
-    FormallyEtale K A := by
+lemma of_formallyUnramified_of_field [EssFiniteType K A] [FormallyUnramified K A]
+    : FormallyEtale K A := by
   have := FormallyUnramified.isReduced_of_field K A
   have : IsArtinianRing A := .of_finite K A
   have (I : MaximalSpectrum A) : FormallyEtale K (A ⧸ I.asIdeal) := by
@@ -182,8 +187,8 @@ lemma of_formallyUnramified_of_field [EssFiniteType K A] [FormallyUnramified K A
   exact .of_equiv ((IsArtinianRing.equivPi A).restrictScalars K).symm
 
 variable {K A} in
-lemma iff_formallyUnramified_of_field [EssFiniteType K A] :
-    FormallyEtale K A ↔ FormallyUnramified K A :=
+lemma iff_formallyUnramified_of_field [EssFiniteType K A]
+    : FormallyEtale K A ↔ FormallyUnramified K A :=
   ⟨fun _ ↦ inferInstance, fun _ ↦ .of_formallyUnramified_of_field K A⟩
 
 attribute [local instance] IsArtinianRing.fieldOfSubtypeIsMaximal in
@@ -191,11 +196,12 @@ attribute [local instance] IsArtinianRing.fieldOfSubtypeIsMaximal in
 If `A` is an essentially of finite type algebra over a field `K`, then `A` is formally étale
 over `K` if and only if `A` is a finite product of separable field extensions.
 -/
-theorem iff_exists_algEquiv_prod [EssFiniteType K A] :
-    FormallyEtale K A ↔
-      ∃ (I : Type u) (_ : Finite I) (Ai : I → Type u) (_ : ∀ i, Field (Ai i))
-        (_ : ∀ i, Algebra K (Ai i)) (_ : A ≃ₐ[K] Π i, Ai i),
-        ∀ i, Algebra.IsSeparable K (Ai i) := by
+theorem iff_exists_algEquiv_prod [EssFiniteType K A]
+    : FormallyEtale K A
+      ↔ ∃ (I : Type u) (_ : Finite I) (Ai : I → Type u) (_ : ∀ i, Field (Ai i))
+          (_ : ∀ i, Algebra K (Ai i)) (_ : A ≃ₐ[K] Π i, Ai i),
+        ∀ i,
+          Algebra.IsSeparable K (Ai i) := by
   classical
   constructor
   · intro H
@@ -204,33 +210,40 @@ theorem iff_exists_algEquiv_prod [EssFiniteType K A] :
     have : IsArtinianRing A := isArtinian_of_tower K inferInstance
     let v (i : MaximalSpectrum A) : A := (IsArtinianRing.equivPi A).symm (Pi.single i 1)
     rw [FormallyEtale.iff_of_equiv ((IsArtinianRing.equivPi A).restrictScalars K),
-      FormallyEtale.pi_iff] at H
-    exact ⟨_, inferInstance, _, _, _, (IsArtinianRing.equivPi A).restrictScalars K,
-      fun I ↦ (iff_isSeparable _ _).mp inferInstance⟩
+        FormallyEtale.pi_iff]
+      at H
+    exact ⟨
+      _,
+      inferInstance,
+      _,
+      _,
+      _,
+      (IsArtinianRing.equivPi A).restrictScalars K,
+      fun I ↦ (iff_isSeparable _ _).mp inferInstance
+    ⟩
   · intro ⟨I, _, Ai, _, _, e, _⟩
     rw [FormallyEtale.iff_of_equiv e, FormallyEtale.pi_iff]
     exact fun I ↦ of_isSeparable K (Ai I)
 
-/-- If `R` is an étale `k`-algebra over a separably closed field `k`, it is
-isomorphic to the (finite) product of copies of `k` indexed by the prime spectrum of `R`. -/
-noncomputable
-def equivPiOfIsSepClosed [EssFiniteType K A] [FormallyEtale K A] [IsSepClosed K] :
-    A ≃ₐ[K] PrimeSpectrum A → K :=
+/--
+If `R` is an étale `k`-algebra over a separably closed field `k`, it is
+isomorphic to the (finite) product of copies of `k` indexed by the prime spectrum of `R`.
+-/
+noncomputable def equivPiOfIsSepClosed [EssFiniteType K A] [FormallyEtale K A] [IsSepClosed K]
+    : A ≃ₐ[K] PrimeSpectrum A → K :=
   haveI := Algebra.FormallyUnramified.finite_of_free K A
   haveI : IsArtinianRing A := isArtinian_of_tower K inferInstance
   haveI := FormallyUnramified.isReduced_of_field K A
-  letI _ (m : MaximalSpectrum A) : Field (A ⧸ m.asIdeal) :=
-    Ideal.Quotient.field m.asIdeal
-  ((IsArtinianRing.equivPi _).restrictScalars K).trans <|
-    (AlgEquiv.piCongrRight fun _ ↦ (AlgEquiv.ofBijective (Algebra.ofId K _)
-      (IsSepClosed.algebraMap_bijective _ _)).symm).trans
+  letI _ (m : MaximalSpectrum A) : Field (A ⧸ m.asIdeal) := Ideal.Quotient.field m.asIdeal
+  ((IsArtinianRing.equivPi _).restrictScalars K).trans <| (AlgEquiv.piCongrRight fun _ ↦
+      (AlgEquiv.ofBijective (Algebra.ofId K _) (IsSepClosed.algebraMap_bijective _ _)).symm).trans
     (AlgEquiv.piCongrLeft _ (fun _ ↦ K) IsArtinianRing.primeSpectrumEquivMaximalSpectrum).symm
 
 variable {K} in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma equivPiOfIsSepClosed_self_apply [IsSepClosed K] (x : K) (p : PrimeSpectrum K) :
-    equivPiOfIsSepClosed K K x p = x := by
+lemma equivPiOfIsSepClosed_self_apply [IsSepClosed K] (x : K) (p : PrimeSpectrum K)
+    : equivPiOfIsSepClosed K K x p = x := by
   let := Ideal.Quotient.field p.asIdeal
   dsimp [equivPiOfIsSepClosed]
   simp only [Equiv.piCongrLeft_symm_apply, AlgEquiv.piCongrRight_apply,
@@ -243,10 +256,11 @@ variable {K A} in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-lemma equivPiOfIsSepClosed_comap {B : Type*} [CommRing B] [EssFiniteType K A] [FormallyEtale K A]
-    [Algebra K B] [EssFiniteType K B] [FormallyEtale K B] [IsSepClosed K]
-    (f : A →ₐ[K] B) (x : A) (p : PrimeSpectrum B) :
-    equivPiOfIsSepClosed K A x (p.comap f) = equivPiOfIsSepClosed K B (f x) p := by
+lemma equivPiOfIsSepClosed_comap
+    {B : Type*} [CommRing B] [EssFiniteType K A] [FormallyEtale K A] [Algebra K B]
+    [EssFiniteType K B] [FormallyEtale K B] [IsSepClosed K]
+    (f : A →ₐ[K] B) (x : A) (p : PrimeSpectrum B)
+    : equivPiOfIsSepClosed K A x (p.comap f) = equivPiOfIsSepClosed K B (f x) p := by
   dsimp [equivPiOfIsSepClosed]
   simp only [Equiv.piCongrLeft_symm_apply, AlgEquiv.piCongrRight_apply,
     IsArtinianRing.primeSpectrumEquivMaximalSpectrum_apply_asIdeal, PrimeSpectrum.comap_asIdeal,
@@ -268,17 +282,29 @@ end Algebra.FormallyEtale
 `A` is étale over a field `K` if and only if
 `A` is a finite product of finite separable field extensions.
 -/
-theorem Algebra.Etale.iff_exists_algEquiv_prod :
-    Etale K A ↔
-      ∃ (I : Type u) (_ : Finite I) (Ai : I → Type u) (_ : ∀ i, Field (Ai i))
-        (_ : ∀ i, Algebra K (Ai i)) (_ : A ≃ₐ[K] Π i, Ai i),
-        ∀ i, Module.Finite K (Ai i) ∧ Algebra.IsSeparable K (Ai i) := by
+theorem Algebra.Etale.iff_exists_algEquiv_prod
+    : Etale K A
+      ↔ ∃ (I : Type u) (_ : Finite I) (Ai : I → Type u) (_ : ∀ i, Field (Ai i))
+          (_ : ∀ i, Algebra K (Ai i)) (_ : A ≃ₐ[K] Π i, Ai i),
+        ∀ i,
+          Module.Finite K (Ai i) ∧ Algebra.IsSeparable K (Ai i) := by
   constructor
   · intro H
     obtain ⟨I, _, Ai, _, _, e, _⟩ := (FormallyEtale.iff_exists_algEquiv_prod K A).mp inferInstance
     have := FormallyUnramified.finite_of_free K A
-    exact ⟨_, ‹_›, _, _, _, e, fun i ↦ ⟨.of_surjective ((LinearMap.proj i).comp e.toLinearMap)
-      ((Function.surjective_eval i).comp e.surjective), inferInstance⟩⟩
+    exact ⟨
+      _,
+      ‹_›,
+      _,
+      _,
+      _,
+      e,
+      fun i ↦ ⟨
+        .of_surjective ((LinearMap.proj i).comp e.toLinearMap)
+          ((Function.surjective_eval i).comp e.surjective),
+        inferInstance
+      ⟩
+    ⟩
   · intro ⟨I, _, Ai, _, _, e, H⟩
     choose h₁ h₂ using H
     have := Module.Finite.of_surjective e.symm.toLinearMap e.symm.surjective

@@ -24,6 +24,6 @@ def topCatOpToFrm : TopCatᵒᵖ ⥤ Frm where
 
 -- Note, `CompHaus` is too strong. We only need `T0Space`.
 instance CompHausOpToFrame.faithful : (compHausToTop.op ⋙ topCatOpToFrm.{u}).Faithful :=
-  ⟨fun {X _ _ _} h =>  Quiver.Hom.unop_inj <| ConcreteCategory.ext <|
-    Opens.comap_injective (β := (unop X).toTop) <| FrameHom.ext <|
-      CategoryTheory.congr_fun h⟩
+  ⟨fun {X _ _ _} h =>
+    Quiver.Hom.unop_inj <| ConcreteCategory.ext <| Opens.comap_injective (β := (unop X).toTop) <|
+      FrameHom.ext <| CategoryTheory.congr_fun h⟩

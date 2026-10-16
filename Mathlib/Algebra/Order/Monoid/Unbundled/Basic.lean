@@ -63,22 +63,20 @@ theorem le_of_mul_le_mul_left' [MulLeftReflectLE α] (bc : a * b ≤ a * c) : b 
   MulLeftReflectLE.le_of_mul_le_mul_left' bc
 
 @[to_additive (attr := gcongr high - 1, to_dual self)]
-theorem mul_le_mul_left [i : MulRightMono α] (bc : b ≤ c) (a : α) : b * a ≤ c * a :=
-  i.elim a bc
+theorem mul_le_mul_left [i : MulRightMono α] (bc : b ≤ c) (a : α) : b * a ≤ c * a := i.elim a bc
 
 @[to_additive (attr := to_dual self) le_of_add_le_add_right]
-theorem le_of_mul_le_mul_right' [MulRightReflectLE α] (bc : b * a ≤ c * a) :
-    b ≤ c :=
+theorem le_of_mul_le_mul_right' [MulRightReflectLE α] (bc : b * a ≤ c * a) : b ≤ c :=
   MulRightReflectLE.le_of_mul_le_mul_right' bc
 
 @[to_additive (attr := simp, to_dual self)]
-theorem mul_le_mul_iff_left [MulLeftMono α] [MulLeftReflectLE α] (a : α) {b c : α} :
-    a * b ≤ a * c ↔ b ≤ c :=
+theorem mul_le_mul_iff_left [MulLeftMono α] [MulLeftReflectLE α] (a : α) {b c : α}
+    : a * b ≤ a * c ↔ b ≤ c :=
   rel_iff_cov' ‹MulLeftMono α›.elim fun _ ↦ MulLeftReflectLE.le_of_mul_le_mul_left'
 
 @[to_additive (attr := simp, to_dual self)]
-theorem mul_le_mul_iff_right [MulRightMono α] [MulRightReflectLE α] (a : α) :
-    b * a ≤ c * a ↔ b ≤ c :=
+theorem mul_le_mul_iff_right [MulRightMono α] [MulRightReflectLE α] (a : α)
+    : b * a ≤ c * a ↔ b ≤ c :=
   rel_iff_cov' ‹MulRightMono α›.elim fun _ ↦ MulRightReflectLE.le_of_mul_le_mul_right'
 
 end LE
@@ -88,21 +86,20 @@ section LT
 variable [LT α]
 
 @[to_additive (attr := simp, to_dual self)]
-theorem mul_lt_mul_iff_left [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α) :
-    a * b < a * c ↔ b < c :=
+theorem mul_lt_mul_iff_left [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α)
+    : a * b < a * c ↔ b < c :=
   rel_iff_cov α α (· * ·) (· < ·) a
 
 @[to_additive (attr := simp, to_dual self)]
-theorem mul_lt_mul_iff_right [MulRightStrictMono α] [MulRightReflectLT α] (a : α) :
-    b * a < c * a ↔ b < c :=
+theorem mul_lt_mul_iff_right [MulRightStrictMono α] [MulRightReflectLT α] (a : α)
+    : b * a < c * a ↔ b < c :=
   rel_iff_cov α α (swap (· * ·)) (· < ·) a
 
 -- Note: in this section, we use `@[gcongr high]` so that these lemmas have a higher priority than
 -- lemmas like `mul_lt_mul_of_pos_left`, which have an extra side condition.
 
 @[to_additive (attr := gcongr high, to_dual self)]
-theorem mul_lt_mul_right [MulLeftStrictMono α] (bc : b < c) (a : α) :
-    a * b < a * c :=
+theorem mul_lt_mul_right [MulLeftStrictMono α] (bc : b < c) (a : α) : a * b < a * c :=
   CovariantClass.elim _ bc
 
 @[to_additive (attr := to_dual self) lt_of_add_lt_add_left]
@@ -124,61 +121,59 @@ section Preorder
 variable [Preorder α]
 
 @[to_additive]
-lemma mul_right_mono [MulLeftMono α] : Monotone (a * ·) :=
-  fun _ _ h ↦ mul_le_mul_right h _
+lemma mul_right_mono [MulLeftMono α] : Monotone (a * ·) := fun _ _ h ↦ mul_le_mul_right h _
 
 @[to_additive]
-lemma mul_left_mono [MulRightMono α] : Monotone (· * a) :=
-  fun _ _ h ↦ mul_le_mul_left h _
+lemma mul_left_mono [MulRightMono α] : Monotone (· * a) := fun _ _ h ↦ mul_le_mul_left h _
 
 @[to_additive]
-lemma mul_right_strictMono [MulLeftStrictMono α] : StrictMono (a * ·) :=
-  fun _ _ h ↦ mul_lt_mul_right h _
+lemma mul_right_strictMono [MulLeftStrictMono α] : StrictMono (a * ·) := fun _ _ h ↦
+  mul_lt_mul_right h _
 
 @[to_additive]
-lemma mul_left_strictMono [MulRightStrictMono α] : StrictMono (· * a) :=
-  fun _ _ h ↦ mul_lt_mul_left h _
+lemma mul_left_strictMono [MulRightStrictMono α] : StrictMono (· * a) := fun _ _ h ↦
+  mul_lt_mul_left h _
 
 -- Note: in this section, we use `@[gcongr high]` so that these lemmas have a higher priority than
 -- lemmas like `mul_le_mul_of_nonneg`, which have an extra side condition.
 
 @[to_additive (attr := gcongr high, to_dual self)]
-theorem mul_lt_mul_of_lt_of_lt [MulLeftStrictMono α] [MulRightStrictMono α]
-    (h₁ : a < b) (h₂ : c < d) : a * c < b * d :=
+theorem mul_lt_mul_of_lt_of_lt
+    [MulLeftStrictMono α] [MulRightStrictMono α] (h₁ : a < b) (h₂ : c < d)
+    : a * c < b * d :=
   (mul_lt_mul_right h₂ a).trans (mul_lt_mul_left h₁ d)
 
 @[to_dual self] alias add_lt_add := add_lt_add_of_lt_of_lt
 
 @[to_additive (attr := to_dual self)]
-theorem mul_lt_mul_of_le_of_lt [MulLeftStrictMono α] [MulRightMono α]
-    (h₁ : a ≤ b) (h₂ : c < d) : a * c < b * d :=
+theorem mul_lt_mul_of_le_of_lt [MulLeftStrictMono α] [MulRightMono α] (h₁ : a ≤ b) (h₂ : c < d)
+    : a * c < b * d :=
   (mul_le_mul_left h₁ _).trans_lt (mul_lt_mul_right h₂ b)
 
 @[to_additive (attr := to_dual self)]
-theorem mul_lt_mul_of_lt_of_le [MulLeftMono α] [MulRightStrictMono α]
-    (h₁ : a < b) (h₂ : c ≤ d) : a * c < b * d :=
+theorem mul_lt_mul_of_lt_of_le [MulLeftMono α] [MulRightStrictMono α] (h₁ : a < b) (h₂ : c ≤ d)
+    : a * c < b * d :=
   (mul_le_mul_right h₂ _).trans_lt (mul_lt_mul_left h₁ d)
 
 /-- Only assumes left strict covariance. -/
 @[to_additive (attr := to_dual self) /-- Only assumes left strict covariance -/]
-theorem Left.mul_lt_mul [MulLeftStrictMono α] [MulRightMono α]
-    (h₁ : a < b) (h₂ : c < d) : a * c < b * d :=
+theorem Left.mul_lt_mul [MulLeftStrictMono α] [MulRightMono α] (h₁ : a < b) (h₂ : c < d)
+    : a * c < b * d :=
   mul_lt_mul_of_le_of_lt h₁.le h₂
 
 /-- Only assumes right strict covariance. -/
 @[to_additive (attr := to_dual self) /-- Only assumes right strict covariance -/]
-theorem Right.mul_lt_mul [MulLeftMono α] [MulRightStrictMono α]
-    (h₁ : a < b) (h₂ : c < d) : a * c < b * d :=
+theorem Right.mul_lt_mul [MulLeftMono α] [MulRightStrictMono α] (h₁ : a < b) (h₂ : c < d)
+    : a * c < b * d :=
   mul_lt_mul_of_lt_of_le h₁ h₂.le
 
 @[to_additive (attr := gcongr high, to_dual self) add_le_add]
-theorem mul_le_mul' [MulLeftMono α] [MulRightMono α]
-    (h₁ : a ≤ b) (h₂ : c ≤ d) : a * c ≤ b * d := by
+theorem mul_le_mul' [MulLeftMono α] [MulRightMono α] (h₁ : a ≤ b) (h₂ : c ≤ d) : a * c ≤ b * d := by
   grw [h₁, h₂]
 
 @[to_additive (attr := to_dual self)]
-theorem mul_le_mul_three [MulLeftMono α] [MulRightMono α]
-    (h₁ : a ≤ d) (h₂ : b ≤ e) (h₃ : c ≤ f) : a * b * c ≤ d * e * f :=
+theorem mul_le_mul_three [MulLeftMono α] [MulRightMono α] (h₁ : a ≤ d) (h₂ : b ≤ e) (h₃ : c ≤ f)
+    : a * b * c ≤ d * e * f :=
   mul_le_mul' (mul_le_mul' h₁ h₂) h₃
 
 @[to_additive]
@@ -227,9 +222,10 @@ instance [MulLeftReflectLE α] : IsLeftCancelMul α where
 instance [MulRightReflectLE α] : IsRightCancelMul α where
   mul_right_cancel _ _ _ h := (le_of_mul_le_mul_right' h.le).antisymm (le_of_mul_le_mul_right' h.ge)
 
-@[to_additive] lemma mul_le_mul_iff_of_ge [MulLeftStrictMono α]
-    [MulRightStrictMono α] {a₁ a₂ b₁ b₂ : α} (ha : a₁ ≤ a₂) (hb : b₁ ≤ b₂) :
-    a₂ * b₂ ≤ a₁ * b₁ ↔ a₁ = a₂ ∧ b₁ = b₂ := by
+@[to_additive]
+lemma mul_le_mul_iff_of_ge
+    [MulLeftStrictMono α] [MulRightStrictMono α] {a₁ a₂ b₁ b₂ : α} (ha : a₁ ≤ a₂) (hb : b₁ ≤ b₂)
+    : a₂ * b₂ ≤ a₁ * b₁ ↔ a₁ = a₂ ∧ b₁ = b₂ := by
   have := mulLeftMono_of_mulLeftStrictMono α
   have := mulRightMono_of_mulRightStrictMono α
   refine ⟨fun h ↦ ?_, by rintro ⟨rfl, rfl⟩; rfl⟩
@@ -237,16 +233,17 @@ instance [MulRightReflectLE α] : IsRightCancelMul α where
   refine ⟨fun ha ↦ h.not_gt ?_, fun hb ↦ h.not_gt ?_⟩
   exacts [mul_lt_mul_of_lt_of_le ha hb, mul_lt_mul_of_le_of_lt ha hb]
 
-@[to_additive] theorem mul_eq_mul_iff_eq_and_eq [MulLeftStrictMono α]
-    [MulRightStrictMono α] (hac : a ≤ c) (hbd : b ≤ d) :
-    a * b = c * d ↔ a = c ∧ b = d := by
+@[to_additive]
+theorem mul_eq_mul_iff_eq_and_eq
+    [MulLeftStrictMono α] [MulRightStrictMono α] (hac : a ≤ c) (hbd : b ≤ d)
+    : a * b = c * d ↔ a = c ∧ b = d := by
   have := mulLeftMono_of_mulLeftStrictMono α
   have := mulRightMono_of_mulRightStrictMono α
   rw [le_antisymm_iff, eq_true (mul_le_mul' hac hbd), true_and, mul_le_mul_iff_of_ge hac hbd]
 
 @[to_additive]
-lemma mul_left_inj_of_comparable [MulRightStrictMono α] (h : b ≤ c ∨ c ≤ b) :
-    c * a = b * a ↔ c = b := by
+lemma mul_left_inj_of_comparable [MulRightStrictMono α] (h : b ≤ c ∨ c ≤ b)
+    : c * a = b * a ↔ c = b := by
   refine ⟨fun h' => ?_, (· ▸ rfl)⟩
   contrapose h'
   obtain h | h := h
@@ -254,8 +251,8 @@ lemma mul_left_inj_of_comparable [MulRightStrictMono α] (h : b ≤ c ∨ c ≤ 
   · exact mul_lt_mul_left (h.lt_of_ne h') a |>.ne
 
 @[to_additive]
-lemma mul_right_inj_of_comparable [MulLeftStrictMono α] (h : b ≤ c ∨ c ≤ b) :
-    a * c = a * b ↔ c = b := by
+lemma mul_right_inj_of_comparable [MulLeftStrictMono α] (h : b ≤ c ∨ c ≤ b)
+    : a * c = a * b ↔ c = b := by
   refine ⟨fun h' => ?_, (· ▸ rfl)⟩
   contrapose h'
   obtain h | h := h
@@ -268,8 +265,8 @@ section LinearOrder
 variable [LinearOrder α]
 
 @[to_additive]
-theorem trichotomy_of_mul_eq_mul [MulLeftStrictMono α] [MulRightStrictMono α]
-    (h : a * b = c * d) : (a = c ∧ b = d) ∨ a < c ∨ b < d := by
+theorem trichotomy_of_mul_eq_mul [MulLeftStrictMono α] [MulRightStrictMono α] (h : a * b = c * d)
+    : (a = c ∧ b = d) ∨ a < c ∨ b < d := by
   obtain hac | rfl | hca := lt_trichotomy a c
   · grind
   · left; simpa using mul_right_inj_of_comparable (le_total d b) |>.1 h
@@ -294,20 +291,24 @@ lemma mul_min [MulLeftMono α] (a b c : α) : a * min b c = min (a * b) (a * c) 
 lemma min_mul [MulRightMono α] (a b c : α) : min a b * c = min (a * c) (b * c) :=
   mul_left_mono.map_min
 
-@[to_additive] lemma min_lt_max_of_mul_lt_mul [MulLeftMono α] [MulRightMono α]
-    (h : a * b < c * d) : min a b < max c d := by
+@[to_additive]
+lemma min_lt_max_of_mul_lt_mul [MulLeftMono α] [MulRightMono α] (h : a * b < c * d)
+    : min a b < max c d := by
   simp_rw [min_lt_iff, lt_max_iff]; contrapose! h; exact mul_le_mul' h.1.1 h.2.2
 
-@[to_additive] lemma Left.min_le_max_of_mul_le_mul [MulLeftStrictMono α] [MulRightMono α]
-    (h : a * b ≤ c * d) : min a b ≤ max c d := by
+@[to_additive]
+lemma Left.min_le_max_of_mul_le_mul [MulLeftStrictMono α] [MulRightMono α] (h : a * b ≤ c * d)
+    : min a b ≤ max c d := by
   simp_rw [min_le_iff, le_max_iff]; contrapose! h; exact mul_lt_mul_of_le_of_lt h.1.1.le h.2.2
 
-@[to_additive] lemma Right.min_le_max_of_mul_le_mul [MulLeftMono α] [MulRightStrictMono α]
-    (h : a * b ≤ c * d) : min a b ≤ max c d := by
+@[to_additive]
+lemma Right.min_le_max_of_mul_le_mul [MulLeftMono α] [MulRightStrictMono α] (h : a * b ≤ c * d)
+    : min a b ≤ max c d := by
   simp_rw [min_le_iff, le_max_iff]; contrapose! h; exact mul_lt_mul_of_lt_of_le h.1.1 h.2.2.le
 
-@[to_additive] lemma min_le_max_of_mul_le_mul [MulLeftStrictMono α] [MulRightStrictMono α]
-    (h : a * b ≤ c * d) : min a b ≤ max c d :=
+@[to_additive]
+lemma min_le_max_of_mul_le_mul [MulLeftStrictMono α] [MulRightStrictMono α] (h : a * b ≤ c * d)
+    : min a b ≤ max c d :=
   haveI := mulRightMono_of_mulRightStrictMono α
   Left.min_le_max_of_mul_le_mul h
 
@@ -321,21 +322,25 @@ theorem MulLeftStrictMono.toIsLeftCancelMul [MulLeftStrictMono α] : IsLeftCance
 theorem MulRightStrictMono.toIsRightCancelMul [MulRightStrictMono α] : IsRightCancelMul α where
   mul_right_cancel _ _ _ h := mul_left_strictMono.injective h
 
-/-- Left multiplication is strictly monotone if and only if it is monotone and
-left-cancellative. -/
+/--
+Left multiplication is strictly monotone if and only if it is monotone and
+left-cancellative.
+-/
 @[to_additive /-- Left addition is strictly monotone if and only if it is monotone and
 left-cancellative. -/]
-theorem mulLeftStrictMono_iff_mulLeftMono_and_isLeftCancelMul :
-    MulLeftStrictMono α ↔ MulLeftMono α ∧ IsLeftCancelMul α where
+theorem mulLeftStrictMono_iff_mulLeftMono_and_isLeftCancelMul
+    : MulLeftStrictMono α ↔ MulLeftMono α ∧ IsLeftCancelMul α where
   mp _ := ⟨mulLeftMono_of_mulLeftStrictMono α, MulLeftStrictMono.toIsLeftCancelMul⟩
   mpr := by rintro ⟨_, _⟩; infer_instance
 
-/-- Right multiplication is strictly monotone if and only if it is monotone and
-right-cancellative. -/
+/--
+Right multiplication is strictly monotone if and only if it is monotone and
+right-cancellative.
+-/
 @[to_additive /-- Right addition is strictly monotone if and only if it is monotone and
 right-cancellative. -/]
-theorem mulRightStrictMono_iff_mulRightMono_and_isRightCancelMul :
-    MulRightStrictMono α ↔ MulRightMono α ∧ IsRightCancelMul α where
+theorem mulRightStrictMono_iff_mulRightMono_and_isRightCancelMul
+    : MulRightStrictMono α ↔ MulRightMono α ∧ IsRightCancelMul α where
   mp _ := ⟨mulRightMono_of_mulRightStrictMono α, MulRightStrictMono.toIsRightCancelMul⟩
   mpr := by rintro ⟨_, _⟩; infer_instance
 
@@ -346,13 +351,13 @@ variable [LinearOrder α] [MulLeftMono α] [MulRightMono α]
 
 @[to_additive max_add_add_le_max_add_max]
 theorem max_mul_mul_le_max_mul_max' : max (a * b) (c * d) ≤ max a c * max b d :=
-  max_le (mul_le_mul' (le_max_left _ _) <| le_max_left _ _) <|
-    mul_le_mul' (le_max_right _ _) <| le_max_right _ _
+  max_le (mul_le_mul' (le_max_left _ _) <| le_max_left _ _) <| mul_le_mul' (le_max_right _ _) <|
+    le_max_right _ _
 
 @[to_additive min_add_min_le_min_add_add]
 theorem min_mul_min_le_min_mul_mul' : min a c * min b d ≤ min (a * b) (c * d) :=
-  le_min (mul_le_mul' (min_le_left _ _) <| min_le_left _ _) <|
-    mul_le_mul' (min_le_right _ _) <| min_le_right _ _
+  le_min (mul_le_mul' (min_le_left _ _) <| min_le_left _ _) <| mul_le_mul' (min_le_right _ _) <|
+    min_le_right _ _
 
 end LinearOrder
 end Mul
@@ -398,23 +403,22 @@ theorem le_one_of_mul_le_left [MulRightReflectLE α] (h : a * b ≤ b) : a ≤ 1
   le_of_mul_le_mul_right' (by simpa)
 
 @[to_additive (attr := simp) le_add_iff_nonneg_right]
-theorem le_mul_iff_one_le_right' [MulLeftMono α] [MulLeftReflectLE α] (a : α) :
-    a ≤ a * b ↔ 1 ≤ b := by
+theorem le_mul_iff_one_le_right' [MulLeftMono α] [MulLeftReflectLE α] (a : α)
+    : a ≤ a * b ↔ 1 ≤ b := by
   simpa using mul_le_mul_iff_left a (b := 1)
 
 @[to_additive (attr := simp) le_add_iff_nonneg_left]
-theorem le_mul_iff_one_le_left' [MulRightMono α] [MulRightReflectLE α] (a : α) :
-    a ≤ b * a ↔ 1 ≤ b := by
+theorem le_mul_iff_one_le_left' [MulRightMono α] [MulRightReflectLE α] (a : α)
+    : a ≤ b * a ↔ 1 ≤ b := by
   simpa using mul_le_mul_iff_right a (b := 1)
 
 @[to_additive (attr := simp) add_le_iff_nonpos_right]
-theorem mul_le_iff_le_one_right' [MulLeftMono α] [MulLeftReflectLE α] (a : α) :
-    a * b ≤ a ↔ b ≤ 1 := by
+theorem mul_le_iff_le_one_right' [MulLeftMono α] [MulLeftReflectLE α] (a : α)
+    : a * b ≤ a ↔ b ≤ 1 := by
   simpa using mul_le_mul_iff_left a (c := 1)
 
 @[to_additive (attr := simp) add_le_iff_nonpos_left]
-theorem mul_le_iff_le_one_left' [MulRightMono α] [MulRightReflectLE α] :
-    a * b ≤ b ↔ a ≤ 1 := by
+theorem mul_le_iff_le_one_left' [MulRightMono α] [MulRightReflectLE α] : a * b ≤ b ↔ a ≤ 1 := by
   simpa using mul_le_mul_iff_right b (c := 1)
 
 end LE
@@ -459,23 +463,23 @@ theorem lt_one_of_mul_lt_left [MulRightReflectLT α] (h : a * b < b) : a < 1 :=
   lt_of_mul_lt_mul_right' (by simpa)
 
 @[to_additive (attr := simp) lt_add_iff_pos_right]
-theorem lt_mul_iff_one_lt_right' [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α) :
-    a < a * b ↔ 1 < b := by
+theorem lt_mul_iff_one_lt_right' [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α)
+    : a < a * b ↔ 1 < b := by
   simpa using mul_lt_mul_iff_left a (b := 1)
 
 @[to_additive (attr := simp) lt_add_iff_pos_left]
-theorem lt_mul_iff_one_lt_left' [MulRightStrictMono α] [MulRightReflectLT α] (a : α) :
-    a < b * a ↔ 1 < b := by
+theorem lt_mul_iff_one_lt_left' [MulRightStrictMono α] [MulRightReflectLT α] (a : α)
+    : a < b * a ↔ 1 < b := by
   simpa using mul_lt_mul_iff_right a (b := 1)
 
 @[to_additive (attr := simp) add_lt_iff_neg_left]
-theorem mul_lt_iff_lt_one_left' [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α) :
-    a * b < a ↔ b < 1 := by
+theorem mul_lt_iff_lt_one_left' [MulLeftStrictMono α] [MulLeftReflectLT α] (a : α)
+    : a * b < a ↔ b < 1 := by
   simpa using mul_lt_mul_iff_left a (c := 1)
 
 @[to_additive (attr := simp) add_lt_iff_neg_right]
-theorem mul_lt_iff_lt_one_right' [MulRightStrictMono α] [MulRightReflectLT α] (b : α) :
-    a * b < b ↔ a < 1 := by
+theorem mul_lt_iff_lt_one_right' [MulRightStrictMono α] [MulRightReflectLT α] (b : α)
+    : a * b < b ↔ a < 1 := by
   simpa using mul_lt_mul_iff_right b (c := 1)
 
 end LT
@@ -563,8 +567,10 @@ theorem lt_mul_of_lt_of_one_lt' [MulLeftMono α] (hbc : b < c) (ha : 1 < a) : b 
 -- TODO: turning `Left.one_le_mul` into an alias breaks the bound tactic.
 -- See https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/.60bound.60.20breaks.20suddenly/with/595553060
 
-/-- Assumes left covariance.
-The lemma assuming right covariance is `Right.one_le_mul`. -/
+/--
+Assumes left covariance.
+The lemma assuming right covariance is `Right.one_le_mul`.
+-/
 @[to_additive Left.add_nonneg /-- Assumes left covariance.
 The lemma assuming right covariance is `Right.add_nonneg`. -/]
 theorem Left.one_le_mul [MulLeftMono α] (ha : 1 ≤ a) (hb : 1 ≤ b) : 1 ≤ a * b :=
@@ -578,8 +584,9 @@ The lemma assuming right covariance is `Right.add_pos_of_nonneg_of_pos`. -/]
 alias Left.one_lt_mul_of_le_of_lt := lt_mul_of_le_of_one_lt
 
 @[to_additive]
-theorem Left.one_lt_mul_of_right [IsBotOneClass α] [MulLeftStrictMono α] {b : α}
-    (hb : 1 < b) (a : α) : 1 < a * b :=
+theorem Left.one_lt_mul_of_right
+    [IsBotOneClass α] [MulLeftStrictMono α] {b : α} (hb : 1 < b) (a : α)
+    : 1 < a * b :=
   Left.one_lt_mul_of_le_of_lt one_le hb
 
 /-- Assumes left covariance.
@@ -590,8 +597,8 @@ The lemma assuming right covariance is `Right.add_pos_of_pos_of_nonneg`. -/]
 alias Left.one_lt_mul_of_lt_of_le := lt_mul_of_lt_of_one_le
 
 @[to_additive]
-theorem Left.one_lt_mul_of_left [IsBotOneClass α] [MulLeftMono α] {a : α}
-    (ha : 1 < a) (b : α) : 1 < a * b :=
+theorem Left.one_lt_mul_of_left [IsBotOneClass α] [MulLeftMono α] {a : α} (ha : 1 < a) (b : α)
+    : 1 < a * b :=
   Left.one_lt_mul_of_lt_of_le ha one_le
 
 @[to_additive add_pos_of_left] alias one_lt_mul_of_left := Left.one_lt_mul_of_left
@@ -698,8 +705,9 @@ The lemma assuming left covariance is `Left.add_pos_of_pos_of_nonneg`. -/]
 alias Right.one_lt_mul_of_lt_of_le := lt_mul_of_one_lt_of_le
 
 @[to_additive]
-theorem Right.one_lt_mul_of_left [IsBotOneClass α] [MulRightStrictMono α] {a : α}
-    (ha : 1 < a) (b : α) : 1 < a * b :=
+theorem Right.one_lt_mul_of_left
+    [IsBotOneClass α] [MulRightStrictMono α] {a : α} (ha : 1 < a) (b : α)
+    : 1 < a * b :=
   Right.one_lt_mul_of_lt_of_le ha one_le
 
 /-- Assumes right covariance.
@@ -710,8 +718,8 @@ The lemma assuming left covariance is `Left.add_pos_of_nonneg_of_pos`. -/]
 alias Right.one_lt_mul_of_le_of_lt := lt_mul_of_one_le_of_lt
 
 @[to_additive]
-theorem Right.one_lt_mul_of_right [IsBotOneClass α] [MulRightMono α] {b : α}
-    (hb : 1 < b) (a : α) : 1 < a * b :=
+theorem Right.one_lt_mul_of_right [IsBotOneClass α] [MulRightMono α] {b : α} (hb : 1 < b) (a : α)
+    : 1 < a * b :=
   Right.one_lt_mul_of_le_of_lt one_le hb
 
 @[to_additive add_pos_of_right] alias one_lt_mul_of_right := Right.one_lt_mul_of_right
@@ -797,8 +805,8 @@ section PartialOrder
 variable [PartialOrder α]
 
 @[to_additive]
-theorem mul_eq_one_iff_of_one_le [MulLeftMono α] [MulRightMono α] (ha : 1 ≤ a) (hb : 1 ≤ b) :
-    a * b = 1 ↔ a = 1 ∧ b = 1 :=
+theorem mul_eq_one_iff_of_one_le [MulLeftMono α] [MulRightMono α] (ha : 1 ≤ a) (hb : 1 ≤ b)
+    : a * b = 1 ↔ a = 1 ∧ b = 1 :=
   Iff.intro
     (fun hab : a * b = 1 =>
       have : a ≤ 1 := hab ▸ le_mul_of_le_of_one_le le_rfl hb
@@ -863,21 +871,29 @@ section PartialOrder
 
 variable [PartialOrder α]
 
-/- This is not instance, since we want to have an instance from `LeftCancelSemigroup`s
-to the appropriate covariant class. -/
-/-- A semigroup with a partial order and satisfying `LeftCancelSemigroup`
-(i.e. `a * c < b * c → a < b`) is a `LeftCancelSemigroup`. -/
+/-
+This is not instance, since we want to have an instance from `LeftCancelSemigroup`s
+to the appropriate covariant class.
+-/
+/--
+A semigroup with a partial order and satisfying `LeftCancelSemigroup`
+(i.e. `a * c < b * c → a < b`) is a `LeftCancelSemigroup`.
+-/
 @[to_additive (attr := instance_reducible)
-/-- An additive semigroup with a partial order and satisfying `AddLeftCancelSemigroup`
+  /-- An additive semigroup with a partial order and satisfying `AddLeftCancelSemigroup`
 (i.e. `c + a < c + b → a < b`) is a `AddLeftCancelSemigroup`. -/]
 def Contravariant.toLeftCancelSemigroup [MulLeftReflectLE α] : LeftCancelSemigroup α where
 
-/- This is not instance, since we want to have an instance from `RightCancelSemigroup`s
-to the appropriate covariant class. -/
-/-- A semigroup with a partial order and satisfying `RightCancelSemigroup`
-(i.e. `a * c < b * c → a < b`) is a `RightCancelSemigroup`. -/
+/-
+This is not instance, since we want to have an instance from `RightCancelSemigroup`s
+to the appropriate covariant class.
+-/
+/--
+A semigroup with a partial order and satisfying `RightCancelSemigroup`
+(i.e. `a * c < b * c → a < b`) is a `RightCancelSemigroup`.
+-/
 @[to_additive (attr := instance_reducible)
-/-- An additive semigroup with a partial order and satisfying `AddRightCancelSemigroup`
+  /-- An additive semigroup with a partial order and satisfying `AddRightCancelSemigroup`
 (`a + c < b + c → a < b`) is a `AddRightCancelSemigroup`. -/]
 def Contravariant.toRightCancelSemigroup [MulRightReflectLE α] : RightCancelSemigroup α where
 
@@ -894,58 +910,61 @@ theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monoto
   mul_right_mono.comp hf
 
 @[to_additive const_add]
-theorem MonotoneOn.const_mul' [MulLeftMono α] (hf : MonotoneOn f s) (a : α) :
-    MonotoneOn (fun x => a * f x) s := mul_right_mono.comp_monotoneOn hf
+theorem MonotoneOn.const_mul' [MulLeftMono α] (hf : MonotoneOn f s) (a : α)
+    : MonotoneOn (fun x => a * f x) s :=
+  mul_right_mono.comp_monotoneOn hf
 
 @[to_additive const_add]
 theorem Antitone.const_mul' [MulLeftMono α] (hf : Antitone f) (a : α) : Antitone fun x ↦ a * f x :=
   mul_right_mono.comp_antitone hf
 
 @[to_additive const_add]
-theorem AntitoneOn.const_mul' [MulLeftMono α] (hf : AntitoneOn f s) (a : α) :
-    AntitoneOn (fun x => a * f x) s := mul_right_mono.comp_antitoneOn hf
+theorem AntitoneOn.const_mul' [MulLeftMono α] (hf : AntitoneOn f s) (a : α)
+    : AntitoneOn (fun x => a * f x) s :=
+  mul_right_mono.comp_antitoneOn hf
 
 @[to_additive add_const]
-theorem Monotone.mul_const' [MulRightMono α] (hf : Monotone f) (a : α) :
-    Monotone fun x => f x * a := mul_left_mono.comp hf
+theorem Monotone.mul_const' [MulRightMono α] (hf : Monotone f) (a : α)
+    : Monotone fun x => f x * a :=
+  mul_left_mono.comp hf
 
 @[to_additive add_const]
-theorem MonotoneOn.mul_const' [MulRightMono α] (hf : MonotoneOn f s) (a : α) :
-    MonotoneOn (fun x => f x * a) s := mul_left_mono.comp_monotoneOn hf
+theorem MonotoneOn.mul_const' [MulRightMono α] (hf : MonotoneOn f s) (a : α)
+    : MonotoneOn (fun x => f x * a) s :=
+  mul_left_mono.comp_monotoneOn hf
 
 @[to_additive add_const]
 theorem Antitone.mul_const' [MulRightMono α] (hf : Antitone f) (a : α) : Antitone fun x ↦ f x * a :=
   mul_left_mono.comp_antitone hf
 
 @[to_additive add_const]
-theorem AntitoneOn.mul_const' [MulRightMono α] (hf : AntitoneOn f s) (a : α) :
-    AntitoneOn (fun x => f x * a) s := mul_left_mono.comp_antitoneOn hf
+theorem AntitoneOn.mul_const' [MulRightMono α] (hf : AntitoneOn f s) (a : α)
+    : AntitoneOn (fun x => f x * a) s :=
+  mul_left_mono.comp_antitoneOn hf
 
 /-- The product of two monotone functions is monotone. -/
 @[to_additive add /-- The sum of two monotone functions is monotone. -/]
-theorem Monotone.mul' [MulLeftMono α]
-    [MulRightMono α] (hf : Monotone f) (hg : Monotone g) :
-    Monotone fun x => f x * g x := fun _ _ h => mul_le_mul' (hf h) (hg h)
+theorem Monotone.mul' [MulLeftMono α] [MulRightMono α] (hf : Monotone f) (hg : Monotone g)
+    : Monotone fun x => f x * g x := fun _ _ h =>
+  mul_le_mul' (hf h) (hg h)
 
 /-- The product of two monotone functions is monotone. -/
 @[to_additive add /-- The sum of two monotone functions is monotone. -/]
-theorem MonotoneOn.mul' [MulLeftMono α]
-    [MulRightMono α] (hf : MonotoneOn f s) (hg : MonotoneOn g s) :
-    MonotoneOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+theorem MonotoneOn.mul' [MulLeftMono α] [MulRightMono α] (hf : MonotoneOn f s) (hg : MonotoneOn g s)
+    : MonotoneOn (fun x => f x * g x) s := fun _ hx _ hy h =>
   mul_le_mul' (hf hx hy h) (hg hx hy h)
 
 /-- The product of two antitone functions is antitone. -/
 @[to_additive add /-- The sum of two antitone functions is antitone. -/]
-theorem Antitone.mul' [MulLeftMono α]
-    [MulRightMono α] (hf : Antitone f) (hg : Antitone g) :
-    Antitone fun x => f x * g x := fun _ _ h => mul_le_mul' (hf h) (hg h)
+theorem Antitone.mul' [MulLeftMono α] [MulRightMono α] (hf : Antitone f) (hg : Antitone g)
+    : Antitone fun x => f x * g x := fun _ _ h =>
+  mul_le_mul' (hf h) (hg h)
 
 /-- The product of two antitone functions is antitone. -/
 @[to_additive add /-- The sum of two antitone functions is antitone. -/]
-theorem AntitoneOn.mul' [MulLeftMono α]
-    [MulRightMono α] (hf : AntitoneOn f s) (hg : AntitoneOn g s) :
-    AntitoneOn (fun x => f x * g x) s :=
-  fun _ hx _ hy h => mul_le_mul' (hf hx hy h) (hg hx hy h)
+theorem AntitoneOn.mul' [MulLeftMono α] [MulRightMono α] (hf : AntitoneOn f s) (hg : AntitoneOn g s)
+    : AntitoneOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+  mul_le_mul' (hf hx hy h) (hg hx hy h)
 
 section Left
 
@@ -956,18 +975,18 @@ theorem StrictMono.const_mul' (hf : StrictMono f) (c : α) : StrictMono fun x =>
   fun _ _ ab => mul_lt_mul_right (hf ab) c
 
 @[to_additive const_add]
-theorem StrictMonoOn.const_mul' (hf : StrictMonoOn f s) (c : α) :
-    StrictMonoOn (fun x => c * f x) s :=
-  fun _ ha _ hb ab => mul_lt_mul_right (hf ha hb ab) c
+theorem StrictMonoOn.const_mul' (hf : StrictMonoOn f s) (c : α)
+    : StrictMonoOn (fun x => c * f x) s := fun _ ha _ hb ab =>
+  mul_lt_mul_right (hf ha hb ab) c
 
 @[to_additive const_add]
 theorem StrictAnti.const_mul' (hf : StrictAnti f) (c : α) : StrictAnti fun x => c * f x :=
   fun _ _ ab => mul_lt_mul_right (hf ab) c
 
 @[to_additive const_add]
-theorem StrictAntiOn.const_mul' (hf : StrictAntiOn f s) (c : α) :
-    StrictAntiOn (fun x => c * f x) s :=
-  fun _ ha _ hb ab => mul_lt_mul_right (hf ha hb ab) c
+theorem StrictAntiOn.const_mul' (hf : StrictAntiOn f s) (c : α)
+    : StrictAntiOn (fun x => c * f x) s := fun _ ha _ hb ab =>
+  mul_lt_mul_right (hf ha hb ab) c
 
 end Left
 
@@ -980,144 +999,140 @@ theorem StrictMono.mul_const' (hf : StrictMono f) (c : α) : StrictMono fun x =>
   fun _ _ ab => mul_lt_mul_left (hf ab) c
 
 @[to_additive add_const]
-theorem StrictMonoOn.mul_const' (hf : StrictMonoOn f s) (c : α) :
-    StrictMonoOn (fun x => f x * c) s :=
-  fun _ ha _ hb ab => mul_lt_mul_left (hf ha hb ab) c
+theorem StrictMonoOn.mul_const' (hf : StrictMonoOn f s) (c : α)
+    : StrictMonoOn (fun x => f x * c) s := fun _ ha _ hb ab =>
+  mul_lt_mul_left (hf ha hb ab) c
 
 @[to_additive add_const]
 theorem StrictAnti.mul_const' (hf : StrictAnti f) (c : α) : StrictAnti fun x => f x * c :=
   fun _ _ ab => mul_lt_mul_left (hf ab) c
 
 @[to_additive add_const]
-theorem StrictAntiOn.mul_const' (hf : StrictAntiOn f s) (c : α) :
-    StrictAntiOn (fun x => f x * c) s :=
-  fun _ ha _ hb ab => mul_lt_mul_left (hf ha hb ab) c
+theorem StrictAntiOn.mul_const' (hf : StrictAntiOn f s) (c : α)
+    : StrictAntiOn (fun x => f x * c) s := fun _ ha _ hb ab =>
+  mul_lt_mul_left (hf ha hb ab) c
 
 end Right
 
 /-- The product of two strictly monotone functions is strictly monotone. -/
 @[to_additive add /-- The sum of two strictly monotone functions is strictly monotone. -/]
-theorem StrictMono.mul' [MulLeftStrictMono α]
-    [MulRightStrictMono α] (hf : StrictMono f) (hg : StrictMono g) :
-    StrictMono fun x => f x * g x := fun _ _ ab =>
+theorem StrictMono.mul'
+    [MulLeftStrictMono α] [MulRightStrictMono α] (hf : StrictMono f) (hg : StrictMono g)
+    : StrictMono fun x => f x * g x := fun _ _ ab =>
   mul_lt_mul_of_lt_of_lt (hf ab) (hg ab)
 
 /-- The product of two strictly monotone functions is strictly monotone. -/
 @[to_additive add /-- The sum of two strictly monotone functions is strictly monotone. -/]
-theorem StrictMonoOn.mul' [MulLeftStrictMono α]
-    [MulRightStrictMono α] (hf : StrictMonoOn f s) (hg : StrictMonoOn g s) :
-    StrictMonoOn (fun x => f x * g x) s :=
-  fun _ ha _ hb ab => mul_lt_mul_of_lt_of_lt (hf ha hb ab) (hg ha hb ab)
+theorem StrictMonoOn.mul'
+    [MulLeftStrictMono α] [MulRightStrictMono α] (hf : StrictMonoOn f s) (hg : StrictMonoOn g s)
+    : StrictMonoOn (fun x => f x * g x) s := fun _ ha _ hb ab =>
+  mul_lt_mul_of_lt_of_lt (hf ha hb ab) (hg ha hb ab)
 
 /-- The product of two strictly antitone functions is strictly antitone. -/
 @[to_additive add /-- The sum of two strictly antitone functions is strictly antitone. -/]
-theorem StrictAnti.mul' [MulLeftStrictMono α]
-    [MulRightStrictMono α] (hf : StrictAnti f) (hg : StrictAnti g) :
-    StrictAnti fun x => f x * g x :=
-  fun _ _ ab => mul_lt_mul_of_lt_of_lt (hf ab) (hg ab)
+theorem StrictAnti.mul'
+    [MulLeftStrictMono α] [MulRightStrictMono α] (hf : StrictAnti f) (hg : StrictAnti g)
+    : StrictAnti fun x => f x * g x := fun _ _ ab =>
+  mul_lt_mul_of_lt_of_lt (hf ab) (hg ab)
 
 /-- The product of two strictly antitone functions is strictly antitone. -/
 @[to_additive add /-- The sum of two strictly antitone functions is strictly antitone. -/]
-theorem StrictAntiOn.mul' [MulLeftStrictMono α]
-    [MulRightStrictMono α] (hf : StrictAntiOn f s) (hg : StrictAntiOn g s) :
-    StrictAntiOn (fun x => f x * g x) s :=
-  fun _ ha _ hb ab => mul_lt_mul_of_lt_of_lt (hf ha hb ab) (hg ha hb ab)
+theorem StrictAntiOn.mul'
+    [MulLeftStrictMono α] [MulRightStrictMono α] (hf : StrictAntiOn f s) (hg : StrictAntiOn g s)
+    : StrictAntiOn (fun x => f x * g x) s := fun _ ha _ hb ab =>
+  mul_lt_mul_of_lt_of_lt (hf ha hb ab) (hg ha hb ab)
 
 /-- The product of a monotone function and a strictly monotone function is strictly monotone. -/
 @[to_additive add_strictMono /-- The sum of a monotone function and a strictly monotone function is
 strictly monotone. -/]
-theorem Monotone.mul_strictMono' [MulLeftStrictMono α]
-    [MulRightMono α] {f g : β → α} (hf : Monotone f)
-    (hg : StrictMono g) :
-    StrictMono fun x => f x * g x :=
-  fun _ _ h => mul_lt_mul_of_le_of_lt (hf h.le) (hg h)
+theorem Monotone.mul_strictMono'
+    [MulLeftStrictMono α] [MulRightMono α] {f g : β → α} (hf : Monotone f) (hg : StrictMono g)
+    : StrictMono fun x => f x * g x := fun _ _ h =>
+  mul_lt_mul_of_le_of_lt (hf h.le) (hg h)
 
 /-- The product of a monotone function and a strictly monotone function is strictly monotone. -/
 @[to_additive add_strictMono /-- The sum of a monotone function and a strictly monotone function is
 strictly monotone. -/]
-theorem MonotoneOn.mul_strictMono' [MulLeftStrictMono α]
-    [MulRightMono α] {f g : β → α} (hf : MonotoneOn f s)
-    (hg : StrictMonoOn g s) : StrictMonoOn (fun x => f x * g x) s :=
-  fun _ hx _ hy h => mul_lt_mul_of_le_of_lt (hf hx hy h.le) (hg hx hy h)
+theorem MonotoneOn.mul_strictMono'
+    [MulLeftStrictMono α] [MulRightMono α]
+    {f g : β → α} (hf : MonotoneOn f s) (hg : StrictMonoOn g s)
+    : StrictMonoOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+  mul_lt_mul_of_le_of_lt (hf hx hy h.le) (hg hx hy h)
 
 /-- The product of an antitone function and a strictly antitone function is strictly antitone. -/
 @[to_additive add_strictAnti /-- The sum of an antitone function and a strictly antitone function is
 strictly antitone. -/]
-theorem Antitone.mul_strictAnti' [MulLeftStrictMono α]
-    [MulRightMono α] {f g : β → α} (hf : Antitone f)
-    (hg : StrictAnti g) :
-    StrictAnti fun x => f x * g x :=
-  fun _ _ h => mul_lt_mul_of_le_of_lt (hf h.le) (hg h)
+theorem Antitone.mul_strictAnti'
+    [MulLeftStrictMono α] [MulRightMono α] {f g : β → α} (hf : Antitone f) (hg : StrictAnti g)
+    : StrictAnti fun x => f x * g x := fun _ _ h =>
+  mul_lt_mul_of_le_of_lt (hf h.le) (hg h)
 
 /-- The product of an antitone function and a strictly antitone function is strictly antitone. -/
 @[to_additive add_strictAnti /-- The sum of an antitone function and a strictly antitone function is
 strictly antitone. -/]
-theorem AntitoneOn.mul_strictAnti' [MulLeftStrictMono α]
-    [MulRightMono α] {f g : β → α} (hf : AntitoneOn f s)
-    (hg : StrictAntiOn g s) :
-    StrictAntiOn (fun x => f x * g x) s :=
-  fun _ hx _ hy h => mul_lt_mul_of_le_of_lt (hf hx hy h.le) (hg hx hy h)
+theorem AntitoneOn.mul_strictAnti'
+    [MulLeftStrictMono α] [MulRightMono α]
+    {f g : β → α} (hf : AntitoneOn f s) (hg : StrictAntiOn g s)
+    : StrictAntiOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+  mul_lt_mul_of_le_of_lt (hf hx hy h.le) (hg hx hy h)
 
 variable [MulLeftMono α] [MulRightStrictMono α]
 
 /-- The product of a strictly monotone function and a monotone function is strictly monotone. -/
 @[to_additive add_monotone /-- The sum of a strictly monotone function and a monotone function is
 strictly monotone. -/]
-theorem StrictMono.mul_monotone' (hf : StrictMono f) (hg : Monotone g) :
-    StrictMono fun x => f x * g x :=
-  fun _ _ h => mul_lt_mul_of_lt_of_le (hf h) (hg h.le)
+theorem StrictMono.mul_monotone' (hf : StrictMono f) (hg : Monotone g)
+    : StrictMono fun x => f x * g x := fun _ _ h =>
+  mul_lt_mul_of_lt_of_le (hf h) (hg h.le)
 
 /-- The product of a strictly monotone function and a monotone function is strictly monotone. -/
 @[to_additive add_monotone /-- The sum of a strictly monotone function and a monotone function is
 strictly monotone. -/]
-theorem StrictMonoOn.mul_monotone' (hf : StrictMonoOn f s) (hg : MonotoneOn g s) :
-    StrictMonoOn (fun x => f x * g x) s :=
-  fun _ hx _ hy h => mul_lt_mul_of_lt_of_le (hf hx hy h) (hg hx hy h.le)
+theorem StrictMonoOn.mul_monotone' (hf : StrictMonoOn f s) (hg : MonotoneOn g s)
+    : StrictMonoOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+  mul_lt_mul_of_lt_of_le (hf hx hy h) (hg hx hy h.le)
 
 /-- The product of a strictly antitone function and an antitone function is strictly antitone. -/
 @[to_additive add_antitone /-- The sum of a strictly antitone function and an antitone function is
 strictly antitone. -/]
-theorem StrictAnti.mul_antitone' (hf : StrictAnti f) (hg : Antitone g) :
-    StrictAnti fun x => f x * g x :=
-  fun _ _ h => mul_lt_mul_of_lt_of_le (hf h) (hg h.le)
+theorem StrictAnti.mul_antitone' (hf : StrictAnti f) (hg : Antitone g)
+    : StrictAnti fun x => f x * g x := fun _ _ h =>
+  mul_lt_mul_of_lt_of_le (hf h) (hg h.le)
 
 /-- The product of a strictly antitone function and an antitone function is strictly antitone. -/
 @[to_additive add_antitone /-- The sum of a strictly antitone function and an antitone function is
 strictly antitone. -/]
-theorem StrictAntiOn.mul_antitone' (hf : StrictAntiOn f s) (hg : AntitoneOn g s) :
-    StrictAntiOn (fun x => f x * g x) s :=
-  fun _ hx _ hy h => mul_lt_mul_of_lt_of_le (hf hx hy h) (hg hx hy h.le)
+theorem StrictAntiOn.mul_antitone' (hf : StrictAntiOn f s) (hg : AntitoneOn g s)
+    : StrictAntiOn (fun x => f x * g x) s := fun _ hx _ hy h =>
+  mul_lt_mul_of_lt_of_le (hf hx hy h) (hg hx hy h.le)
 
 @[to_additive (attr := simp) cmp_add_left]
-theorem cmp_mul_left' {α : Type*} [Mul α] [LinearOrder α] [MulLeftStrictMono α]
-    (a b c : α) :
-    cmp (a * b) (a * c) = cmp b c :=
+theorem cmp_mul_left' {α : Type*} [Mul α] [LinearOrder α] [MulLeftStrictMono α] (a b c : α)
+    : cmp (a * b) (a * c) = cmp b c :=
   (strictMono_id.const_mul' a).cmp_map_eq b c
 
 @[to_additive (attr := simp) cmp_add_right]
-theorem cmp_mul_right' {α : Type*} [Mul α] [LinearOrder α]
-    [MulRightStrictMono α] (a b c : α) :
-    cmp (a * c) (b * c) = cmp a b :=
+theorem cmp_mul_right' {α : Type*} [Mul α] [LinearOrder α] [MulRightStrictMono α] (a b c : α)
+    : cmp (a * c) (b * c) = cmp a b :=
   (strictMono_id.mul_const' c).cmp_map_eq a b
 
 end Mono
 
-/-- An element `a : α` is `MulLECancellable` if `x ↦ a * x` is order-reflecting.
+/--
+An element `a : α` is `MulLECancellable` if `x ↦ a * x` is order-reflecting.
 We will make a separate version of many lemmas that require `[MulLeftReflectLE α]` with
 `MulLECancellable` assumptions instead. These lemmas can then be instantiated to specific types,
 like `ENNReal`, where we can replace the assumption `AddLECancellable x` by `x ≠ ∞`.
 -/
 @[to_additive
-/-- An element `a : α` is `AddLECancellable` if `x ↦ a + x` is order-reflecting.
+  /-- An element `a : α` is `AddLECancellable` if `x ↦ a + x` is order-reflecting.
 We will make a separate version of many lemmas that require `[MulLeftReflectLE α]` with
 `AddLECancellable` assumptions instead. These lemmas can then be instantiated to specific types,
 like `ENNReal`, where we can replace the assumption `AddLECancellable x` by `x ≠ ∞`. -/]
-def MulLECancellable [Mul α] [LE α] (a : α) : Prop :=
-  ∀ ⦃b c⦄, a * b ≤ a * c → b ≤ c
+def MulLECancellable [Mul α] [LE α] (a : α) : Prop := ∀ ⦃b c⦄, a * b ≤ a * c → b ≤ c
 
 @[to_additive]
-theorem Contravariant.MulLECancellable [Mul α] [LE α] [MulLeftReflectLE α] :
-    MulLECancellable a :=
+theorem Contravariant.MulLECancellable [Mul α] [LE α] [MulLeftReflectLE α] : MulLECancellable a :=
   fun _ _ => le_of_mul_le_mul_left'
 
 @[to_additive (attr := simp)]
@@ -1127,9 +1142,9 @@ theorem mulLECancellable_one [MulOneClass α] [LE α] : MulLECancellable (1 : α
 namespace MulLECancellable
 
 @[to_additive]
-protected theorem injective_right [Mul α] [PartialOrder α] (ha : MulLECancellable a) :
-    Injective (a * ·) :=
-  fun _ _ h => le_antisymm (ha h.le) (ha h.ge)
+protected theorem injective_right [Mul α] [PartialOrder α] (ha : MulLECancellable a)
+    : Injective (a * ·) := fun _ _ h =>
+  le_antisymm (ha h.le) (ha h.ge)
 
 @[deprecated (since := "2026-07-07")]
 protected alias _root_.MulLECancellable.Injective := MulLECancellable.injective_right
@@ -1138,13 +1153,13 @@ protected alias _root_.MulLECancellable.Injective := MulLECancellable.injective_
 protected alias _root_.AddLECancellable.Injective := AddLECancellable.injective_right
 
 @[to_additive]
-protected theorem isLeftRegular [Mul α] [PartialOrder α] {a : α}
-    (ha : MulLECancellable a) : IsLeftRegular a :=
+protected theorem isLeftRegular [Mul α] [PartialOrder α] {a : α} (ha : MulLECancellable a)
+    : IsLeftRegular a :=
   ha.injective_right
 
 @[to_additive]
-protected theorem inj_right [Mul α] [PartialOrder α] {a b c : α} (ha : MulLECancellable a) :
-    a * b = a * c ↔ b = c :=
+protected theorem inj_right [Mul α] [PartialOrder α] {a b c : α} (ha : MulLECancellable a)
+    : a * b = a * c ↔ b = c :=
   ha.injective_right.eq_iff
 
 @[deprecated (since := "2026-07-07")]
@@ -1154,68 +1169,75 @@ protected alias _root_.MulLECancellable.inj := MulLECancellable.inj_right
 protected alias _root_.AddLECancellable.inj := AddLECancellable.inj_right
 
 @[to_additive]
-protected theorem injective_left [Mul α] [IsMulCommutative α] [PartialOrder α]
-    (ha : MulLECancellable a) : Injective (· * a) :=
-  fun b c h ↦ ha.injective_right <| by dsimp; rwa [mul_comm' a, mul_comm' a]
+protected theorem injective_left
+    [Mul α] [IsMulCommutative α] [PartialOrder α] (ha : MulLECancellable a)
+    : Injective (· * a) := fun b c h ↦
+  ha.injective_right <| by dsimp; rwa [mul_comm' a, mul_comm' a]
 
 @[to_additive]
-protected theorem isRightRegular [Mul α] [IsMulCommutative α] [PartialOrder α] {a : α}
-    (ha : MulLECancellable a) : IsRightRegular a :=
+protected theorem isRightRegular
+    [Mul α] [IsMulCommutative α] [PartialOrder α] {a : α} (ha : MulLECancellable a)
+    : IsRightRegular a :=
   ha.injective_left
 
 @[to_additive]
-protected theorem inj_left [Mul α] [IsMulCommutative α] [PartialOrder α]
-    (hc : MulLECancellable c) : a * c = b * c ↔ a = b :=
+protected theorem inj_left [Mul α] [IsMulCommutative α] [PartialOrder α] (hc : MulLECancellable c)
+    : a * c = b * c ↔ a = b :=
   hc.injective_left.eq_iff
 
 variable [LE α]
 
 @[to_additive]
-protected theorem mul_le_mul_iff_left [Mul α] [MulLeftMono α]
-    (ha : MulLECancellable a) : a * b ≤ a * c ↔ b ≤ c :=
+protected theorem mul_le_mul_iff_left [Mul α] [MulLeftMono α] (ha : MulLECancellable a)
+    : a * b ≤ a * c ↔ b ≤ c :=
   ⟨fun h => ha h, fun h => mul_le_mul_right h a⟩
 
 @[to_additive]
-protected theorem mul_le_mul_iff_right [Mul α] [IsMulCommutative α] [MulLeftMono α]
-    (ha : MulLECancellable a) : b * a ≤ c * a ↔ b ≤ c := by
+protected theorem mul_le_mul_iff_right
+    [Mul α] [IsMulCommutative α] [MulLeftMono α] (ha : MulLECancellable a)
+    : b * a ≤ c * a ↔ b ≤ c := by
   rw [mul_comm' b, mul_comm' c, ha.mul_le_mul_iff_left]
 
 @[to_additive]
-protected theorem le_mul_iff_one_le_right [MulOneClass α] [MulLeftMono α]
-    (ha : MulLECancellable a) :
-    a ≤ a * b ↔ 1 ≤ b :=
+protected theorem le_mul_iff_one_le_right [MulOneClass α] [MulLeftMono α] (ha : MulLECancellable a)
+    : a ≤ a * b ↔ 1 ≤ b :=
   Iff.trans (by rw [mul_one]) ha.mul_le_mul_iff_left
 
 @[to_additive]
-protected theorem mul_le_iff_le_one_right [MulOneClass α] [MulLeftMono α]
-    (ha : MulLECancellable a) :
-    a * b ≤ a ↔ b ≤ 1 :=
+protected theorem mul_le_iff_le_one_right [MulOneClass α] [MulLeftMono α] (ha : MulLECancellable a)
+    : a * b ≤ a ↔ b ≤ 1 :=
   Iff.trans (by rw [mul_one]) ha.mul_le_mul_iff_left
 
 @[to_additive]
-protected theorem le_mul_iff_one_le_left [MulOneClass α] [IsMulCommutative α] [MulLeftMono α]
-    (ha : MulLECancellable a) : a ≤ b * a ↔ 1 ≤ b := by
+protected theorem le_mul_iff_one_le_left
+    [MulOneClass α] [IsMulCommutative α] [MulLeftMono α] (ha : MulLECancellable a)
+    : a ≤ b * a ↔ 1 ≤ b := by
   rw [mul_comm', ha.le_mul_iff_one_le_right]
 
 @[to_additive]
-protected theorem mul_le_iff_le_one_left [MulOneClass α] [IsMulCommutative α] [MulLeftMono α]
-    (ha : MulLECancellable a) : b * a ≤ a ↔ b ≤ 1 := by
+protected theorem mul_le_iff_le_one_left
+    [MulOneClass α] [IsMulCommutative α] [MulLeftMono α] (ha : MulLECancellable a)
+    : b * a ≤ a ↔ b ≤ 1 := by
   rw [mul_comm', ha.mul_le_iff_le_one_right]
 
-@[to_additive] lemma mul [Semigroup α] (ha : MulLECancellable a) (hb : MulLECancellable b) :
-    MulLECancellable (a * b) :=
-  fun c d hcd ↦ hb <| ha <| by rwa [← mul_assoc, ← mul_assoc]
+@[to_additive]
+lemma mul [Semigroup α] (ha : MulLECancellable a) (hb : MulLECancellable b)
+    : MulLECancellable (a * b) := fun c d hcd ↦
+  hb <| ha <| by rwa [← mul_assoc, ← mul_assoc]
 
-@[to_additive] lemma of_mul_right [Semigroup α] [MulLeftMono α]
-    (h : MulLECancellable (a * b)) : MulLECancellable b :=
-  fun c d hcd ↦ h <| by rw [mul_assoc, mul_assoc]; exact mul_le_mul_right hcd _
+@[to_additive]
+lemma of_mul_right [Semigroup α] [MulLeftMono α] (h : MulLECancellable (a * b))
+    : MulLECancellable b := fun c d hcd ↦
+  h <| by rw [mul_assoc, mul_assoc]; exact mul_le_mul_right hcd _
 
-@[to_additive] lemma of_mul_left [CommSemigroup α] [MulLeftMono α]
-    (h : MulLECancellable (a * b)) : MulLECancellable a := (mul_comm a b ▸ h).of_mul_right
+@[to_additive]
+lemma of_mul_left [CommSemigroup α] [MulLeftMono α] (h : MulLECancellable (a * b))
+    : MulLECancellable a :=
+  (mul_comm a b ▸ h).of_mul_right
 
 end MulLECancellable
 
 @[to_additive (attr := simp)]
-lemma mulLECancellable_mul [LE α] [CommSemigroup α] [MulLeftMono α] :
-    MulLECancellable (a * b) ↔ MulLECancellable a ∧ MulLECancellable b :=
+lemma mulLECancellable_mul [LE α] [CommSemigroup α] [MulLeftMono α]
+    : MulLECancellable (a * b) ↔ MulLECancellable a ∧ MulLECancellable b :=
   ⟨fun h ↦ ⟨h.of_mul_left, h.of_mul_right⟩, fun h ↦ h.1.mul h.2⟩

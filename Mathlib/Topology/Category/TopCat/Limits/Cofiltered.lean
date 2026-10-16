@@ -18,7 +18,6 @@ of sets in the limit is, in fact, a topological basis.
 
 public section
 
-
 open TopologicalSpace
 
 open CategoryTheory
@@ -34,15 +33,18 @@ section CofilteredLimit
 variable {J : Type v} [Category.{w} J] [IsCofiltered J] (F : J ⥤ TopCat.{max v u}) (C : Cone F)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Given a *compatible* collection of topological bases for the factors in a cofiltered limit
+/--
+Given a *compatible* collection of topological bases for the factors in a cofiltered limit
 which contain `Set.univ` and are closed under intersections, the induced *naive* collection
 of sets in the limit is, in fact, a topological basis.
 -/
-theorem isTopologicalBasis_cofiltered_limit (hC : IsLimit C) (T : ∀ j, Set (Set (F.obj j)))
+theorem isTopologicalBasis_cofiltered_limit
+    (hC : IsLimit C)
+    (T : ∀ j, Set (Set (F.obj j)))
     (hT : ∀ j, IsTopologicalBasis (T j)) (univ : ∀ i : J, Set.univ ∈ T i)
     (inter : ∀ (i) (U1 U2 : Set (F.obj i)), U1 ∈ T i → U2 ∈ T i → U1 ∩ U2 ∈ T i)
-    (compat : ∀ (i j : J) (f : i ⟶ j) (V : Set (F.obj j)) (_hV : V ∈ T j), F.map f ⁻¹' V ∈ T i) :
-    IsTopologicalBasis
+    (compat : ∀ (i j : J) (f : i ⟶ j) (V : Set (F.obj j)) (_hV : V ∈ T j), F.map f ⁻¹' V ∈ T i)
+    : IsTopologicalBasis
       {U : Set C.pt | ∃ (j : _) (V : Set (F.obj j)), V ∈ T j ∧ U = C.π.app j ⁻¹' V} := by
   classical
   convert IsTopologicalBasis.iInf_induced hT fun j (x : C.pt) => C.π.app j x using 1
@@ -63,10 +65,10 @@ theorem isTopologicalBasis_cofiltered_limit (hC : IsLimit C) (T : ∀ j, Set (Se
     let V : Set (F.obj j) := ⋂ (e : J) (_he : e ∈ G), Vs e
     refine ⟨j, V, ?_, ?_⟩
     · -- An intermediate claim used to apply induction along `G : Finset J` later on.
-      have :
-        ∀ (S : Set (Set (F.obj j))) (E : Finset J) (P : J → Set (F.obj j)) (_univ : Set.univ ∈ S)
-          (_inter : ∀ A B : Set (F.obj j), A ∈ S → B ∈ S → A ∩ B ∈ S)
-          (_cond : ∀ (e : J) (_he : e ∈ E), P e ∈ S), (⋂ (e) (_he : e ∈ E), P e) ∈ S := by
+      have : ∀ (S : Set (Set (F.obj j))) (E : Finset J) (P : J → Set (F.obj j))
+            (_univ : Set.univ ∈ S) (_inter : ∀ A B : Set (F.obj j), A ∈ S → B ∈ S → A ∩ B ∈ S)
+            (_cond : ∀ (e : J) (_he : e ∈ E), P e ∈ S),
+          (⋂ (e) (_he : e ∈ E), P e) ∈ S := by
         intro S E
         induction E using Finset.induction_on with
         | empty =>

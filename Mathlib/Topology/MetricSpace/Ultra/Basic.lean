@@ -6,7 +6,6 @@ Authors: Yakov Pechersky
 module
 
 public import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
-
 import Mathlib.Topology.Clopen
 
 /-!
@@ -42,8 +41,10 @@ public section
 
 variable {X : Type*}
 
-/-- The `dist : X → X → ℝ` respects the ultrametric inequality
-of `dist(x, z) ≤ max (dist(x,y)) (dist(y,z))`. -/
+/--
+The `dist : X → X → ℝ` respects the ultrametric inequality
+of `dist(x, z) ≤ max (dist(x,y)) (dist(y,z))`.
+-/
 class IsUltrametricDist (X : Type*) [Dist X] : Prop where
   dist_triangle_max : ∀ x y z : X, dist x z ≤ max (dist x y) (dist y z)
 
@@ -57,8 +58,8 @@ lemma dist_triangle_max : dist x z ≤ max (dist x y) (dist y z) :=
 namespace IsUltrametricDist
 
 /-- All triangles are isosceles in an ultrametric space. -/
-lemma dist_eq_max_of_dist_ne_dist (h : dist x y ≠ dist y z) :
-    dist x z = max (dist x y) (dist y z) := by
+lemma dist_eq_max_of_dist_ne_dist (h : dist x y ≠ dist y z)
+    : dist x z = max (dist x y) (dist y z) := by
   apply le_antisymm (dist_triangle_max x y z)
   rcases h.lt_or_gt with h | h
   · rw [max_eq_right h.le]
@@ -74,11 +75,11 @@ instance subtype (p : X → Prop) : IsUltrametricDist (Subtype p) :=
 lemma ball_eq_of_mem {x y : X} {r : ℝ} (h : y ∈ ball x r) : ball x r = ball y r := by
   ext a
   simp_rw [mem_ball] at h ⊢
-  constructor <;> intro h' <;>
-  exact (dist_triangle_max _ _ _).trans_lt (max_lt h' (dist_comm x _ ▸ h))
+  constructor <;> intro h'
+    <;> exact (dist_triangle_max _ _ _).trans_lt (max_lt h' (dist_comm x _ ▸ h))
 
-lemma ball_subset_trichotomy :
-    ball x r ⊆ ball y s ∨ ball y s ⊆ ball x r ∨ Disjoint (ball x r) (ball y s) := by
+lemma ball_subset_trichotomy
+    : ball x r ⊆ ball y s ∨ ball y s ⊆ ball x r ∨ Disjoint (ball x r) (ball y s) := by
   wlog! hrs : r ≤ s generalizing x y r s
   · rw [disjoint_comm, ← or_assoc, or_comm (b := (_ : Set X) ⊆ _), or_assoc]
     exact this y x s r hrs.le
@@ -87,28 +88,26 @@ lemma ball_subset_trichotomy :
     have hx := ball_subset_ball hrs (x := x)
     rwa [ball_eq_of_mem hyz |>.trans (ball_eq_of_mem <| hx hxz).symm]
 
-lemma ball_eq_or_disjoint :
-    ball x r = ball y r ∨ Disjoint (ball x r) (ball y r) := by
+lemma ball_eq_or_disjoint : ball x r = ball y r ∨ Disjoint (ball x r) (ball y r) := by
   refine Set.disjoint_or_nonempty_inter (ball x r) (ball y r) |>.symm.imp (fun h ↦ ?_) id
   have h₁ := ball_eq_of_mem <| Set.inter_subset_left h.some_mem
   have h₂ := ball_eq_of_mem <| Set.inter_subset_right h.some_mem
   exact h₁.trans h₂.symm
 
-lemma closedBall_eq_of_mem {x y : X} {r : ℝ} (h : y ∈ closedBall x r) :
-    closedBall x r = closedBall y r := by
+lemma closedBall_eq_of_mem {x y : X} {r : ℝ} (h : y ∈ closedBall x r)
+    : closedBall x r = closedBall y r := by
   ext
   simp_rw [mem_closedBall] at h ⊢
-  constructor <;> intro h' <;>
-  exact (dist_triangle_max _ _ _).trans (max_le h' (dist_comm x _ ▸ h))
+  constructor <;> intro h' <;> exact (dist_triangle_max _ _ _).trans (max_le h' (dist_comm x _ ▸ h))
 
-lemma closedBall_subset_trichotomy :
-    closedBall x r ⊆ closedBall y s ∨ closedBall y s ⊆ closedBall x r ∨
-    Disjoint (closedBall x r) (closedBall y s) := by
+lemma closedBall_subset_trichotomy
+    : closedBall x r ⊆ closedBall y s ∨ closedBall y s ⊆ closedBall x r
+      ∨ Disjoint (closedBall x r) (closedBall y s) := by
   wlog! hrs : r ≤ s generalizing x y r s
   · rw [disjoint_comm, ← or_assoc, or_comm (b := (_ : Set X) ⊆ _), or_assoc]
     exact this y x s r hrs.le
-  · refine Set.disjoint_or_nonempty_inter (closedBall x r) (closedBall y s) |>.symm.imp
-      (fun h ↦ ?_) (Or.inr ·)
+  · refine Set.disjoint_or_nonempty_inter (closedBall x r) (closedBall y s)
+      |>.symm.imp (fun h ↦ ?_) (Or.inr ·)
     obtain ⟨hxz, hyz⟩ := (Set.mem_inter_iff _ _ _).mp h.some_mem
     have hx := closedBall_subset_closedBall hrs (x := x)
     rwa [closedBall_eq_of_mem hyz |>.trans (closedBall_eq_of_mem <| hx hxz).symm]
@@ -134,10 +133,10 @@ lemma isClopen_ball : IsClopen (ball x r) := ⟨isClosed_ball x r, isOpen_ball�
 lemma frontier_ball_eq_empty : frontier (ball x r) = ∅ :=
   isClopen_iff_frontier_eq_empty.mp (isClopen_ball x r)
 
-lemma closedBall_eq_or_disjoint :
-    closedBall x r = closedBall y r ∨ Disjoint (closedBall x r) (closedBall y r) := by
-  refine Set.disjoint_or_nonempty_inter (closedBall x r) (closedBall y r) |>.symm.imp
-    (fun h ↦ ?_) id
+lemma closedBall_eq_or_disjoint
+    : closedBall x r = closedBall y r ∨ Disjoint (closedBall x r) (closedBall y r) := by
+  refine Set.disjoint_or_nonempty_inter (closedBall x r) (closedBall y r)
+    |>.symm.imp (fun h ↦ ?_) id
   have h₁ := closedBall_eq_of_mem <| Set.inter_subset_left h.some_mem
   have h₂ := closedBall_eq_of_mem <| Set.inter_subset_right h.some_mem
   exact h₁.trans h₂.symm

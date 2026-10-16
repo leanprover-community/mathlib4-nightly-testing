@@ -37,20 +37,23 @@ namespace Mathlib.Tactic.CategoryTheory.ToApp
 
 /-- Simplify an expression in `Cat` using basic properties of `NatTrans.app`. -/
 def catAppSimp (e : Expr) : MetaM Simp.Result :=
-  simpOnlyNames [
-    ``Cat.Hom.comp_toFunctor, ``Functor.comp_obj, ``Cat.Hom.comp_obj, ``Cat.whiskerLeft_app,
-    ``Cat.whiskerRight_app, ``Cat.Hom₂.id_app, ``Cat.Hom₂.comp_app, ``Cat.eqToHom_app,
-    ``Cat.leftUnitor_hom_app, ``Cat.leftUnitor_inv_app, ``Cat.rightUnitor_hom_app,
-    ``Cat.rightUnitor_inv_app, ``Cat.associator_hom_app, ``Cat.associator_inv_app, ``eqToHom_refl,
-    ``Category.comp_id, ``Category.id_comp] e
-    (config := { decide := false })
+  simpOnlyNames
+    [
+      ``Cat.Hom.comp_toFunctor, ``Functor.comp_obj, ``Cat.Hom.comp_obj, ``Cat.whiskerLeft_app,
+      ``Cat.whiskerRight_app, ``Cat.Hom₂.id_app, ``Cat.Hom₂.comp_app, ``Cat.eqToHom_app,
+      ``Cat.leftUnitor_hom_app, ``Cat.leftUnitor_inv_app, ``Cat.rightUnitor_hom_app,
+      ``Cat.rightUnitor_inv_app, ``Cat.associator_hom_app, ``Cat.associator_inv_app, ``eqToHom_refl,
+      ``Category.comp_id, ``Category.id_comp
+    ]
+    e (config := { decide := false })
 
 /--
 Given a term of type `∀ ..., η = θ`, where `η θ : f ⟶ g` are 2-morphisms in some bicategory
 `B`, which is bound by the `∀` binder, get the corresponding equation in the bicategory `Cat`.
 
 It is important here that the levels in the term are level metavariables, as otherwise these will
-not be reassignable to the corresponding levels of `Cat`. -/
+not be reassignable to the corresponding levels of `Cat`.
+-/
 def toCatExpr (e : Expr) : MetaM Expr := do
   let (args, binderInfos, conclusion) ← forallMetaTelescope (← inferType e)
   -- Find the expression corresponding to the bicategory, by analyzing `η = θ` (i.e. conclusion)
@@ -62,30 +65,36 @@ def toCatExpr (e : Expr) : MetaM Expr := do
         match (← inferType f).getAppFnArgs with
         | (`Quiver.Hom, #[_, _, a, _]) => inferType a
         | _ => throwError "The conclusion {conclusion} is not an equality of 2-morphisms!"
-      | _ => throwError "The conclusion {conclusion} is not an equality of 2-morphisms!"
-    | _ => throwError "The conclusion {conclusion} is not an equality!"
+      | _ =>
+        throwError "The conclusion {conclusion} is not an equality of 2-morphisms!"
+    | _ =>
+      throwError "The conclusion {conclusion} is not an equality!"
   -- Create level metavariables to be used for `Cat.{v, u}`
   let u ← mkFreshLevelMVar
   let v ← mkFreshLevelMVar
   -- Assign `B` to `Cat.{v, u}`
   let _ ← isDefEq B (.const ``Cat [v, u])
   -- Assign the right bicategory instance to `Cat.{v, u}`
-  let some inst ← args.findM? fun x => do
-      return (← inferType x).getAppFnArgs == (`CategoryTheory.Bicategory, #[B])
+  let some inst ←
+      args.findM? fun x => do
+        return (← inferType x).getAppFnArgs == (`CategoryTheory.Bicategory, #[B])
     | throwError "Cannot find the argument for the bicategory instance of the bicategory in which \
-      the equality is taking place."
+        the equality is taking place."
   let _ ← isDefEq inst (.const ``CategoryTheory.Cat.bicategory [v, u])
   -- Construct the new expression
   let value := mkAppN e args
   let rec
-  /-- Recursive function which applies `mkLambdaFVars` stepwise
-  (so that each step can have different binderinfos) -/
+    /--
+    Recursive function which applies `mkLambdaFVars` stepwise
+    (so that each step can have different binderinfos)
+    -/
     apprec (i : Nat) (e : Expr) : MetaM Expr := do
       if h : i < args.size then
         let arg := args[i]
         let bi := binderInfos[i]!
         let e' ← apprec (i + 1) e
-        unless arg != B && arg != inst do return e'
+        unless arg != B && arg != inst do
+          return e'
         mkLambdaFVars #[arg] e' (binderInfoForMVars := bi)
       else
         return e
@@ -93,8 +102,9 @@ def toCatExpr (e : Expr) : MetaM Expr := do
   return value
 
 universe v u in
-lemma toNatTrans_congr {C D : Cat.{v, u}} {F G : C ⟶ D} {η θ : F ⟶ G} (h : η = θ) :
-  η.toNatTrans = θ.toNatTrans := congr(($h).toNatTrans)
+lemma toNatTrans_congr {C D : Cat.{v, u}} {F G : C ⟶ D} {η θ : F ⟶ G} (h : η = θ)
+    : η.toNatTrans = θ.toNatTrans :=
+  congr(($h).toNatTrans)
 
 /--
 Given morphisms `f g : C ⟶ D` in the bicategory `Cat`, and an equation `η = θ` between 2-morphisms
@@ -106,7 +116,8 @@ def toNatTransExpr (e : Expr) : MetaM Expr := do
 /--
 Given functors `F G : C ⥤ D`, and an equation `η = θ` between natural transformations
 (possibly after a `∀` binder), produce the equation `∀ (X : C), η.app X = θ.app X`, and simplify
-it using basic lemmas about `NatTrans.app`. -/
+it using basic lemmas about `NatTrans.app`.
+-/
 def toAppExpr (e : Expr) : MetaM Expr := do
   mapForallTelescope (fun e => do simpType catAppSimp (← mkAppM ``NatTrans.congr_app #[e])) e
 
@@ -130,22 +141,27 @@ Note that if you want both the lemma and the new lemma to be `simp` lemmas, you 
 -/
 syntax (name := to_app) "to_app" optAttrArg : attr
 
-initialize registerBuiltinAttribute {
-  name := `to_app
-  descr := ""
-  applicationTime := .afterCompilation
-  add := fun src ref kind => match ref with
-  | `(attr| to_app $optAttr) => MetaM.run' do
-    if (kind != AttributeKind.global) then
-      throwError "`to_app` can only be used as a global attribute"
-    addRelatedDecl src (src.appendAfter "_app") ref optAttr fun value levels => do
-      let levelMVars ← levels.mapM fun _ => mkFreshLevelMVar
-      let value := value.instantiateLevelParams levels levelMVars
-      let newValue ← toAppExpr (← toNatTransExpr (← toCatExpr value))
-      let r := (← getMCtx).levelMVarToParam (fun _ => false) (fun _ => false) newValue
-      let output := (r.expr, r.newParamNames.toList)
-      pure output
-  | _ => throwUnsupportedSyntax }
+initialize
+  registerBuiltinAttribute {
+    name := `to_app
+    descr := ""
+    applicationTime := .afterCompilation
+    add := fun src ref kind =>
+      match ref with
+      | `(attr| to_app $optAttr) =>
+        MetaM.run' do
+          if (kind != AttributeKind.global) then
+            throwError "`to_app` can only be used as a global attribute"
+          addRelatedDecl src (src.appendAfter "_app") ref optAttr fun value levels => do
+            let levelMVars ← levels.mapM fun _ => mkFreshLevelMVar
+            let value := value.instantiateLevelParams levels levelMVars
+            let newValue ← toAppExpr (← toNatTransExpr (← toCatExpr value))
+            let r := (← getMCtx).levelMVarToParam (fun _ => false) (fun _ => false) newValue
+            let output := (r.expr, r.newParamNames.toList)
+            pure output
+      | _ =>
+        throwUnsupportedSyntax
+  }
 
 open Term in
 /--
@@ -154,7 +170,6 @@ bicategory `Cat` (possibly after a `∀` binder), `to_app_of% t` produces the eq
 `∀ (X : C), η.app X = θ.app X` (where `X` is an object in the domain of `f` and `g`), and simplifies
 it suitably using basic lemmas about `NatTrans.app`.
 -/
-elab "to_app_of% " t:term : term => do
-  toAppExpr (← elabTerm t none)
+elab "to_app_of% " t:term : term => do toAppExpr (← elabTerm t none)
 
 end Mathlib.Tactic.CategoryTheory.ToApp

@@ -55,8 +55,8 @@ instance (priority := low) [SMul α β] [SMul M' β] [SMulCommClass α M' β] : 
   ⟨fun a s => smul_comm a (s : M')⟩
 
 @[to_additive]
-instance (priority := low) [SMul α β] [SMul M' α] [SMul M' β] [IsScalarTower M' α β] :
-    IsScalarTower s α β :=
+instance (priority := low) [SMul α β] [SMul M' α] [SMul M' β] [IsScalarTower M' α β]
+    : IsScalarTower s α β :=
   ⟨fun a => smul_assoc (a : M')⟩
 
 end MulOneClass
@@ -74,25 +74,22 @@ section MulOneClass
 
 variable [MulOneClass M']
 
+@[to_additive] instance smul [SMul M' α] (S : Submonoid M') : SMul S α := inferInstance
+
 @[to_additive]
-instance smul [SMul M' α] (S : Submonoid M') : SMul S α :=
+instance smulCommClass_left [SMul M' β] [SMul α β] [SMulCommClass M' α β] (S : Submonoid M')
+    : SMulCommClass S α β :=
   inferInstance
 
 @[to_additive]
-instance smulCommClass_left [SMul M' β] [SMul α β] [SMulCommClass M' α β]
-    (S : Submonoid M') : SMulCommClass S α β :=
-  inferInstance
-
-@[to_additive]
-instance smulCommClass_right [SMul α β] [SMul M' β] [SMulCommClass α M' β]
-    (S : Submonoid M') : SMulCommClass α S β :=
+instance smulCommClass_right [SMul α β] [SMul M' β] [SMulCommClass α M' β] (S : Submonoid M')
+    : SMulCommClass α S β :=
   inferInstance
 
 /-- Note that this provides `IsScalarTower S M' M'` which is needed by `SMulMulAssoc`. -/
 @[to_additive]
-instance isScalarTower [SMul α β] [SMul M' α] [SMul M' β] [IsScalarTower M' α β]
-      (S : Submonoid M') :
-    IsScalarTower S α β :=
+instance isScalarTower [SMul α β] [SMul M' α] [SMul M' β] [IsScalarTower M' α β] (S : Submonoid M')
+    : IsScalarTower S α β :=
   inferInstance
 
 section SMul
@@ -111,12 +108,13 @@ variable [Monoid M']
 /-- The action by a submonoid is the action by the underlying monoid. -/
 @[to_additive
       /-- The additive action by an `AddSubmonoid` is the action by the underlying `AddMonoid`. -/]
-instance mulAction [MulAction M' α] (S : Submonoid M') : MulAction S α :=
-  inferInstance
+instance mulAction [MulAction M' α] (S : Submonoid M') : MulAction S α := inferInstance
 
-instance smulDistribClass {β S : Type*} [SMul M' α] [SMul M' β] [SMul α β] [SetLike S M']
-    [h : SMulDistribClass M' α β] (N' : S) :
-    SMulDistribClass N' α β := ⟨fun g _ _ ↦ h.smul_distrib_smul g _ _⟩
+instance smulDistribClass
+    {β S : Type*} [SMul M' α] [SMul M' β] [SMul α β] [SetLike S M'] [h : SMulDistribClass M' α β]
+    (N' : S)
+    : SMulDistribClass N' α β :=
+  ⟨fun g _ _ ↦ h.smul_distrib_smul g _ _⟩
 
 example {S : Submonoid M'} : IsScalarTower S M' M' := by infer_instance
 

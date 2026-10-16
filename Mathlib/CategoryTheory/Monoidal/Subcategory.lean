@@ -27,7 +27,6 @@ braided/symmetric structure.
 
 public section
 
-
 universe u v
 
 namespace CategoryTheory
@@ -38,37 +37,42 @@ variable {C : Type u} [Category.{v} C] [MonoidalCategory C]
 
 namespace ObjectProperty
 
-/-- Given three properties of objects `P₁`, `P₂`, and `Q` in a monoidal
+/--
+Given three properties of objects `P₁`, `P₂`, and `Q` in a monoidal
 category `C`, we say `TensorLE P₁ P₂ Q` holds if the tensor product
 of an object in `P₁` and an object `P₂` is necessary in `Q`,
-see also `ObjectProperty.IsMonoidal`. -/
+see also `ObjectProperty.IsMonoidal`.
+-/
 class TensorLE (P₁ P₂ Q : ObjectProperty C) : Prop where
   prop_tensor (X₁ X₂ : C) (h₁ : P₁ X₁) (h₂ : P₂ X₂) : Q (X₁ ⊗ X₂)
 
-lemma prop_tensor {P₁ P₂ Q : ObjectProperty C} [TensorLE P₁ P₂ Q]
-    {X₁ X₂ : C} (h₁ : P₁ X₁) (h₂ : P₂ X₂) : Q (X₁ ⊗ X₂) :=
+lemma prop_tensor
+    {P₁ P₂ Q : ObjectProperty C} [TensorLE P₁ P₂ Q] {X₁ X₂ : C} (h₁ : P₁ X₁) (h₂ : P₂ X₂)
+    : Q (X₁ ⊗ X₂) :=
   TensorLE.prop_tensor _ _ h₁ h₂
 
-/-- This is the property that `P : ObjectProperty C` holds
-for the unit of the monoidal category structure. -/
+/--
+This is the property that `P : ObjectProperty C` holds
+for the unit of the monoidal category structure.
+-/
 class ContainsUnit (P : ObjectProperty C) : Prop where
   prop_unit : P (𝟙_ C)
 
-lemma prop_unit (P : ObjectProperty C) [ContainsUnit P] : P (𝟙_ C) :=
-  ContainsUnit.prop_unit
+lemma prop_unit (P : ObjectProperty C) [ContainsUnit P] : P (𝟙_ C) := ContainsUnit.prop_unit
 
-/-- If `C` is a monoidal category, we say that `P : ObjectProperty C`
-is monoidal if it is stable by tensor product and holds for the unit. -/
-class IsMonoidal (P : ObjectProperty C) : Prop extends
-  ContainsUnit P, TensorLE P P P where
-
-/-- A property of objects is a monoidal closed if it is closed under taking internal homs
+/--
+If `C` is a monoidal category, we say that `P : ObjectProperty C`
+is monoidal if it is stable by tensor product and holds for the unit.
 -/
+class IsMonoidal (P : ObjectProperty C) : Prop extends ContainsUnit P, TensorLE P P P where
+
+/-- A property of objects is a monoidal closed if it is closed under taking internal homs -/
 class IsMonoidalClosed (P : ObjectProperty C) [MonoidalClosed C] : Prop where
   prop_ihom (X Y : C) : P X → P Y → P ((ihom X).obj Y) := by cat_disch
 
-lemma prop_ihom (P : ObjectProperty C) [MonoidalClosed C] [P.IsMonoidalClosed]
-    {X Y : C} (hX : P X) (hY : P Y) : P ((ihom X).obj Y) :=
+lemma prop_ihom
+    (P : ObjectProperty C) [MonoidalClosed C] [P.IsMonoidalClosed] {X Y : C} (hX : P X) (hY : P Y)
+    : P ((ihom X).obj Y) :=
   IsMonoidalClosed.prop_ihom _ _ hX hY
 
 variable (P : ObjectProperty C) [P.IsMonoidal]
@@ -89,17 +93,14 @@ When `P : ObjectProperty C` is monoidal, the full subcategory for `P` inherits t
 monoidal structure of `C`.
 -/
 instance fullMonoidalSubcategory : MonoidalCategory (FullSubcategory P) :=
-  Monoidal.induced P.ι
-    { μIso _ _ := Iso.refl _
-      εIso := Iso.refl _ }
+  Monoidal.induced P.ι { μIso _ _ := Iso.refl _, εIso := Iso.refl _ }
 
-/-- The forgetful monoidal functor from a full monoidal subcategory into the original category
+/--
+The forgetful monoidal functor from a full monoidal subcategory into the original category
 ("forgetting" the condition).
 -/
 instance monoidalι : P.ι.Monoidal :=
-  Functor.CoreMonoidal.toMonoidal
-    { εIso := Iso.refl _
-      μIso := fun _ _ ↦ Iso.refl _ }
+  Functor.CoreMonoidal.toMonoidal { εIso := Iso.refl _, μIso := fun _ _ ↦ Iso.refl _ }
 
 open Functor.LaxMonoidal Functor.OplaxMonoidal
 
@@ -127,12 +128,12 @@ section
 variable {P} {P' : ObjectProperty C} [P'.IsMonoidal] (h : P ≤ P')
 
 set_option backward.defeqAttrib.useBackward true in
-/-- An inequality `P ≤ P'` between monoidal properties of objects induces
-a monoidal functor between full monoidal subcategories. -/
+/--
+An inequality `P ≤ P'` between monoidal properties of objects induces
+a monoidal functor between full monoidal subcategories.
+-/
 instance : (ιOfLE h).Monoidal :=
-  Functor.CoreMonoidal.toMonoidal
-    { εIso := Iso.refl _
-      μIso := fun _ _ ↦ Iso.refl _ }
+  Functor.CoreMonoidal.toMonoidal { εIso := Iso.refl _, μIso := fun _ _ ↦ Iso.refl _ }
 
 @[simp] lemma ιOfLE_ε : ε (ιOfLE h) = 𝟙 _ := rfl
 @[simp] lemma ιOfLE_η : η (ιOfLE h) = 𝟙 _ := rfl
@@ -145,12 +146,12 @@ section Braided
 
 variable [BraidedCategory C]
 
-/-- The braided structure on a full subcategory inherited by the braided structure on `C`.
--/
+/-- The braided structure on a full subcategory inherited by the braided structure on `C`. -/
 instance fullBraidedSubcategory : BraidedCategory (FullSubcategory P) :=
   .ofFaithful P.ι fun X Y ↦ P.isoMk (β_ X.1 Y.1)
 
-/-- The forgetful braided functor from a full braided subcategory into the original category
+/--
+The forgetful braided functor from a full braided subcategory into the original category
 ("forgetting" the condition).
 -/
 instance : P.ι.Braided where
@@ -158,10 +159,11 @@ instance : P.ι.Braided where
 variable {P}
 
 set_option backward.defeqAttrib.useBackward true in
-/-- An inequality `P ≤ P'` between monoidal properties of objects induces
-a braided functor between full braided subcategories. -/
-instance {P' : ObjectProperty C} [P'.IsMonoidal] (h : P ≤ P') :
-    (ιOfLE h).Braided where
+/--
+An inequality `P ≤ P'` between monoidal properties of objects induces
+a braided functor between full braided subcategories.
+-/
+instance {P' : ObjectProperty C} [P'.IsMonoidal] (h : P ≤ P') : (ιOfLE h).Braided where
 
 end Braided
 
@@ -169,8 +171,7 @@ section Symmetric
 
 variable [SymmetricCategory C]
 
-instance fullSymmetricSubcategory : SymmetricCategory P.FullSubcategory :=
-  .ofFaithful P.ι
+instance fullSymmetricSubcategory : SymmetricCategory P.FullSubcategory := .ofFaithful P.ι
 
 end Symmetric
 
@@ -180,20 +181,20 @@ variable [MonoidalClosed C] [P.IsMonoidalClosed]
 
 set_option backward.defeqAttrib.useBackward true in
 instance fullMonoidalClosedSubcategory : MonoidalClosed (FullSubcategory P) where
-  closed X :=
-    { rightAdj := P.lift (P.ι ⋙ ihom X.1) (fun Y => P.prop_ihom X.2 Y.2)
-      adj :=
-        { unit := { app Y := ObjectProperty.homMk ((ihom.coev X.1).app Y.1) }
-          counit := { app Y := ObjectProperty.homMk ((ihom.ev X.1).app Y.1) } } }
+  closed X := {
+    rightAdj := P.lift (P.ι ⋙ ihom X.1) (fun Y => P.prop_ihom X.2 Y.2)
+    adj := {
+      unit := { app Y := ObjectProperty.homMk ((ihom.coev X.1).app Y.1) }
+      counit := { app Y := ObjectProperty.homMk ((ihom.ev X.1).app Y.1) }
+    }
+  }
 
 @[simp]
-theorem ihom_obj (X Y : P.FullSubcategory) :
-    ((ihom X).obj Y).obj = (ihom X.obj).obj Y.obj :=
-  rfl
+theorem ihom_obj (X Y : P.FullSubcategory) : ((ihom X).obj Y).obj = (ihom X.obj).obj Y.obj := rfl
 
 @[simp]
-theorem ihom_map_hom (X : P.FullSubcategory) {Y Z : P.FullSubcategory}
-    (f : Y ⟶ Z) : ((ihom X).map f).hom = (ihom X.obj).map f.hom :=
+theorem ihom_map_hom (X : P.FullSubcategory) {Y Z : P.FullSubcategory} (f : Y ⟶ Z)
+    : ((ihom X).map f).hom = (ihom X.obj).map f.hom :=
   rfl
 
 end Closed

@@ -26,26 +26,29 @@ public section
 open scoped Topology
 open Real Filter
 
-lemma Real.norm_inv_mul_rpow_sub_one_sub_log_le {p x : ℝ} (p_pos : 0 < p) (x_pos : 0 < x)
-    (hx : ‖p * log x‖ ≤ 1) : ‖p⁻¹ * (x ^ p - 1) - log x‖ ≤ p * ‖log x‖ ^ 2 := by
+lemma Real.norm_inv_mul_rpow_sub_one_sub_log_le
+    {p x : ℝ} (p_pos : 0 < p) (x_pos : 0 < x) (hx : ‖p * log x‖ ≤ 1)
+    : ‖p⁻¹ * (x ^ p - 1) - log x‖ ≤ p * ‖log x‖ ^ 2 := by
   have pinv_nonneg : 0 ≤ p⁻¹ := by grind [_root_.inv_nonneg]
   calc
     _ = ‖p⁻¹ * ((x ^ p - 1) - p * log x)‖ := by grind
     _ = p⁻¹ * ‖(rexp (p * log x) - 1) - p * log x‖ := by
-          simp only [norm_mul, Real.norm_of_nonneg (r := p⁻¹) pinv_nonneg]
-          congr
-          rw [mul_comm, Real.exp_mul, Real.exp_log (by grind)]
+      simp only [norm_mul, Real.norm_of_nonneg (r := p⁻¹) pinv_nonneg]
+      congr
+      rw [mul_comm, Real.exp_mul, Real.exp_log (by grind)]
     _ ≤ p⁻¹ * ‖p * log x‖ ^ 2 := by
-          gcongr
-          refine Real.norm_exp_sub_one_sub_id_le ?_
-          simp only [hx]
+      gcongr
+      refine Real.norm_exp_sub_one_sub_id_le ?_
+      simp only [hx]
     _ = p * ‖log x‖ ^ 2 := by
-          simp only [norm_mul]
-          grind [Real.norm_of_nonneg]
+      simp only [norm_mul]
+      grind [Real.norm_of_nonneg]
 
 open Set in
-lemma Real.tendstoLocallyUniformlyOn_rpow_sub_one_log :
-    TendstoLocallyUniformlyOn (fun (p : ℝ) (x : ℝ) => p⁻¹ * (x ^ p - 1)) log (𝓝[>] 0) (Ioi 0) := by
+lemma Real.tendstoLocallyUniformlyOn_rpow_sub_one_log
+    : TendstoLocallyUniformlyOn
+      (fun (p : ℝ) (x : ℝ) => p⁻¹ * (x ^ p - 1))
+      log (𝓝[>] 0) (Ioi 0) := by
   refine (tendstoLocallyUniformlyOn_iff_forall_isCompact isOpen_Ioi).mpr ?_
   intro s hs hs'
   rw [Metric.uniformity_basis_dist_le.tendstoUniformlyOn_iff_of_uniformity]
@@ -66,27 +69,27 @@ lemma Real.tendstoLocallyUniformlyOn_rpow_sub_one_log :
   have hcont' : ContinuousOn (fun x => ‖log x‖) s := by fun_prop
   filter_upwards [h₁, h₂] with p ⟨hp₁,hp₂⟩ hp₃
   intro x hx
-  have hx' : ‖p * log x‖ ≤ 1 := calc
-    _ = p * ‖log x‖ := by grind [norm_mul, Real.norm_of_nonneg]
-    _ ≤ 1 / (sSup ((fun y => ‖log y‖) '' s) + 1) * ‖log x‖ := by gcongr
-    _ ≤ 1 / (‖log x‖ + 1) * ‖log x‖ := by
+  have hx' : ‖p * log x‖ ≤ 1 :=
+    calc
+      _ = p * ‖log x‖ := by grind [norm_mul, Real.norm_of_nonneg]
+      _ ≤ 1 / (sSup ((fun y => ‖log y‖) '' s) + 1) * ‖log x‖ := by gcongr
+      _ ≤ 1 / (‖log x‖ + 1) * ‖log x‖ := by
         gcongr
         refine le_csSup ?_ (by grind)
         grind [IsCompact.bddAbove, ← IsCompact.image_of_continuousOn]
-    _ = ‖log x‖ / (‖log x‖ + 1) := by grind
-    _ ≤ 1 := by rw [div_le_one₀] <;> grind [norm_nonneg]
+      _ = ‖log x‖ / (‖log x‖ + 1) := by grind
+      _ ≤ 1 := by rw [div_le_one₀] <;> grind [norm_nonneg]
   have pinv_nonneg : 0 ≤ p⁻¹ := by grind [_root_.inv_nonneg]
   rw [dist_eq_norm']
   calc
     _ ≤ p * ‖log x‖ ^ 2 := Real.norm_inv_mul_rpow_sub_one_sub_log_le hp₁ (hs hx) hx'
     _ ≤ p * sSup ((fun x => ‖log x‖ ^ 2) '' s) := by
-          gcongr
-          refine le_csSup ?_ (by grind)
-          grind [IsCompact.bddAbove, ← IsCompact.image_of_continuousOn]
+      gcongr
+      refine le_csSup ?_ (by grind)
+      grind [IsCompact.bddAbove, ← IsCompact.image_of_continuousOn]
     _ ≤ pbound * (sSup ((fun x => ‖log x‖ ^ 2) '' s) + 1) := by gcongr; grind
     _ = ε := by grind
 
-lemma tendsto_rpow_sub_one_log {x : ℝ} (hx : 0 < x) :
-    Tendsto (fun p => p⁻¹ * (x ^ p - 1)) (𝓝[>] 0) (𝓝 (log x)) :=
-  TendstoLocallyUniformlyOn.tendsto_at
-    tendstoLocallyUniformlyOn_rpow_sub_one_log (by grind)
+lemma tendsto_rpow_sub_one_log {x : ℝ} (hx : 0 < x)
+    : Tendsto (fun p => p⁻¹ * (x ^ p - 1)) (𝓝[>] 0) (𝓝 (log x)) :=
+  TendstoLocallyUniformlyOn.tendsto_at tendstoLocallyUniformlyOn_rpow_sub_one_log (by grind)

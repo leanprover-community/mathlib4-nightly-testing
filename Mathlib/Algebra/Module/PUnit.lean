@@ -21,25 +21,17 @@ namespace PUnit
 
 variable {R S : Type*}
 
-@[to_additive]
-instance smul : SMul R PUnit :=
-  ⟨fun _ _ => unit⟩
+@[to_additive] instance smul : SMul R PUnit := ⟨fun _ _ => unit⟩
 
 @[to_additive (attr := simp)]
-theorem smul_eq {R : Type*} (y : PUnit) (r : R) : r • y = unit :=
-  rfl
+theorem smul_eq {R : Type*} (y : PUnit) (r : R) : r • y = unit := rfl
+
+@[to_additive] instance : IsCentralScalar R PUnit := ⟨fun _ _ => rfl⟩
+
+@[to_additive] instance : SMulCommClass R S PUnit := ⟨fun _ _ _ => rfl⟩
 
 @[to_additive]
-instance : IsCentralScalar R PUnit :=
-  ⟨fun _ _ => rfl⟩
-
-@[to_additive]
-instance : SMulCommClass R S PUnit :=
-  ⟨fun _ _ _ => rfl⟩
-
-@[to_additive]
-instance instIsScalarTowerOfSMul [SMul R S] : IsScalarTower R S PUnit :=
-  ⟨fun _ _ _ => rfl⟩
+instance instIsScalarTowerOfSMul [SMul R S] : IsScalarTower R S PUnit := ⟨fun _ _ _ => rfl⟩
 
 instance smulWithZero [Zero R] : SMulWithZero R PUnit where
   __ := PUnit.smul
@@ -61,11 +53,13 @@ instance mulDistribMulAction [Monoid R] : MulDistribMulAction R PUnit where
   smul_mul := by subsingleton
   smul_one := by subsingleton
 
-instance mulSemiringAction [Semiring R] : MulSemiringAction R PUnit :=
-  { PUnit.distribMulAction, PUnit.mulDistribMulAction with }
+instance mulSemiringAction [Semiring R] : MulSemiringAction R PUnit := {
+  PUnit.distribMulAction, PUnit.mulDistribMulAction with
+}
 
-instance mulActionWithZero [MonoidWithZero R] : MulActionWithZero R PUnit :=
-  { PUnit.mulAction, PUnit.smulWithZero with }
+instance mulActionWithZero [MonoidWithZero R] : MulActionWithZero R PUnit := {
+  PUnit.mulAction, PUnit.smulWithZero with
+}
 
 instance module [Semiring R] : Module R PUnit where
   __ := PUnit.distribMulAction
@@ -73,7 +67,8 @@ instance module [Semiring R] : Module R PUnit where
   zero_smul := by subsingleton
 
 @[to_additive]
-instance : SMul PUnit R where smul _ x := x
+instance : SMul PUnit R where
+  smul _ x := x
 
 /-- The one-element type acts trivially on every element. -/
 @[to_additive (attr := simp)]

@@ -26,7 +26,8 @@ protected def op : X.op.Subcomplex where
   obj := A.obj
   map _ := A.map _
 
-lemma mem_op_obj_iff {d : SimplexCategoryᵒᵖ} (x : X.op.obj d) :
-    x ∈ A.op.obj d ↔ X.opObjEquiv x ∈ A.obj d := Iff.rfl
+lemma mem_op_obj_iff {d : SimplexCategoryᵒᵖ} (x : X.op.obj d)
+    : x ∈ A.op.obj d ↔ X.opObjEquiv x ∈ A.obj d :=
+  Iff.rfl
 
 end SSet.Subcomplex

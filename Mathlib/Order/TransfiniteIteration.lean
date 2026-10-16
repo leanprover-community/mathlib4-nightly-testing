@@ -38,31 +38,32 @@ universe w u
 
 section
 
-variable {I : Type u} [SupSet I] (φ : I → I)
-  {J : Type w} [LinearOrder J] [SuccOrder J] [WellFoundedLT J]
+variable
+  {I : Type u} [SupSet I] (φ : I → I) {J : Type w} [LinearOrder J] [SuccOrder J] [WellFoundedLT J]
 
-/-- The `j`th-iteration of a function `φ : I → I` when `j : J` belongs to
-a well-ordered type. -/
+/--
+The `j`th-iteration of a function `φ : I → I` when `j : J` belongs to
+a well-ordered type.
+-/
 noncomputable def transfiniteIterate (j : J) : I → I :=
   SuccOrder.limitRecOn j
-    (fun _ _ ↦ id) (fun _ _ g ↦ φ ∘ g) (fun y _ h ↦ ⨆ (x : Set.Iio y), h x.1 x.2)
+    (fun _ _ ↦ id)
+    (fun _ _ g ↦ φ ∘ g)
+    (fun y _ h ↦ ⨆ (x : Set.Iio y), h x.1 x.2)
 
 @[simp]
-lemma transfiniteIterate_bot [OrderBot J] (i₀ : I) :
-    transfiniteIterate φ (⊥ : J) i₀ = i₀ := by
+lemma transfiniteIterate_bot [OrderBot J] (i₀ : I) : transfiniteIterate φ (⊥ : J) i₀ = i₀ := by
   dsimp [transfiniteIterate]
   simp only [isMin_iff_eq_bot, SuccOrder.limitRecOn_isMin, id_eq]
 
-lemma transfiniteIterate_succ (i₀ : I) (j : J) (hj : ¬ IsMax j) :
-    transfiniteIterate φ (Order.succ j) i₀ =
-      φ (transfiniteIterate φ j i₀) := by
+lemma transfiniteIterate_succ (i₀ : I) (j : J) (hj : ¬ IsMax j)
+    : transfiniteIterate φ (Order.succ j) i₀ = φ (transfiniteIterate φ j i₀) := by
   dsimp [transfiniteIterate]
   rw [SuccOrder.limitRecOn_succ_of_not_isMax _ _ _ hj]
   rfl
 
-lemma transfiniteIterate_limit (i₀ : I) (j : J) (hj : Order.IsSuccLimit j) :
-    transfiniteIterate φ j i₀ =
-      ⨆ (x : Set.Iio j), transfiniteIterate φ x.1 i₀ := by
+lemma transfiniteIterate_limit (i₀ : I) (j : J) (hj : Order.IsSuccLimit j)
+    : transfiniteIterate φ j i₀ = ⨆ (x : Set.Iio j), transfiniteIterate φ x.1 i₀ := by
   dsimp [transfiniteIterate]
   rw [SuccOrder.limitRecOn_of_isSuccLimit _ _ _ hj]
   simp only [iSup_apply]
@@ -71,11 +72,13 @@ end
 
 section
 
-variable {I : Type u} [CompleteLattice I] (φ : I → I) (i₀ : I)
+variable
+  {I : Type u} [CompleteLattice I]
+  (φ : I → I) (i₀ : I)
   {J : Type w} [LinearOrder J] [OrderBot J] [SuccOrder J] [WellFoundedLT J]
 
-lemma monotone_transfiniteIterate (hφ : ∀ (i : I), i ≤ φ i) :
-    Monotone (fun (j : J) ↦ transfiniteIterate φ j i₀) := by
+lemma monotone_transfiniteIterate (hφ : ∀ (i : I), i ≤ φ i)
+    : Monotone (fun (j : J) ↦ transfiniteIterate φ j i₀) := by
   intro k j hkj
   induction j using SuccOrder.limitRecOn with
   | isMin k hk =>
@@ -98,15 +101,15 @@ lemma monotone_transfiniteIterate (hφ : ∀ (i : I), i ≤ φ i) :
 
 lemma top_mem_range_transfiniteIterate
     (hφ' : ∀ i ≠ (⊤ : I), i < φ i) (φtop : φ ⊤ = ⊤)
-    (H : ¬ Function.Injective (fun (j : J) ↦ transfiniteIterate φ j i₀)) :
-    ∃ (j : J), transfiniteIterate φ j i₀ = ⊤ := by
+    (H : ¬ Function.Injective (fun (j : J) ↦ transfiniteIterate φ j i₀))
+    : ∃ (j : J), transfiniteIterate φ j i₀ = ⊤ := by
   have hφ (i : I) : i ≤ φ i := by
     by_cases hi : i = ⊤
     · subst hi
       rw [φtop]
     · exact (hφ' i hi).le
-  obtain ⟨j₁, j₂, hj, eq⟩ : ∃ (j₁ j₂ : J) (hj : j₁ < j₂),
-      transfiniteIterate φ j₁ i₀ = transfiniteIterate φ j₂ i₀ := by
+  obtain ⟨j₁, j₂, hj, eq⟩
+      : ∃ (j₁ j₂ : J) (hj : j₁ < j₂), transfiniteIterate φ j₁ i₀ = transfiniteIterate φ j₂ i₀ := by
     grind [Function.Injective]
   by_contra!
   suffices transfiniteIterate φ j₁ i₀ < transfiniteIterate φ j₂ i₀ by

@@ -41,8 +41,7 @@ end Bot
 section Preorder
 variable [Preorder α]
 
-noncomputable instance : Preorder (Shrink.{u} α) :=
-  Preorder.lift (equivShrink α).symm
+noncomputable instance : Preorder (Shrink.{u} α) := Preorder.lift (equivShrink α).symm
 
 variable (α) in
 /-- The order isomorphism `α ≃o Shrink.{u} α`. -/
@@ -54,13 +53,12 @@ noncomputable def orderIsoShrink : α ≃o Shrink.{u} α where
     simp only [Equiv.apply_symm_apply]
     rfl
 
-@[simp]
-lemma orderIsoShrink_apply (a : α) :
-    orderIsoShrink α a = equivShrink α a := rfl
+@[simp] lemma orderIsoShrink_apply (a : α) : orderIsoShrink α a = equivShrink α a := rfl
 
 @[simp]
-lemma orderIsoShrink_symm_apply (a : Shrink.{u} α) :
-    (orderIsoShrink α).symm a = (equivShrink α).symm a := rfl
+lemma orderIsoShrink_symm_apply (a : Shrink.{u} α)
+    : (orderIsoShrink α).symm a = (equivShrink α).symm a :=
+  rfl
 
 @[simp]
 theorem equivShrink_le_equivShrink {x y : α} : equivShrink α x ≤ equivShrink α y ↔ x ≤ y :=

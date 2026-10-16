@@ -36,8 +36,10 @@ variable [AddCommMonoid M]
 variable [AddCommMonoid M₁] [AddCommMonoid M₂] [AddCommMonoid M₃] [AddCommMonoid M₄]
 variable [Module R M] [Module R M₁] [Module R M₂] [Module R M₃] [Module R M₄]
 
-/-- An isometry between two bilinear spaces `M₁, B₁` and `M₂, B₂` over a ring `R`,
-is a linear map between `M₁` and `M₂` that commutes with the bilinear forms. -/
+/--
+An isometry between two bilinear spaces `M₁, B₁` and `M₂, B₂` over a ring `R`,
+is a linear map between `M₁` and `M₂` that commutes with the bilinear forms.
+-/
 structure Isometry (B₁ : LinearMap.BilinForm R M₁) (B₂ : LinearMap.BilinForm R M₂)
     extends M₁ →ₗ[R] M₂ where
   /-- The bilinear forms agree across the map. -/
@@ -45,8 +47,7 @@ structure Isometry (B₁ : LinearMap.BilinForm R M₁) (B₂ : LinearMap.BilinFo
 
 namespace Isometry
 
-@[inherit_doc]
-notation:25 B₁ " →bᵢ " B₂:0 => Isometry B₁ B₂
+@[inherit_doc] notation:25 B₁ " →bᵢ " B₂:0 => Isometry B₁ B₂
 
 variable {B₁ : LinearMap.BilinForm R M₁} {B₂ : LinearMap.BilinForm R M₂}
 variable {B₃ : LinearMap.BilinForm R M₃} {B₄ : LinearMap.BilinForm R M₄}
@@ -60,26 +61,20 @@ instance instLinearMapClass : LinearMapClass (B₁ →bᵢ B₂) R M₁ M₂ whe
   map_add f := f.toLinearMap.map_add
   map_smulₛₗ f := f.toLinearMap.map_smul
 
-theorem toLinearMap_injective :
-    Function.Injective (Isometry.toLinearMap : (B₁ →bᵢ B₂) → M₁ →ₗ[R] M₂) := fun _f _g h =>
+theorem toLinearMap_injective
+    : Function.Injective (Isometry.toLinearMap : (B₁ →bᵢ B₂) → M₁ →ₗ[R] M₂) := fun _f _g h =>
   DFunLike.coe_injective congr($h)
 
-@[ext]
-theorem ext ⦃f g : B₁ →bᵢ B₂⦄ (h : ∀ x, f x = g x) : f = g :=
-  DFunLike.ext _ _ h
+@[ext] theorem ext ⦃f g : B₁ →bᵢ B₂⦄ (h : ∀ x, f x = g x) : f = g := DFunLike.ext _ _ h
 
 /-- See Note [custom simps projection]. -/
 protected def Simps.apply (f : B₁ →bᵢ B₂) : M₁ → M₂ := f
 
 initialize_simps_projections Isometry (toFun → apply)
 
-@[simp]
-theorem map_app (f : B₁ →bᵢ B₂) (m m' : M₁) : B₂ (f m) (f m') = B₁ m m' :=
-  f.map_app' m  m'
+@[simp] theorem map_app (f : B₁ →bᵢ B₂) (m m' : M₁) : B₂ (f m) (f m') = B₁ m m' := f.map_app' m m'
 
-@[simp]
-theorem coe_toLinearMap (f : B₁ →bᵢ B₂) : ⇑f.toLinearMap = f :=
-  rfl
+@[simp] theorem coe_toLinearMap (f : B₁ →bᵢ B₂) : ⇑f.toLinearMap = f := rfl
 
 /-- The identity isometry from a bilinear form to itself. -/
 @[simps!]
@@ -93,8 +88,7 @@ def ofEq {B₁ B₂ : LinearMap.BilinForm R M₁} (h : B₁ = B₂) : B₁ →b�
   __ := LinearMap.id
   map_app' _ _ := h ▸ rfl
 
-@[simp]
-theorem ofEq_rfl {B : LinearMap.BilinForm R M₁} : ofEq (rfl : B = B) = .id B := rfl
+@[simp] theorem ofEq_rfl {B : LinearMap.BilinForm R M₁} : ofEq (rfl : B = B) = .id B := rfl
 
 /-- The composition of two isometries between bilinear forms. -/
 @[simps]
@@ -104,20 +98,16 @@ def comp (g : B₂ →bᵢ B₃) (f : B₁ →bᵢ B₂) : B₁ →bᵢ B₃ whe
   __ := (g.toLinearMap : M₂ →ₗ[R] M₃) ∘ₗ (f.toLinearMap : M₁ →ₗ[R] M₂)
 
 @[simp]
-theorem toLinearMap_comp (g : B₂ →bᵢ B₃) (f : B₁ →bᵢ B₂) :
-    (g.comp f).toLinearMap = g.toLinearMap.comp f.toLinearMap :=
+theorem toLinearMap_comp (g : B₂ →bᵢ B₃) (f : B₁ →bᵢ B₂)
+    : (g.comp f).toLinearMap = g.toLinearMap.comp f.toLinearMap :=
   rfl
 
-@[simp]
-theorem id_comp (f : B₁ →bᵢ B₂) : (id B₂).comp f = f :=
-  ext fun _ => rfl
+@[simp] theorem id_comp (f : B₁ →bᵢ B₂) : (id B₂).comp f = f := ext fun _ => rfl
 
-@[simp]
-theorem comp_id (f : B₁ →bᵢ B₂) : f.comp (id B₁) = f :=
-  ext fun _ => rfl
+@[simp] theorem comp_id (f : B₁ →bᵢ B₂) : f.comp (id B₁) = f := ext fun _ => rfl
 
-theorem comp_assoc (h : B₃ →bᵢ B₄) (g : B₂ →bᵢ B₃) (f : B₁ →bᵢ B₂) :
-    (h.comp g).comp f = h.comp (g.comp f) :=
+theorem comp_assoc (h : B₃ →bᵢ B₄) (g : B₂ →bᵢ B₃) (f : B₁ →bᵢ B₂)
+    : (h.comp g).comp f = h.comp (g.comp f) :=
   ext fun _ => rfl
 
 /-- There is a zero map from any module with the zero form. -/
@@ -126,11 +116,12 @@ instance : Zero ((0 : LinearMap.BilinForm R M₁) →bᵢ B₂) where
 
 /-- There is a zero map from the trivial module. -/
 instance hasZeroOfSubsingleton [Subsingleton M₁] : Zero (B₁ →bᵢ B₂) where
-  zero :=
-  { (0 : M₁ →ₗ[R] M₂) with
+  zero := {
+    (0 : M₁ →ₗ[R] M₂) with
     map_app' := fun x y => by
       rw [Subsingleton.elim x 0, Subsingleton.elim y 0]
-      simp }
+      simp
+  }
 
 /-- Maps into the zero module are trivial -/
 instance [Subsingleton M₂] : Subsingleton (B₁ →bᵢ B₂) :=

@@ -21,7 +21,6 @@ and right order continuous.
 
 @[expose] public section
 
-
 universe u v w x
 
 variable {α : Type u} {β : Type v} {γ : Type w} {ι : Sort x}
@@ -32,12 +31,13 @@ open Function OrderDual Set
 ### Definitions
 -/
 
-
-/-- A function `f` between preorders is left order continuous if it preserves all suprema of
+/--
+A function `f` between preorders is left order continuous if it preserves all suprema of
 nonempty sets. We define it using `IsLUB` instead of `sSup` so that the proof works both for
-complete lattices and conditionally complete lattices. -/
+complete lattices and conditionally complete lattices.
+-/
 @[to_dual
-/-- A function `f` between preorders is right order continuous if it preserves all infima of
+  /-- A function `f` between preorders is right order continuous if it preserves all infima of
 nonempty sets.  We define it using `IsGLB` instead of `sInf` so that the proof works both for
 complete lattices and conditionally complete lattices. -/]
 def LeftOrdContinuous [Preorder α] [Preorder β] (f : α → β) :=
@@ -56,9 +56,7 @@ protected theorem id : LeftOrdContinuous (id : α → α) := fun s _ x h => by
 variable {α}
 
 @[to_dual]
-protected theorem dual :
-    LeftOrdContinuous f → RightOrdContinuous (toDual ∘ f ∘ ofDual) :=
-  id
+protected theorem dual : LeftOrdContinuous f → RightOrdContinuous (toDual ∘ f ∘ ofDual) := id
 
 @[deprecated (since := "2026-04-08")] alias rightOrdContinuous_dual := LeftOrdContinuous.dual
 
@@ -66,8 +64,8 @@ protected theorem dual :
   RightOrdContinuous.dual
 
 @[to_dual]
-theorem map_isGreatest (hf : LeftOrdContinuous f) {s : Set α} {x : α} (h : IsGreatest s x) :
-    IsGreatest (f '' s) (f x) :=
+theorem map_isGreatest (hf : LeftOrdContinuous f) {s : Set α} {x : α} (h : IsGreatest s x)
+    : IsGreatest (f '' s) (f x) :=
   ⟨mem_image_of_mem f h.1, (hf ⟨x, h.1⟩ h.isLUB).1⟩
 
 @[to_dual]
@@ -76,12 +74,13 @@ theorem mono (hf : LeftOrdContinuous f) : Monotone f := fun a₁ a₂ h =>
   (hf.map_isGreatest this).2 <| mem_image_of_mem _ (Or.inl rfl)
 
 @[to_dual]
-theorem comp (hg : LeftOrdContinuous g) (hf : LeftOrdContinuous f) : LeftOrdContinuous (g ∘ f) :=
-  fun s x hs h => by simpa only [image_image] using! hg (.image _ hs) (hf hs h)
+theorem comp (hg : LeftOrdContinuous g) (hf : LeftOrdContinuous f)
+    : LeftOrdContinuous (g ∘ f) := fun s x hs h => by
+  simpa only [image_image] using! hg (.image _ hs) (hf hs h)
 
 @[to_dual]
-protected theorem iterate {f : α → α} (hf : LeftOrdContinuous f) (n : ℕ) :
-    LeftOrdContinuous f^[n] :=
+protected theorem iterate {f : α → α} (hf : LeftOrdContinuous f) (n : ℕ)
+    : LeftOrdContinuous f^[n] :=
   match n with
   | 0 => LeftOrdContinuous.id α
   | (n + 1) => (LeftOrdContinuous.iterate hf n).comp hf
@@ -108,15 +107,14 @@ variable (f)
 
 /-- Convert an injective left order continuous function to an order embedding. -/
 @[to_dual
-/-- Convert an injective right order continuous function to an order embedding. -/]
-def toOrderEmbedding (hf : LeftOrdContinuous f) (h : Injective f) : α ↪o β :=
-  ⟨⟨f, h⟩, hf.le_iff h⟩
+  /-- Convert an injective right order continuous function to an order embedding. -/]
+def toOrderEmbedding (hf : LeftOrdContinuous f) (h : Injective f) : α ↪o β := ⟨⟨f, h⟩, hf.le_iff h⟩
 
 variable {f}
 
 @[to_dual (attr := simp)]
-theorem coe_toOrderEmbedding (hf : LeftOrdContinuous f) (h : Injective f) :
-    ⇑(hf.toOrderEmbedding f h) = f :=
+theorem coe_toOrderEmbedding (hf : LeftOrdContinuous f) (h : Injective f)
+    : ⇑(hf.toOrderEmbedding f h) = f :=
   rfl
 
 end SemilatticeSup
@@ -126,18 +124,18 @@ section CompleteLattice
 variable [CompleteLattice α] [CompleteLattice β] {f : α → β}
 
 @[to_dual]
-theorem map_sSup' (hf : LeftOrdContinuous f) {s : Set α} (hs : s.Nonempty) :
-    f (sSup s) = sSup (f '' s) :=
+theorem map_sSup' (hf : LeftOrdContinuous f) {s : Set α} (hs : s.Nonempty)
+    : f (sSup s) = sSup (f '' s) :=
   (hf hs <| isLUB_sSup s).sSup_eq.symm
 
 @[to_dual]
-theorem map_sSup (hf : LeftOrdContinuous f) {s : Set α} (hs : s.Nonempty) :
-    f (sSup s) = ⨆ x ∈ s, f x := by
+theorem map_sSup (hf : LeftOrdContinuous f) {s : Set α} (hs : s.Nonempty)
+    : f (sSup s) = ⨆ x ∈ s, f x := by
   rw [hf.map_sSup' hs, sSup_image]
 
 @[to_dual]
-theorem map_iSup (hf : LeftOrdContinuous f) [Nonempty ι] (g : ι → α) :
-    f (⨆ i, g i) = ⨆ i, f (g i) := by
+theorem map_iSup (hf : LeftOrdContinuous f) [Nonempty ι] (g : ι → α)
+    : f (⨆ i, g i) = ⨆ i, f (g i) := by
   simp only [iSup, hf.map_sSup' (range_nonempty g), ← range_comp]
   rfl
 
@@ -148,13 +146,13 @@ section ConditionallyCompleteLattice
 variable [ConditionallyCompleteLattice α] [ConditionallyCompleteLattice β] [Nonempty ι] {f : α → β}
 
 @[to_dual]
-theorem map_csSup (hf : LeftOrdContinuous f) {s : Set α} (sne : s.Nonempty) (sbdd : BddAbove s) :
-    f (sSup s) = sSup (f '' s) :=
+theorem map_csSup (hf : LeftOrdContinuous f) {s : Set α} (sne : s.Nonempty) (sbdd : BddAbove s)
+    : f (sSup s) = sSup (f '' s) :=
   ((hf sne <| isLUB_csSup sne sbdd).csSup_eq <| sne.image f).symm
 
 @[to_dual]
-theorem map_ciSup (hf : LeftOrdContinuous f) {g : ι → α} (hg : BddAbove (range g)) :
-    f (⨆ i, g i) = ⨆ i, f (g i) := by
+theorem map_ciSup (hf : LeftOrdContinuous f) {g : ι → α} (hg : BddAbove (range g))
+    : f (⨆ i, g i) = ⨆ i, f (g i) := by
   simp only [iSup, hf.map_csSup (range_nonempty _) hg, ← range_comp]
   rfl
 
@@ -166,12 +164,12 @@ namespace GaloisConnection
 variable [Preorder α] [Preorder β] {f : α → β} {g : β → α}
 
 /-- A left adjoint in a Galois connection is left-continuous in the order-theoretic sense. -/
-lemma leftOrdContinuous (gc : GaloisConnection f g) : LeftOrdContinuous f :=
-  fun _ _ _ ↦ gc.isLUB_l_image
+lemma leftOrdContinuous (gc : GaloisConnection f g) : LeftOrdContinuous f := fun _ _ _ ↦
+  gc.isLUB_l_image
 
 /-- A right adjoint in a Galois connection is right-continuous in the order-theoretic sense. -/
-lemma rightOrdContinuous (gc : GaloisConnection f g) : RightOrdContinuous g :=
-  fun _ _ _ ↦ gc.isGLB_u_image
+lemma rightOrdContinuous (gc : GaloisConnection f g) : RightOrdContinuous g := fun _ _ _ ↦
+  gc.isGLB_u_image
 
 end GaloisConnection
 

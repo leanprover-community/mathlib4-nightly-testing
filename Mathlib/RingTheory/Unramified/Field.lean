@@ -45,22 +45,25 @@ theorem of_isSeparable [Algebra.IsSeparable K L] : FormallyUnramified K L := by
   rw [iff_comp_injective]
   intro B _ _ I hI f₁ f₂ e
   ext x
-  have : f₁ x - f₂ x ∈ I := by
-    simpa [Ideal.Quotient.mk_eq_mk_iff_sub_mem] using congr($e x)
-  have := Polynomial.eval_add_of_sq_eq_zero ((minpoly K x).map (algebraMap K B)) (f₂ x)
-    (f₁ x - f₂ x) (show (f₁ x - f₂ x) ^ 2 ∈ ⊥ from hI ▸ Ideal.pow_mem_pow this 2)
+  have : f₁ x - f₂ x ∈ I := by simpa [Ideal.Quotient.mk_eq_mk_iff_sub_mem] using congr($e x)
+  have :=
+    Polynomial.eval_add_of_sq_eq_zero ((minpoly K x).map (algebraMap K B)) (f₂ x) (f₁ x - f₂ x)
+      (show (f₁ x - f₂ x) ^ 2 ∈ ⊥ from hI ▸ Ideal.pow_mem_pow this 2)
   simp only [add_sub_cancel, eval_map_algebraMap, aeval_algHom_apply, minpoly.aeval, map_zero,
-    derivative_map, zero_add] at this
-  rwa [eq_comm, ((isUnit_iff_ne_zero.mpr
-    ((Algebra.IsSeparable.isSeparable K x).aeval_derivative_ne_zero
-      (minpoly.aeval K x))).map f₂).mul_right_eq_zero, sub_eq_zero] at this
+      derivative_map, zero_add]
+    at this
+  rwa [eq_comm,
+      ((isUnit_iff_ne_zero.mpr ((Algebra.IsSeparable.isSeparable K x).aeval_derivative_ne_zero
+          (minpoly.aeval K x))).map
+        f₂).mul_right_eq_zero,
+      sub_eq_zero]
+    at this
 
 variable [FormallyUnramified K A] [EssFiniteType K A]
 variable [FormallyUnramified K L] [EssFiniteType K L]
 
-theorem bijective_of_isAlgClosed_of_isLocalRing
-    [IsAlgClosed K] [IsLocalRing A] :
-    Function.Bijective (algebraMap K A) := by
+theorem bijective_of_isAlgClosed_of_isLocalRing [IsAlgClosed K] [IsLocalRing A]
+    : Function.Bijective (algebraMap K A) := by
   have := finite_of_free (R := K) (S := A)
   have : IsArtinianRing A := isArtinian_of_tower K inferInstance
   have hA : IsNilpotent (IsLocalRing.maximalIdeal A) := by
@@ -69,7 +72,8 @@ theorem bijective_of_isAlgClosed_of_isLocalRing
     · exact bot_ne_top
   let e : K ≃ₐ[K] A ⧸ IsLocalRing.maximalIdeal A := {
     __ := Algebra.ofId K (A ⧸ IsLocalRing.maximalIdeal A)
-    __ := Equiv.ofBijective _ IsAlgClosed.algebraMap_bijective_of_isIntegral }
+    __ := Equiv.ofBijective _ IsAlgClosed.algebraMap_bijective_of_isIntegral
+  }
   let e' : A ⊗[K] (A ⧸ IsLocalRing.maximalIdeal A) ≃ₐ[A] A :=
     (Algebra.TensorProduct.congr AlgEquiv.refl e.symm).trans (Algebra.TensorProduct.rid K A A)
   let f : A ⧸ IsLocalRing.maximalIdeal A →ₗ[A] A := e'.toLinearMap.comp (sec K A _)
@@ -81,15 +85,14 @@ theorem bijective_of_isAlgClosed_of_isLocalRing
     apply _root_.TensorProduct.ext'
     intro r s
     obtain ⟨s, rfl⟩ := e.surjective s
-    suffices s • (Ideal.Quotient.mk (IsLocalRing.maximalIdeal A)) r = r • e s by
-      simpa [ofId, e']
+    suffices s • (Ideal.Quotient.mk (IsLocalRing.maximalIdeal A)) r = r • e s by simpa [ofId, e']
     simp [Algebra.smul_def, e, ofId, mul_comm]
   have hf₁ : f 1 • (1 : A ⧸ IsLocalRing.maximalIdeal A) = 1 := by
     rw [← algebraMap_eq_smul_one]
     congrm $hf 1
   have hf₂ : 1 - f 1 ∈ IsLocalRing.maximalIdeal A := by
     rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_one, ← Ideal.Quotient.algebraMap_eq,
-     algebraMap_eq_smul_one, hf₁, sub_self]
+      algebraMap_eq_smul_one, hf₁, sub_self]
   have hf₃ : IsIdempotentElem (1 - f 1) := by
     apply IsIdempotentElem.one_sub
     rw [IsIdempotentElem, ← smul_eq_mul, ← map_smul, hf₁]
@@ -105,33 +108,32 @@ theorem bijective_of_isAlgClosed_of_isLocalRing
     conv_rhs => rw [← mul_one k, ← smul_eq_mul, Function.comp_apply, map_smul,
       LinearMap.map_smul_of_tower, map_one, hf₄, ← algebraMap_eq_smul_one]
   rw [this]
-  simp only [Function.comp_apply, AlgEquiv.apply_symm_apply, algebraMap_eq_smul_one,
-    map_smul, hf₄, smul_eq_mul, mul_one]
+  simp only [Function.comp_apply, AlgEquiv.apply_symm_apply, algebraMap_eq_smul_one, map_smul, hf₄,
+    smul_eq_mul, mul_one]
 
-theorem isField_of_isAlgClosed_of_isLocalRing
-    [IsAlgClosed K] [IsLocalRing A] : IsField A := by
+theorem isField_of_isAlgClosed_of_isLocalRing [IsAlgClosed K] [IsLocalRing A] : IsField A := by
   rw [IsLocalRing.isField_iff_maximalIdeal_eq, eq_bot_iff]
   intro x hx
   obtain ⟨x, rfl⟩ := (bijective_of_isAlgClosed_of_isLocalRing K A).surjective x
   change _ = 0
   rw [← (algebraMap K A).map_zero]
   by_contra hx'
-  exact hx ((isUnit_iff_ne_zero.mpr
-    (fun e ↦ hx' ((algebraMap K A).congr_arg e))).map (algebraMap K A))
+  exact hx ((isUnit_iff_ne_zero.mpr (fun e ↦ hx' ((algebraMap K A).congr_arg e))).map
+    (algebraMap K A))
 
 include K in
-theorem isReduced_of_field :
-    IsReduced A := by
+theorem isReduced_of_field : IsReduced A := by
   constructor
   intro x hx
   let f := (Algebra.TensorProduct.includeRight (R := K) (A := AlgebraicClosure K) (B := A))
   have : Function.Injective f := by
-    have : ⇑f = (LinearMap.rTensor A (Algebra.ofId K (AlgebraicClosure K)).toLinearMap).comp
-        (Algebra.TensorProduct.lid K A).symm.toLinearMap := by
+    have : ⇑f
+        = (LinearMap.rTensor A (Algebra.ofId K (AlgebraicClosure K)).toLinearMap).comp
+          (Algebra.TensorProduct.lid K A).symm.toLinearMap := by
       ext x; simp [f]
     rw [this]
-    suffices Function.Injective
-        (LinearMap.rTensor A (Algebra.ofId K (AlgebraicClosure K)).toLinearMap) by
+    suffices Function.Injective (LinearMap.rTensor A
+        (Algebra.ofId K (AlgebraicClosure K)).toLinearMap) by
       exact this.comp (Algebra.TensorProduct.lid K A).symm.injective
     apply Module.Flat.rTensor_preserves_injective_linearMap
     exact (algebraMap K _).injective
@@ -143,23 +145,25 @@ theorem isReduced_of_field :
   generalize algebraMap _ (Localization.AtPrime M) (f x) = y at *
   have := EssFiniteType.of_isLocalization (Localization.AtPrime M) M.primeCompl
   have := of_isLocalization (Rₘ := Localization.AtPrime M) M.primeCompl
-  have := EssFiniteType.comp (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] A)
-    (Localization.AtPrime M)
-  have := comp (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] A)
-    (Localization.AtPrime M)
-  let := (isField_of_isAlgClosed_of_isLocalRing (AlgebraicClosure K)
-    (A := Localization.AtPrime M)).toField
+  have :=
+    EssFiniteType.comp (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] A) (Localization.AtPrime M)
+  have := comp (AlgebraicClosure K) (AlgebraicClosure K ⊗[K] A) (Localization.AtPrime M)
+  let :=
+    (isField_of_isAlgClosed_of_isLocalRing (AlgebraicClosure K)
+      (A := Localization.AtPrime M)).toField
   exact hy.eq_zero
 
-theorem isRadical_map_isMaximal (B : Type*) [CommRing B] [Algebra A B]
-    [Algebra.EssFiniteType A B] [Algebra.FormallyUnramified A B] (p : Ideal A) [p.IsMaximal] :
-    (p.map (algebraMap A B)).IsRadical := by
+theorem isRadical_map_isMaximal
+    (B : Type*)
+    [CommRing B] [Algebra A B] [Algebra.EssFiniteType A B] [Algebra.FormallyUnramified A B]
+    (p : Ideal A) [p.IsMaximal]
+    : (p.map (algebraMap A B)).IsRadical := by
   let : Field (A ⧸ p) := Ideal.Quotient.field p
   rw [Ideal.isRadical_iff_quotient_reduced]
   exact Algebra.FormallyUnramified.isReduced_of_field (A ⧸ p) (B ⧸ p.map (algebraMap A B))
 
-theorem range_eq_top_of_isPurelyInseparable
-    [IsPurelyInseparable K L] : (algebraMap K L).range = ⊤ := by
+theorem range_eq_top_of_isPurelyInseparable [IsPurelyInseparable K L]
+    : (algebraMap K L).range = ⊤ := by
   classical
   have : Nontrivial (L ⊗[K] L) := by
     rw [← not_subsingleton_iff_nontrivial, ← rank_zero_iff (R := K), rank_tensorProduct',
@@ -187,10 +191,11 @@ theorem range_eq_top_of_isPurelyInseparable
     by_cases e : a = b
     · obtain rfl : 1 = x := congr($(e).val)
       exact ⟨1, map_one _⟩
-    have := DFunLike.congr_fun
-      congr(((Basis.extend h).tensorProduct (Basis.extend h)).repr $H) (a, b)
+    have :=
+      DFunLike.congr_fun (congr(((Basis.extend h).tensorProduct (Basis.extend h)).repr $H)) (a, b)
     simp only [Basis.tensorProduct_repr_tmul_apply, ← ha, ← hb, Basis.repr_self, smul_eq_mul,
-      Finsupp.single_apply, e, Ne.symm e, ↓reduceIte, mul_one, mul_zero, one_ne_zero] at this
+        Finsupp.single_apply, e, Ne.symm e, ↓ reduceIte, mul_one, mul_zero, one_ne_zero]
+      at this
   · rw [LinearIndependent.pair_iff] at h'
     simp only [not_forall, not_and, exists_prop] at h'
     obtain ⟨a, b, e, hab⟩ := h'
@@ -198,11 +203,12 @@ theorem range_eq_top_of_isPurelyInseparable
       rw [isUnit_iff_ne_zero]
       rintro rfl
       rw [zero_smul, ← algebraMap_eq_smul_one, add_zero,
-        (injective_iff_map_eq_zero' _).mp (algebraMap K L).injective] at e
+          (injective_iff_map_eq_zero' _).mp (algebraMap K L).injective]
+        at e
       cases hab e rfl
     use (-this.unit⁻¹ * a)
-    rw [map_mul, ← Algebra.smul_def, algebraMap_eq_smul_one, eq_neg_iff_add_eq_zero.mpr e,
-      smul_neg, neg_smul, neg_neg, smul_smul, this.val_inv_mul, one_smul]
+    rw [map_mul, ← Algebra.smul_def, algebraMap_eq_smul_one, eq_neg_iff_add_eq_zero.mpr e, smul_neg,
+      neg_smul, neg_neg, smul_smul, this.val_inv_mul, one_smul]
 
 theorem isSeparable : Algebra.IsSeparable K L := by
   have := finite_of_free (R := K) (S := L)
@@ -214,20 +220,22 @@ theorem isSeparable : Algebra.IsSeparable K L := by
   rw [← range_eq_top_of_isPurelyInseparable (separableClosure K L) L]
   simp
 
-theorem iff_isSeparable (L : Type u) [Field L] [Algebra K L] [EssFiniteType K L] :
-    FormallyUnramified K L ↔ Algebra.IsSeparable K L :=
+theorem iff_isSeparable (L : Type u) [Field L] [Algebra K L] [EssFiniteType K L]
+    : FormallyUnramified K L ↔ Algebra.IsSeparable K L :=
   ⟨fun _ ↦ isSeparable K L, fun _ ↦ of_isSeparable K L⟩
 
 end Algebra.FormallyUnramified
 
 variable {K A} in
-/-- If `A = K[X]/⟨p⟩` is unramified at some prime `Q`, then the minpoly of `X` in `κ(Q)`
-only divides `p` once. -/
+/--
+If `A = K[X]/⟨p⟩` is unramified at some prime `Q`, then the minpoly of `X` in `κ(Q)`
+only divides `p` once.
+-/
 theorem Algebra.IsUnramifiedAt.not_minpoly_sq_dvd
-    (Q : Ideal A) [Q.IsPrime] [Algebra.IsUnramifiedAt K Q] (x : A) (p : K[X])
-    (hp₁ : Ideal.span {p} = RingHom.ker (aeval x).toRingHom)
-    (hp₂ : Function.Surjective (aeval (R := K) x)) :
-    ¬ minpoly K (algebraMap A Q.ResidueField x) ^ 2 ∣ p := by
+    (Q : Ideal A) [Q.IsPrime] [Algebra.IsUnramifiedAt K Q]
+    (x : A) (p : K[X]) (hp₁ : Ideal.span {p} = RingHom.ker (aeval x).toRingHom)
+    (hp₂ : Function.Surjective (aeval (R := K) x))
+    : ¬ minpoly K (algebraMap A Q.ResidueField x) ^ 2 ∣ p := by
   have : Algebra.FiniteType K A := .of_surjective _ hp₂
   have := Algebra.FormallyUnramified.finite_of_free K (Localization.AtPrime Q)
   have : IsField (Localization.AtPrime Q) :=
@@ -245,7 +253,7 @@ theorem Algebra.IsUnramifiedAt.not_minpoly_sq_dvd
     ← hp₁, Ideal.mem_span_singleton] at hm'
   rw [pow_two]
   rintro H
-  have := (mul_dvd_mul_iff_right (minpoly.ne_zero (Algebra.IsIntegral.isIntegral _))).mp
-    (H.trans hm')
+  have :=
+    (mul_dvd_mul_iff_right (minpoly.ne_zero (Algebra.IsIntegral.isIntegral _))).mp (H.trans hm')
   rw [minpoly.dvd_iff, aeval_algebraMap_apply, Q.algebraMap_residueField_eq_zero] at this
   exact hm this

@@ -26,7 +26,6 @@ coefficients.
 
 @[expose] public section
 
-
 open Finset Function
 
 noncomputable section
@@ -39,21 +38,17 @@ section SMulZeroClass
 
 variable [PartialOrder Γ] {V : Type*} [Zero V] [SMulZeroClass R V]
 
-instance : SMul R V⟦Γ⟧ :=
-  ⟨fun r x =>
-    { coeff := r • x.coeff
-      isPWO_support' := x.isPWO_support.mono (Function.support_const_smul_subset ..) }⟩
+instance : SMul R V⟦Γ⟧ := ⟨fun r x => {
+  coeff := r • x.coeff
+  isPWO_support' := x.isPWO_support.mono (Function.support_const_smul_subset ..)
+}⟩
 
 theorem support_smul_subset (r : R) (x : HahnSeries Γ V) : (r • x).support ⊆ x.support :=
   Function.support_const_smul_subset ..
 
-@[simp]
-theorem coeff_smul' (r : R) (x : V⟦Γ⟧) : (r • x).coeff = r • x.coeff :=
-  rfl
+@[simp] theorem coeff_smul' (r : R) (x : V⟦Γ⟧) : (r • x).coeff = r • x.coeff := rfl
 
-@[simp]
-theorem coeff_smul {r : R} {x : V⟦Γ⟧} {a : Γ} : (r • x).coeff a = r • x.coeff a :=
-  rfl
+@[simp] theorem coeff_smul {r : R} {x : V⟦Γ⟧} {a : Γ} : (r • x).coeff a = r • x.coeff a := rfl
 
 instance : SMulZeroClass R V⟦Γ⟧ where
   smul_zero _ := by
@@ -68,22 +63,23 @@ theorem orderTop_smul_not_lt (r : R) (x : V⟦Γ⟧) : ¬ (r • x).orderTop < x
       WithTop.coe_lt_coe]
     exact Set.IsWF.min_of_subset_not_lt_min (Function.support_smul_subset_right ..)
 
-theorem orderTop_le_orderTop_smul {Γ} [LinearOrder Γ] (r : R) (x : V⟦Γ⟧) :
-    x.orderTop ≤ (r • x).orderTop :=
+theorem orderTop_le_orderTop_smul {Γ} [LinearOrder Γ] (r : R) (x : V⟦Γ⟧)
+    : x.orderTop ≤ (r • x).orderTop :=
   le_of_not_gt <| orderTop_smul_not_lt r x
 
-theorem order_smul_not_lt [Zero Γ] (r : R) (x : V⟦Γ⟧) (h : r • x ≠ 0) :
-    ¬ (r • x).order < x.order := by
+theorem order_smul_not_lt [Zero Γ] (r : R) (x : V⟦Γ⟧) (h : r • x ≠ 0)
+    : ¬ (r • x).order < x.order := by
   have hx : x ≠ 0 := right_ne_zero_of_smul h
   simp_all only [order, dite_false]
   exact Set.IsWF.min_of_subset_not_lt_min (Function.support_smul_subset_right ..)
 
-theorem le_order_smul {Γ} [Zero Γ] [LinearOrder Γ] (r : R) (x : V⟦Γ⟧) (h : r • x ≠ 0) :
-    x.order ≤ (r • x).order :=
+theorem le_order_smul {Γ} [Zero Γ] [LinearOrder Γ] (r : R) (x : V⟦Γ⟧) (h : r • x ≠ 0)
+    : x.order ≤ (r • x).order :=
   le_of_not_gt (order_smul_not_lt r x h)
 
-theorem truncLT_smul [DecidableLT Γ] (c : Γ) (r : R) (x : V⟦Γ⟧) :
-    truncLT c (r • x) = r • truncLT c x := by ext; simp
+theorem truncLT_smul [DecidableLT Γ] (c : Γ) (r : R) (x : V⟦Γ⟧)
+    : truncLT c (r • x) = r • truncLT c x := by
+  ext; simp
 
 end SMulZeroClass
 
@@ -96,33 +92,33 @@ section AddMonoid
 variable [AddMonoid R]
 
 instance : Add R⟦Γ⟧ where
-  add x y :=
-    { coeff := x.coeff + y.coeff
-      isPWO_support' := (x.isPWO_support.union y.isPWO_support).mono (Function.support_add ..) }
+  add x y := {
+    coeff := x.coeff + y.coeff
+    isPWO_support' := (x.isPWO_support.union y.isPWO_support).mono (Function.support_add ..)
+  }
 
 theorem support_add_subset (x y : R⟦Γ⟧) : (x + y).support ⊆ x.support ∪ y.support :=
   Function.support_add ..
 
+@[simp] theorem coeff_add' (x y : R⟦Γ⟧) : (x + y).coeff = x.coeff + y.coeff := rfl
+
+theorem coeff_add {x y : R⟦Γ⟧} {a : Γ} : (x + y).coeff a = x.coeff a + y.coeff a := rfl
+
 @[simp]
-theorem coeff_add' (x y : R⟦Γ⟧) : (x + y).coeff = x.coeff + y.coeff :=
-  rfl
-
-theorem coeff_add {x y : R⟦Γ⟧} {a : Γ} : (x + y).coeff a = x.coeff a + y.coeff a :=
-  rfl
-
-@[simp] theorem single_add (a : Γ) (r s : R) : single a (r + s) = single a r + single a s := by
+theorem single_add (a : Γ) (r s : R) : single a (r + s) = single a r + single a s := by
   classical
   ext : 1; exact Pi.single_add (f := fun _ => R) a r s
 
-instance : AddMonoid R⟦Γ⟧ := fast_instance%
-  coeff_injective.addMonoid _
-    coeff_zero' coeff_add' (fun _ _ => coeff_smul' _ _)
+instance : AddMonoid R⟦Γ⟧ :=
+  fast_instance%
+    coeff_injective.addMonoid _
+      coeff_zero' coeff_add' (fun _ _ => coeff_smul' _ _)
 
 theorem coeff_nsmul {x : R⟦Γ⟧} {n : ℕ} : (n • x).coeff = n • x.coeff := coeff_smul' _ _
 
 @[simp]
-protected lemma map_add [AddMonoid S] (f : R →+ S) {x y : R⟦Γ⟧} :
-    ((x + y).map f : S⟦Γ⟧) = x.map f + y.map f := by
+protected lemma map_add [AddMonoid S] (f : R →+ S) {x y : R⟦Γ⟧}
+    : ((x + y).map f : S⟦Γ⟧) = x.map f + y.map f := by
   ext; simp
 /--
 `addOppositeEquiv` is an additive monoid isomorphism between
@@ -143,34 +139,32 @@ def addOppositeEquiv : Rᵃᵒᵖ⟦Γ⟧ ≃+ R⟦Γ⟧ᵃᵒᵖ where
     simp
 
 @[simp]
-lemma addOppositeEquiv_support (x : Rᵃᵒᵖ⟦Γ⟧) :
-    (addOppositeEquiv x).unop.support = x.support := by
+lemma addOppositeEquiv_support (x : Rᵃᵒᵖ⟦Γ⟧) : (addOppositeEquiv x).unop.support = x.support := by
   ext
   simp [addOppositeEquiv_apply]
 
 @[simp]
-lemma addOppositeEquiv_symm_support (x : R⟦Γ⟧ᵃᵒᵖ) :
-    (addOppositeEquiv.symm x).support = x.unop.support := by
+lemma addOppositeEquiv_symm_support (x : R⟦Γ⟧ᵃᵒᵖ)
+    : (addOppositeEquiv.symm x).support = x.unop.support := by
   rw [← addOppositeEquiv_support, AddEquiv.apply_symm_apply]
 
 @[simp]
-lemma addOppositeEquiv_orderTop (x : Rᵃᵒᵖ⟦Γ⟧) :
-    (addOppositeEquiv x).unop.orderTop = x.orderTop := by
+lemma addOppositeEquiv_orderTop (x : Rᵃᵒᵖ⟦Γ⟧)
+    : (addOppositeEquiv x).unop.orderTop = x.orderTop := by
   classical
-  simp only [orderTop,
-    addOppositeEquiv_support]
+  simp only [orderTop, addOppositeEquiv_support]
   simp only [addOppositeEquiv_apply, AddOpposite.unop_op, mk_eq_zero]
   simp_rw [HahnSeries.ext_iff, funext_iff]
   simp only [Pi.zero_apply, AddOpposite.unop_eq_zero_iff, coeff_zero]
 
 @[simp]
-lemma addOppositeEquiv_symm_orderTop (x : R⟦Γ⟧ᵃᵒᵖ) :
-    (addOppositeEquiv.symm x).orderTop = x.unop.orderTop := by
+lemma addOppositeEquiv_symm_orderTop (x : R⟦Γ⟧ᵃᵒᵖ)
+    : (addOppositeEquiv.symm x).orderTop = x.unop.orderTop := by
   rw [← addOppositeEquiv_orderTop, AddEquiv.apply_symm_apply]
 
 @[simp]
-lemma addOppositeEquiv_leadingCoeff (x : Rᵃᵒᵖ⟦Γ⟧) :
-    (addOppositeEquiv x).unop.leadingCoeff = x.leadingCoeff.unop := by
+lemma addOppositeEquiv_leadingCoeff (x : Rᵃᵒᵖ⟦Γ⟧)
+    : (addOppositeEquiv x).unop.leadingCoeff = x.leadingCoeff.unop := by
   obtain rfl | hx := eq_or_ne x 0
   · simp
   simp only [ne_eq, AddOpposite.unop_eq_zero_iff, EmbeddingLike.map_eq_zero_iff, hx,
@@ -178,37 +172,42 @@ lemma addOppositeEquiv_leadingCoeff (x : Rᵃᵒᵖ⟦Γ⟧) :
   simp [addOppositeEquiv]
 
 @[simp]
-lemma addOppositeEquiv_symm_leadingCoeff (x : R⟦Γ⟧ᵃᵒᵖ) :
-    (addOppositeEquiv.symm x).leadingCoeff = .op x.unop.leadingCoeff := by
+lemma addOppositeEquiv_symm_leadingCoeff (x : R⟦Γ⟧ᵃᵒᵖ)
+    : (addOppositeEquiv.symm x).leadingCoeff = .op x.unop.leadingCoeff := by
   apply AddOpposite.unop_injective
   rw [← addOppositeEquiv_leadingCoeff, AddEquiv.apply_symm_apply, AddOpposite.unop_op]
 
-protected theorem min_le_min_add {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hx : x ≠ 0)
-    (hy : y ≠ 0) (hxy : x + y ≠ 0) :
-    min (Set.IsWF.min x.isWF_support (support_nonempty_iff.2 hx))
-      (Set.IsWF.min y.isWF_support (support_nonempty_iff.2 hy)) ≤
-      Set.IsWF.min (x + y).isWF_support (support_nonempty_iff.2 hxy) := by
+protected theorem min_le_min_add
+    {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hx : x ≠ 0) (hy : y ≠ 0) (hxy : x + y ≠ 0)
+    : min (Set.IsWF.min x.isWF_support (support_nonempty_iff.2 hx))
+        (Set.IsWF.min y.isWF_support (support_nonempty_iff.2 hy))
+      ≤ Set.IsWF.min (x + y).isWF_support (support_nonempty_iff.2 hxy) := by
   rw [← Set.IsWF.min_union]
   exact Set.IsWF.min_le_min_of_subset (support_add_subset (x := x) (y := y))
 
-theorem min_orderTop_le_orderTop_add {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} :
-    min x.orderTop y.orderTop ≤ (x + y).orderTop := by
-  by_cases hx : x = 0; · simp [hx]
-  by_cases hy : y = 0; · simp [hy]
-  by_cases hxy : x + y = 0; · simp [hxy]
+theorem min_orderTop_le_orderTop_add {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
+    : min x.orderTop y.orderTop ≤ (x + y).orderTop := by
+  by_cases hx : x = 0
+  · simp [hx]
+  by_cases hy : y = 0
+  · simp [hy]
+  by_cases hxy : x + y = 0
+  · simp [hxy]
   rw [orderTop_of_ne_zero hx, orderTop_of_ne_zero hy, orderTop_of_ne_zero hxy, ← WithTop.coe_min,
     WithTop.coe_le_coe]
   exact HahnSeries.min_le_min_add hx hy hxy
 
-theorem min_order_le_order_add {Γ} [Zero Γ] [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : x + y ≠ 0) : min x.order y.order ≤ (x + y).order := by
-  by_cases hx : x = 0; · simp [hx]
-  by_cases hy : y = 0; · simp [hy]
+theorem min_order_le_order_add {Γ} [Zero Γ] [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : x + y ≠ 0)
+    : min x.order y.order ≤ (x + y).order := by
+  by_cases hx : x = 0
+  · simp [hx]
+  by_cases hy : y = 0
+  · simp [hy]
   rw [order_of_ne hx, order_of_ne hy, order_of_ne hxy]
   exact HahnSeries.min_le_min_add hx hy hxy
 
-theorem orderTop_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : x.orderTop < y.orderTop) : (x + y).orderTop = x.orderTop := by
+theorem orderTop_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : x.orderTop < y.orderTop)
+    : (x + y).orderTop = x.orderTop := by
   have hx : x ≠ 0 := orderTop_ne_top.1 hxy.ne_top
   let g : Γ := Set.IsWF.min x.isWF_support (support_nonempty_iff.2 hx)
   have hcxyne : (x + y).coeff g ≠ 0 := by
@@ -220,14 +219,13 @@ theorem orderTop_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
     exact orderTop_le_of_coeff_ne_zero hcxyne
   exact le_antisymm hxyx (le_of_eq_of_le (min_eq_left_of_lt hxy).symm min_orderTop_le_orderTop_add)
 
-theorem orderTop_add_eq_right {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : y.orderTop < x.orderTop) : (x + y).orderTop = y.orderTop := by
-  simpa [← map_add, ← AddOpposite.op_add, hxy] using orderTop_add_eq_left
-    (x := addOppositeEquiv.symm (.op y))
-    (y := addOppositeEquiv.symm (.op x))
+theorem orderTop_add_eq_right {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : y.orderTop < x.orderTop)
+    : (x + y).orderTop = y.orderTop := by
+  simpa [← map_add, ← AddOpposite.op_add, hxy] using
+    orderTop_add_eq_left (x := addOppositeEquiv.symm (.op y)) (y := addOppositeEquiv.symm (.op x))
 
-theorem leadingCoeff_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : x.orderTop < y.orderTop) : (x + y).leadingCoeff = x.leadingCoeff := by
+theorem leadingCoeff_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : x.orderTop < y.orderTop)
+    : (x + y).leadingCoeff = x.leadingCoeff := by
   have hx : x ≠ 0 := orderTop_ne_top.1 hxy.ne_top
   have ho : (x + y).orderTop = x.orderTop := orderTop_add_eq_left hxy
   by_cases h : x + y = 0
@@ -236,32 +234,35 @@ theorem leadingCoeff_add_eq_left {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
   · simp_rw [leadingCoeff_of_ne_zero h, leadingCoeff_of_ne_zero hx, ho, coeff_add]
     rw [coeff_eq_zero_of_lt_orderTop (x := y) (by simpa using hxy), add_zero]
 
-theorem leadingCoeff_add_eq_right {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : y.orderTop < x.orderTop) : (x + y).leadingCoeff = y.leadingCoeff := by
-  simpa [← map_add, ← AddOpposite.op_add, hxy] using leadingCoeff_add_eq_left
-    (x := addOppositeEquiv.symm (.op y))
-    (y := addOppositeEquiv.symm (.op x))
+theorem leadingCoeff_add_eq_right {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : y.orderTop < x.orderTop)
+    : (x + y).leadingCoeff = y.leadingCoeff := by
+  simpa [← map_add, ← AddOpposite.op_add, hxy] using
+    leadingCoeff_add_eq_left (x := addOppositeEquiv.symm (.op y))
+      (y := addOppositeEquiv.symm (.op x))
 
-theorem ne_zero_of_eq_add_single [Zero Γ] {x y : R⟦Γ⟧}
-    (hxy : x = y + single x.order x.leadingCoeff) (hy : y ≠ 0) : x ≠ 0 := by
+theorem ne_zero_of_eq_add_single
+    [Zero Γ] {x y : R⟦Γ⟧} (hxy : x = y + single x.order x.leadingCoeff) (hy : y ≠ 0)
+    : x ≠ 0 := by
   by_contra h
   simp only [h, order_zero, leadingCoeff_zero, map_zero, add_zero] at hxy
   exact hy hxy.symm
 
-theorem coeff_order_of_eq_add_single {R} [AddCancelCommMonoid R] [Zero Γ] {x y : R⟦Γ⟧}
-    (hxy : x = y + single x.order x.leadingCoeff) : y.coeff x.order = 0 := by
+theorem coeff_order_of_eq_add_single
+    {R} [AddCancelCommMonoid R] [Zero Γ] {x y : R⟦Γ⟧} (hxy : x = y + single x.order x.leadingCoeff)
+    : y.coeff x.order = 0 := by
   simpa [← leadingCoeff_eq] using congr(($hxy).coeff x.order)
 
-theorem order_lt_order_of_eq_add_single {R} {Γ} [LinearOrder Γ] [Zero Γ] [AddCancelCommMonoid R]
-    {x y : R⟦Γ⟧} (hxy : x = y + single x.order x.leadingCoeff) (hy : y ≠ 0) :
-    x.order < y.order := by
+theorem order_lt_order_of_eq_add_single
+    {R} {Γ} [LinearOrder Γ] [Zero Γ] [AddCancelCommMonoid R]
+    {x y : R⟦Γ⟧} (hxy : x = y + single x.order x.leadingCoeff) (hy : y ≠ 0)
+    : x.order < y.order := by
   have : x.order ≠ y.order := by
     intro h
     have hyne : single y.order y.leadingCoeff ≠ 0 := single_ne_zero <| leadingCoeff_ne_zero.mpr hy
     rw [leadingCoeff_eq, ← h, coeff_order_of_eq_add_single hxy, single_eq_zero] at hyne
     exact hyne rfl
   refine lt_of_le_of_ne ?_ this
-  simp only [order, ne_zero_of_eq_add_single hxy hy, ↓reduceDIte, hy]
+  simp only [order, ne_zero_of_eq_add_single hxy hy, ↓ reduceDIte, hy]
   refine Set.IsWF.min_le_min_of_subset fun g hg ↦ ?_
   obtain rfl | hgx := eq_or_ne g x.order
   · simpa using coeff_order_eq_zero.not.2 <| ne_zero_of_eq_add_single hxy hy
@@ -270,10 +271,7 @@ theorem order_lt_order_of_eq_add_single {R} {Γ} [LinearOrder Γ] [Zero Γ] [Add
     simpa [this] using hg
 
 /-- `single` as an additive monoid/group homomorphism -/
-@[simps!]
-def single.addMonoidHom (a : Γ) : R →+ R⟦Γ⟧ :=
-  { single a with
-    map_add' := single_add _ }
+@[simps!] def single.addMonoidHom (a : Γ) : R →+ R⟦Γ⟧ := { single a with map_add' := single_add _ }
 
 /-- `coeff g` as an additive monoid/group homomorphism -/
 @[simps]
@@ -286,8 +284,8 @@ section Domain
 
 variable [PartialOrder Γ']
 
-theorem embDomain_add (f : Γ ↪o Γ') (x y : R⟦Γ⟧) :
-    embDomain f (x + y) = embDomain f x + embDomain f y := by
+theorem embDomain_add (f : Γ ↪o Γ') (x y : R⟦Γ⟧)
+    : embDomain f (x + y) = embDomain f x + embDomain f y := by
   ext g
   by_cases hg : g ∈ Set.range f
   · obtain ⟨a, rfl⟩ := hg
@@ -296,8 +294,8 @@ theorem embDomain_add (f : Γ ↪o Γ') (x y : R⟦Γ⟧) :
 
 end Domain
 
-theorem truncLT_add [DecidableLT Γ] (c : Γ) (x y : R⟦Γ⟧) :
-    truncLT c (x + y) = truncLT c x + truncLT c y := by
+theorem truncLT_add [DecidableLT Γ] (c : Γ) (x y : R⟦Γ⟧)
+    : truncLT c (x + y) = truncLT c x + truncLT c y := by
   ext i
   by_cases h : i < c <;> simp [h]
 
@@ -313,8 +311,8 @@ instance : AddCommMonoid R⟦Γ⟧ where
     apply add_comm
 
 @[simp]
-theorem coeff_sum {s : Finset α} {x : α → R⟦Γ⟧} (g : Γ) :
-    (∑ i ∈ s, x i).coeff g = ∑ i ∈ s, (x i).coeff g :=
+theorem coeff_sum {s : Finset α} {x : α → R⟦Γ⟧} (g : Γ)
+    : (∑ i ∈ s, x i).coeff g = ∑ i ∈ s, (x i).coeff g :=
   cons_induction rfl (fun i s his hsum => by rw [sum_cons, sum_cons, coeff_add, hsum]) s
 
 end AddCommMonoid
@@ -324,17 +322,13 @@ section NegZeroClass
 variable [NegZeroClass R]
 
 instance : Neg R⟦Γ⟧ where
-  neg x := x.map (-ZeroHom.id _)
+  neg x := x.map (- ZeroHom.id _)
 
-theorem support_neg_subset (x : R⟦Γ⟧) : (-x).support ⊆ x.support :=
-  support_map_subset ..
+theorem support_neg_subset (x : R⟦Γ⟧) : (-x).support ⊆ x.support := support_map_subset ..
 
-@[simp]
-theorem coeff_neg' (x : R⟦Γ⟧) : (-x).coeff = -x.coeff :=
-  rfl
+@[simp] theorem coeff_neg' (x : R⟦Γ⟧) : (-x).coeff = -x.coeff := rfl
 
-theorem coeff_neg {x : R⟦Γ⟧} {a : Γ} : (-x).coeff a = -x.coeff a :=
-  rfl
+theorem coeff_neg {x : R⟦Γ⟧} {a : Γ} : (-x).coeff a = - x.coeff a := rfl
 
 end NegZeroClass
 
@@ -343,31 +337,30 @@ section AddGroup
 variable [AddGroup R]
 
 instance : Sub R⟦Γ⟧ where
-  sub x y :=
-    { coeff := x.coeff - y.coeff
-      isPWO_support' := (x.isPWO_support.union y.isPWO_support).mono (Function.support_sub ..) }
+  sub x y := {
+    coeff := x.coeff - y.coeff
+    isPWO_support' := (x.isPWO_support.union y.isPWO_support).mono (Function.support_sub ..)
+  }
 
 theorem support_sub_subset (x y : R⟦Γ⟧) : (x - y).support ⊆ x.support ∪ y.support :=
   Function.support_sub ..
 
-@[simp]
-theorem coeff_sub' (x y : R⟦Γ⟧) : (x - y).coeff = x.coeff - y.coeff :=
-  rfl
+@[simp] theorem coeff_sub' (x y : R⟦Γ⟧) : (x - y).coeff = x.coeff - y.coeff := rfl
 
-theorem coeff_sub {x y : R⟦Γ⟧} {a : Γ} : (x - y).coeff a = x.coeff a - y.coeff a :=
-  rfl
+theorem coeff_sub {x y : R⟦Γ⟧} {a : Γ} : (x - y).coeff a = x.coeff a - y.coeff a := rfl
 
-instance : AddGroup R⟦Γ⟧ := fast_instance%
-  coeff_injective.addGroup _
-    coeff_zero' coeff_add' coeff_neg' coeff_sub'
-    (fun _ _ => coeff_smul' _ _) (fun _ _ => coeff_smul' _ _)
+instance : AddGroup R⟦Γ⟧ :=
+  fast_instance%
+    coeff_injective.addGroup _
+      coeff_zero' coeff_add' coeff_neg' coeff_sub'
+      (fun _ _ => coeff_smul' _ _) (fun _ _ => coeff_smul' _ _)
 
 @[simp]
 theorem single_sub (a : Γ) (r s : R) : single a (r - s) = single a r - single a s :=
   map_sub (single.addMonoidHom a) _ _
 
 @[simp]
-theorem single_neg (a : Γ) (r : R) : single a (-r) = -single a r :=
+theorem single_neg (a : Γ) (r : R) : single a (-r) = - single a r :=
   map_neg (single.addMonoidHom a) _
 
 @[simp]
@@ -376,13 +369,13 @@ theorem support_neg {x : R⟦Γ⟧} : (-x).support = x.support := by
   simp
 
 @[simp]
-protected lemma map_neg [AddGroup S] (f : R →+ S) {x : R⟦Γ⟧} :
-    ((-x).map f : S⟦Γ⟧) = -x.map f := by
+protected lemma map_neg [AddGroup S] (f : R →+ S) {x : R⟦Γ⟧} : ((-x).map f : S⟦Γ⟧) = - x.map f := by
   ext; simp
 
 @[simp]
 theorem orderTop_neg {x : R⟦Γ⟧} : (-x).orderTop = x.orderTop := by
-  classical simp only [orderTop, support_neg, neg_eq_zero]
+  classical
+  simp only [orderTop, support_neg, neg_eq_zero]
 
 @[simp]
 theorem order_neg [Zero Γ] {f : R⟦Γ⟧} : (-f).order = f.order := by
@@ -395,42 +388,46 @@ theorem leadingCoeff_neg {x : R⟦Γ⟧} : (-x).leadingCoeff = -x.leadingCoeff :
   obtain rfl | hx := eq_or_ne x 0 <;> simp [leadingCoeff_of_ne_zero, *]
 
 @[simp]
-protected lemma map_sub [AddGroup S] (f : R →+ S) {x y : R⟦Γ⟧} :
-    ((x - y).map f : S⟦Γ⟧) = x.map f - y.map f := by
+protected lemma map_sub [AddGroup S] (f : R →+ S) {x y : R⟦Γ⟧}
+    : ((x - y).map f : S⟦Γ⟧) = x.map f - y.map f := by
   ext; simp
 
-theorem min_orderTop_le_orderTop_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} :
-    min x.orderTop y.orderTop ≤ (x - y).orderTop := by
+theorem min_orderTop_le_orderTop_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
+    : min x.orderTop y.orderTop ≤ (x - y).orderTop := by
   rw [sub_eq_add_neg, ← orderTop_neg (x := y)]
   exact min_orderTop_le_orderTop_add
 
-theorem orderTop_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : x.orderTop < y.orderTop) : (x - y).orderTop = x.orderTop := by
+theorem orderTop_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : x.orderTop < y.orderTop)
+    : (x - y).orderTop = x.orderTop := by
   rw [sub_eq_add_neg]
   rw [← orderTop_neg (x := y)] at hxy
   exact orderTop_add_eq_left hxy
 
-theorem leadingCoeff_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧}
-    (hxy : x.orderTop < y.orderTop) : (x - y).leadingCoeff = x.leadingCoeff := by
+theorem leadingCoeff_sub {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} (hxy : x.orderTop < y.orderTop)
+    : (x - y).leadingCoeff = x.leadingCoeff := by
   rw [sub_eq_add_neg]
   rw [← orderTop_neg (x := y)] at hxy
   exact leadingCoeff_add_eq_left hxy
 
-theorem orderTop_sub_ne {x y : R⟦Γ⟧} {g : Γ}
-    (hxg : x.orderTop = g) (hyg : y.orderTop = g) (hxyc : x.leadingCoeff = y.leadingCoeff) :
-    (x - y).orderTop ≠ g := by
+theorem orderTop_sub_ne
+    {x y : R⟦Γ⟧} {g : Γ}
+    (hxg : x.orderTop = g) (hyg : y.orderTop = g) (hxyc : x.leadingCoeff = y.leadingCoeff)
+    : (x - y).orderTop ≠ g := by
   refine orderTop_ne_of_coeff_eq_zero ?_
   have hx : x ≠ 0 := fun h ↦ by simp_all [orderTop_zero, WithTop.top_ne_coe]
   rw [orderTop_of_ne_zero hx, WithTop.coe_eq_coe] at hxg
   have hy : y ≠ 0 := fun h ↦ by simp_all [orderTop_zero, WithTop.top_ne_coe]
   rw [orderTop_of_ne_zero hy, WithTop.coe_eq_coe] at hyg
   simp only [leadingCoeff_of_ne_zero hx, leadingCoeff_of_ne_zero hy, untop_orderTop_of_ne_zero hx,
-    untop_orderTop_of_ne_zero hy, hxg, hyg] at hxyc
+      untop_orderTop_of_ne_zero hy, hxg, hyg]
+    at hxyc
   rwa [coeff_sub, sub_eq_zero]
 
-theorem le_orderTop_of_leadingCoeff_eq {Γ} [LinearOrder Γ] {x y : R⟦Γ⟧} {g : Γ}
-    (hxg : x.orderTop = g) (hyg : y.orderTop = g) (hxyc : x.leadingCoeff = y.leadingCoeff) :
-    g < (x - y).orderTop :=
+theorem le_orderTop_of_leadingCoeff_eq
+    {Γ} [LinearOrder Γ]
+    {x y : R⟦Γ⟧} {g : Γ}
+    (hxg : x.orderTop = g) (hyg : y.orderTop = g) (hxyc : x.leadingCoeff = y.leadingCoeff)
+    : g < (x - y).orderTop :=
   lt_of_le_of_ne (le_of_eq_of_le (by rw [hxg, hyg, inf_idem]) min_orderTop_le_orderTop_sub)
     (orderTop_sub_ne hxg hyg hxyc).symm
 
@@ -460,15 +457,13 @@ instance : DistribMulAction R V⟦Γ⟧ where
 
 variable {S : Type*} [Monoid S] [DistribMulAction S V]
 
-instance [SMul R S] [IsScalarTower R S V] : IsScalarTower R S V⟦Γ⟧ :=
-  ⟨fun r s a => by
-    ext
-    simp⟩
+instance [SMul R S] [IsScalarTower R S V] : IsScalarTower R S V⟦Γ⟧ := ⟨fun r s a => by
+  ext
+  simp⟩
 
-instance [SMulCommClass R S V] : SMulCommClass R S V⟦Γ⟧ :=
-  ⟨fun r s a => by
-    ext
-    simp [smul_comm]⟩
+instance [SMulCommClass R S V] : SMulCommClass R S V⟦Γ⟧ := ⟨fun r s a => by
+  ext
+  simp [smul_comm]⟩
 
 end DistribMulAction
 
@@ -486,20 +481,23 @@ instance : Module R V⟦Γ⟧ where
 
 /-- `single` as a linear map -/
 @[simps]
-def single.linearMap (a : Γ) : V →ₗ[R] V⟦Γ⟧ :=
-  { single.addMonoidHom a with
-    map_smul' := fun r s => by
-      ext b
-      by_cases h : b = a <;> simp [h] }
+def single.linearMap (a : Γ) : V →ₗ[R] V⟦Γ⟧ := {
+  single.addMonoidHom a with
+  map_smul' := fun r s => by
+    ext b
+    by_cases h : b = a <;> simp [h]
+}
 
 /-- `coeff g` as a linear map -/
 @[simps]
-def coeff.linearMap (g : Γ) : V⟦Γ⟧ →ₗ[R] V :=
-  { coeff.addMonoidHom g with map_smul' := fun _ _ => rfl }
+def coeff.linearMap (g : Γ) : V⟦Γ⟧ →ₗ[R] V := {
+  coeff.addMonoidHom g with
+  map_smul' := fun _ _ => rfl
+}
 
 @[simp]
-protected lemma map_smul [AddCommMonoid U] [Module R U] (f : U →ₗ[R] V) {r : R} {x : U⟦Γ⟧} :
-    (r • x).map f = r • (x.map f : V⟦Γ⟧) := by
+protected lemma map_smul [AddCommMonoid U] [Module R U] (f : U →ₗ[R] V) {r : R} {x : U⟦Γ⟧}
+    : (r • x).map f = r • (x.map f : V⟦Γ⟧) := by
   ext; simp
 
 section Finsupp
@@ -517,8 +515,8 @@ def ofFinsuppLinearMap : (Γ →₀ V) →ₗ[R] V⟦Γ⟧ where
 
 variable (R) in
 @[simp]
-theorem coeff_ofFinsuppLinearMap (f : Γ →₀ V) (a : Γ) :
-    (ofFinsuppLinearMap R f).coeff a = f a := rfl
+theorem coeff_ofFinsuppLinearMap (f : Γ →₀ V) (a : Γ) : (ofFinsuppLinearMap R f).coeff a = f a :=
+  rfl
 
 end Finsupp
 
@@ -526,8 +524,8 @@ section Domain
 
 variable [PartialOrder Γ']
 
-theorem embDomain_smul (f : Γ ↪o Γ') (r : R) (x : R⟦Γ⟧) :
-    embDomain f (r • x) = r • embDomain f x := by
+theorem embDomain_smul (f : Γ ↪o Γ') (r : R) (x : R⟦Γ⟧)
+    : embDomain f (r • x) = r • embDomain f x := by
   ext g
   by_cases hg : g ∈ Set.range f
   · obtain ⟨a, rfl⟩ := hg
@@ -552,8 +550,9 @@ def truncLTLinearMap [DecidableLT Γ] (c : Γ) : V⟦Γ⟧ →ₗ[R] V⟦Γ⟧ w
 
 variable (R) in
 @[simp]
-theorem coe_truncLTLinearMap [DecidableLT Γ] (c : Γ) :
-    (truncLTLinearMap R c : V⟦Γ⟧ → V⟦Γ⟧) = truncLT c := by rfl
+theorem coe_truncLTLinearMap [DecidableLT Γ] (c : Γ)
+    : (truncLTLinearMap R c : V⟦Γ⟧ → V⟦Γ⟧) = truncLT c := by
+  rfl
 
 end Module
 

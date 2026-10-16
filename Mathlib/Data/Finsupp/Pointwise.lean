@@ -21,7 +21,6 @@ and `MonoidAlgebra`.
 
 public section
 
-
 noncomputable section
 
 open Finset
@@ -34,41 +33,35 @@ namespace Finsupp
 
 /-! ### Declarations about the pointwise product on `Finsupp`s -/
 
-
 section
 
 variable [MulZeroClass β]
 
-/-- The product of `f g : α →₀ β` is the finitely supported function
-  whose value at `a` is `f a * g a`. -/
-instance : Mul (α →₀ β) :=
-  ⟨zipWith (· * ·) (mul_zero 0)⟩
+/--
+The product of `f g : α →₀ β` is the finitely supported function
+whose value at `a` is `f a * g a`.
+-/
+instance : Mul (α →₀ β) := ⟨zipWith (· * ·) (mul_zero 0)⟩
 
-theorem coe_mul (g₁ g₂ : α →₀ β) : ⇑(g₁ * g₂) = g₁ * g₂ :=
-  rfl
+theorem coe_mul (g₁ g₂ : α →₀ β) : ⇑(g₁ * g₂) = g₁ * g₂ := rfl
 
-@[simp]
-theorem mul_apply {g₁ g₂ : α →₀ β} {a : α} : (g₁ * g₂) a = g₁ a * g₂ a :=
-  rfl
+@[simp] theorem mul_apply {g₁ g₂ : α →₀ β} {a : α} : (g₁ * g₂) a = g₁ a * g₂ a := rfl
 
 @[simp]
 theorem single_mul (a : α) (b₁ b₂ : β) : single a (b₁ * b₂) = single a b₁ * single a b₂ :=
   (zipWith_single_single _ _ _ _ _).symm
 
-lemma support_mul_subset_left {g₁ g₂ : α →₀ β} :
-    (g₁ * g₂).support ⊆ g₁.support := fun x hx => by
+lemma support_mul_subset_left {g₁ g₂ : α →₀ β} : (g₁ * g₂).support ⊆ g₁.support := fun x hx => by
   aesop
 
-lemma support_mul_subset_right {g₁ g₂ : α →₀ β} :
-    (g₁ * g₂).support ⊆ g₂.support := fun x hx => by
+lemma support_mul_subset_right {g₁ g₂ : α →₀ β} : (g₁ * g₂).support ⊆ g₂.support := fun x hx => by
   aesop
 
-theorem support_mul [DecidableEq α] {g₁ g₂ : α →₀ β} :
-    (g₁ * g₂).support ⊆ g₁.support ∩ g₂.support :=
+theorem support_mul [DecidableEq α] {g₁ g₂ : α →₀ β}
+    : (g₁ * g₂).support ⊆ g₁.support ∩ g₂.support :=
   subset_inter support_mul_subset_left support_mul_subset_right
 
-instance : MulZeroClass (α →₀ β) :=
-  DFunLike.coe_injective.mulZeroClass _ coe_zero coe_mul
+instance : MulZeroClass (α →₀ β) := DFunLike.coe_injective.mulZeroClass _ coe_zero coe_mul
 
 end
 
@@ -86,18 +79,21 @@ instance [NonUnitalCommSemiring β] : NonUnitalCommSemiring (α →₀ β) :=
 
 instance [NonUnitalNonAssocRing β] : NonUnitalNonAssocRing (α →₀ β) :=
   DFunLike.coe_injective.nonUnitalNonAssocRing _ coe_zero coe_add coe_mul coe_neg coe_sub
-    (fun _ _ ↦ rfl) fun _ _ ↦ rfl
+    (fun _ _ ↦ rfl)
+    fun _ _ ↦ rfl
 
 instance [NonUnitalRing β] : NonUnitalRing (α →₀ β) :=
-  DFunLike.coe_injective.nonUnitalRing _ coe_zero coe_add coe_mul coe_neg coe_sub (fun _ _ ↦ rfl)
+  DFunLike.coe_injective.nonUnitalRing _ coe_zero coe_add coe_mul coe_neg coe_sub
+    (fun _ _ ↦ rfl)
     fun _ _ ↦ rfl
 
 instance [NonUnitalCommRing β] : NonUnitalCommRing (α →₀ β) :=
   DFunLike.coe_injective.nonUnitalCommRing _ coe_zero coe_add coe_mul coe_neg coe_sub
-    (fun _ _ ↦ rfl) fun _ _ ↦ rfl
+    (fun _ _ ↦ rfl)
+    fun _ _ ↦ rfl
 
-lemma pointwise_smul_support_finite [Zero γ] [SMulZeroClass β γ] (f : α → β)
-    (g : α →₀ γ) : (fun x ↦ f x • g x).support.Finite :=
+lemma pointwise_smul_support_finite [Zero γ] [SMulZeroClass β γ] (f : α → β) (g : α →₀ γ)
+    : (fun x ↦ f x • g x).support.Finite :=
   Set.Finite.subset g.hasFiniteSupport (by simp; grind [smul_zero])
 
 -- TODO(Paul-Lez): add a `DFinsupp` version of this.
@@ -110,9 +106,7 @@ abbrev pointwiseScalar [Zero γ] [SMulZeroClass β γ] : SMul (α → β) (α �
 
 instance pointwiseScalarSemiring [Semiring β] : SMul (α → β) (α →₀ β) := pointwiseScalar
 
-@[simp]
-theorem coe_pointwise_smul [Semiring β] (f : α → β) (g : α →₀ β) : ⇑(f • g) = f • ⇑g :=
-  rfl
+@[simp] theorem coe_pointwise_smul [Semiring β] (f : α → β) (g : α →₀ β) : ⇑(f • g) = f • ⇑g := rfl
 
 /-- The pointwise multiplicative action of functions on finitely supported functions -/
 instance pointwiseModule [Semiring β] : Module (α → β) (α →₀ β) :=

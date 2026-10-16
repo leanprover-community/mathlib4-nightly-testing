@@ -7,7 +7,6 @@ module
 
 public import Mathlib.AlgebraicGeometry.GluingOneHypercover
 public import Mathlib.CategoryTheory.MorphismProperty.Representable
-
 import Mathlib.CategoryTheory.Sites.LocallyBijective
 
 /-!
@@ -50,7 +49,8 @@ Consider the following setup:
 Later, we will also assume:
 * The family f is locally surjective with respect to the Zariski topology
 -/
-variable (F : Sheaf Scheme.zariskiTopology.{u} (Type u))
+variable
+  (F : Sheaf Scheme.zariskiTopology.{u} (Type u))
   {ι : Type u} {X : ι → Scheme.{u}}
   (f : (i : ι) → yoneda.obj (X i) ⟶ F.1) (hf : ∀ i, IsOpenImmersion.presheaf (f i))
 
@@ -72,79 +72,77 @@ noncomputable def glueData : GlueData where
     IsOpenImmersion.mono _
   f_id i := IsOpenImmersion.isIso_fst'_self IsOpenImmersion.le_monomorphisms (hf i)
   t i j := (hf i).rep.symmetry (hf j).rep
-  t_id i := by apply (hf i).rep.hom_ext' <;>
-    simp [IsOpenImmersion.fst'_self_eq_snd IsOpenImmersion.le_monomorphisms (hf i)]
-  t' i j k := lift₃ _ _ _ (pullback₃.p₂ _ _ _) (pullback₃.p₃ _ _ _) (pullback₃.p₁ _ _ _)
-    (by simp) (by simp)
+  t_id i := by
+    apply (hf i).rep.hom_ext'
+      <;> simp [IsOpenImmersion.fst'_self_eq_snd IsOpenImmersion.le_monomorphisms (hf i)]
+  t' i j k :=
+    lift₃ _ _ _ (pullback₃.p₂ _ _ _) (pullback₃.p₃ _ _ _) (pullback₃.p₁ _ _ _) (by simp) (by simp)
   t_fac i j k := (hf j).rep.hom_ext' (by simp) (by simp)
   cocycle i j k := pullback₃.hom_ext (by simp) (by simp) (by simp)
   f_open i j := (hf j).property _ _ _ ((hf i).1.isPullback' (f j)).flip
 
 /-- The map from `X i` to the glued scheme `(glueData hf).glued` -/
-noncomputable def toGlued (i : ι) : X i ⟶ (glueData hf).glued :=
-  (glueData hf).ι i
+noncomputable def toGlued (i : ι) : X i ⟶ (glueData hf).glued := (glueData hf).ι i
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance : IsOpenImmersion (toGlued hf i) :=
-  inferInstanceAs (IsOpenImmersion ((glueData hf).ι i))
+instance : IsOpenImmersion (toGlued hf i) := inferInstanceAs (IsOpenImmersion ((glueData hf).ι i))
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The map from the glued scheme `(glueData hf).glued`, treated as a sheaf, to `F`. -/
-noncomputable def yonedaGluedToSheaf :
-    zariskiTopology.yoneda.obj (glueData hf).glued ⟶ F where
+noncomputable def yonedaGluedToSheaf : zariskiTopology.yoneda.obj (glueData hf).glued ⟶ F where
   -- The map is obtained by finding an object of `F((glueData hf).glued)`.
-  hom := yonedaEquiv.symm
-  -- This section is obtained from gluing the section corresponding to `f i : Hom(-, X i) ⟶ F`.
-    ((glueData hf).sheafValGluedMk (fun i ↦ yonedaEquiv (f i)) (by
-      intro i j
-      apply yonedaEquiv.symm.injective
-      dsimp only [glueData_V, glueData_J, glueData_U, glueData_f, glueData_t]
-      rw [yonedaEquiv_naturality, Equiv.symm_apply_apply,
-        Functor.map_comp_apply, yonedaEquiv_naturality, yonedaEquiv_naturality,
-        Equiv.symm_apply_apply, ← Functor.map_comp_assoc,
-        Functor.relativelyRepresentable.symmetry_fst, ((hf i).rep.isPullback' (f j)).w]))
+  hom :=
+    yonedaEquiv.symm
+      -- This section is obtained from gluing the section corresponding to `f i : Hom(-, X i) ⟶ F`.
+      ((glueData hf).sheafValGluedMk (fun i ↦ yonedaEquiv (f i)) (by
+        intro i j
+        apply yonedaEquiv.symm.injective
+        dsimp only [glueData_V, glueData_J, glueData_U, glueData_f, glueData_t]
+        rw [yonedaEquiv_naturality, Equiv.symm_apply_apply, Functor.map_comp_apply,
+          yonedaEquiv_naturality, yonedaEquiv_naturality, Equiv.symm_apply_apply,
+          ← Functor.map_comp_assoc, Functor.relativelyRepresentable.symmetry_fst,
+          ((hf i).rep.isPullback' (f j)).w]))
 
 @[reassoc (attr := simp)]
-lemma yoneda_toGlued_yonedaGluedToSheaf (i : ι) :
-    yoneda.map (toGlued hf i) ≫ (yonedaGluedToSheaf hf).hom = f i := by
+lemma yoneda_toGlued_yonedaGluedToSheaf (i : ι)
+    : yoneda.map (toGlued hf i) ≫ (yonedaGluedToSheaf hf).hom = f i := by
   apply yonedaEquiv.injective
-  rw [yonedaGluedToSheaf, yonedaEquiv_apply, yonedaEquiv_apply,
-    NatTrans.comp_app_apply, yoneda_map_app]
+  rw [yonedaGluedToSheaf, yonedaEquiv_apply, yonedaEquiv_apply, NatTrans.comp_app_apply,
+    yoneda_map_app]
   simpa using! GlueData.sheafValGluedMk_val _ _ _ _
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma yonedaGluedToSheaf_app_toGlued {i : ι} :
-    dsimp% (yonedaGluedToSheaf hf).hom.app _ (toGlued hf i) = yonedaEquiv (f i) := by
-  rw [← yoneda_toGlued_yonedaGluedToSheaf hf i, yonedaEquiv_comp,
-    yonedaEquiv_yoneda_map]
+lemma yonedaGluedToSheaf_app_toGlued {i : ι}
+    : dsimp% (yonedaGluedToSheaf hf).hom.app _ (toGlued hf i) = yonedaEquiv (f i) := by
+  rw [← yoneda_toGlued_yonedaGluedToSheaf hf i, yonedaEquiv_comp, yonedaEquiv_yoneda_map]
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma yonedaGluedToSheaf_app_comp {V U : Scheme.{u}} (γ : V ⟶ U) (α : U ⟶ (glueData hf).glued) :
-    dsimp% (yonedaGluedToSheaf hf).hom.app (op V) (γ ≫ α) =
-      F.obj.map γ.op ((yonedaGluedToSheaf hf).hom.app (op U) α) :=
+lemma yonedaGluedToSheaf_app_comp {V U : Scheme.{u}} (γ : V ⟶ U) (α : U ⟶ (glueData hf).glued)
+    : dsimp% (yonedaGluedToSheaf hf).hom.app (op V) (γ ≫ α) =
+        F.obj.map γ.op ((yonedaGluedToSheaf hf).hom.app (op U) α) :=
   congr($((yonedaGluedToSheaf hf).hom.naturality γ.op) α)
 
-instance [Presheaf.IsLocallySurjective Scheme.zariskiTopology (Sigma.desc f)] :
-    Sheaf.IsLocallySurjective (yonedaGluedToSheaf hf) :=
+instance [Presheaf.IsLocallySurjective Scheme.zariskiTopology (Sigma.desc f)]
+    : Sheaf.IsLocallySurjective (yonedaGluedToSheaf hf) :=
   Presheaf.isLocallySurjective_of_isLocallySurjective_fac _
-    (show Sigma.desc (fun i ↦ yoneda.map (toGlued hf i)) ≫
-      (yonedaGluedToSheaf hf).hom = Sigma.desc f by cat_disch)
+    (show Sigma.desc (fun i ↦ yoneda.map (toGlued hf i)) ≫ (yonedaGluedToSheaf hf).hom
+        = Sigma.desc f by
+      cat_disch)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-lemma comp_toGlued_eq {U : Scheme} {i j : ι} (a : U ⟶ X i) (b : U ⟶ X j)
-    (h : yoneda.map a ≫ f i = yoneda.map b ≫ f j) :
-    a ≫ toGlued hf i = b ≫ toGlued hf j := by
+lemma comp_toGlued_eq
+    {U : Scheme} {i j : ι} (a : U ⟶ X i) (b : U ⟶ X j) (h : yoneda.map a ≫ f i = yoneda.map b ≫ f j)
+    : a ≫ toGlued hf i = b ≫ toGlued hf j := by
   rw [← (hf i).rep.lift'_fst a b h, assoc]
   conv_rhs => rw [← (hf i).rep.lift'_snd a b h, assoc]
   congr 1
   exact ((glueData hf).glue_condition i j).symm.trans (by simp [toGlued])
 
-@[simp]
-lemma glueData_openCover_map : (glueData hf).openCover.f j = toGlued hf j := rfl
+@[simp] lemma glueData_openCover_map : (glueData hf).openCover.f j = toGlued hf j := rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
@@ -158,8 +156,10 @@ instance : Sheaf.IsLocallyInjective (yonedaGluedToSheaf hf) where
         (zariskiTopology.pullback_stable β mem))
     rintro V (γ : _ ⟶ U) ⟨⟨W₁, a, _, ⟨i⟩, fac₁⟩, ⟨W₂, b, _, ⟨j⟩, fac₂⟩⟩
     change γ ≫ α = γ ≫ β
-    replace h : (yonedaGluedToSheaf hf).hom.app _ (γ ≫ α) =
-        (yonedaGluedToSheaf hf).hom.app _ (γ ≫ β) := by dsimp at h; simp [h]
+    replace h
+        : (yonedaGluedToSheaf hf).hom.app _ (γ ≫ α)
+          = (yonedaGluedToSheaf hf).hom.app _ (γ ≫ β) := by
+      dsimp at h; simp [h]
     rw [← fac₁, ← fac₂] at h ⊢
     apply comp_toGlued_eq
     simpa [Scheme.GlueData.openCover_X, yonedaEquiv_naturality] using h
@@ -170,11 +170,12 @@ instance : IsIso (yonedaGluedToSheaf hf) := by
   rw [← Sheaf.isLocallyBijective_iff_isIso (yonedaGluedToSheaf hf)]
   constructor <;> infer_instance
 
-/-- The isomorphism between `yoneda.obj (glueData hf).glued` and `F`.
+/--
+The isomorphism between `yoneda.obj (glueData hf).glued` and `F`.
 
-This implies that `F` is representable. -/
-noncomputable def yonedaIsoSheaf :
-    zariskiTopology.yoneda.obj (glueData hf).glued ≅ F :=
+This implies that `F` is representable.
+-/
+noncomputable def yonedaIsoSheaf : zariskiTopology.yoneda.obj (glueData hf).glued ≅ F :=
   asIso (yonedaGluedToSheaf hf)
 
 /--
@@ -186,10 +187,8 @@ Suppose
 
 Then `F` is representable, and the representing object is glued from the `X i`s
 -/
-noncomputable
-def representableBy : F.1.RepresentableBy (glueData hf).glued :=
+noncomputable def representableBy : F.1.RepresentableBy (glueData hf).glued :=
   Functor.representableByEquiv.symm ((sheafToPresheaf _ _).mapIso (yonedaIsoSheaf hf))
-
 
 include hf in
 /--
@@ -202,8 +201,7 @@ Suppose
 Then `F` is representable.
 -/
 @[stacks 01JJ]
-theorem isRepresentable : F.1.IsRepresentable :=
-  ⟨_, ⟨representableBy hf⟩⟩
+theorem isRepresentable : F.1.IsRepresentable := ⟨_, ⟨representableBy hf⟩⟩
 
 end LocalRepresentability
 

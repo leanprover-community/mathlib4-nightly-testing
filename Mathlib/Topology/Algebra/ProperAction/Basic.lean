@@ -6,7 +6,6 @@ Authors: Anatole Dedeker, Etienne Marion, Florestan Martin-Baillon, Vincent Guir
 module
 
 public import Mathlib.Topology.Algebra.Group.Quotient
-
 import Mathlib.Topology.LocalAtTarget
 
 /-!
@@ -41,21 +40,30 @@ public section
 
 open Filter Topology Set Prod
 
-/-- Proper group action in the sense of Bourbaki:
-the map `G × X → X × X` is a proper map (see `IsProperMap`). -/
-class ProperVAdd (G X : Type*) [TopologicalSpace G] [TopologicalSpace X] [AddGroup G]
-    [AddAction G X] : Prop where
-  /-- Proper group action in the sense of Bourbaki:
-  the map `G × X → X × X` is a proper map (see `IsProperMap`). -/
+/--
+Proper group action in the sense of Bourbaki:
+the map `G × X → X × X` is a proper map (see `IsProperMap`).
+-/
+class ProperVAdd
+    (G X : Type*) [TopologicalSpace G] [TopologicalSpace X] [AddGroup G] [AddAction G X]
+    : Prop where
+  /--
+  Proper group action in the sense of Bourbaki:
+  the map `G × X → X × X` is a proper map (see `IsProperMap`).
+  -/
   isProperMap_vadd_pair : IsProperMap (fun gx ↦ (gx.1 +ᵥ gx.2, gx.2) : G × X → X × X)
 
-/-- Proper group action in the sense of Bourbaki:
-the map `G × X → X × X` is a proper map (see `IsProperMap`). -/
+/--
+Proper group action in the sense of Bourbaki:
+the map `G × X → X × X` is a proper map (see `IsProperMap`).
+-/
 @[to_additive existing (attr := mk_iff)]
-class ProperSMul (G X : Type*) [TopologicalSpace G] [TopologicalSpace X] [Group G]
-    [MulAction G X] : Prop where
-  /-- Proper group action in the sense of Bourbaki:
-  the map `G × X → X × X` is a proper map (see `IsProperMap`). -/
+class ProperSMul (G X : Type*) [TopologicalSpace G] [TopologicalSpace X] [Group G] [MulAction G X]
+    : Prop where
+  /--
+  Proper group action in the sense of Bourbaki:
+  the map `G × X → X × X` is a proper map (see `IsProperMap`).
+  -/
   isProperMap_smul_pair : IsProperMap (fun gx ↦ (gx.1 • gx.2, gx.2) : G × X → X × X)
 
 attribute [to_additive existing] properSMul_iff
@@ -69,18 +77,21 @@ variable [TopologicalSpace G] [TopologicalSpace X]
 instance (priority := 100) ProperSMul.toContinuousSMul [ProperSMul G X] : ContinuousSMul G X where
   continuous_smul := isProperMap_smul_pair.continuous.fst
 
-/-- A group `G` acts properly on a topological space `X` if and only if for all ultrafilters
+/--
+A group `G` acts properly on a topological space `X` if and only if for all ultrafilters
 `𝒰` on `X × G`, if `𝒰` converges to `(x₁, x₂)` along the map `(g, x) ↦ (g • x, x)`,
-then there exists `g : G` such that `g • x₂ = x₁` and `𝒰.fst` converges to `g`. -/
+then there exists `g : G` such that `g • x₂ = x₁` and `𝒰.fst` converges to `g`.
+-/
 @[to_additive /-- An additive group `G` acts properly on a topological space `X` if and only if
 for all ultrafilters `𝒰` on `X`, if `𝒰` converges to `(x₁, x₂)`
 along the map `(g, x) ↦ (g • x, x)`, then there exists `g : G` such that `g • x₂ = x₁`
 and `𝒰.fst` converges to `g`. -/]
-theorem properSMul_iff_continuousSMul_ultrafilter_tendsto :
-    ProperSMul G X ↔ ContinuousSMul G X ∧
-      (∀ 𝒰 : Ultrafilter (G × X), ∀ x₁ x₂ : X,
-        Tendsto (fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) 𝒰 (𝓝 (x₁, x₂)) →
-        ∃ g : G, g • x₂ = x₁ ∧ Tendsto (Prod.fst : G × X → G) 𝒰 (𝓝 g)) := by
+theorem properSMul_iff_continuousSMul_ultrafilter_tendsto
+    : ProperSMul G X
+      ↔ ContinuousSMul G X
+        ∧ (∀ 𝒰 : Ultrafilter (G × X), ∀ x₁ x₂ : X,
+          Tendsto (fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) 𝒰 (𝓝 (x₁, x₂))
+            → ∃ g : G, g • x₂ = x₁ ∧ Tendsto (Prod.fst : G × X → G) 𝒰 (𝓝 g)) := by
   refine ⟨fun h ↦ ⟨inferInstance, fun 𝒰 x₁ x₂ h' ↦ ?_⟩, fun ⟨cont, h⟩ ↦ ?_⟩
   · rw [properSMul_iff, isProperMap_iff_ultrafilter] at h
     rcases h.2 h' with ⟨gx, hgx1, hgx2⟩
@@ -94,24 +105,28 @@ theorem properSMul_iff_continuousSMul_ultrafilter_tendsto :
     rw [nhds_prod_eq, 𝒰.le_prod]
     exact ⟨hg2, (continuous_snd.tendsto _).comp hxx⟩
 
-/-- A group `G` acts properly on a T2 topological space `X` if and only if for all ultrafilters
+/--
+A group `G` acts properly on a T2 topological space `X` if and only if for all ultrafilters
 `𝒰` on `X × G`, if `𝒰` converges to `(x₁, x₂)` along the map `(g, x) ↦ (g • x, x)`,
-then there exists `g : G` such that `𝒰.fst` converges to `g`. -/
-theorem properSMul_iff_continuousSMul_ultrafilter_tendsto_t2 [T2Space X] :
-    ProperSMul G X ↔ ContinuousSMul G X ∧
-      (∀ 𝒰 : Ultrafilter (G × X), ∀ x₁ x₂ : X,
-        Tendsto (fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) 𝒰 (𝓝 (x₁, x₂)) →
-        ∃ g : G, Tendsto (Prod.fst : G × X → G) 𝒰 (𝓝 g)) := by
+then there exists `g : G` such that `𝒰.fst` converges to `g`.
+-/
+theorem properSMul_iff_continuousSMul_ultrafilter_tendsto_t2 [T2Space X]
+    : ProperSMul G X
+      ↔ ContinuousSMul G X
+        ∧ (∀ 𝒰 : Ultrafilter (G × X), ∀ x₁ x₂ : X,
+          Tendsto (fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) 𝒰 (𝓝 (x₁, x₂))
+            → ∃ g : G, Tendsto (Prod.fst : G × X → G) 𝒰 (𝓝 g)) := by
   rw [properSMul_iff_continuousSMul_ultrafilter_tendsto]
   refine and_congr_right fun hc ↦ ?_
   congrm ∀ 𝒰 x₁ x₂ hxx, ∃ g, ?_
-  exact and_iff_right_of_imp fun hg ↦ tendsto_nhds_unique
-    (hg.smul ((continuous_snd.tendsto _).comp hxx)) ((continuous_fst.tendsto _).comp hxx)
+  exact and_iff_right_of_imp fun hg ↦
+    tendsto_nhds_unique (hg.smul ((continuous_snd.tendsto _).comp hxx))
+      ((continuous_fst.tendsto _).comp hxx)
 
 /-- If `G` acts properly on `X`, then the quotient space is Hausdorff (T2). -/
 @[to_additive /-- If `G` acts properly on `X`, then the quotient space is Hausdorff (T2). -/]
-instance t2Space_quotient_mulAction_of_properSMul [ProperSMul G X] :
-    T2Space (Quotient (MulAction.orbitRel G X)) := by
+instance t2Space_quotient_mulAction_of_properSMul [ProperSMul G X]
+    : T2Space (Quotient (MulAction.orbitRel G X)) := by
   rw [t2_iff_isClosed_diagonal]
   set R := MulAction.orbitRel G X
   let π : X → Quotient R := Quotient.mk'
@@ -143,15 +158,18 @@ theorem t2Space_of_properSMul_of_t1Group [h_proper : ProperSMul G X] [T1Space G]
   rw [← range_gf]
   exact (proper_g.comp proper_f).isClosed_range
 
-/-- If two groups `H` and `G` act on a topological space `X` such that `G` acts properly and
+/--
+If two groups `H` and `G` act on a topological space `X` such that `G` acts properly and
 there exists a group homomorphism `H → G` which is a closed embedding compatible with the actions,
-then `H` also acts properly on `X`. -/
+then `H` also acts properly on `X`.
+-/
 @[to_additive /-- If two groups `H` and `G` act on a topological space `X` such that `G` acts
 properly and there exists a group homomorphism `H → G` which is a closed embedding compatible with
 the actions, then `H` also acts properly on `X`. -/]
-theorem properSMul_of_isClosedEmbedding {H : Type*} [Group H] [MulAction H X] [TopologicalSpace H]
-    [ProperSMul G X] (f : H →* G) (f_clemb : IsClosedEmbedding f)
-    (f_compat : ∀ (h : H) (x : X), f h • x = h • x) : ProperSMul H X where
+theorem properSMul_of_isClosedEmbedding
+    {H : Type*} [Group H] [MulAction H X] [TopologicalSpace H] [ProperSMul G X]
+    (f : H →* G) (f_clemb : IsClosedEmbedding f) (f_compat : ∀ (h : H) (x : X), f h • x = h • x)
+    : ProperSMul H X where
   isProperMap_smul_pair := by
     have h : IsProperMap (Prod.map f (fun x : X ↦ x)) := f_clemb.isProperMap.prodMap isProperMap_id
     have : (fun hx : H × X ↦ (hx.1 • hx.2, hx.2)) = (fun hx ↦ (f hx.1 • hx.2, hx.2)) := by
@@ -161,84 +179,97 @@ theorem properSMul_of_isClosedEmbedding {H : Type*} [Group H] [MulAction H X] [T
 
 /-- If `H` is a closed subgroup of `G` and `G` acts properly on `X`, then so does `H`. -/
 @[to_additive
-/-- If `H` is a closed subgroup of `G` and `G` acts properly on `X`, then so does `H`. -/]
+  /-- If `H` is a closed subgroup of `G` and `G` acts properly on `X`, then so does `H`. -/]
 instance {H : Subgroup G} [ProperSMul G X] [H_closed : IsClosed (H : Set G)] : ProperSMul H X :=
   properSMul_of_isClosedEmbedding H.subtype H_closed.isClosedEmbedding_subtypeVal fun _ _ ↦ rfl
 
 /-- The action `G ↷ G` by left translations is proper. -/
 @[to_additive
-/-- The action `G ↷ G` by left translations is proper. -/]
+  /-- The action `G ↷ G` by left translations is proper. -/]
 instance [IsTopologicalGroup G] : ProperSMul G G where
   isProperMap_smul_pair := by
-    let Φ : G × G ≃ₜ G × G :=
-    { toFun := fun gh ↦ (gh.1 * gh.2, gh.2)
+    let Φ : G × G ≃ₜ G × G := {
+      toFun := fun gh ↦ (gh.1 * gh.2, gh.2)
       invFun := fun gh ↦ (gh.1 * gh.2⁻¹, gh.2)
       left_inv := fun _ ↦ by simp
-      right_inv := fun _ ↦ by simp }
+      right_inv := fun _ ↦ by simp
+    }
     exact Φ.isProperMap
 
 open MulOpposite in
 /-- The action `Gᵐᵒᵖ ↷ G` by right translations is proper. -/
 @[to_additive
-/-- The action `Gᵃᵒᵖ ↷ G` by right translations is proper. -/]
+  /-- The action `Gᵃᵒᵖ ↷ G` by right translations is proper. -/]
 instance [IsTopologicalGroup G] : ProperSMul Gᵐᵒᵖ G where
   isProperMap_smul_pair := by
-    let Φ : Gᵐᵒᵖ × G ≃ₜ G × G :=
-    { toFun := fun gh ↦ (gh.2 * (unop gh.1), gh.2)
+    let Φ : Gᵐᵒᵖ × G ≃ₜ G × G := {
+      toFun := fun gh ↦ (gh.2 * (unop gh.1), gh.2)
       invFun := fun gh ↦ (op (gh.2⁻¹ * gh.1), gh.2)
       left_inv := fun _ ↦ by simp
-      right_inv := fun _ ↦ by simp }
+      right_inv := fun _ ↦ by simp
+    }
     exact Φ.isProperMap
 
-/-- Given a closed subgroup `H` of a topological group `G`, the right action of `H` on `G`
+/--
+Given a closed subgroup `H` of a topological group `G`, the right action of `H` on `G`
 is proper. Note that the corresponding statement for the left action can be proven by
-`inferInstance`. -/
+`inferInstance`.
+-/
 @[to_additive /-- Given a closed subgroup `H` of an additive topological group `G`, the right
 action of `H` on `G` is proper. Note that the corresponding statement for the left action can be
 proven by `inferInstance`. -/]
-instance [IsTopologicalGroup G] {H : Subgroup G} [H_closed : IsClosed (H : Set G)] :
-    ProperSMul H.op G :=
+instance [IsTopologicalGroup G] {H : Subgroup G} [H_closed : IsClosed (H : Set G)]
+    : ProperSMul H.op G :=
   have : IsClosed (H.op : Set Gᵐᵒᵖ) := H_closed.preimage MulOpposite.continuous_unop
   inferInstance
 
 @[to_additive]
-instance QuotientGroup.instT2Space [IsTopologicalGroup G] {H : Subgroup G} [IsClosed (H : Set G)] :
-    T2Space (G ⧸ H) :=
+instance QuotientGroup.instT2Space [IsTopologicalGroup G] {H : Subgroup G} [IsClosed (H : Set G)]
+    : T2Space (G ⧸ H) :=
   t2Space_quotient_mulAction_of_properSMul
 
-/-- If `G` acts on `X` properly, then the map `G × T → X × T, (g, t) ↦ (g • t, t)` is still
-proper for *any* subset `T` of `X`. -/
+/--
+If `G` acts on `X` properly, then the map `G × T → X × T, (g, t) ↦ (g • t, t)` is still
+proper for *any* subset `T` of `X`.
+-/
 @[to_additive
-/-- If `G` acts on `X` properly, then the map `G × T → X × T, (g, t) ↦ (g +ᵥ t, t)` is still
+  /-- If `G` acts on `X` properly, then the map `G × T → X × T, (g, t) ↦ (g +ᵥ t, t)` is still
 proper for *any* subset `T` of `X`. -/]
-lemma ProperSMul.isProperMap_smul_pair_set [ProperSMul G X] {t : Set X} :
-    IsProperMap (fun (gx : G × t) ↦ ((gx.1 • gx.2, gx.2) : X × t)) := by
+lemma ProperSMul.isProperMap_smul_pair_set [ProperSMul G X] {t : Set X}
+    : IsProperMap (fun (gx : G × t) ↦ ((gx.1 • gx.2, gx.2) : X × t)) := by
   let Φ : G × X → X × X := fun gx ↦ (gx.1 • gx.2, gx.2)
   have Φ_proper : IsProperMap Φ := ProperSMul.isProperMap_smul_pair
   let α : G × t ≃ₜ (Φ ⁻¹' snd ⁻¹' t) :=
     have : univ ×ˢ t = Φ ⁻¹' snd ⁻¹' t := by ext; simp [Φ]
-    Homeomorph.Set.univ G |>.symm.prodCongr (.refl t) |>.trans
-      ((Homeomorph.Set.prod _ t).symm) |>.trans (Homeomorph.setCongr this)
+    Homeomorph.Set.univ G
+      |>.symm.prodCongr (.refl t)
+      |>.trans ((Homeomorph.Set.prod _ t).symm)
+      |>.trans (Homeomorph.setCongr this)
   let β : X × t ≃ₜ (snd ⁻¹' t) :=
-    Homeomorph.Set.univ X |>.symm.prodCongr (.refl t) |>.trans
-      ((Homeomorph.Set.prod _ t).symm) |>.trans (Homeomorph.setCongr univ_prod)
+    Homeomorph.Set.univ X
+      |>.symm.prodCongr (.refl t)
+      |>.trans ((Homeomorph.Set.prod _ t).symm)
+      |>.trans (Homeomorph.setCongr univ_prod)
   exact β.symm.isProperMap.comp (Φ_proper.restrictPreimage (snd ⁻¹' t)) |>.comp α.isProperMap
 
 open scoped Pointwise in
-/-- If `G` acts on `X` properly, the set `s • t` is closed when `s : Set G` is *closed* and
+/--
+If `G` acts on `X` properly, the set `s • t` is closed when `s : Set G` is *closed* and
 `t : Set X` is *compact*.
 
 See also `IsClosed.smul_left_of_isCompact` for a version with the assumptions on `s` and `t`
-reversed. -/
+reversed.
+-/
 @[to_additive
-/-- If `G` acts on `X` properly, the set `s +ᵥ t` is closed when `s : Set G` is *closed* and
+  /-- If `G` acts on `X` properly, the set `s +ᵥ t` is closed when `s : Set G` is *closed* and
 `t : Set X` is *compact*. In particular, this applies when the action comes from an
 `IsTopologicalAddTorsor`.
 
 See also `IsClosed.vadd_left_of_isCompact` for a version with the assumptions on `s` and `t`
 reversed. -/]
-theorem IsClosed.smul_right_of_isCompact [ProperSMul G X] {s : Set G} {t : Set X} (hs : IsClosed s)
-    (ht : IsCompact t) : IsClosed (s • t) := by
+theorem IsClosed.smul_right_of_isCompact
+    [ProperSMul G X] {s : Set G} {t : Set X} (hs : IsClosed s) (ht : IsCompact t)
+    : IsClosed (s • t) := by
   let Ψ : G × t → X × t := fun gx ↦ (gx.1 • gx.2, gx.2)
   have Ψ_proper : IsProperMap Ψ := ProperSMul.isProperMap_smul_pair_set
   have : s • t = (fst ∘ Ψ) '' fst ⁻¹' s :=
@@ -256,11 +287,13 @@ closed and `t` is compact, but `s +ᵥ t` is the set of all rationals, which is 
 closed in `ℝ`. -/
 
 open scoped Pointwise in
-/-- If `G` acts properly on `X`, then for each pair of compacts `U, V ⊆ X`,
+/--
+If `G` acts properly on `X`, then for each pair of compacts `U, V ⊆ X`,
 the set of `g` such that `g • U` intersects `V` is compact.
 
 See `MulAction.properSMul_iff_isCompact_setOfPred_inter_nonempty` for the two-way implication
-under additional conditions on `G` and `X`. -/
+under additional conditions on `G` and `X`.
+-/
 @[to_additive /-- If `G` acts properly on `X`, then for each pair of compacts `U, V ⊆ X`,
 the set of `g` such that `g +ᵥ U` intersects `V` is compact.
 
@@ -268,10 +301,11 @@ See `AddAction.properVAdd_iff_isCompact_setOfPred_inter_nonempty` for the two-wa
 under additional conditions on `G` and `X`. -/]
 lemma ProperSMul.isCompact_setOfPred_inter_nonempty
     {G : Type*} [Group G] [MulAction G X] [TopologicalSpace G] [ProperSMul G X]
-    {U V : Set X} (hU : IsCompact U) (hV : IsCompact V) :
-    IsCompact {g : G | (g • U ∩ V).Nonempty} := by
-  suffices h : {g : G | (g • U ∩ V).Nonempty} =
-      Prod.fst '' ((fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) ⁻¹' (V ×ˢ U)) by
+    {U V : Set X} (hU : IsCompact U) (hV : IsCompact V)
+    : IsCompact {g : G | (g • U ∩ V).Nonempty} := by
+  suffices h
+      : {g : G | (g • U ∩ V).Nonempty}
+        = Prod.fst '' ((fun gx : G × X ↦ (gx.1 • gx.2, gx.2)) ⁻¹' (V ×ˢ U)) by
     rw [h]
     exact ((ProperSMul.isProperMap_smul_pair (G := G)).isCompact_preimage (hV.prod hU)).image
       continuous_fst
@@ -286,18 +320,21 @@ alias ProperSMul.isCompact_setOf_inter_nonempty := ProperSMul.isCompact_setOfPre
 @[deprecated (since := "2026-07-09")]
 alias ProperVAdd.isCompact_setOf_inter_nonempty := ProperVAdd.isCompact_setOfPred_inter_nonempty
 
-/-- If `G` acts transitively on `X`, and the orbit map of a point in `X` is a proper map, then the
-action is proper. -/
+/--
+If `G` acts transitively on `X`, and the orbit map of a point in `X` is a proper map, then the
+action is proper.
+-/
 @[to_additive /-- If `G` acts transitively on `X`, and the orbit map of a point in `X` is a proper
 map, then the action is proper. -/]
 lemma MulAction.properSMul_of_proper_orbitMap
     [ContinuousSMul G X] [IsTopologicalGroup G] [MulAction.IsPretransitive G X]
-    {x : X} (hx : IsProperMap fun g : G ↦ g • x) : ProperSMul G X := by
+    {x : X} (hx : IsProperMap fun g : G ↦ g • x)
+    : ProperSMul G X := by
   constructor
   let f : G × G → G × X := Prod.map id (fun g ↦ g • x)
   have hfsurj : f.Surjective := Function.surjective_id.prodMap (surjective_smul G x)
   refine isProperMap_of_comp_of_surj (by fun_prop) (by fun_prop) ?_ hfsurj
-  simpa [Function.comp_def, Prod.map_apply, mul_smul]
-    using! (hx.prodMap hx).comp (ProperSMul.isProperMap_smul_pair (G := G))
+  simpa [Function.comp_def, Prod.map_apply, mul_smul] using!
+    (hx.prodMap hx).comp (ProperSMul.isProperMap_smul_pair (G := G))
 
 end

@@ -37,8 +37,8 @@ class UsableInSimplexAlgorithm (α : Nat → Nat → Type) where
 
 export UsableInSimplexAlgorithm (setElem getValues ofValues swapRows subtractRow divideRow)
 
-instance (n m : Nat) (matType : Nat → Nat → Type) [UsableInSimplexAlgorithm matType] :
-    GetElem (matType n m) (Nat × Nat) Rat fun _ p => p.1 < n ∧ p.2 < m where
+instance (n m : Nat) (matType : Nat → Nat → Type) [UsableInSimplexAlgorithm matType]
+    : GetElem (matType n m) (Nat × Nat) Rat fun _ p => p.1 < n ∧ p.2 < m where
   getElem mat p _ := UsableInSimplexAlgorithm.getElem mat p.1 p.2
 
 /--
@@ -60,11 +60,12 @@ instance : UsableInSimplexAlgorithm DenseMatrix where
   setElem mat i j v := ⟨mat.data.modify i fun row => row.set! j v⟩
   getValues mat :=
     mat.data.zipIdx.foldl (init := []) fun acc (row, i) =>
-      let rowVals := Array.toList <| row.zipIdx.filterMap fun (v, j) =>
-        if v != 0 then
-          some (i, j, v)
-        else
-          none
+      let rowVals :=
+        Array.toList <| row.zipIdx.filterMap fun (v, j) =>
+          if v != 0 then
+            some (i, j, v)
+          else
+            none
       rowVals ++ acc
   ofValues {n m : Nat} vals : DenseMatrix _ _ := Id.run do
     let mut data : Array (Array Rat) := Array.replicate n <| Array.replicate m 0
@@ -73,8 +74,8 @@ instance : UsableInSimplexAlgorithm DenseMatrix where
     return ⟨data⟩
   swapRows mat i j := ⟨mat.data.swapIfInBounds i j⟩
   subtractRow mat i j coef :=
-    let newData : Array (Array Rat) := mat.data.modify j fun row =>
-      Array.zipWith (fun x y => x - coef * y) row mat.data[i]!
+    let newData : Array (Array Rat) :=
+      mat.data.modify j fun row => Array.zipWith (fun x y => x - coef * y) row mat.data[i]!
     ⟨newData⟩
   divideRow mat i coef := ⟨mat.data.modify i (·.map (· / coef))⟩
 
@@ -105,15 +106,17 @@ instance : UsableInSimplexAlgorithm SparseMatrix where
     return ⟨data⟩
   swapRows mat i j := ⟨mat.data.swapIfInBounds i j⟩
   subtractRow mat i j coef :=
-    let newData := mat.data.modify j fun row =>
-      mat.data[i]!.fold (fun cur k val =>
-        let newVal := (cur.getD k 0) - coef * val
-        if newVal != 0 then cur.insert k newVal else cur.erase k
-      ) row
+    let newData :=
+      mat.data.modify j fun row =>
+        mat.data[i]!.fold
+          (fun cur k val =>
+            let newVal := (cur.getD k 0) - coef * val
+            if newVal != 0 then cur.insert k newVal else cur.erase k)
+          row
     ⟨newData⟩
   divideRow mat i coef :=
-    let newData : Array (Std.HashMap Nat Rat) := mat.data.modify i fun row =>
-      row.fold (fun cur k v => cur.insert k (v / coef)) row
+    let newData : Array (Std.HashMap Nat Rat) :=
+      mat.data.modify i fun row => row.fold (fun cur k v => cur.insert k (v / coef)) row
     ⟨newData⟩
 
 /--

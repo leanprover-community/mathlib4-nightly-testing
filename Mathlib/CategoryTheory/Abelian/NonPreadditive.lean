@@ -49,7 +49,6 @@ reconstruct any natural preadditive structure the category may have.
 
 @[expose] public section
 
-
 noncomputable section
 
 open CategoryTheory
@@ -64,14 +63,15 @@ universe v u
 
 variable (C : Type u) [Category.{v} C]
 
-/-- We call a category `NonPreadditiveAbelian` if it has a zero object, kernels, cokernels, finite
+/--
+We call a category `NonPreadditiveAbelian` if it has a zero object, kernels, cokernels, finite
 products and coproducts, and every monomorphism and every epimorphism is normal.
 
 Notice that every such category is abelian (see `CategoryTheory.NonPreadditiveAbelian.preadditive`),
 so in practice it is preferable to work directly with `Abelian`.
 -/
-class NonPreadditiveAbelian extends HasZeroMorphisms C, IsNormalMonoCategory C,
-    IsNormalEpiCategory C where
+class NonPreadditiveAbelian
+    extends HasZeroMorphisms C, IsNormalMonoCategory C, IsNormalEpiCategory C where
   [has_zero_object : HasZeroObject C]
   [has_kernels : HasKernels C]
   [has_cokernels : HasCokernels C]
@@ -110,34 +110,35 @@ instance : Epi (Abelian.factorThruImage f) :=
   let p := Abelian.factorThruImage f
   let i := kernel.ι (cokernel.π f)
   -- It will suffice to consider some g : I ⟶ R such that p ≫ g = 0 and show that g = 0.
-  NormalMonoCategory.epi_of_zero_cancel
-  _ fun R (g : I ⟶ R) (hpg : p ≫ g = 0) => by
-  -- Since C is abelian, u := ker g ≫ i is the kernel of some morphism h.
-  let u := kernel.ι g ≫ i
-  have hu := normalMonoOfMono u
-  let h := hu.g
-  -- By hypothesis, p factors through the kernel of g via some t.
-  obtain ⟨t, ht⟩ := kernel.lift' g p hpg
-  have fh : f ≫ h = 0 :=
-    calc
-      f ≫ h = (p ≫ i) ≫ h := (Abelian.image.fac f).symm ▸ rfl
-      _ = ((t ≫ kernel.ι g) ≫ i) ≫ h := ht ▸ rfl
-      _ = t ≫ u ≫ h := by simp only [u, Category.assoc]
-      _ = t ≫ 0 := hu.w ▸ rfl
-      _ = 0 := HasZeroMorphisms.comp_zero _ _
-  -- h factors through the cokernel of f via some l.
-  obtain ⟨l, hl⟩ := cokernel.desc' f h fh
-  have hih : i ≫ h = 0 :=
-    calc
-      i ≫ h = i ≫ cokernel.π f ≫ l := hl ▸ rfl
-      _ = 0 ≫ l := by rw [← Category.assoc, kernel.condition]
-      _ = 0 := zero_comp
-  -- i factors through u = ker h via some s.
-  obtain ⟨s, hs⟩ := NormalMono.lift' u i hih
-  have hs' : (s ≫ kernel.ι g) ≫ i = 𝟙 I ≫ i := by rw [Category.assoc, hs, Category.id_comp]
-  have : Epi (kernel.ι g) := epi_of_epi_fac ((cancel_mono _).1 hs')
-  -- ker g is an epimorphism, but ker g ≫ g = 0 = ker g ≫ 0, so g = 0 as required.
-  exact zero_of_epi_comp _ (kernel.condition g)
+  NormalMonoCategory.epi_of_zero_cancel _ fun R (g : I ⟶ R) (hpg : p ≫ g = 0) => by
+    -- Since C is abelian, u := ker g ≫ i is the kernel of some morphism h.
+    let u := kernel.ι g ≫ i
+    have hu := normalMonoOfMono u
+    let h := hu.g
+    -- By hypothesis, p factors through the kernel of g via some t.
+    obtain ⟨t, ht⟩ := kernel.lift' g p hpg
+    have fh : f ≫ h = 0 :=
+      calc
+        f ≫ h
+          = (p ≫ i) ≫ h := (Abelian.image.fac f).symm ▸ rfl
+        _ = ((t ≫ kernel.ι g) ≫ i) ≫ h := ht ▸ rfl
+        _ = t ≫ u ≫ h := by simp only [u, Category.assoc]
+        _ = t ≫ 0 := hu.w ▸ rfl
+        _ = 0 := HasZeroMorphisms.comp_zero _ _
+    -- h factors through the cokernel of f via some l.
+    obtain ⟨l, hl⟩ := cokernel.desc' f h fh
+    have hih : i ≫ h = 0 :=
+      calc
+        i ≫ h
+          = i ≫ cokernel.π f ≫ l := hl ▸ rfl
+        _ = 0 ≫ l := by rw [← Category.assoc, kernel.condition]
+        _ = 0 := zero_comp
+    -- i factors through u = ker h via some s.
+    obtain ⟨s, hs⟩ := NormalMono.lift' u i hih
+    have hs' : (s ≫ kernel.ι g) ≫ i = 𝟙 I ≫ i := by rw [Category.assoc, hs, Category.id_comp]
+    have : Epi (kernel.ι g) := epi_of_epi_fac ((cancel_mono _).1 hs')
+    -- ker g is an epimorphism, but ker g ≫ g = 0 = ker g ≫ 0, so g = 0 as required.
+    exact zero_of_epi_comp _ (kernel.condition g)
 
 instance isIso_factorThruImage [Mono f] : IsIso (Abelian.factorThruImage f) :=
   isIso_of_mono_of_epi <| Abelian.factorThruImage f
@@ -156,7 +157,8 @@ instance : Mono (Abelian.factorThruCoimage f) :=
     obtain ⟨t, ht⟩ := cokernel.desc' g i hgi
     have hf : h ≫ f = 0 :=
       calc
-        h ≫ f = h ≫ p ≫ i := (Abelian.coimage.fac f).symm ▸ rfl
+        h ≫ f
+          = h ≫ p ≫ i := (Abelian.coimage.fac f).symm ▸ rfl
         _ = h ≫ p ≫ cokernel.π g ≫ t := ht ▸ rfl
         _ = h ≫ u ≫ t := by simp only [u, Category.assoc]
         _ = 0 ≫ t := by rw [← Category.assoc, hu.w]
@@ -165,7 +167,8 @@ instance : Mono (Abelian.factorThruCoimage f) :=
     obtain ⟨l, hl⟩ := kernel.lift' f h hf
     have hhp : h ≫ p = 0 :=
       calc
-        h ≫ p = (l ≫ kernel.ι f) ≫ p := hl ▸ rfl
+        h ≫ p
+          = (l ≫ kernel.ι f) ≫ p := hl ▸ rfl
         _ = l ≫ 0 := by rw [Category.assoc, cokernel.condition]
         _ = 0 := comp_zero
     -- p factors through u = coker h via some s.
@@ -184,21 +187,25 @@ section CokernelOfKernel
 
 variable {X Y : C} {f : X ⟶ Y}
 
-/-- In a `NonPreadditiveAbelian` category, an epi is the cokernel of its kernel. More precisely:
+/--
+In a `NonPreadditiveAbelian` category, an epi is the cokernel of its kernel. More precisely:
 If `f` is an epimorphism and `s` is some limit kernel cone on `f`, then `f` is a cokernel
-of `Fork.ι s`. -/
-def epiIsCokernelOfKernel [Epi f] (s : Fork f 0) (h : IsLimit s) :
-    IsColimit (CokernelCofork.ofπ f (KernelFork.condition s)) :=
+of `Fork.ι s`.
+-/
+def epiIsCokernelOfKernel [Epi f] (s : Fork f 0) (h : IsLimit s)
+    : IsColimit (CokernelCofork.ofπ f (KernelFork.condition s)) :=
   IsCokernel.cokernelIso _ _
     (cokernel.ofIsoComp _ _ (Limits.IsLimit.conePointUniqueUpToIso (limit.isLimit _) h)
       (ConeMorphism.w (Limits.IsLimit.uniqueUpToIso (limit.isLimit _) h).hom _))
     (asIso <| Abelian.factorThruCoimage f) (Abelian.coimage.fac f)
 
-/-- In a `NonPreadditiveAbelian` category, a mono is the kernel of its cokernel. More precisely:
+/--
+In a `NonPreadditiveAbelian` category, a mono is the kernel of its cokernel. More precisely:
 If `f` is a monomorphism and `s` is some colimit cokernel cocone on `f`, then `f` is a kernel
-of `Cofork.π s`. -/
-def monoIsKernelOfCokernel [Mono f] (s : Cofork f 0) (h : IsColimit s) :
-    IsLimit (KernelFork.ofι f (CokernelCofork.condition s)) :=
+of `Cofork.π s`.
+-/
+def monoIsKernelOfCokernel [Mono f] (s : Cofork f 0) (h : IsColimit s)
+    : IsLimit (KernelFork.ofι f (CokernelCofork.condition s)) :=
   IsKernel.isoKernel _ _
     (kernel.ofCompIso _ _ (Limits.IsColimit.coconePointUniqueUpToIso h (colimit.isColimit _))
       (CoconeMorphism.w (Limits.IsColimit.uniqueUpToIso h <| colimit.isColimit _).hom _))
@@ -208,13 +215,13 @@ end CokernelOfKernel
 
 section
 
-/-- The composite `A ⟶ A ⨯ A ⟶ cokernel (Δ A)`, where the first map is `(𝟙 A, 0)` and the second map
-is the canonical projection into the cokernel. -/
-abbrev r (A : C) : A ⟶ cokernel (diag A) :=
-  prod.lift (𝟙 A) 0 ≫ cokernel.π (diag A)
+/--
+The composite `A ⟶ A ⨯ A ⟶ cokernel (Δ A)`, where the first map is `(𝟙 A, 0)` and the second map
+is the canonical projection into the cokernel.
+-/
+abbrev r (A : C) : A ⟶ cokernel (diag A) := prod.lift (𝟙 A) 0 ≫ cokernel.π (diag A)
 
-instance mono_Δ {A : C} : Mono (diag A) :=
-  mono_of_mono_fac <| prod.lift_fst _ _
+instance mono_Δ {A : C} : Mono (diag A) := mono_of_mono_fac <| prod.lift_fst _ _
 
 instance mono_r {A : C} : Mono (r A) := by
   let hl : IsLimit (KernelFork.ofι (diag A) (cokernel.condition (diag A))) :=
@@ -259,26 +266,26 @@ instance epi_r {A : C} : Epi (r A) := by
   apply (cancel_epi (cokernel.π (diag A))).1
   rw [← ht, htt, comp_zero, comp_zero]
 
-instance isIso_r {A : C} : IsIso (r A) :=
-  isIso_of_mono_of_epi _
+instance isIso_r {A : C} : IsIso (r A) := isIso_of_mono_of_epi _
 
-/-- The composite `A ⨯ A ⟶ cokernel (diag A) ⟶ A` given by the natural projection into the cokernel
+/--
+The composite `A ⨯ A ⟶ cokernel (diag A) ⟶ A` given by the natural projection into the cokernel
 followed by the inverse of `r`. In the category of modules, using the normal kernels and
-cokernels, this map is equal to the map `(a, b) ↦ a - b`, hence the name `σ` for "subtraction". -/
-abbrev σ {A : C} : A ⨯ A ⟶ A :=
-  cokernel.π (diag A) ≫ inv (r A)
+cokernels, this map is equal to the map `(a, b) ↦ a - b`, hence the name `σ` for "subtraction".
+-/
+abbrev σ {A : C} : A ⨯ A ⟶ A := cokernel.π (diag A) ≫ inv (r A)
 
 end
 
-@[reassoc]
-theorem diag_σ {X : C} : diag X ≫ σ = 0 := by rw [cokernel.condition_assoc, zero_comp]
+@[reassoc] theorem diag_σ {X : C} : diag X ≫ σ = 0 := by rw [cokernel.condition_assoc, zero_comp]
 
 @[reassoc (attr := simp)]
 theorem lift_σ {X : C} : prod.lift (𝟙 X) 0 ≫ σ = 𝟙 X := by rw [← Category.assoc, IsIso.hom_inv_id]
 
 @[reassoc]
-theorem lift_map {X Y : C} (f : X ⟶ Y) :
-    prod.lift (𝟙 X) 0 ≫ Limits.prod.map f f = f ≫ prod.lift (𝟙 Y) 0 := by simp
+theorem lift_map {X Y : C} (f : X ⟶ Y)
+    : prod.lift (𝟙 X) 0 ≫ Limits.prod.map f f = f ≫ prod.lift (𝟙 Y) 0 := by
+  simp
 
 /-- σ is a cokernel of Δ X. -/
 def isColimitσ {X : C} : IsColimit (CokernelCofork.ofπ (σ : X ⨯ X ⟶ X) diag_σ) :=
@@ -287,8 +294,8 @@ def isColimitσ {X : C} : IsColimit (CokernelCofork.ofπ (σ : X ⨯ X ⟶ X) di
 /-- This is the key identity satisfied by `σ`. -/
 theorem σ_comp {X Y : C} (f : X ⟶ Y) : σ ≫ f = Limits.prod.map f f ≫ σ := by
   obtain ⟨g, hg⟩ :=
-    CokernelCofork.IsColimit.desc' isColimitσ (Limits.prod.map f f ≫ σ) (by
-      rw [prod.diag_map_assoc, diag_σ, comp_zero])
+    CokernelCofork.IsColimit.desc' isColimitσ (Limits.prod.map f f ≫ σ)
+      (by rw [prod.diag_map_assoc, diag_σ, comp_zero])
   suffices hfg : f = g by rw [← hg, Cofork.π_ofπ, hfg]
   calc
     f = f ≫ prod.lift (𝟙 Y) 0 ≫ σ := by rw [lift_σ, Category.comp_id]
@@ -300,9 +307,7 @@ section
 
 -- We write `f - g` for `prod.lift f g ≫ σ`.
 /-- Subtraction of morphisms in a `NonPreadditiveAbelian` category. -/
-@[instance_reducible]
-def hasSub {X Y : C} : Sub (X ⟶ Y) :=
-  ⟨fun f g => prod.lift f g ≫ σ⟩
+@[instance_reducible] def hasSub {X Y : C} : Sub (X ⟶ Y) := ⟨fun f g => prod.lift f g ≫ σ⟩
 
 attribute [local instance] hasSub
 
@@ -316,9 +321,7 @@ attribute [local instance] hasNeg
 
 -- We write `f + g` for `f - (-g)`.
 /-- Addition of morphisms in a `NonPreadditiveAbelian` category. -/
-@[instance_reducible]
-def hasAdd {X Y : C} : Add (X ⟶ Y) :=
-  ⟨fun f g => f - -g⟩
+@[instance_reducible] def hasAdd {X Y : C} : Add (X ⟶ Y) := ⟨fun f g => f - -g⟩
 
 attribute [local instance] hasAdd
 
@@ -338,8 +341,8 @@ theorem sub_zero {X Y : C} (a : X ⟶ Y) : a - 0 = a := by
 theorem sub_self {X Y : C} (a : X ⟶ Y) : a - a = 0 := by
   rw [sub_def, ← Category.comp_id a, ← prod.comp_lift, Category.assoc, diag_σ, comp_zero]
 
-theorem lift_sub_lift {X Y : C} (a b c d : X ⟶ Y) :
-    prod.lift a b - prod.lift c d = prod.lift (a - c) (b - d) := by
+theorem lift_sub_lift {X Y : C} (a b c d : X ⟶ Y)
+    : prod.lift a b - prod.lift c d = prod.lift (a - c) (b - d) := by
   simp only [sub_def]
   ext
   · rw [Category.assoc, σ_comp, prod.lift_map_assoc, prod.lift_fst, prod.lift_fst, prod.lift_fst]
@@ -405,15 +408,16 @@ theorem add_comp (X Y Z : C) (f g : X ⟶ Y) (h : Y ⟶ Z) : (f + g) ≫ h = f �
 /-- Every `NonPreadditiveAbelian` category is preadditive. -/
 @[instance_reducible]
 def preadditive : Preadditive C where
-  homGroup X Y :=
-    { add_assoc := add_assoc
-      zero_add := neg_neg
-      add_zero := add_zero
-      neg_add_cancel := neg_add_cancel
-      sub_eq_add_neg f g := (add_neg f g).symm
-      add_comm := add_comm
-      nsmul := nsmulRec
-      zsmul := zsmulRec }
+  homGroup X Y := {
+    add_assoc := add_assoc
+    zero_add := neg_neg
+    add_zero := add_zero
+    neg_add_cancel := neg_add_cancel
+    sub_eq_add_neg f g := (add_neg f g).symm
+    add_comm := add_comm
+    nsmul := nsmulRec
+    zsmul := zsmulRec
+  }
   add_comp := add_comp
   comp_add := comp_add
 

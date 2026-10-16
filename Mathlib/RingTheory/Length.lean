@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.Dimension.Free
 public import Mathlib.RingTheory.FiniteLength
-
 import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 /-!
@@ -27,12 +26,10 @@ import Mathlib.LinearAlgebra.Basis.VectorSpace
 variable (R M : Type*) [Ring R] [AddCommGroup M] [Module R M]
 
 /-- The length of a module, defined as the krull dimension of its submodule lattice. -/
-noncomputable
-def Module.length : ℕ∞ :=
+noncomputable def Module.length : ℕ∞ :=
   (Order.krullDim (Submodule R M)).unbot (by simp [Order.krullDim_eq_bot_iff])
 
-lemma Module.coe_length :
-    (Module.length R M : WithBot ℕ∞) = Order.krullDim (Submodule R M) :=
+lemma Module.coe_length : (Module.length R M : WithBot ℕ∞) = Order.krullDim (Submodule R M) :=
   WithBot.coe_unbot _ _
 
 lemma Module.length_eq_height : Module.length R M = Order.height (⊤ : Submodule R M) := by
@@ -61,11 +58,11 @@ lemma Module.length_eq_zero_of_subsingleton_ring [Subsingleton R] : Module.lengt
 lemma Module.length_pos_iff : 0 < Module.length R M ↔ Nontrivial M := by
   rw [pos_iff_ne_zero, ne_eq, Module.length_eq_zero_iff, not_subsingleton_iff_nontrivial]
 
-lemma Module.length_pos [Nontrivial M] : 0 < Module.length R M :=
-  Module.length_pos_iff.mpr ‹_›
+lemma Module.length_pos [Nontrivial M] : 0 < Module.length R M := Module.length_pos_iff.mpr ‹_›
 
-lemma Module.length_compositionSeries (s : CompositionSeries (Submodule R M)) (h₁ : s.head = ⊥)
-    (h₂ : s.last = ⊤) : s.length = Module.length R M := by
+lemma Module.length_compositionSeries
+    (s : CompositionSeries (Submodule R M)) (h₁ : s.head = ⊥) (h₂ : s.last = ⊤)
+    : s.length = Module.length R M := by
   have H := isFiniteLength_of_exists_compositionSeries ⟨s, h₁, h₂⟩
   have := (isFiniteLength_iff_isNoetherian_isArtinian.mp H).1
   have := (isFiniteLength_iff_isNoetherian_isArtinian.mp H).2
@@ -81,13 +78,13 @@ lemma Module.length_compositionSeries (s : CompositionSeries (Submodule R M)) (h
     have h' : t'.length = s.length := by simpa using Fintype.card_congr this.symm
     simpa using h.trans h'.le
 
-lemma Module.length_eq_top_iff_infiniteDimensionalOrder :
-    length R M = ⊤ ↔ InfiniteDimensionalOrder (Submodule R M) := by
+lemma Module.length_eq_top_iff_infiniteDimensionalOrder
+    : length R M = ⊤ ↔ InfiniteDimensionalOrder (Submodule R M) := by
   rw [← WithBot.coe_inj, WithBot.coe_top, coe_length, Order.krullDim_eq_top_iff,
-      ← not_finiteDimensionalOrder_iff]
+    ← not_finiteDimensionalOrder_iff]
 
-lemma Module.length_ne_top_iff_finiteDimensionalOrder :
-    length R M ≠ ⊤ ↔ FiniteDimensionalOrder (Submodule R M) := by
+lemma Module.length_ne_top_iff_finiteDimensionalOrder
+    : length R M ≠ ⊤ ↔ FiniteDimensionalOrder (Submodule R M) := by
   rw [Ne, length_eq_top_iff_infiniteDimensionalOrder, ← not_finiteDimensionalOrder_iff, not_not]
 
 lemma Module.length_ne_top_iff : Module.length R M ≠ ⊤ ↔ IsFiniteLength R M := by
@@ -107,57 +104,54 @@ lemma Module.length_ne_top [IsArtinian R M] [IsNoetherian R M] : Module.length R
   exact ⟨‹_›, ‹_›⟩
 
 @[simp]
-lemma Module.finiteDimensionalOrder_submodule_iff :
-    FiniteDimensionalOrder (Submodule R M) ↔ IsFiniteLength R M := by
+lemma Module.finiteDimensionalOrder_submodule_iff
+    : FiniteDimensionalOrder (Submodule R M) ↔ IsFiniteLength R M := by
   rw [← Module.length_ne_top_iff_finiteDimensionalOrder, Module.length_ne_top_iff]
 
 instance [IsArtinian R M] [IsNoetherian R M] : FiniteDimensionalOrder (Submodule R M) := by
   rw [Module.finiteDimensionalOrder_submodule_iff, isFiniteLength_iff_isNoetherian_isArtinian]
   tauto
 
-lemma Module.length_submodule {N : Submodule R M} :
-    Module.length R N = Order.height N := by
+lemma Module.length_submodule {N : Submodule R M} : Module.length R N = Order.height N := by
   apply WithBot.coe_injective
   rw [Order.height_eq_krullDim_Iic, coe_length, Order.krullDim_eq_of_orderIso (Submodule.mapIic _)]
 
-lemma Module.length_quotient {N : Submodule R M} :
-    Module.length R (M ⧸ N) = Order.coheight N := by
+lemma Module.length_quotient {N : Submodule R M} : Module.length R (M ⧸ N) = Order.coheight N := by
   apply WithBot.coe_injective
   rw [Order.coheight_eq_krullDim_Ici, coe_length,
     Order.krullDim_eq_of_orderIso (Submodule.comapMkQRelIso N)]
 
-lemma LinearEquiv.length_eq {N : Type*} [AddCommGroup N] [Module R N] (e : M ≃ₗ[R] N) :
-    Module.length R M = Module.length R N := by
+lemma LinearEquiv.length_eq {N : Type*} [AddCommGroup N] [Module R N] (e : M ≃ₗ[R] N)
+    : Module.length R M = Module.length R N := by
   apply WithBot.coe_injective
   rw [Module.coe_length, Module.coe_length,
     Order.krullDim_eq_of_orderIso (Submodule.orderIsoMapComap e)]
 
-theorem Module.length_eq_of_surjective {S : Type*} [CommRing S] [Algebra S R] [Module S M]
-    [IsScalarTower S R M] (h : Function.Surjective (algebraMap S R)) :
-    Module.length S M = Module.length R M := by
+theorem Module.length_eq_of_surjective
+    {S : Type*} [CommRing S] [Algebra S R] [Module S M] [IsScalarTower S R M]
+    (h : Function.Surjective (algebraMap S R))
+    : Module.length S M = Module.length R M := by
   have : RingHomSurjective (algebraMap S R) := ⟨h⟩
   let f : M →ₛₗ[algebraMap S R] M := ⟨AddHom.id M, by simp⟩
   rw [Module.length, Module.length, WithBot.unbot_inj,
     Order.krullDim_eq_of_orderIso (Submodule.orderIsoMapComapOfBijective f Function.bijective_id)]
 
-lemma Module.length_bot :
-    Module.length R (⊥ : Submodule R M) = 0 :=
-  Module.length_eq_zero
+lemma Module.length_bot : Module.length R (⊥ : Submodule R M) = 0 := Module.length_eq_zero
 
-@[simp] lemma Module.length_top :
-    Module.length R (⊤ : Submodule R M) = Module.length R M := by
+@[simp]
+lemma Module.length_top : Module.length R (⊤ : Submodule R M) = Module.length R M := by
   rw [Module.length_submodule, Module.length_eq_height]
 
-lemma Submodule.height_lt_top [IsArtinian R M] [IsNoetherian R M] (N : Submodule R M) :
-    Order.height N < ⊤ := by
+lemma Submodule.height_lt_top [IsArtinian R M] [IsNoetherian R M] (N : Submodule R M)
+    : Order.height N < ⊤ := by
   simpa only [← Module.length_submodule] using Module.length_ne_top.lt_top
 
-lemma Submodule.height_strictMono [IsArtinian R M] [IsNoetherian R M] :
-    StrictMono (Order.height : Submodule R M → ℕ∞) :=
-  fun N _ h ↦ Order.height_strictMono h N.height_lt_top
+lemma Submodule.height_strictMono [IsArtinian R M] [IsNoetherian R M]
+    : StrictMono (Order.height : Submodule R M → ℕ∞) := fun N _ h ↦
+  Order.height_strictMono h N.height_lt_top
 
-lemma Submodule.length_lt [IsArtinian R M] [IsNoetherian R M] {N : Submodule R M} (h : N ≠ ⊤) :
-    Module.length R N < Module.length R M := by
+lemma Submodule.length_lt [IsArtinian R M] [IsNoetherian R M] {N : Submodule R M} (h : N ≠ ⊤)
+    : Module.length R N < Module.length R M := by
   simpa [← Module.length_top (M := M), Module.length_submodule] using height_strictMono h.lt_top
 
 variable {N P : Type*} [AddCommGroup N] [AddCommGroup P] [Module R N] [Module R P]
@@ -166,8 +160,8 @@ variable (H : Function.Exact f g)
 
 include hf hg H in
 /-- Length is additive in exact sequences. -/
-lemma Module.length_eq_add_of_exact :
-    Module.length R M = Module.length R N + Module.length R P := by
+lemma Module.length_eq_add_of_exact
+    : Module.length R M = Module.length R N + Module.length R P := by
   by_cases hP : IsFiniteLength R P
   · by_cases hN : IsFiniteLength R N
     · obtain ⟨s, hs₁, hs₂⟩ := isFiniteLength_iff_exists_compositionSeries.mp hP
@@ -179,8 +173,7 @@ lemma Module.length_eq_add_of_exact :
       have hfg : Submodule.map f ⊤ = Submodule.comap g ⊥ := by
         rw [Submodule.map_top, Submodule.comap_bot, LinearMap.exact_iff.mp H]
       let r := t'.smash s' (by simpa [s', t', hs₁, ht₂] using hfg)
-      rw [← Module.length_compositionSeries s hs₁ hs₂,
-        ← Module.length_compositionSeries t ht₁ ht₂,
+      rw [← Module.length_compositionSeries s hs₁ hs₂, ← Module.length_compositionSeries t ht₁ ht₂,
         ← Module.length_compositionSeries r
           (by simpa [r, t', ht₁, -Submodule.map_bot] using Submodule.map_bot f)
           (by simpa [r, s', hs₂, -Submodule.comap_top] using Submodule.comap_top g)]
@@ -194,8 +187,8 @@ lemma Module.length_eq_add_of_exact :
 
 include hf in
 lemma Module.length_le_of_injective : Module.length R N ≤ Module.length R M := by
-  rw [Module.length_eq_add_of_exact f (LinearMap.range f).mkQ hf
-    (Submodule.mkQ_surjective _) (LinearMap.exact_map_mkQ_range f)]
+  rw [Module.length_eq_add_of_exact f (LinearMap.range f).mkQ hf (Submodule.mkQ_surjective _)
+    (LinearMap.exact_map_mkQ_range f)]
   exact le_self_add
 
 include hg in
@@ -206,15 +199,14 @@ lemma Module.length_le_of_surjective : Module.length R P ≤ Module.length R M :
 
 variable (R M N) in
 @[simp]
-lemma Module.length_prod :
-    Module.length R (M × N) = Module.length R M + Module.length R N :=
+lemma Module.length_prod : Module.length R (M × N) = Module.length R M + Module.length R N :=
   Module.length_eq_add_of_exact _ _ LinearMap.inl_injective LinearMap.snd_surjective .inl_snd
 
 variable (R) in
 @[simp]
-lemma Module.length_pi_of_fintype : ∀ {ι : Type*} [Fintype ι]
-    (M : ι → Type*) [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)],
-    Module.length R (Π i, M i) = ∑ i, Module.length R (M i) := by
+lemma Module.length_pi_of_fintype
+    : ∀ {ι : Type*} [Fintype ι] (M : ι → Type*) [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)],
+      Module.length R (Π i, M i) = ∑ i, Module.length R (M i) := by
   apply Fintype.induction_empty_option
   · intro α β _ e IH M _ _
     let _ : Fintype α := .ofEquiv β e.symm
@@ -226,8 +218,8 @@ lemma Module.length_pi_of_fintype : ∀ {ι : Type*} [Fintype ι]
       Fintype.sum_option, add_comm]
 
 @[simp]
-lemma Module.length_finsupp {ι : Type*} :
-    Module.length R (ι →₀ M) = ENat.card ι * Module.length R M := by
+lemma Module.length_finsupp {ι : Type*}
+    : Module.length R (ι →₀ M) = ENat.card ι * Module.length R M := by
   cases finite_or_infinite ι
   · cases nonempty_fintype ι
     simp [(Finsupp.linearEquivFunOnFinite R M ι).length_eq]
@@ -237,14 +229,14 @@ lemma Module.length_finsupp {ι : Type*} :
   obtain ⟨s, hs⟩ := Infinite.exists_subset_card_eq ι m
   have : length R (s →₀ M) = ↑m * length R M := by
     simp [(Finsupp.linearEquivFunOnFinite R M _).length_eq, hs]
-  refine le_trans ?_ (Module.length_le_of_injective (Finsupp.lmapDomain M R ((↑) : s → ι))
-    (Finsupp.mapDomain_injective Subtype.val_injective))
+  refine le_trans ?_
+    (Module.length_le_of_injective (Finsupp.lmapDomain M R ((↑) : s → ι))
+      (Finsupp.mapDomain_injective Subtype.val_injective))
   rw [this]
   exact ENat.self_le_mul_right _ length_pos.ne'
 
 @[simp]
-lemma Module.length_pi {ι : Type*} :
-    Module.length R (ι → M) = ENat.card ι * Module.length R M := by
+lemma Module.length_pi {ι : Type*} : Module.length R (ι → M) = ENat.card ι * Module.length R M := by
   cases finite_or_infinite ι
   · cases nonempty_fintype ι
     simp
@@ -256,8 +248,8 @@ lemma Module.length_pi {ι : Type*} :
 attribute [nontriviality] rank_subsingleton'
 
 variable (R M) in
-lemma Module.length_of_free [Module.Free R M] :
-    Module.length R M = (Module.rank R M).toENat * Module.length R R := by
+lemma Module.length_of_free [Module.Free R M]
+    : Module.length R M = (Module.rank R M).toENat * Module.length R R := by
   let b := Module.Free.chooseBasis R M
   nontriviality R
   nontriviality M
@@ -269,40 +261,37 @@ lemma Module.length_of_free [Module.Free R M] :
   rw [b.repr.length_eq, Module.length_finsupp, Free.rank_eq_card_chooseBasisIndex, ENat.card]
 
 variable (R M) in
-lemma Module.length_of_free_of_finite
-    [StrongRankCondition R] [Module.Free R M] [Module.Finite R M] :
-    Module.length R M = Module.finrank R M * Module.length R R := by
+lemma Module.length_of_free_of_finite [StrongRankCondition R] [Module.Free R M] [Module.Finite R M]
+    : Module.length R M = Module.finrank R M * Module.length R R := by
   rw [length_of_free, Cardinal.toENat_eq_natCast.mpr (finrank_eq_rank _ _).symm]
 
-lemma Module.length_eq_one_iff :
-    Module.length R M = 1 ↔ IsSimpleModule R M := by
+lemma Module.length_eq_one_iff : Module.length R M = 1 ↔ IsSimpleModule R M := by
   rw [← WithBot.coe_inj, Module.coe_length, WithBot.coe_one,
     Order.krullDim_eq_one_iff_of_boundedOrder, isSimpleModule_iff]
 
 variable (R M) in
 @[simp]
-lemma Module.length_eq_one [IsSimpleModule R M] :
-    Module.length R M = 1 :=
+lemma Module.length_eq_one [IsSimpleModule R M] : Module.length R M = 1 :=
   Module.length_eq_one_iff.mpr ‹_›
 
-lemma Module.length_eq_rank
-    (K M : Type*) [DivisionRing K] [AddCommGroup M] [Module K M] :
-    Module.length K M = (Module.rank K M).toENat := by
+lemma Module.length_eq_rank (K M : Type*) [DivisionRing K] [AddCommGroup M] [Module K M]
+    : Module.length K M = (Module.rank K M).toENat := by
   simp [Module.length_of_free]
 
 lemma Module.length_eq_finrank
-    (K M : Type*) [DivisionRing K] [AddCommGroup M] [Module K M] [Module.Finite K M] :
-    Module.length K M = Module.finrank K M := by
+    (K M : Type*) [DivisionRing K] [AddCommGroup M] [Module K M] [Module.Finite K M]
+    : Module.length K M = Module.finrank K M := by
   simp [Module.length_of_free]
 
-theorem Submodule.length_le_length_restrictScalars (A : Type*) [Ring A] [SMul A R] [Module A M]
-    [IsScalarTower A R M] (p : Submodule R M) :
-    Module.length R p ≤ Module.length A (p.restrictScalars A) := by
+theorem Submodule.length_le_length_restrictScalars
+    (A : Type*) [Ring A] [SMul A R] [Module A M] [IsScalarTower A R M] (p : Submodule R M)
+    : Module.length R p ≤ Module.length A (p.restrictScalars A) := by
   rw [← WithBot.coe_le_coe, Module.coe_length, Module.coe_length]
   exact Order.krullDim_le_of_orderEmbedding (restrictScalarsEmbedding A R p)
 
-theorem Submodule.length_quotient_lt [IsArtinian R M] [IsNoetherian R M] (p : Submodule R M)
-    (h : p ≠ ⊥) : Module.length R (M ⧸ p) < Module.length R M := by
+theorem Submodule.length_quotient_lt
+    [IsArtinian R M] [IsNoetherian R M] (p : Submodule R M) (h : p ≠ ⊥)
+    : Module.length R (M ⧸ p) < Module.length R M := by
   rw [Module.length_quotient, Module.length, WithBot.lt_unbot_iff, ← Order.coheight_bot_eq_krullDim,
     WithBot.coe_lt_coe]
   exact Order.coheight_strictAnti (bot_lt_iff_ne_bot.mpr h) (Order.coheight_lt_top p)

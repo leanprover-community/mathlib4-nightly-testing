@@ -20,7 +20,6 @@ subgroup, subgroups
 
 public section
 
-
 namespace Subgroup
 variable {G α β : Type*} [Group G]
 
@@ -39,19 +38,19 @@ lemma mk_smul (g : G) (hg : g ∈ S) (a : α) : (⟨g, hg⟩ : S) • a = g • 
 end MulAction
 
 @[to_additive]
-instance smulCommClass_left [MulAction G β] [SMul α β] [SMulCommClass G α β] (S : Subgroup G) :
-    SMulCommClass S α β :=
+instance smulCommClass_left [MulAction G β] [SMul α β] [SMulCommClass G α β] (S : Subgroup G)
+    : SMulCommClass S α β :=
   S.toSubmonoid.smulCommClass_left
 
 @[to_additive]
-instance smulCommClass_right [SMul α β] [MulAction G β] [SMulCommClass α G β] (S : Subgroup G) :
-    SMulCommClass α S β :=
+instance smulCommClass_right [SMul α β] [MulAction G β] [SMulCommClass α G β] (S : Subgroup G)
+    : SMulCommClass α S β :=
   S.toSubmonoid.smulCommClass_right
 
 /-- Note that this provides `IsScalarTower S G G` which is needed by `smul_mul_assoc`. -/
 @[to_additive]
-instance [SMul α β] [MulAction G α] [MulAction G β] [IsScalarTower G α β] (S : Subgroup G) :
-    IsScalarTower S α β :=
+instance [SMul α β] [MulAction G α] [MulAction G β] [IsScalarTower G α β] (S : Subgroup G)
+    : IsScalarTower S α β :=
   inferInstanceAs (IsScalarTower S.toSubmonoid α β)
 
 @[to_additive]
@@ -77,6 +76,8 @@ instance center.smulCommClass_right : SMulCommClass G (center G) G :=
 end Subgroup
 
 open MonoidHom in
-lemma MonoidWithZeroHom.comap_mker {M N P : Type*} [MulZeroOneClass M] [MulZeroOneClass N]
-    [MulZeroOneClass P] (g : N →*₀ P) (f : M →*₀ N) :
-    Submonoid.comap f (mker g) = mker (g.comp f) := rfl
+lemma MonoidWithZeroHom.comap_mker
+    {M N P : Type*} [MulZeroOneClass M] [MulZeroOneClass N] [MulZeroOneClass P]
+    (g : N →*₀ P) (f : M →*₀ N)
+    : Submonoid.comap f (mker g) = mker (g.comp f) :=
+  rfl

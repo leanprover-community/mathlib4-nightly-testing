@@ -50,22 +50,24 @@ public section
 
 namespace Manifold
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-  {E₁ E₂ E₃ E₄ : Type*} [NormedAddCommGroup E₁] [NormedSpace 𝕜 E₁]
-  [NormedAddCommGroup E₂] [NormedSpace 𝕜 E₂]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E₁ E₂ E₃ E₄ : Type*}
+  [NormedAddCommGroup E₁] [NormedSpace 𝕜 E₁] [NormedAddCommGroup E₂] [NormedSpace 𝕜 E₂]
   [NormedAddCommGroup E₃] [NormedSpace 𝕜 E₃] [NormedAddCommGroup E₄] [NormedSpace 𝕜 E₄]
-  {H H' G G' : Type*} [TopologicalSpace H] [TopologicalSpace H']
-  [TopologicalSpace G] [TopologicalSpace G']
-  {I : ModelWithCorners 𝕜 E₁ H} {I' : ModelWithCorners 𝕜 E₂ H'}
-  {J : ModelWithCorners 𝕜 E₃ G} {J' : ModelWithCorners 𝕜 E₄ G'}
-  {M M' N N' : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [TopologicalSpace M'] [ChartedSpace H' M']
+  {H H' G G' : Type*}
+  [TopologicalSpace H] [TopologicalSpace H'] [TopologicalSpace G] [TopologicalSpace G']
+  {I : ModelWithCorners 𝕜 E₁ H} {I' : ModelWithCorners 𝕜 E₂ H'} {J : ModelWithCorners 𝕜 E₃ G}
+  {J' : ModelWithCorners 𝕜 E₄ G'} {M M' N N' : Type*}
+  [TopologicalSpace M] [ChartedSpace H M] [TopologicalSpace M'] [ChartedSpace H' M']
   [TopologicalSpace N] [ChartedSpace G N] [TopologicalSpace N'] [ChartedSpace G' N']
   {n : ℕ∞ω}
 
 variable (I J n) in
-/-- A `C^n` map `f : M → M'` is a smooth `C^n` embedding if it is a topological embedding
-and a `C^n` immersion. -/
+/--
+A `C^n` map `f : M → M'` is a smooth `C^n` embedding if it is a topological embedding
+and a `C^n` immersion.
+-/
 @[mk_iff]
 structure IsSmoothEmbedding (f : M → N) where
   isImmersion : IsImmersion I J n f
@@ -77,39 +79,42 @@ variable {f g : M → N}
 
 protected lemma id [IsManifold I n M] : IsSmoothEmbedding I I n (@id M) := ⟨.id, .id⟩
 
-/-- If `f: M → N` and `g: M' × N'` are smooth embeddings, respectively,
-then so is `f × g: M × M' → N × N'`. -/
-theorem prodMap {f : M → N} {g : M' → N'}
+/--
+If `f: M → N` and `g: M' × N'` are smooth embeddings, respectively,
+then so is `f × g: M × M' → N × N'`.
+-/
+theorem prodMap
+    {f : M → N} {g : M' → N'}
     [IsManifold I n M] [IsManifold I' n M'] [IsManifold J n N] [IsManifold J' n N']
-    (hf : IsSmoothEmbedding I J n f) (hg : IsSmoothEmbedding I' J' n g) :
-    IsSmoothEmbedding (I.prod I') (J.prod J') n (Prod.map f g) :=
+    (hf : IsSmoothEmbedding I J n f) (hg : IsSmoothEmbedding I' J' n g)
+    : IsSmoothEmbedding (I.prod I') (J.prod J') n (Prod.map f g) :=
   ⟨hf.1.prodMap hg.1, hf.2.prodMap hg.2⟩
 
 /- The inclusion of an open subset `s` of a smooth manifold `M` is a smooth embedding. -/
-lemma of_opens [IsManifold I n M] (s : TopologicalSpace.Opens M) :
-    IsSmoothEmbedding I I n (Subtype.val : s → M) := by
+lemma of_opens [IsManifold I n M] (s : TopologicalSpace.Opens M)
+    : IsSmoothEmbedding I I n (Subtype.val : s → M) := by
   rw [isSmoothEmbedding_iff]
   exact ⟨IsImmersion.of_opens s, IsEmbedding.subtypeVal⟩
 
 /-- Every `ModelWithCorners 𝕜 E H` is a smooth embedding when viewed as a map `H → E`. -/
-protected lemma _root_.ModelWithCorners.isSmoothEmbedding {n : ℕ} :
-    IsSmoothEmbedding I (modelWithCornersSelf 𝕜 E₁) n I :=
+protected lemma _root_.ModelWithCorners.isSmoothEmbedding {n : ℕ}
+    : IsSmoothEmbedding I (modelWithCornersSelf 𝕜 E₁) n I :=
   ⟨I.isImmersion, I.isClosedEmbedding.isEmbedding⟩
 
 /-- Given `C^n` manifolds `M` and `N`, `Sum.inl : M → M ⊕ N` is a `C^n` embedding. -/
-lemma sumInl {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I n M] [IsManifold I n M'] : IsSmoothEmbedding I I n (@Sum.inl M M') :=
+lemma sumInl
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M'] [IsManifold I n M] [IsManifold I n M']
+    : IsSmoothEmbedding I I n (@Sum.inl M M') :=
   ⟨IsImmersionOfComplement.sumInl.isImmersion, Topology.IsEmbedding.inl⟩
 
 /-- Given `C^n` manifolds `M` and `N`, `Sum.inr : N → M ⊕ N` is a `C^n` embedding. -/
-lemma sumInr {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I n M] [IsManifold I n M'] : IsSmoothEmbedding I I n (@Sum.inr M M') :=
+lemma sumInr
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M'] [IsManifold I n M] [IsManifold I n M']
+    : IsSmoothEmbedding I I n (@Sum.inr M M') :=
   ⟨IsImmersionOfComplement.sumInr.isImmersion, Topology.IsEmbedding.inr⟩
 
 /-- A smooth embedding is automatically smooth. -/
-lemma contMDiff (hf : IsSmoothEmbedding I J n f) :
-    ContMDiff I J n f :=
-  hf.isImmersion.contMDiff
+lemma contMDiff (hf : IsSmoothEmbedding I J n f) : ContMDiff I J n f := hf.isImmersion.contMDiff
 
 end IsSmoothEmbedding
 

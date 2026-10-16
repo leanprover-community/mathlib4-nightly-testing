@@ -26,8 +26,8 @@ theorem ratSqrt_le_realSqrt (x : ℕ) {prec : ℕ} (h : 0 < prec) : ratSqrt x pr
   rwa [Real.sqrt_sq] at this
   simpa only [Rat.cast_nonneg] using ratSqrt_nonneg _ _
 
-theorem realSqrt_lt_ratSqrt_add_inv_prec (x : ℕ) {prec : ℕ} (h : 0 < prec) :
-    √x < ratSqrt x prec + 1 / prec := by
+theorem realSqrt_lt_ratSqrt_add_inv_prec (x : ℕ) {prec : ℕ} (h : 0 < prec)
+    : √x < ratSqrt x prec + 1 / prec := by
   have := lt_ratSqrt_add_inv_prec_sq (x := x) h
   have : (x : ℝ) < ↑((x.ratSqrt prec + 1 / prec) ^ 2 : ℚ) := by norm_cast
   have := Real.sqrt_lt_sqrt (by simp) this
@@ -37,8 +37,8 @@ theorem realSqrt_lt_ratSqrt_add_inv_prec (x : ℕ) {prec : ℕ} (h : 0 < prec) :
   · push_cast
     exact add_nonneg (by simpa using ratSqrt_nonneg _ _) (by simp)
 
-theorem realSqrt_mem_Ico (x : ℕ) {prec : ℕ} (h : 0 < prec) :
-    √x ∈ Set.Ico (ratSqrt x prec : ℝ) (ratSqrt x prec + 1 / prec : ℝ) := by
+theorem realSqrt_mem_Ico (x : ℕ) {prec : ℕ} (h : 0 < prec)
+    : √x ∈ Set.Ico (ratSqrt x prec : ℝ) (ratSqrt x prec + 1 / prec : ℝ) := by
   grind [ratSqrt_le_realSqrt, realSqrt_lt_ratSqrt_add_inv_prec]
 
 #adaptation_note
@@ -51,8 +51,8 @@ So for robustness I'm explicitly setting the pattern here.
 -/
 local grind_pattern realSqrt_lt_ratSqrt_add_inv_prec => (x.ratSqrt prec : ℝ)
 
-theorem ratSqrt_mem_Ioc (x : ℕ) {prec : ℕ} (h : 0 < prec) :
-    (ratSqrt x prec : ℝ) ∈ Set.Ioc (√x - 1 / prec) √x := by
+theorem ratSqrt_mem_Ioc (x : ℕ) {prec : ℕ} (h : 0 < prec)
+    : (ratSqrt x prec : ℝ) ∈ Set.Ioc (√x - 1 / prec) √x := by
   grind [ratSqrt_le_realSqrt]
 
 end Nat

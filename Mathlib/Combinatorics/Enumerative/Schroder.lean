@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Algebra.Group.Even
 public import Mathlib.Order.Interval.Finset.Nat
-
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.BigOperators.Group.Finset.Lemmas
 import Mathlib.Algebra.Order.BigOperators.Group.LocallyFinite
@@ -49,8 +48,10 @@ open Finset
 namespace Nat
 variable {n : ℕ}
 
-/-- The recursive definition of the sequence of the large Schröder numbers :
-`a (n + 1) = a n + ∑ i : Fin n.succ, a i * a (n - i)` -/
+/--
+The recursive definition of the sequence of the large Schröder numbers :
+`a (n + 1) = a n + ∑ i : Fin n.succ, a i * a (n - i)`
+-/
 def largeSchroder : ℕ → ℕ
   | 0 => 1
   | n + 1 => largeSchroder n + ∑ i : Fin n.succ, largeSchroder i * largeSchroder (n - i)
@@ -59,12 +60,14 @@ def largeSchroder : ℕ → ℕ
 @[simp] theorem largeSchroder_one : largeSchroder 1 = 2 := by simp [largeSchroder]
 @[simp] theorem largeSchroder_two : largeSchroder 2 = 6 := by simp [largeSchroder]
 
-theorem largeSchroder_succ (n : ℕ) :
-    largeSchroder (n + 1) = largeSchroder n + ∑ i ≤ n, largeSchroder i * largeSchroder (n - i) := by
+theorem largeSchroder_succ (n : ℕ)
+    : largeSchroder (n + 1)
+      = largeSchroder n + ∑ i ≤ n, largeSchroder i * largeSchroder (n - i) := by
   simp [largeSchroder, ← Iio_add_one_eq_Iic, Nat.Iio_eq_range, ← Fin.sum_univ_eq_sum_range]
 
 theorem even_largeSchroder : ∀ {n : ℕ}, n ≠ 0 → Even (largeSchroder n)
-  | 1, _ => by simp
+  | 1, _ => by
+    simp
   | n + 2, _ => by
     rw [largeSchroder_succ]
     refine .add (even_largeSchroder n.succ_ne_zero) <| even_sum _ fun k hk ↦ ?_
@@ -82,37 +85,40 @@ def smallSchroder : ℕ → ℕ
 @[simp] lemma smallSchroder_zero : smallSchroder 0 = 1 := by simp [smallSchroder]
 @[simp] lemma smallSchroder_one : smallSchroder 1 = 1 := by simp [smallSchroder]
 
-lemma smallSchroder_succ_eq_largeSchroder_div_two (h : n ≠ 0) :
-    smallSchroder (n + 1) = largeSchroder n / 2 := by simp [smallSchroder]
+lemma smallSchroder_succ_eq_largeSchroder_div_two (h : n ≠ 0)
+    : smallSchroder (n + 1) = largeSchroder n / 2 := by
+  simp [smallSchroder]
 
 lemma two_mul_smallSchroder_succ (hn : n ≠ 0) : 2 * smallSchroder (n + 1) = largeSchroder n := by
   rw [smallSchroder_succ_eq_largeSchroder_div_two hn,
     Nat.mul_div_cancel_left' (even_largeSchroder hn).two_dvd]
 
-theorem smallSchroder_succ (hn : 1 < n) :
-    smallSchroder (n + 1) =
-      3 * n.smallSchroder +
-          2 * ∑ i ∈ Ioo 0 (n - 1), (i + 1).smallSchroder * (n - i).smallSchroder := by
+theorem smallSchroder_succ (hn : 1 < n)
+    : smallSchroder (n + 1)
+      = 3 * n.smallSchroder
+        + 2 * ∑ i ∈ Ioo 0 (n - 1), (i + 1).smallSchroder * (n - i).smallSchroder := by
   obtain _ | _ | n := n
   · simp at hn
   · simp at hn
   refine Nat.mul_left_cancel zero_lt_two ?_
   calc
-        2 * (n + 3).smallSchroder
-    _ = 3 * (n + 1).largeSchroder +
-          ∑ i ∈ Ioo 0 (n + 1), i.largeSchroder * (n + 1 - i).largeSchroder := by
+    2 * (n + 3).smallSchroder
+    _ = 3 * (n + 1).largeSchroder
+        + ∑ i ∈ Ioo 0 (n + 1), i.largeSchroder * (n + 1 - i).largeSchroder := by
       rw [two_mul_smallSchroder_succ, largeSchroder_succ, ← Icc_bot, ← sum_Ioc_add_eq_sum_Icc,
-        ← sum_Ioo_add_eq_sum_Ioc] <;> simp; lia
-    _ = 3 * (n + 1).largeSchroder +
-          ∑ i ∈ Ioo 0 (n + 1), (2 * (i + 1).smallSchroder) * (2 * (n + 2 - i).smallSchroder) := by
+          ← sum_Ioo_add_eq_sum_Ioc]
+        <;> simp
+      lia
+    _ = 3 * (n + 1).largeSchroder
+        + ∑ i ∈ Ioo 0 (n + 1), (2 * (i + 1).smallSchroder) * (2 * (n + 2 - i).smallSchroder) := by
       congr! 2 with i hi
       simp at hi
-      rw [← two_mul_smallSchroder_succ, ← two_mul_smallSchroder_succ] <;>
-      · #adaptation_note /-- After https://github.com/leanprover/lean4/pull/13593
+      rw [← two_mul_smallSchroder_succ, ← two_mul_smallSchroder_succ]
+        <;> · #adaptation_note /-- After https://github.com/leanprover/lean4/pull/13593
         we need to re-enable model-based theory combination in `lia` for this to go through. -/
-        lia +mbtc
-    _ = 6 * (n + 2).smallSchroder +
-          4 * ∑ i ∈ Ioo 0 (n + 1), (i + 1).smallSchroder * (n + 2 - i).smallSchroder := by
+              lia +mbtc
+    _ = 6 * (n + 2).smallSchroder
+        + 4 * ∑ i ∈ Ioo 0 (n + 1), (i + 1).smallSchroder * (n + 2 - i).smallSchroder := by
       rw [← two_mul_smallSchroder_succ (by lia)]
       simp [mul_mul_mul_comm _ _ 2, ← Finset.mul_sum]
       lia

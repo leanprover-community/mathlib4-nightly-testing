@@ -6,7 +6,6 @@ Authors: Johan Commelin, Kenny Lau
 module
 
 public import Mathlib.RingTheory.Ideal.Span
-
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.RingTheory.Ideal.Quotient.Defs
 
@@ -25,15 +24,16 @@ all natural numbers `p` and `k` if `p` divides `a-b` in `R`, then `p ^ (k + 1)` 
 
 public section
 
-
 section
 
 open Ideal Ideal.Quotient
 
-theorem dvd_sub_pow_of_dvd_sub {R : Type*} [CommRing R] {p : ℕ} {a b : R} (h : (p : R) ∣ a - b)
-    (k : ℕ) : (p ^ (k + 1) : R) ∣ a ^ p ^ k - b ^ p ^ k := by
+theorem dvd_sub_pow_of_dvd_sub
+    {R : Type*} [CommRing R] {p : ℕ} {a b : R} (h : (p : R) ∣ a - b) (k : ℕ)
+    : (p ^ (k + 1) : R) ∣ a ^ p ^ k - b ^ p ^ k := by
   induction k with
-  | zero => rwa [pow_one, pow_zero, pow_one, pow_one]
+  | zero =>
+    rwa [pow_one, pow_zero, pow_one, pow_one]
   | succ k ih =>
     rw [pow_succ p k, pow_mul, pow_mul, ← geom_sum₂_mul, pow_succ']
     refine mul_dvd_mul ?_ ih

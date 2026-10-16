@@ -50,20 +50,20 @@ A regular category is a category with finite limits, such that every kernel pair
 and such that regular epimorphisms are stable under base change.
 -/
 class Regular extends HasFiniteLimits C where
-  hasCoequalizer_of_isKernelPair {X Y Z : C} {f : X ⟶ Y} {g₁ g₂ : Z ⟶ X} :
-    IsKernelPair f g₁ g₂ → HasCoequalizer g₁ g₂
+  hasCoequalizer_of_isKernelPair {X Y Z : C} {f : X ⟶ Y} {g₁ g₂ : Z ⟶ X}
+    : IsKernelPair f g₁ g₂ → HasCoequalizer g₁ g₂
   regularEpiIsStableUnderBaseChange : MorphismProperty.IsStableUnderBaseChange (.regularEpi C)
 
 variable {C} [Regular C]
 
-instance {X Y B : C} (f : X ⟶ B) (g : Y ⟶ B) [HasPullback f g] [IsRegularEpi f] :
-    IsRegularEpi (pullback.snd f g) := by
+instance {X Y B : C} (f : X ⟶ B) (g : Y ⟶ B) [HasPullback f g] [IsRegularEpi f]
+    : IsRegularEpi (pullback.snd f g) := by
   apply Regular.regularEpiIsStableUnderBaseChange.of_isPullback (IsPullback.of_hasPullback f g)
   dsimp [MorphismProperty.regularEpi]
   infer_instance
 
-instance {X Y B : C} (f : X ⟶ B) (g : Y ⟶ B) [HasPullback f g] [IsRegularEpi g] :
-    IsRegularEpi (pullback.fst f g) := by
+instance {X Y B : C} (f : X ⟶ B) (g : Y ⟶ B) [HasPullback f g] [IsRegularEpi g]
+    : IsRegularEpi (pullback.fst f g) := by
   apply Regular.regularEpiIsStableUnderBaseChange.of_isPullback (IsPullback.of_hasPullback f g).flip
   dsimp [MorphismProperty.regularEpi]
   infer_instance
@@ -83,7 +83,8 @@ local instance : HasCoequalizer (pullback.fst f f) (pullback.snd f f) :=
 instance : Mono (coequalizer.desc f pullback.condition) := by
   -- It suffices to show that the two projections from the kernel pair are equal:
   apply (IsKernelPair.of_hasPullback _).mono_of_eq_fst_snd
-  /- We fill in the kernel pair square of `f` as follows:
+  /-
+  We fill in the kernel pair square of `f` as follows:
   ```
                   g₁                   fst
   pullback f f------->pullback e k₁----------> X
@@ -155,8 +156,10 @@ instance hasStrongEpiMonoFactorisations : HasStrongEpiMonoFactorisations C where
 /-- In a regular category, every extremal epimorphism is a regular epimorphism. -/
 noncomputable def regularEpiOfExtremalEpi [h : ExtremalEpi f] : RegularEpi f :=
   have := h.isIso (strongEpiMonoFactorisation f).e (strongEpiMonoFactorisation f).m (by simp)
-  RegularEpi.ofArrowIso (Arrow.isoMk (f := .mk (strongEpiMonoFactorisation f).e) (Iso.refl _)
-    (asIso (strongEpiMonoFactorisation f).m)) (IsRegularEpi.getStruct _)
+  RegularEpi.ofArrowIso
+    (Arrow.isoMk (f := .mk (strongEpiMonoFactorisation f).e) (Iso.refl _)
+      (asIso (strongEpiMonoFactorisation f).m))
+    (IsRegularEpi.getStruct _)
 
 instance isRegularEpi_of_extremalEpi (f : X ⟶ Y) [ExtremalEpi f] : IsRegularEpi f :=
   ⟨⟨regularEpiOfExtremalEpi f⟩⟩
@@ -176,31 +179,31 @@ Given a morphism `f : A ⟶ B` and subobjects `A' ⟶ A` and `B' ⟶ B`, we have
 This morphism is part of a `StrongEpiMonoFactorisation` of
 `(A' ⊓ (Subobject.pullback f).obj B').arrow ≫ f`, see `frobeniusStrongEpiMonoFactorisation`.
 -/
-noncomputable def frobeniusMorphism :
-    underlying.obj (A' ⊓ (Subobject.pullback f).obj B') ⟶
-      underlying.obj ((«exists» f).obj A' ⊓ B') :=
+noncomputable def frobeniusMorphism
+    : underlying.obj (A' ⊓ (Subobject.pullback f).obj B')
+      ⟶ underlying.obj ((«exists» f).obj A' ⊓ B') :=
   (inf_isPullback ((«exists» f).obj A') B').flip.lift
     ((ofLE _ _ (inf_le_right A' ((Subobject.pullback f).obj B'))) ≫ (pullbackπ _ _))
     ((ofLE _ _ (inf_le_left A' ((Subobject.pullback f).obj B'))) ≫ (imageFactorisation f A').F.e)
     (by simp [← imageFactorisation_F_m, (isPullback _ _).w])
 
 set_option backward.isDefEq.respectTransparency false in
-lemma frobeniusMorphism_isPullback :
-    IsPullback (frobeniusMorphism f A' B')
+lemma frobeniusMorphism_isPullback
+    : IsPullback (frobeniusMorphism f A' B')
       ((ofLE _ _ (inf_le_left A' ((Subobject.pullback f).obj B'))))
-      ((ofLE _ _ (inf_le_left ((«exists» f).obj A') B')))
-      (imageFactorisation _ _).F.e := by
+      ((ofLE _ _ (inf_le_left ((«exists» f).obj A') B'))) (imageFactorisation _ _).F.e := by
   apply IsPullback.of_right (t := (inf_isPullback ((«exists» f).obj A') B').flip)
     (p := by simp [frobeniusMorphism])
   simpa [frobeniusMorphism, IsPullback.lift_fst, ← imageFactorisation_F_m,
-    (isPullback f B').paste_horiz_iff] using
-    (inf_isPullback A' ((Subobject.pullback f).obj B')).flip
+      (isPullback f B').paste_horiz_iff]
+    using (inf_isPullback A' ((Subobject.pullback f).obj B')).flip
 
 set_option backward.isDefEq.respectTransparency false in
 instance : IsRegularEpi (frobeniusMorphism f A' B') := by
   apply regularEpiIsStableUnderBaseChange.of_isPullback (frobeniusMorphism_isPullback f A' B').flip
-  have := strongEpi_of_strongEpiMonoFactorisation (strongEpiMonoFactorisation (A'.arrow ≫ f))
-    (imageFactorisation f A').isImage
+  have :=
+    strongEpi_of_strongEpiMonoFactorisation (strongEpiMonoFactorisation (A'.arrow ≫ f))
+      (imageFactorisation f A').isImage
   simp only [MorphismProperty.regularEpi_iff]
   infer_instance
 
@@ -212,8 +215,8 @@ gives a `StrongEpiMonoFactorisation` of `(A' ⊓ (Subobject.pullback f).obj B').
 This is an auxiliary definition to show `frobenius_reciprocity`.
 -/
 @[simps!]
-noncomputable def frobeniusStrongEpiMonoFactorisation :
-    StrongEpiMonoFactorisation ((A' ⊓ (Subobject.pullback f).obj B').arrow ≫ f) where
+noncomputable def frobeniusStrongEpiMonoFactorisation
+    : StrongEpiMonoFactorisation ((A' ⊓ (Subobject.pullback f).obj B').arrow ≫ f) where
   I := underlying.obj <| («exists» f).obj A' ⊓ B'
   m := ((«exists» f).obj A' ⊓ B').arrow
   e := frobeniusMorphism f A' B'
@@ -227,8 +230,8 @@ Regular categories satisfy Frobenius reciprocity. That is, in the internal langu
 categories, we have `∃ x, (P(x) ⊓ Q)` iff `(∃ x, P(x)) ⊓ Q`, for a proposition `Q` not depending on
 `x`.
 -/
-theorem exists_inf_pullback_eq_exists_inf :
-    («exists» f).obj (A' ⊓ (Subobject.pullback f).obj B') = («exists» f).obj A' ⊓ B' :=
+theorem exists_inf_pullback_eq_exists_inf
+    : («exists» f).obj (A' ⊓ (Subobject.pullback f).obj B') = («exists» f).obj A' ⊓ B' :=
   eq_of_comm
     (IsImage.isoExt (imageFactorisation _ _).isImage
       (frobeniusStrongEpiMonoFactorisation f A' B').toMonoIsImage)

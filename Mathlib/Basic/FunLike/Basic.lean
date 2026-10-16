@@ -133,7 +133,8 @@ the entire `extends` hierarchy.
 
 public section
 
-/-- The class `DFunLike F α β` expresses that terms of type `F` have an
+/--
+The class `DFunLike F α β` expresses that terms of type `F` have an
 injective coercion to (dependent) functions from `α` to `β`.
 
 For non-dependent functions you can also use the abbreviation `FunLike`.
@@ -148,7 +149,8 @@ class DFunLike (F : Sort*) (α : outParam (Sort*)) (β : outParam <| α → Sort
   /-- The coercion to functions must be injective. -/
   coe_injective : Function.Injective coe
 
-/-- The class `FunLike F α β` (`Fun`ction-`Like`) expresses that terms of type `F`
+/--
+The class `FunLike F α β` (`Fun`ction-`Like`) expresses that terms of type `F`
 have an injective coercion to functions from `α` to `β`.
 `FunLike` is the non-dependent version of `DFunLike`.
 This typeclass is used in the definition of the homomorphism typeclasses,
@@ -173,9 +175,9 @@ variable {F α β} [i : DFunLike F α β]
 instance (priority := 100) toCoeFun : CoeFun F (fun _ ↦ ∀ a : α, β a) where
   coe := @DFunLike.coe _ _ β _ -- need to make explicit to beta reduce for non-dependent functions
 
-run_cmd Lean.Elab.Command.liftTermElabM do
-  Lean.Meta.registerCoercion ``DFunLike.coe
-    (some { numArgs := 5, coercee := 4, type := .coeFun })
+run_cmd
+  Lean.Elab.Command.liftTermElabM do
+    Lean.Meta.registerCoercion ``DFunLike.coe (some { numArgs := 5, coercee := 4, type := .coeFun })
 
 @[deprecated "Now a syntactic tautology" (since := "2026-06-04")]
 theorem coe_eq_coe_fn : (DFunLike.coe (F := F)) = (fun f => ↑f) := rfl
@@ -187,32 +189,25 @@ theorem coe_fn_eq {f g : F} : (f : ∀ a : α, β a) = (g : ∀ a : α, β a) �
 theorem ext' {f g : F} (h : (f : ∀ a : α, β a) = (g : ∀ a : α, β a)) : f = g :=
   DFunLike.coe_injective h
 
-theorem ext'_iff {f g : F} : f = g ↔ (f : ∀ a : α, β a) = (g : ∀ a : α, β a) :=
-  coe_fn_eq.symm
+theorem ext'_iff {f g : F} : f = g ↔ (f : ∀ a : α, β a) = (g : ∀ a : α, β a) := coe_fn_eq.symm
 
-theorem ext (f g : F) (h : ∀ x : α, f x = g x) : f = g :=
-  DFunLike.coe_injective (funext h)
+theorem ext (f g : F) (h : ∀ x : α, f x = g x) : f = g := DFunLike.coe_injective (funext h)
 
-theorem ext_iff {f g : F} : f = g ↔ ∀ x, f x = g x :=
-  coe_fn_eq.symm.trans funext_iff
+theorem ext_iff {f g : F} : f = g ↔ ∀ x, f x = g x := coe_fn_eq.symm.trans funext_iff
 
 protected theorem congr_fun {f g : F} (h₁ : f = g) (x : α) : f x = g x :=
   congr_fun (congr_arg _ h₁) x
 
-theorem ne_iff {f g : F} : f ≠ g ↔ ∃ a, f a ≠ g a :=
-  ext_iff.not.trans not_forall
+theorem ne_iff {f g : F} : f ≠ g ↔ ∃ a, f a ≠ g a := ext_iff.not.trans not_forall
 
-theorem exists_ne {f g : F} (h : f ≠ g) : ∃ x, f x ≠ g x :=
-  ne_iff.mp h
+theorem exists_ne {f g : F} (h : f ≠ g) : ∃ x, f x ≠ g x := ne_iff.mp h
 
 /-- This is not an instance to avoid slowing down every single `Subsingleton` typeclass search. -/
-lemma subsingleton_cod [∀ a, Subsingleton (β a)] : Subsingleton F :=
-  coe_injective.subsingleton
+lemma subsingleton_cod [∀ a, Subsingleton (β a)] : Subsingleton F := coe_injective.subsingleton
 
 include β in
 /-- This is not an instance to avoid slowing down every single `Subsingleton` typeclass search. -/
-lemma subsingleton_dom [IsEmpty α] : Subsingleton F :=
-  coe_injective.subsingleton
+lemma subsingleton_dom [IsEmpty α] : Subsingleton F := coe_injective.subsingleton
 
 end DFunLike
 
@@ -229,15 +224,14 @@ namespace DFunLike
 protected theorem congr {f g : F} {x y : α} (h₁ : f = g) (h₂ : x = y) : f x = g y :=
   congr (congr_arg _ h₁) h₂
 
-protected theorem congr_arg (f : F) {x y : α} (h₂ : x = y) : f x = f y :=
-  congr_arg _ h₂
+protected theorem congr_arg (f : F) {x y : α} (h₂ : x = y) : f x = f y := congr_arg _ h₂
 
-theorem dite_apply {P : Prop} [Decidable P] (f : P → F) (g : ¬P → F) (x : α) :
-    (if h : P then f h else g h) x = if h : P then f h x else g h x := by
+theorem dite_apply {P : Prop} [Decidable P] (f : P → F) (g : ¬P → F) (x : α)
+    : (if h : P then f h else g h) x = if h : P then f h x else g h x := by
   split_ifs <;> rfl
 
-theorem ite_apply {P : Prop} [Decidable P] (f g : F) (x : α) :
-    (if P then f else g) x = if P then f x else g x :=
+theorem ite_apply {P : Prop} [Decidable P] (f g : F) (x : α)
+    : (if P then f else g) x = if P then f x else g x :=
   dite_apply _ _ _
 
 end DFunLike

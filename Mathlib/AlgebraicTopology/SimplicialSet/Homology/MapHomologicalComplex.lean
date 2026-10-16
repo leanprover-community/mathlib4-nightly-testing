@@ -31,28 +31,33 @@ open scoped Simplicial
 
 namespace SSet
 
-variable {C : Type u} {D : Type u'} [Category.{v} C] [Category.{v'} D]
-  [Preadditive C] [Preadditive D] [HasCoproducts.{w} C] [HasCoproducts.{w} D]
-  (X : SSet.{w}) (F : C ⥤ D) [F.Additive]
-  [∀ (T : Type w), PreservesColimitsOfShape (Discrete T) F] (R : C)
+variable
+  {C : Type u} {D : Type u'} [Category.{v} C] [Category.{v'} D] [Preadditive C] [Preadditive D]
+  [HasCoproducts.{w} C] [HasCoproducts.{w} D]
+  (X : SSet.{w})
+  (F : C ⥤ D) [F.Additive] [∀ (T : Type w), PreservesColimitsOfShape (Discrete T) F]
+  (R : C)
 
 open SimplicialObject Functor in
-/-- The chain complex functor commutes with the "extension of scalars".
+/--
+The chain complex functor commutes with the "extension of scalars".
 More precisely, if `F : C ⥤ D` is a functor which commutes with arbitrary coproducts,
 `R : C` and `X : SSet`, then the chain complex of `X` with coefficients
 in `F.obj R` is obtained by applying `F` to the chain complex of `X`
-with coefficients in `R`. -/
-noncomputable def chainComplexFunctorObjCompMapIso :
-    (chainComplexFunctor C).obj R ⋙ F.mapHomologicalComplex (.down ℕ) ≅
-    (chainComplexFunctor D).obj (F.obj R) :=
+with coefficients in `R`.
+-/
+noncomputable def chainComplexFunctorObjCompMapIso
+    : (chainComplexFunctor C).obj R ⋙ F.mapHomologicalComplex (.down ℕ)
+      ≅ (chainComplexFunctor D).obj (F.obj R) :=
   calc
-    _ ≅ (whiskering ..).obj (sigmaConst.obj R) ⋙
-      alternatingFaceMapComplex C ⋙ F.mapHomologicalComplex _ := associator ..
-    _ ≅ (whiskering ..).obj (sigmaConst.obj R) ⋙
-        (whiskering ..).obj F ⋙ alternatingFaceMapComplex D :=
+    _ ≅ (whiskering ..).obj (sigmaConst.obj R) ⋙ alternatingFaceMapComplex C
+        ⋙ F.mapHomologicalComplex _ :=
+      associator ..
+    _ ≅ (whiskering ..).obj (sigmaConst.obj R) ⋙ (whiskering ..).obj F
+        ⋙ alternatingFaceMapComplex D :=
       isoWhiskerLeft _ (alternatingFaceMapComplexCompMapHomologicalComplexIso _)
-    _ ≅ ((whiskering ..).obj (sigmaConst.obj R) ⋙
-        (whiskering ..).obj F) ⋙ alternatingFaceMapComplex D :=
+    _ ≅ ((whiskering ..).obj (sigmaConst.obj R) ⋙ (whiskering ..).obj F)
+        ⋙ alternatingFaceMapComplex D :=
       (associator ..).symm
     _ ≅ (whiskering ..).obj (sigmaConst.obj R ⋙ F) ⋙ alternatingFaceMapComplex D :=
       isoWhiskerRight (whiskeringRightObjCompIso ..) _
@@ -61,12 +66,10 @@ noncomputable def chainComplexFunctorObjCompMapIso :
 
 variable {R} in
 @[reassoc (attr := simp)]
-lemma map_ιChainComplex_chainComplexFunctorObjCompMapIso_hom_app_f
-    {n : ℕ} (x : X _⦋n⦌) :
-    dsimp% F.map (X.ιChainComplex x) ≫
-      ((chainComplexFunctorObjCompMapIso F R).hom.app X).f n =
-    X.ιChainComplex x := by
-  simp [chainComplexFunctorObjCompMapIso, ιChainComplex,
-    SSet.chainComplexFunctor]
+lemma map_ιChainComplex_chainComplexFunctorObjCompMapIso_hom_app_f {n : ℕ} (x : X _⦋n⦌)
+    : dsimp% F.map (X.ιChainComplex x) ≫
+        ((chainComplexFunctorObjCompMapIso F R).hom.app X).f n =
+      X.ιChainComplex x := by
+  simp [chainComplexFunctorObjCompMapIso, ιChainComplex, SSet.chainComplexFunctor]
 
 end SSet

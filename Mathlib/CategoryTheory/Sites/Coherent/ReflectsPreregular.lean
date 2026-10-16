@@ -20,9 +20,9 @@ public section
 
 namespace CategoryTheory
 
-variable {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D)
-  [F.PreservesEffectiveEpis] [F.ReflectsEffectiveEpis]
-  [F.EffectivelyEnough]
+variable
+  {C D : Type*} [Category* C] [Category* D]
+  (F : C ⥤ D) [F.PreservesEffectiveEpis] [F.ReflectsEffectiveEpis] [F.EffectivelyEnough]
   [Preregular D] [F.Full] [F.Faithful]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -30,8 +30,11 @@ include F in
 lemma Functor.reflects_preregular : Preregular C where
   exists_fac f g _ := by
     obtain ⟨W, f', _, i, w⟩ := Preregular.exists_fac (F.map f) (F.map g)
-    refine ⟨_, F.preimage (F.effectiveEpiOver W ≫ f'),
-      ⟨F.effectiveEpi_of_map _ ?_, F.preimage (F.effectiveEpiOver W ≫ i), ?_⟩⟩
+    refine ⟨
+      _,
+      F.preimage (F.effectiveEpiOver W ≫ f'),
+      ⟨F.effectiveEpi_of_map _ ?_, F.preimage (F.effectiveEpiOver W ≫ i), ?_⟩
+    ⟩
     · simp only [Functor.map_preimage]
       infer_instance
     · apply F.map_injective

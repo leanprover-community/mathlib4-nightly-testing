@@ -47,17 +47,17 @@ class Groupoid (obj : Type u) : Type max u (v + 1) extends Category.{v} obj wher
 
 initialize_simps_projections Groupoid (-Hom)
 
-/-- A `LargeGroupoid` is a groupoid
+/--
+A `LargeGroupoid` is a groupoid
 where the objects live in `Type (u+1)` while the morphisms live in `Type u`.
 -/
-abbrev LargeGroupoid (C : Type (u + 1)) : Type (u + 1) :=
-  Groupoid.{u} C
+abbrev LargeGroupoid (C : Type (u + 1)) : Type (u + 1) := Groupoid.{u} C
 
-/-- A `SmallGroupoid` is a groupoid
+/--
+A `SmallGroupoid` is a groupoid
 where the objects and morphisms live in the same universe.
 -/
-abbrev SmallGroupoid (C : Type u) : Type (u + 1) :=
-  Groupoid.{u} C
+abbrev SmallGroupoid (C : Type u) : Type (u + 1) := Groupoid.{u} C
 
 section
 
@@ -82,9 +82,7 @@ instance (priority := 100) groupoidHasInvolutiveReverse : Quiver.HasInvolutiveRe
     dsimp [Quiver.reverse]
     simp
 
-@[simp]
-theorem Groupoid.reverse_eq_inv (f : X ⟶ Y) : Quiver.reverse f = Groupoid.inv f :=
-  rfl
+@[simp] theorem Groupoid.reverse_eq_inv (f : X ⟶ Y) : Quiver.reverse f = Groupoid.inv f := rfl
 
 set_option backward.defeqAttrib.useBackward true in
 instance functorMapReverse {D : Type*} [Groupoid D] (F : C ⥤ D) : F.toPrefunctor.MapReverse where
@@ -127,14 +125,13 @@ variable {C : Type u} [Category.{v} C]
 
 /-- Promote (noncomputably) an `IsGroupoid` to a `Groupoid` structure. -/
 @[instance_reducible]
-noncomputable def Groupoid.ofIsGroupoid [IsGroupoid C] :
-    Groupoid.{v} C where
+noncomputable def Groupoid.ofIsGroupoid [IsGroupoid C] : Groupoid.{v} C where
   inv := fun f => CategoryTheory.inv f
 
 /-- A category where every morphism `IsIso` is a groupoid. -/
 @[instance_reducible]
-noncomputable def Groupoid.ofIsIso (all_is_iso : ∀ {X Y : C} (f : X ⟶ Y), IsIso f) :
-    Groupoid.{v} C where
+noncomputable def Groupoid.ofIsIso (all_is_iso : ∀ {X Y : C} (f : X ⟶ Y), IsIso f)
+    : Groupoid.{v} C where
   inv := fun f => CategoryTheory.inv f
 
 /-- A category with a unique morphism between any two objects is a groupoid -/
@@ -144,60 +141,62 @@ def Groupoid.ofHomUnique (all_unique : ∀ {X Y : C}, Unique (X ⟶ Y)) : Groupo
 
 end
 
-lemma isGroupoid_of_reflects_iso {C D : Type*} [Category* C] [Category* D]
-    (F : C ⥤ D) [F.ReflectsIsomorphisms] [IsGroupoid D] :
-    IsGroupoid C where
+lemma isGroupoid_of_reflects_iso
+    {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D) [F.ReflectsIsomorphisms] [IsGroupoid D]
+    : IsGroupoid C where
   all_isIso _ := isIso_of_reflects_iso _ F
 
 /-- A category equipped with a fully faithful functor to a groupoid is fully faithful -/
 @[instance_reducible]
-def Groupoid.ofFullyFaithfulToGroupoid {C : Type*} [𝒞 : Category C] {D : Type u} [Groupoid.{v} D]
-    (F : C ⥤ D) (h : F.FullyFaithful) : Groupoid C :=
-  { 𝒞 with
-    inv f := h.preimage <| Groupoid.inv (F.map f)
-    inv_comp f := by
-      apply h.map_injective
-      simp
-    comp_inv f := by
-      apply h.map_injective
-      simp }
+def Groupoid.ofFullyFaithfulToGroupoid
+    {C : Type*} [𝒞 : Category C] {D : Type u} [Groupoid.{v} D] (F : C ⥤ D) (h : F.FullyFaithful)
+    : Groupoid C := {
+  𝒞 with
+  inv f := h.preimage <| Groupoid.inv (F.map f)
+  inv_comp f := by
+    apply h.map_injective
+    simp
+  comp_inv f := by
+    apply h.map_injective
+    simp
+}
 
-instance InducedCategory.groupoid {C : Type u} (D : Type u₂) [Groupoid.{v} D] (F : C → D) :
-    Groupoid.{v} (InducedCategory D F) :=
+instance InducedCategory.groupoid {C : Type u} (D : Type u₂) [Groupoid.{v} D] (F : C → D)
+    : Groupoid.{v} (InducedCategory D F) :=
   Groupoid.ofFullyFaithfulToGroupoid (inducedFunctor F) (fullyFaithfulInducedFunctor F)
 
-instance InducedCategory.isGroupoid {C : Type u} (D : Type u₂)
-    [Category.{v} D] [IsGroupoid D] (F : C → D) :
-    IsGroupoid (InducedCategory D F) :=
+instance InducedCategory.isGroupoid
+    {C : Type u} (D : Type u₂) [Category.{v} D] [IsGroupoid D] (F : C → D)
+    : IsGroupoid (InducedCategory D F) :=
   isGroupoid_of_reflects_iso (inducedFunctor F)
 
 section
 
-instance groupoidPi {I : Type u} {J : I → Type u₂} [∀ i, Groupoid.{v} (J i)] :
-    Groupoid.{max u v} (∀ i : I, J i) where
+instance groupoidPi {I : Type u} {J : I → Type u₂} [∀ i, Groupoid.{v} (J i)]
+    : Groupoid.{max u v} (∀ i : I, J i) where
   inv f := fun i : I => Groupoid.inv (f i)
   comp_inv := fun f => by funext i; apply Groupoid.comp_inv
   inv_comp := fun f => by funext i; apply Groupoid.inv_comp
 
-instance groupoidProd {α : Type u} {β : Type v} [Groupoid.{u₂} α] [Groupoid.{v₂} β] :
-    Groupoid.{max u₂ v₂} (α × β) where
+instance groupoidProd {α : Type u} {β : Type v} [Groupoid.{u₂} α] [Groupoid.{v₂} β]
+    : Groupoid.{max u₂ v₂} (α × β) where
   inv f := (Groupoid.inv f.1, Groupoid.inv f.2)
 
-instance isGroupoidPi {I : Type u} {J : I → Type u₂}
-    [∀ i, Category.{v} (J i)] [∀ i, IsGroupoid (J i)] :
-    IsGroupoid (∀ i : I, J i) where
+instance isGroupoidPi
+    {I : Type u} {J : I → Type u₂} [∀ i, Category.{v} (J i)] [∀ i, IsGroupoid (J i)]
+    : IsGroupoid (∀ i : I, J i) where
   all_isIso f := (isIso_pi_iff f).mpr (fun _ ↦ inferInstance)
 
-instance isGroupoidProd {α : Type u} {β : Type u₂} [Category.{v} α] [Category.{v₂} β]
-    [IsGroupoid α] [IsGroupoid β] :
-    IsGroupoid (α × β) where
+instance isGroupoidProd
+    {α : Type u} {β : Type u₂} [Category.{v} α] [Category.{v₂} β] [IsGroupoid α] [IsGroupoid β]
+    : IsGroupoid (α × β) where
   all_isIso f := (isIso_prod_iff (f := f)).mpr ⟨inferInstance, inferInstance⟩
 
 end
 
 open MorphismProperty in
-lemma isGroupoid_iff_isomorphisms_eq_top (C : Type*) [Category* C] :
-    IsGroupoid C ↔ isomorphisms C = ⊤ := by
+lemma isGroupoid_iff_isomorphisms_eq_top (C : Type*) [Category* C]
+    : IsGroupoid C ↔ isomorphisms C = ⊤ := by
   constructor
   · rw [eq_top_iff]
     intro _ _

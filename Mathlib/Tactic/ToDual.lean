@@ -6,9 +6,7 @@ Authors: Jovan Gerbscheid
 module
 
 public import Mathlib.Tactic.Translate.ToDual
-
-import all Init.Core  -- TODO: for accessing proofs
-
+import all Init.Core -- TODO: for accessing proofs
 
 /-!
 ## `@[to_dual]` attributes for basic types
@@ -33,11 +31,11 @@ attribute [to_dual lt_of_lt_of_eq''] lt_of_lt_of_eq
 
 attribute [to_dual] Max
 
-attribute [to_dual existing] Std.MaxEqOr Std.LawfulOrderSup Std.LawfulOrderMax
-  Std.LawfulOrderLeftLeaningMax
+attribute [to_dual existing]
+  Std.MaxEqOr Std.LawfulOrderSup Std.LawfulOrderMax Std.LawfulOrderLeftLeaningMax
   Std.instLawfulOrderMaxOfIsLinearPreorderOfLawfulOrderLeftLeaningMax
-  Std.instLawfulOrderLeftLeaningMaxOfIsLinearOrderOfLawfulOrderSup
-  List.max? List.max?_eq_none_iff List.max?_eq_some_iff
+  Std.instLawfulOrderLeftLeaningMaxOfIsLinearOrderOfLawfulOrderSup List.max? List.max?_eq_none_iff
+  List.max?_eq_some_iff
 
 -- We need to tag the lemmas used by `grind` in order to translate `grind` proofs.
 namespace Lean.Grind.Order
@@ -49,12 +47,14 @@ attribute [to_dual self (reorder := a c, h₁ h₂)] le_trans lt_trans
 attribute [to_dual existing (reorder := a c, h₁ h₂) le_lt_trans] lt_le_trans
 attribute [to_dual self] le_eq_true_of_lt le_eq_false_of_lt lt_eq_false_of_lt lt_eq_false_of_le
 
-/- For now, we don't tag any `grind` lemmas involving offsets, but this may be done in the future.
+/-
+For now, we don't tag any `grind` lemmas involving offsets, but this may be done in the future.
 These offset lemmas are:
 
 le_of_eq_1_k, le_of_eq_2_k, le_of_not_lt_k, lt_of_not_le_k, le_trans_k, lt_trans_k, le_lt_trans_k,
 lt_le_trans_k, le_unsat_k, lt_unsat_k, le_eq_true_of_le_k, le_eq_true_of_lt_k, lt_eq_true_of_lt_k,
 lt_eq_true_of_le_k, le_eq_false_of_le_k, lt_eq_false_of_le_k, lt_eq_false_of_lt_k,
-le_eq_false_of_lt_k -/
+le_eq_false_of_lt_k
+-/
 
 end Lean.Grind.Order

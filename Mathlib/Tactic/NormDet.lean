@@ -5,8 +5,8 @@ Authors: Paul Cadman
 -/
 module
 
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic  -- shake: keep (Matrix.det, Qq dependency)
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Bird.Correctness  -- shake: keep (BirdDet.det_eq_birdDet, Qq dependency)
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic -- shake: keep (Matrix.det, Qq dependency)
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Bird.Correctness -- shake: keep (BirdDet.det_eq_birdDet, Qq dependency)
 public import Mathlib.Tactic.Determinant.Bird.Cert
 
 /-!
@@ -25,12 +25,13 @@ open Mathlib.Tactic.Determinant
 private def normalizeBirdDet (e : Expr) : MetaM Simp.Result := do
   let ⟨rα, ctx⟩ ← reifyBirdDet e
   let detNorm ← certBirdDet (rα := rα) |>.run' {} |>.run ctx |>.run .reducible
-  Mathlib.Tactic.RingNF.cleanup {} {expr := detNorm.norm, proof? := some detNorm.proof}
+  Mathlib.Tactic.RingNF.cleanup {} { expr := detNorm.norm, proof? := some detNorm.proof }
 
 /-- Normalize the determinant of `A` from its `entries` in row-major order -/
-private def normalizeDetFromEntries {u : Level} {α : Q(Type u)} {n : Q(ℕ)} (rα : Q(CommRing $α))
-  (A : Q(Matrix (Fin $n) (Fin $n) $α)) (entries : Array Q($α)) :
-    MetaM Simp.Result := do
+private def normalizeDetFromEntries
+    {u : Level} {α : Q(Type u)} {n : Q(ℕ)}
+    (rα : Q(CommRing $α)) (A : Q(Matrix (Fin $n) (Fin $n) $α)) (entries : Array Q($α))
+    : MetaM Simp.Result := do
   let xs : Q(List $α) ← mkListLit α entries.toList
   let arrayExpr : Q(Array $α) := q(List.toArray $xs)
   -- `List.ofFn` is exposed (unlike `Array.ofFn`) and so this reduction can be
@@ -39,37 +40,51 @@ private def normalizeDetFromEntries {u : Level} {α : Q(Type u)} {n : Q(ℕ)} (r
   let hlist : Q(List.ofFn (fun k : Fin ($n * $n) ↦ $A k.divNat k.modNat) = $xs) := q(rfl)
   let hArray := q($hlist ▸ List.toArray_ofFn)
   let birdDet := q(BirdDet.birdDet $n $arrayExpr)
-  let detEqBirdDet := q($hArray ▸ Matrix.ofArray_ofFn $A ▸ BirdDet.det_eq_birdDet
-    (Array.ofFn fun k : Fin ($n * $n) ↦ $A k.divNat k.modNat) Array.size_ofFn)
+  let detEqBirdDet :=
+    q($hArray ▸ Matrix.ofArray_ofFn $A ▸ BirdDet.det_eq_birdDet
+      (Array.ofFn fun k : Fin ($n * $n) ↦ $A k.divNat k.modNat) Array.size_ofFn)
   let birdDetNorm ← normalizeBirdDet birdDet
   let detEqBirdDetRes : Simp.Result := ⟨birdDet, some detEqBirdDet, true⟩
   detEqBirdDetRes.mkEqTrans birdDetNorm
 
-/-- Extract the entries of a square `!![...]` matrix literal in row-major order.
-Returns `none` if `A` is not an `n × n` matrix literal. -/
-private def entriesOfMatrixLiteral? {u : Level} {α : Q(Type u)} {n : Q(ℕ)}
-    (A : Q(Matrix (Fin $n) (Fin $n) $α)) :
-    MetaM (Option (Array Q($α))) := do
-  let some dim ← getNatValue? n | return none
-  let ~q(Matrix.of $rows) := A | return none
+/--
+Extract the entries of a square `!![...]` matrix literal in row-major order.
+Returns `none` if `A` is not an `n × n` matrix literal.
+-/
+private def entriesOfMatrixLiteral?
+    {u : Level} {α : Q(Type u)} {n : Q(ℕ)} (A : Q(Matrix (Fin $n) (Fin $n) $α))
+    : MetaM (Option (Array Q($α))) := do
+  let some dim ← getNatValue? n
+    | return none
+  let ~q(Matrix.of $rows) := A
+    | return none
   let (matrixRows, _, _) ← Matrix.matchVecConsPrefix n rows
-  unless matrixRows.length == dim do return none
-  let entriesByRow ← matrixRows.mapM fun row => do
-    let (entries, _, _) ← Matrix.matchVecConsPrefix n row
-    return entries
-  unless entriesByRow.all (·.length == dim) do return none
-  let entries ← entriesByRow.flatten.mapM fun entry => do
-    let some entry ← checkTypeQ entry α | throwError "expected matrix entry to have type {α}"
-    return entry
+  unless matrixRows.length == dim do
+    return none
+  let entriesByRow ←
+    matrixRows.mapM fun row => do
+      let (entries, _, _) ← Matrix.matchVecConsPrefix n row
+      return entries
+  unless entriesByRow.all (·.length == dim) do
+    return none
+  let entries ←
+    entriesByRow.flatten.mapM fun entry => do
+      let some entry ← checkTypeQ entry α
+        | throwError "expected matrix entry to have type {α}"
+      return entry
   return some entries.toArray
 
-/-- The `norm_det` simproc normalizes determinants of matrices written using `!![...]`
-notation over a commutative ring. -/
+/--
+The `norm_det` simproc normalizes determinants of matrices written using `!![...]`
+notation over a commutative ring.
+-/
 simproc_decl norm_det (Matrix.det _) := fun e => do
   let e ← instantiateMVars e
   let ⟨_, _, e⟩ ← inferTypeQ' e
-  let ~q(@Matrix.det (Fin $n) _ _ _ $rα $matrix) := e | return .continue
-  let some entries ← entriesOfMatrixLiteral? matrix | return .continue
+  let ~q(@Matrix.det (Fin $n) _ _ _ $rα $matrix) := e
+    | return .continue
+  let some entries ← entriesOfMatrixLiteral? matrix
+    | return .continue
   return .done (← normalizeDetFromEntries rα matrix entries)
 
 /--

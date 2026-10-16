@@ -29,8 +29,7 @@ namespace Vector
 variable {α β σ φ : Type*} {n : ℕ} {x : α} {s : σ} (xs : Vector α n)
 
 /-- Append a single element to the end of a vector -/
-def snoc : Vector α n → α → Vector α (n + 1) :=
-  fun xs x => xs ++ x ::ᵥ Vector.nil
+def snoc : Vector α n → α → Vector α (n + 1) := fun xs x => xs ++ x ::ᵥ Vector.nil
 
 /-! ## Simplification lemmas -/
 
@@ -38,13 +37,9 @@ section Simp
 
 variable {y : α}
 
-@[simp]
-theorem snoc_cons : (x ::ᵥ xs).snoc y = x ::ᵥ (xs.snoc y) :=
-  rfl
+@[simp] theorem snoc_cons : (x ::ᵥ xs).snoc y = x ::ᵥ (xs.snoc y) := rfl
 
-@[simp]
-theorem snoc_nil : (nil.snoc x) = x ::ᵥ nil :=
-  rfl
+@[simp] theorem snoc_nil : (nil.snoc x) = x ::ᵥ nil := rfl
 
 @[simp]
 theorem reverse_cons : reverse (x ::ᵥ xs) = (reverse xs).snoc x := by
@@ -59,10 +54,10 @@ theorem reverse_snoc : reverse (xs.snoc x) = x ::ᵥ (reverse xs) := by
   congr
   simp [toList, append_def]
 
-theorem replicate_succ_to_snoc (val : α) :
-    replicate (n + 1) val = (replicate n val).snoc val := by
+theorem replicate_succ_to_snoc (val : α) : replicate (n + 1) val = (replicate n val).snoc val := by
   induction n with
-  | zero => rfl
+  | zero =>
+    rfl
   | succ n ih =>
     rw [replicate_succ]
     conv => rhs; rw [replicate_succ]
@@ -81,42 +76,43 @@ That is, break the vector down starting from the right-most element, using `snoc
 This function has two arguments: `nil` handles the base case on `C nil`,
 and `snoc` defines the inductive step using `∀ x : α, C xs → C (xs.snoc x)`.
 
-This can be used as `induction v using Vector.revInductionOn`. -/
+This can be used as `induction v using Vector.revInductionOn`.
+-/
 @[elab_as_elim]
-def revInductionOn {C : ∀ {n : ℕ}, Vector α n → Sort*} {n : ℕ} (v : Vector α n)
-    (nil : C nil)
-    (snoc : ∀ {n : ℕ} (xs : Vector α n) (x : α), C xs → C (xs.snoc x)) :
-    C v :=
+def revInductionOn
+    {C : ∀ {n : ℕ}, Vector α n → Sort*} {n : ℕ} (v : Vector α n) (nil : C nil)
+    (snoc : ∀ {n : ℕ} (xs : Vector α n) (x : α), C xs → C (xs.snoc x))
+    : C v :=
   cast (by simp) <| inductionOn
     (C := fun v => C v.reverse)
-    v.reverse
-    nil
-    (@fun n x xs (r : C xs.reverse) => cast (by simp) <| snoc xs.reverse x r)
+    v.reverse nil (@fun n x xs (r : C xs.reverse) => cast (by simp) <| snoc xs.reverse x r)
 
-/-- Define `C v w` by *reverse* induction on a pair of vectors `v : Vector α n` and
-`w : Vector β n`. -/
+/--
+Define `C v w` by *reverse* induction on a pair of vectors `v : Vector α n` and
+`w : Vector β n`.
+-/
 @[elab_as_elim]
-def revInductionOn₂ {C : ∀ {n : ℕ}, Vector α n → Vector β n → Sort*} {n : ℕ}
-    (v : Vector α n) (w : Vector β n)
-    (nil : C nil nil)
+def revInductionOn₂
+    {C : ∀ {n : ℕ}, Vector α n → Vector β n → Sort*} {n : ℕ}
+    (v : Vector α n) (w : Vector β n) (nil : C nil nil)
     (snoc : ∀ {n : ℕ} (xs : Vector α n) (ys : Vector β n) (x : α) (y : β),
-      C xs ys → C (xs.snoc x) (ys.snoc y)) :
-    C v w :=
+      C xs ys → C (xs.snoc x) (ys.snoc y))
+    : C v w :=
   cast (by simp) <| inductionOn₂
     (C := fun v w => C v.reverse w.reverse)
-    v.reverse
-    w.reverse
-    nil
+    v.reverse w.reverse nil
     (@fun n x y xs ys (r : C xs.reverse ys.reverse) =>
       cast (by simp) <| snoc xs.reverse ys.reverse x y r)
 
-/-- Define `C v` by *reverse* case analysis, i.e. by handling the cases `nil` and `xs.snoc x`
-separately -/
+/--
+Define `C v` by *reverse* case analysis, i.e. by handling the cases `nil` and `xs.snoc x`
+separately
+-/
 @[elab_as_elim]
-def revCasesOn {C : ∀ {n : ℕ}, Vector α n → Sort*} {n : ℕ} (v : Vector α n)
-    (nil : C nil)
-    (snoc : ∀ {n : ℕ} (xs : Vector α n) (x : α), C (xs.snoc x)) :
-    C v :=
+def revCasesOn
+    {C : ∀ {n : ℕ}, Vector α n → Sort*} {n : ℕ}
+    (v : Vector α n) (nil : C nil) (snoc : ∀ {n : ℕ} (xs : Vector α n) (x : α), C (xs.snoc x))
+    : C v :=
   revInductionOn v nil fun xs x _ => snoc xs x
 
 end Induction
@@ -134,11 +130,11 @@ theorem mapAccumr_nil {f : α → σ → σ × β} {s : σ} : mapAccumr f Vector
   rfl
 
 @[simp]
-theorem mapAccumr_snoc {f : α → σ → σ × β} {s : σ} :
-    mapAccumr f (xs.snoc x) s
-    = let q := f x s
-      let r := mapAccumr f xs q.1
-      (r.1, r.2.snoc q.2) := by
+theorem mapAccumr_snoc {f : α → σ → σ × β} {s : σ}
+    : mapAccumr f (xs.snoc x) s
+      = let q := f x s
+        let r := mapAccumr f xs q.1
+        (r.1, r.2.snoc q.2) := by
   induction xs
   · rfl
   · simp [*]
@@ -146,21 +142,21 @@ theorem mapAccumr_snoc {f : α → σ → σ × β} {s : σ} :
 variable (ys : Vector β n)
 
 @[simp]
-theorem map₂_snoc {f : α → β → σ} {y : β} :
-    map₂ f (xs.snoc x) (ys.snoc y) = (map₂ f xs ys).snoc (f x y) := by
+theorem map₂_snoc {f : α → β → σ} {y : β}
+    : map₂ f (xs.snoc x) (ys.snoc y) = (map₂ f xs ys).snoc (f x y) := by
   induction xs, ys using Vector.inductionOn₂ <;> simp_all
 
 @[simp]
-theorem mapAccumr₂_nil {f : α → β → σ → σ × φ} :
-    mapAccumr₂ f Vector.nil Vector.nil s = (s, Vector.nil) :=
+theorem mapAccumr₂_nil {f : α → β → σ → σ × φ}
+    : mapAccumr₂ f Vector.nil Vector.nil s = (s, Vector.nil) :=
   rfl
 
 @[simp]
-theorem mapAccumr₂_snoc (f : α → β → σ → σ × φ) (x : α) (y : β) :
-    mapAccumr₂ f (xs.snoc x) (ys.snoc y) s
-    = let q := f x y s
-      let r := mapAccumr₂ f xs ys q.1
-      (r.1, r.2.snoc q.2) := by
+theorem mapAccumr₂_snoc (f : α → β → σ → σ × φ) (x : α) (y : β)
+    : mapAccumr₂ f (xs.snoc x) (ys.snoc y) s
+      = let q := f x y s
+        let r := mapAccumr₂ f xs ys q.1
+        (r.1, r.2.snoc q.2) := by
   induction xs, ys using Vector.inductionOn₂ <;> simp_all
 
 end Simp

@@ -21,6 +21,8 @@ def UsesInstanceOf (α : Sort u) (_ : α := by infer_instance) : Prop := True
 /-- Uses an arbitrary value of any type. -/
 def UsesExactly {α} : α → Prop := fun _ => True
 
-/-- Uses an instance of the given type in a proof, returning a proof of true. Can be nested in
-`Uses`.-/
+/--
+Uses an instance of the given type in a proof, returning a proof of true. Can be nested in
+`Uses`.
+-/
 theorem UsesInstanceInProof (α : Sort u) (_ : α := by infer_instance) : True := trivial

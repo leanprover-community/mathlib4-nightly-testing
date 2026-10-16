@@ -27,8 +27,8 @@ theorem disjoint_atBot_principal_Ioi [Preorder α] (x : α) : Disjoint atBot (�
   disjoint_of_disjoint_of_mem (Iic_disjoint_Ioi le_rfl) (Iic_mem_atBot x) (mem_principal_self _)
 
 @[to_dual disjoint_atBot_principal_Ici]
-theorem disjoint_atTop_principal_Iic [Preorder α] [NoTopOrder α] (x : α) :
-    Disjoint atTop (𝓟 (Iic x)) :=
+theorem disjoint_atTop_principal_Iic [Preorder α] [NoTopOrder α] (x : α)
+    : Disjoint atTop (𝓟 (Iic x)) :=
   disjoint_of_disjoint_of_mem (Iic_disjoint_Ioi le_rfl).symm (Ioi_mem_atTop x)
     (mem_principal_self _)
 
@@ -38,8 +38,8 @@ theorem disjoint_pure_atTop [Preorder α] [NoTopOrder α] (x : α) : Disjoint (p
     mem_pure.2 self_mem_Iic
 
 @[to_dual disjoint_atTop_atBot]
-theorem disjoint_atBot_atTop [PartialOrder α] [Nontrivial α] :
-    Disjoint (atBot : Filter α) atTop := by
+theorem disjoint_atBot_atTop [PartialOrder α] [Nontrivial α]
+    : Disjoint (atBot : Filter α) atTop := by
   rcases exists_pair_ne α with ⟨x, y, hne⟩
   by_cases hle : x ≤ y
   · refine disjoint_of_disjoint_of_mem ?_ (Iic_mem_atBot x) (Ici_mem_atTop y)

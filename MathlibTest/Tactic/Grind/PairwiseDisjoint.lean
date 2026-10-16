@@ -9,5 +9,4 @@ attribute [grind _=_] LawfulSingleton.insert_empty_eq
 
 attribute [grind] Pairwise
 
-example : Pairwise (Function.onFun Disjoint fun x ↦ S1 x) := by
-  grind
+example : Pairwise (Function.onFun Disjoint fun x ↦ S1 x) := by grind

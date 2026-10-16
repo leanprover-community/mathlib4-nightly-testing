@@ -34,8 +34,9 @@ namespace Submodule
 
 section Ring
 
-variable {R R₂ : Type*} [Ring R] [Ring R₂] {σ : R →+* R₂} {M M₂ : Type*}
-  [TopologicalSpace M] [AddCommGroup M] [Module R M]
+variable
+  {R R₂ : Type*} [Ring R] [Ring R₂]
+  {σ : R →+* R₂} {M M₂ : Type*} [TopologicalSpace M] [AddCommGroup M] [Module R M]
   [TopologicalSpace M₂] [AddCommGroup M₂] [Module R₂ M₂]
   (S : Submodule R M)
 
@@ -46,11 +47,9 @@ def mkQL : M →L[R] M ⧸ S where
   toLinearMap := S.mkQ
   cont := continuous_quot_mk
 
-@[simp, norm_cast]
-theorem toLinearMap_mkQL : (S.mkQL : M →ₗ[R] M ⧸ S) = S.mkQ := rfl
+@[simp, norm_cast] theorem toLinearMap_mkQL : (S.mkQL : M →ₗ[R] M ⧸ S) = S.mkQ := rfl
 
-@[simp]
-theorem coe_mkQL : ⇑S.mkQL = S.mkQ := rfl
+@[simp] theorem coe_mkQL : ⇑S.mkQL = S.mkQ := rfl
 
 theorem mkQL_apply (x : M) : S.mkQL x = S.mkQ x := by simp
 
@@ -65,16 +64,16 @@ def liftQL (f : M →SL[σ] M₂) (h : S ≤ f.ker) : M ⧸ S →SL[σ] M₂ whe
   cont := continuous_quot_lift _ f.continuous
 
 @[simp, norm_cast]
-theorem toLinearMap_liftQL (f : M →SL[σ] M₂) (h : S ≤ f.ker) :
-    (S.liftQL f h).toLinearMap = S.liftQ f.toLinearMap h := rfl
-
-@[simp]
-theorem coe_liftQL (f : M →SL[σ] M₂) (h : S ≤ f.ker) :
-    ⇑(S.liftQL f h) = S.liftQ f.toLinearMap h :=
+theorem toLinearMap_liftQL (f : M →SL[σ] M₂) (h : S ≤ f.ker)
+    : (S.liftQL f h).toLinearMap = S.liftQ f.toLinearMap h :=
   rfl
 
-theorem liftQL_apply (f : M →SL[σ] M₂) (h : S ≤ f.ker) (x : M ⧸ S) :
-    S.liftQL f h x = S.liftQ f.toLinearMap h x := by
+@[simp]
+theorem coe_liftQL (f : M →SL[σ] M₂) (h : S ≤ f.ker) : ⇑(S.liftQL f h) = S.liftQ f.toLinearMap h :=
+  rfl
+
+theorem liftQL_apply (f : M →SL[σ] M₂) (h : S ≤ f.ker) (x : M ⧸ S)
+    : S.liftQL f h x = S.liftQ f.toLinearMap h x := by
   simp
 
 end Ring

@@ -26,8 +26,10 @@ namespace TopCat
 
 variable {X Y Z : TopCat.{u}}
 
-/-- A homotopy between morphisms in `TopCat` is a homotopy between
-the corresponding continuous maps. -/
+/--
+A homotopy between morphisms in `TopCat` is a homotopy between
+the corresponding continuous maps.
+-/
 abbrev Homotopy (f g : X ⟶ Y) := ContinuousMap.Homotopy f.hom g.hom
 
 namespace Homotopy
@@ -39,8 +41,7 @@ def h (H : Homotopy f₀ f₁) : X ⊗ I ⟶ Y :=
   (β_ _ _).hom ≫ ofHom (H.toContinuousMap.comp (ContinuousMap.prodMap I.homeomorph (.id _)))
 
 -- simps generates the wrong apply lemma
-@[simp]
-theorem h_hom_apply (p : ↑(X ⊗ I)) : F.h p = F (I.homeomorph p.2, p.1) := rfl
+@[simp] theorem h_hom_apply (p : ↑(X ⊗ I)) : F.h p = F (I.homeomorph p.2, p.1) := rfl
 
 @[reassoc (attr := simp)]
 lemma ι₀_h : ι₀ ≫ F.h = f₀ := by
@@ -55,29 +56,28 @@ lemma ι₁_h : ι₁ ≫ F.h = f₁ := by
 /-- The identity homotopy of a morphism `f : X ⟶ Y` in `TopCat`. -/
 abbrev refl (f : X ⟶ Y) := ContinuousMap.Homotopy.refl f.hom
 
-@[simp]
-lemma h_refl : h (refl f₀) = fst _ _ ≫ f₀ := rfl
+@[simp] lemma h_refl : h (refl f₀) = fst _ _ ≫ f₀ := rfl
 
 /-- The reverse of a homotopy `F` in `TopCat`. -/
 abbrev symm := ContinuousMap.Homotopy.symm F
 
-@[simp]
-lemma h_symm : h F.symm = (X ◁ I.symm) ≫ F.h := rfl
+@[simp] lemma h_symm : h F.symm = (X ◁ I.symm) ≫ F.h := rfl
 
 /-- The compositions of homotopies in `TopCat`. -/
 noncomputable abbrev trans := ContinuousMap.Homotopy.trans F G
 
 /-- The homotopy between compositions of morphisms in `TopCat`. -/
 @[simps!]
-abbrev comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁) :
-    Homotopy (f₀ ≫ g₀) (f₁ ≫ g₁) := ContinuousMap.Homotopy.comp G F
+abbrev comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁)
+    : Homotopy (f₀ ≫ g₀) (f₁ ≫ g₁) :=
+  ContinuousMap.Homotopy.comp G F
 
 attribute [nolint simpNF] comp_apply
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-lemma h_comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁) :
-    (G.comp F).h = X ◁ lift (𝟙 I) (𝟙 I) ≫ (α_ _ _ _).inv ≫ F.h ▷ _ ≫ G.h := by
+lemma h_comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁)
+    : (G.comp F).h = X ◁ lift (𝟙 I) (𝟙 I) ≫ (α_ _ _ _).inv ≫ F.h ▷ _ ≫ G.h := by
   ext
   simp
 

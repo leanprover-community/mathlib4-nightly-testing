@@ -44,29 +44,20 @@ Fibonacci numbers, Fibonacci sequence
 
 namespace Nat
 
-
-
-/-- Implementation of the Fibonacci sequence satisfying
+/--
+Implementation of the Fibonacci sequence satisfying
 `fib 0 = 0, fib 1 = 1, fib (n + 2) = fib n + fib (n + 1)`.
 
 *Note:* We use a stream iterator for better performance when compared to the naive recursive
 implementation.
 -/
-@[pp_nodot]
-def fib (n : ℕ) : ℕ :=
-  ((fun p : ℕ × ℕ => (p.snd, p.fst + p.snd))^[n] (0, 1)).fst
+@[pp_nodot] def fib (n : ℕ) : ℕ := ((fun p : ℕ × ℕ => (p.snd, p.fst + p.snd))^[n] (0, 1)).fst
 
-@[simp]
-theorem fib_zero : fib 0 = 0 :=
-  rfl
+@[simp] theorem fib_zero : fib 0 = 0 := rfl
 
-@[simp]
-theorem fib_one : fib 1 = 1 :=
-  rfl
+@[simp] theorem fib_one : fib 1 = 1 := rfl
 
-@[simp]
-theorem fib_two : fib 2 = 1 :=
-  rfl
+@[simp] theorem fib_two : fib 2 = 1 := rfl
 
 /-- Shows that `fib` indeed satisfies the Fibonacci recurrence `Fₙ₊₂ = Fₙ + Fₙ₊₁`. -/
 theorem fib_add_two {n : ℕ} : fib (n + 2) = fib n + fib (n + 1) := by
@@ -77,14 +68,13 @@ lemma fib_add_one : ∀ {n}, n ≠ 0 → fib (n + 1) = fib (n - 1) + fib n
 
 theorem fib_le_fib_succ {n : ℕ} : fib n ≤ fib (n + 1) := by cases n <;> simp [fib_add_two]
 
-@[gcongr, mono]
-theorem fib_mono : Monotone fib :=
-  monotone_nat_of_le_succ fun _ => fib_le_fib_succ
+@[gcongr, mono] theorem fib_mono : Monotone fib := monotone_nat_of_le_succ fun _ => fib_le_fib_succ
 
-@[simp] lemma fib_eq_zero : ∀ {n}, fib n = 0 ↔ n = 0
-| 0 => Iff.rfl
-| 1 => Iff.rfl
-| n + 2 => by simp [fib_add_two, fib_eq_zero]
+@[simp]
+lemma fib_eq_zero : ∀ {n}, fib n = 0 ↔ n = 0
+  | 0 => Iff.rfl
+  | 1 => Iff.rfl
+  | n + 2 => by simp [fib_add_two, fib_eq_zero]
 
 @[simp] lemma fib_pos {n : ℕ} : 0 < fib n ↔ 0 < n := by simp [pos_iff_ne_zero]
 
@@ -112,7 +102,8 @@ lemma fib_lt_fib {m : ℕ} (hm : 2 ≤ m) : ∀ {n}, fib m < fib n ↔ m < n
 
 theorem le_fib_self {n : ℕ} (five_le_n : 5 ≤ n) : n ≤ fib n := by
   induction five_le_n with
-  | refl => rfl -- 5 ≤ fib 5
+  | refl =>
+    rfl -- 5 ≤ fib 5
   | @step n five_le_n IH => -- n + 1 ≤ fib (n + 1) for 5 ≤ n
     rw [succ_le_iff]
     calc
@@ -127,8 +118,10 @@ lemma le_fib_add_one : ∀ n, n ≤ fib n + 1
   | 4 => le_rfl
   | _n + 5 => (le_fib_self le_add_self).trans <| le_succ _
 
-/-- Subsequent Fibonacci numbers are coprime,
-  see https://proofwiki.org/wiki/Consecutive_Fibonacci_Numbers_are_Coprime -/
+/--
+Subsequent Fibonacci numbers are coprime,
+see https://proofwiki.org/wiki/Consecutive_Fibonacci_Numbers_are_Coprime
+-/
 theorem fib_coprime_fib_succ (n : ℕ) : Nat.Coprime (fib n) (fib (n + 1)) := by
   induction n with
   | zero => simp
@@ -137,7 +130,8 @@ theorem fib_coprime_fib_succ (n : ℕ) : Nat.Coprime (fib n) (fib (n + 1)) := by
 /-- See https://proofwiki.org/wiki/Fibonacci_Number_in_terms_of_Smaller_Fibonacci_Numbers -/
 theorem fib_add (m n : ℕ) : fib (m + n + 1) = fib m * fib n + fib (m + 1) * fib (n + 1) := by
   induction n generalizing m with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     specialize ih (m + 1)
     rw [add_assoc m 1 n, add_comm 1 n] at ih
@@ -155,38 +149,43 @@ theorem fib_two_mul_add_one (n : ℕ) : fib (2 * n + 1) = fib (n + 1) ^ 2 + fib 
   rw [two_mul, fib_add]
   ring
 
-theorem fib_two_mul_add_two (n : ℕ) :
-    fib (2 * n + 2) = fib (n + 1) * (2 * fib n + fib (n + 1)) := by
+theorem fib_two_mul_add_two (n : ℕ)
+    : fib (2 * n + 2) = fib (n + 1) * (2 * fib n + fib (n + 1)) := by
   rw [fib_add_two, fib_two_mul, fib_two_mul_add_one]
   have : fib n ≤ 2 * fib (n + 1) :=
     le_trans fib_le_fib_succ (mul_comm 2 _ ▸ Nat.le_mul_of_pos_right _ two_pos)
   zify [this]
   ring
 
-/-- Computes `(Nat.fib n, Nat.fib (n + 1))` using the binary representation of `n`.
-Supports `Nat.fastFib`. -/
+/--
+Computes `(Nat.fib n, Nat.fib (n + 1))` using the binary representation of `n`.
+Supports `Nat.fastFib`.
+-/
 def fastFibAux : ℕ → ℕ × ℕ :=
   Nat.binaryRec (fib 0, fib 1) fun b _ p =>
-    if b then (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2))
-    else (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2)
+    if b then
+      (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2))
+    else
+      (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2)
 
-/-- Computes `Nat.fib n` using the binary representation of `n`.
-Proved to be equal to `Nat.fib` in `Nat.fast_fib_eq`. -/
-def fastFib (n : ℕ) : ℕ :=
-  (fastFibAux n).1
+/--
+Computes `Nat.fib n` using the binary representation of `n`.
+Proved to be equal to `Nat.fib` in `Nat.fast_fib_eq`.
+-/
+def fastFib (n : ℕ) : ℕ := (fastFibAux n).1
 
-theorem fastFibAux_bit_false (n : ℕ) :
-    fastFibAux (bit false n) =
-      let p := fastFibAux n
-      (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2) := by
+theorem fastFibAux_bit_false (n : ℕ)
+    : fastFibAux (bit false n)
+      = let p := fastFibAux n
+        (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2) := by
   rw [fastFibAux, binaryRec_eq]
   · rfl
   · simp
 
-theorem fastFibAux_bit_true (n : ℕ) :
-    fastFibAux (bit true n) =
-      let p := fastFibAux n
-      (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2)) := by
+theorem fastFibAux_bit_true (n : ℕ)
+    : fastFibAux (bit true n)
+      = let p := fastFibAux n
+        (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2)) := by
   rw [fastFibAux, binaryRec_eq]
   · rfl
   · simp
@@ -194,65 +193,69 @@ theorem fastFibAux_bit_true (n : ℕ) :
 theorem fastFibAux_eq (n : ℕ) : fastFibAux n = (fib n, fib (n + 1)) := by
   refine Nat.binaryRec ?_ ?_ n
   · simp [fastFibAux]
-  · rintro (_ | _) n' ih <;>
-      simp only [fastFibAux_bit_false, fastFibAux_bit_true, congr($(ih).fst),
-        congr($(ih).snd), Prod.mk_inj] <;>
-      simp [bit, fib_two_mul, fib_two_mul_add_one, fib_two_mul_add_two]
+  · rintro (_ | _) n' ih
+      <;> simp only [fastFibAux_bit_false, fastFibAux_bit_true, congr($(ih).fst), congr($(ih).snd),
+        Prod.mk_inj]
+      <;> simp [bit, fib_two_mul, fib_two_mul_add_one, fib_two_mul_add_two]
 
 theorem fastFib_eq (n : ℕ) : fastFib n = fib n := by rw [fastFib, fastFibAux_eq]
 
-@[csimp]
-theorem fib_eq_fastFib : fib = fastFib := by ext; rw [fastFib_eq]
+@[csimp] theorem fib_eq_fastFib : fib = fastFib := by ext; rw [fastFib_eq]
 
 theorem gcd_fib_add_self (m n : ℕ) : gcd (fib m) (fib (n + m)) = gcd (fib m) (fib n) := by
   rcases Nat.eq_zero_or_pos n with rfl | h
   · simp
-  replace h := Nat.succ_pred_eq_of_pos h; rw [← h, succ_eq_add_one]
+  replace h := Nat.succ_pred_eq_of_pos h
+  rw [← h, succ_eq_add_one]
   calc
-    gcd (fib m) (fib (n.pred + 1 + m)) =
-        gcd (fib m) (fib n.pred * fib m + fib (n.pred + 1) * fib (m + 1)) := by
-        rw [← fib_add n.pred _]
-        ring_nf
+    gcd (fib m) (fib (n.pred + 1 + m))
+        = gcd (fib m) (fib n.pred * fib m + fib (n.pred + 1) * fib (m + 1)) := by
+      rw [← fib_add n.pred _]
+      ring_nf
     _ = gcd (fib m) (fib (n.pred + 1) * fib (m + 1)) := by
-        rw [add_comm, gcd_add_mul_right_right (fib m) _ (fib n.pred)]
+      rw [add_comm, gcd_add_mul_right_right (fib m) _ (fib n.pred)]
     _ = gcd (fib m) (fib (n.pred + 1)) :=
       Coprime.gcd_mul_right_cancel_right (fib (n.pred + 1)) (Coprime.symm (fib_coprime_fib_succ m))
 
 theorem gcd_fib_add_mul_self (m n : ℕ) : ∀ k, gcd (fib m) (fib (n + k * m)) = gcd (fib m) (fib n)
-  | 0 => by simp
+  | 0 => by
+    simp
   | k + 1 => by
     rw [← gcd_fib_add_mul_self m n k, add_mul, ← add_assoc, one_mul, gcd_fib_add_self _ _]
 
-/-- `fib n` is a strong divisibility sequence,
-  see https://proofwiki.org/wiki/GCD_of_Fibonacci_Numbers -/
+/--
+`fib n` is a strong divisibility sequence,
+see https://proofwiki.org/wiki/GCD_of_Fibonacci_Numbers
+-/
 theorem fib_gcd (m n : ℕ) : fib (gcd m n) = gcd (fib m) (fib n) := by
   induction m, n using Nat.gcd.induction with
-  | H0 => simp
+  | H0 =>
+    simp
   | H1 m n _ h' =>
     rw [← gcd_rec m n] at h'
     conv_rhs => rw [← mod_add_div' n m]
     rwa [gcd_fib_add_mul_self m (n % m) (n / m), gcd_comm (fib m) _]
 
-theorem isStrongDvdSequence_fib : IsStrongDvdSequence fib :=
-  fun m n ↦ (fib_gcd m n).symm
+theorem isStrongDvdSequence_fib : IsStrongDvdSequence fib := fun m n ↦ (fib_gcd m n).symm
 
-theorem isDvdSequence_fib : IsDvdSequence fib :=
-  isStrongDvdSequence_fib.isDvdSequence
+theorem isDvdSequence_fib : IsDvdSequence fib := isStrongDvdSequence_fib.isDvdSequence
 
 alias fib_dvd := isDvdSequence_fib
 
-theorem fib_succ_eq_sum_choose :
-    ∀ n : ℕ, fib (n + 1) = ∑ p ∈ Finset.antidiagonal n, choose p.1 p.2 :=
+theorem fib_succ_eq_sum_choose
+    : ∀ n : ℕ, fib (n + 1) = ∑ p ∈ Finset.antidiagonal n, choose p.1 p.2 :=
   twoStepInduction rfl rfl fun n h1 h2 => by
     rw [fib_add_two, h1, h2, Finset.Nat.antidiagonal_succ_succ', Finset.Nat.antidiagonal_succ']
     simp [choose_succ_succ, Finset.sum_add_distrib, add_left_comm]
 
 theorem fib_succ_eq_succ_sum (n : ℕ) : fib (n + 1) = (∑ k ∈ Finset.range n, fib k) + 1 := by
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     calc
-      fib (n + 2) = fib n + fib (n + 1) := fib_add_two
+      fib (n + 2)
+        = fib n + fib (n + 1) := fib_add_two
       _ = (fib n + ∑ k ∈ Finset.range n, fib k) + 1 := by rw [ih, add_assoc]
       _ = (∑ k ∈ Finset.range (n + 1), fib k) + 1 := by simp [Finset.range_add_one]
 

@@ -36,13 +36,16 @@ Many definitions have been made reducible so as to ease rewrites when this API i
 
 namespace CategoryTheory
 
-variable {C D : Type*} [Category* C] [Category* D] (L : C ⥤ D) (W : MorphismProperty C)
-  [L.IsLocalization W]
+variable
+  {C D : Type*} [Category* C] [Category* D]
+  (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
 
 namespace MorphismProperty
 
-/-- This structure contains the data of two left fractions for
-`W : MorphismProperty C` that have the same "denominator". -/
+/--
+This structure contains the data of two left fractions for
+`W : MorphismProperty C` that have the same "denominator".
+-/
 structure LeftFraction₂ (X Y : C) where
   /-- the auxiliary object of left fractions -/
   {Y' : C}
@@ -55,11 +58,12 @@ structure LeftFraction₂ (X Y : C) where
   /-- the condition that the denominator belongs to the given morphism property -/
   hs : W s
 
-instance {X Y : C} (z : W.LeftFraction₂ X Y) : IsIso (L.map z.s) :=
-  Localization.inverts L W _ z.hs
+instance {X Y : C} (z : W.LeftFraction₂ X Y) : IsIso (L.map z.s) := Localization.inverts L W _ z.hs
 
-/-- This structure contains the data of three left fractions for
-`W : MorphismProperty C` that have the same "denominator". -/
+/--
+This structure contains the data of three left fractions for
+`W : MorphismProperty C` that have the same "denominator".
+-/
 structure LeftFraction₃ (X Y : C) where
   /-- the auxiliary object of left fractions -/
   {Y' : C}
@@ -74,11 +78,12 @@ structure LeftFraction₃ (X Y : C) where
   /-- the condition that the denominator belongs to the given morphism property -/
   hs : W s
 
-instance {X Y : C} (z : W.LeftFraction₃ X Y) : IsIso (L.map z.s) :=
-  Localization.inverts L W _ z.hs
+instance {X Y : C} (z : W.LeftFraction₃ X Y) : IsIso (L.map z.s) := Localization.inverts L W _ z.hs
 
-/-- This structure contains the data of two right fractions for
-`W : MorphismProperty C` that have the same "denominator". -/
+/--
+This structure contains the data of two right fractions for
+`W : MorphismProperty C` that have the same "denominator".
+-/
 structure RightFraction₂ (X Y : C) where
   /-- the auxiliary object of right fractions -/
   {X' : C}
@@ -91,17 +96,19 @@ structure RightFraction₂ (X Y : C) where
   /-- the numerator of the second right fraction -/
   f' : X' ⟶ Y
 
-instance {X Y : C} (z : W.RightFraction₂ X Y) : IsIso (L.map z.s) :=
-  Localization.inverts L W _ z.hs
+instance {X Y : C} (z : W.RightFraction₂ X Y) : IsIso (L.map z.s) := Localization.inverts L W _ z.hs
 
 variable {W}
 
-/-- The equivalence relation on tuples of left fractions with the same denominator
+/--
+The equivalence relation on tuples of left fractions with the same denominator
 for a morphism property `W`. The fact it is an equivalence relation is not
-formalized, but it would follow easily from `LeftFraction₂.map_eq_iff`. -/
+formalized, but it would follow easily from `LeftFraction₂.map_eq_iff`.
+-/
 def LeftFraction₂Rel {X Y : C} (z₁ z₂ : W.LeftFraction₂ X Y) : Prop :=
   ∃ (Z : C) (t₁ : z₁.Y' ⟶ Z) (t₂ : z₂.Y' ⟶ Z) (_ : z₁.s ≫ t₁ = z₂.s ≫ t₂)
-    (_ : z₁.f ≫ t₁ = z₂.f ≫ t₂) (_ : z₁.f' ≫ t₁ = z₂.f' ≫ t₂), W (z₁.s ≫ t₁)
+      (_ : z₁.f ≫ t₁ = z₂.f ≫ t₂) (_ : z₁.f' ≫ t₁ = z₂.f' ≫ t₂),
+    W (z₁.s ≫ t₁)
 
 namespace LeftFraction₂
 
@@ -201,10 +208,10 @@ namespace LeftFraction₂
 variable (W)
 variable [W.HasLeftCalculusOfFractions]
 
-lemma map_eq_iff {X Y : C} (φ ψ : W.LeftFraction₂ X Y) :
-    (φ.fst.map L (Localization.inverts _ _) = ψ.fst.map L (Localization.inverts _ _) ∧
-    φ.snd.map L (Localization.inverts _ _) = ψ.snd.map L (Localization.inverts _ _)) ↔
-      LeftFraction₂Rel φ ψ := by
+lemma map_eq_iff {X Y : C} (φ ψ : W.LeftFraction₂ X Y)
+    : (φ.fst.map L (Localization.inverts _ _) = ψ.fst.map L (Localization.inverts _ _)
+        ∧ φ.snd.map L (Localization.inverts _ _) = ψ.snd.map L (Localization.inverts _ _))
+      ↔ LeftFraction₂Rel φ ψ := by
   simp only [LeftFraction.map_eq_iff L W]
   constructor
   · intro ⟨h, h'⟩
@@ -248,15 +255,14 @@ abbrev snd : W.RightFraction X Y where
   s := φ.s
   hs := φ.hs
 
-lemma exists_leftFraction₂ [W.HasLeftCalculusOfFractions] :
-    ∃ (ψ : W.LeftFraction₂ X Y), φ.f ≫ ψ.s = φ.s ≫ ψ.f ∧
-      φ.f' ≫ ψ.s = φ.s ≫ ψ.f' := by
+lemma exists_leftFraction₂ [W.HasLeftCalculusOfFractions]
+    : ∃ (ψ : W.LeftFraction₂ X Y), φ.f ≫ ψ.s = φ.s ≫ ψ.f ∧ φ.f' ≫ ψ.s = φ.s ≫ ψ.f' := by
   obtain ⟨ψ₁, hψ₁⟩ := φ.fst.exists_leftFraction
   obtain ⟨ψ₂, hψ₂⟩ := φ.snd.exists_leftFraction
   obtain ⟨α, hα⟩ := (RightFraction.mk _ ψ₁.hs ψ₂.s).exists_leftFraction
   dsimp at hψ₁ hψ₂ hα
-  refine ⟨LeftFraction₂.mk (ψ₁.f ≫ α.f) (ψ₂.f ≫ α.s) (ψ₂.s ≫ α.s)
-      (W.comp_mem _ _ ψ₂.hs α.hs), ?_, ?_⟩
+  refine
+    ⟨LeftFraction₂.mk (ψ₁.f ≫ α.f) (ψ₂.f ≫ α.s) (ψ₂.s ≫ α.s) (W.comp_mem _ _ ψ₂.hs α.hs), ?_, ?_⟩
   · dsimp
     rw [hα, reassoc_of% hψ₁]
   · rw [reassoc_of% hψ₂]
@@ -271,53 +277,53 @@ variable [W.HasLeftCalculusOfFractions]
 
 open MorphismProperty
 
-lemma exists_leftFraction₂ {X Y : C} (f f' : L.obj X ⟶ L.obj Y) :
-    ∃ (φ : W.LeftFraction₂ X Y), f = φ.fst.map L (inverts L W) ∧
-      f' = φ.snd.map L (inverts L W) := by
+lemma exists_leftFraction₂ {X Y : C} (f f' : L.obj X ⟶ L.obj Y)
+    : ∃ (φ : W.LeftFraction₂ X Y),
+      f = φ.fst.map L (inverts L W) ∧ f' = φ.snd.map L (inverts L W) := by
   have ⟨φ, hφ⟩ := exists_leftFraction L W f
   have ⟨φ', hφ'⟩ := exists_leftFraction L W f'
   obtain ⟨α, hα⟩ := (RightFraction.mk _ φ.hs φ'.s).exists_leftFraction
-  let ψ : W.LeftFraction₂ X Y :=
-    { Y' := α.Y'
-      f := φ.f ≫ α.f
-      f' := φ'.f ≫ α.s
-      s := φ'.s ≫ α.s
-      hs := W.comp_mem _ _ φ'.hs α.hs }
+  let ψ : W.LeftFraction₂ X Y := {
+    Y' := α.Y'
+    f := φ.f ≫ α.f
+    f' := φ'.f ≫ α.s
+    s := φ'.s ≫ α.s
+    hs := W.comp_mem _ _ φ'.hs α.hs
+  }
   have : IsIso (L.map (φ'.s ≫ α.s)) := by
     rw [L.map_comp]
     infer_instance
   refine ⟨ψ, ?_, ?_⟩
-  · rw [← cancel_mono (L.map (φ'.s ≫ α.s)), LeftFraction.map_comp_map_s,
-      hα, L.map_comp, hφ, LeftFraction.map_comp_map_s_assoc,
-      L.map_comp]
+  · rw [← cancel_mono (L.map (φ'.s ≫ α.s)), LeftFraction.map_comp_map_s, hα, L.map_comp, hφ,
+      LeftFraction.map_comp_map_s_assoc, L.map_comp]
   · rw [← cancel_mono (L.map (φ'.s ≫ α.s)), hφ']
     nth_rw 1 [L.map_comp]
-    rw [LeftFraction.map_comp_map_s_assoc, LeftFraction.map_comp_map_s,
-      L.map_comp]
+    rw [LeftFraction.map_comp_map_s_assoc, LeftFraction.map_comp_map_s, L.map_comp]
 
-lemma exists_leftFraction₃ {X Y : C} (f f' f'' : L.obj X ⟶ L.obj Y) :
-    ∃ (φ : W.LeftFraction₃ X Y), f = φ.fst.map L (inverts L W) ∧
-      f' = φ.snd.map L (inverts L W) ∧
-      f'' = φ.thd.map L (inverts L W) := by
+lemma exists_leftFraction₃ {X Y : C} (f f' f'' : L.obj X ⟶ L.obj Y)
+    : ∃ (φ : W.LeftFraction₃ X Y),
+      f = φ.fst.map L (inverts L W) ∧ f' = φ.snd.map L (inverts L W)
+        ∧ f'' = φ.thd.map L (inverts L W) := by
   obtain ⟨α, hα, hα'⟩ := exists_leftFraction₂ L W f f'
   have ⟨β, hβ⟩ := exists_leftFraction L W f''
   obtain ⟨γ, hγ⟩ := (RightFraction.mk _ α.hs β.s).exists_leftFraction
   dsimp at hγ
-  let ψ : W.LeftFraction₃ X Y :=
-    { Y' := γ.Y'
-      f := α.f ≫ γ.f
-      f' := α.f' ≫ γ.f
-      f'' := β.f ≫ γ.s
-      s := β.s ≫ γ.s
-      hs := W.comp_mem _ _ β.hs γ.hs }
+  let ψ : W.LeftFraction₃ X Y := {
+    Y' := γ.Y'
+    f := α.f ≫ γ.f
+    f' := α.f' ≫ γ.f
+    f'' := β.f ≫ γ.s
+    s := β.s ≫ γ.s
+    hs := W.comp_mem _ _ β.hs γ.hs
+  }
   have : IsIso (L.map (β.s ≫ γ.s)) := by
     rw [L.map_comp]
     infer_instance
   refine ⟨ψ, ?_, ?_, ?_⟩
-  · rw [← cancel_mono (L.map (β.s ≫ γ.s)), LeftFraction.map_comp_map_s, hα, hγ,
-      L.map_comp, LeftFraction.map_comp_map_s_assoc, L.map_comp]
-  · rw [← cancel_mono (L.map (β.s ≫ γ.s)), LeftFraction.map_comp_map_s, hα', hγ,
-      L.map_comp, LeftFraction.map_comp_map_s_assoc, L.map_comp]
+  · rw [← cancel_mono (L.map (β.s ≫ γ.s)), LeftFraction.map_comp_map_s, hα, hγ, L.map_comp,
+      LeftFraction.map_comp_map_s_assoc, L.map_comp]
+  · rw [← cancel_mono (L.map (β.s ≫ γ.s)), LeftFraction.map_comp_map_s, hα', hγ, L.map_comp,
+      LeftFraction.map_comp_map_s_assoc, L.map_comp]
   · rw [← cancel_mono (L.map (β.s ≫ γ.s)), hβ]
     nth_rw 1 [L.map_comp]
     rw [LeftFraction.map_comp_map_s_assoc, LeftFraction.map_comp_map_s, L.map_comp]
@@ -325,10 +331,11 @@ lemma exists_leftFraction₃ {X Y : C} (f f' f'' : L.obj X ⟶ L.obj Y) :
 end Localization
 
 lemma Functor.faithful_of_comp_of_hasLeftCalculusOfFractions
-    {E : Type*} [Category* E] (F : D ⥤ E)
+    {E : Type*} [Category* E]
+    (F : D ⥤ E)
     [W.HasLeftCalculusOfFractions]
-    (h : ∀ ⦃X₁ X₂ : C⦄ (f g : X₁ ⟶ X₂), F.map (L.map f) = F.map (L.map g) → L.map f = L.map g) :
-    F.Faithful := by
+    (h : ∀ ⦃X₁ X₂ : C⦄ (f g : X₁ ⟶ X₂), F.map (L.map f) = F.map (L.map g) → L.map f = L.map g)
+    : F.Faithful := by
   have := Localization.essSurj L W
   refine F.faithful_of_comp_essSurj L (fun X₁ X₂ f g hfg ↦ ?_)
   obtain ⟨φ, rfl, rfl⟩ := Localization.exists_leftFraction₂ L W f g

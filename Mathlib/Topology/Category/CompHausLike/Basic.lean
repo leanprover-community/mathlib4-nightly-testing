@@ -6,7 +6,6 @@ Authors: Adam Topaz, Dagur Asgeirsson, Filippo A. E. Nuccio, Riccardo Brasca
 module
 
 public import Mathlib.Topology.Category.TopCat.Basic
-
 import Mathlib.CategoryTheory.Functor.EpiMono
 /-!
 
@@ -86,8 +85,7 @@ namespace CompHausLike
 
 attribute [instance] is_compact is_hausdorff
 
-instance : CoeSort (CompHausLike P) (Type u) :=
-  ⟨fun X => X.toTop⟩
+instance : CoeSort (CompHausLike P) (Type u) := ⟨fun X => X.toTop⟩
 
 instance category : Category (CompHausLike P) :=
   inferInstanceAs <| Category (InducedCategory _ toTop)
@@ -108,9 +106,11 @@ instance (X : CompHausLike P) : HasProp P X := ⟨X.4⟩
 
 variable [HasProp P X]
 
-/-- A constructor for objects of the category `CompHausLike P`,
+/--
+A constructor for objects of the category `CompHausLike P`,
 taking a type, and bundling the compact Hausdorff topology
-found by typeclass inference. -/
+found by typeclass inference.
+-/
 abbrev of : CompHausLike P where
   toTop := ↧X
   is_compact := ‹_›
@@ -124,14 +124,10 @@ meta def delabOf : Delab := CategoryTheory.delabOf
 
 theorem coe_of : (CompHausLike.of P X : Type _) = X := rfl
 
-@[simp]
-theorem coe_id (X : CompHausLike P) : (𝟙 X : X → X) = id :=
-  rfl
+@[simp] theorem coe_id (X : CompHausLike P) : (𝟙 X : X → X) = id := rfl
 
 @[simp]
-theorem coe_comp {X Y Z : CompHausLike P} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g : X → Z) = (g ∘ f) :=
-  rfl
+theorem coe_comp {X Y Z : CompHausLike P} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g : X → Z) = (g ∘ f) := rfl
 
 section
 
@@ -145,8 +141,8 @@ abbrev ofHom (f : C(X, Y)) : of P X ⟶ of P Y := ConcreteCategory.ofHom f
 
 @[simp] lemma ofHom_id : ofHom P (ContinuousMap.id X) = 𝟙 (of _ X) := rfl
 
-@[simp] lemma ofHom_comp (f : C(X, Y)) (g : C(Y, Z)) :
-    ofHom P (g.comp f) = ofHom _ f ≫ ofHom _ g := rfl
+@[simp]
+lemma ofHom_comp (f : C(X, Y)) (g : C(Y, Z)) : ofHom P (g.comp f) = ofHom _ f ≫ ofHom _ g := rfl
 
 end
 
@@ -154,8 +150,8 @@ variable {P}
 
 /-- If `P` implies `P'`, then there is a functor from `CompHausLike P` to `CompHausLike P'`. -/
 @[simps map]
-def toCompHausLike {P P' : TopCat → Prop} (h : ∀ (X : CompHausLike P), P X.toTop → P' X.toTop) :
-    CompHausLike P ⥤ CompHausLike P' where
+def toCompHausLike {P P' : TopCat → Prop} (h : ∀ (X : CompHausLike P), P X.toTop → P' X.toTop)
+    : CompHausLike P ⥤ CompHausLike P' where
   obj X :=
     haveI : HasProp P' X := ⟨(h _ X.prop)⟩
     ↧X
@@ -165,8 +161,10 @@ section
 
 variable {P P' : TopCat → Prop} (h : ∀ (X : CompHausLike P), P X.toTop → P' X.toTop)
 
-/-- If `P` implies `P'`, then the functor from `CompHausLike P` to `CompHausLike P'` is fully
-faithful. -/
+/--
+If `P` implies `P'`, then the functor from `CompHausLike P` to `CompHausLike P'` is fully
+faithful.
+-/
 def fullyFaithfulToCompHausLike : (toCompHausLike h).FullyFaithful where
   preimage f := ConcreteCategory.ofHom f.hom.hom
 
@@ -180,23 +178,21 @@ variable (P)
 
 /-- The fully faithful embedding of `CompHausLike P` in `TopCat`. -/
 @[simps! map]
-def compHausLikeToTop : CompHausLike.{u} P ⥤ TopCat.{u} :=
-  inducedFunctor _
+def compHausLikeToTop : CompHausLike.{u} P ⥤ TopCat.{u} := inducedFunctor _
 -- The `Full, Faithful` instances should be constructed by a deriving handler.
 -- https://github.com/leanprover-community/mathlib4/issues/380
 
-example {P P' : TopCat → Prop} (h : ∀ (X : CompHausLike P), P X.toTop → P' X.toTop) :
-    toCompHausLike h ⋙ compHausLikeToTop P' = compHausLikeToTop P := rfl
+example {P P' : TopCat → Prop} (h : ∀ (X : CompHausLike P), P X.toTop → P' X.toTop)
+    : toCompHausLike h ⋙ compHausLikeToTop P' = compHausLikeToTop P :=
+  rfl
 
 /-- The functor from `CompHausLike P` to `TopCat` is fully faithful. -/
 def fullyFaithfulCompHausLikeToTop : (compHausLikeToTop P).FullyFaithful :=
   fullyFaithfulInducedFunctor _
 
-instance : (compHausLikeToTop P).Full :=
-  inferInstanceAs (inducedFunctor _).Full
+instance : (compHausLikeToTop P).Full := inferInstanceAs (inducedFunctor _).Full
 
-instance : (compHausLikeToTop P).Faithful :=
-  inferInstanceAs (inducedFunctor _).Faithful
+instance : (compHausLikeToTop P).Faithful := inferInstanceAs (inducedFunctor _).Faithful
 
 instance (X : CompHausLike P) : CompactSpace ((compHausLikeToTop P).obj X) :=
   inferInstanceAs (CompactSpace X.toTop)
@@ -206,13 +202,13 @@ instance (X : CompHausLike P) : T2Space ((compHausLikeToTop P).obj X) :=
 
 variable {P}
 
-theorem epi_of_surjective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (hf : Function.Surjective f) :
-    Epi f := by
+theorem epi_of_surjective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (hf : Function.Surjective f)
+    : Epi f := by
   rw [← CategoryTheory.ofHom_epi_iff_surjective] at hf
   exact (forget (CompHausLike P)).epi_of_epi_map hf
 
-theorem mono_iff_injective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) :
-    Mono f ↔ Function.Injective f := by
+theorem mono_iff_injective {X Y : CompHausLike.{u} P} (f : X ⟶ Y)
+    : Mono f ↔ Function.Injective f := by
   constructor
   · intro hf x₁ x₂ h
     let g₁ : X ⟶ X := ofHom _ ⟨fun _ => x₁, continuous_const⟩
@@ -227,8 +223,8 @@ theorem isClosedMap {X Y : CompHausLike.{u} P} (f : X ⟶ Y) : IsClosedMap f := 
   (hC.isCompact.image f.hom.hom.continuous).isClosed
 
 /-- Any continuous bijection of compact Hausdorff spaces is an isomorphism. -/
-theorem isIso_of_bijective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (bij : Function.Bijective f) :
-    IsIso f := by
+theorem isIso_of_bijective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (bij : Function.Bijective f)
+    : IsIso f := by
   let E := Equiv.ofBijective _ bij
   have hE : Continuous E.symm := by
     rw [continuous_iff_isClosed]
@@ -241,13 +237,12 @@ theorem isIso_of_bijective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (bij : Funct
   · ext x
     apply E.apply_symm_apply
 
-instance forget_reflectsIsomorphisms :
-    (forget (CompHausLike.{u} P)).ReflectsIsomorphisms :=
+instance forget_reflectsIsomorphisms : (forget (CompHausLike.{u} P)).ReflectsIsomorphisms :=
   ⟨by intro A B f hf; rw [isIso_iff_bijective] at hf; exact isIso_of_bijective _ hf⟩
 
 /-- Any continuous bijection of compact Hausdorff spaces induces an isomorphism. -/
-noncomputable def isoOfBijective {X Y : CompHausLike.{u} P} (f : X ⟶ Y)
-    (bij : Function.Bijective f) : X ≅ Y :=
+noncomputable def isoOfBijective {X Y : CompHausLike.{u} P} (f : X ⟶ Y) (bij : Function.Bijective f)
+    : X ≅ Y :=
   letI := isIso_of_bijective _ bij
   asIso f
 
@@ -261,20 +256,22 @@ def isoOfHomeo {X Y : CompHausLike.{u} P} (f : X ≃ₜ Y) : X ≅ Y :=
 def homeoOfIso {X Y : CompHausLike.{u} P} (f : X ≅ Y) : X ≃ₜ Y :=
   TopCat.homeoOfIso <| (compHausLikeToTop P).mapIso f
 
-/-- The equivalence between isomorphisms in `CompHaus` and homeomorphisms
-of topological spaces. -/
+/--
+The equivalence between isomorphisms in `CompHaus` and homeomorphisms
+of topological spaces.
+-/
 @[simps]
 def isoEquivHomeo {X Y : CompHausLike.{u} P} : (X ≅ Y) ≃ (X ≃ₜ Y) where
   toFun := homeoOfIso
   invFun := isoOfHomeo
 
 /-- A constant map as a morphism in `CompHausLike` -/
-def const {P : TopCat.{u} → Prop}
-    (T : CompHausLike.{u} P) {S : CompHausLike.{u} P} (s : S) : T ⟶ S :=
+def const {P : TopCat.{u} → Prop} (T : CompHausLike.{u} P) {S : CompHausLike.{u} P} (s : S)
+    : T ⟶ S :=
   ofHom _ (ContinuousMap.const _ s)
 
-lemma const_comp {P : TopCat.{u} → Prop} {S T U : CompHausLike.{u} P}
-    (s : S) (g : S ⟶ U) : T.const s ≫ g = T.const (g s) :=
+lemma const_comp {P : TopCat.{u} → Prop} {S T U : CompHausLike.{u} P} (s : S) (g : S ⟶ U)
+    : T.const s ≫ g = T.const (g s) :=
   rfl
 
 end CompHausLike

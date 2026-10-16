@@ -38,8 +38,10 @@ open CategoryTheory Opposite TopologicalSpace Topology
 
 namespace AlgebraicGeometry
 
-/-- A morphism of schemes `X ⟶ Y` is a closed immersion if the underlying
-topological map is a closed embedding and the induced stalk maps are surjective. -/
+/--
+A morphism of schemes `X ⟶ Y` is a closed immersion if the underlying
+topological map is a closed embedding and the induced stalk maps are surjective.
+-/
 @[mk_iff]
 class IsClosedImmersion {X Y : Scheme} (f : X ⟶ Y) : Prop extends SurjectiveOnStalks f where
   isClosedEmbedding (f) : IsClosedEmbedding f
@@ -48,18 +50,17 @@ alias Scheme.Hom.isClosedEmbedding := IsClosedImmersion.isClosedEmbedding
 
 namespace IsClosedImmersion
 
-lemma eq_inf : @IsClosedImmersion = (topologically IsClosedEmbedding) ⊓
-    @SurjectiveOnStalks := by
+lemma eq_inf : @IsClosedImmersion = (topologically IsClosedEmbedding) ⊓ @SurjectiveOnStalks := by
   ext X Y f
   rw [isClosedImmersion_iff, and_comm]
   rfl
 
-lemma iff_isPreimmersion {X Y : Scheme} {f : X ⟶ Y} :
-    IsClosedImmersion f ↔ IsPreimmersion f ∧ IsClosed (Set.range f) := by
+lemma iff_isPreimmersion {X Y : Scheme} {f : X ⟶ Y}
+    : IsClosedImmersion f ↔ IsPreimmersion f ∧ IsClosed (Set.range f) := by
   rw [isClosedImmersion_iff, isPreimmersion_iff, and_assoc, isClosedEmbedding_iff]
 
-lemma of_isPreimmersion {X Y : Scheme} (f : X ⟶ Y) [IsPreimmersion f]
-    (hf : IsClosed (Set.range f)) : IsClosedImmersion f :=
+lemma of_isPreimmersion {X Y : Scheme} (f : X ⟶ Y) [IsPreimmersion f] (hf : IsClosed (Set.range f))
+    : IsClosedImmersion f :=
   iff_isPreimmersion.mpr ⟨‹_›, hf⟩
 
 instance (priority := 900) {X Y : Scheme} (f : X ⟶ Y) [IsClosedImmersion f] : IsPreimmersion f :=
@@ -79,8 +80,8 @@ instance : MorphismProperty.IsMultiplicative @IsClosedImmersion where
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Composition of closed immersions is a closed immersion. -/
-instance comp {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [IsClosedImmersion f]
-    [IsClosedImmersion g] : IsClosedImmersion (f ≫ g) :=
+instance comp {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [IsClosedImmersion f] [IsClosedImmersion g]
+    : IsClosedImmersion (f ≫ g) :=
   MorphismProperty.IsStableUnderComposition.comp_mem f g inferInstance inferInstance
 
 /-- Composition with an isomorphism preserves closed immersions. -/
@@ -91,11 +92,13 @@ instance {X : Scheme} (I : X.IdealSheafData) : IsClosedImmersion I.subschemeι :
   .of_isPreimmersion _ (I.range_subschemeι ▸ I.support.isClosed)
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- Given two commutative rings `R S : CommRingCat` and a surjective morphism
+/--
+Given two commutative rings `R S : CommRingCat` and a surjective morphism
 `f : R ⟶ S`, the induced scheme morphism `specObj S ⟶ specObj R` is a
-closed immersion. -/
-theorem spec_of_surjective {R S : CommRingCat} (f : R ⟶ S) (h : Function.Surjective f) :
-    IsClosedImmersion (Spec.map f) where
+closed immersion.
+-/
+theorem spec_of_surjective {R S : CommRingCat} (f : R ⟶ S) (h : Function.Surjective f)
+    : IsClosedImmersion (Spec.map f) where
   isClosedEmbedding := PrimeSpectrum.isClosedEmbedding_comap_of_surjective _ _ h
   stalkMap_surjective x := by
     have : (RingHom.toMorphismProperty (fun f ↦ Function.Surjective f)).RespectsIso := by
@@ -106,16 +109,21 @@ theorem spec_of_surjective {R S : CommRingCat} (f : R ⟶ S) (h : Function.Surje
       (Scheme.arrowStalkMapSpecIso f x)).mpr
     exact RingHom.surjective_localRingHom_of_surjective f.hom h x.asIdeal
 
-/-- For any ideal `I` in a commutative ring `R`, the quotient map `specObj R ⟶ specObj (R ⧸ I)`
-is a closed immersion. -/
-instance spec_of_quotient_mk {R : CommRingCat.{u}} (I : Ideal R) :
-    IsClosedImmersion (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I))) :=
+/--
+For any ideal `I` in a commutative ring `R`, the quotient map `specObj R ⟶ specObj (R ⧸ I)`
+is a closed immersion.
+-/
+instance spec_of_quotient_mk {R : CommRingCat.{u}} (I : Ideal R)
+    : IsClosedImmersion (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I))) :=
   spec_of_surjective _ Ideal.Quotient.mk_surjective
 
-/-- Any morphism between affine schemes that is surjective on global sections is a
-closed immersion. -/
-lemma of_surjective_of_isAffine {X Y : Scheme} [IsAffine X] [IsAffine Y] (f : X ⟶ Y)
-    (h : Function.Surjective (f.appTop)) : IsClosedImmersion f := by
+/--
+Any morphism between affine schemes that is surjective on global sections is a
+closed immersion.
+-/
+lemma of_surjective_of_isAffine
+    {X Y : Scheme} [IsAffine X] [IsAffine Y] (f : X ⟶ Y) (h : Function.Surjective (f.appTop))
+    : IsClosedImmersion f := by
   rw [MorphismProperty.arrow_mk_iso_iff @IsClosedImmersion (arrowIsoSpecΓOfIsAffine f)]
   apply spec_of_surjective
   exact h
@@ -125,15 +133,15 @@ If `f ≫ g` and `g` are closed immersions, then `f` is a closed immersion.
 Also see `IsClosedImmersion.of_comp` for the general version
 where `g` is only required to be separated.
 -/
-theorem of_comp_isClosedImmersion {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [IsClosedImmersion g]
-    [IsClosedImmersion (f ≫ g)] : IsClosedImmersion f where
+theorem of_comp_isClosedImmersion
+    {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [IsClosedImmersion g] [IsClosedImmersion (f ≫ g)]
+    : IsClosedImmersion f where
   isClosedEmbedding := by
     have h := (f ≫ g).isClosedEmbedding
     simp only [Scheme.Hom.comp_base, TopCat.coe_comp] at h
     refine .of_continuous_injective_isClosedMap (Scheme.Hom.continuous f) h.injective.of_comp ?_
     intro Z hZ
-    rw [IsClosedEmbedding.isClosed_iff_image_isClosed g.isClosedEmbedding,
-      ← Set.image_comp]
+    rw [IsClosedEmbedding.isClosed_iff_image_isClosed g.isClosedEmbedding, ← Set.image_comp]
     exact h.isClosedMap _ hZ
   stalkMap_surjective x := by
     have h := (f ≫ g).stalkMap_surjective x
@@ -141,93 +149,108 @@ theorem of_comp_isClosedImmersion {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) [
     exact Function.Surjective.of_comp h
 
 instance SpecMap_residue {X : Scheme.{u}} (x) : IsClosedImmersion (Spec.map (X.residue x)) :=
-  IsClosedImmersion.spec_of_surjective (X.residue x)
-    Ideal.Quotient.mk_surjective
+  IsClosedImmersion.spec_of_surjective (X.residue x) Ideal.Quotient.mk_surjective
 
 instance (priority := low) {X Y : Scheme} (f : X ⟶ Y) [IsClosedImmersion f] : IsAffineHom f :=
   isAffineHom_of_isInducing _ f.isClosedEmbedding.isInducing f.isClosedEmbedding.isClosed_range
 
 set_option backward.isDefEq.respectTransparency false in
-instance {X Y : Scheme.{u}} (f : X ⟶ Y) [IsClosedImmersion f] :
-    IsIso f.toImage := by
-  have := @of_comp_isClosedImmersion _ _ _ f.toImage f.imageι inferInstance
-    (by rw [Scheme.Hom.toImage_imageι]; infer_instance)
+instance {X Y : Scheme.{u}} (f : X ⟶ Y) [IsClosedImmersion f] : IsIso f.toImage := by
+  have :=
+    @of_comp_isClosedImmersion _ _ _ f.toImage f.imageι inferInstance
+      (by rw [Scheme.Hom.toImage_imageι]; infer_instance)
   have : IsHomeomorph f.toImage :=
-    isHomeomorph_iff_isEmbedding_surjective.mpr ⟨f.toImage.isEmbedding, by
-      rw [← Set.range_eq_univ, ← f.toImage.isClosedEmbedding.isClosed_range.closure_eq]
-      exact f.toImage.denseRange.closure_eq⟩
+    isHomeomorph_iff_isEmbedding_surjective.mpr ⟨
+      f.toImage.isEmbedding,
+      by
+        rw [← Set.range_eq_univ, ← f.toImage.isClosedEmbedding.isClosed_range.closure_eq]
+        exact f.toImage.denseRange.closure_eq
+    ⟩
   refine isomorphisms_eq_stalkwise.ge _ ⟨?_, ?_⟩
   · exact inferInstanceAs (IsIso (TopCat.isoOfHomeo this.homeomorph).hom)
   · intro x
     refine ⟨?_, f.toImage.stalkMap_surjective x⟩
-    change Function.Injective (CommRingCat.Hom.hom (((TopCat.Presheaf.stalkFunctor CommRingCat
-      (f.toImage x)).map f.toImage.c) ≫ X.presheaf.stalkPushforward _ _ x))
+    change Function.Injective (CommRingCat.Hom.hom
+      (((TopCat.Presheaf.stalkFunctor CommRingCat (f.toImage x)).map f.toImage.c)
+        ≫ X.presheaf.stalkPushforward _ _ x))
     simp only [TopCat.Presheaf.stalkFunctor_obj, CommRingCat.hom_comp, RingHom.coe_comp]
     refine .comp ?_ (f.stalkFunctor_toImage_injective _)
-    have := TopCat.Presheaf.stalkPushforward.stalkPushforward_iso_of_isInducing CommRingCat
-      (f := f.toImage.base) f.toImage.isEmbedding.isInducing X.presheaf x
+    have :=
+      TopCat.Presheaf.stalkPushforward.stalkPushforward_iso_of_isInducing CommRingCat
+        (f := f.toImage.base) f.toImage.isEmbedding.isInducing X.presheaf x
     exact ((ConcreteCategory.isIso_iff_bijective _).mp this).1
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The category of closed subschemes is contravariantly equivalent
-to the lattice of ideal sheaves. -/
-noncomputable
-def overEquivIdealSheafData (X : Scheme.{u}) :
-    (MorphismProperty.Over @IsClosedImmersion ⊤ X)ᵒᵖ ≌ X.IdealSheafData where
+/--
+The category of closed subschemes is contravariantly equivalent
+to the lattice of ideal sheaves.
+-/
+noncomputable def overEquivIdealSheafData (X : Scheme.{u})
+    : (MorphismProperty.Over @IsClosedImmersion ⊤ X)ᵒᵖ ≌ X.IdealSheafData where
   functor := (MorphismProperty.Over.forget _ _ _).op ⋙ X.kerFunctor
-  inverse :=
-  { obj I := .op <| .mk _ I.subschemeι inferInstance
+  inverse := {
+    obj I := .op <| .mk _ I.subschemeι inferInstance
     map {I J} h := (MorphismProperty.Over.homMk (Scheme.IdealSheafData.inclusion h.le)).op
-    map_comp f g := Quiver.Hom.unop_inj (by ext1; simp) }
-  unitIso := NatIso.ofComponents (fun Y ↦
-    letI : IsClosedImmersion Y.unop.hom := Y.unop.prop
-    ((MorphismProperty.Over.isoMk (asIso Y.unop.hom.toImage).symm).op)) fun {X Y} f ↦ by
-      apply Quiver.Hom.unop_inj
-      ext1
-      dsimp
-      rw [IsIso.eq_comp_inv, Category.assoc, IsIso.inv_comp_eq,
-        ← cancel_mono (Scheme.IdealSheafData.subschemeι _)]
-      simp
+    map_comp f g := Quiver.Hom.unop_inj (by ext1; simp)
+  }
+  unitIso :=
+    NatIso.ofComponents
+      (fun Y ↦
+        letI : IsClosedImmersion Y.unop.hom := Y.unop.prop
+        ((MorphismProperty.Over.isoMk (asIso Y.unop.hom.toImage).symm).op))
+      fun {X Y} f ↦ by
+        apply Quiver.Hom.unop_inj
+        ext1
+        dsimp
+        rw [IsIso.eq_comp_inv, Category.assoc, IsIso.inv_comp_eq,
+          ← cancel_mono (Scheme.IdealSheafData.subschemeι _)]
+        simp
   counitIso := NatIso.ofComponents (fun I ↦ eqToIso (by simp))
 
-lemma isIso_iff_ker_eq_bot {X Y : Scheme.{u}} {f : X ⟶ Y} [IsClosedImmersion f] :
-    IsIso f ↔ f.ker = ⊥ := by
+lemma isIso_iff_ker_eq_bot {X Y : Scheme.{u}} {f : X ⟶ Y} [IsClosedImmersion f]
+    : IsIso f ↔ f.ker = ⊥ := by
   refine ⟨fun _ ↦ f.ker_eq_bot_of_isIso, fun H ↦ ?_⟩
   have : IsIso f.imageι := by simpa [Scheme.Hom.imageι, Scheme.Hom.image] using H ▸ inferInstance
   exact f.toImage_imageι ▸ inferInstance
 
-/-- The universal property of closed immersions:
+/--
+The universal property of closed immersions:
 For a closed immersion `f : X ⟶ Z`, given any morphism of schemes `g : Y ⟶ Z` whose kernel
 contains the kernel of `X` in `Z`, we can lift this morphism to a unique `Y ⟶ X` that
 commutes with these maps.
 -/
-noncomputable
-def lift {X Y Z : Scheme.{u}}
-    (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f] (H : f.ker ≤ g.ker) : Y ⟶ X :=
+noncomputable def lift
+    {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f] (H : f.ker ≤ g.ker)
+    : Y ⟶ X :=
   g.toImage ≫ Scheme.IdealSheafData.inclusion H ≫ inv f.toImage
 
 @[reassoc (attr := simp)]
-lemma lift_fac {X Y Z : Scheme.{u}}
-    (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f] (H : f.ker ≤ g.ker) : lift f g H ≫ f = g := by
+lemma lift_fac
+    {X Y Z : Scheme.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f] (H : f.ker ≤ g.ker)
+    : lift f g H ≫ f = g := by
   nth_rw 2 [← f.toImage_imageι]
   simp [lift, -Scheme.Hom.toImage_imageι, g.toImage_imageι]
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-lemma isIso_of_ker_eq {Z₁ Z₂ X : Scheme.{u}} (i₁ : Z₁ ⟶ X) (i₂ : Z₂ ⟶ X)
-    [IsClosedImmersion i₁] [IsClosedImmersion i₂] (f : Z₁ ⟶ Z₂)
-    (h : f ≫ i₂ = i₁) (h' : i₁.ker = i₂.ker) : IsIso f := by
+lemma isIso_of_ker_eq
+    {Z₁ Z₂ X : Scheme.{u}} (i₁ : Z₁ ⟶ X) (i₂ : Z₂ ⟶ X) [IsClosedImmersion i₁] [IsClosedImmersion i₂]
+    (f : Z₁ ⟶ Z₂) (h : f ≫ i₂ = i₁)
+    (h' : i₁.ker = i₂.ker)
+    : IsIso f := by
   let f' : MorphismProperty.Over.mk ⊤ i₁ ‹_› ⟶ .mk ⊤ i₂ ‹_› := MorphismProperty.Over.homMk f h
   suffices h : IsIso f'.op by
     rwa [isIso_op_iff, ← isIso_iff_of_reflects_iso _ (MorphismProperty.Over.forget ..),
-      ← isIso_iff_of_reflects_iso _ (Over.forget _)] at h
+        ← isIso_iff_of_reflects_iso _ (Over.forget _)]
+      at h
   rw [← isIso_iff_of_reflects_iso _ (IsClosedImmersion.overEquivIdealSheafData X).functor]
   simpa [IsClosedImmersion.overEquivIdealSheafData] using ⟨homOfLE h'.le, by simp, by simp⟩
 
-lemma isIso_lift {Z₁ Z₂ X : Scheme.{u}} (i₁ : Z₁ ⟶ X) (i₂ : Z₂ ⟶ X)
-    [IsClosedImmersion i₁] [IsClosedImmersion i₂] (h : i₁.ker = i₂.ker) :
-    IsIso (lift i₁ i₂ h.le) :=
+lemma isIso_lift
+    {Z₁ Z₂ X : Scheme.{u}} (i₁ : Z₁ ⟶ X) (i₂ : Z₂ ⟶ X) [IsClosedImmersion i₁] [IsClosedImmersion i₂]
+    (h : i₁.ker = i₂.ker)
+    : IsIso (lift i₁ i₂ h.le) :=
   isIso_of_ker_eq i₂ i₁ _ (by simp) h.symm
 
 end IsClosedImmersion
@@ -237,15 +260,19 @@ section Affine
 variable {X Y : Scheme.{u}} [IsAffine Y] {f : X ⟶ Y}
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `f : X ⟶ Y` is a morphism of schemes with quasi-compact source and affine target,
-`f` induces an injection on global sections, then `f` is dominant. -/
-lemma isDominant_of_of_appTop_injective [CompactSpace X]
-    (hfinj : Function.Injective (f.appTop)) :
-    IsDominant f := by
-  have : f.ker = ⊥ := Scheme.IdealSheafData.ext_of_isAffine
-    (by simpa [f.ker_apply ⟨⊤, isAffineOpen_top Y⟩, ← RingHom.injective_iff_ker_eq_bot])
-  exact ⟨by simpa only [Scheme.Hom.support_ker, Scheme.IdealSheafData.support_bot,
-    Closeds.coe_top, ← dense_iff_closure_eq] using! (congr((↑($this).support : Set Y)) :)⟩
+/--
+If `f : X ⟶ Y` is a morphism of schemes with quasi-compact source and affine target,
+`f` induces an injection on global sections, then `f` is dominant.
+-/
+lemma isDominant_of_of_appTop_injective [CompactSpace X] (hfinj : Function.Injective (f.appTop))
+    : IsDominant f := by
+  have : f.ker = ⊥ :=
+    Scheme.IdealSheafData.ext_of_isAffine (by
+      simpa [f.ker_apply ⟨⊤, isAffineOpen_top Y⟩, ← RingHom.injective_iff_ker_eq_bot])
+  exact ⟨by
+    simpa only [Scheme.Hom.support_ker, Scheme.IdealSheafData.support_bot, Closeds.coe_top,
+        ← dense_iff_closure_eq]
+      using! (congr((↑($this).support : Set Y)) :)⟩
 
 instance [CompactSpace X] : IsDominant X.toSpecΓ :=
   isDominant_of_of_appTop_injective (by
@@ -253,12 +280,15 @@ instance [CompactSpace X] : IsDominant X.toSpecΓ :=
       (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso Γ(X, ⊤)).hom).1)
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `f : X ⟶ Y` is open, injective, `X` is quasi-compact and `Y` is affine, then `f` is stalkwise
-injective if it is injective on global sections. -/
-lemma stalkMap_injective_of_isOpenMap_of_injective [CompactSpace X]
-    (hfopen : IsOpenMap f) (hfinj₁ : Function.Injective f)
-    (hfinj₂ : Function.Injective f.appTop) (x : X) :
-    Function.Injective (f.stalkMap x) := by
+/--
+If `f : X ⟶ Y` is open, injective, `X` is quasi-compact and `Y` is affine, then `f` is stalkwise
+injective if it is injective on global sections.
+-/
+lemma stalkMap_injective_of_isOpenMap_of_injective
+    [CompactSpace X]
+    (hfopen : IsOpenMap f) (hfinj₁ : Function.Injective f) (hfinj₂ : Function.Injective f.appTop)
+    (x : X)
+    : Function.Injective (f.stalkMap x) := by
   let φ : Γ(Y, ⊤) ⟶ Γ(X, ⊤) := f.appTop
   let 𝒰 : X.OpenCover := X.affineCover.finiteSubcover
   let res (i : 𝒰.I₀) : Γ(X, ⊤) ⟶ Γ(𝒰.X i, ⊤) := (𝒰.f i).appTop
@@ -266,14 +296,14 @@ lemma stalkMap_injective_of_isOpenMap_of_injective [CompactSpace X]
   rw [TopCat.Presheaf.Γgerm, Scheme.Hom.germ_stalkMap_apply] at h
   obtain ⟨U, w, (hx : x ∈ U), hg⟩ :=
     X.toRingedSpace.exists_res_eq_zero_of_germ_eq_zero ⊤ (φ g) ⟨x, trivial⟩ h
-  obtain ⟨_, ⟨s, rfl⟩, hyv, bsle⟩ := Opens.isBasis_iff_nbhd.mp (isBasis_basicOpen Y)
-    (show f x ∈ ⟨f '' U.carrier, hfopen U.carrier U.is_open'⟩ from ⟨x, by simpa⟩)
+  obtain ⟨_, ⟨s, rfl⟩, hyv, bsle⟩ :=
+    Opens.isBasis_iff_nbhd.mp (isBasis_basicOpen Y)
+      (show f x ∈ ⟨f '' U.carrier, hfopen U.carrier U.is_open'⟩ from ⟨x, by simpa⟩)
   let W (i : 𝒰.I₀) : TopologicalSpace.Opens (𝒰.X i) := (𝒰.X i).basicOpen ((res i) (φ s))
   have hwle (i : 𝒰.I₀) : W i ≤ (𝒰.f i) ⁻¹ᵁ U := by
     change (𝒰.X i).basicOpen ((𝒰.f i ≫ f).appTop s) ≤ _
     rw [← Scheme.preimage_basicOpen_top, Scheme.Hom.comp_base, Opens.map_comp_obj]
-    refine Scheme.Hom.preimage_mono _
-      (le_trans (f.preimage_mono bsle) (le_of_eq ?_))
+    refine Scheme.Hom.preimage_mono _ (le_trans (f.preimage_mono bsle) (le_of_eq ?_))
     simp [Set.preimage_image_eq _ hfinj₁]
   have h0 (i : 𝒰.I₀) : (𝒰.f i).appLE _ (W i) (by simp) (φ g) = 0 := by
     rw [← Scheme.Hom.appLE_map _ ((Opens.map _).map w).le (homOfLE <| hwle i).op,
@@ -298,20 +328,24 @@ lemma stalkMap_injective_of_isOpenMap_of_injective [CompactSpace X]
 namespace IsClosedImmersion
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If `f` is a closed immersion with affine target such that the induced map on global
-sections is injective, `f` is an isomorphism. -/
-theorem isIso_of_injective_of_isAffine [IsClosedImmersion f]
-    (hf : Function.Injective f.appTop) : IsIso f :=
-  isIso_iff_ker_eq_bot.mpr (Scheme.IdealSheafData.ext_of_isAffine
-    (by simpa [f.ker_apply ⟨⊤, isAffineOpen_top Y⟩, ← RingHom.injective_iff_ker_eq_bot]))
+/--
+If `f` is a closed immersion with affine target such that the induced map on global
+sections is injective, `f` is an isomorphism.
+-/
+theorem isIso_of_injective_of_isAffine [IsClosedImmersion f] (hf : Function.Injective f.appTop)
+    : IsIso f :=
+  isIso_iff_ker_eq_bot.mpr (Scheme.IdealSheafData.ext_of_isAffine (by
+    simpa [f.ker_apply ⟨⊤, isAffineOpen_top Y⟩, ← RingHom.injective_iff_ker_eq_bot]))
 
 variable (f)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `f` is a closed immersion with affine target, the source is affine and
-the induced map on global sections is surjective. -/
-theorem isAffine_surjective_of_isAffine [IsClosedImmersion f] :
-    IsAffine X ∧ Function.Surjective f.appTop := by
+/--
+If `f` is a closed immersion with affine target, the source is affine and
+the induced map on global sections is surjective.
+-/
+theorem isAffine_surjective_of_isAffine [IsClosedImmersion f]
+    : IsAffine X ∧ Function.Surjective f.appTop := by
   refine ⟨isAffine_of_isAffineHom f, ?_⟩
   simp only [← f.toImage_imageι, Scheme.Hom.comp_appTop, CommRingCat.hom_comp, RingHom.coe_comp,
     Scheme.Hom.image, Scheme.Hom.imageι]
@@ -320,19 +354,27 @@ theorem isAffine_surjective_of_isAffine [IsClosedImmersion f] :
   exact (ConcreteCategory.bijective_of_isIso _).2.comp
     ((ConcreteCategory.bijective_of_isIso _).2.comp Ideal.Quotient.mk_surjective)
 
-lemma Spec_iff {R : CommRingCat} {f : X ⟶ Spec R} :
-    IsClosedImmersion f ↔ ∃ I : Ideal R, ∃ e : X ≅ Spec (.of <| R ⧸ I),
-      f = e.hom ≫ Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)) := by
+lemma Spec_iff {R : CommRingCat} {f : X ⟶ Spec R}
+    : IsClosedImmersion f
+      ↔ ∃ I : Ideal R, ∃ e : X ≅ Spec (.of <| R ⧸ I),
+        f = e.hom ≫ Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)) := by
   constructor
   · intro H
     obtain ⟨h₁, h₂⟩ := IsClosedImmersion.isAffine_surjective_of_isAffine f
     let φ := (Scheme.ΓSpecIso R).inv ≫ f.appTop
-    refine ⟨RingHom.ker φ.1, Scheme.isoSpec _ ≪≫ Scheme.Spec.mapIso
-        (.op (RingEquiv.ofBijective φ.1.kerLift ?_).toCommRingCatIso), ?_⟩
-    · exact ⟨φ.1.kerLift_injective, Ideal.Quotient.lift_surjective_of_surjective _ _
-        (h₂.comp (Scheme.ΓSpecIso R).commRingCatIsoToRingEquiv.symm.surjective)⟩
-    · simp only [Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom, Scheme.Spec_map,
-        Quiver.Hom.unop_op, Category.assoc, ← Spec.map_comp]
+    refine ⟨
+      RingHom.ker φ.1,
+      Scheme.isoSpec _
+        ≪≫ Scheme.Spec.mapIso (.op (RingEquiv.ofBijective φ.1.kerLift ?_).toCommRingCatIso),
+      ?_
+    ⟩
+    · exact ⟨
+        φ.1.kerLift_injective,
+        Ideal.Quotient.lift_surjective_of_surjective _ _
+          (h₂.comp (Scheme.ΓSpecIso R).commRingCatIsoToRingEquiv.symm.surjective)
+      ⟩
+    · simp only [Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom, Scheme.Spec_map, Quiver.Hom.unop_op,
+        Category.assoc, ← Spec.map_comp]
       change f = X.isoSpec.hom ≫ Spec.map φ
       simp only [Scheme.isoSpec, asIso_hom, Spec.map_comp, ← Scheme.toSpecΓ_naturality_assoc,
         ← SpecMap_ΓSpecIso_hom, φ]
@@ -352,53 +394,59 @@ instance IsClosedImmersion.isZariskiLocalAtTarget : IsZariskiLocalAtTarget @IsCl
   eq_inf ▸ inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- On morphisms with affine target, being a closed immersion is precisely having affine source
-and being surjective on global sections. -/
-instance IsClosedImmersion.hasAffineProperty : HasAffineProperty @IsClosedImmersion
-    (fun X _ f ↦ IsAffine X ∧ Function.Surjective (f.appTop)) := by
+/--
+On morphisms with affine target, being a closed immersion is precisely having affine source
+and being surjective on global sections.
+-/
+instance IsClosedImmersion.hasAffineProperty
+    : HasAffineProperty @IsClosedImmersion
+      (fun X _ f ↦ IsAffine X ∧ Function.Surjective (f.appTop)) := by
   convert! HasAffineProperty.of_isZariskiLocalAtTarget @IsClosedImmersion
   refine ⟨fun ⟨h₁, h₂⟩ ↦ of_surjective_of_isAffine _ h₂, by apply isAffine_surjective_of_isAffine⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma isClosedImmersion_iff_isAffineHom {f : X ⟶ Y} :
-    IsClosedImmersion f ↔
-      IsAffineHom f ∧ ∀ U : Y.Opens, IsAffineOpen U → Function.Surjective (f.app U) := by
+lemma isClosedImmersion_iff_isAffineHom {f : X ⟶ Y}
+    : IsClosedImmersion f
+      ↔ IsAffineHom f ∧ ∀ U : Y.Opens, IsAffineOpen U → Function.Surjective (f.app U) := by
   rw [HasAffineProperty.eq_targetAffineLocally @IsClosedImmersion]
   exact targetAffineLocally_affineAnd_iff' RingHom.surjective_respectsIso _
 
-lemma Scheme.Hom.app_surjective (f : X ⟶ Y) (U : Y.Opens) (hU : IsAffineOpen U)
-    [IsClosedImmersion f] : Function.Surjective (f.app U) :=
+lemma Scheme.Hom.app_surjective
+    (f : X ⟶ Y) (U : Y.Opens) (hU : IsAffineOpen U) [IsClosedImmersion f]
+    : Function.Surjective (f.app U) :=
   (isClosedImmersion_iff_isAffineHom.mp ‹_›).2 U hU
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Being a closed immersion is stable under base change. -/
-instance IsClosedImmersion.isStableUnderBaseChange :
-    MorphismProperty.IsStableUnderBaseChange @IsClosedImmersion := by
+instance IsClosedImmersion.isStableUnderBaseChange
+    : MorphismProperty.IsStableUnderBaseChange @IsClosedImmersion := by
   apply HasAffineProperty.isStableUnderBaseChange
   have := HasAffineProperty.isLocal_affineProperty @IsClosedImmersion
   apply AffineTargetMorphismProperty.IsStableUnderBaseChange.mk
   intro X Y S _ _ f g ⟨ha, hsurj⟩
-  exact ⟨inferInstance, RingHom.surjective_isStableUnderBaseChange.pullback_fst_appTop _
-    RingHom.surjective_respectsIso f _ hsurj⟩
+  exact ⟨
+    inferInstance,
+    RingHom.surjective_isStableUnderBaseChange.pullback_fst_appTop _ RingHom.surjective_respectsIso
+      f _ hsurj
+  ⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion g] :
-    IsClosedImmersion (Limits.pullback.fst f g) :=
+instance (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion g]
+    : IsClosedImmersion (Limits.pullback.fst f g) :=
   MorphismProperty.pullback_fst _ _ ‹_›
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f] :
-    IsClosedImmersion (Limits.pullback.snd f g) :=
+instance (f : X ⟶ Z) (g : Y ⟶ Z) [IsClosedImmersion f]
+    : IsClosedImmersion (Limits.pullback.snd f g) :=
   MorphismProperty.pullback_snd _ _ ‹_›
 
-instance (f : X ⟶ Y) (V : Y.Opens) [IsClosedImmersion f] :
-    IsClosedImmersion (f ∣_ V) :=
+instance (f : X ⟶ Y) (V : Y.Opens) [IsClosedImmersion f] : IsClosedImmersion (f ∣_ V) :=
   IsZariskiLocalAtTarget.restrict ‹_› V
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Closed immersions are locally of finite type. -/
-instance (priority := 900) {X Y : Scheme.{u}} (f : X ⟶ Y) [h : IsClosedImmersion f] :
-    LocallyOfFiniteType f := by
+instance (priority := 900) {X Y : Scheme.{u}} (f : X ⟶ Y) [h : IsClosedImmersion f]
+    : LocallyOfFiniteType f := by
   rw [HasRingHomProperty.eq_affineLocally @LocallyOfFiniteType,
     ← and_iff_right (inferInstance : IsAffineHom f) (b := affineLocally _ _),
     ← targetAffineLocally_affineAnd_iff_affineLocally RingHom.finiteType_isLocal]
@@ -406,25 +454,27 @@ instance (priority := 900) {X Y : Scheme.{u}} (f : X ⟶ Y) [h : IsClosedImmersi
   exact targetAffineLocally_affineAnd_le (RingHom.FiniteType.of_surjective _) _ h
 
 /-- A surjective closed immersion is an isomorphism when the target is reduced. -/
-lemma isIso_of_isClosedImmersion_of_surjective {X Y : Scheme.{u}} (f : X ⟶ Y)
-    [IsClosedImmersion f] [Surjective f] [IsReduced Y] :
-    IsIso f := by
+lemma isIso_of_isClosedImmersion_of_surjective
+    {X Y : Scheme.{u}} (f : X ⟶ Y) [IsClosedImmersion f] [Surjective f] [IsReduced Y]
+    : IsIso f := by
   rw [IsClosedImmersion.isIso_iff_ker_eq_bot, ← Scheme.IdealSheafData.support_eq_top_iff,
     ← SetLike.coe_injective.eq_iff, Scheme.Hom.support_ker]
   simp
 
-lemma isClosed_singleton_iff_isClosedImmersion {X : Scheme} {x : X} :
-    IsClosed {x} ↔ IsClosedImmersion (X.fromSpecResidueField x) := by
+lemma isClosed_singleton_iff_isClosedImmersion {X : Scheme} {x : X}
+    : IsClosed {x} ↔ IsClosedImmersion (X.fromSpecResidueField x) := by
   rw [← Scheme.range_fromSpecResidueField]
-  exact ⟨fun H ↦ .of_isPreimmersion _ H,
-    fun _ ↦ (X.fromSpecResidueField x).isClosedEmbedding.isClosed_range⟩
+  exact ⟨
+    fun H ↦ .of_isPreimmersion _ H,
+    fun _ ↦ (X.fromSpecResidueField x).isClosedEmbedding.isClosed_range
+  ⟩
 
 section Section
 
 set_option backward.isDefEq.respectTransparency false in
-nonrec theorem isClosedImmersion_of_comp_eq_id {X Y : Scheme.{u}} [Subsingleton Y]
-    (f : X ⟶ Y) (g : Y ⟶ X) (hg : g ≫ f = 𝟙 Y) :
-    IsClosedImmersion g := by
+nonrec theorem isClosedImmersion_of_comp_eq_id
+    {X Y : Scheme.{u}} [Subsingleton Y] (f : X ⟶ Y) (g : Y ⟶ X) (hg : g ≫ f = 𝟙 Y)
+    : IsClosedImmersion g := by
   wlog hX : ∃ R, X = Spec R
   · rw [IsZariskiLocalAtTarget.iff_of_openCover (P := @IsClosedImmersion) X.affineCover]
     intro i
@@ -459,8 +509,8 @@ nonrec theorem isClosedImmersion_of_comp_eq_id {X Y : Scheme.{u}} [Subsingleton 
 instance {X Y : Scheme.{u}} [Subsingleton X] (f : Retract X Y) : IsClosedImmersion f.i :=
   isClosedImmersion_of_comp_eq_id _ _ f.retract
 
-instance (priority := low) {X Y : Scheme.{u}} [Subsingleton Y] [X.Over Y] (f : Y ⟶ X) [f.IsOver Y] :
-    IsClosedImmersion f :=
+instance (priority := low) {X Y : Scheme.{u}} [Subsingleton Y] [X.Over Y] (f : Y ⟶ X) [f.IsOver Y]
+    : IsClosedImmersion f :=
   isClosedImmersion_of_comp_eq_id (X ↘ Y) f (by simp)
 
 end Section

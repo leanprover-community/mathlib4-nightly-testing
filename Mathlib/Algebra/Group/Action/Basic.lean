@@ -39,8 +39,8 @@ add_decl_doc AddAction.toPerm
 
 /-- `MulAction.toPerm` is injective on faithful actions. -/
 @[to_additive /-- `AddAction.toPerm` is injective on faithful actions. -/]
-lemma MulAction.toPerm_injective [FaithfulSMul α β] :
-    Function.Injective (MulAction.toPerm : α → Equiv.Perm β) :=
+lemma MulAction.toPerm_injective [FaithfulSMul α β]
+    : Function.Injective (MulAction.toPerm : α → Equiv.Perm β) :=
   (show Function.Injective (Equiv.toFun ∘ MulAction.toPerm) from smul_left_injective').of_comp
 
 @[to_additive]
@@ -63,12 +63,11 @@ lemma smul_left_cancel_iff (g : α) {x y : β} : g • x = g • y ↔ x = y :=
   (MulAction.injective g).eq_iff
 
 @[to_additive]
-lemma smul_eq_iff_eq_inv_smul (g : α) {x y : β} : g • x = y ↔ x = g⁻¹ • y :=
-  eq_inv_smul_iff.symm
+lemma smul_eq_iff_eq_inv_smul (g : α) {x y : β} : g • x = y ↔ x = g⁻¹ • y := eq_inv_smul_iff.symm
 
 @[to_additive]
-lemma isCancelSMul_iff_eq_one_of_smul_eq :
-    IsCancelSMul α β ↔ (∀ (g : α) (x : β), g • x = x → g = 1) := by
+lemma isCancelSMul_iff_eq_one_of_smul_eq
+    : IsCancelSMul α β ↔ (∀ (g : α) (x : β), g • x = x → g = 1) := by
   refine ⟨fun H _ _ ↦ IsCancelSMul.eq_one_of_smul, fun H ↦ ⟨fun g h x ↦ ?_⟩⟩
   rw [smul_eq_iff_eq_inv_smul, eq_comm, ← mul_smul, ← inv_mul_eq_one (G := α)]
   exact H (g⁻¹ * h) x
@@ -96,7 +95,7 @@ variable {G A B : Type*} [DivisionMonoid G] [MulAction G A]
 
 /-- If `G` acts on `A`, then it acts also on `A → B`, by `(g • F) a = F (g⁻¹ • a)`. -/
 @[to_additive (attr := instance_reducible, simps) arrowAddAction
-/-- If `G` acts on `A`, then it acts also on `A → B`, by `(g +ᵥ F) a = F (g⁻¹ +ᵥ a)` -/]
+  /-- If `G` acts on `A`, then it acts also on `A → B`, by `(g +ᵥ F) a = F (g⁻¹ +ᵥ a)` -/]
 def arrowAction : MulAction G (A → B) where
   smul g F a := F (g⁻¹ • a)
   one_smul f := by
@@ -122,8 +121,7 @@ namespace IsUnit
 variable [Monoid α] [MulAction α β]
 
 @[to_additive]
-theorem smul_bijective {m : α} (hm : IsUnit m) :
-    Function.Bijective (fun (a : β) ↦ m • a) := by
+theorem smul_bijective {m : α} (hm : IsUnit m) : Function.Bijective (fun (a : β) ↦ m • a) := by
   lift m to αˣ using hm
   exact MulAction.bijective m
 
@@ -137,7 +135,8 @@ end IsUnit
 section SMul
 variable [Group α] [Monoid β] [MulAction α β] [SMulCommClass α β β] [IsScalarTower α β β]
 
-@[simp] lemma isUnit_smul_iff (g : α) (m : β) : IsUnit (g • m) ↔ IsUnit m :=
+@[simp]
+lemma isUnit_smul_iff (g : α) (m : β) : IsUnit (g • m) ↔ IsUnit m :=
   ⟨fun h => inv_smul_smul g m ▸ h.smul g⁻¹, IsUnit.smul g⟩
 
 end SMul
@@ -148,7 +147,7 @@ variable [Monoid M] [MulAction M α]
 variable (M α) in
 /-- Embedding of `α` into functions `M → α` induced by a multiplicative action of `M` on `α`. -/
 @[to_additive
-/-- Embedding of `α` into functions `M → α` induced by an additive action of `M` on `α`. -/]
+  /-- Embedding of `α` into functions `M → α` induced by an additive action of `M` on `α`. -/]
 def toFun : α ↪ M → α :=
   ⟨fun y x ↦ x • y, fun y₁ y₂ H ↦ one_smul M y₁ ▸ one_smul M y₂ ▸ by convert congr_fun H 1⟩
 
@@ -160,32 +159,42 @@ end MulAction
 section MulDistribMulAction
 variable [Monoid M] [Monoid A] [MulDistribMulAction M A]
 
-/-- Pullback a multiplicative distributive multiplicative action along an injective monoid
-homomorphism. -/
+/--
+Pullback a multiplicative distributive multiplicative action along an injective monoid
+homomorphism.
+-/
 -- See note [reducible non-instances]
-protected abbrev Function.Injective.mulDistribMulAction [Monoid B] [SMul M B] (f : B →* A)
-    (hf : Injective f) (smul : ∀ (c : M) (x), f (c • x) = c • f x) : MulDistribMulAction M B where
+protected abbrev Function.Injective.mulDistribMulAction
+    [Monoid B] [SMul M B]
+    (f : B →* A) (hf : Injective f) (smul : ∀ (c : M) (x), f (c • x) = c • f x)
+    : MulDistribMulAction M B where
   __ := hf.mulAction f smul
   smul_mul c x y := hf <| by simp only [smul, f.map_mul, smul_mul']
   smul_one c := hf <| by simp only [smul, f.map_one, smul_one]
 
-/-- Pushforward a multiplicative distributive multiplicative action along a surjective monoid
-homomorphism. -/
+/--
+Pushforward a multiplicative distributive multiplicative action along a surjective monoid
+homomorphism.
+-/
 -- See note [reducible non-instances]
-protected abbrev Function.Surjective.mulDistribMulAction [Monoid B] [SMul M B] (f : A →* B)
-    (hf : Surjective f) (smul : ∀ (c : M) (x), f (c • x) = c • f x) : MulDistribMulAction M B where
+protected abbrev Function.Surjective.mulDistribMulAction
+    [Monoid B] [SMul M B]
+    (f : A →* B) (hf : Surjective f) (smul : ∀ (c : M) (x), f (c • x) = c • f x)
+    : MulDistribMulAction M B where
   __ := hf.mulAction f smul
   smul_mul c := by simp only [hf.forall, smul_mul', ← smul, ← f.map_mul, implies_true]
   smul_one c := by rw [← f.map_one, ← smul, smul_one]
 
 variable (A) in
 /-- Scalar multiplication by `r` as a `MonoidHom`. -/
-@[simps] def MulDistribMulAction.toMonoidHom (r : M) : A →* A where
+@[simps]
+def MulDistribMulAction.toMonoidHom (r : M) : A →* A where
   toFun := (r • ·)
   map_one' := smul_one r
   map_mul' := smul_mul' r
 
-@[simp] lemma smul_pow' (r : M) (x : A) (n : ℕ) : r • x ^ n = (r • x) ^ n :=
+@[simp]
+lemma smul_pow' (r : M) (x : A) (n : ℕ) : r • x ^ n = (r • x) ^ n :=
   (MulDistribMulAction.toMonoidHom _ _).map_pow _ _
 
 variable (M A) in
@@ -201,7 +210,8 @@ end MulDistribMulAction
 section MulDistribMulAction
 variable [Monoid M] [Group A] [MulDistribMulAction M A]
 
-@[simp] lemma smul_inv' (r : M) (x : A) : r • x⁻¹ = (r • x)⁻¹ :=
+@[simp]
+lemma smul_inv' (r : M) (x : A) : r • x⁻¹ = (r • x)⁻¹ :=
   (MulDistribMulAction.toMonoidHom A r).map_inv x
 
 lemma smul_div' (r : M) (x y : A) : r • (x / y) = r • x / r • y :=

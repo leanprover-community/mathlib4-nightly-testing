@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Group.DenselyOrdered
 public import Mathlib.Analysis.Subadditive
-
 import Mathlib.Data.Fintype.Order
 
 /-!
@@ -40,24 +39,29 @@ section SeminormedRing
 
 variable [NormedField 𝕜] [SeminormedRing A] [NormedAlgebra 𝕜 A]
 
-/-- The limit `‖a ^ k‖ ^ (1 / k)` of an element `a` in a normed ring.
-We use `k : ℕ+` to ease the eventual generalization to `NonUnitalSeminormedRing`. -/
-noncomputable def gelfandRadius (a : A) : ℝ :=
-  atTop.limUnder fun k : ℕ+ ↦ ‖a ^ (k : ℕ)‖ ^ (k : ℝ)⁻¹
+/--
+The limit `‖a ^ k‖ ^ (1 / k)` of an element `a` in a normed ring.
+We use `k : ℕ+` to ease the eventual generalization to `NonUnitalSeminormedRing`.
+-/
+noncomputable def gelfandRadius (a : A) : ℝ := atTop.limUnder fun k : ℕ+ ↦ ‖a ^ (k : ℕ)‖ ^ (k : ℝ)⁻¹
 
-/-- `gelfandRadius a` is the limit of `‖a ^ k‖ ^ (1 / k)` over `k : ℕ+`.
-See `tendsto_gelfandRadius` for the limit over `k : ℕ`. -/
-theorem tendsto_gelfandRadius' (a : A) :
-    atTop.Tendsto (fun k : ℕ+ ↦ ‖a ^ (k : ℕ)‖ ^ (k : ℝ)⁻¹) (𝓝 (gelfandRadius a)) := by
-  have h : Submultiplicative fun k ↦ ‖a ^ k‖ :=
-    fun m n ↦ by simpa [pow_add] using norm_mul_le (a ^ m) (a ^ n)
-  exact tendsto_nhds_limUnder ⟨h.lim,
-    (h.tendsto_lim fun n ↦ norm_nonneg (a ^ n)).comp tendsto_PNat_val_atTop_atTop⟩
+/--
+`gelfandRadius a` is the limit of `‖a ^ k‖ ^ (1 / k)` over `k : ℕ+`.
+See `tendsto_gelfandRadius` for the limit over `k : ℕ`.
+-/
+theorem tendsto_gelfandRadius' (a : A)
+    : atTop.Tendsto (fun k : ℕ+ ↦ ‖a ^ (k : ℕ)‖ ^ (k : ℝ)⁻¹) (𝓝 (gelfandRadius a)) := by
+  have h : Submultiplicative fun k ↦ ‖a ^ k‖ := fun m n ↦ by
+    simpa [pow_add] using norm_mul_le (a ^ m) (a ^ n)
+  exact tendsto_nhds_limUnder
+    ⟨h.lim, (h.tendsto_lim fun n ↦ norm_nonneg (a ^ n)).comp tendsto_PNat_val_atTop_atTop⟩
 
-/-- `gelfandRadius a` is the limit of `‖a ^ k‖ ^ (1 / k)` over `k : ℕ`.
-See `tendsto_gelfandRadius'` for the limit over `k : ℕ+`. -/
-theorem tendsto_gelfandRadius (a : A) :
-    atTop.Tendsto (fun k : ℕ ↦ ‖a ^ k‖ ^ (k : ℝ)⁻¹) (𝓝 (gelfandRadius a)) :=
+/--
+`gelfandRadius a` is the limit of `‖a ^ k‖ ^ (1 / k)` over `k : ℕ`.
+See `tendsto_gelfandRadius'` for the limit over `k : ℕ+`.
+-/
+theorem tendsto_gelfandRadius (a : A)
+    : atTop.Tendsto (fun k : ℕ ↦ ‖a ^ k‖ ^ (k : ℝ)⁻¹) (𝓝 (gelfandRadius a)) :=
   PNat.tendsto_comp_val_iff.mp (tendsto_gelfandRadius' a)
 
 theorem gelfandRadius_nonneg (a : A) : 0 ≤ gelfandRadius a :=
@@ -68,13 +72,18 @@ namespace Mathlib.Meta.Positivity
 open Lean Meta Qq Function
 /-- The `positivity` extension which identifies expressions of the form `gelfandRadius a`. -/
 @[positivity gelfandRadius _]
-meta def evalGelfandRadius : PositivityExt where eval {u α} _ pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(ℝ), ~q(@gelfandRadius $A $KA $a) =>
-    assertInstancesCommute
-    pure (.nonnegative q(gelfandRadius_nonneg $a))
-  | _, _, _ => throwError "not gelfandRadius"
+meta def evalGelfandRadius : PositivityExt where
+  eval {u α} _ pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(ℝ), ~q(@gelfandRadius $A $KA $a) =>
+        assertInstancesCommute
+        pure (.nonnegative q(gelfandRadius_nonneg $a))
+      | _, _, _ =>
+        throwError "not gelfandRadius"
 
 end Mathlib.Meta.Positivity
 
@@ -90,42 +99,43 @@ theorem gelfandRadius_zero : gelfandRadius (0 : A) = 0 :=
 theorem gelfandRadius_neg (a : A) : gelfandRadius (-a) = gelfandRadius a :=
   tendsto_nhds_unique (by simpa using tendsto_gelfandRadius (-a)) (tendsto_gelfandRadius a)
 
-theorem gelfandRadius_smul (c : 𝕜) (a : A) :
-    gelfandRadius (c • a) = ‖c‖ * gelfandRadius a := by
+theorem gelfandRadius_smul (c : 𝕜) (a : A) : gelfandRadius (c • a) = ‖c‖ * gelfandRadius a := by
   refine tendsto_nhds_unique ((tendsto_gelfandRadius' (c • a)).congr fun k ↦ ?_)
     ((tendsto_gelfandRadius' a).const_mul ‖c‖)
   simp [smul_pow, norm_smul, Real.mul_rpow, ← Real.rpow_natCast_mul]
 
-theorem gelfandRadius_pow_of_ne_zero (a : A) {n : ℕ} (hn : n ≠ 0) :
-    gelfandRadius (a ^ n) = gelfandRadius a ^ n := by
+theorem gelfandRadius_pow_of_ne_zero (a : A) {n : ℕ} (hn : n ≠ 0)
+    : gelfandRadius (a ^ n) = gelfandRadius a ^ n := by
   refine tendsto_nhds_unique ((tendsto_gelfandRadius (a ^ n)).congr fun k ↦ ?_)
     (((tendsto_gelfandRadius a).comp (strictMono_mul_left_of_pos hn.pos).tendsto_atTop).pow n)
-  rw [Function.comp_apply, Nat.cast_mul, mul_inv_rev,
-    ← Real.rpow_mul_natCast (by positivity), inv_mul_cancel_right₀ (by simpa), pow_mul]
+  rw [Function.comp_apply, Nat.cast_mul, mul_inv_rev, ← Real.rpow_mul_natCast (by positivity),
+    inv_mul_cancel_right₀ (by simpa), pow_mul]
 
 @[simp]
 theorem gelfandRadius_one [NormOneClass A] : gelfandRadius (1 : A) = 1 :=
   tendsto_nhds_unique (tendsto_gelfandRadius 1) (by simp)
 
-theorem gelfandRadius_pow [NormOneClass A] (a : A) (n : ℕ) :
-    gelfandRadius (a ^ n) = gelfandRadius a ^ n := by
+theorem gelfandRadius_pow [NormOneClass A] (a : A) (n : ℕ)
+    : gelfandRadius (a ^ n) = gelfandRadius a ^ n := by
   obtain rfl | hn := eq_or_ne n 0
   · simp
   · exact gelfandRadius_pow_of_ne_zero a hn
 
-theorem gelfandRadius_le_norm_pow (a : A) {n : ℕ} (hn : n ≠ 0) :
-    gelfandRadius a ≤ ‖a ^ n‖ ^ (n : ℝ)⁻¹ := by
+theorem gelfandRadius_le_norm_pow (a : A) {n : ℕ} (hn : n ≠ 0)
+    : gelfandRadius a ≤ ‖a ^ n‖ ^ (n : ℝ)⁻¹ := by
   grw [← gelfandRadius_le_norm, gelfandRadius_pow_of_ne_zero a hn,
     ← Real.rpow_natCast_mul (by positivity), mul_inv_cancel₀ (by simpa), Real.rpow_one]
 
-theorem gelfandRadius_pow_le_norm_pow (a : A) {n : ℕ} (hn : n ≠ 0) :
-    gelfandRadius a ^ n ≤ ‖a ^ n‖ :=
+theorem gelfandRadius_pow_le_norm_pow (a : A) {n : ℕ} (hn : n ≠ 0)
+    : gelfandRadius a ^ n ≤ ‖a ^ n‖ :=
   gelfandRadius_pow_of_ne_zero a hn ▸ gelfandRadius_le_norm (a ^ n)
 
-/-- If `gelfandRadius a < r`, then there is some `C` for which `‖a ^ n‖ ≤ C * r ^ n` for all `n`.
-See `gelfandRadius_le_of_bound` for the converse. -/
-theorem norm_pow_le_mul_pow_of_gelfandRadius_lt (a : A) {r : ℝ} (hr : gelfandRadius a < r) :
-    ∃ C > 0, ∀ n, ‖a ^ n‖ ≤ C * r ^ n := by
+/--
+If `gelfandRadius a < r`, then there is some `C` for which `‖a ^ n‖ ≤ C * r ^ n` for all `n`.
+See `gelfandRadius_le_of_bound` for the converse.
+-/
+theorem norm_pow_le_mul_pow_of_gelfandRadius_lt (a : A) {r : ℝ} (hr : gelfandRadius a < r)
+    : ∃ C > 0, ∀ n, ‖a ^ n‖ ≤ C * r ^ n := by
   have hr0 : 0 < r := (gelfandRadius_nonneg a).trans_lt hr
   have h : ∀ᶠ n : ℕ in atTop, ‖a ^ n‖ / r ^ n ≤ 1 := by
     filter_upwards [(tendsto_gelfandRadius a).eventually_le_const hr, eventually_ne_atTop 0]
@@ -133,24 +143,31 @@ theorem norm_pow_le_mul_pow_of_gelfandRadius_lt (a : A) {r : ℝ} (hr : gelfandR
     rwa [div_le_one (by positivity), ← Real.rpow_natCast,
       ← Real.rpow_inv_le_iff_of_pos (by positivity) hr0.le (by positivity)]
   obtain ⟨C, hC⟩ := (isBoundedUnder_of_eventually_le h).bddAbove_range
-  exact ⟨max C 1, by positivity, fun n ↦ by
-    grw [← le_max_left, ← div_le_iff₀ (by positivity)]; exact hC ⟨n, rfl⟩⟩
+  exact ⟨
+    max C 1,
+    by positivity,
+    fun n ↦ by grw [← le_max_left, ← div_le_iff₀ (by positivity)]; exact hC ⟨n, rfl⟩
+  ⟩
 
-/-- If `‖a ^ n‖ ≤ C * r ^ n` for all `n`, then `gelfandRadius a ≤ r`.
-See `exists_le_gelfandRadius` for the converse. -/
-theorem gelfandRadius_le_of_bound {a : A} {C r : ℝ} (hr : 0 ≤ r)
-    (h : ∀ n, ‖a ^ n‖ ≤ C * r ^ n) : gelfandRadius a ≤ r := by
+/--
+If `‖a ^ n‖ ≤ C * r ^ n` for all `n`, then `gelfandRadius a ≤ r`.
+See `exists_le_gelfandRadius` for the converse.
+-/
+theorem gelfandRadius_le_of_bound {a : A} {C r : ℝ} (hr : 0 ≤ r) (h : ∀ n, ‖a ^ n‖ ≤ C * r ^ n)
+    : gelfandRadius a ≤ r := by
   have hC : 0 < max C 1 := by positivity
   replace h (n : ℕ) : ‖a ^ n‖ ≤ max C 1 * r ^ n := by grw [h n, ← le_max_left]
   have hlim : Tendsto (fun n : ℕ ↦ max C 1 ^ (n : ℝ)⁻¹ * r) atTop (𝓝 r) := by
-    simpa using (((Real.continuous_const_rpow hC.ne').tendsto' 0 1 (Real.rpow_zero _)).comp
-      tendsto_inv_atTop_nhds_zero_nat).mul_const r
+    simpa using
+      (((Real.continuous_const_rpow hC.ne').tendsto' 0 1 (Real.rpow_zero _)).comp
+          tendsto_inv_atTop_nhds_zero_nat).mul_const
+        r
   refine le_of_tendsto_of_tendsto (tendsto_gelfandRadius a) hlim ?_
   filter_upwards [eventually_ne_atTop 0] with n hn
   grw [h n, Real.mul_rpow hC.le (by positivity), Real.pow_rpow_inv_natCast hr hn]
 
-theorem Commute.gelfandRadius_add_le {a b : A} (h : Commute a b) :
-    gelfandRadius (a + b) ≤ gelfandRadius a + gelfandRadius b := by
+theorem Commute.gelfandRadius_add_le {a b : A} (h : Commute a b)
+    : gelfandRadius (a + b) ≤ gelfandRadius a + gelfandRadius b := by
   refine le_add_of_forall_lt fun x hx y hy ↦ ?_
   have hx0 := (gelfandRadius_nonneg a).trans_lt hx
   have hy0 := (gelfandRadius_nonneg b).trans_lt hy
@@ -160,8 +177,8 @@ theorem Commute.gelfandRadius_add_le {a b : A} (h : Commute a b) :
   grw [h.add_pow, norm_sum_le, norm_mul_le, norm_mul_le, ha, hb, Nat.norm_cast_le]
   grind [Finset.mul_sum, _root_.add_pow]
 
-theorem Commute.gelfandRadius_mul_le {a b : A} (h : Commute a b) :
-    gelfandRadius (a * b) ≤ gelfandRadius a * gelfandRadius b := by
+theorem Commute.gelfandRadius_mul_le {a b : A} (h : Commute a b)
+    : gelfandRadius (a * b) ≤ gelfandRadius a * gelfandRadius b := by
   refine le_of_tendsto_of_tendsto (tendsto_gelfandRadius (a * b))
     ((tendsto_gelfandRadius a).mul (tendsto_gelfandRadius b)) (.of_forall fun n ↦ ?_)
   simp_rw [h.mul_pow]
@@ -174,13 +191,13 @@ section SeminormedCommRing
 variable [SeminormedCommRing A]
 
 /-- `gelfandRadius` is subadditive. -/
-theorem gelfandRadius_add_le (a b : A) :
-    gelfandRadius (a + b) ≤ gelfandRadius a + gelfandRadius b :=
+theorem gelfandRadius_add_le (a b : A)
+    : gelfandRadius (a + b) ≤ gelfandRadius a + gelfandRadius b :=
   (Commute.all a b).gelfandRadius_add_le
 
 /-- `gelfandRadius` is submultiplicative. -/
-theorem gelfandRadius_mul_le (a b : A) :
-    gelfandRadius (a * b) ≤ gelfandRadius a * gelfandRadius b :=
+theorem gelfandRadius_mul_le (a b : A)
+    : gelfandRadius (a * b) ≤ gelfandRadius a * gelfandRadius b :=
   (Commute.all a b).gelfandRadius_mul_le
 
 end SeminormedCommRing

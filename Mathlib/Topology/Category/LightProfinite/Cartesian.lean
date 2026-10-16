@@ -24,7 +24,6 @@ open CategoryTheory Limits CompHausLike
 
 namespace LightProfinite
 
-instance : CartesianMonoidalCategory LightProfinite.{u} :=
-  cartesianMonoidalCategory
+instance : CartesianMonoidalCategory LightProfinite.{u} := cartesianMonoidalCategory
 
 end LightProfinite

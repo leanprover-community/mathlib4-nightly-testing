@@ -37,9 +37,11 @@ universe w₁ w₂ v₁ v₂ u₁ u₂
 @[kerodon 009Q]
 abbrev IsLocallyGroupoid (B : Type u₁) [Bicategory.{w₁, v₁} B] := ∀ (b c : B), IsGroupoid (b ⟶ c)
 
-/-- Given a bicategory `B`, `Pith B` is the bicategory obtained by discarding the non-invertible
+/--
+Given a bicategory `B`, `Pith B` is the bicategory obtained by discarding the non-invertible
 2-cells from `B`. We implement this as a wrapper type for `B`, and use `CategoryTheory.Core`
-to discard the non-invertible morphisms. -/
+to discard the non-invertible morphisms.
+-/
 @[kerodon 00AL]
 structure Pith (B : Type u₁) where
   /-- The underlying object of the bicategory. -/
@@ -62,36 +64,33 @@ variable [Bicategory.{w₁, v₁} B]
 
 -- @[simps!] in categoryStruct puts `Core (a.as ⟶ b.as)` in the hyps for the next two
 -- lemmas, so we record them manually instead.
-@[simp]
-lemma id_of (a : Pith B) : (𝟙 a : a ⟶ a).of = 𝟙 a.as := rfl
+@[simp] lemma id_of (a : Pith B) : (𝟙 a : a ⟶ a).of = 𝟙 a.as := rfl
 
-@[simp]
-lemma comp_of {a b c : Pith B} (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).of = f.of ≫ g.of := rfl
+@[simp] lemma comp_of {a b c : Pith B} (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).of = f.of ≫ g.of := rfl
 
-instance homGroupoid (a b : Pith B) :
-    Groupoid.{w₁} (a ⟶ b) := inferInstanceAs <| Groupoid <| Core _
+instance homGroupoid (a b : Pith B) : Groupoid.{w₁} (a ⟶ b) := inferInstanceAs <| Groupoid <| Core _
 
 @[ext]
-lemma hom₂_ext {a b : Pith B} {x y : a ⟶ b} {f g : x ⟶ y} (h : f.iso.hom = g.iso.hom) :
-    f = g := CoreHom.ext <| Iso.ext h
+lemma hom₂_ext {a b : Pith B} {x y : a ⟶ b} {f g : x ⟶ y} (h : f.iso.hom = g.iso.hom) : f = g :=
+  CoreHom.ext <| Iso.ext h
 
 @[simp, reassoc]
-lemma comp₂_iso_hom {a b : Pith B} {x y z : a ⟶ b} {f : x ⟶ y} {g : y ⟶ z} :
-    (f ≫ g).iso.hom = f.iso.hom ≫ g.iso.hom := rfl
+lemma comp₂_iso_hom {a b : Pith B} {x y z : a ⟶ b} {f : x ⟶ y} {g : y ⟶ z}
+    : (f ≫ g).iso.hom = f.iso.hom ≫ g.iso.hom :=
+  rfl
 
 @[simp, reassoc]
-lemma comp₂_iso_inv {a b : Pith B} {x y z : a ⟶ b} {f : x ⟶ y} {g : y ⟶ z} :
-    (f ≫ g).iso.inv = g.iso.inv ≫ f.iso.inv := rfl
+lemma comp₂_iso_inv {a b : Pith B} {x y z : a ⟶ b} {f : x ⟶ y} {g : y ⟶ z}
+    : (f ≫ g).iso.inv = g.iso.inv ≫ f.iso.inv :=
+  rfl
 
-@[simp]
-lemma id₂_iso_hom {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.hom = 𝟙 _ := rfl
+@[simp] lemma id₂_iso_hom {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.hom = 𝟙 _ := rfl
 
-@[simp]
-lemma id₂_iso_inv {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.inv = 𝟙 _ := rfl
+@[simp] lemma id₂_iso_inv {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.inv = 𝟙 _ := rfl
 
 @[simps! whiskerLeft_iso_hom whiskerLeft_iso_inv whiskerRight_iso_hom whiskerRight_iso_inv
-associator_hom_iso associator_inv_iso_hom associator_inv_iso_inv leftUnitor_hom_iso
-leftUnitor_inv_iso_hom rightUnitor_hom_iso rightUnitor_inv_iso_hom rightUnitor_inv_iso_inv]
+  associator_hom_iso associator_inv_iso_hom associator_inv_iso_inv leftUnitor_hom_iso
+  leftUnitor_inv_iso_hom rightUnitor_hom_iso rightUnitor_inv_iso_hom rightUnitor_inv_iso_inv]
 instance : Bicategory.{w₁, v₁} (Pith B) where
   whiskerLeft x _ _ f := CoreHom.mk <| whiskerLeftIso x.of (CoreHom.iso f)
   whiskerRight f y := CoreHom.mk <| whiskerRightIso (CoreHom.iso f) y.of
@@ -115,12 +114,14 @@ def inclusion : Pseudofunctor (Pith B) B where
   mapComp _ _ := .refl _
 
 variable {B} in
-/-- Any pseudofunctor from a (2,1)-category to a bicategory factors through
-the pith of the target bicategory. -/
+/--
+Any pseudofunctor from a (2,1)-category to a bicategory factors through
+the pith of the target bicategory.
+-/
 @[simps!]
-noncomputable def pseudofunctorToPith {B' : Type u₂} [Bicategory.{w₂, v₂} B']
-    [IsLocallyGroupoid B'] (F : Pseudofunctor B' B) :
-    Pseudofunctor B' (Pith B) where
+noncomputable def pseudofunctorToPith
+    {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B'] (F : Pseudofunctor B' B)
+    : Pseudofunctor B' (Pith B) where
   obj x := .mk <| F.obj x
   map f := .mk <| F.map f
   map₂ f := .mk <| asIso <| F.map₂ f
@@ -133,19 +134,23 @@ variable {B} {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B'
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The hom direction of the (strong) natural isomorphism of pseudofunctors
-between `(pseudofunctorToPith F).comp (inclusion B)` and `F`. -/
-noncomputable def pseudofunctorToPithCompInclusionStrongIsoHom :
-    ((pseudofunctorToPith F).comp (inclusion B)).StrongTrans F where
+/--
+The hom direction of the (strong) natural isomorphism of pseudofunctors
+between `(pseudofunctorToPith F).comp (inclusion B)` and `F`.
+-/
+noncomputable def pseudofunctorToPithCompInclusionStrongIsoHom
+    : ((pseudofunctorToPith F).comp (inclusion B)).StrongTrans F where
   app b' := 𝟙 _
   naturality f := (ρ_ _) ≪≫ (λ_ _).symm
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The inv direction of the (strong) natural isomorphism of pseudofunctors
-between `(pseudofunctorToPith F).comp (inclusion B)` and `F`. -/
-noncomputable def pseudofunctorToPithCompInclusionStrongIsoInv :
-    F.StrongTrans ((pseudofunctorToPith F).comp (inclusion B)) where
+/--
+The inv direction of the (strong) natural isomorphism of pseudofunctors
+between `(pseudofunctorToPith F).comp (inclusion B)` and `F`.
+-/
+noncomputable def pseudofunctorToPithCompInclusionStrongIsoInv
+    : F.StrongTrans ((pseudofunctorToPith F).comp (inclusion B)) where
   app b' := 𝟙 _
   naturality f := (ρ_ _) ≪≫ (λ_ _).symm
 
@@ -155,23 +160,27 @@ end Pith
 
 variable {B : Type u₁} [Bicategory.{w₁, v₁} B]
 
-/-- If `B` is a (2,1)-category, then every lax functor `F` from a bicategory to `B` defines a
+/--
+If `B` is a (2,1)-category, then every lax functor `F` from a bicategory to `B` defines a
 `CategoryTheory.LaxFunctor.PseudoCore` structure on `F` that can be used to promote `F` to a
-pseudofunctor using `CategoryTheory.Pseudofunctor.mkOfLax`. -/
+pseudofunctor using `CategoryTheory.Pseudofunctor.mkOfLax`.
+-/
 @[simps! mapIdIso_hom mapCompIso_hom]
 noncomputable def Pseudofunctor.ofLaxFunctorToLocallyGroupoid
-    {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B] (F : LaxFunctor B' B) :
-    F.PseudoCore where
+    {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B] (F : LaxFunctor B' B)
+    : F.PseudoCore where
   mapIdIso x := (asIso (F.mapId x)).symm
   mapCompIso f g := (asIso <| F.mapComp f g).symm
 
-/-- If `B` is a (2,1)-category, then every oplax functor `F` from a bicategory to `B` defines
+/--
+If `B` is a (2,1)-category, then every oplax functor `F` from a bicategory to `B` defines
 a `CategoryTheory.OplaxFunctor.PseudoCore` structure on `F` that can be used to promote `F`
-to a pseudofunctor using `CategoryTheory.Pseudofunctor.mkOfOplax`. -/
+to a pseudofunctor using `CategoryTheory.Pseudofunctor.mkOfOplax`.
+-/
 @[simps! mapIdIso_inv mapCompIso_inv]
 noncomputable def Pseudofunctor.ofOplaxFunctorToLocallyGroupoid
-    {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B] (F : OplaxFunctor B' B) :
-    F.PseudoCore where
+    {B' : Type u₂} [Bicategory.{w₂, v₂} B'] [IsLocallyGroupoid B] (F : OplaxFunctor B' B)
+    : F.PseudoCore where
   mapIdIso x := asIso (F.mapId x)
   mapCompIso f g := asIso (F.mapComp f g)
 

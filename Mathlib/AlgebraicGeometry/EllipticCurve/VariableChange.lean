@@ -48,11 +48,13 @@ section VariableChange
 
 /-! ## Variable changes -/
 
-/-- An admissible linear change of variables of Weierstrass curves defined over a ring `R` given by
+/--
+An admissible linear change of variables of Weierstrass curves defined over a ring `R` given by
 a tuple `(u, r, s, t)` for some `u` in `Rˣ` and some `r, s, t` in `R`. As a matrix, it is
 $$\begin{pmatrix} u^2 & 0 & r \cr u^2s & u^3 & t \cr 0 & 0 & 1 \end{pmatrix}.$$
 In other words, this is the change of variables `(X, Y) ↦ (u²X + r, u³Y + u²sX + t)`.
-When `R` is a field, any two isomorphic Weierstrass equations are related by this. -/
+When `R` is a field, any two isomorphic Weierstrass equations are related by this.
+-/
 @[ext]
 structure VariableChange (R : Type u) [CommRing R] where
   /-- The `u` coefficient of an admissible linear change of variables, which must be a unit. -/
@@ -79,32 +81,41 @@ instance : Mul (VariableChange R) where
     u := C.u * C'.u
     r := C.r * C'.u ^ 2 + C'.r
     s := C'.u * C.s + C'.s
-    t := C.t * C'.u ^ 3 + C.r * C'.s * C'.u ^ 2 + C'.t }
+    t := C.t * C'.u ^ 3 + C.r * C'.s * C'.u ^ 2 + C'.t
+  }
 
 /-- The composition of two linear changes of variables given by matrix multiplication. -/
-lemma mul_def : C * C' = {
-    u := C.u * C'.u
-    r := C.r * C'.u ^ 2 + C'.r
-    s := C'.u * C.s + C'.s
-    t := C.t * C'.u ^ 3 + C.r * C'.s * C'.u ^ 2 + C'.t } := rfl
+lemma mul_def
+    : C * C'
+      = {
+        u := C.u * C'.u
+        r := C.r * C'.u ^ 2 + C'.r
+        s := C'.u * C.s + C'.s
+        t := C.t * C'.u ^ 3 + C.r * C'.s * C'.u ^ 2 + C'.t
+      } :=
+  rfl
 
 instance : Inv (VariableChange R) where
   inv C := {
     u := C.u⁻¹
     r := -C.r * C.u⁻¹ ^ 2
     s := -C.s * C.u⁻¹
-    t := (C.r * C.s - C.t) * C.u⁻¹ ^ 3 }
+    t := (C.r * C.s - C.t) * C.u⁻¹ ^ 3
+  }
 
 /-- The inverse of a linear change of variables given by matrix inversion. -/
-lemma inv_def : C⁻¹ = {
-    u := C.u⁻¹
-    r := -C.r * C.u⁻¹ ^ 2
-    s := -C.s * C.u⁻¹
-    t := (C.r * C.s - C.t) * C.u⁻¹ ^ 3 } := rfl
+lemma inv_def
+    : C⁻¹
+      = {
+        u := C.u⁻¹
+        r := -C.r * C.u⁻¹ ^ 2
+        s := -C.s * C.u⁻¹
+        t := (C.r * C.s - C.t) * C.u⁻¹ ^ 3
+      } :=
+  rfl
 
 instance : Group (VariableChange R) where
-  one_mul C := by
-    simp only [mul_def, one_def, zero_add, zero_mul, mul_zero, one_mul]
+  one_mul C := by simp only [mul_def, one_def, zero_add, zero_mul, mul_zero, one_mul]
   mul_one C := by
     simp only [mul_def, one_def, add_zero, mul_zero, one_mul, mul_one, one_pow, Units.val_one]
   inv_mul_cancel C := by
@@ -115,8 +126,7 @@ instance : Group (VariableChange R) where
     · linear_combination -C.s * C.u.inv_mul
     · linear_combination (C.r * C.s - C.t) * pow_mul_pow_eq_one 3 C.u.inv_mul
         + -C.r * C.s * pow_mul_pow_eq_one 2 C.u.inv_mul
-  mul_assoc _ _ _ := by
-    ext <;> simp only [mul_def, Units.val_mul] <;> ring1
+  mul_assoc _ _ _ := by ext <;> simp only [mul_def, Units.val_mul] <;> ring1
 
 end VariableChange
 
@@ -127,21 +137,35 @@ instance : SMul (VariableChange R) (WeierstrassCurve R) where
     a₁ := C.u⁻¹ * (W.a₁ + 2 * C.s)
     a₂ := C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a₁ + 3 * C.r - C.s ^ 2)
     a₃ := C.u⁻¹ ^ 3 * (W.a₃ + C.r * W.a₁ + 2 * C.t)
-    a₄ := C.u⁻¹ ^ 4 * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
-      - 2 * C.s * C.t)
-    a₆ := C.u⁻¹ ^ 6 * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
-      - C.r * C.t * W.a₁) }
+    a₄ :=
+      C.u⁻¹ ^ 4
+        * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
+          - 2 * C.s * C.t)
+    a₆ :=
+      C.u⁻¹ ^ 6
+        * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2 - C.r * C.t * W.a₁)
+  }
 
-/-- The Weierstrass curve over `R` induced by an admissible linear change of variables
-`(X, Y) ↦ (u²X + r, u³Y + u²sX + t)` for some `u` in `Rˣ` and some `r, s, t` in `R`. -/
-lemma variableChange_def : C • W = {
-    a₁ := C.u⁻¹ * (W.a₁ + 2 * C.s)
-    a₂ := C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a₁ + 3 * C.r - C.s ^ 2)
-    a₃ := C.u⁻¹ ^ 3 * (W.a₃ + C.r * W.a₁ + 2 * C.t)
-    a₄ := C.u⁻¹ ^ 4 * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
-      - 2 * C.s * C.t)
-    a₆ := C.u⁻¹ ^ 6 * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
-      - C.r * C.t * W.a₁) } := rfl
+/--
+The Weierstrass curve over `R` induced by an admissible linear change of variables
+`(X, Y) ↦ (u²X + r, u³Y + u²sX + t)` for some `u` in `Rˣ` and some `r, s, t` in `R`.
+-/
+lemma variableChange_def
+    : C • W
+      = {
+        a₁ := C.u⁻¹ * (W.a₁ + 2 * C.s)
+        a₂ := C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a₁ + 3 * C.r - C.s ^ 2)
+        a₃ := C.u⁻¹ ^ 3 * (W.a₃ + C.r * W.a₁ + 2 * C.t)
+        a₄ :=
+          C.u⁻¹ ^ 4
+            * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
+              - 2 * C.s * C.t)
+        a₆ :=
+          C.u⁻¹ ^ 6
+            * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
+              - C.r * C.t * W.a₁)
+      } :=
+  rfl
 
 instance : MulAction (VariableChange R) (WeierstrassCurve R) where
   one_smul W := by
@@ -180,13 +204,19 @@ lemma variableChange_a₂ : (C • W).a₂ = C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a�
 
 lemma variableChange_a₃ : (C • W).a₃ = C.u⁻¹ ^ 3 * (W.a₃ + C.r * W.a₁ + 2 * C.t) := rfl
 
-lemma variableChange_a₄ : (C • W).a₄ =
-    C.u⁻¹ ^ 4 * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
-      - 2 * C.s * C.t) := rfl
+lemma variableChange_a₄
+    : (C • W).a₄
+      = C.u⁻¹ ^ 4
+        * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
+          - 2 * C.s * C.t) :=
+  rfl
 
-lemma variableChange_a₆ : (C • W).a₆ =
-    C.u⁻¹ ^ 6 * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
-      - C.r * C.t * W.a₁) := rfl
+lemma variableChange_a₆
+    : (C • W).a₆
+      = C.u⁻¹ ^ 6
+        * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
+          - C.r * C.t * W.a₁) :=
+  rfl
 
 lemma variableChange_b₂ : (C • W).b₂ = C.u⁻¹ ^ 2 * (W.b₂ + 12 * C.r) := by
   simp only [b₂, variableChange_a₁, variableChange_a₂]
@@ -196,13 +226,15 @@ lemma variableChange_b₄ : (C • W).b₄ = C.u⁻¹ ^ 4 * (W.b₄ + C.r * W.b�
   simp only [b₂, b₄, variableChange_a₁, variableChange_a₃, variableChange_a₄]
   ring1
 
-lemma variableChange_b₆ : (C • W).b₆ =
-    C.u⁻¹ ^ 6 * (W.b₆ + 2 * C.r * W.b₄ + C.r ^ 2 * W.b₂ + 4 * C.r ^ 3) := by
+lemma variableChange_b₆
+    : (C • W).b₆ = C.u⁻¹ ^ 6 * (W.b₆ + 2 * C.r * W.b₄ + C.r ^ 2 * W.b₂ + 4 * C.r ^ 3) := by
   simp only [b₂, b₄, b₆, variableChange_a₃, variableChange_a₆]
   ring1
 
-lemma variableChange_b₈ : (C • W).b₈ = C.u⁻¹ ^ 8 *
-    (W.b₈ + 3 * C.r * W.b₆ + 3 * C.r ^ 2 * W.b₄ + C.r ^ 3 * W.b₂ + 3 * C.r ^ 4) := by
+lemma variableChange_b₈
+    : (C • W).b₈
+      = C.u⁻¹ ^ 8
+        * (W.b₈ + 3 * C.r * W.b₆ + 3 * C.r ^ 2 * W.b₄ + C.r ^ 3 * W.b₂ + 3 * C.r ^ 4) := by
   simp only [b₂, b₄, b₆, b₈, variableChange_a₁, variableChange_a₂, variableChange_a₃,
     variableChange_a₄, variableChange_a₆]
   ring1
@@ -258,34 +290,32 @@ variable (C : VariableChange R) {A : Type v} [CommRing A] (φ : R →+* A)
 namespace VariableChange
 
 /-- The change of variables mapped over a ring homomorphism `φ : R →+* A`. -/
-@[simps]
-def map : VariableChange A :=
-  ⟨Units.map φ C.u, φ C.r, φ C.s, φ C.t⟩
+@[simps] def map : VariableChange A := ⟨Units.map φ C.u, φ C.r, φ C.s, φ C.t⟩
 
 variable (A) in
 /-- The change of variables base changed to an algebra `A` over `R`. -/
-def baseChange [Algebra R A] : VariableChange A :=
-  C.map <| algebraMap R A
+def baseChange [Algebra R A] : VariableChange A := C.map <| algebraMap R A
 
 /-- The notation `\textf` for `WeierstrassCurve.VariableChange.baseChange C A`. -/
 scoped notation:max (priority := low) C:max "⁄" A:max => baseChange C A
 
-@[simp]
-lemma map_id : C.map (RingHom.id R) = C :=
-  rfl
+@[simp] lemma map_id : C.map (RingHom.id R) = C := rfl
 
-lemma map_map {A : Type v} [CommRing A] (φ : R →+* A) {B : Type w} [CommRing B] (ψ : A →+* B) :
-    (C.map φ).map ψ = C.map (ψ.comp φ) :=
+lemma map_map {A : Type v} [CommRing A] (φ : R →+* A) {B : Type w} [CommRing B] (ψ : A →+* B)
+    : (C.map φ).map ψ = C.map (ψ.comp φ) :=
   rfl
 
 @[simp]
-lemma map_baseChange {S : Type s} [CommRing S] [Algebra R S] {A : Type v} [CommRing A] [Algebra R A]
-    [Algebra S A] [IsScalarTower R S A] {B : Type w} [CommRing B] [Algebra R B] [Algebra S B]
-    [IsScalarTower R S B] (ψ : A →ₐ[S] B) : (C⁄A).map ψ = C⁄B :=
+lemma map_baseChange
+    {S : Type s} [CommRing S] [Algebra R S]
+    {A : Type v} [CommRing A] [Algebra R A] [Algebra S A] [IsScalarTower R S A]
+    {B : Type w} [CommRing B] [Algebra R B] [Algebra S B] [IsScalarTower R S B]
+    (ψ : A →ₐ[S] B)
+    : (C⁄A).map ψ = C⁄B :=
   congr(C.map $(ψ.comp_algebraMap_of_tower R))
 
-lemma map_injective {φ : R →+* A} (hφ : Function.Injective φ) :
-    Function.Injective <| map (φ := φ) := fun _ _ h => by
+lemma map_injective {φ : R →+* A} (hφ : Function.Injective φ)
+    : Function.Injective <| map (φ := φ) := fun _ _ h => by
   rcases mk.inj h with ⟨h, _, _, _⟩
   replace h := (Units.mk.inj h).left
   ext <;> apply_fun _ using hφ <;> assumption

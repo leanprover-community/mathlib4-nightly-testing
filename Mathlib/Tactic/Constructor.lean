@@ -27,17 +27,19 @@ open Lean Elab Tactic
 constructor, creating new goals for all arguments to the constructor in the same order.
 This is like `constructor` except the goals are not reordered.
 -/
-elab "fconstructor" : tactic => withMainContext do
-  let mvarIds' ← (← getMainGoal).constructor {newGoals := .all}
-  Term.synthesizeSyntheticMVarsNoPostponing
-  replaceMainGoal mvarIds'
+elab "fconstructor" : tactic =>
+  withMainContext do
+    let mvarIds' ← (← getMainGoal).constructor { newGoals := .all }
+    Term.synthesizeSyntheticMVarsNoPostponing
+    replaceMainGoal mvarIds'
 
 /--
 `econstructor`, on a goal which is an inductive type, solves it by applying the first matching
 constructor, creating new goals for non-dependent arguments to the constructor in the same order.
 This is like `constructor` except only non-dependent arguments are shown as new goals.
 -/
-elab "econstructor" : tactic => withMainContext do
-  let mvarIds' ← (← getMainGoal).constructor {newGoals := .nonDependentOnly}
-  Term.synthesizeSyntheticMVarsNoPostponing
-  replaceMainGoal mvarIds'
+elab "econstructor" : tactic =>
+  withMainContext do
+    let mvarIds' ← (← getMainGoal).constructor { newGoals := .nonDependentOnly }
+    Term.synthesizeSyntheticMVarsNoPostponing
+    replaceMainGoal mvarIds'

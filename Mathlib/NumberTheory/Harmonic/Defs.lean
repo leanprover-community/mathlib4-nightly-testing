@@ -22,9 +22,7 @@ This file defines the harmonic numbers.
 /-- The nth-harmonic number defined as a finset sum of consecutive reciprocals. -/
 def harmonic : ℕ → ℚ := fun n => ∑ i ∈ Finset.range n, (↑(i + 1))⁻¹
 
-@[simp]
-lemma harmonic_zero : harmonic 0 = 0 :=
-  rfl
+@[simp] lemma harmonic_zero : harmonic 0 = 0 := rfl
 
 @[simp]
 lemma harmonic_succ (n : ℕ) : harmonic (n + 1) = harmonic n + (↑(n + 1))⁻¹ :=

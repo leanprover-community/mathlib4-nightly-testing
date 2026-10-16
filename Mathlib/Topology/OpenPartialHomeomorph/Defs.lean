@@ -45,12 +45,13 @@ then it should use `e.source ∩ s` or `e.target ∩ t`, not `s ∩ e.source` or
 
 open Function Set
 
-variable {X X' : Type*} {Y Y' : Type*}
+variable
+  {X X' : Type*} {Y Y' : Type*}
   [TopologicalSpace X] [TopologicalSpace X'] [TopologicalSpace Y] [TopologicalSpace Y']
 
 /-- Partial homeomorphisms, defined on open subsets of the space -/
-structure OpenPartialHomeomorph (X : Type*) (Y : Type*) [TopologicalSpace X]
-    [TopologicalSpace Y] extends PartialHomeomorph X Y where
+structure OpenPartialHomeomorph (X : Type*) (Y : Type*) [TopologicalSpace X] [TopologicalSpace Y]
+    extends PartialHomeomorph X Y where
   open_source : IsOpen source
   open_target : IsOpen target
 
@@ -60,14 +61,17 @@ variable (e : OpenPartialHomeomorph X Y)
 
 /-! Basic properties; inverse (symm instance) -/
 section Basic
-/-- Coercion of an open partial homeomorphisms to a function. We don't use `e.toFun` because it is
-actually `e.toPartialEquiv.toFun`, so `simp` will apply lemmas about `toPartialEquiv`. -/
+/--
+Coercion of an open partial homeomorphisms to a function. We don't use `e.toFun` because it is
+actually `e.toPartialEquiv.toFun`, so `simp` will apply lemmas about `toPartialEquiv`.
+-/
 @[coe] def toFun' : X → Y := e.toFun
 
-/-- Coercion of an `OpenPartialHomeomorph` to function.
-Note that an `OpenPartialHomeomorph` is not `DFunLike`. -/
-instance : CoeFun (OpenPartialHomeomorph X Y) fun _ => X → Y :=
-  ⟨fun e => e.toFun'⟩
+/--
+Coercion of an `OpenPartialHomeomorph` to function.
+Note that an `OpenPartialHomeomorph` is not `DFunLike`.
+-/
+instance : CoeFun (OpenPartialHomeomorph X Y) fun _ => X → Y := ⟨fun e => e.toFun'⟩
 
 /-- The inverse of an open partial homeomorphism -/
 @[symm]
@@ -76,8 +80,10 @@ protected def symm : OpenPartialHomeomorph Y X where
   open_source := e.open_target
   open_target := e.open_source
 
-/-- See Note [custom simps projection]. We need to specify this projection explicitly in this case,
-  because it is a composition of multiple projections. -/
+/--
+See Note [custom simps projection]. We need to specify this projection explicitly in this case,
+because it is a composition of multiple projections.
+-/
 def Simps.apply (e : OpenPartialHomeomorph X Y) : X → Y := e
 
 /-- See Note [custom simps projection] -/
@@ -85,97 +91,79 @@ def Simps.symm_apply (e : OpenPartialHomeomorph X Y) : Y → X := e.symm
 
 initialize_simps_projections OpenPartialHomeomorph (toFun → apply, invFun → symm_apply)
 
-@[fun_prop]
-protected theorem continuousOn : ContinuousOn e e.source :=
-  e.continuousOn_toFun
+@[fun_prop] protected theorem continuousOn : ContinuousOn e e.source := e.continuousOn_toFun
 
-@[fun_prop]
-theorem continuousOn_symm : ContinuousOn e.symm e.target :=
-  e.continuousOn_invFun
+@[fun_prop] theorem continuousOn_symm : ContinuousOn e.symm e.target := e.continuousOn_invFun
 
 @[simp, mfld_simps]
-theorem coe_mk (e : PartialEquiv X Y) (h₁ h₂ h₃ h₄) :
-    (OpenPartialHomeomorph.mk (.mk e h₁ h₂) h₃ h₄ : X → Y) = e :=
+theorem coe_mk (e : PartialEquiv X Y) (h₁ h₂ h₃ h₄)
+    : (OpenPartialHomeomorph.mk (.mk e h₁ h₂) h₃ h₄ : X → Y) = e :=
   rfl
 
 @[deprecated (since := "2026-05-20")] alias mk_coe := coe_mk
 
 @[simp, mfld_simps]
-theorem coe_mk_symm (e : PartialEquiv X Y) (h₁ h₂ h₃ h₄) :
-    ((OpenPartialHomeomorph.mk (.mk e h₁ h₂) h₃ h₄).symm : Y → X) = e.symm :=
+theorem coe_mk_symm (e : PartialEquiv X Y) (h₁ h₂ h₃ h₄)
+    : ((OpenPartialHomeomorph.mk (.mk e h₁ h₂) h₃ h₄).symm : Y → X) = e.symm :=
   rfl
 
 @[deprecated (since := "2026-05-20")] alias mk_coe_symm := coe_mk_symm
 
-theorem toPartialHomeomorph_injective :
-    Injective (toPartialHomeomorph : OpenPartialHomeomorph X Y → PartialHomeomorph X Y)
+theorem toPartialHomeomorph_injective
+    : Injective (toPartialHomeomorph : OpenPartialHomeomorph X Y → PartialHomeomorph X Y)
   | ⟨_, _, _⟩, ⟨_, _, _⟩, rfl => rfl
 
-theorem toPartialEquiv_injective :
-    Injective (fun f ↦ f.toPartialEquiv : OpenPartialHomeomorph X Y → PartialEquiv X Y) :=
+theorem toPartialEquiv_injective
+    : Injective (fun f ↦ f.toPartialEquiv : OpenPartialHomeomorph X Y → PartialEquiv X Y) :=
   PartialHomeomorph.toPartialEquiv_injective.comp toPartialHomeomorph_injective
 
-/- Register a few simp lemmas to make sure that `simp` puts the application of a local
-homeomorphism in its normal form, i.e., in terms of its coercion to a function. -/
+/-
+Register a few simp lemmas to make sure that `simp` puts the application of a local
+homeomorphism in its normal form, i.e., in terms of its coercion to a function.
+-/
 
-@[simp, mfld_simps]
-theorem toFun_eq_coe (e : OpenPartialHomeomorph X Y) : e.toFun = e :=
-  rfl
+@[simp, mfld_simps] theorem toFun_eq_coe (e : OpenPartialHomeomorph X Y) : e.toFun = e := rfl
 
-@[simp, mfld_simps]
-theorem invFun_eq_coe (e : OpenPartialHomeomorph X Y) : e.invFun = e.symm :=
-  rfl
+@[simp, mfld_simps] theorem invFun_eq_coe (e : OpenPartialHomeomorph X Y) : e.invFun = e.symm := rfl
 
-@[simp, mfld_simps]
-theorem coe_toPartialEquiv : (e.toPartialEquiv : X → Y) = e :=
-  rfl
+@[simp, mfld_simps] theorem coe_toPartialEquiv : (e.toPartialEquiv : X → Y) = e := rfl
 
 @[deprecated (since := "2026-05-18")] alias coe_coe := coe_toPartialEquiv
 
 @[simp, mfld_simps]
-theorem coe_toPartialEquiv_symm : (e.toPartialEquiv.symm : Y → X) = e.symm :=
-  rfl
+theorem coe_toPartialEquiv_symm : (e.toPartialEquiv.symm : Y → X) = e.symm := rfl
 
 @[deprecated (since := "2026-05-18")] alias coe_coe_symm := coe_toPartialEquiv_symm
 
 @[simp, mfld_simps]
-theorem map_source {x : X} (h : x ∈ e.source) : e x ∈ e.target :=
-  e.map_source' h
+theorem map_source {x : X} (h : x ∈ e.source) : e x ∈ e.target := e.map_source' h
+
+@[simp, mfld_simps] theorem coe_toPartialHomeomorph : (e.toPartialHomeomorph : X → Y) = e := rfl
 
 @[simp, mfld_simps]
-theorem coe_toPartialHomeomorph : (e.toPartialHomeomorph : X → Y) = e :=
-  rfl
-
-@[simp, mfld_simps]
-theorem coe_toPartialHomeomorph_symm : (e.toPartialHomeomorph.symm : Y → X) = e.symm :=
-  rfl
+theorem coe_toPartialHomeomorph_symm : (e.toPartialHomeomorph.symm : Y → X) = e.symm := rfl
 
 /-- Variant of `map_source`, stated for images of subsets of `source`. -/
-lemma image_source_subset : e '' e.source ⊆ e.target :=
-  fun _ ⟨_, hx, hex⟩ ↦ mem_of_eq_of_mem (id hex.symm) (e.map_source' hx)
+lemma image_source_subset : e '' e.source ⊆ e.target := fun _ ⟨_, hx, hex⟩ ↦
+  mem_of_eq_of_mem (id hex.symm) (e.map_source' hx)
 
 @[deprecated (since := "2026-06-17")] alias map_source'' := image_source_subset
 
 @[simp, mfld_simps]
-theorem map_target {x : Y} (h : x ∈ e.target) : e.symm x ∈ e.source :=
-  e.map_target' h
+theorem map_target {x : Y} (h : x ∈ e.target) : e.symm x ∈ e.source := e.map_target' h
+
+@[simp, mfld_simps] theorem left_inv {x : X} (h : x ∈ e.source) : e.symm (e x) = x := e.left_inv' h
 
 @[simp, mfld_simps]
-theorem left_inv {x : X} (h : x ∈ e.source) : e.symm (e x) = x :=
-  e.left_inv' h
+theorem right_inv {x : Y} (h : x ∈ e.target) : e (e.symm x) = x := e.right_inv' h
 
-@[simp, mfld_simps]
-theorem right_inv {x : Y} (h : x ∈ e.target) : e (e.symm x) = x :=
-  e.right_inv' h
-
-theorem eq_symm_apply {x : X} {y : Y} (hx : x ∈ e.source) (hy : y ∈ e.target) :
-    x = e.symm y ↔ e x = y :=
+theorem eq_symm_apply {x : X} {y : Y} (hx : x ∈ e.source) (hy : y ∈ e.target)
+    : x = e.symm y ↔ e x = y :=
   e.toPartialEquiv.eq_symm_apply hx hy
 
 protected theorem mapsTo : MapsTo e e.source e.target := fun _ => e.map_source
 
-protected theorem mapsTo_symm : MapsTo e.symm e.target e.source :=
-  e.symm.mapsTo
+protected theorem mapsTo_symm : MapsTo e.symm e.target e.source := e.symm.mapsTo
 
 @[deprecated (since := "2026-05-28")] alias symm_mapsTo := OpenPartialHomeomorph.mapsTo_symm
 
@@ -183,26 +171,24 @@ protected theorem leftInvOn : LeftInvOn e.symm e e.source := fun _ => e.left_inv
 
 protected theorem rightInvOn : RightInvOn e.symm e e.target := fun _ => e.right_inv
 
-protected theorem invOn : InvOn e.symm e e.source e.target :=
-  ⟨e.leftInvOn, e.rightInvOn⟩
+protected theorem invOn : InvOn e.symm e e.source e.target := ⟨e.leftInvOn, e.rightInvOn⟩
 
-protected theorem injOn : InjOn e e.source :=
-  e.leftInvOn.injOn
+protected theorem injOn : InjOn e e.source := e.leftInvOn.injOn
 
-protected theorem bijOn : BijOn e e.source e.target :=
-  e.invOn.bijOn e.mapsTo e.mapsTo_symm
+protected theorem bijOn : BijOn e e.source e.target := e.invOn.bijOn e.mapsTo e.mapsTo_symm
 
-protected theorem surjOn : SurjOn e e.source e.target :=
-  e.bijOn.surjOn
+protected theorem surjOn : SurjOn e e.source e.target := e.bijOn.surjOn
 
 end Basic
 
-/-- Interpret a `Homeomorph` as an `OpenPartialHomeomorph` by restricting it
-to an open set `s` in the domain and to `t` in the codomain. -/
-@[simps! -fullyApplied apply symm_apply toPartialHomeomorph,
-  simps! -isSimp source target]
-def _root_.Homeomorph.toOpenPartialHomeomorphOfImageEq (e : X ≃ₜ Y) (s : Set X) (hs : IsOpen s)
-    (t : Set Y) (h : e '' s = t) : OpenPartialHomeomorph X Y where
+/--
+Interpret a `Homeomorph` as an `OpenPartialHomeomorph` by restricting it
+to an open set `s` in the domain and to `t` in the codomain.
+-/
+@[simps! -fullyApplied apply symm_apply toPartialHomeomorph, simps! -isSimp source target]
+def _root_.Homeomorph.toOpenPartialHomeomorphOfImageEq
+    (e : X ≃ₜ Y) (s : Set X) (hs : IsOpen s) (t : Set Y) (h : e '' s = t)
+    : OpenPartialHomeomorph X Y where
   toPartialHomeomorph := e.toPartialHomeomorphOfImageEq s t h
   open_source := hs
   open_target := by simpa [← h]
@@ -210,51 +196,54 @@ def _root_.Homeomorph.toOpenPartialHomeomorphOfImageEq (e : X ≃ₜ Y) (s : Set
 /-- A homeomorphism induces an open partial homeomorphism on the whole space -/
 @[simps! (attr := mfld_simps) -fullyApplied]
 def _root_.Homeomorph.toOpenPartialHomeomorph (e : X ≃ₜ Y) : OpenPartialHomeomorph X Y :=
-  e.toOpenPartialHomeomorphOfImageEq univ isOpen_univ univ <|
-    by rw [image_univ, e.surjective.range_eq]
+  e.toOpenPartialHomeomorphOfImageEq univ isOpen_univ univ <| by
+    rw [image_univ, e.surjective.range_eq]
 
 /-- Replace `toPartialEquiv` field to provide better definitional equalities. -/
-def replacePartialEquiv (e : OpenPartialHomeomorph X Y) (e' : PartialEquiv X Y)
-    (h : e.toPartialEquiv = e') : OpenPartialHomeomorph X Y where
+def replacePartialEquiv
+    (e : OpenPartialHomeomorph X Y) (e' : PartialEquiv X Y) (h : e.toPartialEquiv = e')
+    : OpenPartialHomeomorph X Y where
   toPartialHomeomorph := e.toPartialHomeomorph.replacePartialEquiv e' h
   open_source := h ▸ e.open_source
   open_target := h ▸ e.open_target
 
 @[deprecated (since := "2026-05-19")] alias replaceEquiv := replacePartialEquiv
 
-theorem replacePartialEquiv_eq_self (e' : PartialEquiv X Y)
-    (h : e.toPartialEquiv = e') : e.replacePartialEquiv e' h = e := by
+theorem replacePartialEquiv_eq_self (e' : PartialEquiv X Y) (h : e.toPartialEquiv = e')
+    : e.replacePartialEquiv e' h = e := by
   cases e
   subst e'
   rfl
 
 @[deprecated (since := "2026-05-20")] alias replaceEquiv_eq_self := replacePartialEquiv_eq_self
 
-/-- Two open partial homeomorphisms are equal when they have equal `toFun`, `invFun` and `source`.
+/--
+Two open partial homeomorphisms are equal when they have equal `toFun`, `invFun` and `source`.
 It is not sufficient to have equal `toFun` and `source`, as this only determines `invFun` on
 the target. This would only be true for a weaker notion of equality, arguably the right one,
-called `EqOnSource`. -/
+called `EqOnSource`.
+-/
 @[ext]
-protected theorem ext (e' : OpenPartialHomeomorph X Y) (h : ∀ x, e x = e' x)
-    (hinv : ∀ x, e.symm x = e'.symm x) (hs : e.source = e'.source) : e = e' :=
-  toPartialHomeomorph_injective
-    (PartialHomeomorph.ext e.toPartialHomeomorph e'.toPartialHomeomorph h hinv hs)
+protected theorem ext
+    (e' : OpenPartialHomeomorph X Y)
+    (h : ∀ x, e x = e' x) (hinv : ∀ x, e.symm x = e'.symm x) (hs : e.source = e'.source)
+    : e = e' :=
+  toPartialHomeomorph_injective (PartialHomeomorph.ext e.toPartialHomeomorph e'.toPartialHomeomorph
+    h hinv hs)
 
 @[simp, mfld_simps]
-theorem symm_toPartialEquiv : e.symm.toPartialEquiv = e.toPartialEquiv.symm :=
-  rfl
+theorem symm_toPartialEquiv : e.symm.toPartialEquiv = e.toPartialEquiv.symm := rfl
 
 -- The following lemmas are already simp via `PartialEquiv`
-theorem symm_source : e.symm.source = e.target :=
-  rfl
+theorem symm_source : e.symm.source = e.target := rfl
 
-theorem symm_target : e.symm.target = e.source :=
-  rfl
+theorem symm_target : e.symm.target = e.source := rfl
 
 @[simp, mfld_simps] theorem symm_symm : e.symm.symm = e := rfl
 
-theorem symm_bijective : Function.Bijective
-    (OpenPartialHomeomorph.symm : OpenPartialHomeomorph X Y → OpenPartialHomeomorph Y X) :=
+theorem symm_bijective
+    : Function.Bijective
+      (OpenPartialHomeomorph.symm : OpenPartialHomeomorph X Y → OpenPartialHomeomorph Y X) :=
   Function.bijective_iff_has_inverse.mpr ⟨_, symm_symm, symm_symm⟩
 
 end OpenPartialHomeomorph

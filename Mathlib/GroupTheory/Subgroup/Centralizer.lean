@@ -26,7 +26,7 @@ variable {H K : Subgroup G}
 
 /-- The `centralizer` of `s` is the subgroup of `g : G` commuting with every `h : s`. -/
 @[to_additive
-/-- The `centralizer` of `s` is the additive subgroup of `g : G` commuting with every `h : s`. -/]
+  /-- The `centralizer` of `s` is the additive subgroup of `g : G` commuting with every `h : s`. -/]
 def centralizer (s : Set G) : Subgroup G where
   __ := Submonoid.centralizer s
   inv_mem' := Set.inv_mem_centralizer
@@ -37,34 +37,31 @@ theorem mem_centralizer_iff {g : G} {s : Set G} : g ∈ centralizer s ↔ ∀ h 
 
 open scoped commutatorElement in
 @[to_additive]
-theorem mem_centralizer_iff_commutator_eq_one {g : G} {s : Set G} :
-    g ∈ centralizer s ↔ ∀ h ∈ s, ⁅h, g⁆ = 1 := by
+theorem mem_centralizer_iff_commutator_eq_one {g : G} {s : Set G}
+    : g ∈ centralizer s ↔ ∀ h ∈ s, ⁅h, g⁆ = 1 := by
   simp only [commutatorElement_def, mem_centralizer_iff, mul_inv_eq_iff_eq_mul, one_mul]
 
 open scoped commutatorElement in
 @[to_additive]
-theorem mem_centralizer_iff_commutator_eq_one' {g : G} {s : Set G} :
-    g ∈ centralizer s ↔ ∀ h ∈ s, ⁅g, h⁆ = 1 := by
+theorem mem_centralizer_iff_commutator_eq_one' {g : G} {s : Set G}
+    : g ∈ centralizer s ↔ ∀ h ∈ s, ⁅g, h⁆ = 1 := by
   refine forall₂_congr fun _ _ ↦ ?_
   rw [commutatorElement_def, mul_inv_eq_iff_eq_mul, mul_inv_eq_iff_eq_mul, one_mul, eq_comm]
 
 @[to_additive]
-lemma mem_centralizer_singleton_iff {g k : G} :
-    k ∈ Subgroup.centralizer {g} ↔ k * g = g * k := by
+lemma mem_centralizer_singleton_iff {g k : G} : k ∈ Subgroup.centralizer {g} ↔ k * g = g * k := by
   simp only [mem_centralizer_iff, Set.mem_singleton_iff, forall_eq]
   exact eq_comm
 
 @[to_additive]
-theorem centralizer_univ : centralizer Set.univ = center G :=
-  SetLike.ext' (Set.centralizer_univ G)
+theorem centralizer_univ : centralizer Set.univ = center G := SetLike.ext' (Set.centralizer_univ G)
 
 @[to_additive]
 theorem le_centralizer_iff : H ≤ centralizer K ↔ K ≤ centralizer H :=
   ⟨fun h x hx _y hy => (h hy x hx).symm, fun h x hx _y hy => (h hy x hx).symm⟩
 
 @[to_additive]
-theorem center_le_centralizer (s) : center G ≤ centralizer s :=
-  Set.center_subset_centralizer s
+theorem center_le_centralizer (s) : center G ≤ centralizer s := Set.center_subset_centralizer s
 
 @[to_additive]
 theorem centralizer_le {s t : Set G} (h : s ⊆ t) : centralizer t ≤ centralizer s :=
@@ -79,28 +76,29 @@ theorem centralizer_center : centralizer (center G : Set G) = ⊤ :=
   centralizer_eq_top_iff_subset.mpr le_rfl
 
 @[to_additive]
-theorem map_centralizer_le_centralizer_image (s : Set G) (f : G →* G') :
-    (Subgroup.centralizer s).map f ≤ Subgroup.centralizer (f '' s) := by
+theorem map_centralizer_le_centralizer_image (s : Set G) (f : G →* G')
+    : (Subgroup.centralizer s).map f ≤ Subgroup.centralizer (f '' s) := by
   rintro - ⟨g, hg, rfl⟩ - ⟨h, hh, rfl⟩
   rw [← map_mul, ← map_mul, hg h hh]
 
 @[to_additive]
 instance normal_centralizer [H.Normal] : (centralizer H : Subgroup G).Normal where
   conj_mem g hg i h hh := by
-    simpa [-mul_left_inj, -mul_right_inj, mul_assoc]
-      using congr(i * $(hg _ <| ‹H.Normal›.conj_mem _ hh i⁻¹) * i⁻¹)
+    simpa [-mul_left_inj, -mul_right_inj, mul_assoc] using
+      congr(i * $(hg _ <| ‹H.Normal›.conj_mem _ hh i⁻¹) * i⁻¹)
 
 @[to_additive]
-instance characteristic_centralizer [hH : H.Characteristic] :
-    (centralizer (H : Set G)).Characteristic := by
+instance characteristic_centralizer [hH : H.Characteristic]
+    : (centralizer (H : Set G)).Characteristic := by
   refine Subgroup.characteristic_iff_comap_le.mpr fun ϕ g hg h hh => ϕ.injective ?_
   rw [map_mul, map_mul]
   exact hg (ϕ h) (Subgroup.characteristic_iff_le_comap.mp hH ϕ hh)
 
 @[to_additive]
-theorem le_centralizer_iff_isMulCommutative : K ≤ centralizer K ↔ IsMulCommutative K :=
-  ⟨fun h ↦ ⟨⟨fun x y ↦ Subtype.ext <| h y.2 x x.2⟩⟩,
-    fun _ x hx y hy ↦ congrArg Subtype.val <| mul_comm' ⟨y, hy⟩ ⟨x, hx⟩⟩
+theorem le_centralizer_iff_isMulCommutative : K ≤ centralizer K ↔ IsMulCommutative K := ⟨
+  fun h ↦ ⟨⟨fun x y ↦ Subtype.ext <| h y.2 x x.2⟩⟩,
+  fun _ x hx y hy ↦ congrArg Subtype.val <| mul_comm' ⟨y, hy⟩ ⟨x, hx⟩
+⟩
 
 variable (H)
 
@@ -110,8 +108,7 @@ theorem le_centralizer [h : IsMulCommutative H] : H ≤ centralizer H :=
 
 variable {H} in
 @[to_additive]
-lemma closure_le_centralizer_centralizer (s : Set G) :
-    closure s ≤ centralizer (centralizer s) :=
+lemma closure_le_centralizer_centralizer (s : Set G) : closure s ≤ centralizer (centralizer s) :=
   closure_le _ |>.mpr Set.subset_centralizer_centralizer
 
 @[to_additive]
@@ -125,27 +122,27 @@ theorem centralizer_eq_iInf (s : Set G) : centralizer s = ⨅ g ∈ s, centraliz
     simpa only [mem_iInf, mem_centralizer_singleton_iff, eq_comm (a := x * _)] using! hx
 
 @[to_additive]
-theorem center_eq_iInf {s : Set G} (hs : closure s = ⊤) :
-    center G = ⨅ g ∈ s, centralizer {g} := by
+theorem center_eq_iInf {s : Set G} (hs : closure s = ⊤) : center G = ⨅ g ∈ s, centralizer {g} := by
   rw [← centralizer_univ, ← coe_top, ← hs, centralizer_closure, centralizer_eq_iInf]
 
 @[to_additive]
-theorem center_eq_infi' {s : Set G} (hs : closure s = ⊤) :
-    center G = ⨅ g : s, centralizer {(g : G)} := by
+theorem center_eq_infi' {s : Set G} (hs : closure s = ⊤)
+    : center G = ⨅ g : s, centralizer {(g : G)} := by
   rw [center_eq_iInf hs, ← iInf_subtype'']
 
 /-- If all the elements of a set `s` commute, then `closure s` is a commutative group. -/
 @[to_additive
-/-- If all the elements of a set `s` commute, then `closure s` is an additive commutative group. -/]
-theorem isMulCommutative_closure {k : Set G} (hcomm : k.Pairwise Commute) :
-    IsMulCommutative (closure k) :=
+  /-- If all the elements of a set `s` commute, then `closure s` is an additive commutative group. -/]
+theorem isMulCommutative_closure {k : Set G} (hcomm : k.Pairwise Commute)
+    : IsMulCommutative (closure k) :=
   have := closure_le_centralizer_centralizer k
   .of_setLike_mul_comm fun _ h₁ _ h₂ ↦
     Set.centralizer_centralizer_comm_of_comm hcomm _ (this h₁) _ (this h₂)
 
 @[to_additive]
-instance instIsMulCommutative_closure {S : Type*} [SetLike S G] [MulMemClass S G] (s : S)
-    [IsMulCommutative s] : IsMulCommutative (closure (s : Set G)) :=
+instance instIsMulCommutative_closure
+    {S : Type*} [SetLike S G] [MulMemClass S G] (s : S) [IsMulCommutative s]
+    : IsMulCommutative (closure (s : Set G)) :=
   isMulCommutative_closure fun _ h₁ _ h₂ _ => setLike_mul_comm h₁ h₂
 
 @[to_additive]
@@ -156,8 +153,8 @@ theorem centralizer_le_normalizer (s : Set G) : centralizer s ≤ normalizer s :
     simpa using hg _ hh
 
 @[to_additive]
-instance normal_subgroupOf_centralizer_normalizer (s : Set G) :
-    (centralizer s |>.subgroupOf <| normalizer s).Normal := by
+instance normal_subgroupOf_centralizer_normalizer (s : Set G)
+    : (centralizer s |>.subgroupOf <| normalizer s).Normal := by
   refine (Subgroup.normal_subgroupOf_iff <| centralizer_le_normalizer s).mpr fun c n hc hn ↦ ?_
   refine mem_centralizer_iff_commutator_eq_one'.mpr fun g hg ↦ ?_
   suffices n * (c * (n⁻¹ * g * n) * c⁻¹ * n⁻¹ * g⁻¹) = 1 by simpa [commutatorElement_def, mul_assoc]
@@ -186,9 +183,9 @@ instance : MulDistribMulAction (normalizer H : Subgroup G) H where
 def normalizerMonoidHom : normalizer (H : Set G) →* MulAut H :=
   MulDistribMulAction.toMulAut (normalizer H : Subgroup G) H
 
-theorem normalizerMonoidHom_ker :
-    H.normalizerMonoidHom.ker = (centralizer H).subgroupOf (normalizer H : Subgroup G) := by
-  simp [Subgroup.ext_iff, DFunLike.ext_iff, Subtype.ext_iff,
-    mem_subgroupOf, mem_centralizer_iff, eq_mul_inv_iff_mul_eq, eq_comm]
+theorem normalizerMonoidHom_ker
+    : H.normalizerMonoidHom.ker = (centralizer H).subgroupOf (normalizer H : Subgroup G) := by
+  simp [Subgroup.ext_iff, DFunLike.ext_iff, Subtype.ext_iff, mem_subgroupOf, mem_centralizer_iff,
+    eq_mul_inv_iff_mul_eq, eq_comm]
 
 end Subgroup

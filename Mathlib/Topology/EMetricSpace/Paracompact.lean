@@ -38,15 +38,19 @@ open scoped Topology
 namespace Metric
 
 -- See note [lower instance priority]
-/-- A `PseudoEMetricSpace` is always a paracompact space.
-Formalization is based on [MR0236876]. -/
+/--
+A `PseudoEMetricSpace` is always a paracompact space.
+Formalization is based on [MR0236876].
+-/
 instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : ParacompactSpace α := by
-  /- We start with trivial observations about `1 / 2 ^ k`. Here and below we use `1 / 2 ^ k` in
-    the comments and `2⁻¹ ^ k` in the code. -/
+  /-
+  We start with trivial observations about `1 / 2 ^ k`. Here and below we use `1 / 2 ^ k` in
+  the comments and `2⁻¹ ^ k` in the code.
+  -/
   have pow_pos : ∀ k : ℕ, (0 : ℝ≥0∞) < 2⁻¹ ^ k := fun k =>
     ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _
-  have hpow_le : ∀ {m n : ℕ}, m ≤ n → (2⁻¹ : ℝ≥0∞) ^ n ≤ 2⁻¹ ^ m := @fun m n h =>
-    pow_le_pow_right_of_le_one' (ENNReal.inv_le_one.2 ENNReal.one_lt_two.le) h
+  have hpow_le : ∀ {m n : ℕ}, m ≤ n → (2⁻¹ : ℝ≥0∞) ^ n ≤ 2⁻¹ ^ m :=
+    @fun m n h => pow_le_pow_right_of_le_one' (ENNReal.inv_le_one.2 ENNReal.one_lt_two.le) h
   have h2pow : ∀ n : ℕ, 2 * (2⁻¹ : ℝ≥0∞) ^ (n + 1) = 2⁻¹ ^ n := fun n => by
     simp [pow_succ', ← mul_assoc, ENNReal.mul_inv_cancel two_ne_zero ofNat_ne_top]
   -- Consider an open covering `S : Set (Set α)`
@@ -55,30 +59,35 @@ instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : Paraco
   -- choose a well-founded order on `S`
   obtain ⟨_, wf⟩ := exists_wellFoundedLT ι
   -- Let `ind x` be the minimal index `s : S` such that `x ∈ s`.
-  let ind (x : α) : ι := wellFounded_lt.min { i : ι | x ∈ s i } (hcov x)
-  have mem_ind (x) : x ∈ s (ind x) := wellFounded_lt.min_mem {i : ι | x ∈ s i} (hcov x)
+  let ind (x : α) : ι := wellFounded_lt.min ({ i : ι | x ∈ s i }) (hcov x)
+  have mem_ind (x) : x ∈ s (ind x) := wellFounded_lt.min_mem ({i : ι | x ∈ s i}) (hcov x)
   have notMem_of_lt_ind {x i} (hlt : i < ind x) (hxi : x ∈ s i) : False :=
-    wellFounded_lt.not_lt_min {i | x ∈ s i} hxi hlt
-  /- The refinement `D : ℕ → ι → Set α` is defined recursively. For each `n` and `i`, `D n i`
-    is the union of balls `ball x (1 / 2 ^ n)` over all points `x` such that
+    wellFounded_lt.not_lt_min ({i | x ∈ s i}) hxi hlt
+  /-
+  The refinement `D : ℕ → ι → Set α` is defined recursively. For each `n` and `i`, `D n i`
+  is the union of balls `ball x (1 / 2 ^ n)` over all points `x` such that
 
-    * `ind x = i`;
-    * `x` does not belong to any `D m j`, `m < n`;
-    * `ball x (3 / 2 ^ n) ⊆ s i`;
+  * `ind x = i`;
+  * `x` does not belong to any `D m j`, `m < n`;
+  * `ball x (3 / 2 ^ n) ⊆ s i`;
 
-    We define this sequence using `Nat.strongRec`, then restate it as `Dn` and `memD`.
+  We define this sequence using `Nat.strongRec`, then restate it as `Dn` and `memD`.
   -/
   set D : ℕ → ι → Set α :=
     Nat.strongRec fun n D' i ↦
       ⋃ (x : α) (hxs : ind x = i) (hb : eball x (3 * 2⁻¹ ^ n) ⊆ s i) (hlt :
         ∀ (m : ℕ) (H : m < n), ∀ (j : ι), x ∉ D' m H j), eball x (2⁻¹ ^ n) with hD
-  have Dn (n i) : D n i = ⋃ (x : α) (hxs : ind x = i) (hb : eball x (3 * 2⁻¹ ^ n) ⊆ s i)
-      (hlt : ∀ m < n, ∀ (j : ι), x ∉ D m j), eball x (2⁻¹ ^ n) := by
+  have Dn (n i)
+      : D n i
+        = ⋃ (x : α) (hxs : ind x = i) (hb : eball x (3 * 2⁻¹ ^ n) ⊆ s i)
+          (hlt : ∀ m < n, ∀ (j : ι), x ∉ D m j), eball x (2⁻¹ ^ n) := by
     simp only [hD]
     rw [Nat.strongRec_eq]
-  have memD {n i y} :
-      y ∈ D n i ↔ ∃ x : α, ind x = i ∧ eball x (3 * 2⁻¹ ^ n) ⊆ s i ∧
-        (∀ m < n, ∀ (j : ι), x ∉ D m j) ∧ edist y x < 2⁻¹ ^ n := by
+  have memD {n i y}
+      : y ∈ D n i
+        ↔ ∃ x : α,
+          ind x = i ∧ eball x (3 * 2⁻¹ ^ n) ⊆ s i ∧ (∀ m < n, ∀ (j : ι), x ∉ D m j)
+            ∧ edist y x < 2⁻¹ ^ n := by
     rw [Dn n i]
     simp only [mem_iUnion, mem_eball, exists_prop]
   -- The sets `D n i` cover the whole space. Indeed, for each `x` we can choose `n` such that
@@ -112,9 +121,11 @@ instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : Paraco
   · refine iUnion_eq_univ_iff.2 fun x ↦ ?_
     rcases Dcov x with ⟨n, i, h⟩
     exact ⟨⟨n, i⟩, h⟩
-  /- Let us prove that the covering `D n i` is locally finite. Take a point `x` and choose
-    `n`, `i` so that `x ∈ D n i`. Since `D n i` is an open set, we can choose `k` so that
-    `B = ball x (1 / 2 ^ (n + k + 1)) ⊆ D n i`. -/
+  /-
+  Let us prove that the covering `D n i` is locally finite. Take a point `x` and choose
+  `n`, `i` so that `x ∈ D n i`. Since `D n i` is an open set, we can choose `k` so that
+  `B = ball x (1 / 2 ^ (n + k + 1)) ⊆ D n i`.
+  -/
   · intro x
     rcases Dcov x with ⟨n, i, hn⟩
     have : D n i ∈ 𝓝 x := IsOpen.mem_nhds (Dopen _ _) hn
@@ -130,10 +141,10 @@ instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : Paraco
       have : z ∉ eball x (2⁻¹ ^ k) := fun hz' => H n (by lia) i (hsub hz')
       apply this
       calc
-        edist z x ≤ edist y z + edist y x := edist_triangle_left _ _ _
+        edist z x
+          ≤ edist y z + edist y x := edist_triangle_left _ _ _
         _ < 2⁻¹ ^ m + 2⁻¹ ^ (n + k + 1) := ENNReal.add_lt_add hz hyx
-        _ ≤ 2⁻¹ ^ (k + 1) + 2⁻¹ ^ (k + 1) :=
-          (add_le_add (hpow_le <| by lia) (hpow_le <| by lia))
+        _ ≤ 2⁻¹ ^ (k + 1) + 2⁻¹ ^ (k + 1) := (add_le_add (hpow_le <| by lia) (hpow_le <| by lia))
         _ = 2⁻¹ ^ k := by rw [← two_mul, h2pow]
     -- For each `m ≤ n + k` there is at most one `j` such that `D m j ∩ B` is nonempty.
     have Hle (m) (hm : m ≤ n + k) : Set.Subsingleton { j | (D m j ∩ B).Nonempty } := by
@@ -145,7 +156,8 @@ instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : Paraco
       rcases memD.1 hzD with ⟨z', rfl, -, -, hdistz⟩
       suffices edist z' y' < 3 * 2⁻¹ ^ m from notMem_of_lt_ind h (hsuby this)
       calc
-        edist z' y' ≤ edist z' x + edist x y' := edist_triangle _ _ _
+        edist z' y'
+          ≤ edist z' x + edist x y' := edist_triangle _ _ _
         _ ≤ edist z z' + edist z x + (edist y x + edist y y') :=
           (add_le_add (edist_triangle_left _ _ _) (edist_triangle_left _ _ _))
         _ < 2⁻¹ ^ m + 2⁻¹ ^ (n + k + 1) + (2⁻¹ ^ (n + k + 1) + 2⁻¹ ^ m) := by
@@ -153,8 +165,7 @@ instance (priority := 100) instParacompactSpace [PseudoEMetricSpace α] : Paraco
         _ = 2 * (2⁻¹ ^ m + 2⁻¹ ^ (n + k + 1)) := by simp only [two_mul, add_comm]
         _ ≤ 2 * (2⁻¹ ^ m + 2⁻¹ ^ (m + 1)) := by
           gcongr 2 * (_ + ?_); exact hpow_le (add_le_add hm le_rfl)
-        _ = 3 * 2⁻¹ ^ m := by
-          rw [mul_add, h2pow, ← two_add_one_eq_three, add_mul, one_mul]
+        _ = 3 * 2⁻¹ ^ m := by rw [mul_add, h2pow, ← two_add_one_eq_three, add_mul, one_mul]
     -- Finally, we glue `Hgt` and `Hle`
     have : (⋃ (m ≤ n + k) (i ∈ { i : ι | (D m i ∩ B).Nonempty }), {(m, i)}).Finite :=
       (finite_le_nat _).biUnion' fun i hi =>

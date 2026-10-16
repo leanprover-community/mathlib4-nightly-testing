@@ -21,8 +21,8 @@ public section
 
 open Set
 
-variable {X : Type*} [TopologicalSpace X] [LinearOrder X]
-  [OrderTopology X] [SecondCountableTopology X]
+variable
+  {X : Type*} [TopologicalSpace X] [LinearOrder X] [OrderTopology X] [SecondCountableTopology X]
 
 namespace HasCountableSeparatingOn
 
@@ -48,16 +48,18 @@ instance range_Iio : HasCountableSeparatingOn X (· ∈ range Iio) s := by
       rcases hsd.inter_open_nonempty _ isOpen_Ioo hne with ⟨z, ⟨hxz, hzy⟩, hzs⟩
       simpa [hxz, hzy.not_gt] using h (Iio z) (mem_image_of_mem _ (.inl hzs))
 
-instance range_Ioi : HasCountableSeparatingOn X (· ∈ range Ioi) s :=
-  .range_Iio (X := Xᵒᵈ)
+instance range_Ioi : HasCountableSeparatingOn X (· ∈ range Ioi) s := .range_Iio (X := Xᵒᵈ)
 
 instance range_Iic : HasCountableSeparatingOn X (· ∈ range Iic) s :=
   let ⟨t, htc, ht_sub, ht⟩ := (range_Ioi (X := X) (s := s)).1
-  ⟨compl '' t, htc.image _, by simpa [← compl_inj_iff (x := Ioi _)] using ht_sub,
-    by simpa [not_iff_not]⟩
+  ⟨
+    compl '' t,
+    htc.image _,
+    by simpa [← compl_inj_iff (x := Ioi _)] using ht_sub,
+    by simpa [not_iff_not]
+  ⟩
 
-instance range_Ici : HasCountableSeparatingOn X (· ∈ range Ici) s :=
-  range_Iic (X := Xᵒᵈ)
+instance range_Ici : HasCountableSeparatingOn X (· ∈ range Ici) s := range_Iic (X := Xᵒᵈ)
 
 end HasCountableSeparatingOn
 

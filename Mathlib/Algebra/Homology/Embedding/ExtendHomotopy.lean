@@ -27,7 +27,8 @@ namespace Homotopy
 
 open HomologicalComplex
 
-variable {C : Type*} [Category* C] [HasZeroObject C] [Preadditive C]
+variable
+  {C : Type*} [Category* C] [HasZeroObject C] [Preadditive C]
   {K L : HomologicalComplex C c} {f g : K ⟶ L}
 
 namespace extend
@@ -38,13 +39,16 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `Homotopy.extend` -/
 noncomputable def homAux (i' j' : Option ι) : extend.X K i' ⟶ extend.X L j' :=
   match i', j' with
-  | none, _ => 0
-  | _, none => 0
-  | some i, some j => φ i j
+  | none, _ =>
+    0
+  | _, none =>
+    0
+  | some i, some j =>
+    φ i j
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma homAux_eq (i' j' : Option ι) (i j : ι) (hi : i' = some i) (hj : j' = some j) :
-    homAux φ i' j' = (extend.XIso K hi).hom ≫ φ i j ≫ (extend.XIso L hj).inv := by
+lemma homAux_eq (i' j' : Option ι) (i j : ι) (hi : i' = some i) (hj : j' = some j)
+    : homAux φ i' j' = (extend.XIso K hi).hom ≫ φ i j ≫ (extend.XIso L hj).inv := by
   subst hi hj
   simp [homAux, extend.XIso, extend.X]
 
@@ -52,25 +56,25 @@ lemma homAux_eq (i' j' : Option ι) (i j : ι) (hi : i' = some i) (hj : j' = som
 noncomputable def hom (i' j' : ι') : (K.extend e).X i' ⟶ (L.extend e).X j' :=
   extend.homAux φ (e.r i') (e.r j')
 
-lemma hom_eq_zero₁ (i' j' : ι') (hi' : ∀ i, e.f i ≠ i') :
-    hom e φ i' j' = 0 :=
+lemma hom_eq_zero₁ (i' j' : ι') (hi' : ∀ i, e.f i ≠ i') : hom e φ i' j' = 0 :=
   (isZero_extend_X _ _ _ hi').eq_of_src _ _
 
-lemma hom_eq_zero₂ (i' j' : ι') (hj' : ∀ j, e.f j ≠ j') :
-    hom e φ i' j' = 0 :=
+lemma hom_eq_zero₂ (i' j' : ι') (hj' : ∀ j, e.f j ≠ j') : hom e φ i' j' = 0 :=
   (isZero_extend_X _ _ _ hj').eq_of_tgt _ _
 
-lemma hom_eq {i' j' : ι'} {i j : ι} (hi : e.f i = i') (hj : e.f j = j') :
-    hom e φ i' j' = (K.extendXIso e hi).hom ≫ φ i j ≫ (L.extendXIso e hj).inv :=
+lemma hom_eq {i' j' : ι'} {i j : ι} (hi : e.f i = i') (hj : e.f j = j')
+    : hom e φ i' j' = (K.extendXIso e hi).hom ≫ φ i j ≫ (L.extendXIso e hj).inv :=
   homAux_eq φ (e.r i') (e.r j') i j (e.r_eq_some hi) (e.r_eq_some hj)
 
 end extend
 
-/-- If `e : c.Embedding c'` is an embedding of complex shapes and `h` is a
+/--
+If `e : c.Embedding c'` is an embedding of complex shapes and `h` is a
 homotopy between morphisms of homological complexes of shape `c`, this is
-the corresponding homotopy between the extension of these morphisms. -/
-noncomputable def extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff] :
-    Homotopy (extendMap f e) (extendMap g e) where
+the corresponding homotopy between the extension of these morphisms.
+-/
+noncomputable def extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff]
+    : Homotopy (extendMap f e) (extendMap g e) where
   hom := extend.hom e h.hom
   comm i' := by
     by_cases hi' : ∃ i, e.f i = i'
@@ -80,16 +84,14 @@ noncomputable def extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff] :
       congr 1
       · by_cases hi : c.Rel i (c.next i)
         · have hi' : c'.Rel (e.f i) (e.f (c.next i)) := by rwa [e.rel_iff]
-          simp [dNext_eq _ hi, dNext_eq _ hi', extend.hom_eq _ _ rfl rfl,
-            extend_d_eq _ _ rfl rfl]
+          simp [dNext_eq _ hi, dNext_eq _ hi', extend.hom_eq _ _ rfl rfl, extend_d_eq _ _ rfl rfl]
         · rw [dNext_eq_zero _ _ hi]
           by_cases hi' : c'.Rel (e.f i) (c'.next (e.f i))
           · simp [dNext_eq _ hi', K.extend_d_from_eq_zero _ _ _ _ rfl hi]
           · simp [dNext_eq_zero _ _ hi']
       · by_cases hi : c.Rel (c.prev i) i
         · have hi' : c'.Rel (e.f (c.prev i)) (e.f i) := by rwa [e.rel_iff]
-          simp [prevD_eq _ hi, prevD_eq _ hi', extend.hom_eq _ _ rfl rfl,
-            extend_d_eq _ _ rfl rfl]
+          simp [prevD_eq _ hi, prevD_eq _ hi', extend.hom_eq _ _ rfl rfl, extend_d_eq _ _ rfl rfl]
         · rw [prevD_eq_zero _ _ hi]
           by_cases hi' : c'.Rel (c'.prev (e.f i)) (e.f i)
           · simp [prevD_eq _ hi', L.extend_d_to_eq_zero _ _ _ _ rfl hi]
@@ -100,31 +102,33 @@ noncomputable def extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff] :
     · obtain ⟨i, rfl⟩ := hi'
       by_cases hj' : ∃ j, e.f j = j'
       · obtain ⟨j, rfl⟩ := hj'
-        rw [extend.hom_eq _ _ rfl rfl, h.zero _ _ (by rwa [← e.rel_iff]),
-          zero_comp, comp_zero]
+        rw [extend.hom_eq _ _ rfl rfl, h.zero _ _ (by rwa [← e.rel_iff]), zero_comp, comp_zero]
       · exact extend.hom_eq_zero₂ _ _ _ _ (by tauto)
     · exact extend.hom_eq_zero₁ _ _ _ _ (by tauto)
 
-lemma extend_hom_eq (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff]
-    {i' j' : ι'} {i j : ι} (hi : e.f i = i') (hj : e.f j = j') :
-    (h.extend e).hom i' j' = (K.extendXIso e hi).hom ≫ h.hom i j ≫ (L.extendXIso e hj).inv :=
+lemma extend_hom_eq
+    (h : Homotopy f g)
+    (e : c.Embedding c') [e.IsRelIff]
+    {i' j' : ι'} {i j : ι} (hi : e.f i = i') (hj : e.f j = j')
+    : (h.extend e).hom i' j' = (K.extendXIso e hi).hom ≫ h.hom i j ≫ (L.extendXIso e hj).inv :=
   extend.hom_eq _ _ _ _
 
-/-- If `e : c.Embedding c'` is an embedding of complex shapes,
+/--
+If `e : c.Embedding c'` is an embedding of complex shapes,
 `f` and `g` are morphism between cochain complexes of shape `c`,
 and `h` is an homotopy between the extensions `extendMap f e` and `extendMap g e`,
-then this is the corresponding homotopy between `f` and `g`. -/
+then this is the corresponding homotopy between `f` and `g`.
+-/
 @[simps -isSimp]
-noncomputable def ofExtend {e : c.Embedding c'} [e.IsRelIff]
-    (h : Homotopy (extendMap f e) (extendMap g e)) :
-    Homotopy f g where
+noncomputable def ofExtend
+    {e : c.Embedding c'} [e.IsRelIff] (h : Homotopy (extendMap f e) (extendMap g e))
+    : Homotopy f g where
   hom i j := (K.extendXIso e rfl).inv ≫ h.hom (e.f i) (e.f j) ≫ (L.extendXIso e rfl).hom
   comm i := by
     have := h.comm (e.f i)
     simp only [extendMap_f _ _ rfl] at this
-    simp only [← cancel_mono (L.extendXIso e rfl).inv,
-      ← cancel_epi (K.extendXIso e rfl).hom, this, Preadditive.add_comp,
-      Preadditive.comp_add, add_left_inj]
+    simp only [← cancel_mono (L.extendXIso e rfl).inv, ← cancel_epi (K.extendXIso e rfl).hom, this,
+      Preadditive.add_comp, Preadditive.comp_add, add_left_inj]
     congr 1
     · by_cases hi : c.Rel i (c.next i)
       · have hi' : c'.Rel (e.f i) (e.f (c.next i)) := by rwa [e.rel_iff]
@@ -143,9 +147,9 @@ noncomputable def ofExtend {e : c.Embedding c'} [e.IsRelIff]
   zero i j hij := by rw [h.zero _ _ (by rwa [e.rel_iff]), zero_comp, comp_zero]
 
 @[simp]
-lemma extend_ofExtend {e : c.Embedding c'} [e.IsRelIff]
-    (h : Homotopy (extendMap f e) (extendMap g e)) :
-    (ofExtend h).extend e = h := by
+lemma extend_ofExtend
+    {e : c.Embedding c'} [e.IsRelIff] (h : Homotopy (extendMap f e) (extendMap g e))
+    : (ofExtend h).extend e = h := by
   ext i' j'
   by_cases hi' : ∃ i, e.f i = i'
   · obtain ⟨i, rfl⟩ := hi'
@@ -156,18 +160,19 @@ lemma extend_ofExtend {e : c.Embedding c'} [e.IsRelIff]
   · exact (isZero_extend_X _ _ _ (by tauto)).eq_of_src _ _
 
 @[simp]
-lemma ofExtend_extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff] :
-    (h.extend e).ofExtend = h := by
+lemma ofExtend_extend (h : Homotopy f g) (e : c.Embedding c') [e.IsRelIff]
+    : (h.extend e).ofExtend = h := by
   ext i j
   simp [ofExtend_hom, h.extend_hom_eq e rfl rfl]
 
-
-/-- If `e : c.Embedding c'` is an embedding of complex shapes,
+/--
+If `e : c.Embedding c'` is an embedding of complex shapes,
 `f` and `g` are morphism between cochain complexes of shape `c`,
 this is the bijection between homotopies between `f` and `g`,
-and homotopies between the extensions `extendMap f e` and `extendMap g e`. -/
-noncomputable def extendEquiv (e : c.Embedding c') [e.IsRelIff] :
-    Homotopy f g ≃ Homotopy (extendMap f e) (extendMap g e) where
+and homotopies between the extensions `extendMap f e` and `extendMap g e`.
+-/
+noncomputable def extendEquiv (e : c.Embedding c') [e.IsRelIff]
+    : Homotopy f g ≃ Homotopy (extendMap f e) (extendMap g e) where
   toFun h := h.extend e
   invFun h := h.ofExtend
   left_inv _ := by simp
@@ -177,32 +182,34 @@ end Homotopy
 
 namespace ComplexShape.Embedding
 
-variable (e : Embedding c c') [e.IsRelIff]
-  (C : Type*) [Category* C] [HasZeroObject C] [Preadditive C]
+variable
+  (e : Embedding c c') [e.IsRelIff] (C : Type*) [Category* C] [HasZeroObject C] [Preadditive C]
 
-/-- Given an embedding `e : c.Embedding c'` of complex shapes, this is
+/--
+Given an embedding `e : c.Embedding c'` of complex shapes, this is
 the functor `HomotopyCategory C c ⥤ HomotopyCategory C c'` which
-extend complexes along `e`. -/
-noncomputable def extendHomotopyFunctor :
-    HomotopyCategory C c ⥤ HomotopyCategory C c' :=
+extend complexes along `e`.
+-/
+noncomputable def extendHomotopyFunctor : HomotopyCategory C c ⥤ HomotopyCategory C c' :=
   CategoryTheory.Quotient.lift _ (e.extendFunctor C ⋙ HomotopyCategory.quotient C c') (by
     rintro K L f₁ f₂ ⟨h⟩
     exact HomotopyCategory.eq_of_homotopy _ _ (h.extend e))
 
-/-- Given an embedding `e : c.Embedding c'` of complex shapes, the
+/--
+Given an embedding `e : c.Embedding c'` of complex shapes, the
 functor `e.extendHomotopyFunctor C` on homotopy categories is
-induced by the functor `e.extendFunctor C` on homological complexes. -/
-noncomputable def extendHomotopyFunctorFactors :
-    HomotopyCategory.quotient C c ⋙ e.extendHomotopyFunctor C ≅
-      e.extendFunctor C ⋙ HomotopyCategory.quotient C c' :=
+induced by the functor `e.extendFunctor C` on homological complexes.
+-/
+noncomputable def extendHomotopyFunctorFactors
+    : HomotopyCategory.quotient C c ⋙ e.extendHomotopyFunctor C
+      ≅ e.extendFunctor C ⋙ HomotopyCategory.quotient C c' :=
   Iso.refl _
 
 instance : (e.extendHomotopyFunctor C).Full where
   map_surjective {K L} φ := by
     obtain ⟨K, rfl⟩ := HomotopyCategory.quotient_obj_surjective K
     obtain ⟨L, rfl⟩ := HomotopyCategory.quotient_obj_surjective L
-    obtain ⟨φ : K.extend e ⟶ L.extend e, rfl⟩ :=
-      (HomotopyCategory.quotient C c').map_surjective φ
+    obtain ⟨φ : K.extend e ⟶ L.extend e, rfl⟩ := (HomotopyCategory.quotient C c').map_surjective φ
     obtain ⟨φ, rfl⟩ := (e.extendFunctor C).map_surjective φ
     exact ⟨(HomotopyCategory.quotient _ _).map φ, rfl⟩
 
@@ -212,8 +219,7 @@ instance : (e.extendHomotopyFunctor C).Faithful where
     obtain ⟨L, rfl⟩ := HomotopyCategory.quotient_obj_surjective L
     obtain ⟨φ₁, rfl⟩ := (HomotopyCategory.quotient C c).map_surjective φ₁
     obtain ⟨φ₂, rfl⟩ := (HomotopyCategory.quotient C c).map_surjective φ₂
-    exact HomotopyCategory.eq_of_homotopy _ _
-      (.ofExtend (HomotopyCategory.homotopyOfEq _ _ hφ))
+    exact HomotopyCategory.eq_of_homotopy _ _ (.ofExtend (HomotopyCategory.homotopyOfEq _ _ hφ))
 
 end ComplexShape.Embedding
 
@@ -221,9 +227,8 @@ end ComplexShape.Embedding
 lemma HomologicalComplex.homotopyEquivalences_extendMap_iff
     {C : Type*} [Category* C] [HasZeroObject C] [Preadditive C]
     {K L : HomologicalComplex C c} (f : K ⟶ L)
-    (e : ComplexShape.Embedding c c') [e.IsRelIff] :
-    homotopyEquivalences C c' (extendMap f e) ↔
-      homotopyEquivalences C c f := by
+    (e : ComplexShape.Embedding c c') [e.IsRelIff]
+    : homotopyEquivalences C c' (extendMap f e) ↔ homotopyEquivalences C c f := by
   #adaptation_note /-- Prior to nightly-2026-05-07, `dsimp%` was used directly inline as the last
   argument to the original `simp`; it now reports `made no progress` so we apply
   `NatIso.isIso_map_iff` via a `change` + `rw` after the rest of the simp set has done its work. -/

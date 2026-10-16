@@ -33,25 +33,25 @@ namespace Matrix
 variable {R m : Type*} [Zero R] [Preorder m] [SuccOrder m]
 
 /-- `M` is upper Hessenberg: entries strictly below the subdiagonal vanish. -/
-def IsUpperHessenberg (M : Matrix m m R) : Prop :=
-  ∀ ⦃i j⦄, Order.succ j < i → M i j = 0
+def IsUpperHessenberg (M : Matrix m m R) : Prop := ∀ ⦃i j⦄, Order.succ j < i → M i j = 0
 
-theorem isUpperHessenberg_iff {M : Matrix m m R} :
-    M.IsUpperHessenberg ↔ ∀ ⦃i j⦄, Order.succ j < i → M i j = 0 :=
+theorem isUpperHessenberg_iff {M : Matrix m m R}
+    : M.IsUpperHessenberg ↔ ∀ ⦃i j⦄, Order.succ j < i → M i j = 0 :=
   Iff.rfl
 
-instance [DecidableEq R] [Fintype m] [DecidableLT m]
-    (M : Matrix m m R) : Decidable M.IsUpperHessenberg :=
-  decidable_of_iff (∀ ij : m × m, Order.succ ij.2 < ij.1 → M ij.1 ij.2 = 0)
-    ⟨fun h => isUpperHessenberg_iff.mpr fun i j hij => h (i, j) hij,
-        fun h _ hij => isUpperHessenberg_iff.mp h hij⟩
+instance [DecidableEq R] [Fintype m] [DecidableLT m] (M : Matrix m m R)
+    : Decidable M.IsUpperHessenberg :=
+  decidable_of_iff (∀ ij : m × m, Order.succ ij.2 < ij.1 → M ij.1 ij.2 = 0) ⟨
+    fun h => isUpperHessenberg_iff.mpr fun i j hij => h (i, j) hij,
+    fun h _ hij => isUpperHessenberg_iff.mp h hij
+  ⟩
 
-theorem IsUpperTriangular.isUpperHessenberg {M : Matrix m m R} (h : M.IsUpperTriangular) :
-    M.IsUpperHessenberg :=
-  fun _ j hij => h ((Order.le_succ j).trans_lt hij)
+theorem IsUpperTriangular.isUpperHessenberg {M : Matrix m m R} (h : M.IsUpperTriangular)
+    : M.IsUpperHessenberg := fun _ j hij =>
+  h ((Order.le_succ j).trans_lt hij)
 
-theorem isUpperHessenberg_fin_iff {n : ℕ} {M : Matrix (Fin n) (Fin n) R} :
-    M.IsUpperHessenberg ↔ ∀ i j : Fin n, (j : ℕ) + 1 < i → M i j = 0 := by
+theorem isUpperHessenberg_fin_iff {n : ℕ} {M : Matrix (Fin n) (Fin n) R}
+    : M.IsUpperHessenberg ↔ ∀ i j : Fin n, (j : ℕ) + 1 < i → M i j = 0 := by
   simp only [IsUpperHessenberg, Fin.orderSucc_lt_iff]
 
 end Matrix

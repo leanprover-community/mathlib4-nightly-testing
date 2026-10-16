@@ -63,11 +63,11 @@ theorem lt_rank_iff {o : Ordinal} {x : PSet} : o < rank x ↔ ∃ y ∈ x, o ≤
 
 variable {x y : PSet.{u}}
 
-@[gcongr] theorem rank_mono (h : x ⊆ y) : rank x ≤ rank y :=
+@[gcongr]
+theorem rank_mono (h : x ⊆ y) : rank x ≤ rank y :=
   rank_le_iff.2 fun _ h₁ => rank_lt_of_mem (mem_of_subset h h₁)
 
-@[simp]
-theorem rank_empty : rank ∅ = 0 := by simp [empty_def, rank]
+@[simp] theorem rank_empty : rank ∅ = 0 := by simp [empty_def, rank]
 
 @[simp]
 theorem rank_insert (x y : PSet) : rank (insert x y) = max (succ (rank x)) (rank y) := by
@@ -81,11 +81,9 @@ theorem rank_insert (x y : PSet) : rank (insert x y) = max (succ (rank x)) (rank
     · exact rank_mono (subset_iff.2 fun z => mem_insert_of_mem x)
 
 @[simp]
-theorem rank_singleton (x : PSet) : rank {x} = succ (rank x) :=
-  (rank_insert _ _).trans (by simp)
+theorem rank_singleton (x : PSet) : rank {x} = succ (rank x) := (rank_insert _ _).trans (by simp)
 
-theorem rank_pair (x y : PSet) : rank {x, y} = max (succ (rank x)) (succ (rank y)) := by
-  simp
+theorem rank_pair (x y : PSet) : rank {x, y} = max (succ (rank x)) (succ (rank y)) := by simp
 
 @[simp]
 theorem rank_powerset (x : PSet) : rank (powerset x) = succ (rank x) := by
@@ -97,15 +95,17 @@ theorem rank_powerset (x : PSet) : rank (powerset x) = succ (rank x) := by
     apply rank_lt_of_mem
     simp
 
-/-- For the rank of `⋃₀ x`, we only have `rank (⋃₀ x) ≤ rank x ≤ rank (⋃₀ x) + 1`.
+/--
+For the rank of `⋃₀ x`, we only have `rank (⋃₀ x) ≤ rank x ≤ rank (⋃₀ x) + 1`.
 
-This inequality is split into `rank_sUnion_le` and `le_succ_rank_sUnion`. -/
-theorem rank_sUnion_le (x : PSet) : rank (⋃₀ x) ≤ rank x := by
+This inequality is split into `rank_sUnion_le` and `le_succ_rank_sUnion`.
+-/
+theorem rank_sUnion_le (x : PSet) : rank (⋃₀x) ≤ rank x := by
   simp_rw [rank_le_iff, mem_sUnion]
   intro _ ⟨_, _, _⟩
   trans <;> apply rank_lt_of_mem <;> assumption
 
-theorem le_succ_rank_sUnion (x : PSet) : rank x ≤ succ (rank (⋃₀ x)) := by
+theorem le_succ_rank_sUnion (x : PSet) : rank x ≤ succ (rank (⋃₀x)) := by
   rw [← rank_powerset]
   apply rank_mono
   rw [subset_iff]
@@ -117,7 +117,8 @@ theorem le_succ_rank_sUnion (x : PSet) : rank x ≤ succ (rank (⋃₀ x)) := by
 
 /-- `PSet.rank` is equal to the `WellFounded.rank` over `∈`. -/
 theorem rank_eq_wfRank : lift.{u + 1, u} (rank x) = WellFounded.rank (α := PSet) (· ∈ ·) x := by
-  induction x using mem_wf.induction with | _ x ih
+  induction x using mem_wf.induction with
+  | _ x ih
   rw [WellFounded.rank_eq]
   simp_rw [← fun y : { y // y ∈ x } => ih y y.2]
   apply (le_of_forall_lt _).antisymm (Ordinal.iSup_le _) <;> intro h
@@ -135,40 +136,34 @@ namespace ZFSet
 variable {x y : ZFSet.{u}}
 
 /-- The ordinal rank of a ZFC set -/
-noncomputable def rank : ZFSet.{u} → Ordinal.{u} :=
-  Quotient.lift _ fun _ _ => PSet.rank_congr
+noncomputable def rank : ZFSet.{u} → Ordinal.{u} := Quotient.lift _ fun _ _ => PSet.rank_congr
 
-@[simp]
-theorem rank_mk (x : PSet) : rank (.mk x) = x.rank :=
-  rfl
+@[simp] theorem rank_mk (x : PSet) : rank (.mk x) = x.rank := rfl
 
 theorem rank_lt_of_mem : y ∈ x → rank y < rank x :=
   Quotient.inductionOn₂ x y fun _ _ => PSet.rank_lt_of_mem
 
-theorem rank_le_iff {o : Ordinal} : rank x ≤ o ↔ ∀ ⦃y⦄, y ∈ x → rank y < o :=
-  ⟨fun h _ h' => (rank_lt_of_mem h').trans_le h,
-    Quotient.inductionOn x fun _ h =>
-      PSet.rank_le_iff.2 fun y h' => @h ⟦y⟧ h'⟩
+theorem rank_le_iff {o : Ordinal} : rank x ≤ o ↔ ∀ ⦃y⦄, y ∈ x → rank y < o := ⟨
+  fun h _ h' => (rank_lt_of_mem h').trans_le h,
+  Quotient.inductionOn x fun _ h => PSet.rank_le_iff.2 fun y h' => @h (⟦y⟧) h'
+⟩
 
 theorem lt_rank_iff {o : Ordinal} : o < rank x ↔ ∃ y ∈ x, o ≤ rank y := by
   contrapose!; exact rank_le_iff
 
-@[gcongr] theorem rank_mono (h : x ⊆ y) : rank x ≤ rank y :=
-  rank_le_iff.2 fun _ h₁ => rank_lt_of_mem (h h₁)
+@[gcongr]
+theorem rank_mono (h : x ⊆ y) : rank x ≤ rank y := rank_le_iff.2 fun _ h₁ => rank_lt_of_mem (h h₁)
 
-@[simp]
-theorem rank_empty : rank ∅ = 0 := PSet.rank_empty
+@[simp] theorem rank_empty : rank ∅ = 0 := PSet.rank_empty
 
 @[simp]
 theorem rank_insert (x y : ZFSet) : rank (insert x y) = max (succ (rank x)) (rank y) :=
   Quotient.inductionOn₂ x y PSet.rank_insert
 
 @[simp]
-theorem rank_singleton (x : ZFSet) : rank {x} = succ (rank x) :=
-  (rank_insert _ _).trans (by simp)
+theorem rank_singleton (x : ZFSet) : rank {x} = succ (rank x) := (rank_insert _ _).trans (by simp)
 
-theorem rank_pair (x y : ZFSet) : rank {x, y} = max (succ (rank x)) (succ (rank y)) := by
-  simp
+theorem rank_pair (x y : ZFSet) : rank {x, y} = max (succ (rank x)) (succ (rank y)) := by simp
 
 @[simp]
 theorem rank_union (x y : ZFSet) : rank (x ∪ y) = max (rank x) (rank y) := by
@@ -182,15 +177,17 @@ theorem rank_union (x y : ZFSet) : rank (x ∪ y) = max (rank x) (rank y) := by
 theorem rank_powerset (x : ZFSet) : rank (powerset x) = succ (rank x) :=
   Quotient.inductionOn x PSet.rank_powerset
 
-/-- For the rank of `⋃₀ x`, we only have `rank (⋃₀ x) ≤ rank x ≤ rank (⋃₀ x) + 1`.
+/--
+For the rank of `⋃₀ x`, we only have `rank (⋃₀ x) ≤ rank x ≤ rank (⋃₀ x) + 1`.
 
-This inequality is split into `rank_sUnion_le` and `le_succ_rank_sUnion`. -/
-theorem rank_sUnion_le (x : ZFSet) : rank (⋃₀ x) ≤ rank x := by
+This inequality is split into `rank_sUnion_le` and `le_succ_rank_sUnion`.
+-/
+theorem rank_sUnion_le (x : ZFSet) : rank (⋃₀x) ≤ rank x := by
   simp_rw [rank_le_iff, mem_sUnion]
   intro _ ⟨_, _, _⟩
   trans <;> apply rank_lt_of_mem <;> assumption
 
-theorem le_succ_rank_sUnion (x : ZFSet) : rank x ≤ succ (rank (⋃₀ x)) := by
+theorem le_succ_rank_sUnion (x : ZFSet) : rank x ≤ succ (rank (⋃₀x)) := by
   rw [← rank_powerset]
   apply rank_mono
   intro z _
@@ -200,15 +197,15 @@ theorem le_succ_rank_sUnion (x : ZFSet) : rank x ≤ succ (rank (⋃₀ x)) := b
   exists z
 
 @[simp]
-theorem rank_range {α : Type*} [Small.{u} α] (f : α → ZFSet.{u}) :
-    rank (range f) = ⨆ i, succ (rank (f i)) := by
+theorem rank_range {α : Type*} [Small.{u} α] (f : α → ZFSet.{u})
+    : rank (range f) = ⨆ i, succ (rank (f i)) := by
   apply (Ordinal.iSup_le _).antisymm'
   · simpa [rank_le_iff, ← add_one_le_iff] using Ordinal.le_iSup _
   · simp [rank_lt_of_mem]
 
 @[simp]
-theorem rank_iUnion {α : Type*} [Small.{u} α] (f : α → ZFSet.{u}) :
-    rank (⋃ i, f i) = ⨆ i, rank (f i) := by
+theorem rank_iUnion {α : Type*} [Small.{u} α] (f : α → ZFSet.{u})
+    : rank (⋃ i, f i) = ⨆ i, rank (f i) := by
   apply le_antisymm
   · simp_rw [rank_le_iff, mem_iUnion]
     intro y ⟨i, hy⟩
@@ -217,7 +214,8 @@ theorem rank_iUnion {α : Type*} [Small.{u} α] (f : α → ZFSet.{u}) :
 
 /-- `ZFSet.rank` is equal to the `WellFounded.rank` over `∈`. -/
 theorem rank_eq_wfRank : lift.{u + 1, u} (rank x) = WellFounded.rank (α := ZFSet) (· ∈ ·) x := by
-  induction x using inductionOn with | _ x ih
+  induction x using inductionOn with
+  | _ x ih
   rw [WellFounded.rank_eq]
   simp_rw [← fun y : { y // y ∈ x } => ih y y.2]
   apply (le_of_forall_lt _).antisymm (Ordinal.iSup_le _) <;> intro h

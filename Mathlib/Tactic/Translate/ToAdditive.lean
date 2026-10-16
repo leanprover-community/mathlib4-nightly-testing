@@ -23,8 +23,9 @@ open Lean Elab Translate
 /-- This attribute has been deprecated. -/
 syntax (name := to_additive_ignore_args) "to_additive_ignore_args" (ppSpace num)* : attr
 
-deprecated_syntax to_additive_ignore_args "This attribute is now redundant. \
-  to specify which argument is relevant, you can use `to_additive self (relevant_arg := ...)`"
+deprecated_syntax to_additive_ignore_args
+  "This attribute is now redundant. \
+    to specify which argument is relevant, you can use `to_additive self (relevant_arg := ...)`"
   (since := "2026-09-27")
 
 @[inherit_doc TranslateData.dontTranslateAttr]
@@ -33,7 +34,8 @@ syntax (name := to_additive_do_translate) "to_additive_do_translate" : attr
 @[inherit_doc TranslateData.dontTranslateAttr]
 syntax (name := to_additive_dont_translate) "to_additive_dont_translate" : attr
 
-/-- The attribute `to_additive` can be used to automatically transport theorems
+/--
+The attribute `to_additive` can be used to automatically transport theorems
 and definitions (but not inductive types and structures) from a multiplicative
 theory to an additive theory.
 
@@ -243,7 +245,8 @@ In this case `to_additive` adds all structure fields to its mapping.
   new name as is.
 
 As a safety check, in the first case `to_additive` double checks
-that the new name differs from the original one. -/
+that the new name differs from the original one.
+-/
 syntax (name := to_additive) "to_additive" "?"? attrArgs : attr
 
 @[inherit_doc to_additive]
@@ -258,126 +261,134 @@ initialize translations : NameMapExtension TranslationInfo ← registerNameMapEx
 initialize
   registerBuiltinAttribute {
     name := `to_additive_do_translate
-    descr := "Auxiliary attribute for `to_additive` stating \
-      that the operations on this type should be translated."
-    add name _ _ := translations.add name { translation := name, relevantArg := .noArg } }
+    descr :=
+      "Auxiliary attribute for `to_additive` stating \
+        that the operations on this type should be translated."
+    add name _ _ := translations.add name { translation := name, relevantArg := .noArg }
+  }
   registerBuiltinAttribute {
     name := `to_additive_dont_translate
-    descr := "Auxiliary attribute for `to_additive` stating \
-      that the operations on this type should not be translated."
-    add name _ _ := dontTranslateAttr.add name () }
+    descr :=
+      "Auxiliary attribute for `to_additive` stating \
+        that the operations on this type should not be translated."
+    add name _ _ := dontTranslateAttr.add name ()
+  }
 
 @[inherit_doc GuessName.GuessNameData.nameDict]
-def nameDict : Std.HashMap String (List String) := .ofList [
-  ("one", ["Zero"]),
-  ("mul", ["Add"]),
-  ("smul", ["VAdd"]),
-  ("inv", ["Neg"]),
-  ("div", ["Sub"]),
-  ("sdiv", ["VSub"]),
-  ("prod", ["Sum"]),
-  ("hmul", ["HAdd"]),
-  ("hsmul", ["HVAdd"]),
-  ("hdiv", ["HSub"]),
-  ("hpow", ["HSMul"]),
-  ("finprod", ["Finsum"]),
-  ("tprod", ["TSum"]),
-  ("pow", ["NSMul"]),
-  ("npow", ["NSMul"]),
-  ("zpow", ["ZSMul"]),
-  ("mabs", ["Abs"]),
-  ("monoid", ["Add", "Monoid"]),
-  ("submonoid", ["Add", "Submonoid"]),
-  ("group", ["Add", "Group"]),
-  ("subgroup", ["Add", "Subgroup"]),
-  ("semigroup", ["Add", "Semigroup"]),
-  ("torsor", ["Add", "Torsor"]),
-  ("magma", ["Add", "Magma"]),
-  ("haar", ["Add", "Haar"]),
-  ("prehaar", ["Add", "Prehaar"]),
-  ("unit", ["Add", "Unit"]),
-  ("units", ["Add", "Units"]),
-  ("cyclic", ["Add", "Cyclic"]),
-  ("semigrp", ["Add", "Semigrp"]),
-  ("grp", ["Add", "Grp"]),
-  ("commute", ["Add", "Commute"]),
-  ("semiconj", ["Add", "Semiconj"]),
-  ("conjugates", ["Add", "Conjugates"]),
-  ("conj", ["Add", "Conj"]),
-  ("commutator", ["Add", "Commutator"]),
-  ("rootable", ["Divisible"]),
-  ("zpowers", ["ZMultiples"]),
-  ("powers", ["Multiples"]),
-  ("multipliable", ["Summable"]),
-  ("gpfree", ["APFree"]),
-  ("quantale", ["Add", "Quantale"]),
-  ("square", ["Even"]),
-  ("mconv", ["Conv"]),
-  ("irreducible", ["Add", "Irreducible"]),
-  ("mlconvolution", ["LConvolution"])]
+def nameDict : Std.HashMap String (List String) :=
+  .ofList [
+    ("one", ["Zero"]),
+    ("mul", ["Add"]),
+    ("smul", ["VAdd"]),
+    ("inv", ["Neg"]),
+    ("div", ["Sub"]),
+    ("sdiv", ["VSub"]),
+    ("prod", ["Sum"]),
+    ("hmul", ["HAdd"]),
+    ("hsmul", ["HVAdd"]),
+    ("hdiv", ["HSub"]),
+    ("hpow", ["HSMul"]),
+    ("finprod", ["Finsum"]),
+    ("tprod", ["TSum"]),
+    ("pow", ["NSMul"]),
+    ("npow", ["NSMul"]),
+    ("zpow", ["ZSMul"]),
+    ("mabs", ["Abs"]),
+    ("monoid", ["Add", "Monoid"]),
+    ("submonoid", ["Add", "Submonoid"]),
+    ("group", ["Add", "Group"]),
+    ("subgroup", ["Add", "Subgroup"]),
+    ("semigroup", ["Add", "Semigroup"]),
+    ("torsor", ["Add", "Torsor"]),
+    ("magma", ["Add", "Magma"]),
+    ("haar", ["Add", "Haar"]),
+    ("prehaar", ["Add", "Prehaar"]),
+    ("unit", ["Add", "Unit"]),
+    ("units", ["Add", "Units"]),
+    ("cyclic", ["Add", "Cyclic"]),
+    ("semigrp", ["Add", "Semigrp"]),
+    ("grp", ["Add", "Grp"]),
+    ("commute", ["Add", "Commute"]),
+    ("semiconj", ["Add", "Semiconj"]),
+    ("conjugates", ["Add", "Conjugates"]),
+    ("conj", ["Add", "Conj"]),
+    ("commutator", ["Add", "Commutator"]),
+    ("rootable", ["Divisible"]),
+    ("zpowers", ["ZMultiples"]),
+    ("powers", ["Multiples"]),
+    ("multipliable", ["Summable"]),
+    ("gpfree", ["APFree"]),
+    ("quantale", ["Add", "Quantale"]),
+    ("square", ["Even"]),
+    ("mconv", ["Conv"]),
+    ("irreducible", ["Add", "Irreducible"]),
+    ("mlconvolution", ["LConvolution"])
+  ]
 
 @[inherit_doc GuessName.GuessNameData.abbreviationDict]
-def abbreviationDict : Std.HashMap String String := .ofList [
-  ("isCancelAdd", "IsCancelAdd"),
-  ("isLeftCancelAdd", "IsLeftCancelAdd"),
-  ("isRightCancelAdd", "IsRightCancelAdd"),
-  ("cancelAdd", "AddCancel"),
-  ("leftCancelAdd", "AddLeftCancel"),
-  ("rightCancelAdd", "AddRightCancel"),
-  ("cancelCommAdd", "AddCancelComm"),
-  ("commAdd", "AddComm"),
-  ("zero_le", "Nonneg"),
-  ("zeroLE", "Nonneg"),
-  ("zero_lt", "Pos"),
-  ("zeroLT", "Pos"),
-  ("lezero", "Nonpos"),
-  ("le_zero", "Nonpos"),
-  ("ltzero", "Neg"),
-  ("lt_zero", "Neg"),
-  ("addAntidiagonal", "Antidiagonal"),
-  ("addSingle", "Single"),
-  ("addSupport", "Support"),
-  ("addTSupport", "TSupport"),
-  ("addPointed", "Pointed"),
-  ("addSpanning", "Spanning"),
-  ("addIndicator", "Indicator"),
-  ("isEven", "Even"),
-  -- "Regular" is well-used in mathlib with various meanings (e.g. in
-  -- measure theory) and a direct translation
-  -- "regular" --> "addRegular" in `nameDict` above seems error-prone.
-  ("isRegular", "IsAddRegular"),
-  ("isLeftRegular", "IsAddLeftRegular"),
-  ("isRightRegular", "IsAddRightRegular"),
-  ("hasUniqueRoots", "hasUniqueDiv"),
-  ("hasFundamentalDomain", "HasAddFundamentalDomain"),
-  ("quotientMeasure", "AddQuotientMeasure"),
-  ("negFun", "InvFun"),
-  ("uniqueProds", "UniqueSums"),
-  ("orderOf", "AddOrderOf"),
-  ("zeroLePart", "PosPart"),
-  ("leZeroPart", "NegPart"),
-  ("isScalarTower", "VAddAssocClass"),
-  ("isOfFinOrder", "IsOfFinAddOrder"),
-  ("isCentralScalar", "IsCentralVAdd"),
-  ("function_addSemiconj", "Function_semiconj"),
-  ("function_addCommute", "Function_commute"),
-  ("divisionAddMonoid", "SubtractionMonoid"),
-  ("subNegZeroAddMonoid", "SubNegZeroMonoid"),
-  ("modularCharacter", "AddModularCharacter"),
-  ("addShift", "Shift"),
-  ("addSubshift", "Subshift"),
-  ("isQuotientCoveringMap", "IsAddQuotientCoveringMap"),
-  ("addExact", "Exact"),
-  ("isMonHom", "IsAddMonHom"),
-  ("mapMon", "MapAddMon"),
-  ("monObj", "AddMonObj"),
-  ("isModHom", "IsAddModHom"),
-  ("mapMod", "MapAddMod"),
-  ("modObj", "AddModObj"),
-  ("yonedaMon", "YonedaAddMon"),
-  ("conGen", "AddConGen"),
-  ("unoneD", "unzeroD"),
-  ("unone", "unzero")]
+def abbreviationDict : Std.HashMap String String :=
+  .ofList [
+    ("isCancelAdd", "IsCancelAdd"),
+    ("isLeftCancelAdd", "IsLeftCancelAdd"),
+    ("isRightCancelAdd", "IsRightCancelAdd"),
+    ("cancelAdd", "AddCancel"),
+    ("leftCancelAdd", "AddLeftCancel"),
+    ("rightCancelAdd", "AddRightCancel"),
+    ("cancelCommAdd", "AddCancelComm"),
+    ("commAdd", "AddComm"),
+    ("zero_le", "Nonneg"),
+    ("zeroLE", "Nonneg"),
+    ("zero_lt", "Pos"),
+    ("zeroLT", "Pos"),
+    ("lezero", "Nonpos"),
+    ("le_zero", "Nonpos"),
+    ("ltzero", "Neg"),
+    ("lt_zero", "Neg"),
+    ("addAntidiagonal", "Antidiagonal"),
+    ("addSingle", "Single"),
+    ("addSupport", "Support"),
+    ("addTSupport", "TSupport"),
+    ("addPointed", "Pointed"),
+    ("addSpanning", "Spanning"),
+    ("addIndicator", "Indicator"),
+    ("isEven", "Even"),
+    -- "Regular" is well-used in mathlib with various meanings (e.g. in
+    -- measure theory) and a direct translation
+    -- "regular" --> "addRegular" in `nameDict` above seems error-prone.
+    ("isRegular", "IsAddRegular"),
+    ("isLeftRegular", "IsAddLeftRegular"),
+    ("isRightRegular", "IsAddRightRegular"),
+    ("hasUniqueRoots", "hasUniqueDiv"),
+    ("hasFundamentalDomain", "HasAddFundamentalDomain"),
+    ("quotientMeasure", "AddQuotientMeasure"),
+    ("negFun", "InvFun"),
+    ("uniqueProds", "UniqueSums"),
+    ("orderOf", "AddOrderOf"),
+    ("zeroLePart", "PosPart"),
+    ("leZeroPart", "NegPart"),
+    ("isScalarTower", "VAddAssocClass"),
+    ("isOfFinOrder", "IsOfFinAddOrder"),
+    ("isCentralScalar", "IsCentralVAdd"),
+    ("function_addSemiconj", "Function_semiconj"),
+    ("function_addCommute", "Function_commute"),
+    ("divisionAddMonoid", "SubtractionMonoid"),
+    ("subNegZeroAddMonoid", "SubNegZeroMonoid"),
+    ("modularCharacter", "AddModularCharacter"),
+    ("addShift", "Shift"),
+    ("addSubshift", "Subshift"),
+    ("isQuotientCoveringMap", "IsAddQuotientCoveringMap"),
+    ("addExact", "Exact"),
+    ("isMonHom", "IsAddMonHom"),
+    ("mapMon", "MapAddMon"),
+    ("monObj", "AddMonObj"),
+    ("isModHom", "IsAddModHom"),
+    ("mapMod", "MapAddMod"),
+    ("modObj", "AddModObj"),
+    ("yonedaMon", "YonedaAddMon"),
+    ("conGen", "AddConGen"),
+    ("unoneD", "unzeroD"),
+    ("unone", "unzero")
+  ]
 
 @[inherit_doc GuessName.GuessNameExt]
 initialize guessNameExt : GuessName.GuessNameExt ←
@@ -385,31 +396,37 @@ initialize guessNameExt : GuessName.GuessNameExt ←
 
 /-- The bundle of environment extensions for `to_additive` -/
 def data : TranslateData where
-  dontTranslateAttr; translations
+  dontTranslateAttr
+  translations
   attrName := `to_additive
   changeNumeral := true
   isDual := false
   guessNameExt
 
-initialize registerBuiltinAttribute {
+initialize
+  registerBuiltinAttribute {
     name := `to_additive
     descr := "Transport multiplicative to additive"
-    add := fun src stx kind ↦ discard do
-      profileitM Exception "to_additive" (← getOptions) do
-        addTranslationAttr data src (← elabTranslationAttr src stx) kind
+    add := fun src stx kind ↦
+      discard do
+        profileitM Exception "to_additive" (← getOptions) do
+          addTranslationAttr data src (← elabTranslationAttr src stx) kind
     -- we (presumably) need to run after compilation to properly add the `simp` attribute
     applicationTime := .afterCompilation
   }
 
-/-- `insert_to_additive_translation mulName addName` inserts the translation `mulName ↦ addName`
+/--
+`insert_to_additive_translation mulName addName` inserts the translation `mulName ↦ addName`
 into the `to_additive` dictionary. This is useful for translating namespaces that don't (yet)
-have a corresponding translated declaration. -/
+have a corresponding translated declaration.
+-/
 elab "insert_to_additive_translation" src:ident tgt:ident : command => do
   translations.add src.getId { translation := tgt.getId }
 
-/-- `to_additive_name_hint src tgt` lets `to_additive` translate the name segment `src` to `tgt`
-for the rest of the file current. `src` and `tgt` should both be capitalized. -/
-elab "to_additive_name_hint" src:ident tgt:ident : command => do
-  guessNameExt.addTranslation src tgt
+/--
+`to_additive_name_hint src tgt` lets `to_additive` translate the name segment `src` to `tgt`
+for the rest of the file current. `src` and `tgt` should both be capitalized.
+-/
+elab "to_additive_name_hint" src:ident tgt:ident : command => do guessNameExt.addTranslation src tgt
 
 end Mathlib.Tactic.ToAdditive

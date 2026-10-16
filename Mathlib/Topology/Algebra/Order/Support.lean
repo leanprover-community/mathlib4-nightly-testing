@@ -6,7 +6,6 @@ Authors: Yoh Tanimoto
 module
 
 public import Mathlib.Topology.Algebra.Support
-
 import Mathlib.Algebra.Order.Group.Indicator
 
 /-!
@@ -27,8 +26,9 @@ section SemilatticeSup
 variable [SemilatticeSup M]
 
 @[to_additive]
-theorem HasCompactMulSupport.sup {f g : X → M} (hf : HasCompactMulSupport f)
-    (hg : HasCompactMulSupport g) : HasCompactMulSupport (f ⊔ g) := by
+theorem HasCompactMulSupport.sup
+    {f g : X → M} (hf : HasCompactMulSupport f) (hg : HasCompactMulSupport g)
+    : HasCompactMulSupport (f ⊔ g) := by
   apply IsCompact.of_isClosed_subset (IsCompact.union hf hg) (isClosed_mulTSupport _)
   rw [mulTSupport, mulTSupport, mulTSupport, ← closure_union]
   apply closure_mono
@@ -41,8 +41,9 @@ section SemilatticeInf
 variable [SemilatticeInf M]
 
 @[to_additive]
-theorem HasCompactMulSupport.inf {f g : X → M} (hf : HasCompactMulSupport f)
-    (hg : HasCompactMulSupport g) : HasCompactMulSupport (f ⊓ g) := by
+theorem HasCompactMulSupport.inf
+    {f g : X → M} (hf : HasCompactMulSupport f) (hg : HasCompactMulSupport g)
+    : HasCompactMulSupport (f ⊓ g) := by
   apply IsCompact.of_isClosed_subset (IsCompact.union hf hg) (isClosed_mulTSupport _)
   rw [mulTSupport, mulTSupport, mulTSupport, ← closure_union]
   apply closure_mono

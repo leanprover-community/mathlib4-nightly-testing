@@ -22,7 +22,8 @@ namespace CategoryTheory
 
 open CategoryTheory.Functor Limits
 
-variable {C D H₁ H₂ : Type*} [Category* C] [Category* D] [Category* H₁] [Category* H₂]
+variable
+  {C D H₁ H₂ : Type*} [Category* C] [Category* D] [Category* H₁] [Category* H₂]
   {G₁ : H₁ ⥤ H₂} {G₂ : H₂ ⥤ H₁}
 
 namespace Adjunction
@@ -34,22 +35,24 @@ section
 variable (F : C ⥤ H₁) (L : C ⥤ D)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The right adjoint of `LeftExtension.postcompose₂ L F G₁` when `G₁` is
-part of an adjunction `adj : G₁ ⊣ G₂`. -/
+/--
+The right adjoint of `LeftExtension.postcompose₂ L F G₁` when `G₁` is
+part of an adjunction `adj : G₁ ⊣ G₂`.
+-/
 @[simps! +dsimpLhs obj_right_obj obj_right_map obj_hom_app map_right_app]
-def leftExtensionPostCompose₂RightAdjoint :
-    L.LeftExtension (F ⋙ G₁) ⥤ L.LeftExtension F :=
-  StructuredArrow.map₂ (F := (whiskeringRight _ _ _).obj G₂)
-    (G := (whiskeringRight _ _ _).obj G₂)
+def leftExtensionPostCompose₂RightAdjoint : L.LeftExtension (F ⋙ G₁) ⥤ L.LeftExtension F :=
+  StructuredArrow.map₂ (F := (whiskeringRight _ _ _).obj G₂) (G := (whiskeringRight _ _ _).obj G₂)
     (F.rightUnitor.inv ≫ whiskerLeft F adj.unit ≫ (associator _ _ _).inv)
     { app _ := (associator _ _ _).hom }
 
 set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The adjunction exhibiting that `LeftExtension.postcompose₂ L F G₁` has a right adjoint
-when `G₁` has. -/
-def leftExtensionPostcompose₂ :
-    LeftExtension.postcompose₂ L F G₁ ⊣ adj.leftExtensionPostCompose₂RightAdjoint F L where
+/--
+The adjunction exhibiting that `LeftExtension.postcompose₂ L F G₁` has a right adjoint
+when `G₁` has.
+-/
+def leftExtensionPostcompose₂
+    : LeftExtension.postcompose₂ L F G₁ ⊣ adj.leftExtensionPostCompose₂RightAdjoint F L where
   unit.app E := StructuredArrow.homMk (whiskerLeft E.right adj.unit)
   counit.app E := StructuredArrow.homMk (whiskerLeft E.right adj.counit)
 
@@ -69,21 +72,24 @@ section
 variable (F : C ⥤ H₂) (L : C ⥤ D)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The left adjoint of `RightExtension.postcompose₂ L F G₂` when `G₂` is
-part of an adjunction `adj : G₁ ⊣ G₂`. -/
+/--
+The left adjoint of `RightExtension.postcompose₂ L F G₂` when `G₂` is
+part of an adjunction `adj : G₁ ⊣ G₂`.
+-/
 @[simps! +dsimpLhs obj_left_obj obj_left_map obj_hom_app map_left_app]
-def rightExtensionPostCompose₂LeftAdjoint :
-    L.RightExtension (F ⋙ G₂) ⥤ L.RightExtension F :=
-  CostructuredArrow.map₂ (F := (whiskeringRight _ _ _).obj G₁)
-    (G := (whiskeringRight _ _ _).obj G₁) { app _ := (associator _ _ _).inv }
+def rightExtensionPostCompose₂LeftAdjoint : L.RightExtension (F ⋙ G₂) ⥤ L.RightExtension F :=
+  CostructuredArrow.map₂ (F := (whiskeringRight _ _ _).obj G₁) (G := (whiskeringRight _ _ _).obj G₁)
+    { app _ := (associator _ _ _).inv }
     ((associator _ _ _).hom ≫ whiskerLeft F adj.counit ≫ F.rightUnitor.hom)
 
 set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The adjunction exhibiting that `RightExtension.postcompose₂ L F G₂` has a left adjoint
-when `G₂` has. -/
-def rightExtensionPostcompose₂ :
-    adj.rightExtensionPostCompose₂LeftAdjoint F L ⊣  RightExtension.postcompose₂ L F G₂ where
+/--
+The adjunction exhibiting that `RightExtension.postcompose₂ L F G₂` has a left adjoint
+when `G₂` has.
+-/
+def rightExtensionPostcompose₂
+    : adj.rightExtensionPostCompose₂LeftAdjoint F L ⊣ RightExtension.postcompose₂ L F G₂ where
   unit.app E := CostructuredArrow.homMk (whiskerLeft E.left adj.unit)
   counit.app E := CostructuredArrow.homMk (whiskerLeft E.left adj.counit)
 
@@ -103,12 +109,10 @@ end Adjunction
 
 namespace Functor
 
-instance [G₁.IsLeftAdjoint] (F : C ⥤ H₁) (L : C ⥤ D) :
-    G₁.PreservesLeftKanExtension F L :=
+instance [G₁.IsLeftAdjoint] (F : C ⥤ H₁) (L : C ⥤ D) : G₁.PreservesLeftKanExtension F L :=
   (Adjunction.ofIsLeftAdjoint G₁).preservesLeftKanExtension F L
 
-instance [G₂.IsRightAdjoint] (F : C ⥤ H₂) (L : C ⥤ D) :
-    G₂.PreservesRightKanExtension F L :=
+instance [G₂.IsRightAdjoint] (F : C ⥤ H₂) (L : C ⥤ D) : G₂.PreservesRightKanExtension F L :=
   (Adjunction.ofIsRightAdjoint G₂).preservesRightKanExtension F L
 
 end Functor

@@ -6,7 +6,6 @@ Authors: Andrew Yang, Riccardo Brasca
 module
 
 public import Mathlib.RingTheory.IntegralClosure.IntegralRestrict
-
 import Mathlib.RingTheory.DedekindDomain.Dvr
 import Mathlib.RingTheory.LocalRing.Quotient
 
@@ -37,17 +36,16 @@ variable [Module.Free R S] [Module.Finite R S]
 
 attribute [local instance] Ideal.Quotient.field
 
-lemma Algebra.trace_quotient_mk [IsLocalRing R] (x : S) :
-    Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x) =
-      Ideal.Quotient.mk p (Algebra.trace R S x) := by
+lemma Algebra.trace_quotient_mk [IsLocalRing R] (x : S)
+    : Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x)
+      = Ideal.Quotient.mk p (Algebra.trace R S x) := by
   let ι := Module.Free.ChooseBasisIndex R S
   let b : Module.Basis ι R S := Module.Free.chooseBasis R S
   rw [trace_eq_matrix_trace b, trace_eq_matrix_trace (basisQuotient b), AddMonoidHom.map_trace]
   congr 1
   ext i j
-  simp only [leftMulMatrix_apply, coe_lmul_eq_mul, LinearMap.toMatrix_apply,
-    basisQuotient_apply, LinearMap.mul_apply', Matrix.map_apply, ← map_mul,
-    basisQuotient_repr]
+  simp only [leftMulMatrix_apply, coe_lmul_eq_mul, LinearMap.toMatrix_apply, basisQuotient_apply,
+    LinearMap.mul_apply', Matrix.map_apply, ← map_mul, basisQuotient_repr]
 
 end IsLocalRing
 
@@ -66,9 +64,9 @@ local notation "pSₚ" => Ideal.map (algebraMap Rₚ Sₚ) (maximalIdeal Rₚ)
 
 variable (S)
 
-lemma trace_quotient_eq_trace_localization_quotient (x) :
-    Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x) =
-      (equivQuotMaximalIdeal p Rₚ).symm
+lemma trace_quotient_eq_trace_localization_quotient (x)
+    : Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x)
+      = (equivQuotMaximalIdeal p Rₚ).symm
         (Algebra.trace (Rₚ ⧸ maximalIdeal Rₚ) (Sₚ ⧸ pSₚ) (algebraMap S _ x)) := by
   have : IsScalarTower R (Rₚ ⧸ maximalIdeal Rₚ) (Sₚ ⧸ pSₚ) := by
     apply IsScalarTower.of_algebraMap_eq'
@@ -86,15 +84,17 @@ lemma trace_quotient_eq_trace_localization_quotient (x) :
 
 open nonZeroDivisors in
 /-- The trace map on `B → A` coincides with the trace map on `B⧸pB → A⧸p`. -/
-lemma Algebra.trace_quotient_eq_of_isDedekindDomain (x) [IsDedekindDomain R] [IsDomain S]
-    [Module.IsTorsionFree R S] [Module.Finite R S] [IsIntegrallyClosed S] :
-    Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x) =
-      Ideal.Quotient.mk p (Algebra.intTrace R S x) := by
+lemma Algebra.trace_quotient_eq_of_isDedekindDomain
+    (x)
+    [IsDedekindDomain R] [IsDomain S] [Module.IsTorsionFree R S] [Module.Finite R S]
+    [IsIntegrallyClosed S]
+    : Algebra.trace (R ⧸ p) (S ⧸ pS) (Ideal.Quotient.mk pS x)
+      = Ideal.Quotient.mk p (Algebra.intTrace R S x) := by
   let Rₚ := Localization.AtPrime p
   let Sₚ := Localization (Algebra.algebraMapSubmonoid S p.primeCompl)
   have e : Algebra.algebraMapSubmonoid S p.primeCompl ≤ S⁰ :=
-    Submonoid.map_le_of_le_comap _ <| p.primeCompl_le_nonZeroDivisors.trans
-      (nonZeroDivisors_le_comap_nonZeroDivisors_of_injective _
+    Submonoid.map_le_of_le_comap _ <|
+      p.primeCompl_le_nonZeroDivisors.trans (nonZeroDivisors_le_comap_nonZeroDivisors_of_injective _
         (FaithfulSMul.algebraMap_injective _ _))
   have : IsIntegrallyClosed Sₚ := isIntegrallyClosed_of_isLocalization _ _ e
   apply (equivQuotMaximalIdeal p Rₚ).injective

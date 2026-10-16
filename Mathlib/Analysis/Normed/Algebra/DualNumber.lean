@@ -31,9 +31,7 @@ variable {R : Type*}
 variable [CommRing R] [Algebra ℚ R]
 variable [UniformSpace R] [IsTopologicalRing R] [T2Space R]
 
-@[simp]
-theorem exp_eps : exp (eps : DualNumber R) = 1 + eps :=
-  exp_inr _
+@[simp] theorem exp_eps : exp (eps : DualNumber R) = 1 + eps := exp_inr _
 
 @[simp]
 theorem exp_smul_eps (r : R) : exp (r • eps : DualNumber R) = 1 + r • eps := by

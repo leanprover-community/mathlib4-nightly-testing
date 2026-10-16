@@ -36,53 +36,55 @@ local infixr:81 " ◁ " => Bicategory.whiskerLeftIso
 local infixl:81 " ▷ " => Bicategory.whiskerRightIso
 
 /-- The composition of the normalizing isomorphisms `η_f : p ≫ f ≅ pf` and `η_g : pf ≫ g ≅ pfg`. -/
-abbrev normalizeIsoComp {p : a ⟶ b} {f : b ⟶ c} {g : c ⟶ d} {pf : a ⟶ c} {pfg : a ⟶ d}
+abbrev normalizeIsoComp
+    {p : a ⟶ b} {f : b ⟶ c} {g : c ⟶ d} {pf : a ⟶ c} {pfg : a ⟶ d}
     (η_f : p ≫ f ≅ pf) (η_g : pf ≫ g ≅ pfg) :=
   (α_ _ _ _).symm ≪≫ whiskerRightIso η_f g ≪≫ η_g
 
 theorem naturality_associator
     {p : a ⟶ b} {f : b ⟶ c} {g : c ⟶ d} {h : d ⟶ e} {pf : a ⟶ c} {pfg : a ⟶ d} {pfgh : a ⟶ e}
-    (η_f : p ≫ f ≅ pf) (η_g : pf ≫ g ≅ pfg) (η_h : pfg ≫ h ≅ pfgh) :
-    p ◁ (α_ f g h) ≪≫ (normalizeIsoComp η_f (normalizeIsoComp η_g η_h)) =
-    (normalizeIsoComp (normalizeIsoComp η_f η_g) η_h) :=
+    (η_f : p ≫ f ≅ pf) (η_g : pf ≫ g ≅ pfg) (η_h : pfg ≫ h ≅ pfgh)
+    : p ◁ (α_ f g h) ≪≫ (normalizeIsoComp η_f (normalizeIsoComp η_g η_h))
+      = (normalizeIsoComp (normalizeIsoComp η_f η_g) η_h) :=
   Iso.ext (by simp)
 
-theorem naturality_leftUnitor {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf) :
-    p ◁ (λ_ f) ≪≫ η_f = normalizeIsoComp (ρ_ p) η_f :=
+theorem naturality_leftUnitor {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf)
+    : p ◁ (λ_ f) ≪≫ η_f = normalizeIsoComp (ρ_ p) η_f :=
   Iso.ext (by simp)
 
-theorem naturality_rightUnitor {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf) :
-    p ◁ (ρ_ f) ≪≫ η_f = normalizeIsoComp η_f (ρ_ pf) :=
+theorem naturality_rightUnitor {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf)
+    : p ◁ (ρ_ f) ≪≫ η_f = normalizeIsoComp η_f (ρ_ pf) :=
   Iso.ext (by simp)
 
-theorem naturality_id {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf) :
-    p ◁ Iso.refl f ≪≫ η_f = η_f :=
+theorem naturality_id {p : a ⟶ b} {f : b ⟶ c} {pf : a ⟶ c} (η_f : p ≫ f ≅ pf)
+    : p ◁ Iso.refl f ≪≫ η_f = η_f :=
   Iso.ext (by simp)
 
-theorem naturality_comp {p : a ⟶ b} {f g h : b ⟶ c} {pf : a ⟶ c} {η : f ≅ g} {θ : g ≅ h}
-    (η_f : p ≫ f ≅ pf) (η_g : p ≫ g ≅ pf) (η_h : p ≫ h ≅ pf)
-    (ih_η : p ◁ η ≪≫ η_g = η_f) (ih_θ : p ◁ θ ≪≫ η_h = η_g) :
-    p ◁ (η ≪≫ θ) ≪≫ η_h = η_f := by
+theorem naturality_comp
+    {p : a ⟶ b} {f g h : b ⟶ c} {pf : a ⟶ c} {η : f ≅ g} {θ : g ≅ h} (η_f : p ≫ f ≅ pf)
+    (η_g : p ≫ g ≅ pf) (η_h : p ≫ h ≅ pf) (ih_η : p ◁ η ≪≫ η_g = η_f) (ih_θ : p ◁ θ ≪≫ η_h = η_g)
+    : p ◁ (η ≪≫ θ) ≪≫ η_h = η_f := by
   rw [← ih_η, ← ih_θ]
   apply Iso.ext (by simp)
 
-theorem naturality_whiskerLeft {p : a ⟶ b} {f : b ⟶ c} {g h : c ⟶ d} {pf : a ⟶ c} {pfg : a ⟶ d}
-    {η : g ≅ h} (η_f : p ≫ f ≅ pf) (η_fg : pf ≫ g ≅ pfg) (η_fh : pf ≫ h ≅ pfg)
-    (ih_η : pf ◁ η ≪≫ η_fh = η_fg) :
-    p ◁ (f ◁ η) ≪≫ normalizeIsoComp η_f η_fh = normalizeIsoComp η_f η_fg := by
+theorem naturality_whiskerLeft
+    {p : a ⟶ b} {f : b ⟶ c} {g h : c ⟶ d} {pf : a ⟶ c} {pfg : a ⟶ d} {η : g ≅ h}
+    (η_f : p ≫ f ≅ pf) (η_fg : pf ≫ g ≅ pfg) (η_fh : pf ≫ h ≅ pfg) (ih_η : pf ◁ η ≪≫ η_fh = η_fg)
+    : p ◁ (f ◁ η) ≪≫ normalizeIsoComp η_f η_fh = normalizeIsoComp η_f η_fg := by
   rw [← ih_η]
   apply Iso.ext (by simp [← whisker_exchange_assoc])
 
-theorem naturality_whiskerRight {p : a ⟶ b} {f g : b ⟶ c} {h : c ⟶ d} {pf : a ⟶ c} {pfh : a ⟶ d}
-    {η : f ≅ g} (η_f : p ≫ f ≅ pf) (η_g : p ≫ g ≅ pf) (η_fh : pf ≫ h ≅ pfh)
-    (ih_η : p ◁ η ≪≫ η_g = η_f) :
-    p ◁ (η ▷ h) ≪≫ normalizeIsoComp η_g η_fh = normalizeIsoComp η_f η_fh := by
+theorem naturality_whiskerRight
+    {p : a ⟶ b} {f g : b ⟶ c} {h : c ⟶ d} {pf : a ⟶ c} {pfh : a ⟶ d} {η : f ≅ g}
+    (η_f : p ≫ f ≅ pf) (η_g : p ≫ g ≅ pf) (η_fh : pf ≫ h ≅ pfh) (ih_η : p ◁ η ≪≫ η_g = η_f)
+    : p ◁ (η ▷ h) ≪≫ normalizeIsoComp η_g η_fh = normalizeIsoComp η_f η_fh := by
   rw [← ih_η]
   apply Iso.ext (by simp)
 
-theorem naturality_inv {p : a ⟶ b} {f g : b ⟶ c} {pf : a ⟶ c}
-    {η : f ≅ g} (η_f : p ≫ f ≅ pf) (η_g : p ≫ g ≅ pf) (ih : p ◁ η ≪≫ η_g = η_f) :
-    p ◁ η.symm ≪≫ η_f = η_g := by
+theorem naturality_inv
+    {p : a ⟶ b} {f g : b ⟶ c} {pf : a ⟶ c} {η : f ≅ g}
+    (η_f : p ≫ f ≅ pf) (η_g : p ≫ g ≅ pf) (ih : p ◁ η ≪≫ η_g = η_f)
+    : p ◁ η.symm ≪≫ η_f = η_g := by
   rw [← ih]
   apply Iso.ext (by simp)
 
@@ -214,27 +216,26 @@ instance : MonadNormalizeNaturality BicategoryM where
     have ih : Q($p ◁ $η ≪≫ $η_g = $η_f) := ih
     return q(naturality_inv $η_f $η_g $ih)
 
-theorem of_normalize_eq {f g f' : a ⟶ b} {η θ : f ≅ g} (η_f : 𝟙 a ≫ f ≅ f') (η_g : 𝟙 a ≫ g ≅ f')
-    (h_η : 𝟙 a ◁ η ≪≫ η_g = η_f)
-    (h_θ : 𝟙 a ◁ θ ≪≫ η_g = η_f) : η = θ := by
+theorem of_normalize_eq
+    {f g f' : a ⟶ b} {η θ : f ≅ g} (η_f : 𝟙 a ≫ f ≅ f') (η_g : 𝟙 a ≫ g ≅ f')
+    (h_η : 𝟙 a ◁ η ≪≫ η_g = η_f) (h_θ : 𝟙 a ◁ θ ≪≫ η_g = η_f)
+    : η = θ := by
   apply Iso.ext
   calc
     η.hom = (λ_ f).inv ≫ η_f.hom ≫ η_g.inv ≫ (λ_ g).hom := by
       simp [← reassoc_of% (congrArg Iso.hom h_η)]
-    _ = θ.hom := by
-      simp [← reassoc_of% (congrArg Iso.hom h_θ)]
+    _ = θ.hom := by simp [← reassoc_of% (congrArg Iso.hom h_θ)]
 
-theorem mk_eq_of_naturality {f g f' : a ⟶ b} {η θ : f ⟶ g} {η' θ' : f ≅ g}
-    (η_f : 𝟙 a ≫ f ≅ f') (η_g : 𝟙 a ≫ g ≅ f')
-    (Hη : η'.hom = η) (Hθ : θ'.hom = θ)
-    (Hη' : whiskerLeftIso (𝟙 a) η' ≪≫ η_g = η_f)
-    (Hθ' : whiskerLeftIso (𝟙 a) θ' ≪≫ η_g = η_f) : η = θ :=
+theorem mk_eq_of_naturality
+    {f g f' : a ⟶ b} {η θ : f ⟶ g} {η' θ' : f ≅ g}
+    (η_f : 𝟙 a ≫ f ≅ f') (η_g : 𝟙 a ≫ g ≅ f') (Hη : η'.hom = η) (Hθ : θ'.hom = θ)
+    (Hη' : whiskerLeftIso (𝟙 a) η' ≪≫ η_g = η_f) (Hθ' : whiskerLeftIso (𝟙 a) θ' ≪≫ η_g = η_f)
+    : η = θ :=
   calc
     η = η'.hom := Hη.symm
     _ = (λ_ f).inv ≫ η_f.hom ≫ η_g.inv ≫ (λ_ g).hom := by
       simp [← reassoc_of% (congrArg Iso.hom Hη')]
-    _ = θ'.hom := by
-      simp [← reassoc_of% (congrArg Iso.hom Hθ')]
+    _ = θ'.hom := by simp [← reassoc_of% (congrArg Iso.hom Hθ')]
     _ = θ := Hθ
 
 end
@@ -267,7 +268,8 @@ instance : MkEqOfNaturality BicategoryM where
 
 open Elab.Tactic
 
-/-- Close the goal of the form `η.hom = θ.hom`, where `η` and `θ` are 2-isomorphisms made up only of
+/--
+Close the goal of the form `η.hom = θ.hom`, where `η` and `θ` are 2-isomorphisms made up only of
 associators, unitors, and identities.
 ```lean
 example {B : Type} [Bicategory B] {a : B} :
@@ -279,7 +281,7 @@ def pureCoherence (mvarId : MVarId) : MetaM (List MVarId) :=
   BicategoryLike.pureCoherence Bicategory.Context `bicategory mvarId
 
 @[inherit_doc pureCoherence]
-elab "bicategory_coherence" : tactic => withMainContext do
-  replaceMainGoal <| ← Bicategory.pureCoherence <| ← getMainGoal
+elab "bicategory_coherence" : tactic =>
+  withMainContext do replaceMainGoal <| ← Bicategory.pureCoherence <| ← getMainGoal
 
 end Mathlib.Tactic.Bicategory

@@ -33,33 +33,43 @@ section Semiring
 variable [Semiring R] [Semiring S]
 
 section AddCommMonoid
-variable [AddCommMonoid M] [Module R M] [Module S M] [AddCommMonoid N] [Module R N]
-  {r : R} {m m₁ m₂ : M}
+variable
+  [AddCommMonoid M] [Module R M] [Module S M] [AddCommMonoid N] [Module R N] {r : R} {m m₁ m₂ : M}
 
 variable (R M) in
-/-- An `R`-module `M` is torsion-free if scalar multiplication by an element `r : R` is injective if
+/--
+An `R`-module `M` is torsion-free if scalar multiplication by an element `r : R` is injective if
 multiplication (on `R`) by `r` is.
 
 For domains, this is equivalent to the usual condition of `r • m = 0 → r = 0 ∨ m = 0`.
-See `smul_eq_zero`. -/
+See `smul_eq_zero`.
+-/
 class Module.IsTorsionFree where
   isSMulRegular ⦃r : R⦄ : IsRegular r → IsSMulRegular M r
 
 alias IsRegular.isSMulRegular := IsTorsionFree.isSMulRegular
 
-instance : IsTorsionFree R R where isSMulRegular _r hr := hr.1
-instance : IsTorsionFree Rᵐᵒᵖ R where isSMulRegular _r hr := hr.unop.2
+instance : IsTorsionFree R R where
+  isSMulRegular _r hr := hr.1
+instance : IsTorsionFree Rᵐᵒᵖ R where
+  isSMulRegular _r hr := hr.unop.2
 
 /-- Pullback an `IsTorsionFree` instance along an injective function. -/
-lemma Function.Injective.moduleIsTorsionFree [IsTorsionFree R N] (f : M → N) (hf : f.Injective)
-    (smul : ∀ (r : R) (m : M), f (r • m) = r • f m) : IsTorsionFree R M where
+lemma Function.Injective.moduleIsTorsionFree
+    [IsTorsionFree R N]
+    (f : M → N) (hf : f.Injective) (smul : ∀ (r : R) (m : M), f (r • m) = r • f m)
+    : IsTorsionFree R M where
   isSMulRegular r hr m₁ m₂ hm := hf <| hr.isSMulRegular <| by simpa [smul] using congr(f $hm)
 
-/-- Pullback an `IsTorsionFree` instance along a function preserving scalar multiplication and
-regular elements. -/
-lemma Module.IsTorsionFree.comap [IsTorsionFree S M] (f : R → S)
-    (isRegular : ∀ r, IsRegular r → IsRegular (f r)) (smul : ∀ (r : R) (m : M), f r • m = r • m) :
-    IsTorsionFree R M where
+/--
+Pullback an `IsTorsionFree` instance along a function preserving scalar multiplication and
+regular elements.
+-/
+lemma Module.IsTorsionFree.comap
+    [IsTorsionFree S M]
+    (f : R → S)
+    (isRegular : ∀ r, IsRegular r → IsRegular (f r)) (smul : ∀ (r : R) (m : M), f r • m = r • m)
+    : IsTorsionFree R M where
   isSMulRegular r hr := (isRegular _ hr).isSMulRegular.of_map f (smul r)
 
 instance HasUniqueDiv.to_isTorsionFree_nat [HasUniqueDiv M] : IsTorsionFree ℕ M where
@@ -77,22 +87,28 @@ variable (M) in
 protected lemma IsRegular.smul_right_injective (hr : IsRegular r) : ((r • ·) : M → M).Injective :=
   hr.isSMulRegular
 
-@[simp] protected lemma IsRegular.smul_right_inj (hr : IsRegular r) : r • m₁ = r • m₂ ↔ m₁ = m₂ :=
+@[simp]
+protected lemma IsRegular.smul_right_inj (hr : IsRegular r) : r • m₁ = r • m₂ ↔ m₁ = m₂ :=
   (hr.smul_right_injective _).eq_iff
 
-@[simp] protected lemma IsRegular.smul_eq_zero_iff_right (hr : IsRegular r) :
-    r • m = 0 ↔ m = 0 := by rw [← hr.smul_right_inj (m₁ := m), smul_zero]
+@[simp]
+protected lemma IsRegular.smul_eq_zero_iff_right (hr : IsRegular r) : r • m = 0 ↔ m = 0 := by
+  rw [← hr.smul_right_inj (m₁ := m), smul_zero]
 
 protected lemma IsRegular.smul_ne_zero_iff_right (hr : IsRegular r) : r • m ≠ 0 ↔ m ≠ 0 :=
   hr.smul_eq_zero_iff_right.ne
 
 variable (R) in
-lemma Module.IsTorsionFree.trans [Module S R] [IsTorsionFree S R] [IsScalarTower S R R]
-    [SMulCommClass S R R] [IsScalarTower S R M] : IsTorsionFree S M where
+lemma Module.IsTorsionFree.trans
+    [Module S R] [IsTorsionFree S R] [IsScalarTower S R R] [SMulCommClass S R R]
+    [IsScalarTower S R M]
+    : IsTorsionFree S M where
   isSMulRegular s hs x y hxy := by
     refine (?_ : IsRegular (s • 1 : R)).isSMulRegular (by simpa using hxy)
-    exact ⟨fun x y hxy ↦ hs.isSMulRegular <| by simpa using hxy,
-      fun x y hxy ↦ hs.isSMulRegular <| by simpa using hxy⟩
+    exact ⟨
+      fun x y hxy ↦ hs.isSMulRegular <| by simpa using hxy,
+      fun x y hxy ↦ hs.isSMulRegular <| by simpa using hxy
+    ⟩
 
 variable [IsCancelMulZero R]
 
@@ -103,7 +119,8 @@ variable (M) in
 lemma smul_right_injective (hr : r ≠ 0) : ((r • ·) : M → M).Injective :=
   (IsRegular.of_ne_zero hr).smul_right_injective _
 
-@[simp] lemma smul_right_inj (hr : r ≠ 0) : r • m₁ = r • m₂ ↔ m₁ = m₂ :=
+@[simp]
+lemma smul_right_inj (hr : r ≠ 0) : r • m₁ = r • m₂ ↔ m₁ = m₂ :=
   (IsRegular.of_ne_zero hr).smul_right_inj
 
 lemma smul_eq_zero_iff_right (hr : r ≠ 0) : r • m = 0 ↔ m = 0 :=
@@ -111,7 +128,8 @@ lemma smul_eq_zero_iff_right (hr : r ≠ 0) : r • m = 0 ↔ m = 0 :=
 
 lemma smul_ne_zero_iff_right (hr : r ≠ 0) : r • m ≠ 0 ↔ m ≠ 0 := (smul_eq_zero_iff_right hr).ne
 
-@[simp] lemma smul_eq_zero : r • m = 0 ↔ r = 0 ∨ m = 0 := by
+@[simp]
+lemma smul_eq_zero : r • m = 0 ↔ r = 0 ∨ m = 0 := by
   obtain rfl | hr := eq_or_ne r 0 <;> simp [smul_eq_zero_iff_right, *]
 
 lemma smul_ne_zero_iff : r • m ≠ 0 ↔ r ≠ 0 ∧ m ≠ 0 := by simp
@@ -175,23 +193,21 @@ theorem isLeftRegular_natCast : IsLeftRegular (n : R) ↔ IsSMulRegular R n := b
 theorem isRightRegular_natCast : IsRightRegular (n : R) ↔ IsSMulRegular R n := by
   simp [IsRightRegular, IsSMulRegular, Nat.cast_comm]
 
-@[simp]
-theorem isRegular_natCast : IsRegular (n : R) ↔ IsSMulRegular R n := by
-  simp [isRegular_iff]
+@[simp] theorem isRegular_natCast : IsRegular (n : R) ↔ IsSMulRegular R n := by simp [isRegular_iff]
 
 end NonAssocSemiring
 
 section Ring
 variable [Ring R] [AddCommGroup M] [Module R M] {m : M} {r₁ r₂ : R}
 
-lemma Module.IsTorsionFree.of_smul_eq_zero [Nontrivial R]
-    (h : ∀ (r : R) (m : M), r • m = 0 → r = 0 ∨ m = 0) :
-    IsTorsionFree R M where
+lemma Module.IsTorsionFree.of_smul_eq_zero
+    [Nontrivial R] (h : ∀ (r : R) (m : M), r • m = 0 → r = 0 ∨ m = 0)
+    : IsTorsionFree R M where
   isSMulRegular r hr m₁ m₂ hm := by
     simpa [sub_eq_zero, hr.ne_zero] using h r (m₁ - m₂) (by simpa [smul_sub, sub_eq_zero] using hm)
 
-lemma Module.isTorsionFree_iff_smul_eq_zero [IsDomain R] :
-    IsTorsionFree R M ↔ ∀ (r : R) (m : M), r • m = 0 → r = 0 ∨ m = 0 where
+lemma Module.isTorsionFree_iff_smul_eq_zero [IsDomain R]
+    : IsTorsionFree R M ↔ ∀ (r : R) (m : M), r • m = 0 → r = 0 ∨ m = 0 where
   mp _ _ _ := smul_eq_zero.1
   mpr := .of_smul_eq_zero
 
@@ -203,8 +219,8 @@ lemma smul_left_injective (hm : m ≠ 0) : ((· • m) : R → M).Injective := b
   dsimp at hr
   rwa [← sub_eq_zero, ← sub_smul, smul_eq_zero_iff_left hm, sub_eq_zero] at hr
 
-@[simp] lemma smul_left_inj (hm : m ≠ 0) : r₁ • m = r₂ • m ↔ r₁ = r₂ :=
-  (smul_left_injective _ hm).eq_iff
+@[simp]
+lemma smul_left_inj (hm : m ≠ 0) : r₁ • m = r₂ • m ↔ r₁ = r₂ := (smul_left_injective _ hm).eq_iff
 
 end Ring
 
@@ -212,8 +228,10 @@ section Semiring
 variable (R M) [Semiring R] [AddCommGroup M] [Module R M]
 
 -- TODO: Add a `ℤ`-specific version of `smul_left_injective` and move this lemma to an earlier file.
-/-- Only a ring of characteristic zero can have a non-trivial module without additive or
-scalar torsion. -/
+/--
+Only a ring of characteristic zero can have a non-trivial module without additive or
+scalar torsion.
+-/
 lemma CharZero.of_hasUniqueDiv [Nontrivial M] [HasUniqueDiv M] : CharZero R := by
   refine ⟨fun {n m h} ↦ ?_⟩
   obtain ⟨x, hx⟩ := exists_ne (0 : M)
@@ -227,8 +245,7 @@ end Semiring
 section NonAssocRing
 variable [NonAssocRing R]
 
-theorem isSelfNeg_of_isSMulRegular_two (h : IsSMulRegular R 2) {a : R} :
-    IsSelfNeg a ↔ a = 0 :=
+theorem isSelfNeg_of_isSMulRegular_two (h : IsSMulRegular R 2) {a : R} : IsSelfNeg a ↔ a = 0 :=
   isSelfNeg_iff_two_nsmul_eq_zero.trans ⟨(h <| by simpa using ·), (by simp [·])⟩
 
 end NonAssocRing

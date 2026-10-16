@@ -6,7 +6,6 @@ Authors: Yaël Dillies, Kexing Ying
 module
 
 public import Mathlib.MeasureTheory.Covering.BesicovitchVectorSpace
-
 import Mathlib.Analysis.Normed.Order.UpperLower
 
 /-!
@@ -54,16 +53,19 @@ open scoped Topology
 
 variable {ι : Type*} [Fintype ι] {s : Set (ι → ℝ)} {x : ι → ℝ}
 
-/-- If we can fit a small ball inside a set `s` intersected with any neighborhood of `x`, then the
+/--
+If we can fit a small ball inside a set `s` intersected with any neighborhood of `x`, then the
 density of `s` near `x` is not `0`.
 
 Along with `aux₁`, this proves that `x` is not a Lebesgue point of `s`. This will be used to prove
-that the frontier of an order-connected set is null. -/
+that the frontier of an order-connected set is null.
+-/
 private lemma aux₀
-    (h : ∀ δ, 0 < δ →
-      ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior s) :
-    ¬Tendsto (fun r ↦ volume (closure s ∩ closedBall x r) / volume (closedBall x r)) (𝓝[>] 0)
-        (𝓝 0) := by
+    (h
+      : ∀ δ, 0 < δ → ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior s)
+    : ¬ Tendsto
+      (fun r ↦ volume (closure s ∩ closedBall x r) / volume (closedBall x r))
+      (𝓝[>] 0) (𝓝 0) := by
   choose f hf₀ hf₁ using h
   intro H
   obtain ⟨ε, -, hε', hε₀⟩ := exists_seq_strictAnti_tendsto_nhdsWithin (0 : ℝ)
@@ -83,24 +85,27 @@ private lemma aux₀
       ← div_pow, mul_div_mul_left _ _ (two_ne_zero' ℝ), div_right_comm, div_self, one_div]
   all_goals positivity
 
-/-- If we can fit a small ball inside a set `sᶜ` intersected with any neighborhood of `x`, then the
+/--
+If we can fit a small ball inside a set `sᶜ` intersected with any neighborhood of `x`, then the
 density of `s` near `x` is not `1`.
 
 Along with `aux₀`, this proves that `x` is not a Lebesgue point of `s`. This will be used to prove
-that the frontier of an order-connected set is null. -/
+that the frontier of an order-connected set is null.
+-/
 private lemma aux₁
-    (h : ∀ δ, 0 < δ →
-      ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior sᶜ) :
-    ¬Tendsto (fun r ↦ volume (closure s ∩ closedBall x r) / volume (closedBall x r)) (𝓝[>] 0)
-        (𝓝 1) := by
+    (h : ∀ δ,
+      0 < δ → ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior sᶜ)
+    : ¬ Tendsto
+      (fun r ↦ volume (closure s ∩ closedBall x r) / volume (closedBall x r))
+      (𝓝[>] 0) (𝓝 1) := by
   choose f hf₀ hf₁ using h
   intro H
   obtain ⟨ε, -, hε', hε₀⟩ := exists_seq_strictAnti_tendsto_nhdsWithin (0 : ℝ)
   refine not_eventually.2
-      (Frequently.of_forall fun _ ↦ lt_irrefl <| 1 - ENNReal.ofReal (4⁻¹ ^ Fintype.card ι))
-      ((Filter.Tendsto.eventually_lt tendsto_const_nhds (H.comp hε₀) <|
-            ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero ?_).mono
-        fun n ↦ lt_of_le_of_lt' ?_)
+    (Frequently.of_forall fun _ ↦ lt_irrefl <| 1 - ENNReal.ofReal (4⁻¹ ^ Fintype.card ι))
+    ((Filter.Tendsto.eventually_lt tendsto_const_nhds (H.comp hε₀) <|
+        ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero ?_).mono
+      fun n ↦ lt_of_le_of_lt' ?_)
   on_goal 2 =>
     calc
       volume (closure s ∩ closedBall x (ε n)) / volume (closedBall x (ε n))
@@ -122,32 +127,32 @@ private lemma aux₁
   · exact measurableSet_closedBall.nullMeasurableSet
 
 theorem IsUpperSet.null_frontier (hs : IsUpperSet s) : volume (frontier s) = 0 := by
-  refine measure_mono_null (fun x hx ↦ ?_)
+  refine measure_mono_null
+    (fun x hx ↦ ?_)
     (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet _
       (isClosed_closure (s := s)).measurableSet)
-  by_cases h : x ∈ closure s <;>
-    simp only [mem_compl_iff, mem_ofPred, h, not_false_eq_true, indicator_of_notMem,
-      indicator_of_mem, Pi.one_apply]
+  by_cases h : x ∈ closure s <;> simp only [mem_compl_iff, mem_ofPred, h, not_false_eq_true,
+    indicator_of_notMem, indicator_of_mem, Pi.one_apply]
   · refine aux₁ fun _ ↦ hs.compl.exists_subset_ball <| frontier_subset_closure ?_
     rwa [frontier_compl]
   · exact aux₀ fun _ ↦ hs.exists_subset_ball <| frontier_subset_closure hx
 
 theorem IsLowerSet.null_frontier (hs : IsLowerSet s) : volume (frontier s) = 0 := by
-  refine measure_mono_null (fun x hx ↦ ?_)
+  refine measure_mono_null
+    (fun x hx ↦ ?_)
     (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet _
       (isClosed_closure (s := s)).measurableSet)
-  by_cases h : x ∈ closure s <;>
-    simp only [mem_compl_iff, mem_ofPred, h, not_false_eq_true, indicator_of_notMem,
-      indicator_of_mem, Pi.one_apply]
+  by_cases h : x ∈ closure s <;> simp only [mem_compl_iff, mem_ofPred, h, not_false_eq_true,
+    indicator_of_notMem, indicator_of_mem, Pi.one_apply]
   · refine aux₁ fun _ ↦ hs.compl.exists_subset_ball <| frontier_subset_closure ?_
     rwa [frontier_compl]
   · exact aux₀ fun _ ↦ hs.exists_subset_ball <| frontier_subset_closure hx
 
 theorem Set.OrdConnected.null_frontier (hs : s.OrdConnected) : volume (frontier s) = 0 := by
   rw [← hs.upperClosure_inter_lowerClosure]
-  exact measure_mono_null (frontier_inter_subset _ _) <| measure_union_null
-    (measure_inter_null_of_null_left _ (UpperSet.upper _).null_frontier)
-    (measure_inter_null_of_null_right _ (LowerSet.lower _).null_frontier)
+  exact measure_mono_null (frontier_inter_subset _ _) <|
+    measure_union_null (measure_inter_null_of_null_left _ (UpperSet.upper _).null_frontier)
+      (measure_inter_null_of_null_right _ (LowerSet.lower _).null_frontier)
 
 protected theorem Set.OrdConnected.nullMeasurableSet (hs : s.OrdConnected) : NullMeasurableSet s :=
   nullMeasurableSet_of_null_frontier hs.null_frontier

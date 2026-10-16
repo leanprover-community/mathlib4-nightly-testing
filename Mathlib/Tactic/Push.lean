@@ -34,22 +34,21 @@ variable (p q : Prop) {α : Sort*} (s : α → Prop)
 attribute [push] not_not not_or Classical.not_imp not_false_eq_true not_true_eq_false
 attribute [push ←] ne_eq
 
-@[push] theorem not_iff : ¬ (p ↔ q) ↔ (p ∧ ¬ q) ∨ (¬ p ∧ q) :=
+@[push]
+theorem not_iff : ¬(p ↔ q) ↔ (p ∧ ¬q) ∨ (¬p ∧ q) :=
   _root_.not_iff.trans <| iff_iff_and_or_not_and_not.trans <| by rw [not_not, or_comm]
-@[push] theorem not_exists : (¬ Exists s) ↔ (∀ x, binderNameHint x s <| ¬ s x) :=
-  _root_.not_exists
+@[push] theorem not_exists : (¬ Exists s) ↔ (∀ x, binderNameHint x s <| ¬ s x) := _root_.not_exists
 
 -- TODO: lemmas involving `∃` should be tagged using `binderNameHint`,
 -- and lemmas involving `∀` would need manual rewriting to keep the binder name.
 attribute [push]
   forall_const forall_and forall_or_left forall_or_right forall_eq forall_eq' Classical.skolem
-  exists_const exists_or exists_and_left exists_and_right exists_eq exists_eq'
-  and_or_left and_or_right and_true true_and and_false false_and
-  or_and_left or_and_right or_true true_or or_false false_or
+  exists_const exists_or exists_and_left exists_and_right exists_eq exists_eq' and_or_left
+  and_or_right and_true true_and and_false false_and or_and_left or_and_right or_true true_or
+  or_false false_or
 
 -- these lemmas are only for the `pull` tactic
-attribute [push low]
-  forall_and_left forall_and_right -- needs lower priority than `forall_and` in the `pull` tactic
+attribute [push low] forall_and_left forall_and_right -- needs lower priority than `forall_and` in the `pull` tactic
 
 attribute [push ←] Function.id_def
 
@@ -57,14 +56,15 @@ attribute [push ←] Function.id_def
 -- @[push high] theorem Nat.not_nonneg_iff_eq_zero (n : Nat) : ¬ 0 < n ↔ n = 0 :=
 --   Nat.not_lt.trans Nat.le_zero
 
-theorem not_and_eq : (¬ (p ∧ q)) = (p → ¬ q) := propext not_and
-theorem not_and_or_eq : (¬ (p ∧ q)) = (¬ p ∨ ¬ q) := propext not_and_or
+theorem not_and_eq : (¬(p ∧ q)) = (p → ¬q) := propext not_and
+theorem not_and_or_eq : (¬(p ∧ q)) = (¬p ∨ ¬q) := propext not_and_or
 theorem not_forall_eq : (¬ ∀ x, s x) = (∃ x, ¬ s x) := propext not_forall
 
 /-- Set `distrib` to true in `push Not` and related tactics. -/
-register_option push_neg.use_distrib : Bool :=
-  { defValue := false
-    descr := "Set `distrib` to true in `push_neg` and related tactics." }
+register_option push_neg.use_distrib : Bool := {
+  defValue := false
+  descr := "Set `distrib` to true in `push_neg` and related tactics."
+}
 
 open Lean Meta Elab.Tactic Parser.Tactic
 
@@ -108,7 +108,8 @@ def pushSimpConfig : Simp.Config where
 /-- Try to rewrite using a `push` lemma. -/
 def pushStep (head : Head) (cfg : Config) : Simp.Simproc := fun e => do
   let e_whnf ← whnf e
-  let some e_head := Head.ofExpr? e_whnf | return Simp.Step.continue
+  let some e_head := Head.ofExpr? e_whnf
+    | return Simp.Step.continue
   unless e_head == head do
     return Simp.Step.continue
   let thms := pushExt.getState (← getEnv)
@@ -122,18 +123,22 @@ def pushStep (head : Head) (cfg : Config) : Simp.Simproc := fun e => do
     return Simp.Step.continue
 
 /-- Common entry point to the implementation of `push`. -/
-def pushCore (head : Head) (cfg : Config) (disch? : Option Simp.Discharge) (tgt : Expr) :
-    MetaM Simp.Result := do
-  let ctx : Simp.Context ← Simp.mkContext pushSimpConfig
-      (simpTheorems := #[])
-      (congrTheorems := ← getSimpCongrTheorems)
-  let methods := match disch? with
-    | none => { pre := pushStep head cfg, post _ := return .continue }
+def pushCore (head : Head) (cfg : Config) (disch? : Option Simp.Discharge) (tgt : Expr)
+    : MetaM Simp.Result := do
+  let ctx : Simp.Context ←
+    Simp.mkContext pushSimpConfig (simpTheorems := #[]) (congrTheorems := ← getSimpCongrTheorems)
+  let methods :=
+    match disch? with
+    | none => {
+      pre := pushStep head cfg
+      post _ := return .continue
+    }
     | some disch => {
-      pre := pushStep head cfg,
-      post _ := return .continue,
-      discharge? := disch,
-      wellBehavedDischarge := false }
+      pre := pushStep head cfg
+      post _ := return .continue
+      discharge? := disch
+      wellBehavedDischarge := false
+    }
   (·.1) <$> Simp.main tgt ctx (methods := methods)
 
 /-- Try to rewrite using a `pull` lemma. -/
@@ -153,10 +158,10 @@ def pullStep (head : Head) : Simp.Simproc := fun e => do
 
 /-- Common entry point to the implementation of `pull`. -/
 def pullCore (head : Head) (tgt : Expr) (disch? : Option Simp.Discharge) : MetaM Simp.Result := do
-  let ctx : Simp.Context ← Simp.mkContext pushSimpConfig
-      (simpTheorems := #[])
-      (congrTheorems := ← getSimpCongrTheorems)
-  let methods := match disch? with
+  let ctx : Simp.Context ←
+    Simp.mkContext pushSimpConfig (simpTheorems := #[]) (congrTheorems := ← getSimpCongrTheorems)
+  let methods :=
+    match disch? with
     | none => { post := pullStep head }
     | some disch => { post := pullStep head, discharge? := disch, wellBehavedDischarge := false }
   (·.1) <$> Simp.main tgt ctx (methods := methods)
@@ -169,8 +174,10 @@ partial def isUnderscore : Term → Bool
   | `(_) | `(fun $_ => _) => true
   | _ => false
 
-/-- `resolvePushId?` is a version of `resolveId?` that also supports notations like `_ ∈ _`,
-`∃ x, _` and `∑ x, _`. -/
+/--
+`resolvePushId?` is a version of `resolveId?` that also supports notations like `_ ∈ _`,
+`∃ x, _` and `∑ x, _`.
+-/
 def resolvePushId? (stx : Term) : TermElabM (Option Expr) := do
   match ← liftMacroM <| expandMacros stx with
   | `($f $args*) =>
@@ -189,23 +196,31 @@ def resolvePushId? (stx : Term) : TermElabM (Option Expr) := do
   | `(binrel% $f _ _)
   | `(binrel_no_prop% $f _ _)
   | `(unop% $f _)
-  | f => try resolveId? f catch _ => return none
+  | f =>
+    try resolveId? f catch _ => return none
 
 /-- Elaborator for the argument passed to `push`. It accepts a constant, or a function -/
-def elabHead (stx : Term) : TermElabM Head := withRef stx do
-  -- we elaborate `stx` to get an appropriate error message if the term isn't well formed,
-  -- and to add hover information
-  _ ← withTheReader Term.Context ({ · with ignoreTCFailures := true }) <|
-    Term.withoutModifyingElabMetaStateWithInfo <| Term.withoutErrToSorry <| Term.elabTerm stx none
-  match stx with
-  | `(fun $_ => _) => return .lambda
-  | `(∀ $_, _) => return .forall
-  | _ =>
-    match ← resolvePushId? stx with
-    | some (.const c _) => return .const c
-    | _ => throwError "Could not resolve `push` argument `{stx}`. \
-      Expected either a constant, e.g. `push Not`, \
-      or notation with underscores, e.g. `push ¬ _`"
+def elabHead (stx : Term) : TermElabM Head :=
+  withRef stx do
+    -- we elaborate `stx` to get an appropriate error message if the term isn't well formed,
+    -- and to add hover information
+    _ ←
+      withTheReader Term.Context ({ · with ignoreTCFailures := true }) <|
+        Term.withoutModifyingElabMetaStateWithInfo <| Term.withoutErrToSorry <|
+          Term.elabTerm stx none
+    match stx with
+    | `(fun $_ => _) =>
+      return .lambda
+    | `(∀ $_, _) =>
+      return .forall
+    | _ =>
+      match ← resolvePushId? stx with
+      | some (.const c _) =>
+        return .const c
+      | _ =>
+        throwError "Could not resolve `push` argument `{stx}`. \
+          Expected either a constant, e.g. `push Not`, \
+          or notation with underscores, e.g. `push ¬ _`"
 
 end ElabHead
 
@@ -214,8 +229,10 @@ def elabDischarger (stx : TSyntax ``discharger) : TacticM Simp.Discharge :=
   (·.2) <$> tacticToDischarge stx.raw[3]
 
 /-- Run the `push` tactic. -/
-def push (cfg : Config) (disch? : Option Simp.Discharge) (head : Head) (loc : Location)
-    (ifUnchanged : BehaviorIfUnchanged := .error) : TacticM Unit := do
+def push
+    (cfg : Config) (disch? : Option Simp.Discharge) (head : Head) (loc : Location)
+    (ifUnchanged : BehaviorIfUnchanged := .error)
+    : TacticM Unit := do
   let cfg := { distrib := cfg.distrib || (← getBoolOption `push_neg.use_distrib) }
   transformAtLocation (pushCore head cfg disch? ·) s!"push {head}" loc ifUnchanged
 
@@ -245,8 +262,9 @@ Examples:
 * `push fun _ ↦ _` rewrites `fun x => f x ^ 2 + 5` into `f ^ 2 + 5`
 * `push ∀ _, _` rewrites `∀ a, p a ∧ q a` into `(∀ a, p a) ∧ (∀ a, q a)`.
 -/
-elab (name := pushStx) "push" cfg:optConfig disch?:(discharger)? head:(ppSpace colGt term)
-    loc:(location)? : tactic => do
+elab (name := pushStx)
+      "push" cfg:optConfig disch?:(discharger)? head:(ppSpace colGt term) loc:(location)?
+    : tactic => do
   let disch? ← disch?.mapM elabDischarger
   let loc := (loc.map expandLocation).getD (.targets #[] true)
   push (← elabPushConfig cfg) disch? (← elabHead head) loc
@@ -281,14 +299,13 @@ example (h : ¬ ∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - y₀
 -/
 elab (name := push_neg) "push_neg" cfg:optConfig loc:(location)? : tactic => do
   -- (since := "2026-03-29")
-  logWarning "`push_neg` has been deprecated. Prefer using `push Not` instead.
-If you'd rather continue using `push_neg` in your project, you can implement it as follows:
-```
-open Lean.Parser.Tactic in
-macro \"push_neg\" cfg:optConfig loc:(location)? : tactic =>
-  `(tactic| push $cfg:optConfig Not $[$loc]?)
-```
-"
+  logWarning "`push_neg` has been deprecated. Prefer using `push Not` instead.\
+    \nIf you'd rather continue using `push_neg` in your project, you can implement it as follows:\
+    \n```\
+    \nopen Lean.Parser.Tactic in\
+    \nmacro \"push_neg\" cfg:optConfig loc:(location)? : tactic =>\
+    \n  `(tactic| push $cfg:optConfig Not $[$loc]?)\
+    \n```\n"
   let loc := (loc.map expandLocation).getD (.targets #[] true)
   push (← elabPushConfig cfg) none (.const ``Not) loc
 
@@ -319,8 +336,8 @@ Examples:
 * `pull (disch := positivity) Real.log` rewrites `log a + 2 * log b` into `log (a * b ^ 2)`.
 * `pull fun _ ↦ _` rewrites `f ^ 2 + 5` into `fun x => f x ^ 2 + 5` where `f` is a function.
 -/
-elab (name := pull) "pull" disch?:(discharger)? head:(ppSpace colGt term) loc:(location)? :
-    tactic => do
+elab (name := pull) "pull" disch?:(discharger)? head:(ppSpace colGt term) loc:(location)?
+    : tactic => do
   let disch? ← disch?.mapM elabDischarger
   let head ← elabHead head
   let loc := (loc.map expandLocation).getD (.targets #[] true)
@@ -337,24 +354,23 @@ section Conv
 @[inherit_doc pushStx]
 elab "push" cfg:optConfig disch?:(discharger)? head:(ppSpace colGt term) : conv =>
   withMainContext do
-  let cfg ← elabPushConfig cfg
-  let cfg := { distrib := cfg.distrib || (← getBoolOption `push_neg.use_distrib) }
-  let disch? ← disch?.mapM elabDischarger
-  let head ← elabHead head
-  -- TODO: this doesn't throw an error when it does nothing.
-  -- Note that conv-mode `simp` has the same problem.
-  Conv.applySimpResult (← pushCore head cfg disch? (← instantiateMVars (← Conv.getLhs)))
+    let cfg ← elabPushConfig cfg
+    let cfg := { distrib := cfg.distrib || (← getBoolOption `push_neg.use_distrib) }
+    let disch? ← disch?.mapM elabDischarger
+    let head ← elabHead head
+    -- TODO: this doesn't throw an error when it does nothing.
+    -- Note that conv-mode `simp` has the same problem.
+    Conv.applySimpResult (← pushCore head cfg disch? (← instantiateMVars (← Conv.getLhs)))
 
 @[inherit_doc push_neg]
 elab "push_neg" cfg:optConfig : conv => do
   -- (since := "2026-03-29")
-  logWarning "`push_neg` has been deprecated. Prefer using `push Not` instead.
-If you'd rather continue using `push_neg` in your project, you can implement it as follows:
-```
-open Lean.Parser.Tactic in
-macro \"push_neg\" cfg:optConfig : conv => `(conv| push $cfg:optConfig Not)
-```
-"
+  logWarning "`push_neg` has been deprecated. Prefer using `push Not` instead.\
+    \nIf you'd rather continue using `push_neg` in your project, you can implement it as follows:\
+    \n```\
+    \nopen Lean.Parser.Tactic in\
+    \nmacro \"push_neg\" cfg:optConfig : conv => `(conv| push $cfg:optConfig Not)\
+    \n```\n"
   evalTactic (← `(conv| push $cfg Not))
 
 /--
@@ -363,15 +379,17 @@ prints the `push head` form of `e`.
 
 `#push` understands local variables, so you can use them to introduce parameters.
 -/
-macro (name := pushCommand) tk:"#push" cfg:optConfig disch?:(discharger)? ppSpace head:term " => "
-    e:term : command =>
+macro (name := pushCommand)
+    tk:"#push" cfg:optConfig disch?:(discharger)? ppSpace head:term " => " e:term
+    : command =>
   `(command| #conv%$tk push $cfg $[$disch?:discharger]? $head:term => $e)
 
 @[inherit_doc pull]
-elab "pull" disch?:(discharger)? head:(ppSpace colGt term) : conv => withMainContext do
-  let disch? ← disch?.mapM elabDischarger
-  let head ← elabHead head
-  Conv.applySimpResult (← pullCore head (← instantiateMVars (← Conv.getLhs)) disch?)
+elab "pull" disch?:(discharger)? head:(ppSpace colGt term) : conv =>
+  withMainContext do
+    let disch? ← disch?.mapM elabDischarger
+    let head ← elabHead head
+    Conv.applySimpResult (← pullCore head (← instantiateMVars (← Conv.getLhs)) disch?)
 
 /--
 The syntax is `#pull head e`, where `head` is a constant and `e` is an expression,
@@ -379,8 +397,8 @@ which will print the `pull head` form of `e`.
 
 `#pull` understands local variables, so you can use them to introduce parameters.
 -/
-macro (name := pullCommand) tk:"#pull" disch?:(discharger)? ppSpace head:term " => " e:term :
-    command =>
+macro (name := pullCommand) tk:"#pull" disch?:(discharger)? ppSpace head:term " => " e:term
+    : command =>
   `(command| #conv%$tk pull $[$disch?:discharger]? $head:term => $e)
 
 end Conv
@@ -396,21 +414,25 @@ syntax (name := pushTree) "#push_discr_tree " (colGt term) : command
 @[command_elab pushTree, inherit_doc pushTree]
 def elabPushTree : Elab.Command.CommandElab := fun stx => do
   Elab.Command.runTermElabM fun _ => do
-  let head ← elabHead ⟨stx[1]⟩
-  let thms := pushExt.getState (← getEnv)
-  let mut logged := false
-  for (key, trie) in thms.root do
-    let matchesHead (k : DiscrTree.Key) : Bool :=
-      match k, head with
-      | .const c _, .const c' => c == c'
-      | .other    , .lambda  => true
-      | .arrow    , .forall  => true
-      | _         , _        => false
-    if matchesHead key then
-      logInfo m! "DiscrTree branch for {key}:{indentD (format trie)}"
-      logged := true
-  unless logged do
-    logInfo m! "There are no `push` theorems for `{head.toString}`"
+    let head ← elabHead ⟨stx[1]⟩
+    let thms := pushExt.getState (← getEnv)
+    let mut logged := false
+    for (key, trie) in thms.root do
+      let matchesHead (k : DiscrTree.Key) : Bool :=
+        match k, head with
+        | .const c _, .const c' =>
+          c == c'
+        | .other, .lambda =>
+          true
+        | .arrow, .forall =>
+          true
+        | _, _ =>
+          false
+      if matchesHead key then
+        logInfo m!"DiscrTree branch for {key}:{indentD (format trie)}"
+        logged := true
+    unless logged do
+      logInfo m!"There are no `push` theorems for `{head.toString}`"
 
 end DiscrTree
 

@@ -22,29 +22,34 @@ open Lean Meta Elab Tactic
 
 namespace Mathlib.Tactic.Choose
 
-/-- Given `α : Sort u`, `nonemp : Nonempty α`, `p : α → Prop`, a context of free variables
+/--
+Given `α : Sort u`, `nonemp : Nonempty α`, `p : α → Prop`, a context of free variables
 `ctx`, and a pair of an element `val : α` and `spec : p val`,
 `mkSometimes u α nonemp p ctx (val, spec)` produces another pair `val', spec'`
 such that `val'` does not have any free variables from elements of `ctx` whose types are
 propositions. This is done by applying `Function.sometimes` to abstract over all the propositional
-arguments. -/
-def mkSometimes (u : Level) (α nonemp p : Expr) :
-    List Expr → Expr × Expr → MetaM (Expr × Expr)
-| [], (val, spec) => pure (val, spec)
-| (e :: ctx), (val, spec) => do
-  let (val, spec) ← mkSometimes u α nonemp p ctx (val, spec)
-  let t ← inferType e
-  let b ← isProp t
-  if b then do
-    let val' ← mkLambdaFVars #[e] val
-    pure
-      (mkApp4 (Expr.const ``Function.sometimes [Level.zero, u]) t α nonemp val',
-      mkApp7 (Expr.const ``Function.sometimes_spec [u]) t α nonemp p val' e spec)
-  else pure (val, spec)
+arguments.
+-/
+def mkSometimes (u : Level) (α nonemp p : Expr) : List Expr → Expr × Expr → MetaM (Expr × Expr)
+  | [], (val, spec) =>
+    pure (val, spec)
+  | (e :: ctx), (val, spec) => do
+    let (val, spec) ← mkSometimes u α nonemp p ctx (val, spec)
+    let t ← inferType e
+    let b ← isProp t
+    if b then do
+      let val' ← mkLambdaFVars #[e] val
+      pure (
+        mkApp4 (Expr.const ``Function.sometimes [Level.zero, u]) t α nonemp val',
+        mkApp7 (Expr.const ``Function.sometimes_spec [u]) t α nonemp p val' e spec
+      )
+    else
+      pure (val, spec)
 
 @[deprecated (since := "2026-05-27")] alias mk_sometimes := mkSometimes
 
-/-- Results of searching for nonempty instances,
+/--
+Results of searching for nonempty instances,
 to eliminate dependencies on propositions (`choose!`).
 `success` means we found at least one instance;
 `failure ts` means we didn't find instances for any `t ∈ ts`.
@@ -58,15 +63,22 @@ inductive ElimStatus
   | success
   | failure (ts : List Expr)
 
-/-- Combine two statuses, keeping a success from either side
-or merging the failures. -/
+/--
+Combine two statuses, keeping a success from either side
+or merging the failures.
+-/
 def ElimStatus.merge : ElimStatus → ElimStatus → ElimStatus
-  | success, _ => success
-  | _, success => success
-  | failure ts₁, failure ts₂ => failure (ts₁ ++ ts₂)
+  | success, _ =>
+    success
+  | _, success =>
+    success
+  | failure ts₁, failure ts₂ =>
+    failure (ts₁ ++ ts₂)
 
-/-- `mkFreshNameFrom orig base` returns `mkFreshUserName base` if ``orig = `_``
-and `orig` otherwise. -/
+/--
+`mkFreshNameFrom orig base` returns `mkFreshUserName base` if ``orig = `_``
+and `orig` otherwise.
+-/
 def mkFreshNameFrom (orig base : Name) : CoreM Name :=
   if orig = `_ then mkFreshUserName base else pure orig
 
@@ -78,33 +90,39 @@ structure ChooseArg where
   name : Name
   /-- Optional expected type annotation -/
   expectedType? : Option Term
-  deriving Inhabited
+deriving Inhabited
 
 /-- A `choose` argument is either a bare identifier or a parenthesized extended binder -/
 syntax chooseBinder := binderIdent <|> Batteries.ExtendedBinder.extBinderParenthesized
 
 open Batteries.ExtendedBinder in
-/-- Parse a `choose` argument from `chooseBinder` syntax. Accepts:
+/--
+Parse a `choose` argument from `chooseBinder` syntax. Accepts:
 - `x` - plain identifier
 - `_` - anonymous
 - `(x : T)` - identifier with type annotation
-- `(_ : T)` - anonymous with type annotation -/
+- `(_ : T)` - anonymous with type annotation
+-/
 def parseChooseArg (stx : TSyntax ``chooseBinder) : MetaM ChooseArg := do
   match stx with
-  | `(chooseBinder| $id:binderIdent) => return parseBinderIdent id
+  | `(chooseBinder| $id:binderIdent) =>
+    return parseBinderIdent id
   | `(chooseBinder| ($id:binderIdent : $ty:term)) =>
     return { parseBinderIdent id with expectedType? := some ty }
   | `(chooseBinder| ($_id:binderIdent $bp:binderPred)) =>
-    throwErrorAt bp "binder predicates like '< n' are not supported by choose; \
-      use a type annotation like '(h : x < n)' instead"
-  | _ => return ⟨stx, `_, none⟩
+    throwErrorAt bp
+      "binder predicates like '< n' are not supported by choose; \
+        use a type annotation like '(h : x < n)' instead"
+  | _ =>
+    return ⟨stx, `_, none⟩
 where
   parseBinderIdent (id : TSyntax ``Lean.binderIdent) : ChooseArg :=
     match id with
     | `(binderIdent| $h:ident) => ⟨h, h.getId, none⟩
     | _ => ⟨id, `_, none⟩
 
-/-- Changes `(h : ∀ xs, ∃ a:α, p a) ⊢ g` to `(d : ∀ xs, a) ⊢ (s : ∀ xs, p (d xs)) → g` and
+/--
+Changes `(h : ∀ xs, ∃ a:α, p a) ⊢ g` to `(d : ∀ xs, a) ⊢ (s : ∀ xs, p (d xs)) → g` and
 `(h : ∀ xs, p xs ∧ q xs) ⊢ g` to `(d : ∀ xs, p xs) ⊢ (s : ∀ xs, q xs) → g`.
 `choose1` returns a tuple of
 
@@ -114,96 +132,111 @@ where
 
 If `nondep` is true and `α` is inhabited, then it will remove the dependency of `d` on
 all propositional assumptions in `xs`. For example if `ys` are propositions then
-`(h : ∀ xs ys, ∃ a:α, p a) ⊢ g` becomes `(d : ∀ xs, a) (s : ∀ xs ys, p (d xs)) ⊢ g`. -/
-def choose1 (g : MVarId) (nondep : Bool) (h : Option Expr) (data : Name) :
-    MetaM (ElimStatus × Expr × MVarId) := do
-  let (g, h) ← match h with
-  | some e => pure (g, e)
-  | none   => do
-    let (e, g) ← g.intro1P
-    pure (g, .fvar e)
+`(h : ∀ xs ys, ∃ a:α, p a) ⊢ g` becomes `(d : ∀ xs, a) (s : ∀ xs ys, p (d xs)) ⊢ g`.
+-/
+def choose1 (g : MVarId) (nondep : Bool) (h : Option Expr) (data : Name)
+    : MetaM (ElimStatus × Expr × MVarId) := do
+  let (g, h) ←
+    match h with
+    | some e =>
+      pure (g, e)
+    | none => do
+      let (e, g) ← g.intro1P
+      pure (g, .fvar e)
   g.withContext do
     let h ← instantiateMVars h
     let t ← inferType h
     forallTelescopeReducing t fun ctx t ↦ do
       (← withTransparency .all (whnf t)).withApp fun
-      | .const ``Exists [u], #[α, p] => do
-        let data ← mkFreshNameFrom data ((← p.getBinderName).getD `h)
-        let ((neFail : ElimStatus), (nonemp : Option Expr)) ← if nondep then
-          let ne := (Expr.const ``Nonempty [u]).app α
-          let m ← mkFreshExprMVar ne
-          let mut g' := m.mvarId!
-          for e in ctx do
-            if (← isProof e) then continue
-            let ty ← whnf (← inferType e)
-            let nety := (Expr.const ``Nonempty [u]).app ty
-            let neval := mkApp2 (Expr.const ``Nonempty.intro [u]) ty e
-            g' ← g'.assert .anonymous nety neval
-          (_, g') ← g'.intros
-          g'.withContext do
-            match ← synthInstance? (← g'.getType) with
-            | some e => do
-              g'.assign e
-              let m ← instantiateMVars m
-              pure (.success, some m)
-            | none => pure (.failure [ne], none)
-        else pure (.failure [], none)
-        let ctx' ← if nonemp.isSome then ctx.filterM (not <$> isProof ·) else pure ctx
-        let dataTy ← mkForallFVars ctx' α
-        let mut dataVal := mkApp3 (.const ``Classical.choose [u]) α p (mkAppN h ctx)
-        let mut specVal := mkApp3 (.const ``Classical.choose_spec [u]) α p (mkAppN h ctx)
-        if let some nonemp := nonemp then
-          (dataVal, specVal) ← mkSometimes u α nonemp p ctx.toList (dataVal, specVal)
-        dataVal ← mkLambdaFVars ctx' dataVal
-        specVal ← mkLambdaFVars ctx specVal
-        let (fvar, g) ← withLocalDeclD .anonymous dataTy fun d ↦ do
-          let specTy ← mkForallFVars ctx (p.app (mkAppN d ctx')).headBeta
-          g.withContext <| withLocalDeclD data dataTy fun d' ↦ do
-            let mvarTy ← mkArrow (specTy.replaceFVar d d') (← g.getType)
-            let newMVar ← mkFreshExprSyntheticOpaqueMVar mvarTy (← g.getTag)
-            g.assign <| mkApp2 (← mkLambdaFVars #[d'] newMVar) dataVal specVal
-            pure (d', newMVar.mvarId!)
-        let g ← match h with
-        | .fvar v => g.clear v
-        | _ => pure g
-        return (neFail, fvar, g)
-      | .const ``And _, #[p, q] => do
-        let data ← mkFreshNameFrom data `h
-        let e1 ← mkLambdaFVars ctx <| mkApp3 (.const ``And.left  []) p q (mkAppN h ctx)
-        let e2 ← mkLambdaFVars ctx <| mkApp3 (.const ``And.right []) p q (mkAppN h ctx)
-        let t1 ← inferType e1
-        let t2 ← inferType e2
-        let (fvar, g) ← (← (← g.assert .anonymous t2 e2).assert data t1 e1).intro1P
-        let g ← match h with
-        | .fvar v => g.clear v
-        | _ => pure g
-        return (.success, .fvar fvar, g)
-      -- TODO: support Σ, ×, or even any inductive type with 1 constructor ?
-      | _, _ => throwError "expected a term of the shape `∀ xs, ∃ a, p xs a` or `∀ xs, p xs ∧ q xs`"
+        | .const ``Exists [u], #[α, p] => do
+          let data ← mkFreshNameFrom data ((← p.getBinderName).getD `h)
+          let ((neFail : ElimStatus), (nonemp : Option Expr)) ←
+            if nondep then
+              let ne := (Expr.const ``Nonempty [u]).app α
+              let m ← mkFreshExprMVar ne
+              let mut g' := m.mvarId!
+              for e in ctx do
+                if (← isProof e) then continue
+                let ty ← whnf (← inferType e)
+                let nety := (Expr.const ``Nonempty [u]).app ty
+                let neval := mkApp2 (Expr.const ``Nonempty.intro [u]) ty e
+                g' ← g'.assert .anonymous nety neval
+              (_, g') ← g'.intros
+              g'.withContext do
+                match ← synthInstance? (← g'.getType) with
+                | some e => do
+                  g'.assign e
+                  let m ← instantiateMVars m
+                  pure (.success, some m)
+                | none =>
+                  pure (.failure [ne], none)
+            else
+              pure (.failure [], none)
+          let ctx' ← if nonemp.isSome then ctx.filterM (not <$> isProof ·) else pure ctx
+          let dataTy ← mkForallFVars ctx' α
+          let mut dataVal := mkApp3 (.const ``Classical.choose [u]) α p (mkAppN h ctx)
+          let mut specVal := mkApp3 (.const ``Classical.choose_spec [u]) α p (mkAppN h ctx)
+          if let some nonemp := nonemp then
+            (dataVal, specVal) ← mkSometimes u α nonemp p ctx.toList (dataVal, specVal)
+          dataVal ← mkLambdaFVars ctx' dataVal
+          specVal ← mkLambdaFVars ctx specVal
+          let (fvar, g) ←
+            withLocalDeclD .anonymous dataTy fun d ↦ do
+              let specTy ← mkForallFVars ctx (p.app (mkAppN d ctx')).headBeta
+              g.withContext <| withLocalDeclD data dataTy fun d' ↦ do
+                let mvarTy ← mkArrow (specTy.replaceFVar d d') (← g.getType)
+                let newMVar ← mkFreshExprSyntheticOpaqueMVar mvarTy (← g.getTag)
+                g.assign <| mkApp2 (← mkLambdaFVars #[d'] newMVar) dataVal specVal
+                pure (d', newMVar.mvarId!)
+          let g ←
+            match h with
+            | .fvar v => g.clear v
+            | _ => pure g
+          return (neFail, fvar, g)
+        | .const ``And _, #[p, q] => do
+          let data ← mkFreshNameFrom data `h
+          let e1 ← mkLambdaFVars ctx <| mkApp3 (.const ``And.left []) p q (mkAppN h ctx)
+          let e2 ← mkLambdaFVars ctx <| mkApp3 (.const ``And.right []) p q (mkAppN h ctx)
+          let t1 ← inferType e1
+          let t2 ← inferType e2
+          let (fvar, g) ← (← (← g.assert .anonymous t2 e2).assert data t1 e1).intro1P
+          let g ←
+            match h with
+            | .fvar v => g.clear v
+            | _ => pure g
+          return (.success, .fvar fvar, g)
+        -- TODO: support Σ, ×, or even any inductive type with 1 constructor ?
+        | _, _ =>
+          throwError "expected a term of the shape `∀ xs, ∃ a, p xs a` or `∀ xs, p xs ∧ q xs`"
 
-/-- A wrapper around `choose1` that parses identifiers, adds variable info to new variables,
-and optionally checks the type annotation. -/
-def choose1WithInfo (g : MVarId) (nondep : Bool) (h : Option Expr) (arg : ChooseArg) :
-    TermElabM (ElimStatus × MVarId) := do
+/--
+A wrapper around `choose1` that parses identifiers, adds variable info to new variables,
+and optionally checks the type annotation.
+-/
+def choose1WithInfo (g : MVarId) (nondep : Bool) (h : Option Expr) (arg : ChooseArg)
+    : TermElabM (ElimStatus × MVarId) := do
   let (status, fvar, g) ← choose1 g nondep h arg.name
-  let g ← g.withContext do
-    Term.addLocalVarInfo arg.ref fvar
-    -- Check type annotation if provided, and use the user-specified type
-    if let some expectedTypeStx := arg.expectedType? then
-      let actualType ← inferType fvar
-      let expectedType ← Term.elabType expectedTypeStx
-      unless ← isDefEq actualType expectedType do
-        throwErrorAt arg.ref m!"type mismatch for '{arg.name}'\n\
-          {← mkHasTypeButIsExpectedMsg actualType expectedType}"
-      -- Change the local declaration to use the user-specified type
-      return ← g.changeLocalDecl fvar.fvarId! expectedType
-    return g
+  let g ←
+    g.withContext do
+      Term.addLocalVarInfo arg.ref fvar
+      -- Check type annotation if provided, and use the user-specified type
+      if let some expectedTypeStx := arg.expectedType? then
+        let actualType ← inferType fvar
+        let expectedType ← Term.elabType expectedTypeStx
+        unless ← isDefEq actualType expectedType do
+          throwErrorAt arg.ref
+            m!"type mismatch for '{arg.name}'\n\
+              {← mkHasTypeButIsExpectedMsg actualType expectedType}"
+        -- Change the local declaration to use the user-specified type
+        return ← g.changeLocalDecl fvar.fvarId! expectedType
+      return g
   pure (status, g)
 
 /-- A loop around `choose1`. The main entry point for the `choose` tactic. -/
-def elabChoose (nondep : Bool) (h : Option Expr) :
-    List ChooseArg → ElimStatus → MVarId → TermElabM MVarId
-  | [], _, _ => throwError "expect list of variables"
+def elabChoose (nondep : Bool) (h : Option Expr)
+    : List ChooseArg → ElimStatus → MVarId → TermElabM MVarId
+  | [], _, _ =>
+    throwError "expect list of variables"
   | [arg], status, g =>
     match nondep, status with
     | true, .failure tys => do -- We expected some elimination, but it didn't happen.
@@ -220,12 +253,13 @@ def elabChoose (nondep : Bool) (h : Option Expr) :
           let actualType ← inferType (.fvar fvar)
           let expectedType ← Term.elabType expectedTypeStx
           unless ← isDefEq actualType expectedType do
-            throwErrorAt arg.ref m!"type mismatch for '{arg.name}'\n\
-              {← mkHasTypeButIsExpectedMsg actualType expectedType}"
+            throwErrorAt arg.ref
+              m!"type mismatch for '{arg.name}'\n\
+                {← mkHasTypeButIsExpectedMsg actualType expectedType}"
           -- Change the local declaration to use the user-specified type
           return ← g.changeLocalDecl fvar expectedType
         return g
-  | arg::args, status, g => do
+  | arg :: args, status, g => do
     let (status', g) ← choose1WithInfo g nondep h arg
     elabChoose nondep none args (status.merge status') g
 
@@ -279,12 +313,13 @@ example (h : ∀ i : ℕ, i < 7 → ∃ j, i < j ∧ j < i+i) : True := by
 syntax (name := choose) "choose" "!"? (ppSpace colGt chooseBinder)+ (" using " term)? : tactic
 
 elab_rules : tactic
-| `(tactic| choose $[!%$b]? $[$ids:chooseBinder]* $[using $h]?) => withMainContext do
-  let h ← h.mapM (Elab.Tactic.elabTerm · none)
-  let args ← ids.toList.mapM (liftM <| parseChooseArg ·)
-  Term.withoutErrToSorry do
-    let g ← elabChoose b.isSome h args (.failure []) (← getMainGoal)
-    replaceMainGoal [g]
+  | `(tactic| choose $[!%$b]? $[$ids:chooseBinder]* $[using $h]?) =>
+    withMainContext do
+      let h ← h.mapM (Elab.Tactic.elabTerm · none)
+      let args ← ids.toList.mapM (liftM <| parseChooseArg ·)
+      Term.withoutErrToSorry do
+        let g ← elabChoose b.isSome h args (.failure []) (← getMainGoal)
+        replaceMainGoal [g]
 
 @[tactic_alt choose]
 syntax "choose!" (ppSpace colGt chooseBinder)+ (" using " term)? : tactic

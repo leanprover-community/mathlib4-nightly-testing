@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Basic
 import Batteries.Tactic.Init
 
@@ -26,12 +27,12 @@ example (a b : Nat) : a ≠ b → ¬ a = b := by
   by_contra H
   contradiction
 
-example (a b : Nat) : ¬¬ a = b → a = b := by
+example (a b : Nat) : ¬ ¬ a = b → a = b := by
   intros
   by_contra H
   contradiction
 
-example (p _q : Prop) : ¬¬ p → p := by
+example (p _q : Prop) : ¬ ¬p → p := by
   intros
   by_contra H
   contradiction

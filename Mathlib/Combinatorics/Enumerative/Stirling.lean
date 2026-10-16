@@ -52,139 +52,143 @@ namespace Nat
 counting the number of permutations of `n` elements with exactly `k` disjoint cycles.
 -/
 def stirlingFirst : ℕ → ℕ → ℕ
-  | 0, 0 => 1
-  | 0, _ + 1 => 0
-  | _ + 1, 0 => 0
-  | n + 1, k + 1 => n * stirlingFirst n (k + 1) + stirlingFirst n k
+  | 0, 0 =>
+    1
+  | 0, _ + 1 =>
+    0
+  | _ + 1, 0 =>
+    0
+  | n + 1, k + 1 =>
+    n * stirlingFirst n (k + 1) + stirlingFirst n k
 
-@[simp]
-theorem stirlingFirst_zero : stirlingFirst 0 0 = 1 :=
-  rfl
+@[simp] theorem stirlingFirst_zero : stirlingFirst 0 0 = 1 := rfl
 
-@[simp]
-theorem stirlingFirst_zero_succ (k : ℕ) : stirlingFirst 0 (succ k) = 0 :=
-  rfl
+@[simp] theorem stirlingFirst_zero_succ (k : ℕ) : stirlingFirst 0 (succ k) = 0 := rfl
 
-@[simp]
-theorem stirlingFirst_succ_zero (n : ℕ) : stirlingFirst (succ n) 0 = 0 :=
-  rfl
+@[simp] theorem stirlingFirst_succ_zero (n : ℕ) : stirlingFirst (succ n) 0 = 0 := rfl
 
-theorem stirlingFirst_succ_left (n k : ℕ) (hk : k ≠ 0) :
-    stirlingFirst (n + 1) k = n * stirlingFirst n k + stirlingFirst n (k - 1) := by
+theorem stirlingFirst_succ_left (n k : ℕ) (hk : k ≠ 0)
+    : stirlingFirst (n + 1) k = n * stirlingFirst n k + stirlingFirst n (k - 1) := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le' (Nat.pos_of_ne_zero hk)
   rfl
 
-theorem stirlingFirst_succ_right (n k : ℕ) (hn : n ≠ 0) :
-    stirlingFirst n (k + 1) =
-      (n - 1) * stirlingFirst (n - 1) (k + 1) + stirlingFirst (n - 1) k := by
+theorem stirlingFirst_succ_right (n k : ℕ) (hn : n ≠ 0)
+    : stirlingFirst n (k + 1)
+      = (n - 1) * stirlingFirst (n - 1) (k + 1) + stirlingFirst (n - 1) k := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le' (Nat.pos_of_ne_zero hn)
   rfl
 
-theorem stirlingFirst_succ_succ (n k : ℕ) :
-    stirlingFirst (n + 1) (k + 1) = n * stirlingFirst n (k + 1) + stirlingFirst n k := by
+theorem stirlingFirst_succ_succ (n k : ℕ)
+    : stirlingFirst (n + 1) (k + 1) = n * stirlingFirst n (k + 1) + stirlingFirst n k := by
   rfl
 
 theorem stirlingFirst_eq_zero_of_lt : ∀ {n k : ℕ}, n < k → stirlingFirst n k = 0
-  | _, 0, hk => absurd hk (Nat.not_lt_zero _)
-  | 0, _ + 1, _ => by rw [stirlingFirst]
+  | _, 0, hk =>
+    absurd hk (Nat.not_lt_zero _)
+  | 0, _ + 1, _ => by
+    rw [stirlingFirst]
   | n + 1, k + 1, hk => by
     rw [stirlingFirst_succ_succ, stirlingFirst_eq_zero_of_lt (Nat.lt_of_succ_lt_succ hk),
       stirlingFirst_eq_zero_of_lt (Nat.lt_of_succ_lt hk), mul_zero]
 
 theorem stirlingFirst_self (n : ℕ) : stirlingFirst n n = 1 := by
-  induction n <;> simp only [*, stirlingFirst, stirlingFirst_eq_zero_of_lt (Nat.lt_succ_self _),
-    mul_zero]
+  induction n
+    <;> simp only [*, stirlingFirst, stirlingFirst_eq_zero_of_lt (Nat.lt_succ_self _), mul_zero]
 
 theorem stirlingFirst_succ_self_left (n : ℕ) : stirlingFirst (n + 1) n = (n + 1).choose 2 := by
   induction n with
-  | zero => simp only [zero_add, stirlingFirst_succ_zero, choose_succ_self]
+  | zero =>
+    simp only [zero_add, stirlingFirst_succ_zero, choose_succ_self]
   | succ n ih =>
     rw [stirlingFirst_succ_succ, ih, stirlingFirst_self, mul_one, Nat.choose_succ_succ (n + 1),
       Nat.choose_one_right]
 
 theorem stirlingFirst_one_right (n : ℕ) : stirlingFirst (n + 1) 1 = n.factorial := by
   induction n with
-  | zero => rfl
+  | zero =>
+    rfl
   | succ n hn =>
     rw [stirlingFirst_succ_succ, zero_add, hn, stirlingFirst_succ_zero]
     simp [Nat.factorial_succ]
-
 
 /--
 `Nat.stirlingSecond n k` is the Stirling number of the second kind,
 counting the number of ways to partition a set of `n` elements into `k` nonempty subsets.
 -/
 def stirlingSecond : ℕ → ℕ → ℕ
-  | 0, 0 => 1
-  | 0, _ + 1 => 0
-  | _ + 1, 0 => 0
+  | 0, 0 =>
+    1
+  | 0, _ + 1 =>
+    0
+  | _ + 1, 0 =>
+    0
   | n + 1, k + 1 =>
     (k + 1) * stirlingSecond n (k + 1) + stirlingSecond n k
 
-@[simp]
-theorem stirlingSecond_zero : stirlingSecond 0 0 = 1 :=
-  rfl
+@[simp] theorem stirlingSecond_zero : stirlingSecond 0 0 = 1 := rfl
 
-@[simp]
-theorem stirlingSecond_zero_succ (k : ℕ) : stirlingSecond 0 (succ k) = 0 :=
-  rfl
+@[simp] theorem stirlingSecond_zero_succ (k : ℕ) : stirlingSecond 0 (succ k) = 0 := rfl
 
-@[simp]
-theorem stirlingSecond_succ_zero (n : ℕ) : stirlingSecond (succ n) 0 = 0 :=
-  rfl
+@[simp] theorem stirlingSecond_succ_zero (n : ℕ) : stirlingSecond (succ n) 0 = 0 := rfl
 
-theorem stirlingSecond_succ_left (n k : ℕ) (hk : k ≠ 0) :
-    stirlingSecond (n + 1) k = k * stirlingSecond n k + stirlingSecond n (k - 1) := by
+theorem stirlingSecond_succ_left (n k : ℕ) (hk : k ≠ 0)
+    : stirlingSecond (n + 1) k = k * stirlingSecond n k + stirlingSecond n (k - 1) := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le' (Nat.pos_of_ne_zero hk)
   rfl
 
-theorem stirlingSecond_succ_right (n k : ℕ) (hn : n ≠ 0) :
-    stirlingSecond n (k + 1) =
-      (k + 1) * stirlingSecond (n - 1) (k + 1) + stirlingSecond (n - 1) k := by
+theorem stirlingSecond_succ_right (n k : ℕ) (hn : n ≠ 0)
+    : stirlingSecond n (k + 1)
+      = (k + 1) * stirlingSecond (n - 1) (k + 1) + stirlingSecond (n - 1) k := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le' (Nat.pos_of_ne_zero hn)
   rfl
 
-theorem stirlingSecond_succ_succ (n k : ℕ) :
-    stirlingSecond (n + 1) (k + 1) =
-      (k + 1) * stirlingSecond n (k + 1) + stirlingSecond n k := rfl
+theorem stirlingSecond_succ_succ (n k : ℕ)
+    : stirlingSecond (n + 1) (k + 1) = (k + 1) * stirlingSecond n (k + 1) + stirlingSecond n k :=
+  rfl
 
 theorem stirlingSecond_eq_zero_of_lt : ∀ {n k : ℕ}, n < k → stirlingSecond n k = 0
-  | _, 0, hk => absurd hk (Nat.not_lt_zero _)
-  | 0, _ + 1, _ => by rw [stirlingSecond]
+  | _, 0, hk =>
+    absurd hk (Nat.not_lt_zero _)
+  | 0, _ + 1, _ => by
+    rw [stirlingSecond]
   | n + 1, k + 1, hk => by
     simp only [stirlingSecond_succ_succ, stirlingSecond_eq_zero_of_lt (Nat.lt_of_succ_lt_succ hk),
       stirlingSecond_eq_zero_of_lt (Nat.lt_of_succ_lt hk), mul_zero]
 
 theorem stirlingSecond_self (n : ℕ) : stirlingSecond n n = 1 := by
-  induction n <;> simp only [*, stirlingSecond, stirlingSecond_eq_zero_of_lt (lt_succ_self _),
-    mul_zero]
+  induction n
+    <;> simp only [*, stirlingSecond, stirlingSecond_eq_zero_of_lt (lt_succ_self _), mul_zero]
 
 theorem stirlingSecond_one_right (n : ℕ) : stirlingSecond (n + 1) 1 = 1 := by
   induction n with
   | zero => rfl
   | succ n ih => rw [stirlingSecond, stirlingSecond_succ_zero, ih]
 
-theorem stirlingSecond_succ_self_left (n : ℕ) :
-    stirlingSecond (n + 1) n = (n + 1).choose 2 := by
+theorem stirlingSecond_succ_self_left (n : ℕ) : stirlingSecond (n + 1) n = (n + 1).choose 2 := by
   induction n with
-  | zero => simp only [zero_add, stirlingSecond_succ_zero, choose_succ_self]
+  | zero =>
+    simp only [zero_add, stirlingSecond_succ_zero, choose_succ_self]
   | succ n ih =>
-    rw [stirlingSecond_succ_succ, ih, stirlingSecond_self, mul_one,
-      Nat.choose_succ_succ (n + 1), Nat.choose_one_right]
+    rw [stirlingSecond_succ_succ, ih, stirlingSecond_self, mul_one, Nat.choose_succ_succ (n + 1),
+      Nat.choose_one_right]
 
-/-- Every power `n ^ k` is a linear combination of the descending factorials `n.descFactorial j`
-with the Stirling numbers of the second kind `stirlingSecond k j` as coefficients. -/
-theorem pow_eq_sum_stirlingSecond_mul_descFactorial (n k : ℕ) :
-    n ^ k = ∑ j ∈ Finset.range (k + 1), stirlingSecond k j * n.descFactorial j := by
+/--
+Every power `n ^ k` is a linear combination of the descending factorials `n.descFactorial j`
+with the Stirling numbers of the second kind `stirlingSecond k j` as coefficients.
+-/
+theorem pow_eq_sum_stirlingSecond_mul_descFactorial (n k : ℕ)
+    : n ^ k = ∑ j ∈ Finset.range (k + 1), stirlingSecond k j * n.descFactorial j := by
   induction k with
-  | zero => simp
+  | zero =>
+    simp
   | succ k ih =>
     have : ∑ j ∈ Finset.range (k + 1), stirlingSecond k j * (j * n.descFactorial j)
         = ∑ j ∈ Finset.range (k + 1),
             (j + 1) * (stirlingSecond k (j + 1) * n.descFactorial (j + 1)) := by
       rw [Finset.sum_range_succ' (fun j ↦ stirlingSecond k j * (j * n.descFactorial j)) k,
-        Finset.sum_range_succ (fun j ↦ (j + 1) * (stirlingSecond k (j + 1) *
-          n.descFactorial (j + 1))) k,
+        Finset.sum_range_succ
+          (fun j ↦ (j + 1) * (stirlingSecond k (j + 1) * n.descFactorial (j + 1)))
+          k,
         stirlingSecond_eq_zero_of_lt k.lt_add_one]
       simp [mul_left_comm]
     rw [pow_succ, ih, Finset.sum_mul,

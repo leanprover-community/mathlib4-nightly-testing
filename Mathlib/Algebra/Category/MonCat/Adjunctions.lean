@@ -28,7 +28,6 @@ from monoids to semigroups.
 
 @[expose] public section
 
-
 universe u
 
 open CategoryTheory
@@ -37,7 +36,7 @@ namespace MonCat
 
 /-- The functor of adjoining a neutral element `one` to a semigroup. -/
 @[to_additive (attr := simps)
-/-- The functor of adjoining a neutral element `zero` to a semigroup -/]
+  /-- The functor of adjoining a neutral element `zero` to a semigroup -/]
 def adjoinOne : Semigrp.{u} ⥤ MonCat.{u} where
   obj S := ↧(WithOne S)
   map f := ofHom (WithOne.mapMulHom f.hom)
@@ -46,24 +45,23 @@ def adjoinOne : Semigrp.{u} ⥤ MonCat.{u} where
 
 @[to_additive]
 instance hasForgetToSemigroup : HasForget₂ MonCat Semigrp where
-  forget₂ :=
-    { obj := fun M => ↧M
-      map f := Semigrp.ofHom f.hom.toMulHom }
+  forget₂ := { obj := fun M => ↧M, map f := Semigrp.ofHom f.hom.toMulHom }
 
 /-- The `adjoinOne`-forgetful adjunction from `Semigrp` to `MonCat`. -/
 @[to_additive /-- The `adjoinZero`-forgetful adjunction from `AddSemigrp` to `AddMonCat` -/]
 def adjoinOneAdj : adjoinOne ⊣ forget₂ MonCat.{u} Semigrp.{u} :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv X Y :=
-        ConcreteCategory.homEquiv.trans (WithOne.lift.symm.trans
-          (ConcreteCategory.homEquiv (X := X) (Y := (forget₂ _ _).obj Y)).symm)
-      homEquiv_naturality_left_symm := by
-        intros
-        ext ⟨_ | _⟩ <;> simp <;> rfl }
+  Adjunction.mkOfHomEquiv {
+    homEquiv X Y :=
+      ConcreteCategory.homEquiv.trans (WithOne.lift.symm.trans (ConcreteCategory.homEquiv (X := X)
+        (Y := (forget₂ _ _).obj Y)).symm)
+    homEquiv_naturality_left_symm := by
+      intros
+      ext ⟨_ | _⟩ <;> simp <;> rfl
+  }
 
 /-- The free functor `Type u ⥤ MonCat` sending a type `X` to the free monoid on `X`. -/
 @[to_additive
-/-- The free functor `Type u ⥤ AddMonCat` sending a type `X` to the free additive monoid on `X`. -/]
+  /-- The free functor `Type u ⥤ AddMonCat` sending a type `X` to the free additive monoid on `X`. -/]
 def free : Type u ⥤ MonCat.{u} where
   obj α := ↧(FreeMonoid α)
   map f := ofHom (FreeMonoid.map f)
@@ -75,34 +73,37 @@ def free : Type u ⥤ MonCat.{u} where
 def adj : free ⊣ forget MonCat.{u} :=
   Adjunction.mkOfHomEquiv
     -- The hint `(C := MonCat)` below speeds up the declaration by 10 times.
-    { homEquiv X Y := (ConcreteCategory.homEquiv (C := MonCat)).trans (FreeMonoid.lift.symm.trans
-        TypeCat.homEquiv.symm)
-      homEquiv_naturality_left_symm _ _ := ConcreteCategory.ext (FreeMonoid.hom_eq fun _ ↦ by rfl) }
+    {
+      homEquiv X Y :=
+        (ConcreteCategory.homEquiv (C := MonCat)).trans
+          (FreeMonoid.lift.symm.trans TypeCat.homEquiv.symm)
+      homEquiv_naturality_left_symm _ _ := ConcreteCategory.ext (FreeMonoid.hom_eq fun _ ↦ by rfl)
+    }
 
-instance : (forget MonCat.{u}).IsRightAdjoint :=
-  ⟨_, ⟨adj⟩⟩
+instance : (forget MonCat.{u}).IsRightAdjoint := ⟨_, ⟨adj⟩⟩
 
 end MonCat
 
 namespace AddCommMonCat
 
-/-- The free functor `Type u ⥤ AddCommMonCat`
-sending a type `X` to the free commutative monoid on `X`. -/
+/--
+The free functor `Type u ⥤ AddCommMonCat`
+sending a type `X` to the free commutative monoid on `X`.
+-/
 @[simps]
-noncomputable
-def free : Type u ⥤ AddCommMonCat.{u} where
+noncomputable def free : Type u ⥤ AddCommMonCat.{u} where
   obj α := ↧(α →₀ ℕ)
   map f := ofHom (Finsupp.mapDomain.addMonoidHom f)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The free-forgetful adjunction for commutative monoids. -/
-noncomputable
-def adj : free ⊣ forget AddCommMonCat.{u} where
+noncomputable def adj : free ⊣ forget AddCommMonCat.{u} where
   unit := { app X := ↾fun i ↦ Finsupp.single i 1 }
-  counit :=
-  { app M := ofHom (Finsupp.liftAddHom (multiplesHom M))
-    naturality {M N} f := by ext1; apply Finsupp.liftAddHom.symm.injective; cat_disch }
+  counit := {
+    app M := ofHom (Finsupp.liftAddHom (multiplesHom M))
+    naturality {M N} f := by ext1; apply Finsupp.liftAddHom.symm.injective; cat_disch
+  }
 
 instance : free.IsLeftAdjoint := ⟨_, ⟨adj⟩⟩
 

@@ -26,16 +26,15 @@ namespace Cardinal
 
 variable {α : Type u} {c d : Cardinal.{u}}
 
-/-- This function sends finite cardinals to the corresponding natural, and infinite cardinals
-  to 0. -/
-noncomputable def toNat : Cardinal →*₀ ℕ :=
-  ENat.toNatHom.comp toENat
+/--
+This function sends finite cardinals to the corresponding natural, and infinite cardinals
+to 0.
+-/
+noncomputable def toNat : Cardinal →*₀ ℕ := ENat.toNatHom.comp toENat
 
 @[simp] lemma toNat_toENat (a : Cardinal) : ENat.toNat (toENat a) = toNat a := rfl
 
-@[simp]
-theorem toNat_ofENat (n : ℕ∞) : toNat n = ENat.toNat n :=
-  congr($(toENat_ofENat n).toNat)
+@[simp] theorem toNat_ofENat (n : ℕ∞) : toNat n = ENat.toNat n := congr($(toENat_ofENat n).toNat)
 
 @[simp, norm_cast] theorem toNat_natCast (n : ℕ) : toNat n = n := toNat_ofENat n
 
@@ -50,8 +49,8 @@ theorem cast_toNat_of_lt_aleph0 {c : Cardinal} (h : c < ℵ₀) : ↑(toNat c) =
   lift c to ℕ using h
   rw [toNat_natCast]
 
-theorem toNat_apply_of_lt_aleph0 {c : Cardinal.{u}} (h : c < ℵ₀) :
-    toNat c = Classical.choose (lt_aleph0.1 h) :=
+theorem toNat_apply_of_lt_aleph0 {c : Cardinal.{u}} (h : c < ℵ₀)
+    : toNat c = Classical.choose (lt_aleph0.1 h) :=
   Nat.cast_injective (R := Cardinal.{u}) <| by
     rw [cast_toNat_of_lt_aleph0 h, ← Classical.choose_spec (lt_aleph0.1 h)]
 
@@ -72,18 +71,17 @@ theorem toNat_monotoneOn : MonotoneOn toNat (Iio ℵ₀) := toNat_strictMonoOn.m
 
 theorem toNat_injOn : InjOn toNat (Iio ℵ₀) := toNat_strictMonoOn.injOn
 
-/-- Two finite cardinals are equal
-iff they are equal their `Cardinal.toNat` projections are equal. -/
-theorem toNat_inj_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) :
-    toNat c = toNat d ↔ c = d :=
+/--
+Two finite cardinals are equal
+iff they are equal their `Cardinal.toNat` projections are equal.
+-/
+theorem toNat_inj_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) : toNat c = toNat d ↔ c = d :=
   toNat_injOn.eq_iff hc hd
 
-theorem toNat_le_iff_le_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) :
-    toNat c ≤ toNat d ↔ c ≤ d :=
+theorem toNat_le_iff_le_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) : toNat c ≤ toNat d ↔ c ≤ d :=
   toNat_strictMonoOn.le_iff_le hc hd
 
-theorem toNat_lt_iff_lt_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) :
-    toNat c < toNat d ↔ c < d :=
+theorem toNat_lt_iff_lt_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) : toNat c < toNat d ↔ c < d :=
   toNat_strictMonoOn.lt_iff_lt hc hd
 
 @[gcongr]
@@ -94,28 +92,21 @@ theorem toNat_lt_toNat (hcd : c < d) (hd : d < ℵ₀) : toNat c < toNat d :=
   toNat_strictMonoOn (hcd.trans hd) hd hcd
 
 @[simp]
-theorem toNat_ofNat (n : ℕ) [n.AtLeastTwo] :
-    Cardinal.toNat ofNat(n) = OfNat.ofNat n :=
+theorem toNat_ofNat (n : ℕ) [n.AtLeastTwo] : Cardinal.toNat ofNat(n) = OfNat.ofNat n :=
   toNat_natCast n
 
 /-- `toNat` has a right-inverse: coercion. -/
-theorem toNat_rightInverse : Function.RightInverse ((↑) : ℕ → Cardinal) toNat :=
-  toNat_natCast
+theorem toNat_rightInverse : Function.RightInverse ((↑) : ℕ → Cardinal) toNat := toNat_natCast
 
-theorem toNat_surjective : Surjective toNat :=
-  toNat_rightInverse.surjective
+theorem toNat_surjective : Surjective toNat := toNat_rightInverse.surjective
 
-@[simp]
-theorem mk_toNat_of_infinite [h : Infinite α] : toNat #α = 0 := by simp
+@[simp] theorem mk_toNat_of_infinite [h : Infinite α] : toNat #α = 0 := by simp
 
-@[simp]
-theorem aleph0_toNat : toNat ℵ₀ = 0 :=
-  toNat_apply_of_aleph0_le le_rfl
+@[simp] theorem aleph0_toNat : toNat ℵ₀ = 0 := toNat_apply_of_aleph0_le le_rfl
 
 theorem mk_toNat_eq_card [Fintype α] : toNat #α = Fintype.card α := by simp
 
-@[simp]
-theorem zero_toNat : toNat 0 = 0 := map_zero _
+@[simp] theorem zero_toNat : toNat 0 = 0 := map_zero _
 
 theorem one_toNat : toNat 1 = 1 := map_one _
 
@@ -123,13 +114,10 @@ theorem toNat_eq_iff {n : ℕ} (hn : n ≠ 0) : toNat c = n ↔ c = n := by
   rw [← toNat_toENat, ENat.toNat_eq_iff hn, toENat_eq_natCast]
 
 /-- A version of `toNat_eq_iff` for literals -/
-theorem toNat_eq_ofNat {n : ℕ} [Nat.AtLeastTwo n] :
-    toNat c = OfNat.ofNat n ↔ c = OfNat.ofNat n :=
+theorem toNat_eq_ofNat {n : ℕ} [Nat.AtLeastTwo n] : toNat c = OfNat.ofNat n ↔ c = OfNat.ofNat n :=
   toNat_eq_iff <| OfNat.ofNat_ne_zero n
 
-@[simp]
-theorem toNat_eq_one : toNat c = 1 ↔ c = 1 := by
-  rw [toNat_eq_iff one_ne_zero, Nat.cast_one]
+@[simp] theorem toNat_eq_one : toNat c = 1 ↔ c = 1 := by rw [toNat_eq_iff one_ne_zero, Nat.cast_one]
 
 theorem toNat_eq_one_iff_unique : toNat #α = 1 ↔ Subsingleton α ∧ Nonempty α :=
   toNat_eq_one.trans eq_one_iff_unique
@@ -150,8 +138,8 @@ theorem toNat_add (hc : c < ℵ₀) (hd : d < ℵ₀) : toNat (c + d) = toNat c 
   lift d to ℕ using hd
   norm_cast
 
-theorem toNat_lift_add_lift {a : Cardinal.{u}} {b : Cardinal.{v}} (ha : a < ℵ₀) (hb : b < ℵ₀) :
-    toNat (lift.{v} a + lift.{u} b) = toNat a + toNat b := by
+theorem toNat_lift_add_lift {a : Cardinal.{u}} {b : Cardinal.{v}} (ha : a < ℵ₀) (hb : b < ℵ₀)
+    : toNat (lift.{v} a + lift.{u} b) = toNat a + toNat b := by
   simp [*]
 
 @[simp]
@@ -160,20 +148,22 @@ lemma natCast_toNat_le (a : Cardinal) : (toNat a : Cardinal) ≤ a := by
   · simp [cast_toNat_of_lt_aleph0 h]
   · simp [Cardinal.toNat_apply_of_aleph0_le h]
 
-lemma toNat_le_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0) :
-    a.toNat ≤ n ↔ a ≤ n := by
+lemma toNat_le_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0)
+    : a.toNat ≤ n ↔ a ≤ n := by
   nth_rw 1 [← Cardinal.toNat_natCast.{u} n,
     Cardinal.toNat_le_iff_le_of_lt_aleph0 lt (Cardinal.natCast_lt_aleph0)]
 
-lemma toNat_eq_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0) :
-    a.toNat = n ↔ a = n := by
+lemma toNat_eq_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0)
+    : a.toNat = n ↔ a = n := by
   nth_rw 2 [← Cardinal.cast_toNat_of_lt_aleph0 lt]
   exact Nat.cast_inj.symm
 
-/-- A `Cardinal.toNat` version of `eq_of_forall_le_iff`.
-This is useful for proving equality of `Module.finrank`. -/
-theorem toNat_eq_of_forall_le_iff {c : Cardinal.{u}} {d : Cardinal.{v}}
-    (h : ∀ n : ℕ, n ≤ c ↔ n ≤ d) : c.toNat = d.toNat := by
+/--
+A `Cardinal.toNat` version of `eq_of_forall_le_iff`.
+This is useful for proving equality of `Module.finrank`.
+-/
+theorem toNat_eq_of_forall_le_iff {c : Cardinal.{u}} {d : Cardinal.{v}} (h : ∀ n : ℕ, n ≤ c ↔ n ≤ d)
+    : c.toNat = d.toNat := by
   have h' := forall_congr' h
   rw [← Cardinal.aleph0_le, ← Cardinal.aleph0_le] at h'
   rcases iff_iff_and_or_not_and_not.mp h' with ⟨hc, hd⟩ | ⟨hc, hd⟩

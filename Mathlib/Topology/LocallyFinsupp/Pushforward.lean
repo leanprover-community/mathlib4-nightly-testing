@@ -32,26 +32,28 @@ specialized to the degree of the residue field extension
 
 open Set TopologicalSpace
 
-variable {X Y R : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-  {f : X → Y} (hf : IsSpectralMap f) (w : X → R)
+variable
+  {X Y R : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  {f : X → Y} (hf : IsSpectralMap f)
+  (w : X → R)
 
 namespace Function.locallyFinsupp
 
-variable [Semiring R] (c : Function.locallyFinsupp X R)
-  [PrespectralSpace Y]
+variable [Semiring R] (c : Function.locallyFinsupp X R) [PrespectralSpace Y]
 
 variable (f) in
 /--
 The pushforward of a function `c` of locally finite support by a spectral map with respect to a
 weight function `w`.
 -/
-noncomputable
-def map (hf : IsSpectralMap f) (c : locallyFinsupp X R) : Function.locallyFinsupp Y R where
+noncomputable def map (hf : IsSpectralMap f) (c : locallyFinsupp X R)
+    : Function.locallyFinsupp Y R where
   toFun z := ∑ᶠ x ∈ f ⁻¹' {z}, c x * w x
   supportWithinDomain' := by simp
   supportLocallyFiniteWithinDomain' y _ := by
-    obtain ⟨U, hU⟩ := (PrespectralSpace.isTopologicalBasis (X := Y)).exists_subset_of_mem_open
-      (by simp : y ∈ ⊤) (by simp)
+    obtain ⟨U, hU⟩ :=
+      (PrespectralSpace.isTopologicalBasis (X := Y)).exists_subset_of_mem_open (by simp : y ∈ ⊤)
+        (by simp)
     refine ⟨U, IsOpen.mem_nhds hU.1.1 hU.2.1, ?_⟩
     suffices h : (U ∩ {z | (f ⁻¹' {z} ∩ support ⇑c).Nonempty}).Finite by
       refine h.subset (inter_subset_inter_right U fun y hy ↦ ?_)
@@ -64,18 +66,19 @@ def map (hf : IsSpectralMap f) (c : locallyFinsupp X R) : Function.locallyFinsup
       (by simp; grind)
 
 @[simp]
-lemma map_apply (hf : IsSpectralMap f) (c : locallyFinsupp X R) (y : Y) :
-    map f w hf c y = ∑ᶠ x ∈ f ⁻¹' {y}, c x * w x := rfl
+lemma map_apply (hf : IsSpectralMap f) (c : locallyFinsupp X R) (y : Y)
+    : map f w hf c y = ∑ᶠ x ∈ f ⁻¹' {y}, c x * w x :=
+  rfl
 
-lemma support_map_subset_of_forall_mem (s : Set X) (t : Set Y) (hc : c.support ⊆ s)
-    (h : ∀ x : X, x ∈ s → w x ≠ 0 → f x ∈ t) : (map f w hf c).support ⊆ t := by
+lemma support_map_subset_of_forall_mem
+    (s : Set X) (t : Set Y) (hc : c.support ⊆ s) (h : ∀ x : X, x ∈ s → w x ≠ 0 → f x ∈ t)
+    : (map f w hf c).support ⊆ t := by
   intro y hy
   obtain ⟨x, (rfl : f x = y), h'⟩ := exists_ne_zero_of_finsum_mem_ne_zero hy
   grind
 
 @[simp]
-lemma map_id [PrespectralSpace X] (hw : ∀ z : X, w z = 1) :
-    map id w isSpectralMap_id c = c := by
+lemma map_id [PrespectralSpace X] (hw : ∀ z : X, w z = 1) : map id w isSpectralMap_id c = c := by
   ext
   simp [map, hw]
 

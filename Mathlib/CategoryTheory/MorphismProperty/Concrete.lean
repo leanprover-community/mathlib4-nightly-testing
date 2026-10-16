@@ -45,8 +45,8 @@ protected def surjective : MorphismProperty C := fun _ _ f => Surjective f
 /-- Bijectivity (in a concrete category) as a `MorphismProperty` -/
 protected def bijective : MorphismProperty C := fun _ _ f => Bijective f
 
-theorem bijective_eq_sup :
-    MorphismProperty.bijective C = MorphismProperty.injective C ⊓ MorphismProperty.surjective C :=
+theorem bijective_eq_sup
+    : MorphismProperty.bijective C = MorphismProperty.injective C ⊓ MorphismProperty.surjective C :=
   rfl
 
 instance : (MorphismProperty.injective C).IsMultiplicative where
@@ -80,33 +80,39 @@ instance : (MorphismProperty.bijective C).IsMultiplicative where
     exact hg.comp hf
 
 instance injective_respectsIso : (MorphismProperty.injective C).RespectsIso :=
-  respectsIso_of_isStableUnderComposition
-    (fun _ _ f (_ : IsIso f) => ((forget C).mapIso (asIso f)).toEquiv.injective)
+  respectsIso_of_isStableUnderComposition (fun _ _ f (_ : IsIso f) =>
+    ((forget C).mapIso (asIso f)).toEquiv.injective)
 
 instance surjective_respectsIso : (MorphismProperty.surjective C).RespectsIso :=
-  respectsIso_of_isStableUnderComposition
-    (fun _ _ f (_ : IsIso f) => ((forget C).mapIso (asIso f)).toEquiv.surjective)
+  respectsIso_of_isStableUnderComposition (fun _ _ f (_ : IsIso f) =>
+    ((forget C).mapIso (asIso f)).toEquiv.surjective)
 
 instance bijective_respectsIso : (MorphismProperty.bijective C).RespectsIso :=
-  respectsIso_of_isStableUnderComposition
-    (fun _ _ f (_ : IsIso f) => ((forget C).mapIso (asIso f)).toEquiv.bijective)
+  respectsIso_of_isStableUnderComposition (fun _ _ f (_ : IsIso f) =>
+    ((forget C).mapIso (asIso f)).toEquiv.bijective)
 
 end MorphismProperty
 
 namespace ConcreteCategory
 
-/-- The property that any morphism in a concrete category can be factored as a surjective
-map followed by an injective map. -/
+/--
+The property that any morphism in a concrete category can be factored as a surjective
+map followed by an injective map.
+-/
 abbrev HasSurjectiveInjectiveFactorization :=
-    (MorphismProperty.surjective C).HasFactorization (MorphismProperty.injective C)
+  (MorphismProperty.surjective C).HasFactorization (MorphismProperty.injective C)
 
-/-- The property that any morphism in a concrete category can be functorially
-factored as a surjective map followed by an injective map. -/
+/--
+The property that any morphism in a concrete category can be functorially
+factored as a surjective map followed by an injective map.
+-/
 abbrev HasFunctorialSurjectiveInjectiveFactorization :=
   (MorphismProperty.surjective C).HasFunctorialFactorization (MorphismProperty.injective C)
 
-/-- The structure containing the data of a functorial factorization of morphisms as
-a surjective map followed by an injective map in a concrete category. -/
+/--
+The structure containing the data of a functorial factorization of morphisms as
+a surjective map followed by an injective map in a concrete category.
+-/
 abbrev FunctorialSurjectiveInjectiveFactorizationData :=
   (MorphismProperty.surjective C).FunctorialFactorizationData (MorphismProperty.injective C)
 
@@ -114,20 +120,21 @@ end ConcreteCategory
 
 open ConcreteCategory
 
-/-- In the category of types, any map can be functorially factored as a surjective
-map followed by an injective map. -/
-def functorialSurjectiveInjectiveFactorizationData :
-    FunctorialSurjectiveInjectiveFactorizationData (Type u) where
+/--
+In the category of types, any map can be functorially factored as a surjective
+map followed by an injective map.
+-/
+def functorialSurjectiveInjectiveFactorizationData
+    : FunctorialSurjectiveInjectiveFactorizationData (Type u) where
   Z.obj f := Set.range f.hom.hom
   Z.map φ := ↾fun y ↦ ⟨φ.right y.1, by obtain ⟨_, x, rfl⟩ := y; exact ⟨φ.left x, congr_hom φ.w x⟩⟩
-  i :=
-    { app := fun f => ↾fun x => ⟨f.hom x, ⟨x, rfl⟩⟩
-      naturality := fun f g φ => by
-        ext x
-        exact congr_hom φ.w x }
-  p :=
-    { app := fun _ => ↾fun y => y.1
-      naturality := by intros; rfl; }
+  i := {
+    app := fun f => ↾fun x => ⟨f.hom x, ⟨x, rfl⟩⟩
+    naturality := fun f g φ => by
+      ext x
+      exact congr_hom φ.w x
+  }
+  p := { app := fun _ => ↾fun y => y.1, naturality := by intros; rfl }
   fac := rfl
   hi := by
     rintro f ⟨_, x, rfl⟩
@@ -137,7 +144,6 @@ def functorialSurjectiveInjectiveFactorizationData :
     exact h
 
 instance : HasFunctorialSurjectiveInjectiveFactorization (Type u) where
-  nonempty_functorialFactorizationData :=
-    ⟨functorialSurjectiveInjectiveFactorizationData⟩
+  nonempty_functorialFactorizationData := ⟨functorialSurjectiveInjectiveFactorizationData⟩
 
 end CategoryTheory

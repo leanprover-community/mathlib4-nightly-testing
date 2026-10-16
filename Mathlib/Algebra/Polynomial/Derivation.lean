@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Polynomial.Module.AEval
 public import Mathlib.RingTheory.Derivation.Basic
-
 import Mathlib.RingTheory.Adjoin.Polynomial.Basic
 /-!
 # Derivations of univariate polynomials
@@ -30,7 +29,7 @@ variable {R A : Type*} [CommSemiring R]
 
 /-- `Polynomial.derivative` as a derivation. -/
 @[simps]
-def derivative' : Derivation R R[X] R[X] where
+def derivative' : Derivation R (R[X]) R[X] where
   toFun := derivative
   map_add' _ _ := derivative_add
   map_smul' := derivative_smul
@@ -39,36 +38,32 @@ def derivative' : Derivation R R[X] R[X] where
 
 variable [AddCommMonoid A] [Module R A] [Module (Polynomial R) A]
 
-@[simp]
-theorem derivation_C (D : Derivation R R[X] A) (a : R) : D (C a) = 0 :=
-  D.map_algebraMap a
+@[simp] theorem derivation_C (D : Derivation R (R[X]) A) (a : R) : D (C a) = 0 := D.map_algebraMap a
 
 @[simp]
-theorem C_smul_derivation_apply (D : Derivation R R[X] A) (a : R) (f : R[X]) :
-    C a • D f = a • D f := by
+theorem C_smul_derivation_apply (D : Derivation R (R[X]) A) (a : R) (f : R[X])
+    : C a • D f = a • D f := by
   have : C a • D f = D (C a * f) := by simp
   rw [this, C_mul', D.map_smul]
 
 @[ext]
-theorem derivation_ext {D₁ D₂ : Derivation R R[X] A} (h : D₁ X = D₂ X) : D₁ = D₂ :=
-  Derivation.ext fun f => Derivation.eqOn_adjoin (Set.eqOn_singleton.2 h) <| by
-    simp only [adjoin_X, Algebra.coe_top, Set.mem_univ]
+theorem derivation_ext {D₁ D₂ : Derivation R (R[X]) A} (h : D₁ X = D₂ X) : D₁ = D₂ :=
+  Derivation.ext fun f =>
+    Derivation.eqOn_adjoin (Set.eqOn_singleton.2 h) <| by
+      simp only [adjoin_X, Algebra.coe_top, Set.mem_univ]
 
 variable [IsScalarTower R (Polynomial R) A]
 variable (R)
 
 /-- The derivation on `R[X]` that takes the value `a` on `X`. -/
 def mkDerivation : A →ₗ[R] Derivation R R[X] A where
-  toFun := fun a ↦ (LinearMap.toSpanSingleton R[X] A a).compDer derivative'
+  toFun := fun a ↦ (LinearMap.toSpanSingleton (R[X]) A a).compDer derivative'
   map_add' := fun a b ↦ by ext; simp
   map_smul' := fun t a ↦ by ext; simp
 
-lemma mkDerivation_apply (a : A) (f : R[X]) :
-    mkDerivation R a f = derivative f • a := by
-  rfl
+lemma mkDerivation_apply (a : A) (f : R[X]) : mkDerivation R a f = derivative f • a := by rfl
 
-@[simp]
-theorem mkDerivation_X (a : A) : mkDerivation R a X = a := by simp [mkDerivation_apply]
+@[simp] theorem mkDerivation_X (a : A) : mkDerivation R a X = a := by simp [mkDerivation_apply]
 
 lemma mkDerivation_one_eq_derivative' : mkDerivation R (1 : R[X]) = derivative' := by
   ext : 1
@@ -80,28 +75,31 @@ lemma mkDerivation_one_eq_derivative (f : R[X]) : mkDerivation R (1 : R[X]) f = 
 
 /-- `Polynomial.mkDerivation` as a linear equivalence. -/
 def mkDerivationEquiv : A ≃ₗ[R] Derivation R R[X] A :=
-  LinearEquiv.symm
-    { invFun := mkDerivation R
-      toFun := fun D => D X
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl
-      left_inv := fun _ => derivation_ext <| mkDerivation_X _ _
-      right_inv := fun _ => mkDerivation_X _ _ }
+  LinearEquiv.symm {
+    invFun := mkDerivation R
+    toFun := fun D => D X
+    map_add' := fun _ _ => rfl
+    map_smul' := fun _ _ => rfl
+    left_inv := fun _ => derivation_ext <| mkDerivation_X _ _
+    right_inv := fun _ => mkDerivation_X _ _
+  }
 
-@[simp] lemma mkDerivationEquiv_apply (a : A) :
-    mkDerivationEquiv R a = mkDerivation R a := by
+@[simp] lemma mkDerivationEquiv_apply (a : A) : mkDerivationEquiv R a = mkDerivation R a := by rfl
+
+@[simp]
+lemma mkDerivationEquiv_symm_apply (D : Derivation R (R[X]) A)
+    : (mkDerivationEquiv R).symm D = D X :=
   rfl
-
-@[simp] lemma mkDerivationEquiv_symm_apply (D : Derivation R R[X] A) :
-    (mkDerivationEquiv R).symm D = D X := rfl
 
 end CommSemiring
 end Polynomial
 
 namespace Derivation
 
-variable {R A M : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] [AddCommMonoid M]
-  [Module A M] [Module R M] [IsScalarTower R A M] (d : Derivation R A M) (a : A)
+variable
+  {R A M : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] [AddCommMonoid M] [Module A M]
+  [Module R M] [IsScalarTower R A M]
+  (d : Derivation R A M) (a : A)
 
 open Polynomial Module
 
@@ -120,10 +118,10 @@ within the definition.
 -/
 @[simps]
 def compAEval : Derivation R R[X] <| AEval R M a where
-  toFun f          := AEval.of R M a (d (aeval a f))
-  map_add'         := by simp
-  map_smul'        := by simp
-  leibniz'         := by simp [AEval.of_aeval_smul, -Derivation.map_aeval]
+  toFun f := AEval.of R M a (d (aeval a f))
+  map_add' := by simp
+  map_smul' := by simp
+  leibniz' := by simp [AEval.of_aeval_smul, -Derivation.map_aeval]
   map_one_eq_zero' := by simp
 
 /--
@@ -133,8 +131,8 @@ $$ d(f(a)) = f' (a) d a. $$
 The equation is in the `R[X]`-module `Module.AEval R M a`.
 For the same equation in `M`, see `Derivation.compAEval_eq`.
 -/
-theorem compAEval_eq (d : Derivation R A M) (f : R[X]) :
-    d.compAEval a f = derivative f • (AEval.of R M a (d a)) := by
+theorem compAEval_eq (d : Derivation R A M) (f : R[X])
+    : d.compAEval a f = derivative f • (AEval.of R M a (d a)) := by
   simpa using AEval.of_aeval_smul _ _ _
 
 /--
@@ -144,8 +142,8 @@ $$ d(f(a)) = f' (a) d a. $$
 The equation is in `M`. For the same equation in `Module.AEval R M a`,
 see `Derivation.compAEval_eq`.
 -/
-theorem comp_aeval_eq (d : Derivation R A M) (f : R[X]) :
-    d (aeval a f) = aeval a (derivative f) • d a :=
+theorem comp_aeval_eq (d : Derivation R A M) (f : R[X])
+    : d (aeval a f) = aeval a (derivative f) • d a :=
   calc
     _ = (AEval.of R M a).symm (d.compAEval a f) := rfl
     _ = _ := by simp [-compAEval_apply, compAEval_eq]

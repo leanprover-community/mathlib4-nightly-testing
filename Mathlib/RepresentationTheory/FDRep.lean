@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Algebra.Category.FGModuleCat.Colimits
 public import Mathlib.Algebra.Category.FGModuleCat.Limits
-public import Mathlib.CategoryTheory.Monoidal.Rigid.Braided  -- shake: keep (`example`)
+public import Mathlib.CategoryTheory.Monoidal.Rigid.Braided -- shake: keep (`example`)
 public import Mathlib.CategoryTheory.Preadditive.Schur
 public import Mathlib.RepresentationTheory.Rep.Basic
 
@@ -55,13 +55,13 @@ open CategoryTheory
 
 open CategoryTheory.Limits
 
-
-/-- The category of finitely generated `R`-linear representations of a monoid `G`.
+/--
+The category of finitely generated `R`-linear representations of a monoid `G`.
 
 Note that `R` can be any ring,
-but the main case of interest is when `R = k` is a field and `G` is a group. -/
-abbrev FDRep (R : Type u) (G : Type v) [Ring R] [Monoid G] :=
-  Action (FGModuleCat.{u} R) G
+but the main case of interest is when `R = k` is a field and `G` is a group.
+-/
+abbrev FDRep (R : Type u) (G : Type v) [Ring R] [Monoid G] := Action (FGModuleCat.{u} R) G
 
 namespace FDRep
 
@@ -73,8 +73,7 @@ example : Preadditive (FDRep R G) := by infer_instance
 example : HasFiniteLimits (FDRep k G) := by infer_instance
 example : Linear R (FDRep R G) := by infer_instance
 
-instance : CoeSort (FDRep R G) (Type u) :=
-  ⟨fun V => V.V⟩
+instance : CoeSort (FDRep R G) (Type u) := ⟨fun V => V.V⟩
 
 example (V : FDRep R G) : Module.Finite R V := by infer_instance
 
@@ -89,14 +88,15 @@ def ρ (V : FDRep R G) : G →* V →ₗ[R] V :=
     (InducedCategory.endEquiv.toMonoidHom.comp (Action.ρ V))
 
 @[simp]
-lemma endRingEquiv_symm_comp_ρ (V : FDRep R G) :
-    (MonoidHom.ofClass (ModuleCat.endRingEquiv V.V.obj).symm).comp (ρ V) =
-      InducedCategory.endEquiv.toMonoidHom.comp (Action.ρ V) :=
+lemma endRingEquiv_symm_comp_ρ (V : FDRep R G)
+    : (MonoidHom.ofClass (ModuleCat.endRingEquiv V.V.obj).symm).comp (ρ V)
+      = InducedCategory.endEquiv.toMonoidHom.comp (Action.ρ V) :=
   rfl
 
-lemma endRingEquiv_comp_ρ (V : FDRep R G) :
-    (MonoidHom.ofClass (ModuleCat.endRingEquiv V.V.obj)).comp
-      (InducedCategory.endEquiv.toMonoidHom.comp (Action.ρ V)) = ρ V :=
+lemma endRingEquiv_comp_ρ (V : FDRep R G)
+    : (MonoidHom.ofClass (ModuleCat.endRingEquiv V.V.obj)).comp
+        (InducedCategory.endEquiv.toMonoidHom.comp (Action.ρ V))
+      = ρ V :=
   rfl
 
 @[simp]
@@ -107,8 +107,8 @@ def isoToLinearEquiv {V W : FDRep R G} (i : V ≅ W) : V ≃ₗ[R] W :=
   FGModuleCat.isoToLinearEquiv ((Action.forget (FGModuleCat R) G).mapIso i)
 
 set_option backward.defeqAttrib.useBackward true in
-theorem Iso.conj_ρ {V W : FDRep R G} (i : V ≅ W) (g : G) :
-    W.ρ g = (FDRep.isoToLinearEquiv i).conj (V.ρ g) := by
+theorem Iso.conj_ρ {V W : FDRep R G} (i : V ≅ W) (g : G)
+    : W.ρ g = (FDRep.isoToLinearEquiv i).conj (V.ρ g) := by
   rw [FDRep.isoToLinearEquiv, ← hom_hom_action_ρ V, ← FGModuleCat.Iso.conj_hom_eq_conj,
     Iso.conj_apply_asHom, ← ModuleCat.hom_ofHom (W.ρ g), ← ModuleCat.hom_ext_iff]
   dsimp only [Action.forget_map, Functor.mapIso_hom]
@@ -117,15 +117,18 @@ theorem Iso.conj_ρ {V W : FDRep R G} (i : V ≅ W) (g : G) :
 
 /-- Lift an unbundled representation to `FDRep`. -/
 @[simps ρ]
-abbrev of {V : Type u} [AddCommGroup V] [Module R V] [Module.Finite R V]
-    (ρ : Representation R G V) : FDRep R G :=
-  ⟨↧V, (MulEquiv.toMonoidHom (MulEquiv.symm InducedCategory.endEquiv)).comp
-    ((ModuleCat.endRingEquiv ↧V).symm.toMonoidHom.comp ρ)⟩
+abbrev of {V : Type u} [AddCommGroup V] [Module R V] [Module.Finite R V] (ρ : Representation R G V)
+    : FDRep R G := ⟨
+  ↧V,
+  (MulEquiv.toMonoidHom (MulEquiv.symm InducedCategory.endEquiv)).comp
+    ((ModuleCat.endRingEquiv ↧V).symm.toMonoidHom.comp ρ)
+⟩
 
 /-- This lemma is about `FDRep.ρ`, instead of `Action.ρ` for `of_ρ`. -/
 @[simp]
-theorem of_ρ' {V : Type u} [AddCommGroup V] [Module R V] [Module.Finite R V] (ρ : G →* V →ₗ[R] V) :
-    (of ρ).ρ = ρ := rfl
+theorem of_ρ' {V : Type u} [AddCommGroup V] [Module R V] [Module.Finite R V] (ρ : G →* V →ₗ[R] V)
+    : (of ρ).ρ = ρ :=
+  rfl
 
 instance : HasForget₂ (FDRep R G) (Rep R G) where
   forget₂ := (forget₂ (FGModuleCat R) (ModuleCat R)).mapAction G ⋙ Rep.ActionToRep R G
@@ -153,25 +156,34 @@ open Module
 instance : HasKernels (FDRep k G) := by infer_instance
 
 open scoped Classical in
-/-- Schur's Lemma: the dimension of the `Hom`-space between two irreducible representation is `0` if
-they are not isomorphic, and `1` if they are. -/
-theorem finrank_hom_simple_simple [IsAlgClosed k] (V W : FDRep k G) [Simple V] [Simple W] :
-    finrank k (V ⟶ W) = if Nonempty (V ≅ W) then 1 else 0 :=
+/--
+Schur's Lemma: the dimension of the `Hom`-space between two irreducible representation is `0` if
+they are not isomorphic, and `1` if they are.
+-/
+theorem finrank_hom_simple_simple [IsAlgClosed k] (V W : FDRep k G) [Simple V] [Simple W]
+    : finrank k (V ⟶ W) = if Nonempty (V ≅ W) then 1 else 0 :=
   CategoryTheory.finrank_hom_simple_simple k V W
 
 /-- The forgetful functor to `Rep k G` preserves hom-sets and their vector space structure. -/
-def forget₂HomLinearEquiv (X Y : FDRep R G) :
-    ((forget₂ (FDRep R G) (Rep R G)).obj X ⟶
-      (forget₂ (FDRep R G) (Rep R G)).obj Y) ≃ₗ[R] X ⟶ Y where
-  toFun f := ⟨InducedCategory.homMk (ModuleCat.ofHom f.hom.toLinearMap), fun g ↦ by
-    ext1
-    simp only [FGModuleCat.obj_carrier]
-    exact f.hom.2 g⟩
+def forget₂HomLinearEquiv (X Y : FDRep R G)
+    : ((forget₂ (FDRep R G) (Rep R G)).obj X ⟶
+        (forget₂ (FDRep R G) (Rep R G)).obj Y) ≃ₗ[R] X ⟶ Y where
+  toFun f := ⟨
+    InducedCategory.homMk (ModuleCat.ofHom f.hom.toLinearMap),
+    fun g ↦ by
+      ext1
+      simp only [FGModuleCat.obj_carrier]
+      exact f.hom.2 g
+  ⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-  invFun f := Rep.ofHom ⟨((forget₂ (FGModuleCat R) (ModuleCat R)).map f.hom).hom, fun g ↦ by
-    ext x
-    congrm $((forget (FGModuleCat R)).congr_map (f.comm g)) x⟩
+  invFun f :=
+    Rep.ofHom ⟨
+      ((forget₂ (FGModuleCat R) (ModuleCat R)).map f.hom).hom,
+      fun g ↦ by
+        ext x
+        congrm $((forget (FGModuleCat R)).congr_map (f.comm g)) x
+    ⟩
 
 instance : (forget₂ (FDRep R G) (Rep R G)).Full := by
   dsimp [forget₂, HasForget₂.forget₂]
@@ -200,20 +212,22 @@ variable (ρV : Representation k G V) (W : FDRep k G)
 open scoped MonoidalCategory
 
 /-- Auxiliary definition for `FDRep.dualTensorIsoLinHom`. -/
-noncomputable def dualTensorIsoLinHomAux :
-    (FDRep.of ρV.dual ⊗ W).V ≅ (FDRep.of (linHom ρV W.ρ)).V :=
+noncomputable def dualTensorIsoLinHomAux
+    : (FDRep.of ρV.dual ⊗ W).V ≅ (FDRep.of (linHom ρV W.ρ)).V :=
   LinearEquiv.toFGModuleCatIso (dualTensorHomEquiv k V W)
 
-/-- When `V` and `W` are finite-dimensional representations of a group `G`, the isomorphism
-`dualTensorHomEquiv k V W` of vector spaces induces an isomorphism of representations. -/
+/--
+When `V` and `W` are finite-dimensional representations of a group `G`, the isomorphism
+`dualTensorHomEquiv k V W` of vector spaces induces an isomorphism of representations.
+-/
 noncomputable def dualTensorIsoLinHom : FDRep.of ρV.dual ⊗ W ≅ FDRep.of (linHom ρV W.ρ) := by
   refine Action.mkIso (dualTensorIsoLinHomAux ρV W) (fun g => ?_)
   ext : 1
   exact dualTensorHom_comm ρV W.ρ g
 
 @[simp]
-theorem dualTensorIsoLinHom_hom_hom :
-    (dualTensorIsoLinHom ρV W).hom.hom = ConcreteCategory.ofHom (dualTensorHom k V W) :=
+theorem dualTensorIsoLinHom_hom_hom
+    : (dualTensorIsoLinHom ρV W).hom.hom = ConcreteCategory.ofHom (dualTensorHom k V W) :=
   rfl
 
 end FDRep

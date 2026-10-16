@@ -26,14 +26,18 @@ variable {C : Type u} [Category.{v} C]
 
 namespace MorphismProperty
 
-/-- The property that the subtype of arrows satisfying a property `P : MorphismProperty C`
-is of cardinality `< κ`. -/
+/--
+The property that the subtype of arrows satisfying a property `P : MorphismProperty C`
+is of cardinality `< κ`.
+-/
 protected abbrev HasCardinalLT (P : MorphismProperty C) (κ : Cardinal.{w}) :=
-    _root_.HasCardinalLT P.toSet κ
+  _root_.HasCardinalLT P.toSet κ
 
-lemma hasCardinalLT_ofHoms {C : Type*} [Category* C]
-    {ι : Type*} {X Y : ι → C} (f : ∀ i, X i ⟶ Y i) {κ : Cardinal}
-    (h : HasCardinalLT ι κ) : (MorphismProperty.ofHoms f).HasCardinalLT κ :=
+lemma hasCardinalLT_ofHoms
+    {C : Type*} [Category* C]
+    {ι : Type*} {X Y : ι → C} (f : ∀ i, X i ⟶ Y i)
+    {κ : Cardinal} (h : HasCardinalLT ι κ)
+    : (MorphismProperty.ofHoms f).HasCardinalLT κ :=
   h.of_surjective (fun i ↦ ⟨Arrow.mk (f i), ⟨i⟩⟩) (by
     rintro ⟨f, hf⟩
     rw [MorphismProperty.mem_toSet_iff, MorphismProperty.ofHoms_iff] at hf
@@ -43,17 +47,16 @@ lemma hasCardinalLT_ofHoms {C : Type*} [Category* C]
 
 lemma HasCardinalLT.iSup
     {ι : Type*} {P : ι → MorphismProperty C} {κ : Cardinal.{w}} [Fact κ.IsRegular]
-    (hP : ∀ i, (P i).HasCardinalLT κ) (hι : HasCardinalLT ι κ) :
-    (⨆ i, P i).HasCardinalLT κ := by
+    (hP : ∀ i, (P i).HasCardinalLT κ) (hι : HasCardinalLT ι κ)
+    : (⨆ i, P i).HasCardinalLT κ := by
   dsimp only [MorphismProperty.HasCardinalLT]
   rw [toSet_iSup]
   exact hasCardinalLT_iUnion _ hι hP
 
 lemma HasCardinalLT.sup
     {P₁ P₂ : MorphismProperty C} {κ : Cardinal.{w}}
-    (h₁ : P₁.HasCardinalLT κ) (h₂ : P₂.HasCardinalLT κ)
-    (hκ : Cardinal.aleph0 ≤ κ) :
-    (P₁ ⊔ P₂).HasCardinalLT κ := by
+    (h₁ : P₁.HasCardinalLT κ) (h₂ : P₂.HasCardinalLT κ) (hκ : Cardinal.aleph0 ≤ κ)
+    : (P₁ ⊔ P₂).HasCardinalLT κ := by
   dsimp only [MorphismProperty.HasCardinalLT]
   rw [MorphismProperty.toSet_max]
   exact hasCardinalLT_union hκ h₁ h₂

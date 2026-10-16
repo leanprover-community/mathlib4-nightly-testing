@@ -34,18 +34,15 @@ structure ProfCat where
 
 initialize_simps_projections ProfCat (-str)
 
-instance : CoeSort ProfCat (Type u) :=
-  ⟨ProfCat.obj⟩
+instance : CoeSort ProfCat (Type u) := ⟨ProfCat.obj⟩
 
 attribute [instance] ProfCat.str
 
 namespace ProfCat
 
-@[simp]
-lemma of_obj (C : Type u) [Category.{v} C] : (of C).obj = C := rfl
+@[simp] lemma of_obj (C : Type u) [Category.{v} C] : (of C).obj = C := rfl
 
-@[simp]
-lemma coe_of (C : ProfCat.{v, u}) : of C = C := rfl
+@[simp] lemma coe_of (C : ProfCat.{v, u}) : of C = C := rfl
 
 end ProfCat
 
@@ -56,12 +53,13 @@ namespace Profunctor
 section
 
 @[reassoc (attr := simp)]
-lemma pentagon {C D E F G : Type u} [Category* C] [Category* D] [Category* E]
-  [Category* F] [Category* G] (P : Profunctor.{max u w} C D) (Q : Profunctor.{max u w} D E)
-    (R : Profunctor.{max u w} E F) (S : Profunctor.{max u w} F G) :
-    whiskerRight S (P.associator Q R).hom ≫
-        (P.associator (Q.comp R) S).hom ≫ P.whiskerLeft (Q.associator R S).hom =
-      ((P.comp Q).associator R S).hom ≫ (P.associator Q (R.comp S)).hom := by
+lemma pentagon
+    {C D E F G : Type u} [Category* C] [Category* D] [Category* E] [Category* F] [Category* G]
+    (P : Profunctor.{max u w} C D) (Q : Profunctor.{max u w} D E) (R : Profunctor.{max u w} E F)
+    (S : Profunctor.{max u w} F G)
+    : whiskerRight S (P.associator Q R).hom ≫ (P.associator (Q.comp R) S).hom
+        ≫ P.whiskerLeft (Q.associator R S).hom
+      = ((P.comp Q).associator R S).hom ≫ (P.associator Q (R.comp S)).hom := by
   ext _ _ ⟨_, ⟨_, ⟨_, _, _⟩, _⟩, _⟩
   rfl
 
@@ -69,10 +67,11 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] Types.chosenCoend_def in
 @[reassoc (attr := simp)]
-lemma triangle {C D E : Type u} [Category* C] [Category.{u} D] [Category* E]
-    (P : Profunctor.{u} C D) (Q : Profunctor.{u} D E) :
-    (P.associator (Profunctor.id (C := D)) Q).hom ≫ P.whiskerLeft (Q.leftUnitor.hom) =
-      whiskerRight Q (P.rightUnitor.hom) := by
+lemma triangle
+    {C D E : Type u} [Category* C] [Category.{u} D] [Category* E]
+    (P : Profunctor.{u} C D) (Q : Profunctor.{u} D E)
+    : (P.associator (Profunctor.id (C := D)) Q).hom ≫ P.whiskerLeft (Q.leftUnitor.hom)
+      = whiskerRight Q (P.rightUnitor.hom) := by
   ext _ _ ⟨_, ⟨_, _, g⟩, _⟩
   dsimp [chosenCoend.map_apply, Quot.map, associatorHomFun]
   symm
@@ -103,9 +102,10 @@ variable {C D : ProfCat.{u, u}} {P Q : C ⟶ D}
 
 /-- Two 2-morphisms in `ProfCat` are equal if they agree on every element. -/
 @[ext]
-lemma hom_ext {η θ : P ⟶ Q}
-    (h : ∀ (X : C) (Y : Dᵒᵖ) (x : (P.obj X).obj Y),
-      (η.app X).app Y x = (θ.app X).app Y x) : η = θ := by
+lemma hom_ext
+    {η θ : P ⟶ Q}
+    (h : ∀ (X : C) (Y : Dᵒᵖ) (x : (P.obj X).obj Y), (η.app X).app Y x = (θ.app X).app Y x)
+    : η = θ := by
   apply NatTrans.ext
   funext X
   apply NatTrans.ext

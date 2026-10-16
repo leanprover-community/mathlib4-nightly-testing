@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Limits.Constructions.LimitsOfProductsAndEqualizers
 public import Mathlib.CategoryTheory.Limits.Constructions.Over.Connected
-
 import Mathlib.CategoryTheory.Limits.Constructions.Over.Products
 
 /-!
@@ -18,7 +17,6 @@ finite limits, and if `C` has arbitrary wide pullbacks then `Over B` has limits.
 -/
 
 public section
-
 
 universe w v u
 

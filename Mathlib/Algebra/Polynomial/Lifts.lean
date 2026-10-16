@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.Algebra.Polynomial.Eval.Subring
-
 import Mathlib.Algebra.Polynomial.Monic
 
 /-!
@@ -44,7 +43,6 @@ that lift is a subalgebra. (By `lift_iff` this is true if `R` is commutative.)
 
 @[expose] public section
 
-
 open Polynomial
 
 noncomputable section
@@ -58,8 +56,7 @@ section Semiring
 variable {R : Type u} [Semiring R] {S : Type v} [Semiring S] {f : R →+* S}
 
 /-- We define the subsemiring of polynomials that lifts as the image of `RingHom.of (map f)`. -/
-def lifts (f : R →+* S) : Subsemiring S[X] :=
-  RingHom.rangeS (mapRingHom f)
+def lifts (f : R →+* S) : Subsemiring S[X] := RingHom.rangeS (mapRingHom f)
 
 theorem mem_lifts (p : S[X]) : p ∈ lifts f ↔ ∃ q : R[X], map f q = p := by
   simp only [coe_mapRingHom, lifts, RingHom.mem_rangeS]
@@ -74,8 +71,8 @@ theorem lifts_iff_coeff_lifts (p : S[X]) : p ∈ lifts f ↔ ∀ n : ℕ, p.coef
   rw [lifts_iff_ringHom_rangeS, mem_map_rangeS f]
   rfl
 
-theorem lifts_iff_coeffs_subset_range (p : S[X]) :
-    p ∈ lifts f ↔ (p.coeffs : Set S) ⊆ Set.range f := by
+theorem lifts_iff_coeffs_subset_range (p : S[X])
+    : p ∈ lifts f ↔ (p.coeffs : Set S) ⊆ Set.range f := by
   rw [lifts_iff_coeff_lifts]
   constructor
   · intro h _ hc
@@ -91,8 +88,7 @@ theorem mem_lifts_of_surjective (hf : Function.Surjective f) (p : S[X]) : p ∈ 
 
 /-- If `(r : R)`, then `C (f r)` lifts. -/
 theorem C_mem_lifts (f : R →+* S) (r : R) : C (f r) ∈ lifts f :=
-  ⟨C r, by
-    simp only [coe_mapRingHom, map_C]⟩
+  ⟨C r, by simp only [coe_mapRingHom, map_C]⟩
 
 /-- If `(s : S)` is in the image of `f`, then `C s` lifts. -/
 theorem C'_mem_lifts {f : R →+* S} {s : S} (h : s ∈ Set.range f) : C s ∈ lifts f := by
@@ -102,13 +98,11 @@ theorem C'_mem_lifts {f : R →+* S} {s : S} (h : s ∈ Set.range f) : C s ∈ l
 
 /-- The polynomial `X` lifts. -/
 theorem X_mem_lifts (f : R →+* S) : (X : S[X]) ∈ lifts f :=
-  ⟨X, by
-    simp only [coe_mapRingHom, map_X]⟩
+  ⟨X, by simp only [coe_mapRingHom, map_X]⟩
 
 /-- The polynomial `X ^ n` lifts. -/
 theorem X_pow_mem_lifts (f : R →+* S) (n : ℕ) : (X ^ n : S[X]) ∈ lifts f :=
-  ⟨X ^ n, by
-    simp only [coe_mapRingHom, map_pow, map_X]⟩
+  ⟨X ^ n, by simp only [coe_mapRingHom, map_pow, map_X]⟩
 
 /-- If `p` lifts and `(r : R)` then `r * p` lifts. -/
 theorem base_mul_mem_lifts {p : S[X]} (r : R) (hp : p ∈ lifts f) : C (f r) * p ∈ lifts f := by
@@ -136,8 +130,8 @@ theorem erase_mem_lifts {p : S[X]} (n : ℕ) (h : p ∈ lifts f) : p.erase n ∈
 
 section LiftDeg
 
-theorem monomial_mem_lifts_and_degree_eq {s : S} {n : ℕ} (hl : monomial n s ∈ lifts f) :
-    ∃ q : R[X], map f q = monomial n s ∧ q.degree = (monomial n s).degree := by
+theorem monomial_mem_lifts_and_degree_eq {s : S} {n : ℕ} (hl : monomial n s ∈ lifts f)
+    : ∃ q : R[X], map f q = monomial n s ∧ q.degree = (monomial n s).degree := by
   rcases eq_or_ne s 0 with rfl | h
   · exact ⟨0, by simp⟩
   obtain ⟨a, rfl⟩ := coeff_monomial_same n s ▸ (monomial n s).lifts_iff_coeff_lifts.mp hl n
@@ -146,8 +140,8 @@ theorem monomial_mem_lifts_and_degree_eq {s : S} {n : ℕ} (hl : monomial n s �
   exact mt (fun ha ↦ ha ▸ map_zero f) h
 
 /-- A polynomial that lifts can be lifted to a polynomial of the same support. -/
-theorem exists_support_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f) :
-    ∃ q : R[X], map f q = p ∧ q.support = p.support := by
+theorem exists_support_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f)
+    : ∃ q : R[X], map f q = p ∧ q.support = p.support := by
   rw [lifts_iff_coeff_lifts] at hlifts
   let g : ℕ → R := fun k ↦ (hlifts k).choose
   have hg : ∀ k, f (g k) = p.coeff k := fun k ↦ (hlifts k).choose_spec
@@ -160,23 +154,26 @@ theorem exists_support_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f) :
   exact ⟨q, hq, hq'⟩
 
 /-- A polynomial lifts if and only if it can be lifted to a polynomial of the same degree. -/
-theorem exists_degree_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f) :
-    ∃ q : R[X], map f q = p ∧ q.degree = p.degree := by
+theorem exists_degree_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f)
+    : ∃ q : R[X], map f q = p ∧ q.degree = p.degree := by
   obtain ⟨q, hq, hq'⟩ := exists_support_eq_of_mem_lifts hlifts
   exact ⟨q, hq, congrArg Finset.max hq'⟩
 
-theorem exists_natDegree_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f) :
-    ∃ q, map f q = p ∧ q.natDegree = p.natDegree :=
+theorem exists_natDegree_eq_of_mem_lifts {p : S[X]} (hlifts : p ∈ lifts f)
+    : ∃ q, map f q = p ∧ q.natDegree = p.natDegree :=
   (exists_degree_eq_of_mem_lifts hlifts).imp fun _ ↦ And.imp_right natDegree_eq_of_degree_eq
 
 end LiftDeg
 
 section Monic
 
-/-- A monic polynomial lifts if and only if it can be lifted to a monic polynomial
-of the same degree. -/
-theorem lifts_and_degree_eq_and_monic [Nontrivial S] {p : S[X]} (hlifts : p ∈ lifts f)
-    (hp : p.Monic) : ∃ q : R[X], map f q = p ∧ q.degree = p.degree ∧ q.Monic := by
+/--
+A monic polynomial lifts if and only if it can be lifted to a monic polynomial
+of the same degree.
+-/
+theorem lifts_and_degree_eq_and_monic
+    [Nontrivial S] {p : S[X]} (hlifts : p ∈ lifts f) (hp : p.Monic)
+    : ∃ q : R[X], map f q = p ∧ q.degree = p.degree ∧ q.Monic := by
   rw [lifts_iff_coeff_lifts] at hlifts
   let g : ℕ → R := fun k ↦ (hlifts k).choose
   have hg k : f (g k) = p.coeff k := (hlifts k).choose_spec
@@ -187,8 +184,8 @@ theorem lifts_and_degree_eq_and_monic [Nontrivial S] {p : S[X]} (hlifts : p ∈ 
   have h : q.Monic := monic_X_pow_add (by simp_rw [← Fin.sum_univ_eq_sum_range, degree_sum_fin_lt])
   exact ⟨q, hq, hq ▸ (h.degree_map f).symm, h⟩
 
-theorem lifts_and_natDegree_eq_and_monic {p : S[X]} (hlifts : p ∈ lifts f) (hp : p.Monic) :
-    ∃ q : R[X], map f q = p ∧ q.natDegree = p.natDegree ∧ q.Monic := by
+theorem lifts_and_natDegree_eq_and_monic {p : S[X]} (hlifts : p ∈ lifts f) (hp : p.Monic)
+    : ∃ q : R[X], map f q = p ∧ q.natDegree = p.natDegree ∧ q.Monic := by
   rcases subsingleton_or_nontrivial S with hR | hR
   · obtain rfl : p = 1 := Subsingleton.elim _ _
     exact ⟨1, Subsingleton.elim _ _, by simp, by simp⟩
@@ -204,11 +201,12 @@ section Ring
 variable {R : Type u} [Ring R] {S : Type v} [Ring S] (f : R →+* S)
 
 /-- The subring of polynomials that lift. -/
-def liftsRing (f : R →+* S) : Subring S[X] :=
-  RingHom.range (mapRingHom f)
+def liftsRing (f : R →+* S) : Subring S[X] := RingHom.range (mapRingHom f)
 
-/-- If `R` and `S` are rings, `p` is in the subring of polynomials that lift if and only if it is in
-the subsemiring of polynomials that lift. -/
+/--
+If `R` and `S` are rings, `p` is in the subring of polynomials that lift if and only if it is in
+the subsemiring of polynomials that lift.
+-/
 theorem lifts_iff_liftsRing (p : S[X]) : p ∈ lifts f ↔ p ∈ liftsRing f := by
   simp only [lifts, liftsRing, RingHom.mem_range, RingHom.mem_rangeS]
 
@@ -219,18 +217,19 @@ section Algebra
 variable {R : Type u} [CommSemiring R] {S : Type v} [Semiring S] [Algebra R S]
 
 /-- A polynomial `p` lifts if and only if it is in the image of `mapAlg`. -/
-theorem mem_lifts_iff_mem_alg (R : Type u) [CommSemiring R] {S : Type v} [Semiring S] [Algebra R S]
-    (p : S[X]) : p ∈ lifts (algebraMap R S) ↔ p ∈ AlgHom.range (@mapAlg R _ S _ _) := by
+theorem mem_lifts_iff_mem_alg
+    (R : Type u) [CommSemiring R] {S : Type v} [Semiring S] [Algebra R S] (p : S[X])
+    : p ∈ lifts (algebraMap R S) ↔ p ∈ AlgHom.range (@mapAlg R _ S _ _) := by
   simp only [coe_mapRingHom, lifts, mapAlg_eq_map, AlgHom.mem_range, RingHom.mem_rangeS]
 
 /-- If `p` lifts and `(r : R)` then `r • p` lifts. -/
-theorem smul_mem_lifts {p : S[X]} (r : R) (hp : p ∈ lifts (algebraMap R S)) :
-    r • p ∈ lifts (algebraMap R S) := by
+theorem smul_mem_lifts {p : S[X]} (r : R) (hp : p ∈ lifts (algebraMap R S))
+    : r • p ∈ lifts (algebraMap R S) := by
   rw [mem_lifts_iff_mem_alg] at hp ⊢
   exact Subalgebra.smul_mem (mapAlg R S).range hp r
 
-theorem monic_of_monic_mapAlg [FaithfulSMul R S] {p : Polynomial R} (hp : (mapAlg R S p).Monic) :
-    p.Monic :=
+theorem monic_of_monic_mapAlg [FaithfulSMul R S] {p : Polynomial R} (hp : (mapAlg R S p).Monic)
+    : p.Monic :=
   monic_of_injective (FaithfulSMul.algebraMap_injective R S) hp
 
 end Algebra

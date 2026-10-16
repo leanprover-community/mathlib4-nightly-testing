@@ -29,16 +29,22 @@ namespace Ordinal
 
 variable {a b o : Ordinal}
 
-/-- A fundamental sequence for `o` is a strictly monotonic function `Iio o.cof.ord → Iio o` with
-cofinal range. We provide `a = o.cof.ord` explicitly to avoid type rewrites. -/
+/--
+A fundamental sequence for `o` is a strictly monotonic function `Iio o.cof.ord → Iio o` with
+cofinal range. We provide `a = o.cof.ord` explicitly to avoid type rewrites.
+-/
 structure IsFundamentalSeq (f : Iio a → Iio o) : Prop where
-  /-- This condition alongside the others is enough to conclude `o.cof.ord = a`, see
-  `IsFundamentalSeq.ord_cof`. -/
+  /--
+  This condition alongside the others is enough to conclude `o.cof.ord = a`, see
+  `IsFundamentalSeq.ord_cof`.
+  -/
   le_ord_cof : a ≤ o.cof.ord
   /-- A fundamental sequence is strictly monotonic. -/
   strictMono : StrictMono f
-  /-- A fundamental sequence for `o` has cofinal range, i.e. its least strict upper bound equals the
-  ordinal `o`. See `IsFundamentalSeq.iSup_add_one_eq` and `IsFundamentalSeq.iSup_eq`. -/
+  /--
+  A fundamental sequence for `o` has cofinal range, i.e. its least strict upper bound equals the
+  ordinal `o`. See `IsFundamentalSeq.iSup_add_one_eq` and `IsFundamentalSeq.iSup_eq`.
+  -/
   isCofinal_range : IsCofinal (range f)
 
 namespace IsFundamentalSeq
@@ -78,25 +84,27 @@ protected theorem zero (f : Iio 0 → Iio 0) : IsFundamentalSeq f where
   isCofinal_range := .of_isEmpty
 
 /-- The length one sequence `(o)` is a fundamental sequence for `o + 1`. -/
-protected theorem add_one (o : Ordinal) :
-    @IsFundamentalSeq 1 (o + 1) fun _ ↦ ⟨o, mem_Iio.2 <| lt_add_one o⟩ where
+protected theorem add_one (o : Ordinal)
+    : @IsFundamentalSeq 1 (o + 1) fun _ ↦ ⟨o, mem_Iio.2 <| lt_add_one o⟩ where
   strictMono _ := by simp
   le_ord_cof := by simp
   isCofinal_range := by simp [IsTop]
 
-protected theorem comp (hf : IsFundamentalSeq f) (hg : IsFundamentalSeq g) :
-    IsFundamentalSeq (f ∘ g) where
+protected theorem comp (hf : IsFundamentalSeq f) (hg : IsFundamentalSeq g)
+    : IsFundamentalSeq (f ∘ g) where
   strictMono := hf.strictMono.comp hg.strictMono
   le_ord_cof := by rw [hf.ord_cof, ← hg.ord_cof]; exact a.ord_cof_le
   isCofinal_range := by
     rw [range_comp]
     exact hg.isCofinal_range.image hf.strictMono.monotone hf.isCofinal_range
 
-/-- If `f` is a fundamental sequence for a limit ordinal `o` and `g` is normal, then `g ∘ f` is a
-fundamental sequence for `g o`. -/
-theorem comp_isNormal {g : Ordinal → Ordinal}
-    (hg : IsNormal g) (hf : IsFundamentalSeq f) (ho : IsSuccLimit o) :
-    IsFundamentalSeq fun i ↦ ⟨g (f i), mem_Iio.2 <| hg.strictMono.imp <| mem_Iio.1 (f i).2⟩ where
+/--
+If `f` is a fundamental sequence for a limit ordinal `o` and `g` is normal, then `g ∘ f` is a
+fundamental sequence for `g o`.
+-/
+theorem comp_isNormal
+    {g : Ordinal → Ordinal} (hg : IsNormal g) (hf : IsFundamentalSeq f) (ho : IsSuccLimit o)
+    : IsFundamentalSeq fun i ↦ ⟨g (f i), mem_Iio.2 <| hg.strictMono.imp <| mem_Iio.1 (f i).2⟩ where
   strictMono := hg.strictMono.comp hf.strictMono
   le_ord_cof := by rw [cof_map_of_isNormal hg ho, hf.ord_cof]
   isCofinal_range := by
@@ -114,8 +122,7 @@ theorem exists_isFundamentalSeq (ha : o.cof.ord = a) : ∃ f : Iio a → Iio o, 
   subst ha
   obtain ⟨s, hs, hs'⟩ := exists_ord_cof_eq o.ToType
   rw [cof_toType] at hs'
-  let g := (Set.orderIsoOfEq _ _ (congrArg _ hs'.symm)).trans <|
-    .ofRelIsoLT (enum (α := s) (· < ·))
+  let g := (Set.orderIsoOfEq _ _ (congrArg _ hs'.symm)).trans <| .ofRelIsoLT (enum (α := s) (· < ·))
   refine ⟨fun i ↦ g i, le_rfl, fun _ ↦ by simp, ?_⟩
   rw [range_comp', OrderIso.map_isCofinal_iff, range_comp', g.range_eq]
   simpa

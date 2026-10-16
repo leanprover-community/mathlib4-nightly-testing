@@ -27,39 +27,40 @@ Get all metavariables which `mvarId` depends on. These are the metavariables
 which occur in the target or local context or delayed assignment (if any) of
 `mvarId`, plus the metavariables which occur in these metavariables, etc.
 -/
-partial def getUnassignedGoalMVarDependencies (mvarId : MVarId) :
-    MetaM (Std.HashSet MVarId) :=
+partial def getUnassignedGoalMVarDependencies (mvarId : MVarId) : MetaM (Std.HashSet MVarId) :=
   return (← go mvarId |>.run {}).snd
 where
-    /-- auxiliary function for `getUnassignedGoalMVarDependencies` -/
-    addMVars (e : Expr) : StateRefT (Std.HashSet MVarId) MetaM Unit := do
-      let mvars ← getMVars e
-      let mut s ← get
-      set ({} : Std.HashSet MVarId) -- Ensure that `s` is not shared.
-      for mvarId in mvars do
-        unless ← mvarId.isDelayedAssigned do
-          s := s.insert mvarId
-      set s
-      mvars.forM go
-    /-- auxiliary function for `getUnassignedGoalMVarDependencies` -/
-    go (mvarId : MVarId) : StateRefT (Std.HashSet MVarId) MetaM Unit :=
-      withIncRecDepth do
-        let mdecl ← mvarId.getDecl
-        addMVars mdecl.type
-        for ldecl in mdecl.lctx do
-          addMVars ldecl.type
-          if let (some val) := ldecl.value? then
-            addMVars val
-        if let (some ass) ← getDelayedMVarAssignment? mvarId then
-          let pendingMVarId := ass.mvarIdPending
-          unless ← pendingMVarId.isAssigned <||> pendingMVarId.isDelayedAssigned do
-            modify (·.insert pendingMVarId)
-          go pendingMVarId
+  /-- auxiliary function for `getUnassignedGoalMVarDependencies` -/
+  addMVars (e : Expr) : StateRefT (Std.HashSet MVarId) MetaM Unit := do
+    let mvars ← getMVars e
+    let mut s ← get
+    set ({} : Std.HashSet MVarId) -- Ensure that `s` is not shared.
+    for mvarId in mvars do
+      unless ← mvarId.isDelayedAssigned do
+        s := s.insert mvarId
+    set s
+    mvars.forM go
+  /-- auxiliary function for `getUnassignedGoalMVarDependencies` -/
+  go (mvarId : MVarId) : StateRefT (Std.HashSet MVarId) MetaM Unit :=
+    withIncRecDepth do
+      let mdecl ← mvarId.getDecl
+      addMVars mdecl.type
+      for ldecl in mdecl.lctx do
+        addMVars ldecl.type
+        if let (some val) := ldecl.value? then
+          addMVars val
+      if let (some ass) ← getDelayedMVarAssignment? mvarId then
+        let pendingMVarId := ass.mvarIdPending
+        unless ← pendingMVarId.isAssigned <||> pendingMVarId.isDelayedAssigned do
+          modify (·.insert pendingMVarId)
+        go pendingMVarId
 
-/-- `recover tacs` applies the tactic (sequence) `tacs` and then re-adds goals that were
+/--
+`recover tacs` applies the tactic (sequence) `tacs` and then re-adds goals that were
 incorrectly marked as closed. This helps to debug issues where a tactic closes goals without
 solving them (i.e. goals were removed from the MetaM state without the metavariable
-being assigned), resulting in the error "(kernel) declaration has metavariables". -/
+being assigned), resulting in the error "(kernel) declaration has metavariables".
+-/
 elab "recover " tacs:tacticSeq : tactic => do
   let originalGoals ← getGoals
   evalTactic tacs

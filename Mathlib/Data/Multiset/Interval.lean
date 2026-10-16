@@ -8,7 +8,6 @@ module
 public import Mathlib.Data.DFinsupp.Interval
 public import Mathlib.Data.DFinsupp.Multiset
 public import Mathlib.Order.Lattice.Nat
-
 import Mathlib.Algebra.Order.Group.Nat
 
 /-!
@@ -28,7 +27,6 @@ multisets are typically used computationally.
 
 public section
 
-
 open Finset DFinsupp
 
 open scoped Pointwise
@@ -41,39 +39,42 @@ variable [DecidableEq α] (s t : Multiset α)
 
 instance instLocallyFiniteOrder : LocallyFiniteOrder (Multiset α) :=
   LocallyFiniteOrder.ofIcc (Multiset α)
-    (fun s t => (Finset.Icc (toDFinsupp s) (toDFinsupp t)).map
-      Multiset.equivDFinsupp.toEquiv.symm.toEmbedding)
+    (fun s t =>
+      (Finset.Icc (toDFinsupp s) (toDFinsupp t)).map
+        Multiset.equivDFinsupp.toEquiv.symm.toEmbedding)
     fun s t x => by simp
 
-theorem Icc_eq :
-    Finset.Icc s t = (Finset.Icc (toDFinsupp s) (toDFinsupp t)).map
-      Multiset.equivDFinsupp.toEquiv.symm.toEmbedding :=
+theorem Icc_eq
+    : Finset.Icc s t
+      = (Finset.Icc (toDFinsupp s) (toDFinsupp t)).map
+        Multiset.equivDFinsupp.toEquiv.symm.toEmbedding :=
   rfl
 
-theorem uIcc_eq :
-    uIcc s t =
-      (uIcc (toDFinsupp s) (toDFinsupp t)).map Multiset.equivDFinsupp.toEquiv.symm.toEmbedding :=
+theorem uIcc_eq
+    : uIcc s t
+      = (uIcc (toDFinsupp s) (toDFinsupp t)).map Multiset.equivDFinsupp.toEquiv.symm.toEmbedding :=
   (Icc_eq _ _).trans <| by simp [uIcc]
 
-theorem card_Icc :
-    #(Finset.Icc s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) := by
+theorem card_Icc
+    : #(Finset.Icc s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) := by
   simp_rw [Icc_eq, Finset.card_map, DFinsupp.card_Icc, Nat.card_Icc, Multiset.toDFinsupp_apply,
     toDFinsupp_support]
 
-theorem card_Ico :
-    #(Finset.Ico s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 1 := by
+theorem card_Ico
+    : #(Finset.Ico s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 1 := by
   rw [Finset.card_Ico_eq_card_Icc_sub_one, card_Icc]
 
-theorem card_Ioc :
-    #(Finset.Ioc s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 1 := by
+theorem card_Ioc
+    : #(Finset.Ioc s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 1 := by
   rw [Finset.card_Ioc_eq_card_Icc_sub_one, card_Icc]
 
-theorem card_Ioo :
-    #(Finset.Ioo s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 2 := by
+theorem card_Ioo
+    : #(Finset.Ioo s t) = ∏ i ∈ s.toFinset ∪ t.toFinset, (t.count i + 1 - s.count i) - 2 := by
   rw [Finset.card_Ioo_eq_card_Icc_sub_two, card_Icc]
 
-theorem card_uIcc :
-    (uIcc s t).card = ∏ i ∈ s.toFinset ∪ t.toFinset, ((t.count i - s.count i : ℤ).natAbs + 1) := by
+theorem card_uIcc
+    : (uIcc s t).card
+      = ∏ i ∈ s.toFinset ∪ t.toFinset, ((t.count i - s.count i : ℤ).natAbs + 1) := by
   simp_rw [uIcc_eq, Finset.card_map, DFinsupp.card_uIcc, Nat.card_uIcc, Multiset.toDFinsupp_apply,
     toDFinsupp_support]
 

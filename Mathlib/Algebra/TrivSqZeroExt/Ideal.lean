@@ -23,7 +23,8 @@ namespace TrivSqZeroExt
 
 open Ideal
 
-variable (R M : Type*)
+variable
+  (R M : Type*)
   [CommSemiring R] [AddCommMonoid M] [Module R M] [Module Rᵐᵒᵖ M] [IsCentralScalar R M]
 
 /-- The kernel of the `AlgHom` `fstHom R R M` -/
@@ -35,7 +36,8 @@ theorem mem_kerIdeal_iff_inr (x : TrivSqZeroExt R M) : x ∈ kerIdeal R M ↔ x 
   simp only [kerIdeal, RingHom.mem_ker, fstHom_apply, fst_mk]
   exact ⟨fun hr => by rw [hr]; rfl, fun hrm => by rw [← fst_mk r m, hrm, fst_inr]⟩
 
-@[simp] theorem kerIdeal_sq : kerIdeal R M ^ 2 = ⊥ := by
+@[simp]
+theorem kerIdeal_sq : kerIdeal R M ^ 2 = ⊥ := by
   simp only [pow_two, eq_bot_iff, mul_le, mem_kerIdeal_iff_inr]
   rintro x hx y hy
   rw [hx, hy, mem_bot, inr_mul_inr]

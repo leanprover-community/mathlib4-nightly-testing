@@ -48,12 +48,11 @@ class IsStableUnderUnitor (P : MorphismProperty C) : Prop where
   rightUnitor_hom_mem (P) (c : C) : P ((ρ_ c).hom)
   rightUnitor_inv_mem (P) (c : C) : P ((ρ_ c).inv)
 
-export IsStableUnderUnitor (leftUnitor_hom_mem leftUnitor_inv_mem rightUnitor_hom_mem
-  rightUnitor_inv_mem)
+export IsStableUnderUnitor
+  (leftUnitor_hom_mem leftUnitor_inv_mem rightUnitor_hom_mem rightUnitor_inv_mem)
 
 /-- A morphism property stable under tensoring, associators, and unitors. -/
-class IsMonoidalStable : Prop extends IsMonoidal P, IsStableUnderAssociator P,
-    IsStableUnderUnitor P
+class IsMonoidalStable : Prop extends IsMonoidal P, IsStableUnderAssociator P, IsStableUnderUnitor P
 
 /-- A monoidal-stable morphism property also stable under braiding isomorphisms. -/
 class IsStableUnderBraiding [BraidedCategory C] (P : MorphismProperty C) : Prop
@@ -73,32 +72,26 @@ instance [P.IsMonoidalStable] : MonoidalCategoryStruct (WideSubcategory P) where
   whiskerLeft c _ _ f := ⟨c.obj ◁ f.1, P.whiskerLeft_mem _ _ f.2⟩
   whiskerRight f c' := ⟨f.1 ▷ c'.obj, P.whiskerRight_mem _ f.2 _⟩
   tensorUnit := ⟨𝟙_ C⟩
-  associator _ _ _ :=
-    isoMk (α_ _ _ _) (P.associator_hom_mem _ _ _) (P.associator_inv_mem _ _ _)
-  leftUnitor _ :=
-    isoMk (λ_ _) (P.leftUnitor_hom_mem _) (P.leftUnitor_inv_mem _)
-  rightUnitor _ :=
-    isoMk (ρ_ _) (P.rightUnitor_hom_mem _) (P.rightUnitor_inv_mem _)
+  associator _ _ _ := isoMk (α_ _ _ _) (P.associator_hom_mem _ _ _) (P.associator_inv_mem _ _ _)
+  leftUnitor _ := isoMk (λ_ _) (P.leftUnitor_hom_mem _) (P.leftUnitor_inv_mem _)
+  rightUnitor _ := isoMk (ρ_ _) (P.rightUnitor_hom_mem _) (P.rightUnitor_inv_mem _)
   tensorHom f g := ⟨f.1 ⊗ₘ g.1, P.tensorHom_mem _ _ f.2 g.2⟩
 
 instance [P.IsMonoidalStable] : MonoidalCategory (WideSubcategory P) :=
-  Monoidal.induced (wideSubcategoryInclusion P)
-    { εIso := Iso.refl _
-      μIso _ _ := Iso.refl _ }
+  Monoidal.induced (wideSubcategoryInclusion P) { εIso := Iso.refl _, μIso _ _ := Iso.refl _ }
 
-instance [BraidedCategory C] [P.IsStableUnderBraiding] :
-    BraidedCategory (WideSubcategory P) where
-  braiding _ _ :=
-    isoMk (β_ _ _) (P.braiding_hom_mem _ _) (P.braiding_inv_mem _ _)
+instance [BraidedCategory C] [P.IsStableUnderBraiding] : BraidedCategory (WideSubcategory P) where
+  braiding _ _ := isoMk (β_ _ _) (P.braiding_hom_mem _ _) (P.braiding_inv_mem _ _)
 
 variable {P} in
 open MonoidalCategory in
 @[simp]
-lemma tensorμ_hom [BraidedCategory C] [P.IsStableUnderBraiding] (X Y Z T : WideSubcategory P) :
-    (tensorμ X Y Z T).hom = tensorμ _ _ _ _ := rfl
+lemma tensorμ_hom [BraidedCategory C] [P.IsStableUnderBraiding] (X Y Z T : WideSubcategory P)
+    : (tensorμ X Y Z T).hom = tensorμ _ _ _ _ :=
+  rfl
 
-instance [SymmetricCategory C] [P.IsStableUnderBraiding] :
-    SymmetricCategory (WideSubcategory P) where
+instance [SymmetricCategory C] [P.IsStableUnderBraiding]
+    : SymmetricCategory (WideSubcategory P) where
   symmetry c c' := by
     ext
     exact SymmetricCategory.symmetry _ _

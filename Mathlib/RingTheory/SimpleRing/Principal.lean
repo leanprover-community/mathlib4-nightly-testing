@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.PrincipalIdealDomain
 public import Mathlib.RingTheory.SimpleRing.Field
-
 import Mathlib.RingTheory.TwoSidedIdeal.Operations
 
 /-!
@@ -23,10 +22,7 @@ variable {R : Type*} [CommRing R] [IsSimpleRing R]
 
 instance : IsSimpleOrder (Ideal R) := TwoSidedIdeal.orderIsoIdeal.symm.isSimpleOrder
 
-instance IsPrincipalIdealRing.of_isSimpleRing :
-    IsPrincipalIdealRing R :=
+instance IsPrincipalIdealRing.of_isSimpleRing : IsPrincipalIdealRing R :=
   ((isSimpleRing_iff_isField _).mp ‹_›).isPrincipalIdealRing
 
-instance IsDomain.of_isSimpleRing :
-    IsDomain R :=
-  ((isSimpleRing_iff_isField _).mp ‹_›).isDomain
+instance IsDomain.of_isSimpleRing : IsDomain R := ((isSimpleRing_iff_isField _).mp ‹_›).isDomain

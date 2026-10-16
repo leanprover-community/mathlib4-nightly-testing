@@ -8,7 +8,7 @@ module
 
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public import Lean.Exception
 
 /-!
@@ -26,8 +26,8 @@ namespace Mathlib.Linter.UnusedTactic
 Defines the `allowedUnusedTacticExt` extension for adding a `HashSet` of `allowedUnusedTactic`s
 to the environment.
 -/
-public initialize allowedUnusedTacticExt :
-    SimplePersistentEnvExtension SyntaxNodeKind (Std.HashSet SyntaxNodeKind) ←
+public initialize allowedUnusedTacticExt
+    : SimplePersistentEnvExtension SyntaxNodeKind (Std.HashSet SyntaxNodeKind) ←
   registerSimplePersistentEnvExtension {
     addImportedFn := fun as => as.foldl Std.HashSet.insertMany {}
     addEntryFn := .insert
@@ -43,12 +43,13 @@ the tactic state.
 See the `#allow_unused_tactic! ids` command for dynamically extending the extension as a user-facing
 command.
 -/
-def addAllowedUnusedTactic {m : Type → Type} [Monad m] [MonadEnv m]
-    (stxNodes : Std.HashSet SyntaxNodeKind) :
-    m Unit :=
+def addAllowedUnusedTactic
+    {m : Type → Type} [Monad m] [MonadEnv m] (stxNodes : Std.HashSet SyntaxNodeKind)
+    : m Unit :=
   stxNodes.foldM (init := ()) fun _ d => modifyEnv (allowedUnusedTacticExt.addEntry · d)
 
-/-- `Parser`s allowed to not change the tactic state.
+/--
+`Parser`s allowed to not change the tactic state.
 This can be increased dynamically, using `#allow_unused_tactic`.
 -/
 public initialize allowedRef : IO.Ref (Std.HashSet SyntaxNodeKind) ←
@@ -95,11 +96,14 @@ elab "#allow_unused_tactic" pers:("!")? ppSpace colGt ids:ident* : command => do
       addAllowedUnusedTactic (.ofArray ids)
     else
       allowedRef.modify (·.insertMany ids)
-  catch e => match e with
+  catch e =>
+    match e with
     | .error ref md =>
-      logErrorAt ref (md ++ m!"\n\
-        The command `#show_kind {ref}` may help to find the correct `SyntaxNodeKind`.")
-    | _ => logError e.toMessageData
+      logErrorAt ref
+        (md ++ m!"\n\
+          The command `#show_kind {ref}` may help to find the correct `SyntaxNodeKind`.")
+    | _ =>
+      logError e.toMessageData
 
 /--
 `#show_kind tac` takes as input the syntax of a tactic and returns the `SyntaxNodeKind`

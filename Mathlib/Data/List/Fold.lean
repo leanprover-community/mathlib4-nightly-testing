@@ -44,28 +44,28 @@ variable {α β : Type*} {l : List α} {f : α → β → β} {v : β → α →
 lemma foldl_cons_nil : l.foldl (flip cons) [] = l.reverse := by
   induction l <;> simp [flip, foldl_eq_foldr_reverse, -foldr_reverse]
 
-lemma foldl_cons_eq_apply_foldl [hv : RightCommutative v] :
-    (a :: l).foldl v b = v (l.foldl v b) a := by
+lemma foldl_cons_eq_apply_foldl [hv : RightCommutative v]
+    : (a :: l).foldl v b = v (l.foldl v b) a := by
   rw [foldl_cons]
   induction l generalizing a b <;> simp [*, hv.right_comm]
 
-lemma foldr_cons_eq_foldr_apply [hf : LeftCommutative f] :
-    (a :: l).foldr f b = l.foldr f (f a b) := by
+lemma foldr_cons_eq_foldr_apply [hf : LeftCommutative f]
+    : (a :: l).foldr f b = l.foldr f (f a b) := by
   rw [foldr_cons]
   induction l generalizing a b <;> simp [*, hf.left_comm]
 
-lemma foldl1_eq_foldr1 {f : α → α → α} [ha : Std.Associative f] {a b : α} :
-    f (l.foldl f a) b = f a (l.foldr f b) := by
+lemma foldl1_eq_foldr1 {f : α → α → α} [ha : Std.Associative f] {a b : α}
+    : f (l.foldl f a) b = f a (l.foldr f b) := by
   induction l generalizing a <;> simp [*, ha.assoc]
 
 /-- **First Bird–Wadler duality theorem**. -/
-theorem foldl_eq_foldr_of_commute {f : α → α → α} [Std.Associative f] (ha : ∀ x, f a x = f x a) :
-    l.foldl f a = l.foldr f a := by
+theorem foldl_eq_foldr_of_commute {f : α → α → α} [Std.Associative f] (ha : ∀ x, f a x = f x a)
+    : l.foldl f a = l.foldr f a := by
   induction l <;> simp [*, foldl_assoc]
 
 /-- **First Bird–Wadler duality theorem** for commutative functions. -/
-theorem foldl_eq_foldr {f : α → α → α} [hf : Std.Commutative f] [Std.Associative f] :
-    l.foldl f a = l.foldr f a :=
+theorem foldl_eq_foldr {f : α → α → α} [hf : Std.Commutative f] [Std.Associative f]
+    : l.foldl f a = l.foldr f a :=
   foldl_eq_foldr_of_commute (hf.comm a)
 
 /-- **Second Bird–Wadler duality theorem**. -/

@@ -34,8 +34,10 @@ structure RwInfo where
   subExpr : Expr
   /-- If we rewrite into this expression, then the goal will be solved. -/
   rflTarget? : Option Expr
-  /-- The expression that is being rewritten. This may not be the same as the selected expression,
-  because we also suggest rewriting partial applications. -/
+  /--
+  The expression that is being rewritten. This may not be the same as the selected expression,
+  because we also suggest rewriting partial applications.
+  -/
   pos : SubExpr.Pos
   /-- Some information about the rewrite position. -/
   rwKind : RwKind
@@ -61,11 +63,8 @@ deriving Inhabited
 
 instance : Ord RwKey where
   compare a b :=
-    (compare a.1 b.1).then <|
-    (compare a.2 b.2).then <|
-    (compare a.3 b.3).then <|
-    (compare a.4 b.4).then
-    (compare a.5 b.5)
+    (compare a.1 b.1).then <| (compare a.2 b.2).then <| (compare a.3 b.3).then <|
+      (compare a.4 b.4).then (compare a.5 b.5)
 
 /-- Whether the two suggestions are duplicates of each other. -/
 def RwKey.isDuplicate (a b : RwKey) : MetaM Bool :=
@@ -73,23 +72,28 @@ def RwKey.isDuplicate (a b : RwKey) : MetaM Bool :=
     <&&> isExplicitEq a.replacement.expr b.replacement.expr
 
 /-- Return the rewrite tactic that performs the rewrite. -/
-private def tacticSyntax (lem : RwLemma) (rwKind : RwKind) (hyp? : Option Ident) (proof : Expr)
-    (justLemmaName : Bool) : MetaM (TSyntax `tactic) := do
-  let proof ← if justLemmaName then
+private def tacticSyntax
+    (lem : RwLemma) (rwKind : RwKind) (hyp? : Option Ident) (proof : Expr) (justLemmaName : Bool)
+    : MetaM (TSyntax `tactic) := do
+  let proof ←
+    if justLemmaName then
       `(term| $(mkIdent <| ← lem.name.unresolveName))
     else
       withOptions (pp.mvars.set · false) (PrettyPrinter.delab proof)
   mkRewrite rwKind lem.symm proof hyp?
 
 /-- Generate the suggestion for rewriting with `lem`. -/
-def RwLemma.try (i : RwInfo) (lem : RwLemma) (assignableMVars : Array Expr) :
-    ClickSuggestionsM (Result RwKey) := do
+def RwLemma.try (i : RwInfo) (lem : RwLemma) (assignableMVars : Array Expr)
+    : ClickSuggestionsM (Result RwKey) := do
   let e := i.subExpr
   let (proof, mvars, binderInfos, eqn) ← lem.name.forallMetaTelescopeReducing
-  let mkApp2 _ lhs rhs ← whnf eqn | throwError "Exected an equality or iff, not {eqn}"
+  let mkApp2 _ lhs rhs ← whnf eqn
+    | throwError "Exected an equality or iff, not {eqn}"
   let (lhs, rhs) := if lem.symm then (rhs, lhs) else (lhs, rhs)
-  let lhsOrig := lhs; let mctxOrig ← getMCtx
-  unless ← isDefEq lhs e do throwError "{lhs} does not unify with {e}"
+  let lhsOrig := lhs
+  let mctxOrig ← getMCtx
+  unless ← isDefEq lhs e do
+    throwError "{lhs} does not unify with {e}"
   -- just like in `kabstract`, we compare the `HeadIndex` and number of arguments
   let lhs ← instantiateMVars lhs
   -- TODO: if the `headIndex` doesn't match, then use `simp_rw` instead of `rw` in the suggestion,
@@ -141,8 +145,8 @@ def RwLemma.try (i : RwInfo) (lem : RwLemma) (assignableMVars : Array Expr) :
     addSolvedSuggestion tactic
   let mut htmls := #[← exprToHtml replacement]
   for goal in extraGoals do
-    htmls := htmls.push
-      jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
+    htmls :=
+      htmls.push jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
   let filtered ←
     if isRefl || unhelpfulMVars then
       pure none
@@ -152,7 +156,8 @@ def RwLemma.try (i : RwInfo) (lem : RwLemma) (assignableMVars : Array Expr) :
   let unfiltered ← mkSuggestion tactic (.element "div" #[] htmls) (isClosing := isClosing)
   let pattern ← do
     let (_, _, e) ← forallMetaTelescopeReducing (← lem.name.getType)
-    let mkApp2 _ lhs rhs ← whnf e | throwError "Expected equation, not{indentExpr e}"
+    let mkApp2 _ lhs rhs ← whnf e
+      | throwError "Expected equation, not{indentExpr e}"
     exprToHtml <| if lem.symm then rhs else lhs
   return { filtered, unfiltered, key, pattern }
 

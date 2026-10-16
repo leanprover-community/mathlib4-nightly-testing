@@ -19,7 +19,8 @@ universe u
 
 variable {α : Type u}
 
-/-- An ordered additive monoid is `CanonicallyOrderedAdd`
+/--
+An ordered additive monoid is `CanonicallyOrderedAdd`
 if the ordering coincides with the subtractibility relation,
 which is to say, `a ≤ b` iff there exists `c` with `b = a + c`.
 This is satisfied by the natural numbers, for example, but not
@@ -27,26 +28,27 @@ the integers or other nontrivial ordered groups.
 
 We have `a ≤ b + a` and `a ≤ a + b` as separate fields. In the commutative case the second field
 is redundant, but in the noncommutative case (satisfied most relevantly by the ordinals), this
-extra field allows us to prove more things without the extra commutativity assumption. -/
-class CanonicallyOrderedAdd (α : Type*) [Add α] [LE α] : Prop
-    extends ExistsAddOfLE α where
+extra field allows us to prove more things without the extra commutativity assumption.
+-/
+class CanonicallyOrderedAdd (α : Type*) [Add α] [LE α] : Prop extends ExistsAddOfLE α where
   /-- For any `a` and `b`, `a ≤ a + b` -/
   protected le_add_self : ∀ a b : α, a ≤ b + a
   protected le_self_add : ∀ a b : α, a ≤ a + b
 
 attribute [instance 50] CanonicallyOrderedAdd.toExistsAddOfLE
 
-/-- An ordered monoid is `CanonicallyOrderedMul`
-  if the ordering coincides with the divisibility relation,
-  which is to say, `a ≤ b` iff there exists `c` with `b = a * c`.
-  Examples seem rare; it seems more likely that the `OrderDual`
-  of a naturally-occurring lattice satisfies this than the lattice
-  itself (for example, dual of the lattice of ideals of a PID or
-  Dedekind domain satisfy this; collections of all things ≤ 1 seem to
-  be more natural that collections of all things ≥ 1). -/
+/--
+An ordered monoid is `CanonicallyOrderedMul`
+if the ordering coincides with the divisibility relation,
+which is to say, `a ≤ b` iff there exists `c` with `b = a * c`.
+Examples seem rare; it seems more likely that the `OrderDual`
+of a naturally-occurring lattice satisfies this than the lattice
+itself (for example, dual of the lattice of ideals of a PID or
+Dedekind domain satisfy this; collections of all things ≤ 1 seem to
+be more natural that collections of all things ≥ 1).
+-/
 @[to_additive]
-class CanonicallyOrderedMul (α : Type*) [Mul α] [LE α] : Prop
-    extends ExistsMulOfLE α where
+class CanonicallyOrderedMul (α : Type*) [Mul α] [LE α] : Prop extends ExistsMulOfLE α where
   /-- For any `a` and `b`, `a ≤ a * b` -/
   protected le_mul_self : ∀ a b : α, a ≤ b * a
   protected le_self_mul : ∀ a b : α, a ≤ a * b
@@ -59,48 +61,36 @@ variable [Mul α]
 section LE
 variable [LE α] [CanonicallyOrderedMul α] {a b c : α}
 
-@[to_additive]
-theorem le_mul_self : a ≤ b * a :=
-  CanonicallyOrderedMul.le_mul_self _ _
+@[to_additive] theorem le_mul_self : a ≤ b * a := CanonicallyOrderedMul.le_mul_self _ _
 
-@[to_additive]
-theorem le_self_mul : a ≤ a * b :=
-  CanonicallyOrderedMul.le_self_mul _ _
+@[to_additive] theorem le_self_mul : a ≤ a * b := CanonicallyOrderedMul.le_self_mul _ _
 
 @[to_additive (attr := simp)]
-theorem self_le_mul_left (a b : α) : a ≤ b * a :=
-  le_mul_self
+theorem self_le_mul_left (a b : α) : a ≤ b * a := le_mul_self
 
 @[to_additive (attr := simp)]
-theorem self_le_mul_right (a b : α) : a ≤ a * b :=
-  le_self_mul
+theorem self_le_mul_right (a b : α) : a ≤ a * b := le_self_mul
 
 @[to_additive]
-theorem le_iff_exists_mul : a ≤ b ↔ ∃ c, b = a * c :=
-  ⟨exists_mul_of_le, by
+theorem le_iff_exists_mul : a ≤ b ↔ ∃ c, b = a * c := ⟨
+  exists_mul_of_le,
+  by
     rintro ⟨c, rfl⟩
-    exact le_self_mul⟩
+    exact le_self_mul
+⟩
 
 end LE
 
 section Preorder
 variable [Preorder α] [CanonicallyOrderedMul α] {a b c : α}
 
-@[to_additive]
-theorem le_of_mul_le_left : a * b ≤ c → a ≤ c :=
-  le_self_mul.trans
+@[to_additive] theorem le_of_mul_le_left : a * b ≤ c → a ≤ c := le_self_mul.trans
 
-@[to_additive]
-theorem le_mul_of_le_left : a ≤ b → a ≤ b * c :=
-  le_self_mul.trans'
+@[to_additive] theorem le_mul_of_le_left : a ≤ b → a ≤ b * c := le_self_mul.trans'
 
-@[to_additive]
-theorem le_of_mul_le_right : a * b ≤ c → b ≤ c :=
-  le_mul_self.trans
+@[to_additive] theorem le_of_mul_le_right : a * b ≤ c → b ≤ c := le_mul_self.trans
 
-@[to_additive]
-theorem le_mul_of_le_right : a ≤ c → a ≤ b * c :=
-  le_mul_self.trans'
+@[to_additive] theorem le_mul_of_le_right : a ≤ c → a ≤ b * c := le_mul_self.trans'
 
 @[to_additive] alias le_mul_left := le_mul_of_le_right
 @[to_additive] alias le_mul_right := le_mul_of_le_left
@@ -167,8 +157,7 @@ variable [LE α] [CanonicallyOrderedMul α]
 
 -- see Note [lower instance priority]
 @[to_additive]
-instance (priority := 10) CanonicallyOrderedMul.toMulLeftMono :
-    MulLeftMono α where
+instance (priority := 10) CanonicallyOrderedMul.toMulLeftMono : MulLeftMono α where
   elim a b c hbc := by
     obtain ⟨c, hc, rfl⟩ := exists_mul_of_le hbc
     rw [le_iff_exists_mul]
@@ -180,8 +169,8 @@ end Semigroup
 
 -- TODO: make it an instance
 @[to_additive]
-lemma CanonicallyOrderedMul.toIsOrderedMonoid
-    [CommMonoid α] [Preorder α] [CanonicallyOrderedMul α] : IsOrderedMonoid α where
+lemma CanonicallyOrderedMul.toIsOrderedMonoid [CommMonoid α] [Preorder α] [CanonicallyOrderedMul α]
+    : IsOrderedMonoid α where
   mul_le_mul_left _ _ := mul_le_mul_left
 
 section Monoid
@@ -190,7 +179,8 @@ variable [Monoid α]
 section PartialOrder
 variable [PartialOrder α] [CanonicallyOrderedMul α] {a : α}
 
-@[to_additive] instance CanonicallyOrderedCommMonoid.toUniqueUnits : Unique αˣ where
+@[to_additive]
+instance CanonicallyOrderedCommMonoid.toUniqueUnits : Unique αˣ where
   uniq a := Units.ext <| le_one_iff_eq_one.mp (le_of_mul_le_left a.mul_inv.le)
 
 end PartialOrder
@@ -229,8 +219,7 @@ theorem min_mul_distrib' (a b c : α) : min (a * b) c = min (min a c * min b c) 
 
 /-- In a linearly ordered monoid, we are happy for `bot_eq_one` to be a `@[simp]` lemma. -/
 @[to_additive (attr := simp)
-/-- In a linearly ordered monoid, we are happy for `bot_eq_zero` to be a `@[simp]` lemma -/]
-theorem bot_eq_one' [OrderBot α] : (⊥ : α) = 1 :=
-  bot_eq_one
+  /-- In a linearly ordered monoid, we are happy for `bot_eq_zero` to be a `@[simp]` lemma -/]
+theorem bot_eq_one' [OrderBot α] : (⊥ : α) = 1 := bot_eq_one
 
 end CanonicallyLinearOrderedMonoid

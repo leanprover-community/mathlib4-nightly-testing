@@ -7,7 +7,7 @@ namespace CategoryTheory.Types
 
 open MorphismProperty
 
-example : MorphismProperty.IsStableUnderTransfiniteComposition.{v}
-    (monomorphisms (Type u)) := inferInstance
+example : MorphismProperty.IsStableUnderTransfiniteComposition.{v} (monomorphisms (Type u)) :=
+  inferInstance
 
 end CategoryTheory.Types

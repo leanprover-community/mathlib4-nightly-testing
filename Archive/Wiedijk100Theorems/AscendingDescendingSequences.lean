@@ -81,8 +81,8 @@ To this end, we will assume wlog that `i < j`, and show that if `f i < f j`,
 then `maxIncSequencesTo f i < maxIncSequencesTo f j`, and later dualise to prove that if `f j < f i`
 then `maxDecSequencesTo f i < maxDecSequencesTo f j`.
 -/
-private lemma maxIncSequencesTo_lt {i j : α} (hij : i < j) (hfij : f i < f j) :
-    maxIncSequencesTo f i < maxIncSequencesTo f j := by
+private lemma maxIncSequencesTo_lt {i j : α} (hij : i < j) (hfij : f i < f j)
+    : maxIncSequencesTo f i < maxIncSequencesTo f j := by
   rw [Nat.lt_iff_add_one_le]
   refine le_max' _ _ ?_
   have : maxIncSequencesTo f i ∈ incSequencesTo f i := max'_mem _ incSequencesTo_nonempty
@@ -107,8 +107,8 @@ private lemma maxIncSequencesTo_lt {i j : α} (hij : i < j) (hfij : f i < f j) :
   have : j ∉ t := fun hj ↦ lt_irrefl _ (this _ hj)
   simp [this, ht₂]
 
-private lemma maxDecSequencesTo_gt {i j : α} (hij : i < j) (hfij : f j < f i) :
-    maxDecSequencesTo f i < maxDecSequencesTo f j :=
+private lemma maxDecSequencesTo_gt {i j : α} (hij : i < j) (hfij : f j < f i)
+    : maxDecSequencesTo f i < maxDecSequencesTo f j :=
   maxIncSequencesTo_lt (β := βᵒᵈ) hij hfij
 
 /--
@@ -129,7 +129,8 @@ private lemma paired_injective (hf : Injective f) : Injective (paired f) := by
   case inl h => exact (maxIncSequencesTo_lt hij h).ne congr($q.1)
   case inr h => exact (maxDecSequencesTo_gt hij h).ne congr($q.2)
 
-/-- **Erdős–Szekeres Theorem**: Given a sequence of more than `r * s` distinct values, there is an
+/--
+**Erdős–Szekeres Theorem**: Given a sequence of more than `r * s` distinct values, there is an
 increasing sequence of length longer than `r` or a decreasing sequence of length longer than `s`.
 
 Proof idea:
@@ -139,9 +140,8 @@ We then show the pair of labels must be unique. Now if there is no increasing se
 `r` and no decreasing sequence longer than `s`, then there are at most `r * s` possible labels,
 which is a contradiction if there are more than `r * s` elements.
 -/
-theorem erdos_szekeres {r s : ℕ} {f : α → β} (hn : r * s < Fintype.card α) (hf : Injective f) :
-    (∃ t : Finset α, r < #t ∧ StrictMonoOn f t) ∨
-      ∃ t : Finset α, s < #t ∧ StrictAntiOn f t := by
+theorem erdos_szekeres {r s : ℕ} {f : α → β} (hn : r * s < Fintype.card α) (hf : Injective f)
+    : (∃ t : Finset α, r < #t ∧ StrictMonoOn f t) ∨ ∃ t : Finset α, s < #t ∧ StrictAntiOn f t := by
   classical
   -- It suffices to prove that there is some `i` where one of the max lengths is bigger than
   -- `r` or `s`, as this corresponds to a monotone sequence of the required length.

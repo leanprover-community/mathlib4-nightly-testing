@@ -23,14 +23,15 @@ provide `HasUpperLowerClosure`, an ad hoc axiomatisation of the properties we ne
 
 public section
 
-
 open Set
 
 open scoped Pointwise
 
-/-- Ad hoc class stating that the closure of an upper set is an upper set. This is used to state
+/--
+Ad hoc class stating that the closure of an upper set is an upper set. This is used to state
 lemmas that do not mention algebraic operations for both the additive and multiplicative versions
-simultaneously. If you find a satisfying replacement for this typeclass, please remove it! -/
+simultaneously. If you find a satisfying replacement for this typeclass, please remove it!
+-/
 class HasUpperLowerClosure (α : Type*) [TopologicalSpace α] [Preorder α] : Prop where
   isUpperSet_closure : ∀ s : Set α, IsUpperSet s → IsUpperSet (closure s)
   isLowerSet_closure : ∀ s : Set α, IsLowerSet s → IsLowerSet (closure s)
@@ -42,8 +43,8 @@ variable {α : Type*} [TopologicalSpace α]
 -- See note [lower instance priority]
 @[to_additive]
 instance (priority := 100) IsOrderedMonoid.to_hasUpperLowerClosure
-    [CommGroup α] [Preorder α] [IsOrderedMonoid α]
-    [ContinuousConstSMul α α] : HasUpperLowerClosure α where
+    [CommGroup α] [Preorder α] [IsOrderedMonoid α] [ContinuousConstSMul α α]
+    : HasUpperLowerClosure α where
   isUpperSet_closure s h x y hxy hx :=
     closure_mono (h.smul_subset <| one_le_div'.2 hxy) <| by
       rw [closure_smul]
@@ -102,5 +103,5 @@ protected theorem IsLowerSet.interior (h : IsLowerSet s) : IsLowerSet (interior 
 
 protected theorem Set.OrdConnected.interior (h : s.OrdConnected) : (interior s).OrdConnected := by
   rw [← h.upperClosure_inter_lowerClosure, interior_inter]
-  exact
-    (upperClosure s).upper.interior.ordConnected.inter (lowerClosure s).lower.interior.ordConnected
+  exact (upperClosure s).upper.interior.ordConnected.inter
+    (lowerClosure s).lower.interior.ordConnected

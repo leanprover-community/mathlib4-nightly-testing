@@ -40,52 +40,47 @@ def uliftZPowersHom (G : Type u) [Group G] : G ≃ (ULift.{u} (Multiplicative �
   (zpowersHom _).trans MulEquiv.ulift.symm.monoidHomCongrLeftEquiv
 
 /-- The forget functor `GrpCat.{u} ⥤ Type u` is corepresentable. -/
-def GrpCat.coyonedaObjIsoForget :
-    coyoneda.obj (op (of (ULift.{u} (Multiplicative ℤ)))) ≅ forget GrpCat.{u} :=
+def GrpCat.coyonedaObjIsoForget
+    : coyoneda.obj (op (of (ULift.{u} (Multiplicative ℤ)))) ≅ forget GrpCat.{u} :=
   NatIso.ofComponents fun M ↦
     (ConcreteCategory.homEquiv.trans (uliftZPowersHom M.carrier).symm).toIso
 
 /-- The forget functor `CommGrpCat.{u} ⥤ Type u` is corepresentable. -/
-def CommGrpCat.coyonedaObjIsoForget :
-    coyoneda.obj (op (of (ULift.{u} (Multiplicative ℤ)))) ≅ forget CommGrpCat.{u} :=
+def CommGrpCat.coyonedaObjIsoForget
+    : coyoneda.obj (op (of (ULift.{u} (Multiplicative ℤ)))) ≅ forget CommGrpCat.{u} :=
   NatIso.ofComponents fun M ↦
     (ConcreteCategory.homEquiv.trans (uliftZPowersHom M.carrier).symm).toIso
 
 /-- The forget functor `AddGrpCat.{u} ⥤ Type u` is corepresentable. -/
-def AddGrpCat.coyonedaObjIsoForget :
-    coyoneda.obj (op (of (ULift.{u} ℤ))) ≅ forget AddGrpCat.{u} :=
+def AddGrpCat.coyonedaObjIsoForget : coyoneda.obj (op (of (ULift.{u} ℤ))) ≅ forget AddGrpCat.{u} :=
   NatIso.ofComponents fun M ↦
     (ConcreteCategory.homEquiv.trans (uliftZMultiplesHom M.carrier).symm).toIso
 
 /-- The forget functor `AddCommGrpCat.{u} ⥤ Type u` is corepresentable. -/
-def AddCommGrpCat.coyonedaObjIsoForget :
-    coyoneda.obj (op (of (ULift.{u} ℤ))) ≅ forget AddCommGrpCat.{u} :=
+def AddCommGrpCat.coyonedaObjIsoForget
+    : coyoneda.obj (op (of (ULift.{u} ℤ))) ≅ forget AddCommGrpCat.{u} :=
   NatIso.ofComponents fun M ↦
     (ConcreteCategory.homEquiv.trans (uliftZMultiplesHom M.carrier).symm).toIso
 
-instance GrpCat.forget_isCorepresentable :
-    (forget GrpCat.{u}).IsCorepresentable :=
+instance GrpCat.forget_isCorepresentable : (forget GrpCat.{u}).IsCorepresentable :=
   Functor.IsCorepresentable.mk' GrpCat.coyonedaObjIsoForget
 
-instance CommGrpCat.forget_isCorepresentable :
-    (forget CommGrpCat.{u}).IsCorepresentable :=
+instance CommGrpCat.forget_isCorepresentable : (forget CommGrpCat.{u}).IsCorepresentable :=
   Functor.IsCorepresentable.mk' CommGrpCat.coyonedaObjIsoForget
 
-instance AddGrpCat.forget_isCorepresentable :
-    (forget AddGrpCat.{u}).IsCorepresentable :=
+instance AddGrpCat.forget_isCorepresentable : (forget AddGrpCat.{u}).IsCorepresentable :=
   Functor.IsCorepresentable.mk' AddGrpCat.coyonedaObjIsoForget
 
-instance AddCommGrpCat.forget_isCorepresentable :
-    (forget AddCommGrpCat.{u}).IsCorepresentable :=
+instance AddCommGrpCat.forget_isCorepresentable : (forget AddCommGrpCat.{u}).IsCorepresentable :=
   Functor.IsCorepresentable.mk' AddCommGrpCat.coyonedaObjIsoForget
 
-theorem uliftZMultiplesHom_apply_add (G : Type u) [AddCommGroup G] (x y : G) :
-    uliftZMultiplesHom G (x + y) = uliftZMultiplesHom G x + uliftZMultiplesHom G y := by
+theorem uliftZMultiplesHom_apply_add (G : Type u) [AddCommGroup G] (x y : G)
+    : uliftZMultiplesHom G (x + y) = uliftZMultiplesHom G x + uliftZMultiplesHom G y := by
   ext
   simp_all only [uliftZMultiplesHom_apply_apply, smul_add, AddMonoidHom.add_apply]
 
 /-- The additive equivalence `(ℤ ⟶ G) ≃+ G` -/
 @[simps!]
 def AddCommGrpCat.uliftZMultiplesAddEquiv (G : AddCommGrpCat) : (of (ULift ℤ) ⟶ G) ≃+ G :=
-  AddCommGrpCat.homAddEquiv.trans
-    (AddEquiv.mk' (uliftZMultiplesHom G) (uliftZMultiplesHom_apply_add G)).symm
+  AddCommGrpCat.homAddEquiv.trans (AddEquiv.mk' (uliftZMultiplesHom G)
+    (uliftZMultiplesHom_apply_add G)).symm

@@ -1,4 +1,4 @@
-module  -- shake: keep-all, shake: keep-downstream
+module -- shake: keep-all, shake: keep-downstream
 
 -- This import makes the `alias` command available globally.
 public import Batteries.Tactic.Alias
@@ -80,7 +80,8 @@ All linters imported here have no bulk imports;
 
 public section
 
-/-- Define a linter set of all mathlib syntax linters which are enabled by default.
+/--
+Define a linter set of all mathlib syntax linters which are enabled by default.
 
 Projects depending on mathlib can use `set_option linter.mathlibStandardSet true` to enable
 all these linters, or add the `weak.linter.mathlibStandardSet` option to their lakefile.
@@ -88,70 +89,49 @@ all these linters, or add the `weak.linter.mathlibStandardSet` option to their l
 register_linter_set linter.mathlibStandardSet :=
   -- linter.allScriptsDocumented -- disabled, let's not impose this requirement downstream.
   -- linter.checkInitImports -- disabled, not relevant downstream.
-  linter.auxLemma
-  linter.flexible
-  linter.hashCommand
-  linter.oldObtain
-  linter.privateModule
-  linter.style.cases
-  linter.style.induction
-  linter.style.refine
-  linter.style.cdot
-  linter.style.docString
-  linter.style.dollarSyntax
-  linter.style.emptyLine
-  linter.style.header
-  linter.style.lambdaSyntax
-  linter.style.longLine
-  linter.style.longFile
-  linter.style.multiGoal
-  linter.style.native
-  linter.style.openClassical
-  linter.style.maxHeartbeats
-  linter.style.missingEnd
-  linter.style.setOption
-  linter.style.show
-  linter.style.whitespace
-  linter.unusedDecidableInType
+  linter.auxLemma linter.flexible linter.hashCommand linter.oldObtain linter.privateModule
+  linter.style.cases linter.style.induction linter.style.refine linter.style.cdot
+  linter.style.docString linter.style.dollarSyntax linter.style.emptyLine linter.style.header
+  linter.style.lambdaSyntax linter.style.longLine linter.style.longFile linter.style.multiGoal
+  linter.style.native linter.style.openClassical linter.style.maxHeartbeats linter.style.missingEnd
+  linter.style.setOption linter.style.show linter.style.whitespace linter.unusedDecidableInType
   linter.unusedFintypeInType
-  -- The `docPrime` linter is disabled: https://github.com/leanprover-community/mathlib4/issues/20560
+-- The `docPrime` linter is disabled: https://github.com/leanprover-community/mathlib4/issues/20560
 
-/-- Define a set of linters that are used in the `nightly-testing` branch
+/--
+Define a set of linters that are used in the `nightly-testing` branch
 to catch any regressions.
 -/
 register_linter_set linter.nightlyRegressionSet :=
-  linter.tacticAnalysis.regressions.linarithToGrind
-  linter.tacticAnalysis.regressions.omegaToLia
-  linter.tacticAnalysis.regressions.ringToGrind
-  linter.tacticAnalysis.regressions.tautoToGrind
+  linter.tacticAnalysis.regressions.linarithToGrind linter.tacticAnalysis.regressions.omegaToLia
+  linter.tacticAnalysis.regressions.ringToGrind linter.tacticAnalysis.regressions.tautoToGrind
 
-/-- Define a set of linters that run once a week and get posted to Zulip.
--/
+/-- Define a set of linters that run once a week and get posted to Zulip. -/
 register_linter_set linter.weeklyLintSet :=
-  linter.tacticAnalysis.mergeWithGrind
-  linter.style.docStringVerso
+  linter.tacticAnalysis.mergeWithGrind linter.style.docStringVerso
   linter.tacticAnalysis.verifyGrindOnly
 
 -- Check that all linter options mentioned in the mathlib standard linter set exist.
 open Lean Elab.Command Linter Mathlib.Linter Style UnusedInstancesInType AuxLemma
 
-run_cmd liftTermElabM do
-  let DefinedInScripts : Array Name :=
-    #[`linter.checkInitImports, `linter.allScriptsDocumented]
-  let env ← getEnv
-  let ls := (linterSetsExt.getState env).localEntries
-  let some (_, mlLinters) := ls.find? (·.1 == ``linter.mathlibStandardSet) |
-    throwError m!"'linter.mathlibStandardSet' is not defined."
-  let some (_, nrLinters) := ls.find? (·.1 == ``linter.nightlyRegressionSet) |
-    throwError m!"'linter.nightlyRegressionSet is not defined."
-  let some (_, wlLinters) := ls.find? (·.1 == ``linter.weeklyLintSet) |
-    throwError m!"'linter.weeklyLintSet is not defined."
-  for mll in mlLinters ∪ nrLinters ∪ wlLinters do
-    let [(mlRes, _)] ← realizeGlobalName mll |
-      if !DefinedInScripts.contains mll then
-        throwError "Unknown option '{mll}'!"
-    let some cinfo := env.find? mlRes | throwError "{mlRes}: this code should be unreachable."
-    if !cinfo.type.isAppOf ``Lean.Option then
-      throwError "{.ofConstName mlRes} is not an option, it is a{indentD cinfo.type}"
+run_cmd
+  liftTermElabM do
+    let DefinedInScripts : Array Name := #[`linter.checkInitImports, `linter.allScriptsDocumented]
+    let env ← getEnv
+    let ls := (linterSetsExt.getState env).localEntries
+    let some (_, mlLinters) := ls.find? (·.1 == ``linter.mathlibStandardSet)
+      | throwError m!"'linter.mathlibStandardSet' is not defined."
+    let some (_, nrLinters) := ls.find? (·.1 == ``linter.nightlyRegressionSet)
+      | throwError m!"'linter.nightlyRegressionSet is not defined."
+    let some (_, wlLinters) := ls.find? (·.1 == ``linter.weeklyLintSet)
+      | throwError m!"'linter.weeklyLintSet is not defined."
+    for mll in mlLinters ∪ nrLinters ∪ wlLinters do
+      let [(mlRes, _)] ← realizeGlobalName mll
+        | if ! DefinedInScripts.contains mll then
+            throwError "Unknown option '{mll}'!"
+      let some cinfo := env.find? mlRes
+        | throwError "{mlRes}: this code should be unreachable."
+      if ! cinfo.type.isAppOf ``Lean.Option then
+        throwError "{.ofConstName mlRes} is not an option, it is a{indentD cinfo.type}"
 
 #allow_unused_tactic! Mathlib.Linter.Style.show

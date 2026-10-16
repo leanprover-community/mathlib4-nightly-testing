@@ -28,7 +28,8 @@ variable [DecidableEq l] [DecidableEq m] [DecidableEq n] [DecidableEq o]
 section Zero
 variable [Zero α]
 
-/-- `single i j a` is the matrix with `a` in the `i`-th row, `j`-th column,
+/--
+`single i j a` is the matrix with `a` in the `i`-th row, `j`-th column,
 and zeroes elsewhere.
 -/
 def single (i : m) (j : n) (a : α) : Matrix m n α :=
@@ -37,20 +38,20 @@ def single (i : m) (j : n) (a : α) : Matrix m n α :=
 section
 variable (i : m) (j : n) (c : α) (i' : m) (j' : n)
 
-@[simp]
-theorem single_apply_same : single i j c i j = c :=
-  ite_eq_left (And.intro rfl rfl)
+@[simp] theorem single_apply_same : single i j c i j = c := ite_eq_left (And.intro rfl rfl)
 
 @[simp]
 theorem single_apply_of_ne (h : ¬(i = i' ∧ j = j')) : single i j c i' j' = 0 := by
   simp only [single, and_imp, ite_eq_right_iff, of_apply]
   tauto
 
-theorem single_apply_of_row_ne {i i' : m} (hi : i ≠ i') (j j' : n) (a : α) :
-    single i j a i' j' = 0 := by simp [hi]
+theorem single_apply_of_row_ne {i i' : m} (hi : i ≠ i') (j j' : n) (a : α)
+    : single i j a i' j' = 0 := by
+  simp [hi]
 
-theorem single_apply_of_col_ne (i i' : m) {j j' : n} (hj : j ≠ j') (a : α) :
-    single i j a i' j' = 0 := by simp [hj]
+theorem single_apply_of_col_ne (i i' : m) {j j' : n} (hj : j ≠ j') (a : α)
+    : single i j a i' j' = 0 := by
+  simp [hj]
 
 @[grind =]
 lemma single_apply : single i j c i' j' = if i = i' ∧ j = j' then c else 0 := rfl
@@ -58,20 +59,20 @@ lemma single_apply : single i j c i' j' = if i = i' ∧ j = j' then c else 0 := 
 end
 
 /-- See also `single_eq_updateRow_zero` and `single_eq_updateCol_zero`. -/
-theorem single_eq_of_single_single (i : m) (j : n) (a : α) :
-    single i j a = Matrix.of (Pi.single i (Pi.single j a)) := by
+theorem single_eq_of_single_single (i : m) (j : n) (a : α)
+    : single i j a = Matrix.of (Pi.single i (Pi.single j a)) := by
   ext a b
   unfold single
   by_cases hi : i = a <;> by_cases hj : j = b <;> simp [*]
 
 @[simp]
-theorem of_symm_single (i : m) (j : n) (a : α) :
-    of.symm (single i j a) = Pi.single i (Pi.single j a) :=
+theorem of_symm_single (i : m) (j : n) (a : α)
+    : of.symm (single i j a) = Pi.single i (Pi.single j a) :=
   congr(of.symm $(single_eq_of_single_single i j a))
 
 @[simp]
-theorem smul_single [SMulZeroClass R α] (r : R) (i : m) (j : n) (a : α) :
-    r • single i j a = single i j (r • a) := by
+theorem smul_single [SMulZeroClass R α] (r : R) (i : m) (j : n) (a : α)
+    : r • single i j a = single i j (r • a) := by
   unfold single
   ext
   simp [smul_ite]
@@ -83,32 +84,32 @@ theorem single_zero (i : m) (j : n) : single i j (0 : α) = 0 := by
   simp
 
 @[simp]
-lemma transpose_single (i : m) (j : n) (a : α) :
-    (single i j a)ᵀ = single j i a := by
+lemma transpose_single (i : m) (j : n) (a : α) : (single i j a)ᵀ = single j i a := by
   aesop (add unsafe unfold single)
 
 @[simp]
-lemma map_single (i : m) (j : n) (a : α) {β : Type*} [Zero β]
-    {F : Type*} [FunLike F α β] [ZeroHomClass F α β] (f : F) :
-    (single i j a).map f = single i j (f a) := by
+lemma map_single
+    (i : m) (j : n) (a : α)
+    {β : Type*} [Zero β]
+    {F : Type*} [FunLike F α β] [ZeroHomClass F α β]
+    (f : F)
+    : (single i j a).map f = single i j (f a) := by
   aesop (add unsafe unfold single)
 
-theorem single_mem_matrix {S : Set α} (hS : 0 ∈ S) {i : m} {j : n} {a : α} :
-    Matrix.single i j a ∈ S.matrix ↔ a ∈ S := by
+theorem single_mem_matrix {S : Set α} (hS : 0 ∈ S) {i : m} {j : n} {a : α}
+    : Matrix.single i j a ∈ S.matrix ↔ a ∈ S := by
   simp only [Set.mem_matrix, single, of_apply]
   conv_lhs => intro _ _; rw [ite_mem]
   simp [hS]
 
-theorem diagonal_single (i : m) (r : α) :
-    diagonal (Pi.single i r) = single i i r := by
+theorem diagonal_single (i : m) (r : α) : diagonal (Pi.single i r) = single i i r := by
   ext j k
   dsimp [diagonal, single]
   grind
 
 @[simp]
-theorem submatrix_single_equiv
-    (f : l ≃ n) (g : m ≃ o) (i : n) (j : o) (r : α) :
-    (single i j r).submatrix f g = single (f.symm i) (g.symm j) r := by
+theorem submatrix_single_equiv (f : l ≃ n) (g : m ≃ o) (i : n) (j : o) (r : α)
+    : (single i j r).submatrix f g = single (f.symm i) (g.symm j) r := by
   ext i' j'
   dsimp
   obtain hi | rfl := ne_or_eq (f.symm i) i'
@@ -121,72 +122,72 @@ theorem submatrix_single_equiv
 
 end Zero
 
-theorem single_add [AddZeroClass α] (i : m) (j : n) (a b : α) :
-    single i j (a + b) = single i j a + single i j b := by
+theorem single_add [AddZeroClass α] (i : m) (j : n) (a b : α)
+    : single i j (a + b) = single i j a + single i j b := by
   ext
   simp only [single, of_apply]
   split_ifs with h <;> simp [h]
 
-lemma single_neg [NegZeroClass α] (i j : n) (b : α) :
-    - single i j b = single i j (-b) :=
+lemma single_neg [NegZeroClass α] (i j : n) (b : α) : - single i j b = single i j (-b) :=
   neg_of _ |>.trans <| ext fun x y ↦ by simp [single, neg_ite]
 
-theorem single_mulVec [NonUnitalNonAssocSemiring α] [Fintype m]
-    (i : n) (j : m) (c : α) (x : m → α) :
-    mulVec (single i j c) x = Function.update (0 : n → α) i (c * x j) := by
+theorem single_mulVec [NonUnitalNonAssocSemiring α] [Fintype m] (i : n) (j : m) (c : α) (x : m → α)
+    : mulVec (single i j c) x = Function.update (0 : n → α) i (c * x j) := by
   ext i'
   simp only [mulVec, dotProduct, single, of_apply, ite_mul, zero_mul]
   rcases eq_or_ne i i' with rfl | h
   · simp
   simp [h, h.symm]
 
-lemma single_mulVec_eq [Fintype n] [NonAssocSemiring α] (i j : n) (b : α) (w : n → α) :
-    single i j b *ᵥ w = (b * w j) • Pi.single i (1 : α) := by
+lemma single_mulVec_eq [Fintype n] [NonAssocSemiring α] (i j : n) (b : α) (w : n → α)
+    : single i j b *ᵥ w = (b * w j) • Pi.single i (1 : α) := by
   ext
   simp [Matrix.single_mulVec, Function.update_apply, Pi.single_apply]
 
-lemma sum_single_eq_diagonal [AddCommMonoid α] [Fintype m] (f : m → α) :
-    ∑ i : m, single i i (f i) = Matrix.diagonal f := by
+lemma sum_single_eq_diagonal [AddCommMonoid α] [Fintype m] (f : m → α)
+    : ∑ i : m, single i i (f i) = Matrix.diagonal f := by
   ext j k
   rw [sum_apply, diagonal_apply, Finset.sum_eq_single j] <;> simp +contextual [single]
 
-lemma sum_single_one [AddCommMonoid α] [One α] [Fintype m] :
-    ∑ i : m, single i i (1 : α) = 1 :=
+lemma sum_single_one [AddCommMonoid α] [One α] [Fintype m] : ∑ i : m, single i i (1 : α) = 1 :=
   sum_single_eq_diagonal _
 
-lemma sum_single_natCast [AddCommMonoidWithOne α] [Fintype m] (n : ℕ) :
-    ∑ i : m, single i i (n : α) = n :=
+lemma sum_single_natCast [AddCommMonoidWithOne α] [Fintype m] (n : ℕ)
+    : ∑ i : m, single i i (n : α) = n :=
   sum_single_eq_diagonal _
 
-lemma sum_single_ofNat [AddCommMonoidWithOne α] [Fintype m] (n : ℕ) [n.AtLeastTwo] :
-    ∑ i : m, single i i (ofNat(n) : α) = ofNat(n) :=
+lemma sum_single_ofNat [AddCommMonoidWithOne α] [Fintype m] (n : ℕ) [n.AtLeastTwo]
+    : ∑ i : m, single i i (ofNat(n) : α) = ofNat(n) :=
   sum_single_eq_diagonal _
 
-lemma sum_single_intCast [AddCommGroupWithOne α] [Fintype m] (z : ℤ) :
-    ∑ i : m, single i i (z : α) = z :=
+lemma sum_single_intCast [AddCommGroupWithOne α] [Fintype m] (z : ℤ)
+    : ∑ i : m, single i i (z : α) = z :=
   sum_single_eq_diagonal _
 
-theorem sum_sum_single [AddCommMonoid α] [Fintype m] [Fintype n] (x : m → n → α) :
-    ∑ i : m, ∑ j : n, single i j (x i j) = of x := by
+theorem sum_sum_single [AddCommMonoid α] [Fintype m] [Fintype n] (x : m → n → α)
+    : ∑ i : m, ∑ j : n, single i j (x i j) = of x := by
   ext i j
   rw [← Fintype.sum_prod_type']
   simp [single, Matrix.sum_apply, Matrix.of_apply, ← Prod.mk_inj]
 
-theorem matrix_eq_sum_single [AddCommMonoid α] [Fintype m] [Fintype n] (x : Matrix m n α) :
-    x = ∑ i : m, ∑ j : n, single i j (x i j) :=
+theorem matrix_eq_sum_single [AddCommMonoid α] [Fintype m] [Fintype n] (x : Matrix m n α)
+    : x = ∑ i : m, ∑ j : n, single i j (x i j) :=
   sum_sum_single _ |>.symm
 
-theorem single_eq_single_vecMulVec_single [MulZeroOneClass α] (i : m) (j : n) :
-    single i j (1 : α) = vecMulVec (Pi.single i 1) (Pi.single j 1) := by
+theorem single_eq_single_vecMulVec_single [MulZeroOneClass α] (i : m) (j : n)
+    : single i j (1 : α) = vecMulVec (Pi.single i 1) (Pi.single j 1) := by
   simp [-mul_ite, single, vecMulVec, ite_and, Pi.single_apply, eq_comm]
 
 -- todo: the old proof used fintypes, I don't know `Finsupp` but this feels generalizable
 @[elab_as_elim]
 protected theorem induction_on'
-    [AddCommMonoid α] [Finite m] [Finite n] {P : Matrix m n α → Prop} (M : Matrix m n α)
-    (h_zero : P 0) (h_add : ∀ p q, P p → P q → P (p + q))
-    (h_std_basis : ∀ (i : m) (j : n) (x : α), P (single i j x)) : P M := by
-  cases nonempty_fintype m; cases nonempty_fintype n
+    [AddCommMonoid α] [Finite m] [Finite n]
+    {P : Matrix m n α → Prop}
+    (M : Matrix m n α) (h_zero : P 0) (h_add : ∀ p q, P p → P q → P (p + q))
+    (h_std_basis : ∀ (i : m) (j : n) (x : α), P (single i j x))
+    : P M := by
+  cases nonempty_fintype m
+  cases nonempty_fintype n
   rw [matrix_eq_sum_single M, ← Finset.sum_product']
   apply Finset.sum_induction _ _ h_add h_zero
   intros
@@ -195,8 +196,10 @@ protected theorem induction_on'
 @[elab_as_elim]
 protected theorem induction_on
     [AddCommMonoid α] [Finite m] [Finite n] [Nonempty m] [Nonempty n]
-    {P : Matrix m n α → Prop} (M : Matrix m n α) (h_add : ∀ p q, P p → P q → P (p + q))
-    (h_std_basis : ∀ i j x, P (single i j x)) : P M :=
+    {P : Matrix m n α → Prop}
+    (M : Matrix m n α) (h_add : ∀ p q, P p → P q → P (p + q))
+    (h_std_basis : ∀ i j x, P (single i j x))
+    : P M :=
   Matrix.induction_on' M
     (by
       inhabit m
@@ -214,21 +217,24 @@ def singleAddMonoidHom [AddCommMonoid α] (i : m) (j : n) : α →+ Matrix m n �
 variable (R)
 /-- `Matrix.single` as a bundled linear map. -/
 @[simps!]
-def singleLinearMap [Semiring R] [AddCommMonoid α] [Module R α] (i : m) (j : n) :
-    α →ₗ[R] Matrix m n α where
+def singleLinearMap [Semiring R] [AddCommMonoid α] [Module R α] (i : m) (j : n)
+    : α →ₗ[R] Matrix m n α where
   __ := singleAddMonoidHom i j
   map_smul' _ _ := smul_single _ _ _ _ |>.symm
 
 section ext
 
-/-- Additive maps from finite matrices are equal if they agree on the standard basis.
+/--
+Additive maps from finite matrices are equal if they agree on the standard basis.
 
-See note [partially-applied ext lemmas]. -/
+See note [partially-applied ext lemmas].
+-/
 @[local ext]
 theorem ext_addMonoidHom
-    [Finite m] [Finite n] [AddCommMonoid α] [AddCommMonoid β] ⦃f g : Matrix m n α →+ β⦄
-    (h : ∀ i j, f.comp (singleAddMonoidHom i j) = g.comp (singleAddMonoidHom i j)) :
-    f = g := by
+    [Finite m] [Finite n] [AddCommMonoid α] [AddCommMonoid β]
+    ⦃f g : Matrix m n α →+ β⦄
+    (h : ∀ i j, f.comp (singleAddMonoidHom i j) = g.comp (singleAddMonoidHom i j))
+    : f = g := by
   cases nonempty_fintype m
   cases nonempty_fintype n
   ext x
@@ -237,51 +243,55 @@ theorem ext_addMonoidHom
   congr! 2
   congrm $(h _ _) _
 
-/-- Linear maps from finite matrices are equal if they agree on the standard basis.
+/--
+Linear maps from finite matrices are equal if they agree on the standard basis.
 
-See note [partially-applied ext lemmas]. -/
+See note [partially-applied ext lemmas].
+-/
 @[local ext]
 theorem ext_linearMap
     [Finite m] [Finite n] [Semiring R] [AddCommMonoid α] [AddCommMonoid β] [Module R α] [Module R β]
     ⦃f g : Matrix m n α →ₗ[R] β⦄
-    (h : ∀ i j, f ∘ₗ singleLinearMap R i j = g ∘ₗ singleLinearMap R i j) :
-    f = g :=
-  LinearMap.toAddMonoidHom_injective <| ext_addMonoidHom fun i j =>
-    congrArg LinearMap.toAddMonoidHom <| h i j
+    (h : ∀ i j, f ∘ₗ singleLinearMap R i j = g ∘ₗ singleLinearMap R i j)
+    : f = g :=
+  LinearMap.toAddMonoidHom_injective <|
+    ext_addMonoidHom fun i j => congrArg LinearMap.toAddMonoidHom <| h i j
 
 section liftLinear
 variable {R} (S)
 variable [Fintype m] [Fintype n] [Semiring R] [Semiring S] [AddCommMonoid α] [AddCommMonoid β]
 variable [Module R α] [Module R β] [Module S β] [SMulCommClass R S β]
 
-/-- Families of linear maps acting on each element are equivalent to linear maps from a matrix.
+/--
+Families of linear maps acting on each element are equivalent to linear maps from a matrix.
 
-This can be thought of as the matrix version of `LinearMap.lsum`. -/
+This can be thought of as the matrix version of `LinearMap.lsum`.
+-/
 def liftLinear : (m → n → α →ₗ[R] β) ≃ₗ[S] (Matrix m n α →ₗ[R] β) :=
-  LinearEquiv.piCongrRight (fun _ => LinearMap.lsum R _ S) ≪≫ₗ LinearMap.lsum R _ S ≪≫ₗ
-    LinearEquiv.congrLeft _ _ (ofLinearEquiv _)
+  LinearEquiv.piCongrRight (fun _ => LinearMap.lsum R _ S) ≪≫ₗ LinearMap.lsum R _ S
+    ≪≫ₗ LinearEquiv.congrLeft _ _ (ofLinearEquiv _)
 
 -- not `simp` to let `liftLinear_single` fire instead
-theorem liftLinear_apply (f : m → n → α →ₗ[R] β) (M : Matrix m n α) :
-    liftLinear S f M = ∑ i, ∑ j, f i j (M i j) := by
+theorem liftLinear_apply (f : m → n → α →ₗ[R] β) (M : Matrix m n α)
+    : liftLinear S f M = ∑ i, ∑ j, f i j (M i j) := by
   simp [liftLinear, map_sum, LinearEquiv.congrLeft]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem liftLinear_single (f : m → n → α →ₗ[R] β) (i : m) (j : n) (a : α) :
-    liftLinear S f (Matrix.single i j a) = f i j a := by
+theorem liftLinear_single (f : m → n → α →ₗ[R] β) (i : m) (j : n) (a : α)
+    : liftLinear S f (Matrix.single i j a) = f i j a := by
   dsimp [liftLinear, -LinearMap.lsum_apply, LinearEquiv.congrLeft, LinearEquiv.piCongrRight]
   simp_rw [of_symm_single, LinearMap.lsum_piSingle]
 
 @[simp]
-theorem liftLinear_comp_singleLinearMap (f : m → n → α →ₗ[R] β) (i : m) (j : n) :
-    liftLinear S f ∘ₗ Matrix.singleLinearMap _ i j = f i j :=
+theorem liftLinear_comp_singleLinearMap (f : m → n → α →ₗ[R] β) (i : m) (j : n)
+    : liftLinear S f ∘ₗ Matrix.singleLinearMap _ i j = f i j :=
   LinearMap.ext <| liftLinear_single S f i j
 
 @[simp]
-theorem liftLinear_singleLinearMap [Module S α] [SMulCommClass R S α] :
-    liftLinear S (Matrix.singleLinearMap R) = .id (M := Matrix m n α) :=
+theorem liftLinear_singleLinearMap [Module S α] [SMulCommClass R S α]
+    : liftLinear S (Matrix.singleLinearMap R) = .id (M := Matrix m n α) :=
   ext_linearMap _ <| liftLinear_comp_singleLinearMap _ _
 
 end liftLinear
@@ -309,42 +319,46 @@ variable [Fintype m] [NonUnitalNonAssocSemiring α] (c : α)
 
 omit [DecidableEq n] in
 @[simp]
-theorem single_mul_apply_same (i : l) (j : m) (b : n) (M : Matrix m n α) :
-    (single i j c * M) i b = c * M j b := by simp [mul_apply, single]
+theorem single_mul_apply_same (i : l) (j : m) (b : n) (M : Matrix m n α)
+    : (single i j c * M) i b = c * M j b := by
+  simp [mul_apply, single]
 
 omit [DecidableEq l] in
 @[simp]
-theorem mul_single_apply_same (i : m) (j : n) (a : l) (M : Matrix l m α) :
-    (M * single i j c) a j = M a i * c := by simp [mul_apply, single]
+theorem mul_single_apply_same (i : m) (j : n) (a : l) (M : Matrix l m α)
+    : (M * single i j c) a j = M a i * c := by
+  simp [mul_apply, single]
 
 omit [DecidableEq n] in
 @[simp]
-theorem single_mul_apply_of_ne (i : l) (j : m) (a : l) (b : n) (h : a ≠ i) (M : Matrix m n α) :
-    (single i j c * M) a b = 0 := by simp [mul_apply, h.symm]
+theorem single_mul_apply_of_ne (i : l) (j : m) (a : l) (b : n) (h : a ≠ i) (M : Matrix m n α)
+    : (single i j c * M) a b = 0 := by
+  simp [mul_apply, h.symm]
 
 omit [DecidableEq l] in
 @[simp]
-theorem mul_single_apply_of_ne (i : m) (j : n) (a : l) (b : n) (hbj : b ≠ j) (M : Matrix l m α) :
-    (M * single i j c) a b = 0 := by simp [mul_apply, hbj.symm]
+theorem mul_single_apply_of_ne (i : m) (j : n) (a : l) (b : n) (hbj : b ≠ j) (M : Matrix l m α)
+    : (M * single i j c) a b = 0 := by
+  simp [mul_apply, hbj.symm]
 
 @[simp]
-theorem single_mul_single_same (i : l) (j : m) (k : n) (d : α) :
-    single i j c * single j k d = single i k (c * d) := by
+theorem single_mul_single_same (i : l) (j : m) (k : n) (d : α)
+    : single i j c * single j k d = single i k (c * d) := by
   ext a b
   simp only [mul_apply, single]
   by_cases h₁ : i = a <;> by_cases h₂ : k = b <;> simp [h₁, h₂]
 
 @[simp]
-theorem single_mul_mul_single [Fintype n]
-    (i : l) (i' : m) (j' : n) (j : o) (a : α) (x : Matrix m n α) (b : α) :
-    single i i' a * x * single j' j b = single i j (a * x i' j' * b) := by
+theorem single_mul_mul_single
+    [Fintype n] (i : l) (i' : m) (j' : n) (j : o) (a : α) (x : Matrix m n α) (b : α)
+    : single i i' a * x * single j' j b = single i j (a * x i' j' * b) := by
   ext i'' j''
   simp only [mul_apply, single]
   by_cases h₁ : i = i'' <;> by_cases h₂ : j = j'' <;> simp [h₁, h₂]
 
 @[simp]
-theorem single_mul_single_of_ne (i : l) (j k : m) {l : n} (h : j ≠ k) (d : α) :
-    single i j c * single k l d = 0 := by
+theorem single_mul_single_of_ne (i : l) (j k : m) {l : n} (h : j ≠ k) (d : α)
+    : single i j c * single k l d = 0 := by
   ext a b
   simp only [mul_apply, single, of_apply]
   by_cases h₁ : i = a
@@ -357,25 +371,27 @@ section Commute
 
 variable [Fintype n] [Semiring α]
 
-theorem row_eq_zero_of_commute_single {i j k : n} {M : Matrix n n α}
-    (hM : Commute (single i j 1) M) (hkj : k ≠ j) : M j k = 0 := by
+theorem row_eq_zero_of_commute_single
+    {i j k : n} {M : Matrix n n α} (hM : Commute (single i j 1) M) (hkj : k ≠ j)
+    : M j k = 0 := by
   have := ext_iff.mpr hM i k
   simp_all
 
-theorem col_eq_zero_of_commute_single {i j k : n} {M : Matrix n n α}
-    (hM : Commute (single i j 1) M) (hki : k ≠ i) : M k i = 0 := by
+theorem col_eq_zero_of_commute_single
+    {i j k : n} {M : Matrix n n α} (hM : Commute (single i j 1) M) (hki : k ≠ i)
+    : M k i = 0 := by
   have := ext_iff.mpr hM k j
   simp_all
 
-theorem diag_eq_of_commute_single {i j : n} {M : Matrix n n α}
-    (hM : Commute (single i j 1) M) : M i i = M j j := by
+theorem diag_eq_of_commute_single {i j : n} {M : Matrix n n α} (hM : Commute (single i j 1) M)
+    : M i i = M j j := by
   have := ext_iff.mpr hM i j
   simp_all
 
 /-- `M` is a scalar matrix if it commutes with every non-diagonal `single`. -/
-theorem mem_range_scalar_of_commute_single {M : Matrix n n α}
-    (hM : Pairwise fun i j => Commute (single i j 1) M) :
-    M ∈ Set.range (Matrix.scalar n) := by
+theorem mem_range_scalar_of_commute_single
+    {M : Matrix n n α} (hM : Pairwise fun i j => Commute (single i j 1) M)
+    : M ∈ Set.range (Matrix.scalar n) := by
   cases isEmpty_or_nonempty n
   · exact ⟨0, Subsingleton.elim _ _⟩
   obtain ⟨i⟩ := ‹Nonempty n›
@@ -391,49 +407,53 @@ theorem mem_range_scalar_of_commute_single {M : Matrix n n α}
     · rw [col_eq_zero_of_commute_single (hM hkl.symm) hkl]
     · rw [row_eq_zero_of_commute_single (hM hij) hkl.symm]
 
-theorem mem_range_scalar_iff_commute_single {M : Matrix n n α} :
-    M ∈ Set.range (Matrix.scalar n) ↔ ∀ (i j : n), i ≠ j → Commute (single i j 1) M := by
+theorem mem_range_scalar_iff_commute_single {M : Matrix n n α}
+    : M ∈ Set.range (Matrix.scalar n) ↔ ∀ (i j : n), i ≠ j → Commute (single i j 1) M := by
   refine ⟨fun ⟨r, hr⟩ i j _ => hr ▸ Commute.symm ?_, mem_range_scalar_of_commute_single⟩
   rw [scalar_commute_iff]
   simp
 
 /-- `M` is a scalar matrix if and only if it commutes with every `single`. -/
-theorem mem_range_scalar_iff_commute_single' {M : Matrix n n α} :
-    M ∈ Set.range (Matrix.scalar n) ↔ ∀ (i j : n), Commute (single i j 1) M := by
-  refine ⟨fun ⟨r, hr⟩ i j => hr ▸ Commute.symm ?_,
-    fun hM => mem_range_scalar_iff_commute_single.mpr <| fun i j _ => hM i j⟩
+theorem mem_range_scalar_iff_commute_single' {M : Matrix n n α}
+    : M ∈ Set.range (Matrix.scalar n) ↔ ∀ (i j : n), Commute (single i j 1) M := by
+  refine ⟨
+    fun ⟨r, hr⟩ i j => hr ▸ Commute.symm ?_,
+    fun hM => mem_range_scalar_iff_commute_single.mpr <| fun i j _ => hM i j
+  ⟩
   rw [scalar_commute_iff]
   simp
 
 /-- The center of `Matrix n n α` is equal to the image of the center of `α` under `scalar n`. -/
-theorem center_eq_scalar_image :
-    Set.center (Matrix n n α) = scalar n '' Set.center α := Set.ext fun x ↦ by
-  simp_rw [Set.mem_image, Semigroup.mem_center_iff]
-  refine ⟨fun hx ↦ ?_, fun ⟨x, hx, eq⟩ y ↦ eq ▸ scalar_commute x (hx · |>.symm) y |>.symm⟩
-  refine (isEmpty_or_nonempty n).elim (fun _ ↦ ⟨0, by simp [nontriviality]⟩) fun ⟨i⟩ ↦ ?_
-  obtain ⟨x, rfl⟩ := mem_range_scalar_iff_commute_single'.mpr fun _ _ ↦ hx _
-  exact ⟨x, by simpa using fun r ↦ congr($(hx (single i i r)) i i)⟩
+theorem center_eq_scalar_image : Set.center (Matrix n n α) = scalar n '' Set.center α :=
+  Set.ext fun x ↦ by
+    simp_rw [Set.mem_image, Semigroup.mem_center_iff]
+    refine ⟨fun hx ↦ ?_, fun ⟨x, hx, eq⟩ y ↦ eq ▸ scalar_commute x (hx · |>.symm) y |>.symm⟩
+    refine (isEmpty_or_nonempty n).elim (fun _ ↦ ⟨0, by simp [nontriviality]⟩) fun ⟨i⟩ ↦ ?_
+    obtain ⟨x, rfl⟩ := mem_range_scalar_iff_commute_single'.mpr fun _ _ ↦ hx _
+    exact ⟨x, by simpa using fun r ↦ congr($(hx (single i i r)) i i)⟩
 
-theorem submonoidCenter_eq_scalar_map :
-    Submonoid.center (Matrix n n α) = (Submonoid.center α).map (scalar n) :=
+theorem submonoidCenter_eq_scalar_map
+    : Submonoid.center (Matrix n n α) = (Submonoid.center α).map (scalar n) :=
   SetLike.coe_injective center_eq_scalar_image
 
-theorem subsemigroupCenter_eq_scalar_map :
-    Subsemigroup.center (Matrix n n α) = (Subsemigroup.center α).map (scalar n).toMulHom :=
+theorem subsemigroupCenter_eq_scalar_map
+    : Subsemigroup.center (Matrix n n α) = (Subsemigroup.center α).map (scalar n).toMulHom :=
   SetLike.coe_injective center_eq_scalar_image
 
-theorem subsemiringCenter_eq_scalar_map :
-    Subsemiring.center (Matrix n n α) = (Subsemiring.center α).map (scalar n) :=
+theorem subsemiringCenter_eq_scalar_map
+    : Subsemiring.center (Matrix n n α) = (Subsemiring.center α).map (scalar n) :=
   SetLike.coe_injective center_eq_scalar_image
 
-theorem subringCenter_eq_scalar_map [Ring R] :
-    Subring.center (Matrix n n R) = (Subring.center R).map (scalar n) :=
+theorem subringCenter_eq_scalar_map [Ring R]
+    : Subring.center (Matrix n n R) = (Subring.center R).map (scalar n) :=
   SetLike.coe_injective center_eq_scalar_image
 
-/-- For a commutative semiring `R`, the center of `Matrix n n R` is the range of `scalar n`
-(i.e., the span of `{1}`). -/
-@[simp] theorem center_eq_range [CommSemiring R] :
-    Set.center (Matrix n n R) = Set.range (scalar n) := by
+/--
+For a commutative semiring `R`, the center of `Matrix n n R` is the range of `scalar n`
+(i.e., the span of `{1}`).
+-/
+@[simp]
+theorem center_eq_range [CommSemiring R] : Set.center (Matrix n n R) = Set.range (scalar n) := by
   rw [center_eq_scalar_image, Set.center_eq_univ, Set.image_univ]
 
 end Commute

@@ -26,8 +26,8 @@ noncomputable section
 
 namespace TopologicalSpace
 
-theorem eq_induced_by_maps_to_sierpinski (X : Type*) [t : TopologicalSpace X] :
-    t = ⨅ u : Opens X, sierpinskiSpace.induced (· ∈ u) := by
+theorem eq_induced_by_maps_to_sierpinski (X : Type*) [t : TopologicalSpace X]
+    : t = ⨅ u : Opens X, sierpinskiSpace.induced (· ∈ u) := by
   apply le_antisymm
   · rw [le_iInf_iff]
     exact fun u => Continuous.le_induced (isOpen_iff_continuous_mem.mp u.2)
@@ -39,7 +39,8 @@ theorem eq_induced_by_maps_to_sierpinski (X : Type*) [t : TopologicalSpace X] :
 
 variable (X : Type*) [TopologicalSpace X]
 
-/-- The continuous map from `X` to the product of copies of the Sierpinski space, (one copy for each
+/--
+The continuous map from `X` to the product of copies of the Sierpinski space, (one copy for each
 open subset `u` of `X`). The `u` coordinate of `productOfMemOpens x` is given by `x ∈ u`.
 -/
 def productOfMemOpens : C(X, Opens X → Prop) where

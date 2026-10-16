@@ -57,9 +57,9 @@ both orientations are present.
 def toSimpleGraphStrict (G : Digraph V) : SimpleGraph V where
   Adj v w := v ≠ w ∧ G.Adj v w ∧ G.Adj w v
 
-lemma toSimpleGraphStrict_subgraph_toSimpleGraphInclusive (G : Digraph V) :
-    G.toSimpleGraphStrict ≤ G.toSimpleGraphInclusive :=
-  fun _ _ h ↦ ⟨h.1, Or.inl h.2.1⟩
+lemma toSimpleGraphStrict_subgraph_toSimpleGraphInclusive (G : Digraph V)
+    : G.toSimpleGraphStrict ≤ G.toSimpleGraphInclusive := fun _ _ h ↦
+  ⟨h.1, Or.inl h.2.1⟩
 
 @[gcongr, mono]
 lemma toSimpleGraphInclusive_mono : Monotone (toSimpleGraphInclusive : _ → SimpleGraph V) :=

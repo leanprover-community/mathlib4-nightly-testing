@@ -46,33 +46,27 @@ variable [Lattice α] [Group α]
 
 -- Special case of Bourbaki A.VI.9 (1)
 @[to_additive]
-lemma mul_sup [MulLeftMono α] (a b c : α) :
-    c * (a ⊔ b) = c * a ⊔ c * b :=
+lemma mul_sup [MulLeftMono α] (a b c : α) : c * (a ⊔ b) = c * a ⊔ c * b :=
   (OrderIso.mulLeft _).map_sup _ _
 
 @[to_additive]
-lemma sup_mul [MulRightMono α] (a b c : α) :
-    (a ⊔ b) * c = a * c ⊔ b * c :=
+lemma sup_mul [MulRightMono α] (a b c : α) : (a ⊔ b) * c = a * c ⊔ b * c :=
   (OrderIso.mulRight _).map_sup _ _
 
 @[to_additive]
-lemma mul_inf [MulLeftMono α] (a b c : α) :
-    c * (a ⊓ b) = c * a ⊓ c * b :=
+lemma mul_inf [MulLeftMono α] (a b c : α) : c * (a ⊓ b) = c * a ⊓ c * b :=
   (OrderIso.mulLeft _).map_inf _ _
 
 @[to_additive]
-lemma inf_mul [MulRightMono α] (a b c : α) :
-    (a ⊓ b) * c = a * c ⊓ b * c :=
+lemma inf_mul [MulRightMono α] (a b c : α) : (a ⊓ b) * c = a * c ⊓ b * c :=
   (OrderIso.mulRight _).map_inf _ _
 
 @[to_additive]
-lemma sup_div [MulRightMono α] (a b c : α) :
-    (a ⊔ b) / c = a / c ⊔ b / c :=
+lemma sup_div [MulRightMono α] (a b c : α) : (a ⊔ b) / c = a / c ⊔ b / c :=
   (OrderIso.divRight _).map_sup _ _
 
 @[to_additive]
-lemma inf_div [MulRightMono α] (a b c : α) :
-    (a ⊓ b) / c = a / c ⊓ b / c :=
+lemma inf_div [MulRightMono α] (a b c : α) : (a ⊓ b) / c = a / c ⊓ b / c :=
   (OrderIso.divRight _).map_inf _ _
 
 section
@@ -92,12 +86,10 @@ lemma div_inf (a b c : α) : c / (a ⊓ b) = c / a ⊔ c / b := (OrderIso.divLef
 -- Chapter V, 1.E
 -- See also `one_le_pow_iff` for the existing version in linear orders
 @[to_additive]
-lemma pow_two_semiclosed
-    {a : α} (ha : 1 ≤ a ^ 2) : 1 ≤ a := by
-  suffices this : (a ⊓ 1) * (a ⊓ 1) = a ⊓ 1 by
-    rwa [← inf_eq_right, ← mul_eq_left]
-  rw [mul_inf, inf_mul, ← pow_two, mul_one, one_mul, inf_assoc, inf_left_idem, inf_comm,
-    inf_assoc, inf_of_le_left ha]
+lemma pow_two_semiclosed {a : α} (ha : 1 ≤ a ^ 2) : 1 ≤ a := by
+  suffices this : (a ⊓ 1) * (a ⊓ 1) = a ⊓ 1 by rwa [← inf_eq_right, ← mul_eq_left]
+  rw [mul_inf, inf_mul, ← pow_two, mul_one, one_mul, inf_assoc, inf_left_idem, inf_comm, inf_assoc,
+    inf_of_le_left ha]
 
 end
 
@@ -119,8 +111,8 @@ lemma inf_mul_sup [MulLeftMono α] (a b : α) : (a ⊓ b) * (a ⊔ b) = a * b :=
 -- Non-comm case needs cancellation law https://ncatlab.org/nlab/show/distributive+lattice
 @[to_additive (attr := instance_reducible)
   /-- Every lattice ordered commutative additive group is a distributive lattice -/]
-def CommGroup.toDistribLattice (α : Type*) [Lattice α] [CommGroup α]
-    [MulLeftMono α] : DistribLattice α where
+def CommGroup.toDistribLattice (α : Type*) [Lattice α] [CommGroup α] [MulLeftMono α]
+    : DistribLattice α where
   le_sup_inf x y z := by
     rw [← mul_le_mul_iff_left (x ⊓ (y ⊓ z)), inf_mul_sup x (y ⊓ z), ← inv_mul_le_iff_le_mul,
       le_inf_iff]

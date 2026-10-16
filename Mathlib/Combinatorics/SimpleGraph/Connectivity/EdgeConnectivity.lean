@@ -27,17 +27,18 @@ namespace SimpleGraph
 variable {V : Type*} {G H : SimpleGraph V} {k l : ℕ∞} {u v w x y : V}
 
 variable (G k u v) in
-/-- Two vertices are `k`-edge-reachable if they remain reachable after removing strictly fewer than
-`k` edges. -/
-def IsEdgeReachable : Prop :=
-  ∀ ⦃s : Set (Sym2 V)⦄, s.encard < k → (G.deleteEdges s).Reachable u v
+/--
+Two vertices are `k`-edge-reachable if they remain reachable after removing strictly fewer than
+`k` edges.
+-/
+def IsEdgeReachable : Prop := ∀ ⦃s : Set (Sym2 V)⦄, s.encard < k → (G.deleteEdges s).Reachable u v
 
 variable (G k) in
 /-- A graph is `k`-edge-connected if any two vertices are `k`-edge-reachable. -/
 def IsEdgeConnected : Prop := ∀ u v, G.IsEdgeReachable k u v
 
-theorem isEdgeConnected_iff :
-    G.IsEdgeConnected k ↔ ∀ ⦃s⦄, s.encard < k → (G.deleteEdges s).Preconnected :=
+theorem isEdgeConnected_iff
+    : G.IsEdgeConnected k ↔ ∀ ⦃s⦄, s.encard < k → (G.deleteEdges s).Preconnected :=
   ⟨fun h _ hs u v ↦ h u v hs, fun h u v _ hs ↦ h hs u v⟩
 
 @[refl, simp]
@@ -46,15 +47,15 @@ protected lemma IsEdgeReachable.rfl {u : V} : G.IsEdgeReachable k u u := fun _ _
 protected lemma IsEdgeReachable.refl (u : V) : G.IsEdgeReachable k u u := .rfl
 
 @[symm]
-lemma IsEdgeReachable.symm (h : G.IsEdgeReachable k u v) : G.IsEdgeReachable k v u :=
-  fun _ hk ↦ (h hk).symm
+lemma IsEdgeReachable.symm (h : G.IsEdgeReachable k u v) : G.IsEdgeReachable k v u := fun _ hk ↦
+  (h hk).symm
 
-lemma isEdgeReachable_comm : G.IsEdgeReachable k u v ↔ G.IsEdgeReachable k v u :=
-  ⟨.symm, .symm⟩
+lemma isEdgeReachable_comm : G.IsEdgeReachable k u v ↔ G.IsEdgeReachable k v u := ⟨.symm, .symm⟩
 
 @[trans]
-lemma IsEdgeReachable.trans (h1 : G.IsEdgeReachable k u v) (h2 : G.IsEdgeReachable k v w) :
-    G.IsEdgeReachable k u w := fun _ hk ↦ (h1 hk).trans (h2 hk)
+lemma IsEdgeReachable.trans (h1 : G.IsEdgeReachable k u v) (h2 : G.IsEdgeReachable k v w)
+    : G.IsEdgeReachable k u w := fun _ hk ↦
+  (h1 hk).trans (h2 hk)
 
 @[gcongr]
 lemma IsEdgeReachable.mono (hGH : G ≤ H) (h : G.IsEdgeReachable k u v) : H.IsEdgeReachable k u v :=
@@ -64,8 +65,7 @@ lemma IsEdgeReachable.mono (hGH : G ≤ H) (h : G.IsEdgeReachable k u v) : H.IsE
 lemma IsEdgeReachable.anti (hkl : k ≤ l) (h : G.IsEdgeReachable l u v) : G.IsEdgeReachable k u v :=
   fun _ hk ↦ h <| by grw [← hkl]; exact hk
 
-@[simp]
-protected lemma IsEdgeReachable.zero : G.IsEdgeReachable 0 u v := by simp [IsEdgeReachable]
+@[simp] protected lemma IsEdgeReachable.zero : G.IsEdgeReachable 0 u v := by simp [IsEdgeReachable]
 
 @[simp] protected lemma IsEdgeConnected.zero : G.IsEdgeConnected 0 := fun _ _ ↦ .zero
 
@@ -81,35 +81,36 @@ lemma IsEdgeReachable.reachable (hk : k ≠ 0) (huv : G.IsEdgeReachable k u v) :
   isEdgeReachable_one.mp (huv.anti (Order.one_le_iff_ne_zero.mpr hk))
 
 @[nontriviality]
-lemma IsEdgeReachable.of_subsingleton [Subsingleton V] : G.IsEdgeReachable k u v :=
-  fun _ _ ↦ .of_subsingleton
+lemma IsEdgeReachable.of_subsingleton [Subsingleton V] : G.IsEdgeReachable k u v := fun _ _ ↦
+  .of_subsingleton
 
 @[nontriviality]
-lemma IsEdgeConnected.of_subsingleton [Subsingleton V] : G.IsEdgeConnected k :=
-  fun _ _ ↦ .of_subsingleton
+lemma IsEdgeConnected.of_subsingleton [Subsingleton V] : G.IsEdgeConnected k := fun _ _ ↦
+  .of_subsingleton
 
 lemma IsEdgeConnected.preconnected (hk : k ≠ 0) (h : G.IsEdgeConnected k) : G.Preconnected :=
   fun u v ↦ (h u v).reachable hk
 
-lemma IsEdgeConnected.connected [Nonempty V] (hk : k ≠ 0) (h : G.IsEdgeConnected k) :
-    G.Connected where
+lemma IsEdgeConnected.connected [Nonempty V] (hk : k ≠ 0) (h : G.IsEdgeConnected k)
+    : G.Connected where
   preconnected := h.preconnected hk
 
-lemma IsEdgeReachable.le_degree [Fintype (G.neighborSet u)] (h : G.IsEdgeReachable k u v)
-    (huv : u ≠ v) : k ≤ G.degree u := by
+lemma IsEdgeReachable.le_degree
+    [Fintype (G.neighborSet u)] (h : G.IsEdgeReachable k u v) (huv : u ≠ v)
+    : k ≤ G.degree u := by
   classical
   by_contra! hh
   rw [← card_incidenceSet_eq_degree, Set.coe_fintypeCard] at hh
   obtain ⟨w, _⟩ := h hh |>.exists_isPath
   simpa using w.adj_snd <| mt Walk.Nil.eq huv
 
-lemma IsEdgeConnected.le_degree [Fintype (G.neighborSet u)] [Nontrivial V]
-    (h : G.IsEdgeConnected k) : k ≤ G.degree u := by
+lemma IsEdgeConnected.le_degree [Fintype (G.neighborSet u)] [Nontrivial V] (h : G.IsEdgeConnected k)
+    : k ≤ G.degree u := by
   obtain ⟨v, hv⟩ := exists_ne u
   exact (h u v).le_degree hv.symm
 
-lemma isEdgeReachable_add_one (hk : k ≠ 0) :
-    G.IsEdgeReachable (k + 1) u v ↔ ∀ e, (G.deleteEdges {e}).IsEdgeReachable k u v := by
+lemma isEdgeReachable_add_one (hk : k ≠ 0)
+    : G.IsEdgeReachable (k + 1) u v ↔ ∀ e, (G.deleteEdges {e}).IsEdgeReachable k u v := by
   refine ⟨fun h e s hk ↦ ?_, fun h s hs ↦ ?_⟩
   · rw [deleteEdges_deleteEdges, Set.union_comm]
     apply h
@@ -121,25 +122,27 @@ lemma isEdgeReachable_add_one (hk : k ≠ 0) :
     refine h e <| ENat.add_lt_add_iff_right ENat.one_ne_top |>.mp ?_
     rwa [Set.encard_sdiff_singleton_add_one he]
 
-lemma isEdgeConnected_add_one (hk : k ≠ 0) :
-    G.IsEdgeConnected (k + 1) ↔ ∀ e, (G.deleteEdges {e}).IsEdgeConnected k := by
+lemma isEdgeConnected_add_one (hk : k ≠ 0)
+    : G.IsEdgeConnected (k + 1) ↔ ∀ e, (G.deleteEdges {e}).IsEdgeConnected k := by
   simp [IsEdgeConnected, isEdgeReachable_add_one hk, forall_comm (α := Sym2 _)]
 
 lemma IsBridge.not_isEdgeReachable_two (huv : G.IsBridge s(u, v)) : ¬ G.IsEdgeReachable 2 u v :=
   fun hc ↦ huv <| hc <| Set.encard_singleton _ |>.trans_lt Nat.one_lt_ofNat
 
-/-- An edge is a bridge iff its endpoints are not 2-edge-reachable.
+/--
+An edge is a bridge iff its endpoints are not 2-edge-reachable.
 
 The forward direction of this is true without assuming `u` and `v` are adjacent.
-See `IsBridge.not_isEdgeReachable_two`. -/
-lemma isBridge_iff_not_isEdgeReachable_two (huv : G.Adj u v) :
-    G.IsBridge s(u, v) ↔ ¬G.IsEdgeReachable 2 u v := by
+See `IsBridge.not_isEdgeReachable_two`.
+-/
+lemma isBridge_iff_not_isEdgeReachable_two (huv : G.Adj u v)
+    : G.IsBridge s(u, v) ↔ ¬ G.IsEdgeReachable 2 u v := by
   refine ⟨fun h ↦ h.not_isEdgeReachable_two, fun hc hr ↦ hc fun s hs₂ ↦ ?_⟩
   by_cases! hs₁ : s.encard ≠ (1 : ℕ)
   · apply G.isEdgeReachable_one.mpr huv.reachable
     exact lt_of_le_of_ne (ENat.lt_natCast_add_one_iff.mp hs₂) hs₁
   obtain ⟨x, rfl⟩ := s.encard_eq_one.mp hs₁
-  obtain rfl | hx := eq_or_ne s(u, v) x
+  obtain rfl | hx := eq_or_ne (s(u, v)) x
   · exact hr
   · exact deleteEdges_adj.mpr ⟨huv, hx⟩ |>.reachable
 
@@ -155,8 +158,8 @@ lemma isEdgeReachable_two : G.IsEdgeReachable 2 u v ↔ ∀ e, (G.deleteEdges {e
 lemma isEdgeConnected_two : G.IsEdgeConnected 2 ↔ ∀ e, (G.deleteEdges {e}).Preconnected := by
   simp [isEdgeConnected_add_one, ← one_add_one_eq_two]
 
-lemma exists_adj_isEdgeReachable_two (hne : u ≠ v) (h : G.IsEdgeReachable 2 u v) :
-    ∃ w : V, G.Adj u w ∧ G.IsEdgeReachable 2 u w := by
+lemma exists_adj_isEdgeReachable_two (hne : u ≠ v) (h : G.IsEdgeReachable 2 u v)
+    : ∃ w : V, G.Adj u w ∧ G.IsEdgeReachable 2 u w := by
   obtain ⟨w, hw⟩ := h.reachable (by simp) |>.exists_isPath
   have : G.Adj u w.snd := Walk.adj_snd (by grind [Walk.not_nil_of_ne])
   refine ⟨w.snd, this, fun s hs ↦ ?_⟩
@@ -171,21 +174,21 @@ lemma exists_adj_isEdgeReachable_two (hne : u ≠ v) (h : G.IsEdgeReachable 2 u 
     refine (Set.subsingleton_iff_singleton h').mp ?_
     exact Set.encard_le_one_iff_subsingleton.mp (Order.le_of_lt_succ hs)
 
-theorem isEdgeReachable_top_iff_forall_finite :
-    G.IsEdgeReachable ⊤ u v ↔ ∀ ⦃s⦄, s.Finite → (G.deleteEdges s).Reachable u v := by
+theorem isEdgeReachable_top_iff_forall_finite
+    : G.IsEdgeReachable ⊤ u v ↔ ∀ ⦃s⦄, s.Finite → (G.deleteEdges s).Reachable u v := by
   simp_rw [IsEdgeReachable, Set.encard_lt_top_iff]
 
-theorem isEdgeConnected_top_iff_forall_finite :
-    G.IsEdgeConnected ⊤ ↔ ∀ ⦃s⦄, s.Finite → (G.deleteEdges s).Preconnected := by
+theorem isEdgeConnected_top_iff_forall_finite
+    : G.IsEdgeConnected ⊤ ↔ ∀ ⦃s⦄, s.Finite → (G.deleteEdges s).Preconnected := by
   simp_rw [isEdgeConnected_iff, Set.encard_lt_top_iff]
 
-theorem isEdgeReachable_top_iff_forall_nat :
-    G.IsEdgeReachable ⊤ u v ↔ ∀ n : ℕ, G.IsEdgeReachable n u v := by
+theorem isEdgeReachable_top_iff_forall_nat
+    : G.IsEdgeReachable ⊤ u v ↔ ∀ n : ℕ, G.IsEdgeReachable n u v := by
   refine ⟨fun h _ ↦ h.anti le_top, fun h s hlt ↦ h (s.ncard + 1) ?_⟩
   simp [← Set.encard_lt_top_iff.mp hlt |>.cast_ncard_eq, -Nat.cast_add]
 
-theorem isEdgeConnected_top_iff_forall_nat :
-    G.IsEdgeConnected ⊤ ↔ ∀ n : ℕ, G.IsEdgeConnected n := by
+theorem isEdgeConnected_top_iff_forall_nat
+    : G.IsEdgeConnected ⊤ ↔ ∀ n : ℕ, G.IsEdgeConnected n := by
   simp_rw [IsEdgeConnected, isEdgeReachable_top_iff_forall_nat]
   exact ⟨fun h n u v ↦ h u v n, fun h u v n ↦ h n u v⟩
 
@@ -198,35 +201,41 @@ In this section, we prove results about 2-connected components of a graph, but w
 namespace Walk
 variable {w : G.Walk u v}
 
-private lemma IsTrail.isEdgeReachable_two_of_isEdgeReachable_two_aux (hw : w.IsTrail)
-    (huv : G.IsEdgeReachable 2 u v) (huy : x ∈ w.support) : G.IsEdgeReachable 2 u x := by
+private lemma IsTrail.isEdgeReachable_two_of_isEdgeReachable_two_aux
+    (hw : w.IsTrail) (huv : G.IsEdgeReachable 2 u v) (huy : x ∈ w.support)
+    : G.IsEdgeReachable 2 u x := by
   classical
   contrapose huy
   obtain ⟨e, he⟩ := by simpa [isEdgeReachable_two] using huy
   have he' : ¬ (G.deleteEdges {e}).Reachable v x := fun hvy ↦
     he <| (isEdgeReachable_two.1 huv _).trans hvy
-  exact fun hy ↦ hw.disjoint_edges_takeUntil_dropUntil hy
-    ((w.takeUntil x _).mem_edges_of_not_reachable_deleteEdges he)
-    (by simpa using (w.dropUntil x _).reverse.mem_edges_of_not_reachable_deleteEdges he')
+  exact fun hy ↦
+    hw.disjoint_edges_takeUntil_dropUntil hy
+      ((w.takeUntil x _).mem_edges_of_not_reachable_deleteEdges he)
+      (by simpa using (w.dropUntil x _).reverse.mem_edges_of_not_reachable_deleteEdges he')
 
 /-- Vertices of a trail with 2-edge reachable endpoints are 2-edge reachable. -/
-lemma IsTrail.isEdgeReachable_two_of_isEdgeReachable_two (hw : w.IsTrail)
-    (huv : G.IsEdgeReachable 2 u v) (hx : x ∈ w.support) (hy : y ∈ w.support) :
-    G.IsEdgeReachable 2 x y :=
+lemma IsTrail.isEdgeReachable_two_of_isEdgeReachable_two
+    (hw : w.IsTrail) (huv : G.IsEdgeReachable 2 u v) (hx : x ∈ w.support) (hy : y ∈ w.support)
+    : G.IsEdgeReachable 2 x y :=
   (hw.isEdgeReachable_two_of_isEdgeReachable_two_aux huv hx).symm.trans
     (hw.isEdgeReachable_two_of_isEdgeReachable_two_aux huv hy)
 
-/-- A trail doesn't go through a vertex that is not 2-edge-reachable from its 2-edge-reachable
-endpoints. -/
+/--
+A trail doesn't go through a vertex that is not 2-edge-reachable from its 2-edge-reachable
+endpoints.
+-/
 @[deprecated IsTrail.isEdgeReachable_two_of_isEdgeReachable_two +typeChanged
   (since := "2026-04-01")]
-lemma IsTrail.not_mem_edges_of_not_isEdgeReachable_two (hw : w.IsTrail)
-    (huv : G.IsEdgeReachable 2 u v) (huy : ¬ G.IsEdgeReachable 2 u x) : x ∉ w.support :=
+lemma IsTrail.not_mem_edges_of_not_isEdgeReachable_two
+    (hw : w.IsTrail) (huv : G.IsEdgeReachable 2 u v) (huy : ¬ G.IsEdgeReachable 2 u x)
+    : x ∉ w.support :=
   mt (hw.isEdgeReachable_two_of_isEdgeReachable_two_aux huv) huy
 
 /-- Vertices of a closed trail are 2-edge reachable. -/
-lemma IsTrail.isEdgeReachable_two {w : G.Walk u u} (hw : w.IsTrail) (hx : x ∈ w.support)
-    (hy : y ∈ w.support) : G.IsEdgeReachable 2 x y :=
+lemma IsTrail.isEdgeReachable_two
+    {w : G.Walk u u} (hw : w.IsTrail) (hx : x ∈ w.support) (hy : y ∈ w.support)
+    : G.IsEdgeReachable 2 x y :=
   hw.isEdgeReachable_two_of_isEdgeReachable_two .rfl hx hy
 
 end SimpleGraph.Walk

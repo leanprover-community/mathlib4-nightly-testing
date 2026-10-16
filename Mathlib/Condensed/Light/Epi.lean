@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Condensed.Light.Functors
 public import Mathlib.Condensed.Light.Limits
-
 import Mathlib.CategoryTheory.Limits.Shapes.SequentialProduct
 import Mathlib.CategoryTheory.Sites.Coherent.SequentialLimit
 /-!
@@ -30,18 +29,19 @@ open CategoryTheory Sheaf Limits GrothendieckTopology
 namespace LightCondensed
 
 variable (A : Type u') [Category.{v'} A] {FA : A → A → Type*} {CA : A → Type w}
-variable [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory.{w} A FA]
+variable
+  [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory.{w} A FA]
   [PreservesFiniteProducts (CategoryTheory.forget A)]
 
 variable {X Y : LightCondensed.{u} A} (f : X ⟶ Y)
 
-lemma isLocallySurjective_iff_locallySurjective_on_lightProfinite : IsLocallySurjective f ↔
-    ∀ (S : LightProfinite) (y : ToType (Y.obj.obj ⟨S⟩)),
-      (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ)
-        (x : ToType (X.obj.obj ⟨S'⟩)),
-        f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
-  rw [coherentTopology.isLocallySurjective_iff,
-    regularTopology.isLocallySurjective_iff]
+lemma isLocallySurjective_iff_locallySurjective_on_lightProfinite
+    : IsLocallySurjective f
+      ↔ ∀ (S : LightProfinite) (y : ToType (Y.obj.obj ⟨S⟩)),
+        (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ)
+            (x : ToType (X.obj.obj ⟨S'⟩)),
+          f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
+  rw [coherentTopology.isLocallySurjective_iff, regularTopology.isLocallySurjective_iff]
   simp_rw [LightProfinite.effectiveEpi_iff_surjective]
 
 end LightCondensed
@@ -50,10 +50,11 @@ namespace LightCondSet
 
 variable {X Y : LightCondSet.{u}} (f : X ⟶ Y)
 
-lemma epi_iff_locallySurjective_on_lightProfinite : Epi f ↔
-    ∀ (S : LightProfinite) (y : Y.obj.obj ⟨S⟩),
-      (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ) (x : X.obj.obj ⟨S'⟩),
-        f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
+lemma epi_iff_locallySurjective_on_lightProfinite
+    : Epi f
+      ↔ ∀ (S : LightProfinite) (y : Y.obj.obj ⟨S⟩),
+        (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ) (x : X.obj.obj ⟨S'⟩),
+          f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
   rw [← isLocallySurjective_iff_epi']
   exact LightCondensed.isLocallySurjective_iff_locallySurjective_on_lightProfinite _ f
 
@@ -63,10 +64,11 @@ namespace LightCondMod
 
 variable (R : Type u) [Ring R] {X Y : LightCondMod.{u} R} (f : X ⟶ Y)
 
-lemma epi_iff_locallySurjective_on_lightProfinite : Epi f ↔
-    ∀ (S : LightProfinite) (y : Y.obj.obj ⟨S⟩),
-      (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ) (x : X.obj.obj ⟨S'⟩),
-        f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
+lemma epi_iff_locallySurjective_on_lightProfinite
+    : Epi f
+      ↔ ∀ (S : LightProfinite) (y : Y.obj.obj ⟨S⟩),
+        (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ) (x : X.obj.obj ⟨S'⟩),
+          f.hom.app ⟨S'⟩ x = Y.obj.map ⟨φ⟩ y) := by
   rw [← isLocallySurjective_iff_epi']
   exact LightCondensed.isLocallySurjective_iff_locallySurjective_on_lightProfinite _ f
 
@@ -81,19 +83,26 @@ instance : (LightCondensed.forget R).PreservesEpimorphisms where
     exact (Presheaf.isLocallySurjective_iff_whisker_forget _ f.hom).mp hf
 
 set_option backward.isDefEq.respectTransparency false in
-lemma factorsThru_lightProfinite_epi_of_epi [Epi f]
-    {S : LightProfinite} (p : (LightCondensed.free R).obj S.toCondensed ⟶ Y) :
-      ∃ (T : LightProfinite) (π : T ⟶ S) (g : ((LightCondensed.free R).obj T.toCondensed) ⟶ X),
-        Epi π ∧ (lightProfiniteToLightCondSet ⋙ (LightCondensed.free R)).map π ≫ p = g ≫ f := by
+lemma factorsThru_lightProfinite_epi_of_epi
+    [Epi f] {S : LightProfinite} (p : (LightCondensed.free R).obj S.toCondensed ⟶ Y)
+    : ∃ (T : LightProfinite) (π : T ⟶ S) (g : ((LightCondensed.free R).obj T.toCondensed) ⟶ X),
+      Epi π ∧ (lightProfiniteToLightCondSet ⋙ (LightCondensed.free R)).map π ≫ p = g ≫ f := by
   have : Epi ((LightCondensed.forget _).map f) := inferInstance
   rw [LightCondSet.epi_iff_locallySurjective_on_lightProfinite] at this
-  obtain ⟨T, π, hπ, x, hx⟩ := this S <| (coherentTopology LightProfinite).yonedaEquiv <|
-    (LightCondensed.freeForgetAdjunction R).homEquiv S.toCondensed Y p
-  refine ⟨T, π, ((LightCondensed.freeForgetAdjunction R).homEquiv T.toCondensed X).symm
-    ((coherentTopology LightProfinite).yonedaEquiv.symm x),
-    (LightProfinite.epi_iff_surjective π).mpr hπ, ?_⟩
-  rw [Functor.comp_map, ← Adjunction.homEquiv_naturality_left_square_iff
-    (LightCondensed.freeForgetAdjunction R), Sheaf.hom_ext_iff, Equiv.apply_symm_apply,
+  obtain ⟨T, π, hπ, x, hx⟩ :=
+    this S <| (coherentTopology LightProfinite).yonedaEquiv <|
+      (LightCondensed.freeForgetAdjunction R).homEquiv S.toCondensed Y p
+  refine ⟨
+    T,
+    π,
+    ((LightCondensed.freeForgetAdjunction R).homEquiv T.toCondensed X).symm
+      ((coherentTopology LightProfinite).yonedaEquiv.symm x),
+    (LightProfinite.epi_iff_surjective π).mpr hπ,
+    ?_
+  ⟩
+  rw [Functor.comp_map,
+    ← Adjunction.homEquiv_naturality_left_square_iff (LightCondensed.freeForgetAdjunction R),
+    Sheaf.hom_ext_iff, Equiv.apply_symm_apply,
     GrothendieckTopology.yonedaEquiv_symm_naturality_right, hx,
     GrothendieckTopology.map_yonedaEquiv', ← GrothendieckTopology.yonedaEquiv_symm_naturality_right]
   rfl
@@ -103,8 +112,9 @@ end LightCondMod
 namespace LightCondensed
 
 variable (R : Type*) [Ring R]
-variable {F : ℕᵒᵖ ⥤ LightCondMod R} {c : Cone F} (hc : IsLimit c)
-  (hF : ∀ n, Epi (F.map (homOfLE (Nat.le_succ n)).op))
+variable
+  {F : ℕᵒᵖ ⥤ LightCondMod R} {c : Cone F}
+  (hc : IsLimit c) (hF : ∀ n, Epi (F.map (homOfLE (Nat.le_succ n)).op))
 
 include hc hF in
 lemma epi_π_app_zero_of_epi : Epi (c.π.app ⟨0⟩) := by

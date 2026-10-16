@@ -51,11 +51,11 @@ namespace Abelian
 
 namespace SpectralObject
 
-variable {C ι κ : Type*} [Category* C] [Abelian C] [Preorder ι]
-  {c : ℤ → ComplexShape κ} {r₀ : ℤ}
+variable {C ι κ : Type*} [Category* C] [Abelian C] [Preorder ι] {c : ℤ → ComplexShape κ} {r₀ : ℤ}
 
 variable (ι c r₀) in
-/-- This data is a recipe in order to produce a spectral sequence starting on
+/--
+This data is a recipe in order to produce a spectral sequence starting on
 page `r₀` (where the `r`th page is of shape `c r`) from a spectral object
 indexed by `ι`. The object on page `r` at the position `pq : κ` shall be
 `E^(deg pq)(i₀ ≤ i₁ ≤ i₂ ≤ i₃)`, where `i₀ ≤ i₁ ≤ i₂ ≤ i₃` are elements in the
@@ -63,7 +63,8 @@ index type `ι` of the spectral object and `deg pq : ℤ` is a cohomological deg
 The indices `i₀` and `i₃` depend on `r` and `pq`, but `i₁`, `i₂` only depend on `pq`.
 Various conditions are added in order to construct the differentials on the pages
 and show that the homology of a page identifies to the next page; in certain
-cases, additional conditions may be required on the spectral object. -/
+cases, additional conditions may be required on the spectral object.
+-/
 structure SpectralSequenceDataCore where
   /-- The cohomological degree of objects in the pages -/
   deg : κ → ℤ
@@ -81,67 +82,69 @@ structure SpectralSequenceDataCore where
   hc (r : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq') (hr : r₀ ≤ r := by lia) : deg pq + 1 = deg pq'
   hc₀₂ (r : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq') (hr : r₀ ≤ r := by lia) : i₀ r pq = i₂ pq'
   hc₁₃ (r : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq') (hr : r₀ ≤ r := by lia) : i₁ pq = i₃ r pq'
-  antitone_i₀ (r r' : ℤ) (pq : κ) (hr : r₀ ≤ r := by lia) (hrr' : r ≤ r' := by lia) :
-      i₀ r' pq ≤ i₀ r pq
-  monotone_i₃ (r r' : ℤ) (pq : κ) (hr : r₀ ≤ r := by lia) (hrr' : r ≤ r' := by lia) :
-      i₃ r pq ≤ i₃ r' pq
-  i₀_prev (r r' : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq') (hrr' : r + 1 = r' := by lia)
-      (hr : r₀ ≤ r := by lia) :
-      i₀ r' pq = i₁ pq'
-  i₃_next (r r' : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq') (hrr' : r + 1 = r' := by lia)
-      (hr : r₀ ≤ r := by lia) :
-      i₃ r' pq' = i₂ pq
+  antitone_i₀ (r r' : ℤ) (pq : κ) (hr : r₀ ≤ r := by lia) (hrr' : r ≤ r' := by lia)
+    : i₀ r' pq ≤ i₀ r pq
+  monotone_i₃ (r r' : ℤ) (pq : κ) (hr : r₀ ≤ r := by lia) (hrr' : r ≤ r' := by lia)
+    : i₃ r pq ≤ i₃ r' pq
+  i₀_prev
+    (r r' : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq')
+    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : i₀ r' pq = i₁ pq'
+  i₃_next
+    (r r' : ℤ) (pq pq' : κ) (hpq : (c r).Rel pq pq')
+    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : i₃ r' pq' = i₂ pq
 
 namespace SpectralSequenceDataCore
 
 variable (data : SpectralSequenceDataCore ι c r₀)
 
-lemma i₀_le (r r' : ℤ) (pq : κ) (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia) :
-    data.i₀ r' pq ≤ data.i₀ r pq :=
+lemma i₀_le (r r' : ℤ) (pq : κ) (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : data.i₀ r' pq ≤ data.i₀ r pq :=
   data.antitone_i₀ r r' pq
 
-lemma i₃_le (r r' : ℤ) (pq : κ) (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia) :
-    data.i₃ r pq ≤ data.i₃ r' pq :=
+lemma i₃_le (r r' : ℤ) (pq : κ) (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : data.i₃ r pq ≤ data.i₃ r' pq :=
   data.monotone_i₃ r r' pq
 
-lemma i₀_le' {r r' : ℤ} (hrr' : r + 1 = r') (hr : r₀ ≤ r) (pq' : κ)
-    {i₀' i₀ : ι} (hi₀' : i₀' = data.i₀ r' pq') (hi₀ : i₀ = data.i₀ r pq') :
-    i₀' ≤ i₀ := by
+lemma i₀_le'
+    {r r' : ℤ} (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq' : κ)
+    {i₀' i₀ : ι} (hi₀' : i₀' = data.i₀ r' pq') (hi₀ : i₀ = data.i₀ r pq')
+    : i₀' ≤ i₀ := by
   rw [hi₀', hi₀]
   exact data.antitone_i₀ r r' pq'
 
-lemma le₀₁' (r : ℤ) (hr : r₀ ≤ r) (pq' : κ) {i₀ i₁ : ι}
-    (hi₀ : i₀ = data.i₀ r pq')
-    (hi₁ : i₁ = data.i₁ pq') :
-    i₀ ≤ i₁ := by
+lemma le₀₁'
+    (r : ℤ) (hr : r₀ ≤ r) (pq' : κ) {i₀ i₁ : ι} (hi₀ : i₀ = data.i₀ r pq') (hi₁ : i₁ = data.i₁ pq')
+    : i₀ ≤ i₁ := by
   have := data.le₀₁ r pq'
   simpa only [hi₀, hi₁] using data.le₀₁ r pq'
 
-lemma le₁₂' (pq' : κ) {i₁ i₂ : ι} (hi₁ : i₁ = data.i₁ pq') (hi₂ : i₂ = data.i₂ pq') :
-    i₁ ≤ i₂ := by
+lemma le₁₂' (pq' : κ) {i₁ i₂ : ι} (hi₁ : i₁ = data.i₁ pq') (hi₂ : i₂ = data.i₂ pq') : i₁ ≤ i₂ := by
   simpa only [hi₁, hi₂] using data.le₁₂ pq'
 
-lemma le₂₃' (r : ℤ) (hr : r₀ ≤ r) (pq' : κ)
-    {i₂ i₃ : ι}
-    (hi₂ : i₂ = data.i₂ pq')
-    (hi₃ : i₃ = data.i₃ r pq') :
-    i₂ ≤ i₃ := by
+lemma le₂₃'
+    (r : ℤ) (hr : r₀ ≤ r) (pq' : κ) {i₂ i₃ : ι} (hi₂ : i₂ = data.i₂ pq') (hi₃ : i₃ = data.i₃ r pq')
+    : i₂ ≤ i₃ := by
   simpa only [hi₂, hi₃] using data.le₂₃ r pq'
 
-lemma le₃₃' {r r' : ℤ} (hrr' : r + 1 = r') (hr : r₀ ≤ r) (pq' : κ)
-    {i₃ i₃' : ι}
-    (hi₃ : i₃ = data.i₃ r pq')
-    (hi₃' : i₃' = data.i₃ r' pq') :
-    i₃ ≤ i₃' := by
+lemma le₃₃'
+    {r r' : ℤ} (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq' : κ)
+    {i₃ i₃' : ι} (hi₃ : i₃ = data.i₃ r pq') (hi₃' : i₃' = data.i₃ r' pq')
+    : i₃ ≤ i₃' := by
   simpa only [hi₃, hi₃'] using data.monotone_i₃ r r' pq'
 
 end SpectralSequenceDataCore
 
-/-- The data which allows to construct an `E₂`-cohomological spectral sequence
-indexed by `ℤ × ℤ` from a spectral object indexed by `EInt`. -/
+/--
+The data which allows to construct an `E₂`-cohomological spectral sequence
+indexed by `ℤ × ℤ` from a spectral object indexed by `EInt`.
+-/
 @[simps!]
-def coreE₂Cohomological :
-    SpectralSequenceDataCore EInt (fun r ↦ ComplexShape.up' (⟨r, 1 - r⟩ : ℤ × ℤ)) 2 where
+def coreE₂Cohomological
+    : SpectralSequenceDataCore EInt (fun r ↦ ComplexShape.up' (⟨r, 1 - r⟩ : ℤ × ℤ)) 2 where
   deg pq := pq.1 + pq.2
   i₀ r pq hr := (pq.2 - r + 2 :)
   i₁ pq := pq.2
@@ -168,14 +171,15 @@ def coreE₂Cohomological :
     we need to re-enable model-based theory combination in `lia` for this to go through. -/
     lia +mbtc
 
-/-- The data which allows to construct an `E₂`-cohomological spectral sequence
+/--
+The data which allows to construct an `E₂`-cohomological spectral sequence
 indexed by `ℕ × ℕ` from a spectral object indexed by `EInt`. (Note: additional
 assumptions on the spectral object are required for the construction of
-the spectral sequence from this.) -/
+the spectral sequence from this.)
+-/
 @[simps!]
-def coreE₂CohomologicalNat :
-    SpectralSequenceDataCore EInt
-    (fun r ↦ ComplexShape.spectralSequenceNat ⟨r, 1 - r⟩) 2 where
+def coreE₂CohomologicalNat
+    : SpectralSequenceDataCore EInt (fun r ↦ ComplexShape.spectralSequenceNat ⟨r, 1 - r⟩) 2 where
   deg pq := pq.1 + pq.2
   i₀ r pq hr := (pq.2 - r + 2 :)
   i₁ pq := (pq.2 : ℤ)
@@ -208,12 +212,15 @@ def coreE₂CohomologicalNat :
     we need to re-enable model-based theory combination in `lia` for this to go through. -/
     lia +mbtc
 
-/-- The data which allows to construct an `E₂`-cohomological spectral sequence
-indexed by `ℤ × Fin l` from a spectral object indexed by `Fin (l + 1)`. -/
+/--
+The data which allows to construct an `E₂`-cohomological spectral sequence
+indexed by `ℤ × Fin l` from a spectral object indexed by `Fin (l + 1)`.
+-/
 @[simps deg i₀ i₁ i₂ i₃]
-def coreE₂CohomologicalFin (l : ℕ) :
-    SpectralSequenceDataCore (Fin (l + 1))
-    (fun r ↦ ComplexShape.spectralSequenceFin l ⟨r, 1 - r⟩) 2 where
+def coreE₂CohomologicalFin (l : ℕ)
+    : SpectralSequenceDataCore (Fin (l + 1))
+      (fun r ↦ ComplexShape.spectralSequenceFin l ⟨r, 1 - r⟩)
+      2 where
   deg pq := pq.1 + pq.2.1
   i₀ r pq hr := ⟨(pq.2.1 - (r - 2)).toNat, by grind⟩
   i₁ pq := pq.2.castSucc
@@ -252,15 +259,16 @@ def coreE₂CohomologicalFin (l : ℕ) :
     dsimp
     grind
 
-/-- The data which allows to construct an `E₂`-homological spectral sequence
+/--
+The data which allows to construct an `E₂`-homological spectral sequence
 indexed by `ℕ × ℕ` from a spectral object indexed by `EInt`. (Note: additional
 assumptions on the spectral object are required for the construction of
-the spectral sequence from this.) -/
+the spectral sequence from this.)
+-/
 @[simps!]
-def coreE₂HomologicalNat :
-    SpectralSequenceDataCore EInt
-    (fun r ↦ ComplexShape.spectralSequenceNat ⟨-r, r - 1⟩) 2 where
-  deg pq := - pq.1 - pq.2
+def coreE₂HomologicalNat
+    : SpectralSequenceDataCore EInt (fun r ↦ ComplexShape.spectralSequenceNat ⟨-r, r - 1⟩) 2 where
+  deg pq := -pq.1 - pq.2
   i₀ r pq hr := (-pq.2 - r + 2 :)
   i₁ pq := (-pq.2 : ℤ)
   i₂ pq := (-pq.2 + 1 : ℤ)
@@ -296,51 +304,57 @@ def coreE₂HomologicalNat :
 
 variable (X : SpectralObject C ι) (data : SpectralSequenceDataCore ι c r₀)
 
-/-- Given `X : SpectralObject C ι` and `data : SpectralSequenceDataCore ι c r₀`, this is
+/--
+Given `X : SpectralObject C ι` and `data : SpectralSequenceDataCore ι c r₀`, this is
 the property which allows to construct a spectral sequence by using the recipe given
 by `data`. The conditions given allow to show that the homology of a page identifies
-to the next page. -/
+to the next page.
+-/
 class HasSpectralSequence : Prop where
-  isZero_H_obj_mk₁_i₀_le (r r' : ℤ) (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq pq'))
+  isZero_H_obj_mk₁_i₀_le
+    (r r' : ℤ) (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq pq'))
     (n : ℤ) (hn : n = data.deg pq + 1)
-    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia) :
-      IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₀_le r r' pq))))
-  isZero_H_obj_mk₁_i₃_le (r r' : ℤ) (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq' pq))
+    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₀_le r r' pq))))
+  isZero_H_obj_mk₁_i₃_le
+    (r r' : ℤ) (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq' pq))
     (n : ℤ) (hn : n = data.deg pq - 1)
-    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia) :
-      IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₃_le r r' pq))))
+    (hrr' : r + 1 = r' := by lia) (hr : r₀ ≤ r := by lia)
+    : IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₃_le r r' pq))))
 
 variable [X.HasSpectralSequence data]
 
-lemma isZero_H_obj_mk₁_i₀_le (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
-    (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq pq'))
-    (n : ℤ) (hn : n = data.deg pq + 1) :
-    IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₀_le r r' pq)))) :=
+lemma isZero_H_obj_mk₁_i₀_le
+    (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq pq'))
+    (n : ℤ) (hn : n = data.deg pq + 1)
+    : IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₀_le r r' pq)))) :=
   HasSpectralSequence.isZero_H_obj_mk₁_i₀_le r r' pq hpq n hn
 
-lemma isZero_H_obj_mk₁_i₀_le' (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
-    (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq pq'))
-    (n : ℤ) (hn : n = data.deg pq + 1) (i₀' i₀ : ι)
-    (hi₀' : i₀' = data.i₀ r' pq)
-    (hi₀ : i₀ = data.i₀ r pq) :
-    IsZero ((X.H n).obj (mk₁ (homOfLE (show i₀' ≤ i₀ by
-      simpa only [hi₀', hi₀] using data.i₀_le r r' pq)))) := by
+lemma isZero_H_obj_mk₁_i₀_le'
+    (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq pq'))
+    (n : ℤ) (hn : n = data.deg pq + 1)
+    (i₀' i₀ : ι) (hi₀' : i₀' = data.i₀ r' pq) (hi₀ : i₀ = data.i₀ r pq)
+    : IsZero ((X.H n).obj
+      (mk₁ (homOfLE (show i₀' ≤ i₀ by simpa only [hi₀', hi₀] using data.i₀_le r r' pq)))) := by
   subst hi₀' hi₀
   exact HasSpectralSequence.isZero_H_obj_mk₁_i₀_le r r' pq hpq n hn
 
-lemma isZero_H_obj_mk₁_i₃_le (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
-    (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq' pq))
-    (n : ℤ) (hn : n = data.deg pq - 1) :
-    IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₃_le r r' pq)))) :=
+lemma isZero_H_obj_mk₁_i₃_le
+    (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq' pq))
+    (n : ℤ) (hn : n = data.deg pq - 1)
+    : IsZero ((X.H n).obj (mk₁ (homOfLE (data.i₃_le r r' pq)))) :=
   HasSpectralSequence.isZero_H_obj_mk₁_i₃_le r r' pq hpq n hn
 
-lemma isZero_H_obj_mk₁_i₃_le' (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
-    (pq : κ) (hpq : ∀ (pq' : κ), ¬ ((c r).Rel pq' pq))
-    (n : ℤ) (hn : n = data.deg pq - 1) (i₃ i₃' : ι)
-    (hi₃ : i₃ = data.i₃ r pq)
-    (hi₃' : i₃' = data.i₃ r' pq) :
-    IsZero ((X.H n).obj (mk₁ (homOfLE (show i₃ ≤ i₃' by
-      simpa only [hi₃, hi₃'] using data.i₃_le r r' pq)))) := by
+lemma isZero_H_obj_mk₁_i₃_le'
+    (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
+    (pq : κ) (hpq : ∀ (pq' : κ), ¬((c r).Rel pq' pq))
+    (n : ℤ) (hn : n = data.deg pq - 1)
+    (i₃ i₃' : ι) (hi₃ : i₃ = data.i₃ r pq) (hi₃' : i₃' = data.i₃ r' pq)
+    : IsZero ((X.H n).obj
+      (mk₁ (homOfLE (show i₃ ≤ i₃' by simpa only [hi₃, hi₃'] using data.i₃_le r r' pq)))) := by
   subst hi₃ hi₃'
   exact HasSpectralSequence.isZero_H_obj_mk₁_i₃_le r r' pq hpq n hn
 
@@ -353,11 +367,10 @@ instance (E : SpectralObject C EInt) : E.HasSpectralSequence coreE₂Cohomologic
     exact hpq (pq - (r, 1 - r)) (by simp)
 
 set_option backward.defeqAttrib.useBackward true in
-instance {l : ℕ} (E : SpectralObject C (Fin (l + 1))) :
-    E.HasSpectralSequence (coreE₂CohomologicalFin l) where
+instance {l : ℕ} (E : SpectralObject C (Fin (l + 1)))
+    : E.HasSpectralSequence (coreE₂CohomologicalFin l) where
   isZero_H_obj_mk₁_i₀_le r r' pq hpq n hn hrr' hr := by
-    have : (coreE₂CohomologicalFin l).i₀ r' pq =
-        (coreE₂CohomologicalFin l).i₀ r pq := by
+    have : (coreE₂CohomologicalFin l).i₀ r' pq = (coreE₂CohomologicalFin l).i₀ r pq := by
       subst hrr'
       obtain ⟨k, rfl⟩ := Int.le.dest hr
       obtain ⟨p, q, hq⟩ := pq
@@ -389,22 +402,23 @@ section
 
 variable (Y : SpectralObject C EInt)
 
-/-- The conditions on a spectral object indexed by `EInt` which allow
-to obtain a (convergent) first quadrant `E₂` cohomological spectral sequence. -/
+/--
+The conditions on a spectral object indexed by `EInt` which allow
+to obtain a (convergent) first quadrant `E₂` cohomological spectral sequence.
+-/
 class IsFirstQuadrant : Prop where
-  isZero₁ (i j : EInt) (hij : i ≤ j) (hj : j ≤ (0 : ℤ)) (n : ℤ) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
-  isZero₂ (i j : EInt) (hij : i ≤ j) (n : ℤ) (hi : n < i) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
+  isZero₁ (i j : EInt) (hij : i ≤ j) (hj : j ≤ (0 : ℤ)) (n : ℤ)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
+  isZero₂ (i j : EInt) (hij : i ≤ j) (n : ℤ) (hi : n < i) : IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
 
 variable [Y.IsFirstQuadrant]
 
-lemma isZero₁_of_isFirstQuadrant (i j : EInt) (hij : i ≤ j) (hj : j ≤ (0 : ℤ)) (n : ℤ) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
+lemma isZero₁_of_isFirstQuadrant (i j : EInt) (hij : i ≤ j) (hj : j ≤ (0 : ℤ)) (n : ℤ)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
   IsFirstQuadrant.isZero₁ i j hij hj n
 
-lemma isZero₂_of_isFirstQuadrant (i j : EInt) (hij : i ≤ j) (n : ℤ) (hi : n < i) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
+lemma isZero₂_of_isFirstQuadrant (i j : EInt) (hij : i ≤ j) (n : ℤ) (hi : n < i)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
   IsFirstQuadrant.isZero₂ i j hij n hi
 
 instance : Y.HasSpectralSequence coreE₂CohomologicalNat where
@@ -431,23 +445,24 @@ section
 
 variable (Y : SpectralObject C EInt)
 
-/-- The conditions on a spectral object indexed by `EInt` which allow
+/--
+The conditions on a spectral object indexed by `EInt` which allow
 to obtain a (convergent) third quadrant `E₂` cohomological spectral sequence,
-or a (convergent) first quadrant `E₂` *homological* spectral sequence -/
+or a (convergent) first quadrant `E₂` *homological* spectral sequence
+-/
 class IsThirdQuadrant where
-  isZero₁ (i j : EInt) (hij : i ≤ j) (hi : (0 : ℤ) < i) (n : ℤ) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
-  isZero₂ (i j : EInt) (hij : i ≤ j) (n : ℤ) (hj : j ≤ n) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
+  isZero₁ (i j : EInt) (hij : i ≤ j) (hi : (0 : ℤ) < i) (n : ℤ)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
+  isZero₂ (i j : EInt) (hij : i ≤ j) (n : ℤ) (hj : j ≤ n) : IsZero ((Y.H n).obj (mk₁ (homOfLE hij)))
 
 variable [Y.IsThirdQuadrant]
 
-lemma isZero₁_of_isThirdQuadrant (i j : EInt) (hij : i ≤ j) (hi : (0 : ℤ) < i) (n : ℤ) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
+lemma isZero₁_of_isThirdQuadrant (i j : EInt) (hij : i ≤ j) (hi : (0 : ℤ) < i) (n : ℤ)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
   IsThirdQuadrant.isZero₁ i j hij hi n
 
-lemma isZero₂_of_isThirdQuadrant (i j : EInt) (hij : i ≤ j) (n : ℤ) (hj : j ≤ n) :
-    IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
+lemma isZero₂_of_isThirdQuadrant (i j : EInt) (hij : i ≤ j) (n : ℤ) (hj : j ≤ n)
+    : IsZero ((Y.H n).obj (mk₁ (homOfLE hij))) :=
   IsThirdQuadrant.isZero₂ i j hij n hj
 
 instance : Y.HasSpectralSequence coreE₂HomologicalNat where

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Combinatorics.SimpleGraph.Bipartite
 public import Mathlib.Combinatorics.SimpleGraph.Extremal.Basic
-
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Tactic.Rify
@@ -24,29 +23,33 @@ open Finset Fintype
 
 namespace SimpleGraph
 
-/-- The **Zarankiewicz function** of natural numbers `m`, `n`, `s`, and `t` is the maximum
+/--
+The **Zarankiewicz function** of natural numbers `m`, `n`, `s`, and `t` is the maximum
 number of edges in a `completeBipartiteGraph (Fin s) (Fin t)`-free bipartite graph with parts of
 size `m` and `n`.
 
-This is the *extremal graph theory* version of the **Zarankiewicz function**. -/
+This is the *extremal graph theory* version of the **Zarankiewicz function**.
+-/
 noncomputable def zarankiewicz (m n s t : ℕ) : ℕ :=
   open Classical in
-  sup { G : SimpleGraph (Fin m ⊕ Fin n) | G ≤ completeBipartiteGraph (Fin m) (Fin n)
-    ∧ (completeBipartiteGraph (Fin s) (Fin t)).Free G} (#·.edgeFinset)
+  sup
+    ({ G : SimpleGraph (Fin m ⊕ Fin n) | G ≤ completeBipartiteGraph (Fin m) (Fin n)
+      ∧ (completeBipartiteGraph (Fin s) (Fin t)).Free G})
+    (#·.edgeFinset)
 
 variable {m n s t : ℕ} {V W α β : Type*} [Fintype V] [Fintype W] [Fintype α] [Fintype β]
 
 open Classical in
 theorem zarankiewicz_of_fintypeCard_eq
-    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) :
-    zarankiewicz m n s t =
-      sup { G : SimpleGraph (V ⊕ W) | G ≤ completeBipartiteGraph V W
-        ∧ (completeBipartiteGraph α β).Free G} (#·.edgeFinset) := by
-  let e₁ := completeBipartiteGraphCongr
-    (Fintype.equivFinOfCardEq hm) (Fintype.equivFinOfCardEq hn)
+    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t)
+    : zarankiewicz m n s t
+      = sup
+        ({ G : SimpleGraph (V ⊕ W) | G ≤ completeBipartiteGraph V W
+          ∧ (completeBipartiteGraph α β).Free G})
+        (#·.edgeFinset) := by
+  let e₁ := completeBipartiteGraphCongr (Fintype.equivFinOfCardEq hm) (Fintype.equivFinOfCardEq hn)
   let K := completeBipartiteGraph (Fin s) (Fin t)
-  let e₂ := completeBipartiteGraphCongr
-    (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
+  let e₂ := completeBipartiteGraphCongr (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
   rw [zarankiewicz, le_antisymm_iff]
   and_intros
   on_goal 1 =>
@@ -57,8 +60,9 @@ theorem zarankiewicz_of_fintypeCard_eq
     simp_rw [Finset.sup_le_iff, mem_filter, mem_univ, true_and]
     intro G ⟨h_le, h_free⟩
     simp_rw [Iso.card_edgeFinset_eq (.map e₁.toEquiv G)]
-    have h' : G.map e₁.toEquiv.toEmbedding ∈ univ.filter fun G ↦
-        G ≤ completeBipartiteGraph _ _ ∧ K.Free G := by
+    have h'
+        : G.map e₁.toEquiv.toEmbedding
+          ∈ univ.filter fun G ↦ G ≤ completeBipartiteGraph _ _ ∧ K.Free G := by
       rw [mem_filter_univ, map_le_iff_le_comap]
       refine ⟨fun _ _ hadj ↦ ?_, ?_⟩
       · replace h_le := h_le hadj
@@ -70,54 +74,66 @@ theorem zarankiewicz_of_fintypeCard_eq
     simp_rw [← card_coe, mem_edgeFinset] at h_le_sup ⊢
     exact h_le_sup
 
-/-- `zarankiewicz m n s t` is at most `x` if and only if every
-`completeBipartiteGraph α β`-free bipartite graph `G` has at most `x` edges. -/
+/--
+`zarankiewicz m n s t` is at most `x` if and only if every
+`completeBipartiteGraph α β`-free bipartite graph `G` has at most `x` edges.
+-/
 theorem zarankiewicz_le_iff
-    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) (x : ℕ) :
-    zarankiewicz m n s t ≤ x ↔
-      ∀ ⦃G : SimpleGraph (V ⊕ W)⦄ [DecidableRel G.Adj], G ≤ completeBipartiteGraph V W →
-        (completeBipartiteGraph α β).Free G → #G.edgeFinset ≤ x := by
+    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) (x : ℕ)
+    : zarankiewicz m n s t ≤ x
+      ↔ ∀ ⦃G : SimpleGraph (V ⊕ W)⦄ [DecidableRel G.Adj],
+        G ≤ completeBipartiteGraph V W → (completeBipartiteGraph α β).Free G
+          → #G.edgeFinset ≤ x := by
   simp_rw [zarankiewicz_of_fintypeCard_eq hm hn hs ht,
     Finset.sup_le_iff, mem_filter, mem_univ, true_and]
-  exact ⟨fun h _ _ h_le h_free ↦ (h _ ⟨h_le, h_free⟩).trans_eq' <| by convert rfl,
-    fun h _ ⟨h_le, h_free⟩ ↦ by convert h h_le h_free⟩
+  exact ⟨
+    fun h _ _ h_le h_free ↦ (h _ ⟨h_le, h_free⟩).trans_eq' <| by convert rfl,
+    fun h _ ⟨h_le, h_free⟩ ↦ by convert h h_le h_free
+  ⟩
 
-/-- `zarankiewicz m n s t` is greater than `x` if and only if there
-exists a `completeBipartiteGraph α β`-free bipartite graph `G` with more than `x` edges. -/
+/--
+`zarankiewicz m n s t` is greater than `x` if and only if there
+exists a `completeBipartiteGraph α β`-free bipartite graph `G` with more than `x` edges.
+-/
 theorem lt_zarankiewicz_iff
-    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) (x : ℕ) :
-    x < zarankiewicz m n s t ↔
-      ∃ G : SimpleGraph (V ⊕ W), ∃ _ : DecidableRel G.Adj, G ≤ completeBipartiteGraph V W ∧
-        (completeBipartiteGraph α β).Free G ∧  x < #G.edgeFinset := by
+    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) (x : ℕ)
+    : x < zarankiewicz m n s t
+      ↔ ∃ G : SimpleGraph (V ⊕ W), ∃ _ : DecidableRel G.Adj,
+        G ≤ completeBipartiteGraph V W ∧ (completeBipartiteGraph α β).Free G
+          ∧ x < #G.edgeFinset := by
   simp_rw [zarankiewicz_of_fintypeCard_eq hm hn hs ht,
     Finset.lt_sup_iff, mem_filter, mem_univ, true_and]
-  exact ⟨fun ⟨_, ⟨h_le, h_free⟩, h_lt⟩ ↦ ⟨_, _, h_le, h_free, by convert h_lt⟩,
-    fun ⟨_, _, ⟨h_le, h_free, h_lt⟩⟩ ↦ ⟨_, ⟨h_le, h_free⟩, h_lt.trans_eq <| by convert rfl⟩⟩
+  exact ⟨
+    fun ⟨_, ⟨h_le, h_free⟩, h_lt⟩ ↦ ⟨_, _, h_le, h_free, by convert h_lt⟩,
+    fun ⟨_, _, ⟨h_le, h_free, h_lt⟩⟩ ↦ ⟨_, ⟨h_le, h_free⟩, h_lt.trans_eq <| by convert rfl⟩
+  ⟩
 
 variable {R : Type*} [Semiring R] [LinearOrder R] [FloorSemiring R]
 
 @[inherit_doc zarankiewicz_le_iff]
 theorem zarankiewicz_le_iff_of_nonneg
-    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) {x : R} (h : 0 ≤ x) :
-    zarankiewicz m n s t ≤ x ↔
-      ∀ ⦃G : SimpleGraph (V ⊕ W)⦄ [DecidableRel G.Adj], G ≤ completeBipartiteGraph V W →
-        (completeBipartiteGraph α β).Free G → #G.edgeFinset ≤ x := by
+    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) {x : R} (h : 0 ≤ x)
+    : zarankiewicz m n s t ≤ x
+      ↔ ∀ ⦃G : SimpleGraph (V ⊕ W)⦄ [DecidableRel G.Adj],
+        G ≤ completeBipartiteGraph V W → (completeBipartiteGraph α β).Free G
+          → #G.edgeFinset ≤ x := by
   simp_rw [← Nat.le_floor_iff h]
   exact zarankiewicz_le_iff hm hn hs ht ⌊x⌋₊
 
 @[inherit_doc lt_zarankiewicz_iff]
 theorem lt_zarankiewicz_iff_of_nonneg
-    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) {x : R} (h : 0 ≤ x) :
-    x < zarankiewicz m n s t ↔
-      ∃ G : SimpleGraph (V ⊕ W), ∃ _ : DecidableRel G.Adj, G ≤ completeBipartiteGraph V W ∧
-        (completeBipartiteGraph α β).Free G ∧  x < #G.edgeFinset := by
+    (hm : card V = m) (hn : card W = n) (hs : card α = s) (ht : card β = t) {x : R} (h : 0 ≤ x)
+    : x < zarankiewicz m n s t
+      ↔ ∃ G : SimpleGraph (V ⊕ W), ∃ _ : DecidableRel G.Adj,
+        G ≤ completeBipartiteGraph V W ∧ (completeBipartiteGraph α β).Free G
+          ∧ x < #G.edgeFinset := by
   simp_rw [← Nat.floor_lt h]
   exact lt_zarankiewicz_iff hm hn hs ht ⌊x⌋₊
 
 open Classical in
 /-- The Zarankiewicz function is at most the corresponding extremal number. -/
-theorem zarankiewicz_le_extremalNumber (hs : card α = s) (ht : card β = t) :
-    zarankiewicz m n s t ≤ extremalNumber (m + n) (completeBipartiteGraph α β) := by
+theorem zarankiewicz_le_extremalNumber (hs : card α = s) (ht : card β = t)
+    : zarankiewicz m n s t ≤ extremalNumber (m + n) (completeBipartiteGraph α β) := by
   conv =>
     enter [2, 1]
     rw [← Fintype.card_fin (m + n)]
@@ -126,13 +142,12 @@ theorem zarankiewicz_le_extremalNumber (hs : card α = s) (ht : card β = t) :
   rw [(Iso.map finSumFinEquiv B).card_edgeFinset_eq]
   refine card_edgeFinset_le_extremalNumber <|
     (h.congr_left ?_).congr_right (Iso.map finSumFinEquiv B).symm
-  exact completeBipartiteGraphCongr
-    (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
+  exact completeBipartiteGraphCongr (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
 
 /-- The symmetric Zarankiewicz function is at least twice a corresponding extremal number. -/
 theorem two_mul_extremalNumber_le_zarankiewicz_symm
-    [Nonempty α] [Nonempty β] (hs : card α = s) (ht : card β = t) :
-    2 * extremalNumber n (completeBipartiteGraph α β) ≤ zarankiewicz n n s t := by
+    [Nonempty α] [Nonempty β] (hs : card α = s) (ht : card β = t)
+    : 2 * extremalNumber n (completeBipartiteGraph α β) ≤ zarankiewicz n n s t := by
   conv =>
     enter [1, 2, 1]
     rw [← Fintype.card_fin n]
@@ -144,10 +159,8 @@ theorem two_mul_extremalNumber_le_zarankiewicz_symm
   · simp_rw [mem_filter, mem_univ, true_and]
     refine ⟨bipartiteDoubleCover_le, ?_⟩
     contrapose h
-    refine completeBipartiteGraph_isContained_bipartiteDoubleCover.mp <|
-      h.trans' ⟨Iso.toCopy ?_⟩
-    exact completeBipartiteGraphCongr
-      (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
+    refine completeBipartiteGraph_isContained_bipartiteDoubleCover.mp <| h.trans' ⟨Iso.toCopy ?_⟩
+    exact completeBipartiteGraphCongr (Fintype.equivFinOfCardEq hs) (Fintype.equivFinOfCardEq ht)
   · convert card_edgeFinset_bipartiteDoubleCover.symm.le
 
 end SimpleGraph

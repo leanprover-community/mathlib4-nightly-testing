@@ -16,8 +16,8 @@ public section
 
 open Set Topology.IsUpperSet
 
-instance (priority := low) {α : Type*}
-    [TopologicalSpace α] [LinearOrder α] [Topology.IsUpperSet α] : CompletelyNormalSpace α where
+instance (priority := low) {α : Type*} [TopologicalSpace α] [LinearOrder α] [Topology.IsUpperSet α]
+    : CompletelyNormalSpace α where
   completely_normal s t hcst hsct := by
     obtain (rfl | ⟨a, ha⟩) := s.eq_empty_or_nonempty
     case inl => simp
@@ -29,9 +29,8 @@ instance (priority := low) {α : Type*}
     conv at hsct => equals b < a => simp
     exact lt_asymm hcst hsct
 
-instance (priority := low) {α : Type*}
-    [TopologicalSpace α] [LinearOrder α] [Topology.IsLowerSet α] :
-    CompletelyNormalSpace α :=
+instance (priority := low) {α : Type*} [TopologicalSpace α] [LinearOrder α] [Topology.IsLowerSet α]
+    : CompletelyNormalSpace α :=
   inferInstanceAs (CompletelyNormalSpace αᵒᵈ)
 
 instance : CompletelyNormalSpace Prop :=

@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Calculus.MeanValue
 public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Algebra.Polynomial
-
 import Mathlib.Algebra.Order.Interval.Set.Group
 import Mathlib.Algebra.Polynomial.DenomsClearable
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
@@ -29,13 +28,12 @@ Liouville numbers.
 
 @[expose] public section
 
-
-/-- A Liouville number is a real number `x` such that for every natural number `n`, there exist
+/--
+A Liouville number is a real number `x` such that for every natural number `n`, there exist
 `a, b ∈ ℤ` with `1 < b` such that `0 < |x - a/b| < 1/bⁿ`.
 In the implementation, the condition `x ≠ a/b` replaces the traditional equivalent `0 < |x - a/b|`.
 -/
-def Liouville (x : ℝ) :=
-  ∀ n : ℕ, ∃ a b : ℤ, 1 < b ∧ x ≠ a / b ∧ |x - a / b| < 1 / (b : ℝ) ^ n
+def Liouville (x : ℝ) := ∀ n : ℕ, ∃ a b : ℤ, 1 < b ∧ x ≠ a / b ∧ |x - a / b| < 1 / (b : ℝ) ^ n
 
 namespace Liouville
 
@@ -54,7 +52,8 @@ protected theorem irrational {x : ℝ} (h : Liouville x) : Irrational x := by
   -- At a1, clear denominators...
   replace a1 : |a * q - b * p| * q ^ (b + 1) < b * q := by
     rw [div_sub_div _ _ b0 qR0.ne', abs_div, div_lt_div_iff₀ (abs_pos.mpr bq0.ne') (pow_pos qR0 _),
-      abs_of_pos bq0, one_mul] at a1
+        abs_of_pos bq0, one_mul]
+      at a1
     exact mod_cast a1
   -- At a0, clear denominators...
   replace a0 : a * q - ↑b * p ≠ 0 := by
@@ -77,7 +76,8 @@ open Polynomial Metric Set Real RingHom
 
 open scoped Polynomial
 
-/-- Let `Z, N` be types, let `R` be a metric space, let `α : R` be a point and let
+/--
+Let `Z, N` be types, let `R` be a metric space, let `α : R` be a point and let
 `j : Z → N → R` be a function.  We aim to estimate how close we can get to `α`, while staying
 in the image of `j`.  The points `j z a` of `R` in the image of `j` come with a "cost" equal to
 `d a`.  As we get closer to `α` while staying in the image of `j`, we are interested in bounding
@@ -94,16 +94,16 @@ It is stated in more general form than needed: in the intended application, `Z =
 root of `f`, `ε` is small, `M` is a bound on the Lipschitz constant of `f` near `α`, `n` is
 the degree of the polynomial `f`.
 -/
-theorem exists_one_le_pow_mul_dist {Z N R : Type*} [PseudoMetricSpace R] {d : N → ℝ}
-    {j : Z → N → R} {f : R → R} {α : R} {ε M : ℝ}
+theorem exists_one_le_pow_mul_dist
+    {Z N R : Type*} [PseudoMetricSpace R]
+    {d : N → ℝ} {j : Z → N → R} {f : R → R} {α : R} {ε M : ℝ}
     -- denominators are positive
-    (d0 : ∀ a : N, 1 ≤ d a)
-    (e0 : 0 < ε)
+    (d0 : ∀ a : N, 1 ≤ d a) (e0 : 0 < ε)
     -- function is Lipschitz at α
     (B : ∀ ⦃y : R⦄, y ∈ closedBall α ε → dist (f α) (f y) ≤ dist α y * M)
     -- clear denominators
-    (L : ∀ ⦃z : Z⦄, ∀ ⦃a : N⦄, j z a ∈ closedBall α ε → 1 ≤ d a * dist (f α) (f (j z a))) :
-    ∃ A : ℝ, 0 < A ∧ ∀ z : Z, ∀ a : N, 1 ≤ d a * (dist α (j z a) * A) := by
+    (L : ∀ ⦃z : Z⦄, ∀ ⦃a : N⦄, j z a ∈ closedBall α ε → 1 ≤ d a * dist (f α) (f (j z a)))
+    : ∃ A : ℝ, 0 < A ∧ ∀ z : Z, ∀ a : N, 1 ≤ d a * (dist α (j z a) * A) := by
   -- A useful inequality to keep at hand
   have me0 : 0 < max (1 / ε) M := lt_max_iff.mpr (Or.inl (one_div_pos.mpr e0))
   -- The maximum between `1 / ε` and `M` works
@@ -124,10 +124,11 @@ theorem exists_one_le_pow_mul_dist {Z N R : Type*} [PseudoMetricSpace R] {d : N 
       gcongr
       apply le_max_right
 
-theorem exists_pos_real_of_irrational_root {α : ℝ} (ha : Irrational α) {f : ℤ[X]} (f0 : f ≠ 0)
-    (fa : eval α (map (algebraMap ℤ ℝ) f) = 0) :
-    ∃ A : ℝ, 0 < A ∧ ∀ a : ℤ, ∀ b : ℕ,
-      (1 : ℝ) ≤ ((b : ℝ) + 1) ^ f.natDegree * (|α - a / (b + 1)| * A) := by
+theorem exists_pos_real_of_irrational_root
+    {α : ℝ} (ha : Irrational α) {f : ℤ[X]} (f0 : f ≠ 0) (fa : eval α (map (algebraMap ℤ ℝ) f) = 0)
+    : ∃ A : ℝ,
+      0 < A
+        ∧ ∀ a : ℤ, ∀ b : ℕ, (1 : ℝ) ≤ ((b : ℝ) + 1) ^ f.natDegree * (|α - a / (b + 1)| * A) := by
   -- `fR` is `f` viewed as a polynomial with `ℝ` coefficients.
   set fR : ℝ[X] := map (algebraMap ℤ ℝ) f
   -- `fR` is non-zero, since `f` is non-zero.
@@ -142,24 +143,27 @@ theorem exists_pos_real_of_irrational_root {α : ℝ} (ha : Irrational α) {f : 
   obtain ⟨ζ, z0, U⟩ : ∃ ζ > 0, closedBall α ζ ∩ fR.roots.toFinset = {α} :=
     @exists_closedBall_inter_eq_singleton_of_discrete _ _ _ (toFinite _).isDiscrete _ ar
   -- Since `fR` is continuous, it is bounded on the interval above.
-  obtain ⟨xm, -, hM⟩ : ∃ xm : ℝ, xm ∈ Icc (α - ζ) (α + ζ) ∧
-      IsMaxOn (|fR.derivative.eval ·|) (Icc (α - ζ) (α + ζ)) xm :=
-    IsCompact.exists_isMaxOn isCompact_Icc
-      ⟨α, (sub_lt_self α z0).le, (lt_add_of_pos_right α z0).le⟩
+  obtain ⟨xm, -, hM⟩
+      : ∃ xm : ℝ,
+        xm ∈ Icc (α - ζ) (α + ζ) ∧ IsMaxOn (|fR.derivative.eval ·|) (Icc (α - ζ) (α + ζ)) xm :=
+    IsCompact.exists_isMaxOn isCompact_Icc ⟨α, (sub_lt_self α z0).le, (lt_add_of_pos_right α z0).le⟩
       (continuous_abs.comp fR.derivative.continuous_aeval).continuousOn
   -- Use the key lemma `exists_one_le_pow_mul_dist`: we are left to show that ...
-  refine
-    @exists_one_le_pow_mul_dist ℤ ℕ ℝ _ _ _ (fun y => fR.eval y) α ζ |fR.derivative.eval xm| ?_ z0
-      (fun y hy => ?_) fun z a hq => ?_
+  refine @exists_one_le_pow_mul_dist ℤ ℕ ℝ _ _ _
+    (fun y => fR.eval y)
+    α ζ (|fR.derivative.eval xm|) ?_ z0
+    (fun y hy => ?_)
+    fun z a hq => ?_
   -- 1: the denominators are positive -- essentially by definition;
   · exact fun a => one_le_pow₀ ((le_add_iff_nonneg_left 1).mpr a.cast_nonneg)
   -- 2: the polynomial `fR` is Lipschitz at `α` -- as its derivative continuous;
   · rw [mul_comm]
     rw [Real.closedBall_eq_Icc] at hy
     -- apply the Mean Value Theorem: the bound on the derivative comes from differentiability.
-    refine
-      Convex.norm_image_sub_le_of_norm_deriv_le (fun _ _ => fR.differentiableAt)
-        (fun y h => by rw [fR.deriv]; exact hM h) (convex_Icc _ _) hy (mem_Icc_iff_abs_le.mp ?_)
+    refine Convex.norm_image_sub_le_of_norm_deriv_le
+      (fun _ _ => fR.differentiableAt)
+      (fun y h => by rw [fR.deriv]; exact hM h)
+      (convex_Icc _ _) hy (mem_Icc_iff_abs_le.mp ?_)
     exact @mem_closedBall_self ℝ _ α ζ (le_of_lt z0)
   -- 3: the weird inequality of Liouville type with powers of the denominators.
   · change 1 ≤ (a + 1 : ℝ) ^ f.natDegree * |eval α fR - eval ((z : ℝ) / (a + 1)) fR|
@@ -182,18 +186,19 @@ protected theorem transcendental {x : ℝ} (lx : Liouville x) : Transcendental �
   -- non-zero (`f0`) polynomial `f`
   rintro ⟨f : ℤ[X], f0, ef0⟩
   -- Change `aeval x f = 0` to `eval (map _ f) = 0`, who knew.
-  replace ef0 : (f.map (algebraMap ℤ ℝ)).eval x = 0 := by
-    rwa [← eval_map_algebraMap] at ef0
+  replace ef0 : (f.map (algebraMap ℤ ℝ)).eval x = 0 := by rwa [← eval_map_algebraMap] at ef0
   -- There is a "large" real number `A` such that `(b + 1) ^ (deg f) * |f (x - a / (b + 1))| * A`
   -- is at least one.  This is obtained from lemma `exists_pos_real_of_irrational_root`.
-  obtain ⟨A, hA, h⟩ : ∃ A : ℝ, 0 < A ∧ ∀ (a : ℤ) (b : ℕ),
-      (1 : ℝ) ≤ ((b : ℝ) + 1) ^ f.natDegree * (|x - a / (b + 1)| * A) :=
+  obtain ⟨A, hA, h⟩
+      : ∃ A : ℝ,
+        0 < A
+          ∧ ∀ (a : ℤ) (b : ℕ), (1 : ℝ) ≤ ((b : ℝ) + 1) ^ f.natDegree * (|x - a / (b + 1)| * A) :=
     exists_pos_real_of_irrational_root lx.irrational f0 ef0
   -- Since the real numbers are Archimedean, a power of `2` exceeds `A`: `hn : A < 2 ^ r`.
   rcases pow_unbounded_of_one_lt A (lt_add_one 1) with ⟨r, hn⟩
   -- Use the Liouville property, with exponent `r + deg f`.
-  obtain ⟨a, b, b1, -, a1⟩ : ∃ a b : ℤ, 1 < b ∧ x ≠ a / b ∧
-      |x - a / b| < 1 / (b : ℝ) ^ (r + f.natDegree) :=
+  obtain ⟨a, b, b1, -, a1⟩
+      : ∃ a b : ℤ, 1 < b ∧ x ≠ a / b ∧ |x - a / b| < 1 / (b : ℝ) ^ (r + f.natDegree) :=
     lx (r + f.natDegree)
   have b0 : (0 : ℝ) < b := zero_lt_one.trans (by rw [← Int.cast_one]; exact Int.cast_lt.mpr b1)
   -- Prove that `b ^ f.nat_degree * abs (x - a / b)` is strictly smaller than itself
@@ -215,8 +220,9 @@ protected theorem transcendental {x : ℝ} (lx : Liouville x) : Transcendental �
   -- at ratios of integers.
   · lift b to ℕ using zero_le_one.trans b1.le
     specialize h a b.pred
-    rwa [← Nat.cast_succ, Nat.succ_pred_eq_of_pos (zero_lt_one.trans _), ← mul_assoc, ←
-      div_le_iff₀ hA] at h
+    rwa [← Nat.cast_succ, Nat.succ_pred_eq_of_pos (zero_lt_one.trans _), ← mul_assoc,
+        ← div_le_iff₀ hA]
+      at h
     exact Int.ofNat_lt.mp b1
 
 end Liouville

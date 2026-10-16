@@ -33,8 +33,7 @@ protected def op (S : Subalgebra R A) : Subalgebra R Aᵐᵒᵖ where
 
 attribute [norm_cast] coe_op
 
-@[simp]
-theorem mem_op {x : Aᵐᵒᵖ} {S : Subalgebra R A} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
+@[simp] theorem mem_op {x : Aᵐᵒᵖ} {S : Subalgebra R A} : x ∈ S.op ↔ x.unop ∈ S := Iff.rfl
 
 /-- Pull a subalgebra back to a subalgebra along `MulOpposite.op` -/
 @[simps! coe toSubsemiring]
@@ -47,11 +46,9 @@ attribute [norm_cast] coe_unop
 @[simp]
 theorem mem_unop {x : A} {S : Subalgebra R Aᵐᵒᵖ} : x ∈ S.unop ↔ MulOpposite.op x ∈ S := Iff.rfl
 
-@[simp]
-theorem unop_op (S : Subalgebra R A) : S.op.unop = S := rfl
+@[simp] theorem unop_op (S : Subalgebra R A) : S.op.unop = S := rfl
 
-@[simp]
-theorem op_unop (S : Subalgebra R Aᵐᵒᵖ) : S.unop.op = S := rfl
+@[simp] theorem op_unop (S : Subalgebra R Aᵐᵒᵖ) : S.unop.op = S := rfl
 
 /-! ### Lattice results -/
 
@@ -78,20 +75,15 @@ def opEquiv : Subalgebra R A ≃o Subalgebra R Aᵐᵒᵖ where
   right_inv := op_unop
   map_rel_iff' := op_le_op_iff
 
-@[simp]
-theorem op_bot : (⊥ : Subalgebra R A).op = ⊥ := opEquiv.map_bot
+@[simp] theorem op_bot : (⊥ : Subalgebra R A).op = ⊥ := opEquiv.map_bot
 
-@[simp]
-theorem unop_bot : (⊥ : Subalgebra R Aᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
+@[simp] theorem unop_bot : (⊥ : Subalgebra R Aᵐᵒᵖ).unop = ⊥ := opEquiv.symm.map_bot
 
-@[simp]
-theorem op_top : (⊤ : Subalgebra R A).op = ⊤ := opEquiv.map_top
+@[simp] theorem op_top : (⊤ : Subalgebra R A).op = ⊤ := opEquiv.map_top
 
-@[simp]
-theorem unop_top : (⊤ : Subalgebra R Aᵐᵒᵖ).unop = ⊤ := opEquiv.symm.map_top
+@[simp] theorem unop_top : (⊤ : Subalgebra R Aᵐᵒᵖ).unop = ⊤ := opEquiv.symm.map_top
 
-theorem op_sup (S₁ S₂ : Subalgebra R A) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op :=
-  opEquiv.map_sup _ _
+theorem op_sup (S₁ S₂ : Subalgebra R A) : (S₁ ⊔ S₂).op = S₁.op ⊔ S₂.op := opEquiv.map_sup _ _
 
 theorem unop_sup (S₁ S₂ : Subalgebra R Aᵐᵒᵖ) : (S₁ ⊔ S₂).unop = S₁.unop ⊔ S₂.unop :=
   opEquiv.symm.map_sup _ _
@@ -123,8 +115,8 @@ theorem op_iInf (S : ι → Subalgebra R A) : (iInf S).op = ⨅ i, (S i).op := o
 theorem unop_iInf (S : ι → Subalgebra R Aᵐᵒᵖ) : (iInf S).unop = ⨅ i, (S i).unop :=
   opEquiv.symm.map_iInf _
 
-theorem op_adjoin (s : Set A) :
-    (Algebra.adjoin R s).op = Algebra.adjoin R (MulOpposite.unop ⁻¹' s) := by
+theorem op_adjoin (s : Set A)
+    : (Algebra.adjoin R s).op = Algebra.adjoin R (MulOpposite.unop ⁻¹' s) := by
   apply toSubsemiring_injective
   simp_rw [Algebra.adjoin, op_toSubsemiring, Subsemiring.op_closure, Set.preimage_union]
   congr with x
@@ -132,8 +124,8 @@ theorem op_adjoin (s : Set A) :
   congr!
   rw [← MulOpposite.op_injective.eq_iff (b := x.unop), MulOpposite.op_unop]
 
-theorem unop_adjoin (s : Set Aᵐᵒᵖ) :
-    (Algebra.adjoin R s).unop = Algebra.adjoin R (MulOpposite.op ⁻¹' s) := by
+theorem unop_adjoin (s : Set Aᵐᵒᵖ)
+    : (Algebra.adjoin R s).unop = Algebra.adjoin R (MulOpposite.op ⁻¹' s) := by
   apply toSubsemiring_injective
   simp_rw [Algebra.adjoin, unop_toSubsemiring, Subsemiring.unop_closure, Set.preimage_union]
   congr with x
@@ -163,11 +155,9 @@ section Ring
 
 variable {R A : Type*} [CommRing R] [Ring A] [Algebra R A]
 
-@[simp]
-theorem op_toSubring (S : Subalgebra R A) : S.op.toSubring = S.toSubring.op := rfl
+@[simp] theorem op_toSubring (S : Subalgebra R A) : S.op.toSubring = S.toSubring.op := rfl
 
-@[simp]
-theorem unop_toSubring (S : Subalgebra R Aᵐᵒᵖ) : S.unop.toSubring = S.toSubring.unop := rfl
+@[simp] theorem unop_toSubring (S : Subalgebra R Aᵐᵒᵖ) : S.unop.toSubring = S.toSubring.unop := rfl
 
 end Ring
 

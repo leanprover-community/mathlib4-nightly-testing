@@ -16,7 +16,6 @@ public import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor
 
 @[expose] public section
 
-
 open Opposite
 
 namespace CategoryTheory
@@ -28,49 +27,36 @@ instance : Preadditive Cᵒᵖ where
   add_comp _ _ _ f f' g := Quiver.Hom.unop_inj (Preadditive.comp_add _ _ _ g.unop f.unop f'.unop)
   comp_add _ _ _ f g g' := Quiver.Hom.unop_inj (Preadditive.add_comp _ _ _ g.unop g'.unop f.unop)
 
-/-- Test that the two ways to obtain the `HasZeroMorphisms Cᵒᵖ` instance
-from `Preadditive C` are the same. -/
-example : (instPreadditiveOpposite C).preadditiveHasZeroMorphisms =
-    @Limits.hasZeroMorphismsOpposite  C _ Preadditive.preadditiveHasZeroMorphisms := by
+/--
+Test that the two ways to obtain the `HasZeroMorphisms Cᵒᵖ` instance
+from `Preadditive C` are the same.
+-/
+example
+    : (instPreadditiveOpposite C).preadditiveHasZeroMorphisms
+      = @Limits.hasZeroMorphismsOpposite C _ Preadditive.preadditiveHasZeroMorphisms := by
   with_reducible_and_instances rfl
 
-instance moduleEndLeft {X Y : C} : Module (End X)ᵐᵒᵖ (X ⟶ Y) where
+instance moduleEndLeft {X Y : C} : Module ((End X)ᵐᵒᵖ) (X ⟶ Y) where
   smul_add _ _ _ := Preadditive.comp_add _ _ _ _ _ _
   smul_zero _ := Limits.comp_zero
   add_smul _ _ _ := Preadditive.add_comp _ _ _ _ _ _
   zero_smul _ := Limits.zero_comp
 
-@[simp]
-theorem unop_add {X Y : Cᵒᵖ} (f g : X ⟶ Y) : (f + g).unop = f.unop + g.unop :=
-  rfl
+@[simp] theorem unop_add {X Y : Cᵒᵖ} (f g : X ⟶ Y) : (f + g).unop = f.unop + g.unop := rfl
 
-@[simp]
-theorem unop_sub {X Y : Cᵒᵖ} (f g : X ⟶ Y) : (f - g).unop = f.unop - g.unop :=
-  rfl
+@[simp] theorem unop_sub {X Y : Cᵒᵖ} (f g : X ⟶ Y) : (f - g).unop = f.unop - g.unop := rfl
 
-@[simp]
-theorem unop_zsmul {X Y : Cᵒᵖ} (k : ℤ) (f : X ⟶ Y) : (k • f).unop = k • f.unop :=
-  rfl
+@[simp] theorem unop_zsmul {X Y : Cᵒᵖ} (k : ℤ) (f : X ⟶ Y) : (k • f).unop = k • f.unop := rfl
 
-@[simp]
-theorem unop_neg {X Y : Cᵒᵖ} (f : X ⟶ Y) : (-f).unop = -f.unop :=
-  rfl
+@[simp] theorem unop_neg {X Y : Cᵒᵖ} (f : X ⟶ Y) : (-f).unop = -f.unop := rfl
 
-@[simp]
-theorem op_add {X Y : C} (f g : X ⟶ Y) : (f + g).op = f.op + g.op :=
-  rfl
+@[simp] theorem op_add {X Y : C} (f g : X ⟶ Y) : (f + g).op = f.op + g.op := rfl
 
-@[simp]
-theorem op_sub {X Y : C} (f g : X ⟶ Y) : (f - g).op = f.op - g.op :=
-  rfl
+@[simp] theorem op_sub {X Y : C} (f g : X ⟶ Y) : (f - g).op = f.op - g.op := rfl
 
-@[simp]
-theorem op_zsmul {X Y : C} (k : ℤ) (f : X ⟶ Y) : (k • f).op = k • f.op :=
-  rfl
+@[simp] theorem op_zsmul {X Y : C} (k : ℤ) (f : X ⟶ Y) : (k • f).op = k • f.op := rfl
 
-@[simp]
-theorem op_neg {X Y : C} (f : X ⟶ Y) : (-f).op = -f.op :=
-  rfl
+@[simp] theorem op_neg {X Y : C} (f : X ⟶ Y) : (-f).op = -f.op := rfl
 
 variable {C}
 
@@ -80,8 +66,8 @@ def unopHom (X Y : Cᵒᵖ) : (X ⟶ Y) →+ (Opposite.unop Y ⟶ Opposite.unop 
   AddMonoidHom.mk' (fun f => f.unop) fun f g => unop_add _ f g
 
 @[simp]
-theorem unop_sum (X Y : Cᵒᵖ) {ι : Type*} (s : Finset ι) (f : ι → (X ⟶ Y)) :
-    (s.sum f).unop = s.sum fun i => (f i).unop :=
+theorem unop_sum (X Y : Cᵒᵖ) {ι : Type*} (s : Finset ι) (f : ι → (X ⟶ Y))
+    : (s.sum f).unop = s.sum fun i => (f i).unop :=
   map_sum (unopHom X Y) _ _
 
 /-- `op` induces morphisms of monoids on hom groups of a preadditive category -/
@@ -90,8 +76,8 @@ def opHom (X Y : C) : (X ⟶ Y) →+ (Opposite.op Y ⟶ Opposite.op X) :=
   AddMonoidHom.mk' (fun f => f.op) fun f g => op_add _ f g
 
 @[simp]
-theorem op_sum (X Y : C) {ι : Type*} (s : Finset ι) (f : ι → (X ⟶ Y)) :
-    (s.sum f).op = s.sum fun i => (f i).op :=
+theorem op_sum (X Y : C) {ι : Type*} (s : Finset ι) (f : ι → (X ⟶ Y))
+    : (s.sum f).op = s.sum fun i => (f i).op :=
   map_sum (opHom X Y) _ _
 
 /-- `G ⟶ G` and `(End G)ᵐᵒᵖ` are isomorphic as `(End G)ᵐᵒᵖ`-modules. -/

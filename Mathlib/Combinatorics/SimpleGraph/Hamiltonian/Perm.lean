@@ -24,14 +24,19 @@ namespace SimpleGraph
 
 variable {α : Type*} {G : SimpleGraph α}
 
-/-- If `σ` is a cycle on a finset `s` and each vertex is adjacent to its image under `σ`,
-then the cycle graph on `#s` vertices is contained in `G`. -/
-theorem cycleGraph_isContained_of_isCycleOn {σ : Perm α} {s : Finset α} (hσ : σ.IsCycleOn s)
-    (hadj : ∀ v, G.Adj v (σ v)) : cycleGraph #s ⊑ G := by
+/--
+If `σ` is a cycle on a finset `s` and each vertex is adjacent to its image under `σ`,
+then the cycle graph on `#s` vertices is contained in `G`.
+-/
+theorem cycleGraph_isContained_of_isCycleOn
+    {σ : Perm α} {s : Finset α} (hσ : σ.IsCycleOn s) (hadj : ∀ v, G.Adj v (σ v))
+    : cycleGraph #s ⊑ G := by
   obtain rfl | ⟨v, hv⟩ := s.eq_empty_or_nonempty
   · simp
-  refine ⟨⟨fun i ↦ (σ ^ i.1) v, fun {i j} h ↦ ?_⟩,
-    fun i j hij ↦ Fin.ext <| hσ.injOn_pow_apply hv i.2 j.2 hij⟩
+  refine ⟨
+    ⟨fun i ↦ (σ ^ i.1) v, fun {i j} h ↦ ?_⟩,
+    fun i j hij ↦ Fin.ext <| hσ.injOn_pow_apply hv i.2 j.2 hij
+  ⟩
   wlog hij : i < j
   · grind [Adj.symm]
   rcases cycleGraph_adj'.mp h with h | h
@@ -42,10 +47,15 @@ theorem cycleGraph_isContained_of_isCycleOn {σ : Perm α} {s : Finset α} (hσ 
   · rw [show j.1 = i.1 + 1 by lia [Fin.sub_val_of_le], pow_succ', mul_apply]
     exact hadj _
 
-/-- If a cyclic permutation `σ` of a type with at least 3 elements is such that each vertex is
-adjacent to its image under `σ`, then `G` is Hamiltonian. -/
-theorem IsHamiltonian.of_perm [Fintype α] [DecidableEq α] {σ : Perm α} (hσ : σ.IsCycle)
-    (hadj : ∀ v, G.Adj v (σ v)) (hcard : 3 ≤ Fintype.card α) : G.IsHamiltonian :=
+/--
+If a cyclic permutation `σ` of a type with at least 3 elements is such that each vertex is
+adjacent to its image under `σ`, then `G` is Hamiltonian.
+-/
+theorem IsHamiltonian.of_perm
+    [Fintype α] [DecidableEq α]
+    {σ : Perm α} (hσ : σ.IsCycle) (hadj : ∀ v, G.Adj v (σ v))
+    (hcard : 3 ≤ Fintype.card α)
+    : G.IsHamiltonian :=
   isHamiltonian_iff_cycleGraph_isContained hcard |>.mpr <|
     cycleGraph_isContained_of_isCycleOn (by grind [coe_univ, hσ.isCycleOn]) hadj
 

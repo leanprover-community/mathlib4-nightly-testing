@@ -34,19 +34,21 @@ namespace HomotopyCategory.Plus
 
 variable (C)
 
-/-- The property of objects in `HomotopyCategory.Plus C` that is satisfied
-by acyclic complexes. -/
-abbrev subcategoryAcyclic :
-    ObjectProperty (HomotopyCategory.Plus C) :=
+/--
+The property of objects in `HomotopyCategory.Plus C` that is satisfied
+by acyclic complexes.
+-/
+abbrev subcategoryAcyclic : ObjectProperty (HomotopyCategory.Plus C) :=
   (HomotopyCategory.subcategoryAcyclic C).inverseImage (HomotopyCategory.Plus.ι C)
 
 set_option backward.defeqAttrib.useBackward true in
-lemma quasiIso_eq_subcategoryAcyclic_trW :
-    HomotopyCategory.Plus.quasiIso C = (subcategoryAcyclic C).trW := by
+lemma quasiIso_eq_subcategoryAcyclic_trW
+    : HomotopyCategory.Plus.quasiIso C = (subcategoryAcyclic C).trW := by
   ext K L f
   obtain ⟨M, g, h, mem⟩ := CategoryTheory.Pretriangulated.distinguished_cocone_triangle f
-  have := (HomotopyCategory.subcategoryAcyclic C).trW_iff_of_distinguished _
-    ((HomotopyCategory.Plus.ι C).map_distinguished _ mem)
+  have :=
+    (HomotopyCategory.subcategoryAcyclic C).trW_iff_of_distinguished _
+      ((HomotopyCategory.Plus.ι C).map_distinguished _ mem)
   rw [← HomotopyCategory.quasiIso_eq_trW_subcategoryAcyclic] at this
   rwa [dsimp% (subcategoryAcyclic C).trW_iff_of_distinguished _ mem]
 
@@ -69,23 +71,25 @@ noncomputable def Qh : HomotopyCategory.Plus C ⥤ Plus C :=
     obtain ⟨n, _⟩ := (HomotopyCategory.plus_quotient_obj_iff _).mp hK
     exact ⟨n, t.isGE_of_iso ((quotientCompQhIso C).symm.app K) n⟩)
 
-noncomputable instance : (Qh : _ ⥤ Plus C).CommShift ℤ :=
-  ObjectProperty.commShiftLift ..
+noncomputable instance : (Qh : _ ⥤ Plus C).CommShift ℤ := ObjectProperty.commShiftLift ..
 
 instance : (Qh : _ ⥤ Plus C).IsTriangulated := by
   dsimp only [Qh]
   infer_instance
 
 set_option backward.isDefEq.respectTransparency false in
-lemma Qh_map_bijective_of_isKInjective (K L : HomotopyCategory.Plus C)
-    (_ : CochainComplex.IsKInjective L.1.as) : Function.Bijective (Qh.map : (K ⟶ L) → _) := by
+lemma Qh_map_bijective_of_isKInjective
+    (K L : HomotopyCategory.Plus C) (_ : CochainComplex.IsKInjective L.1.as)
+    : Function.Bijective (Qh.map : (K ⟶ L) → _) := by
   have := CochainComplex.IsKInjective.Qh_map_bijective K.1 L.1.as
   rw [← Function.Bijective.of_comp_iff _
-    ((HomotopyCategory.Plus.fullyFaithfulι C).map_bijective _ _)] at this
+      ((HomotopyCategory.Plus.fullyFaithfulι C).map_bijective _ _)]
+    at this
   rwa [← Function.Bijective.of_comp_iff' (t.plus.fullyFaithfulι.map_bijective _ _)]
 
-instance : (HomotopyCategory.plus C).IsVerdierRightLocalizing
-    (HomotopyCategory.subcategoryAcyclic C) where
+instance
+    : (HomotopyCategory.plus C).IsVerdierRightLocalizing
+      (HomotopyCategory.subcategoryAcyclic C) where
   fac {K L} φ hK hL := by
     obtain ⟨K : CochainComplex _ _, rfl⟩ := HomotopyCategory.quotient_obj_surjective K
     obtain ⟨L : CochainComplex _ _, rfl⟩ := HomotopyCategory.quotient_obj_surjective L
@@ -93,10 +97,14 @@ instance : (HomotopyCategory.plus C).IsVerdierRightLocalizing
     obtain ⟨n, hn⟩ := hL
     obtain ⟨φ, rfl⟩ := (HomotopyCategory.quotient _ _).map_surjective φ
     rw [HomotopyCategory.quotient_obj_mem_subcategoryAcyclic_iff_acyclic] at hK
-    refine ⟨(HomotopyCategory.quotient _ _).obj (K.truncGE n),
+    refine ⟨
+      (HomotopyCategory.quotient _ _).obj (K.truncGE n),
       (HomotopyCategory.quotient _ _).map (K.πTruncGE n),
       (HomotopyCategory.quotient _ _).map (CochainComplex.truncGEMap φ n ≫ inv (L.πTruncGE n)),
-      ?_, ?_, by simp [← Functor.map_comp]⟩
+      ?_,
+      ?_,
+      by simp [← Functor.map_comp]
+    ⟩
     · simp only [HomotopyCategory.plus_quotient_obj_iff]
       exact ⟨n, inferInstance⟩
     · rw [HomotopyCategory.quotient_obj_mem_subcategoryAcyclic_iff_acyclic]
@@ -104,11 +112,14 @@ instance : (HomotopyCategory.plus C).IsVerdierRightLocalizing
 
 variable (C)
 
-/-- The functor `DerivedCategory.Plus.Qh : HomotopyCategory.Plus C ⥤ DerivedCategory.Plus C`
-is induced by `DerivedCategory.Qh : HomotopyCategory C (.up ℤ) ⥤ DerivedCategory C`. -/
+/--
+The functor `DerivedCategory.Plus.Qh : HomotopyCategory.Plus C ⥤ DerivedCategory.Plus C`
+is induced by `DerivedCategory.Qh : HomotopyCategory C (.up ℤ) ⥤ DerivedCategory C`.
+-/
 @[simps! -isSimp]
-noncomputable def QhCompιIsoιCompQh :
-    Qh ⋙ Plus.ι ≅ HomotopyCategory.Plus.ι C ⋙ DerivedCategory.Qh := Iso.refl _
+noncomputable def QhCompιIsoιCompQh
+    : Qh ⋙ Plus.ι ≅ HomotopyCategory.Plus.ι C ⋙ DerivedCategory.Qh :=
+  Iso.refl _
 
 instance : NatTrans.CommShift (QhCompιIsoιCompQh C).hom ℤ :=
   ObjectProperty.commShift_liftCompιIso_hom ..
@@ -116,36 +127,43 @@ instance : NatTrans.CommShift (QhCompιIsoιCompQh C).hom ℤ :=
 instance : (Qh (C := C)).EssSurj where
   mem_essImage := by
     intro ⟨X, n, K, e, h⟩
-    refine ⟨⟨(HomotopyCategory.quotient C (ComplexShape.up ℤ)).obj K, ?_⟩,
-      ⟨Plus.ι.preimageIso ((quotientCompQhIso C).app _ ≪≫ e.symm)⟩⟩
+    refine ⟨
+      ⟨(HomotopyCategory.quotient C (ComplexShape.up ℤ)).obj K, ?_⟩,
+      ⟨Plus.ι.preimageIso ((quotientCompQhIso C).app _ ≪≫ e.symm)⟩
+    ⟩
     simp only [HomotopyCategory.plus_quotient_obj_iff]
     exact ⟨n, h⟩
 
 instance : Qh.IsLocalization (HomotopyCategory.Plus.subcategoryAcyclic C).trW :=
   ((HomotopyCategory.plus C).triangulatedLocalizerMorphism
-    (HomotopyCategory.subcategoryAcyclic C)).isLocalization_of_isLocalizedFullyFaithful
-      (QhCompιIsoιCompQh C).symm
+      (HomotopyCategory.subcategoryAcyclic C)).isLocalization_of_isLocalizedFullyFaithful
+    (QhCompιIsoιCompQh C).symm
 
 instance : Qh.IsLocalization (HomotopyCategory.Plus.quasiIso C) := by
   rw [HomotopyCategory.Plus.quasiIso_eq_subcategoryAcyclic_trW]
   infer_instance
 
-/-- The single functors `C ⥤ DerivedCategory.Plus C` for all `n : ℤ` along with
-their compatibilities with shifts. -/
+/--
+The single functors `C ⥤ DerivedCategory.Plus C` for all `n : ℤ` along with
+their compatibilities with shifts.
+-/
 noncomputable def singleFunctors : SingleFunctors C (Plus C) ℤ :=
   SingleFunctors.lift (DerivedCategory.singleFunctors C) Plus.ι
-      (fun n => t.plus.lift (DerivedCategory.singleFunctor C n)
-      (fun _ => ⟨n, inferInstance⟩))
-      (fun _ => Iso.refl _)
+    (fun n => t.plus.lift (DerivedCategory.singleFunctor C n) (fun _ => ⟨n, inferInstance⟩))
+    (fun _ => Iso.refl _)
 
-/-- The single functor `C ⥤ DerivedCategory.Plus C` which sends `X : C` to the
-single cochain complex with `X` sitting in degree `n : ℤ`. -/
+/--
+The single functor `C ⥤ DerivedCategory.Plus C` which sends `X : C` to the
+single cochain complex with `X` sitting in degree `n : ℤ`.
+-/
 noncomputable abbrev singleFunctor (n : ℤ) : C ⥤ Plus C := (singleFunctors C).functor n
 
-/-- The single functors on `DerivedCategory.Plus C` are induced by the
-single functors on `DerivedCategory C`. -/
-noncomputable def singleFunctorιIso (n : ℤ) :
-    singleFunctor C n ⋙ Plus.ι ≅ DerivedCategory.singleFunctor C n :=
+/--
+The single functors on `DerivedCategory.Plus C` are induced by the
+single functors on `DerivedCategory C`.
+-/
+noncomputable def singleFunctorιIso (n : ℤ)
+    : singleFunctor C n ⋙ Plus.ι ≅ DerivedCategory.singleFunctor C n :=
   Iso.refl _
 
 instance (n : ℤ) : (singleFunctor C n).Additive := by
@@ -158,8 +176,7 @@ noncomputable def homologyFunctor (n : ℤ) : Plus C ⥤ C :=
 deriving Functor.IsHomological
 
 instance : (Qh (C := C)).mapArrow.EssSurj :=
-  Localization.essSurj_mapArrow _
-    (HomotopyCategory.Plus.subcategoryAcyclic C).trW
+  Localization.essSurj_mapArrow _ (HomotopyCategory.Plus.subcategoryAcyclic C).trW
 
 variable {C}
 
@@ -167,21 +184,23 @@ variable {C}
 noncomputable abbrev TStructure.t : TStructure (DerivedCategory.Plus C) :=
   (DerivedCategory.TStructure.t (C := C)).plus.tStructure DerivedCategory.TStructure.t
 
-/-- Given `X : DerivedCategory.Plus C` and `n : ℤ`, this property means
-that `X` is `≥ n` for the canonical t-structure. -/
+/--
+Given `X : DerivedCategory.Plus C` and `n : ℤ`, this property means
+that `X` is `≥ n` for the canonical t-structure.
+-/
 abbrev IsGE (X : Plus C) (n : ℤ) : Prop := Plus.TStructure.t.IsGE X n
 
-/-- Given `X : DerivedCategory.Plus C` and `n : ℤ`, this property means
-that `X` is `≤ n` for the canonical t-structure. -/
+/--
+Given `X : DerivedCategory.Plus C` and `n : ℤ`, this property means
+that `X` is `≤ n` for the canonical t-structure.
+-/
 abbrev IsLE (X : Plus C) (n : ℤ) : Prop := Plus.TStructure.t.IsLE X n
 
-lemma isGE_ι_obj_iff (X : Plus C) (n : ℤ) :
-    (ι.obj X).IsGE n ↔ X.IsGE n := by
+lemma isGE_ι_obj_iff (X : Plus C) (n : ℤ) : (ι.obj X).IsGE n ↔ X.IsGE n := by
   constructor
   all_goals exact fun h ↦ ⟨h.1⟩
 
-lemma isLE_ι_obj_iff (X : Plus C) (n : ℤ) :
-    (ι.obj X).IsLE n ↔ X.IsLE n := by
+lemma isLE_ι_obj_iff (X : Plus C) (n : ℤ) : (ι.obj X).IsLE n ↔ X.IsLE n := by
   constructor
   all_goals exact fun h ↦ ⟨h.1⟩
 
@@ -206,18 +225,16 @@ instance (X : C) (n : ℤ) : ((singleFunctor C n).obj X).IsLE n := by
   change DerivedCategory.TStructure.t.IsLE ((DerivedCategory.singleFunctor C n).obj X) n
   infer_instance
 
-lemma isZero_homology_of_isGE
-    (X : Plus C) (n : ℤ) [X.IsGE n] (i : ℤ) (hi : i < n) :
-    IsZero ((homologyFunctor C i).obj X) :=
+lemma isZero_homology_of_isGE (X : Plus C) (n : ℤ) [X.IsGE n] (i : ℤ) (hi : i < n)
+    : IsZero ((homologyFunctor C i).obj X) :=
   (ι.obj X).isZero_of_isGE n i hi
 
-lemma isZero_homology_of_isLE
-    (X : Plus C) (n : ℤ) [X.IsLE n] (i : ℤ) (hi : n < i) :
-    IsZero ((homologyFunctor C i).obj X) :=
+lemma isZero_homology_of_isLE (X : Plus C) (n : ℤ) [X.IsLE n] (i : ℤ) (hi : n < i)
+    : IsZero ((homologyFunctor C i).obj X) :=
   (ι.obj X).isZero_of_isLE n i hi
 
-lemma isIso_iff {X Y : Plus C} (f : X ⟶ Y) :
-    IsIso f ↔ ∀ (n : ℤ), IsIso ((homologyFunctor C n).map f) := by
+lemma isIso_iff {X Y : Plus C} (f : X ⟶ Y)
+    : IsIso f ↔ ∀ (n : ℤ), IsIso ((homologyFunctor C n).map f) := by
   refine ⟨fun _ _ ↦ inferInstance, fun _ ↦ ?_⟩
   have : IsIso (ι.map f) := by rwa [DerivedCategory.isIso_iff]
   exact isIso_of_fully_faithful ι _
@@ -231,41 +248,42 @@ noncomputable def Q : CochainComplex.Plus C ⥤ DerivedCategory.Plus C :=
 noncomputable instance : (Q (C := C)).CommShift ℤ := ObjectProperty.commShiftLift ..
 
 variable (C) in
-/-- The localization functor `CochainComplex.Plus C ⥤ DerivedCategory.Plus C` is
-induced by `DerivedCategory.Q : CochainComplex C ℤ ⥤ DerivedCategory C`. -/
+/--
+The localization functor `CochainComplex.Plus C ⥤ DerivedCategory.Plus C` is
+induced by `DerivedCategory.Q : CochainComplex C ℤ ⥤ DerivedCategory C`.
+-/
 @[simps!]
-noncomputable def QCompιIso :
-    DerivedCategory.Plus.Q ⋙ Plus.ι ≅ CochainComplex.Plus.ι C ⋙ DerivedCategory.Q :=
+noncomputable def QCompιIso
+    : DerivedCategory.Plus.Q ⋙ Plus.ι ≅ CochainComplex.Plus.ι C ⋙ DerivedCategory.Q :=
   ObjectProperty.liftCompιIso ..
 
 instance : (Q (C := C)).Additive :=
   have := Functor.additive_of_iso (QCompιIso C).symm
   Functor.additive_of_comp_faithful _ Plus.ι
 
-instance : NatTrans.CommShift (QCompιIso C).hom ℤ :=
-  ObjectProperty.commShift_liftCompιIso_hom ..
+instance : NatTrans.CommShift (QCompιIso C).hom ℤ := ObjectProperty.commShift_liftCompιIso_hom ..
 
 variable (C) in
 /-- The natural isomorphism `HomotopyCategory.Plus.quotient C ⋙ Qh ≅ Q`. -/
 @[simps!]
 noncomputable def quotientCompQhIso : HomotopyCategory.Plus.quotient C ⋙ Qh ≅ Q :=
-  NatIso.ofComponents (fun X ↦
-    ObjectProperty.isoMk _ ((DerivedCategory.quotientCompQhIso C).app X.obj)) (fun _ ↦ by
+  NatIso.ofComponents
+    (fun X ↦ ObjectProperty.isoMk _ ((DerivedCategory.quotientCompQhIso C).app X.obj))
+    (fun _ ↦ by
       ext
       apply (DerivedCategory.quotientCompQhIso C).hom.naturality)
 
 open Functor in
 @[reassoc]
-lemma whiskerRight_quotientCompQhIso_hom_ι :
-    whiskerRight (quotientCompQhIso C).hom ι =
-    (associator _ _ _).hom ≫ whiskerLeft _ (QhCompιIsoιCompQh C).hom ≫
-    (associator _ _ _).inv ≫
-    whiskerRight (HomotopyCategory.Plus.quotientCompιIso C).hom _ ≫ (associator _ _ _).hom ≫
-    whiskerLeft _ (DerivedCategory.quotientCompQhIso C).hom ≫ (QCompιIso C).inv := by
+lemma whiskerRight_quotientCompQhIso_hom_ι
+    : whiskerRight (quotientCompQhIso C).hom ι
+      = (associator _ _ _).hom ≫ whiskerLeft _ (QhCompιIsoιCompQh C).hom ≫ (associator _ _ _).inv
+        ≫ whiskerRight (HomotopyCategory.Plus.quotientCompιIso C).hom _ ≫ (associator _ _ _).hom
+        ≫ whiskerLeft _ (DerivedCategory.quotientCompQhIso C).hom ≫ (QCompιIso C).inv := by
   ext K
   dsimp
-  simp [QCompιIso_inv_app, comp_id, id_comp,
-    QhCompιIsoιCompQh_hom_app, HomotopyCategory.Plus.quotientCompιIso_hom_app,
+  simp [QCompιIso_inv_app, comp_id, id_comp, QhCompιIsoιCompQh_hom_app,
+    HomotopyCategory.Plus.quotientCompιIso_hom_app,
     DerivedCategory.Qh.map_id ((HomotopyCategory.quotient _ (.up ℤ)).obj K.obj),
     dsimp% Category.id_comp ((DerivedCategory.quotientCompQhIso C).hom.app K.obj)]
 
@@ -274,8 +292,8 @@ instance : NatTrans.CommShift (quotientCompQhIso C).hom ℤ :=
     rw [whiskerRight_quotientCompQhIso_hom_ι]
     infer_instance)
 
-example : (HomotopyCategory.Plus.quotient C ⋙ Qh).IsLocalization
-    (CochainComplex.Plus.quasiIso C) := by
+example
+    : (HomotopyCategory.Plus.quotient C ⋙ Qh).IsLocalization (CochainComplex.Plus.quasiIso C) := by
   infer_instance
 
 instance : Q.IsLocalization (CochainComplex.Plus.quasiIso C) :=

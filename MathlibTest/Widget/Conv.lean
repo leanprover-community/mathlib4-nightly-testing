@@ -15,32 +15,36 @@ syntax "test" str ("at" ident)? : tactic
 
 elab_rules : tactic
   | `(tactic| test%$stx $t:str $[at $h?:ident]?) =>
-  withMainContext do
-    let goal ← getMainGoal
-    let goalType ← goal.getType
-    let pos := Pos.fromString! t.getString
-    let loc ← do
-      match h? with
-      | none => pure <| GoalLocation.target pos
-      | some h => pure <| GoalLocation.hypType (← getFVarId h) pos
-    let locs := #[{ mvarId := goal, loc := loc }]
-    let conv ← Mathlib.Tactic.Conv.insertEnterSyntax locs goalType
-    let insert ← conv.replaceM fun stx =>
-      match stx with
-      | `(Lean.Parser.Tactic.Conv.skip| skip) =>
-        some <$> `(Lean.Parser.Tactic.Conv.convTrace_state| trace_state)
-      | _ => pure none
-    evalTactic insert
-    let some range := (← getFileMap).lspRangeOfStx? stx | failure
-    let interactive ← Lean.Widget.goalToInteractive goal
-    let params : SelectInsertParams := {
-      pos := range.start
-      goals := #[interactive]
-      selectedLocations := locs
-      replaceRange := range
-    }
-    let (_, text, _) ← Mathlib.Tactic.Conv.insertEnter locs goalType params
-    logInfo m!"`conv?` would output:\n{text}"
+    withMainContext do
+      let goal ← getMainGoal
+      let goalType ← goal.getType
+      let pos := Pos.fromString! t.getString
+      let loc ← do
+        match h? with
+        | none => pure <| GoalLocation.target pos
+        | some h => pure <| GoalLocation.hypType (← getFVarId h) pos
+      let locs := #[{ mvarId := goal, loc := loc }]
+      let conv ← Mathlib.Tactic.Conv.insertEnterSyntax locs goalType
+      let insert ←
+        conv.replaceM fun stx =>
+          match stx with
+          | `(Lean.Parser.Tactic.Conv.skip| skip) =>
+            some <$> `(Lean.Parser.Tactic.Conv.convTrace_state| trace_state)
+          | _ =>
+            pure none
+      evalTactic insert
+      let some range := (← getFileMap).lspRangeOfStx? stx
+        | failure
+      let interactive ← Lean.Widget.goalToInteractive goal
+      let params : SelectInsertParams := {
+        pos := range.start
+        goals := #[interactive]
+        selectedLocations := locs
+        replaceRange := range
+      }
+      let (_, text, _) ← Mathlib.Tactic.Conv.insertEnter locs goalType params
+      logInfo m!"`conv?` would output:\
+        \n{text}"
 
 elab "mdata% " e:term : term => do
   let e ← Term.elabTerm e none
@@ -178,8 +182,8 @@ trace: inst : Decidable (True ∧ False)
 | instDecidableFalse
 -/
 #guard_msgs in
-example (inst : Decidable (True ∧ False)) :
-    (clear% inst; _root_.inferInstanceAs (Decidable (True ∧ False))) = inst := by
+example (inst : Decidable (True ∧ False))
+    : (clear% inst; _root_.inferInstanceAs (Decidable (True ∧ False))) = inst := by
   -- go to `instDecidableFalse`
   test "/0/1/1/1"
   exact test_sorry
@@ -247,8 +251,8 @@ h : ∃ h, k < l.length → l[k] = 0
 | h.2
 -/
 #guard_msgs in
-example (k : Nat) (l : List Nat) (h : ∃ (h : k < l.length), k < l.length → l[k] = 0) :
-    Fin.mk (l[k]'h.1) ((congrArg (· < 1) (h.2 h.1)).mpr Nat.zero_lt_one) = 0 := by
+example (k : Nat) (l : List Nat) (h : ∃ (h : k < l.length), k < l.length → l[k] = 0)
+    : Fin.mk (l[k]'h.1) ((congrArg (· < 1) (h.2 h.1)).mpr Nat.zero_lt_one) = 0 := by
   -- go to `h.2`
   test "/0/1/1/0/1/1/0"
   exact test_sorry
@@ -337,8 +341,8 @@ trace: f : ∀ {a : Nat} ⦃b : Nat⦄, optParam (0 < 1) Nat.zero_lt_one → ∀
 | 17
 -/
 #guard_msgs in
-example (f : ∀ {a : Nat} ⦃b : Nat⦄ (_ : 0 < 1 := Nat.zero_lt_one) (c : Nat), 1 < 0) :
-    Fin.elim0.{1} ⟨1, @f 0 1 Nat.zero_lt_one 17⟩ := by
+example (f : ∀ {a : Nat} ⦃b : Nat⦄ (_ : 0 < 1 := Nat.zero_lt_one) (c : Nat), 1 < 0)
+    : Fin.elim0.{1} ⟨1, @f 0 1 Nat.zero_lt_one 17⟩ := by
   -- go to `17`
   test "/1/1/1"
   exact test_sorry
@@ -385,8 +389,12 @@ trace: x0 x1 x2 : Bool → Nat
 | x2 true
 -/
 #guard_msgs in
-example : (fun x0 x1 x2 : Bool → Nat => x0 true + x1 false + x2 true)
-    (fun b => bif b then 0 else 1) (fun b => bif b then 3 else 2) (fun _ => 17) = 19 := by
+example
+    : (fun x0 x1 x2 : Bool → Nat => x0 true + x1 false + x2 true)
+        (fun b => bif b then 0 else 1)
+        (fun b => bif b then 3 else 2)
+        (fun _ => 17)
+      = 19 := by
   -- go to `x2 true`
   test "/0/1/0/0/0/1/1/1/1"
   exact test_sorry

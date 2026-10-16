@@ -27,26 +27,27 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 
 section
 
-variable {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H]
+  (I : ModelWithCorners 𝕜 E H)
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
 
-variable (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+variable
+  (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F]
   -- `F` model fiber
   (n : WithTop ℕ∞)
-  (V : M → Type*) [TopologicalSpace (TotalSpace F V)]
-  [∀ x, AddCommGroup (V x)] [∀ x, Module 𝕜 (V x)]
-  [∀ x : M, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
-  [∀ x, ContinuousSMul 𝕜 (V x)]
-  [FiberBundle F V] [VectorBundle 𝕜 F V]
-  -- `V` vector bundle
+  (V : M → Type*) [TopologicalSpace (TotalSpace F V)] [∀ x, AddCommGroup (V x)]
+  [∀ x, Module 𝕜 (V x)] [∀ x : M, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
+  [∀ x, ContinuousSMul 𝕜 (V x)] [FiberBundle F V] [VectorBundle 𝕜 F V]
+-- `V` vector bundle
 
 section ErrorMetavars -- Test for error messages when the goal still has metavariables.
 
 -- The argument k is deliberately implicit; it should be explicit in a mathlib definition.
-def proj : TangentBundle 𝓘(𝕜, 𝕜) 𝕜 → 𝕜 := fun x ↦ x.2
+def proj : TangentBundle (𝓘(𝕜, 𝕜)) 𝕜 → 𝕜 := fun x ↦ x.2
 
 open ContDiff
 
@@ -70,8 +71,10 @@ end ErrorMetavars
 /-! Additional tests for the elaborators for `MDifferentiable{WithinAt,At,On}`. -/
 section differentiability
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
 
 -- From a manifold into an inner product space.
@@ -79,11 +82,13 @@ variable {EM' : Type*} [NormedAddCommGroup EM']
 -- normed field via being RCLike and via being a nontrivially normed field.
 section
 
-variable {k' : Type*} [RCLike k']
-  {E'' : Type*} [NormedAddCommGroup E''] [h: InnerProductSpace k' E'']
-  {E' H' M' : Type*} [NormedAddCommGroup E'] [NormedSpace k' E']
-  [TopologicalSpace H'] [TopologicalSpace M'] [ChartedSpace H' M']
-  (I'' : ModelWithCorners k' E' H') {g' : M' → E''}
+variable
+  {k' : Type*} [RCLike k']
+  {E'' : Type*} [NormedAddCommGroup E''] [h : InnerProductSpace k' E'']
+  {E' H' M' : Type*} [NormedAddCommGroup E'] [NormedSpace k' E'] [TopologicalSpace H']
+  [TopologicalSpace M'] [ChartedSpace H' M']
+  (I'' : ModelWithCorners k' E' H')
+  {g' : M' → E''}
 
 /-- info: MDifferentiable I'' (modelWithCornersSelf k' E'') g' : Prop -/
 #guard_msgs in
@@ -269,13 +274,13 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 /-- info: MDifferentiable I.tangent (modelWithCornersSelf 𝕜 F) h' : Prop -/
 #guard_msgs in
-#check MDifferentiable I.tangent 𝓘(𝕜, F) h'
+#check MDifferentiable I.tangent (𝓘(𝕜, F)) h'
 
 /--
 info: MDifferentiable (I.prod (modelWithCornersSelf 𝕜 E)) (modelWithCornersSelf 𝕜 F) h' : Prop
 -/
 #guard_msgs in
-#check MDifferentiable (I.prod (𝓘(𝕜, E))) 𝓘(𝕜, F) h'
+#check MDifferentiable (I.prod (𝓘(𝕜, E))) (𝓘(𝕜, F)) h'
 
 /-- info: MDifferentiable I.tangent (modelWithCornersSelf 𝕜 F) h' : Prop -/
 #guard_msgs in
@@ -310,10 +315,12 @@ def RealCopy := ℝ
 
 noncomputable instance : NormedField RealCopy := inferInstanceAs (NormedField ℝ)
 
-noncomputable instance : NontriviallyNormedField RealCopy := inferInstanceAs (NontriviallyNormedField ℝ)
+noncomputable instance : NontriviallyNormedField RealCopy :=
+  inferInstanceAs (NontriviallyNormedField ℝ)
 
-variable {E'' E''' : Type*} [NormedAddCommGroup E''] [NormedAddCommGroup E''']
-  [NormedSpace ℝ E''] [NormedSpace RealCopy E''']
+variable
+  {E'' E''' : Type*}
+  [NormedAddCommGroup E''] [NormedAddCommGroup E'''] [NormedSpace ℝ E''] [NormedSpace RealCopy E''']
 
 def id' : ℝ →+* RealCopy := RingHom.id ℝ
 
@@ -411,7 +418,8 @@ Hint: failures to find a model with corners can be debugged with the command `se
 
 -- Testing the case of a map that is not the identity: we infer a model with corners, but
 -- it will not match the desired type exactly.
-variable {E'''' : Type*} [NormedAddCommGroup E''''] [NormedSpace ℝ E'''']
+variable
+  {E'''' : Type*} [NormedAddCommGroup E''''] [NormedSpace ℝ E'''']
   {σ : ℝ →+* ℝ} [RingHomIsometric σ]
 
 variable {f : M → E'' →SL[σ] E''''} in
@@ -528,8 +536,10 @@ section RealInterval
 -- Make a new real manifold N with model J.
 -- TODO: change this line to modify M and E instead (thus testing if everything
 -- still works in the presence of two instances over different fields).
-variable {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℝ E''] {J : ModelWithCorners ℝ E'' H}
-  {N : Type} [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
+variable
+  {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℝ E'']
+  {J : ModelWithCorners ℝ E'' H} {N : Type}
+  [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
 
 variable {g : unitInterval → M} in
 /-- info: MDifferentiable (modelWithCornersEuclideanHalfSpace 1) J g : Prop -/
@@ -621,11 +631,12 @@ variable {α : Type*} [Preorder α] {x' y' : α} {k : ℝ → Set.Icc x' y'} in
 #check CMDiff 2 k
 
 -- Now, with a fact about x < y: these should behave well.
-variable {x y : ℝ} [Fact (x < y)] {g : Set.Icc x y → N} {h : E'' → Set.Icc x y} {k : Set.Icc x y → ℝ}
+variable
+  {x y : ℝ} [Fact (x < y)] {g : Set.Icc x y → N} {h : E'' → Set.Icc x y} {k : Set.Icc x y → ℝ}
 
 /-- info: MDifferentiable (modelWithCornersEuclideanHalfSpace 1) J g : Prop -/
 #guard_msgs in
-variable [h: Fact ((0 : ℝ) < (2 : ℝ))] {g : Set.Icc (0 : ℝ) (2 : ℝ) → M} in
+variable [h : Fact ((0 : ℝ) < (2 : ℝ))] {g : Set.Icc (0 : ℝ) (2 : ℝ) → M} in
 #check MDiff g
 
 /-- info: MDifferentiable (modelWithCornersEuclideanHalfSpace 1) J g : Prop -/
@@ -658,7 +669,8 @@ instance : Preorder RealCopy' := inferInstanceAs (Preorder ℝ)
 instance : TopologicalSpace RealCopy' := inferInstanceAs (TopologicalSpace ℝ)
 
 -- Repeat the same test for an interval in RealCopy.
-variable {x y : RealCopy'} {g : Set.Icc x y → N} {h : E'' → Set.Icc x y} {k : Set.Icc x y → ℝ}
+variable
+  {x y : RealCopy'} {g : Set.Icc x y → N} {h : E'' → Set.Icc x y} {k : Set.Icc x y → ℝ}
   [Fact (x < y)]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -743,9 +755,11 @@ end RealInterval
 /-! Tests for inferring a model with corners on Euclidean space, half-spaces and quadrants -/
 section EuclideanSpace
 
-variable {n m n' m' : ℕ} [NeZero n] [NeZero m] [NeZero n'] [NeZero m']
+variable
+  {n m n' m' : ℕ} [NeZero n] [NeZero m] [NeZero n'] [NeZero m']
   {f : EuclideanSpace ℝ (Fin n) → ℝ} {g : EuclideanSpace ℝ (Fin n') → EuclideanSpace ℝ (Fin m')}
-  {a b : ℝ} [Fact (a < b)] {h : Set.Icc a b → EuclideanSpace ℝ (Fin m)}
+  {a b : ℝ} [Fact (a < b)]
+  {h : Set.Icc a b → EuclideanSpace ℝ (Fin m)}
 
 /--
 info: MDifferentiable (modelWithCornersSelf Real (EuclideanSpace Real (Fin n))) (modelWithCornersSelf Real Real) f : Prop
@@ -766,7 +780,8 @@ info: ContMDiff (modelWithCornersEuclideanHalfSpace 1) (modelWithCornersSelf Rea
 #guard_msgs in
 #check CMDiff 2 h
 
-variable {f' : EuclideanHalfSpace 2 → ℝ} {x : EuclideanHalfSpace 2}
+variable
+  {f' : EuclideanHalfSpace 2 → ℝ} {x : EuclideanHalfSpace 2}
   {g' : EuclideanHalfSpace n → EuclideanHalfSpace m} {y : EuclideanHalfSpace n}
 
 /--
@@ -880,8 +895,10 @@ open scoped UpperHalfPlane
 -- Make a new complex manifold N with model J.
 -- TODO: change this line to modify M and E instead (thus testing if everything
 -- still works in the presence of two instances over different fields).
-variable {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℂ E''] {J : ModelWithCorners ℂ E'' H}
-  {N : Type} [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
+variable
+  {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℂ E'']
+  {J : ModelWithCorners ℂ E'' H} {N : Type}
+  [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
 
 variable {g : ℍ → N} {h : E'' → ℍ} {k : ℍ → ℂ} {y : ℍ}
 
@@ -946,8 +963,10 @@ end differentiability
 /-! Tests for the custom elaborators for `mfderiv` and `mfderivWithin` -/
 section mfderiv
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
 
 variable {f : M → M'} {s : Set M} {m : M}
@@ -1126,8 +1145,10 @@ end mfderiv
 /-! Tests for the custom elaborators for `HasMFDeriv` and `HasMFDerivWithin` -/
 section HasMFDeriv
 
-variable {EM' : Type*} [NormedAddCommGroup EM']
-  [NormedSpace 𝕜 EM'] {H' : Type*} [TopologicalSpace H'] (I' : ModelWithCorners 𝕜 EM' H')
+variable
+  {EM' : Type*} [NormedAddCommGroup EM'] [NormedSpace 𝕜 EM']
+  {H' : Type*} [TopologicalSpace H']
+  (I' : ModelWithCorners 𝕜 EM' H')
   {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
 
 variable {f : M → M'} {s : Set M} {m : M} {f' : TangentSpace I m →L[𝕜] TangentSpace I' (f m)}
@@ -1140,7 +1161,8 @@ variable {f : M → M'} {s : Set M} {m : M} {f' : TangentSpace I m →L[𝕜] Ta
 #guard_msgs in
 #check HasMFDerivAt[s] f m f'
 
-variable {f : E → EM'} {s : Set E} {m : E}
+variable
+  {f : E → EM'} {s : Set E} {m : E}
   -- #check mfderiv% f m tells us the type of f :-)
   {f' : TangentSpace 𝓘(𝕜, E) m →L[𝕜] TangentSpace 𝓘(𝕜, EM') (f m)}
 
@@ -1209,7 +1231,9 @@ info: mfderivWithin (modelWithCornersSelf 𝕜 E) ((modelWithCornersSelf 𝕜 E)
 #guard_msgs in
 #check mfderiv[t] (T% σ') p
 
-variable {dσ'p : TangentSpace 𝓘(𝕜, E) p →L[𝕜] TangentSpace (𝓘(𝕜, E).prod 𝓘(𝕜, E')) (TotalSpace.mk' E' p (σ' p))}
+variable
+  {dσ'p
+    : TangentSpace 𝓘(𝕜, E) p →L[𝕜] TangentSpace (𝓘(𝕜, E).prod 𝓘(𝕜, E')) (TotalSpace.mk' E' p (σ' p))}
 
 /--
 info: HasMFDerivAt (modelWithCornersSelf 𝕜 E) ((modelWithCornersSelf 𝕜 E).prod (modelWithCornersSelf 𝕜 E'))

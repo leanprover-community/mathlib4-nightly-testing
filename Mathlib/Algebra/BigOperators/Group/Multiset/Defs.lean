@@ -35,22 +35,19 @@ section CommMonoid
 
 variable [CommMonoid M] [CommMonoid N] {s : Multiset M} {a : M} {m : Multiset ι} {f g : ι → M}
 
-/-- Product of a multiset given a commutative monoid structure on `M`.
-  `prod {a, b, c} = a * b * c` -/
+/--
+Product of a multiset given a commutative monoid structure on `M`.
+`prod {a, b, c} = a * b * c`
+-/
 @[to_additive
       /-- Sum of a multiset given a commutative additive monoid structure on `M`.
       `sum {a, b, c} = a + b + c` -/]
-def prod : Multiset M → M :=
-  foldr (· * ·) 1
+def prod : Multiset M → M := foldr (· * ·) 1
+
+@[to_additive] theorem prod_eq_foldr (s : Multiset M) : prod s = foldr (· * ·) 1 s := rfl
 
 @[to_additive]
-theorem prod_eq_foldr (s : Multiset M) :
-    prod s = foldr (· * ·) 1 s :=
-  rfl
-
-@[to_additive]
-theorem prod_eq_foldl (s : Multiset M) :
-    prod s = foldl (· * ·) 1 s :=
+theorem prod_eq_foldl (s : Multiset M) : prod s = foldl (· * ·) 1 s :=
   (foldr_swap _ _ _).trans (by simp [mul_comm])
 
 @[to_additive (attr := simp, norm_cast)]
@@ -66,12 +63,10 @@ theorem prod_map_toList (s : Multiset ι) (f : ι → M) : (s.toList.map f).prod
   rw [← Multiset.prod_coe, ← Multiset.map_coe, coe_toList]
 
 @[to_additive (attr := simp, grind =)]
-theorem prod_zero : @prod M _ 0 = 1 :=
-  rfl
+theorem prod_zero : @prod M _ 0 = 1 := rfl
 
 @[to_additive (attr := simp)]
-theorem prod_cons (a : M) (s) : prod (a ::ₘ s) = a * prod s :=
-  foldr_cons _ _ _ _
+theorem prod_cons (a : M) (s) : prod (a ::ₘ s) = a * prod s := foldr_cons _ _ _ _
 
 @[to_additive (attr := simp)]
 theorem prod_singleton (a : M) : prod {a} = a := by
@@ -90,9 +85,11 @@ theorem pow_count [DecidableEq M] (a : M) : a ^ s.count a = (s.filter (Eq a)).pr
   rw [filter_eq, prod_replicate]
 
 @[to_additive]
-theorem prod_hom_rel (s : Multiset ι) {r : M → N → Prop} {f : ι → M} {g : ι → N}
-    (h₁ : r 1 1) (h₂ : ∀ ⦃a b c⦄, r b c → r (f a * b) (g a * c)) :
-    r (s.map f).prod (s.map g).prod :=
+theorem prod_hom_rel
+    (s : Multiset ι)
+    {r : M → N → Prop} {f : ι → M} {g : ι → N}
+    (h₁ : r 1 1) (h₂ : ∀ ⦃a b c⦄, r b c → r (f a * b) (g a * c))
+    : r (s.map f).prod (s.map g).prod :=
   Quotient.inductionOn s fun l => by
     simp only [l.prod_hom_rel h₁ h₂, quot_mk_to_coe, map_coe, prod_coe]
 
@@ -101,16 +98,20 @@ theorem prod_map_one : prod (m.map fun _ => (1 : M)) = 1 := by
   rw [map_const', prod_replicate, one_pow]
 
 @[to_additive]
-theorem prod_induction (p : M → Prop) (s : Multiset M) (p_mul : ∀ a b, p a → p b → p (a * b))
-    (p_one : p 1) (p_s : ∀ a ∈ s, p a) : p s.prod := by
+theorem prod_induction
+    (p : M → Prop) (s : Multiset M)
+    (p_mul : ∀ a b, p a → p b → p (a * b)) (p_one : p 1) (p_s : ∀ a ∈ s, p a)
+    : p s.prod := by
   rw [prod_eq_foldr]
   exact foldr_induction (· * ·) 1 p s p_mul p_one p_s
 
 @[to_additive]
-theorem prod_induction_nonempty (p : M → Prop) (p_mul : ∀ a b, p a → p b → p (a * b)) (hs : s ≠ ∅)
-    (p_s : ∀ a ∈ s, p a) : p s.prod := by
+theorem prod_induction_nonempty
+    (p : M → Prop) (p_mul : ∀ a b, p a → p b → p (a * b)) (hs : s ≠ ∅) (p_s : ∀ a ∈ s, p a)
+    : p s.prod := by
   induction s using Multiset.induction_on with
-  | empty => simp at hs
+  | empty =>
+    simp at hs
   | cons a s hsa =>
     rw [prod_cons]
     by_cases hs_empty : s = ∅

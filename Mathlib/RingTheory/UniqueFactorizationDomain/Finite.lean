@@ -25,24 +25,27 @@ local infixl:50 " ~ᵤ " => Associated
 
 namespace UniqueFactorizationMonoid
 
-/-- If `y` is a nonzero element of a unique factorization monoid with finitely
-many units (e.g. `ℤ`, `Ideal (ring_of_integers K)`), it has finitely many divisors. -/
+/--
+If `y` is a nonzero element of a unique factorization monoid with finitely
+many units (e.g. `ℤ`, `Ideal (ring_of_integers K)`), it has finitely many divisors.
+-/
 @[instance_reducible]
-noncomputable def fintypeSubtypeDvd {M : Type*} [CommMonoidWithZero M]
-    [UniqueFactorizationMonoid M] [Fintype Mˣ] (y : M) (hy : y ≠ 0) : Fintype { x // x ∣ y } := by
+noncomputable def fintypeSubtypeDvd
+    {M : Type*} [CommMonoidWithZero M] [UniqueFactorizationMonoid M] [Fintype Mˣ]
+    (y : M) (hy : y ≠ 0)
+    : Fintype {x // x ∣ y} := by
   haveI : Nontrivial M := ⟨⟨y, 0, hy⟩⟩
   haveI : StrongNormalizationMonoid M := UniqueFactorizationMonoid.strongNormalizationMonoid
   haveI := Classical.decEq M
   haveI := Classical.decEq (Associates M)
   -- We'll show `fun (u : Mˣ) (f ⊆ factors y) ↦ u * Π f` is injective
   -- and has image exactly the divisors of `y`.
-  refine
-    Fintype.subtype
-      (((normalizedFactors y).powerset.toFinset ×ˢ (Finset.univ : Finset Mˣ)).image fun s =>
-        (s.snd : M) * s.fst.prod)
-      fun x => ?_
-  simp only [Finset.mem_image, Finset.mem_product, Finset.mem_univ, and_true,
-    Multiset.mem_toFinset, Multiset.mem_powerset]
+  refine Fintype.subtype
+    (((normalizedFactors y).powerset.toFinset ×ˢ (Finset.univ : Finset Mˣ)).image fun s =>
+      (s.snd : M) * s.fst.prod)
+    fun x => ?_
+  simp only [Finset.mem_image, Finset.mem_product, Finset.mem_univ, and_true, Multiset.mem_toFinset,
+    Multiset.mem_powerset]
   constructor
   · rintro ⟨s, hs, rfl⟩
     rw [(unit_associated_one.mul_right s.fst.prod).dvd_iff_dvd_left, one_mul,

@@ -26,10 +26,12 @@ open Set Metric
 
 variable {α : Type*} {β : Type*} [PseudoMetricSpace α] [ProperSpace α] {x : α} {r : ℝ} {s : Set α}
 
-/-- If a nonempty ball in a proper space includes a closed set `s`, then there exists a nonempty
-ball with the same center and a strictly smaller radius that includes `s`. -/
-theorem exists_pos_lt_subset_ball (hr : 0 < r) (hs : IsClosed s) (h : s ⊆ ball x r) :
-    ∃ r' ∈ Ioo 0 r, s ⊆ ball x r' := by
+/--
+If a nonempty ball in a proper space includes a closed set `s`, then there exists a nonempty
+ball with the same center and a strictly smaller radius that includes `s`.
+-/
+theorem exists_pos_lt_subset_ball (hr : 0 < r) (hs : IsClosed s) (h : s ⊆ ball x r)
+    : ∃ r' ∈ Ioo 0 r, s ⊆ ball x r' := by
   rcases eq_empty_or_nonempty s with (rfl | hne)
   · exact ⟨r / 2, ⟨half_pos hr, half_lt_self hr⟩, empty_subset _⟩
   have : IsCompact s :=
@@ -40,8 +42,10 @@ theorem exists_pos_lt_subset_ball (hr : 0 < r) (hs : IsClosed s) (h : s ⊆ ball
   rcases exists_between hyr with ⟨r', hyr', hrr'⟩
   exact ⟨r', ⟨dist_nonneg.trans_lt hyr', hrr'⟩, hy.trans <| closedBall_subset_ball hyr'⟩
 
-/-- If a ball in a proper space includes a closed set `s`, then there exists a ball with the same
-center and a strictly smaller radius that includes `s`. -/
+/--
+If a ball in a proper space includes a closed set `s`, then there exists a ball with the same
+center and a strictly smaller radius that includes `s`.
+-/
 theorem exists_lt_subset_ball (hs : IsClosed s) (h : s ⊆ ball x r) : ∃ r' < r, s ⊆ ball x r' := by
   rcases le_or_gt r 0 with hr | hr
   · rw [ball_eq_empty.2 hr, subset_empty_iff] at h
@@ -49,10 +53,11 @@ theorem exists_lt_subset_ball (hs : IsClosed s) (h : s ⊆ ball x r) : ∃ r' < 
     exact (exists_lt r).imp fun r' hr' => ⟨hr', empty_subset _⟩
   · exact (exists_pos_lt_subset_ball hr hs h).imp fun r' hr' => ⟨hr'.1.2, hr'.2⟩
 
-theorem Metric.exists_isLocalMin_mem_ball [TopologicalSpace β]
-    [ConditionallyCompleteLinearOrder β] [OrderTopology β] {f : α → β} {a z : α} {r : ℝ}
-    (hf : ContinuousOn f (closedBall a r)) (hz : z ∈ closedBall a r)
-    (hf1 : ∀ z' ∈ sphere a r, f z < f z') : ∃ z ∈ ball a r, IsLocalMin f z := by
+theorem Metric.exists_isLocalMin_mem_ball
+    [TopologicalSpace β] [ConditionallyCompleteLinearOrder β] [OrderTopology β]
+    {f : α → β} {a z : α} {r : ℝ} (hf : ContinuousOn f (closedBall a r)) (hz : z ∈ closedBall a r)
+    (hf1 : ∀ z' ∈ sphere a r, f z < f z')
+    : ∃ z ∈ ball a r, IsLocalMin f z := by
   simp_rw [← closedBall_sdiff_ball] at hf1
   exact (isCompact_closedBall a r).exists_isLocalMin_mem_open ball_subset_closedBall hf hz hf1
     isOpen_ball
@@ -72,7 +77,7 @@ lemma properSpace_iff_isProperMap_dist : ProperSpace α ↔ ∀ x : α, IsProper
 lemma isClosedMap_dist (x : α) : IsClosedMap (dist x) := (isProperMap_dist x).isClosedMap
 
 lemma isProperMap_nndist (x : α) : IsProperMap (nndist x) :=
-  isProperMap_of_comp_of_inj (Z := ℝ) (g := (↑)) (by fun_prop) (by fun_prop)
-    (isProperMap_dist x) NNReal.coe_injective
+  isProperMap_of_comp_of_inj (Z := ℝ) (g := (↑)) (by fun_prop) (by fun_prop) (isProperMap_dist x)
+    NNReal.coe_injective
 
 lemma isClosedMap_nndist (x : α) : IsClosedMap (nndist x) := (isProperMap_nndist _).isClosedMap

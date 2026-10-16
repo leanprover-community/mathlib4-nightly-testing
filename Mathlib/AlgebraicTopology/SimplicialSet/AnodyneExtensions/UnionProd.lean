@@ -66,8 +66,9 @@ namespace SSet
 
 namespace prodStdSimplex
 
-variable {m : ℕ} {k : Fin (m + 1)} {n : ℕ}
-  (x : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N) {d : ℕ}
+variable
+  {m : ℕ} {k : Fin (m + 1)} {n : ℕ} (x : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N)
+  {d : ℕ}
 
 @[deprecated (since := "2026-08-23")] alias objEquiv_apply_fst' := objEquiv_apply_fst
 @[deprecated (since := "2026-08-23")] alias objEquiv_apply_snd' := objEquiv_apply_snd
@@ -78,7 +79,8 @@ section
 
 variable (hd : x.dim = d)
 
-/-- Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
+/--
+Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
 does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. In particular,
 `x` induces a strictly monotone map from `Fin (d + 1)` to
 `{0, ..., m + 1} × {0, ..., n}`. We introduce a predicate on elements in
@@ -86,63 +88,65 @@ does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. In particular,
 if `x l.castSucc = (k.castSucc, t)` and `x l.succ = (k.succ, t)`
 for some `t`. The nondegenerate simplices `x` such that there exists
 such a `l` shall be the type (I) simplices of a pairing, and the
-corresponding type (II) simplex shall be obtained by deleting `x l.castSucc`. -/
+corresponding type (II) simplex shall be obtained by deleting `x l.castSucc`.
+-/
 def IsIndex : Fin (d + 1) → Prop :=
   Fin.cases False (fun l ↦
-    (x.cast hd).simplex.1 l.castSucc = k.castSucc ∧
-    (x.cast hd).simplex.1 l.succ = k.succ ∧
-    (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc)
+    (x.cast hd).simplex.1 l.castSucc = k.castSucc ∧ (x.cast hd).simplex.1 l.succ = k.succ
+      ∧ (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc)
 
-@[simp]
-lemma isIndex_zero : IsIndex x hd 0 ↔ False := Iff.rfl
+@[simp] lemma isIndex_zero : IsIndex x hd 0 ↔ False := Iff.rfl
 
-lemma isIndex_succ (l : Fin d) :
-    IsIndex x hd l.succ ↔
-      (x.cast hd).simplex.1 l.castSucc = k.castSucc ∧
-      (x.cast hd).simplex.1 l.succ = k.succ ∧
-      (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc := Iff.rfl
+lemma isIndex_succ (l : Fin d)
+    : IsIndex x hd l.succ
+      ↔ (x.cast hd).simplex.1 l.castSucc = k.castSucc ∧ (x.cast hd).simplex.1 l.succ = k.succ
+        ∧ (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc :=
+  Iff.rfl
 
-lemma mem_range_left (i : Fin (m + 2)) (hi : i ≠ k.castSucc) :
-    i ∈ Set.range (x.cast hd).simplex.1 := by
+lemma mem_range_left (i : Fin (m + 2)) (hi : i ≠ k.castSucc)
+    : i ∈ Set.range (x.cast hd).simplex.1 := by
   subst hd
   have := x.notMem
   simp [Subcomplex.mem_unionProd_iff, mem_horn_iff_notMem_range] at this
   tauto
 
-lemma mem_range_right (i : Fin (n + 1)) :
-    i ∈ Set.range (x.cast hd).simplex.2 := by
+lemma mem_range_right (i : Fin (n + 1)) : i ∈ Set.range (x.cast hd).simplex.2 := by
   subst hd
   have := x.notMem
   simp [Subcomplex.mem_unionProd_iff, mem_boundary_iff_notMem_range] at this
   tauto
 
-/-- Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
+/--
+Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
 does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. This is
 the finite subset of `Fin (d + 1)` consisting of those `l` such
-that `x l` is of the form `(k.succ, _)`. -/
+that `x l` is of the form `(k.succ, _)`.
+-/
 noncomputable def finset : Finset (Fin (d + 1)) :=
   { l : Fin (d + 1) | (x.cast hd).simplex.1 l = k.succ }
 
 @[simp]
-lemma mem_finset_iff (l : Fin (d + 1)) :
-    dsimp% l ∈ finset x hd ↔ (x.cast hd).simplex.1 l = k.succ := by
+lemma mem_finset_iff (l : Fin (d + 1))
+    : dsimp% l ∈ finset x hd ↔ (x.cast hd).simplex.1 l = k.succ := by
   simp [finset]
 
 lemma nonempty_finset : (finset x hd).Nonempty := by
   obtain ⟨i, hi⟩ := mem_range_left x hd k.succ (by grind)
   exact ⟨i, by simpa using hi⟩
 
-/-- Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
+/--
+Let `x` be a nondegenerate `d`-simplex of `Δ[m + 1] ⊗ Δ[n]` which
 does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. This is
-the smallest `l : Fin (d + 1)` such that `x l` is of the form `(k.succ, _)`. -/
+the smallest `l : Fin (d + 1)` such that `x l` is of the form `(k.succ, _)`.
+-/
 noncomputable def min : Fin (d + 1) := (finset x hd).min' (nonempty_finset x hd)
 
 lemma simplex_fst_min : dsimp% (x.cast hd).simplex.1 (min x hd) = k.succ := by
   rw [← mem_finset_iff]
   apply Finset.min'_mem
 
-lemma simplex_fst_le_castSucc_iff (i : Fin (d + 1)) :
-    (x.cast hd).simplex.1 i ≤ k.castSucc ↔ i < min x hd := by
+lemma simplex_fst_le_castSucc_iff (i : Fin (d + 1))
+    : (x.cast hd).simplex.1 i ≤ k.castSucc ↔ i < min x hd := by
   contrapose!
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · rw [Fin.castSucc_lt_iff_succ_le] at h
@@ -166,17 +170,15 @@ variable {x} {hd : x.dim = d} {l : Fin d} (hl : IsIndex x hd l.succ)
 
 include hl
 
-lemma simplex_fst_castSucc :
-    dsimp% (x.cast hd).simplex.1 l.castSucc = k.castSucc := hl.1
+lemma simplex_fst_castSucc : dsimp% (x.cast hd).simplex.1 l.castSucc = k.castSucc := hl.1
 
-lemma simplex_fst_succ :
-    dsimp% (x.cast hd).simplex.1 l.succ = k.succ := hl.2.1
+lemma simplex_fst_succ : dsimp% (x.cast hd).simplex.1 l.succ = k.succ := hl.2.1
 
-lemma simplex_snd_succ :
-    dsimp% (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc := hl.2.2
+lemma simplex_snd_succ : dsimp% (x.cast hd).simplex.2 l.succ = (x.cast hd).simplex.2 l.castSucc :=
+  hl.2.2
 
-lemma succ_le_simplex_fst_iff (i : Fin (d + 1)) :
-    dsimp% k.succ ≤ (x.cast hd).simplex.1 i ↔ l.succ ≤ i := by
+lemma succ_le_simplex_fst_iff (i : Fin (d + 1))
+    : dsimp% k.succ ≤ (x.cast hd).simplex.1 i ↔ l.succ ≤ i := by
   refine ⟨fun hi ↦ ?_, fun hi ↦ ?_⟩
   · by_contra!
     rw [← not_lt] at hi
@@ -187,13 +189,13 @@ lemma succ_le_simplex_fst_iff (i : Fin (d + 1)) :
   · rw [← hl.simplex_fst_succ]
     exact stdSimplex.monotone_apply _ hi
 
-lemma simplex_fst_le_castSucc_iff (i : Fin (d + 1)) :
-    dsimp% (x.cast hd).simplex.1 i ≤ k.castSucc ↔ i < l.succ := by
+lemma simplex_fst_le_castSucc_iff (i : Fin (d + 1))
+    : dsimp% (x.cast hd).simplex.1 i ≤ k.castSucc ↔ i < l.succ := by
   rw [Fin.le_castSucc_iff, ← not_le, hl.succ_le_simplex_fst_iff, not_le]
 
 lemma min_eq : min x hd = l.succ :=
   le_antisymm (Finset.min'_le _ _ (by simpa using hl.simplex_fst_succ))
-    ((Finset.le_min'_iff _ _ ).2 (fun i hi ↦ by
+    ((Finset.le_min'_iff _ _).2 (fun i hi ↦ by
       rw [mem_finset_iff] at hi
       simp [← hl.succ_le_simplex_fst_iff, ← hi]))
 
@@ -211,8 +213,7 @@ include hl
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The type (II) simplex obtained as a face of a type (I) simplex. -/
 @[simps -isSimp]
-noncomputable abbrev δ :
-    (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N where
+noncomputable abbrev δ : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N where
   dim := d
   simplex := (Δ[m + 1] ⊗ Δ[n]).δ l.castSucc (x.cast hd).simplex
   nonDegenerate := nonDegenerate_δ (x.cast hd).nonDegenerate _
@@ -221,8 +222,8 @@ noncomputable abbrev δ :
     -- `simp? [Subcomplex.mem_unionProd_iff, mem_boundary_iff_notMem_range,
     --   mem_horn_iff_notMem_range,stdSimplex.δ_apply]` says:
     simp only [Subcomplex.mem_unionProd_iff, prod_δ_snd, mem_boundary_iff_notMem_range,
-      Set.mem_range, stdSimplex.δ_apply, not_exists, prod_δ_fst, mem_horn_iff_notMem_range,
-      ne_eq, exists_prop, not_or, not_forall, Decidable.not_not, not_and]
+      Set.mem_range, stdSimplex.δ_apply, not_exists, prod_δ_fst, mem_horn_iff_notMem_range, ne_eq,
+      exists_prop, not_or, not_forall, Decidable.not_not, not_and]
     refine ⟨fun j ↦ ?_, fun j hj ↦ ?_⟩
     · obtain ⟨i, hi⟩ := mem_range_right x hd j
       dsimp at hi
@@ -244,7 +245,7 @@ variable (k n) in
 /-- The type of type (I) simplices for the pairing -/
 structure Type₁ where
   /-- the nondegenerate simplex -/
-  x : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N
+  x : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N
   /-- the dimension of the 1-codimensional face -/
   d : ℕ
   hd : x.dim = d + 1
@@ -255,8 +256,8 @@ structure Type₁ where
 variable {x} in
 /-- Constructor for `Type₁ k n`. -/
 @[simps]
-def IsIndex.type₁ {hd : x.dim = d + 1} {i : Fin (d + 1)}
-    (h : IsIndex x hd i.succ) : Type₁.{u} k n where
+def IsIndex.type₁ {hd : x.dim = d + 1} {i : Fin (d + 1)} (h : IsIndex x hd i.succ)
+    : Type₁.{u} k n where
   x := x
   d := d
   hd := hd
@@ -265,8 +266,7 @@ def IsIndex.type₁ {hd : x.dim = d + 1} {i : Fin (d + 1)}
 
 namespace Type₁
 
-lemma ext_iff {s t : Type₁.{u} k n} :
-    s = t ↔ s.x = t.x := by
+lemma ext_iff {s t : Type₁.{u} k n} : s = t ↔ s.x = t.x := by
   refine ⟨fun h ↦ by rw [h], fun h ↦ ?_⟩
   have hs := s.isIndex.min_eq
   have ht := t.isIndex.min_eq
@@ -278,51 +278,53 @@ lemma ext_iff {s t : Type₁.{u} k n} :
   dsimp
 
 /-- The type (II) simplex obtained as a face of a type (I) simplex. -/
-noncomputable abbrev δ (s : Type₁.{u} k n) :
-    (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N :=
+noncomputable abbrev δ (s : Type₁.{u} k n)
+    : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N :=
   s.isIndex.δ
 
 end Type₁
 
-/-- Let `x` be a nondegenerate simplex of `Δ[m + 1] ⊗ Δ[n]` which
+/--
+Let `x` be a nondegenerate simplex of `Δ[m + 1] ⊗ Δ[n]` which
 does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. This is
 the property that `x` is a type (II) simplex for the pairing
-`prodStdSimplex.pairingCore` that is constructed below. -/
-def IsType₂ : Prop :=
-  ∀ (d : ℕ) (hd : x.dim = d) (l : Fin (d + 1)), ¬ IsIndex x hd l
+`prodStdSimplex.pairingCore` that is constructed below.
+-/
+def IsType₂ : Prop := ∀ (d : ℕ) (hd : x.dim = d) (l : Fin (d + 1)), ¬ IsIndex x hd l
 
 namespace IsType₂
 
 variable (hx : IsType₂ x) {d : ℕ} (hd : x.dim = d)
 
-/-- Auxiliary definition for `IsType₂.simplex`. This gives the underlying
-data of the type (I) simplex reconstructed from a type (II) simplex. -/
+/--
+Auxiliary definition for `IsType₂.simplex`. This gives the underlying
+data of the type (I) simplex reconstructed from a type (II) simplex.
+-/
 noncomputable def φ (i : Fin (d + 2)) : Fin (m + 2) × Fin (n + 1) :=
-  if i = (min x hd).castSucc
-  then ⟨k.castSucc, (x.cast hd).simplex.2 (min x hd)⟩
-  else objEquiv (x.cast hd).simplex ((min x hd).predAbove i)
+  if i = (min x hd).castSucc then
+    ⟨k.castSucc, (x.cast hd).simplex.2 (min x hd)⟩
+  else
+    objEquiv (x.cast hd).simplex ((min x hd).predAbove i)
 
 @[simp]
-lemma φ_castSucc :
-    φ x hd (min x hd).castSucc = ⟨k.castSucc, (x.cast hd).simplex.2 (min x hd)⟩ := by
+lemma φ_castSucc : φ x hd (min x hd).castSucc = ⟨k.castSucc, (x.cast hd).simplex.2 (min x hd)⟩ := by
   simp [φ]
 
 @[simp]
-lemma φ_succAbove (i : Fin (d + 1)) :
-    φ x hd ((min x hd).castSucc.succAbove i) =
-      objEquiv (x.cast hd).simplex i := by
+lemma φ_succAbove (i : Fin (d + 1))
+    : φ x hd ((min x hd).castSucc.succAbove i) = objEquiv (x.cast hd).simplex i := by
   simp [φ]
 
-lemma φ_of_ne (i : Fin (d + 2)) (hi : i ≠ (min x hd).castSucc) :
-    φ x hd i = objEquiv (x.cast hd).simplex ((min x hd).predAbove i) :=
+lemma φ_of_ne (i : Fin (d + 2)) (hi : i ≠ (min x hd).castSucc)
+    : φ x hd i = objEquiv (x.cast hd).simplex ((min x hd).predAbove i) :=
   ite_eq_right hi
 
-lemma φ_of_lt (i : Fin (d + 2)) (hi : i < (min x hd).castSucc) :
-    φ x hd i = objEquiv (x.cast hd).simplex (i.castPred (by grind)) := by
+lemma φ_of_lt (i : Fin (d + 2)) (hi : i < (min x hd).castSucc)
+    : φ x hd i = objEquiv (x.cast hd).simplex (i.castPred (by grind)) := by
   rw [φ_of_ne _ _ _ hi.ne, Fin.predAbove_of_le_castSucc _ _ hi.le]
 
-lemma φ_of_gt (i : Fin (d + 2)) (hi : (min x hd).castSucc < i) :
-    φ x hd i = objEquiv (x.cast hd).simplex (i.pred (by aesop)) := by
+lemma φ_of_gt (i : Fin (d + 2)) (hi : (min x hd).castSucc < i)
+    : φ x hd i = objEquiv (x.cast hd).simplex (i.pred (by aesop)) := by
   rw [φ_of_ne _ _ _ hi.ne', Fin.predAbove_of_castSucc_lt _ _ hi]
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -342,15 +344,14 @@ variable {x}
 include hx in
 set_option backward.isDefEq.respectTransparency false in
 lemma strictMono_φ : StrictMono (φ x hd) := by
-  have hx' := (prodStdSimplex.nonDegenerate_iff_strictMono_objEquiv _).1
-    (x.cast hd).nonDegenerate
+  have hx' := (prodStdSimplex.nonDegenerate_iff_strictMono_objEquiv _).1 (x.cast hd).nonDegenerate
   rw [Fin.strictMono_iff_lt_succ]
   intro i
   obtain hi | rfl | hi := lt_trichotomy i (min x hd)
   · obtain ⟨i, rfl⟩ := Fin.eq_castSucc_of_ne_last (Fin.ne_last_of_lt hi)
     rw [φ_of_lt _ _ _ (by grind), Fin.castPred_castSucc]
     rw [Fin.castSucc_lt_iff_succ_le] at hi
-    obtain hi | hi :=  hi.lt_or_eq
+    obtain hi | hi := hi.lt_or_eq
     · rw [φ_of_lt _ _ _ (by grind)]
       exact hx' (Fin.lt_def.2 (by dsimp; grind))
     · rw [← Fin.castSucc_succ, hi, φ_castSucc]
@@ -358,8 +359,7 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
       · dsimp
         rw [simplex_fst_le_castSucc_iff]
         grind
-      · exact stdSimplex.monotone_apply _
-          (by dsimp; rw [← hi]; exact Fin.castSucc_le_succ i)
+      · exact stdSimplex.monotone_apply _ (by dsimp; rw [← hi]; exact Fin.castSucc_le_succ i)
       · intro h
         rw [Prod.ext_iff] at h
         dsimp at h
@@ -382,38 +382,31 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
 noncomputable abbrev simplex : (Δ[m + 1] ⊗ Δ[n]) _⦋d + 1⦌ :=
   (objEquiv.{u}.symm ⟨φ x hd, (hx.strictMono_φ hd).monotone⟩)
 
-@[simp]
-lemma simplex_fst_apply (i : Fin (d + 2)) :
-    (hx.simplex hd).1 i = (φ x hd i).1 := rfl
+@[simp] lemma simplex_fst_apply (i : Fin (d + 2)) : (hx.simplex hd).1 i = (φ x hd i).1 := rfl
 
-@[simp]
-lemma simplex_snd_apply (i : Fin (d + 2)) :
-    (hx.simplex hd).2 i = (φ x hd i).2 := rfl
+@[simp] lemma simplex_snd_apply (i : Fin (d + 2)) : (hx.simplex hd).2 i = (φ x hd i).2 := rfl
 
-lemma simplex_mem_nonDegenerate :
-    hx.simplex hd ∈ (Δ[m + 1] ⊗ Δ[n]).nonDegenerate (d + 1) := by
+lemma simplex_mem_nonDegenerate : hx.simplex hd ∈ (Δ[m + 1] ⊗ Δ[n]).nonDegenerate (d + 1) := by
   rw [nonDegenerate_iff_strictMono_objEquiv, Equiv.apply_symm_apply]
   exact hx.strictMono_φ hd
 
-lemma δ_simplex :
-    dsimp% (Δ[m + 1] ⊗ Δ[n]).δ (min x hd).castSucc (hx.simplex hd) = (x.cast hd).simplex := by
+lemma δ_simplex
+    : dsimp% (Δ[m + 1] ⊗ Δ[n]).δ (min x hd).castSucc (hx.simplex hd) = (x.cast hd).simplex := by
   apply objEquiv.injective
   ext i : 2
   rw [objEquiv_δ_apply, Equiv.apply_symm_apply, OrderHom.coe_mk, φ_succAbove]
 
-lemma notMem_simplex :
-    hx.simplex hd ∉ (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).obj _ := by
+lemma notMem_simplex
+    : hx.simplex hd ∉ (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).obj _ := by
   refine fun h ↦ (x.cast hd).notMem ?_
   rw [← hx.δ_simplex hd]
-  exact (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).map
+  exact (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).map
     (SimplexCategory.δ (min x hd).castSucc).op h
 
 /-- The type (I) simplex reconstructed from a type (II) simplex. -/
 @[implicit_reducible, simps]
 noncomputable def type₁ : Type₁ k n where
-  x :=
-    Subcomplex.N.mk (hx.simplex hd) (hx.simplex_mem_nonDegenerate hd)
-      (hx.notMem_simplex hd)
+  x := Subcomplex.N.mk (hx.simplex hd) (hx.simplex_mem_nonDegenerate hd) (hx.notMem_simplex hd)
   d := d
   hd := rfl
   index := min x hd
@@ -428,14 +421,14 @@ variable {hd : x.dim = d + 1} {l : Fin (d + 1)} (hl : IsIndex x hd l.succ)
 include hl
 
 lemma min_δ : min (d := d) hl.δ rfl = l := by
-  refine le_antisymm (Finset.min'_le _ _ ?_)
-    (Finset.le_min' _ _ _ (fun y hy ↦ ?_))
+  refine le_antisymm (Finset.min'_le _ _ ?_) (Finset.le_min' _ _ _ (fun y hy ↦ ?_))
   · simp only [mem_finset_iff]
-    simp only [Monoidal.tensorObj_obj, S.cast_simplex_rfl, prod_δ_fst,
-      stdSimplex.δ_apply, Fin.succAbove_castSucc_self]
+    simp only [Monoidal.tensorObj_obj, S.cast_simplex_rfl, prod_δ_fst, stdSimplex.δ_apply,
+      Fin.succAbove_castSucc_self]
     exact hl.simplex_fst_succ
-  · simp only [mem_finset_iff, Monoidal.tensorObj_obj,
-      S.cast_simplex_rfl, prod_δ_fst, stdSimplex.δ_apply] at hy
+  · simp only [mem_finset_iff, Monoidal.tensorObj_obj, S.cast_simplex_rfl, prod_δ_fst,
+        stdSimplex.δ_apply]
+      at hy
     by_contra!
     rw [Fin.succAbove_of_castSucc_lt _ _ (by grind)] at hy
     grind [(hl.succ_le_simplex_fst_iff y.castSucc).1 hy.symm.le]
@@ -446,26 +439,26 @@ lemma isType₂_δ : IsType₂ hl.δ := by
   dsimp at t ht
   obtain ⟨t, rfl⟩ := Fin.eq_succ_of_ne_zero (i := t) (fun h ↦ by simp [h] at ht)
   obtain rfl : l = t.succ := by rw [← ht.min_eq, hl.min_δ]
-  refine ((prodStdSimplex.nonDegenerate_iff_strictMono_objEquiv _).1
-    (x.cast hd).nonDegenerate t.castSucc.castSucc_lt_succ).ne ?_
+  refine ((prodStdSimplex.nonDegenerate_iff_strictMono_objEquiv _).1 (x.cast hd).nonDegenerate
+      t.castSucc.castSucc_lt_succ).ne
+    ?_
   simp only [isIndex_succ] at hl ht
   dsimp [stdSimplex.δ_apply] at hl ht ⊢
   aesop
 
 variable {x} in
-lemma eq_of_isType₂_δ {u : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N}
-    (hu : IsType₂ u) (i : Fin (d + 2))
-    (hu' : S.mk u.simplex = S.mk (((Δ[m + 1] ⊗ Δ[n])).δ i (x.cast hd).simplex)) :
-    i = l.castSucc ∨ i = l.succ := by
+lemma eq_of_isType₂_δ
+    {u : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N} (hu : IsType₂ u)
+    (i : Fin (d + 2)) (hu' : S.mk u.simplex = S.mk (((Δ[m + 1] ⊗ Δ[n])).δ i (x.cast hd).simplex))
+    : i = l.castSucc ∨ i = l.succ := by
   obtain rfl : u.dim = d := congr(S.dim $hu')
   rw [S.ext_iff] at hu'
   obtain hi | rfl | hi := lt_trichotomy i l.castSucc
   · obtain ⟨l, rfl⟩ := Fin.eq_succ_of_ne_zero (i := l) (by grind)
     refine (hu _ rfl l.succ ?_).elim
     simp [isIndex_succ, S.cast_simplex_rfl, hu', stdSimplex.δ_apply,
-      Fin.succAbove_of_lt_succ i l.castSucc hi,
-      Fin.succAbove_of_lt_succ i l.succ (by grind), hl.simplex_fst_succ,
-      dsimp% hl.simplex_snd_succ, dsimp% hl.simplex_fst_castSucc]
+      Fin.succAbove_of_lt_succ i l.castSucc hi, Fin.succAbove_of_lt_succ i l.succ (by grind),
+      hl.simplex_fst_succ, dsimp% hl.simplex_snd_succ, dsimp% hl.simplex_fst_castSucc]
   · exact Or.inl rfl
   · obtain rfl | hi := (Fin.castSucc_lt_iff_succ_le.1 hi).eq_or_lt
     · exact Or.inr rfl
@@ -473,16 +466,16 @@ lemma eq_of_isType₂_δ {u : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] �
       refine (hu _ rfl l.succ ?_).elim
       simp [isIndex_succ, hu', stdSimplex.δ_apply,
         Fin.succAbove_of_castSucc_lt i l.castSucc (by grind),
-        Fin.succAbove_of_castSucc_lt i l.succ (by grind),
-        hl.simplex_fst_castSucc, hl.simplex_snd_succ,
-        hl.simplex_fst_succ]
+        Fin.succAbove_of_castSucc_lt i l.succ (by grind), hl.simplex_fst_castSucc,
+        hl.simplex_snd_succ, hl.simplex_fst_succ]
 
 end IsIndex
 
 lemma IsType₂.type₁_eq_of_δ_eq
-    {t : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N}
-    (ht : IsType₂ t) (s : Type₁.{u} k n) (hst : s.δ = t) {d : ℕ} (hd : t.dim = d) :
-    ht.type₁ hd = s := by
+    {t : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N} (ht : IsType₂ t)
+    (s : Type₁.{u} k n) (hst : s.δ = t)
+    {d : ℕ} (hd : t.dim = d)
+    : ht.type₁ hd = s := by
   subst hst hd
   rw [Type₁.ext_iff, Subcomplex.N.ext_iff, N.ext_iff]
   rw [← s.x.toS.cast_eq_self s.hd, S.ext_iff']
@@ -497,28 +490,25 @@ lemma IsType₂.type₁_eq_of_δ_eq
     ext : 1
     · simp [← s.isIndex.simplex_fst_castSucc]
       rfl
-    · change (s.x.cast s.hd).simplex.2
-        (s.index.castSucc.succAbove (min s.δ rfl)) = _
+    · change (s.x.cast s.hd).simplex.2 (s.index.castSucc.succAbove (min s.δ rfl)) = _
       rw [s.isIndex.min_δ, Fin.succAbove_castSucc_self]
       exact s.isIndex.simplex_snd_succ -- defeq abuse
   · rw [← s.isIndex.min_δ] at hi
     rw [φ_of_ne _ rfl _ hi]
-    change objEquiv (s.x.cast s.hd).simplex
-      (s.index.castSucc.succAbove ((min s.δ rfl).predAbove i)) = _
+    change objEquiv (s.x.cast s.hd).simplex (s.index.castSucc.succAbove ((min s.δ rfl).predAbove i))
+      = _
     congr 1
     rw [← s.isIndex.min_δ]
     simp [hi]
 
-lemma Type₁.isType₂_δ (s : Type₁.{u} k n) : IsType₂ s.δ :=
-  s.isIndex.isType₂_δ
+lemma Type₁.isType₂_δ (s : Type₁.{u} k n) : IsType₂ s.δ := s.isIndex.isType₂_δ
 
 variable {x} in
 lemma IsIndex.δ_injective
     {d : ℕ} {hd : x.dim = d + 1} {l : Fin (d + 1)} (hl : IsIndex x hd l.succ)
-    {y : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N}
-    {d' : ℕ} {hd' : y.dim = d' + 1} {l' : Fin (d' + 1)} (hl' : IsIndex y hd' l'.succ)
-    (h : hl.δ = hl'.δ) :
-    x = y := by
+    {y : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).N} {d' : ℕ} {hd' : y.dim = d' + 1}
+    {l' : Fin (d' + 1)} (hl' : IsIndex y hd' l'.succ) (h : hl.δ = hl'.δ)
+    : x = y := by
   have h₁ := hl.isType₂_δ.type₁_eq_of_δ_eq hl'.type₁ h.symm rfl
   have h₂ := hl.isType₂_δ.type₁_eq_of_δ_eq hl.type₁ rfl rfl
   congrm Type₁.x $(h₂.symm.trans h₁)
@@ -527,12 +517,14 @@ end pairingCore
 
 open pairingCore
 
-/-- The underlying structure which gives a pairing for
+/--
+The underlying structure which gives a pairing for
 `Subcomplex.unionProd Λ[m + 1, k.castSucc] ∂Δ[n]`
-when `k : Fin (m + 1)` and `n : ℕ`. -/
+when `k : Fin (m + 1)` and `n : ℕ`.
+-/
 @[simps]
-noncomputable def pairingCore {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
-    (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).PairingCore where
+noncomputable def pairingCore {m : ℕ} (k : Fin (m + 1)) (n : ℕ)
+    : (Subcomplex.unionProd.{u} (Λ[m + 1, k.castSucc]) ∂Δ[n]).PairingCore where
   ι := Type₁.{u} k n
   dim s := s.d
   simplex s := (s.x.cast s.hd).simplex
@@ -548,8 +540,7 @@ noncomputable def pairingCore {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
     replace h : s.δ = t.δ := by rwa [Subcomplex.N.ext_iff, N.ext_iff]
     generalize hs : s.δ = u
     have hu' : IsType₂ u := by simpa only [hs] using s.isType₂_δ
-    rw [← hu'.type₁_eq_of_δ_eq _ hs rfl,
-      hu'.type₁_eq_of_δ_eq _ (h.symm.trans hs) rfl]
+    rw [← hu'.type₁_eq_of_δ_eq _ hs rfl, hu'.type₁_eq_of_δ_eq _ (h.symm.trans hs) rfl]
   type₁_ne_type₂' s t hst := by
     replace hst : s.x = t.isIndex.δ := by
       rwa [Subcomplex.N.ext_iff, N.ext_iff, ← s.x.cast_eq_self s.hd]
@@ -573,16 +564,15 @@ noncomputable def pairingCore {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
         exact ⟨hd, rfl⟩
 
 @[simp]
-lemma type₁_pairingCore {m : ℕ} (k : Fin (m + 1)) {n : ℕ}
-    (s : Type₁.{u} k n) :
-    (pairingCore k n).type₁ s = s.x :=
+lemma type₁_pairingCore {m : ℕ} (k : Fin (m + 1)) {n : ℕ} (s : Type₁.{u} k n)
+    : (pairingCore k n).type₁ s = s.x :=
   Subcomplex.N.cast_eq_self _ s.hd
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A weak rank function for `pairingCore k n`. -/
-noncomputable def weakRankFunction {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
-    (pairingCore.{u} k n).WeakRankFunction ℕ where
+noncomputable def weakRankFunction {m : ℕ} (k : Fin (m + 1)) (n : ℕ)
+    : (pairingCore.{u} k n).WeakRankFunction ℕ where
   rank s := #(finset s.x rfl)
   lt := by
     intro ⟨s, d, hds, is, hs⟩ ⟨t, d', hdt, it, ht⟩ ⟨h₁, h₂⟩ h₃
@@ -595,17 +585,17 @@ noncomputable def weakRankFunction {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
     obtain ⟨f, hf, hδ⟩ := N.le_iff_exists_mono.1 h₂.le
     dsimp at f hf
     obtain ⟨i, rfl⟩ := SimplexCategory.eq_δ_of_mono f
-    obtain rfl | rfl := ht.eq_of_isType₂_δ hs.isType₂_δ i (by
-      rw [S.ext_iff']
-      exact ⟨rfl, hδ.symm⟩)
+    obtain rfl | rfl :=
+      ht.eq_of_isType₂_δ hs.isType₂_δ i (by
+        rw [S.ext_iff']
+        exact ⟨rfl, hδ.symm⟩)
     · refine (h₁ (hs.δ_injective ht ?_)).elim
       rw [Subcomplex.N.ext_iff, N.ext_iff, S.ext_iff']
       exact ⟨rfl, hδ.symm⟩
     · let Ss := finset (Subcomplex.N.mk s hs₁ hs₂) rfl
       let St := finset (Subcomplex.N.mk t ht₁ ht₂) rfl
       let Sδ := finset hs.δ rfl
-      replace hδ (i : Fin (d + 1)) :
-          s.1 (is.castSucc.succAbove i) = t.1 (it.succ.succAbove i) :=
+      replace hδ (i : Fin (d + 1)) : s.1 (is.castSucc.succAbove i) = t.1 (it.succ.succAbove i) :=
         congr($(hδ.symm).fst i)
       have hSs (i : Fin (d + 1)) : i ∈ Sδ ↔ is.castSucc.succAbove i ∈ Ss := by
         simp [Sδ, Ss, stdSimplex.δ_apply]
@@ -626,21 +616,17 @@ noncomputable def weakRankFunction {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
         · simp [hSs]
       · suffices St = Finset.image it.succ.succAbove Sδ ∪ {it.succ} by
           rw [this, Finset.card_union_of_disjoint (by simp),
-            Finset.card_image_of_injective _ Fin.succAbove_right_injective,
-            Finset.card_singleton]
+            Finset.card_image_of_injective _ Fin.succAbove_right_injective, Finset.card_singleton]
         ext i
         obtain rfl | ⟨i, rfl⟩ := it.succ.eq_self_or_eq_succAbove i
-        · have : it.succ ∈ St := by
-            simpa [St, mem_finset_iff] using ht.simplex_fst_succ
+        · have : it.succ ∈ St := by simpa [St, mem_finset_iff] using ht.simplex_fst_succ
           simp [hSt, this]
         · simp [hSt]
 
-instance {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
-    (pairingCore.{u} k n).IsRegular :=
+instance {m : ℕ} (k : Fin (m + 1)) (n : ℕ) : (pairingCore.{u} k n).IsRegular :=
   (weakRankFunction.{u} k n).isRegular
 
-instance {m : ℕ} (k : Fin m) (n : ℕ) :
-    (pairingCore.{u} k.succ n).IsInner where
+instance {m : ℕ} (k : Fin m) (n : ℕ) : (pairingCore.{u} k.succ n).IsInner where
   ne_zero (s : Type₁ k.succ n) h := by
     have : s.index = 0 := by rwa [← Fin.castSucc_eq_zero_iff]
     have hs : IsIndex s.x s.hd (Fin.succ 0) := by simpa [this] using s.isIndex
@@ -653,29 +639,29 @@ instance {m : ℕ} (k : Fin m) (n : ℕ) :
     dsimp [pairingCore]
     simp
 
-/-- A regular pairing for `Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]`
-when `k : Fin (m + 1)` and `n : ℕ`. -/
-noncomputable def pairing {m : ℕ} (k : Fin (m + 2)) (n : ℕ) :
-    (Subcomplex.unionProd.{u} Λ[m + 1, k] ∂Δ[n]).Pairing :=
+/--
+A regular pairing for `Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]`
+when `k : Fin (m + 1)` and `n : ℕ`.
+-/
+noncomputable def pairing {m : ℕ} (k : Fin (m + 2)) (n : ℕ)
+    : (Subcomplex.unionProd.{u} (Λ[m + 1, k]) ∂Δ[n]).Pairing :=
   if hk : k = Fin.last (m + 1) then
     (pairingCore (0 : Fin (m + 1)) n).pairing.op.ofIso
-      (((stdSimplex.opIso _).symm ⊗ᵢ (stdSimplex.opIso _).symm) ≪≫
-        Functor.Monoidal.μIso opFunctor _ _) (by
-          dsimp
-          rw [hk, Subcomplex.preimage_comp,
-            Subcomplex.preimage_op_unionProd,
-            Subcomplex.preimage_unionProd,
-            op_boundary, op_horn, Fin.rev_zero])
+      (((stdSimplex.opIso _).symm ⊗ᵢ (stdSimplex.opIso _).symm)
+        ≪≫ Functor.Monoidal.μIso opFunctor _ _)
+      (by
+        dsimp
+        rw [hk, Subcomplex.preimage_comp, Subcomplex.preimage_op_unionProd,
+          Subcomplex.preimage_unionProd, op_boundary, op_horn, Fin.rev_zero])
   else
     (pairingCore.{u} (k.castPred hk) n).pairing
 
-lemma pairing_castSucc {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
-    pairing.{u} k.castSucc n = (pairingCore.{u} k n).pairing :=
+lemma pairing_castSucc {m : ℕ} (k : Fin (m + 1)) (n : ℕ)
+    : pairing.{u} k.castSucc n = (pairingCore.{u} k n).pairing :=
   dite_eq_right (by grind)
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {m : ℕ} (k : Fin (m + 2)) (n : ℕ) :
-    (pairing.{u} k n).IsRegular := by
+instance {m : ℕ} (k : Fin (m + 2)) (n : ℕ) : (pairing.{u} k n).IsRegular := by
   by_cases! hk : k = Fin.last (m + 1)
   · subst hk
     dsimp only [pairing]
@@ -685,8 +671,7 @@ instance {m : ℕ} (k : Fin (m + 2)) (n : ℕ) :
     rw [pairing_castSucc]
     infer_instance
 
-instance {m : ℕ} (k : Fin m) (n : ℕ) :
-    (pairing.{u} k.castSucc.succ n).IsInner := by
+instance {m : ℕ} (k : Fin m) (n : ℕ) : (pairing.{u} k.castSucc.succ n).IsInner := by
   simp only [← Fin.castSucc_succ, pairing_castSucc]
   infer_instance
 

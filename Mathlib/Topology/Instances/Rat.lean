@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Module.Rat
 public import Mathlib.Topology.Algebra.Order.Archimedean
 public import Mathlib.Topology.Algebra.Ring.Real
 public import Mathlib.Topology.Instances.Nat
-
 import Mathlib.Algebra.Order.Ring.NNRat
 
 /-!
@@ -30,12 +29,9 @@ instance : MetricSpace ℚ :=
 
 theorem dist_eq (x y : ℚ) : dist x y = |(x : ℝ) - y| := rfl
 
-@[norm_cast, simp]
-theorem dist_cast (x y : ℚ) : dist (x : ℝ) y = dist x y :=
-  rfl
+@[norm_cast, simp] theorem dist_cast (x y : ℚ) : dist (x : ℝ) y = dist x y := rfl
 
-theorem uniformContinuous_coe_real : UniformContinuous ((↑) : ℚ → ℝ) :=
-  uniformContinuous_comap
+theorem uniformContinuous_coe_real : UniformContinuous ((↑) : ℚ → ℝ) := uniformContinuous_comap
 
 theorem isUniformEmbedding_coe_real : IsUniformEmbedding ((↑) : ℚ → ℝ) :=
   isUniformEmbedding_comap Rat.cast_injective
@@ -43,11 +39,9 @@ theorem isUniformEmbedding_coe_real : IsUniformEmbedding ((↑) : ℚ → ℝ) :
 theorem isDenseEmbedding_coe_real : IsDenseEmbedding ((↑) : ℚ → ℝ) :=
   isUniformEmbedding_coe_real.isDenseEmbedding Rat.denseRange_cast
 
-theorem isEmbedding_coe_real : IsEmbedding ((↑) : ℚ → ℝ) :=
-  isDenseEmbedding_coe_real.isEmbedding
+theorem isEmbedding_coe_real : IsEmbedding ((↑) : ℚ → ℝ) := isDenseEmbedding_coe_real.isEmbedding
 
-theorem continuous_coe_real : Continuous ((↑) : ℚ → ℝ) :=
-  uniformContinuous_coe_real.continuous
+theorem continuous_coe_real : Continuous ((↑) : ℚ → ℝ) := uniformContinuous_coe_real.continuous
 
 end Rat
 
@@ -78,13 +72,12 @@ instance : NoncompactSpace ℚ := Int.isClosedEmbedding_coe_rat.noncompactSpace
 theorem uniformContinuous_add : UniformContinuous fun p : ℚ × ℚ => p.1 + p.2 :=
   Rat.isUniformEmbedding_coe_real.isUniformInducing.uniformContinuous_iff.2 <| by
     simp only [Function.comp_def, Rat.cast_add]
-    exact Real.uniformContinuous_add.comp
-      (Rat.uniformContinuous_coe_real.prodMap Rat.uniformContinuous_coe_real)
+    exact Real.uniformContinuous_add.comp (Rat.uniformContinuous_coe_real.prodMap
+      Rat.uniformContinuous_coe_real)
 
 theorem uniformContinuous_neg : UniformContinuous (@Neg.neg ℚ _) :=
   Metric.uniformContinuous_iff.2 fun ε ε0 =>
-    ⟨_, ε0, fun _ _ h => by
-      simpa only [abs_sub_comm, dist_eq, cast_neg, neg_sub_neg] using h⟩
+    ⟨_, ε0, fun _ _ h => by simpa only [abs_sub_comm, dist_eq, cast_neg, neg_sub_neg] using h⟩
 
 instance : IsUniformAddGroup ℚ :=
   IsUniformAddGroup.mk' Rat.uniformContinuous_add Rat.uniformContinuous_neg
@@ -94,23 +87,24 @@ instance : IsTopologicalAddGroup ℚ := inferInstance
 instance : OrderTopology ℚ := induced_orderTopology _ Rat.cast_lt exists_rat_btwn
 
 theorem uniformContinuous_abs : UniformContinuous (abs : ℚ → ℚ) :=
-  Metric.uniformContinuous_iff.2 fun ε ε0 =>
-    ⟨ε, ε0, fun _ _ h =>
-      lt_of_le_of_lt (by simpa [Rat.dist_eq] using abs_abs_sub_abs_le_abs_sub _ _) h⟩
+  Metric.uniformContinuous_iff.2 fun ε ε0 => ⟨
+    ε,
+    ε0,
+    fun _ _ h => lt_of_le_of_lt (by simpa [Rat.dist_eq] using abs_abs_sub_abs_le_abs_sub _ _) h
+  ⟩
 
 instance : IsTopologicalRing ℚ := inferInstance
 
 nonrec theorem totallyBounded_Icc (a b : ℚ) : TotallyBounded (Icc a b) := by
-  simpa only [preimage_cast_Icc]
-    using totallyBounded_preimage Rat.isUniformEmbedding_coe_real.isUniformInducing
+  simpa only [preimage_cast_Icc] using
+    totallyBounded_preimage Rat.isUniformEmbedding_coe_real.isUniformInducing
       (totallyBounded_Icc (a : ℝ) b)
 
 end Rat
 
 namespace NNRat
 
-instance : MetricSpace ℚ≥0 :=
-  inferInstanceAs <| MetricSpace (Subtype _)
+instance : MetricSpace ℚ≥0 := inferInstanceAs <| MetricSpace (Subtype _)
 
 set_option linter.style.whitespace false in -- linter false positive
 @[simp ←, push_cast]
@@ -133,8 +127,10 @@ instance : ContinuousInv₀ ℚ≥0 := inferInstance
 instance : ContinuousSMul ℚ ℝ where
   continuous_smul := continuous_induced_dom.fst'.smul (M := ℝ) (X := ℝ) continuous_snd
 
-instance {R : Type*} [TopologicalSpace R] [MulAction ℚ R] [MulAction ℚ≥0 R] [IsScalarTower ℚ≥0 ℚ R]
-    [ContinuousSMul ℚ R] : ContinuousSMul ℚ≥0 R where
+instance
+    {R : Type*} [TopologicalSpace R] [MulAction ℚ R] [MulAction ℚ≥0 R] [IsScalarTower ℚ≥0 ℚ R]
+    [ContinuousSMul ℚ R]
+    : ContinuousSMul ℚ≥0 R where
   continuous_smul := by
     conv in _ • _ => rw [← NNRat.cast_smul_eq_nnqsmul ℚ]
     fun_prop

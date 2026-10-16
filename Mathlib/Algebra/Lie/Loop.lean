@@ -59,23 +59,25 @@ namespace LieAlgebra
 
 variable [CommRing R] [LieRing L] [LieAlgebra R L]
 
-/-- A loop algebra is the base change of a Lie algebra `L` over `R` by `R[z,z⁻¹]`. We make a
+/--
+A loop algebra is the base change of a Lie algebra `L` over `R` by `R[z,z⁻¹]`. We make a
 slightly more general definition which coincides with the Laurent polynomial construction when
-`A = ℤ` -/
+`A = ℤ`
+-/
 abbrev loopAlgebra := AddMonoidAlgebra R A ⊗[R] L
 
 open LaurentPolynomial in
-/-- An Lie algebra isomorphism between the Loop algebra (with `A = ℤ`) and the tensor product with
-Laurent polynomials. -/
-def loopAlgebraEquivLaurent :
-    loopAlgebra R ℤ L ≃ₗ⁅R⁆ R[T;T⁻¹] ⊗[R] L :=
-  LieEquiv.refl
+/--
+An Lie algebra isomorphism between the Loop algebra (with `A = ℤ`) and the tensor product with
+Laurent polynomials.
+-/
+def loopAlgebraEquivLaurent : loopAlgebra R ℤ L ≃ₗ⁅R⁆ R[T;T⁻¹] ⊗[R] L := LieEquiv.refl
 
 namespace LoopAlgebra
 
 open DirectSum in
-noncomputable instance [DecidableEq A] [AddCommMonoid A] :
-    GradedLieAlgebra (fun a : A ↦ (decomposeTensor (AddMonoidAlgebra.grade R) L a)) where
+noncomputable instance [DecidableEq A] [AddCommMonoid A]
+    : GradedLieAlgebra (fun a : A ↦ (decomposeTensor (AddMonoidAlgebra.grade R) L a)) where
   bracket_mem i j xi xj hi hj := by
     rw [decomposeTensor_apply] at hi hj ⊢
     obtain ⟨xi, rfl⟩ := hi
@@ -111,25 +113,28 @@ def toFinsupp : loopAlgebra R A L ≃ₗ[R] A →₀ L :=
   TensorProduct.equivFinsuppOfBasisLeft (AddMonoidAlgebra.basis A R)
 
 @[simp]
-lemma toFinsupp_symm_single (c : A) (z : L) :
-    (toFinsupp R A L).symm (Finsupp.single c z) = AddMonoidAlgebra.single c 1 ⊗ₜ[R] z := by
+lemma toFinsupp_symm_single (c : A) (z : L)
+    : (toFinsupp R A L).symm (Finsupp.single c z) = AddMonoidAlgebra.single c 1 ⊗ₜ[R] z := by
   simp [toFinsupp]
 
 @[simp]
-lemma toFinsupp_single_tmul (c : A) (z : L) :
-    (toFinsupp R A L (AddMonoidAlgebra.single c 1 ⊗ₜ[R] z)) = Finsupp.single c z := by
+lemma toFinsupp_single_tmul (c : A) (z : L)
+    : (toFinsupp R A L (AddMonoidAlgebra.single c 1 ⊗ₜ[R] z)) = Finsupp.single c z := by
   simp [← toFinsupp_symm_single]
 
 open Finsupp in
-/-- The residue pairing on the loop algebra.  When `A = ℤ` and the elements are viewed as Laurent
-polynomials with coefficients in `L`, the pairing is interpreted as `(f, g) ↦ Res f dg`. -/
+/--
+The residue pairing on the loop algebra.  When `A = ℤ` and the elements are viewed as Laurent
+polynomials with coefficients in `L`, the pairing is interpreted as `(f, g) ↦ Res f dg`.
+-/
 @[simps]
-def residuePairing [AddCommGroup A] [DistribSMul A R] [SMulCommClass A R R]
-    (Φ : LinearMap.BilinForm R L) :
-    LinearMap.BilinForm R (loopAlgebra R A L) where
+def residuePairing
+    [AddCommGroup A] [DistribSMul A R] [SMulCommClass A R R] (Φ : LinearMap.BilinForm R L)
+    : LinearMap.BilinForm R (loopAlgebra R A L) where
   toFun f :=
     letI F := toFinsupp R A L
-    { toFun g := (F g).sum fun a v ↦ a • Φ (F f (-a)) v
+    {
+      toFun g := (F g).sum fun a v ↦ a • Φ (F f (-a)) v
       map_add' x y := by
         classical
         let u : Finset A := (F x).support ∪ (F y).support
@@ -143,16 +148,19 @@ def residuePairing [AddCommGroup A] [DistribSMul A R] [SMulCommClass A R R]
         simp [Finset.sum_add_distrib, u]
       map_smul' r x := by
         rw [map_smul, sum_of_support_subset _ support_smul _ (by simp), sum, Finset.smul_sum]
-        simp [-smul_eq_mul, smul_comm] }
+        simp [-smul_eq_mul, smul_comm]
+    }
   map_add' x y := by ext; simp [sum_add]
   map_smul' r x := by ext; simp [-smul_eq_mul, smul_comm]
 
 open LieModule in
-/-- A 2-cochain on a loop algebra given by an invariant bilinear form. When `A = ℤ`, the alternating
-condition amounts to the fact that Res f df = 0. -/
-def twoCochainOfBilinear [CommRing A] [HasUniqueDiv R] [Algebra A R]
-    (Φ : LinearMap.BilinForm R L) (hΦ : Φ.IsSymm) :
-    Cohomology.twoCochain R (loopAlgebra R A L) (TrivialLieModule R (loopAlgebra R A L) R) where
+/--
+A 2-cochain on a loop algebra given by an invariant bilinear form. When `A = ℤ`, the alternating
+condition amounts to the fact that Res f df = 0.
+-/
+def twoCochainOfBilinear
+    [CommRing A] [HasUniqueDiv R] [Algebra A R] (Φ : LinearMap.BilinForm R L) (hΦ : Φ.IsSymm)
+    : Cohomology.twoCochain R (loopAlgebra R A L) (TrivialLieModule R (loopAlgebra R A L) R) where
   val := (residuePairing R A L Φ).compr₂ (TrivialLieModule.equiv R (loopAlgebra R A L) R).symm
   property := by
     refine Cohomology.mem_twoCochain_iff.mpr fun f ↦ ?_
@@ -171,30 +179,32 @@ def twoCochainOfBilinear [CommRing A] [HasUniqueDiv R] [Algebra A R]
     · exact Or.inl <| by simpa using h
 
 @[simp]
-lemma twoCochainOfBilinear_apply_apply [CommRing A] [HasUniqueDiv R] [Algebra A R]
-    (Φ : LinearMap.BilinForm R L) (hΦ : Φ.IsSymm) (x y : loopAlgebra R A L) :
-    twoCochainOfBilinear R A L Φ hΦ x y =
-      (TrivialLieModule.equiv R (loopAlgebra R A L) R).symm (residuePairing R A L Φ x y) :=
+lemma twoCochainOfBilinear_apply_apply
+    [CommRing A] [HasUniqueDiv R] [Algebra A R]
+    (Φ : LinearMap.BilinForm R L) (hΦ : Φ.IsSymm)
+    (x y : loopAlgebra R A L)
+    : twoCochainOfBilinear R A L Φ hΦ x y
+      = (TrivialLieModule.equiv R (loopAlgebra R A L) R).symm (residuePairing R A L Φ x y) :=
   rfl
 
 open LieModule in
 /-- A 2-cocycle on a loop algebra given by an invariant bilinear form. -/
 @[simps]
-def twoCocycleOfBilinear [CommRing A] [HasUniqueDiv R] [Algebra A R]
-    (Φ : LinearMap.BilinForm R L) (hΦ : Φ.lieInvariant L) (hΦs : Φ.IsSymm) :
-    Cohomology.twoCocycle R (loopAlgebra R A L) (TrivialLieModule R (loopAlgebra R A L) R) where
+def twoCocycleOfBilinear
+    [CommRing A] [HasUniqueDiv R] [Algebra A R]
+    (Φ : LinearMap.BilinForm R L) (hΦ : Φ.lieInvariant L) (hΦs : Φ.IsSymm)
+    : Cohomology.twoCocycle R (loopAlgebra R A L) (TrivialLieModule R (loopAlgebra R A L) R) where
   val := twoCochainOfBilinear R A L Φ hΦs
   property := by
     apply (LieModule.Cohomology.mem_twoCocycle_iff ..).mpr
     ext a x b y c z
-    suffices
-        b • Φ (Finsupp.single (a + c) ⁅x, z⁆ (-b)) y =
-        c • Φ (Finsupp.single (a + b) ⁅x, y⁆ (-c)) z +
-        a • Φ (Finsupp.single (b + c) ⁅y, z⁆ (-a)) x by
+    suffices b • Φ (Finsupp.single (a + c) (⁅x, z⁆) (-b)) y
+        = c • Φ (Finsupp.single (a + b) (⁅x, y⁆) (-c)) z
+          + a • Φ (Finsupp.single (b + c) (⁅y, z⁆) (-a)) x by
       simpa [trivial_lie_zero, sub_eq_zero, neg_add_eq_iff_eq_add, ← LinearEquiv.map_add,
         -LinearEquiv.map_add]
     by_cases h0 : a + b + c = 0
-    · suffices b • Φ ⁅x, z⁆ y = c • Φ ⁅x, y⁆ z + a • Φ ⁅y, z⁆ x by
+    · suffices b • Φ (⁅x, z⁆) y = c • Φ (⁅x, y⁆) z + a • Φ (⁅y, z⁆) x by
         simpa only [show a + b = -c by grind, show a + c = -b by grind, show b + c = -a by grind,
           Finsupp.single_eq_same]
       rw [hΦ, hΦs.eq z ⁅x, y⁆, hΦ y, ← lie_skew y x, hΦs.eq z, Φ.neg_left, neg_neg,

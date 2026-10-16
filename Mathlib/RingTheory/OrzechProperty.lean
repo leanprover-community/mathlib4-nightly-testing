@@ -51,17 +51,21 @@ open Function
 
 variable (R : Type u) [Semiring R]
 
-/-- A ring `R` satisfies the Orzech property, if for any finitely generated `R`-module `M`,
+/--
+A ring `R` satisfies the Orzech property, if for any finitely generated `R`-module `M`,
 any surjective homomorphism `f : N → M` from a submodule `N` of `M` to `M` is injective.
 
 NOTE: In the definition we need to assume that `M` has the same universe level as `R`, but it
 in fact implies the universe polymorphic versions
 `OrzechProperty.injective_of_surjective_of_injective`
-and `OrzechProperty.injective_of_surjective_of_submodule`. -/
+and `OrzechProperty.injective_of_surjective_of_submodule`.
+-/
 @[mk_iff]
 class OrzechProperty : Prop where
-  injective_of_surjective_of_submodule' : ∀ {M : Type u} [AddCommMonoid M] [Module R M]
-    [Module.Finite R M] {N : Submodule R M} (f : N →ₗ[R] M), Surjective f → Injective f
+  injective_of_surjective_of_submodule'
+    : ∀ {M : Type u} [AddCommMonoid M] [Module R M] [Module.Finite R M] {N : Submodule R M}
+        (f : N →ₗ[R] M),
+      Surjective f → Injective f
 
 namespace OrzechProperty
 
@@ -77,7 +81,8 @@ variable [OrzechProperty R] {M : Type v} [AddCommMonoid M] [Module R M] [Module.
 
 theorem injective_of_surjective_of_injective
     {N : Type w} [AddCommMonoid N] [Module R N]
-    (i f : N →ₗ[R] M) (hi : Injective i) (hf : Surjective f) : Injective f := by
+    (i f : N →ₗ[R] M) (hi : Injective i) (hf : Surjective f)
+    : Injective f := by
   obtain ⟨n, g, hg⟩ := Module.Finite.exists_fin' R M
   have := small_of_surjective hg
   let j : Shrink.{u} M ≃ₗ[R] M := (Shrink.addEquiv (α := M)).linearEquiv R
@@ -89,20 +94,18 @@ theorem injective_of_surjective_of_injective
 
 theorem bijective_of_surjective_of_injective
     {N : Type w} [AddCommMonoid N] [Module R N]
-    (i f : N →ₗ[R] M) (hi : Function.Injective i)
-    (hf : Function.Surjective f) : Function.Bijective f :=
+    (i f : N →ₗ[R] M) (hi : Function.Injective i) (hf : Function.Surjective f)
+    : Function.Bijective f :=
   ⟨OrzechProperty.injective_of_surjective_of_injective _ _ hi hf, hf⟩
 
-theorem injective_of_surjective_of_submodule
-    {N : Submodule R M} (f : N →ₗ[R] M) (hf : Surjective f) : Injective f :=
+theorem injective_of_surjective_of_submodule {N : Submodule R M} (f : N →ₗ[R] M) (hf : Surjective f)
+    : Injective f :=
   injective_of_surjective_of_injective N.subtype f N.injective_subtype hf
 
-theorem injective_of_surjective_endomorphism
-    (f : M →ₗ[R] M) (hf : Surjective f) : Injective f :=
+theorem injective_of_surjective_endomorphism (f : M →ₗ[R] M) (hf : Surjective f) : Injective f :=
   injective_of_surjective_of_injective _ f (LinearEquiv.refl _ _).injective hf
 
-theorem bijective_of_surjective_endomorphism
-    (f : M →ₗ[R] M) (hf : Surjective f) : Bijective f :=
+theorem bijective_of_surjective_endomorphism (f : M →ₗ[R] M) (hf : Surjective f) : Bijective f :=
   ⟨injective_of_surjective_endomorphism f hf, hf⟩
 
 end OrzechProperty

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Polynomial.Eval.Coeff
 public import Mathlib.Algebra.Ring.Subring.Basic
-
 import Mathlib.Algebra.Polynomial.Degree.Support
 
 /-!
@@ -47,12 +46,12 @@ theorem mem_map_rangeS {p : S[X]} : p ∈ (mapRingHom f).rangeS ↔ ∀ n, p.coe
 theorem notMem_map_rangeS {p : S[X]} : p ∉ (mapRingHom f).rangeS ↔ ∃ n, p.coeff n ∉ f.rangeS :=
   (mem_map_rangeS f (p := p)).not.trans not_forall
 
-theorem mem_map_range {R S : Type*} [Ring R] [Ring S] (f : R →+* S) {p : S[X]} :
-    p ∈ (mapRingHom f).range ↔ ∀ n, p.coeff n ∈ f.range :=
+theorem mem_map_range {R S : Type*} [Ring R] [Ring S] (f : R →+* S) {p : S[X]}
+    : p ∈ (mapRingHom f).range ↔ ∀ n, p.coeff n ∈ f.range :=
   mem_map_rangeS f
 
-theorem notMem_map_range {R S : Type*} [Ring R] [Ring S] (f : R →+* S) {p : S[X]} :
-    p ∉ (mapRingHom f).range ↔ ∃ n, p.coeff n ∉ f.range :=
+theorem notMem_map_range {R S : Type*} [Ring R] [Ring S] (f : R →+* S) {p : S[X]}
+    : p ∉ (mapRingHom f).range ↔ ∃ n, p.coeff n ∉ f.range :=
   notMem_map_rangeS f
 
 end Polynomial

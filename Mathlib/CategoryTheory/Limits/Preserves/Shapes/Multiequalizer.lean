@@ -34,8 +34,7 @@ namespace Limits
 
 section Multifork
 
-variable {J : MulticospanShape.{w, w'}} (d : MulticospanIndex J C)
-  (c : Multifork d) (F : C ⥤ D)
+variable {J : MulticospanShape.{w, w'}} (d : MulticospanIndex J C) (c : Multifork d) (F : C ⥤ D)
 
 /-- The multicospan index obtained by applying a functor. -/
 @[simps]
@@ -46,12 +45,15 @@ def MulticospanIndex.map : MulticospanIndex J D where
   snd i := F.map (d.snd i)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MulticospanIndex J C` and `F : C ⥤ D`, this is the obvious isomorphism
-`(d.map F).multicospan ≅ d.multicospan ⋙ F`. -/
+/--
+If `d : MulticospanIndex J C` and `F : C ⥤ D`, this is the obvious isomorphism
+`(d.map F).multicospan ≅ d.multicospan ⋙ F`.
+-/
 @[simps!]
 def MulticospanIndex.multicospanMapIso : (d.map F).multicospan ≅ d.multicospan ⋙ F :=
   NatIso.ofComponents
-    (fun i ↦ match i with
+    (fun i ↦
+      match i with
       | .left _ => Iso.refl _
       | .right _ => Iso.refl _)
     (by rintro a b (_ | _) <;> simp)
@@ -59,36 +61,41 @@ def MulticospanIndex.multicospanMapIso : (d.map F).multicospan ≅ d.multicospan
 variable {d}
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MulticospanIndex J C`, `c : Multifork d` and `F : C ⥤ D`,
-this is the induced multifork of `d.map F`. -/
+/--
+If `d : MulticospanIndex J C`, `c : Multifork d` and `F : C ⥤ D`,
+this is the induced multifork of `d.map F`.
+-/
 @[simps!]
 def Multifork.map : Multifork (d.map F) :=
-  Multifork.ofι _ (F.obj c.pt) (fun i ↦ F.map (c.ι i)) (fun j ↦ by
-    dsimp
-    rw [← F.map_comp, ← F.map_comp, condition])
+  Multifork.ofι _ (F.obj c.pt)
+    (fun i ↦ F.map (c.ι i))
+    (fun j ↦ by
+      dsimp
+      rw [← F.map_comp, ← F.map_comp, condition])
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MulticospanIndex J C`, `c : Multifork d` and `F : C ⥤ D`,
-the cone `F.mapCone c` is limiting iff the multifork `c.map F` is. -/
-def Multifork.isLimitMapEquiv :
-    IsLimit (F.mapCone c) ≃ IsLimit (c.map F) :=
+/--
+If `d : MulticospanIndex J C`, `c : Multifork d` and `F : C ⥤ D`,
+the cone `F.mapCone c` is limiting iff the multifork `c.map F` is.
+-/
+def Multifork.isLimitMapEquiv : IsLimit (F.mapCone c) ≃ IsLimit (c.map F) :=
   Equiv.trans (IsLimit.postcomposeInvEquiv (d.multicospanMapIso F) (F.mapCone c)).symm
-    (IsLimit.equivIsoLimit
-      (Multifork.ext (Iso.refl _) (fun i ↦ by dsimp only [Multifork.ι]; simp)))
+    (IsLimit.equivIsoLimit (Multifork.ext (Iso.refl _) (fun i ↦ by dsimp only [Multifork.ι]; simp)))
 
-/-- If `d : MulticospanIndex J C`, `c : Multifork d` is a limit multifork,
+/--
+If `d : MulticospanIndex J C`, `c : Multifork d` is a limit multifork,
 and `F : C ⥤ D` is a functor which preserves the limit of `d.multicospan`,
-then the multifork `c.map F` is limiting. -/
-noncomputable def Multifork.isLimitMapOfPreserves
-    [PreservesLimit d.multicospan F] (hc : IsLimit c) : IsLimit (c.map F) :=
+then the multifork `c.map F` is limiting.
+-/
+noncomputable def Multifork.isLimitMapOfPreserves [PreservesLimit d.multicospan F] (hc : IsLimit c)
+    : IsLimit (c.map F) :=
   (isLimitMapEquiv c F) (isLimitOfPreserves F hc)
 
 end Multifork
 
 section Multicofork
 
-variable {J : MultispanShape.{w, w'}} (d : MultispanIndex J C)
-  (c : Multicofork d) (F : C ⥤ D)
+variable {J : MultispanShape.{w, w'}} (d : MultispanIndex J C) (c : Multicofork d) (F : C ⥤ D)
 
 /-- The multispan index obtained by applying a functor. -/
 @[simps]
@@ -99,12 +106,15 @@ def MultispanIndex.map : MultispanIndex J D where
   snd i := F.map (d.snd i)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MultispanIndex J C` and `F : C ⥤ D`, this is the obvious isomorphism
-`(d.map F).multispan ≅ d.multispan ⋙ F`. -/
+/--
+If `d : MultispanIndex J C` and `F : C ⥤ D`, this is the obvious isomorphism
+`(d.map F).multispan ≅ d.multispan ⋙ F`.
+-/
 @[simps!]
 def MultispanIndex.multispanMapIso : (d.map F).multispan ≅ d.multispan ⋙ F :=
   NatIso.ofComponents
-    (fun i ↦ match i with
+    (fun i ↦
+      match i with
       | .left _ => Iso.refl _
       | .right _ => Iso.refl _)
     (by rintro _ _ (_ | _) <;> simp)
@@ -112,28 +122,36 @@ def MultispanIndex.multispanMapIso : (d.map F).multispan ≅ d.multispan ⋙ F :
 variable {d}
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MultispanIndex J C`, `c : Multicofork d` and `F : C ⥤ D`,
-this is the induced multicofork of `d.map F`. -/
+/--
+If `d : MultispanIndex J C`, `c : Multicofork d` and `F : C ⥤ D`,
+this is the induced multicofork of `d.map F`.
+-/
 @[simps!]
 def Multicofork.map : Multicofork (d.map F) :=
-  Multicofork.ofπ _ (F.obj c.pt) (fun i ↦ F.map (c.π i)) (fun j ↦ by
-    dsimp
-    rw [← F.map_comp, ← F.map_comp, condition])
+  Multicofork.ofπ _ (F.obj c.pt)
+    (fun i ↦ F.map (c.π i))
+    (fun j ↦ by
+      dsimp
+      rw [← F.map_comp, ← F.map_comp, condition])
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `d : MultispanIndex J C`, `c : Multicofork d` and `F : C ⥤ D`,
-the cocone `F.mapCocone c` is colimit iff the multicofork `c.map F` is. -/
-def Multicofork.isColimitMapEquiv :
-    IsColimit (F.mapCocone c) ≃ IsColimit (c.map F) :=
+/--
+If `d : MultispanIndex J C`, `c : Multicofork d` and `F : C ⥤ D`,
+the cocone `F.mapCocone c` is colimit iff the multicofork `c.map F` is.
+-/
+def Multicofork.isColimitMapEquiv : IsColimit (F.mapCocone c) ≃ IsColimit (c.map F) :=
   (IsColimit.precomposeInvEquiv (d.multispanMapIso F).symm (F.mapCocone c)).symm.trans
-    (IsColimit.equivIsoColimit
-      (Multicofork.ext (Iso.refl _) (fun i ↦ by dsimp only [Multicofork.π]; simp)))
+    (IsColimit.equivIsoColimit (Multicofork.ext (Iso.refl _)
+      (fun i ↦ by dsimp only [Multicofork.π]; simp)))
 
-/-- If `d : MultispanIndex J C`, `c : Multicofork d` is a colimit multicofork,
+/--
+If `d : MultispanIndex J C`, `c : Multicofork d` is a colimit multicofork,
 and `F : C ⥤ D` is a functor which preserves the colimit of `d.multispan`,
-then the multicofork `c.map F` is colimit. -/
+then the multicofork `c.map F` is colimit.
+-/
 noncomputable def Multicofork.isColimitMapOfPreserves
-    [PreservesColimit d.multispan F] (hc : IsColimit c) : IsColimit (c.map F) :=
+    [PreservesColimit d.multispan F] (hc : IsColimit c)
+    : IsColimit (c.map F) :=
   (isColimitMapEquiv c F) (isColimitOfPreserves F hc)
 
 end Multicofork

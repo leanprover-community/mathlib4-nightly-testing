@@ -43,8 +43,10 @@ namespace Counterexample
 
 open Function Int Polynomial
 
-/-- The integers with infinitesimals adjoined. Higher powers of `ε` are smaller than lower
-powers. -/
+/--
+The integers with infinitesimals adjoined. Higher powers of `ε` are smaller than lower
+powers.
+-/
 abbrev IntWithEpsilon := ℤ[X]
 
 local notation "ℤ[ε]" => IntWithEpsilon
@@ -58,40 +60,44 @@ instance linearOrder : LinearOrder ℤ[ε] :=
 
 instance isOrderedAddMonoid : IsOrderedAddMonoid ℤ[ε] :=
   Function.Injective.isOrderedAddMonoid
-    (fun x ↦ toLex ⇑x.coeff) (fun _ _ => funext fun _ => coeff_add _ _ _) .rfl
+    (fun x ↦ toLex ⇑x.coeff)
+    (fun _ _ => funext fun _ => coeff_add _ _ _)
+    .rfl
 
 theorem pos_iff {p : ℤ[ε]} : 0 < p ↔ 0 < p.trailingCoeff := by
   rw [trailingCoeff]
-  refine
-    ⟨?_, fun h =>
-      ⟨p.natTrailingDegree, fun m hm => (coeff_eq_zero_of_lt_natTrailingDegree hm).symm, h⟩⟩
+  refine ⟨
+    ?_,
+    fun h => ⟨p.natTrailingDegree, fun m hm => (coeff_eq_zero_of_lt_natTrailingDegree hm).symm, h⟩
+  ⟩
   rintro ⟨n, hn⟩
   convert! hn.2
   exact (natTrailingDegree_le_of_ne_zero hn.2.ne').antisymm
     (le_natTrailingDegree (by rintro rfl; cases hn.2.false) fun m hm => (hn.1 _ hm).symm)
 
-instance : ZeroLEOneClass ℤ[ε] :=
-  { zero_le_one := Or.inr ⟨0, by simp⟩ }
+instance : ZeroLEOneClass ℤ[ε] := { zero_le_one := Or.inr ⟨0, by simp⟩ }
 
 instance : IsStrictOrderedRing ℤ[X] :=
   .of_mul_pos fun p q => by simp_rw [pos_iff]; rw [trailingCoeff_mul]; exact mul_pos
 
 instance : FloorRing ℤ[ε] :=
-  FloorRing.ofFloor _ (fun p => if (p.coeff 0 : ℤ[ε]) ≤ p then p.coeff 0 else p.coeff 0 - 1)
+  FloorRing.ofFloor _
+    (fun p => if (p.coeff 0 : ℤ[ε]) ≤ p then p.coeff 0 else p.coeff 0 - 1)
     fun p q => by
-    simp_rw [← not_lt, not_iff_not]
-    constructor
-    · split_ifs with h
-      · rintro ⟨_ | n, hn⟩
-        · apply (sub_one_lt _).trans _
-          simp_all
-        · dsimp at hn
-          simp only [hn.1 _ n.zero_lt_succ]
-          rw [intCast_coeff_zero]; simp
-      · exact fun h' => cast_lt.1 ((not_lt.1 h).trans_lt h')
-    · split_ifs with h
-      · exact fun h' => h.trans_le (cast_le.2 <| sub_one_lt_iff.1 h')
-      · exact fun h' => ⟨0, by simp_all⟩
+      simp_rw [← not_lt, not_iff_not]
+      constructor
+      · split_ifs with h
+        · rintro ⟨_ | n, hn⟩
+          · apply (sub_one_lt _).trans _
+            simp_all
+          · dsimp at hn
+            simp only [hn.1 _ n.zero_lt_succ]
+            rw [intCast_coeff_zero]
+            simp
+        · exact fun h' => cast_lt.1 ((not_lt.1 h).trans_lt h')
+      · split_ifs with h
+        · exact fun h' => h.trans_le (cast_le.2 <| sub_one_lt_iff.1 h')
+        · exact fun h' => ⟨0, by simp_all⟩
 
 /-- The ordered ring homomorphisms from `ℤ[ε]` to `ℤ` that "forgets" the `ε`s. -/
 def forgetEpsilons : ℤ[ε] →+*o ℤ where
@@ -100,31 +106,34 @@ def forgetEpsilons : ℤ[ε] →+*o ℤ where
   map_one' := coeff_one_zero
   map_add' _ _ := coeff_add _ _ _
   map_mul' := mul_coeff_zero
-  monotone' := monotone_iff_forall_lt.2 (by
-    rintro p q ⟨n, hn⟩
-    rcases n with - | n
-    · exact hn.2.le
-    · exact (hn.1 _ n.zero_lt_succ).le)
+  monotone' :=
+    monotone_iff_forall_lt.2 (by
+      rintro p q ⟨n, hn⟩
+      rcases n with - | n
+      · exact hn.2.le
+      · exact (hn.1 _ n.zero_lt_succ).le)
 
-@[simp]
-theorem forgetEpsilons_apply (p : ℤ[ε]) : forgetEpsilons p = coeff p 0 :=
-  rfl
+@[simp] theorem forgetEpsilons_apply (p : ℤ[ε]) : forgetEpsilons p = coeff p 0 := rfl
 
-/-- The floor of `n - ε` is `n - 1` but its image under `forgetEpsilons` is `n`, whose floor is
-itself. -/
-theorem forgetEpsilons_floor_lt (n : ℤ) :
-    forgetEpsilons ⌊(n - ↑ε : ℤ[ε])⌋ < ⌊forgetEpsilons (n - ↑ε)⌋ := by
+/--
+The floor of `n - ε` is `n - 1` but its image under `forgetEpsilons` is `n`, whose floor is
+itself.
+-/
+theorem forgetEpsilons_floor_lt (n : ℤ)
+    : forgetEpsilons ⌊(n - ↑ε : ℤ[ε])⌋ < ⌊forgetEpsilons (n - ↑ε)⌋ := by
   suffices ⌊(n - ↑ε : ℤ[ε])⌋ = n - 1 by simp [map_sub, this]
   have : (0 : ℤ[ε]) < ε := ⟨1, by simp⟩
-  exact (ite_eq_right <| by rw [coeff_sub, intCast_coeff_zero]; simp [this]).trans (by
-    rw [coeff_sub, intCast_coeff_zero]; simp)
+  exact (ite_eq_right <| by rw [coeff_sub, intCast_coeff_zero]; simp [this]).trans
+    (by rw [coeff_sub, intCast_coeff_zero]; simp)
 
-/-- The ceil of `n + ε` is `n + 1` but its image under `forgetEpsilons` is `n`, whose ceil is
-itself. -/
-theorem lt_forgetEpsilons_ceil (n : ℤ) :
-    ⌈forgetEpsilons (n + ↑ε)⌉ < forgetEpsilons ⌈(n + ↑ε : ℤ[ε])⌉ := by
-  rw [← neg_lt_neg_iff, ← map_neg, ← cast_neg, ← floor_neg, ← floor_neg, ← map_neg, neg_add', ←
-    cast_neg]
+/--
+The ceil of `n + ε` is `n + 1` but its image under `forgetEpsilons` is `n`, whose ceil is
+itself.
+-/
+theorem lt_forgetEpsilons_ceil (n : ℤ)
+    : ⌈forgetEpsilons (n + ↑ε)⌉ < forgetEpsilons ⌈(n + ↑ε : ℤ[ε])⌉ := by
+  rw [← neg_lt_neg_iff, ← map_neg, ← cast_neg, ← floor_neg, ← floor_neg, ← map_neg, neg_add',
+    ← cast_neg]
   exact forgetEpsilons_floor_lt _
 
 end IntWithEpsilon

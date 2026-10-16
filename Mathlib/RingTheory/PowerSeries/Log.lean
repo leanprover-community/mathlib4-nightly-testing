@@ -6,7 +6,6 @@ Authors: Ralf Stephan
 module
 
 public import Mathlib.RingTheory.PowerSeries.Exp
-
 import Mathlib.Algebra.Algebra.Rat
 import Mathlib.RingTheory.PowerSeries.WellKnown
 
@@ -46,14 +45,13 @@ namespace PowerSeries
 variable (A : Type*) [CommRing A] [Algebra ℚ A]
 
 /-- Power series for `log(1 + X) = X - X²/2 + X³/3 - ⋯`. -/
-def log : PowerSeries A :=
-  mk fun n ↦ if n = 0 then 0 else algebraMap ℚ A ((-1 : ℚ) ^ (n + 1) / n)
+def log : PowerSeries A := mk fun n ↦ if n = 0 then 0 else algebraMap ℚ A ((-1 : ℚ) ^ (n + 1) / n)
 
 variable {A}
 
 @[simp]
-theorem coeff_log (n : ℕ) :
-    coeff n (log A) = if n = 0 then 0 else algebraMap ℚ A ((-1 : ℚ) ^ (n + 1) / n) :=
+theorem coeff_log (n : ℕ)
+    : coeff n (log A) = if n = 0 then 0 else algebraMap ℚ A ((-1 : ℚ) ^ (n + 1) / n) :=
   coeff_mk _ _
 
 @[simp]
@@ -61,8 +59,8 @@ theorem constantCoeff_log : constantCoeff (log A) = 0 := by
   simp [← coeff_zero_eq_constantCoeff_apply]
 
 @[simp]
-theorem map_log {A' : Type*} [CommRing A'] [Algebra ℚ A'] (f : A →+* A') :
-    map f (log A) = log A' := by
+theorem map_log {A' : Type*} [CommRing A'] [Algebra ℚ A'] (f : A →+* A')
+    : map f (log A) = log A' := by
   ext n; simp only [coeff_map, coeff_log]; split_ifs <;> simp [RingHom.map_rat_algebraMap]
 
 theorem coeff_one_log : coeff 1 (log A) = 1 := by simp
@@ -85,20 +83,18 @@ theorem derivative_log_mul_one_add_X : d⁄dX (log A) * (1 + X) = 1 := by
 
 /-! ## Substitution -/
 
-theorem HasSubst.log : HasSubst (log A) :=
-  HasSubst.of_constantCoeff_zero' constantCoeff_log
+theorem HasSubst.log : HasSubst (log A) := HasSubst.of_constantCoeff_zero' constantCoeff_log
 
 theorem HasSubst.exp_sub_one : HasSubst (exp A - 1) :=
   HasSubst.of_constantCoeff_zero' (by simp [constantCoeff_exp])
 
 /-- `logOf f` is `log(1+X)` substituted at `f - 1`, i.e., `(f-1) - (f-1)²/2 + (f-1)³/3 - ⋯`. -/
-noncomputable def logOf (f : A⟦X⟧) : A⟦X⟧ :=
-  (log A).subst (f - 1)
+noncomputable def logOf (f : A⟦X⟧) : A⟦X⟧ := (log A).subst (f - 1)
 
 theorem logOf_eq (f : A⟦X⟧) : logOf f = (log A).subst (f - 1) := rfl
 
-theorem constantCoeff_logOf {f : A⟦X⟧} (hf : constantCoeff f = 1) :
-    constantCoeff (logOf f) = 0 := by
+theorem constantCoeff_logOf {f : A⟦X⟧} (hf : constantCoeff f = 1)
+    : constantCoeff (logOf f) = 0 := by
   rw [logOf_eq]
   have h : MvPowerSeries.constantCoeff (f - 1 : A⟦X⟧) = 0 := by
     rw [map_sub, map_one, ← constantCoeff_eq, hf, sub_self]
@@ -112,9 +108,9 @@ theorem logOf_one_add_X : logOf (1 + X : A⟦X⟧) = log A := by
 /-! ## Log and exp as inverses -/
 
 omit [Algebra ℚ A] in
-theorem eq_of_derivative_mul_one_add_X_eq_self [HasUniqueDiv A]
-    {g : A⟦X⟧} (hderiv : d⁄dX g * (1 + X) = g) :
-    g = constantCoeff g • (1 + X) := by
+theorem eq_of_derivative_mul_one_add_X_eq_self
+    [HasUniqueDiv A] {g : A⟦X⟧} (hderiv : d⁄dX g * (1 + X) = g)
+    : g = constantCoeff g • (1 + X) := by
   have : Invertible (1 + X : A⟦X⟧) := (isUnit_iff_constantCoeff.mpr (by simp)).invertible
   have hcu : constantCoeff (⅟(1 + X) : A⟦X⟧) = 1 := by
     have h := congrArg (constantCoeff (R := A)) (mul_invOf_self (1 + X : A⟦X⟧))
@@ -153,9 +149,7 @@ theorem subst_log_exp_sub_one : (log A).subst (exp A - 1) = X := by
     ring
 
 variable (A) in
-@[simp]
-theorem logOf_exp : logOf (exp A) = X :=
-  subst_log_exp_sub_one A
+@[simp] theorem logOf_exp : logOf (exp A) = X := subst_log_exp_sub_one A
 
 end PowerSeries
 

@@ -29,12 +29,15 @@ section Ring
 variable {R : Type*} [Ring R]
 variable {M : Type*} [AddCommGroup M] [Module R M]
 
-/-- A submodule `S` of a module `M` is co-finitely generated (CoFG) if the quotient
-  space `M ⧸ S` is finitely generated. -/
+/--
+A submodule `S` of a module `M` is co-finitely generated (CoFG) if the quotient
+space `M ⧸ S` is finitely generated.
+-/
 abbrev CoFG (S : Submodule R M) : Prop := Module.Finite R (M ⧸ S)
 
 /-- A submodule of a finite module is CoFG. -/
-@[simp] theorem CoFG.of_finite [Module.Finite R M] {S : Submodule R M} : S.CoFG :=
+@[simp]
+theorem CoFG.of_finite [Module.Finite R M] {S : Submodule R M} : S.CoFG :=
   Module.Finite.quotient R S
 
 /-- The top submodule is CoFG. -/
@@ -50,13 +53,13 @@ theorem CoFG.fg_of_isCompl {S T : Submodule R M} (hST : IsCompl S T) (hS : S.CoF
   Module.Finite.iff_fg.mp <| Module.Finite.equiv <| quotientEquivOfIsCompl S T hST
 
 /-- Over a noetherian ring, if `S` and `T` are disjoint and `T` is CoFG, then `S` is FG. -/
-theorem CoFG.fg_of_disjoint [IsNoetherianRing R] {S T : Submodule R M} (hST : Disjoint S T)
-    (hT : T.CoFG) : S.FG :=
+theorem CoFG.fg_of_disjoint
+    [IsNoetherianRing R] {S T : Submodule R M} (hST : Disjoint S T) (hT : T.CoFG)
+    : S.FG :=
   .of_disjoint_of_isNoetherian_quotient hST
 
 /-- If `S` and `T` are co-disjoint and `S` is FG, then `T` is CoFG. -/
-theorem FG.cofg_of_codisjoint {S T : Submodule R M} (hST : Codisjoint S T) (hS : S.FG) :
-    T.CoFG :=
+theorem FG.cofg_of_codisjoint {S T : Submodule R M} (hST : Codisjoint S T) (hS : S.FG) : T.CoFG :=
   have := Module.Finite.iff_fg.mpr hS
   .of_surjective (T.mkQ.domRestrict S) (by simp [← LinearMap.range_eq_top, hST.symm.eq_top])
 
@@ -94,23 +97,23 @@ section IsNoetherianRing
 variable [IsNoetherianRing R]
 
 /-- Over a noetherian ring the intersection of two CoFG submodules is CoFG. -/
-theorem CoFG.inf {S T : Submodule R M} (hS : S.CoFG) (hT : T.CoFG) :
-      (S ⊓ T).CoFG := by
+theorem CoFG.inf {S T : Submodule R M} (hS : S.CoFG) (hT : T.CoFG) : (S ⊓ T).CoFG := by
   rw [← Submodule.ker_mkQ S, ← Submodule.ker_mkQ T, ← LinearMap.ker_prod]
   exact CoFG.ker _
 
 /-- Over a noetherian ring the infimum of a finite family of CoFG submodules is CoFG. -/
-protected theorem CoFG.sInf {s : Finset (Submodule R M)} (hs : ∀ S ∈ s, S.CoFG) :
-    (sInf (s : Set (Submodule R M))).CoFG := by
+protected theorem CoFG.sInf {s : Finset (Submodule R M)} (hs : ∀ S ∈ s, S.CoFG)
+    : (sInf (s : Set (Submodule R M))).CoFG := by
   induction s using Finset.induction with
-  | empty => simp
+  | empty =>
+    simp
   | insert w s hws hs' =>
     simp only [Finset.mem_insert, forall_eq_or_imp, Finset.coe_insert, sInf_insert] at *
     exact hs.1.inf (hs' hs.2)
 
 /-- Over a noetherian ring the infimum of a finite family of CoFG submodules is CoFG. -/
-theorem CoFG.sInf_of_finite {s : Set (Submodule R M)} (hs : s.Finite)
-    (hcofg : ∀ S ∈ s, S.CoFG) : (sInf s).CoFG := by
+theorem CoFG.sInf_of_finite {s : Set (Submodule R M)} (hs : s.Finite) (hcofg : ∀ S ∈ s, S.CoFG)
+    : (sInf s).CoFG := by
   rw [← hs.coe_toFinset] at hcofg ⊢; exact CoFG.sInf hcofg
 
 end IsNoetherianRing

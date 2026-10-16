@@ -34,13 +34,15 @@ lattice.
 
 namespace Submonoid
 
-/-- Given a submonoid `s` of `M`, we say that `s` is **saturated** if it satisfies
+/--
+Given a submonoid `s` of `M`, we say that `s` is **saturated** if it satisfies
 `x * y ∈ s → x ∈ s ∧ y ∈ s`.
 
 It is called `MulSaturated` here to be distinguished from `Submonoid.PowSaturated` or
-`AddSubmonoid.NSMulSaturated`, which is also called "saturated" in the literature. -/
+`AddSubmonoid.NSMulSaturated`, which is also called "saturated" in the literature.
+-/
 @[to_additive
-/-- Given an additive submonoid `s` of `M`, we say that `s` is **saturated** if it satisfies
+  /-- Given an additive submonoid `s` of `M`, we say that `s` is **saturated** if it satisfies
 `x + y ∈ s → x ∈ s ∧ y ∈ s`.
 
 It is called `AddSaturated` here to be distinguished from `Submonoid.PowSaturated` or
@@ -49,43 +51,42 @@ def MulSaturated {M : Type*} [MulOneClass M] (s : Submonoid M) : Prop :=
   ∀ ⦃x y⦄, x * y ∈ s → x ∈ s ∧ y ∈ s
 
 namespace MulSaturated
-variable {M : Type*} [MulOneClass M] {s s₁ s₂ : Submonoid M}
-  (h : s.MulSaturated) (h₁ : s₁.MulSaturated) (h₂ : s₂.MulSaturated)
+variable
+  {M : Type*} [MulOneClass M]
+  {s s₁ s₂ : Submonoid M} (h : s.MulSaturated) (h₁ : s₁.MulSaturated) (h₂ : s₂.MulSaturated)
 
 include h in
 @[to_additive]
-theorem mul_mem_iff {x y : M} : x * y ∈ s ↔ x ∈ s ∧ y ∈ s :=
-  ⟨@h _ _, and_imp.mpr mul_mem⟩
+theorem mul_mem_iff {x y : M} : x * y ∈ s ↔ x ∈ s ∧ y ∈ s := ⟨@h _ _, and_imp.mpr mul_mem⟩
 
-@[to_additive]
-theorem top : MulSaturated (⊤ : Submonoid M) := fun _ _ _ ↦ ⟨trivial, trivial⟩
+@[to_additive] theorem top : MulSaturated (⊤ : Submonoid M) := fun _ _ _ ↦ ⟨trivial, trivial⟩
 
 include h₁ h₂ in
 @[to_additive]
-theorem inf : MulSaturated (s₁ ⊓ s₂) :=
-  fun _ _ hxy ↦ ⟨⟨(h₁ hxy.1).1, (h₂ hxy.2).1⟩, (h₁ hxy.1).2, (h₂ hxy.2).2⟩
+theorem inf : MulSaturated (s₁ ⊓ s₂) := fun _ _ hxy ↦
+  ⟨⟨(h₁ hxy.1).1, (h₂ hxy.2).1⟩, (h₁ hxy.1).2, (h₂ hxy.2).2⟩
 
 @[to_additive]
-theorem sInf {f : Set (Submonoid M)} (hf : ∀ s ∈ f, s.MulSaturated) :
-    (sInf f).MulSaturated := fun _ _ hxy ↦ by
+theorem sInf {f : Set (Submonoid M)} (hf : ∀ s ∈ f, s.MulSaturated)
+    : (sInf f).MulSaturated := fun _ _ hxy ↦ by
   simp_rw [mem_sInf] at hxy ⊢
   exact ⟨fun s hs ↦ (hf s hs <| hxy s hs).1, fun s hs ↦ (hf s hs <| hxy s hs).2⟩
 
 @[to_additive]
-theorem iInf {ι : Sort*} {f : ι → Submonoid M} (hf : ∀ i, (f i).MulSaturated) :
-    (iInf f).MulSaturated :=
+theorem iInf {ι : Sort*} {f : ι → Submonoid M} (hf : ∀ i, (f i).MulSaturated)
+    : (iInf f).MulSaturated :=
   sInf <| Set.forall_mem_range.mpr hf
 
 /-- If `M` is commutative, we only need to check the left condition `x ∈ s`. -/
 @[to_additive /-- If `M` is commutative, we only need to check the left condition `x ∈ s`. -/]
-theorem of_left {M : Type*} [CommMonoid M] {s : Submonoid M}
-    (h : ∀ ⦃x y⦄, x * y ∈ s → x ∈ s) : s.MulSaturated :=
-  fun x y hxy ↦ ⟨h hxy, h <| mul_comm x y ▸ hxy⟩
+theorem of_left {M : Type*} [CommMonoid M] {s : Submonoid M} (h : ∀ ⦃x y⦄, x * y ∈ s → x ∈ s)
+    : s.MulSaturated := fun x y hxy ↦
+  ⟨h hxy, h <| mul_comm x y ▸ hxy⟩
 
 /-- If `M` is commutative, we only need to check the right condition `y ∈ s`. -/
 @[to_additive /-- If `M` is commutative, we only need to check the right condition `y ∈ s`. -/]
-theorem of_right {M : Type*} [CommMonoid M] {s : Submonoid M}
-    (h : ∀ ⦃x y⦄, x * y ∈ s → y ∈ s) : s.MulSaturated :=
+theorem of_right {M : Type*} [CommMonoid M] {s : Submonoid M} (h : ∀ ⦃x y⦄, x * y ∈ s → y ∈ s)
+    : s.MulSaturated :=
   of_left fun x y ↦ mul_comm x y ▸ @h y x
 
 end MulSaturated
@@ -98,7 +99,8 @@ structure SaturatedAddSubmonoid (M : Type*) [AddZeroClass M] extends AddSubmonoi
   addSaturated : toAddSubmonoid.AddSaturated
 
 /-- A saturated submonoid is a submonoid `s` that satisfies `x * y ∈ s → x ∈ s ∧ y ∈ s`. -/
-@[to_additive] structure SaturatedSubmonoid (M : Type*) [MulOneClass M] extends Submonoid M where
+@[to_additive]
+structure SaturatedSubmonoid (M : Type*) [MulOneClass M] extends Submonoid M where
   mulSaturated : toSubmonoid.MulSaturated
 
 namespace SaturatedSubmonoid
@@ -107,8 +109,8 @@ variable {M : Type*} [MulOneClass M]
 attribute [simp] mulSaturated SaturatedAddSubmonoid.addSaturated
 
 @[to_additive]
-theorem toSubmonoid_injective : (toSubmonoid (M := M)).Injective :=
-  fun ⟨s₁, h₁⟩ ⟨s₂, h₂⟩ eq ↦ by congr
+theorem toSubmonoid_injective : (toSubmonoid (M := M)).Injective := fun ⟨s₁, h₁⟩ ⟨s₂, h₂⟩ eq ↦ by
+  congr
 
 @[to_additive (attr := ext)]
 lemma ext {s₁ s₂ : SaturatedSubmonoid M} (h : s₁.toSubmonoid = s₂.toSubmonoid) : s₁ = s₂ :=
@@ -120,12 +122,10 @@ instance : SetLike (SaturatedSubmonoid M) M where
   coe := (·.carrier)
   coe_injective _ _ h := toSubmonoid_injective <| SetLike.coe_injective h
 
-@[to_additive]
-instance : PartialOrder (SaturatedSubmonoid M) := .ofSetLike _
+@[to_additive] instance : PartialOrder (SaturatedSubmonoid M) := .ofSetLike _
 
 @[to_additive]
-lemma ext' {s₁ s₂ : SaturatedSubmonoid M} (h : ∀ x, x ∈ s₁ ↔ x ∈ s₂) : s₁ = s₂ :=
-  SetLike.ext h
+lemma ext' {s₁ s₂ : SaturatedSubmonoid M} (h : ∀ x, x ∈ s₁ ↔ x ∈ s₂) : s₁ = s₂ := SetLike.ext h
 
 variable (M) in
 @[to_additive]
@@ -134,8 +134,7 @@ instance : SubmonoidClass (SaturatedSubmonoid M) M where
   one_mem {s} := s.one_mem
 
 @[to_additive (attr := simp)]
-lemma mem_toSubmonoid {s : SaturatedSubmonoid M} {x : M} : x ∈ s.toSubmonoid ↔ x ∈ s :=
-  Iff.rfl
+lemma mem_toSubmonoid {s : SaturatedSubmonoid M} {x : M} : x ∈ s.toSubmonoid ↔ x ∈ s := Iff.rfl
 
 @[to_additive]
 instance : Top (SaturatedSubmonoid M) where
@@ -152,13 +151,15 @@ instance : Min (SaturatedSubmonoid M) where
 variable (M) in
 @[to_additive]
 instance : InfSet (SaturatedSubmonoid M) where
-  sInf f :=
-  { carrier := ⋂ s ∈ f, s
+  sInf f := {
+    carrier := ⋂ s ∈ f, s
     mul_mem' hx hy := by rw [Set.mem_iInter₂] at *; exact fun s hs ↦ mul_mem (hx s hs) (hy s hs)
     one_mem' := Set.mem_iInter₂.mpr fun _ _ ↦ one_mem _
     mulSaturated := by
       convert Submonoid.MulSaturated.sInf (f := toSubmonoid '' f) (by simp)
-      ext; simp [Submonoid.mem_sInf] }
+      ext
+      simp [Submonoid.mem_sInf]
+  }
 
 @[to_additive]
 theorem mem_sInf {f : Set (SaturatedSubmonoid M)} {x : M} : x ∈ sInf f ↔ ∀ s ∈ f, x ∈ s :=
@@ -173,12 +174,14 @@ end SaturatedSubmonoid
 
 namespace Submonoid
 
-/-- The saturation of a submonoid `s` is the intersection of all saturated submonoids that contain
+/--
+The saturation of a submonoid `s` is the intersection of all saturated submonoids that contain
 `s`.
 
-If `M` is a commutative monoid, then this is `{x : M | ∃ y : M, x * y ∈ s}`. -/
+If `M` is a commutative monoid, then this is `{x : M | ∃ y : M, x * y ∈ s}`.
+-/
 @[to_additive
-/-- The saturation of an additive submonoid `s` is the intersection of all saturated submonoids
+  /-- The saturation of an additive submonoid `s` is the intersection of all saturated submonoids
 that contain `s`.
 
 If `M` is a commutative additive monoid, then this is `{x : M | ∃ y : M, x + y ∈ s}`. -/]
@@ -192,15 +195,18 @@ variable [MulOneClass M]
 
 variable (M) in
 @[to_additive]
-theorem gc_saturation : GaloisConnection (saturation (M := M)) (·.toSubmonoid) := fun _ _ ↦
-  ⟨fun ih _ hx ↦ ih <| SaturatedSubmonoid.mem_sInf.mpr fun _ ht ↦ ht hx,
-  fun ih _ hx ↦ SaturatedSubmonoid.mem_sInf.mp hx _ ih⟩
+theorem gc_saturation : GaloisConnection (saturation (M := M)) (·.toSubmonoid) := fun _ _ ↦ ⟨
+  fun ih _ hx ↦ ih <| SaturatedSubmonoid.mem_sInf.mpr fun _ ht ↦ ht hx,
+  fun ih _ hx ↦ SaturatedSubmonoid.mem_sInf.mp hx _ ih
+⟩
 
 variable (M) in
-/-- `saturation` forms a `GaloisInsertion` with the forgetful functor
-`SaturatedSubmonoid.toSubmonoid`. -/
+/--
+`saturation` forms a `GaloisInsertion` with the forgetful functor
+`SaturatedSubmonoid.toSubmonoid`.
+-/
 @[to_additive
-/-- `saturation` forms a `GaloisInsertion` with the forgetful functor
+  /-- `saturation` forms a `GaloisInsertion` with the forgetful functor
 `SaturatedAddSubmonoid.toAddSubmonoid`. -/]
 def giSaturation : GaloisInsertion (saturation (M := M)) (·.toSubmonoid) where
   choice s hs := { s with mulSaturated := le_antisymm ((gc_saturation M).le_u_l s) hs ▸ by simp }
@@ -223,18 +229,20 @@ theorem le_toSubmonoid_saturation : a ≤ a.saturation.toSubmonoid := (gc_satura
 theorem saturation_toSubmonoid : b.saturation = b := (giSaturation M).l_u_eq b
 
 @[to_additive (attr := elab_as_elim)]
-theorem saturation_induction {s : Submonoid M}
-    {p : (x : M) → x ∈ s.saturation → Prop}
+theorem saturation_induction
+    {s : Submonoid M} {p : (x : M) → x ∈ s.saturation → Prop}
     (mem : ∀ (x) (hx : x ∈ s), p x (le_toSubmonoid_saturation hx))
     (mul : ∀ x y hx hy, p x hx → p y hy → p (x * y) (mul_mem hx hy))
     (of_mul : ∀ (x y) (hxy : x * y ∈ s.saturation),
       p (x * y) hxy → p x (s.saturation.2 hxy).1 ∧ p y (s.saturation.2 hxy).2)
-    {x : M} (hx : x ∈ s.saturation) : p x hx := by
-  let s' : SaturatedSubmonoid M :=
-  { carrier := { x | ∃ hx, p x hx }
-    one_mem' := ⟨_ , mem 1 <| one_mem s⟩
+    {x : M} (hx : x ∈ s.saturation)
+    : p x hx := by
+  let s' : SaturatedSubmonoid M := {
+    carrier := { x | ∃ hx, p x hx }
+    one_mem' := ⟨_, mem 1 <| one_mem s⟩
     mul_mem' := fun ⟨_, hpx⟩ ⟨_, hpy⟩ ↦ ⟨_, mul _ _ _ _ hpx hpy⟩
-    mulSaturated := fun x y ⟨_, hpxy⟩ ↦ ⟨⟨_, (of_mul _ _ _ hpxy).1⟩, ⟨_, (of_mul _ _ _ hpxy).2⟩⟩ }
+    mulSaturated := fun x y ⟨_, hpxy⟩ ↦ ⟨⟨_, (of_mul _ _ _ hpxy).1⟩, ⟨_, (of_mul _ _ _ hpxy).2⟩⟩
+  }
   exact SaturatedSubmonoid.mem_sInf.mp hx s' (fun _ h ↦ ⟨_, mem _ h⟩) |>.2
 
 end MulOneClass
@@ -248,13 +256,14 @@ variable {s : Submonoid M} {x : M}
 theorem mem_saturation_iff : x ∈ s.saturation ↔ ∃ y, x * y ∈ s := by
   refine ⟨fun h ↦ ?_, fun ⟨y, hxy⟩ ↦ (s.saturation.2 <| le_toSubmonoid_saturation hxy).1⟩
   induction h using saturation_induction with
-  | mem _ hx => exact ⟨1, by simpa⟩
+  | mem _ hx =>
+    exact ⟨1, by simpa⟩
   | mul _ _ _ _ ih₁ ih₂ =>
-    exact ih₁.elim fun y₁ h₁ ↦ ih₂.elim fun y₂ h₂ ↦
-      ⟨y₁ * y₂, by rw [mul_mul_mul_comm]; exact mul_mem h₁ h₂⟩
+    exact ih₁.elim fun y₁ h₁ ↦
+      ih₂.elim fun y₂ h₂ ↦ ⟨y₁ * y₂, by rw [mul_mul_mul_comm]; exact mul_mem h₁ h₂⟩
   | of_mul x₁ x₂ _ ih =>
-    exact ih.elim fun y h ↦ ⟨⟨x₂ * y, by rwa [← mul_assoc]⟩,
-      ⟨x₁ * y, by rwa [mul_left_comm, ← mul_assoc]⟩⟩
+    exact ih.elim fun y h ↦
+      ⟨⟨x₂ * y, by rwa [← mul_assoc]⟩, ⟨x₁ * y, by rwa [mul_left_comm, ← mul_assoc]⟩⟩
 
 @[to_additive]
 theorem mem_saturation_iff' : x ∈ s.saturation ↔ ∃ y, y * x ∈ s := by
@@ -270,33 +279,33 @@ end Submonoid
 namespace SaturatedSubmonoid
 
 @[to_additive]
-instance (M : Type*) [MulOneClass M] :
-    CompleteLattice (SaturatedSubmonoid M) :=
-  { (inferInstance : PartialOrder (SaturatedSubmonoid M)),
-    (inferInstance : Top (SaturatedSubmonoid M)),
-    (inferInstance : Min (SaturatedSubmonoid M)),
-    (inferInstance : CompleteSemilatticeInf (SaturatedSubmonoid M)),
-    (Submonoid.giSaturation M).liftCompleteLattice with }
+instance (M : Type*) [MulOneClass M] : CompleteLattice (SaturatedSubmonoid M) := {
+  (inferInstance : PartialOrder (SaturatedSubmonoid M)),
+  (inferInstance : Top (SaturatedSubmonoid M)),
+  (inferInstance : Min (SaturatedSubmonoid M)),
+  (inferInstance : CompleteSemilatticeInf (SaturatedSubmonoid M)),
+  (Submonoid.giSaturation M).liftCompleteLattice with
+}
 
 variable {M : Type*}
 
 section MulOneClass
 variable [MulOneClass M]
 
-@[to_additive]
-theorem bot_def : (⊥ : SaturatedSubmonoid M) = Submonoid.saturation ⊥ := rfl
+@[to_additive] theorem bot_def : (⊥ : SaturatedSubmonoid M) = Submonoid.saturation ⊥ := rfl
 
 @[to_additive]
-theorem sup_def {s₁ s₂ : SaturatedSubmonoid M} :
-    s₁ ⊔ s₂ = (s₁.toSubmonoid ⊔ s₂.toSubmonoid).saturation := rfl
+theorem sup_def {s₁ s₂ : SaturatedSubmonoid M}
+    : s₁ ⊔ s₂ = (s₁.toSubmonoid ⊔ s₂.toSubmonoid).saturation :=
+  rfl
 
 @[to_additive]
-theorem sSup_def {f : Set (SaturatedSubmonoid M)} :
-    sSup f = (sSup (toSubmonoid '' f)).saturation := rfl
+theorem sSup_def {f : Set (SaturatedSubmonoid M)} : sSup f = (sSup (toSubmonoid '' f)).saturation :=
+  rfl
 
 @[to_additive]
-theorem iSup_def {ι : Sort*} {f : ι → SaturatedSubmonoid M} :
-    iSup f = (⨆ i, (f i).toSubmonoid).saturation :=
+theorem iSup_def {ι : Sort*} {f : ι → SaturatedSubmonoid M}
+    : iSup f = (⨆ i, (f i).toSubmonoid).saturation :=
   (Submonoid.giSaturation M).l_iSup_u f |>.symm
 
 end MulOneClass
@@ -322,8 +331,9 @@ theorem saturation_bot : (⊥ : Submonoid M).saturation = ⊥ := (gc_saturation 
 theorem saturation_top : (⊤ : Submonoid M).saturation = ⊤ := (giSaturation M).l_top
 
 @[to_additive (attr := simp)]
-theorem saturation_sup {s₁ s₂ : Submonoid M} :
-    (s₁ ⊔ s₂).saturation = s₁.saturation ⊔ s₂.saturation := (gc_saturation M).l_sup
+theorem saturation_sup {s₁ s₂ : Submonoid M}
+    : (s₁ ⊔ s₂).saturation = s₁.saturation ⊔ s₂.saturation :=
+  (gc_saturation M).l_sup
 
 -- note that it does not preserve inf:
 -- if s₁ = {6 ^ n | n : ℕ} and s₂ = {15 ^ n | n : ℕ} then
@@ -331,11 +341,12 @@ theorem saturation_sup {s₁ s₂ : Submonoid M} :
 -- s₁.saturation ⊓ s₂.saturation = {3 ^ n | n : ℕ}
 
 @[to_additive (attr := simp)]
-theorem saturation_sSup {f : Set (Submonoid M)} :
-    (sSup f).saturation = ⨆ s ∈ f, s.saturation := (gc_saturation M).l_sSup
+theorem saturation_sSup {f : Set (Submonoid M)} : (sSup f).saturation = ⨆ s ∈ f, s.saturation :=
+  (gc_saturation M).l_sSup
 
 @[to_additive (attr := simp)]
-theorem saturation_iSup {ι : Sort*} {f : ι → Submonoid M} :
-    (iSup f).saturation = ⨆ i, (f i).saturation := (gc_saturation M).l_iSup
+theorem saturation_iSup {ι : Sort*} {f : ι → Submonoid M}
+    : (iSup f).saturation = ⨆ i, (f i).saturation :=
+  (gc_saturation M).l_iSup
 
 end Submonoid

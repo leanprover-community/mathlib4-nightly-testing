@@ -12,11 +12,13 @@ example {R S : CommMonCat} (i : R ⟶ S) (r : R) (h : r = 1) : i r = 1 := by sim
 
 -- We verify that when constructing a morphism in `CommMonCat`,
 -- when we construct the `toFun` field, the types are presented as `↑R`.
-example (R : CommMonCat.{u}) : R ⟶ R := CommMonCat.ofHom
-  { toFun := fun x => by
+example (R : CommMonCat.{u}) : R ⟶ R :=
+  CommMonCat.ofHom {
+    toFun := fun x => by
       guard_target =~ (R : Type u)
       guard_hyp x : (R : Type u)
       exact x * x
     map_one' := by simp
     map_mul' := fun x y => by
-      rw [mul_assoc x y (x * y), ← mul_assoc y x y, mul_comm y x, mul_assoc, mul_assoc] }
+      rw [mul_assoc x y (x * y), ← mul_assoc y x y, mul_comm y x, mul_assoc, mul_assoc]
+  }

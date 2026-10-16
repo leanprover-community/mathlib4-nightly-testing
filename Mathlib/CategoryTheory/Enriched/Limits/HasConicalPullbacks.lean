@@ -22,10 +22,11 @@ open Limits
 variable (V : Type u') [Category.{v'} V] [MonoidalCategory V]
 variable {C : Type u} [Category.{v} C] [EnrichedOrdinaryCategory V C]
 
-/-- `HasConicalPullback f g` represents the mere existence of a conical limit cone for the pair
-of morphisms `f : X ⟶ Z` and `g : Y ⟶ Z` -/
-abbrev HasConicalPullback {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) :=
-  HasConicalLimit V (cospan f g)
+/--
+`HasConicalPullback f g` represents the mere existence of a conical limit cone for the pair
+of morphisms `f : X ⟶ Z` and `g : Y ⟶ Z`
+-/
+abbrev HasConicalPullback {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) := HasConicalLimit V (cospan f g)
 
 /-- ensure conical pullbacks are pullbacks -/
 example {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) [HasConicalPullback V f g] : HasPullback f g :=

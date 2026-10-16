@@ -33,20 +33,26 @@ open Nat Finset
 
 namespace Imo2019Q4
 
-theorem upper_bound {k n : ℕ} (hk : k > 0)
-    (h : (k ! : ℤ) = ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i)) : n < 6 := by
+theorem upper_bound
+    {k n : ℕ} (hk : k > 0) (h : (k ! : ℤ) = ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i))
+    : n < 6 := by
   have h2 : ∑ i ∈ range n, i < k := by
     suffices emultiplicity 2 (k ! : ℤ) = ↑(∑ i ∈ range n, i : ℕ) by
-      rw [← Nat.cast_lt (α := ℕ∞), ← this]; change emultiplicity ((2 : ℕ) : ℤ) _ < _
+      rw [← Nat.cast_lt (α := ℕ∞), ← this]
+      change emultiplicity ((2 : ℕ) : ℤ) _ < _
       simp_rw [Int.natCast_emultiplicity, emultiplicity_two_factorial_lt hk.lt.ne.symm]
     rw [h, Finset.emultiplicity_prod Int.prime_two, Nat.cast_sum]
-    apply sum_congr rfl; intro i hi
+    apply sum_congr rfl
+    intro i hi
     rw [emultiplicity_sub_of_gt, emultiplicity_pow_self_of_prime Int.prime_two]
     rwa [emultiplicity_pow_self_of_prime Int.prime_two,
       emultiplicity_pow_self_of_prime Int.prime_two, Nat.cast_lt, ← mem_range]
-  rw [← not_le]; intro hn
+  rw [← not_le]
+  intro hn
   apply _root_.ne_of_gt _ h
-  calc ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i) ≤ ∏ _ ∈ range n, (2 : ℤ) ^ n := ?_
+  calc
+    ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i)
+      ≤ ∏ _ ∈ range n, (2 : ℤ) ^ n := ?_
     _ < k ! := ?_
   · gcongr
     · intro i hi
@@ -56,18 +62,22 @@ theorem upper_bound {k n : ℕ} (hk : k > 0)
     · apply sub_le_self
       positivity
   norm_cast
-  calc ∏ _ ∈ range n, 2 ^ n = 2 ^ (n * n) := by rw [prod_const, card_range, ← pow_mul]
+  calc
+    ∏ _ ∈ range n, 2 ^ n
+      = 2 ^ (n * n) := by rw [prod_const, card_range, ← pow_mul]
     _ < (∑ i ∈ range n, i)! := ?_
     _ ≤ k ! := by gcongr
   clear h h2
   induction n, hn using Nat.le_induction with
-  | base => decide
+  | base =>
+    decide
   | succ n' hn' IH =>
     let A := ∑ i ∈ range n', i
     have le_sum : ∑ i ∈ range 6, i ≤ A := by
       apply sum_le_sum_of_subset
       simpa using hn'
-    calc 2 ^ ((n' + 1) * (n' + 1))
+    calc
+      2 ^ ((n' + 1) * (n' + 1))
         ≤ 2 ^ (n' * n' + 4 * n') := by gcongr; linarith
       _ = 2 ^ (n' * n') * (2 ^ 4) ^ n' := by rw [← pow_mul, ← pow_add]
       _ < A ! * (2 ^ 4) ^ n' := by gcongr
@@ -78,8 +88,9 @@ theorem upper_bound {k n : ℕ} (hk : k > 0)
 
 end Imo2019Q4
 
-theorem imo2019_q4 {k n : ℕ} (hk : 0 < k) (hn : 0 < n) :
-    (k ! : ℤ) = ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i) ↔ (k, n) = (1, 1) ∨ (k, n) = (3, 2) := by
+theorem imo2019_q4 {k n : ℕ} (hk : 0 < k) (hn : 0 < n)
+    : (k ! : ℤ) = ∏ i ∈ range n, ((2 : ℤ) ^ n - (2 : ℤ) ^ i)
+      ↔ (k, n) = (1, 1) ∨ (k, n) = (3, 2) := by
   -- The implication `←` holds.
   constructor
   swap
@@ -87,8 +98,8 @@ theorem imo2019_q4 {k n : ℕ} (hk : 0 < k) (hn : 0 < n) :
   intro h
   -- We know that n < 6.
   have := Imo2019Q4.upper_bound hk h
-  interval_cases n <;>
-  simp_rw [prod_range_succ, prod_range_zero, Int.reducePow, Int.reduceSub] at h <;> norm_cast at h
+  interval_cases n <;> simp_rw [prod_range_succ, prod_range_zero, Int.reducePow, Int.reduceSub] at h
+    <;> norm_cast at h
   -- n = 1
   · rw [mul_one, factorial_eq_one] at h
     simp [le_antisymm h hk]

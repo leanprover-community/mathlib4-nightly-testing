@@ -24,7 +24,6 @@ This is used in `CategoryTheory.Functor.Flat`.
 
 @[expose] public section
 
-
 universe v₁ u₁
 
 noncomputable section
@@ -40,18 +39,16 @@ inductive Bicone (J : Type u₁)
   | left : Bicone J
   | right : Bicone J
   | diagram (val : J) : Bicone J
-  deriving DecidableEq
+deriving DecidableEq
 
 variable (J : Type u₁)
 
-instance : Inhabited (Bicone J) :=
-  ⟨Bicone.left⟩
+instance : Inhabited (Bicone J) := ⟨Bicone.left⟩
 
 open scoped Classical in
 instance finBicone [Fintype J] : Fintype (Bicone J) where
   elems := [Bicone.left, Bicone.right].toFinset ∪ Finset.image Bicone.diagram Fintype.elems
-  complete j := by
-    cases j <;> simp [Fintype.complete]
+  complete j := by cases j <;> simp [Fintype.complete]
 
 variable [Category.{v₁} J]
 
@@ -63,11 +60,11 @@ inductive BiconeHom : Bicone J → Bicone J → Type max u₁ v₁
   | right (j : J) : BiconeHom Bicone.right (Bicone.diagram j)
   | diagram {j k : J} (f : j ⟶ k) : BiconeHom (Bicone.diagram j) (Bicone.diagram k)
 
-instance : Inhabited (BiconeHom J Bicone.left Bicone.left) :=
-  ⟨BiconeHom.left_id⟩
+instance : Inhabited (BiconeHom J Bicone.left Bicone.left) := ⟨BiconeHom.left_id⟩
 
 instance BiconeHom.decidableEq {j k : Bicone J} : DecidableEq (BiconeHom J j k) := fun f g => by
-  classical cases f <;> cases g <;> simp only [diagram.injEq] <;> infer_instance
+  classical
+  cases f <;> cases g <;> simp only [diagram.injEq] <;> infer_instance
 
 @[simps]
 instance biconeCategoryStruct : CategoryStruct (Bicone J) where
@@ -95,7 +92,8 @@ section SmallCategory
 
 variable (J : Type v₁) [SmallCategory J]
 
-/-- Given a diagram `F : J ⥤ C` and two `Cone F`s, we can join them into a diagram `Bicone J ⥤ C`.
+/--
+Given a diagram `F : J ⥤ C` and two `Cone F`s, we can join them into a diagram `Bicone J ⥤ C`.
 -/
 @[simps]
 def biconeMk {C : Type u₁} [Category.{v₁} C] {F : J ⥤ C} (c₁ c₂ : Cone F) : Bicone J ⥤ C where
@@ -122,40 +120,24 @@ def biconeMk {C : Type u₁} [Category.{v₁} C] {F : J ⥤ C} (c₁ c₂ : Cone
 open scoped Classical in
 instance finBiconeHom [FinCategory J] (j k : Bicone J) : Fintype (j ⟶ k) := by
   cases j <;> cases k
-  · exact
-      { elems := {BiconeHom.left_id}
-        complete := fun f => by cases f; simp }
-  · exact
-    { elems := ∅
-      complete := fun f => by cases f }
-  · exact
-    { elems := {BiconeHom.left _}
-      complete := fun f => by cases f; simp }
-  · exact
-    { elems := ∅
-      complete := fun f => by cases f }
-  · exact
-      { elems := {BiconeHom.right_id}
-        complete := fun f => by cases f; simp }
-  · exact
-    { elems := {BiconeHom.right _}
-      complete := fun f => by cases f; simp }
-  · exact
-    { elems := ∅
-      complete := fun f => by cases f }
-  · exact
-    { elems := ∅
-      complete := fun f => by cases f }
-  · exact
-    { elems := Finset.image BiconeHom.diagram Fintype.elems
+  · exact { elems := {BiconeHom.left_id}, complete := fun f => by cases f; simp }
+  · exact { elems := ∅, complete := fun f => by cases f }
+  · exact { elems := {BiconeHom.left _}, complete := fun f => by cases f; simp }
+  · exact { elems := ∅, complete := fun f => by cases f }
+  · exact { elems := {BiconeHom.right_id}, complete := fun f => by cases f; simp }
+  · exact { elems := {BiconeHom.right _}, complete := fun f => by cases f; simp }
+  · exact { elems := ∅, complete := fun f => by cases f }
+  · exact { elems := ∅, complete := fun f => by cases f }
+  · exact {
+      elems := Finset.image BiconeHom.diagram Fintype.elems
       complete := fun f => by
         rcases f with (_ | _ | _ | _ | f)
         simp only [Finset.mem_image]
         use f
-        simpa using Fintype.complete _ }
+        simpa using Fintype.complete _
+    }
 
-instance biconeSmallCategory : SmallCategory (Bicone J) :=
-  CategoryTheory.biconeCategory J
+instance biconeSmallCategory : SmallCategory (Bicone J) := CategoryTheory.biconeCategory J
 
 instance biconeFinCategory [FinCategory J] : FinCategory (Bicone J) where
 

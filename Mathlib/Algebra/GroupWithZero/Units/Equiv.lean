@@ -22,32 +22,39 @@ namespace Equiv
 section GroupWithZero
 variable [GroupWithZero G₀]
 
-/-- In a `GroupWithZero` `G₀`, the unit group `G₀ˣ` is equivalent to the subtype of nonzero
-elements. -/
-@[simps] def _root_.unitsEquivNeZero : G₀ˣ ≃ {a : G₀ // a ≠ 0} where
+/--
+In a `GroupWithZero` `G₀`, the unit group `G₀ˣ` is equivalent to the subtype of nonzero
+elements.
+-/
+@[simps]
+def _root_.unitsEquivNeZero : G₀ˣ ≃ {a : G₀ // a ≠ 0} where
   toFun a := ⟨a, a.ne_zero⟩
   invFun a := Units.mk0 _ a.prop
 
-/-- Left multiplication by a nonzero element in a `GroupWithZero` is a permutation of the
-underlying type. -/
+/--
+Left multiplication by a nonzero element in a `GroupWithZero` is a permutation of the
+underlying type.
+-/
 @[simps! -fullyApplied]
-protected def mulLeft₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ :=
-  (Units.mk0 a ha).mulLeft
+protected def mulLeft₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ := (Units.mk0 a ha).mulLeft
 
 theorem _root_.mulLeft_bijective₀ (a : G₀) (ha : a ≠ 0) : Function.Bijective (a * · : G₀ → G₀) :=
   (Equiv.mulLeft₀ a ha).bijective
 
-/-- Right multiplication by a nonzero element in a `GroupWithZero` is a permutation of the
-underlying type. -/
+/--
+Right multiplication by a nonzero element in a `GroupWithZero` is a permutation of the
+underlying type.
+-/
 @[simps! -fullyApplied]
-protected def mulRight₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ :=
-  (Units.mk0 a ha).mulRight
+protected def mulRight₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ := (Units.mk0 a ha).mulRight
 
 theorem _root_.mulRight_bijective₀ (a : G₀) (ha : a ≠ 0) : Function.Bijective ((· * a) : G₀ → G₀) :=
   (Equiv.mulRight₀ a ha).bijective
 
-/-- Right division by a nonzero element in a `GroupWithZero` is a permutation of the
-underlying type. -/
+/--
+Right division by a nonzero element in a `GroupWithZero` is a permutation of the
+underlying type.
+-/
 @[simps! +simpRhs]
 def divRight₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ where
   toFun := (· / a)
@@ -60,8 +67,10 @@ end GroupWithZero
 section CommGroupWithZero
 variable [CommGroupWithZero G₀]
 
-/-- Left division by a nonzero element in a `CommGroupWithZero` is a permutation of the underlying
-type. -/
+/--
+Left division by a nonzero element in a `CommGroupWithZero` is a permutation of the underlying
+type.
+-/
 @[simps! +simpRhs]
 def divLeft₀ (a : G₀) (ha : a ≠ 0) : Perm G₀ where
   toFun := (a / ·)

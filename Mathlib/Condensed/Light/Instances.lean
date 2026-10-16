@@ -27,18 +27,16 @@ open CategoryTheory Limits
 
 namespace LightProfinite
 
-variable (A : Type u') [Category.{u} A] [HasLimits A] [HasColimits A]
-  {FA : A → A → Type v} {CA : A → Type u}
-  [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory A FA]
-  [PreservesFilteredColimits (forget A)]
-  [PreservesLimits (forget A)] [(forget A).ReflectsIsomorphisms]
+variable
+  (A : Type u') [Category.{u} A] [HasLimits A] [HasColimits A]
+  {FA : A → A → Type v} {CA : A → Type u} [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)]
+  [ConcreteCategory A FA] [PreservesFilteredColimits (forget A)] [PreservesLimits (forget A)]
+  [(forget A).ReflectsIsomorphisms]
 
-instance hasSheafify :
-    HasSheafify (coherentTopology LightProfinite.{u}) A :=
+instance hasSheafify : HasSheafify (coherentTopology LightProfinite.{u}) A :=
   hasSheafifyEssentiallySmallSite _ _
 
-instance hasSheafify_type :
-    HasSheafify (coherentTopology LightProfinite.{u}) (Type u) :=
+instance hasSheafify_type : HasSheafify (coherentTopology LightProfinite.{u}) (Type u) :=
   hasSheafifyEssentiallySmallSite _ _
 
 instance : (coherentTopology LightProfinite.{u}).WEqualsLocallyBijective A :=

@@ -48,21 +48,19 @@ universe u
 
 open Ideal WittVector
 
-variable (R : Type u) [CommRing R] (p : ℕ) [Fact p.Prime]
-    [Fact ¬IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
+variable
+  (R : Type u) [CommRing R]
+  (p : ℕ) [Fact p.Prime] [Fact ¬ IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
 
 local notation "𝕎 " A:100 => WittVector p A
 local notation A "♭" => PreTilt A p
 
 noncomputable section
 
-/--
-The Fontaine's θ map inverting `p`. Note that if `p = 0` in `R`, then this is the zero map.
--/
-def fontaineThetaInvertP :
-    Localization.Away (p : 𝕎 R♭) →+* Localization.Away (p : R) :=
+/-- The Fontaine's θ map inverting `p`. Note that if `p = 0` in `R`, then this is the zero map. -/
+def fontaineThetaInvertP : Localization.Away (p : 𝕎 R♭) →+* Localization.Away (p : R) :=
   Localization.awayLift ((algebraMap R _).comp (fontaineTheta R p)) (p : 𝕎 R♭)
-      (by simpa using IsLocalization.Away.algebraMap_isUnit (p : R))
+    (by simpa using IsLocalization.Away.algebraMap_isUnit (p : R))
 
 /--
 The de Rham period ring $\mathbb{B}_{dR}^+$ for general perfectoid ring.
@@ -87,8 +85,8 @@ Note that if `p = 0` in `R`, then this definition is the zero ring.
 -/
 def BDeRham : Type u :=
   Localization (M := BDeRhamPlus R p) <| Submonoid.closure <|
-    AdicCompletion.of ((RingHom.ker (fontaineThetaInvertP R p))) _ ''
-      {a | (RingHom.ker (fontaineThetaInvertP R p)) = Ideal.span {a}}
+    AdicCompletion.of ((RingHom.ker (fontaineThetaInvertP R p))) _
+      '' {a | (RingHom.ker (fontaineThetaInvertP R p)) = Ideal.span {a}}
 
 local notation "𝔹_dR^+(" R ")" => BDeRhamPlus R p
 local notation "𝔹_dR(" R ")" => BDeRham R p

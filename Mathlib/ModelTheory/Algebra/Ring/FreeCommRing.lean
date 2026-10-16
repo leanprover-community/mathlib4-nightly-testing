@@ -33,16 +33,12 @@ section
 attribute [local instance] compatibleRingOfRing
 
 set_option backward.privateInPublic true in
-private theorem exists_term_realize_eq_freeCommRing (p : FreeCommRing α) :
-    ∃ t : Language.ring.Term α,
-      (t.realize FreeCommRing.of : FreeCommRing α) = p :=
-  FreeCommRing.induction_on p
-    ⟨-1, by simp⟩
+private theorem exists_term_realize_eq_freeCommRing (p : FreeCommRing α)
+    : ∃ t : Language.ring.Term α, (t.realize FreeCommRing.of : FreeCommRing α) = p :=
+  FreeCommRing.induction_on p ⟨-1, by simp⟩
     (fun a => ⟨Term.var a, by simp [Term.realize]⟩)
-    (fun x y ⟨t₁, ht₁⟩ ⟨t₂, ht₂⟩ =>
-      ⟨t₁ + t₂, by simp_all⟩)
-    (fun x y ⟨t₁, ht₁⟩ ⟨t₂, ht₂⟩ =>
-      ⟨t₁ * t₂, by simp_all⟩)
+    (fun x y ⟨t₁, ht₁⟩ ⟨t₂, ht₂⟩ => ⟨t₁ + t₂, by simp_all⟩)
+    (fun x y ⟨t₁, ht₁⟩ ⟨t₂, ht₂⟩ => ⟨t₁ * t₂, by simp_all⟩)
 
 end
 
@@ -56,15 +52,13 @@ variable {R : Type*} [CommRing R] [CompatibleRing R]
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem realize_termOfFreeCommRing (p : FreeCommRing α) (v : α → R) :
-    (termOfFreeCommRing p).realize v = FreeCommRing.lift v p := by
+theorem realize_termOfFreeCommRing (p : FreeCommRing α) (v : α → R)
+    : (termOfFreeCommRing p).realize v = FreeCommRing.lift v p := by
   rw [termOfFreeCommRing]
   conv_rhs => rw [← Classical.choose_spec (exists_term_realize_eq_freeCommRing p)]
   induction Classical.choose (exists_term_realize_eq_freeCommRing p) with
   | var _ => simp
-  | func f a ih =>
-    cases f <;>
-    simp [ih]
+  | func f a ih => cases f <;> simp [ih]
 
 end Ring
 

@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Basic.SetLike.Basic
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Set.Prod
@@ -16,11 +17,12 @@ class SProd' (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   sprod : α → β → γ
 
 -- This notation binds more strongly than (pre)images, unions and intersections.
-@[inherit_doc SProd'.sprod] local infixr:82 " ×ˢ' " => SProd'.sprod
-macro_rules | `($x ×ˢ' $y)   => `(fbinop% SProd'.sprod $x $y)
+@[inherit_doc SProd'.sprod]
+local infixr:82 " ×ˢ' " => SProd'.sprod
+macro_rules
+  | `($x ×ˢ' $y) => `(fbinop% SProd'.sprod $x $y)
 
-@[default_instance]
-instance : SProd' (Set α) (Set β) (Set (α × β)) := ⟨Set.prod⟩
+@[default_instance] instance : SProd' (Set α) (Set β) (Set (α × β)) := ⟨Set.prod⟩
 instance : SProd' (Finset α) (Finset β) (Finset (α × β)) := ⟨Finset.product⟩
 
 -- set_option trace.Elab.fbinop true
@@ -53,16 +55,14 @@ example (s : Finset α) (t : Finset (α × ℕ)) : s ×ˢ' {1, 2, 3} = t := test
 example (s : Finset α) (t : Finset (ℕ × α)) : {1, 2, 3} ×ˢ' s = t := test_sorry
 example (s : Finset α) (_t : Finset (ℕ × α)) : ({1, 2, 3} ×ˢ' s).card = 22 := test_sorry
 
-/--
-info: {1, 2, 3} ×ˢ' {4, 5, 6} : Finset (ℕ × ℕ)
--/
+/-- info: {1, 2, 3} ×ˢ' {4, 5, 6} : Finset (ℕ × ℕ) -/
 #guard_msgs in
-#check ({1,2,3} ×ˢ' {4,5,6} : Finset _)
+#check ({1, 2, 3} ×ˢ' {4, 5, 6} : Finset _)
 
 example (s : Finset α) (t : Set β) (u : Finset γ) : Nat.card (s ×ˢ' t ×ˢ' u) = 0 := test_sorry
 
-example (s : Finset α) (t : Finset β) :
-    (↑(s ×ˢ' t) : Set _) = (s : Set α) ×ˢ' t := Finset.coe_product s t
+example (s : Finset α) (t : Finset β) : (↑(s ×ˢ' t) : Set _) = (s : Set α) ×ˢ' t :=
+  Finset.coe_product s t
 
 structure SubObj (X : Type _) where
   carrier : Set X
@@ -88,8 +88,8 @@ instance [DecidableEq X] : SetLike (DecSubObj X) X where
 instance [DecidableEq X] : PartialOrder (DecSubObj X) := .ofSetLike (DecSubObj X)
 
 -- Note: this is testing instance arguments after the type.
-def DecSubObj.prod [DecidableEq X] [DecidableEq Y] (s : DecSubObj X) (t : DecSubObj Y) :
-    DecSubObj (X × Y) where
+def DecSubObj.prod [DecidableEq X] [DecidableEq Y] (s : DecSubObj X) (t : DecSubObj Y)
+    : DecSubObj (X × Y) where
   carrier := s ×ˢ' t
 
 end FBinopTests

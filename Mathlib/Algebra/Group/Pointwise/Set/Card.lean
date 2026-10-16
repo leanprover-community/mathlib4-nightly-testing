@@ -45,18 +45,16 @@ section InvolutiveInv
 variable [InvolutiveInv G]
 
 @[to_additive (attr := simp)]
-lemma _root_.Cardinal.mk_inv (s : Set G) : #↥(s⁻¹) = #s := by
+lemma _root_.Cardinal.mk_inv (s : Set G) : # ↥(s⁻¹) = #s := by
   rw [← image_inv_eq_inv, Cardinal.mk_image_eq_of_injOn _ _ inv_injective.injOn]
 
 @[to_additive (attr := simp)]
-lemma encard_inv (s : Set G) : s⁻¹.encard = s.encard := by
-  simp [← toENat_cardinalMk]
+lemma encard_inv (s : Set G) : s⁻¹.encard = s.encard := by simp [← toENat_cardinalMk]
 
 @[to_additive (attr := simp)]
 lemma ncard_inv (s : Set G) : s⁻¹.ncard = s.ncard := by simp [ncard]
 
-@[to_additive]
-lemma natCard_inv (s : Set G) : Nat.card ↥(s⁻¹) = Nat.card s := by simp
+@[to_additive] lemma natCard_inv (s : Set G) : Nat.card ↥(s⁻¹) = Nat.card s := by simp
 
 end InvolutiveInv
 
@@ -79,7 +77,7 @@ lemma natCard_div_le : Nat.card (s / t) ≤ Nat.card s * Nat.card t := by
 variable [MulAction G α]
 
 @[to_additive (attr := simp)]
-lemma _root_.Cardinal.mk_smul_set (a : G) (s : Set α) : #↥(a • s) = #s :=
+lemma _root_.Cardinal.mk_smul_set (a : G) (s : Set α) : # ↥(a • s) = #s :=
   Cardinal.mk_image_eq_of_injOn _ _ (MulAction.injective a).injOn
 
 @[to_additive (attr := simp)]
@@ -90,8 +88,7 @@ lemma encard_smul_set (a : G) (s : Set α) : (a • s).encard = s.encard := by
 lemma ncard_smul_set (a : G) (s : Set α) : (a • s).ncard = s.ncard := by simp [ncard]
 
 @[to_additive]
-lemma natCard_smul_set (a : G) (s : Set α) : Nat.card ↥(a • s) = Nat.card s := by
-  simp
+lemma natCard_smul_set (a : G) (s : Set α) : Nat.card ↥(a • s) = Nat.card s := by simp
 
 end Group
 end Set

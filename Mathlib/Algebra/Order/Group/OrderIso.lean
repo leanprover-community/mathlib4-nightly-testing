@@ -41,16 +41,14 @@ def OrderIso.inv : α ≃o αᵒᵈ where
 end
 
 @[to_additive neg_le]
-theorem inv_le' : a⁻¹ ≤ b ↔ b⁻¹ ≤ a :=
-  (OrderIso.inv α).symm_apply_le
+theorem inv_le' : a⁻¹ ≤ b ↔ b⁻¹ ≤ a := (OrderIso.inv α).symm_apply_le
 
 alias ⟨inv_le_of_inv_le', _⟩ := inv_le'
 
 attribute [to_additive neg_le_of_neg_le] inv_le_of_inv_le'
 
 @[to_additive le_neg]
-theorem le_inv' : a ≤ b⁻¹ ↔ b ≤ a⁻¹ :=
-  (OrderIso.inv α).le_symm_apply
+theorem le_inv' : a ≤ b⁻¹ ↔ b ≤ a⁻¹ := (OrderIso.inv α).le_symm_apply
 
 /-- `x ↦ a / x` as an order-reversing equivalence. -/
 @[to_additive (attr := simps!) /-- `x ↦ a - x` as an order-reversing equivalence. -/]

@@ -56,10 +56,12 @@ namespace TopologicalSpace
 
 variable {X Y : Type*}
 
-/-- Given `f : X → Y` and a topology on `Y`,
-  the induced topology on `X` is the collection of sets
-  that are preimages of some open set in `Y`.
-  This is the coarsest topology that makes `f` continuous. -/
+/--
+Given `f : X → Y` and a topology on `Y`,
+the induced topology on `X` is the collection of sets
+that are preimages of some open set in `Y`.
+This is the coarsest topology that makes `f` continuous.
+-/
 @[instance_reducible, wikidata Q660730]
 def induced (f : X → Y) (t : TopologicalSpace Y) : TopologicalSpace X where
   IsOpen s := ∃ t, IsOpen t ∧ f ⁻¹' t = s
@@ -69,19 +71,21 @@ def induced (f : X → Y) (t : TopologicalSpace Y) : TopologicalSpace X where
     exact ⟨s'₁ ∩ s'₂, hs₁.inter hs₂, preimage_inter⟩
   isOpen_sUnion S h := by
     choose! g hgo hfg using h
-    refine ⟨⋃₀ (g '' S), isOpen_sUnion <| forall_mem_image.2 hgo, ?_⟩
+    refine ⟨⋃₀(g '' S), isOpen_sUnion <| forall_mem_image.2 hgo, ?_⟩
     rw [preimage_sUnion, biUnion_image, sUnion_eq_biUnion]
     exact iUnion₂_congr hfg
 
 @[wikidata Q77613467]
-instance _root_.instTopologicalSpaceSubtype {p : X → Prop} [t : TopologicalSpace X] :
-    TopologicalSpace (Subtype p) :=
+instance _root_.instTopologicalSpaceSubtype {p : X → Prop} [t : TopologicalSpace X]
+    : TopologicalSpace (Subtype p) :=
   induced (↑) t
 
-/-- Given `f : X → Y` and a topology on `X`,
-  the coinduced topology on `Y` is defined such that
-  `s : Set Y` is open if the preimage of `s` is open.
-  This is the finest topology that makes `f` continuous. -/
+/--
+Given `f : X → Y` and a topology on `X`,
+the coinduced topology on `Y` is defined such that
+`s : Set Y` is open if the preimage of `s` is open.
+This is the finest topology that makes `f` continuous.
+-/
 @[instance_reducible]
 def coinduced (f : X → Y) (t : TopologicalSpace X) : TopologicalSpace Y where
   IsOpen s := IsOpen (f ⁻¹' s)
@@ -93,12 +97,12 @@ end TopologicalSpace
 
 namespace WithTopology
 
-instance instTopologicalSpace (X : Type*) (t : TopologicalSpace X) :
-    TopologicalSpace (WithTopology X t) :=
+instance instTopologicalSpace (X : Type*) (t : TopologicalSpace X)
+    : TopologicalSpace (WithTopology X t) :=
   .coinduced (WithTopology.toTopology t) t
 
-lemma topology_eq_coinduced (X : Type*) (t : TopologicalSpace X) :
-    instTopologicalSpace X t = .coinduced (.toTopology t) t :=
+lemma topology_eq_coinduced (X : Type*) (t : TopologicalSpace X)
+    : instTopologicalSpace X t = .coinduced (.toTopology t) t :=
   rfl
 
 /-- `WithTopology.ofTopology` and `WithTopology.toTopology` as an equivalence. -/
@@ -114,7 +118,8 @@ end WithTopology
 namespace Topology
 variable {X Y : Type*} [tX : TopologicalSpace X] [tY : TopologicalSpace Y]
 
-/-- We say that restrictions of the topology on `X` to sets from a family `S`
+/--
+We say that restrictions of the topology on `X` to sets from a family `S`
 generates the original topology,
 if either of the following equivalent conditions hold:
 
@@ -126,24 +131,30 @@ if either of the following equivalent conditions hold:
 structure IsCoherentWith (S : Set (Set X)) : Prop where
   isOpen_of_forall_induced (u : Set X) : (∀ s ∈ S, IsOpen ((↑) ⁻¹' u : Set s)) → IsOpen u
 
-/-- A function `f : X → Y` between topological spaces is inducing if the topology on `X` is induced
+/--
+A function `f : X → Y` between topological spaces is inducing if the topology on `X` is induced
 by the topology on `Y` through `f`, meaning that a set `s : Set X` is open iff it is the preimage
-under `f` of some open set `t : Set Y`. -/
+under `f` of some open set `t : Set Y`.
+-/
 @[fun_prop, mk_iff]
 structure IsInducing (f : X → Y) : Prop where
   /-- The topology on the domain is equal to the induced topology. -/
   eq_induced : tX = tY.induced f
 
-/-- A function `f : X → Y` between topological spaces is coinducing if the topology on `Y` is
+/--
+A function `f : X → Y` between topological spaces is coinducing if the topology on `Y` is
 coinduced by the topology on `X` through `f`, meaning that a set `s : Set Y` is open iff its
-preimage is open. -/
+preimage is open.
+-/
 @[fun_prop, mk_iff isCoinducing_iff']
 structure IsCoinducing (f : X → Y) : Prop where
   /-- The topology on the codomain is equal to the coinduced topology. -/
   eq_coinduced : tY = tX.coinduced f
 
-/-- A function between topological spaces is an embedding if it is injective,
-  and for all `s : Set X`, `s` is open iff it is the preimage of an open set. -/
+/--
+A function between topological spaces is an embedding if it is injective,
+and for all `s : Set X`, `s` is open iff it is the preimage of an open set.
+-/
 @[fun_prop, mk_iff]
 structure IsEmbedding (f : X → Y) : Prop extends IsInducing f where
   /-- A topological embedding is injective. -/
@@ -161,11 +172,15 @@ structure IsClosedEmbedding (f : X → Y) : Prop extends IsEmbedding f where
   /-- The range of a closed embedding is a closed set. -/
   isClosed_range : IsClosed <| range f
 
-/-- A function between topological spaces is a quotient map if it is surjective,
-  and for all `s : Set Y`, `s` is open iff its preimage is an open set. -/
+/--
+A function between topological spaces is a quotient map if it is surjective,
+and for all `s : Set Y`, `s` is open iff its preimage is an open set.
+-/
 @[fun_prop, mk_iff]
-structure IsQuotientMap {X : Type*} {Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-    (f : X → Y) : Prop extends isCoinducing : IsCoinducing f where
+structure IsQuotientMap
+    {X : Type*} {Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] (f : X → Y)
+    : Prop
+    extends isCoinducing : IsCoinducing f where
   surjective : Function.Surjective f
 
 end Topology

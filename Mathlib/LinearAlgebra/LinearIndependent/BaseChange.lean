@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Algebra.Pi
 public import Mathlib.LinearAlgebra.Basis.VectorSpace
-
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import Mathlib.LinearAlgebra.TensorProduct.Pi
 import Mathlib.RingTheory.Localization.Module
@@ -28,10 +27,10 @@ open Function Set TensorProduct
 variable {ι ι' : Type*} [Finite ι']
 
 /-- This is an auxiliary lemma dominated by `linearIndependent_algebraMap_comp_iff`. -/
-private lemma LinearIndependent.linearIndependent_algebraMap_comp_aux {K : Type*} (L : Type*)
-    [Field K] [Field L] [Algebra K L]
-    {v : ι → ι' → K} (hv : LinearIndependent K v) :
-    LinearIndependent L (fun i ↦ algebraMap K L ∘ v i) := by
+private lemma LinearIndependent.linearIndependent_algebraMap_comp_aux
+    {K : Type*} (L : Type*) [Field K] [Field L] [Algebra K L]
+    {v : ι → ι' → K} (hv : LinearIndependent K v)
+    : LinearIndependent L (fun i ↦ algebraMap K L ∘ v i) := by
   classical
   let : Fintype ι' := .ofFinite ι'
   let I : Set (ι' → K) := hv.linearIndepOn_id.extend (subset_univ _)
@@ -44,10 +43,11 @@ private lemma LinearIndependent.linearIndependent_algebraMap_comp_aux {K : Type*
   rw [← hv']
   exact b'.linearIndependent.comp _ h_inj
 
-@[simp] lemma linearIndependent_algebraMap_comp_iff {R S : Type*}
-    [CommRing R] [CommRing S] [Algebra R S] [FaithfulSMul R S] [IsDomain S]
-    {v : ι → ι' → R} :
-    LinearIndependent S (fun i ↦ algebraMap R S ∘ v i) ↔ LinearIndependent R v := by
+@[simp]
+lemma linearIndependent_algebraMap_comp_iff
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S] [FaithfulSMul R S] [IsDomain S]
+    {v : ι → ι' → R}
+    : LinearIndependent S (fun i ↦ algebraMap R S ∘ v i) ↔ LinearIndependent R v := by
   change LinearIndependent S (Pi.algebraMap ι' R S ∘ v) ↔ LinearIndependent R v
   refine ⟨fun h ↦ (h.restrict_scalars' R).of_comp, fun h ↦ ?_⟩
   have : IsDomain R := .of_faithfulSMul R S
@@ -57,7 +57,9 @@ private lemma LinearIndependent.linearIndependent_algebraMap_comp_aux {K : Type*
     rw [← LinearIndependent.iff_fractionRing (R := R)]
     have : Function.Injective (Pi.algebraMap ι' R K) := by
       rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
-      intro v hv; ext i; simpa [Pi.algebraMap] using congr($hv i)
+      intro v hv
+      ext i
+      simpa [Pi.algebraMap] using congr($hv i)
     rwa [LinearMap.linearIndependent_iff_of_injOn _ this.injOn]
   let : Algebra K L := FractionRing.liftAlgebra R L
   suffices LinearIndependent L (Pi.algebraMap ι' R L ∘ v) by

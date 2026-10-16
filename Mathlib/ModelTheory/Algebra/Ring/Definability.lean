@@ -26,21 +26,30 @@ namespace Ring
 
 open MvPolynomial Language BoundedFormula
 
-theorem mvPolynomial_zeroLocus_definable {ι K : Type*} [Field K]
-    [CompatibleRing K] (S : Finset (MvPolynomial ι K)) :
-    Set.Definable (⋃ p ∈ S, p.coeff '' p.support : Set K) Language.ring
+theorem mvPolynomial_zeroLocus_definable
+    {ι K : Type*} [Field K] [CompatibleRing K] (S : Finset (MvPolynomial ι K))
+    : Set.Definable (⋃ p ∈ S, p.coeff '' p.support : Set K) Language.ring
       (zeroLocus K (Ideal.span (S : Set (MvPolynomial ι K)))) := by
   rw [Set.definable_iff_exists_formula_sum]
   let p' := genericPolyMap (fun p : S => p.1.support)
   let := Classical.decEq ι
   let := Classical.decEq K
   rw [MvPolynomial.zeroLocus_span]
-  refine ⟨BoundedFormula.iInf
-      (fun i : S => Term.equal
+  refine ⟨
+    BoundedFormula.iInf (fun i : S =>
+      Term.equal
         ((termOfFreeCommRing (p' i)).relabel
-          (Sum.map (fun p => ⟨p.1.1.coeff p.2.1, by
-            simp only [Set.mem_iUnion]
-            exact ⟨p.1.1, p.1.2, Set.mem_image_of_mem _ p.2.2⟩⟩) id)) 0), ?_⟩
+          (Sum.map
+            (fun p => ⟨
+              p.1.1.coeff p.2.1,
+              by
+                simp only [Set.mem_iUnion]
+                exact ⟨p.1.1, p.1.2, Set.mem_image_of_mem _ p.2.2⟩
+            ⟩)
+            id))
+        0),
+    ?_
+  ⟩
   simp [Formula.Realize, Term.equal, Function.comp_def, p', MvPolynomial.aeval_eq_eval₂Hom]
 
 end Ring

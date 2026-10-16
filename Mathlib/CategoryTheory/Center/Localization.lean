@@ -25,50 +25,52 @@ universe w v₁ v₂ u₁ u₂
 
 namespace CategoryTheory
 
-variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
-  (r s : CatCenter C) (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
+variable
+  {C : Type u₁} [Category.{v₁} C]
+  {D : Type u₂} [Category.{v₂} D]
+  (r s : CatCenter C)
+  (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
 
 namespace CatCenter
 
-/-- Given `r : CatCenter C` and `L : C ⥤ D` a localization functor with respect
+/--
+Given `r : CatCenter C` and `L : C ⥤ D` a localization functor with respect
 to `W : MorphismProperty D`, this is the induced element in `CatCenter D`
-obtained by localization. -/
+obtained by localization.
+-/
 noncomputable def localization : CatCenter D :=
   .of (Localization.liftNatTrans L W L L (𝟭 D) (𝟭 D) (Functor.whiskerRight r.asHom L))
 
 @[simp]
-lemma localization_app (X : C) :
-    (r.localization L W).app (L.obj X) = L.map (r.app X) := by
+lemma localization_app (X : C) : (r.localization L W).app (L.obj X) = L.map (r.app X) := by
   simp [localization, app]
 
 include W
 
-lemma ext_of_localization (r s : CatCenter D)
-    (h : ∀ (X : C), r.app (L.obj X) = s.app (L.obj X)) : r = s :=
+lemma ext_of_localization (r s : CatCenter D) (h : ∀ (X : C), r.app (L.obj X) = s.app (L.obj X))
+    : r = s :=
   End.ext (Localization.natTrans_ext L W h)
 
-lemma localization_one :
-    (1 : CatCenter C).localization L W = 1 :=
+lemma localization_one : (1 : CatCenter C).localization L W = 1 :=
   ext_of_localization L W _ _ (fun X => by simp)
 
-lemma localization_mul :
-    (r * s).localization L W = r.localization L W * s.localization L W :=
+lemma localization_mul : (r * s).localization L W = r.localization L W * s.localization L W :=
   ext_of_localization L W _ _ (fun X => by simp [mul_app])
 
 section Preadditive
 
 variable [Preadditive C] [Preadditive D] [L.Additive]
 
-lemma localization_zero :
-    (0 : CatCenter C).localization L W = 0 :=
+lemma localization_zero : (0 : CatCenter C).localization L W = 0 :=
   ext_of_localization L W _ _ (fun X => by simp)
 
-lemma localization_add :
-    (r + s).localization L W = r.localization L W + s.localization L W :=
+lemma localization_add : (r + s).localization L W = r.localization L W + s.localization L W :=
   ext_of_localization L W _ _ (by simp)
 
-/-- The morphism of rings `CatCenter C →+* CatCenter D` when `L : C ⥤ D`
-is an additive localization functor between preadditive categories. -/
+/--
+The morphism of rings `CatCenter C →+* CatCenter D` when `L : C ⥤ D`
+is an additive localization functor between preadditive categories.
+-/
 noncomputable def localizationRingHom : CatCenter C →+* CatCenter D where
   toFun r := r.localization L W
   map_zero' := localization_zero L W

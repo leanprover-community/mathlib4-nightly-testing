@@ -47,8 +47,8 @@ namespace Subsemigroup
 -- such that `CompleteLattice.LE` coincides with `SetLike.LE`
 
 @[to_additive]
-lemma mem_iSup_of_directed {ι : Sort*} {S : ι → Subsemigroup M} (hS : Directed (· ≤ ·) S) {x : M} :
-    x ∈ ⨆ i, S i ↔ ∃ i, x ∈ S i := by
+lemma mem_iSup_of_directed {ι : Sort*} {S : ι → Subsemigroup M} (hS : Directed (· ≤ ·) S) {x : M}
+    : x ∈ ⨆ i, S i ↔ ∃ i, x ∈ S i := by
   refine ⟨?_, fun ⟨i, hi⟩ ↦ le_iSup S i hi⟩
   suffices x ∈ closure (⋃ i, (S i : Set M)) → ∃ i, x ∈ S i by
     simpa only [closure_iUnion, closure_eq (S _)] using this
@@ -59,31 +59,32 @@ lemma mem_iSup_of_directed {ι : Sort*} {S : ι → Subsemigroup M} (hS : Direct
   exact ⟨k, mul_mem (hik hi) (hjk hj)⟩
 
 @[to_additive]
-theorem mem_biSup_of_directedOn {ι : Type*} {p : ι → Prop} {S : ι → Subsemigroup M}
-    (hS : DirectedOn ((· ≤ ·) on S) {i | p i}) {x : M} :
-    x ∈ ⨆ i, ⨆ (_h : p i), S i ↔ ∃ i, p i ∧ x ∈ S i := by
+theorem mem_biSup_of_directedOn
+    {ι : Type*} {p : ι → Prop} {S : ι → Subsemigroup M} (hS : DirectedOn ((· ≤ ·) on S) {i | p i})
+    {x : M}
+    : x ∈ ⨆ i, ⨆ (_h : p i), S i ↔ ∃ i, p i ∧ x ∈ S i := by
   rw [iSup_subtype', mem_iSup_of_directed]
   · simp
   rw [← Function.comp_def, directed_comp]
   exact hS.directed_val
 
 @[to_additive (attr := simp)]
-theorem mem_iSup_prop {p : Prop} {S : p → Subsemigroup M} {x : M} :
-    x ∈ ⨆ (h : p), S h ↔ ∃ (h : p), x ∈ S h := by
+theorem mem_iSup_prop {p : Prop} {S : p → Subsemigroup M} {x : M}
+    : x ∈ ⨆ (h : p), S h ↔ ∃ (h : p), x ∈ S h := by
   by_cases h : p
   · simp +contextual [h]
   · simpa [h] using! id
 
 @[to_additive]
-theorem coe_iSup_of_directed {S : ι → Subsemigroup M} (hS : Directed (· ≤ ·) S) :
-    ((⨆ i, S i : Subsemigroup M) : Set M) = ⋃ i, S i :=
+theorem coe_iSup_of_directed {S : ι → Subsemigroup M} (hS : Directed (· ≤ ·) S)
+    : ((⨆ i, S i : Subsemigroup M) : Set M) = ⋃ i, S i :=
   Set.ext fun x => by simp [mem_iSup_of_directed hS]
 
 /-- The supremum of a directed family of commutative subsemigroups is commutative. -/
 @[to_additive]
-theorem isMulCommutative_iSup {S : ι → Subsemigroup M}
-    [hS : ∀ i, IsMulCommutative (S i)] (dir : Directed (· ≤ ·) S) :
-    IsMulCommutative (⨆ i, S i : Subsemigroup M) := by
+theorem isMulCommutative_iSup
+    {S : ι → Subsemigroup M} [hS : ∀ i, IsMulCommutative (S i)] (dir : Directed (· ≤ ·) S)
+    : IsMulCommutative (⨆ i, S i : Subsemigroup M) := by
   refine .of_setLike_mul_comm ?_
   simp_rw [← SetLike.mem_coe, coe_iSup_of_directed dir, Set.mem_iUnion,
     SetLike.mem_coe, forall_exists_index]
@@ -93,19 +94,20 @@ theorem isMulCommutative_iSup {S : ι → Subsemigroup M}
 
 /-- The supremum of a directed family of commutative subsemigroups is commutative. -/
 @[to_additive]
-instance instIsMulCommutative_iSup {ι : Type*} [Preorder ι] [IsDirectedOrder ι]
-    (S : ι →o Subsemigroup M) [hS : ∀ i, IsMulCommutative (S i)] :
-    IsMulCommutative (⨆ i, S i : Subsemigroup M) :=
+instance instIsMulCommutative_iSup
+    {ι : Type*} [Preorder ι] [IsDirectedOrder ι]
+    (S : ι →o Subsemigroup M) [hS : ∀ i, IsMulCommutative (S i)]
+    : IsMulCommutative (⨆ i, S i : Subsemigroup M) :=
   isMulCommutative_iSup S.monotone.directed_le
 
 @[to_additive]
-theorem mem_sSup_of_directed_on {S : Set (Subsemigroup M)} (hS : DirectedOn (· ≤ ·) S) {x : M} :
-    x ∈ sSup S ↔ ∃ s ∈ S, x ∈ s := by
+theorem mem_sSup_of_directed_on {S : Set (Subsemigroup M)} (hS : DirectedOn (· ≤ ·) S) {x : M}
+    : x ∈ sSup S ↔ ∃ s ∈ S, x ∈ s := by
   simp only [sSup_eq_iSup', mem_iSup_of_directed hS.directed_val, SetCoe.exists, exists_prop]
 
 @[to_additive]
-theorem coe_sSup_of_directed_on {S : Set (Subsemigroup M)} (hS : DirectedOn (· ≤ ·) S) :
-    (↑(sSup S) : Set M) = ⋃ s ∈ S, ↑s :=
+theorem coe_sSup_of_directed_on {S : Set (Subsemigroup M)} (hS : DirectedOn (· ≤ ·) S)
+    : (↑(sSup S) : Set M) = ⋃ s ∈ S, ↑s :=
   Set.ext fun x => by simp [mem_sSup_of_directed_on hS]
 
 @[to_additive]
@@ -128,20 +130,25 @@ theorem mem_iSup_of_mem {S : ι → Subsemigroup M} (i : ι) : ∀ {x : M}, x �
   tauto
 
 @[to_additive]
-theorem mem_sSup_of_mem {S : Set (Subsemigroup M)} {s : Subsemigroup M} (hs : s ∈ S) :
-    ∀ {x : M}, x ∈ s → x ∈ sSup S := by
+theorem mem_sSup_of_mem {S : Set (Subsemigroup M)} {s : Subsemigroup M} (hs : s ∈ S)
+    : ∀ {x : M}, x ∈ s → x ∈ sSup S := by
   have : s ≤ sSup S := le_sSup hs
   tauto
 
-/-- An induction principle for elements of `⨆ i, S i`.
+/--
+An induction principle for elements of `⨆ i, S i`.
 If `C` holds all elements of `S i` for all `i`, and is preserved under multiplication,
-then it holds for all elements of the supremum of `S`. -/
+then it holds for all elements of the supremum of `S`.
+-/
 @[to_additive (attr := elab_as_elim)
-/-- An induction principle for elements of `⨆ i, S i`. If `C` holds all
+  /-- An induction principle for elements of `⨆ i, S i`. If `C` holds all
 elements of `S i` for all `i`, and is preserved under addition, then it holds for all elements of
 the supremum of `S`. -/]
-theorem iSup_induction (S : ι → Subsemigroup M) {C : M → Prop} {x₁ : M} (hx₁ : x₁ ∈ ⨆ i, S i)
-    (mem : ∀ i, ∀ x₂ ∈ S i, C x₂) (mul : ∀ x y, C x → C y → C (x * y)) : C x₁ := by
+theorem iSup_induction
+    (S : ι → Subsemigroup M)
+    {C : M → Prop} {x₁ : M}
+    (hx₁ : x₁ ∈ ⨆ i, S i) (mem : ∀ i, ∀ x₂ ∈ S i, C x₂) (mul : ∀ x y, C x → C y → C (x * y))
+    : C x₁ := by
   rw [iSup_eq_closure] at hx₁
   refine closure_induction (fun x₂ hx₂ => ?_) (fun x y _ _ ↦ mul x y) hx₁
   obtain ⟨i, hi⟩ := Set.mem_iUnion.mp hx₂
@@ -149,14 +156,16 @@ theorem iSup_induction (S : ι → Subsemigroup M) {C : M → Prop} {x₁ : M} (
 
 /-- A dependent version of `Subsemigroup.iSup_induction`. -/
 @[to_additive (attr := elab_as_elim)
-/-- A dependent version of `AddSubsemigroup.iSup_induction`. -/]
-theorem iSup_induction' (S : ι → Subsemigroup M) {C : ∀ x, (x ∈ ⨆ i, S i) → Prop}
-    (mem : ∀ (i) (x) (hxS : x ∈ S i), C x (mem_iSup_of_mem i ‹_›))
-    (mul : ∀ x y hx hy, C x hx → C y hy → C (x * y) (mul_mem ‹_› ‹_›)) {x₁ : M}
-    (hx₁ : x₁ ∈ ⨆ i, S i) : C x₁ hx₁ := by
+  /-- A dependent version of `AddSubsemigroup.iSup_induction`. -/]
+theorem iSup_induction'
+    (S : ι → Subsemigroup M)
+    {C : ∀ x, (x ∈ ⨆ i, S i) → Prop} (mem : ∀ (i) (x) (hxS : x ∈ S i), C x (mem_iSup_of_mem i ‹_›))
+    (mul : ∀ x y hx hy, C x hx → C y hy → C (x * y) (mul_mem ‹_› ‹_›))
+    {x₁ : M} (hx₁ : x₁ ∈ ⨆ i, S i)
+    : C x₁ hx₁ := by
   refine Exists.elim ?_ fun (hx₁' : x₁ ∈ ⨆ i, S i) (hc : C x₁ hx₁') => hc
-  refine @iSup_induction _ _ _ S (fun x' => ∃ hx'', C x' hx'') _ hx₁
-      (fun i x₂ hx₂ => ?_) fun x₃ y => ?_
+  refine
+    @iSup_induction _ _ _ S (fun x' => ∃ hx'', C x' hx'') _ hx₁ (fun i x₂ hx₂ => ?_) fun x₃ y => ?_
   · exact ⟨_, mem _ _ hx₂⟩
   · rintro ⟨_, Cx⟩ ⟨_, Cy⟩
     exact ⟨_, mul _ _ _ _ Cx Cy⟩

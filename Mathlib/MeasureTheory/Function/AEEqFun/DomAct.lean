@@ -29,7 +29,8 @@ open MeasureTheory
 
 namespace DomMulAct
 
-variable {M N α β} [MeasurableSpace N] [MeasurableSpace α]
+variable
+  {M N α β} [MeasurableSpace N] [MeasurableSpace α]
   {μ : MeasureTheory.Measure α} [TopologicalSpace β]
 
 section SMul
@@ -41,32 +42,32 @@ instance : SMul Mᵈᵐᵃ (α →ₘ[μ] β) where
   smul c f := f.compMeasurePreserving (mk.symm c • ·) (measurePreserving_smul _ _)
 
 @[to_additive]
-theorem smul_aeeqFun_aeeq (c : Mᵈᵐᵃ) (f : α →ₘ[μ] β) :
-    c • f =ᵐ[μ] (f <| mk.symm c • ·) :=
+theorem smul_aeeqFun_aeeq (c : Mᵈᵐᵃ) (f : α →ₘ[μ] β) : c • f =ᵐ[μ] (f <| mk.symm c • ·) :=
   f.coeFn_compMeasurePreserving _
 
 @[to_additive (attr := simp)]
-theorem mk_smul_mk_aeeqFun (c : M) (f : α → β) (hf : AEStronglyMeasurable f μ) :
-    mk c • AEEqFun.mk f hf = AEEqFun.mk (f <| c • ·)
-      (hf.comp_measurePreserving (measurePreserving_smul _ _)) :=
+theorem mk_smul_mk_aeeqFun (c : M) (f : α → β) (hf : AEStronglyMeasurable f μ)
+    : mk c • AEEqFun.mk f hf
+      = AEEqFun.mk (f <| c • ·) (hf.comp_measurePreserving (measurePreserving_smul _ _)) :=
   rfl
 
 @[to_additive (attr := simp)]
-theorem smul_aeeqFun_const (c : Mᵈᵐᵃ) (b : β) :
-    c • (AEEqFun.const α b : α →ₘ[μ] β) = AEEqFun.const α b :=
+theorem smul_aeeqFun_const (c : Mᵈᵐᵃ) (b : β)
+    : c • (AEEqFun.const α b : α →ₘ[μ] β) = AEEqFun.const α b :=
   rfl
 
 instance [SMul N β] [ContinuousConstSMul N β] : SMulCommClass Mᵈᵐᵃ N (α →ₘ[μ] β) where
   smul_comm := by rintro _ _ ⟨_⟩; rfl
 
-instance [SMul N β] [ContinuousConstSMul N β] : SMulCommClass N Mᵈᵐᵃ (α →ₘ[μ] β) :=
-  .symm _ _ _
+instance [SMul N β] [ContinuousConstSMul N β] : SMulCommClass N Mᵈᵐᵃ (α →ₘ[μ] β) := .symm _ _ _
 
 @[to_additive]
-instance [SMul N α] [MeasurableConstSMul N α] [SMulInvariantMeasure N α μ] [SMulCommClass M N α] :
-    SMulCommClass Mᵈᵐᵃ Nᵈᵐᵃ (α →ₘ[μ] β) where
-  smul_comm := mk.surjective.forall.2 fun c₁ ↦ mk.surjective.forall.2 fun c₂ ↦
-    (AEEqFun.induction_on · fun f hf ↦ by simp only [mk_smul_mk_aeeqFun, smul_comm])
+instance [SMul N α] [MeasurableConstSMul N α] [SMulInvariantMeasure N α μ] [SMulCommClass M N α]
+    : SMulCommClass Mᵈᵐᵃ Nᵈᵐᵃ (α →ₘ[μ] β) where
+  smul_comm :=
+    mk.surjective.forall.2 fun c₁ ↦
+      mk.surjective.forall.2 fun c₂ ↦
+        (AEEqFun.induction_on · fun f hf ↦ by simp only [mk_smul_mk_aeeqFun, smul_comm])
 
 instance [Zero β] : SMulZeroClass Mᵈᵐᵃ (α →ₘ[μ] β) where
   smul_zero _ := rfl
@@ -83,10 +84,12 @@ variable [Monoid M] [MulAction M α] [MeasurableConstSMul M α] [SMulInvariantMe
 
 @[to_additive]
 instance : MulAction Mᵈᵐᵃ (α →ₘ[μ] β) where
-  one_smul := (AEEqFun.induction_on · fun _ _ ↦ by
-    simp only [← mk_one, mk_smul_mk_aeeqFun, one_smul])
-  mul_smul := mk.surjective.forall.2 fun _ ↦ mk.surjective.forall.2 fun _ ↦
-    (AEEqFun.induction_on · fun _ _ ↦ by simp only [← mk_mul, mk_smul_mk_aeeqFun, mul_smul])
+  one_smul :=
+    (AEEqFun.induction_on · fun _ _ ↦ by simp only [← mk_one, mk_smul_mk_aeeqFun, one_smul])
+  mul_smul :=
+    mk.surjective.forall.2 fun _ ↦
+      mk.surjective.forall.2 fun _ ↦
+        (AEEqFun.induction_on · fun _ _ ↦ by simp only [← mk_mul, mk_smul_mk_aeeqFun, mul_smul])
 
 instance [Monoid β] [ContinuousMul β] : MulDistribMulAction Mᵈᵐᵃ (α →ₘ[μ] β) where
   smul_one _ := rfl

@@ -12,9 +12,7 @@ variable {C : Type u} [Category.{v} C]
 
 #guard_msgs in
 @[reassoc]
-lemma clean_lem {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) (h : X ⟶ Z) (w : f ≫ g = h) :
-    f ≫ g = h := w
-
+lemma clean_lem {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) (h : X ⟶ Z) (w : f ≫ g = h) : f ≫ g = h := w
 
 /-! a semireducible alias used for `.implicit`-ill-typed equation -/
 
@@ -29,9 +27,9 @@ Note: This linter can be disabled with `set_option linter.tacticCheckInstances f
 -/
 #guard_msgs in
 @[reassoc]
-lemma alias_lem {X Y Z : C} (f : MyHom X Y) (g : Y ⟶ Z) (h : MyHom X Z)
-    (w : (f : X ⟶ Y) ≫ g = h) :
-    (f : X ⟶ Y) ≫ g = h := w
+lemma alias_lem {X Y Z : C} (f : MyHom X Y) (g : Y ⟶ Z) (h : MyHom X Z) (w : (f : X ⟶ Y) ≫ g = h)
+    : (f : X ⟶ Y) ≫ g = h :=
+  w
 
 /-! marking the offenders `@[implicit_reducible]` silences the warning -/
 
@@ -40,6 +38,6 @@ attribute [implicit_reducible] Quiver.Hom MyHom
 
 #guard_msgs in
 @[reassoc]
-lemma alias_lem2 {X Y Z : C} (f : MyHom X Y) (g : Y ⟶ Z) (h : MyHom X Z)
-    (w : (f : X ⟶ Y) ≫ g = h) :
-    (f : X ⟶ Y) ≫ g = h := w
+lemma alias_lem2 {X Y Z : C} (f : MyHom X Y) (g : Y ⟶ Z) (h : MyHom X Z) (w : (f : X ⟶ Y) ≫ g = h)
+    : (f : X ⟶ Y) ≫ g = h :=
+  w

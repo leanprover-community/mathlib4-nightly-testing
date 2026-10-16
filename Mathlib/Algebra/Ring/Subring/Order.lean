@@ -33,8 +33,10 @@ instance toIsOrderedRing [IsOrderedRing R] (s : S) : IsOrderedRing s :=
 
 /-- A subring of a strict ordered ring is a strict ordered ring. -/
 instance toIsStrictOrderedRing [IsStrictOrderedRing R] (s : S) : IsStrictOrderedRing s :=
-  Function.Injective.isStrictOrderedRing Subtype.val
-    rfl rfl (fun _ _ => rfl) (fun _ _ => rfl) .rfl .rfl
+  Function.Injective.isStrictOrderedRing Subtype.val rfl rfl
+    (fun _ _ => rfl)
+    (fun _ _ => rfl)
+    .rfl .rfl
 
 /-- The inclusion `S → R` of a subring, as an ordered ring homomorphism. -/
 def orderedSubtype (s : Subring R) : s →+*o R where

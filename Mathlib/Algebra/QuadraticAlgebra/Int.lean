@@ -39,21 +39,23 @@ instance : IsScalarTower ℤ (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a 
   .of_algHom (baseChange ℚ a b)
 
 @[simp]
-theorem re_algebraMap (x : QuadraticAlgebra ℤ a b) :
-    (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x).re = x.re := rfl
+theorem re_algebraMap (x : QuadraticAlgebra ℤ a b)
+    : (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x).re = x.re :=
+  rfl
 
 @[simp]
-theorem im_algebraMap (x : QuadraticAlgebra ℤ a b) :
-    (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x).im = x.im := rfl
+theorem im_algebraMap (x : QuadraticAlgebra ℤ a b)
+    : (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x).im = x.im :=
+  rfl
 
 @[simp]
-theorem norm_algebraMap_eq (x : QuadraticAlgebra ℤ a b) :
-    norm (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x) = norm x :=
+theorem norm_algebraMap_eq (x : QuadraticAlgebra ℤ a b)
+    : norm (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x) = norm x :=
   norm_mapRingHom (algebraMap ℤ ℚ) a b x
 
 @[simp]
-theorem trace_algebraMap_eq (x : QuadraticAlgebra ℤ a b) :
-    trace (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x) = trace x :=
+theorem trace_algebraMap_eq (x : QuadraticAlgebra ℤ a b)
+    : trace (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) x) = trace x :=
   trace_mapRingHom (algebraMap ℤ ℚ) a b x
 
 instance : FaithfulSMul (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) :=
@@ -61,21 +63,27 @@ instance : FaithfulSMul (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) :=
 
 open scoped nonZeroDivisors
 
-theorem exists_nat_smul_mem (z : QuadraticAlgebra ℚ a b) :
-    ∃ n : ℕ, 0 < n ∧
-      n • z ∈ Set.range (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b)) := by
-  obtain ⟨n, hn, x, y, hx, hy⟩ : ∃ n : ℕ, 0 < n ∧ ∃ x y : ℤ, n * z.re = x ∧ n * z.im = y :=
-    ⟨z.re.den * z.im.den, by positivity, z.im.den * z.re.num, z.re.den * z.im.num,
-      by push_cast; grind [← Rat.mul_den_eq_num]⟩
+theorem exists_nat_smul_mem (z : QuadraticAlgebra ℚ a b)
+    : ∃ n : ℕ,
+      0 < n ∧ n • z ∈ Set.range (algebraMap (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b)) := by
+  obtain ⟨n, hn, x, y, hx, hy⟩ : ∃ n : ℕ, 0 < n ∧ ∃ x y : ℤ, n * z.re = x ∧ n * z.im = y := ⟨
+    z.re.den * z.im.den,
+    by positivity,
+    z.im.den * z.re.num,
+    z.re.den * z.im.num,
+    by push_cast; grind [← Rat.mul_den_eq_num]
+  ⟩
   refine ⟨n, hn, x • 1 + y • ω, ?_⟩
   ext <;> simp [hx, hy]
 
 -- TODO: generalize this instance: if `S` is the localization of `R` at `M`, then
 -- `QuadraticAlgebra S a b` is the localization of `QuadraticAlgebra R a b` at the image of `M`.
-/-- `QuadraticAlgebra ℚ a b` is the localization of the order `QuadraticAlgebra ℤ a b` at the
-nonzero integers. -/
-noncomputable instance :
-    IsLocalization (algebraMapSubmonoid (QuadraticAlgebra ℤ a b) ℤ⁰)
+/--
+`QuadraticAlgebra ℚ a b` is the localization of the order `QuadraticAlgebra ℤ a b` at the
+nonzero integers.
+-/
+noncomputable instance
+    : IsLocalization (algebraMapSubmonoid (QuadraticAlgebra ℤ a b) ℤ⁰)
       (QuadraticAlgebra ℚ a b) := by
   refine ⟨fun ⟨y, ⟨x, hx, hy⟩⟩ ↦ ?_, fun x ↦ ?_, fun h ↦ ⟨1, by simpa using h⟩⟩
   · dsimp only
@@ -92,8 +100,7 @@ instance : IsFractionRing (QuadraticAlgebra ℤ a b) (QuadraticAlgebra ℚ a b) 
     rwa [isUnit_iff_norm_isUnit, isUnit_iff_ne_zero, norm_algebraMap_eq, Int.cast_ne_zero,
       ← mem_nonZeroDivisors_iff_ne_zero, norm_mem_nonZeroDivisors_iff]
 
-theorem isDomain_iff :
-    IsDomain (QuadraticAlgebra ℤ a b) ↔ ¬ IsSquare (discr a b) := by
+theorem isDomain_iff : IsDomain (QuadraticAlgebra ℤ a b) ↔ ¬ IsSquare (discr a b) := by
   simp [IsFractionRing.isDomain_iff_isField (K := QuadraticAlgebra ℚ a b),
     isField_iff_not_isSquare_discr, discr_intCast]
 

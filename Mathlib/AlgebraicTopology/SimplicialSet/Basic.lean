@@ -27,11 +27,12 @@ open CategoryTheory Limits Functor ConcreteCategory
 
 open scoped Simplicial
 
-/-- The category of simplicial sets.
+/--
+The category of simplicial sets.
 This is the category of contravariant functors from
-`SimplexCategory` to `Type u`. -/
-abbrev SSet : Type (u + 1) :=
-  SimplicialObject (Type u)
+`SimplexCategory` to `Type u`.
+-/
+abbrev SSet : Type (u + 1) := SimplicialObject (Type u)
 
 namespace SSet
 
@@ -39,13 +40,12 @@ namespace SSet
 lemma hom_ext {X Y : SSet} {f g : X ⟶ Y} (w : ∀ n, f.app n = g.app n) : f = g :=
   SimplicialObject.hom_ext _ _ w
 
-@[simp]
-lemma id_app (X : SSet) (n : SimplexCategoryᵒᵖ) :
-    NatTrans.app (𝟙 X) n = 𝟙 _ := rfl
+@[simp] lemma id_app (X : SSet) (n : SimplexCategoryᵒᵖ) : NatTrans.app (𝟙 X) n = 𝟙 _ := rfl
 
 @[simp, reassoc]
-lemma comp_app {X Y Z : SSet} (f : X ⟶ Y) (g : Y ⟶ Z) (n : SimplexCategoryᵒᵖ) :
-    (f ≫ g).app n = f.app n ≫ g.app n := rfl
+lemma comp_app {X Y Z : SSet} (f : X ⟶ Y) (g : Y ⟶ Z) (n : SimplexCategoryᵒᵖ)
+    : (f ≫ g).app n = f.app n ≫ g.app n :=
+  rfl
 
 /-- The constant map of simplicial sets `X ⟶ Y` induced by a simplex `y : Y _[0]`. -/
 @[simps]
@@ -57,53 +57,52 @@ def const {X Y : SSet.{u}} (y : Y _⦋0⦌) : X ⟶ Y where
     rw [← CategoryTheory.comp_apply, ← Functor.map_comp]
     rfl
 
-@[simp]
-lemma comp_const {X Y Z : SSet.{u}} (f : X ⟶ Y) (z : Z _⦋0⦌) :
-    f ≫ const z = const z := rfl
+@[simp] lemma comp_const {X Y Z : SSet.{u}} (f : X ⟶ Y) (z : Z _⦋0⦌) : f ≫ const z = const z := rfl
 
 @[simp]
-lemma const_comp {X Y Z : SSet.{u}} (y : Y _⦋0⦌) (g : Y ⟶ Z) :
-    const (X := X) y ≫ g = const (g.app _ y) := by
+lemma const_comp {X Y Z : SSet.{u}} (y : Y _⦋0⦌) (g : Y ⟶ Z)
+    : const (X := X) y ≫ g = const (g.app _ y) := by
   cat_disch
 
 /-- The ulift functor `SSet.{u} ⥤ SSet.{max u v}` on simplicial sets. -/
 def uliftFunctor : SSet.{u} ⥤ SSet.{max u v} :=
   (SimplicialObject.whiskering _ _).obj CategoryTheory.uliftFunctor.{v, u}
 
-/-- The functor which sends `n : SimplexCategoryᵒᵖ` to the evaluation
-functor `SSet.{u} ⥤ Type u` on the object `n`. -/
-protected abbrev evaluation : SimplexCategoryᵒᵖ ⥤ SSet.{u} ⥤ Type u :=
-  evaluation _ _
+/--
+The functor which sends `n : SimplexCategoryᵒᵖ` to the evaluation
+functor `SSet.{u} ⥤ Type u` on the object `n`.
+-/
+protected abbrev evaluation : SimplexCategoryᵒᵖ ⥤ SSet.{u} ⥤ Type u := evaluation _ _
 
 /-- Truncated simplicial sets. -/
 abbrev Truncated (n : ℕ) := SimplicialObject.Truncated (Type u) n
 
 namespace Truncated
 
-/-- The ulift functor `SSet.Truncated.{u} ⥤ SSet.Truncated.{max u v}` on truncated
-simplicial sets. -/
+/--
+The ulift functor `SSet.Truncated.{u} ⥤ SSet.Truncated.{max u v}` on truncated
+simplicial sets.
+-/
 def uliftFunctor (k : ℕ) : SSet.Truncated.{u} k ⥤ SSet.Truncated.{max u v} k :=
   (whiskeringRight _ _ _).obj CategoryTheory.uliftFunctor.{v, u}
 
 @[ext]
-lemma hom_ext {n : ℕ} {X Y : Truncated n} {f g : X ⟶ Y} (w : ∀ n, f.app n = g.app n) :
-    f = g :=
+lemma hom_ext {n : ℕ} {X Y : Truncated n} {f g : X ⟶ Y} (w : ∀ n, f.app n = g.app n) : f = g :=
   NatTrans.ext (funext w)
 
 /-- Further truncation of truncated simplicial sets. -/
-abbrev trunc (n m : ℕ) (h : m ≤ n := by lia) :
-    SSet.Truncated n ⥤ SSet.Truncated m :=
+abbrev trunc (n m : ℕ) (h : m ≤ n := by lia) : SSet.Truncated n ⥤ SSet.Truncated m :=
   SimplicialObject.Truncated.trunc (Type u) n m
 
 @[simp]
-lemma id_app {n : ℕ} (X : Truncated n) (d : (SimplexCategory.Truncated n)ᵒᵖ) :
-    NatTrans.app (𝟙 X) d = 𝟙 _ :=
+lemma id_app {n : ℕ} (X : Truncated n) (d : (SimplexCategory.Truncated n)ᵒᵖ)
+    : NatTrans.app (𝟙 X) d = 𝟙 _ :=
   rfl
 
 @[simp, reassoc]
-lemma comp_app {n : ℕ} {X Y Z : Truncated n} (f : X ⟶ Y) (g : Y ⟶ Z)
-    (d : (SimplexCategory.Truncated n)ᵒᵖ) :
-    (f ≫ g).app d = f.app d ≫ g.app d :=
+lemma comp_app
+    {n : ℕ} {X Y Z : Truncated n} (f : X ⟶ Y) (g : Y ⟶ Z) (d : (SimplexCategory.Truncated n)ᵒᵖ)
+    : (f ≫ g).app d = f.app d ≫ g.app d :=
   rfl
 
 end Truncated
@@ -112,8 +111,7 @@ end Truncated
 abbrev truncation (n : ℕ) : SSet ⥤ SSet.Truncated n := SimplicialObject.truncation n
 
 /-- For all `m ≤ n`, `truncation m` factors through `SSet.Truncated n`. -/
-def truncationCompTrunc {n m : ℕ} (h : m ≤ n) :
-    truncation n ⋙ Truncated.trunc n m ≅ truncation m :=
+def truncationCompTrunc {n m : ℕ} (h : m ≤ n) : truncation n ⋙ Truncated.trunc n m ≅ truncation m :=
   Iso.refl _
 
 open SimplexCategory
@@ -139,8 +137,7 @@ end
 section adjunctions
 
 /-- The adjunction between the n-skeleton and n-truncation. -/
-noncomputable def skAdj (n : ℕ) : Truncated.sk n ⊣ truncation.{u} n :=
-  SimplicialObject.skAdj n
+noncomputable def skAdj (n : ℕ) : Truncated.sk n ⊣ truncation.{u} n := SimplicialObject.skAdj n
 
 /-- The adjunction between n-truncation and the n-coskeleton. -/
 noncomputable def coskAdj (n : ℕ) : truncation.{u} n ⊣ Truncated.cosk n :=
@@ -151,16 +148,13 @@ namespace Truncated
 instance cosk_reflective (n) : IsIso (coskAdj n).counit :=
   SimplicialObject.Truncated.cosk_reflective n
 
-instance sk_coreflective (n) : IsIso (skAdj n).unit :=
-  SimplicialObject.Truncated.sk_coreflective n
+instance sk_coreflective (n) : IsIso (skAdj n).unit := SimplicialObject.Truncated.sk_coreflective n
 
 /-- Since `Truncated.inclusion` is fully faithful, so is right Kan extension along it. -/
-noncomputable def cosk.fullyFaithful (n) :
-    (Truncated.cosk n).FullyFaithful :=
+noncomputable def cosk.fullyFaithful (n) : (Truncated.cosk n).FullyFaithful :=
   SimplicialObject.Truncated.cosk.fullyFaithful n
 
-instance cosk.full (n) : (Truncated.cosk n).Full :=
-  SimplicialObject.Truncated.cosk.full n
+instance cosk.full (n) : (Truncated.cosk n).Full := SimplicialObject.Truncated.cosk.full n
 
 instance cosk.faithful (n) : (Truncated.cosk n).Faithful :=
   SimplicialObject.Truncated.cosk.faithful n
@@ -169,13 +163,12 @@ noncomputable instance coskAdj.reflective (n) : Reflective (Truncated.cosk n) :=
   SimplicialObject.Truncated.coskAdj.reflective n
 
 /-- Since `Truncated.inclusion` is fully faithful, so is left Kan extension along it. -/
-noncomputable def sk.fullyFaithful (n) :
-    (Truncated.sk n).FullyFaithful := SimplicialObject.Truncated.sk.fullyFaithful n
+noncomputable def sk.fullyFaithful (n) : (Truncated.sk n).FullyFaithful :=
+  SimplicialObject.Truncated.sk.fullyFaithful n
 
 instance sk.full (n) : (Truncated.sk n).Full := SimplicialObject.Truncated.sk.full n
 
-instance sk.faithful (n) : (Truncated.sk n).Faithful :=
-  SimplicialObject.Truncated.sk.faithful n
+instance sk.faithful (n) : (Truncated.sk n).Faithful := SimplicialObject.Truncated.sk.faithful n
 
 noncomputable instance skAdj.coreflective (n) : Coreflective (Truncated.sk n) :=
   SimplicialObject.Truncated.skAdj.coreflective n
@@ -184,75 +177,88 @@ end Truncated
 
 end adjunctions
 
-/-- The category of augmented simplicial sets, as a particular case of
-augmented simplicial objects. -/
-abbrev Augmented :=
-  SimplicialObject.Augmented (Type u)
+/--
+The category of augmented simplicial sets, as a particular case of
+augmented simplicial objects.
+-/
+abbrev Augmented := SimplicialObject.Augmented (Type u)
 
 section applications
 variable {S : SSet}
 
-lemma δ_comp_δ_apply {n} {i j : Fin (n + 2)} (H : i ≤ j) (x : S _⦋n + 2⦌) :
-    S.δ i (S.δ j.succ x) = S.δ j (S.δ i.castSucc x) := congr_hom (S.δ_comp_δ H) x
+lemma δ_comp_δ_apply {n} {i j : Fin (n + 2)} (H : i ≤ j) (x : S _⦋n + 2⦌)
+    : S.δ i (S.δ j.succ x) = S.δ j (S.δ i.castSucc x) :=
+  congr_hom (S.δ_comp_δ H) x
 
-lemma δ_comp_δ'_apply {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : Fin.castSucc i < j)
-    (x : S _⦋n + 2⦌) : S.δ i (S.δ j x) =
-      S.δ (j.pred H.ne_zero) (S.δ i.castSucc x) :=
+lemma δ_comp_δ'_apply
+    {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : Fin.castSucc i < j) (x : S _⦋n + 2⦌)
+    : S.δ i (S.δ j x) = S.δ (j.pred H.ne_zero) (S.δ i.castSucc x) :=
   congr_hom (S.δ_comp_δ' H) x
 
-lemma δ_comp_δ''_apply {n} {i : Fin (n + 3)} {j : Fin (n + 2)} (H : i ≤ Fin.castSucc j)
-    (x : S _⦋n + 2⦌) :
-    S.δ (i.castLT (Nat.lt_of_le_of_lt (Fin.le_iff_val_le_val.mp H) j.is_lt)) (S.δ j.succ x) =
-      S.δ j (S.δ i x) := congr_hom (S.δ_comp_δ'' H) x
+lemma δ_comp_δ''_apply
+    {n} {i : Fin (n + 3)} {j : Fin (n + 2)} (H : i ≤ Fin.castSucc j) (x : S _⦋n + 2⦌)
+    : S.δ (i.castLT (Nat.lt_of_le_of_lt (Fin.le_iff_val_le_val.mp H) j.is_lt)) (S.δ j.succ x)
+      = S.δ j (S.δ i x) :=
+  congr_hom (S.δ_comp_δ'' H) x
 
-lemma δ_comp_δ_self_apply {n} {i : Fin (n + 2)} (x : S _⦋n + 2⦌) :
-    S.δ i (S.δ i.castSucc x) = S.δ i (S.δ i.succ x) := congr_hom S.δ_comp_δ_self x
+lemma δ_comp_δ_self_apply {n} {i : Fin (n + 2)} (x : S _⦋n + 2⦌)
+    : S.δ i (S.δ i.castSucc x) = S.δ i (S.δ i.succ x) :=
+  congr_hom S.δ_comp_δ_self x
 
-lemma δ_comp_δ_self'_apply {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : j = Fin.castSucc i)
-    (x : S _⦋n + 2⦌) : S.δ i (S.δ j x) = S.δ i (S.δ i.succ x) := congr_hom (S.δ_comp_δ_self' H) x
+lemma δ_comp_δ_self'_apply
+    {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : j = Fin.castSucc i) (x : S _⦋n + 2⦌)
+    : S.δ i (S.δ j x) = S.δ i (S.δ i.succ x) :=
+  congr_hom (S.δ_comp_δ_self' H) x
 
-lemma δ_comp_σ_of_le_apply {n} {i : Fin (n + 2)} {j : Fin (n + 1)} (H : i ≤ Fin.castSucc j)
-    (x : S _⦋n + 1⦌) :
-    S.δ (Fin.castSucc i) (S.σ j.succ x) = S.σ j (S.δ i x) := congr_hom (S.δ_comp_σ_of_le H) x
+lemma δ_comp_σ_of_le_apply
+    {n} {i : Fin (n + 2)} {j : Fin (n + 1)} (H : i ≤ Fin.castSucc j) (x : S _⦋n + 1⦌)
+    : S.δ (Fin.castSucc i) (S.σ j.succ x) = S.σ j (S.δ i x) :=
+  congr_hom (S.δ_comp_σ_of_le H) x
 
 @[simp]
 lemma δ_comp_σ_self_apply {n} (i : Fin (n + 1)) (x : S _⦋n⦌) : S.δ i.castSucc (S.σ i x) = x :=
   congr_hom S.δ_comp_σ_self x
 
-lemma δ_comp_σ_self'_apply {n} {j : Fin (n + 2)} {i : Fin (n + 1)} (H : j = Fin.castSucc i)
-    (x : S _⦋n⦌) : S.δ j (S.σ i x) = x := congr_hom (S.δ_comp_σ_self' H) x
+lemma δ_comp_σ_self'_apply
+    {n} {j : Fin (n + 2)} {i : Fin (n + 1)} (H : j = Fin.castSucc i) (x : S _⦋n⦌)
+    : S.δ j (S.σ i x) = x :=
+  congr_hom (S.δ_comp_σ_self' H) x
 
 @[simp]
 lemma δ_comp_σ_succ_apply {n} (i : Fin (n + 1)) (x : S _⦋n⦌) : S.δ i.succ (S.σ i x) = x :=
   congr_hom S.δ_comp_σ_succ x
 
-lemma δ_comp_σ_succ'_apply {n} {j : Fin (n + 2)} {i : Fin (n + 1)} (H : j = i.succ) (x : S _⦋n⦌) :
-    S.δ j (S.σ i x) = x := congr_hom (S.δ_comp_σ_succ' H) x
+lemma δ_comp_σ_succ'_apply {n} {j : Fin (n + 2)} {i : Fin (n + 1)} (H : j = i.succ) (x : S _⦋n⦌)
+    : S.δ j (S.σ i x) = x :=
+  congr_hom (S.δ_comp_σ_succ' H) x
 
-lemma δ_comp_σ_of_gt_apply {n} {i : Fin (n + 2)} {j : Fin (n + 1)} (H : Fin.castSucc j < i)
-    (x : S _⦋n + 1⦌) : S.δ i.succ (S.σ (Fin.castSucc j) x) = S.σ j (S.δ i x) :=
+lemma δ_comp_σ_of_gt_apply
+    {n} {i : Fin (n + 2)} {j : Fin (n + 1)} (H : Fin.castSucc j < i) (x : S _⦋n + 1⦌)
+    : S.δ i.succ (S.σ (Fin.castSucc j) x) = S.σ j (S.δ i x) :=
   congr_hom (S.δ_comp_σ_of_gt H) x
 
-lemma δ_comp_σ_of_gt'_apply {n} {i : Fin (n + 3)} {j : Fin (n + 2)} (H : j.succ < i)
-    (x : S _⦋n + 1⦌) : S.δ i (S.σ j x) =
-      S.σ (j.castLT ((add_lt_add_iff_right 1).mp (lt_of_lt_of_le H i.is_le)))
+lemma δ_comp_σ_of_gt'_apply
+    {n} {i : Fin (n + 3)} {j : Fin (n + 2)} (H : j.succ < i) (x : S _⦋n + 1⦌)
+    : S.δ i (S.σ j x)
+      = S.σ (j.castLT ((add_lt_add_iff_right 1).mp (lt_of_lt_of_le H i.is_le)))
         (S.δ (i.pred H.ne_zero) x) :=
   congr_hom (S.δ_comp_σ_of_gt' H) x
 
-lemma σ_comp_σ_apply {n} {i j : Fin (n + 1)} (H : i ≤ j) (x : S _⦋n⦌) :
-    S.σ i.castSucc (S.σ j x) = S.σ j.succ (S.σ i x) := congr_hom (S.σ_comp_σ H) x
+lemma σ_comp_σ_apply {n} {i j : Fin (n + 1)} (H : i ≤ j) (x : S _⦋n⦌)
+    : S.σ i.castSucc (S.σ j x) = S.σ j.succ (S.σ i x) :=
+  congr_hom (S.σ_comp_σ H) x
 
 variable {T : SSet} (f : S ⟶ T)
 
 open Opposite
 
-lemma δ_naturality_apply {n : ℕ} (i : Fin (n + 2)) (x : S _⦋n + 1⦌) :
-    f.app (op ⦋n⦌) (S.δ i x) = T.δ i (f.app (op ⦋n + 1⦌) x) := by
+lemma δ_naturality_apply {n : ℕ} (i : Fin (n + 2)) (x : S _⦋n + 1⦌)
+    : f.app (op ⦋n⦌) (S.δ i x) = T.δ i (f.app (op ⦋n + 1⦌) x) := by
   change (S.δ i ≫ f.app (op ⦋n⦌)) x = (f.app (op ⦋n + 1⦌) ≫ T.δ i) x
   exact congr_hom (SimplicialObject.δ_naturality f i) x
 
-lemma σ_naturality_apply {n : ℕ} (i : Fin (n + 1)) (x : S _⦋n⦌) :
-    f.app (op ⦋n + 1⦌) (S.σ i x) = T.σ i (f.app (op ⦋n⦌) x) := by
+lemma σ_naturality_apply {n : ℕ} (i : Fin (n + 1)) (x : S _⦋n⦌)
+    : f.app (op ⦋n + 1⦌) (S.σ i x) = T.σ i (f.app (op ⦋n⦌) x) := by
   change (S.σ i ≫ f.app (op ⦋n + 1⦌)) x = (f.app (op ⦋n⦌) ≫ T.σ i) x
   exact congr_hom (SimplicialObject.σ_naturality f i) x
 

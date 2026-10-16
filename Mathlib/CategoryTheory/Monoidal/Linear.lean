@@ -17,7 +17,6 @@ tensor product of morphisms is `R`-linear in both factors.
 
 public section
 
-
 namespace CategoryTheory
 
 open CategoryTheory.Limits
@@ -28,8 +27,7 @@ variable (R : Type*) [Semiring R]
 variable (C : Type*) [Category* C] [Preadditive C] [Linear R C]
 variable [MonoidalCategory C]
 
-/-- A category is `MonoidalLinear R` if tensoring is `R`-linear in both factors.
--/
+/-- A category is `MonoidalLinear R` if tensoring is `R`-linear in both factors. -/
 class MonoidalLinear [MonoidalPreadditive C] : Prop where
   whiskerLeft_smul : ∀ (X : C) {Y Z : C} (r : R) (f : Y ⟶ Z), X ◁ (r • f) = r • (X ◁ f) := by
     cat_disch
@@ -49,20 +47,25 @@ instance tensoringLeft_linear (X : C) : ((tensoringLeft C).obj X).Linear R where
 
 instance tensoringRight_linear (X : C) : ((tensoringRight C).obj X).Linear R where
 
-/-- A faithful linear monoidal functor to a linear monoidal category
-ensures that the domain is linear monoidal. -/
-theorem MonoidalLinear.ofFaithful {D : Type*} [Category* D] [Preadditive D] [Linear R D]
-    [MonoidalCategory D] [MonoidalPreadditive D] (F : D ⥤ C) [F.Monoidal] [F.Faithful]
-    [F.Linear R] : MonoidalLinear R D :=
-  { whiskerLeft_smul := by
-      intro X Y Z r f
-      apply F.map_injective
-      rw [Functor.Monoidal.map_whiskerLeft]
-      simp
-    smul_whiskerRight := by
-      intro r X Y f Z
-      apply F.map_injective
-      rw [Functor.Monoidal.map_whiskerRight]
-      simp }
+/--
+A faithful linear monoidal functor to a linear monoidal category
+ensures that the domain is linear monoidal.
+-/
+theorem MonoidalLinear.ofFaithful
+    {D : Type*}
+    [Category* D] [Preadditive D] [Linear R D] [MonoidalCategory D] [MonoidalPreadditive D]
+    (F : D ⥤ C) [F.Monoidal] [F.Faithful] [F.Linear R]
+    : MonoidalLinear R D := {
+  whiskerLeft_smul := by
+    intro X Y Z r f
+    apply F.map_injective
+    rw [Functor.Monoidal.map_whiskerLeft]
+    simp
+  smul_whiskerRight := by
+    intro r X Y f Z
+    apply F.map_injective
+    rw [Functor.Monoidal.map_whiskerRight]
+    simp
+}
 
 end CategoryTheory

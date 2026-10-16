@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.DefEqTransformations
 
 set_option autoImplicit true
@@ -67,8 +68,7 @@ example (m n : Nat) : (m == n) = true := by
   guard_target =ₛ m.beq n = true
   exact test_sorry
 
-example {α : Type u} (f : α → α) (a : α) :
-    (fun x => (fun x => f x) x) a = f a := by
+example {α : Type u} (f : α → α) (a : α) : (fun x => (fun x => f x) x) a = f a := by
   eta_reduce
   guard_target =ₛ f a = f a
   rfl

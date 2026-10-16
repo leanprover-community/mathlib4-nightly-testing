@@ -6,7 +6,6 @@ Authors: Robert Y. Lewis
 module
 
 public meta import Lean.Elab.Tactic.Basic
-
 import Mathlib.Init
 
 /-!
@@ -26,5 +25,4 @@ not the number of visible hypotheses.
 -/
 elab (name := guardHypNums) "guard_hyp_nums " n:num : tactic => do
   let numHyps := (← getLCtx).size
-  guard (numHyps = n.getNat) <|>
-    throwError "expected {n.getNat} hypotheses but found {numHyps}"
+  guard (numHyps = n.getNat) <|> throwError "expected {n.getNat} hypotheses but found {numHyps}"

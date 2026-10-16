@@ -31,21 +31,26 @@ open Lean Meta
 
 namespace Meta.FunProp
 
-/-- An abbreviation of `∀ x, p x`. It is used by `fun_prop` to represent Pi types as function
-applications and should not occur in any place other than the implementation of `fun_prop`. -/
+/--
+An abbreviation of `∀ x, p x`. It is used by `fun_prop` to represent Pi types as function
+applications and should not occur in any place other than the implementation of `fun_prop`.
+-/
 abbrev Forall {α : Sort*} (p : α → Sort*) := ∀ x, p x
 
 namespace Mor
 
 /-- Is `name` a coercion from some function space to functions? -/
 def isCoeFunName (name : Name) : CoreM Bool := do
-  let some info ← getCoeFnInfo? name | return false
+  let some info ← getCoeFnInfo? name
+    | return false
   return info.type == .coeFun
 
 /-- Is `e` a coercion from some function space to functions? -/
 def isCoeFun (e : Expr) : MetaM Bool := do
-  let some (name, _) := e.getAppFn.const? | return false
-  let some info ← getCoeFnInfo? name | return false
+  let some (name, _) := e.getAppFn.const?
+    | return false
+  let some info ← getCoeFnInfo? name
+    | return false
   return e.getAppNumArgs' + 1 == info.numArgs
 
 /-- Morphism application -/
@@ -53,14 +58,14 @@ structure App where
   /-- morphism coercion -/
   coe : Expr
   /-- bundled morphism -/
-  fn  : Expr
+  fn : Expr
   /-- morphism argument -/
   arg : Expr
 
 /-- Is `e` morphism application? -/
 def isMorApp? (e : Expr) : MetaM (Option App) := do
-
-  let .app (.app coe f) x := e | return none
+  let .app (.app coe f) x := e
+    | return none
   if ← isCoeFun coe then
     return some { coe := coe, fn := f, arg := x }
   else
@@ -72,12 +77,11 @@ can specify which when to unfold definitions.
 
 For example calling this on `coe (f a) b` will put `f` in weak normal head form instead of `coe`.
 -/
-partial def whnfPred (e : Expr) (pred : Expr → MetaM Bool) :
-    MetaM Expr := do
+partial def whnfPred (e : Expr) (pred : Expr → MetaM Bool) : MetaM Expr := do
   whnfEasyCases e fun e => do
     let e ← whnfCore e
 
-    if let some ⟨coe,f,x⟩ ← isMorApp? e then
+    if let some ⟨coe, f, x⟩ ← isMorApp? e then
       let f ← whnfPred f pred
       if (← getConfig).zeta then
         return (coe.app f).app x
@@ -85,9 +89,9 @@ partial def whnfPred (e : Expr) (pred : Expr → MetaM Bool) :
         return ← mapLetTelescope f fun _ f' => pure ((coe.app f').app x)
 
     if (← pred e) then
-        match (← unfoldDefinition? e) with
-        | some e => whnfPred e pred
-        | none   => return e
+      match (← unfoldDefinition? e) with
+      | some e => whnfPred e pred
+      | none => return e
     else
       return e
 
@@ -96,9 +100,7 @@ Weak normal head form of an expression involving morphism applications.
 
 For example calling this on `coe (f a) b` will put `f` in weak normal head form instead of `coe`.
 -/
-def whnf (e : Expr) : MetaM Expr :=
-  whnfPred e (fun _ => return false)
-
+def whnf (e : Expr) : MetaM Expr := whnfPred e (fun _ => return false)
 
 /-- Argument of morphism application that stores corresponding coercion if necessary -/
 structure Arg where
@@ -106,7 +108,7 @@ structure Arg where
   expr : Expr
   /-- coercion `F → α → β` -/
   coe : Option Expr := none
-  deriving Inhabited
+deriving Inhabited
 
 /-- Morphism application -/
 def app (f : Expr) (arg : Arg) : Expr :=
@@ -114,34 +116,37 @@ def app (f : Expr) (arg : Arg) : Expr :=
   | none => f.app arg.expr
   | some coe => (coe.app f).app arg.expr
 
+/--
+Given `e = f a₁ a₂ ... aₙ`, returns `k f #[a₁, ..., aₙ]` where `f` can be bundled morphism.
 
-/-- Given `e = f a₁ a₂ ... aₙ`, returns `k f #[a₁, ..., aₙ]` where `f` can be bundled morphism.
-
-`∀ x, p x` is represented as `Forall p`. -/
-partial def withApp {α} (e : Expr) (k : Expr → Array Arg → MetaM α) : MetaM α :=
-  go e #[]
+`∀ x, p x` is represented as `Forall p`.
+-/
+partial def withApp {α} (e : Expr) (k : Expr → Array Arg → MetaM α) : MetaM α := go e #[]
 where
   /-- -/
-  go : Expr → Array Arg →  MetaM α
-    | .mdata _ b, as => go b as
+  go : Expr → Array Arg → MetaM α
+    | .mdata _ b, as =>
+      go b as
     | .app (.app c f) x, as => do
       if ← isCoeFun c then
-        go f (as.push { coe := c, expr := x})
+        go f (as.push { coe := c, expr := x })
       else
-        go (.app c f) (as.push { expr := x})
+        go (.app c f) (as.push { expr := x })
     | .app (.proj n i f) x, as => do
       -- convert proj back to function application
       let env ← getEnv
       let info := getStructureInfo? env n |>.get!
       let projFn := getProjFnForField? env n (info.fieldNames[i]!) |>.get!
-      let .app c f ← mkAppM projFn #[f] | panic! "bug in Mor.withApp"
+      let .app c f ← mkAppM projFn #[f]
+        | panic! "bug in Mor.withApp"
 
       go (.app (.app c f) x) as
-    | .app f a, as => go f (as.push { expr := a })
+    | .app f a, as =>
+      go f (as.push { expr := a })
     | .forallE x t b bi, _ => do
       go (← mkAppM ``Forall #[.lam x t b bi]) #[]
-    | f, as => k f as.reverse
-
+    | f, as =>
+      k f as.reverse
 
 /--
 If the given expression is a sequence of morphism applications `f a₁ .. aₙ`, return `f`.
@@ -149,7 +154,8 @@ Otherwise return the input expression.
 -/
 def getAppFn (e : Expr) : MetaM Expr :=
   match e with
-  | .mdata _ b => getAppFn b
+  | .mdata _ b =>
+    getAppFn b
   | .app (.app c f) _ => do
     if ← isCoeFun c then
       getAppFn f
@@ -157,7 +163,8 @@ def getAppFn (e : Expr) : MetaM Expr :=
       getAppFn (.app c f)
   | .app f _ =>
     getAppFn f
-  | e => return e
+  | e =>
+    return e
 
 /-- Given `f a₁ a₂ ... aₙ`, returns `#[a₁, ..., aₙ]` where `f` can be bundled morphism. -/
 def getAppArgs (e : Expr) : MetaM (Array Arg) := withApp e fun _ xs => return xs

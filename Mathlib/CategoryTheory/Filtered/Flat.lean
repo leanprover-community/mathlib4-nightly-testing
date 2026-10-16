@@ -6,7 +6,6 @@ Authors: Jakob von Raumer
 module
 
 public import Mathlib.CategoryTheory.Functor.Flat
-
 import Mathlib.CategoryTheory.Filtered.CostructuredArrow
 
 /-!
@@ -34,8 +33,8 @@ variable (F : C ⥤ D)
 lemma isFiltered_of_representablyCoflat [IsFiltered D] [RepresentablyCoflat F] : IsFiltered C :=
   isFiltered_of_isFiltered_costructuredArrow F (𝟭 _)
 
-lemma isCofiltered_of_representablyFlat [IsCofiltered D] [RepresentablyFlat F] :
-    IsCofiltered C := by
+lemma isCofiltered_of_representablyFlat [IsCofiltered D] [RepresentablyFlat F]
+    : IsCofiltered C := by
   have := isFiltered_of_representablyCoflat F.op
   exact isCofiltered_of_isFiltered_op C
 

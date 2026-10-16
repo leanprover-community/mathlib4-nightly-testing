@@ -19,7 +19,6 @@ open Equiv Equiv.Perm Function
 
 namespace Set
 
-
 /-! ### Congruence lemmas for monotonicity and antitonicity -/
 section Order
 
@@ -33,8 +32,8 @@ theorem _root_.MonotoneOn.congr (h₁ : MonotoneOn f₁ s) (h : s.EqOn f₁ f₂
 theorem _root_.AntitoneOn.congr (h₁ : AntitoneOn f₁ s) (h : s.EqOn f₁ f₂) : AntitoneOn f₂ s :=
   h₁.dual_right.congr h
 
-theorem _root_.StrictMonoOn.congr (h₁ : StrictMonoOn f₁ s) (h : s.EqOn f₁ f₂) :
-    StrictMonoOn f₂ s := by
+theorem _root_.StrictMonoOn.congr (h₁ : StrictMonoOn f₁ s) (h : s.EqOn f₁ f₂)
+    : StrictMonoOn f₂ s := by
   intro a ha b hb hab
   rw [← h ha, ← h hb]
   exact h₁ ha hb hab
@@ -73,37 +72,35 @@ theorem _root_.StrictMonoOn.mono (h : StrictMonoOn f s) (h' : s₂ ⊆ s) : Stri
 theorem _root_.StrictAntiOn.mono (h : StrictAntiOn f s) (h' : s₂ ⊆ s) : StrictAntiOn f s₂ :=
   fun _ hx _ hy => h (h' hx) (h' hy)
 
-protected theorem _root_.MonotoneOn.monotone (h : MonotoneOn f s) :
-    Monotone (f ∘ Subtype.val : s → β) :=
-  fun x y hle => h x.coe_prop y.coe_prop hle
+protected theorem _root_.MonotoneOn.monotone (h : MonotoneOn f s)
+    : Monotone (f ∘ Subtype.val : s → β) := fun x y hle =>
+  h x.coe_prop y.coe_prop hle
 
-protected theorem _root_.AntitoneOn.monotone (h : AntitoneOn f s) :
-    Antitone (f ∘ Subtype.val : s → β) :=
-  fun x y hle => h x.coe_prop y.coe_prop hle
+protected theorem _root_.AntitoneOn.monotone (h : AntitoneOn f s)
+    : Antitone (f ∘ Subtype.val : s → β) := fun x y hle =>
+  h x.coe_prop y.coe_prop hle
 
-protected theorem _root_.StrictMonoOn.strictMono (h : StrictMonoOn f s) :
-    StrictMono (f ∘ Subtype.val : s → β) :=
-  fun x y hlt => h x.coe_prop y.coe_prop hlt
+protected theorem _root_.StrictMonoOn.strictMono (h : StrictMonoOn f s)
+    : StrictMono (f ∘ Subtype.val : s → β) := fun x y hlt =>
+  h x.coe_prop y.coe_prop hlt
 
-protected theorem _root_.StrictAntiOn.strictAnti (h : StrictAntiOn f s) :
-    StrictAnti (f ∘ Subtype.val : s → β) :=
-  fun x y hlt => h x.coe_prop y.coe_prop hlt
+protected theorem _root_.StrictAntiOn.strictAnti (h : StrictAntiOn f s)
+    : StrictAnti (f ∘ Subtype.val : s → β) := fun x y hlt =>
+  h x.coe_prop y.coe_prop hlt
 
-lemma monotoneOn_insert_iff {a : α} :
-    MonotoneOn f (insert a s) ↔
-      (∀ b ∈ s, b ≤ a → f b ≤ f a) ∧ (∀ b ∈ s, a ≤ b → f a ≤ f b) ∧ MonotoneOn f s := by
+lemma monotoneOn_insert_iff {a : α}
+    : MonotoneOn f (insert a s)
+      ↔ (∀ b ∈ s, b ≤ a → f b ≤ f a) ∧ (∀ b ∈ s, a ≤ b → f a ≤ f b) ∧ MonotoneOn f s := by
   simp [MonotoneOn, forall_and]
 
-lemma antitoneOn_insert_iff {a : α} :
-    AntitoneOn f (insert a s) ↔
-      (∀ b ∈ s, b ≤ a → f a ≤ f b) ∧ (∀ b ∈ s, a ≤ b → f b ≤ f a) ∧ AntitoneOn f s :=
-  @monotoneOn_insert_iff α βᵒᵈ _ _ _ _ _
+lemma antitoneOn_insert_iff {a : α}
+    : AntitoneOn f (insert a s)
+      ↔ (∀ b ∈ s, b ≤ a → f a ≤ f b) ∧ (∀ b ∈ s, a ≤ b → f b ≤ f a) ∧ AntitoneOn f s :=
+  @monotoneOn_insert_iff α (βᵒᵈ) _ _ _ _ _
 
 end Mono
 
 end Set
-
-
 
 open Function
 
@@ -117,12 +114,11 @@ protected theorem domRestrict (h : Monotone f) (s : Set α) : Monotone (s.domRes
 
 @[deprecated (since := "2026-07-19")] alias restrict := Monotone.domRestrict
 
-protected theorem codRestrict (h : Monotone f) {s : Set β} (hs : ∀ x, f x ∈ s) :
-    Monotone (s.codRestrict f hs) :=
+protected theorem codRestrict (h : Monotone f) {s : Set β} (hs : ∀ x, f x ∈ s)
+    : Monotone (s.codRestrict f hs) :=
   h
 
-protected theorem rangeFactorization (h : Monotone f) : Monotone (Set.rangeFactorization f) :=
-  h
+protected theorem rangeFactorization (h : Monotone f) : Monotone (Set.rangeFactorization f) := h
 
 end Monotone
 
@@ -142,46 +138,46 @@ alias _root_.StrictMono.of_restrict := _root_.StrictMono.of_domRestrict
 @[deprecated (since := "2026-07-19")]
 alias _root_.StrictMonoOn.restrict := _root_.StrictMonoOn.domRestrict
 
-theorem StrictMono.codRestrict (hf : StrictMono f)
-    {s : Set β} (hs : ∀ x, f x ∈ s) : StrictMono (Set.codRestrict f s hs) :=
+theorem StrictMono.codRestrict (hf : StrictMono f) {s : Set β} (hs : ∀ x, f x ∈ s)
+    : StrictMono (Set.codRestrict f s hs) :=
   hf
 
-lemma strictMonoOn_insert_iff {a : α} :
-    StrictMonoOn f (insert a s) ↔
-       (∀ b ∈ s, b < a → f b < f a) ∧ (∀ b ∈ s, a < b → f a < f b) ∧ StrictMonoOn f s := by
+lemma strictMonoOn_insert_iff {a : α}
+    : StrictMonoOn f (insert a s)
+      ↔ (∀ b ∈ s, b < a → f b < f a) ∧ (∀ b ∈ s, a < b → f a < f b) ∧ StrictMonoOn f s := by
   simp [StrictMonoOn, forall_and]
 
-lemma strictAntiOn_insert_iff {a : α} :
-    StrictAntiOn f (insert a s) ↔
-       (∀ b ∈ s, b < a → f a < f b) ∧ (∀ b ∈ s, a < b → f b < f a) ∧ StrictAntiOn f s :=
-  @strictMonoOn_insert_iff α βᵒᵈ _ _ _ _ _
+lemma strictAntiOn_insert_iff {a : α}
+    : StrictAntiOn f (insert a s)
+      ↔ (∀ b ∈ s, b < a → f a < f b) ∧ (∀ b ∈ s, a < b → f b < f a) ∧ StrictAntiOn f s :=
+  @strictMonoOn_insert_iff α (βᵒᵈ) _ _ _ _ _
 
-lemma strictMonoOn_insert_iff_of_forall_le {a : α} (ha : ∀ x ∈ s, x ≤ a) :
-    StrictMonoOn f (insert a s) ↔ (∀ b ∈ s, b < a → f b < f a) ∧ StrictMonoOn f s := by
+lemma strictMonoOn_insert_iff_of_forall_le {a : α} (ha : ∀ x ∈ s, x ≤ a)
+    : StrictMonoOn f (insert a s) ↔ (∀ b ∈ s, b < a → f b < f a) ∧ StrictMonoOn f s := by
   rw [strictMonoOn_insert_iff]
   have : ∀ b ∈ s, a < b → f a < f b := by
     intro b hb hab
     cases (ha _ hb).not_gt hab
   tauto
 
-lemma strictMonoOn_insert_iff_of_forall_ge {a : α} (ha : ∀ x ∈ s, a ≤ x) :
-    StrictMonoOn f (insert a s) ↔ (∀ b ∈ s, a < b → f a < f b) ∧ StrictMonoOn f s := by
+lemma strictMonoOn_insert_iff_of_forall_ge {a : α} (ha : ∀ x ∈ s, a ≤ x)
+    : StrictMonoOn f (insert a s) ↔ (∀ b ∈ s, a < b → f a < f b) ∧ StrictMonoOn f s := by
   rw [strictMonoOn_insert_iff]
   have : ∀ b ∈ s, b < a → f b < f a := by
     intro b hb hab
     cases (ha _ hb).not_gt hab
   tauto
 
-lemma strictAntiOn_insert_iff_of_forall_le {a : α} (ha : ∀ x ∈ s, x ≤ a) :
-    StrictAntiOn f (insert a s) ↔ (∀ b ∈ s, b < a → f a < f b) ∧ StrictAntiOn f s := by
+lemma strictAntiOn_insert_iff_of_forall_le {a : α} (ha : ∀ x ∈ s, x ≤ a)
+    : StrictAntiOn f (insert a s) ↔ (∀ b ∈ s, b < a → f a < f b) ∧ StrictAntiOn f s := by
   rw [strictAntiOn_insert_iff]
   have : ∀ b ∈ s, a < b → f b < f a := by
     intro b hb hab
     cases (ha _ hb).not_gt hab
   tauto
 
-lemma strictAntiOn_insert_iff_of_forall_ge {a : α} (ha : ∀ x ∈ s, a ≤ x) :
-    StrictAntiOn f (insert a s) ↔ (∀ b ∈ s, a < b → f b < f a) ∧ StrictAntiOn f s := by
+lemma strictAntiOn_insert_iff_of_forall_ge {a : α} (ha : ∀ x ∈ s, a ≤ x)
+    : StrictAntiOn f (insert a s) ↔ (∀ b ∈ s, a < b → f b < f a) ∧ StrictAntiOn f s := by
   rw [strictAntiOn_insert_iff]
   have : ∀ b ∈ s, b < a → f a < f b := by
     intro b hb hab
@@ -194,9 +190,11 @@ namespace Function
 
 open Set
 
-theorem monotoneOn_of_rightInvOn_of_mapsTo [PartialOrder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α} (hφ : MonotoneOn φ t)
-    (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t) : MonotoneOn ψ s := by
+theorem monotoneOn_of_rightInvOn_of_mapsTo
+    [PartialOrder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α}
+    (hφ : MonotoneOn φ t) (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t)
+    : MonotoneOn ψ s := by
   rintro x xs y ys l
   rcases le_total (ψ x) (ψ y) with (ψxy | ψyx)
   · exact ψxy
@@ -205,42 +203,50 @@ theorem monotoneOn_of_rightInvOn_of_mapsTo [PartialOrder α] [LinearOrder β]
     induction le_antisymm l this
     exact le_refl _
 
-theorem strictMonoOn_of_rightInvOn_of_mapsTo [Preorder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α} (hφ : StrictMonoOn φ t)
-    (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t) : StrictMonoOn ψ s := by
+theorem strictMonoOn_of_rightInvOn_of_mapsTo
+    [Preorder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α}
+    (hφ : StrictMonoOn φ t) (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t)
+    : StrictMonoOn ψ s := by
   intro x xs y ys l
   rwa [← hφ.lt_iff_lt (ψts xs) (ψts ys), φψs xs, φψs ys]
 
-theorem antitoneOn_of_rightInvOn_of_mapsTo [PartialOrder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α} (hφ : AntitoneOn φ t)
-    (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t) : AntitoneOn ψ s :=
+theorem antitoneOn_of_rightInvOn_of_mapsTo
+    [PartialOrder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α}
+    (hφ : AntitoneOn φ t) (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t)
+    : AntitoneOn ψ s :=
   (monotoneOn_of_rightInvOn_of_mapsTo hφ.dual_left φψs ψts).dual_right
 
-theorem strictAntiOn_of_rightInvOn_of_mapsTo [Preorder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α} (hφ : StrictAntiOn φ t)
-    (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t) : StrictAntiOn ψ s :=
+theorem strictAntiOn_of_rightInvOn_of_mapsTo
+    [Preorder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} {t : Set β} {s : Set α}
+    (hφ : StrictAntiOn φ t) (φψs : RightInvOn ψ φ s) (ψts : MapsTo ψ s t)
+    : StrictAntiOn ψ s :=
   (strictMonoOn_of_rightInvOn_of_mapsTo hφ.dual_left φψs ψts).dual_right
 
-theorem monotone_of_rightInverse [PartialOrder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} (hφ : Monotone φ)
-    (φψ : RightInverse ψ φ) : Monotone ψ :=
-  monotoneOn_univ.mp <| monotoneOn_of_rightInvOn_of_mapsTo
-    (hφ.monotoneOn _) (φψ.rightInvOn _) (mapsTo_univ ψ _)
+theorem monotone_of_rightInverse
+    [PartialOrder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} (hφ : Monotone φ) (φψ : RightInverse ψ φ)
+    : Monotone ψ :=
+  monotoneOn_univ.mp <|
+    monotoneOn_of_rightInvOn_of_mapsTo (hφ.monotoneOn _) (φψ.rightInvOn _) (mapsTo_univ ψ _)
 
-theorem strictMono_of_rightInverse [Preorder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} (hφ : StrictMono φ)
-    (φψ : RightInverse ψ φ) : StrictMono ψ :=
-  strictMonoOn_univ.mp <| strictMonoOn_of_rightInvOn_of_mapsTo
-    (hφ.strictMonoOn _) (φψ.rightInvOn _) (mapsTo_univ ψ _)
+theorem strictMono_of_rightInverse
+    [Preorder α] [LinearOrder β] {φ : β → α} {ψ : α → β} (hφ : StrictMono φ) (φψ : RightInverse ψ φ)
+    : StrictMono ψ :=
+  strictMonoOn_univ.mp <|
+    strictMonoOn_of_rightInvOn_of_mapsTo (hφ.strictMonoOn _) (φψ.rightInvOn _) (mapsTo_univ ψ _)
 
-theorem antitone_of_rightInverse [PartialOrder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} (hφ : Antitone φ)
-    (φψ : RightInverse ψ φ) : Antitone ψ :=
+theorem antitone_of_rightInverse
+    [PartialOrder α] [LinearOrder β]
+    {φ : β → α} {ψ : α → β} (hφ : Antitone φ) (φψ : RightInverse ψ φ)
+    : Antitone ψ :=
   (monotone_of_rightInverse hφ.dual_left φψ).dual_right
 
-theorem strictAnti_of_rightInverse [Preorder α] [LinearOrder β]
-    {φ : β → α} {ψ : α → β} (hφ : StrictAnti φ)
-    (φψ : RightInverse ψ φ) : StrictAnti ψ :=
+theorem strictAnti_of_rightInverse
+    [Preorder α] [LinearOrder β] {φ : β → α} {ψ : α → β} (hφ : StrictAnti φ) (φψ : RightInverse ψ φ)
+    : StrictAnti ψ :=
   (strictMono_of_rightInverse hφ.dual_left φψ).dual_right
 
 end Function

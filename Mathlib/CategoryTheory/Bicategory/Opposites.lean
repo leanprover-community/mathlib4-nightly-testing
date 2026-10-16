@@ -58,52 +58,43 @@ instance homCategory (a b : Bᵒᵖ) : Category.{w} (a ⟶ b) where
   comp η θ := op2' (η.unop2 ≫ θ.unop2)
 
 /-- Synonym for constructor of `Hom2` where the 1-morphisms `f` and `g` lie in `B` and not `Bᵒᵖ`. -/
-def op2 {a b : B} {f g : a ⟶ b} (η : f ⟶ g) : f.op ⟶ g.op :=
-  op2' η
+def op2 {a b : B} {f g : a ⟶ b} (η : f ⟶ g) : f.op ⟶ g.op := op2' η
+
+@[simp] theorem unop2_op2 {a b : B} {f g : a ⟶ b} (η : f ⟶ g) : (op2 η).unop2 = η := rfl
+
+@[simp] theorem op2_unop2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ⟶ g) : op2 η.unop2 = η := rfl
 
 @[simp]
-theorem unop2_op2 {a b : B} {f g : a ⟶ b} (η : f ⟶ g) : (op2 η).unop2 = η :=
+theorem op2_comp {a b : B} {f g h : a ⟶ b} (η : f ⟶ g) (θ : g ⟶ h)
+    : op2 (η ≫ θ) = (op2 η) ≫ (op2 θ) :=
   rfl
+
+@[simp] theorem op2_id {a b : B} {f : a ⟶ b} : op2 (𝟙 f) = 𝟙 f.op := rfl
 
 @[simp]
-theorem op2_unop2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ⟶ g) : op2 η.unop2 = η :=
+theorem unop2_comp {a b : Bᵒᵖ} {f g h : a ⟶ b} (η : f ⟶ g) (θ : g ⟶ h)
+    : unop2 (η ≫ θ) = unop2 η ≫ unop2 θ :=
   rfl
 
-@[simp]
-theorem op2_comp {a b : B} {f g h : a ⟶ b} (η : f ⟶ g) (θ : g ⟶ h) :
-    op2 (η ≫ θ) = (op2 η) ≫ (op2 θ) :=
-  rfl
+@[simp] theorem unop2_id {a b : Bᵒᵖ} {f : a ⟶ b} : unop2 (𝟙 f) = 𝟙 f.unop := rfl
 
-@[simp]
-theorem op2_id {a b : B} {f : a ⟶ b} : op2 (𝟙 f) = 𝟙 f.op :=
-  rfl
+@[simp] theorem unop2_id_bop {a b : B} {f : a ⟶ b} : unop2 (𝟙 f.op) = 𝟙 f := rfl
 
-@[simp]
-theorem unop2_comp {a b : Bᵒᵖ} {f g h : a ⟶ b} (η : f ⟶ g) (θ : g ⟶ h) :
-    unop2 (η ≫ θ) = unop2 η ≫ unop2 θ :=
-  rfl
+@[simp] theorem op2_id_unbop {a b : Bᵒᵖ} {f : a ⟶ b} : op2 (𝟙 f.unop) = 𝟙 f := rfl
 
-@[simp]
-theorem unop2_id {a b : Bᵒᵖ} {f : a ⟶ b} : unop2 (𝟙 f) = 𝟙 f.unop :=
-  rfl
-
-@[simp]
-theorem unop2_id_bop {a b : B} {f : a ⟶ b} : unop2 (𝟙 f.op) = 𝟙 f :=
-  rfl
-
-@[simp]
-theorem op2_id_unbop {a b : Bᵒᵖ} {f : a ⟶ b} : op2 (𝟙 f.unop) = 𝟙 f :=
-  rfl
-
-/-- The natural functor from the hom-category `a ⟶ b` in `B` to its bicategorical opposite
-`bop b ⟶ bop a`. -/
+/--
+The natural functor from the hom-category `a ⟶ b` in `B` to its bicategorical opposite
+`bop b ⟶ bop a`.
+-/
 @[simps]
 def opFunctor (a b : B) : (a ⟶ b) ⥤ (op b ⟶ op a) where
   obj f := f.op
   map η := op2 η
 
-/-- The functor from the hom-category `a ⟶ b` in `Bᵒᵖ` to its bicategorical opposite
-`unop b ⟶ unop a`. -/
+/--
+The functor from the hom-category `a ⟶ b` in `Bᵒᵖ` to its bicategorical opposite
+`unop b ⟶ unop a`.
+-/
 @[simps]
 def unopFunctor (a b : Bᵒᵖ) : (a ⟶ b) ⥤ (unop b ⟶ unop a) where
   obj f := f.unop
@@ -125,15 +116,13 @@ abbrev op2_unop {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f.unop ≅ g.unop) : f ≅
   (opFunctor b.unop a.unop).mapIso η
 
 /-- A 2-isomorphism in `Bᵒᵖ` gives a 2-isomorphism in `B` -/
-abbrev unop2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ≅ g) : f.unop ≅ g.unop :=
-  (unopFunctor a b).mapIso η
+abbrev unop2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ≅ g) : f.unop ≅ g.unop := (unopFunctor a b).mapIso η
 
 /-- A 2-isomorphism in `Bᵒᵖ` gives a 2-isomorphism in `B` -/
 abbrev unop2_op {a b : B} {f g : a ⟶ b} (η : f.op ≅ g.op) : f ≅ g :=
   (unopFunctor (op b) (op a)).mapIso η
 
-@[simp]
-theorem unop2_op2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ≅ g) : η.unop2.op2 = η := rfl
+@[simp] theorem unop2_op2 {a b : Bᵒᵖ} {f g : a ⟶ b} (η : f ≅ g) : η.unop2.op2 = η := rfl
 
 end CategoryTheory.Iso
 
@@ -143,7 +132,8 @@ open Hom2
 
 variable {B : Type u} [Bicategory.{w, v} B]
 
-/-- The 1-cell dual bicategory `Bᵒᵖ`.
+/--
+The 1-cell dual bicategory `Bᵒᵖ`.
 
 It is defined as follows.
 * The objects of `Bᵒᵖ` correspond to objects of `B`.
@@ -167,59 +157,41 @@ instance bicategory : Bicategory.{w, v} Bᵒᵖ where
   triangle f g := congrArg op2 <| by simp
 
 @[simp]
-lemma op2_whiskerLeft {a b c : B} {f : a ⟶ b} {g g' : b ⟶ c} (η : g ⟶ g') :
-    op2 (f ◁ η) = (op2 η) ▷ f.op :=
+lemma op2_whiskerLeft {a b c : B} {f : a ⟶ b} {g g' : b ⟶ c} (η : g ⟶ g')
+    : op2 (f ◁ η) = (op2 η) ▷ f.op :=
   rfl
 
 @[simp]
-lemma op2_whiskerRight {a b c : B} {f f' : a ⟶ b} {g : b ⟶ c} (η : f ⟶ f') :
-    op2 (η ▷ g) = g.op ◁ (op2 η) :=
+lemma op2_whiskerRight {a b c : B} {f f' : a ⟶ b} {g : b ⟶ c} (η : f ⟶ f')
+    : op2 (η ▷ g) = g.op ◁ (op2 η) :=
   rfl
 
 @[simp]
-lemma op2_associator {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) :
-    (α_ f g h).op2 = (α_ h.op g.op f.op).symm :=
+lemma op2_associator {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d)
+    : (α_ f g h).op2 = (α_ h.op g.op f.op).symm :=
   rfl
 
 @[simp]
-lemma op2_associator_hom {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) :
-    op2 (α_ f g h).hom = (α_ h.op g.op f.op).symm.hom :=
+lemma op2_associator_hom {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d)
+    : op2 (α_ f g h).hom = (α_ h.op g.op f.op).symm.hom :=
   rfl
 
 @[simp]
-lemma op2_associator_inv {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d) :
-    op2 (α_ f g h).inv = (α_ h.op g.op f.op).symm.inv :=
+lemma op2_associator_inv {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d)
+    : op2 (α_ f g h).inv = (α_ h.op g.op f.op).symm.inv :=
   rfl
 
-@[simp]
-lemma op2_leftUnitor {a b : B} (f : a ⟶ b) :
-    (λ_ f).op2 = ρ_ f.op :=
-  rfl
+@[simp] lemma op2_leftUnitor {a b : B} (f : a ⟶ b) : (λ_ f).op2 = ρ_ f.op := rfl
 
-@[simp]
-lemma op2_leftUnitor_hom {a b : B} (f : a ⟶ b) :
-    op2 (λ_ f).hom = (ρ_ f.op).hom :=
-  rfl
+@[simp] lemma op2_leftUnitor_hom {a b : B} (f : a ⟶ b) : op2 (λ_ f).hom = (ρ_ f.op).hom := rfl
 
-@[simp]
-lemma op2_leftUnitor_inv {a b : B} (f : a ⟶ b) :
-    op2 (λ_ f).inv = (ρ_ f.op).inv :=
-  rfl
+@[simp] lemma op2_leftUnitor_inv {a b : B} (f : a ⟶ b) : op2 (λ_ f).inv = (ρ_ f.op).inv := rfl
 
-@[simp]
-lemma op2_rightUnitor {a b : B} (f : a ⟶ b) :
-    (ρ_ f).op2 = λ_ f.op :=
-  rfl
+@[simp] lemma op2_rightUnitor {a b : B} (f : a ⟶ b) : (ρ_ f).op2 = λ_ f.op := rfl
 
-@[simp]
-lemma op2_rightUnitor_hom {a b : B} (f : a ⟶ b) :
-    op2 (ρ_ f).hom = (λ_ f.op).hom :=
-  rfl
+@[simp] lemma op2_rightUnitor_hom {a b : B} (f : a ⟶ b) : op2 (ρ_ f).hom = (λ_ f.op).hom := rfl
 
-@[simp]
-lemma op2_rightUnitor_inv {a b : B} (f : a ⟶ b) :
-    op2 (ρ_ f).inv = (λ_ f.op).inv :=
-  rfl
+@[simp] lemma op2_rightUnitor_inv {a b : B} (f : a ⟶ b) : op2 (ρ_ f).inv = (λ_ f.op).inv := rfl
 
 end Opposite
 

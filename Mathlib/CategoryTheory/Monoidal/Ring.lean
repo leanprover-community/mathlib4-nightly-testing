@@ -36,9 +36,9 @@ variable {C : Type u} [Category.{v} C] [CartesianMonoidalCategory C]
 
 open scoped MonObj AddMonObj
 
-lemma mul_add_iff (R : C) [MonObj R] [AddMonObj R] :
-    R ◁ σ ≫ μ = lift ((R ◁ fst _ _) ≫ μ) ((R ◁ snd _ _) ≫ μ) ≫ σ ↔
-      ∀ ⦃X : C⦄ (a b c : X ⟶ R), a * (b + c) = a * b + a * c := by
+lemma mul_add_iff (R : C) [MonObj R] [AddMonObj R]
+    : R ◁ σ ≫ μ = lift ((R ◁ fst _ _) ≫ μ) ((R ◁ snd _ _) ≫ μ) ≫ σ
+      ↔ ∀ ⦃X : C⦄ (a b c : X ⟶ R), a * (b + c) = a * b + a * c := by
   refine ⟨fun h _ a b c ↦ ?_, fun h ↦ ?_⟩
   · have := lift a (lift b c) ≫= h
     simp only [lift_whiskerLeft_assoc] at this
@@ -56,9 +56,9 @@ lemma mul_add_iff (R : C) [MonObj R] [AddMonObj R] :
         congr 1
         cat_disch
 
-lemma add_mul_iff (R : C) [MonObj R] [AddMonObj R] :
-    σ ▷ R ≫ μ = lift (fst _ _ ▷ _ ≫ μ) (snd _ _ ▷ _ ≫ μ) ≫ σ ↔
-      ∀ ⦃X : C⦄ (a b c : X ⟶ R), (a + b) * c = a * c + b * c := by
+lemma add_mul_iff (R : C) [MonObj R] [AddMonObj R]
+    : σ ▷ R ≫ μ = lift (fst _ _ ▷ _ ≫ μ) (snd _ _ ▷ _ ≫ μ) ≫ σ
+      ↔ ∀ ⦃X : C⦄ (a b c : X ⟶ R), (a + b) * c = a * c + b * c := by
   refine ⟨fun h _ a b c ↦ ?_, fun h ↦ ?_⟩
   · have := lift (lift a b) c ≫= h
     simp only [lift_whiskerRight_assoc] at this
@@ -78,9 +78,11 @@ lemma add_mul_iff (R : C) [MonObj R] [AddMonObj R] :
 
 variable [BraidedCategory C]
 
-/-- A ring object in a cartesian monoidal category is an object that is equipped
+/--
+A ring object in a cartesian monoidal category is an object that is equipped
 with an additive group structure and a (multiplicative) monoid structure that
-is left and right distributive over the additive structure. -/
+is left and right distributive over the additive structure.
+-/
 class RingObj (R : C) extends AddGrpObj R, IsCommAddMonObj R, MonObj R where
   mul_add (R) : R ◁ σ ≫ μ = lift ((R ◁ fst _ _) ≫ μ) ((R ◁ snd _ _) ≫ μ) ≫ σ
   add_mul (R) : σ ▷ R ≫ μ = lift (fst _ _ ▷ _ ≫ μ) (snd _ _ ▷ _ ≫ μ) ≫ σ
@@ -110,8 +112,10 @@ end
 
 open scoped RingObj
 
-/-- A commutative ring object in a cartesian monoidal category is a
-ring object such that the multiplicative law is commutative. -/
+/--
+A commutative ring object in a cartesian monoidal category is a
+ring object such that the multiplicative law is commutative.
+-/
 class CommRingObj (R : C) extends RingObj R, IsCommMonObj R where
 
 /-- If `G` is a commutative ring object, then `Hom(X, G)` has a commutative ring structure. -/
@@ -125,11 +129,10 @@ class IsRingHom {R₁ R₂ : C} [AddMonObj R₁] [AddMonObj R₂] [MonObj R₁] 
 
 instance IsRingHom.id (R : C) [AddMonObj R] [MonObj R] : IsRingHom (𝟙 R) where
 
-instance IsRingHom.comp {R₁ R₂ R₃ : C}
-    [AddMonObj R₁] [AddMonObj R₂] [AddMonObj R₃]
-    [MonObj R₁] [MonObj R₂] [MonObj R₃]
-    (f : R₁ ⟶ R₂) (g : R₂ ⟶ R₃) [IsRingHom f] [IsRingHom g] :
-    IsRingHom (f ≫ g) where
+instance IsRingHom.comp
+  {R₁ R₂ R₃ : C} [AddMonObj R₁] [AddMonObj R₂] [AddMonObj R₃] [MonObj R₁] [MonObj R₂] [MonObj R₃]
+  (f : R₁ ⟶ R₂) (g : R₂ ⟶ R₃) [IsRingHom f] [IsRingHom g]
+  : IsRingHom (f ≫ g) where
 
 variable (C) in
 /-- The category of ring objects in a cartesian monoidal category. -/
@@ -159,9 +162,7 @@ instance : Category (RingObjCat C) where
   id X := { hom := 𝟙 _ }
   comp f g := { hom := f.hom ≫ g.hom }
 
-@[ext]
-lemma hom_ext {R₁ R₂ : RingObjCat C} {f g : R₁ ⟶ R₂} (h : f.hom = g.hom) : f = g :=
-  Hom.ext h
+@[ext] lemma hom_ext {R₁ R₂ : RingObjCat C} {f g : R₁ ⟶ R₂} (h : f.hom = g.hom) : f = g := Hom.ext h
 
 variable (C) in
 /-- The forgetful functor from the category of ring objects in `C` to `C`. -/
@@ -173,16 +174,20 @@ def forget : RingObjCat C ⥤ C where
 instance : (forget C).Faithful where
 
 variable (C) in
-/-- The forgetful functor from the category of ring objects in `C`
-to the category of monoid objects in `C`. -/
+/--
+The forgetful functor from the category of ring objects in `C`
+to the category of monoid objects in `C`.
+-/
 @[simps]
 def forget₂Mon : RingObjCat C ⥤ Mon C where
   obj R := .mk R.X
   map f := .mk f.hom
 
 variable (C) in
-/-- The forgetful functor from the category of ring objects in `C`
-to the category of additive monoid objects in `C`. -/
+/--
+The forgetful functor from the category of ring objects in `C`
+to the category of additive monoid objects in `C`.
+-/
 @[simps]
 def forget₂AddMon : RingObjCat C ⥤ AddMon C where
   obj R := .mk R.X
@@ -219,8 +224,7 @@ instance : Category (CommRingObjCat C) where
   comp f g := { hom := f.hom ≫ g.hom }
 
 @[ext]
-lemma hom_ext {R₁ R₂ : CommRingObjCat C} {f g : R₁ ⟶ R₂} (h : f.hom = g.hom) : f = g :=
-  Hom.ext h
+lemma hom_ext {R₁ R₂ : CommRingObjCat C} {f g : R₁ ⟶ R₂} (h : f.hom = g.hom) : f = g := Hom.ext h
 
 variable (C) in
 /-- The forgetful functor from the category of ring objects in `C` to `C`. -/
@@ -230,8 +234,10 @@ def forget : CommRingObjCat C ⥤ C where
   map f := f.hom
 
 variable (C) in
-/-- The forgetful functor from the category of commutative ring objects
-to the category of ring objects. -/
+/--
+The forgetful functor from the category of commutative ring objects
+to the category of ring objects.
+-/
 @[simps]
 def forget₂RingObjCat : CommRingObjCat C ⥤ RingObjCat C where
   obj R := .mk R.X
@@ -242,11 +248,9 @@ variable (C) in
 def fullyFaithfulForget₂RingObjCat : (forget₂RingObjCat C).FullyFaithful where
   preimage f := { hom := f.hom, isRingHom := f.isRingHom }
 
-instance : (forget₂RingObjCat C).Faithful :=
-  (fullyFaithfulForget₂RingObjCat C).faithful
+instance : (forget₂RingObjCat C).Faithful := (fullyFaithfulForget₂RingObjCat C).faithful
 
-instance : (forget₂RingObjCat C).Full :=
-  (fullyFaithfulForget₂RingObjCat C).full
+instance : (forget₂RingObjCat C).Full := (fullyFaithfulForget₂RingObjCat C).full
 
 instance : (forget C).Faithful where
 

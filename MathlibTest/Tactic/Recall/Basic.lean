@@ -16,8 +16,7 @@ section
 variable {𝕜 : Type _} [NontriviallyNormedField 𝕜]
 variable {E : Type _} [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E]
 variable {F : Type _} [AddCommGroup F] [Module 𝕜 F] [TopologicalSpace F]
-recall HasFDerivAt (f : E → F) (f' : E →L[𝕜] F) (x : E) :=
-  HasFDerivAtFilter f f' (nhds x ×ˢ pure x)
+recall HasFDerivAt (f : E → F) (f' : E →L[𝕜] F) (x : E) := HasFDerivAtFilter f f' (nhds x ×ˢ pure x)
 end
 
 /--
@@ -28,7 +27,8 @@ has value
 but is expected to have value
   Complex.wrapped✝.1
 -/
-#guard_msgs in recall Complex.exp : ℂ → ℂ := id
+#guard_msgs in
+recall Complex.exp : ℂ → ℂ := id
 
 /--
 error: value mismatch
@@ -38,11 +38,10 @@ has value
 but is expected to have value
   2 * Classical.choose Real.exists_cos_eq_zero
 -/
-#guard_msgs in recall Real.pi : ℝ := 0
+#guard_msgs in
+recall Real.pi : ℝ := 0
 
-/-
-Other example tests
--/
+/- Other example tests -/
 
 recall id (x : α) : α := x
 
@@ -58,7 +57,8 @@ of sort `Type u_1` but is expected to have type
   {α : Sort u} → α → α
 of sort `Sort (imax (u + 1) u)`
 -/
-#guard_msgs in recall id (_x _y : α) : ℕ := 0
+#guard_msgs in
+recall id (_x _y : α) : ℕ := 0
 
 recall id (_x : α) : α
 
@@ -76,7 +76,8 @@ has value
 but is expected to have value
   22
 -/
-#guard_msgs in recall foo := 23
+#guard_msgs in
+recall foo := 23
 
 recall Nat.add_comm (n m : Nat) : n + m = m + n
 
@@ -88,11 +89,13 @@ recall add_assoc {G : Type _} [AddSemigroup G] (a b c : G) : a + b + c = a + (b 
 recall add_assoc
 
 /-- error: Unknown constant `nonexistent` -/
-#guard_msgs in recall nonexistent
+#guard_msgs in
+recall nonexistent
 
 axiom bar : Nat
 /-- error: constant 'bar' has no defined value -/
-#guard_msgs in recall bar := bar
+#guard_msgs in
+recall bar := bar
 
 recall List.cons_append (a : α) (as bs : List α) : (a :: as) ++ bs = a :: (as ++ bs) := rfl
 
@@ -128,16 +131,15 @@ end RecallTest
 open RecallTest in
 recall myDef : Nat
 
-/-
-## `recall?` tests
--/
+/- ## `recall?` tests -/
 
 -- Test recall? with a simple function
 /--
 info: Try this:
   [apply] recall Nat.add_comm (n m : ℕ) : n + m = m + n
 -/
-#guard_msgs in recall? Nat.add_comm
+#guard_msgs in
+recall? Nat.add_comm
 -- Verify the suggestion is accepted:
 recall Nat.add_comm (n m : ℕ) : n + m = m + n
 
@@ -146,20 +148,23 @@ recall Nat.add_comm (n m : ℕ) : n + m = m + n
 info: Try this:
   [apply] recall id {α : Sort u} (a : α) : α
 -/
-#guard_msgs in recall? id
+#guard_msgs in
+recall? id
 -- Verify the suggestion is accepted:
 recall id {α : Sort u} (a : α) : α
 
 -- Test recall? with unknown constant
 /-- error: Unknown constant `nonexistent` -/
-#guard_msgs in recall? nonexistent
+#guard_msgs in
+recall? nonexistent
 
 -- Test recall? with a simple def
 /--
 info: Try this:
   [apply] recall foo : ℕ
 -/
-#guard_msgs in recall? foo
+#guard_msgs in
+recall? foo
 -- Verify the suggestion is accepted:
 recall foo : ℕ
 
@@ -168,13 +173,12 @@ recall foo : ℕ
 info: Try this:
   [apply] recall add_assoc {G : Type u_1} [AddSemigroup G] (a b c : G) : a + b + c = a + (b + c)
 -/
-#guard_msgs in recall? add_assoc
+#guard_msgs in
+recall? add_assoc
 -- Verify the suggestion is accepted:
 recall add_assoc {G : Type u_1} [AddSemigroup G] (a b c : G) : a + b + c = a + (b + c)
 
-/-
-## Type mismatch suggestion tests
--/
+/- ## Type mismatch suggestion tests -/
 
 -- Test that type mismatch on recall without value gives a suggestion
 /--
@@ -188,4 +192,5 @@ has type
 but is expected to have type
   ∀ (n m : ℕ), n + m = m + n
 -/
-#guard_msgs in recall Nat.add_comm (n m : Nat) : n + m = m + m
+#guard_msgs in
+recall Nat.add_comm (n m : Nat) : n + m = m + m

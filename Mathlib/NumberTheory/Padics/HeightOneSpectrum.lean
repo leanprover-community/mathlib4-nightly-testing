@@ -63,21 +63,24 @@ theorem Rat.int_algebraMap_injective : Function.Injective (algebraMap ℤ R) :=
 
 variable [IsIntegralClosure R ℤ ℚ]
 
-theorem Rat.int_algebraMap_surjective [IsFractionRing R ℚ] :
-    Function.Surjective (algebraMap ℤ R) := by
+theorem Rat.int_algebraMap_surjective [IsFractionRing R ℚ]
+    : Function.Surjective (algebraMap ℤ R) := by
   intro x
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.1 <|
-    IsIntegral.algebraMap (B := ℚ) (IsIntegralClosure.isIntegral ℤ ℚ x)
+  obtain ⟨y, hy⟩ :=
+    IsIntegrallyClosed.isIntegral_iff.1 <|
+      IsIntegral.algebraMap (B := ℚ) (IsIntegralClosure.isIntegral ℤ ℚ x)
   exact ⟨y, IsFractionRing.injective R ℚ <| by simp only [← IsScalarTower.algebraMap_apply, hy]⟩
 
-/-- If `R` has field of fractions `ℚ` and is the integral closure of `ℤ` in `ℚ` then it is
-isomorphic to `ℤ`. -/
+/--
+If `R` has field of fractions `ℚ` and is the integral closure of `ℤ` in `ℚ` then it is
+isomorphic to `ℤ`.
+-/
 noncomputable def Rat.IsIntegralClosure.intEquiv : R ≃+* ℤ :=
   (NumberField.RingOfIntegers.equiv R).symm.trans ringOfIntegersEquiv
 
 @[simp]
-theorem Rat.IsIntegralClosure.intEquiv_apply_eq_ringOfIntegersEquiv (x : 𝓞 ℚ) :
-    intEquiv (𝓞 ℚ) x = ringOfIntegersEquiv x := by
+theorem Rat.IsIntegralClosure.intEquiv_apply_eq_ringOfIntegersEquiv (x : 𝓞 ℚ)
+    : intEquiv (𝓞 ℚ) x = ringOfIntegersEquiv x := by
   simp [intEquiv, RingOfIntegers.equiv, IsIntegralClosure.equiv, IsIntegralClosure.lift,
     IsIntegralClosure.mk']
 
@@ -85,17 +88,19 @@ namespace Rat.HeightOneSpectrum
 
 variable {R : Type*} [CommRing R] [Algebra R ℚ] [IsIntegralClosure R ℤ ℚ]
 
-/-- If `v : HeightOneSpectrum R` then `natGenerator v` is the generator in `ℕ` of the corresponding
-ideal in `ℤ`. -/
+/--
+If `v : HeightOneSpectrum R` then `natGenerator v` is the generator in `ℕ` of the corresponding
+ideal in `ℤ`.
+-/
 noncomputable def natGenerator (v : HeightOneSpectrum R) : ℕ :=
   Submodule.IsPrincipal.generator (v.asIdeal.map <| IsIntegralClosure.intEquiv R) |>.natAbs
 
-theorem span_natGenerator (v : HeightOneSpectrum R) :
-    Ideal.span {(natGenerator v : ℤ)} = v.asIdeal.map (IsIntegralClosure.intEquiv R) := by
+theorem span_natGenerator (v : HeightOneSpectrum R)
+    : Ideal.span {(natGenerator v : ℤ)} = v.asIdeal.map (IsIntegralClosure.intEquiv R) := by
   simp [natGenerator]
 
-theorem natGenerator_dvd_iff (v : HeightOneSpectrum R) {n : ℕ} :
-    natGenerator v ∣ n ↔ ↑n ∈ v.asIdeal.map (IsIntegralClosure.intEquiv R) := by
+theorem natGenerator_dvd_iff (v : HeightOneSpectrum R) {n : ℕ}
+    : natGenerator v ∣ n ↔ ↑n ∈ v.asIdeal.map (IsIntegralClosure.intEquiv R) := by
   rw [← span_natGenerator, Ideal.mem_span_singleton]
   exact Int.ofNat_dvd.symm
 
@@ -124,54 +129,63 @@ noncomputable def primesEquiv : HeightOneSpectrum R ≃ Nat.Primes where
       Int.associated_iff_natAbs.1 (Submodule.IsPrincipal.associated_generator_span_self _)]
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem valuation_equiv_padicValuation (v : HeightOneSpectrum R) :
-    (v.valuation ℚ).IsEquiv (padicValuation (primesEquiv v)) := by
+theorem valuation_equiv_padicValuation (v : HeightOneSpectrum R)
+    : (v.valuation ℚ).IsEquiv (padicValuation (primesEquiv v)) := by
   simp [primesEquiv, Valuation.isEquiv_iff_val_le_one, valuation_le_one_iff_den,
     padicValuation_le_one_iff, natGenerator_dvd_iff,
     map_natCast (IsIntegralClosure.intEquiv R) _ ▸ Ideal.apply_mem_of_equiv_iff]
 
 open Valuation
 
-/-- The uniform space isomorphism `ℚ ≃ᵤ ℚ`, where the LHS has the uniformity from
+/--
+The uniform space isomorphism `ℚ ≃ᵤ ℚ`, where the LHS has the uniformity from
 `HeightOneSpectrum.valuation ℚ v` and the RHS has uniformity from
 `Rat.padicValuation (natGenerator v)`, for a height-one prime ideal
-`v : HeightOneSpectrum R`. -/
-noncomputable def withValEquiv (v : HeightOneSpectrum R) :
-    WithVal (v.valuation ℚ) ≃ᵤ WithVal (padicValuation (primesEquiv v)) :=
+`v : HeightOneSpectrum R`.
+-/
+noncomputable def withValEquiv (v : HeightOneSpectrum R)
+    : WithVal (v.valuation ℚ) ≃ᵤ WithVal (padicValuation (primesEquiv v)) :=
   (valuation_equiv_padicValuation v).uniformEquiv
 
 /-- The continuous `ℚ`-algebra isomorphism between `v.adicCompletion ℚ` and `ℚ_[primesEquiv v]`. -/
-noncomputable def adicCompletion.padicEquiv (v : HeightOneSpectrum R) :
-    v.adicCompletion ℚ ≃A[ℚ] ℚ_[primesEquiv v] where
-  __ := (adicCompletion.equiv ℚ v).trans <|
-    (mapRingEquiv _ (withValEquiv v).continuous
-      (withValEquiv v).symm.continuous).trans Padic.withValRingEquiv
-  __ := ((adicCompletion.uniformEquiv ℚ v).trans <|
-    (mapEquiv (withValEquiv v)).trans Padic.withValUniformEquiv).toHomeomorph
+noncomputable def adicCompletion.padicEquiv (v : HeightOneSpectrum R)
+    : v.adicCompletion ℚ ≃A[ℚ] ℚ_[primesEquiv v] where
+  __ :=
+    (adicCompletion.equiv ℚ v).trans <|
+      (mapRingEquiv _ (withValEquiv v).continuous (withValEquiv v).symm.continuous).trans
+        Padic.withValRingEquiv
+  __ :=
+    ((adicCompletion.uniformEquiv ℚ v).trans <|
+      (mapEquiv (withValEquiv v)).trans Padic.withValUniformEquiv).toHomeomorph
   commutes' := by simp
 
-/-- The continuous `ℤ`-algebra isomorphism between `v.adicCompletionIntegers ℚ` and
-`ℤ_[primesEquiv v]`. -/
-noncomputable def adicCompletionIntegers.padicIntEquiv (v : HeightOneSpectrum R) :
-    v.adicCompletionIntegers ℚ ≃A[ℤ] ℤ_[primesEquiv v] where
-  __ := let e0 := (adicCompletion.equiv ℚ v).restrict
-          (v.adicCompletionIntegers ℚ)
-          (Valued.v (R := (v.valuation ℚ).Completion)).valuationSubring
-          fun _ ↦ by
-            rw [mem_adicCompletionIntegers, ← adicCompletion.valued_toCompletion_apply]; rfl
-        let e := (mapRingEquiv _ (withValEquiv v).continuous
-          (withValEquiv v).symm.continuous).restrict _ _ fun _ ↦ by
-            simpa using! (valuation_equiv_padicValuation v).valuedCompletion_le_one_iff
-        (e0.trans e).trans withValIntegersRingEquiv
-  __ := let e0 := (adicCompletion.uniformEquiv ℚ v).subtype
-          fun _ ↦ by
-            rw [mem_adicCompletionIntegers, ← adicCompletion.valued_toCompletion_apply]; rfl
-        let e := (mapEquiv (withValEquiv v)).subtype fun _ ↦ by
-          simpa using! (valuation_equiv_padicValuation v).valuedCompletion_le_one_iff
-        ((e0.trans e).trans withValIntegersUniformEquiv).toHomeomorph
+/--
+The continuous `ℤ`-algebra isomorphism between `v.adicCompletionIntegers ℚ` and
+`ℤ_[primesEquiv v]`.
+-/
+noncomputable def adicCompletionIntegers.padicIntEquiv (v : HeightOneSpectrum R)
+    : v.adicCompletionIntegers ℚ ≃A[ℤ] ℤ_[primesEquiv v] where
+  __ :=
+    let e0 :=
+      (adicCompletion.equiv ℚ v).restrict (v.adicCompletionIntegers ℚ)
+        (Valued.v (R := (v.valuation ℚ).Completion)).valuationSubring
+        fun _ ↦ by rw [mem_adicCompletionIntegers, ← adicCompletion.valued_toCompletion_apply]; rfl
+    let e :=
+      (mapRingEquiv _ (withValEquiv v).continuous (withValEquiv v).symm.continuous).restrict _ _
+        fun _ ↦ by simpa using! (valuation_equiv_padicValuation v).valuedCompletion_le_one_iff
+    (e0.trans e).trans withValIntegersRingEquiv
+  __ :=
+    let e0 :=
+      (adicCompletion.uniformEquiv ℚ v).subtype fun _ ↦ by
+        rw [mem_adicCompletionIntegers, ← adicCompletion.valued_toCompletion_apply]; rfl
+    let e :=
+      (mapEquiv (withValEquiv v)).subtype fun _ ↦ by
+        simpa using! (valuation_equiv_padicValuation v).valuedCompletion_le_one_iff
+    ((e0.trans e).trans withValIntegersUniformEquiv).toHomeomorph
   commutes' := by simp
 
-/-- The diagram
+/--
+The diagram
 ```
 v.adicCompletionIntegers ℚ  ----->  ℤ_[primesEquiv v]
       |                               |
@@ -179,11 +193,15 @@ v.adicCompletionIntegers ℚ  ----->  ℤ_[primesEquiv v]
       v                               v
 v.adicCompletion ℚ  ------------->  ℚ_[primesEquiv v]
 ```
-commutes. -/
-theorem adicCompletionIntegers.coe_padicIntEquiv_apply (v : HeightOneSpectrum R)
-    (x : v.adicCompletionIntegers ℚ) : padicIntEquiv v x = adicCompletion.padicEquiv v x := rfl
+commutes.
+-/
+theorem adicCompletionIntegers.coe_padicIntEquiv_apply
+    (v : HeightOneSpectrum R) (x : v.adicCompletionIntegers ℚ)
+    : padicIntEquiv v x = adicCompletion.padicEquiv v x :=
+  rfl
 
-/-- The diagram
+/--
+The diagram
 ```
 v.adicCompletionIntegers ℚ  <-----  ℤ_[primesEquiv v]
       |                               |
@@ -191,13 +209,15 @@ v.adicCompletionIntegers ℚ  <-----  ℤ_[primesEquiv v]
       v                               v
 v.adicCompletion ℚ  <-------------  ℚ_[primesEquiv v]
 ```
-commutes. -/
-theorem adicCompletionIntegers.coe_padicIntEquiv_symm_apply (v : HeightOneSpectrum R)
-    (x : ℤ_[primesEquiv v]) : (adicCompletionIntegers.padicIntEquiv v).symm x =
-      (adicCompletion.padicEquiv v).symm x := rfl
+commutes.
+-/
+theorem adicCompletionIntegers.coe_padicIntEquiv_symm_apply
+    (v : HeightOneSpectrum R) (x : ℤ_[primesEquiv v])
+    : (adicCompletionIntegers.padicIntEquiv v).symm x = (adicCompletion.padicEquiv v).symm x :=
+  rfl
 
-theorem adicCompletion.padicEquiv_bijOn (v : HeightOneSpectrum R) :
-    Set.BijOn (padicEquiv v) (v.adicCompletionIntegers ℚ) (subring (primesEquiv v)) := by
+theorem adicCompletion.padicEquiv_bijOn (v : HeightOneSpectrum R)
+    : Set.BijOn (padicEquiv v) (v.adicCompletionIntegers ℚ) (subring (primesEquiv v)) := by
   refine ⟨fun x hx ↦ ?_, (padicEquiv v).injective.injOn, fun y hy ↦ ?_⟩
   · rw [← adicCompletionIntegers.coe_padicIntEquiv_apply v ⟨x, hx⟩]
     exact norm_le_one ((adicCompletionIntegers.padicIntEquiv v) ⟨x, hx⟩)
@@ -210,13 +230,16 @@ open Rat.HeightOneSpectrum
 
 namespace Padic
 
-variable (R : Type*) [CommRing R] [IsDedekindDomain R] [Algebra R ℚ] [IsFractionRing R ℚ]
-  [IsIntegralClosure R ℤ ℚ]
+variable
+  (R : Type*)
+  [CommRing R] [IsDedekindDomain R] [Algebra R ℚ] [IsFractionRing R ℚ] [IsIntegralClosure R ℤ ℚ]
 
-/-- The continuous `ℚ`-algebra isomorphism between `ℚ_[p]` and
-`(primesEquiv.symm p).adicCompletion ℚ`. -/
-noncomputable def adicCompletionEquiv (p : Nat.Primes) :
-    ℚ_[p] ≃A[ℚ] ((primesEquiv (R := R)).symm p).adicCompletion ℚ := by
+/--
+The continuous `ℚ`-algebra isomorphism between `ℚ_[p]` and
+`(primesEquiv.symm p).adicCompletion ℚ`.
+-/
+noncomputable def adicCompletionEquiv (p : Nat.Primes)
+    : ℚ_[p] ≃A[ℚ] ((primesEquiv (R := R)).symm p).adicCompletion ℚ := by
   apply (ContinuousAlgEquiv.cast (primesEquiv.apply_symm_apply p).symm).trans
     (adicCompletion.padicEquiv (primesEquiv.symm p)).symm
 
@@ -226,18 +249,22 @@ namespace PadicInt
 
 open Padic
 
-variable (R : Type*) [CommRing R] [IsDedekindDomain R] [Algebra R ℚ] [IsFractionRing R ℚ]
-  [IsIntegralClosure R ℤ ℚ]
+variable
+  (R : Type*)
+  [CommRing R] [IsDedekindDomain R] [Algebra R ℚ] [IsFractionRing R ℚ] [IsIntegralClosure R ℤ ℚ]
 
-/-- The continuous `ℤ`-algebra isomorphism between `ℤ_[p]` and
-`(primesEquiv.symm p).adicCompletionIntegers ℚ`. -/
-noncomputable def adicCompletionIntegersEquiv (p : Nat.Primes) :
-    ℤ_[p] ≃A[ℤ] ((primesEquiv (R := R)).symm p).adicCompletionIntegers ℚ := by
+/--
+The continuous `ℤ`-algebra isomorphism between `ℤ_[p]` and
+`(primesEquiv.symm p).adicCompletionIntegers ℚ`.
+-/
+noncomputable def adicCompletionIntegersEquiv (p : Nat.Primes)
+    : ℤ_[p] ≃A[ℤ] ((primesEquiv (R := R)).symm p).adicCompletionIntegers ℚ := by
   apply (ContinuousAlgEquiv.cast (primesEquiv.apply_symm_apply p).symm).trans
     (adicCompletionIntegers.padicIntEquiv (primesEquiv.symm p)).symm
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The diagram
+/--
+The diagram
 ```
 ℤ_[p]  -------->  (primesEquiv.symm p).adicCompletionIntegers ℚ
    |                          |
@@ -245,19 +272,21 @@ set_option backward.isDefEq.respectTransparency.types false in
    v                          v
 ℚ_[p]  -------->  (primesEquiv.symm p).adicCompletion ℚ
 ```
-commutes. -/
-theorem coe_adicCompletionIntegersEquiv_apply (p : Nat.Primes) (x : ℤ_[p]) :
-    (adicCompletionIntegersEquiv R p x) = adicCompletionEquiv R p x := by
+commutes.
+-/
+theorem coe_adicCompletionIntegersEquiv_apply (p : Nat.Primes) (x : ℤ_[p])
+    : (adicCompletionIntegersEquiv R p x) = adicCompletionEquiv R p x := by
   simp only [adicCompletionIntegersEquiv, ContinuousAlgEquiv.trans_apply,
-    adicCompletionIntegers.coe_padicIntEquiv_symm_apply,
-    adicCompletionEquiv, ContinuousAlgEquiv.trans_apply, ContinuousAlgEquiv.cast_apply,
-    EmbeddingLike.apply_eq_iff_eq, Equiv.cast_apply, eq_cast_iff_heq]
+    adicCompletionIntegers.coe_padicIntEquiv_symm_apply, adicCompletionEquiv,
+    ContinuousAlgEquiv.trans_apply, ContinuousAlgEquiv.cast_apply, EmbeddingLike.apply_eq_iff_eq,
+    Equiv.cast_apply, eq_cast_iff_heq]
   rw [← Subtype.heq_iff_coe_heq (by rw [primesEquiv.apply_symm_apply])
     (by rw [primesEquiv.apply_symm_apply])]
   exact cast_heq _ _
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The diagram
+/--
+The diagram
 ```
 ℤ_[p]  <--------  (primesEquiv.symm p).adicCompletionIntegers ℚ
    |                          |
@@ -265,10 +294,11 @@ set_option backward.isDefEq.respectTransparency.types false in
    v                          v
 ℚ_[p]  <--------  (primesEquiv.symm p).adicCompletion ℚ
 ```
-commutes. -/
-theorem coe_adicCompletionIntegersEquiv_symm_apply (p : Nat.Primes)
-    (x : (primesEquiv.symm p).adicCompletionIntegers ℚ) :
-    (adicCompletionIntegersEquiv R p).symm x = (adicCompletionEquiv R p).symm x := by
+commutes.
+-/
+theorem coe_adicCompletionIntegersEquiv_symm_apply
+    (p : Nat.Primes) (x : (primesEquiv.symm p).adicCompletionIntegers ℚ)
+    : (adicCompletionIntegersEquiv R p).symm x = (adicCompletionEquiv R p).symm x := by
   simp -implicitDefEqProofs only [adicCompletionIntegersEquiv, ContinuousAlgEquiv.symm_trans_apply,
     ContinuousAlgEquiv.symm_symm, adicCompletionEquiv, Equiv.cast_apply, eq_cast_iff_heq,
     ← adicCompletionIntegers.coe_padicIntEquiv_apply, ContinuousAlgEquiv.cast_symm_apply]

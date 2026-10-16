@@ -6,7 +6,6 @@ Authors: Kalle Kytölä
 module
 
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
-
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.Tactic.MoveAdd
@@ -48,17 +47,19 @@ variable {α : Type*} [MeasurableSpace α] (μ : Measure α)
 
 section Layercake
 
-/-- An application of the layer cake formula / Cavalieri's principle / tail probability formula:
+/--
+An application of the layer cake formula / Cavalieri's principle / tail probability formula:
 
 For a nonnegative function `f` on a measure space, the Lebesgue integral of `f` can
 be written (roughly speaking) as: `∫⁻ f^p ∂μ = p * ∫⁻ t in 0..∞, t^(p-1) * μ {ω | f(ω) ≥ t}`.
 
 See `MeasureTheory.lintegral_rpow_eq_lintegral_meas_lt_mul` for a version with sets of the form
-`{ω | f(ω) > t}` instead. -/
+`{ω | f(ω) > t}` instead.
+-/
 theorem lintegral_rpow_eq_lintegral_meas_le_mul
-    {f : α → ℝ} (f_nn : 0 ≤ᵐ[μ] f) (f_mble : AEMeasurable f μ) {p : ℝ} (p_pos : 0 < p) :
-    ∫⁻ ω, ENNReal.ofReal (f ω ^ p) ∂μ =
-      ENNReal.ofReal p * ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (t ^ (p - 1)) := by
+    {f : α → ℝ} (f_nn : 0 ≤ᵐ[μ] f) (f_mble : AEMeasurable f μ) {p : ℝ} (p_pos : 0 < p)
+    : ∫⁻ ω, ENNReal.ofReal (f ω ^ p) ∂μ
+      = ENNReal.ofReal p * ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (t ^ (p - 1)) := by
   have one_lt_p : -1 < p - 1 := by linarith
   have obs : ∀ x : ℝ, ∫ t : ℝ in 0..x, t ^ (p - 1) = x ^ p / p := by
     intro x
@@ -82,17 +83,19 @@ end Layercake
 
 section LayercakeLT
 
-/-- An application of the layer cake formula / Cavalieri's principle / tail probability formula:
+/--
+An application of the layer cake formula / Cavalieri's principle / tail probability formula:
 
 For a nonnegative function `f` on a measure space, the Lebesgue integral of `f` can
 be written (roughly speaking) as: `∫⁻ f^p ∂μ = p * ∫⁻ t in 0..∞, t^(p-1) * μ {ω | f(ω) > t}`.
 
 See `MeasureTheory.lintegral_rpow_eq_lintegral_meas_le_mul` for a version with sets of the form
-`{ω | f(ω) ≥ t}` instead. -/
+`{ω | f(ω) ≥ t}` instead.
+-/
 theorem lintegral_rpow_eq_lintegral_meas_lt_mul
-    {f : α → ℝ} (f_nn : 0 ≤ᵐ[μ] f) (f_mble : AEMeasurable f μ) {p : ℝ} (p_pos : 0 < p) :
-    ∫⁻ ω, ENNReal.ofReal (f ω ^ p) ∂μ =
-      ENNReal.ofReal p * ∫⁻ t in Ioi 0, μ {a : α | t < f a} * ENNReal.ofReal (t ^ (p - 1)) := by
+    {f : α → ℝ} (f_nn : 0 ≤ᵐ[μ] f) (f_mble : AEMeasurable f μ) {p : ℝ} (p_pos : 0 < p)
+    : ∫⁻ ω, ENNReal.ofReal (f ω ^ p) ∂μ
+      = ENNReal.ofReal p * ∫⁻ t in Ioi 0, μ {a : α | t < f a} * ENNReal.ofReal (t ^ (p - 1)) := by
   rw [lintegral_rpow_eq_lintegral_meas_le_mul μ f_nn f_mble p_pos]
   apply congr_arg fun z => ENNReal.ofReal p * z
   apply lintegral_congr_ae
@@ -101,16 +104,18 @@ theorem lintegral_rpow_eq_lintegral_meas_lt_mul
 
 end LayercakeLT
 
-variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [MeasurableSpace E] [BorelSpace E]
-  [NormedAddCommGroup F]
+variable
+  {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E]
+  [BorelSpace E] [NormedAddCommGroup F]
   {μ : Measure E} [μ.IsAddHaarMeasure]
 
 open Set Metric in
-lemma integrableOn_ball_of_norm_le_rpow (hd : 1 ≤ Module.finrank ℝ E) {f : E → F} {C α r : ℝ}
+lemma integrableOn_ball_of_norm_le_rpow
+    (hd : 1 ≤ Module.finrank ℝ E)
+    {f : E → F} {C α r : ℝ}
     (hα : α < Module.finrank ℝ E) (h_decay : ∀ᵐ x ∂μ.restrict (ball 0 r), ‖f x‖ ≤ C * ‖x‖ ^ (-α))
-    (h_meas : AEStronglyMeasurable f μ) :
-    IntegrableOn f (ball 0 r) μ := by
+    (h_meas : AEStronglyMeasurable f μ)
+    : IntegrableOn f (ball 0 r) μ := by
   have : Nontrivial E := by
     apply Module.nontrivial_of_finrank_pos (R := ℝ)
     positivity
@@ -132,10 +137,11 @@ lemma integrableOn_ball_of_norm_le_rpow (hd : 1 ≤ Module.finrank ℝ E) {f : E
   exact Integrable.mono' hint h_meas.restrict h_decay
 
 /-- A function that is dominated by `‖x‖ ^ (-d + ε)` is locally integrable -/
-theorem locallyIntegrable_of_norm_le_rpow (hdim : 1 ≤ Module.finrank ℝ E) {f : E → F} {C α : ℝ}
-    (hα : α < Module.finrank ℝ E)
-    (h_decay : ∀ᵐ x ∂μ, ‖f x‖ ≤ C * ‖x‖ ^ (-α)) (h_meas : AEStronglyMeasurable f μ) :
-    LocallyIntegrable f μ := by
+theorem locallyIntegrable_of_norm_le_rpow
+    (hdim : 1 ≤ Module.finrank ℝ E)
+    {f : E → F} {C α : ℝ} (hα : α < Module.finrank ℝ E) (h_decay : ∀ᵐ x ∂μ, ‖f x‖ ≤ C * ‖x‖ ^ (-α))
+    (h_meas : AEStronglyMeasurable f μ)
+    : LocallyIntegrable f μ := by
   rw [locallyIntegrable_iff]
   intro K hK
   obtain ⟨R, hR_pos, hR⟩ := hK.isBounded.exists_pos_norm_lt

@@ -18,7 +18,6 @@ topological space.
 
 public section
 
-
 open Filter Set OrderDual
 
 open scoped Topology
@@ -33,8 +32,9 @@ theorem ordConnectedComponent_mem_nhds : ordConnectedComponent s a ∈ 𝓝 a �
   rcases exists_Icc_mem_subset_of_mem_nhds h with ⟨b, c, ha, ha', hs⟩
   exact mem_of_superset ha' (subset_ordConnectedComponent ha hs)
 
-theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE (hd : Disjoint s (closure t))
-    (ha : a ∈ s) : (ordConnectedSection (ordSeparatingSet s t))ᶜ ∈ 𝓝[≥] a := by
+theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE
+    (hd : Disjoint s (closure t)) (ha : a ∈ s)
+    : (ordConnectedSection (ordSeparatingSet s t))ᶜ ∈ 𝓝[≥] a := by
   have hmem : tᶜ ∈ 𝓝[≥] a := by
     refine mem_nhdsWithin_of_mem_nhds ?_
     rw [← mem_interior_iff_mem_nhds, interior_compl]
@@ -48,8 +48,8 @@ theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE (hd : Disjoint s (
       subset_ordConnectedComponent (left_mem_Icc.2 hab) hsub
     have hd : Disjoint s (ordConnectedSection (ordSeparatingSet s t)) :=
       disjoint_left_ordSeparatingSet.mono_right ordConnectedSection_subset
-    replace hac : a < c := hac.lt_of_ne <| Ne.symm <| ne_of_mem_of_not_mem hc <|
-      disjoint_left.1 hd ha
+    replace hac : a < c :=
+      hac.lt_of_ne <| Ne.symm <| ne_of_mem_of_not_mem hc <| disjoint_left.1 hd ha
     filter_upwards [Ico_mem_nhdsGE hac] with x hx hx'
     refine hx.2.ne (eq_of_mem_ordConnectedSection_of_uIcc_subset hx' hc ?_)
     refine subset_inter (subset_iUnion₂_of_subset a ha ?_) ?_
@@ -65,25 +65,30 @@ theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE (hd : Disjoint s (
       have hya : y < a := not_le.1 fun hay => hsub ⟨hay, hyc.trans hcb⟩ hyt
       exact hxy (Icc_subset_uIcc ⟨hya.le, hx.1⟩) ha
 
-theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsLE (hd : Disjoint s (closure t))
-    (ha : a ∈ s) : (ordConnectedSection <| ordSeparatingSet s t)ᶜ ∈ 𝓝[≤] a := by
+theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhdsLE
+    (hd : Disjoint s (closure t)) (ha : a ∈ s)
+    : (ordConnectedSection <| ordSeparatingSet s t)ᶜ ∈ 𝓝[≤] a := by
   have hd' : Disjoint (ofDual ⁻¹' s) (closure <| ofDual ⁻¹' t) := hd
   have ha' : toDual a ∈ ofDual ⁻¹' s := ha
   simpa only [dual_ordSeparatingSet, dual_ordConnectedSection] using!
     compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE hd' ha'
 
-theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhds (hd : Disjoint s (closure t))
-    (ha : a ∈ s) : (ordConnectedSection <| ordSeparatingSet s t)ᶜ ∈ 𝓝 a := by
+theorem compl_ordConnectedSection_ordSeparatingSet_mem_nhds
+    (hd : Disjoint s (closure t)) (ha : a ∈ s)
+    : (ordConnectedSection <| ordSeparatingSet s t)ᶜ ∈ 𝓝 a := by
   rw [← nhdsLE_sup_nhdsGE, mem_sup]
-  exact ⟨compl_ordConnectedSection_ordSeparatingSet_mem_nhdsLE hd ha,
-    compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE hd ha⟩
+  exact ⟨
+    compl_ordConnectedSection_ordSeparatingSet_mem_nhdsLE hd ha,
+    compl_ordConnectedSection_ordSeparatingSet_mem_nhdsGE hd ha
+  ⟩
 
 theorem ordT5Nhd_mem_nhdsSet (hd : Disjoint s (closure t)) : ordT5Nhd s t ∈ 𝓝ˢ s :=
-  bUnion_mem_nhdsSet fun x hx => ordConnectedComponent_mem_nhds.2 <| inter_mem
-    (by
-      rw [← mem_interior_iff_mem_nhds, interior_compl]
-      exact disjoint_left.1 hd hx)
-    (compl_ordConnectedSection_ordSeparatingSet_mem_nhds hd hx)
+  bUnion_mem_nhdsSet fun x hx =>
+    ordConnectedComponent_mem_nhds.2 <| inter_mem
+      (by
+        rw [← mem_interior_iff_mem_nhds, interior_compl]
+        exact disjoint_left.1 hd hx)
+      (compl_ordConnectedSection_ordSeparatingSet_mem_nhds hd hx)
 
 end Set
 
@@ -91,8 +96,13 @@ open Set
 
 /-- A linear order with order topology is a completely normal Hausdorff topological space. -/
 instance (priority := 100) OrderTopology.completelyNormalSpace : CompletelyNormalSpace X :=
-  ⟨fun s t h₁ h₂ => Filter.disjoint_iff.2
-    ⟨ordT5Nhd s t, ordT5Nhd_mem_nhdsSet h₂, ordT5Nhd t s, ordT5Nhd_mem_nhdsSet h₁.symm,
-      disjoint_ordT5Nhd⟩⟩
+  ⟨fun s t h₁ h₂ =>
+    Filter.disjoint_iff.2 ⟨
+      ordT5Nhd s t,
+      ordT5Nhd_mem_nhdsSet h₂,
+      ordT5Nhd t s,
+      ordT5Nhd_mem_nhdsSet h₁.symm,
+      disjoint_ordT5Nhd
+    ⟩⟩
 
 instance (priority := 100) OrderTopology.t5Space : T5Space X := T5Space.mk

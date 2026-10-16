@@ -75,13 +75,15 @@ lemma superadditive {m n : ℕ+} : f m + f n ≤ f (m + n) := by have h := hf.re
 
 lemma superhomogeneous {m n : ℕ+} : ↑n * f m ≤ f (n * m) := by
   induction n with
-  | one => simp
+  | one =>
+    simp
   | succ n' ih =>
     calc
-    ↑(n' + 1) * f m = ↑n' * f m + f m := by rw [PNat.add_coe, add_mul, PNat.val_ofNat, one_mul]
-    _ ≤ f (n' * m) + f m := by gcongr
-    _ ≤ f (n' * m + m) := hf.superadditive
-    _ = f ((n' + 1) * m) := by congr; rw [add_mul, one_mul]
+      ↑(n' + 1) * f m
+        = ↑n' * f m + f m := by rw [PNat.add_coe, add_mul, PNat.val_ofNat, one_mul]
+      _ ≤ f (n' * m) + f m := by gcongr
+      _ ≤ f (n' * m + m) := hf.superadditive
+      _ = f ((n' + 1) * m) := by congr; rw [add_mul, one_mul]
 
 lemma superlinear {a b c d : ℕ+} : a * f b + c * f d ≤ f (a * b + c * d) :=
   (add_le_add hf.superhomogeneous hf.superhomogeneous).trans hf.superadditive
@@ -90,14 +92,15 @@ lemma le_mul_three_apply (n : ℕ+) : n ≤ f (3 * n) := by
   rw [← mul_one (n : ℕ), ← hf.f₃, mul_comm 3]
   exact hf.superhomogeneous
 
-lemma part_1 : 660 ≤ f (1980) := by
-  exact hf.le_mul_three_apply 660
+lemma part_1 : 660 ≤ f (1980) := by exact hf.le_mul_three_apply 660
 
 lemma part_2 : f 1980 ≤ 660 := by
   have h : 5 * f 1980 + 33 * f 3 ≤ 5 * 660 + 33 := by
-    calc (5 : ℕ+) * f 1980 + (33 : ℕ+) * f 3 ≤ f (5 * 1980 + 33 * 3) := by apply hf.superlinear
-    _ = f 9999 := rfl
-    _ = 5 * 660 + 33 := by rw [hf.f_9999]
+    calc
+      (5 : ℕ+) * f 1980 + (33 : ℕ+) * f 3
+        ≤ f (5 * 1980 + 33 * 3) := by apply hf.superlinear
+      _ = f 9999 := rfl
+      _ = 5 * 660 + 33 := by rw [hf.f_9999]
   rw [hf.f₃, mul_one] at h
   -- from 5 * f 1980 + 33 ≤ 5 * 660 + 33 we show f 1980 ≤ 660
   linarith
@@ -116,8 +119,9 @@ lemma imo1982_q1 {f : ℕ+ → ℕ} (hf : IsGood f) : f 1982 = 660 := by
   intro hr
   suffices h : 3334 ≤ 3333 by simp at h
   calc
-    3334 = 5 * f 1982 + 29 * f 3 + f 2 := by rw [hf.f₃, hf.f₂, hr, add_zero, mul_one]
-    (5 : ℕ+) * f 1982 + (29 : ℕ+) * f 3 + f 2 ≤ f (5 * 1982 + 29 * 3) + f 2 := by
-      grw [hf.superlinear]
+    3334
+      = 5 * f 1982 + 29 * f 3 + f 2 := by rw [hf.f₃, hf.f₂, hr, add_zero, mul_one]
+    (5 : ℕ+) * f 1982 + (29 : ℕ+) * f 3 + f 2
+      ≤ f (5 * 1982 + 29 * 3) + f 2 := by grw [hf.superlinear]
     _ ≤ f (5 * 1982 + 29 * 3 + 2) := hf.superadditive
     _ = 3333 := hf.f_9999

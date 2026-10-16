@@ -29,27 +29,27 @@ lemma odd_iff : Odd n ↔ n % 2 = 1 where
   mp := fun ⟨m, hm⟩ ↦ by grind
   mpr h := ⟨n / 2, by grind⟩
 
-lemma not_odd_iff : ¬Odd n ↔ n % 2 = 0 := by grind
+lemma not_odd_iff : ¬ Odd n ↔ n % 2 = 0 := by grind
 
-@[simp] lemma not_odd_zero : ¬Odd (0 : ℤ) := by grind
+@[simp] lemma not_odd_zero : ¬ Odd (0 : ℤ) := by grind
 
-@[simp, grind =] lemma not_odd_iff_even : ¬Odd n ↔ Even n := by grind
-@[simp] lemma not_even_iff_odd : ¬Even n ↔ Odd n := by grind
+@[simp, grind =]
+lemma not_odd_iff_even : ¬ Odd n ↔ Even n := by grind
+@[simp] lemma not_even_iff_odd : ¬ Even n ↔ Odd n := by grind
 
 lemma even_or_odd (n : ℤ) : Even n ∨ Odd n := by grind
 
 lemma even_or_odd' (n : ℤ) : ∃ k, n = 2 * k ∨ n = 2 * k + 1 := by
   simpa only [two_mul, exists_or, Odd, Even] using even_or_odd n
 
-lemma even_xor_odd (n : ℤ) : Xor (Even n) (Odd n) := by
-  grind
+lemma even_xor_odd (n : ℤ) : Xor (Even n) (Odd n) := by grind
 
 @[deprecated (since := "2026-04-27")] alias even_xor'_odd := even_xor_odd
 
 lemma even_xor_odd' (n : ℤ) : ∃ k, Xor (n = 2 * k) (n = 2 * k + 1) := by
-  rcases even_or_odd n with (⟨k, rfl⟩ | ⟨k, rfl⟩) <;>
-  · use k
-    grind
+  rcases even_or_odd n with (⟨k, rfl⟩ | ⟨k, rfl⟩)
+    <;> · use k
+          grind
 
 @[deprecated (since := "2026-04-27")] alias even_xor'_odd' := even_xor_odd'
 
@@ -89,17 +89,15 @@ lemma even_mul_pred_self (n : ℤ) : Even (n * (n - 1)) := by grind
 
 @[simp] lemma natAbs_even : Even n.natAbs ↔ Even n := by grind
 
-@[simp]
-lemma natAbs_odd : Odd n.natAbs ↔ Odd n := by grind
+@[simp] lemma natAbs_odd : Odd n.natAbs ↔ Odd n := by grind
 
 protected alias ⟨_, _root_.Even.natAbs⟩ := natAbs_even
 protected alias ⟨_, _root_.Odd.natAbs⟩ := natAbs_odd
 
-lemma four_dvd_add_or_sub_of_odd {a b : ℤ} (ha : Odd a) (hb : Odd b) :
-    4 ∣ a + b ∨ 4 ∣ a - b := by grind
+lemma four_dvd_add_or_sub_of_odd {a b : ℤ} (ha : Odd a) (hb : Odd b) : 4 ∣ a + b ∨ 4 ∣ a - b := by
+  grind
 
-lemma two_dvd_mul_add_one (k : ℤ) : 2 ∣ k * (k + 1) :=
-  even_iff_two_dvd.mp (even_mul_succ_self k)
+lemma two_dvd_mul_add_one (k : ℤ) : 2 ∣ k * (k + 1) := even_iff_two_dvd.mp (even_mul_succ_self k)
 
 lemma two_mul_ediv_two_add_one_of_odd : Odd n → 2 * (n / 2) + 1 = n := by grind
 
@@ -109,11 +107,9 @@ lemma add_one_ediv_two_mul_two_of_odd : Odd n → 1 + n / 2 * 2 = n := by grind
 
 lemma two_mul_ediv_two_of_odd (h : Odd n) : 2 * (n / 2) = n - 1 := by grind
 
-@[simp]
-theorem even_sign_iff {z : ℤ} : Even z.sign ↔ z = 0 := by grind
+@[simp] theorem even_sign_iff {z : ℤ} : Even z.sign ↔ z = 0 := by grind
 
-@[simp]
-theorem odd_sign_iff {z : ℤ} : Odd z.sign ↔ z ≠ 0 := by grind
+@[simp] theorem odd_sign_iff {z : ℤ} : Odd z.sign ↔ z ≠ 0 := by grind
 
 @[norm_cast, simp]
 theorem isSquare_natCast_iff {n : ℕ} : IsSquare (n : ℤ) ↔ IsSquare n := by
@@ -122,8 +118,7 @@ theorem isSquare_natCast_iff {n : ℕ} : IsSquare (n : ℤ) ↔ IsSquare n := by
   · exact ⟨x, mod_cast h⟩
 
 @[simp]
-theorem isSquare_ofNat_iff {n : ℕ} :
-    IsSquare (ofNat(n) : ℤ) ↔ IsSquare (ofNat(n) : ℕ) :=
+theorem isSquare_ofNat_iff {n : ℕ} : IsSquare (ofNat(n) : ℤ) ↔ IsSquare (ofNat(n) : ℕ) :=
   isSquare_natCast_iff
 
 -- These next two don't make good `norm_cast` lemmas.
@@ -137,8 +132,7 @@ theorem coe_nat_two_pow_pred (p : ℕ) : ((2 ^ p - 1 : ℕ) : ℤ) = (2 ^ p - 1 
 lemma sq_emod_four (b : ℤ) : b ^ 2 % 4 = b % 2 := by
   rcases even_or_odd' b with ⟨k, rfl | rfl⟩ <;> grind
 
-theorem sq_emod_four_eq_one_of_odd {x : ℤ} (hx : Odd x) : x ^ 2 % 4 = 1 := by
-  grind [sq_emod_four]
+theorem sq_emod_four_eq_one_of_odd {x : ℤ} (hx : Odd x) : x ^ 2 % 4 = 1 := by grind [sq_emod_four]
 
 lemma eight_dvd_sq_sub_one_of_odd {k : ℤ} (hk : Odd k) : 8 ∣ k ^ 2 - 1 := by
   obtain ⟨m, rfl⟩ := hk
@@ -151,7 +145,7 @@ section DivisionMonoid
 
 variable {α : Type*} [DivisionMonoid α] [HasDistribNeg α] {n : ℤ}
 
-theorem Odd.neg_zpow (h : Odd n) (a : α) : (-a) ^ n = -a ^ n := by
+theorem Odd.neg_zpow (h : Odd n) (a : α) : (-a) ^ n = - a ^ n := by
   obtain ⟨k, rfl⟩ := h
   cases k with
   | ofNat k =>

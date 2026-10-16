@@ -23,16 +23,17 @@ namespace CategoryTheory
 
 namespace Localization
 
-variable {C D : Type*} [Category* C] [Category* D] (L : C ⥤ D) (W : MorphismProperty C)
-  [L.IsLocalization W]
+variable
+  {C D : Type*} [Category* C] [Category* D]
+  (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
 
 open ComposableArrows
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma essSurj_mapComposableArrows_of_hasRightCalculusOfFractions
-    [W.HasRightCalculusOfFractions] (n : ℕ) :
-    (L.mapComposableArrows n).EssSurj where
+    [W.HasRightCalculusOfFractions] (n : ℕ)
+    : (L.mapComposableArrows n).EssSurj where
   mem_essImage Y := by
     have := essSurj L W
     induction n with
@@ -42,15 +43,13 @@ lemma essSurj_mapComposableArrows_of_hasRightCalculusOfFractions
     | succ n hn =>
       obtain ⟨Y, Z, f, rfl⟩ := ComposableArrows.precomp_surjective Y
       obtain ⟨Y', ⟨e⟩⟩ := hn Y
-      obtain ⟨f', hf'⟩ := exists_rightFraction L W
-        ((L.objObjPreimageIso Z).hom ≫ f ≫ (e.app 0).inv)
-      refine ⟨Y'.precomp f'.f,
-        ⟨isoMkSucc (isoOfHom L W _ f'.hs ≪≫ L.objObjPreimageIso Z) e ?_⟩⟩
+      obtain ⟨f', hf'⟩ := exists_rightFraction L W ((L.objObjPreimageIso Z).hom ≫ f ≫ (e.app 0).inv)
+      refine ⟨Y'.precomp f'.f, ⟨isoMkSucc (isoOfHom L W _ f'.hs ≪≫ L.objObjPreimageIso Z) e ?_⟩⟩
       dsimp at hf' ⊢
       simp [← cancel_mono (e.inv.app 0), hf']
 
-lemma essSurj_mapComposableArrows [W.HasLeftCalculusOfFractions] (n : ℕ) :
-    (L.mapComposableArrows n).EssSurj := by
+lemma essSurj_mapComposableArrows [W.HasLeftCalculusOfFractions] (n : ℕ)
+    : (L.mapComposableArrows n).EssSurj := by
   have := essSurj_mapComposableArrows_of_hasRightCalculusOfFractions L.op W.op n
   have := Functor.essSurj_of_iso (L.mapComposableArrowsOpIso n).symm
   exact Functor.essSurj_of_comp_fully_faithful _ (opEquivalence D n).functor.rightOp

@@ -23,23 +23,27 @@ class ZeroLEOneClass (α : Type*) [Zero α] [One α] [LE α] : Prop where
   zero_le_one : (0 : α) ≤ 1
 
 /-- `zero_le_one` with the type argument implicit. -/
-@[simp] lemma zero_le_one [Zero α] [One α] [LE α] [ZeroLEOneClass α] : (0 : α) ≤ 1 :=
+@[simp]
+lemma zero_le_one [Zero α] [One α] [LE α] [ZeroLEOneClass α] : (0 : α) ≤ 1 :=
   ZeroLEOneClass.zero_le_one
 
-instance ZeroLEOneClass.factZeroLeOne [Zero α] [One α] [LE α] [ZeroLEOneClass α] :
-    Fact ((0 : α) ≤ 1) where
+instance ZeroLEOneClass.factZeroLeOne [Zero α] [One α] [LE α] [ZeroLEOneClass α]
+    : Fact ((0 : α) ≤ 1) where
   out := zero_le_one
 
 /-- `zero_le_one` with the type argument explicit. -/
-lemma zero_le_one' (α) [Zero α] [One α] [LE α] [ZeroLEOneClass α] : (0 : α) ≤ 1 :=
-  zero_le_one
+lemma zero_le_one' (α) [Zero α] [One α] [LE α] [ZeroLEOneClass α] : (0 : α) ≤ 1 := zero_le_one
 
-instance Prod.instZeroLEOneClass {R S : Type*} [Zero R] [One R] [LE R] [ZeroLEOneClass R]
-    [Zero S] [One S] [LE S] [ZeroLEOneClass S] : ZeroLEOneClass (R × S) :=
+instance Prod.instZeroLEOneClass
+    {R S : Type*}
+    [Zero R] [One R] [LE R] [ZeroLEOneClass R] [Zero S] [One S] [LE S] [ZeroLEOneClass S]
+    : ZeroLEOneClass (R × S) :=
   ⟨⟨zero_le_one, zero_le_one⟩⟩
 
-instance Pi.instZeroLEOneClass {ι : Type*} {R : ι → Type*} [∀ i, Zero (R i)] [∀ i, One (R i)]
-    [∀ i, LE (R i)] [∀ i, ZeroLEOneClass (R i)] : ZeroLEOneClass (∀ i, R i) :=
+instance Pi.instZeroLEOneClass
+    {ι : Type*} {R : ι → Type*}
+    [∀ i, Zero (R i)] [∀ i, One (R i)] [∀ i, LE (R i)] [∀ i, ZeroLEOneClass (R i)]
+    : ZeroLEOneClass (∀ i, R i) :=
   ⟨fun _ ↦ zero_le_one⟩
 
 section

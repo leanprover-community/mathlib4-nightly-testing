@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Combinatorics.SimpleGraph.Connectivity.Subgraph
 public import Mathlib.Combinatorics.SimpleGraph.Prod
-
 import Mathlib.Order.SuccPred.Fin
 import Mathlib.Order.SuccPred.Relation
 
@@ -25,7 +24,6 @@ path graph on `n` vertices.
 
 @[expose] public section
 
-
 open Order OrderDual Relation
 
 namespace SimpleGraph
@@ -42,27 +40,22 @@ def hasse : SimpleGraph α where
 
 variable {α} {a b : α}
 
-@[simp]
-theorem hasse_adj : (hasse α).Adj a b ↔ a ⋖ b ∨ b ⋖ a :=
-  Iff.rfl
+@[simp] theorem hasse_adj : (hasse α).Adj a b ↔ a ⋖ b ∨ b ⋖ a := Iff.rfl
 
-instance [Fintype α] [DecidableLT α] : DecidableRel (hasse α).Adj :=
-  fun _ _ ↦ decidable_of_iff' _ hasse_adj
+instance [Fintype α] [DecidableLT α] : DecidableRel (hasse α).Adj := fun _ _ ↦
+  decidable_of_iff' _ hasse_adj
 
 /-- `αᵒᵈ` and `α` have the same Hasse diagram. -/
-def hasseDualIso : hasse αᵒᵈ ≃g hasse α :=
-  { ofDual with map_rel_iff' := by simp [or_comm] }
+def hasseDualIso : hasse αᵒᵈ ≃g hasse α := { ofDual with map_rel_iff' := by simp [or_comm] }
 
-@[simp]
-theorem hasseDualIso_apply (a : αᵒᵈ) : hasseDualIso a = ofDual a :=
-  rfl
+@[simp] theorem hasseDualIso_apply (a : αᵒᵈ) : hasseDualIso a = ofDual a := rfl
 
-@[simp]
-theorem hasseDualIso_symm_apply (a : α) : hasseDualIso.symm a = toDual a :=
-  rfl
+@[simp] theorem hasseDualIso_symm_apply (a : α) : hasseDualIso.symm a = toDual a := rfl
 
-/-- The Hasse diagram of a preorder is triangle-free. This is the graph-theoretic formulation of
-`not_covBy_of_lt_of_lt`: if `a ⋖ b` and `b ⋖ c` then `¬a ⋖ c`. -/
+/--
+The Hasse diagram of a preorder is triangle-free. This is the graph-theoretic formulation of
+`not_covBy_of_lt_of_lt`: if `a ⋖ b` and `b ⋖ c` then `¬a ⋖ c`.
+-/
 theorem cliqueFree_hasse_three : (hasse α).CliqueFree 3 := by
   classical
   intro s ⟨hc, hcard⟩
@@ -90,42 +83,47 @@ section LinearOrder
 
 variable [LinearOrder α]
 
-/-- A discrete form of the intermediate value theorem – a walk in a linear graph visits all of
-the vertices between its endpoints. -/
-theorem Walk.mem_support_hasse_of_ge_of_le {u v : α} (w : (hasse α).Walk u v) {x : α} (hu : u ≤ x)
-    (hv : x ≤ v) : x ∈ w.support := by
+/--
+A discrete form of the intermediate value theorem – a walk in a linear graph visits all of
+the vertices between its endpoints.
+-/
+theorem Walk.mem_support_hasse_of_ge_of_le
+    {u v : α} (w : (hasse α).Walk u v) {x : α} (hu : u ≤ x) (hv : x ≤ v)
+    : x ∈ w.support := by
   rcases eq_or_lt_of_le hv with rfl | hx
   · exact w.end_mem_support
   · have ⟨d, hd, _⟩ := w.exists_boundary_dart (.Iic x) hu hx.not_ge
     rw [show x = d.fst by grind [not_le, Dart.adj, hasse_adj, CovBy]]
     exact w.dart_fst_mem_support_of_mem_darts hd
 
-/-- A discrete form of the intermediate value theorem – a walk in a linear graph visits all of
-the darts between its endpoints, oriented from the walk's start to its end. -/
-theorem Walk.mem_darts_hasse_of_ge_of_le_of_le {u v : α} (w : (hasse α).Walk u v)
-    {d : (hasse α).Dart} (hu : u ≤ d.fst) (hd : d.fst ≤ d.snd) (hv : d.snd ≤ v) : d ∈ w.darts := by
+/--
+A discrete form of the intermediate value theorem – a walk in a linear graph visits all of
+the darts between its endpoints, oriented from the walk's start to its end.
+-/
+theorem Walk.mem_darts_hasse_of_ge_of_le_of_le
+    {u v : α} (w : (hasse α).Walk u v)
+    {d : (hasse α).Dart} (hu : u ≤ d.fst) (hd : d.fst ≤ d.snd) (hv : d.snd ≤ v)
+    : d ∈ w.darts := by
   replace hd := hd.lt_of_ne d.fst_ne_snd
   have := w.exists_boundary_dart (.Iic d.fst) hu (hd.trans_le hv).not_ge
   grind [Dart.ext, Dart.adj, hasse_adj, CovBy, covBy_iff_lt_iff_le_left]
 
-theorem preconnected_hasse_of_succOrder [SuccOrder α] [IsSuccArchimedean α] :
-    (hasse α).Preconnected :=
-  fun a b => by
+theorem preconnected_hasse_of_succOrder [SuccOrder α] [IsSuccArchimedean α]
+    : (hasse α).Preconnected := fun a b => by
   rw [reachable_iff_reflTransGen]
-  exact
-    reflTransGen_of_succ _ (fun c hc => Or.inl <| covBy_succ_of_not_isMax hc.2.not_isMax)
-      fun c hc => Or.inr <| covBy_succ_of_not_isMax hc.2.not_isMax
+  exact reflTransGen_of_succ _
+    (fun c hc => Or.inl <| covBy_succ_of_not_isMax hc.2.not_isMax)
+    fun c hc => Or.inr <| covBy_succ_of_not_isMax hc.2.not_isMax
 
 @[deprecated (since := "2026-10-01")]
 alias hasse_preconnected_of_succ := preconnected_hasse_of_succOrder
 
-theorem preconnected_hasse_of_predOrder [PredOrder α] [IsPredArchimedean α] :
-    (hasse α).Preconnected :=
-  fun a b => by
+theorem preconnected_hasse_of_predOrder [PredOrder α] [IsPredArchimedean α]
+    : (hasse α).Preconnected := fun a b => by
   rw [reachable_iff_reflTransGen, ← reflTransGen_swap]
-  exact
-    reflTransGen_of_pred _ (fun c hc => Or.inl <| pred_covBy_of_not_isMin hc.1.not_isMin)
-      fun c hc => Or.inr <| pred_covBy_of_not_isMin hc.1.not_isMin
+  exact reflTransGen_of_pred _
+    (fun c hc => Or.inl <| pred_covBy_of_not_isMin hc.1.not_isMin)
+    fun c hc => Or.inr <| pred_covBy_of_not_isMin hc.1.not_isMin
 
 @[deprecated (since := "2026-10-01")]
 alias hasse_preconnected_of_pred := preconnected_hasse_of_predOrder
@@ -133,11 +131,11 @@ alias hasse_preconnected_of_pred := preconnected_hasse_of_predOrder
 end LinearOrder
 
 /-- The path graph on `n` vertices. -/
-def pathGraph (n : ℕ) : SimpleGraph (Fin n) :=
-  hasse _
+def pathGraph (n : ℕ) : SimpleGraph (Fin n) := hasse _
 
-theorem pathGraph_adj {n : ℕ} {u v : Fin n} :
-    (pathGraph n).Adj u v ↔ u.val + 1 = v.val ∨ v.val + 1 = u.val := by simp [pathGraph, hasse]
+theorem pathGraph_adj {n : ℕ} {u v : Fin n}
+    : (pathGraph n).Adj u v ↔ u.val + 1 = v.val ∨ v.val + 1 = u.val := by
+  simp [pathGraph, hasse]
 
 @[simp]
 theorem preconnected_pathGraph (n : ℕ) : (pathGraph n).Preconnected :=
@@ -158,8 +156,7 @@ theorem pathGraph_two_eq_top : pathGraph 2 = ⊤ := by
   ext u v
   fin_cases u <;> fin_cases v <;> simp [pathGraph]
 
-instance (n : ℕ) : DecidableRel (pathGraph n).Adj :=
-  inferInstanceAs <| DecidableRel (hasse _).Adj
+instance (n : ℕ) : DecidableRel (pathGraph n).Adj := inferInstanceAs <| DecidableRel (hasse _).Adj
 
 namespace Walk
 
@@ -173,13 +170,12 @@ def pathGraphHomToSubgraph : pathGraph (w.length + 1) →g w.toSubgraph.coe wher
       Subgraph.Adj.symm]
 
 /-- A walk induces a homomorphism from a path graph to the graph -/
-def pathGraphHom : pathGraph (w.length + 1) →g G :=
-  w.toSubgraph.hom.comp w.pathGraphHomToSubgraph
+def pathGraphHom : pathGraph (w.length + 1) →g G := w.toSubgraph.hom.comp w.pathGraphHomToSubgraph
 
 variable {w} in
 /-- The subgraph of a path is isomorphic to the path graph with the same number of vertices -/
-def IsPath.pathGraphIsoToSubgraph (hw : w.IsPath) :
-    pathGraph (w.length + 1) ≃g w.toSubgraph.coe where
+def IsPath.pathGraphIsoToSubgraph (hw : w.IsPath)
+    : pathGraph (w.length + 1) ≃g w.toSubgraph.coe where
   toFun := w.pathGraphHomToSubgraph
   invFun v := ⟨w.support.idxOf v.val, by grind [w.mem_verts_toSubgraph]⟩
   left_inv := by grind [pathGraphHomToSubgraph, RelHom.coeFn_mk, hw.support_nodup]

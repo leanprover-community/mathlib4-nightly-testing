@@ -29,14 +29,14 @@ variable {C : Type u'} [Category.{v'} C] {J : GrothendieckTopology C}
 
 namespace PresheafOfModules
 
-variable {R₀ : Cᵒᵖ ⥤ RingCat.{u}} {R : Sheaf J RingCat.{u}} (α : R₀ ⟶ R.obj)
+variable
+  {R₀ : Cᵒᵖ ⥤ RingCat.{u}} {R : Sheaf J RingCat.{u}} (α : R₀ ⟶ R.obj)
   [Presheaf.IsLocallyInjective J α] [Presheaf.IsLocallySurjective J α]
-  [J.WEqualsLocallyBijective AddCommGrpCat.{v}]
-  [HasWeakSheafify J AddCommGrpCat.{v}]
+  [J.WEqualsLocallyBijective AddCommGrpCat.{v}] [HasWeakSheafify J AddCommGrpCat.{v}]
 
 open MorphismProperty in
-lemma inverseImage_W_toPresheaf_eq_inverseImage_isomorphisms :
-    J.W.inverseImage (toPresheaf R₀) = (isomorphisms _).inverseImage (sheafification α) := by
+lemma inverseImage_W_toPresheaf_eq_inverseImage_isomorphisms
+    : J.W.inverseImage (toPresheaf R₀) = (isomorphisms _).inverseImage (sheafification α) := by
   rw [J.W_eq_inverseImage_isomorphisms]
   ext P Q f
   simp only [inverseImage_iff, isomorphisms.iff,

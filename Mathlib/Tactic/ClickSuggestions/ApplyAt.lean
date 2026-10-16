@@ -40,15 +40,11 @@ deriving Inhabited
 
 instance : Ord ApplyAtKey where
   compare a b :=
-    (compare a.1 b.1).then <|
-    (compare a.2 b.2).then <|
-    (compare a.3 b.3).then
-    (compare a.4 b.4)
+    (compare a.1 b.1).then <| (compare a.2 b.2).then <| (compare a.3 b.3).then (compare a.4 b.4)
 
 /-- Whether the two suggestions are duplicates of each other. -/
 def ApplyAtKey.isDuplicate (a b : ApplyAtKey) : MetaM Bool :=
-  pure (a.newGoals.size == b.newGoals.size) <&&>
-  a.newGoals.size.allM fun i _ =>
+  pure (a.newGoals.size == b.newGoals.size) <&&> a.newGoals.size.allM fun i _ =>
     pure (a.newGoals[i]!.mvars.size == b.newGoals[i]!.mvars.size)
       <&&> isExplicitEq a.newGoals[i]!.expr b.newGoals[i]!.expr
 
@@ -58,8 +54,8 @@ private def tacticSyntax (lem : ApplyAtLemma) : ClickSuggestionsM (TSyntax `tact
   `(tactic| apply $(mkIdent (← lem.name.unresolveName)) at $(← getHypIdent!))
 
 /-- Generate the suggestion for applying `lem`. -/
-def ApplyAtLemma.try (lem : ApplyAtLemma) (assignableMVars : Array Expr) :
-    ClickSuggestionsM (Result ApplyAtKey) := do
+def ApplyAtLemma.try (lem : ApplyAtLemma) (assignableMVars : Array Expr)
+    : ClickSuggestionsM (Result ApplyAtKey) := do
   let (_proof, mvars, binderInfos, replacement) ← lem.name.forallMetaTelescopeReducing
   let mvar := mvars.back!
   let mvars := mvars.pop
@@ -75,16 +71,16 @@ def ApplyAtLemma.try (lem : ApplyAtLemma) (assignableMVars : Array Expr) :
   let key := {
     numGoals := newGoals.size
     nameLength := lem.name.length
-    replacementSize := ← newGoals.foldlM (init := 0) fun s g =>
-      return (← ppExpr g).pretty.length + s
+    replacementSize :=
+      ← newGoals.foldlM (init := 0) fun s g => return (← ppExpr g).pretty.length + s
     name := lem.name.toString
     newGoals := (← newGoals.mapM (abstractMVars ·)).push (← abstractMVars replacement)
   }
   let tactic ← tacticSyntax lem
   let mut htmls := #[← exprToHtml replacement]
   for goal in newGoals do
-    htmls := htmls.push
-      jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
+    htmls :=
+      htmls.push jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
   let filtered ←
     if unhelpfulMVars then
       pure none

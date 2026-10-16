@@ -1,5 +1,4 @@
 import Mathlib.Tactic.Linter.FlexibleLinter
-
 import Mathlib.Basic.ENNReal.Operations
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Continuity
@@ -14,7 +13,6 @@ import Mathlib.Tactic.Measurability
 import Mathlib.Tactic.Module
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
-
 import Mathlib.MeasureTheory.MeasurableSpace.Instances
 import Mathlib.Topology.Continuous
 import Mathlib.Topology.Instances.Nat
@@ -109,9 +107,9 @@ example {a b : Nat} : a + b = b + a + 0 := by
 
 -- Test that `continuity` is also a flexible tactic: the goal must be solvable by continuity,
 -- but require some simplification first.
-example {X : Type*} [TopologicalSpace X] {f : X → ℕ} {g : ℕ → X}
-    (hf : Continuous f) (hg : Continuous g) :
-    Continuous (fun x ↦ (f ∘ g) x + 0) := by
+example
+    {X : Type*} [TopologicalSpace X] {f : X → ℕ} {g : ℕ → X} (hf : Continuous f) (hg : Continuous g)
+    : Continuous (fun x ↦ (f ∘ g) x + 0) := by
   simp
   continuity
 
@@ -130,15 +128,15 @@ info: `fun_prop`
 modifies the current goal, which was modified by the flexible tactic `simp` on line
 -/
 #guard_msgs (substring := true) in
-example {X : Type*} [TopologicalSpace X] {f : X → ℕ} {g : ℕ → X}
-    (hf : Continuous f) (hg : Continuous g) :
-    Continuous (fun x ↦ (f ∘ g) x + 0) := by
+example
+    {X : Type*} [TopologicalSpace X] {f : X → ℕ} {g : ℕ → X} (hf : Continuous f) (hg : Continuous g)
+    : Continuous (fun x ↦ (f ∘ g) x + 0) := by
   simp
   fun_prop
 
 -- A similar example for the `measurability` tactic.
-example {α : Type*} [MeasurableSpace α] {f : α → ℚ} (hf : Measurable f) :
-    Measurable (fun x ↦ f x + 0) := by
+example {α : Type*} [MeasurableSpace α] {f : α → ℚ} (hf : Measurable f)
+    : Measurable (fun x ↦ f x + 0) := by
   simp
   measurability
 
@@ -193,8 +191,8 @@ example {a b : ℤ} (h : a + 1 = b) : a + 1 + 0 = b := by
 
 -- Test that `field_simp` is accepted as a follower of `simp`.
 #guard_msgs in
-example {K : Type*} [Field K] (x y z : K) (hy : 1 - y ≠ 0) (h : z = y) :
-    x / (1 - y) / (1 + y / (1 - z)) = x := by
+example {K : Type*} [Field K] (x y z : K) (hy : 1 - y ≠ 0) (h : z = y)
+    : x / (1 - y) / (1 + y / (1 - z)) = x := by
   simp [h]
   field_simp
   simp
@@ -224,12 +222,13 @@ example {a b : Nat} (h : a + b = a + (b + 1)) : a + b = b + a + 0 + 1 := by
 #guard_msgs in
 example {a b : ℝ≥0∞} (ha : a = 0) (hb : b = a) : a + b + 3 < ∞ := by
   simp [hb]
-  finiteness_nonterminal; simp [ha]
+  finiteness_nonterminal
+  simp [ha]
 
 -- `field_simp` is a rigidifier
 #guard_msgs in
-example {K : Type*} [Field K] (x y z : K) (hy : 1 - y ≠ 0) (h : x = z) (h' : (1 - y + y) = 1) :
-    x / (1 - y) / (1 + y / (1 - y)) = z := by
+example {K : Type*} [Field K] (x y z : K) (hy : 1 - y ≠ 0) (h : x = z) (h' : (1 - y + y) = 1)
+    : x / (1 - y) / (1 + y / (1 - y)) = z := by
   field_simp
   rw [h', one_mul, h]
 

@@ -31,7 +31,7 @@ variable {C : Type u} [Category.{v} C] [Preadditive C] [CartesianMonoidalCategor
 instance (X : C) : GrpObj X where
   one := 0
   mul := fst _ _ + snd _ _
-  inv := -𝟙 X
+  inv := - 𝟙 X
   one_mul := by simp [← leftUnitor_hom]
   mul_one := by simp [← rightUnitor_hom]
   mul_assoc := by simp [add_assoc]
@@ -42,8 +42,10 @@ instance (X : C) : IsCommMonObj X where
   mul_comm := by simp [add_comm]
 
 variable (C) in
-/-- The canonical functor from an additive category into its commutative group objects. This is
-always an equivalence, see `commGrpEquivalence`. -/
+/--
+The canonical functor from an additive category into its commutative group objects. This is
+always an equivalence, see `commGrpEquivalence`.
+-/
 @[simps]
 def toCommGrp : C ⥤ CommGrp C where
   obj X := ⟨X⟩
@@ -53,9 +55,10 @@ def toCommGrp : C ⥤ CommGrp C where
 -- `CartesianMonoidalCategory` in preadditive categories, to give this lemma a proper home.
 set_option backward.privateInPublic true in
 omit [BraidedCategory C] in
-private theorem monoidal_hom_ext {X Y Z : C} {f g : X ⊗ Y ⟶ Z}
-    (h₁ : lift (𝟙 X) 0 ≫ f = lift (𝟙 X) 0 ≫ g) (h₂ : lift 0 (𝟙 Y) ≫ f = lift 0 (𝟙 Y) ≫ g) :
-    f = g :=
+private theorem monoidal_hom_ext
+    {X Y Z : C} {f g : X ⊗ Y ⟶ Z}
+    (h₁ : lift (𝟙 X) 0 ≫ f = lift (𝟙 X) 0 ≫ g) (h₂ : lift 0 (𝟙 Y) ≫ f = lift 0 (𝟙 Y) ≫ g)
+    : f = g :=
   BinaryCofan.IsColimit.hom_ext
     (binaryBiconeIsBilimitOfLimitConeOfIsLimit (tensorProductIsBinaryProduct X Y)).isColimit h₁ h₂
 
@@ -64,12 +67,11 @@ set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- Auxiliary definition for `commGrpEquivalence`. -/
 @[simps!]
-def commGrpEquivalenceAux : CommGrp.forget C ⋙ toCommGrp C ≅
-      𝟭 (CommGrp C) := by
+def commGrpEquivalenceAux : CommGrp.forget C ⋙ toCommGrp C ≅ 𝟭 (CommGrp C) := by
   refine NatIso.ofComponents (fun _ => CommGrp.mkIso (Iso.refl _) ?_ ?_) ?_
   · exact ((IsZero.iff_id_eq_zero _).2 (Subsingleton.elim _ _)).eq_of_src _ _
-  · simp only [Functor.id_obj,
-      mul_def, Iso.refl_hom, Category.comp_id, tensorHom_id, id_whiskerRight, Category.id_comp]
+  · simp only [Functor.id_obj, mul_def, Iso.refl_hom, Category.comp_id, tensorHom_id,
+      id_whiskerRight, Category.id_comp]
     apply monoidal_hom_ext
     · simp only [comp_add, lift_fst, lift_snd, add_zero]
       convert (MonObj.lift_comp_one_right _ 0).symm

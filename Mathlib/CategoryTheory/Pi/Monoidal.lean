@@ -26,8 +26,7 @@ namespace Pi
 
 open Category MonoidalCategory
 
-variable {I : Type w₁} {C : I → Type u₁} [∀ i, Category.{v₁} (C i)]
-  [∀ i, MonoidalCategory (C i)]
+variable {I : Type w₁} {C : I → Type u₁} [∀ i, Category.{v₁} (C i)] [∀ i, MonoidalCategory (C i)]
 
 @[simps tensorObj tensorHom whiskerLeft whiskerRight tensorUnit]
 instance monoidalCategoryStruct : MonoidalCategoryStruct (∀ i, C i) where
@@ -41,43 +40,35 @@ instance monoidalCategoryStruct : MonoidalCategoryStruct (∀ i, C i) where
   associator X Y Z := isoMk (fun i ↦ α_ (X i) (Y i) (Z i))
 
 @[simp]
-theorem associator_hom_apply {X Y Z : ∀ i, C i} {i : I} :
-    (α_ X Y Z).hom i = (α_ (X i) (Y i) (Z i)).hom := rfl
+theorem associator_hom_apply {X Y Z : ∀ i, C i} {i : I}
+    : (α_ X Y Z).hom i = (α_ (X i) (Y i) (Z i)).hom :=
+  rfl
 
 @[simp]
-theorem associator_inv_apply {X Y Z : ∀ i, C i} {i : I} :
-    (α_ X Y Z).inv i = (α_ (X i) (Y i) (Z i)).inv := rfl
+theorem associator_inv_apply {X Y Z : ∀ i, C i} {i : I}
+    : (α_ X Y Z).inv i = (α_ (X i) (Y i) (Z i)).inv :=
+  rfl
 
 @[simp]
-theorem isoApp_associator {X Y Z : ∀ i, C i} {i : I} :
-    isoApp (α_ X Y Z) i = α_ (X i) (Y i) (Z i) := rfl
+theorem isoApp_associator {X Y Z : ∀ i, C i} {i : I} : isoApp (α_ X Y Z) i = α_ (X i) (Y i) (Z i) :=
+  rfl
 
-@[simp]
-theorem left_unitor_hom_apply {X : ∀ i, C i} {i : I} :
-    (λ_ X).hom i = (λ_ (X i)).hom := rfl
+@[simp] theorem left_unitor_hom_apply {X : ∀ i, C i} {i : I} : (λ_ X).hom i = (λ_ (X i)).hom := rfl
 
-@[simp]
-theorem left_unitor_inv_apply {X : ∀ i, C i} {i : I} :
-    (λ_ X).inv i = (λ_ (X i)).inv := rfl
+@[simp] theorem left_unitor_inv_apply {X : ∀ i, C i} {i : I} : (λ_ X).inv i = (λ_ (X i)).inv := rfl
 
-@[simp]
-theorem isoApp_left_unitor {X : ∀ i, C i} {i : I} :
-    isoApp (λ_ X) i = λ_ (X i) := rfl
+@[simp] theorem isoApp_left_unitor {X : ∀ i, C i} {i : I} : isoApp (λ_ X) i = λ_ (X i) := rfl
 
-@[simp]
-theorem right_unitor_hom_apply {X : ∀ i, C i} {i : I} :
-    (ρ_ X).hom i = (ρ_ (X i)).hom := rfl
+@[simp] theorem right_unitor_hom_apply {X : ∀ i, C i} {i : I} : (ρ_ X).hom i = (ρ_ (X i)).hom := rfl
 
-@[simp]
-theorem right_unitor_inv_apply {X : ∀ i, C i} {i : I} :
-    (ρ_ X).inv i = (ρ_ (X i)).inv := rfl
+@[simp] theorem right_unitor_inv_apply {X : ∀ i, C i} {i : I} : (ρ_ X).inv i = (ρ_ (X i)).inv := rfl
 
-@[simp]
-theorem isoApp_right_unitor {X : ∀ i, C i} {i : I} :
-    isoApp (ρ_ X) i = ρ_ (X i) := rfl
+@[simp] theorem isoApp_right_unitor {X : ∀ i, C i} {i : I} : isoApp (ρ_ X) i = ρ_ (X i) := rfl
 
-/-- `Pi.monoidalCategory C` equips the product of an indexed family of categories with
-the pointwise monoidal structure. -/
+/--
+`Pi.monoidalCategory C` equips the product of an indexed family of categories with
+the pointwise monoidal structure.
+-/
 instance monoidalCategory : MonoidalCategory.{max w₁ v₁} (∀ i, C i) where
   tensorHom_def {A B X Y} f g := by ext i; simp [tensorHom_def, whiskerLeft]
 
@@ -87,7 +78,8 @@ open CategoryTheory.BraidedCategory
 
 variable [∀ i, BraidedCategory (C i)]
 
-/-- When each `C i` is a braided monoidal category,
+/--
+When each `C i` is a braided monoidal category,
 the natural pointwise monoidal structure on `∀ i, C i`
 is also braided.
 -/
@@ -97,16 +89,12 @@ instance braidedCategory : BraidedCategory (∀ i, C i) where
   hexagon_reverse X Y Z := by ext i; apply hexagon_reverse
 
 @[simp]
-theorem braiding_hom_apply {X Y : ∀ i, C i} {i : I} :
-    (β_ X Y).hom i = (β_ (X i) (Y i)).hom := rfl
+theorem braiding_hom_apply {X Y : ∀ i, C i} {i : I} : (β_ X Y).hom i = (β_ (X i) (Y i)).hom := rfl
 
 @[simp]
-theorem braiding_inv_apply {X Y : ∀ i, C i} {i : I} :
-    (β_ X Y).inv i = (β_ (X i) (Y i)).inv := rfl
+theorem braiding_inv_apply {X Y : ∀ i, C i} {i : I} : (β_ X Y).inv i = (β_ (X i) (Y i)).inv := rfl
 
-@[simp]
-theorem isoApp_braiding {X Y : ∀ i, C i} {i : I} :
-    isoApp (β_ X Y) i = β_ (X i) (Y i) := rfl
+@[simp] theorem isoApp_braiding {X Y : ∀ i, C i} {i : I} : isoApp (β_ X Y) i = β_ (X i) (Y i) := rfl
 
 end BraidedCategory
 
@@ -116,7 +104,8 @@ open CategoryTheory.SymmetricCategory
 
 variable [∀ i, SymmetricCategory (C i)]
 
-/-- When each `C i` is a symmetric monoidal category,
+/--
+When each `C i` is a symmetric monoidal category,
 the natural pointwise monoidal structure on `∀ i, C i`
 is also symmetric.
 -/
@@ -129,8 +118,9 @@ section Closed
 
 open ihom
 
-variable {I : Type w₁} {C : I → Type u₁} [∀ i, Category.{v₁} (C i)]
-  [∀ i, MonoidalCategory (C i)] [∀ i, MonoidalClosed (C i)]
+variable
+  {I : Type w₁} {C : I → Type u₁}
+  [∀ i, Category.{v₁} (C i)] [∀ i, MonoidalCategory (C i)] [∀ i, MonoidalClosed (C i)]
 
 /-- The internal hom functor `X ⟶[∀ i, C i] -` -/
 @[simps!]
@@ -151,14 +141,13 @@ def closedCounit (X : ∀ i, C i) : ihom X ⋙ tensorLeft X ⟶ 𝟭 (∀ i, C i
   app Y := fun i ↦ (ihom.ev (X i)).app (Y i)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Equips the product of a family of closed monoidal categories with
-a pointwise closed monoidal structure. -/
+/--
+Equips the product of a family of closed monoidal categories with
+a pointwise closed monoidal structure.
+-/
 @[simps]
 instance monoidalClosed : MonoidalClosed (∀ i, C i) where
-  closed X := {
-    rightAdj := ihom X
-    adj.unit := closedUnit X
-    adj.counit := closedCounit X }
+  closed X := { rightAdj := ihom X, adj.unit := closedUnit X, adj.counit := closedCounit X }
 
 end Closed
 
@@ -176,19 +165,18 @@ instance [∀ i, BraidedCategory (C i)] (i : I) : (Pi.eval C i).Braided where
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
-instance laxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ i : I, D ⥤ C i)
-    [∀ i, (F i).LaxMonoidal] :
-    (Functor.pi' F).LaxMonoidal where
+instance laxMonoidalPi'
+    {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).LaxMonoidal]
+    : (Functor.pi' F).LaxMonoidal where
   ε := fun i ↦ Functor.LaxMonoidal.ε (F i)
   μ X Y := fun i ↦ Functor.LaxMonoidal.μ (F i) X Y
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
-instance opLaxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
-    (F : ∀ i : I, D ⥤ C i)
-    [∀ i, (F i).OplaxMonoidal] :
-    (Functor.pi' F).OplaxMonoidal where
+instance opLaxMonoidalPi'
+    {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).OplaxMonoidal]
+    : (Functor.pi' F).OplaxMonoidal where
   η := fun i ↦ Functor.OplaxMonoidal.η (F i)
   δ X Y := fun i ↦ Functor.OplaxMonoidal.δ (F i) X Y
   oplax_left_unitality X := by ext; simp
@@ -196,38 +184,40 @@ instance opLaxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
 
 set_option backward.defeqAttrib.useBackward true in
 @[simps!]
-instance monoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
-    (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).Monoidal] :
-    (Functor.pi' F).Monoidal where
+instance monoidalPi'
+  {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).Monoidal]
+  : (Functor.pi' F).Monoidal where
 
-instance [∀ i, BraidedCategory (C i)]
+instance
+    [∀ i, BraidedCategory (C i)]
     {D : Type*} [Category* D] [MonoidalCategory D] [BraidedCategory D]
-    (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).LaxBraided] :
-    (Functor.pi' F).LaxBraided where
+    (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).LaxBraided]
+    : (Functor.pi' F).LaxBraided where
   braided := by intros; ext i; exact Functor.LaxBraided.braided _ _
 
-instance [∀ i, BraidedCategory (C i)]
-    {D : Type*} [Category* D] [MonoidalCategory D] [BraidedCategory D]
-    (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).Braided] :
-    (Functor.pi' F).Braided where
+instance
+  [∀ i, BraidedCategory (C i)]
+  {D : Type*} [Category* D] [MonoidalCategory D] [BraidedCategory D]
+  (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).Braided]
+  : (Functor.pi' F).Braided where
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
-instance laxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)] (F : ∀ i : I, D i ⥤ C i)
-    [∀ i, (F i).LaxMonoidal] :
-    (Functor.pi F).LaxMonoidal where
+instance laxMonoidalPi
+    {D : I → Type u₂} [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)]
+    (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).LaxMonoidal]
+    : (Functor.pi F).LaxMonoidal where
   ε := fun i ↦ Functor.LaxMonoidal.ε (F i)
   μ X Y := fun i ↦ Functor.LaxMonoidal.μ (F i) (X i) (Y i)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
-instance opLaxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)] (F : ∀ i : I, D i ⥤ C i)
-    [∀ i, (F i).OplaxMonoidal] :
-    (Functor.pi F).OplaxMonoidal where
+instance opLaxMonoidalPi
+    {D : I → Type u₂} [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)]
+    (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).OplaxMonoidal]
+    : (Functor.pi F).OplaxMonoidal where
   η := fun i ↦ Functor.OplaxMonoidal.η (F i)
   δ X Y := fun i ↦ Functor.OplaxMonoidal.δ (F i) (X i) (Y i)
   oplax_left_unitality X := by ext; simp
@@ -235,40 +225,41 @@ instance opLaxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
 
 set_option backward.defeqAttrib.useBackward true in
 @[simps!]
-instance monoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)] (F : ∀ i : I, D i ⥤ C i)
-    [∀ i, (F i).Monoidal] :
-    (Functor.pi F).Monoidal where
+instance monoidalPi
+  {D : I → Type u₂} [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)]
+  (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).Monoidal]
+  : (Functor.pi F).Monoidal where
 
-instance [∀ i, BraidedCategory (C i)]
-    {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)] [∀ i, BraidedCategory (D i)]
-    (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).LaxBraided] :
-    (Functor.pi F).LaxBraided where
+instance
+    [∀ i, BraidedCategory (C i)]
+    {D : I → Type u₂}
+    [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)] [∀ i, BraidedCategory (D i)]
+    (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).LaxBraided]
+    : (Functor.pi F).LaxBraided where
   braided := by intros; ext i; exact Functor.LaxBraided.braided _ _
 
-instance [∀ i, BraidedCategory (C i)]
-    {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)] [∀ i, BraidedCategory (D i)]
-    (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).Braided] :
-    (Functor.pi F).Braided where
+instance
+  [∀ i, BraidedCategory (C i)]
+  {D : I → Type u₂}
+  [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)] [∀ i, BraidedCategory (D i)]
+  (F : ∀ i : I, D i ⥤ C i) [∀ i, (F i).Braided]
+  : (Functor.pi F).Braided where
 
 set_option backward.defeqAttrib.useBackward true in
-instance {D : Type*} [Category* D] [MonoidalCategory D]
+instance
+    {D : Type*} [Category* D] [MonoidalCategory D]
     {F G : D ⥤ (∀ i, C i)} [F.LaxMonoidal] [G.LaxMonoidal]
-    (τ : ∀ i, F ⋙ Pi.eval C i ⟶ G ⋙ Pi.eval C i)
-    [∀ i, (τ i).IsMonoidal] :
-    (NatTrans.pi' τ).IsMonoidal where
+    (τ : ∀ i, F ⋙ Pi.eval C i ⟶ G ⋙ Pi.eval C i) [∀ i, (τ i).IsMonoidal]
+    : (NatTrans.pi' τ).IsMonoidal where
   unit := by ext i; simpa using NatTrans.IsMonoidal.unit (τ := τ i)
   tensor X Y := by ext i; simpa using NatTrans.IsMonoidal.tensor _ _ (τ := τ i)
 
 set_option backward.defeqAttrib.useBackward true in
-instance {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
-    [∀ i, MonoidalCategory (D i)]
-    {F G : ∀ i : I, (D i ⥤ C i)} [∀ i, (F i).LaxMonoidal]
-    [∀ i, (G i).LaxMonoidal] (τ : ∀ i : I, (F i) ⟶ (G i))
-    [∀ i, (τ i).IsMonoidal] :
-    (NatTrans.pi τ).IsMonoidal where
+instance
+  {D : I → Type u₂} [∀ i, Category.{v₂} (D i)] [∀ i, MonoidalCategory (D i)]
+  {F G : ∀ i : I, (D i ⥤ C i)} [∀ i, (F i).LaxMonoidal] [∀ i, (G i).LaxMonoidal]
+  (τ : ∀ i : I, (F i) ⟶ (G i)) [∀ i, (τ i).IsMonoidal]
+  : (NatTrans.pi τ).IsMonoidal where
 
 end Pi
 

@@ -37,16 +37,16 @@ This is almost `finitePresentation_ofLocalizationSpanTarget`. The difference is,
 that here the set `t` generates the unit ideal of `A`, while in the general version,
 it only generates a quotient of `A`.
 -/
-lemma of_span_eq_top_target_aux {A : Type*} [CommRing A] [Algebra R A]
-    [Algebra.FinitePresentation R A] (f : A →ₐ[R] S) (hf : Function.Surjective f)
+lemma of_span_eq_top_target_aux
+    {A : Type*} [CommRing A] [Algebra R A] [Algebra.FinitePresentation R A]
+    (f : A →ₐ[R] S) (hf : Function.Surjective f)
     (t : Finset A) (ht : Ideal.span (t : Set A) = ⊤)
-    (H : ∀ g : t, Algebra.FinitePresentation R (Localization.Away (f g))) :
-    Algebra.FinitePresentation R S := by
+    (H : ∀ g : t, Algebra.FinitePresentation R (Localization.Away (f g)))
+    : Algebra.FinitePresentation R S := by
   apply Algebra.FinitePresentation.of_surjective hf
   apply RingHom.ker_fg_of_localizationSpan t ht
   intro g
-  let f' : Localization.Away g.val →ₐ[R] Localization.Away (f g) :=
-    Localization.awayMapₐ f g.val
+  let f' : Localization.Away g.val →ₐ[R] Localization.Away (f g) := Localization.awayMapₐ f g.val
   have (g : t) : Algebra.FinitePresentation R (Localization.Away g.val) :=
     haveI : Algebra.FinitePresentation A (Localization.Away g.val) :=
       IsLocalization.Away.finitePresentation g.val
@@ -58,9 +58,10 @@ universe u
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Finite-presentation can be checked on a standard covering of the target. -/
-lemma of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
-    (h : ∀ i ∈ s, Algebra.FinitePresentation R (Localization.Away i)) :
-    Algebra.FinitePresentation R S := by
+lemma of_span_eq_top_target
+    (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
+    (h : ∀ i ∈ s, Algebra.FinitePresentation R (Localization.Away i))
+    : Algebra.FinitePresentation R S := by
   obtain ⟨s, h₁, hs⟩ := (Ideal.span_eq_top_iff_finite s).mp hs
   replace h (i : s) : Algebra.FinitePresentation R (Localization.Away i.val) := h i (h₁ i.property)
   classical
@@ -76,11 +77,12 @@ lemma of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
     have := h ⟨x, hx⟩
     infer_instance
   obtain ⟨n, f, hf⟩ := Algebra.FiniteType.iff_quotient_mvPolynomial''.mp hfintype
-  obtain ⟨l, hl⟩ := (Finsupp.mem_span_iff_linearCombination S (s : Set S) 1).mp
+  obtain ⟨l, hl⟩ :=
+    (Finsupp.mem_span_iff_linearCombination S (s : Set S) 1).mp
       (show (1 : S) ∈ Ideal.span (s : Set S) by rw [hs]; trivial)
   choose g' hg' using (fun g : s ↦ hf g)
   choose h' hh' using (fun g : s ↦ hf (l g))
-  let I : Ideal (MvPolynomial (Fin n) R) := Ideal.span { ∑ g : s, g' g * h' g - 1 }
+  let I : Ideal (MvPolynomial (Fin n) R) := Ideal.span {∑ g : s, g' g * h' g - 1}
   let A := MvPolynomial (Fin n) R ⧸ I
   have hfI : ∀ a ∈ I, f a = 0 := by
     intro p hp
@@ -93,8 +95,7 @@ lemma of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
     · rintro a -
       simp
   let f' : A →ₐ[R] S := Ideal.Quotient.liftₐ I f hfI
-  have hf' : Function.Surjective f' :=
-    Ideal.Quotient.lift_surjective_of_surjective I hfI hf
+  have hf' : Function.Surjective f' := Ideal.Quotient.lift_surjective_of_surjective I hfI hf
   let t : Finset A := Finset.image (fun g ↦ g' g) Finset.univ
   have ht : Ideal.span (t : Set A) = ⊤ := by
     rw [Ideal.eq_top_iff_one]
@@ -124,25 +125,28 @@ lemma of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
   exact of_span_eq_top_target_aux f' hf' t ht Ht
 
 /-- Finite-presentation can be checked on a standard covering of the target. -/
-lemma of_span_eq_top_target_of_isLocalizationAway {ι : Type*} (s : ι → S)
-    (hs : Ideal.span (Set.range s) = ⊤) (T : ι → Type*) [∀ i, CommRing (T i)] [∀ i, Algebra R (T i)]
-    [∀ i, Algebra S (T i)] [∀ i, IsScalarTower R S (T i)] [∀ i, IsLocalization.Away (s i) (T i)]
-    [∀ i, Algebra.FinitePresentation R (T i)] :
-    Algebra.FinitePresentation R S := by
+lemma of_span_eq_top_target_of_isLocalizationAway
+    {ι : Type*} (s : ι → S) (hs : Ideal.span (Set.range s) = ⊤) (T : ι → Type*)
+    [∀ i, CommRing (T i)] [∀ i, Algebra R (T i)] [∀ i, Algebra S (T i)]
+    [∀ i, IsScalarTower R S (T i)] [∀ i, IsLocalization.Away (s i) (T i)]
+    [∀ i, Algebra.FinitePresentation R (T i)]
+    : Algebra.FinitePresentation R S := by
   apply of_span_eq_top_target _ hs
   rintro - ⟨i, rfl⟩
   exact .equiv <| (IsLocalization.algEquiv (.powers <| s i) _ (T i)).symm |>.restrictScalars R
 
-instance pi {ι : Type*} [Finite ι] (S : ι → Type*) [∀ i, CommRing (S i)] [∀ i, Algebra R (S i)]
-    [∀ i, Algebra.FinitePresentation R (S i)] :
-    Algebra.FinitePresentation R (∀ a, S a) := by
+instance pi
+    {ι : Type*} [Finite ι]
+    (S : ι → Type*)
+    [∀ i, CommRing (S i)] [∀ i, Algebra R (S i)] [∀ i, Algebra.FinitePresentation R (S i)]
+    : Algebra.FinitePresentation R (∀ a, S a) := by
   classical
   let (i : ι) : Algebra (Π a, S a) (S i) := (Pi.evalAlgHom R S i).toAlgebra
   have (i : ι) : IsLocalization.Away (Pi.single i 1 : ∀ a, S a) (S i) := by
     refine IsLocalization.away_of_isIdempotentElem ?_ (RingHom.ker_evalRingHom _ _)
       ((Pi.evalRingHom S i).surjective)
     simp [IsIdempotentElem, ← Pi.single_mul_left]
-  exact Algebra.FinitePresentation.of_span_eq_top_target_of_isLocalizationAway
-    _ (Ideal.span_single_eq_top S) (fun i ↦ S i)
+  exact Algebra.FinitePresentation.of_span_eq_top_target_of_isLocalizationAway _
+    (Ideal.span_single_eq_top S) (fun i ↦ S i)
 
 end Algebra.FinitePresentation

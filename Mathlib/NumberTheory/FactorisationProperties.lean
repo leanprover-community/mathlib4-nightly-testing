@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.Divisors
 public import Mathlib.Tactic.NormNum
-
 import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Tactic.NormNum.Prime
@@ -64,10 +63,11 @@ deriving Decidable
 def Deficient (n : ℕ) : Prop := ∑ i ∈ properDivisors n, i < n
 deriving Decidable
 
-/-- A positive natural number `n` is _pseudoperfect_ if there exists a subset of the proper
-  divisors of `n` such that the sum of that subset is equal to `n`. -/
-def Pseudoperfect (n : ℕ) : Prop :=
-  0 < n ∧ ∃ s ⊆ properDivisors n, ∑ i ∈ s, i = n
+/--
+A positive natural number `n` is _pseudoperfect_ if there exists a subset of the proper
+divisors of `n` such that the sum of that subset is equal to `n`.
+-/
+def Pseudoperfect (n : ℕ) : Prop := 0 < n ∧ ∃ s ⊆ properDivisors n, ∑ i ∈ s, i = n
 deriving Decidable
 
 /-- `n : ℕ` is a _weird_ number if and only if it is abundant but not pseudoperfect. -/
@@ -77,68 +77,55 @@ deriving Decidable
 /-- `abundancyIndex n` is the sum of the divisors of `n` divided by `n`. -/
 def abundancyIndex (n : ℕ) : ℚ := (∑ i ∈ n.divisors, i) / (n : ℚ)
 
-theorem not_pseudoperfect_iff_forall :
-    ¬ Pseudoperfect n ↔ n = 0 ∨ ∀ s ⊆ properDivisors n, ∑ i ∈ s, i ≠ n := by
+theorem not_pseudoperfect_iff_forall
+    : ¬ Pseudoperfect n ↔ n = 0 ∨ ∀ s ⊆ properDivisors n, ∑ i ∈ s, i ≠ n := by
   grind [Pseudoperfect]
 
-theorem not_deficient_zero : ¬ Deficient 0 := by
-  decide
+theorem not_deficient_zero : ¬ Deficient 0 := by decide
 
-theorem deficient_one : Deficient 1 := by
-  decide
+theorem deficient_one : Deficient 1 := by decide
 
-theorem deficient_two : Deficient 2 := by
-  decide
+theorem deficient_two : Deficient 2 := by decide
 
-theorem deficient_three : Deficient 3 := by
-  decide
+theorem deficient_three : Deficient 3 := by decide
 
-theorem not_abundant_zero : ¬ Abundant 0 := by
-  decide
+theorem not_abundant_zero : ¬ Abundant 0 := by decide
 
-theorem abundant_twelve : Abundant 12 := by
-  decide
+theorem abundant_twelve : Abundant 12 := by decide
 
-theorem not_weird_zero : ¬ Weird 0 := by
-  decide
+theorem not_weird_zero : ¬ Weird 0 := by decide
 
-theorem weird_seventy : Weird 70 := by
-  decide +kernel
+theorem weird_seventy : Weird 70 := by decide +kernel
 
-lemma Deficient.pos (h : Deficient n) : 0 < n := by
-  grind only [not_deficient_zero]
+lemma Deficient.pos (h : Deficient n) : 0 < n := by grind only [not_deficient_zero]
 
-lemma Abundant.pos (h : Abundant n) : 0 < n := by
-  grind only [not_abundant_zero]
+lemma Abundant.pos (h : Abundant n) : 0 < n := by grind only [not_abundant_zero]
 
-lemma Weird.pos (h : Weird n) : 0 < n := by
-  grind only [not_weird_zero]
+lemma Weird.pos (h : Weird n) : 0 < n := by grind only [not_weird_zero]
 
-lemma deficient_iff_not_abundant_and_not_perfect (hn : n ≠ 0) :
-    Deficient n ↔ ¬ Abundant n ∧ ¬ Perfect n := by
+lemma deficient_iff_not_abundant_and_not_perfect (hn : n ≠ 0)
+    : Deficient n ↔ ¬ Abundant n ∧ ¬ Perfect n := by
   grind [Perfect, Abundant, Deficient]
 
-lemma perfect_iff_not_abundant_and_not_deficient (hn : 0 ≠ n) :
-    Perfect n ↔ ¬ Abundant n ∧ ¬ Deficient n := by
+lemma perfect_iff_not_abundant_and_not_deficient (hn : 0 ≠ n)
+    : Perfect n ↔ ¬ Abundant n ∧ ¬ Deficient n := by
   grind [Perfect, Abundant, Deficient]
 
-lemma abundant_iff_not_perfect_and_not_deficient (hn : 0 ≠ n) :
-    Abundant n ↔ ¬ Perfect n ∧ ¬ Deficient n := by
+lemma abundant_iff_not_perfect_and_not_deficient (hn : 0 ≠ n)
+    : Abundant n ↔ ¬ Perfect n ∧ ¬ Deficient n := by
   grind [Perfect, Abundant, Deficient]
 
 /-- A positive natural number is either deficient, perfect, or abundant -/
-theorem deficient_or_perfect_or_abundant (hn : 0 ≠ n) :
-    Deficient n ∨ Abundant n ∨ Perfect n := by
+theorem deficient_or_perfect_or_abundant (hn : 0 ≠ n) : Deficient n ∨ Abundant n ∨ Perfect n := by
   grind [Perfect, Abundant, Deficient]
 
 theorem Perfect.pseudoperfect (h : Perfect n) : Pseudoperfect n :=
   ⟨h.2, ⟨properDivisors n, ⟨fun _ a ↦ a, h.1⟩⟩⟩
 
-theorem Prime.not_abundant (h : Prime n) : ¬ Abundant n :=
-  fun h1 ↦ (h.one_lt.trans h1).ne' (sum_properDivisors_eq_one_iff_prime.mpr h)
+theorem Prime.not_abundant (h : Prime n) : ¬ Abundant n := fun h1 ↦
+  (h.one_lt.trans h1).ne' (sum_properDivisors_eq_one_iff_prime.mpr h)
 
-theorem Prime.not_weird (h : Prime n) : ¬ Weird n := by
-  grind [Weird, h.not_abundant]
+theorem Prime.not_weird (h : Prime n) : ¬ Weird n := by grind [Weird, h.not_abundant]
 
 theorem Prime.not_pseudoperfect (h : Prime p) : ¬ Pseudoperfect p := by
   rw [not_pseudoperfect_iff_forall]
@@ -146,8 +133,8 @@ theorem Prime.not_pseudoperfect (h : Prime p) : ¬ Pseudoperfect p := by
   rw [Prime.properDivisors h] at hs
   simpa using Finset.sum_le_sum_of_subset hs
 
-theorem Prime.not_perfect (h : Prime p) : ¬ Perfect p :=
-  fun hp ↦ h.not_pseudoperfect hp.pseudoperfect
+theorem Prime.not_perfect (h : Prime p) : ¬ Perfect p := fun hp ↦
+  h.not_pseudoperfect hp.pseudoperfect
 
 /-- Any natural number power of a prime is deficient -/
 theorem Prime.deficient_pow (h : Prime n) : Deficient (n ^ m) := by
@@ -165,8 +152,7 @@ theorem _root_.IsPrimePow.deficient (h : IsPrimePow n) : Deficient n := by
   obtain ⟨p, k, hp, -, rfl⟩ := h
   exact hp.nat_prime.deficient_pow
 
-theorem Prime.deficient (h : Prime n) : Deficient n :=
-  (pow_one n) ▸ h.deficient_pow
+theorem Prime.deficient (h : Prime n) : Deficient n := (pow_one n) ▸ h.deficient_pow
 
 /-- There exists infinitely many deficient numbers -/
 theorem infinite_deficient : {n : ℕ | n.Deficient}.Infinite := by
@@ -189,8 +175,11 @@ theorem infinite_odd_deficient : {n : ℕ | Odd n ∧ n.Deficient}.Infinite := b
   rw [Set.infinite_iff_exists_gt]
   intro n
   obtain ⟨p, ⟨_, h2⟩⟩ := exists_infinite_primes (max (n + 1) 3)
-  exact ⟨p, Set.mem_ofPred.mpr ⟨Prime.odd_of_ne_two h2 (Ne.symm (ne_of_lt (by grind))),
-    Prime.deficient h2⟩, by grind⟩
+  exact ⟨
+    p,
+    Set.mem_ofPred.mpr ⟨Prime.odd_of_ne_two h2 (Ne.symm (ne_of_lt (by grind))), Prime.deficient h2⟩,
+    by grind
+  ⟩
 
 theorem abundant_iff_sum_divisors : Abundant n ↔ 2 * n < ∑ i ∈ n.divisors, i := by
   grind [Abundant, sum_divisors_eq_sum_properDivisors_add_self]
@@ -201,8 +190,8 @@ theorem abundant_iff_two_lt_abundancyIndex : Abundant n ↔ 2 < n.abundancyIndex
   · rw [abundant_iff_sum_divisors, abundancyIndex, lt_div_iff₀ (by positivity)]
     norm_cast
 
-theorem abundancyIndex_le_of_dvd (hn : n ≠ 0) (hd : m ∣ n) :
-    m.abundancyIndex ≤ n.abundancyIndex := by
+theorem abundancyIndex_le_of_dvd (hn : n ≠ 0) (hd : m ∣ n)
+    : m.abundancyIndex ≤ n.abundancyIndex := by
   obtain ⟨k, hk⟩ := hd
   have hk0 : k ≠ 0 := by grind
   rw [abundancyIndex, abundancyIndex, hk, cast_mul, div_mul_eq_div_div_swap]

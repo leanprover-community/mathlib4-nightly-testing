@@ -32,29 +32,29 @@ namespace Topology
 variable {X : Type*} [t : TopologicalSpace X] {C D : Set X}
 
 @[alias_in CWComplex.Subcomplex]
-lemma RelCWComplex.Subcomplex.closedCell_subset_of_mem [T2Space X] [RelCWComplex C D]
-    (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n) :
-    closedCell n i ⊆ E := by
+lemma RelCWComplex.Subcomplex.closedCell_subset_of_mem
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n)
+    : closedCell n i ⊆ E := by
   rw [← closure_openCell_eq_closedCell, E.closed.closure_subset_iff, ← E.union]
   apply subset_union_of_subset_right
   exact subset_iUnion_of_subset n
     (subset_iUnion (fun (j : ↑(E.I n)) ↦ openCell (C := C) n j) ⟨i, hi⟩)
 
 @[alias_in CWComplex.Subcomplex]
-lemma RelCWComplex.Subcomplex.openCell_subset_of_mem [T2Space X] [RelCWComplex C D]
-    (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n) :
-    openCell n i ⊆ E :=
+lemma RelCWComplex.Subcomplex.openCell_subset_of_mem
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n)
+    : openCell n i ⊆ E :=
   (openCell_subset_closedCell n i).trans (closedCell_subset_of_mem E hi)
 
 @[alias_in CWComplex.Subcomplex]
-lemma RelCWComplex.Subcomplex.cellFrontier_subset_of_mem [T2Space X] [RelCWComplex C D]
-    (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n) :
-    cellFrontier n i ⊆ E :=
+lemma RelCWComplex.Subcomplex.cellFrontier_subset_of_mem
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) {n : ℕ} {i : cell C n} (hi : i ∈ E.I n)
+    : cellFrontier n i ⊆ E :=
   (cellFrontier_subset_closedCell n i).trans (closedCell_subset_of_mem E hi)
 
 /-- A subcomplex is the union of its closed cells and its base. -/
-lemma RelCWComplex.Subcomplex.union_closedCell [T2Space X] [RelCWComplex C D] (E : Subcomplex C) :
-    D ∪ ⋃ (n : ℕ) (j : E.I n), closedCell (C := C) n j = E := by
+lemma RelCWComplex.Subcomplex.union_closedCell [T2Space X] [RelCWComplex C D] (E : Subcomplex C)
+    : D ∪ ⋃ (n : ℕ) (j : E.I n), closedCell (C := C) n j = E := by
   apply subset_antisymm
   · apply union_subset E.base_subset
     exact iUnion₂_subset fun n i ↦ closedCell_subset_of_mem E i.2
@@ -64,15 +64,16 @@ lemma RelCWComplex.Subcomplex.union_closedCell [T2Space X] [RelCWComplex C D] (E
     exact openCell_subset_closedCell (C := C) n i
 
 /-- A subcomplex is the union of its closed cells. -/
-lemma CWComplex.Subcomplex.union_closedCell [T2Space X] [CWComplex C] (E : Subcomplex C) :
-    ⋃ (n : ℕ) (j : E.I n), closedCell (C := C) n j = E :=
+lemma CWComplex.Subcomplex.union_closedCell [T2Space X] [CWComplex C] (E : Subcomplex C)
+    : ⋃ (n : ℕ) (j : E.I n), closedCell (C := C) n j = E :=
   (empty_union _).symm.trans (RelCWComplex.Subcomplex.union_closedCell E)
 
 @[alias_in CWComplex.Subcomplex]
-lemma RelCWComplex.Subcomplex.disjoint_openCell_subcomplex_of_notMem [RelCWComplex C D]
-    (E : Subcomplex C) {n : ℕ} {i : cell C n} (h : i ∉ E.I n) : Disjoint (openCell n i) E := by
+lemma RelCWComplex.Subcomplex.disjoint_openCell_subcomplex_of_notMem
+    [RelCWComplex C D] (E : Subcomplex C) {n : ℕ} {i : cell C n} (h : i ∉ E.I n)
+    : Disjoint (openCell n i) E := by
   simp_rw [← union, disjoint_union_right, disjoint_iUnion_right]
-  exact ⟨disjointBase n i , fun _ _ ↦ disjoint_openCell_of_ne (by lia)⟩
+  exact ⟨disjointBase n i, fun _ _ ↦ disjoint_openCell_of_ne (by lia)⟩
 
 @[deprecated (since := "2026-09-28")]
 alias RelCWComplex.Subcomplex.disjoint_openCell_subcomplex_of_not_mem :=
@@ -81,8 +82,8 @@ alias RelCWComplex.Subcomplex.disjoint_openCell_subcomplex_of_not_mem :=
 open scoped Classical in
 /-- A subcomplex is again a CW complex. -/
 @[simps]
-instance RelCWComplex.Subcomplex.instRelCWComplex [T2Space X] [RelCWComplex C D]
-    (E : Subcomplex C) : RelCWComplex E D where
+instance RelCWComplex.Subcomplex.instRelCWComplex [T2Space X] [RelCWComplex C D] (E : Subcomplex C)
+    : RelCWComplex E D where
   cell n := E.I n
   map n i := map (C := C) n i
   source_eq n i := source_eq (C := C) n i
@@ -120,54 +121,59 @@ instance RelCWComplex.Subcomplex.instRelCWComplex [T2Space X] [RelCWComplex C D]
   union' := union_closedCell E
 
 /-- A subcomplex is again a CW complex. -/
-instance CWComplex.Subcomplex.instCWComplex [T2Space X] [CWComplex C] (E : Subcomplex C) :
-    CWComplex (E : Set X) :=
+instance CWComplex.Subcomplex.instCWComplex [T2Space X] [CWComplex C] (E : Subcomplex C)
+    : CWComplex (E : Set X) :=
   RelCWComplex.toCWComplex (E : Set X)
 
 @[simp]
-lemma CWComplex.Subcomplex.cell_def [T2Space X] [CWComplex C] (E : Subcomplex C)
-    (n : ℕ) : cell (E : Set X) n = E.I (C := C) n :=
+lemma CWComplex.Subcomplex.cell_def [T2Space X] [CWComplex C] (E : Subcomplex C) (n : ℕ)
+    : cell (E : Set X) n = E.I (C := C) n :=
   rfl
 
 @[simp]
-lemma CWComplex.Subcomplex.map_def [T2Space X] [CWComplex C] (E : Subcomplex C) (n : ℕ)
-    (i : E.I n) : map (C := E) n i = map (C := C) n i :=
+lemma CWComplex.Subcomplex.map_def [T2Space X] [CWComplex C] (E : Subcomplex C) (n : ℕ) (i : E.I n)
+    : map (C := E) n i = map (C := C) n i :=
   rfl
 
 @[simp]
-lemma RelCWComplex.Subcomplex.openCell_eq [T2Space X] [RelCWComplex C D] (E : Subcomplex C) (n : ℕ)
-    (i : E.I n) : openCell (C := E) n i = openCell n (i : cell C n) := by
+lemma RelCWComplex.Subcomplex.openCell_eq
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) (n : ℕ) (i : E.I n)
+    : openCell (C := E) n i = openCell n (i : cell C n) := by
   rfl
 
 @[simp]
-lemma RelCWComplex.Subcomplex.closedCell_eq [T2Space X] [RelCWComplex C D] (E : Subcomplex C)
-    (n : ℕ) (i : E.I n) : closedCell (C := E) n i = closedCell n (i : cell C n) := by
+lemma RelCWComplex.Subcomplex.closedCell_eq
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) (n : ℕ) (i : E.I n)
+    : closedCell (C := E) n i = closedCell n (i : cell C n) := by
   rfl
 
 @[simp]
-lemma RelCWComplex.Subcomplex.cellFrontier_eq [T2Space X] [RelCWComplex C D] (E : Subcomplex C)
-    (n : ℕ) (i : E.I n) : cellFrontier (C := E) n i = cellFrontier n (i : cell C n) := by
+lemma RelCWComplex.Subcomplex.cellFrontier_eq
+    [T2Space X] [RelCWComplex C D] (E : Subcomplex C) (n : ℕ) (i : E.I n)
+    : cellFrontier (C := E) n i = cellFrontier n (i : cell C n) := by
   rfl
 
 @[alias_in CWComplex.Subcomplex]
-instance RelCWComplex.Subcomplex.finiteType_subcomplex_of_finiteType [T2Space X]
-    [RelCWComplex C D] [FiniteType C] (E : Subcomplex C) : FiniteType (E : Set X) where
+instance RelCWComplex.Subcomplex.finiteType_subcomplex_of_finiteType
+    [T2Space X] [RelCWComplex C D] [FiniteType C] (E : Subcomplex C)
+    : FiniteType (E : Set X) where
   finite_cell n :=
     let _ := FiniteType.finite_cell (C := C) (D := D) n
     Subtype.finite
 
 @[alias_in CWComplex.Subcomplex]
 instance RelCWComplex.Subcomplex.finiteDimensional_subcomplex_of_finiteDimensional
-    [T2Space X] [RelCWComplex C D] [FiniteDimensional C] (E : Subcomplex C) :
-    FiniteDimensional (E : Set X) where
+    [T2Space X] [RelCWComplex C D] [FiniteDimensional C] (E : Subcomplex C)
+    : FiniteDimensional (E : Set X) where
   eventually_isEmpty_cell := by
     filter_upwards [FiniteDimensional.eventually_isEmpty_cell (C := C) (D := D)] with n hn
     simp [isEmpty_subtype]
 
 /-- A subcomplex of a finite CW complex is again finite. -/
 @[alias_in CWComplex.Subcomplex]
-instance RelCWComplex.Subcomplex.finite_subcomplex_of_finite [T2Space X] [RelCWComplex C D]
-    [Finite C] (E : Subcomplex C) : Finite (E : Set X) :=
+instance RelCWComplex.Subcomplex.finite_subcomplex_of_finite
+    [T2Space X] [RelCWComplex C D] [Finite C] (E : Subcomplex C)
+    : Finite (E : Set X) :=
   finite_of_finiteDimensional_finiteType _
 
 end Topology

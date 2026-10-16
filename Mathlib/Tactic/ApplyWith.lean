@@ -23,7 +23,8 @@ public meta section
 namespace Mathlib.Tactic
 open Lean Parser Meta Elab Tactic Term
 
-/-- A configuration with at least one configuration option.
+/--
+A configuration with at least one configuration option.
 
 In comparison, `optConfig` allows zero or more options.
 -/

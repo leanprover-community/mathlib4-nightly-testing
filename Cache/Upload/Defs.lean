@@ -33,34 +33,38 @@ namespace Cache.Requests
 
 open System (FilePath)
 
-/-- The storage backend an upload targets, selected with `--backend=NAME`.
+/--
+The storage backend an upload targets, selected with `--backend=NAME`.
 Each backend implements the complete upload in its own module: credential
 resolution, location, transfer tool, and the transfer. `runPut` dispatches
-on this type. -/
+on this type.
+-/
 inductive UploadBackend where
   /-- Azure Blob Storage (`Cache/Upload/Azure.lean`); the default. -/
   | azure
   /-- An S3-compatible bucket (`Cache/Upload/S3.lean`). -/
   | s3
-  deriving DecidableEq, Repr, BEq, Inhabited
+deriving DecidableEq, Repr, BEq, Inhabited
 
 namespace UploadBackend
 
 /-- Canonical short name for a backend, used in the `--backend` flag. -/
 def name : UploadBackend → String
   | .azure => "azure"
-  | .s3    => "s3"
+  | .s3 => "s3"
 
 /-- All known backends, listed in their canonical declaration order. -/
 def all : List UploadBackend := [.azure, .s3]
 
-/-- Parse a short name back into an `UploadBackend`. Matching is
-case-insensitive. -/
+/--
+Parse a short name back into an `UploadBackend`. Matching is
+case-insensitive.
+-/
 def parse? (s : String) : Option UploadBackend :=
   match s.toLower with
   | "azure" => some .azure
-  | "s3"    => some .s3
-  | _       => none
+  | "s3" => some .s3
+  | _ => none
 
 end UploadBackend
 
@@ -79,10 +83,12 @@ Without it, the backend resolves its own location (`azureUploadLocationFrom`,
 backend defaults to the Azure account when the base is unset; the s3 backend
 has no default, because a bucket endpoint is account-specific.
 -/
-def uploadLocationFrom (backend : UploadBackend) (putUrl? putBase? : Option String)
-    (container? : Option Container) (repo : String) (scope? : Option String) :
-    Except String Location := do
-  let dest ← if let some url := putUrl? then
+def uploadLocationFrom
+    (backend : UploadBackend) (putUrl? putBase? : Option String) (container? : Option Container)
+    (repo : String) (scope? : Option String)
+    : Except String Location := do
+  let dest ←
+    if let some url := putUrl? then
       pure (.ofEndpoint url "MATHLIB_CACHE_PUT_URL" repo scope?)
     else
       let putBase? := normalizeBaseURL putBase?
@@ -100,8 +106,10 @@ def uploadLocationFrom (backend : UploadBackend) (putUrl? putBase? : Option Stri
 The location derives both the file directory and its optional marker, so
 every transfer tool uses one resolution.
 -/
-def uploadLocation (backend : UploadBackend) (container? : Option Container)
-    (repo : String) (scope? : Option String) : IO Location := do
+def uploadLocation
+    (backend : UploadBackend) (container? : Option Container) (repo : String)
+    (scope? : Option String)
+    : IO Location := do
   let putUrl? ← IO.getEnv "MATHLIB_CACHE_PUT_URL"
   let putBase? ← IO.getEnv "MATHLIB_CACHE_PUT_BASE_URL"
   IO.ofExcept <| uploadLocationFrom backend putUrl? putBase? container? repo scope?

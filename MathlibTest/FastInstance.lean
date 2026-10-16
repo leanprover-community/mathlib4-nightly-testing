@@ -6,7 +6,7 @@ namespace testing
 set_option autoImplicit false
 
 -- For debugging:
---set_option trace.Elab.fast_instance true
+-- set_option trace.Elab.fast_instance true
 
 /-!
 Testing a diamond: CommSemigroup
@@ -31,27 +31,32 @@ variable {α : Type*}
 theorem val_injective : Function.Injective (Wrapped.val (α := α))
   | ⟨_⟩, ⟨_⟩, rfl => rfl
 
-instance [Mul α] : Mul (Wrapped α) where mul m n := ⟨Mul.mul m.1 n.1⟩
+instance [Mul α] : Mul (Wrapped α) where
+  mul m n := ⟨Mul.mul m.1 n.1⟩
 
-@[reducible] def Function.Injective.semigroup {α β : Type*} [Mul α] [Semigroup β]
-    (f : α → β) (hf : Function.Injective f)
-    (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y)) :
-    Semigroup α :=
-  { ‹Mul α› with
-    mul_assoc := fun x y z => by apply hf; rw [hmul, hmul, hmul, hmul, Semigroup.mul_assoc] }
+@[reducible]
+def Function.Injective.semigroup
+    {α β : Type*} [Mul α] [Semigroup β]
+    (f : α → β) (hf : Function.Injective f) (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y))
+    : Semigroup α := {
+  ‹Mul α› with
+  mul_assoc := fun x y z => by apply hf; rw [hmul, hmul, hmul, hmul, Semigroup.mul_assoc]
+}
 
-@[reducible] def Function.Injective.commMagma {α β : Type*} [Mul α] [CommMagma β]
-    (f : α → β) (hf : Function.Injective f)
-    (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y)) :
-    CommMagma α where
+@[reducible]
+def Function.Injective.commMagma
+    {α β : Type*} [Mul α] [CommMagma β]
+    (f : α → β) (hf : Function.Injective f) (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y))
+    : CommMagma α where
   mul_comm x y := by
     apply hf
     rw [hmul, hmul, CommMagma.mul_comm]
 
-@[reducible] def Function.Injective.commSemigroup {α β : Type*} [Mul α] [CommSemigroup β]
-    (f : α → β) (hf : Function.Injective f)
-    (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y)) :
-    CommSemigroup α where
+@[reducible]
+def Function.Injective.commSemigroup
+    {α β : Type*} [Mul α] [CommSemigroup β]
+    (f : α → β) (hf : Function.Injective f) (hmul : ∀ x y, f (Mul.mul x y) = Mul.mul (f x) (f y))
+    : CommSemigroup α where
   toSemigroup := Function.Injective.semigroup f hf hmul
   __ := Function.Injective.commMagma f hf hmul
 
@@ -78,7 +83,6 @@ fun {α} [inst : CommSemigroup α] =>
 set_option pp.explicit true in
 #print instCommSemigroup
 
-
 /-!
 Non-defeq error
 -/
@@ -103,7 +107,6 @@ info: { mul := fun x y => y * x } : Mul Nat
 -/
 #guard_msgs in
 #check fast_instance% { mul := fun x y => y * x : Mul Nat }
-
 
 /-!
 Checking handling of non-structure classes.
@@ -155,12 +158,10 @@ set_option pp.explicit true in
 class DecEq (α : Type*) where
   [decEq : DecidableEq α]
 
-def UnitAlias : Type :=
-  Unit
+def UnitAlias : Type := Unit
 
 /-! The root is an instance family. -/
-example : DecidableEq UnitAlias :=
-  fast_instance% fun _ _ ↦ isTrue rfl
+example : DecidableEq UnitAlias := fast_instance% fun _ _ ↦ isTrue rfl
 
 /-! The root is an instance family, and the instances do not reduce to a constructor application. -/
 /--
@@ -173,8 +174,7 @@ Use `set_option trace.Elab.fast_instance true` to analyze the error.
 Trace of fields visited: []
 -/
 #guard_msgs in
-example : DecidableEq UnitAlias :=
-  fast_instance% fun _ _ ↦ sorry
+example : DecidableEq UnitAlias := fast_instance% fun _ _ ↦ sorry
 
 /-! The root is an instance family, and the instances do not reduce to a constructor application,
 but are equal defeq to what `inferInstance` would synthesize, so we allow it with a warning. -/
@@ -190,8 +190,7 @@ example : DecidableEq UnitAlias :=
   fast_instance% fun _ _ ↦ inferInstance
 
 /-! A nested instance field contains an instance family. -/
-example : DecEq UnitAlias :=
-  fast_instance% { decEq := fun _ _ ↦ isTrue rfl }
+example : DecEq UnitAlias := fast_instance% { decEq := fun _ _ ↦ isTrue rfl }
 
 /-! A nested instance field contains an instance family, and the instances do not reduce to a
 constructor application. -/
@@ -205,11 +204,12 @@ Use `set_option trace.Elab.fast_instance true` to analyze the error.
 Trace of fields visited: [testing.DecEq.decEq]
 -/
 #guard_msgs in
-example : DecEq α :=
-  fast_instance% { decEq := fun a b ↦ sorry }
+example : DecEq α := fast_instance% { decEq := fun a b ↦ sorry }
 
-/- A nested instance field contains an instance family, and the instances do not reduce to a
-constructor application, it is defeq to what `inferInstance` would synthesize so we allow it. -/
+/-
+A nested instance field contains an instance family, and the instances do not reduce to a
+constructor application, it is defeq to what `inferInstance` would synthesize so we allow it.
+-/
 #guard_msgs (drop warning) in
 example : DecEq α :=
   let : DecidableEq α := fun a b ↦ sorry

@@ -41,8 +41,10 @@ variable {C : Type*} [Category* C] {P : ObjectProperty C}
 
 namespace ObjectProperty
 
-/-- A morphism `f` is a local epimorphism wrt. the object property `P`
-if it satisfies left cancellation for morphisms with codomain in `P`. -/
+/--
+A morphism `f` is a local epimorphism wrt. the object property `P`
+if it satisfies left cancellation for morphisms with codomain in `P`.
+-/
 def localEpi (P : ObjectProperty C) : MorphismProperty C := fun _ _ f ↦
   ∀ ⦃Z⦄, P Z → Function.Injective fun (g : _ ⟶ Z) ↦ f ≫ g
 
@@ -55,16 +57,15 @@ lemma localEpi.of_epi {X Y : C} (f : X ⟶ Y) [Epi f] : P.localEpi f := by
   rwa [← cancel_epi f]
 
 @[simp]
-lemma localEpi_top_apply_iff {X Y : C} {f : X ⟶ Y} :
-    (⊤ : ObjectProperty C).localEpi f ↔ Epi f :=
+lemma localEpi_top_apply_iff {X Y : C} {f : X ⟶ Y} : (⊤ : ObjectProperty C).localEpi f ↔ Epi f :=
   ⟨fun h ↦ ⟨fun _ _ huv ↦ h trivial huv⟩, fun _ ↦ .of_epi _⟩
 
 lemma localEpi_top_eq_epimorphisms : (⊤ : ObjectProperty C).localEpi = .epimorphisms C := by
   ext
   simp
 
-lemma localEpi_antitone : Antitone (localEpi (C := C)) :=
-  fun _ _ hPQ _ _ _ hf _ hZ _ _ huv ↦ hf (hPQ _ hZ) huv
+lemma localEpi_antitone : Antitone (localEpi (C := C)) := fun _ _ hPQ _ _ _ hf _ hZ _ _ huv ↦
+  hf (hPQ _ hZ) huv
 
 lemma localEpi_isoClosure : P.isoClosure.localEpi = P.localEpi := by
   refine le_antisymm (localEpi_antitone <| le_isoClosure P) ?_
@@ -73,8 +74,7 @@ lemma localEpi_isoClosure : P.isoClosure.localEpi = P.localEpi := by
   apply hf hT
   simpa
 
-lemma isLocal_le_localEpi : P.isLocal ≤ P.localEpi :=
-  fun _ _ _ hf Z hZ ↦ (hf Z hZ).injective
+lemma isLocal_le_localEpi : P.isLocal ≤ P.localEpi := fun _ _ _ hf Z hZ ↦ (hf Z hZ).injective
 
 instance : P.localEpi.RespectsIso :=
   MorphismProperty.respectsIso_of_isStableUnderComposition fun _ _ _ _ ↦ .of_epi _
@@ -97,12 +97,11 @@ instance : P.localEpi.Respects P.isLocal where
   precomp _ hf _ hg := MorphismProperty.comp_mem _ _ _ (isLocal_le_localEpi _ hf) hg
   postcomp _ hf _ hg := MorphismProperty.comp_mem _ _ _ hg (isLocal_le_localEpi _ hf)
 
-variable {D : Type*} [Category* D] {F : C ⥤ D} {G : D ⥤ C} (adj : F ⊣ G)
-  [G.Faithful] [G.Full]
+variable {D : Type*} [Category* D] {F : C ⥤ D} {G : D ⥤ C} (adj : F ⊣ G) [G.Faithful] [G.Full]
 include adj
 
-lemma localEpi_mem_range_iff_epi {X Y : C} (f : X ⟶ Y) :
-    localEpi (· ∈ Set.range G.obj) f ↔ Epi (F.map f) := by
+lemma localEpi_mem_range_iff_epi {X Y : C} (f : X ⟶ Y)
+    : localEpi (· ∈ Set.range G.obj) f ↔ Epi (F.map f) := by
   rw [← dsimp% (localEpi (· ∈ Set.range G.obj)).postcomp_iff _ _ (isLocal_adj_unit_app adj Y),
     dsimp% adj.unit.naturality f,
     dsimp% (localEpi (· ∈ Set.range G.obj)).precomp_iff _ _ (isLocal_adj_unit_app adj X)]
@@ -116,14 +115,14 @@ lemma localEpi_mem_range_iff_epi {X Y : C} (f : X ⟶ Y) :
     simp only [← G.map_comp, G.map_injective_iff, cancel_epi] at huv
     rw [huv]
 
-lemma localEpi_mem_range_eq_inverseImage_epimorphisms :
-    localEpi (· ∈ Set.range G.obj) = (MorphismProperty.epimorphisms _).inverseImage F := by
+lemma localEpi_mem_range_eq_inverseImage_epimorphisms
+    : localEpi (· ∈ Set.range G.obj) = (MorphismProperty.epimorphisms _).inverseImage F := by
   ext X Y f
   rw [localEpi_mem_range_iff_epi adj]
   simp
 
-lemma localEpi_essImage :
-    G.essImage.localEpi = (MorphismProperty.epimorphisms _).inverseImage F := by
+lemma localEpi_essImage
+    : G.essImage.localEpi = (MorphismProperty.epimorphisms _).inverseImage F := by
   rw [← Functor.isoClosure_eq_essImage, localEpi_isoClosure,
     localEpi_mem_range_eq_inverseImage_epimorphisms adj]
 

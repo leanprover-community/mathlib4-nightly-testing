@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jacob Reinhold
 -/
 module
+
 import Mathlib.CategoryTheory.MarkovCategory.Basic
 import Mathlib.CategoryTheory.CopyDiscardCategory.Cartesian
 import Mathlib.CategoryTheory.Monoidal.Types.Basic
@@ -50,9 +51,7 @@ example (X : C) : Δ[X] ≫ (ε[X] ▷ X) = (λ_ X).inv := ComonObj.counit_comul
 example (X : C) : Δ[X] ≫ (X ◁ ε[X]) = (ρ_ X).inv := ComonObj.comul_counit X
 
 /-- Comultiplication is coassociative -/
-example (X : C) :
-    Δ[X] ≫ (X ◁ Δ[X]) = Δ[X] ≫ (Δ[X] ▷ X) ≫ (α_ X X X).hom :=
-  ComonObj.comul_assoc X
+example (X : C) : Δ[X] ≫ (X ◁ Δ[X]) = Δ[X] ≫ (Δ[X] ▷ X) ≫ (α_ X X X).hom := ComonObj.comul_assoc X
 
 end ComonoidLaws
 

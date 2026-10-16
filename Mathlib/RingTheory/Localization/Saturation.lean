@@ -25,8 +25,8 @@ variable {R : Type*} [CommRing R] {S T : Submonoid R} {A : Type*} [CommRing A] [
 open Submonoid
 
 variable (S A) in
-theorem mem_saturation_iff_isUnit_algebraMap [IsLocalization S A] {x : R} :
-    x ∈ S.saturation ↔ IsUnit (algebraMap R A x) := by
+theorem mem_saturation_iff_isUnit_algebraMap [IsLocalization S A] {x : R}
+    : x ∈ S.saturation ↔ IsUnit (algebraMap R A x) := by
   rw [IsLocalization.algebraMap_isUnit_iff S, Submonoid.mem_saturation_iff_exists_dvd]
 
 @[simp]
@@ -35,13 +35,13 @@ theorem saturation_iff : IsLocalization S.saturation.toSubmonoid A ↔ IsLocaliz
     simp [mem_saturation_iff_exists_dvd]
 
 variable (S T) in
-theorem of_saturation_eq [IsLocalization S A] (ih : S.saturation = T.saturation) :
-    IsLocalization T A := by
+theorem of_saturation_eq [IsLocalization S A] (ih : S.saturation = T.saturation)
+    : IsLocalization T A := by
   rwa [← saturation_iff, ← ih, saturation_iff]
 
 variable (S T) in
-theorem isLocalization_iff_of_saturation_eq (ih : S.saturation = T.saturation) :
-    IsLocalization S A ↔ IsLocalization T A := by
+theorem isLocalization_iff_of_saturation_eq (ih : S.saturation = T.saturation)
+    : IsLocalization S A ↔ IsLocalization T A := by
   rw [← saturation_iff, ih, saturation_iff]
 
 variable (S T) in

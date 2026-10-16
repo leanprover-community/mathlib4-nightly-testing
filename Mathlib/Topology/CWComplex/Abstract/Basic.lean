@@ -48,7 +48,6 @@ public section
 
 open TopCat
 
-
 universe u
 
 open CategoryTheory Limits HomotopicalAlgebra
@@ -57,18 +56,22 @@ namespace TopCat
 
 namespace RelativeCWComplex
 
-/-- For each `n : ℕ`, this is the family of morphisms which sends the unique
-element of `Unit` to `diskBoundaryInclusion n : ∂𝔻 n ⟶ 𝔻 n`. -/
+/--
+For each `n : ℕ`, this is the family of morphisms which sends the unique
+element of `Unit` to `diskBoundaryInclusion n : ∂𝔻 n ⟶ 𝔻 n`.
+-/
 @[nolint unusedArguments]
-abbrev basicCell (n : ℕ) (_ : Unit) : ∂𝔻 n ⟶ 𝔻 n := diskBoundaryInclusion n
+abbrev basicCell (n : ℕ) (_ : Unit) : ∂𝔻n ⟶ 𝔻 n := diskBoundaryInclusion n
 
 end RelativeCWComplex
 
 open RelativeCWComplex in
-/-- A relative CW-complex is a morphism `f : X ⟶ Y` equipped with data expressing
+/--
+A relative CW-complex is a morphism `f : X ⟶ Y` equipped with data expressing
 that `Y` identifies to the colimit of a functor `F : ℕ ⥤ TopCat` with that
 `F.obj 0 ≅ X` and for any `n : ℕ`, `F.obj (n + 1)` is obtained from `F.obj n`
-by attaching `n`-disks. -/
+by attaching `n`-disks.
+-/
 abbrev RelativeCWComplex {X Y : TopCat.{u}} (f : X ⟶ Y) := RelativeCellComplex.{u} basicCell f
 
 /-- A CW-complex is a topological space such that `⊥_ _ ⟶ X` is a relative CW-complex. -/

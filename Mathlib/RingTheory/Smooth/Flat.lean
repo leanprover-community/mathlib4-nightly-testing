@@ -37,19 +37,19 @@ namespace Algebra
 
 variable {R A S : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing S] [Algebra R S]
 
-lemma FormallySmooth.flat_of_algHom_of_isNoetherianRing (f : S →ₐ[R] A) (hf : Function.Surjective f)
-    [Module.Flat R S] [IsNoetherianRing S] [FormallySmooth R A] :
-    Module.Flat R A := by
+lemma FormallySmooth.flat_of_algHom_of_isNoetherianRing
+    (f : S →ₐ[R] A) (hf : Function.Surjective f)
+    [Module.Flat R S] [IsNoetherianRing S] [FormallySmooth R A]
+    : Module.Flat R A := by
   have : Module.Flat R (AdicCompletion (RingHom.ker f) S) := .trans _ S _
   obtain ⟨g, hg⟩ := exists_kerProj_comp_eq_id f hf
-  exact .of_retract g.toLinearMap
-    (AdicCompletion.kerProj hf).toLinearMap (LinearMap.ext fun x ↦ congr($hg x))
+  exact .of_retract g.toLinearMap (AdicCompletion.kerProj hf).toLinearMap
+    (LinearMap.ext fun x ↦ congr($hg x))
 
 variable (R A)
 
 /-- If `A` is `R`-smooth and `R` is Noetherian, then `A` is `R`-flat. -/
-theorem Smooth.flat_of_isNoetherianRing [IsNoetherianRing R] [Smooth R A] :
-    Module.Flat R A := by
+theorem Smooth.flat_of_isNoetherianRing [IsNoetherianRing R] [Smooth R A] : Module.Flat R A := by
   obtain ⟨k, f, hf⟩ := (FiniteType.iff_quotient_mvPolynomial'' (R := R) (S := A)).mp inferInstance
   exact FormallySmooth.flat_of_algHom_of_isNoetherianRing f hf
 
@@ -62,7 +62,7 @@ instance Smooth.flat [Smooth R A] : Module.Flat R A := by
 
 end Algebra
 
-lemma RingHom.Smooth.flat {R S : Type*} [CommRing R] [CommRing S] {f : R →+* S} (hf : f.Smooth) :
-    f.Flat := by
+lemma RingHom.Smooth.flat {R S : Type*} [CommRing R] [CommRing S] {f : R →+* S} (hf : f.Smooth)
+    : f.Flat := by
   algebraize [f]
   exact Algebra.Smooth.flat R S

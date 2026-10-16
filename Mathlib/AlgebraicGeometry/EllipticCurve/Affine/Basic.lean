@@ -71,33 +71,38 @@ namespace WeierstrassCurve
 
 variable (R) in
 /-- An abbreviation for a Weierstrass curve in affine coordinates. -/
-abbrev Affine : Type r :=
-  WeierstrassCurve R
+abbrev Affine : Type r := WeierstrassCurve R
 
 /-- The conversion from a Weierstrass curve to affine coordinates. -/
-abbrev toAffine (W : WeierstrassCurve R) : Affine R :=
-  W
+abbrev toAffine (W : WeierstrassCurve R) : Affine R := W
 
-variable [CommRing R] {W : Affine R}
-  {S : Type s} [CommRing S] {A : Type u} [CommRing A] {B : Type v} [CommRing B]
+variable
+  [CommRing R]
+  {W : Affine R} {S : Type s} [CommRing S]
+  {A : Type u} [CommRing A]
+  {B : Type v} [CommRing B]
 
 namespace Affine
 
 /-! ## Weierstrass equations in affine coordinates -/
 
 variable (W) in
-/-- The polynomial `W(X, Y) := Y² + a₁XY + a₃Y - (X³ + a₂X² + a₄X + a₆)` associated to a Weierstrass
+/--
+The polynomial `W(X, Y) := Y² + a₁XY + a₃Y - (X³ + a₂X² + a₄X + a₆)` associated to a Weierstrass
 curve `W` over a ring `R` in affine coordinates.
 
 For ease of polynomial manipulation, this is represented as a term of type `R[X][X]`, where the
 inner variable represents `X` and the outer variable represents `Y`. For clarity, the alternative
 notations `Y` and `R[X][Y]` are provided in the `Polynomial.Bivariate` scope to represent the outer
-variable and the bivariate polynomial ring `R[X][X]` respectively. -/
+variable and the bivariate polynomial ring `R[X][X]` respectively.
+-/
 noncomputable def polynomial : R[X][Y] :=
   Y ^ 2 + C (C W.a₁ * X + C W.a₃) * Y - C (X ^ 3 + C W.a₂ * X ^ 2 + C W.a₄ * X + C W.a₆)
 
-lemma polynomial_eq : W.polynomial = Cubic.toPoly
-    ⟨0, 1, Cubic.toPoly ⟨0, 0, W.a₁, W.a₃⟩, Cubic.toPoly ⟨-1, -W.a₂, -W.a₄, -W.a₆⟩⟩ := by
+lemma polynomial_eq
+    : W.polynomial
+      = Cubic.toPoly
+        ⟨0, 1, Cubic.toPoly ⟨0, 0, W.a₁, W.a₃⟩, Cubic.toPoly ⟨-1, -W.a₂, -W.a₄, -W.a₆⟩⟩ := by
   simp_rw [polynomial, Cubic.toPoly]
   map_simp
   simp only [C_0, C_1]
@@ -132,8 +137,9 @@ lemma irreducible_polynomial [IsDomain R] : Irreducible W.polynomial := by
   iterate 2 rw [degree_add_eq_right_of_degree_lt] <;> simp only [h] <;> decide
   iterate 2 rw [degree_add_eq_left_of_degree_lt] <;> simp only [h] <;> decide
 
-lemma evalEval_polynomial (x y : R) : W.polynomial.evalEval x y =
-    y ^ 2 + W.a₁ * x * y + W.a₃ * y - (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) := by
+lemma evalEval_polynomial (x y : R)
+    : W.polynomial.evalEval x y
+      = y ^ 2 + W.a₁ * x * y + W.a₃ * y - (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) := by
   simp only [polynomial]
   eval_simp
   rw [add_mul, ← add_assoc]
@@ -143,26 +149,29 @@ lemma evalEval_polynomial_zero : W.polynomial.evalEval 0 0 = -W.a₆ := by
   simp only [evalEval_polynomial, zero_add, zero_sub, mul_zero, zero_pow <| Nat.succ_ne_zero _]
 
 variable (W) in
-/-- The proposition that an affine point `(x, y)` lies in a Weierstrass curve `W`.
+/--
+The proposition that an affine point `(x, y)` lies in a Weierstrass curve `W`.
 
-In other words, it satisfies the Weierstrass equation `W(X, Y) = 0`. -/
-def Equation (x y : R) : Prop :=
-  W.polynomial.evalEval x y = 0
+In other words, it satisfies the Weierstrass equation `W(X, Y) = 0`.
+-/
+def Equation (x y : R) : Prop := W.polynomial.evalEval x y = 0
 
-lemma equation_iff' (x y : R) : W.Equation x y ↔
-    y ^ 2 + W.a₁ * x * y + W.a₃ * y - (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) = 0 := by
+lemma equation_iff' (x y : R)
+    : W.Equation x y
+      ↔ y ^ 2 + W.a₁ * x * y + W.a₃ * y - (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) = 0 := by
   rw [Equation, evalEval_polynomial]
 
-lemma equation_iff (x y : R) : W.Equation x y ↔
-    y ^ 2 + W.a₁ * x * y + W.a₃ * y = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ := by
+lemma equation_iff (x y : R)
+    : W.Equation x y
+      ↔ y ^ 2 + W.a₁ * x * y + W.a₃ * y = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ := by
   rw [equation_iff', sub_eq_zero]
 
 @[simp]
 lemma equation_zero : W.Equation 0 0 ↔ W.a₆ = 0 := by
   rw [Equation, evalEval_polynomial_zero, neg_eq_zero]
 
-lemma equation_iff_variableChange (x y : R) :
-    W.Equation x y ↔ (VariableChange.mk 1 x 0 y • W).toAffine.Equation 0 0 := by
+lemma equation_iff_variableChange (x y : R)
+    : W.Equation x y ↔ (VariableChange.mk 1 x 0 y • W).toAffine.Equation 0 0 := by
   rw [equation_iff', ← neg_eq_zero, equation_zero, variableChange_a₆, inv_one, Units.val_one]
   congr! 1
   ring1
@@ -170,14 +179,16 @@ lemma equation_iff_variableChange (x y : R) :
 /-! ## The nonsingular condition in affine coordinates -/
 
 variable (W) in
-/-- The partial derivative `W_X(X, Y)` with respect to `X` of the polynomial `W(X, Y)` associated to
-a Weierstrass curve `W` in affine coordinates. -/
+/--
+The partial derivative `W_X(X, Y)` with respect to `X` of the polynomial `W(X, Y)` associated to
+a Weierstrass curve `W` in affine coordinates.
+-/
 -- TODO: define this in terms of `Polynomial.derivative`.
 noncomputable def polynomialX : R[X][Y] :=
   C (C W.a₁) * Y - C (C 3 * X ^ 2 + C (2 * W.a₂) * X + C W.a₄)
 
-lemma evalEval_polynomialX (x y : R) :
-    W.polynomialX.evalEval x y = W.a₁ * y - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) := by
+lemma evalEval_polynomialX (x y : R)
+    : W.polynomialX.evalEval x y = W.a₁ * y - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) := by
   simp only [polynomialX]
   eval_simp
 
@@ -186,11 +197,12 @@ lemma evalEval_polynomialX_zero : W.polynomialX.evalEval 0 0 = -W.a₄ := by
   simp only [evalEval_polynomialX, zero_add, zero_sub, mul_zero, zero_pow <| Nat.succ_ne_zero _]
 
 variable (W) in
-/-- The partial derivative `W_Y(X, Y)` with respect to `Y` of the polynomial `W(X, Y)` associated to
-a Weierstrass curve `W` in affine coordinates. -/
+/--
+The partial derivative `W_Y(X, Y)` with respect to `Y` of the polynomial `W(X, Y)` associated to
+a Weierstrass curve `W` in affine coordinates.
+-/
 -- TODO: define this in terms of `Polynomial.derivative`.
-noncomputable def polynomialY : R[X][Y] :=
-  C (C 2) * Y + C (C W.a₁ * X + C W.a₃)
+noncomputable def polynomialY : R[X][Y] := C (C 2) * Y + C (C W.a₁ * X + C W.a₃)
 
 lemma evalEval_polynomialY (x y : R) : W.polynomialY.evalEval x y = 2 * y + W.a₁ * x + W.a₃ := by
   simp only [polynomialY]
@@ -202,21 +214,27 @@ lemma evalEval_polynomialY_zero : W.polynomialY.evalEval 0 0 = W.a₃ := by
   simp only [evalEval_polynomialY, zero_add, mul_zero]
 
 variable (W) in
-/-- The proposition that an affine point `(x, y)` on a Weierstrass curve `W` is nonsingular.
+/--
+The proposition that an affine point `(x, y)` on a Weierstrass curve `W` is nonsingular.
 
 In other words, either `W_X(x, y) ≠ 0` or `W_Y(x, y) ≠ 0`.
 
-Note that this definition is only mathematically accurate for fields. -/
+Note that this definition is only mathematically accurate for fields.
+-/
 -- TODO: generalise this definition to be mathematically accurate for a larger class of rings.
 def Nonsingular (x y : R) : Prop :=
   W.Equation x y ∧ (W.polynomialX.evalEval x y ≠ 0 ∨ W.polynomialY.evalEval x y ≠ 0)
 
-lemma nonsingular_iff' (x y : R) : W.Nonsingular x y ↔ W.Equation x y ∧
-    (W.a₁ * y - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) ≠ 0 ∨ 2 * y + W.a₁ * x + W.a₃ ≠ 0) := by
+lemma nonsingular_iff' (x y : R)
+    : W.Nonsingular x y
+      ↔ W.Equation x y
+        ∧ (W.a₁ * y - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) ≠ 0 ∨ 2 * y + W.a₁ * x + W.a₃ ≠ 0) := by
   rw [Nonsingular, equation_iff', evalEval_polynomialX, evalEval_polynomialY]
 
-lemma nonsingular_iff (x y : R) : W.Nonsingular x y ↔ W.Equation x y ∧
-    (W.a₁ * y ≠ 3 * x ^ 2 + 2 * W.a₂ * x + W.a₄ ∨ y ≠ -y - W.a₁ * x - W.a₃) := by
+lemma nonsingular_iff (x y : R)
+    : W.Nonsingular x y
+      ↔ W.Equation x y
+        ∧ (W.a₁ * y ≠ 3 * x ^ 2 + 2 * W.a₂ * x + W.a₄ ∨ y ≠ -y - W.a₁ * x - W.a₃) := by
   rw [nonsingular_iff', sub_ne_zero, ← sub_ne_zero (a := y)]
   congr! 3
   ring1
@@ -226,28 +244,28 @@ lemma nonsingular_zero : W.Nonsingular 0 0 ↔ W.a₆ = 0 ∧ (W.a₃ ≠ 0 ∨ 
   rw [Nonsingular, equation_zero, evalEval_polynomialX_zero, neg_ne_zero, evalEval_polynomialY_zero,
     or_comm]
 
-lemma nonsingular_iff_variableChange (x y : R) :
-    W.Nonsingular x y ↔ (VariableChange.mk 1 x 0 y • W).toAffine.Nonsingular 0 0 := by
+lemma nonsingular_iff_variableChange (x y : R)
+    : W.Nonsingular x y ↔ (VariableChange.mk 1 x 0 y • W).toAffine.Nonsingular 0 0 := by
   rw [nonsingular_iff', equation_iff_variableChange, equation_zero, ← neg_ne_zero, or_comm,
     nonsingular_zero, variableChange_a₃, variableChange_a₄, inv_one, Units.val_one]
   simp only [variableChange_def]
   congr! 3 <;> ring1
 
-private lemma equation_zero_iff_nonsingular_zero_of_Δ_ne_zero (hΔ : W.Δ ≠ 0) :
-    W.Equation 0 0 ↔ W.Nonsingular 0 0 := by
+private lemma equation_zero_iff_nonsingular_zero_of_Δ_ne_zero (hΔ : W.Δ ≠ 0)
+    : W.Equation 0 0 ↔ W.Nonsingular 0 0 := by
   simp only [equation_zero, nonsingular_zero, iff_self_and]
   contrapose! hΔ
   simp only [b₂, b₄, b₆, b₈, Δ, hΔ]
   ring1
 
-lemma equation_iff_nonsingular_of_Δ_ne_zero {x y : R} (hΔ : W.Δ ≠ 0) :
-    W.Equation x y ↔ W.Nonsingular x y := by
+lemma equation_iff_nonsingular_of_Δ_ne_zero {x y : R} (hΔ : W.Δ ≠ 0)
+    : W.Equation x y ↔ W.Nonsingular x y := by
   rw [equation_iff_variableChange, nonsingular_iff_variableChange,
     equation_zero_iff_nonsingular_zero_of_Δ_ne_zero <| by
       rwa [variableChange_Δ, inv_one, Units.val_one, one_pow, one_mul]]
 
-lemma equation_iff_nonsingular [Nontrivial R] [W.IsElliptic] {x y : R} :
-    W.Equation x y ↔ W.Nonsingular x y :=
+lemma equation_iff_nonsingular [Nontrivial R] [W.IsElliptic] {x y : R}
+    : W.Equation x y ↔ W.Nonsingular x y :=
   W.equation_iff_nonsingular_of_Δ_ne_zero <| W.coe_Δ' ▸ W.Δ'.ne_zero
 
 /-! ### Maps and base changes -/
@@ -255,14 +273,11 @@ lemma equation_iff_nonsingular [Nontrivial R] [W.IsElliptic] {x y : R} :
 variable (W) (f : R →+* S)
 
 /-- The Weierstrass curve in affine coordinates mapped over a ring homomorphism `f : R →+* S`. -/
-abbrev map : Affine S :=
-  WeierstrassCurve.map W f
+abbrev map : Affine S := WeierstrassCurve.map W f
 
 variable (S) in
 /-- The Weierstrass curve in affine coordinates base changed to an algebra `S` over `R`. -/
-@[simps!]
-abbrev baseChange [Algebra R S] : Affine S :=
-  WeierstrassCurve.baseChange W S
+@[simps!] abbrev baseChange [Algebra R S] : Affine S := WeierstrassCurve.baseChange W S
 
 /-- The notation `\textf` for `WeierstrassCurve.Affine.baseChange W S`. -/
 scoped notation:max W:max "⁄" S:max => baseChange W S
@@ -276,8 +291,8 @@ lemma Equation.map {x y : R} (h : W.Equation x y) : (W.map f).Equation (f x) (f 
   rw [Equation, map_polynomial, map_mapRingHom_evalEval, h, map_zero]
 
 variable {f} in
-lemma map_equation (hf : Function.Injective f) (x y : R) :
-    (W.map f).Equation (f x) (f y) ↔ W.Equation x y := by
+lemma map_equation (hf : Function.Injective f) (x y : R)
+    : (W.map f).Equation (f x) (f y) ↔ W.Equation x y := by
   simp only [Equation, map_polynomial, map_mapRingHom_evalEval, map_eq_zero_iff f hf]
 
 lemma map_polynomialX : (W.map f).polynomialX = W.polynomialX.map (mapRingHom f) := by
@@ -289,16 +304,17 @@ lemma map_polynomialY : (W.map f).polynomialY = W.polynomialY.map (mapRingHom f)
   map_simp
 
 variable {f} in
-lemma map_nonsingular (hf : Function.Injective f) (x y : R) :
-    (W.map f).Nonsingular (f x) (f y) ↔ W.Nonsingular x y := by
+lemma map_nonsingular (hf : Function.Injective f) (x y : R)
+    : (W.map f).Nonsingular (f x) (f y) ↔ W.Nonsingular x y := by
   simp only [Nonsingular, evalEval, W.map_equation hf, map_polynomialX, map_polynomialY,
     map_mapRingHom_evalEval, map_ne_zero_iff f hf]
 
-variable [Algebra R S] [Algebra R A] [Algebra S A] [IsScalarTower R S A] [Algebra R B] [Algebra S B]
-  [IsScalarTower R S B] (f : A →ₐ[S] B)
+variable
+  [Algebra R S] [Algebra R A] [Algebra S A] [IsScalarTower R S A] [Algebra R B] [Algebra S B]
+  [IsScalarTower R S B]
+  (f : A →ₐ[S] B)
 
-lemma map_baseChange : (W⁄A).map f = W⁄B :=
-  WeierstrassCurve.map_baseChange W f
+lemma map_baseChange : (W⁄A).map f = W⁄B := WeierstrassCurve.map_baseChange W f
 
 lemma baseChange_polynomial : (W⁄B).polynomial = (W⁄A).polynomial.map (mapRingHom f) := by
   rw [← map_polynomial, map_baseChange]
@@ -309,8 +325,8 @@ lemma Equation.baseChange {x y : A} (h : (W⁄A).Equation x y) : (W⁄B).Equatio
   rw [AlgHom.toRingHom_eq_coe, map_baseChange]
 
 variable {f} in
-lemma baseChange_equation (hf : Function.Injective f) (x y : A) :
-    (W⁄B).Equation (f x) (f y) ↔ (W⁄A).Equation x y := by
+lemma baseChange_equation (hf : Function.Injective f) (x y : A)
+    : (W⁄B).Equation (f x) (f y) ↔ (W⁄A).Equation x y := by
   rw [← map_equation _ hf, AlgHom.toRingHom_eq_coe, map_baseChange, RingHom.coe_coe]
 
 lemma baseChange_polynomialX : (W⁄B).polynomialX = (W⁄A).polynomialX.map (mapRingHom f) := by
@@ -320,8 +336,8 @@ lemma baseChange_polynomialY : (W⁄B).polynomialY = (W⁄A).polynomialY.map (ma
   rw [← map_polynomialY, map_baseChange]
 
 variable {f} in
-lemma baseChange_nonsingular (hf : Function.Injective f) (x y : A) :
-    (W⁄B).Nonsingular (f x) (f y) ↔ (W⁄A).Nonsingular x y := by
+lemma baseChange_nonsingular (hf : Function.Injective f) (x y : A)
+    : (W⁄B).Nonsingular (f x) (f y) ↔ (W⁄A).Nonsingular x y := by
   rw [← map_nonsingular _ hf, AlgHom.toRingHom_eq_coe, map_baseChange, RingHom.coe_coe]
 
 end Affine

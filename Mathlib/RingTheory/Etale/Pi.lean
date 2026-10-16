@@ -28,8 +28,7 @@ namespace Algebra.FormallyEtale
 variable {R : Type*} {I : Type*} (A : I → Type*)
 variable [CommRing R] [∀ i, CommRing (A i)] [∀ i, Algebra R (A i)]
 
-theorem pi_iff [Finite I] :
-    FormallyEtale R (Π i, A i) ↔ ∀ i, FormallyEtale R (A i) := by
+theorem pi_iff [Finite I] : FormallyEtale R (Π i, A i) ↔ ∀ i, FormallyEtale R (A i) := by
   simp_rw [FormallyEtale.iff_formallyUnramified_and_formallySmooth, forall_and]
   rw [FormallyUnramified.pi_iff A, FormallySmooth.pi_iff A]
 

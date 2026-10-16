@@ -6,7 +6,6 @@ Authors: John Talbot, Lian Bremner Tattersall
 module
 
 public import Mathlib.Combinatorics.SimpleGraph.CompleteMultipartite
-
 import Mathlib.Tactic.Linarith
 /-!
 # Five-wheel like graphs
@@ -95,17 +94,19 @@ namespace SimpleGraph
 section withDecEq
 variable [DecidableEq α]
 
-private lemma IsNClique.insert_insert (h1 : G.IsNClique r (insert a s))
-    (h2 : G.IsNClique r (insert b s)) (h3 : b ∉ s) (ha : G.Adj a b) :
-    G.IsNClique (r + 1) (insert b (insert a s)) := by
+private lemma IsNClique.insert_insert
+    (h1 : G.IsNClique r (insert a s)) (h2 : G.IsNClique r (insert b s)) (h3 : b ∉ s)
+    (ha : G.Adj a b)
+    : G.IsNClique (r + 1) (insert b (insert a s)) := by
   apply h1.insert (fun b hb ↦ ?_)
   obtain (rfl | h) := mem_insert.1 hb
   · exact ha.symm
   · exact h2.1 (mem_insert_self _ s) (mem_insert_of_mem h) <| fun h' ↦ (h3 (h' ▸ h)).elim
 
-private lemma IsNClique.insert_insert_erase (hs : G.IsNClique r (insert a s)) (hc : c ∈ s)
-    (ha : a ∉ s) (hd : ∀ w ∈ insert a s, w ≠ c → G.Adj w b) :
-    G.IsNClique r (insert a (insert b (erase s c))) := by
+private lemma IsNClique.insert_insert_erase
+    (hs : G.IsNClique r (insert a s)) (hc : c ∈ s) (ha : a ∉ s)
+    (hd : ∀ w ∈ insert a s, w ≠ c → G.Adj w b)
+    : G.IsNClique r (insert a (insert b (erase s c))) := by
   rw [insert_comm, ← erase_insert_of_ne (fun h : a = c ↦ ha (h ▸ hc) |>.elim)]
   simp_rw [adj_comm, ← notMem_singleton] at hd
   exact hs.insert_erase (fun _ h ↦ hd _ (mem_sdiff.1 h).1 (mem_sdiff.1 h).2) (mem_insert_of_mem hc)
@@ -119,8 +120,7 @@ multipartite then `G` will contain such a structure: see
 `exists_isFiveWheelLike_of_maximal_cliqueFree_not_isCompleteMultipartite`.)
 -/
 @[grind]
-structure IsFiveWheelLike (G : SimpleGraph α) (r k : ℕ) (v w₁ w₂ : α) (s t : Finset α) :
-    Prop where
+structure IsFiveWheelLike (G : SimpleGraph α) (r k : ℕ) (v w₁ w₂ : α) (s t : Finset α) : Prop where
   /-- `{v, w₁, w₂}` induces the single edge `w₁w₂` -/
   isPathGraph3Compl : G.IsPathGraph3Compl v w₁ w₂
   notMem_left : v ∉ s
@@ -134,8 +134,8 @@ structure IsFiveWheelLike (G : SimpleGraph α) (r k : ℕ) (v w₁ w₂ : α) (s
   card_inter : #(s ∩ t) = k
 
 lemma exists_isFiveWheelLike_of_maximal_cliqueFree_not_isCompleteMultipartite
-    (h : Maximal (fun H => H.CliqueFree (r + 2)) G) (hnc : ¬ G.IsCompleteMultipartite) :
-    ∃ v w₁ w₂ s t, G.IsFiveWheelLike r #(s ∩ t) v w₁ w₂ s t := by
+    (h : Maximal (fun H => H.CliqueFree (r + 2)) G) (hnc : ¬G.IsCompleteMultipartite)
+    : ∃ v w₁ w₂ s t, G.IsFiveWheelLike r (#(s ∩ t)) v w₁ w₂ s t := by
   obtain ⟨v, w₁, w₂, p3⟩ := exists_isPathGraph3Compl_of_not_isCompleteMultipartite hnc
   obtain ⟨s, h1, h2, h3, h4⟩ := exists_of_maximal_cliqueFree_not_adj h p3.ne_fst p3.not_adj_fst
   obtain ⟨t, h5, h6, h7, h8⟩ := exists_of_maximal_cliqueFree_not_adj h p3.ne_snd p3.not_adj_snd
@@ -151,21 +151,20 @@ variable {v w₁ w₂ : α} {t : Finset α} (hw : G.IsFiveWheelLike r k v w₁ w
 
 include hw
 
-@[symm] lemma symm : G.IsFiveWheelLike r k v w₂ w₁ t s :=
+@[symm]
+lemma symm : G.IsFiveWheelLike r k v w₂ w₁ t s :=
   let ⟨p2, d1, d2, d3, d4, c1, c2, c3, c4, hk⟩ := hw
   ⟨p2.symm, d2, d1, d4, d3, c3, c4, c1, c2, by rwa [inter_comm]⟩
 
 @[grind →]
-lemma fst_notMem_right : w₁ ∉ t :=
-  fun h ↦ hw.isPathGraph3Compl.not_adj_fst <| hw.isNClique_right.1 (mem_insert_self ..)
-    (mem_insert_of_mem h) hw.isPathGraph3Compl.ne_fst
+lemma fst_notMem_right : w₁ ∉ t := fun h ↦
+  hw.isPathGraph3Compl.not_adj_fst <|
+    hw.isNClique_right.1 (mem_insert_self ..) (mem_insert_of_mem h) hw.isPathGraph3Compl.ne_fst
 
 @[grind →]
 lemma snd_notMem_left : w₂ ∉ s := hw.symm.fst_notMem_right
 
-/--
-Any graph containing an `IsFiveWheelLike r k` structure is not `(r + 1)`-colorable.
--/
+/-- Any graph containing an `IsFiveWheelLike r k` structure is not `(r + 1)`-colorable. -/
 lemma not_colorable_succ : ¬ G.Colorable (r + 1) := by
   intro ⟨C⟩
   have h := C.surjOn_of_card_le_isClique hw.isNClique_fst_left.1 (by simp [hw.isNClique_fst_left.2])
@@ -181,7 +180,7 @@ lemma not_colorable_succ : ¬ G.Colorable (r + 1) := by
   | inl hx =>
     cases hy with
     | inl hy =>
-    -- But this is a contradiction since `w₁` and `w₂` are adjacent.
+      -- But this is a contradiction since `w₁` and `w₂` are adjacent.
       subst_vars; exact C.valid hw.isPathGraph3Compl.adj (hcy ▸ hcx)
     | inr hy =>
       apply (C.valid _ hcy.symm).elim
@@ -191,8 +190,7 @@ lemma not_colorable_succ : ¬ G.Colorable (r + 1) := by
     exact hw.isNClique_left.1 (by simp) (by simp [hx]) fun h ↦ hw.notMem_left (h ▸ hx)
 
 @[grind →]
-lemma card_left : s.card = r := by
-  simp [← Nat.succ_inj, ← hw.isNClique_left.2, hw.notMem_left]
+lemma card_left : s.card = r := by simp [← Nat.succ_inj, ← hw.isNClique_left.2, hw.notMem_left]
 
 @[grind →]
 lemma card_right : t.card = r := hw.symm.card_left
@@ -212,31 +210,45 @@ Any maximally `Kᵣ₊₂`-free graph that is not complete-multipartite contains
 `IsFiveWheelLike` structure `Wᵣ,ₖ` for some `k < r`. (It is maximal in terms of `k`.)
 -/
 lemma exists_max_isFiveWheelLike_of_maximal_cliqueFree_not_isCompleteMultipartite
-    (h : Maximal (fun H => H.CliqueFree (r + 2)) G) (hnc : ¬ G.IsCompleteMultipartite) :
-    ∃ k v w₁ w₂ s t, G.IsFiveWheelLike r k v w₁ w₂ s t ∧ k < r ∧
-      ∀ j, k < j → G.FiveWheelLikeFree r j := by
+    (h : Maximal (fun H => H.CliqueFree (r + 2)) G) (hnc : ¬G.IsCompleteMultipartite)
+    : ∃ k v w₁ w₂ s t,
+      G.IsFiveWheelLike r k v w₁ w₂ s t ∧ k < r ∧ ∀ j, k < j → G.FiveWheelLikeFree r j := by
   obtain ⟨_, _, _, s, t, hw⟩ :=
     exists_isFiveWheelLike_of_maximal_cliqueFree_not_isCompleteMultipartite h hnc
   let P : ℕ → Prop := fun k ↦ ∃ v w₁ w₂ s t, G.IsFiveWheelLike r k v w₁ w₂ s t
   have hk : P #(s ∩ t) := ⟨_, _, _, _, _, hw⟩
   classical
   obtain ⟨_, _, _, _, _, hw⟩ := Nat.findGreatest_spec (hw.card_inter_lt_of_cliqueFree h.1).le hk
-  exact ⟨_, _, _, _, _, _, hw, hw.card_inter_lt_of_cliqueFree h.1,
-         fun _ hj _ _ _ _ _ hv ↦ hj.not_ge <| Nat.le_findGreatest
-           (hv.card_inter_lt_of_cliqueFree h.1).le ⟨_, _, _, _, _, hv⟩⟩
+  exact ⟨
+    _,
+    _,
+    _,
+    _,
+    _,
+    _,
+    hw,
+    hw.card_inter_lt_of_cliqueFree h.1,
+    fun _ hj _ _ _ _ _ hv ↦
+      hj.not_ge <| Nat.le_findGreatest (hv.card_inter_lt_of_cliqueFree h.1).le ⟨_, _, _, _, _, hv⟩
+  ⟩
 
-lemma CliqueFree.fiveWheelLikeFree_of_le (h : G.CliqueFree (r + 2)) (hk : r ≤ k) :
-    G.FiveWheelLikeFree r k := fun hw ↦ (hw.card_inter_lt_of_cliqueFree h).not_ge hk
+lemma CliqueFree.fiveWheelLikeFree_of_le (h : G.CliqueFree (r + 2)) (hk : r ≤ k)
+    : G.FiveWheelLikeFree r k := fun hw ↦
+  (hw.card_inter_lt_of_cliqueFree h).not_ge hk
 
 end withDecEq
 
 /-- A maximally `Kᵣ₊₁`-free graph is `r`-colorable iff it is complete-multipartite. -/
 theorem colorable_iff_isCompleteMultipartite_of_maximal_cliqueFree
-    (h : Maximal (fun H => H.CliqueFree (r + 1)) G) : G.Colorable r ↔ G.IsCompleteMultipartite := by
+    (h : Maximal (fun H => H.CliqueFree (r + 1)) G)
+    : G.Colorable r ↔ G.IsCompleteMultipartite := by
   classical
   match r with
-  | 0 => exact ⟨fun _ ↦ ⟨fun x ↦ cliqueFree_one.1 h.1 |>.elim' x⟩,
-                fun _ ↦ G.colorable_zero_iff.2 <| cliqueFree_one.1 h.1⟩
+  | 0 =>
+    exact ⟨
+      fun _ ↦ ⟨fun x ↦ cliqueFree_one.1 h.1 |>.elim' x⟩,
+      fun _ ↦ G.colorable_zero_iff.2 <| cliqueFree_one.1 h.1
+    ⟩
   | r + 1 =>
     refine ⟨fun hc ↦ ?_, fun hc ↦ hc.colorable_of_cliqueFree h.1⟩
     contrapose hc
@@ -252,17 +264,19 @@ section Counting
 /--
 Given lower bounds on non-adjacencies from `W` into `X`,`Xᶜ` we can bound the degree sum over `W`.
 -/
-private lemma sum_degree_le_of_le_not_adj [Fintype α] [DecidableEq α] [DecidableRel G.Adj]
-    {W X : Finset α} (hx : ∀ x ∈ X, i ≤ #{z ∈ W | ¬ G.Adj x z})
-    (hxc : ∀ y ∈ Xᶜ, j ≤ #{z ∈ W | ¬ G.Adj y z}) :
-    ∑ w ∈ W, G.degree w ≤ #X * (#W - i) + #Xᶜ * (#W - j) := calc
-  _ = ∑ v, #(G.neighborFinset v ∩ W) := by
-    simp_rw [degree, card_eq_sum_ones]
-    exact sum_comm' (by simp [and_comm, adj_comm])
-  _ ≤ _ := by
-    simp_rw [← union_compl X, sum_union disjoint_compl_right (s₁ := X), neighborFinset_eq_filter,
-             filter_inter, univ_inter, card_eq_sum_ones X, card_eq_sum_ones Xᶜ, sum_mul, one_mul]
-    gcongr <;> grind [card_filter_add_card_filter_not]
+private lemma sum_degree_le_of_le_not_adj
+    [Fintype α] [DecidableEq α] [DecidableRel G.Adj]
+    {W X : Finset α}
+    (hx : ∀ x ∈ X, i ≤ # {z ∈ W | ¬ G.Adj x z}) (hxc : ∀ y ∈ Xᶜ, j ≤ # {z ∈ W | ¬ G.Adj y z})
+    : ∑ w ∈ W, G.degree w ≤ #X * (#W - i) + # Xᶜ * (#W - j) :=
+  calc
+    _ = ∑ v, #(G.neighborFinset v ∩ W) := by
+      simp_rw [degree, card_eq_sum_ones]
+      exact sum_comm' (by simp [and_comm, adj_comm])
+    _ ≤ _ := by
+      simp_rw [← union_compl X, sum_union disjoint_compl_right (s₁ := X), neighborFinset_eq_filter,
+               filter_inter, univ_inter, card_eq_sum_ones X, card_eq_sum_ones Xᶜ, sum_mul, one_mul]
+      gcongr <;> grind [card_filter_add_card_filter_not]
 
 end Counting
 
@@ -277,9 +291,10 @@ If `G` is `Kᵣ₊₂`-free and contains a `Wᵣ,ₖ` together with a vertex `x`
 clique vertices then there exist (not necessarily distinct) vertices `a, b, c, d`, one from each of
 the four `r + 1`-cliques of `Wᵣ,ₖ`, none of which are adjacent to `x`.
 -/
-private lemma exist_not_adj_of_adj_inter (hW : ∀ ⦃y⦄, y ∈ s ∩ t → G.Adj x y) :
-    ∃ a b c d, a ∈ insert w₁ s ∧ ¬ G.Adj x a ∧ b ∈ insert w₂ t ∧ ¬ G.Adj x b ∧ c ∈ insert v s ∧
-    ¬ G.Adj x c ∧ d ∈ insert v t ∧ ¬ G.Adj x d ∧ a ≠ b ∧ a ≠ d ∧ b ≠ c ∧ a ∉ t ∧ b ∉ s := by
+private lemma exist_not_adj_of_adj_inter (hW : ∀ ⦃y⦄, y ∈ s ∩ t → G.Adj x y)
+    : ∃ a b c d,
+      a ∈ insert w₁ s ∧ ¬ G.Adj x a ∧ b ∈ insert w₂ t ∧ ¬ G.Adj x b ∧ c ∈ insert v s ∧ ¬ G.Adj x c
+        ∧ d ∈ insert v t ∧ ¬ G.Adj x d ∧ a ≠ b ∧ a ≠ d ∧ b ≠ c ∧ a ∉ t ∧ b ∉ s := by
   obtain ⟨a, ha, haj⟩ := hw.isNClique_fst_left.exists_not_adj_of_cliqueFree_succ hcf x
   obtain ⟨b, hb, hbj⟩ := hw.isNClique_snd_right.exists_not_adj_of_cliqueFree_succ hcf x
   obtain ⟨c, hc, hcj⟩ := hw.isNClique_left.exists_not_adj_of_cliqueFree_succ hcf x
@@ -292,9 +307,10 @@ variable [DecidableRel G.Adj]
 If `G` is `Kᵣ₊₂`-free and contains a `Wᵣ,ₖ` together with a vertex `x` adjacent to all but at most
 two vertices of `Wᵣ,ₖ`, including all of its common clique vertices, then `G` contains a `Wᵣ,ₖ₊₁`.
 -/
-lemma exists_isFiveWheelLike_succ_of_not_adj_le_two (hW : ∀ ⦃y⦄, y ∈ s ∩ t → G.Adj x y)
-    (h2 : #{z ∈ {v} ∪ ({w₁} ∪ ({w₂} ∪ (s ∪ t))) | ¬ G.Adj x z} ≤ 2) :
-    ∃ a b, G.IsFiveWheelLike r (k + 1) v w₁ w₂ (insert x (s.erase a)) (insert x (t.erase b)) := by
+lemma exists_isFiveWheelLike_succ_of_not_adj_le_two
+    (hW : ∀ ⦃y⦄, y ∈ s ∩ t → G.Adj x y)
+    (h2 : # {z ∈ {v} ∪ ({w₁} ∪ ({w₂} ∪ (s ∪ t))) | ¬ G.Adj x z} ≤ 2)
+    : ∃ a b, G.IsFiveWheelLike r (k + 1) v w₁ w₂ (insert x (s.erase a)) (insert x (t.erase b)) := by
   obtain ⟨a, b, c, d, ha, haj, hb, hbj, hc, hcj, hd, hdj, hab, had, hbc, hat, hbs⟩ :=
     hw.exist_not_adj_of_adj_inter hcf hW
   -- Let `W` denote the vertices of the copy of `Wᵣ,ₖ` in `G`
@@ -324,54 +340,71 @@ lemma exists_isFiveWheelLike_succ_of_not_adj_le_two (hW : ∀ ⦃y⦄, y ∈ s �
     intro _ hz haz hbz
     by_contra hf
     apply h2.not_gt
-    exact two_lt_card.2 ⟨_, by simp [has, hcj], _, by simp [hbt, hdj], _,
-                         mem_filter.2 ⟨hz, by rwa [adj_comm] at hf⟩, hab, haz.symm, hbz.symm⟩
+    exact two_lt_card.2 ⟨
+      _,
+      by simp [has, hcj],
+      _,
+      by simp [hbt, hdj],
+      _,
+      mem_filter.2 ⟨hz, by rwa [adj_comm] at hf⟩,
+      hab,
+      haz.symm,
+      hbz.symm
+    ⟩
   have ⟨h1s, h2t⟩ : insert w₁ s ⊆ W ∧ insert w₂ t ⊆ W := by grind
   -- We now check that we can build a `Wᵣ,ₖ₊₁` by inserting `x` and erasing `a` and `b`
   refine ⟨a, b, ⟨by grind, by grind, by grind, by grind, by grind, ?h5, ?h6, ?h7, ?h8, ?h9⟩⟩
   -- Check that the new cliques are indeed cliques
-  case h5 => exact hw.isNClique_left.insert_insert_erase has hw.notMem_left fun _ hz hZ ↦
-               wa ((insert_subset_insert _ fun _ hx ↦ (by simp [hx])) hz) hZ
-                 fun h ↦ hbv <| (mem_insert.1 (h ▸ hz)).resolve_right hbs
-  case h6 => exact hw.isNClique_fst_left.insert_insert_erase has hw.fst_notMem fun _ hz hZ ↦
-               wa (h1s hz) hZ fun h ↦ hbw <| (mem_insert.1 (h ▸ hz)).resolve_right hbs
-  case h7 => exact hw.isNClique_right.insert_insert_erase hbt hw.notMem_right fun _ hz hZ ↦
-               wa ((insert_subset_insert _ fun _ hx ↦ (by simp [hx])) hz)
-                 (fun h ↦ hav <| (mem_insert.1 (h ▸ hz)).resolve_right hat) hZ
-  case h8 => exact hw.isNClique_snd_right.insert_insert_erase hbt hw.snd_notMem fun _ hz hZ ↦
-               wa (h2t hz) (fun h ↦ haw <| (mem_insert.1 (h ▸ hz)).resolve_right hat) hZ
+  case h5 =>
+    exact hw.isNClique_left.insert_insert_erase has hw.notMem_left fun _ hz hZ ↦
+      wa ((insert_subset_insert _ fun _ hx ↦ (by simp [hx])) hz) hZ fun h ↦
+        hbv <| (mem_insert.1 (h ▸ hz)).resolve_right hbs
+  case h6 =>
+    exact hw.isNClique_fst_left.insert_insert_erase has hw.fst_notMem fun _ hz hZ ↦
+      wa (h1s hz) hZ fun h ↦ hbw <| (mem_insert.1 (h ▸ hz)).resolve_right hbs
+  case h7 =>
+    exact hw.isNClique_right.insert_insert_erase hbt hw.notMem_right fun _ hz hZ ↦
+      wa ((insert_subset_insert _ fun _ hx ↦ (by simp [hx])) hz)
+        (fun h ↦ hav <| (mem_insert.1 (h ▸ hz)).resolve_right hat)
+        hZ
+  case h8 =>
+    exact hw.isNClique_snd_right.insert_insert_erase hbt hw.snd_notMem fun _ hz hZ ↦
+      wa (h2t hz) (fun h ↦ haw <| (mem_insert.1 (h ▸ hz)).resolve_right hat) hZ
   case h9 =>
     -- Finally check that this new `IsFiveWheelLike` structure has `k + 1` common clique
     -- vertices i.e. `#((insert x (s.erase a)) ∩ (insert x (s.erase b))) = k + 1`.
-    rw [← insert_inter_distrib, erase_inter, inter_erase, erase_eq_of_notMem <|
-        notMem_mono inter_subset_left hbs, erase_eq_of_notMem <| notMem_mono inter_subset_right hat,
-        card_insert_of_notMem (fun h ↦ G.irrefl (hW h)), hw.card_inter]
+    rw [← insert_inter_distrib, erase_inter, inter_erase,
+      erase_eq_of_notMem <| notMem_mono inter_subset_left hbs,
+      erase_eq_of_notMem <| notMem_mono inter_subset_right hat,
+      card_insert_of_notMem (fun h ↦ G.irrefl (hW h)), hw.card_inter]
 
 /--
 If `G` is a `Kᵣ₊₂`-free graph with `n` vertices containing a `Wᵣ,ₖ` but no `Wᵣ,ₖ₊₁`
 then `G.minDegree ≤ (2 * r + k) * n / (2 * r + k + 3)`
 -/
-lemma minDegree_le_of_cliqueFree_fiveWheelLikeFree_succ [Fintype α]
-    (hm : G.FiveWheelLikeFree r (k + 1)) : G.minDegree ≤ (2 * r + k) * ‖α‖ / (2 * r + k + 3) := by
+lemma minDegree_le_of_cliqueFree_fiveWheelLikeFree_succ
+    [Fintype α] (hm : G.FiveWheelLikeFree r (k + 1))
+    : G.minDegree ≤ (2 * r + k) * ‖α‖ / (2 * r + k + 3) := by
   let X : Finset α := {x | ∀ ⦃y⦄, y ∈ s ∩ t → G.Adj x y}
   let W := {v} ∪ ({w₁} ∪ ({w₂} ∪ (s ∪ t)))
   -- Any vertex in `X` has at least 3 non-neighbors in `W` (otherwise we could build a bigger wheel)
-  have dXle : ∀ x ∈ X, 3 ≤ #{z ∈ W | ¬ G.Adj x z} := by
+  have dXle : ∀ x ∈ X, 3 ≤ # {z ∈ W | ¬ G.Adj x z} := by
     intro _ hx
     by_contra! h
-    obtain ⟨_, _, hW⟩ := hw.exists_isFiveWheelLike_succ_of_not_adj_le_two hcf
-      (by simpa [X] using hx) <| Nat.le_of_succ_le_succ h
+    obtain ⟨_, _, hW⟩ :=
+      hw.exists_isFiveWheelLike_succ_of_not_adj_le_two hcf (by simpa [X] using hx) <|
+        Nat.le_of_succ_le_succ h
     exact hm hW
   -- Since `G` is `Kᵣ₊₂`-free and contains a `Wᵣ,ₖ`, every vertex is not adjacent to at least one
   -- wheel vertex.
-  have one_le (x : α) : 1 ≤ #{z ∈ {v} ∪ ({w₁} ∪ ({w₂} ∪ (s ∪ t))) | ¬ G.Adj x z} :=
+  have one_le (x : α) : 1 ≤ # {z ∈ {v} ∪ ({w₁} ∪ ({w₂} ∪ (s ∪ t))) | ¬ G.Adj x z} :=
     let ⟨_, hz⟩ := hw.isNClique_fst_left.exists_not_adj_of_cliqueFree_succ hcf x
     card_pos.2 ⟨_, mem_filter.2 ⟨by grind, hz.2⟩⟩
   -- Since every vertex has at least one non-neighbor in `W` we now have the following upper bound
   -- `∑ w ∈ W, H.degree w ≤ #X * (#W - 3) + #Xᶜ * (#W - 1)`
   have bdW := sum_degree_le_of_le_not_adj dXle (fun y _ ↦ one_le y)
   -- By the definition of `X`, any `x ∈ Xᶜ` has at least one non-neighbour in `X`.
-  have xcle : ∀ x ∈ Xᶜ, 1 ≤ #{z ∈ s ∩ t | ¬ G.Adj x z} := by
+  have xcle : ∀ x ∈ Xᶜ, 1 ≤ # {z ∈ s ∩ t | ¬ G.Adj x z} := by
     intro x hx
     apply card_pos.2
     obtain ⟨_, hy⟩ : ∃ y ∈ s ∩ t, ¬ G.Adj x y := by
@@ -391,36 +424,49 @@ lemma minDegree_le_of_cliqueFree_fiveWheelLikeFree_succ [Fintype α]
       simp_rw [add_assoc, add_comm k, ← add_assoc, ← Wc, add_assoc, ← two_mul, mul_add,
                ← hw.card_inter, card_eq_sum_ones, ← mul_assoc, mul_sum, mul_one, mul_comm 2]
       gcongr with i <;> exact minDegree_le_degree ..
-    _ ≤ (#X * (#W - 3) + #Xᶜ * (#W - 1)) + 2 * (#X * #(s ∩ t) + #Xᶜ * (#(s ∩ t) - 1)) := by gcongr
-    _ = #X * (#W - 3 + 2 * k) + #Xᶜ * ((#W - 1) + 2 * (k - 1)) := by grind
+    _ ≤ (#X * (#W - 3) + # Xᶜ * (#W - 1)) + 2 * (#X * #(s ∩ t) + # Xᶜ * (#(s ∩ t) - 1)) := by gcongr
+    _ = #X * (#W - 3 + 2 * k) + # Xᶜ * ((#W - 1) + 2 * (k - 1)) := by grind
     _ ≤ _ := by
-        by_cases hk : k = 0 -- so `s ∩ t = ∅` and hence `Xᶜ = ∅`
-        · have Xu : X = univ := by
-            rw [← hw.card_inter, card_eq_zero] at hk
-            exact eq_univ_of_forall fun _ ↦ by simp [X, hk]
-          subst k
-          rw [add_zero] at Wc
-          simp [Xu, Wc, mul_comm]
-        have w3 : 3 ≤ #W := two_lt_card.2 ⟨_, mem_insert_self .., _, by simp [W], _, by simp [W],
-          hw.isPathGraph3Compl.ne_fst, hw.isPathGraph3Compl.ne_snd, hw.isPathGraph3Compl.fst_ne_snd⟩
-        have hap : #W - 1 + 2 * (k - 1) = #W - 3 + 2 * k := by lia
-        rw [hap, ← add_mul, card_add_card_compl, mul_comm, two_mul, ← add_assoc]
-        gcongr
-        lia
+      by_cases hk : k = 0 -- so `s ∩ t = ∅` and hence `Xᶜ = ∅`
+      · have Xu : X = univ := by
+          rw [← hw.card_inter, card_eq_zero] at hk
+          exact eq_univ_of_forall fun _ ↦ by simp [X, hk]
+        subst k
+        rw [add_zero] at Wc
+        simp [Xu, Wc, mul_comm]
+      have w3 : 3 ≤ #W :=
+        two_lt_card.2 ⟨
+          _,
+          mem_insert_self ..,
+          _,
+          by simp [W],
+          _,
+          by simp [W],
+          hw.isPathGraph3Compl.ne_fst,
+          hw.isPathGraph3Compl.ne_snd,
+          hw.isPathGraph3Compl.fst_ne_snd
+        ⟩
+      have hap : #W - 1 + 2 * (k - 1) = #W - 3 + 2 * k := by lia
+      rw [hap, ← add_mul, card_add_card_compl, mul_comm, two_mul, ← add_assoc]
+      gcongr
+      lia
 
 end IsFiveWheelLike
 
-/-- **Andrásfai-Erdős-Sós** theorem
+/--
+**Andrásfai-Erdős-Sós** theorem
 
 If `G` is a `Kᵣ₊₁`-free graph with `n` vertices and `(3 * r - 4) * n / (3 * r - 1) < G.minDegree`
 then `G` is `r + 1`-colorable, e.g. if `G` is `K₃`-free and `2 * n / 5 < G.minDegree` then `G`
 is `2`-colorable.
 -/
-theorem colorable_of_cliqueFree_lt_minDegree [Fintype α] [DecidableRel G.Adj]
-    (hf : G.CliqueFree (r + 1)) (hd : (3 * r - 4) * ‖α‖ / (3 * r - 1) < G.minDegree) :
-    G.Colorable r := by
+theorem colorable_of_cliqueFree_lt_minDegree
+    [Fintype α] [DecidableRel G.Adj]
+    (hf : G.CliqueFree (r + 1)) (hd : (3 * r - 4) * ‖α‖ / (3 * r - 1) < G.minDegree)
+    : G.Colorable r := by
   match r with
-  | 0 | 1 => aesop
+  | 0 | 1 =>
+    aesop
   | r + 2 =>
     classical
     -- There is an edge maximal `Kᵣ₊₃`-free supergraph `H` of `G`
@@ -430,7 +476,7 @@ theorem colorable_of_cliqueFree_lt_minDegree [Fintype α] [DecidableRel G.Adj]
     -- Suppose, for a contradiction, that `H` is not `r + 2`-colorable
     by_contra hnotcol
     -- so `H` is not complete-multipartite
-    have hn : ¬ H.IsCompleteMultipartite := fun hc ↦ hnotcol <| hc.colorable_of_cliqueFree hmcf.1
+    have hn : ¬H.IsCompleteMultipartite := fun hc ↦ hnotcol <| hc.colorable_of_cliqueFree hmcf.1
     -- Hence `H` contains `Wᵣ₊₁,ₖ` but not `Wᵣ₊₁,ₖ₊₁`, for some `k < r + 1`
     obtain ⟨k, _, _, _, _, _, hw, hlt, hm⟩ :=
       exists_max_isFiveWheelLike_of_maximal_cliqueFree_not_isCompleteMultipartite hmcf hn
@@ -438,8 +484,8 @@ theorem colorable_of_cliqueFree_lt_minDegree [Fintype α] [DecidableRel G.Adj]
     -- a contradiction.
     have hD := hw.minDegree_le_of_cliqueFree_fiveWheelLikeFree_succ hmcf.1 <| hm _ <| lt_add_one _
     have : (2 * (r + 1) + k) * ‖α‖ / (2 * (r + 1) + k + 3) ≤ (3 * r + 2) * ‖α‖ / (3 * r + 5) := by
-      apply (Nat.le_div_iff_mul_le <| Nat.succ_pos _).2
-              <| (mul_le_mul_iff_right₀ (_ + 2).succ_pos).1 _
+      apply (Nat.le_div_iff_mul_le <| Nat.succ_pos _).2 <|
+        (mul_le_mul_iff_right₀ (_ + 2).succ_pos).1 _
       rw [← mul_assoc, mul_comm (2 * r + 2 + k + 3), mul_comm _ (_ * ‖α‖)]
       apply (Nat.mul_le_mul_right _ (Nat.div_mul_le_self ..)).trans
       nlinarith

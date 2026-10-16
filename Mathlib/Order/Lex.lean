@@ -42,36 +42,22 @@ variable {α : Type*}
 
 /-! ### Lexicographic order -/
 
-
 /-- A type synonym to equip a type with its lexicographic order. -/
-def Lex (α : Type*) :=
-  α
+def Lex (α : Type*) := α
 
 /-- `toLex` is the identity function to the `Lex` of a type. -/
-@[match_pattern]
-def toLex : α ≃ Lex α :=
-  Equiv.refl _
+@[match_pattern] def toLex : α ≃ Lex α := Equiv.refl _
 
 /-- `ofLex` is the identity function from the `Lex` of a type. -/
-@[match_pattern]
-def ofLex : Lex α ≃ α :=
-  Equiv.refl _
+@[match_pattern] def ofLex : Lex α ≃ α := Equiv.refl _
 
-@[simp]
-theorem toLex_symm_eq : (@toLex α).symm = ofLex :=
-  rfl
+@[simp] theorem toLex_symm_eq : (@toLex α).symm = ofLex := rfl
 
-@[simp]
-theorem ofLex_symm_eq : (@ofLex α).symm = toLex :=
-  rfl
+@[simp] theorem ofLex_symm_eq : (@ofLex α).symm = toLex := rfl
 
-@[simp]
-theorem toLex_ofLex (a : Lex α) : toLex (ofLex a) = a :=
-  rfl
+@[simp] theorem toLex_ofLex (a : Lex α) : toLex (ofLex a) = a := rfl
 
-@[simp]
-theorem ofLex_toLex (a : α) : ofLex (toLex a) = a :=
-  rfl
+@[simp] theorem ofLex_toLex (a : α) : ofLex (toLex a) = a := rfl
 
 theorem toLex_inj {a b : α} : toLex a = toLex b ↔ a = b := by simp
 
@@ -100,36 +86,22 @@ protected def Lex.rec {β : Lex α → Sort*} (h : ∀ a, β (toLex a)) : ∀ a,
 
 /-! ### Colexicographic order -/
 
-
 /-- A type synonym to equip a type with its lexicographic order. -/
-def Colex (α : Type*) :=
-  α
+def Colex (α : Type*) := α
 
 /-- `toColex` is the identity function to the `Colex` of a type. -/
-@[match_pattern]
-def toColex : α ≃ Colex α :=
-  Equiv.refl _
+@[match_pattern] def toColex : α ≃ Colex α := Equiv.refl _
 
 /-- `ofColex` is the identity function from the `Colex` of a type. -/
-@[match_pattern]
-def ofColex : Colex α ≃ α :=
-  Equiv.refl _
+@[match_pattern] def ofColex : Colex α ≃ α := Equiv.refl _
 
-@[simp]
-theorem toColex_symm_eq : (@toColex α).symm = ofColex :=
-  rfl
+@[simp] theorem toColex_symm_eq : (@toColex α).symm = ofColex := rfl
 
-@[simp]
-theorem ofColex_symm_eq : (@ofColex α).symm = toColex :=
-  rfl
+@[simp] theorem ofColex_symm_eq : (@ofColex α).symm = toColex := rfl
 
-@[simp]
-theorem toColex_ofColex (a : Colex α) : toColex (ofColex a) = a :=
-  rfl
+@[simp] theorem toColex_ofColex (a : Colex α) : toColex (ofColex a) = a := rfl
 
-@[simp]
-theorem ofColex_toColex (a : α) : ofColex (toColex a) = a :=
-  rfl
+@[simp] theorem ofColex_toColex (a : α) : ofColex (toColex a) = a := rfl
 
 theorem toColex_inj {a b : α} : toColex a = toColex b ↔ a = b := by simp
 
@@ -151,8 +123,8 @@ instance {α γ} [H : CoeFun α γ] : CoeFun (Colex α) γ where
 
 /-- A recursor for `Colex`. Use as `induction x`. -/
 @[elab_as_elim, induction_eliminator, cases_eliminator]
-protected def Colex.rec {β : Colex α → Sort*} (h : ∀ a, β (toColex a)) : ∀ a, β a :=
-  fun a => h (ofColex a)
+protected def Colex.rec {β : Colex α → Sort*} (h : ∀ a, β (toColex a)) : ∀ a, β a := fun a =>
+  h (ofColex a)
 
 @[simp] lemma Colex.forall {p : Colex α → Prop} : (∀ a, p a) ↔ ∀ a, p (toColex a) := Iff.rfl
 @[simp] lemma Colex.exists {p : Colex α → Prop} : (∃ a, p a) ↔ ∃ a, p (toColex a) := Iff.rfl

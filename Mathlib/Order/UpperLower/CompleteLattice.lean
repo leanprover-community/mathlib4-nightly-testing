@@ -46,12 +46,10 @@ initialize_simps_projections UpperSet (carrier → coe, as_prefix coe)
 initialize_simps_projections LowerSet (carrier → coe, as_prefix coe)
 
 @[to_dual (attr := ext)]
-theorem ext {s t : UpperSet α} : (s : Set α) = t → s = t :=
-  SetLike.ext'
+theorem ext {s t : UpperSet α} : (s : Set α) = t → s = t := SetLike.ext'
 
 @[to_dual (attr := simp)]
-theorem carrier_eq_coe (s : UpperSet α) : s.carrier = s :=
-  rfl
+theorem carrier_eq_coe (s : UpperSet α) : s.carrier = s := rfl
 
 @[to_dual (attr := simp)]
 protected lemma upper (s : UpperSet α) : IsUpperSet (s : Set α) := s.upper'
@@ -64,41 +62,36 @@ lemma mem_mk {s : Set α} (hs) {a : α} : a ∈ mk s hs ↔ a ∈ s := Iff.rfl
 
 variable {S : Set (UpperSet α)} {s t : UpperSet α} {a : α}
 
-@[to_dual]
-instance : Max (UpperSet α) :=
-  ⟨fun s t => ⟨s ∩ t, s.upper.inter t.upper⟩⟩
+@[to_dual] instance : Max (UpperSet α) := ⟨fun s t => ⟨s ∩ t, s.upper.inter t.upper⟩⟩
+
+@[to_dual] instance : Min (UpperSet α) := ⟨fun s t => ⟨s ∪ t, s.upper.union t.upper⟩⟩
+
+@[to_dual] instance : Top (UpperSet α) := ⟨⟨∅, isUpperSet_empty⟩⟩
+
+@[to_dual] instance : Bot (UpperSet α) := ⟨⟨univ, isUpperSet_univ⟩⟩
 
 @[to_dual]
-instance : Min (UpperSet α) :=
-  ⟨fun s t => ⟨s ∪ t, s.upper.union t.upper⟩⟩
+instance : SupSet (UpperSet α) := ⟨fun S => ⟨⋂ s ∈ S, ↑s, isUpperSet_iInter₂ fun s _ => s.upper⟩⟩
 
 @[to_dual]
-instance : Top (UpperSet α) :=
-  ⟨⟨∅, isUpperSet_empty⟩⟩
-
-@[to_dual]
-instance : Bot (UpperSet α) :=
-  ⟨⟨univ, isUpperSet_univ⟩⟩
-
-@[to_dual]
-instance : SupSet (UpperSet α) :=
-  ⟨fun S => ⟨⋂ s ∈ S, ↑s, isUpperSet_iInter₂ fun s _ => s.upper⟩⟩
-
-@[to_dual]
-instance : InfSet (UpperSet α) :=
-  ⟨fun S => ⟨⋃ s ∈ S, ↑s, isUpperSet_iUnion₂ fun s _ => s.upper⟩⟩
+instance : InfSet (UpperSet α) := ⟨fun S => ⟨⋃ s ∈ S, ↑s, isUpperSet_iUnion₂ fun s _ => s.upper⟩⟩
 
 instance : PartialOrder (UpperSet α) :=
   PartialOrder.lift _ (toDual.injective.comp SetLike.coe_injective)
 
 instance completeLattice : CompleteLattice (UpperSet α) :=
-  (toDual.injective.comp SetLike.coe_injective).completeLattice _
-    .rfl .rfl (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) (fun _ ↦ rfl) (fun _ ↦ rfl) rfl rfl
+  (toDual.injective.comp SetLike.coe_injective).completeLattice _ .rfl .rfl
+    (fun _ _ ↦ rfl)
+    (fun _ _ ↦ rfl)
+    (fun _ ↦ rfl)
+    (fun _ ↦ rfl)
+    rfl rfl
 
 instance completelyDistribLattice : CompletelyDistribLattice (UpperSet α) :=
   .ofMinimalAxioms <|
     (toDual.injective.comp SetLike.coe_injective).completelyDistribLatticeMinimalAxioms .of _
-      (fun _ ↦ rfl) (fun _ ↦ rfl)
+      (fun _ ↦ rfl)
+      (fun _ ↦ rfl)
 
 @[to_dual existing]
 instance _root_.LowerSet.instPartialOrder : PartialOrder (LowerSet α) :=
@@ -106,21 +99,22 @@ instance _root_.LowerSet.instPartialOrder : PartialOrder (LowerSet α) :=
 
 @[to_dual existing]
 instance _root_.LowerSet.completeLattice : CompleteLattice (LowerSet α) :=
-  SetLike.coe_injective.completeLattice _
-    .rfl .rfl (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) (fun _ ↦ rfl) (fun _ ↦ rfl) rfl rfl
+  SetLike.coe_injective.completeLattice _ .rfl .rfl
+    (fun _ _ ↦ rfl)
+    (fun _ _ ↦ rfl)
+    (fun _ ↦ rfl)
+    (fun _ ↦ rfl)
+    rfl rfl
 
 @[to_dual existing]
 instance _root_.LowerSet.completelyDistribLattice : CompletelyDistribLattice (LowerSet α) :=
-  .ofMinimalAxioms <| SetLike.coe_injective.completelyDistribLatticeMinimalAxioms .of _
-    (fun _ ↦ rfl) (fun _ ↦ rfl)
+  .ofMinimalAxioms <|
+    SetLike.coe_injective.completelyDistribLatticeMinimalAxioms .of _ (fun _ ↦ rfl) (fun _ ↦ rfl)
 
-@[to_dual]
-instance : Inhabited (UpperSet α) :=
-  ⟨⊥⟩
+@[to_dual] instance : Inhabited (UpperSet α) := ⟨⊥⟩
 
 @[to_dual (attr := simp 1100, norm_cast)]
-theorem coe_subset_coe : (s : Set α) ⊆ t ↔ t ≤ s :=
-  Iff.rfl
+theorem coe_subset_coe : (s : Set α) ⊆ t ↔ t ≤ s := Iff.rfl
 
 @[to_dual (attr := simp 1100, norm_cast)]
 lemma coe_ssubset_coe : (s : Set α) ⊂ t ↔ t < s := Iff.rfl
@@ -132,12 +126,10 @@ lemma mk_le_mk {s t : Set α} (hs ht) : mk s hs ≤ mk t ht ↔ t ≤ s := Iff.r
 lemma mk_lt_mk {s t : Set α} (hs ht) : mk s hs < mk t ht ↔ t < s := Iff.rfl
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_top : ((⊤ : UpperSet α) : Set α) = ∅ :=
-  rfl
+theorem coe_top : ((⊤ : UpperSet α) : Set α) = ∅ := rfl
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_bot : ((⊥ : UpperSet α) : Set α) = univ :=
-  rfl
+theorem coe_bot : ((⊥ : UpperSet α) : Set α) = univ := rfl
 
 @[to_dual (attr := simp, norm_cast)]
 theorem coe_eq_univ : (s : Set α) = univ ↔ s = ⊥ := by simp [SetLike.ext'_iff]
@@ -146,24 +138,19 @@ theorem coe_eq_univ : (s : Set α) = univ ↔ s = ⊥ := by simp [SetLike.ext'_i
 theorem coe_eq_empty : (s : Set α) = ∅ ↔ s = ⊤ := by simp [SetLike.ext'_iff]
 
 @[to_dual (attr := simp, norm_cast)]
-lemma coe_nonempty : (s : Set α).Nonempty ↔ s ≠ ⊤ :=
-  nonempty_iff_ne_empty.trans coe_eq_empty.not
+lemma coe_nonempty : (s : Set α).Nonempty ↔ s ≠ ⊤ := nonempty_iff_ne_empty.trans coe_eq_empty.not
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_sup (s t : UpperSet α) : (↑(s ⊔ t) : Set α) = (s : Set α) ∩ t :=
-  rfl
+theorem coe_sup (s t : UpperSet α) : (↑(s ⊔ t) : Set α) = (s : Set α) ∩ t := rfl
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_inf (s t : UpperSet α) : (↑(s ⊓ t) : Set α) = (s : Set α) ∪ t :=
-  rfl
+theorem coe_inf (s t : UpperSet α) : (↑(s ⊓ t) : Set α) = (s : Set α) ∪ t := rfl
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_sSup (S : Set (UpperSet α)) : (↑(sSup S) : Set α) = ⋂ s ∈ S, ↑s :=
-  rfl
+theorem coe_sSup (S : Set (UpperSet α)) : (↑(sSup S) : Set α) = ⋂ s ∈ S, ↑s := rfl
 
 @[to_dual (attr := simp, norm_cast)]
-theorem coe_sInf (S : Set (UpperSet α)) : (↑(sInf S) : Set α) = ⋃ s ∈ S, ↑s :=
-  rfl
+theorem coe_sInf (S : Set (UpperSet α)) : (↑(sInf S) : Set α) = ⋃ s ∈ S, ↑s := rfl
 
 @[to_dual (attr := simp, norm_cast)]
 theorem coe_iSup (f : ι → UpperSet α) : (↑(⨆ i, f i) : Set α) = ⋂ i, f i := by simp [iSup]
@@ -172,32 +159,29 @@ theorem coe_iSup (f : ι → UpperSet α) : (↑(⨆ i, f i) : Set α) = ⋂ i, 
 theorem coe_iInf (f : ι → UpperSet α) : (↑(⨅ i, f i) : Set α) = ⋃ i, f i := by simp [iInf]
 
 @[to_dual (attr := norm_cast)]
-theorem coe_iSup₂ (f : ∀ i, κ i → UpperSet α) :
-    (↑(⨆ (i) (j), f i j) : Set α) = ⋂ (i) (j), f i j := by simp
+theorem coe_iSup₂ (f : ∀ i, κ i → UpperSet α)
+    : (↑(⨆ (i) (j), f i j) : Set α) = ⋂ (i) (j), f i j := by
+  simp
 
 @[to_dual (attr := norm_cast)]
-theorem coe_iInf₂ (f : ∀ i, κ i → UpperSet α) :
-    (↑(⨅ (i) (j), f i j) : Set α) = ⋃ (i) (j), f i j := by simp
+theorem coe_iInf₂ (f : ∀ i, κ i → UpperSet α)
+    : (↑(⨅ (i) (j), f i j) : Set α) = ⋃ (i) (j), f i j := by
+  simp
 
 @[to_dual (attr := simp)]
-theorem notMem_top : a ∉ (⊤ : UpperSet α) :=
-  id
+theorem notMem_top : a ∉ (⊤ : UpperSet α) := id
 
 @[to_dual (attr := simp)]
-theorem mem_bot : a ∈ (⊥ : UpperSet α) :=
-  trivial
+theorem mem_bot : a ∈ (⊥ : UpperSet α) := trivial
 
 @[to_dual (attr := simp)]
-theorem mem_sup_iff : a ∈ s ⊔ t ↔ a ∈ s ∧ a ∈ t :=
-  Iff.rfl
+theorem mem_sup_iff : a ∈ s ⊔ t ↔ a ∈ s ∧ a ∈ t := Iff.rfl
 
 @[to_dual (attr := simp)]
-theorem mem_inf_iff : a ∈ s ⊓ t ↔ a ∈ s ∨ a ∈ t :=
-  Iff.rfl
+theorem mem_inf_iff : a ∈ s ⊓ t ↔ a ∈ s ∨ a ∈ t := Iff.rfl
 
 @[to_dual (attr := simp)]
-theorem mem_sSup_iff : a ∈ sSup S ↔ ∀ s ∈ S, a ∈ s :=
-  mem_iInter₂
+theorem mem_sSup_iff : a ∈ sSup S ↔ ∀ s ∈ S, a ∈ s := mem_iInter₂
 
 @[to_dual (attr := simp)]
 theorem mem_sInf_iff : a ∈ sInf S ↔ ∃ s ∈ S, a ∈ s :=
@@ -229,24 +213,19 @@ theorem codisjoint_coe : Codisjoint (s : Set α) t ↔ Disjoint s t := by
 
 /-- The complement of an upper set as a lower set. -/
 @[to_dual /-- The complement of a lower set as an upper set. -/]
-def compl (s : UpperSet α) : LowerSet α :=
-  ⟨sᶜ, s.upper.compl⟩
+def compl (s : UpperSet α) : LowerSet α := ⟨sᶜ, s.upper.compl⟩
 
 @[to_dual (attr := simp)]
-theorem coe_compl (s : UpperSet α) : (s.compl : Set α) = (↑s)ᶜ :=
-  rfl
+theorem coe_compl (s : UpperSet α) : (s.compl : Set α) = (↑s)ᶜ := rfl
 
 @[to_dual (attr := simp)]
-theorem mem_compl_iff : a ∈ s.compl ↔ a ∉ s :=
-  Iff.rfl
+theorem mem_compl_iff : a ∈ s.compl ↔ a ∉ s := Iff.rfl
 
 @[to_dual (attr := simp)]
-nonrec theorem compl_compl (s : UpperSet α) : s.compl.compl = s :=
-  UpperSet.ext <| compl_compl _
+nonrec theorem compl_compl (s : UpperSet α) : s.compl.compl = s := UpperSet.ext <| compl_compl _
 
 @[to_dual (attr := simp)]
-theorem compl_le_compl : s.compl ≤ t.compl ↔ s ≤ t :=
-  compl_subset_compl
+theorem compl_le_compl : s.compl ≤ t.compl ↔ s ≤ t := compl_subset_compl
 
 @[to_dual (attr := simp)]
 protected theorem compl_sup (s t : UpperSet α) : (s ⊔ t).compl = s.compl ⊔ t.compl :=
@@ -257,12 +236,10 @@ protected theorem compl_inf (s t : UpperSet α) : (s ⊓ t).compl = s.compl ⊓ 
   LowerSet.ext compl_sup
 
 @[to_dual (attr := simp)]
-protected theorem compl_top : (⊤ : UpperSet α).compl = ⊤ :=
-  LowerSet.ext compl_empty
+protected theorem compl_top : (⊤ : UpperSet α).compl = ⊤ := LowerSet.ext compl_empty
 
 @[to_dual (attr := simp)]
-protected theorem compl_bot : (⊥ : UpperSet α).compl = ⊥ :=
-  LowerSet.ext compl_univ
+protected theorem compl_bot : (⊥ : UpperSet α).compl = ⊥ := LowerSet.ext compl_univ
 
 @[to_dual (attr := simp)]
 protected theorem compl_sSup (S : Set (UpperSet α)) : (sSup S).compl = ⨆ s ∈ S, UpperSet.compl s :=
@@ -281,12 +258,14 @@ protected theorem compl_iInf (f : ι → UpperSet α) : (⨅ i, f i).compl = ⨅
   LowerSet.ext <| by simp only [coe_compl, coe_iInf, compl_iUnion, LowerSet.coe_iInf]
 
 @[to_dual]
-theorem compl_iSup₂ (f : ∀ i, κ i → UpperSet α) :
-    (⨆ (i) (j), f i j).compl = ⨆ (i) (j), (f i j).compl := by simp
+theorem compl_iSup₂ (f : ∀ i, κ i → UpperSet α)
+    : (⨆ (i) (j), f i j).compl = ⨆ (i) (j), (f i j).compl := by
+  simp
 
 @[to_dual]
-theorem compl_iInf₂ (f : ∀ i, κ i → UpperSet α) :
-    (⨅ (i) (j), f i j).compl = ⨅ (i) (j), (f i j).compl := by simp
+theorem compl_iInf₂ (f : ∀ i, κ i → UpperSet α)
+    : (⨅ (i) (j), f i j).compl = ⨅ (i) (j), (f i j).compl := by
+  simp
 
 /-- Upper sets are order-isomorphic to lower sets under complementation. -/
 @[simps]
@@ -306,10 +285,12 @@ variable [LinearOrder α]
 instance total_le : @Std.Total (UpperSet α) (· ≤ ·) := ⟨fun s t => t.upper.total s.upper⟩
 
 noncomputable instance instLinearOrder : LinearOrder (UpperSet α) := by
-  classical exact Lattice.toLinearOrder _
+  classical
+  exact Lattice.toLinearOrder _
 
-noncomputable instance instCompleteLinearOrder : CompleteLinearOrder (UpperSet α) :=
-  { completelyDistribLattice, instLinearOrder with }
+noncomputable instance instCompleteLinearOrder : CompleteLinearOrder (UpperSet α) := {
+  completelyDistribLattice, instLinearOrder with
+}
 
 @[to_dual none]
 instance _root_.LowerSet.total_le : @Std.Total (LowerSet α) (· ≤ ·) :=
@@ -317,11 +298,14 @@ instance _root_.LowerSet.total_le : @Std.Total (LowerSet α) (· ≤ ·) :=
 
 @[to_dual existing]
 noncomputable instance _root_.LowerSet.instLinearOrder : LinearOrder (LowerSet α) := by
-  classical exact Lattice.toLinearOrder _
+  classical
+  exact Lattice.toLinearOrder _
 
 @[to_dual existing]
-noncomputable instance _root_.LowerSet.instCompleteLinearOrder : CompleteLinearOrder (LowerSet α) :=
-  { LowerSet.completelyDistribLattice, LowerSet.instLinearOrder with }
+noncomputable instance _root_.LowerSet.instCompleteLinearOrder
+    : CompleteLinearOrder (LowerSet α) := {
+  LowerSet.completelyDistribLattice, LowerSet.instLinearOrder with
+}
 
 end LinearOrder
 
@@ -333,7 +317,7 @@ variable {f : α ≃o β} {s t : UpperSet α} {a : α} {b : β}
 
 /-- An order isomorphism of Preorders induces an order isomorphism of their upper sets. -/
 @[to_dual
-/-- An order isomorphism of Preorders induces an order isomorphism of their lower sets. -/]
+  /-- An order isomorphism of Preorders induces an order isomorphism of their lower sets. -/]
 def map (f : α ≃o β) : UpperSet α ≃o UpperSet β where
   toFun s := ⟨f '' s, s.upper.image f⟩
   invFun t := ⟨f ⁻¹' t, t.upper.preimage f.monotone⟩
@@ -370,13 +354,11 @@ theorem map_map (g : β ≃o γ) (f : α ≃o β) : map g (map f s) = map (f.tra
 variable (f s t)
 
 @[to_dual (attr := norm_cast)]
-theorem coe_map : (map f s : Set β) = f '' s :=
-  rfl
+theorem coe_map : (map f s : Set β) = f '' s := rfl
 
 @[to_dual (attr := simp)]
 theorem compl_map : (map f s).compl = LowerSet.map f s.compl :=
   SetLike.coe_injective (Set.image_compl_eq f.bijective).symm
-
 
 end Map
 

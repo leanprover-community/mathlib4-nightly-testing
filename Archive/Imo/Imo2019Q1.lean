@@ -22,9 +22,10 @@ Note that there is a much more compact proof of this fact in Isabelle/HOL
   - http://downthetypehole.de/paste/4YbGgqb4
 -/
 
-public theorem imo2019_q1 (f : ℤ → ℤ) :
-    (∀ a b : ℤ, f (2 * a) + 2 * f b = f (f (a + b))) ↔ f = 0 ∨ ∃ c, f = fun x => 2 * x + c := by
-  constructor; swap
+public theorem imo2019_q1 (f : ℤ → ℤ)
+    : (∀ a b : ℤ, f (2 * a) + 2 * f b = f (f (a + b))) ↔ f = 0 ∨ ∃ c, f = fun x => 2 * x + c := by
+  constructor
+  swap
   -- easy way: f(x)=0 and f(x)=2x+c work.
   · rintro (rfl | ⟨c, rfl⟩) <;> intros <;> norm_num; ring
   -- hard way.
@@ -41,11 +42,14 @@ public theorem imo2019_q1 (f : ℤ → ℤ) :
   obtain ⟨c, H⟩ : ∃ c, ∀ b, f b = c + m * b := by
     refine ⟨f 0, fun b => ?_⟩
     induction b with
-    | zero => simp
-    | succ b ihb => simp [H, ihb, mul_add, add_assoc]
+    | zero =>
+      simp
+    | succ b ihb =>
+      simp [H, ihb, mul_add, add_assoc]
     | pred b ihb =>
       rw [← sub_eq_of_eq_add (H _)]
-      simp [ihb]; ring
+      simp [ihb]
+      ring
   -- Now use `hf 0 0` and `hf 0 1` to show that `m ∈ {0, 2}`
   have H3 : 2 * c = m * c := by simpa [H, mul_add] using hf 0 0
   obtain rfl | rfl : 2 = m ∨ m = 0 := by simpa [H, mul_add, H3] using hf 0 1

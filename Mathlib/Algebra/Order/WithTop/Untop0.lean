@@ -33,21 +33,15 @@ def untop₀ (a : WithTop α) : α := a.untopD 0
 ## Simplifying Lemmas in cases where α is an Instance of Zero
 -/
 
-@[simp]
-lemma untop₀_eq_zero {a : WithTop α} :
-    a.untop₀ = 0 ↔ a = 0 ∨ a = ⊤ := by simp [untop₀]
+@[simp] lemma untop₀_eq_zero {a : WithTop α} : a.untop₀ = 0 ↔ a = 0 ∨ a = ⊤ := by simp [untop₀]
 
-@[simp]
-lemma untop₀_top : untop₀ ⊤ = (0 : α) := by simp [untop₀]
+@[simp] lemma untop₀_top : untop₀ ⊤ = (0 : α) := by simp [untop₀]
 
-@[simp]
-lemma untop₀_zero : untop₀ 0 = (0 : α) := by simp [untop₀]
+@[simp] lemma untop₀_zero : untop₀ 0 = (0 : α) := by simp [untop₀]
 
-@[simp]
-lemma untop₀_coe (a : α) : (a : WithTop α).untop₀ = a := rfl
+@[simp] lemma untop₀_coe (a : α) : (a : WithTop α).untop₀ = a := rfl
 
-lemma coe_untop₀_of_ne_top {a : WithTop α} (ha : a ≠ ⊤) :
-    a.untop₀ = a := by
+lemma coe_untop₀_of_ne_top {a : WithTop α} (ha : a ≠ ⊤) : a.untop₀ = a := by
   obtain ⟨b, hb⟩ := WithTop.ne_top_iff_exists.1 ha
   simp [← hb]
 
@@ -58,28 +52,28 @@ end Zero
 -/
 
 @[simp]
-lemma untopD_add [Add α] {a b : WithTop α} {c : α} (ha : a ≠ ⊤) (hb : b ≠ ⊤) :
-    (a + b).untopD c = a.untopD c + b.untopD c := by
+lemma untopD_add [Add α] {a b : WithTop α} {c : α} (ha : a ≠ ⊤) (hb : b ≠ ⊤)
+    : (a + b).untopD c = a.untopD c + b.untopD c := by
   lift a to α using ha
   lift b to α using hb
   simp [← coe_add]
 
 @[simp]
-lemma untop₀_add [AddZeroClass α] {a b : WithTop α} (ha : a ≠ ⊤) (hb : b ≠ ⊤) :
-    (a + b).untop₀ = a.untop₀ + b.untop₀ := untopD_add ha hb
+lemma untop₀_add [AddZeroClass α] {a b : WithTop α} (ha : a ≠ ⊤) (hb : b ≠ ⊤)
+    : (a + b).untop₀ = a.untop₀ + b.untop₀ :=
+  untopD_add ha hb
+
+@[simp] lemma untop₀_natCast [AddMonoidWithOne α] (n : ℕ) : untop₀ (n : WithTop α) = n := rfl
 
 @[simp]
-lemma untop₀_natCast [AddMonoidWithOne α] (n : ℕ) : untop₀ (n : WithTop α) = n := rfl
-
-@[simp]
-theorem untop₀_one {α : Type*} [AddMonoidWithOne α] :
-    (1 : WithTop α).untop₀ = 1 := by
+theorem untop₀_one {α : Type*} [AddMonoidWithOne α] : (1 : WithTop α).untop₀ = 1 := by
   convert WithTop.untop₀_natCast 1
   all_goals exact Nat.cast_one.symm
 
 @[simp]
-lemma untop₀_ofNat [AddMonoidWithOne α] (n : ℕ) [n.AtLeastTwo] :
-    untop₀ (ofNat(n) : WithTop α) = ofNat(n) := rfl
+lemma untop₀_ofNat [AddMonoidWithOne α] (n : ℕ) [n.AtLeastTwo]
+    : untop₀ (ofNat(n) : WithTop α) = ofNat(n) :=
+  rfl
 
 @[simp]
 lemma untop₀_neg [AddCommGroup α] : ∀ a : WithTop α, (-a).untop₀ = -a.untop₀
@@ -87,8 +81,9 @@ lemma untop₀_neg [AddCommGroup α] : ∀ a : WithTop α, (-a).untop₀ = -a.un
   | (a : α) => rfl
 
 @[simp]
-lemma untop₀_mul [DecidableEq α] [MulZeroClass α] (a b : WithTop α) :
-    (a * b).untop₀ = a.untop₀ * b.untop₀ := untopD_zero_mul a b
+lemma untop₀_mul [DecidableEq α] [MulZeroClass α] (a b : WithTop α)
+    : (a * b).untop₀ = a.untop₀ * b.untop₀ :=
+  untopD_zero_mul a b
 
 section OrderedAddCommGroup
 
@@ -97,7 +92,8 @@ variable [AddCommGroup α] [PartialOrder α] {a b : WithTop α}
 /--
 Elements of ordered additive commutative groups are nonnegative iff their untop₀ is nonnegative.
 -/
-@[simp] lemma untop₀_nonneg : 0 ≤ a.untop₀ ↔ 0 ≤ a := by
+@[simp]
+lemma untop₀_nonneg : 0 ≤ a.untop₀ ↔ 0 ≤ a := by
   cases a with
   | top => tauto
   | coe a => simp
@@ -109,15 +105,15 @@ theorem le_of_untop₀_le_untop₀ (ha : a ≠ ⊤) (h : a.untop₀ ≤ b.untop�
   lift b to α using hb
   simp_all
 
-@[simp, gcongr] theorem untop₀_le_untop₀ (hb : b ≠ ⊤) (h : a ≤ b) : a.untop₀ ≤ b.untop₀ := by
+@[simp, gcongr]
+theorem untop₀_le_untop₀ (hb : b ≠ ⊤) (h : a ≤ b) : a.untop₀ ≤ b.untop₀ := by
   lift b to α using hb
   by_cases ha : a = ⊤
   · simp_all
   lift a to α using ha
   simp_all
 
-theorem untop₀_le_untop₀_iff (ha : a ≠ ⊤) (hb : b ≠ ⊤) :
-    a.untop₀ ≤ b.untop₀ ↔ a ≤ b := by
+theorem untop₀_le_untop₀_iff (ha : a ≠ ⊤) (hb : b ≠ ⊤) : a.untop₀ ≤ b.untop₀ ↔ a ≤ b := by
   lift a to α using ha
   lift b to α using hb
   simp
@@ -128,8 +124,8 @@ section LinearOrderedAddCommGroup
 
 variable [AddCommGroup α] [LinearOrder α] {a b : WithTop α}
 
-@[simp] theorem untop₀_max (ha : a ≠ ⊤) (hb : b ≠ ⊤) :
-    (max a b).untop₀ = max a.untop₀ b.untop₀ := by
+@[simp]
+theorem untop₀_max (ha : a ≠ ⊤) (hb : b ≠ ⊤) : (max a b).untop₀ = max a.untop₀ b.untop₀ := by
   lift a to α using ha
   lift b to α using hb
   simp only [untop₀_coe]
@@ -138,8 +134,8 @@ variable [AddCommGroup α] [LinearOrder α] {a b : WithTop α}
   rw [not_le] at h
   simp [max_eq_left h.le, max_eq_left (coe_lt_coe.mpr h).le]
 
-@[simp] theorem untop₀_min (ha : a ≠ ⊤) (hb : b ≠ ⊤) :
-    (min a b).untop₀ = min a.untop₀ b.untop₀ := by
+@[simp]
+theorem untop₀_min (ha : a ≠ ⊤) (hb : b ≠ ⊤) : (min a b).untop₀ = min a.untop₀ b.untop₀ := by
   lift a to α using ha
   lift b to α using hb
   norm_cast

@@ -156,17 +156,20 @@ open Lean Qq Elab Meta Tactic
 
 initialize registerTraceClass `order
 
-/-- Finds a contradictory `≠`-fact whose `.lhs` and `.rhs` belong to the same strongly connected
-component in the `≤`-graph, implying they must be equal, and then uses it to derive `False`. -/
+/--
+Finds a contradictory `≠`-fact whose `.lhs` and `.rhs` belong to the same strongly connected
+component in the `≤`-graph, implying they must be equal, and then uses it to derive `False`.
+-/
 def findContradictionWithNe (graph : Graph) (facts : Array AtomicFact) : AtomM (Option Expr) := do
   let scc := graph.findSCCs
   for fact in facts do
-    let .ne lhs rhs neProof := fact | continue
+    let .ne lhs rhs neProof := fact
+      | continue
     -- It is possible that `lhs` or `rhs` is not in the `≤`-graph if there were no `≤`-facts
     -- involving them. In this case we can use this fact only if `lhs = rhs`
     if lhs == rhs then
       return some <| mkApp neProof (← mkEqRefl (← get).atoms[lhs]!)
-    if !scc.contains lhs || !scc.contains rhs || scc[lhs]! != scc[rhs]! then
+    if ! scc.contains lhs || ! scc.contains rhs || scc[lhs]! != scc[rhs]! then
       continue
     let some pf1 ← graph.buildTransitiveLeProof lhs rhs
       | panic! "Cannot find path in strongly connected component"
@@ -177,36 +180,39 @@ def findContradictionWithNe (graph : Graph) (facts : Array AtomicFact) : AtomM (
   return none
 
 /-- Using the `≤`-graph `g`, find a contradiction with some `≰`-fact. -/
-def findContradictionWithNle (g : Graph)
-    (facts : Array AtomicFact) : AtomM <| Option Expr := do
+def findContradictionWithNle (g : Graph) (facts : Array AtomicFact) : AtomM <| Option Expr := do
   for fact in facts do
     if let .nle lhs rhs proof := fact then
-      let some pf ← g.buildTransitiveLeProof lhs rhs | continue
+      let some pf ← g.buildTransitiveLeProof lhs rhs
+        | continue
       return some <| mkApp proof pf
   return none
 
-/-- Adds edges to the `≤`-graph using two types of facts:
+/--
+Adds edges to the `≤`-graph using two types of facts:
 1. Each fact `¬ (x < y)` allows to add the edge `(x, y)` when `y` is reachable from `x` in the
    graph.
 2. Each fact `x ⊔ y = z` allows to add the edge `(z, s)` when `s` is reachable from both `x`
    and `y`.
 
-We repeat the process until no more edges can be added. -/
-def updateGraphWithNltInfSup (g : Graph)
-    (facts : Array AtomicFact) : AtomM Graph := do
+We repeat the process until no more edges can be added.
+-/
+def updateGraphWithNltInfSup (g : Graph) (facts : Array AtomicFact) : AtomM Graph := do
   let nltFacts := facts.filter fun fact => fact matches .nlt ..
   let mut usedNltFacts : Vector Bool _ := .replicate nltFacts.size false
   let infSupFacts := facts.filter fun fact => fact matches .isInf .. | .isSup ..
   let mut g := g
-  let vertices : Std.HashSet Nat := g.fold (init := ∅) fun acc v edges =>
-    (acc.insert v).insertMany <| edges.map (fun e => e.dst)
+  let vertices : Std.HashSet Nat :=
+    g.fold (init := ∅) fun acc v edges => (acc.insert v).insertMany <| edges.map (fun e => e.dst)
   repeat do
     let mut changed : Bool := false
     for h : i in [:nltFacts.size] do
       if usedNltFacts[i] then
         continue
-      let .nlt lhs rhs proof := nltFacts[i] | panic! "Non-nlt fact in nltFacts."
-      let some pf ← g.buildTransitiveLeProof lhs rhs | continue
+      let .nlt lhs rhs proof := nltFacts[i]
+        | panic! "Non-nlt fact in nltFacts."
+      let some pf ← g.buildTransitiveLeProof lhs rhs
+        | continue
       g := g.addEdge ⟨rhs, lhs, ← mkAppM ``le_of_not_lt_le #[proof, pf]⟩
       changed := true
       usedNltFacts := usedNltFacts.set i true
@@ -214,18 +220,23 @@ def updateGraphWithNltInfSup (g : Graph)
       for idx in vertices do
         match fact with
         | .isSup lhs rhs sup =>
-          let some pf1 ← g.buildTransitiveLeProof lhs idx | continue
-          let some pf2 ← g.buildTransitiveLeProof rhs idx | continue
+          let some pf1 ← g.buildTransitiveLeProof lhs idx
+            | continue
+          let some pf2 ← g.buildTransitiveLeProof rhs idx
+            | continue
           if (← g.buildTransitiveLeProof sup idx).isNone then
             g := g.addEdge ⟨sup, idx, ← mkAppM ``sup_le #[pf1, pf2]⟩
             changed := true
         | .isInf lhs rhs inf =>
-          let some pf1 ← g.buildTransitiveLeProof idx lhs | continue
-          let some pf2 ← g.buildTransitiveLeProof idx rhs | continue
+          let some pf1 ← g.buildTransitiveLeProof idx lhs
+            | continue
+          let some pf2 ← g.buildTransitiveLeProof idx rhs
+            | continue
           if (← g.buildTransitiveLeProof idx inf).isNone then
             g := g.addEdge ⟨idx, inf, ← mkAppM ``le_inf #[pf1, pf2]⟩
             changed := true
-        | _ => panic! "Non-isInf or isSup fact in infSupFacts."
+        | _ =>
+          panic! "Non-isInf or isSup fact in infSupFacts."
     if !changed then
       break
   return g
@@ -238,23 +249,28 @@ local instance : Ord (Nat × Expr) where
 def orderCoreImp (only? : Bool) (hyps : Array Expr) (negGoal : Expr) (g : MVarId) : AtomM Unit := do
   g.withContext do
     let TypeToFacts ← collectFacts only? hyps negGoal
-    let atomsMsg := String.intercalate "\n" <| Array.toList <|
-      ← (← get).atoms.mapIdxM
-        fun idx atom => do return s!"#{idx} := {← ppExpr atom}"
-    trace[order] "Collected atoms:\n{atomsMsg}"
+    let atomsMsg :=
+      String.intercalate "\n" <| Array.toList <|
+        ← (← get).atoms.mapIdxM fun idx atom => do return s!"#{idx} := {← ppExpr atom}"
+    trace[order] "Collected atoms:\
+      \n{atomsMsg}"
     for (type, facts) in TypeToFacts do
-      let some orderType ← findBestOrderInstance type | continue
+      let some orderType ← findBestOrderInstance type
+        | continue
       trace[order] "Working on type {← ppExpr type} ({orderType})"
       let factsMsg := String.intercalate "\n" (facts.map toString).toList
-      trace[order] "Collected facts:\n{factsMsg}"
+      trace[order] "Collected facts:\
+        \n{factsMsg}"
       let facts ← replaceBotTop facts
       let processedFacts : Array AtomicFact ← preprocessFacts facts orderType
       let factsMsg := String.intercalate "\n" (processedFacts.map toString).toList
-      trace[order] "Processed facts:\n{factsMsg}"
+      trace[order] "Processed facts:\
+        \n{factsMsg}"
       let mut graph ← Graph.constructLeGraph processedFacts
       graph ← updateGraphWithNltInfSup graph processedFacts
       if orderType == .pre then
-        let some pf ← findContradictionWithNle graph processedFacts | continue
+        let some pf ← findContradictionWithNle graph processedFacts
+          | continue
         g.assign pf
         return
       if let some pf ← findContradictionWithNe graph processedFacts then
@@ -267,22 +283,24 @@ def orderCoreImp (only? : Bool) (hyps : Array Expr) (negGoal : Expr) (g : MVarId
         -- Here we only need to translate the hypotheses,
         -- since the goal will remain to derive `False`.
         let (_, factsNat) ← translateToInt type instLinearOrder facts
-        let factsExpr : Array Expr := factsNat.filterMap fun factNat =>
-          match factNat with
-          | .eq _ _ proof => some proof
-          | .ne _ _ proof => some proof
-          | .le _ _ proof => some proof
-          | .nle _ _ proof => some proof
-          | .lt _ _ proof => some proof
-          | .nlt _ _ proof => some proof
-          | _ => none
+        let factsExpr : Array Expr :=
+          factsNat.filterMap fun factNat =>
+            match factNat with
+            | .eq _ _ proof => some proof
+            | .ne _ _ proof => some proof
+            | .le _ _ proof => some proof
+            | .nle _ _ proof => some proof
+            | .lt _ _ proof => some proof
+            | .nlt _ _ proof => some proof
+            | _ => none
         try
           Omega.omega factsExpr.toList g
           return
-        catch _ => pure ()
-    throwError ("No contradiction found.\n\n" ++
-      "Additional diagnostic information may be available using " ++
-      "the `set_option trace.order true` command.")
+        catch _ =>
+          pure ()
+    throwError
+      ("No contradiction found.\n\n" ++ "Additional diagnostic information may be available using "
+        ++ "the `set_option trace.order true` command.")
 
 /-- Core of the `order` tactic. -/
 def orderCore (only? : Bool) (hyps : Array Expr) (negGoal : Expr) (g : MVarId) : MetaM Unit :=
@@ -291,19 +309,23 @@ def orderCore (only? : Bool) (hyps : Array Expr) (negGoal : Expr) (g : MVarId) :
 /-- Args for the `order` tactic. -/
 syntax orderArgs := (&" only")? (" [" term,* "]")?
 
-/-- `order_core` is an implementation detail of the `order` tactic. It proves the main goal,
+/--
+`order_core` is an implementation detail of the `order` tactic. It proves the main goal,
 which must be `⊢ False`, by deriving a contradiction from hypotheses which are formulas in the
-language of orders. -/
+language of orders.
+-/
 local syntax (name := order_core) "order_core" orderArgs ident : tactic
 
 open Syntax in
 elab_rules : tactic
-  | `(tactic| order_core $[only%$o]? $[[$args,*]]? $order_neg_goal) => withMainContext do
-    let negGoal ← elabTerm order_neg_goal none
-    let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `order)
-    commitIfNoEx do liftMetaFinishingTactic <| orderCore o.isSome args negGoal
+  | `(tactic| order_core $[only%$o]? $[[$args,*]]? $order_neg_goal) =>
+    withMainContext do
+      let negGoal ← elabTerm order_neg_goal none
+      let args ← ((args.map (TSepArray.getElems)).getD {}).mapM (elabTermWithoutNewMVars `order)
+      commitIfNoEx do liftMetaFinishingTactic <| orderCore o.isSome args negGoal
 
-/-- `order` solves the main goal if it can be derived from the local hypotheses and the axioms of
+/--
+`order` solves the main goal if it can be derived from the local hypotheses and the axioms of
 `Preorder`, `PartialOrder` or `LinearOrder`. Also supports `⊤`, `⊥` and lattice operations.
 
 This tactic fails if it cannot prove the main goal.
@@ -313,10 +335,11 @@ This tactic fails if it cannot prove the main goal.
 * `order only [e₁, ..., eₙ]` uses only the terms `e₁`, ... `eₙ` as hypotheses (ignoring the local
   context).
 -/
-macro "order" args:orderArgs : tactic => `(tactic|
-  · intros
-    by_contra! _order_neg_goal
-    order_core $args _order_neg_goal
-)
+macro "order" args:orderArgs : tactic =>
+  `(tactic|
+      · intros
+        by_contra! _order_neg_goal
+        order_core $args _order_neg_goal
+    )
 
 end Mathlib.Tactic.Order

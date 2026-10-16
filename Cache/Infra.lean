@@ -26,10 +26,11 @@ open System (FilePath)
 /-- The full name of the main Mathlib GitHub repository. -/
 def MATHLIBREPO := "leanprover-community/mathlib4"
 
-/-- Whether `repo` is the canonical Mathlib repo. Every other repo caches into the
-per-commit `forks` namespace. -/
-def isCanonicalRepo (repo : String) : Bool :=
-  repo == MATHLIBREPO
+/--
+Whether `repo` is the canonical Mathlib repo. Every other repo caches into the
+per-commit `forks` namespace.
+-/
+def isCanonicalRepo (repo : String) : Bool := repo == MATHLIBREPO
 
 /--
 Canonical form of a GitHub `owner/repo` name for use as a cache blob path
@@ -54,10 +55,12 @@ first.
 inductive Container where
   /-- Most-trusted container (`mathlib4-master`); only master CI writes here. -/
   | master
-  /-- Container for fork PR builds, mathlib4 development branches, and every
-  push build on the nightly-testing repo. -/
+  /--
+  Container for fork PR builds, mathlib4 development branches, and every
+  push build on the nightly-testing repo.
+  -/
   | forks
-  deriving DecidableEq, Repr, BEq, Inhabited
+deriving DecidableEq, Repr, BEq, Inhabited
 
 /-- Base URL of the `lakecache` Azure Blob Storage account. -/
 def azureAccountURL : String := "https://lakecache.blob.core.windows.net"
@@ -67,18 +70,17 @@ namespace Container
 /-- Canonical short name for a container, used in CLI flags and URLs. -/
 def name : Container → String
   | .master => "master"
-  | .forks  => "forks"
+  | .forks => "forks"
 
 /-- All known containers, listed in their canonical declaration order. -/
-def all : List Container :=
-  [.master, .forks]
+def all : List Container := [.master, .forks]
 
 /-- Parse a short name back into a `Container`. Matching is case-insensitive. -/
 def parse? (s : String) : Option Container :=
   match s.toLower with
   | "master" => some .master
-  | "forks"  => some .forks
-  | _        => none
+  | "forks" => some .forks
+  | _ => none
 
 /--
 The container's segment in the URL contract `{base}/{pathSegment}/{key}`
@@ -87,17 +89,16 @@ prefix.
 
 Every container follows the `mathlib4-{name}` convention.
 -/
-def pathSegment (c : Container) : String :=
-  s!"mathlib4-{c.name}"
+def pathSegment (c : Container) : String := s!"mathlib4-{c.name}"
 
-/-- The container's URL under `base`: `{base}/{pathSegment}`. `base` is a host
-or an upload base that serves the `/{container}/{key}` namespace. -/
-def urlUnder (c : Container) (base : String) : String :=
-  s!"{base}/{c.pathSegment}"
+/--
+The container's URL under `base`: `{base}/{pathSegment}`. `base` is a host
+or an upload base that serves the `/{container}/{key}` namespace.
+-/
+def urlUnder (c : Container) (base : String) : String := s!"{base}/{c.pathSegment}"
 
 /-- Public Azure Blob Storage base URL for a container. -/
-def azureURL (c : Container) : String :=
-  c.urlUnder azureAccountURL
+def azureURL (c : Container) : String := c.urlUnder azureAccountURL
 
 /--
 Whether file lookups in this container use the flat `/f/<hash>` layout, or

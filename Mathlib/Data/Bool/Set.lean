@@ -15,13 +15,11 @@ This file contains three trivial lemmas about `Bool`, `Set.univ`, and `Set.range
 
 public section
 
-
 open Set
 
 namespace Bool
 
-@[simp]
-theorem univ_eq : (univ : Set Bool) = {false, true} := by grind
+@[simp] theorem univ_eq : (univ : Set Bool) = {false, true} := by grind
 
 @[simp, grind =]
 theorem range_eq {α : Type*} (f : Bool → α) : range f = {f false, f true} := by grind [cases Bool]

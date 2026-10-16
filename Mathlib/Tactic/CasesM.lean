@@ -25,8 +25,11 @@ Core tactic for `casesm` and `cases_type`. Calls `cases` on all fvars in `g` for
 * `allowSplit`: if false, it will skip any hypotheses where `cases` returns more than one subgoal.
 * `throwOnNoMatch`: if true, then throws an error if no match is found
 -/
-partial def casesMatching (matcher : Expr → MetaM Bool) (recursive := false) (allowSplit := true)
-    (throwOnNoMatch := true) (g : MVarId) : MetaM (List MVarId) := do
+partial def casesMatching
+    (matcher : Expr → MetaM Bool)
+    (recursive := false) (allowSplit := true) (throwOnNoMatch := true)
+    (g : MVarId)
+    : MetaM (List MVarId) := do
   let result := (← go g).toList
   if throwOnNoMatch && result == [g] then
     throwError "no match"
@@ -40,21 +43,23 @@ where
         if ldecl.isImplementationDetail then continue
         if ← matcher ldecl.type then
           let mut acc := acc
-          let subgoals ← if allowSplit then
-            g.cases ldecl.fvarId
-          else
-            let s ← saveState
-            let subgoals ← g.cases ldecl.fvarId (givenNames := #[⟨true, [ldecl.userName]⟩])
-            if subgoals.size > 1 then
-              s.restore
-              continue
+          let subgoals ←
+            if allowSplit then
+              g.cases ldecl.fvarId
             else
-              pure subgoals
+              let s ← saveState
+              let subgoals ← g.cases ldecl.fvarId (givenNames := #[⟨true, [ldecl.userName]⟩])
+              if subgoals.size > 1 then
+                s.restore
+                continue
+              else
+                pure subgoals
           for subgoal in subgoals do
             -- If only one new hypothesis is generated, rename it to the original name.
-            let g ← match subgoal.fields with
-            | #[.fvar fvarId] => subgoal.mvarId.rename fvarId ldecl.userName
-            | _ => pure subgoal.mvarId
+            let g ←
+              match subgoal.fields with
+              | #[.fvar fvarId] => subgoal.mvarId.rename fvarId ldecl.userName
+              | _ => pure subgoal.mvarId
             if recursive then
               acc ← go g acc
             else
@@ -62,10 +67,10 @@ where
           return acc
       return (acc.push g)
 
-def casesType (heads : Array Name) (recursive := false) (allowSplit := true) :
-    MVarId → MetaM (List MVarId) :=
-  let matcher ty := pure <|
-    if let .const n .. := ty.headBeta.getAppFn then heads.contains n else false
+def casesType (heads : Array Name) (recursive := false) (allowSplit := true)
+    : MVarId → MetaM (List MVarId) :=
+  let matcher ty :=
+    pure <| if let .const n .. := ty.headBeta.getAppFn then heads.contains n else false
   casesMatching matcher recursive allowSplit
 
 end Lean.MVarId
@@ -76,9 +81,10 @@ open Lean Meta Elab Tactic MVarId
 /-- Elaborate a list of terms with holes into a list of patterns. -/
 def elabPatterns (pats : Array Term) : TermElabM (Array AbstractMVarsResult) :=
   withTheReader Term.Context (fun ctx ↦ { ctx with ignoreTCFailures := true }) <|
-  Term.withoutErrToSorry <|
-  pats.mapM fun p ↦ Term.withoutModifyingElabMetaStateWithInfo do
-    withRef p <| abstractMVars (← Term.elabTerm p none)
+    Term.withoutErrToSorry <|
+      pats.mapM fun p ↦
+        Term.withoutModifyingElabMetaStateWithInfo do
+          withRef p <| abstractMVars (← Term.elabTerm p none)
 
 /-- Returns true if any of the patterns match the expression. -/
 def matchPatterns (pats : Array AbstractMVarsResult) (e : Expr) : MetaM Bool := do
@@ -121,8 +127,8 @@ elab (name := casesm!) "casesm!" recursive:"*"? ppSpace pats:term,+ : tactic => 
   elabCasesM pats recursive.isSome false
 
 /-- Common implementation of `cases_type` and `cases_type!`. -/
-def elabCasesType (heads : Array Ident)
-    (recursive := false) (allowSplit := true) : TacticM Unit := do
+def elabCasesType (heads : Array Ident) (recursive := false) (allowSplit := true)
+    : TacticM Unit := do
   let heads ← heads.mapM (fun stx => realizeGlobalConstNoOverloadWithInfo stx)
   liftMetaTactic (casesType heads recursive allowSplit)
 
@@ -160,15 +166,15 @@ Core tactic for `constructorm`. Calls `constructor` on all subgoals for which
 * `recursive`: if true, it calls itself repeatedly on the resulting subgoals
 * `throwOnNoMatch`: if true, throws an error if no match is found
 -/
-partial def constructorMatching (g : MVarId) (matcher : Expr → MetaM Bool)
-    (recursive := false) (throwOnNoMatch := true) : MetaM (List MVarId) := do
+partial def constructorMatching
+    (g : MVarId) (matcher : Expr → MetaM Bool) (recursive := false) (throwOnNoMatch := true)
+    : MetaM (List MVarId) := do
   let result ←
     (if recursive then (do
-      let result ← go g
-      pure result.toList)
+       let result ← go g
+       pure result.toList)
      else
-      (g.withContext do
-          if ← matcher (← g.getType) then g.constructor else pure [g]))
+       (g.withContext do if ← matcher (← g.getType) then g.constructor else pure [g]))
   if throwOnNoMatch && [g] == result then
     throwError "no match"
   else

@@ -23,12 +23,13 @@ syntax (name := substs) "substs" (colGt ppSpace ident)* : tactic
 
 open Lean Meta Elab.Tactic Meta.Tactic.TryThis in
 elab_rules : tactic
-| `(tactic| substs%$tk $xs:ident*) => withMainContext do
-  let stx ← getRef
-  let tac ← `(tactic| subst $[$xs]*)
-  Lean.logWarningAt tk m!"Deprecation warning: `substs` can be replaced with `subst`."
-  Lean.Meta.Tactic.TryThis.addSuggestion tk tac (origSpan? := stx)
-  evalTactic tac
+  | `(tactic| substs%$tk $xs:ident*) =>
+    withMainContext do
+      let stx ← getRef
+      let tac ← `(tactic| subst $[$xs]*)
+      Lean.logWarningAt tk m!"Deprecation warning: `substs` can be replaced with `subst`."
+      Lean.Meta.Tactic.TryThis.addSuggestion tk tac (origSpan? := stx)
+      evalTactic tac
 
 end Substs
 

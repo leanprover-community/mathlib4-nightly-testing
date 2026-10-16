@@ -37,11 +37,13 @@ end Imo2008Q4
 
 open Imo2008Q4
 
-theorem imo2008_q4 (f : ℝ → ℝ) (H₁ : ∀ x > 0, 0 < f x) :
-    (∀ w x y z : ℝ, 0 < w → 0 < x → 0 < y → 0 < z → w * x = y * z →
-      (f w ^ 2 + f x ^ 2) / (f (y ^ 2) + f (z ^ 2)) = (w ^ 2 + x ^ 2) / (y ^ 2 + z ^ 2)) ↔
-    (∀ x > 0, f x = x) ∨ ∀ x > 0, f x = 1 / x := by
-  constructor; swap
+theorem imo2008_q4 (f : ℝ → ℝ) (H₁ : ∀ x > 0, 0 < f x)
+    : (∀ w x y z : ℝ,
+        0 < w → 0 < x → 0 < y → 0 < z → w * x = y * z
+          → (f w ^ 2 + f x ^ 2) / (f (y ^ 2) + f (z ^ 2)) = (w ^ 2 + x ^ 2) / (y ^ 2 + z ^ 2))
+      ↔ (∀ x > 0, f x = x) ∨ ∀ x > 0, f x = 1 / x := by
+  constructor
+  swap
   -- proof that f(x) = x and f(x) = 1/x satisfy the condition
   · rintro (h | h)
     · intro w x y z hw hx hy hz _

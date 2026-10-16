@@ -24,8 +24,7 @@ variable (ι) in
 abbrev WithBotTop := WithBot (WithTop ι)
 
 /-- The canonical inclusion `ι → WithBotTop ι`. Registered as a coercion. -/
-def WithBotTop.coe : ι → WithBotTop ι :=
-  WithBot.some ∘ WithTop.some
+def WithBotTop.coe : ι → WithBotTop ι := WithBot.some ∘ WithTop.some
 
 namespace WithBotTop
 
@@ -39,8 +38,8 @@ theorem coe_injective : Function.Injective (WithBotTop.coe : ι → _) := by rin
 
 section
 
-variable {motive : (WithBotTop ι) → Sort*}
-  (bot : motive ⊥) (coe : ∀ a : ι, motive a) (top : motive ⊤)
+variable
+  {motive : (WithBotTop ι) → Sort*} (bot : motive ⊥) (coe : ∀ a : ι, motive a) (top : motive ⊤)
 
 /-- A recursor for `WithBotTop` in terms of the coercion. -/
 @[elab_as_elim]
@@ -56,14 +55,12 @@ protected def rec : ∀ a, motive a
 end
 
 @[simp]
-lemma coe_le_coe [LE ι] {a b : ι} :
-    (a : WithBotTop ι) ≤ b ↔ a ≤ b := by
+lemma coe_le_coe [LE ι] {a b : ι} : (a : WithBotTop ι) ≤ b ↔ a ≤ b := by
   rw [← WithTop.coe_le_coe (α := ι)]
   exact WithBot.coe_le_coe
 
 @[simp]
-lemma coe_lt_coe [LT ι] {a b : ι} :
-    (a : WithBotTop ι) < b ↔ a < b := by
+lemma coe_lt_coe [LT ι] {a b : ι} : (a : WithBotTop ι) < b ↔ a < b := by
   rw [← WithTop.coe_lt_coe (α := ι)]
   exact WithBot.coe_lt_coe
 
@@ -71,9 +68,7 @@ lemma coe_lt_coe [LT ι] {a b : ι} :
 theorem coe_strictMono [Preorder ι] : StrictMono (WithBotTop.coe : ι → _) :=
   WithBot.coe_strictMono.comp WithTop.coe_strictMono
 
-lemma coe_monotone [Preorder ι] :
-    Monotone (WithBotTop.coe : ι → _) :=
-  fun _ _ _ ↦ by simpa
+lemma coe_monotone [Preorder ι] : Monotone (WithBotTop.coe : ι → _) := fun _ _ _ ↦ by simpa
 
 end WithBotTop
 

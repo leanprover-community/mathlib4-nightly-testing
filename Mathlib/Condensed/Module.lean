@@ -47,17 +47,14 @@ def Condensed.forget : CondensedMod R ⥤ CondensedSet := sheafCompose _ (Catego
 /--
 The left adjoint to the forgetful functor. The *free condensed `R`-module* on a condensed set.
 -/
-noncomputable
-def Condensed.free : CondensedSet ⥤ CondensedMod R :=
+noncomputable def Condensed.free : CondensedSet ⥤ CondensedMod R :=
   Sheaf.composeAndSheafify _ (ModuleCat.free R)
 
 /-- The condensed version of the free-forgetful adjunction. -/
-noncomputable
-def Condensed.freeForgetAdjunction : free R ⊣ forget R := Sheaf.adjunction _ (ModuleCat.adj R)
+noncomputable def Condensed.freeForgetAdjunction : free R ⊣ forget R :=
+  Sheaf.adjunction _ (ModuleCat.adj R)
 
-/--
-The category of condensed abelian groups is defined as condensed `ℤ`-modules.
--/
+/-- The category of condensed abelian groups is defined as condensed `ℤ`-modules. -/
 abbrev CondensedAb := CondensedMod.{u} (ULift ℤ)
 
 noncomputable example : Abelian CondensedAb.{u} := inferInstance
@@ -73,8 +70,9 @@ noncomputable abbrev Condensed.setAbAdjunction : freeAb ⊣ abForget := freeForg
 
 namespace CondensedMod
 
-lemma hom_naturality_apply {X Y : CondensedMod.{u} R} (f : X ⟶ Y) {S T : CompHausᵒᵖ} (g : S ⟶ T)
-    (x : X.obj.obj S) : f.hom.app T (X.obj.map g x) = Y.obj.map g (f.hom.app S x) :=
+lemma hom_naturality_apply
+    {X Y : CondensedMod.{u} R} (f : X ⟶ Y) {S T : CompHausᵒᵖ} (g : S ⟶ T) (x : X.obj.obj S)
+    : f.hom.app T (X.obj.map g x) = Y.obj.map g (f.hom.app S x) :=
   NatTrans.naturality_apply f.hom g x
 
 end CondensedMod

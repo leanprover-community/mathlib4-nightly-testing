@@ -44,9 +44,10 @@ xᵢ ∈ Fᵢ    xⱼ ∈ Fⱼ
 that commutes with it.
 -/
 class Functor.IsLocallyDirected (F : J ⥤ Type*) : Prop where
-  cond (F) : ∀ {i j k} (fi : i ⟶ k) (fj : j ⟶ k) (xi : F.obj i) (xj : F.obj j),
-    F.map fi xi = F.map fj xj → ∃ (l : J) (fli : l ⟶ i) (flj : l ⟶ j) (x : _),
-      F.map fli x = xi ∧ F.map flj x = xj
+  cond (F)
+    : ∀ {i j k} (fi : i ⟶ k) (fj : j ⟶ k) (xi : F.obj i) (xj : F.obj j),
+      F.map fi xi = F.map fj xj
+        → ∃ (l : J) (fli : l ⟶ i) (flj : l ⟶ j) (x : _), F.map fli x = xi ∧ F.map flj x = xj
 
 alias Functor.exists_map_eq_of_isLocallyDirected := Functor.IsLocallyDirected.cond
 
@@ -55,8 +56,7 @@ instance (F : Discrete J ⥤ Type*) : F.IsLocallyDirected := by
   rintro ⟨i⟩ ⟨j⟩ ⟨k⟩ ⟨⟨⟨⟩⟩⟩ ⟨⟨⟨⟩⟩⟩
   simpa using fun x ↦ ⟨i, 𝟙 _, 𝟙 _, x, by simp⟩
 
-instance (F : WidePushoutShape J ⥤ Type*) [∀ i, Mono (F.map (.init i))] :
-    F.IsLocallyDirected := by
+instance (F : WidePushoutShape J ⥤ Type*) [∀ i, Mono (F.map (.init i))] : F.IsLocallyDirected := by
   constructor
   rintro i j k (_ | i) (_ | j)
   · simpa using fun x ↦ ⟨_, 𝟙 _, 𝟙 _, x, by simp⟩

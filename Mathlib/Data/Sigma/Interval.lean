@@ -21,7 +21,6 @@ Do the same for the lexicographical order
 
 public section
 
-
 open Finset Function
 
 namespace Sigma
@@ -29,7 +28,6 @@ namespace Sigma
 variable {ι : Type*} {α : ι → Type*}
 
 /-! ### Disjoint sum of orders -/
-
 
 section Disjoint
 
@@ -98,8 +96,10 @@ section LocallyFiniteOrderBot
 variable [∀ i, Preorder (α i)] [∀ i, LocallyFiniteOrderBot (α i)]
 
 instance instLocallyFiniteOrderBot : LocallyFiniteOrderBot (Σ i, α i) where
-  finsetIic | ⟨i, a⟩ => (Iic a).map (Embedding.sigmaMk i)
-  finsetIio | ⟨i, a⟩ => (Iio a).map (Embedding.sigmaMk i)
+  finsetIic
+    | ⟨i, a⟩ => (Iic a).map (Embedding.sigmaMk i)
+  finsetIio
+    | ⟨i, a⟩ => (Iio a).map (Embedding.sigmaMk i)
   finset_mem_Iic := fun ⟨i, a⟩ ⟨j, b⟩ => by
     obtain rfl | hij := eq_or_ne i j
     · simp
@@ -120,8 +120,10 @@ section LocallyFiniteOrderTop
 variable [∀ i, Preorder (α i)] [∀ i, LocallyFiniteOrderTop (α i)]
 
 instance instLocallyFiniteOrderTop : LocallyFiniteOrderTop (Σ i, α i) where
-  finsetIci | ⟨i, a⟩ => (Ici a).map (Embedding.sigmaMk i)
-  finsetIoi | ⟨i, a⟩ => (Ioi a).map (Embedding.sigmaMk i)
+  finsetIci
+    | ⟨i, a⟩ => (Ici a).map (Embedding.sigmaMk i)
+  finsetIoi
+    | ⟨i, a⟩ => (Ioi a).map (Embedding.sigmaMk i)
   finset_mem_Ici := fun ⟨i, a⟩ ⟨j, b⟩ => by
     obtain rfl | hij := eq_or_ne i j
     · simp

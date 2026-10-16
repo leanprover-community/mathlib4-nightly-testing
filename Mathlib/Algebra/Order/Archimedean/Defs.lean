@@ -6,7 +6,6 @@ Authors: Mario Carneiro
 module
 
 public import Mathlib.Algebra.Order.Ring.Defs
-
 import Mathlib.Algebra.Order.Group.OrderIso
 import Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 
@@ -27,19 +26,27 @@ public section
 
 variable {R : Type*}
 
-/-- An ordered additive commutative monoid is called `Archimedean` if for any two elements `x`, `y`
-such that `0 < y`, there exists a natural number `n` such that `x ≤ n • y`. -/
+/--
+An ordered additive commutative monoid is called `Archimedean` if for any two elements `x`, `y`
+such that `0 < y`, there exists a natural number `n` such that `x ≤ n • y`.
+-/
 class Archimedean (R) [AddCommMonoid R] [PartialOrder R] : Prop where
-  /-- For any two elements `x`, `y` such that `0 < y`, there exists a natural number `n`
-  such that `x ≤ n • y`. -/
+  /--
+  For any two elements `x`, `y` such that `0 < y`, there exists a natural number `n`
+  such that `x ≤ n • y`.
+  -/
   arch : ∀ (x : R) {y : R}, 0 < y → ∃ n : ℕ, x ≤ n • y
 
-/-- An ordered commutative monoid is called `MulArchimedean` if for any two elements `x`, `y`
-such that `1 < y`, there exists a natural number `n` such that `x ≤ y ^ n`. -/
+/--
+An ordered commutative monoid is called `MulArchimedean` if for any two elements `x`, `y`
+such that `1 < y`, there exists a natural number `n` such that `x ≤ y ^ n`.
+-/
 @[to_additive Archimedean]
 class MulArchimedean (R) [CommMonoid R] [PartialOrder R] : Prop where
-  /-- For any two elements `x`, `y` such that `1 < y`, there exists a natural number `n`
-  such that `x ≤ y ^ n`. -/
+  /--
+  For any two elements `x`, `y` such that `1 < y`, there exists a natural number `n`
+  such that `x ≤ y ^ n`.
+  -/
   arch : ∀ (x : R) {y : R}, 1 < y → ∃ n : ℕ, x ≤ y ^ n
 
 section OrderedMonoid

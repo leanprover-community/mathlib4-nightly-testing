@@ -26,31 +26,38 @@ namespace LinearMap
 variable {R M N ι : Type*} (S : Type*) [Semiring R] [AddCommMonoid M] [AddCommMonoid N]
 variable [Module R M] [Module R N] [Semiring S] [Module S N] [SMulCommClass R S N]
 
-/-- The linear map from `Hom(M,N)^(ι)` to `Hom(M,N^(ι))`. This is the `Finsupp` version of
-the forward direction of `LinearEquiv.linearMapPi`. -/
-@[expose, simps!] noncomputable def finsuppLinearMap : (ι →₀ M →ₗ[R] N) →ₗ[S] M →ₗ[R] ι →₀ N :=
+/--
+The linear map from `Hom(M,N)^(ι)` to `Hom(M,N^(ι))`. This is the `Finsupp` version of
+the forward direction of `LinearEquiv.linearMapPi`.
+-/
+@[expose, simps!]
+noncomputable def finsuppLinearMap : (ι →₀ M →ₗ[R] N) →ₗ[S] M →ₗ[R] ι →₀ N :=
   have := SMulCommClass.symm
-  LinearMap.flip
-  { toFun := (Finsupp.mapRange.linearMap <| flip id ·)
+  LinearMap.flip {
+    toFun := (Finsupp.mapRange.linearMap <| flip id ·)
     map_add' := fun _ _ ↦ by ext; simp
-    map_smul' := fun _ _ ↦ by ext; simp }
+    map_smul' := fun _ _ ↦ by ext; simp
+  }
 
 variable (R M N ι)
 
-theorem finsuppLinearMap_injective :
-    Function.Injective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) :=
-  fun _ _ eq ↦ by ext i m; congrm $eq m i
+theorem finsuppLinearMap_injective
+    : Function.Injective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) := fun _ _ eq ↦ by
+  ext i m; congrm $eq m i
 
-theorem finsuppLinearMap_bijective_of_moduleFinite [Module.Finite R M] :
-    Function.Bijective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) := by
+theorem finsuppLinearMap_bijective_of_moduleFinite [Module.Finite R M]
+    : Function.Bijective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) := by
   have ⟨s, span_s⟩ := Module.finite_def.mp ‹Module.Finite R M›
-  classical refine ⟨finsuppLinearMap_injective ..,
-    fun x ↦ ⟨.onFinset (s.sup fun m ↦ (x m).support) (lapply · ∘ₗ x) fun i h ↦ ?_, ?_⟩⟩
+  classical
+    refine ⟨
+      finsuppLinearMap_injective ..,
+      fun x ↦ ⟨.onFinset (s.sup fun m ↦ (x m).support) (lapply · ∘ₗ x) fun i h ↦ ?_, ?_⟩
+    ⟩
   · contrapose h; exact LinearMap.ext_on span_s (by simpa using! h)
   · ext; rfl
 
-theorem finsuppLinearMap_bijective_of_finite [Finite ι] :
-    Function.Bijective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) where
+theorem finsuppLinearMap_bijective_of_finite [Finite ι]
+    : Function.Bijective (finsuppLinearMap S : (ι →₀ M →ₗ[R] N) → M →ₗ[R] ι →₀ N) where
   left := finsuppLinearMap_injective ..
   right x := ⟨equivFunOnFinite.symm fun i ↦ lapply i ∘ₗ x, by ext; simp⟩
 
@@ -58,16 +65,19 @@ end LinearMap
 
 namespace Submodule
 
-variable {R M N P : Type*} [Ring R] [AddCommGroup M] [Module R M] [AddCommGroup N]
-  [Module R N] [AddCommGroup P] [Module R P]
+variable
+  {R M N P : Type*}
+  [Ring R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N] [AddCommGroup P] [Module R P]
 
 open Set
 
-/-- If 0 → M' → M → M'' → 0 is exact and M' and M'' are
-finitely generated then so is M. -/
-theorem fg_of_fg_map_of_fg_inf_ker (f : M →ₗ[R] P) {s : Submodule R M}
-    (hs1 : (s.map f).FG)
-    (hs2 : (s ⊓ LinearMap.ker f).FG) : s.FG := by
+/--
+If 0 → M' → M → M'' → 0 is exact and M' and M'' are
+finitely generated then so is M.
+-/
+theorem fg_of_fg_map_of_fg_inf_ker
+    (f : M →ₗ[R] P) {s : Submodule R M} (hs1 : (s.map f).FG) (hs2 : (s ⊓ LinearMap.ker f).FG)
+    : s.FG := by
   have := Classical.decEq R
   have := Classical.decEq M
   have := Classical.decEq P
@@ -107,11 +117,13 @@ theorem fg_of_fg_map_of_fg_inf_ker (f : M →ₗ[R] P) {s : Submodule R M}
     exact ⟨x, hx, rfl⟩
   rw [← ht1, ← Set.image_id (t1 : Set P), Finsupp.mem_span_image_iff_linearCombination] at this
   rcases this with ⟨l, hl1, hl2⟩
-  refine
-    mem_sup.2
-      ⟨(linearCombination R id).toFun ((lmapDomain R R g : (P →₀ R) → M →₀ R) l), ?_,
-        x - linearCombination R id ((lmapDomain R R g : (P →₀ R) → M →₀ R) l), ?_,
-        add_sub_cancel _ _⟩
+  refine mem_sup.2 ⟨
+    (linearCombination R id).toFun ((lmapDomain R R g : (P →₀ R) → M →₀ R) l),
+    ?_,
+    x - linearCombination R id ((lmapDomain R R g : (P →₀ R) → M →₀ R) l),
+    ?_,
+    add_sub_cancel _ _
+  ⟩
   · rw [← Set.image_id (g '' ↑t1), Finsupp.mem_span_image_iff_linearCombination]
     refine ⟨_, ?_, rfl⟩
     have : Inhabited P := ⟨0⟩
@@ -137,32 +149,39 @@ theorem fg_of_fg_map_of_fg_inf_ker (f : M →ₗ[R] P) {s : Submodule R M}
     · exact zero_smul _
     · exact fun _ _ _ => add_smul _ _ _
 
-/-- The kernel of the composition of two linear maps is finitely generated if both kernels are and
-the first morphism is surjective. -/
-theorem fg_ker_comp (f : M →ₗ[R] N) (g : N →ₗ[R] P)
-    (hf1 : (LinearMap.ker f).FG) (hf2 : (LinearMap.ker g).FG)
-    (hsur : Function.Surjective f) : (LinearMap.ker (g.comp f)).FG := by
+/--
+The kernel of the composition of two linear maps is finitely generated if both kernels are and
+the first morphism is surjective.
+-/
+theorem fg_ker_comp
+    (f : M →ₗ[R] N) (g : N →ₗ[R] P)
+    (hf1 : (LinearMap.ker f).FG) (hf2 : (LinearMap.ker g).FG) (hsur : Function.Surjective f)
+    : (LinearMap.ker (g.comp f)).FG := by
   rw [LinearMap.ker_comp]
   apply fg_of_fg_map_of_fg_inf_ker f
   · rwa [Submodule.map_comap_eq, LinearMap.range_eq_top.2 hsur, top_inf_eq]
-  · rwa [inf_of_le_right (show (LinearMap.ker f) ≤
-      (LinearMap.ker g).comap f from comap_mono bot_le)]
+  · rwa [inf_of_le_right (show (LinearMap.ker f) ≤ (LinearMap.ker g).comap f from
+      comap_mono bot_le)]
 
-/-- If $M → N → P → 0$ is exact and $M$ and $P$ are finitely generated then so is $N$.
+/--
+If $M → N → P → 0$ is exact and $M$ and $P$ are finitely generated then so is $N$.
 
-This is the `Module.Finite` version of `Submodule.fg_of_fg_map_of_fg_inf_ker`. -/
+This is the `Module.Finite` version of `Submodule.fg_of_fg_map_of_fg_inf_ker`.
+-/
 @[stacks 0519 "(1)"]
-lemma _root_.Module.Finite.of_exact {f : M →ₗ[R] N} {g : N →ₗ[R] P}
-    (h_exact : Function.Exact f g) (h_surj : Function.Surjective g)
-    [Module.Finite R M] [Module.Finite R P] : Module.Finite R N := by
+lemma _root_.Module.Finite.of_exact
+    {f : M →ₗ[R] N} {g : N →ₗ[R] P} (h_exact : Function.Exact f g) (h_surj : Function.Surjective g)
+    [Module.Finite R M] [Module.Finite R P]
+    : Module.Finite R N := by
   refine ⟨(⊤ : Submodule R _).fg_of_fg_map_of_fg_inf_ker g ?_ ?_⟩
   · rw [← LinearMap.range_eq_top] at h_surj
     rw [Submodule.map_top, h_surj]
     exact Module.Finite.fg_top
   · simp [LinearMap.exact_iff.1 h_exact]
 
-theorem _root_.Module.Finite.of_submodule_quotient (N : Submodule R M) [Module.Finite R N]
-    [Module.Finite R (M ⧸ N)] : Module.Finite R M :=
+theorem _root_.Module.Finite.of_submodule_quotient
+    (N : Submodule R M) [Module.Finite R N] [Module.Finite R (M ⧸ N)]
+    : Module.Finite R M :=
   .of_exact (LinearMap.exact_subtype_mkQ N) (Quotient.mk_surjective _)
 
 end Submodule
@@ -171,8 +190,8 @@ section
 
 variable {R V} [Semiring R] [AddCommMonoid V] [Module R V]
 
-instance Module.Finite.finsupp {ι : Type*} [_root_.Finite ι] [Module.Finite R V] :
-    Module.Finite R (ι →₀ V) :=
+instance Module.Finite.finsupp {ι : Type*} [_root_.Finite ι] [Module.Finite R V]
+    : Module.Finite R (ι →₀ V) :=
   Module.Finite.equiv (Finsupp.linearEquivFunOnFinite R V ι).symm
 
 end

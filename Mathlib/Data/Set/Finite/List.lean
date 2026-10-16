@@ -6,7 +6,6 @@ Authors: Johannes Hölzl, Mario Carneiro, Kyle Miller
 module
 
 public import Mathlib.Data.Set.Finite.Lattice
-
 import Mathlib.Data.Fintype.Vector
 
 /-!

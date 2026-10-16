@@ -32,11 +32,9 @@ structure Sequential where
 
 namespace Sequential
 
-instance : Inhabited Sequential.{u} :=
-  ⟨{ toTop := ↧(ULift (Fin 37)) }⟩
+instance : Inhabited Sequential.{u} := ⟨{ toTop := ↧(ULift (Fin 37)) }⟩
 
-instance : CoeSort Sequential Type* :=
-  ⟨fun X => X.toTop⟩
+instance : CoeSort Sequential Type* := ⟨fun X => X.toTop⟩
 
 attribute [instance] is_sequential
 
@@ -59,19 +57,14 @@ open Lean.PrettyPrinter.Delaborator in
 meta def delabOf : Delab := CategoryTheory.delabOf
 
 /-- The fully faithful embedding of `Sequential` in `TopCat`. -/
-@[simps!]
-def sequentialToTop : Sequential.{u} ⥤ TopCat.{u} :=
-  inducedFunctor _
+@[simps!] def sequentialToTop : Sequential.{u} ⥤ TopCat.{u} := inducedFunctor _
 
 /-- The functor to `TopCat` is indeed fully faithful. -/
-def fullyFaithfulSequentialToTop : sequentialToTop.FullyFaithful :=
-  fullyFaithfulInducedFunctor _
+def fullyFaithfulSequentialToTop : sequentialToTop.FullyFaithful := fullyFaithfulInducedFunctor _
 
-instance : sequentialToTop.{u}.Full :=
-  inferInstanceAs (inducedFunctor _).Full
+instance : sequentialToTop.{u}.Full := inferInstanceAs (inducedFunctor _).Full
 
-instance : sequentialToTop.{u}.Faithful :=
-  inferInstanceAs (inducedFunctor _).Faithful
+instance : sequentialToTop.{u}.Faithful := inferInstanceAs (inducedFunctor _).Faithful
 
 /-- Construct an isomorphism from a homeomorphism. -/
 @[simps hom inv]
@@ -95,8 +88,10 @@ def homeoOfIso {X Y : Sequential.{u}} (f : X ≅ Y) : X ≃ₜ Y where
   continuous_toFun := f.hom.hom.hom.continuous
   continuous_invFun := f.inv.hom.hom.continuous
 
-/-- The equivalence between isomorphisms in `Sequential` and homeomorphisms
-of topological spaces. -/
+/--
+The equivalence between isomorphisms in `Sequential` and homeomorphisms
+of topological spaces.
+-/
 @[simps]
 def isoEquivHomeo {X Y : Sequential.{u}} : (X ≅ Y) ≃ (X ≃ₜ Y) where
   toFun := homeoOfIso

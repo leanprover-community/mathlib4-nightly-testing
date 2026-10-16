@@ -29,9 +29,11 @@ namespace CategoryTheory.MorphismProperty
 
 variable {C : Type u} [Category.{v} C] (W₁ W₂ : MorphismProperty C)
 
-/-- Two classes of morphisms `W₁` and `W₂` in a category `C` form a weak
+/--
+Two classes of morphisms `W₁` and `W₂` in a category `C` form a weak
 factorization system if `W₁` is exactly `W₂.llp`, `W₂` is exactly `W₁.rlp`,
-and any morphism can be factored a `i ≫ p` with `W₁ i` and `W₂ p`. -/
+and any morphism can be factored a `i ≫ p` with `W₁ i` and `W₂ p`.
+-/
 class IsWeakFactorizationSystem : Prop where
   rlp : W₁.rlp = W₂
   llp : W₂.llp = W₁
@@ -41,15 +43,16 @@ namespace IsWeakFactorizationSystem
 
 attribute [instance] hasFactorization
 
-lemma mk' [HasFactorization W₁ W₂]
-    [W₁.IsStableUnderRetracts] [W₂.IsStableUnderRetracts]
-    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y),
-      W₁ i → W₂ p → HasLiftingProperty i p) :
-    IsWeakFactorizationSystem W₁ W₂ where
-  rlp := rlp_eq_of_le_rlp_of_hasFactorization_of_isStableUnderRetracts
-    (fun _ _ _ hp _ _ _ hi ↦ h _ _ hi hp)
-  llp := llp_eq_of_le_llp_of_hasFactorization_of_isStableUnderRetracts
-    (fun _ _ _ hi _ _ _ hp ↦ h _ _ hi hp)
+lemma mk'
+    [HasFactorization W₁ W₂] [W₁.IsStableUnderRetracts] [W₂.IsStableUnderRetracts]
+    (h : ∀ {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y), W₁ i → W₂ p → HasLiftingProperty i p)
+    : IsWeakFactorizationSystem W₁ W₂ where
+  rlp :=
+    rlp_eq_of_le_rlp_of_hasFactorization_of_isStableUnderRetracts (fun _ _ _ hp _ _ _ hi ↦
+      h _ _ hi hp)
+  llp :=
+    llp_eq_of_le_llp_of_hasFactorization_of_isStableUnderRetracts (fun _ _ _ hi _ _ _ hp ↦
+      h _ _ hi hp)
 
 end IsWeakFactorizationSystem
 
@@ -62,8 +65,8 @@ lemma rlp_eq_of_wfs : W₁.rlp = W₂ := IsWeakFactorizationSystem.rlp
 lemma llp_eq_of_wfs : W₂.llp = W₁ := IsWeakFactorizationSystem.llp
 
 variable {W₁ W₂} in
-lemma hasLiftingProperty_of_wfs {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y)
-    (hi : W₁ i) (hp : W₂ p) : HasLiftingProperty i p :=
+lemma hasLiftingProperty_of_wfs {A B X Y : C} (i : A ⟶ B) (p : X ⟶ Y) (hi : W₁ i) (hp : W₂ p)
+    : HasLiftingProperty i p :=
   (llp_eq_of_wfs W₁ W₂ ▸ hi) p hp
 
 end

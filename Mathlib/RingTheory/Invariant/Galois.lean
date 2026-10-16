@@ -23,28 +23,29 @@ open scoped Pointwise
 
 section Galois
 
-variable (A K L B : Type*) [CommRing A] [CommRing B] [Field K] [Field L]
-  [Algebra A K] [Algebra B L] [IsFractionRing A K] [IsFractionRing B L]
-  [Algebra A B] [Algebra K L] [Algebra A L] [IsScalarTower A K L] [IsScalarTower A B L]
-  [IsIntegrallyClosed A] [IsIntegralClosure B A L]
+variable
+  (A K L B : Type*) [CommRing A] [CommRing B] [Field K] [Field L] [Algebra A K] [Algebra B L]
+  [IsFractionRing A K] [IsFractionRing B L] [Algebra A B] [Algebra K L] [Algebra A L]
+  [IsScalarTower A K L] [IsScalarTower A B L] [IsIntegrallyClosed A] [IsIntegralClosure B A L]
 
 /-- In the AKLB setup, the Galois group of `L/K` acts on `B`. -/
 @[implicit_reducible]
-noncomputable def IsIntegralClosure.MulSemiringAction [Algebra.IsAlgebraic K L] :
-    MulSemiringAction Gal(L/K) B :=
+noncomputable def IsIntegralClosure.MulSemiringAction [Algebra.IsAlgebraic K L]
+    : MulSemiringAction (Gal(L/K)) B :=
   MulSemiringAction.compHom B (galRestrict A K L B).toMonoidHom
 
-instance [Algebra.IsAlgebraic K L] : let := IsIntegralClosure.MulSemiringAction A K L B
-    SMulDistribClass Gal(L/K) B L :=
+instance [Algebra.IsAlgebraic K L]
+    : let := IsIntegralClosure.MulSemiringAction A K L B
+      SMulDistribClass (Gal(L/K)) B L :=
   let := IsIntegralClosure.MulSemiringAction A K L B
   ⟨fun g b l ↦ by
     simp only [Algebra.smul_def, smul_mul', mul_eq_mul_right_iff]
     exact Or.inl (algebraMap_galRestrictHom_apply A K L B g b).symm⟩
 
 /-- In the AKLB setup, every fixed point of `B` lies in the image of `A`. -/
-theorem Algebra.isInvariant_of_isGalois [FiniteDimensional K L] [h : IsGalois K L] :
-    letI := IsIntegralClosure.MulSemiringAction A K L B
-    Algebra.IsInvariant A B Gal(L/K) := by
+theorem Algebra.isInvariant_of_isGalois [FiniteDimensional K L] [h : IsGalois K L]
+    : letI := IsIntegralClosure.MulSemiringAction A K L B
+      Algebra.IsInvariant A B Gal(L/K) := by
   replace h := ((IsGalois.tfae (F := K) (E := L)).out 1 2).mp h
   let := IsIntegralClosure.MulSemiringAction A K L B
   refine ⟨fun b hb ↦ ?_⟩
@@ -57,32 +58,38 @@ theorem Algebra.isInvariant_of_isGalois [FiniteDimensional K L] [h : IsGalois K 
   rw [← isIntegral_algebraMap_iff (B := L), ← hk, isIntegral_algebraMap_iff] at hb
   obtain ⟨a, rfl⟩ := IsIntegrallyClosed.algebraMap_eq_of_integral hb
   rw [← IsScalarTower.algebraMap_apply, IsScalarTower.algebraMap_apply A B L,
-    (FaithfulSMul.algebraMap_injective B L).eq_iff] at hk
+      (FaithfulSMul.algebraMap_injective B L).eq_iff]
+    at hk
   exact ⟨a, hk⟩
 
 /-- A variant of `Algebra.isInvariant_of_isGalois`, replacing `Gal(L/K)` by `Aut(B/A)`. -/
-theorem Algebra.isInvariant_of_isGalois' [FiniteDimensional K L] [IsGalois K L] :
-    Algebra.IsInvariant A B (B ≃ₐ[A] B) :=
+theorem Algebra.isInvariant_of_isGalois' [FiniteDimensional K L] [IsGalois K L]
+    : Algebra.IsInvariant A B (B ≃ₐ[A] B) :=
   ⟨fun b h ↦ (isInvariant_of_isGalois A K L B).1 b (fun g ↦ h (galRestrict A K L B g))⟩
 
 end Galois
 
 section normal
 
-variable {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
+variable
+  {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
   (G : Type*) [Finite G] [Group G] [MulSemiringAction G B] [Algebra.IsInvariant A B G]
   (P : Ideal A) (Q : Ideal B) [Q.LiesOver P]
 
 namespace Ideal.IsFractionRing
 
-variable [P.IsPrime] [Q.IsPrime] (K L : Type*) [Field K] [Field L] [Algebra K L]
-    [Algebra (A ⧸ P) K] [IsFractionRing (A ⧸ P) K] [Algebra (B ⧸ Q) L] [IsFractionRing (B ⧸ Q) L]
-    [Algebra (A ⧸ P) L] [IsScalarTower (A ⧸ P) (B ⧸ Q) L] [IsScalarTower (A ⧸ P) K L]
+variable
+  [P.IsPrime] [Q.IsPrime]
+  (K L : Type*) [Field K] [Field L] [Algebra K L] [Algebra (A ⧸ P) K] [IsFractionRing (A ⧸ P) K]
+  [Algebra (B ⧸ Q) L] [IsFractionRing (B ⧸ Q) L] [Algebra (A ⧸ P) L]
+  [IsScalarTower (A ⧸ P) (B ⧸ Q) L] [IsScalarTower (A ⧸ P) K L]
 
 open Polynomial in
 include P Q G in
-/-- If `Q` is a prime ideal of `B` lying over a prime ideal `P` of `A`,
-then the extension `Frac(B/Q)` over `Frac(A/P)` is normal. -/
+/--
+If `Q` is a prime ideal of `B` lying over a prime ideal `P` of `A`,
+then the extension `Frac(B/Q)` over `Frac(A/P)` is normal.
+-/
 lemma normal : Normal K L := by
   have := Algebra.IsInvariant.isIntegral A B G
   have := isAlgebraic_of_isFractionRing (A ⧸ P) (B ⧸ Q) K L
@@ -94,17 +101,19 @@ lemma normal : Normal K L := by
   obtain ⟨b, rfl⟩ := Quotient.mk_surjective b
   simp_rw [← Quotient.algebraMap_eq] at *
   cases nonempty_fintype G
-  obtain ⟨p, hp, -, h_monic⟩ := lifts_and_natDegree_eq_and_monic
-    (Algebra.IsInvariant.charpoly_mem_lifts A B G b) (MulSemiringAction.monic_charpoly ..)
-  have h_eval : p.aeval b = 0 := by
-    rw [← eval_map_algebraMap, hp, MulSemiringAction.eval_charpoly]
+  obtain ⟨p, hp, -, h_monic⟩ :=
+    lifts_and_natDegree_eq_and_monic (Algebra.IsInvariant.charpoly_mem_lifts A B G b)
+      (MulSemiringAction.monic_charpoly ..)
+  have h_eval : p.aeval b = 0 := by rw [← eval_map_algebraMap, hp, MulSemiringAction.eval_charpoly]
   let q := p.comp (C a * X)
   let d := (algebraMap (B ⧸ Q) L) x / (algebraMap (B ⧸ Q) L) y
-  have comm₁ : (algebraMap K L).comp (algebraMap (A ⧸ P) K) =
-      (algebraMap (B ⧸ Q) L).comp (algebraMap (A ⧸ P) (B ⧸ Q)) := by
+  have comm₁
+      : (algebraMap K L).comp (algebraMap (A ⧸ P) K)
+        = (algebraMap (B ⧸ Q) L).comp (algebraMap (A ⧸ P) (B ⧸ Q)) := by
     simp_rw [← IsScalarTower.algebraMap_eq]
-  have comm₂ : (algebraMap (A ⧸ P) (B ⧸ Q)).comp (algebraMap A (A ⧸ P)) =
-      (algebraMap B (B ⧸ Q)).comp (algebraMap A B) := by
+  have comm₂
+      : (algebraMap (A ⧸ P) (B ⧸ Q)).comp (algebraMap A (A ⧸ P))
+        = (algebraMap B (B ⧸ Q)).comp (algebraMap A B) := by
     simp_rw [← IsScalarTower.algebraMap_eq]
   replace h_eval : ((q.map (algebraMap A (A ⧸ P))).map (algebraMap (A ⧸ P) K)).aeval d = 0 := by
     simp_rw [q, map_comp, Polynomial.map_mul, map_C, map_X, aeval_comp, aeval_mul, aeval_C, aeval_X,
@@ -126,8 +135,8 @@ lemma normal : Normal K L := by
 
 include P Q in
 /-- If the extension `Frac(B/Q)` over `Frac(A/P)` is separable, then it is finite dimensional. -/
-lemma finite_of_isInvariant [SMulCommClass G A B] [Algebra.IsSeparable K L] :
-    Module.Finite K L := by
+lemma finite_of_isInvariant [SMulCommClass G A B] [Algebra.IsSeparable K L]
+    : Module.Finite K L := by
   have : IsGalois K L := { __ := normal G P Q K L }
   have := Finite.of_surjective _ (IsFractionRing.stabilizerHom_surjective G P Q K L)
   apply IsGalois.finiteDimensional_of_finite
@@ -136,18 +145,19 @@ end Ideal.IsFractionRing
 
 attribute [local instance] Ideal.Quotient.field in
 include G in
-/-- If `Q` is a maximal ideal of `B` lying over a maximal ideal `P` of `A`,
-then the extension `B/Q` over `A/P` is normal. -/
-lemma Ideal.Quotient.normal [P.IsMaximal] [Q.IsMaximal] :
-    Normal (A ⧸ P) (B ⧸ Q) :=
+/--
+If `Q` is a maximal ideal of `B` lying over a maximal ideal `P` of `A`,
+then the extension `B/Q` over `A/P` is normal.
+-/
+lemma Ideal.Quotient.normal [P.IsMaximal] [Q.IsMaximal] : Normal (A ⧸ P) (B ⧸ Q) :=
   IsFractionRing.normal G P Q (A ⧸ P) (B ⧸ Q)
 
 attribute [local instance] Ideal.Quotient.field in
 include G in
 /-- If the extension `B/Q` over `A/P` is separable, then it is finite dimensional. -/
-lemma Ideal.Quotient.finite_of_isInvariant [P.IsMaximal] [Q.IsMaximal]
-    [SMulCommClass G A B] [Algebra.IsSeparable (A ⧸ P) (B ⧸ Q)] :
-    Module.Finite (A ⧸ P) (B ⧸ Q) :=
+lemma Ideal.Quotient.finite_of_isInvariant
+    [P.IsMaximal] [Q.IsMaximal] [SMulCommClass G A B] [Algebra.IsSeparable (A ⧸ P) (B ⧸ Q)]
+    : Module.Finite (A ⧸ P) (B ⧸ Q) :=
   IsFractionRing.finite_of_isInvariant G P Q (A ⧸ P) (B ⧸ Q)
 
 end normal

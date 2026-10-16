@@ -6,7 +6,6 @@ Authors: David Loeffler
 module
 
 public import Mathlib.Topology.Algebra.Order.Archimedean
-
 import Mathlib.GroupTheory.ArchimedeanDensely
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Topology.Algebra.OpenSubgroup
@@ -24,11 +23,14 @@ public section
 
 namespace Subgroup
 
-variable {G : Type*} [CommGroup G] [LinearOrder G] [IsOrderedMonoid G]
-  [TopologicalSpace G] [OrderTopology G]
+variable
+  {G : Type*}
+  [CommGroup G] [LinearOrder G] [IsOrderedMonoid G] [TopologicalSpace G] [OrderTopology G]
 
-/-- In a linearly ordered group with the order topology, the powers of a single element form a
-discrete subgroup. -/
+/--
+In a linearly ordered group with the order topology, the powers of a single element form a
+discrete subgroup.
+-/
 @[to_additive /-- In a linearly ordered additive group with the order topology, the multiples of a
 single element form a discrete subgroup. -/]
 instance instDiscreteTopologyZMultiples (g : G) : DiscreteTopology (zpowers g) := by
@@ -56,10 +58,12 @@ instance [DiscreteTopology G] : IsCyclic G := by
   exact LinearOrderedCommGroup.isCyclic_iff_not_denselyOrdered.mpr fun h ↦
     have := h.subsingleton_of_discreteTopology; false_of_nontrivial_of_subsingleton G
 
-/-- A subgroup of an archimedean linear ordered multiplicative commutative group `G` with order
-topology either is dense in `G` or is a cyclic subgroup. -/
+/--
+A subgroup of an archimedean linear ordered multiplicative commutative group `G` with order
+topology either is dense in `G` or is a cyclic subgroup.
+-/
 @[to_additive dense_or_isCyclic
-/-- An additive subgroup of an archimedean linear ordered additive commutative group `G`
+  /-- An additive subgroup of an archimedean linear ordered additive commutative group `G`
 with order topology either is dense in `G` or is a cyclic subgroup. -/]
 theorem dense_or_isCyclic (H : Subgroup G) : Dense (H : Set G) ∨ IsCyclic H := by
   refine (em _).imp (dense_of_not_isolated_one H) fun h => ?_
@@ -70,18 +74,20 @@ theorem dense_or_isCyclic (H : Subgroup G) : Dense (H : Set G) ∨ IsCyclic H :=
 @[to_additive (attr := deprecated (since := "2026-08-30")) dense_or_cyclic]
 alias dense_or_cyclic := dense_or_isCyclic
 
-/-- In a nontrivial densely linear ordered archimedean topological multiplicative group,
+/--
+In a nontrivial densely linear ordered archimedean topological multiplicative group,
 a subgroup is either dense or is cyclic, but not both.
 
-For a non-exclusive `Or` version with weaker assumptions, see `Subgroup.dense_or_cyclic` above. -/
+For a non-exclusive `Or` version with weaker assumptions, see `Subgroup.dense_or_cyclic` above.
+-/
 @[to_additive
-/-- In a nontrivial densely linear ordered archimedean topological additive group,
+  /-- In a nontrivial densely linear ordered archimedean topological additive group,
 a subgroup is either dense or is cyclic, but not both.
 
 For a non-exclusive `Or` version with weaker assumptions, see `AddSubgroup.dense_or_cyclic` above.
--/]
-theorem dense_xor_isCyclic [Nontrivial G] [DenselyOrdered G] (H : Subgroup G) :
-    Xor (Dense (H : Set G)) (IsCyclic H) := by
+  -/]
+theorem dense_xor_isCyclic [Nontrivial G] [DenselyOrdered G] (H : Subgroup G)
+    : Xor (Dense (H : Set G)) (IsCyclic H) := by
   if hd : Dense (H : Set G) then
     simp only [hd, xor_true, H.isCyclic_iff_exists_zpowers_eq_top]
     rintro ⟨a, rfl⟩
@@ -97,15 +103,17 @@ alias dense_xor_cyclic := dense_xor_isCyclic
 alias dense_xor'_cyclic := dense_xor_isCyclic
 
 @[to_additive]
-theorem dense_iff_not_isCyclic [Nontrivial G] [DenselyOrdered G] {H : Subgroup G} :
-    Dense (H : Set G) ↔ ¬IsCyclic H := by
+theorem dense_iff_not_isCyclic [Nontrivial G] [DenselyOrdered G] {H : Subgroup G}
+    : Dense (H : Set G) ↔ ¬ IsCyclic H := by
   simp [xor_iff_iff_not.1 H.dense_xor_isCyclic]
 
 @[to_additive (attr := deprecated (since := "2026-08-30"))]
 alias dense_iff_ne_zpowers := dense_iff_not_isCyclic
 
-/-- In an Archimedean linearly ordered group (with the order topology), a subgroup is
-discrete iff it is cyclic. -/
+/--
+In an Archimedean linearly ordered group (with the order topology), a subgroup is
+discrete iff it is cyclic.
+-/
 @[to_additive /-- In an Archimedean linearly ordered additive group (with the order topology), a
 subgroup is discrete iff it is cyclic. -/]
 lemma isCyclic_iff_discreteTopology {H : Subgroup G} : IsCyclic H ↔ DiscreteTopology H := by

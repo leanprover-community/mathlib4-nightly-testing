@@ -3,7 +3,7 @@ Copyright (c) 2023 Parth Shastri. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Parth Shastri, Gabriel Ebner, Mario Carneiro
 -/
-module  -- shake: keep-downstream (`[csimp]` is not currently tracked)
+module -- shake: keep-downstream (`[csimp]` is not currently tracked)
 
 public meta import Lean.Compiler.CSimpAttr
 public meta import Lean.Data.AssocList
@@ -34,20 +34,25 @@ open Lean Meta
 meta section
 
 private def replaceConst (repl : AssocList Name Name) (e : Expr) : Expr :=
-  e.replace fun | .const n us => repl.find? n |>.map (.const · us) | _ => none
+  e.replace fun
+    | .const n us => repl.find? n |>.map (.const · us)
+    | _ => none
 
-/-- Returns the names of the recursors for a nested or mutual inductive,
-using the `all` and `numMotives` arguments from `RecursorVal`. -/
+/--
+Returns the names of the recursors for a nested or mutual inductive,
+using the `all` and `numMotives` arguments from `RecursorVal`.
+-/
 def mkRecNames (all : List Name) (numMotives : Nat) : List Name :=
   if numMotives ≤ all.length then
     all.map mkRecName
   else
     let main := all[0]!
-    all.map mkRecName ++
-      (List.range (numMotives - all.length)).map (fun i => main.str s!"rec_{i+1}")
+    all.map mkRecName
+      ++ (List.range (numMotives - all.length)).map (fun i => main.str s!"rec_{i + 1}")
 
 private def addAndCompile' (decl : Declaration) : CoreM Unit := do
-  try addAndCompile decl
+  try
+    addAndCompile decl
   catch e =>
     match decl with
     | .defnDecl val => throwError "while compiling {val.name}: {e.toMessageData}"
@@ -89,29 +94,26 @@ This can be used for type class projections or definitions like `List._sizeOf_1`
 for which Lean does not generate compiled code by default
 (since it is not used 99% of the time).
 -/
-elab tk:"compile_def% " i:ident : command => Command.liftTermElabM do
-  let n ← realizeGlobalConstNoOverloadWithInfo i
-  if hasCSimpLemma (← getEnv) n then
-    logWarningAt tk m!"already compiled {n}"
-    return
-  let dv ← withRef i <| getConstInfoDefn n
-  withRef tk <| compileDefn dv
+elab tk:"compile_def% " i:ident : command =>
+  Command.liftTermElabM do
+    let n ← realizeGlobalConstNoOverloadWithInfo i
+    if hasCSimpLemma (← getEnv) n then
+      logWarningAt tk m!"already compiled {n}"
+      return
+    let dv ← withRef i <| getConstInfoDefn n
+    withRef tk <| compileDefn dv
 
 private def compileStructOnly (iv : InductiveVal) (rv : RecursorVal) : MetaM Unit := do
-  let value ← forallTelescope rv.type fun xs _ =>
-    let val := xs[rv.getFirstMinorIdx]!
-    let val := mkAppN val ⟨.map (xs[rv.getMajorIdx]!.proj iv.name) <| .range rv.rules[0]!.nfields⟩
-    mkLambdaFVars xs val
+  let value ←
+    forallTelescope rv.type fun xs _ =>
+      let val := xs[rv.getFirstMinorIdx]!
+      let val := mkAppN val ⟨.map (xs[rv.getMajorIdx]!.proj iv.name) <| .range rv.rules[0]!.nfields⟩
+      mkLambdaFVars xs val
   go value
 where
   go value := do
     let name ← mkFreshUserName rv.name
-    addAndCompile' <| .defnDecl { rv with
-      name
-      value
-      hints := .abbrev
-      safety := .safe
-    }
+    addAndCompile' <| .defnDecl { rv with name, value, hints := .abbrev, safety := .safe }
     let levels := rv.levelParams.map .param
     let old := .const rv.name levels
     let new := .const name levels
@@ -127,9 +129,7 @@ where
     Compiler.CSimp.add name .global
     compileDefn <| ← getConstInfoDefn <| mkRecOnName iv.name
 
-/--
-Generate compiled code for the recursor for `iv`, excluding the `sizeOf` function.
--/
+/-- Generate compiled code for the recursor for `iv`, excluding the `sizeOf` function. -/
 def compileInductiveOnly (iv : InductiveVal) (rv : RecursorVal) (warn := true) : MetaM Unit := do
   if ← isProp rv.type then
     if warn then logWarning m!"not compiling {rv.name}"
@@ -139,32 +139,38 @@ def compileInductiveOnly (iv : InductiveVal) (rv : RecursorVal) (warn := true) :
     return
   let levels := rv.levelParams.map .param
   let rvs ←
-    if rv.numMotives == 1 then pure [rv]
-    else mkRecNames iv.all rv.numMotives |>.mapM getConstInfoRec
+    if rv.numMotives == 1 then
+      pure [rv]
+    else
+      mkRecNames iv.all rv.numMotives |>.mapM getConstInfoRec
   let rvs ← rvs.mapM fun rv => return (rv, ← mkFreshUserName rv.name)
   let repl := rvs.foldl (fun l (rv, name) => .cons rv.name name l) .nil
-  addAndCompile' <| .mutualDefnDecl <|← rvs.mapM fun (rv, name) => do
-    pure { rv with
+  addAndCompile' <| .mutualDefnDecl <| ← rvs.mapM fun (rv, name) => do
+    pure {
+      rv with
       name
-      value := ← forallTelescope rv.type fun xs body => do
-        let major := xs[rv.getMajorIdx]!
-        (← whnfD <| ← inferType major).withApp fun head args => do
-          let .const iv levels' := head | throwError "not an inductive"
-          let iv ← getConstInfoInduct iv
-          let rv' ← getConstInfoRec <| mkRecName iv.name
-          if !iv.isRec && rv'.numMotives == 1 && iv.numCtors == 1 && iv.numIndices == 0 then
-            let rule := rv.rules[0]!
-            let val := .beta (replaceConst repl rule.rhs) xs[:rv.getFirstIndexIdx]
-            let val := .beta val ⟨.map (major.proj iv.name) <| .range rule.nfields⟩
-            mkLambdaFVars xs val
-          else
-            let val := .const (mkCasesOnName iv.name) (.param rv.levelParams.head! :: levels')
-            let val := mkAppN val args[:rv'.numParams]
-            let val := .app val <| ← mkLambdaFVars xs[rv.getFirstIndexIdx:] body
-            let val := mkAppN val xs[rv.getFirstIndexIdx:]
-            let val := mkAppN val <| rv.rules.toArray.map fun rule =>
-              .beta (replaceConst repl rule.rhs) xs[:rv.getFirstIndexIdx]
-            mkLambdaFVars xs val
+      value :=
+        ← forallTelescope rv.type fun xs body => do
+          let major := xs[rv.getMajorIdx]!
+          (← whnfD <| ← inferType major).withApp fun head args => do
+            let .const iv levels' := head
+              | throwError "not an inductive"
+            let iv ← getConstInfoInduct iv
+            let rv' ← getConstInfoRec <| mkRecName iv.name
+            if !iv.isRec && rv'.numMotives == 1 && iv.numCtors == 1 && iv.numIndices == 0 then
+              let rule := rv.rules[0]!
+              let val := .beta (replaceConst repl rule.rhs) xs[:rv.getFirstIndexIdx]
+              let val := .beta val ⟨.map (major.proj iv.name) <| .range rule.nfields⟩
+              mkLambdaFVars xs val
+            else
+              let val := .const (mkCasesOnName iv.name) (.param rv.levelParams.head! :: levels')
+              let val := mkAppN val args[:rv'.numParams]
+              let val := .app val <| ← mkLambdaFVars xs[rv.getFirstIndexIdx:] body
+              let val := mkAppN val xs[rv.getFirstIndexIdx:]
+              let val :=
+                mkAppN val <| rv.rules.toArray.map fun rule =>
+                  .beta (replaceConst repl rule.rhs) xs[:rv.getFirstIndexIdx]
+              mkLambdaFVars xs val
       hints := .opaque
       safety := .partial
     }
@@ -188,9 +194,7 @@ def compileInductiveOnly (iv : InductiveVal) (rv : RecursorVal) (warn := true) :
 
 mutual
 
-/--
-Generate compiled code for the recursor for `iv`.
--/
+/-- Generate compiled code for the recursor for `iv`. -/
 partial def compileInductive (iv : InductiveVal) (warn := true) : MetaM Unit := do
   let rv ← getConstInfoRec <| mkRecName iv.name
   if hasCSimpLemma (← getEnv) rv.name then
@@ -206,9 +210,10 @@ compile the `sizeOf` definition (because `sizeOf` definitions depend on `T.rec`)
 partial def compileSizeOf (iv : InductiveVal) (rv : RecursorVal) : MetaM Unit := do
   let go aux := do
     if let some (.defnInfo dv) := (← getEnv).find? aux then
-      if !hasCSimpLemma (← getEnv) aux then
-        let deps : NameSet := dv.value.foldConsts ∅ fun c arr =>
-          if let .str name "_sizeOf_inst" := c then arr.insert name else arr
+      if ! hasCSimpLemma (← getEnv) aux then
+        let deps : NameSet :=
+          dv.value.foldConsts ∅ fun c arr =>
+            if let .str name "_sizeOf_inst" := c then arr.insert name else arr
         for i in deps do
           -- We only want to recompile inductives defined in external modules, because attempting
           -- to recompile `sizeOf` functions defined in the current module multiple times will lead
@@ -217,11 +222,11 @@ partial def compileSizeOf (iv : InductiveVal) (rv : RecursorVal) : MetaM Unit :=
           -- compiled using `compile_inductive%` if necessary.
           if ((← getEnv).getModuleIdxFor? i).isSome then
             if let some (.inductInfo iv) := (← getEnv).find? i then
-               compileInductive iv (warn := false)
+              compileInductive iv (warn := false)
         compileDefn dv
   for name in iv.all do
     for i in [:rv.numMotives] do
-      go <| name.str s!"_sizeOf_{i+1}"
+      go <| name.str s!"_sizeOf_{i + 1}"
     go <| name.str "_sizeOf_inst"
 
 end
@@ -231,10 +236,11 @@ end
 so that `Foo.rec` can be used in a definition
 without having to mark the definition as `noncomputable`.
 -/
-elab tk:"compile_inductive% " i:ident : command => Command.liftTermElabM do
-  let n ← realizeGlobalConstNoOverloadWithInfo i
-  let iv ← withRef i <| getConstInfoInduct n
-  withRef tk <| compileInductive iv
+elab tk:"compile_inductive% " i:ident : command =>
+  Command.liftTermElabM do
+    let n ← realizeGlobalConstNoOverloadWithInfo i
+    let iv ← withRef i <| getConstInfoInduct n
+    withRef tk <| compileInductive iv
 
 end
 
@@ -261,14 +267,16 @@ compile_def% Empty.recOn
 -- These types need manual implementations because the default implementation in `compileStruct`
 -- uses `Expr.proj` which has an invalid IR type.
 open Lean Meta Elab Mathlib.Util in
-run_cmd Command.liftTermElabM do
-  for n in [``UInt8, ``UInt16, ``UInt32, ``UInt64, ``USize, ``Float, ``Float32] do
-    let iv ← getConstInfoInduct n
-    let rv ← getConstInfoRec <| mkRecName n
-    let value ← Elab.Term.elabTerm (← `(fun H t => H t.1))
-      (← inferType (.const rv.name (rv.levelParams.map .param)))
-    compileStructOnly.go iv rv value
-    compileSizeOf iv rv
+run_cmd
+  Command.liftTermElabM do
+    for n in [``UInt8, ``UInt16, ``UInt32, ``UInt64, ``USize, ``Float, ``Float32] do
+      let iv ← getConstInfoInduct n
+      let rv ← getConstInfoRec <| mkRecName n
+      let value ←
+        Elab.Term.elabTerm (← `(fun H t => H t.1))
+          (← inferType (.const rv.name (rv.levelParams.map .param)))
+      compileStructOnly.go iv rv value
+      compileSizeOf iv rv
 
 -- These need special handling because `Lean.Name.sizeOf` and `Lean.instSizeOfName`
 -- were manually implemented as `noncomputable`

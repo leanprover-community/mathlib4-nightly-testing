@@ -39,8 +39,9 @@ public section
 
 variable {α β : Type*} [CommSemiring α] [PartialOrder α] [Semiring β] [PartialOrder β] [Algebra α β]
 
-theorem IsOrderedModule.of_algebraMap_mono [PosMulMono β] [MulPosMono β]
-    (h : Monotone (algebraMap α β)) : IsOrderedModule α β :=
+theorem IsOrderedModule.of_algebraMap_mono
+    [PosMulMono β] [MulPosMono β] (h : Monotone (algebraMap α β))
+    : IsOrderedModule α β :=
   .of_smul_one_mono (by simpa [Algebra.smul_def] using h)
 
 section ZeroLEOneClass
@@ -58,16 +59,16 @@ lemma algebraMap_nonneg {a : α} (ha : 0 ≤ a) : 0 ≤ algebraMap α β a := by
 
 end SMulPosMono
 
-theorem isOrderedModule_iff_algebraMap_mono [PosMulMono β] [MulPosMono β] :
-    IsOrderedModule α β ↔ Monotone (algebraMap α β) := by
+theorem isOrderedModule_iff_algebraMap_mono [PosMulMono β] [MulPosMono β]
+    : IsOrderedModule α β ↔ Monotone (algebraMap α β) := by
   simp [isOrderedModule_iff_smul_one_mono, Algebra.smul_def]
 
 section Nontrivial
 variable [Nontrivial β]
 
 @[simp]
-lemma algebraMap_le_algebraMap [SMulPosMono α β] [SMulPosReflectLE α β] {a₁ a₂ : α} :
-    algebraMap α β a₁ ≤ algebraMap α β a₂ ↔ a₁ ≤ a₂ := by
+lemma algebraMap_le_algebraMap [SMulPosMono α β] [SMulPosReflectLE α β] {a₁ a₂ : α}
+    : algebraMap α β a₁ ≤ algebraMap α β a₂ ↔ a₁ ≤ a₂ := by
   simp [Algebra.algebraMap_eq_smul_one]
 
 section SMulPosStrictMono
@@ -82,8 +83,8 @@ lemma algebraMap_pos {a : α} (ha : 0 < a) : 0 < algebraMap α β a := by
 
 variable {β} in
 @[simp]
-lemma algebraMap_lt_algebraMap [SMulPosReflectLT α β] {a₁ a₂ : α} :
-    algebraMap α β a₁ < algebraMap α β a₂ ↔ a₁ < a₂ := by
+lemma algebraMap_lt_algebraMap [SMulPosReflectLT α β] {a₁ a₂ : α}
+    : algebraMap α β a₁ < algebraMap α β a₂ ↔ a₁ < a₂ := by
   simp [Algebra.algebraMap_eq_smul_one]
 
 end SMulPosStrictMono
@@ -95,47 +96,52 @@ open Lean Qq
 
 /-- Extension for `algebraMap`. -/
 @[positivity algebraMap _ _ _]
-meta def evalAlgebraMap : PositivityExt where eval {u β} _zβ pβ? e :=
-  match pβ? with | none => pure .none | some _ => do
-  let ~q(@algebraMap $α _ $instα $instβ $instαβ $a) := e | throwError "not `algebraMap`"
-  let some pα ← try? <| synthInstanceQ q(PartialOrder $α) | pure .none
-  match ← core q(inferInstance) (some pα) a with
-  | .positive pa =>
-    let _instαSemiring ← synthInstanceQ q(Semiring $α)
-    try
-      let _instβSemiring ← synthInstanceQ q(Semiring $β)
-      let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
-      let _instβIsStrictOrderedRing ← synthInstanceQ q(IsStrictOrderedRing $β)
-      let _instαβsmul ← synthInstanceQ q(SMulPosStrictMono $α $β)
-      assertInstancesCommute
-      return .positive q(algebraMap_pos $β $pa)
-    catch _ =>
-      let _instβSemiring ← synthInstanceQ q(Semiring $β)
-      let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
-      let _instβIsOrderedRing ← synthInstanceQ q(IsOrderedRing $β)
-      let _instαβsmul ← synthInstanceQ q(SMulPosMono $α $β)
-      assertInstancesCommute
-      return .nonnegative q(algebraMap_nonneg $β <| le_of_lt $pa)
-  | .nonnegative pa =>
-    let _instαSemiring ← synthInstanceQ q(CommSemiring $α)
-    let _instβSemiring ← synthInstanceQ q(Semiring $β)
-    let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
-    let _instβIsOrderedRing ← synthInstanceQ q(IsOrderedRing $β)
-    let _instαβsmul ← synthInstanceQ q(SMulPosMono $α $β)
-    assertInstancesCommute
-    return .nonnegative q(algebraMap_nonneg $β $pa)
-  | _ => pure .none
+meta def evalAlgebraMap : PositivityExt where
+  eval {u β} _zβ pβ? e :=
+    match pβ? with
+    | none =>
+      pure .none
+    | some _ => do
+      let ~q(@algebraMap $α _ $instα $instβ $instαβ $a) := e
+        | throwError "not `algebraMap`"
+      let some pα ← try? <| synthInstanceQ q(PartialOrder $α)
+        | pure .none
+      match ← core (q(inferInstance)) (some pα) a with
+      | .positive pa =>
+        let _instαSemiring ← synthInstanceQ q(Semiring $α)
+        try
+          let _instβSemiring ← synthInstanceQ q(Semiring $β)
+          let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
+          let _instβIsStrictOrderedRing ← synthInstanceQ q(IsStrictOrderedRing $β)
+          let _instαβsmul ← synthInstanceQ q(SMulPosStrictMono $α $β)
+          assertInstancesCommute
+          return .positive q(algebraMap_pos $β $pa)
+        catch _ =>
+          let _instβSemiring ← synthInstanceQ q(Semiring $β)
+          let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
+          let _instβIsOrderedRing ← synthInstanceQ q(IsOrderedRing $β)
+          let _instαβsmul ← synthInstanceQ q(SMulPosMono $α $β)
+          assertInstancesCommute
+          return .nonnegative q(algebraMap_nonneg $β <| le_of_lt $pa)
+      | .nonnegative pa =>
+        let _instαSemiring ← synthInstanceQ q(CommSemiring $α)
+        let _instβSemiring ← synthInstanceQ q(Semiring $β)
+        let _instβPartialOrder ← synthInstanceQ q(PartialOrder $β)
+        let _instβIsOrderedRing ← synthInstanceQ q(IsOrderedRing $β)
+        let _instαβsmul ← synthInstanceQ q(SMulPosMono $α $β)
+        assertInstancesCommute
+        return .nonnegative q(algebraMap_nonneg $β $pa)
+      | _ =>
+        pure .none
 
-example [IsOrderedRing β] [SMulPosMono α β]
-    {a : α} (ha : 0 ≤ a) :
-    0 ≤ algebraMap α β a := by positivity
+example [IsOrderedRing β] [SMulPosMono α β] {a : α} (ha : 0 ≤ a) : 0 ≤ algebraMap α β a := by
+  positivity
 
-example [IsOrderedRing β] [SMulPosMono α β]
-    {a : α} (ha : 0 < a) :
-    0 ≤ algebraMap α β a := by positivity
+example [IsOrderedRing β] [SMulPosMono α β] {a : α} (ha : 0 < a) : 0 ≤ algebraMap α β a := by
+  positivity
 
-example [IsStrictOrderedRing β] [SMulPosStrictMono α β]
-    {a : α} (ha : 0 < a) :
-    0 < algebraMap α β a := by positivity
+example [IsStrictOrderedRing β] [SMulPosStrictMono α β] {a : α} (ha : 0 < a)
+    : 0 < algebraMap α β a := by
+  positivity
 
 end Mathlib.Meta.Positivity

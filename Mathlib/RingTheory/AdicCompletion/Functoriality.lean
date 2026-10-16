@@ -38,25 +38,27 @@ variable {T : Type*} [AddCommGroup T] [Module (AdicCompletion I R) T]
 namespace LinearMap
 
 /-- The induced linear map on the quotients mod `I • ⊤`. -/
-def reduceModIdeal :
-    (M →ₗ[R] N) →ₗ[R] M ⧸ (I • ⊤ : Submodule R M) →ₗ[R ⧸ I] N ⧸ (I • ⊤ : Submodule R N) where
-  toFun f := LinearMap.extendScalarsOfSurjective Ideal.Quotient.mk_surjective <|
-    Submodule.mapQ (I • ⊤ : Submodule R M) (I • ⊤ : Submodule R N) f
-      (fun x hx ↦ by
+def reduceModIdeal
+    : (M →ₗ[R] N) →ₗ[R] M ⧸ (I • ⊤ : Submodule R M) →ₗ[R ⧸ I] N ⧸ (I • ⊤ : Submodule R N) where
+  toFun f :=
+    LinearMap.extendScalarsOfSurjective Ideal.Quotient.mk_surjective <|
+      Submodule.mapQ (I • ⊤ : Submodule R M) (I • ⊤ : Submodule R N) f (fun x hx ↦ by
         refine Submodule.smul_induction_on hx (fun r hr x _ ↦ ?_) (fun x y hx hy ↦ ?_)
         · simp [Submodule.smul_mem_smul hr Submodule.mem_top]
         · simp [Submodule.add_mem _ hx hy])
-  map_add' f g := LinearMap.ext fun x ↦ by
-    rcases Submodule.Quotient.mk_surjective _ x with ⟨x, rfl⟩
-    simp
-  map_smul' r f := LinearMap.ext fun x ↦ by
-    rcases Submodule.Quotient.mk_surjective _ x with ⟨x, rfl⟩
-    simp
+  map_add' f g :=
+    LinearMap.ext fun x ↦ by
+      rcases Submodule.Quotient.mk_surjective _ x with ⟨x, rfl⟩
+      simp
+  map_smul' r f :=
+    LinearMap.ext fun x ↦ by
+      rcases Submodule.Quotient.mk_surjective _ x with ⟨x, rfl⟩
+      simp
 
 @[simp]
-theorem reduceModIdeal_apply (f : M →ₗ[R] N) (x : M) :
-    (f.reduceModIdeal I) (Submodule.Quotient.mk (p := (I • ⊤ : Submodule R M)) x) =
-      Submodule.Quotient.mk (p := (I • ⊤ : Submodule R N)) (f x) :=
+theorem reduceModIdeal_apply (f : M →ₗ[R] N) (x : M)
+    : (f.reduceModIdeal I) (Submodule.Quotient.mk (p := (I • ⊤ : Submodule R M)) x)
+      = Submodule.Quotient.mk (p := (I • ⊤ : Submodule R N)) (f x) :=
   rfl
 
 end LinearMap
@@ -65,9 +67,9 @@ namespace AdicCompletion
 
 open LinearMap
 
-theorem transitionMap_comp_reduceModIdeal (f : M →ₗ[R] N) {m n : ℕ}
-    (hmn : m ≤ n) : transitionMap I N hmn ∘ₗ f.reduceModIdeal (I ^ n) =
-      (f.reduceModIdeal (I ^ m) : _ →ₗ[R] _) ∘ₗ transitionMap I M hmn := by
+theorem transitionMap_comp_reduceModIdeal (f : M →ₗ[R] N) {m n : ℕ} (hmn : m ≤ n)
+    : transitionMap I N hmn ∘ₗ f.reduceModIdeal (I ^ n)
+      = (f.reduceModIdeal (I ^ m) : _ →ₗ[R] _) ∘ₗ transitionMap I M hmn := by
   ext x
   simp
 
@@ -77,104 +79,106 @@ set_option backward.isDefEq.respectTransparency false in
 /-- A linear map induces a linear map on adic Cauchy sequences. -/
 @[simps]
 def map (f : M →ₗ[R] N) : AdicCauchySequence I M →ₗ[R] AdicCauchySequence I N where
-  toFun a := ⟨fun n ↦ f (a n), fun {m n} hmn ↦ by
-    have hm : Submodule.map f (I ^ m • ⊤ : Submodule R M) ≤ (I ^ m • ⊤ : Submodule R N) := by
-      rw [Submodule.map_smul'']
-      exact smul_mono_right _ le_top
-    apply SModEq.mono hm
-    apply SModEq.map (a.property hmn) f⟩
+  toFun a := ⟨
+    fun n ↦ f (a n),
+    fun {m n} hmn ↦ by
+      have hm : Submodule.map f (I ^ m • ⊤ : Submodule R M) ≤ (I ^ m • ⊤ : Submodule R N) := by
+        rw [Submodule.map_smul'']
+        exact smul_mono_right _ le_top
+      apply SModEq.mono hm
+      apply SModEq.map (a.property hmn) f
+  ⟩
   map_add' a b := by ext n; simp
   map_smul' r a := by ext n; simp
 
 variable (M) in
-@[simp]
-theorem map_id : map I (LinearMap.id (M := M)) = LinearMap.id :=
+@[simp] theorem map_id : map I (LinearMap.id (M := M)) = LinearMap.id := rfl
+
+theorem map_comp (f : M →ₗ[R] N) (g : N →ₗ[R] P) : map I g ∘ₗ map I f = map I (g ∘ₗ f) := rfl
+
+theorem map_comp_apply (f : M →ₗ[R] N) (g : N →ₗ[R] P) (a : AdicCauchySequence I M)
+    : map I g (map I f a) = map I (g ∘ₗ f) a :=
   rfl
 
-theorem map_comp (f : M →ₗ[R] N) (g : N →ₗ[R] P) :
-    map I g ∘ₗ map I f = map I (g ∘ₗ f) :=
-  rfl
-
-theorem map_comp_apply (f : M →ₗ[R] N) (g : N →ₗ[R] P) (a : AdicCauchySequence I M) :
-    map I g (map I f a) = map I (g ∘ₗ f) a :=
-  rfl
-
-@[simp]
-theorem map_zero : map I (0 : M →ₗ[R] N) = 0 :=
-  rfl
+@[simp] theorem map_zero : map I (0 : M →ₗ[R] N) = 0 := rfl
 
 end AdicCauchySequence
 
 /-- A linear map induces a map on adic completions. -/
 def map : (M →ₗ[R] N) →ₗ[R] (AdicCompletion I M →ₗ[AdicCompletion I R] AdicCompletion I N) where
-  toFun f :=
-    { __ := AdicCompletion.lift I (fun n ↦ reduceModIdeal (I ^ n) f ∘ₗ AdicCompletion.eval I M n)
-        (fun {m n} hmn ↦ by rw [← comp_assoc, AdicCompletion.transitionMap_comp_reduceModIdeal,
-          comp_assoc, transitionMap_comp_eval])
-      map_smul' r x := by
-        ext
-        dsimp
-        rw [val_smul_eq_evalₐ_smul, val_smul_eq_evalₐ_smul, map_smul] }
-  map_add' f g := LinearMap.ext fun _ ↦ by
-    simp only [map_add, restrictScalars_add, add_comp, ← Pi.add_def, coe_mk, coe_toAddHom,
-      add_apply]
-    rw [← LinearMap.add_apply, ← lift_add]
-  map_smul' c f := LinearMap.ext fun _ ↦ by
-    simp only [map_smul, restrictScalars_smul, coe_mk, coe_toAddHom, RingHom.id_apply, smul_apply]
-    simp_rw [← LinearMap.smul_apply, ← lift_smul, Pi.smul_def, LinearMap.smul_comp]
+  toFun f := {
+    __ :=
+      AdicCompletion.lift I
+        (fun n ↦ reduceModIdeal (I ^ n) f ∘ₗ AdicCompletion.eval I M n)
+        (fun {m n} hmn ↦ by
+          rw [← comp_assoc, AdicCompletion.transitionMap_comp_reduceModIdeal, comp_assoc,
+            transitionMap_comp_eval])
+    map_smul' r x := by
+      ext
+      dsimp
+      rw [val_smul_eq_evalₐ_smul, val_smul_eq_evalₐ_smul, map_smul]
+  }
+  map_add' f g :=
+    LinearMap.ext fun _ ↦ by
+      simp only [map_add, restrictScalars_add, add_comp, ← Pi.add_def, coe_mk, coe_toAddHom,
+        add_apply]
+      rw [← LinearMap.add_apply, ← lift_add]
+  map_smul' c f :=
+    LinearMap.ext fun _ ↦ by
+      simp only [map_smul, restrictScalars_smul, coe_mk, coe_toAddHom, RingHom.id_apply, smul_apply]
+      simp_rw [← LinearMap.smul_apply, ← lift_smul, Pi.smul_def, LinearMap.smul_comp]
 
 @[simp]
-theorem map_val_apply (f : M →ₗ[R] N) {n : ℕ} (x : AdicCompletion I M) :
-    (map I f x).val n = f.reduceModIdeal (I ^ n) (x.val n) :=
+theorem map_val_apply (f : M →ₗ[R] N) {n : ℕ} (x : AdicCompletion I M)
+    : (map I f x).val n = f.reduceModIdeal (I ^ n) (x.val n) :=
   rfl
 
 /-- Equality of maps out of an adic completion can be checked on Cauchy sequences. -/
-theorem map_ext {N} {f g : AdicCompletion I M → N}
-    (h : ∀ (a : AdicCauchySequence I M),
-      f (AdicCompletion.mk I M a) = g (AdicCompletion.mk I M a)) :
-    f = g := by
+theorem map_ext
+    {N} {f g : AdicCompletion I M → N}
+    (h : ∀ (a : AdicCauchySequence I M), f (AdicCompletion.mk I M a) = g (AdicCompletion.mk I M a))
+    : f = g := by
   ext x
   apply induction_on I M x h
 
 /-- Equality of linear maps out of an adic completion can be checked on Cauchy sequences. -/
 @[ext]
-theorem map_ext' {f g : AdicCompletion I M →ₗ[AdicCompletion I R] T}
-    (h : ∀ (a : AdicCauchySequence I M),
-      f (AdicCompletion.mk I M a) = g (AdicCompletion.mk I M a)) :
-    f = g := by
+theorem map_ext'
+    {f g : AdicCompletion I M →ₗ[AdicCompletion I R] T}
+    (h : ∀ (a : AdicCauchySequence I M), f (AdicCompletion.mk I M a) = g (AdicCompletion.mk I M a))
+    : f = g := by
   ext x
   apply induction_on I M x h
 
 /-- Equality of linear maps out of an adic completion can be checked on Cauchy sequences. -/
 @[ext]
-theorem map_ext'' {f g : AdicCompletion I M →ₗ[R] N}
-    (h : f.comp (AdicCompletion.mk I M) = g.comp (AdicCompletion.mk I M)) :
-    f = g := by
+theorem map_ext''
+    {f g : AdicCompletion I M →ₗ[R] N}
+    (h : f.comp (AdicCompletion.mk I M) = g.comp (AdicCompletion.mk I M))
+    : f = g := by
   ext x
   apply induction_on I M x (fun a ↦ LinearMap.ext_iff.mp h a)
 
 variable (M) in
 @[simp]
-theorem map_id :
-    map I (LinearMap.id (M := M)) =
-      LinearMap.id (R := AdicCompletion I R) (M := AdicCompletion I M) := by
+theorem map_id
+    : map I (LinearMap.id (M := M))
+      = LinearMap.id (R := AdicCompletion I R) (M := AdicCompletion I M) := by
   ext a n
   simp
 
-theorem map_comp (f : M →ₗ[R] N) (g : N →ₗ[R] P) :
-    map I g ∘ₗ map I f = map I (g ∘ₗ f) := by
+theorem map_comp (f : M →ₗ[R] N) (g : N →ₗ[R] P) : map I g ∘ₗ map I f = map I (g ∘ₗ f) := by
   ext
   simp
 
-theorem map_comp_apply (f : M →ₗ[R] N) (g : N →ₗ[R] P) (x : AdicCompletion I M) :
-    map I g (map I f x) = map I (g ∘ₗ f) x := by
+theorem map_comp_apply (f : M →ₗ[R] N) (g : N →ₗ[R] P) (x : AdicCompletion I M)
+    : map I g (map I f x) = map I (g ∘ₗ f) x := by
   change (map I g ∘ₗ map I f) x = map I (g ∘ₗ f) x
   rw [map_comp]
 
 @[simp]
-theorem map_mk (f : M →ₗ[R] N) (a : AdicCauchySequence I M) :
-    map I f (AdicCompletion.mk I M a) =
-      AdicCompletion.mk I N (AdicCauchySequence.map I f a) :=
+theorem map_mk (f : M →ₗ[R] N) (a : AdicCauchySequence I M)
+    : map I f (AdicCompletion.mk I M a) = AdicCompletion.mk I N (AdicCauchySequence.map I f a) :=
   rfl
 
 @[simp]
@@ -182,23 +186,18 @@ theorem map_zero : map I (0 : M →ₗ[R] N) = 0 := by
   ext
   simp
 
-theorem map_of (f : M →ₗ[R] N) (x : M) : map I f (of I M x) = of I N (f x) :=
-  rfl
+theorem map_of (f : M →ₗ[R] N) (x : M) : map I f (of I M x) = of I N (f x) := rfl
 
 /-- A linear equiv induces a linear equiv on adic completions. -/
-def congr (f : M ≃ₗ[R] N) :
-    AdicCompletion I M ≃ₗ[AdicCompletion I R] AdicCompletion I N :=
-  LinearEquiv.ofLinearMap (map I f)
-    (map I f.symm) (by simp [map_comp]) (by simp [map_comp])
+def congr (f : M ≃ₗ[R] N) : AdicCompletion I M ≃ₗ[AdicCompletion I R] AdicCompletion I N :=
+  LinearEquiv.ofLinearMap (map I f) (map I f.symm) (by simp [map_comp]) (by simp [map_comp])
 
 @[simp]
-theorem congr_apply (f : M ≃ₗ[R] N) (x : AdicCompletion I M) :
-    congr I f x = map I f x :=
-  rfl
+theorem congr_apply (f : M ≃ₗ[R] N) (x : AdicCompletion I M) : congr I f x = map I f x := rfl
 
 @[simp]
-theorem congr_symm_apply (f : M ≃ₗ[R] N) (x : AdicCompletion I N) :
-    (congr I f).symm x = map I f.symm x :=
+theorem congr_symm_apply (f : M ≃ₗ[R] N) (x : AdicCompletion I N)
+    : (congr I f).symm x = map I f.symm x :=
   rfl
 
 section Families
@@ -217,13 +216,14 @@ inverse to each other.
 
 -/
 
-variable {ι : Type*} (M : ι → Type*) [∀ i, AddCommGroup (M i)]
-  [∀ i, Module R (M i)]
+variable {ι : Type*} (M : ι → Type*) [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)]
 
 section Pi
 
-/-- The canonical map from the adic completion of the product to the product of the
-adic completions. -/
+/--
+The canonical map from the adic completion of the product to the product of the
+adic completions.
+-/
 @[simps!]
 def pi : AdicCompletion I (∀ j, M j) →ₗ[AdicCompletion I R] ∀ j, AdicCompletion I (M j) :=
   LinearMap.pi (fun j ↦ map I (LinearMap.proj j))
@@ -234,45 +234,46 @@ section Sum
 
 open DirectSum
 
-/-- The canonical map from the sum of the adic completions to the adic completion
-of the sum. -/
-def sum [DecidableEq ι] :
-    (⨁ j, (AdicCompletion I (M j))) →ₗ[AdicCompletion I R] AdicCompletion I (⨁ j, M j) :=
-  toModule (AdicCompletion I R) ι (AdicCompletion I (⨁ j, M j))
-    (fun j ↦ map I (lof R ι M j))
+/--
+The canonical map from the sum of the adic completions to the adic completion
+of the sum.
+-/
+def sum [DecidableEq ι]
+    : (⨁ j, (AdicCompletion I (M j))) →ₗ[AdicCompletion I R] AdicCompletion I (⨁ j, M j) :=
+  toModule (AdicCompletion I R) ι (AdicCompletion I (⨁ j, M j)) (fun j ↦ map I (lof R ι M j))
 
 @[simp]
-theorem sum_lof [DecidableEq ι] (j : ι) (x : AdicCompletion I (M j)) :
-    sum I M ((DirectSum.lof (AdicCompletion I R) ι (fun i ↦ AdicCompletion I (M i)) j) x) =
-      map I (lof R ι M j) x := by
+theorem sum_lof [DecidableEq ι] (j : ι) (x : AdicCompletion I (M j))
+    : sum I M ((DirectSum.lof (AdicCompletion I R) ι (fun i ↦ AdicCompletion I (M i)) j) x)
+      = map I (lof R ι M j) x := by
   simp [sum]
 
 @[simp]
-theorem sum_of [DecidableEq ι] (j : ι) (x : AdicCompletion I (M j)) :
-    sum I M ((DirectSum.of (fun i ↦ AdicCompletion I (M i)) j) x) =
-      map I (lof R ι M j) x := by
+theorem sum_of [DecidableEq ι] (j : ι) (x : AdicCompletion I (M j))
+    : sum I M ((DirectSum.of (fun i ↦ AdicCompletion I (M i)) j) x) = map I (lof R ι M j) x := by
   rw [← lof_eq_of R]
   apply sum_lof
 
 variable [Fintype ι]
 
-/-- If `ι` is finite, we use the equivalence of sum and product to obtain an inverse for
-`AdicCompletion.sum` from `AdicCompletion.pi`. -/
+/--
+If `ι` is finite, we use the equivalence of sum and product to obtain an inverse for
+`AdicCompletion.sum` from `AdicCompletion.pi`.
+-/
 def sumInv : AdicCompletion I (⨁ j, M j) →ₗ[AdicCompletion I R] (⨁ j, (AdicCompletion I (M j))) :=
   letI f := map I (linearEquivFunOnFintype R ι M)
   letI g := linearEquivFunOnFintype (AdicCompletion I R) ι (fun j ↦ AdicCompletion I (M j))
   g.symm.toLinearMap ∘ₗ pi I M ∘ₗ f
 
 @[simp]
-theorem component_sumInv (x : AdicCompletion I (⨁ j, M j)) (j : ι) :
-    component (AdicCompletion I R) ι _ j (sumInv I M x) =
-      map I (component R ι _ j) x := by
+theorem component_sumInv (x : AdicCompletion I (⨁ j, M j)) (j : ι)
+    : component (AdicCompletion I R) ι _ j (sumInv I M x) = map I (component R ι _ j) x := by
   apply induction_on I _ x (fun x ↦ ?_)
   rfl
 
 @[simp]
-theorem sumInv_apply (x : AdicCompletion I (⨁ j, M j)) (j : ι) :
-    (sumInv I M x) j = map I (component R ι _ j) x := by
+theorem sumInv_apply (x : AdicCompletion I (⨁ j, M j)) (j : ι)
+    : (sumInv I M x) j = map I (component R ι _ j) x := by
   apply induction_on I _ x (fun x ↦ ?_)
   rfl
 
@@ -300,18 +301,18 @@ theorem sum_comp_sumInv : sum I M ∘ₗ sumInv I M = LinearMap.id := by
     DirectSum.sum_univ_of]
 
 /-- If `ι` is finite, `sum` has `sumInv` as inverse. -/
-def sumEquivOfFintype :
-    (⨁ j, (AdicCompletion I (M j))) ≃ₗ[AdicCompletion I R] AdicCompletion I (⨁ j, M j) :=
+def sumEquivOfFintype
+    : (⨁ j, (AdicCompletion I (M j))) ≃ₗ[AdicCompletion I R] AdicCompletion I (⨁ j, M j) :=
   LinearEquiv.ofLinearMap (sum I M) (sumInv I M) (sum_comp_sumInv I M) (sumInv_comp_sum I M)
 
 @[simp]
-theorem sumEquivOfFintype_apply (x : ⨁ j, (AdicCompletion I (M j))) :
-    sumEquivOfFintype I M x = sum I M x :=
+theorem sumEquivOfFintype_apply (x : ⨁ j, (AdicCompletion I (M j)))
+    : sumEquivOfFintype I M x = sum I M x :=
   rfl
 
 @[simp]
-theorem sumEquivOfFintype_symm_apply (x : AdicCompletion I (⨁ j, M j)) :
-    (sumEquivOfFintype I M).symm x = sumInv I M x :=
+theorem sumEquivOfFintype_symm_apply (x : AdicCompletion I (⨁ j, M j))
+    : (sumEquivOfFintype I M).symm x = sumInv I M x :=
   rfl
 
 end Sum
@@ -323,20 +324,20 @@ open DirectSum
 variable [DecidableEq ι] [Fintype ι]
 
 /-- If `ι` is finite, `pi` is a linear equiv. -/
-def piEquivOfFintype :
-    AdicCompletion I (∀ j, M j) ≃ₗ[AdicCompletion I R] ∀ j, AdicCompletion I (M j) :=
+def piEquivOfFintype
+    : AdicCompletion I (∀ j, M j) ≃ₗ[AdicCompletion I R] ∀ j, AdicCompletion I (M j) :=
   letI f := (congr I (linearEquivFunOnFintype R ι M)).symm
   letI g := (linearEquivFunOnFintype (AdicCompletion I R) ι (fun j ↦ AdicCompletion I (M j)))
   f.trans ((sumEquivOfFintype I M).symm.trans g)
 
 @[simp]
-theorem piEquivOfFintype_apply (x : AdicCompletion I (∀ j, M j)) :
-    piEquivOfFintype I M x = pi I M x := by
+theorem piEquivOfFintype_apply (x : AdicCompletion I (∀ j, M j))
+    : piEquivOfFintype I M x = pi I M x := by
   simp [piEquivOfFintype, sumInv, map_comp_apply]
 
 /-- Adic completion of `R^n` is `(AdicCompletion I R)^n`. -/
-def piEquivFin (n : ℕ) :
-    AdicCompletion I (Fin n → R) ≃ₗ[AdicCompletion I R] Fin n → AdicCompletion I R :=
+def piEquivFin (n : ℕ)
+    : AdicCompletion I (Fin n → R) ≃ₗ[AdicCompletion I R] Fin n → AdicCompletion I R :=
   piEquivOfFintype I (ι := Fin n) (fun _ : Fin n ↦ R)
 
 /-
@@ -357,8 +358,8 @@ example : ((AdicCompletion.module I).toSMul : SMul (AdicCompletion I R) (AdicCom
 -/
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem piEquivFin_apply (n : ℕ) (x : AdicCompletion I (Fin n → R)) :
-    piEquivFin I n x = pi I (fun _ : Fin n ↦ R) x := by
+theorem piEquivFin_apply (n : ℕ) (x : AdicCompletion I (Fin n → R))
+    : piEquivFin I n x = pi I (fun _ : Fin n ↦ R) x := by
   simp only [piEquivFin, piEquivOfFintype_apply]
 
 end Pi
@@ -369,10 +370,10 @@ open Submodule
 
 variable {I}
 
-theorem exists_smodEq_pow_add_one_smul {f : M →ₗ[R] N}
-    (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f)) {y : N} {n : ℕ}
-    (hy : y ∈ (I ^ n • ⊤ : Submodule R N)) :
-    ∃ x ∈ (I ^ n • ⊤ : Submodule R M), f x ≡ y [SMOD (I ^ (n + 1) • ⊤ : Submodule R N)] := by
+theorem exists_smodEq_pow_add_one_smul
+    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f))
+    {y : N} {n : ℕ} (hy : y ∈ (I ^ n • ⊤ : Submodule R N))
+    : ∃ x ∈ (I ^ n • ⊤ : Submodule R M), f x ≡ y [SMOD (I ^ (n + 1) • ⊤ : Submodule R N)] := by
   induction hy using smul_induction_on' with
   | smul r hr y _ =>
     obtain ⟨x, hx⟩ := h (mkQ _ y)
@@ -387,11 +388,12 @@ theorem exists_smodEq_pow_add_one_smul {f : M →ₗ[R] N}
     simp only [map_add]
     exact SModEq.add hx1' hx2'
 
-theorem exists_smodEq_pow_smul_top_and_smodEq_pow_add_one_smul_top {f : M →ₗ[R] N}
-    (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f)) {x : M} {y : N} {n : ℕ}
-    (hxy : f x ≡ y [SMOD (I ^ n • ⊤ : Submodule R N)]) :
-    ∃ x' : M, x ≡ x' [SMOD (I ^ n • ⊤ : Submodule R M)] ∧
-    f x' ≡ y [SMOD (I ^ (n + 1) • ⊤ : Submodule R N)] := by
+theorem exists_smodEq_pow_smul_top_and_smodEq_pow_add_one_smul_top
+    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f))
+    {x : M} {y : N} {n : ℕ} (hxy : f x ≡ y [SMOD (I ^ n • ⊤ : Submodule R N)])
+    : ∃ x' : M,
+      x ≡ x' [SMOD (I ^ n • ⊤ : Submodule R M)]
+        ∧ f x' ≡ y [SMOD (I ^ (n + 1) • ⊤ : Submodule R N)] := by
   obtain ⟨z, hz, hz'⟩ :=
     exists_smodEq_pow_add_one_smul h (y := y - f x) (SModEq.sub_mem.mp hxy.symm)
   use x + z
@@ -399,26 +401,29 @@ theorem exists_smodEq_pow_smul_top_and_smodEq_pow_add_one_smul_top {f : M →ₗ
   · simpa [SModEq.sub_mem]
   · simpa [SModEq.sub_mem, sub_sub_eq_add_sub, add_comm] using hz'
 
-theorem exists_smodEq_pow_smul_top_and_mkQ_eq {f : M →ₗ[R] N}
-    (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f)) {x : M} {n : ℕ}
-    {y : N ⧸ (I ^ n • ⊤ : Submodule R N)} {y' : N ⧸ (I ^ (n + 1) • ⊤ : Submodule R N)}
-    (hyy' : factor (pow_smul_top_le I N n.le_succ) y' = y) (hxy : mkQ _ (f x) = y) :
-    ∃ x' : M, x ≡ x' [SMOD (I ^ n • ⊤ : Submodule R M)] ∧ mkQ _ (f x') = y' := by
+theorem exists_smodEq_pow_smul_top_and_mkQ_eq
+    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f))
+    {x : M} {n : ℕ} {y : N ⧸ (I ^ n • ⊤ : Submodule R N)}
+    {y' : N ⧸ (I ^ (n + 1) • ⊤ : Submodule R N)}
+    (hyy' : factor (pow_smul_top_le I N n.le_succ) y' = y) (hxy : mkQ _ (f x) = y)
+    : ∃ x' : M, x ≡ x' [SMOD (I ^ n • ⊤ : Submodule R M)] ∧ mkQ _ (f x') = y' := by
   obtain ⟨y0, hy0⟩ := mkQ_surjective _ y'
   have : f x ≡ y0 [SMOD (I ^ n • ⊤ : Submodule R N)] := by
-    rw [SModEq, ← mkQ_apply, ← mkQ_apply, ← factor_mk (pow_smul_top_le I N n.le_succ) y0,
-        hy0, hyy', hxy]
-  obtain ⟨x', hxx', hx'y0⟩ :=
-    exists_smodEq_pow_smul_top_and_smodEq_pow_add_one_smul_top h this
+    rw [SModEq, ← mkQ_apply, ← mkQ_apply, ← factor_mk (pow_smul_top_le I N n.le_succ) y0, hy0, hyy',
+      hxy]
+  obtain ⟨x', hxx', hx'y0⟩ := exists_smodEq_pow_smul_top_and_smodEq_pow_add_one_smul_top h this
   use x', hxx'
   rwa [mkQ_apply, hx'y0]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem map_surjective_of_mkQ_comp_surjective {f : M →ₗ[R] N}
-    (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f)) : Function.Surjective (map I f) := by
+theorem map_surjective_of_mkQ_comp_surjective
+    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f))
+    : Function.Surjective (map I f) := by
   intro y
-  suffices h : ∃ x : ℕ → M, ∀ n, x n ≡ x (n + 1) [SMOD (I ^ n • ⊤ : Submodule R M)] ∧
-      Submodule.Quotient.mk (f (x n)) = eval I _ n y by
+  suffices h
+      : ∃ x : ℕ → M, ∀ n,
+        x n ≡ x (n + 1) [SMOD (I ^ n • ⊤ : Submodule R M)]
+          ∧ Submodule.Quotient.mk (f (x n)) = eval I _ n y by
     obtain ⟨x, hx⟩ := h
     use AdicCompletion.mk I M ⟨x, fun h ↦
         eq_factor_of_eq_factor_succ (fun _ _ ↦ pow_smul_top_le I M) _ (fun n ↦ (hx n).1) h⟩
@@ -434,8 +439,14 @@ theorem map_surjective_of_mkQ_comp_surjective {f : M →ₗ[R] N}
       choose z hz using exists_smodEq_pow_smul_top_and_mkQ_eq h
           (y' := eval _ _ (n + 1) y) (by simp) xn.2
       exact ⟨z, hz.2⟩
-  exact ⟨fun n ↦ (x n).val, fun n ↦ ⟨(Classical.choose_spec (exists_smodEq_pow_smul_top_and_mkQ_eq
-      h (y' := eval I _ (n + 1) y) (by simp) (x n).2)).1, (x n).property⟩⟩
+  exact ⟨
+    fun n ↦ (x n).val,
+    fun n ↦ ⟨
+      (Classical.choose_spec (exists_smodEq_pow_smul_top_and_mkQ_eq h (y' := eval I _ (n + 1) y)
+        (by simp) (x n).2)).1,
+      (x n).property
+    ⟩
+  ⟩
 
 end AdicCompletion
 
@@ -443,8 +454,10 @@ open AdicCompletion Submodule
 
 variable {I}
 
-theorem surjective_of_mkQ_comp_surjective [IsPrecomplete I M] [IsHausdorff I N]
-    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f)) : Function.Surjective f := by
+theorem surjective_of_mkQ_comp_surjective
+    [IsPrecomplete I M] [IsHausdorff I N]
+    {f : M →ₗ[R] N} (h : Function.Surjective (mkQ (I • ⊤) ∘ₗ f))
+    : Function.Surjective f := by
   intro y
   obtain ⟨x', hx'⟩ := AdicCompletion.map_surjective_of_mkQ_comp_surjective h (of I N y)
   obtain ⟨x, hx⟩ := of_surjective I M x'
@@ -453,9 +466,10 @@ theorem surjective_of_mkQ_comp_surjective [IsPrecomplete I M] [IsHausdorff I N]
 
 variable {S : Type*} [CommRing S] (f : R →+* S)
 
-theorem surjective_of_mk_map_comp_surjective [IsPrecomplete I R] [haus : IsHausdorff (I.map f) S]
-    (h : Function.Surjective ((Ideal.Quotient.mk (I.map f)).comp f)) :
-    Function.Surjective f := by
+theorem surjective_of_mk_map_comp_surjective
+    [IsPrecomplete I R] [haus : IsHausdorff (I.map f) S]
+    (h : Function.Surjective ((Ideal.Quotient.mk (I.map f)).comp f))
+    : Function.Surjective f := by
   let _ := f.toAlgebra
   let fₗ := (Algebra.ofId R S).toLinearMap
   change Function.Surjective ((restrictScalars R (I.map f)).mkQ ∘ₗ fₗ) at h

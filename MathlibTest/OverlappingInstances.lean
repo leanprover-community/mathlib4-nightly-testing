@@ -35,8 +35,7 @@ warning: Overlapping instance parameters in `foo`:
 Note: This linter can be disabled with `set_option linter.overlappingInstances false`
 -/
 #guard_msgs in
-def foo [Add Nat] [Add Nat] : [Add Nat] → [Add Nat] → Bool := by
-  skip
+def foo [Add Nat] [Add Nat] : [Add Nat] → [Add Nat] → Bool := by skip
 
 /--
 @ +3:21...+4:12
@@ -230,7 +229,8 @@ section duplicates
 /-! Make sure we warn on duplicate inductive classes and duplicate `Prop` classes. -/
 
 class inductive IndFoo where
-| mk₁ (n : Nat) | mk₂ (b : Bool)
+  | mk₁ (n : Nat)
+  | mk₂ (b : Bool)
 
 /--
 warning: Overlapping instance parameters in `indFoo`:
@@ -243,7 +243,8 @@ Note: This linter can be disabled with `set_option linter.overlappingInstances f
 def indFoo [IndFoo] [IndFoo] : Bool := true
 
 class inductive IndFooProp : Prop where
-| mk₁ (n : Nat) | mk₂ (b : Bool)
+  | mk₁ (n : Nat)
+  | mk₂ (b : Bool)
 
 /--
 warning: Overlapping instance parameters in `indFooProp`:
@@ -357,8 +358,7 @@ warning: Overlapping instance parameters in `List.lt'.go`:
 Note: This linter can be disabled with `set_option linter.overlappingInstances false`
 -/
 #guard_msgs in
-def List.lt' {α} [DecidableEq α] (a b : List α) : Bool :=
-  go a b
+def List.lt' {α} [DecidableEq α] (a b : List α) : Bool := go a b
 where
   go [DecidableEq α] (_ _ : List α) : Bool := false
 

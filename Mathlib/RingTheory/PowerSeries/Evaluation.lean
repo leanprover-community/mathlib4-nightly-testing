@@ -61,48 +61,44 @@ abbrev HasEval (a : S) := IsTopologicallyNilpotent a
 
 theorem hasEval_def (a : S) : HasEval a ↔ IsTopologicallyNilpotent a := .rfl
 
-theorem hasEval_iff {a : S} :
-    HasEval a ↔ MvPowerSeries.HasEval (fun (_ : Unit) ↦ a) :=
+theorem hasEval_iff {a : S} : HasEval a ↔ MvPowerSeries.HasEval (fun (_ : Unit) ↦ a) :=
   ⟨fun ha ↦ ⟨fun _ ↦ ha, by simp⟩, fun ha ↦ ha.hpow default⟩
 
-theorem hasEval {a : S} (ha : HasEval a) :
-    MvPowerSeries.HasEval (fun (_ : Unit) ↦ a) := hasEval_iff.mp ha
+theorem hasEval {a : S} (ha : HasEval a) : MvPowerSeries.HasEval (fun (_ : Unit) ↦ a) :=
+  hasEval_iff.mp ha
 
-theorem HasEval.mono {S : Type*} [CommRing S] {a : S}
-    {t u : TopologicalSpace S} (h : t ≤ u) (ha : @HasEval _ _ t a) :
-    @HasEval _ _ u a := by
+theorem HasEval.mono
+    {S : Type*} [CommRing S] {a : S} {t u : TopologicalSpace S} (h : t ≤ u) (ha : @HasEval _ _ t a)
+    : @HasEval _ _ u a := by
   simp only [hasEval_iff] at ha ⊢
   exact ha.mono h
 
-theorem HasEval.zero : HasEval (0 : S) := by
-    rw [hasEval_iff]; exact MvPowerSeries.HasEval.zero
+theorem HasEval.zero : HasEval (0 : S) := by rw [hasEval_iff]; exact MvPowerSeries.HasEval.zero
 
-theorem HasEval.add [ContinuousAdd S] [IsLinearTopology S S]
-    {a b : S} (ha : HasEval a) (hb : HasEval b) : HasEval (a + b) := by
+theorem HasEval.add
+    [ContinuousAdd S] [IsLinearTopology S S] {a b : S} (ha : HasEval a) (hb : HasEval b)
+    : HasEval (a + b) := by
   simp only [hasEval_iff] at ha hb ⊢
   exact ha.add hb
 
-theorem HasEval.mul_left [IsLinearTopology S S]
-    (c : S) {x : S} (hx : HasEval x) : HasEval (c * x) := by
+theorem HasEval.mul_left [IsLinearTopology S S] (c : S) {x : S} (hx : HasEval x)
+    : HasEval (c * x) := by
   simp only [hasEval_iff] at hx ⊢
   exact hx.mul_left _
 
-theorem HasEval.mul_right [IsLinearTopology S S]
-    (c : S) {x : S} (hx : HasEval x) : HasEval (x * c) := by
+theorem HasEval.mul_right [IsLinearTopology S S] (c : S) {x : S} (hx : HasEval x)
+    : HasEval (x * c) := by
   simp only [hasEval_iff] at hx ⊢
   exact hx.mul_right _
 
 /-- [Bourbaki, *Algebra*, chap. 4, §4, n°3, Prop. 4 (i) (a & b)][bourbaki1981]. -/
-theorem HasEval.map (hφ : Continuous φ) {a : R} (ha : HasEval a) :
-    HasEval (φ a) := by
+theorem HasEval.map (hφ : Continuous φ) {a : R} (ha : HasEval a) : HasEval (φ a) := by
   simp only [hasEval_iff] at ha ⊢
   exact ha.map hφ
 
-protected theorem HasEval.X :
-    HasEval (X : R⟦X⟧) := by
+protected theorem HasEval.X : HasEval (X : R⟦X⟧) := by
   rw [hasEval_iff]
   exact MvPowerSeries.HasEval.X
-
 
 variable [IsTopologicalRing S] [IsLinearTopology S S]
 
@@ -114,9 +110,7 @@ def hasEvalIdeal : Ideal S where
   zero_mem' := HasEval.zero
   smul_mem' := HasEval.mul_left
 
-theorem mem_hasEvalIdeal_iff {a : S} :
-    a ∈ hasEvalIdeal ↔ HasEval a := by
-  simp [hasEvalIdeal]
+theorem mem_hasEvalIdeal_iff {a : S} : a ∈ hasEvalIdeal ↔ HasEval a := by simp [hasEvalIdeal]
 
 end
 
@@ -124,12 +118,13 @@ variable (φ : R →+* S) (a : S)
 
 variable [UniformSpace R] [UniformSpace S]
 
-/-- Evaluation of a power series `f` at a point `a`.
+/--
+Evaluation of a power series `f` at a point `a`.
 
 It coincides with the evaluation of `f` as a polynomial if `f` is the coercion of a polynomial.
-Otherwise, it is only relevant if `φ` is continuous and `a` is topologically nilpotent. -/
-noncomputable def eval₂ : PowerSeries R → S :=
-  MvPowerSeries.eval₂ φ (fun _ ↦ a)
+Otherwise, it is only relevant if `φ` is continuous and `a` is topologically nilpotent.
+-/
+noncomputable def eval₂ : PowerSeries R → S := MvPowerSeries.eval₂ φ (fun _ ↦ a)
 
 @[simp]
 theorem eval₂_coe (f : Polynomial R) : eval₂ φ a f = f.eval₂ φ a := by
@@ -138,43 +133,38 @@ theorem eval₂_coe (f : Polynomial R) : eval₂ φ a f = f.eval₂ φ a := by
   rw [← MvPolynomial.toMvPowerSeries_pUnitAlgEquiv, MvPowerSeries.eval₂_coe]
 
 @[simp]
-theorem eval₂_C (r : R) :
-    eval₂ φ a (C r) = φ r := by
+theorem eval₂_C (r : R) : eval₂ φ a (C r) = φ r := by
   rw [← Polynomial.coe_C, eval₂_coe, Polynomial.eval₂_C]
 
 @[simp]
-theorem eval₂_X :
-    eval₂ φ a X = a := by
-  rw [← Polynomial.coe_X, eval₂_coe, Polynomial.eval₂_X]
+theorem eval₂_X : eval₂ φ a X = a := by rw [← Polynomial.coe_X, eval₂_coe, Polynomial.eval₂_X]
 
 variable {φ a}
 
-variable [IsUniformAddGroup R] [IsTopologicalSemiring R]
-    [IsUniformAddGroup S] [T2Space S] [CompleteSpace S]
-    [IsTopologicalRing S] [IsLinearTopology S S]
+variable
+  [IsUniformAddGroup R] [IsTopologicalSemiring R] [IsUniformAddGroup S] [T2Space S]
+  [CompleteSpace S] [IsTopologicalRing S] [IsLinearTopology S S]
 
 /-- The evaluation homomorphism at `a` on `PowerSeries`, as a `RingHom`. -/
-noncomputable def eval₂Hom (hφ : Continuous φ) (ha : HasEval a) :
-    PowerSeries R →+* S :=
+noncomputable def eval₂Hom (hφ : Continuous φ) (ha : HasEval a) : PowerSeries R →+* S :=
   MvPowerSeries.eval₂Hom hφ (hasEval ha)
 
-theorem coe_eval₂Hom (hφ : Continuous φ) (ha : HasEval a) :
-    ⇑(eval₂Hom hφ ha) = eval₂ φ a :=
+theorem coe_eval₂Hom (hφ : Continuous φ) (ha : HasEval a) : ⇑(eval₂Hom hφ ha) = eval₂ φ a :=
   MvPowerSeries.coe_eval₂Hom hφ (hasEval ha)
 
 -- Note: this is still true without the `T2Space` hypothesis, by arguing that the case
 -- disjunction in the definition of `eval₂` only replaces some values by topologically
 -- inseparable ones.
-theorem uniformContinuous_eval₂ (hφ : Continuous φ) (ha : HasEval a) :
-    UniformContinuous (eval₂ φ a) :=
+theorem uniformContinuous_eval₂ (hφ : Continuous φ) (ha : HasEval a)
+    : UniformContinuous (eval₂ φ a) :=
   MvPowerSeries.uniformContinuous_eval₂ hφ (hasEval ha)
 
-theorem continuous_eval₂ (hφ : Continuous φ) (ha : HasEval a) :
-    Continuous (eval₂ φ a : PowerSeries R → S) :=
+theorem continuous_eval₂ (hφ : Continuous φ) (ha : HasEval a)
+    : Continuous (eval₂ φ a : PowerSeries R → S) :=
   (uniformContinuous_eval₂ hφ ha).continuous
 
-theorem hasSum_eval₂ (hφ : Continuous φ) (ha : HasEval a) (f : PowerSeries R) :
-    HasSum (fun (d : ℕ) ↦ φ (coeff d f) * a ^ d) (f.eval₂ φ a) := by
+theorem hasSum_eval₂ (hφ : Continuous φ) (ha : HasEval a) (f : PowerSeries R)
+    : HasSum (fun (d : ℕ) ↦ φ (coeff d f) * a ^ d) (f.eval₂ φ a) := by
   have := MvPowerSeries.hasSum_eval₂ hφ (hasEval ha) f
   simp only [PowerSeries.eval₂]
   rw [← (Finsupp.single_injective ()).hasSum_iff] at this
@@ -182,67 +172,66 @@ theorem hasSum_eval₂ (hφ : Continuous φ) (ha : HasEval a) (f : PowerSeries R
   · intro d hd
     exact False.elim (hd ⟨d (), by ext; simp⟩)
 
-theorem eval₂_eq_tsum (hφ : Continuous φ) (ha : HasEval a) (f : PowerSeries R) :
-    PowerSeries.eval₂ φ a f =
-      ∑' d : ℕ, φ (coeff d f) * a ^ d :=
+theorem eval₂_eq_tsum (hφ : Continuous φ) (ha : HasEval a) (f : PowerSeries R)
+    : PowerSeries.eval₂ φ a f = ∑' d : ℕ, φ (coeff d f) * a ^ d :=
   (hasSum_eval₂ hφ ha f).tsum_eq.symm
 
-theorem eval₂_unique (hφ : Continuous φ) (ha : HasEval a)
-    {ε : PowerSeries R → S} (hε : Continuous ε)
-    (h : ∀ p : Polynomial R, ε p = Polynomial.eval₂ φ a p) :
-    ε = eval₂ φ a := by
+theorem eval₂_unique
+    (hφ : Continuous φ) (ha : HasEval a)
+    {ε : PowerSeries R → S}
+    (hε : Continuous ε) (h : ∀ p : Polynomial R, ε p = Polynomial.eval₂ φ a p)
+    : ε = eval₂ φ a := by
   refine MvPowerSeries.eval₂_unique hφ (hasEval ha) hε (fun p ↦ ?_)
   rw [MvPolynomial.toMvPowerSeries_pUnitAlgEquiv, h, ← MvPolynomial.eval₂_uniqueAlgEquiv]
 
-theorem comp_eval₂ (hφ : Continuous φ) (ha : HasEval a)
-    {T : Type*} [UniformSpace T] [CompleteSpace T] [T2Space T]
-    [CommRing T] [IsTopologicalRing T] [IsLinearTopology T T] [IsUniformAddGroup T]
-    {ε : S →+* T} (hε : Continuous ε) :
-    ε ∘ eval₂ φ a = eval₂ (ε.comp φ) (ε a) := by
+theorem comp_eval₂
+    (hφ : Continuous φ) (ha : HasEval a)
+    {T : Type*} [UniformSpace T] [CompleteSpace T] [T2Space T] [CommRing T] [IsTopologicalRing T]
+    [IsLinearTopology T T] [IsUniformAddGroup T]
+    {ε : S →+* T} (hε : Continuous ε)
+    : ε ∘ eval₂ φ a = eval₂ (ε.comp φ) (ε a) := by
   refine eval₂_unique (by simp only [RingHom.coe_comp, hε.comp hφ]) (ha.map hε)
     (hε.comp (continuous_eval₂ hφ ha)) (fun p ↦ ?_)
   simpa [Function.comp_apply, eval₂_coe] using p.hom_eval₂ φ ε a
 
 variable [Algebra R S] [ContinuousSMul R S]
 
-/-- For `HasEval a`,
-the evaluation homomorphism at `a` on `PowerSeries`, as an `AlgHom`. -/
-noncomputable def aeval (ha : HasEval a) :
-    PowerSeries R →ₐ[R] S :=
-  MvPowerSeries.aeval (hasEval ha)
+/--
+For `HasEval a`,
+the evaluation homomorphism at `a` on `PowerSeries`, as an `AlgHom`.
+-/
+noncomputable def aeval (ha : HasEval a) : PowerSeries R →ₐ[R] S := MvPowerSeries.aeval (hasEval ha)
 
-theorem coe_aeval (ha : HasEval a) :
-    ↑(aeval ha) = eval₂ (algebraMap R S) a :=
+theorem coe_aeval (ha : HasEval a) : ↑(aeval ha) = eval₂ (algebraMap R S) a :=
   MvPowerSeries.coe_aeval (hasEval ha)
 
-theorem continuous_aeval (ha : HasEval a) :
-    Continuous (aeval ha : PowerSeries R → S) :=
+theorem continuous_aeval (ha : HasEval a) : Continuous (aeval ha : PowerSeries R → S) :=
   MvPowerSeries.continuous_aeval (hasEval ha)
 
 @[simp]
-theorem aeval_coe (ha : HasEval a) (p : Polynomial R) :
-    aeval ha (p : PowerSeries R) = Polynomial.aeval a p := by
+theorem aeval_coe (ha : HasEval a) (p : Polynomial R)
+    : aeval ha (p : PowerSeries R) = Polynomial.aeval a p := by
   rw [coe_aeval, Polynomial.aeval_def, eval₂_coe]
 
-theorem aeval_unique {ε : PowerSeries R →ₐ[R] S} (hε : Continuous ε) :
-    aeval (HasEval.X.map hε) = ε :=
+theorem aeval_unique {ε : PowerSeries R →ₐ[R] S} (hε : Continuous ε)
+    : aeval (HasEval.X.map hε) = ε :=
   MvPowerSeries.aeval_unique hε
 
-theorem hasSum_aeval (ha : HasEval a) (f : PowerSeries R) :
-    HasSum (fun d ↦ coeff d f • a ^ d) (f.aeval ha) := by
+theorem hasSum_aeval (ha : HasEval a) (f : PowerSeries R)
+    : HasSum (fun d ↦ coeff d f • a ^ d) (f.aeval ha) := by
   simp_rw [coe_aeval, ← algebraMap_smul (R := R) S, smul_eq_mul]
   exact hasSum_eval₂ (continuous_algebraMap R S) ha f
 
-theorem aeval_eq_sum (ha : HasEval a) (f : PowerSeries R) :
-    aeval ha f = tsum fun d ↦ coeff d f • a ^ d :=
+theorem aeval_eq_sum (ha : HasEval a) (f : PowerSeries R)
+    : aeval ha f = tsum fun d ↦ coeff d f • a ^ d :=
   (hasSum_aeval ha f).tsum_eq.symm
 
-theorem comp_aeval (ha : HasEval a)
-    {T : Type*} [CommRing T] [UniformSpace T] [IsUniformAddGroup T]
-    [IsTopologicalRing T] [IsLinearTopology T T]
-    [T2Space T] [Algebra R T] [ContinuousSMul R T] [CompleteSpace T]
-    {ε : S →ₐ[R] T} (hε : Continuous ε) :
-    ε.comp (aeval ha) = aeval (ha.map hε) :=
+theorem comp_aeval
+    (ha : HasEval a)
+    {T : Type*} [CommRing T] [UniformSpace T] [IsUniformAddGroup T] [IsTopologicalRing T]
+    [IsLinearTopology T T] [T2Space T] [Algebra R T] [ContinuousSMul R T] [CompleteSpace T]
+    {ε : S →ₐ[R] T} (hε : Continuous ε)
+    : ε.comp (aeval ha) = aeval (ha.map hε) :=
   MvPowerSeries.comp_aeval (hasEval ha) hε
 
 end PowerSeries

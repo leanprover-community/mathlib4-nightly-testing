@@ -6,7 +6,6 @@ Authors: Kim Morrison, Alex J. Best, Yaël Dillies
 module
 
 public import Qq
-
 import Mathlib.Init
 import Qq.Typ
 
@@ -23,18 +22,20 @@ open Lean Elab Tactic Meta
 namespace Qq
 
 /-- If `e` has type `Sort u` for some level `u`, return `u` and `e : Q(Sort u)`. -/
-def getLevelQ (e : Expr) : MetaM (Σ u : Lean.Level, Q(Sort u)) := do
-  return ⟨← getLevel e, e⟩
+def getLevelQ (e : Expr) : MetaM (Σ u : Lean.Level, Q(Sort u)) := do return ⟨← getLevel e, e⟩
 
 /-- If `e` has type `Type u` for some level `u`, return `u` and `e : Q(Type u)`. -/
 def getLevelQ' (e : Expr) : MetaM (Σ u : Lean.Level, Q(Type u)) := do
   let u ← getLevel e
-  let some v := (← instantiateLevelMVars u).dec | throwError "not a Type{indentExpr e}"
+  let some v := (← instantiateLevelMVars u).dec
+    | throwError "not a Type{indentExpr e}"
   return ⟨v, e⟩
 
-/-- Variant of `inferTypeQ` that yields a type in `Type u` rather than `Sort u`.
+/--
+Variant of `inferTypeQ` that yields a type in `Type u` rather than `Sort u`.
 Throws an error if the type is a `Prop` or if it's otherwise not possible to represent
-the universe as `Type u` (for example due to universe level metavariables). -/
+the universe as `Type u` (for example due to universe level metavariables).
+-/
 -- See https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/Using.20.60QQ.60.20when.20you.20only.20have.20an.20.60Expr.60/near/303349037
 def inferTypeQ' (e : Expr) : MetaM ((u : Level) × (α : Q(Type $u)) × Q($α)) := do
   let α ← inferType e
@@ -43,19 +44,25 @@ def inferTypeQ' (e : Expr) : MetaM ((u : Level) × (α : Q(Type $u)) × Q($α)) 
 
 theorem QuotedDefEq.rfl {u : Level} {α : Q(Sort u)} {a : Q($α)} : @QuotedDefEq u α a a := ⟨⟩
 
-/-- Return a local declaration whose type is definitionally equal to `sort`.
+/--
+Return a local declaration whose type is definitionally equal to `sort`.
 
-This is a Qq version of `Lean.Meta.findLocalDeclWithType?` -/
+This is a Qq version of `Lean.Meta.findLocalDeclWithType?`
+-/
 def findLocalDeclWithTypeQ? {u : Level} (sort : Q(Sort u)) : MetaM (Option Q($sort)) := do
-  let some fvarId ← findLocalDeclWithType? q($sort) | return none
+  let some fvarId ← findLocalDeclWithType? q($sort)
+    | return none
   return some <| .fvar fvarId
 
-/-- Returns a proof of `p : Prop` using `decide p`.
+/--
+Returns a proof of `p : Prop` using `decide p`.
 
-This is a Qq version of `Lean.Meta.mkDecideProof`. -/
+This is a Qq version of `Lean.Meta.mkDecideProof`.
+-/
 def mkDecideProofQ (p : Q(Prop)) : MetaM Q($p) := mkDecideProof p
 
-/-- Join a list of elements of type `α` into a container `β`.
+/--
+Join a list of elements of type `α` into a container `β`.
 
 Usually `β` is `q(Multiset α)` or `q(Finset α)` or `q(Set α)`.
 
@@ -65,27 +72,31 @@ mkSetLiteralQ q(Finset ℝ) (List.range 4 |>.map fun n : ℕ ↦ q($n•π))
 ```
 produces the expression `{0 • π, 1 • π, 2 • π, 3 • π} : Finset ℝ`.
 -/
-def mkSetLiteralQ {u v : Level} {α : Q(Type u)} (β : Q(Type v))
-    (elems : List Q($α))
+def mkSetLiteralQ
+    {u v : Level} {α : Q(Type u)} (β : Q(Type v)) (elems : List Q($α))
     (_ : Q(EmptyCollection $β) := by exact q(inferInstance))
     (_ : Q(Singleton $α $β) := by exact q(inferInstance))
-    (_ : Q(Insert $α $β) := by exact q(inferInstance)) :
-    Q($β) :=
+    (_ : Q(Insert $α $β) := by exact q(inferInstance))
+    : Q($β) :=
   match elems with
   | [] => q(∅)
   | [x] => q({$x})
   | x :: xs => q(Insert.insert $x $(mkSetLiteralQ β xs))
 
-/-- Returns the natural number literal `n` as used in the frontend. It is a `OfNat.ofNat`
+/--
+Returns the natural number literal `n` as used in the frontend. It is a `OfNat.ofNat`
 application. Recall that all theorems and definitions containing numeric literals are encoded using
 `OfNat.ofNat` applications in the frontend.
 
-This is a Qq version of `Lean.mkNatLit`. -/
+This is a Qq version of `Lean.mkNatLit`.
+-/
 def mkNatLitQ (n : Nat) : Q(Nat) := mkNatLit n
 
-/-- Returns the integer literal `n`.
+/--
+Returns the integer literal `n`.
 
-This is a Qq version of `Lean.mkIntLit`. -/
+This is a Qq version of `Lean.mkIntLit`.
+-/
 def mkIntLitQ (n : Int) : Q(Int) := mkIntLit n
 
 /-- Build the numeral `i : Fin n`. -/
@@ -101,24 +112,29 @@ def mkListLitQ {u : Level} {α : Q(Type u)} : List Q($α) → Q(List $α)
 /-- `List.drop n` on the list literal `l`. -/
 def dropListLitQ {u : Level} {α : Q(Type u)} (n : Nat) (l : Q(List $α)) : Q(List $α) :=
   match n with
-  | 0 => l
-  | n + 1 => match_expr l with
+  | 0 =>
+    l
+  | n + 1 =>
+    match_expr l with
     | List.cons _ _ tl => dropListLitQ (α := α) n tl
     | _ => l
 
 /-- A specialised version of `~q($hd :: $tl)`. -/
-def unconsListLitQ {u : Level} {α : Q(Type u)} (l : Q(List $α)) :
-    MetaM ((hd : Q($α)) × (tl : Q(List $α)) ×' $l =Q $hd :: $tl) := do
-  let_expr List.cons _ hd tl := l | throwError "unconsListLitQ: expected a cons cell{indentExpr l}"
+def unconsListLitQ {u : Level} {α : Q(Type u)} (l : Q(List $α))
+    : MetaM ((hd : Q($α)) × (tl : Q(List $α)) ×' $l =Q $hd :: $tl) := do
+  let_expr List.cons _ hd tl := l
+    | throwError "unconsListLitQ: expected a cons cell{indentExpr l}"
   have hd : Q($α) := hd
   have tl : Q(List $α) := tl
   have : $l =Q $hd :: $tl := ⟨⟩
   return ⟨hd, tl, ⟨⟩⟩
 
-/-- Version of `instantiateMVarsQ` that returns the Qq-fact that the new expression is equal to the
-previous one. -/
-def instantiateMVarsQ' {u : Level} {α : Q(Sort u)} (e : Q($α)) :
-    MetaM <| (e' : Q($α)) ×' ($e' =Q $e) := do
+/--
+Version of `instantiateMVarsQ` that returns the Qq-fact that the new expression is equal to the
+previous one.
+-/
+def instantiateMVarsQ' {u : Level} {α : Q(Sort u)} (e : Q($α))
+    : MetaM <| (e' : Q($α)) ×' ($e' =Q $e) := do
   let e' ← instantiateMVars e
   return ⟨e', ⟨⟩⟩
 

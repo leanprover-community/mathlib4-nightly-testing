@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Algebra.GroupWithZero.Action.Opposite
 
 open MulOpposite renaming op → mop

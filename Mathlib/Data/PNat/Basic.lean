@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Order.Positive.Ring
 public import Mathlib.Algebra.Order.Ring.Nat
 public import Mathlib.Algebra.Order.Sub.Basic
 public import Mathlib.Data.PNat.Equiv
-
 import Mathlib.Tactic.Basify.Attr
 
 /-!
@@ -24,8 +23,9 @@ that `Data.PNat.Defs` can have very few imports.
 @[expose] public section
 
 deriving instance Add, Mul, Distrib, AddLeftCancelSemigroup, AddRightCancelSemigroup,
-  AddCommSemigroup, CommMonoid, IsOrderedCancelMonoid, WellFoundedLT, AddLeftMono,
-  AddLeftStrictMono, AddLeftReflectLE, AddLeftReflectLT for PNat
+    AddCommSemigroup, CommMonoid, IsOrderedCancelMonoid, WellFoundedLT, AddLeftMono,
+    AddLeftStrictMono, AddLeftReflectLE, AddLeftReflectLT
+  for PNat
 
 namespace PNat
 
@@ -36,18 +36,14 @@ theorem one_add_natPred (n : ℕ+) : 1 + n.natPred = n := by
   rw [natPred, add_tsub_cancel_iff_le.mpr <| show 1 ≤ (n : ℕ) from n.2]
 
 @[simp]
-theorem natPred_add_one (n : ℕ+) : n.natPred + 1 = n :=
-  (add_comm _ _).trans n.one_add_natPred
+theorem natPred_add_one (n : ℕ+) : n.natPred + 1 = n := (add_comm _ _).trans n.one_add_natPred
 
 @[gcongr, mono]
 theorem natPred_strictMono : StrictMono natPred := fun m _ h => Nat.pred_lt_pred m.2.ne' h
 
-@[gcongr, mono]
-theorem natPred_monotone : Monotone natPred :=
-  natPred_strictMono.monotone
+@[gcongr, mono] theorem natPred_monotone : Monotone natPred := natPred_strictMono.monotone
 
-theorem natPred_injective : Function.Injective natPred :=
-  natPred_strictMono.injective
+theorem natPred_injective : Function.Injective natPred := natPred_strictMono.injective
 
 @[simp]
 theorem natPred_lt_natPred {m n : ℕ+} : m.natPred < n.natPred ↔ m < n :=
@@ -57,30 +53,23 @@ theorem natPred_lt_natPred {m n : ℕ+} : m.natPred < n.natPred ↔ m < n :=
 theorem natPred_le_natPred {m n : ℕ+} : m.natPred ≤ n.natPred ↔ m ≤ n :=
   natPred_strictMono.le_iff_le
 
-@[simp]
-theorem natPred_inj {m n : ℕ+} : m.natPred = n.natPred ↔ m = n :=
-  natPred_injective.eq_iff
+@[simp] theorem natPred_inj {m n : ℕ+} : m.natPred = n.natPred ↔ m = n := natPred_injective.eq_iff
 
 @[simp, norm_cast, basify_op]
-lemma val_ofNat (n : ℕ) [NeZero n] :
-    ((ofNat(n) : ℕ+) : ℕ) = OfNat.ofNat n :=
-  rfl
+lemma val_ofNat (n : ℕ) [NeZero n] : ((ofNat(n) : ℕ+) : ℕ) = OfNat.ofNat n := rfl
 
 @[simp]
-lemma mk_ofNat (n : ℕ) (h : 0 < n) :
-    @Eq ℕ+ (⟨ofNat(n), h⟩ : ℕ+) (haveI : NeZero n := ⟨h.ne'⟩; OfNat.ofNat n) :=
+lemma mk_ofNat (n : ℕ) (h : 0 < n)
+    : @Eq ℕ+ (⟨ofNat(n), h⟩ : ℕ+) (haveI : NeZero n := ⟨h.ne'⟩; OfNat.ofNat n) :=
   rfl
 
 end PNat
 
 namespace Nat
 
-@[gcongr, mono]
-theorem succPNat_strictMono : StrictMono succPNat := fun _ _ => Nat.succ_lt_succ
+@[gcongr, mono] theorem succPNat_strictMono : StrictMono succPNat := fun _ _ => Nat.succ_lt_succ
 
-@[gcongr, mono]
-theorem succPNat_mono : Monotone succPNat :=
-  succPNat_strictMono.monotone
+@[gcongr, mono] theorem succPNat_mono : Monotone succPNat := succPNat_strictMono.monotone
 
 @[simp]
 theorem succPNat_lt_succPNat {m n : ℕ} : m.succPNat < n.succPNat ↔ m < n :=
@@ -90,12 +79,10 @@ theorem succPNat_lt_succPNat {m n : ℕ} : m.succPNat < n.succPNat ↔ m < n :=
 theorem succPNat_le_succPNat {m n : ℕ} : m.succPNat ≤ n.succPNat ↔ m ≤ n :=
   succPNat_strictMono.le_iff_le
 
-theorem succPNat_injective : Function.Injective succPNat :=
-  succPNat_strictMono.injective
+theorem succPNat_injective : Function.Injective succPNat := succPNat_strictMono.injective
 
 @[simp]
-theorem succPNat_inj {n m : ℕ} : succPNat n = succPNat m ↔ n = m :=
-  succPNat_injective.eq_iff
+theorem succPNat_inj {n m : ℕ} : succPNat n = succPNat m ↔ n = m := succPNat_injective.eq_iff
 
 end Nat
 
@@ -103,18 +90,16 @@ namespace PNat
 
 open Nat
 
-/-- We now define a long list of structures on `ℕ+` induced by
+/--
+We now define a long list of structures on `ℕ+` induced by
 similar structures on `ℕ`. Most of these behave in a completely
 obvious way, but there are a few things to be said about
 subtraction, division and powers.
 -/
 @[simp, norm_cast, basify_simp ←]
-theorem coe_inj {m n : ℕ+} : (m : ℕ) = n ↔ m = n :=
-  Subtype.ext_iff.symm
+theorem coe_inj {m n : ℕ+} : (m : ℕ) = n ↔ m = n := Subtype.ext_iff.symm
 
-@[simp, norm_cast, basify_op]
-theorem add_coe (m n : ℕ+) : ((m + n : ℕ+) : ℕ) = m + n :=
-  rfl
+@[simp, norm_cast, basify_op] theorem add_coe (m n : ℕ+) : ((m + n : ℕ+) : ℕ) = m + n := rfl
 
 /-- `coe` promoted to an `AddHom`, that is, a morphism which preserves addition. -/
 @[simps]
@@ -129,8 +114,7 @@ def _root_.OrderIso.pnatIsoNat : ℕ+ ≃o ℕ where
   map_rel_iff' := natPred_le_natPred
 
 @[simp]
-theorem _root_.OrderIso.pnatIsoNat_symm_apply : OrderIso.pnatIsoNat.symm = Nat.succPNat :=
-  rfl
+theorem _root_.OrderIso.pnatIsoNat_symm_apply : OrderIso.pnatIsoNat.symm = Nat.succPNat := rfl
 
 theorem lt_add_one_iff : ∀ {a b : ℕ+}, a < b + 1 ↔ a ≤ b := Nat.lt_add_one_iff
 
@@ -143,13 +127,12 @@ instance instOrderBot : OrderBot ℕ+ where
 instance : IsBotOneClass ℕ+ where
   isBot_one a := a.2
 
-@[simp]
-theorem bot_eq_one : (⊥ : ℕ+) = 1 :=
-  rfl
+@[simp] theorem bot_eq_one : (⊥ : ℕ+) = 1 := rfl
 
 /-- Strong induction on `ℕ+`, with `n = 1` treated separately. -/
-def caseStrongInductionOn {p : ℕ+ → Sort*} (a : ℕ+) (hz : p 1)
-    (hi : ∀ n, (∀ m, m ≤ n → p m) → p (n + 1)) : p a := by
+def caseStrongInductionOn
+    {p : ℕ+ → Sort*} (a : ℕ+) (hz : p 1) (hi : ∀ n, (∀ m, m ≤ n → p m) → p (n + 1))
+    : p a := by
   apply strongInductionOn a
   rintro ⟨k, kprop⟩ hk
   rcases k with - | k
@@ -158,46 +141,45 @@ def caseStrongInductionOn {p : ℕ+ → Sort*} (a : ℕ+) (hz : p 1)
   · exact hz
   exact hi ⟨k.succ, Nat.succ_pos _⟩ fun m hm => hk _ (Nat.lt_succ_iff.2 hm)
 
-/-- An induction principle for `ℕ+`: it takes values in `Sort*`, so it applies also to Types,
-not only to `Prop`. -/
+/--
+An induction principle for `ℕ+`: it takes values in `Sort*`, so it applies also to Types,
+not only to `Prop`.
+-/
 @[elab_as_elim, induction_eliminator]
 def recOn (n : ℕ+) {p : ℕ+ → Sort*} (one : p 1) (succ : ∀ n, p n → p (n + 1)) : p n := by
   rcases n with ⟨n, h⟩
   induction n with
-  | zero => exact absurd h (by decide)
+  | zero =>
+    exact absurd h (by decide)
   | succ n IH =>
     rcases n with - | n
     · exact one
     · exact succ _ (IH n.succ_pos)
 
-@[simp]
-theorem recOn_one {p} (one succ) : @PNat.recOn 1 p one succ = one :=
-  rfl
+@[simp] theorem recOn_one {p} (one succ) : @PNat.recOn 1 p one succ = one := rfl
 
 @[simp]
-theorem recOn_succ (n : ℕ+) {p : ℕ+ → Sort*} (one succ) :
-    @PNat.recOn (n + 1) p one succ = succ n (@PNat.recOn n p one succ) := by
+theorem recOn_succ (n : ℕ+) {p : ℕ+ → Sort*} (one succ)
+    : @PNat.recOn (n + 1) p one succ = succ n (@PNat.recOn n p one succ) := by
   obtain ⟨n, h⟩ := n
   cases n <;> [exact absurd h (by decide); rfl]
 
 @[simp]
-theorem ofNat_le_ofNat {m n : ℕ} [NeZero m] [NeZero n] :
-    (ofNat(m) : ℕ+) ≤ ofNat(n) ↔ OfNat.ofNat m ≤ OfNat.ofNat n :=
+theorem ofNat_le_ofNat {m n : ℕ} [NeZero m] [NeZero n]
+    : (ofNat(m) : ℕ+) ≤ ofNat(n) ↔ OfNat.ofNat m ≤ OfNat.ofNat n :=
   .rfl
 
 @[simp]
-theorem ofNat_lt_ofNat {m n : ℕ} [NeZero m] [NeZero n] :
-    (ofNat(m) : ℕ+) < ofNat(n) ↔ OfNat.ofNat m < OfNat.ofNat n :=
+theorem ofNat_lt_ofNat {m n : ℕ} [NeZero m] [NeZero n]
+    : (ofNat(m) : ℕ+) < ofNat(n) ↔ OfNat.ofNat m < OfNat.ofNat n :=
   .rfl
 
 @[simp]
-theorem ofNat_inj {m n : ℕ} [NeZero m] [NeZero n] :
-    (ofNat(m) : ℕ+) = ofNat(n) ↔ OfNat.ofNat m = OfNat.ofNat n :=
+theorem ofNat_inj {m n : ℕ} [NeZero m] [NeZero n]
+    : (ofNat(m) : ℕ+) = ofNat(n) ↔ OfNat.ofNat m = OfNat.ofNat n :=
   Subtype.mk_eq_mk
 
-@[simp, norm_cast, basify_op]
-theorem mul_coe (m n : ℕ+) : ((m * n : ℕ+) : ℕ) = m * n :=
-  rfl
+@[simp, norm_cast, basify_op] theorem mul_coe (m n : ℕ+) : ((m * n : ℕ+) : ℕ) = m * n := rfl
 
 /-- `PNat.coe` promoted to a `MonoidHom`. -/
 def coeMonoidHom : ℕ+ →* ℕ where
@@ -205,23 +187,16 @@ def coeMonoidHom : ℕ+ →* ℕ where
   map_one' := one_coe
   map_mul' := mul_coe
 
-@[simp]
-theorem coe_coeMonoidHom : (coeMonoidHom : ℕ+ → ℕ) = (↑) :=
-  rfl
+@[simp] theorem coe_coeMonoidHom : (coeMonoidHom : ℕ+ → ℕ) = (↑) := rfl
 
 @[deprecated le_one_iff_eq_one +typeChanged (since := "2026-05-07")]
-theorem le_one_iff {n : ℕ+} : n ≤ 1 ↔ n = 1 := by
-  simp
+theorem le_one_iff {n : ℕ+} : n ≤ 1 ↔ n = 1 := by simp
 
-theorem lt_add_left (n m : ℕ+) : n < m + n :=
-  lt_add_of_pos_left _ m.2
+theorem lt_add_left (n m : ℕ+) : n < m + n := lt_add_of_pos_left _ m.2
 
-theorem lt_add_right (n m : ℕ+) : n < n + m :=
-  (lt_add_left n m).trans_eq (add_comm _ _)
+theorem lt_add_right (n m : ℕ+) : n < n + m := (lt_add_left n m).trans_eq (add_comm _ _)
 
-@[simp, norm_cast]
-theorem pow_coe (m : ℕ+) (n : ℕ) : ↑(m ^ n) = (m : ℕ) ^ n :=
-  rfl
+@[simp, norm_cast] theorem pow_coe (m : ℕ+) (n : ℕ) : ↑(m ^ n) = (m : ℕ) ^ n := rfl
 
 @[deprecated one_lt_of_gt +typeChanged (since := "2026-05-07")]
 theorem one_lt_of_lt {a b : ℕ+} (hab : a < b) : 1 < b := hab.one_lt
@@ -230,11 +205,11 @@ theorem add_one (a : ℕ+) : a + 1 = succPNat a := rfl
 
 theorem lt_succ_self (a : ℕ+) : a < succPNat a := Nat.lt_add_one a
 
-/-- Subtraction a - b is defined in the obvious way when
-  a > b, and by a - b = 1 if a ≤ b.
+/--
+Subtraction a - b is defined in the obvious way when
+a > b, and by a - b = 1 if a ≤ b.
 -/
-instance instSub : Sub ℕ+ :=
-  ⟨fun a b => toPNat' (a - b : ℕ)⟩
+instance instSub : Sub ℕ+ := ⟨fun a b => toPNat' (a - b : ℕ)⟩
 
 @[basify_op]
 theorem sub_coe (a b : ℕ+) : ((a - b : ℕ+) : ℕ) = ite (b < a) (a - b : ℕ) 1 := by
@@ -256,33 +231,34 @@ theorem le_sub_one_of_lt {a b : ℕ+} (hab : a < b) : a ≤ b - (1 : ℕ+) := by
   · exact Nat.le_pred_of_lt hab
   · exact hab.le.trans (le_of_not_gt h)
 
-theorem add_sub_of_lt {a b : ℕ+} : a < b → a + (b - a) = b :=
-  fun h =>
-    PNat.eq <| by
-      rw [add_coe, sub_coe, ite_eq_left h]
-      exact add_tsub_cancel_of_le h.le
+theorem add_sub_of_lt {a b : ℕ+} : a < b → a + (b - a) = b := fun h =>
+  PNat.eq <| by
+    rw [add_coe, sub_coe, ite_eq_left h]
+    exact add_tsub_cancel_of_le h.le
 
-theorem sub_add_of_lt {a b : ℕ+} (h : b < a) : a - b + b = a := by
-  rw [add_comm, add_sub_of_lt h]
+theorem sub_add_of_lt {a b : ℕ+} (h : b < a) : a - b + b = a := by rw [add_comm, add_sub_of_lt h]
 
 @[simp]
-theorem add_sub {a b : ℕ+} : a + b - b = a :=
-  add_right_cancel (sub_add_of_lt (lt_add_left _ _))
+theorem add_sub {a b : ℕ+} : a + b - b = a := add_right_cancel (sub_add_of_lt (lt_add_left _ _))
 
 /-- If `n : ℕ+` is different from `1`, then it is the successor of some `k : ℕ+`. -/
 theorem exists_eq_succ_of_ne_one : ∀ {n : ℕ+} (_ : n ≠ 1), ∃ k : ℕ+, n = k + 1
-  | ⟨1, _⟩, h₁ => False.elim <| h₁ rfl
-  | ⟨n + 2, _⟩, _ => ⟨⟨n + 1, by simp⟩, rfl⟩
+  | ⟨1, _⟩, h₁ =>
+    False.elim <| h₁ rfl
+  | ⟨n + 2, _⟩, _ =>
+    ⟨⟨n + 1, by simp⟩, rfl⟩
 
 /-- Lemmas with div, dvd and mod operations -/
-theorem modDivAux_spec :
-    ∀ (k : ℕ+) (r q : ℕ) (_ : ¬(r = 0 ∧ q = 0)),
+theorem modDivAux_spec
+    : ∀ (k : ℕ+) (r q : ℕ) (_ : ¬(r = 0 ∧ q = 0)),
       ((modDivAux k r q).1 : ℕ) + k * (modDivAux k r q).2 = r + k * q
-  | _, 0, 0, h => (h ⟨rfl, rfl⟩).elim
+  | _, 0, 0, h =>
+    (h ⟨rfl, rfl⟩).elim
   | k, 0, q + 1, _ => by
     change (k : ℕ) + (k : ℕ) * (q + 1).pred = 0 + (k : ℕ) * (q + 1)
     rw [Nat.pred_succ, Nat.mul_succ, zero_add, add_comm]
-  | _, _ + 1, _, _ => rfl
+  | _, _ + 1, _, _ =>
+    rfl
 
 theorem mod_add_div (m k : ℕ+) : (mod m k + k * div m k : ℕ) = m := by
   let h₀ := Nat.mod_add_div (m : ℕ) (k : ℕ)
@@ -320,15 +296,17 @@ theorem dvd_iff {k m : ℕ+} : k ∣ m ↔ (k : ℕ) ∣ (m : ℕ) := by
   · rcases h with ⟨_, rfl⟩
     apply dvd_mul_right
   · rcases h with ⟨a, h⟩
-    obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (n := a) <| by
-      rintro rfl
-      simp only [mul_zero, ne_zero] at h
+    obtain ⟨n, rfl⟩ :=
+      Nat.exists_eq_succ_of_ne_zero (n := a) <| by
+        rintro rfl
+        simp only [mul_zero, ne_zero] at h
     use ⟨n.succ, n.succ_pos⟩
     rw [← coe_inj, h, mul_coe, mk_coe]
 
 theorem dvd_iff' {k m : ℕ+} : k ∣ m ↔ mod m k = k := by
   rw [dvd_iff]
-  rw [Nat.dvd_iff_mod_eq_zero]; constructor
+  rw [Nat.dvd_iff_mod_eq_zero]
+  constructor
   · intro h
     apply PNat.eq
     rw [mod_coe, ite_eq_left h]
@@ -346,7 +324,8 @@ theorem le_of_dvd {m n : ℕ+} : m ∣ n → m ≤ n := by
   apply (mod_le n m).left
 
 theorem mul_div_exact {m k : ℕ+} (h : k ∣ m) : k * divExact m k = m := by
-  apply PNat.eq; rw [mul_coe]
+  apply PNat.eq
+  rw [mul_coe]
   change (k : ℕ) * (div m k).succ = m
   rw [← div_add_mod m k, dvd_iff'.mp h, Nat.mul_succ]
 

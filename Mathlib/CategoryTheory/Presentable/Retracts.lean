@@ -24,9 +24,8 @@ variable {C : Type u} [Category.{v} C]
 
 set_option backward.defeqAttrib.useBackward true in
 lemma Retract.isCardinalPresentable
-    {X Y : C} (h : Retract Y X) (κ : Cardinal.{w}) [Fact κ.IsRegular]
-    [IsCardinalPresentable X κ] :
-    IsCardinalPresentable Y κ where
+    {X Y : C} (h : Retract Y X) (κ : Cardinal.{w}) [Fact κ.IsRegular] [IsCardinalPresentable X κ]
+    : IsCardinalPresentable Y κ where
   preservesColimitOfShape J _ _ := ⟨fun {F} ↦ ⟨fun {c} hc ↦ ⟨by
     have := essentiallySmallSelf J
     have := isFiltered_of_isCardinalFiltered J κ
@@ -34,12 +33,12 @@ lemma Retract.isCardinalPresentable
     · obtain ⟨i, g, hg⟩ := IsCardinalPresentable.exists_hom_of_isColimit κ hc (h.r ≫ f)
       exact ⟨i, h.i ≫ g, by simp [hg]⟩
     · dsimp at f₁ f₂ hf ⊢
-      obtain ⟨k, u, hj⟩ := IsCardinalPresentable.exists_eq_of_isColimit'
-        κ hc (h.r ≫ f₁) (h.r ≫ f₂) (by simp [hf])
+      obtain ⟨k, u, hj⟩ :=
+        IsCardinalPresentable.exists_eq_of_isColimit' κ hc (h.r ≫ f₁) (h.r ≫ f₂) (by simp [hf])
       exact ⟨k, u, by simpa [← cancel_epi h.r] using hj⟩⟩⟩⟩
 
-instance (κ : Cardinal.{w}) [Fact κ.IsRegular] :
-    (isCardinalPresentable C κ).IsStableUnderRetracts where
+instance (κ : Cardinal.{w}) [Fact κ.IsRegular]
+    : (isCardinalPresentable C κ).IsStableUnderRetracts where
   of_retract {Y X} h hX := by
     rw [isCardinalPresentable_iff] at hX ⊢
     exact h.isCardinalPresentable κ

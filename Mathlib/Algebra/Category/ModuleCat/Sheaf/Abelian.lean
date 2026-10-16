@@ -34,8 +34,9 @@ variable {C : Type u'} [Category.{v'} C] {J : GrothendieckTopology C}
 
 namespace SheafOfModules
 
-variable (R : Sheaf J RingCat.{u}) [HasSheafify J AddCommGrpCat.{v}]
-  [J.WEqualsLocallyBijective AddCommGrpCat.{v}]
+variable
+  (R : Sheaf J RingCat.{u})
+  [HasSheafify J AddCommGrpCat.{v}] [J.WEqualsLocallyBijective AddCommGrpCat.{v}]
 
 noncomputable instance : Abelian (SheafOfModules.{v} R) := by
   let adj := PresheafOfModules.sheafificationAdjunction (𝟙 R.obj)

@@ -49,17 +49,21 @@ solution.
 
 namespace Imo2026Q5
 
-/-- The pair of inequalities in the problem. Positivity of `f` on positive inputs is kept as a
-separate hypothesis because `f` is represented as a function on all of `ℝ`. -/
+/--
+The pair of inequalities in the problem. Positivity of `f` on positive inputs is kept as a
+separate hypothesis because `f` is represented as a function on all of `ℝ`.
+-/
 def IsSolution (f : ℝ → ℝ) : Prop :=
   ∀ x > 0, ∀ y > 0, √((x ^ 2 + f y ^ 2) / 2) ≥ (f x + y) / 2 ∧ (f x + y) / 2 ≥ √(x * f y)
 
 variable {f : ℝ → ℝ} {x y : ℝ}
 
-/-- The key estimate: the two inequalities in the problem control the difference between the
-displacements at two positive inputs. -/
-lemma displacement_control (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (hy : 0 < y) :
-    |(f x - x) - (f y - y)| * (f x + y + x + f y) ≤ (x - f y) ^ 2 := by
+/--
+The key estimate: the two inequalities in the problem control the difference between the
+displacements at two positive inputs.
+-/
+lemma displacement_control (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (hy : 0 < y)
+    : |(f x - x) - (f y - y)| * (f x + y + x + f y) ≤ (x - f y) ^ 2 := by
   rcases h x hx y hy with ⟨hupper, hlower⟩
   obtain ⟨hfx, hfy⟩ : 0 < f x ∧ 0 < f y := ⟨hf x hx, hf y hy⟩
   have hmid_nonneg : 0 ≤ (f x + y) / 2 := by positivity
@@ -79,24 +83,28 @@ lemma iterate_pos (hf : ∀ x > 0, 0 < f x) (hx : 0 < x) (n : ℕ) : 0 < f^[n] x
   | zero => simpa
   | succ n ih => simpa [Function.iterate_succ_apply'] using hf _ ih
 
-/-- The iterates of a positive input form an arithmetic progression whose common difference is
-`f x - x`. -/
-lemma iterate_eq_add_mul_displacement (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
-    (hx : 0 < x) (n : ℕ) : f^[n] x = x + n * (f x - x) := by
+/--
+The iterates of a positive input form an arithmetic progression whose common difference is
+`f x - x`.
+-/
+lemma iterate_eq_add_mul_displacement
+    (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (n : ℕ)
+    : f^[n] x = x + n * (f x - x) := by
   have hstep {y : ℝ} (hy : 0 < y) : f (f y) - f y = f y - y := by
     rcases h (f y) (hf y hy) y hy with ⟨hupper, hlower⟩
     simp [Real.sqrt_sq (hf y hy).le, Real.sqrt_mul_self (hf y hy).le] at hupper hlower
     nlinarith
   induction n generalizing x with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     rw [Function.iterate_succ_apply, ih (hf x hx), hstep hx]
     push_cast
     ring
 
 /-- The displacement `f x - x` is nonnegative at every positive input. -/
-lemma displacement_nonneg (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) :
-    0 ≤ f x - x := by
+lemma displacement_nonneg (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x)
+    : 0 ≤ f x - x := by
   by_contra! hneg
   obtain ⟨n, hn_large⟩ := exists_nat_gt (x / (x - f x))
   have hiter_pos := iterate_pos hf hx n
@@ -104,16 +112,18 @@ lemma displacement_nonneg (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 <
   nlinarith [(div_lt_iff₀ (by linarith : 0 < x - f x)).1 hn_large]
 
 /-- The displacement is constant along the forward orbit of a positive input. -/
-lemma displacement_iterate_eq (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
-    (hx : 0 < x) (n : ℕ) : f (f^[n] x) - f^[n] x = f x - x := by
+lemma displacement_iterate_eq (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (n : ℕ)
+    : f (f^[n] x) - f^[n] x = f x - x := by
   rw [show f (f^[n] x) = f^[n.succ] x by simp [Function.iterate_succ_apply']]
   have hsucc := iterate_eq_add_mul_displacement hf h hx n.succ
   push_cast at hsucc
   nlinarith [iterate_eq_add_mul_displacement hf h hx n]
 
 /-- Any two strictly positive displacements are equal. -/
-lemma displacement_eq_of_pos (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
-    (hx : 0 < x) (hy : 0 < y) (hfx : 0 < f x - x) (hfy : 0 < f y - y) : f x - x = f y - y := by
+lemma displacement_eq_of_pos
+    (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (hy : 0 < y) (hfx : 0 < f x - x)
+    (hfy : 0 < f y - y)
+    : f x - x = f y - y := by
   set a := f x - x
   set b := f y - y
   obtain ⟨ha, hb⟩ : 0 < a ∧ 0 < b := ⟨hfx, hfy⟩
@@ -124,59 +134,56 @@ lemma displacement_eq_of_pos (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
     simpa [Function.iterate_succ_apply', Nat.cast_succ] using
       iterate_eq_add_mul_displacement hf h hy n.succ
   set m := Nat.floor ((f (f^[n] y) - x) / a)
-  have hcontra : a ^ 2 < a ^ 2 := calc
-    _ < n * (|a - b| * b) := by
-      rw [← div_lt_iff₀ (mul_pos habs_pos hb)]
-      grind
-    _ < |a - b| * f (f^[n] y) := by nlinarith
-    _ < |a - b| * (f (f^[m] x) + f^[n] y + f^[m] x + f (f^[n] y)) := by
-      apply mul_lt_mul_of_pos_left _ habs_pos
-      linarith [hf _ (iterate_pos hf hx m), iterate_pos hf hx m, iterate_pos hf hy n]
-    _ ≤ (f (f^[n] y) - f^[m] x) ^ 2 := by
-      have hcontrol :=
-        displacement_control hf h (iterate_pos hf hx m) (iterate_pos hf hy n)
-      rw [displacement_iterate_eq hf h hx m, displacement_iterate_eq hf h hy n] at hcontrol
-      nlinarith
-    _ < _ := by
-      have hxn : x < (n : ℝ) * b := (div_lt_iff₀ hb).1 (by grind)
-      apply (sq_lt_sq₀ ?_ ha.le).2
-      · rw [iterate_eq_add_mul_displacement hf h hx m]
-        have hlt : (f (f^[n] y) - x) / a < (m : ℝ) + 1 :=
-          Nat.lt_floor_add_one _
-        linarith [(div_lt_iff₀ ha).1 hlt]
-      · rw [iterate_eq_add_mul_displacement hf h hx m]
-        have hnonneg : 0 ≤ (f (f^[n] y) - x) / a :=
-          div_nonneg (by rw [hy_succ]; nlinarith) ha.le
-        nlinarith [(le_div_iff₀ ha).1 (Nat.floor_le hnonneg)]
+  have hcontra : a ^ 2 < a ^ 2 :=
+    calc
+      _ < n * (|a - b| * b) := by
+        rw [← div_lt_iff₀ (mul_pos habs_pos hb)]
+        grind
+      _ < |a - b| * f (f^[n] y) := by nlinarith
+      _ < |a - b| * (f (f^[m] x) + f^[n] y + f^[m] x + f (f^[n] y)) := by
+        apply mul_lt_mul_of_pos_left _ habs_pos
+        linarith [hf _ (iterate_pos hf hx m), iterate_pos hf hx m, iterate_pos hf hy n]
+      _ ≤ (f (f^[n] y) - f^[m] x) ^ 2 := by
+        have hcontrol := displacement_control hf h (iterate_pos hf hx m) (iterate_pos hf hy n)
+        rw [displacement_iterate_eq hf h hx m, displacement_iterate_eq hf h hy n] at hcontrol
+        nlinarith
+      _ < _ := by
+        have hxn : x < (n : ℝ) * b := (div_lt_iff₀ hb).1 (by grind)
+        apply (sq_lt_sq₀ ?_ ha.le).2
+        · rw [iterate_eq_add_mul_displacement hf h hx m]
+          have hlt : (f (f^[n] y) - x) / a < (m : ℝ) + 1 := Nat.lt_floor_add_one _
+          linarith [(div_lt_iff₀ ha).1 hlt]
+        · rw [iterate_eq_add_mul_displacement hf h hx m]
+          have hnonneg : 0 ≤ (f (f^[n] y) - x) / a := div_nonneg (by rw [hy_succ]; nlinarith) ha.le
+          nlinarith [(le_div_iff₀ ha).1 (Nat.floor_le hnonneg)]
   exact (lt_self_iff_false (a ^ 2)).mp hcontra
 
-/-- A point with positive displacement `a` is at least distance `a` from every point with zero
-displacement. -/
-lemma displacement_le_dist_of_eq_zero (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
-    {p q a : ℝ} (hp : 0 < p) (hq : 0 < q) (ha : 0 < a)
-    (hp' : f p - p = a) (hq' : f q - q = 0) : a ≤ dist p q := by
+/--
+A point with positive displacement `a` is at least distance `a` from every point with zero
+displacement.
+-/
+lemma displacement_le_dist_of_eq_zero
+    (hf : ∀ x > 0, 0 < f x) (h : IsSolution f)
+    {p q a : ℝ} (hp : 0 < p) (hq : 0 < q) (ha : 0 < a) (hp' : f p - p = a) (hq' : f q - q = 0)
+    : a ≤ dist p q := by
   by_contra! hdist
   have hcontrol := displacement_control hf h hp hq
   rw [hp', hq', sub_zero, abs_of_pos ha] at hcontrol
   nlinarith [(sq_lt_sq₀ (abs_nonneg (p - q)) ha.le).2 hdist, sq_abs (p - q)]
 
 /-- The displacement `f x - x` is constant on the positive reals. -/
-lemma displacement_eq (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (hy : 0 < y) :
-    f x - x = f y - y := by
+lemma displacement_eq (hf : ∀ x > 0, 0 < f x) (h : IsSolution f) (hx : 0 < x) (hy : 0 < y)
+    : f x - x = f y - y := by
   have hnonneg {t : ℝ} (ht : 0 < t) : 0 ≤ f t - t := displacement_nonneg hf h ht
   by_cases hex : ∃ z : ℝ, 0 < z ∧ 0 < f z - z
   · obtain ⟨z, hz, hfz⟩ := hex
-    have hzero_or_eq {t : ℝ} (ht : 0 < t) :
-        f t - t = 0 ∨ f t - t = f z - z := by
+    have hzero_or_eq {t : ℝ} (ht : 0 < t) : f t - t = 0 ∨ f t - t = f z - z := by
       grind [displacement_eq_of_pos hf h]
     set d : Set.Ioi (0 : ℝ) → ℝ := fun t ↦ f t - t
     have hnear (p q : Set.Ioi (0 : ℝ)) (hpq : dist p q < f z - z) : d p = d q := by
-      have hpq_sep :=
-        displacement_le_dist_of_eq_zero hf h p.property q.property hfz
-      have hqp_sep :=
-        displacement_le_dist_of_eq_zero hf h q.property p.property hfz
-      rcases hzero_or_eq p.property with hp₀ | hp₁ <;>
-      rcases hzero_or_eq q.property with hq₀ | hq₁
+      have hpq_sep := displacement_le_dist_of_eq_zero hf h p.property q.property hfz
+      have hqp_sep := displacement_le_dist_of_eq_zero hf h q.property p.property hfz
+      rcases hzero_or_eq p.property with hp₀ | hp₁ <;> rcases hzero_or_eq q.property with hq₀ | hq₁
       all_goals grind [Subtype.dist_eq, dist_comm]
     have hloc : IsLocallyConstant d := by
       rw [IsLocallyConstant.iff_eventually_eq]

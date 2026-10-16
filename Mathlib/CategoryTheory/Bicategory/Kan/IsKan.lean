@@ -56,54 +56,59 @@ variable {f : a ⟶ b} {g : a ⟶ c}
 abbrev IsKan (t : LeftExtension f g) := t.IsUniversal
 
 /-- An absolute left Kan extension is a Kan extension that commutes with any 1-morphism. -/
-abbrev IsAbsKan (t : LeftExtension f g) :=
-  ∀ {x : B} (h : c ⟶ x), IsKan (t.whisker h)
+abbrev IsAbsKan (t : LeftExtension f g) := ∀ {x : B} (h : c ⟶ x), IsKan (t.whisker h)
 
 namespace IsKan
 
 variable {s t : LeftExtension f g}
 
-/-- To show that a left extension `t` is a Kan extension, we need to show that for every left
-extension `s` there is a unique morphism `t ⟶ s`. -/
-abbrev mk (desc : ∀ s, t ⟶ s) (w : ∀ s τ, τ = desc s) :
-    IsKan t :=
-  .ofUniqueHom desc w
+/--
+To show that a left extension `t` is a Kan extension, we need to show that for every left
+extension `s` there is a unique morphism `t ⟶ s`.
+-/
+abbrev mk (desc : ∀ s, t ⟶ s) (w : ∀ s τ, τ = desc s) : IsKan t := .ofUniqueHom desc w
 
 /-- The family of 2-morphisms out of a left Kan extension. -/
 abbrev desc (H : IsKan t) (s : LeftExtension f g) : t.extension ⟶ s.extension :=
   StructuredArrow.IsUniversal.desc H s
 
 @[reassoc (attr := simp)]
-theorem fac (H : IsKan t) (s : LeftExtension f g) :
-    t.unit ≫ f ◁ H.desc s = s.unit :=
+theorem fac (H : IsKan t) (s : LeftExtension f g) : t.unit ≫ f ◁ H.desc s = s.unit :=
   StructuredArrow.IsUniversal.fac H s
 
-/-- Two 2-morphisms out of a left Kan extension are equal if their compositions with
-each triangle 2-morphism are equal. -/
-theorem hom_ext (H : IsKan t) {k : b ⟶ c} {τ τ' : t.extension ⟶ k}
-    (w : t.unit ≫ f ◁ τ = t.unit ≫ f ◁ τ') : τ = τ' :=
+/--
+Two 2-morphisms out of a left Kan extension are equal if their compositions with
+each triangle 2-morphism are equal.
+-/
+theorem hom_ext
+    (H : IsKan t) {k : b ⟶ c} {τ τ' : t.extension ⟶ k} (w : t.unit ≫ f ◁ τ = t.unit ≫ f ◁ τ')
+    : τ = τ' :=
   StructuredArrow.IsUniversal.hom_ext H w
 
 /-- Kan extensions on `g` along `f` are unique up to isomorphism. -/
-def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t :=
-  Limits.IsInitial.uniqueUpToIso P Q
+def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t := Limits.IsInitial.uniqueUpToIso P Q
 
 @[simp]
-theorem uniqueUpToIso_hom_right (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).hom.right = P.desc t := rfl
+theorem uniqueUpToIso_hom_right (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).hom.right = P.desc t :=
+  rfl
 
 @[simp]
-theorem uniqueUpToIso_inv_right (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).inv.right = Q.desc s := rfl
+theorem uniqueUpToIso_inv_right (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).inv.right = Q.desc s :=
+  rfl
 
-/-- Transport evidence that a left extension is a Kan extension across an isomorphism
-of extensions. -/
-def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t :=
-  Limits.IsInitial.ofIso P i
+/--
+Transport evidence that a left extension is a Kan extension across an isomorphism
+of extensions.
+-/
+def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t := Limits.IsInitial.ofIso P i
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `t : LeftExtension f (g ≫ 𝟙 c)` is a Kan extension, then `t.ofCompId : LeftExtension f g`
-is also a Kan extension. -/
+/--
+If `t : LeftExtension f (g ≫ 𝟙 c)` is a Kan extension, then `t.ofCompId : LeftExtension f g`
+is also a Kan extension.
+-/
 def ofCompId (t : LeftExtension f (g ≫ 𝟙 c)) (P : IsKan t) : IsKan t.ofCompId :=
   .mk (fun s ↦ t.whiskerIdCancel <| P.to (s.whisker (𝟙 c))) <| by
     intro s τ
@@ -112,9 +117,9 @@ def ofCompId (t : LeftExtension f (g ≫ 𝟙 c)) (P : IsKan t) : IsKan t.ofComp
     simp [← LeftExtension.w τ]
 
 /-- If `s ≅ t` and `IsKan (s.whisker h)`, then `IsKan (t.whisker h)`. -/
-def whiskerOfCommute (s t : LeftExtension f g) (i : s ≅ t) {x : B} (h : c ⟶ x)
-    (P : IsKan (s.whisker h)) :
-    IsKan (t.whisker h) :=
+def whiskerOfCommute
+    (s t : LeftExtension f g) (i : s ≅ t) {x : B} (h : c ⟶ x) (P : IsKan (s.whisker h))
+    : IsKan (t.whisker h) :=
   P.ofIsoKan <| whiskerIso i h
 
 end IsKan
@@ -124,18 +129,18 @@ namespace IsAbsKan
 variable {s t : LeftExtension f g}
 
 /-- The family of 2-morphisms out of an absolute left Kan extension. -/
-abbrev desc (H : IsAbsKan t) {x : B} {h : c ⟶ x} (s : LeftExtension f (g ≫ h)) :
-    t.extension ≫ h ⟶ s.extension :=
+abbrev desc (H : IsAbsKan t) {x : B} {h : c ⟶ x} (s : LeftExtension f (g ≫ h))
+    : t.extension ≫ h ⟶ s.extension :=
   (H h).desc s
 
 /-- An absolute left Kan extension is a left Kan extension. -/
-def isKan (H : IsAbsKan t) : IsKan t :=
-  ((H (𝟙 c)).ofCompId _).ofIsoKan <| whiskerOfCompIdIsoSelf t
+def isKan (H : IsAbsKan t) : IsKan t := ((H (𝟙 c)).ofCompId _).ofIsoKan <| whiskerOfCompIdIsoSelf t
 
-/-- Transport evidence that a left extension is a Kan extension across an isomorphism
-of extensions. -/
-def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t :=
-  fun h ↦ (P h).ofIsoKan (whiskerIso i h)
+/--
+Transport evidence that a left extension is a Kan extension across an isomorphism
+of extensions.
+-/
+def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t := fun h ↦ (P h).ofIsoKan (whiskerIso i h)
 
 end IsAbsKan
 
@@ -149,53 +154,55 @@ variable {f : b ⟶ a} {g : c ⟶ a}
 abbrev IsKan (t : LeftLift f g) := t.IsUniversal
 
 /-- An absolute left Kan lift is a Kan lift such that every 1-morphism commutes with it. -/
-abbrev IsAbsKan (t : LeftLift f g) :=
-  ∀ {x : B} (h : x ⟶ c), IsKan (t.whisker h)
+abbrev IsAbsKan (t : LeftLift f g) := ∀ {x : B} (h : x ⟶ c), IsKan (t.whisker h)
 
 namespace IsKan
 
 variable {s t : LeftLift f g}
 
-/-- To show that a left lift `t` is a Kan lift, we need to show that for every left lift `s`
-there is a unique morphism `t ⟶ s`. -/
-abbrev mk (desc : ∀ s, t ⟶ s) (w : ∀ s τ, τ = desc s) :
-    IsKan t :=
-  .ofUniqueHom desc w
+/--
+To show that a left lift `t` is a Kan lift, we need to show that for every left lift `s`
+there is a unique morphism `t ⟶ s`.
+-/
+abbrev mk (desc : ∀ s, t ⟶ s) (w : ∀ s τ, τ = desc s) : IsKan t := .ofUniqueHom desc w
 
 /-- The family of 2-morphisms out of a left Kan lift. -/
 abbrev desc (H : IsKan t) (s : LeftLift f g) : t.lift ⟶ s.lift :=
   StructuredArrow.IsUniversal.desc H s
 
 @[reassoc (attr := simp)]
-theorem fac (H : IsKan t) (s : LeftLift f g) :
-    t.unit ≫ H.desc s ▷ f = s.unit :=
+theorem fac (H : IsKan t) (s : LeftLift f g) : t.unit ≫ H.desc s ▷ f = s.unit :=
   StructuredArrow.IsUniversal.fac H s
 
-/-- Two 2-morphisms out of a left Kan lift are equal if their compositions with
-each triangle 2-morphism are equal. -/
-theorem hom_ext (H : IsKan t) {k : c ⟶ b} {τ τ' : t.lift ⟶ k}
-    (w : t.unit ≫ τ ▷ f = t.unit ≫ τ' ▷ f) : τ = τ' :=
+/--
+Two 2-morphisms out of a left Kan lift are equal if their compositions with
+each triangle 2-morphism are equal.
+-/
+theorem hom_ext (H : IsKan t) {k : c ⟶ b} {τ τ' : t.lift ⟶ k} (w : t.unit ≫ τ ▷ f = t.unit ≫ τ' ▷ f)
+    : τ = τ' :=
   StructuredArrow.IsUniversal.hom_ext H w
 
 /-- Kan lifts on `g` along `f` are unique up to isomorphism. -/
-def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t :=
-  Limits.IsInitial.uniqueUpToIso P Q
+def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t := Limits.IsInitial.uniqueUpToIso P Q
 
 @[simp]
-theorem uniqueUpToIso_hom_right (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).hom.right = P.desc t := rfl
+theorem uniqueUpToIso_hom_right (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).hom.right = P.desc t :=
+  rfl
 
 @[simp]
-theorem uniqueUpToIso_inv_right (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).inv.right = Q.desc s := rfl
+theorem uniqueUpToIso_inv_right (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).inv.right = Q.desc s :=
+  rfl
 
 /-- Transport evidence that a left lift is a Kan lift across an isomorphism of lifts. -/
-def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t :=
-  Limits.IsInitial.ofIso P i
+def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t := Limits.IsInitial.ofIso P i
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `t : LeftLift f (𝟙 c ≫ g)` is a Kan lift, then `t.ofIdComp : LeftLift f g` is also
-a Kan lift. -/
+/--
+If `t : LeftLift f (𝟙 c ≫ g)` is a Kan lift, then `t.ofIdComp : LeftLift f g` is also
+a Kan lift.
+-/
 def ofIdComp (t : LeftLift f (𝟙 c ≫ g)) (P : IsKan t) : IsKan t.ofIdComp :=
   .mk (fun s ↦ t.whiskerIdCancel <| P.to (s.whisker (𝟙 c))) <| by
     intro s τ
@@ -204,9 +211,8 @@ def ofIdComp (t : LeftLift f (𝟙 c ≫ g)) (P : IsKan t) : IsKan t.ofIdComp :=
     simp [← LeftLift.w τ]
 
 /-- If `s ≅ t` and `IsKan (s.whisker h)`, then `IsKan (t.whisker h)`. -/
-def whiskerOfCommute (s t : LeftLift f g) (i : s ≅ t) {x : B} (h : x ⟶ c)
-    (P : IsKan (s.whisker h)) :
-    IsKan (t.whisker h) :=
+def whiskerOfCommute (s t : LeftLift f g) (i : s ≅ t) {x : B} (h : x ⟶ c) (P : IsKan (s.whisker h))
+    : IsKan (t.whisker h) :=
   P.ofIsoKan <| whiskerIso i h
 
 end IsKan
@@ -216,17 +222,14 @@ namespace IsAbsKan
 variable {s t : LeftLift f g}
 
 /-- The family of 2-morphisms out of an absolute left Kan lift. -/
-abbrev desc (H : IsAbsKan t) {x : B} {h : x ⟶ c} (s : LeftLift f (h ≫ g)) :
-    h ≫ t.lift ⟶ s.lift :=
+abbrev desc (H : IsAbsKan t) {x : B} {h : x ⟶ c} (s : LeftLift f (h ≫ g)) : h ≫ t.lift ⟶ s.lift :=
   (H h).desc s
 
 /-- An absolute left Kan lift is a left Kan lift. -/
-def isKan (H : IsAbsKan t) : IsKan t :=
-  ((H (𝟙 c)).ofIdComp _).ofIsoKan <| whiskerOfIdCompIsoSelf t
+def isKan (H : IsAbsKan t) : IsKan t := ((H (𝟙 c)).ofIdComp _).ofIsoKan <| whiskerOfIdCompIsoSelf t
 
 /-- Transport evidence that a left lift is a Kan lift across an isomorphism of lifts. -/
-def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t :=
-  fun h ↦ (P h).ofIsoKan (whiskerIso i h)
+def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t := fun h ↦ (P h).ofIsoKan (whiskerIso i h)
 
 end IsAbsKan
 
@@ -249,53 +252,56 @@ variable {f : b ⟶ a} {g : c ⟶ a}
 abbrev IsKan (t : RightLift f g) := t.IsUniversal
 
 /-- An absolute right Kan lift is a Kan lift such that every 1-morphism commutes with it. -/
-abbrev IsAbsKan (t : RightLift f g) :=
-  ∀ {x : B} (h : x ⟶ c), IsKan (t.whisker h)
+abbrev IsAbsKan (t : RightLift f g) := ∀ {x : B} (h : x ⟶ c), IsKan (t.whisker h)
 
 namespace IsKan
 
 variable {s t : RightLift f g}
 
-/-- To show that a right lift `t` is a Kan lift, we need to show that for every right lift `s`
-there is a unique morphism `s ⟶ t`. -/
-abbrev mk (desc : ∀ s, s ⟶ t) (w : ∀ s τ, τ = desc s) :
-    IsKan t :=
-  .ofUniqueHom desc w
+/--
+To show that a right lift `t` is a Kan lift, we need to show that for every right lift `s`
+there is a unique morphism `s ⟶ t`.
+-/
+abbrev mk (desc : ∀ s, s ⟶ t) (w : ∀ s τ, τ = desc s) : IsKan t := .ofUniqueHom desc w
 
 /-- The family of 2-morphisms into a right Kan lift. -/
 abbrev desc (H : IsKan t) (s : RightLift f g) : s.lift ⟶ t.lift :=
   CostructuredArrow.IsUniversal.lift H s
 
 @[reassoc (attr := simp)]
-theorem fac (H : IsKan t) (s : RightLift f g) :
-    H.desc s ▷ f ≫ t.counit = s.counit :=
+theorem fac (H : IsKan t) (s : RightLift f g) : H.desc s ▷ f ≫ t.counit = s.counit :=
   CostructuredArrow.IsUniversal.fac H s
 
-/-- Two 2-morphisms into a right Kan lift are equal if their compositions with
-each triangle 2-morphism are equal. -/
-theorem hom_ext (H : IsKan t) {k : c ⟶ b} {τ τ' : k ⟶ t.lift}
-    (w : τ ▷ f ≫ t.counit = τ' ▷ f ≫ t.counit) : τ = τ' :=
+/--
+Two 2-morphisms into a right Kan lift are equal if their compositions with
+each triangle 2-morphism are equal.
+-/
+theorem hom_ext
+    (H : IsKan t) {k : c ⟶ b} {τ τ' : k ⟶ t.lift} (w : τ ▷ f ≫ t.counit = τ' ▷ f ≫ t.counit)
+    : τ = τ' :=
   CostructuredArrow.IsUniversal.hom_ext H w
 
 /-- Kan lifts on `g` along `f` are unique up to isomorphism. -/
-def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t :=
-  Limits.IsTerminal.uniqueUpToIso P Q
+def uniqueUpToIso (P : IsKan s) (Q : IsKan t) : s ≅ t := Limits.IsTerminal.uniqueUpToIso P Q
 
 @[simp]
-theorem uniqueUpToIso_hom_left (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).hom.left = Q.desc s := rfl
+theorem uniqueUpToIso_hom_left (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).hom.left = Q.desc s :=
+  rfl
 
 @[simp]
-theorem uniqueUpToIso_inv_left (P : IsKan s) (Q : IsKan t) :
-    (uniqueUpToIso P Q).inv.left = P.desc t := rfl
+theorem uniqueUpToIso_inv_left (P : IsKan s) (Q : IsKan t)
+    : (uniqueUpToIso P Q).inv.left = P.desc t :=
+  rfl
 
 /-- Transport evidence that a right lift is a Kan lift across an isomorphism of lifts. -/
-def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t :=
-  Limits.IsTerminal.ofIso P i
+def ofIsoKan (P : IsKan s) (i : s ≅ t) : IsKan t := Limits.IsTerminal.ofIso P i
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `t : RightLift f (𝟙 c ≫ g)` is a Kan lift, then `t.ofIdComp : RightLift f g` is also
-a Kan lift. -/
+/--
+If `t : RightLift f (𝟙 c ≫ g)` is a Kan lift, then `t.ofIdComp : RightLift f g` is also
+a Kan lift.
+-/
 def ofIdComp (t : RightLift f (𝟙 c ≫ g)) (P : IsKan t) : IsKan t.ofIdComp :=
   .mk (fun s ↦ t.whiskerIdCancel <| P.from (s.whisker (𝟙 c))) <| by
     intro s τ
@@ -304,9 +310,8 @@ def ofIdComp (t : RightLift f (𝟙 c ≫ g)) (P : IsKan t) : IsKan t.ofIdComp :
     simp [← RightLift.w τ]
 
 /-- If `s ≅ t` and `IsKan (s.whisker h)`, then `IsKan (t.whisker h)`. -/
-def whiskerOfCommute (s t : RightLift f g) (i : s ≅ t) {x : B} (h : x ⟶ c)
-    (P : IsKan (s.whisker h)) :
-    IsKan (t.whisker h) :=
+def whiskerOfCommute (s t : RightLift f g) (i : s ≅ t) {x : B} (h : x ⟶ c) (P : IsKan (s.whisker h))
+    : IsKan (t.whisker h) :=
   P.ofIsoKan <| whiskerIso i h
 
 end IsKan
@@ -316,17 +321,14 @@ namespace IsAbsKan
 variable {s t : RightLift f g}
 
 /-- The family of 2-morphisms into an absolute right Kan lift. -/
-abbrev desc (H : IsAbsKan t) {x : B} {h : x ⟶ c} (s : RightLift f (h ≫ g)) :
-    s.lift ⟶ h ≫ t.lift :=
+abbrev desc (H : IsAbsKan t) {x : B} {h : x ⟶ c} (s : RightLift f (h ≫ g)) : s.lift ⟶ h ≫ t.lift :=
   (H h).desc s
 
 /-- An absolute right Kan lift is a right Kan lift. -/
-def isKan (H : IsAbsKan t) : IsKan t :=
-  ((H (𝟙 c)).ofIdComp _).ofIsoKan <| whiskerOfIdCompIsoSelf t
+def isKan (H : IsAbsKan t) : IsKan t := ((H (𝟙 c)).ofIdComp _).ofIsoKan <| whiskerOfIdCompIsoSelf t
 
 /-- Transport evidence that a right lift is a Kan lift across an isomorphism of lifts. -/
-def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t :=
-  fun h ↦ (P h).ofIsoKan (whiskerIso i h)
+def ofIsoAbsKan (P : IsAbsKan s) (i : s ≅ t) : IsAbsKan t := fun h ↦ (P h).ofIsoKan (whiskerIso i h)
 
 end IsAbsKan
 

@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Module.Defs
 public import Mathlib.Analysis.CStarAlgebra.Module.Synonym
 public import Mathlib.Analysis.InnerProductSpace.Basic
-
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import Mathlib.Topology.MetricSpace.Bilipschitz
 
@@ -105,16 +104,18 @@ variable [NormedAddCommGroup F] [Module ℂ F] [SMul A F]
 variable [CStarModule A E] [CStarModule A F]
 
 noncomputable instance : Norm C⋆ᵐᵒᵈ(A, E × F) where
-  norm x := √‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖
+  norm x := √ ‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖
 
-lemma prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ = √‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖ := rfl
+lemma prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ = √ ‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖ := rfl
 
 lemma prod_norm_sq (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ ^ 2 = ‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖ := by
   simp [prod_norm]
 
 lemma prod_norm_le_norm_add (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ ≤ ‖x.1‖ + ‖x.2‖ := by
   refine abs_le_of_sq_le_sq' ?_ (by positivity) |>.2
-  calc ‖x‖ ^ 2 ≤ ‖⟪x.1, x.1⟫_A‖ + ‖⟪x.2, x.2⟫_A‖ := prod_norm_sq x ▸ norm_add_le _ _
+  calc
+    ‖x‖ ^ 2
+      ≤ ‖⟪x.1, x.1⟫_A‖ + ‖⟪x.2, x.2⟫_A‖ := prod_norm_sq x ▸ norm_add_le _ _
     _ = ‖x.1‖ ^ 2 + 0 + ‖x.2‖ ^ 2 := by simp [norm_sq_eq A]
     _ ≤ ‖x.1‖ ^ 2 + 2 * ‖x.1‖ * ‖x.2‖ + ‖x.2‖ ^ 2 := by gcongr; positivity
     _ = (‖x.1‖ + ‖x.2‖) ^ 2 := by ring
@@ -140,16 +141,14 @@ noncomputable instance : CStarModule A C⋆ᵐᵒᵈ(A, E × F) where
 
 lemma prod_inner (x y : C⋆ᵐᵒᵈ(A, E × F)) : ⟪x, y⟫_A = ⟪x.1, y.1⟫_A + ⟪x.2, y.2⟫_A := rfl
 
-lemma max_le_prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : max ‖x.1‖ ‖x.2‖ ≤ ‖x‖ := by
+lemma max_le_prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : max (‖x.1‖) ‖x.2‖ ≤ ‖x‖ := by
   rw [prod_norm]
   simp only [norm_eq_sqrt_norm_inner_self (A := A) (E := E),
-    norm_eq_sqrt_norm_inner_self (A := A) (E := F), max_le_iff, norm_nonneg,
-    Real.sqrt_le_sqrt_iff]
+    norm_eq_sqrt_norm_inner_self (A := A) (E := F), max_le_iff, norm_nonneg, Real.sqrt_le_sqrt_iff]
   constructor
   all_goals
     refine CStarAlgebra.norm_le_norm_of_le_of_nonneg (A := A) ?_ ?_
-    all_goals
-      aesop (add safe apply CStarModule.inner_self_nonneg)
+    all_goals aesop (add safe apply CStarModule.inner_self_nonneg)
 
 lemma norm_equiv_le_norm_prod (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖equiv A (E × F) x‖ ≤ ‖x‖ :=
   max_le_prod_norm x
@@ -160,9 +159,11 @@ section Aux
 -- that those induced by the new norm are equal to the old ones.
 attribute [-instance] WithCStarModule.instUniformSpace WithCStarModule.instBornology
 
-/-- A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, E × F)` with the wrong topology,
+/--
+A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, E × F)` with the wrong topology,
 uniformity and bornology. This is only used to build the instance with the correct forgetful
-inheritance data. -/
+inheritance data.
+-/
 @[instance_reducible]
 noncomputable def normedAddCommGroupProdAux : NormedAddCommGroup C⋆ᵐᵒᵈ(A, E × F) :=
   NormedAddCommGroup.ofCore (CStarModule.normedSpaceCore A)
@@ -185,21 +186,20 @@ private lemma lipschitzWith_one_equiv_prod_aux : LipschitzWith 1 (equiv A (E × 
   AddMonoidHomClass.lipschitz_of_bound_nnnorm (linearEquiv ℂ A (E × F)) 1 <| by
     simpa using! norm_equiv_le_norm_prod
 
-private lemma uniformity_prod_eq_aux :
-    𝓤[(inferInstance : UniformSpace (E × F)).comap <| equiv _ _] = 𝓤 C⋆ᵐᵒᵈ(A, E × F) :=
+private lemma uniformity_prod_eq_aux
+    : 𝓤[(inferInstance : UniformSpace (E × F)).comap <| equiv _ _] = 𝓤 C⋆ᵐᵒᵈ(A, E × F) :=
   uniformity_eq_of_bilipschitz antilipschitzWith_two_equiv_prod_aux lipschitzWith_one_equiv_prod_aux
 
-private lemma isBounded_prod_iff_aux (s : Set C⋆ᵐᵒᵈ(A, E × F)) :
-    @IsBounded _ (induced <| equiv A (E × F)) s ↔ IsBounded s :=
-  isBounded_iff_of_bilipschitz antilipschitzWith_two_equiv_prod_aux
-    lipschitzWith_one_equiv_prod_aux s
+private lemma isBounded_prod_iff_aux (s : Set C⋆ᵐᵒᵈ(A, E × F))
+    : @IsBounded _ (induced <| equiv A (E × F)) s ↔ IsBounded s :=
+  isBounded_iff_of_bilipschitz antilipschitzWith_two_equiv_prod_aux lipschitzWith_one_equiv_prod_aux
+    s
 
 end Aux
 
 noncomputable instance : NormedAddCommGroup C⋆ᵐᵒᵈ(A, E × F) :=
   fast_instance% .ofCoreReplaceAll (normedSpaceCore A) ?_ ?_
-where finally
-  exacts [uniformity_prod_eq_aux, isBounded_prod_iff_aux]
+where finally exacts [uniformity_prod_eq_aux, isBounded_prod_iff_aux]
 
 noncomputable instance : NormedSpace ℂ C⋆ᵐᵒᵈ(A, E × F) := .ofCore (normedSpaceCore A)
 
@@ -216,18 +216,19 @@ variable [∀ i, NormedAddCommGroup (E i)] [∀ i, Module ℂ (E i)] [∀ i, SMu
 variable [∀ i, CStarModule A (E i)]
 
 noncomputable instance : Norm C⋆ᵐᵒᵈ(A, Π i, E i) where
-  norm x := √‖∑ i, ⟪x i, x i⟫_A‖
+  norm x := √ ‖∑ i, ⟪x i, x i⟫_A‖
 
-lemma pi_norm (x : C⋆ᵐᵒᵈ(A, Π i, E i)) : ‖x‖ = √‖∑ i, ⟪x i, x i⟫_A‖ := by
+lemma pi_norm (x : C⋆ᵐᵒᵈ(A, Π i, E i)) : ‖x‖ = √ ‖∑ i, ⟪x i, x i⟫_A‖ := by
   with_reducible_and_instances rfl
 
-lemma pi_norm_sq (x : C⋆ᵐᵒᵈ(A, Π i, E i)) : ‖x‖ ^ 2 = ‖∑ i, ⟪x i, x i⟫_A‖ := by
-  simp [pi_norm]
+lemma pi_norm_sq (x : C⋆ᵐᵒᵈ(A, Π i, E i)) : ‖x‖ ^ 2 = ‖∑ i, ⟪x i, x i⟫_A‖ := by simp [pi_norm]
 
 open Finset in
 lemma pi_norm_le_sum_norm (x : C⋆ᵐᵒᵈ(A, Π i, E i)) : ‖x‖ ≤ ∑ i, ‖x i‖ := by
   refine abs_le_of_sq_le_sq' ?_ (by positivity) |>.2
-  calc ‖x‖ ^ 2 ≤ ∑ i, ‖⟪x i, x i⟫_A‖ := pi_norm_sq x ▸ norm_sum_le _ _
+  calc
+    ‖x‖ ^ 2
+      ≤ ∑ i, ‖⟪x i, x i⟫_A‖ := pi_norm_sq x ▸ norm_sum_le _ _
     _ = ∑ i, ‖x i‖ ^ 2 := by simp only [norm_sq_eq A]
     _ ≤ (∑ i, ‖x i‖) ^ 2 := sum_sq_le_sq_sum_of_nonneg (fun _ _ ↦ norm_nonneg _)
 
@@ -251,22 +252,22 @@ noncomputable instance : CStarModule A C⋆ᵐᵒᵈ(A, Π i, E i) where
 lemma pi_inner (x y : C⋆ᵐᵒᵈ(A, Π i, E i)) : ⟪x, y⟫_A = ∑ i, ⟪x i, y i⟫_A := rfl
 
 @[simp]
-lemma inner_single_left [DecidableEq ι] (x : C⋆ᵐᵒᵈ(A, Π i, E i)) {i : ι} (y : E i) :
-    ⟪equiv _ _ |>.symm <| Pi.single i y, x⟫_A = ⟪y, x i⟫_A := by
+lemma inner_single_left [DecidableEq ι] (x : C⋆ᵐᵒᵈ(A, Π i, E i)) {i : ι} (y : E i)
+    : ⟪equiv _ _ |>.symm <| Pi.single i y, x⟫_A = ⟪y, x i⟫_A := by
   simp only [pi_inner, equiv_symm_pi_apply]
   rw [Finset.sum_eq_single i]
   all_goals simp_all
 
 @[simp]
-lemma inner_single_right [DecidableEq ι] (x : C⋆ᵐᵒᵈ(A, Π i, E i)) {i : ι} (y : E i) :
-    ⟪x, equiv _ _ |>.symm <| Pi.single i y⟫_A = ⟪x i, y⟫_A := by
+lemma inner_single_right [DecidableEq ι] (x : C⋆ᵐᵒᵈ(A, Π i, E i)) {i : ι} (y : E i)
+    : ⟪x, equiv _ _ |>.symm <| Pi.single i y⟫_A = ⟪x i, y⟫_A := by
   simp only [pi_inner, equiv_symm_pi_apply]
   rw [Finset.sum_eq_single i]
   all_goals simp_all
 
 @[simp]
-lemma norm_single [DecidableEq ι] (i : ι) (y : E i) :
-    ‖equiv A _ |>.symm <| Pi.single i y‖ = ‖y‖ := by
+lemma norm_single [DecidableEq ι] (i : ι) (y : E i)
+    : ‖equiv A _ |>.symm <| Pi.single i y‖ = ‖y‖ := by
   let _ : NormedAddCommGroup C⋆ᵐᵒᵈ(A, Π i, E i) := normedAddCommGroup A
   rw [← sq_eq_sq₀ (by positivity) (by positivity)]
   simp [norm_sq_eq A]
@@ -290,9 +291,11 @@ section Aux
 -- that those induced by the new norm are equal to the old ones.
 attribute [-instance] WithCStarModule.instUniformSpace WithCStarModule.instBornology
 
-/-- A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, Π i, E i)` with the wrong topology,
+/--
+A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, Π i, E i)` with the wrong topology,
 uniformity and bornology. This is only used to build the instance with the correct forgetful
-inheritance data. -/
+inheritance data.
+-/
 @[instance_reducible]
 noncomputable def normedAddCommGroupPiAux : NormedAddCommGroup C⋆ᵐᵒᵈ(A, Π i, E i) :=
   NormedAddCommGroup.ofCore (CStarModule.normedSpaceCore A)
@@ -303,11 +306,13 @@ open Bornology
 
 open scoped Uniformity
 
-private lemma antilipschitzWith_card_equiv_pi_aux :
-    AntilipschitzWith (Fintype.card ι) (equiv A (Π i, E i)) :=
+private lemma antilipschitzWith_card_equiv_pi_aux
+    : AntilipschitzWith (Fintype.card ι) (equiv A (Π i, E i)) :=
   AddMonoidHomClass.antilipschitz_of_bound (linearEquiv ℂ A (Π i, E i)) fun x ↦ by
     simp only [NNReal.coe_natCast, linearEquiv_apply]
-    calc ‖x‖ ≤ ∑ i, ‖x i‖ := pi_norm_le_sum_norm x
+    calc
+      ‖x‖
+        ≤ ∑ i, ‖x i‖ := pi_norm_le_sum_norm x
       _ ≤ ∑ _, ‖⇑x‖ := Finset.sum_le_sum fun _ _ ↦ norm_le_pi_norm ..
       _ ≤ Fintype.card ι * ‖⇑x‖ := by simp
 
@@ -315,20 +320,19 @@ private lemma lipschitzWith_one_equiv_pi_aux : LipschitzWith 1 (equiv A (Π i, E
   AddMonoidHomClass.lipschitz_of_bound_nnnorm (linearEquiv ℂ A (Π i, E i)) 1 <| by
     simpa using! norm_equiv_le_norm_pi
 
-private lemma uniformity_pi_eq_aux :
-    𝓤[(inferInstance : UniformSpace (Π i, E i)).comap <| equiv A _] = 𝓤 C⋆ᵐᵒᵈ(A, Π i, E i) :=
+private lemma uniformity_pi_eq_aux
+    : 𝓤[(inferInstance : UniformSpace (Π i, E i)).comap <| equiv A _] = 𝓤 C⋆ᵐᵒᵈ(A, Π i, E i) :=
   uniformity_eq_of_bilipschitz antilipschitzWith_card_equiv_pi_aux lipschitzWith_one_equiv_pi_aux
 
-private lemma isBounded_pi_iff_aux (s : Set C⋆ᵐᵒᵈ(A, Π i, E i)) :
-    @IsBounded _ (induced <| equiv A (Π i, E i)) s ↔ IsBounded s :=
+private lemma isBounded_pi_iff_aux (s : Set C⋆ᵐᵒᵈ(A, Π i, E i))
+    : @IsBounded _ (induced <| equiv A (Π i, E i)) s ↔ IsBounded s :=
   isBounded_iff_of_bilipschitz antilipschitzWith_card_equiv_pi_aux lipschitzWith_one_equiv_pi_aux s
 
 end Aux
 
 noncomputable instance : NormedAddCommGroup C⋆ᵐᵒᵈ(A, Π i, E i) :=
   fast_instance% .ofCoreReplaceAll (normedSpaceCore A) ?_ ?_
-where finally
-  exacts [uniformity_pi_eq_aux, isBounded_pi_iff_aux]
+where finally exacts [uniformity_pi_eq_aux, isBounded_pi_iff_aux]
 
 noncomputable instance : NormedSpace ℂ C⋆ᵐᵒᵈ(A, Π i, E i) := .ofCore (normedSpaceCore A)
 
@@ -344,12 +348,14 @@ variable {E : Type*}
 variable [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 open scoped InnerProductSpace in
-/-- Reinterpret an inner product space `E` over `ℂ` as a `CStarModule` over `ℂ`.
+/--
+Reinterpret an inner product space `E` over `ℂ` as a `CStarModule` over `ℂ`.
 
 Note: this instance requires `SMul ℂᵐᵒᵖ E` and `IsCentralScalar ℂ E` instances to exist on `E`,
 which is unlikely to occur in practice. However, in practice one could either add those instances
 to the type `E` in question, or else supply them to this instance manually, which is reason behind
-the naming of these two instance arguments. -/
+the naming of these two instance arguments.
+-/
 noncomputable instance instCStarModuleComplex : CStarModule ℂ E where
   inner x y := ⟪x, y⟫_ℂ
   inner_add_right := by simp [_root_.inner_add_right]
@@ -366,9 +372,11 @@ noncomputable instance instCStarModuleComplex : CStarModule ℂ E where
 -- Ensures that the two ways to obtain `CStarModule ℂᵐᵒᵖ ℂ` are definitionally equal.
 example : instCStarModule (A := ℂ) = instCStarModuleComplex := by with_reducible_and_instances rfl
 
-/-- Ensures that the two `Inner ℂ ℂ` instances are definitionally equal. Note that this cannot be at
+/--
+Ensures that the two `Inner ℂ ℂ` instances are definitionally equal. Note that this cannot be at
 reducible and instances transparency because the one from `InnerProductSpace` uses `StarRingEnd`
-whereas `WithCStarModule.instCStarModule.toInner` uses `star` since `A` may not be commutative. -/
+whereas `WithCStarModule.instCStarModule.toInner` uses `star` since `A` may not be commutative.
+-/
 example : (toInner : Inner ℂ ℂ) = WithCStarModule.instCStarModule.toInner := rfl
 
 end InnerProductSpace

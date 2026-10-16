@@ -45,7 +45,6 @@ Upgrade `Equiv.sigma_congr_left`, `Equiv.sigma_congr`, `Equiv.sigma_assoc`,
 
 @[expose] public section
 
-
 namespace Sigma
 
 variable {ι : Type*} {α : ι → Type*}
@@ -92,24 +91,26 @@ theorem lt_def [∀ i, LT (α i)] {a b : Σ i, α i} : a < b ↔ ∃ h : a.1 = b
     rintro ⟨rfl : i = j, h⟩
     exact LT.fiber _ _ _ h
 
-protected instance preorder [∀ i, Preorder (α i)] : Preorder (Σ i, α i) :=
-  { le_refl := fun ⟨i, a⟩ => Sigma.LE.fiber i a a le_rfl,
-    le_trans := by
-      rintro _ _ _ ⟨i, a, b, hab⟩ ⟨_, _, c, hbc⟩
-      exact LE.fiber i a c (hab.trans hbc),
-    lt_iff_le_not_ge := fun _ _ => by
-      constructor
-      · rintro ⟨i, a, b, hab⟩
-        rwa [mk_le_mk_iff, mk_le_mk_iff, ← lt_iff_le_not_ge]
-      · rintro ⟨⟨i, a, b, hab⟩, h⟩
-        rw [mk_le_mk_iff] at h
-        exact mk_lt_mk_iff.2 (hab.lt_of_not_ge h) }
+protected instance preorder [∀ i, Preorder (α i)] : Preorder (Σ i, α i) := {
+  le_refl := fun ⟨i, a⟩ => Sigma.LE.fiber i a a le_rfl
+  le_trans := by
+    rintro _ _ _ ⟨i, a, b, hab⟩ ⟨_, _, c, hbc⟩
+    exact LE.fiber i a c (hab.trans hbc)
+  lt_iff_le_not_ge := fun _ _ => by
+    constructor
+    · rintro ⟨i, a, b, hab⟩
+      rwa [mk_le_mk_iff, mk_le_mk_iff, ← lt_iff_le_not_ge]
+    · rintro ⟨⟨i, a, b, hab⟩, h⟩
+      rw [mk_le_mk_iff] at h
+      exact mk_lt_mk_iff.2 (hab.lt_of_not_ge h)
+}
 
-instance [∀ i, PartialOrder (α i)] : PartialOrder (Σ i, α i) :=
-  { Sigma.preorder with
-    le_antisymm := by
-      rintro _ _ ⟨i, a, b, hab⟩ ⟨_, _, _, hba⟩
-      exact congr_arg (Sigma.mk _ ·) <| hab.antisymm hba }
+instance [∀ i, PartialOrder (α i)] : PartialOrder (Σ i, α i) := {
+  Sigma.preorder with
+  le_antisymm := by
+    rintro _ _ ⟨i, a, b, hab⟩ ⟨_, _, _, hba⟩
+    exact congr_arg (Sigma.mk _ ·) <| hab.antisymm hba
+}
 
 instance [∀ i, Preorder (α i)] [∀ i, DenselyOrdered (α i)] : DenselyOrdered (Σ i, α i) where
   dense := by
@@ -118,7 +119,6 @@ instance [∀ i, Preorder (α i)] [∀ i, DenselyOrdered (α i)] : DenselyOrdere
     exact ⟨⟨i, c⟩, LT.fiber i a c ha, LT.fiber i c b hb⟩
 
 /-! ### Lexicographical order on `Sigma` -/
-
 
 namespace Lex
 /-- The notation `Σₗ i, α i` refers to a sigma type equipped with the lexicographic order. -/
@@ -132,50 +132,49 @@ protected instance LE [LT ι] [∀ i, LE (α i)] : LE (Σₗ i, α i) where
 protected instance LT [LT ι] [∀ i, LT (α i)] : LT (Σₗ i, α i) where
   lt := Lex (· < ·) fun _ => (· < ·)
 
-theorem le_def [LT ι] [∀ i, LE (α i)] {a b : Σₗ i, α i} :
-    a ≤ b ↔ a.1 < b.1 ∨ ∃ h : a.1 = b.1, h.rec a.2 ≤ b.2 :=
+theorem le_def [LT ι] [∀ i, LE (α i)] {a b : Σₗ i, α i}
+    : a ≤ b ↔ a.1 < b.1 ∨ ∃ h : a.1 = b.1, h.rec a.2 ≤ b.2 :=
   Sigma.lex_iff
 
-theorem lt_def [LT ι] [∀ i, LT (α i)] {a b : Σₗ i, α i} :
-    a < b ↔ a.1 < b.1 ∨ ∃ h : a.1 = b.1, h.rec a.2 < b.2 :=
+theorem lt_def [LT ι] [∀ i, LT (α i)] {a b : Σₗ i, α i}
+    : a < b ↔ a.1 < b.1 ∨ ∃ h : a.1 = b.1, h.rec a.2 < b.2 :=
   Sigma.lex_iff
 
 /-- The lexicographical preorder on a sigma type. -/
-instance preorder [Preorder ι] [∀ i, Preorder (α i)] : Preorder (Σₗ i, α i) :=
-  { Sigma.Lex.LE, Sigma.Lex.LT with
-    le_refl := fun ⟨_, a⟩ => Lex.right a a le_rfl,
-    le_trans := fun _ _ _ => trans_of ((Lex (· < ·)) fun _ => (· ≤ ·)),
-    lt_iff_le_not_ge := by
-      refine fun a b => ⟨fun hab => ⟨hab.mono_right fun i a b => le_of_lt, ?_⟩, ?_⟩
-      · rintro (⟨b, a, hji⟩ | ⟨b, a, hba⟩) <;> obtain ⟨_, _, hij⟩ | ⟨_, _, hab⟩ := hab
-        · exact hij.not_gt hji
-        · exact lt_irrefl _ hji
-        · exact lt_irrefl _ hij
-        · exact hab.not_ge hba
-      · rintro ⟨⟨a, b, hij⟩ | ⟨a, b, hab⟩, hba⟩
-        · exact Sigma.Lex.left _ _ hij
-        · exact Sigma.Lex.right _ _ (hab.lt_of_not_ge fun h => hba <| Sigma.Lex.right _ _ h) }
+instance preorder [Preorder ι] [∀ i, Preorder (α i)] : Preorder (Σₗ i, α i) := {
+  Sigma.Lex.LE, Sigma.Lex.LT with
+  le_refl := fun ⟨_, a⟩ => Lex.right a a le_rfl
+  le_trans := fun _ _ _ => trans_of ((Lex (· < ·)) fun _ => (· ≤ ·))
+  lt_iff_le_not_ge := by
+    refine fun a b => ⟨fun hab => ⟨hab.mono_right fun i a b => le_of_lt, ?_⟩, ?_⟩
+    · rintro (⟨b, a, hji⟩ | ⟨b, a, hba⟩) <;> obtain ⟨_, _, hij⟩ | ⟨_, _, hab⟩ := hab
+      · exact hij.not_gt hji
+      · exact lt_irrefl _ hji
+      · exact lt_irrefl _ hij
+      · exact hab.not_ge hba
+    · rintro ⟨⟨a, b, hij⟩ | ⟨a, b, hab⟩, hba⟩
+      · exact Sigma.Lex.left _ _ hij
+      · exact Sigma.Lex.right _ _ (hab.lt_of_not_ge fun h => hba <| Sigma.Lex.right _ _ h)
+}
 
 /-- The lexicographical partial order on a sigma type. -/
-instance partialOrder [Preorder ι] [∀ i, PartialOrder (α i)] :
-    PartialOrder (Σₗ i, α i) :=
-  { Lex.preorder with
-    le_antisymm := fun _ _ => antisymm_of ((Lex (· < ·)) fun _ => (· ≤ ·)) }
-
-
+instance partialOrder [Preorder ι] [∀ i, PartialOrder (α i)] : PartialOrder (Σₗ i, α i) := {
+  Lex.preorder with
+  le_antisymm := fun _ _ => antisymm_of ((Lex (· < ·)) fun _ => (· ≤ ·))
+}
 
 /-- The lexicographical linear order on a sigma type. -/
-instance linearOrder [LinearOrder ι] [∀ i, LinearOrder (α i)] :
-    LinearOrder (Σₗ i, α i) :=
-  { Lex.partialOrder with
-    le_total := total_of ((Lex (· < ·)) fun _ => (· ≤ ·)),
-    toDecidableEq := Sigma.instDecidableEqSigma
-    toDecidableLE := Lex.decidable _ _
-    toDecidableLT := Lex.decidable _ _ }
+instance linearOrder [LinearOrder ι] [∀ i, LinearOrder (α i)] : LinearOrder (Σₗ i, α i) := {
+  Lex.partialOrder with
+  le_total := total_of ((Lex (· < ·)) fun _ => (· ≤ ·))
+  toDecidableEq := Sigma.instDecidableEqSigma
+  toDecidableLE := Lex.decidable _ _
+  toDecidableLT := Lex.decidable _ _
+}
 
 /-- The lexicographical linear order on a sigma type. -/
-instance orderBot [PartialOrder ι] [OrderBot ι] [∀ i, Preorder (α i)] [OrderBot (α ⊥)] :
-    OrderBot (Σₗ i, α i) where
+instance orderBot [PartialOrder ι] [OrderBot ι] [∀ i, Preorder (α i)] [OrderBot (α ⊥)]
+    : OrderBot (Σₗ i, α i) where
   bot := ⟨⊥, ⊥⟩
   bot_le := fun ⟨a, b⟩ => by
     obtain rfl | ha := eq_bot_or_bot_lt a
@@ -183,8 +182,8 @@ instance orderBot [PartialOrder ι] [OrderBot ι] [∀ i, Preorder (α i)] [Orde
     · exact Lex.left _ _ ha
 
 /-- The lexicographical linear order on a sigma type. -/
-instance orderTop [PartialOrder ι] [OrderTop ι] [∀ i, Preorder (α i)] [OrderTop (α ⊤)] :
-    OrderTop (Σₗ i, α i) where
+instance orderTop [PartialOrder ι] [OrderTop ι] [∀ i, Preorder (α i)] [OrderTop (α ⊤)]
+    : OrderTop (Σₗ i, α i) where
   top := ⟨⊤, ⊤⟩
   le_top := fun ⟨a, b⟩ => by
     obtain rfl | ha := eq_top_or_lt_top a
@@ -192,12 +191,16 @@ instance orderTop [PartialOrder ι] [OrderTop ι] [∀ i, Preorder (α i)] [Orde
     · exact Lex.left _ _ ha
 
 /-- The lexicographical linear order on a sigma type. -/
-instance boundedOrder [PartialOrder ι] [BoundedOrder ι] [∀ i, Preorder (α i)] [OrderBot (α ⊥)]
-    [OrderTop (α ⊤)] : BoundedOrder (Σₗ i, α i) :=
-  { Lex.orderBot, Lex.orderTop with }
+instance boundedOrder
+    [PartialOrder ι] [BoundedOrder ι] [∀ i, Preorder (α i)] [OrderBot (α ⊥)] [OrderTop (α ⊤)]
+    : BoundedOrder (Σₗ i, α i) := {
+  Lex.orderBot, Lex.orderTop with
+}
 
-instance denselyOrdered [Preorder ι] [DenselyOrdered ι] [∀ i, Nonempty (α i)] [∀ i, Preorder (α i)]
-    [∀ i, DenselyOrdered (α i)] : DenselyOrdered (Σₗ i, α i) where
+instance denselyOrdered
+    [Preorder ι] [DenselyOrdered ι] [∀ i, Nonempty (α i)] [∀ i, Preorder (α i)]
+    [∀ i, DenselyOrdered (α i)]
+    : DenselyOrdered (Σₗ i, α i) where
   dense := by
     rintro ⟨i, a⟩ ⟨j, b⟩ (⟨_, _, h⟩ | ⟨_, b, h⟩)
     · obtain ⟨k, hi, hj⟩ := exists_between h
@@ -206,9 +209,9 @@ instance denselyOrdered [Preorder ι] [DenselyOrdered ι] [∀ i, Nonempty (α i
     · obtain ⟨c, ha, hb⟩ := exists_between h
       exact ⟨⟨i, c⟩, right _ _ ha, right _ _ hb⟩
 
-instance denselyOrdered_of_noMaxOrder [Preorder ι] [∀ i, Preorder (α i)]
-    [∀ i, DenselyOrdered (α i)] [∀ i, NoMaxOrder (α i)] :
-    DenselyOrdered (Σₗ i, α i) where
+instance denselyOrdered_of_noMaxOrder
+    [Preorder ι] [∀ i, Preorder (α i)] [∀ i, DenselyOrdered (α i)] [∀ i, NoMaxOrder (α i)]
+    : DenselyOrdered (Σₗ i, α i) where
   dense := by
     rintro ⟨i, a⟩ ⟨j, b⟩ (⟨_, _, h⟩ | ⟨_, b, h⟩)
     · obtain ⟨c, ha⟩ := exists_gt a
@@ -216,9 +219,9 @@ instance denselyOrdered_of_noMaxOrder [Preorder ι] [∀ i, Preorder (α i)]
     · obtain ⟨c, ha, hb⟩ := exists_between h
       exact ⟨⟨i, c⟩, right _ _ ha, right _ _ hb⟩
 
-instance denselyOrdered_of_noMinOrder [Preorder ι] [∀ i, Preorder (α i)]
-    [∀ i, DenselyOrdered (α i)] [∀ i, NoMinOrder (α i)] :
-    DenselyOrdered (Σₗ i, α i) where
+instance denselyOrdered_of_noMinOrder
+    [Preorder ι] [∀ i, Preorder (α i)] [∀ i, DenselyOrdered (α i)] [∀ i, NoMinOrder (α i)]
+    : DenselyOrdered (Σₗ i, α i) where
   dense := by
     rintro ⟨i, a⟩ ⟨j, b⟩ (⟨_, _, h⟩ | ⟨_, b, h⟩)
     · obtain ⟨c, hb⟩ := exists_lt b
@@ -226,31 +229,33 @@ instance denselyOrdered_of_noMinOrder [Preorder ι] [∀ i, Preorder (α i)]
     · obtain ⟨c, ha, hb⟩ := exists_between h
       exact ⟨⟨i, c⟩, right _ _ ha, right _ _ hb⟩
 
-instance noMaxOrder_of_nonempty [Preorder ι] [∀ i, Preorder (α i)] [NoMaxOrder ι]
-    [∀ i, Nonempty (α i)] : NoMaxOrder (Σₗ i, α i) where
+instance noMaxOrder_of_nonempty
+    [Preorder ι] [∀ i, Preorder (α i)] [NoMaxOrder ι] [∀ i, Nonempty (α i)]
+    : NoMaxOrder (Σₗ i, α i) where
   exists_gt := by
     rintro ⟨i, a⟩
     obtain ⟨j, h⟩ := exists_gt i
     obtain ⟨b⟩ : Nonempty (α j) := inferInstance
     exact ⟨⟨j, b⟩, left _ _ h⟩
 
-instance noMinOrder_of_nonempty [Preorder ι] [∀ i, Preorder (α i)] [NoMinOrder ι]
-    [∀ i, Nonempty (α i)] : NoMinOrder (Σₗ i, α i) where
+instance noMinOrder_of_nonempty
+    [Preorder ι] [∀ i, Preorder (α i)] [NoMinOrder ι] [∀ i, Nonempty (α i)]
+    : NoMinOrder (Σₗ i, α i) where
   exists_lt := by
     rintro ⟨i, a⟩
     obtain ⟨j, h⟩ := exists_lt i
     obtain ⟨b⟩ : Nonempty (α j) := inferInstance
     exact ⟨⟨j, b⟩, left _ _ h⟩
 
-instance noMaxOrder [Preorder ι] [∀ i, Preorder (α i)] [∀ i, NoMaxOrder (α i)] :
-    NoMaxOrder (Σₗ i, α i) where
+instance noMaxOrder [Preorder ι] [∀ i, Preorder (α i)] [∀ i, NoMaxOrder (α i)]
+    : NoMaxOrder (Σₗ i, α i) where
   exists_gt := by
     rintro ⟨i, a⟩
     obtain ⟨b, h⟩ := exists_gt a
     exact ⟨⟨i, b⟩, right _ _ h⟩
 
-instance noMinOrder [Preorder ι] [∀ i, Preorder (α i)] [∀ i, NoMinOrder (α i)] :
-    NoMinOrder (Σₗ i, α i) where
+instance noMinOrder [Preorder ι] [∀ i, Preorder (α i)] [∀ i, NoMinOrder (α i)]
+    : NoMinOrder (Σₗ i, α i) where
   exists_lt := by
     rintro ⟨i, a⟩
     obtain ⟨b, h⟩ := exists_lt a

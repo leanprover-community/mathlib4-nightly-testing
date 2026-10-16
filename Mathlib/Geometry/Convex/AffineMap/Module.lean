@@ -46,7 +46,8 @@ instance : IsAddApply (ConvexSpace.AffineMap R X M) where
 section SMul
 variable [DistribSMul S M] [SMulCommClass S R M]
 
-instance : SMul S (ConvexSpace.AffineMap R X M) where smul s f := ⟨s • f, by fun_prop⟩
+instance : SMul S (ConvexSpace.AffineMap R X M) where
+  smul s f := ⟨s • f, by fun_prop⟩
 
 instance : IsSMulApply S (ConvexSpace.AffineMap R X M) where
 
@@ -58,20 +59,20 @@ instance [SMulCommClass S T M] : SMulCommClass S T (ConvexSpace.AffineMap R X M)
 instance [SMul S T] [IsScalarTower S T M] : IsScalarTower S T (ConvexSpace.AffineMap R X M) where
   smul_assoc _ _ _ := ext <| funext fun _ ↦ smul_assoc ..
 
-instance [DistribSMul Sᵐᵒᵖ M] [IsCentralScalar S M] :
-    IsCentralScalar S (ConvexSpace.AffineMap R X M) where
+instance [DistribSMul Sᵐᵒᵖ M] [IsCentralScalar S M]
+    : IsCentralScalar S (ConvexSpace.AffineMap R X M) where
   op_smul_eq_smul _ _ := ext <| funext fun _ ↦ op_smul_eq_smul ..
 
 end SMul
 
-instance : AddCommMonoid (ConvexSpace.AffineMap R X M) :=
-  fast_instance% FunLike.addCommMonoid
+instance : AddCommMonoid (ConvexSpace.AffineMap R X M) := fast_instance% FunLike.addCommMonoid
 
-instance [Monoid S] [DistribMulAction S M] [SMulCommClass S R M] :
-    DistribMulAction S (ConvexSpace.AffineMap R X M) := fast_instance% FunLike.distribMulAction
+instance [Monoid S] [DistribMulAction S M] [SMulCommClass S R M]
+    : DistribMulAction S (ConvexSpace.AffineMap R X M) :=
+  fast_instance% FunLike.distribMulAction
 
-instance [Semiring S] [Module S M] [SMulCommClass S R M] :
-    Module S (ConvexSpace.AffineMap R X M) := fast_instance% FunLike.module
+instance [Semiring S] [Module S M] [SMulCommClass S R M] : Module S (ConvexSpace.AffineMap R X M) :=
+  fast_instance% FunLike.module
 
 end AddCommMonoid
 
@@ -88,8 +89,7 @@ instance : Sub (ConvexSpace.AffineMap R X M) where
 
 instance : IsSubApply (ConvexSpace.AffineMap R X M) where
 
-instance : AddCommGroup (ConvexSpace.AffineMap R X M) :=
-  fast_instance% FunLike.addCommGroup
+instance : AddCommGroup (ConvexSpace.AffineMap R X M) := fast_instance% FunLike.addCommGroup
 
 end AddCommGroup
 end ConvexSpace.AffineMap
@@ -97,13 +97,14 @@ end ConvexSpace.AffineMap
 /-! ### Compatibility with the pointwise convex space structure -/
 
 section Pointwise
-variable {R S : Type*} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [Semiring S]
-  [PartialOrder S] [IsStrictOrderedRing S] [ConvexSpace R X] [AddCommMonoid M] [Module R M]
-  [Module S M] [SMulCommClass S R M] [ConvexSpace R M] [IsModuleConvexSpace R M] [ConvexSpace S M]
+variable
+  {R S : Type*} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [Semiring S] [PartialOrder S]
+  [IsStrictOrderedRing S] [ConvexSpace R X] [AddCommMonoid M] [Module R M] [Module S M]
+  [SMulCommClass S R M] [ConvexSpace R M] [IsModuleConvexSpace R M] [ConvexSpace S M]
   [IsModuleConvexSpace S M]
 
-instance ConvexSpace.AffineMap.instIsModuleConvexSpace :
-    IsModuleConvexSpace S (ConvexSpace.AffineMap R X M) where
+instance ConvexSpace.AffineMap.instIsModuleConvexSpace
+    : IsModuleConvexSpace S (ConvexSpace.AffineMap R X M) where
   sConvexComb_eq_sum w := by ext x; simp [Finsupp.sum]
 
 end Pointwise

@@ -6,7 +6,6 @@ Authors: Vincent Beffara
 module
 
 public import Mathlib.Analysis.Complex.RemovableSingularity
-
 import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 
 /-!
@@ -25,30 +24,34 @@ subset of the complex plane.
 
 @[expose] public section
 
-
 open Set Metric Filter Complex
 
 open scoped Real Topology
 
-variable {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {U K : Set ℂ}
-  {z : ℂ} {M r δ : ℝ} {φ : Filter ι} {F : ι → ℂ → E} {f g : ℂ → E}
+variable
+  {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+  {U K : Set ℂ} {z : ℂ} {M r δ : ℝ} {φ : Filter ι} {F : ι → ℂ → E} {f g : ℂ → E}
 
 namespace Complex
 
 section Cderiv
 
-/-- A circle integral which coincides with `deriv f z` whenever one can apply the Cauchy formula for
+/--
+A circle integral which coincides with `deriv f z` whenever one can apply the Cauchy formula for
 the derivative. It is useful in the proof that locally uniform limits of holomorphic functions are
-holomorphic, because it depends continuously on `f` for the uniform topology. -/
+holomorphic, because it depends continuously on `f` for the uniform topology.
+-/
 noncomputable def cderiv (r : ℝ) (f : ℂ → E) (z : ℂ) : E :=
   (2 * π * I : ℂ)⁻¹ • ∮ w in C(z, r), ((w - z) ^ 2)⁻¹ • f w
 
-theorem cderiv_eq_deriv [CompleteSpace E] (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) (hr : 0 < r)
-    (hzr : closedBall z r ⊆ U) : cderiv r f z = deriv f z :=
+theorem cderiv_eq_deriv
+    [CompleteSpace E]
+    (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) (hr : 0 < r) (hzr : closedBall z r ⊆ U)
+    : cderiv r f z = deriv f z :=
   two_pi_I_inv_smul_circleIntegral_sub_sq_inv_smul_of_differentiable hU hzr hf (mem_ball_self hr)
 
-theorem norm_cderiv_le (hr : 0 < r) (hf : ∀ w ∈ sphere z r, ‖f w‖ ≤ M) :
-    ‖cderiv r f z‖ ≤ M / r := by
+theorem norm_cderiv_le (hr : 0 < r) (hf : ∀ w ∈ sphere z r, ‖f w‖ ≤ M)
+    : ‖cderiv r f z‖ ≤ M / r := by
   have hM : 0 ≤ M := by
     obtain ⟨w, hw⟩ : (sphere z r).Nonempty := NormedSpace.sphere_nonempty.mpr hr.le
     exact (norm_nonneg _).trans (hf w hw)
@@ -62,11 +65,12 @@ theorem norm_cderiv_le (hr : 0 < r) (hf : ∀ w ∈ sphere z r, ‖f w‖ ≤ M)
   refine (mul_le_mul le_rfl h2 (norm_nonneg _) (norm_nonneg _)).trans (le_of_eq ?_)
   simp [field]
 
-theorem cderiv_sub (hr : 0 < r) (hf : ContinuousOn f (sphere z r))
-    (hg : ContinuousOn g (sphere z r)) : cderiv r (f - g) z = cderiv r f z - cderiv r g z := by
+theorem cderiv_sub
+    (hr : 0 < r) (hf : ContinuousOn f (sphere z r)) (hg : ContinuousOn g (sphere z r))
+    : cderiv r (f - g) z = cderiv r f z - cderiv r g z := by
   have h1 : ContinuousOn (fun w : ℂ => ((w - z) ^ 2)⁻¹) (sphere z r) := by
-    refine ((continuous_id'.fun_sub continuous_const).fun_pow 2).continuousOn.inv₀
-      fun w hw h => hr.ne ?_
+    refine ((continuous_id'.fun_sub continuous_const).fun_pow 2).continuousOn.inv₀ fun w hw h =>
+      hr.ne ?_
     rwa [mem_sphere_iff_norm, sq_eq_zero_iff.mp h, norm_zero] at hw
   simp_rw [cderiv, ← smul_sub]
   congr 1
@@ -74,8 +78,9 @@ theorem cderiv_sub (hr : 0 < r) (hf : ContinuousOn f (sphere z r))
     circleIntegral.integral_sub ((h1.fun_smul hf).circleIntegrable hr.le)
       ((h1.fun_smul hg).circleIntegrable hr.le)
 
-theorem norm_cderiv_lt (hr : 0 < r) (hfM : ∀ w ∈ sphere z r, ‖f w‖ < M)
-    (hf : ContinuousOn f (sphere z r)) : ‖cderiv r f z‖ < M / r := by
+theorem norm_cderiv_lt
+    (hr : 0 < r) (hfM : ∀ w ∈ sphere z r, ‖f w‖ < M) (hf : ContinuousOn f (sphere z r))
+    : ‖cderiv r f z‖ < M / r := by
   obtain ⟨L, hL1, hL2⟩ : ∃ L < M, ∀ w ∈ sphere z r, ‖f w‖ ≤ L := by
     have e1 : (sphere z r).Nonempty := NormedSpace.sphere_nonempty.mpr hr.le
     have e2 : ContinuousOn (fun w => ‖f w‖) (sphere z r) := continuous_norm.comp_continuousOn hf
@@ -83,14 +88,16 @@ theorem norm_cderiv_lt (hr : 0 < r) (hfM : ∀ w ∈ sphere z r, ‖f w‖ < M)
     exact ⟨‖f x‖, hfM x hx, hx'⟩
   exact (norm_cderiv_le hr hL2).trans_lt ((div_lt_div_iff_of_pos_right hr).mpr hL1)
 
-theorem norm_cderiv_sub_lt (hr : 0 < r) (hfg : ∀ w ∈ sphere z r, ‖f w - g w‖ < M)
-    (hf : ContinuousOn f (sphere z r)) (hg : ContinuousOn g (sphere z r)) :
-    ‖cderiv r f z - cderiv r g z‖ < M / r :=
+theorem norm_cderiv_sub_lt
+    (hr : 0 < r) (hfg : ∀ w ∈ sphere z r, ‖f w - g w‖ < M) (hf : ContinuousOn f (sphere z r))
+    (hg : ContinuousOn g (sphere z r))
+    : ‖cderiv r f z - cderiv r g z‖ < M / r :=
   cderiv_sub hr hf hg ▸ norm_cderiv_lt hr hfg (hf.sub hg)
 
-theorem _root_.TendstoUniformlyOn.cderiv (hF : TendstoUniformlyOn F f φ (cthickening δ K))
-    (hδ : 0 < δ) (hFn : ∀ᶠ n in φ, ContinuousOn (F n) (cthickening δ K)) :
-    TendstoUniformlyOn (cderiv δ ∘ F) (cderiv δ f) φ K := by
+theorem _root_.TendstoUniformlyOn.cderiv
+    (hF : TendstoUniformlyOn F f φ (cthickening δ K)) (hδ : 0 < δ)
+    (hFn : ∀ᶠ n in φ, ContinuousOn (F n) (cthickening δ K))
+    : TendstoUniformlyOn (cderiv δ ∘ F) (cderiv δ f) φ K := by
   rcases φ.eq_or_neBot with rfl | hne
   · simp only [TendstoUniformlyOn, eventually_bot, imp_true_iff]
   have e1 : ContinuousOn f (cthickening δ K) := TendstoUniformlyOn.continuousOn hF hFn.frequently
@@ -111,10 +118,11 @@ variable [CompleteSpace E]
 
 section Weierstrass
 
-theorem tendstoUniformlyOn_deriv_of_cthickening_subset (hf : TendstoLocallyUniformlyOn F f φ U)
-    (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U) {δ : ℝ} (hδ : 0 < δ) (hK : IsCompact K)
-    (hU : IsOpen U) (hKU : cthickening δ K ⊆ U) :
-    TendstoUniformlyOn (deriv ∘ F) (cderiv δ f) φ K := by
+theorem tendstoUniformlyOn_deriv_of_cthickening_subset
+    (hf : TendstoLocallyUniformlyOn F f φ U) (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U)
+    {δ : ℝ} (hδ : 0 < δ)
+    (hK : IsCompact K) (hU : IsOpen U) (hKU : cthickening δ K ⊆ U)
+    : TendstoUniformlyOn (deriv ∘ F) (cderiv δ f) φ K := by
   have h1 : ∀ᶠ n in φ, ContinuousOn (F n) (cthickening δ K) := by
     filter_upwards [hF] with n h using h.continuousOn.mono hKU
   have h2 : IsCompact (cthickening δ K) := hK.cthickening
@@ -124,18 +132,23 @@ theorem tendstoUniformlyOn_deriv_of_cthickening_subset (hf : TendstoLocallyUnifo
   filter_upwards [hF] with n h z hz
   exact cderiv_eq_deriv hU h hδ ((closedBall_subset_cthickening hz δ).trans hKU)
 
-theorem exists_cthickening_tendstoUniformlyOn (hf : TendstoLocallyUniformlyOn F f φ U)
-    (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U) (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U) :
-    ∃ δ > 0, cthickening δ K ⊆ U ∧ TendstoUniformlyOn (deriv ∘ F) (cderiv δ f) φ K := by
+theorem exists_cthickening_tendstoUniformlyOn
+    (hf : TendstoLocallyUniformlyOn F f φ U) (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U)
+    (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U)
+    : ∃ δ > 0, cthickening δ K ⊆ U ∧ TendstoUniformlyOn (deriv ∘ F) (cderiv δ f) φ K := by
   obtain ⟨δ, hδ, hKδ⟩ := hK.exists_cthickening_subset_open hU hKU
   exact ⟨δ, hδ, hKδ, tendstoUniformlyOn_deriv_of_cthickening_subset hf hF hδ hK hU hKδ⟩
 
-/-- A locally uniform limit of holomorphic functions on an open domain of the complex plane is
+/--
+A locally uniform limit of holomorphic functions on an open domain of the complex plane is
 holomorphic (the derivatives converge locally uniformly to that of the limit, which is proved
-as `TendstoLocallyUniformlyOn.deriv`). -/
-theorem _root_.TendstoLocallyUniformlyOn.differentiableOn [φ.NeBot]
+as `TendstoLocallyUniformlyOn.deriv`).
+-/
+theorem _root_.TendstoLocallyUniformlyOn.differentiableOn
+    [φ.NeBot]
     (hf : TendstoLocallyUniformlyOn F f φ U) (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U)
-    (hU : IsOpen U) : DifferentiableOn ℂ f U := by
+    (hU : IsOpen U)
+    : DifferentiableOn ℂ f U := by
   rintro x hx
   obtain ⟨K, ⟨hKx, hK⟩, hKU⟩ := (compact_basis_nhds x).mem_iff.mp (hU.mem_nhds hx)
   obtain ⟨δ, _, _, h1⟩ := exists_cthickening_tendstoUniformlyOn hf hF hK hU hKU
@@ -151,9 +164,10 @@ theorem _root_.TendstoLocallyUniformlyOn.differentiableOn [φ.NeBot]
     (h6 x hx).differentiableAt.differentiableWithinAt
   exact (h7.differentiableAt (interior_mem_nhds.mpr hKx)).differentiableWithinAt
 
-theorem _root_.TendstoLocallyUniformlyOn.deriv (hf : TendstoLocallyUniformlyOn F f φ U)
-    (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U) (hU : IsOpen U) :
-    TendstoLocallyUniformlyOn (deriv ∘ F) (deriv f) φ U := by
+theorem _root_.TendstoLocallyUniformlyOn.deriv
+    (hf : TendstoLocallyUniformlyOn F f φ U) (hF : ∀ᶠ n in φ, DifferentiableOn ℂ (F n) U)
+    (hU : IsOpen U)
+    : TendstoLocallyUniformlyOn (deriv ∘ F) (deriv f) φ U := by
   rw [tendstoLocallyUniformlyOn_iff_forall_isCompact hU]
   rcases φ.eq_or_neBot with rfl | hne
   · simp only [TendstoUniformlyOn, eventually_bot, imp_true_iff]
@@ -166,23 +180,29 @@ end Weierstrass
 
 section Tsums
 
-/-- If the terms in the sum `∑' (i : ι), F i` are uniformly bounded on `U` by a
-summable function, and each term in the sum is differentiable on `U`, then so is the sum. -/
-theorem differentiableOn_tsum_of_summable_norm {u : ι → ℝ} (hu : Summable u)
+/--
+If the terms in the sum `∑' (i : ι), F i` are uniformly bounded on `U` by a
+summable function, and each term in the sum is differentiable on `U`, then so is the sum.
+-/
+theorem differentiableOn_tsum_of_summable_norm
+    {u : ι → ℝ} (hu : Summable u)
     (hf : ∀ i : ι, DifferentiableOn ℂ (F i) U) (hU : IsOpen U)
-    (hF_le : ∀ (i : ι) (w : ℂ), w ∈ U → ‖F i w‖ ≤ u i) :
-    DifferentiableOn ℂ (fun w : ℂ => ∑' i : ι, F i w) U := by
+    (hF_le : ∀ (i : ι) (w : ℂ), w ∈ U → ‖F i w‖ ≤ u i)
+    : DifferentiableOn ℂ (fun w : ℂ => ∑' i : ι, F i w) U := by
   have hc := (tendstoUniformlyOn_tsum hu hF_le).tendstoLocallyUniformlyOn
   refine hc.differentiableOn (Eventually.of_forall fun s => ?_) hU
   exact DifferentiableOn.fun_sum fun i _ => hf i
 
-/-- If the terms in the sum `∑' (i : ι), F i` are uniformly bounded on `U` by a
+/--
+If the terms in the sum `∑' (i : ι), F i` are uniformly bounded on `U` by a
 summable function, then the sum of `deriv F i` at a point in `U` is the derivative of the
-sum. -/
-theorem hasSum_deriv_of_summable_norm {u : ι → ℝ} (hu : Summable u)
+sum.
+-/
+theorem hasSum_deriv_of_summable_norm
+    {u : ι → ℝ} (hu : Summable u)
     (hf : ∀ i : ι, DifferentiableOn ℂ (F i) U) (hU : IsOpen U)
-    (hF_le : ∀ (i : ι) (w : ℂ), w ∈ U → ‖F i w‖ ≤ u i) (hz : z ∈ U) :
-    HasSum (fun i : ι => deriv (F i) z) (deriv (fun w : ℂ => ∑' i : ι, F i w) z) := by
+    (hF_le : ∀ (i : ι) (w : ℂ), w ∈ U → ‖F i w‖ ≤ u i) (hz : z ∈ U)
+    : HasSum (fun i : ι => deriv (F i) z) (deriv (fun w : ℂ => ∑' i : ι, F i w) z) := by
   rw [HasSum]
   have hc := (tendstoUniformlyOn_tsum hu hF_le).tendstoLocallyUniformlyOn
   convert!
@@ -196,12 +216,16 @@ end Tsums
 
 section LogDeriv
 
-/-- The logarithmic derivative of a sequence of functions converging locally uniformly to a
-function is the logarithmic derivative of the limit function. -/
-theorem logDeriv_tendsto {ι : Type*} {p : Filter ι} {f : ι → ℂ → ℂ} {g : ℂ → ℂ}
-    {s : Set ℂ} (hs : IsOpen s) {x : ℂ} (hx : x ∈ s) (hF : TendstoLocallyUniformlyOn f g p s)
-    (hf : ∀ᶠ n in p, DifferentiableOn ℂ (f n) s) (hg : g x ≠ 0) :
-    Tendsto (fun n ↦ logDeriv (f n) x) p (𝓝 (logDeriv g x)) :=
+/--
+The logarithmic derivative of a sequence of functions converging locally uniformly to a
+function is the logarithmic derivative of the limit function.
+-/
+theorem logDeriv_tendsto
+    {ι : Type*} {p : Filter ι} {f : ι → ℂ → ℂ} {g : ℂ → ℂ} {s : Set ℂ} (hs : IsOpen s)
+    {x : ℂ} (hx : x ∈ s)
+    (hF : TendstoLocallyUniformlyOn f g p s) (hf : ∀ᶠ n in p, DifferentiableOn ℂ (f n) s)
+    (hg : g x ≠ 0)
+    : Tendsto (fun n ↦ logDeriv (f n) x) p (𝓝 (logDeriv g x)) :=
   ((hF.deriv hf hs).tendsto_at hx).div (hF.tendsto_at hx) hg
 
 end LogDeriv

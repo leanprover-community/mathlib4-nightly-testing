@@ -32,12 +32,14 @@ section Semiring
 
 variable [CommSemiring R] [AddCommMonoid M] [Module R M]
 
-/-- The symmetric bilinear form on `Module.Dual R M × M` defined as
-`B (f, x) (g, y) = f y + g x`. -/
+/--
+The symmetric bilinear form on `Module.Dual R M × M` defined as
+`B (f, x) (g, y) = f y + g x`.
+-/
 @[simps!]
 def dualProd : LinearMap.BilinForm R (Module.Dual R M × M) :=
-    (applyₗ.comp (snd R (Module.Dual R M) M)).compl₂ (fst R (Module.Dual R M) M) +
-      ((applyₗ.comp (snd R (Module.Dual R M) M)).compl₂ (fst R (Module.Dual R M) M)).flip
+  (applyₗ.comp (snd R (Module.Dual R M) M)).compl₂ (fst R (Module.Dual R M) M)
+    + ((applyₗ.comp (snd R (Module.Dual R M) M)).compl₂ (fst R (Module.Dual R M) M)).flip
 
 theorem isSymm_dualProd : (dualProd R M).IsSymm := ⟨fun _x _y => add_comm _ _⟩
 
@@ -48,13 +50,12 @@ section Ring
 variable [CommRing R] [AddCommGroup M] [Module R M]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem separatingLeft_dualProd :
-    (dualProd R M).SeparatingLeft ↔ Function.Injective (Module.Dual.eval R M) := by
+theorem separatingLeft_dualProd
+    : (dualProd R M).SeparatingLeft ↔ Function.Injective (Module.Dual.eval R M) := by
   rw [separatingLeft_iff_ker_eq_bot, ker_eq_bot]
   let e := LinearEquiv.prodComm R _ _ ≪≫ₗ Module.dualProdDualEquivDual R (Module.Dual R M) M
   let h_d := e.symm.toLinearMap.comp (dualProd R M)
-  refine (Function.Injective.of_comp_iff e.symm.injective
-    (dualProd R M)).symm.trans ?_
+  refine (Function.Injective.of_comp_iff e.symm.injective (dualProd R M)).symm.trans ?_
   rw [← LinearEquiv.coe_toLinearMap, ← coe_comp]
   change Function.Injective h_d ↔ _
   have : h_d = prodMap id (Module.Dual.eval R M) := by
@@ -85,17 +86,18 @@ variable [CommSemiring R] [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Modu
 def dualProd : QuadraticForm R (Module.Dual R M × M) where
   toFun p := p.1 p.2
   toFun_smul a p := by
-    rw [Prod.smul_fst, Prod.smul_snd, LinearMap.smul_apply, map_smul, smul_eq_mul,
-      smul_eq_mul, smul_eq_mul, mul_assoc]
-  exists_companion' :=
-    ⟨LinearMap.dualProd R M, fun p q => by
+    rw [Prod.smul_fst, Prod.smul_snd, LinearMap.smul_apply, map_smul, smul_eq_mul, smul_eq_mul,
+      smul_eq_mul, mul_assoc]
+  exists_companion' := ⟨
+    LinearMap.dualProd R M,
+    fun p q => by
       rw [LinearMap.dualProd_apply_apply, Prod.fst_add, Prod.snd_add, LinearMap.add_apply, map_add,
-        map_add, add_right_comm _ (q.1 q.2), add_comm (q.1 p.2) (p.1 q.2), ← add_assoc, ←
-        add_assoc]⟩
+        map_add, add_right_comm _ (q.1 q.2), add_comm (q.1 p.2) (p.1 q.2), ← add_assoc, ← add_assoc]
+  ⟩
 
 @[simp]
-theorem _root_.LinearMap.dualProd.toQuadraticForm :
-    (LinearMap.dualProd R M).toQuadraticMap = 2 • dualProd R M :=
+theorem _root_.LinearMap.dualProd.toQuadraticForm
+    : (LinearMap.dualProd R M).toQuadraticMap = 2 • dualProd R M :=
   ext fun _a => (two_nsmul _).symm
 
 variable {R M N}
@@ -108,11 +110,11 @@ def dualProdIsometry (f : M ≃ₗ[R] N) : (dualProd R M).IsometryEquiv (dualPro
 
 /-- `QuadraticForm.dualProd` commutes (isometrically) with `QuadraticForm.prod`. -/
 @[simps!]
-def dualProdProdIsometry :
-    (dualProd R (M × N)).IsometryEquiv ((dualProd R M).prod (dualProd R N)) where
+def dualProdProdIsometry
+    : (dualProd R (M × N)).IsometryEquiv ((dualProd R M).prod (dualProd R N)) where
   toLinearEquiv :=
-    (Module.dualProdDualEquivDual R M N).symm.prodCongr (LinearEquiv.refl R (M × N)) ≪≫ₗ
-      LinearEquiv.prodProdProdComm R _ _ M N
+    (Module.dualProdDualEquivDual R M N).symm.prodCongr (LinearEquiv.refl R (M × N))
+      ≪≫ₗ LinearEquiv.prodProdProdComm R _ _ M N
   map_app' m :=
     (m.fst.map_add _ _).symm.trans <| DFunLike.congr_arg m.fst <| Prod.ext (add_zero _) (zero_add _)
 
@@ -124,17 +126,19 @@ variable [CommRing R] [AddCommGroup M] [Module R M]
 variable {R M}
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The isometry sending `(Q.prod <| -Q)` to `(QuadraticForm.dualProd R M)`.
+/--
+The isometry sending `(Q.prod <| -Q)` to `(QuadraticForm.dualProd R M)`.
 
 This is `σ` from Proposition 4.8, page 84 of
 [*Hermitian K-Theory and Geometric Applications*][hyman1973]; though we swap the order of the pairs.
 -/
 @[simps!]
-def toDualProd (Q : QuadraticForm R M) [Invertible (2 : R)] :
-    (Q.prod <| -Q) →qᵢ QuadraticForm.dualProd R M where
-  toLinearMap := LinearMap.prod
-    (Q.associated.comp (LinearMap.fst _ _ _) + Q.associated.comp (LinearMap.snd _ _ _))
-    (LinearMap.fst _ _ _ - LinearMap.snd _ _ _)
+def toDualProd (Q : QuadraticForm R M) [Invertible (2 : R)]
+    : (Q.prod <| -Q) →qᵢ QuadraticForm.dualProd R M where
+  toLinearMap :=
+    LinearMap.prod
+      (Q.associated.comp (LinearMap.fst _ _ _) + Q.associated.comp (LinearMap.snd _ _ _))
+      (LinearMap.fst _ _ _ - LinearMap.snd _ _ _)
   map_app' x := by
     dsimp only [QuadraticMap.associated, QuadraticMap.associatedHom]
     dsimp only [LinearMap.smul_apply, LinearMap.coe_mk, AddHom.coe_mk, AddHom.toFun_eq_coe,
@@ -156,17 +160,19 @@ end Ring
 
 end QuadraticForm
 
-/-- Vectors which subtend obtuse angles with each other and all lie in the same half-space are
+/--
+Vectors which subtend obtuse angles with each other and all lie in the same half-space are
 linearly independent.
 
-This is [serre1965](Ch. V, §9, Lemma 4). -/
-lemma LinearMap.BilinForm.linearIndependent_of_pairwise_le_zero {ι R M : Type*}
+This is [serre1965](Ch. V, §9, Lemma 4).
+-/
+lemma LinearMap.BilinForm.linearIndependent_of_pairwise_le_zero
+    {ι R M : Type*}
     [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] [AddCommGroup M] [Module R M]
     (B : LinearMap.BilinForm R M) (hB : B.toQuadraticMap.PosDef)
     (f : Module.Dual R M) (v : ι → M)
-    (hp : ∀ i, 0 < f (v i))
-    (hn : Pairwise fun i j ↦ B (v i) (v j) ≤ 0) :
-    LinearIndependent R v := by
+    (hp : ∀ i, 0 < f (v i)) (hn : Pairwise fun i j ↦ B (v i) (v j) ≤ 0)
+    : LinearIndependent R v := by
   refine linearIndependent_iff'.mpr fun s c hc ↦ ?_
   set x := ∑ i ∈ s with 0 < c i, c i • v i with hx
   set y := ∑ i ∈ s with 0 < -c i, (-c i) • v i with hy
@@ -190,5 +196,5 @@ lemma LinearMap.BilinForm.linearIndependent_of_pairwise_le_zero {ι R M : Type*}
     have : 0 < c i * f (v i) := mul_pos hi' (hp i)
     grind
   replace hx (i : ι) (hi : i ∈ s) : c i ≤ 0 := H _ (by grind) i hi
-  replace hy (i : ι) (hi : i ∈ s) : -c i ≤ 0 := H (-c ·) (by grind) i hi
+  replace hy (i : ι) (hi : i ∈ s) : - c i ≤ 0 := H (- c ·) (by grind) i hi
   grind

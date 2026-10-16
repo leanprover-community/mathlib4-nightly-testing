@@ -45,7 +45,8 @@ set_option backward.isDefEq.respectTransparency false in
 theorem Rat.RingOfIntegers.isUnit_iff {x : 𝓞 ℚ} : IsUnit x ↔ (x : ℚ) = 1 ∨ (x : ℚ) = -1 := by
   simp_rw [(isUnit_map_iff (Rat.ringOfIntegersEquiv : 𝓞 ℚ →+* ℤ) x).symm, Int.isUnit_iff,
     RingEquiv.coe_toRingHom, RingEquiv.map_eq_one_iff, RingEquiv.map_eq_neg_one_iff, ←
-    Subtype.coe_injective.eq_iff]; rfl
+    Subtype.coe_injective.eq_iff]
+  rfl
 
 end Rat
 
@@ -55,8 +56,8 @@ section IsUnit
 
 variable {K}
 
-theorem NumberField.isUnit_iff_norm [NumberField K] {x : 𝓞 K} :
-    IsUnit x ↔ |(RingOfIntegers.norm ℚ x : ℚ)| = 1 := by
+theorem NumberField.isUnit_iff_norm [NumberField K] {x : 𝓞 K}
+    : IsUnit x ↔ |(RingOfIntegers.norm ℚ x : ℚ)| = 1 := by
   convert (RingOfIntegers.isUnit_norm ℚ (F := K)).symm
   rw [← abs_one, abs_eq_abs, ← Rat.RingOfIntegers.isUnit_iff]
 
@@ -66,8 +67,7 @@ namespace NumberField.Units
 
 section coe
 
-instance : CoeHTC (𝓞 K)ˣ K :=
-  ⟨fun x => algebraMap _ K (Units.val x)⟩
+instance : CoeHTC ((𝓞 K)ˣ) K := ⟨fun x => algebraMap _ K (Units.val x)⟩
 
 theorem coe_injective : Function.Injective ((↑) : (𝓞 K)ˣ → K) :=
   RingOfIntegers.coe_injective.comp Units.val_injective
@@ -76,8 +76,8 @@ variable {K}
 
 theorem coe_coe (u : (𝓞 K)ˣ) : ((u : 𝓞 K) : K) = (u : K) := rfl
 
-theorem _root_.IsPrimitiveRoot.coe_coe_iff {ν : (𝓞 K)ˣ} {n : ℕ} :
-    IsPrimitiveRoot (ν : K) n ↔ IsPrimitiveRoot ν n :=
+theorem _root_.IsPrimitiveRoot.coe_coe_iff {ν : (𝓞 K)ˣ} {n : ℕ}
+    : IsPrimitiveRoot (ν : K) n ↔ IsPrimitiveRoot ν n :=
   IsPrimitiveRoot.map_iff_of_injective
     (f := (algebraMap (𝓞 K) K).toMonoidHom.comp (Units.coeHom (𝓞 K))) (coe_injective K)
 
@@ -101,23 +101,22 @@ end coe
 
 variable {K}
 
-/--
-The group homomorphism `(𝓞 K)ˣ →* ℂˣ` induced by a complex embedding of `K`.
--/
+/-- The group homomorphism `(𝓞 K)ˣ →* ℂˣ` induced by a complex embedding of `K`. -/
 protected def complexEmbedding (φ : K →+* ℂ) : (𝓞 K)ˣ →* ℂˣ :=
   (map φ).comp (map (algebraMap (𝓞 K) K).toMonoidHom)
 
 @[simp]
-protected theorem complexEmbedding_apply (φ : K →+* ℂ) (u : (𝓞 K)ˣ) :
-    Units.complexEmbedding φ u = φ u := rfl
+protected theorem complexEmbedding_apply (φ : K →+* ℂ) (u : (𝓞 K)ˣ)
+    : Units.complexEmbedding φ u = φ u :=
+  rfl
 
-protected theorem complexEmbedding_injective (φ : K →+* ℂ) :
-    Function.Injective (Units.complexEmbedding φ) :=
+protected theorem complexEmbedding_injective (φ : K →+* ℂ)
+    : Function.Injective (Units.complexEmbedding φ) :=
   (map_injective φ.injective).comp (map_injective RingOfIntegers.coe_injective)
 
 @[simp]
-protected theorem complexEmbedding_inj (φ : K →+* ℂ) (u v : (𝓞 K)ˣ) :
-    Units.complexEmbedding φ u = Units.complexEmbedding φ v ↔ u = v :=
+protected theorem complexEmbedding_inj (φ : K →+* ℂ) (u v : (𝓞 K)ˣ)
+    : Units.complexEmbedding φ u = Units.complexEmbedding φ v ↔ u = v :=
   (Units.complexEmbedding_injective φ).eq_iff
 
 open NumberField.InfinitePlace
@@ -125,19 +124,16 @@ open NumberField.InfinitePlace
 variable (K)
 
 @[simp]
-protected theorem norm [NumberField K] (x : (𝓞 K)ˣ) :
-    |Algebra.norm ℚ (x : K)| = 1 := by
+protected theorem norm [NumberField K] (x : (𝓞 K)ˣ) : |Algebra.norm ℚ (x : K)| = 1 := by
   rw [← RingOfIntegers.coe_norm, isUnit_iff_norm.mp x.isUnit]
 
 variable {K} in
-theorem pos_at_place (x : (𝓞 K)ˣ) (w : InfinitePlace K) :
-    0 < w x := pos_iff.mpr (coe_ne_zero x)
+theorem pos_at_place (x : (𝓞 K)ˣ) (w : InfinitePlace K) : 0 < w x := pos_iff.mpr (coe_ne_zero x)
 
 variable {K} in
-theorem sum_mult_mul_log [NumberField K] (x : (𝓞 K)ˣ) :
-    ∑ w : InfinitePlace K, w.mult * Real.log (w x) = 0 := by
-  simpa [Units.norm, Real.log_prod, Real.log_pow] using
-    congr(Real.log $(prod_eq_abs_norm (x : K)))
+theorem sum_mult_mul_log [NumberField K] (x : (𝓞 K)ˣ)
+    : ∑ w : InfinitePlace K, w.mult * Real.log (w x) = 0 := by
+  simpa [Units.norm, Real.log_prod, Real.log_pow] using congr(Real.log $(prod_eq_abs_norm (x : K)))
 
 section torsion
 
@@ -148,14 +144,23 @@ instance : Nonempty (torsion K) := One.instNonempty
 
 variable [NumberField K]
 
-theorem mem_torsion {x : (𝓞 K)ˣ} :
-    x ∈ torsion K ↔ ∀ w : InfinitePlace K, w x = 1 := by
+theorem mem_torsion {x : (𝓞 K)ˣ} : x ∈ torsion K ↔ ∀ w : InfinitePlace K, w x = 1 := by
   rw [eq_iff_eq (x : K) 1, torsion, CommGroup.mem_torsion]
-  refine ⟨fun hx φ ↦ (((φ.comp <| algebraMap (𝓞 K) K).toMonoidHom.comp <|
-    Units.coeHom _).isOfFinOrder hx).norm_eq_one, fun h ↦ isOfFinOrder_iff_pow_eq_one.2 ?_⟩
+  refine ⟨
+    fun hx φ ↦
+      (((φ.comp <| algebraMap (𝓞 K) K).toMonoidHom.comp <| Units.coeHom _).isOfFinOrder
+        hx).norm_eq_one,
+    fun h ↦ isOfFinOrder_iff_pow_eq_one.2 ?_
+  ⟩
   obtain ⟨n, hn, hx⟩ := Embeddings.pow_eq_one_of_norm_eq_one K ℂ x.val.isIntegral_coe h
-  exact ⟨n, hn, by ext; rw [NumberField.RingOfIntegers.coe_eq_algebraMap, coe_pow, hx,
-    NumberField.RingOfIntegers.coe_eq_algebraMap, coe_one]⟩
+  exact ⟨
+    n,
+    hn,
+    by
+      ext
+      rw [NumberField.RingOfIntegers.coe_eq_algebraMap, coe_pow, hx,
+        NumberField.RingOfIntegers.coe_eq_algebraMap, coe_one]
+  ⟩
 
 /-- The torsion subgroup is finite. -/
 instance : Finite (torsion K) := by
@@ -173,25 +178,23 @@ instance : IsCyclic (torsion K) := isCyclic_subgroup_units _
 /-- The order of the torsion subgroup. -/
 def torsionOrder : ℕ := Nat.card (torsion K)
 
-theorem torsionOrder_pos : 0 < torsionOrder K :=
-  Nat.card_pos
+theorem torsionOrder_pos : 0 < torsionOrder K := Nat.card_pos
 
-theorem torsionOrder_ne_zero : torsionOrder K ≠ 0 :=
-  (torsionOrder_pos K).ne'
+theorem torsionOrder_ne_zero : torsionOrder K ≠ 0 := (torsionOrder_pos K).ne'
 
-instance : NeZero (torsionOrder K) :=
-  ⟨torsionOrder_ne_zero K⟩
+instance : NeZero (torsionOrder K) := ⟨torsionOrder_ne_zero K⟩
 
 omit [NumberField K] in
-theorem pow_torsionOrder_eq_one {ζ : (𝓞 K)ˣ} (hζ : ζ ∈ torsion K) :
-    ζ ^ torsionOrder K = 1 :=
+theorem pow_torsionOrder_eq_one {ζ : (𝓞 K)ˣ} (hζ : ζ ∈ torsion K) : ζ ^ torsionOrder K = 1 :=
   Subtype.ext_iff.mp <| @pow_card_eq_one' (torsion K) _ ⟨ζ, hζ⟩
 
 omit [NumberField K] in
-/-- If `k` does not divide `torsionOrder` then there are no nontrivial roots of unity of
-  order dividing `k`. -/
-theorem rootsOfUnity_eq_one {k : ℕ+} (hc : Nat.Coprime k (torsionOrder K))
-    {ζ : (𝓞 K)ˣ} : ζ ∈ rootsOfUnity k (𝓞 K) ↔ ζ = 1 := by
+/--
+If `k` does not divide `torsionOrder` then there are no nontrivial roots of unity of
+order dividing `k`.
+-/
+theorem rootsOfUnity_eq_one {k : ℕ+} (hc : Nat.Coprime k (torsionOrder K)) {ζ : (𝓞 K)ˣ}
+    : ζ ∈ rootsOfUnity k (𝓞 K) ↔ ζ = 1 := by
   rw [mem_rootsOfUnity]
   refine ⟨fun h => ?_, fun h => by rw [h, one_pow]⟩
   refine orderOf_eq_one_iff.mp (Nat.eq_one_of_dvd_coprimes hc ?_ ?_)
@@ -202,10 +205,11 @@ theorem rootsOfUnity_eq_one {k : ℕ+} (hc : Nat.Coprime k (torsionOrder K))
     rw [orderOf_submonoid (⟨ζ, hζ⟩ : torsion K)]
     apply orderOf_dvd_natCard
 
-/-- The group of roots of unity of order dividing `torsionOrder` is equal to the torsion
-group. -/
-theorem rootsOfUnity_eq_torsion :
-    rootsOfUnity (torsionOrder K) (𝓞 K) = torsion K := by
+/--
+The group of roots of unity of order dividing `torsionOrder` is equal to the torsion
+group.
+-/
+theorem rootsOfUnity_eq_torsion : rootsOfUnity (torsionOrder K) (𝓞 K) = torsion K := by
   ext ζ
   rw [torsion, mem_rootsOfUnity]
   refine ⟨fun h ↦ ?_, fun h ↦ pow_torsionOrder_eq_one K h⟩
@@ -216,17 +220,17 @@ theorem rootsOfUnity_eq_torsion :
 The image of `torsion K` by a complex embedding is the group of complex roots of unity of
 order `torsionOrder K`.
 -/
-theorem map_complexEmbedding_torsion (φ : K →+* ℂ) :
-    (torsion K).map (Units.complexEmbedding φ) = rootsOfUnity (torsionOrder K) ℂ := by
+theorem map_complexEmbedding_torsion (φ : K →+* ℂ)
+    : (torsion K).map (Units.complexEmbedding φ) = rootsOfUnity (torsionOrder K) ℂ := by
   apply Subgroup.eq_of_le_of_card_ge
   · rw [← rootsOfUnity_eq_torsion]
     exact map_rootsOfUnity _ (torsionOrder K)
-  · let e := ((torsion K).equivMapOfInjective (Units.complexEmbedding φ)
-      (Units.complexEmbedding_injective φ)).symm.toEquiv
+  · let e :=
+      ((torsion K).equivMapOfInjective (Units.complexEmbedding φ)
+        (Units.complexEmbedding_injective φ)).symm.toEquiv
     rw [Complex.card_rootsOfUnity, Nat.card_congr e, torsionOrder]
 
-theorem even_torsionOrder :
-    Even (torsionOrder K) := by
+theorem even_torsionOrder : Even (torsionOrder K) := by
   suffices orderOf (⟨-1, neg_one_mem_torsion⟩ : torsion K) = 2 by
     rw [even_iff_two_dvd, ← this]
     apply orderOf_dvd_natCard
@@ -238,8 +242,8 @@ section odd
 variable {K}
 
 set_option backward.isDefEq.respectTransparency false in
-theorem torsion_eq_one_or_neg_one_of_odd_finrank
-    (h : Odd (Module.finrank ℚ K)) (x : torsion K) : (x : (𝓞 K)ˣ) = 1 ∨ (x : (𝓞 K)ˣ) = -1 := by
+theorem torsion_eq_one_or_neg_one_of_odd_finrank (h : Odd (Module.finrank ℚ K)) (x : torsion K)
+    : (x : (𝓞 K)ˣ) = 1 ∨ (x : (𝓞 K)ˣ) = -1 := by
   by_cases! hc : 2 < orderOf (x : (𝓞 K)ˣ)
   · rw [← orderOf_units, ← orderOf_submonoid] at hc
     linarith [IsPrimitiveRoot.nrRealPlaces_eq_zero_of_two_lt hc (IsPrimitiveRoot.orderOf (x.1 : K)),
@@ -250,13 +254,16 @@ theorem torsion_eq_one_or_neg_one_of_odd_finrank
     · rw [← orderOf_units, CharP.orderOf_eq_two_iff 0 (by decide)] at hi
       simp [← Units.val_inj, ← Units.val_inj, Units.val_neg, Units.val_one, hi]
 
-theorem torsionOrder_eq_two_of_odd_finrank (h : Odd (Module.finrank ℚ K)) :
-    torsionOrder K = 2 := by
+theorem torsionOrder_eq_two_of_odd_finrank (h : Odd (Module.finrank ℚ K)) : torsionOrder K = 2 := by
   classical
   let := Fintype.ofFinite (torsion K)
   rw [torsionOrder, Nat.card_eq_fintype_card]
-  refine (Finset.card_eq_two.2 ⟨1, ⟨-1, neg_one_mem_torsion⟩,
-    by simp [← Subtype.coe_ne_coe], Finset.ext fun x ↦ ⟨fun _ ↦ ?_, fun _ ↦ Finset.mem_univ _⟩⟩)
+  refine (Finset.card_eq_two.2 ⟨
+    1,
+    ⟨-1, neg_one_mem_torsion⟩,
+    by simp [← Subtype.coe_ne_coe],
+    Finset.ext fun x ↦ ⟨fun _ ↦ ?_, fun _ ↦ Finset.mem_univ _⟩
+  ⟩)
   rw [Finset.mem_insert, Finset.mem_singleton, ← Subtype.val_inj, ← Subtype.val_inj]
   exact torsion_eq_one_or_neg_one_of_odd_finrank h x
 

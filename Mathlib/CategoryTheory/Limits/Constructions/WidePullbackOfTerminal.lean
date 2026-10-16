@@ -23,15 +23,13 @@ universe w v u
 
 namespace CategoryTheory.Limits
 
-variable {C : Type u} [Category.{v} C]
-  {ι : Type w} {B : C} {objs : ι → C}
-  (arrows : (j : ι) → objs j ⟶ B)
+variable
+  {C : Type u} [Category.{v} C] {ι : Type w} {B : C} {objs : ι → C} (arrows : (j : ι) → objs j ⟶ B)
 
 namespace WidePullbackCone
 
 /-- The fan that is induced by a wide pullback cone. -/
-abbrev toFan (s : WidePullbackCone arrows) : Fan objs :=
-  Fan.mk _ s.π
+abbrev toFan (s : WidePullbackCone arrows) : Fan objs := Fan.mk _ s.π
 
 variable (c : Fan objs)
 
@@ -40,10 +38,11 @@ abbrev ofFan (hB : IsTerminal B) : WidePullbackCone arrows :=
   WidePullbackCone.mk (hB.from _) c.proj (fun _ ↦ hB.hom_ext _ _)
 
 variable {c} in
-/-- When the base object is terminal, a limit wide pullback cone can be obtained
-from a limit fan. -/
-def isLimitOfFan (hc : IsLimit c) (hB : IsTerminal B) :
-    IsLimit (ofFan arrows c hB) :=
+/--
+When the base object is terminal, a limit wide pullback cone can be obtained
+from a limit fan.
+-/
+def isLimitOfFan (hc : IsLimit c) (hB : IsTerminal B) : IsLimit (ofFan arrows c hB) :=
   IsLimit.mk _
     (fun s ↦ hc.lift s.toFan)
     (fun s ↦ hB.hom_ext _ _)
@@ -52,10 +51,8 @@ def isLimitOfFan (hc : IsLimit c) (hB : IsTerminal B) :
 
 end WidePullbackCone
 
-lemma hasWidePullback_of_isTerminal
-    [HasProduct objs] (hB : IsTerminal B) :
-    HasWidePullback B objs arrows where
-  exists_limit :=
-    ⟨_, WidePullbackCone.isLimitOfFan (arrows := arrows) (limit.isLimit _) hB⟩
+lemma hasWidePullback_of_isTerminal [HasProduct objs] (hB : IsTerminal B)
+    : HasWidePullback B objs arrows where
+  exists_limit := ⟨_, WidePullbackCone.isLimitOfFan (arrows := arrows) (limit.isLimit _) hB⟩
 
 end CategoryTheory.Limits

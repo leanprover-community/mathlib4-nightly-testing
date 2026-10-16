@@ -7,7 +7,6 @@ module
 
 public import Mathlib.AlgebraicTopology.SimplicialSet.Basic
 public import Mathlib.CategoryTheory.Types.Monomorphisms
-
 import Mathlib.CategoryTheory.MorphismProperty.FunctorCategory
 
 /-!
@@ -26,8 +25,7 @@ open CategoryTheory Limits MorphismProperty
 
 namespace SSet
 
-instance [HasCoproducts.{v'} (Type u)] :
-    IsStableUnderCoproducts.{v'} (monomorphisms SSet.{u}) :=
+instance [HasCoproducts.{v'} (Type u)] : IsStableUnderCoproducts.{v'} (monomorphisms SSet.{u}) :=
   inferInstanceAs (IsStableUnderCoproducts.{v'} (monomorphisms (_ ⥤ _)))
 
 instance : (monomorphisms SSet).IsStableUnderCobaseChange := by
@@ -41,8 +39,8 @@ instance : MorphismProperty.IsStableUnderFilteredColimits.{u, u} (monomorphisms 
     rw [← functorCategory_monomorphisms]
     infer_instance
 
-example (K : Type u) [LinearOrder K] [SuccOrder K] [OrderBot K] [WellFoundedLT K] :
-    (monomorphisms SSet.{u}).IsStableUnderTransfiniteCompositionOfShape K := by
+example (K : Type u) [LinearOrder K] [SuccOrder K] [OrderBot K] [WellFoundedLT K]
+    : (monomorphisms SSet.{u}).IsStableUnderTransfiniteCompositionOfShape K := by
   infer_instance
 
 end SSet

@@ -21,8 +21,10 @@ open Lean.Meta
 
 namespace Lean.Elab.Tactic
 
-/-- Returns the free variable IDs that can be cleared, excluding those in the preserve list,
-class instances, and auxiliary declarations (e.g. recursive hypotheses). -/
+/--
+Returns the free variable IDs that can be cleared, excluding those in the preserve list,
+class instances, and auxiliary declarations (e.g. recursive hypotheses).
+-/
 def getVarsToClear (preserve : Array FVarId) : MetaM (Array FVarId) := do
   let mut toClear : Array FVarId := #[]
   for decl in ← getLCtx do
@@ -31,19 +33,23 @@ def getVarsToClear (preserve : Array FVarId) : MetaM (Array FVarId) := do
         toClear := toClear.push decl.fvarId
   return toClear
 
-/-- Clears all hypotheses from a goal except those in the preserve list, class instances, and
-auxiliary declarations (e.g. recursive hypotheses). -/
+/--
+Clears all hypotheses from a goal except those in the preserve list, class instances, and
+auxiliary declarations (e.g. recursive hypotheses).
+-/
 def clearExcept (preserve : Array FVarId) (goal : MVarId) : MetaM MVarId := do
   let toClear ← getVarsToClear preserve
   goal.tryClearMany toClear
 
-/-- Clears all hypotheses it can, except those provided after a minus sign, class instances, and
+/--
+Clears all hypotheses it can, except those provided after a minus sign, class instances, and
 hidden auxiliary declarations (for example recursive hypotheses). Example:
 ```
   clear * - h₁ h₂
 ```
 The intent is that `clear * -` only clears user-visible local declarations; hidden auxiliary
-declarations should be handled by more specific mechanisms when needed. -/
+declarations should be handled by more specific mechanisms when needed.
+-/
 @[nolint tacticAlt]
 syntax (name := clearExceptTactic) "clear " "*" " -" (ppSpace colGt ident)* : tactic
 

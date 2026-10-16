@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 public import Mathlib.Data.DFinsupp.BigOperators
 public import Mathlib.Data.DFinsupp.Order
 public import Mathlib.Order.Interval.Finset.Basic
-
 import Mathlib.Data.Fintype.BigOperators
 
 /-!
@@ -20,7 +19,6 @@ finite and calculates the cardinality of its finite intervals.
 -/
 
 @[expose] public section
-
 
 open DFinsupp Finset
 
@@ -34,11 +32,13 @@ variable [DecidableEq ι] [∀ i, Zero (α i)] {s : Finset ι} {f : Π₀ i, α 
 
 /-- Finitely supported product of finsets. -/
 def dfinsupp (s : Finset ι) (t : ∀ i, Finset (α i)) : Finset (Π₀ i, α i) :=
-  (s.pi t).map
-    ⟨fun f => DFinsupp.mk s fun i => f i i.2, by
+  (s.pi t).map ⟨
+    fun f => DFinsupp.mk s fun i => f i i.2,
+    by
       refine (mk_injective _).comp fun f g h => ?_
       ext i hi
-      convert! congr($h ⟨i, hi⟩)⟩
+      convert! congr($h ⟨i, hi⟩)
+  ⟩
 
 @[simp]
 theorem card_dfinsupp (s : Finset ι) (t : ∀ i, Finset (α i)) : #(s.dfinsupp t) = ∏ i ∈ s, #(t i) :=
@@ -58,14 +58,16 @@ theorem mem_dfinsupp_iff : f ∈ s.dfinsupp t ↔ f.support ⊆ s ∧ ∀ i ∈ 
     dsimp
     exact ite_eq_left_iff.2 fun hi => (notMem_support_iff.1 fun H => hi <| h.1 H).symm
 
-/-- When `t` is supported on `s`, `f ∈ s.dfinsupp t` precisely means that `f` is pointwise in `t`.
+/--
+When `t` is supported on `s`, `f ∈ s.dfinsupp t` precisely means that `f` is pointwise in `t`.
 -/
 @[simp]
-theorem mem_dfinsupp_iff_of_support_subset {t : Π₀ i, Finset (α i)} (ht : t.support ⊆ s) :
-    f ∈ s.dfinsupp t ↔ ∀ i, f i ∈ t i := by
-  refine mem_dfinsupp_iff.trans (forall_and.symm.trans <| forall_congr' fun i =>
-      ⟨ fun h => ?_,
-        fun h => ⟨fun hi => ht <| mem_support_iff.2 fun H => mem_support_iff.1 hi ?_, fun _ => h⟩⟩)
+theorem mem_dfinsupp_iff_of_support_subset {t : Π₀ i, Finset (α i)} (ht : t.support ⊆ s)
+    : f ∈ s.dfinsupp t ↔ ∀ i, f i ∈ t i := by
+  refine mem_dfinsupp_iff.trans (forall_and.symm.trans <| forall_congr' fun i => ⟨
+    fun h => ?_,
+    fun h => ⟨fun hi => ht <| mem_support_iff.2 fun H => mem_support_iff.1 hi ?_, fun _ => h⟩
+  ⟩)
   · by_cases hi : i ∈ s
     · exact h.2 hi
     · rw [notMem_support_iff.1 (mt h.1 hi), notMem_support_iff.1 (notMem_mono ht hi)]
@@ -85,36 +87,41 @@ def singleton (f : Π₀ i, α i) : Π₀ i, Finset (α i) where
   toFun i := {f i}
   support' := f.support'.map fun s => ⟨s.1, fun i => (s.prop i).imp id (congr_arg _)⟩
 
-theorem mem_singleton_apply_iff : a ∈ f.singleton i ↔ a = f i :=
-  mem_singleton
+theorem mem_singleton_apply_iff : a ∈ f.singleton i ↔ a = f i := mem_singleton
 
 end BundledSingleton
 
 section BundledIcc
 
-variable [∀ i, Zero (α i)] [∀ i, PartialOrder (α i)] [∀ i, LocallyFiniteOrder (α i)]
+variable
+  [∀ i, Zero (α i)] [∀ i, PartialOrder (α i)] [∀ i, LocallyFiniteOrder (α i)]
   {f g : Π₀ i, α i} {i : ι} {a : α i}
 
 /-- Pointwise `Finset.Icc` bundled as a `DFinsupp`. -/
 def rangeIcc (f g : Π₀ i, α i) : Π₀ i, Finset (α i) where
   toFun i := Icc (f i) (g i)
-  support' := f.support'.bind fun fs => g.support'.map fun gs =>
-    ⟨ fs.1 + gs.1,
-      fun i => or_iff_not_imp_left.2 fun h => by
-        have hf : f i = 0 := (fs.prop i).resolve_left
-            (Multiset.notMem_mono (Multiset.Le.subset <| Multiset.le_add_right _ _) h)
-        have hg : g i = 0 := (gs.prop i).resolve_left
-            (Multiset.notMem_mono (Multiset.Le.subset <| Multiset.le_add_left _ _) h)
-        simp_rw [hf, hg]
-        exact Icc_self _⟩
+  support' :=
+    f.support'.bind fun fs =>
+      g.support'.map fun gs => ⟨
+        fs.1 + gs.1,
+        fun i =>
+          or_iff_not_imp_left.2 fun h => by
+            have hf : f i = 0 :=
+              (fs.prop i).resolve_left
+                (Multiset.notMem_mono (Multiset.Le.subset <| Multiset.le_add_right _ _) h)
+            have hg : g i = 0 :=
+              (gs.prop i).resolve_left
+                (Multiset.notMem_mono (Multiset.Le.subset <| Multiset.le_add_left _ _) h)
+            simp_rw [hf, hg]
+            exact Icc_self _
+      ⟩
 
-@[simp]
-theorem rangeIcc_apply (f g : Π₀ i, α i) (i : ι) : f.rangeIcc g i = Icc (f i) (g i) := rfl
+@[simp] theorem rangeIcc_apply (f g : Π₀ i, α i) (i : ι) : f.rangeIcc g i = Icc (f i) (g i) := rfl
 
 theorem mem_rangeIcc_apply_iff : a ∈ f.rangeIcc g i ↔ f i ≤ a ∧ a ≤ g i := mem_Icc
 
-theorem support_rangeIcc_subset [DecidableEq ι] [∀ i, DecidableEq (α i)] :
-    (f.rangeIcc g).support ⊆ f.support ∪ g.support := by
+theorem support_rangeIcc_subset [DecidableEq ι] [∀ i, DecidableEq (α i)]
+    : (f.rangeIcc g).support ⊆ f.support ∪ g.support := by
   intro x hx
   by_contra h
   refine notMem_support_iff.2 ?_ hx
@@ -128,8 +135,10 @@ section Pi
 
 variable [∀ i, Zero (α i)] [DecidableEq ι] [∀ i, DecidableEq (α i)]
 
-/-- Given a finitely supported function `f : Π₀ i, Finset (α i)`, one can define the finset
-`f.pi` of all finitely supported functions whose value at `i` is in `f i` for all `i`. -/
+/--
+Given a finitely supported function `f : Π₀ i, Finset (α i)`, one can define the finset
+`f.pi` of all finitely supported functions whose value at `i` is in `f i` for all `i`.
+-/
 def pi (f : Π₀ i, Finset (α i)) : Finset (Π₀ i, α i) := f.support.dfinsupp f
 
 @[simp]
@@ -160,8 +169,7 @@ variable (f g : Π₀ i, α i)
 
 theorem Icc_eq : Icc f g = (f.support ∪ g.support).dfinsupp (f.rangeIcc g) := rfl
 
-lemma card_Icc : #(Icc f g) = ∏ i ∈ f.support ∪ g.support, #(Icc (f i) (g i)) :=
-  card_dfinsupp _ _
+lemma card_Icc : #(Icc f g) = ∏ i ∈ f.support ∪ g.support, #(Icc (f i) (g i)) := card_dfinsupp _ _
 
 lemma card_Ico : #(Ico f g) = (∏ i ∈ f.support ∪ g.support, #(Icc (f i) (g i))) - 1 := by
   rw [card_Ico_eq_card_Icc_sub_one, card_Icc]
@@ -175,8 +183,10 @@ lemma card_Ioo : #(Ioo f g) = (∏ i ∈ f.support ∪ g.support, #(Icc (f i) (g
 end PartialOrder
 
 section Lattice
-variable [DecidableEq ι] [∀ i, DecidableEq (α i)] [∀ i, Lattice (α i)] [∀ i, Zero (α i)]
-  [∀ i, LocallyFiniteOrder (α i)] (f g : Π₀ i, α i)
+variable
+  [DecidableEq ι] [∀ i, DecidableEq (α i)] [∀ i, Lattice (α i)] [∀ i, Zero (α i)]
+  [∀ i, LocallyFiniteOrder (α i)]
+  (f g : Π₀ i, α i)
 
 lemma card_uIcc : #(uIcc f g) = ∏ i ∈ f.support ∪ g.support, #(uIcc (f i) (g i)) := by
   rw [← support_inf_union_support_sup]; exact card_Icc _ _
@@ -186,7 +196,8 @@ end Lattice
 section IsBotZeroClass
 
 variable [DecidableEq ι] [∀ i, DecidableEq (α i)]
-variable [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, IsBotZeroClass (α i)]
+variable
+  [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, IsBotZeroClass (α i)]
   [∀ i, OrderBot (α i)] [∀ i, LocallyFiniteOrder (α i)]
 variable (f : Π₀ i, α i)
 

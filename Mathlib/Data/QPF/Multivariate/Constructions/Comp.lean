@@ -16,7 +16,6 @@ and show that it preserves the QPF structure
 
 @[expose] public section
 
-
 universe u
 
 namespace MvQPF
@@ -25,10 +24,11 @@ open MvFunctor
 
 variable {n m : ℕ} (F : TypeVec.{u} n → Type*) (G : Fin2 n → TypeVec.{u} m → Type u)
 
-/-- Composition of an `n`-ary functor with `n` `m`-ary
-functors gives us one `m`-ary functor -/
-def Comp (v : TypeVec.{u} m) : Type _ :=
-  F fun i : Fin2 n ↦ G i v
+/--
+Composition of an `n`-ary functor with `n` `m`-ary
+functors gives us one `m`-ary functor
+-/
+def Comp (v : TypeVec.{u} m) : Type _ := F fun i : Fin2 n ↦ G i v
 
 namespace Comp
 
@@ -44,11 +44,9 @@ protected def mk (x : F fun i ↦ G i α) : Comp F G α := x
 /-- Destructor for functor composition -/
 protected def get (x : Comp F G α) : F fun i ↦ G i α := x
 
-@[simp]
-protected theorem mk_get (x : Comp F G α) : Comp.mk (Comp.get x) = x := rfl
+@[simp] protected theorem mk_get (x : Comp F G α) : Comp.mk (Comp.get x) = x := rfl
 
-@[simp]
-protected theorem get_mk (x : F fun i ↦ G i α) : Comp.get (Comp.mk x) = x := rfl
+@[simp] protected theorem get_mk (x : F fun i ↦ G i α) : Comp.get (Comp.mk x) = x := rfl
 
 section
 variable [MvFunctor F] [∀ i, MvFunctor <| G i]
@@ -60,13 +58,16 @@ protected def map' : (fun i : Fin2 n ↦ G i α) ⟹ fun i : Fin2 n ↦ G i β :
 protected def map : (Comp F G) α → (Comp F G) β :=
   (map fun _i ↦ map f : (F fun i ↦ G i α) → F fun i ↦ G i β)
 
-instance : MvFunctor (Comp F G) where map f := Comp.map f
+instance : MvFunctor (Comp F G) where
+  map f := Comp.map f
 
-theorem map_mk (x : F fun i ↦ G i α) :
-    f <$$> Comp.mk x = Comp.mk ((fun i (x : G i α) ↦ f <$$> x) <$$> x) := rfl
+theorem map_mk (x : F fun i ↦ G i α)
+    : f <$$> Comp.mk x = Comp.mk ((fun i (x : G i α) ↦ f <$$> x) <$$> x) :=
+  rfl
 
-theorem get_map (x : Comp F G α) :
-    Comp.get (f <$$> x) = (fun i (x : G i α) ↦ f <$$> x) <$$> Comp.get x := rfl
+theorem get_map (x : Comp F G α)
+    : Comp.get (f <$$> x) = (fun i (x : G i α) ↦ f <$$> x) <$$> Comp.get x :=
+  rfl
 
 end
 
@@ -74,18 +75,18 @@ set_option backward.isDefEq.respectTransparency false in
 instance [MvQPF F] [∀ i, MvQPF <| G i] : MvQPF (Comp F G) where
   P := MvPFunctor.comp (P F) fun i ↦ P <| G i
   abs := Comp.mk ∘ (map fun _ ↦ abs) ∘ abs ∘ MvPFunctor.comp.get
-  repr {α} := MvPFunctor.comp.mk ∘ repr ∘
-              (map fun i ↦ (repr : G i α → (fun i : Fin2 n ↦ Obj (P (G i)) α) i)) ∘ Comp.get
+  repr {α} :=
+    MvPFunctor.comp.mk ∘ repr ∘ (map fun i ↦ (repr : G i α → (fun i : Fin2 n ↦ Obj (P (G i)) α) i))
+      ∘ Comp.get
   abs_repr := by
     intros
-    simp +unfoldPartialApp only [Function.comp_def, comp.get_mk, abs_repr,
-      map_map, TypeVec.comp, MvFunctor.id_map', Comp.mk_get]
+    simp +unfoldPartialApp only [Function.comp_def, comp.get_mk, abs_repr, map_map, TypeVec.comp,
+      MvFunctor.id_map', Comp.mk_get]
   abs_map := by
     intros
     simp only [(· ∘ ·)]
     rw [← abs_map]
-    simp +unfoldPartialApp only [comp.get_map, map_map, TypeVec.comp,
-      abs_map, map_mk]
+    simp +unfoldPartialApp only [comp.get_map, map_map, TypeVec.comp, abs_map, map_mk]
 
 end Comp
 

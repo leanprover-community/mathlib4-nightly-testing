@@ -41,8 +41,9 @@ The light condensed object associated to a presheaf on `LightProfinite` which pr
 products and satisfies the equalizer condition.
 -/
 @[simps]
-noncomputable def ofSheafLightProfinite (F : LightProfinite.{u}ᵒᵖ ⥤ A) [PreservesFiniteProducts F]
-    (hF : EqualizerCondition F) : LightCondensed A where
+noncomputable def ofSheafLightProfinite
+    (F : LightProfinite.{u}ᵒᵖ ⥤ A) [PreservesFiniteProducts F] (hF : EqualizerCondition F)
+    : LightCondensed A where
   obj := F
   property := by
     rw [isSheaf_iff_preservesFiniteProducts_and_equalizerCondition F]
@@ -57,7 +58,8 @@ noncomputable def ofSheafForgetLightProfinite
     {FA : A → A → Type*} {CA : A → Type*} [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)]
     [ConcreteCategory A FA] [ReflectsFiniteLimits (CategoryTheory.forget A)]
     (F : LightProfinite.{u}ᵒᵖ ⥤ A) [PreservesFiniteProducts (F ⋙ CategoryTheory.forget A)]
-    (hF : EqualizerCondition (F ⋙ CategoryTheory.forget A)) : LightCondensed A where
+    (hF : EqualizerCondition (F ⋙ CategoryTheory.forget A))
+    : LightCondensed A where
   obj := F
   property := by
     apply isSheaf_coherent_of_hasPullbacks_of_comp F (CategoryTheory.forget A)
@@ -77,8 +79,9 @@ end LightCondensed
 namespace LightCondSet
 
 /-- A `LightCondSet` version of `LightCondensed.ofSheafLightProfinite`. -/
-noncomputable abbrev ofSheafLightProfinite (F : LightProfinite.{u}ᵒᵖ ⥤ Type u)
-    [PreservesFiniteProducts F] (hF : EqualizerCondition F) : LightCondSet :=
+noncomputable abbrev ofSheafLightProfinite
+    (F : LightProfinite.{u}ᵒᵖ ⥤ Type u) [PreservesFiniteProducts F] (hF : EqualizerCondition F)
+    : LightCondSet :=
   LightCondensed.ofSheafLightProfinite F hF
 
 end LightCondSet
@@ -88,8 +91,10 @@ namespace LightCondMod
 variable (R : Type u) [Ring R]
 
 /-- A `LightCondAb` version of `LightCondensed.ofSheafLightProfinite`. -/
-noncomputable abbrev ofSheafLightProfinite (F : LightProfinite.{u}ᵒᵖ ⥤ ModuleCat.{u} R)
-    [PreservesFiniteProducts F] (hF : EqualizerCondition F) : LightCondMod.{u} R :=
+noncomputable abbrev ofSheafLightProfinite
+    (F : LightProfinite.{u}ᵒᵖ ⥤ ModuleCat.{u} R) [PreservesFiniteProducts F]
+    (hF : EqualizerCondition F)
+    : LightCondMod.{u} R :=
   LightCondensed.ofSheafLightProfinite F hF
 
 end LightCondMod
@@ -97,8 +102,9 @@ end LightCondMod
 namespace LightCondAb
 
 /-- A `LightCondAb` version of `LightCondensed.ofSheafLightProfinite`. -/
-noncomputable abbrev ofSheafLightProfinite (F : LightProfiniteᵒᵖ ⥤ ModuleCat ℤ)
-    [PreservesFiniteProducts F] (hF : EqualizerCondition F) : LightCondAb :=
+noncomputable abbrev ofSheafLightProfinite
+    (F : LightProfiniteᵒᵖ ⥤ ModuleCat ℤ) [PreservesFiniteProducts F] (hF : EqualizerCondition F)
+    : LightCondAb :=
   LightCondMod.ofSheafLightProfinite ℤ F hF
 
 end LightCondAb

@@ -9,7 +9,6 @@ public meta import Mathlib.Lean.Expr.Basic
 public meta import Mathlib.Tactic.Core
 public meta import Mathlib.Tactic.ToDual
 public import Mathlib.Data.Fintype.Defs
-
 import Mathlib.Data.Finset.Attr
 
 /-!
@@ -28,18 +27,25 @@ open Lean.Meta
 
 namespace Lean.Elab.Tactic
 
-/-- If `e` is of the form `x ∈ (A : List α)`, `x ∈ (A : Finset α)`, or `x ∈ (A : Multiset α)`,
-return `some α`, otherwise `none`. -/
+/--
+If `e` is of the form `x ∈ (A : List α)`, `x ∈ (A : Finset α)`, or `x ∈ (A : Multiset α)`,
+return `some α`, otherwise `none`.
+-/
 def getMemType {m : Type → Type} [Monad m] [MonadError m] (e : Expr) : m (Option Expr) := do
   match e.getAppFnArgs with
   | (``Membership.mem, #[_, type, _, _, _]) =>
     match type.getAppFnArgs with
-    | (``List, #[α])     => return α
-    | (``Multiset, #[α]) => return α
-    | (``Finset, #[α])   => return α
-    | _ => throwError "Hypothesis must be of type `x ∈ (A : List α)`, `x ∈ (A : Finset α)`, \
-                       or `x ∈ (A : Multiset α)`"
-  | _ => return none
+    | (``List, #[α]) =>
+      return α
+    | (``Multiset, #[α]) =>
+      return α
+    | (``Finset, #[α]) =>
+      return α
+    | _ =>
+      throwError "Hypothesis must be of type `x ∈ (A : List α)`, `x ∈ (A : Finset α)`, \
+        or `x ∈ (A : Multiset α)`"
+  | _ =>
+    return none
 
 /--
 Recursively runs the `cases` tactic on a hypothesis `h`.
@@ -52,29 +58,33 @@ and so on.
 Cases are named according to the order in which they are generated as tracked by `counter`
 and prefixed with `userNamePre`.
 -/
-partial def unfoldCases (g : MVarId) (h : FVarId)
-    (userNamePre : Name := .anonymous) (counter := 0) : MetaM (List MVarId) := do
+partial def unfoldCases (g : MVarId) (h : FVarId) (userNamePre : Name := .anonymous) (counter := 0)
+    : MetaM (List MVarId) := do
   let gs ← g.cases h
   try
-    let #[g₁, g₂] := gs | throwError "unexpected number of cases"
+    let #[g₁, g₂] := gs
+      | throwError "unexpected number of cases"
     g₁.mvarId.setUserName (.str userNamePre s!"{counter}")
-    let gs ← unfoldCases g₂.mvarId g₂.fields[2]!.fvarId! userNamePre (counter+1)
+    let gs ← unfoldCases g₂.mvarId g₂.fields[2]!.fvarId! userNamePre (counter + 1)
     return g₁.mvarId :: gs
-  catch _ => return []
+  catch _ =>
+    return []
 
 /-- Implementation of the `fin_cases` tactic. -/
-partial def finCasesAt (g : MVarId) (hyp : FVarId) : MetaM (List MVarId) := g.withContext do
-  let type ← hyp.getType >>= instantiateMVars
-  match ← getMemType type with
-  | some _ => unfoldCases g hyp (userNamePre := ← g.getTag)
-  | none =>
-    -- Deal with `x : A`, where `[Fintype A]` is available:
-    let inst ← synthInstance (← mkAppM ``Fintype #[type])
-    let elems ← mkAppOptM ``Fintype.elems #[type, inst]
-    let t ← mkAppM ``Membership.mem #[elems, .fvar hyp]
-    let v ← mkAppOptM ``Fintype.complete #[type, inst, Expr.fvar hyp]
-    let (fvar, g) ← (← g.assert `this t v).intro1P
-    finCasesAt g fvar
+partial def finCasesAt (g : MVarId) (hyp : FVarId) : MetaM (List MVarId) :=
+  g.withContext do
+    let type ← hyp.getType >>= instantiateMVars
+    match ← getMemType type with
+    | some _ =>
+      unfoldCases g hyp (userNamePre := ← g.getTag)
+    | none =>
+      -- Deal with `x : A`, where `[Fintype A]` is available:
+      let inst ← synthInstance (← mkAppM ``Fintype #[type])
+      let elems ← mkAppOptM ``Fintype.elems #[type, inst]
+      let t ← mkAppM ``Membership.mem #[elems, .fvar hyp]
+      let v ← mkAppOptM ``Fintype.complete #[type, inst, Expr.fvar hyp]
+      let (fvar, g) ← (← g.assert `this t v).intro1P
+      finCasesAt g fvar
 
 /--
 `fin_cases h` performs case analysis on a hypothesis of the form
@@ -128,10 +138,12 @@ produces three goals with hypotheses
 
 /- TODO: In mathlib3 we ran `norm_num` when there is no `with` clause. Is this still useful? -/
 
-@[tactic finCases] elab_rules : tactic
-  | `(tactic| fin_cases $[$hyps:ident],*) => withMainContext <| focus do
-    for h in hyps do
-      allGoals <| liftMetaTactic (finCasesAt · (← getFVarId h))
+@[tactic finCases]
+elab_rules : tactic
+  | `(tactic| fin_cases $[$hyps:ident],*) =>
+    withMainContext <| focus do
+      for h in hyps do
+        allGoals <| liftMetaTactic (finCasesAt · (← getFVarId h))
 
 end Tactic
 

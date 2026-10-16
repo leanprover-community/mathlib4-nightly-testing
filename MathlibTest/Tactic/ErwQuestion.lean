@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.ErwQuestion
 
 section Single
@@ -11,8 +12,7 @@ def b := a
 -- make sure that `erw'` is noisy, so that it gets picked up by CI
 /-- info: Debugging `erw?` -/
 #guard_msgs in
-example : f 37 = 38 := by
-  erw? [f]
+example : f 37 = 38 := by erw? [f]
 
 /--
 error: Tactic `rewrite` failed: Did not find an occurrence of the pattern

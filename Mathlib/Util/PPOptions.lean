@@ -23,12 +23,13 @@ should use binder predicate notation (such as `∀ x < 2, p x`).
 -/
 register_option pp.mathlib.binderPredicates : Bool := {
   defValue := true
-  descr    := "(pretty printer) pretty prints binders such as \
-    `∀ (x : α) (x < 2), p x` as `∀ x < 2, p x`"
+  descr :=
+    "(pretty printer) pretty prints binders such as \
+      `∀ (x : α) (x < 2), p x` as `∀ x < 2, p x`"
 }
 
 /-- Gets whether `pp.mathlib.binderPredicates` is enabled. -/
 def getPPBinderPredicates (o : Options) : Bool :=
-  o.get pp.mathlib.binderPredicates.name (!getPPAll o)
+  o.get pp.mathlib.binderPredicates.name (! getPPAll o)
 
 end Mathlib

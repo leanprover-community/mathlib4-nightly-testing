@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.ApproximateUnit
 public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Positive
-
 import Mathlib.Analysis.CStarAlgebra.GelfandNaimarkSegal
 
 /-! # Characterization of positive continuous linear functionals on C⋆-algebras
@@ -24,8 +23,8 @@ variable {A : Type*} [NonUnitalCStarAlgebra A] [PartialOrder A] [StarOrderedRing
 
 namespace PositiveContinuousLinearMap
 
-theorem norm_map_le_sqrt_opNorm_mul (f : A →P[ℂ] ℂ) (x : A) :
-    ‖f x‖ ≤ √‖(f : A →L[ℂ] ℂ)‖ * √‖f (star x * x)‖ := by
+theorem norm_map_le_sqrt_opNorm_mul (f : A →P[ℂ] ℂ) (x : A)
+    : ‖f x‖ ≤ √ ‖(f : A →L[ℂ] ℂ)‖ * √ ‖f (star x * x)‖ := by
   have hl := CStarAlgebra.increasingApproximateUnit A
   refine le_of_tendsto ((ContinuousAt.tendsto (by fun_prop)).comp (hl.tendsto_mul_right _)).norm ?_
   filter_upwards [hl.eventually_nonneg, hl.eventually_norm] with e he1 he2
@@ -33,28 +32,30 @@ theorem norm_map_le_sqrt_opNorm_mul (f : A →P[ℂ] ℂ) (x : A) :
     ← f.coe_toContinuousLinearMap, f.toContinuousLinearMap.le_opNorm (star e * e),
     norm_star_mul_self, he2, he2, one_mul, mul_one]
 
-theorem nnnorm_map_le_sqrt_opNNNorm_mul (f : A →P[ℂ] ℂ) (x : A) :
-    ‖f x‖₊ ≤ ‖(f : A →L[ℂ] ℂ)‖₊.sqrt * ‖f (star x * x)‖₊.sqrt := by
+theorem nnnorm_map_le_sqrt_opNNNorm_mul (f : A →P[ℂ] ℂ) (x : A)
+    : ‖f x‖₊ ≤ ‖(f : A →L[ℂ] ℂ)‖₊.sqrt * ‖f (star x * x)‖₊.sqrt := by
   simp [NNReal.toReal_le, norm_map_le_sqrt_opNorm_mul]
 
-theorem norm_map_sq_le_opNorm_mul (f : A →P[ℂ] ℂ) (x : A) :
-    ‖f x‖ ^ 2 ≤ ‖(f : A →L[ℂ] ℂ)‖ * ‖f (star x * x)‖ := by
+theorem norm_map_sq_le_opNorm_mul (f : A →P[ℂ] ℂ) (x : A)
+    : ‖f x‖ ^ 2 ≤ ‖(f : A →L[ℂ] ℂ)‖ * ‖f (star x * x)‖ := by
   grw [norm_map_le_sqrt_opNorm_mul, mul_pow]; simp
 
-theorem nnnorm_map_sq_le_opNNNorm_mul (f : A →P[ℂ] ℂ) (x : A) :
-    ‖f x‖₊ ^ 2 ≤ ‖(f : A →L[ℂ] ℂ)‖₊ * ‖f (star x * x)‖₊ :=
+theorem nnnorm_map_sq_le_opNNNorm_mul (f : A →P[ℂ] ℂ) (x : A)
+    : ‖f x‖₊ ^ 2 ≤ ‖(f : A →L[ℂ] ℂ)‖₊ * ‖f (star x * x)‖₊ :=
   norm_map_sq_le_opNorm_mul _ _
 
-theorem tendsto_nhds_opNorm (f : A →P[ℂ] ℂ) {l : Filter A} (hl : l.IsIncreasingApproximateUnit) :
-    l.Tendsto (f ·) (𝓝 ‖(f : A →L[ℂ] ℂ)‖) := by
-  suffices l.Tendsto (‖f ·‖) (𝓝 ‖f.toContinuousLinearMap‖) from this.ofReal.congr' <| by
-    filter_upwards [hl.eventually_nonneg] using by simp_all [norm_of_nonneg' (f.map_nonneg _)]
+theorem tendsto_nhds_opNorm (f : A →P[ℂ] ℂ) {l : Filter A} (hl : l.IsIncreasingApproximateUnit)
+    : l.Tendsto (f ·) (𝓝 ‖(f : A →L[ℂ] ℂ)‖) := by
+  suffices l.Tendsto (‖f ·‖) (𝓝 ‖f.toContinuousLinearMap‖) from
+    this.ofReal.congr' <| by
+      filter_upwards [hl.eventually_nonneg] using by simp_all [norm_of_nonneg' (f.map_nonneg _)]
   refine Metric.nhds_basis_closedBall.tendsto_right_iff.mpr fun ε hε ↦ ?_
   have h : ∀ᶠ x in l, ‖f x‖ ≤ ‖f.toContinuousLinearMap‖ := by
     filter_upwards [hl.eventually_norm] using f.toContinuousLinearMap.unit_le_opNorm
   have h2 : ∀ᶠ x in l, ‖f.toContinuousLinearMap‖ - ε ≤ ‖f x‖ := by
-    obtain ⟨a, ha1, ha2⟩ := f.toContinuousLinearMap.exists_lt_apply_of_lt_opNorm
-      (r := ‖f.toContinuousLinearMap‖ - ε / 2) (by grind)
+    obtain ⟨a, ha1, ha2⟩ :=
+      f.toContinuousLinearMap.exists_lt_apply_of_lt_opNorm (r := ‖f.toContinuousLinearMap‖ - ε / 2)
+        (by grind)
     have h3 : ∀ᶠ x in l, ‖f (x * a)‖ ^ 2 ≤ ‖f x‖ * ‖f.toContinuousLinearMap‖ := by
       filter_upwards [hl.eventually_nonneg, hl.eventually_norm] with x hx1 hx2
       have : ‖f (star x * x)‖ ≤ ‖f x‖ := by
@@ -71,8 +72,9 @@ theorem tendsto_nhds_opNorm (f : A →P[ℂ] ℂ) {l : Filter A} (hl : l.IsIncre
     filter_upwards [h3, h4] with x _ _ using by nlinarith [norm_nonneg (f x)]
   filter_upwards [h, h2] using by grind [Real.closedBall_eq_Icc]
 
-theorem ofReal_opNorm_eq_map_one {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
-    (f : A →P[ℂ] ℂ) : ‖(f : A →L[ℂ] ℂ)‖ = f 1 :=
+theorem ofReal_opNorm_eq_map_one
+    {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A] (f : A →P[ℂ] ℂ)
+    : ‖(f : A →L[ℂ] ℂ)‖ = f 1 :=
   tendsto_nhds_unique (f.tendsto_nhds_opNorm (.pure_one A)) (tendsto_pure_nhds _ _)
 
 end PositiveContinuousLinearMap
@@ -80,27 +82,36 @@ end PositiveContinuousLinearMap
 namespace ContinuousLinearMap
 variable {f : A →L[ℂ] ℂ}
 
-/- This lemma is only used to prove `monotone_iff_tendsto_nhds_opNorm` below,
+/-
+This lemma is only used to prove `monotone_iff_tendsto_nhds_opNorm` below,
 which can be used to construct a `PositiveContinuousLinearMap`. These may use
 `IsSelfAdjoint.map` to conclude the same property as this lemma, so we mark it
-`private`. -/
-private lemma im_apply_eq_zero_of_tendsto_nhds_opNorm {l : Filter A}
-    (hl : l.IsIncreasingApproximateUnit) (hf : l.Tendsto (f ·) (𝓝 ‖f‖)) {a : A}
-    (ha : IsSelfAdjoint a) : (f a).im = 0 := by
+`private`.
+-/
+private lemma im_apply_eq_zero_of_tendsto_nhds_opNorm
+    {l : Filter A} (hl : l.IsIncreasingApproximateUnit) (hf : l.Tendsto (f ·) (𝓝 ‖f‖))
+    {a : A} (ha : IsSelfAdjoint a)
+    : (f a).im = 0 := by
   by_cases ‖f‖ = 0
   · simp_all
   suffices ∀ (t : ℝ), ‖f a + I * t * ‖f‖‖ ^ 2 ≤ ‖f‖ ^ 2 * (‖a‖ ^ 2 + t ^ 2) by
     contrapose! this
     refine ⟨(‖f‖ ^ 2 * ‖a‖ ^ 2 - ‖f a‖ ^ 2 + 1) / (2 * (f a).im * ‖f‖), ?_⟩
-    simp [normSq, ← normSq_eq_norm_sq, -ofReal_div]; field_simp; grind
+    simp [normSq, ← normSq_eq_norm_sq, -ofReal_div]
+    field_simp
+    grind
   intro t
   suffices (fun x ↦ ‖f (a + (I * t) • x)‖ ^ 2) ≤ᶠ[l]
-        (fun x ↦ ‖f‖ ^ 2 * (‖a‖ ^ 2 + t ^ 2 + |t| * ‖a * x - x * a‖)) by
+      (fun x ↦ ‖f‖ ^ 2 * (‖a‖ ^ 2 + t ^ 2 + |t| * ‖a * x - x * a‖)) by
     refine le_of_tendsto_of_tendsto (hb := hl.neBot) ?_ ?_ this
     · simp_rw [map_add, map_smul, smul_eq_mul]
       apply_rules [Tendsto.pow, Tendsto.norm, Tendsto.const_add, Tendsto.const_mul]
-    · simpa using (hl.tendsto_mul_left a).sub (hl.tendsto_mul_right a)
-        |>.norm |>.const_mul _ |>.const_add _ |>.const_mul _
+    · simpa using
+        (hl.tendsto_mul_left a).sub (hl.tendsto_mul_right a)
+          |>.norm
+          |>.const_mul _
+          |>.const_add _
+          |>.const_mul _
   filter_upwards [hl.eventually_isSelfAdjoint, hl.eventually_norm] with x hx hx2
   grw [f.le_opNorm, mul_pow, mul_le_mul_iff_of_pos_left (by simp_all), sq, ← norm_star_mul_self]
   calc
@@ -112,14 +123,15 @@ private lemma im_apply_eq_zero_of_tendsto_nhds_opNorm {l : Filter A}
         add_assoc, ha.star_eq, add_le_add_iff_left, norm_smul, norm_mul_le x, hx2, hx2]
       simp [norm_smul, sq]
 
-theorem monotone_iff_tendsto_nhds_opNorm {l : Filter A} (hl : l.IsIncreasingApproximateUnit) :
-    Monotone f ↔ l.Tendsto (f ·) (𝓝 ‖f‖) := by
+theorem monotone_iff_tendsto_nhds_opNorm {l : Filter A} (hl : l.IsIncreasingApproximateUnit)
+    : Monotone f ↔ l.Tendsto (f ·) (𝓝 ‖f‖) := by
   refine ⟨fun hf ↦ ?_, fun hf ↦ monotone_iff_map_nonneg _ |>.mpr fun a ha ↦ ?_⟩
   · exact ({ __ := f, monotone' := hf } : _ →P[ℂ] _).tendsto_nhds_opNorm hl
   by_cases ha0 : a = 0
   · simp [ha0]
-  suffices 0 ≤ (f (‖a‖⁻¹ • a)).re by simpa [Complex.le_def, ha0,
-    im_apply_eq_zero_of_tendsto_nhds_opNorm hl hf ha.isSelfAdjoint] using this
+  suffices 0 ≤ (f (‖a‖⁻¹ • a)).re by
+    simpa [Complex.le_def, ha0, im_apply_eq_zero_of_tendsto_nhds_opNorm hl hf ha.isSelfAdjoint]
+      using this
   suffices ‖‖f‖ - f (‖a‖⁻¹ • a)‖ ≤ ‖f‖ by grw [← re_le_norm] at this; simpa
   refine le_of_tendsto (hx := hl.neBot) (hf.sub_const (f _) |>.norm) ?_
   filter_upwards [hl.eventually_nonneg, hl.eventually_norm] with y hy hy2
@@ -127,8 +139,9 @@ theorem monotone_iff_tendsto_nhds_opNorm {l : Filter A} (hl : l.IsIncreasingAppr
     (by simp [smul_nonneg, ha]), hy2]
   simp [norm_smul, ha0]
 
-theorem monotone_iff_opNorm_eq_map_one {A : Type*} [CStarAlgebra A] [PartialOrder A]
-    [StarOrderedRing A] {f : A →L[ℂ] ℂ} : Monotone f ↔ ‖f‖ = f 1 := by
+theorem monotone_iff_opNorm_eq_map_one
+    {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A] {f : A →L[ℂ] ℂ}
+    : Monotone f ↔ ‖f‖ = f 1 := by
   rw [f.monotone_iff_tendsto_nhds_opNorm (.pure_one A)]
   have := tendsto_pure_nhds f 1
   exact ⟨fun h ↦ tendsto_nhds_unique h this, fun h ↦ by simpa [h]⟩

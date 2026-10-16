@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Embeddings
 public import Mathlib.NumberTheory.NumberField.Units.Regulator
-
 import Mathlib.FieldTheory.Galois.IsGaloisGroup
 
 /-!
@@ -79,14 +78,12 @@ variable (K : Type*) [Field K] [CharZero K] [IsCMField K]
 
 local notation3 "K⁺" => maximalRealSubfield K
 
-instance isQuadraticExtension : IsQuadraticExtension K⁺ K :=
-  IsCMField.is_quadratic
+instance isQuadraticExtension : IsQuadraticExtension K⁺ K := IsCMField.is_quadratic
 
-instance isTotallyComplex : IsTotallyComplex K :=
-  IsCMField.to_isTotallyComplex
+instance isTotallyComplex : IsTotallyComplex K := IsCMField.to_isTotallyComplex
 
-theorem card_infinitePlace_eq_card_infinitePlace [NumberField K] :
-    Fintype.card (InfinitePlace K⁺) = Fintype.card (InfinitePlace K) := by
+theorem card_infinitePlace_eq_card_infinitePlace [NumberField K]
+    : Fintype.card (InfinitePlace K⁺) = Fintype.card (InfinitePlace K) := by
   rw [card_eq_nrRealPlaces_add_nrComplexPlaces, card_eq_nrRealPlaces_add_nrComplexPlaces,
     IsTotallyComplex.nrRealPlaces_eq_zero K, IsTotallyReal.nrComplexPlaces_eq_zero, zero_add,
     add_zero, ← IsTotallyReal.finrank, ← Nat.mul_left_cancel_iff zero_lt_two,
@@ -103,30 +100,27 @@ noncomputable def equivInfinitePlace [NumberField K] : InfinitePlace K ≃ Infin
       ⟨comap_surjective, (card_infinitePlace_eq_card_infinitePlace K).symm⟩
 
 @[simp]
-theorem equivInfinitePlace_apply [NumberField K] (w : InfinitePlace K) :
-    equivInfinitePlace K w = w.comap (algebraMap K⁺ K) := rfl
+theorem equivInfinitePlace_apply [NumberField K] (w : InfinitePlace K)
+    : equivInfinitePlace K w = w.comap (algebraMap K⁺ K) :=
+  rfl
 
 @[simp]
-theorem equivInfinitePlace_symm_apply [NumberField K] (w : InfinitePlace K⁺) (x : K⁺) :
-    (equivInfinitePlace K).symm w (algebraMap K⁺ K x) = w x := by
+theorem equivInfinitePlace_symm_apply [NumberField K] (w : InfinitePlace K⁺) (x : K⁺)
+    : (equivInfinitePlace K).symm w (algebraMap K⁺ K x) = w x := by
   rw [← comap_apply, ← equivInfinitePlace_apply, Equiv.apply_symm_apply]
 
-theorem units_rank_eq_units_rank [NumberField K] :
-    Units.rank K⁺ = Units.rank K := by
+theorem units_rank_eq_units_rank [NumberField K] : Units.rank K⁺ = Units.rank K := by
   rw [Units.rank, Units.rank, card_infinitePlace_eq_card_infinitePlace K]
 
 section complexConj
 
-theorem exists_isConj [Algebra.IsAlgebraic ℚ K] (φ : K →+* ℂ) :
-    ∃ σ : K ≃ₐ[K⁺] K, IsConj φ σ :=
+theorem exists_isConj [Algebra.IsAlgebraic ℚ K] (φ : K →+* ℂ) : ∃ σ : K ≃ₐ[K⁺] K, IsConj φ σ :=
   exists_isConj_of_isRamified <|
     isRamified_iff.mpr ⟨IsTotallyComplex.isComplex _, IsTotallyReal.isReal _⟩
 
-/--
-All the conjugations of a CM-field over its maximal real subfield are the same.
--/
-theorem isConj_eq_isConj {φ ψ : K →+* ℂ} {σ τ : K ≃ₐ[K⁺] K}
-    (hφ : IsConj φ σ) (hψ : IsConj ψ τ) : σ = τ := by
+/-- All the conjugations of a CM-field over its maximal real subfield are the same. -/
+theorem isConj_eq_isConj {φ ψ : K →+* ℂ} {σ τ : K ≃ₐ[K⁺] K} (hφ : IsConj φ σ) (hψ : IsConj ψ τ)
+    : σ = τ := by
   have : Nat.card (K ≃ₐ[K⁺] K) = 2 :=
     (IsQuadraticExtension.finrank_eq_two K⁺ K) ▸ IsGalois.card_aut_eq_finrank K⁺ K
   rw [Nat.card_eq_two_iff' 1] at this
@@ -136,67 +130,49 @@ theorem isConj_eq_isConj {φ ψ : K →+* ℂ} {σ τ : K ≃ₐ[K⁺] K}
 
 variable [Algebra.IsIntegral ℚ K]
 
-/--
-The complex conjugation of the CM-field `K`.
--/
+/-- The complex conjugation of the CM-field `K`. -/
 noncomputable def complexConj : K ≃ₐ[K⁺] K :=
   (exists_isConj K (Classical.choice (inferInstance : Nonempty _))).choose
 
-/--
-The complex conjugation is the conjugation of any complex embedding of a CM-field.
--/
+/-- The complex conjugation is the conjugation of any complex embedding of a CM-field. -/
 theorem isConj_complexConj (φ : K →+* ℂ) : IsConj φ (complexConj K) := by
   obtain ⟨σ, hσ⟩ := exists_isConj _ φ
   have := (exists_isConj K (Classical.choice (inferInstance : Nonempty (K →+* ℂ)))).choose_spec
   rwa [isConj_eq_isConj K hσ this] at hσ
 
 @[simp]
-theorem complexEmbedding_complexConj (φ : K →+* ℂ) (x : K) :
-    φ (complexConj K x) = conj (φ x) := by
+theorem complexEmbedding_complexConj (φ : K →+* ℂ) (x : K) : φ (complexConj K x) = conj (φ x) := by
   rw [IsConj.eq (isConj_complexConj K φ), RCLike.star_def]
 
 @[simp]
-theorem infinitePlace_complexConj (w : InfinitePlace K) (x : K) :
-    w (complexConj K x) = w x := by
+theorem infinitePlace_complexConj (w : InfinitePlace K) (x : K) : w (complexConj K x) = w x := by
   rw [← norm_embedding_eq, complexEmbedding_complexConj, Complex.norm_conj, norm_embedding_eq]
 
 @[simp]
-theorem complexConj_apply_apply (x : K) :
-    complexConj K (complexConj K x) = x := by
+theorem complexConj_apply_apply (x : K) : complexConj K (complexConj K x) = x := by
   let φ : K →+* ℂ := Classical.choice (inferInstance : Nonempty _)
   exact isConj_apply_apply (isConj_complexConj K φ) x
 
-theorem complexConj_ne_one :
-    complexConj K ≠ (1 : K ≃ₐ[K⁺] K) :=
-  (isConj_ne_one_iff
-    (exists_isConj K (Classical.choice (inferInstance : Nonempty _))).choose_spec).mpr <|
-      IsTotallyComplex.complexEmbedding_not_isReal _
+theorem complexConj_ne_one : complexConj K ≠ (1 : K ≃ₐ[K⁺] K) :=
+  (isConj_ne_one_iff (exists_isConj K
+      (Classical.choice (inferInstance : Nonempty _))).choose_spec).mpr <|
+    IsTotallyComplex.complexEmbedding_not_isReal _
 
-@[simp]
-theorem complexConj_apply_eq_self (x : K⁺) : complexConj K x = x := AlgEquiv.commutes _ x
+@[simp] theorem complexConj_apply_eq_self (x : K⁺) : complexConj K x = x := AlgEquiv.commutes _ x
 
-/--
-The complex conjugation is an automorphism of degree `2`.
--/
-theorem orderOf_complexConj :
-    orderOf (complexConj K) = 2 :=
+/-- The complex conjugation is an automorphism of degree `2`. -/
+theorem orderOf_complexConj : orderOf (complexConj K) = 2 :=
   orderOf_eq_prime_iff.mpr ⟨by ext; simp, complexConj_ne_one K⟩
 
-/--
-The complex conjugation generates the Galois group of `K/K⁺`.
--/
-theorem zpowers_complexConj_eq_top :
-    Subgroup.zpowers (complexConj K) = ⊤ := by
+/-- The complex conjugation generates the Galois group of `K/K⁺`. -/
+theorem zpowers_complexConj_eq_top : Subgroup.zpowers (complexConj K) = ⊤ := by
   refine Subgroup.eq_top_of_card_eq _ ?_
   rw [Nat.card_zpowers, orderOf_complexConj, IsGalois.card_aut_eq_finrank,
     IsQuadraticExtension.finrank_eq_two]
 
-/--
-An element of `K` is fixed by the complex conjugation iff it lies in `K⁺`.
--/
+/-- An element of `K` is fixed by the complex conjugation iff it lies in `K⁺`. -/
 @[simp]
-theorem complexConj_eq_self_iff (x : K) :
-    complexConj K x = x ↔ x ∈ K⁺ := by
+theorem complexConj_eq_self_iff (x : K) : complexConj K x = x ↔ x ∈ K⁺ := by
   convert (IntermediateField.mem_fixedField_iff (⊤ : Subgroup (K ≃ₐ[K⁺] K)) x).symm using 1
   · rw [← zpowers_complexConj_eq_top, Subgroup.forall_mem_zpowers]
     exact (MulAction.mem_fixedBy_zpowers_iff_mem_fixedBy (g := (complexConj K))).symm
@@ -204,8 +180,8 @@ theorem complexConj_eq_self_iff (x : K) :
     aesop
 
 set_option backward.isDefEq.respectTransparency.types false in
-protected theorem RingOfIntegers.complexConj_eq_self_iff (x : 𝓞 K) :
-    complexConj K x = x ↔ ∃ y : 𝓞 K⁺, algebraMap (𝓞 K⁺) K y = x := by
+protected theorem RingOfIntegers.complexConj_eq_self_iff (x : 𝓞 K)
+    : complexConj K x = x ↔ ∃ y : 𝓞 K⁺, algebraMap (𝓞 K⁺) K y = x := by
   rw [complexConj_eq_self_iff]
   refine ⟨fun h ↦ ?_, fun ⟨y, hy⟩ ↦ ?_⟩
   · have : IsIntegral ℤ (⟨x, h⟩ : K⁺) := isIntegral_algebraMap_iff.mp x.isIntegral_coe
@@ -215,8 +191,8 @@ protected theorem RingOfIntegers.complexConj_eq_self_iff (x : 𝓞 K) :
   · rw [← hy, IsScalarTower.algebraMap_apply (𝓞 K⁺) K⁺]
     exact SetLike.coe_mem _
 
-protected theorem Units.complexConj_eq_self_iff (u : (𝓞 K)ˣ) :
-    complexConj K u = u ↔ ∃ v : (𝓞 K⁺)ˣ, algebraMap (𝓞 K⁺) K v = u := by
+protected theorem Units.complexConj_eq_self_iff (u : (𝓞 K)ˣ)
+    : complexConj K u = u ↔ ∃ v : (𝓞 K⁺)ˣ, algebraMap (𝓞 K⁺) K v = u := by
   rw [RingOfIntegers.complexConj_eq_self_iff, Units.coe_coe]
   refine ⟨fun ⟨y, hy⟩ ↦ ?_, fun ⟨v, hv⟩ ↦ ⟨v, by rw [hv]⟩⟩
   have : IsUnit y := by
@@ -231,21 +207,21 @@ noncomputable instance starRing : StarRing K where
   star_mul _ _ := by rw [map_mul, mul_comm]
   star_add _ _ := by rw [map_add]
 
-/--
-A variant of the complex conjugation defined as an `AlgEquiv` on the ring of integers.
--/
+/-- A variant of the complex conjugation defined as an `AlgEquiv` on the ring of integers. -/
 noncomputable abbrev ringOfIntegersComplexConj : (𝓞 K) ≃ₐ[𝓞 K⁺] (𝓞 K) :=
   RingOfIntegers.mapAlgEquiv (complexConj K)
 
 @[simp]
-theorem coe_ringOfIntegersComplexConj (x : 𝓞 K) :
-    (ringOfIntegersComplexConj K x : K) = complexConj K x := rfl
+theorem coe_ringOfIntegersComplexConj (x : 𝓞 K)
+    : (ringOfIntegersComplexConj K x : K) = complexConj K x :=
+  rfl
 
-theorem ringOfIntegersComplexConj_eq_self_iff (x : 𝓞 K) :
-    ringOfIntegersComplexConj K x = x ↔ x ∈ Set.range (algebraMap (𝓞 K⁺) (𝓞 K)) := by
+theorem ringOfIntegersComplexConj_eq_self_iff (x : 𝓞 K)
+    : ringOfIntegersComplexConj K x = x ↔ x ∈ Set.range (algebraMap (𝓞 K⁺) (𝓞 K)) := by
   refine ⟨fun h ↦ ?_, ?_⟩
   · rw [RingOfIntegers.ext_iff, coe_ringOfIntegersComplexConj,
-      RingOfIntegers.complexConj_eq_self_iff] at h
+        RingOfIntegers.complexConj_eq_self_iff]
+      at h
     obtain ⟨y, hy⟩ := h
     exact ⟨y, RingOfIntegers.ext_iff.mpr hy⟩
   · rintro ⟨y, rfl⟩
@@ -257,8 +233,7 @@ section units
 
 open NumberField.Units
 
-/--
-The complex conjugation as an isomorphism of the units of `K`. -/
+/-- The complex conjugation as an isomorphism of the units of `K`. -/
 noncomputable abbrev unitsComplexConj [Algebra.IsIntegral ℚ K] : (𝓞 K)ˣ ≃* (𝓞 K)ˣ :=
   Units.mapEquiv <| RingOfIntegers.mapRingEquiv (complexConj K).toRingEquiv
 
@@ -269,12 +244,12 @@ by the complex conjugation, see `IsCMField.unitsComplexConj_eq_self_iff`.
 def realUnits : Subgroup (𝓞 K)ˣ := (Units.map (algebraMap (𝓞 K⁺) (𝓞 K)).toMonoidHom).range
 
 omit [IsCMField K] [CharZero K] in
-theorem mem_realUnits_iff (u : (𝓞 K)ˣ) :
-    u ∈ realUnits K ↔ ∃ v : (𝓞 K⁺)ˣ, algebraMap (𝓞 K⁺) (𝓞 K) v = u := by
+theorem mem_realUnits_iff (u : (𝓞 K)ˣ)
+    : u ∈ realUnits K ↔ ∃ v : (𝓞 K⁺)ˣ, algebraMap (𝓞 K⁺) (𝓞 K) v = u := by
   simp [realUnits, MonoidHom.mem_range, RingHom.toMonoidHom_eq_coe, Units.ext_iff]
 
-theorem unitsComplexConj_eq_self_iff [Algebra.IsIntegral ℚ K] (u : (𝓞 K)ˣ) :
-    unitsComplexConj K u = u ↔ u ∈ realUnits K := by
+theorem unitsComplexConj_eq_self_iff [Algebra.IsIntegral ℚ K] (u : (𝓞 K)ˣ)
+    : unitsComplexConj K u = u ↔ u ∈ realUnits K := by
   simp_rw [Units.ext_iff, mem_realUnits_iff, RingOfIntegers.ext_iff, Units.coe_mapEquiv,
     RingEquiv.coe_toMulEquiv, RingOfIntegers.mapRingEquiv_apply,
     AlgEquiv.coe_toRingEquiv, Units.complexConj_eq_self_iff,
@@ -287,8 +262,7 @@ The image of a root of unity by the complex conjugation is its inverse.
 This is the version of `Complex.conj_rootsOfUnity` for CM-fields.
 -/
 @[simp]
-theorem complexConj_torsion (ζ : torsion K) :
-    complexConj K (ζ.val : K) = (ζ.val : K)⁻¹ := by
+theorem complexConj_torsion (ζ : torsion K) : complexConj K (ζ.val : K) = (ζ.val : K)⁻¹ := by
   let φ : K →+* ℂ := Classical.choice (inferInstance : Nonempty _)
   apply φ.injective
   rw [complexEmbedding_complexConj, ← Units.complexEmbedding_apply,
@@ -296,14 +270,11 @@ theorem complexConj_torsion (ζ : torsion K) :
     Units.complexEmbedding_apply, map_inv₀]
   exact map_complexEmbedding_torsion K φ ▸ Subgroup.apply_coe_mem_map _ _ _
 
-theorem unitsComplexConj_torsion (ζ : torsion K) :
-    unitsComplexConj K ζ = ζ⁻¹ := by
+theorem unitsComplexConj_torsion (ζ : torsion K) : unitsComplexConj K ζ = ζ⁻¹ := by
   apply coe_injective
   simp
 
-/--
-The map `(𝓞 K)ˣ →* torsion K` defined by `u ↦ u * (conj u)⁻¹`.
--/
+/-- The map `(𝓞 K)ˣ →* torsion K` defined by `u ↦ u * (conj u)⁻¹`. -/
 noncomputable def unitsMulComplexConjInv : (𝓞 K)ˣ →* torsion K where
   toFun := fun u ↦ ⟨u * (unitsComplexConj K u)⁻¹, (mem_torsion K).mpr fun _ ↦ by simp⟩
   map_one' := by simp
@@ -314,36 +285,28 @@ noncomputable def unitsMulComplexConjInv : (𝓞 K)ˣ →* torsion K where
     simp only [map_mul, mul_inv_rev, Units.val_mul, map_units_inv]
     ring
 
-theorem unitsMulComplexConjInv_apply (u : (𝓞 K)ˣ) :
-    unitsMulComplexConjInv K u = u * (unitsComplexConj K u)⁻¹ := rfl
+theorem unitsMulComplexConjInv_apply (u : (𝓞 K)ˣ)
+    : unitsMulComplexConjInv K u = u * (unitsComplexConj K u)⁻¹ :=
+  rfl
 
 @[simp]
-theorem unitsMulComplexConjInv_apply_torsion (ζ : torsion K) :
-    unitsMulComplexConjInv K ζ = ζ ^ 2 :=
+theorem unitsMulComplexConjInv_apply_torsion (ζ : torsion K) : unitsMulComplexConjInv K ζ = ζ ^ 2 :=
   Subtype.ext <| by simp [unitsMulComplexConjInv_apply, unitsComplexConj_torsion, pow_two]
 
-/--
-The action of `unitsMulComplexConjInv` of the torsion is the same as the 2-power map.
--/
-theorem map_unitsMulComplexConjInv_torsion :
-    Subgroup.map (unitsMulComplexConjInv K) (torsion K) = (powMonoidHom 2).range := by
+/-- The action of `unitsMulComplexConjInv` of the torsion is the same as the 2-power map. -/
+theorem map_unitsMulComplexConjInv_torsion
+    : Subgroup.map (unitsMulComplexConjInv K) (torsion K) = (powMonoidHom 2).range := by
   rw [← MonoidHom.domRestrict_range]
   congrm MonoidHom.range $(MonoidHom.ext fun ζ ↦ by simp)
 
-/--
-The kernel of `unitsMulComplexConjInv` is the subgroup of real units.
--/
-theorem unitsMulComplexConjInv_ker :
-    (unitsMulComplexConjInv K).ker = realUnits K := by
+/-- The kernel of `unitsMulComplexConjInv` is the subgroup of real units. -/
+theorem unitsMulComplexConjInv_ker : (unitsMulComplexConjInv K).ker = realUnits K := by
   ext
   rw [MonoidHom.mem_ker, Subtype.ext_iff, unitsMulComplexConjInv_apply, OneMemClass.coe_one,
     mul_inv_eq_one, eq_comm, unitsComplexConj_eq_self_iff]
 
-/--
-The index of the image of `unitsMulComplexConjInv` divides `2`.
--/
-theorem index_unitsMulComplexConjInv_range_dvd :
-    (unitsMulComplexConjInv K).range.index ∣ 2 := by
+/-- The index of the image of `unitsMulComplexConjInv` divides `2`. -/
+theorem index_unitsMulComplexConjInv_range_dvd : (unitsMulComplexConjInv K).range.index ∣ 2 := by
   suffices (powMonoidHom 2 : _ →* torsion K).range.index = 2 by
     refine this ▸ Subgroup.index_dvd_of_le ?_
     rintro _ ⟨ζ, _, rfl⟩
@@ -357,8 +320,7 @@ index is equal to `1` or `2`, see `indexRealUnits_eq_one_or_two` and `indexRealU
 -/
 noncomputable abbrev indexRealUnits : ℕ := (realUnits K ⊔ torsion K).index
 
-theorem indexRealUnits_mul_eq :
-    indexRealUnits K * (unitsMulComplexConjInv K).range.index = 2 := by
+theorem indexRealUnits_mul_eq : indexRealUnits K * (unitsMulComplexConjInv K).range.index = 2 := by
   rw [indexRealUnits, sup_comm]
   convert (Subgroup.index_map (torsion K) (unitsMulComplexConjInv K)).symm
   · rw [unitsMulComplexConjInv_ker]
@@ -370,8 +332,7 @@ The index of the subgroup of `(𝓞 K)ˣ` generated by the real units and the ro
 equal to `1` or `2` (see `NumberField.IsCMField.indexRealUnits_eq_two_iff` for the computation
 of this index).
 -/
-theorem indexRealUnits_eq_one_or_two :
-    indexRealUnits K = 1 ∨ indexRealUnits K = 2 := by
+theorem indexRealUnits_eq_one_or_two : indexRealUnits K = 1 ∨ indexRealUnits K = 2 := by
   have h₁ := indexRealUnits_mul_eq K
   obtain h₂ | h₂ := (Nat.dvd_prime Nat.prime_two).mp <| index_unitsMulComplexConjInv_range_dvd K
   · exact Or.inr <| by rwa [h₂, mul_one] at h₁
@@ -382,11 +343,10 @@ The index of the subgroup of `(𝓞 K)ˣ` generated by the real units and the ro
 to `2` iff there exists a unit whose image by `unitsMulComplexConjInv` generates the torsion
 subgroup of `K`.
 -/
-theorem indexRealUnits_eq_two_iff :
-    indexRealUnits K = 2 ↔
-      ∃ u : (𝓞 K)ˣ, Subgroup.zpowers (unitsMulComplexConjInv K u) = ⊤ := by
-  suffices (∃ u : (𝓞 K)ˣ, Subgroup.zpowers (unitsMulComplexConjInv K u) = ⊤) ↔
-      (unitsMulComplexConjInv K).range.index = 1 by
+theorem indexRealUnits_eq_two_iff
+    : indexRealUnits K = 2 ↔ ∃ u : (𝓞 K)ˣ, Subgroup.zpowers (unitsMulComplexConjInv K u) = ⊤ := by
+  suffices (∃ u : (𝓞 K)ˣ, Subgroup.zpowers (unitsMulComplexConjInv K u) = ⊤)
+      ↔ (unitsMulComplexConjInv K).range.index = 1 by
     rw [this]
     have h_eq := indexRealUnits_mul_eq K
     refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
@@ -400,26 +360,24 @@ theorem indexRealUnits_eq_two_iff :
     obtain ⟨u, rfl⟩ := h ζ
     exact ⟨u, (Subgroup.eq_top_iff' _).mpr hζ⟩
 
-/--
-The fundamental system of units of `K⁺` as a family of `(𝓞 K)ˣ`.
--/
+/-- The fundamental system of units of `K⁺` as a family of `(𝓞 K)ˣ`. -/
 noncomputable def realFundSystem (i : Fin (rank K)) : (𝓞 K)ˣ :=
-  (Units.map (algebraMap (𝓞 K⁺) (𝓞 K)).toMonoidHom)
-    (fundSystem K⁺ (finCongr (units_rank_eq_units_rank K).symm i))
+  (Units.map (algebraMap (𝓞 K⁺) (𝓞 K)).toMonoidHom) (fundSystem K⁺
+    (finCongr (units_rank_eq_units_rank K).symm i))
 
-theorem closure_realFundSystem_sup_torsion :
-    Subgroup.closure (Set.range (realFundSystem K)) ⊔ torsion K = realUnits K ⊔ torsion K := by
+theorem closure_realFundSystem_sup_torsion
+    : Subgroup.closure (Set.range (realFundSystem K)) ⊔ torsion K = realUnits K ⊔ torsion K := by
   have : Subgroup.map (Units.map (algebraMap (𝓞 K⁺) (𝓞 K))) (torsion K⁺) ≤ torsion K := by
     rintro _ ⟨x, hx, rfl⟩
     exact MonoidHom.isOfFinOrder _ hx
   rw [realUnits, MonoidHom.range_eq_map, ← closure_fundSystem_sup_torsion_eq_top, Subgroup.map_sup,
     sup_assoc, RingHom.toMonoidHom_eq_coe, sup_eq_right.mpr this, MonoidHom.map_closure]
-  congr; ext
+  congr
+  ext
   simp [realFundSystem, Equiv.exists_congr_left (finCongr (units_rank_eq_units_rank K).symm)]
 
 open dirichletUnitTheorem in
-theorem regOfFamily_realFunSystem :
-    regOfFamily (realFundSystem K) = 2 ^ rank K * regulator K⁺ := by
+theorem regOfFamily_realFunSystem : regOfFamily (realFundSystem K) = 2 ^ rank K * regulator K⁺ := by
   classical
   let W₀ := (equivInfinitePlace K).symm w₀
   let f : {w : InfinitePlace K // w ≠ W₀} ≃ {w : InfinitePlace K⁺ // w ≠ w₀} :=
@@ -430,17 +388,18 @@ theorem regOfFamily_realFunSystem :
     simp]
   rw [regulator_eq_regOfFamily_fundSystem, regOfFamily_eq_det _ W₀ g.symm, regOfFamily_eq_det',
     ← abs_mul, ← Matrix.det_mul_column, ← Matrix.det_reindex_self f, Matrix.reindex_apply]
-  congr; ext i w
+  congr
+  ext i w
   rw [Matrix.submatrix_apply, Matrix.of_apply, Matrix.of_apply,
     show f.symm w = (equivInfinitePlace K).symm w.1 by rfl,
     show algebraMap (𝓞 K) K _ = algebraMap K⁺ K _ by rfl, equivInfinitePlace_symm_apply]
   simp [f, g]
 
-theorem regulator_div_regulator_eq_two_pow_mul_indexRealUnits_inv :
-    regulator K / regulator K⁺ = 2 ^ rank K * (indexRealUnits K : ℝ)⁻¹ := by
-  rw [indexRealUnits, ← closure_realFundSystem_sup_torsion, ← regOfFamily_div_regulator
-    (realFundSystem K), regOfFamily_realFunSystem, inv_div, ← mul_div_assoc, mul_div_mul_comm,
-    div_self (by positivity), one_mul]
+theorem regulator_div_regulator_eq_two_pow_mul_indexRealUnits_inv
+    : regulator K / regulator K⁺ = 2 ^ rank K * (indexRealUnits K : ℝ)⁻¹ := by
+  rw [indexRealUnits, ← closure_realFundSystem_sup_torsion,
+    ← regOfFamily_div_regulator (realFundSystem K), regOfFamily_realFunSystem, inv_div,
+    ← mul_div_assoc, mul_div_mul_comm, div_self (by positivity), one_mul]
 
 end units
 
@@ -450,18 +409,22 @@ end maximalRealSubfield
 
 namespace CMExtension
 
-variable (F K : Type*) [Field F] [IsTotallyReal F] [Field K] [CharZero K] [Algebra.IsIntegral ℚ K]
+variable
+  (F K : Type*) [Field F] [IsTotallyReal F] [Field K] [CharZero K] [Algebra.IsIntegral ℚ K]
   [IsTotallyComplex K] [Algebra F K] [IsQuadraticExtension F K]
 
-theorem eq_maximalRealSubfield (E : Subfield K) [IsTotallyReal E] [IsQuadraticExtension E K] :
-    E = maximalRealSubfield K := by
+theorem eq_maximalRealSubfield (E : Subfield K) [IsTotallyReal E] [IsQuadraticExtension E K]
+    : E = maximalRealSubfield K := by
   refine le_antisymm (IsTotallyReal.le_maximalRealSubfield E) ?_
   by_contra h
   have h' : E ⊔ (maximalRealSubfield K) = ⊤ := by
-    let L : IntermediateField E K := (E ⊔ (maximalRealSubfield K)).toIntermediateField
-      (fun x ↦ (le_sup_left (a := E)) x.prop)
-    have := ((IntermediateField.isSimpleOrder_of_finrank_prime E K
-      (IsQuadraticExtension.finrank_eq_two E K ▸ Nat.prime_two)).eq_bot_or_eq_top L).resolve_left ?_
+    let L : IntermediateField E K :=
+      (E ⊔ (maximalRealSubfield K)).toIntermediateField (fun x ↦ (le_sup_left (a := E)) x.prop)
+    have :=
+      ((IntermediateField.isSimpleOrder_of_finrank_prime E K
+            (IsQuadraticExtension.finrank_eq_two E K ▸ Nat.prime_two)).eq_bot_or_eq_top
+          L).resolve_left
+        ?_
     · simpa [L] using congr(IntermediateField.toSubfield $this)
     · contrapose h
       rw [← SetLike.coe_set_eq, Subfield.coe_toIntermediateField] at h
@@ -476,48 +439,47 @@ theorem eq_maximalRealSubfield (E : Subfield K) [IsTotallyReal E] [IsQuadraticEx
 /--
 Any field `F` such that `K/F` is a CM-extension is isomorphic to the maximal real subfield of `K`.
 -/
-noncomputable def equivMaximalRealSubfield :
-    F ≃+* maximalRealSubfield K :=
-  (algebraMap F K).rangeRestrictFieldEquiv.trans (RingEquiv.subfieldCongr (by
-    have := IsTotallyReal.ofRingEquiv (algebraMap F K).rangeRestrictFieldEquiv
-    have : IsQuadraticExtension (algebraMap F K).fieldRange K :=
-    { finrank_eq_two' :=
-        (IsQuadraticExtension.finrank_eq_two F K) ▸ Algebra.finrank_eq_of_equiv_equiv
-          (algebraMap F K).rangeRestrictFieldEquiv.symm (RingEquiv.refl K) (by ext; simp; rfl) }
-    exact eq_maximalRealSubfield K (algebraMap F K).fieldRange))
+noncomputable def equivMaximalRealSubfield : F ≃+* maximalRealSubfield K :=
+  (algebraMap F K).rangeRestrictFieldEquiv.trans
+    (RingEquiv.subfieldCongr (by
+      have := IsTotallyReal.ofRingEquiv (algebraMap F K).rangeRestrictFieldEquiv
+      have : IsQuadraticExtension (algebraMap F K).fieldRange K := {
+        finrank_eq_two' :=
+          (IsQuadraticExtension.finrank_eq_two F K) ▸ Algebra.finrank_eq_of_equiv_equiv
+            (algebraMap F K).rangeRestrictFieldEquiv.symm (RingEquiv.refl K) (by ext; simp; rfl)
+      }
+      exact eq_maximalRealSubfield K (algebraMap F K).fieldRange))
 
 @[simp]
-theorem equivMaximalRealSubfield_apply (x : F) :
-    equivMaximalRealSubfield F K x = algebraMap F K x := rfl
+theorem equivMaximalRealSubfield_apply (x : F)
+    : equivMaximalRealSubfield F K x = algebraMap F K x :=
+  rfl
 
 @[simp]
-theorem algebraMap_equivMaximalRealSubfield_symm_apply (x : maximalRealSubfield K) :
-    algebraMap F K ((CMExtension.equivMaximalRealSubfield F K).symm x) =
-      algebraMap (maximalRealSubfield K) K x := by
+theorem algebraMap_equivMaximalRealSubfield_symm_apply (x : maximalRealSubfield K)
+    : algebraMap F K ((CMExtension.equivMaximalRealSubfield F K).symm x)
+      = algebraMap (maximalRealSubfield K) K x := by
   simpa using! (equivMaximalRealSubfield_apply F K ((equivMaximalRealSubfield F K).symm x)).symm
 
 end CMExtension
 
 namespace IsCMField
 
-variable (F K : Type*) [Field F] [IsTotallyReal F] [Field K] [CharZero K] [Algebra.IsIntegral ℚ K]
+variable
+  (F K : Type*) [Field F] [IsTotallyReal F] [Field K] [CharZero K] [Algebra.IsIntegral ℚ K]
   [IsTotallyComplex K] [Algebra F K] [IsQuadraticExtension F K]
 
 include F in
-/--
-If `K/F` is a CM-extension then `K` is a CM-field.
--/
-theorem ofCMExtension :
-    IsCMField K where
-  is_quadratic := ⟨(IsQuadraticExtension.finrank_eq_two F K) ▸ finrank_eq_of_equiv_equiv
+/-- If `K/F` is a CM-extension then `K` is a CM-field. -/
+theorem ofCMExtension : IsCMField K where
+  is_quadratic :=
+    ⟨(IsQuadraticExtension.finrank_eq_two F K) ▸ finrank_eq_of_equiv_equiv
       (CMExtension.equivMaximalRealSubfield F K).symm (RingEquiv.refl K) (by ext; simp)⟩
 
 open IntermediateField in
-/--
-A totally complex field that has a unique complex conjugation is CM.
--/
-theorem of_forall_isConj [IsGalois ℚ K] {σ : Gal(K/ℚ)}
-    (hσ : ∀ φ : K →+* ℂ, IsConj φ σ) : IsCMField K := by
+/-- A totally complex field that has a unique complex conjugation is CM. -/
+theorem of_forall_isConj [IsGalois ℚ K] {σ : Gal(K/ℚ)} (hσ : ∀ φ : K →+* ℂ, IsConj φ σ)
+    : IsCMField K := by
   let φ : K →+* ℂ := Classical.choice (inferInstance : Nonempty _)
   have hσ' : Nat.card (Subgroup.zpowers σ) = 2 := by
     rw [Nat.card_zpowers, orderOf_isConj_two_of_ne_one (hσ φ)]
@@ -529,18 +491,15 @@ theorem of_forall_isConj [IsGalois ℚ K] {σ : Gal(K/ℚ)}
     dsimp only
     rw [← mk_embedding W, comap_mk, isReal_mk_iff]
     exact ComplexEmbedding.IsConj.isReal_comp
-     (σ := IsGaloisGroup.mulEquivAlgEquiv (Subgroup.zpowers σ) L K ⟨σ, Subgroup.mem_zpowers σ⟩)
+      (σ := IsGaloisGroup.mulEquivAlgEquiv (Subgroup.zpowers σ) L K ⟨σ, Subgroup.mem_zpowers σ⟩)
       (hσ W.embedding)⟩
-  have : IsQuadraticExtension L K := ⟨by
-    rw [IsGaloisGroup.finrank_fixedPoints_eq_card_subgroup, hσ']⟩
+  have : IsQuadraticExtension L K :=
+    ⟨by rw [IsGaloisGroup.finrank_fixedPoints_eq_card_subgroup, hσ']⟩
   exact IsCMField.ofCMExtension L K
 
 open scoped IsMulCommutative in
-/--
-A totally complex abelian extension of `ℚ` is CM.
--/
-instance of_isAbelianGalois [IsAbelianGalois ℚ K] :
-    IsCMField K := by
+/-- A totally complex abelian extension of `ℚ` is CM. -/
+instance of_isAbelianGalois [IsAbelianGalois ℚ K] : IsCMField K := by
   let φ : K →+* ℂ := Classical.choice (inferInstance : Nonempty _)
   obtain ⟨σ, hσ₁⟩ : ∃ σ : Gal(K/ℚ), ComplexEmbedding.IsConj φ σ :=
     exists_isConj_of_isRamified <|
@@ -558,24 +517,21 @@ namespace IsCyclotomicExtension.Rat
 variable (K : Type*) [Field K] [CharZero K]
 
 open IntermediateField in
-/--
-A nontrivial cyclotomic extension of `ℚ` is CM.
--/
-theorem isCMField {S : Set ℕ} (hS : ∃ n ∈ S, 2 < n) [IsCyclotomicExtension S ℚ K] :
-    IsCMField K := by
+/-- A nontrivial cyclotomic extension of `ℚ` is CM. -/
+theorem isCMField {S : Set ℕ} (hS : ∃ n ∈ S, 2 < n) [IsCyclotomicExtension S ℚ K]
+    : IsCMField K := by
   have : Algebra.IsIntegral ℚ K := integral S ℚ K
   obtain ⟨n, hn₁, hn₂⟩ := hS
   have : NeZero n := ⟨by positivity⟩
   obtain ⟨ζ, hζ⟩ := exists_isPrimitiveRoot ℚ K hn₁ (by grind)
   have : IsTotallyComplex K := by
     have : IsCyclotomicExtension {n} ℚ ℚ⟮ζ⟯ := hζ.intermediateField_adjoin_isCyclotomicExtension ℚ
-    have : IsTotallyComplex ℚ⟮ζ⟯ := isTotallyComplex ℚ⟮ζ⟯ hn₂
-    exact isTotallyComplex_of_algebra ℚ⟮ζ⟯ K
+    have : IsTotallyComplex ℚ⟮ζ⟯ := isTotallyComplex (ℚ⟮ζ⟯) hn₂
+    exact isTotallyComplex_of_algebra (ℚ⟮ζ⟯) K
   have := isAbelianGalois S ℚ K
   exact IsCMField.of_isAbelianGalois K
 
-instance [IsCyclotomicExtension ⊤ ℚ K] :
-    IsCMField K :=
+instance [IsCyclotomicExtension ⊤ ℚ K] : IsCMField K :=
   isCMField K (S := ⊤) ⟨3, trivial, Nat.lt_succ_self 2⟩
 
 end IsCyclotomicExtension.Rat

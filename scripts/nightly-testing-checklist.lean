@@ -35,8 +35,10 @@ def runCmd (cmd : String) (args : Array String) : IO (Except String String) := d
 
 /-- Fetch a file's raw content from a GitHub repo at a given ref. -/
 def ghRawFile (repo ref path : String) : IO (Except String String) :=
-  runCmd "gh" #["api", s!"repos/{repo}/contents/{path}?ref={ref}",
-    "-H", "Accept: application/vnd.github.raw"]
+  runCmd "gh" #[
+    "api", s!"repos/{repo}/contents/{path}?ref={ref}",
+    "-H", "Accept: application/vnd.github.raw"
+  ]
 
 /-- Extract the nightly tag from a toolchain string like `leanprover/lean4:nightly-2026-03-25`. -/
 def toolchainTag (tc : String) : String :=
@@ -46,15 +48,18 @@ def toolchainTag (tc : String) : String :=
 
 /-- Find the latest lean4 nightly release tag from `leanprover/lean4-nightly`. -/
 def getLatestNightly : IO (Except String String) := do
-  let r ← runCmd "gh" #["api", "repos/leanprover/lean4-nightly/releases?per_page=1",
-    "--jq", ".[0].tag_name"]
+  let r ←
+    runCmd "gh" #[
+      "api", "repos/leanprover/lean4-nightly/releases?per_page=1",
+      "--jq", ".[0].tag_name"
+    ]
   match r with
   | .ok tag => if tag == "" then return .error "no nightly found" else return .ok tag
   | .error e => return .error e
 
 /-- A CI run's key fields. -/
 structure CIRun where
-  status : String     -- "completed", "in_progress", "queued"
+  status : String -- "completed", "in_progress", "queued"
   conclusion : String -- "success", "failure", "" (if not yet completed)
   url : String
 
@@ -62,29 +67,38 @@ structure CIRun where
 def parseCIRun (lines : List String) : Except String CIRun :=
   match lines with
   | [status, conclusion, url] =>
-    if status == "null" || status == "" then .error "no CI runs found"
-    else .ok { status, conclusion := if conclusion == "null" then "" else conclusion, url }
-  | _ => .error "unexpected output format"
+    if status == "null" || status == "" then
+      .error "no CI runs found"
+    else
+      .ok { status, conclusion := if conclusion == "null" then "" else conclusion, url }
+  | _ =>
+    .error "unexpected output format"
 
 /-- Get the most recent CI run for a repo/branch/workflow. -/
 def getCIRun (repo branch workflow : String) : IO (Except String CIRun) := do
-  match ← runCmd "gh" #["run", "list", "-R", repo, "-b", branch, "-w", workflow, "-L", "1",
-      "--json", "status,conclusion,url",
-      "--jq", ".[0] | .status, .conclusion, .url"] with
+  match ← runCmd "gh" #[
+    "run", "list", "-R", repo, "-b", branch, "-w", workflow, "-L", "1",
+    "--json", "status,conclusion,url",
+    "--jq", ".[0] | .status, .conclusion, .url"
+  ] with
   | .error e => return .error e
   | .ok output => return parseCIRun (output.splitOn "\n")
 
 /-- Get the most recent *completed* CI run for a repo/branch/workflow. -/
 def getLastCompletedCIRun (repo branch workflow : String) : IO (Except String CIRun) := do
-  match ← runCmd "gh" #["run", "list", "-R", repo, "-b", branch, "-w", workflow,
-      "--status", "completed", "-L", "1",
-      "--json", "status,conclusion,url",
-      "--jq", ".[0] | .status, .conclusion, .url"] with
+  match ← runCmd "gh" #[
+    "run", "list", "-R", repo, "-b", branch, "-w", workflow,
+    "--status", "completed", "-L", "1",
+    "--json", "status,conclusion,url",
+    "--jq", ".[0] | .status, .conclusion, .url"
+  ] with
   | .error e => return .error e
   | .ok output => return parseCIRun (output.splitOn "\n")
 
-/-- Extract the run ID from a GitHub Actions URL like
-    `https://github.com/owner/repo/actions/runs/12345`. -/
+/--
+Extract the run ID from a GitHub Actions URL like
+`https://github.com/owner/repo/actions/runs/12345`.
+-/
 def runIdFromUrl (url : String) : Option String :=
   match url.splitOn "/actions/runs/" with
   | [_, id] => some id
@@ -97,37 +111,49 @@ structure FailingJob where
 
 /-- Get failing jobs for a CI run. -/
 def getFailingJobs (repo : String) (runId : String) : IO (Array FailingJob) := do
-  match ← runCmd "gh" #["api", s!"repos/{repo}/actions/runs/{runId}/jobs",
-      "--paginate", "--jq",
-      ".jobs[] | select(.conclusion == \"failure\") | (.id | tostring) + \"\\t\" + .name"] with
+  match ← runCmd "gh" #[
+    "api", s!"repos/{repo}/actions/runs/{runId}/jobs",
+    "--paginate", "--jq",
+    ".jobs[] | select(.conclusion == \"failure\") | (.id | tostring) + \"\\t\" + .name"
+  ] with
   | .ok output =>
     if output == "" then return #[]
-    return output.splitOn "\n" |>.filterMap (fun line =>
-      match line.splitOn "\t" with
-      | [id, name] => some { id, name }
-      | _ => none) |>.toArray
-  | .error _ => return #[]
+    return output.splitOn "\n"
+      |>.filterMap (fun line =>
+        match line.splitOn "\t" with
+        | [id, name] => some { id, name }
+        | _ => none)
+      |>.toArray
+  | .error _ =>
+    return #[]
 
 /-- Run a shell pipeline and return trimmed stdout. -/
 def runShell (script : String) : IO String := do
   let r ← IO.Process.output { cmd := "bash", args := #["-c", script] }
   return r.stdout.trimAscii.toString
 
-/-- Fetch build error lines from a job's log.
-    Extracts Lean errors matching `path.lean:line:col: message`. -/
+/--
+Fetch build error lines from a job's log.
+Extracts Lean errors matching `path.lean:line:col: message`.
+-/
 def getJobErrors (repo : String) (jobId : String) (limit : Nat := 10) : IO (Array String) := do
-  let output ← runShell
-    s!"gh api repos/{repo}/actions/jobs/{jobId}/logs 2>/dev/null | grep -oE 'error: [A-Za-z][A-Za-z0-9_/.]*\\.lean:[0-9]+:[0-9]+: .+' | sort -u | head -{limit}"
+  let output ←
+    runShell s!"gh api repos/{repo}/actions/jobs/{jobId}/logs 2>/dev/null | grep -oE 'error: \
+      [A-Za-z][A-Za-z0-9_/.]*\\.lean:[0-9]+:[0-9]+: .+' | sort -u | head -{limit}"
   if output == "" then return #[]
   return output.splitOn "\n" |>.toArray
 
 open ANSIColor in
-/-- Wait for a GitHub Actions run to complete, waking early on first job failure.
-    Returns the conclusion ("success", "failure", etc.). -/
+/--
+Wait for a GitHub Actions run to complete, waking early on first job failure.
+Returns the conclusion ("success", "failure", etc.).
+-/
 def watchRun (repo : String) (runId : String) (pollSeconds : Nat := 30) : IO String := do
   IO.print s!"  Waiting for CI "
   let stdout ← IO.getStdout
-  let jq := "\"\\([.jobs[] | select(.status == \"completed\")] | length) \\([.jobs[] | select(.conclusion == \"failure\")] | length) \\(.jobs | length)\""
+  let jq :=
+    "\"\\([.jobs[] | select(.status == \"completed\")] | length) \\([.jobs[] | select(.conclusion \
+      == \"failure\")] | length) \\(.jobs | length)\""
   let mut lastMsg := ""
   repeat
     match ← runCmd "gh" #["api", s!"repos/{repo}/actions/runs/{runId}/jobs", "--jq", jq] with
@@ -145,7 +171,8 @@ def watchRun (repo : String) (runId : String) (pollSeconds : Nat := 30) : IO Str
         if completed == total then
           IO.println s!" {green "✓"} ({total}/{total} jobs)"
           -- Fetch the actual conclusion
-          match ← runCmd "gh" #["api", s!"repos/{repo}/actions/runs/{runId}", "--jq", ".conclusion"] with
+          match ← runCmd "gh"
+            #["api", s!"repos/{repo}/actions/runs/{runId}", "--jq", ".conclusion"] with
           | .ok conclusion => return conclusion
           | .error _ => return "success"
         -- Show progress
@@ -154,8 +181,10 @@ def watchRun (repo : String) (runId : String) (pollSeconds : Nat := 30) : IO Str
           IO.print s!"{dim msg} "
           stdout.flush
           lastMsg := msg
-      | _ => pure ()
-    | .error _ => pure ()
+      | _ =>
+        pure ()
+    | .error _ =>
+      pure ()
     -- Sleep between polls
     let _ ← IO.Process.output { cmd := "sleep", args := #[toString pollSeconds] }
   return "unknown"
@@ -185,8 +214,7 @@ def parseBuildError (s : String) : Option BuildError := do
   some { file, line, col, message }
 
 /-- Is this error one we know how to fix? -/
-def BuildError.isFixable (e : BuildError) : Bool :=
-  e.message.contains "has already been declared"
+def BuildError.isFixable (e : BuildError) : Bool := e.message.contains "has already been declared"
 
 deriving instance Inhabited for BuildError
 
@@ -203,8 +231,10 @@ def cloneRepo (repo name : String) : IO String := do
     let _ ← IO.Process.output { cmd := "git", args := #["pull"], cwd := dir }
   else
     IO.println s!"  Cloning {repo} nightly-testing → {dir}"
-    let cloneArgs := #["clone", "--depth", "1", "--branch", "nightly-testing",
-        s!"https://github.com/{repo}.git", dir]
+    let cloneArgs := #[
+      "clone", "--depth", "1", "--branch", "nightly-testing",
+      s!"https://github.com/{repo}.git", dir
+    ]
     let r ← IO.Process.output { cmd := "git", args := cloneArgs }
     if r.exitCode != 0 then
       throw <| IO.userError s!"clone failed: {r.stderr.trimAscii.toString}"
@@ -222,8 +252,9 @@ def buildAndCaptureErrors (dir : String) : IO (Array BuildError) := do
   -- Write combined output to a temp file for reliable grep processing
   let tmpFile := s!"{dir}/.build-output.log"
   IO.FS.writeFile tmpFile (r.stdout ++ "\n" ++ r.stderr)
-  let output ← runShell
-    s!"grep -oE 'error: [A-Za-z][A-Za-z0-9_/.]*\\.lean:[0-9]+:[0-9]+: .+' {tmpFile} | sort -u"
+  let output ←
+    runShell
+      s!"grep -oE 'error: [A-Za-z][A-Za-z0-9_/.]*\\.lean:[0-9]+:[0-9]+: .+' {tmpFile} | sort -u"
   IO.FS.removeFile tmpFile |>.catchExceptions fun _ => pure ()
   if output == "" then return #[]
   let mut errors : Array BuildError := #[]
@@ -241,12 +272,15 @@ def deployHelper (dir : String) : IO String := do
   let _ ← IO.Process.output { cmd := "cp", args := #[helperSrc, helperDst] }
   return helperDst
 
-/-- Find the byte range of the command at a given position using the Lean parser.
-    Includes any preceding attributes/doc comments that the parser split into separate commands. -/
-def findCommandRange (dir : String) (file : String) (line col : Nat) :
-    IO (Option (Nat × Nat)) := do
-  let helperArgs := #["env", "lean", "--run", "find_command_range.lean", file,
-    toString line, toString col]
+/--
+Find the byte range of the command at a given position using the Lean parser.
+Includes any preceding attributes/doc comments that the parser split into separate commands.
+-/
+def findCommandRange (dir : String) (file : String) (line col : Nat) : IO (Option (Nat × Nat)) := do
+  let helperArgs := #[
+    "env", "lean", "--run", "find_command_range.lean", file,
+    toString line, toString col
+  ]
   let r ← IO.Process.output { cmd := "lake", args := helperArgs, cwd := dir }
   if r.exitCode != 0 then
     IO.eprintln s!"    find_command_range failed: {r.stderr.trimAscii.toString}"
@@ -257,7 +291,8 @@ def findCommandRange (dir : String) (file : String) (line col : Nat) :
     match (startStr.toNat?, endStr.toNat?) with
     | (some s, some e) => return some (s, e)
     | _ => return none
-  | _ => return none
+  | _ =>
+    return none
 
 /-- Remove the byte range [start, end) from a file, trimming trailing whitespace at the cut. -/
 def removeByteRange (filePath : String) (start stop : Nat) : IO Unit := do
@@ -269,9 +304,9 @@ def removeByteRange (filePath : String) (start stop : Nat) : IO Unit := do
   let before := bytes.extract 0 start
   -- Skip whitespace/newlines after the removed range
   let mut afterStart := stop
-  while afterStart < bytes.size && (bytes.get! afterStart == '\n'.toNat.toUInt8
-      || bytes.get! afterStart == ' '.toNat.toUInt8
-      || bytes.get! afterStart == '\r'.toNat.toUInt8) do
+  while afterStart < bytes.size
+      && (bytes.get! afterStart == '\n'.toNat.toUInt8 || bytes.get! afterStart == ' '.toNat.toUInt8
+        || bytes.get! afterStart == '\r'.toNat.toUInt8) do
     afterStart := afterStart + 1
   -- But keep exactly one newline before the next content
   if afterStart > stop then
@@ -282,8 +317,10 @@ def removeByteRange (filePath : String) (start stop : Nat) : IO Unit := do
 
 /-- Check if we made progress: the first error moved to a later position or disappeared. -/
 def madeProgress (oldErrors newErrors : Array BuildError) : Bool :=
-  if newErrors.isEmpty then true
-  else if oldErrors.isEmpty then false
+  if newErrors.isEmpty then
+    true
+  else if oldErrors.isEmpty then
+    false
   else
     let o := oldErrors[0]!
     let n := newErrors[0]!
@@ -303,7 +340,7 @@ def fixLoop (dir : String) : IO (Array String) := do
     -- Find first fixable error
     let fixable := errors.filter (·.isFixable)
     if fixable.isEmpty then break
-    let err := fixable[0]!  -- Inhabited instance derived above
+    let err := fixable[0]! -- Inhabited instance derived above
     IO.println s!"  {yellow "→"} Fixing: {err.file}:{err.line}:{err.col}: {err.message}"
     -- Find the command range
     let some (start, stop) ← findCommandRange dir err.file err.line err.col
@@ -312,11 +349,11 @@ def fixLoop (dir : String) : IO (Array String) := do
     -- Remove the declaration
     let filePath := s!"{dir}/{err.file}"
     removeByteRange filePath start stop
-    if !modifiedFiles.contains err.file then
+    if ! modifiedFiles.contains err.file then
       modifiedFiles := modifiedFiles.push err.file
     -- Rebuild and check progress
     let newErrors ← buildAndCaptureErrors dir
-    if !madeProgress errors newErrors then
+    if ! madeProgress errors newErrors then
       IO.println s!"    {red "✗"} No progress made, reverting"
       -- Revert the file
       let _ ← IO.Process.output { cmd := "git", args := #["checkout", "--", err.file], cwd := dir }
@@ -345,15 +382,17 @@ def commitAndPush (dir : String) : IO Unit := do
 
 /-- An upstream dependency to check: package name and its GitHub repo. -/
 structure UpstreamDep where
-  name : String       -- lake package name (as it appears in lake-manifest.json)
-  repo : String       -- GitHub repo (e.g. "leanprover-community/batteries")
-  branch : String     -- branch to track (e.g. "nightly-testing")
+  name : String -- lake package name (as it appears in lake-manifest.json)
+  repo : String -- GitHub repo (e.g. "leanprover-community/batteries")
+  branch : String -- branch to track (e.g. "nightly-testing")
 
 /-- Get the rev of a package from a repo's lake-manifest.json. -/
 def getManifestRev (repo branch pkg : String) : IO (Except String String) := do
   let jq := s!".packages[] | select(.name == \"{pkg}\") | .rev"
-  runCmd "gh" #["api", s!"repos/{repo}/contents/lake-manifest.json?ref={branch}",
-    "-H", "Accept: application/vnd.github.raw", "--jq", jq]
+  runCmd "gh" #[
+    "api", s!"repos/{repo}/contents/lake-manifest.json?ref={branch}",
+    "-H", "Accept: application/vnd.github.raw", "--jq", jq
+  ]
 
 /-- Get the latest commit SHA on a branch. -/
 def getLatestCommit (repo branch : String) : IO (Except String String) := do
@@ -381,9 +420,17 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
 
   let repos : Array (String × String × String × Array UpstreamDep) := #[
     ("Batteries", "leanprover-community/batteries", "build.yml", #[]),
-    ("Mathlib", "leanprover-community/mathlib4-nightly-testing", "build.yml",
-      #[{ name := "batteries", repo := "leanprover-community/batteries",
-           branch := "nightly-testing" }])]
+    (
+      "Mathlib",
+      "leanprover-community/mathlib4-nightly-testing",
+      "build.yml",
+      #[{
+        name := "batteries"
+        repo := "leanprover-community/batteries"
+        branch := "nightly-testing"
+      }]
+    )
+  ]
 
   for (name, repo, workflow, upstreamDeps) in repos do
     IO.println s!"{bold name} {dim s!"({repo})"} nightly-testing"
@@ -406,7 +453,7 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
     -- Upstream dependency freshness
     for dep in upstreamDeps do
       match ← getManifestRev repo "nightly-testing" dep.name,
-            ← getLatestCommit dep.repo dep.branch with
+        ← getLatestCommit dep.repo dep.branch with
       | .ok currentRev, .ok latestRev =>
         if currentRev == latestRev then
           IO.println s!"  {green s!"✓ {dep.name} up to date"}"
@@ -415,7 +462,8 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
           IO.println s!"    manifest: {dim (currentRev.take 12).toString}"
           IO.println s!"    latest:   {dim (latestRev.take 12).toString}"
           allGood := false
-      | .error e, _ | _, .error e =>
+      | .error e, _
+      | _, .error e =>
         IO.println s!"  {dep.name}: {red s!"error - {e}"}"
 
     -- CI
@@ -469,21 +517,28 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
   unless noClone do
     for (name, repo, _, upstreamDeps) in repos do
       -- Check what needs fixing
-      let toolchainStale := match ← ghRawFile repo "nightly-testing" "lean-toolchain" with
-        | .ok tc => match latestNightly with
+      let toolchainStale :=
+        match ← ghRawFile repo "nightly-testing" "lean-toolchain" with
+        | .ok tc =>
+          match latestNightly with
           | .ok latest => toolchainTag tc != latest
           | .error _ => false
-        | .error _ => false
+        | .error _ =>
+          false
       let mut depsStale := false
       for dep in upstreamDeps do
         match ← getManifestRev repo "nightly-testing" dep.name,
-              ← getLatestCommit dep.repo dep.branch with
-        | .ok currentRev, .ok latestRev => if currentRev != latestRev then depsStale := true
-        | _, _ => pure ()
-      let ciFailure := match ← getCIRun repo "nightly-testing" "build.yml" with
+          ← getLatestCommit dep.repo dep.branch with
+        | .ok currentRev, .ok latestRev =>
+          if currentRev != latestRev then depsStale := true
+        | _, _ =>
+          pure ()
+      let ciFailure :=
+        match ← getCIRun repo "nightly-testing" "build.yml" with
         | .ok run => run.conclusion == "failure"
         | .error _ => false
-      unless toolchainStale || depsStale || ciFailure do continue
+      unless toolchainStale || depsStale || ciFailure do
+        continue
       IO.println (bold s!"Fixing {name}")
       let dir ← cloneRepo repo name
       -- Update toolchain if stale
@@ -495,16 +550,18 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
       -- Update stale upstream dependencies
       for dep in upstreamDeps do
         match ← getManifestRev repo "nightly-testing" dep.name,
-              ← getLatestCommit dep.repo dep.branch with
+          ← getLatestCommit dep.repo dep.branch with
         | .ok currentRev, .ok latestRev =>
           if currentRev != latestRev then
             IO.println s!"  Updating {dep.name}..."
             let r ← IO.Process.output { cmd := "lake", args := #["update", dep.name], cwd := dir }
             if r.exitCode != 0 then
-              IO.println s!"  {red s!"lake update {dep.name} failed: {r.stderr.trimAscii.toString}"}"
+              IO.println
+                s!"  {red s!"lake update {dep.name} failed: {r.stderr.trimAscii.toString}"}"
             else
               IO.println s!"  {green s!"✓ {dep.name} updated"}"
-        | _, _ => pure ()
+        | _, _ =>
+          pure ()
       -- Fix build errors
       unless noBuild do
         let modifiedFiles ← fixLoop dir
@@ -530,23 +587,25 @@ def nightlyTestingChecklistCLI (args : Parsed) : IO UInt32 := do
       IO.println ""
 
   if producedPatches then
-    IO.println s!"To automatically apply the patches, use `lake exe nightly-testing-checklist --fix`."
+    IO.println
+      s!"To automatically apply the patches, use `lake exe nightly-testing-checklist --fix`."
 
   return if allGood then 0 else 1
 
 open Cli in
 /-- Setting up command line options and help text for `lake exe nightly-testing-checklist`. -/
-def nightlyTestingChecklist : Cmd := `[Cli|
-  «nightly-testing-checklist» VIA nightlyTestingChecklistCLI; ["0.0.1"]
-  "Report the current state of the nightly-testing branches at Batteries and Mathlib,
+def nightlyTestingChecklist : Cmd :=
+  `[Cli|
+      «nightly-testing-checklist» VIA nightlyTestingChecklistCLI; ["0.0.1"]
+      "Report the current state of the nightly-testing branches at Batteries and Mathlib,
   including toolchain versions, CI status, and build errors."
 
-  FLAGS:
-    "no-clone"; "Do not clone repositories into /tmp for local investigation."
-    "no-build"; "Do not run lake build in cloned repositories."
-    "fix";      "Actually commit and push fixes (default is dry-run: generate patch only)."
-    "watch";    "Wait for in-progress CI runs to complete before proceeding."
-]
+      FLAGS:
+        "no-clone"; "Do not clone repositories into /tmp for local investigation."
+        "no-build"; "Do not run lake build in cloned repositories."
+        "fix";      "Actually commit and push fixes (default is dry-run: generate patch only)."
+        "watch";    "Wait for in-progress CI runs to complete before proceeding."
+    ]
 
 /-- The entrypoint to the `lake exe nightly-testing-checklist` command. -/
 def main (args : List String) : IO UInt32 := nightlyTestingChecklist.validate args

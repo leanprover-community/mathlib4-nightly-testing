@@ -24,12 +24,14 @@ universe u
 
 section IsField
 
-/-- A predicate to express that a (semi)ring is a (semi)field.
+/--
+A predicate to express that a (semi)ring is a (semi)field.
 
 This is mainly useful because such a predicate does not contain data,
 and can therefore be easily transported along ring isomorphisms.
 Additionally, this is useful when trying to prove that
-a particular ring structure extends to a (semi)field. -/
+a particular ring structure extends to a (semi)field.
+-/
 structure IsField (R : Type u) [Semiring R] : Prop where
   /-- For a semiring to be a field, it must have two distinct elements. -/
   exists_pair_ne : ∃ x y : R, x ≠ y
@@ -44,8 +46,7 @@ theorem Semifield.toIsField (R : Type u) [Semifield R] : IsField R where
   mul_inv_cancel {a} ha := ⟨a⁻¹, mul_inv_cancel₀ ha⟩
 
 /-- Transferring from `Field` to `IsField`. -/
-theorem Field.toIsField (R : Type u) [Field R] : IsField R :=
-  Semifield.toIsField _
+theorem Field.toIsField (R : Type u) [Field R] : IsField R := Semifield.toIsField _
 
 @[simp]
 theorem IsField.nontrivial {R : Type u} [Semiring R] (h : IsField R) : Nontrivial R :=
@@ -60,12 +61,11 @@ lemma IsField.isDomain {R : Type u} [Semiring R] (h : IsField R) : IsDomain R wh
     simpa [mul_assoc, hx] using congr($hb * x)
   exists_pair_ne := h.exists_pair_ne
 
-instance {R : Type u} [Semifield R] : IsDomain R :=
-  (Semifield.toIsField _).isDomain
+instance {R : Type u} [Semifield R] : IsDomain R := (Semifield.toIsField _).isDomain
 
 @[simp]
-theorem not_isField_of_subsingleton (R : Type u) [Semiring R] [Subsingleton R] : ¬IsField R :=
-  fun h =>
+theorem not_isField_of_subsingleton (R : Type u) [Semiring R] [Subsingleton R]
+    : ¬ IsField R := fun h =>
   let ⟨_, _, h⟩ := h.exists_pair_ne
   h (Subsingleton.elim _ _)
 
@@ -91,12 +91,13 @@ noncomputable def IsField.toField {R : Type u} [Ring R] (h : IsField R) : Field 
   qsmul := _
   qsmul_def := fun _ _ => rfl
 
-/-- For each field, and for each nonzero element of said field, there is a unique inverse.
+/--
+For each field, and for each nonzero element of said field, there is a unique inverse.
 Since `IsField` doesn't remember the data of an `inv` function and as such,
 a lemma that there is a unique inverse could be useful.
 -/
-theorem uniq_inv_of_isField (R : Type u) [Ring R] (hf : IsField R) :
-    ∀ x : R, x ≠ 0 → ∃! y : R, x * y = 1 := by
+theorem uniq_inv_of_isField (R : Type u) [Ring R] (hf : IsField R)
+    : ∀ x : R, x ≠ 0 → ∃! y : R, x * y = 1 := by
   have := hf.isDomain
   intro x hx
   exact (mul_right_injective₀ hx).existsUnique_iff_exists.2 (hf.mul_inv_cancel hx)

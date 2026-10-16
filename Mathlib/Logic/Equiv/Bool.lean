@@ -16,8 +16,7 @@ This file shows that `not : Bool → Bool` is an equivalence and derives some co
 @[expose] public section
 
 /-- The boolean negation function `not : Bool → Bool` is an involution and thus an equivalence. -/
-@[simps!]
-def Equiv.boolNot : Equiv.Perm Bool := Bool.involutive_not.toPerm
+@[simps!] def Equiv.boolNot : Equiv.Perm Bool := Bool.involutive_not.toPerm
 
 namespace Bool
 

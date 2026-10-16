@@ -24,25 +24,26 @@ variable (R M : Type u) (M' : Type v) [Semiring R]
 namespace MonoidAlgebra
 
 @[to_additive (attr := simp)]
-lemma cardinalMk_eq_lift_of_fintype [Fintype M'] : #R[M'] = lift.{v} #R ^ card M' := by
+lemma cardinalMk_eq_lift_of_fintype [Fintype M'] : # R[M'] = lift.{v} #R ^ card M' := by
   simp [coeffEquiv.cardinal_eq]
 
-@[to_additive]
-lemma cardinalMk_of_fintype [Fintype M] : #R[M] = #R ^ card M := by simp
+@[to_additive] lemma cardinalMk_of_fintype [Fintype M] : # R[M] = #R ^ card M := by simp
 
 @[to_additive (attr := simp)]
-lemma cardinalMk_eq_max_lift_of_infinite [Infinite M'] [Nontrivial R] :
-    #R[M'] = max (lift.{v} #R) (lift.{u} #M') := by simp [coeffEquiv.cardinal_eq, max_comm]
+lemma cardinalMk_eq_max_lift_of_infinite [Infinite M'] [Nontrivial R]
+    : # R[M'] = max (lift.{v} #R) (lift.{u} #M') := by
+  simp [coeffEquiv.cardinal_eq, max_comm]
 
 @[to_additive]
-lemma cardinalMk_of_infinite [Infinite M] [Nontrivial R] : #R[M] = max #R #M := by simp
+lemma cardinalMk_of_infinite [Infinite M] [Nontrivial R] : # R[M] = max #R #M := by simp
 
 @[to_additive (attr := simp)]
-lemma cardinalMk_eq_max_lift_of_infinite' [Nonempty M'] [Infinite R] :
-    #R[M'] = max (lift.{v} #R) (lift.{u} #M') := by simp [coeffEquiv.cardinal_eq, max_comm]
+lemma cardinalMk_eq_max_lift_of_infinite' [Nonempty M'] [Infinite R]
+    : # R[M'] = max (lift.{v} #R) (lift.{u} #M') := by
+  simp [coeffEquiv.cardinal_eq, max_comm]
 
 @[to_additive]
-lemma cardinalMk_of_infinite' [Nonempty M] [Infinite R] : #R[M] = max #R #M := by simp
+lemma cardinalMk_of_infinite' [Nonempty M] [Infinite R] : # R[M] = max #R #M := by simp
 
 @[to_additive]
 instance [Infinite R] [Nonempty M'] : Infinite R[M'] :=
@@ -68,16 +69,15 @@ instance [Small.{w} R] [Small.{w} M'] : Small.{w} R[M'] := by
   nontriviality R
   rw [small_iff_lift_mk_lt_univ]
   cases fintypeOrInfinite M'
-  · rw [cardinalMk_eq_lift_of_fintype, ← power_natCast, lift_power,
-      lift_lift, ← mk_uLift, ← lift_natCast.{u, v}, ← mk_fintype M',
-      lift_lift, ← mk_uLift, power_def, ← lift_id'.{w + 1} (mk _),
-      ← small_iff_lift_mk_lt_univ]
+  · rw [cardinalMk_eq_lift_of_fintype, ← power_natCast, lift_power, lift_lift, ← mk_uLift,
+      ← lift_natCast.{u, v}, ← mk_fintype M', lift_lift, ← mk_uLift, power_def,
+      ← lift_id'.{w + 1} (mk _), ← small_iff_lift_mk_lt_univ]
     infer_instance
   · rw [cardinalMk_eq_max_lift_of_infinite, lift_max, max_lt_iff]
     constructor
-    · rwa [lift_lift, ← lift_lift.{w + 1}, ← lift_univ.{w, max (w + 1) u, v},
-        lift_lt, ← small_iff_lift_mk_lt_univ]
-    · rwa [lift_lift, ← lift_lift.{w + 1}, ← lift_univ.{w, max (w + 1) v, u},
-        lift_lt, ← small_iff_lift_mk_lt_univ]
+    · rwa [lift_lift, ← lift_lift.{w + 1}, ← lift_univ.{w, max (w + 1) u, v}, lift_lt,
+        ← small_iff_lift_mk_lt_univ]
+    · rwa [lift_lift, ← lift_lift.{w + 1}, ← lift_univ.{w, max (w + 1) v, u}, lift_lt,
+        ← small_iff_lift_mk_lt_univ]
 
 end MonoidAlgebra

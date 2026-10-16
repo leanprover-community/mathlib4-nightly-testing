@@ -24,8 +24,10 @@ open CategoryTheory
 
 namespace Set
 
-/-- Given `X : Type u`, this is the functor `Set X ⥤ Type u` which sends `A`
-to its underlying type. -/
+/--
+Given `X : Type u`, this is the functor `Set X ⥤ Type u` which sends `A`
+to its underlying type.
+-/
 @[simps obj map]
 def functorToTypes {X : Type u} : Set X ⥤ Type u where
   obj S := S

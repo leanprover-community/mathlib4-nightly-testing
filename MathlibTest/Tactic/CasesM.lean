@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.CasesM
 
 set_option autoImplicit true
@@ -12,7 +13,8 @@ example (h : a ∧ b ∨ c ∧ d) (h2 : e ∧ f) : True := by
 
 example (h : a ∧ b ∨ c ∧ d) : True := by
   fail_if_success casesm* _∧_ -- no match expected
-  clear ‹a ∧ b ∨ c ∧ d›; trivial
+  clear ‹a ∧ b ∨ c ∧ d›
+  trivial
 
 example (h : a ∧ b ∨ c ∨ d) : True := by
   casesm* _∨_
@@ -83,7 +85,7 @@ example : True ∧ True ∧ True := by
   · guard_target = True ∧ True; constructorm* True, _∧_
 
 example (n : Nat) : True := by
-  fail_if_success casesm! Nat  -- two constructors, so `casesm!` doesn't fire
+  fail_if_success casesm! Nat -- two constructors, so `casesm!` doesn't fire
   trivial
 
 example (h : Array Nat) : True := by

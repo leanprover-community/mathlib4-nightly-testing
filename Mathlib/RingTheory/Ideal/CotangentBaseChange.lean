@@ -34,34 +34,36 @@ variable (T : Type*) [CommRing T] [Algebra R T] (I : Ideal S)
 
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
-/-- The canonical map from the base change of the cotangent space `T ⊗[R] I/I²` to the
+/--
+The canonical map from the base change of the cotangent space `T ⊗[R] I/I²` to the
 cotangent space `(I · (T ⊗[R] S))/(I · (T ⊗[R] S))²` of the extended ideal.
 This map is always surjective (`tensorCotangentHom_surjective`) and injective
-if `T` is `R`-flat (`tensorCotangentHom_injective_of_flat`). -/
-def tensorCotangentHom :
-    T ⊗[R] I.Cotangent →ₗ[T]
-      (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).Cotangent :=
+if `T` is `R`-flat (`tensorCotangentHom_injective_of_flat`).
+-/
+def tensorCotangentHom
+    : T ⊗[R] I.Cotangent →ₗ[T]
+        (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).Cotangent :=
   LinearMap.liftBaseChange T <|
     Cotangent.lift
-      ((map (algebraMap S (T ⊗[R] S)) I).toCotangent.restrictScalars R ∘ₗ
-        (Algebra.idealMap _ I).restrictScalars R) <| fun x y ↦ by
-    simp only [AlgHom.toRingHom_eq_coe, LinearMap.coe_comp, LinearMap.coe_restrictScalars,
-      Function.comp_apply, Algebra.idealMap_mul]
-    simp only [RingHom.algebraMap_toAlgebra, AlgHom.toRingHom_eq_coe, LinearMap.coe_restrictScalars,
-      toCotangent_eq_zero, sq, MulMemClass.coe_mul]
-    exact mul_mem_mul ((Algebra.idealMap (T ⊗[R] S) I) x).property
-      ((Algebra.idealMap (T ⊗[R] S) I) y).property
+        ((map (algebraMap S (T ⊗[R] S)) I).toCotangent.restrictScalars R
+          ∘ₗ (Algebra.idealMap _ I).restrictScalars R) <|
+      fun x y ↦ by
+        simp only [AlgHom.toRingHom_eq_coe, LinearMap.coe_comp, LinearMap.coe_restrictScalars,
+          Function.comp_apply, Algebra.idealMap_mul]
+        simp only [RingHom.algebraMap_toAlgebra, AlgHom.toRingHom_eq_coe,
+          LinearMap.coe_restrictScalars, toCotangent_eq_zero, sq, MulMemClass.coe_mul]
+        exact mul_mem_mul ((Algebra.idealMap (T ⊗[R] S) I) x).property
+          ((Algebra.idealMap (T ⊗[R] S) I) y).property
 
 -- TODO: make this @[simp] when `Ideal.map` is refactored to only take `RingHom`s
-lemma tensorCotangentHom_tmul (t : T) (x : I) :
-    tensorCotangentHom R T I (t ⊗ₜ[R] I.toCotangent x) =
-      t • (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).toCotangent
+lemma tensorCotangentHom_tmul (t : T) (x : I)
+    : tensorCotangentHom R T I (t ⊗ₜ[R] I.toCotangent x)
+      = t • (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).toCotangent
         ⟨1 ⊗ₜ x, Ideal.mem_map_of_mem _ x.2⟩ := by
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma tensorCotangentHom_surjective :
-    Function.Surjective (I.tensorCotangentHom R T) := by
+lemma tensorCotangentHom_surjective : Function.Surjective (I.tensorCotangentHom R T) := by
   let a : S →+* T ⊗[R] S := Algebra.TensorProduct.includeRight.toRingHom
   intro x
   obtain ⟨⟨x, hx⟩, rfl⟩ := Ideal.toCotangent_surjective _ x
@@ -81,8 +83,8 @@ lemma tensorCotangentHom_surjective :
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `T` is a flat `R`-module, the canonical map `tensorCotangentHom R T I` is injective. -/
-lemma tensorCotangentHom_injective_of_flat [Module.Flat R T] :
-    Function.Injective (I.tensorCotangentHom R T) := by
+lemma tensorCotangentHom_injective_of_flat [Module.Flat R T]
+    : Function.Injective (I.tensorCotangentHom R T) := by
   let a : S →+* T ⊗[R] S := Algebra.TensorProduct.includeRight.toRingHom
   let f : (I.map a).Cotangent →ₗ[T] T ⊗[R] S ⧸ (I.map a) ^ 2 :=
     (Ideal.cotangentToQuotientSquare _).restrictScalars T
@@ -104,18 +106,20 @@ lemma tensorCotangentHom_injective_of_flat [Module.Flat R T] :
     (I.cotangentToQuotientSquare.restrictScalars R)
   apply cotangentToQuotientSquare_injective
 
-/-- If `T` is a flat `R`-module, the base change of the cotangent space of `I` is linearly
-equivalent to the cotangent space of the extended ideal `I · (T ⊗[R] S)`. -/
-def tensorCotangentEquiv [Module.Flat R T] :
-    T ⊗[R] I.Cotangent ≃ₗ[T]
-      (I.map (Algebra.TensorProduct.includeRight.toRingHom : _ →+* T ⊗[R] S)).Cotangent :=
+/--
+If `T` is a flat `R`-module, the base change of the cotangent space of `I` is linearly
+equivalent to the cotangent space of the extended ideal `I · (T ⊗[R] S)`.
+-/
+def tensorCotangentEquiv [Module.Flat R T]
+    : T ⊗[R] I.Cotangent ≃ₗ[T]
+        (I.map (Algebra.TensorProduct.includeRight.toRingHom : _ →+* T ⊗[R] S)).Cotangent :=
   LinearEquiv.ofBijective (I.tensorCotangentHom R T)
     ⟨I.tensorCotangentHom_injective_of_flat R T, I.tensorCotangentHom_surjective R T⟩
 
 -- TODO: make this @[simp] when `Ideal.map` is refactored to only take `RingHom`s
-lemma tensorCotangentEquiv_tmul [Module.Flat R T] (t : T) (x : I) :
-    I.tensorCotangentEquiv R T (t ⊗ₜ I.toCotangent x) =
-      t • (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).toCotangent
+lemma tensorCotangentEquiv_tmul [Module.Flat R T] (t : T) (x : I)
+    : I.tensorCotangentEquiv R T (t ⊗ₜ I.toCotangent x)
+      = t • (I.map (Algebra.TensorProduct.includeRight.toRingHom : S →+* T ⊗[R] S)).toCotangent
         ⟨1 ⊗ₜ x, Ideal.mem_map_of_mem _ x.2⟩ :=
   rfl
 

@@ -26,46 +26,50 @@ open scoped Simplicial
 
 namespace SimplexCategory
 
-/-- Given `i : Fin (n + 2)`, this is the morphism `⦋n⦌ ⟶ ⦋1⦌` in the simplex
+/--
+Given `i : Fin (n + 2)`, this is the morphism `⦋n⦌ ⟶ ⦋1⦌` in the simplex
 category which corresponds to the monotone map `Fin (n + 1) → Fin 2` which
-takes `i` times the value `0`. -/
+takes `i` times the value `0`.
+-/
 def toMk₁ {n : ℕ} (i : Fin (n + 2)) : ⦋n⦌ ⟶ ⦋1⦌ :=
-  Hom.mk
-    { toFun j := if j.castSucc < i then 0 else 1
-      monotone' j₁ j₂ h := by
-        dsimp
-        split_ifs <;> grind }
+  Hom.mk {
+    toFun j := if j.castSucc < i then 0 else 1
+    monotone' j₁ j₂ h := by
+      dsimp
+      split_ifs <;> grind
+  }
 
 @[local grind =]
-lemma toMk₁_apply {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) :
-  dsimp% toMk₁ i j = if j.castSucc < i then 0 else 1 := rfl
+lemma toMk₁_apply {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    : dsimp% toMk₁ i j = if j.castSucc < i then 0 else 1 :=
+  rfl
 
 #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/13166
 (replacing grind's canonicalizer with a type-directed normalizer), `grind` closed the goals in
 the four lemmas below. It is not yet clear whether this is due to defeq abuse in Mathlib or a
 problem in the new canonicalizer; a minimization would help. The original proof was: `grind` -/
 
-lemma toMk₁_apply_eq_zero_iff {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) :
-    dsimp% toMk₁ i j = 0 ↔ j.castSucc < i := by
+lemma toMk₁_apply_eq_zero_iff {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    : dsimp% toMk₁ i j = 0 ↔ j.castSucc < i := by
   simp [toMk₁_apply]
 
-lemma toMk₁_of_castSucc_lt {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : j.castSucc < i) :
-    dsimp% toMk₁ i j = 0 := by
+lemma toMk₁_of_castSucc_lt {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : j.castSucc < i)
+    : dsimp% toMk₁ i j = 0 := by
   simpa [toMk₁_apply]
 
-lemma toMk₁_apply_eq_one_iff {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) :
-    dsimp% toMk₁ i j = 1 ↔ i ≤ j.castSucc := by
+lemma toMk₁_apply_eq_one_iff {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    : dsimp% toMk₁ i j = 1 ↔ i ≤ j.castSucc := by
   simp [toMk₁_apply]
 
-lemma toMk₁_of_le_castSucc {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : i ≤ j.castSucc) :
-    dsimp% toMk₁ i j = 1 := by
+lemma toMk₁_of_le_castSucc {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : i ≤ j.castSucc)
+    : dsimp% toMk₁ i j = 1 := by
   simpa [toMk₁_apply]
 
-lemma δ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : i ≤ j.castSucc) :
-    δ j ≫ toMk₁ i =
-      toMk₁ (i.castPred (Fin.ne_last_of_lt (lt_of_le_of_lt h j.castSucc_lt_succ))) := by
-  obtain ⟨i, rfl⟩ := Fin.eq_castSucc_of_ne_last
-    (Fin.ne_last_of_lt (lt_of_le_of_lt h j.castSucc_lt_succ))
+lemma δ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : i ≤ j.castSucc)
+    : δ j ≫ toMk₁ i
+      = toMk₁ (i.castPred (Fin.ne_last_of_lt (lt_of_le_of_lt h j.castSucc_lt_succ))) := by
+  obtain ⟨i, rfl⟩ :=
+    Fin.eq_castSucc_of_ne_last (Fin.ne_last_of_lt (lt_of_le_of_lt h j.castSucc_lt_succ))
   simp only [Fin.castSucc_le_castSucc_iff] at h
   rw [Fin.castPred_castSucc]
   refine ConcreteCategory.hom_ext _ _ (fun k ↦ ?_)
@@ -73,8 +77,8 @@ lemma δ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : i
   dsimp
   grind [Fin.succAbove]
 
-lemma δ_comp_toMk₁_of_lt {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : j.castSucc < i) :
-    δ j ≫ toMk₁ i = toMk₁ (i.pred (Fin.ne_zero_of_lt h)) := by
+lemma δ_comp_toMk₁_of_lt {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : j.castSucc < i)
+    : δ j ≫ toMk₁ i = toMk₁ (i.pred (Fin.ne_zero_of_lt h)) := by
   obtain ⟨i, rfl⟩ := Fin.eq_succ_of_ne_zero (Fin.ne_zero_of_lt h)
   rw [Fin.pred_succ]
   refine ConcreteCategory.hom_ext _ _ (fun k ↦ ?_)
@@ -82,8 +86,8 @@ lemma δ_comp_toMk₁_of_lt {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2)) (h : j
   dsimp
   grind [Fin.succAbove]
 
-lemma σ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : i ≤ j.castSucc) :
-    σ j ≫ toMk₁ i = toMk₁ i.castSucc := by
+lemma σ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : i ≤ j.castSucc)
+    : σ j ≫ toMk₁ i = toMk₁ i.castSucc := by
   refine ConcreteCategory.hom_ext _ _ (fun k ↦ ?_)
   change toMk₁ i (j.predAbove k) = _
   by_cases! hk : k < i
@@ -94,8 +98,8 @@ lemma σ_comp_toMk₁_of_le {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : i
     · rwa [Fin.predAbove_of_le_castSucc _ _ hk', Fin.castSucc_castPred]
     · grind [Fin.predAbove]
 
-lemma σ_comp_toMk₁_of_lt {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : j.castSucc < i) :
-    σ j ≫ toMk₁ i = toMk₁ i.succ := by
+lemma σ_comp_toMk₁_of_lt {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1)) (h : j.castSucc < i)
+    : σ j ≫ toMk₁ i = toMk₁ i.succ := by
   refine ConcreteCategory.hom_ext _ _ (fun k ↦ ?_)
   change toMk₁ i (j.predAbove k) = _
   by_cases! hk : i < k
@@ -124,8 +128,7 @@ lemma toMk₁_surjective {n : ℕ} : Function.Surjective (toMk₁ (n := n)) := b
     split_ifs with h
     · have hi : i ∉ S := fun hi ↦ by have := S.min'_le _ hi; grind
       grind
-    · simp only [Fin.castSucc_lt_castSucc_iff, Finset.lt_min'_iff, not_forall,
-        not_lt] at h
+    · simp only [Fin.castSucc_lt_castSucc_iff, Finset.lt_min'_iff, not_forall, not_lt] at h
       obtain ⟨j, hj, hij⟩ := h
       have := f.toOrderHom.monotone hij
       #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/13166
@@ -150,9 +153,11 @@ lemma toMk₁_surjective {n : ℕ} : Function.Surjective (toMk₁ (n := n)) := b
 lemma toMk₁_bijective {n : ℕ} : Function.Bijective (toMk₁ (n := n)) :=
   ⟨toMk₁_injective, toMk₁_surjective⟩
 
-/-- The bijection `Fin (n + 2) ≃ (⦋n⦌ ⟶ ⦋1⦌)` which sends `i : Fin (n + 2)` to the
+/--
+The bijection `Fin (n + 2) ≃ (⦋n⦌ ⟶ ⦋1⦌)` which sends `i : Fin (n + 2)` to the
 morphism `⦋n⦌ ⟶ ⦋1⦌` in the simplex category which corresponds to the monotone map
-`Fin (n + 1) → Fin 2` which takes `i` times the value `0`. -/
+`Fin (n + 1) → Fin 2` which takes `i` times the value `0`.
+-/
 @[simps! apply]
 noncomputable def toMk₁Equiv {n : ℕ} : Fin (n + 2) ≃ (⦋n⦌ ⟶ ⦋1⦌) :=
   Equiv.ofBijective _ toMk₁_bijective

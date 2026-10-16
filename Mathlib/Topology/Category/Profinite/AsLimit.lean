@@ -32,7 +32,6 @@ There are a handful of definitions in this file, given `X : Profinite`:
 
 @[expose] public section
 
-
 noncomputable section
 
 open CategoryTheory
@@ -49,42 +48,46 @@ def fintypeDiagram : DiscreteQuotient X ⥤ FintypeCat where
   map f := FintypeCat.homMk (DiscreteQuotient.ofLE f.le)
 
 /-- An abbreviation for `X.fintypeDiagram ⋙ FintypeCat.toProfinite`. -/
-abbrev diagram : DiscreteQuotient X ⥤ Profinite :=
-  X.fintypeDiagram ⋙ FintypeCat.toProfinite
+abbrev diagram : DiscreteQuotient X ⥤ Profinite := X.fintypeDiagram ⋙ FintypeCat.toProfinite
 
 /-- A cone over `X.diagram` whose cone point is `X`. -/
-def asLimitCone : CategoryTheory.Limits.Cone X.diagram :=
-  { pt := X
-    π := { app := fun S => CompHausLike.ofHom (Y := X.diagram.obj S) _
-            ⟨S.proj, IsLocallyConstant.continuous (S.proj_isLocallyConstant)⟩ } }
+def asLimitCone : CategoryTheory.Limits.Cone X.diagram := {
+  pt := X
+  π := {
+    app := fun S =>
+      CompHausLike.ofHom (Y := X.diagram.obj S) _
+        ⟨S.proj, IsLocallyConstant.continuous (S.proj_isLocallyConstant)⟩
+  }
+}
 
 set_option backward.isDefEq.respectTransparency.types false in
 instance isIso_asLimitCone_lift : IsIso ((limitConeIsLimit.{u, u} X.diagram).lift X.asLimitCone) :=
-  CompHausLike.isIso_of_bijective _
-    (by
-      refine ⟨fun a b h => ?_, fun a => ?_⟩
-      · refine DiscreteQuotient.eq_of_forall_proj_eq fun S => ?_
-        apply_fun fun f : (limitCone.{u, u} X.diagram).pt => f.val S at h
-        exact h
-      · obtain ⟨b, hb⟩ :=
-          DiscreteQuotient.exists_of_compat (fun S => a.val S) fun _ _ h => a.prop (homOfLE h)
-        use b
-        -- ext S : 3 -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11041): `ext` does not work, replaced with following
-        -- three lines.
-        apply Subtype.ext
-        apply funext
-        rintro S
-        -- Porting note: end replacement block
-        apply hb)
+  CompHausLike.isIso_of_bijective _ (by
+    refine ⟨fun a b h => ?_, fun a => ?_⟩
+    · refine DiscreteQuotient.eq_of_forall_proj_eq fun S => ?_
+      apply_fun fun f : (limitCone.{u, u} X.diagram).pt => f.val S at h
+      exact h
+    · obtain ⟨b, hb⟩ :=
+        DiscreteQuotient.exists_of_compat (fun S => a.val S) fun _ _ h => a.prop (homOfLE h)
+      use b
+      -- ext S : 3 -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11041): `ext` does not work, replaced with following
+      -- three lines.
+      apply Subtype.ext
+      apply funext
+      rintro S
+      -- Porting note: end replacement block
+      apply hb)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The isomorphism between `X` and the explicit limit of `X.diagram`,
+/--
+The isomorphism between `X` and the explicit limit of `X.diagram`,
 induced by lifting `X.asLimitCone`.
 -/
 def isoAsLimitConeLift : X ≅ (limitCone.{u, u} X.diagram).pt :=
   asIso <| (limitConeIsLimit.{u, u} _).lift X.asLimitCone
 
-/-- The isomorphism of cones `X.asLimitCone` and `Profinite.limitCone X.diagram`.
+/--
+The isomorphism of cones `X.asLimitCone` and `Profinite.limitCone X.diagram`.
 The underlying isomorphism is defeq to `X.isoAsLimitConeLift`.
 -/
 def asLimitConeIso : X.asLimitCone ≅ limitCone.{u, u} _ :=
@@ -95,7 +98,6 @@ def asLimit : CategoryTheory.Limits.IsLimit X.asLimitCone :=
   Limits.IsLimit.ofIsoLimit (limitConeIsLimit _) X.asLimitConeIso.symm
 
 /-- A bundled version of `X.asLimitCone` and `X.asLimit`. -/
-def lim : Limits.LimitCone X.diagram :=
-  ⟨X.asLimitCone, X.asLimit⟩
+def lim : Limits.LimitCone X.diagram := ⟨X.asLimitCone, X.asLimit⟩
 
 end Profinite

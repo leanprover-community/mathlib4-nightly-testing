@@ -8,7 +8,7 @@ module
 public meta import Lean.Elab.Command
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public import Lean.Message
 
 /-!
@@ -31,17 +31,17 @@ open Lean Elab Linter
 namespace Mathlib.Linter.AuxLemma
 
 /-- Returns `true` if `s` has the form `pfx ++ digits`, e.g. `"_proof_17"`. -/
-@[inline] private def matchesAuxPattern (pfx : String) (s : String) : Bool :=
+@[inline]
+private def matchesAuxPattern (pfx : String) (s : String) : Bool :=
   s.startsWith pfx && (s.drop pfx.length).all (·.isDigit) && s.rawEndPos > pfx.rawEndPos
 
-/-- Returns `true` if `s` is an auto-generated auxiliary name component,
-such as `_proof_1`, `match_2`, or `_sizeOf_3`. -/
+/--
+Returns `true` if `s` is an auto-generated auxiliary name component,
+such as `_proof_1`, `match_2`, or `_sizeOf_3`.
+-/
 private def isAuxName (s : String) : Bool :=
-  matchesAuxPattern "_proof_" s ||
-  matchesAuxPattern "match_" s ||
-  matchesAuxPattern "_sizeOf_" s ||
-  matchesAuxPattern "_simp_" s ||
-  matchesAuxPattern "_aux_" s
+  matchesAuxPattern "_proof_" s || matchesAuxPattern "match_" s || matchesAuxPattern "_sizeOf_" s
+    || matchesAuxPattern "_simp_" s || matchesAuxPattern "_aux_" s
 
 /-- Returns `true` if any component of the name is an auto-generated auxiliary name. -/
 private def nameRefersToAuxLemma : Name → Bool
@@ -49,25 +49,29 @@ private def nameRefersToAuxLemma : Name → Bool
   | .num p _ => nameRefersToAuxLemma p
   | .anonymous => false
 
-/-- The `auxLemma` linter emits a warning on any explicit reference to an auto-generated
+/--
+The `auxLemma` linter emits a warning on any explicit reference to an auto-generated
 auxiliary declaration (such as `_proof_1`, `match_1`, or `_sizeOf_1`).
 
-These names are internal to the Lean elaborator and are not stable across refactors. -/
+These names are internal to the Lean elaborator and are not stable across refactors.
+-/
 public register_option linter.auxLemma : Bool := {
   defValue := true
   descr := "enable the `auxLemma` linter"
 }
 
 @[inherit_doc linter.auxLemma]
-def auxLemmaLinter : Linter where run := withSetOptionIn fun stx => do
-    unless getLinterValue linter.auxLemma (← getLinterOptions) do
-      return
-    if ← MonadLog.hasErrors then
-      return
-    if let some id := stx.find? fun s => s.isIdent && nameRefersToAuxLemma s.getId then
-      logLint linter.auxLemma id
-        m!"`{id.getId}` refers to an auto-generated auxiliary declaration. \
-          These are not stable across refactors; consider using a different approach."
+def auxLemmaLinter : Linter where
+  run :=
+    withSetOptionIn fun stx => do
+      unless getLinterValue linter.auxLemma (← getLinterOptions) do
+        return
+      if ← MonadLog.hasErrors then
+        return
+      if let some id := stx.find? fun s => s.isIdent && nameRefersToAuxLemma s.getId then
+        logLint linter.auxLemma id
+          m!"`{id.getId}` refers to an auto-generated auxiliary declaration. \
+            These are not stable across refactors; consider using a different approach."
 
 initialize addLinter auxLemmaLinter
 

@@ -6,7 +6,6 @@ Authors: Jireh Loreaux
 module
 
 public import Batteries.Util.LibraryNote
-
 import Mathlib.Init
 
 /-!
@@ -17,7 +16,6 @@ as the organizational structure within Mathlib.
 -/
 
 public section
-
 
 library_note «continuous functional calculus» /--
 # The continuous functional calculus

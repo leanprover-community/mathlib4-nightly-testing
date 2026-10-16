@@ -48,8 +48,7 @@ theorem decode_isSome (α) [Denumerable α] (n : ℕ) : (decode (α := α) n).is
   Option.isSome_iff_exists.2 <| (decode_inv n).imp fun _ => And.left
 
 /-- Returns the `n`-th element of `α` indexed by the decoding. -/
-def ofNat (α) [Denumerable α] (n : ℕ) : α :=
-  Option.get _ (decode_isSome α n)
+def ofNat (α) [Denumerable α] (n : ℕ) : α := Option.get _ (decode_isSome α n)
 
 @[simp]
 theorem decode_eq_ofNat (α) [Denumerable α] (n : ℕ) : decode (α := α) n = some (ofNat α n) :=
@@ -63,17 +62,13 @@ theorem encode_ofNat (n) : encode (ofNat α n) = n := by
   obtain ⟨a, h, e⟩ := decode_inv (α := α) n
   rwa [ofNat_of_decode h]
 
-@[simp]
-theorem ofNat_encode (a) : ofNat α (encode a) = a :=
-  ofNat_of_decode (encodek _)
+@[simp] theorem ofNat_encode (a) : ofNat α (encode a) = a := ofNat_of_decode (encodek _)
 
 /-- A denumerable type is equivalent to `ℕ`. -/
-def eqv (α) [Denumerable α] : α ≃ ℕ :=
-  ⟨encode, ofNat α, ofNat_encode, encode_ofNat⟩
+def eqv (α) [Denumerable α] : α ≃ ℕ := ⟨encode, ofNat α, ofNat_encode, encode_ofNat⟩
 
 -- See Note [lower instance priority]
-instance (priority := 100) : Infinite α :=
-  Infinite.of_surjective _ (eqv α).surjective
+instance (priority := 100) : Infinite α := Infinite.of_surjective _ (eqv α).surjective
 
 /-- A type equivalent to `ℕ` is denumerable. -/
 @[instance_reducible]
@@ -83,95 +78,83 @@ def mk' {α} (e : α ≃ ℕ) : Denumerable α where
   encodek _ := congr(some $(e.symm_apply_apply _))
   decode_inv _ := ⟨_, rfl, e.apply_symm_apply _⟩
 
-/-- Denumerability is conserved by equivalences. This is transitivity of equivalence the denumerable
-way. -/
+/--
+Denumerability is conserved by equivalences. This is transitivity of equivalence the denumerable
+way.
+-/
 @[instance_reducible]
-def ofEquiv (α) {β} [Denumerable α] (e : β ≃ α) : Denumerable β :=
-  { Encodable.ofEquiv _ e with
-    decode_inv := fun n => by
-      simp [decode_ofEquiv, encode_ofEquiv] }
+def ofEquiv (α) {β} [Denumerable α] (e : β ≃ α) : Denumerable β := {
+  Encodable.ofEquiv _ e with
+  decode_inv := fun n => by simp [decode_ofEquiv, encode_ofEquiv]
+}
 
 @[simp]
-theorem ofEquiv_ofNat (α) {β} [Denumerable α] (e : β ≃ α) (n) :
-    @ofNat β (ofEquiv _ e) n = e.symm (ofNat α n) := by
+theorem ofEquiv_ofNat (α) {β} [Denumerable α] (e : β ≃ α) (n)
+    : @ofNat β (ofEquiv _ e) n = e.symm (ofNat α n) := by
   let := ofEquiv _ e
   refine ofNat_of_decode ?_
   rw [decode_ofEquiv e]
   simp
 
 /-- All denumerable types are equivalent. -/
-def equiv₂ (α β) [Denumerable α] [Denumerable β] : α ≃ β :=
-  (eqv α).trans (eqv β).symm
+def equiv₂ (α β) [Denumerable α] [Denumerable β] : α ≃ β := (eqv α).trans (eqv β).symm
 
-instance nat : Denumerable ℕ :=
-  ⟨fun _ => ⟨_, rfl, rfl⟩⟩
+instance nat : Denumerable ℕ := ⟨fun _ => ⟨_, rfl, rfl⟩⟩
 
-@[simp]
-theorem ofNat_nat (n) : ofNat ℕ n = n :=
-  rfl
+@[simp] theorem ofNat_nat (n) : ofNat ℕ n = n := rfl
 
 /-- If `α` is denumerable, then so is `Option α`. -/
-instance option : Denumerable (Option α) :=
-  ⟨fun n => by
-    cases n with
-    | zero =>
-      refine ⟨none, ?_, encode_none⟩
-      rw [decode_option_zero, Option.mem_def]
-    | succ n =>
-      refine ⟨some (ofNat α n), ?_, ?_⟩
-      · rw [decode_option_succ, decode_eq_ofNat, Option.map_some, Option.mem_def]
-      rw [encode_some, encode_ofNat]⟩
+instance option : Denumerable (Option α) := ⟨fun n => by
+  cases n with
+  | zero =>
+    refine ⟨none, ?_, encode_none⟩
+    rw [decode_option_zero, Option.mem_def]
+  | succ n =>
+    refine ⟨some (ofNat α n), ?_, ?_⟩
+    · rw [decode_option_succ, decode_eq_ofNat, Option.map_some, Option.mem_def]
+    rw [encode_some, encode_ofNat]⟩
 
 /-- If `α` and `β` are denumerable, then so is their sum. -/
-instance sum : Denumerable (α ⊕ β) :=
-  ⟨fun n => by
-    suffices ∃ a ∈ @decodeSum α β _ _ n, encodeSum a = bit (bodd n) (div2 n) by
-      simpa [bit_bodd_div2]
-    simp only [decodeSum, decode_eq_ofNat, Option.map_some, Sum.exists]
-    cases bodd n <;> simp [bit_val, encodeSum]⟩
+instance sum : Denumerable (α ⊕ β) := ⟨fun n => by
+  suffices ∃ a ∈ @decodeSum α β _ _ n, encodeSum a = bit (bodd n) (div2 n) by simpa [bit_bodd_div2]
+  simp only [decodeSum, decode_eq_ofNat, Option.map_some, Sum.exists]
+  cases bodd n <;> simp [bit_val, encodeSum]⟩
 
 section Sigma
 
 variable {γ : α → Type*} [∀ a, Denumerable (γ a)]
 
 /-- A denumerable collection of denumerable types is denumerable. -/
-instance sigma : Denumerable (Sigma γ) :=
-  ⟨fun n => by simp⟩
+instance sigma : Denumerable (Sigma γ) := ⟨fun n => by simp⟩
 
 @[simp]
-theorem sigma_ofNat_val (n : ℕ) :
-    ofNat (Sigma γ) n = ⟨ofNat α (unpair n).1, ofNat (γ _) (unpair n).2⟩ :=
+theorem sigma_ofNat_val (n : ℕ)
+    : ofNat (Sigma γ) n = ⟨ofNat α (unpair n).1, ofNat (γ _) (unpair n).2⟩ :=
   Option.some.inj <| by rw [← decode_eq_ofNat, decode_sigma_val]; simp
 
 end Sigma
 
 /-- If `α` and `β` are denumerable, then so is their product. -/
-instance prod : Denumerable (α × β) :=
-  ofEquiv _ (Equiv.sigmaEquivProd α β).symm
+instance prod : Denumerable (α × β) := ofEquiv _ (Equiv.sigmaEquivProd α β).symm
 
-theorem prod_ofNat_val (n : ℕ) :
-    ofNat (α × β) n = (ofNat α (unpair n).1, ofNat β (unpair n).2) := by simp
+theorem prod_ofNat_val (n : ℕ)
+    : ofNat (α × β) n = (ofNat α (unpair n).1, ofNat β (unpair n).2) := by
+  simp
 
-@[simp]
-theorem prod_nat_ofNat : ofNat (ℕ × ℕ) = unpair := by funext; simp
+@[simp] theorem prod_nat_ofNat : ofNat (ℕ × ℕ) = unpair := by funext; simp
 
-instance int : Denumerable ℤ :=
-  fast_instance% Denumerable.mk' Equiv.intEquivNat
+instance int : Denumerable ℤ := fast_instance% Denumerable.mk' Equiv.intEquivNat
 
-instance pnat : Denumerable ℕ+ :=
-  fast_instance% Denumerable.mk' Equiv.pnatEquivNat
+instance pnat : Denumerable ℕ+ := fast_instance% Denumerable.mk' Equiv.pnatEquivNat
 
 /-- The lift of a denumerable type is denumerable. -/
-instance ulift : Denumerable (ULift α) :=
-  ofEquiv _ Equiv.ulift
+instance ulift : Denumerable (ULift α) := ofEquiv _ Equiv.ulift
 
 /-- The lift of a denumerable type is denumerable. -/
-instance plift : Denumerable (PLift α) :=
-  ofEquiv _ Equiv.plift
+instance plift : Denumerable (PLift α) := ofEquiv _ Equiv.plift
 
 /-- If `α` is denumerable, then `α × α` and `α` are equivalent. -/
-def pair : α × α ≃ α :=
-  equiv₂ _ _
+def pair : α × α ≃ α := equiv₂ _ _
 
 end
 
@@ -192,10 +175,12 @@ theorem exists_succ (x : s) : ∃ n, (x : ℕ) + n + 1 ∈ s := by
   have (a : ℕ) (ha : a ∈ s) : a < x + 1 :=
     lt_of_not_ge fun hax => h ⟨a - (x + 1), by rwa [Nat.add_right_comm, Nat.add_sub_cancel' hax]⟩
   classical
-  exact Fintype.false
-    ⟨(((Multiset.range (succ x)).filter (· ∈ s)).pmap
-      (fun (y : ℕ) (hy : y ∈ s) => Subtype.mk y hy) (by simp [-Multiset.range_succ])).toFinset,
-      by simpa [Subtype.ext_iff, Multiset.mem_filter, -Multiset.range_succ] ⟩
+  exact Fintype.false ⟨
+    (((Multiset.range (succ x)).filter (· ∈ s)).pmap
+      (fun (y : ℕ) (hy : y ∈ s) => Subtype.mk y hy)
+      (by simp [-Multiset.range_succ])).toFinset,
+    by simpa [Subtype.ext_iff, Multiset.mem_filter, -Multiset.range_succ]
+  ⟩
 
 end Classical
 
@@ -216,17 +201,18 @@ theorem le_succ_of_forall_lt_le {x y : s} (h : ∀ z < x, z ≤ y) : x ≤ succ 
   have hx : ∃ m, (y : ℕ) + m + 1 ∈ s := exists_succ _
   show (x : ℕ) ≤ (y : ℕ) + Nat.find hx + 1 from
     le_of_not_gt fun hxy =>
-      (h ⟨_, Nat.find_spec hx⟩ hxy).not_gt
-        (by lia : (y : ℕ) < (y : ℕ) + Nat.find hx + 1)
+      (h ⟨_, Nat.find_spec hx⟩ hxy).not_gt (by lia : (y : ℕ) < (y : ℕ) + Nat.find hx + 1)
 
 theorem lt_succ_self (x : s) : x < succ x :=
   calc
-    (x : ℕ) ≤ (x + _) := le_add_right ..
+    (x : ℕ)
+      ≤ (x + _) := le_add_right ..
     _ < (succ x) := Nat.lt_succ_self (x + _)
 
-theorem lt_succ_iff_le {x y : s} : x < succ y ↔ x ≤ y :=
-  ⟨fun h => le_of_not_gt fun h' => not_le_of_gt h (succ_le_of_lt h'), fun h =>
-    lt_of_le_of_lt h (lt_succ_self _)⟩
+theorem lt_succ_iff_le {x y : s} : x < succ y ↔ x ≤ y := ⟨
+  fun h => le_of_not_gt fun h' => not_le_of_gt h (succ_le_of_lt h'),
+  fun h => lt_of_le_of_lt h (lt_succ_self _)
+⟩
 
 /-- Returns the `n`-th element of a set, according to the usual ordering of `ℕ`. -/
 def ofNat (s : Set ℕ) [DecidablePred (· ∈ s)] [Infinite s] : ℕ → s
@@ -239,8 +225,7 @@ theorem ofNat_surjective : Surjective (ofNat s)
       ((List.range x).filter fun y => y ∈ s).pmap
         (fun (y : ℕ) (hy : y ∈ s) => ⟨y, hy⟩)
         (by intro a ha; simpa using! (List.mem_filter.mp ha).2) with ht
-    have hmt : ∀ {y : s}, y ∈ t ↔ y < ⟨x, hx⟩ := by
-      simp [List.mem_filter, Subtype.ext_iff, ht]
+    have hmt : ∀ {y : s}, y ∈ t ↔ y < ⟨x, hx⟩ := by simp [List.mem_filter, Subtype.ext_iff, ht]
     cases hmax : List.maximum t with
     | bot =>
       refine ⟨0, le_antisymm bot_le (le_of_not_gt fun h => List.not_mem_nil (a := (⊥ : s)) ?_)⟩
@@ -250,21 +235,18 @@ theorem ofNat_surjective : Surjective (ofNat s)
       rcases ofNat_surjective m with ⟨a, rfl⟩
       refine ⟨a + 1, le_antisymm (succ_le_of_lt wf) ?_⟩
       exact le_succ_of_forall_lt_le fun z hz => List.le_maximum_of_mem (hmt.2 hz) hmax
-  termination_by n => n.val
+termination_by n => n.val
 
-@[simp]
-theorem ofNat_range : Set.range (ofNat s) = Set.univ :=
-  ofNat_surjective.range_eq
+@[simp] theorem ofNat_range : Set.range (ofNat s) = Set.univ := ofNat_surjective.range_eq
 
 @[simp]
 theorem coe_comp_ofNat_range : Set.range ((↑) ∘ ofNat s : ℕ → ℕ) = s := by
   rw [Set.range_comp Subtype.val, ofNat_range, Set.image_univ, Subtype.range_coe]
 
-private def toFunAux (x : s) : ℕ :=
-  (List.range x).countP (· ∈ s)
+private def toFunAux (x : s) : ℕ := (List.range x).countP (· ∈ s)
 
-private theorem toFunAux_eq {s : Set ℕ} [DecidablePred (· ∈ s)] (x : s) :
-    toFunAux x = #{y ∈ Finset.range x | y ∈ s} := by
+private theorem toFunAux_eq {s : Set ℕ} [DecidablePred (· ∈ s)] (x : s)
+    : toFunAux x = # {y ∈ Finset.range x | y ∈ s} := by
   rw [toFunAux, List.countP_eq_length_filter]
   rfl
 
@@ -277,16 +259,19 @@ private theorem right_inverse_aux : ∀ n, toFunAux (ofNat s n) = n
   | n + 1 => by
     have ih : toFunAux (ofNat s n) = n := right_inverse_aux n
     have h₁ : (ofNat s n : ℕ) ∉ {x ∈ range (ofNat s n) | x ∈ s} := by simp
-    have h₂ : {x ∈ range (succ (ofNat s n)) | x ∈ s} =
-        insert ↑(ofNat s n) {x ∈ range (ofNat s n) | x ∈ s} := by
+    have h₂
+        : {x ∈ range (succ (ofNat s n)) | x ∈ s}
+          = insert (↑(ofNat s n)) {x ∈ range (ofNat s n) | x ∈ s} := by
       simp only [Finset.ext_iff, mem_insert, mem_range, mem_filter]
-      exact fun m =>
-        ⟨fun h => by
+      exact fun m => ⟨
+        fun h => by
           simp only [h.2, and_true]
           exact Or.symm (lt_or_eq_of_le ((@lt_succ_iff_le _ _ _ ⟨m, h.2⟩ _).1 h.1)),
-         fun h =>
-          h.elim (fun h => h.symm ▸ ⟨lt_succ_self _, (ofNat s n).prop⟩) fun h =>
-            ⟨h.1.trans (lt_succ_self _), h.2⟩⟩
+        fun h =>
+          h.elim
+            (fun h => h.symm ▸ ⟨lt_succ_self _, (ofNat s n).prop⟩)
+            fun h => ⟨h.1.trans (lt_succ_self _), h.2⟩
+      ⟩
     simp only [toFunAux_eq, ofNat] at ih ⊢
     conv =>
       rhs
@@ -295,11 +280,12 @@ private theorem right_inverse_aux : ∀ n, toFunAux (ofNat s n) = n
 /-- Any infinite set of naturals is denumerable. -/
 @[instance_reducible, no_expose]
 def denumerable (s : Set ℕ) [DecidablePred (· ∈ s)] [Infinite s] : Denumerable s :=
-  Denumerable.ofEquiv ℕ
-    { toFun := toFunAux
-      invFun := ofNat s
-      left_inv := leftInverse_of_surjective_of_rightInverse ofNat_surjective right_inverse_aux
-      right_inv := right_inverse_aux }
+  Denumerable.ofEquiv ℕ {
+    toFun := toFunAux
+    invFun := ofNat s
+    left_inv := leftInverse_of_surjective_of_rightInverse ofNat_surjective right_inverse_aux
+    right_inv := right_inverse_aux
+  }
 
 end Nat.Subtype
 
@@ -322,12 +308,12 @@ end Denumerable
 theorem nonempty_denumerable (α : Type*) [Countable α] [Infinite α] : Nonempty (Denumerable α) :=
   (nonempty_encodable α).map fun h => @Denumerable.ofEncodableOfInfinite _ h _
 
-theorem nonempty_denumerable_iff {α : Type*} :
-    Nonempty (Denumerable α) ↔ Countable α ∧ Infinite α :=
+theorem nonempty_denumerable_iff {α : Type*}
+    : Nonempty (Denumerable α) ↔ Countable α ∧ Infinite α :=
   ⟨fun ⟨_⟩ ↦ ⟨inferInstance, inferInstance⟩, fun ⟨_, _⟩ ↦ nonempty_denumerable _⟩
 
-instance nonempty_equiv_of_countable [Countable α] [Infinite α] [Countable β] [Infinite β] :
-    Nonempty (α ≃ β) := by
+instance nonempty_equiv_of_countable [Countable α] [Infinite α] [Countable β] [Infinite β]
+    : Nonempty (α ≃ β) := by
   cases nonempty_denumerable α
   cases nonempty_denumerable β
   exact ⟨(Denumerable.eqv _).trans (Denumerable.eqv _).symm⟩

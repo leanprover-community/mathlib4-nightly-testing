@@ -20,72 +20,77 @@ public import Mathlib.Algebra.Order.Monoid.Unbundled.TypeTags
 section TypeTags
 
 /-- Reinterpret `G ≃*o H` as `Additive G ≃+o Additive H`. -/
-def OrderMonoidIso.toAdditive {G H : Type*}
-    [CommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H] :
-    (G ≃*o H) ≃ (Additive G ≃+o Additive H) where
+def OrderMonoidIso.toAdditive
+    {G H : Type*} [CommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H]
+    : (G ≃*o H) ≃ (Additive G ≃+o Additive H) where
   toFun e := ⟨MulEquiv.toAdditive e, by simp⟩
   invFun e := ⟨MulEquiv.toAdditive.symm e, by simp⟩
   left_inv e := by ext; simp
   right_inv e := by ext; simp
 
 /-- Reinterpret `G ≃+o H` as `Multiplicative G ≃*o Multiplicative H`. -/
-def OrderAddMonoidIso.toMultiplicative {G H : Type*}
-    [AddCommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H] :
-    (G ≃+o H) ≃ (Multiplicative G ≃*o Multiplicative H) where
+def OrderAddMonoidIso.toMultiplicative
+    {G H : Type*} [AddCommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H]
+    : (G ≃+o H) ≃ (Multiplicative G ≃*o Multiplicative H) where
   toFun e := ⟨AddEquiv.toMultiplicative e, by simp⟩
   invFun e := ⟨AddEquiv.toMultiplicative.symm e, by simp⟩
   left_inv e := by ext; simp
   right_inv e := by ext; simp
 
 /-- Reinterpret `Additive G ≃+o H` as `G ≃*o Multiplicative H`. -/
-def OrderAddMonoidIso.toMultiplicativeRight {G H : Type*}
-    [CommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H] :
-    (Additive G ≃+o H) ≃ (G ≃*o Multiplicative H) where
+def OrderAddMonoidIso.toMultiplicativeRight
+    {G H : Type*} [CommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H]
+    : (Additive G ≃+o H) ≃ (G ≃*o Multiplicative H) where
   toFun e := ⟨e.toAddEquiv.toMultiplicativeRight, by simp⟩
   invFun e := ⟨e.toMulEquiv.toAdditiveLeft, by simp⟩
   left_inv e := by ext; simp
   right_inv e := by ext; simp
 
 /-- Reinterpret `G ≃* Multiplicative H` as `Additive G ≃+ H`. -/
-abbrev OrderMonoidIso.toAdditiveLeft {G H : Type*}
-    [CommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H] :
-    (G ≃*o Multiplicative H) ≃ (Additive G ≃+o H) :=
+abbrev OrderMonoidIso.toAdditiveLeft
+    {G H : Type*} [CommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H]
+    : (G ≃*o Multiplicative H) ≃ (Additive G ≃+o H) :=
   OrderAddMonoidIso.toMultiplicativeRight.symm
 
 /-- Reinterpret `G ≃+o Additive H` as `Multiplicative G ≃*o H`. -/
-def OrderAddMonoidIso.toMultiplicativeLeft {G H : Type*}
-    [AddCommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H] :
-    (G ≃+o Additive H) ≃ (Multiplicative G ≃*o H) where
+def OrderAddMonoidIso.toMultiplicativeLeft
+    {G H : Type*} [AddCommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H]
+    : (G ≃+o Additive H) ≃ (Multiplicative G ≃*o H) where
   toFun e := ⟨e.toAddEquiv.toMultiplicativeLeft, by simp⟩
   invFun e := ⟨e.toMulEquiv.toAdditiveRight, by simp⟩
   left_inv e := by ext; simp
   right_inv e := by ext; simp
 
 /-- Reinterpret `Multiplicative G ≃*o H` as `G ≃+o Additive H` as. -/
-abbrev OrderMonoidIso.toAdditiveRight {G H : Type*}
-    [AddCommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H] :
-    (Multiplicative G ≃*o H) ≃ (G ≃+o Additive H) :=
+abbrev OrderMonoidIso.toAdditiveRight
+    {G H : Type*} [AddCommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H]
+    : (Multiplicative G ≃*o H) ≃ (G ≃+o Additive H) :=
   OrderAddMonoidIso.toMultiplicativeLeft.symm
 
-/-- The multiplicative version of an additivized ordered monoid is order-mul-equivalent to itself.
+/--
+The multiplicative version of an additivized ordered monoid is order-mul-equivalent to itself.
 -/
-def OrderMonoidIso.toMultiplicative_toAdditive {G : Type*} [CommMonoid G] [PartialOrder G] :
-    Multiplicative (Additive G) ≃*o G :=
+def OrderMonoidIso.toMultiplicative_toAdditive {G : Type*} [CommMonoid G] [PartialOrder G]
+    : Multiplicative (Additive G) ≃*o G :=
   OrderAddMonoidIso.toMultiplicativeLeft <| OrderMonoidIso.toAdditive (.refl _)
 
-/-- The additive version of a multiplicativized ordered additive monoid is
-order-add-equivalent to itself. -/
-def OrderAddMonoidIso.toAdditive_toMultiplicative {G : Type*} [AddCommMonoid G] [PartialOrder G] :
-    Additive (Multiplicative G) ≃+o G :=
+/--
+The additive version of a multiplicativized ordered additive monoid is
+order-add-equivalent to itself.
+-/
+def OrderAddMonoidIso.toAdditive_toMultiplicative {G : Type*} [AddCommMonoid G] [PartialOrder G]
+    : Additive (Multiplicative G) ≃+o G :=
   OrderMonoidIso.toAdditiveLeft <| OrderAddMonoidIso.toMultiplicative (.refl _)
 
-instance Additive.instUniqueOrderAddMonoidIso {G H : Type*}
-    [CommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H] [Unique (G ≃*o H)] :
-    Unique (Additive G ≃+o Additive H) :=
+instance Additive.instUniqueOrderAddMonoidIso
+    {G H : Type*} [CommMonoid G] [PartialOrder G] [CommMonoid H] [PartialOrder H] [Unique (G ≃*o H)]
+    : Unique (Additive G ≃+o Additive H) :=
   OrderMonoidIso.toAdditive.symm.unique
 
-instance {G H : Type*} [AddCommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H]
-    [Unique (G ≃+o H)] : Unique (Multiplicative G ≃*o Multiplicative H) :=
+instance
+    {G H : Type*}
+    [AddCommMonoid G] [PartialOrder G] [AddCommMonoid H] [PartialOrder H] [Unique (G ≃+o H)]
+    : Unique (Multiplicative G ≃*o Multiplicative H) :=
   OrderAddMonoidIso.toMultiplicative.symm.unique
 
 @[deprecated (since := "2026-09-17")]

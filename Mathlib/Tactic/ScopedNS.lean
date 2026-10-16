@@ -33,8 +33,8 @@ scoped[Nat.Count] attribute [instance] CountSet.fintype
 -- but only if `Nat.Count` is open
 ```
 -/
-syntax (name := scopedNS) (docComment)? (Parser.Term.attributes)?
-  "scoped" "[" ident "] " command : command
+syntax (name := scopedNS) (docComment)? (Parser.Term.attributes)? "scoped" "[" ident "] " command
+  : command
 macro_rules
   | `($[$doc]? $(attr)? scoped[$ns] notation $(prec)? $(n)? $(prio)? $sym* => $t) =>
     `(with_weak_namespace $(mkIdentFrom ns <| rootNamespace ++ ns.getId)

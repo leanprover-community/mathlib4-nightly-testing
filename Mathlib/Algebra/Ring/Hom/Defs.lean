@@ -50,48 +50,62 @@ open Function
 
 variable {F α β γ : Type*}
 
-/-- Bundled non-unital semiring homomorphisms `α →ₙ+* β`; use this for bundled non-unital ring
+/--
+Bundled non-unital semiring homomorphisms `α →ₙ+* β`; use this for bundled non-unital ring
 homomorphisms too.
 
 When possible, instead of parametrizing results over `(f : α →ₙ+* β)`,
 you should parametrize over `(F : Type*) [NonUnitalRingHomClass F α β] (f : F)`.
 
-When you extend this structure, make sure to extend `NonUnitalRingHomClass`. -/
-structure NonUnitalRingHom (α β : Type*) [NonUnitalNonAssocSemiring α]
-  [NonUnitalNonAssocSemiring β] extends α →ₙ* β, α →+ β
+When you extend this structure, make sure to extend `NonUnitalRingHomClass`.
+-/
+structure NonUnitalRingHom (α β : Type*) [NonUnitalNonAssocSemiring α] [NonUnitalNonAssocSemiring β]
+  extends α →ₙ* β, α →+ β
 
 /-- `α →ₙ+* β` denotes the type of non-unital ring homomorphisms from `α` to `β`. -/
 infixr:25 " →ₙ+* " => NonUnitalRingHom
 
-/-- Reinterpret a non-unital ring homomorphism `f : α →ₙ+* β` as a semigroup
-homomorphism `α →ₙ* β`. The `simp`-normal form is `(f : α →ₙ* β)`. -/
+/--
+Reinterpret a non-unital ring homomorphism `f : α →ₙ+* β` as a semigroup
+homomorphism `α →ₙ* β`. The `simp`-normal form is `(f : α →ₙ* β)`.
+-/
 add_decl_doc NonUnitalRingHom.toMulHom
 
-/-- Reinterpret a non-unital ring homomorphism `f : α →ₙ+* β` as an additive
-monoid homomorphism `α →+ β`. The `simp`-normal form is `(f : α →+ β)`. -/
+/--
+Reinterpret a non-unital ring homomorphism `f : α →ₙ+* β` as an additive
+monoid homomorphism `α →+ β`. The `simp`-normal form is `(f : α →+ β)`.
+-/
 add_decl_doc NonUnitalRingHom.toAddMonoidHom
 
 section NonUnitalRingHomClass
 
-/-- `NonUnitalRingHomClass F α β` states that `F` is a type of non-unital (semi)ring
-homomorphisms. You should extend this class when you extend `NonUnitalRingHom`. -/
-class NonUnitalRingHomClass (F : Type*) (α β : outParam Type*) [NonUnitalNonAssocSemiring α]
-  [NonUnitalNonAssocSemiring β] [FunLike F α β] : Prop
+/--
+`NonUnitalRingHomClass F α β` states that `F` is a type of non-unital (semi)ring
+homomorphisms. You should extend this class when you extend `NonUnitalRingHom`.
+-/
+class NonUnitalRingHomClass
+  (F : Type*) (α β : outParam Type*)
+  [NonUnitalNonAssocSemiring α] [NonUnitalNonAssocSemiring β] [FunLike F α β]
+  : Prop
   extends MulHomClass F α β, AddMonoidHomClass F α β
 
 variable [NonUnitalNonAssocSemiring α] [NonUnitalNonAssocSemiring β] [FunLike F α β]
 variable [NonUnitalRingHomClass F α β]
 
-/-- Turn an element of a type `F` satisfying `NonUnitalRingHomClass F α β` into an actual
-`NonUnitalRingHom`. This is declared as the default coercion from `F` to `α →ₙ+* β`. -/
+/--
+Turn an element of a type `F` satisfying `NonUnitalRingHomClass F α β` into an actual
+`NonUnitalRingHom`. This is declared as the default coercion from `F` to `α →ₙ+* β`.
+-/
 @[coe]
-def NonUnitalRingHomClass.toNonUnitalRingHom (f : F) : α →ₙ+* β :=
-  { (f : α →ₙ* β), (f : α →+ β) with }
+def NonUnitalRingHomClass.toNonUnitalRingHom (f : F) : α →ₙ+* β := {
+  (f : α →ₙ* β), (f : α →+ β) with
+}
 
-/-- Any type satisfying `NonUnitalRingHomClass` can be cast into `NonUnitalRingHom` via
-`NonUnitalRingHomClass.toNonUnitalRingHom`. -/
-instance : CoeTC F (α →ₙ+* β) :=
-  ⟨NonUnitalRingHomClass.toNonUnitalRingHom⟩
+/--
+Any type satisfying `NonUnitalRingHomClass` can be cast into `NonUnitalRingHom` via
+`NonUnitalRingHomClass.toNonUnitalRingHom`.
+-/
+instance : CoeTC F (α →ₙ+* β) := ⟨NonUnitalRingHomClass.toNonUnitalRingHom⟩
 
 end NonUnitalRingHomClass
 
@@ -118,36 +132,34 @@ instance : NonUnitalRingHomClass (α →ₙ+* β) α β where
 
 initialize_simps_projections NonUnitalRingHom (toFun → apply)
 
-@[simp]
-theorem coe_toMulHom (f : α →ₙ+* β) : ⇑f.toMulHom = f :=
-  rfl
+@[simp] theorem coe_toMulHom (f : α →ₙ+* β) : ⇑f.toMulHom = f := rfl
 
 @[simp]
-theorem coe_mulHom_mk (f : α → β) (h₁ h₂ h₃) :
-    ((⟨⟨f, h₁⟩, h₂, h₃⟩ : α →ₙ+* β) : α →ₙ* β) = ⟨f, h₁⟩ :=
+theorem coe_mulHom_mk (f : α → β) (h₁ h₂ h₃)
+    : ((⟨⟨f, h₁⟩, h₂, h₃⟩ : α →ₙ+* β) : α →ₙ* β) = ⟨f, h₁⟩ :=
   rfl
 
 theorem coe_toAddMonoidHom (f : α →ₙ+* β) : ⇑f.toAddMonoidHom = f := rfl
 
 @[simp]
-theorem toAddMonoidHom_mk (f : α → β) (h₁ h₂ h₃) :
-    ((⟨⟨f, h₁⟩, h₂, h₃⟩ : α →ₙ+* β) : α →+ β) = ⟨⟨f, h₂⟩, h₃⟩ :=
+theorem toAddMonoidHom_mk (f : α → β) (h₁ h₂ h₃)
+    : ((⟨⟨f, h₁⟩, h₂, h₃⟩ : α →ₙ+* β) : α →+ β) = ⟨⟨f, h₂⟩, h₃⟩ :=
   rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_addMonoidHom_mk := toAddMonoidHom_mk
 
-/-- Copy of a `RingHom` with a new `toFun` equal to the old one. Useful to fix definitional
-equalities. -/
-protected def copy (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : α →ₙ+* β :=
-  { f.toMulHom.copy f' h, f.toAddMonoidHom.copy f' h with }
+/--
+Copy of a `RingHom` with a new `toFun` equal to the old one. Useful to fix definitional
+equalities.
+-/
+protected def copy (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : α →ₙ+* β := {
+  f.toMulHom.copy f' h, f.toAddMonoidHom.copy f' h with
+}
 
-@[simp]
-theorem coe_copy (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : ⇑(f.copy f' h) = f' :=
-  rfl
+@[simp] theorem coe_copy (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : ⇑(f.copy f' h) = f' := rfl
 
-theorem copy_eq (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : f.copy f' h = f :=
-  DFunLike.ext' h
+theorem copy_eq (f : α →ₙ+* β) (f' : α → β) (h : f' = f) : f.copy f' h = f := DFunLike.ext' h
 
 end coe
 
@@ -155,9 +167,7 @@ section
 
 variable [NonUnitalNonAssocSemiring α] [NonUnitalNonAssocSemiring β]
 
-@[ext]
-theorem ext ⦃f g : α →ₙ+* β⦄ : (∀ x, f x = g x) → f = g :=
-  DFunLike.ext _ _
+@[ext] theorem ext ⦃f g : α →ₙ+* β⦄ : (∀ x, f x = g x) → f = g := DFunLike.ext _ _
 
 @[simp]
 theorem mk_coe (f : α →ₙ+* β) (h₁ h₂ h₃) : NonUnitalRingHom.mk (MulHom.mk f h₁) h₂ h₃ = f :=
@@ -184,67 +194,57 @@ protected def id (α : Type*) [NonUnitalNonAssocSemiring α] : α →ₙ+* α wh
   map_zero' := rfl
   map_add' _ _ := rfl
 
-instance : Zero (α →ₙ+* β) :=
-  ⟨{ toFun := 0, map_mul' := fun _ _ => (mul_zero (0 : β)).symm, map_zero' := rfl,
-      map_add' := fun _ _ => (add_zero (0 : β)).symm }⟩
+instance : Zero (α →ₙ+* β) := ⟨{
+  toFun := 0
+  map_mul' := fun _ _ => (mul_zero (0 : β)).symm
+  map_zero' := rfl
+  map_add' := fun _ _ => (add_zero (0 : β)).symm
+}⟩
 
-instance : Inhabited (α →ₙ+* β) :=
-  ⟨0⟩
+instance : Inhabited (α →ₙ+* β) := ⟨0⟩
 
-@[simp]
-theorem coe_zero : ⇑(0 : α →ₙ+* β) = 0 :=
-  rfl
+@[simp] theorem coe_zero : ⇑(0 : α →ₙ+* β) = 0 := rfl
 
-@[simp]
-theorem zero_apply (x : α) : (0 : α →ₙ+* β) x = 0 :=
-  rfl
+@[simp] theorem zero_apply (x : α) : (0 : α →ₙ+* β) x = 0 := rfl
 
-@[simp]
-theorem id_apply (x : α) : NonUnitalRingHom.id α x = x :=
-  rfl
+@[simp] theorem id_apply (x : α) : NonUnitalRingHom.id α x = x := rfl
 
-@[simp]
-theorem toAddMonoidHom_id : (NonUnitalRingHom.id α : α →+ α) = AddMonoidHom.id α :=
-  rfl
+@[simp] theorem toAddMonoidHom_id : (NonUnitalRingHom.id α : α →+ α) = AddMonoidHom.id α := rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_addMonoidHom_id := toAddMonoidHom_id
 
-@[simp]
-theorem coe_mulHom_id : (NonUnitalRingHom.id α : α →ₙ* α) = MulHom.id α :=
-  rfl
+@[simp] theorem coe_mulHom_id : (NonUnitalRingHom.id α : α →ₙ* α) = MulHom.id α := rfl
 
 variable [NonUnitalNonAssocSemiring γ]
 
 /-- Composition of non-unital ring homomorphisms is a non-unital ring homomorphism. -/
 @[instance_reducible]
-def comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : α →ₙ+* γ :=
-  { g.toMulHom.comp f.toMulHom, g.toAddMonoidHom.comp f.toAddMonoidHom with }
+def comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : α →ₙ+* γ := {
+  g.toMulHom.comp f.toMulHom, g.toAddMonoidHom.comp f.toAddMonoidHom with
+}
 
 /-- Composition of non-unital ring homomorphisms is associative. -/
-theorem comp_assoc {δ} {_ : NonUnitalNonAssocSemiring δ} (f : α →ₙ+* β) (g : β →ₙ+* γ)
-    (h : γ →ₙ+* δ) : (h.comp g).comp f = h.comp (g.comp f) :=
+theorem comp_assoc
+    {δ} {_ : NonUnitalNonAssocSemiring δ} (f : α →ₙ+* β) (g : β →ₙ+* γ) (h : γ →ₙ+* δ)
+    : (h.comp g).comp f = h.comp (g.comp f) :=
   rfl
 
-@[simp]
-theorem coe_comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : ⇑(g.comp f) = g ∘ f :=
-  rfl
+@[simp] theorem coe_comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : ⇑(g.comp f) = g ∘ f := rfl
+
+@[simp] theorem comp_apply (g : β →ₙ+* γ) (f : α →ₙ+* β) (x : α) : g.comp f x = g (f x) := rfl
 
 @[simp]
-theorem comp_apply (g : β →ₙ+* γ) (f : α →ₙ+* β) (x : α) : g.comp f x = g (f x) :=
-  rfl
-
-@[simp]
-theorem toAddMonoidHom_comp (g : β →ₙ+* γ) (f : α →ₙ+* β) :
-    AddMonoidHom.mk ⟨g ∘ f, (g.comp f).map_zero'⟩ (g.comp f).map_add' = (g : β →+ γ).comp f :=
+theorem toAddMonoidHom_comp (g : β →ₙ+* γ) (f : α →ₙ+* β)
+    : AddMonoidHom.mk ⟨g ∘ f, (g.comp f).map_zero'⟩ (g.comp f).map_add' = (g : β →+ γ).comp f :=
   rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_comp_addMonoidHom := toAddMonoidHom_comp
 
 @[simp]
-theorem coe_comp_mulHom (g : β →ₙ+* γ) (f : α →ₙ+* β) :
-    MulHom.mk (g ∘ f) (g.comp f).map_mul' = (g : β →ₙ* γ).comp f :=
+theorem coe_comp_mulHom (g : β →ₙ+* γ) (f : α →ₙ+* β)
+    : MulHom.mk (g ∘ f) (g.comp f).map_mul' = (g : β →ₙ* γ).comp f :=
   rfl
 
 @[simp]
@@ -257,13 +257,9 @@ theorem zero_comp (f : α →ₙ+* β) : (0 : β →ₙ+* γ).comp f = 0 := by
   ext
   rfl
 
-@[simp]
-theorem comp_id (f : α →ₙ+* β) : f.comp (NonUnitalRingHom.id α) = f :=
-  ext fun _ => rfl
+@[simp] theorem comp_id (f : α →ₙ+* β) : f.comp (NonUnitalRingHom.id α) = f := ext fun _ => rfl
 
-@[simp]
-theorem id_comp (f : α →ₙ+* β) : (NonUnitalRingHom.id β).comp f = f :=
-  ext fun _ => rfl
+@[simp] theorem id_comp (f : α →ₙ+* β) : (NonUnitalRingHom.id β).comp f = f := ext fun _ => rfl
 
 instance : MonoidWithZero (α →ₙ+* α) where
   one := NonUnitalRingHom.id α
@@ -274,69 +270,76 @@ instance : MonoidWithZero (α →ₙ+* α) where
   mul_zero := comp_zero
   zero_mul := zero_comp
 
-theorem one_def : (1 : α →ₙ+* α) = NonUnitalRingHom.id α :=
-  rfl
+theorem one_def : (1 : α →ₙ+* α) = NonUnitalRingHom.id α := rfl
+
+@[simp] theorem coe_one : ⇑(1 : α →ₙ+* α) = id := rfl
+
+theorem mul_def (f g : α →ₙ+* α) : f * g = f.comp g := rfl
+
+@[simp] theorem coe_mul (f g : α →ₙ+* α) : ⇑(f * g) = f ∘ g := rfl
 
 @[simp]
-theorem coe_one : ⇑(1 : α →ₙ+* α) = id :=
-  rfl
-
-theorem mul_def (f g : α →ₙ+* α) : f * g = f.comp g :=
-  rfl
-
-@[simp]
-theorem coe_mul (f g : α →ₙ+* α) : ⇑(f * g) = f ∘ g :=
-  rfl
-
-@[simp]
-theorem cancel_right {g₁ g₂ : β →ₙ+* γ} {f : α →ₙ+* β} (hf : Surjective f) :
-    g₁.comp f = g₂.comp f ↔ g₁ = g₂ :=
+theorem cancel_right {g₁ g₂ : β →ₙ+* γ} {f : α →ₙ+* β} (hf : Surjective f)
+    : g₁.comp f = g₂.comp f ↔ g₁ = g₂ :=
   ⟨fun h => ext <| hf.forall.2 (NonUnitalRingHom.ext_iff.1 h), fun h => h ▸ rfl⟩
 
 @[simp]
-theorem cancel_left {g : β →ₙ+* γ} {f₁ f₂ : α →ₙ+* β} (hg : Injective g) :
-    g.comp f₁ = g.comp f₂ ↔ f₁ = f₂ :=
+theorem cancel_left {g : β →ₙ+* γ} {f₁ f₂ : α →ₙ+* β} (hg : Injective g)
+    : g.comp f₁ = g.comp f₂ ↔ f₁ = f₂ :=
   ⟨fun h => ext fun x => hg <| by rw [← comp_apply, h, comp_apply], fun h => h ▸ rfl⟩
 
 end NonUnitalRingHom
 
-/-- Bundled semiring homomorphisms; use this for bundled ring homomorphisms too.
+/--
+Bundled semiring homomorphisms; use this for bundled ring homomorphisms too.
 
 This extends from both `MonoidHom` and `MonoidWithZeroHom` in order to put the fields in a
-sensible order, even though `MonoidWithZeroHom` already extends `MonoidHom`. -/
+sensible order, even though `MonoidWithZeroHom` already extends `MonoidHom`.
+-/
 @[wikidata Q1194212]
-structure RingHom (α : Type*) (β : Type*) [NonAssocSemiring α] [NonAssocSemiring β] extends
-  α →* β, α →+ β, α →ₙ+* β, α →*₀ β
+structure RingHom (α : Type*) (β : Type*) [NonAssocSemiring α] [NonAssocSemiring β]
+  extends α →* β, α →+ β, α →ₙ+* β, α →*₀ β
 
 /-- `α →+* β` denotes the type of ring homomorphisms from `α` to `β`. -/
 infixr:25 " →+* " => RingHom
 
-/-- Reinterpret a ring homomorphism `f : α →+* β` as a monoid with zero homomorphism `α →*₀ β`.
-The `simp`-normal form is `(f : α →*₀ β)`. -/
+/--
+Reinterpret a ring homomorphism `f : α →+* β` as a monoid with zero homomorphism `α →*₀ β`.
+The `simp`-normal form is `(f : α →*₀ β)`.
+-/
 add_decl_doc RingHom.toMonoidWithZeroHom
 
-/-- Reinterpret a ring homomorphism `f : α →+* β` as a monoid homomorphism `α →* β`.
-The `simp`-normal form is `(f : α →* β)`. -/
+/--
+Reinterpret a ring homomorphism `f : α →+* β` as a monoid homomorphism `α →* β`.
+The `simp`-normal form is `(f : α →* β)`.
+-/
 add_decl_doc RingHom.toMonoidHom
 
-/-- Reinterpret a ring homomorphism `f : α →+* β` as an additive monoid homomorphism `α →+ β`.
-The `simp`-normal form is `(f : α →+ β)`. -/
+/--
+Reinterpret a ring homomorphism `f : α →+* β` as an additive monoid homomorphism `α →+ β`.
+The `simp`-normal form is `(f : α →+ β)`.
+-/
 add_decl_doc RingHom.toAddMonoidHom
 
-/-- Reinterpret a ring homomorphism `f : α →+* β` as a non-unital ring homomorphism `α →ₙ+* β`. The
-`simp`-normal form is `(f : α →ₙ+* β)`. -/
+/--
+Reinterpret a ring homomorphism `f : α →+* β` as a non-unital ring homomorphism `α →ₙ+* β`. The
+`simp`-normal form is `(f : α →ₙ+* β)`.
+-/
 add_decl_doc RingHom.toNonUnitalRingHom
 
 section RingHomClass
 
-/-- `RingHomClass F α β` states that `F` is a type of (semi)ring homomorphisms.
+/--
+`RingHomClass F α β` states that `F` is a type of (semi)ring homomorphisms.
 You should extend this class when you extend `RingHom`.
 
 This extends from both `MonoidHomClass` and `MonoidWithZeroHomClass` in
 order to put the fields in a sensible order, even though
-`MonoidWithZeroHomClass` already extends `MonoidHomClass`. -/
-class RingHomClass (F : Type*) (α β : outParam Type*)
-    [NonAssocSemiring α] [NonAssocSemiring β] [FunLike F α β] : Prop
+`MonoidWithZeroHomClass` already extends `MonoidHomClass`.
+-/
+class RingHomClass
+  (F : Type*) (α β : outParam Type*) [NonAssocSemiring α] [NonAssocSemiring β] [FunLike F α β]
+  : Prop
   extends MonoidHomClass F α β, AddMonoidHomClass F α β, MonoidWithZeroHomClass F α β
 
 variable [FunLike F α β]
@@ -344,18 +347,18 @@ variable [FunLike F α β]
 -- See note [implicit instance arguments].
 variable {_ : NonAssocSemiring α} {_ : NonAssocSemiring β} [RingHomClass F α β]
 
-/-- Turn an element of a type `F` satisfying `RingHomClass F α β` into an actual
-`RingHom`. This is declared as the default coercion from `F` to `α →+* β`. -/
-@[coe]
-def RingHomClass.toRingHom (f : F) : α →+* β :=
-  { (f : α →* β), (f : α →+ β) with }
+/--
+Turn an element of a type `F` satisfying `RingHomClass F α β` into an actual
+`RingHom`. This is declared as the default coercion from `F` to `α →+* β`.
+-/
+@[coe] def RingHomClass.toRingHom (f : F) : α →+* β := { (f : α →* β), (f : α →+ β) with }
 
 /-- Any type satisfying `RingHomClass` can be cast into `RingHom` via `RingHomClass.toRingHom`. -/
-instance : CoeTC F (α →+* β) :=
-  ⟨RingHomClass.toRingHom⟩
+instance : CoeTC F (α →+* β) := ⟨RingHomClass.toRingHom⟩
 
-instance (priority := 100) RingHomClass.toNonUnitalRingHomClass : NonUnitalRingHomClass F α β :=
-  { ‹RingHomClass F α β› with }
+instance (priority := 100) RingHomClass.toNonUnitalRingHomClass : NonUnitalRingHomClass F α β := {
+  ‹RingHomClass F α β› with
+}
 
 end RingHomClass
 
@@ -388,67 +391,55 @@ instance instRingHomClass : RingHomClass (α →+* β) α β where
 
 initialize_simps_projections RingHom (toFun → apply)
 
-theorem toFun_eq_coe (f : α →+* β) : f.toFun = f :=
-  rfl
+theorem toFun_eq_coe (f : α →+* β) : f.toFun = f := rfl
+
+@[simp] theorem coe_mk (f : α →* β) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : α →+* β) : α → β) = f := rfl
 
 @[simp]
-theorem coe_mk (f : α →* β) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : α →+* β) : α → β) = f :=
-  rfl
-
-@[simp]
-theorem coe_coe {F : Type*} [FunLike F α β] [RingHomClass F α β] (f : F) :
-    ((f : α →+* β) : α → β) = f :=
+theorem coe_coe {F : Type*} [FunLike F α β] [RingHomClass F α β] (f : F)
+    : ((f : α →+* β) : α → β) = f :=
   rfl
 
 attribute [coe] RingHom.toMonoidWithZeroHom
 
-instance : Coe (α →+* β) (α →*₀ β) :=
-  ⟨RingHom.toMonoidWithZeroHom⟩
+instance : Coe (α →+* β) (α →*₀ β) := ⟨RingHom.toMonoidWithZeroHom⟩
 
-@[simp]
-theorem coe_toMonoidWithZeroHom (f : α →+* β) : ⇑(f : α →*₀ β) = f := rfl
+@[simp] theorem coe_toMonoidWithZeroHom (f : α →+* β) : ⇑(f : α →*₀ β) = f := rfl
 
 @[deprecated (since := "2026-09-15")] alias toMonoidWithZeroHom_eq_coe := coe_toMonoidWithZeroHom
 
 attribute [coe] RingHom.toMonoidHom
 
-instance coeToMonoidHom : Coe (α →+* β) (α →* β) :=
-  ⟨RingHom.toMonoidHom⟩
+instance coeToMonoidHom : Coe (α →+* β) (α →* β) := ⟨RingHom.toMonoidHom⟩
 
-@[simp]
-theorem toMonoidHom_eq_coe (f : α →+* β) : f.toMonoidHom = f :=
-  rfl
+@[simp] theorem toMonoidHom_eq_coe (f : α →+* β) : f.toMonoidHom = f := rfl
 
-@[simp]
-theorem toMonoidHom_mk (f : α →* β) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : α →+* β) : α →* β) = f :=
-  rfl
+@[simp] theorem toMonoidHom_mk (f : α →* β) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : α →+* β) : α →* β) = f := rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_monoidHom_mk := toMonoidHom_mk
 
-@[simp]
-theorem toAddMonoidHom_eq_coe (f : α →+* β) : f.toAddMonoidHom = f :=
-  rfl
+@[simp] theorem toAddMonoidHom_eq_coe (f : α →+* β) : f.toAddMonoidHom = f := rfl
 
 @[simp]
-theorem toAddMonoidHom_mk (f : α → β) (h₁ h₂ h₃ h₄) :
-    ((⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩ : α →+* β) : α →+ β) = ⟨⟨f, h₃⟩, h₄⟩ :=
+theorem toAddMonoidHom_mk (f : α → β) (h₁ h₂ h₃ h₄)
+    : ((⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩ : α →+* β) : α →+ β) = ⟨⟨f, h₃⟩, h₄⟩ :=
   rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_addMonoidHom_mk := toAddMonoidHom_mk
 
-/-- Copy of a `RingHom` with a new `toFun` equal to the old one. Useful to fix definitional
-equalities. -/
-def copy (f : α →+* β) (f' : α → β) (h : f' = f) : α →+* β :=
-  { f.toMonoidWithZeroHom.copy f' h, f.toAddMonoidHom.copy f' h with }
+/--
+Copy of a `RingHom` with a new `toFun` equal to the old one. Useful to fix definitional
+equalities.
+-/
+def copy (f : α →+* β) (f' : α → β) (h : f' = f) : α →+* β := {
+  f.toMonoidWithZeroHom.copy f' h, f.toAddMonoidHom.copy f' h with
+}
 
-@[simp]
-theorem coe_copy (f : α →+* β) (f' : α → β) (h : f' = f) : ⇑(f.copy f' h) = f' :=
-  rfl
+@[simp] theorem coe_copy (f : α →+* β) (f' : α → β) (h : f' = f) : ⇑(f.copy f' h) = f' := rfl
 
-theorem copy_eq (f : α →+* β) (f' : α → β) (h : f' = f) : f.copy f' h = f :=
-  DFunLike.ext' h
+theorem copy_eq (f : α →+* β) (f' : α → β) (h : f' = f) : f.copy f' h = f := DFunLike.ext' h
 
 end coe
 
@@ -462,16 +453,12 @@ protected theorem congr_fun {f g : α →+* β} (h : f = g) (x : α) : f x = g x
 protected theorem congr_arg (f : α →+* β) {x y : α} (h : x = y) : f x = f y :=
   DFunLike.congr_arg f h
 
-theorem coe_inj ⦃f g : α →+* β⦄ (h : (f : α → β) = g) : f = g :=
-  DFunLike.coe_injective h
+theorem coe_inj ⦃f g : α →+* β⦄ (h : (f : α → β) = g) : f = g := DFunLike.coe_injective h
 
-@[ext]
-theorem ext ⦃f g : α →+* β⦄ : (∀ x, f x = g x) → f = g :=
-  DFunLike.ext _ _
+@[ext] theorem ext ⦃f g : α →+* β⦄ : (∀ x, f x = g x) → f = g := DFunLike.ext _ _
 
 @[simp]
-theorem mk_coe (f : α →+* β) (h₁ h₂ h₃ h₄) : RingHom.mk ⟨⟨f, h₁⟩, h₂⟩ h₃ h₄ = f :=
-  ext fun _ => rfl
+theorem mk_coe (f : α →+* β) (h₁ h₂ h₃ h₄) : RingHom.mk ⟨⟨f, h₁⟩, h₂⟩ h₃ h₄ = f := ext fun _ => rfl
 
 theorem toMonoidWithZeroHom_injective : Injective (fun f : α →+* β => (f : α →*₀ β)) := fun _ _ h =>
   ext <| DFunLike.congr_fun (F := α →*₀ β) h
@@ -489,20 +476,16 @@ theorem toMonoidHom_injective : Injective (fun f : α →+* β => (f : α →* �
 alias coe_monoidHom_injective := toMonoidHom_injective
 
 /-- Ring homomorphisms map zero to zero. -/
-protected theorem map_zero (f : α →+* β) : f 0 = 0 :=
-  map_zero f
+protected theorem map_zero (f : α →+* β) : f 0 = 0 := map_zero f
 
 /-- Ring homomorphisms map one to one. -/
-protected theorem map_one (f : α →+* β) : f 1 = 1 :=
-  map_one f
+protected theorem map_one (f : α →+* β) : f 1 = 1 := map_one f
 
 /-- Ring homomorphisms preserve addition. -/
-protected theorem map_add (f : α →+* β) : ∀ a b, f (a + b) = f a + f b :=
-  map_add f
+protected theorem map_add (f : α →+* β) : ∀ a b, f (a + b) = f a + f b := map_add f
 
 /-- Ring homomorphisms preserve multiplication. -/
-protected theorem map_mul (f : α →+* β) : ∀ a b, f (a * b) = f a * f b :=
-  map_mul f
+protected theorem map_mul (f : α →+* β) : ∀ a b, f (a * b) = f a * f b := map_mul f
 
 /-- `f : α →+* β` has a trivial codomain iff `f 1 = 0`. -/
 theorem codomain_trivial_iff_map_one_eq_zero : (0 : β) = 1 ↔ f 1 = 0 := by rw [map_one, eq_comm]
@@ -528,18 +511,20 @@ theorem codomain_trivial (f : α →+* β) [h : Subsingleton α] : Subsingleton 
 end
 
 /-- Ring homomorphisms preserve additive inverse. -/
-protected theorem map_neg [NonAssocRing α] [NonAssocRing β] (f : α →+* β) (x : α) : f (-x) = -f x :=
+protected theorem map_neg [NonAssocRing α] [NonAssocRing β] (f : α →+* β) (x : α)
+    : f (-x) = - f x :=
   map_neg f x
 
 /-- Ring homomorphisms preserve subtraction. -/
-protected theorem map_sub [NonAssocRing α] [NonAssocRing β] (f : α →+* β) (x y : α) :
-    f (x - y) = f x - f y :=
+protected theorem map_sub [NonAssocRing α] [NonAssocRing β] (f : α →+* β) (x y : α)
+    : f (x - y) = f x - f y :=
   map_sub f x y
 
 /-- Makes a ring homomorphism from a monoid homomorphism of rings which preserves addition. -/
-def mk' [NonAssocSemiring α] [NonAssocRing β] (f : α →* β)
-    (map_add : ∀ a b, f (a + b) = f a + f b) : α →+* β :=
-  { AddMonoidHom.mk' f map_add, f with }
+def mk' [NonAssocSemiring α] [NonAssocRing β] (f : α →* β) (map_add : ∀ a b, f (a + b) = f a + f b)
+    : α →+* β := {
+  AddMonoidHom.mk' f map_add, f with
+}
 
 variable {_ : NonAssocSemiring α} {_ : NonAssocSemiring β}
 
@@ -552,26 +537,18 @@ def id (α : Type*) [NonAssocSemiring α] : α →+* α where
   map_add' _ _ := rfl
   map_mul' _ _ := rfl
 
-instance : Inhabited (α →+* α) :=
-  ⟨id α⟩
+instance : Inhabited (α →+* α) := ⟨id α⟩
 
-@[simp, norm_cast]
-theorem coe_id : ⇑(RingHom.id α) = _root_.id := rfl
+@[simp, norm_cast] theorem coe_id : ⇑(RingHom.id α) = _root_.id := rfl
 
-@[simp]
-theorem id_apply (x : α) : RingHom.id α x = x :=
-  rfl
+@[simp] theorem id_apply (x : α) : RingHom.id α x = x := rfl
 
-@[simp]
-theorem toAddMonoidHom_id : (id α : α →+ α) = AddMonoidHom.id α :=
-  rfl
+@[simp] theorem toAddMonoidHom_id : (id α : α →+ α) = AddMonoidHom.id α := rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_addMonoidHom_id := toAddMonoidHom_id
 
-@[simp]
-theorem toMonoidHom_id : (id α : α →* α) = MonoidHom.id α :=
-  rfl
+@[simp] theorem toMonoidHom_id : (id α : α →* α) = MonoidHom.id α := rfl
 
 @[deprecated (since := "2026-09-15")]
 alias coe_monoidHom_id := toMonoidHom_id
@@ -580,32 +557,31 @@ variable {_ : NonAssocSemiring γ}
 
 /-- Composition of ring homomorphisms is a ring homomorphism. -/
 @[instance_reducible]
-def comp (g : β →+* γ) (f : α →+* β) : α →+* γ :=
-  { g.toNonUnitalRingHom.comp f.toNonUnitalRingHom with toFun x := g (f x), map_one' := by simp }
+def comp (g : β →+* γ) (f : α →+* β) : α →+* γ := {
+  g.toNonUnitalRingHom.comp f.toNonUnitalRingHom with
+  toFun x := g (f x)
+  map_one' := by simp
+}
 
 /-- Composition of semiring homomorphisms is associative. -/
-theorem comp_assoc {δ} {_ : NonAssocSemiring δ} (f : α →+* β) (g : β →+* γ) (h : γ →+* δ) :
-    (h.comp g).comp f = h.comp (g.comp f) :=
+theorem comp_assoc {δ} {_ : NonAssocSemiring δ} (f : α →+* β) (g : β →+* γ) (h : γ →+* δ)
+    : (h.comp g).comp f = h.comp (g.comp f) :=
   rfl
 
-@[simp]
-theorem coe_comp (hnp : β →+* γ) (hmn : α →+* β) : (hnp.comp hmn : α → γ) = hnp ∘ hmn :=
+@[simp] theorem coe_comp (hnp : β →+* γ) (hmn : α →+* β) : (hnp.comp hmn : α → γ) = hnp ∘ hmn := rfl
+
+theorem comp_apply (hnp : β →+* γ) (hmn : α →+* β) (x : α)
+    : (hnp.comp hmn : α → γ) x = hnp (hmn x) :=
   rfl
 
-theorem comp_apply (hnp : β →+* γ) (hmn : α →+* β) (x : α) :
-    (hnp.comp hmn : α → γ) x = hnp (hmn x) :=
-  rfl
+@[simp] theorem comp_id (f : α →+* β) : f.comp (id α) = f := ext fun _ => rfl
 
-@[simp]
-theorem comp_id (f : α →+* β) : f.comp (id α) = f :=
-  ext fun _ => rfl
+@[simp] theorem id_comp (f : α →+* β) : (id β).comp f = f := ext fun _ => rfl
 
-@[simp]
-theorem id_comp (f : α →+* β) : (id β).comp f = f :=
-  ext fun _ => rfl
-
-instance instOne : One (α →+* α) where one := id _
-instance instMul : Mul (α →+* α) where mul := comp
+instance instOne : One (α →+* α) where
+  one := id _
+instance instMul : Mul (α →+* α) where
+  mul := comp
 
 lemma one_def : (1 : α →+* α) = id α := rfl
 
@@ -625,13 +601,13 @@ instance instMonoid : Monoid (α →+* α) where
 @[simp, norm_cast] lemma coe_pow (f : α →+* α) (n : ℕ) : ⇑(f ^ n) = f^[n] := rfl
 
 @[simp]
-theorem cancel_right {g₁ g₂ : β →+* γ} {f : α →+* β} (hf : Surjective f) :
-    g₁.comp f = g₂.comp f ↔ g₁ = g₂ :=
+theorem cancel_right {g₁ g₂ : β →+* γ} {f : α →+* β} (hf : Surjective f)
+    : g₁.comp f = g₂.comp f ↔ g₁ = g₂ :=
   ⟨fun h => RingHom.ext <| hf.forall.2 (RingHom.ext_iff.1 h), fun h => h ▸ rfl⟩
 
 @[simp]
-theorem cancel_left {g : β →+* γ} {f₁ f₂ : α →+* β} (hg : Injective g) :
-    g.comp f₁ = g.comp f₂ ↔ f₁ = f₂ :=
+theorem cancel_left {g : β →+* γ} {f₁ f₂ : α →+* β} (hg : Injective g)
+    : g.comp f₁ = g.comp f₂ ↔ f₁ = f₂ :=
   ⟨fun h => RingHom.ext fun x => hg <| by rw [← comp_apply, h, comp_apply], fun h => h ▸ rfl⟩
 
 end RingHom
@@ -647,31 +623,37 @@ namespace AddMonoidHom
 
 variable [CommRing α] [IsDomain α] [CommRing β] (f : β →+ α)
 
-/-- Make a ring homomorphism from an additive group homomorphism from a commutative ring to an
+/--
+Make a ring homomorphism from an additive group homomorphism from a commutative ring to an
 integral domain that commutes with self multiplication, assumes that two is nonzero and `1` is sent
-to `1`. -/
-def mkRingHomOfMulSelfOfTwoNeZero (h : ∀ x, f (x * x) = f x * f x) (h_two : (2 : α) ≠ 0)
-    (h_one : f 1 = 1) : β →+* α :=
-  { f with
-    map_one' := h_one,
-    map_mul' := fun x y => by
-      have hxy := h (x + y)
-      rw [mul_add, add_mul, add_mul, f.map_add, f.map_add, f.map_add, f.map_add, h x, h y, add_mul,
+to `1`.
+-/
+def mkRingHomOfMulSelfOfTwoNeZero
+    (h : ∀ x, f (x * x) = f x * f x) (h_two : (2 : α) ≠ 0) (h_one : f 1 = 1)
+    : β →+* α := {
+  f with
+  map_one' := h_one
+  map_mul' := fun x y => by
+    have hxy := h (x + y)
+    rw [mul_add, add_mul, add_mul, f.map_add, f.map_add, f.map_add, f.map_add, h x, h y, add_mul,
         mul_add, mul_add, ← sub_eq_zero, add_comm (f x * f x + f (y * x)), ← sub_sub, ← sub_sub,
-        ← sub_sub, mul_comm y x, mul_comm (f y) (f x)] at hxy
-      simp only [add_assoc, add_sub_assoc, add_sub_cancel] at hxy
-      rw [sub_sub, ← two_mul, ← add_sub_assoc, ← two_mul, ← mul_sub, mul_eq_zero (M₀ := α),
-        sub_eq_zero, or_iff_not_imp_left] at hxy
-      exact hxy h_two }
+        ← sub_sub, mul_comm y x, mul_comm (f y) (f x)]
+      at hxy
+    simp only [add_assoc, add_sub_assoc, add_sub_cancel] at hxy
+    rw [sub_sub, ← two_mul, ← add_sub_assoc, ← two_mul, ← mul_sub, mul_eq_zero (M₀ := α),
+        sub_eq_zero, or_iff_not_imp_left]
+      at hxy
+    exact hxy h_two
+}
 
 @[simp]
-theorem coe_fn_mkRingHomOfMulSelfOfTwoNeZero (h h_two h_one) :
-    (f.mkRingHomOfMulSelfOfTwoNeZero h h_two h_one : β → α) = f :=
+theorem coe_fn_mkRingHomOfMulSelfOfTwoNeZero (h h_two h_one)
+    : (f.mkRingHomOfMulSelfOfTwoNeZero h h_two h_one : β → α) = f :=
   rfl
 
 @[simp]
-theorem toAddMonoidHom_mkRingHomOfMulSelfOfTwoNeZero (h h_two h_one) :
-    (f.mkRingHomOfMulSelfOfTwoNeZero h h_two h_one : β →+ α) = f := by
+theorem toAddMonoidHom_mkRingHomOfMulSelfOfTwoNeZero (h h_two h_one)
+    : (f.mkRingHomOfMulSelfOfTwoNeZero h h_two h_one : β →+ α) = f := by
   ext
   rfl
 

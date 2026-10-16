@@ -6,7 +6,6 @@ Authors: Rémy Degenne
 module
 
 public import Mathlib.MeasureTheory.Constructions.Polish.Basic
-
 import Mathlib.Analysis.Real.Cardinality
 
 /-!
@@ -20,14 +19,14 @@ open Set Function PolishSpace TopologicalSpace Topology MeasureTheory
 namespace MeasureTheory
 variable (α : Type*) [MeasurableSpace α] [StandardBorelSpace α]
 
-theorem exists_nat_measurableEquiv_range_coe_fin_of_finite [Finite α] :
-    ∃ n : ℕ, Nonempty (α ≃ᵐ range ((↑) : Fin n → ℝ)) := by
+theorem exists_nat_measurableEquiv_range_coe_fin_of_finite [Finite α]
+    : ∃ n : ℕ, Nonempty (α ≃ᵐ range ((↑) : Fin n → ℝ)) := by
   obtain ⟨n, ⟨n_equiv⟩⟩ := Finite.exists_equiv_fin α
   refine ⟨n, ⟨PolishSpace.Equiv.measurableEquiv (n_equiv.trans ?_)⟩⟩
   exact Equiv.ofInjective _ (Nat.cast_injective.comp Fin.val_injective)
 
-theorem measurableEquiv_range_coe_nat_of_infinite_of_countable [Infinite α] [Countable α] :
-    Nonempty (α ≃ᵐ range ((↑) : ℕ → ℝ)) := by
+theorem measurableEquiv_range_coe_nat_of_infinite_of_countable [Infinite α] [Countable α]
+    : Nonempty (α ≃ᵐ range ((↑) : ℕ → ℝ)) := by
   have : PolishSpace (range ((↑) : ℕ → ℝ)) :=
     Nat.isClosedEmbedding_coe_real.isClosedMap.isClosed_range.polishSpace
   refine ⟨PolishSpace.Equiv.measurableEquiv ?_⟩
@@ -43,9 +42,11 @@ theorem exists_subset_real_measurableEquiv : ∃ s : Set ℝ, MeasurableSet s �
       exact (Set.finite_range ((↑) : Fin n → ℝ)).measurableSet
     · refine ⟨_, ?_, measurableEquiv_range_coe_nat_of_infinite_of_countable α⟩
       exact Nat.isClosedEmbedding_coe_real.isClosed_range.measurableSet
-  · refine
-      ⟨univ, MeasurableSet.univ,
-        ⟨(PolishSpace.measurableEquivOfNotCountable hα ?_ : α ≃ᵐ (univ : Set ℝ))⟩⟩
+  · refine ⟨
+      univ,
+      MeasurableSet.univ,
+      ⟨(PolishSpace.measurableEquivOfNotCountable hα ?_ : α ≃ᵐ (univ : Set ℝ))⟩
+    ⟩
     rw [countable_coe_iff]
     exact Cardinal.not_countable_real
 
@@ -55,17 +56,16 @@ theorem exists_measurableEmbedding_real : ∃ f : α → ℝ, MeasurableEmbeddin
   exact ⟨(↑) ∘ e, (MeasurableEmbedding.subtype_coe hs).comp e.measurableEmbedding⟩
 
 /-- A measurable embedding of a standard Borel space into `ℝ`. -/
-noncomputable
-def embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω] : Ω → ℝ :=
+noncomputable def embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω] : Ω → ℝ :=
   (exists_measurableEmbedding_real Ω).choose
 
-lemma measurableEmbedding_embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω] :
-    MeasurableEmbedding (embeddingReal Ω) :=
+lemma measurableEmbedding_embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω]
+    : MeasurableEmbedding (embeddingReal Ω) :=
   (exists_measurableEmbedding_real Ω).choose_spec
 
 @[fun_prop]
-lemma measurable_embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω] :
-    Measurable (embeddingReal Ω) :=
+lemma measurable_embeddingReal (Ω : Type*) [MeasurableSpace Ω] [StandardBorelSpace Ω]
+    : Measurable (embeddingReal Ω) :=
   (measurableEmbedding_embeddingReal Ω).measurable
 
 end MeasureTheory

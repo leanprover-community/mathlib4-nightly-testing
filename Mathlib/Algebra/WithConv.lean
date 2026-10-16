@@ -20,14 +20,18 @@ This is given for any type `A` so that we can have `WithConv (A →ₗ[R] B)`,
 
 @[expose] public section
 
-/-- A type synonym for the convolutive product of linear maps and intrinsic star.
+/--
+A type synonym for the convolutive product of linear maps and intrinsic star.
 
 The instances for the convolutive product and intrinsic star are only available with this type.
 
-Use `WithConv.linearEquiv` to coerce into this type. -/
+Use `WithConv.linearEquiv` to coerce into this type.
+-/
 structure WithConv A where
-  /-- Converts an element of `A` to `WithConv A`. -/ toConv ::
-  /-- Converts an element of `WithConv A` back to `A`. -/ ofConv : A
+  /-- Converts an element of `A` to `WithConv A`. -/
+  toConv ::
+  /-- Converts an element of `WithConv A` back to `A`. -/
+  ofConv : A
 
 namespace WithConv
 
@@ -56,10 +60,11 @@ lemma toConv_injective : Function.Injective (@toConv A) :=
 lemma ofConv_bijective : Function.Bijective (@ofConv A) := ⟨ofConv_injective, ofConv_surjective⟩
 lemma toConv_bijective : Function.Bijective (@toConv A) := ⟨toConv_injective, toConv_surjective⟩
 
-instance [CoeFun A (fun _ ↦ B → C)] : CoeFun (WithConv A) (fun _ ↦ B → C) where coe f := ⇑f.ofConv
+instance [CoeFun A (fun _ ↦ B → C)] : CoeFun (WithConv A) (fun _ ↦ B → C) where
+  coe f := ⇑f.ofConv
 
-@[ext] protected theorem ext {x y : WithConv A}
-    (h : x.ofConv = y.ofConv) : x = y := ofConv_injective h
+@[ext]
+protected theorem ext {x y : WithConv A} (h : x.ofConv = y.ofConv) : x = y := ofConv_injective h
 
 variable (A) in
 /-- `WithConv.ofConv` and `WithConv.toConv` as an equivalence. -/
@@ -79,33 +84,37 @@ instance [AddMonoid A] : AddMonoid (WithConv A) := (WithConv.equiv A).addMonoid
 instance [AddCommMonoid A] : AddCommMonoid (WithConv A) := (WithConv.equiv A).addCommMonoid
 instance [AddGroup A] : AddGroup (WithConv A) := (WithConv.equiv A).addGroup
 instance [AddCommGroup A] : AddCommGroup (WithConv A) := (WithConv.equiv A).addCommGroup
-@[to_additive] instance [Monoid R] [MulAction R A] : MulAction R (WithConv A) :=
+@[to_additive]
+instance [Monoid R] [MulAction R A] : MulAction R (WithConv A) :=
   fast_instance% (WithConv.equiv A).mulAction R
 
 /-- Lift an equivalence between `A` and `B` to `WithConv A` and `WithConv B`. -/
 protected def congr (f : A ≃ B) : WithConv A ≃ WithConv B :=
   (WithConv.equiv A).trans (f.trans (WithConv.equiv B).symm)
 
-@[simp] lemma congr_apply (f : A ≃ B) (x : WithConv A) :
-    WithConv.congr f x = toConv (f x.ofConv) := rfl
+@[simp]
+lemma congr_apply (f : A ≃ B) (x : WithConv A) : WithConv.congr f x = toConv (f x.ofConv) := rfl
 @[simp] lemma symm_congr (f : A ≃ B) : (WithConv.congr f).symm = WithConv.congr f.symm := rfl
-lemma symm_congr_apply (f : A ≃ B) (x : WithConv B) :
-    (WithConv.congr f).symm x = toConv (f.symm x.ofConv) := by simp
+lemma symm_congr_apply (f : A ≃ B) (x : WithConv B)
+    : (WithConv.congr f).symm x = toConv (f.symm x.ofConv) := by
+  simp
 
 section AddGroup
 variable [AddGroup A]
 
 @[simp] lemma toConv_sub (x y : A) : toConv (x - y) = toConv x - toConv y := rfl
 @[simp] lemma ofConv_sub (x y : WithConv A) : ofConv (x - y) = ofConv x - ofConv y := rfl
-@[simp] lemma ofConv_neg (x : WithConv A) : ofConv (-x) = -ofConv x := rfl
-@[simp] lemma toConv_neg (x : A) : toConv (-x) = -toConv x := rfl
+@[simp] lemma ofConv_neg (x : WithConv A) : ofConv (-x) = - ofConv x := rfl
+@[simp] lemma toConv_neg (x : A) : toConv (-x) = - toConv x := rfl
 
 end AddGroup
 
-@[simp] lemma ofConv_smul [Monoid R] [MulAction R A] (c : R) (x : WithConv A) :
-    ofConv (c • x) = c • ofConv x := rfl
-@[simp] lemma toConv_smul [Monoid R] [MulAction R A] (c : R) (x : A) :
-    toConv (c • x) = c • toConv x := rfl
+@[simp]
+lemma ofConv_smul [Monoid R] [MulAction R A] (c : R) (x : WithConv A)
+    : ofConv (c • x) = c • ofConv x :=
+  rfl
+@[simp]
+lemma toConv_smul [Monoid R] [MulAction R A] (c : R) (x : A) : toConv (c • x) = c • toConv x := rfl
 
 section
 variable [AddMonoid A]
@@ -119,7 +128,8 @@ variable [AddMonoid A]
 
 variable (A) in
 /-- The additive equivalence between `WithConv A` and `A`. -/
-@[simps!] protected def addEquiv : WithConv A ≃+ A where
+@[simps!]
+protected def addEquiv : WithConv A ≃+ A where
   __ := WithConv.equiv A
   map_add' := by simp
 
@@ -140,25 +150,39 @@ protected def linearEquiv [Semiring R] [Module R A] : WithConv A ≃ₗ[R] A whe
   __ := WithConv.addEquiv A
   map_smul' := by simp
 
-@[simp] lemma linearEquiv_apply [Semiring R] [Module R A]
-    (a : WithConv A) : WithConv.linearEquiv R A a = ofConv a := rfl
-@[simp] lemma symm_linearEquiv_apply [Semiring R] [Module R A]
-    (a : A) : (WithConv.linearEquiv R A).symm a = toConv a := rfl
-@[simp] lemma toAddEquiv_linearEquiv [Semiring R] [Module R A] :
-    (WithConv.linearEquiv R A).toAddEquiv = WithConv.addEquiv A := rfl
+@[simp]
+lemma linearEquiv_apply [Semiring R] [Module R A] (a : WithConv A)
+    : WithConv.linearEquiv R A a = ofConv a :=
+  rfl
+@[simp]
+lemma symm_linearEquiv_apply [Semiring R] [Module R A] (a : A)
+    : (WithConv.linearEquiv R A).symm a = toConv a :=
+  rfl
+@[simp]
+lemma toAddEquiv_linearEquiv [Semiring R] [Module R A]
+    : (WithConv.linearEquiv R A).toAddEquiv = WithConv.addEquiv A :=
+  rfl
 
-@[simp] lemma ofConv_sum {ι : Type*} (s : Finset ι) (f : ι → WithConv A) :
-    (∑ i ∈ s, f i).ofConv = ∑ i ∈ s, (f i).ofConv := map_sum (WithConv.addEquiv _) _ _
-@[simp] lemma toConv_sum {ι : Type*} (s : Finset ι) (f : ι → A) :
-    toConv (∑ i ∈ s, f i) = ∑ i ∈ s, toConv (f i) := map_sum (WithConv.addEquiv _).symm _ _
-@[simp] lemma ofConv_listSum (l : List (WithConv A)) :
-    l.sum.ofConv = (l.map ofConv).sum := map_list_sum (WithConv.addEquiv _) _
-@[simp] lemma toConv_listSum (l : List A) :
-    toConv l.sum = (l.map toConv).sum := map_list_sum (WithConv.addEquiv _).symm _
-@[simp] lemma ofConv_multisetSum (s : Multiset (WithConv A)) :
-    s.sum.ofConv = (s.map ofConv).sum := map_multiset_sum (WithConv.addEquiv _) _
-@[simp] lemma toConv_multisetSum (s : Multiset A) :
-    toConv s.sum = (s.map toConv).sum := map_multiset_sum (WithConv.addEquiv _).symm _
+@[simp]
+lemma ofConv_sum {ι : Type*} (s : Finset ι) (f : ι → WithConv A)
+    : (∑ i ∈ s, f i).ofConv = ∑ i ∈ s, (f i).ofConv :=
+  map_sum (WithConv.addEquiv _) _ _
+@[simp]
+lemma toConv_sum {ι : Type*} (s : Finset ι) (f : ι → A)
+    : toConv (∑ i ∈ s, f i) = ∑ i ∈ s, toConv (f i) :=
+  map_sum (WithConv.addEquiv _).symm _ _
+@[simp]
+lemma ofConv_listSum (l : List (WithConv A)) : l.sum.ofConv = (l.map ofConv).sum :=
+  map_list_sum (WithConv.addEquiv _) _
+@[simp]
+lemma toConv_listSum (l : List A) : toConv l.sum = (l.map toConv).sum :=
+  map_list_sum (WithConv.addEquiv _).symm _
+@[simp]
+lemma ofConv_multisetSum (s : Multiset (WithConv A)) : s.sum.ofConv = (s.map ofConv).sum :=
+  map_multiset_sum (WithConv.addEquiv _) _
+@[simp]
+lemma toConv_multisetSum (s : Multiset A) : toConv s.sum = (s.map toConv).sum :=
+  map_multiset_sum (WithConv.addEquiv _).symm _
 
 section
 variable [Semiring R] [Module R A] [AddCommMonoid B] [Module R B]
@@ -167,14 +191,20 @@ variable [Semiring R] [Module R A] [AddCommMonoid B] [Module R B]
 def congrLinearEquiv (f : A ≃ₗ[R] B) : WithConv A ≃ₗ[R] WithConv B :=
   (WithConv.linearEquiv R A).trans (f.trans (WithConv.linearEquiv R B).symm)
 
-@[simp] lemma congrLinearEquiv_apply (f : A ≃ₗ[R] B) (x : WithConv A) :
-    congrLinearEquiv f x = toConv (f x.ofConv) := rfl
-@[simp] lemma symm_congrLinearEquiv (f : A ≃ₗ[R] B) :
-    (congrLinearEquiv f).symm = congrLinearEquiv f.symm := rfl
-lemma symm_congrLinearEquiv_apply (f : A ≃ₗ[R] B) (x : WithConv B) :
-    (congrLinearEquiv f).symm x = toConv (f.symm x.ofConv) := by simp
-@[simp] theorem toEquiv_congrLinearEquiv (f : A ≃ₗ[R] B) :
-    (congrLinearEquiv f).toEquiv = WithConv.congr f.toEquiv := rfl
+@[simp]
+lemma congrLinearEquiv_apply (f : A ≃ₗ[R] B) (x : WithConv A)
+    : congrLinearEquiv f x = toConv (f x.ofConv) :=
+  rfl
+@[simp]
+lemma symm_congrLinearEquiv (f : A ≃ₗ[R] B) : (congrLinearEquiv f).symm = congrLinearEquiv f.symm :=
+  rfl
+lemma symm_congrLinearEquiv_apply (f : A ≃ₗ[R] B) (x : WithConv B)
+    : (congrLinearEquiv f).symm x = toConv (f.symm x.ofConv) := by
+  simp
+@[simp]
+theorem toEquiv_congrLinearEquiv (f : A ≃ₗ[R] B)
+    : (congrLinearEquiv f).toEquiv = WithConv.congr f.toEquiv :=
+  rfl
 
 end
 

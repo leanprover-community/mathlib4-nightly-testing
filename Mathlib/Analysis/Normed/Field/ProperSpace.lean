@@ -30,12 +30,14 @@ assert_not_exists FiniteDimensional
 
 open Metric Filter
 
-/-- A weakly locally compact normed field is proper.
+/--
+A weakly locally compact normed field is proper.
 This is a specialization of `ProperSpace.of_locallyCompactSpace`
-which holds for `NormedSpace`s but requires more imports. -/
+which holds for `NormedSpace`s but requires more imports.
+-/
 lemma ProperSpace.of_nontriviallyNormedField_of_weaklyLocallyCompactSpace
-    (𝕜 : Type*) [NontriviallyNormedField 𝕜] [WeaklyLocallyCompactSpace 𝕜] :
-    ProperSpace 𝕜 := by
+    (𝕜 : Type*) [NontriviallyNormedField 𝕜] [WeaklyLocallyCompactSpace 𝕜]
+    : ProperSpace 𝕜 := by
   rcases exists_isCompact_closedBall (0 : 𝕜) with ⟨r, rpos, hr⟩
   rcases NormedField.exists_one_lt_norm 𝕜 with ⟨c, hc⟩
   have hC n : IsCompact (closedBall (0 : 𝕜) (‖c‖ ^ n * r)) := by

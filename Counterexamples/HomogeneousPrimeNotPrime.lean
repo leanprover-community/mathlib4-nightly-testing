@@ -40,14 +40,11 @@ namespace CounterexampleNotPrimeButHomogeneousPrime
 
 open DirectSum
 
-abbrev Two :=
-  WithZero Unit
+abbrev Two := WithZero Unit
 
-instance : Fintype Two :=
-  inferInstanceAs (Fintype (Option Unit))
+instance : Fintype Two := inferInstanceAs (Fintype (Option Unit))
 
-instance : IsOrderedAddMonoid Two :=
-  { add_le_add_left := by decide }
+instance : IsOrderedAddMonoid Two := { add_le_add_left := by decide }
 
 section
 
@@ -64,14 +61,15 @@ instance [Fintype R] [DecidableEq R] : Fintype (submoduleZ R) :=
   inferInstanceAs (Fintype {zz : R × R // zz.1 = zz.2})
 
 /-- The grade 1 part of `R²` is `{(0, b) | b ∈ R}`. -/
-def submoduleO : Submodule R (R × R) :=
-  LinearMap.ker (LinearMap.fst R R R)
+def submoduleO : Submodule R (R × R) := LinearMap.ker (LinearMap.fst R R R)
 
 instance [Fintype R] [DecidableEq R] : Fintype (submoduleO R) :=
   inferInstanceAs (Fintype {zz : R × R // zz.1 = 0})
 
-/-- Given the above grading (see `submoduleZ` and `submoduleO`),
-  we turn `R²` into a graded ring. -/
+/--
+Given the above grading (see `submoduleZ` and `submoduleO`),
+we turn `R²` into a graded ring.
+-/
 def grading : Two → Submodule R (R × R)
   | 0 => submoduleZ R
   | 1 => submoduleO R
@@ -80,17 +78,19 @@ instance [Fintype R] [DecidableEq R] : ∀ (i : Two), Fintype (grading R i)
   | 0 => inferInstanceAs (Fintype (submoduleZ R))
   | 1 => inferInstanceAs (Fintype (submoduleO R))
 
-theorem grading.one_mem : (1 : R × R) ∈ grading R 0 :=
-  Eq.refl (1, 1).fst
+theorem grading.one_mem : (1 : R × R) ∈ grading R 0 := Eq.refl (1, 1).fst
 
-theorem grading.mul_mem :
-    ∀ ⦃i j : Two⦄ {a b : R × R} (_ : a ∈ grading R i) (_ : b ∈ grading R j),
+theorem grading.mul_mem
+    : ∀ ⦃i j : Two⦄ {a b : R × R} (_ : a ∈ grading R i) (_ : b ∈ grading R j),
       a * b ∈ grading R (i + j)
-  | 0, 0, a, b, (ha : a.1 = a.2), (hb : b.1 = b.2) => show a.1 * b.1 = a.2 * b.2 by rw [ha, hb]
+  | 0, 0, a, b, (ha : a.1 = a.2), (hb : b.1 = b.2) =>
+    show a.1 * b.1 = a.2 * b.2 by rw [ha, hb]
   | 0, 1, a, b, (_ : a.1 = a.2), (hb : b.1 = 0) =>
     show a.1 * b.1 = 0 by rw [hb, mul_zero]
-  | 1, 0, a, b, (ha : a.1 = 0), _ => show a.1 * b.1 = 0 by rw [ha, zero_mul]
-  | 1, 1, a, b, (ha : a.1 = 0), _ => show a.1 * b.1 = 0 by rw [ha, zero_mul]
+  | 1, 0, a, b, (ha : a.1 = 0), _ =>
+    show a.1 * b.1 = 0 by rw [ha, zero_mul]
+  | 1, 1, a, b, (ha : a.1 = 0), _ =>
+    show a.1 * b.1 = 0 by rw [ha, zero_mul]
 
 end
 
@@ -98,9 +98,7 @@ local notation "R" => ZMod 4
 
 /-- `R² ≅ {(a, a) | a ∈ R} ⨁ {(0, b) | b ∈ R}` by `(x, y) ↦ (x, x) + (0, y - x)`. -/
 def grading.decompose : R × R →+ DirectSum Two fun i => grading R i where
-  toFun zz :=
-    of (grading R ·) 0 ⟨(zz.1, zz.1), rfl⟩ +
-    of (grading R ·) 1 ⟨(0, zz.2 - zz.1), rfl⟩
+  toFun zz := of (grading R ·) 0 ⟨(zz.1, zz.1), rfl⟩ + of (grading R ·) 1 ⟨(0, zz.2 - zz.1), rfl⟩
   map_zero' := by decide
   map_add' := by
     rintro ⟨a1, b1⟩ ⟨a2, b2⟩
@@ -124,8 +122,7 @@ instance : GradedAlgebra (grading R) where
   right_inv := grading.right_inv
 
 /-- The counterexample is the ideal `I = span {(2, 2)}`. -/
-def I : Ideal (R × R) :=
-  Ideal.span {((2, 2) : R × R)}
+def I : Ideal (R × R) := Ideal.span {((2, 2) : R × R)}
 
 theorem I_not_prime : ¬I.IsPrime := by
   rintro ⟨-, h⟩
@@ -139,16 +136,15 @@ theorem I_isHomogeneous : Ideal.IsHomogeneous (grading R) I := by
   rw [Set.image_singleton]
   rfl
 
-
-theorem homogeneous_mem_or_mem : ∀ {x y : R × R},
-    SetLike.IsHomogeneousElem (grading R) x → SetLike.IsHomogeneousElem (grading R) y →
-    x * y ∈ I → x ∈ I ∨ y ∈ I := by
+theorem homogeneous_mem_or_mem
+    : ∀ {x y : R × R},
+      SetLike.IsHomogeneousElem (grading R) x → SetLike.IsHomogeneousElem (grading R) y → x * y ∈ I
+        → x ∈ I ∨ y ∈ I := by
   have h2 : Prime (2 : R) := by
     unfold Prime
     decide +kernel
   simp only [I, Ideal.mem_span_singleton]
-  rintro ⟨x1, x2⟩ ⟨y1, y2⟩ ⟨_ | ⟨⟨⟩⟩, rfl : x1 = _⟩ ⟨_ | ⟨⟨⟩⟩, rfl : y1 = _⟩ h <;>
-    decide +revert
+  rintro ⟨x1, x2⟩ ⟨y1, y2⟩ ⟨_ | ⟨⟨⟩⟩, rfl : x1 = _⟩ ⟨_ | ⟨⟨⟩⟩, rfl : y1 = _⟩ h <;> decide +revert
 
 end CounterexampleNotPrimeButHomogeneousPrime
 

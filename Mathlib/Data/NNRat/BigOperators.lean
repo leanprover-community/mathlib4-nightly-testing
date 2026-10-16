@@ -6,7 +6,6 @@ Authors: Yaël Dillies, Bhavik Mehta
 module
 
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-! # Casting lemmas for non-negative rational numbers involving sums and products
@@ -23,8 +22,7 @@ section DivisionSemiring
 variable {K : Type*} [DivisionSemiring K] [CharZero K]
 
 @[norm_cast]
-theorem cast_listSum (l : List ℚ≥0) : (l.sum : K) = (l.map (↑)).sum :=
-  map_list_sum (castHom _) _
+theorem cast_listSum (l : List ℚ≥0) : (l.sum : K) = (l.map (↑)).sum := map_list_sum (castHom _) _
 
 @[norm_cast]
 theorem cast_listProd (l : List ℚ≥0) : (l.prod : K) = (l.map (↑)).prod :=
@@ -56,13 +54,13 @@ end Semifield
 
 section Rat
 
-theorem toNNRat_sum_of_nonneg {s : Finset α} {f : α → ℚ} (hf : ∀ a, a ∈ s → 0 ≤ f a) :
-    (∑ a ∈ s, f a).toNNRat = ∑ a ∈ s, (f a).toNNRat := by
+theorem toNNRat_sum_of_nonneg {s : Finset α} {f : α → ℚ} (hf : ∀ a, a ∈ s → 0 ≤ f a)
+    : (∑ a ∈ s, f a).toNNRat = ∑ a ∈ s, (f a).toNNRat := by
   rw [← coe_inj, cast_sum, Rat.coe_toNNRat _ (Finset.sum_nonneg hf)]
   exact Finset.sum_congr rfl fun x hxs ↦ by rw [Rat.coe_toNNRat _ (hf x hxs)]
 
-theorem toNNRat_prod_of_nonneg {s : Finset α} {f : α → ℚ} (hf : ∀ a ∈ s, 0 ≤ f a) :
-    (∏ a ∈ s, f a).toNNRat = ∏ a ∈ s, (f a).toNNRat := by
+theorem toNNRat_prod_of_nonneg {s : Finset α} {f : α → ℚ} (hf : ∀ a ∈ s, 0 ≤ f a)
+    : (∏ a ∈ s, f a).toNNRat = ∏ a ∈ s, (f a).toNNRat := by
   rw [← coe_inj, cast_prod, Rat.coe_toNNRat _ (Finset.prod_nonneg hf)]
   exact Finset.prod_congr rfl fun x hxs ↦ by rw [Rat.coe_toNNRat _ (hf x hxs)]
 

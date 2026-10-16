@@ -9,7 +9,6 @@ public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.Topology.Algebra.Module.Equiv.Basic
 public import Mathlib.Topology.Bornology.Constructions
 public import Mathlib.Topology.UniformSpace.Equiv
-
 import Mathlib.Topology.Algebra.IsUniformGroup.Constructions
 
 /-! # Type synonym for types with a `CStarModule` structure
@@ -54,22 +53,25 @@ separate synonym for each type, and allows all the structure-copying code to be 
 @[expose] public section
 
 set_option linter.unusedVariables false in
-/-- A type synonym for endowing a given type with a `CStarModule` structure. This has the scoped
-notation `C⋆ᵐᵒᵈ`. -/
+/--
+A type synonym for endowing a given type with a `CStarModule` structure. This has the scoped
+notation `C⋆ᵐᵒᵈ`.
+-/
 @[nolint unusedArguments]
 def WithCStarModule (A E : Type*) := E
 
 namespace WithCStarModule
 
-@[inherit_doc]
-scoped notation "C⋆ᵐᵒᵈ(" A ", " E ")" => WithCStarModule A E
+@[inherit_doc] scoped notation "C⋆ᵐᵒᵈ(" A ", " E ")" => WithCStarModule A E
 
 section Basic
 
 variable (R R' A E : Type*)
 
-/-- The canonical equivalence between `C⋆ᵐᵒᵈ(A, E)` and `E`. This should always be used to
-convert back and forth between the representations. -/
+/--
+The canonical equivalence between `C⋆ᵐᵒᵈ(A, E)` and `E`. This should always be used to
+convert back and forth between the representations.
+-/
 def equiv : WithCStarModule A E ≃ E := Equiv.refl _
 
 instance [Nontrivial E] : Nontrivial C⋆ᵐᵒᵈ(A, E) := inferInstanceAs <| Nontrivial E
@@ -95,8 +97,8 @@ instance [AddCommGroup E] : AddCommGroup C⋆ᵐᵒᵈ(A, E) := inferInstanceAs 
 instance [Semiring R] [AddCommGroup E] [Module R E] : Module R C⋆ᵐᵒᵈ(A, E) :=
   inferInstanceAs <| Module R E
 
-instance [SMul R R'] [SMul R E] [SMul R' E] [IsScalarTower R R' E] :
-    IsScalarTower R R' C⋆ᵐᵒᵈ(A, E) :=
+instance [SMul R R'] [SMul R E] [SMul R' E] [IsScalarTower R R' E]
+    : IsScalarTower R R' C⋆ᵐᵒᵈ(A, E) :=
   inferInstanceAs <| IsScalarTower R R' E
 
 instance [SMul R E] [SMul R' E] [SMulCommClass R R' E] : SMulCommClass R R' C⋆ᵐᵒᵈ(A, E) :=
@@ -113,71 +115,56 @@ section AddCommGroup
 
 variable [AddCommGroup E]
 
-@[simp]
-theorem equiv_zero : equiv A E 0 = 0 :=
-  rfl
+@[simp] theorem equiv_zero : equiv A E 0 = 0 := rfl
+
+@[simp] theorem equiv_symm_zero : (equiv A E).symm 0 = 0 := rfl
+
+@[simp] theorem equiv_add : equiv A E (x + y) = equiv A E x + equiv A E y := rfl
 
 @[simp]
-theorem equiv_symm_zero : (equiv A E).symm 0 = 0 :=
+theorem equiv_symm_add : (equiv A E).symm (x' + y') = (equiv A E).symm x' + (equiv A E).symm y' :=
   rfl
 
-@[simp]
-theorem equiv_add : equiv A E (x + y) = equiv A E x + equiv A E y :=
-  rfl
+@[simp] theorem equiv_sub : equiv A E (x - y) = equiv A E x - equiv A E y := rfl
 
 @[simp]
-theorem equiv_symm_add :
-    (equiv A E).symm (x' + y') = (equiv A E).symm x' + (equiv A E).symm y' :=
+theorem equiv_symm_sub : (equiv A E).symm (x' - y') = (equiv A E).symm x' - (equiv A E).symm y' :=
   rfl
 
-@[simp]
-theorem equiv_sub : equiv A E (x - y) = equiv A E x - equiv A E y :=
-  rfl
+@[simp] theorem equiv_neg : equiv A E (-x) = - equiv A E x := rfl
 
-@[simp]
-theorem equiv_symm_sub :
-    (equiv A E).symm (x' - y') = (equiv A E).symm x' - (equiv A E).symm y' :=
-  rfl
-
-@[simp]
-theorem equiv_neg : equiv A E (-x) = -equiv A E x :=
-  rfl
-
-@[simp]
-theorem equiv_symm_neg : (equiv A E).symm (-x') = -(equiv A E).symm x' :=
-  rfl
+@[simp] theorem equiv_symm_neg : (equiv A E).symm (-x') = - (equiv A E).symm x' := rfl
 
 end AddCommGroup
 
-@[simp]
-theorem equiv_smul : equiv A E (c • x) = c • equiv A E x :=
-  rfl
+@[simp] theorem equiv_smul : equiv A E (c • x) = c • equiv A E x := rfl
 
-@[simp]
-theorem equiv_symm_smul : (equiv A E).symm (c • x') = c • (equiv A E).symm x' :=
-  rfl
+@[simp] theorem equiv_symm_smul : (equiv A E).symm (c • x') = c • (equiv A E).symm x' := rfl
 
 end Equiv
 
 /-- `WithCStarModule.equiv` as an additive equivalence. -/
-def addEquiv [AddCommGroup E] : C⋆ᵐᵒᵈ(A, E) ≃+ E :=
-  { AddEquiv.refl _ with
-    toFun := equiv _ _
-    invFun := (equiv _ _).symm }
+def addEquiv [AddCommGroup E] : C⋆ᵐᵒᵈ(A, E) ≃+ E := {
+  AddEquiv.refl _ with
+  toFun := equiv _ _
+  invFun := (equiv _ _).symm
+}
 
 /-- `WithCStarModule.equiv` as a linear equivalence. -/
 @[simps -fullyApplied]
-def linearEquiv [Semiring R] [AddCommGroup E] [Module R E] : C⋆ᵐᵒᵈ(A, E) ≃ₗ[R] E :=
-  { LinearEquiv.refl _ _ with
-    toFun := equiv _ _
-    invFun := (equiv _ _).symm }
+def linearEquiv [Semiring R] [AddCommGroup E] [Module R E] : C⋆ᵐᵒᵈ(A, E) ≃ₗ[R] E := {
+  LinearEquiv.refl _ _ with
+  toFun := equiv _ _
+  invFun := (equiv _ _).symm
+}
 
-lemma map_top_submodule {R : Type*} [Semiring R] [AddCommGroup E] [Module R E] :
-    (⊤ : Submodule R E).map (linearEquiv R A E).symm.toLinearMap = ⊤ :=
+lemma map_top_submodule {R : Type*} [Semiring R] [AddCommGroup E] [Module R E]
+    : (⊤ : Submodule R E).map (linearEquiv R A E).symm.toLinearMap = ⊤ :=
   Submodule.map_eq_top_iff.mpr rfl
 
-instance instModuleFinite [Semiring R] [AddCommGroup E] [Module R E] [Module.Finite R E] :
-    Module.Finite R C⋆ᵐᵒᵈ(A, E) := ‹Module.Finite R E›
+instance instModuleFinite [Semiring R] [AddCommGroup E] [Module R E] [Module.Finite R E]
+    : Module.Finite R C⋆ᵐᵒᵈ(A, E) :=
+  ‹Module.Finite R E›
 
 /-! ## `C⋆ᵐᵒᵈ(A, E)` inherits the uniformity and bornology from `E`. -/
 
@@ -187,17 +174,17 @@ instance [u : UniformSpace E] : UniformSpace C⋆ᵐᵒᵈ(A, E) := u.comap <| e
 
 instance [Bornology E] : Bornology C⋆ᵐᵒᵈ(A, E) := Bornology.induced <| equiv A E
 
-
 /-- `WithCStarModule.equiv` as a uniform equivalence between `C⋆ᵐᵒᵈ(A, E)` and `E`. -/
 def uniformEquiv [UniformSpace E] : C⋆ᵐᵒᵈ(A, E) ≃ᵤ E :=
   equiv A E |>.toUniformEquivOfIsUniformInducing ⟨rfl⟩
 
 /-- `WithCStarModule.equiv` as a continuous linear equivalence between `C⋆ᵐᵒᵈ E` and `E`. -/
 @[simps! apply symm_apply]
-def equivL [Semiring R] [AddCommGroup E] [UniformSpace E] [Module R E] : C⋆ᵐᵒᵈ(A, E) ≃L[R] E :=
-  { linearEquiv R A E with
-    continuous_toFun := UniformEquiv.continuous uniformEquiv
-    continuous_invFun := UniformEquiv.continuous uniformEquiv.symm }
+def equivL [Semiring R] [AddCommGroup E] [UniformSpace E] [Module R E] : C⋆ᵐᵒᵈ(A, E) ≃L[R] E := {
+  linearEquiv R A E with
+  continuous_toFun := UniformEquiv.continuous uniformEquiv
+  continuous_invFun := UniformEquiv.continuous uniformEquiv.symm
+}
 
 instance [UniformSpace E] [CompleteSpace E] : CompleteSpace C⋆ᵐᵒᵈ(A, E) :=
   uniformEquiv.completeSpace_iff.mpr inferInstance
@@ -208,8 +195,10 @@ instance [AddCommGroup E] [UniformSpace E] [ContinuousAdd E] : ContinuousAdd C�
 instance [AddCommGroup E] [UniformSpace E] [IsUniformAddGroup E] : IsUniformAddGroup C⋆ᵐᵒᵈ(A, E) :=
   IsUniformAddGroup.comap (addEquiv A E)
 
-instance [Semiring R] [TopologicalSpace R] [AddCommGroup E] [UniformSpace E] [Module R E]
-    [ContinuousSMul R E] : ContinuousSMul R C⋆ᵐᵒᵈ(A, E) :=
+instance
+    [Semiring R] [TopologicalSpace R] [AddCommGroup E] [UniformSpace E] [Module R E]
+    [ContinuousSMul R E]
+    : ContinuousSMul R C⋆ᵐᵒᵈ(A, E) :=
   ContinuousSMul.induced (linearEquiv R A E)
 
 end Basic
@@ -229,66 +218,38 @@ section AddCommGroup
 
 variable [AddCommGroup E] [AddCommGroup F]
 
-@[simp]
-theorem zero_fst : (0 : C⋆ᵐᵒᵈ(A, E × F)).fst = 0 :=
-  rfl
+@[simp] theorem zero_fst : (0 : C⋆ᵐᵒᵈ(A, E × F)).fst = 0 := rfl
 
-@[simp]
-theorem zero_snd : (0 : C⋆ᵐᵒᵈ(A, E × F)).snd = 0 :=
-  rfl
+@[simp] theorem zero_snd : (0 : C⋆ᵐᵒᵈ(A, E × F)).snd = 0 := rfl
 
-@[simp]
-theorem add_fst : (x + y).fst = x.fst + y.fst :=
-  rfl
+@[simp] theorem add_fst : (x + y).fst = x.fst + y.fst := rfl
 
-@[simp]
-theorem add_snd : (x + y).snd = x.snd + y.snd :=
-  rfl
+@[simp] theorem add_snd : (x + y).snd = x.snd + y.snd := rfl
 
-@[simp]
-theorem sub_fst : (x - y).fst = x.fst - y.fst :=
-  rfl
+@[simp] theorem sub_fst : (x - y).fst = x.fst - y.fst := rfl
 
-@[simp]
-theorem sub_snd : (x - y).snd = x.snd - y.snd :=
-  rfl
+@[simp] theorem sub_snd : (x - y).snd = x.snd - y.snd := rfl
 
-@[simp]
-theorem neg_fst : (-x).fst = -x.fst :=
-  rfl
+@[simp] theorem neg_fst : (-x).fst = -x.fst := rfl
 
-@[simp]
-theorem neg_snd : (-x).snd = -x.snd :=
-  rfl
+@[simp] theorem neg_snd : (-x).snd = -x.snd := rfl
 
 end AddCommGroup
 
-@[simp]
-theorem smul_fst : (c • x).fst = c • x.fst :=
-  rfl
+@[simp] theorem smul_fst : (c • x).fst = c • x.fst := rfl
 
-@[simp]
-theorem smul_snd : (c • x).snd = c • x.snd :=
-  rfl
+@[simp] theorem smul_snd : (c • x).snd = c • x.snd := rfl
 
 /-! Note that the unapplied versions of these lemmas are deliberately omitted, as they break
 the use of the type synonym. -/
 
-@[simp]
-theorem equiv_fst (x : C⋆ᵐᵒᵈ(A, E × F)) : (equiv A (E × F) x).fst = x.fst :=
-  rfl
+@[simp] theorem equiv_fst (x : C⋆ᵐᵒᵈ(A, E × F)) : (equiv A (E × F) x).fst = x.fst := rfl
 
-@[simp]
-theorem equiv_snd (x : C⋆ᵐᵒᵈ(A, E × F)) : (equiv A (E × F) x).snd = x.snd :=
-  rfl
+@[simp] theorem equiv_snd (x : C⋆ᵐᵒᵈ(A, E × F)) : (equiv A (E × F) x).snd = x.snd := rfl
 
-@[simp]
-theorem equiv_symm_fst (x : E × F) : ((equiv A (E × F)).symm x).fst = x.fst :=
-  rfl
+@[simp] theorem equiv_symm_fst (x : E × F) : ((equiv A (E × F)).symm x).fst = x.fst := rfl
 
-@[simp]
-theorem equiv_symm_snd (x : E × F) : ((equiv A (E × F)).symm x).snd = x.snd :=
-  rfl
+@[simp] theorem equiv_symm_snd (x : E × F) : ((equiv A (E × F)).symm x).snd = x.snd := rfl
 
 end Prod
 
@@ -301,14 +262,16 @@ We also provide a `CoeFun` instance for `WithCStarModule (Π i, E i)`. -/
 
 section Pi
 
-/-- The following should not be a `FunLike` instance because then the coercion `⇑` would get
-unfolded to `FunLike.coe` instead of `WithCStarModule.equiv`. -/
+/--
+The following should not be a `FunLike` instance because then the coercion `⇑` would get
+unfolded to `FunLike.coe` instead of `WithCStarModule.equiv`.
+-/
 instance {A ι : Type*} (E : ι → Type*) : CoeFun (C⋆ᵐᵒᵈ(A, Π i, E i)) (fun _ ↦ Π i, E i) where
   coe := equiv _ _
 
 @[ext]
-protected theorem ext {A ι : Type*} {E : ι → Type*} {x y : C⋆ᵐᵒᵈ(A, Π i, E i)}
-    (h : ∀ i, x i = y i) : x = y :=
+protected theorem ext {A ι : Type*} {E : ι → Type*} {x y : C⋆ᵐᵒᵈ(A, Π i, E i)} (h : ∀ i, x i = y i)
+    : x = y :=
   funext h
 
 variable {R A ι : Type*} {E : ι → Type*}
@@ -319,39 +282,24 @@ section AddCommGroup
 
 variable [∀ i, AddCommGroup (E i)]
 
-@[simp]
-theorem zero_apply : (0 : C⋆ᵐᵒᵈ(A, Π i, E i)) i = 0 :=
-  rfl
+@[simp] theorem zero_apply : (0 : C⋆ᵐᵒᵈ(A, Π i, E i)) i = 0 := rfl
 
-@[simp]
-theorem add_apply : (x + y) i = x i + y i :=
-  rfl
+@[simp] theorem add_apply : (x + y) i = x i + y i := rfl
 
-@[simp]
-theorem sub_apply : (x - y) i = x i - y i :=
-  rfl
+@[simp] theorem sub_apply : (x - y) i = x i - y i := rfl
 
-@[simp]
-theorem neg_apply : (-x) i = -x i :=
-  rfl
+@[simp] theorem neg_apply : (-x) i = - x i := rfl
 
 end AddCommGroup
 
-@[simp]
-theorem smul_apply : (c • x) i = c • x i :=
-  rfl
+@[simp] theorem smul_apply : (c • x) i = c • x i := rfl
 
 /-! Note that the unapplied versions of these lemmas are deliberately omitted, as they break
 the use of the type synonym. -/
 
-@[simp]
-theorem equiv_pi_apply (i : ι) : equiv _ _ x i = x i :=
-  rfl
+@[simp] theorem equiv_pi_apply (i : ι) : equiv _ _ x i = x i := rfl
 
-@[simp]
-theorem equiv_symm_pi_apply (x : ∀ i, E i) (i : ι) :
-    (equiv A _).symm x i = x i :=
-  rfl
+@[simp] theorem equiv_symm_pi_apply (x : ∀ i, E i) (i : ι) : (equiv A _).symm x i = x i := rfl
 
 end Pi
 

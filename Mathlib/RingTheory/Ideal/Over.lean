@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Ideal.Pointwise
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
-
 import Mathlib.Algebra.Algebra.Tower
 
 /-!
@@ -41,7 +40,8 @@ variable {S : Type*} [CommRing S] {f : R →+* S}
 
 variable {p : Ideal R} {P : Ideal S}
 
-/-- If there is an injective map `R/p → S/P` such that the following diagram commutes:
+/--
+If there is an injective map `R/p → S/P` such that the following diagram commutes:
 ```
 R   → S
 ↓     ↓
@@ -49,9 +49,10 @@ R/p → S/P
 ```
 then `P` lies over `p`.
 -/
-theorem comap_eq_of_scalar_tower_quotient [Algebra R S] [Algebra (R ⧸ p) (S ⧸ P)]
-    [IsScalarTower R (R ⧸ p) (S ⧸ P)] (h : Function.Injective (algebraMap (R ⧸ p) (S ⧸ P))) :
-    comap (algebraMap R S) P = p := by
+theorem comap_eq_of_scalar_tower_quotient
+    [Algebra R S] [Algebra (R ⧸ p) (S ⧸ P)] [IsScalarTower R (R ⧸ p) (S ⧸ P)]
+    (h : Function.Injective (algebraMap (R ⧸ p) (S ⧸ P)))
+    : comap (algebraMap R S) P = p := by
   ext x
   rw [mem_comap, ← Quotient.eq_zero_iff_mem, ← Quotient.eq_zero_iff_mem, Quotient.mk_algebraMap,
     IsScalarTower.algebraMap_apply R (R ⧸ p) (S ⧸ P), Quotient.algebraMap_eq]
@@ -64,23 +65,22 @@ instance Quotient.algebraQuotientMapQuotient : Algebra (R ⧸ p) (S ⧸ map (alg
   Ideal.Quotient.algebraQuotientOfLEComap le_comap_map
 
 @[simp]
-theorem Quotient.algebraMap_quotient_map_quotient (x : R) :
-    letI f := algebraMap R S
-    algebraMap (R ⧸ p) (S ⧸ map f p) (Ideal.Quotient.mk p x) =
-    Ideal.Quotient.mk (map f p) (f x) :=
+theorem Quotient.algebraMap_quotient_map_quotient (x : R)
+    : letI f := algebraMap R S
+      algebraMap (R ⧸ p) (S ⧸ map f p) (Ideal.Quotient.mk p x)
+        = Ideal.Quotient.mk (map f p) (f x) :=
   rfl
 
 @[simp]
-theorem Quotient.mk_smul_mk_quotient_map_quotient (x : R) (y : S) :
-    letI f := algebraMap R S
-    Quotient.mk p x • Quotient.mk (map f p) y = Quotient.mk (map f p) (f x * y) :=
+theorem Quotient.mk_smul_mk_quotient_map_quotient (x : R) (y : S)
+    : letI f := algebraMap R S
+      Quotient.mk p x • Quotient.mk (map f p) y = Quotient.mk (map f p) (f x * y) :=
   Algebra.smul_def _ _
 
-instance Quotient.tower_quotient_map_quotient :
-    IsScalarTower R (R ⧸ p) (S ⧸ map (algebraMap R S) p) :=
+instance Quotient.tower_quotient_map_quotient
+    : IsScalarTower R (R ⧸ p) (S ⧸ map (algebraMap R S) p) :=
   IsScalarTower.of_algebraMap_eq fun x => by
-    rw [Quotient.algebraMap_eq, Quotient.algebraMap_quotient_map_quotient,
-      Quotient.mk_algebraMap]
+    rw [Quotient.algebraMap_eq, Quotient.algebraMap_quotient_map_quotient, Quotient.mk_algebraMap]
 
 end CommRing
 
@@ -88,9 +88,14 @@ section ideal_liesOver
 
 section Semiring
 
-variable (A : Type*) [CommSemiring A] {B C : Type*} [Semiring B] [Semiring C] [Algebra A B]
-  [Algebra A C] (P : Ideal B) {Q : Ideal C} (p : Ideal A)
-  {G : Type*} [Group G] [MulSemiringAction G B] (g : G)
+variable
+  (A : Type*) [CommSemiring A]
+  {B C : Type*} [Semiring B] [Semiring C] [Algebra A B] [Algebra A C]
+  (P : Ideal B)
+  {Q : Ideal C}
+  (p : Ideal A)
+  {G : Type*} [Group G] [MulSemiringAction G B]
+  (g : G)
 
 /-- The ideal obtained by pulling back the ideal `P` from `B` to `A`. -/
 abbrev under : Ideal A := Ideal.comap (algebraMap A B) P
@@ -99,8 +104,7 @@ theorem under_def : P.under A = Ideal.comap (algebraMap A B) P := rfl
 
 theorem mem_under {x : A} : x ∈ P.under A ↔ algebraMap A B x ∈ P := mem_comap
 
-instance IsPrime.under [hP : P.IsPrime] : (P.under A).IsPrime :=
-  hP.comap (algebraMap A B)
+instance IsPrime.under [hP : P.IsPrime] : (P.under A).IsPrime := hP.comap (algebraMap A B)
 
 @[simp]
 lemma under_smul [SMulCommClass G A B] : (g • P : Ideal B).under A = P.under A := by
@@ -108,8 +112,8 @@ lemma under_smul [SMulCommClass G A B] : (g • P : Ideal B).under A = P.under A
   rw [mem_comap, mem_comap, mem_pointwise_smul_iff_inv_smul_mem, smul_algebraMap]
 
 @[simp]
-theorem smul_under [MulSemiringAction G A] [SMulDistribClass G A B] :
-    g • P.under A = (g • P).under A := by
+theorem smul_under [MulSemiringAction G A] [SMulDistribClass G A B]
+    : g • P.under A = (g • P).under A := by
   conv_lhs => rw [pointwise_smul_eq_comap, ← comap_coe, under_def, comap_comap]
   conv_rhs => rw [pointwise_smul_eq_comap, ← comap_coe, under_def, comap_comap]
   congr
@@ -122,10 +126,12 @@ theorem under_top : under A (⊤ : Ideal B) = ⊤ := comap_top
 variable {A}
 
 /-- `P` lies over `p` if `p` is the preimage of `P` by the `algebraMap`. -/
-@[mk_iff] class LiesOver : Prop where
+@[mk_iff]
+class LiesOver : Prop where
   over : p = P.under A
 
-instance over_under : P.LiesOver (P.under A) where over := rfl
+instance over_under : P.LiesOver (P.under A) where
+  over := rfl
 
 theorem over_def [P.LiesOver p] : p = P.under A := LiesOver.over
 
@@ -149,16 +155,17 @@ lemma isPrime_of_liesOver [P.LiesOver p] [P.IsPrime] : p.IsPrime := by
 
 variable {P}
 
-theorem LiesOver.of_eq_comap [Q.LiesOver p] {F : Type*} [FunLike F B C]
-    [AlgHomClass F A B C] (f : F) (h : P = Q.comap f) : P.LiesOver p where
+theorem LiesOver.of_eq_comap
+    [Q.LiesOver p] {F : Type*} [FunLike F B C] [AlgHomClass F A B C] (f : F) (h : P = Q.comap f)
+    : P.LiesOver p where
   over := by
     rw [h]
     exact (over_def Q p).trans <|
-      congrFun (congrFun (congrArg
-        comap ((AlgHom.ofClass f).comp_algebraMap.symm)) _) Q
+      congrFun (congrFun (congrArg comap ((AlgHom.ofClass f).comp_algebraMap.symm)) _) Q
 
-theorem LiesOver.of_eq_map_equiv [P.LiesOver p] {E : Type*} [EquivLike E B C]
-    [AlgEquivClass E A B C] (σ : E) (h : Q = P.map σ) : Q.LiesOver p := by
+theorem LiesOver.of_eq_map_equiv
+    [P.LiesOver p] {E : Type*} [EquivLike E B C] [AlgEquivClass E A B C] (σ : E) (h : Q = P.map σ)
+    : Q.LiesOver p := by
   rw [← show _ = P.map σ from comap_symm (RingEquivClass.toRingEquiv σ)] at h
   exact of_eq_comap p (AlgEquiv.ofClass σ).symm h
 
@@ -168,20 +175,23 @@ instance LiesOver.smul [SMulCommClass G A B] [h : P.LiesOver p] : (g • P).Lies
 
 variable (P) (Q)
 
-instance comap_liesOver [Q.LiesOver p] {F : Type*} [FunLike F B C] [AlgHomClass F A B C]
-    (f : F) : (Q.comap f).LiesOver p :=
+instance comap_liesOver [Q.LiesOver p] {F : Type*} [FunLike F B C] [AlgHomClass F A B C] (f : F)
+    : (Q.comap f).LiesOver p :=
   LiesOver.of_eq_comap p f rfl
 
-instance map_equiv_liesOver [P.LiesOver p] {E : Type*} [EquivLike E B C] [AlgEquivClass E A B C]
-    (σ : E) : (P.map σ).LiesOver p :=
+instance map_equiv_liesOver
+    [P.LiesOver p] {E : Type*} [EquivLike E B C] [AlgEquivClass E A B C] (σ : E)
+    : (P.map σ).LiesOver p :=
   LiesOver.of_eq_map_equiv p σ rfl
 
 end Semiring
 
 section CommSemiring
 
-variable {A : Type*} [CommSemiring A] {B : Type*} [CommSemiring B] {C : Type*} [Semiring C]
-  [Algebra A B] [Algebra B C] [Algebra A C] [IsScalarTower A B C]
+variable
+  {A : Type*} [CommSemiring A]
+  {B : Type*} [CommSemiring B]
+  {C : Type*} [Semiring C] [Algebra A B] [Algebra B C] [Algebra A C] [IsScalarTower A B C]
   (𝔓 : Ideal C) (P : Ideal B) (p : Ideal A)
 
 @[simp]
@@ -194,11 +204,9 @@ theorem LiesOver.trans [𝔓.LiesOver P] [P.LiesOver p] : 𝔓.LiesOver p where
 theorem LiesOver.tower_bot [hp : 𝔓.LiesOver p] [hP : 𝔓.LiesOver P] : P.LiesOver p where
   over := by rw [𝔓.over_def p, 𝔓.over_def P, under_under]
 
-instance [𝔓.LiesOver P] : 𝔓.LiesOver (P.under A) :=
-  .trans 𝔓 P (P.under A)
+instance [𝔓.LiesOver P] : 𝔓.LiesOver (P.under A) := .trans 𝔓 P (P.under A)
 
-instance [𝔓.LiesOver P] : P.LiesOver (𝔓.under A) :=
-  .tower_bot 𝔓 P (𝔓.under A)
+instance [𝔓.LiesOver P] : P.LiesOver (𝔓.under A) := .tower_bot 𝔓 P (𝔓.under A)
 
 /--
 Consider the following commutative diagram of ring maps
@@ -210,9 +218,10 @@ C → D
 and let `P` be an ideal of `B`. The image in `C` of the ideal of `A` under `P` is included
 in the ideal of `C` under the image of `P` in `D`.
 -/
-theorem map_under_le_under_map {C D : Type*} [CommSemiring C] [Semiring D] [Algebra A C]
-    [Algebra C D] [Algebra A D] [Algebra B D] [IsScalarTower A C D] [IsScalarTower A B D] :
-    map (algebraMap A C) (under A P) ≤ under C (map (algebraMap B D) P) := by
+theorem map_under_le_under_map
+    {C D : Type*} [CommSemiring C] [Semiring D] [Algebra A C] [Algebra C D] [Algebra A D]
+    [Algebra B D] [IsScalarTower A C D] [IsScalarTower A B D]
+    : map (algebraMap A C) (under A P) ≤ under C (map (algebraMap B D) P) := by
   apply le_comap_of_map_le
   rw [map_map, ← IsScalarTower.algebraMap_eq, map_le_iff_le_comap,
     IsScalarTower.algebraMap_eq A B D, ← comap_comap]
@@ -229,22 +238,23 @@ and let `P` be an ideal of `B`. Assume that the image in `C` of the ideal of `A`
 is maximal and that the image of `P` in `D` is not equal to `D`, then the image in `C` of the
 ideal of `A` under `P` is equal to the ideal of `C` under the image of `P` in `D`.
 -/
-theorem under_map_eq_map_under {C D : Type*} [CommSemiring C] [Semiring D] [Algebra A C]
-    [Algebra C D] [Algebra A D] [Algebra B D] [IsScalarTower A C D] [IsScalarTower A B D]
-    (h₁ : (map (algebraMap A C) (under A P)).IsMaximal) (h₂ : map (algebraMap B D) P ≠ ⊤) :
-    under C (map (algebraMap B D) P) = map (algebraMap A C) (under A P) :=
+theorem under_map_eq_map_under
+    {C D : Type*} [CommSemiring C] [Semiring D] [Algebra A C] [Algebra C D] [Algebra A D]
+    [Algebra B D] [IsScalarTower A C D] [IsScalarTower A B D]
+    (h₁ : (map (algebraMap A C) (under A P)).IsMaximal) (h₂ : map (algebraMap B D) P ≠ ⊤)
+    : under C (map (algebraMap B D) P) = map (algebraMap A C) (under A P) :=
   (IsCoatom.le_iff_eq (isMaximal_def.mp h₁) (comap_ne_top (algebraMap C D) h₂)).mp <|
     map_under_le_under_map P
 
-theorem disjoint_primeCompl_of_liesOver [p.IsPrime] [hPp : 𝔓.LiesOver p] :
-  Disjoint ((Algebra.algebraMapSubmonoid C p.primeCompl) : Set C) (𝔓 : Set C) := by
+theorem disjoint_primeCompl_of_liesOver [p.IsPrime] [hPp : 𝔓.LiesOver p]
+    : Disjoint ((Algebra.algebraMapSubmonoid C p.primeCompl) : Set C) (𝔓 : Set C) := by
   rw [liesOver_iff, under_def, SetLike.ext'_iff, coe_comap] at hPp
-  simpa only [Algebra.algebraMapSubmonoid, primeCompl, hPp, ← le_compl_iff_disjoint_left]
-    using! Set.subset_compl_comm.mp (by simp)
+  simpa only [Algebra.algebraMapSubmonoid, primeCompl, hPp, ← le_compl_iff_disjoint_left] using!
+    Set.subset_compl_comm.mp (by simp)
 
 theorem algebraMapSubmonoid_primeCompl_of_liesOver_surjective
-    [p.IsPrime] [P.IsPrime] [P.LiesOver p] (hf : Function.Surjective (algebraMap A B)) :
-    Algebra.algebraMapSubmonoid B p.primeCompl = P.primeCompl := by
+    [p.IsPrime] [P.IsPrime] [P.LiesOver p] (hf : Function.Surjective (algebraMap A B))
+    : Algebra.algebraMapSubmonoid B p.primeCompl = P.primeCompl := by
   simpa [over_def P p] using! P.map_primeCompl_comap_of_surjective (algebraMap A B) hf
 
 variable (B)
@@ -256,8 +266,7 @@ end CommSemiring
 
 section CommRing
 
-variable (A B : Type*) [CommSemiring A] [Semiring B]
-  [Algebra A B] [FaithfulSMul A B] {p : Ideal A}
+variable (A B : Type*) [CommSemiring A] [Semiring B] [Algebra A B] [FaithfulSMul A B] {p : Ideal A}
 
 @[simp]
 theorem under_bot : under A (⊥ : Ideal B) = ⊥ :=
@@ -273,14 +282,17 @@ theorem ne_bot_of_liesOver_of_ne_bot (hp : p ≠ ⊥) (P : Ideal B) [P.LiesOver 
 
 end CommRing
 
-instance {K A : Type*} [Field K] [Semiring A] [Algebra K A] (P : Ideal A) [P.IsPrime] :
-    P.LiesOver (⊥ : Ideal K) :=
+instance {K A : Type*} [Field K] [Semiring A] [Algebra K A] (P : Ideal A) [P.IsPrime]
+    : P.LiesOver (⊥ : Ideal K) :=
   ⟨((IsSimpleOrder.eq_bot_or_eq_top _).resolve_right Ideal.IsPrime.ne_top').symm⟩
 namespace Quotient
 
-variable (R : Type*) [CommSemiring R] {A B C : Type*} [CommRing A] [CommRing B] [CommRing C]
-  [Algebra A B] [Algebra A C] [Algebra R A] [Algebra R B] [IsScalarTower R A B]
-  (P : Ideal B) {Q : Ideal C} (p : Ideal A) [Q.LiesOver p] [P.LiesOver p]
+variable
+  (R : Type*) [CommSemiring R]
+  {A B C : Type*} [CommRing A] [CommRing B] [CommRing C] [Algebra A B] [Algebra A C] [Algebra R A]
+  [Algebra R B] [IsScalarTower R A B]
+  (P : Ideal B)
+  {Q : Ideal C} (p : Ideal A) [Q.LiesOver p] [P.LiesOver p]
   (G : Type*) [Group G] [MulSemiringAction G B] [SMulCommClass G A B]
 
 /-- If `P` lies over `p`, then canonically `B ⧸ P` is a `A ⧸ p`-algebra. -/
@@ -288,8 +300,8 @@ instance algebraOfLiesOver : Algebra (A ⧸ p) (B ⧸ P) :=
   algebraQuotientOfLEComap (le_of_eq (P.over_def p))
 
 @[simp]
-lemma algebraMap_mk_of_liesOver (x : A) :
-    algebraMap (A ⧸ p) (B ⧸ P) (Ideal.Quotient.mk p x) = Ideal.Quotient.mk P (algebraMap _ _ x) :=
+lemma algebraMap_mk_of_liesOver (x : A)
+    : algebraMap (A ⧸ p) (B ⧸ P) (Ideal.Quotient.mk p x) = Ideal.Quotient.mk P (algebraMap _ _ x) :=
   rfl
 
 instance isScalarTower_of_liesOver : IsScalarTower R (A ⧸ p) (B ⧸ P) :=
@@ -314,8 +326,10 @@ section algEquiv
 
 variable {P} {E : Type*} [EquivLike E B C] [AlgEquivClass E A B C] (σ : E)
 
-/-- An `A ⧸ p`-algebra isomorphism between `B ⧸ P` and `C ⧸ Q` induced by an `A`-algebra
-  isomorphism between `B` and `C`, where `Q = σ P`. -/
+/--
+An `A ⧸ p`-algebra isomorphism between `B ⧸ P` and `C ⧸ Q` induced by an `A`-algebra
+isomorphism between `B` and `C`, where `Q = σ P`.
+-/
 def algEquivOfEqMap (h : Q = P.map σ) : (B ⧸ P) ≃ₐ[A ⧸ p] (C ⧸ Q) where
   __ := quotientEquiv P Q (RingEquivClass.toRingEquiv σ) h
   commutes' := by
@@ -323,17 +337,17 @@ def algEquivOfEqMap (h : Q = P.map σ) : (B ⧸ P) ≃ₐ[A ⧸ p] (C ⧸ Q) whe
     exact congrArg (Ideal.Quotient.mk Q) (AlgHomClass.commutes σ x)
 
 @[simp]
-theorem algEquivOfEqMap_apply (h : Q = P.map σ) (x : B) : algEquivOfEqMap p σ h x = σ x :=
-  rfl
+theorem algEquivOfEqMap_apply (h : Q = P.map σ) (x : B) : algEquivOfEqMap p σ h x = σ x := rfl
 
-/-- An `A ⧸ p`-algebra isomorphism between `B ⧸ P` and `C ⧸ Q` induced by an `A`-algebra
-  isomorphism between `B` and `C`, where `P = σ⁻¹ Q`. -/
+/--
+An `A ⧸ p`-algebra isomorphism between `B ⧸ P` and `C ⧸ Q` induced by an `A`-algebra
+isomorphism between `B` and `C`, where `P = σ⁻¹ Q`.
+-/
 def algEquivOfEqComap (h : P = Q.comap σ) : (B ⧸ P) ≃ₐ[A ⧸ p] (C ⧸ Q) :=
   algEquivOfEqMap p σ ((congrArg (map σ) h).trans (Q.map_comap_eq_self_of_equiv σ)).symm
 
 @[simp]
-theorem algEquivOfEqComap_apply (h : P = Q.comap σ) (x : B) : algEquivOfEqComap p σ h x = σ x :=
-  rfl
+theorem algEquivOfEqComap_apply (h : P = Q.comap σ) (x : B) : algEquivOfEqComap p σ h x = σ x := rfl
 
 end algEquiv
 
@@ -347,20 +361,21 @@ def stabilizerHom : MulAction.stabilizer G P →* ((B ⧸ P) ≃ₐ[A ⧸ p] (B 
     ext ⟨x⟩
     exact congrArg (Ideal.Quotient.mk P) (mul_smul g h x)
 
-@[simp] theorem stabilizerHom_apply (g : MulAction.stabilizer G P) (b : B) :
-    stabilizerHom P p G g b = ↑(g • b) :=
+@[simp]
+theorem stabilizerHom_apply (g : MulAction.stabilizer G P) (b : B)
+    : stabilizerHom P p G g b = ↑(g • b) :=
   rfl
 
 lemma ker_stabilizerHom : (stabilizerHom P p G).ker = P.inertia (MulAction.stabilizer G P) := by
   ext σ
   simp [DFunLike.ext_iff, mk_surjective.forall, Quotient.eq]
 
-theorem map_ker_stabilizer_subtype :
-    (stabilizerHom P p G).ker.map (Subgroup.subtype _) = P.inertia G := by
+theorem map_ker_stabilizer_subtype
+    : (stabilizerHom P p G).ker.map (Subgroup.subtype _) = P.inertia G := by
   simp [ker_stabilizerHom, Ideal.inertia_le_stabilizer]
 
-instance (p : Ideal R) (P : Ideal A) [P.IsPrime] [P.LiesOver p] :
-    (P.map (Ideal.Quotient.mk <| p.map (algebraMap R A))).IsPrime := by
+instance (p : Ideal R) (P : Ideal A) [P.IsPrime] [P.LiesOver p]
+    : (P.map (Ideal.Quotient.mk <| p.map (algebraMap R A))).IsPrime := by
   apply Ideal.isPrime_map_quotientMk_of_isPrime
   rw [Ideal.map_le_iff_le_comap, Ideal.LiesOver.over (p := p) (P := P)]
 
@@ -373,24 +388,22 @@ section primesOver
 variable {A : Type*} [CommSemiring A] (p : Ideal A) (B : Type*) [Semiring B] [Algebra A B]
 
 /-- The set of all prime ideals in `B` that lie over an ideal `p` of `A`. -/
-def primesOver : Set (Ideal B) :=
-  { P : Ideal B | P.IsPrime ∧ P.LiesOver p }
+def primesOver : Set (Ideal B) := { P : Ideal B | P.IsPrime ∧ P.LiesOver p }
 
 variable {B}
 
-instance primesOver.isPrime (Q : primesOver p B) : Q.1.IsPrime :=
-  Q.2.1
+instance primesOver.isPrime (Q : primesOver p B) : Q.1.IsPrime := Q.2.1
 
-instance primesOver.liesOver (Q : primesOver p B) : Q.1.LiesOver p :=
-  Q.2.2
+instance primesOver.liesOver (Q : primesOver p B) : Q.1.LiesOver p := Q.2.2
 
 /-- If an ideal `P` of `B` is prime and lying over `p`, then it is in `primesOver p B`. -/
 abbrev primesOver.mk (P : Ideal B) [hPp : P.IsPrime] [hp : P.LiesOver p] : primesOver p B :=
   ⟨P, ⟨hPp, hp⟩⟩
 
 variable {p} in
-theorem ne_bot_of_mem_primesOver [FaithfulSMul A B] (hp : p ≠ ⊥) {P : Ideal B}
-    (hP : P ∈ p.primesOver B) : P ≠ ⊥ := by
+theorem ne_bot_of_mem_primesOver
+    [FaithfulSMul A B] (hp : p ≠ ⊥) {P : Ideal B} (hP : P ∈ p.primesOver B)
+    : P ≠ ⊥ := by
   have : P.LiesOver p := hP.2
   exact ne_bot_of_liesOver_of_ne_bot hp P
 

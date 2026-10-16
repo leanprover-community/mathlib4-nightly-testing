@@ -8,7 +8,6 @@ module
 public import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Basic
 public import Mathlib.CategoryTheory.Abelian.Transfer
 public import Mathlib.CategoryTheory.Adjunction.AdjointFunctorTheorems
-
 import Mathlib.CategoryTheory.Abelian.Subobject
 
 /-!
@@ -73,13 +72,14 @@ class IsGrothendieckAbelian [Abelian C] : Prop where
   ab5OfSize : AB5OfSize.{w, w} C := by infer_instance
   hasSeparator : HasSeparator C := by infer_instance
 
-attribute [instance] IsGrothendieckAbelian.locallySmall
-  IsGrothendieckAbelian.hasFilteredColimitsOfSize IsGrothendieckAbelian.ab5OfSize
-  IsGrothendieckAbelian.hasSeparator
+attribute [instance]
+  IsGrothendieckAbelian.locallySmall IsGrothendieckAbelian.hasFilteredColimitsOfSize
+  IsGrothendieckAbelian.ab5OfSize IsGrothendieckAbelian.hasSeparator
 
 variable {C} {D} in
-theorem IsGrothendieckAbelian.of_equivalence [Abelian C] [Abelian D]
-    [IsGrothendieckAbelian.{w} C] (α : C ≌ D) : IsGrothendieckAbelian.{w} D := by
+theorem IsGrothendieckAbelian.of_equivalence
+    [Abelian C] [Abelian D] [IsGrothendieckAbelian.{w} C] (α : C ≌ D)
+    : IsGrothendieckAbelian.{w} D := by
   have hasFilteredColimits : HasFilteredColimitsOfSize.{w, w, v₂, u₂} D :=
     ⟨fun _ _ _ => Adjunction.hasColimitsOfShape_of_equivalence α.inverse⟩
   refine ⟨?_, hasFilteredColimits, ?_, ?_⟩
@@ -88,8 +88,8 @@ theorem IsGrothendieckAbelian.of_equivalence [Abelian C] [Abelian D]
     exact HasExactColimitsOfShape.of_codomain_equivalence _ α
   · exact HasSeparator.of_equivalence α
 
-instance ShrinkHoms.isGrothendieckAbelian [Abelian C] [IsGrothendieckAbelian.{w} C] :
-    IsGrothendieckAbelian.{w, w} (ShrinkHoms C) :=
+instance ShrinkHoms.isGrothendieckAbelian [Abelian C] [IsGrothendieckAbelian.{w} C]
+    : IsGrothendieckAbelian.{w, w} (ShrinkHoms C) :=
   IsGrothendieckAbelian.of_equivalence <| ShrinkHoms.equivalence C
 
 section Instances

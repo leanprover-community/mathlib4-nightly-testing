@@ -37,7 +37,6 @@ We further define sums of functors and natural transformations, written `F.sum G
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
@@ -49,31 +48,34 @@ section
 
 variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 
-/-- `sum C D` gives the direct sum of two categories.
--/
+/-- `sum C D` gives the direct sum of two categories. -/
 instance sum : Category.{max v₁ v₂} (C ⊕ D) where
   Hom X Y :=
     match X, Y with
-    | inl X, inl Y => ULift.{max v₁ v₂} (X ⟶ Y)
-    | inl _, inr _ => PEmpty
-    | inr _, inl _ => PEmpty
-    | inr X, inr Y => ULift.{max v₁ v₂} (X ⟶ Y)
+    | inl X, inl Y =>
+      ULift.{max v₁ v₂} (X ⟶ Y)
+    | inl _, inr _ =>
+      PEmpty
+    | inr _, inl _ =>
+      PEmpty
+    | inr X, inr Y =>
+      ULift.{max v₁ v₂} (X ⟶ Y)
   id X :=
     match X with
     | inl X => ULift.up (𝟙 X)
     | inr X => ULift.up (𝟙 X)
   comp {X Y Z} f g :=
     match X, Y, Z, f, g with
-    | inl _, inl _, inl _, f, g => ULift.up <| f.down ≫ g.down
-    | inr _, inr _, inr _, f, g => ULift.up <| f.down ≫ g.down
+    | inl _, inl _, inl _, f, g =>
+      ULift.up <| f.down ≫ g.down
+    | inr _, inr _, inr _, f, g =>
+      ULift.up <| f.down ≫ g.down
 
 @[aesop norm -10 destruct (rule_sets := [CategoryTheory])]
-theorem hom_inl_inr_false {X : C} {Y : D} (f : Sum.inl X ⟶ Sum.inr Y) : False := by
-  cases f
+theorem hom_inl_inr_false {X : C} {Y : D} (f : Sum.inl X ⟶ Sum.inr Y) : False := by cases f
 
 @[aesop norm -10 destruct (rule_sets := [CategoryTheory])]
-theorem hom_inr_inl_false {X : C} {Y : D} (f : Sum.inr X ⟶ Sum.inl Y) : False := by
-  cases f
+theorem hom_inr_inl_false {X : C} {Y : D} (f : Sum.inr X ⟶ Sum.inl Y) : False := by cases f
 
 end
 
@@ -96,37 +98,47 @@ def inr_ : D ⥤ C ⊕ D where
 
 variable {C D}
 
-/-- An induction principle for morphisms in a sum of categories: a morphism is either of the form
-`(inl_ _ _).map _` or of the form `(inr_ _ _).map _`. -/
+/--
+An induction principle for morphisms in a sum of categories: a morphism is either of the form
+`(inl_ _ _).map _` or of the form `(inr_ _ _).map _`.
+-/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-def homInduction {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*}
-    (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
+def homInduction
+    {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*} (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
     (inr : ∀ x y : D, (f : x ⟶ y) → P ((inr_ C D).map f))
-    {x y : C ⊕ D} (f : x ⟶ y) : P f :=
+    {x y : C ⊕ D} (f : x ⟶ y)
+    : P f :=
   match x, y, f with
-  | .inl x, .inl y, f => inl x y f.down
-  | .inr x, .inr y, f => inr x y f.down
+  | .inl x, .inl y, f =>
+    inl x y f.down
+  | .inr x, .inr y, f =>
+    inr x y f.down
 
 @[simp]
-lemma homInduction_left {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*}
-    (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
+lemma homInduction_left
+    {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*} (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
     (inr : ∀ x y : D, (f : x ⟶ y) → P ((inr_ C D).map f))
-    {x y : C} (f : x ⟶ y) : homInduction inl inr ((inl_ C D).map f) = inl x y f :=
+    {x y : C} (f : x ⟶ y)
+    : homInduction inl inr ((inl_ C D).map f) = inl x y f :=
   rfl
 
 @[simp]
-lemma homInduction_right {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*}
-    (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
+lemma homInduction_right
+    {P : {x y : C ⊕ D} → (x ⟶ y) → Sort*} (inl : ∀ x y : C, (f : x ⟶ y) → P ((inl_ C D).map f))
     (inr : ∀ x y : D, (f : x ⟶ y) → P ((inr_ C D).map f))
-    {x y : D} (f : x ⟶ y) : homInduction inl inr ((inr_ C D).map f) = inr x y f :=
+    {x y : D} (f : x ⟶ y)
+    : homInduction inl inr ((inr_ C D).map f) = inr x y f :=
   rfl
 
 end Sum
 
 namespace Functor
 
-variable {A : Type u₁} [Category.{v₁} A] {B : Type u₂} [Category.{v₂} B] {C : Type u₃}
-  [Category.{v₃} C] {D : Type u₄} [Category.{v₄} D]
+variable
+  {A : Type u₁} [Category.{v₁} A]
+  {B : Type u₂} [Category.{v₂} B]
+  {C : Type u₃} [Category.{v₃} C]
+  {D : Type u₄} [Category.{v₄} D]
 
 section Sum'
 
@@ -136,42 +148,30 @@ set_option backward.isDefEq.respectTransparency false in
 /-- The sum of two functors that land in a given category `C`. -/
 def sum' : A ⊕ B ⥤ C where
   obj
-  | inl X => F.obj X
-  | inr X => G.obj X
+    | inl X => F.obj X
+    | inr X => G.obj X
   map {X Y} f := Sum.homInduction (inl := fun _ _ f ↦ F.map f) (inr := fun _ _ g ↦ G.map g) f
-  map_comp {x y z} f g := by
-    cases f <;> cases g <;> simp [← Functor.map_comp]
-  map_id x := by
-    cases x <;> (simp only [← map_id]; rfl)
+  map_comp {x y z} f g := by cases f <;> cases g <;> simp [← Functor.map_comp]
+  map_id x := by cases x <;> (simp only [← map_id]; rfl)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The sum `F.sum' G` precomposed with the left inclusion functor is isomorphic to `F` -/
-@[simps!]
-def inlCompSum' : Sum.inl_ A B ⋙ F.sum' G ≅ F :=
-  NatIso.ofComponents fun _ => Iso.refl _
+@[simps!] def inlCompSum' : Sum.inl_ A B ⋙ F.sum' G ≅ F := NatIso.ofComponents fun _ => Iso.refl _
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The sum `F.sum' G` precomposed with the right inclusion functor is isomorphic to `G` -/
-@[simps!]
-def inrCompSum' : Sum.inr_ A B ⋙ F.sum' G ≅ G :=
-  NatIso.ofComponents fun _ => Iso.refl _
+@[simps!] def inrCompSum' : Sum.inr_ A B ⋙ F.sum' G ≅ G := NatIso.ofComponents fun _ => Iso.refl _
+
+@[simp] theorem sum'_obj_inl (a : A) : (F.sum' G).obj (inl a) = (F.obj a) := rfl
+
+@[simp] theorem sum'_obj_inr (b : B) : (F.sum' G).obj (inr b) = (G.obj b) := rfl
 
 @[simp]
-theorem sum'_obj_inl (a : A) : (F.sum' G).obj (inl a) = (F.obj a) :=
+theorem sum'_map_inl {a a' : A} (f : a ⟶ a') : (F.sum' G).map ((Sum.inl_ _ _).map f) = F.map f :=
   rfl
 
 @[simp]
-theorem sum'_obj_inr (b : B) : (F.sum' G).obj (inr b) = (G.obj b) :=
-  rfl
-
-@[simp]
-theorem sum'_map_inl {a a' : A} (f : a ⟶ a') :
-    (F.sum' G).map ((Sum.inl_ _ _).map f) = F.map f :=
-  rfl
-
-@[simp]
-theorem sum'_map_inr {b b' : B} (f : b ⟶ b') :
-    (F.sum' G).map ((Sum.inr_ _ _).map f) = G.map f :=
+theorem sum'_map_inr {b b' : B} (f : b ⟶ b') : (F.sum' G).map ((Sum.inr_ _ _).map f) = G.map f :=
   rfl
 
 end Sum'
@@ -180,38 +180,38 @@ end Sum'
 def sum (F : A ⥤ B) (G : C ⥤ D) : A ⊕ C ⥤ B ⊕ D := (F ⋙ Sum.inl_ _ _).sum' (G ⋙ Sum.inr_ _ _)
 
 @[simp]
-theorem sum_obj_inl (F : A ⥤ B) (G : C ⥤ D) (a : A) : (F.sum G).obj (inl a) = inl (F.obj a) :=
-  rfl
+theorem sum_obj_inl (F : A ⥤ B) (G : C ⥤ D) (a : A) : (F.sum G).obj (inl a) = inl (F.obj a) := rfl
 
 @[simp]
-theorem sum_obj_inr (F : A ⥤ B) (G : C ⥤ D) (c : C) : (F.sum G).obj (inr c) = inr (G.obj c) :=
-  rfl
+theorem sum_obj_inr (F : A ⥤ B) (G : C ⥤ D) (c : C) : (F.sum G).obj (inr c) = inr (G.obj c) := rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem sum_map_inl (F : A ⥤ B) (G : C ⥤ D) {a a' : A} (f : a ⟶ a') :
-    (F.sum G).map ((Sum.inl_ _ _).map f) = (Sum.inl_ _ _).map (F.map f) := by
+theorem sum_map_inl (F : A ⥤ B) (G : C ⥤ D) {a a' : A} (f : a ⟶ a')
+    : (F.sum G).map ((Sum.inl_ _ _).map f) = (Sum.inl_ _ _).map (F.map f) := by
   simp [sum]
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-theorem sum_map_inr (F : A ⥤ B) (G : C ⥤ D) {c c' : C} (f : c ⟶ c') :
-    (F.sum G).map ((Sum.inr_ _ _).map f) = (Sum.inr_ _ _).map (G.map f) := by
+theorem sum_map_inr (F : A ⥤ B) (G : C ⥤ D) {c c' : C} (f : c ⟶ c')
+    : (F.sum G).map ((Sum.inr_ _ _).map f) = (Sum.inr_ _ _).map (G.map f) := by
   simp [sum]
 
 section
 
-variable {F G : A ⊕ B ⥤ C}
-  (e₁ : Sum.inl_ A B ⋙ F ≅ Sum.inl_ A B ⋙ G)
-  (e₂ : Sum.inr_ A B ⋙ F ≅ Sum.inr_ A B ⋙ G)
+variable
+  {F G : A ⊕ B ⥤ C}
+  (e₁ : Sum.inl_ A B ⋙ F ≅ Sum.inl_ A B ⋙ G) (e₂ : Sum.inr_ A B ⋙ F ≅ Sum.inr_ A B ⋙ G)
 
-/-- A functor out of a sum is uniquely characterized by its precompositions with `inl_` and `inr_`.
+/--
+A functor out of a sum is uniquely characterized by its precompositions with `inl_` and `inr_`.
 -/
 def sumIsoExt : F ≅ G :=
-  NatIso.ofComponents (fun x ↦
-    match x with
-    | inl x => e₁.app x
-    | inr x => e₂.app x)
+  NatIso.ofComponents
+    (fun x ↦
+      match x with
+      | inl x => e₁.app x
+      | inr x => e₂.app x)
     (fun {x y} f ↦ by
       cases f
       · simpa using! e₁.hom.naturality _
@@ -241,17 +241,13 @@ def isoSum : F ≅ (Sum.inl_ A B ⋙ F).sum' (Sum.inr_ A B ⋙ F) :=
 
 variable (a : A) (b : B)
 
-@[simp]
-lemma isoSum_hom_app_inl : (isoSum F).hom.app (inl a) = 𝟙 (F.obj (inl a)) := rfl
+@[simp] lemma isoSum_hom_app_inl : (isoSum F).hom.app (inl a) = 𝟙 (F.obj (inl a)) := rfl
 
-@[simp]
-lemma isoSum_hom_app_inr : (isoSum F).hom.app (inr b) = 𝟙 (F.obj (inr b)) := rfl
+@[simp] lemma isoSum_hom_app_inr : (isoSum F).hom.app (inr b) = 𝟙 (F.obj (inr b)) := rfl
 
-@[simp]
-lemma isoSum_inv_app_inl : (isoSum F).inv.app (inl a) = 𝟙 (F.obj (inl a)) := rfl
+@[simp] lemma isoSum_inv_app_inl : (isoSum F).inv.app (inl a) = 𝟙 (F.obj (inl a)) := rfl
 
-@[simp]
-lemma isoSum_inv_app_inr : (isoSum F).inv.app (inr b) = 𝟙 (F.obj (inr b)) := rfl
+@[simp] lemma isoSum_inv_app_inr : (isoSum F).inv.app (inr b) = 𝟙 (F.obj (inr b)) := rfl
 
 end
 
@@ -259,8 +255,11 @@ end Functor
 
 namespace NatTrans
 
-variable {A : Type u₁} [Category.{v₁} A] {B : Type u₂} [Category.{v₂} B] {C : Type u₃}
-  [Category.{v₃} C] {D : Type u₄} [Category.{v₄} D]
+variable
+  {A : Type u₁} [Category.{v₁} A]
+  {B : Type u₂} [Category.{v₂} B]
+  {C : Type u₃} [Category.{v₃} C]
+  {D : Type u₄} [Category.{v₄} D]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -270,17 +269,16 @@ def sum' {F G : A ⥤ C} {H I : B ⥤ C} (α : F ⟶ G) (β : H ⟶ I) : F.sum' 
     match X with
     | inl X => α.app X
     | inr X => β.app X
-  naturality X Y f := by
-    cases f <;> simp
+  naturality X Y f := by cases f <;> simp
 
 @[simp]
-theorem sum'_app_inl {F G : A ⥤ C} {H I : B ⥤ C} (α : F ⟶ G) (β : H ⟶ I) (a : A) :
-    (sum' α β).app (inl a) = α.app a :=
+theorem sum'_app_inl {F G : A ⥤ C} {H I : B ⥤ C} (α : F ⟶ G) (β : H ⟶ I) (a : A)
+    : (sum' α β).app (inl a) = α.app a :=
   rfl
 
 @[simp]
-theorem sum'_app_inr {F G : A ⥤ C} {H I : B ⥤ C} (α : F ⟶ G) (β : H ⟶ I) (b : B) :
-    (sum' α β).app (inr b) = β.app b :=
+theorem sum'_app_inr {F G : A ⥤ C} {H I : B ⥤ C} (α : F ⟶ G) (β : H ⟶ I) (b : B)
+    : (sum' α β).app (inr b) = β.app b :=
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
@@ -291,17 +289,16 @@ def sum {F G : A ⥤ B} {H I : C ⥤ D} (α : F ⟶ G) (β : H ⟶ I) : F.sum H 
     match X with
     | inl X => (Sum.inl_ B D).map (α.app X)
     | inr X => (Sum.inr_ B D).map (β.app X)
-  naturality X Y f := by
-    cases f <;> simp [← Functor.map_comp]
+  naturality X Y f := by cases f <;> simp [← Functor.map_comp]
 
 @[simp]
-theorem sum_app_inl {F G : A ⥤ B} {H I : C ⥤ D} (α : F ⟶ G) (β : H ⟶ I) (a : A) :
-    (sum α β).app (inl a) = (Sum.inl_ _ _).map (α.app a) :=
+theorem sum_app_inl {F G : A ⥤ B} {H I : C ⥤ D} (α : F ⟶ G) (β : H ⟶ I) (a : A)
+    : (sum α β).app (inl a) = (Sum.inl_ _ _).map (α.app a) :=
   rfl
 
 @[simp]
-theorem sum_app_inr {F G : A ⥤ B} {H I : C ⥤ D} (α : F ⟶ G) (β : H ⟶ I) (c : C) :
-    (sum α β).app (inr c) = (Sum.inr_ _ _).map (β.app c) :=
+theorem sum_app_inr {F G : A ⥤ B} {H I : C ⥤ D} (α : F ⟶ G) (β : H ⟶ I) (c : C)
+    : (sum α β).app (inr c) = (Sum.inr_ _ _).map (β.app c) :=
   rfl
 
 end NatTrans
@@ -313,31 +310,21 @@ variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 /-- The functor exchanging two direct summand categories. -/
 def swap : C ⊕ D ⥤ D ⊕ C := (inr_ D C).sum' (inl_ D C)
 
-@[simp]
-theorem swap_obj_inl (X : C) : (swap C D).obj (inl X) = inr X :=
-  rfl
+@[simp] theorem swap_obj_inl (X : C) : (swap C D).obj (inl X) = inr X := rfl
 
-@[simp]
-theorem swap_obj_inr (X : D) : (swap C D).obj (inr X) = inl X :=
-  rfl
+@[simp] theorem swap_obj_inr (X : D) : (swap C D).obj (inr X) = inl X := rfl
 
-@[simp]
-theorem swap_map_inl {X Y : C} {f : inl X ⟶ inl Y} : (swap C D).map f = f :=
-  rfl
+@[simp] theorem swap_map_inl {X Y : C} {f : inl X ⟶ inl Y} : (swap C D).map f = f := rfl
 
-@[simp]
-theorem swap_map_inr {X Y : D} {f : inr X ⟶ inr Y} : (swap C D).map f = f :=
-  rfl
+@[simp] theorem swap_map_inr {X Y : D} {f : inr X ⟶ inr Y} : (swap C D).map f = f := rfl
 
 /-- Precomposing `swap` with the left inclusion gives the right inclusion. -/
 @[simps! hom_app inv_app]
-def swapCompInl : inl_ C D ⋙ swap C D ≅ inr_ D C :=
-  Functor.inlCompSum' (inr_ _ _) (inl_ _ _)
+def swapCompInl : inl_ C D ⋙ swap C D ≅ inr_ D C := Functor.inlCompSum' (inr_ _ _) (inl_ _ _)
 
 /-- Precomposing `swap` with the right inclusion gives the left inclusion. -/
 @[simps! hom_app inv_app]
-def swapCompInr : inr_ C D ⋙ swap C D ≅ inl_ D C :=
-  Functor.inrCompSum' (inr_ _ _) (inl_ _ _)
+def swapCompInr : inr_ C D ⋙ swap C D ≅ inl_ D C := Functor.inrCompSum' (inr_ _ _) (inl_ _ _)
 
 namespace Swap
 
@@ -347,35 +334,40 @@ set_option backward.defeqAttrib.useBackward true in
 def equivalence : C ⊕ D ≌ D ⊕ C where
   functor := swap C D
   inverse := swap D C
-  unitIso := Functor.sumIsoExt
-    (calc inl_ C D ⋙ 𝟭 (C ⊕ D)
-        ≅ inl_ C D := rightUnitor _
-      _ ≅ inr_ D C ⋙ swap D C := (swapCompInr D C).symm
-      _ ≅ (inl_ C D ⋙ swap C D) ⋙ swap D C := isoWhiskerRight (swapCompInl C D).symm _
-      _ ≅ inl_ C D ⋙ swap C D ⋙ swap D C := associator _ _ _)
-    (calc inr_ C D ⋙ 𝟭 (C ⊕ D)
-        ≅ inr_ C D := rightUnitor _
-      _ ≅ inl_ D C ⋙ swap D C := (swapCompInl D C).symm
-      _ ≅ (inr_ C D ⋙ swap C D) ⋙ swap D C := isoWhiskerRight (swapCompInr C D).symm _
-      _ ≅ inr_ C D ⋙ swap C D ⋙ swap D C := associator _ _ _)
-  counitIso := Functor.sumIsoExt
-    (calc inl_ D C ⋙ swap D C ⋙ swap C D
-        ≅ (inl_ D C ⋙ swap D C) ⋙ swap C D := (associator _ _ _).symm
-      _ ≅ inr_ C D ⋙ swap C D := isoWhiskerRight (swapCompInl D C) _
-      _ ≅ inl_ D C := swapCompInr C D
-      _ ≅ inl_ D C ⋙ 𝟭 (D ⊕ C) := (rightUnitor _).symm)
-    (calc inr_ D C ⋙ swap D C ⋙ swap C D
-        ≅ (inr_ D C ⋙ swap D C) ⋙ swap C D := (associator _ _ _).symm
-      _ ≅ inl_ C D ⋙ swap C D := isoWhiskerRight (swapCompInr D C) _
-      _ ≅ inr_ D C := swapCompInl C D
-      _ ≅ inr_ D C ⋙ 𝟭 (D ⊕ C) := (rightUnitor _).symm)
+  unitIso :=
+    Functor.sumIsoExt
+      (calc
+        inl_ C D ⋙ 𝟭 (C ⊕ D)
+          ≅ inl_ C D := rightUnitor _
+        _ ≅ inr_ D C ⋙ swap D C := (swapCompInr D C).symm
+        _ ≅ (inl_ C D ⋙ swap C D) ⋙ swap D C := isoWhiskerRight (swapCompInl C D).symm _
+        _ ≅ inl_ C D ⋙ swap C D ⋙ swap D C := associator _ _ _)
+      (calc
+        inr_ C D ⋙ 𝟭 (C ⊕ D)
+          ≅ inr_ C D := rightUnitor _
+        _ ≅ inl_ D C ⋙ swap D C := (swapCompInl D C).symm
+        _ ≅ (inr_ C D ⋙ swap C D) ⋙ swap D C := isoWhiskerRight (swapCompInr C D).symm _
+        _ ≅ inr_ C D ⋙ swap C D ⋙ swap D C := associator _ _ _)
+  counitIso :=
+    Functor.sumIsoExt
+      (calc
+        inl_ D C ⋙ swap D C ⋙ swap C D
+          ≅ (inl_ D C ⋙ swap D C) ⋙ swap C D := (associator _ _ _).symm
+        _ ≅ inr_ C D ⋙ swap C D := isoWhiskerRight (swapCompInl D C) _
+        _ ≅ inl_ D C := swapCompInr C D
+        _ ≅ inl_ D C ⋙ 𝟭 (D ⊕ C) := (rightUnitor _).symm)
+      (calc
+        inr_ D C ⋙ swap D C ⋙ swap C D
+          ≅ (inr_ D C ⋙ swap D C) ⋙ swap C D := (associator _ _ _).symm
+        _ ≅ inl_ C D ⋙ swap C D := isoWhiskerRight (swapCompInr D C) _
+        _ ≅ inr_ D C := swapCompInl C D
+        _ ≅ inr_ D C ⋙ 𝟭 (D ⊕ C) := (rightUnitor _).symm)
 
 instance isEquivalence : (swap C D).IsEquivalence :=
   (by infer_instance : (equivalence C D).functor.IsEquivalence)
 
 /-- The double swap on `C ⊕ D` is naturally isomorphic to the identity functor. -/
-def symmetry : swap C D ⋙ swap D C ≅ 𝟭 (C ⊕ D) :=
-  (equivalence C D).unitIso.symm
+def symmetry : swap C D ⋙ swap D C ≅ 𝟭 (C ⊕ D) := (equivalence C D).unitIso.symm
 
 end Swap
 

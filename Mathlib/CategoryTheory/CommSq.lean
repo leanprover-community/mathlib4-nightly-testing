@@ -27,13 +27,13 @@ Refactor `LiftStruct` from `Arrow.lean` and lifting properties using `CommSq.lea
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 variable {C : Type*} [Category* C]
 
 set_option linter.translate.warnInvalid false in
-/-- The proposition that a square
+/--
+The proposition that a square
 ```
   W ---f---> X
   |          |
@@ -61,34 +61,30 @@ namespace CommSq
 variable {W X Y Z : C} {f : W ⟶ X} {g : W ⟶ Y} {h : X ⟶ Z} {i : Y ⟶ Z}
 
 @[to_dual self]
-theorem flip (p : CommSq f g h i) : CommSq g f i h :=
-  ⟨p.w.symm⟩
+theorem flip (p : CommSq f g h i) : CommSq g f i h := ⟨p.w.symm⟩
 
-theorem of_arrow {f g : Arrow C} (h : f ⟶ g) : CommSq f.hom h.left h.right g.hom :=
-  ⟨h.w.symm⟩
+theorem of_arrow {f g : Arrow C} (h : f ⟶ g) : CommSq f.hom h.left h.right g.hom := ⟨h.w.symm⟩
 
 /-- The commutative square in the opposite category associated to a commutative square. -/
 @[to_dual self]
-theorem op (p : CommSq f g h i) : CommSq i.op h.op g.op f.op :=
-  ⟨by simp only [← op_comp, p.w]⟩
+theorem op (p : CommSq f g h i) : CommSq i.op h.op g.op f.op := ⟨by simp only [← op_comp, p.w]⟩
 
 /-- The commutative square associated to a commutative square in the opposite category. -/
 @[to_dual self]
-theorem unop {W X Y Z : Cᵒᵖ} {f : W ⟶ X} {g : W ⟶ Y} {h : X ⟶ Z} {i : Y ⟶ Z} (p : CommSq f g h i) :
-    CommSq i.unop h.unop g.unop f.unop :=
+theorem unop {W X Y Z : Cᵒᵖ} {f : W ⟶ X} {g : W ⟶ Y} {h : X ⟶ Z} {i : Y ⟶ Z} (p : CommSq f g h i)
+    : CommSq i.unop h.unop g.unop f.unop :=
   ⟨by simp only [← unop_comp, p.w]⟩
 
 @[to_dual none]
-theorem vert_inv {g : W ≅ Y} {h : X ≅ Z} (p : CommSq f g.hom h.hom i) :
-    CommSq i g.inv h.inv f :=
+theorem vert_inv {g : W ≅ Y} {h : X ≅ Z} (p : CommSq f g.hom h.hom i) : CommSq i g.inv h.inv f :=
   ⟨by rw [Iso.comp_inv_eq, Category.assoc, Iso.eq_inv_comp, p.w]⟩
 
 @[to_dual none]
-theorem horiz_inv {f : W ≅ X} {i : Y ≅ Z} (p : CommSq f.hom g h i.hom) :
-    CommSq f.inv h g i.inv :=
+theorem horiz_inv {f : W ≅ X} {i : Y ≅ Z} (p : CommSq f.hom g h i.hom) : CommSq f.inv h g i.inv :=
   flip (vert_inv (flip p))
 
-/-- The horizontal composition of two commutative squares as below is a commutative square.
+/--
+The horizontal composition of two commutative squares as below is a commutative square.
 ```
   W ---f---> X ---f'--> X'
   |          |          |
@@ -100,12 +96,14 @@ theorem horiz_inv {f : W ≅ X} {i : Y ≅ Z} (p : CommSq f.hom g h i.hom) :
 ```
 -/
 @[to_dual self (reorder := W Z', X Z, X' Y, f i', f' i, g h', hsq₁ hsq₂)]
-lemma horiz_comp {W X X' Y Z Z' : C} {f : W ⟶ X} {f' : X ⟶ X'} {g : W ⟶ Y} {h : X ⟶ Z}
-    {h' : X' ⟶ Z'} {i : Y ⟶ Z} {i' : Z ⟶ Z'} (hsq₁ : CommSq f g h i) (hsq₂ : CommSq f' h h' i') :
-    CommSq (f ≫ f') g h' (i ≫ i') :=
+lemma horiz_comp
+    {W X X' Y Z Z' : C} {f : W ⟶ X} {f' : X ⟶ X'} {g : W ⟶ Y} {h : X ⟶ Z} {h' : X' ⟶ Z'} {i : Y ⟶ Z}
+    {i' : Z ⟶ Z'} (hsq₁ : CommSq f g h i) (hsq₂ : CommSq f' h h' i')
+    : CommSq (f ≫ f') g h' (i ≫ i') :=
   ⟨by rw [← Category.assoc, Category.assoc, ← hsq₁.w, hsq₂.w, Category.assoc]⟩
 
-/-- The vertical composition of two commutative squares as below is a commutative square.
+/--
+The vertical composition of two commutative squares as below is a commutative square.
 ```
   W ---f---> X
   |          |
@@ -122,11 +120,11 @@ lemma horiz_comp {W X X' Y Z Z' : C} {f : W ⟶ X} {f' : X ⟶ X'} {g : W ⟶ Y}
 ```
 -/
 @[to_dual self (reorder := W Z', Y Z, Y' X, g h', g' h, f i', hsq₁ hsq₂)]
-lemma vert_comp {W X Y Y' Z Z' : C} {f : W ⟶ X} {g : W ⟶ Y} {g' : Y ⟶ Y'} {h : X ⟶ Z}
-    {h' : Z ⟶ Z'} {i : Y ⟶ Z} {i' : Y' ⟶ Z'} (hsq₁ : CommSq f g h i) (hsq₂ : CommSq i g' h' i') :
-    CommSq f (g ≫ g') (h ≫ h') i' :=
+lemma vert_comp
+    {W X Y Y' Z Z' : C} {f : W ⟶ X} {g : W ⟶ Y} {g' : Y ⟶ Y'} {h : X ⟶ Z} {h' : Z ⟶ Z'} {i : Y ⟶ Z}
+    {i' : Y' ⟶ Z'} (hsq₁ : CommSq f g h i) (hsq₂ : CommSq i g' h' i')
+    : CommSq f (g ≫ g') (h ≫ h') i' :=
   flip (horiz_comp (flip hsq₁) (flip hsq₂))
-
 
 section
 
@@ -160,11 +158,11 @@ alias CommSq.map := Functor.map_commSq
 
 namespace CommSq
 
-
 variable {A B X Y : C} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y}
 
 set_option linter.translate.warnInvalid false in
-/-- Now we consider a square:
+/--
+Now we consider a square:
 ```
   A ---f---> X
   |          |
@@ -175,7 +173,8 @@ set_option linter.translate.warnInvalid false in
 ```
 
 The datum of a lift in a commutative square, i.e. an up-right-diagonal
-morphism which makes both triangles commute. -/
+morphism which makes both triangles commute.
+-/
 @[ext, to_dual self]
 structure LiftStruct (sq : CommSq f i p g) where
   /-- The lift. -/
@@ -190,25 +189,33 @@ attribute [to_dual self (reorder := A Y, B X, f g, i p, fac_left fac_right)] Lif
 
 namespace LiftStruct
 
-/-- A `LiftStruct` for a commutative square gives a `LiftStruct` for the
-corresponding square in the opposite category. -/
+/--
+A `LiftStruct` for a commutative square gives a `LiftStruct` for the
+corresponding square in the opposite category.
+-/
 @[simps, to_dual self]
 def op {sq : CommSq f i p g} (l : LiftStruct sq) : LiftStruct sq.op where
   l := l.l.op
   fac_left := by rw [← op_comp, l.fac_right]
   fac_right := by rw [← op_comp, l.fac_left]
 
-/-- A `LiftStruct` for a commutative square in the opposite category
-gives a `LiftStruct` for the corresponding square in the original category. -/
+/--
+A `LiftStruct` for a commutative square in the opposite category
+gives a `LiftStruct` for the corresponding square in the original category.
+-/
 @[simps, to_dual self]
-def unop {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y} {sq : CommSq f i p g}
-    (l : LiftStruct sq) : LiftStruct sq.unop where
+def unop
+    {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y} {sq : CommSq f i p g}
+    (l : LiftStruct sq)
+    : LiftStruct sq.unop where
   l := l.l.unop
   fac_left := by rw [← unop_comp, l.fac_right]
   fac_right := by rw [← unop_comp, l.fac_left]
 
-/-- Equivalences of `LiftStruct` for a square and the corresponding square
-in the opposite category. -/
+/--
+Equivalences of `LiftStruct` for a square and the corresponding square
+in the opposite category.
+-/
 @[simps, to_dual self]
 def opEquiv (sq : CommSq f i p g) : LiftStruct sq ≃ LiftStruct sq.op where
   toFun := op
@@ -216,11 +223,13 @@ def opEquiv (sq : CommSq f i p g) : LiftStruct sq ≃ LiftStruct sq.op where
   left_inv := by cat_disch
   right_inv := by cat_disch
 
-/-- Equivalences of `LiftStruct` for a square in the opposite category and
-the corresponding square in the original category. -/
+/--
+Equivalences of `LiftStruct` for a square in the opposite category and
+the corresponding square in the original category.
+-/
 @[simps, to_dual self]
-def unopEquiv {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y}
-    (sq : CommSq f i p g) : LiftStruct sq ≃ LiftStruct sq.unop where
+def unopEquiv {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y} (sq : CommSq f i p g)
+    : LiftStruct sq ≃ LiftStruct sq.unop where
   toFun := unop
   invFun := op
   left_inv := by cat_disch
@@ -229,12 +238,11 @@ def unopEquiv {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g :
 end LiftStruct
 
 @[to_dual]
-instance subsingleton_liftStruct_of_epi (sq : CommSq f i p g) [Epi i] :
-    Subsingleton (LiftStruct sq) :=
-  ⟨fun l₁ l₂ => by
-    ext
-    rw [← cancel_epi i]
-    simp only [LiftStruct.fac_left]⟩
+instance subsingleton_liftStruct_of_epi (sq : CommSq f i p g) [Epi i]
+    : Subsingleton (LiftStruct sq) := ⟨fun l₁ l₂ => by
+  ext
+  rw [← cancel_epi i]
+  simp only [LiftStruct.fac_left]⟩
 
 variable (sq : CommSq f i p g)
 
@@ -248,8 +256,7 @@ namespace HasLift
 
 variable {sq} in
 @[to_dual self]
-theorem mk' (l : sq.LiftStruct) : HasLift sq :=
-  ⟨Nonempty.intro l⟩
+theorem mk' (l : sq.LiftStruct) : HasLift sq := ⟨Nonempty.intro l⟩
 
 @[to_dual self]
 theorem iff : HasLift sq ↔ Nonempty sq.LiftStruct := by
@@ -262,22 +269,23 @@ theorem iff_op : HasLift sq ↔ HasLift sq.op := by
   exact Nonempty.congr (LiftStruct.opEquiv sq).toFun (LiftStruct.opEquiv sq).invFun
 
 @[to_dual self]
-theorem iff_unop {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y}
-    (sq : CommSq f i p g) : HasLift sq ↔ HasLift sq.unop := by
+theorem iff_unop
+    {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y} (sq : CommSq f i p g)
+    : HasLift sq ↔ HasLift sq.unop := by
   rw [iff, iff]
   exact Nonempty.congr (LiftStruct.unopEquiv sq).toFun (LiftStruct.unopEquiv sq).invFun
 
 end HasLift
 
-/-- A choice of a diagonal morphism that is part of a `LiftStruct` when
-the square has a lift. -/
+/--
+A choice of a diagonal morphism that is part of a `LiftStruct` when
+the square has a lift.
+-/
 @[to_dual self]
-noncomputable def lift [hsq : HasLift sq] : B ⟶ X :=
-  hsq.exists_lift.some.l
+noncomputable def lift [hsq : HasLift sq] : B ⟶ X := hsq.exists_lift.some.l
 
 @[to_dual (attr := reassoc (attr := simp)) fac_right]
-theorem fac_left [hsq : HasLift sq] : i ≫ sq.lift = f :=
-  hsq.exists_lift.some.fac_left
+theorem fac_left [hsq : HasLift sq] : i ≫ sq.lift = f := hsq.exists_lift.some.fac_left
 
 end CommSq
 

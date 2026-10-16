@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 public import Mathlib.CategoryTheory.Abelian.Yoneda
-
 import Mathlib.CategoryTheory.Generator.Abelian
 
 /-!
@@ -49,8 +48,8 @@ private noncomputable def generator : Cᵒᵖ :=
 private theorem exists_epi (X : D) : ∃ f : generator F ⟶ F.obj X, Epi f := by
   classical
   refine ⟨Sigma.desc (Pi.single X (𝟙 _)) ≫ Sigma.desc (fun f => f), ?_⟩
-  have h := (isSeparator_iff_epi (projectiveSeparator C)).1
-    isSeparator_projectiveSeparator (F.obj X)
+  have h :=
+    (isSeparator_iff_epi (projectiveSeparator C)).1 isSeparator_projectiveSeparator (F.obj X)
   suffices Epi (Sigma.desc (Pi.single X (𝟙 _))) from epi_comp' this h
   exact SplitEpi.epi ⟨Sigma.ι (fun (X : D) => ∐ fun _ => projectiveSeparator C) X, by simp⟩
 
@@ -65,20 +64,23 @@ private theorem isSeparator [Nonempty D] : IsSeparator (generator F) := by
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- Given a functor `F : D ⥤ Cᵒᵖ`, where `C` is Grothendieck abelian, this is a ring `R` such that
+/--
+Given a functor `F : D ⥤ Cᵒᵖ`, where `C` is Grothendieck abelian, this is a ring `R` such that
 `Cᵒᵖ` has a nice embedding into `ModuleCat (EmbeddingRing F)`; see
-`OppositeModuleEmbedding.embedding`. -/
+`OppositeModuleEmbedding.embedding`.
+-/
 def EmbeddingRing : Type v := (End (generator F))ᵐᵒᵖ
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-noncomputable instance : Ring (EmbeddingRing F) :=
-  inferInstanceAs <| Ring (End (generator F))ᵐᵒᵖ
+noncomputable instance : Ring (EmbeddingRing F) := inferInstanceAs <| Ring (End (generator F))ᵐᵒᵖ
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- This is a functor `embedding F : Cᵒᵖ ⥤ ModuleCat (EmbeddingRing F)`. We have that `embedding F`
-is faithful and preserves finite limits and colimits. Furthermore, `F ⋙ embedding F` is full. -/
+/--
+This is a functor `embedding F : Cᵒᵖ ⥤ ModuleCat (EmbeddingRing F)`. We have that `embedding F`
+is faithful and preserves finite limits and colimits. Furthermore, `F ⋙ embedding F` is full.
+-/
 noncomputable def embedding : Cᵒᵖ ⥤ ModuleCat.{v} (EmbeddingRing F) :=
   preadditiveCoyonedaObj (generator F)
 

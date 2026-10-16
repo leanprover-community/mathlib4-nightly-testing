@@ -64,34 +64,39 @@ namespace Module
 
 variable {ι : Type*} [Fintype ι] (f : ι → R) (x : ι → M)
 
-/-- The proposition that the relation $\sum_i f_i x_i = 0$ in $M$ is trivial.
+/--
+The proposition that the relation $\sum_i f_i x_i = 0$ in $M$ is trivial.
 That is, there exist a finite index type $\kappa$ = `Fin k`, elements
 $(y_j)_{j \in \kappa}$ of $M$, and elements $(a_{ij})_{i \in \iota, j \in \kappa}$ of $R$
 such that for all $i$,
 $$x_i = \sum_j a_{ij} y_j$$
 and for all $j$,
 $$\sum_i f_i a_{ij} = 0.$$
-By `Module.sum_smul_eq_zero_of_isTrivialRelation`, this condition implies $\sum_i f_i x_i = 0$. -/
+By `Module.sum_smul_eq_zero_of_isTrivialRelation`, this condition implies $\sum_i f_i x_i = 0$.
+-/
 abbrev IsTrivialRelation : Prop :=
   ∃ (k : ℕ) (a : ι → Fin k → R) (y : Fin k → M),
     (∀ i, x i = ∑ j, a i j • y j) ∧ ∀ j, ∑ i, f i * a i j = 0
 
 variable {f x}
 
-/-- `Module.IsTrivialRelation` is equivalent to the predicate `TensorProduct.VanishesTrivially`
-defined in `Mathlib/LinearAlgebra/TensorProduct/Vanishing.lean`. -/
-theorem isTrivialRelation_iff_vanishesTrivially :
-    IsTrivialRelation f x ↔ VanishesTrivially R f x := by
+/--
+`Module.IsTrivialRelation` is equivalent to the predicate `TensorProduct.VanishesTrivially`
+defined in `Mathlib/LinearAlgebra/TensorProduct/Vanishing.lean`.
+-/
+theorem isTrivialRelation_iff_vanishesTrivially
+    : IsTrivialRelation f x ↔ VanishesTrivially R f x := by
   simp only [IsTrivialRelation, VanishesTrivially, smul_eq_mul, mul_comm]
 
-theorem _root_.Equiv.isTrivialRelation_comp {κ} [Fintype κ] (e : κ ≃ ι) :
-    IsTrivialRelation (f ∘ e) (x ∘ e) ↔ IsTrivialRelation f x := by
+theorem _root_.Equiv.isTrivialRelation_comp {κ} [Fintype κ] (e : κ ≃ ι)
+    : IsTrivialRelation (f ∘ e) (x ∘ e) ↔ IsTrivialRelation f x := by
   simp_rw [isTrivialRelation_iff_vanishesTrivially, e.vanishesTrivially_comp]
 
-/-- If the relation given by $(f_i)_{i \in \iota}$ and $(x_i)_{i \in \iota}$ is trivial, then
-$\sum_i f_i x_i$ is actually equal to $0$. -/
-theorem sum_smul_eq_zero_of_isTrivialRelation (h : IsTrivialRelation f x) :
-    ∑ i, f i • x i = 0 := by
+/--
+If the relation given by $(f_i)_{i \in \iota}$ and $(x_i)_{i \in \iota}$ is trivial, then
+$\sum_i f_i x_i$ is actually equal to $0$.
+-/
+theorem sum_smul_eq_zero_of_isTrivialRelation (h : IsTrivialRelation f x) : ∑ i, f i • x i = 0 := by
   simpa using
     congr_arg (TensorProduct.lid R M) <|
       sum_tmul_eq_zero_of_vanishesTrivially R (isTrivialRelation_iff_vanishesTrivially.mp h)
@@ -101,7 +106,8 @@ end Module
 namespace Module.Flat
 
 variable (R M) in
-/-- **Equational criterion for flatness**, combined form.
+/--
+**Equational criterion for flatness**, combined form.
 
 Let $M$ be a module over a commutative ring $R$. The following are equivalent:
 * $M$ is flat.
@@ -114,15 +120,18 @@ Let $M$ be a module over a commutative ring $R$. The following are equivalent:
   that $x = y \circ a$ and $a(f) = 0$.
 -/
 @[stacks 00HK, stacks 058D "(1) ↔ (2)"]
-theorem tfae_equational_criterion : List.TFAE [
-    Flat R M,
-    ∀ I : Ideal R, Function.Injective (rTensor M I.subtype),
-    ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M}, ∑ i, f i ⊗ₜ x i = (0 : R ⊗[R] M) →
-      VanishesTrivially R f x,
-    ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M}, ∑ i, f i • x i = 0 → IsTrivialRelation f x,
-    ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M}, x f = 0 →
-      ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
-        x = y ∘ₗ a ∧ a f = 0] := by
+theorem tfae_equational_criterion
+    : List.TFAE [
+      Flat R M,
+      ∀ I : Ideal R, Function.Injective (rTensor M I.subtype),
+      ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M},
+        ∑ i, f i ⊗ₜ x i = (0 : R ⊗[R] M) → VanishesTrivially R f x,
+      ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M}, ∑ i, f i • x i = 0 → IsTrivialRelation f x,
+      ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M},
+        x f = 0
+          → ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
+            x = y ∘ₗ a ∧ a f = 0
+    ] := by
   tfae_have 1 ↔ 2 := iff_rTensor_injective'
   tfae_have 3 ↔ 2 := forall_vanishesTrivially_iff_forall_rTensor_injective R
   tfae_have 3 ↔ 4 := by
@@ -163,76 +172,101 @@ theorem tfae_equational_criterion : List.TFAE [
       simpa using congr($ha' j)
   tfae_finish
 
-/-- **Equational criterion for flatness**:
-a module $M$ is flat if and only if every relation $\sum_i f_i x_i = 0$ in $M$ is trivial. -/
+/--
+**Equational criterion for flatness**:
+a module $M$ is flat if and only if every relation $\sum_i f_i x_i = 0$ in $M$ is trivial.
+-/
 @[stacks 00HK]
-theorem iff_forall_isTrivialRelation : Flat R M ↔ ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M},
-    ∑ i, f i • x i = 0 → IsTrivialRelation f x :=
+theorem iff_forall_isTrivialRelation
+    : Flat R M
+      ↔ ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M}, ∑ i, f i • x i = 0 → IsTrivialRelation f x :=
   (tfae_equational_criterion R M).out 1 4
 
-/-- **Equational criterion for flatness**, forward direction.
+/--
+**Equational criterion for flatness**, forward direction.
 
-If $M$ is flat, then every relation $\sum_i f_i x_i = 0$ in $M$ is trivial. -/
+If $M$ is flat, then every relation $\sum_i f_i x_i = 0$ in $M$ is trivial.
+-/
 @[stacks 00HK]
-theorem isTrivialRelation_of_sum_smul_eq_zero [Flat R M] {ι : Type*} [Fintype ι] {f : ι → R}
-    {x : ι → M} (h : ∑ i, f i • x i = 0) : IsTrivialRelation f x :=
+theorem isTrivialRelation_of_sum_smul_eq_zero
+    [Flat R M] {ι : Type*} [Fintype ι] {f : ι → R} {x : ι → M} (h : ∑ i, f i • x i = 0)
+    : IsTrivialRelation f x :=
   (Fintype.equivFin ι).symm.isTrivialRelation_comp.mp <| iff_forall_isTrivialRelation.mp ‹_› <| by
     simpa only [← (Fintype.equivFin ι).symm.sum_comp] using! h
 
-/-- **Equational criterion for flatness**, backward direction.
+/--
+**Equational criterion for flatness**, backward direction.
 
-If every relation $\sum_i f_i x_i = 0$ in $M$ is trivial, then $M$ is flat. -/
+If every relation $\sum_i f_i x_i = 0$ in $M$ is trivial, then $M$ is flat.
+-/
 @[stacks 00HK]
-theorem of_forall_isTrivialRelation (hfx : ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M},
-    ∑ i, f i • x i = 0 → IsTrivialRelation f x) : Flat R M :=
+theorem of_forall_isTrivialRelation
+    (hfx : ∀ {l : ℕ} {f : Fin l → R} {x : Fin l → M}, ∑ i, f i • x i = 0 → IsTrivialRelation f x)
+    : Flat R M :=
   iff_forall_isTrivialRelation.mpr hfx
 
-/-- **Equational criterion for flatness**, alternate form.
+/--
+**Equational criterion for flatness**, alternate form.
 
 A module $M$ is flat if and only if for all finite free modules $R^l$,
 all $f \in R^l$, and all linear maps $x \colon R^l \to M$ such that $x(f) = 0$, there
 exist a finite free module $R^k$ and linear maps $a \colon R^l \to R^k$ and
-$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$. -/
+$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$.
+-/
 @[stacks 058D "(1) ↔ (2)"]
-theorem iff_forall_exists_factorization : Flat R M ↔
-    ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M}, x f = 0 →
-      ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
-        x = y ∘ₗ a ∧ a f = 0 := (tfae_equational_criterion R M).out 1 5
+theorem iff_forall_exists_factorization
+    : Flat R M
+      ↔ ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M},
+        x f = 0
+          → ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
+            x = y ∘ₗ a ∧ a f = 0 :=
+  (tfae_equational_criterion R M).out 1 5
 
-/-- **Equational criterion for flatness**, backward direction, alternate form.
+/--
+**Equational criterion for flatness**, backward direction, alternate form.
 
 Let $M$ be a module over a commutative ring $R$. Suppose that for all finite free modules $R^l$,
 all $f \in R^l$, and all linear maps $x \colon R^l \to M$ such that $x(f) = 0$, there
 exist a finite free module $R^k$ and linear maps $a \colon R^l \to R^k$ and
-$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$. Then $M$ is flat. -/
+$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$. Then $M$ is flat.
+-/
 @[stacks 058D "(2) → (1)"]
 theorem of_forall_exists_factorization
-    (h : ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M}, x f = 0 →
-      ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
-      x = y ∘ₗ a ∧ a f = 0) : Flat R M := iff_forall_exists_factorization.mpr h
+    (h : ∀ {l : ℕ} {f : Fin l →₀ R} {x : (Fin l →₀ R) →ₗ[R] M},
+      x f = 0
+        → ∃ (k : ℕ) (a : (Fin l →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
+          x = y ∘ₗ a ∧ a f = 0)
+    : Flat R M :=
+  iff_forall_exists_factorization.mpr h
 
-/-- **Equational criterion for flatness**, forward direction, second alternate form.
+/--
+**Equational criterion for flatness**, forward direction, second alternate form.
 
 Let $M$ be a flat module over a commutative ring $R$. Let $N$ be a finite free module over $R$,
 let $f \in N$, and let $x \colon N \to M$ be a linear map such that $x(f) = 0$. Then there exist a
 finite free module $R^k$ and linear maps $a \colon N \to R^k$ and
-$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$. -/
+$y \colon R^k \to M$ such that $x = y \circ a$ and $a(f) = 0$.
+-/
 @[stacks 058D "(1) → (2)"]
-theorem exists_factorization_of_apply_eq_zero_of_free [Flat R M] {N : Type*} [AddCommGroup N]
-    [Module R N] [Free R N] [Module.Finite R N] {f : N} {x : N →ₗ[R] M} (h : x f = 0) :
-    ∃ (k : ℕ) (a : N →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M), x = y ∘ₗ a ∧ a f = 0 :=
+theorem exists_factorization_of_apply_eq_zero_of_free
+    [Flat R M]
+    {N : Type*} [AddCommGroup N] [Module R N] [Free R N] [Module.Finite R N]
+    {f : N} {x : N →ₗ[R] M} (h : x f = 0)
+    : ∃ (k : ℕ) (a : N →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M), x = y ∘ₗ a ∧ a f = 0 :=
   have e := ((Module.Free.chooseBasis R N).reindex (Fintype.equivFin _)).repr.symm
-  have ⟨k, a, y, hya, haf⟩ := iff_forall_exists_factorization.mp ‹Flat R M›
-    (f := e.symm f) (x := x ∘ₗ e) (by simpa using h)
+  have ⟨k, a, y, hya, haf⟩ :=
+    iff_forall_exists_factorization.mp ‹Flat R M› (f := e.symm f) (x := x ∘ₗ e) (by simpa using h)
   ⟨k, a ∘ₗ e.symm, y, by rwa [← comp_assoc, LinearEquiv.eq_comp_toLinearMap_symm], haf⟩
 
-private theorem exists_factorization_of_comp_eq_zero_of_free_aux [Flat R M] {K : Type*} {n : ℕ}
-    [AddCommGroup K] [Module R K] [Module.Finite R K] {f : K →ₗ[R] Fin n →₀ R}
-    {x : (Fin n →₀ R) →ₗ[R] M} (h : x ∘ₗ f = 0) :
-    ∃ (k : ℕ) (a : (Fin n →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
+private theorem exists_factorization_of_comp_eq_zero_of_free_aux
+    [Flat R M]
+    {K : Type*} {n : ℕ} [AddCommGroup K] [Module R K] [Module.Finite R K]
+    {f : K →ₗ[R] Fin n →₀ R} {x : (Fin n →₀ R) →ₗ[R] M} (h : x ∘ₗ f = 0)
+    : ∃ (k : ℕ) (a : (Fin n →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
       x = y ∘ₗ a ∧ a ∘ₗ f = 0 := by
-  have (K' : Submodule R K) (hK' : K'.FG) : ∃ (k : ℕ) (a : (Fin n →₀ R) →ₗ[R] (Fin k →₀ R))
-      (y : (Fin k →₀ R) →ₗ[R] M), x = y ∘ₗ a ∧ K' ≤ LinearMap.ker (a ∘ₗ f) := by
+  have (K' : Submodule R K) (hK' : K'.FG)
+      : ∃ (k : ℕ) (a : (Fin n →₀ R) →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
+        x = y ∘ₗ a ∧ K' ≤ LinearMap.ker (a ∘ₗ f) := by
     induction K', hK' using Submodule.fg_induction generalizing n with
     | singleton k =>
       have : x (f k) = 0 := by simpa using congr($h k)
@@ -247,29 +281,40 @@ private theorem exists_factorization_of_comp_eq_zero_of_free_aux [Flat R M] {K :
   convert! this ⊤ Finite.fg_top
   simp only [top_le_iff, ker_eq_top]
 
-/-- Let $M$ be a flat module. Let $K$ and $N$ be finite $R$-modules with $N$
+/--
+Let $M$ be a flat module. Let $K$ and $N$ be finite $R$-modules with $N$
 free, and let $f \colon K \to N$ and $x \colon N \to M$ be linear maps such that
 $x \circ f = 0$. Then there exist a finite free module $R^k$ and linear maps
 $a \colon N \to R^k$ and $y \colon R^k \to M$ such that $x = y \circ a$ and
-$a \circ f = 0$. -/
+$a \circ f = 0$.
+-/
 @[stacks 058D "(1) → (4)"]
-theorem exists_factorization_of_comp_eq_zero_of_free [Flat R M] {K N : Type*} [AddCommGroup K]
-    [Module R K] [Module.Finite R K] [AddCommGroup N] [Module R N] [Free R N] [Module.Finite R N]
-    {f : K →ₗ[R] N} {x : N →ₗ[R] M} (h : x ∘ₗ f = 0) :
-    ∃ (k : ℕ) (a : N →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M),
-      x = y ∘ₗ a ∧ a ∘ₗ f = 0 :=
+theorem exists_factorization_of_comp_eq_zero_of_free
+    [Flat R M]
+    {K N : Type*} [AddCommGroup K] [Module R K] [Module.Finite R K] [AddCommGroup N] [Module R N]
+    [Free R N] [Module.Finite R N]
+    {f : K →ₗ[R] N} {x : N →ₗ[R] M} (h : x ∘ₗ f = 0)
+    : ∃ (k : ℕ) (a : N →ₗ[R] (Fin k →₀ R)) (y : (Fin k →₀ R) →ₗ[R] M), x = y ∘ₗ a ∧ a ∘ₗ f = 0 :=
   have e := ((Module.Free.chooseBasis R N).reindex (Fintype.equivFin _)).repr.symm
-  have ⟨k, a, y, hya, haf⟩ := exists_factorization_of_comp_eq_zero_of_free_aux
-    (f := e.symm ∘ₗ f) (x := x ∘ₗ e.toLinearMap) (by ext; simpa [comp_assoc] using congr($h _))
-  ⟨k, a ∘ₗ e.symm, y, by rwa [← comp_assoc, LinearEquiv.eq_comp_toLinearMap_symm], by
-    rwa [comp_assoc]⟩
+  have ⟨k, a, y, hya, haf⟩ :=
+    exists_factorization_of_comp_eq_zero_of_free_aux (f := e.symm ∘ₗ f) (x := x ∘ₗ e.toLinearMap)
+      (by ext; simpa [comp_assoc] using congr($h _))
+  ⟨
+    k,
+    a ∘ₗ e.symm,
+    y,
+    by rwa [← comp_assoc, LinearEquiv.eq_comp_toLinearMap_symm],
+    by rwa [comp_assoc]
+  ⟩
 
-/-- Every homomorphism from a finitely presented module to a flat module factors through a finite
-free module. -/
+/--
+Every homomorphism from a finitely presented module to a flat module factors through a finite
+free module.
+-/
 @[stacks 058E "only if"]
-theorem exists_factorization_of_finitePresentation [Flat R M] {P : Type*} [AddCommGroup P]
-    [Module R P] [FinitePresentation R P] (h₁ : P →ₗ[R] M) :
-    ∃ (k : ℕ) (h₂ : P →ₗ[R] (Fin k →₀ R)) (h₃ : (Fin k →₀ R) →ₗ[R] M), h₁ = h₃ ∘ₗ h₂ := by
+theorem exists_factorization_of_finitePresentation
+    [Flat R M] {P : Type*} [AddCommGroup P] [Module R P] [FinitePresentation R P] (h₁ : P →ₗ[R] M)
+    : ∃ (k : ℕ) (h₂ : P →ₗ[R] (Fin k →₀ R)) (h₃ : (Fin k →₀ R) →ₗ[R] M), h₁ = h₃ ∘ₗ h₂ := by
   have ⟨_, K, ϕ, hK⟩ := FinitePresentation.exists_fin R P
   have : Module.Finite R K := .of_fg hK
   have : (h₁ ∘ₗ ϕ.symm ∘ₗ K.mkQ) ∘ₗ K.subtype = 0 := by

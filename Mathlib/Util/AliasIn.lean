@@ -12,7 +12,8 @@ public import Mathlib.Tactic.Core
 
 public meta section
 
-/-- Adds an alias of this declaration in a different namespace.
+/--
+Adds an alias of this declaration in a different namespace.
 Example:
 ```
 @[alias_in Foo.Bar] def A.B.C.d := ...
@@ -38,26 +39,30 @@ syntax (name := aliasIn) "alias_in " ident (ppSpace num)? : attr
 
 open Lean Meta Elab Command
 @[inherit_doc aliasIn]
-initialize registerBuiltinAttribute {
+initialize
+  registerBuiltinAttribute {
     name := `aliasIn
     descr := "create alias in another namespace"
     applicationTime := .afterCompilation
     add := fun
-    | src, `(attr| alias_in%$tk $nm $[$num]?), kind => do
-      unless kind == .global do
-        throwError "The `alias_in` attribute cannot be {kind}."
-      let newNamespace := nm.getId.components
-      let num := num.map (·.getNat) |>.getD newNamespace.length
-      let components := src.components
-      if (← toModifiers src).visibility.isPrivate then
-        throwError "The `alias_in` attribute cannot be used for private declarations."
-      if components.length ≤ num then
-        throwError m!"{src} has only {components.length - 1} namespaces, cannot remove {num}.\n\
-        Use `@[alias_in {nm} {components.length - 1}]` instead."
-      let tgtName := .fromComponents <|
-        components.take (components.length - 1 - num) ++ newNamespace ++ [components.getLast!]
-      liftCommandElabM <| elabCommand <|
-        ← `(command| public alias $(mkIdent tgtName) := $(mkIdent src))
-      -- add mouse-over text
-      Term.addTermInfo' nm (← mkConstWithLevelParams tgtName) (isBinder := true) |>.run' |>.run'
-    | _, _, _ => throwUnsupportedSyntax }
+      | src, `(attr| alias_in%$tk $nm $[$num]?), kind => do
+        unless kind == .global do
+          throwError "The `alias_in` attribute cannot be {kind}."
+        let newNamespace := nm.getId.components
+        let num := num.map (·.getNat) |>.getD newNamespace.length
+        let components := src.components
+        if (← toModifiers src).visibility.isPrivate then
+          throwError "The `alias_in` attribute cannot be used for private declarations."
+        if components.length ≤ num then
+          throwError m!"{src} has only {components.length - 1} namespaces, cannot remove {num}.\n\
+            Use `@[alias_in {nm} {components.length - 1}]` instead."
+        let tgtName :=
+          .fromComponents <|
+            components.take (components.length - 1 - num) ++ newNamespace ++ [components.getLast!]
+        liftCommandElabM <| elabCommand <|
+          ← `(command| public alias $(mkIdent tgtName) := $(mkIdent src))
+        -- add mouse-over text
+        Term.addTermInfo' nm (← mkConstWithLevelParams tgtName) (isBinder := true) |>.run' |>.run'
+      | _, _, _ =>
+        throwUnsupportedSyntax
+  }

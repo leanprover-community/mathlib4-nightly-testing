@@ -87,22 +87,20 @@ structure Hom₂ (α β : a ⟶ b) where
   τr : β.r ⟶ α.r
   conjugateEquiv_τl : conjugateEquiv β.adj α.adj τl = τr := by cat_disch
 
-lemma Hom₂.conjugateEquiv_symm_τr {α β : a ⟶ b} (p : Hom₂ α β) :
-    (conjugateEquiv β.adj α.adj).symm p.τr = p.τl := by
+lemma Hom₂.conjugateEquiv_symm_τr {α β : a ⟶ b} (p : Hom₂ α β)
+    : (conjugateEquiv β.adj α.adj).symm p.τr = p.τl := by
   rw [← Hom₂.conjugateEquiv_τl, Equiv.symm_apply_apply]
 
 @[simps!]
 instance : CategoryStruct (a ⟶ b) where
   Hom α β := Hom₂ α β
-  id α :=
-    { τl := 𝟙 _
-      τr := 𝟙 _ }
-  comp {a b c} x y :=
-    { τl := x.τl ≫ y.τl
-      τr := y.τr ≫ x.τr
-      conjugateEquiv_τl := by
-        simp [← conjugateEquiv_comp c.adj b.adj a.adj y.τl x.τl,
-          Hom₂.conjugateEquiv_τl] }
+  id α := { τl := 𝟙 _, τr := 𝟙 _ }
+  comp {a b c} x y := {
+    τl := x.τl ≫ y.τl
+    τr := y.τr ≫ x.τr
+    conjugateEquiv_τl := by
+      simp [← conjugateEquiv_comp c.adj b.adj a.adj y.τl x.τl, Hom₂.conjugateEquiv_τl]
+  }
 
 attribute [reassoc] comp_τl comp_τr
 
@@ -114,19 +112,18 @@ instance : Category (a ⟶ b) where
 
 /-- Constructor for isomorphisms between 1-morphisms in the bicategory `Adj B`. -/
 @[simps]
-def iso₂Mk {α β : a ⟶ b} (el : α.l ≅ β.l) (er : β.r ≅ α.r)
-    (h : conjugateEquiv β.adj α.adj el.hom = er.hom := by cat_disch) :
-    α ≅ β where
-  hom :=
-    { τl := el.hom
-      τr := er.hom
-      conjugateEquiv_τl := h }
-  inv :=
-    { τl := el.inv
-      τr := er.inv
-      conjugateEquiv_τl := by
-        rw [← cancel_mono er.hom, Iso.inv_hom_id, ← h,
-          conjugateEquiv_comp, Iso.hom_inv_id, conjugateEquiv_id] }
+def iso₂Mk
+    {α β : a ⟶ b} (el : α.l ≅ β.l) (er : β.r ≅ α.r)
+    (h : conjugateEquiv β.adj α.adj el.hom = er.hom := by cat_disch)
+    : α ≅ β where
+  hom := { τl := el.hom, τr := er.hom, conjugateEquiv_τl := h }
+  inv := {
+    τl := el.inv
+    τr := er.inv
+    conjugateEquiv_τl := by
+      rw [← cancel_mono er.hom, Iso.inv_hom_id, ← h, conjugateEquiv_comp, Iso.hom_inv_id,
+        conjugateEquiv_id]
+  }
 
 namespace Bicategory
 
@@ -140,15 +137,13 @@ set_option linter.dupNamespace false in
 /-- The left unitor in the bicategory `Adj B`. -/
 @[simps!]
 def leftUnitor (α : a ⟶ b) : 𝟙 a ≫ α ≅ α :=
-  iso₂Mk (λ_ _) (ρ_ _).symm
-    (by simpa using conjugateEquiv_id_comp_right_apply α.adj α.adj (𝟙 _))
+  iso₂Mk (λ_ _) (ρ_ _).symm (by simpa using conjugateEquiv_id_comp_right_apply α.adj α.adj (𝟙 _))
 
 set_option linter.dupNamespace false in
 /-- The right unitor in the bicategory `Adj B`. -/
 @[simps!]
 def rightUnitor (α : a ⟶ b) : α ≫ 𝟙 b ≅ α :=
-  iso₂Mk (ρ_ _) (λ_ _).symm
-    (by simpa using conjugateEquiv_comp_id_right_apply α.adj α.adj (𝟙 _))
+  iso₂Mk (ρ_ _) (λ_ _).symm (by simpa using conjugateEquiv_comp_id_right_apply α.adj α.adj (𝟙 _))
 
 set_option linter.dupNamespace false in
 /-- The left whiskering in the bicategory `Adj B`. -/
@@ -156,8 +151,7 @@ set_option linter.dupNamespace false in
 def whiskerLeft (α : a ⟶ b) {β β' : b ⟶ c} (y : β ⟶ β') : α ≫ β ⟶ α ≫ β' where
   τl := _ ◁ y.τl
   τr := y.τr ▷ _
-  conjugateEquiv_τl := by
-    simp [conjugateEquiv_whiskerLeft, Hom₂.conjugateEquiv_τl]
+  conjugateEquiv_τl := by simp [conjugateEquiv_whiskerLeft, Hom₂.conjugateEquiv_τl]
 
 set_option linter.dupNamespace false in
 /-- The right whiskering in the bicategory `Adj B`. -/
@@ -165,8 +159,7 @@ set_option linter.dupNamespace false in
 def whiskerRight {α α' : a ⟶ b} (x : α ⟶ α') (β : b ⟶ c) : α ≫ β ⟶ α' ≫ β where
   τl := x.τl ▷ _
   τr := _ ◁ x.τr
-  conjugateEquiv_τl := by
-    simp [conjugateEquiv_whiskerRight, Hom₂.conjugateEquiv_τl]
+  conjugateEquiv_τl := by simp [conjugateEquiv_whiskerRight, Hom₂.conjugateEquiv_τl]
 
 end Bicategory
 
@@ -194,8 +187,10 @@ def forget₁ : Adj B ⥤ᵖ B where
 
 -- TODO: define `forget₂` which sends an adjunction to its right adjoint functor
 
-/-- Given an isomorphism between two 1-morphisms in `Adj B`, this is the
-underlying isomorphism between the left adjoints. -/
+/--
+Given an isomorphism between two 1-morphisms in `Adj B`, this is the
+underlying isomorphism between the left adjoints.
+-/
 @[simps]
 def lIso {a b : Adj B} {adj₁ adj₂ : a ⟶ b} (e : adj₁ ≅ adj₂) : adj₁.l ≅ adj₂.l where
   hom := e.hom.τl
@@ -203,8 +198,10 @@ def lIso {a b : Adj B} {adj₁ adj₂ : a ⟶ b} (e : adj₁ ≅ adj₂) : adj�
   hom_inv_id := by rw [← comp_τl, e.hom_inv_id, id_τl]
   inv_hom_id := by rw [← comp_τl, e.inv_hom_id, id_τl]
 
-/-- Given an isomorphism between two 1-morphisms in `Adj B`, this is the
-underlying isomorphism between the right adjoints. -/
+/--
+Given an isomorphism between two 1-morphisms in `Adj B`, this is the
+underlying isomorphism between the right adjoints.
+-/
 @[simps]
 def rIso {a b : Adj B} {adj₁ adj₂ : a ⟶ b} (e : adj₁ ≅ adj₂) : adj₁.r ≅ adj₂.r where
   hom := e.inv.τr

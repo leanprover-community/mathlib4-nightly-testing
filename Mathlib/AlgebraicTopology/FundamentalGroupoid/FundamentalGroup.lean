@@ -26,10 +26,11 @@ open CategoryTheory
 
 variable (X)
 
-/-- The fundamental group is the automorphism group (vertex group) of the basepoint
-in the fundamental groupoid. -/
-abbrev FundamentalGroup (x : X) :=
-  End (FundamentalGroupoid.mk x)
+/--
+The fundamental group is the automorphism group (vertex group) of the basepoint
+in the fundamental groupoid.
+-/
+abbrev FundamentalGroup (x : X) := End (FundamentalGroupoid.mk x)
 
 variable {X}
 
@@ -42,38 +43,36 @@ theorem mul_def : p * q = .of (q.asHom.trans p.asHom) := rfl
 theorem inv_def : p⁻¹ = .of p.asHom.symm := rfl
 
 /-- Get an isomorphism between the fundamental groups at two points given a path -/
-def fundamentalGroupMulEquivOfPath (p : Path x₀ x₁) :
-    FundamentalGroup X x₀ ≃* FundamentalGroup X x₁ :=
+def fundamentalGroupMulEquivOfPath (p : Path x₀ x₁)
+    : FundamentalGroup X x₀ ≃* FundamentalGroup X x₁ :=
   ((Groupoid.isoEquivHom ..).symm ⟦p⟧).conj
 
 variable (x₀ x₁)
 
 /-- The fundamental group of a path connected space is independent of the choice of basepoint. -/
-def fundamentalGroupMulEquivOfPathConnected [PathConnectedSpace X] :
-    FundamentalGroup X x₀ ≃* FundamentalGroup X x₁ :=
+def fundamentalGroupMulEquivOfPathConnected [PathConnectedSpace X]
+    : FundamentalGroup X x₀ ≃* FundamentalGroup X x₁ :=
   fundamentalGroupMulEquivOfPath (PathConnectedSpace.somePath x₀ x₁)
 
 /-- An element of the fundamental group as an arrow in the fundamental groupoid. -/
-abbrev toArrow {x : X} (p : FundamentalGroup X x) :
-    FundamentalGroupoid.mk x ⟶ FundamentalGroupoid.mk x :=
+abbrev toArrow {x : X} (p : FundamentalGroup X x)
+    : FundamentalGroupoid.mk x ⟶ FundamentalGroupoid.mk x :=
   p.asHom
 
 /-- An element of the fundamental group as a quotient of homotopic paths. -/
-abbrev toPath {x : X} (p : FundamentalGroup X x) : Path.Homotopic.Quotient x x :=
-  toArrow p
+abbrev toPath {x : X} (p : FundamentalGroup X x) : Path.Homotopic.Quotient x x := toArrow p
 
 /-- An element of the fundamental group, constructed from an arrow in the fundamental groupoid. -/
-abbrev fromArrow {x : X}
-    (p : FundamentalGroupoid.mk x ⟶ FundamentalGroupoid.mk x) :
-    FundamentalGroup X x :=
+abbrev fromArrow {x : X} (p : FundamentalGroupoid.mk x ⟶ FundamentalGroupoid.mk x)
+    : FundamentalGroup X x :=
   .of p
 
 /-- An element of the fundamental group, constructed from a quotient of homotopic paths. -/
-abbrev fromPath {x : X} (p : Path.Homotopic.Quotient x x) : FundamentalGroup X x :=
-  fromArrow p
+abbrev fromPath {x : X} (p : Path.Homotopic.Quotient x x) : FundamentalGroup X x := fromArrow p
 
 /-- The homomorphism between fundamental groups induced by a continuous map. -/
-@[simps!] def map (f : C(X, Y)) (x : X) : FundamentalGroup X x →* FundamentalGroup Y (f x) :=
+@[simps!]
+def map (f : C(X, Y)) (x : X) : FundamentalGroup X x →* FundamentalGroup Y (f x) :=
   (FundamentalGroupoid.map f).mapEnd _
 
 variable (f : C(X, Y)) {x : X} {y : Y} (h : f x = y)
@@ -82,8 +81,8 @@ variable (f : C(X, Y)) {x : X} {y : Y} (h : f x = y)
 def mapOfEq : FundamentalGroup X x →* FundamentalGroup Y y :=
   (eqToIso <| congr(FundamentalGroupoid.mk $h)).conj.toMonoidHom.comp (map f x)
 
-theorem mapOfEq_apply (p : FundamentalGroup X x) :
-    mapOfEq f h p = .of ((Path.Homotopic.Quotient.map p.asHom f).cast h.symm h.symm) := by
+theorem mapOfEq_apply (p : FundamentalGroup X x)
+    : mapOfEq f h p = .of ((Path.Homotopic.Quotient.map p.asHom f).cast h.symm h.symm) := by
   ext
   apply FundamentalGroupoid.conj_eqToHom
 

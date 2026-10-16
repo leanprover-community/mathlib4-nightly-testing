@@ -36,8 +36,10 @@ namespace Group
 
 variable {G G' : Type*} [Group G] [Group G']
 
-/-- An additive group is **virtually cyclic** if it has a cyclic additive
-subgroup of finite index. -/
+/--
+An additive group is **virtually cyclic** if it has a cyclic additive
+subgroup of finite index.
+-/
 @[mk_iff]
 class _root_.AddGroup.IsVirtuallyAddCyclic (G : Type*) [AddGroup G] : Prop where
   exists_isAddCyclic_and_finiteIndex (G) : ∃ H : AddSubgroup G, IsAddCyclic H ∧ H.FiniteIndex
@@ -50,43 +52,47 @@ class IsVirtuallyCyclic (G : Type*) [Group G] : Prop where
 /-- A cyclic group is virtually cyclic. -/
 @[to_additive]
 -- see Note [lower instance priority]
-instance (priority := 100) [IsCyclic G] : IsVirtuallyCyclic G :=
-  ⟨⊤, inferInstance, inferInstance⟩
+instance (priority := 100) [IsCyclic G] : IsVirtuallyCyclic G := ⟨⊤, inferInstance, inferInstance⟩
 
 /-- A finite group is virtually cyclic. -/
 @[to_additive]
 -- see Note [lower instance priority]
-instance (priority := 100) [Finite G] : IsVirtuallyCyclic G :=
-  ⟨⊥, inferInstance, inferInstance⟩
+instance (priority := 100) [Finite G] : IsVirtuallyCyclic G := ⟨⊥, inferInstance, inferInstance⟩
 
 variable (G) in
 /-- A virtually cyclic group has a normal cyclic subgroup of finite index. -/
 @[to_additive]
-theorem IsVirtuallyCyclic.exists_isCyclic_and_finiteIndex_and_normal [IsVirtuallyCyclic G] :
-    ∃ H : Subgroup G, IsCyclic H ∧ H.FiniteIndex ∧ H.Normal := by
+theorem IsVirtuallyCyclic.exists_isCyclic_and_finiteIndex_and_normal [IsVirtuallyCyclic G]
+    : ∃ H : Subgroup G, IsCyclic H ∧ H.FiniteIndex ∧ H.Normal := by
   obtain ⟨H, hc, hfi⟩ := exists_isCyclic_and_finiteIndex G
   exact ⟨H.normalCore, Subgroup.isCyclic_of_le H.normalCore_le, inferInstance, inferInstance⟩
 
 /-- A virtually cyclic group is virtually nilpotent. -/
 @[to_additive]
-theorem IsVirtuallyCyclic.isVirtuallyNilpotent [IsVirtuallyCyclic G] :
-    IsVirtuallyNilpotent G := by
+theorem IsVirtuallyCyclic.isVirtuallyNilpotent [IsVirtuallyCyclic G] : IsVirtuallyNilpotent G := by
   obtain ⟨H, hc, hfi⟩ := exists_isCyclic_and_finiteIndex G
   exact ⟨H, inferInstance, hfi⟩
 
-/-- The image of a virtually cyclic group under a surjective homomorphism is
-virtually cyclic. -/
+/--
+The image of a virtually cyclic group under a surjective homomorphism is
+virtually cyclic.
+-/
 @[to_additive]
-theorem IsVirtuallyCyclic.of_surjective (f : G →* G') (hf : Function.Surjective f)
-    [IsVirtuallyCyclic G] : IsVirtuallyCyclic G' := by
+theorem IsVirtuallyCyclic.of_surjective
+    (f : G →* G') (hf : Function.Surjective f) [IsVirtuallyCyclic G]
+    : IsVirtuallyCyclic G' := by
   obtain ⟨H, hc, hfi⟩ := exists_isCyclic_and_finiteIndex G
-  exact ⟨H.map f, isCyclic_of_surjective _ (f.subgroupMap_surjective H),
-    Subgroup.FiniteIndex.map_of_surjective H hf⟩
+  exact ⟨
+    H.map f,
+    isCyclic_of_surjective _ (f.subgroupMap_surjective H),
+    Subgroup.FiniteIndex.map_of_surjective H hf
+  ⟩
 
 /-- A group embedding into a virtually cyclic group is virtually cyclic. -/
 @[to_additive]
-theorem IsVirtuallyCyclic.of_injective (f : G →* G') (hf : Function.Injective f)
-    [IsVirtuallyCyclic G'] : IsVirtuallyCyclic G := by
+theorem IsVirtuallyCyclic.of_injective
+    (f : G →* G') (hf : Function.Injective f) [IsVirtuallyCyclic G']
+    : IsVirtuallyCyclic G := by
   obtain ⟨H, hc, hfi⟩ := exists_isCyclic_and_finiteIndex G'
   exact ⟨H.comap f, isCyclic_of_injective _ (f.subgroupComap_injective H hf), inferInstance⟩
 

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Limits.Preserves.Finite
 public import Mathlib.CategoryTheory.ObjectProperty.FiniteProducts
-
 import Mathlib.CategoryTheory.Limits.FullSubcategory
 
 /-!
@@ -30,8 +29,9 @@ variable {C : Type*} [Category* C] (P : ObjectProperty C)
 
 /-- A typeclass expressing that a property of objects is closed under finite limits. -/
 class IsClosedUnderFiniteLimits : Prop where
-  isClosedUnderLimitsOfShape (J : Type) [SmallCategory J] [FinCategory J] :
-    P.IsClosedUnderLimitsOfShape J := by intros; infer_instance
+  isClosedUnderLimitsOfShape (J : Type) [SmallCategory J] [FinCategory J]
+      : P.IsClosedUnderLimitsOfShape J := by
+    intros; infer_instance
 
 namespace IsClosedUnderFiniteLimits
 
@@ -56,8 +56,9 @@ end IsClosedUnderFiniteLimits
 
 /-- A typeclass expressing that a property of objects is closed under finite colimits. -/
 class IsClosedUnderFiniteColimits : Prop where
-  isClosedUnderColimitsOfShape (J : Type) [SmallCategory J] [FinCategory J] :
-    P.IsClosedUnderColimitsOfShape J := by intros; infer_instance
+  isClosedUnderColimitsOfShape (J : Type) [SmallCategory J] [FinCategory J]
+      : P.IsClosedUnderColimitsOfShape J := by
+    intros; infer_instance
 
 namespace IsClosedUnderFiniteColimits
 

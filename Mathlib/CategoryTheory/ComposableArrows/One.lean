@@ -22,26 +22,28 @@ namespace ComposableArrows
 
 variable (C : Type u) [Category.{v} C]
 
-/-- The functor `ComposableArrows C n ⥤ ComposableArrows C 1`
+/--
+The functor `ComposableArrows C n ⥤ ComposableArrows C 1`
 which sends `S` to `mk₁ (S.map' i j)` when `i`, `j` and `n`
-are such that `i ≤ j` and `j ≤ n`. -/
+are such that `i ≤ j` and `j ≤ n`.
+-/
 @[implicit_reducible, simps]
-def functorArrows (i j n : ℕ) (hij : i ≤ j := by lia) (hj : j ≤ n := by lia) :
-    ComposableArrows C n ⥤ ComposableArrows C 1 where
+def functorArrows (i j n : ℕ) (hij : i ≤ j := by lia) (hj : j ≤ n := by lia)
+    : ComposableArrows C n ⥤ ComposableArrows C 1 where
   obj S := mk₁ (S.map' i j)
   map {S S'} φ := homMk₁ (φ.app _) (φ.app _) (φ.naturality _)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The natural transformation `functorArrows C i j n ⟶ functorArrows C i' j' n`
-when `i ≤ i'` and `j ≤ j'`. -/
+/--
+The natural transformation `functorArrows C i j n ⟶ functorArrows C i' j' n`
+when `i ≤ i'` and `j ≤ j'`.
+-/
 @[simps]
-def mapFunctorArrows (i j i' j' n : ℕ)
-    (_ : i ≤ j := by lia) (_ : i' ≤ j' := by lia)
-    (_ : i ≤ i' := by lia) (_ : j ≤ j' := by lia)
-    (_ : j' ≤ n := by lia) :
-    functorArrows C i j n ⟶ functorArrows C i' j' n where
-  app S := homMk₁ (S.map' i i') (S.map' j j')
-    (by simp [← Functor.map_comp])
+def mapFunctorArrows
+    (i j i' j' n : ℕ) (_ : i ≤ j := by lia) (_ : i' ≤ j' := by lia) (_ : i ≤ i' := by lia)
+    (_ : j ≤ j' := by lia) (_ : j' ≤ n := by lia)
+    : functorArrows C i j n ⟶ functorArrows C i' j' n where
+  app S := homMk₁ (S.map' i i') (S.map' j j') (by simp [← Functor.map_comp])
 
 end ComposableArrows
 

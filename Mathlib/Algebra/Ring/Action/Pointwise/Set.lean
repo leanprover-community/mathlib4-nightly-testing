@@ -58,11 +58,12 @@ lemma zero_mem_smul_set_iff (ha : a ≠ 0) : (0 : β) ∈ a • t ↔ (0 : β) �
   rwa [(smul_eq_zero.1 h).resolve_left ha] at hb
 
 lemma zero_mem_smul_iff : 0 ∈ s • t ↔ 0 ∈ s ∧ t.Nonempty ∨ 0 ∈ t ∧ s.Nonempty where
-  mp | ⟨a, ha, b, hb, h⟩ => by
+  mp
+    | ⟨a, ha, b, hb, h⟩ => by
       obtain rfl | rfl := smul_eq_zero.1 h; exacts [.inl ⟨ha, b, hb⟩, .inr ⟨hb, a, ha⟩]
   mpr
-  | .inl ⟨hs, b, hb⟩ => ⟨0, hs, b, hb, zero_smul _ _⟩
-  | .inr ⟨ht, a, ha⟩ => ⟨a, ha, 0, ht, smul_zero _⟩
+    | .inl ⟨hs, b, hb⟩ => ⟨0, hs, b, hb, zero_smul _ _⟩
+    | .inr ⟨ht, a, ha⟩ => ⟨a, ha, 0, ht, smul_zero _⟩
 
 end Semiring
 

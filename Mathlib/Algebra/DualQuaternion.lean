@@ -26,109 +26,111 @@ rigid motions in 3D space can be represented by dual quaternions of unit length.
 
 @[expose] public section
 
-
 variable {R : Type*} [CommRing R]
 
 namespace Quaternion
 
-/-- The dual quaternions can be equivalently represented as a quaternion with dual coefficients,
+/--
+The dual quaternions can be equivalently represented as a quaternion with dual coefficients,
 or as a dual number with quaternion coefficients.
 
-See also `Matrix.dualNumberEquiv` for a similar result. -/
+See also `Matrix.dualNumberEquiv` for a similar result.
+-/
 def dualNumberEquiv : Quaternion (DualNumber R) ≃ₐ[R] DualNumber (Quaternion R) where
   toFun q :=
     (⟨q.re.fst, q.imI.fst, q.imJ.fst, q.imK.fst⟩, ⟨q.re.snd, q.imI.snd, q.imJ.snd, q.imK.snd⟩)
   invFun d :=
     ⟨(d.fst.re, d.snd.re), (d.fst.imI, d.snd.imI), (d.fst.imJ, d.snd.imJ), (d.fst.imK, d.snd.imK)⟩
   map_mul' _ _ := by
-    ext1; · rfl
+    ext1
+    · rfl
     refine .trans ?_ (DualNumber.snd_mul _ _).symm
-    dsimp [-TrivSqZeroExt.snd_mul]; ext <;> ring
+    dsimp [-TrivSqZeroExt.snd_mul]
+    ext <;> ring
   map_add' _ _ := rfl
   commutes' _ := rfl
 
 /-! Lemmas characterizing `Quaternion.dualNumberEquiv`. -/
 
-
 -- `simps` can't work on `DualNumber` because it's not a structure
 @[simp]
-theorem re_fst_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).fst.re = q.re.fst :=
+theorem re_fst_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).fst.re = q.re.fst :=
   rfl
 
 @[simp]
-theorem imI_fst_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).fst.imI = q.imI.fst :=
+theorem imI_fst_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).fst.imI = q.imI.fst :=
   rfl
 
 @[simp]
-theorem imJ_fst_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).fst.imJ = q.imJ.fst :=
+theorem imJ_fst_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).fst.imJ = q.imJ.fst :=
   rfl
 
 @[simp]
-theorem imK_fst_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).fst.imK = q.imK.fst :=
+theorem imK_fst_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).fst.imK = q.imK.fst :=
   rfl
 
 @[simp]
-theorem re_snd_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).snd.re = q.re.snd :=
+theorem re_snd_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).snd.re = q.re.snd :=
   rfl
 
 @[simp]
-theorem imI_snd_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).snd.imI = q.imI.snd :=
+theorem imI_snd_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).snd.imI = q.imI.snd :=
   rfl
 
 @[simp]
-theorem imJ_snd_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).snd.imJ = q.imJ.snd :=
+theorem imJ_snd_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).snd.imJ = q.imJ.snd :=
   rfl
 
 @[simp]
-theorem imK_snd_dualNumberEquiv (q : Quaternion (DualNumber R)) :
-    (dualNumberEquiv q).snd.imK = q.imK.snd :=
+theorem imK_snd_dualNumberEquiv (q : Quaternion (DualNumber R))
+    : (dualNumberEquiv q).snd.imK = q.imK.snd :=
   rfl
 
 @[simp]
-theorem fst_re_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).re.fst = d.fst.re :=
+theorem fst_re_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).re.fst = d.fst.re :=
   rfl
 
 @[simp]
-theorem fst_imI_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imI.fst = d.fst.imI :=
+theorem fst_imI_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imI.fst = d.fst.imI :=
   rfl
 
 @[simp]
-theorem fst_imJ_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imJ.fst = d.fst.imJ :=
+theorem fst_imJ_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imJ.fst = d.fst.imJ :=
   rfl
 
 @[simp]
-theorem fst_imK_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imK.fst = d.fst.imK :=
+theorem fst_imK_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imK.fst = d.fst.imK :=
   rfl
 
 @[simp]
-theorem snd_re_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).re.snd = d.snd.re :=
+theorem snd_re_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).re.snd = d.snd.re :=
   rfl
 
 @[simp]
-theorem snd_imI_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imI.snd = d.snd.imI :=
+theorem snd_imI_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imI.snd = d.snd.imI :=
   rfl
 
 @[simp]
-theorem snd_imJ_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imJ.snd = d.snd.imJ :=
+theorem snd_imJ_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imJ.snd = d.snd.imJ :=
   rfl
 
 @[simp]
-theorem snd_imK_dualNumberEquiv_symm (d : DualNumber (Quaternion R)) :
-    (dualNumberEquiv.symm d).imK.snd = d.snd.imK :=
+theorem snd_imK_dualNumberEquiv_symm (d : DualNumber (Quaternion R))
+    : (dualNumberEquiv.symm d).imK.snd = d.snd.imK :=
   rfl
 
 end Quaternion

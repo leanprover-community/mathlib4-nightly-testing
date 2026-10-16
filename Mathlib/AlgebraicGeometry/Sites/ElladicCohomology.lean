@@ -11,7 +11,6 @@ public import Mathlib.AlgebraicGeometry.Sites.Proetale
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.HasExt
 public import Mathlib.CategoryTheory.Sites.SheafCohomology.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
-
 import Mathlib.Algebra.Category.Grp.AB
 import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Sheaf
 
@@ -61,11 +60,11 @@ The sheaf of continuous maps `U ↦ C(U, ℤ_[ℓ])` on the pro-étale site. Thi
 sheaf for `ℓ`-adic cohomology.
 [Definition 6.8.1.][proetale2015]
 -/
-noncomputable def ellAdicSheaf (ℓ : ℕ) [Fact ℓ.Prime] :
-    Sheaf (ProEt.topology X) Ab.{u} :=
-  ((ProEt.forget X ⋙ Over.forget _).sheafPushforwardContinuous _ _ proetaleTopology).obj
-    ⟨continuousMapPresheafAb (ℤ_[ℓ]), .of_le proetaleTopology_le_fpqcTopology <|
-      isSheaf_fpqcTopology_continuousMapPresheafAb _⟩
+noncomputable def ellAdicSheaf (ℓ : ℕ) [Fact ℓ.Prime] : Sheaf (ProEt.topology X) Ab.{u} :=
+  ((ProEt.forget X ⋙ Over.forget _).sheafPushforwardContinuous _ _ proetaleTopology).obj ⟨
+    continuousMapPresheafAb (ℤ_[ℓ]),
+    .of_le proetaleTopology_le_fpqcTopology <| isSheaf_fpqcTopology_continuousMapPresheafAb _
+  ⟩
 
 variable (ℓ : ℕ) [Fact ℓ.Prime]
 

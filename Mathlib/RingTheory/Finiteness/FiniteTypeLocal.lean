@@ -33,16 +33,20 @@ variable [Algebra S S']
 
 variable {S'} in
 open scoped Classical in
-/-- Let `S` be an `R`-algebra, `M` a submonoid of `S`, `S' = M⁻¹S`.
+/--
+Let `S` be an `R`-algebra, `M` a submonoid of `S`, `S' = M⁻¹S`.
 Suppose the image of some `x : S` falls in the adjoin of some finite `s ⊆ S'` over `R`,
 and `A` is an `R`-subalgebra of `S` containing both `M` and the numerators of `s`.
 Then, there exists some `m : M` such that `m • x` falls in `A`.
 -/
-theorem IsLocalization.exists_smul_mem_of_mem_adjoin [Algebra R S']
-    [IsScalarTower R S S'] (M : Submonoid S) [IsLocalization M S'] (x : S) (s : Finset S')
-    (A : Subalgebra R S) (hA₁ : (IsLocalization.finsetIntegerMultiple M s : Set S) ⊆ A)
-    (hA₂ : M ≤ A.toSubmonoid) (hx : algebraMap S S' x ∈ Algebra.adjoin R (s : Set S')) :
-    ∃ m : M, m • x ∈ A := by
+theorem IsLocalization.exists_smul_mem_of_mem_adjoin
+    [Algebra R S'] [IsScalarTower R S S']
+    (M : Submonoid S) [IsLocalization M S']
+    (x : S)
+    (s : Finset S') (A : Subalgebra R S)
+    (hA₁ : (IsLocalization.finsetIntegerMultiple M s : Set S) ⊆ A) (hA₂ : M ≤ A.toSubmonoid)
+    (hx : algebraMap S S' x ∈ Algebra.adjoin R (s : Set S'))
+    : ∃ m : M, m • x ∈ A := by
   let g : S →ₐ[R] S' := IsScalarTower.toAlgHom R S S'
   let y := IsLocalization.commonDenomOfFinset M s
   have hx₁ : (y : S) • (s : Set S') = g '' _ :=
@@ -60,16 +64,17 @@ theorem IsLocalization.exists_smul_mem_of_mem_adjoin [Algebra R S']
 
 variable {S'} in
 open scoped Classical in
-/-- Let `S` be an `R`-algebra, `M` a submonoid of `R`, and `S' = M⁻¹S`.
+/--
+Let `S` be an `R`-algebra, `M` a submonoid of `R`, and `S' = M⁻¹S`.
 If the image of some `x : S` falls in the adjoin of some finite `s ⊆ S'` over `R`,
 then there exists some `m : M` such that `m • x` falls in the
 adjoin of `IsLocalization.finsetIntegerMultiple _ s` over `R`.
 -/
-theorem IsLocalization.lift_mem_adjoin_finsetIntegerMultiple [Algebra R S']
-    [IsScalarTower R S S'] [IsLocalization (M.map (algebraMap R S)) S'] (x : S) (s : Finset S')
-    (hx : algebraMap S S' x ∈ Algebra.adjoin R (s : Set S')) :
-    ∃ m : M, m • x ∈
-      Algebra.adjoin R
+theorem IsLocalization.lift_mem_adjoin_finsetIntegerMultiple
+    [Algebra R S'] [IsScalarTower R S S'] [IsLocalization (M.map (algebraMap R S)) S']
+    (x : S) (s : Finset S') (hx : algebraMap S S' x ∈ Algebra.adjoin R (s : Set S'))
+    : ∃ m : M,
+      m • x ∈ Algebra.adjoin R
         (IsLocalization.finsetIntegerMultiple (M.map (algebraMap R S)) s : Set S) := by
   obtain ⟨⟨_, a, ha, rfl⟩, e⟩ :=
     IsLocalization.exists_smul_mem_of_mem_adjoin (M.map (algebraMap R S)) x s (Algebra.adjoin R _)
@@ -78,9 +83,10 @@ theorem IsLocalization.lift_mem_adjoin_finsetIntegerMultiple [Algebra R S']
   simpa only [Submonoid.smul_def, algebraMap_smul] using e
 
 /-- Finite-type can be checked on a standard covering of the target. -/
-lemma Algebra.FiniteType.of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
-    (h : ∀ x ∈ s, Algebra.FiniteType R (Localization.Away x)) :
-    Algebra.FiniteType R S := by
+lemma Algebra.FiniteType.of_span_eq_top_target
+    (s : Set S)
+    (hs : Ideal.span (s : Set S) = ⊤) (h : ∀ x ∈ s, Algebra.FiniteType R (Localization.Away x))
+    : Algebra.FiniteType R S := by
   obtain ⟨s, h₁, hs⟩ := (Ideal.span_eq_top_iff_finite s).mp hs
   replace h (i : s) : Algebra.FiniteType R (Localization.Away i.val) := h i (h₁ i.property)
   classical
@@ -105,7 +111,8 @@ lemma Algebra.FiniteType.of_span_eq_top_target (s : Set S) (hs : Ideal.span (s :
     rw [Finset.coe_union, Finset.coe_union]
     exact Or.inl (Or.inr hx)
   · intro i
-    by_cases h : l i = 0; · rw [h]; exact zero_mem _
+    by_cases h : l i = 0
+    · rw [h]; exact zero_mem _
     apply Algebra.subset_adjoin
     rw [Finset.coe_union, Finset.coe_image]
     exact Or.inr (Set.mem_image_of_mem _ (Finsupp.mem_support_iff.mpr h))
@@ -117,11 +124,13 @@ lemma Algebra.FiniteType.of_span_eq_top_target (s : Set S) (hs : Ideal.span (s :
     -- placeholders are, so we need to provide a little more guidance
     -- obtain ⟨⟨_, n₂, rfl⟩, hn₂⟩ := IsLocalization.exists_smul_mem_of_mem_adjoin
     --   (Submonoid.powers (r : S)) x (t r) (Algebra.adjoin R _) _ _ _
-    rw [show ∀ A : Set S, (∃ n, (r : S) ^ n • x ∈ Algebra.adjoin R A) ↔
-      (∃ m : (Submonoid.powers (r : S)), (m : S) • x ∈ Algebra.adjoin R A) by
-      { exact fun _ => by simp [Submonoid.mem_powers_iff] }]
-    refine IsLocalization.exists_smul_mem_of_mem_adjoin
-      (Submonoid.powers (r : S)) x (t r) (Algebra.adjoin R _) ?_ ?_ ?_
+    rw [show ∀ A : Set S,
+        (∃ n, (r : S) ^ n • x ∈ Algebra.adjoin R A)
+          ↔ (∃ m : (Submonoid.powers (r : S)), (m : S) • x ∈ Algebra.adjoin R A) by {
+      exact fun _ => by simp [Submonoid.mem_powers_iff]
+    }]
+    refine IsLocalization.exists_smul_mem_of_mem_adjoin (Submonoid.powers (r : S)) x (t r)
+      (Algebra.adjoin R _) ?_ ?_ ?_
     · intro x hx
       apply Algebra.subset_adjoin
       exact Or.inl (Or.inl ⟨_, ⟨r, rfl⟩, _, ⟨s.mem_attach r, rfl⟩, hx⟩)
@@ -131,9 +140,10 @@ lemma Algebra.FiniteType.of_span_eq_top_target (s : Set S) (hs : Ideal.span (s :
     · rw [ht]; trivial
 
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
-lemma Algebra.FiniteType.of_span_eq_top_source (s : Set R) (hs : Ideal.span (s : Set R) = ⊤)
-    (h : ∀ i ∈ s, Algebra.FiniteType (Localization.Away i) (Localization.Away i ⊗[R] S)) :
-    Algebra.FiniteType R S := by
+lemma Algebra.FiniteType.of_span_eq_top_source
+    (s : Set R) (hs : Ideal.span (s : Set R) = ⊤)
+    (h : ∀ i ∈ s, Algebra.FiniteType (Localization.Away i) (Localization.Away i ⊗[R] S))
+    : Algebra.FiniteType R S := by
   obtain ⟨s, h₁, hs⟩ := (Ideal.span_eq_top_iff_finite s).mp hs
   replace h (i : s) := h i.val (h₁ i.property)
   classical
@@ -147,13 +157,13 @@ lemma Algebra.FiniteType.of_span_eq_top_source (s : Set R) (hs : Ideal.span (s :
   convert (Algebra.adjoin_attach_biUnion (R := R) sf).trans _
   rw [eq_top_iff]
   rintro x -
-  apply (⨆ x : s, Algebra.adjoin R (sf x : Set S)).toSubmodule.mem_of_span_eq_top_of_smul_pow_mem
-    _ hs _ _
+  apply (⨆ x : s, Algebra.adjoin R (sf x : Set S)).toSubmodule.mem_of_span_eq_top_of_smul_pow_mem _
+    hs _ _
   intro r
   obtain ⟨⟨_, n₁, rfl⟩, hn₁⟩ :=
     multiple_mem_adjoin_of_mem_localization_adjoin (Submonoid.powers (r : R))
-      (Localization.Away (r : R)) (s₁ r : Set (Localization.Away r.val ⊗[R] S))
-      (algebraMap S _ x) (by rw [s₂ r]; trivial)
+      (Localization.Away (r : R)) (s₁ r : Set (Localization.Away r.val ⊗[R] S)) (algebraMap S _ x)
+      (by rw [s₂ r]; trivial)
   rw [Submonoid.smul_def, Algebra.smul_def, IsScalarTower.algebraMap_apply R S, ← map_mul] at hn₁
   obtain ⟨⟨_, n₂, rfl⟩, hn₂⟩ :=
     IsLocalization.lift_mem_adjoin_finsetIntegerMultiple (Submonoid.powers (r : R)) _ (s₁ r) hn₁

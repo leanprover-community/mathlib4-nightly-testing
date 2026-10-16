@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.RingTheory.Coprime.Lemmas
-
 import Mathlib.Algebra.BigOperators.Associated
 
 /-!
@@ -21,14 +20,16 @@ assert_not_exists TwoSidedIdeal
 namespace ZMod
 
 variable {n m : ℕ}
-/-- `unitsMap` is a group homomorphism that maps units of `ZMod m` to units of `ZMod n` when `n`
-divides `m`. -/
+/--
+`unitsMap` is a group homomorphism that maps units of `ZMod m` to units of `ZMod n` when `n`
+divides `m`.
+-/
 def unitsMap (hm : n ∣ m) : (ZMod m)ˣ →* (ZMod n)ˣ := Units.map (castHom hm (ZMod n))
 
 lemma unitsMap_def (hm : n ∣ m) : unitsMap hm = Units.map (castHom hm (ZMod n)) := rfl
 
-lemma unitsMap_comp {d : ℕ} (hm : n ∣ m) (hd : m ∣ d) :
-    (unitsMap hm).comp (unitsMap hd) = unitsMap (dvd_trans hm hd) := by
+lemma unitsMap_comp {d : ℕ} (hm : n ∣ m) (hd : m ∣ d)
+    : (unitsMap hm).comp (unitsMap hd) = unitsMap (dvd_trans hm hd) := by
   simp only [unitsMap_def]
   rw [← Units.map_comp]
   congrm Units.map (RingHom.toMonoidHom $(castHom_comp hm hd))
@@ -37,15 +38,16 @@ lemma unitsMap_comp {d : ℕ} (hm : n ∣ m) (hd : m ∣ d) :
 lemma unitsMap_self (n : ℕ) : unitsMap (dvd_refl n) = MonoidHom.id _ := by
   simp [unitsMap, castHom_self]
 
-/-- `unitsMap_val` shows that coercing from `(ZMod m)ˣ` to `ZMod n` gives the same result
-when going via `(ZMod n)ˣ` and `ZMod m`. -/
-lemma unitsMap_val (h : n ∣ m) (a : (ZMod m)ˣ) :
-    ↑(unitsMap h a) = ((a : ZMod m).cast : ZMod n) := rfl
+/--
+`unitsMap_val` shows that coercing from `(ZMod m)ˣ` to `ZMod n` gives the same result
+when going via `(ZMod n)ˣ` and `ZMod m`.
+-/
+lemma unitsMap_val (h : n ∣ m) (a : (ZMod m)ˣ) : ↑(unitsMap h a) = ((a : ZMod m).cast : ZMod n) :=
+  rfl
 
 lemma isUnit_cast_of_dvd (hm : n ∣ m) (a : Units (ZMod m)) : IsUnit (cast (a : ZMod m) : ZMod n) :=
   Units.isUnit (unitsMap hm a)
-theorem unitsMap_surjective [hm : NeZero m] (h : n ∣ m) :
-    Function.Surjective (unitsMap h) := by
+theorem unitsMap_surjective [hm : NeZero m] (h : n ∣ m) : Function.Surjective (unitsMap h) := by
   suffices ∀ x : ℕ, x.Coprime n → ∃ k : ℕ, (x + k * n).Coprime m by
     intro x
     have ⟨k, hk⟩ := this x.val.val (val_coe_unit_coprime x)
@@ -62,8 +64,8 @@ theorem unitsMap_surjective [hm : NeZero m] (h : n ∣ m) :
     rw [add_comm, Nat.add_sub_cancel] at h
     rcases pp.dvd_mul.mp h with h | h
     · have ⟨q, hq, hq'⟩ := (pp.prime.dvd_finsetProd_iff id).mp h
-      rw [Finset.mem_filter, Nat.mem_primeFactors,
-        ← (Nat.prime_dvd_prime_iff_eq pp hq.1.1).mp hq'] at hq
+      rw [Finset.mem_filter, Nat.mem_primeFactors, ← (Nat.prime_dvd_prime_iff_eq pp hq.1.1).mp hq']
+        at hq
       exact hq.2 hpx
     · exact Nat.Prime.not_coprime_iff_dvd.mpr ⟨p, pp, hpx, h⟩ hx
   · have pps : p ∈ ps := Finset.mem_filter.mpr ⟨Nat.mem_primeFactors.mpr ⟨pp, hpn, hm.out⟩, hpx⟩
@@ -73,15 +75,15 @@ theorem unitsMap_surjective [hm : NeZero m] (h : n ∣ m) :
 
 -- This needs `Nat.primeFactors`, so cannot go into `Mathlib/Data/ZMod/Basic.lean`.
 open Nat in
-lemma not_isUnit_of_mem_primeFactors {n p : ℕ} (h : p ∈ n.primeFactors) :
-    ¬ IsUnit (p : ZMod n) := by
+lemma not_isUnit_of_mem_primeFactors {n p : ℕ} (h : p ∈ n.primeFactors)
+    : ¬ IsUnit (p : ZMod n) := by
   rw [isUnit_iff_coprime]
   exact (Prime.dvd_iff_not_coprime <| prime_of_mem_primeFactors h).mp <| dvd_of_mem_primeFactors h
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Any element of `ZMod N` has the form `u * d` where `u` is a unit and `d` is a divisor of `N`. -/
-lemma eq_unit_mul_divisor {N : ℕ} (a : ZMod N) :
-    ∃ d : ℕ, d ∣ N ∧ ∃ (u : ZMod N), IsUnit u ∧ a = u * d := by
+lemma eq_unit_mul_divisor {N : ℕ} (a : ZMod N)
+    : ∃ d : ℕ, d ∣ N ∧ ∃ (u : ZMod N), IsUnit u ∧ a = u * d := by
   rcases eq_or_ne N 0 with rfl | hN
   -- Silly special case : N = 0. Of no mathematical interest, but true, so let's prove it.
   · change ℤ at a
@@ -104,19 +106,20 @@ lemma eq_unit_mul_divisor {N : ℕ} (a : ZMod N) :
     refine (isUnit_iff_coprime _ _).mpr (Nat.isCoprime_iff_coprime.mp ?_)
     obtain ⟨p, q, hpq⟩ : ∃ (p q : ℤ), d = a.val * p + N * q := ⟨_, _, Nat.gcd_eq_gcd_ab _ _⟩
     rw [ha₀, hN₀, Nat.cast_mul, Nat.cast_mul, mul_assoc, mul_assoc, ← mul_add, eq_comm,
-      mul_comm _ p, mul_comm _ q] at hpq
+        mul_comm _ p, mul_comm _ q]
+      at hpq
     exact ⟨p, q, Int.eq_one_of_mul_eq_self_right (Nat.cast_ne_zero.mpr hd) hpq⟩
   -- Lift it arbitrarily to a unit mod `N`.
   obtain ⟨u, hu⟩ := (unitsMap_surjective (⟨d, mul_comm d N₀ ▸ hN₀⟩ : N₀ ∣ N)) hu₀.unit
   rw [unitsMap_def, ← Units.val_inj, Units.coe_map, IsUnit.unit_spec, MonoidHom.coe_ofClass] at hu
   refine ⟨u.val, u.isUnit, ?_⟩
-  rw [← natCast_zmod_val a, ← natCast_zmod_val u.1, ha₀, ← Nat.cast_mul,
-    natCast_eq_natCast_iff, mul_comm _ d, Nat.ModEq]
+  rw [← natCast_zmod_val a, ← natCast_zmod_val u.1, ha₀, ← Nat.cast_mul, natCast_eq_natCast_iff,
+    mul_comm _ d, Nat.ModEq]
   simp only [hN₀, Nat.mul_mod_mul_left, Nat.mul_right_inj hd]
   rw [← Nat.ModEq, ← natCast_eq_natCast_iff, ← hu, natCast_val, castHom_apply]
 
-theorem coe_int_mul_inv_eq_one {n : ℕ} {x : ℤ} (h : IsCoprime x n) :
-    (x : ZMod n) * (x : ZMod n)⁻¹ = 1 := by
+theorem coe_int_mul_inv_eq_one {n : ℕ} {x : ℤ} (h : IsCoprime x n)
+    : (x : ZMod n) * (x : ZMod n)⁻¹ = 1 := by
   by_cases hn : n = 0
   · simp only [hn, Nat.cast_zero, isCoprime_zero_right] at h
     rcases Int.isUnit_eq_one_or h with h | h <;> simp [h]
@@ -125,37 +128,36 @@ theorem coe_int_mul_inv_eq_one {n : ℕ} {x : ℤ} (h : IsCoprime x n) :
   apply coe_mul_inv_eq_one
   rwa [Int.isCoprime_iff_gcd_eq_one, ← Int.gcd_emod, ← val_intCast] at h
 
-theorem coe_int_inv_mul_eq_one {n : ℕ} {x : ℤ} (h : IsCoprime x n) :
-    (x : ZMod n)⁻¹ * (x : ZMod n) = 1 := by
+theorem coe_int_inv_mul_eq_one {n : ℕ} {x : ℤ} (h : IsCoprime x n)
+    : (x : ZMod n)⁻¹ * (x : ZMod n) = 1 := by
   rw [mul_comm, coe_int_mul_inv_eq_one h]
 
-lemma coe_int_mul_val_inv {n : ℕ} [NeZero n] {m : ℤ} (h : IsCoprime m n) :
-    (m * (m⁻¹ : ZMod n).val : ZMod n) = 1 := by
+lemma coe_int_mul_val_inv {n : ℕ} [NeZero n] {m : ℤ} (h : IsCoprime m n)
+    : (m * (m⁻¹ : ZMod n).val : ZMod n) = 1 := by
   rw [natCast_zmod_val, coe_int_mul_inv_eq_one h]
 
-lemma coe_int_val_inv_mul {n : ℕ} [NeZero n] {m : ℤ} (h : IsCoprime m n) :
-    ((m⁻¹ : ZMod n).val : ZMod n) * m = 1 := by
+lemma coe_int_val_inv_mul {n : ℕ} [NeZero n] {m : ℤ} (h : IsCoprime m n)
+    : ((m⁻¹ : ZMod n).val : ZMod n) * m = 1 := by
   rw [mul_comm, coe_int_mul_val_inv h]
 
 /-- The unit of `ZMod m` associated with an integer prime to `n`. -/
-def unitOfIsCoprime {m : ℕ} (n : ℤ)
-    (h : IsCoprime n (m : ℤ)) : (ZMod m)ˣ where
+def unitOfIsCoprime {m : ℕ} (n : ℤ) (h : IsCoprime n (m : ℤ)) : (ZMod m)ˣ where
   val := n
   inv := n⁻¹
   val_inv := coe_int_mul_inv_eq_one h
   inv_val := coe_int_inv_mul_eq_one h
 
 @[simp]
-theorem coe_unitOfIsCoprime {m : ℕ} (n : ℤ) (h : IsCoprime n ↑m) :
-    (unitOfIsCoprime n h : ZMod m) = n := rfl
+theorem coe_unitOfIsCoprime {m : ℕ} (n : ℤ) (h : IsCoprime n ↑m)
+    : (unitOfIsCoprime n h : ZMod m) = n :=
+  rfl
 
-theorem isUnit_inv {m : ℕ} {n : ℤ} (h : IsUnit (n : ZMod m)) :
-    IsUnit (n : ZMod m)⁻¹ := by
+theorem isUnit_inv {m : ℕ} {n : ℤ} (h : IsUnit (n : ZMod m)) : IsUnit (n : ZMod m)⁻¹ := by
   rw [isUnit_iff_exists]
   exact ⟨n, inv_mul_of_unit _ h, mul_inv_of_unit _ h⟩
 
-theorem coe_int_isUnit_iff_isCoprime (n : ℤ) (m : ℕ) :
-    IsUnit (n : ZMod m) ↔ IsCoprime (m : ℤ) n := by
+theorem coe_int_isUnit_iff_isCoprime (n : ℤ) (m : ℕ)
+    : IsUnit (n : ZMod m) ↔ IsCoprime (m : ℤ) n := by
   refine ⟨fun h ↦ ?_, fun h ↦ ⟨unitOfIsCoprime n (isCoprime_comm.mp h), by simp⟩⟩
   obtain rfl | hm := eq_or_ne m 0
   · rw [Nat.cast_zero, isCoprime_zero_left]
@@ -163,8 +165,8 @@ theorem coe_int_isUnit_iff_isCoprime (n : ℤ) (m : ℕ) :
   · have : NeZero m := ⟨hm⟩
     obtain ⟨u, hu⟩ := h
     have h_coprime := val_coe_unit_coprime u
-    rw [hu, Nat.coprime_iff_gcd_eq_one, ← Int.gcd_natCast_natCast,
-      val_intCast, Int.gcd_emod] at h_coprime
+    rw [hu, Nat.coprime_iff_gcd_eq_one, ← Int.gcd_natCast_natCast, val_intCast, Int.gcd_emod]
+      at h_coprime
     rwa [isCoprime_comm, Int.isCoprime_iff_gcd_eq_one]
 
 /-- For each `n ≥ 0`, the unit group of `ZMod n` is finite. -/

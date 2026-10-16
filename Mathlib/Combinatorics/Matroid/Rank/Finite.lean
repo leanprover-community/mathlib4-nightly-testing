@@ -32,10 +32,10 @@ namespace Matroid
 /-- `Matroid.IsRkFinite M X` means that every basis of `X` in `M` is finite. -/
 def IsRkFinite (M : Matroid α) (X : Set α) : Prop := (M ↾ X).RankFinite
 
-lemma IsRkFinite.rankFinite (hX : M.IsRkFinite X) : (M ↾ X).RankFinite :=
-  hX
+lemma IsRkFinite.rankFinite (hX : M.IsRkFinite X) : (M ↾ X).RankFinite := hX
 
-@[simp] lemma RankFinite.isRkFinite [RankFinite M] (X : Set α) : M.IsRkFinite X :=
+@[simp]
+lemma RankFinite.isRkFinite [RankFinite M] (X : Set α) : M.IsRkFinite X :=
   inferInstanceAs (M ↾ X).RankFinite
 
 lemma IsBasis'.finite_iff_isRkFinite (hI : M.IsBasis' I X) : I.Finite ↔ M.IsRkFinite X :=
@@ -83,14 +83,16 @@ lemma IsRkFinite.subset (h : M.IsRkFinite X) (hXY : Y ⊆ X) : M.IsRkFinite Y :=
 @[simp]
 lemma isRkFinite_inter_ground_iff : M.IsRkFinite (X ∩ M.E) ↔ M.IsRkFinite X :=
   let ⟨_I, hI⟩ := M.exists_isBasis' X
-  ⟨fun h ↦ hI.isRkFinite_of_finite (hI.isBasis_inter_ground.finite_of_isRkFinite h),
-    fun h ↦ h.subset inter_subset_left⟩
+  ⟨
+    fun h ↦ hI.isRkFinite_of_finite (hI.isBasis_inter_ground.finite_of_isRkFinite h),
+    fun h ↦ h.subset inter_subset_left
+  ⟩
 
 lemma IsRkFinite.inter_ground (h : M.IsRkFinite X) : M.IsRkFinite (X ∩ M.E) :=
   isRkFinite_inter_ground_iff.2 h
 
-lemma isRkFinite_iff (hX : X ⊆ M.E := by aesop_mat) :
-    M.IsRkFinite X ↔ ∃ I, M.IsBasis I X ∧ I.Finite := by
+lemma isRkFinite_iff (hX : X ⊆ M.E := by aesop_mat)
+    : M.IsRkFinite X ↔ ∃ I, M.IsBasis I X ∧ I.Finite := by
   simp_rw [isRkFinite_iff_exists_isBasis', M.isBasis'_iff_isBasis hX]
 
 lemma Indep.isRkFinite_iff_finite (hI : M.Indep I) : M.IsRkFinite I ↔ I.Finite :=
@@ -103,22 +105,22 @@ lemma isRkFinite_of_finite (M : Matroid α) (hX : X.Finite) : M.IsRkFinite X :=
   let ⟨_, hI⟩ := M.exists_isBasis' X
   hI.isRkFinite_of_finite (hX.subset hI.subset)
 
-lemma Indep.subset_finite_isBasis'_of_subset_of_isRkFinite (hI : M.Indep I) (hIX : I ⊆ X)
-    (hX : M.IsRkFinite X) : ∃ J, M.IsBasis' J X ∧ I ⊆ J ∧ J.Finite :=
+lemma Indep.subset_finite_isBasis'_of_subset_of_isRkFinite
+    (hI : M.Indep I) (hIX : I ⊆ X) (hX : M.IsRkFinite X)
+    : ∃ J, M.IsBasis' J X ∧ I ⊆ J ∧ J.Finite :=
   (hI.subset_isBasis'_of_subset hIX).imp fun _ hJ => ⟨hJ.1, hJ.2, hJ.1.finite_of_isRkFinite hX⟩
 
-lemma Indep.subset_finite_isBasis_of_subset_of_isRkFinite (hI : M.Indep I) (hIX : I ⊆ X)
-    (hX : M.IsRkFinite X) (hXE : X ⊆ M.E := by aesop_mat) : ∃ J, M.IsBasis J X ∧ I ⊆ J ∧ J.Finite :=
+lemma Indep.subset_finite_isBasis_of_subset_of_isRkFinite
+    (hI : M.Indep I) (hIX : I ⊆ X) (hX : M.IsRkFinite X) (hXE : X ⊆ M.E := by aesop_mat)
+    : ∃ J, M.IsBasis J X ∧ I ⊆ J ∧ J.Finite :=
   (hI.subset_isBasis_of_subset hIX).imp fun _ hJ => ⟨hJ.1, hJ.2, hJ.1.finite_of_isRkFinite hX⟩
 
-lemma isRkFinite_singleton : M.IsRkFinite {e} := by
-  simp
+lemma isRkFinite_singleton : M.IsRkFinite {e} := by simp
 
-lemma IsRkFinite.empty (M : Matroid α) : M.IsRkFinite ∅ :=
-  isRkFinite_of_finite M finite_empty
+lemma IsRkFinite.empty (M : Matroid α) : M.IsRkFinite ∅ := isRkFinite_of_finite M finite_empty
 
-lemma IsRkFinite.finite_of_indep_subset (hX : M.IsRkFinite X) (hI : M.Indep I) (hIX : I ⊆ X) :
-    I.Finite :=
+lemma IsRkFinite.finite_of_indep_subset (hX : M.IsRkFinite X) (hI : M.Indep I) (hIX : I ⊆ X)
+    : I.Finite :=
   hI.finite_of_isRkFinite <| hX.subset hIX
 
 @[simp]
@@ -128,8 +130,8 @@ lemma isRkFinite_ground_iff_rankFinite : M.IsRkFinite M.E ↔ M.RankFinite := by
 lemma isRkFinite_ground (M : Matroid α) [RankFinite M] : M.IsRkFinite M.E := by
   rwa [isRkFinite_ground_iff_rankFinite]
 
-lemma Indep.finite_of_subset_isRkFinite (hI : M.Indep I) (hIX : I ⊆ X) (hX : M.IsRkFinite X) :
-    I.Finite :=
+lemma Indep.finite_of_subset_isRkFinite (hI : M.Indep I) (hIX : I ⊆ X) (hX : M.IsRkFinite X)
+    : I.Finite :=
   hX.finite_of_indep_subset hI hIX
 
 lemma IsRkFinite.closure (h : M.IsRkFinite X) : M.IsRkFinite (M.closure X) :=
@@ -150,12 +152,12 @@ lemma IsRkFinite.union (hX : M.IsRkFinite X) (hY : M.IsRkFinite Y) : M.IsRkFinit
     closure_union_congr_right hJ.closure_eq_closure]
   exact inter_ground_subset_closure M (X ∪ Y)
 
-lemma IsRkFinite.isRkFinite_union_iff (hX : M.IsRkFinite X) :
-    M.IsRkFinite (X ∪ Y) ↔ M.IsRkFinite Y :=
+lemma IsRkFinite.isRkFinite_union_iff (hX : M.IsRkFinite X)
+    : M.IsRkFinite (X ∪ Y) ↔ M.IsRkFinite Y :=
   ⟨fun h ↦ h.subset subset_union_right, fun h ↦ hX.union h⟩
 
-lemma IsRkFinite.isRkFinite_sdiff_iff (hX : M.IsRkFinite X) :
-    M.IsRkFinite (Y \ X) ↔ M.IsRkFinite Y := by
+lemma IsRkFinite.isRkFinite_sdiff_iff (hX : M.IsRkFinite X)
+    : M.IsRkFinite (Y \ X) ↔ M.IsRkFinite Y := by
   rw [← hX.isRkFinite_union_iff, union_sdiff_self, hX.isRkFinite_union_iff]
 
 @[deprecated (since := "2026-06-03")]
@@ -167,8 +169,7 @@ lemma IsRkFinite.inter_right (hX : M.IsRkFinite X) : M.IsRkFinite (X ∩ Y) :=
 lemma IsRkFinite.inter_left (hX : M.IsRkFinite X) : M.IsRkFinite (Y ∩ X) :=
   hX.subset inter_subset_right
 
-lemma IsRkFinite.diff (hX : M.IsRkFinite X) : M.IsRkFinite (X \ Y) :=
-  hX.subset sdiff_subset
+lemma IsRkFinite.diff (hX : M.IsRkFinite X) : M.IsRkFinite (X \ Y) := hX.subset sdiff_subset
 
 lemma IsRkFinite.insert (hX : M.IsRkFinite X) (e : α) : M.IsRkFinite (insert e X) := by
   rw [← union_singleton]
@@ -190,13 +191,14 @@ lemma isRkFinite_set (M : Matroid α) [RankFinite M] (X : Set α) : M.IsRkFinite
   hI.isRkFinite_of_finite hI.indep.finite
 
 /-- A union of finitely many `IsRkFinite` sets is `IsRkFinite`. -/
-lemma IsRkFinite.iUnion {ι : Type*} [Finite ι] {Xs : ι → Set α} (h : ∀ i, M.IsRkFinite (Xs i)) :
-    M.IsRkFinite (⋃ i, Xs i) := by
+lemma IsRkFinite.iUnion {ι : Type*} [Finite ι] {Xs : ι → Set α} (h : ∀ i, M.IsRkFinite (Xs i))
+    : M.IsRkFinite (⋃ i, Xs i) := by
   choose Is hIs using fun i ↦ M.exists_isBasis' (Xs i)
   have hfin : (⋃ i, Is i).Finite := finite_iUnion <| fun i ↦ (h i).finite_of_isBasis' (hIs i)
   refine isRkFinite_inter_ground_iff.1 <| (M.isRkFinite_of_finite hfin).closure.subset ?_
   rw [iUnion_inter, iUnion_subset_iff]
-  exact fun i ↦ (hIs i).isBasis_inter_ground.subset_closure.trans <| M.closure_subset_closure <|
-    subset_iUnion ..
+  exact fun i ↦
+    (hIs i).isBasis_inter_ground.subset_closure.trans <| M.closure_subset_closure <|
+      subset_iUnion ..
 
 end Matroid

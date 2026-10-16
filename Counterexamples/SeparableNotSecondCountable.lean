@@ -45,11 +45,12 @@ instance instSeparableSpace : SeparableSpace (ℝ ×ₗ Bool) := by
     refine ⟨(q, false), hyU ?_, mem_range_self _⟩
     simp [Prod.Lex.toLex_le_toLex, Prod.Lex.toLex_lt_toLex, hyq, hqx]
 
-theorem not_secondCountableTopology : ¬SecondCountableTopology (ℝ ×ₗ Bool) := by
+theorem not_secondCountableTopology : ¬ SecondCountableTopology (ℝ ×ₗ Bool) := by
   intro h
   have : {x : ℝ ×ₗ Bool | (ofLex x).2}.Countable := by
     simpa [Prod.Lex.covBy_iff, not_covBy_of_denselyOrdered, (Bool.le_true _).not_gt,
-      (Bool.false_le _).lt_iff_ne] using countable_setOfPred_covBy_left (α := ℝ ×ₗ Bool)
+        (Bool.false_le _).lt_iff_ne]
+      using countable_setOfPred_covBy_left (α := ℝ ×ₗ Bool)
   refine not_countable_univ <| (this.image fun x ↦ (ofLex x).1).mono fun x _ ↦ ?_
   exact ⟨toLex (x, true), rfl, rfl⟩
 

@@ -32,10 +32,12 @@ namespace AlgebraicGeometry.Scheme.GlueData
 
 variable (D : Scheme.GlueData.{u})
 
-/-- The 1-hypercover of `D.glued` in the big Zariski site that is given by the
+/--
+The 1-hypercover of `D.glued` in the big Zariski site that is given by the
 open cover `D.U` from the glue data `D`.
 The "covering of the intersection of two such open subsets" is the trivial
-covering given by `D.V`. -/
+covering given by `D.V`.
+-/
 @[simps]
 noncomputable def oneHypercover : Scheme.zariskiTopology.OneHypercover D.glued where
   I₀ := D.J
@@ -53,22 +55,23 @@ noncomputable def oneHypercover : Scheme.zariskiTopology.OneHypercover D.glued w
     exact ⟨_, 𝟙 _, _, ⟨i⟩, by simp; rfl⟩
   mem₁ i₁ i₂ W p₁ p₂ fac := by
     refine zariskiTopology.superset_covering (fun T g _ ↦ ?_) (zariskiTopology.top_mem _)
-    have ⟨φ, h₁, h₂⟩ := PullbackCone.IsLimit.lift' (D.vPullbackConeIsLimit i₁ i₂)
-      (g ≫ p₁) (g ≫ p₂) (by simpa using g ≫= fac)
+    have ⟨φ, h₁, h₂⟩ :=
+      PullbackCone.IsLimit.lift' (D.vPullbackConeIsLimit i₁ i₂) (g ≫ p₁) (g ≫ p₂)
+        (by simpa using g ≫= fac)
     exact ⟨⟨⟩, φ, h₁.symm, h₂.symm⟩
 
 section
 
-variable {F : Sheaf Scheme.zariskiTopology (Type v)}
-  (s : ∀ (j : D.J), F.obj.obj (op (D.U j)))
-  (h : ∀ (i j : D.J), F.obj.map (D.f i j).op (s i) =
-    F.obj.map ((D.f j i).op ≫ (D.t i j).op) (s j))
+variable
+  {F : Sheaf Scheme.zariskiTopology (Type v)} (s : ∀ (j : D.J), F.obj.obj (op (D.U j)))
+  (h : ∀ (i j : D.J), F.obj.map (D.f i j).op (s i) = F.obj.map ((D.f j i).op ≫ (D.t i j).op) (s j))
 
 /-- Constructor for sections over `D.glued` of a sheaf of types on the big Zariski site. -/
 noncomputable def sheafValGluedMk : F.obj.obj (op D.glued) :=
-  Multifork.IsLimit.sectionsEquiv (D.oneHypercover.isLimitMultifork F)
-    { val := s
-      property := fun _ ↦ h _ _ }
+  Multifork.IsLimit.sectionsEquiv (D.oneHypercover.isLimitMultifork F) {
+    val := s
+    property := fun _ ↦ h _ _
+  }
 
 @[simp]
 lemma sheafValGluedMk_val (j : D.J) : F.obj.map (D.ι j).op (D.sheafValGluedMk s h) = s j :=

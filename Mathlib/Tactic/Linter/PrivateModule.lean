@@ -8,8 +8,7 @@ module
 public meta import Lean.Elab.Command
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public import Mathlib.Tactic.Linter.Header  -- shake: keep
-
+public import Mathlib.Tactic.Linter.Header -- shake: keep
 import Lean.Environment
 
 /-!
@@ -60,12 +59,15 @@ open Lean Elab Command Linter
 
 namespace Mathlib.Linter
 
-/-- The `privateModule` linter lints against nonempty modules that have only private declarations,
-and suggests ways to mark some or all of its declarations as `public`. -/
+/--
+The `privateModule` linter lints against nonempty modules that have only private declarations,
+and suggests ways to mark some or all of its declarations as `public`.
+-/
 public register_option linter.privateModule : Bool := {
   defValue := false
-  descr := "Enable the `privateModule` linter, which lints against nonempty modules that have only \
-    private declarations."
+  descr :=
+    "Enable the `privateModule` linter, which lints against nonempty modules that have only \
+      private declarations."
 }
 
 /--
@@ -74,29 +76,30 @@ and suggests ways to make declarations in the module public.
 
 It logs its message at the top of the file.
 -/
-def privateModule : ModuleLinter where run _ := do
-  unless getLinterValue linter.privateModule (← getLinterOptions) do
-    return
-  let env ← getEnv
-  if env.header.isModule
-    -- If there are new initializers, this module has a downstream effect and is not private.
-    && (regularInitAttr.ext.getState env).1.isEmpty
-    -- Don't lint an imports-only module:
-    && !env.constants.map₂.isEmpty
-  then
-    -- Exit if any declaration from the current module is public:
-    for (decl, _) in env.constants.map₂ do
-      -- Ignore both private and reserved names; see implementation notes
-      if !isPrivateName decl && !isReservedName env decl then return
-    -- Lint if all names are private:
-    let topOfFileRef := Syntax.atom (.synthetic ⟨0⟩ ⟨0⟩) ""
-    logLint linter.privateModule topOfFileRef
-      "The current module only contains private declarations.\n\n\
-      Consider adding `public section` at the beginning of the module, \
-      or selectively marking declarations as `public`. Mark a `def` with \
-      `@[expose]` if downstream code needs it to be definitionally equal \
-      to its body (e.g. for `unfold`). Alternatively, \
-      add `@[expose] public section` to mark every definition as exposed."
+def privateModule : ModuleLinter where
+  run _ := do
+    unless getLinterValue linter.privateModule (← getLinterOptions) do
+      return
+    let env ← getEnv
+    if env.header.isModule
+        -- If there are new initializers, this module has a downstream effect and is not private.
+        && (regularInitAttr.ext.getState env).1.isEmpty
+        -- Don't lint an imports-only module:
+        && !env.constants.map₂.isEmpty then
+      -- Exit if any declaration from the current module is public:
+      for (decl, _) in env.constants.map₂ do
+        -- Ignore both private and reserved names; see implementation notes
+        if ! isPrivateName decl && ! isReservedName env decl then return
+      -- Lint if all names are private:
+      let topOfFileRef := Syntax.atom (.synthetic ⟨0⟩ ⟨0⟩) ""
+      logLint linter.privateModule topOfFileRef
+        "The current module only contains private declarations.\
+          \n\n\
+          Consider adding `public section` at the beginning of the module, \
+          or selectively marking declarations as `public`. Mark a `def` with \
+          `@[expose]` if downstream code needs it to be definitionally equal \
+          to its body (e.g. for `unfold`). Alternatively, \
+          add `@[expose] public section` to mark every definition as exposed."
 
 initialize addModuleLinter privateModule
 

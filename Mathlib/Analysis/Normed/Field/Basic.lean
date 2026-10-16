@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Field.Subfield.Defs
 public import Mathlib.Analysis.Normed.Ring.Basic
-
 import Mathlib.Algebra.Order.Group.Pointwise.Interval
 
 /-!
@@ -36,8 +35,10 @@ variable {α β : Type*}
 open Filter
 open scoped Topology NNReal ENNReal
 
-/-- A normed division ring is a division ring endowed with a seminorm which satisfies the equality
-`‖x y‖ = ‖x‖ ‖y‖`. -/
+/--
+A normed division ring is a division ring endowed with a seminorm which satisfies the equality
+`‖x y‖ = ‖x‖ ‖y‖`.
+-/
 class NormedDivisionRing (α : Type*) extends Norm α, DivisionRing α, MetricSpace α where
   /-- The distance is induced by the norm. -/
   dist_eq : ∀ x y, dist x y = norm (-x + y)
@@ -49,14 +50,16 @@ attribute [instance 10] NormedDivisionRing.toDivisionRing
 
 -- see Note [lower instance priority]
 /-- A normed division ring is a normed ring. -/
-instance (priority := 100) NormedDivisionRing.toNormedRing [β : NormedDivisionRing α] :
-    NormedRing α :=
-  { β with norm_mul_le a b := (NormedDivisionRing.norm_mul a b).le }
+instance (priority := 100) NormedDivisionRing.toNormedRing [β : NormedDivisionRing α]
+    : NormedRing α := {
+  β with
+  norm_mul_le a b := (NormedDivisionRing.norm_mul a b).le
+}
 
 -- see Note [lower instance priority]
 /-- The norm on a normed division ring is strictly multiplicative. -/
-instance (priority := 100) NormedDivisionRing.toNormMulClass [NormedDivisionRing α] :
-    NormMulClass α where
+instance (priority := 100) NormedDivisionRing.toNormMulClass [NormedDivisionRing α]
+    : NormMulClass α where
   norm_mul := NormedDivisionRing.norm_mul
 
 section NormedDivisionRing
@@ -66,48 +69,38 @@ variable [NormedDivisionRing α] {a b : α}
 instance (priority := 900) NormedDivisionRing.to_normOneClass : NormOneClass α :=
   ⟨mul_left_cancel₀ (mt norm_eq_zero.1 (one_ne_zero' α)) <| by rw [← norm_mul, mul_one, mul_one]⟩
 
-@[simp]
-theorem norm_div (a b : α) : ‖a / b‖ = ‖a‖ / ‖b‖ :=
-  map_div₀ (normHom : α →*₀ ℝ) a b
+@[simp] theorem norm_div (a b : α) : ‖a / b‖ = ‖a‖ / ‖b‖ := map_div₀ (normHom : α →*₀ ℝ) a b
 
 @[simp]
-theorem nnnorm_div (a b : α) : ‖a / b‖₊ = ‖a‖₊ / ‖b‖₊ :=
-  map_div₀ (nnnormHom : α →*₀ ℝ≥0) a b
+theorem nnnorm_div (a b : α) : ‖a / b‖₊ = ‖a‖₊ / ‖b‖₊ := map_div₀ (nnnormHom : α →*₀ ℝ≥0) a b
 
-@[simp]
-theorem norm_inv (a : α) : ‖a⁻¹‖ = ‖a‖⁻¹ :=
-  map_inv₀ (normHom : α →*₀ ℝ) a
+@[simp] theorem norm_inv (a : α) : ‖a⁻¹‖ = ‖a‖⁻¹ := map_inv₀ (normHom : α →*₀ ℝ) a
 
-@[simp]
-theorem nnnorm_inv (a : α) : ‖a⁻¹‖₊ = ‖a‖₊⁻¹ :=
-  NNReal.eq <| by simp
+@[simp] theorem nnnorm_inv (a : α) : ‖a⁻¹‖₊ = ‖a‖₊⁻¹ := NNReal.eq <| by simp
 
 @[simp]
 lemma enorm_inv {a : α} (ha : a ≠ 0) : ‖a⁻¹‖ₑ = ‖a‖ₑ⁻¹ := by simp [enorm, ENNReal.coe_inv, ha]
 
-@[simp]
-theorem norm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖ = ‖a‖ ^ n :=
-  map_zpow₀ (normHom : α →*₀ ℝ)
+@[simp] theorem norm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖ = ‖a‖ ^ n := map_zpow₀ (normHom : α →*₀ ℝ)
 
 @[simp]
-theorem nnnorm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖₊ = ‖a‖₊ ^ n :=
-  map_zpow₀ (nnnormHom : α →*₀ ℝ≥0)
+theorem nnnorm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖₊ = ‖a‖₊ ^ n := map_zpow₀ (nnnormHom : α →*₀ ℝ≥0)
 
-theorem dist_inv_inv₀ {z w : α} (hz : z ≠ 0) (hw : w ≠ 0) :
-    dist z⁻¹ w⁻¹ = dist z w / (‖z‖ * ‖w‖) := by
+theorem dist_inv_inv₀ {z w : α} (hz : z ≠ 0) (hw : w ≠ 0)
+    : dist z⁻¹ w⁻¹ = dist z w / (‖z‖ * ‖w‖) := by
   rw [dist_eq_norm, inv_sub_inv' hz hw, norm_mul, norm_mul, norm_inv, norm_inv, mul_comm ‖z‖⁻¹,
     mul_assoc, dist_eq_norm', div_eq_mul_inv, mul_inv]
 
-theorem nndist_inv_inv₀ {z w : α} (hz : z ≠ 0) (hw : w ≠ 0) :
-    nndist z⁻¹ w⁻¹ = nndist z w / (‖z‖₊ * ‖w‖₊) :=
+theorem nndist_inv_inv₀ {z w : α} (hz : z ≠ 0) (hw : w ≠ 0)
+    : nndist z⁻¹ w⁻¹ = nndist z w / (‖z‖₊ * ‖w‖₊) :=
   NNReal.eq <| dist_inv_inv₀ hz hw
 
-lemma norm_commutator_sub_one_le (ha : a ≠ 0) (hb : b ≠ 0) :
-    ‖a * b * a⁻¹ * b⁻¹ - 1‖ ≤ 2 * ‖a‖⁻¹ * ‖b‖⁻¹ * ‖a - 1‖ * ‖b - 1‖ := by
+lemma norm_commutator_sub_one_le (ha : a ≠ 0) (hb : b ≠ 0)
+    : ‖a * b * a⁻¹ * b⁻¹ - 1‖ ≤ 2 * ‖a‖⁻¹ * ‖b‖⁻¹ * ‖a - 1‖ * ‖b - 1‖ := by
   simpa using norm_commutator_units_sub_one_le (.mk0 a ha) (.mk0 b hb)
 
-lemma nnnorm_commutator_sub_one_le (ha : a ≠ 0) (hb : b ≠ 0) :
-    ‖a * b * a⁻¹ * b⁻¹ - 1‖₊ ≤ 2 * ‖a‖₊⁻¹ * ‖b‖₊⁻¹ * ‖a - 1‖₊ * ‖b - 1‖₊ := by
+lemma nnnorm_commutator_sub_one_le (ha : a ≠ 0) (hb : b ≠ 0)
+    : ‖a * b * a⁻¹ * b⁻¹ - 1‖₊ ≤ 2 * ‖a‖₊⁻¹ * ‖b‖₊⁻¹ * ‖a - 1‖₊ * ‖b - 1‖₊ := by
   simpa using nnnorm_commutator_units_sub_one_le (.mk0 a ha) (.mk0 b hb)
 
 namespace NormedDivisionRing
@@ -135,8 +128,7 @@ lemma norm_eq_one_iff_ne_zero_of_discrete {x : 𝕜} : ‖x‖ = 1 ↔ x ≠ 0 :
     simp [hx] at h'
 
 @[simp]
-lemma norm_le_one_of_discrete
-    (x : 𝕜) : ‖x‖ ≤ 1 := by
+lemma norm_le_one_of_discrete (x : 𝕜) : ‖x‖ ≤ 1 := by
   rcases eq_or_ne x 0 with rfl | hx
   · simp
   · simp [norm_eq_one_iff_ne_zero_of_discrete.mpr hx]
@@ -161,26 +153,32 @@ class NormedField (α : Type*) extends Norm α, Field α, MetricSpace α where
 -- see Note [lower instance priority]
 attribute [instance 10] NormedField.toField
 
-/-- A nontrivially normed field is a normed field in which there is an element of norm different
+/--
+A nontrivially normed field is a normed field in which there is an element of norm different
 from `0` and `1`. This makes it possible to bring any element arbitrarily close to `0` by
-multiplication by the powers of any element, and thus to relate algebra and topology. -/
+multiplication by the powers of any element, and thus to relate algebra and topology.
+-/
 class NontriviallyNormedField (α : Type*) extends NormedField α where
   /-- The norm attains a value exceeding 1. -/
   non_trivial : ∃ x : α, 1 < ‖x‖
 
-/-- A densely normed field is a normed field for which the image of the norm is dense in `ℝ≥0`,
+/--
+A densely normed field is a normed field for which the image of the norm is dense in `ℝ≥0`,
 which means it is also nontrivially normed. However, not all nontrivially normed fields are densely
-normed; in particular, the `Padic`s exhibit this fact. -/
+normed; in particular, the `Padic`s exhibit this fact.
+-/
 class DenselyNormedField (α : Type*) extends NormedField α where
   /-- The range of the norm is dense in the collection of nonnegative real numbers. -/
   lt_norm_lt : ∀ x y : ℝ, 0 ≤ x → x < y → ∃ a : α, x < ‖a‖ ∧ ‖a‖ < y
 
 section NormedField
 
-/-- A densely normed field is always a nontrivially normed field.
-See note [lower instance priority]. -/
-instance (priority := 100) DenselyNormedField.toNontriviallyNormedField [DenselyNormedField α] :
-    NontriviallyNormedField α where
+/--
+A densely normed field is always a nontrivially normed field.
+See note [lower instance priority].
+-/
+instance (priority := 100) DenselyNormedField.toNontriviallyNormedField [DenselyNormedField α]
+    : NontriviallyNormedField α where
   non_trivial :=
     let ⟨a, h, _⟩ := DenselyNormedField.lt_norm_lt 1 2 zero_le_one one_lt_two
     ⟨a, h⟩
@@ -188,12 +186,15 @@ instance (priority := 100) DenselyNormedField.toNontriviallyNormedField [Densely
 variable [NormedField α]
 
 -- see Note [lower instance priority]
-instance (priority := 100) NormedField.toNormedDivisionRing : NormedDivisionRing α :=
-  { ‹NormedField α› with }
+instance (priority := 100) NormedField.toNormedDivisionRing : NormedDivisionRing α := {
+  ‹NormedField α› with
+}
 
 -- see Note [lower instance priority]
-instance (priority := 100) NormedField.toNormedCommRing : NormedCommRing α :=
-  { ‹NormedField α› with norm_mul_le a b := (norm_mul a b).le }
+instance (priority := 100) NormedField.toNormedCommRing : NormedCommRing α := {
+  ‹NormedField α› with
+  norm_mul_le a b := (norm_mul a b).le
+}
 
 end NormedField
 
@@ -203,8 +204,7 @@ section Nontrivially
 
 variable (α) [NontriviallyNormedField α]
 
-theorem exists_one_lt_norm : ∃ x : α, 1 < ‖x‖ :=
-  ‹NontriviallyNormedField α›.non_trivial
+theorem exists_one_lt_norm : ∃ x : α, 1 < ‖x‖ := ‹NontriviallyNormedField α›.non_trivial
 
 theorem exists_one_lt_nnnorm : ∃ x : α, 1 < ‖x‖₊ := exists_one_lt_norm α
 
@@ -232,12 +232,13 @@ theorem exists_nnnorm_lt {r : ℝ≥0} (hr : 0 < r) : ∃ x : α, 0 < ‖x‖₊
 /-- TODO: merge with `_root_.exists_enorm_lt`. -/
 theorem exists_enorm_lt {r : ℝ≥0∞} (hr : 0 < r) : ∃ x : α, 0 < ‖x‖ₑ ∧ ‖x‖ₑ < r :=
   match r with
-  | ∞ => exists_one_lt_enorm α |>.imp fun _ hx => ⟨zero_le_one.trans_lt hx, ENNReal.coe_lt_top⟩
-  | (r : ℝ≥0) => exists_nnnorm_lt α (ENNReal.coe_pos.mp hr) |>.imp fun _ =>
-    And.imp ENNReal.coe_pos.mpr ENNReal.coe_lt_coe.mpr
+  | ∞ =>
+    exists_one_lt_enorm α |>.imp fun _ hx => ⟨zero_le_one.trans_lt hx, ENNReal.coe_lt_top⟩
+  | (r : ℝ≥0) =>
+    exists_nnnorm_lt α (ENNReal.coe_pos.mp hr)
+      |>.imp fun _ => And.imp ENNReal.coe_pos.mpr ENNReal.coe_lt_coe.mpr
 
-theorem exists_norm_lt_one : ∃ x : α, 0 < ‖x‖ ∧ ‖x‖ < 1 :=
-  exists_norm_lt α one_pos
+theorem exists_norm_lt_one : ∃ x : α, 0 < ‖x‖ ∧ ‖x‖ < 1 := exists_norm_lt α one_pos
 
 theorem exists_nnnorm_lt_one : ∃ x : α, 0 < ‖x‖₊ ∧ ‖x‖₊ < 1 := exists_norm_lt_one _
 
@@ -285,11 +286,14 @@ end Densely
 
 end NormedField
 
-/-- A normed field is nontrivially normed
-provided that the norm of some nonzero element is not one. -/
+/--
+A normed field is nontrivially normed
+provided that the norm of some nonzero element is not one.
+-/
 @[instance_reducible]
-def NontriviallyNormedField.ofNormNeOne {𝕜 : Type*} [h' : NormedField 𝕜]
-    (h : ∃ x : 𝕜, x ≠ 0 ∧ ‖x‖ ≠ 1) : NontriviallyNormedField 𝕜 where
+def NontriviallyNormedField.ofNormNeOne
+    {𝕜 : Type*} [h' : NormedField 𝕜] (h : ∃ x : 𝕜, x ≠ 0 ∧ ‖x‖ ≠ 1)
+    : NontriviallyNormedField 𝕜 where
   toNormedField := h'
   non_trivial := by
     rcases h with ⟨x, hx, hx1⟩
@@ -299,9 +303,10 @@ def NontriviallyNormedField.ofNormNeOne {𝕜 : Type*} [h' : NormedField 𝕜]
       exact (one_lt_inv₀ (norm_pos_iff.2 hx)).2 hlt
     · exact ⟨x, hlt⟩
 
-noncomputable instance Real.normedField : NormedField ℝ :=
-  { Real.normedAddCommGroup, Real.instField with
-    norm_mul := abs_mul }
+noncomputable instance Real.normedField : NormedField ℝ := {
+  Real.normedAddCommGroup, Real.instField with
+  norm_mul := abs_mul
+}
 
 noncomputable instance Real.denselyNormedField : DenselyNormedField ℝ where
   lt_norm_lt _ _ h₀ hr :=
@@ -326,21 +331,28 @@ section Induced
 
 variable {F : Type*} (R S : Type*) [FunLike F R S]
 
-/-- An injective non-unital ring homomorphism from a `DivisionRing` to a `NormedRing` induces a
+/--
+An injective non-unital ring homomorphism from a `DivisionRing` to a `NormedRing` induces a
 `NormedDivisionRing` structure on the domain.
 
-See note [reducible non-instances] -/
-abbrev NormedDivisionRing.induced [DivisionRing R] [NormedDivisionRing S]
-    [NonUnitalRingHomClass F R S] (f : F) (hf : Function.Injective f) : NormedDivisionRing R :=
+See note [reducible non-instances]
+-/
+abbrev NormedDivisionRing.induced
+    [DivisionRing R] [NormedDivisionRing S] [NonUnitalRingHomClass F R S]
+    (f : F) (hf : Function.Injective f)
+    : NormedDivisionRing R :=
   fast_instance% { NormedAddCommGroup.induced R S f hf, ‹DivisionRing R› with
     norm_mul x y := show ‖f _‖ = _ from (map_mul f x y).symm ▸ norm_mul (f x) (f y) }
 
-/-- An injective non-unital ring homomorphism from a `Field` to a `NormedRing` induces a
+/--
+An injective non-unital ring homomorphism from a `Field` to a `NormedRing` induces a
 `NormedField` structure on the domain.
 
-See note [reducible non-instances] -/
-abbrev NormedField.induced [Field R] [NormedField S] [NonUnitalRingHomClass F R S] (f : F)
-    (hf : Function.Injective f) : NormedField R :=
+See note [reducible non-instances]
+-/
+abbrev NormedField.induced
+    [Field R] [NormedField S] [NonUnitalRingHomClass F R S] (f : F) (hf : Function.Injective f)
+    : NormedField R :=
   fast_instance% { NormedDivisionRing.induced R S f hf with
     mul_comm := mul_comm }
 

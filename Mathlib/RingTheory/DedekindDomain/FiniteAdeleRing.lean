@@ -8,7 +8,6 @@ module
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation
 public import Mathlib.Topology.Algebra.RestrictedProduct.TopologicalSpace
 public import Mathlib.Topology.Algebra.RestrictedProduct.Units
-
 import Mathlib.RingTheory.DedekindDomain.Factorization
 
 /-!
@@ -33,8 +32,9 @@ finite adèle ring, dedekind domain
 
 @[expose] public section
 
-variable (R : Type*) [CommRing R] [IsDedekindDomain R] {K : Type*}
-    [Field K] [Algebra R K] [IsFractionRing R K]
+variable
+  (R : Type*) [CommRing R] [IsDedekindDomain R]
+  {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
 
 namespace IsDedekindDomain
 
@@ -43,7 +43,7 @@ The support of an element `k` of the field of fractions of a Dedekind domain is
 the set of maximal ideals of the Dedekind domain at which `k` is not integral.
 -/
 def HeightOneSpectrum.Support (k : K) : Set (HeightOneSpectrum R) :=
-    {v : HeightOneSpectrum R | 1 < v.valuation K k}
+  {v : HeightOneSpectrum R | 1 < v.valuation K k}
 
 /--
 The support of an element of the field of fractions of a Dedekind domain
@@ -95,11 +95,13 @@ are in `R_v` for all but finitely many `v`.
 def FiniteAdeleRing : Type _ :=
   Πʳ v : HeightOneSpectrum R, [v.adicCompletion K, v.adicCompletionIntegers K]
 
-instance : CommRing (FiniteAdeleRing R K) := inferInstanceAs <|
-  CommRing <| Πʳ v : HeightOneSpectrum R, [v.adicCompletion K, v.adicCompletionIntegers K]
+instance : CommRing (FiniteAdeleRing R K) :=
+  inferInstanceAs <|
+    CommRing <| Πʳ v : HeightOneSpectrum R, [v.adicCompletion K, v.adicCompletionIntegers K]
 
-instance : TopologicalSpace (FiniteAdeleRing R K) := inferInstanceAs <|
-  TopologicalSpace <| Πʳ v : HeightOneSpectrum R, [v.adicCompletion K, v.adicCompletionIntegers K]
+instance : TopologicalSpace (FiniteAdeleRing R K) :=
+  inferInstanceAs <|
+    TopologicalSpace <| Πʳ v : HeightOneSpectrum R, [v.adicCompletion K, v.adicCompletionIntegers K]
 
 @[macro_inline]
 instance : DFunLike (FiniteAdeleRing R K) (HeightOneSpectrum R) (adicCompletion K) where
@@ -113,8 +115,10 @@ scoped notation:max "𝔸ᶠ[" R ", " K "]" => FiniteAdeleRing R K
 
 variable {R K}
 
-lemma cofinite_mem_adicCompletionIntegers (a : FiniteAdeleRing R K) : ∀ᶠ v in Filter.cofinite,
-    a v ∈ v.adicCompletionIntegers K := a.2
+lemma cofinite_mem_adicCompletionIntegers (a : FiniteAdeleRing R K)
+    : ∀ᶠ v in Filter.cofinite,
+      a v ∈ v.adicCompletionIntegers K :=
+  a.2
 
 theorem finite_valued_one_lt (a : FiniteAdeleRing R K) : {v | 1 < Valued.v (a v)}.Finite := by
   simpa [mem_adicCompletionIntegers] using a.cofinite_mem_adicCompletionIntegers
@@ -128,10 +132,13 @@ The content of the existence of this map is the fact that an element `k` of `K` 
 all but finitely many places, which is `IsDedekindDomain.HeightOneSpectrum.Support.finite R k`.
 -/
 protected def algebraMap : K →+* 𝔸ᶠ[R, K] where
-  toFun k := ⟨fun i ↦ k, by
-    simp only [Filter.eventually_cofinite, SetLike.mem_coe, mem_adicCompletionIntegers R K,
-     valuedAdicCompletion_eq_valuation', not_le]
-    exact HeightOneSpectrum.Support.finite R k⟩
+  toFun k := ⟨
+    fun i ↦ k,
+    by
+      simp only [Filter.eventually_cofinite, SetLike.mem_coe, mem_adicCompletionIntegers R K,
+        valuedAdicCompletion_eq_valuation', not_le]
+      exact HeightOneSpectrum.Support.finite R k
+  ⟩
   map_one' := Subtype.ext <| funext fun _ ↦ adicCompletion.coe_one ..
   map_mul' x y := Subtype.ext <| funext fun _ ↦ adicCompletion.coe_mul ..
   map_zero' := Subtype.ext <| funext fun _ ↦ adicCompletion.coe_zero ..
@@ -140,24 +147,20 @@ protected def algebraMap : K →+* 𝔸ᶠ[R, K] where
 instance : Algebra K 𝔸ᶠ[R, K] := (FiniteAdeleRing.algebraMap R K).toAlgebra
 
 @[simp]
-theorem algebraMap_apply (k : K) (v : HeightOneSpectrum R) :
-    algebraMap K 𝔸ᶠ[R, K] k v = k := rfl
+theorem algebraMap_apply (k : K) (v : HeightOneSpectrum R) : algebraMap K (𝔸ᶠ[R, K]) k v = k := rfl
 
 instance : Algebra R 𝔸ᶠ[R, K] := Algebra.compHom _ (algebraMap R K)
 
-instance : IsScalarTower R K 𝔸ᶠ[R, K] :=
-  IsScalarTower.of_algebraMap_eq' rfl
+instance : IsScalarTower R K 𝔸ᶠ[R, K] := IsScalarTower.of_algebraMap_eq' rfl
 
 variable {R} in
-@[ext]
-lemma ext {a₁ a₂ : 𝔸ᶠ[R, K]} (h : ∀ v, a₁ v = a₂ v) : a₁ = a₂ :=
-  Subtype.ext <| funext h
+@[ext] lemma ext {a₁ a₂ : 𝔸ᶠ[R, K]} (h : ∀ v, a₁ v = a₂ v) : a₁ = a₂ := Subtype.ext <| funext h
 
 section Topology
 
 instance : IsTopologicalRing 𝔸ᶠ[R, K] :=
-  haveI : Fact (∀ v : HeightOneSpectrum R,
-      IsOpen (v.adicCompletionIntegers K : Set (v.adicCompletion K))) :=
+  haveI : Fact
+      (∀ v : HeightOneSpectrum R, IsOpen (v.adicCompletionIntegers K : Set (v.adicCompletion K))) :=
     ⟨fun _ ↦ Valued.isOpen_valuationSubring _⟩
   RestrictedProduct.isTopologicalRing (fun (v : HeightOneSpectrum R) ↦ v.adicCompletion K)
 
@@ -168,26 +171,26 @@ section Units
 variable {R K}
 
 set_option backward.isDefEq.respectTransparency false in
-theorem isUnit_iff {a : 𝔸ᶠ[R, K]} :
-    IsUnit a ↔ (∀ v, a v ≠ 0) ∧ ∀ᶠ v in Filter.cofinite, Valued.v (a v) = 1 := by
+theorem isUnit_iff {a : 𝔸ᶠ[R, K]}
+    : IsUnit a ↔ (∀ v, a v ≠ 0) ∧ ∀ᶠ v in Filter.cofinite, Valued.v (a v) = 1 := by
   rw [RestrictedProduct.isUnit_iff]
   simp only [isUnit_iff_ne_zero, adicCompletionIntegers.isUnit_iff_valued_eq_one, exists_prop,
     Filter.eventually_cofinite, not_and_or, Set.ofPred_or]
   simpa using! fun _ _ ↦ a.2
 
-theorem unitsEquiv_finite_valued_eq_one (a : 𝔸ᶠ[R, K]ˣ) :
-    ∀ᶠ v in Filter.cofinite, Valued.v (RestrictedProduct.unitsEquiv _ a v).1 = 1 := by
+theorem unitsEquiv_finite_valued_eq_one (a : 𝔸ᶠ[R, K]ˣ)
+    : ∀ᶠ v in Filter.cofinite, Valued.v (RestrictedProduct.unitsEquiv _ a v).1 = 1 := by
   filter_upwards [(RestrictedProduct.unitsEquiv _ a).2] using fun _ h ↦
     adicCompletionIntegers.mem_units_iff_valued_eq_one.1 h
 
-theorem infinite_valued_ne_one_of_not_isUnit {a : 𝔸ᶠ[R, K]} (ha₀ : ∀ v, a v ≠ 0)
-    (ha : ¬IsUnit a) : {v | Valued.v (a v) ≠ 1}.Infinite := by
+theorem infinite_valued_ne_one_of_not_isUnit {a : 𝔸ᶠ[R, K]} (ha₀ : ∀ v, a v ≠ 0) (ha : ¬ IsUnit a)
+    : {v | Valued.v (a v) ≠ 1}.Infinite := by
   contrapose! ha
   rw [isUnit_iff]
   exact ⟨ha₀, ha⟩
 
-theorem hasFiniteMulSupport_valued (a : 𝔸ᶠ[R, K]ˣ) :
-    (fun v ↦ Valued.v (a.1 v)).HasFiniteMulSupport := by
+theorem hasFiniteMulSupport_valued (a : 𝔸ᶠ[R, K]ˣ)
+    : (fun v ↦ Valued.v (a.1 v)).HasFiniteMulSupport := by
   simp only [Function.HasFiniteMulSupport, Function.mulSupport, ne_eq]
   exact FiniteAdeleRing.unitsEquiv_finite_valued_eq_one _
 
@@ -197,7 +200,8 @@ variable (K) in
 /-- The global embedding of the units of `K` into the units of `FiniteAdeleRing R K`. -/
 def unitEmbedding : Kˣ →* 𝔸ᶠ[R, K]ˣ := Units.map (algebraMap K 𝔸ᶠ[R, K])
 
-@[simp] theorem unitEmbedding_apply (k : Kˣ) : unitEmbedding R K k = algebraMap K 𝔸ᶠ[R, K] k := rfl
+@[simp]
+theorem unitEmbedding_apply (k : Kˣ) : unitEmbedding R K k = algebraMap K (𝔸ᶠ[R, K]) k := rfl
 
 variable {R}
 

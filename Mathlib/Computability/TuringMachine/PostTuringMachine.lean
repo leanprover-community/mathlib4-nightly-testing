@@ -69,8 +69,8 @@ open Relation
 
 open Nat (iterate)
 
-open Function (update iterate_succ iterate_succ_apply iterate_succ' iterate_succ_apply'
-  iterate_zero_apply)
+open Function
+  (update iterate_succ iterate_succ_apply iterate_succ' iterate_succ_apply' iterate_zero_apply)
 
 open StateTransition
 
@@ -100,7 +100,6 @@ of generality, where the output ends. If equality to `default : Γ` is decidable
 to remove the infinite tail of blanks.)
 -/
 
-
 namespace TM0
 
 section
@@ -111,34 +110,38 @@ variable (Γ : Type*)
 -- type of "labels" or TM states
 variable (Λ : Type*)
 
-/-- A Turing machine "statement" is just a command to either move
-  left or right, or write a symbol on the tape. -/
+/--
+A Turing machine "statement" is just a command to either move
+left or right, or write a symbol on the tape.
+-/
 inductive Stmt
   | move : Dir → Stmt
   | write : Γ → Stmt
 
-instance Stmt.inhabited [Inhabited Γ] : Inhabited (Stmt Γ) :=
-  ⟨Stmt.write default⟩
+instance Stmt.inhabited [Inhabited Γ] : Inhabited (Stmt Γ) := ⟨Stmt.write default⟩
 
-/-- A Post-Turing machine with symbol type `Γ` and label type `Λ`
-  is a function which, given the current state `q : Λ` and
-  the tape head `a : Γ`, either halts (returns `none`) or returns
-  a new state `q' : Λ` and a `Stmt` describing what to do,
-  either a move left or right, or a write command.
+/--
+A Post-Turing machine with symbol type `Γ` and label type `Λ`
+is a function which, given the current state `q : Λ` and
+the tape head `a : Γ`, either halts (returns `none`) or returns
+a new state `q' : Λ` and a `Stmt` describing what to do,
+either a move left or right, or a write command.
 
-  Both `Λ` and `Γ` are required to be inhabited; the default value
-  for `Γ` is the "blank" tape value, and the default value of `Λ` is
-  the initial state. -/
+Both `Λ` and `Γ` are required to be inhabited; the default value
+for `Γ` is the "blank" tape value, and the default value of `Λ` is
+the initial state.
+-/
 @[nolint unusedArguments] -- this is a deliberate addition, see comment
-def Machine [Inhabited Λ] :=
-  Λ → Γ → Option (Λ × (Stmt Γ))
+def Machine [Inhabited Λ] := Λ → Γ → Option (Λ × (Stmt Γ))
 deriving Inhabited
 
-/-- The configuration state of a Turing machine during operation
-  consists of a label (machine state), and a tape.
-  The tape is represented in the form `(a, L, R)`, meaning the tape looks like `L.rev ++ [a] ++ R`
-  with the machine currently reading the `a`. The lists are
-  automatically extended with blanks as the machine moves around. -/
+/--
+The configuration state of a Turing machine during operation
+consists of a label (machine state), and a tape.
+The tape is represented in the form `(a, L, R)`, meaning the tape looks like `L.rev ++ [a] ++ R`
+with the machine currently reading the `a`. The lists are
+automatically extended with blanks as the machine moves around.
+-/
 structure Cfg [Inhabited Γ] where
   /-- The current machine state. -/
   q : Λ
@@ -154,35 +157,44 @@ variable [Inhabited Γ]
 instance Cfg.inhabited : Inhabited (Cfg Γ Λ) := ⟨⟨default, default⟩⟩
 
 /-- Execution semantics of the Turing machine. -/
-def step (M : Machine Γ Λ) : Cfg Γ Λ → Option (Cfg Γ Λ) :=
-  fun ⟨q, T⟩ ↦ (M q T.1).map fun ⟨q', a⟩ ↦ ⟨q', match a with
+def step (M : Machine Γ Λ) : Cfg Γ Λ → Option (Cfg Γ Λ) := fun ⟨q, T⟩ ↦
+  (M q T.1).map fun ⟨q', a⟩ ↦ ⟨
+    q',
+    match a with
     | Stmt.move d => T.move d
-    | Stmt.write a => T.write a⟩
+    | Stmt.write a => T.write a
+  ⟩
 
-/-- The statement `Reaches M s₁ s₂` means that `s₂` is obtained
-  starting from `s₁` after a finite number of steps. -/
+/--
+The statement `Reaches M s₁ s₂` means that `s₂` is obtained
+starting from `s₁` after a finite number of steps.
+-/
 def Reaches (M : Machine Γ Λ) : Cfg Γ Λ → Cfg Γ Λ → Prop := ReflTransGen fun a b ↦ b ∈ step M a
 
 /-- The initial configuration. -/
 def init (l : List Γ) : Cfg Γ Λ := ⟨default, Tape.mk₁ l⟩
 
-/-- Evaluate a Turing machine on initial input to a final state,
-  if it terminates. -/
+/--
+Evaluate a Turing machine on initial input to a final state,
+if it terminates.
+-/
 def eval (M : Machine Γ Λ) (l : List Γ) : Part (ListBlank Γ) :=
   (StateTransition.eval (step M) (init l)).map fun c ↦ c.Tape.right₀
 
-/-- The raw definition of a Turing machine does not require that
-  `Γ` and `Λ` are finite, and in practice we will be interested
-  in the infinite `Λ` case. We recover instead a notion of
-  "effectively finite" Turing machines, which only make use of a
-  finite subset of their states. We say that a set `S ⊆ Λ`
-  supports a Turing machine `M` if `S` is closed under the
-  transition function and contains the initial state. -/
+/--
+The raw definition of a Turing machine does not require that
+`Γ` and `Λ` are finite, and in practice we will be interested
+in the infinite `Λ` case. We recover instead a notion of
+"effectively finite" Turing machines, which only make use of a
+finite subset of their states. We say that a set `S ⊆ Λ`
+supports a Turing machine `M` if `S` is closed under the
+transition function and contains the initial state.
+-/
 def Supports (M : Machine Γ Λ) (S : Set Λ) :=
   default ∈ S ∧ ∀ {q a q' s}, (q', s) ∈ M q a → q ∈ S → q' ∈ S
 
-theorem step_supports (M : Machine Γ Λ) {S : Set Λ} (ss : Supports M S) :
-    ∀ {c c' : Cfg Γ Λ}, c' ∈ step M c → c.q ∈ S → c'.q ∈ S := by
+theorem step_supports (M : Machine Γ Λ) {S : Set Λ} (ss : Supports M S)
+    : ∀ {c c' : Cfg Γ Λ}, c' ∈ step M c → c.q ∈ S → c'.q ∈ S := by
   intro ⟨q, T⟩ c' h₁ h₂
   rcases Option.map_eq_some_iff.1 h₁ with ⟨⟨q', a⟩, h, rfl⟩
   exact ss.2 h h₂
@@ -201,33 +213,40 @@ variable {Γ' : Type*} [Inhabited Γ']
 variable {Λ : Type*} [Inhabited Λ]
 variable {Λ' : Type*} [Inhabited Λ']
 
-/-- Map a TM statement across a function. This does nothing to move statements and maps the write
-values. -/
+/--
+Map a TM statement across a function. This does nothing to move statements and maps the write
+values.
+-/
 def Stmt.map (f : PointedMap Γ Γ') : Stmt Γ → Stmt Γ'
   | Stmt.move d => Stmt.move d
   | Stmt.write a => Stmt.write (f a)
 
-/-- Map a configuration across a function, given `f : Γ → Γ'` a map of the alphabets and
-`g : Λ → Λ'` a map of the machine states. -/
+/--
+Map a configuration across a function, given `f : Γ → Γ'` a map of the alphabets and
+`g : Λ → Λ'` a map of the machine states.
+-/
 def Cfg.map (f : PointedMap Γ Γ') (g : Λ → Λ') : Cfg Γ Λ → Cfg Γ' Λ'
   | ⟨q, T⟩ => ⟨g q, T.map f⟩
 
 variable (M : Machine Γ Λ) (f₁ : PointedMap Γ Γ') (f₂ : PointedMap Γ' Γ) (g₁ : Λ → Λ') (g₂ : Λ' → Λ)
 
-/-- Because the state transition function uses the alphabet and machine states in both the input
+/--
+Because the state transition function uses the alphabet and machine states in both the input
 and output, to map a machine from one alphabet and machine state space to another we need functions
-in both directions, essentially an `Equiv` without the laws. -/
+in both directions, essentially an `Equiv` without the laws.
+-/
 def Machine.map : Machine Γ' Λ'
   | q, l => (M (g₂ q) (f₂ l)).map (Prod.map g₁ (Stmt.map f₁))
 
-theorem Machine.map_step {S : Set Λ} (f₂₁ : Function.RightInverse f₁ f₂)
-    (g₂₁ : ∀ q ∈ S, g₂ (g₁ q) = q) :
-    ∀ c : Cfg Γ Λ,
+theorem Machine.map_step
+    {S : Set Λ} (f₂₁ : Function.RightInverse f₁ f₂) (g₂₁ : ∀ q ∈ S, g₂ (g₁ q) = q)
+    : ∀ c : Cfg Γ Λ,
       c.q ∈ S → (step M c).map (Cfg.map f₁ g₁) = step (M.map f₁ f₂ g₁ g₂) (Cfg.map f₁ g₁ c)
   | ⟨q, T⟩, h => by
     unfold step Machine.map Cfg.map
     simp only [Turing.Tape.map_fst, g₂₁ q h, f₂₁ _]
-    rcases M q T.1 with (_ | ⟨q', d | a⟩); · rfl
+    rcases M q T.1 with (_ | ⟨q', d | a⟩)
+    · rfl
     · simp only [Option.map_some, Tape.map_move f₁]
       rfl
     · simp only [Option.map_some, Tape.map_write]
@@ -236,9 +255,11 @@ theorem Machine.map_step {S : Set Λ} (f₂₁ : Function.RightInverse f₁ f₂
 theorem map_init (g₁ : PointedMap Λ Λ') (l : List Γ) : (init l).map f₁ g₁ = init (l.map f₁) :=
   congr(Cfg.mk $g₁.map_pt $(Tape.map_mk₁ _ _))
 
-theorem Machine.map_respects (g₁ : PointedMap Λ Λ') (g₂ : Λ' → Λ) {S} (ss : Supports M S)
-    (f₂₁ : Function.RightInverse f₁ f₂) (g₂₁ : ∀ q ∈ S, g₂ (g₁ q) = q) :
-    Respects (step M) (step (M.map f₁ f₂ g₁ g₂)) fun a b ↦ a.q ∈ S ∧ Cfg.map f₁ g₁ a = b := by
+theorem Machine.map_respects
+    (g₁ : PointedMap Λ Λ') (g₂ : Λ' → Λ)
+    {S} (ss : Supports M S)
+    (f₂₁ : Function.RightInverse f₁ f₂) (g₂₁ : ∀ q ∈ S, g₂ (g₁ q) = q)
+    : Respects (step M) (step (M.map f₁ f₂ g₁ g₂)) fun a b ↦ a.q ∈ S ∧ Cfg.map f₁ g₁ a = b := by
   intro c _ ⟨cs, rfl⟩
   cases e : step M c
   · rw [← M.map_step f₁ f₂ g₁ g₂ f₂₁ g₂₁ _ cs, e]
@@ -280,9 +301,7 @@ the halt have a chance to be "committed", since the `eval` relation uses the fin
 before the halt as the output, and `move` and `write` etc. take 0 steps in this model.
 -/
 
-
 namespace TM1
-
 
 section
 
@@ -295,18 +314,20 @@ variable (Λ : Type*)
 variable (σ : Type*)
 
 -- Type of variable settings
-/-- The TM1 model is a simplification and extension of TM0
-  (Post-Turing model) in the direction of Wang B-machines. The machine's
-  internal state is extended with a (finite) store `σ` of variables
-  that may be accessed and updated at any time.
-  A machine is given by a `Λ` indexed set of procedures or functions.
-  Each function has a body which is a `Stmt`, which can either be a
-  `move` or `write` command, a `branch` (if statement based on the
-  current tape value), a `load` (set the variable value),
-  a `goto` (call another function), or `halt`. Note that here
-  most statements do not have labels; `goto` commands can only
-  go to a new function. All commands have access to the variable value
-  and current tape value. -/
+/--
+The TM1 model is a simplification and extension of TM0
+(Post-Turing model) in the direction of Wang B-machines. The machine's
+internal state is extended with a (finite) store `σ` of variables
+that may be accessed and updated at any time.
+A machine is given by a `Λ` indexed set of procedures or functions.
+Each function has a body which is a `Stmt`, which can either be a
+`move` or `write` command, a `branch` (if statement based on the
+current tape value), a `load` (set the variable value),
+a `goto` (call another function), or `halt`. Note that here
+most statements do not have labels; `goto` commands can only
+go to a new function. All commands have access to the variable value
+and current tape value.
+-/
 inductive Stmt
   | move : Dir → Stmt → Stmt
   | write : (Γ → σ → Γ) → Stmt → Stmt
@@ -319,8 +340,10 @@ open Stmt
 
 instance Stmt.inhabited : Inhabited (Stmt Γ Λ σ) := ⟨halt⟩
 
-/-- The configuration of a TM1 machine is given by the currently
-  evaluating statement, the variable store value, and the tape. -/
+/--
+The configuration of a TM1 machine is given by the currently
+evaluating statement, the variable store value, and the tape.
+-/
 structure Cfg [Inhabited Γ] where
   /-- The statement (if any) which is currently evaluated -/
   l : Option Λ
@@ -336,20 +359,28 @@ variable {Γ Λ σ}
 
 /-- The semantics of TM1 evaluation. -/
 def stepAux [Inhabited Γ] : Stmt Γ Λ σ → σ → Tape Γ → Cfg Γ Λ σ
-  | move d q, v, T => stepAux q v (T.move d)
-  | write a q, v, T => stepAux q v (T.write (a T.1 v))
-  | load s q, v, T => stepAux q (s T.1 v) T
-  | branch p q₁ q₂, v, T => cond (p T.1 v) (stepAux q₁ v T) (stepAux q₂ v T)
-  | goto l, v, T => ⟨some (l T.1 v), v, T⟩
-  | halt, v, T => ⟨none, v, T⟩
+  | move d q, v, T =>
+    stepAux q v (T.move d)
+  | write a q, v, T =>
+    stepAux q v (T.write (a T.1 v))
+  | load s q, v, T =>
+    stepAux q (s T.1 v) T
+  | branch p q₁ q₂, v, T =>
+    cond (p T.1 v) (stepAux q₁ v T) (stepAux q₂ v T)
+  | goto l, v, T =>
+    ⟨some (l T.1 v), v, T⟩
+  | halt, v, T =>
+    ⟨none, v, T⟩
 
 /-- The state transition function. -/
 def step [Inhabited Γ] (M : Λ → Stmt Γ Λ σ) : Cfg Γ Λ σ → Option (Cfg Γ Λ σ)
   | ⟨none, _, _⟩ => none
   | ⟨some l, v, T⟩ => some (stepAux (M l) v T)
 
-/-- A set `S` of labels supports the statement `q` if all the `goto`
-  statements in `q` refer only to other functions in `S`. -/
+/--
+A set `S` of labels supports the statement `q` if all the `goto`
+statements in `q` refer only to other functions in `S`.
+-/
 def SupportsStmt (S : Finset Λ) : Stmt Γ Λ σ → Prop
   | move _ q => SupportsStmt S q
   | write _ q => SupportsStmt S q
@@ -375,81 +406,97 @@ theorem stmts₁_trans {q₁ q₂ : Stmt Γ Λ σ} : q₁ ∈ stmts₁ q₂ → 
   intro h₁₂ q₀ h₀₁
   induction q₂ with (
     simp only [stmts₁] at h₁₂ ⊢
-    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at h₁₂)
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at h₁₂
+  )
   | branch p q₁ q₂ IH₁ IH₂ =>
     rcases h₁₂ with (rfl | h₁₂ | h₁₂)
     · unfold stmts₁ at h₀₁
       exact h₀₁
     · grind
     · grind
-  | goto l => subst h₁₂; exact h₀₁
-  | halt => subst h₁₂; exact h₀₁
+  | goto l =>
+    subst h₁₂; exact h₀₁
+  | halt =>
+    subst h₁₂; exact h₀₁
   | _ _ q IH =>
     rcases h₁₂ with rfl | h₁₂
     · exact h₀₁
     · grind
 
-theorem stmts₁_supportsStmt_mono {S : Finset Λ} {q₁ q₂ : Stmt Γ Λ σ} (h : q₁ ∈ stmts₁ q₂)
-    (hs : SupportsStmt S q₂) : SupportsStmt S q₁ := by
-  induction q₂ with
-    simp only [stmts₁, SupportsStmt, Finset.mem_insert, Finset.mem_union, Finset.mem_singleton]
-      at h hs
+theorem stmts₁_supportsStmt_mono
+    {S : Finset Λ} {q₁ q₂ : Stmt Γ Λ σ} (h : q₁ ∈ stmts₁ q₂) (hs : SupportsStmt S q₂)
+    : SupportsStmt S q₁ := by
+  induction q₂ with simp only [stmts₁, SupportsStmt, Finset.mem_insert, Finset.mem_union,
+      Finset.mem_singleton]
+    at h hs
   | branch p q₁ q₂ IH₁ IH₂ => rcases h with (rfl | h | h); exacts [hs, IH₁ h hs.1, IH₂ h hs.2]
   | goto l => subst h; exact hs
   | halt => subst h; trivial
   | _ _ q IH => rcases h with (rfl | h) <;> [exact hs; exact IH h hs]
 
 open scoped Classical in
-/-- The set of all statements in a Turing machine, plus one extra value `none` representing the
-halt state. This is used in the TM1 to TM0 reduction. -/
+/--
+The set of all statements in a Turing machine, plus one extra value `none` representing the
+halt state. This is used in the TM1 to TM0 reduction.
+-/
 noncomputable def stmts (M : Λ → Stmt Γ Λ σ) (S : Finset Λ) : Finset (Option (Stmt Γ Λ σ)) :=
   Finset.insertNone (S.biUnion fun q ↦ stmts₁ (M q))
 
-theorem stmts_trans {M : Λ → Stmt Γ Λ σ} {S : Finset Λ} {q₁ q₂ : Stmt Γ Λ σ} (h₁ : q₁ ∈ stmts₁ q₂) :
-    some q₂ ∈ stmts M S → some q₁ ∈ stmts M S := by
+theorem stmts_trans {M : Λ → Stmt Γ Λ σ} {S : Finset Λ} {q₁ q₂ : Stmt Γ Λ σ} (h₁ : q₁ ∈ stmts₁ q₂)
+    : some q₂ ∈ stmts M S → some q₁ ∈ stmts M S := by
   simp only [stmts, Finset.mem_insertNone, Finset.mem_biUnion, Option.mem_def, Option.some.injEq,
     forall_eq', exists_imp, and_imp]
   exact fun l ls h₂ ↦ ⟨_, ls, stmts₁_trans h₂ h₁⟩
 
 variable [Inhabited Λ]
 
-/-- A set `S` of labels supports machine `M` if all the `goto`
-  statements in the functions in `S` refer only to other functions
-  in `S`. -/
-def Supports (M : Λ → Stmt Γ Λ σ) (S : Finset Λ) :=
-  default ∈ S ∧ ∀ q ∈ S, SupportsStmt S (M q)
+/--
+A set `S` of labels supports machine `M` if all the `goto`
+statements in the functions in `S` refer only to other functions
+in `S`.
+-/
+def Supports (M : Λ → Stmt Γ Λ σ) (S : Finset Λ) := default ∈ S ∧ ∀ q ∈ S, SupportsStmt S (M q)
 
-theorem stmts_supportsStmt {M : Λ → Stmt Γ Λ σ} {S : Finset Λ} {q : Stmt Γ Λ σ}
-    (ss : Supports M S) : some q ∈ stmts M S → SupportsStmt S q := by
+theorem stmts_supportsStmt {M : Λ → Stmt Γ Λ σ} {S : Finset Λ} {q : Stmt Γ Λ σ} (ss : Supports M S)
+    : some q ∈ stmts M S → SupportsStmt S q := by
   simp only [stmts, Finset.mem_insertNone, Finset.mem_biUnion, Option.mem_def, Option.some.injEq,
     forall_eq', exists_imp, and_imp]
   exact fun l ls h ↦ stmts₁_supportsStmt_mono h (ss.2 _ ls)
 
 variable [Inhabited Γ]
 
-theorem step_supports (M : Λ → Stmt Γ Λ σ) {S : Finset Λ} (ss : Supports M S) :
-    ∀ {c c' : Cfg Γ Λ σ}, c' ∈ step M c → c.l ∈ Finset.insertNone S → c'.l ∈ Finset.insertNone S
+theorem step_supports (M : Λ → Stmt Γ Λ σ) {S : Finset Λ} (ss : Supports M S)
+    : ∀ {c c' : Cfg Γ Λ σ}, c' ∈ step M c → c.l ∈ Finset.insertNone S → c'.l ∈ Finset.insertNone S
   | ⟨some l₁, v, T⟩, c', h₁, h₂ => by
     replace h₂ := ss.2 _ (Finset.some_mem_insertNone.1 h₂)
-    simp only [step, Option.mem_def, Option.some.injEq] at h₁; subst c'
-    revert h₂; induction M l₁ generalizing v T with intro hs
+    simp only [step, Option.mem_def, Option.some.injEq] at h₁
+    subst c'
+    revert h₂
+    induction M l₁ generalizing v T with intro hs
     | branch p q₁' q₂' IH₁ IH₂ =>
-      unfold stepAux; cases p T.1 v
+      unfold stepAux
+      cases p T.1 v
       · exact IH₂ _ _ hs.2
       · exact IH₁ _ _ hs.1
-    | goto => exact Finset.some_mem_insertNone.2 (hs _ _)
-    | halt => apply Multiset.mem_cons_self
-    | _ _ q IH => exact IH _ _ hs
+    | goto =>
+      exact Finset.some_mem_insertNone.2 (hs _ _)
+    | halt =>
+      apply Multiset.mem_cons_self
+    | _ _ q IH =>
+      exact IH _ _ hs
 
 variable [Inhabited σ]
 
-/-- The initial state, given a finite input that is placed on the tape starting at the TM head and
-going to the right. -/
-def init (l : List Γ) : Cfg Γ Λ σ :=
-  ⟨some default, default, Tape.mk₁ l⟩
+/--
+The initial state, given a finite input that is placed on the tape starting at the TM head and
+going to the right.
+-/
+def init (l : List Γ) : Cfg Γ Λ σ := ⟨some default, default, Tape.mk₁ l⟩
 
-/-- Evaluate a TM to completion, resulting in an output list on the tape (with an indeterminate
-number of blanks on the end). -/
+/--
+Evaluate a TM to completion, resulting in an output list on the tape (with an indeterminate
+number of blanks on the end).
+-/
 def eval (M : Λ → Stmt Γ Λ σ) (l : List Γ) : Part (ListBlank Γ) :=
   (StateTransition.eval (step M) (init l)).map fun c ↦ c.Tape.right₀
 
@@ -475,7 +522,6 @@ Even though `Stmt₁` contains a statement called `halt`, we must separate it fr
 TM1 semantics.
 -/
 
-
 namespace TM1to0
 
 variable {Γ : Type*}
@@ -485,76 +531,91 @@ variable {σ : Type*} [Inhabited σ]
 variable (M : Λ → TM1.Stmt Γ Λ σ)
 
 set_option linter.unusedVariables false in
-/-- The base machine state space is a pair of an `Option Stmt₁` representing the current program
+/--
+The base machine state space is a pair of an `Option Stmt₁` representing the current program
 to be executed, or `none` for the halt state, and a `σ` which is the local state (stored in the TM,
 not the tape). Because there are an infinite number of programs, this state space is infinite, but
 for a finitely supported TM1 machine and a finite type `σ`, only finitely many of these states are
-reachable. -/
+reachable.
+-/
 @[nolint unusedArguments] -- We need the M assumption
-def Λ' (M : Λ → TM1.Stmt Γ Λ σ) :=
-  Option (TM1.Stmt Γ Λ σ) × σ
+def Λ' (M : Λ → TM1.Stmt Γ Λ σ) := Option (TM1.Stmt Γ Λ σ) × σ
 
-instance : Inhabited (Λ' M) :=
-  ⟨(some (M default), default)⟩
+instance : Inhabited (Λ' M) := ⟨(some (M default), default)⟩
 
 open TM0.Stmt
 
-/-- The core TM1 → TM0 translation function. Here `s` is the current value on the tape, and the
+/--
+The core TM1 → TM0 translation function. Here `s` is the current value on the tape, and the
 `Stmt₁` is the TM1 statement to translate, with local state `v : σ`. We evaluate all regular
 instructions recursively until we reach either a `move` or `write` command, or a `goto`; in the
-latter case we emit a dummy `write s` step and transition to the new target location. -/
+latter case we emit a dummy `write s` step and transition to the new target location.
+-/
 def trAux (s : Γ) : TM1.Stmt Γ Λ σ → σ → Λ' M × TM0.Stmt Γ
-  | TM1.Stmt.move d q, v => ((some q, v), move d)
-  | TM1.Stmt.write a q, v => ((some q, v), write (a s v))
-  | TM1.Stmt.load a q, v => trAux s q (a s v)
-  | TM1.Stmt.branch p q₁ q₂, v => cond (p s v) (trAux s q₁ v) (trAux s q₂ v)
-  | TM1.Stmt.goto l, v => ((some (M (l s v)), v), write s)
-  | TM1.Stmt.halt, v => ((none, v), write s)
+  | TM1.Stmt.move d q, v =>
+    ((some q, v), move d)
+  | TM1.Stmt.write a q, v =>
+    ((some q, v), write (a s v))
+  | TM1.Stmt.load a q, v =>
+    trAux s q (a s v)
+  | TM1.Stmt.branch p q₁ q₂, v =>
+    cond (p s v) (trAux s q₁ v) (trAux s q₂ v)
+  | TM1.Stmt.goto l, v =>
+    ((some (M (l s v)), v), write s)
+  | TM1.Stmt.halt, v =>
+    ((none, v), write s)
 
 /-- The translated TM0 machine (given the TM1 machine input). -/
 def tr : TM0.Machine Γ (Λ' M)
-  | (none, _), _ => none
-  | (some q, v), s => some (trAux M s q v)
+  | (none, _), _ =>
+    none
+  | (some q, v), s =>
+    some (trAux M s q v)
 
 /-- Translate configurations from TM1 to TM0. -/
 def trCfg [Inhabited Γ] : TM1.Cfg Γ Λ σ → TM0.Cfg Γ (Λ' M)
   | ⟨l, v, T⟩ => ⟨(l.map M, v), T⟩
 
-theorem tr_respects [Inhabited Γ] :
-    Respects (TM1.step M) (TM0.step (tr M))
-      fun (c₁ : TM1.Cfg Γ Λ σ) (c₂ : TM0.Cfg Γ (Λ' M)) ↦ trCfg M c₁ = c₂ :=
+theorem tr_respects [Inhabited Γ]
+    : Respects (TM1.step M) (TM0.step (tr M)) fun (c₁ : TM1.Cfg Γ Λ σ) (c₂ : TM0.Cfg Γ (Λ' M)) ↦
+      trCfg M c₁ = c₂ :=
   fun_respects.2 fun ⟨l₁, v, T⟩ ↦ by
-    rcases l₁ with - | l₁; · exact rfl
+    rcases l₁ with - | l₁
+    · exact rfl
     simp only [trCfg, TM1.step, FRespects, Option.map]
     induction M l₁ generalizing v T with
-    | move _ _ IH => exact TransGen.head rfl (IH _ _)
-    | write _ _ IH => exact TransGen.head rfl (IH _ _)
-    | load _ _ IH => exact (reaches₁_eq (by rfl)).2 (IH _ _)
+    | move _ _ IH =>
+      exact TransGen.head rfl (IH _ _)
+    | write _ _ IH =>
+      exact TransGen.head rfl (IH _ _)
+    | load _ _ IH =>
+      exact (reaches₁_eq (by rfl)).2 (IH _ _)
     | branch p _ _ IH₁ IH₂ =>
-      unfold TM1.stepAux; cases e : p T.1 v
+      unfold TM1.stepAux
+      cases e : p T.1 v
       · exact (reaches₁_eq (by simp only [TM0.step, tr, trAux, e]; rfl)).2 (IH₂ _ _)
       · exact (reaches₁_eq (by simp only [TM0.step, tr, trAux, e]; rfl)).2 (IH₁ _ _)
     | _ =>
       exact TransGen.single congr(some (TM0.Cfg.mk _ $(Tape.write_self T)))
 
 theorem tr_eval [Inhabited Γ] (l : List Γ) : TM0.eval (tr M) l = TM1.eval M l :=
-  (congr_arg _ (tr_eval' _ _ _ (tr_respects M) ⟨some _, _, _⟩)).trans
-    (by
-      rw [Part.map_eq_map, Part.map_map, TM1.eval]
-      congr with ⟨⟩)
+  (congr_arg _ (tr_eval' _ _ _ (tr_respects M) ⟨some _, _, _⟩)).trans (by
+    rw [Part.map_eq_map, Part.map_map, TM1.eval]
+    congr with ⟨⟩)
 
 variable [Fintype σ]
 
-/-- Given a finite set of accessible `Λ` machine states, there is a finite set of accessible
-machine states in the target (even though the type `Λ'` is infinite). -/
-noncomputable def trStmts (S : Finset Λ) : Finset (Λ' M) :=
-  (TM1.stmts M S) ×ˢ Finset.univ
+/--
+Given a finite set of accessible `Λ` machine states, there is a finite set of accessible
+machine states in the target (even though the type `Λ'` is infinite).
+-/
+noncomputable def trStmts (S : Finset Λ) : Finset (Λ' M) := (TM1.stmts M S) ×ˢ Finset.univ
 
 attribute [local simp] TM1.stmts₁_self
 
 set_option backward.isDefEq.respectTransparency false in
-theorem tr_supports {S : Finset Λ} (ss : TM1.Supports M S) :
-    TM0.Supports (tr M) ↑(trStmts M S) := by
+theorem tr_supports {S : Finset Λ} (ss : TM1.Supports M S)
+    : TM0.Supports (tr M) ↑(trStmts M S) := by
   classical
   constructor
   · apply Finset.mem_product.2
@@ -564,21 +625,26 @@ theorem tr_supports {S : Finset Λ} (ss : TM1.Supports M S) :
       exact ⟨_, ss.1, TM1.stmts₁_self⟩
     · apply Finset.mem_univ
   · intro q a q' s h₁ h₂
-    rcases q with ⟨_ | q, v⟩; · cases h₁
+    rcases q with ⟨_ | q, v⟩
+    · cases h₁
     obtain ⟨q', v'⟩ := q'
     simp only [trStmts, Finset.mem_coe] at h₂ ⊢
     rw [Finset.mem_product] at h₂ ⊢
     simp only [Finset.mem_univ, and_true] at h₂ ⊢
-    cases q'; · exact Multiset.mem_cons_self _ _
+    cases q'
+    · exact Multiset.mem_cons_self _ _
     simp only [tr, Option.mem_def] at h₁
     have := TM1.stmts_supportsStmt ss h₂
-    revert this; induction q generalizing v with intro hs
+    revert this
+    induction q generalizing v with intro hs
     | move d q =>
-      cases h₁; refine TM1.stmts_trans ?_ h₂
+      cases h₁
+      refine TM1.stmts_trans ?_ h₂
       unfold TM1.stmts₁
       exact Finset.mem_insert_of_mem TM1.stmts₁_self
     | write b q =>
-      cases h₁; refine TM1.stmts_trans ?_ h₂
+      cases h₁
+      refine TM1.stmts_trans ?_ h₂
       unfold TM1.stmts₁
       exact Finset.mem_insert_of_mem TM1.stmts₁_self
     | load b q IH =>
@@ -596,7 +662,8 @@ theorem tr_supports {S : Finset Λ} (ss : TM1.Supports M S) :
     | goto l =>
       cases h₁
       exact Finset.some_mem_insertNone.2 (Finset.mem_biUnion.2 ⟨_, hs _ _, TM1.stmts₁_self⟩)
-    | halt => cases h₁
+    | halt =>
+      cases h₁
 
 end TM1to0
 
@@ -623,20 +690,18 @@ nevertheless a bounded number of `write` calls between `goto` statements because
 finitely long.
 -/
 
-
 namespace TM1to1
 
 open TM1
 variable {Γ : Type*}
 
-theorem exists_enc_dec [Inhabited Γ] [Finite Γ] :
-    ∃ (n : ℕ) (enc : Γ → List.Vector Bool n) (dec : List.Vector Bool n → Γ),
+theorem exists_enc_dec [Inhabited Γ] [Finite Γ]
+    : ∃ (n : ℕ) (enc : Γ → List.Vector Bool n) (dec : List.Vector Bool n → Γ),
       enc default = List.Vector.replicate n false ∧ ∀ a, dec (enc a) = a := by
   rcases Finite.exists_equiv_fin Γ with ⟨n, ⟨e⟩⟩
   let : DecidableEq Γ := e.decidableEq
   let G : Fin n ↪ Fin n → Bool :=
-    ⟨fun a b ↦ a = b, fun a b h ↦
-      Bool.of_decide_true <| congr($h b).trans <| Bool.decide_true rfl⟩
+    ⟨fun a b ↦ a = b, fun a b h ↦ Bool.of_decide_true <| congr($h b).trans <| Bool.decide_true rfl⟩
   let H := (e.toEmbedding.trans G).trans (Equiv.vectorEquivFin _ _).symm.toEmbedding
   let enc := H.setValue default (List.Vector.replicate n false)
   exact ⟨_, enc, Function.invFun enc, H.setValue_eq _ _, Function.leftInverse_invFun enc.2⟩
@@ -651,76 +716,90 @@ inductive Λ'
 
 variable {Γ Λ σ}
 
-instance [Inhabited Λ] : Inhabited (Λ' Γ Λ σ) :=
-  ⟨Λ'.normal default⟩
+instance [Inhabited Λ] : Inhabited (Λ' Γ Λ σ) := ⟨Λ'.normal default⟩
 
 /-- Read a vector of length `n` from the tape. -/
 def readAux : ∀ n, (List.Vector Bool n → Stmt Bool (Λ' Γ Λ σ) σ) → Stmt Bool (Λ' Γ Λ σ) σ
-  | 0, f => f Vector.nil
+  | 0, f =>
+    f Vector.nil
   | i + 1, f =>
-    Stmt.branch (fun a _ ↦ a) (Stmt.move Dir.right <| readAux i fun v ↦ f (true ::ᵥ v))
+    Stmt.branch
+      (fun a _ ↦ a)
+      (Stmt.move Dir.right <| readAux i fun v ↦ f (true ::ᵥ v))
       (Stmt.move Dir.right <| readAux i fun v ↦ f (false ::ᵥ v))
 
 variable (n : ℕ) (enc : Γ → List.Vector Bool n) (dec : List.Vector Bool n → Γ)
 
 /-- A move left or right corresponds to `n` moves across the super-cell. -/
-def move (d : Dir) (q : Stmt Bool (Λ' Γ Λ σ) σ) : Stmt Bool (Λ' Γ Λ σ) σ :=
-  (Stmt.move d)^[n] q
+def move (d : Dir) (q : Stmt Bool (Λ' Γ Λ σ) σ) : Stmt Bool (Λ' Γ Λ σ) σ := (Stmt.move d)^[n] q
 
 variable {n}
 
-/-- To read a symbol from the tape, we use `readAux` to traverse the symbol,
-then return to the original position with `n` moves to the left. -/
+/--
+To read a symbol from the tape, we use `readAux` to traverse the symbol,
+then return to the original position with `n` moves to the left.
+-/
 def read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) : Stmt Bool (Λ' Γ Λ σ) σ :=
   readAux n fun v ↦ move n Dir.left <| f (dec v)
 
 /-- Write a list of `Bool`s on the tape. -/
 def write : List Bool → Stmt Bool (Λ' Γ Λ σ) σ → Stmt Bool (Λ' Γ Λ σ) σ
-  | [], q => q
-  | a :: l, q => (Stmt.write fun _ _ ↦ a) <| Stmt.move Dir.right <| write l q
+  | [], q =>
+    q
+  | a :: l, q =>
+    (Stmt.write fun _ _ ↦ a) <| Stmt.move Dir.right <| write l q
 
-/-- Translate a normal instruction. For the `write` command, we use a `goto` indirection so that
-we can access the current value of the tape. -/
+/--
+Translate a normal instruction. For the `write` command, we use a `goto` indirection so that
+we can access the current value of the tape.
+-/
 def trNormal : Stmt Γ Λ σ → Stmt Bool (Λ' Γ Λ σ) σ
-  | Stmt.move d q => move n d <| trNormal q
-  | Stmt.write f q => read dec fun a ↦ Stmt.goto fun _ s ↦ Λ'.write (f a s) q
-  | Stmt.load f q => read dec fun a ↦ (Stmt.load fun _ s ↦ f a s) <| trNormal q
+  | Stmt.move d q =>
+    move n d <| trNormal q
+  | Stmt.write f q =>
+    read dec fun a ↦ Stmt.goto fun _ s ↦ Λ'.write (f a s) q
+  | Stmt.load f q =>
+    read dec fun a ↦ (Stmt.load fun _ s ↦ f a s) <| trNormal q
   | Stmt.branch p q₁ q₂ =>
     read dec fun a ↦ Stmt.branch (fun _ s ↦ p a s) (trNormal q₁) (trNormal q₂)
-  | Stmt.goto l => read dec fun a ↦ Stmt.goto fun _ s ↦ Λ'.normal (l a s)
-  | Stmt.halt => Stmt.halt
+  | Stmt.goto l =>
+    read dec fun a ↦ Stmt.goto fun _ s ↦ Λ'.normal (l a s)
+  | Stmt.halt =>
+    Stmt.halt
 
-theorem stepAux_move (d : Dir) (q : Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (T : Tape Bool) :
-    stepAux (move n d q) v T = stepAux q v ((Tape.move d)^[n] T) := by
+theorem stepAux_move (d : Dir) (q : Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (T : Tape Bool)
+    : stepAux (move n d q) v T = stepAux q v ((Tape.move d)^[n] T) := by
   suffices ∀ i, stepAux ((Stmt.move d)^[i] q) v T = stepAux q v ((Tape.move d)^[i] T) from this n
   intro i
   induction i generalizing T with
-  | zero => rfl
+  | zero =>
+    rfl
   | succ i IH =>
     rw [iterate_succ', iterate_succ]
     simp only [stepAux, Function.comp_apply]
     rw [IH]
 
-theorem supportsStmt_move {S : Finset (Λ' Γ Λ σ)} {d : Dir} {q : Stmt Bool (Λ' Γ Λ σ) σ} :
-    SupportsStmt S (move n d q) = SupportsStmt S q := by
+theorem supportsStmt_move {S : Finset (Λ' Γ Λ σ)} {d : Dir} {q : Stmt Bool (Λ' Γ Λ σ) σ}
+    : SupportsStmt S (move n d q) = SupportsStmt S q := by
   suffices ∀ {i}, SupportsStmt S ((Stmt.move d)^[i] q) = _ from this
-  intro i; induction i generalizing q <;> simp only [*, iterate]; rfl
+  intro i
+  induction i generalizing q <;> simp only [*, iterate]
+  rfl
 
-theorem supportsStmt_write {S : Finset (Λ' Γ Λ σ)} {l : List Bool} {q : Stmt Bool (Λ' Γ Λ σ) σ} :
-    SupportsStmt S (write l q) = SupportsStmt S q := by
+theorem supportsStmt_write {S : Finset (Λ' Γ Λ σ)} {l : List Bool} {q : Stmt Bool (Λ' Γ Λ σ) σ}
+    : SupportsStmt S (write l q) = SupportsStmt S q := by
   induction l <;> simp only [write, SupportsStmt, *]
 
-theorem supportsStmt_read {S : Finset (Λ' Γ Λ σ)} :
-    ∀ {f : Γ → Stmt Bool (Λ' Γ Λ σ) σ}, (∀ a, SupportsStmt S (f a)) →
-      SupportsStmt S (read dec f) :=
-  suffices
-    ∀ (i) (f : List.Vector Bool i → Stmt Bool (Λ' Γ Λ σ) σ),
-      (∀ v, SupportsStmt S (f v)) → SupportsStmt S (readAux i f)
-    from fun hf ↦ this n _ (by intro; simp only [supportsStmt_move, hf])
+theorem supportsStmt_read {S : Finset (Λ' Γ Λ σ)}
+    : ∀ {f : Γ → Stmt Bool (Λ' Γ Λ σ) σ},
+      (∀ a, SupportsStmt S (f a)) → SupportsStmt S (read dec f) :=
+  suffices ∀ (i) (f : List.Vector Bool i → Stmt Bool (Λ' Γ Λ σ) σ),
+      (∀ v, SupportsStmt S (f v)) → SupportsStmt S (readAux i f) from fun hf ↦
+    this n _ (by intro; simp only [supportsStmt_move, hf])
   fun i f hf ↦ by
-  induction i with
-  | zero => exact hf _
-  | succ i IH => constructor <;> apply IH <;> intro <;> apply hf
+    induction i with
+    | zero => exact hf _
+    | succ i IH => constructor <;> apply IH <;> intro <;> apply hf
 
 variable (M : Λ → TM1.Stmt Γ Λ σ)
 
@@ -732,15 +811,13 @@ variable {enc}
 
 /-- The low level tape corresponding to the given tape over alphabet `Γ`. -/
 def trTape' (L R : ListBlank Γ) : Tape Bool := by
-  refine
-      Tape.mk' (L.flatMap (fun x ↦ (enc x).toList.reverse) ⟨n, ?_⟩)
-        (R.flatMap (fun x ↦ (enc x).toList) ⟨n, ?_⟩) <;>
-    simp only [enc0, List.Vector.replicate, List.reverse_replicate, Bool.default_bool,
+  refine Tape.mk' (L.flatMap (fun x ↦ (enc x).toList.reverse) ⟨n, ?_⟩)
+      (R.flatMap (fun x ↦ (enc x).toList) ⟨n, ?_⟩)
+    <;> simp only [enc0, List.Vector.replicate, List.reverse_replicate, Bool.default_bool,
       List.Vector.toList_mk]
 
 /-- The low level tape corresponding to the given tape over alphabet `Γ`. -/
-def trTape (T : Tape Γ) : Tape Bool :=
-  trTape' enc0 T.left T.right₀
+def trTape (T : Tape Γ) : Tape Bool := trTape' enc0 T.left T.right₀
 
 theorem trTape_mk' (L R : ListBlank Γ) : trTape enc0 (Tape.mk' L R) = trTape' enc0 L R := by
   simp only [trTape, Tape.mk'_left, Tape.mk'_right₀]
@@ -758,25 +835,25 @@ def trCfg : Cfg Γ Λ σ → Cfg Bool (Λ' Γ Λ σ) σ
 
 variable {enc}
 
-theorem trTape'_move_left (L R : ListBlank Γ) :
-    (Tape.move Dir.left)^[n] (trTape' enc0 L R) = trTape' enc0 L.tail (R.cons L.head) := by
+theorem trTape'_move_left (L R : ListBlank Γ)
+    : (Tape.move Dir.left)^[n] (trTape' enc0 L R) = trTape' enc0 L.tail (R.cons L.head) := by
   obtain ⟨a, L, rfl⟩ := L.exists_cons
   simp only [trTape', ListBlank.cons_flatMap, ListBlank.head_cons, ListBlank.tail_cons]
   suffices ∀ {L' R' l₁ l₂} (_ : List.Vector.toList (enc a) = List.reverseAux l₁ l₂),
-      (Tape.move Dir.left)^[l₁.length]
-      (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂ R')) =
-      Tape.mk' L' (ListBlank.append (List.Vector.toList (enc a)) R') by
+      (Tape.move Dir.left)^[l₁.length] (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂ R'))
+        = Tape.mk' L' (ListBlank.append (List.Vector.toList (enc a)) R') by
     simpa only [List.length_reverse, Vector.toList_length] using! this (List.reverse_reverse _).symm
   intro _ _ l₁ l₂ e
   induction l₁ generalizing l₂ with
-  | nil => cases e; rfl
+  | nil =>
+    cases e; rfl
   | cons b l₁ IH =>
     simp only [List.length, iterate_succ_apply]
     convert IH e
     simp only [ListBlank.tail_cons, ListBlank.append, Tape.move_left_mk', ListBlank.head_cons]
 
-theorem trTape'_move_right (L R : ListBlank Γ) :
-    (Tape.move Dir.right)^[n] (trTape' enc0 L R) = trTape' enc0 (L.cons R.head) R.tail := by
+theorem trTape'_move_right (L R : ListBlank Γ)
+    : (Tape.move Dir.right)^[n] (trTape' enc0 L R) = trTape' enc0 (L.cons R.head) R.tail := by
   suffices ∀ i L, (Tape.move Dir.right)^[i] ((Tape.move Dir.left)^[i] L) = L by
     refine (Eq.symm ?_).trans (this n _)
     simp only [trTape'_move_left, ListBlank.cons_head_tail, ListBlank.head_cons,
@@ -786,45 +863,48 @@ theorem trTape'_move_right (L R : ListBlank Γ) :
   | zero => rfl
   | succ i IH => rw [iterate_succ_apply, iterate_succ_apply', Tape.move_left_right, IH]
 
-theorem stepAux_write (q : Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (a b : Γ) (L R : ListBlank Γ) :
-    stepAux (write (enc a).toList q) v (trTape' enc0 L (ListBlank.cons b R)) =
-      stepAux q v (trTape' enc0 (ListBlank.cons a L) R) := by
+theorem stepAux_write (q : Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (a b : Γ) (L R : ListBlank Γ)
+    : stepAux (write (enc a).toList q) v (trTape' enc0 L (ListBlank.cons b R))
+      = stepAux q v (trTape' enc0 (ListBlank.cons a L) R) := by
   simp only [trTape', ListBlank.cons_flatMap]
   suffices ∀ {L' R'} (l₁ l₂ l₂' : List Bool) (_ : l₂'.length = l₂.length),
-      stepAux (write l₂ q) v (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂' R')) =
-      stepAux q v (Tape.mk' (L'.append (List.reverseAux l₂ l₁)) R') by
+      stepAux (write l₂ q) v (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂' R'))
+        = stepAux q v (Tape.mk' (L'.append (List.reverseAux l₂ l₁)) R') by
     exact this [] _ _ ((enc b).2.trans (enc a).2.symm)
   clear a b L R
   intro L' R' l₁ l₂ l₂' e
   induction l₂ generalizing l₁ l₂' with
-  | nil => cases List.length_eq_zero_iff.1 e; rfl
+  | nil =>
+    cases List.length_eq_zero_iff.1 e; rfl
   | cons a l₂ IH =>
-    rcases l₂' with - | ⟨b, l₂'⟩ <;>
-      simp only [List.length_nil, List.length_cons, Nat.succ_inj, reduceCtorEq] at e
+    rcases l₂' with - | ⟨b, l₂'⟩
+      <;> simp only [List.length_nil, List.length_cons, Nat.succ_inj, reduceCtorEq] at e
     rw [List.reverseAux, ← IH (a :: l₁) l₂' e]
     simp [stepAux, ListBlank.append, write]
 
 variable (encdec : ∀ a, dec (enc a) = a)
 include encdec
 
-theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : ListBlank Γ) :
-    stepAux (read dec f) v (trTape' enc0 L R) = stepAux (f R.head) v (trTape' enc0 L R) := by
-  suffices ∀ f, stepAux (readAux n f) v (trTape' enc0 L R) =
-      stepAux (f (enc R.head)) v (trTape' enc0 (L.cons R.head) R.tail) by
+theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : ListBlank Γ)
+    : stepAux (read dec f) v (trTape' enc0 L R) = stepAux (f R.head) v (trTape' enc0 L R) := by
+  suffices ∀ f,
+      stepAux (readAux n f) v (trTape' enc0 L R)
+        = stepAux (f (enc R.head)) v (trTape' enc0 (L.cons R.head) R.tail) by
     rw [read, this, stepAux_move, encdec, trTape'_move_left enc0]
     simp only [ListBlank.head_cons, ListBlank.cons_head_tail, ListBlank.tail_cons]
   obtain ⟨a, R, rfl⟩ := R.exists_cons
   simp only [ListBlank.head_cons, ListBlank.tail_cons, trTape', ListBlank.cons_flatMap]
   suffices ∀ i f L' R' l₁ l₂ h,
-      stepAux (readAux i f) v (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂ R')) =
-      stepAux (f ⟨l₂, h⟩) v (Tape.mk' (ListBlank.append (l₂.reverseAux l₁) L') R') by
+      stepAux (readAux i f) v (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂ R'))
+        = stepAux (f ⟨l₂, h⟩) v (Tape.mk' (ListBlank.append (l₂.reverseAux l₁) L') R') by
     intro f
-    exact this n f (L.flatMap (fun x => (enc x).1.reverse) _)
-      (R.flatMap (fun x => (enc x).1) _) [] _ (enc a).2
+    exact this n f (L.flatMap (fun x => (enc x).1.reverse) _) (R.flatMap (fun x => (enc x).1) _) []
+      _ (enc a).2
   clear f L a R
   rintro _ f L' R' l₁ l₂ rfl
   induction l₂ generalizing l₁ with
-  | nil => rfl
+  | nil =>
+    rfl
   | cons a l₂ IH =>
     trans stepAux (readAux l₂.length fun v ↦ f (a ::ᵥ v)) v
         (Tape.mk' ((L'.append l₁).cons a) (R'.append l₂))
@@ -835,14 +915,14 @@ theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : Li
       rfl
 
 variable {enc0} in
-theorem tr_respects :
-    Respects (step M) (step (tr enc dec M)) fun c₁ c₂ ↦ trCfg enc enc0 c₁ = c₂ :=
+theorem tr_respects : Respects (step M) (step (tr enc dec M)) fun c₁ c₂ ↦ trCfg enc enc0 c₁ = c₂ :=
   fun_respects.2 fun ⟨l₁, v, T⟩ ↦ by
     obtain ⟨L, R, rfl⟩ := T.exists_mk'
     rcases l₁ with - | l₁
     · exact rfl
-    suffices ∀ q R, Reaches (step (tr enc dec M)) (stepAux (trNormal dec q) v (trTape' enc0 L R))
-        (trCfg enc enc0 (stepAux q v (Tape.mk' L R))) by
+    suffices ∀ q R,
+        Reaches (step (tr enc dec M)) (stepAux (trNormal dec q) v (trTape' enc0 L R))
+          (trCfg enc enc0 (stepAux q v (Tape.mk' L R))) by
       refine TransGen.head' rfl ?_
       rw [trTape_mk']
       exact this _ R
@@ -850,11 +930,10 @@ theorem tr_respects :
     intro q R
     induction q generalizing v L R with
     | move d q IH =>
-      cases d <;>
-          simp only [trNormal, stepAux_move, stepAux,
-            Tape.move_left_mk',
-            trTape'_move_left enc0, trTape'_move_right enc0] <;>
-        apply IH
+      cases d
+        <;> simp only [trNormal, stepAux_move, stepAux, Tape.move_left_mk', trTape'_move_left enc0,
+          trTape'_move_right enc0]
+        <;> apply IH
     | write f q IH =>
       simp only [trNormal, stepAux_read dec enc0 encdec, stepAux]
       refine ReflTransGen.head rfl ?_
@@ -872,12 +951,10 @@ theorem tr_respects :
       simp only [trNormal, stepAux_read dec enc0 encdec, stepAux, trCfg, trTape_mk']
       apply ReflTransGen.refl
     | halt =>
-      simp only [trNormal, stepAux, trCfg,
-        trTape_mk']
+      simp only [trNormal, stepAux, trCfg, trTape_mk']
       apply ReflTransGen.refl
 
 end
-
 
 variable [Fintype Γ]
 
@@ -892,18 +969,22 @@ noncomputable def writes : Stmt Γ Λ σ → Finset (Λ' Γ Λ σ)
   | Stmt.halt => ∅
 
 open scoped Classical in
-/-- The set of accessible machine states, assuming that the input machine is supported on `S`,
-are the normal states embedded from `S`, plus all write states accessible from these states. -/
+/--
+The set of accessible machine states, assuming that the input machine is supported on `S`,
+are the normal states embedded from `S`, plus all write states accessible from these states.
+-/
 noncomputable def trSupp (S : Finset Λ) : Finset (Λ' Γ Λ σ) :=
   S.biUnion fun l ↦ insert (Λ'.normal l) (writes (M l))
 
 open scoped Classical in
-theorem tr_supports [Inhabited Λ] {S : Finset Λ} (ss : Supports M S) :
-    Supports (tr enc dec M) (trSupp M S) :=
-  ⟨Finset.mem_biUnion.2 ⟨_, ss.1, Finset.mem_insert_self _ _⟩, fun q h ↦ by
-    suffices ∀ q, SupportsStmt S q → (∀ q' ∈ writes q, q' ∈ trSupp M S) →
-        SupportsStmt (trSupp M S) (trNormal dec q) ∧
-        ∀ q' ∈ writes q, SupportsStmt (trSupp M S) (tr enc dec M q') by
+theorem tr_supports [Inhabited Λ] {S : Finset Λ} (ss : Supports M S)
+    : Supports (tr enc dec M) (trSupp M S) := ⟨
+  Finset.mem_biUnion.2 ⟨_, ss.1, Finset.mem_insert_self _ _⟩,
+  fun q h ↦ by
+    suffices ∀ q,
+        SupportsStmt S q → (∀ q' ∈ writes q, q' ∈ trSupp M S)
+          → SupportsStmt (trSupp M S) (trNormal dec q)
+            ∧ ∀ q' ∈ writes q, SupportsStmt (trSupp M S) (tr enc dec M q') by
       rcases Finset.mem_biUnion.1 h with ⟨l, hl, h⟩
       have :=
         this _ (ss.2 _ hl) fun q' hq ↦ Finset.mem_biUnion.2 ⟨_, hl, Finset.mem_insert_of_mem hq⟩
@@ -913,12 +994,12 @@ theorem tr_supports [Inhabited Λ] {S : Finset Λ} (ss : Supports M S) :
     induction q with
     | move d q IH =>
       unfold writes at hw ⊢
-      replace IH := IH hs hw; refine ⟨?_, IH.2⟩
+      replace IH := IH hs hw
+      refine ⟨?_, IH.2⟩
       cases d <;> simp only [trNormal, supportsStmt_move, IH]
     | write f q IH =>
       unfold writes at hw ⊢
-      simp only [Finset.mem_image, Finset.mem_union, Finset.mem_univ, true_and]
-        at hw ⊢
+      simp only [Finset.mem_image, Finset.mem_union, Finset.mem_univ, true_and] at hw ⊢
       replace IH := IH hs fun q hq ↦ hw q (Or.inr hq)
       refine ⟨supportsStmt_read _ fun a _ s ↦ hw _ (Or.inl ⟨_, rfl⟩), fun q' hq ↦ ?_⟩
       rcases hq with (⟨a, q₂, rfl⟩ | hq)
@@ -935,12 +1016,15 @@ theorem tr_supports [Inhabited Λ] {S : Finset Λ} (ss : Supports M S) :
       replace IH₂ := IH₂ hs.2 fun q hq ↦ hw q (Or.inr hq)
       exact ⟨supportsStmt_read _ fun _ ↦ ⟨IH₁.1, IH₂.1⟩, fun q ↦ Or.rec (IH₁.2 _) (IH₂.2 _)⟩
     | goto l =>
-      simp only [writes, Finset.notMem_empty]; refine ⟨?_, fun _ ↦ False.elim⟩
+      simp only [writes, Finset.notMem_empty]
+      refine ⟨?_, fun _ ↦ False.elim⟩
       refine supportsStmt_read _ fun a _ s ↦ ?_
       exact Finset.mem_biUnion.2 ⟨_, hs _ _, Finset.mem_insert_self _ _⟩
     | halt =>
-      simp only [writes, Finset.notMem_empty]; refine ⟨?_, fun _ ↦ False.elim⟩
-      simp only [SupportsStmt, trNormal]⟩
+      simp only [writes, Finset.notMem_empty]
+      refine ⟨?_, fun _ ↦ False.elim⟩
+      simp only [SupportsStmt, trNormal]
+⟩
 
 end TM1to1
 
@@ -958,23 +1042,23 @@ to a halting state. To resolve this we do a check for `halt` first, then `goto` 
 unreachable branch).
 -/
 
-
 namespace TM0to1
 
 variable (Γ : Type*) [Inhabited Γ]
 variable (Λ : Type*) [Inhabited Λ]
 
-/-- The machine states for a TM1 emulating a TM0 machine. States of the TM0 machine are embedded
+/--
+The machine states for a TM1 emulating a TM0 machine. States of the TM0 machine are embedded
 as `normal q` states, but the actual operation is split into two parts, a jump to `act s q`
-followed by the action and a jump to the next `normal` state. -/
+followed by the action and a jump to the next `normal` state.
+-/
 inductive Λ'
   | normal : Λ → Λ'
   | act : TM0.Stmt Γ → Λ → Λ'
 
 variable {Γ Λ}
 
-instance : Inhabited (Λ' Γ Λ) :=
-  ⟨Λ'.normal default⟩
+instance : Inhabited (Λ' Γ Λ) := ⟨Λ'.normal default⟩
 
 variable (M : TM0.Machine Γ Λ)
 
@@ -983,12 +1067,14 @@ open TM1.Stmt
 /-- The program. -/
 def tr : Λ' Γ Λ → TM1.Stmt Γ (Λ' Γ Λ) Unit
   | Λ'.normal q =>
-    branch (fun a _ ↦ (M q a).isNone) halt <|
-      goto fun a _ ↦ match M q a with
+    branch (fun a _ ↦ (M q a).isNone) halt <| goto fun a _ ↦
+      match M q a with
       | none => default -- unreachable
       | some (q', s) => Λ'.act s q'
-  | Λ'.act (TM0.Stmt.move d) q => move d <| goto fun _ _ ↦ Λ'.normal q
-  | Λ'.act (TM0.Stmt.write a) q => (write fun _ _ ↦ a) <| goto fun _ _ ↦ Λ'.normal q
+  | Λ'.act (TM0.Stmt.move d) q =>
+    move d <| goto fun _ _ ↦ Λ'.normal q
+  | Λ'.act (TM0.Stmt.write a) q =>
+    (write fun _ _ ↦ a) <| goto fun _ _ ↦ Λ'.normal q
 
 /-- The configuration translation. -/
 def trCfg : TM0.Cfg Γ Λ → TM1.Cfg Γ (Λ' Γ Λ) Unit
@@ -1001,9 +1087,14 @@ theorem tr_respects : Respects (TM0.step M) (TM1.step (tr M)) fun a b ↦ trCfg 
     obtain ⟨q', s⟩ := val
     simp only [FRespects, TM0.step, trCfg, e, Option.isSome, cond, Option.map_some]
     revert e
-    have : TM1.step (tr M) ⟨some (Λ'.act s q'), (), T⟩ = some ⟨some (Λ'.normal q'), (), match s with
-        | TM0.Stmt.move d => T.move d
-        | TM0.Stmt.write a => T.write a⟩ := by
+    have : TM1.step (tr M) ⟨some (Λ'.act s q'), (), T⟩
+        = some ⟨
+          some (Λ'.normal q'),
+          (),
+          match s with
+          | TM0.Stmt.move d => T.move d
+          | TM0.Stmt.write a => T.write a
+        ⟩ := by
       cases s <;> rfl
     intro e
     refine TransGen.head ?_ (TransGen.head' this ?_) <;> grind [TM1.step, TM1.stepAux, tr]

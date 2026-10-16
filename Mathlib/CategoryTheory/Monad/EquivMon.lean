@@ -26,7 +26,6 @@ A monad "is just" a monoid in the category of endofunctors.
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 open Category MonObj
@@ -64,12 +63,9 @@ def ofMon (M : Mon (C ⥤ C)) : Monad C where
   toFunctor := M.X
   «η» := η[M.X]
   «μ» := μ[M.X]
-  left_unit := fun X => by
-    simpa [-MonObj.mul_one] using! congrArg (fun t ↦ t.app X) (mul_one M.X)
-  right_unit := fun X => by
-    simpa [-MonObj.one_mul] using! congrArg (fun t ↦ t.app X) (one_mul M.X)
-  assoc := fun X => by
-    simpa [-MonObj.mul_assoc] using! congrArg (fun t ↦ t.app X) (mul_assoc M.X)
+  left_unit := fun X => by simpa [-MonObj.mul_one] using! congrArg (fun t ↦ t.app X) (mul_one M.X)
+  right_unit := fun X => by simpa [-MonObj.one_mul] using! congrArg (fun t ↦ t.app X) (one_mul M.X)
+  assoc := fun X => by simpa [-MonObj.mul_assoc] using! congrArg (fun t ↦ t.app X) (mul_assoc M.X)
 
 -- Porting note: `@[simps]` fails to generate `ofMon_obj`:
 @[simp] lemma ofMon_obj (M : Mon (C ⥤ C)) (X : C) : (ofMon M).obj X = M.X.obj X := rfl
@@ -81,12 +77,13 @@ set_option backward.isDefEq.respectTransparency false in
 @[simps]
 def monToMonad : Mon (C ⥤ C) ⥤ Monad C where
   obj := ofMon
-  map {X Y} f :=
-    { f.hom with
-      app_η X := by
-        simpa [-IsMonHom.one_hom] using congrArg (fun t ↦ t.app X) (IsMonHom.one_hom f.hom)
-      app_μ Z := by
-        simpa [-IsMonHom.mul_hom] using congrArg (fun t ↦ t.app Z) (IsMonHom.mul_hom f.hom) }
+  map {X Y} f := {
+    f.hom with
+    app_η X := by
+      simpa [-IsMonHom.one_hom] using congrArg (fun t ↦ t.app X) (IsMonHom.one_hom f.hom)
+    app_μ Z := by
+      simpa [-IsMonHom.mul_hom] using congrArg (fun t ↦ t.app Z) (IsMonHom.mul_hom f.hom)
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -95,16 +92,17 @@ set_option backward.isDefEq.respectTransparency false in
 def monadMonEquiv : Monad C ≌ Mon (C ⥤ C) where
   functor := monadToMon _
   inverse := monToMonad _
-  unitIso :=
-  { hom := { app := fun _ => { app := fun _ => 𝟙 _ } }
-    inv := { app := fun _ => { app := fun _ => 𝟙 _ } } }
-  counitIso :=
-  { hom := { app := fun _ => { hom := 𝟙 _ } }
-    inv := { app := fun _ => { hom := 𝟙 _ } } }
+  unitIso := {
+    hom := { app := fun _ => { app := fun _ => 𝟙 _ } }
+    inv := { app := fun _ => { app := fun _ => 𝟙 _ } }
+  }
+  counitIso := {
+    hom := { app := fun _ => { hom := 𝟙 _ } }
+    inv := { app := fun _ => { hom := 𝟙 _ } }
+  }
 
 -- Sanity check
-example (A : Monad C) {X : C} : ((monadMonEquiv C).unitIso.app A).hom.app X = 𝟙 _ :=
-  rfl
+example (A : Monad C) {X : C} : ((monadMonEquiv C).unitIso.app A).hom.app X = 𝟙 _ := rfl
 
 end Monad
 

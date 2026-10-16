@@ -72,7 +72,7 @@ info: Try these:
   ⊢ 1369 • 1 - 1225 • 1 = 72 • 2
 -/
 #guard_msgs in
-example : 37^2 - 35^2 = 72 * 2 := by hint
+example : 37 ^ 2 - 35 ^ 2 = 72 * 2 := by hint
 
 /--
 info: Try these:
@@ -98,7 +98,7 @@ info: Try these:
   ⊢ ∃ x, P x
 -/
 #guard_msgs in
-example {P : Nat → Prop} (h : { x // P x }) : ∃ x, P x ∧ 0 ≤ x := by hint
+example {P : Nat → Prop} (h : {x // P x}) : ∃ x, P x ∧ 0 ≤ x := by hint
 
 def f (p : Nat × Nat) := (p.fst, p.snd)
 /--
@@ -118,7 +118,7 @@ local macro "this_is_a_multiline_exact" ppLine t:term : tactic => `(tactic| exac
 local elab tk:"long_trivial" : tactic => do
   let triv := Lean.mkIdent ``trivial
   let actual ← `(tactic| this_is_a_multiline_exact $triv)
-  Lean.Meta.Tactic.TryThis.addSuggestion tk { suggestion := .tsyntax actual}
+  Lean.Meta.Tactic.TryThis.addSuggestion tk { suggestion := .tsyntax actual }
   Lean.Elab.Tactic.evalTactic actual
 
 register_hint 1000 long_trivial
@@ -128,8 +128,7 @@ info: Try these:
   [apply] 🎉️ long_trivial
 -/
 #guard_msgs in
-example : True := by
-  hint
+example : True := by hint
 
 end multiline_hint
 

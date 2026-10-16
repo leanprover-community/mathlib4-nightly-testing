@@ -21,9 +21,9 @@ deriving instance ToExpr for ULift
 
 universe u in
 /-- Hand-written instance since `PUnit` is a `Sort` rather than a `Type`. -/
-instance [ToLevel.{u}] : ToExpr PUnit.{u+1} where
-  toExpr _ := mkConst ``PUnit.unit [toLevel.{u+1}]
-  toTypeExpr := mkConst ``PUnit [toLevel.{u+1}]
+instance [ToLevel.{u}] : ToExpr PUnit.{u + 1} where
+  toExpr _ := mkConst ``PUnit.unit [toLevel.{u + 1}]
+  toTypeExpr := mkConst ``PUnit [toLevel.{u + 1}]
 
 deriving instance ToExpr for String.Pos.Raw
 deriving instance ToExpr for Substring.Raw
@@ -31,20 +31,23 @@ deriving instance ToExpr for SourceInfo
 deriving instance ToExpr for Syntax
 
 open DataValue in
-/-- Core of a hand-written `ToExpr` handler for `MData`.
+/--
+Core of a hand-written `ToExpr` handler for `MData`.
 Uses the `KVMap.set*` functions rather than going into the internals
-of the `KVMap` data structure. -/
+of the `KVMap` data structure.
+-/
 private def toExprMData (md : MData) : Expr := Id.run do
   let mut e := mkConst ``MData.empty
   for (k, v) in md do
     let k := toExpr k
-    e := match v with
-          | ofString v => mkApp3 (mkConst ``KVMap.setString) e k (mkStrLit v)
-          | ofBool v   => mkApp3 (mkConst ``KVMap.setBool) e k (toExpr v)
-          | ofName v   => mkApp3 (mkConst ``KVMap.setName) e k (toExpr v)
-          | ofNat v    => mkApp3 (mkConst ``KVMap.setNat) e k (mkNatLit v)
-          | ofInt v    => mkApp3 (mkConst ``KVMap.setInt) e k (toExpr v)
-          | ofSyntax v => mkApp3 (mkConst ``KVMap.setSyntax) e k (toExpr v)
+    e :=
+      match v with
+      | ofString v => mkApp3 (mkConst ``KVMap.setString) e k (mkStrLit v)
+      | ofBool v => mkApp3 (mkConst ``KVMap.setBool) e k (toExpr v)
+      | ofName v => mkApp3 (mkConst ``KVMap.setName) e k (toExpr v)
+      | ofNat v => mkApp3 (mkConst ``KVMap.setNat) e k (mkNatLit v)
+      | ofInt v => mkApp3 (mkConst ``KVMap.setInt) e k (toExpr v)
+      | ofSyntax v => mkApp3 (mkConst ``KVMap.setSyntax) e k (toExpr v)
   return e
 
 @[no_expose]

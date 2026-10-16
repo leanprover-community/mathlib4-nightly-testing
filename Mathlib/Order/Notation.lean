@@ -47,8 +47,7 @@ class Compl (α : Type*) where
 
 export Compl (compl)
 
-@[inherit_doc]
-postfix:1024 "ᶜ" => compl
+@[inherit_doc] postfix:1024 "ᶜ" => compl
 
 initialize_simps_projections Compl
 
@@ -69,16 +68,16 @@ and should be used when the type is not a linear order.
 syntax:69 term:69 " ⊓ " term:70 : term
 
 macro_rules
-| `($a ⊔ $b) => `(Max.max $a $b)
-| `($a ⊓ $b) => `(Min.min $a $b)
+  | `($a ⊔ $b) => `(Max.max $a $b)
+  | `($a ⊓ $b) => `(Min.min $a $b)
 
 namespace Mathlib.Meta
 
 open Lean Meta PrettyPrinter Delaborator SubExpr Qq
 
 -- irreducible to not confuse Qq
-@[irreducible] private meta def linearOrderExpr (u : Level) : Q(Type u → Type u) :=
-  .const `LinearOrder [u]
+@[irreducible]
+private meta def linearOrderExpr (u : Level) : Q(Type u → Type u) := .const `LinearOrder [u]
 private meta def linearOrderToMax (u : Level) : Q((a : Type u) → $(linearOrderExpr u) a → Max a) :=
   .const `LinearOrder.toMax [u]
 private meta def linearOrderToMin (u : Level) : Q((a : Type u) → $(linearOrderExpr u) a → Min a) :=
@@ -89,18 +88,19 @@ Return `true` if `LinearOrder` is imported and `inst` comes from a `LinearOrder 
 
 We use a `try catch` block to make sure there are no surprising errors during delaboration.
 -/
-private meta def hasLinearOrder (u : Level) (α : Q(Type u)) (cls : Q(Type u → Type u))
-    (toCls : Q((α : Type u) → $(linearOrderExpr u) α → $cls α)) (inst : Q($cls $α)) :
-    MetaM Bool := do
+private meta def hasLinearOrder
+    (u : Level) (α : Q(Type u)) (cls : Q(Type u → Type u))
+    (toCls : Q((α : Type u) → $(linearOrderExpr u) α → $cls α)) (inst : Q($cls $α))
+    : MetaM Bool := do
   try
     withNewMCtxDepth do
-    -- `isDefEq` may call type class search to instantiate `mvar`, so we need the local instances.
-    -- Unfortunately, the local instances are not present in delaboration.
-    -- See https://leanprover.zulipchat.com/#narrow/channel/270676-lean4/topic/Bug.3F.20Local.20instances.20not.20populated.20during.20delaboration/with/545766705
-    withLocalInstances (← getLCtx).decls.toList.reduceOption do
-      let mvar ← mkFreshExprMVarQ q($(linearOrderExpr u) $α) (kind := .synthetic)
-      let inst' : Q($cls $α) := q($toCls $α $mvar)
-      withImplicit <| isDefEq inst inst'
+      -- `isDefEq` may call type class search to instantiate `mvar`, so we need the local instances.
+      -- Unfortunately, the local instances are not present in delaboration.
+      -- See https://leanprover.zulipchat.com/#narrow/channel/270676-lean4/topic/Bug.3F.20Local.20instances.20not.20populated.20during.20delaboration/with/545766705
+      withLocalInstances (← getLCtx).decls.toList.reduceOption do
+        let mvar ← mkFreshExprMVarQ (q($(linearOrderExpr u) $α)) (kind := .synthetic)
+        let inst' : Q($cls $α) := q($toCls $α $mvar)
+        withImplicit <| isDefEq inst inst'
   catch _ =>
     -- For instance, if `LinearOrder` is not yet imported.
     return false
@@ -108,12 +108,11 @@ private meta def hasLinearOrder (u : Level) (α : Q(Type u)) (cls : Q(Type u →
 /-- Delaborate `max x y` into `x ⊔ y` if the type is not a linear order. -/
 @[delab app.Max.max]
 meta def delabSup : Delab :=
-  whenNotPPOption getPPExplicit <|
-  whenPPOption getPPNotation <|
-  withOverApp 4 do
-    let_expr f@Max.max α inst _ _ := ← getExpr | failure
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation <| withOverApp 4 do
+    let_expr f@Max.max α inst _ _ := ← getExpr
+      | failure
     have u := f.constLevels![0]!
-    if ← hasLinearOrder u α q(Max) q($(linearOrderToMax u)) inst then
+    if ← hasLinearOrder u α (q(Max)) (q($(linearOrderToMax u))) inst then
       failure -- use the default delaborator
     let x ← withNaryArg 2 delab
     let y ← withNaryArg 3 delab
@@ -123,12 +122,11 @@ meta def delabSup : Delab :=
 /-- Delaborate `min x y` into `x ⊓ y` if the type is not a linear order. -/
 @[delab app.Min.min]
 meta def delabInf : Delab :=
-  whenNotPPOption getPPExplicit <|
-  whenPPOption getPPNotation <|
-  withOverApp 4 do
-    let_expr f@Min.min α inst _ _ := ← getExpr | failure
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation <| withOverApp 4 do
+    let_expr f@Min.min α inst _ _ := ← getExpr
+      | failure
     have u := f.constLevels![0]!
-    if ← hasLinearOrder u α q(Min) q($(linearOrderToMin u)) inst then
+    if ← hasLinearOrder u α (q(Min)) (q($(linearOrderToMin u))) inst then
       failure -- use the default delaborator
     let x ← withNaryArg 2 delab
     let y ← withNaryArg 3 delab
@@ -148,7 +146,8 @@ attribute [to_dual existing (reorder := 3 4) sdiff] HImp.himp
 set_option linter.translateOverwrite false in
 attribute [to_dual existing (reorder := himp (1 2))] HImp.mk
 
-/-- Syntax typeclass for Heyting negation `￢`.
+/--
+Syntax typeclass for Heyting negation `￢`.
 
 The difference between `Compl` and `HNot` is that the former belongs to Heyting algebras,
 while the latter belongs to co-Heyting algebras. They are both pseudo-complements, but `compl`
@@ -191,9 +190,7 @@ notation "⊤" => Top.top
 /-- The bot (`⊥`, `\bot`) element -/
 notation "⊥" => Bot.bot
 
-@[to_dual]
-instance (priority := 100) top_nonempty (α : Type*) [Top α] : Nonempty α :=
-  ⟨⊤⟩
+@[to_dual] instance (priority := 100) top_nonempty (α : Type*) [Top α] : Nonempty α := ⟨⊤⟩
 
 attribute [match_pattern] Bot.bot Top.top
 

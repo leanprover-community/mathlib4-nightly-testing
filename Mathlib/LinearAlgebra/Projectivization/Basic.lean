@@ -40,11 +40,12 @@ variable (K V : Type*) [DivisionRing K] [AddCommGroup V] [Module K V]
 
 /-- The setoid whose quotient is the projectivization of `V`. -/
 @[instance_reducible]
-def projectivizationSetoid : Setoid { v : V // v ≠ 0 } :=
-  (MulAction.orbitRel Kˣ V).comap (↑)
+def projectivizationSetoid : Setoid {v : V // v ≠ 0} := (MulAction.orbitRel Kˣ V).comap (↑)
 
-/-- The projectivization of the `K`-vector space `V`.
-The notation `ℙ K V` is preferred. -/
+/--
+The projectivization of the `K`-vector space `V`.
+The notation `ℙ K V` is preferred.
+-/
 def Projectivization := Quotient (projectivizationSetoid K V)
 
 /-- We define notations `ℙ K V` for the projectivization of the `K`-vector space `V`. -/
@@ -57,15 +58,12 @@ open scoped LinearAlgebra.Projectivization
 variable {V}
 
 /-- Construct an element of the projectivization from a nonzero vector. -/
-def mk (v : V) (hv : v ≠ 0) : ℙ K V :=
-  Quotient.mk'' ⟨v, hv⟩
+def mk (v : V) (hv : v ≠ 0) : ℙ K V := Quotient.mk'' ⟨v, hv⟩
 
 /-- A variant of `Projectivization.mk` in terms of a subtype. `mk` is preferred. -/
-def mk' (v : { v : V // v ≠ 0 }) : ℙ K V :=
-  Quotient.mk'' v
+def mk' (v : {v : V // v ≠ 0}) : ℙ K V := Quotient.mk'' v
 
-@[simp]
-theorem mk'_eq_mk (v : { v : V // v ≠ 0 }) : mk' K v = mk K ↑v v.2 := rfl
+@[simp] theorem mk'_eq_mk (v : {v : V // v ≠ 0}) : mk' K v = mk K ↑v v.2 := rfl
 
 instance [Nontrivial V] : Nonempty (ℙ K V) :=
   let ⟨v, hv⟩ := exists_ne (0 : V)
@@ -73,29 +71,31 @@ instance [Nontrivial V] : Nonempty (ℙ K V) :=
 
 variable {K}
 
-/-- A function on non-zero vectors which is independent of scale, descends to a function on the
-projectivization. -/
-protected def lift {α : Type*} (f : { v : V // v ≠ 0 } → α)
-    (hf : ∀ (a b : { v : V // v ≠ 0 }) (t : K), a = t • (b : V) → f a = f b)
-    (x : ℙ K V) : α :=
+/--
+A function on non-zero vectors which is independent of scale, descends to a function on the
+projectivization.
+-/
+protected def lift
+    {α : Type*} (f : {v : V // v ≠ 0} → α)
+    (hf : ∀ (a b : {v : V // v ≠ 0}) (t : K), a = t • (b : V) → f a = f b)
+    (x : ℙ K V)
+    : α :=
   Quotient.lift f (by rintro ⟨-, hv⟩ ⟨w, hw⟩ ⟨⟨t, -⟩, rfl⟩; exact hf ⟨_, hv⟩ ⟨w, hw⟩ t rfl) x
 
 @[simp]
-protected lemma lift_mk {α : Type*} (f : { v : V // v ≠ 0 } → α)
-    (hf : ∀ (a b : { v : V // v ≠ 0 }) (t : K), a = t • (b : V) → f a = f b)
-    (v : V) (hv : v ≠ 0) :
-    Projectivization.lift f hf (mk K v hv) = f ⟨v, hv⟩ :=
+protected lemma lift_mk
+    {α : Type*} (f : {v : V // v ≠ 0} → α)
+    (hf : ∀ (a b : {v : V // v ≠ 0}) (t : K), a = t • (b : V) → f a = f b)
+    (v : V) (hv : v ≠ 0)
+    : Projectivization.lift f hf (mk K v hv) = f ⟨v, hv⟩ :=
   rfl
 
 /-- Choose a representative of `v : Projectivization K V` in `V`. -/
-protected noncomputable def rep (v : ℙ K V) : V :=
-  v.out
+protected noncomputable def rep (v : ℙ K V) : V := v.out
 
-theorem rep_nonzero (v : ℙ K V) : v.rep ≠ 0 :=
-  v.out.2
+theorem rep_nonzero (v : ℙ K V) : v.rep ≠ 0 := v.out.2
 
-@[simp]
-theorem mk_rep (v : ℙ K V) : mk K v.rep v.rep_nonzero = v := Quotient.out_eq' _
+@[simp] theorem mk_rep (v : ℙ K V) : mk K v.rep v.rep_nonzero = v := Quotient.out_eq' _
 
 open Module
 
@@ -107,14 +107,16 @@ protected def submodule (v : ℙ K V) : Submodule K V :=
 
 variable (K)
 
-theorem mk_eq_mk_iff (v w : V) (hv : v ≠ 0) (hw : w ≠ 0) :
-    mk K v hv = mk K w hw ↔ ∃ a : Kˣ, a • w = v :=
+theorem mk_eq_mk_iff (v w : V) (hv : v ≠ 0) (hw : w ≠ 0)
+    : mk K v hv = mk K w hw ↔ ∃ a : Kˣ, a • w = v :=
   Quotient.eq''
 
-/-- Two nonzero vectors go to the same point in projective space if and only if one is
-a scalar multiple of the other. -/
-theorem mk_eq_mk_iff' (v w : V) (hv : v ≠ 0) (hw : w ≠ 0) :
-    mk K v hv = mk K w hw ↔ ∃ a : K, a • w = v := by
+/--
+Two nonzero vectors go to the same point in projective space if and only if one is
+a scalar multiple of the other.
+-/
+theorem mk_eq_mk_iff' (v w : V) (hv : v ≠ 0) (hw : w ≠ 0)
+    : mk K v hv = mk K w hw ↔ ∃ a : K, a • w = v := by
   rw [mk_eq_mk_iff K v w hv hw]
   constructor
   · rintro ⟨a, ha⟩
@@ -133,9 +135,7 @@ variable {K}
 theorem ind {P : ℙ K V → Prop} (h : ∀ (v : V) (h : v ≠ 0), P (mk K v h)) : ∀ p, P p :=
   Quotient.ind' <| Subtype.rec h
 
-@[simp]
-theorem submodule_mk (v : V) (hv : v ≠ 0) : (mk K v hv).submodule = K ∙ v :=
-  rfl
+@[simp] theorem submodule_mk (v : V) (hv : v ≠ 0) : (mk K v hv).submodule = K ∙ v := rfl
 
 theorem submodule_eq (v : ℙ K V) : v.submodule = K ∙ v.rep := by
   conv_lhs => rw [← v.mk_rep]
@@ -150,18 +150,22 @@ instance (v : ℙ K V) : FiniteDimensional K v.submodule := by
   change FiniteDimensional K (K ∙ v.rep)
   infer_instance
 
-theorem submodule_injective :
-    Function.Injective (Projectivization.submodule : ℙ K V → Submodule K V) := fun u v h ↦ by
-  induction u using ind with | h u hu =>
-  induction v using ind with | h v hv =>
-  rw [submodule_mk, submodule_mk, Submodule.span_singleton_eq_span_singleton] at h
-  exact ((mk_eq_mk_iff K v u hv hu).2 h).symm
+theorem submodule_injective
+    : Function.Injective (Projectivization.submodule : ℙ K V → Submodule K V) := fun u v h ↦ by
+  induction u using ind with
+  | h u hu =>
+    induction v using ind with
+    | h v hv =>
+      rw [submodule_mk, submodule_mk, Submodule.span_singleton_eq_span_singleton] at h
+      exact ((mk_eq_mk_iff K v u hv hu).2 h).symm
 
 variable (K V)
 
-/-- The equivalence between the projectivization and the
-collection of subspaces of dimension 1. -/
-noncomputable def equivSubmodule : ℙ K V ≃ { H : Submodule K V // finrank K H = 1 } :=
+/--
+The equivalence between the projectivization and the
+collection of subspaces of dimension 1.
+-/
+noncomputable def equivSubmodule : ℙ K V ≃ {H : Submodule K V // finrank K H = 1} :=
   (Equiv.ofInjective _ submodule_injective).trans <| .subtypeEquiv (.refl _) fun H ↦ by
     refine ⟨fun ⟨v, hv⟩ ↦ hv ▸ v.finrank_submodule, fun h ↦ ?_⟩
     rcases finrank_eq_one_iff'.1 h with ⟨v : H, hv₀, hv : ∀ w : H, _⟩
@@ -191,26 +195,31 @@ variable {L W : Type*} [DivisionRing L] [AddCommGroup W] [Module L W]
 
 /-- An injective semilinear map of vector spaces induces a map on projective spaces. -/
 def map {σ : K →+* L} (f : V →ₛₗ[σ] W) (hf : Function.Injective f) : ℙ K V → ℙ L W :=
-  Quotient.map' (fun v => ⟨f v, fun c => v.2 (hf (by simp [c]))⟩)
-    (by
-      rintro ⟨u, hu⟩ ⟨v, hv⟩ ⟨a, ha⟩
-      use Units.map σ.toMonoidHom a
-      dsimp at ha ⊢
-      simp [f.map_smulₛₗ, ← ha, Units.smul_def])
+  Quotient.map' (fun v => ⟨f v, fun c => v.2 (hf (by simp [c]))⟩) (by
+    rintro ⟨u, hu⟩ ⟨v, hv⟩ ⟨a, ha⟩
+    use Units.map σ.toMonoidHom a
+    dsimp at ha ⊢
+    simp [f.map_smulₛₗ, ← ha, Units.smul_def])
 
-theorem map_mk {σ : K →+* L} (f : V →ₛₗ[σ] W) (hf : Function.Injective f) (v : V) (hv : v ≠ 0) :
-    map f hf (mk K v hv) = mk L (f v) (map_zero f ▸ hf.ne hv) :=
+theorem map_mk {σ : K →+* L} (f : V →ₛₗ[σ] W) (hf : Function.Injective f) (v : V) (hv : v ≠ 0)
+    : map f hf (mk K v hv) = mk L (f v) (map_zero f ▸ hf.ne hv) :=
   rfl
 
-/-- Mapping with respect to a semilinear map over an isomorphism of fields yields
-an injective map on projective spaces. -/
-theorem map_injective {σ : K →+* L} {τ : L →+* K} [RingHomInvPair σ τ] (f : V →ₛₗ[σ] W)
-    (hf : Function.Injective f) : Function.Injective (map f hf) := fun u v h ↦ by
-  induction u using ind with | h u hu => induction v using ind with | h v hv =>
-  simp only [map_mk, mk_eq_mk_iff'] at h ⊢
-  rcases h with ⟨a, ha⟩
-  refine ⟨τ a, hf ?_⟩
-  rwa [f.map_smulₛₗ, RingHomInvPair.comp_apply_eq₂]
+/--
+Mapping with respect to a semilinear map over an isomorphism of fields yields
+an injective map on projective spaces.
+-/
+theorem map_injective
+    {σ : K →+* L} {τ : L →+* K} [RingHomInvPair σ τ] (f : V →ₛₗ[σ] W) (hf : Function.Injective f)
+    : Function.Injective (map f hf) := fun u v h ↦ by
+  induction u using ind with
+  | h u hu =>
+    induction v using ind with
+    | h v hv =>
+      simp only [map_mk, mk_eq_mk_iff'] at h ⊢
+      rcases h with ⟨a, ha⟩
+      refine ⟨τ a, hf ?_⟩
+      rwa [f.map_smulₛₗ, RingHomInvPair.comp_apply_eq₂]
 
 @[simp]
 theorem map_id : map (LinearMap.id : V →ₗ[K] V) (LinearEquiv.refl K V).injective = id := by
@@ -218,11 +227,12 @@ theorem map_id : map (LinearMap.id : V →ₗ[K] V) (LinearEquiv.refl K V).injec
   rfl
 
 @[simp]
-theorem map_comp {F U : Type*} [DivisionRing F] [AddCommGroup U] [Module F U] {σ : K →+* L}
-    {τ : L →+* F} {γ : K →+* F} [RingHomCompTriple σ τ γ] (f : V →ₛₗ[σ] W)
-    (hf : Function.Injective f) (g : W →ₛₗ[τ] U) (hg : Function.Injective g)
-    (hgf : Function.Injective (g.comp f) := hg.comp hf) :
-    map (g.comp f) hgf = map g hg ∘ map f hf := by
+theorem map_comp
+    {F U : Type*} [DivisionRing F] [AddCommGroup U] [Module F U]
+    {σ : K →+* L} {τ : L →+* F} {γ : K →+* F} [RingHomCompTriple σ τ γ]
+    (f : V →ₛₗ[σ] W) (hf : Function.Injective f)
+    (g : W →ₛₗ[τ] U) (hg : Function.Injective g) (hgf : Function.Injective (g.comp f) := hg.comp hf)
+    : map (g.comp f) hgf = map g hg ∘ map f hf := by
   ext ⟨v⟩
   rfl
 
@@ -230,20 +240,20 @@ end Map
 
 section linearIndependent
 
-theorem linearIndependent_pair_iff_ne {D D' : ℙ K V} :
-  LinearIndependent K ![D.rep, D'.rep] ↔ D ≠ D' := by
-    rw [LinearIndependent.pair_iff' (rep_nonzero _)]
-    refine ⟨fun h hD ↦ h 1 (by simp [hD]), fun h a hD ↦ h ?_⟩
-    rw [eq_comm, ← mk_rep D, ← mk_rep D', mk_eq_mk_iff]
-    suffices a ≠ 0 by refine ⟨(Ne.isUnit this).unit, by simp [← hD]⟩
-    exact fun ha ↦ D'.rep_nonzero (by simp [← hD, ha])
+theorem linearIndependent_pair_iff_ne {D D' : ℙ K V}
+    : LinearIndependent K ![D.rep, D'.rep] ↔ D ≠ D' := by
+  rw [LinearIndependent.pair_iff' (rep_nonzero _)]
+  refine ⟨fun h hD ↦ h 1 (by simp [hD]), fun h a hD ↦ h ?_⟩
+  rw [eq_comm, ← mk_rep D, ← mk_rep D', mk_eq_mk_iff]
+  suffices a ≠ 0 by refine ⟨(Ne.isUnit this).unit, by simp [← hD]⟩
+  exact fun ha ↦ D'.rep_nonzero (by simp [← hD, ha])
 
-theorem linearIndepOn_pair (D D' : ℙ K V) :
-    LinearIndepOn K id {D.rep, D'.rep} := by
+theorem linearIndepOn_pair (D D' : ℙ K V) : LinearIndepOn K id {D.rep, D'.rep} := by
   by_cases h : D = D'
   · simpa [h] using D'.rep_nonzero
   rw [← ne_eq, ← linearIndependent_pair_iff_ne, LinearIndependent.pair_symm_iff,
-    ← linearIndepOn_id_range_iff h.injective] at h
+      ← linearIndepOn_id_range_iff h.injective]
+    at h
   simpa using h
 
 end linearIndependent

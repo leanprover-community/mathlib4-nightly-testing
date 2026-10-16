@@ -33,12 +33,12 @@ convex, convex body
 
 public section
 
-
 open scoped Pointwise Topology NNReal
 
 variable {V : Type*}
 
-/-- Let `V` be a real topological vector space. A subset of `V` is a convex body if and only if
+/--
+Let `V` be a real topological vector space. A subset of `V` is a convex body if and only if
 it is convex, compact, and nonempty.
 -/
 structure ConvexBody (V : Type*) [TopologicalSpace V] [AddCommMonoid V] [SMul ℝ V] where
@@ -66,25 +66,18 @@ instance : SetLike (ConvexBody V) V where
 
 instance : PartialOrder (ConvexBody V) := .ofSetLike (ConvexBody V)
 
-protected theorem convex (K : ConvexBody V) : Convex ℝ (K : Set V) :=
-  K.convex'
+protected theorem convex (K : ConvexBody V) : Convex ℝ (K : Set V) := K.convex'
 
-protected theorem isCompact (K : ConvexBody V) : IsCompact (K : Set V) :=
-  K.isCompact'
+protected theorem isCompact (K : ConvexBody V) : IsCompact (K : Set V) := K.isCompact'
 
 protected theorem isClosed [T2Space V] (K : ConvexBody V) : IsClosed (K : Set V) :=
   K.isCompact.isClosed
 
-protected theorem nonempty (K : ConvexBody V) : (K : Set V).Nonempty :=
-  K.nonempty'
+protected theorem nonempty (K : ConvexBody V) : (K : Set V).Nonempty := K.nonempty'
 
-@[ext]
-protected theorem ext {K L : ConvexBody V} (h : (K : Set V) = L) : K = L :=
-  SetLike.ext' h
+@[ext] protected theorem ext {K L : ConvexBody V} (h : (K : Set V) = L) : K = L := SetLike.ext' h
 
-@[simp]
-theorem coe_mk (s : Set V) (h₁ h₂ h₃) : (mk s h₁ h₂ h₃ : Set V) = s :=
-  rfl
+@[simp] theorem coe_mk (s : Set V) (h₁ h₂ h₃) : (mk s h₁ h₂ h₃ : Set V) = s := rfl
 
 /-- A convex body that is symmetric contains `0`. -/
 theorem zero_mem_of_symmetric (K : ConvexBody V) (h_symm : ∀ x ∈ K, -x ∈ K) : 0 ∈ K := by
@@ -98,34 +91,30 @@ section ContinuousAdd
 instance : Zero (ConvexBody V) where
   zero := ⟨0, convex_singleton 0, isCompact_singleton, Set.singleton_nonempty 0⟩
 
-@[simp, norm_cast]
-theorem coe_zero : (↑(0 : ConvexBody V) : Set V) = 0 :=
-  rfl
+@[simp, norm_cast] theorem coe_zero : (↑(0 : ConvexBody V) : Set V) = 0 := rfl
 
-instance : Inhabited (ConvexBody V) :=
-  ⟨0⟩
+instance : Inhabited (ConvexBody V) := ⟨0⟩
 
 variable [ContinuousAdd V]
 
 instance : Add (ConvexBody V) where
-  add K L :=
-    ⟨K + L, K.convex.add L.convex, K.isCompact.add L.isCompact,
-      K.nonempty.add L.nonempty⟩
+  add K L := ⟨K + L, K.convex.add L.convex, K.isCompact.add L.isCompact, K.nonempty.add L.nonempty⟩
 
 instance : SMul ℕ (ConvexBody V) where
   smul := nsmulRec
 
 @[simp, norm_cast]
 theorem coe_nsmul : ∀ (n : ℕ) (K : ConvexBody V), ↑(n • K) = n • (K : Set V)
-  | 0, _ => rfl
-  | n + 1, K => congr($(coe_nsmul n K) + _)
+  | 0, _ =>
+    rfl
+  | n + 1, K =>
+    congr($(coe_nsmul n K) + _)
 
 noncomputable instance : AddMonoid (ConvexBody V) :=
   SetLike.coe_injective.addMonoid _ rfl (fun _ _ ↦ rfl) fun _ _ ↦ coe_nsmul _ _
 
 @[simp, norm_cast]
-theorem coe_add (K L : ConvexBody V) : (↑(K + L) : Set V) = (K : Set V) + L :=
-  rfl
+theorem coe_add (K L : ConvexBody V) : (↑(K + L) : Set V) = (K : Set V) + L := rfl
 
 noncomputable instance : AddCommMonoid (ConvexBody V) :=
   SetLike.coe_injective.addCommMonoid _ rfl (fun _ _ ↦ rfl) fun _ _ ↦ coe_nsmul _ _
@@ -138,15 +127,13 @@ instance : SMul ℝ (ConvexBody V) where
   smul c K := ⟨c • (K : Set V), K.convex.smul _, K.isCompact.smul _, K.nonempty.smul_set⟩
 
 @[simp, norm_cast]
-theorem coe_smul (c : ℝ) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) :=
-  rfl
+theorem coe_smul (c : ℝ) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) := rfl
 
 @[simp, norm_cast]
-theorem coe_smul' (c : ℝ≥0) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) :=
-  rfl
+theorem coe_smul' (c : ℝ≥0) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) := rfl
 
-theorem smul_le_of_le (K : ConvexBody V) (h_zero : 0 ∈ K) {a b : ℝ≥0} (h : a ≤ b) :
-    a • K ≤ b • K := by
+theorem smul_le_of_le (K : ConvexBody V) (h_zero : 0 ∈ K) {a b : ℝ≥0} (h : a ≤ b)
+    : a • K ≤ b • K := by
   rw [← SetLike.coe_subset_coe, coe_smul', coe_smul']
   obtain rfl | ha := eq_zero_or_pos a
   · rw [Set.zero_smul_set K.nonempty, Set.zero_subset]
@@ -173,24 +160,23 @@ section SeminormedAddCommGroup
 
 variable [SeminormedAddCommGroup V] [NormedSpace ℝ V] (K L : ConvexBody V)
 
-protected theorem isBounded : Bornology.IsBounded (K : Set V) :=
-  K.isCompact.isBounded
+protected theorem isBounded : Bornology.IsBounded (K : Set V) := K.isCompact.isBounded
 
 theorem hausdorffEDist_ne_top {K L : ConvexBody V} : Metric.hausdorffEDist (K : Set V) L ≠ ⊤ := by
   apply_rules [Metric.hausdorffEDist_ne_top_of_nonempty_of_bounded, ConvexBody.nonempty,
     ConvexBody.isBounded]
 
-/-- Convex bodies in a fixed seminormed space $V$ form a pseudo-metric space under the Hausdorff
-metric. -/
+/--
+Convex bodies in a fixed seminormed space $V$ form a pseudo-metric space under the Hausdorff
+metric.
+-/
 noncomputable instance : PseudoMetricSpace (ConvexBody V) where
   dist K L := Metric.hausdorffDist (K : Set V) L
   dist_self _ := Metric.hausdorffDist_self_zero
   dist_comm _ _ := Metric.hausdorffDist_comm
   dist_triangle _ _ _ := Metric.hausdorffDist_triangle hausdorffEDist_ne_top
 
-@[simp, norm_cast]
-theorem hausdorffDist_coe : Metric.hausdorffDist (K : Set V) L = dist K L :=
-  rfl
+@[simp, norm_cast] theorem hausdorffDist_coe : Metric.hausdorffDist (K : Set V) L = dist K L := rfl
 
 @[simp, norm_cast]
 theorem hausdorffEDist_coe : Metric.hausdorffEDist (K : Set V) L = edist K L := by
@@ -199,12 +185,14 @@ theorem hausdorffEDist_coe : Metric.hausdorffEDist (K : Set V) L = edist K L := 
 
 open Filter
 
-/-- Let `K` be a convex body that contains `0` and let `u n` be a sequence of nonnegative real
+/--
+Let `K` be a convex body that contains `0` and let `u n` be a sequence of nonnegative real
 numbers that tends to `0`. Then the intersection of the dilated bodies `(1 + u n) • K` is equal
-to `K`. -/
-theorem iInter_smul_eq_self [T2Space V] {u : ℕ → ℝ≥0} (K : ConvexBody V) (h_zero : 0 ∈ K)
-    (hu : Tendsto u atTop (𝓝 0)) :
-    ⋂ n : ℕ, (1 + (u n : ℝ)) • (K : Set V) = K := by
+to `K`.
+-/
+theorem iInter_smul_eq_self
+    [T2Space V] {u : ℕ → ℝ≥0} (K : ConvexBody V) (h_zero : 0 ∈ K) (hu : Tendsto u atTop (𝓝 0))
+    : ⋂ n : ℕ, (1 + (u n : ℝ)) • (K : Set V) = K := by
   ext x
   refine ⟨fun h => ?_, fun h => ?_⟩
   · obtain ⟨C, hC_pos, hC_bdd⟩ := K.isBounded.exists_pos_norm_le
@@ -219,7 +207,8 @@ theorem iInter_smul_eq_self [T2Space V] {u : ℕ → ℝ≥0} (K : ConvexBody V)
     specialize hn n le_rfl
     rw [lt_div_iff₀' hC_pos, mul_comm, NNReal.coe_zero, sub_zero, Real.norm_eq_abs] at hn
     refine lt_of_le_of_lt ?_ hn
-    gcongr; exact hC_bdd _ hyK
+    gcongr
+    exact hC_bdd _ hyK
   · refine Set.mem_iInter.mpr (fun n => Convex.mem_smul_of_zero_mem K.convex h_zero h ?_)
     exact le_add_of_nonneg_right (by positivity)
 
@@ -231,8 +220,8 @@ variable [NormedAddCommGroup V] [NormedSpace ℝ V]
 
 /-- Convex bodies in a fixed normed space `V` form a metric space under the Hausdorff metric. -/
 noncomputable instance : MetricSpace (ConvexBody V) where
-  eq_of_dist_eq_zero {K L} hd := ConvexBody.ext <|
-    (K.isClosed.hausdorffDist_zero_iff_eq L.isClosed hausdorffEDist_ne_top).1 hd
+  eq_of_dist_eq_zero {K L} hd :=
+    ConvexBody.ext <| (K.isClosed.hausdorffDist_zero_iff_eq L.isClosed hausdorffEDist_ne_top).1 hd
 
 end NormedAddCommGroup
 

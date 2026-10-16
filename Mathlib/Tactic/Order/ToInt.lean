@@ -35,7 +35,8 @@ namespace Mathlib.Tactic.Order.ToInt
 
 variable {α : Type*} [LinearOrder α] {n : ℕ} (val : Fin n → α)
 
-/-- The main theorem asserting the existence of a translation.
+/--
+The main theorem asserting the existence of a translation.
 We use `Classical.choose` to turn this into a value for use in the `order` tactic,
 see `toInt`.
 -/
@@ -54,8 +55,9 @@ theorem exists_translation : ∃ tr : Fin n → ℤ, ∀ i j, val i ≤ val j �
   generalize_proofs _ hi hj
   rw [← hi.choose_spec, ← hj.choose_spec] at h_eq
   conv_lhs => rw [← hi.choose_spec, ← hj.choose_spec]
-  have := li.pairwise_mergeSort (le := fun a b ↦ decide (a ≤ b))
-      (fun a b c ↦ by simpa using le_trans) (by simpa using le_total)
+  have :=
+    li.pairwise_mergeSort (le := fun a b ↦ decide (a ≤ b)) (fun a b c ↦ by simpa using le_trans) (by
+      simpa using le_total)
   rw [List.pairwise_iff_get] at this
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · contrapose! h
@@ -64,8 +66,7 @@ theorem exists_translation : ∃ tr : Fin n → ℤ, ∀ i j, val i ≤ val j �
   · simpa using this hi.choose hj.choose (by apply lt_of_le_of_ne h; contrapose h_eq; simp [h_eq])
 
 /-- Auxiliary definition used by the `order` tactic to transfer facts in a linear order to `ℤ`. -/
-noncomputable def toInt (k : Fin n) : ℤ :=
-  (exists_translation val).choose k
+noncomputable def toInt (k : Fin n) : ℤ := (exists_translation val).choose k
 
 variable (i j k : Fin n)
 
@@ -81,24 +82,26 @@ theorem toInt_eq_toInt : toInt val i = toInt val j ↔ val i = val j := by
 theorem toInt_ne_toInt : toInt val i ≠ toInt val j ↔ val i ≠ val j := by
   simpa using (toInt_eq_toInt val i j).not
 
-theorem toInt_nle_toInt : ¬toInt val i ≤ toInt val j ↔ ¬val i ≤ val j := by
+theorem toInt_nle_toInt : ¬ toInt val i ≤ toInt val j ↔ ¬ val i ≤ val j := by
   simpa using toInt_lt_toInt val j i
 
-theorem toInt_nlt_toInt : ¬toInt val i < toInt val j ↔ ¬val i < val j := by
+theorem toInt_nlt_toInt : ¬ toInt val i < toInt val j ↔ ¬ val i < val j := by
   simpa using toInt_le_toInt val j i
 
-theorem toInt_sup_toInt_eq_toInt :
-    toInt val i ⊔ toInt val j = toInt val k ↔ val i ⊔ val j = val k := by
+theorem toInt_sup_toInt_eq_toInt
+    : toInt val i ⊔ toInt val j = toInt val k ↔ val i ⊔ val j = val k := by
   simp [le_antisymm_iff, toInt_le_toInt]
 
-theorem toInt_inf_toInt_eq_toInt :
-    toInt val i ⊓ toInt val j = toInt val k ↔ val i ⊓ val j = val k := by
+theorem toInt_inf_toInt_eq_toInt
+    : toInt val i ⊓ toInt val j = toInt val k ↔ val i ⊓ val j = val k := by
   simp [le_antisymm_iff, toInt_le_toInt]
 
 open Lean Meta Qq
 
-/-- Given an array `atoms : Array α`, create an expression representing a function
-`f : Fin atoms.size → α` such that `f n` is defeq to `atoms[n]` for `n : Fin atoms.size`. -/
+/--
+Given an array `atoms : Array α`, create an expression representing a function
+`f : Fin atoms.size → α` such that `f n` is defeq to `atoms[n]` for `n : Fin atoms.size`.
+-/
 def mkFinFun {u : Level} {α : Q(Type $u)} (atoms : Array Q($α)) : MetaM Expr := do
   if h : atoms.isEmpty then
     return q(Fin.elim0 : Fin 0 → $α)
@@ -108,12 +111,14 @@ def mkFinFun {u : Level} {α : Q(Type $u)} (atoms : Array Q($α)) : MetaM Expr :
     haveI m : Q(ℕ) := mkNatLit atoms.size
     return q(fun (x : Fin $m) ↦ ($rarrayExpr).get x.val)
 
-/-- Translates a set of values in a linear ordered type to `ℤ`,
+/--
+Translates a set of values in a linear ordered type to `ℤ`,
 preserving all the facts except for `.isTop` and `.isBot`. We assume that these facts are filtered
-at the preprocessing step. -/
-def translateToInt {u : Lean.Level} (type : Q(Type u)) (inst : Q(LinearOrder $type))
-    (facts : Array AtomicFact) :
-    AtomM <| Std.HashMap ℕ Q(ℤ) × Array AtomicFact := do
+at the preprocessing step.
+-/
+def translateToInt
+    {u : Lean.Level} (type : Q(Type u)) (inst : Q(LinearOrder $type)) (facts : Array AtomicFact)
+    : AtomM <| Std.HashMap ℕ Q(ℤ) × Array AtomicFact := do
   let mut idxToAtom : Std.HashMap Nat Q($type) := ∅
   for atom in (← get).atoms do
     -- `atoms` contains atoms for all types we are working on, so here we need to filter only
@@ -127,75 +132,94 @@ def translateToInt {u : Lean.Level} (type : Q(Type u)) (inst : Q(LinearOrder $ty
     haveI kE := mkNatLitQ k
     haveI heq : decide ($kE < $nE) =Q true := ⟨⟩
     q(⟨$kE, of_decide_eq_true $heq⟩)
-  return Prod.snd <| facts.foldl (fun (curr, map, facts) fact =>
-    match fact with
-    | .eq lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q($finFun $lhsFin = $finFun $rhsFin) := prf
-        .eq lhs rhs q((toInt_eq_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .ne lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q($finFun $lhsFin ≠ $finFun $rhsFin) := prf
-        .ne lhs rhs q((toInt_ne_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .le lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q($finFun $lhsFin ≤ $finFun $rhsFin) := prf
-        .le lhs rhs q((toInt_le_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .lt lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q($finFun $lhsFin < $finFun $rhsFin) := prf
-        .lt lhs rhs q((toInt_lt_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .nle lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q(¬$finFun $lhsFin ≤ $finFun $rhsFin) := prf
-        .nle lhs rhs q((toInt_nle_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .nlt lhs rhs prf =>
-      (curr, map, facts.push (
-        haveI lhsFin := toFinUnsafe lhs
-        haveI rhsFin := toFinUnsafe rhs
-        haveI prfQ : Q(¬$finFun $lhsFin < $finFun $rhsFin) := prf
-        .nlt lhs rhs q((toInt_nlt_toInt $finFun $lhsFin $rhsFin).mpr $prfQ)
-      ))
-    | .isBot _
-    | .isTop _ => (curr, map, facts)
-    | .isSup lhs rhs val =>
-      haveI lhsFin := toFinUnsafe lhs
-      haveI rhsFin := toFinUnsafe rhs
-      haveI valFin := toFinUnsafe val
-      haveI heq : max («$finFun» «$lhsFin») («$finFun» «$rhsFin») =Q «$finFun» «$valFin» := ⟨⟩
-      (curr + 1, map.insert curr q(toInt $finFun $lhsFin ⊔ toInt $finFun $rhsFin),
-        (facts.push (.isSup lhs rhs curr)).push (.eq curr val
-          q((toInt_sup_toInt_eq_toInt $finFun $lhsFin $rhsFin $valFin).mpr $heq)
-        )
+  return Prod.snd <| facts.foldl
+    (fun (curr, map, facts) fact =>
+      match fact with
+      | .eq lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q($finFun $lhsFin = $finFun $rhsFin) := prf
+           .eq lhs rhs q((toInt_eq_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
       )
-    | .isInf lhs rhs val =>
-      haveI lhsFin := toFinUnsafe lhs
-      haveI rhsFin := toFinUnsafe rhs
-      haveI valFin := toFinUnsafe val
-      haveI heq : min («$finFun» «$lhsFin») («$finFun» «$rhsFin») =Q «$finFun» «$valFin» := ⟨⟩
-      (curr + 1, map.insert curr q(toInt $finFun $lhsFin ⊓ toInt $finFun $rhsFin),
-        (facts.push (.isInf lhs rhs curr)).push (.eq curr val
-          q((toInt_inf_toInt_eq_toInt $finFun $lhsFin $rhsFin $valFin).mpr $heq)
+      | .ne lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q($finFun $lhsFin ≠ $finFun $rhsFin) := prf
+           .ne lhs rhs q((toInt_ne_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
+      )
+      | .le lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q($finFun $lhsFin ≤ $finFun $rhsFin) := prf
+           .le lhs rhs q((toInt_le_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
+      )
+      | .lt lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q($finFun $lhsFin < $finFun $rhsFin) := prf
+           .lt lhs rhs q((toInt_lt_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
+      )
+      | .nle lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q(¬$finFun $lhsFin ≤ $finFun $rhsFin) := prf
+           .nle lhs rhs q((toInt_nle_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
+      )
+      | .nlt lhs rhs prf => (
+        curr,
+        map,
+        facts.push
+          (haveI lhsFin := toFinUnsafe lhs
+           haveI rhsFin := toFinUnsafe rhs
+           haveI prfQ : Q(¬$finFun $lhsFin < $finFun $rhsFin) := prf
+           .nlt lhs rhs q((toInt_nlt_toInt $finFun $lhsFin $rhsFin).mpr $prfQ))
+      )
+      | .isBot _ | .isTop _ =>
+        (curr, map, facts)
+      | .isSup lhs rhs val =>
+        haveI lhsFin := toFinUnsafe lhs
+        haveI rhsFin := toFinUnsafe rhs
+        haveI valFin := toFinUnsafe val
+        haveI heq : max («$finFun» «$lhsFin») («$finFun» «$rhsFin») =Q «$finFun» «$valFin» := ⟨⟩
+        (
+          curr + 1,
+          map.insert curr q(toInt $finFun $lhsFin ⊔ toInt $finFun $rhsFin),
+          (facts.push (.isSup lhs rhs curr)).push
+            (.eq curr val q((toInt_sup_toInt_eq_toInt $finFun $lhsFin $rhsFin $valFin).mpr $heq))
         )
-      ))
-    (idxToAtom.size, idxToAtom.map fun k _ =>
-      haveI kFin := toFinUnsafe k
-      q(toInt $finFun $kFin), Array.emptyWithCapacity idxToAtom.size)
+      | .isInf lhs rhs val =>
+        haveI lhsFin := toFinUnsafe lhs
+        haveI rhsFin := toFinUnsafe rhs
+        haveI valFin := toFinUnsafe val
+        haveI heq : min («$finFun» «$lhsFin») («$finFun» «$rhsFin») =Q «$finFun» «$valFin» := ⟨⟩
+        (
+          curr + 1,
+          map.insert curr q(toInt $finFun $lhsFin ⊓ toInt $finFun $rhsFin),
+          (facts.push (.isInf lhs rhs curr)).push
+            (.eq curr val q((toInt_inf_toInt_eq_toInt $finFun $lhsFin $rhsFin $valFin).mpr $heq))
+        ))
+    (
+      idxToAtom.size,
+      idxToAtom.map fun k _ =>
+        haveI kFin := toFinUnsafe k
+        q(toInt $finFun $kFin),
+      Array.emptyWithCapacity idxToAtom.size
+    )
 
 end Mathlib.Tactic.Order.ToInt
 

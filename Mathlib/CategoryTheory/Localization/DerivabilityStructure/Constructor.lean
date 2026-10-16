@@ -39,7 +39,8 @@ namespace CategoryTheory
 
 open Category Localization
 
-variable {C₁ C₂ : Type*} [Category* C₁] [Category* C₂]
+variable
+  {C₁ C₂ : Type*} [Category* C₁] [Category* C₂]
   {W₁ : MorphismProperty C₁} {W₂ : MorphismProperty C₂}
 
 namespace LocalizerMorphism
@@ -47,43 +48,50 @@ namespace IsRightDerivabilityStructure
 
 section
 
-variable (Φ : LocalizerMorphism W₁ W₂)
-  [∀ X₂, IsConnected (Φ.RightResolution X₂)]
-  [Φ.arrow.HasRightResolutions] [W₂.ContainsIdentities]
+variable
+  (Φ : LocalizerMorphism W₁ W₂)
+  [∀ X₂, IsConnected (Φ.RightResolution X₂)] [Φ.arrow.HasRightResolutions] [W₂.ContainsIdentities]
 
 namespace Constructor
 
-variable {D : Type*} [Category* D] (L : C₂ ⥤ D) [L.IsLocalization W₂]
+variable
+  {D : Type*} [Category* D]
+  (L : C₂ ⥤ D) [L.IsLocalization W₂]
   {X₂ : C₂} {X₃ : D} (y : L.obj X₂ ⟶ X₃)
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Given `Φ : LocalizerMorphism W₁ W₂`, `L : C₂ ⥤ D` a localization functor for `W₂` and
+/--
+Given `Φ : LocalizerMorphism W₁ W₂`, `L : C₂ ⥤ D` a localization functor for `W₂` and
 a morphism `y : L.obj X₂ ⟶ X₃`, this is the functor which sends `R : Φ.RightResolution d` to
 `(isoOfHom L W₂ R.w R.hw).inv ≫ y` in the category `w.CostructuredArrowDownwards y`
-where `w` is `TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _) (Functor.rightUnitor _).inv`. -/
+where `w` is `TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _) (Functor.rightUnitor _).inv`.
+-/
 @[simps]
-noncomputable def fromRightResolution :
-    Φ.RightResolution X₂ ⥤ (TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _)
-      (Functor.rightUnitor _).inv).CostructuredArrowDownwards y where
-  obj R := CostructuredArrow.mk (Y := StructuredArrow.mk R.w)
-    (StructuredArrow.homMk ((isoOfHom L W₂ R.w R.hw).inv ≫ y))
-  map {R R'} φ := CostructuredArrow.homMk (StructuredArrow.homMk φ.f) (by
-    ext
-    dsimp
-    rw [← assoc, ← cancel_epi (isoOfHom L W₂ R.w R.hw).hom,
-      isoOfHom_hom, isoOfHom_hom_inv_id_assoc, assoc, ← L.map_comp_assoc,
-      φ.comm, isoOfHom_hom_inv_id_assoc])
+noncomputable def fromRightResolution
+    : Φ.RightResolution X₂ ⥤ (TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _)
+        (Functor.rightUnitor _).inv).CostructuredArrowDownwards
+      y where
+  obj R :=
+    CostructuredArrow.mk (Y := StructuredArrow.mk R.w)
+      (StructuredArrow.homMk ((isoOfHom L W₂ R.w R.hw).inv ≫ y))
+  map {R R'} φ :=
+    CostructuredArrow.homMk (StructuredArrow.homMk φ.f) (by
+      ext
+      dsimp
+      rw [← assoc, ← cancel_epi (isoOfHom L W₂ R.w R.hw).hom, isoOfHom_hom,
+        isoOfHom_hom_inv_id_assoc, assoc, ← L.map_comp_assoc, φ.comm, isoOfHom_hom_inv_id_assoc])
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma isConnected :
-    IsConnected ((TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _)
-      (Functor.rightUnitor _).inv).CostructuredArrowDownwards y) := by
+lemma isConnected
+    : IsConnected ((TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _)
+        (Functor.rightUnitor _).inv).CostructuredArrowDownwards
+      y) := by
   let w := (TwoSquare.mk Φ.functor (Φ.functor ⋙ L) L (𝟭 _) (Functor.rightUnitor _).inv)
   have : Nonempty (w.CostructuredArrowDownwards y) :=
     ⟨(fromRightResolution Φ L y).obj (Classical.arbitrary _)⟩
-  suffices ∀ (X : w.CostructuredArrowDownwards y),
-      ∃ Y, Zigzag X ((fromRightResolution Φ L y).obj Y) by
+  suffices ∀ (X : w.CostructuredArrowDownwards y), ∃ Y,
+      Zigzag X ((fromRightResolution Φ L y).obj Y) by
     refine zigzag_isConnected (fun X X' => ?_)
     obtain ⟨Y, hX⟩ := this X
     obtain ⟨Y', hX'⟩ := this X'
@@ -94,8 +102,8 @@ lemma isConnected :
   rw [id_comp] at fac
   let ρ : Φ.arrow.RightResolution (Arrow.mk g) := Classical.arbitrary _
   refine ⟨RightResolution.mk ρ.w.left ρ.hw.1, ?_⟩
-  have := zigzag_obj_of_zigzag
-    (fromRightResolution Φ L x ⋙ w.costructuredArrowDownwardsPrecomp x y g fac)
+  have :=
+    zigzag_obj_of_zigzag (fromRightResolution Φ L x ⋙ w.costructuredArrowDownwardsPrecomp x y g fac)
       (isPreconnected_zigzag (RightResolution.mk (𝟙 _) (W₂.id_mem _))
         (RightResolution.mk ρ.w.right ρ.hw.2))
   refine Zigzag.trans ?_ (Zigzag.trans this ?_)
@@ -107,33 +115,37 @@ lemma isConnected :
 
 end Constructor
 
-/-- If a localizer morphism `Φ` is a localized equivalence, then it is a right
+/--
+If a localizer morphism `Φ` is a localized equivalence, then it is a right
 derivability structure if the categories of right resolutions are connected and the
-categories of right resolutions of arrows are nonempty. -/
+categories of right resolutions of arrows are nonempty.
+-/
 lemma mk' [Φ.IsLocalizedEquivalence] : Φ.IsRightDerivabilityStructure := by
-  rw [Φ.isRightDerivabilityStructure_iff (Φ.functor ⋙ W₂.Q) W₂.Q (𝟭 _)
-    (Functor.rightUnitor _).symm, TwoSquare.guitartExact_iff_isConnected_downwards]
+  rw [Φ.isRightDerivabilityStructure_iff (Φ.functor ⋙ W₂.Q) W₂.Q (𝟭 _) (Functor.rightUnitor _).symm,
+    TwoSquare.guitartExact_iff_isConnected_downwards]
   apply Constructor.isConnected
 
 end
 
 end IsRightDerivabilityStructure
 
-/-- If a localizer morphism `Φ` is a localized equivalence, then it is a left
+/--
+If a localizer morphism `Φ` is a localized equivalence, then it is a left
 derivability structure if the categories of left resolutions are connected and the
-categories of left resolutions of arrows are nonempty. -/
-lemma IsLeftDerivabilityStructure.mk' (Φ : LocalizerMorphism W₁ W₂)
-    [∀ X₂, IsConnected (Φ.LeftResolution X₂)]
-    [Φ.arrow.HasLeftResolutions] [W₂.ContainsIdentities]
-    [Φ.IsLocalizedEquivalence] :
-    Φ.IsLeftDerivabilityStructure := by
+categories of left resolutions of arrows are nonempty.
+-/
+lemma IsLeftDerivabilityStructure.mk'
+    (Φ : LocalizerMorphism W₁ W₂) [∀ X₂, IsConnected (Φ.LeftResolution X₂)]
+    [Φ.arrow.HasLeftResolutions] [W₂.ContainsIdentities] [Φ.IsLocalizedEquivalence]
+    : Φ.IsLeftDerivabilityStructure := by
   rw [isLeftDerivabilityStructure_iff_op]
   have : Φ.op.arrow.HasRightResolutions := fun f ↦ by
     let R : Φ.arrow.LeftResolution (Arrow.mk f.hom.unop) := Classical.arbitrary _
     exact ⟨{
       X₁ := Arrow.mk R.X₁.hom.op
       w := Arrow.homMk R.w.right.op R.w.left.op (Quiver.Hom.unop_inj R.w.w.symm)
-      hw := ⟨R.hw.right, R.hw.left⟩ }⟩
+      hw := ⟨R.hw.right, R.hw.left⟩
+    }⟩
   have (X₂ : C₂ᵒᵖ) : IsConnected (Φ.op.RightResolution X₂) :=
     isConnected_of_equivalent (LeftResolution.opEquivalence Φ X₂.unop)
   exact IsRightDerivabilityStructure.mk' _

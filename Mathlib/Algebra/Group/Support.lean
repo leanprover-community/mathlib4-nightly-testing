@@ -26,15 +26,16 @@ variable {α M G : Type*}
 namespace Function
 
 @[to_additive]
-theorem mulSupport_mul [MulOneClass M] (f g : α → M) :
-    (mulSupport fun x ↦ f x * g x) ⊆ mulSupport f ∪ mulSupport g :=
+theorem mulSupport_mul [MulOneClass M] (f g : α → M)
+    : (mulSupport fun x ↦ f x * g x) ⊆ mulSupport f ∪ mulSupport g :=
   mulSupport_binop_subset (· * ·) (one_mul _) f g
 
 @[to_additive]
-theorem mulSupport_pow [Monoid M] (f : α → M) (n : ℕ) :
-    (mulSupport fun x => f x ^ n) ⊆ mulSupport f := by
+theorem mulSupport_pow [Monoid M] (f : α → M) (n : ℕ)
+    : (mulSupport fun x => f x ^ n) ⊆ mulSupport f := by
   induction n with
-  | zero => simp [pow_zero]
+  | zero =>
+    simp [pow_zero]
   | succ n hfn =>
     simpa only [pow_succ'] using (mulSupport_mul f _).trans (union_subset Subset.rfl hfn)
 
@@ -43,12 +44,10 @@ section DivisionMonoid
 variable [DivisionMonoid G] (f g : α → G)
 
 @[to_additive (attr := simp)]
-theorem mulSupport_fun_inv : (mulSupport fun x => (f x)⁻¹) = mulSupport f :=
-  ext fun _ => inv_ne_one
+theorem mulSupport_fun_inv : (mulSupport fun x => (f x)⁻¹) = mulSupport f := ext fun _ => inv_ne_one
 
 @[to_additive (attr := simp)]
-theorem mulSupport_inv : mulSupport f⁻¹ = mulSupport f :=
-  mulSupport_fun_inv f
+theorem mulSupport_inv : mulSupport f⁻¹ = mulSupport f := mulSupport_fun_inv f
 
 @[to_additive]
 theorem mulSupport_mul_inv : (mulSupport fun x => f x * (g x)⁻¹) ⊆ mulSupport f ∪ mulSupport g :=

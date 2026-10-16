@@ -29,23 +29,26 @@ namespace CategoryTheory.ObjectProperty
 
 open Limits
 
-variable {C : Type u} [Category.{v} C] (P : ObjectProperty C)
+variable
+  {C : Type u} [Category.{v} C]
+  (P : ObjectProperty C)
   {α : Type t} (J : α → Type u') [∀ a, Category.{v'} (J a)]
 
-/-- The closure of a property of objects of a category under colimits of
-shape `J a` for a family of categories `J`. -/
+/--
+The closure of a property of objects of a category under colimits of
+shape `J a` for a family of categories `J`.
+-/
 inductive colimitsClosure : ObjectProperty C
   | of_mem (X : C) (hX : P X) : colimitsClosure X
   | of_isoClosure {X Y : C} (e : X ≅ Y) (hX : colimitsClosure X) : colimitsClosure Y
-  | of_colimitPresentation {X : C} {a : α} (pres : ColimitPresentation (J a) X)
-      (h : ∀ j, colimitsClosure (pres.diag.obj j)) : colimitsClosure X
+  | of_colimitPresentation
+    {X : C} {a : α}
+    (pres : ColimitPresentation (J a) X) (h : ∀ j, colimitsClosure (pres.diag.obj j))
+    : colimitsClosure X
 
-@[simp]
-lemma le_colimitsClosure : P ≤ P.colimitsClosure J :=
-  fun X hX ↦ .of_mem X hX
+@[simp] lemma le_colimitsClosure : P ≤ P.colimitsClosure J := fun X hX ↦ .of_mem X hX
 
-instance [P.Nonempty] : (P.colimitsClosure J).Nonempty :=
-  .mono (P.le_colimitsClosure J)
+instance [P.Nonempty] : (P.colimitsClosure J).Nonempty := .mono (P.le_colimitsClosure J)
 
 instance : (P.colimitsClosure J).IsClosedUnderIsomorphisms where
   of_iso e hX := .of_isoClosure e hX
@@ -56,9 +59,11 @@ instance (a : α) : (P.colimitsClosure J).IsClosedUnderColimitsOfShape (J a) whe
     exact .of_colimitPresentation hX.toColimitPresentation hX.prop_diag_obj
 
 variable {P J} in
-lemma colimitsClosure_le {Q : ObjectProperty C} [Q.IsClosedUnderIsomorphisms]
-    [∀ (a : α), Q.IsClosedUnderColimitsOfShape (J a)] (h : P ≤ Q) :
-    P.colimitsClosure J ≤ Q := by
+lemma colimitsClosure_le
+    {Q : ObjectProperty C}
+    [Q.IsClosedUnderIsomorphisms] [∀ (a : α), Q.IsClosedUnderColimitsOfShape (J a)]
+    (h : P ≤ Q)
+    : P.colimitsClosure J ≤ Q := by
   intro X hX
   induction hX with
   | of_mem X hX => exact h _ hX
@@ -66,40 +71,41 @@ lemma colimitsClosure_le {Q : ObjectProperty C} [Q.IsClosedUnderIsomorphisms]
   | of_colimitPresentation pres h h' => exact Q.prop_of_isColimit pres.isColimit h'
 
 variable {P} in
-lemma colimitsClosure_monotone {Q : ObjectProperty C} (h : P ≤ Q) :
-    P.colimitsClosure J ≤ Q.colimitsClosure J :=
+lemma colimitsClosure_monotone {Q : ObjectProperty C} (h : P ≤ Q)
+    : P.colimitsClosure J ≤ Q.colimitsClosure J :=
   colimitsClosure_le (h.trans (Q.le_colimitsClosure J))
 
-lemma colimitsClosure_eq_self [P.IsClosedUnderIsomorphisms]
-    [∀ (a : α), P.IsClosedUnderColimitsOfShape (J a)] : P.colimitsClosure J = P :=
+lemma colimitsClosure_eq_self
+    [P.IsClosedUnderIsomorphisms] [∀ (a : α), P.IsClosedUnderColimitsOfShape (J a)]
+    : P.colimitsClosure J = P :=
   le_antisymm (colimitsClosure_le (le_refl P)) (P.le_colimitsClosure J)
 
 @[simp]
-lemma colimitsClosure_bot [∀ (a : α), Nonempty (J a)] :
-    colimitsClosure (⊥ : ObjectProperty C) J = ⊥ :=
+lemma colimitsClosure_bot [∀ (a : α), Nonempty (J a)]
+    : colimitsClosure (⊥ : ObjectProperty C) J = ⊥ :=
   colimitsClosure_eq_self _ _
 
 @[simp]
 lemma colimitsClosure_top : colimitsClosure (⊤ : ObjectProperty C) J = ⊤ :=
   colimitsClosure_eq_self _ _
 
-lemma colimitsClosure_isoClosure :
-    P.isoClosure.colimitsClosure J = P.colimitsClosure J := by
-  refine le_antisymm (colimitsClosure_le ?_)
-    (colimitsClosure_monotone _ P.le_isoClosure)
+lemma colimitsClosure_isoClosure : P.isoClosure.colimitsClosure J = P.colimitsClosure J := by
+  refine le_antisymm (colimitsClosure_le ?_) (colimitsClosure_monotone _ P.le_isoClosure)
   rw [isoClosure_le_iff]
   exact le_colimitsClosure P J
 
-/-- The closure of a property of objects of a category under colimits of
-shape `J` for a category `J`. -/
+/--
+The closure of a property of objects of a category under colimits of
+shape `J` for a category `J`.
+-/
 abbrev colimitClosure (J : Type*) [Category* J] : ObjectProperty C :=
   P.colimitsClosure (fun (_ : Unit) ↦ J)
 
 instance (J : Type*) [Category* J] : (P.colimitClosure J).IsClosedUnderColimitsOfShape J :=
   P.instIsClosedUnderColimitsOfShapeColimitsClosure _ ()
 
-lemma colimitsClosure_eq_unop_limitsClosure :
-    P.colimitsClosure J = (P.op.limitsClosure (fun a ↦ (J a)ᵒᵖ)).unop := by
+lemma colimitsClosure_eq_unop_limitsClosure
+    : P.colimitsClosure J = (P.op.limitsClosure (fun a ↦ (J a)ᵒᵖ)).unop := by
   refine le_antisymm ?_ ?_
   · apply colimitsClosure_le
     rw [← op_monotone_iff, op_unop]
@@ -109,9 +115,10 @@ lemma colimitsClosure_eq_unop_limitsClosure :
     rw [op_monotone_iff]
     apply le_colimitsClosure
 
-instance [ObjectProperty.EssentiallySmall.{w} P] [LocallySmall.{w} C] [Small.{w} α]
-    [∀ a, Small.{w} (J a)] [∀ a, LocallySmall.{w} (J a)] :
-    ObjectProperty.EssentiallySmall.{w} (P.colimitsClosure J) := by
+instance
+    [ObjectProperty.EssentiallySmall.{w} P] [LocallySmall.{w} C] [Small.{w} α]
+    [∀ a, Small.{w} (J a)] [∀ a, LocallySmall.{w} (J a)]
+    : ObjectProperty.EssentiallySmall.{w} (P.colimitsClosure J) := by
   rw [colimitsClosure_eq_unop_limitsClosure]
   have (a : α) : Small.{w} (J a)ᵒᵖ := Opposite.small
   infer_instance

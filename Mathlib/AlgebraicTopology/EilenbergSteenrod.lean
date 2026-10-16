@@ -53,15 +53,19 @@ variable {C : Type*} [Category* C] [Limits.HasZeroMorphisms C] {ι : Type*} {c :
 /-- A morphism in the category `HomologyPretheory`. -/
 @[ext]
 structure Hom (HP HP' : HomologyPretheory.{u} C c) where
-  /-- The natural transformation of relative homology functors in a morphism of
-  `HomologyPretheory`s. -/
+  /--
+  The natural transformation of relative homology functors in a morphism of
+  `HomologyPretheory`s.
+  -/
   homₚ (i : ι) : HP.Hₚ i ⟶ HP'.Hₚ i
-  /-- The natural transformation of homology functors in a morphism of
-  `HomologyPretheory`s. -/
+  /--
+  The natural transformation of homology functors in a morphism of
+  `HomologyPretheory`s.
+  -/
   hom (i : ι) : HP.H i ⟶ HP'.H i := (HP.iso i).hom ≫ incl.whiskerLeft (homₚ i) ≫ (HP'.iso i).inv
   /-- `homₚ` and `hom` need to be compatible with `HomologyPretheory.iso`. -/
-  iso_comm (i : ι) :
-    (HP.iso i).hom ≫ incl.whiskerLeft (homₚ i) = hom i ≫ (HP'.iso i).hom := by cat_disch
+  iso_comm (i : ι) : (HP.iso i).hom ≫ incl.whiskerLeft (homₚ i) = hom i ≫ (HP'.iso i).hom := by
+    cat_disch
   /-- `homₚ` needs to be compatible with the boundary maps. -/
   w (i j : ι) : HP.δ i j ≫ proj₂.whiskerLeft (hom j) = homₚ i ≫ HP'.δ i j := by cat_disch
 
@@ -81,8 +85,9 @@ variable {HP HP' : HomologyPretheory.{u} C c}
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
-lemma Hom.iso_comm_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u}) :
-    (HP.iso i).hom.app X ≫ (f.homₚ i).app (ofTopCat X) = (f.hom i).app X ≫ (HP'.iso i).hom.app X :=
+lemma Hom.iso_comm_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u})
+    : (HP.iso i).hom.app X ≫ (f.homₚ i).app (ofTopCat X)
+      = (f.hom i).app X ≫ (HP'.iso i).hom.app X :=
   congr($(f.iso_comm _).app _)
 
 -- TODO: generate this with `@[to_app]`
@@ -90,35 +95,39 @@ lemma Hom.iso_comm_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u}) :
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
-lemma Hom.w_app (f : HP ⟶ HP') (i j : ι) (X : TopPair.{u}) :
-    (HP.δ i j).app X ≫ (f.hom j).app X.left = (f.homₚ i).app X ≫ (HP'.δ i j).app X :=
+lemma Hom.w_app (f : HP ⟶ HP') (i j : ι) (X : TopPair.{u})
+    : (HP.δ i j).app X ≫ (f.hom j).app X.left = (f.homₚ i).app X ≫ (HP'.δ i j).app X :=
   congr($(f.w _ _).app _)
 
 @[reassoc]
-lemma iso_homₚ_inv_hom (f : HP ⟶ HP') (i : ι) :
-    (HP.iso i).hom ≫ incl.whiskerLeft (f.homₚ i) ≫ (HP'.iso i).inv = f.hom i := by simp
+lemma iso_homₚ_inv_hom (f : HP ⟶ HP') (i : ι)
+    : (HP.iso i).hom ≫ incl.whiskerLeft (f.homₚ i) ≫ (HP'.iso i).inv = f.hom i := by
+  simp
 
 -- TODO: generate this with `@[to_app]`
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
-lemma iso_homₚ_inv_hom_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u}) :
-    (HP.iso i).hom.app X ≫ (f.homₚ i).app (ofTopCat X) ≫ (HP'.iso i).inv.app X = (f.hom i).app X :=
+lemma iso_homₚ_inv_hom_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u})
+    : (HP.iso i).hom.app X ≫ (f.homₚ i).app (ofTopCat X) ≫ (HP'.iso i).inv.app X
+      = (f.hom i).app X :=
   congr($(iso_homₚ_inv_hom _ _).app _)
 
 @[reassoc (attr := simp)]
-lemma inv_hom_iso_homₚ (f : HP ⟶ HP') (i : ι) :
-    (HP.iso i).inv ≫ f.hom i ≫ (HP'.iso i).hom = incl.whiskerLeft (f.homₚ i) :=
+lemma inv_hom_iso_homₚ (f : HP ⟶ HP') (i : ι)
+    : (HP.iso i).inv ≫ f.hom i ≫ (HP'.iso i).hom = incl.whiskerLeft (f.homₚ i) :=
   ((Iso.inv_comp_eq (HP.iso i)).mpr (f.iso_comm i).symm)
 
 -- TODO: generate this with `@[to_app]`
 @[reassoc (attr := simp)]
-lemma inv_hom_iso_homₚ_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u}) :
-    (HP.iso i).inv.app X ≫ (f.hom i).app X ≫ (HP'.iso i).hom.app X = (f.homₚ i).app (ofTopCat X) :=
+lemma inv_hom_iso_homₚ_app (f : HP ⟶ HP') (i : ι) (X : TopCat.{u})
+    : (HP.iso i).inv.app X ≫ (f.hom i).app X ≫ (HP'.iso i).hom.app X
+      = (f.homₚ i).app (ofTopCat X) :=
   congr($(inv_hom_iso_homₚ _ _).app _)
 
-/-- The forgetful functor that sends a `HomologyPretheory` to it's relative homology functor `Hₚ`.
+/--
+The forgetful functor that sends a `HomologyPretheory` to it's relative homology functor `Hₚ`.
 -/
 @[simps]
 protected def hₚFunctor (i : ι) : HomologyPretheory.{u} C c ⥤ TopPair.{u} ⥤ C where
@@ -139,21 +148,22 @@ instance (f : HP ⟶ HP') [IsIso f] (i : ι) : IsIso (f.hom i) :=
 
 variable (HP : HomologyPretheory.{u} C c)
 
-/-- A `HomologyPretheory` is homotopy-invariant if its homology functor `Hₚ` takes homotopic maps to
-the same map in homology -/
+/--
+A `HomologyPretheory` is homotopy-invariant if its homology functor `Hₚ` takes homotopic maps to
+the same map in homology
+-/
 class IsHomotopyInvariant (HP : HomologyPretheory.{u} C c) where
-  map_eq_of_homotopy (HP) {X Y : TopPair.{u}} {f g : X ⟶ Y} (F : Homotopy f g) (i : ι) :
-    (HP.Hₚ i).map f = (HP.Hₚ i).map g := by cat_disch
+  map_eq_of_homotopy (HP) {X Y : TopPair.{u}} {f g : X ⟶ Y} (F : Homotopy f g) (i : ι)
+      : (HP.Hₚ i).map f = (HP.Hₚ i).map g := by
+    cat_disch
 
 export IsHomotopyInvariant (map_eq_of_homotopy)
 
 variable (C c) in
 /-- An abbreviation for `HomologyPretheory.IsHomotopyInvariant` as `ObjectProperty`. -/
-abbrev isHomotopyInvariant : ObjectProperty (HomologyPretheory.{u} C c) :=
-  IsHomotopyInvariant
+abbrev isHomotopyInvariant : ObjectProperty (HomologyPretheory.{u} C c) := IsHomotopyInvariant
 
-@[simp]
-lemma isHomotopyInvariant_iff : isHomotopyInvariant C c HP ↔ IsHomotopyInvariant HP := .rfl
+@[simp] lemma isHomotopyInvariant_iff : isHomotopyInvariant C c HP ↔ IsHomotopyInvariant HP := .rfl
 
 instance : IsClosedUnderIsomorphisms (isHomotopyInvariant.{u} C c) where
   of_iso e _ := ⟨fun F _ ↦ by

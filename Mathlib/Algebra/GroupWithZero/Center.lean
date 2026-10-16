@@ -22,7 +22,8 @@ namespace Set
 section MulZeroClass
 variable [MulZeroClass M₀] {s : Set M₀}
 
-@[simp] lemma zero_mem_center : (0 : M₀) ∈ center M₀ where
+@[simp]
+lemma zero_mem_center : (0 : M₀) ∈ center M₀ where
   comm _ := by rw [commute_iff_eq, zero_mul, mul_zero]
   left_assoc _ _ := by rw [zero_mul, zero_mul, zero_mul]
   right_assoc _ _ := by rw [mul_zero, mul_zero, mul_zero]
@@ -45,15 +46,17 @@ lemma center_units_subset : center G₀ˣ ⊆ ((↑) : G₀ˣ → G₀) ⁻¹' c
 lemma center_units_eq : center G₀ˣ = ((↑) : G₀ˣ → G₀) ⁻¹' center G₀ :=
   center_units_subset.antisymm subset_center_units
 
-@[simp] lemma inv_mem_centralizer₀ (ha : a ∈ centralizer s) : a⁻¹ ∈ centralizer s := by
+@[simp]
+lemma inv_mem_centralizer₀ (ha : a ∈ centralizer s) : a⁻¹ ∈ centralizer s := by
   obtain rfl | ha₀ := eq_or_ne a 0
   · rw [inv_zero]
     exact zero_mem_centralizer
   · rintro c hc
     rw [mul_inv_eq_iff_eq_mul₀ ha₀, mul_assoc, eq_inv_mul_iff_mul_eq₀ ha₀, ha c hc]
 
-@[simp] lemma div_mem_centralizer₀ (ha : a ∈ centralizer s) (hb : b ∈ centralizer s) :
-    a / b ∈ centralizer s := by
+@[simp]
+lemma div_mem_centralizer₀ (ha : a ∈ centralizer s) (hb : b ∈ centralizer s)
+    : a / b ∈ centralizer s := by
   simpa only [div_eq_mul_inv] using mul_mem_centralizer ha (inv_mem_centralizer₀ hb)
 
 end GroupWithZero

@@ -18,7 +18,6 @@ They are probably good targets for further cleanup or moves.
 
 public section
 
-
 open Set NNReal
 
 variable {α : Type*}
@@ -26,8 +25,8 @@ variable {α : Type*}
 namespace ENNReal
 
 @[simp, norm_cast]
-theorem coe_indicator {α} (s : Set α) (f : α → ℝ≥0) (a : α) :
-    ((s.indicator f a : ℝ≥0) : ℝ≥0∞) = s.indicator (fun x => ↑(f x)) a :=
+theorem coe_indicator {α} (s : Set α) (f : α → ℝ≥0) (a : α)
+    : ((s.indicator f a : ℝ≥0) : ℝ≥0∞) = s.indicator (fun x => ↑(f x)) a :=
   map_indicator ofNNRealHom _ _ _
 
 section Order

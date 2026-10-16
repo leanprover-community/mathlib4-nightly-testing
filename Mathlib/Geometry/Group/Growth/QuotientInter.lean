@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 public import Mathlib.GroupTheory.QuotientGroup.Defs
-
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
@@ -23,12 +22,14 @@ open Finset Function
 open scoped Pointwise
 
 namespace Finset
-variable {G : Type*} [Group G] [DecidableEq G] {H : Subgroup G} [DecidablePred (· ∈ H)] [H.Normal]
+variable
+  {G : Type*} [Group G] [DecidableEq G]
+  {H : Subgroup G} [DecidablePred (· ∈ H)] [H.Normal]
   {A : Finset G} {m n : ℕ}
 
 @[to_additive]
-lemma card_pow_quotient_mul_pow_inter_subgroup_le :
-    #((A ^ m).image <| QuotientGroup.mk' H) * #{x ∈ A ^ n | x ∈ H} ≤ #(A ^ (m + n)) := by
+lemma card_pow_quotient_mul_pow_inter_subgroup_le
+    : #((A ^ m).image <| QuotientGroup.mk' H) * # {x ∈ A ^ n | x ∈ H} ≤ #(A ^ (m + n)) := by
   set π := QuotientGroup.mk' H
   let φ := invFunOn π (A ^ m)
   have hφ : Set.InjOn φ (π '' (A ^ m)) := invFunOn_injOn_image ..
@@ -38,8 +39,8 @@ lemma card_pow_quotient_mul_pow_inter_subgroup_le :
     simpa using this
   have hπφ {a} (ha : a ∈ π '' (A ^ m)) : π (φ a) = a := invFunOn_eq (by simpa using ha)
   calc
-    #((A ^ m).image π) * #{x ∈ A ^ n | x ∈ H}
-    _ = #(((A ^ m).image π).image φ) * #{x ∈ A ^ n | x ∈ H} := by
+    #((A ^ m).image π) * # {x ∈ A ^ n | x ∈ H}
+    _ = #(((A ^ m).image π).image φ) * # {x ∈ A ^ n | x ∈ H} := by
       rw [Finset.card_image_of_injOn (f := φ) (mod_cast hφ)]
     _ ≤ #(((A ^ m).image π).image φ * {x ∈ A ^ n | x ∈ H}) := by
       rw [Finset.card_mul_iff.2]
@@ -60,21 +61,20 @@ lemma card_pow_quotient_mul_pow_inter_subgroup_le :
       exact mul_mem_mul (hφA <| Set.mem_image_of_mem _ <| mod_cast ha) hb
 
 @[to_additive]
-lemma le_card_quotient_mul_sq_inter_subgroup (hAsymm : A⁻¹ = A) :
-    #A ≤ #(A.image <| QuotientGroup.mk' H) * #{x ∈ A ^ 2 | x ∈ H} := by
+lemma le_card_quotient_mul_sq_inter_subgroup (hAsymm : A⁻¹ = A)
+    : #A ≤ #(A.image <| QuotientGroup.mk' H) * # {x ∈ A ^ 2 | x ∈ H} := by
   set π := QuotientGroup.mk' H
   rw [card_eq_sum_card_image π]
   refine sum_le_card_nsmul _ _ _ <| forall_mem_image.2 fun a ha ↦ ?_
   calc
-    #{a' ∈ A | π a' = π a}
-    _ ≤ #({a' ∈ A | π a' = π a}⁻¹ * {a' ∈ A | π a' = π a}) :=
-      card_le_card_mul_left ⟨a⁻¹, by simpa⟩
-    _ ≤ #{x ∈ A⁻¹ * A | x ∈ H} := by
+    # {a' ∈ A | π a' = π a}
+    _ ≤ #({a' ∈ A | π a' = π a}⁻¹ * {a' ∈ A | π a' = π a}) := card_le_card_mul_left ⟨a⁻¹, by simpa⟩
+    _ ≤ # {x ∈ A⁻¹ * A | x ∈ H} := by
       gcongr
       simp only [mul_subset_iff, mem_inv', map_inv, mem_filter, and_imp]
       rintro x hx hxa y hy hya
       refine ⟨mul_mem_mul (by simpa) hy, (QuotientGroup.eq_one_iff _).1 (?_ : π _ = _)⟩
       simp [hya, ← hxa]
-    _ = #{x ∈ A ^ 2 | x ∈ H} := by simp [hAsymm, sq]
+    _ = # {x ∈ A ^ 2 | x ∈ H} := by simp [hAsymm, sq]
 
 end Finset

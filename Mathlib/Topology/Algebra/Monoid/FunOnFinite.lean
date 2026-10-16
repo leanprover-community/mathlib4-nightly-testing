@@ -19,8 +19,9 @@ namespace FunOnFinite
 
 lemma continuous_map
     (M : Type*) [AddCommMonoid M] [TopologicalSpace M] [ContinuousAdd M]
-    {X Y : Type*} [Finite X] [Finite Y] (f : X → Y) :
-    Continuous (FunOnFinite.map (M := M) f) := by
+    {X Y : Type*} [Finite X] [Finite Y]
+    (f : X → Y)
+    : Continuous (FunOnFinite.map (M := M) f) := by
   classical
   have := Fintype.ofFinite X
   refine continuous_pi (fun y ↦ ?_)
@@ -28,10 +29,10 @@ lemma continuous_map
   exact continuous_finsetSum _ (fun _ _ ↦ continuous_apply _)
 
 lemma continuous_linearMap
-    (R M : Type*) [Semiring R] [AddCommMonoid M]
-    [Module R M] [TopologicalSpace M] [ContinuousAdd M]
-    {X Y : Type*} [Finite X] [Finite Y] (f : X → Y) :
-    Continuous (FunOnFinite.linearMap R M f) :=
+    (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M] [TopologicalSpace M] [ContinuousAdd M]
+    {X Y : Type*} [Finite X] [Finite Y]
+    (f : X → Y)
+    : Continuous (FunOnFinite.linearMap R M f) :=
   FunOnFinite.continuous_map _ _
 
 end FunOnFinite

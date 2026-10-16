@@ -41,10 +41,11 @@ variable {C : Type*} [Category* C]
 variable {P : MorphismProperty C} {S : C} [P.IsStableUnderComposition]
 
 set_option backward.defeqAttrib.useBackward true in
-lemma exists_map_eq_of_presieve (K : Precoverage C) (H : K ≤ P.precoverage)
+lemma exists_map_eq_of_presieve
+    (K : Precoverage C) (H : K ≤ P.precoverage)
     {X : P.Over ⊤ S} {R : Presieve ((MorphismProperty.Over.forget P ⊤ S).obj X)}
-    (hR : R ∈ (K.comap <| CategoryTheory.Over.forget S) _) :
-    ∃ T : Presieve X, T.map (MorphismProperty.Over.forget P ⊤ S) = R := by
+    (hR : R ∈ (K.comap <| CategoryTheory.Over.forget S) _)
+    : ∃ T : Presieve X, T.map (MorphismProperty.Over.forget P ⊤ S) = R := by
   rw [Precoverage.mem_iff_exists_zeroHypercover] at hR
   obtain ⟨𝒰, rfl⟩ := hR
   let 𝒱 : PreZeroHypercover X :=
@@ -55,21 +56,21 @@ lemma exists_map_eq_of_presieve (K : Precoverage C) (H : K ≤ P.precoverage)
   · rw [← CategoryTheory.Over.w (𝒰.f i)]
     exact P.comp_mem _ _ (H _ 𝒰.mem₀ ⟨⟨i⟩⟩) X.prop
 
-variable (K : Precoverage C) [K.HasIsos] [K.IsStableUnderBaseChange] [K.IsStableUnderComposition]
-  [K.HasPullbacks]
+variable
+  (K : Precoverage C)
+  [K.HasIsos] [K.IsStableUnderBaseChange] [K.IsStableUnderComposition] [K.HasPullbacks]
 
-lemma locallyCoverDense_forget_of_le (H : K ≤ P.precoverage) :
-    (MorphismProperty.Over.forget P ⊤ S).LocallyCoverDense (K.toGrothendieck.over S) := by
+lemma locallyCoverDense_forget_of_le (H : K ≤ P.precoverage)
+    : (MorphismProperty.Over.forget P ⊤ S).LocallyCoverDense (K.toGrothendieck.over S) := by
   rw [over_toGrothendieck_eq_toGrothendieck_comap_forget]
   apply Precoverage.locallyCoverDense_of_map_functorPullback_mem
   intro X R hR
   obtain ⟨R, rfl⟩ := MorphismProperty.exists_map_eq_of_presieve _ H hR
   simpa
 
-lemma toGrothendieck_comap_forget_eq_restrictedTopology
-    (H : K ≤ P.precoverage) :
-    (K.comap (MorphismProperty.Over.forget P ⊤ _ ⋙ CategoryTheory.Over.forget S)).toGrothendieck =
-      (MorphismProperty.Over.forget P ⊤ _).restrictedTopology (K.toGrothendieck.over S) := by
+lemma toGrothendieck_comap_forget_eq_restrictedTopology (H : K ≤ P.precoverage)
+    : (K.comap (MorphismProperty.Over.forget P ⊤ _ ⋙ CategoryTheory.Over.forget S)).toGrothendieck
+      = (MorphismProperty.Over.forget P ⊤ _).restrictedTopology (K.toGrothendieck.over S) := by
   have : (Over.forget P ⊤ S).LocallyCoverDense
       (K.comap (CategoryTheory.Over.forget S)).toGrothendieck := by
     rw [← over_toGrothendieck_eq_toGrothendieck_comap_forget]
@@ -81,32 +82,32 @@ lemma toGrothendieck_comap_forget_eq_restrictedTopology
   obtain ⟨T, rfl⟩ := MorphismProperty.exists_map_eq_of_presieve K H hR
   simpa
 
-lemma coverPreserving_comap_forget (H : K ≤ P.precoverage) :
-    CoverPreserving
+lemma coverPreserving_comap_forget (H : K ≤ P.precoverage)
+    : CoverPreserving
       (K.comap (MorphismProperty.Over.forget P ⊤ _ ⋙ CategoryTheory.Over.forget S)).toGrothendieck
-      (K.toGrothendieck.over S)
-      (MorphismProperty.Over.forget P ⊤ S) := by
+      (K.toGrothendieck.over S) (MorphismProperty.Over.forget P ⊤ S) := by
   have := MorphismProperty.locallyCoverDense_forget_of_le (S := S) K H
   rw [toGrothendieck_comap_forget_eq_restrictedTopology _ H]
   exact Functor.coverPreserving_restrictedTopology (Over.forget P ⊤ S) (K.toGrothendieck.over S)
 
-variable [HasFiniteWidePullbacks C] [P.HasOfPostcompProperty P] [P.IsStableUnderBaseChange]
+variable
+  [HasFiniteWidePullbacks C] [P.HasOfPostcompProperty P] [P.IsStableUnderBaseChange]
   [P.ContainsIdentities]
 
-attribute [local instance] hasFiniteLimits_of_hasTerminal_and_pullbacks
+attribute [local instance]
+  hasFiniteLimits_of_hasTerminal_and_pullbacks
   preservesFiniteLimits_of_preservesTerminal_and_pullbacks in
-lemma isContinuous_comap_forget (H : K ≤ P.precoverage) :
-    (Over.forget P ⊤ S).IsContinuous
-        (Precoverage.comap (Over.forget P ⊤ S ⋙ CategoryTheory.Over.forget S) K).toGrothendieck
-        (K.toGrothendieck.over S) := by
-  have : RepresentablyFlat (Over.forget P ⊤ S) :=
-    flat_of_preservesFiniteLimits _
+lemma isContinuous_comap_forget (H : K ≤ P.precoverage)
+    : (Over.forget P ⊤ S).IsContinuous
+      (Precoverage.comap (Over.forget P ⊤ S ⋙ CategoryTheory.Over.forget S) K).toGrothendieck
+      (K.toGrothendieck.over S) := by
+  have : RepresentablyFlat (Over.forget P ⊤ S) := flat_of_preservesFiniteLimits _
   rw [Functor.isContinuous_iff_coverPreserving]
   exact coverPreserving_comap_forget _ H
 
-lemma toGrothendieck_comap_forget_eq_inducedTopology (H : K ≤ P.precoverage) :
-    (K.comap (MorphismProperty.Over.forget P ⊤ _ ⋙ CategoryTheory.Over.forget S)).toGrothendieck =
-      (MorphismProperty.Over.forget P ⊤ _).inducedTopology (K.toGrothendieck.over S) := by
+lemma toGrothendieck_comap_forget_eq_inducedTopology (H : K ≤ P.precoverage)
+    : (K.comap (MorphismProperty.Over.forget P ⊤ _ ⋙ CategoryTheory.Over.forget S)).toGrothendieck
+      = (MorphismProperty.Over.forget P ⊤ _).inducedTopology (K.toGrothendieck.over S) := by
   have := isContinuous_comap_forget (S := S) _ H
   refine (Functor.restrictedTopology_eq_inducedTopology_of_isContinuous ?_).symm
   rw [toGrothendieck_comap_forget_eq_restrictedTopology _ H]

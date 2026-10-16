@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.ArithmeticFunction.Carmichael
 public import Mathlib.NumberTheory.FermatPsp
-
 import Mathlib.Data.Nat.Factorization.PrimePow
 import Mathlib.Tactic.Simproc.Factors
 
@@ -42,25 +41,25 @@ namespace Nat
 
 open ArithmeticFunction
 
-/-- We say a natural number `n` is a Carmichael number if it is greater than 2, composite and
-for all natural numbers `b` coprime to `n` we have `n ∣ b ^ (n - 1) - 1`. -/
-@[expose]
-def IsCarmichael (n : ℕ) : Prop :=
-  2 < n ∧ ¬ n.Prime ∧ ∀ b, b.Coprime n → ProbablePrime n b
+/--
+We say a natural number `n` is a Carmichael number if it is greater than 2, composite and
+for all natural numbers `b` coprime to `n` we have `n ∣ b ^ (n - 1) - 1`.
+-/
+@[expose] def IsCarmichael (n : ℕ) : Prop := 2 < n ∧ ¬n.Prime ∧ ∀ b, b.Coprime n → ProbablePrime n b
 
 variable {n : ℕ}
 
 theorem IsCarmichael.two_lt (h : n.IsCarmichael) : 2 < n := h.1
 
-theorem IsCarmichael.neZero (h : n.IsCarmichael) : NeZero n :=
-  ⟨by grind [h.two_lt]⟩
+theorem IsCarmichael.neZero (h : n.IsCarmichael) : NeZero n := ⟨by grind [h.two_lt]⟩
 
-theorem IsCarmichael.not_prime (h : n.IsCarmichael) : ¬ n.Prime := h.2.1
+theorem IsCarmichael.not_prime (h : n.IsCarmichael) : ¬n.Prime := h.2.1
 
-theorem IsCarmichael.probablePrime_of_coprime {b : ℕ} (h : n.IsCarmichael) (hb : b.Coprime n) :
-    ProbablePrime n b := h.2.2 b hb
+theorem IsCarmichael.probablePrime_of_coprime {b : ℕ} (h : n.IsCarmichael) (hb : b.Coprime n)
+    : ProbablePrime n b :=
+  h.2.2 b hb
 
-theorem Prime.not_isCarmichael (hn : n.Prime) : ¬ n.IsCarmichael := by
+theorem Prime.not_isCarmichael (hn : n.Prime) : ¬n.IsCarmichael := by
   contrapose hn
   exact hn.not_prime
 
@@ -74,8 +73,8 @@ theorem not_isCarmichael_one : ¬ IsCarmichael 1 := by
   intro h
   simpa using h.two_lt
 
-lemma IsCarmichael.zmod_unit_pow_sub_one (s : (ZMod n)ˣ) (hn : n.IsCarmichael) :
-  s ^ (n - 1) = 1 := by
+lemma IsCarmichael.zmod_unit_pow_sub_one (s : (ZMod n)ˣ) (hn : n.IsCarmichael)
+    : s ^ (n - 1) = 1 := by
   have : Nontrivial (ZMod n) := ZMod.nontrivial_iff.mpr (by grind [hn.two_lt])
   ext
   have : NeZero n := hn.neZero
@@ -86,7 +85,8 @@ lemma IsCarmichael.zmod_unit_pow_sub_one (s : (ZMod n)ˣ) (hn : n.IsCarmichael) 
 /-- A Carmichael number is odd. -/
 theorem IsCarmichael.odd (h : n.IsCarmichael) : Odd n := by
   match n with
-  | 0 => exact (not_isCarmichael_zero h).elim
+  | 0 =>
+    exact (not_isCarmichael_zero h).elim
   | n + 1 =>
     have H := h.zmod_unit_pow_sub_one (-1)
     rw [Nat.add_one_sub_one, neg_one_pow_eq_ite] at H
@@ -100,8 +100,9 @@ theorem IsCarmichael.squarefree (h : n.IsCarmichael) : Squarefree n := by
   refine squarefree_iff_prime_squarefree.mpr fun p hp p_dvd ↦ ?_
   have : NeZero (p ^ 2) := ⟨pow_ne_zero 2 hp.ne_zero⟩
   have p_odd : Odd p := h.odd.of_dvd_nat <| dvd_trans (p.dvd_mul_left p) p_dvd
-  obtain ⟨r, hr⟩ := isCyclic_iff_exists_orderOf_eq_natCard.mp <|
-    (ZMod.isCyclic_units_iff_of_odd p_odd.pow).mpr ⟨p, 2, hp, p_odd, rfl⟩
+  obtain ⟨r, hr⟩ :=
+    isCyclic_iff_exists_orderOf_eq_natCard.mp <|
+      (ZMod.isCyclic_units_iff_of_odd p_odd.pow).mpr ⟨p, 2, hp, p_odd, rfl⟩
   rw [card_eq_fintype_card, ZMod.card_units_eq_totient] at hr
   have : NeZero n := h.neZero
   obtain ⟨s, hs⟩ := ZMod.unitsMap_surjective (pow_two p ▸ p_dvd) r
@@ -117,17 +118,19 @@ theorem IsCarmichael.carmichael_dvd_sub_one (h : n.IsCarmichael) : carmichael n 
   rw [@carmichael_eq_exponent' n h.neZero]
   exact Monoid.exponent_dvd_of_forall_pow_eq_one h.zmod_unit_pow_sub_one
 
-theorem IsCarmichael.prime_sub_one_dvd {p : ℕ} (h : n.IsCarmichael) (hp : p.Prime) (hpn : p ∣ n) :
-    p - 1 ∣ n - 1 := by
+theorem IsCarmichael.prime_sub_one_dvd {p : ℕ} (h : n.IsCarmichael) (hp : p.Prime) (hpn : p ∣ n)
+    : p - 1 ∣ n - 1 := by
   refine dvd_trans ?_ h.carmichael_dvd_sub_one
   rw [← carmichael_of_prime hp]
   exact carmichael_dvd (by simpa using hpn)
 
-/-- **Korselt's criterion** for Carmichael numbers:
+/--
+**Korselt's criterion** for Carmichael numbers:
 `n` is a Carmichael number if and only if it is greater than two, composite, squarefree, and for
-each prime divisor `p` of `n`, we have `p - 1 ∣ n - 1`. -/
-theorem isCarmichael_iff_korselt :
-    n.IsCarmichael ↔ 2 < n ∧ ¬n.Prime ∧ Squarefree n ∧ ∀ p, p.Prime → p ∣ n → p - 1 ∣ n - 1 := by
+each prime divisor `p` of `n`, we have `p - 1 ∣ n - 1`.
+-/
+theorem isCarmichael_iff_korselt
+    : n.IsCarmichael ↔ 2 < n ∧ ¬n.Prime ∧ Squarefree n ∧ ∀ p, p.Prime → p ∣ n → p - 1 ∣ n - 1 := by
   refine ⟨fun h ↦ ⟨h.two_lt, h.not_prime, h.squarefree, fun _ ↦ h.prime_sub_one_dvd⟩, ?_⟩
   intro ⟨hn, hn_prime, hn_squarefree, h_dvd⟩
   refine ⟨hn, hn_prime, fun b hb ↦ ?_⟩
@@ -141,8 +144,7 @@ theorem isCarmichael_iff_korselt :
   rw [probablePrime_iff_zmod_one n (by grind), ← ZMod.coe_unitOfCoprime b hb,
     ← Units.val_pow_eq_pow_val, hd, pow_mul, pow_carmichael, one_pow, Units.val_one]
 
-theorem IsCarmichael.three_le_card_primeFactors (h : IsCarmichael n) :
-    3 ≤ n.primeFactors.card := by
+theorem IsCarmichael.three_le_card_primeFactors (h : IsCarmichael n) : 3 ≤ n.primeFactors.card := by
   obtain ⟨_, _, hs, h⟩ := isCarmichael_iff_korselt.mp h
   have h0 : n.primeFactors.card ≠ 0 := by grind [primeFactors_eq_empty]
   have h1 : n.primeFactors.card ≠ 1 := by
@@ -158,9 +160,9 @@ theorem IsCarmichael.three_le_card_primeFactors (h : IsCarmichael n) :
   exact h q hq (Dvd.intro_left p hn)
 
 /-- **Korselt's criterion** stated in a form suitable for concrete calculations. -/
-theorem isCarmichael_iff_korselt_primeFactorsList :
-    n.IsCarmichael ↔
-      2 < n ∧ ¬n.Prime ∧ n.primeFactorsList.Nodup ∧ ∀ p ∈ n.primeFactorsList, p - 1 ∣ n - 1 := by
+theorem isCarmichael_iff_korselt_primeFactorsList
+    : n.IsCarmichael
+      ↔ 2 < n ∧ ¬n.Prime ∧ n.primeFactorsList.Nodup ∧ ∀ p ∈ n.primeFactorsList, p - 1 ∣ n - 1 := by
   simp only [isCarmichael_iff_korselt, mem_primeFactorsList', ne_eq, and_imp, and_congr_right_iff]
   intro hn
   rw [squarefree_iff_nodup_primeFactorsList] <;> grind

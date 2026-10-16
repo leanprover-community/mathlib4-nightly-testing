@@ -8,7 +8,6 @@ module
 public import Mathlib.AlgebraicTopology.SimplicialSet.FiniteProd
 public import Mathlib.CategoryTheory.Presentable.Finite
 public import Mathlib.CategoryTheory.Presentable.Presheaf
-
 import Mathlib.AlgebraicTopology.SimplicialSet.FiniteColimits
 import Mathlib.AlgebraicTopology.SimplicialSet.RegularEpi
 
@@ -32,23 +31,25 @@ namespace SSet
 
 namespace Finite
 
-instance (n : SimplexCategory) :
-    IsFinitelyPresentable.{u} (stdSimplex.{u}.obj n) :=
+instance (n : SimplexCategory) : IsFinitelyPresentable.{u} (stdSimplex.{u}.obj n) :=
   inferInstanceAs (IsFinitelyPresentable.{u} (uliftYoneda.obj n))
 
-lemma exists_epi_from_isCardinalPresentable (X : SSet.{u}) [X.Finite] :
-    ∃ (Y : SSet.{u}) (_ : Y.Finite) (_ : IsFinitelyPresentable.{u} Y)
-      (p : Y ⟶ X), Epi p := by
-  refine ⟨∐ (fun (s : X.N) ↦ Δ[s.dim]), inferInstance, ?_,
-    Sigma.desc (fun s ↦ yonedaEquiv.symm s.simplex), ?_⟩
+lemma exists_epi_from_isCardinalPresentable (X : SSet.{u}) [X.Finite]
+    : ∃ (Y : SSet.{u}) (_ : Y.Finite) (_ : IsFinitelyPresentable.{u} Y) (p : Y ⟶ X), Epi p := by
+  refine ⟨
+    ∐ (fun (s : X.N) ↦ Δ[s.dim]),
+    inferInstance,
+    ?_,
+    Sigma.desc (fun s ↦ yonedaEquiv.symm s.simplex),
+    ?_
+  ⟩
   · apply +allowSynthFailures isCardinalPresentable_of_isColimit' _ (coproductIsCoproduct _)
     · exact hasCardinalLT_of_finite _ _ (by rfl)
     · rintro s
       dsimp
       infer_instance
-  · simp only [← Subcomplex.range_eq_top_iff, range_eq_iSup_sigma_ι,
-        colimit.ι_desc, Cofan.mk_ι_app, ← N.iSup_subcomplex_eq_top,
-        Subcomplex.range_eq_ofSimplex, Equiv.apply_symm_apply]
+  · simp only [← Subcomplex.range_eq_top_iff, range_eq_iSup_sigma_ι, colimit.ι_desc, Cofan.mk_ι_app,
+      ← N.iSup_subcomplex_eq_top, Subcomplex.range_eq_ofSimplex, Equiv.apply_symm_apply]
 
 instance (X : SSet.{u}) [X.Finite] : IsFinitelyPresentable.{u} X := by
   obtain ⟨Y, _, _, p, _⟩ := exists_epi_from_isCardinalPresentable X

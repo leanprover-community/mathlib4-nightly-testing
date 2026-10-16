@@ -36,7 +36,6 @@ the composition of `N₁ : SimplicialObject C ⥤ Karoubi (ChainComplex C ℕ)`
 
 @[expose] public section
 
-
 suppress_compilation
 noncomputable section
 
@@ -52,61 +51,63 @@ namespace DoldKan
 
 open AlgebraicTopology.DoldKan
 
-/-- The functor `N` for the equivalence is obtained by composing
+/--
+The functor `N` for the equivalence is obtained by composing
 `N' : SimplicialObject C ⥤ Karoubi (ChainComplex C ℕ)` and the inverse
-of the equivalence `ChainComplex C ℕ ≌ Karoubi (ChainComplex C ℕ)`. -/
+of the equivalence `ChainComplex C ℕ ≌ Karoubi (ChainComplex C ℕ)`.
+-/
 @[simps!, nolint unusedArguments]
 def N [IsIdempotentComplete C] [HasFiniteCoproducts C] : SimplicialObject C ⥤ ChainComplex C ℕ :=
   N₁ ⋙ (toKaroubiEquivalence _).inverse
 
 /-- The functor `Γ` for the equivalence is `Γ₀`. -/
 @[simps!, nolint unusedArguments]
-def Γ [IsIdempotentComplete C] [HasFiniteCoproducts C] : ChainComplex C ℕ ⥤ SimplicialObject C :=
-  Γ₀
+def Γ [IsIdempotentComplete C] [HasFiniteCoproducts C] : ChainComplex C ℕ ⥤ SimplicialObject C := Γ₀
 
 variable [IsIdempotentComplete C] [HasFiniteCoproducts C]
 
 /-- A reformulation of the isomorphism `toKaroubi (SimplicialObject C) ⋙ N₂ ≅ N₁` -/
-def isoN₁ :
-    (toKaroubiEquivalence (SimplicialObject C)).functor ⋙
-      Preadditive.DoldKan.equivalence.functor ≅ N₁ := toKaroubiCompN₂IsoN₁
+def isoN₁
+    : (toKaroubiEquivalence (SimplicialObject C)).functor ⋙ Preadditive.DoldKan.equivalence.functor
+      ≅ N₁ :=
+  toKaroubiCompN₂IsoN₁
 
-@[simp]
-lemma isoN₁_hom_app_f (X : SimplicialObject C) :
-    (isoN₁.hom.app X).f = PInfty := rfl
+@[simp] lemma isoN₁_hom_app_f (X : SimplicialObject C) : (isoN₁.hom.app X).f = PInfty := rfl
 
-/-- A reformulation of the canonical isomorphism
-`toKaroubi (ChainComplex C ℕ) ⋙ Γ₂ ≅ Γ ⋙ toKaroubi (SimplicialObject C)`. -/
-def isoΓ₀ :
-    (toKaroubiEquivalence (ChainComplex C ℕ)).functor ⋙ Preadditive.DoldKan.equivalence.inverse ≅
-      Γ ⋙ (toKaroubiEquivalence _).functor :=
+/--
+A reformulation of the canonical isomorphism
+`toKaroubi (ChainComplex C ℕ) ⋙ Γ₂ ≅ Γ ⋙ toKaroubi (SimplicialObject C)`.
+-/
+def isoΓ₀
+    : (toKaroubiEquivalence (ChainComplex C ℕ)).functor ⋙ Preadditive.DoldKan.equivalence.inverse
+      ≅ Γ ⋙ (toKaroubiEquivalence _).functor :=
   (functorExtension₂CompWhiskeringLeftToKaroubiIso _ _).app Γ₀
 
 @[simp]
-lemma N₂_map_isoΓ₀_hom_app_f (X : ChainComplex C ℕ) :
-    (N₂.map (isoΓ₀.hom.app X)).f = PInfty := by
+lemma N₂_map_isoΓ₀_hom_app_f (X : ChainComplex C ℕ) : (N₂.map (isoΓ₀.hom.app X)).f = PInfty := by
   ext
   apply comp_id
 
-/-- The Dold-Kan equivalence for pseudoabelian categories given
+/--
+The Dold-Kan equivalence for pseudoabelian categories given
 by the functors `N` and `Γ`. It is obtained by applying the results in
-`Compatibility.lean` to the equivalence `Preadditive.DoldKan.Equivalence`. -/
-def equivalence : SimplicialObject C ≌ ChainComplex C ℕ :=
-  Compatibility.equivalence isoN₁ isoΓ₀
+`Compatibility.lean` to the equivalence `Preadditive.DoldKan.Equivalence`.
+-/
+def equivalence : SimplicialObject C ≌ ChainComplex C ℕ := Compatibility.equivalence isoN₁ isoΓ₀
 
-theorem equivalence_functor : (equivalence : SimplicialObject C ≌ _).functor = N :=
-  rfl
+theorem equivalence_functor : (equivalence : SimplicialObject C ≌ _).functor = N := rfl
 
-theorem equivalence_inverse : (equivalence : SimplicialObject C ≌ _).inverse = Γ :=
-  rfl
+theorem equivalence_inverse : (equivalence : SimplicialObject C ≌ _).inverse = Γ := rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The natural isomorphism `NΓ'` satisfies the compatibility that is needed
-for the construction of our counit isomorphism `η`. -/
-theorem hη :
-    Compatibility.τ₀ =
-      Compatibility.τ₁ isoN₁ isoΓ₀
+/--
+The natural isomorphism `NΓ'` satisfies the compatibility that is needed
+for the construction of our counit isomorphism `η`.
+-/
+theorem hη
+    : Compatibility.τ₀
+      = Compatibility.τ₁ isoN₁ isoΓ₀
         (N₁Γ₀ : Γ ⋙ N₁ ≅ (toKaroubiEquivalence (ChainComplex C ℕ)).functor) := by
   ext K : 3
   simp only [Compatibility.τ₀_hom_app, Compatibility.τ₁_hom_app]
@@ -121,16 +122,17 @@ def η : Γ ⋙ N ≅ 𝟭 (ChainComplex C ℕ) :=
   Compatibility.equivalenceCounitIso
     (N₁Γ₀ : (Γ : ChainComplex C ℕ ⥤ _) ⋙ N₁ ≅ (toKaroubiEquivalence _).functor)
 
-theorem equivalence_counitIso :
-    DoldKan.equivalence.counitIso = (η : Γ ⋙ N ≅ 𝟭 (ChainComplex C ℕ)) :=
+theorem equivalence_counitIso
+    : DoldKan.equivalence.counitIso = (η : Γ ⋙ N ≅ 𝟭 (ChainComplex C ℕ)) :=
   Compatibility.equivalenceCounitIso_eq hη
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem hε :
-    Compatibility.υ (isoN₁) =
-      (Γ₂N₁ : (toKaroubiEquivalence _).functor ≅
-          (N₁ : SimplicialObject C ⥤ _) ⋙ Preadditive.DoldKan.equivalence.inverse) := by
+theorem hε
+    : Compatibility.υ (isoN₁)
+      = (Γ₂N₁
+        : (toKaroubiEquivalence _).functor
+          ≅ (N₁ : SimplicialObject C ⥤ _) ⋙ Preadditive.DoldKan.equivalence.inverse) := by
   dsimp only [isoN₁]
   ext1
   rw [← cancel_epi Γ₂N₁.inv, Iso.inv_hom_id]
@@ -144,11 +146,9 @@ theorem hε :
     Γ₂N₂ToKaroubiIso_inv_app, ← Γ₂.map_comp, Iso.inv_hom_id_app, Γ₂.map_id]
 
 /-- The unit isomorphism induced by `Γ₂N₁`. -/
-def ε : 𝟭 (SimplicialObject C) ≅ N ⋙ Γ :=
-  Compatibility.equivalenceUnitIso isoΓ₀ Γ₂N₁
+def ε : 𝟭 (SimplicialObject C) ≅ N ⋙ Γ := Compatibility.equivalenceUnitIso isoΓ₀ Γ₂N₁
 
-theorem equivalence_unitIso :
-    DoldKan.equivalence.unitIso = (ε : 𝟭 (SimplicialObject C) ≅ N ⋙ Γ) :=
+theorem equivalence_unitIso : DoldKan.equivalence.unitIso = (ε : 𝟭 (SimplicialObject C) ≅ N ⋙ Γ) :=
   Compatibility.equivalenceUnitIso_eq hε
 
 end DoldKan

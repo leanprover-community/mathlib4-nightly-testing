@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Basic
 public import Mathlib.Data.Nat.Basic
-
 import Mathlib.Algebra.Group.Nat.Defs
 
 /-!
@@ -28,29 +27,29 @@ wrap the result in an `Option` type instead:
 
 namespace Nat
 
-/-- Partial predecessor operation. Returns `ppred n = some m`
-  if `n = m + 1`, otherwise `none`. -/
+/--
+Partial predecessor operation. Returns `ppred n = some m`
+if `n = m + 1`, otherwise `none`.
+-/
 def ppred : ℕ → Option ℕ
   | 0 => none
   | n + 1 => some n
 
-@[simp]
-theorem ppred_zero : ppred 0 = none := rfl
+@[simp] theorem ppred_zero : ppred 0 = none := rfl
 
-@[simp]
-theorem ppred_succ {n : ℕ} : ppred (succ n) = some n := rfl
+@[simp] theorem ppred_succ {n : ℕ} : ppred (succ n) = some n := rfl
 
-/-- Partial subtraction operation. Returns `psub m n = some k`
-  if `m = n + k`, otherwise `none`. -/
+/--
+Partial subtraction operation. Returns `psub m n = some k`
+if `m = n + k`, otherwise `none`.
+-/
 def psub (m : ℕ) : ℕ → Option ℕ
   | 0 => some m
   | n + 1 => psub m n >>= ppred
 
-@[simp]
-theorem psub_zero {m : ℕ} : psub m 0 = some m := rfl
+@[simp] theorem psub_zero {m : ℕ} : psub m 0 = some m := rfl
 
-@[simp]
-theorem psub_succ {m n : ℕ} : psub m (succ n) = psub m n >>= ppred := rfl
+@[simp] theorem psub_succ {m n : ℕ} : psub m (succ n) = psub m n >>= ppred := rfl
 
 theorem pred_eq_ppred (n : ℕ) : pred n = (ppred n).getD 0 := by cases n <;> rfl
 
@@ -69,7 +68,8 @@ theorem ppred_eq_none : ∀ {n : ℕ}, ppred n = none ↔ n = 0
   | n + 1 => by constructor <;> intro <;> contradiction
 
 theorem psub_eq_some {m : ℕ} : ∀ {n k}, psub m n = some k ↔ k + n = m
-  | 0, k => by simp [eq_comm]
+  | 0, k => by
+    simp [eq_comm]
   | n + 1, k => by
     apply Option.bind_eq_some_iff.trans
     simp only [psub_eq_some, ppred_eq_some]
@@ -89,16 +89,13 @@ theorem ppred_eq_pred {n} (h : 0 < n) : ppred n = some (pred n) :=
 theorem psub_eq_sub {m n} (h : n ≤ m) : psub m n = some (m - n) :=
   psub_eq_some.2 <| Nat.sub_add_cancel h
 
-theorem psub_add (m n k) :
-    psub m (n + k) = (do psub (← psub m n) k) := by
-    induction k with
-    | zero => simp
-    | succ n ih => simp only [ih, add_succ, psub_succ, bind_assoc]
+theorem psub_add (m n k) : psub m (n + k) = (do psub (← psub m n) k) := by
+  induction k with
+  | zero => simp
+  | succ n ih => simp only [ih, add_succ, psub_succ, bind_assoc]
 
 /-- Same as `psub`, but with a more efficient implementation. -/
-@[inline]
-def psub' (m n : ℕ) : Option ℕ :=
-  if n ≤ m then some (m - n) else none
+@[inline] def psub' (m n : ℕ) : Option ℕ := if n ≤ m then some (m - n) else none
 
 theorem psub'_eq_psub (m n) : psub' m n = psub m n := by
   rw [psub']

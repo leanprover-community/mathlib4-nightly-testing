@@ -37,7 +37,9 @@ This is useful for instance when one needs `M/K` to be Galois.
 
 namespace IntermediateField
 
-variable {K L : Type*} [Field K] [Field L] [Algebra K L] (F : IntermediateField K L)
+variable
+  {K L : Type*} [Field K] [Field L] [Algebra K L]
+  (F : IntermediateField K L)
   (M : Type*) [Field M] [Algebra K M] [Algebra L M] [IsScalarTower K L M]
 
 /--
@@ -50,16 +52,16 @@ def extendRight : IntermediateField K M := F.map (Algebra.algHom K L M)
 noncomputable def extendRightEquiv : F ≃ₐ[K] (F.extendRight M) := F.equivMap (Algebra.algHom K L M)
 
 @[simp]
-theorem algebraMap_extendRightEquiv (a : F) :
-    algebraMap (F.extendRight M) M (extendRightEquiv F M a) = algebraMap F M a := rfl
+theorem algebraMap_extendRightEquiv (a : F)
+    : algebraMap (F.extendRight M) M (extendRightEquiv F M a) = algebraMap F M a :=
+  rfl
 
 @[simp]
-theorem coe_extendRightEquiv (a : F) :
-    (extendRightEquiv F M a : M) = algebraMap F M a := rfl
+theorem coe_extendRightEquiv (a : F) : (extendRightEquiv F M a : M) = algebraMap F M a := rfl
 
 @[simp]
-theorem algebraMap_extendRightEquiv_symm (a : F.extendRight M) :
-    algebraMap F M ((extendRightEquiv F M).symm a) = a := by
+theorem algebraMap_extendRightEquiv_symm (a : F.extendRight M)
+    : algebraMap F M ((extendRightEquiv F M).symm a) = a := by
   rw [← algebraMap_extendRightEquiv, AlgEquiv.apply_symm_apply, algebraMap_apply]
 
 namespace extendRight
@@ -79,29 +81,29 @@ instance : SMul S (F.extendRight M) where
     exact (F.extendRight M).mul_mem (algebraMap_mem F M s) x.prop
 
 @[simp]
-theorem coe_smul (s : S) (x : F.extendRight M) :
-    (s • x : F.extendRight M) = s • (x : M) := rfl
+theorem coe_smul (s : S) (x : F.extendRight M) : (s • x : F.extendRight M) = s • (x : M) := rfl
 
 -- The algebra instance is defined this way to avoid diamonds, see below
 noncomputable instance algebra : Algebra S (F.extendRight M) where
   algebraMap := (algebraMap S M).codRestrict (F.extendRight M).toSubalgebra (algebraMap_mem F M ·)
   commutes' _ _ := Subtype.ext <| by simp [Algebra.commutes]
-  smul_def' s x := Subtype.ext <| by
-    convert_to! s • (x : M) = _
-    rw [MulMemClass.coe_mul, RingHom.codRestrict_apply, ← Algebra.smul_def]
+  smul_def' s x :=
+    Subtype.ext <| by
+      convert_to! s • (x : M) = _
+      rw [MulMemClass.coe_mul, RingHom.codRestrict_apply, ← Algebra.smul_def]
 
 -- Check there is no diamond
-example [Algebra S K] [IsScalarTower S K M] :
-    ((F.extendRight M).algebra' : Algebra S (F.extendRight M)) =
-      (algebra F M : Algebra S (F.extendRight M)) := by
+example [Algebra S K] [IsScalarTower S K M]
+    : ((F.extendRight M).algebra' : Algebra S (F.extendRight M))
+      = (algebra F M : Algebra S (F.extendRight M)) := by
   with_reducible_and_instances rfl
 
 instance : IsScalarTower S (F.extendRight M) M := IsScalarTower.of_algebraMap_eq' rfl
 
 instance : IsScalarTower S F (F.extendRight M) := IsScalarTower.to₁₂₃ S F (F.extendRight M) M
 
-instance [Algebra R S] [Algebra R F] [Algebra R M] [IsScalarTower R F M] [IsScalarTower R S M] :
-    IsScalarTower R S (F.extendRight M) :=
+instance [Algebra R S] [Algebra R F] [Algebra R M] [IsScalarTower R F M] [IsScalarTower R S M]
+    : IsScalarTower R S (F.extendRight M) :=
   IsScalarTower.to₁₂₃ R S (F.extendRight M) M
 
 variable (S)
@@ -114,27 +116,26 @@ noncomputable def _root_.IntermediateField.extendRightEquiv' : F ≃ₐ[S] (F.ex
   AlgEquiv.ofBijective (Algebra.algHom S F (F.extendRight M)) (extendRightEquiv F M).bijective
 
 @[simp]
-theorem coe_extendRightEquiv' (a : F) :
-    (extendRightEquiv' F M S a : M) = algebraMap F M a := rfl
+theorem coe_extendRightEquiv' (a : F) : (extendRightEquiv' F M S a : M) = algebraMap F M a := rfl
 
 @[simp]
-theorem algebraMap_extendRightEquiv' (a : F) :
-    algebraMap (F.extendRight M) M (extendRightEquiv' F M S a) = algebraMap F M a := rfl
+theorem algebraMap_extendRightEquiv' (a : F)
+    : algebraMap (F.extendRight M) M (extendRightEquiv' F M S a) = algebraMap F M a :=
+  rfl
 
 @[simp]
-theorem algebraMap_extendRightEquiv'_symm (a : F.extendRight M) :
-    algebraMap F M ((extendRightEquiv' F M S).symm a) = a := by
+theorem algebraMap_extendRightEquiv'_symm (a : F.extendRight M)
+    : algebraMap F M ((extendRightEquiv' F M S).symm a) = a := by
   rw [← algebraMap_extendRightEquiv' F M S, AlgEquiv.apply_symm_apply, algebraMap_apply]
 
 variable {S}
 
-instance isFractionRing [IsFractionRing S F] :
-    IsFractionRing S (F.extendRight M) :=
+instance isFractionRing [IsFractionRing S F] : IsFractionRing S (F.extendRight M) :=
   .of_algEquiv (R := S) (L := F.extendRight M) (K := F) <| F.extendRightEquiv' M S
 
-instance isIntegralClosure [Algebra R F] [Algebra R M] [IsScalarTower R F M]
-    [IsIntegralClosure S R F] :
-    IsIntegralClosure S R (F.extendRight M) := by
+instance isIntegralClosure
+    [Algebra R F] [Algebra R M] [IsScalarTower R F M] [IsIntegralClosure S R F]
+    : IsIntegralClosure S R (F.extendRight M) := by
   refine .of_algEquiv S (F.extendRightEquiv' M R) fun x ↦ ?_
   rw [Subtype.ext_iff, ← algebraMap_apply (F.extendRight M), ← algebraMap_apply (F.extendRight M),
     algebraMap_extendRightEquiv', ← IsScalarTower.algebraMap_apply,

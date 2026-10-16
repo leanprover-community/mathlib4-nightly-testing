@@ -21,8 +21,10 @@ namespace Mathlib.Tactic.Order
 
 open Lean Expr Meta
 
-/-- An edge in a graph. In the `order` tactic, the `proof` field stores the of
-`atoms[src] ≤ atoms[dst]`. -/
+/--
+An edge in a graph. In the `order` tactic, the `proof` field stores the of
+`atoms[src] ≤ atoms[dst]`.
+-/
 structure Edge where
   /-- Source of the edge. -/
   src : Nat
@@ -35,15 +37,19 @@ structure Edge where
 instance : ToString Edge where
   toString e := s!"{e.src} ⟶ {e.dst}"
 
-/-- If `g` is a `Graph`, then for a vertex with index `v`, `g[v]` is an array containing
-the edges starting from this vertex. -/
+/--
+If `g` is a `Graph`, then for a vertex with index `v`, `g[v]` is an array containing
+the edges starting from this vertex.
+-/
 abbrev Graph := Std.HashMap Nat (Array Edge)
 
 namespace Graph
 
 /-- Adds an `edge` to the graph. -/
 def addEdge (g : Graph) (edge : Edge) : Graph :=
-  g.alter edge.src fun | none => #[edge] | some edges => edges.push edge
+  g.alter edge.src fun
+    | none => #[edge]
+    | some edges => edges.push edge
 
 /-- Constructs a directed `Graph` using `≤` facts. It ignores all other facts. -/
 def constructLeGraph (facts : Array AtomicFact) : MetaM Graph := do
@@ -58,26 +64,27 @@ structure DFSState where
   /-- `visited.contains v` if and only if the algorithm has already entered vertex `v`. -/
   visited : Std.HashSet Nat
 
-/-- DFS algorithm for constructing a proof that `x ≤ y` by finding a path from `x` to `y` in the
-`≤`-graph. -/
-partial def buildTransitiveLeProofDFS (g : Graph) (v t : Nat) (tExpr : Expr) :
-    StateT DFSState MetaM (Option Expr) := do
-  modify fun s => {s with visited := s.visited.insert v}
+/--
+DFS algorithm for constructing a proof that `x ≤ y` by finding a path from `x` to `y` in the
+`≤`-graph.
+-/
+partial def buildTransitiveLeProofDFS (g : Graph) (v t : Nat) (tExpr : Expr)
+    : StateT DFSState MetaM (Option Expr) := do
+  modify fun s => { s with visited := s.visited.insert v }
   if v == t then
     return ← mkAppM ``le_refl #[tExpr]
-  if !g.contains v then
+  if ! g.contains v then
     return none
   for edge in g[v]! do
     let u := edge.dst
-    if !(← get).visited.contains u then
+    if ! (← get).visited.contains u then
       match ← buildTransitiveLeProofDFS g u t tExpr with
       | some pf => return some <| ← mkAppM ``le_trans #[edge.proof, pf]
       | none => continue
   return none
 
 /-- Given a `≤`-graph `g`, finds a proof of `s ≤ t` using transitivity. -/
-def buildTransitiveLeProof (g : Graph) (s t : Nat) :
-    AtomM (Option Expr) := do
+def buildTransitiveLeProof (g : Graph) (s t : Nat) : AtomM (Option Expr) := do
   let state : DFSState := ⟨∅⟩
   (buildTransitiveLeProofDFS g s t ((← get).atoms[t]!)).run' state
 

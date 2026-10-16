@@ -16,13 +16,16 @@ Currently, we only verify very basic checks: this could be made stricter in the 
 -/
 
 open Cli in
-/-- Implementation of the `check-title-labels` command line program.
-The exit code is the number of violations found. -/
+/--
+Implementation of the `check-title-labels` command line program.
+The exit code is the number of violations found.
+-/
 def checkTitleLabelsCLI (args : Parsed) : IO UInt32 := do
   let title := (args.positionalArg! "title").value
-  let labels : List String := match args.flag? "labels" with
-  | some f => (f.as! String).splitOn "\n"
-  | none => []
+  let labels : List String :=
+    match args.flag? "labels" with
+    | some f => (f.as! String).splitOn "\n"
+    | none => []
   IO.println s!"labels are {labels}"
   -- We do not validate titles of WIP PRs.
   if labels.contains "WIP" then return 0
@@ -37,23 +40,24 @@ def checkTitleLabelsCLI (args : Parsed) : IO UInt32 := do
 
 open Cli in
 /-- Setting up command line options and help text for `lake exe check-title-labels`. -/
-def checkTitleLabels : Cmd := `[Cli|
-  «check-title-labels» VIA checkTitleLabelsCLI; ["0.0.1"]
-  "Check that a PR title matches the formatting requirements at
+def checkTitleLabels : Cmd :=
+  `[Cli|
+      «check-title-labels» VIA checkTitleLabelsCLI; ["0.0.1"]
+      "Check that a PR title matches the formatting requirements at
   <https://leanprover-community.github.io/contribute/commit.html>.
   If this PR is a feature PR, also verify that it has a topic label,
   and that there are no contradictory labels.
 
   If the inpupt title does not pass validation, output a list of errors."
 
-  FLAGS:
-    "labels" : String; "newline-separated list of label names of this PR\n\
+      FLAGS:
+        "labels" : String; "newline-separated list of label names of this PR\n\
       These are optional; we merely use a WIP label to skip any checks of the PR title"
 
-  ARGS:
-    title : String; "this PR's title"
+      ARGS:
+        title : String; "this PR's title"
 
-]
+    ]
 
 /-- The entrypoint to the `lake exe check-title-labels` command. -/
 def main (args : List String) : IO UInt32 := checkTitleLabels.validate args

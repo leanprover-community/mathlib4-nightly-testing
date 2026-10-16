@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Group.TypeTags.Finite
 public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.GroupTheory.OrderOfElement
 
-
 /-!
 # Finite order elements in normed rings.
 
@@ -30,10 +29,12 @@ variable [NormedRing α] [NormMulClass α] [NormOneClass α] {a : α}
 protected lemma IsOfFinOrder.norm_eq_one (ha : IsOfFinOrder a) : ‖a‖ = 1 :=
   ((normHom : α →*₀ ℝ).toMonoidHom.isOfFinOrder ha).eq_one <| norm_nonneg _
 
-example [Monoid β] (φ : β →* α) {x : β} {k : ℕ+} (h : x ^ (k : ℕ) = 1) :
-    ‖φ x‖ = 1 := (φ.isOfFinOrder <| isOfFinOrder_iff_pow_eq_one.2 ⟨_, k.2, h⟩).norm_eq_one
+example [Monoid β] (φ : β →* α) {x : β} {k : ℕ+} (h : x ^ (k : ℕ) = 1) : ‖φ x‖ = 1 :=
+  (φ.isOfFinOrder <| isOfFinOrder_iff_pow_eq_one.2 ⟨_, k.2, h⟩).norm_eq_one
 
-@[simp] lemma AddChar.norm_apply {G : Type*} [AddLeftCancelMonoid G] [Finite G] (ψ : AddChar G α)
-    (x : G) : ‖ψ x‖ = 1 := (ψ.toMonoidHom.isOfFinOrder <| isOfFinOrder_of_finite _).norm_eq_one
+@[simp]
+lemma AddChar.norm_apply {G : Type*} [AddLeftCancelMonoid G] [Finite G] (ψ : AddChar G α) (x : G)
+    : ‖ψ x‖ = 1 :=
+  (ψ.toMonoidHom.isOfFinOrder <| isOfFinOrder_of_finite _).norm_eq_one
 
 end NormedRing

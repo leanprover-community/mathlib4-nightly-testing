@@ -6,7 +6,6 @@ Authors: Kim Morrison, Floris van Doorn
 module
 
 public import Mathlib.CategoryTheory.Limits.Filtered
-
 import Mathlib.CategoryTheory.Limits.Opposites
 
 /-!
@@ -32,19 +31,22 @@ namespace CategoryTheory.Limits
 
 variable {C : Type u₁} [Category.{v₁} C]
 
-instance has_cofiltered_limits_op_of_has_filtered_colimits [HasFilteredColimitsOfSize.{v₂, u₂} C] :
-    HasCofilteredLimitsOfSize.{v₂, u₂} Cᵒᵖ where
+instance has_cofiltered_limits_op_of_has_filtered_colimits [HasFilteredColimitsOfSize.{v₂, u₂} C]
+    : HasCofilteredLimitsOfSize.{v₂, u₂} Cᵒᵖ where
   HasLimitsOfShape _ _ _ := hasLimitsOfShape_op_of_hasColimitsOfShape
 
-theorem has_cofiltered_limits_of_has_filtered_colimits_op [HasFilteredColimitsOfSize.{v₂, u₂} Cᵒᵖ] :
-    HasCofilteredLimitsOfSize.{v₂, u₂} C :=
-  { HasLimitsOfShape := fun _ _ _ => hasLimitsOfShape_of_hasColimitsOfShape_op }
+theorem has_cofiltered_limits_of_has_filtered_colimits_op [HasFilteredColimitsOfSize.{v₂, u₂} Cᵒᵖ]
+    : HasCofilteredLimitsOfSize.{v₂, u₂} C := {
+  HasLimitsOfShape := fun _ _ _ => hasLimitsOfShape_of_hasColimitsOfShape_op
+}
 
-instance has_filtered_colimits_op_of_has_cofiltered_limits [HasCofilteredLimitsOfSize.{v₂, u₂} C] :
-    HasFilteredColimitsOfSize.{v₂, u₂} Cᵒᵖ where HasColimitsOfShape _ _ _ := inferInstance
+instance has_filtered_colimits_op_of_has_cofiltered_limits [HasCofilteredLimitsOfSize.{v₂, u₂} C]
+    : HasFilteredColimitsOfSize.{v₂, u₂} Cᵒᵖ where
+  HasColimitsOfShape _ _ _ := inferInstance
 
-theorem has_filtered_colimits_of_has_cofiltered_limits_op [HasCofilteredLimitsOfSize.{v₂, u₂} Cᵒᵖ] :
-    HasFilteredColimitsOfSize.{v₂, u₂} C :=
-  { HasColimitsOfShape := fun _ _ _ => hasColimitsOfShape_of_hasLimitsOfShape_op }
+theorem has_filtered_colimits_of_has_cofiltered_limits_op [HasCofilteredLimitsOfSize.{v₂, u₂} Cᵒᵖ]
+    : HasFilteredColimitsOfSize.{v₂, u₂} C := {
+  HasColimitsOfShape := fun _ _ _ => hasColimitsOfShape_of_hasLimitsOfShape_op
+}
 
 end CategoryTheory.Limits

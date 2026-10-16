@@ -32,8 +32,10 @@ variable (C : Type u) [Category.{v} C] [Abelian C]
 
 namespace HomotopyCategory
 
-/-- The triangulated subcategory of `HomotopyCategory C (ComplexShape.up ℤ)` consisting
-of acyclic complexes. -/
+/--
+The triangulated subcategory of `HomotopyCategory C (ComplexShape.up ℤ)` consisting
+of acyclic complexes.
+-/
 def subcategoryAcyclic : ObjectProperty (HomotopyCategory C (ComplexShape.up ℤ)) :=
   (homologyFunctor C (ComplexShape.up ℤ) 0).homologicalKernel
 
@@ -47,25 +49,25 @@ instance : (subcategoryAcyclic C).IsClosedUnderIsomorphisms := by
 
 variable {C}
 
-lemma mem_subcategoryAcyclic_iff (X : HomotopyCategory C (ComplexShape.up ℤ)) :
-    subcategoryAcyclic C X ↔ ∀ (n : ℤ), IsZero ((homologyFunctor _ _ n).obj X) :=
+lemma mem_subcategoryAcyclic_iff (X : HomotopyCategory C (ComplexShape.up ℤ))
+    : subcategoryAcyclic C X ↔ ∀ (n : ℤ), IsZero ((homologyFunctor _ _ n).obj X) :=
   Functor.mem_homologicalKernel_iff _ X
 
-lemma quotient_obj_mem_subcategoryAcyclic_iff_exactAt (K : CochainComplex C ℤ) :
-    subcategoryAcyclic C ((quotient _ _).obj K) ↔ ∀ (n : ℤ), K.ExactAt n := by
+lemma quotient_obj_mem_subcategoryAcyclic_iff_exactAt (K : CochainComplex C ℤ)
+    : subcategoryAcyclic C ((quotient _ _).obj K) ↔ ∀ (n : ℤ), K.ExactAt n := by
   rw [mem_subcategoryAcyclic_iff]
   refine forall_congr' (fun n => ?_)
   simp only [HomologicalComplex.exactAt_iff_isZero_homology]
   exact ((homologyFunctorFactors C (ComplexShape.up ℤ) n).app K).isZero_iff
 
-lemma quotient_obj_mem_subcategoryAcyclic_iff_acyclic (K : CochainComplex C ℤ) :
-    subcategoryAcyclic C ((quotient _ _).obj K) ↔ K.Acyclic :=
+lemma quotient_obj_mem_subcategoryAcyclic_iff_acyclic (K : CochainComplex C ℤ)
+    : subcategoryAcyclic C ((quotient _ _).obj K) ↔ K.Acyclic :=
   quotient_obj_mem_subcategoryAcyclic_iff_exactAt _
 
 variable (C)
 
-lemma quasiIso_eq_trW_subcategoryAcyclic :
-    quasiIso C (ComplexShape.up ℤ) = (subcategoryAcyclic C).trW := by
+lemma quasiIso_eq_trW_subcategoryAcyclic
+    : quasiIso C (ComplexShape.up ℤ) = (subcategoryAcyclic C).trW := by
   ext K L f
   exact ((homologyFunctor C (ComplexShape.up ℤ) 0).mem_homologicalKernel_trW_iff f).symm
 

@@ -36,10 +36,10 @@ ideal quotient, quotient ring
 
 public section
 
-
 universe u v
 
-/-- `HasQuotient A B` is a notation typeclass that allows us to write `A ⧸ b` for `b : B`.
+/--
+`HasQuotient A B` is a notation typeclass that allows us to write `A ⧸ b` for `b : B`.
 This allows the usual notation for quotients of algebraic structures,
 such as groups, modules and rings.
 

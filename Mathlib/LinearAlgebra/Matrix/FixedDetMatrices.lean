@@ -25,17 +25,20 @@ kbb (https://github.com/kim-em/kbb/tree/master) repository, so credit to those a
 variable (n : Type*) [DecidableEq n] [Fintype n] (R : Type*) [CommRing R]
 
 /-- The subtype of matrices with fixed determinant `m` -/
-def FixedDetMatrix (m : R) := { A : Matrix n n R // A.det = m }
+def FixedDetMatrix (m : R) := {A : Matrix n n R // A.det = m}
 
 namespace FixedDetMatrices
 
 open Matrix hiding mul_smul
 open ModularGroup SpecialLinearGroup MatrixGroups
 
-/-- Extensionality theorem for `FixedDetMatrix` with respect to the underlying matrix, not
-entrywise. -/
+/--
+Extensionality theorem for `FixedDetMatrix` with respect to the underlying matrix, not
+entrywise.
+-/
 lemma ext' {m : R} {A B : FixedDetMatrix n R m} (h : A.1 = B.1) : A = B := by
-  cases A; cases B
+  cases A
+  cases B
   congr
 
 @[ext]
@@ -47,8 +50,8 @@ lemma ext {m : R} {A B : FixedDetMatrix n R m} (h : ∀ i j, A.1 i j = B.1 i j) 
 instance (m : R) : SMul (SpecialLinearGroup n R) (FixedDetMatrix n R m) where
   smul g A := ⟨g * A.1, by simp only [det_mul, SpecialLinearGroup.det_coe, A.2, one_mul]⟩
 
-lemma smul_def (m : R) (g : SpecialLinearGroup n R) (A : (FixedDetMatrix n R m)) :
-    g • A = ⟨g * A.1, by simp only [det_mul, SpecialLinearGroup.det_coe, A.2, one_mul]⟩ :=
+lemma smul_def (m : R) (g : SpecialLinearGroup n R) (A : (FixedDetMatrix n R m))
+    : g • A = ⟨g * A.1, by simp only [det_mul, SpecialLinearGroup.det_coe, A.2, one_mul]⟩ :=
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
@@ -56,8 +59,8 @@ instance (m : R) : MulAction (SpecialLinearGroup n R) (FixedDetMatrix n R m) whe
   one_smul b := by rw [smul_def]; simp only [coe_one, one_mul, Subtype.coe_eta]
   mul_smul x y b := by simp_rw [smul_def, ← mul_assoc, coe_mul]
 
-lemma smul_coe (m : R) (g : SpecialLinearGroup n R) (A : FixedDetMatrix n R m) :
-    (g • A).1 = g * A.1 := by
+lemma smul_coe (m : R) (g : SpecialLinearGroup n R) (A : FixedDetMatrix n R m)
+    : (g • A).1 = g * A.1 := by
   rw [smul_def]
 
 section IntegralFixedDetMatrices
@@ -73,8 +76,8 @@ def reps (m : ℤ) : Set (Δ m) :=
 /-- Reduction step for matrices in `Δ m` which moves the matrices towards `reps` -/
 def reduceStep (A : Δ m) : Δ m := S • (T ^ (-(A.1 0 0 / A.1 1 0))) • A
 
-private lemma reduce_aux {A : Δ m} (h : (A.1 1 0) ≠ 0) :
-    |((reduceStep A).1 1 0)| < |(A.1 1 0)| := by
+private lemma reduce_aux {A : Δ m} (h : (A.1 1 0) ≠ 0)
+    : |((reduceStep A).1 1 0)| < |(A.1 1 0)| := by
   suffices ((reduceStep A).1 1 0) = A.1 0 0 % A.1 1 0 by
     rw [this, abs_eq_self.mpr (Int.emod_nonneg (A.1 0 0) h)]
     exact Int.emod_lt_abs (A.1 0 0) h
@@ -83,47 +86,50 @@ private lemma reduce_aux {A : Δ m} (h : (A.1 1 0) ≠ 0) :
 
 /-- Reduction lemma for integral FixedDetMatrices. -/
 @[elab_as_elim]
-def reduce_rec {C : Δ m → Sort*}
-    (base : ∀ A : Δ m, (A.1 1 0) = 0 → C A)
-    (step : ∀ A : Δ m, (A.1 1 0) ≠ 0 → C (reduceStep A) → C A) :
-    ∀ A, C A := fun A => by
+def reduce_rec
+    {C : Δ m → Sort*} (base : ∀ A : Δ m, (A.1 1 0) = 0 → C A)
+    (step : ∀ A : Δ m, (A.1 1 0) ≠ 0 → C (reduceStep A) → C A)
+    : ∀ A, C A := fun A => by
   by_cases h : (A.1 1 0) = 0
   · exact base _ h
   · exact step A h (reduce_rec base step (reduceStep A))
-  termination_by A => Int.natAbs (A.1 1 0)
-  decreasing_by
-    zify
-    exact reduce_aux h
+termination_by A => Int.natAbs (A.1 1 0)
+decreasing_by
+  zify
+  exact reduce_aux h
 
-/-- Map from `Δ m → Δ m` which reduces a `FixedDetMatrix` towards a representative element
-in reps -/
+/--
+Map from `Δ m → Δ m` which reduces a `FixedDetMatrix` towards a representative element
+in reps
+-/
 def reduce : Δ m → Δ m := fun A ↦
   if (A.1 1 0) = 0 then
-    if 0 < A.1 0 0 then (T ^ (-(A.1 0 1 / A.1 1 1))) • A else
-      (T ^ (-(-A.1 0 1 / -A.1 1 1))) • (S • (S • A)) --the -/- don't cancel with ℤ divs.
+    if 0 < A.1 0 0 then
+      (T ^ (-(A.1 0 1 / A.1 1 1))) • A
+    else
+      (T ^ (-(- A.1 0 1 / - A.1 1 1))) • (S • (S • A)) -- the -/- don't cancel with ℤ divs.
   else
     reduce (reduceStep A)
-  termination_by b => Int.natAbs (b.1 1 0)
-  decreasing_by
-    next a h =>
+termination_by b => Int.natAbs (b.1 1 0)
+decreasing_by
+  next a h =>
     zify
     exact reduce_aux h
 
-lemma reduce_of_pos {A : Δ m} (hc : (A.1 1 0) = 0) (ha : 0 < A.1 0 0) :
-    reduce A = (T ^ (-(A.1 0 1 / A.1 1 1))) • A := by
+lemma reduce_of_pos {A : Δ m} (hc : (A.1 1 0) = 0) (ha : 0 < A.1 0 0)
+    : reduce A = (T ^ (-(A.1 0 1 / A.1 1 1))) • A := by
   rw [reduce]
   simp only [zpow_neg, Int.ediv_neg, neg_neg] at *
   simp_rw [ite_eq_left hc, ite_eq_left ha]
 
-lemma reduce_of_not_pos {A : Δ m} (hc : (A.1 1 0) = 0) (ha : ¬ 0 < A.1 0 0) :
-    reduce A = (T ^ (-(-A.1 0 1 / -A.1 1 1))) • (S • (S • A)) := by
+lemma reduce_of_not_pos {A : Δ m} (hc : (A.1 1 0) = 0) (ha : ¬ 0 < A.1 0 0)
+    : reduce A = (T ^ (-(- A.1 0 1 / - A.1 1 1))) • (S • (S • A)) := by
   rw [reduce]
   simp only [zpow_neg, Int.ediv_neg, neg_neg] at *
   simp_rw [ite_eq_left hc, ite_eq_right ha]
 
 @[simp]
-lemma reduce_reduceStep {A : Δ m} (hc : (A.1 1 0) ≠ 0) :
-    reduce (reduceStep A) = reduce A := by
+lemma reduce_reduceStep {A : Δ m} (hc : (A.1 1 0) ≠ 0) : reduce (reduceStep A) = reduce A := by
   symm
   rw [reduce, ite_eq_right hc]
 
@@ -137,8 +143,8 @@ private lemma A_a_ne_zero {A : Δ m} (ha : A.1 1 0 = 0) (hm : m ≠ 0) : A.1 0 0
   left_ne_zero_of_mul (A_c_eq_zero ha ▸ hm)
 
 /-- An auxiliary result bounding the size of the entries of the representatives in `reps` -/
-lemma reps_entries_le_m' {A : Δ m} (h : A ∈ reps m) (i j : Fin 2) :
-    A.1 i j ∈ Finset.Icc (-|m|) |m| := by
+lemma reps_entries_le_m' {A : Δ m} (h : A ∈ reps m) (i j : Fin 2)
+    : A.1 i j ∈ Finset.Icc (- |m|) |m| := by
   suffices |A.1 i j| ≤ |m| from Finset.mem_Icc.mpr <| abs_le.mp this
   obtain ⟨h10, h00, h01, h11⟩ := h
   have h1 : 0 < |A.1 1 1| := (abs_nonneg _).trans_lt h11
@@ -158,7 +164,7 @@ lemma reps_zero_empty : reps 0 = ∅ := by
   simp_all [h₂.ne']
 
 noncomputable instance repsFintype (k : ℤ) : Fintype (reps k) := by
-  let H := Finset.Icc (-|k|) |k|
+  let H := Finset.Icc (- |k|) |k|
   let H4 := Fin 2 → Fin 2 → H
   apply Fintype.ofInjective (β := H4) (f := fun M i j ↦ ⟨M.1.1 i j, reps_entries_le_m' M.2 i j⟩)
   intro M N h
@@ -177,7 +183,8 @@ lemma T_S_rel_smul (A : Δ m) : S • S • S • T • S • T • S • A = T�
 set_option backward.isDefEq.respectTransparency false in
 lemma reduce_mem_reps {m : ℤ} (hm : m ≠ 0) (A : Δ m) : reduce A ∈ reps m := by
   induction A using reduce_rec with
-  | step A h1 h2 => simpa only [reduce_reduceStep h1] using h2
+  | step A h1 h2 =>
+    simpa only [reduce_reduceStep h1] using h2
   | base A h =>
     have hd := A_d_ne_zero h hm
     by_cases h1 : 0 < A.1 0 0
@@ -188,27 +195,27 @@ lemma reduce_mem_reps {m : ℤ} (hm : m ≠ 0) (A : Δ m) : reduce A ∈ reps m 
       have h3 := Int.emod_lt_abs (A.1 0 1) hd
       rw [← abs_eq_self.mpr <| Int.emod_nonneg _ hd] at h3
       simp only [smul_def, coe_T_zpow]
-      suffices A.1 1 0 = 0 ∧ n * A.1 1 0 < A.1 0 0 ∧
-          n * A.1 1 1 ≤ A.1 0 1 ∧ |A.1 0 1 + -(n * A.1 1 1)| < |A.1 1 1| by
+      suffices A.1 1 0 = 0 ∧ n * A.1 1 0 < A.1 0 0 ∧ n * A.1 1 1 ≤ A.1 0 1
+          ∧ |A.1 0 1 + -(n * A.1 1 1)| < |A.1 1 1| by
         simpa only [reps, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, empty_mul,
           Equiv.symm_apply_apply, Set.mem_ofPred_eq, of_apply, cons_val', vecMul, cons_dotProduct,
           vecHead, one_mul, vecTail, Function.comp_apply, Fin.succ_zero_eq_one, neg_mul,
           dotProduct_of_isEmpty, add_zero, zero_mul, zero_add, empty_val', cons_val_fin_one,
           cons_val_one, cons_val_zero, lt_add_neg_iff_add_lt, le_add_neg_iff_add_le]
-      simp_all only [mul_comm n, zero_mul, ← sub_eq_add_neg, ← h2,
-        Fin.isValue, and_true]
-    · simp only [reps, Fin.isValue, reduce_of_not_pos h h1, Int.ediv_neg, neg_neg, smul_def, ←
-        mul_assoc, S_mul_S_eq, neg_mul, one_mul, coe_T_zpow, mul_neg, cons_mul, Nat.succ_eq_add_one,
-        Nat.reduceAdd, empty_mul, Equiv.symm_apply_apply, neg_of, neg_cons, neg_empty,
-        Set.mem_ofPred_eq, of_apply, cons_val', Pi.neg_apply, vecMul, cons_dotProduct, vecHead,
-        vecTail, Function.comp_apply, Fin.succ_zero_eq_one, h, mul_zero, dotProduct_of_isEmpty,
-        add_zero, zero_mul, neg_zero, empty_val', cons_val_fin_one, cons_val_one, cons_val_zero,
-        lt_neg, neg_add_rev, zero_add, le_add_neg_iff_add_le, ← le_neg, abs_neg, true_and]
+      simp_all only [mul_comm n, zero_mul, ← sub_eq_add_neg, ← h2, Fin.isValue, and_true]
+    · simp only [reps, Fin.isValue, reduce_of_not_pos h h1, Int.ediv_neg, neg_neg, smul_def,
+        ← mul_assoc, S_mul_S_eq, neg_mul, one_mul, coe_T_zpow, mul_neg, cons_mul,
+        Nat.succ_eq_add_one, Nat.reduceAdd, empty_mul, Equiv.symm_apply_apply, neg_of, neg_cons,
+        neg_empty, Set.mem_ofPred_eq, of_apply, cons_val', Pi.neg_apply, vecMul, cons_dotProduct,
+        vecHead, vecTail, Function.comp_apply, Fin.succ_zero_eq_one, h, mul_zero,
+        dotProduct_of_isEmpty, add_zero, zero_mul, neg_zero, empty_val', cons_val_fin_one,
+        cons_val_one, cons_val_zero, lt_neg, neg_add_rev, zero_add, le_add_neg_iff_add_le, ← le_neg,
+        abs_neg, true_and]
       refine ⟨?_, Int.ediv_mul_le _ hd, ?_⟩
       · simp only [Int.lt_iff_le_and_ne]
         exact ⟨not_lt.mp h1, A_a_ne_zero h hm⟩
       · rw [mul_comm, add_comm, ← Int.sub_eq_add_neg, ← Int.emod_def,
-         abs_eq_self.mpr <| Int.emod_nonneg _ hd]
+          abs_eq_self.mpr <| Int.emod_nonneg _ hd]
         exact Int.emod_lt_abs _ hd
 
 variable {C : Δ m → Prop}
@@ -219,18 +226,19 @@ private lemma prop_red_S (hS : ∀ B, C B → C (S • B)) (B) : C (S • B) ↔
   rw [← (S_smul_four B)]
   solve_by_elim
 
-private lemma prop_red_T (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B)) (B) :
-    C (T • B) ↔ C B := by
+private lemma prop_red_T (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B)) (B)
+    : C (T • B) ↔ C B := by
   refine ⟨?_, hT _⟩
   intro ih
   rw [show B = T⁻¹ • T • B by simp, ← T_S_rel_smul]
   solve_by_elim (maxDepth := 10)
 
-private lemma prop_red_T_pow (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B)) :
-     ∀ B (n : ℤ), C (T ^ n • B) ↔ C B := by
+private lemma prop_red_T_pow (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B))
+    : ∀ B (n : ℤ), C (T ^ n • B) ↔ C B := by
   intro B n
   induction n with
-  | zero => simp only [zpow_zero, one_smul]
+  | zero =>
+    simp only [zpow_zero, one_smul]
   | succ n hn =>
     simpa only [add_comm (n : ℤ), zpow_add _ 1, ← smul_eq_mul, zpow_one, smul_assoc,
       prop_red_T hS hT]
@@ -238,9 +246,12 @@ private lemma prop_red_T_pow (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B 
     rwa [sub_eq_neg_add, zpow_add, zpow_neg_one, ← prop_red_T hS hT, mul_smul, smul_inv_smul]
 
 @[elab_as_elim]
-theorem induction_on {C : Δ m → Prop} {A : Δ m} (hm : m ≠ 0)
+theorem induction_on
+    {C : Δ m → Prop} {A : Δ m}
+    (hm : m ≠ 0)
     (h0 : ∀ A : Δ m, A.1 1 0 = 0 → 0 < A.1 0 0 → 0 ≤ A.1 0 1 → |(A.1 0 1)| < |(A.1 1 1)| → C A)
-    (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B)) : C A := by
+    (hS : ∀ B, C B → C (S • B)) (hT : ∀ B, C B → C (T • B))
+    : C A := by
   have h_reduce : C (reduce A) := by
     rcases reduce_mem_reps hm A with ⟨H1, H2, H3, H4⟩
     exact h0 _ H1 H2 H3 H4
@@ -254,8 +265,10 @@ theorem induction_on {C : Δ m → Prop} {A : Δ m} (hm : m ≠ 0)
   rw [← reduce_reduceStep hc] at hA
   simpa only [reduceStep, prop_red_S hS, prop_red_T_pow hS hT] using ih hA
 
-lemma reps_one_id (A : FixedDetMatrix (Fin 2) ℤ 1) (a1 : A.1 1 0 = 0) (a4 : 0 < A.1 0 0)
-    (a6 : |A.1 0 1| < |(A.1 1 1)|) : A = (1 : SL(2, ℤ)) := by
+lemma reps_one_id
+    (A : FixedDetMatrix (Fin 2) ℤ 1)
+    (a1 : A.1 1 0 = 0) (a4 : 0 < A.1 0 0) (a6 : |A.1 0 1| < |(A.1 1 1)|)
+    : A = (1 : SL(2, ℤ)) := by
   have := Int.mul_eq_one_iff_eq_one_or_neg_one.mp (A_c_eq_zero a1)
   ext i j
   fin_cases i <;> fin_cases j <;> aesop

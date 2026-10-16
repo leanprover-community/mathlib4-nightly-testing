@@ -28,34 +28,32 @@ namespace CategoryTheory
 
 open Localization Limits MorphismProperty
 
-variable {C D : Type*} [Category* C] [Category* D]
-  [Abelian C] [Abelian D] (G : D ⥤ C)
-  [PreservesFiniteLimits G] [PreservesFiniteColimits G]
+variable
+  {C D : Type*} [Category* C] [Category* D] [Abelian C] [Abelian D]
+  (G : D ⥤ C) [PreservesFiniteLimits G] [PreservesFiniteColimits G]
 
 namespace Abelian
 
-lemma isoModSerre_kernel_eq_inverseImage_isomorphisms :
-    G.kernel.isoModSerre = (isomorphisms C).inverseImage G := by
+lemma isoModSerre_kernel_eq_inverseImage_isomorphisms
+    : G.kernel.isoModSerre = (isomorphisms C).inverseImage G := by
   ext X Y f
   refine ⟨(G.kernel.isoModSerre_isInvertedBy_iff G).2 (by rfl) _, fun hf ↦ ?_⟩
   simp only [inverseImage_iff, isomorphisms.iff] at hf
   constructor
-  · exact KernelFork.IsLimit.isZero_of_mono
-      (KernelFork.mapIsLimit _ (kernelIsKernel f) G)
-  · exact CokernelCofork.IsColimit.isZero_of_epi
-      (CokernelCofork.mapIsColimit _ (cokernelIsCokernel f) G)
+  · exact KernelFork.IsLimit.isZero_of_mono (KernelFork.mapIsLimit _ (kernelIsKernel f) G)
+  · exact CokernelCofork.IsColimit.isZero_of_epi (CokernelCofork.mapIsColimit _
+      (cokernelIsCokernel f) G)
 
 variable {G}
 
-lemma isoModSerre_kernel_eq_isLocal_of_rightAdjoint
-    {F : C ⥤ D} (adj : G ⊣ F) [F.Full] [F.Faithful] :
-    G.kernel.isoModSerre = ObjectProperty.isLocal (· ∈ Set.range F.obj) := by
+lemma isoModSerre_kernel_eq_isLocal_of_rightAdjoint {F : C ⥤ D} (adj : G ⊣ F) [F.Full] [F.Faithful]
+    : G.kernel.isoModSerre = ObjectProperty.isLocal (· ∈ Set.range F.obj) := by
   rw [ObjectProperty.isLocal_eq_inverseImage_isomorphisms adj,
     isoModSerre_kernel_eq_inverseImage_isomorphisms]
 
 lemma isLocalization_isoModSerre_kernel_of_leftAdjoint
-    {F : C ⥤ D} (adj : G ⊣ F) [F.Full] [F.Faithful] :
-    G.IsLocalization G.kernel.isoModSerre := by
+    {F : C ⥤ D} (adj : G ⊣ F) [F.Full] [F.Faithful]
+    : G.IsLocalization G.kernel.isoModSerre := by
   rw [isoModSerre_kernel_eq_inverseImage_isomorphisms G]
   exact adj.isLocalization
 

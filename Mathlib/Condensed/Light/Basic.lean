@@ -25,8 +25,7 @@ open CategoryTheory
 `LightCondensed.{u} C` is the category of light condensed objects in a category `C`, which are
 defined as sheaves on `LightProfinite.{u}` with respect to the coherent Grothendieck topology.
 -/
-abbrev LightCondensed (C : Type w) [Category.{v} C] :=
-  Sheaf (coherentTopology LightProfinite.{u}) C
+abbrev LightCondensed (C : Type w) [Category.{v} C] := Sheaf (coherentTopology LightProfinite.{u}) C
 
 /--
 Light condensed sets. Because `LightProfinite` is an essentially small category, we don't need the
@@ -42,13 +41,13 @@ variable {C : Type w} [Category.{v} C]
 lemma id_hom (X : LightCondensed.{u} C) : (𝟙 X : X ⟶ X).hom = 𝟙 _ := rfl
 
 @[deprecated ObjectProperty.FullSubcategory.comp_hom +typeChanged (since := "2026-04-08")]
-lemma comp_hom {X Y Z : LightCondensed.{u} C} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom = f.hom ≫ g.hom :=
+lemma comp_hom {X Y Z : LightCondensed.{u} C} (f : X ⟶ Y) (g : Y ⟶ Z)
+    : (f ≫ g).hom = f.hom ≫ g.hom :=
   rfl
 
 @[ext]
-lemma hom_ext {X Y : LightCondensed.{u} C} (f g : X ⟶ Y) (h : ∀ S, f.hom.app S = g.hom.app S) :
-    f = g := by
+lemma hom_ext {X Y : LightCondensed.{u} C} (f g : X ⟶ Y) (h : ∀ S, f.hom.app S = g.hom.app S)
+    : f = g := by
   apply Sheaf.hom_ext
   ext
   exact h _

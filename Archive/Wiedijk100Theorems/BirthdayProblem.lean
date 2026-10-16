@@ -27,8 +27,9 @@ local notation "|" x "|" => Finset.card x
 local notation "‖" x "‖" => Fintype.card x
 
 /-- **Birthday Problem**: set cardinality interpretation. -/
-theorem birthday :
-    2 * ‖Fin 23 ↪ Fin 365‖ < ‖Fin 23 → Fin 365‖ ∧ 2 * ‖Fin 22 ↪ Fin 365‖ > ‖Fin 22 → Fin 365‖ := by
+theorem birthday
+    : 2 * ‖Fin 23 ↪ Fin 365‖ < ‖Fin 23 → Fin 365‖
+      ∧ 2 * ‖Fin 22 ↪ Fin 365‖ > ‖Fin 22 → Fin 365‖ := by
   simp only [Fintype.card_fin, Fintype.card_embedding_eq, Fintype.card_fun]
   decide
 
@@ -36,18 +37,18 @@ open MeasureTheory ProbabilityTheory
 
 variable {n m : ℕ}
 
-/- We then endow the space with a canonical measure, which is called ℙ.
-We define this to be the conditional counting measure. -/
-noncomputable instance measureSpace : MeasureSpace (Fin n → Fin m) :=
-  ⟨uniformOn Set.univ⟩
+/-
+We then endow the space with a canonical measure, which is called ℙ.
+We define this to be the conditional counting measure.
+-/
+noncomputable instance measureSpace : MeasureSpace (Fin n → Fin m) := ⟨uniformOn Set.univ⟩
 
-theorem Fin.measure_apply {s : Set <| Fin n → Fin m} :
-    ℙ s = |s.toFinite.toFinset| / ‖Fin n → Fin m‖ := by
+theorem Fin.measure_apply {s : Set <| Fin n → Fin m}
+    : ℙ s = |s.toFinite.toFinset| / ‖Fin n → Fin m‖ := by
   rw [volume, measureSpace, uniformOn_univ, Measure.count_apply_finite]
 
 /-- **Birthday Problem**: first probabilistic interpretation. -/
-theorem birthday_measure :
-    ℙ ({f | f.Injective} : Set (Fin 23 → Fin 365)) < 1 / 2 := by
+theorem birthday_measure : ℙ ({f | f.Injective} : Set (Fin 23 → Fin 365)) < 1 / 2 := by
   rw [Fin.measure_apply]
   generalize_proofs hfin
   have : |hfin.toFinset| = 42200819302092359872395663074908957253749760700776448000000 := by

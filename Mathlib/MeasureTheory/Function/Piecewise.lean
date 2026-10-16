@@ -25,33 +25,39 @@ namespace IndexedPartition
 variable {ι α β : Type*} [MeasurableSpace α] {s : ι → Set α} {f : ι → α → β}
 
 @[fun_prop]
-theorem measurable_piecewise [MeasurableSpace β] [Countable ι]
-    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i)) (hf : ∀ i, Measurable (f i)) :
-    Measurable (hs.piecewise f) :=
-  fun t ht => by simpa [piecewise_preimage] using .iUnion (fun i => (hm i).inter ((hf i) ht))
+theorem measurable_piecewise
+    [MeasurableSpace β] [Countable ι]
+    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i)) (hf : ∀ i, Measurable (f i))
+    : Measurable (hs.piecewise f) := fun t ht => by
+  simpa [piecewise_preimage] using .iUnion (fun i => (hm i).inter ((hf i) ht))
 
 @[fun_prop]
-theorem aemeasurable_piecewise {μ : Measure α} [MeasurableSpace β] [Countable ι]
-    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i)) (hf : ∀ i, AEMeasurable (f i) μ) :
-    AEMeasurable (hs.piecewise f) μ := by
+theorem aemeasurable_piecewise
+    {μ : Measure α} [MeasurableSpace β] [Countable ι]
+    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i)) (hf : ∀ i, AEMeasurable (f i) μ)
+    : AEMeasurable (hs.piecewise f) μ := by
   choose p hp hq using hf
   refine ⟨hs.piecewise p, hs.measurable_piecewise hm hp, ?_⟩
   filter_upwards [ae_all_iff.2 hq] with x hx using hx (hs.index x)
 
 /-- This is the analogue of `SimpleFunc.piecewise` for `IndexedPartition`. -/
-def simpleFunc_piecewise [Finite ι] (hs : IndexedPartition s)
-    (hm : ∀ i, MeasurableSet (s i)) (f : ι → SimpleFunc α β) : SimpleFunc α β where
+def simpleFunc_piecewise
+    [Finite ι] (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i)) (f : ι → SimpleFunc α β)
+    : SimpleFunc α β where
   toFun := hs.piecewise (fun i => f i)
   measurableSet_fiber' := fun _ =>
     letI : MeasurableSpace β := ⊤
     hs.measurable_piecewise hm (fun i => (f i).measurable) trivial
-  finite_range' := (finite_iUnion (fun i => (f i).finite_range)).subset
-    (hs.range_piecewise_subset _)
+  finite_range' :=
+    (finite_iUnion (fun i => (f i).finite_range)).subset (hs.range_piecewise_subset _)
 
 @[fun_prop]
-theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
-    (hm : ∀ i, MeasurableSet (s i)) [TopologicalSpace β] (hf : ∀ i, StronglyMeasurable (f i)) :
-    StronglyMeasurable (hs.piecewise f) := by
+theorem stronglyMeasurable_piecewise
+    [Countable ι]
+    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i))
+    [TopologicalSpace β]
+    (hf : ∀ i, StronglyMeasurable (f i))
+    : StronglyMeasurable (hs.piecewise f) := by
   by_cases Fi : Finite ι
   · refine ⟨fun n => simpleFunc_piecewise hs hm (fun i => (hf i).approx n), fun x => ?_⟩
     simp [simpleFunc_piecewise, piecewise_apply, StronglyMeasurable.tendsto_approx]
@@ -70,8 +76,8 @@ theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
     · simp [hb]
       grind
   have G (n : ℕ) := hs.coarserPartition (g n) (sg n)
-  refine ⟨fun n => (G n).simpleFunc_piecewise (fun i => ?_) (fun i => (hf (e i)).approx n),
-    fun x => ?_⟩
+  refine
+    ⟨fun n => (G n).simpleFunc_piecewise (fun i => ?_) (fun i => (hf (e i)).approx n), fun x => ?_⟩
   · exact .biUnion (to_countable _) fun _ _ ↦ hm _
   simp only [simpleFunc_piecewise, SimpleFunc.coe_mk, piecewise_apply]
   have : ∀ᶠ n in atTop, e ((G n).index x) = hs.index x := by
@@ -86,9 +92,12 @@ theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
   exact (Filter.tendsto_congr' this).mp (by simp [StronglyMeasurable.tendsto_approx])
 
 @[fun_prop]
-theorem aestronglyMeasurable_piecewise {μ : Measure α} [Countable ι] (hs : IndexedPartition s)
-    (hm : ∀ i, MeasurableSet (s i)) [TopologicalSpace β] (hf : ∀ i, AEStronglyMeasurable (f i) μ) :
-    AEStronglyMeasurable (hs.piecewise f) μ := by
+theorem aestronglyMeasurable_piecewise
+    {μ : Measure α} [Countable ι]
+    (hs : IndexedPartition s) (hm : ∀ i, MeasurableSet (s i))
+    [TopologicalSpace β]
+    (hf : ∀ i, AEStronglyMeasurable (f i) μ)
+    : AEStronglyMeasurable (hs.piecewise f) μ := by
   choose p hp hq using hf
   refine ⟨hs.piecewise p, hs.stronglyMeasurable_piecewise hm hp, ?_⟩
   filter_upwards [ae_all_iff.2 hq] with x hx using hx (hs.index x)

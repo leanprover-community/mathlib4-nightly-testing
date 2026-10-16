@@ -38,7 +38,8 @@ def primeFactors (n : ℕ) : Finset ℕ := n.primeFactorsList.toFinset
 
 @[simp] lemma toFinset_factors (n : ℕ) : n.primeFactorsList.toFinset = n.primeFactors := rfl
 
-@[simp, grind =] lemma mem_primeFactors : p ∈ n.primeFactors ↔ p.Prime ∧ p ∣ n ∧ n ≠ 0 := by
+@[simp, grind =]
+lemma mem_primeFactors : p ∈ n.primeFactors ↔ p.Prime ∧ p ∣ n ∧ n ≠ 0 := by
   simp_rw [← toFinset_factors, List.mem_toFinset, mem_primeFactorsList']
 
 lemma mem_primeFactors_of_ne_zero (hn : n ≠ 0) : p ∈ n.primeFactors ↔ p.Prime ∧ p ∣ n := by
@@ -70,15 +71,18 @@ lemma pos_of_mem_primeFactors (hp : p ∈ n.primeFactors) : 0 < p :=
 lemma le_of_mem_primeFactors (h : p ∈ n.primeFactors) : p ≤ n :=
   le_of_dvd (mem_primeFactors.1 h).2.2.bot_lt <| dvd_of_mem_primeFactors h
 
-@[simp] lemma primeFactors_zero : primeFactors 0 = ∅ := by
+@[simp]
+lemma primeFactors_zero : primeFactors 0 = ∅ := by
   ext
   simp
 
-@[simp] lemma primeFactors_one : primeFactors 1 = ∅ := by
+@[simp]
+lemma primeFactors_one : primeFactors 1 = ∅ := by
   ext
   simpa using Prime.ne_one
 
-@[simp] lemma primeFactors_eq_empty : n.primeFactors = ∅ ↔ n = 0 ∨ n = 1 := by
+@[simp]
+lemma primeFactors_eq_empty : n.primeFactors = ∅ ↔ n = 0 ∨ n = 1 := by
   constructor
   · contrapose!
     rintro hn
@@ -91,29 +95,31 @@ lemma nonempty_primeFactors {n : ℕ} : n.primeFactors.Nonempty ↔ 1 < n := by
   contrapose!
   rw [primeFactors_eq_empty, Nat.le_one_iff_eq_zero_or_eq_one]
 
-@[simp] protected lemma Prime.primeFactors (hp : p.Prime) : p.primeFactors = {p} := by
+@[simp]
+protected lemma Prime.primeFactors (hp : p.Prime) : p.primeFactors = {p} := by
   simp [Nat.primeFactors, primeFactorsList_prime hp]
 
-lemma primeFactors_mul (ha : a ≠ 0) (hb : b ≠ 0) :
-    (a * b).primeFactors = a.primeFactors ∪ b.primeFactors := by
-  ext; simp only [Finset.mem_union, mem_primeFactors_iff_mem_primeFactorsList,
+lemma primeFactors_mul (ha : a ≠ 0) (hb : b ≠ 0)
+    : (a * b).primeFactors = a.primeFactors ∪ b.primeFactors := by
+  ext
+  simp only [Finset.mem_union, mem_primeFactors_iff_mem_primeFactorsList,
     mem_primeFactorsList_mul ha hb]
 
-lemma Coprime.primeFactors_mul {a b : ℕ} (hab : Coprime a b) :
-    (a * b).primeFactors = a.primeFactors ∪ b.primeFactors :=
+lemma Coprime.primeFactors_mul {a b : ℕ} (hab : Coprime a b)
+    : (a * b).primeFactors = a.primeFactors ∪ b.primeFactors :=
   (List.toFinset.ext <| mem_primeFactorsList_mul_of_coprime hab).trans <| List.toFinset_union _ _
 
-lemma primeFactors_gcd (ha : a ≠ 0) (hb : b ≠ 0) :
-    (a.gcd b).primeFactors = a.primeFactors ∩ b.primeFactors := by
+lemma primeFactors_gcd (ha : a ≠ 0) (hb : b ≠ 0)
+    : (a.gcd b).primeFactors = a.primeFactors ∩ b.primeFactors := by
   grind [dvd_gcd_iff]
 
-@[simp] lemma disjoint_primeFactors (ha : a ≠ 0) (hb : b ≠ 0) :
-    Disjoint a.primeFactors b.primeFactors ↔ Coprime a b := by
-  simp [disjoint_iff_inter_eq_empty, coprime_iff_gcd_eq_one, ← primeFactors_gcd,
-    ha, hb]
+@[simp]
+lemma disjoint_primeFactors (ha : a ≠ 0) (hb : b ≠ 0)
+    : Disjoint a.primeFactors b.primeFactors ↔ Coprime a b := by
+  simp [disjoint_iff_inter_eq_empty, coprime_iff_gcd_eq_one, ← primeFactors_gcd, ha, hb]
 
-protected lemma Coprime.disjoint_primeFactors (hab : Coprime a b) :
-    Disjoint a.primeFactors b.primeFactors :=
+protected lemma Coprime.disjoint_primeFactors (hab : Coprime a b)
+    : Disjoint a.primeFactors b.primeFactors :=
   List.disjoint_toFinset_iff_disjoint.2 <| coprime_primeFactorsList_disjoint hab
 
 lemma primeFactors_pow_succ (n k : ℕ) : (n ^ (k + 1)).primeFactors = n.primeFactors := by
@@ -129,7 +135,7 @@ lemma primeFactors_pow (n : ℕ) (hk : k ≠ 0) : (n ^ k).primeFactors = n.prime
   rw [primeFactors_pow_succ]
 
 /-- The only prime divisor of positive prime power `p^k` is `p` itself -/
-lemma primeFactors_prime_pow (hk : k ≠ 0) (hp : Prime p) :
-    (p ^ k).primeFactors = {p} := by simp [primeFactors_pow p hk, hp]
+lemma primeFactors_prime_pow (hk : k ≠ 0) (hp : Prime p) : (p ^ k).primeFactors = {p} := by
+  simp [primeFactors_pow p hk, hp]
 
 end Nat

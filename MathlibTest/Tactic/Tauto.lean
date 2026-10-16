@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon, David Renshaw
 -/
 module
+
 import Mathlib.Tactic.Tauto
 import Mathlib.Tactic.SplitIfs
 import Mathlib.Data.Part
@@ -45,29 +46,27 @@ section tauto₃
 example (p : Prop) : p ∧ True ↔ p := by tauto
 example (p : Prop) : p ∨ False ↔ p := by tauto
 
-example (p q : Prop) (h : p ≠ q) : ¬ p ↔ q := by tauto
-example (p q : Prop) (h : ¬ p = q) : ¬ p ↔ q := by tauto
+example (p q : Prop) (h : p ≠ q) : ¬p ↔ q := by tauto
+example (p q : Prop) (h : ¬ p = q) : ¬p ↔ q := by tauto
 
 example (p q r : Prop) : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (r ∨ p ∨ r) := by tauto
 example (p q r : Prop) : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (r ∨ p ∨ r) := by tauto
 
-example (p q : Prop) (h : ¬ (p ↔ q)) (h' : ¬ p) : q := by tauto
-example (p q : Prop) (h : ¬ (p ↔ q)) (h' : p) : ¬ q := by tauto
-example (p q : Prop) (h : ¬ (p ↔ q)) (h' : q) : ¬ p := by tauto
-example (p q : Prop) (h : ¬ (p ↔ q)) (h' : ¬ q) : p := by tauto
+example (p q : Prop) (h : ¬(p ↔ q)) (h' : ¬p) : q := by tauto
+example (p q : Prop) (h : ¬(p ↔ q)) (h' : p) : ¬q := by tauto
+example (p q : Prop) (h : ¬(p ↔ q)) (h' : q) : ¬p := by tauto
+example (p q : Prop) (h : ¬(p ↔ q)) (h' : ¬q) : p := by tauto
 
-example (p q : Prop) (h : ¬ (p ↔ q)) (h' : ¬ q) (h'' : ¬ p) : False := by
-  tauto
+example (p q : Prop) (h : ¬(p ↔ q)) (h' : ¬q) (h'' : ¬p) : False := by tauto
 
-example (p q r : Prop) (h : p ↔ q) (h' : r ↔ q) (h'' : ¬ r) : ¬ p := by
-  tauto
+example (p q r : Prop) (h : p ↔ q) (h' : r ↔ q) (h'' : ¬r) : ¬p := by tauto
 
 example (p q r : Prop) (h : p ↔ q) (h' : r ↔ q) : p ↔ r := by tauto
 
-example (p q r : Prop) (h : ¬ p = q) (h' : r = q) : p ↔ ¬ r := by tauto
+example (p q r : Prop) (h : ¬ p = q) (h' : r = q) : p ↔ ¬r := by tauto
 
-example (p : Prop) : p → ¬ (p → ¬ p) := by tauto
-example (p : Prop) (em : p ∨ ¬ p) : ¬ (p ↔ ¬ p) := by tauto
+example (p : Prop) : p → ¬(p → ¬p) := by tauto
+example (p : Prop) (em : p ∨ ¬p) : ¬(p ↔ ¬p) := by tauto
 
 -- reported at https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/weird.20tactic.20bug/near/370505747
 open scoped Classical in
@@ -77,7 +76,7 @@ example (hp : p) (hq : q) : (if p ∧ q then 1 else 0) = 1 := by
   · rfl
   · tauto
 
-example (hp : p) (hq : q) (h : ¬ (p ∧ q)) : False := by
+example (hp : p) (hq : q) (h : ¬(p ∧ q)) : False := by
   -- causes `h'` to have a type that's a metavariable:
   have h' := h
   clear h
@@ -95,11 +94,9 @@ example (hp : p) (hq : q) : p ∧ q := by
   tauto
 
 -- Checking `tauto` can deal with annotations:
-example (hp : ¬ p) (hq : ¬ (q ↔ p) := by sorry) : q := by
-  tauto
+example (hp : ¬p) (hq : ¬(q ↔ p) := by sorry) : q := by tauto
 
-example (P : Nat → Prop) (n : Nat) : P n → n = 7 ∨ n = 0 ∨ ¬ (n = 7 ∨ n = 0) ∧ P n := by
-  tauto
+example (P : Nat → Prop) (n : Nat) : P n → n = 7 ∨ n = 0 ∨ ¬(n = 7 ∨ n = 0) ∧ P n := by tauto
 
 section implementation_detail_ldecl
 variable (a b c : Nat)
@@ -109,8 +106,7 @@ Mathlib.Tactic.Tauto.distribNot must ignore any LocalDecl where isImplementation
 is true. Otherwise, this example yields an error saying "well-founded recursion cannot
 be used".
 -/
-example : ¬(¬a ≤ b ∧ a ≤ c ∨ ¬a ≤ c ∧ a ≤ b) ↔ a ≤ b ∧ a ≤ c ∨ ¬a ≤ c ∧ ¬a ≤ b := by
-  tauto
+example : ¬(¬ a ≤ b ∧ a ≤ c ∨ ¬ a ≤ c ∧ a ≤ b) ↔ a ≤ b ∧ a ≤ c ∨ ¬ a ≤ c ∧ ¬ a ≤ b := by tauto
 
 end implementation_detail_ldecl
 
@@ -137,7 +133,7 @@ variable (x y z w : α)
 
 -- This example is taken from pair_eq_pair_iff in Data.Set.Basic.
 -- It currently doesn't work because `tauto` does not apply `symm`.
---example : ((x = z ∨ x = w) ∧ (y = z ∨ y = w)) ∧
+-- example : ((x = z ∨ x = w) ∧ (y = z ∨ y = w)) ∧
 --           (z = x ∨ z = y) ∧ (w = x ∨ w = y) → x = z ∧ y = w ∨ x = w ∧ y = z := by
 --  tauto
 
@@ -163,11 +159,11 @@ example : (((r ∧ p ↔ r ∨ q) ∧ (q ∨ r)) → (p ∧ (x = w) ∧ (¬ x = 
 end closer
 -/
 
-/-  Zulip discussion:
+/-
+Zulip discussion:
 https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/tauto!.20fails.20on.20ne
 -/
-example {x y : Nat} (h : ¬x ≠ y) : x = y := by
-  tauto
+example {x y : Nat} (h : ¬ x ≠ y) : x = y := by tauto
 
 /-
 Test the case where the goal depends on a hypothesis
@@ -175,8 +171,7 @@ https://github.com/leanprover-community/mathlib4/issues/10590
 -/
 section goal_depends_on_hyp
 open Part
-example (p : Prop) (o : Part α) (h : p → o.Dom) (a : α) :
-    a ∈ restrict p o h ↔ p ∧ a ∈ o := by
+example (p : Prop) (o : Part α) (h : p → o.Dom) (a : α) : a ∈ restrict p o h ↔ p ∧ a ∈ o := by
   dsimp [restrict, mem_eq]
   tauto
 end goal_depends_on_hyp

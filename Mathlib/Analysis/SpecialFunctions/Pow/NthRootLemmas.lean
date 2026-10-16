@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Ring.Pow
 public import Mathlib.Data.Nat.NthRoot.Defs
-
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring.Basic
 import Mathlib.Tactic.Zify
@@ -36,8 +35,8 @@ theorem nthRoot_zero_right (h : n ≠ 0) : nthRoot n 0 = 0 := by
 theorem nthRoot_one_right : nthRoot n 1 = 1 := by
   rcases n with _ | _ | _ <;> simp [nthRoot, nthRoot.go, Nat.add_comm 1]
 
-private theorem nthRoot.pow_go_le (hle : guess ≤ fuel) (n a : ℕ) :
-    go n a fuel guess ^ (n + 2) ≤ a := by
+private theorem nthRoot.pow_go_le (hle : guess ≤ fuel) (n a : ℕ)
+    : go n a fuel guess ^ (n + 2) ≤ a := by
   induction fuel generalizing guess with
   | zero =>
     obtain rfl : guess = 0 := by grind
@@ -45,8 +44,7 @@ private theorem nthRoot.pow_go_le (hle : guess ≤ fuel) (n a : ℕ) :
   | succ fuel ih =>
     rw [go]
     split_ifs with h
-    case pos =>
-      grind
+    case pos => grind
     case neg =>
       have : guess ≤ a / guess ^ (n + 1) := by
         linarith only [Nat.mul_le_of_le_div _ _ _ (not_lt.1 h)]
@@ -60,11 +58,10 @@ theorem pow_nthRoot_le_iff : nthRoot n a ^ n ≤ a ↔ n ≠ 0 ∨ a ≠ 0 := by
 
 alias ⟨_, pow_nthRoot_le⟩ := pow_nthRoot_le_iff
 
-private theorem nthRoot.lt_pow_go_succ_aux0 (hb : b ≠ 0) :
-    a ≤ ((a ^ (n + 1) / b ^ n) + n * b) / (n + 1) := by
+private theorem nthRoot.lt_pow_go_succ_aux0 (hb : b ≠ 0)
+    : a ≤ ((a ^ (n + 1) / b ^ n) + n * b) / (n + 1) := by
   rw [Nat.le_div_iff_mul_le (by positivity), Nat.mul_comm,
-    ← Nat.add_mul_div_right _ _ (by positivity),
-    Nat.le_div_iff_mul_le (by positivity)]
+    ← Nat.add_mul_div_right _ _ (by positivity), Nat.le_div_iff_mul_le (by positivity)]
   #adaptation_note /-- Prior to nightly-2026-04-06, this was
   ```
   have := (Commute.all (b : ℤ) (a - b)).pow_add_mul_le_add_pow_of_sq_nonneg
@@ -73,15 +70,16 @@ private theorem nthRoot.lt_pow_go_succ_aux0 (hb : b ≠ 0) :
   ```
   -/
   zify
-  have h := pow_add_mul_le_add_pow_of_sq_nonneg (a := (b : ℤ)) (b := (a : ℤ) - b)
-    (ha := by positivity) (Hsq := by positivity) (Hsq' := by positivity) (H := by omega)
-    (n := n + 1)
+  have h :=
+    pow_add_mul_le_add_pow_of_sq_nonneg (a := (b : ℤ)) (b := (a : ℤ) - b) (ha := by positivity)
+      (Hsq := by positivity) (Hsq' := by positivity) (H := by omega) (n := n + 1)
   rw [← sub_nonneg] at h ⊢
   convert h using 1
-  rw [pow_succ]; push_cast; ring1
+  rw [pow_succ]
+  push_cast
+  ring1
 
-private theorem nthRoot.always_exists (n a : ℕ) :
-    ∃ c, c ^ (n + 1) ≤ a ∧ a < (c + 1) ^ (n + 1) := by
+private theorem nthRoot.always_exists (n a : ℕ) : ∃ c, c ^ (n + 1) ≤ a ∧ a < (c + 1) ^ (n + 1) := by
   have H : ∃ c, a < (c + 1) ^ (n + 1) := ⟨a, Nat.le_self_pow (by positivity) (a + 1)⟩
   let +nondep (eq := hc) c := Nat.find H
   refine ⟨c, ?_, hc ▸ Nat.find_spec H⟩
@@ -93,20 +91,21 @@ private theorem nthRoot.always_exists (n a : ℕ) :
 An auxiliary lemma saying that if `b ≠ 0`,
 then `(a / b ^ n + n * b) / (n + 1) + 1` is a strict upper estimate on `√[n + 1] a`.
 -/
-theorem nthRoot.lt_pow_go_succ_aux (hb : b ≠ 0) :
-     a < ((a / b ^ n + n * b) / (n + 1) + 1) ^ (n + 1) := by
+theorem nthRoot.lt_pow_go_succ_aux (hb : b ≠ 0)
+    : a < ((a / b ^ n + n * b) / (n + 1) + 1) ^ (n + 1) := by
   have ⟨c, hc1, hc2⟩ := nthRoot.always_exists n a
-  calc a < (c + 1) ^ (n + 1) := hc2
+  calc
+    a < (c + 1) ^ (n + 1) := hc2
     _ ≤ ((c ^ (n + 1) / b ^ n + n * b) / (n + 1) + 1) ^ (n + 1) := by
       gcongr
       exact nthRoot.lt_pow_go_succ_aux0 hb
-    _ ≤ ((a / b ^ n + n * b) / (n + 1) + 1) ^ (n + 1) := by
-      gcongr
+    _ ≤ ((a / b ^ n + n * b) / (n + 1) + 1) ^ (n + 1) := by gcongr
 
-private theorem nthRoot.lt_pow_go_succ (hlt : a < (guess + 1) ^ (n + 2)) :
-    a < (go n a fuel guess + 1) ^ (n + 2) := by
+private theorem nthRoot.lt_pow_go_succ (hlt : a < (guess + 1) ^ (n + 2))
+    : a < (go n a fuel guess + 1) ^ (n + 2) := by
   induction fuel generalizing guess with
-  | zero => simpa [go]
+  | zero =>
+    simpa [go]
   | succ fuel ih =>
     rw [go]
     split_ifs with h
@@ -114,12 +113,12 @@ private theorem nthRoot.lt_pow_go_succ (hlt : a < (guess + 1) ^ (n + 2)) :
       rcases eq_or_ne guess 0 with rfl | hguess
       · grind
       · exact ih <| Nat.nthRoot.lt_pow_go_succ_aux hguess
-    case neg =>
-      assumption
+    case neg => assumption
 
 theorem lt_pow_nthRoot_add_one (hn : n ≠ 0) (a : ℕ) : a < (nthRoot n a + 1) ^ n := by
   match n, hn with
-  | 1, _ => simp
+  | 1, _ =>
+    simp
   | n + 2, hn =>
     simp only [nthRoot]
     apply nthRoot.lt_pow_go_succ
@@ -149,8 +148,7 @@ theorem nthRoot_pow (hn : n ≠ 0) (a : ℕ) : nthRoot n (a ^ n) = a := by
   exact (Nat.pow_left_strictMono hn).le_iff_le
 
 /-- If `a ^ n ≤ b < (a + 1) ^ n`, then `n` root of `b` equals `a`. -/
-theorem nthRoot_eq_of_le_of_lt (h₁ : a ^ n ≤ b) (h₂ : b < (a + 1) ^ n) :
-    nthRoot n b = a := by
+theorem nthRoot_eq_of_le_of_lt (h₁ : a ^ n ≤ b) (h₂ : b < (a + 1) ^ n) : nthRoot n b = a := by
   rcases eq_or_ne n 0 with rfl | hn
   · grind
   simp only [← le_nthRoot_iff hn, ← nthRoot_lt_iff hn] at h₁ h₂
@@ -162,8 +160,8 @@ theorem exists_pow_eq_iff' (hn : n ≠ 0) : (∃ x, x ^ n = a) ↔ (nthRoot n a)
     rw [nthRoot_pow hn]
   · grind
 
-theorem exists_pow_eq_iff :
-    (∃ x, x ^ n = a) ↔ ((n = 0 ∧ a = 1) ∨ (n ≠ 0 ∧ (nthRoot n a) ^ n = a)) := by
+theorem exists_pow_eq_iff
+    : (∃ x, x ^ n = a) ↔ ((n = 0 ∧ a = 1) ∨ (n ≠ 0 ∧ (nthRoot n a) ^ n = a)) := by
   rcases eq_or_ne n 0 with rfl | _ <;> grind [exists_pow_eq_iff']
 
 instance instDecidableExistsPowEq : Decidable (∃ x, x ^ n = a) :=

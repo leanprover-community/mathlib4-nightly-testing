@@ -49,15 +49,21 @@ namespace MeasureTheory.AddContent
 
 variable {α : Type*} {C : Set (Set α)} {s : Set α}
 
-/-- For `m : AddContent C` sigma-sub-additive, finite on `C`, the `OuterMeasure` given by `m`
-coincides with `m` on `C`. -/
-theorem ofFunction_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    (m_sigma_subadd : m.IsSigmaSubadditive) (m_top : ∀ s ∉ C, m s = ∞) (hs : s ∈ C) :
-    OuterMeasure.ofFunction m addContent_empty s = m s := by
+/--
+For `m : AddContent C` sigma-sub-additive, finite on `C`, the `OuterMeasure` given by `m`
+coincides with `m` on `C`.
+-/
+theorem ofFunction_eq
+    (hC : IsSetSemiring C)
+    (m : AddContent ℝ≥0∞ C) (m_sigma_subadd : m.IsSigmaSubadditive) (m_top : ∀ s ∉ C, m s = ∞)
+    (hs : s ∈ C)
+    : OuterMeasure.ofFunction m addContent_empty s = m s := by
   refine le_antisymm (OuterMeasure.ofFunction_le s) ?_
   rw [OuterMeasure.ofFunction_eq_iInf_mem _ _ m_top]
   refine le_iInf fun f ↦ le_iInf fun hf ↦ le_iInf fun hs_subset ↦ ?_
-  calc m s = m (s ∩ ⋃ i, f i) := by rw [inter_eq_self_of_subset_left hs_subset]
+  calc
+    m s
+      = m (s ∩ ⋃ i, f i) := by rw [inter_eq_self_of_subset_left hs_subset]
     _ = m (⋃ i, s ∩ f i) := by rw [inter_iUnion]
     _ ≤ ∑' i, m (s ∩ f i) := by
       refine m_sigma_subadd (fun i ↦ hC.inter_mem _ hs _ (hf i)) ?_
@@ -66,11 +72,15 @@ theorem ofFunction_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
       refine ENNReal.summable.tsum_le_tsum (fun i ↦ ?_) ENNReal.summable
       exact addContent_mono hC (hC.inter_mem _ hs _ (hf i)) (hf i) Set.inter_subset_right
 
-/-- For `m : AddContent C` sigma-sub-additive, finite on `C`, the `inducedOuterMeasure` given by `m`
-coincides with `m` on `C`. -/
-theorem inducedOuterMeasure_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    (m_sigma_subadd : m.IsSigmaSubadditive) (hs : s ∈ C) :
-    inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s = m s := by
+/--
+For `m : AddContent C` sigma-sub-additive, finite on `C`, the `inducedOuterMeasure` given by `m`
+coincides with `m` on `C`.
+-/
+theorem inducedOuterMeasure_eq
+    (hC : IsSetSemiring C)
+    (m : AddContent ℝ≥0∞ C) (m_sigma_subadd : m.IsSigmaSubadditive)
+    (hs : s ∈ C)
+    : inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s = m s := by
   suffices inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s = m.extend hC s by
     rwa [m.extend_eq hC hs] at this
   refine Eq.trans ?_ ((m.extend hC).ofFunction_eq hC ?_ ?_ hs)
@@ -82,9 +92,9 @@ theorem inducedOuterMeasure_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞
     rw [m.extend_eq hC (hf i)]
   · exact fun _ ↦ m.extend_eq_top _
 
-theorem isCaratheodory_ofFunction_of_mem (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    (m_top : ∀ s ∉ C, m s = ∞) (hs : s ∈ C) :
-    (OuterMeasure.ofFunction m addContent_empty).IsCaratheodory s := by
+theorem isCaratheodory_ofFunction_of_mem
+    (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) (m_top : ∀ s ∉ C, m s = ∞) (hs : s ∈ C)
+    : (OuterMeasure.ofFunction m addContent_empty).IsCaratheodory s := by
   rw [OuterMeasure.isCaratheodory_iff_le']
   intro t
   conv_rhs => rw [OuterMeasure.ofFunction_eq_iInf_mem _ _ m_top]
@@ -99,80 +109,102 @@ theorem isCaratheodory_ofFunction_of_mem (hC : IsSetSemiring C) (m : AddContent 
   · refine iInf_le_of_le (fun i ↦ f i ∩ s) <| iInf_le_of_le ?_ le_rfl
     rw [← iUnion_inter]
     exact Set.inter_subset_inter_left _ hf_subset
-  · apply le_trans <| (OuterMeasure.ofFunction m addContent_empty).mono
-      <| (iUnion_sdiff s f) ▸ sdiff_subset_sdiff_left hf_subset
+  · apply le_trans <| (OuterMeasure.ofFunction m addContent_empty).mono <|
+      (iUnion_sdiff s f) ▸ sdiff_subset_sdiff_left hf_subset
     simp only [OuterMeasure.measureOf_eq_coe, A]
-    apply le_trans <| measure_iUnion_le (μ := OuterMeasure.ofFunction m addContent_empty)
-      (fun i ↦ f i \ s)
+    apply le_trans <|
+      measure_iUnion_le (μ := OuterMeasure.ofFunction m addContent_empty) (fun i ↦ f i \ s)
     apply ENNReal.tsum_le_tsum
     intro i
     simp_rw [sUnion_eq_biUnion] at h_diff_eq_sUnion
     rw [h_diff_eq_sUnion]
-    obtain h6 := MeasureTheory.measure_biUnion_finset_le
-      (μ := OuterMeasure.ofFunction m addContent_empty) (A i) id
+    obtain h6 :=
+      MeasureTheory.measure_biUnion_finset_le (μ := OuterMeasure.ofFunction m addContent_empty)
+        (A i) id
     simp only [id_eq] at h6
     exact le_trans h6 <| Finset.sum_le_sum <| fun b _ ↦ OuterMeasure.ofFunction_le b
 
-/-- Every `s ∈ C` for an `m : AddContent C` with `IsSetSemiring C` is Carathéodory measurable
-with respect to the `inducedOuterMeasure` from `m`. -/
-theorem isCaratheodory_inducedOuterMeasure_of_mem (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    {s : Set α} (hs : s ∈ C) :
-    (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).IsCaratheodory s :=
+/--
+Every `s ∈ C` for an `m : AddContent C` with `IsSetSemiring C` is Carathéodory measurable
+with respect to the `inducedOuterMeasure` from `m`.
+-/
+theorem isCaratheodory_inducedOuterMeasure_of_mem
+    (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) {s : Set α} (hs : s ∈ C)
+    : (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).IsCaratheodory s :=
   isCaratheodory_ofFunction_of_mem hC (m.extend hC) (fun _ ↦ m.extend_eq_top hC) hs
 
-theorem isCaratheodory_inducedOuterMeasure (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    (s : Set α) (hs : MeasurableSet[MeasurableSpace.generateFrom C] s) :
-    (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).IsCaratheodory s := by
+theorem isCaratheodory_inducedOuterMeasure
+    (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
+    (s : Set α) (hs : MeasurableSet[MeasurableSpace.generateFrom C] s)
+    : (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).IsCaratheodory s := by
   induction hs with
   | basic u hu => exact isCaratheodory_inducedOuterMeasure_of_mem hC m hu
   | empty => exact OuterMeasure.isCaratheodory_empty _
   | compl t _ h => exact OuterMeasure.isCaratheodory_compl _ h
   | iUnion f _ h => exact OuterMeasure.isCaratheodory_iUnion _ h
 
-/-- Construct a measure from a sigma-subadditive content on a semiring. This
-measure is defined on the associated Carathéodory sigma-algebra. -/
-noncomputable def measureCaratheodory (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)
-    (m_sigma_subadd : m.IsSigmaSubadditive) :
-    @Measure α (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).caratheodory :=
+/--
+Construct a measure from a sigma-subadditive content on a semiring. This
+measure is defined on the associated Carathéodory sigma-algebra.
+-/
+noncomputable def measureCaratheodory
+    (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C) (m_sigma_subadd : m.IsSigmaSubadditive)
+    : @Measure α (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).caratheodory :=
   letI : MeasurableSpace α :=
     (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).caratheodory
-  { inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty with
+  {
+    inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty with
     m_iUnion := fun f hf hd ↦ OuterMeasure.iUnion_eq_of_caratheodory _ hf hd
     trim_le := by
       apply le_inducedOuterMeasure.mpr fun s hs ↦ ?_
       have hs_meas : MeasurableSet[(inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem
-          addContent_empty).caratheodory] s := by
+            addContent_empty).caratheodory]
+          s := by
         change (inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty).IsCaratheodory s
         exact isCaratheodory_inducedOuterMeasure_of_mem hC m hs
-      rw [OuterMeasure.trim_eq _ hs_meas, m.inducedOuterMeasure_eq hC m_sigma_subadd hs] }
+      rw [OuterMeasure.trim_eq _ hs_meas, m.inducedOuterMeasure_eq hC m_sigma_subadd hs]
+  }
 
-/-- The measure `MeasureTheory.AddContent.measureCaratheodory` generated from an
-`m : AddContent C` on a `IsSetSemiring C` coincides with the `MeasureTheory.inducedOuterMeasure`. -/
-theorem measureCaratheodory_eq_inducedOuterMeasure (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)
-    (m_sigma_subadd : m.IsSigmaSubadditive) :
-    m.measureCaratheodory hC m_sigma_subadd s
-      = inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s := rfl
+/--
+The measure `MeasureTheory.AddContent.measureCaratheodory` generated from an
+`m : AddContent C` on a `IsSetSemiring C` coincides with the `MeasureTheory.inducedOuterMeasure`.
+-/
+theorem measureCaratheodory_eq_inducedOuterMeasure
+    (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) (m_sigma_subadd : m.IsSigmaSubadditive)
+    : m.measureCaratheodory hC m_sigma_subadd s
+      = inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s :=
+  rfl
 
-theorem measureCaratheodory_eq (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)
-    (m_sigma_subadd : m.IsSigmaSubadditive) (hs : s ∈ C) :
-    m.measureCaratheodory hC m_sigma_subadd s = m s :=
+theorem measureCaratheodory_eq
+    (m : AddContent ℝ≥0∞ C)
+    (hC : IsSetSemiring C) (m_sigma_subadd : m.IsSigmaSubadditive) (hs : s ∈ C)
+    : m.measureCaratheodory hC m_sigma_subadd s = m s :=
   m.inducedOuterMeasure_eq hC m_sigma_subadd hs
 
-/-- Construct a measure from a sigma-subadditive content on a semiring, assuming the semiring
-generates a given measurable structure. The measure is defined on this measurable structure. -/
-noncomputable def measure [mα : MeasurableSpace α] (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)
-    (hC_gen : mα ≤ MeasurableSpace.generateFrom C) (m_sigma_subadd : m.IsSigmaSubadditive) :
-    Measure α :=
-  (m.measureCaratheodory hC m_sigma_subadd).trim <|
-    fun s a ↦ isCaratheodory_inducedOuterMeasure hC m s (hC_gen s a)
+/--
+Construct a measure from a sigma-subadditive content on a semiring, assuming the semiring
+generates a given measurable structure. The measure is defined on this measurable structure.
+-/
+noncomputable def measure
+    [mα : MeasurableSpace α]
+    (m : AddContent ℝ≥0∞ C)
+    (hC : IsSetSemiring C) (hC_gen : mα ≤ MeasurableSpace.generateFrom C)
+    (m_sigma_subadd : m.IsSigmaSubadditive)
+    : Measure α :=
+  (m.measureCaratheodory hC m_sigma_subadd).trim <| fun s a ↦
+    isCaratheodory_inducedOuterMeasure hC m s (hC_gen s a)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The measure defined through a sigma-subadditive
-  content on a semiring coincides with the content on the semiring. -/
-theorem measure_eq [mα : MeasurableSpace α] (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)
-    (hC_gen : mα = MeasurableSpace.generateFrom C) (m_sigma_subadd : m.IsSigmaSubadditive)
-    (hs : s ∈ C) :
-    m.measure hC hC_gen.le m_sigma_subadd s = m s := by
+/--
+The measure defined through a sigma-subadditive
+content on a semiring coincides with the content on the semiring.
+-/
+theorem measure_eq
+    [mα : MeasurableSpace α]
+    (m : AddContent ℝ≥0∞ C)
+    (hC : IsSetSemiring C) (hC_gen : mα = MeasurableSpace.generateFrom C)
+    (m_sigma_subadd : m.IsSigmaSubadditive) (hs : s ∈ C)
+    : m.measure hC hC_gen.le m_sigma_subadd s = m s := by
   rw [measure, trim_measurableSet_eq]
   · exact m.measureCaratheodory_eq hC m_sigma_subadd hs
   · rw [hC_gen]

@@ -41,17 +41,20 @@ theorem Order.cof_int : cof ℤ = ℵ₀ := by simp
 -- TODO: generalize to `OrderType`
 namespace Ordinal
 
-/-- The cofinality on an ordinal is the `Order.cof` of any isomorphic linear order.
+/--
+The cofinality on an ordinal is the `Order.cof` of any isomorphic linear order.
 
-In particular, `cof 0 = 0` and `cof (succ o) = 1`. -/
+In particular, `cof 0 = 0` and `cof (succ o) = 1`.
+-/
 def cof (o : Ordinal.{u}) : Cardinal.{u} :=
-  o.liftOnWellOrder (fun α _ _ ↦ Order.cof α) fun _ _ _ _ _ _ h ↦
-    let ⟨f⟩ := type_eq.1 h
-    (OrderIso.ofRelIsoLT f).cof_congr
+  o.liftOnWellOrder
+    (fun α _ _ ↦ Order.cof α)
+    fun _ _ _ _ _ _ h ↦
+      let ⟨f⟩ := type_eq.1 h
+      (OrderIso.ofRelIsoLT f).cof_congr
 
 @[simp]
-theorem cof_type (α : Type*) [LinearOrder α] [WellFoundedLT α] :
-    (typeLT α).cof = Order.cof α :=
+theorem cof_type (α : Type*) [LinearOrder α] [WellFoundedLT α] : (typeLT α).cof = Order.cof α :=
   liftOnWellOrder_type ..
 
 @[simp]
@@ -60,23 +63,22 @@ theorem cof_toType (o : Ordinal) : Order.cof o.ToType = o.cof := by
 
 @[simp]
 theorem lift_cof (o : Ordinal.{u}) : Cardinal.lift.{v} (cof o) = cof (Ordinal.lift.{v} o) := by
-  cases o using inductionOnWellOrder with | type α
+  cases o using inductionOnWellOrder with
+  | type α
   rw [cof_type, ← type_lt_ulift, cof_type, ← Cardinal.lift_id'.{u, v} (Order.cof (ULift _)),
     ← Cardinal.lift_umax, ← ULift.orderIso.lift_cof_congr]
 
-theorem _root_.Order.cof_Iio [LinearOrder α] [WellFoundedLT α] (x : α) :
-    Order.cof (Iio x) = cof (typein (α := α) (· < ·) x) :=
+theorem _root_.Order.cof_Iio [LinearOrder α] [WellFoundedLT α] (x : α)
+    : Order.cof (Iio x) = cof (typein (α := α) (· < ·) x) :=
   (cof_type _).symm
 
 @[simp]
 theorem cof_Iio (o : Ordinal.{u}) : Order.cof (Iio o) = cof (lift.{u + 1} o) := by
   rw [Order.cof_Iio, typein_ordinal]
 
-theorem cof_le_card (o : Ordinal) : cof o ≤ card o := by
-  simpa using cof_le_cardinalMk o.ToType
+theorem cof_le_card (o : Ordinal) : cof o ≤ card o := by simpa using cof_le_cardinalMk o.ToType
 
-theorem cof_ord_le (c : Cardinal) : c.ord.cof ≤ c := by
-  simpa using cof_le_card c.ord
+theorem cof_ord_le (c : Cardinal) : c.ord.cof ≤ c := by simpa using cof_le_card c.ord
 
 theorem ord_cof_le (o : Ordinal) : o.cof.ord ≤ o :=
   (ord_le_ord.2 (cof_le_card o)).trans (ord_card_le o)
@@ -85,45 +87,36 @@ theorem ord_cof_le (o : Ordinal) : o.cof.ord ≤ o :=
 theorem cof_eq_zero {o} : cof o = 0 ↔ o = 0 := by
   rw [← cof_toType, cof_eq_zero_iff, isEmpty_toType_iff]
 
-@[simp]
-theorem cof_pos {o} : 0 < cof o ↔ 0 < o := by
-  simp [pos_iff_ne_zero]
+@[simp] theorem cof_pos {o} : 0 < cof o ↔ 0 < o := by simp [pos_iff_ne_zero]
 
-@[simp]
-theorem cof_zero : cof 0 = 0 :=
-  cof_eq_zero.2 rfl
+@[simp] theorem cof_zero : cof 0 = 0 := cof_eq_zero.2 rfl
 
 theorem cof_eq_one_iff {o} : cof o = 1 ↔ o ∈ range succ := by
-  cases o using inductionOnWellOrder with | type α
+  cases o using inductionOnWellOrder with
+  | type α
   rw [cof_type, Order.cof_eq_one_iff, type_lt_mem_range_succ_iff]
   simp_rw [isTop_iff_isMax]
 
-theorem cof_add_one (o) : cof (o + 1) = 1 :=
-  cof_eq_one_iff.2 (mem_range_self o)
+theorem cof_add_one (o) : cof (o + 1) = 1 := cof_eq_one_iff.2 (mem_range_self o)
 
-@[simp]
-theorem cof_one : cof 1 = 1 := by
-  simpa using cof_add_one 0
+@[simp] theorem cof_one : cof 1 = 1 := by simpa using cof_add_one 0
 
 @[deprecated cof_add_one +typeChanged (since := "2026-05-25")]
-theorem cof_succ (o) : cof (succ o) = 1 :=
-  cof_add_one o
+theorem cof_succ (o) : cof (succ o) = 1 := cof_add_one o
 
 theorem one_lt_cof_iff {o : Ordinal} : 1 < cof o ↔ IsSuccLimit o := by
-  rw [← not_iff_not, not_lt, Cardinal.le_one_iff, isSuccLimit_iff,
-    not_and_or, not_ne_iff, not_isSuccPrelimit_iff_mem_range_succ, cof_eq_zero, cof_eq_one_iff]
+  rw [← not_iff_not, not_lt, Cardinal.le_one_iff, isSuccLimit_iff, not_and_or, not_ne_iff,
+    not_isSuccPrelimit_iff_mem_range_succ, cof_eq_zero, cof_eq_one_iff]
 
 @[simp]
 theorem cof_lt_aleph0_iff {o : Ordinal} : cof o < ℵ₀ ↔ cof o ≤ 1 := by
   simpa using Order.cof_lt_aleph0_iff (α := o.ToType)
 
-@[simp]
-theorem aleph0_le_cof_iff {o : Ordinal} : ℵ₀ ≤ cof o ↔ 1 < cof o := by
-  simp [← not_lt]
+@[simp] theorem aleph0_le_cof_iff {o : Ordinal} : ℵ₀ ≤ cof o ↔ 1 < cof o := by simp [← not_lt]
 
 /-- A countable limit ordinal has cofinality `ℵ₀`. -/
-theorem cof_eq_aleph0_of_isSuccLimit {o : Ordinal} (ho : IsSuccLimit o) (ho' : o < ω₁) :
-    cof o = ℵ₀ := by
+theorem cof_eq_aleph0_of_isSuccLimit {o : Ordinal} (ho : IsSuccLimit o) (ho' : o < ω₁)
+    : cof o = ℵ₀ := by
   apply ((cof_le_card _).trans _).antisymm
   · rwa [aleph0_le_cof_iff, one_lt_cof_iff]
   · rwa [card_le_iff, succ_aleph0, ord_aleph]
@@ -134,8 +127,8 @@ theorem cof_omega0 : cof ω = ℵ₀ :=
 
 variable (α) in
 /-- Every well-order has a cofinal subset of order type `(cof α).ord`. -/
-theorem exists_ord_cof_eq [LinearOrder α] [WellFoundedLT α] :
-    ∃ s : Set α, IsCofinal s ∧ typeLT s = (Order.cof α).ord := by
+theorem exists_ord_cof_eq [LinearOrder α] [WellFoundedLT α]
+    : ∃ s : Set α, IsCofinal s ∧ typeLT s = (Order.cof α).ord := by
   obtain ⟨s, hs, hs'⟩ := exists_cof_eq α
   obtain ⟨r, hr, hr'⟩ := exists_ord_eq s
   have ht := hs.trans (isCofinal_setOfPred_imp_lt r)
@@ -152,8 +145,9 @@ theorem exists_ord_cof_eq [LinearOrder α] [WellFoundedLT α] :
 @[deprecated (since := "2026-05-25")] alias ord_cof_eq := exists_ord_cof_eq
 
 /-- Every cofinal set has a cofinal subset of order type `(cof α).ord`. -/
-theorem exists_ord_cof_eq_of_isCofinal [LinearOrder α] [WellFoundedLT α]
-    {s : Set α} (hs : IsCofinal s) : ∃ t ⊆ s, IsCofinal t ∧ typeLT t = (Order.cof α).ord := by
+theorem exists_ord_cof_eq_of_isCofinal
+    [LinearOrder α] [WellFoundedLT α] {s : Set α} (hs : IsCofinal s)
+    : ∃ t ⊆ s, IsCofinal t ∧ typeLT t = (Order.cof α).ord := by
   obtain ⟨t, ht, ht'⟩ := exists_ord_cof_eq s
   rw [cof_eq_of_isCofinal hs] at ht'
   refine ⟨t, ?_, hs.trans ht, ?_⟩
@@ -162,8 +156,8 @@ theorem exists_ord_cof_eq_of_isCofinal [LinearOrder α] [WellFoundedLT α]
     exact ((Subtype.strictMono_coe _).strictMonoOn _).orderIso.ordinalType_congr.symm
 
 @[simp]
-theorem _root_.Order.cof_ord_cof (α : Type*) [LinearOrder α] [WellFoundedLT α] :
-    (Order.cof α).ord.cof = Order.cof α := by
+theorem _root_.Order.cof_ord_cof (α : Type*) [LinearOrder α] [WellFoundedLT α]
+    : (Order.cof α).ord.cof = Order.cof α := by
   obtain ⟨s, hs, hs'⟩ := exists_ord_cof_eq α
   rw [← hs', cof_type, cof_eq_of_isCofinal hs]
 
@@ -176,8 +170,8 @@ theorem cof_ord_cof (o : Ordinal) : o.cof.ord.cof = o.cof := by
 section LinearOrder
 variable [LinearOrder β] [LinearOrder γ]
 
-theorem lift_cof_iSup_add_one [Small.{u} β] {f : β → Ordinal} (hf : StrictMono f) :
-    Cardinal.lift.{v} (cof (⨆ i, f i + 1)) = Cardinal.lift.{u} (Order.cof β) := by
+theorem lift_cof_iSup_add_one [Small.{u} β] {f : β → Ordinal} (hf : StrictMono f)
+    : Cardinal.lift.{v} (cof (⨆ i, f i + 1)) = Cardinal.lift.{u} (Order.cof β) := by
   have : StrictMono (β := Iio (⨆ i, f i + 1)) (fun i ↦ ⟨f i, ?_⟩) := fun x y h ↦ hf h
   · have := lift_cof_congr_of_strictMono this ?_
     · rw [← Cardinal.lift_inj.{_, max (u + 1) v}, Cardinal.lift_lift.{_, _, v},
@@ -190,26 +184,26 @@ theorem lift_cof_iSup_add_one [Small.{u} β] {f : β → Ordinal} (hf : StrictMo
   · rw [mem_Iio]
     exact (lt_add_one _).trans_le <| le_ciSup bddAbove_of_small _
 
-theorem cof_iSup_add_one {f : γ → Ordinal} (hf : StrictMono f) :
-    cof (⨆ i, f i + 1) = Order.cof γ := by
+theorem cof_iSup_add_one {f : γ → Ordinal} (hf : StrictMono f)
+    : cof (⨆ i, f i + 1) = Order.cof γ := by
   simpa using lift_cof_iSup_add_one hf
 
-theorem lift_cof_iSup [Small.{u} β] [NoMaxOrder β] {f : β → Ordinal} (hf : StrictMono f) :
-    Cardinal.lift.{v} (cof (⨆ i, f i)) = Cardinal.lift.{u} (Order.cof β) := by
+theorem lift_cof_iSup [Small.{u} β] [NoMaxOrder β] {f : β → Ordinal} (hf : StrictMono f)
+    : Cardinal.lift.{v} (cof (⨆ i, f i)) = Cardinal.lift.{u} (Order.cof β) := by
   rw [← iSup_add_one hf, lift_cof_iSup_add_one hf]
 
-theorem cof_iSup [NoMaxOrder γ] {f : γ → Ordinal} (hf : StrictMono f) :
-    cof (⨆ i, f i) = Order.cof γ := by
+theorem cof_iSup [NoMaxOrder γ] {f : γ → Ordinal} (hf : StrictMono f)
+    : cof (⨆ i, f i) = Order.cof γ := by
   simpa using lift_cof_iSup hf
 
 end LinearOrder
 
-theorem cof_iSup_Iio_add_one {a} {f : Iio a → Ordinal} (hf : StrictMono f) :
-    cof (⨆ i, f i + 1) = cof a := by
+theorem cof_iSup_Iio_add_one {a} {f : Iio a → Ordinal} (hf : StrictMono f)
+    : cof (⨆ i, f i + 1) = cof a := by
   simpa [← lift_cof] using lift_cof_iSup_add_one hf
 
-theorem cof_iSup_Iio {a} {f : Iio a → Ordinal} (hf : StrictMono f) (ha : IsSuccPrelimit a) :
-    cof (⨆ i, f i) = cof a := by
+theorem cof_iSup_Iio {a} {f : Iio a → Ordinal} (hf : StrictMono f) (ha : IsSuccPrelimit a)
+    : cof (⨆ i, f i) = cof a := by
   rw [← iSup_Iio_add_one hf ha, cof_iSup_Iio_add_one hf]
 
 theorem cof_map_of_isNormal {f} (hf : IsNormal f) {a} (ha : IsSuccLimit a) : cof (f a) = cof a := by
@@ -218,15 +212,18 @@ theorem cof_map_of_isNormal {f} (hf : IsNormal f) {a} (ha : IsSuccLimit a) : cof
 
 theorem le_cof_map_of_isNormal {f} (hf : IsNormal f) (a) : cof a ≤ cof (f a) := by
   cases a using limitRecOn with
-  | zero => simp
+  | zero =>
+    simp
   | add_one a =>
     rw [cof_add_one, Cardinal.one_le_iff_ne_zero, cof_eq_zero.ne]
     exact (hf.strictMono (lt_succ a)).ne_zero
-  | limit a ha => rw [cof_map_of_isNormal hf ha]
+  | limit a ha =>
+    rw [cof_map_of_isNormal hf ha]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem sSup_add_one_lt_of_lt_cof {s : Set Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : #s < (lift.{u + 1} a).cof) (hs : ∀ i ∈ s, i < a) : sSup ((· + 1) '' s) < a := by
+theorem sSup_add_one_lt_of_lt_cof
+    {s : Set Ordinal.{u}} {a : Ordinal.{u}} (ha : #s < (lift.{u + 1} a).cof) (hs : ∀ i ∈ s, i < a)
+    : sSup ((· + 1) '' s) < a := by
   let f := OrderIso.ofRelIsoLT (enum (α := s) (· < ·))
   have : Small.{u} (Iio (typeLT s)) := by
     refine small_of_injective (β := Iio a) (f := fun x ↦ ⟨f x, hs _ (f x).2⟩) fun _ ↦ ?_
@@ -240,16 +237,20 @@ theorem sSup_add_one_lt_of_lt_cof {s : Set Ordinal.{u}} {a : Ordinal.{u}}
   · simp [hs]
   · rintro rfl
     rw [← lift_cof, ← Cardinal.lift_lt.{_, u + 2}, Cardinal.lift_lift,
-      lift_cof_iSup_add_one fun _ ↦ by simp, cof_Iio, ← lift_cof, cof_type,
-      Cardinal.lift_lift, Cardinal.lift_lt] at ha
+        lift_cof_iSup_add_one fun _ ↦ by simp, cof_Iio, ← lift_cof, cof_type, Cardinal.lift_lift,
+        Cardinal.lift_lt]
+      at ha
     exact ha.not_ge (cof_le_cardinalMk _)
 
-theorem sSup_lt_of_lt_cof {s : Set Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : #s < (lift.{u + 1} a).cof) (hs : ∀ i ∈ s, i < a) : sSup s < a :=
+theorem sSup_lt_of_lt_cof
+    {s : Set Ordinal.{u}} {a : Ordinal.{u}} (ha : #s < (lift.{u + 1} a).cof) (hs : ∀ i ∈ s, i < a)
+    : sSup s < a :=
   (sSup_le_sSup_add_one s).trans_lt (sSup_add_one_lt_of_lt_cof ha hs)
 
-theorem lift_iSup_add_one_lt_of_lt_cof {f : β → Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : Cardinal.lift.{u} #β < (lift.{v} a).cof) (hf : ∀ i, f i < a) : ⨆ i, f i + 1 < a := by
+theorem lift_iSup_add_one_lt_of_lt_cof
+    {f : β → Ordinal.{u}} {a : Ordinal.{u}}
+    (ha : Cardinal.lift.{u} #β < (lift.{v} a).cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i + 1 < a := by
   rw [iSup, range_comp' (· + 1)]
   apply sSup_add_one_lt_of_lt_cof _ (by simpa)
   rw [← Cardinal.lift_lt.{_, v}]
@@ -257,48 +258,59 @@ theorem lift_iSup_add_one_lt_of_lt_cof {f : β → Ordinal.{u}} {a : Ordinal.{u}
   rw [← Cardinal.lift_lt.{_, u + 1}] at ha
   simpa [← lift_cof] using ha
 
-theorem iSup_add_one_lt_of_lt_cof {f : α → Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : #α < a.cof) (hf : ∀ i, f i < a) : ⨆ i, f i + 1 < a := by
+theorem iSup_add_one_lt_of_lt_cof
+    {f : α → Ordinal.{u}} {a : Ordinal.{u}} (ha : #α < a.cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i + 1 < a := by
   rw [← Cardinal.lift_lt.{_, u}, lift_cof] at ha
   simpa using lift_iSup_add_one_lt_of_lt_cof ha hf
 
-theorem lift_iSup_lt_of_lt_cof {f : β → Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : Cardinal.lift.{u} #β < (lift.{v} a).cof) (hf : ∀ i, f i < a) : ⨆ i, f i < a :=
+theorem lift_iSup_lt_of_lt_cof
+    {f : β → Ordinal.{u}} {a : Ordinal.{u}}
+    (ha : Cardinal.lift.{u} #β < (lift.{v} a).cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i < a :=
   (iSup_le_iSup_add_one f).trans_lt (lift_iSup_add_one_lt_of_lt_cof ha hf)
 
-theorem iSup_lt_of_lt_cof {f : α → Ordinal.{u}} {a : Ordinal.{u}}
-    (ha : #α < a.cof) (hf : ∀ i, f i < a) : ⨆ i, f i < a := by
+theorem iSup_lt_of_lt_cof
+    {f : α → Ordinal.{u}} {a : Ordinal.{u}} (ha : #α < a.cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i < a := by
   rw [← Cardinal.lift_lt.{_, u}, lift_cof] at ha
   simpa using lift_iSup_lt_of_lt_cof ha hf
 
-theorem cof_lift_iSup_add_one_le [Small.{u} β] (f : β → Ordinal.{u}) :
-    cof (lift.{v} (⨆ i, f i + 1)) ≤ Cardinal.lift.{u} (#β) := by
+theorem cof_lift_iSup_add_one_le [Small.{u} β] (f : β → Ordinal.{u})
+    : cof (lift.{v} (⨆ i, f i + 1)) ≤ Cardinal.lift.{u} (#β) := by
   by_contra! hf
   exact (lift_iSup_add_one_lt_of_lt_cof hf <| Ordinal.lt_iSup_add_one _).false
 
 theorem cof_iSup_add_one_le (f : α → Ordinal.{u}) : cof (⨆ i, f i + 1) ≤ #α := by
   simpa using cof_lift_iSup_add_one_le f
 
-theorem _root_.Cardinal.sSup_lt_of_lt_cof_ord {s : Set Cardinal.{u}} {a : Cardinal.{u}}
-    (ha : #s < (Cardinal.lift.{u + 1} a).ord.cof) (hs : ∀ i ∈ s, i < a) : sSup s < a := by
+theorem _root_.Cardinal.sSup_lt_of_lt_cof_ord
+    {s : Set Cardinal.{u}} {a : Cardinal.{u}}
+    (ha : #s < (Cardinal.lift.{u + 1} a).ord.cof) (hs : ∀ i ∈ s, i < a)
+    : sSup s < a := by
   rw [← ord_lt_ord, sSup_ord]
   apply Ordinal.sSup_lt_of_lt_cof
   · simpa [mk_image_eq ord_injective]
   · simpa
 
-theorem _root_.Cardinal.lift_iSup_lt_of_lt_cof_ord {f : β → Cardinal.{u}} {a : Cardinal.{u}}
-    (ha : Cardinal.lift.{u} #β < a.lift.ord.cof) (hf : ∀ i, f i < a) : ⨆ i, f i < a := by
+theorem _root_.Cardinal.lift_iSup_lt_of_lt_cof_ord
+    {f : β → Cardinal.{u}} {a : Cardinal.{u}}
+    (ha : Cardinal.lift.{u} #β < a.lift.ord.cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i < a := by
   rw [← ord_lt_ord, iSup_ord]
   apply Ordinal.lift_iSup_lt_of_lt_cof <;> simpa
 
-theorem _root_.Cardinal.iSup_lt_of_lt_cof_ord {f : α → Cardinal.{u}} {a : Cardinal.{u}}
-    (ha : #α < a.ord.cof) (hf : ∀ i, f i < a) : ⨆ i, f i < a := by
+theorem _root_.Cardinal.iSup_lt_of_lt_cof_ord
+    {f : α → Cardinal.{u}} {a : Cardinal.{u}} (ha : #α < a.ord.cof) (hf : ∀ i, f i < a)
+    : ⨆ i, f i < a := by
   rw [← ord_lt_ord, iSup_ord]
   apply Ordinal.iSup_lt_of_lt_cof <;> simpa
 
-theorem nfpFamily_lt_ord_lift {ι} {f : ι → Ordinal → Ordinal} {c} (hc : ℵ₀ < cof c)
-    (hc' : Cardinal.lift.{v, u} #ι < cof c) (hf : ∀ (i), ∀ b < c, f i b < c) {a} (ha : a < c) :
-    nfpFamily f a < c := by
+theorem nfpFamily_lt_ord_lift
+    {ι} {f : ι → Ordinal → Ordinal} {c}
+    (hc : ℵ₀ < cof c) (hc' : Cardinal.lift.{v, u} #ι < cof c) (hf : ∀ (i), ∀ b < c, f i b < c)
+    {a} (ha : a < c)
+    : nfpFamily f a < c := by
   refine lift_iSup_lt_of_lt_cof ?_ (fun l ↦ ?_)
   · rw [Cardinal.lift_umax, c.lift_id']
     apply (Cardinal.lift_le.2 (mk_list_le_max _)).trans_lt
@@ -308,12 +320,15 @@ theorem nfpFamily_lt_ord_lift {ι} {f : ι → Ordinal → Ordinal} {c} (hc : �
     | nil => exact ha
     | cons i l H => exact hf _ _ H
 
-theorem nfpFamily_lt_ord {ι} {f : ι → Ordinal → Ordinal} {c} (hc : ℵ₀ < cof c) (hc' : #ι < cof c)
-    (hf : ∀ (i), ∀ b < c, f i b < c) {a} : a < c → nfpFamily.{u, u} f a < c :=
+theorem nfpFamily_lt_ord
+    {ι} {f : ι → Ordinal → Ordinal} {c}
+    (hc : ℵ₀ < cof c) (hc' : #ι < cof c) (hf : ∀ (i), ∀ b < c, f i b < c)
+    {a}
+    : a < c → nfpFamily.{u, u} f a < c :=
   nfpFamily_lt_ord_lift hc (by rwa [(#ι).lift_id]) hf
 
-theorem nfp_lt_ord {f : Ordinal → Ordinal} {c} (hc : ℵ₀ < cof c) (hf : ∀ i < c, f i < c) {a} :
-    a < c → nfp f a < c :=
+theorem nfp_lt_ord {f : Ordinal → Ordinal} {c} (hc : ℵ₀ < cof c) (hf : ∀ i < c, f i < c) {a}
+    : a < c → nfp f a < c :=
   nfpFamily_lt_ord_lift hc (by simpa using Cardinal.one_lt_aleph0.trans hc) fun _ => hf
 
 /-! ### Cofinality arithmetic -/
@@ -353,8 +368,11 @@ open Ordinal
 /-! ### Results on sets -/
 
 -- TODO: re-state this for a bundled well-order
-theorem mk_bounded_subset {α : Type*} (h : IsStrongPrelimit #α) {r : α → α → Prop}
-    [IsWellOrder α r] (hr : (#α).ord = type r) : #{ s : Set α // Bounded r s } = #α := by
+theorem mk_bounded_subset
+    {α : Type*} (h : IsStrongPrelimit #α)
+    {r : α → α → Prop} [IsWellOrder α r]
+    (hr : (#α).ord = type r)
+    : #{s : Set α // Bounded r s} = #α := by
   rcases eq_or_ne #α 0 with (ha | ha)
   · rw [ha]
     have := mk_eq_zero_iff.1 ha
@@ -381,8 +399,8 @@ theorem mk_bounded_subset {α : Type*} (h : IsStrongPrelimit #α) {r : α → α
     · intro a b hab
       simpa [singleton_eq_singleton_iff] using hab
 
-theorem mk_subset_mk_lt_cof {α : Type*} (h : IsStrongPrelimit #α) :
-    #{ s : Set α // #s < cof (#α).ord } = #α := by
+theorem mk_subset_mk_lt_cof {α : Type*} (h : IsStrongPrelimit #α)
+    : #{s : Set α // #s < cof (#α).ord} = #α := by
   rcases eq_or_ne #α 0 with (ha | ha)
   · simp [ha]
   have h' : IsStrongLimit #α := ⟨ha, @h⟩
@@ -408,7 +426,8 @@ theorem mk_subset_mk_lt_cof {α : Type*} (h : IsStrongPrelimit #α) :
 /-! ### Consequences of König's lemma -/
 
 theorem lt_power_cof_ord {c : Cardinal} (hc : ℵ₀ ≤ c) : c < c ^ c.ord.cof := by
-  induction c using Cardinal.inductionOn with | mk α
+  induction c using Cardinal.inductionOn with
+  | mk α
   obtain ⟨_, _, hα⟩ := exists_ord_eq_type_lt α
   have : NoMaxOrder α := by
     rw [← isSuccPrelimit_type_lt_iff, ← hα]

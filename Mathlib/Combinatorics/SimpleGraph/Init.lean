@@ -6,7 +6,6 @@ Authors: Jannis Limperg
 module
 
 public import Aesop
-
 import Mathlib.Init
 
 /-!

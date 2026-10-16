@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.CharZero.Infinite
 public import Mathlib.Data.Rat.Encodable
 public import Mathlib.SetTheory.Cardinal.Basic
-
 import Mathlib.Algebra.Ring.Rat
 
 /-!

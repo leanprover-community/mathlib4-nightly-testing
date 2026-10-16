@@ -23,7 +23,8 @@ variable {𝕜 H : Type*}
 open MulOpposite
 
 /-- The inner product of `Hᵐᵒᵖ` is given by `⟪x, y⟫ ↦ ⟪x.unop, y.unop⟫`. -/
-instance [Inner 𝕜 H] : Inner 𝕜 Hᵐᵒᵖ where inner x y := inner 𝕜 x.unop y.unop
+instance [Inner 𝕜 H] : Inner 𝕜 Hᵐᵒᵖ where
+  inner x y := inner 𝕜 x.unop y.unop
 
 @[simp] theorem inner_unop [Inner 𝕜 H] (x y : Hᵐᵒᵖ) : inner 𝕜 x.unop y.unop = inner 𝕜 x y := rfl
 
@@ -40,17 +41,21 @@ instance : InnerProductSpace 𝕜 Hᵐᵒᵖ where
 
 section orthonormal
 
-theorem _root_.Module.Basis.mulOpposite_is_orthonormal_iff {ι : Type*} (b : Module.Basis ι 𝕜 H) :
-    Orthonormal 𝕜 b.mulOpposite ↔ Orthonormal 𝕜 b := Iff.rfl
+theorem _root_.Module.Basis.mulOpposite_is_orthonormal_iff {ι : Type*} (b : Module.Basis ι 𝕜 H)
+    : Orthonormal 𝕜 b.mulOpposite ↔ Orthonormal 𝕜 b :=
+  Iff.rfl
 
 variable {ι H : Type*} [NormedAddCommGroup H] [InnerProductSpace 𝕜 H] [Fintype ι]
 
 /-- The multiplicative opposite of an orthonormal basis `b`, i.e., `b i ↦ op (b i)`. -/
-noncomputable def _root_.OrthonormalBasis.mulOpposite (b : OrthonormalBasis ι 𝕜 H) :
-    OrthonormalBasis ι 𝕜 Hᵐᵒᵖ := b.toBasis.mulOpposite.toOrthonormalBasis b.orthonormal
+noncomputable def _root_.OrthonormalBasis.mulOpposite (b : OrthonormalBasis ι 𝕜 H)
+    : OrthonormalBasis ι 𝕜 Hᵐᵒᵖ :=
+  b.toBasis.mulOpposite.toOrthonormalBasis b.orthonormal
 
-@[simp] lemma _root_.OrthonormalBasis.toBasis_mulOpposite (b : OrthonormalBasis ι 𝕜 H) :
-    b.mulOpposite.toBasis = b.toBasis.mulOpposite := rfl
+@[simp]
+lemma _root_.OrthonormalBasis.toBasis_mulOpposite (b : OrthonormalBasis ι 𝕜 H)
+    : b.mulOpposite.toBasis = b.toBasis.mulOpposite :=
+  rfl
 
 end orthonormal
 

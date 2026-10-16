@@ -8,7 +8,6 @@ module
 public import Mathlib.GroupTheory.Index
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.RingTheory.TensorProduct.Finite
-
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Data.Finsupp.Fintype
 import Mathlib.LinearAlgebra.DirectSum.Finsupp
@@ -35,22 +34,25 @@ variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
 variable (I : Ideal R) {N : Submodule R M}
 
 open TensorProduct in
-/-- Let `N` be a finite index f.g. `R`-submodule, and `I` be a finite index ideal.
-Then `I • N` also has finite index. -/
-lemma Submodule.finite_quotient_smul [Finite (R ⧸ I)] [Finite (M ⧸ N)] (hN : N.FG) :
-    Finite (M ⧸ I • N) := by
+/--
+Let `N` be a finite index f.g. `R`-submodule, and `I` be a finite index ideal.
+Then `I • N` also has finite index.
+-/
+lemma Submodule.finite_quotient_smul [Finite (R ⧸ I)] [Finite (M ⧸ N)] (hN : N.FG)
+    : Finite (M ⧸ I • N) := by
   suffices (I • N).toAddSubgroup.FiniteIndex by
     exact (I • N).toAddSubgroup.finite_quotient_of_finiteIndex
   suffices Nat.card (N ⧸ (I • N).comap N.subtype) ≠ 0 by
     constructor
-    rw [← AddSubgroup.relIndex_mul_index
-      (H := (I • N).toAddSubgroup) (K := N.toAddSubgroup) Submodule.smul_le_right]
+    rw [← AddSubgroup.relIndex_mul_index (H := (I • N).toAddSubgroup) (K := N.toAddSubgroup)
+      Submodule.smul_le_right]
     have inst : Finite (M ⧸ N.toAddSubgroup) := ‹_›
     exact mul_ne_zero this AddSubgroup.index_ne_zero_of_finite
   let e : (N ⧸ (I • N).comap N.subtype) ≃ₗ[R] (R ⧸ I) ⊗[R] N :=
-    Submodule.quotEquivOfEq _ (I • (⊤ : Submodule R N)) (Submodule.map_injective_of_injective
-      N.injective_subtype (by simp [Submodule.smul_le_right])) ≪≫ₗ
-        (quotTensorEquivQuotSMul N I).symm
+    Submodule.quotEquivOfEq _ (I • (⊤ : Submodule R N))
+        (Submodule.map_injective_of_injective N.injective_subtype
+          (by simp [Submodule.smul_le_right]))
+      ≪≫ₗ (quotTensorEquivQuotSMul N I).symm
   rw [Nat.card_congr e.toEquiv]
   have : Module.Finite R N := .of_fg hN
   have : Finite ((R ⧸ I) ⊗[R] N) := Module.finite_of_finite (R ⧸ I)
@@ -60,25 +62,26 @@ lemma Submodule.finite_quotient_smul [Finite (R ⧸ I)] [Finite (M ⧸ N)] (hN :
 -- Usually we would like to bound the index of some abstract `I • N`, and we may construct `s` while
 -- applying this lemma instead of having to provide it beforehand.
 open TensorProduct in
-lemma Submodule.index_smul_le [Finite (R ⧸ I)]
-    (s : Finset M) (hs : Submodule.span R s = N) :
-    (I • N).toAddSubgroup.index ≤ I.toAddSubgroup.index ^ s.card * N.toAddSubgroup.index := by
+lemma Submodule.index_smul_le [Finite (R ⧸ I)] (s : Finset M) (hs : Submodule.span R s = N)
+    : (I • N).toAddSubgroup.index ≤ I.toAddSubgroup.index ^ s.card * N.toAddSubgroup.index := by
   classical
   cases nonempty_fintype (R ⧸ I)
-  rw [← AddSubgroup.relIndex_mul_index
-    (H := (I • N).toAddSubgroup) (K := N.toAddSubgroup) Submodule.smul_le_right]
+  rw [← AddSubgroup.relIndex_mul_index (H := (I • N).toAddSubgroup) (K := N.toAddSubgroup)
+    Submodule.smul_le_right]
   gcongr
   change (Nat.card (N ⧸ (I • N).comap N.subtype)) ≤ Nat.card (R ⧸ I) ^ s.card
   let e : (N ⧸ (I • N).comap N.subtype) ≃ₗ[R] (R ⧸ I) ⊗[R] N :=
-    Submodule.quotEquivOfEq _ (I • (⊤ : Submodule R N)) (Submodule.map_injective_of_injective
-      N.injective_subtype (by simp [Submodule.smul_le_right])) ≪≫ₗ
-      (quotTensorEquivQuotSMul N I).symm
+    Submodule.quotEquivOfEq _ (I • (⊤ : Submodule R N))
+        (Submodule.map_injective_of_injective N.injective_subtype
+          (by simp [Submodule.smul_le_right]))
+      ≪≫ₗ (quotTensorEquivQuotSMul N I).symm
   rw [Nat.card_congr e.toEquiv]
   have H : LinearMap.range (Finsupp.linearCombination R (α := s) (↑)) = N := by
     rw [Finsupp.range_linearCombination, ← hs]
     exact congr(span R $Subtype.range_coe_subtype)
-  let f : (s →₀ R) →ₗ[R] N := (Finsupp.linearCombination R (↑)).codRestrict _
-    (fun c => by rw [← H, LinearMap.mem_range]; exact exists_apply_eq_apply _ _)
+  let f : (s →₀ R) →ₗ[R] N :=
+    (Finsupp.linearCombination R (↑)).codRestrict _
+      (fun c => by rw [← H, LinearMap.mem_range]; exact exists_apply_eq_apply _ _)
   have hf : Function.Surjective f := fun x ↦ by
     obtain ⟨y, hy⟩ := H.ge x.2; exact ⟨y, Subtype.ext hy⟩
   have : Function.Surjective
@@ -89,11 +92,14 @@ lemma Submodule.index_smul_le [Finite (R ⧸ I)]
 
 variable {I}
 
-lemma Ideal.finite_quotient_prod {ι : Type*} (I : ι → Ideal R) (s : Finset ι)
-    (hI : ∀ i ∈ s, (I i).FG) (hI' : ∀ i ∈ s, Finite (R ⧸ I i)) : Finite (R ⧸ (∏ i ∈ s, I i)) := by
+lemma Ideal.finite_quotient_prod
+    {ι : Type*}
+    (I : ι → Ideal R) (s : Finset ι) (hI : ∀ i ∈ s, (I i).FG) (hI' : ∀ i ∈ s, Finite (R ⧸ I i))
+    : Finite (R ⧸ (∏ i ∈ s, I i)) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp only [Finset.prod_empty, one_eq_top]; infer_instance
+  | empty =>
+    simp only [Finset.prod_empty, one_eq_top]; infer_instance
   | insert a s has IH =>
     rw [Finset.prod_insert has, mul_comm]
     have := hI' a (by simp)
@@ -108,9 +114,8 @@ lemma Ideal.finite_quotient_pow (hI : I.FG) [Finite (R ⧸ I)] (n) : Finite (R �
   | succ n _ =>
     exact Submodule.finite_quotient_smul (I ^ n) hI
 
-lemma Ideal.index_pow_le
-    (s : Finset R) (hs : Ideal.span s = I) [Finite (R ⧸ I)] (n) :
-    (I ^ n).toAddSubgroup.index ≤ I.toAddSubgroup.index ^ ∑ i ∈ Finset.range n, s.card ^ i := by
+lemma Ideal.index_pow_le (s : Finset R) (hs : Ideal.span s = I) [Finite (R ⧸ I)] (n)
+    : (I ^ n).toAddSubgroup.index ≤ I.toAddSubgroup.index ^ ∑ i ∈ Finset.range n, s.card ^ i := by
   have := Ideal.finite_quotient_pow ⟨s, hs⟩
   induction n with
   | zero =>

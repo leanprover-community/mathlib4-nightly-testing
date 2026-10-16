@@ -55,9 +55,11 @@ namespace Imo2015Q6
 
 open Finset
 
-/-- The conditions on `a` in the problem. We reindex `a` to start from 0 rather than 1;
+/--
+The conditions on `a` in the problem. We reindex `a` to start from 0 rather than 1;
 `N` then only has to be nonnegative rather than positive, and the sum in the problem statement
-is over `Ico m n` rather than `Ioc m n`. -/
+is over `Ico m n` rather than `Ioc m n`.
+-/
 def Condition (a : ℕ → ℤ) : Prop := (∀ i, a i ∈ Icc 1 2015) ∧ Function.Injective fun i ↦ i + a i
 
 /-- The collection of ball heights in the solution. -/
@@ -71,26 +73,31 @@ section Pool
 
 lemma exists_add_eq_of_mem_pool {z : ℤ} (hz : z ∈ pool a t) : ∃ u < t, u + a u = t + z := by
   induction t generalizing z with
-  | zero => simp only [pool, notMem_empty] at hz
+  | zero =>
+    simp only [pool, notMem_empty] at hz
   | succ t ih =>
     simp_rw [pool, mem_map, Equiv.coe_toEmbedding, Equiv.subRight_apply] at hz
     obtain ⟨y, my, ey⟩ := hz
-    rw [mem_insert, mem_erase] at my; rcases my with h | h
+    rw [mem_insert, mem_erase] at my
+    rcases my with h | h
     · use t; lia
     · obtain ⟨u, lu, hu⟩ := ih h.2
-      use u; lia
+      use u
+      lia
 
 include ha
 
 /-- The ball heights are always within `[0, 2014]`. -/
 lemma pool_subset_Icc : ∀ {t}, pool a t ⊆ Icc 0 2014
-  | 0 => by simp [pool]
+  | 0 => by
+    simp [pool]
   | t + 1 => by
     intro x hx
     simp_rw [pool, mem_map, Equiv.coe_toEmbedding, Equiv.subRight_apply] at hx
     obtain ⟨y, my, rfl⟩ := hx
     suffices y ∈ Icc 1 2015 by rw [mem_Icc] at this ⊢; grind
-    rw [mem_insert, mem_erase] at my; rcases my with h | ⟨h₁, h₂⟩
+    rw [mem_insert, mem_erase] at my
+    rcases my with h | ⟨h₁, h₂⟩
     · exact h ▸ ha.1 t
     · have := pool_subset_Icc h₂; rw [mem_Icc] at this ⊢; grind
 
@@ -99,8 +106,10 @@ lemma notMem_pool_self : a t ∉ pool a t := by
   obtain ⟨u, lu, hu⟩ := exists_add_eq_of_mem_pool h
   exact lu.ne (ha.2 hu)
 
-/-- The number of balls stays unchanged if there is a ball with height 0 and increases by 1
-otherwise. -/
+/--
+The number of balls stays unchanged if there is a ball with height 0 and increases by 1
+otherwise.
+-/
 lemma card_pool_succ : #(pool a (t + 1)) = #(pool a t) + if 0 ∈ pool a t then 0 else 1 := by
   have nms : a t ∉ (pool a t).erase 0 := by
     rw [mem_erase, not_and_or]; exact .inr (notMem_pool_self ha)
@@ -111,10 +120,13 @@ lemma card_pool_succ : #(pool a (t + 1)) = #(pool a t) + if 0 ∈ pool a t then 
 
 lemma monotone_card_pool : Monotone fun t ↦ #(pool a t) := by
   refine monotone_nat_of_le_succ fun t ↦ ?_
-  have := card_pool_succ (t := t) ha; lia
+  have := card_pool_succ (t := t) ha
+  lia
 
-/-- There exists a point where the number of balls reaches a maximum (which follows from its
-monotonicity and boundedness). We take its coordinates for the problem's `b` and `N`. -/
+/--
+There exists a point where the number of balls reaches a maximum (which follows from its
+monotonicity and boundedness). We take its coordinates for the problem's `b` and `N`.
+-/
 lemma exists_max_card_pool : ∃ b N, ∀ t ≥ N, #(pool a t) = b :=
   converges_of_monotone_of_bounded (monotone_card_pool ha)
     (fun t ↦ by simpa using card_le_card (pool_subset_Icc ha))
@@ -128,7 +140,9 @@ variable {b N : ℕ} (hbN : ∀ t ≥ N, #(pool a t) = b) (ht : t ≥ N)
 include ha hbN
 
 lemma b_pos : 0 < b := by
-  by_contra! h; rw [nonpos_iff_eq_zero] at h; subst h
+  by_contra! h
+  rw [nonpos_iff_eq_zero] at h
+  subst h
   replace hbN : ∀ t, #(pool a t) = 0 := fun t ↦ by
     obtain h | h := le_or_gt t N
     · have : #(pool a t) ≤ #(pool a N) := monotone_card_pool ha h
@@ -136,7 +150,8 @@ lemma b_pos : 0 < b := by
     · exact hbN _ h.le
   have cp1 : #(pool a 1) = 1 := by
     simp_rw [card_pool_succ ha, pool, card_empty, notMem_empty, ite_false]
-  apply absurd (hbN 1); lia
+  apply absurd (hbN 1)
+  lia
 
 include ht in
 lemma zero_mem_pool : 0 ∈ pool a t := by
@@ -155,8 +170,8 @@ lemma sum_sub_sum_eq_sub : ∑ x ∈ pool a (t + 1), x - ∑ x ∈ pool a t, x =
   lia
 
 /-- The telescoping sum giving the part of the problem's expression within the modulus signs. -/
-lemma sum_telescope {m n : ℕ} (hm : N ≤ m) (hn : m < n) :
-    ∑ j ∈ Ico m n, (a j - b) = ∑ x ∈ pool a n, x - ∑ x ∈ pool a m, x :=
+lemma sum_telescope {m n : ℕ} (hm : N ≤ m) (hn : m < n)
+    : ∑ j ∈ Ico m n, (a j - b) = ∑ x ∈ pool a n, x - ∑ x ∈ pool a m, x :=
   calc
     _ = ∑ j ∈ Ico m n, (∑ x ∈ pool a (j + 1), x - ∑ x ∈ pool a j, x) := by
       congr! 1 with j hj; rw [sum_sub_sum_eq_sub ha hbN]; simp at hj; lia
@@ -178,11 +193,13 @@ lemma sum_pool_le : ∑ x ∈ pool a t, x ≤ ∑ i ∈ range (b - 1), (2014 - i
 
 end Sums
 
-theorem result (ha : Condition a) :
-    ∃ b > 0, ∃ N, ∀ m ≥ N, ∀ n > m, |∑ j ∈ Ico m n, (a j - b)| ≤ 1007 ^ 2 := by
+theorem result (ha : Condition a)
+    : ∃ b > 0, ∃ N, ∀ m ≥ N, ∀ n > m, |∑ j ∈ Ico m n, (a j - b)| ≤ 1007 ^ 2 := by
   obtain ⟨b, N, hbN⟩ := exists_max_card_pool ha
   have bp := b_pos ha hbN
-  use b, Int.natCast_pos.mpr bp, N; intro m hm n hn; rw [sum_telescope ha hbN hm hn]
+  use b, Int.natCast_pos.mpr bp, N
+  intro m hm n hn
+  rw [sum_telescope ha hbN hm hn]
   calc
     _ ≤ ∑ i ∈ range (b - 1), (2014 - i : ℤ) - ∑ i ∈ range b, (i : ℤ) :=
       abs_sub_le_of_le_of_le (le_sum_pool ha hbN (hm.trans hn.le))

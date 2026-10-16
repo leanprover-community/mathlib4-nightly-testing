@@ -29,14 +29,15 @@ abbrev InjectiveObject : Type u := ObjectProperty.FullSubcategory (isInjective C
 
 namespace InjectiveObject
 
-instance (J : Type*) :
-    ObjectProperty.IsClosedUnderLimitsOfShape (isInjective C) (Discrete J) where
+instance (J : Type*) : ObjectProperty.IsClosedUnderLimitsOfShape (isInjective C) (Discrete J) where
   limitsOfShape_le := by
     rintro Y ⟨p⟩
     have (j : J) : Injective (p.diag.obj ⟨j⟩) := p.prop_diag_obj _
-    exact ⟨fun q i _ ↦ ⟨p.isLimit.lift (Cone.mk _
-      (Discrete.natTrans (fun ⟨j⟩ ↦ (Injective.factorThru (q ≫ p.π.app ⟨j⟩) i :)))),
-        p.isLimit.hom_ext (fun ⟨j⟩ ↦ by simp [p.isLimit.fac])⟩⟩
+    exact ⟨fun q i _ ↦ ⟨
+      p.isLimit.lift (Cone.mk _
+        (Discrete.natTrans (fun ⟨j⟩ ↦ (Injective.factorThru (q ≫ p.π.app ⟨j⟩) i :)))),
+      p.isLimit.hom_ext (fun ⟨j⟩ ↦ by simp [p.isLimit.fac])
+    ⟩⟩
 
 instance [HasFiniteProducts C] : HasFiniteProducts (InjectiveObject C) where
   out _ := inferInstance
@@ -50,8 +51,10 @@ instance [Preadditive C] [HasBinaryBiproducts C] : HasBinaryBiproducts (Injectiv
 instance [HasZeroMorphisms C] [HasZeroObject C] : (isInjective C).ContainsZero where
   exists_zero := ⟨0, by simp [IsZero.iff_id_eq_zero], Injective.zero_injective⟩
 
-/-- The inclusion `InjectiveObject C ⥤ C` of the full subcategory of
-injective objects in `C`. -/
+/--
+The inclusion `InjectiveObject C ⥤ C` of the full subcategory of
+injective objects in `C`.
+-/
 abbrev ι : InjectiveObject C ⥤ C := ObjectProperty.ι _
 
 instance (X : InjectiveObject C) : Injective ((ι C).obj X) := X.2

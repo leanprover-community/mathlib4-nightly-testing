@@ -52,18 +52,18 @@ lemma isGLB_of_isLimit {c : Cone F} (h : IsLimit c) : IsGLB (Set.range F.obj) c.
 def isLimitOfIsGLB (c : Cone F) (h : IsGLB (Set.range F.obj) c.pt) : IsLimit c where
   lift d := (h.2 (conePt_mem_lowerBounds F d)).hom
 
-/-- The limit cone for a functor `F : J ⥤ C` to a preorder when `pt : C`
-is the greatest lower bound of `Set.range F.obj` -/
+/--
+The limit cone for a functor `F : J ⥤ C` to a preorder when `pt : C`
+is the greatest lower bound of `Set.range F.obj`
+-/
 @[simps]
-def limitConeOfIsGLB {pt : C} (h : IsGLB (Set.range F.obj) pt) :
-    LimitCone F where
+def limitConeOfIsGLB {pt : C} (h : IsGLB (Set.range F.obj) pt) : LimitCone F where
   cone := coneOfLowerBound _ h.1
   isLimit := isLimitOfIsGLB _ _ h
 
 /-- A functor has a limit iff there exists a glb. -/
 lemma hasLimit_iff_hasGLB : HasLimit F ↔ ∃ x, IsGLB (Set.range F.obj) x :=
-  ⟨fun _ ↦ ⟨_, isGLB_of_isLimit _ (limit.isLimit _)⟩,
-    fun ⟨_, h⟩ ↦ ⟨⟨limitConeOfIsGLB _ h⟩⟩⟩
+  ⟨fun _ ↦ ⟨_, isGLB_of_isLimit _ (limit.isLimit _)⟩, fun ⟨_, h⟩ ↦ ⟨⟨limitConeOfIsGLB _ h⟩⟩⟩
 
 /-- The cocone associated to an upper bound of a functor. -/
 @[simps]
@@ -83,19 +83,20 @@ lemma isLUB_of_isColimit {c : Cocone F} (h : IsColimit c) : IsLUB (Set.range F.o
 def isColimitOfIsLUB (c : Cocone F) (h : IsLUB (Set.range F.obj) c.pt) : IsColimit c where
   desc d := (h.2 (coconePt_mem_upperBounds F d)).hom
 
-/-- The colimit cocone for a functor `F : J ⥤ C` to a preorder when `pt : C`
-is the least upper bound of `Set.range F.obj` -/
+/--
+The colimit cocone for a functor `F : J ⥤ C` to a preorder when `pt : C`
+is the least upper bound of `Set.range F.obj`
+-/
 @[simps]
-def colimitCoconeOfIsLUB {pt : C} (h : IsLUB (Set.range F.obj) pt) :
-    ColimitCocone F where
+def colimitCoconeOfIsLUB {pt : C} (h : IsLUB (Set.range F.obj) pt) : ColimitCocone F where
   cocone := coconeOfUpperBound _ h.1
   isColimit := isColimitOfIsLUB _ _ h
 
 /-- A functor has a colimit iff there exists a lub. -/
-lemma hasColimit_iff_hasLUB :
-    HasColimit F ↔ ∃ x, IsLUB (Set.range F.obj) x :=
-  ⟨fun _ ↦ ⟨_, isLUB_of_isColimit _ (colimit.isColimit _)⟩,
-    fun ⟨_, h⟩ ↦ ⟨⟨colimitCoconeOfIsLUB _ h⟩⟩⟩
+lemma hasColimit_iff_hasLUB : HasColimit F ↔ ∃ x, IsLUB (Set.range F.obj) x := ⟨
+  fun _ ↦ ⟨_, isLUB_of_isColimit _ (colimit.isColimit _)⟩,
+  fun ⟨_, h⟩ ↦ ⟨⟨colimitCoconeOfIsLUB _ h⟩⟩
+⟩
 
 end
 
@@ -148,7 +149,8 @@ A family of limiting binary fans on a partial order induces an inf-semilattice s
 -/
 @[instance_reducible]
 def semilatticeInfOfIsLimitBinaryFan
-    (c : ∀ (X Y : C), BinaryFan X Y) (h : (X Y : C) → IsLimit (c X Y)) : SemilatticeInf C where
+    (c : ∀ (X Y : C), BinaryFan X Y) (h : (X Y : C) → IsLimit (c X Y))
+    : SemilatticeInf C where
   inf X Y := (c X Y).pt
   inf_le_left X Y := leOfHom (c X Y).fst
   inf_le_right X Y := leOfHom (c X Y).snd
@@ -159,14 +161,16 @@ variable (C) in
 @[instance_reducible]
 noncomputable def semilatticeInfOfHasBinaryProducts [HasBinaryProducts C] : SemilatticeInf C :=
   semilatticeInfOfIsLimitBinaryFan
-    (fun _ _ ↦ BinaryFan.mk prod.fst prod.snd) (fun X Y ↦ prodIsProd X Y)
+    (fun _ _ ↦ BinaryFan.mk prod.fst prod.snd)
+    (fun X Y ↦ prodIsProd X Y)
 
 /--
 A family of colimiting binary cofans on a partial order induces a sup-semilattice structure on it.
 -/
 @[instance_reducible]
 def semilatticeSupOfIsColimitBinaryCofan
-    (c : ∀ (X Y : C), BinaryCofan X Y) (h : (X Y : C) → IsColimit (c X Y)) : SemilatticeSup C where
+    (c : ∀ (X Y : C), BinaryCofan X Y) (h : (X Y : C) → IsColimit (c X Y))
+    : SemilatticeSup C where
   sup X Y := (c X Y).pt
   le_sup_left X Y := leOfHom (c X Y).inl
   le_sup_right X Y := leOfHom (c X Y).inr
@@ -177,17 +181,21 @@ variable (C) in
 @[instance_reducible]
 noncomputable def semilatticeSupOfHasBinaryCoproducts [HasBinaryCoproducts C] : SemilatticeSup C :=
   semilatticeSupOfIsColimitBinaryCofan
-    (fun _ _ ↦ BinaryCofan.mk coprod.inl coprod.inr) (fun X Y ↦ coprodIsCoprod X Y)
+    (fun _ _ ↦ BinaryCofan.mk coprod.inl coprod.inr)
+    (fun X Y ↦ coprodIsCoprod X Y)
 
 end
 
 section
 
-/-- The infimum of two elements in a preordered type is a binary product in
-the category associated to this preorder. -/
-def isLimitBinaryFan [SemilatticeInf C] (X Y : C) :
-    IsLimit (BinaryFan.mk (P := X ⊓ Y) (homOfLE inf_le_left) (homOfLE inf_le_right)) :=
-  BinaryFan.isLimitMk (fun s ↦ homOfLE (le_inf (leOfHom s.fst) (leOfHom s.snd)))
+/--
+The infimum of two elements in a preordered type is a binary product in
+the category associated to this preorder.
+-/
+def isLimitBinaryFan [SemilatticeInf C] (X Y : C)
+    : IsLimit (BinaryFan.mk (P := X ⊓ Y) (homOfLE inf_le_left) (homOfLE inf_le_right)) :=
+  BinaryFan.isLimitMk
+    (fun s ↦ homOfLE (le_inf (leOfHom s.fst) (leOfHom s.snd)))
     (by intros; rfl) (by intros; rfl) (by intros; rfl)
 
 instance (priority := low) [SemilatticeInf C] : HasBinaryProducts C where
@@ -196,11 +204,14 @@ instance (priority := low) [SemilatticeInf C] : HasBinaryProducts C where
       ⟨⟨⟨_, isLimitBinaryFan (F.obj ⟨WalkingPair.left⟩) (F.obj ⟨WalkingPair.right⟩)⟩⟩⟩
     apply hasLimit_of_iso (diagramIsoPair F).symm
 
-/-- The supremum of two elements in a preordered type is a binary coproduct
-in the category associated to this preorder. -/
-def isColimitBinaryCofan [SemilatticeSup C] (X Y : C) :
-    IsColimit (BinaryCofan.mk (P := X ⊔ Y) (homOfLE le_sup_left) (homOfLE le_sup_right)) :=
-  BinaryCofan.isColimitMk (fun s ↦ homOfLE (sup_le (leOfHom s.inl) (leOfHom s.inr)))
+/--
+The supremum of two elements in a preordered type is a binary coproduct
+in the category associated to this preorder.
+-/
+def isColimitBinaryCofan [SemilatticeSup C] (X Y : C)
+    : IsColimit (BinaryCofan.mk (P := X ⊔ Y) (homOfLE le_sup_left) (homOfLE le_sup_right)) :=
+  BinaryCofan.isColimitMk
+    (fun s ↦ homOfLE (sup_le (leOfHom s.inl) (leOfHom s.inr)))
     (by intros; rfl) (by intros; rfl) (by intros; rfl)
 
 instance (priority := low) [SemilatticeSup C] : HasBinaryCoproducts C where
@@ -214,13 +225,13 @@ end
 section
 
 /-- The product of elements in a complete lattice is the infimum. -/
-def isLimitIInf [CompleteLattice C] {ι : Type*} (X : ι → C) :
-    IsLimit (Fan.mk (⨅ i, X i) fun i : ι ↦ homOfLE (iInf_le X i)) :=
+def isLimitIInf [CompleteLattice C] {ι : Type*} (X : ι → C)
+    : IsLimit (Fan.mk (⨅ i, X i) fun i : ι ↦ homOfLE (iInf_le X i)) :=
   isLimitOfIsGLB _ _ (by simp [isGLB_iInf])
 
 /-- The coproduct of elements in a complete lattice is the supremum. -/
-def isColimitISup [CompleteLattice C] {ι : Type*} (X : ι → C) :
-    IsColimit (Cofan.mk (⨆ i, X i) fun i : ι ↦ homOfLE (le_iSup X i)) :=
+def isColimitISup [CompleteLattice C] {ι : Type*} (X : ι → C)
+    : IsColimit (Cofan.mk (⨆ i, X i) fun i : ι ↦ homOfLE (le_iSup X i)) :=
   isColimitOfIsLUB _ _ (by simp [isLUB_iSup])
 
 end

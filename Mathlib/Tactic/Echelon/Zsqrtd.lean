@@ -32,8 +32,10 @@ def evalInt (e : Expr) : MetaM Int := do
       return v.num
   throwError "the following entry cannot be simplified to an integer numeral{indentExpr e}"
 
-/-- Evaluate a `ℤ√d` entry to its value. The entry is a `⟨re, im⟩` literal, `√d` itself, or
-an entry without `√d` content, which `norm_num` evaluates. -/
+/--
+Evaluate a `ℤ√d` entry to its value. The entry is a `⟨re, im⟩` literal, `√d` itself, or
+an entry without `√d` content, which `norm_num` evaluates.
+-/
 def evalZsqrtdEntry (d : ℤ) (e : Expr) : MetaM (ℤ√d) := do
   match_expr e with
   | Zsqrtd.mk _ re im => return ⟨← evalInt re, ← evalInt im⟩
@@ -69,9 +71,11 @@ def zsqrtdOfRawLit? (d : ℤ) (e : Expr) : Option (ℤ√d) :=
 def mkZsqrtdRawLit (dQ : Q(ℤ)) {d : ℤ} (v : ℤ√d) : Q(Zsqrtd $dQ) :=
   q(⟨$(Meta.NormNum.mkRawIntLit v.re), $(Meta.NormNum.mkRawIntLit v.im)⟩)
 
-/-- The `ℤ√d` model of the ring `α`, which reduces to `Zsqrtd dQ`. The elimination runs on
+/--
+The `ℤ√d` model of the ring `α`, which reduces to `Zsqrtd dQ`. The elimination runs on
 literals with raw integer components, computed with the arithmetic of `ℤ√d`. `d` is the value of
-the integer literal `dQ`. -/
+the integer literal `dQ`.
+-/
 def zsqrtdModel {u : Level} (α : Q(Type u)) (dQ : Q(ℤ)) (d : ℤ) : Model α Expr where
   ops := (zsqrtdOps d).lift (zsqrtdOfRawLit? d) (mkZsqrtdRawLit dQ)
   evalEntry e := return (mkZsqrtdRawLit dQ (← evalZsqrtdEntry d e), none)
@@ -84,12 +88,15 @@ def zsqrtdModel {u : Level} (α : Q(Type u)) (dQ : Q(ℤ)) (d : ℤ) : Model α 
     return entry
 
 /-- The `ℤ√d` model registration: handles `Zsqrtd d` for an integer literal `d`. -/
-@[bareiss_ext] def zsqrtdExt : BareissExt where
+@[bareiss_ext]
+def zsqrtdExt : BareissExt where
   model? α := do
     -- unfold reducible aliases such as `GaussianInt` before matching
     let R ← whnfR α
-    let_expr Zsqrtd dE := R | return none
-    let some d ← getIntValue? dE | return none
+    let_expr Zsqrtd dE := R
+      | return none
+    let some d ← getIntValue? dE
+      | return none
     have dQ : Q(ℤ) := dE
     return some ⟨.expr, zsqrtdModel α dQ d⟩
 

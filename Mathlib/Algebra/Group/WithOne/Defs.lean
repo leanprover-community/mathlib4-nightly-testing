@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.DivInvMonoid
 public import Mathlib.Data.Option.Basic
 public import Mathlib.Tactic.Attr.Core
 public import Mathlib.Tactic.Common
-
 import Mathlib.Basic.Nontrivial.Basic
 
 /-!
@@ -37,64 +36,47 @@ variable {α : Type u}
 
 /-- Add an extra element `1` to a type -/
 @[to_additive /-- Add an extra element `0` to a type -/]
-def WithOne (α) :=
-  Option α
+def WithOne (α) := Option α
 
-instance WithZero.instRepr [Repr α] : Repr (WithZero α) :=
-  ⟨fun o _ =>
-    match o with
-    | none => "0"
-    | some a => "↑" ++ repr a⟩
+instance WithZero.instRepr [Repr α] : Repr (WithZero α) := ⟨fun o _ =>
+  match o with
+  | none => "0"
+  | some a => "↑" ++ repr a⟩
 
 namespace WithOne
 
 @[to_additive existing]
-instance [Repr α] : Repr (WithOne α) :=
-  ⟨fun o _ =>
-    match o with
-    | none => "1"
-    | some a => "↑" ++ repr a⟩
+instance [Repr α] : Repr (WithOne α) := ⟨fun o _ =>
+  match o with
+  | none => "1"
+  | some a => "↑" ++ repr a⟩
+
+@[to_additive] instance instMonad : Monad WithOne := inferInstanceAs <| Monad Option
+
+@[to_additive] instance instOne : One (WithOne α) := ⟨none⟩
+
+@[to_additive] instance instMul [Mul α] : Mul (WithOne α) := ⟨Option.merge (· * ·)⟩
+
+@[to_additive] instance instInv [Inv α] : Inv (WithOne α) := ⟨fun a => Option.map Inv.inv a⟩
 
 @[to_additive]
-instance instMonad : Monad WithOne :=
-  inferInstanceAs <| Monad Option
+instance instInvOneClass [Inv α] : InvOneClass (WithOne α) := {
+  WithOne.instOne, WithOne.instInv with
+  inv_one := rfl
+}
+
+@[to_additive] instance inhabited : Inhabited (WithOne α) := ⟨1⟩
+
+@[to_additive] instance instNontrivial [Nonempty α] : Nontrivial (WithOne α) := Option.nontrivial
 
 @[to_additive]
-instance instOne : One (WithOne α) :=
-  ⟨none⟩
-
-@[to_additive]
-instance instMul [Mul α] : Mul (WithOne α) :=
-  ⟨Option.merge (· * ·)⟩
-
-@[to_additive]
-instance instInv [Inv α] : Inv (WithOne α) :=
-  ⟨fun a => Option.map Inv.inv a⟩
-
-@[to_additive]
-instance instInvOneClass [Inv α] : InvOneClass (WithOne α) :=
-  { WithOne.instOne, WithOne.instInv with inv_one := rfl }
-
-@[to_additive]
-instance inhabited : Inhabited (WithOne α) :=
-  ⟨1⟩
-
-@[to_additive]
-instance instNontrivial [Nonempty α] : Nontrivial (WithOne α) :=
-  Option.nontrivial
-
-@[to_additive]
-instance [IsEmpty α] : Subsingleton (WithOne α) :=
-  inferInstanceAs <| Subsingleton (Option α)
+instance [IsEmpty α] : Subsingleton (WithOne α) := inferInstanceAs <| Subsingleton (Option α)
 
 /-- The canonical map from `α` into `WithOne α` -/
 @[to_additive (attr := coe, match_pattern) /-- The canonical map from `α` into `WithZero α` -/]
-def coe : α → WithOne α :=
-  Option.some
+def coe : α → WithOne α := Option.some
 
-@[to_additive]
-instance instCoeTC : CoeTC α (WithOne α) :=
-  ⟨coe⟩
+@[to_additive] instance instCoeTC : CoeTC α (WithOne α) := ⟨coe⟩
 
 @[to_additive]
 lemma «forall» {p : WithOne α → Prop} : (∀ x, p x) ↔ p 1 ∧ ∀ a : α, p a := Option.forall
@@ -104,62 +86,57 @@ lemma «exists» {p : WithOne α → Prop} : (∃ x, p x) ↔ p 1 ∨ ∃ a : α
 
 /-- Recursor for `WithOne` using the preferred forms `1` and `↑a`. -/
 @[to_additive (attr := elab_as_elim, induction_eliminator, cases_eliminator)
-/-- Recursor for `WithZero` using the preferred forms `0` and `↑a`. -/]
-def recOneCoe {motive : WithOne α → Sort*} (one : motive 1) (coe : ∀ a : α, motive a) :
-    ∀ n : WithOne α, motive n
+  /-- Recursor for `WithZero` using the preferred forms `0` and `↑a`. -/]
+def recOneCoe {motive : WithOne α → Sort*} (one : motive 1) (coe : ∀ a : α, motive a)
+    : ∀ n : WithOne α, motive n
   | Option.none => one
   | Option.some x => coe x
 
 @[to_additive (attr := simp)]
-lemma recOneCoe_one {motive : WithOne α → Sort*} (h₁ h₂) :
-    recOneCoe h₁ h₂ (1 : WithOne α) = (h₁ : motive 1) :=
+lemma recOneCoe_one {motive : WithOne α → Sort*} (h₁ h₂)
+    : recOneCoe h₁ h₂ (1 : WithOne α) = (h₁ : motive 1) :=
   rfl
 
 @[to_additive (attr := simp)]
-lemma recOneCoe_coe {motive : WithOne α → Sort*} (h₁ h₂) (a : α) :
-    recOneCoe h₁ h₂ (a : WithOne α) = (h₂ : ∀ a : α, motive a) a :=
+lemma recOneCoe_coe {motive : WithOne α → Sort*} (h₁ h₂) (a : α)
+    : recOneCoe h₁ h₂ (a : WithOne α) = (h₂ : ∀ a : α, motive a) a :=
   rfl
 
 /-- Deconstruct an `x : WithOne α` to the underlying value in `α`, given a proof that `x ≠ 1`. -/
 @[to_additive
-/-- Deconstruct an `x : WithZero α` to the underlying value in `α`, given a proof that `x ≠ 0`. -/]
-def unone : ∀ {x : WithOne α}, x ≠ 1 → α | (x : α), _ => x
+  /-- Deconstruct an `x : WithZero α` to the underlying value in `α`, given a proof that `x ≠ 0`. -/]
+def unone : ∀ {x : WithOne α}, x ≠ 1 → α
+  | (x : α), _ => x
 
 @[to_additive (attr := simp)]
-theorem unone_coe {x : α} (hx : (x : WithOne α) ≠ 1) : unone hx = x :=
-  rfl
+theorem unone_coe {x : α} (hx : (x : WithOne α) ≠ 1) : unone hx = x := rfl
 
 @[to_additive (attr := simp)]
 lemma coe_unone : ∀ {x : WithOne α} (hx : x ≠ 1), unone hx = x
   | (x : α), _ => rfl
 
 @[to_additive (attr := simp)]
-theorem coe_ne_one {a : α} : (a : WithOne α) ≠ (1 : WithOne α) :=
-  Option.some_ne_none a
+theorem coe_ne_one {a : α} : (a : WithOne α) ≠ (1 : WithOne α) := Option.some_ne_none a
 
 @[to_additive (attr := simp)]
-theorem one_ne_coe {a : α} : (1 : WithOne α) ≠ a :=
-  coe_ne_one.symm
+theorem one_ne_coe {a : α} : (1 : WithOne α) ≠ a := coe_ne_one.symm
 
 @[to_additive]
-theorem ne_one_iff_exists {x : WithOne α} : x ≠ 1 ↔ ∃ a : α, ↑a = x :=
-  Option.ne_none_iff_exists
+theorem ne_one_iff_exists {x : WithOne α} : x ≠ 1 ↔ ∃ a : α, ↑a = x := Option.ne_none_iff_exists
 
 @[to_additive]
 instance instCanLift : CanLift (WithOne α) α (↑) fun a => a ≠ 1 where
   prf _ := ne_one_iff_exists.1
 
 @[to_additive (attr := simp, norm_cast)]
-theorem coe_inj {a b : α} : (a : WithOne α) = b ↔ a = b :=
-  Option.some_inj
+theorem coe_inj {a b : α} : (a : WithOne α) = b ↔ a = b := Option.some_inj
 
 @[to_additive]
-lemma coe_injective : Function.Injective (coe : α → WithOne α) :=
-  Option.some_injective _
+lemma coe_injective : Function.Injective (coe : α → WithOne α) := Option.some_injective _
 
 @[to_additive (attr := elab_as_elim)]
-protected theorem cases_on {motive : WithOne α → Prop} :
-    ∀ x : WithOne α, (one : motive 1) → (coe : ∀ a : α, motive a) → motive x :=
+protected theorem cases_on {motive : WithOne α → Prop}
+    : ∀ x : WithOne α, (one : motive 1) → (coe : ∀ a : α, motive a) → motive x :=
   Option.casesOn
 
 @[to_additive]
@@ -174,37 +151,40 @@ lemma coe_mul [Mul α] (a b : α) : (↑(a * b) : WithOne α) = a * b := rfl
 instance instMonoid [Semigroup α] : Monoid (WithOne α) where
   __ := instMulOneClass
   mul_assoc
-    | 1, b, c => by simp
-    | (a : α), 1, c => by simp
-    | (a : α), (b : α), 1 => by simp
-    | (a : α), (b : α), (c : α) => by simp_rw [← coe_mul, mul_assoc]
+    | 1, b, c => by
+      simp
+    | (a : α), 1, c => by
+      simp
+    | (a : α), (b : α), 1 => by
+      simp
+    | (a : α), (b : α), (c : α) => by
+      simp_rw [← coe_mul, mul_assoc]
 
 @[to_additive]
 instance instCommMonoid [CommSemigroup α] : CommMonoid (WithOne α) where
   mul_comm
-    | (a : α), (b : α) => congr(some $(mul_comm a b))
-    | (_ : α), 1 => rfl
-    | 1, (_ : α) => rfl
-    | 1, 1 => rfl
+    | (a : α), (b : α) =>
+      congr(some $(mul_comm a b))
+    | (_ : α), 1 =>
+      rfl
+    | 1, (_ : α) =>
+      rfl
+    | 1, 1 =>
+      rfl
 
 @[to_additive (attr := simp, norm_cast)]
-theorem coe_inv [Inv α] (a : α) : ((a⁻¹ : α) : WithOne α) = (a : WithOne α)⁻¹ :=
-  rfl
+theorem coe_inv [Inv α] (a : α) : ((a⁻¹ : α) : WithOne α) = (a : WithOne α)⁻¹ := rfl
 
-/--
-Specialization of `Option.getD` to values in `WithOne α` that respects API boundaries.
--/
+/-- Specialization of `Option.getD` to values in `WithOne α` that respects API boundaries. -/
 @[to_additive
   /-- Specialization of `Option.getD` to values in `WithZero α` that respects API boundaries. -/]
 def unoneD (d : α) (x : WithOne α) : α := recOneCoe d id x
 
 @[to_additive (attr := simp)]
-theorem unoneD_one (d : α) : unoneD d 1 = d :=
-  rfl
+theorem unoneD_one (d : α) : unoneD d 1 = d := rfl
 
 @[to_additive (attr := simp)]
-theorem unoneD_coe (d x : α) : unoneD d x = x :=
-  rfl
+theorem unoneD_coe (d x : α) : unoneD d x = x := rfl
 
 @[to_additive]
 theorem unoneD_eq_iff {d y : α} {x : WithOne α} : unoneD d x = y ↔ x = y ∨ x = 1 ∧ y = d := by
@@ -215,8 +195,8 @@ theorem unoneD_eq_self_iff {d : α} {x : WithOne α} : unoneD d x = d ↔ x = d 
   simp [unoneD_eq_iff]
 
 @[to_additive]
-theorem unoneD_eq_unoneD_iff {d : α} {x y : WithOne α} :
-    unoneD d x = unoneD d y ↔ x = y ∨ x = d ∧ y = 1 ∨ x = 1 ∧ y = d := by
+theorem unoneD_eq_unoneD_iff {d : α} {x y : WithOne α}
+    : unoneD d x = unoneD d y ↔ x = y ∨ x = d ∧ y = 1 ∨ x = 1 ∧ y = d := by
   induction y <;> simp [unoneD_eq_iff, or_comm]
 
 @[to_additive]

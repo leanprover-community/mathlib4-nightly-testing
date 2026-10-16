@@ -28,7 +28,6 @@ Once we have cocartesian-monoidal categories, replace `monoidalOfHasFiniteCoprod
 
 @[expose] public section
 
-
 universe v u
 
 noncomputable section
@@ -56,9 +55,7 @@ def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : Monoi
     leftUnitor X := coprod.leftUnitor X
     rightUnitor X := coprod.rightUnitor X
   }
-  .ofTensorHom
-    (pentagon := coprod.pentagon)
-    (triangle := coprod.triangle)
+  .ofTensorHom (pentagon := coprod.pentagon) (triangle := coprod.triangle)
     (associator_naturality := @coprod.associator_naturality _ _ _)
     (id_tensorHom_id := fun _ _ => coprod.map_id_id)
     (tensorHom_comp_tensorHom := coprod.map_map)
@@ -75,49 +72,35 @@ attribute [local instance] monoidalOfHasFiniteCoproducts
 
 open scoped MonoidalCategory
 
-@[simp]
-theorem tensorObj (X Y : C) : X ⊗ Y = (X ⨿ Y) :=
-  rfl
+@[simp] theorem tensorObj (X Y : C) : X ⊗ Y = (X ⨿ Y) := rfl
 
 @[simp]
-theorem tensorHom {W X Y Z : C} (f : W ⟶ X) (g : Y ⟶ Z) : f ⊗ₘ g = Limits.coprod.map f g :=
-  rfl
+theorem tensorHom {W X Y Z : C} (f : W ⟶ X) (g : Y ⟶ Z) : f ⊗ₘ g = Limits.coprod.map f g := rfl
+
+@[simp] theorem whiskerLeft (X : C) {Y Z : C} (f : Y ⟶ Z) : X ◁ f = Limits.coprod.map (𝟙 X) f := rfl
 
 @[simp]
-theorem whiskerLeft (X : C) {Y Z : C} (f : Y ⟶ Z) : X ◁ f = Limits.coprod.map (𝟙 X) f :=
-  rfl
+theorem whiskerRight {X Y : C} (f : X ⟶ Y) (Z : C) : f ▷ Z = Limits.coprod.map f (𝟙 Z) := rfl
 
-@[simp]
-theorem whiskerRight {X Y : C} (f : X ⟶ Y) (Z : C) : f ▷ Z = Limits.coprod.map f (𝟙 Z) :=
-  rfl
+@[simp] theorem leftUnitor_hom (X : C) : (λ_ X).hom = coprod.desc (initial.to X) (𝟙 _) := rfl
 
-@[simp]
-theorem leftUnitor_hom (X : C) : (λ_ X).hom = coprod.desc (initial.to X) (𝟙 _) :=
-  rfl
+@[simp] theorem rightUnitor_hom (X : C) : (ρ_ X).hom = coprod.desc (𝟙 _) (initial.to X) := rfl
 
-@[simp]
-theorem rightUnitor_hom (X : C) : (ρ_ X).hom = coprod.desc (𝟙 _) (initial.to X) :=
-  rfl
+@[simp] theorem leftUnitor_inv (X : C) : (λ_ X).inv = Limits.coprod.inr := rfl
 
-@[simp]
-theorem leftUnitor_inv (X : C) : (λ_ X).inv = Limits.coprod.inr :=
-  rfl
-
-@[simp]
-theorem rightUnitor_inv (X : C) : (ρ_ X).inv = Limits.coprod.inl :=
-  rfl
+@[simp] theorem rightUnitor_inv (X : C) : (ρ_ X).inv = Limits.coprod.inl := rfl
 
 -- We don't mark this as a simp lemma, even though in many particular
 -- categories the right-hand side will simplify significantly further.
 -- For now, we'll plan to create specialised simp lemmas in each particular category.
-theorem associator_hom (X Y Z : C) :
-    (α_ X Y Z).hom =
-      coprod.desc (coprod.desc coprod.inl (coprod.inl ≫ coprod.inr)) (coprod.inr ≫ coprod.inr) :=
+theorem associator_hom (X Y Z : C)
+    : (α_ X Y Z).hom
+      = coprod.desc (coprod.desc coprod.inl (coprod.inl ≫ coprod.inr)) (coprod.inr ≫ coprod.inr) :=
   rfl
 
-theorem associator_inv (X Y Z : C) :
-    (α_ X Y Z).inv =
-      coprod.desc (coprod.inl ≫ coprod.inl) (coprod.desc (coprod.inr ≫ coprod.inl) coprod.inr) :=
+theorem associator_inv (X Y Z : C)
+    : (α_ X Y Z).inv
+      = coprod.desc (coprod.inl ≫ coprod.inl) (coprod.desc (coprod.inr ≫ coprod.inl) coprod.inr) :=
   rfl
 
 end monoidalOfHasFiniteCoproducts
@@ -126,11 +109,10 @@ section
 
 attribute [local instance] monoidalOfHasFiniteCoproducts
 
-/-- The monoidal structure coming from finite coproducts is symmetric.
--/
+/-- The monoidal structure coming from finite coproducts is symmetric. -/
 @[simps, instance_reducible]
-def symmetricOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] :
-    SymmetricCategory C where
+def symmetricOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C]
+    : SymmetricCategory C where
   braiding X Y := Limits.coprod.braiding X Y
   braiding_naturality_left f g := by simp
   braiding_naturality_right f g := by simp

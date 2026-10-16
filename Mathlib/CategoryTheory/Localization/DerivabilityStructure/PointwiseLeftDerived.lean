@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Functor.Derived.PointwiseLeftDerived
 public import Mathlib.CategoryTheory.Localization.DerivabilityStructure.Basic
-
 import Mathlib.CategoryTheory.GuitartExact.KanExtension
 
 /-!
@@ -41,59 +40,61 @@ namespace CategoryTheory
 
 open CategoryTheory.Functor
 
-variable {C₁ C₂ H D₁ D₂ : Type*} [Category* C₁] [Category* C₂] [Category* H]
-  [Category* D₁] [Category* D₂]
+variable
+  {C₁ C₂ H D₁ D₂ : Type*} [Category* C₁] [Category* C₂] [Category* H] [Category* D₁] [Category* D₂]
   {W₁ : MorphismProperty C₁} {W₂ : MorphismProperty C₂}
 
 namespace LocalizerMorphism
 
-variable (Φ : LocalizerMorphism W₁ W₂) (L₁ : C₁ ⥤ D₁) (L₂ : C₂ ⥤ D₂)
-  [L₁.IsLocalization W₁] [L₂.IsLocalization W₂]
+variable
+  (Φ : LocalizerMorphism W₁ W₂)
+  (L₁ : C₁ ⥤ D₁) (L₂ : C₂ ⥤ D₂) [L₁.IsLocalization W₁] [L₂.IsLocalization W₂]
   (F : C₂ ⥤ H) (F₁ : D₁ ⥤ H) (α₁ : L₁ ⋙ F₁ ⟶ Φ.functor ⋙ F)
   (F₂ : D₂ ⥤ H) (α₂ : L₂ ⋙ F₂ ⟶ F)
   [F₁.IsLeftDerivedFunctor α₁ W₁]
 
-/-- If `Φ` is a localizer morphism from `W₁ : MorphismProperty C₁` to
+/--
+If `Φ` is a localizer morphism from `W₁ : MorphismProperty C₁` to
 `W₂ : MorphismProperty C₂`, if `L₁ : C₁ ⥤ D₁` and `L₂ : C₂ ⥤ D₂` are
 localization functors for `W₁` and `W₂`, if `F : C₂ ⥤ H` is a functor,
 if `F₁ : D₁ ⥤ H` is a left derived functor of `Φ.functor ⋙ F`,
 and if `F₂ : D₂ ⥤ H` is a functor equipped with a
 natural transformation `α₂ : L₂ ⋙ F₂ ⟶ F`, this is the canonical
-morphism `Φ.localizedFunctor L₁ L₂ ⋙ F₂ ⟶ F₁`. -/
-noncomputable def leftDerivedFunctorComparison :
-    Φ.localizedFunctor L₁ L₂ ⋙ F₂ ⟶ F₁ :=
+morphism `Φ.localizedFunctor L₁ L₂ ⋙ F₂ ⟶ F₁`.
+-/
+noncomputable def leftDerivedFunctorComparison : Φ.localizedFunctor L₁ L₂ ⋙ F₂ ⟶ F₁ :=
   F₁.leftDerivedLift α₁ W₁ (Φ.localizedFunctor L₁ L₂ ⋙ F₂)
-    ((associator _ _ _).inv ≫ whiskerRight ((Φ.catCommSq L₁ L₂).iso).inv F₂ ≫
-      (associator _ _ _).hom ≫ whiskerLeft Φ.functor α₂)
+    ((associator _ _ _).inv ≫ whiskerRight ((Φ.catCommSq L₁ L₂).iso).inv F₂ ≫ (associator _ _ _).hom
+      ≫ whiskerLeft Φ.functor α₂)
 
 @[reassoc]
-lemma leftDerivedFunctorComparison_fac :
-    whiskerLeft _ (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂) ≫ α₁ =
-      (associator _ _ _).inv ≫ whiskerRight ((Φ.catCommSq L₁ L₂).iso).inv F₂ ≫
-        (associator _ _ _).hom ≫ whiskerLeft Φ.functor α₂ := by
+lemma leftDerivedFunctorComparison_fac
+    : whiskerLeft _ (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂) ≫ α₁
+      = (associator _ _ _).inv ≫ whiskerRight ((Φ.catCommSq L₁ L₂).iso).inv F₂
+        ≫ (associator _ _ _).hom ≫ whiskerLeft Φ.functor α₂ := by
   dsimp only [leftDerivedFunctorComparison]
   rw [Functor.leftDerived_fac]
 
 @[reassoc (attr := simp)]
-lemma leftDerivedFunctorComparison_fac_app (X : C₁) :
-    (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂).app (L₁.obj X) ≫ α₁.app X =
-      F₂.map (((Φ.catCommSq L₁ L₂).iso).inv.app X) ≫ α₂.app (Φ.functor.obj X) := by
+lemma leftDerivedFunctorComparison_fac_app (X : C₁)
+    : (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂).app (L₁.obj X) ≫ α₁.app X
+      = F₂.map (((Φ.catCommSq L₁ L₂).iso).inv.app X) ≫ α₂.app (Φ.functor.obj X) := by
   simpa using congr_app (Φ.leftDerivedFunctorComparison_fac L₁ L₂ F F₁ α₁ F₂ α₂) X
 
 variable [Φ.IsLeftDerivabilityStructure]
 
-lemma hasPointwiseLeftDerivedFunctorAt_iff_of_isLeftDerivabilityStructure (X : C₁) :
-    (Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctorAt W₁ X ↔
-      F.HasPointwiseLeftDerivedFunctorAt W₂ (Φ.functor.obj X) := by
+lemma hasPointwiseLeftDerivedFunctorAt_iff_of_isLeftDerivabilityStructure (X : C₁)
+    : (Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctorAt W₁ X
+      ↔ F.HasPointwiseLeftDerivedFunctorAt W₂ (Φ.functor.obj X) := by
   let e : W₂.Q.obj _ ≅ (Φ.localizedFunctor W₁.Q W₂.Q).obj _ := ((Φ.catCommSq W₁.Q W₂.Q).iso).app X
   rw [F.hasPointwiseLeftDerivedFunctorAt_iff W₂.Q W₂ (Φ.functor.obj X),
     (Φ.functor ⋙ F).hasPointwiseLeftDerivedFunctorAt_iff W₁.Q W₁ X,
     TwoSquare.hasPointwiseRightKanExtensionAt_iff ((Φ.catCommSq W₁.Q W₂.Q).iso).inv,
     Functor.hasPointwiseRightKanExtensionAt_iff_of_iso W₂.Q F e]
 
-lemma hasPointwiseLeftDerivedFunctor_iff_of_isLeftDerivabilityStructure :
-    F.HasPointwiseLeftDerivedFunctor W₂ ↔
-      ((Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctor W₁) := by
+lemma hasPointwiseLeftDerivedFunctor_iff_of_isLeftDerivabilityStructure
+    : F.HasPointwiseLeftDerivedFunctor W₂
+      ↔ ((Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctor W₁) := by
   constructor
   · intro hF X₁
     rw [hasPointwiseLeftDerivedFunctorAt_iff_of_isLeftDerivabilityStructure]
@@ -101,12 +102,12 @@ lemma hasPointwiseLeftDerivedFunctor_iff_of_isLeftDerivabilityStructure :
   · intro hF X₂
     have R : Φ.LeftResolution X₂ := Classical.arbitrary _
     simpa only [hasPointwiseLeftDerivedFunctorAt_iff_of_isLeftDerivabilityStructure,
-      ← F.hasPointwiseLeftDerivedFunctorAt_iff_of_mem W₂ R.w R.hw] using hF R.X₁
+        ← F.hasPointwiseLeftDerivedFunctorAt_iff_of_mem W₂ R.w R.hw]
+      using hF R.X₁
 
 section
 
-variable [(Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctor W₁]
-  [F₂.IsLeftDerivedFunctor α₂ W₂]
+variable [(Φ.functor ⋙ F).HasPointwiseLeftDerivedFunctor W₁] [F₂.IsLeftDerivedFunctor α₂ W₂]
 
 instance : IsIso (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂) := by
   have : F.HasPointwiseLeftDerivedFunctor W₂ := by
@@ -118,10 +119,9 @@ instance : IsIso (Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α
   exact ((F₂.isPointwiseRightKanExtensionOfHasPointwiseLeftDerivedFunctor α₂ W₂).compTwoSquare
     ((Φ.catCommSq L₁ L₂).iso).inv).isRightKanExtension
 
-lemma isIso_iff_of_isLeftDerivabilityStructure (X : C₁) :
-    IsIso (α₁.app X) ↔ IsIso (α₂.app (Φ.functor.obj X)) := by
-  rw [← isIso_comp_left_iff
-    ((Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂).app (L₁.obj X)),
+lemma isIso_iff_of_isLeftDerivabilityStructure (X : C₁)
+    : IsIso (α₁.app X) ↔ IsIso (α₂.app (Φ.functor.obj X)) := by
+  rw [← isIso_comp_left_iff ((Φ.leftDerivedFunctorComparison L₁ L₂ F F₁ α₁ F₂ α₂).app (L₁.obj X)),
     leftDerivedFunctorComparison_fac_app, isIso_comp_left_iff]
 
 end

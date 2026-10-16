@@ -24,9 +24,10 @@ variable [MulZeroClass M₀]
 
 lemma zero : IsIdempotentElem (0 : M₀) := mul_zero _
 
-instance : Zero { p : M₀ // IsIdempotentElem p } where zero := ⟨0, zero⟩
+instance : Zero {p : M₀ // IsIdempotentElem p} where
+  zero := ⟨0, zero⟩
 
-@[simp] lemma coe_zero : ↑(0 : { p : M₀ // IsIdempotentElem p }) = (0 : M₀) := rfl
+@[simp] lemma coe_zero : ↑(0 : {p : M₀ // IsIdempotentElem p}) = (0 : M₀) := rfl
 
 end MulZeroClass
 

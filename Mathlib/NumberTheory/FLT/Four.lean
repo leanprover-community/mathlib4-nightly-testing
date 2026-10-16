@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.FLT.Basic
 public import Mathlib.NumberTheory.PythagoreanTriples
-
 import Mathlib.Tactic.LinearCombination
 
 /-!
@@ -22,11 +21,12 @@ assert_not_exists TwoSidedIdeal
 
 noncomputable section
 
-/-- Shorthand for three non-zero integers `a`, `b`, and `c` satisfying `a ^ 4 + b ^ 4 = c ^ 2`.
+/--
+Shorthand for three non-zero integers `a`, `b`, and `c` satisfying `a ^ 4 + b ^ 4 = c ^ 2`.
 We will show that no integers satisfy this equation. Clearly Fermat's Last theorem for n = 4
-follows. -/
-def Fermat42 (a b c : ℤ) : Prop :=
-  a ≠ 0 ∧ b ≠ 0 ∧ a ^ 4 + b ^ 4 = c ^ 2
+follows.
+-/
+def Fermat42 (a b c : ℤ) : Prop := a ≠ 0 ∧ b ≠ 0 ∧ a ^ 4 + b ^ 4 = c ^ 2
 
 namespace Fermat42
 
@@ -35,8 +35,8 @@ theorem comm {a b c : ℤ} : Fermat42 a b c ↔ Fermat42 b a c := by
   rw [add_comm]
   tauto
 
-theorem mul {a b c k : ℤ} (hk0 : k ≠ 0) :
-    Fermat42 a b c ↔ Fermat42 (k * a) (k * b) (k ^ 2 * c) := by
+theorem mul {a b c k : ℤ} (hk0 : k ≠ 0)
+    : Fermat42 a b c ↔ Fermat42 (k * a) (k * b) (k ^ 2 * c) := by
   delta Fermat42
   constructor
   · grind [mul_eq_zero]
@@ -49,13 +49,15 @@ theorem mul {a b c k : ℤ} (hk0 : k ≠ 0) :
     linear_combination f42.2.2
 
 theorem ne_zero {a b c : ℤ} (h : Fermat42 a b c) : c ≠ 0 := by
-  apply ne_zero_pow two_ne_zero _; apply ne_of_gt
+  apply ne_zero_pow two_ne_zero _
+  apply ne_of_gt
   rw [← h.2.2, (by ring : a ^ 4 + b ^ 4 = (a ^ 2) ^ 2 + (b ^ 2) ^ 2)]
-  exact
-    add_pos (sq_pos_of_ne_zero (pow_ne_zero 2 h.1)) (sq_pos_of_ne_zero (pow_ne_zero 2 h.2.1))
+  exact add_pos (sq_pos_of_ne_zero (pow_ne_zero 2 h.1)) (sq_pos_of_ne_zero (pow_ne_zero 2 h.2.1))
 
-/-- We say a solution to `a ^ 4 + b ^ 4 = c ^ 2` is minimal if there is no other solution with
-a smaller `c` (in absolute value). -/
+/--
+We say a solution to `a ^ 4 + b ^ 4 = c ^ 2` is minimal if there is no other solution with
+a smaller `c` (in absolute value).
+-/
 def Minimal (a b c : ℤ) : Prop :=
   Fermat42 a b c ∧ ∀ a1 b1 c1 : ℤ, Fermat42 a1 b1 c1 → Int.natAbs c ≤ Int.natAbs c1
 
@@ -109,8 +111,8 @@ theorem neg_of_minimal {a b c : ℤ} : Minimal a b c → Minimal a b (-c) := by
   rwa [Int.natAbs_neg c]
 
 /-- We can assume that a minimal solution to `a ^ 4 + b ^ 4 = c ^ 2` has `a` odd. -/
-theorem exists_odd_minimal {a b c : ℤ} (h : Fermat42 a b c) :
-    ∃ a0 b0 c0, Minimal a0 b0 c0 ∧ a0 % 2 = 1 := by
+theorem exists_odd_minimal {a b c : ℤ} (h : Fermat42 a b c)
+    : ∃ a0 b0 c0, Minimal a0 b0 c0 ∧ a0 % 2 = 1 := by
   obtain ⟨a0, b0, c0, hf⟩ := exists_minimal h
   rcases Int.emod_two_eq_zero_or_one a0 with hap | hap
   · rcases Int.emod_two_eq_zero_or_one b0 with hbp | hbp
@@ -123,10 +125,12 @@ theorem exists_odd_minimal {a b c : ℤ} (h : Fermat42 a b c) :
     · exact ⟨b0, ⟨a0, ⟨c0, minimal_comm hf, hbp⟩⟩⟩
   exact ⟨a0, ⟨b0, ⟨c0, hf, hap⟩⟩⟩
 
-/-- We can assume that a minimal solution to `a ^ 4 + b ^ 4 = c ^ 2` has
-`a` odd and `c` positive. -/
-theorem exists_pos_odd_minimal {a b c : ℤ} (h : Fermat42 a b c) :
-    ∃ a0 b0 c0, Minimal a0 b0 c0 ∧ a0 % 2 = 1 ∧ 0 < c0 := by
+/--
+We can assume that a minimal solution to `a ^ 4 + b ^ 4 = c ^ 2` has
+`a` odd and `c` positive.
+-/
+theorem exists_pos_odd_minimal {a b c : ℤ} (h : Fermat42 a b c)
+    : ∃ a0 b0 c0, Minimal a0 b0 c0 ∧ a0 % 2 = 1 ∧ 0 < c0 := by
   obtain ⟨a0, b0, c0, hf, hc⟩ := exists_odd_minimal h
   rcases lt_trichotomy 0 c0 with (h1 | h1 | h1)
   · use a0, b0, c0
@@ -141,10 +145,11 @@ theorem Int.isCoprime_of_sq_sum {r s : ℤ} (h2 : IsCoprime s r) : IsCoprime (r 
   rw [sq, sq]
   exact (IsCoprime.mul_left h2 h2).mul_add_left_left r
 
-theorem Int.isCoprime_of_sq_sum' {r s : ℤ} (h : IsCoprime r s) :
-    IsCoprime (r ^ 2 + s ^ 2) (r * s) := by
+theorem Int.isCoprime_of_sq_sum' {r s : ℤ} (h : IsCoprime r s)
+    : IsCoprime (r ^ 2 + s ^ 2) (r * s) := by
   apply IsCoprime.mul_right (Int.isCoprime_of_sq_sum (isCoprime_comm.mp h))
-  rw [add_comm]; apply Int.isCoprime_of_sq_sum h
+  rw [add_comm]
+  apply Int.isCoprime_of_sq_sum h
 
 namespace Fermat42
 
@@ -190,8 +195,8 @@ theorem not_minimal {a b c : ℤ} (h : Minimal a b c) (ha2 : a % 2 = 1) (hc : 0 
   -- m and r * s are coprime because m = r ^ 2 + s ^ 2 and r and s are coprime.
   have hcp : Int.gcd m (r * s) = 1 := by
     rw [htt3]
-    exact Int.isCoprime_iff_gcd_eq_one.mp
-      (Int.isCoprime_of_sq_sum' (Int.isCoprime_iff_gcd_eq_one.mpr htt4))
+    exact Int.isCoprime_iff_gcd_eq_one.mp (Int.isCoprime_of_sq_sum'
+      (Int.isCoprime_iff_gcd_eq_one.mpr htt4))
   -- b is even because b ^ 2 = 2 * m * n.
   have hb2 : 2 ∣ b := by
     apply @Int.Prime.dvd_pow' _ 2 _ Nat.prime_two
@@ -205,9 +210,9 @@ theorem not_minimal {a b c : ℤ} (h : Minimal a b c) (ha2 : a % 2 = 1) (hc : 0 
   have h2b0 : b' ≠ 0 := by grind
   obtain ⟨i, hi⟩ := Int.sq_of_gcd_eq_one hcp hs.symm
   -- use m is positive to exclude m = - i ^ 2
-  have hi' : ¬m = -i ^ 2 := by
+  have hi' : ¬ m = - i ^ 2 := by
     by_contra h1
-    have hit : -i ^ 2 ≤ 0 := neg_nonpos.mpr (sq_nonneg i)
+    have hit : - i ^ 2 ≤ 0 := neg_nonpos.mpr (sq_nonneg i)
     rw [← h1] at hit
     apply absurd h4 (not_lt.mpr hit)
   replace hi : m = i ^ 2 := Or.resolve_right hi hi'
@@ -216,11 +221,11 @@ theorem not_minimal {a b c : ℤ} (h : Minimal a b c) (ha2 : a % 2 = 1) (hc : 0 
   -- obtain d such that r * s = d ^ 2
   obtain ⟨d, hd⟩ := Int.sq_of_gcd_eq_one hcp hs.symm
   -- (b / 2) ^ 2 and m are positive so r * s is positive
-  have hd' : ¬r * s = -d ^ 2 := by
+  have hd' : ¬ r * s = - d ^ 2 := by
     by_contra h1
     rw [h1] at hs
     have h2 : b' ^ 2 ≤ 0 := by
-      rw [hs, (by ring : -d ^ 2 * m = -(d ^ 2 * m))]
+      rw [hs, (by ring : - d ^ 2 * m = -(d ^ 2 * m))]
       exact neg_nonpos.mpr ((mul_nonneg_iff_of_pos_right h4).mpr (sq_nonneg d))
     have h2' : 0 ≤ b' ^ 2 := by apply sq_nonneg b'
     exact absurd (lt_of_le_of_ne h2' (Ne.symm (pow_ne_zero _ h2b0))) (not_lt.mpr h2)
@@ -267,13 +272,13 @@ theorem fermatLastTheoremFour : FermatLastTheoremFor 4 := by
   rw [fermatLastTheoremFor_iff_int]
   intro a b c ha hb _ heq
   apply @not_fermat_42 _ _ (c ^ 2) ha hb
-  rw [heq]; ring
+  rw [heq]
+  ring
 
-/--
-To prove Fermat's Last Theorem, it suffices to prove it for odd prime exponents.
--/
+/-- To prove Fermat's Last Theorem, it suffices to prove it for odd prime exponents. -/
 theorem FermatLastTheorem.of_odd_primes
-    (hprimes : ∀ p : ℕ, Nat.Prime p → Odd p → FermatLastTheoremFor p) : FermatLastTheorem := by
+    (hprimes : ∀ p : ℕ, Nat.Prime p → Odd p → FermatLastTheoremFor p)
+    : FermatLastTheorem := by
   intro n h
   obtain hdvd | ⟨p, hpprime, hdvd, hpodd⟩ := Nat.four_dvd_or_exists_odd_prime_and_dvd_of_two_lt h
     <;> apply FermatLastTheoremWith.mono hdvd

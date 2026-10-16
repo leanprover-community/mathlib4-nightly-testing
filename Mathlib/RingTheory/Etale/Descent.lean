@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Finiteness.Descent
 public import Mathlib.RingTheory.RingHom.Etale
-
 import Mathlib.RingTheory.Extension.Cotangent.BaseChange
 
 /-!
@@ -45,16 +44,15 @@ variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 variable (T : Type*) [CommRing T] [Algebra R T] [Module.FaithfullyFlat R T]
 
 lemma FormallyUnramified.of_formallyUnramified_tensorProduct_of_faithfullyFlat
-    [FormallyUnramified T (T ⊗[R] S)] :
-    FormallyUnramified R S := by
+    [FormallyUnramified T (T ⊗[R] S)]
+    : FormallyUnramified R S := by
   constructor
   let _ : Algebra S (T ⊗[R] S) := TensorProduct.rightAlgebra
   have : Subsingleton (T ⊗[R] Ω[S⁄R]) :=
     (KaehlerDifferential.tensorKaehlerEquivBase R T S (T ⊗[R] S)).subsingleton
   exact Module.FaithfullyFlat.lTensor_reflects_triviality R T _
 
-lemma Smooth.of_smooth_tensorProduct_of_faithfullyFlat [Smooth T (T ⊗[R] S)] :
-    Smooth R S := by
+lemma Smooth.of_smooth_tensorProduct_of_faithfullyFlat [Smooth T (T ⊗[R] S)] : Smooth R S := by
   have : Algebra.FinitePresentation R S := .of_finitePresentation_tensorProduct_of_faithfullyFlat T
   refine ⟨?_, .of_finitePresentation_tensorProduct_of_faithfullyFlat T⟩
   rw [formallySmooth_iff]
@@ -71,16 +69,18 @@ lemma Smooth.of_smooth_tensorProduct_of_faithfullyFlat [Smooth T (T ⊗[R] S)] :
   · have : Subsingleton (T ⊗[R] H1Cotangent R S) := (tensorH1CotangentOfFlat R S T).subsingleton
     exact Module.FaithfullyFlat.lTensor_reflects_triviality R T (H1Cotangent R S)
 
-lemma Unramified.of_unramified_tensorProduct_of_faithfullyFlat [Unramified T (T ⊗[R] S)] :
-    Unramified R S :=
-  ⟨.of_formallyUnramified_tensorProduct_of_faithfullyFlat T,
-    .of_finiteType_tensorProduct_of_faithfullyFlat T⟩
+lemma Unramified.of_unramified_tensorProduct_of_faithfullyFlat [Unramified T (T ⊗[R] S)]
+    : Unramified R S := ⟨
+  .of_formallyUnramified_tensorProduct_of_faithfullyFlat T,
+  .of_finiteType_tensorProduct_of_faithfullyFlat T
+⟩
 
-lemma Etale.of_etale_tensorProduct_of_faithfullyFlat [Etale T (T ⊗[R] S)] :
-    Etale R S := by
+lemma Etale.of_etale_tensorProduct_of_faithfullyFlat [Etale T (T ⊗[R] S)] : Etale R S := by
   rw [Etale.iff_formallyUnramified_and_smooth]
-  exact ⟨.of_formallyUnramified_tensorProduct_of_faithfullyFlat T,
-    .of_smooth_tensorProduct_of_faithfullyFlat T⟩
+  exact ⟨
+    .of_formallyUnramified_tensorProduct_of_faithfullyFlat T,
+    .of_smooth_tensorProduct_of_faithfullyFlat T
+  ⟩
 
 end Algebra
 
@@ -92,8 +92,8 @@ lemma Smooth.codescendsAlong_faithfullyFlat : CodescendsAlong Smooth FaithfullyF
   rw [faithfullyFlat_algebraMap_iff] at h
   exact .of_smooth_tensorProduct_of_faithfullyFlat S
 
-lemma FormallyUnramified.codescendsAlong_faithfullyFlat :
-    CodescendsAlong FormallyUnramified FaithfullyFlat := by
+lemma FormallyUnramified.codescendsAlong_faithfullyFlat
+    : CodescendsAlong FormallyUnramified FaithfullyFlat := by
   refine .mk _ FormallyUnramified.respectsIso fun R S T _ _ _ _ _ h h' ↦ ?_
   rw [formallyUnramified_algebraMap] at h' ⊢
   rw [faithfullyFlat_algebraMap_iff] at h

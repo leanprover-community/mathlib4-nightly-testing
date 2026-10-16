@@ -22,13 +22,14 @@ the sequence `a n` relative to an arbitrary prime.
 namespace IMO2005Q4
 
 /-- The sequence considered in the problem, `2 ^ n + 3 ^ n + 6 ^ n - 1`. -/
-def a (n : ℕ) : ℤ :=
-  2 ^ n + 3 ^ n + 6 ^ n - 1
+def a (n : ℕ) : ℤ := 2 ^ n + 3 ^ n + 6 ^ n - 1
 
-/-- Key lemma (a modular arithmetic calculation):  Given a prime `p` other than `2` or `3`, the
-`(p - 2)`th term of the sequence has `p` as a factor. -/
-theorem find_specified_factor {p : ℕ} (hp : Nat.Prime p) (hp2 : p ≠ 2) (hp3 : p ≠ 3) :
-    ↑p ∣ a (p - 2) := by
+/--
+Key lemma (a modular arithmetic calculation):  Given a prime `p` other than `2` or `3`, the
+`(p - 2)`th term of the sequence has `p` as a factor.
+-/
+theorem find_specified_factor {p : ℕ} (hp : Nat.Prime p) (hp2 : p ≠ 2) (hp3 : p ≠ 3)
+    : ↑p ∣ a (p - 2) := by
   -- Since `p` is neither `2` nor `3`, it is coprime with `2`, `3`, and `6`
   rw [Ne, ← Nat.prime_dvd_prime_iff_eq hp (by decide), ← Nat.Prime.coprime_iff_not_dvd hp]
     at hp2 hp3
@@ -42,8 +43,8 @@ theorem find_specified_factor {p : ℕ} (hp : Nat.Prime p) (hp2 : p ≠ 2) (hp3 
     6 * a (p - 2) = 3 * 2 ^ (p - 1) + 2 * 3 ^ (p - 1) + (2 * 3) ^ (p - 1) - 6 := by
       simp only [a, hp', pow_succ']; ring
     _ ≡ 3 * 1 + 2 * 1 + 1 - 6 [ZMOD p] := by
-      gcongr <;> apply Int.ModEq.pow_card_sub_one_eq_one hp <;>
-        rwa [Int.isCoprime_iff_gcd_eq_one, Int.gcd_comm]
+      gcongr <;> apply Int.ModEq.pow_card_sub_one_eq_one hp
+        <;> rwa [Int.isCoprime_iff_gcd_eq_one, Int.gcd_comm]
     _ = 0 := rfl
 
 end IMO2005Q4
@@ -52,7 +53,8 @@ open IMO2005Q4
 
 /-- Main statement:  The only positive integer coprime to all terms of the sequence `a` is `1`. -/
 theorem imo2005_q4 {k : ℕ} (hk : 0 < k) : (∀ n : ℕ, 1 ≤ n → IsCoprime (a n) k) ↔ k = 1 := by
-  constructor; rotate_left
+  constructor
+  rotate_left
   · -- The property is clearly true for `k = 1`
     rintro rfl n -
     exact isCoprime_one_right
@@ -64,7 +66,7 @@ theorem imo2005_q4 {k : ℕ} (hk : 0 < k) : (∀ n : ℕ, 1 ≤ n → IsCoprime 
   -- `k`. Hence, it divides none of `a n`, `1 ≤ n`
   by_contra hk'
   have hp : Nat.Prime p := Nat.minFac_prime hk'
-  replace h : ∀ n, 1 ≤ n → ¬(p : ℤ) ∣ a n := fun n hn ↦ by
+  replace h : ∀ n, 1 ≤ n → ¬ (p : ℤ) ∣ a n := fun n hn ↦ by
     have : IsCoprime (a n) p :=
       .of_isCoprime_of_dvd_right (h n hn) (Int.natCast_dvd_natCast.mpr k.minFac_dvd)
     rwa [isCoprime_comm, (Nat.prime_iff_prime_int.mp hp).coprime_iff_not_dvd] at this

@@ -30,7 +30,6 @@ affine space, ordered module, slope
 
 public section
 
-
 open AffineMap
 
 variable {k E : Type*}
@@ -42,11 +41,11 @@ In this section we prove that `lineMap a b r` is monotone (strictly or not) in i
 other arguments belong to specific domains.
 -/
 
-
 section OrderedRing
 
-variable [Ring k] [PartialOrder k] [IsOrderedRing k]
-  [AddCommGroup E] [PartialOrder E] [IsOrderedAddMonoid E] [Module k E] [IsStrictOrderedModule k E]
+variable
+  [Ring k] [PartialOrder k] [IsOrderedRing k] [AddCommGroup E] [PartialOrder E]
+  [IsOrderedAddMonoid E] [Module k E] [IsStrictOrderedModule k E]
 variable {a a' b b' : E} {r r' : k}
 
 theorem lineMap_mono_left (ha : a ≤ a') (hr : r ≤ 1) : lineMap a b r ≤ lineMap a' b r := by
@@ -68,13 +67,14 @@ omit [IsOrderedRing k] in
 theorem lineMap_strict_mono_right (hb : b < b') (hr : 0 < r) : lineMap a b r < lineMap a b' r := by
   simp only [lineMap_apply_module]; gcongr
 
-theorem lineMap_mono_endpoints (ha : a ≤ a') (hb : b ≤ b') (h₀ : 0 ≤ r) (h₁ : r ≤ 1) :
-    lineMap a b r ≤ lineMap a' b' r :=
+theorem lineMap_mono_endpoints (ha : a ≤ a') (hb : b ≤ b') (h₀ : 0 ≤ r) (h₁ : r ≤ 1)
+    : lineMap a b r ≤ lineMap a' b' r :=
   (lineMap_mono_left ha h₁).trans (lineMap_mono_right hb h₀)
 
-theorem lineMap_strict_mono_endpoints (ha : a < a') (hb : b < b') (h₀ : 0 ≤ r) (h₁ : r ≤ 1) :
-    lineMap a b r < lineMap a' b' r := by
-  rcases h₀.eq_or_lt with (rfl | h₀); · simpa
+theorem lineMap_strict_mono_endpoints (ha : a < a') (hb : b < b') (h₀ : 0 ≤ r) (h₁ : r ≤ 1)
+    : lineMap a b r < lineMap a' b' r := by
+  rcases h₀.eq_or_lt with (rfl | h₀)
+  · simpa
   exact (lineMap_mono_left ha.le h₁).trans_lt (lineMap_strict_mono_right hb h₀)
 
 variable [PosSMulReflectLT k E]
@@ -100,8 +100,9 @@ end OrderedRing
 
 section LinearOrderedRing
 
-variable [Ring k] [LinearOrder k] [IsStrictOrderedRing k]
-  [AddCommGroup E] [PartialOrder E] [IsOrderedAddMonoid E] [Module k E] [IsStrictOrderedModule k E]
+variable
+  [Ring k] [LinearOrder k] [IsStrictOrderedRing k] [AddCommGroup E] [PartialOrder E]
+  [IsOrderedAddMonoid E] [Module k E] [IsStrictOrderedModule k E]
   {a a' b b' : E} {r r' : k}
 
 theorem lineMap_le_lineMap_iff_of_lt' (h : a < b) : lineMap a b r ≤ lineMap a b r' ↔ r ≤ r' := by
@@ -136,16 +137,17 @@ theorem right_lt_lineMap_iff_one_lt (h : a < b) : b < lineMap a b r ↔ 1 < r :=
 theorem lineMap_lt_right_iff_lt_one (h : a < b) : lineMap a b r < b ↔ r < 1 := by
   rw [← lineMap_lt_lineMap_iff_of_lt' h, lineMap_apply_one]
 
-theorem midpoint_le_midpoint [Invertible (2 : k)] (ha : a ≤ a') (hb : b ≤ b') :
-    midpoint k a b ≤ midpoint k a' b' :=
+theorem midpoint_le_midpoint [Invertible (2 : k)] (ha : a ≤ a') (hb : b ≤ b')
+    : midpoint k a b ≤ midpoint k a' b' :=
   lineMap_mono_endpoints ha hb (invOf_nonneg.2 zero_le_two) <| invOf_le_one one_le_two
 
 end LinearOrderedRing
 
 section LinearOrderedField
 
-variable [Field k] [LinearOrder k] [IsStrictOrderedRing k]
-  [AddCommGroup E] [PartialOrder E] [IsOrderedAddMonoid E]
+variable
+  [Field k] [LinearOrder k] [IsStrictOrderedRing k] [AddCommGroup E] [PartialOrder E]
+  [IsOrderedAddMonoid E]
 variable [Module k E] [IsStrictOrderedModule k E] [PosSMulReflectLE k E]
 
 section
@@ -213,7 +215,6 @@ For each inequality between `f c` and `lineMap (f a) (f b) r` we provide 3 lemma
 These inequalities can be used to restate `convexOn` in terms of monotonicity of the slope.
 -/
 
-
 variable {f : k → E} {a b r : k}
 
 local notation "c" => lineMap a b r
@@ -221,10 +222,12 @@ local notation "c" => lineMap a b r
 section
 omit [IsStrictOrderedRing k]
 
-/-- Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is non-strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a c ≤ slope f a b`. -/
-theorem map_le_lineMap_iff_slope_le_slope_left (h : 0 < r * (b - a)) :
-    f c ≤ lineMap (f a) (f b) r ↔ slope f a c ≤ slope f a b := by
+/--
+Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is non-strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a c ≤ slope f a b`.
+-/
+theorem map_le_lineMap_iff_slope_le_slope_left (h : 0 < r * (b - a))
+    : f c ≤ lineMap (f a) (f b) r ↔ slope f a c ≤ slope f a b := by
   rw [lineMap_apply, lineMap_apply, slope, slope, vsub_eq_sub, vsub_eq_sub, vsub_eq_sub,
     vadd_eq_add, vadd_eq_add, smul_eq_mul, add_sub_cancel_right, smul_sub, smul_sub, smul_sub,
     sub_le_iff_le_add, mul_inv_rev, mul_smul, mul_smul, ← smul_sub, ← smul_sub, ← smul_add,
@@ -232,103 +235,129 @@ theorem map_le_lineMap_iff_slope_le_slope_left (h : 0 < r * (b - a)) :
     mul_inv_cancel_right₀ (right_ne_zero_of_mul h.ne'), smul_add,
     smul_inv_smul₀ (left_ne_zero_of_mul h.ne')]
 
-/-- Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is non-strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a b ≤ slope f a c`. -/
-theorem lineMap_le_map_iff_slope_le_slope_left (h : 0 < r * (b - a)) :
-    lineMap (f a) (f b) r ≤ f c ↔ slope f a b ≤ slope f a c :=
+/--
+Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is non-strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a b ≤ slope f a c`.
+-/
+theorem lineMap_le_map_iff_slope_le_slope_left (h : 0 < r * (b - a))
+    : lineMap (f a) (f b) r ≤ f c ↔ slope f a b ≤ slope f a c :=
   map_le_lineMap_iff_slope_le_slope_left (E := Eᵒᵈ) (f := f) (a := a) (b := b) (r := r) h
 
-/-- Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a c < slope f a b`. -/
-theorem map_lt_lineMap_iff_slope_lt_slope_left (h : 0 < r * (b - a)) :
-    f c < lineMap (f a) (f b) r ↔ slope f a c < slope f a b :=
+/--
+Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a c < slope f a b`.
+-/
+theorem map_lt_lineMap_iff_slope_lt_slope_left (h : 0 < r * (b - a))
+    : f c < lineMap (f a) (f b) r ↔ slope f a c < slope f a b :=
   lt_iff_lt_of_le_iff_le' (lineMap_le_map_iff_slope_le_slope_left h)
     (map_le_lineMap_iff_slope_le_slope_left h)
 
-/-- Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a b < slope f a c`. -/
-theorem lineMap_lt_map_iff_slope_lt_slope_left (h : 0 < r * (b - a)) :
-    lineMap (f a) (f b) r < f c ↔ slope f a b < slope f a c :=
+/--
+Given `c = lineMap a b r`, `a < c`, the point `(c, f c)` is strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a b < slope f a c`.
+-/
+theorem lineMap_lt_map_iff_slope_lt_slope_left (h : 0 < r * (b - a))
+    : lineMap (f a) (f b) r < f c ↔ slope f a b < slope f a c :=
   map_lt_lineMap_iff_slope_lt_slope_left (E := Eᵒᵈ) (f := f) (a := a) (b := b) (r := r) h
 
-/-- Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is non-strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a b ≤ slope f c b`. -/
-theorem map_le_lineMap_iff_slope_le_slope_right (h : 0 < (1 - r) * (b - a)) :
-    f c ≤ lineMap (f a) (f b) r ↔ slope f a b ≤ slope f c b := by
+/--
+Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is non-strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a b ≤ slope f c b`.
+-/
+theorem map_le_lineMap_iff_slope_le_slope_right (h : 0 < (1 - r) * (b - a))
+    : f c ≤ lineMap (f a) (f b) r ↔ slope f a b ≤ slope f c b := by
   rw [← lineMap_apply_one_sub, ← lineMap_apply_one_sub _ _ r]
-  revert h; generalize 1 - r = r'; clear! r; intro h
+  revert h
+  generalize 1 - r = r'
+  clear! r
+  intro h
   simp_rw [lineMap_apply, slope, vsub_eq_sub, vadd_eq_add, smul_eq_mul]
   rw [sub_add_eq_sub_sub_swap, sub_self, zero_sub, neg_mul_eq_mul_neg, neg_sub,
     le_inv_smul_iff_of_pos h, smul_smul, mul_inv_cancel_right₀, le_sub_comm, ← neg_sub (f b),
     smul_neg, neg_add_eq_sub]
   exact right_ne_zero_of_mul h.ne'
 
-/-- Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is non-strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f c b ≤ slope f a b`. -/
-theorem lineMap_le_map_iff_slope_le_slope_right (h : 0 < (1 - r) * (b - a)) :
-    lineMap (f a) (f b) r ≤ f c ↔ slope f c b ≤ slope f a b :=
+/--
+Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is non-strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f c b ≤ slope f a b`.
+-/
+theorem lineMap_le_map_iff_slope_le_slope_right (h : 0 < (1 - r) * (b - a))
+    : lineMap (f a) (f b) r ≤ f c ↔ slope f c b ≤ slope f a b :=
   map_le_lineMap_iff_slope_le_slope_right (E := Eᵒᵈ) (f := f) (a := a) (b := b) (r := r) h
 
-/-- Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a b < slope f c b`. -/
-theorem map_lt_lineMap_iff_slope_lt_slope_right (h : 0 < (1 - r) * (b - a)) :
-    f c < lineMap (f a) (f b) r ↔ slope f a b < slope f c b :=
+/--
+Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a b < slope f c b`.
+-/
+theorem map_lt_lineMap_iff_slope_lt_slope_right (h : 0 < (1 - r) * (b - a))
+    : f c < lineMap (f a) (f b) r ↔ slope f a b < slope f c b :=
   lt_iff_lt_of_le_iff_le' (lineMap_le_map_iff_slope_le_slope_right h)
     (map_le_lineMap_iff_slope_le_slope_right h)
 
-/-- Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f c b < slope f a b`. -/
-theorem lineMap_lt_map_iff_slope_lt_slope_right (h : 0 < (1 - r) * (b - a)) :
-    lineMap (f a) (f b) r < f c ↔ slope f c b < slope f a b :=
+/--
+Given `c = lineMap a b r`, `c < b`, the point `(c, f c)` is strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f c b < slope f a b`.
+-/
+theorem lineMap_lt_map_iff_slope_lt_slope_right (h : 0 < (1 - r) * (b - a))
+    : lineMap (f a) (f b) r < f c ↔ slope f c b < slope f a b :=
   map_lt_lineMap_iff_slope_lt_slope_right (E := Eᵒᵈ) (f := f) (a := a) (b := b) (r := r) h
 
 end
 
-/-- Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is non-strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a c ≤ slope f c b`. -/
-theorem map_le_lineMap_iff_slope_le_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1) :
-    f c ≤ lineMap (f a) (f b) r ↔ slope f a c ≤ slope f c b := by
-  rw [map_le_lineMap_iff_slope_le_slope_left (mul_pos h₀ (sub_pos.2 hab)), ←
-    lineMap_slope_lineMap_slope_lineMap f a b r, right_le_lineMap_iff_le h₁]
+/--
+Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is non-strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a c ≤ slope f c b`.
+-/
+theorem map_le_lineMap_iff_slope_le_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1)
+    : f c ≤ lineMap (f a) (f b) r ↔ slope f a c ≤ slope f c b := by
+  rw [map_le_lineMap_iff_slope_le_slope_left (mul_pos h₀ (sub_pos.2 hab)),
+    ← lineMap_slope_lineMap_slope_lineMap f a b r, right_le_lineMap_iff_le h₁]
 
-/-- Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is non-strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f c b ≤ slope f a c`. -/
-theorem lineMap_le_map_iff_slope_le_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1) :
-    lineMap (f a) (f b) r ≤ f c ↔ slope f c b ≤ slope f a c :=
+/--
+Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is non-strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f c b ≤ slope f a c`.
+-/
+theorem lineMap_le_map_iff_slope_le_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1)
+    : lineMap (f a) (f b) r ≤ f c ↔ slope f c b ≤ slope f a c :=
   map_le_lineMap_iff_slope_le_slope (E := Eᵒᵈ) hab h₀ h₁
 
-/-- Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is strictly below the
-segment `[(a, f a), (b, f b)]` if and only if `slope f a c < slope f c b`. -/
-theorem map_lt_lineMap_iff_slope_lt_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1) :
-    f c < lineMap (f a) (f b) r ↔ slope f a c < slope f c b :=
+/--
+Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is strictly below the
+segment `[(a, f a), (b, f b)]` if and only if `slope f a c < slope f c b`.
+-/
+theorem map_lt_lineMap_iff_slope_lt_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1)
+    : f c < lineMap (f a) (f b) r ↔ slope f a c < slope f c b :=
   lt_iff_lt_of_le_iff_le' (lineMap_le_map_iff_slope_le_slope hab h₀ h₁)
     (map_le_lineMap_iff_slope_le_slope hab h₀ h₁)
 
-/-- Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is strictly above the
-segment `[(a, f a), (b, f b)]` if and only if `slope f c b < slope f a c`. -/
-theorem lineMap_lt_map_iff_slope_lt_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1) :
-    lineMap (f a) (f b) r < f c ↔ slope f c b < slope f a c :=
+/--
+Given `c = lineMap a b r`, `a < c < b`, the point `(c, f c)` is strictly above the
+segment `[(a, f a), (b, f b)]` if and only if `slope f c b < slope f a c`.
+-/
+theorem lineMap_lt_map_iff_slope_lt_slope (hab : a < b) (h₀ : 0 < r) (h₁ : r < 1)
+    : lineMap (f a) (f b) r < f c ↔ slope f c b < slope f a c :=
   map_lt_lineMap_iff_slope_lt_slope (E := Eᵒᵈ) hab h₀ h₁
 
 end LinearOrderedField
 
-
-lemma slope_pos_iff {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : x₀ < b) :
-    0 < slope f x₀ b ↔ f x₀ < f b := by
+lemma slope_pos_iff
+    {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : x₀ < b)
+    : 0 < slope f x₀ b ↔ f x₀ < f b := by
   simp [slope, hb]
 
-lemma slope_pos_iff_gt {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : b < x₀) :
-    0 < slope f x₀ b ↔ f b < f x₀ := by
+lemma slope_pos_iff_gt
+    {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : b < x₀)
+    : 0 < slope f x₀ b ↔ f b < f x₀ := by
   rw [slope_comm, slope_pos_iff hb]
 
-lemma pos_of_slope_pos {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    {f : 𝕜 → 𝕜} {x₀ b : 𝕜}
-    (hb : x₀ < b) (hbf : 0 < slope f x₀ b) (hf : f x₀ = 0) : 0 < f b := by
+lemma pos_of_slope_pos
+    {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
+    {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : x₀ < b) (hbf : 0 < slope f x₀ b) (hf : f x₀ = 0)
+    : 0 < f b := by
   simp_all [slope]
 
-lemma neg_of_slope_pos {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    {f : 𝕜 → 𝕜} {x₀ b : 𝕜}
-    (hb : b < x₀) (hbf : 0 < slope f x₀ b) (hf : f x₀ = 0) : f b < 0 := by
+lemma neg_of_slope_pos
+    {𝕜} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
+    {f : 𝕜 → 𝕜} {x₀ b : 𝕜} (hb : b < x₀) (hbf : 0 < slope f x₀ b) (hf : f x₀ = 0)
+    : f b < 0 := by
   rwa [slope_pos_iff_gt, hf] at hbf

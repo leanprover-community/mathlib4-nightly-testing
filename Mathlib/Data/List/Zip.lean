@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.List.Basic
 public import Mathlib.Logic.OpClass
-
 import Mathlib.Data.List.Forall2
 import Mathlib.Data.Nat.Basic
 
@@ -38,21 +37,24 @@ namespace List
 variable {α : Type u} {β γ δ ε : Type*}
 
 open Function in
-theorem rightInverse_unzip_zip :
-    RightInverse (unzip : List (α × β) → List α × List β) (uncurry zip) := by
+theorem rightInverse_unzip_zip
+    : RightInverse (unzip : List (α × β) → List α × List β) (uncurry zip) := by
   grind [zip_unzip]
 
 @[simp]
 theorem zip_swap : ∀ (l₁ : List α) (l₂ : List β), (zip l₁ l₂).map Prod.swap = zip l₂ l₁
-  | [], _ => zip_nil_right.symm
-  | l₁, [] => by rw [zip_nil_right]; rfl
+  | [], _ =>
+    zip_nil_right.symm
+  | l₁, [] => by
+    rw [zip_nil_right]; rfl
   | a :: l₁, b :: l₂ => by
     simp only [zip_cons_cons, map_cons, zip_swap l₁ l₂, Prod.swap_prod_mk]
 
-theorem forall_zipWith {f : α → β → γ} {p : γ → Prop} :
-    ∀ {l₁ : List α} {l₂ : List β}, length l₁ = length l₂ →
-      (Forall p (zipWith f l₁ l₂) ↔ Forall₂ (fun x y => p (f x y)) l₁ l₂)
-  | [], [], _ => by simp
+theorem forall_zipWith {f : α → β → γ} {p : γ → Prop}
+    : ∀ {l₁ : List α} {l₂ : List β},
+      length l₁ = length l₂ → (Forall p (zipWith f l₁ l₂) ↔ Forall₂ (fun x y => p (f x y)) l₁ l₂)
+  | [], [], _ => by
+    simp
   | a :: l₁, b :: l₂, h => by
     simp only [length_cons, succ_inj] at h
     simp [forall_zipWith h]
@@ -62,48 +64,67 @@ theorem unzip_swap (l : List (α × β)) : unzip (l.map Prod.swap) = (unzip l).s
   rfl
 
 @[congr]
-theorem zipWith_congr (f g : α → β → γ) (la : List α) (lb : List β)
-    (h : List.Forall₂ (fun a b => f a b = g a b) la lb) : zipWith f la lb = zipWith g la lb := by
+theorem zipWith_congr
+    (f g : α → β → γ) (la : List α) (lb : List β)
+    (h : List.Forall₂ (fun a b => f a b = g a b) la lb)
+    : zipWith f la lb = zipWith g la lb := by
   induction h with
   | nil => rfl
   | cons hfg _ ih => exact congr_arg₂ _ hfg ih
 
-theorem zipWith_zipWith_left (f : δ → γ → ε) (g : α → β → δ) :
-    ∀ (la : List α) (lb : List β) (lc : List γ),
+theorem zipWith_zipWith_left (f : δ → γ → ε) (g : α → β → δ)
+    : ∀ (la : List α) (lb : List β) (lc : List γ),
       zipWith f (zipWith g la lb) lc = zipWith3 (fun a b c => f (g a b) c) la lb lc
-  | [], _, _ => rfl
-  | _ :: _, [], _ => rfl
-  | _ :: _, _ :: _, [] => rfl
-  | _ :: as, _ :: bs, _ :: cs => congr(cons _ $(zipWith_zipWith_left f g as bs cs))
+  | [], _, _ =>
+    rfl
+  | _ :: _, [], _ =>
+    rfl
+  | _ :: _, _ :: _, [] =>
+    rfl
+  | _ :: as, _ :: bs, _ :: cs =>
+    congr(cons _ $(zipWith_zipWith_left f g as bs cs))
 
-theorem zipWith_zipWith_right (f : α → δ → ε) (g : β → γ → δ) :
-    ∀ (la : List α) (lb : List β) (lc : List γ),
+theorem zipWith_zipWith_right (f : α → δ → ε) (g : β → γ → δ)
+    : ∀ (la : List α) (lb : List β) (lc : List γ),
       zipWith f la (zipWith g lb lc) = zipWith3 (fun a b c => f a (g b c)) la lb lc
-  | [], _, _ => rfl
-  | _ :: _, [], _ => rfl
-  | _ :: _, _ :: _, [] => rfl
-  | _ :: as, _ :: bs, _ :: cs => congr(cons _ $(zipWith_zipWith_right f g as bs cs))
+  | [], _, _ =>
+    rfl
+  | _ :: _, [], _ =>
+    rfl
+  | _ :: _, _ :: _, [] =>
+    rfl
+  | _ :: as, _ :: bs, _ :: cs =>
+    congr(cons _ $(zipWith_zipWith_right f g as bs cs))
 
 @[simp]
-theorem zipWith3_same_left (f : α → α → β → γ) :
-    ∀ (la : List α) (lb : List β), zipWith3 f la la lb = zipWith (fun a b => f a a b) la lb
-  | [], _ => rfl
-  | _ :: _, [] => rfl
-  | _ :: as, _ :: bs => congr(cons _ $(zipWith3_same_left f as bs))
+theorem zipWith3_same_left (f : α → α → β → γ)
+    : ∀ (la : List α) (lb : List β), zipWith3 f la la lb = zipWith (fun a b => f a a b) la lb
+  | [], _ =>
+    rfl
+  | _ :: _, [] =>
+    rfl
+  | _ :: as, _ :: bs =>
+    congr(cons _ $(zipWith3_same_left f as bs))
 
 @[simp]
-theorem zipWith3_same_mid (f : α → β → α → γ) :
-    ∀ (la : List α) (lb : List β), zipWith3 f la lb la = zipWith (fun a b => f a b a) la lb
-  | [], _ => rfl
-  | _ :: _, [] => rfl
-  | _ :: as, _ :: bs => congr(cons _ $(zipWith3_same_mid f as bs))
+theorem zipWith3_same_mid (f : α → β → α → γ)
+    : ∀ (la : List α) (lb : List β), zipWith3 f la lb la = zipWith (fun a b => f a b a) la lb
+  | [], _ =>
+    rfl
+  | _ :: _, [] =>
+    rfl
+  | _ :: as, _ :: bs =>
+    congr(cons _ $(zipWith3_same_mid f as bs))
 
 @[simp]
-theorem zipWith3_same_right (f : α → β → β → γ) :
-    ∀ (la : List α) (lb : List β), zipWith3 f la lb lb = zipWith (fun a b => f a b b) la lb
-  | [], _ => rfl
-  | _ :: _, [] => rfl
-  | _ :: as, _ :: bs => congr(cons _ $(zipWith3_same_right f as bs))
+theorem zipWith3_same_right (f : α → β → β → γ)
+    : ∀ (la : List α) (lb : List β), zipWith3 f la lb lb = zipWith (fun a b => f a b b) la lb
+  | [], _ =>
+    rfl
+  | _ :: _, [] =>
+    rfl
+  | _ :: as, _ :: bs =>
+    congr(cons _ $(zipWith3_same_right f as bs))
 
 instance (f : α → α → β) [IsSymmOp f] : IsSymmOp (zipWith f) :=
   ⟨fun _ _ => zipWith_comm_of_comm IsSymmOp.symm_op⟩
@@ -130,8 +151,8 @@ theorem reverse_revzip (l : List α) : reverse l.revzip = revzip l.reverse := by
 
 theorem revzip_swap (l : List α) : (revzip l).map Prod.swap = revzip l.reverse := by simp [revzip]
 
-theorem mem_zip_inits_tails {l : List α} {init tail : List α} :
-    (init, tail) ∈ zip l.inits l.tails ↔ init ++ tail = l := by
+theorem mem_zip_inits_tails {l : List α} {init tail : List α}
+    : (init, tail) ∈ zip l.inits l.tails ↔ init ++ tail = l := by
   induction l generalizing init tail <;> simp_rw [tails, inits, zip_cons_cons]
   case nil => simp
   case cons hd tl ih =>

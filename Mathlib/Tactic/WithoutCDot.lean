@@ -6,7 +6,6 @@ Authors: Eric Wieser
 module
 
 public meta import Lean.Elab.SyntheticMVars
-
 import Mathlib.Init
 
 /-!
@@ -23,18 +22,17 @@ private def withoutCDotContents : Parser :=
   withoutPosition <|
     withoutForbidden (termParser >> optional (" :" >> optional (ppSpace >> termParser)))
 
-/-- A set of parentheses, supporting type ascriptions, which does not process `·`.
+/--
+A set of parentheses, supporting type ascriptions, which does not process `·`.
 
 Primarily, this is useful when quoting user-provided syntax inside parentheses, as it prevents `·`s
-from the caller being interpreted in the context of `()`s from the macro. -/
-@[term_parser]
-def withoutCDot := leading_parser
-  "without_cdot(" >> withoutCDotContents >> ")"
+from the caller being interpreted in the context of `()`s from the macro.
+-/
+@[term_parser] def withoutCDot := leading_parser "without_cdot(" >> withoutCDotContents >> ")"
 
 /-- Implementation detail of `withoutCDot` -/
 @[term_parser]
-def withoutCDotImpl := leading_parser
-  "without_cdot_impl(" >> withoutCDotContents >> ")"
+def withoutCDotImpl := leading_parser "without_cdot_impl(" >> withoutCDotContents >> ")"
 
 -- The `no_implicit_lambda%`s here are to emulate the behavior of `blockImplicitLambda`
 macro_rules
@@ -54,6 +52,7 @@ def elabWithoutCDot : TermElab
     ensureHasType expectedType? e
   | `(without_cdot_impl($e)), expectedType? => do
     elabTerm e expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
 end Lean.Elab.Term

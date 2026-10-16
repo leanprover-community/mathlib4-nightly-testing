@@ -30,7 +30,6 @@ matrix
 
 public section
 
-
 variable {m n p R : Type*}
 
 section Semiring
@@ -39,7 +38,8 @@ variable [Semiring R] [Fintype n]
 
 theorem dotProduct_eq (v w : n → R) (h : ∀ u, v ⬝ᵥ u = w ⬝ᵥ u) : v = w := by
   funext x
-  classical rw [← dotProduct_single_one v x, ← dotProduct_single_one w x, h]
+  classical
+  rw [← dotProduct_single_one v x, ← dotProduct_single_one w x, h]
 
 theorem dotProduct_eq_iff {v w : n → R} : (∀ u, v ⬝ᵥ u = w ⬝ᵥ u) ↔ v = w :=
   ⟨fun h => dotProduct_eq v w h, fun h _ => h ▸ rfl⟩
@@ -59,12 +59,12 @@ variable [Semiring R] [PartialOrder R] [IsOrderedRing R] [Fintype n]
 lemma dotProduct_nonneg_of_nonneg {v w : n → R} (hv : 0 ≤ v) (hw : 0 ≤ w) : 0 ≤ v ⬝ᵥ w :=
   Finset.sum_nonneg (fun i _ => mul_nonneg (hv i) (hw i))
 
-lemma dotProduct_le_dotProduct_of_nonneg_right {u v w : n → R} (huv : u ≤ v) (hw : 0 ≤ w) :
-    u ⬝ᵥ w ≤ v ⬝ᵥ w := by
+lemma dotProduct_le_dotProduct_of_nonneg_right {u v w : n → R} (huv : u ≤ v) (hw : 0 ≤ w)
+    : u ⬝ᵥ w ≤ v ⬝ᵥ w := by
   unfold dotProduct; gcongr <;> apply_rules
 
-lemma dotProduct_le_dotProduct_of_nonneg_left {u v w : n → R} (huv : u ≤ v) (hw : 0 ≤ w) :
-    w ⬝ᵥ u ≤ w ⬝ᵥ v := by
+lemma dotProduct_le_dotProduct_of_nonneg_left {u v w : n → R} (huv : u ≤ v) (hw : 0 ≤ w)
+    : w ⬝ᵥ u ≤ w ⬝ᵥ v := by
   unfold dotProduct; gcongr <;> apply_rules
 
 end OrderedSemiring
@@ -74,10 +74,9 @@ section Self
 variable [Fintype m] [Fintype n] [Fintype p]
 
 @[simp]
-theorem dotProduct_self_eq_zero [Ring R] [LinearOrder R] [IsStrictOrderedRing R] {v : n → R} :
-    v ⬝ᵥ v = 0 ↔ v = 0 :=
-  (Finset.sum_eq_zero_iff_of_nonneg fun i _ => mul_self_nonneg (v i)).trans <| by
-    simp [funext_iff]
+theorem dotProduct_self_eq_zero [Ring R] [LinearOrder R] [IsStrictOrderedRing R] {v : n → R}
+    : v ⬝ᵥ v = 0 ↔ v = 0 :=
+  (Finset.sum_eq_zero_iff_of_nonneg fun i _ => mul_self_nonneg (v i)).trans <| by simp [funext_iff]
 
 section StarOrderedRing
 
@@ -98,8 +97,7 @@ variable [IsProperStar R]
 /-- Note that this applies to `ℂ` via `RCLike.toStarOrderedRing`. -/
 @[simp]
 theorem dotProduct_star_self_eq_zero {v : n → R} : star v ⬝ᵥ v = 0 ↔ v = 0 :=
-  (Fintype.sum_eq_zero_iff_of_nonneg fun _ => star_mul_self_nonneg _).trans <|
-    by simp [funext_iff]
+  (Fintype.sum_eq_zero_iff_of_nonneg fun _ => star_mul_self_nonneg _).trans <| by simp [funext_iff]
 
 /-- Note that this applies to `ℂ` via `RCLike.toStarOrderedRing`. -/
 @[simp]
@@ -109,10 +107,11 @@ theorem dotProduct_self_star_eq_zero {v : n → R} : v ⬝ᵥ star v = 0 ↔ v =
 namespace Matrix
 
 @[simp]
-lemma conjTranspose_mul_self_eq_zero {n} {A : Matrix m n R} : Aᴴ * A = 0 ↔ A = 0 :=
-  ⟨fun h => Matrix.ext fun i j =>
-    (congr_fun <| dotProduct_star_self_eq_zero.1 <| Matrix.ext_iff.2 h j j) i,
-  fun h => h ▸ Matrix.mul_zero _⟩
+lemma conjTranspose_mul_self_eq_zero {n} {A : Matrix m n R} : Aᴴ * A = 0 ↔ A = 0 := ⟨
+  fun h =>
+    Matrix.ext fun i j => (congr_fun <| dotProduct_star_self_eq_zero.1 <| Matrix.ext_iff.2 h j j) i,
+  fun h => h ▸ Matrix.mul_zero _
+⟩
 
 instance : IsProperStar (Matrix m m R) where
   eq_zero_of_star_mul_self_eq_zero := by simp [star_eq_conjTranspose]
@@ -121,48 +120,48 @@ instance : IsProperStar (Matrix m m R) where
 lemma self_mul_conjTranspose_eq_zero {m} {A : Matrix m n R} : A * Aᴴ = 0 ↔ A = 0 := by
   simpa using conjTranspose_mul_self_eq_zero (A := Aᴴ)
 
-lemma conjTranspose_mul_self_mul_eq_zero {p} (A : Matrix m n R) (B : Matrix n p R) :
-    (Aᴴ * A) * B = 0 ↔ A * B = 0 := by
+lemma conjTranspose_mul_self_mul_eq_zero {p} (A : Matrix m n R) (B : Matrix n p R)
+    : (Aᴴ * A) * B = 0 ↔ A * B = 0 := by
   refine ⟨fun h => ?_, fun h => by simp only [Matrix.mul_assoc, h, Matrix.mul_zero]⟩
   apply_fun (Bᴴ * ·) at h
   rwa [Matrix.mul_zero, Matrix.mul_assoc, ← Matrix.mul_assoc, ← conjTranspose_mul,
-    conjTranspose_mul_self_eq_zero] at h
+      conjTranspose_mul_self_eq_zero]
+    at h
 
-lemma self_mul_conjTranspose_mul_eq_zero {p} (A : Matrix m n R) (B : Matrix m p R) :
-    (A * Aᴴ) * B = 0 ↔ Aᴴ * B = 0 := by
+lemma self_mul_conjTranspose_mul_eq_zero {p} (A : Matrix m n R) (B : Matrix m p R)
+    : (A * Aᴴ) * B = 0 ↔ Aᴴ * B = 0 := by
   simpa only [conjTranspose_conjTranspose] using conjTranspose_mul_self_mul_eq_zero Aᴴ _
 
-lemma mul_self_mul_conjTranspose_eq_zero {p} (A : Matrix m n R) (B : Matrix p m R) :
-    B * (A * Aᴴ) = 0 ↔ B * A = 0 := by
+lemma mul_self_mul_conjTranspose_eq_zero {p} (A : Matrix m n R) (B : Matrix p m R)
+    : B * (A * Aᴴ) = 0 ↔ B * A = 0 := by
   rw [← conjTranspose_eq_zero, conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose,
     self_mul_conjTranspose_mul_eq_zero, ← conjTranspose_mul, conjTranspose_eq_zero]
 
-lemma mul_conjTranspose_mul_self_eq_zero {p} (A : Matrix m n R) (B : Matrix p n R) :
-    B * (Aᴴ * A) = 0 ↔ B * Aᴴ = 0 := by
+lemma mul_conjTranspose_mul_self_eq_zero {p} (A : Matrix m n R) (B : Matrix p n R)
+    : B * (Aᴴ * A) = 0 ↔ B * Aᴴ = 0 := by
   simpa only [conjTranspose_conjTranspose] using mul_self_mul_conjTranspose_eq_zero Aᴴ _
 
-lemma conjTranspose_mul_self_mulVec_eq_zero (A : Matrix m n R) (v : n → R) :
-    (Aᴴ * A) *ᵥ v = 0 ↔ A *ᵥ v = 0 := by
+lemma conjTranspose_mul_self_mulVec_eq_zero (A : Matrix m n R) (v : n → R)
+    : (Aᴴ * A) *ᵥ v = 0 ↔ A *ᵥ v = 0 := by
   simpa only [← Matrix.replicateCol_mulVec, replicateCol_eq_zero] using
     conjTranspose_mul_self_mul_eq_zero A (replicateCol (Fin 1) v)
 
-lemma self_mul_conjTranspose_mulVec_eq_zero (A : Matrix m n R) (v : m → R) :
-    (A * Aᴴ) *ᵥ v = 0 ↔ Aᴴ *ᵥ v = 0 := by
+lemma self_mul_conjTranspose_mulVec_eq_zero (A : Matrix m n R) (v : m → R)
+    : (A * Aᴴ) *ᵥ v = 0 ↔ Aᴴ *ᵥ v = 0 := by
   simpa only [conjTranspose_conjTranspose] using conjTranspose_mul_self_mulVec_eq_zero Aᴴ _
 
-lemma vecMul_conjTranspose_mul_self_eq_zero (A : Matrix m n R) (v : n → R) :
-    v ᵥ* (Aᴴ * A) = 0 ↔ v ᵥ* Aᴴ = 0 := by
+lemma vecMul_conjTranspose_mul_self_eq_zero (A : Matrix m n R) (v : n → R)
+    : v ᵥ* (Aᴴ * A) = 0 ↔ v ᵥ* Aᴴ = 0 := by
   simpa only [← Matrix.replicateRow_vecMul, replicateRow_eq_zero] using
     mul_conjTranspose_mul_self_eq_zero A (replicateRow (Fin 1) v)
 
-lemma vecMul_self_mul_conjTranspose_eq_zero (A : Matrix m n R) (v : m → R) :
-    v ᵥ* (A * Aᴴ) = 0 ↔ v ᵥ* A = 0 := by
+lemma vecMul_self_mul_conjTranspose_eq_zero (A : Matrix m n R) (v : m → R)
+    : v ᵥ* (A * Aᴴ) = 0 ↔ v ᵥ* A = 0 := by
   simpa only [conjTranspose_conjTranspose] using vecMul_conjTranspose_mul_self_eq_zero Aᴴ _
 
 /-- Note that this applies to `ℂ` via `RCLike.toStarOrderedRing`. -/
 @[simp]
-theorem dotProduct_star_self_pos_iff {v : n → R} :
-    0 < star v ⬝ᵥ v ↔ v ≠ 0 := by
+theorem dotProduct_star_self_pos_iff {v : n → R} : 0 < star v ⬝ᵥ v ↔ v ≠ 0 := by
   simp [dotProduct, Finset.sum_pos_iff_of_nonneg, funext_iff]
 
 /-- Note that this applies to `ℂ` via `RCLike.toStarOrderedRing`. -/

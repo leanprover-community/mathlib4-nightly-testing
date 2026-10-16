@@ -10,7 +10,6 @@ public import Mathlib.Order.Completion
 public import Mathlib.Order.Prod.Lex.Basic
 public import Mathlib.Order.SuccPred.Limit
 public import Mathlib.Topology.Order.Basic
-
 import Mathlib.Algebra.Field.Rat
 import Mathlib.Algebra.Order.Field.Basic
 
@@ -38,9 +37,10 @@ open Set
 
 variable {α : Type*} [LinearOrder α]
 
-theorem DedekindCut.continuous_principal [TopologicalSpace α] [OrderTopology α]
-    [TopologicalSpace (DedekindCut α)] [OrderTopology (DedekindCut α)] :
-    Continuous (fun a : α ↦ principal a) := by
+theorem DedekindCut.continuous_principal
+    [TopologicalSpace α] [OrderTopology α] [TopologicalSpace (DedekindCut α)]
+    [OrderTopology (DedekindCut α)]
+    : Continuous (fun a : α ↦ principal a) := by
   rw [OrderTopology.continuous_iff]
   refine fun c ↦ ⟨?_, ?_⟩
   · have : IsOpen (⋃ a ∈ c.right, Ioi a) := isOpen_biUnion fun _ _ ↦ isOpen_Ioi
@@ -56,9 +56,8 @@ namespace Order
 
 /-- A dense linear order into which α embeds continuously, formed by "filling in" the blanks. -/
 abbrev Fill (α : Type*) [LinearOrder α] : Type _ :=
-  {x : α ×ₗ ℚ //
-    (IsSuccPrelimit (ofLex x).1 → 0 ≤ (ofLex x).2) ∧
-    (IsPredPrelimit (ofLex x).1 → (ofLex x).2 ≤ 0) }
+  {x : α ×ₗ ℚ // (IsSuccPrelimit (ofLex x).1 → 0 ≤ (ofLex x).2)
+    ∧ (IsPredPrelimit (ofLex x).1 → (ofLex x).2 ≤ 0)}
 
 namespace Fill
 
@@ -76,8 +75,8 @@ def some : α ↪o Fill α where
 set_option backward.isDefEq.respectTransparency.types false in
 instance : DenselyOrdered (Fill α) where
   dense := by
-    simp only [ofLex_toLex, Subtype.forall, Prod.Lex.lt_iff, Subtype.mk_lt_mk,
-      Lex.forall, Prod.forall]
+    simp only [ofLex_toLex, Subtype.forall, Prod.Lex.lt_iff, Subtype.mk_lt_mk, Lex.forall,
+      Prod.forall]
     rintro x q ⟨hx₁, hx₂⟩ y r ⟨hy₁, hy₂⟩ (h | ⟨rfl, h⟩)
     · by_cases hx : IsPredPrelimit x
       · obtain ⟨z, hz, hz'⟩ := hx.nonempty_Ioo_of_lt h
@@ -120,13 +119,20 @@ universe u
 
 /-- Every linear order embeds continuously in a dense complete linear order. -/
 theorem exists_dense_continuous_completion
-    (α : Type u) [LinearOrder α] [TopologicalSpace α] [OrderTopology α] :
-    ∃ (β : Type u) (_ : CompleteLinearOrder β) (_ : DenselyOrdered β) (_ : TopologicalSpace β)
-      (_ : OrderTopology β) (ι : α ↪o β), Continuous ι :=
+    (α : Type u) [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
+    : ∃ (β : Type u) (_ : CompleteLinearOrder β) (_ : DenselyOrdered β) (_ : TopologicalSpace β)
+        (_ : OrderTopology β) (ι : α ↪o β),
+      Continuous ι :=
   let : TopologicalSpace (DedekindCut (Fill α)) := Preorder.topology _
   have : OrderTopology (DedekindCut (Fill α)) := ⟨rfl⟩
-  ⟨_, inferInstance, inferInstance, inferInstance, inferInstance,
+  ⟨
+    _,
+    inferInstance,
+    inferInstance,
+    inferInstance,
+    inferInstance,
     Fill.some.trans DedekindCut.principalEmbedding,
-    DedekindCut.continuous_principal.comp Fill.continuous_some⟩
+    DedekindCut.continuous_principal.comp Fill.continuous_some
+  ⟩
 
 end Order

@@ -36,7 +36,6 @@ well-founded relation, well order, extension
 
 @[expose] public section
 
-
 universe u
 
 variable {α : Type u} {r : α → α → Prop}
@@ -45,7 +44,8 @@ namespace WellFounded
 
 variable {α : Type u} (r : α → α → Prop) [WellFounded r]
 
-/-- An arbitrary well order on `α` that extends `r`.
+/--
+An arbitrary well order on `α` that extends `r`.
 
 The construction maps `r` into two well-orders: the first map is `WellFounded.rank`, which is not
 necessarily injective but respects the order `r`; the other map is the identity (with an arbitrarily
@@ -57,7 +57,8 @@ arbitrary well-order to serve as a tiebreak between two elements of same rank.
 -/
 @[instance_reducible]
 noncomputable def wellOrderExtension : LinearOrder α :=
-  @LinearOrder.lift' α (Ordinal ×ₗ Cardinal) _ (fun a : α => (rank r a, embeddingToCardinal a))
+  @LinearOrder.lift' α (Ordinal ×ₗ Cardinal) _
+    (fun a : α => (rank r a, embeddingToCardinal a))
     fun _ _ h => embeddingToCardinal.injective congr($(h).snd)
 
 instance wellOrderExtension.wellFounded_lt : WellFounded (wellOrderExtension r).lt :=
@@ -78,12 +79,11 @@ def WellOrderExtension (α : Type*) : Type _ := α
 instance [Inhabited α] : Inhabited (WellOrderExtension α) := ‹_›
 
 /-- "Identity" equivalence between a well-founded order and its well-order extension. -/
-def toWellOrderExtension : α ≃ WellOrderExtension α :=
-  Equiv.refl _
+def toWellOrderExtension : α ≃ WellOrderExtension α := Equiv.refl _
 
 noncomputable instance [LT α] [h : WellFoundedLT α] : LinearOrder (WellOrderExtension α) :=
   fast_instance% h.wellOrderExtension
 
-theorem toWellOrderExtension_strictMono [Preorder α] [WellFoundedLT α] :
-    StrictMono (toWellOrderExtension : α → WellOrderExtension α) := fun _ _ h =>
+theorem toWellOrderExtension_strictMono [Preorder α] [WellFoundedLT α]
+    : StrictMono (toWellOrderExtension : α → WellOrderExtension α) := fun _ _ h =>
   Prod.Lex.left _ _ <| WellFounded.rank_lt_of_rel h

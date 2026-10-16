@@ -28,15 +28,17 @@ namespace StarOrderedRing
 must commute. We provide this only as an example as opposed to a lemma because we never expect the
 type class assumptions to be satisfied without a `CommSemiring` instance already in scope; not that
 it is impossible, only that it shouldn't occur in practice. -/
-example {R : Type*} [Semiring R] [PartialOrder R] [IsOrderedRing R]
-    [StarRing R] [StarOrderedRing R] {x y : R} (hx : 0 ≤ x)
-    (hy : 0 ≤ y) : x * y = y * x := by
+example
+    {R : Type*} [Semiring R] [PartialOrder R] [IsOrderedRing R] [StarRing R] [StarOrderedRing R]
+    {x y : R} (hx : 0 ≤ x) (hy : 0 ≤ y)
+    : x * y = y * x := by
   rw [← IsSelfAdjoint.of_nonneg (mul_nonneg hy hx), star_mul, IsSelfAdjoint.of_nonneg hx,
     IsSelfAdjoint.of_nonneg hy]
 
 /-- A commutative star-ordered semiring is an ordered semiring. -/
-instance toIsOrderedRing (R : Type*) [CommSemiring R] [PartialOrder R]
-    [StarRing R] [StarOrderedRing R] : IsOrderedRing R where
+instance toIsOrderedRing
+    (R : Type*) [CommSemiring R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
+    : IsOrderedRing R where
   mul_le_mul_of_nonneg_left _a ha _b _c hbc := smul_le_smul_of_nonneg_left hbc ha
   mul_le_mul_of_nonneg_right _a ha _b _c hbc := smul_le_smul_of_nonneg_right hbc ha
 

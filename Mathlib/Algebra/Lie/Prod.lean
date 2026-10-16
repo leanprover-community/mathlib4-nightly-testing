@@ -35,10 +35,10 @@ Extend to further functionality from `LinearMap.prod`, e.g.
 
 @[expose] public section
 
-variable {R L₁ L₂ L L₃ L₄ L₅ L₆ : Type*}
-  [CommRing R] [LieRing L₁] [LieAlgebra R L₁] [LieRing L₂] [LieAlgebra R L₂]
-  [LieRing L] [LieAlgebra R L] [LieRing L₃] [LieAlgebra R L₃] [LieRing L₄] [LieAlgebra R L₄]
-  [LieRing L₅] [LieAlgebra R L₅] [LieRing L₆] [LieAlgebra R L₆]
+variable
+  {R L₁ L₂ L L₃ L₄ L₅ L₆ : Type*} [CommRing R] [LieRing L₁] [LieAlgebra R L₁] [LieRing L₂]
+  [LieAlgebra R L₂] [LieRing L] [LieAlgebra R L] [LieRing L₃] [LieAlgebra R L₃] [LieRing L₄]
+  [LieAlgebra R L₄] [LieRing L₅] [LieAlgebra R L₅] [LieRing L₆] [LieAlgebra R L₆]
 
 namespace LieAlgebra.Prod
 
@@ -49,8 +49,7 @@ instance instLieRing : LieRing (L₁ × L₂) where
   lie_self := by simp
   leibniz_lie := by simp
 
-@[simp]
-theorem bracket_apply (x y : L₁ × L₂) : ⁅x, y⁆ = ⟨⁅x.1, y.1⁆, ⁅x.2, y.2⁆⟩ := rfl
+@[simp] theorem bracket_apply (x y : L₁ × L₂) : ⁅x, y⁆ = ⟨⁅x.1, y.1⁆, ⁅x.2, y.2⁆⟩ := rfl
 
 instance instLieAlgebra : LieAlgebra R (L₁ × L₂) where
   lie_smul _ _ _ := by simp
@@ -102,8 +101,7 @@ def prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : L →ₗ⁅R⁆
   toLinearMap := LinearMap.prod f g
   map_lie' := by simp
 
-theorem coe_prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : ⇑(f.prod g) = Function.prod f g :=
-  rfl
+theorem coe_prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : ⇑(f.prod g) = Function.prod f g := rfl
 
 @[simp]
 theorem fst_prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : (fst R L₁ L₂).comp (prod f g) = f := rfl
@@ -111,11 +109,10 @@ theorem fst_prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : (fst R 
 @[simp]
 theorem snd_prod (f : L →ₗ⁅R⁆ L₁) (g : L →ₗ⁅R⁆ L₂) : (snd R L₁ L₂).comp (prod f g) = g := rfl
 
-@[simp]
-theorem pair_fst_snd : prod (fst R L₁ L₂) (snd R L₁ L₂) = LieHom.id := rfl
+@[simp] theorem pair_fst_snd : prod (fst R L₁ L₂) (snd R L₁ L₂) = LieHom.id := rfl
 
-theorem prod_comp (f : L₁ →ₗ⁅R⁆ L₂) (g : L₁ →ₗ⁅R⁆ L)
-    (h : L →ₗ⁅R⁆ L₁) : (f.prod g).comp h = (f.comp h).prod (g.comp h) :=
+theorem prod_comp (f : L₁ →ₗ⁅R⁆ L₂) (g : L₁ →ₗ⁅R⁆ L) (h : L →ₗ⁅R⁆ L₁)
+    : (f.prod g).comp h = (f.comp h).prod (g.comp h) :=
   rfl
 
 theorem inl_apply (x : L₁) : inl R L₁ L₂ x = (x, 0) := rfl
@@ -138,16 +135,14 @@ theorem range_inl : range (inl R L₁ L₂) = ker (snd R L₁ L₂) := by
     ker_toSubmodule]
   exact LinearMap.range_inl R L₁ L₂
 
-theorem ker_snd : ker (snd R L₁ L₂) = range (inl R L₁ L₂) :=
-  Eq.symm <| range_inl R L₁ L₂
+theorem ker_snd : ker (snd R L₁ L₂) = range (inl R L₁ L₂) := Eq.symm <| range_inl R L₁ L₂
 
 theorem range_inr : range (inr R L₁ L₂) = ker (fst R L₁ L₂) := by
   rw [← LieSubalgebra.toSubmodule_inj, range_toSubmodule, LieIdeal.toLieSubalgebra_toSubmodule,
     ker_toSubmodule]
   exact LinearMap.range_inr R L₁ L₂
 
-theorem ker_fst : ker (fst R L₁ L₂) = range (inr R L₁ L₂) :=
-  Eq.symm <| range_inr R L₁ L₂
+theorem ker_fst : ker (fst R L₁ L₂) = range (inr R L₁ L₂) := Eq.symm <| range_inr R L₁ L₂
 
 @[simp] theorem fst_comp_inl : (fst R L₁ L₂).comp (inl R L₁ L₂) = id := rfl
 
@@ -157,14 +152,13 @@ theorem ker_fst : ker (fst R L₁ L₂) = range (inr R L₁ L₂) :=
 
 @[simp] theorem snd_comp_inr : (snd R L₁ L₂).comp (inr R L₁ L₂) = id := rfl
 
-theorem inl_eq_prod : inl R L₁ L₂ = prod LieHom.id 0 :=
-  rfl
+theorem inl_eq_prod : inl R L₁ L₂ = prod LieHom.id 0 := rfl
 
-theorem inr_eq_prod : inr R L₁ L₂ = prod 0 LieHom.id :=
-  rfl
+theorem inr_eq_prod : inr R L₁ L₂ = prod 0 LieHom.id := rfl
 
-theorem prod_ext_iff {f g : L₁ × L₂ →ₗ⁅R⁆ L} :
-    f = g ↔ f.comp (inl _ _ _) = g.comp (inl _ _ _) ∧ f.comp (inr _ _ _) = g.comp (inr _ _ _) := by
+theorem prod_ext_iff {f g : L₁ × L₂ →ₗ⁅R⁆ L}
+    : f = g
+      ↔ f.comp (inl _ _ _) = g.comp (inl _ _ _) ∧ f.comp (inr _ _ _) = g.comp (inr _ _ _) := by
   simp_rw [LieHom.ext_iff]
   have h := LinearMap.prod_ext_iff (f := f.toLinearMap) (g := g.toLinearMap)
   simp_rw [LinearMap.ext_iff] at h
@@ -174,11 +168,14 @@ theorem prod_ext_iff {f g : L₁ × L₂ →ₗ⁅R⁆ L} :
 Split equality of Lie algebra homomorphisms from a product into Lie algebra homomorphism over
 each component, to allow `ext` to apply lemmas specific to `L₁ →ₗ L` and `L₂ →ₗ L`.
 
-See note [partially-applied ext lemmas]. -/
+See note [partially-applied ext lemmas].
+-/
 @[ext 1100]
-theorem prod_ext {f g : L₁ × L₂ →ₗ⁅R⁆ L} (hl : f.comp (inl _ _ _) = g.comp (inl _ _ _))
-    (hr : f.comp (inr _ _ _) = g.comp (inr _ _ _)) : f = g := by
-  refine (prod_ext_iff R L₁ L₂).mpr ⟨hl,hr⟩
+theorem prod_ext
+    {f g : L₁ × L₂ →ₗ⁅R⁆ L}
+    (hl : f.comp (inl _ _ _) = g.comp (inl _ _ _)) (hr : f.comp (inr _ _ _) = g.comp (inr _ _ _))
+    : f = g := by
+  refine (prod_ext_iff R L₁ L₂).mpr ⟨hl, hr⟩
 
 end
 
@@ -186,35 +183,28 @@ end
 def prodMap (f : L₁ →ₗ⁅R⁆ L₃) (g : L₂ →ₗ⁅R⁆ L₄) : L₁ × L₂ →ₗ⁅R⁆ L₃ × L₄ :=
   (f.comp (fst R L₁ L₂)).prod (g.comp (snd R L₁ L₂))
 
-theorem coe_prodMap (f : L₁ →ₗ⁅R⁆ L₃) (g : L₂ →ₗ⁅R⁆ L₄) : ⇑(prodMap f g) = Prod.map f g :=
-  rfl
+theorem coe_prodMap (f : L₁ →ₗ⁅R⁆ L₃) (g : L₂ →ₗ⁅R⁆ L₄) : ⇑(prodMap f g) = Prod.map f g := rfl
 
 @[simp]
 theorem prodMap_apply (f : L₁ →ₗ⁅R⁆ L₃) (g : L₂ →ₗ⁅R⁆ L₄) (x) : f.prodMap g x = (f x.1, g x.2) :=
   rfl
 
-@[simp]
-theorem prodMap_id : (id : L →ₗ⁅R⁆ L).prodMap (id : L₁ →ₗ⁅R⁆ L₁) = id :=
+@[simp] theorem prodMap_id : (id : L →ₗ⁅R⁆ L).prodMap (id : L₁ →ₗ⁅R⁆ L₁) = id := rfl
+
+@[simp] theorem prodMap_one : (1 : L →ₗ⁅R⁆ L).prodMap (1 : L₁ →ₗ⁅R⁆ L₁) = 1 := rfl
+
+theorem prodMap_comp (f₁₂ : L₁ →ₗ⁅R⁆ L₂) (f₂₃ : L₂ →ₗ⁅R⁆ L₃) (g₁₂ : L₄ →ₗ⁅R⁆ L₅) (g₂₃ : L₅ →ₗ⁅R⁆ L₆)
+    : (f₂₃.prodMap g₂₃).comp (f₁₂.prodMap g₁₂) = (f₂₃.comp f₁₂).prodMap (g₂₃.comp g₁₂) :=
   rfl
 
-@[simp]
-theorem prodMap_one : (1 : L →ₗ⁅R⁆ L).prodMap (1 : L₁ →ₗ⁅R⁆ L₁) = 1 :=
-  rfl
-
-theorem prodMap_comp (f₁₂ : L₁ →ₗ⁅R⁆ L₂) (f₂₃ : L₂ →ₗ⁅R⁆ L₃) (g₁₂ : L₄ →ₗ⁅R⁆ L₅)
-    (g₂₃ : L₅ →ₗ⁅R⁆ L₆) :
-    (f₂₃.prodMap g₂₃).comp (f₁₂.prodMap g₁₂) = (f₂₃.comp f₁₂).prodMap (g₂₃.comp g₁₂) :=
-  rfl
-
-@[simp]
-theorem prodMap_zero : (0 : L₁ →ₗ⁅R⁆ L₃).prodMap (0 : L₂ →ₗ⁅R⁆ L₄) = 0 :=
-  rfl
+@[simp] theorem prodMap_zero : (0 : L₁ →ₗ⁅R⁆ L₃).prodMap (0 : L₂ →ₗ⁅R⁆ L₄) = 0 := rfl
 
 end LieHom
 
 variable (R L₁ L₂) in
 /-- The map `(x, y) ↦ (y, x)` as a Lie equivalence. -/
-@[simps!] def LieEquiv.prodComm : (L₁ × L₂) ≃ₗ⁅R⁆ L₂ × L₁ where
+@[simps!]
+def LieEquiv.prodComm : (L₁ × L₂) ≃ₗ⁅R⁆ L₂ × L₁ where
   __ := LinearEquiv.prodComm R L₁ L₂
   map_lie' := by simp
 

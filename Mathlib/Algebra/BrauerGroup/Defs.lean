@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Category.AlgCat.Basic
 public import Mathlib.Algebra.Central.Defs
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-
 import Mathlib.LinearAlgebra.Matrix.Reindex
 
 /-!
@@ -36,8 +35,10 @@ Brauer group, Central simple algebra, Galois Cohomology
 
 universe u v
 
-/-- `CSA` is the set of all finite-dimensional central simple algebras over a field `K`. For the
-generalization to a `CommRing`, see `IsAzumaya` in `Mathlib/Algebra/Azumaya/Defs.lean`. -/
+/--
+`CSA` is the set of all finite-dimensional central simple algebras over a field `K`. For the
+generalization to a `CommRing`, see `IsAzumaya` in `Mathlib/Algebra/Azumaya/Defs.lean`.
+-/
 structure CSA (K : Type u) [Field K] extends AlgCat.{v} K where
   /-- Any member of `CSA` is central. -/
   [isCentral : Algebra.IsCentral K carrier]
@@ -52,16 +53,17 @@ instance : CoeSort (CSA.{u, v} K) (Type v) := ⟨(·.carrier)⟩
 
 attribute [instance] CSA.isCentral CSA.isSimple CSA.fin_dim
 
-/-- Two finite-dimensional central simple algebras `A` and `B` are Brauer equivalent
-  if there exist `n, m ∈ ℕ+` such that `Mₙ(A) ≃ₐ[K] Mₘ(B)`. -/
+/--
+Two finite-dimensional central simple algebras `A` and `B` are Brauer equivalent
+if there exist `n, m ∈ ℕ+` such that `Mₙ(A) ≃ₐ[K] Mₘ(B)`.
+-/
 abbrev IsBrauerEquivalent (A B : CSA K) : Prop :=
   ∃ n m : ℕ, n ≠ 0 ∧ m ≠ 0 ∧ (Nonempty <| Matrix (Fin n) (Fin n) A ≃ₐ[K] Matrix (Fin m) (Fin m) B)
 
 namespace IsBrauerEquivalent
 
 @[refl]
-lemma refl (A : CSA K) : IsBrauerEquivalent A A :=
-  ⟨1, 1, one_ne_zero, one_ne_zero, ⟨AlgEquiv.refl⟩⟩
+lemma refl (A : CSA K) : IsBrauerEquivalent A A := ⟨1, 1, one_ne_zero, one_ne_zero, ⟨AlgEquiv.refl⟩⟩
 
 @[symm]
 lemma symm {A B : CSA K} (h : IsBrauerEquivalent A B) : IsBrauerEquivalent B A :=
@@ -70,15 +72,21 @@ lemma symm {A B : CSA K} (h : IsBrauerEquivalent A B) : IsBrauerEquivalent B A :
 
 open Matrix in
 @[trans]
-lemma trans {A B C : CSA K} (hAB : IsBrauerEquivalent A B) (hBC : IsBrauerEquivalent B C) :
-    IsBrauerEquivalent A C := by
+lemma trans {A B C : CSA K} (hAB : IsBrauerEquivalent A B) (hBC : IsBrauerEquivalent B C)
+    : IsBrauerEquivalent A C := by
   obtain ⟨n, m, hn, hm, ⟨iso1⟩⟩ := hAB
   obtain ⟨p, q, hp, hq, ⟨iso2⟩⟩ := hBC
-  exact ⟨p * n, m * q, by simp_all, by simp_all,
-    ⟨reindexAlgEquiv _ _ finProdFinEquiv |>.symm.trans <| compAlgEquiv _ _ _ _|>.symm.trans <|
-    iso1.mapMatrix (m := Fin p)|>.trans <| compAlgEquiv _ _ _ _|>.trans <|
-    reindexAlgEquiv K B (.prodComm (Fin p) (Fin m))|>.trans <| compAlgEquiv _ _ _ _|>.symm.trans <|
-    iso2.mapMatrix.trans <| compAlgEquiv _ _ _ _|>.trans <| reindexAlgEquiv _ _ finProdFinEquiv⟩⟩
+  exact ⟨
+    p * n,
+    m * q,
+    by simp_all,
+    by simp_all,
+    ⟨reindexAlgEquiv _ _ finProdFinEquiv |>.symm.trans <| compAlgEquiv _ _ _ _ |>.symm.trans <|
+      iso1.mapMatrix (m := Fin p) |>.trans <| compAlgEquiv _ _ _ _ |>.trans <|
+        reindexAlgEquiv K B (.prodComm (Fin p) (Fin m)) |>.trans <|
+          compAlgEquiv _ _ _ _ |>.symm.trans <| iso2.mapMatrix.trans <|
+            compAlgEquiv _ _ _ _ |>.trans <| reindexAlgEquiv _ _ finProdFinEquiv⟩
+  ⟩
 
 lemma is_eqv : Equivalence (IsBrauerEquivalent (K := K)) where
   refl := refl
@@ -95,6 +103,8 @@ def Brauer.CSA_Setoid : Setoid (CSA K) where
   r := IsBrauerEquivalent
   iseqv := IsBrauerEquivalent.is_eqv
 
-/-- `BrauerGroup` is the set of all finite-dimensional central simple algebras quotient
-  by Brauer Equivalence. -/
+/--
+`BrauerGroup` is the set of all finite-dimensional central simple algebras quotient
+by Brauer Equivalence.
+-/
 abbrev BrauerGroup := Quotient (Brauer.CSA_Setoid K)

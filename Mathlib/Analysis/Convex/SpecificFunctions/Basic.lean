@@ -45,7 +45,8 @@ theorem strictConvexOn_exp : StrictConvexOn ℝ univ exp := by
     have h2 : x - y < 0 := by linarith
     rw [div_lt_iff₀ h1]
     calc
-      exp y - exp x = exp y - exp y * exp (x - y) := by rw [← exp_add]; ring_nf
+      exp y - exp x
+        = exp y - exp y * exp (x - y) := by rw [← exp_add]; ring_nf
       _ = exp y * (1 - exp (x - y)) := by ring
       _ < exp y * -(x - y) := by gcongr; linarith [add_one_lt_exp h2.ne]
       _ = exp y * (y - x) := by ring
@@ -59,8 +60,7 @@ theorem strictConvexOn_exp : StrictConvexOn ℝ univ exp := by
       _ ≤ exp z - exp y := by rw [← exp_add]; ring_nf; rfl
 
 /-- `Real.exp` is convex on the whole real line. -/
-theorem convexOn_exp : ConvexOn ℝ univ exp :=
-  strictConvexOn_exp.convexOn
+theorem convexOn_exp : ConvexOn ℝ univ exp := strictConvexOn_exp.convexOn
 
 /-- `Real.log` is strictly concave on `(0, +∞)`. -/
 theorem strictConcaveOn_log_Ioi : StrictConcaveOn ℝ (Ioi 0) log := by
@@ -76,7 +76,8 @@ theorem strictConcaveOn_log_Ioi : StrictConcaveOn ℝ (Ioi 0) log := by
       rw [div_eq_one_iff_eq hy.ne'] at h
       simp [h]
     calc
-      log z - log y = log (z / y) := by rw [← log_div hz.ne' hy.ne']
+      log z - log y
+        = log (z / y) := by rw [← log_div hz.ne' hy.ne']
       _ < z / y - 1 := log_lt_sub_one_of_pos hyz' hyz''
       _ = y⁻¹ * (z - y) := by field
   · have h : 0 < y - x := by linarith
@@ -87,15 +88,18 @@ theorem strictConcaveOn_log_Ioi : StrictConcaveOn ℝ (Ioi 0) log := by
       rw [div_eq_one_iff_eq hy.ne'] at h
       simp [h]
     calc
-      y⁻¹ * (y - x) = 1 - x / y := by field
-      _ < -log (x / y) := by linarith [log_lt_sub_one_of_pos hxy' hxy'']
+      y⁻¹ * (y - x)
+        = 1 - x / y := by field
+      _ < - log (x / y) := by linarith [log_lt_sub_one_of_pos hxy' hxy'']
       _ = -(log x - log y) := by rw [log_div hx.ne' hy.ne']
       _ = log y - log x := by ring
 
-/-- **Bernoulli's inequality** for real exponents, strict version: for `1 < p` and `-1 ≤ s`, with
-`s ≠ 0`, we have `1 + p * s < (1 + s) ^ p`. -/
-theorem one_add_mul_self_lt_rpow_one_add {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 0) {p : ℝ} (hp : 1 < p) :
-    1 + p * s < (1 + s) ^ p := by
+/--
+**Bernoulli's inequality** for real exponents, strict version: for `1 < p` and `-1 ≤ s`, with
+`s ≠ 0`, we have `1 + p * s < (1 + s) ^ p`.
+-/
+theorem one_add_mul_self_lt_rpow_one_add {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 0) {p : ℝ} (hp : 1 < p)
+    : 1 + p * s < (1 + s) ^ p := by
   have hp' : 0 < p := zero_lt_one.trans hp
   rcases eq_or_lt_of_le hs with rfl | hs
   · rwa [add_neg_cancel, zero_rpow hp'.ne', mul_neg_one, add_neg_lt_iff_lt_add, zero_add]
@@ -121,20 +125,25 @@ theorem one_add_mul_self_lt_rpow_one_add {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 
     · gcongr
       exact lt_mul_of_one_lt_left hs' hp
 
-/-- **Bernoulli's inequality** for real exponents, non-strict version: for `1 ≤ p` and `-1 ≤ s`
-we have `1 + p * s ≤ (1 + s) ^ p`. -/
-theorem one_add_mul_self_le_rpow_one_add {s : ℝ} (hs : -1 ≤ s) {p : ℝ} (hp : 1 ≤ p) :
-    1 + p * s ≤ (1 + s) ^ p := by
+/--
+**Bernoulli's inequality** for real exponents, non-strict version: for `1 ≤ p` and `-1 ≤ s`
+we have `1 + p * s ≤ (1 + s) ^ p`.
+-/
+theorem one_add_mul_self_le_rpow_one_add {s : ℝ} (hs : -1 ≤ s) {p : ℝ} (hp : 1 ≤ p)
+    : 1 + p * s ≤ (1 + s) ^ p := by
   rcases eq_or_lt_of_le hp with (rfl | hp)
   · simp
   by_cases hs' : s = 0
   · simp [hs']
   exact (one_add_mul_self_lt_rpow_one_add hs hs' hp).le
 
-/-- **Bernoulli's inequality** for real exponents, strict version: for `0 < p < 1` and `-1 ≤ s`,
-with `s ≠ 0`, we have `(1 + s) ^ p < 1 + p * s`. -/
-theorem rpow_one_add_lt_one_add_mul_self {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 0) {p : ℝ} (hp1 : 0 < p)
-    (hp2 : p < 1) : (1 + s) ^ p < 1 + p * s := by
+/--
+**Bernoulli's inequality** for real exponents, strict version: for `0 < p < 1` and `-1 ≤ s`,
+with `s ≠ 0`, we have `(1 + s) ^ p < 1 + p * s`.
+-/
+theorem rpow_one_add_lt_one_add_mul_self
+    {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 0) {p : ℝ} (hp1 : 0 < p) (hp2 : p < 1)
+    : (1 + s) ^ p < 1 + p * s := by
   rcases eq_or_lt_of_le hs with rfl | hs
   · rwa [add_neg_cancel, zero_rpow hp1.ne', mul_neg_one, lt_add_neg_iff_add_lt, zero_add]
   have hs1 : 0 < 1 + s := neg_lt_iff_pos_add'.mp hs
@@ -162,10 +171,12 @@ theorem rpow_one_add_lt_one_add_mul_self {s : ℝ} (hs : -1 ≤ s) (hs' : s ≠ 
     · gcongr
       exact mul_lt_of_lt_one_left hs' hp2
 
-/-- **Bernoulli's inequality** for real exponents, non-strict version: for `0 ≤ p ≤ 1` and `-1 ≤ s`
-we have `(1 + s) ^ p ≤ 1 + p * s`. -/
-theorem rpow_one_add_le_one_add_mul_self {s : ℝ} (hs : -1 ≤ s) {p : ℝ} (hp1 : 0 ≤ p) (hp2 : p ≤ 1) :
-    (1 + s) ^ p ≤ 1 + p * s := by
+/--
+**Bernoulli's inequality** for real exponents, non-strict version: for `0 ≤ p ≤ 1` and `-1 ≤ s`
+we have `(1 + s) ^ p ≤ 1 + p * s`.
+-/
+theorem rpow_one_add_le_one_add_mul_self {s : ℝ} (hs : -1 ≤ s) {p : ℝ} (hp1 : 0 ≤ p) (hp2 : p ≤ 1)
+    : (1 + s) ^ p ≤ 1 + p * s := by
   rcases eq_or_lt_of_le hp1 with (rfl | hp1)
   · simp
   rcases eq_or_lt_of_le hp2 with (rfl | hp2)
@@ -220,20 +231,21 @@ theorem strictConcaveOn_log_Iio : StrictConcaveOn ℝ (Iio 0) log := by
   have hy' : 0 < -y := by linarith
   have hxy' : -x ≠ -y := by contrapose hxy; linarith
   calc
-    a • log x + b • log y = a • log (-x) + b • log (-y) := by simp_rw [log_neg_eq_log]
+    a • log x + b • log y
+      = a • log (-x) + b • log (-y) := by simp_rw [log_neg_eq_log]
     _ < log (a • -x + b • -y) := strictConcaveOn_log_Ioi.2 hx' hy' hxy' ha hb hab
     _ = log (-(a • x + b • y)) := by congr 1; simp only [smul_eq_mul]; ring
     _ = _ := by rw [log_neg_eq_log]
 
 namespace Real
 
-lemma exp_mul_le_cosh_add_mul_sinh {t : ℝ} (ht : |t| ≤ 1) (x : ℝ) :
-    exp (t * x) ≤ cosh x + t * sinh x := by
+lemma exp_mul_le_cosh_add_mul_sinh {t : ℝ} (ht : |t| ≤ 1) (x : ℝ)
+    : exp (t * x) ≤ cosh x + t * sinh x := by
   rw [abs_le] at ht
   calc
     _ = exp ((1 + t) / 2 * x + (1 - t) / 2 * (-x)) := by ring_nf
     _ ≤ (1 + t) / 2 * exp x + (1 - t) / 2 * exp (-x) :=
-        convexOn_exp.2 (Set.mem_univ _) (Set.mem_univ _) (by linarith) (by linarith) <| by ring
+      convexOn_exp.2 (Set.mem_univ _) (Set.mem_univ _) (by linarith) (by linarith) <| by ring
     _ = _ := by rw [cosh_eq, sinh_eq]; ring
 
 end Real

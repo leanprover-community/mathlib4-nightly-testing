@@ -34,7 +34,7 @@ See [M. Hindry and J. Silverman, Diophantine Geometry: an Introduction][hindrysi
 
 public section
 
-/- We set ‖⬝‖ to be Matrix.seminormedAddCommGroup  -/
+/- We set ‖⬝‖ to be Matrix.seminormedAddCommGroup -/
 attribute [local instance] Matrix.seminormedAddCommGroup
 
 open Matrix Finset
@@ -60,7 +60,8 @@ local notation3 "S" => Finset.Icc N P
 
 section preparation
 
-/- In order to apply Pigeonhole we need:
+/-
+In order to apply Pigeonhole we need:
 # Step 1: ∀ v ∈  T, A *ᵥ v ∈  S
 and
 # Step 2: #S < #T
@@ -84,16 +85,14 @@ private lemma image_T_subset_S [DecidableEq α] [DecidableEq β] (v) (hv : v ∈
 
 -- # Preparation for Step 2
 
-private lemma card_T_eq [DecidableEq β] : #T = (B + 1) ^ n := by
-  simp [Pi.card_Icc]
+private lemma card_T_eq [DecidableEq β] : #T = (B + 1) ^ n := by simp [Pi.card_Icc]
 
 -- This lemma is necessary to be able to apply the formula #(Icc a b) = b + 1 - a
 private lemma N_le_P_add_one (i : α) : N i ≤ P i + 1 := by
   calc
-    N i ≤ 0 := by
-      simpa using sum_nonneg fun _ _ ↦ by positivity
-    _ ≤ P i + 1 :=
-      add_nonneg (sum_nonneg fun _ _ ↦ by positivity) zero_le_one
+    N i
+      ≤ 0 := by simpa using sum_nonneg fun _ _ ↦ by positivity
+    _ ≤ P i + 1 := add_nonneg (sum_nonneg fun _ _ ↦ by positivity) zero_le_one
 
 private lemma card_S_eq [DecidableEq α] : #(Finset.Icc N P) = ∏ i : α, (P i - N i + 1) := by
   rw [Pi.card_Icc N P, Nat.cast_prod]
@@ -114,51 +113,50 @@ lemma one_le_norm_A_of_ne_zero (hA : A ≠ 0) : 1 ≤ ‖A‖ := by
 
 open Real Nat
 
-private lemma card_S_lt_card_T [DecidableEq α] [DecidableEq β]
-    (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α) :
-    #S < #T := by
+private lemma card_S_lt_card_T
+    [DecidableEq α] [DecidableEq β] (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α)
+    : #S < #T := by
   zify -- This is necessary to use card_S_eq
   rw [card_T_eq A, card_S_eq]
   rify -- This is necessary because ‖A‖ is a real number
   calc
-  ∏ x : α, (∑ x_1 : β, ↑B * ↑(A x x_1)⁺ - ∑ x_1 : β, ↑B * -↑(A x x_1)⁻ + 1)
-    ≤ ∏ x : α, (n * max 1 ‖A‖ * B + 1) := by
+    ∏ x : α, (∑ x_1 : β, ↑B * ↑(A x x_1)⁺ - ∑ x_1 : β, ↑B * -↑(A x x_1)⁻ + 1)
+        ≤ ∏ x : α, (n * max 1 ‖A‖ * B + 1) := by
       refine Finset.prod_le_prod₀ (fun i _ ↦ ?_) (fun i _ ↦ ?_)
       · have h := N_le_P_add_one A i
         rify at h
         linarith only [h]
       · simp only [mul_neg, sum_neg_distrib, sub_neg_eq_add, add_le_add_iff_right]
-        have h1 : n * max 1 ‖A‖ * B = ∑ _ : β, max 1 ‖A‖ * B := by
-          simp [mul_assoc]
+        have h1 : n * max 1 ‖A‖ * B = ∑ _ : β, max 1 ‖A‖ * B := by simp [mul_assoc]
         simp_rw [h1, ← Finset.sum_add_distrib, ← mul_add, mul_comm (max 1 ‖A‖), ← Int.cast_add]
         gcongr with j _
         rw [posPart_add_negPart (A i j), Int.cast_abs]
         exact le_trans (norm_entry_le_entrywise_sup_norm A) (le_max_right ..)
-  _ = (n * max 1 ‖A‖ * B + 1) ^ m := by simp
-  _ ≤ (n * max 1 ‖A‖) ^ m * (B + 1) ^ m := by
-        rw [← mul_pow, mul_add, mul_one]
-        gcongr
-        exact one_le_mul_of_one_le_of_one_le (mod_cast hm.trans hn) <| le_max_left ..
-  _ = ((n * max 1 ‖A‖) ^ (m / ((n : ℝ) - m))) ^ ((n : ℝ) - m) * (B + 1) ^ m := by
-        congr 1
-        rw [← rpow_mul (by positivity), ← Real.rpow_natCast, div_mul_cancel₀]
-        exact sub_ne_zero_of_ne (mod_cast hn.ne')
-  _ < (B + 1) ^ ((n : ℝ) - m) * (B + 1) ^ m := by
-        gcongr
-        · exact sub_pos.mpr (mod_cast hn)
-        · exact Nat.lt_floor_add_one _
-  _ = (B + 1) ^ n := by
-        rw [← rpow_natCast, ← rpow_add (Nat.cast_add_one_pos B), ← rpow_natCast, sub_add_cancel]
+    _ = (n * max 1 ‖A‖ * B + 1) ^ m := by simp
+    _ ≤ (n * max 1 ‖A‖) ^ m * (B + 1) ^ m := by
+      rw [← mul_pow, mul_add, mul_one]
+      gcongr
+      exact one_le_mul_of_one_le_of_one_le (mod_cast hm.trans hn) <| le_max_left ..
+    _ = ((n * max 1 ‖A‖) ^ (m / ((n : ℝ) - m))) ^ ((n : ℝ) - m) * (B + 1) ^ m := by
+      congr 1
+      rw [← rpow_mul (by positivity), ← Real.rpow_natCast, div_mul_cancel₀]
+      exact sub_ne_zero_of_ne (mod_cast hn.ne')
+    _ < (B + 1) ^ ((n : ℝ) - m) * (B + 1) ^ m := by
+      gcongr
+      · exact sub_pos.mpr (mod_cast hn)
+      · exact Nat.lt_floor_add_one _
+    _ = (B + 1) ^ n := by
+      rw [← rpow_natCast, ← rpow_add (Nat.cast_add_one_pos B), ← rpow_natCast, sub_add_cancel]
 
 end preparation
 
 theorem exists_ne_zero_int_vec_norm_le
-    (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α) : ∃ t : β → ℤ, t ≠ 0 ∧
-    A *ᵥ t = 0 ∧ ‖t‖ ≤ (n * max 1 ‖A‖) ^ ((m : ℝ) / (n - m)) := by
+    (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α)
+    : ∃ t : β → ℤ, t ≠ 0 ∧ A *ᵥ t = 0 ∧ ‖t‖ ≤ (n * max 1 ‖A‖) ^ ((m : ℝ) / (n - m)) := by
   classical
   -- Pigeonhole
-  rcases exists_ne_map_eq_of_card_lt_of_maps_to (card_S_lt_card_T A hn hm) (image_T_subset_S A)
-    with ⟨x, hxT, y, hyT, hneq, hfeq⟩
+  rcases exists_ne_map_eq_of_card_lt_of_maps_to (card_S_lt_card_T A hn hm) (image_T_subset_S A) with
+    ⟨x, hxT, y, hyT, hneq, hfeq⟩
   -- Proofs that x - y ≠ 0 and x - y is a solution
   refine ⟨x - y, sub_ne_zero.mpr hneq, by simp [mulVec_sub, hfeq], ?_⟩
   -- Inequality
@@ -175,10 +173,8 @@ theorem exists_ne_zero_int_vec_norm_le
     _ ≤ _ := by simpa only [Int.cast_natCast] using Nat.floor_le n_mul_norm_A_pow_e_nonneg
 
 theorem exists_ne_zero_int_vec_norm_le'
-    (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α) (hA : A ≠ 0) :
-    ∃ t : β → ℤ, t ≠ 0 ∧
-    A *ᵥ t = 0 ∧ ‖t‖ ≤ (n * ‖A‖) ^ ((m : ℝ) / (n - m)) := by
-  simpa [max_eq_right (one_le_norm_A_of_ne_zero A hA)] using
-    exists_ne_zero_int_vec_norm_le A hn hm
+    (hn : Fintype.card α < Fintype.card β) (hm : 0 < Fintype.card α) (hA : A ≠ 0)
+    : ∃ t : β → ℤ, t ≠ 0 ∧ A *ᵥ t = 0 ∧ ‖t‖ ≤ (n * ‖A‖) ^ ((m : ℝ) / (n - m)) := by
+  simpa [max_eq_right (one_le_norm_A_of_ne_zero A hA)] using exists_ne_zero_int_vec_norm_le A hn hm
 
 end Int.Matrix

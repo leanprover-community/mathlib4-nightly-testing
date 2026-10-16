@@ -25,15 +25,13 @@ variable (R : Type*) [CommRing R] [IsLocalRing R]
 
 /-- The residue field of a local ring is the quotient of the ring by its maximal ideal. -/
 @[wikidata Q7315530]
-def ResidueField :=
-  R ⧸ maximalIdeal R
+def ResidueField := R ⧸ maximalIdeal R
 deriving CommRing, Inhabited
 
 noncomputable instance ResidueField.field : Field (ResidueField R) :=
   fast_instance% Ideal.Quotient.field (maximalIdeal R)
 
 /-- The quotient map from a local ring to its residue field. -/
-def residue : R →+* ResidueField R :=
-  Ideal.Quotient.mk _
+def residue : R →+* ResidueField R := Ideal.Quotient.mk _
 
 end IsLocalRing

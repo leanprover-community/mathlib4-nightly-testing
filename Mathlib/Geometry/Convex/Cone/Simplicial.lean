@@ -38,16 +38,18 @@ variable (C : PointedCone R M)
 
 namespace PointedCone
 
-/-- A pointed cone is simplicial if it equals the conic hull of a finite set that is linearly
-independent over `R`. -/
-def IsSimplicial : Prop :=
-  ∃ s : Set M, s.Finite ∧ LinearIndepOn R id s ∧ hull R s = C
+/--
+A pointed cone is simplicial if it equals the conic hull of a finite set that is linearly
+independent over `R`.
+-/
+def IsSimplicial : Prop := ∃ s : Set M, s.Finite ∧ LinearIndepOn R id s ∧ hull R s = C
 
 namespace IsSimplicial
 
 /-- The conic hull of a finite linearly independent set is simplicial. -/
-protected theorem hull {s : Set M} (hs : s.Finite) (hli : LinearIndepOn R id s) :
-    (PointedCone.hull R s).IsSimplicial := ⟨s, hs, hli, rfl⟩
+protected theorem hull {s : Set M} (hs : s.Finite) (hli : LinearIndepOn R id s)
+    : (PointedCone.hull R s).IsSimplicial :=
+  ⟨s, hs, hli, rfl⟩
 
 end IsSimplicial
 

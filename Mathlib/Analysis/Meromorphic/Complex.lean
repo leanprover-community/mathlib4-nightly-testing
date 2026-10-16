@@ -26,6 +26,4 @@ lemma MeromorphicNFOn.Gamma : MeromorphicNFOn Gamma univ :=
 lemma Meromorphic.Gamma : Meromorphic Gamma :=
   meromorphicOn_univ.mp MeromorphicNFOn.Gamma.meromorphicOn
 
-@[fun_prop]
-lemma MeromorphicOn.Gamma {s} : MeromorphicOn Gamma s :=
-  Meromorphic.Gamma.meromorphicOn
+@[fun_prop] lemma MeromorphicOn.Gamma {s} : MeromorphicOn Gamma s := Meromorphic.Gamma.meromorphicOn

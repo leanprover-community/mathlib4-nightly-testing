@@ -23,28 +23,32 @@ public section
 
 variable {α : Type*} {β : Type*}
 
-/-- Predicate typeclass for expressing that a type is not reduced to a single element. In rings,
-this is equivalent to `0 ≠ 1`. In vector spaces, this is equivalent to positive dimension. -/
+/--
+Predicate typeclass for expressing that a type is not reduced to a single element. In rings,
+this is equivalent to `0 ≠ 1`. In vector spaces, this is equivalent to positive dimension.
+-/
 class Nontrivial (α : Type*) : Prop where
   /-- In a nontrivial type, there exists a pair of distinct terms. -/
   exists_pair_ne : ∃ x y : α, x ≠ y
 
-theorem nontrivial_iff : Nontrivial α ↔ ∃ x y : α, x ≠ y :=
-  ⟨fun h ↦ h.exists_pair_ne, fun h ↦ ⟨h⟩⟩
+theorem nontrivial_iff : Nontrivial α ↔ ∃ x y : α, x ≠ y := ⟨fun h ↦ h.exists_pair_ne, fun h ↦ ⟨h⟩⟩
 
-theorem exists_pair_ne (α : Type*) [Nontrivial α] : ∃ x y : α, x ≠ y :=
-  Nontrivial.exists_pair_ne
+theorem exists_pair_ne (α : Type*) [Nontrivial α] : ∃ x y : α, x ≠ y := Nontrivial.exists_pair_ne
 
 /-- Pushforward a `Nontrivial` instance along an injective function. -/
-protected theorem Function.Injective.nontrivial [Nontrivial α] {f : α → β}
-    (hf : Function.Injective f) : Nontrivial β :=
+protected theorem Function.Injective.nontrivial
+    [Nontrivial α] {f : α → β} (hf : Function.Injective f)
+    : Nontrivial β :=
   let ⟨x, y, h⟩ := exists_pair_ne α
   ⟨⟨f x, f y, hf.ne h⟩⟩
 
-/-- An injective function from a nontrivial type has an argument at
-which it does not take a given value. -/
-protected theorem Function.Injective.exists_ne [Nontrivial α] {f : α → β}
-    (hf : Function.Injective f) (y : β) : ∃ x, f x ≠ y := by
+/--
+An injective function from a nontrivial type has an argument at
+which it does not take a given value.
+-/
+protected theorem Function.Injective.exists_ne
+    [Nontrivial α] {f : α → β} (hf : Function.Injective f) (y : β)
+    : ∃ x, f x ≠ y := by
   rcases exists_pair_ne α with ⟨x₁, x₂, hx⟩
   by_cases h : f x₂ = y
   · exact ⟨x₁, (hf.ne_iff' h).2 hx⟩
@@ -63,23 +67,21 @@ theorem exists_ne [Nontrivial α] (x : α) : ∃ y, y ≠ x := by
   exact Decidable.exists_ne x
 
 -- `x` and `y` are explicit here, as they are often needed to guide typechecking of `h`.
-theorem nontrivial_of_ne (x y : α) (h : x ≠ y) : Nontrivial α :=
-  ⟨⟨x, y, h⟩⟩
+theorem nontrivial_of_ne (x y : α) (h : x ≠ y) : Nontrivial α := ⟨⟨x, y, h⟩⟩
 
 theorem nontrivial_iff_exists_ne (x : α) : Nontrivial α ↔ ∃ y, y ≠ x :=
   ⟨fun h ↦ @exists_ne α h x, fun ⟨_, hy⟩ ↦ nontrivial_of_ne _ _ hy⟩
 
-theorem Function.nontrivial_of_nontrivial (α β : Type*) [Nontrivial (α → β)] :
-    Nontrivial β := by
+theorem Function.nontrivial_of_nontrivial (α β : Type*) [Nontrivial (α → β)] : Nontrivial β := by
   obtain ⟨f, g, h⟩ := exists_pair_ne (α → β)
   rw [ne_eq, funext_iff, Classical.not_forall] at h
   obtain ⟨a, h⟩ := h
   exact nontrivial_of_ne _ _ h
 
-instance : Nontrivial Prop :=
-  ⟨⟨True, False, true_ne_false⟩⟩
+instance : Nontrivial Prop := ⟨⟨True, False, true_ne_false⟩⟩
 
-/-- See Note [lower instance priority]
+/--
+See Note [lower instance priority]
 
 Note that since this and `instNonemptyOfInhabited` are the most "obvious" way to find a nonempty
 instance if no direct instance can be found, we give this a higher priority than the usual `100`.
@@ -88,23 +90,24 @@ instance (priority := 500) Nontrivial.to_nonempty [Nontrivial α] : Nonempty α 
   let ⟨x, _⟩ := _root_.exists_pair_ne α
   ⟨x⟩
 
-theorem subsingleton_iff : Subsingleton α ↔ ∀ x y : α, x = y :=
-  ⟨by
+theorem subsingleton_iff : Subsingleton α ↔ ∀ x y : α, x = y := ⟨
+  by
     intro h
-    exact Subsingleton.elim, fun h ↦ ⟨h⟩⟩
+    exact Subsingleton.elim,
+  fun h ↦ ⟨h⟩
+⟩
 
 @[push]
-theorem not_nontrivial_iff_subsingleton : ¬Nontrivial α ↔ Subsingleton α := by
+theorem not_nontrivial_iff_subsingleton : ¬ Nontrivial α ↔ Subsingleton α := by
   simp only [nontrivial_iff, subsingleton_iff, not_exists, Classical.not_not]
 
-theorem not_nontrivial (α) [Subsingleton α] : ¬Nontrivial α :=
-  fun ⟨⟨x, y, h⟩⟩ ↦ h <| Subsingleton.elim x y
+theorem not_nontrivial (α) [Subsingleton α] : ¬ Nontrivial α := fun ⟨⟨x, y, h⟩⟩ ↦
+  h <| Subsingleton.elim x y
 
-theorem not_subsingleton (α) [Nontrivial α] : ¬Subsingleton α :=
-  fun _ => not_nontrivial _ ‹_›
+theorem not_subsingleton (α) [Nontrivial α] : ¬ Subsingleton α := fun _ => not_nontrivial _ ‹_›
 
 @[push]
-lemma not_subsingleton_iff_nontrivial : ¬Subsingleton α ↔ Nontrivial α := by
+lemma not_subsingleton_iff_nontrivial : ¬ Subsingleton α ↔ Nontrivial α := by
   rw [← not_nontrivial_iff_subsingleton, Classical.not_not]
 
 /-- A type is either a subsingleton or nontrivial. -/
@@ -116,8 +119,9 @@ theorem false_of_nontrivial_of_subsingleton (α : Type*) [Nontrivial α] [Subsin
   not_nontrivial _ ‹_›
 
 /-- Pullback a `Nontrivial` instance along a surjective function. -/
-protected theorem Function.Surjective.nontrivial [Nontrivial β] {f : α → β}
-    (hf : Function.Surjective f) : Nontrivial α := by
+protected theorem Function.Surjective.nontrivial
+    [Nontrivial β] {f : α → β} (hf : Function.Surjective f)
+    : Nontrivial α := by
   rcases exists_pair_ne β with ⟨x, y, h⟩
   rcases hf x with ⟨x', hx'⟩
   rcases hf y with ⟨y', hy'⟩
@@ -128,8 +132,7 @@ protected theorem Function.Surjective.nontrivial [Nontrivial β] {f : α → β}
 
 namespace Bool
 
-instance : Nontrivial Bool :=
-  ⟨⟨true, false, nofun⟩⟩
+instance : Nontrivial Bool := ⟨⟨true, false, nofun⟩⟩
 
 end Bool
 

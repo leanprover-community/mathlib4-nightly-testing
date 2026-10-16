@@ -41,7 +41,6 @@ attribute [local trans] Subset.trans Superset.trans
 
 /-! ### sdiff -/
 
-
 section Sdiff
 
 variable [DecidableEq α] {s t u v : Finset α} {a b : α}
@@ -50,16 +49,12 @@ variable [DecidableEq α] {s t u v : Finset α} {a b : α}
 instance instSDiff : SDiff (Finset α) :=
   ⟨fun s₁ s₂ => ⟨s₁.1 - s₂.1, nodup_of_le (Multiset.sub_le_self ..) s₁.2⟩⟩
 
-@[simp]
-theorem sdiff_val (s₁ s₂ : Finset α) : (s₁ \ s₂).val = s₁.val - s₂.val :=
-  rfl
+@[simp] theorem sdiff_val (s₁ s₂ : Finset α) : (s₁ \ s₂).val = s₁.val - s₂.val := rfl
 
 @[simp, grind =]
-theorem mem_sdiff : a ∈ s \ t ↔ a ∈ s ∧ a ∉ t :=
-  mem_sub_of_nodup s.2
+theorem mem_sdiff : a ∈ s \ t ↔ a ∈ s ∧ a ∉ t := mem_sub_of_nodup s.2
 
-@[simp]
-theorem inter_sdiff_self (s₁ s₂ : Finset α) : s₁ ∩ (s₂ \ s₁) = ∅ := by grind
+@[simp] theorem inter_sdiff_self (s₁ s₂ : Finset α) : s₁ ∩ (s₂ \ s₁) = ∅ := by grind
 
 instance : GeneralizedBooleanAlgebra (Finset α) where
   sup_inf_sdiff := by grind
@@ -81,30 +76,21 @@ lemma sdiff_inter_right_comm (s t u : Finset α) : s \ t ∩ u = (s ∩ u) \ t :
 
 lemma inter_sdiff_left_comm (s t u : Finset α) : s ∩ (t \ u) = t ∩ (s \ u) := inf_sdiff_left_comm ..
 
-@[simp]
-theorem sdiff_inter_self (s₁ s₂ : Finset α) : s₂ \ s₁ ∩ s₁ = ∅ :=
-  inf_sdiff_self_left
+@[simp] theorem sdiff_inter_self (s₁ s₂ : Finset α) : s₂ \ s₁ ∩ s₁ = ∅ := inf_sdiff_self_left
 
-protected theorem sdiff_self (s₁ : Finset α) : s₁ \ s₁ = ∅ :=
-  _root_.sdiff_self
+protected theorem sdiff_self (s₁ : Finset α) : s₁ \ s₁ = ∅ := _root_.sdiff_self
 
-theorem sdiff_inter_distrib_right (s t u : Finset α) : s \ (t ∩ u) = s \ t ∪ s \ u :=
-  sdiff_inf
+theorem sdiff_inter_distrib_right (s t u : Finset α) : s \ (t ∩ u) = s \ t ∪ s \ u := sdiff_inf
 
 @[simp]
-theorem sdiff_inter_self_left (s t : Finset α) : s \ (s ∩ t) = s \ t :=
-  sdiff_inf_self_left _ _
+theorem sdiff_inter_self_left (s t : Finset α) : s \ (s ∩ t) = s \ t := sdiff_inf_self_left _ _
 
 @[simp]
-theorem sdiff_inter_self_right (s t : Finset α) : s \ (t ∩ s) = s \ t :=
-  sdiff_inf_self_right _ _
+theorem sdiff_inter_self_right (s t : Finset α) : s \ (t ∩ s) = s \ t := sdiff_inf_self_right _ _
 
-@[simp]
-theorem sdiff_empty : s \ ∅ = s :=
-  sdiff_bot
+@[simp] theorem sdiff_empty : s \ ∅ = s := sdiff_bot
 
-@[mono, gcongr]
-theorem sdiff_subset_sdiff (hst : s ⊆ t) (hvu : v ⊆ u) : s \ u ⊆ t \ v := by grind
+@[mono, gcongr] theorem sdiff_subset_sdiff (hst : s ⊆ t) (hvu : v ⊆ u) : s \ u ⊆ t \ v := by grind
 
 variable (u) in
 lemma sdiff_subset_sdiff_left (h : s ⊆ t) : s \ u ⊆ t \ u := by gcongr
@@ -112,33 +98,24 @@ lemma sdiff_subset_sdiff_left (h : s ⊆ t) : s \ u ⊆ t \ u := by gcongr
 variable (u) in
 lemma sdiff_subset_sdiff_right (h : s ⊆ t) : u \ t ⊆ u \ s := by gcongr
 
-theorem sdiff_subset_sdiff_iff_subset {r : Finset α} (hs : s ⊆ r) (ht : t ⊆ r) :
-    r \ s ⊆ r \ t ↔ t ⊆ s :=
+theorem sdiff_subset_sdiff_iff_subset {r : Finset α} (hs : s ⊆ r) (ht : t ⊆ r)
+    : r \ s ⊆ r \ t ↔ t ⊆ s :=
   sdiff_le_sdiff_iff_le hs ht
 
 @[simp, grind =, norm_cast]
-theorem coe_sdiff (s₁ s₂ : Finset α) : ↑(s₁ \ s₂) = (s₁ \ s₂ : Set α) :=
-  Set.ext fun _ => mem_sdiff
+theorem coe_sdiff (s₁ s₂ : Finset α) : ↑(s₁ \ s₂) = (s₁ \ s₂ : Set α) := Set.ext fun _ => mem_sdiff
 
-@[simp]
-theorem union_sdiff_self_eq_union : s ∪ t \ s = s ∪ t :=
-  sup_sdiff_self_right _ _
+@[simp] theorem union_sdiff_self_eq_union : s ∪ t \ s = s ∪ t := sup_sdiff_self_right _ _
 
-@[simp]
-theorem sdiff_union_self_eq_union : s \ t ∪ t = s ∪ t :=
-  sup_sdiff_self_left _ _
+@[simp] theorem sdiff_union_self_eq_union : s \ t ∪ t = s ∪ t := sup_sdiff_self_left _ _
 
-theorem union_sdiff_left (s t : Finset α) : (s ∪ t) \ s = t \ s :=
-  sup_sdiff_left_self
+theorem union_sdiff_left (s t : Finset α) : (s ∪ t) \ s = t \ s := sup_sdiff_left_self
 
-theorem union_sdiff_right (s t : Finset α) : (s ∪ t) \ t = s \ t :=
-  sup_sdiff_right_self
+theorem union_sdiff_right (s t : Finset α) : (s ∪ t) \ t = s \ t := sup_sdiff_right_self
 
-theorem union_sdiff_cancel_left (h : Disjoint s t) : (s ∪ t) \ s = t :=
-  h.sup_sdiff_cancel_left
+theorem union_sdiff_cancel_left (h : Disjoint s t) : (s ∪ t) \ s = t := h.sup_sdiff_cancel_left
 
-theorem union_sdiff_cancel_right (h : Disjoint s t) : (s ∪ t) \ t = s :=
-  h.sup_sdiff_cancel_right
+theorem union_sdiff_cancel_right (h : Disjoint s t) : (s ∪ t) \ t = s := h.sup_sdiff_cancel_right
 
 /-- `· ∪ s` is injective on finsets disjoint from `s`. -/
 lemma disjoint_injOn_union_left (s : Finset α) : {t | Disjoint s t}.InjOn (· ∪ s) := by
@@ -150,29 +127,23 @@ lemma superset_injOn_sdiff (s : Finset α) : {t | s ⊆ t}.InjOn (· \ s) := by
 
 theorem union_sdiff_symm : s ∪ t \ s = t ∪ s \ t := by simp [union_comm]
 
-theorem sdiff_union_inter (s t : Finset α) : s \ t ∪ s ∩ t = s :=
-  sup_sdiff_inf _ _
+theorem sdiff_union_inter (s t : Finset α) : s \ t ∪ s ∩ t = s := sup_sdiff_inf _ _
 
-theorem sdiff_idem (s t : Finset α) : (s \ t) \ t = s \ t :=
-  _root_.sdiff_idem
+theorem sdiff_idem (s t : Finset α) : (s \ t) \ t = s \ t := _root_.sdiff_idem
 
-theorem subset_sdiff : s ⊆ t \ u ↔ s ⊆ t ∧ Disjoint s u :=
-  le_sdiff
+theorem subset_sdiff : s ⊆ t \ u ↔ s ⊆ t ∧ Disjoint s u := le_sdiff
 
-@[simp]
-theorem sdiff_eq_empty_iff_subset : s \ t = ∅ ↔ s ⊆ t :=
-  sdiff_eq_bot_iff
+@[simp] theorem sdiff_eq_empty_iff_subset : s \ t = ∅ ↔ s ⊆ t := sdiff_eq_bot_iff
 
 @[grind =]
-theorem sdiff_nonempty : (s \ t).Nonempty ↔ ¬s ⊆ t :=
+theorem sdiff_nonempty : (s \ t).Nonempty ↔ ¬ s ⊆ t :=
   nonempty_iff_ne_empty.trans sdiff_eq_empty_iff_subset.not
 
-@[simp]
-theorem empty_sdiff (s : Finset α) : ∅ \ s = ∅ :=
-  bot_sdiff
+@[simp] theorem empty_sdiff (s : Finset α) : ∅ \ s = ∅ := bot_sdiff
 
-theorem insert_sdiff_of_notMem (s : Finset α) {t : Finset α} {x : α} (h : x ∉ t) :
-    insert x s \ t = insert x (s \ t) := by grind
+theorem insert_sdiff_of_notMem (s : Finset α) {t : Finset α} {x : α} (h : x ∉ t)
+    : insert x s \ t = insert x (s \ t) := by
+  grind
 
 theorem insert_sdiff_of_mem (s : Finset α) {x : α} (h : x ∈ t) : insert x s \ t = s \ t := by grind
 
@@ -196,17 +167,15 @@ theorem sdiff_subset {s t : Finset α} : s \ t ⊆ s := by simp
 
 theorem sdiff_ssubset (h : t ⊆ s) (ht : t.Nonempty) : s \ t ⊂ s := by grind
 
-theorem union_sdiff_distrib (s₁ s₂ t : Finset α) : (s₁ ∪ s₂) \ t = s₁ \ t ∪ s₂ \ t :=
-  sup_sdiff
+theorem union_sdiff_distrib (s₁ s₂ t : Finset α) : (s₁ ∪ s₂) \ t = s₁ \ t ∪ s₂ \ t := sup_sdiff
 
-theorem sdiff_union_distrib (s t₁ t₂ : Finset α) : s \ (t₁ ∪ t₂) = s \ t₁ ∩ (s \ t₂) :=
-  sdiff_sup
+theorem sdiff_union_distrib (s t₁ t₂ : Finset α) : s \ (t₁ ∪ t₂) = s \ t₁ ∩ (s \ t₂) := sdiff_sup
 
-theorem union_sdiff_self (s t : Finset α) : (s ∪ t) \ t = s \ t :=
-  sup_sdiff_right_self
+theorem union_sdiff_self (s t : Finset α) : (s ∪ t) \ t = s \ t := sup_sdiff_right_self
 
-theorem Nontrivial.sdiff_singleton_nonempty {c : α} {s : Finset α} (hS : s.Nontrivial) :
-    (s \ {c}).Nonempty := by grind
+theorem Nontrivial.sdiff_singleton_nonempty {c : α} {s : Finset α} (hS : s.Nontrivial)
+    : (s \ {c}).Nonempty := by
+  grind
 
 theorem sdiff_sdiff_left' (s t u : Finset α) : (s \ t) \ u = s \ t ∩ (s \ u) :=
   _root_.sdiff_sdiff_left'
@@ -217,24 +186,20 @@ theorem sdiff_union_sdiff_cancel (hts : t ⊆ s) (hut : u ⊆ t) : s \ t ∪ t \
 theorem sdiff_sdiff_eq_sdiff_union (h : u ⊆ s) : s \ (t \ u) = s \ t ∪ u :=
   sdiff_sdiff_eq_sdiff_sup h
 
-theorem sdiff_sdiff_self_left (s t : Finset α) : s \ (s \ t) = s ∩ t :=
-  sdiff_sdiff_right_self
+theorem sdiff_sdiff_self_left (s t : Finset α) : s \ (s \ t) = s ∩ t := sdiff_sdiff_right_self
 
-theorem sdiff_sdiff_eq_self (h : t ⊆ s) : s \ (s \ t) = t :=
-  _root_.sdiff_sdiff_eq_self h
+theorem sdiff_sdiff_eq_self (h : t ⊆ s) : s \ (s \ t) = t := _root_.sdiff_sdiff_eq_self h
 
-theorem sdiff_eq_sdiff_iff_inter_eq_inter {s t₁ t₂ : Finset α} :
-    s \ t₁ = s \ t₂ ↔ s ∩ t₁ = s ∩ t₂ :=
+theorem sdiff_eq_sdiff_iff_inter_eq_inter {s t₁ t₂ : Finset α}
+    : s \ t₁ = s \ t₂ ↔ s ∩ t₁ = s ∩ t₂ :=
   sdiff_eq_sdiff_iff_inf_eq_inf
 
 theorem union_eq_sdiff_union_sdiff_union_inter (s t : Finset α) : s ∪ t = s \ t ∪ t \ s ∪ s ∩ t :=
   sup_eq_sdiff_sup_sdiff_sup_inf
 
-theorem sdiff_eq_self_iff_disjoint : s \ t = s ↔ Disjoint s t :=
-  sdiff_eq_left
+theorem sdiff_eq_self_iff_disjoint : s \ t = s ↔ Disjoint s t := sdiff_eq_left
 
-theorem sdiff_eq_self_of_disjoint (h : Disjoint s t) : s \ t = s :=
-  sdiff_eq_self_iff_disjoint.2 h
+theorem sdiff_eq_self_of_disjoint (h : Disjoint s t) : s \ t = s := sdiff_eq_self_iff_disjoint.2 h
 
 end Sdiff
 

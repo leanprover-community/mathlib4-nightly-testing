@@ -27,31 +27,31 @@ variable {a b c : ℝ≥0∞} {r : ℝ≥0}
 -- TODO: generalize some of these to `WithTop α`
 section Actions
 
-noncomputable instance {M : Type*} [MulAction ℝ≥0∞ M] : SMul ℝ≥0 M :=
-  ⟨fun c m ↦ (c : ℝ≥0∞) • m⟩
+noncomputable instance {M : Type*} [MulAction ℝ≥0∞ M] : SMul ℝ≥0 M := ⟨fun c m ↦ (c : ℝ≥0∞) • m⟩
 
 /-- A `MulAction` over `ℝ≥0∞` restricts to a `MulAction` over `ℝ≥0`. -/
 noncomputable instance {M : Type*} [MulAction ℝ≥0∞ M] : MulAction ℝ≥0 M :=
   fast_instance% MulAction.compHom M ofNNRealHom.toMonoidHom
 
-theorem smul_def {M : Type*} [MulAction ℝ≥0∞ M] (c : ℝ≥0) (x : M) : c • x = (c : ℝ≥0∞) • x :=
-  rfl
+theorem smul_def {M : Type*} [MulAction ℝ≥0∞ M] (c : ℝ≥0) (x : M) : c • x = (c : ℝ≥0∞) • x := rfl
 
-@[simp]
-theorem smul_one (c : ℝ≥0) : c • (1 : ℝ≥0∞) = (c : ℝ≥0∞) := by simp [smul_def]
+@[simp] theorem smul_one (c : ℝ≥0) : c • (1 : ℝ≥0∞) = (c : ℝ≥0∞) := by simp [smul_def]
 
-instance {M N : Type*} [MulAction ℝ≥0∞ M] [MulAction ℝ≥0∞ N] [SMul M N] [IsScalarTower ℝ≥0∞ M N] :
-    IsScalarTower ℝ≥0 M N where smul_assoc r := smul_assoc (r : ℝ≥0∞)
+instance {M N : Type*} [MulAction ℝ≥0∞ M] [MulAction ℝ≥0∞ N] [SMul M N] [IsScalarTower ℝ≥0∞ M N]
+    : IsScalarTower ℝ≥0 M N where
+  smul_assoc r := smul_assoc (r : ℝ≥0∞)
 
-instance smulCommClass_left {M N : Type*} [MulAction ℝ≥0∞ N] [SMul M N] [SMulCommClass ℝ≥0∞ M N] :
-    SMulCommClass ℝ≥0 M N where smul_comm r := smul_comm (r : ℝ≥0∞)
+instance smulCommClass_left {M N : Type*} [MulAction ℝ≥0∞ N] [SMul M N] [SMulCommClass ℝ≥0∞ M N]
+    : SMulCommClass ℝ≥0 M N where
+  smul_comm r := smul_comm (r : ℝ≥0∞)
 
-instance smulCommClass_right {M N : Type*} [MulAction ℝ≥0∞ N] [SMul M N] [SMulCommClass M ℝ≥0∞ N] :
-    SMulCommClass M ℝ≥0 N where smul_comm m r := smul_comm m (r : ℝ≥0∞)
+instance smulCommClass_right {M N : Type*} [MulAction ℝ≥0∞ N] [SMul M N] [SMulCommClass M ℝ≥0∞ N]
+    : SMulCommClass M ℝ≥0 N where
+  smul_comm m r := smul_comm m (r : ℝ≥0∞)
 
 /-- A `DistribMulAction` over `ℝ≥0∞` restricts to a `DistribMulAction` over `ℝ≥0`. -/
-noncomputable instance {M : Type*} [AddMonoid M] [DistribMulAction ℝ≥0∞ M] :
-    DistribMulAction ℝ≥0 M :=
+noncomputable instance {M : Type*} [AddMonoid M] [DistribMulAction ℝ≥0∞ M]
+    : DistribMulAction ℝ≥0 M :=
   fast_instance% DistribMulAction.compHom M ofNNRealHom.toMonoidHom
 
 /-- A `Module` over `ℝ≥0∞` restricts to a `Module` over `ℝ≥0`. -/
@@ -70,14 +70,19 @@ noncomputable example : Algebra ℝ≥0 ℝ≥0∞ := inferInstance
 
 noncomputable example : DistribMulAction ℝ≥0ˣ ℝ≥0∞ := inferInstance
 
-theorem coe_smul {R} (r : R) (s : ℝ≥0) [SMul R ℝ≥0] [SMul R ℝ≥0∞] [IsScalarTower R ℝ≥0 ℝ≥0]
-    [IsScalarTower R ℝ≥0 ℝ≥0∞] : (↑(r • s) : ℝ≥0∞) = (r : R) • (s : ℝ≥0∞) := by
+theorem coe_smul
+    {R} (r : R)
+    (s : ℝ≥0)
+    [SMul R ℝ≥0] [SMul R ℝ≥0∞] [IsScalarTower R ℝ≥0 ℝ≥0] [IsScalarTower R ℝ≥0 ℝ≥0∞]
+    : (↑(r • s) : ℝ≥0∞) = (r : R) • (s : ℝ≥0∞) := by
   rw [← smul_one_smul ℝ≥0 r (s : ℝ≥0∞), smul_def, smul_eq_mul, ← ENNReal.coe_mul, smul_mul_assoc,
     one_mul]
 
-theorem smul_top {R : Type*} [Semiring R] [IsDomain R] [Module R ℝ≥0∞] [IsScalarTower R ℝ≥0∞ ℝ≥0∞]
-    [Module.IsTorsionFree R ℝ≥0∞] [DecidableEq R] (c : R) :
-    c • ∞ = if c = 0 then 0 else ∞ := by
+theorem smul_top
+    {R : Type*} [Semiring R] [IsDomain R] [Module R ℝ≥0∞] [IsScalarTower R ℝ≥0∞ ℝ≥0∞]
+    [Module.IsTorsionFree R ℝ≥0∞] [DecidableEq R]
+    (c : R)
+    : c • ∞ = if c = 0 then 0 else ∞ := by
   rw [← smul_one_mul, mul_top']
   simp_rw [smul_eq_zero, or_iff_left one_ne_zero]
 

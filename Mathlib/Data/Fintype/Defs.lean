@@ -50,10 +50,12 @@ universe u v
 
 variable {α β : Type*}
 
-/-- `Fintype α` means that `α` is finite, i.e. there are only
-  finitely many distinct elements of type `α`. The evidence of this
-  is a finset `elems` (a list up to permutation without duplicates),
-  together with a proof that everything of type `α` is in the list. -/
+/--
+`Fintype α` means that `α` is finite, i.e. there are only
+finitely many distinct elements of type `α`. The evidence of this
+is a finset `elems` (a list up to permutation without duplicates),
+together with a proof that everything of type `α` is in the list.
+-/
 class Fintype (α : Type*) where
   /-- The `Finset` containing all elements of a `Fintype` -/
   elems : Finset α
@@ -64,8 +66,8 @@ class Fintype (α : Type*) where
 
 namespace Finset
 
-theorem nodup_map_iff_injOn {f : α → β} {s : Finset α} :
-    (Multiset.map f s.val).Nodup ↔ Set.InjOn f s := by
+theorem nodup_map_iff_injOn {f : α → β} {s : Finset α}
+    : (Multiset.map f s.val).Nodup ↔ Set.InjOn f s := by
   simp [Multiset.nodup_map_iff_inj_on s.nodup, Set.InjOn]
 
 end Finset
@@ -78,8 +80,7 @@ instance [DecidableEq β] : Decidable (Set.InjOn f s) :=
   -- Use custom implementation for better performance.
   decidable_of_iff ((Multiset.map f s.val).Nodup) Finset.nodup_map_iff_injOn
 
-instance [DecidableEq β] : Decidable (Set.BijOn f s t') :=
-  inferInstanceAs (Decidable (_ ∧ _ ∧ _))
+instance [DecidableEq β] : Decidable (Set.BijOn f s t') := inferInstanceAs (Decidable (_ ∧ _ ∧ _))
 
 end List
 
@@ -87,30 +88,27 @@ namespace Finset
 
 variable [Fintype α] {s : Finset α}
 
-/-- `univ` is the universal finite set of type `Finset α` implied from
-  the assumption `Fintype α`. -/
-def univ : Finset α :=
-  @Fintype.elems α _
+/--
+`univ` is the universal finite set of type `Finset α` implied from
+the assumption `Fintype α`.
+-/
+def univ : Finset α := @Fintype.elems α _
 
 @[simp, grind ←]
-theorem mem_univ (x : α) : x ∈ (univ : Finset α) :=
-  Fintype.complete x
+theorem mem_univ (x : α) : x ∈ (univ : Finset α) := Fintype.complete x
 
 theorem mem_univ_val : ∀ x, x ∈ (univ : Finset α).1 := by simp
 
 theorem eq_univ_iff_forall : s = univ ↔ ∀ x, x ∈ s := by simp [Finset.ext_iff]
 
-theorem eq_univ_of_forall : (∀ x, x ∈ s) → s = univ :=
-  eq_univ_iff_forall.2
+theorem eq_univ_of_forall : (∀ x, x ∈ s) → s = univ := eq_univ_iff_forall.2
 
-@[simp, norm_cast]
-theorem coe_univ : ↑(univ : Finset α) = (Set.univ : Set α) := by ext; simp
+@[simp, norm_cast] theorem coe_univ : ↑(univ : Finset α) = (Set.univ : Set α) := by ext; simp
 
 @[simp, norm_cast]
 theorem coe_eq_univ : (s : Set α) = Set.univ ↔ s = univ := by rw [← coe_univ, coe_inj]
 
-@[simp]
-theorem subset_univ (s : Finset α) : s ⊆ univ := fun a _ => mem_univ a
+@[simp] theorem subset_univ (s : Finset α) : s ⊆ univ := fun a _ => mem_univ a
 
 theorem mem_filter_univ {p : α → Prop} [DecidablePred p] : ∀ x, x ∈ univ.filter p ↔ p x := by simp
 
@@ -119,7 +117,8 @@ end Finset
 namespace Mathlib.Meta
 open Lean Elab Term Meta Batteries.ExtendedBinder Parser.Term PrettyPrinter.Delaborator SubExpr
 
-/-- Elaborate set builder notation for `Finset`.
+/--
+Elaborate set builder notation for `Finset`.
 
 * `{x | p x}` is elaborated as `Finset.filter (fun x ↦ p x) Finset.univ` if the expected type is
   `Finset ?α`.
@@ -143,11 +142,13 @@ See also
 meta def elabFinsetBuilderSetOf : TermElab
   | `({ $x:ident | $p }), expectedType? => do
     -- If the expected type is not known to be `Finset ?α`, give up.
-    unless ← knownToBeFinsetNotSet expectedType? do throwUnsupportedSyntax
+    unless ← knownToBeFinsetNotSet expectedType? do
+      throwUnsupportedSyntax
     elabTerm (← `(Finset.filter (fun $x:ident ↦ $p) Finset.univ)) expectedType?
   | `({ $x:ident : $t | $p }), expectedType? => do
     -- If the expected type is not known to be `Finset ?α`, give up.
-    unless ← knownToBeFinsetNotSet expectedType? do throwUnsupportedSyntax
+    unless ← knownToBeFinsetNotSet expectedType? do
+      throwUnsupportedSyntax
     elabTerm (← `(Finset.filter (fun $x:ident : $t ↦ $p) Finset.univ)) expectedType?
   | `({ $x:ident ∉ $s:term | $p }), expectedType? => do
     -- If the expected type is known to be `Set ?α`, give up. If it is not known to be `Set ?α` or
@@ -163,37 +164,44 @@ meta def elabFinsetBuilderSetOf : TermElab
     elabTerm (← `(Finset.filter (fun $x:ident ↦ $p) $sᶜ)) expectedType?
   | `({ $x:ident ≠ $a | $p }), expectedType? => do
     -- If the expected type is not known to be `Finset ?α`, give up.
-    unless ← knownToBeFinsetNotSet expectedType? do throwUnsupportedSyntax
+    unless ← knownToBeFinsetNotSet expectedType? do
+      throwUnsupportedSyntax
     elabTerm (← `(Finset.filter (fun $x:ident ↦ $p) (singleton $a)ᶜ)) expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
-/-- Delaborator for `Finset.filter`. The `pp.funBinderTypes` option controls whether
-to show the domain type when the filter is over `Finset.univ`. -/
-@[app_delab Finset.filter] meta def delabFinsetFilter : Delab :=
+/--
+Delaborator for `Finset.filter`. The `pp.funBinderTypes` option controls whether
+to show the domain type when the filter is over `Finset.univ`.
+-/
+@[app_delab Finset.filter]
+meta def delabFinsetFilter : Delab :=
   whenPPOption getPPNotation do
-  let #[_, p, _, t] := (← getExpr).getAppArgs | failure
-  guard p.isLambda
-  let i ← withNaryArg 1 <| withBindingBodyUnusedName (pure ⟨·⟩)
-  let p ← withNaryArg 1 <| withBindingBody i.getId delab
-  if t.isAppOfArity ``Finset.univ 2 then
-    if ← getPPOption getPPFunBinderTypes then
-      let ty ← withNaryArg 0 delab
-      `({$i:ident : $ty | $p})
+    let #[_, p, _, t] := (← getExpr).getAppArgs
+      | failure
+    guard p.isLambda
+    let i ← withNaryArg 1 <| withBindingBodyUnusedName (pure ⟨·⟩)
+    let p ← withNaryArg 1 <| withBindingBody i.getId delab
+    if t.isAppOfArity ``Finset.univ 2 then
+      if ← getPPOption getPPFunBinderTypes then
+        let ty ← withNaryArg 0 delab
+        `({$i:ident : $ty | $p})
+      else
+        `({$i:ident | $p})
+    -- check if `t` is of the form `s₀ᶜ`, in which case we display `x ∉ s₀` instead
+    else if t.isAppOfArity ``Compl.compl 3 then
+      let #[_, _, s₀] := t.getAppArgs
+        | failure
+      -- if `s₀` is a singleton, we can even use the notation `x ≠ a`
+      if s₀.isAppOfArity ``Singleton.singleton 4 then
+        let t ← withNaryArg 3 <| withNaryArg 2 <| withNaryArg 3 delab
+        `({$i:ident ≠ $t | $p})
+      else
+        let t ← withNaryArg 3 <| withNaryArg 2 delab
+        `({$i:ident ∉ $t | $p})
     else
-      `({$i:ident | $p})
-  -- check if `t` is of the form `s₀ᶜ`, in which case we display `x ∉ s₀` instead
-  else if t.isAppOfArity ``Compl.compl 3 then
-    let #[_, _, s₀] := t.getAppArgs | failure
-    -- if `s₀` is a singleton, we can even use the notation `x ≠ a`
-    if s₀.isAppOfArity ``Singleton.singleton 4 then
-      let t ← withNaryArg 3 <| withNaryArg 2 <| withNaryArg 3 delab
-      `({$i:ident ≠ $t | $p})
-    else
-      let t ← withNaryArg 3 <| withNaryArg 2 delab
-      `({$i:ident ∉ $t | $p})
-  else
-    let t ← withNaryArg 3 delab
-    `({$i:ident ∈ $t | $p})
+      let t ← withNaryArg 3 delab
+      `({$i:ident ∈ $t | $p})
 
 end Mathlib.Meta
 
@@ -201,27 +209,29 @@ open Finset
 
 namespace Fintype
 
-instance decidablePiFintype {β : α → Type*} [∀ a, DecidableEq (β a)] [Fintype α] :
-    DecidableEq (∀ a, β a) := fun f g =>
+instance decidablePiFintype {β : α → Type*} [∀ a, DecidableEq (β a)] [Fintype α]
+    : DecidableEq (∀ a, β a) := fun f g =>
   decidable_of_iff (∀ a ∈ @univ α _, f a = g a) (by simp [funext_iff])
 
-instance decidableForallFintype {p : α → Prop} [DecidablePred p] [Fintype α] :
-    Decidable (∀ a, p a) :=
+instance decidableForallFintype {p : α → Prop} [DecidablePred p] [Fintype α]
+    : Decidable (∀ a, p a) :=
   decidable_of_iff (∀ a ∈ @univ α _, p a) (by simp)
 
-instance decidableExistsFintype {p : α → Prop} [DecidablePred p] [Fintype α] :
-    Decidable (∃ a, p a) :=
+instance decidableExistsFintype {p : α → Prop} [DecidablePred p] [Fintype α]
+    : Decidable (∃ a, p a) :=
   decidable_of_iff (∃ a ∈ @univ α _, p a) (by simp)
 
-instance {β : α → Type*} [∀ a, LE (β a)] [∀ a, DecidableLE (β a)] [Fintype α] :
-    DecidableLE (∀ a, β a) :=
-  fun _ _ ↦ decidable_of_iff _ Pi.le_def.symm
+instance {β : α → Type*} [∀ a, LE (β a)] [∀ a, DecidableLE (β a)] [Fintype α]
+    : DecidableLE (∀ a, β a) := fun _ _ ↦
+  decidable_of_iff _ Pi.le_def.symm
 
-instance decidableMemRangeFintype [Fintype α] [DecidableEq β] (f : α → β) :
-    DecidablePred (· ∈ Set.range f) := fun _ => Fintype.decidableExistsFintype
+instance decidableMemRangeFintype [Fintype α] [DecidableEq β] (f : α → β)
+    : DecidablePred (· ∈ Set.range f) := fun _ =>
+  Fintype.decidableExistsFintype
 
-instance decidableSubsingleton [Fintype α] [DecidableEq α] {s : Set α} [DecidablePred (· ∈ s)] :
-    Decidable s.Subsingleton := decidable_of_iff (∀ a ∈ s, ∀ b ∈ s, a = b) Iff.rfl
+instance decidableSubsingleton [Fintype α] [DecidableEq α] {s : Set α} [DecidablePred (· ∈ s)]
+    : Decidable s.Subsingleton :=
+  decidable_of_iff (∀ a ∈ s, ∀ b ∈ s, a = b) Iff.rfl
 
 section BundledHoms
 
@@ -233,69 +243,67 @@ instance decidableEqEmbeddingFintype [DecidableEq β] [Fintype α] : DecidableEq
 
 end BundledHoms
 
-theorem nodup_map_univ_iff_injective [Fintype α] {f : α → β} :
-    (Multiset.map f univ.val).Nodup ↔ Function.Injective f := by
+theorem nodup_map_univ_iff_injective [Fintype α] {f : α → β}
+    : (Multiset.map f univ.val).Nodup ↔ Function.Injective f := by
   rw [nodup_map_iff_injOn, coe_univ, Set.injOn_univ]
 
-instance decidableInjectiveFintype [DecidableEq β] [Fintype α] :
-    DecidablePred (Injective : (α → β) → Prop) :=
+instance decidableInjectiveFintype [DecidableEq β] [Fintype α]
+    : DecidablePred (Injective : (α → β) → Prop) :=
   -- Use custom implementation for better performance.
   fun f => decidable_of_iff ((Multiset.map f univ.val).Nodup) nodup_map_univ_iff_injective
 
-instance decidableSurjectiveFintype [DecidableEq β] [Fintype α] [Fintype β] :
-    DecidablePred (Surjective : (α → β) → Prop) :=
-  fun x ↦ inferInstanceAs <| Decidable (∀ b, ∃ a, x a = b)
+instance decidableSurjectiveFintype [DecidableEq β] [Fintype α] [Fintype β]
+    : DecidablePred (Surjective : (α → β) → Prop) := fun x ↦
+  inferInstanceAs <| Decidable (∀ b, ∃ a, x a = b)
 
-instance decidableBijectiveFintype [DecidableEq β] [Fintype α] [Fintype β] :
-    DecidablePred (Bijective : (α → β) → Prop) :=
-  fun x ↦ inferInstanceAs <| Decidable (Injective x ∧ Surjective x)
+instance decidableBijectiveFintype [DecidableEq β] [Fintype α] [Fintype β]
+    : DecidablePred (Bijective : (α → β) → Prop) := fun x ↦
+  inferInstanceAs <| Decidable (Injective x ∧ Surjective x)
 
-instance decidableRightInverseFintype [DecidableEq α] [Fintype α] (f : α → β) (g : β → α) :
-    Decidable (Function.RightInverse f g) :=
+instance decidableRightInverseFintype [DecidableEq α] [Fintype α] (f : α → β) (g : β → α)
+    : Decidable (Function.RightInverse f g) :=
   inferInstanceAs <| Decidable (∀ x, g (f x) = x)
 
-instance decidableLeftInverseFintype [DecidableEq β] [Fintype β] (f : α → β) (g : β → α) :
-    Decidable (Function.LeftInverse f g) :=
+instance decidableLeftInverseFintype [DecidableEq β] [Fintype β] (f : α → β) (g : β → α)
+    : Decidable (Function.LeftInverse f g) :=
   inferInstanceAs <| Decidable (∀ x, f (g x) = x)
 
 instance [Fintype α] [Preorder α] [DecidableLE α] : DecidableRel (WCovBy : α → α → Prop) :=
   have := decidableLTOfDecidableLE (α := α)
-  inferInstanceAs <| DecidableRel fun a b ↦ a ≤ b ∧ ∀ ⦃c : α⦄, a < c → ¬c < b
+  inferInstanceAs <| DecidableRel fun a b ↦ a ≤ b ∧ ∀ ⦃c : α⦄, a < c → ¬ c < b
 
 instance [Fintype α] [LT α] [DecidableLT α] : DecidableRel (CovBy : α → α → Prop) :=
-  inferInstanceAs <| DecidableRel fun a b ↦ a < b ∧ ∀ ⦃c : α⦄, a < c → ¬c < b
+  inferInstanceAs <| DecidableRel fun a b ↦ a < b ∧ ∀ ⦃c : α⦄, a < c → ¬ c < b
 
 instance subsingleton (α : Type*) : Subsingleton (Fintype α) :=
   ⟨fun ⟨s₁, h₁⟩ ⟨s₂, h₂⟩ => by congr; simp [Finset.ext_iff, h₁, h₂]⟩
 
 instance (α : Type*) : Lean.Meta.FastSubsingleton (Fintype α) := {}
 
-/-- Given a predicate that can be represented by a finset, the subtype
-associated to the predicate is a fintype. -/
+/--
+Given a predicate that can be represented by a finset, the subtype
+associated to the predicate is a fintype.
+-/
 @[instance_reducible]
-protected def subtype {p : α → Prop} (s : Finset α) (H : ∀ x : α, x ∈ s ↔ p x) :
-    Fintype { x // p x } :=
-  ⟨⟨s.1.pmap Subtype.mk fun x => (H x).1, s.nodup.pmap fun _ _ _ _ => congr_arg Subtype.val⟩,
-    fun ⟨x, px⟩ => Multiset.mem_pmap.2 ⟨x, (H x).2 px, rfl⟩⟩
+protected def subtype {p : α → Prop} (s : Finset α) (H : ∀ x : α, x ∈ s ↔ p x)
+    : Fintype {x // p x} := ⟨
+  ⟨s.1.pmap Subtype.mk fun x => (H x).1, s.nodup.pmap fun _ _ _ _ => congr_arg Subtype.val⟩,
+  fun ⟨x, px⟩ => Multiset.mem_pmap.2 ⟨x, (H x).2 px, rfl⟩
+⟩
 
 /-- Construct a fintype from a finset with the same elements. -/
 @[instance_reducible]
-def ofFinset {p : Set α} (s : Finset α) (H : ∀ x, x ∈ s ↔ x ∈ p) : Fintype p :=
-  Fintype.subtype s H
+def ofFinset {p : Set α} (s : Finset α) (H : ∀ x, x ∈ s ↔ x ∈ p) : Fintype p := Fintype.subtype s H
 
 end Fintype
 
-instance Bool.fintype : Fintype Bool :=
-  ⟨⟨{true, false}, by simp⟩, fun x => by cases x <;> simp⟩
+instance Bool.fintype : Fintype Bool := ⟨⟨{true, false}, by simp⟩, fun x => by cases x <;> simp⟩
 
 instance Ordering.fintype : Fintype Ordering :=
   ⟨⟨{.lt, .eq, .gt}, by simp⟩, fun x => by cases x <;> simp⟩
 
-instance OrderDual.fintype (α : Type*) [Fintype α] : Fintype αᵒᵈ :=
-  ‹Fintype α›
+instance OrderDual.fintype (α : Type*) [Fintype α] : Fintype αᵒᵈ := ‹Fintype α›
 
-instance OrderDual.finite (α : Type*) [Finite α] : Finite αᵒᵈ :=
-  ‹Finite α›
+instance OrderDual.finite (α : Type*) [Finite α] : Finite αᵒᵈ := ‹Finite α›
 
-instance Lex.fintype (α : Type*) [Fintype α] : Fintype (Lex α) :=
-  ‹Fintype α›
+instance Lex.fintype (α : Type*) [Fintype α] : Fintype (Lex α) := ‹Fintype α›

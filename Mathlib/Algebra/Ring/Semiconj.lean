@@ -22,7 +22,6 @@ For the definitions of semirings and rings see `Mathlib/Algebra/Ring/Defs.lean`.
 
 public section
 
-
 universe u
 
 variable {R : Type u}
@@ -30,13 +29,13 @@ variable {R : Type u}
 namespace SemiconjBy
 
 @[simp]
-theorem add_right [Distrib R] {a x y x' y' : R} (h : SemiconjBy a x y) (h' : SemiconjBy a x' y') :
-    SemiconjBy a (x + x') (y + y') := by
+theorem add_right [Distrib R] {a x y x' y' : R} (h : SemiconjBy a x y) (h' : SemiconjBy a x' y')
+    : SemiconjBy a (x + x') (y + y') := by
   simp only [SemiconjBy, left_distrib, right_distrib, h.eq, h'.eq]
 
 @[simp]
-theorem add_left [Distrib R] {a b x y : R} (ha : SemiconjBy a x y) (hb : SemiconjBy b x y) :
-    SemiconjBy (a + b) x y := by
+theorem add_left [Distrib R] {a b x y : R} (ha : SemiconjBy a x y) (hb : SemiconjBy b x y)
+    : SemiconjBy (a + b) x y := by
   simp only [SemiconjBy, left_distrib, right_distrib, ha.eq, hb.eq]
 
 section
@@ -74,13 +73,12 @@ section
 variable [NonUnitalNonAssocRing R] {a b x y x' y' : R}
 
 @[simp]
-theorem sub_right (h : SemiconjBy a x y) (h' : SemiconjBy a x' y') :
-    SemiconjBy a (x - x') (y - y') := by
+theorem sub_right (h : SemiconjBy a x y) (h' : SemiconjBy a x' y')
+    : SemiconjBy a (x - x') (y - y') := by
   simpa only [sub_eq_add_neg] using h.add_right h'.neg_right
 
 @[simp]
-theorem sub_left (ha : SemiconjBy a x y) (hb : SemiconjBy b x y) :
-    SemiconjBy (a - b) x y := by
+theorem sub_left (ha : SemiconjBy a x y) (hb : SemiconjBy b x y) : SemiconjBy (a - b) x y := by
   simpa only [sub_eq_add_neg] using ha.add_left hb.neg_left
 
 end

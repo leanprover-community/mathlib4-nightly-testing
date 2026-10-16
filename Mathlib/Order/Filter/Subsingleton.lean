@@ -22,12 +22,14 @@ variable {α β : Type*} {l : Filter α}
 
 namespace Filter
 
-/-- We say that a filter is a *subsingleton* if there exists a subsingleton set
-that belongs to the filter. -/
+/--
+We say that a filter is a *subsingleton* if there exists a subsingleton set
+that belongs to the filter.
+-/
 protected def Subsingleton (l : Filter α) : Prop := ∃ s ∈ l, Set.Subsingleton s
 
-theorem HasBasis.subsingleton_iff {ι : Sort*} {p : ι → Prop} {s : ι → Set α} (h : l.HasBasis p s) :
-    l.Subsingleton ↔ ∃ i, p i ∧ (s i).Subsingleton :=
+theorem HasBasis.subsingleton_iff {ι : Sort*} {p : ι → Prop} {s : ι → Set α} (h : l.HasBasis p s)
+    : l.Subsingleton ↔ ∃ i, p i ∧ (s i).Subsingleton :=
   h.exists_iff fun _ _ hsub h ↦ h.anti hsub
 
 theorem Subsingleton.anti {l'} (hl : l.Subsingleton) (hl' : l' ≤ l) : l'.Subsingleton :=
@@ -40,8 +42,8 @@ theorem Subsingleton.of_subsingleton [Subsingleton α] : l.Subsingleton :=
 theorem Subsingleton.map (hl : l.Subsingleton) (f : α → β) : (map f l).Subsingleton :=
   let ⟨s, hsl, hs⟩ := hl; ⟨f '' s, image_mem_map hsl, hs.image f⟩
 
-theorem Subsingleton.prod (hl : l.Subsingleton) {l' : Filter β} (hl' : l'.Subsingleton) :
-    (l ×ˢ l').Subsingleton :=
+theorem Subsingleton.prod (hl : l.Subsingleton) {l' : Filter β} (hl' : l'.Subsingleton)
+    : (l ×ˢ l').Subsingleton :=
   let ⟨s, hsl, hs⟩ := hl; let ⟨t, htl', ht⟩ := hl'; ⟨s ×ˢ t, prod_mem_prod hsl htl', hs.prod ht⟩
 
 @[simp]
@@ -49,8 +51,7 @@ theorem subsingleton_pure {a : α} : Filter.Subsingleton (pure a) :=
   ⟨{a}, rfl, subsingleton_singleton⟩
 
 @[simp]
-theorem subsingleton_bot : Filter.Subsingleton (⊥ : Filter α) :=
-  ⟨∅, trivial, subsingleton_empty⟩
+theorem subsingleton_bot : Filter.Subsingleton (⊥ : Filter α) := ⟨∅, trivial, subsingleton_empty⟩
 
 /-- A nontrivial subsingleton filter is equal to `pure a` for some `a`. -/
 theorem Subsingleton.exists_eq_pure [l.NeBot] (hl : l.Subsingleton) : ∃ a, l = pure a := by
@@ -65,8 +66,10 @@ theorem subsingleton_iff_bot_or_pure : l.Subsingleton ↔ l = ⊥ ∨ ∃ a, l =
   · exact (eq_or_neBot l).imp_right (@Subsingleton.exists_eq_pure _ _ · hl)
   · rintro (rfl | ⟨a, rfl⟩) <;> simp
 
-/-- In a nonempty type, a filter is a subsingleton iff
-it is less than or equal to a pure filter. -/
+/--
+In a nonempty type, a filter is a subsingleton iff
+it is less than or equal to a pure filter.
+-/
 theorem subsingleton_iff_exists_le_pure [Nonempty α] : l.Subsingleton ↔ ∃ a, l ≤ pure a := by
   rcases eq_or_neBot l with rfl | hbot
   · simp

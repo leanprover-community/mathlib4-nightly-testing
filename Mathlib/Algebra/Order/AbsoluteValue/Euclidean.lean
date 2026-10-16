@@ -24,8 +24,7 @@ absolute value is compatible with the Euclidean domain structure on its domain.
 
 public section
 
-@[inherit_doc]
-local infixl:50 " ≺ " => EuclideanDomain.r
+@[inherit_doc] local infixl:50 " ≺ " => EuclideanDomain.r
 
 namespace AbsoluteValue
 
@@ -34,12 +33,16 @@ section OrderedSemiring
 variable {R S : Type*} [EuclideanDomain R] [Semiring S] [PartialOrder S]
 variable (abv : AbsoluteValue R S)
 
-/-- An absolute value `abv : R → S` is Euclidean if it is compatible with the
+/--
+An absolute value `abv : R → S` is Euclidean if it is compatible with the
 `EuclideanDomain` structure on `R`, namely `abv` is strictly monotone with respect to the well
-founded relation `≺` on `R`. -/
+founded relation `≺` on `R`.
+-/
 structure IsEuclidean : Prop where
-  /-- The requirement of a Euclidean absolute value
-  that `abv` is monotone with respect to `≺` -/
+  /--
+  The requirement of a Euclidean absolute value
+  that `abv` is monotone with respect to `≺`
+  -/
   map_lt_map_iff' : ∀ {x y}, abv x < abv y ↔ x ≺ y
 
 namespace IsEuclidean
@@ -47,8 +50,7 @@ namespace IsEuclidean
 variable {abv}
 
 -- Rearrange the parameters to `map_lt_map_iff'` so it elaborates better.
-theorem map_lt_map_iff {x y : R} (h : abv.IsEuclidean) : abv x < abv y ↔ x ≺ y :=
-  map_lt_map_iff' h
+theorem map_lt_map_iff {x y : R} (h : abv.IsEuclidean) : abv x < abv y ↔ x ≺ y := map_lt_map_iff' h
 
 attribute [simp] map_lt_map_iff
 
@@ -65,9 +67,10 @@ open Int
 
 -- TODO: generalize to `LinearOrderedEuclideanDomain`s if we ever get a definition of those
 /-- `abs : ℤ → ℤ` is a Euclidean absolute value -/
-protected theorem abs_isEuclidean : IsEuclidean (AbsoluteValue.abs : AbsoluteValue ℤ ℤ) :=
-  { map_lt_map_iff' := fun {x y} =>
-       show abs x < abs y ↔ natAbs x < natAbs y by rw [abs_eq_natAbs, abs_eq_natAbs, ofNat_lt] }
+protected theorem abs_isEuclidean : IsEuclidean (AbsoluteValue.abs : AbsoluteValue ℤ ℤ) := {
+  map_lt_map_iff' := fun {x y} =>
+    show abs x < abs y ↔ natAbs x < natAbs y by rw [abs_eq_natAbs, abs_eq_natAbs, ofNat_lt]
+}
 
 end Int
 

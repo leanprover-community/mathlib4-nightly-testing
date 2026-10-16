@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Notation.Support
 public import Mathlib.Algebra.Ring.Units
 public import Mathlib.Data.Nat.Cast.Basic
 public import Mathlib.Logic.Embedding.Basic
-
 import Mathlib.Algebra.GroupWithZero.Units.Basic
 
 /-!
@@ -28,8 +27,7 @@ section AddMonoidWithOne
 variable [AddMonoidWithOne R] [CharZero R]
 
 /-- `Nat.cast` as an embedding into monoids of characteristic `0`. -/
-@[simps]
-def Nat.castEmbedding : ℕ ↪ R := ⟨Nat.cast, cast_injective⟩
+@[simps] def Nat.castEmbedding : ℕ ↪ R := ⟨Nat.cast, cast_injective⟩
 
 instance CharZero.NeZero.two : NeZero (2 : R) where
   out := by rw [← Nat.cast_two, Nat.cast_ne_zero]; decide
@@ -51,13 +49,13 @@ variable [NonAssocSemiring R] [NonAssocSemiring S]
 namespace RingHom
 
 lemma charZero (ϕ : R →+* S) [CharZero S] : CharZero R where
-  cast_injective a b h := CharZero.cast_injective (R := S) <| by
-    rw [← map_natCast ϕ, ← map_natCast ϕ, h]
+  cast_injective a b h :=
+    CharZero.cast_injective (R := S) <| by rw [← map_natCast ϕ, ← map_natCast ϕ, h]
 
-lemma charZero_iff {ϕ : R →+* S} (hϕ : Injective ϕ) : CharZero R ↔ CharZero S :=
-  ⟨fun hR =>
-    ⟨by intro a b h; rwa [← @Nat.cast_inj R, ← hϕ.eq_iff, map_natCast ϕ, map_natCast ϕ]⟩,
-    fun _ => ϕ.charZero⟩
+lemma charZero_iff {ϕ : R →+* S} (hϕ : Injective ϕ) : CharZero R ↔ CharZero S := ⟨
+  fun hR => ⟨by intro a b h; rwa [← @Nat.cast_inj R, ← hϕ.eq_iff, map_natCast ϕ, map_natCast ϕ]⟩,
+  fun _ => ϕ.charZero
+⟩
 
 lemma injective_nat (f : ℕ →+* R) [CharZero R] : Injective f :=
   Subsingleton.elim (Nat.castRingHom _) f ▸ Nat.cast_injective
@@ -75,7 +73,8 @@ end NonAssocSemiring
 section Semiring
 variable [Semiring R] [CharZero R]
 
-@[simp] lemma Nat.cast_pow_eq_one {a : ℕ} (hn : n ≠ 0) : (a : R) ^ n = 1 ↔ a = 1 := by
+@[simp]
+lemma Nat.cast_pow_eq_one {a : ℕ} (hn : n ≠ 0) : (a : R) ^ n = 1 ↔ a = 1 := by
   simp [← cast_pow, cast_eq_one, hn]
 
 variable [IsCancelMulZero R]
@@ -116,7 +115,6 @@ theorem units_ne_neg_self (u : Rˣ) : u ≠ -u := by
   simp_rw [ne_eq, Units.ext_iff, Units.val_neg, eq_neg_iff_add_eq_zero, ← two_mul,
     Units.mul_left_eq_zero, two_ne_zero, not_false_iff]
 
-@[simp]
-theorem neg_units_ne_self (u : Rˣ) : -u ≠ u := (units_ne_neg_self u).symm
+@[simp] theorem neg_units_ne_self (u : Rˣ) : -u ≠ u := (units_ne_neg_self u).symm
 
 end Ring

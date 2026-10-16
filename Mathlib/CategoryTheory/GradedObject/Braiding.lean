@@ -38,39 +38,41 @@ section Braided
 
 variable [BraidedCategory C]
 
-/-- The braiding `tensorObj X Y ≅ tensorObj Y X` when `X` and `Y` are graded objects
-indexed by a commutative additive monoid. -/
+/--
+The braiding `tensorObj X Y ≅ tensorObj Y X` when `X` and `Y` are graded objects
+indexed by a commutative additive monoid.
+-/
 noncomputable def braiding [HasTensor X Y] [HasTensor Y X] : tensorObj X Y ≅ tensorObj Y X where
-  hom k := tensorObjDesc (fun i j hij => (β_ _ _).hom ≫
-    ιTensorObj Y X j i k (by simpa only [add_comm j i] using hij))
-  inv k := tensorObjDesc (fun i j hij => (β_ _ _).inv ≫
-    ιTensorObj X Y j i k (by simpa only [add_comm j i] using hij))
+  hom k :=
+    tensorObjDesc (fun i j hij =>
+      (β_ _ _).hom ≫ ιTensorObj Y X j i k (by simpa only [add_comm j i] using hij))
+  inv k :=
+    tensorObjDesc (fun i j hij =>
+      (β_ _ _).inv ≫ ιTensorObj X Y j i k (by simpa only [add_comm j i] using hij))
 
 variable {Y Z} in
-lemma braiding_naturality_right [HasTensor X Y] [HasTensor Y X] [HasTensor X Z] [HasTensor Z X]
-    (f : Y ⟶ Z) :
-    whiskerLeft X f ≫ (braiding X Z).hom = (braiding X Y).hom ≫ whiskerRight f X := by
+lemma braiding_naturality_right
+    [HasTensor X Y] [HasTensor Y X] [HasTensor X Z] [HasTensor Z X] (f : Y ⟶ Z)
+    : whiskerLeft X f ≫ (braiding X Z).hom = (braiding X Y).hom ≫ whiskerRight f X := by
   dsimp [braiding]
   cat_disch
 
 variable {X Y} in
-lemma braiding_naturality_left [HasTensor Y Z] [HasTensor Z Y] [HasTensor X Z] [HasTensor Z X]
-    (f : X ⟶ Y) :
-    whiskerRight f Z ≫ (braiding Y Z).hom = (braiding X Z).hom ≫ whiskerLeft Z f := by
+lemma braiding_naturality_left
+    [HasTensor Y Z] [HasTensor Z Y] [HasTensor X Z] [HasTensor Z X] (f : X ⟶ Y)
+    : whiskerRight f Z ≫ (braiding Y Z).hom = (braiding X Z).hom ≫ whiskerLeft Z f := by
   dsimp [braiding]
   cat_disch
 
-lemma hexagon_forward [HasTensor X Y] [HasTensor Y X] [HasTensor Y Z]
-    [HasTensor Z X] [HasTensor X Z]
-    [HasTensor (tensorObj X Y) Z] [HasTensor X (tensorObj Y Z)]
-    [HasTensor (tensorObj Y Z) X] [HasTensor Y (tensorObj Z X)]
-    [HasTensor (tensorObj Y X) Z] [HasTensor Y (tensorObj X Z)]
-    [HasGoodTensor₁₂Tensor X Y Z] [HasGoodTensorTensor₂₃ X Y Z]
-    [HasGoodTensor₁₂Tensor Y Z X] [HasGoodTensorTensor₂₃ Y Z X]
-    [HasGoodTensor₁₂Tensor Y X Z] [HasGoodTensorTensor₂₃ Y X Z] :
-    (associator X Y Z).hom ≫ (braiding X (tensorObj Y Z)).hom ≫ (associator Y Z X).hom =
-      whiskerRight (braiding X Y).hom Z ≫ (associator Y X Z).hom ≫
-        whiskerLeft Y (braiding X Z).hom := by
+lemma hexagon_forward
+    [HasTensor X Y] [HasTensor Y X] [HasTensor Y Z] [HasTensor Z X] [HasTensor X Z]
+    [HasTensor (tensorObj X Y) Z] [HasTensor X (tensorObj Y Z)] [HasTensor (tensorObj Y Z) X]
+    [HasTensor Y (tensorObj Z X)] [HasTensor (tensorObj Y X) Z] [HasTensor Y (tensorObj X Z)]
+    [HasGoodTensor₁₂Tensor X Y Z] [HasGoodTensorTensor₂₃ X Y Z] [HasGoodTensor₁₂Tensor Y Z X]
+    [HasGoodTensorTensor₂₃ Y Z X] [HasGoodTensor₁₂Tensor Y X Z] [HasGoodTensorTensor₂₃ Y X Z]
+    : (associator X Y Z).hom ≫ (braiding X (tensorObj Y Z)).hom ≫ (associator Y Z X).hom
+      = whiskerRight (braiding X Y).hom Z ≫ (associator Y X Z).hom
+        ≫ whiskerLeft Y (braiding X Z).hom := by
   ext k i₁ i₂ i₃ h
   dsimp [braiding]
   conv_lhs => rw [ιTensorObj₃'_associator_hom_assoc, ιTensorObj₃_eq X Y Z i₁ i₂ i₃ k h _ rfl,
@@ -98,17 +100,15 @@ lemma hexagon_forward [HasTensor X Y] [HasTensor Y X] [HasTensor Y Z]
     ← ιTensorObj₃_eq Y Z X i₂ i₃ i₁ k (by rw [add_comm _ i₁, ← add_assoc, h])
       (i₁ + i₃) (add_comm _ _)]
 
-lemma hexagon_reverse [HasTensor X Y] [HasTensor Y Z] [HasTensor Z X]
-    [HasTensor Z Y] [HasTensor X Z]
-    [HasTensor (tensorObj X Y) Z] [HasTensor X (tensorObj Y Z)]
-    [HasTensor Z (tensorObj X Y)] [HasTensor (tensorObj Z X) Y]
-    [HasTensor X (tensorObj Z Y)] [HasTensor (tensorObj X Z) Y]
-    [HasGoodTensor₁₂Tensor X Y Z] [HasGoodTensorTensor₂₃ X Y Z]
-    [HasGoodTensor₁₂Tensor Z X Y] [HasGoodTensorTensor₂₃ Z X Y]
-    [HasGoodTensor₁₂Tensor X Z Y] [HasGoodTensorTensor₂₃ X Z Y] :
-    (associator X Y Z).inv ≫ (braiding (tensorObj X Y) Z).hom ≫ (associator Z X Y).inv =
-      whiskerLeft X (braiding Y Z).hom ≫ (associator X Z Y).inv ≫
-        whiskerRight (braiding X Z).hom Y := by
+lemma hexagon_reverse
+    [HasTensor X Y] [HasTensor Y Z] [HasTensor Z X] [HasTensor Z Y] [HasTensor X Z]
+    [HasTensor (tensorObj X Y) Z] [HasTensor X (tensorObj Y Z)] [HasTensor Z (tensorObj X Y)]
+    [HasTensor (tensorObj Z X) Y] [HasTensor X (tensorObj Z Y)] [HasTensor (tensorObj X Z) Y]
+    [HasGoodTensor₁₂Tensor X Y Z] [HasGoodTensorTensor₂₃ X Y Z] [HasGoodTensor₁₂Tensor Z X Y]
+    [HasGoodTensorTensor₂₃ Z X Y] [HasGoodTensor₁₂Tensor X Z Y] [HasGoodTensorTensor₂₃ X Z Y]
+    : (associator X Y Z).inv ≫ (braiding (tensorObj X Y) Z).hom ≫ (associator Z X Y).inv
+      = whiskerLeft X (braiding Y Z).hom ≫ (associator X Z Y).inv
+        ≫ whiskerRight (braiding X Z).hom Y := by
   ext k i₁ i₂ i₃ h
   dsimp [braiding]
   conv_lhs => rw [ιTensorObj₃_associator_inv_assoc, ιTensorObj₃'_eq X Y Z i₁ i₂ i₃ k h _ rfl, assoc,
@@ -137,8 +137,8 @@ lemma hexagon_reverse [HasTensor X Y] [HasTensor Y Z] [HasTensor Z X]
 end Braided
 
 @[reassoc (attr := simp)]
-lemma symmetry [SymmetricCategory C] [HasTensor X Y] [HasTensor Y X] :
-    (braiding X Y).hom ≫ (braiding Y X).hom = 𝟙 _ := by
+lemma symmetry [SymmetricCategory C] [HasTensor X Y] [HasTensor Y X]
+    : (braiding X Y).hom ≫ (braiding Y X).hom = 𝟙 _ := by
   dsimp [braiding]
   cat_disch
 
@@ -149,24 +149,21 @@ section Instances
 variable
   [∀ (X₁ X₂ : GradedObject I C), HasTensor X₁ X₂]
   [∀ (X₁ X₂ X₃ : GradedObject I C), HasGoodTensor₁₂Tensor X₁ X₂ X₃]
-  [∀ (X₁ X₂ X₃ : GradedObject I C), HasGoodTensorTensor₂₃ X₁ X₂ X₃]
-  [DecidableEq I] [HasInitial C]
-  [∀ X₁, PreservesColimit (Functor.empty.{0} C)
-    ((MonoidalCategory.curriedTensor C).obj X₁)]
-  [∀ X₂, PreservesColimit (Functor.empty.{0} C)
-    ((MonoidalCategory.curriedTensor C).flip.obj X₂)]
+  [∀ (X₁ X₂ X₃ : GradedObject I C), HasGoodTensorTensor₂₃ X₁ X₂ X₃] [DecidableEq I] [HasInitial C]
+  [∀ X₁, PreservesColimit (Functor.empty.{0} C) ((MonoidalCategory.curriedTensor C).obj X₁)]
+  [∀ X₂, PreservesColimit (Functor.empty.{0} C) ((MonoidalCategory.curriedTensor C).flip.obj X₂)]
   [∀ (X₁ X₂ X₃ X₄ : GradedObject I C), HasTensor₄ObjExt X₁ X₂ X₃ X₄]
 
-noncomputable instance braidedCategory [BraidedCategory C] :
-    BraidedCategory (GradedObject I C) where
+noncomputable instance braidedCategory [BraidedCategory C]
+    : BraidedCategory (GradedObject I C) where
   braiding X Y := Monoidal.braiding X Y
   braiding_naturality_left _ _ := Monoidal.braiding_naturality_left _ _
   braiding_naturality_right _ _ _ _ := Monoidal.braiding_naturality_right _ _
   hexagon_forward _ _ _ := Monoidal.hexagon_forward _ _ _
   hexagon_reverse _ _ _ := Monoidal.hexagon_reverse _ _ _
 
-noncomputable instance symmetricCategory [SymmetricCategory C] :
-    SymmetricCategory (GradedObject I C) where
+noncomputable instance symmetricCategory [SymmetricCategory C]
+    : SymmetricCategory (GradedObject I C) where
   symmetry _ _ := Monoidal.symmetry _ _
 
 /-!

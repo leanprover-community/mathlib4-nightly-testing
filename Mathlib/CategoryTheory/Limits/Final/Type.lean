@@ -34,17 +34,18 @@ namespace Functor
 
 variable {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
 
-/-- When `F : C ⥤ D` and `P : D ⥤ Type _`, this is the obvious map
-`P.sections → (F ⋙ P).sections`. -/
+/--
+When `F : C ⥤ D` and `P : D ⥤ Type _`, this is the obvious map
+`P.sections → (F ⋙ P).sections`.
+-/
 @[simps]
-def sectionsPrecomp (F : C ⥤ D) {P : D ⥤ Type w} (x : P.sections) :
-    (F ⋙ P).sections where
+def sectionsPrecomp (F : C ⥤ D) {P : D ⥤ Type w} (x : P.sections) : (F ⋙ P).sections where
   val _ := x.val _
   property _ := x.property _
 
 set_option backward.defeqAttrib.useBackward true in
-lemma bijective_sectionsPrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Initial] :
-    Function.Bijective (F.sectionsPrecomp (P := P)) := by
+lemma bijective_sectionsPrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Initial]
+    : Function.Bijective (F.sectionsPrecomp (P := P)) := by
   refine ⟨fun s₁ s₂ h ↦ ?_, fun t ↦ ?_⟩
   · ext Y
     let X : CostructuredArrow F Y := Classical.arbitrary _
@@ -53,8 +54,8 @@ lemma bijective_sectionsPrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Initial] :
     have h₂ := s₂.property X.hom
     dsimp at this h₁ h₂
     rw [← h₁, this, h₂]
-  · have h (Y : D) : ∃ (a : P.obj Y),
-        ∀ (j : CostructuredArrow F Y), P.map j.hom (t.val j.left) = a := by
+  · have h (Y : D)
+        : ∃ (a : P.obj Y), ∀ (j : CostructuredArrow F Y), P.map j.hom (t.val j.left) = a := by
       apply constant_of_preserves_morphisms'
       intro Z₁ Z₂ φ
       dsimp
@@ -68,24 +69,25 @@ lemma bijective_sectionsPrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Initial] :
     · ext X : 2
       simpa using (hval (F.obj X) (CostructuredArrow.mk (𝟙 _))).symm
 
-/-- Given `P : D ⥤ Type w` and `F : C ⥤ D`, this is the obvious map
-`(F ⋙ P).ColimitType → P.ColimitType`. -/
-def colimitTypePrecomp (F : C ⥤ D) (P : D ⥤ Type w) :
-    (F ⋙ P).ColimitType → P.ColimitType :=
+/--
+Given `P : D ⥤ Type w` and `F : C ⥤ D`, this is the obvious map
+`(F ⋙ P).ColimitType → P.ColimitType`.
+-/
+def colimitTypePrecomp (F : C ⥤ D) (P : D ⥤ Type w) : (F ⋙ P).ColimitType → P.ColimitType :=
   (F ⋙ P).descColimitType (P.coconeTypes.precomp F)
 
 @[simp]
-lemma colimitTypePrecomp_ιColimitType (F : C ⥤ D) {P : D ⥤ Type w}
-    (i : C) (x : P.obj (F.obj i)) :
-    colimitTypePrecomp F P ((F ⋙ P).ιColimitType i x) = P.ιColimitType (F.obj i) x :=
+lemma colimitTypePrecomp_ιColimitType (F : C ⥤ D) {P : D ⥤ Type w} (i : C) (x : P.obj (F.obj i))
+    : colimitTypePrecomp F P ((F ⋙ P).ιColimitType i x) = P.ιColimitType (F.obj i) x :=
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
-lemma bijective_colimitTypePrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Final] :
-    Function.Bijective (F.colimitTypePrecomp (P := P)) := by
+lemma bijective_colimitTypePrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Final]
+    : Function.Bijective (F.colimitTypePrecomp (P := P)) := by
   refine ⟨?_, fun x ↦ ?_⟩
-  · have h (Y : D) : ∃ (a : P.obj Y → (F ⋙ P).ColimitType), ∀ (j : StructuredArrow Y F),
-        (F ⋙ P).ιColimitType j.right ∘ P.map j.hom = a := by
+  · have h (Y : D)
+        : ∃ (a : P.obj Y → (F ⋙ P).ColimitType), ∀ (j : StructuredArrow Y F),
+          (F ⋙ P).ιColimitType j.right ∘ P.map j.hom = a := by
       apply constant_of_preserves_morphisms'
       intro Z₁ Z₂ f
       ext x
@@ -93,14 +95,15 @@ lemma bijective_colimitTypePrecomp (F : C ⥤ D) (P : D ⥤ Type w) [F.Final] :
       rw [← (F ⋙ P).ιColimitType_map f.right, comp_map]
       simp [← comp_apply, ← Functor.map_comp]
     choose φ hφ using h
-    let c : P.CoconeTypes :=
-      { pt := (F ⋙ P).ColimitType
-        ι Y := φ Y
-        ι_naturality {Y₁ Y₂} f := by
-          ext
-          have X : StructuredArrow Y₂ F := Classical.arbitrary _
-          rw [← hφ Y₂ X, ← hφ Y₁ ((StructuredArrow.map f).obj X)]
-          simp }
+    let c : P.CoconeTypes := {
+      pt := (F ⋙ P).ColimitType
+      ι Y := φ Y
+      ι_naturality {Y₁ Y₂} f := by
+        ext
+        have X : StructuredArrow Y₂ F := Classical.arbitrary _
+        rw [← hφ Y₂ X, ← hφ Y₁ ((StructuredArrow.map f).obj X)]
+        simp
+    }
     refine Function.RightInverse.injective (g := (P.descColimitType c)) (fun x ↦ ?_)
     obtain ⟨X, x, rfl⟩ := (F ⋙ P).ιColimitType_jointly_surjective x
     simp [c, ← hφ (F.obj X) (StructuredArrow.mk (𝟙 _))]

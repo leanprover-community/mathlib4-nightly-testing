@@ -49,15 +49,17 @@ lemma coe_mul_coe [SetLike S M] [SubmonoidClass S M] (H : S) : H * H = (H : Set 
   aesop (add simp mem_mul)
 
 @[to_additive]
-lemma Set.subtype_smul_set {S α β : Type*} [SMul α β] [SetLike S α] {s : S} (x : s) (t : Set β) :
-    (x • t : Set β) = (x : α) • t :=
+lemma Set.subtype_smul_set {S α β : Type*} [SMul α β] [SetLike S α] {s : S} (x : s) (t : Set β)
+    : (x • t : Set β) = (x : α) • t :=
   rfl
 
 @[to_additive (attr := simp)]
-lemma coe_set_pow [SetLike S M] [SubmonoidClass S M] :
-    ∀ {n} (_ : n ≠ 0) (H : S), (H ^ n : Set M) = H
-  | 1, _, H => by simp
-  | n + 2, _, H => by rw [pow_succ, coe_set_pow n.succ_ne_zero, coe_mul_coe]
+lemma coe_set_pow [SetLike S M] [SubmonoidClass S M]
+    : ∀ {n} (_ : n ≠ 0) (H : S), (H ^ n : Set M) = H
+  | 1, _, H => by
+    simp
+  | n + 2, _, H => by
+    rw [pow_succ, coe_set_pow n.succ_ne_zero, coe_mul_coe]
 
 /-! Some lemmas about pointwise multiplication and submonoids. Ideally we put these in
   `GroupTheory.Submonoid.Basic`, but currently we cannot because that file is imported by this. -/
@@ -78,14 +80,12 @@ lemma pow_subset {S : Submonoid M} {n : ℕ} (hs : s ⊆ S) : s ^ n ⊆ S := by
 theorem mul_subset_closure (hs : s ⊆ u) (ht : t ⊆ u) : s * t ⊆ Submonoid.closure u :=
   mul_subset (Subset.trans hs Submonoid.subset_closure) (Subset.trans ht Submonoid.subset_closure)
 
-@[to_additive]
-theorem coe_mul_self_eq (s : Submonoid M) : (s : Set M) * s = s := by
-  simp
+@[to_additive] theorem coe_mul_self_eq (s : Submonoid M) : (s : Set M) * s = s := by simp
 
 @[to_additive]
 theorem closure_mul_le (S T : Set M) : closure (S * T) ≤ closure S ⊔ closure T :=
-  sInf_le fun _x ⟨_s, hs, _t, ht, hx⟩ => hx ▸
-    (closure S ⊔ closure T).mul_mem (mem_of_le_of_mem le_sup_left <| subset_closure hs)
+  sInf_le fun _x ⟨_s, hs, _t, ht, hx⟩ =>
+    hx ▸ (closure S ⊔ closure T).mul_mem (mem_of_le_of_mem le_sup_left <| subset_closure hs)
       (mem_of_le_of_mem le_sup_right <| subset_closure ht)
 
 @[to_additive] lemma closure_pow_le {n : ℕ} : closure (s ^ n) ≤ closure s := by simp
@@ -102,27 +102,33 @@ lemma closure_pow {n : ℕ} (hs : 1 ∈ s) (hn : n ≠ 0) : closure (s ^ n) = cl
 @[to_additive]
 theorem sup_eq_closure_mul (H K : Submonoid M) : H ⊔ K = closure ((H : Set M) * (K : Set M)) :=
   le_antisymm
-    (sup_le (fun h hh => subset_closure ⟨h, hh, 1, K.one_mem, mul_one h⟩) fun k hk =>
-      subset_closure ⟨1, H.one_mem, k, hk, one_mul k⟩)
+    (sup_le
+      (fun h hh => subset_closure ⟨h, hh, 1, K.one_mem, mul_one h⟩)
+      fun k hk => subset_closure ⟨1, H.one_mem, k, hk, one_mul k⟩)
     ((closure_mul_le _ _).trans <| by rw [closure_eq, closure_eq])
 
 @[to_additive]
-theorem coe_sup {N : Type*} [CommMonoid N] (H K : Submonoid N) :
-    ↑(H ⊔ K) = (H * K : Set N) := by
+theorem coe_sup {N : Type*} [CommMonoid N] (H K : Submonoid N) : ↑(H ⊔ K) = (H * K : Set N) := by
   ext x
   simp [mem_sup, Set.mem_mul]
 
 @[to_additive]
-theorem coe_iSup_eq_iUnion_finset_coe_biSup {ι : Type*} (S : ι → Submonoid M) :
-    ((⨆ i, S i : Submonoid M) : Set M) = ⋃ s : Finset ι, (⨆ i ∈ s, S i : Submonoid M) := by
+theorem coe_iSup_eq_iUnion_finset_coe_biSup {ι : Type*} (S : ι → Submonoid M)
+    : ((⨆ i, S i : Submonoid M) : Set M) = ⋃ s : Finset ι, (⨆ i ∈ s, S i : Submonoid M) := by
   rw [iSup_eq_iSup_finset, coe_iSup_of_directed <| Monotone.directed_le fun _ _ ↦ biSup_mono]
 
 @[to_additive]
-theorem pow_smul_mem_closure_smul {N : Type*} [CommMonoid N] [MulAction M N] [IsScalarTower M N N]
-    (r : M) (s : Set N) {x : N} (hx : x ∈ closure s) : ∃ n : ℕ, r ^ n • x ∈ closure (r • s) := by
+theorem pow_smul_mem_closure_smul
+    {N : Type*} [CommMonoid N] [MulAction M N] [IsScalarTower M N N]
+    (r : M)
+    (s : Set N)
+    {x : N} (hx : x ∈ closure s)
+    : ∃ n : ℕ, r ^ n • x ∈ closure (r • s) := by
   induction hx using closure_induction with
-  | mem x hx => exact ⟨1, subset_closure ⟨_, hx, by rw [pow_one]⟩⟩
-  | one => exact ⟨0, by simp⟩
+  | mem x hx =>
+    exact ⟨1, subset_closure ⟨_, hx, by rw [pow_one]⟩⟩
+  | one =>
+    exact ⟨0, by simp⟩
   | mul x y _ _ hx hy =>
     obtain ⟨⟨nx, hx⟩, ⟨ny, hy⟩⟩ := And.intro hx hy
     use ny + nx
@@ -135,20 +141,19 @@ variable [Group G]
 @[to_additive (attr := instance_reducible)
   /-- The additive submonoid with every element negated. -/]
 protected def inv : Inv (Submonoid G) where
-  inv S :=
-    { carrier := (S : Set G)⁻¹
-      mul_mem' := fun ha hb => by rw [mem_inv, mul_inv_rev]; exact mul_mem hb ha
-      one_mem' := mem_inv.2 <| by rw [inv_one]; exact S.one_mem' }
+  inv S := {
+    carrier := (S : Set G)⁻¹
+    mul_mem' := fun ha hb => by rw [mem_inv, mul_inv_rev]; exact mul_mem hb ha
+    one_mem' := mem_inv.2 <| by rw [inv_one]; exact S.one_mem'
+  }
 
 scoped[Pointwise] attribute [instance] Submonoid.inv AddSubmonoid.neg
 
 @[to_additive (attr := simp)]
-theorem coe_inv (S : Submonoid G) : ↑S⁻¹ = (S : Set G)⁻¹ :=
-  rfl
+theorem coe_inv (S : Submonoid G) : ↑S⁻¹ = (S : Set G)⁻¹ := rfl
 
 @[to_additive (attr := simp)]
-theorem mem_inv {g : G} {S : Submonoid G} : g ∈ S⁻¹ ↔ g⁻¹ ∈ S :=
-  Iff.rfl
+theorem mem_inv {g : G} {S : Submonoid G} : g ∈ S⁻¹ ↔ g⁻¹ ∈ S := Iff.rfl
 
 /-- Inversion is involutive on submonoids. -/
 @[to_additive (attr := instance_reducible) /-- Inversion is involutive on additive submonoids. -/]
@@ -167,7 +172,7 @@ theorem inv_le (S T : Submonoid G) : S⁻¹ ≤ T ↔ S ≤ T⁻¹ :=
 
 /-- Pointwise inversion of submonoids as an order isomorphism. -/
 @[to_additive (attr := simps!)
-/-- Pointwise negation of additive submonoids as an order isomorphism -/]
+  /-- Pointwise negation of additive submonoids as an order isomorphism -/]
 def invOrderIso : Submonoid G ≃o Submonoid G where
   toEquiv := Equiv.inv _
   map_rel_iff' := inv_le_inv _ _
@@ -185,8 +190,7 @@ lemma mem_closure_inv (s : Set G) (x : G) : x ∈ closure s⁻¹ ↔ x⁻¹ ∈ 
   rw [closure_inv, mem_inv]
 
 @[to_additive (attr := simp)]
-theorem inv_inf (S T : Submonoid G) : (S ⊓ T)⁻¹ = S⁻¹ ⊓ T⁻¹ :=
-  SetLike.coe_injective Set.inter_inv
+theorem inv_inf (S T : Submonoid G) : (S ⊓ T)⁻¹ = S⁻¹ ⊓ T⁻¹ := SetLike.coe_injective Set.inter_inv
 
 @[to_additive (attr := simp)]
 theorem inv_sup (S T : Submonoid G) : (S ⊔ T)⁻¹ = S⁻¹ ⊔ T⁻¹ :=
@@ -197,8 +201,7 @@ theorem inv_bot : (⊥ : Submonoid G)⁻¹ = ⊥ :=
   SetLike.coe_injective <| (Set.inv_singleton 1).trans <| congr_arg _ inv_one
 
 @[to_additive (attr := simp)]
-theorem inv_top : (⊤ : Submonoid G)⁻¹ = ⊤ :=
-  SetLike.coe_injective Set.inv_univ
+theorem inv_top : (⊤ : Submonoid G)⁻¹ = ⊤ := SetLike.coe_injective Set.inv_univ
 
 @[to_additive (attr := simp)]
 theorem inv_iInf {ι : Sort*} (S : ι → Submonoid G) : (⨅ i, S i)⁻¹ = ⨅ i, (S i)⁻¹ :=
@@ -217,9 +220,11 @@ section Monoid
 variable [Monoid α] [MulDistribMulAction α M]
 
 -- todo: add `to_additive`?
-/-- The action on a submonoid corresponding to applying the action to every element.
+/--
+The action on a submonoid corresponding to applying the action to every element.
 
-This is available as an instance in the `Pointwise` locale. -/
+This is available as an instance in the `Pointwise` locale.
+-/
 @[instance_reducible]
 protected def pointwiseMulAction : MulAction α (Submonoid M) where
   smul a S := S.map (MulDistribMulAction.toMonoidEnd _ M a)
@@ -231,31 +236,26 @@ protected def pointwiseMulAction : MulAction α (Submonoid M) where
 scoped[Pointwise] attribute [instance] Submonoid.pointwiseMulAction
 
 @[simp, norm_cast]
-theorem coe_pointwise_smul (a : α) (S : Submonoid M) : ↑(a • S) = a • (S : Set M) :=
-  rfl
+theorem coe_pointwise_smul (a : α) (S : Submonoid M) : ↑(a • S) = a • (S : Set M) := rfl
 
 theorem smul_mem_pointwise_smul (m : M) (a : α) (S : Submonoid M) : m ∈ S → a • m ∈ a • S :=
   (Set.smul_mem_smul_set : _ → _ ∈ a • (S : Set M))
 
-instance : CovariantClass α (Submonoid M) HSMul.hSMul LE.le :=
-  ⟨fun _ _ => image_mono⟩
+instance : CovariantClass α (Submonoid M) HSMul.hSMul LE.le := ⟨fun _ _ => image_mono⟩
 
-theorem mem_smul_pointwise_iff_exists (m : M) (a : α) (S : Submonoid M) :
-    m ∈ a • S ↔ ∃ s : M, s ∈ S ∧ a • s = m :=
+theorem mem_smul_pointwise_iff_exists (m : M) (a : α) (S : Submonoid M)
+    : m ∈ a • S ↔ ∃ s : M, s ∈ S ∧ a • s = m :=
   (Set.mem_smul_set : m ∈ a • (S : Set M) ↔ _)
 
-@[simp]
-theorem smul_bot (a : α) : a • (⊥ : Submonoid M) = ⊥ :=
-  map_bot _
+@[simp] theorem smul_bot (a : α) : a • (⊥ : Submonoid M) = ⊥ := map_bot _
 
-theorem smul_sup (a : α) (S T : Submonoid M) : a • (S ⊔ T) = a • S ⊔ a • T :=
-  map_sup _ _ _
+theorem smul_sup (a : α) (S T : Submonoid M) : a • (S ⊔ T) = a • S ⊔ a • T := map_sup _ _ _
 
 theorem smul_closure (a : α) (s : Set M) : a • closure s = closure (a • s) :=
   MonoidHom.map_mclosure _ _
 
-lemma pointwise_isCentralScalar [MulDistribMulAction αᵐᵒᵖ M] [IsCentralScalar α M] :
-    IsCentralScalar α (Submonoid M) :=
+lemma pointwise_isCentralScalar [MulDistribMulAction αᵐᵒᵖ M] [IsCentralScalar α M]
+    : IsCentralScalar α (Submonoid M) :=
   ⟨fun _ S => (congr_arg fun f : Monoid.End M => S.map f) <| MonoidHom.ext <| op_smul_eq_smul _⟩
 
 scoped[Pointwise] attribute [instance] Submonoid.pointwise_isCentralScalar
@@ -270,8 +270,8 @@ variable [Group α] [MulDistribMulAction α M]
 theorem smul_mem_pointwise_smul_iff {a : α} {S : Submonoid M} {x : M} : a • x ∈ a • S ↔ x ∈ S :=
   smul_mem_smul_set_iff
 
-theorem mem_pointwise_smul_iff_inv_smul_mem {a : α} {S : Submonoid M} {x : M} :
-    x ∈ a • S ↔ a⁻¹ • x ∈ S :=
+theorem mem_pointwise_smul_iff_inv_smul_mem {a : α} {S : Submonoid M} {x : M}
+    : x ∈ a • S ↔ a⁻¹ • x ∈ S :=
   mem_smul_set_iff_inv_smul_mem
 
 theorem mem_inv_pointwise_smul_iff {a : α} {S : Submonoid M} {x : M} : x ∈ a⁻¹ • S ↔ a • x ∈ S :=
@@ -295,8 +295,8 @@ namespace Set.IsPWO
 variable [CommMonoid α] [PartialOrder α] [IsOrderedCancelMonoid α] {s : Set α}
 
 @[to_additive]
-theorem submonoid_closure (hpos : ∀ x : α, x ∈ s → 1 ≤ x) (h : s.IsPWO) :
-    IsPWO (Submonoid.closure s : Set α) := by
+theorem submonoid_closure (hpos : ∀ x : α, x ∈ s → 1 ≤ x) (h : s.IsPWO)
+    : IsPWO (Submonoid.closure s : Set α) := by
   rw [Submonoid.closure_eq_image_prod]
   refine (h.partiallyWellOrderedOn_sublistForall₂ (· ≤ ·)).image_of_monotone_on ?_
   exact fun l1 _ l2 hl2 h12 => h12.prod_le_prod fun x hx => hpos x <| hl2 x hx

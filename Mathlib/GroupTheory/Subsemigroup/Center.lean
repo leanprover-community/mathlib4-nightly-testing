@@ -63,8 +63,7 @@ theorem mem_center_iff {z : M} : z ∈ center M ↔ ∀ g, g * z = z * g := by
   exact Iff.rfl
 
 @[to_additive]
-instance decidableMemCenter (a) [Decidable <| ∀ b : M, b * a = a * b] :
-    Decidable (a ∈ center M) :=
+instance decidableMemCenter (a) [Decidable <| ∀ b : M, b * a = a * b] : Decidable (a ∈ center M) :=
   decidable_of_iff' _ Semigroup.mem_center_iff
 
 end Semigroup
@@ -73,8 +72,7 @@ section CommSemigroup
 variable [CommSemigroup M]
 
 @[to_additive (attr := simp)]
-theorem center_eq_top : center M = ⊤ :=
-  SetLike.coe_injective (Set.center_eq_univ M)
+theorem center_eq_top : center M = ⊤ := SetLike.coe_injective (Set.center_eq_univ M)
 
 end CommSemigroup
 

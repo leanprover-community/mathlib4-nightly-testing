@@ -26,7 +26,6 @@ Please try to keep them in sync.
 
 @[expose] public section
 
-
 universe v₁ u₁
 
 namespace CategoryTheory
@@ -42,7 +41,6 @@ variable {T : Monad C} (X : Algebra T)
 /-!
 Show that any algebra is a coequalizer of free algebras.
 -/
-
 
 /-- The top map in the coequalizer diagram we will construct. -/
 @[simps!]
@@ -61,9 +59,9 @@ def FreeCoequalizer.π : (Monad.free T).obj X.A ⟶ X where
   f := X.a
   h := X.assoc.symm
 
-theorem FreeCoequalizer.condition :
-    FreeCoequalizer.topMap X ≫ FreeCoequalizer.π X =
-      FreeCoequalizer.bottomMap X ≫ FreeCoequalizer.π X :=
+theorem FreeCoequalizer.condition
+    : FreeCoequalizer.topMap X ≫ FreeCoequalizer.π X
+      = FreeCoequalizer.bottomMap X ≫ FreeCoequalizer.π X :=
   Algebra.Hom.ext X.assoc.symm
 
 set_option backward.defeqAttrib.useBackward true in
@@ -76,7 +74,8 @@ instance : IsReflexivePair (FreeCoequalizer.topMap X) (FreeCoequalizer.bottomMap
   · ext
     apply Monad.right_unit
 
-/-- Construct the Beck cofork in the category of algebras. This cofork is reflexive as well as a
+/--
+Construct the Beck cofork in the category of algebras. This cofork is reflexive as well as a
 coequalizer.
 -/
 @[simps!]
@@ -85,7 +84,8 @@ def beckAlgebraCofork : Cofork (FreeCoequalizer.topMap X) (FreeCoequalizer.botto
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The cofork constructed is a colimit. This shows that any algebra is a (reflexive) coequalizer of
+/--
+The cofork constructed is a colimit. This shows that any algebra is a (reflexive) coequalizer of
 free algebras.
 -/
 def beckAlgebraCoequalizer : IsColimit (beckAlgebraCofork X) :=
@@ -110,20 +110,16 @@ def beckSplitCoequalizer : IsSplitCoequalizer (T.map X.a) (T.μ.app _) X.a :=
 
 /-- This is the Beck cofork. It is a split coequalizer, in particular a coequalizer. -/
 @[simps! pt]
-def beckCofork : Cofork (T.map X.a) (T.μ.app _) :=
-  (beckSplitCoequalizer X).asCofork
+def beckCofork : Cofork (T.map X.a) (T.μ.app _) := (beckSplitCoequalizer X).asCofork
 
-@[simp]
-theorem beckCofork_π : (beckCofork X).π = X.a :=
-  rfl
+@[simp] theorem beckCofork_π : (beckCofork X).π = X.a := rfl
 
 /-- The Beck cofork is a coequalizer. -/
-def beckCoequalizer : IsColimit (beckCofork X) :=
-  (beckSplitCoequalizer X).isCoequalizer
+def beckCoequalizer : IsColimit (beckCofork X) := (beckSplitCoequalizer X).isCoequalizer
 
 @[simp]
-theorem beckCoequalizer_desc (s : Cofork (T.toFunctor.map X.a) (T.μ.app X.A)) :
-    (beckCoequalizer X).desc s = T.η.app _ ≫ s.π :=
+theorem beckCoequalizer_desc (s : Cofork (T.toFunctor.map X.a) (T.μ.app X.A))
+    : (beckCoequalizer X).desc s = T.η.app _ ≫ s.π :=
   rfl
 
 end Monad

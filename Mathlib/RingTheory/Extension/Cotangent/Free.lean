@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Extension.Cotangent.Basic
 public import Mathlib.RingTheory.Extension.Presentation.Submersive
-
 import Mathlib.LinearAlgebra.Basis.Exact
 
 /-!
@@ -39,8 +38,7 @@ namespace Algebra
 
 namespace Generators
 
-variable (P : Generators R S ι) {u : σ → ι} (hu : Function.Injective u)
-  {v : κ → ι}
+variable (P : Generators R S ι) {u : σ → ι} (hu : Function.Injective u) {v : κ → ι}
 
 /--
 If `H¹(L_{S/R}) = 0` and `R[xᵢ] → S` are generators indexed by `σ ⊕ κ` such that the images
@@ -57,9 +55,9 @@ lemma cotangentRestrict_bijective_of_isCompl
     (huv : IsCompl (Set.range v) (Set.range u))
     (hm : Submodule.span S (.range fun i ↦ D R S (P.val (v i))) = ⊤)
     (hk : Disjoint (LinearMap.ker P.toExtension.toKaehler)
-        (.span S (.range fun x ↦ P.cotangentSpaceBasis (v x))))
-    [Subsingleton (H1Cotangent R S)] :
-    Function.Bijective (cotangentRestrict P hu) := by
+      (.span S (.range fun x ↦ P.cotangentSpaceBasis (v x))))
+    [Subsingleton (H1Cotangent R S)]
+    : Function.Bijective (cotangentRestrict P hu) := by
   rw [cotangentRestrict, Finsupp.lcomapDomain_eq_linearProjOfIsCompl _ huv.symm]
   set f : _ →ₗ[S] (ι →₀ S) := P.cotangentSpaceBasis.repr ∘ₗ P.toExtension.cotangentComplex
   let g : (ι →₀ S) →ₗ[S] (Ω[S⁄R]) := P.toExtension.toKaehler ∘ₗ P.cotangentSpaceBasis.repr.symm
@@ -73,29 +71,32 @@ lemma cotangentRestrict_bijective_of_isCompl
     apply Submodule.map_injective_of_injective (f := P.cotangentSpaceBasis.repr.symm.toLinearMap)
       P.cotangentSpaceBasis.repr.symm.injective
     rw [Submodule.map_inf P.cotangentSpaceBasis.repr.symm.toLinearMap
-        P.cotangentSpaceBasis.repr.symm.injective, Submodule.map_span, ← Set.range_comp,
-        Function.comp_def, LinearMap.ker_comp, Submodule.map_comap_eq_of_surjective]
+        P.cotangentSpaceBasis.repr.symm.injective,
+      Submodule.map_span, ← Set.range_comp, Function.comp_def, LinearMap.ker_comp,
+      Submodule.map_comap_eq_of_surjective]
     · simpa [← disjoint_iff]
     · exact P.cotangentSpaceBasis.repr.symm.surjective
   · simpa [g, Submodule.map_comp, Submodule.map_span, ← Set.range_comp, Function.comp_def]
 
 lemma disjoint_ker_toKaehler_of_linearIndependent
-    (h : LinearIndependent S (fun k ↦ D R S (P.val (v k)))) :
-    Disjoint (LinearMap.ker P.toExtension.toKaehler)
-        (.span S <| .range fun x ↦ P.cotangentSpaceBasis (v x)) := by
+    (h : LinearIndependent S (fun k ↦ D R S (P.val (v k))))
+    : Disjoint (LinearMap.ker P.toExtension.toKaehler)
+      (.span S <| .range fun x ↦ P.cotangentSpaceBasis (v x)) := by
   rw [disjoint_iff, Submodule.eq_bot_iff]
   intro x ⟨hx, hxs⟩
   rw [SetLike.mem_coe, Finsupp.mem_span_range_iff_exists_finsupp] at hxs
   obtain ⟨c, rfl⟩ := hxs
   simp only [SetLike.mem_coe, LinearMap.mem_ker, map_finsuppSum, map_smul,
-    toKaehler_cotangentSpaceBasis] at hx
+      toKaehler_cotangentSpaceBasis]
+    at hx
   obtain rfl := (linearIndependent_iff.mp h) c hx
   simp
 
 lemma cotangentRestrict_bijective_of_basis_kaehlerDifferential
-    (huv : IsCompl (Set.range v) (Set.range u)) (b : Module.Basis κ S (Ω[S⁄R]))
-    (hb : ∀ k, b k = (D R S) (P.val (v k))) [Subsingleton (H1Cotangent R S)] :
-    Function.Bijective (cotangentRestrict P hu) := by
+    (huv : IsCompl (Set.range v) (Set.range u))
+    (b : Module.Basis κ S (Ω[S⁄R])) (hb : ∀ k, b k = (D R S) (P.val (v k)))
+    [Subsingleton (H1Cotangent R S)]
+    : Function.Bijective (cotangentRestrict P hu) := by
   refine P.cotangentRestrict_bijective_of_isCompl _ huv ?_ ?_
   · simp_rw [← hb]
     exact b.span_eq
@@ -112,16 +113,19 @@ open Generators
 variable (P : PreSubmersivePresentation R S ι σ) [Finite σ]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- To show a pre-submersive presentation with kernel `I = (fᵢ)` is submersive, it suffices to show
+/--
+To show a pre-submersive presentation with kernel `I = (fᵢ)` is submersive, it suffices to show
 that the images of the `fᵢ` form a basis of `I/I²` and that the restricted
-cotangent complex `I/I² → S ⊗[R] (Ω[R[Xᵢ]⁄R]) = ⊕ᵢ S → ⊕ⱼ S` is bijective. -/
+cotangent complex `I/I² → S ⊗[R] (Ω[R[Xᵢ]⁄R]) = ⊕ᵢ S → ⊕ⱼ S` is bijective.
+-/
 lemma isUnit_jacobian_of_cotangentRestrict_bijective
     (b : Module.Basis σ S P.toExtension.Cotangent)
     (hb : ∀ r, b r = Extension.Cotangent.mk ⟨P.relation r, P.relation_mem_ker r⟩)
-    (h : Function.Bijective (P.cotangentRestrict P.map_inj)) :
-    IsUnit P.jacobian := by
-  have heq : (fun j i ↦ (aeval P.val) (pderiv (P.map i) (P.relation j))) =
-      Finsupp.linearEquivFunOnFinite S S _ ∘ P.cotangentRestrict P.map_inj ∘ ⇑b := by
+    (h : Function.Bijective (P.cotangentRestrict P.map_inj))
+    : IsUnit P.jacobian := by
+  have heq
+      : (fun j i ↦ (aeval P.val) (pderiv (P.map i) (P.relation j)))
+        = Finsupp.linearEquivFunOnFinite S S _ ∘ P.cotangentRestrict P.map_inj ∘ ⇑b := by
     ext i j
     simp only [Function.comp_apply, hb, Finsupp.linearEquivFunOnFinite_apply, cotangentRestrict_mk]
   apply P.isUnit_jacobian_of_linearIndependent_of_span_eq_top

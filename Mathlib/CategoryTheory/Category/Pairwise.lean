@@ -29,7 +29,6 @@ and show that `iSup U` provides a colimit cocone over this functor.
 
 @[expose] public section
 
-
 noncomputable section
 
 universe v u
@@ -40,22 +39,23 @@ open CategoryTheory.Limits
 
 namespace CategoryTheory
 
-/-- An inductive type representing either a single term of a type `ι`, or a pair of terms.
+/--
+An inductive type representing either a single term of a type `ι`, or a pair of terms.
 We use this as the objects of a category to describe the sheaf condition.
 -/
 inductive Pairwise (ι : Type v)
   | single : ι → Pairwise ι
   | pair : ι → ι → Pairwise ι
-  deriving Fintype, DecidableEq
+deriving Fintype, DecidableEq
 
 variable {ι : Type v}
 
 namespace Pairwise
 
-instance pairwiseInhabited [Inhabited ι] : Inhabited (Pairwise ι) :=
-  ⟨single default⟩
+instance pairwiseInhabited [Inhabited ι] : Inhabited (Pairwise ι) := ⟨single default⟩
 
-/-- Morphisms in the category `CategoryTheory.Pairwise ι`. The only non-identity morphisms are
+/--
+Morphisms in the category `CategoryTheory.Pairwise ι`. The only non-identity morphisms are
 `left i j : single i ⟶ pair i j` and `right i j : single j ⟶ pair i j`.
 -/
 inductive Hom : Pairwise ι → Pairwise ι → Type v
@@ -63,7 +63,7 @@ inductive Hom : Pairwise ι → Pairwise ι → Type v
   | id_pair : ∀ i j, Hom (pair i j) (pair i j)
   | left : ∀ i j, Hom (pair i j) (single i)
   | right : ∀ i j, Hom (pair i j) (single j)
-  deriving DecidableEq
+deriving DecidableEq
 
 -- False positive?
 attribute [nolint unusedArguments] instDecidableEqHom.decEq
@@ -73,18 +73,21 @@ open Hom
 instance homInhabited [Inhabited ι] : Inhabited (Hom (single (default : ι)) (single default)) :=
   ⟨id_single default⟩
 
-/-- The identity morphism in `CategoryTheory.Pairwise ι`.
--/
+/-- The identity morphism in `CategoryTheory.Pairwise ι`. -/
 def id : ∀ o : Pairwise ι, Hom o o
   | single i => id_single i
   | pair i j => id_pair i j
 
 /-- Composition of morphisms in `CategoryTheory.Pairwise ι`. -/
 def comp : ∀ {o₁ o₂ o₃ : Pairwise ι} (_ : Hom o₁ o₂) (_ : Hom o₂ o₃), Hom o₁ o₃
-  | _, _, _, id_single _, g => g
-  | _, _, _, id_pair _ _, g => g
-  | _, _, _, left i j, id_single _ => left i j
-  | _, _, _, right i j, id_single _ => right i j
+  | _, _, _, id_single _, g =>
+    g
+  | _, _, _, id_pair _ _, g =>
+    g
+  | _, _, _, left i j, id_single _ =>
+    left i j
+  | _, _, _, right i j, id_single _ =>
+    right i j
 
 instance : CategoryStruct (Pairwise ι) where
   Hom := Hom
@@ -108,14 +111,17 @@ instance {i j : Pairwise ι} [DecidableEq ι] : DecidableEq (i ⟶ j) :=
 
 instance [Fintype ι] [DecidableEq ι] : FinCategory (Pairwise ι) where
   fintypeHom
-  | .single i, .single j => ⟨if h : i = j then {eqToHom (h ▸ rfl)} else ∅, by rintro ⟨⟩; cat_disch⟩
-  | .single i, .pair j k => ⟨∅, by rintro ⟨⟩⟩
-  | .pair i j, .single k =>
-    ⟨(if h : i = k then {Hom.left i j ≫ eqToHom (h ▸ rfl)} else ∅) ∪
-      (if h : j = k then {Hom.right i j ≫ eqToHom (h ▸ rfl)} else ∅),
-        by rintro ⟨⟩ <;> cat_disch⟩
-  | .pair i j, .pair k l =>
-    ⟨if h : i = k ∧ j = l then {eqToHom (h.1 ▸ h.2 ▸ rfl)} else ∅, by rintro ⟨⟩; cat_disch⟩
+    | .single i, .single j =>
+      ⟨if h : i = j then {eqToHom (h ▸ rfl)} else ∅, by rintro ⟨⟩; cat_disch⟩
+    | .single i, .pair j k =>
+      ⟨∅, by rintro ⟨⟩⟩
+    | .pair i j, .single k => ⟨
+      (if h : i = k then {Hom.left i j ≫ eqToHom (h ▸ rfl)} else ∅)
+        ∪ (if h : j = k then {Hom.right i j ≫ eqToHom (h ▸ rfl)} else ∅),
+      by rintro ⟨⟩ <;> cat_disch
+    ⟩
+    | .pair i j, .pair k l =>
+      ⟨if h : i = k ∧ j = l then {eqToHom (h.1 ▸ h.2 ▸ rfl)} else ∅, by rintro ⟨⟩; cat_disch⟩
 
 variable {α : Type u} (U : ι → α)
 
@@ -132,12 +138,17 @@ def diagramObj : Pairwise ι → α
 /-- Auxiliary definition for `diagram`. -/
 @[simp]
 def diagramMap : ∀ {o₁ o₂ : Pairwise ι} (_ : o₁ ⟶ o₂), diagramObj U o₁ ⟶ diagramObj U o₂
-  | _, _, id_single _ => 𝟙 _
-  | _, _, id_pair _ _ => 𝟙 _
-  | _, _, left _ _ => homOfLE inf_le_left
-  | _, _, right _ _ => homOfLE inf_le_right
+  | _, _, id_single _ =>
+    𝟙 _
+  | _, _, id_pair _ _ =>
+    𝟙 _
+  | _, _, left _ _ =>
+    homOfLE inf_le_left
+  | _, _, right _ _ =>
+    homOfLE inf_le_right
 
-/-- Given a function `U : ι → α` for `[SemilatticeInf α]`, we obtain a functor
+/--
+Given a function `U : ι → α` for `[SemilatticeInf α]`, we obtain a functor
 `CategoryTheory.Pairwise ι ⥤ α`,
 sending `single i` to `U i` and `pair i j` to `U i ⊓ U j`,
 and the morphisms to the obvious inequalities.
@@ -160,7 +171,8 @@ def coconeιApp : ∀ o : Pairwise ι, diagramObj U o ⟶ iSup U
   | single i => homOfLE (le_iSup U i)
   | pair i _ => homOfLE inf_le_left ≫ homOfLE (le_iSup U i)
 
-/-- Given a function `U : ι → α` for `[CompleteLattice α]`,
+/--
+Given a function `U : ι → α` for `[CompleteLattice α]`,
 `iSup U` provides a cocone over `diagram U`.
 -/
 @[simps]
@@ -168,12 +180,13 @@ def cocone : Cocone (diagram U) where
   pt := iSup U
   ι := { app := coconeιApp U }
 
-/-- Given a function `U : ι → α` for `[CompleteLattice α]`,
+/--
+Given a function `U : ι → α` for `[CompleteLattice α]`,
 `iInf U` provides a limit cone over `diagram U`.
 -/
 def coconeIsColimit : IsColimit (cocone U) where
-  desc s := homOfLE
-    (by
+  desc s :=
+    homOfLE (by
       apply sSup_le
       rintro _ ⟨j, rfl⟩
       exact (s.ι.app (single j)).le)

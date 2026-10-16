@@ -28,8 +28,8 @@ namespace Set
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open CompleteLattice in
-instance {J : Type w} [Category.{w'} J] {X : Type u} [IsFilteredOrEmpty J] :
-    PreservesColimitsOfShape J (functorToTypes (X := X)) where
+instance {J : Type w} [Category.{w'} J] {X : Type u} [IsFilteredOrEmpty J]
+    : PreservesColimitsOfShape J (functorToTypes (X := X)) where
   preservesColimit {F} := by
     apply preservesColimit_of_preserves_colimit_cocone (colimitCocone F).isColimit
     apply Types.FilteredColimit.isColimitOf

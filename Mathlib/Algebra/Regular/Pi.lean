@@ -36,8 +36,8 @@ theorem isRegular_iff {a : ∀ i, R i} : IsRegular a ↔ ∀ i, IsRegular (a i) 
 end
 
 @[simp]
-theorem isSMulRegular_iff [∀ i, SMul α (R i)] {r : α} [∀ i, Nonempty (R i)] :
-    IsSMulRegular (∀ i, R i) r ↔ ∀ i, IsSMulRegular (R i) r :=
+theorem isSMulRegular_iff [∀ i, SMul α (R i)] {r : α} [∀ i, Nonempty (R i)]
+    : IsSMulRegular (∀ i, R i) r ↔ ∀ i, IsSMulRegular (R i) r :=
   Pi.map_injective
 
 end Pi

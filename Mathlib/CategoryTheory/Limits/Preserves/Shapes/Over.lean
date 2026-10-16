@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Limits.Preserves.Finite
 public import Mathlib.CategoryTheory.WithTerminal.Cone
-
 import Mathlib.CategoryTheory.WithTerminal.FinCategory
 
 /-!
@@ -31,44 +30,47 @@ variable {D : Type u₂} [Category.{v₂} D]
 variable {J : Type w} [Category.{w'} J] {X : C} {F : C ⥤ D}
 
 -- TODO: Do we even want to keep `WidePullbackShape` around?
-instance PreservesLimitsOfShape.ofWidePullbacks {J : Type*}
-    [PreservesLimitsOfShape (WidePullbackShape J) F] :
-    PreservesLimitsOfShape (WithTerminal <| Discrete J) F :=
+instance PreservesLimitsOfShape.ofWidePullbacks
+    {J : Type*} [PreservesLimitsOfShape (WidePullbackShape J) F]
+    : PreservesLimitsOfShape (WithTerminal <| Discrete J) F :=
   preservesLimitsOfShape_of_equiv WithTerminal.widePullbackShapeEquiv F
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 open WithTerminal in
-instance PreservesLimitsOfShape.overPost [PreservesLimitsOfShape (WithTerminal J) F] :
-    PreservesLimitsOfShape J (Over.post F (X := X)) where
+instance PreservesLimitsOfShape.overPost [PreservesLimitsOfShape (WithTerminal J) F]
+    : PreservesLimitsOfShape J (Over.post F (X := X)) where
   preservesLimit.preserves {coneK} isLimitConeK :=
-    have isLimitConeD := (IsLimit.postcomposeHomEquiv liftFromOverComp.symm _).symm <|
-      isLimitOfPreserves F (isLimitEquiv.symm isLimitConeK)
-    ⟨isLimitEquiv <| isLimitConeD.ofIsoLimit <| Cone.ext (.refl _) fun | .star | .of a => by aesop⟩
+    have isLimitConeD :=
+      (IsLimit.postcomposeHomEquiv liftFromOverComp.symm _).symm <|
+        isLimitOfPreserves F (isLimitEquiv.symm isLimitConeK)
+    ⟨isLimitEquiv <| isLimitConeD.ofIsoLimit <| Cone.ext (.refl _) fun
+      | .star | .of a => by aesop⟩
 
-instance PreservesFiniteLimits.overPost [PreservesFiniteLimits F] :
-    PreservesFiniteLimits (Over.post F (X := X)) where
+instance PreservesFiniteLimits.overPost [PreservesFiniteLimits F]
+    : PreservesFiniteLimits (Over.post F (X := X)) where
   preservesFiniteLimits _ := inferInstance
 
-instance PreservesLimitsOfSize.overPost [PreservesLimitsOfSize.{w', w} F] :
-    PreservesLimitsOfSize.{w', w} (Over.post F (X := X)) where
+instance PreservesLimitsOfSize.overPost [PreservesLimitsOfSize.{w', w} F]
+  : PreservesLimitsOfSize.{w', w} (Over.post F (X := X)) where
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 open WithInitial in
-instance PreservesColimitsOfShape.underPost [PreservesColimitsOfShape (WithInitial J) F] :
-    PreservesColimitsOfShape J (Under.post F (X := X)) where
+instance PreservesColimitsOfShape.underPost [PreservesColimitsOfShape (WithInitial J) F]
+    : PreservesColimitsOfShape J (Under.post F (X := X)) where
   preservesColimit.preserves {coconeK} isColimitCoconeK :=
-    have isColimitCoconeD := (IsColimit.precomposeHomEquiv liftFromUnderComp _).symm <|
-      isColimitOfPreserves F (isColimitEquiv.symm isColimitCoconeK)
-    ⟨isColimitEquiv <| isColimitCoconeD.ofIsoColimit <|
-      Cocone.ext (.refl _) fun | .star | .of a => by aesop⟩
+    have isColimitCoconeD :=
+      (IsColimit.precomposeHomEquiv liftFromUnderComp _).symm <|
+        isColimitOfPreserves F (isColimitEquiv.symm isColimitCoconeK)
+    ⟨isColimitEquiv <| isColimitCoconeD.ofIsoColimit <| Cocone.ext (.refl _) fun
+      | .star | .of a => by aesop⟩
 
-instance PreservesFiniteColimits.underPost [PreservesFiniteColimits F] :
-    PreservesFiniteColimits (Under.post F (X := X)) where
+instance PreservesFiniteColimits.underPost [PreservesFiniteColimits F]
+    : PreservesFiniteColimits (Under.post F (X := X)) where
   preservesFiniteColimits _ := inferInstance
 
-instance PreservesColimitsOfSize.underPost [PreservesColimitsOfSize.{w', w} F] :
-    PreservesColimitsOfSize.{w', w} (Under.post F (X := X)) where
+instance PreservesColimitsOfSize.underPost [PreservesColimitsOfSize.{w', w} F]
+  : PreservesColimitsOfSize.{w', w} (Under.post F (X := X)) where
 
 end CategoryTheory.Limits

@@ -7,7 +7,6 @@ module
 
 public import Batteries.Data.List.Lemmas
 public import Mathlib.Tactic.Common
-
 import Mathlib.Tactic.Finiteness.Attr
 
 /-!
@@ -22,8 +21,8 @@ open Nat
 
 namespace List
 
-lemma isChain_ofFn {α : Type*} {n : ℕ} {f : Fin n → α} {r : α → α → Prop} :
-    (ofFn f).IsChain r ↔ ∀ (i) (hi : i + 1 < n), r (f ⟨i, lt_of_succ_lt hi⟩) (f ⟨i + 1, hi⟩) := by
+lemma isChain_ofFn {α : Type*} {n : ℕ} {f : Fin n → α} {r : α → α → Prop}
+    : (ofFn f).IsChain r ↔ ∀ (i) (hi : i + 1 < n), r (f ⟨i, lt_of_succ_lt hi⟩) (f ⟨i + 1, hi⟩) := by
   simp_rw [isChain_iff_getElem, List.getElem_ofFn, length_ofFn]
 
 end List

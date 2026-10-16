@@ -44,10 +44,10 @@ open CategoryTheory MonoidalCategory MonObj
 
 namespace AlgebraicGeometry
 
-variable {k : Type u} [Field k] {C : Over (Spec (.of k))}
-  [SmoothOfRelativeDimension 1 C.hom]
-  [IsProper C.hom]
-  [GeometricallyIrreducible C.hom]
+variable
+  {k : Type u} [Field k]
+  {C : Over (Spec (.of k))}
+  [SmoothOfRelativeDimension 1 C.hom] [IsProper C.hom] [GeometricallyIrreducible C.hom]
 
 /-- The genus of a smooth proper curve. -/
 def_wanted genus (C : Over (Spec (.of k))) [IsProper C.hom]
@@ -133,12 +133,12 @@ variable {K : Type u} [Field K] (f : Spec (.of K) ⟶ Spec (.of k))
 instance (X : Over (Spec (.of k))) [IsProper X.hom] : IsProper ((Over.pullback f).obj X).hom := by
   dsimp; infer_instance
 
-instance (X : Over (Spec (.of k))) (n : ℕ) [SmoothOfRelativeDimension n X.hom] :
-    SmoothOfRelativeDimension n ((Over.pullback f).obj X).hom := by
+instance (X : Over (Spec (.of k))) (n : ℕ) [SmoothOfRelativeDimension n X.hom]
+    : SmoothOfRelativeDimension n ((Over.pullback f).obj X).hom := by
   dsimp; infer_instance
 
-instance (X : Over (Spec (.of k))) [GeometricallyIrreducible X.hom] :
-    GeometricallyIrreducible ((Over.pullback f).obj X).hom := by
+instance (X : Over (Spec (.of k))) [GeometricallyIrreducible X.hom]
+    : GeometricallyIrreducible ((Over.pullback f).obj X).hom := by
   dsimp; infer_instance
 
 /-- The genus of a smooth proper curve is invariant under base change. -/

@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Joseph Myers
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
@@ -14,7 +13,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 -/
 
 public section
-
 
 namespace Real
 
@@ -38,11 +36,9 @@ theorem exp_one_gt_d9 : 2.7182818283 < exp 1 :=
 theorem exp_one_lt_d9 : exp 1 < 2.7182818286 :=
   lt_of_le_of_lt (sub_le_iff_le_add.1 (abs_sub_le_iff.1 exp_one_near_10).1) (by norm_num)
 
-theorem exp_one_gt_two : 2 < exp 1 :=
-  lt_trans (by norm_num) exp_one_gt_d9
+theorem exp_one_gt_two : 2 < exp 1 := lt_trans (by norm_num) exp_one_gt_d9
 
-theorem exp_one_lt_three : exp 1 < 3 :=
-  lt_trans exp_one_lt_d9 (by norm_num)
+theorem exp_one_lt_three : exp 1 < 3 := lt_trans exp_one_lt_d9 (by norm_num)
 
 theorem floor_exp_one_eq_two : ⌊exp 1⌋ = 2 :=
   Int.floor_eq_iff.mpr ⟨exp_one_gt_two.le, by exact_mod_cast exp_one_lt_three⟩
@@ -65,8 +61,7 @@ theorem exp_neg_one_lt_d9 : exp (-1) < 0.3678794412 := by
   rw [exp_neg, inv_lt_comm₀ (exp_pos _) (by norm_num)]
   exact lt_of_lt_of_le (by norm_num) (sub_le_comm.1 (abs_sub_le_iff.1 exp_one_near_10).2)
 
-theorem exp_neg_one_lt_half : exp (-1) < 1 / 2 :=
-  lt_trans exp_neg_one_lt_d9 (by norm_num)
+theorem exp_neg_one_lt_half : exp (-1) < 1 / 2 := lt_trans exp_neg_one_lt_d9 (by norm_num)
 
 theorem log_two_near_10 : |log 2 - 287209 / 414355| ≤ 1 / 10 ^ 10 := by
   suffices |log 2 - 287209 / 414355| ≤ 1 / 17179869184 + (1 / 10 ^ 10 - 1 / 2 ^ 34) by
@@ -87,14 +82,15 @@ theorem log_two_lt_d9 : log 2 < 0.6931471808 :=
   lt_of_le_of_lt (sub_le_iff_le_add.1 (abs_sub_le_iff.1 log_two_near_10).1) (by norm_num)
 
 theorem log_three_near_10 : |log 3 - 109861228867 / 100000000000| ≤ 1 / 10 ^ 10 := by
-  suffices |log 3 - 109861228867 / 100000000000| ≤
-      (2 / 3) ^ 71 / 3⁻¹ + (1 / 10 ^ 10 - (2 / 3) ^ 71 / 3⁻¹) by
+  suffices |log 3 - 109861228867 / 100000000000|
+      ≤ (2 / 3) ^ 71 / 3⁻¹ + (1 / 10 ^ 10 - (2 / 3) ^ 71 / 3⁻¹) by
     norm_num1 at *
     assumption
   have t : |2 / 3| = (2 : ℝ) / 3 := by norm_num
   have z := abs_log_sub_add_sum_range_le (x := 2 / 3) (by norm_num) 70
   rw [t, show (1 - (2 : ℝ) / 3) = (1 / 3 : ℝ) by norm_num, one_div (3 : ℝ), log_inv,
-    ← sub_eq_add_neg, _root_.abs_sub_comm] at z
+      ← sub_eq_add_neg, _root_.abs_sub_comm]
+    at z
   apply le_trans (_root_.abs_sub_le _ _ _) (add_le_add z _)
   norm_num [sum_range_succ]
 
@@ -107,14 +103,15 @@ theorem log_three_lt_d9 : log 3 < 1.0986122888 :=
 theorem log_four_eq : log 4 = 2 * log 2 := by norm_num [← log_rpow]
 
 theorem log_five_near_10 : |log 5 - 160943791243 / 100000000000| ≤ 1 / 10 ^ 10 := by
-  suffices |log 5 - 160943791243 / 100000000000| ≤
-      (4 / 5) ^ 131 / 5⁻¹ + (1 / 10 ^ 10 - (4 / 5) ^ 131 / 5⁻¹) by
+  suffices |log 5 - 160943791243 / 100000000000|
+      ≤ (4 / 5) ^ 131 / 5⁻¹ + (1 / 10 ^ 10 - (4 / 5) ^ 131 / 5⁻¹) by
     norm_num1 at *
     assumption
   have t : |4 / 5| = (4 : ℝ) / 5 := by norm_num
   have z := abs_log_sub_add_sum_range_le (x := 4 / 5) (by norm_num) 130
   rw [t, show (1 - (4 : ℝ) / 5) = (1 / 5 : ℝ) by norm_num, one_div (5 : ℝ), log_inv,
-    ← sub_eq_add_neg, _root_.abs_sub_comm] at z
+      ← sub_eq_add_neg, _root_.abs_sub_comm]
+    at z
   apply le_trans (_root_.abs_sub_le _ _ _) (add_le_add z _)
   norm_num [sum_range_succ]
 

@@ -22,9 +22,10 @@ variable [TopologicalSpace V] [TopologicalSpace P] [IsTopologicalTorsor P]
 `P` is proper. -/]
 instance : ProperSMul V P where
   isProperMap_smul_pair := by
-    let Φ : V × P ≃ₜ P × P :=
-    { toFun vp := (vp.1 • vp.2, vp.2)
+    let Φ : V × P ≃ₜ P × P := {
+      toFun vp := (vp.1 • vp.2, vp.2)
       invFun pq := (pq.1 /ₛ pq.2, pq.2)
       left_inv _ := by simp
-      right_inv _ := by simp }
+      right_inv _ := by simp
+    }
     exact Φ.isProperMap

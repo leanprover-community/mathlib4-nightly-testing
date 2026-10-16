@@ -40,9 +40,9 @@ namespace Mathlib.Tactic.Polynomial
 @[polynomial_infer_base]
 def polynomialInferBase : PolynomialExt where
   infer e := do
-  match_expr e with
-  | Polynomial R _ => pure R
-  | _ => failure
+    match_expr e with
+    | Polynomial R _ => pure R
+    | _ => failure
 
 section Lemmas
 
@@ -56,23 +56,27 @@ theorem monomial_eq_smul (a : R) (n : ℕ) : Polynomial.monomial n a = a • (.X
 
 -- `polynomial_pre` contains a lemma sending `C -> algebraMap`, so `C` is not simp normal form.
 @[polynomial_pre]
-theorem map_algebraMap (r : R) :
-    Polynomial.map (algebraMap R A) (algebraMap R (Polynomial R) r) =
-    algebraMap A (Polynomial A) (algebraMap R A r) := by
+theorem map_algebraMap (r : R)
+    : Polynomial.map (algebraMap R A) (algebraMap R (Polynomial R) r)
+      = algebraMap A (Polynomial A) (algebraMap R A r) := by
   simp
 
 end Lemmas
 
 open Mathlib.Meta AtomM
 
-attribute [polynomial_pre] Polynomial.C_eq_algebraMap
-  Polynomial.monomial_eq_smul Polynomial.map_add Polynomial.map_mul Polynomial.map_pow
-  Polynomial.map_X Polynomial.map_natCast Polynomial.map_intCast
+attribute [polynomial_pre]
+  Polynomial.C_eq_algebraMap Polynomial.monomial_eq_smul Polynomial.map_add Polynomial.map_mul
+  Polynomial.map_pow Polynomial.map_X Polynomial.map_natCast Polynomial.map_intCast
 
-/- TODO: we don't currently have a good way to normalize monomials of MvPolynomials. These are
-indexed by finsupps, making it difficult to turn into the appropriate normal form. -/
-/-- Run the `polynomial_pre` simpset to turn nonstandard spellings of `algebraMap` such as
-`Polynomial.C` into `algebraMap` -/
+/-
+TODO: we don't currently have a good way to normalize monomials of MvPolynomials. These are
+indexed by finsupps, making it difficult to turn into the appropriate normal form.
+-/
+/--
+Run the `polynomial_pre` simpset to turn nonstandard spellings of `algebraMap` such as
+`Polynomial.C` into `algebraMap`
+-/
 def preprocess (e : Expr) : MetaM Simp.Result := do
   let preThms ← polynomialPreExt.getTheorems
   let ctx ← Simp.mkContext { failIfUnchanged := false } (simpTheorems := #[preThms])
@@ -80,7 +84,8 @@ def preprocess (e : Expr) : MetaM Simp.Result := do
 
 open Tactic
 
-/-- `polynomial` solves equalities of `Polynomial`s and similar types.
+/--
+`polynomial` solves equalities of `Polynomial`s and similar types.
 
 Given a goal which is an equality in `Polynomial R` with a commutative ring `R`, `polynomial`
 turns both sides of the equation into a normal form by expanding out the brackets. It then closes
@@ -108,49 +113,54 @@ example {P : ℚ[X] → Prop} (h : P (X ^ 2 + X + C 4⁻¹)) : P ((X + C 2⁻¹)
   polynomial_nf at h ⊢
   exact h
 ```
-
 -/
 elab (name := polynomial) "polynomial" tk:"!"? : tactic =>
   withMainContext do
     let g ← getMainGoal
-    let some (α, _, _) := (← whnfR <|← instantiateMVars <|← g.getType).eq?
+    let some (α, _, _) := (← whnfR <| ← instantiateMVars <| ← g.getType).eq?
       | throwError "polynomial failed: not an equality"
     let mut β : Expr := default
     try
       β ← Polynomial.inferBase α
     catch _ =>
       throwError "polynomial failed: not an equality of (mv)polynomials"
-    let some g ← transformAtTarget (fun e _ ↦ Polynomial.preprocess e) "polynomial" .silent g
-      default | done
-    let some g ← transformAtTarget (fun e _ ↦ Algebra.preprocess e) "polynomial" .silent g
-      default | done
+    let some g ←
+        transformAtTarget (fun e _ ↦ Polynomial.preprocess e) "polynomial" .silent g default
+      | done
+    let some g ← transformAtTarget (fun e _ ↦ Algebra.preprocess e) "polynomial" .silent g default
+      | done
     AtomM.run (if tk.isSome then .default else .reducible)
       (Algebra.proveEq (some (← getLevelQ' β)) g)
 
 @[tactic_alt polynomial]
 macro "polynomial!" : tactic => `(tactic| polynomial !)
 
-/-- A cleanup routine, which simplifies normalized expressions to a more human-friendly format.
+/--
+A cleanup routine, which simplifies normalized expressions to a more human-friendly format.
 This is the `algebra_nf` cleanup routine with a little extra work to turn scalar multiplication
-into `(MV)Polynomial.C` -/
+into `(MV)Polynomial.C`
+-/
 def cleanup (cfg : RingNF.Config) (r : Simp.Result) : MetaM Simp.Result := do
   match cfg.mode with
-  | .raw => pure r
+  | .raw =>
+    pure r
   | .SOP => do
     let r ← cleanupSMul cfg r
     let thms : SimpTheorems ← polynomialPostExt.getTheorems
-    let ctx ← Simp.mkContext { zetaDelta := cfg.zetaDelta }
-      (simpTheorems := #[thms])
-      (congrTheorems := ← getSimpCongrTheorems)
-    pure <| ←
-      r.mkEqTrans (← Simp.main r.expr ctx (methods := Lean.Meta.Simp.mkDefaultMethodsCore {})).1
+    let ctx ←
+      Simp.mkContext { zetaDelta := cfg.zetaDelta } (simpTheorems := #[thms])
+        (congrTheorems := ← getSimpCongrTheorems)
+    pure <|
+      ← r.mkEqTrans (← Simp.main r.expr ctx (methods := Lean.Meta.Simp.mkDefaultMethodsCore {})).1
 
 /-- Normalize a polynomial expression into standard form. Used by `polynomial_nf`. -/
 def evalExprPoly (e : Expr) : AtomM Simp.Result := do
   let ⟨_, α, e⟩ ← inferTypeQ e
   let mut R : Expr := default
-  try R ← inferBase α
-  catch _ => throwError "not a polynomial"
+  try
+    R ← inferBase α
+  catch _ =>
+    throwError "not a polynomial"
   let r₁ ← Polynomial.preprocess e
   let r₂ ← Algebra.preprocess r₁.expr
   let ⟨_, R'⟩ ← getLevelQ' R
@@ -158,17 +168,18 @@ def evalExprPoly (e : Expr) : AtomM Simp.Result := do
   (← r₁.mkEqTrans r₂).mkEqTrans r₃
 
 @[tactic_alt polynomial]
-elab (name := polynomialNF) "polynomial_nf" tk:"!"? loc:(location)? : tactic => withMainContext do
-  let mut cfg := {}
-  if tk.isSome then cfg := { cfg with red := .default, zetaDelta := true }
-  let loc := (loc.map expandLocation).getD (.targets #[] true)
-  let s ← IO.mkRef {}
-  let m := AtomM.recurse s cfg.toConfig (wellBehavedDischarge := true) (evalExprPoly) (cleanup cfg)
-  transformAtLocation (m ·) "polynomial_nf" loc cfg.ifUnchanged false
+elab (name := polynomialNF) "polynomial_nf" tk:"!"? loc:(location)? : tactic =>
+  withMainContext do
+    let mut cfg := {}
+    if tk.isSome then cfg := { cfg with red := .default, zetaDelta := true }
+    let loc := (loc.map expandLocation).getD (.targets #[] true)
+    let s ← IO.mkRef {}
+    let m :=
+      AtomM.recurse s cfg.toConfig (wellBehavedDischarge := true) (evalExprPoly) (cleanup cfg)
+    transformAtLocation (m ·) "polynomial_nf" loc cfg.ifUnchanged false
 
 @[tactic_alt polynomial]
-macro "polynomial_nf!" loc:(location)? : tactic =>
-  `(tactic| polynomial_nf ! $(loc)?)
+macro "polynomial_nf!" loc:(location)? : tactic => `(tactic| polynomial_nf ! $(loc)?)
 
 end Mathlib.Tactic.Polynomial
 

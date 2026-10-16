@@ -38,14 +38,12 @@ instance : (coherentTopology LightProfinite.{u}).W (A := ModuleCat.{u} R) |>.IsM
       (coherentTopology LightProfinite.{u}))
     (equivSmallModel.{u} LightProfinite.{u}).inverse
 
-instance : MonoidalCategory (LightCondMod.{u} R) :=
-  monoidalCategory _ _
+instance : MonoidalCategory (LightCondMod.{u} R) := monoidalCategory _ _
 
 instance : MonoidalCategory (Sheaf (coherentTopology LightProfinite.{u}) (ModuleCat.{u} R)) :=
   inferInstanceAs (MonoidalCategory (LightCondMod _))
 
-instance : SymmetricCategory (LightCondMod.{u} R) :=
-  symmetricCategory _ _
+instance : SymmetricCategory (LightCondMod.{u} R) := symmetricCategory _ _
 
 instance : MonoidalClosed (LightProfinite.{u}ᵒᵖ ⥤ ModuleCat.{u} R) :=
   .ofEquiv _ (equivSmallModel LightProfinite).op.congrLeft.toAdjunction
@@ -53,8 +51,7 @@ instance : MonoidalClosed (LightProfinite.{u}ᵒᵖ ⥤ ModuleCat.{u} R) :=
 instance : MonoidalClosed (Sheaf (coherentTopology LightProfinite.{u}) (ModuleCat.{u} R)) :=
   Reflective.monoidalClosed (sheafificationAdjunction _ _)
 
-instance : MonoidalClosed (LightCondMod.{u} R) :=
-  inferInstanceAs (MonoidalClosed (Sheaf _ _))
+instance : MonoidalClosed (LightCondMod.{u} R) := inferInstanceAs (MonoidalClosed (Sheaf _ _))
 
 instance : (presheafToSheaf (coherentTopology LightProfinite.{u}) (ModuleCat.{u} R)).Monoidal :=
   inferInstance

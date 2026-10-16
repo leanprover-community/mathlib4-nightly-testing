@@ -40,12 +40,13 @@ choices of `V`?
 
 @[expose] public section
 
-
 open scoped ENNReal
 
-/-- A type synonym for the given `V`, associated with the L`p` norm. Note that by default this just
+/--
+A type synonym for the given `V`, associated with the L`p` norm. Note that by default this just
 forgets the norm structure on `V`; it is up to downstream users to implement the L`p` norm (for
-instance, on `Prod` and finite `Pi` types). -/
+instance, on `Prod` and finite `Pi` types).
+-/
 structure WithLp (p : ℝ≥0∞) (V : Type*) where
   /-- Converts an element of `V` to an element of `WithLp p V`. -/
   toLp (p) ::
@@ -74,8 +75,7 @@ protected def equiv : WithLp p V ≃ V where
   left_inv _ := rfl
   right_inv _ := rfl
 
-@[simp]
-lemma equiv_symm_apply : ⇑(WithLp.equiv p V).symm = toLp p := rfl
+@[simp] lemma equiv_symm_apply : ⇑(WithLp.equiv p V).symm = toLp p := rfl
 
 /-! `WithLp p V` inherits various module-adjacent structures from `V`. -/
 
@@ -86,9 +86,9 @@ instance instDecidableEq [DecidableEq V] : DecidableEq (WithLp p V) :=
 
 instance instAddCommGroup [AddCommGroup V] : AddCommGroup (WithLp p V) :=
   (WithLp.equiv p V).addCommGroup
-@[to_additive] instance instSMul [SMul K V] : SMul K (WithLp p V) :=
-  (WithLp.equiv p V).smul K
-@[to_additive] instance instMulAction [Monoid K] [MulAction K V] : MulAction K (WithLp p V) :=
+@[to_additive] instance instSMul [SMul K V] : SMul K (WithLp p V) := (WithLp.equiv p V).smul K
+@[to_additive]
+instance instMulAction [Monoid K] [MulAction K V] : MulAction K (WithLp p V) :=
   fast_instance% (WithLp.equiv p V).mulAction K
 
 variable {K V}
@@ -111,43 +111,31 @@ lemma ofLp_injective : Function.Injective (@ofLp p V) :=
 lemma toLp_injective : Function.Injective (@toLp p V) :=
   Function.LeftInverse.injective <| ofLp_toLp _
 
-lemma ofLp_bijective : Function.Bijective (@ofLp p V) :=
-  ⟨ofLp_injective p, ofLp_surjective p⟩
+lemma ofLp_bijective : Function.Bijective (@ofLp p V) := ⟨ofLp_injective p, ofLp_surjective p⟩
 
-lemma toLp_bijective : Function.Bijective (@toLp p V) :=
-  ⟨toLp_injective p, toLp_surjective p⟩
+lemma toLp_bijective : Function.Bijective (@toLp p V) := ⟨toLp_injective p, toLp_surjective p⟩
 
 /-- Lift a function to `WithLp`. -/
-@[simp]
-protected def map (f : V → V') (x : WithLp p V) : WithLp p V' :=
-  toLp p (f x.ofLp)
+@[simp] protected def map (f : V → V') (x : WithLp p V) : WithLp p V' := toLp p (f x.ofLp)
 
-@[simp]
-theorem map_id : WithLp.map p (id (α := V)) = id :=
-  rfl
+@[simp] theorem map_id : WithLp.map p (id (α := V)) = id := rfl
 
-theorem map_comp (f : V' → V'') (g : V → V') :
-    WithLp.map p (f ∘ g) = WithLp.map p f ∘ WithLp.map p g :=
+theorem map_comp (f : V' → V'') (g : V → V')
+    : WithLp.map p (f ∘ g) = WithLp.map p f ∘ WithLp.map p g :=
   rfl
 
 /-- Lift an equivalence to `WithLp`. -/
 protected def congr (f : V ≃ V') : WithLp p V ≃ WithLp p V' :=
   (WithLp.equiv p V).trans <| f.trans (WithLp.equiv p V').symm
 
-@[simp]
-theorem coe_congr (f : V ≃ V') : ⇑(WithLp.congr p f) = WithLp.map p f :=
-  rfl
+@[simp] theorem coe_congr (f : V ≃ V') : ⇑(WithLp.congr p f) = WithLp.map p f := rfl
 
-@[simp]
-theorem congr_refl : WithLp.congr p (Equiv.refl V) = Equiv.refl _ :=
-  rfl
+@[simp] theorem congr_refl : WithLp.congr p (Equiv.refl V) = Equiv.refl _ := rfl
 
-@[simp]
-theorem congr_symm (f : V ≃ V') : (WithLp.congr p f).symm = WithLp.congr p f.symm :=
-  rfl
+@[simp] theorem congr_symm (f : V ≃ V') : (WithLp.congr p f).symm = WithLp.congr p f.symm := rfl
 
-theorem congr_trans (f : V ≃ V') (g : V' ≃ V'') :
-    WithLp.congr p (f.trans g) = (WithLp.congr p f).trans (WithLp.congr p g) :=
+theorem congr_trans (f : V ≃ V') (g : V' ≃ V'')
+    : WithLp.congr p (f.trans g) = (WithLp.congr p f).trans (WithLp.congr p g) :=
   rfl
 
 section AddCommGroup
@@ -162,8 +150,8 @@ variable [AddCommGroup V]
 @[simp] lemma toLp_sub (x y : V) : toLp p (x - y) = toLp p x - toLp p y := rfl
 @[simp] lemma ofLp_sub (x y : WithLp p V) : ofLp (x - y) = ofLp x - ofLp y := rfl
 
-@[simp] lemma toLp_neg (x : V) : toLp p (-x) = -toLp p x := rfl
-@[simp] lemma ofLp_neg (x : WithLp p V) : ofLp (-x) = -ofLp x := rfl
+@[simp] lemma toLp_neg (x : V) : toLp p (-x) = - toLp p x := rfl
+@[simp] lemma ofLp_neg (x : WithLp p V) : ofLp (-x) = - ofLp x := rfl
 
 @[simp] lemma toLp_eq_zero {x : V} : toLp p x = 0 ↔ x = 0 := (toLp_injective p).eq_iff
 @[simp] lemma ofLp_eq_zero {x : WithLp p V} : ofLp x = 0 ↔ x = 0 := (ofLp_injective p).eq_iff
@@ -174,13 +162,13 @@ end AddCommGroup
 @[simp] lemma ofLp_smul [SMul K V] (c : K) (x : WithLp p V) : ofLp (c • x) = c • ofLp x := rfl
 
 @[to_additive]
-instance instIsScalarTower [SMul K K'] [SMul K V] [SMul K' V] [IsScalarTower K K' V] :
-    IsScalarTower K K' (WithLp p V) :=
+instance instIsScalarTower [SMul K K'] [SMul K V] [SMul K' V] [IsScalarTower K K' V]
+    : IsScalarTower K K' (WithLp p V) :=
   (WithLp.equiv p V).isScalarTower K K'
 
 @[to_additive]
-instance instSMulCommClass [SMul K V] [SMul K' V] [SMulCommClass K K' V] :
-    SMulCommClass K K' (WithLp p V) :=
+instance instSMulCommClass [SMul K V] [SMul K' V] [SMulCommClass K K' V]
+    : SMulCommClass K K' (WithLp p V) :=
   (WithLp.equiv p V).smulCommClass K K'
 
 variable (K V)
@@ -197,37 +185,35 @@ lemma coe_addEquiv [AddCommGroup V] : ⇑(WithLp.addEquiv p V) = ofLp := rfl
 lemma coe_symm_addEquiv [AddCommGroup V] : ⇑(WithLp.addEquiv p V).symm = toLp p := rfl
 
 @[simp]
-lemma ofLp_sum [AddCommGroup V] {ι : Type*} (s : Finset ι) (f : ι → WithLp p V) :
-    (∑ i ∈ s, f i).ofLp = ∑ i ∈ s, (f i).ofLp :=
+lemma ofLp_sum [AddCommGroup V] {ι : Type*} (s : Finset ι) (f : ι → WithLp p V)
+    : (∑ i ∈ s, f i).ofLp = ∑ i ∈ s, (f i).ofLp :=
   map_sum (WithLp.addEquiv _ _) _ _
 
 @[simp]
-lemma toLp_sum [AddCommGroup V] {ι : Type*} (s : Finset ι) (f : ι → V) :
-    toLp p (∑ i ∈ s, f i) = ∑ i ∈ s, toLp p (f i) :=
+lemma toLp_sum [AddCommGroup V] {ι : Type*} (s : Finset ι) (f : ι → V)
+    : toLp p (∑ i ∈ s, f i) = ∑ i ∈ s, toLp p (f i) :=
   map_sum (WithLp.addEquiv _ _).symm _ _
 
 @[simp]
-lemma ofLp_listSum [AddCommGroup V] (l : List (WithLp p V)) :
-    l.sum.ofLp = (l.map ofLp).sum :=
+lemma ofLp_listSum [AddCommGroup V] (l : List (WithLp p V)) : l.sum.ofLp = (l.map ofLp).sum :=
   map_list_sum (WithLp.addEquiv _ _) _
 
 @[simp]
-lemma toLp_listSum [AddCommGroup V] (l : List V) :
-    toLp p l.sum = (l.map (toLp p)).sum :=
+lemma toLp_listSum [AddCommGroup V] (l : List V) : toLp p l.sum = (l.map (toLp p)).sum :=
   map_list_sum (WithLp.addEquiv _ _).symm _
 
 @[simp]
-lemma ofLp_multisetSum [AddCommGroup V] (s : Multiset (WithLp p V)) :
-    s.sum.ofLp = (s.map ofLp).sum :=
+lemma ofLp_multisetSum [AddCommGroup V] (s : Multiset (WithLp p V))
+    : s.sum.ofLp = (s.map ofLp).sum :=
   map_multiset_sum (WithLp.addEquiv _ _) _
 
 @[simp]
-lemma toLp_multisetSum [AddCommGroup V] (s : Multiset V) :
-    toLp p s.sum = (s.map (toLp p)).sum :=
+lemma toLp_multisetSum [AddCommGroup V] (s : Multiset V) : toLp p s.sum = (s.map (toLp p)).sum :=
   map_multiset_sum (WithLp.addEquiv _ _).symm _
 
-instance instDistribMulAction [Monoid K] [AddCommGroup V] [DistribMulAction K V] :
-    DistribMulAction K (WithLp p V) := fast_instance% (WithLp.addEquiv p V).distribMulAction K
+instance instDistribMulAction [Monoid K] [AddCommGroup V] [DistribMulAction K V]
+    : DistribMulAction K (WithLp p V) :=
+  fast_instance% (WithLp.addEquiv p V).distribMulAction K
 instance instModule [Semiring K] [AddCommGroup V] [Module K V] : Module K (WithLp p V) :=
   fast_instance% (WithLp.addEquiv p V).module K
 
@@ -237,30 +223,33 @@ protected def linearEquiv [Semiring K] [AddCommGroup V] [Module K V] : WithLp p 
   __ := WithLp.addEquiv p V
   map_smul' _ _ := rfl
 
-lemma coe_linearEquiv [Semiring K] [AddCommGroup V] [Module K V] :
-    ⇑(WithLp.linearEquiv p K V) = ofLp := rfl
+lemma coe_linearEquiv [Semiring K] [AddCommGroup V] [Module K V]
+    : ⇑(WithLp.linearEquiv p K V) = ofLp :=
+  rfl
 
-lemma coe_symm_linearEquiv [Semiring K] [AddCommGroup V] [Module K V] :
-    ⇑(WithLp.linearEquiv p K V).symm = toLp p := rfl
+lemma coe_symm_linearEquiv [Semiring K] [AddCommGroup V] [Module K V]
+    : ⇑(WithLp.linearEquiv p K V).symm = toLp p :=
+  rfl
 
 @[simp]
-lemma toAddEquiv_linearEquiv [Semiring K] [AddCommGroup V] [Module K V] :
-    (WithLp.linearEquiv p K V).toAddEquiv = WithLp.addEquiv p V := rfl
+lemma toAddEquiv_linearEquiv [Semiring K] [AddCommGroup V] [Module K V]
+    : (WithLp.linearEquiv p K V).toAddEquiv = WithLp.addEquiv p V :=
+  rfl
 
-instance instModuleFinite
-    [Semiring K] [AddCommGroup V] [Module K V] [Module.Finite K V] :
-    Module.Finite K (WithLp p V) :=
+instance instModuleFinite [Semiring K] [AddCommGroup V] [Module K V] [Module.Finite K V]
+    : Module.Finite K (WithLp p V) :=
   Module.Finite.equiv (WithLp.linearEquiv p K V).symm
 
 end WithLp
 
 section
 
-variable {K K' V} [Semiring K] [Semiring K'] [Semiring K'']
+variable
+  {K K' V} [Semiring K] [Semiring K'] [Semiring K'']
   {σ : K →+* K'} {σ' : K' →+* K} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
   {τ : K' →+* K''} {τ' : K'' →+* K'} [RingHomInvPair τ τ'] [RingHomInvPair τ' τ]
-  {ρ : K →+* K''} {ρ' : K'' →+* K} [RingHomInvPair ρ ρ'] [RingHomInvPair ρ' ρ]
-  [RingHomCompTriple σ τ ρ] [RingHomCompTriple τ' σ' ρ']
+  {ρ : K →+* K''} {ρ' : K'' →+* K}
+  [RingHomInvPair ρ ρ'] [RingHomInvPair ρ' ρ] [RingHomCompTriple σ τ ρ] [RingHomCompTriple τ' σ' ρ']
   [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K' V'] [AddCommGroup V''] [Module K'' V'']
 
 namespace LinearMap
@@ -269,17 +258,13 @@ namespace LinearMap
 def withLpMap (f : V →ₛₗ[σ] V') : WithLp p V →ₛₗ[σ] WithLp p V' :=
   (WithLp.linearEquiv p K' V').symm.toLinearMap ∘ₛₗ f ∘ₛₗ (WithLp.linearEquiv p K V).toLinearMap
 
-@[simp]
-theorem coe_withLpMap (f : V →ₛₗ[σ] V') : ⇑(withLpMap p f) = WithLp.map p f :=
-  rfl
+@[simp] theorem coe_withLpMap (f : V →ₛₗ[σ] V') : ⇑(withLpMap p f) = WithLp.map p f := rfl
+
+@[simp] theorem withLpMap_id : withLpMap p (LinearMap.id (R := K) (M := V)) = LinearMap.id := rfl
 
 @[simp]
-theorem withLpMap_id : withLpMap p (LinearMap.id (R := K) (M := V)) = LinearMap.id :=
-  rfl
-
-@[simp]
-theorem withLpMap_comp (f : V' →ₛₗ[τ] V'') (g : V →ₛₗ[σ] V') :
-    withLpMap p (f ∘ₛₗ g) = withLpMap p f ∘ₛₗ withLpMap p g :=
+theorem withLpMap_comp (f : V' →ₛₗ[τ] V'') (g : V →ₛₗ[σ] V')
+    : withLpMap p (f ∘ₛₗ g) = withLpMap p f ∘ₛₗ withLpMap p g :=
   rfl
 
 end LinearMap
@@ -290,21 +275,16 @@ namespace LinearEquiv
 def withLpCongr (f : V ≃ₛₗ[σ] V') : WithLp p V ≃ₛₗ[σ] WithLp p V' :=
   (WithLp.linearEquiv p K V).trans <| f.trans (WithLp.linearEquiv p K' V').symm
 
-@[simp]
-theorem coe_withLpCongr (f : V ≃ₛₗ[σ] V') : ⇑(withLpCongr p f) = WithLp.map p f :=
-  rfl
+@[simp] theorem coe_withLpCongr (f : V ≃ₛₗ[σ] V') : ⇑(withLpCongr p f) = WithLp.map p f := rfl
 
 @[simp]
-theorem withLpCongr_symm (f : V ≃ₛₗ[σ] V') : (withLpCongr p f).symm = withLpCongr p f.symm :=
-  rfl
+theorem withLpCongr_symm (f : V ≃ₛₗ[σ] V') : (withLpCongr p f).symm = withLpCongr p f.symm := rfl
 
 @[simp]
-theorem withLpCongr_refl :
-    withLpCongr p (LinearEquiv.refl K V) = LinearEquiv.refl K _ :=
-  rfl
+theorem withLpCongr_refl : withLpCongr p (LinearEquiv.refl K V) = LinearEquiv.refl K _ := rfl
 
-theorem withLpCongr_trans (f : V ≃ₛₗ[σ] V') (g : V' ≃ₛₗ[τ] V'') :
-    withLpCongr p (f.trans g) = (withLpCongr p f).trans (withLpCongr p g) :=
+theorem withLpCongr_trans (f : V ≃ₛₗ[σ] V') (g : V' ≃ₛₗ[τ] V'')
+    : withLpCongr p (f.trans g) = (withLpCongr p f).trans (withLpCongr p g) :=
   rfl
 
 end LinearEquiv

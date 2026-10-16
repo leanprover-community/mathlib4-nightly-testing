@@ -18,7 +18,6 @@ bounded lattice homomorphisms.
 
 @[expose] public section
 
-
 universe u
 
 open CategoryTheory
@@ -29,14 +28,11 @@ structure FinBddDistLat extends BddDistLat where
 
 namespace FinBddDistLat
 
-instance : CoeSort FinBddDistLat Type* :=
-  ⟨fun X => X.carrier⟩
+instance : CoeSort FinBddDistLat Type* := ⟨fun X => X.carrier⟩
 
-instance (X : FinBddDistLat) : DistribLattice X :=
-  X.str
+instance (X : FinBddDistLat) : DistribLattice X := X.str
 
-instance (X : FinBddDistLat) : BoundedOrder X :=
-  X.isBoundedOrder
+instance (X : FinBddDistLat) : BoundedOrder X := X.isBoundedOrder
 
 attribute [instance] FinBddDistLat.isFintype
 
@@ -75,16 +71,16 @@ abbrev Hom.hom {X Y : FinBddDistLat.{u}} (f : Hom X Y) :=
   ConcreteCategory.hom (C := FinBddDistLat) f
 
 /-- Typecheck a `BoundedLatticeHom` as a morphism in `FinBddDistLat`. -/
-abbrev ofHom {X Y : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
-    [BoundedOrder Y] [Fintype Y]
-    (f : BoundedLatticeHom X Y) :
-    of X ⟶ of Y :=
+abbrev ofHom
+    {X Y : Type u}
+    [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y] [BoundedOrder Y] [Fintype Y]
+    (f : BoundedLatticeHom X Y)
+    : of X ⟶ of Y :=
   ConcreteCategory.ofHom (C := FinBddDistLat) f
 
 variable {R} in
 /-- Use the `ConcreteCategory.hom` projection for `@[simps]` lemmas. -/
-def Hom.Simps.hom (X Y : FinBddDistLat.{u}) (f : Hom X Y) :=
-  f.hom
+def Hom.Simps.hom (X Y : FinBddDistLat.{u}) (f : Hom X Y) := f.hom
 
 initialize_simps_projections Hom (hom' → hom)
 
@@ -92,71 +88,69 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp]
-lemma coe_id {X : FinBddDistLat} : (𝟙 X : X → X) = id := rfl
+@[simp] lemma coe_id {X : FinBddDistLat} : (𝟙 X : X → X) = id := rfl
 
 @[simp]
 lemma coe_comp {X Y Z : FinBddDistLat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[simp]
-lemma forget_map {X Y : FinBddDistLat} (f : X ⟶ Y) :
-    (forget FinBddDistLat).map f = (f : _ → _) := rfl
+lemma forget_map {X Y : FinBddDistLat} (f : X ⟶ Y) : (forget FinBddDistLat).map f = (f : _ → _) :=
+  rfl
 
 @[ext]
 lemma ext {X Y : FinBddDistLat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[simp]
-lemma hom_id {X : FinBddDistLat} : (𝟙 X : X ⟶ X).hom = BoundedLatticeHom.id _ := rfl
+@[simp] lemma hom_id {X : FinBddDistLat} : (𝟙 X : X ⟶ X).hom = BoundedLatticeHom.id _ := rfl
 
 /- Provided for rewriting. -/
-lemma id_apply (X : FinBddDistLat) (x : X) :
-    (𝟙 X : X ⟶ X) x = x := by simp
+lemma id_apply (X : FinBddDistLat) (x : X) : (𝟙 X : X ⟶ X) x = x := by simp
 
 @[simp]
-lemma hom_comp {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom = g.hom.comp f.hom := rfl
-
-/- Provided for rewriting. -/
-lemma comp_apply {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-    (f ≫ g) x = g (f x) := by simp
-
-@[ext]
-lemma hom_ext {X Y : FinBddDistLat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
-  Hom.ext hf
-
-@[simp]
-lemma hom_ofHom {X Y : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
-    [BoundedOrder Y] [Fintype Y] (f : BoundedLatticeHom X Y) : (ofHom f).hom = f := rfl
-
-@[simp]
-lemma ofHom_hom {X Y : FinBddDistLat} (f : X ⟶ Y) :
-    ofHom (Hom.hom f) = f := rfl
-
-@[simp]
-lemma ofHom_id {X : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] :
-    ofHom (BoundedLatticeHom.id _) = 𝟙 (of X) := rfl
-
-@[simp]
-lemma ofHom_comp {X Y Z : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
-    [BoundedOrder Y] [Fintype Y] [DistribLattice Z] [BoundedOrder Z] [Fintype Z]
-    (f : BoundedLatticeHom X Y) (g : BoundedLatticeHom Y Z) :
-    ofHom (g.comp f) = ofHom f ≫ ofHom g :=
+lemma hom_comp {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).hom = g.hom.comp f.hom :=
   rfl
 
-lemma ofHom_apply {X Y : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
-    [BoundedOrder Y] [Fintype Y]
-    (f : BoundedLatticeHom X Y) (x : X) :
-    (ofHom f) x = f x := rfl
-
-lemma inv_hom_apply {X Y : FinBddDistLat} (e : X ≅ Y) (x : X) : e.inv (e.hom x) = x := by
+/- Provided for rewriting. -/
+lemma comp_apply {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) : (f ≫ g) x = g (f x) := by
   simp
 
-lemma hom_inv_apply {X Y : FinBddDistLat} (e : X ≅ Y) (s : Y) : e.hom (e.inv s) = s := by
-  simp
+@[ext] lemma hom_ext {X Y : FinBddDistLat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
-instance : Inhabited FinBddDistLat :=
-  ⟨of PUnit⟩
+@[simp]
+lemma hom_ofHom
+    {X Y : Type u}
+    [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y] [BoundedOrder Y] [Fintype Y]
+    (f : BoundedLatticeHom X Y)
+    : (ofHom f).hom = f :=
+  rfl
+
+@[simp] lemma ofHom_hom {X Y : FinBddDistLat} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
+
+@[simp]
+lemma ofHom_id {X : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X]
+    : ofHom (BoundedLatticeHom.id _) = 𝟙 (of X) :=
+  rfl
+
+@[simp]
+lemma ofHom_comp
+    {X Y Z : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
+    [BoundedOrder Y] [Fintype Y] [DistribLattice Z] [BoundedOrder Z] [Fintype Z]
+    (f : BoundedLatticeHom X Y) (g : BoundedLatticeHom Y Z)
+    : ofHom (g.comp f) = ofHom f ≫ ofHom g :=
+  rfl
+
+lemma ofHom_apply
+    {X Y : Type u}
+    [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y] [BoundedOrder Y] [Fintype Y]
+    (f : BoundedLatticeHom X Y) (x : X)
+    : (ofHom f) x = f x :=
+  rfl
+
+lemma inv_hom_apply {X Y : FinBddDistLat} (e : X ≅ Y) (x : X) : e.inv (e.hom x) = x := by simp
+
+lemma hom_inv_apply {X Y : FinBddDistLat} (e : X ≅ Y) (s : Y) : e.hom (e.inv s) = s := by simp
+
+instance : Inhabited FinBddDistLat := ⟨of PUnit⟩
 
 instance hasForgetToBddDistLat : HasForget₂ FinBddDistLat BddDistLat where
   forget₂.obj X := ↧X
@@ -166,8 +160,10 @@ instance hasForgetToFinPartOrd : HasForget₂ FinBddDistLat FinPartOrd where
   forget₂.obj X := ↧X
   forget₂.map f := ConcreteCategory.ofHom (.ofClass f.hom)
 
-/-- Constructs an equivalence between finite distributive lattices from an order isomorphism
-between them. -/
+/--
+Constructs an equivalence between finite distributive lattices from an order isomorphism
+between them.
+-/
 @[simps]
 def Iso.mk {α β : FinBddDistLat.{u}} (e : α.carrier ≃o β.carrier) : α ≅ β where
   hom := ofHom e
@@ -191,7 +187,7 @@ def dualEquiv : FinBddDistLat ≌ FinBddDistLat where
 
 end FinBddDistLat
 
-theorem finBddDistLat_dual_comp_forget_to_bddDistLat :
-    FinBddDistLat.dual ⋙ forget₂ FinBddDistLat BddDistLat =
-      forget₂ FinBddDistLat BddDistLat ⋙ BddDistLat.dual :=
+theorem finBddDistLat_dual_comp_forget_to_bddDistLat
+    : FinBddDistLat.dual ⋙ forget₂ FinBddDistLat BddDistLat
+      = forget₂ FinBddDistLat BddDistLat ⋙ BddDistLat.dual :=
   rfl

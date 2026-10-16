@@ -6,7 +6,6 @@ Authors: Benjamin Davidson
 module
 
 public import Mathlib.Analysis.SpecialFunctions.NonIntegrable
-
 import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
@@ -31,21 +30,25 @@ namespace intervalIntegral
 theorem intervalIntegrable_pow : IntervalIntegrable (fun x => x ^ n) μ a b :=
   (continuous_pow n).intervalIntegrable a b
 
-theorem intervalIntegrable_zpow {n : ℤ} (h : 0 ≤ n ∨ (0 : ℝ) ∉ [[a, b]]) :
-    IntervalIntegrable (fun x => x ^ n) μ a b :=
+theorem intervalIntegrable_zpow {n : ℤ} (h : 0 ≤ n ∨ (0 : ℝ) ∉ [[a, b]])
+    : IntervalIntegrable (fun x => x ^ n) μ a b :=
   (continuousOn_id.zpow₀ n fun _ hx => h.symm.imp (ne_of_mem_of_not_mem hx) id).intervalIntegrable
 
-/-- See `intervalIntegrable_rpow'` for a version with a weaker hypothesis on `r`, but assuming the
-measure is volume. -/
-theorem intervalIntegrable_rpow {r : ℝ} (h : 0 ≤ r ∨ (0 : ℝ) ∉ [[a, b]]) :
-    IntervalIntegrable (fun x => x ^ r) μ a b :=
+/--
+See `intervalIntegrable_rpow'` for a version with a weaker hypothesis on `r`, but assuming the
+measure is volume.
+-/
+theorem intervalIntegrable_rpow {r : ℝ} (h : 0 ≤ r ∨ (0 : ℝ) ∉ [[a, b]])
+    : IntervalIntegrable (fun x => x ^ r) μ a b :=
   (continuousOn_id.rpow_const fun _ hx =>
     h.symm.imp (ne_of_mem_of_not_mem hx) id).intervalIntegrable
 
-/-- See `intervalIntegrable_rpow` for a version applying to any locally finite measure, but with a
-stronger hypothesis on `r`. -/
-theorem intervalIntegrable_rpow' {r : ℝ} (h : -1 < r) :
-    IntervalIntegrable (fun x => x ^ r) volume a b := by
+/--
+See `intervalIntegrable_rpow` for a version applying to any locally finite measure, but with a
+stronger hypothesis on `r`.
+-/
+theorem intervalIntegrable_rpow' {r : ℝ} (h : -1 < r)
+    : IntervalIntegrable (fun x => x ^ r) volume a b := by
   suffices ∀ c : ℝ, IntervalIntegrable (fun x => x ^ r) volume 0 c by
     exact IntervalIntegrable.trans (this a).symm (this b)
   have : ∀ c : ℝ, 0 ≤ c → IntervalIntegrable (fun x => x ^ r) volume 0 c := by
@@ -58,19 +61,21 @@ theorem intervalIntegrable_rpow' {r : ℝ} (h : -1 < r) :
     apply integrableOn_deriv_of_nonneg _ hderiv
     · intro x hx; apply rpow_nonneg hx.1.le
     · refine (continuousOn_id.rpow_const ?_).div_const _; intro x _; right; linarith
-  intro c; rcases le_total 0 c with (hc | hc)
+  intro c
+  rcases le_total 0 c with (hc | hc)
   · exact this c hc
   · rw [IntervalIntegrable.iff_comp_neg, neg_zero]
     have m := (this (-c) (by linarith)).smul (cos (r * π))
     rw [intervalIntegrable_iff] at m ⊢
-    refine m.congr_fun ?_ measurableSet_Ioc; intro x hx
+    refine m.congr_fun ?_ measurableSet_Ioc
+    intro x hx
     rw [uIoc_of_le (by linarith : 0 ≤ -c)] at hx
-    simp only [Pi.smul_apply, smul_eq_mul, log_neg_eq_log, mul_comm,
-      rpow_def_of_pos hx.1, rpow_def_of_neg (by linarith [hx.1] : -x < 0)]
+    simp only [Pi.smul_apply, smul_eq_mul, log_neg_eq_log, mul_comm, rpow_def_of_pos hx.1,
+      rpow_def_of_neg (by linarith [hx.1] : -x < 0)]
 
 /-- The power function `x ↦ x^s` is integrable on `(0, t)` iff `-1 < s`. -/
-lemma integrableOn_Ioo_rpow_iff {s t : ℝ} (ht : 0 < t) :
-    IntegrableOn (fun x ↦ x ^ s) (Ioo (0 : ℝ) t) ↔ -1 < s := by
+lemma integrableOn_Ioo_rpow_iff {s t : ℝ} (ht : 0 < t)
+    : IntegrableOn (fun x ↦ x ^ s) (Ioo (0 : ℝ) t) ↔ -1 < s := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   swap
   · rw [← intervalIntegrable_iff_integrableOn_Ioo_of_le ht.le]
@@ -90,10 +95,12 @@ lemma integrableOn_Ioo_rpow_iff {s t : ℝ} (ht : 0 < t) :
     rwa [intervalIntegrable_iff_integrableOn_Ioo_of_le I.le]
   simp [intervalIntegrable_inv_iff, I.ne] at this
 
-/-- See `intervalIntegrable_cpow'` for a version with a weaker hypothesis on `r`, but assuming the
-measure is volume. -/
-theorem intervalIntegrable_cpow {r : ℂ} (h : 0 ≤ r.re ∨ (0 : ℝ) ∉ [[a, b]]) :
-    IntervalIntegrable (fun x : ℝ => (x : ℂ) ^ r) μ a b := by
+/--
+See `intervalIntegrable_cpow'` for a version with a weaker hypothesis on `r`, but assuming the
+measure is volume.
+-/
+theorem intervalIntegrable_cpow {r : ℂ} (h : 0 ≤ r.re ∨ (0 : ℝ) ∉ [[a, b]])
+    : IntervalIntegrable (fun x : ℝ => (x : ℂ) ^ r) μ a b := by
   by_cases h2 : (0 : ℝ) ∉ [[a, b]]
   · -- Easy case #1: 0 ∉ [a, b] -- use continuity.
     refine (continuousOn_of_forall_continuousAt fun x hx => ?_).intervalIntegrable
@@ -120,24 +127,26 @@ theorem intervalIntegrable_cpow {r : ℂ} (h : 0 ≤ r.re ∨ (0 : ℝ) ∉ [[a,
   · -- case `c < 0`: integrand is identically constant, *except* at `x = 0` if `r ≠ 0`.
     apply IntervalIntegrable.symm
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hc.le]
-    rw [← Ioo_union_right hc, integrableOn_union, and_comm]; constructor
+    rw [← Ioo_union_right hc, integrableOn_union, and_comm]
+    constructor
     · exact integrableOn_singleton (by simp) <|
         isFiniteMeasureOnCompacts_of_isLocallyFiniteMeasure.lt_top_of_isCompact isCompact_singleton
     · have : ∀ x : ℝ, x ∈ Ioo c 0 → ‖Complex.exp (↑π * Complex.I * r)‖ = ‖(x : ℂ) ^ r‖ := by
         intro x hx
         rw [Complex.ofReal_cpow_of_nonpos hx.2.le, norm_mul, ← Complex.ofReal_neg,
-          Complex.norm_cpow_eq_rpow_re_of_pos (neg_pos.mpr hx.2), ← h',
-          rpow_zero, one_mul]
+          Complex.norm_cpow_eq_rpow_re_of_pos (neg_pos.mpr hx.2), ← h', rpow_zero, one_mul]
       refine IntegrableOn.congr_fun ?_ this measurableSet_Ioo
       rw [integrableOn_const_iff]
       right
       refine (measure_mono Set.Ioo_subset_Icc_self).trans_lt ?_
       exact isFiniteMeasureOnCompacts_of_isLocallyFiniteMeasure.lt_top_of_isCompact isCompact_Icc
 
-/-- See `intervalIntegrable_cpow` for a version applying to any locally finite measure, but with a
-stronger hypothesis on `r`. -/
-theorem intervalIntegrable_cpow' {r : ℂ} (h : -1 < r.re) :
-    IntervalIntegrable (fun x : ℝ => (x : ℂ) ^ r) volume a b := by
+/--
+See `intervalIntegrable_cpow` for a version applying to any locally finite measure, but with a
+stronger hypothesis on `r`.
+-/
+theorem intervalIntegrable_cpow' {r : ℂ} (h : -1 < r.re)
+    : IntervalIntegrable (fun x : ℝ => (x : ℂ) ^ r) volume a b := by
   suffices ∀ c : ℝ, IntervalIntegrable (fun x => (x : ℂ) ^ r) volume 0 c by
     exact IntervalIntegrable.trans (this a).symm (this b)
   have : ∀ c : ℝ, 0 ≤ c → IntervalIntegrable (fun x => (x : ℂ) ^ r) volume 0 c := by
@@ -157,7 +166,8 @@ theorem intervalIntegrable_cpow' {r : ℂ} (h : -1 < r.re) :
       refine (continuousAt_cpow_const (Or.inl ?_)).comp Complex.continuous_ofReal.continuousAt
       rw [Complex.ofReal_re]
       exact hx.1
-  intro c; rcases le_total 0 c with (hc | hc)
+  intro c
+  rcases le_total 0 c with (hc | hc)
   · exact this c hc
   · rw [IntervalIntegrable.iff_comp_neg, neg_zero]
     have m := (this (-c) (by linarith)).const_mul (Complex.exp (π * Complex.I * r))
@@ -173,8 +183,8 @@ theorem intervalIntegrable_cpow' {r : ℂ} (h : -1 < r.re) :
     simp
 
 /-- The complex power function `x ↦ x^s` is integrable on `(0, t)` iff `-1 < s.re`. -/
-theorem integrableOn_Ioo_cpow_iff {s : ℂ} {t : ℝ} (ht : 0 < t) :
-    IntegrableOn (fun x : ℝ ↦ (x : ℂ) ^ s) (Ioo (0 : ℝ) t) ↔ -1 < s.re := by
+theorem integrableOn_Ioo_cpow_iff {s : ℂ} {t : ℝ} (ht : 0 < t)
+    : IntegrableOn (fun x : ℝ ↦ (x : ℂ) ^ s) (Ioo (0 : ℝ) t) ↔ -1 < s.re := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   swap
   · rw [← intervalIntegrable_iff_integrableOn_Ioo_of_le ht.le]
@@ -189,13 +199,14 @@ theorem integrableOn_Ioo_cpow_iff {s : ℂ} {t : ℝ} (ht : 0 < t) :
 theorem intervalIntegrable_id : IntervalIntegrable (fun x => x) μ a b :=
   continuous_id.intervalIntegrable a b
 
-theorem intervalIntegrable_one_div (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0)
-    (hf : ContinuousOn f [[a, b]]) : IntervalIntegrable (fun x => 1 / f x) μ a b :=
+theorem intervalIntegrable_one_div
+    (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0) (hf : ContinuousOn f [[a, b]])
+    : IntervalIntegrable (fun x => 1 / f x) μ a b :=
   (continuousOn_const.div hf h).intervalIntegrable
 
 @[simp]
-theorem intervalIntegrable_inv (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0)
-    (hf : ContinuousOn f [[a, b]]) : IntervalIntegrable (fun x => (f x)⁻¹) μ a b := by
+theorem intervalIntegrable_inv (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0) (hf : ContinuousOn f [[a, b]])
+    : IntervalIntegrable (fun x => (f x)⁻¹) μ a b := by
   simpa only [one_div] using intervalIntegrable_one_div h hf
 
 @[simp]
@@ -211,9 +222,9 @@ theorem intervalIntegrable_exp : IntervalIntegrable exp μ a b :=
   continuous_exp.intervalIntegrable a b
 
 @[simp]
-theorem _root_.IntervalIntegrable.log (hf : ContinuousOn f [[a, b]])
-    (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0) :
-    IntervalIntegrable (fun x => log (f x)) μ a b :=
+theorem _root_.IntervalIntegrable.log
+    (hf : ContinuousOn f [[a, b]]) (h : ∀ x : ℝ, x ∈ [[a, b]] → f x ≠ 0)
+    : IntervalIntegrable (fun x => log (f x)) μ a b :=
   (ContinuousOn.log hf h).intervalIntegrable
 
 /--
@@ -253,14 +264,14 @@ theorem intervalIntegrable_log' : IntervalIntegrable log volume a b := by
     apply Set.notMem_uIcc_of_lt zero_lt_one at hx
     simpa
 
-theorem intervalIntegrable_one_div_one_add_sq :
-    IntervalIntegrable (fun x : ℝ => 1 / (↑1 + x ^ 2)) μ a b := by
+theorem intervalIntegrable_one_div_one_add_sq
+    : IntervalIntegrable (fun x : ℝ => 1 / (↑1 + x ^ 2)) μ a b := by
   apply Continuous.intervalIntegrable
   fun_prop (discharger := intro; nlinarith)
 
 @[simp]
-theorem intervalIntegrable_inv_one_add_sq :
-    IntervalIntegrable (fun x : ℝ => (↑1 + x ^ 2)⁻¹) μ a b := by
+theorem intervalIntegrable_inv_one_add_sq
+    : IntervalIntegrable (fun x : ℝ => (↑1 + x ^ 2)⁻¹) μ a b := by
   simp [← one_div, intervalIntegrable_one_div_one_add_sq]
 
 end intervalIntegral

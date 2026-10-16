@@ -29,13 +29,13 @@ def Units.opEquiv {M} [Monoid M] : Mᵐᵒᵖˣ ≃* Mˣᵐᵒᵖ where
   map_mul' _ _ := unop_injective <| Units.ext rfl
 
 @[to_additive (attr := simp)]
-theorem Units.coe_unop_opEquiv {M} [Monoid M] (u : Mᵐᵒᵖˣ) :
-    ((Units.opEquiv u).unop : M) = unop (u : Mᵐᵒᵖ) :=
+theorem Units.coe_unop_opEquiv {M} [Monoid M] (u : Mᵐᵒᵖˣ)
+    : ((Units.opEquiv u).unop : M) = unop (u : Mᵐᵒᵖ) :=
   rfl
 
 @[to_additive (attr := simp)]
-theorem Units.coe_opEquiv_symm {M} [Monoid M] (u : Mˣᵐᵒᵖ) :
-    (Units.opEquiv.symm u : Mᵐᵒᵖ) = op (u.unop : M) :=
+theorem Units.coe_opEquiv_symm {M} [Monoid M] (u : Mˣᵐᵒᵖ)
+    : (Units.opEquiv.symm u : Mᵐᵒᵖ) = op (u.unop : M) :=
   rfl
 
 @[to_additive]
@@ -49,8 +49,7 @@ nonrec theorem IsUnit.unop {M} [Monoid M] {m : Mᵐᵒᵖ} (h : IsUnit m) : IsUn
   hu ▸ ⟨unop (Units.opEquiv u), rfl⟩
 
 @[to_additive (attr := simp)]
-theorem isUnit_op {M} [Monoid M] {m : M} : IsUnit (op m) ↔ IsUnit m :=
-  ⟨IsUnit.unop, IsUnit.op⟩
+theorem isUnit_op {M} [Monoid M] {m : M} : IsUnit (op m) ↔ IsUnit m := ⟨IsUnit.unop, IsUnit.op⟩
 
 @[to_additive (attr := simp)]
 theorem isUnit_unop {M} [Monoid M] {m : Mᵐᵒᵖ} : IsUnit (unop m) ↔ IsUnit m :=

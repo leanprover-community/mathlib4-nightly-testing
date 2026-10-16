@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 module
 
 public import Aesop.Frontend
-
 import Aesop.Frontend.Basic
 import Mathlib.Init
 

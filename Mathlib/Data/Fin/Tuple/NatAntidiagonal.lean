@@ -43,13 +43,12 @@ support finitely-supported functions, as in `Finset.finsuppAntidiag` from
 
 @[expose] public section
 
-
 /-! ### Lists -/
-
 
 namespace List.Nat
 
-/-- `List.antidiagonalTuple k n` is a list of all `k`-tuples which sum to `n`.
+/--
+`List.antidiagonalTuple k n` is a list of all `k`-tuples which sum to `n`.
 
 This list contains no duplicates (`List.Nat.nodup_antidiagonalTuple`), and is sorted
 lexicographically (`List.Nat.antidiagonalTuple_pairwise_pi_lex`), starting with `![0, ..., n]`
@@ -61,22 +60,20 @@ and ending with `![n, ..., 0]`.
 ```
 -/
 def antidiagonalTuple : ∀ k, ℕ → List (Fin k → ℕ)
-  | 0, 0 => [![]]
-  | 0, _ + 1 => []
+  | 0, 0 =>
+    [![]]
+  | 0, _ + 1 =>
+    []
   | k + 1, n =>
     (List.Nat.antidiagonal n).flatMap fun ni =>
       (antidiagonalTuple k ni.2).map fun x => Fin.cons ni.1 x
 
-@[simp]
-theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = [![]] :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = [![]] := rfl
 
-@[simp]
-theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 (n + 1) = [] :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 (n + 1) = [] := rfl
 
-theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ} :
-    x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n := by
+theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ}
+    : x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n := by
   induction x using Fin.consInduction generalizing n with
   | elim0 =>
     cases n
@@ -98,7 +95,8 @@ theorem nodup_antidiagonalTuple (k n : ℕ) : List.Nodup (antidiagonalTuple k n)
   · intro i _
     exact (ih i.snd).map (Fin.cons_right_injective (α := fun _ => ℕ) i.fst)
   induction n with
-  | zero => exact List.pairwise_singleton _ _
+  | zero =>
+    exact List.pairwise_singleton _ _
   | succ n n_ih =>
     rw [List.Nat.antidiagonal_succ]
     refine List.Pairwise.cons (fun a ha x hx₁ hx₂ => ?_) (n_ih.map _ fun a b h x hx₁ hx₂ => ?_)
@@ -115,7 +113,8 @@ theorem nodup_antidiagonalTuple (k n : ℕ) : List.Nodup (antidiagonalTuple k n)
       exact h (List.mem_map_of_mem hx₁) (List.mem_map_of_mem hx₂)
 
 theorem antidiagonalTuple_zero_right : ∀ k, antidiagonalTuple k 0 = [0]
-  | 0 => (congr_arg fun x => [x]) <| Subsingleton.elim _ _
+  | 0 =>
+    (congr_arg fun x => [x]) <| Subsingleton.elim _ _
   | k + 1 => by
     rw [antidiagonalTuple, antidiagonal_zero, List.flatMap_singleton,
       antidiagonalTuple_zero_right k, List.map_singleton]
@@ -132,23 +131,24 @@ theorem antidiagonalTuple_one (n : ℕ) : antidiagonalTuple 1 n = [![n]] := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt hx
   rw [add_assoc, add_tsub_cancel_left, antidiagonalTuple_zero_succ]
 
-theorem antidiagonalTuple_two (n : ℕ) :
-    antidiagonalTuple 2 n = (antidiagonal n).map fun i => ![i.1, i.2] := by
+theorem antidiagonalTuple_two (n : ℕ)
+    : antidiagonalTuple 2 n = (antidiagonal n).map fun i => ![i.1, i.2] := by
   rw [antidiagonalTuple]
   simp_rw [antidiagonalTuple_one, List.map_singleton]
   rw [List.map_eq_flatMap]
   rfl
 
-theorem antidiagonalTuple_pairwise_pi_lex :
-    ∀ k n, (antidiagonalTuple k n).Pairwise (Pi.Lex (· < ·) @fun _ => (· < ·))
-  | 0, 0 => List.pairwise_singleton _ _
-  | 0, _ + 1 => List.Pairwise.nil
+theorem antidiagonalTuple_pairwise_pi_lex
+    : ∀ k n, (antidiagonalTuple k n).Pairwise (Pi.Lex (· < ·) @fun _ => (· < ·))
+  | 0, 0 =>
+    List.pairwise_singleton _ _
+  | 0, _ + 1 =>
+    List.Pairwise.nil
   | k + 1, n => by
     simp_rw [antidiagonalTuple, List.pairwise_flatMap, List.pairwise_map, List.mem_map,
       forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
     simp only [mem_antidiagonal, Prod.forall]
-    simp only [Fin.pi_lex_lt_cons_cons, true_and, lt_self_iff_false,
-      false_or]
+    simp only [Fin.pi_lex_lt_cons_cons, true_and, lt_self_iff_false, false_or]
     refine ⟨fun _ _ _ => antidiagonalTuple_pairwise_pi_lex k _, ?_⟩
     induction n with
     | zero =>
@@ -162,23 +162,17 @@ end List.Nat
 
 /-! ### Multisets -/
 
-
 namespace Multiset.Nat
 
 /-- `Multiset.Nat.antidiagonalTuple k n` is a multiset of `k`-tuples summing to `n` -/
-def antidiagonalTuple (k n : ℕ) : Multiset (Fin k → ℕ) :=
-  List.Nat.antidiagonalTuple k n
+def antidiagonalTuple (k n : ℕ) : Multiset (Fin k → ℕ) := List.Nat.antidiagonalTuple k n
 
-@[simp]
-theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = {![]} :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = {![]} := rfl
 
-@[simp]
-theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 n.succ = 0 :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 n.succ = 0 := rfl
 
-theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ} :
-    x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n :=
+theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ}
+    : x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n :=
   List.Nat.mem_antidiagonalTuple
 
 theorem nodup_antidiagonalTuple (k n : ℕ) : (antidiagonalTuple k n).Nodup :=
@@ -191,14 +185,13 @@ theorem antidiagonalTuple_zero_right (k : ℕ) : antidiagonalTuple k 0 = {0} :=
 theorem antidiagonalTuple_one (n : ℕ) : antidiagonalTuple 1 n = {![n]} :=
   congr_arg _ (List.Nat.antidiagonalTuple_one n)
 
-theorem antidiagonalTuple_two (n : ℕ) :
-    antidiagonalTuple 2 n = (antidiagonal n).map fun i => ![i.1, i.2] :=
+theorem antidiagonalTuple_two (n : ℕ)
+    : antidiagonalTuple 2 n = (antidiagonal n).map fun i => ![i.1, i.2] :=
   congr_arg _ (List.Nat.antidiagonalTuple_two n)
 
 end Multiset.Nat
 
 /-! ### Finsets -/
-
 
 namespace Finset.Nat
 
@@ -206,16 +199,12 @@ namespace Finset.Nat
 def antidiagonalTuple (k n : ℕ) : Finset (Fin k → ℕ) :=
   ⟨Multiset.Nat.antidiagonalTuple k n, Multiset.Nat.nodup_antidiagonalTuple k n⟩
 
-@[simp]
-theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = {![]} :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_zero : antidiagonalTuple 0 0 = {![]} := rfl
 
-@[simp]
-theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 n.succ = ∅ :=
-  rfl
+@[simp] theorem antidiagonalTuple_zero_succ (n : ℕ) : antidiagonalTuple 0 n.succ = ∅ := rfl
 
-theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ} :
-    x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n :=
+theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ}
+    : x ∈ antidiagonalTuple k n ↔ ∑ i, x i = n :=
   List.Nat.mem_antidiagonalTuple
 
 theorem antidiagonalTuple_zero_right (k : ℕ) : antidiagonalTuple k 0 = {0} :=
@@ -225,16 +214,18 @@ theorem antidiagonalTuple_zero_right (k : ℕ) : antidiagonalTuple k 0 = {0} :=
 theorem antidiagonalTuple_one (n : ℕ) : antidiagonalTuple 1 n = {![n]} :=
   Finset.eq_of_veq (Multiset.Nat.antidiagonalTuple_one n)
 
-theorem antidiagonalTuple_two (n : ℕ) :
-    antidiagonalTuple 2 n = (antidiagonal n).map (piFinTwoEquiv fun _ => ℕ).symm.toEmbedding :=
+theorem antidiagonalTuple_two (n : ℕ)
+    : antidiagonalTuple 2 n = (antidiagonal n).map (piFinTwoEquiv fun _ => ℕ).symm.toEmbedding :=
   Finset.eq_of_veq (Multiset.Nat.antidiagonalTuple_two n)
 
 section EquivProd
 
-/-- The disjoint union of antidiagonal tuples `Σ n, antidiagonalTuple k n` is equivalent to the
+/--
+The disjoint union of antidiagonal tuples `Σ n, antidiagonalTuple k n` is equivalent to the
 `k`-tuple `Fin k → ℕ`. This is such an equivalence, obtained by mapping `(n, x)` to `x`.
 
-This is the tuple version of `Finset..HasAntidiagonal.sigmaAntidiagonalEquivProd`. -/
+This is the tuple version of `Finset..HasAntidiagonal.sigmaAntidiagonalEquivProd`.
+-/
 @[simps]
 def sigmaAntidiagonalTupleEquivTuple (k : ℕ) : (Σ n, antidiagonalTuple k n) ≃ (Fin k → ℕ) where
   toFun x := x.2

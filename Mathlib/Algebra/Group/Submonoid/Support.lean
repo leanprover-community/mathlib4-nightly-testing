@@ -38,7 +38,7 @@ The support of a submonoid `M` of a group `G` is `M ∩ M⁻¹`,
 the largest subgroup of `G` contained in `M`.
 -/
 @[to_additive (attr := simps!)
-/-- The support of a submonoid `M` of a group `G` is `M ∩ -M`,
+  /-- The support of a submonoid `M` of a group `G` is `M ∩ -M`,
 the largest subgroup of `G` contained in `M`. -/]
 def mulSupport : Subgroup G where
   toSubmonoid := M ⊓ M⁻¹
@@ -55,18 +55,16 @@ theorem mulSupport_toSubmonoid : M.mulSupport.toSubmonoid = M ⊓ M⁻¹ := rfl
 
 /-- The support of a submonoid is the largest subgroup it contains. -/
 @[to_additive /-- The support of a submonoid is the largest subgroup it contains. -/]
-theorem _root_.Subgroup.gc_toSubmonoid_mulSupport :
-    GaloisConnection (α := Subgroup G) Subgroup.toSubmonoid mulSupport :=
-  fun _ _ ↦ by
-    rw [← Subgroup.toSubmonoid_le]
-    grind [mulSupport_toSubmonoid, le_inf_iff, Submonoid.inv_le_inv, Subgroup.toSubmonoid_inv]
+theorem _root_.Subgroup.gc_toSubmonoid_mulSupport
+    : GaloisConnection (α := Subgroup G) Subgroup.toSubmonoid mulSupport := fun _ _ ↦ by
+  rw [← Subgroup.toSubmonoid_le]
+  grind [mulSupport_toSubmonoid, le_inf_iff, Submonoid.inv_le_inv, Subgroup.toSubmonoid_inv]
 
 /-- The support of a submonoid is the largest subgroup it contains. -/
 @[to_additive /-- The support of a submonoid is the largest subgroup it contains. -/]
-def _root_.Subgroup.gciToSubmonoidMulSupport :
-    GaloisCoinsertion (α := Subgroup G) Subgroup.toSubmonoid mulSupport :=
-  Subgroup.gc_toSubmonoid_mulSupport.toGaloisCoinsertion <| by
-    simp [← Subgroup.toSubmonoid_le]
+def _root_.Subgroup.gciToSubmonoidMulSupport
+    : GaloisCoinsertion (α := Subgroup G) Subgroup.toSubmonoid mulSupport :=
+  Subgroup.gc_toSubmonoid_mulSupport.toGaloisCoinsertion <| by simp [← Subgroup.toSubmonoid_le]
 
 /-- A submonoid is pointed if it has zero support. -/
 @[to_additive /-- A submonoid is pointed if it has zero support. -/]
@@ -80,8 +78,9 @@ variable {M}
 theorem mk (h : ∀ x ∈ M, x⁻¹ ∈ M → x = 1) : M.IsMulPointed := h
 
 @[to_additive]
-theorem eq_one_of_mem_of_inv_mem (hM : M.IsMulPointed)
-    {x : G} (hx₁ : x ∈ M) (hx₂ : x⁻¹ ∈ M) : x = 1 := hM _ hx₁ hx₂
+theorem eq_one_of_mem_of_inv_mem (hM : M.IsMulPointed) {x : G} (hx₁ : x ∈ M) (hx₂ : x⁻¹ ∈ M)
+    : x = 1 :=
+  hM _ hx₁ hx₂
 
 @[to_additive (attr := deprecated (since := "2026-09-28"))]
 alias eq_one_of_mem_of_inv_mem₂ := eq_one_of_mem_of_inv_mem
@@ -99,7 +98,7 @@ end IsMulPointed
 
 /-- A submonoid `M` of a group `G` is spanning if `M` generates `G` as a subgroup. -/
 @[to_additive
-/-- A submonoid `M` of a group `G` is spanning if `M` generates `G` as a subgroup. -/]
+  /-- A submonoid `M` of a group `G` is spanning if `M` generates `G` as a subgroup. -/]
 def IsMulSpanning := ∀ a : G, a ∈ M ∨ a⁻¹ ∈ M
 
 namespace IsMulSpanning
@@ -109,16 +108,15 @@ variable {M}
 @[to_additive (attr := deprecated "Trivially true" (since := "2026-09-28"))]
 theorem mk (h : ∀ a : G, a ∈ M ∨ a⁻¹ ∈ M) : M.IsMulSpanning := h
 
-@[to_additive]
-theorem mem_or_inv_mem (hM : M.IsMulSpanning) (a : G) : a ∈ M ∨ a⁻¹ ∈ M := hM a
+@[to_additive] theorem mem_or_inv_mem (hM : M.IsMulSpanning) (a : G) : a ∈ M ∨ a⁻¹ ∈ M := hM a
 
 @[to_additive]
 theorem of_le {N : Submonoid G} (hM : M.IsMulSpanning) (h : M ≤ N) : N.IsMulSpanning := by
   grind [IsMulSpanning, IsConcreteLE.le_iff]
 
 @[to_additive]
-theorem maximal_isMulPointed (hMp : M.IsMulPointed) (hMs : M.IsMulSpanning) :
-    Maximal IsMulPointed M := by
+theorem maximal_isMulPointed (hMp : M.IsMulPointed) (hMs : M.IsMulSpanning)
+    : Maximal IsMulPointed M := by
   grind [Maximal, IsConcreteLE.le_iff, IsMulPointed, IsMulSpanning, one_mem, inv_one]
 
 end IsMulSpanning
@@ -147,13 +145,12 @@ theorem mulSupport_inf : (M ⊓ N).mulSupport = M.mulSupport ⊓ N.mulSupport :=
   Subgroup.gc_toSubmonoid_mulSupport.u_inf
 
 @[to_additive (attr := simp)]
-theorem mulSupport_sInf (s : Set (Submonoid G)) :
-    (sInf s).mulSupport = ⨅ M ∈ s, M.mulSupport :=
+theorem mulSupport_sInf (s : Set (Submonoid G)) : (sInf s).mulSupport = ⨅ M ∈ s, M.mulSupport :=
   Subgroup.gc_toSubmonoid_mulSupport.u_sInf
 
 @[to_additive (attr := simp)]
-theorem mulSupport_iInf {ι : Type*} (f : ι → Submonoid G) :
-    (iInf f).mulSupport = ⨅ i, (f i).mulSupport :=
+theorem mulSupport_iInf {ι : Type*} (f : ι → Submonoid G)
+    : (iInf f).mulSupport = ⨅ i, (f i).mulSupport :=
   Subgroup.gc_toSubmonoid_mulSupport.u_iInf
 
 variable {M'} in
@@ -166,17 +163,18 @@ theorem mulSupport_comap : (M'.comap f).mulSupport = M'.mulSupport.comap f := by
 
 variable {f M} in
 @[to_additive]
-theorem IsMulSpanning.map (hM : M.IsMulSpanning) (hf : Function.Surjective f) :
-    (M.map f).IsMulSpanning := fun x ↦ by grind [IsMulSpanning, mem_map, hf x]
+theorem IsMulSpanning.map (hM : M.IsMulSpanning) (hf : Function.Surjective f)
+    : (M.map f).IsMulSpanning := fun x ↦ by
+  grind [IsMulSpanning, mem_map, hf x]
 
 @[to_additive]
-theorem map_mulSupport_le : M.mulSupport.map f ≤ (M.map f).mulSupport :=
-  fun _ ⟨a, _⟩ ↦ ⟨⟨a, by simp_all⟩, ⟨a⁻¹, by simp_all⟩⟩
+theorem map_mulSupport_le : M.mulSupport.map f ≤ (M.map f).mulSupport := fun _ ⟨a, _⟩ ↦
+  ⟨⟨a, by simp_all⟩, ⟨a⁻¹, by simp_all⟩⟩
 
 variable {f M} in
 @[to_additive]
-theorem mulSupport_map (hsupp : f.ker ≤ M.mulSupport) :
-    (M.map f).mulSupport = M.mulSupport.map f := by
+theorem mulSupport_map (hsupp : f.ker ≤ M.mulSupport)
+    : (M.map f).mulSupport = M.mulSupport.map f := by
   refine le_antisymm (fun _ ⟨⟨a, _⟩, ⟨b, ⟨hb₁, _⟩⟩⟩ ↦ ?_) (map_mulSupport_le f M)
   have : (b * a)⁻¹ * b ∈ M := mul_mem (hsupp (by simp [*])).2 hb₁
   exact ⟨a, by simp_all⟩

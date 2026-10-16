@@ -21,7 +21,6 @@ These are primarily useful to show the General Adjoint Functor Theorem.
 
 public section
 
-
 universe w v u
 
 namespace CategoryTheory
@@ -34,22 +33,24 @@ variable {C : Type u} [Category.{v} C]
 If `C` has (small) products and a small weakly initial set of objects, then it has a weakly initial
 object.
 -/
-theorem has_weakly_initial_of_weakly_initial_set_and_hasProducts [HasProducts.{w} C] {ι : Type w}
-    {B : ι → C} (hB : ∀ A : C, ∃ i, Nonempty (B i ⟶ A)) : ∃ T : C, ∀ X, Nonempty (T ⟶ X) :=
+theorem has_weakly_initial_of_weakly_initial_set_and_hasProducts
+    [HasProducts.{w} C] {ι : Type w} {B : ι → C} (hB : ∀ A : C, ∃ i, Nonempty (B i ⟶ A))
+    : ∃ T : C, ∀ X, Nonempty (T ⟶ X) :=
   ⟨∏ᶜ B, fun X => ⟨Pi.π _ _ ≫ (hB X).choose_spec.some⟩⟩
 
-/-- If `C` has (small) wide equalizers and a weakly initial object, then it has an initial object.
+/--
+If `C` has (small) wide equalizers and a weakly initial object, then it has an initial object.
 
 The initial object is constructed as the wide equalizer of all endomorphisms on the given weakly
 initial object.
 -/
-theorem hasInitial_of_weakly_initial_and_hasWideEqualizers [HasWideEqualizers.{w} C] {T : C}
-    [LocallySmall.{w} C]
-    (hT : ∀ X, Nonempty (T ⟶ X)) : HasInitial C := by
+theorem hasInitial_of_weakly_initial_and_hasWideEqualizers
+    [HasWideEqualizers.{w} C] {T : C} [LocallySmall.{w} C] (hT : ∀ X, Nonempty (T ⟶ X))
+    : HasInitial C := by
   let endos := T ⟶ T
   have : HasLimitsOfShape (WalkingParallelFamily endos) C :=
-    hasLimitsOfShape_of_equivalence
-      (WalkingParallelFamily.equivalenceOfEquiv (equivShrink.{w} endos).symm)
+    hasLimitsOfShape_of_equivalence (WalkingParallelFamily.equivalenceOfEquiv (equivShrink.{w}
+      endos).symm)
   let i := wideEqualizer.ι (id : endos → endos)
   have : Nonempty endos := ⟨𝟙 _⟩
   have : ∀ X : C, Unique (wideEqualizer (id : endos → endos) ⟶ X) := by

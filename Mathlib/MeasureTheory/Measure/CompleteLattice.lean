@@ -25,9 +25,7 @@ open Set ENNReal
 
 namespace MeasureTheory.Measure
 
-variable {α R : Type*} {mα : MeasurableSpace α}
-  {μ μ₁ μ₂ ν ν' : Measure α} {s t : Set α}
-
+variable {α R : Type*} {mα : MeasurableSpace α} {μ μ₁ μ₂ ν ν' : Measure α} {s t : Set α}
 
 /-- Measures are partially ordered. -/
 instance : PartialOrder (Measure α) where
@@ -48,12 +46,11 @@ theorem le_iff' : μ₁ ≤ μ₂ ↔ ∀ s, μ₁ s ≤ μ₂ s := .rfl
 @[gcongr] theorem measure_mono_left (h : μ ≤ ν) (s : Set α) : μ s ≤ ν s := h s
 
 @[gcongr]
-theorem measure_mono_both (h₁ : μ ≤ ν) (h₂ : s ⊆ t) : μ s ≤ ν t :=
-  (h₁ s).trans (measure_mono h₂)
+theorem measure_mono_both (h₁ : μ ≤ ν) (h₂ : s ⊆ t) : μ s ≤ ν t := (h₁ s).trans (measure_mono h₂)
 
 theorem lt_iff : μ < ν ↔ μ ≤ ν ∧ ∃ s, MeasurableSet s ∧ μ s < ν s :=
-  lt_iff_le_not_ge.trans <|
-    and_congr Iff.rfl <| by simp only [le_iff, not_forall, not_le, exists_prop]
+  lt_iff_le_not_ge.trans <| and_congr Iff.rfl <| by
+    simp only [le_iff, not_forall, not_le, exists_prop]
 
 theorem lt_iff' : μ < ν ↔ μ ≤ ν ∧ ∃ s, μ s < ν s :=
   lt_iff_le_not_ge.trans <| and_congr Iff.rfl <| by simp only [le_iff', not_forall, not_le]
@@ -65,14 +62,14 @@ protected theorem le_add_left (h : μ ≤ ν) : μ ≤ ν' + ν := fun s => le_a
 
 protected theorem le_add_right (h : μ ≤ ν) : μ ≤ ν + ν' := fun s => le_add_right (h s)
 
-instance [SMul R ℝ≥0∞] [IsScalarTower R ℝ≥0∞ ℝ≥0∞] [CovariantClass R ℝ≥0∞ (· • ·) (· ≤ ·)] :
-    CovariantClass R (Measure α) (· • ·) (· ≤ ·) where
+instance [SMul R ℝ≥0∞] [IsScalarTower R ℝ≥0∞ ℝ≥0∞] [CovariantClass R ℝ≥0∞ (· • ·) (· ≤ ·)]
+    : CovariantClass R (Measure α) (· • ·) (· ≤ ·) where
   elim c μ ν hμν s := by
     simp only [smul_apply]
     gcongr
 
-instance [SMul R ℝ≥0∞] [LE R] [IsScalarTower R ℝ≥0∞ ℝ≥0∞] [IsOrderedSMul R ℝ≥0∞] :
-    IsOrderedSMul R (Measure α) where
+instance [SMul R ℝ≥0∞] [LE R] [IsScalarTower R ℝ≥0∞ ℝ≥0∞] [IsOrderedSMul R ℝ≥0∞]
+    : IsOrderedSMul R (Measure α) where
   smul_le_smul_left μ ν hμν a s := by gcongr
   smul_le_smul_right a b hab μ s := by
     simp only [smul_apply]
@@ -82,8 +79,8 @@ section sInf
 
 variable {m : Set (Measure α)}
 
-theorem sInf_caratheodory (s : Set α) (hs : MeasurableSet s) :
-    MeasurableSet[(sInf (toOuterMeasure '' m)).caratheodory] s := by
+theorem sInf_caratheodory (s : Set α) (hs : MeasurableSet s)
+    : MeasurableSet[(sInf (toOuterMeasure '' m)).caratheodory] s := by
   rw [OuterMeasure.sInf_eq_boundedBy_sInfGen]
   refine OuterMeasure.boundedBy_caratheodory fun t => ?_
   simp only [OuterMeasure.sInfGen, le_iInf_iff, forall_mem_image, measure_eq_iInf t,
@@ -96,8 +93,7 @@ theorem sInf_caratheodory (s : Set α) (hs : MeasurableSet s) :
   rw [← measure_inter_add_sdiff u hs]
   exact add_le_add (hm <| inter_subset_inter_left _ htu) (hm <| sdiff_subset_sdiff_left htu)
 
-instance : InfSet (Measure α) :=
-  ⟨fun m => (sInf (toOuterMeasure '' m)).toMeasure sInf_caratheodory⟩
+instance : InfSet (Measure α) := ⟨fun m => (sInf (toOuterMeasure '' m)).toMeasure sInf_caratheodory⟩
 
 theorem sInf_apply (hs : MeasurableSet s) : sInf m s = sInf (toOuterMeasure '' m) s :=
   toMeasure_apply _ _ hs
@@ -114,30 +110,32 @@ private theorem measure_le_sInf (h : ∀ μ' ∈ m, μ ≤ μ') : μ ≤ sInf m 
 instance : CompleteSemilatticeInf (Measure α) where
   isGLB_sInf _ := private ⟨fun _ ↦ measure_sInf_le, fun _ ↦ measure_le_sInf⟩
 
-instance : CompleteLattice (Measure α) :=
-  { completeLatticeOfCompleteSemilatticeInf (Measure α) with
-    top :=
-      { toOuterMeasure := ⊤,
-        m_iUnion := by
-          intro f _ _
-          refine (measure_iUnion_le _).antisymm ?_
-          if hne : (⋃ i, f i).Nonempty then
-            rw [OuterMeasure.top_apply hne]
-            exact le_top
-          else
-            simp_all [Set.not_nonempty_iff_eq_empty]
-        trim_le := le_top },
-    le_top := fun _ => toOuterMeasure_le.mp le_top
-    bot := 0
-    bot_le := fun _a _s => bot_le }
+instance : CompleteLattice (Measure α) := {
+  completeLatticeOfCompleteSemilatticeInf (Measure α) with
+  top := {
+    toOuterMeasure := ⊤
+    m_iUnion := by
+      intro f _ _
+      refine (measure_iUnion_le _).antisymm ?_
+      if hne : (⋃ i, f i).Nonempty then
+        rw [OuterMeasure.top_apply hne]
+        exact le_top
+      else
+        simp_all [Set.not_nonempty_iff_eq_empty]
+    trim_le := le_top
+  }
+  le_top := fun _ => toOuterMeasure_le.mp le_top
+  bot := 0
+  bot_le := fun _a _s => bot_le
+}
 
 end sInf
 
-lemma inf_apply {s : Set α} (hs : MeasurableSet s) :
-    (μ ⊓ ν) s = sInf {m | ∃ t, m = μ (t ∩ s) + ν (tᶜ ∩ s)} := by
+lemma inf_apply {s : Set α} (hs : MeasurableSet s)
+    : (μ ⊓ ν) s = sInf {m | ∃ t, m = μ (t ∩ s) + ν (tᶜ ∩ s)} := by
   -- `(μ ⊓ ν) s` is defined as `⊓ (t : ℕ → Set α) (ht : s ⊆ ⋃ n, t n), ∑' n, μ (t n) ⊓ ν (t n)`
-  rw [← sInf_pair, Measure.sInf_apply hs, OuterMeasure.sInf_apply
-    (image_nonempty.2 <| insert_nonempty μ {ν})]
+  rw [← sInf_pair, Measure.sInf_apply hs,
+    OuterMeasure.sInf_apply (image_nonempty.2 <| insert_nonempty μ {ν})]
   refine le_antisymm (le_sInf fun m ⟨t, ht₁⟩ ↦ ?_) (le_iInf₂ fun t' ht' ↦ ?_)
   · subst ht₁
     -- We first show `(μ ⊓ ν) s ≤ μ (t ∩ s) + ν (tᶜ ∩ s)` for any `t : Set α`
@@ -187,7 +185,8 @@ lemma inf_apply {s : Set α} (hs : MeasurableSet s) :
     rw [ENNReal.summable.tsum_union_disjoint (f := fun n ↦ μ (t' n) ⊓ ν (t' n)) ?_ ENNReal.summable]
     · refine add_le_add (tsum_congr ?_).le (tsum_congr ?_).le
       · rw [Subtype.forall]
-        intro n hn; simpa
+        intro n hn
+        simpa
       · rw [Subtype.forall]
         intro n hn
         rw [mem_ofPred_eq] at hn
@@ -198,43 +197,30 @@ lemma inf_apply {s : Set α} (hs : MeasurableSet s) :
       exact False.elim <| hk₂.not_ge hk₁
 
 @[simp]
-theorem _root_.MeasureTheory.OuterMeasure.toMeasure_top :
-    (⊤ : OuterMeasure α).toMeasure (by rw [OuterMeasure.top_caratheodory]; exact le_top) =
-      (⊤ : Measure α) :=
+theorem _root_.MeasureTheory.OuterMeasure.toMeasure_top
+    : (⊤ : OuterMeasure α).toMeasure (by rw [OuterMeasure.top_caratheodory]; exact le_top)
+      = (⊤ : Measure α) :=
   toOuterMeasure_toMeasure (μ := ⊤)
 
-@[simp]
-theorem toOuterMeasure_top :
-    (⊤ : Measure α).toOuterMeasure = (⊤ : OuterMeasure α) :=
-  rfl
+@[simp] theorem toOuterMeasure_top : (⊤ : Measure α).toOuterMeasure = (⊤ : OuterMeasure α) := rfl
 
-@[simp]
-theorem top_add : ⊤ + μ = ⊤ :=
-  top_unique <| Measure.le_add_right le_rfl
+@[simp] theorem top_add : ⊤ + μ = ⊤ := top_unique <| Measure.le_add_right le_rfl
 
-@[simp]
-theorem add_top : μ + ⊤ = ⊤ :=
-  top_unique <| Measure.le_add_left le_rfl
+@[simp] theorem add_top : μ + ⊤ = ⊤ := top_unique <| Measure.le_add_left le_rfl
 
-protected theorem zero_le (μ : Measure α) : 0 ≤ μ :=
-  bot_le
+protected theorem zero_le (μ : Measure α) : 0 ≤ μ := bot_le
 
-theorem nonpos_iff_eq_zero' : μ ≤ 0 ↔ μ = 0 :=
-  μ.zero_le.ge_iff_eq'
+theorem nonpos_iff_eq_zero' : μ ≤ 0 ↔ μ = 0 := μ.zero_le.ge_iff_eq'
 
 @[simp]
 theorem measure_univ_eq_zero : μ univ = 0 ↔ μ = 0 :=
-  ⟨fun h => bot_unique fun s => (h ▸ measure_mono (subset_univ s) : μ s ≤ 0), fun h =>
-    h.symm ▸ rfl⟩
+  ⟨fun h => bot_unique fun s => (h ▸ measure_mono (subset_univ s) : μ s ≤ 0), fun h => h.symm ▸ rfl⟩
 
-theorem measure_univ_ne_zero : μ univ ≠ 0 ↔ μ ≠ 0 :=
-  measure_univ_eq_zero.not
+theorem measure_univ_ne_zero : μ univ ≠ 0 ↔ μ ≠ 0 := measure_univ_eq_zero.not
 
 instance [NeZero μ] : NeZero (μ univ) := ⟨measure_univ_ne_zero.2 <| NeZero.ne μ⟩
 
-@[simp]
-theorem measure_univ_pos : 0 < μ univ ↔ μ ≠ 0 :=
-  pos_iff_ne_zero.trans measure_univ_ne_zero
+@[simp] theorem measure_univ_pos : 0 < μ univ ↔ μ ≠ 0 := pos_iff_ne_zero.trans measure_univ_ne_zero
 
 lemma nonempty_of_neZero (μ : Measure α) [NeZero μ] : Nonempty α :=
   (isEmpty_or_nonempty α).resolve_left fun h ↦ by

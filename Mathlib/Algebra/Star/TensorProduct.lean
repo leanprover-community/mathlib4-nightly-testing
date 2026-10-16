@@ -18,18 +18,16 @@ defines the `StarAddMonoid` and `StarModule` instances for tensor products.
 public section
 
 namespace TensorProduct
-variable {R A B : Type*}
-  [CommSemiring R] [StarRing R]
-  [AddCommMonoid A] [StarAddMonoid A] [Module R A] [StarModule R A]
-  [AddCommMonoid B] [StarAddMonoid B] [Module R B] [StarModule R B]
+variable
+  {R A B : Type*} [CommSemiring R] [StarRing R] [AddCommMonoid A] [StarAddMonoid A] [Module R A]
+  [StarModule R A] [AddCommMonoid B] [StarAddMonoid B] [Module R B] [StarModule R B]
 
 open scoped TensorProduct
 
 instance : Star (A ⊗[R] B) where
   star x := congr (starLinearEquiv R) (starLinearEquiv R) x
 
-@[simp]
-theorem star_tmul (x : A) (y : B) : star (x ⊗ₜ[R] y) = star x ⊗ₜ[R] star y := rfl
+@[simp] theorem star_tmul (x : A) (y : B) : star (x ⊗ₜ[R] y) = star x ⊗ₜ[R] star y := rfl
 
 noncomputable instance : InvolutiveStar (A ⊗[R] B) where
   star_involutive x := by
@@ -43,7 +41,8 @@ noncomputable instance : StarAddMonoid (A ⊗[R] B) where
 instance : StarModule R (A ⊗[R] B) where
   star_smul := map_smulₛₗ _
 
-theorem _root_.starLinearEquiv_tensor :
-    starLinearEquiv R (A := A ⊗[R] B) = congr (starLinearEquiv R) (starLinearEquiv R) := rfl
+theorem _root_.starLinearEquiv_tensor
+    : starLinearEquiv R (A := A ⊗[R] B) = congr (starLinearEquiv R) (starLinearEquiv R) :=
+  rfl
 
 end TensorProduct

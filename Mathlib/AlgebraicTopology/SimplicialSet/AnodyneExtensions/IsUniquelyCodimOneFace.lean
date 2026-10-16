@@ -41,9 +41,8 @@ def IsUniquelyCodimOneFace : Prop :=
 
 namespace IsUniquelyCodimOneFace
 
-lemma iff {d : ℕ} (x : X _⦋d⦌) (y : X _⦋d + 1⦌) :
-    IsUniquelyCodimOneFace (S.mk x) (S.mk y) ↔
-      ∃! (i : Fin (d + 2)), X.δ i y = x := by
+lemma iff {d : ℕ} (x : X _⦋d⦌) (y : X _⦋d + 1⦌)
+    : IsUniquelyCodimOneFace (S.mk x) (S.mk y) ↔ ∃! (i : Fin (d + 2)), X.δ i y = x := by
   constructor
   · rintro ⟨_, ⟨f, ⟨_, h₁⟩, h₂⟩⟩
     obtain ⟨i, rfl⟩ := SimplexCategory.eq_δ_of_mono f
@@ -66,42 +65,42 @@ variable {d : ℕ} (hd : x.dim = d)
 lemma cast : IsUniquelyCodimOneFace (x.cast hd) (y.cast (d := d + 1) (by rw [hxy.dim_eq, hd])) := by
   simpa only [cast_eq_self]
 
-lemma existsUnique_δ_cast_simplex :
-    ∃! (i : Fin (d + 2)), X.δ i (y.cast (by rw [hxy.dim_eq, hd])).simplex =
-      (x.cast hd).simplex := by
+lemma existsUnique_δ_cast_simplex
+    : ∃! (i : Fin (d + 2)), X.δ i (y.cast (by rw [hxy.dim_eq, hd])).simplex =
+        (x.cast hd).simplex := by
   simpa only [S.cast, iff] using hxy.cast hd
 
 include hxy in
-/-- When a `d`-dimensional simplex `x` is a `1`-codimensional face of `y`, this is
+/--
+When a `d`-dimensional simplex `x` is a `1`-codimensional face of `y`, this is
 the only `i : Fin (d + 2)`, such that `X.δ i y = x` (with an abuse of notation:
-see `δ_index` and `δ_eq_iff` for well typed statements). -/
-noncomputable def index : Fin (d + 2) :=
-  (hxy.existsUnique_δ_cast_simplex hd).exists.choose
+see `δ_index` and `δ_eq_iff` for well typed statements).
+-/
+noncomputable def index : Fin (d + 2) := (hxy.existsUnique_δ_cast_simplex hd).exists.choose
 
-lemma δ_index :
-    X.δ (hxy.index hd) (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex :=
+lemma δ_index
+    : X.δ (hxy.index hd) (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex :=
   (hxy.existsUnique_δ_cast_simplex hd).exists.choose_spec
 
-lemma δ_eq_iff (i : Fin (d + 2)) :
-    X.δ i (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex ↔
-      i = hxy.index hd :=
-  ⟨fun h ↦ (hxy.existsUnique_δ_cast_simplex hd).unique h (hxy.δ_index hd),
-    by rintro rfl; apply δ_index⟩
+lemma δ_eq_iff (i : Fin (d + 2))
+    : X.δ i (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex ↔ i = hxy.index hd := ⟨
+  fun h ↦ (hxy.existsUnique_δ_cast_simplex hd).unique h (hxy.δ_index hd),
+  by rintro rfl; apply δ_index
+⟩
 
 include hxy in
 lemma le : x ≤ y := by
   have := hxy.δ_index rfl
   simp only [cast_simplex_rfl] at this
-  rw [S.le_def, ← y.subcomplex_cast hxy.dim_eq, Subfunctor.ofSection_le_iff,
-    ← this]
+  rw [S.le_def, ← y.subcomplex_cast hxy.dim_eq, Subfunctor.ofSection_le_iff, ← this]
   exact ⟨(SimplexCategory.δ _).op, rfl⟩
 
 include hxy in
-lemma unique (f : ⦋d⦌ ⟶ ⦋d + 1⦌) [Mono f]
-    (hf : X.map f.op (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex) :
-    f = SimplexCategory.δ (hxy.index hd) :=
-  (hxy.cast hd).2.unique ⟨by dsimp; infer_instance, hf⟩
-    ⟨by dsimp; infer_instance, hxy.δ_index hd⟩
+lemma unique
+    (f : ⦋d⦌ ⟶ ⦋d + 1⦌) [Mono f]
+    (hf : X.map f.op (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex)
+    : f = SimplexCategory.δ (hxy.index hd) :=
+  (hxy.cast hd).2.unique ⟨by dsimp; infer_instance, hf⟩ ⟨by dsimp; infer_instance, hxy.δ_index hd⟩
 
 end
 
@@ -116,28 +115,27 @@ lemma op : (S.opEquiv.symm x).IsUniquelyCodimOneFace (S.opEquiv.symm y) := by
   simpa [← hxy.δ_eq_iff rfl] using hi
 
 include hxy in
-lemma of_iso {Y : SSet.{u}} (e : X ≅ Y) :
-    (S.mk (e.hom.app _ x.simplex)).IsUniquelyCodimOneFace (S.mk (e.hom.app _ y.simplex)) := by
+lemma of_iso {Y : SSet.{u}} (e : X ≅ Y)
+    : (S.mk (e.hom.app _ x.simplex)).IsUniquelyCodimOneFace (S.mk (e.hom.app _ y.simplex)) := by
   obtain ⟨d, x, rfl⟩ := x.mk_surjective
   obtain ⟨d', y, rfl⟩ := y.mk_surjective
   obtain rfl : d' = d + 1 := hxy.dim_eq
   rw [iff] at hxy ⊢
   simpa [← SSet.δ_naturality_apply, dsimp% (e.app (Opposite.op ⦋d⦌)).toEquiv.apply_eq_iff_eq]
 
-lemma iff_of_iso {Y : SSet.{u}} (e : X ≅ Y) (x y : X.S) :
-    (S.mk (e.hom.app _ x.simplex)).IsUniquelyCodimOneFace (S.mk (e.hom.app _ y.simplex)) ↔
-      x.IsUniquelyCodimOneFace y :=
+lemma iff_of_iso {Y : SSet.{u}} (e : X ≅ Y) (x y : X.S)
+    : (S.mk (e.hom.app _ x.simplex)).IsUniquelyCodimOneFace (S.mk (e.hom.app _ y.simplex))
+      ↔ x.IsUniquelyCodimOneFace y :=
   ⟨fun hxy' ↦ by simpa using hxy'.of_iso e.symm, fun hxy ↦ hxy.of_iso e⟩
 
-lemma index_of_iso {Y : SSet.{u}} (e : X ≅ Y) {d : ℕ} (hd : x.dim = d) :
-    (hxy.of_iso e).index hd = hxy.index hd := by
+lemma index_of_iso {Y : SSet.{u}} (e : X ≅ Y) {d : ℕ} (hd : x.dim = d)
+    : (hxy.of_iso e).index hd = hxy.index hd := by
   obtain ⟨dx, x, rfl⟩ := x.mk_surjective
   obtain ⟨dy, y, rfl⟩ := y.mk_surjective
   obtain rfl : dy = dx + 1 := hxy.dim_eq
   obtain rfl : dx = d := hd
   symm
-  simp [← (hxy.of_iso e).δ_eq_iff rfl,
-    ← SSet.δ_naturality_apply, dsimp% hxy.δ_index rfl]
+  simp [← (hxy.of_iso e).δ_eq_iff rfl, ← SSet.δ_naturality_apply, dsimp% hxy.δ_index rfl]
 
 end IsUniquelyCodimOneFace
 

@@ -27,11 +27,12 @@ open CategoryTheory Category
 
 namespace CategoryTheory.ObjectProperty
 
-instance {C : Type*} [Category* C] (P : ObjectProperty C)
-    {A : Type*} [AddMonoid A] [HasShift C A]
-    [P.IsStableUnderShift A] [Preadditive C] (n : A)
-    [(shiftFunctor C n).Additive] :
-    (shiftFunctor P.FullSubcategory n).Additive := by
+instance
+    {C : Type*} [Category* C]
+    (P : ObjectProperty C)
+    {A : Type*} [AddMonoid A] [HasShift C A] [P.IsStableUnderShift A] [Preadditive C]
+    (n : A) [(shiftFunctor C n).Additive]
+    : (shiftFunctor P.FullSubcategory n).Additive := by
   have := Functor.additive_of_iso (P.ι.commShiftIso n).symm
   apply Functor.additive_of_comp_faithful _ P.ι
 

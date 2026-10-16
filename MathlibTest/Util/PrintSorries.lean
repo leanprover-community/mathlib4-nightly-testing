@@ -73,8 +73,7 @@ theorem thm_sorry (n : Nat) : n = sorry := sorry
 
 /-- warning: declaration uses `sorry` -/
 #guard_msgs in
-theorem thm_use_it (m n : Nat) : m = n := by
-  rw [thm_sorry m, thm_sorry n]
+theorem thm_use_it (m n : Nat) : m = n := by rw [thm_sorry m, thm_sorry n]
 
 /--
 info: thm_sorry has sorry of type
@@ -160,13 +159,15 @@ info: thm' has sorry of type
 The `sorry` pretty printing can handle free variables.
 -/
 /-- warning: declaration uses `sorry` -/
-#guard_msgs in def g (α : Type) : α := sorry
+#guard_msgs in
+def g (α : Type) : α := sorry
 
 /--
 info: g has sorry of type
   α
 -/
-#guard_msgs in #print sorries g
+#guard_msgs in
+#print sorries g
 
 /-!
 `#print sorries in`

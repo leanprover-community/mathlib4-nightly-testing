@@ -6,7 +6,6 @@ Authors: Reid Barton
 module
 
 public import Mathlib.Topology.Category.TopCat.Adjunctions
-
 import Mathlib.CategoryTheory.Functor.EpiMono
 
 /-!
@@ -19,7 +18,6 @@ topological spaces if and only if it is injective.
 
 public section
 
-
 universe u
 
 open CategoryTheory
@@ -29,8 +27,7 @@ open TopCat
 namespace TopCat
 
 theorem epi_iff_surjective {X Y : TopCat.{u}} (f : X ⟶ Y) : Epi f ↔ Function.Surjective f := by
-  suffices Epi f ↔ Epi ((forget TopCat).map f) by
-    rw [this, CategoryTheory.ofHom_epi_iff_surjective]
+  suffices Epi f ↔ Epi ((forget TopCat).map f) by rw [this, CategoryTheory.ofHom_epi_iff_surjective]
   constructor
   · intro
     apply Functor.map_epi -- was `infer_instance`

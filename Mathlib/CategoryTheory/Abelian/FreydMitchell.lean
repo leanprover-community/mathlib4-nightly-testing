@@ -91,23 +91,23 @@ open ZeroObject in
 instance : Nonempty (AsSmall.{max u v} C) := ⟨0⟩
 
 variable (C) in
-/-- Given an abelian category `C`, this is a ring such that there is a full, faithful and exact
+/--
+Given an abelian category `C`, this is a ring such that there is a full, faithful and exact
 embedding `C ⥤ ModuleCat (EmbeddingRing C)`.
 
-It is probably not a good idea to unfold this. -/
+It is probably not a good idea to unfold this.
+-/
 def EmbeddingRing : Type (max u v) :=
-  IsGrothendieckAbelian.OppositeModuleEmbedding.EmbeddingRing
-    (Ind.yoneda (C := (AsSmall.{max u v} C)ᵒᵖ)).rightOp
+  IsGrothendieckAbelian.OppositeModuleEmbedding.EmbeddingRing (Ind.yoneda (C :=
+    (AsSmall.{max u v} C)ᵒᵖ)).rightOp
 
 noncomputable instance : Ring (EmbeddingRing C) :=
-  inferInstanceAs <| Ring <|
-    IsGrothendieckAbelian.OppositeModuleEmbedding.EmbeddingRing
-      (Ind.yoneda (C := (AsSmall.{max u v} C)ᵒᵖ)).rightOp
+  inferInstanceAs <| Ring <| IsGrothendieckAbelian.OppositeModuleEmbedding.EmbeddingRing (Ind.yoneda
+    (C := (AsSmall.{max u v} C)ᵒᵖ)).rightOp
 
 set_option backward.privateInPublic true in
 variable (C) in
-private def F : C ⥤ AsSmall.{max u v} C :=
-  AsSmall.equiv.functor
+private def F : C ⥤ AsSmall.{max u v} C := AsSmall.equiv.functor
 
 set_option backward.privateInPublic true in
 variable (C) in
@@ -116,19 +116,20 @@ private noncomputable def G : AsSmall.{max u v} C ⥤ (Ind (AsSmall.{max u v} C)
 
 set_option backward.privateInPublic true in
 variable (C) in
-private noncomputable def H :
-    (Ind (AsSmall.{max u v} C)ᵒᵖ)ᵒᵖ ⥤ ModuleCat.{max u v} (EmbeddingRing C) :=
+private noncomputable def H
+    : (Ind (AsSmall.{max u v} C)ᵒᵖ)ᵒᵖ ⥤ ModuleCat.{max u v} (EmbeddingRing C) :=
   IsGrothendieckAbelian.OppositeModuleEmbedding.embedding (G C)
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 variable (C) in
-/-- This is the full, faithful and exact embedding `C ⥤ ModuleCat (EmbeddingRing C)`. The fact that
+/--
+This is the full, faithful and exact embedding `C ⥤ ModuleCat (EmbeddingRing C)`. The fact that
 such a functor exists is called the Freyd-Mitchell embedding theorem.
 
-It is probably not a good idea to unfold this. -/
-noncomputable def functor : C ⥤ ModuleCat.{max u v} (EmbeddingRing C) :=
-  F C ⋙ G C ⋙ H C
+It is probably not a good idea to unfold this.
+-/
+noncomputable def functor : C ⥤ ModuleCat.{max u v} (EmbeddingRing C) := F C ⋙ G C ⋙ H C
 
 instance : (functor C).Faithful := by
   rw [functor]
@@ -162,11 +163,13 @@ instance : PreservesFiniteColimits (functor C) := by
 
 end FreydMitchell
 
-/-- The Freyd-Mitchell embedding theorem. See also `FreydMitchell.functor` for a functor which
-has the relevant instances. -/
+/--
+The Freyd-Mitchell embedding theorem. See also `FreydMitchell.functor` for a functor which
+has the relevant instances.
+-/
 @[stacks 05PP]
-theorem freyd_mitchell (C : Type u) [Category.{v} C] [Abelian C] :
-    ∃ (R : Type (max u v)) (_ : Ring R) (F : C ⥤ ModuleCat.{max u v} R),
+theorem freyd_mitchell (C : Type u) [Category.{v} C] [Abelian C]
+    : ∃ (R : Type (max u v)) (_ : Ring R) (F : C ⥤ ModuleCat.{max u v} R),
       F.Full ∧ F.Faithful ∧ PreservesFiniteLimits F ∧ PreservesFiniteColimits F :=
   ⟨_, _, FreydMitchell.functor C, inferInstance, inferInstance, inferInstance, inferInstance⟩
 

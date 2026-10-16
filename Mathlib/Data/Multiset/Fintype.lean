@@ -36,46 +36,50 @@ multiset enumeration
 
 @[expose] public section
 
-
 variable {α β : Type*} [DecidableEq α] [DecidableEq β] {m : Multiset α}
 
 namespace Multiset
 
-/-- Auxiliary definition for the `CoeSort` instance. This prevents the `CoeOut m α`
-instance from inadvertently applying to other sigma types. -/
+/--
+Auxiliary definition for the `CoeSort` instance. This prevents the `CoeOut m α`
+instance from inadvertently applying to other sigma types.
+-/
 def ToType (m : Multiset α) : Type _ := (x : α) × Fin (m.count x)
 
-/-- Create a type that has the same number of elements as the multiset.
+/--
+Create a type that has the same number of elements as the multiset.
 Terms of this type are triples `⟨x, ⟨i, h⟩⟩` where `x : α`, `i : ℕ`, and `h : i < m.count x`.
-This way repeated elements of a multiset appear multiple times from different values of `i`. -/
+This way repeated elements of a multiset appear multiple times from different values of `i`.
+-/
 instance : CoeSort (Multiset α) (Type _) := ⟨Multiset.ToType⟩
 
 example : DecidableEq m := inferInstanceAs <| DecidableEq ((x : α) × Fin (m.count x))
 
-/-- Constructor for terms of the coercion of `m` to a type.
-This helps Lean pick up the correct instances. -/
+/--
+Constructor for terms of the coercion of `m` to a type.
+This helps Lean pick up the correct instances.
+-/
 @[reducible, match_pattern]
-def mkToType (m : Multiset α) (x : α) (i : Fin (m.count x)) : m :=
-  ⟨x, i⟩
+def mkToType (m : Multiset α) (x : α) (i : Fin (m.count x)) : m := ⟨x, i⟩
 
-/-- As a convenience, there is a coercion from `m : Type*` to `α` by projecting onto the first
-component. -/
-instance instCoeSortMultisetType.instCoeOutToType : CoeOut m α :=
-  ⟨fun x ↦ x.1⟩
+/--
+As a convenience, there is a coercion from `m : Type*` to `α` by projecting onto the first
+component.
+-/
+instance instCoeSortMultisetType.instCoeOutToType : CoeOut m α := ⟨fun x ↦ x.1⟩
 
-theorem coe_mk {x : α} {i : Fin (m.count x)} : ↑(m.mkToType x i) = x :=
-  rfl
+theorem coe_mk {x : α} {i : Fin (m.count x)} : ↑(m.mkToType x i) = x := rfl
 
 @[simp] lemma coe_mem {x : m} : ↑x ∈ m := Multiset.count_pos.mp (by have := x.2.2; lia)
 
 @[simp]
-protected theorem forall_coe (p : m → Prop) :
-    (∀ x : m, p x) ↔ ∀ (x : α) (i : Fin (m.count x)), p ⟨x, i⟩ :=
+protected theorem forall_coe (p : m → Prop)
+    : (∀ x : m, p x) ↔ ∀ (x : α) (i : Fin (m.count x)), p ⟨x, i⟩ :=
   Sigma.forall
 
 @[simp]
-protected theorem exists_coe (p : m → Prop) :
-    (∃ x : m, p x) ↔ ∃ (x : α) (i : Fin (m.count x)), p ⟨x, i⟩ :=
+protected theorem exists_coe (p : m → Prop)
+    : (∃ x : m, p x) ↔ ∃ (x : α) (i : Fin (m.count x)), p ⟨x, i⟩ :=
   Sigma.exists
 
 set_option backward.isDefEq.respectTransparency false in
@@ -91,37 +95,41 @@ instance : Fintype { p : α × ℕ | p.2 < m.count p.1 } :=
       simp only [← and_assoc, exists_eq_right, and_iff_right_iff_imp]
       exact fun h ↦ Multiset.count_pos.mp (by lia))
 
-/-- Construct a finset whose elements enumerate the elements of the multiset `m`.
+/--
+Construct a finset whose elements enumerate the elements of the multiset `m`.
 The `ℕ` component is used to differentiate between equal elements: if `x` appears `n` times
-then `(x, 0)`, ..., and `(x, n-1)` appear in the `Finset`. -/
-def toEnumFinset (m : Multiset α) : Finset (α × ℕ) :=
-  { p : α × ℕ | p.2 < m.count p.1 }.toFinset
+then `(x, 0)`, ..., and `(x, n-1)` appear in the `Finset`.
+-/
+def toEnumFinset (m : Multiset α) : Finset (α × ℕ) := { p : α × ℕ | p.2 < m.count p.1 }.toFinset
 
 @[simp]
-theorem mem_toEnumFinset (m : Multiset α) (p : α × ℕ) :
-    p ∈ m.toEnumFinset ↔ p.2 < m.count p.1 :=
+theorem mem_toEnumFinset (m : Multiset α) (p : α × ℕ) : p ∈ m.toEnumFinset ↔ p.2 < m.count p.1 :=
   Set.mem_toFinset
 
 theorem mem_of_mem_toEnumFinset {p : α × ℕ} (h : p ∈ m.toEnumFinset) : p.1 ∈ m :=
   have := (m.mem_toEnumFinset p).mp h; Multiset.count_pos.mp (by lia)
 
-@[simp] lemma toEnumFinset_filter_eq (m : Multiset α) (a : α) :
-    {x ∈ m.toEnumFinset | x.1 = a} = {a} ×ˢ Finset.range (m.count a) := by aesop
+@[simp]
+lemma toEnumFinset_filter_eq (m : Multiset α) (a : α)
+    : {x ∈ m.toEnumFinset | x.1 = a} = {a} ×ˢ Finset.range (m.count a) := by
+  aesop
 
-@[simp] lemma map_toEnumFinset_fst (m : Multiset α) : m.toEnumFinset.val.map Prod.fst = m := by
+@[simp]
+lemma map_toEnumFinset_fst (m : Multiset α) : m.toEnumFinset.val.map Prod.fst = m := by
   ext a; simp [count_map, ← Finset.filter_val, eq_comm (a := a)]
 
 @[to_additive]
-theorem prod_map_eq_prod_toEnumFinset {M : Type*} [CommMonoid M] (m : Multiset α) (f : α → M) :
-    (m.map f).prod = ∏ i ∈ m.toEnumFinset, f i.1 := by
+theorem prod_map_eq_prod_toEnumFinset {M : Type*} [CommMonoid M] (m : Multiset α) (f : α → M)
+    : (m.map f).prod = ∏ i ∈ m.toEnumFinset, f i.1 := by
   grind [m.map_toEnumFinset_fst, map_map, Finset.prod_map_val]
 
-@[simp] lemma image_toEnumFinset_fst (m : Multiset α) :
-    m.toEnumFinset.image Prod.fst = m.toFinset := by
+@[simp]
+lemma image_toEnumFinset_fst (m : Multiset α) : m.toEnumFinset.image Prod.fst = m.toFinset := by
   rw [Finset.image, Multiset.map_toEnumFinset_fst]
 
-@[simp] lemma map_fst_le_of_subset_toEnumFinset {s : Finset (α × ℕ)} (hsm : s ⊆ m.toEnumFinset) :
-    s.1.map Prod.fst ≤ m := by
+@[simp]
+lemma map_fst_le_of_subset_toEnumFinset {s : Finset (α × ℕ)} (hsm : s ⊆ m.toEnumFinset)
+    : s.1.map Prod.fst ≤ m := by
   simp_rw [le_iff_count, count_map]
   rintro a
   obtain ha | ha := (s.1.filter fun x ↦ a = x.1).card.eq_zero_or_pos
@@ -130,27 +138,30 @@ theorem prod_map_eq_prod_toEnumFinset {M : Type*} [CommMonoid M] (m : Multiset �
   obtain ⟨n, han, hn⟩ : ∃ n ≥ card (s.1.filter fun x ↦ a = x.1) - 1, (a, n) ∈ s := by
     by_contra! h
     replace h : {x ∈ s | x.1 = a} ⊆ {a} ×ˢ .range (card (s.1.filter fun x ↦ a = x.1) - 1) := by
-      simpa +contextual [forall_comm (β := _ = a), Finset.subset_iff,
-        imp_not_comm, not_le, Nat.lt_sub_iff_add_lt] using h
+      simpa +contextual [forall_comm (β := _ = a), Finset.subset_iff, imp_not_comm, not_le,
+          Nat.lt_sub_iff_add_lt]
+        using h
     have : card (s.1.filter fun x ↦ a = x.1) ≤ card (s.1.filter fun x ↦ a = x.1) - 1 := by
       simpa [Finset.card, eq_comm] using Finset.card_mono h
     lia
   exact Nat.le_of_pred_lt (han.trans_lt <| by simpa using hsm hn)
 
 @[gcongr, mono]
-theorem toEnumFinset_mono {m₁ m₂ : Multiset α} (h : m₁ ≤ m₂) :
-    m₁.toEnumFinset ⊆ m₂.toEnumFinset := by
+theorem toEnumFinset_mono {m₁ m₂ : Multiset α} (h : m₁ ≤ m₂)
+    : m₁.toEnumFinset ⊆ m₂.toEnumFinset := by
   intro p
   simp only [Multiset.mem_toEnumFinset]
   exact lt_of_le_of_lt' (Multiset.le_iff_count.mp h p.1)
 
 @[simp]
-theorem toEnumFinset_subset_iff {m₁ m₂ : Multiset α} :
-    m₁.toEnumFinset ⊆ m₂.toEnumFinset ↔ m₁ ≤ m₂ :=
+theorem toEnumFinset_subset_iff {m₁ m₂ : Multiset α}
+    : m₁.toEnumFinset ⊆ m₂.toEnumFinset ↔ m₁ ≤ m₂ :=
   ⟨fun h ↦ by simpa using map_fst_le_of_subset_toEnumFinset h, Multiset.toEnumFinset_mono⟩
 
-/-- The embedding from a multiset into `α × ℕ` where the second coordinate enumerates repeats.
-If you are looking for the function `m → α`, that would be plain `(↑)`. -/
+/--
+The embedding from a multiset into `α × ℕ` where the second coordinate enumerates repeats.
+If you are looking for the function `m → α`, that would be plain `(↑)`.
+-/
 @[simps]
 def coeEmbedding (m : Multiset α) : m ↪ α × ℕ where
   toFun x := (x, x.2)
@@ -159,51 +170,58 @@ def coeEmbedding (m : Multiset α) : m ↪ α × ℕ where
     rintro ⟨⟩
     rfl
 
-/-- Another way to coerce a `Multiset` to a type is to go through `m.toEnumFinset` and coerce
-that `Finset` to a type. -/
+/--
+Another way to coerce a `Multiset` to a type is to go through `m.toEnumFinset` and coerce
+that `Finset` to a type.
+-/
 @[simps]
 def coeEquiv (m : Multiset α) : m ≃ m.toEnumFinset where
-  toFun x :=
-    ⟨m.coeEmbedding x, by
+  toFun x := ⟨
+    m.coeEmbedding x,
+    by
       rw [Multiset.mem_toEnumFinset]
-      exact x.2.2⟩
-  invFun x :=
-    ⟨x.1.1, x.1.2, by
+      exact x.2.2
+  ⟩
+  invFun x := ⟨
+    x.1.1,
+    x.1.2,
+    by
       rw [← Multiset.mem_toEnumFinset]
-      exact x.2⟩
+      exact x.2
+  ⟩
 
 @[simp]
-theorem toEmbedding_coeEquiv_trans (m : Multiset α) :
-    m.coeEquiv.toEmbedding.trans (Function.Embedding.subtype _) = m.coeEmbedding := by ext <;> rfl
+theorem toEmbedding_coeEquiv_trans (m : Multiset α)
+    : m.coeEquiv.toEmbedding.trans (Function.Embedding.subtype _) = m.coeEmbedding := by
+  ext <;> rfl
 
-instance fintypeCoe : Fintype m :=
-  Fintype.ofEquiv m.toEnumFinset m.coeEquiv.symm
+instance fintypeCoe : Fintype m := Fintype.ofEquiv m.toEnumFinset m.coeEquiv.symm
 
 attribute [irreducible] fintypeCoe
 
-theorem map_univ_coeEmbedding (m : Multiset α) :
-    (Finset.univ : Finset m).map m.coeEmbedding = m.toEnumFinset := by
+theorem map_univ_coeEmbedding (m : Multiset α)
+    : (Finset.univ : Finset m).map m.coeEmbedding = m.toEnumFinset := by
   ext ⟨x, i⟩
   simp only [Fin.exists_iff, Finset.mem_map, Finset.mem_univ, Multiset.coeEmbedding_apply,
-    Prod.mk_inj, Multiset.exists_coe, Multiset.coe_mk,
-    exists_prop, exists_eq_right_right, exists_eq_right, Multiset.mem_toEnumFinset, true_and]
+    Prod.mk_inj, Multiset.exists_coe, Multiset.coe_mk, exists_prop, exists_eq_right_right,
+    exists_eq_right, Multiset.mem_toEnumFinset, true_and]
 
 @[simp]
-theorem map_univ_coe (m : Multiset α) :
-    (Finset.univ : Finset m).val.map (fun x : m ↦ (x : α)) = m := by
+theorem map_univ_coe (m : Multiset α)
+    : (Finset.univ : Finset m).val.map (fun x : m ↦ (x : α)) = m := by
   have := m.map_toEnumFinset_fst
   rw [← m.map_univ_coeEmbedding] at this
-  simpa only [Finset.map_val, Multiset.coeEmbedding_apply, Multiset.map_map,
-    Function.comp_apply] using this
+  simpa only [Finset.map_val, Multiset.coeEmbedding_apply, Multiset.map_map, Function.comp_apply]
+    using this
 
-theorem map_univ_comp_coe {β : Type*} (m : Multiset α) (f : α → β) :
-    ((Finset.univ : Finset m).val.map (f ∘ (fun x : m ↦ (x : α)))) = m.map f := by
+theorem map_univ_comp_coe {β : Type*} (m : Multiset α) (f : α → β)
+    : ((Finset.univ : Finset m).val.map (f ∘ (fun x : m ↦ (x : α)))) = m.map f := by
   rw [← Multiset.map_map, Multiset.map_univ_coe]
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem map_univ {β : Type*} (m : Multiset α) (f : α → β) :
-    ((Finset.univ : Finset m).val.map fun (x : m) ↦ f (x : α)) = m.map f := by
+theorem map_univ {β : Type*} (m : Multiset α) (f : α → β)
+    : ((Finset.univ : Finset m).val.map fun (x : m) ↦ f (x : α)) = m.map f := by
   simp_rw [← Function.comp_apply (f := f)]
   exact map_univ_comp_coe m f
 
@@ -224,22 +242,20 @@ theorem prod_eq_prod_coe [CommMonoid α] (m : Multiset α) : m.prod = ∏ x : m,
   simp
 
 @[to_additive]
-theorem prod_eq_prod_toEnumFinset [CommMonoid α] (m : Multiset α) :
-    m.prod = ∏ x ∈ m.toEnumFinset, x.1 := by
+theorem prod_eq_prod_toEnumFinset [CommMonoid α] (m : Multiset α)
+    : m.prod = ∏ x ∈ m.toEnumFinset, x.1 := by
   congr
   simp
 
 @[to_additive]
-theorem prod_toEnumFinset {β : Type*} [CommMonoid β] (m : Multiset α) (f : α → ℕ → β) :
-    ∏ x ∈ m.toEnumFinset, f x.1 x.2 = ∏ x : m, f x x.2 := by
+theorem prod_toEnumFinset {β : Type*} [CommMonoid β] (m : Multiset α) (f : α → ℕ → β)
+    : ∏ x ∈ m.toEnumFinset, f x.1 x.2 = ∏ x : m, f x x.2 := by
   rw [Fintype.prod_equiv m.coeEquiv (fun x ↦ f x x.2) fun x ↦ f x.1.1 x.1.2]
   · rw [← m.toEnumFinset.prod_coe_sort fun x ↦ f x.1 x.2]
   · intro x
     rfl
 
-/--
-If `s = t` then there's an equivalence between the appropriate types.
--/
+/-- If `s = t` then there's an equivalence between the appropriate types. -/
 @[simps]
 def cast {s t : Multiset α} (h : s = t) : s ≃ t where
   toFun x := ⟨x.1, x.2.cast (by simp [h])⟩
@@ -254,15 +270,24 @@ set_option backward.isDefEq.respectTransparency false in
 `v ::ₘ m` is equivalent to `Option m` by mapping one `v` to `none` and everything else to `m`.
 -/
 def consEquiv {v : α} : v ::ₘ m ≃ Option m where
-  toFun x := if h : x.1 = v ∧ x.2.val = m.count v then none else some ⟨x.1, ⟨x.2, by
-    by_cases hv : x.1 = v
-    · simp only [hv, true_and] at h ⊢
-      apply lt_of_le_of_ne (Nat.le_of_lt_add_one _) h
-      convert x.2.2 using 1
-      simp [hv]
-    · convert x.2.2 using 1
-      exact (count_cons_of_ne hv _).symm
-    ⟩⟩
+  toFun x :=
+    if h : x.1 = v ∧ x.2.val = m.count v then
+      none
+    else
+      some ⟨
+        x.1,
+        ⟨
+          x.2,
+          by
+            by_cases hv : x.1 = v
+            · simp only [hv, true_and] at h ⊢
+              apply lt_of_le_of_ne (Nat.le_of_lt_add_one _) h
+              convert x.2.2 using 1
+              simp [hv]
+            · convert x.2.2 using 1
+              exact (count_cons_of_ne hv _).symm
+        ⟩
+      ⟩
   invFun x := x.elim ⟨v, ⟨m.count v, by simp⟩⟩ (fun x ↦ ⟨x.1, x.2.castLE (count_le_count_cons ..)⟩)
   left_inv := by
     rintro ⟨x, hx⟩
@@ -281,48 +306,48 @@ def consEquiv {v : α} : v ::ₘ m ≃ Option m where
       exact x.2.2.ne
 
 @[simp]
-lemma consEquiv_symm_none {v : α} :
-    (consEquiv (m := m) (v := v)).symm none =
-      ⟨v, ⟨m.count v, (count_cons_self v m) ▸ (Nat.lt_add_one _)⟩⟩ :=
+lemma consEquiv_symm_none {v : α}
+    : (consEquiv (m := m) (v := v)).symm none
+      = ⟨v, ⟨m.count v, (count_cons_self v m) ▸ (Nat.lt_add_one _)⟩⟩ :=
   rfl
 
 @[simp]
-lemma consEquiv_symm_some {v : α} {x : m} :
-    (consEquiv (v := v)).symm (some x) =
-      ⟨x, x.2.castLE (count_le_count_cons ..)⟩ :=
+lemma consEquiv_symm_some {v : α} {x : m}
+    : (consEquiv (v := v)).symm (some x) = ⟨x, x.2.castLE (count_le_count_cons ..)⟩ :=
   rfl
 
-lemma coe_consEquiv_of_ne {v : α} (x : v ::ₘ m) (hx : ↑x ≠ v) :
-    consEquiv x = some ⟨x.1, x.2.cast (by simp [hx])⟩ := by
+lemma coe_consEquiv_of_ne {v : α} (x : v ::ₘ m) (hx : ↑x ≠ v)
+    : consEquiv x = some ⟨x.1, x.2.cast (by simp [hx])⟩ := by
   simp [consEquiv, hx]
   rfl
 
-lemma coe_consEquiv_of_eq_of_eq {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : x.2 = m.count v) :
-    consEquiv x = none := by simp [consEquiv, hx, hx2]
+lemma coe_consEquiv_of_eq_of_eq {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : x.2 = m.count v)
+    : consEquiv x = none := by
+  simp [consEquiv, hx, hx2]
 
-lemma coe_consEquiv_of_eq_of_lt {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : x.2 < m.count v) :
-    consEquiv x = some ⟨x.1, ⟨x.2, by simpa [hx]⟩⟩ := by simp [consEquiv, hx, hx2.ne]
+lemma coe_consEquiv_of_eq_of_lt {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : x.2 < m.count v)
+    : consEquiv x = some ⟨x.1, ⟨x.2, by simpa [hx]⟩⟩ := by
+  simp [consEquiv, hx, hx2.ne]
 
 set_option backward.isDefEq.respectTransparency false in
-/--
-There is some equivalence between `m` and `m.map f` which respects `f`.
--/
-def mapEquivAux (m : Multiset α) (f : α → β) :
-    Squash { v : m ≃ m.map f // ∀ a : m, v a = f a} :=
-  Quotient.recOnSubsingleton m fun l ↦ .mk <|
-    List.recOn l
+/-- There is some equivalence between `m` and `m.map f` which respects `f`. -/
+def mapEquivAux (m : Multiset α) (f : α → β) : Squash {v : m ≃ m.map f // ∀ a : m, v a = f a} :=
+  Quotient.recOnSubsingleton m fun l ↦
+    .mk <| List.recOn l
       ⟨@Equiv.equivOfIsEmpty _ _ (by dsimp; infer_instance) (by dsimp; infer_instance), by simp⟩
-      fun a s ⟨v, hv⟩ ↦ ⟨Multiset.consEquiv.trans v.optionCongr |>.trans
-        Multiset.consEquiv.symm |>.trans (Multiset.cast (map_cons f a s)).symm, fun x ↦ by
-        simp only [consEquiv, Equiv.trans_apply, Equiv.coe_fn_mk, Equiv.optionCongr_apply,
+      fun a s ⟨v, hv⟩ ↦ ⟨
+        Multiset.consEquiv.trans v.optionCongr
+          |>.trans Multiset.consEquiv.symm
+          |>.trans (Multiset.cast (map_cons f a s)).symm,
+        fun x ↦ by
+          simp only [consEquiv, Equiv.trans_apply, Equiv.coe_fn_mk, Equiv.optionCongr_apply,
             Equiv.coe_fn_symm_mk]
-        split <;> simp_all⟩
+          split <;> simp_all
+      ⟩
 
 @[deprecated (since := "2026-06-06")] alias mapEquiv_aux := mapEquivAux
 
-/--
-One of the possible equivalences from `Multiset.mapEquivAux`, selected using choice.
--/
+/-- One of the possible equivalences from `Multiset.mapEquivAux`, selected using choice. -/
 noncomputable def mapEquiv (s : Multiset α) (f : α → β) : s ≃ s.map f :=
   (Multiset.mapEquivAux s f).out.1
 

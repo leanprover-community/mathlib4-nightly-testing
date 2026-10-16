@@ -17,11 +17,9 @@ but keeping it separate results in a significant import reduction.
 
 @[expose] public section
 
-
 namespace Complex
 
 /-- The standard orientation on `ℂ`. -/
-protected noncomputable def orientation : Orientation ℝ ℂ (Fin 2) :=
-  Complex.basisOneI.orientation
+protected noncomputable def orientation : Orientation ℝ ℂ (Fin 2) := Complex.basisOneI.orientation
 
 end Complex

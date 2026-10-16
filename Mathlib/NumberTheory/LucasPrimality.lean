@@ -6,7 +6,6 @@ Authors: Bolton Bailey
 module
 
 public import Mathlib.RingTheory.IntegralDomain
-
 import Mathlib.Algebra.Field.ZMod
 
 /-!
@@ -32,13 +31,15 @@ to `1`.
 
 public section
 
-
-/-- If `a^(p-1) = 1 mod p`, but `a^((p-1)/q) ≠ 1 mod p` for all prime factors `q` of `p-1`, then `p`
+/--
+If `a^(p-1) = 1 mod p`, but `a^((p-1)/q) ≠ 1 mod p` for all prime factors `q` of `p-1`, then `p`
 is prime. This is true because `a` has order `p-1` in the multiplicative group mod `p`, so this
 group must itself have order `p-1`, which only happens when `p` is prime.
 -/
-theorem lucas_primality (p : ℕ) (a : ZMod p) (ha : a ^ (p - 1) = 1)
-    (hd : ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1) : p.Prime := by
+theorem lucas_primality
+    (p : ℕ) (a : ZMod p)
+    (ha : a ^ (p - 1) = 1) (hd : ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1)
+    : p.Prime := by
   have h : p ≠ 0 ∧ p ≠ 1 := by
     constructor <;> rintro rfl <;> exact hd 2 Nat.prime_two (dvd_zero _) (pow_zero _)
   have hp1 : 1 < p := Nat.one_lt_iff_ne_zero_and_ne_one.2 h
@@ -46,17 +47,20 @@ theorem lucas_primality (p : ℕ) (a : ZMod p) (ha : a ^ (p - 1) = 1)
   rw [Nat.prime_iff_card_units]
   apply (Nat.card_units_zmod_lt_sub_one hp1).antisymm
   let a' : (ZMod p)ˣ := Units.mkOfMulEqOne a _ (by rwa [← pow_succ', tsub_add_eq_add_tsub hp1])
-  calc p - 1 = orderOf a := (orderOf_eq_of_pow_and_pow_div_prime (tsub_pos_of_lt hp1) ha hd).symm
+  calc
+    p - 1
+      = orderOf a := (orderOf_eq_of_pow_and_pow_div_prime (tsub_pos_of_lt hp1) ha hd).symm
     _ = orderOf a' := orderOf_injective (Units.coeHom _) Units.val_injective a'
     _ ≤ Fintype.card (ZMod p)ˣ := orderOf_le_card_univ
 
-/-- If `p` is prime, then there exists an `a` such that `a^(p-1) = 1 mod p`
+/--
+If `p` is prime, then there exists an `a` such that `a^(p-1) = 1 mod p`
 and `a^((p-1)/q) ≠ 1 mod p` for all prime factors `q` of `p-1`.
 The multiplicative group mod `p` is cyclic, so `a` can be any generator of the group
 (which must have order `p-1`).
 -/
-theorem reverse_lucas_primality (p : ℕ) (hP : p.Prime) :
-    ∃ a : ZMod p, a ^ (p - 1) = 1 ∧ ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1 := by
+theorem reverse_lucas_primality (p : ℕ) (hP : p.Prime)
+    : ∃ a : ZMod p, a ^ (p - 1) = 1 ∧ ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1 := by
   have : Fact p.Prime := ⟨hP⟩
   obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := (ZMod p)ˣ)
   have h1 : orderOf g = p - 1 := by
@@ -68,9 +72,11 @@ theorem reverse_lucas_primality (p : ℕ) (hP : p.Prime) :
   replace hq := hq.one_lt
   exact h1.2 _ (Nat.div_lt_self h2 hq) (Nat.div_pos (Nat.le_of_dvd h2 hqd) (zero_lt_one.trans hq))
 
-/-- A number `p` is prime if and only if there exists an `a` such that
+/--
+A number `p` is prime if and only if there exists an `a` such that
 `a^(p-1) = 1 mod p` and `a^((p-1)/q) ≠ 1 mod p` for all prime factors `q` of `p-1`.
 -/
-theorem lucas_primality_iff (p : ℕ) : p.Prime ↔
-    ∃ a : ZMod p, a ^ (p - 1) = 1 ∧ ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1 :=
+theorem lucas_primality_iff (p : ℕ)
+    : p.Prime
+      ↔ ∃ a : ZMod p, a ^ (p - 1) = 1 ∧ ∀ q : ℕ, q.Prime → q ∣ p - 1 → a ^ ((p - 1) / q) ≠ 1 :=
   ⟨reverse_lucas_primality p, fun ⟨a, ⟨ha, hb⟩⟩ ↦ lucas_primality p a ha hb⟩

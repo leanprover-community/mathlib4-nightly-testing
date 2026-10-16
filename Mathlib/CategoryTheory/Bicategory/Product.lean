@@ -51,45 +51,43 @@ namespace Prod
 
 /-- `sectL B c` is the strictly unitary pseudofunctor `B ⥤ B × C` given by `X ↦ (X, c)`. -/
 @[simps!]
-def sectL (B : Type u₁) [Bicategory.{w₁, v₁} B] {C : Type u₂} [Bicategory.{w₂, v₂} C] (c : C) :
-    StrictlyUnitaryPseudofunctor B (B × C) := .mk'
-  { obj X := (X, c)
+def sectL (B : Type u₁) [Bicategory.{w₁, v₁} B] {C : Type u₂} [Bicategory.{w₂, v₂} C] (c : C)
+    : StrictlyUnitaryPseudofunctor B (B × C) :=
+  .mk' {
+    obj X := (X, c)
     map f := f ×ₘ 𝟙 c
     map₂ η := η ×ₘ 𝟙 _
-    mapComp f g := Iso.prod (Iso.refl _) (λ_ (g, 𝟙 c).2).symm }
+    mapComp f g := Iso.prod (Iso.refl _) (λ_ (g, 𝟙 c).2).symm
+  }
 
 /-- `sectR b C` is the strictly unitary pseudofunctor `C ⥤ B × C` given by `Y ↦ (b, Y)`. -/
 @[simps!]
-def sectR {B : Type u₁} [Bicategory.{w₁, v₁} B] (b : B) (C : Type u₂) [Bicategory.{w₂, v₂} C] :
-    StrictlyUnitaryPseudofunctor C (B × C) := .mk'
-  { obj Y := (b, Y)
+def sectR {B : Type u₁} [Bicategory.{w₁, v₁} B] (b : B) (C : Type u₂) [Bicategory.{w₂, v₂} C]
+    : StrictlyUnitaryPseudofunctor C (B × C) :=
+  .mk' {
+    obj Y := (b, Y)
     map f := 𝟙 b ×ₘ f
     map₂ η := 𝟙 _ ×ₘ η
-    mapComp f g := Iso.prod (ρ_ (𝟙 b)).symm (Iso.refl _) }
+    mapComp f g := Iso.prod (ρ_ (𝟙 b)).symm (Iso.refl _)
+  }
 
 variable (B : Type u₁) [Bicategory.{w₁, v₁} B] (C : Type u₂) [Bicategory.{w₂, v₂} C]
 
 /-- `fst` is the strict pseudofunctor given by projection to the first factor. -/
 @[simps!]
-def fst : StrictPseudofunctor (B × C) B := .mk'
-  { obj X := X.1
-    map f := f.1
-    map₂ η := η.1 }
+def fst : StrictPseudofunctor (B × C) B := .mk' { obj X := X.1, map f := f.1, map₂ η := η.1 }
 
 /-- `snd` is the strict pseudofunctor given by projection to the second factor. -/
 @[simps!]
-def snd : StrictPseudofunctor (B × C) C := .mk'
-  { obj X := X.2
-    map f := f.2
-    map₂ η := η.2 }
+def snd : StrictPseudofunctor (B × C) C := .mk' { obj X := X.2, map f := f.2, map₂ η := η.2 }
 
-/-- The pseudofunctor swapping the factors of a cartesian product of bicategories,
-`B × C ⥤ C × B`. -/
+/--
+The pseudofunctor swapping the factors of a cartesian product of bicategories,
+`B × C ⥤ C × B`.
+-/
 @[simps!]
-def swap : StrictPseudofunctor (B × C) (C × B) := .mk'
-  { obj X := (X.2, X.1)
-    map f := f.2 ×ₘ f.1
-    map₂ η := η.2 ×ₘ η.1 }
+def swap : StrictPseudofunctor (B × C) (C × B) :=
+  .mk' { obj X := (X.2, X.1), map f := f.2 ×ₘ f.1, map₂ η := η.2 ×ₘ η.1 }
 
 end Prod
 
@@ -97,11 +95,11 @@ section
 
 variable (B : Type u₁) [Bicategory.{w₁, v₁} B] (C : Type u₁) [Bicategory.{w₁, v₁} C]
 
-/-- `Bicategory.uniformProd B C` is an additional instance specialised so both factors have the same
+/--
+`Bicategory.uniformProd B C` is an additional instance specialised so both factors have the same
 universe levels. This helps typeclass resolution.
 -/
-instance uniformProd : Bicategory (B × C) :=
-  Bicategory.prod B C
+instance uniformProd : Bicategory (B × C) := Bicategory.prod B C
 
 end
 

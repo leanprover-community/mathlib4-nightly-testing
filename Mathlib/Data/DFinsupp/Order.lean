@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Module.Defs
 public import Mathlib.Algebra.Order.Sub.Basic
 public import Mathlib.Data.DFinsupp.Module
-
 import Mathlib.Algebra.Order.Pi
 
 /-!
@@ -33,15 +32,13 @@ namespace DFinsupp
 
 /-! ### Order structures -/
 
-
 section Zero
 variable [∀ i, Zero (α i)]
 
 section LE
 variable [∀ i, LE (α i)] {f g : Π₀ i, α i}
 
-instance : LE (Π₀ i, α i) :=
-  ⟨fun f g ↦ ∀ i, f i ≤ g i⟩
+instance : LE (Π₀ i, α i) := ⟨fun f g ↦ ∀ i, f i ≤ g i⟩
 
 lemma le_def : f ≤ g ↔ ∀ i, f i ≤ g i := Iff.rfl
 
@@ -56,19 +53,18 @@ def orderEmbeddingToFun : (Π₀ i, α i) ↪o ∀ i, α i where
 @[simp, norm_cast]
 lemma coe_orderEmbeddingToFun : ⇑(orderEmbeddingToFun (α := α)) = DFunLike.coe := rfl
 
-theorem orderEmbeddingToFun_apply {f : Π₀ i, α i} {i : ι} :
-    orderEmbeddingToFun f i = f i :=
-  rfl
+theorem orderEmbeddingToFun_apply {f : Π₀ i, α i} {i : ι} : orderEmbeddingToFun f i = f i := rfl
 
 end LE
 
 section Preorder
 variable [∀ i, Preorder (α i)] {f g : Π₀ i, α i} {i : ι} {a b : α i}
 
-instance : Preorder (Π₀ i, α i) :=
-  { (inferInstance : LE (DFinsupp α)) with
-    le_refl := fun _ _ ↦ le_rfl
-    le_trans := fun _ _ _ hfg hgh i ↦ (hfg i).trans (hgh i) }
+instance : Preorder (Π₀ i, α i) := {
+  (inferInstance : LE (DFinsupp α)) with
+  le_refl := fun _ _ ↦ le_rfl
+  le_trans := fun _ _ _ hfg hgh i ↦ (hfg i).trans (hgh i)
+}
 
 lemma lt_def : f < g ↔ f ≤ g ∧ ∃ i, f i < g i := Pi.lt_def
 @[simp, norm_cast] lemma coe_lt_coe : ⇑f < g ↔ f < g := Iff.rfl
@@ -79,8 +75,7 @@ lemma coe_strictMono : StrictMono ((⇑) : (Π₀ i, α i) → ∀ i, α i) := f
 
 variable [DecidableEq ι]
 
-@[simp, gcongr] lemma single_le_single : single i a ≤ single i b ↔ a ≤ b :=
-  Pi.single_le_single
+@[simp, gcongr] lemma single_le_single : single i a ≤ single i b ↔ a ≤ b := Pi.single_le_single
 
 lemma single_mono : Monotone (single i : α i → Π₀ i, α i) := fun _ _ ↦ single_le_single.2
 
@@ -89,16 +84,18 @@ lemma single_mono : Monotone (single i : α i → Π₀ i, α i) := fun _ _ ↦ 
 
 end Preorder
 
-instance [∀ i, PartialOrder (α i)] : PartialOrder (Π₀ i, α i) :=
-  { (inferInstance : Preorder (DFinsupp α)) with
-    le_antisymm := fun _ _ hfg hgf ↦ ext fun i ↦ (hfg i).antisymm (hgf i) }
+instance [∀ i, PartialOrder (α i)] : PartialOrder (Π₀ i, α i) := {
+  (inferInstance : Preorder (DFinsupp α)) with
+  le_antisymm := fun _ _ hfg hgf ↦ ext fun i ↦ (hfg i).antisymm (hgf i)
+}
 
-instance [∀ i, SemilatticeInf (α i)] : SemilatticeInf (Π₀ i, α i) :=
-  { (inferInstance : PartialOrder (DFinsupp α)) with
-    inf := zipWith (fun _ ↦ (· ⊓ ·)) fun _ ↦ inf_idem _
-    inf_le_left := fun _ _ _ ↦ inf_le_left
-    inf_le_right := fun _ _ _ ↦ inf_le_right
-    le_inf := fun _ _ _ hf hg i ↦ le_inf (hf i) (hg i) }
+instance [∀ i, SemilatticeInf (α i)] : SemilatticeInf (Π₀ i, α i) := {
+  (inferInstance : PartialOrder (DFinsupp α)) with
+  inf := zipWith (fun _ ↦ (· ⊓ ·)) fun _ ↦ inf_idem _
+  inf_le_left := fun _ _ _ ↦ inf_le_left
+  inf_le_right := fun _ _ _ ↦ inf_le_right
+  le_inf := fun _ _ _ hf hg i ↦ le_inf (hf i) (hg i)
+}
 
 @[simp, norm_cast]
 lemma coe_inf [∀ i, SemilatticeInf (α i)] (f g : Π₀ i, α i) : f ⊓ g = ⇑f ⊓ g := rfl
@@ -106,12 +103,13 @@ lemma coe_inf [∀ i, SemilatticeInf (α i)] (f g : Π₀ i, α i) : f ⊓ g = �
 theorem inf_apply [∀ i, SemilatticeInf (α i)] (f g : Π₀ i, α i) (i : ι) : (f ⊓ g) i = f i ⊓ g i :=
   zipWith_apply _ _ _ _ _
 
-instance [∀ i, SemilatticeSup (α i)] : SemilatticeSup (Π₀ i, α i) :=
-  { (inferInstance : PartialOrder (DFinsupp α)) with
-    sup := zipWith (fun _ ↦ (· ⊔ ·)) fun _ ↦ sup_idem _
-    le_sup_left := fun _ _ _ ↦ le_sup_left
-    le_sup_right := fun _ _ _ ↦ le_sup_right
-    sup_le := fun _ _ _ hf hg i ↦ sup_le (hf i) (hg i) }
+instance [∀ i, SemilatticeSup (α i)] : SemilatticeSup (Π₀ i, α i) := {
+  (inferInstance : PartialOrder (DFinsupp α)) with
+  sup := zipWith (fun _ ↦ (· ⊔ ·)) fun _ ↦ sup_idem _
+  le_sup_left := fun _ _ _ ↦ le_sup_left
+  le_sup_right := fun _ _ _ ↦ le_sup_right
+  sup_le := fun _ _ _ hf hg i ↦ sup_le (hf i) (hg i)
+}
 
 @[simp, norm_cast]
 lemma coe_sup [∀ i, SemilatticeSup (α i)] (f g : Π₀ i, α i) : f ⊔ g = ⇑f ⊔ g := rfl
@@ -122,9 +120,9 @@ theorem sup_apply [∀ i, SemilatticeSup (α i)] (f g : Π₀ i, α i) (i : ι) 
 section Lattice
 variable [∀ i, Lattice (α i)] (f g : Π₀ i, α i)
 
-instance lattice : Lattice (Π₀ i, α i) :=
-  { (inferInstance : SemilatticeInf (DFinsupp α)),
-    (inferInstance : SemilatticeSup (DFinsupp α)) with }
+instance lattice : Lattice (Π₀ i, α i) := {
+  (inferInstance : SemilatticeInf (DFinsupp α)), (inferInstance : SemilatticeSup (DFinsupp α)) with
+}
 
 variable [DecidableEq ι] [∀ (i) (x : α i), Decidable (x ≠ 0)]
 
@@ -139,22 +137,28 @@ end Zero
 
 /-! ### Algebraic order structures -/
 
-instance (α : ι → Type*) [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)]
-    [∀ i, IsOrderedAddMonoid (α i)] : IsOrderedAddMonoid (Π₀ i, α i) :=
-  { add_le_add_left := fun _ _ h c i ↦ add_le_add_left (h i) (c i) }
+instance
+    (α : ι → Type*)
+    [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, IsOrderedAddMonoid (α i)]
+    : IsOrderedAddMonoid (Π₀ i, α i) := {
+  add_le_add_left := fun _ _ h c i ↦ add_le_add_left (h i) (c i)
+}
 
-instance (α : ι → Type*) [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)]
-    [∀ i, IsOrderedCancelAddMonoid (α i)] :
-    IsOrderedCancelAddMonoid (Π₀ i, α i) :=
-  { le_of_add_le_add_left := fun _ _ _ H i ↦ le_of_add_le_add_left (H i) }
+instance
+    (α : ι → Type*)
+    [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, IsOrderedCancelAddMonoid (α i)]
+    : IsOrderedCancelAddMonoid (Π₀ i, α i) := {
+  le_of_add_le_add_left := fun _ _ _ H i ↦ le_of_add_le_add_left (H i)
+}
 
-instance [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, AddLeftReflectLE (α i)] :
-    AddLeftReflectLE (Π₀ i, α i) where
+instance [∀ i, AddCommMonoid (α i)] [∀ i, PartialOrder (α i)] [∀ i, AddLeftReflectLE (α i)]
+    : AddLeftReflectLE (Π₀ i, α i) where
   le_of_add_le_add_left H i := le_of_add_le_add_left <| H i
 
 section Module
-variable {α : Type*} {β : ι → Type*} [Semiring α] [Preorder α] [∀ i, AddCommMonoid (β i)]
-  [∀ i, Preorder (β i)] [∀ i, Module α (β i)]
+variable
+  {α : Type*} {β : ι → Type*}
+  [Semiring α] [Preorder α] [∀ i, AddCommMonoid (β i)] [∀ i, Preorder (β i)] [∀ i, Module α (β i)]
 
 instance instPosSMulMono [∀ i, PosSMulMono α (β i)] : PosSMulMono α (Π₀ i, β i) :=
   PosSMulMono.lift _ coe_le_coe coe_smul
@@ -171,7 +175,8 @@ instance instSMulPosReflectLE [∀ i, SMulPosReflectLE α (β i)] : SMulPosRefle
 end Module
 
 section Module
-variable {α : Type*} {β : ι → Type*} [Semiring α] [PartialOrder α] [∀ i, AddCommMonoid (β i)]
+variable
+  {α : Type*} {β : ι → Type*} [Semiring α] [PartialOrder α] [∀ i, AddCommMonoid (β i)]
   [∀ i, PartialOrder (β i)] [∀ i, Module α (β i)]
 
 instance instPosSMulStrictMono [∀ i, PosSMulStrictMono α (β i)] : PosSMulStrictMono α (Π₀ i, β i) :=
@@ -202,8 +207,7 @@ instance [∀ i, IsBotZeroClass (α i)] : IsBotZeroClass (Π₀ i, α i) where
 variable {α}
 
 @[deprecated _root_.bot_eq_zero +typeChanged (since := "2026-05-07")]
-protected theorem bot_eq_zero [∀ i, IsBotZeroClass (α i)] : (⊥ : Π₀ i, α i) = 0 :=
-  rfl
+protected theorem bot_eq_zero [∀ i, IsBotZeroClass (α i)] : (⊥ : Π₀ i, α i) = 0 := rfl
 
 variable [∀ i, CanonicallyOrderedAdd (α i)]
 
@@ -219,42 +223,42 @@ section
 
 variable [∀ (i) (x : α i), Decidable (x ≠ 0)] {f g : Π₀ i, α i} {s : Finset ι}
 
-theorem le_iff' (hf : f.support ⊆ s) : f ≤ g ↔ ∀ i ∈ s, f i ≤ g i :=
-  ⟨fun h s _ ↦ h s, fun h s ↦
-    if H : s ∈ f.support then h s (hf H) else (notMem_support_iff.1 H).symm ▸ zero_le⟩
+theorem le_iff' (hf : f.support ⊆ s) : f ≤ g ↔ ∀ i ∈ s, f i ≤ g i := ⟨
+  fun h s _ ↦ h s,
+  fun h s ↦ if H : s ∈ f.support then h s (hf H) else (notMem_support_iff.1 H).symm ▸ zero_le
+⟩
 
-theorem le_iff : f ≤ g ↔ ∀ i ∈ f.support, f i ≤ g i :=
-  le_iff' <| Subset.refl _
+theorem le_iff : f ≤ g ↔ ∀ i ∈ f.support, f i ≤ g i := le_iff' <| Subset.refl _
 
-lemma support_monotone : Monotone (support (ι := ι) (β := α)) :=
-  fun f g h a ha ↦ by rw [mem_support_iff, ← pos_iff_ne_zero] at ha ⊢; exact ha.trans_le (h _)
+lemma support_monotone : Monotone (support (ι := ι) (β := α)) := fun f g h a ha ↦ by
+  rw [mem_support_iff, ← pos_iff_ne_zero] at ha ⊢; exact ha.trans_le (h _)
 
 lemma support_mono (hfg : f ≤ g) : f.support ⊆ g.support := support_monotone hfg
 
 variable (α) in
-instance decidableLE [∀ i, DecidableLE (α i)] : DecidableLE (Π₀ i, α i) :=
-  fun _ _ ↦ decidable_of_iff _ le_iff.symm
+instance decidableLE [∀ i, DecidableLE (α i)] : DecidableLE (Π₀ i, α i) := fun _ _ ↦
+  decidable_of_iff _ le_iff.symm
 
 end
 
 @[simp]
-theorem single_le_iff {f : Π₀ i, α i} {i : ι} {a : α i} :
-    single i a ≤ f ↔ a ≤ f i := by
-  classical exact (le_iff' support_single_subset).trans <| by simp
+theorem single_le_iff {f : Π₀ i, α i} {i : ι} {a : α i} : single i a ≤ f ↔ a ≤ f i := by
+  classical
+  exact (le_iff' support_single_subset).trans <| by simp
 
 end LE
 
 variable (α) [∀ i, Sub (α i)] [∀ i, OrderedSub (α i)] {f g : Π₀ i, α i} {i : ι} {a b : α i}
 
-/-- This is called `tsub` for truncated subtraction, to distinguish it with subtraction in an
-additive group. -/
-instance tsub : Sub (Π₀ i, α i) :=
-  ⟨zipWith (fun _ m n ↦ m - n) fun _ ↦ tsub_self 0⟩
+/--
+This is called `tsub` for truncated subtraction, to distinguish it with subtraction in an
+additive group.
+-/
+instance tsub : Sub (Π₀ i, α i) := ⟨zipWith (fun _ m n ↦ m - n) fun _ ↦ tsub_self 0⟩
 
 variable {α}
 
-theorem tsub_apply (f g : Π₀ i, α i) (i : ι) : (f - g) i = f i - g i :=
-  zipWith_apply _ _ _ _ _
+theorem tsub_apply (f g : Π₀ i, α i) (i : ι) : (f - g) i = f i - g i := zipWith_apply _ _ _ _ _
 
 @[simp, norm_cast]
 theorem coe_tsub (f g : Π₀ i, α i) : ⇑(f - g) = f - g := by
@@ -263,8 +267,7 @@ theorem coe_tsub (f g : Π₀ i, α i) : ⇑(f - g) = f - g := by
 
 variable (α)
 
-instance : OrderedSub (Π₀ i, α i) :=
-  ⟨fun _ _ _ ↦ forall_congr' fun _ ↦ tsub_le_iff_right⟩
+instance : OrderedSub (Π₀ i, α i) := ⟨fun _ _ _ ↦ forall_congr' fun _ ↦ tsub_le_iff_right⟩
 
 instance [∀ i, AddLeftMono (α i)] : CanonicallyOrderedAdd (Π₀ i, α i) where
   exists_add_of_le := by
@@ -287,8 +290,8 @@ theorem single_tsub : single i (a - b) = single i a - single i b := by
 variable [∀ (i) (x : α i), Decidable (x ≠ 0)]
 
 theorem support_tsub : (f - g).support ⊆ f.support := by
-  simp +contextual only [subset_iff, tsub_eq_zero_iff_le, mem_support_iff,
-    Ne, coe_tsub, Pi.sub_apply, not_imp_not, zero_le, imp_true_iff]
+  simp +contextual only [subset_iff, tsub_eq_zero_iff_le, mem_support_iff, Ne, coe_tsub,
+    Pi.sub_apply, not_imp_not, zero_le, imp_true_iff]
 
 theorem subset_support_tsub : f.support \ g.support ⊆ (f - g).support := by
   simp +contextual [subset_iff]
@@ -296,8 +299,9 @@ theorem subset_support_tsub : f.support \ g.support ⊆ (f - g).support := by
 end PartialOrder
 
 section LinearOrder
-variable [∀ i, AddCommMonoid (α i)] [∀ i, LinearOrder (α i)] [∀ i, IsBotZeroClass (α i)]
-  [DecidableEq ι] {f g : Π₀ i, α i}
+variable
+  [∀ i, AddCommMonoid (α i)] [∀ i, LinearOrder (α i)] [∀ i, IsBotZeroClass (α i)] [DecidableEq ι]
+  {f g : Π₀ i, α i}
 
 @[simp]
 theorem support_inf : (f ⊓ g).support = f.support ∩ g.support := by

@@ -62,10 +62,12 @@ instance : AddCommGroup (u ⟶ v) where
   add_comm _ _ := by ext <;> simp [add_comm]
   neg_add_cancel _ := by cat_disch
   sub_eq_add_neg _ _ := by ext <;> simp [sub_eq_add_neg]
-  nsmul n α := CommaMorphism.mk (n • α.left) (n • α.right)
-    (by simp [Functor.map_nsmul, Preadditive.comp_nsmul, Preadditive.nsmul_comp])
-  zsmul n α := CommaMorphism.mk (n • α.left) (n • α.right)
-    (by simp [Functor.map_zsmul, Preadditive.comp_zsmul, Preadditive.zsmul_comp])
+  nsmul n α :=
+    CommaMorphism.mk (n • α.left) (n • α.right)
+      (by simp [Functor.map_nsmul, Preadditive.comp_nsmul, Preadditive.nsmul_comp])
+  zsmul n α :=
+    CommaMorphism.mk (n • α.left) (n • α.right)
+      (by simp [Functor.map_zsmul, Preadditive.comp_zsmul, Preadditive.zsmul_comp])
   nsmul_zero := by simp_rw [HSMul.hSMul, SMul.smul]; cat_disch
   nsmul_succ _ _ := by simp_rw [HSMul.hSMul, SMul.smul]; ext <;> dsimp <;> simp [add_nsmul]
   zsmul_zero' := by simp_rw [HSMul.hSMul, SMul.smul]; cat_disch
@@ -74,7 +76,8 @@ instance : AddCommGroup (u ⟶ v) where
     simp_rw [HSMul.hSMul, SMul.smul]
     ext <;> dsimp <;> simp [add_nsmul, add_zsmul]
 
-/-- If we have additive functors `L : A ⥤ T` and `R : B ⥤ T` between preadditive categories,
+/--
+If we have additive functors `L : A ⥤ T` and `R : B ⥤ T` between preadditive categories,
 then the category `Comma L R` is preadditive.
 -/
 instance : Preadditive (Comma L R) where
@@ -87,41 +90,30 @@ end Comma
 
 section Arrow
 
-/-- If a category `T` is preadditive, then so is its category of arrows.
--/
+/-- If a category `T` is preadditive, then so is its category of arrows. -/
 instance : Preadditive (Arrow T) := inferInstanceAs (Preadditive (Comma (𝟭 T) (𝟭 T)))
 
-instance : (Arrow.leftFunc (C := T)).Additive :=
-  inferInstanceAs ((Comma.fst (𝟭 T) (𝟭 T))).Additive
+instance : (Arrow.leftFunc (C := T)).Additive := inferInstanceAs ((Comma.fst (𝟭 T) (𝟭 T))).Additive
 
-instance : (Arrow.rightFunc (C := T)).Additive :=
-  inferInstanceAs ((Comma.snd (𝟭 T) (𝟭 T))).Additive
+instance : (Arrow.rightFunc (C := T)).Additive := inferInstanceAs ((Comma.snd (𝟭 T) (𝟭 T))).Additive
 
 variable {u v : Arrow T}
 
-@[simp]
-lemma Arrow.Hom.add_left (α β : u ⟶ v) : (α + β).left = α.left + β.left := rfl
+@[simp] lemma Arrow.Hom.add_left (α β : u ⟶ v) : (α + β).left = α.left + β.left := rfl
 
-@[simp]
-lemma Arrow.Hom.add_right (α β : u ⟶ v) : (α + β).right = α.right + β.right := rfl
+@[simp] lemma Arrow.Hom.add_right (α β : u ⟶ v) : (α + β).right = α.right + β.right := rfl
 
-@[simp]
-lemma Arrow.Hom.sub_left (α β : u ⟶ v) : (α - β).left = α.left - β.left := rfl
+@[simp] lemma Arrow.Hom.sub_left (α β : u ⟶ v) : (α - β).left = α.left - β.left := rfl
 
-@[simp]
-lemma Arrow.Hom.sub_right (α β : u ⟶ v) : (α - β).right = α.right - β.right := rfl
+@[simp] lemma Arrow.Hom.sub_right (α β : u ⟶ v) : (α - β).right = α.right - β.right := rfl
 
-@[simp]
-lemma Arrow.Hom.zero_left : (0 : u ⟶ v).left = 0 := rfl
+@[simp] lemma Arrow.Hom.zero_left : (0 : u ⟶ v).left = 0 := rfl
 
-@[simp]
-lemma Arrow.Hom.zero_right : (0 : u ⟶ v).right = 0 := rfl
+@[simp] lemma Arrow.Hom.zero_right : (0 : u ⟶ v).right = 0 := rfl
 
-@[simp]
-lemma Arrow.Hom.neg_left (α : u ⟶ v) : (-α).left = -α.left := rfl
+@[simp] lemma Arrow.Hom.neg_left (α : u ⟶ v) : (-α).left = -α.left := rfl
 
-@[simp]
-lemma Arrow.Hom.neg_right (α : u ⟶ v) : (-α).right = -α.right := rfl
+@[simp] lemma Arrow.Hom.neg_right (α : u ⟶ v) : (-α).right = -α.right := rfl
 
 end Arrow
 

@@ -35,12 +35,12 @@ A topological space is spectral if it is T0, compact, sober, quasi-separated, an
 subsets form an open basis.
 -/
 @[stacks 08YG]
-class SpectralSpace (X : Type*) [TopologicalSpace X] : Prop extends
-  T0Space X, CompactSpace X, QuasiSober X, QuasiSeparatedSpace X, PrespectralSpace X
+class SpectralSpace (X : Type*) [TopologicalSpace X] : Prop
+  extends T0Space X, CompactSpace X, QuasiSober X, QuasiSeparatedSpace X, PrespectralSpace X
 
 theorem Topology.IsOpenEmbedding.spectralSpace
-    [SpectralSpace Y] [CompactSpace X] (hf : IsOpenEmbedding f) :
-    SpectralSpace X where
+    [SpectralSpace Y] [CompactSpace X] (hf : IsOpenEmbedding f)
+    : SpectralSpace X where
   __ := hf.quasiSober
   __ := hf.prespectralSpace
   __ := hf.quasiSeparatedSpace

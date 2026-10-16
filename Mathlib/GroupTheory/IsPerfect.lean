@@ -44,31 +44,27 @@ class IsPerfect where
 
 attribute [simp] IsPerfect.commutator_eq_top
 
-lemma isPerfect_def : IsPerfect G ↔ commutator G = ⊤ :=
-  ⟨fun h ↦ h.commutator_eq_top, fun h ↦ ⟨h⟩⟩
+lemma isPerfect_def : IsPerfect G ↔ commutator G = ⊤ := ⟨fun h ↦ h.commutator_eq_top, fun h ↦ ⟨h⟩⟩
 
 lemma _root_.Subgroup.isPerfect_iff : IsPerfect H ↔ ⁅H, H⁆ = H := by
-  rw [Group.isPerfect_def, ← map_subtype_inj,
-    map_subtype_commutator, Subgroup.map_top, range_subtype]
+  rw [Group.isPerfect_def, ← map_subtype_inj, map_subtype_commutator, Subgroup.map_top,
+    range_subtype]
 
-lemma _root_.Subgroup.commutator_eq_self [hH : IsPerfect H] : ⁅H, H⁆ = H :=
-  isPerfect_iff.mp hH
+lemma _root_.Subgroup.commutator_eq_self [hH : IsPerfect H] : ⁅H, H⁆ = H := isPerfect_iff.mp hH
 
 namespace IsPerfect
 
-lemma mem_commutator [hP : IsPerfect G] {g : G} : g ∈ commutator G := by
-  simp
+lemma mem_commutator [hP : IsPerfect G] {g : G} : g ∈ commutator G := by simp
 
 /-- The trivial group is perfect. -/
 instance [Subsingleton G] : IsPerfect G where
   commutator_eq_top := Subsingleton.elim _ _
 
 theorem top_iff : IsPerfect (⊤ : Subgroup G) ↔ IsPerfect G := by
-  rw [isPerfect_def, isPerfect_def, ← map_subtype_inj,
-    map_subtype_commutator, Subgroup.map_top, subtype_range, commutator_def]
+  rw [isPerfect_def, isPerfect_def, ← map_subtype_inj, map_subtype_commutator, Subgroup.map_top,
+    subtype_range, commutator_def]
 
-instance [IsPerfect G] : IsPerfect (⊤ : Subgroup G) :=
-  top_iff.mpr inferInstance
+instance [IsPerfect G] : IsPerfect (⊤ : Subgroup G) := top_iff.mpr inferInstance
 
 variable (G) in
 lemma not_isSolvable [Nontrivial G] [IsPerfect G] : ¬ IsSolvable G := by
@@ -76,16 +72,16 @@ lemma not_isSolvable [Nontrivial G] [IsPerfect G] : ¬ IsSolvable G := by
   exact (h.commutator_lt_top_of_nontrivial G).ne commutator_eq_top
 
 variable (G) in
-lemma not_isNilpotent [Nontrivial G] [IsPerfect G] : ¬ IsNilpotent G :=
-  fun _ ↦ (not_isSolvable G) IsNilpotent.to_isSolvable
+lemma not_isNilpotent [Nontrivial G] [IsPerfect G] : ¬ IsNilpotent G := fun _ ↦
+  (not_isSolvable G) IsNilpotent.to_isSolvable
 
 open scoped IsMulCommutative in
 variable (G) in
-lemma not_isMulCommutative [Nontrivial G] [IsPerfect G] : ¬ IsMulCommutative G :=
-  fun _ ↦ (not_isSolvable G) inferInstance
+lemma not_isMulCommutative [Nontrivial G] [IsPerfect G] : ¬ IsMulCommutative G := fun _ ↦
+  (not_isSolvable G) inferInstance
 
-instance subsingleton_of_isMulCommutative
-    [hG : IsPerfect G] [h_comm : IsMulCommutative G] : Subsingleton G := by
+instance subsingleton_of_isMulCommutative [hG : IsPerfect G] [h_comm : IsMulCommutative G]
+    : Subsingleton G := by
   by_contra! h_not_subsingleton
   exact not_isMulCommutative G h_comm
 
@@ -109,21 +105,19 @@ variable (G) in
 theorem derivedSeries_eq_top [IsPerfect G] (n : ℕ) : derivedSeries G n = ⊤ := by
   match n with
   | 0 => simp
-  | n + 1 =>
-    rw [derivedSeries_succ, derivedSeries_eq_top, commutator_eq_self]
+  | n + 1 => rw [derivedSeries_succ, derivedSeries_eq_top, commutator_eq_self]
 
 @[simp]
-theorem lowerCentralSeries_eq_top (H : Subgroup G) [IsPerfect H] (n : ℕ) :
-    H.lowerCentralSeries n = H := by
+theorem lowerCentralSeries_eq_top (H : Subgroup G) [IsPerfect H] (n : ℕ)
+    : H.lowerCentralSeries n = H := by
   match n with
   | 0 => simp
-  | n + 1 =>
-    rw [Subgroup.lowerCentralSeries_succ, lowerCentralSeries_eq_top, commutator_eq_self]
+  | n + 1 => rw [Subgroup.lowerCentralSeries_succ, lowerCentralSeries_eq_top, commutator_eq_self]
 
 variable (G) in
 @[simp]
-theorem upperCentralSeries_eq_center [IsPerfect G] {n : ℕ} (hn : n ≠ 0) :
-    Subgroup.upperCentralSeries G n = center G := by
+theorem upperCentralSeries_eq_center [IsPerfect G] {n : ℕ} (hn : n ≠ 0)
+    : Subgroup.upperCentralSeries G n = center G := by
   rw [← Subgroup.upperCentralSeries_one, eq_comm]
   apply Subgroup.upperCentralSeries.eq_ge_of_eq_succ <| by lia
   apply le_antisymm <| Subgroup.upperCentralSeries_mono G one_le_two

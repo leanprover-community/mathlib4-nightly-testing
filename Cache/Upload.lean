@@ -39,9 +39,11 @@ resolutions run before `getFileNames`, so a misconfiguration fails before
 `MATHLIB_CACHE_REPO_SCOPE`. The marker lets
 `cache query` discover cached commits with a cheap HEAD probe.
 -/
-def runPut [Monad m] [MonadLiftT IO m] (container? : Option Container)
-    (repo? : Option String) (backend : UploadBackend) (srcDir : FilePath)
-    (getFileNames : m (Array String)) (overwrite : Bool) : m Unit := do
+def runPut
+    [Monad m] [MonadLiftT IO m]
+    (container? : Option Container) (repo? : Option String) (backend : UploadBackend)
+    (srcDir : FilePath) (getFileNames : m (Array String)) (overwrite : Bool)
+    : m Unit := do
   let scope? ← getRepoScope
   let dest ← uploadLocation backend container? (repo?.getD MATHLIBREPO) scope?
   match backend with

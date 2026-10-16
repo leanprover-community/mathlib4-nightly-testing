@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Preadditive.Injective.Basic
 public import Mathlib.Topology.Category.LightProfinite.AsLimit
-
 import Mathlib.CategoryTheory.Functor.OfSequence
 import Mathlib.Topology.Category.CompHausLike.Limits
 
@@ -44,7 +43,8 @@ open Set Topology CategoryTheory Limits
 
 namespace Profinite
 
-/-- This is the key statement for the inductive proof of injectivity of light profinite spaces.
+/--
+This is the key statement for the inductive proof of injectivity of light profinite spaces.
 Given a commutative square
 ```
 X >-f->  Y
@@ -55,22 +55,22 @@ S -f'->> T
 where `Y` is profinite, `S` is finite, `f` is injective and `f'` is surjective,
 there exists a diagonal map `k : Y → S` making the diagram commute.
 -/
-lemma exists_lift_of_finite_of_injective_of_surjective {X Y S T : Type*}
-    [TopologicalSpace X] [CompactSpace X]
-    [TopologicalSpace Y] [CompactSpace Y] [T2Space Y] [TotallyDisconnectedSpace Y]
-    [TopologicalSpace S] [T2Space S] [Finite S]
+lemma exists_lift_of_finite_of_injective_of_surjective
+    {X Y S T : Type*} [TopologicalSpace X] [CompactSpace X] [TopologicalSpace Y] [CompactSpace Y]
+    [T2Space Y] [TotallyDisconnectedSpace Y] [TopologicalSpace S] [T2Space S] [Finite S]
     [TopologicalSpace T] [T2Space T]
     (f : X → Y) (hf : Continuous f) (f_inj : Function.Injective f)
     (f' : S → T) (f'_surj : Function.Surjective f')
-    (g : X → S) (hg : Continuous g) (g' : Y → T) (hg' : Continuous g')
-    (h_comm : g' ∘ f = f' ∘ g) : ∃ k : Y → S, (Continuous k) ∧ (f' ∘ k = g') ∧ (k ∘ f = g) := by
+    (g : X → S) (hg : Continuous g)
+    (g' : Y → T) (hg' : Continuous g') (h_comm : g' ∘ f = f' ∘ g)
+    : ∃ k : Y → S, (Continuous k) ∧ (f' ∘ k = g') ∧ (k ∘ f = g) := by
   -- `T` is finite because it admits a surjection from a finite set
   have : Finite T := Finite.of_surjective f' f'_surj
   -- define the closed partition `Z` so `Z i` is the image under `f` of the fiber of `g` at `i`
   let Z : S → Set Y := fun i ↦ f '' g ⁻¹' {i}
   have Z_closed (i) : IsClosed (Z i) :=
     (IsClosedEmbedding.isClosed_iff_image_isClosed (Continuous.isClosedEmbedding hf f_inj)).mp
-    (IsClosed.preimage hg isClosed_singleton)
+      (IsClosed.preimage hg isClosed_singleton)
   have Z_disj : univ.PairwiseDisjoint Z := by
     rw [Set.pairwiseDisjoint_iff]
     simp only [image_inter_nonempty_iff, Z]
@@ -114,44 +114,48 @@ lemma exists_lift_of_finite_of_injective_of_surjective {X Y S T : Type*}
   · ext x
     simp [liftCover_of_mem <| Z_subset_C (g x) (by simpa [mem_image] using ⟨x, rfl, rfl⟩)]
 
-/-- A categorically stated version of `exists_lift_of_finite_of_injective_of_surjective` in the
-category `Profinite`. -/
-lemma exists_lift_of_finite_of_mono_of_epi {X Y S T : Profinite.{u}} [Finite S]
-    (f : X ⟶ Y) [Mono f] (f' : S ⟶ T) [Epi f']
-    (g : X ⟶ S) (g' : Y ⟶ T) (h_comm : f ≫ g' = g ≫ f') :
-    ∃ k : Y ⟶ S, (k ≫ f' = g') ∧ (f ≫ k = g) := by
-  obtain ⟨k_fun, k_cont, h₁, h₂⟩ := exists_lift_of_finite_of_injective_of_surjective
-    f (by fun_prop) ((CompHausLike.mono_iff_injective f).mp inferInstance)
-    f' ((epi_iff_surjective f').mp inferInstance)
-    g (by fun_prop) g' (by fun_prop) (by simp [← CompHausLike.coe_comp, h_comm])
+/--
+A categorically stated version of `exists_lift_of_finite_of_injective_of_surjective` in the
+category `Profinite`.
+-/
+lemma exists_lift_of_finite_of_mono_of_epi
+    {X Y S T : Profinite.{u}} [Finite S]
+    (f : X ⟶ Y) [Mono f]
+    (f' : S ⟶ T) [Epi f']
+    (g : X ⟶ S) (g' : Y ⟶ T) (h_comm : f ≫ g' = g ≫ f')
+    : ∃ k : Y ⟶ S, (k ≫ f' = g') ∧ (f ≫ k = g) := by
+  obtain ⟨k_fun, k_cont, h₁, h₂⟩ :=
+    exists_lift_of_finite_of_injective_of_surjective f (by fun_prop)
+      ((CompHausLike.mono_iff_injective f).mp inferInstance) f'
+      ((epi_iff_surjective f').mp inferInstance) g (by fun_prop) g' (by fun_prop)
+      (by simp [← CompHausLike.coe_comp, h_comm])
   exact ⟨CompHausLike.ofHom _ ⟨k_fun, k_cont⟩, by ext; simp [← h₁], by ext; simp [← h₂]⟩
 
 /-- Finite sets are injective objects in `Profinite`. -/
-instance injective_of_finite (S : Profinite.{u}) [Nonempty S] [Finite S] :
-    Injective (S) where
+instance injective_of_finite (S : Profinite.{u}) [Nonempty S] [Finite S] : Injective (S) where
   factors {X Y} g f _ := by
     have (T : Profinite.{u}) [Nonempty T] : IsSplitEpi (CompHausLike.isTerminalPUnit.from T) :=
       IsSplitEpi.mk' { section_ := CompHausLike.const _ (Nonempty.some inferInstance) }
-    obtain ⟨k, _, h2⟩ := exists_lift_of_finite_of_mono_of_epi f
-        (CompHausLike.isTerminalPUnit.from S) g (CompHausLike.isTerminalPUnit.from Y)
-      (CompHausLike.isTerminalPUnit.hom_ext _ _)
+    obtain ⟨k, _, h2⟩ :=
+      exists_lift_of_finite_of_mono_of_epi f (CompHausLike.isTerminalPUnit.from S) g
+        (CompHausLike.isTerminalPUnit.from Y) (CompHausLike.isTerminalPUnit.hom_ext _ _)
     exact ⟨k, h2⟩
 
 set_option backward.isDefEq.respectTransparency false in
 /-- A nonempty light profinite space is injective in `Profinite`. -/
-instance injective_of_light (S : LightProfinite.{u}) [Nonempty S] :
-    Injective (lightToProfinite.obj S) where
+instance injective_of_light (S : LightProfinite.{u}) [Nonempty S]
+    : Injective (lightToProfinite.obj S) where
   factors {X Y} g f h := by
     -- help the instance inference a bit
     have (n : ℕ) : Finite <| lightToProfinite.obj (S.component n) :=
       inferInstanceAs (Finite (FintypeCat.toLightProfinite.obj _))
-    have : Nonempty <| lightToProfinite.obj (S.component 0) :=
-      Nonempty.map (S.proj 0) inferInstance
-    have (n : ℕ) : Epi (S.transitionMap n) := (LightProfinite.epi_iff_surjective _).mpr
-      (S.surjective_transitionMap n)
+    have : Nonempty <| lightToProfinite.obj (S.component 0) := Nonempty.map (S.proj 0) inferInstance
+    have (n : ℕ) : Epi (S.transitionMap n) :=
+      (LightProfinite.epi_iff_surjective _).mpr (S.surjective_transitionMap n)
     -- base step of the induction: find k0 : Y ⟶ S.component 0
     obtain ⟨k0, h_down0⟩ := Injective.factors (g ≫ lightToProfinite.map (S.proj 0)) f
-    /- Induction step: `next` produces k n+1 out of k n:
+    /-
+    Induction step: `next` produces k n+1 out of k n:
     ```
     X        --f-->  Y
     |g' (n+1)        |k n
@@ -162,32 +166,38 @@ instance injective_of_light (S : LightProfinite.{u}) [Nonempty S] :
       - `h_up (n+1) : k (n+1) ≫ p n = k n`
       - `h_down n+1 : f ≫ k (n+1) = g' (n+1)`
     Construction of `k (n+1)` through extension lemma requires as input:
-      - `h_comm n : g' (n+1) ≫ p n = f ≫ k n`, which can be obtained from h_down n. -/
-    have h_comm (n : ℕ) (k : Y ⟶ lightToProfinite.obj (S.component n)) (h_down :
-        f ≫ k = g ≫ lightToProfinite.map (S.proj n)) : f ≫ k =
-          g ≫ lightToProfinite.map (S.proj (n + 1)) ≫ lightToProfinite.map (S.transitionMap n) := by
+      - `h_comm n : g' (n+1) ≫ p n = f ≫ k n`, which can be obtained from h_down n.
+    -/
+    have h_comm
+        (n : ℕ) (k : Y ⟶ lightToProfinite.obj (S.component n))
+        (h_down : f ≫ k = g ≫ lightToProfinite.map (S.proj n))
+        : f ≫ k
+          = g ≫ lightToProfinite.map (S.proj (n + 1))
+            ≫ lightToProfinite.map (S.transitionMap n) := by
       rw [h_down, ← Functor.map_comp, ← S.proj_comp_transitionMap n]
-    have h_step (n : ℕ) (k : Y ⟶ lightToProfinite.obj (S.component n))
-        (h_down : f ≫ k = g ≫ lightToProfinite.map (S.proj n)) :
-        ∃ k' : Y ⟶ lightToProfinite.obj (S.component (n + 1)), k' ≫
-          lightToProfinite.map (S.transitionMap n) = k ∧ f ≫ k' = g ≫
-            lightToProfinite.map (S.proj (n + 1)) :=
+    have h_step
+        (n : ℕ) (k : Y ⟶ lightToProfinite.obj (S.component n))
+        (h_down : f ≫ k = g ≫ lightToProfinite.map (S.proj n))
+        : ∃ k' : Y ⟶ lightToProfinite.obj (S.component (n + 1)),
+          k' ≫ lightToProfinite.map (S.transitionMap n) = k
+            ∧ f ≫ k' = g ≫ lightToProfinite.map (S.proj (n + 1)) :=
       exists_lift_of_finite_of_mono_of_epi f (lightToProfinite.map (S.transitionMap n))
         (g ≫ lightToProfinite.map (S.proj (n + 1))) k (h_comm _ _ h_down)
-    let lifts (n : ℕ) := { k : Y ⟶ lightToProfinite.obj (S.component n) //
-      f ≫ k = g ≫ lightToProfinite.map (S.proj n) }
-    let next (n : ℕ) : lifts n → lifts (n + 1) :=
-      fun k ↦ ⟨(h_step n k.val k.property).choose, (h_step n k.val k.property).choose_spec.2⟩
+    let lifts (n : ℕ) :=
+      {k : Y ⟶ lightToProfinite.obj (S.component n) // f ≫ k = g ≫ lightToProfinite.map (S.proj n)}
+    let next (n : ℕ) : lifts n → lifts (n + 1) := fun k ↦
+      ⟨(h_step n k.val k.property).choose, (h_step n k.val k.property).choose_spec.2⟩
     -- now define a sequence of lifts using induction
     let k_seq (n : Nat) : lifts n := Nat.rec ⟨k0, h_down0⟩ next n
     -- `h_up` and `h_down` are the required commutativity properties
-    have h_down (n : ℕ) : f ≫ (k_seq n).val = g ≫ lightToProfinite.map (S.proj n) :=
-      (k_seq n).prop
+    have h_down (n : ℕ) : f ≫ (k_seq n).val = g ≫ lightToProfinite.map (S.proj n) := (k_seq n).prop
     have h_up : ∀ n, (k_seq (n + 1)).val ≫ lightToProfinite.map (S.transitionMap n) = (k_seq n).val
-    | 0 => (h_step 0 k0 h_down0).choose_spec.1
-    | n + 1 => (h_step (n + 1) (k_seq (n + 1)).val (k_seq (n + 1)).prop).choose_spec.1
-    let k_cone : Cone (S.diagram ⋙ lightToProfinite) :=
-      { pt := Y, π := NatTrans.ofOpSequence (fun n ↦ (k_seq n).val) (fun n ↦ (h_up n).symm) }
+      | 0 => (h_step 0 k0 h_down0).choose_spec.1
+      | n + 1 => (h_step (n + 1) (k_seq (n + 1)).val (k_seq (n + 1)).prop).choose_spec.1
+    let k_cone : Cone (S.diagram ⋙ lightToProfinite) := {
+      pt := Y
+      π := NatTrans.ofOpSequence (fun n ↦ (k_seq n).val) (fun n ↦ (h_up n).symm)
+    }
     -- now the induced map `Y ⟶ S = limₙ Sₙ` is the desired map
     refine ⟨(isLimitOfPreserves _ S.asLimit).lift k_cone, ?_⟩
     have hg : g = (isLimitOfPreserves _ S.asLimit).lift (k_cone.extend f) := by

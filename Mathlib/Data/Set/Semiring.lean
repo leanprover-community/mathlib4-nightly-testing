@@ -25,8 +25,10 @@ open scoped Pointwise
 
 variable {α β γ : Type*}
 
-/-- An alias for `Set α`, which has a semiring structure given by `∪` as "addition" and pointwise
-multiplication `*` as "multiplication". -/
+/--
+An alias for `Set α`, which has a semiring structure given by `∪` as "addition" and pointwise
+multiplication `*` as "multiplication".
+-/
 def SetSemiring (α : Type*) : Type _ := Set α
 deriving Inhabited, CompleteAtomicBooleanAlgebra
 
@@ -48,8 +50,10 @@ def toSet : SetSemiring α ≃ Set α := Equiv.refl _
 @[simp] lemma symm_toSet : toSet (α := α).symm = ofSet := rfl
 @[simp] lemma symm_ofSet : ofSet (α := α).symm = toSet := rfl
 
-instance : Zero (SetSemiring α) where zero := ofSet ∅
-instance : Add (SetSemiring α) where add s t := ofSet (s.toSet ∪ t.toSet)
+instance : Zero (SetSemiring α) where
+  zero := ofSet ∅
+instance : Add (SetSemiring α) where
+  add s t := ofSet (s.toSet ∪ t.toSet)
 
 lemma zero_def : (0 : SetSemiring α) = ofSet ∅ := rfl
 @[simp] lemma toSet_zero : (0 : SetSemiring α).toSet = ∅ := rfl
@@ -101,7 +105,8 @@ section One
 
 variable [One α]
 
-instance : One (SetSemiring α) where one := ofSet 1
+instance : One (SetSemiring α) where
+  one := ofSet 1
 
 lemma one_def : (1 : SetSemiring α) = ofSet 1 := rfl
 @[simp] lemma toSet_one : (1 : SetSemiring α).toSet = 1 := rfl
@@ -109,13 +114,11 @@ lemma one_def : (1 : SetSemiring α) = ofSet 1 := rfl
 
 end One
 
-instance [MulOneClass α] : MulOneClass (SetSemiring α) :=
-  inferInstanceAs <| MulOneClass (Set α)
+instance [MulOneClass α] : MulOneClass (SetSemiring α) := inferInstanceAs <| MulOneClass (Set α)
 
 instance [MulOneClass α] : NonAssocSemiring (SetSemiring α) where
 
-instance [Semigroup α] : Semigroup (SetSemiring α) :=
-  inferInstanceAs <| Semigroup (Set α)
+instance [Semigroup α] : Semigroup (SetSemiring α) := inferInstanceAs <| Semigroup (Set α)
 
 instance [Semigroup α] : NonUnitalSemiring (SetSemiring α) where
 
@@ -126,8 +129,7 @@ instance [CommSemigroup α] : CommSemigroup (SetSemiring α) :=
 
 instance [CommSemigroup α] : NonUnitalCommSemiring (SetSemiring α) where
 
-instance [CommMonoid α] : CommMonoid (SetSemiring α) :=
-  inferInstanceAs <| CommMonoid (Set α)
+instance [CommMonoid α] : CommMonoid (SetSemiring α) := inferInstanceAs <| CommMonoid (Set α)
 
 instance [CommMonoid α] : IdemCommSemiring (SetSemiring α) where
 
@@ -136,8 +138,7 @@ instance : CanonicallyOrderedAdd (SetSemiring α) where
   le_add_self _ _ := subset_union_right
   le_self_add _ _ := subset_union_left
 
-instance [CommMonoid α] : IsOrderedRing (SetSemiring α) :=
-  CanonicallyOrderedAdd.toIsOrderedRing
+instance [CommMonoid α] : IsOrderedRing (SetSemiring α) := CanonicallyOrderedAdd.toIsOrderedRing
 
 /-- If `α` is a monoid, the map that sends `a : α` to `{a}` is a monoid homomorphism. -/
 def singletonMonoidHom [Monoid α] : α →* SetSemiring α where
@@ -149,8 +150,10 @@ section ImageHom
 
 variable [MulOneClass α] [MulOneClass β] [MulOneClass γ] (f : α →* β)
 
-/-- The image of a set under a multiplicative homomorphism is a ring homomorphism
-with respect to the pointwise operations on sets. -/
+/--
+The image of a set under a multiplicative homomorphism is a ring homomorphism
+with respect to the pointwise operations on sets.
+-/
 def imageHom : SetSemiring α →+* SetSemiring β where
   toFun s := ofSet (f '' s.toSet)
   map_zero' := image_empty _
@@ -160,7 +163,8 @@ def imageHom : SetSemiring α →+* SetSemiring β where
 
 @[simp] lemma imageHom_apply (s : SetSemiring α) : imageHom f s = ofSet (f '' s.toSet) := rfl
 
-@[simp] lemma imageHom_id : imageHom (MonoidHom.id α) = RingHom.id (SetSemiring α) := by
+@[simp]
+lemma imageHom_id : imageHom (MonoidHom.id α) = RingHom.id (SetSemiring α) := by
   simp [imageHom, RingHom.id]
 
 lemma imageHom_comp (g : β →* γ) : imageHom (g.comp f) = (imageHom g).comp (imageHom f) := by

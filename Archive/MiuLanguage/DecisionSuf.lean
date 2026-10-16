@@ -52,12 +52,14 @@ namespace Miu
 
 open MiuAtom List Nat
 
-/-- We start by showing that an `Miustr` `M::w` can be derived, where `w` consists only of `I`s and
+/--
+We start by showing that an `Miustr` `M::w` can be derived, where `w` consists only of `I`s and
 where `count I w` is a power of 2.
 -/
 private theorem der_cons_replicate (n : ℕ) : Derivable (M :: replicate (2 ^ n) I) := by
   induction n with
-  | zero => constructor
+  | zero =>
+    constructor
   | succ k hk =>
     rw [pow_add, pow_one 2, mul_two, replicate_add]
     exact Derivable.r2 hk
@@ -79,17 +81,18 @@ As an intermediate step, we show that derive `z` from `zt`, where `t` is an `Miu
 an even number of `U`s and `z` is any `Miustr`.
 -/
 
-
 /--
 Any number of successive occurrences of `"UU"` can be removed from the end of a `Derivable` `Miustr`
 to produce another `Derivable` `Miustr`.
 -/
-theorem der_of_der_append_replicate_U_even {z : Miustr} {m : ℕ}
-    (h : Derivable (z ++ ↑(replicate (m * 2) U))) : Derivable z := by
+theorem der_of_der_append_replicate_U_even
+    {z : Miustr} {m : ℕ} (h : Derivable (z ++ ↑(replicate (m * 2) U)))
+    : Derivable z := by
   induction m with
   | zero =>
     revert h
-    rw [replicate, append_nil]; exact id
+    rw [replicate, append_nil]
+    exact id
   | succ k hk =>
     apply hk
     simp only [succ_mul, replicate_add] at h
@@ -104,22 +107,21 @@ In fine-tuning my application of `simp`, I issued the following command to deter
 `set_option trace.simplify.rewrite true`
 -/
 
-
-/-- We may replace several consecutive occurrences of `"III"` with the same number of `"U"`s.
+/--
+We may replace several consecutive occurrences of `"III"` with the same number of `"U"`s.
 In application of the following lemma, `xs` will either be `[]` or `[U]`.
 -/
-theorem der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append (c k : ℕ)
-    (_ : c % 3 = 1 ∨ c % 3 = 2) (xs : Miustr)
-    (hder : Derivable (↑(M :: replicate (c + 3 * k) I) ++ xs)) :
-    Derivable (↑(M :: (replicate c I ++ replicate k U)) ++ xs) := by
+theorem der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append
+    (c k : ℕ) (_ : c % 3 = 1 ∨ c % 3 = 2)
+    (xs : Miustr) (hder : Derivable (↑(M :: replicate (c + 3 * k) I) ++ xs))
+    : Derivable (↑(M :: (replicate c I ++ replicate k U)) ++ xs) := by
   induction k generalizing xs with
   | zero =>
     simpa only [replicate, mul_zero, add_zero, append_nil, forall_true_iff, imp_self]
   | succ a ha =>
     specialize ha (U :: xs)
     -- We massage the goal into a form amenable to the application of `ha`.
-    rw [replicate_add, ← append_assoc, ← cons_append, replicate_one, append_assoc,
-      singleton_append]
+    rw [replicate_add, ← append_assoc, ← cons_append, replicate_one, append_assoc, singleton_append]
     apply ha
     apply Derivable.r3
     change Derivable (↑(M :: replicate (c + 3 * a) I) ++ ↑(replicate 3 I) ++ xs)
@@ -132,18 +134,16 @@ We collect purely arithmetic lemmas: `add_mod2` is used to ensure we have an eve
 while `le_pow2_and_pow2_eq_mod3` treats the congruence condition modulo 3.
 -/
 
-
 section Arithmetic
 
-/-- For every `a`, the number `a + a % 2` is even.
--/
+/-- For every `a`, the number `a + a % 2` is even. -/
 theorem add_mod2 (a : ℕ) : ∃ t, a + a % 2 = t * 2 := by
   simp only [mul_comm _ 2] -- write `t*2` as `2*t`
   apply dvd_of_mod_eq_zero -- it suffices to prove `(a + a % 2) % 2 = 0`
   rw [add_mod, mod_mod, ← two_mul, mul_mod_right]
 
-private theorem le_pow2_and_pow2_eq_mod3' (c : ℕ) (x : ℕ) (h : c = 1 ∨ c = 2) :
-    ∃ m : ℕ, c + 3 * x ≤ 2 ^ m ∧ 2 ^ m % 3 = c % 3 := by
+private theorem le_pow2_and_pow2_eq_mod3' (c : ℕ) (x : ℕ) (h : c = 1 ∨ c = 2)
+    : ∃ m : ℕ, c + 3 * x ≤ 2 ^ m ∧ 2 ^ m % 3 = c % 3 := by
   induction x with
   | zero =>
     use c + 1
@@ -154,15 +154,17 @@ private theorem le_pow2_and_pow2_eq_mod3' (c : ℕ) (x : ℕ) (h : c = 1 ∨ c =
     · use g, hp, hgmod
     refine ⟨g + 2, ?_, ?_⟩
     · rw [mul_succ, ← add_assoc, pow_add]
-      change c + 3 * k + 3 ≤ 2 ^ g * (1 + 3); rw [mul_add (2 ^ g) 1 3, mul_one]
+      change c + 3 * k + 3 ≤ 2 ^ g * (1 + 3)
+      rw [mul_add (2 ^ g) 1 3, mul_one]
       linarith [hkg, @Nat.one_le_two_pow g]
     · rw [pow_add, ← mul_one c]
       exact ModEq.mul hgmod rfl
 
-/-- If `a` is 1 or 2 modulo 3, then exists `k` a power of 2 for which `a ≤ k` and `a ≡ k [MOD 3]`.
+/--
+If `a` is 1 or 2 modulo 3, then exists `k` a power of 2 for which `a ≤ k` and `a ≡ k [MOD 3]`.
 -/
-theorem le_pow2_and_pow2_eq_mod3 (a : ℕ) (h : a % 3 = 1 ∨ a % 3 = 2) :
-    ∃ m : ℕ, a ≤ 2 ^ m ∧ 2 ^ m % 3 = a % 3 := by
+theorem le_pow2_and_pow2_eq_mod3 (a : ℕ) (h : a % 3 = 1 ∨ a % 3 = 2)
+    : ∃ m : ℕ, a ≤ 2 ^ m ∧ 2 ^ m % 3 = a % 3 := by
   obtain ⟨m, hm⟩ := le_pow2_and_pow2_eq_mod3' (a % 3) (a / 3) h
   use m
   constructor
@@ -171,8 +173,8 @@ theorem le_pow2_and_pow2_eq_mod3 (a : ℕ) (h : a % 3 = 1 ∨ a % 3 = 2) :
 
 end Arithmetic
 
-theorem replicate_pow_sub_append {m : ℕ} :
-    M :: replicate (2 ^ m - 1) I ++ [I] = M :: replicate (2 ^ m) I := by
+theorem replicate_pow_sub_append {m : ℕ}
+    : M :: replicate (2 ^ m - 1) I ++ [I] = M :: replicate (2 ^ m) I := by
   change M :: replicate (2 ^ m - 1) I ++ replicate 1 I = M :: replicate (2 ^ m) I
   rw [cons_append, ← replicate_add, tsub_add_cancel_of_le (one_le_pow' m 1)]
 
@@ -180,8 +182,8 @@ theorem replicate_pow_sub_append {m : ℕ} :
 `der_replicate_I_of_mod3` states that `M::y` is `Derivable` if `y` is any `Miustr` consisting just
 of `I`s, where `count I y` is 1 or 2 modulo 3.
 -/
-theorem der_replicate_I_of_mod3 (c : ℕ) (h : c % 3 = 1 ∨ c % 3 = 2) :
-    Derivable (M :: replicate c I) := by
+theorem der_replicate_I_of_mod3 (c : ℕ) (h : c % 3 = 1 ∨ c % 3 = 2)
+    : Derivable (M :: replicate c I) := by
   -- From `der_cons_replicate`, we can derive the `Miustr` `M::w` described in the introduction.
   obtain ⟨m, hm⟩ := le_pow2_and_pow2_eq_mod3 c h -- `2^m` will be the number of `I`s in `M::w`
   have hw₂ : Derivable (M :: replicate (2 ^ m) I ++ replicate ((2 ^ m - c) / 3 % 2) U) := by
@@ -193,10 +195,11 @@ theorem der_replicate_I_of_mod3 (c : ℕ) (h : c % 3 = 1 ∨ c % 3 = 2) :
       apply Derivable.r1
       rw [replicate_pow_sub_append]
       exact der_cons_replicate m
-  have hw₃ : Derivable (M :: replicate c I ++
-      replicate ((2 ^ m - c) / 3) U ++ replicate ((2 ^ m - c) / 3 % 2) U) := by
-    apply
-      der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append c ((2 ^ m - c) / 3) h
+  have hw₃ : Derivable
+      (M :: replicate c I ++ replicate ((2 ^ m - c) / 3) U
+        ++ replicate ((2 ^ m - c) / 3 % 2) U) := by
+    apply der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append c ((2 ^ m - c) / 3)
+      h
     convert hw₂
     -- now we must show `c + 3 * ((2 ^ m - c) / 3) = 2 ^ m`
     rw [Nat.mul_div_cancel']
@@ -219,10 +222,11 @@ example (c : ℕ) (h : c % 3 = 1 ∨ c % 3 = 2) : Derivable (M :: replicate c I)
       apply Derivable.r1
       rw [replicate_pow_sub_append]
       exact der_cons_replicate m
-  have hw₃ : Derivable (M :: replicate c I ++
-      replicate ((2 ^ m - c) / 3) U ++ replicate ((2 ^ m - c) / 3 % 2) U) := by
-    apply
-      der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append c ((2 ^ m - c) / 3) h
+  have hw₃ : Derivable
+      (M :: replicate c I ++ replicate ((2 ^ m - c) / 3) U
+        ++ replicate ((2 ^ m - c) / 3 % 2) U) := by
+    apply der_cons_replicate_I_replicate_U_append_of_der_cons_replicate_I_append c ((2 ^ m - c) / 3)
+      h
     convert hw₂
     -- now we must show `c + 3 * ((2 ^ m - c) / 3) = 2 ^ m`
     rw [Nat.mul_div_cancel']
@@ -245,13 +249,13 @@ We tackle first the base case of the induction. This requires auxiliary results 
 conditions under which `count I ys = length ys`.
 -/
 
-
-/-- If an `Miustr` has a zero `count U` and contains no `M`, then its `count I` is its length.
--/
-theorem count_I_eq_length_of_count_U_zero_and_neg_mem {ys : Miustr} (hu : count U ys = 0)
-    (hm : M ∉ ys) : count I ys = length ys := by
+/-- If an `Miustr` has a zero `count U` and contains no `M`, then its `count I` is its length. -/
+theorem count_I_eq_length_of_count_U_zero_and_neg_mem
+    {ys : Miustr} (hu : count U ys = 0) (hm : M ∉ ys)
+    : count I ys = length ys := by
   induction ys with
-  | nil => rfl
+  | nil =>
+    rfl
   | cons x xs hxs =>
     cases x
     · -- case `x = M` gives a contradiction.
@@ -264,14 +268,12 @@ theorem count_I_eq_length_of_count_U_zero_and_neg_mem {ys : Miustr} (hu : count 
     · -- case `x = U` gives a contradiction.
       simp_all
 
-/-- `base_case_suf` is the base case of the sufficiency result.
--/
+/-- `base_case_suf` is the base case of the sufficiency result. -/
 theorem base_case_suf (en : Miustr) (h : Decstr en) (hu : count U en = 0) : Derivable en := by
   rcases h with ⟨⟨mhead, nmtail⟩, hi⟩
   have : en ≠ nil := by
     intro k
-    simp only [k, count, countP, countP.go, zero_mod, zero_ne_one, false_or,
-      reduceCtorEq] at hi
+    simp only [k, count, countP, countP.go, zero_mod, zero_ne_one, false_or, reduceCtorEq] at hi
   rcases exists_cons_of_ne_nil this with ⟨y, ys, rfl⟩
   rcases mhead
   rsuffices ⟨c, rfl, hc⟩ : ∃ c, replicate c I = ys ∧ (c % 3 = 1 ∨ c % 3 = 2)
@@ -286,26 +288,24 @@ Before continuing to the proof of the induction step, we need other auxiliary re
 relate to `count U`.
 -/
 
-
 theorem mem_of_count_U_eq_succ {xs : Miustr} {k : ℕ} (h : count U xs = succ k) : U ∈ xs := by
   induction xs with
-  | nil => exfalso; rw [count] at h; contradiction
+  | nil =>
+    exfalso; rw [count] at h; contradiction
   | cons z zs hzs =>
     rw [mem_cons]
     cases z <;> try exact Or.inl rfl
     all_goals right; simp only [count_cons] at h; exact hzs h
 
-theorem eq_append_cons_U_of_count_U_pos {k : ℕ} {zs : Miustr} (h : count U zs = succ k) :
-    ∃ as bs : Miustr, zs = as ++ ↑(U :: bs) :=
+theorem eq_append_cons_U_of_count_U_pos {k : ℕ} {zs : Miustr} (h : count U zs = succ k)
+    : ∃ as bs : Miustr, zs = as ++ ↑(U :: bs) :=
   append_of_mem (mem_of_count_U_eq_succ h)
 
-/-- `ind_hyp_suf` is the inductive step of the sufficiency result.
--/
-theorem ind_hyp_suf (k : ℕ) (ys : Miustr) (hu : count U ys = succ k) (hdec : Decstr ys) :
-    ∃ as bs : Miustr,
-      ys = M :: as ++ U :: bs ∧
-      count U (↑(M :: as) ++ ↑[I, I, I] ++ bs : Miustr) = k ∧
-      Decstr (↑(M :: as) ++ ↑[I, I, I] ++ bs) := by
+/-- `ind_hyp_suf` is the inductive step of the sufficiency result. -/
+theorem ind_hyp_suf (k : ℕ) (ys : Miustr) (hu : count U ys = succ k) (hdec : Decstr ys)
+    : ∃ as bs : Miustr,
+      ys = M :: as ++ U :: bs ∧ count U (↑(M :: as) ++ ↑[I, I, I] ++ bs : Miustr) = k
+        ∧ Decstr (↑(M :: as) ++ ↑[I, I, I] ++ bs) := by
   rcases hdec with ⟨⟨mhead, nmtail⟩, hic⟩
   have : ys ≠ nil := by rintro rfl; contradiction
   rcases exists_cons_of_ne_nil this with ⟨z, zs, rfl⟩
@@ -321,21 +321,25 @@ theorem ind_hyp_suf (k : ℕ) (ys : Miustr) (hu : count U ys = succ k) (hdec : D
     rw [cons_append, cons_append]
     dsimp [tail] at nmtail ⊢
     rw [mem_append] at nmtail
-    simpa only [append_assoc, cons_append, nil_append, mem_append, mem_cons, reduceCtorEq,
-      false_or] using nmtail
-  · rw [count_append, count_append]; rw [← cons_append, count_append] at hic
+    simpa only [append_assoc, cons_append, nil_append, mem_append, mem_cons, reduceCtorEq, false_or]
+      using nmtail
+  · rw [count_append, count_append]
+    rw [← cons_append, count_append] at hic
     simp only [count_cons_self, count_nil, count_cons] at hic ⊢
-    rw [add_right_comm, add_mod_right]; exact hic
+    rw [add_right_comm, add_mod_right]
+    exact hic
 
-/-- `der_of_decstr` states that `Derivable en` follows from `Decstr en`.
--/
+/-- `der_of_decstr` states that `Derivable en` follows from `Decstr en`. -/
 theorem der_of_decstr {en : Miustr} (h : Decstr en) : Derivable en := by
-  /- The next three lines have the effect of introducing `count U en` as a variable that can be used
-  for induction -/
+  /-
+  The next three lines have the effect of introducing `count U en` as a variable that can be used
+  for induction
+  -/
   have hu : ∃ n, count U en = n := exists_eq'
   obtain ⟨n, hu⟩ := hu
   induction n generalizing en with
-  | zero => exact base_case_suf _ h hu
+  | zero =>
+    exact base_case_suf _ h hu
   | succ k hk =>
     rcases ind_hyp_suf k en hu h with ⟨as, bs, hyab, habuc, hdecab⟩
     have h₂ : Derivable (↑(M :: as) ++ ↑[I, I, I] ++ bs) := hk hdecab habuc
@@ -346,17 +350,14 @@ theorem der_of_decstr {en : Miustr} (h : Decstr en) : Derivable en := by
 ### Decidability of `Derivable`
 -/
 
-
-/-- Finally, we have the main result, namely that `Derivable` is a decidable predicate.
--/
+/-- Finally, we have the main result, namely that `Derivable` is a decidable predicate. -/
 instance : DecidablePred Derivable := fun _ => decidable_of_iff _ ⟨der_of_decstr, decstr_of_der⟩
 
 /-!
 By decidability, we can automatically determine whether any given `Miustr` is `Derivable`.
 -/
 
-
-example : ¬Derivable "MU" := by decide
+example : ¬ Derivable "MU" := by decide
 
 example : Derivable "MUIUIUIIIIIUUUIUII" := by decide
 

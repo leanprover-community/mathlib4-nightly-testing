@@ -11,7 +11,6 @@ public meta import Lean.Elab.Term
 public meta import Lean.Meta.Tactic.Cleanup
 public meta import Lean.PrettyPrinter
 public import Mathlib.Tactic.MinImports
-
 import Lean.Elab.Command
 
 /-!
@@ -138,7 +137,8 @@ For example, `set_option pp.all true in extract_goal` gives the `pp.all` form.
 -/
 syntax (name := extractGoal) "extract_goal" config (" using " ident)? : tactic
 
-/-- Format a goal into a type signature for a declaration named `name`.
+/--
+Format a goal into a type signature for a declaration named `name`.
 
 Example output: `myTheorem (a b : Nat) : a + b = b + a`.
 
@@ -156,9 +156,8 @@ def goalSignature (name : Name) (g : MVarId) : TermElabM (MessageData × Expr ×
     -- not just implications (which have anonymous or internal hygienic names)
     let originalTy ← instantiateMVars (← g.getType)
     let hasOriginalForalls :=
-      originalTy.isForall &&
-      !originalTy.bindingName!.isAnonymous &&
-      !originalTy.bindingName!.isInternal
+      originalTy.isForall && !originalTy.bindingName!.isAnonymous
+        && !originalTy.bindingName!.isInternal
     let (_, g) ← g.revert (clearAuxDeclsInsteadOfRevert := true) (← g.getDecl).lctx.getFVarIds
     let ty ← instantiateMVars (← g.getType)
     if ty.hasExprMVar then
@@ -166,61 +165,68 @@ def goalSignature (name : Name) (g : MVarId) : TermElabM (MessageData × Expr ×
       throwError "Extracted goal has metavariables: {ty}"
     let ty ← Term.levelMVarToParam ty
     let seenLevels := collectLevelParams {} ty
-    let levels := (← Term.getLevelNames).filter
-      fun u => seenLevels.visitedLevel.contains (.param u)
-    addAndCompile <| Declaration.axiomDecl
-      { name := name
-        levelParams := levels
-        isUnsafe := false
-        type := ty }
+    let levels := (← Term.getLevelNames).filter fun u => seenLevels.visitedLevel.contains (.param u)
+    addAndCompile <|
+      Declaration.axiomDecl { name := name, levelParams := levels, isUnsafe := false, type := ty }
     let sig ← addMessageContext <| MessageData.signature name
     let context ← liftM (m := CoreM) <| read
     let state ← get
     let env ← getEnv
-    let (ts, _) ← ((Mathlib.Command.MinImports.getVisited name).run
-        { context with snap? := none }).run
-        { state with env, maxRecDepth := context.maxRecDepth }
+    let (ts, _) ←
+      ((Mathlib.Command.MinImports.getVisited name).run { context with snap? := none }).run {
+        state with
+        env
+        maxRecDepth := context.maxRecDepth
+      }
     let mut hm : Std.HashMap Nat Name := {}
     for imp in env.header.moduleNames do
       hm := hm.insert ((env.getModuleIdx? imp).getD default) imp
     let mut fins : NameSet := {}
     for t in ts do
-      let new := match env.getModuleIdxFor? t with
+      let new :=
+        match env.getModuleIdxFor? t with
         | some t => (hm.get? t).get!
-        | none   => .anonymous -- instead of `getMainModule`, we omit the current module
-      if !fins.contains new then fins := fins.insert new
+        | none => .anonymous -- instead of `getMainModule`, we omit the current module
+      if ! fins.contains new then fins := fins.insert new
     let tot := Mathlib.Command.MinImports.getIrredundantImports (← getEnv) (fins.erase .anonymous)
     let fileNames := tot.toArray.qsort Name.lt
     return (sig, ty, fileNames, hasOriginalForalls)
 
 elab_rules : tactic
   | `(tactic| extract_goal $cfg:config $[using $name?]?) => do
-    let name ← if let some name := name?
-                then pure name.getId
-                else mkAuxDeclName `extracted
-    let msg ← withoutModifyingEnv <| withoutModifyingState do
-      let g ← getMainGoal
-      let g ← do match cfg with
-        | `(config| *) => pure g
-        | `(config| ) =>
-          if (← g.getType >>= instantiateMVars).consumeMData.isConstOf ``False then
-            -- In a contradiction proof, it is not very helpful to clear all hypotheses!
-            pure g
-          else
-            g.cleanup
-        | `(config| $fvars:ident*) =>
-          -- Note: `getFVarIds` does `withMainContext`
-          g.cleanup (toPreserve := (← getFVarIds fvars)) (indirectProps := false)
-        | _ => throwUnsupportedSyntax
-      let (sig, ty, _, hasOriginalForalls) ← goalSignature name g
-      let cmd := if ← Meta.isProp ty then "theorem" else "def"
-      let msg ← if hasOriginalForalls then
-        -- Preserve foralls: format as "theorem name : ty := sorry"
-        pure m!"{cmd} {name} : {ty} := sorry"
+    let name ←
+      if let some name := name? then
+        pure name.getId
       else
-        -- Convert foralls to parameters: format using signature
-        pure m!"{cmd} {sig} := sorry"
-      pure msg
+        mkAuxDeclName `extracted
+    let msg ←
+      withoutModifyingEnv <| withoutModifyingState do
+        let g ← getMainGoal
+        let g ← do
+          match cfg with
+          | `(config| *) =>
+            pure g
+          | `(config| ) =>
+            if (← g.getType >>= instantiateMVars).consumeMData.isConstOf ``False then
+              -- In a contradiction proof, it is not very helpful to clear all hypotheses!
+              pure g
+            else
+              g.cleanup
+          | `(config| $fvars:ident*) =>
+            -- Note: `getFVarIds` does `withMainContext`
+            g.cleanup (toPreserve := (← getFVarIds fvars)) (indirectProps := false)
+          | _ =>
+            throwUnsupportedSyntax
+        let (sig, ty, _, hasOriginalForalls) ← goalSignature name g
+        let cmd := if ← Meta.isProp ty then "theorem" else "def"
+        let msg ←
+          if hasOriginalForalls then
+            -- Preserve foralls: format as "theorem name : ty := sorry"
+            pure m!"{cmd} {name} : {ty} := sorry"
+          else
+            -- Convert foralls to parameters: format using signature
+            pure m!"{cmd} {sig} := sorry"
+        pure msg
     logInfo msg
 
 end Mathlib.Tactic.ExtractGoal

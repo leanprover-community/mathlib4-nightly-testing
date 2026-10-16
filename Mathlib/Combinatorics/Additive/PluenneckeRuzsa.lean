@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
-
 import Mathlib.Algebra.Order.Field.Rat
 import Mathlib.Combinatorics.Enumerative.DoubleCounting
 
@@ -51,12 +50,13 @@ variable [Group G] {A B C : Finset G}
 
 /-- **Ruzsa's triangle inequality**. Division version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Subtraction version. -/]
-theorem ruzsa_triangle_inequality_div_div_div (A B C : Finset G) :
-    #(A / C) * #B ≤ #(A / B) * #(C / B) := by
+theorem ruzsa_triangle_inequality_div_div_div (A B C : Finset G)
+    : #(A / C) * #B ≤ #(A / B) * #(C / B) := by
   rw [← card_product (A / B), ← mul_one #((A / B) ×ˢ (C / B))]
-  refine card_mul_le_card_mul (fun b (a, c) ↦ a / c = b) (fun x hx ↦ ?_)
-    fun x _ ↦ card_le_one_iff.2 fun hu hv ↦
-      ((mem_bipartiteBelow _).1 hu).2.symm.trans ?_
+  refine card_mul_le_card_mul
+    (fun b (a, c) ↦ a / c = b)
+    (fun x hx ↦ ?_)
+    fun x _ ↦ card_le_one_iff.2 fun hu hv ↦ ((mem_bipartiteBelow _).1 hu).2.symm.trans ?_
   · obtain ⟨a, ha, c, hc, rfl⟩ := mem_div.1 hx
     refine card_le_card_of_injOn (fun b ↦ (a / b, c / b)) (fun b hb ↦ ?_) fun b₁ _ b₂ _ h ↦ ?_
     · rw [mem_coe, mem_bipartiteAbove]
@@ -66,64 +66,63 @@ theorem ruzsa_triangle_inequality_div_div_div (A B C : Finset G) :
 
 /-- **Ruzsa's triangle inequality**. Mulinv-mulinv-mulinv version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Addneg-addneg-addneg version. -/]
-theorem ruzsa_triangle_inequality_mulInv_mulInv_mulInv (A B C : Finset G) :
-    #(A * C⁻¹) * #B ≤ #(A * B⁻¹) * #(C * B⁻¹) := by
+theorem ruzsa_triangle_inequality_mulInv_mulInv_mulInv (A B C : Finset G)
+    : #(A * C⁻¹) * #B ≤ #(A * B⁻¹) * #(C * B⁻¹) := by
   simpa [div_eq_mul_inv] using ruzsa_triangle_inequality_div_div_div A B C
 
 /-- **Ruzsa's triangle inequality**. Invmul-invmul-invmul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Negadd-negadd-negadd version. -/]
-theorem ruzsa_triangle_inequality_invMul_invMul_invMul (A B C : Finset G) :
-    #B * #(A⁻¹ * C) ≤ #(B⁻¹ * A) * #(B⁻¹ * C) := by
+theorem ruzsa_triangle_inequality_invMul_invMul_invMul (A B C : Finset G)
+    : #B * #(A⁻¹ * C) ≤ #(B⁻¹ * A) * #(B⁻¹ * C) := by
   simpa [mul_comm, div_eq_mul_inv, ← map_op_mul, ← map_op_inv] using
     ruzsa_triangle_inequality_div_div_div (G := Gᵐᵒᵖ) (C.map opEquiv.toEmbedding)
       (B.map opEquiv.toEmbedding) (A.map opEquiv.toEmbedding)
 
-
 /-- **Ruzsa's triangle inequality**. Div-mul-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Sub-add-add version. -/]
-theorem ruzsa_triangle_inequality_div_mul_mul (A B C : Finset G) :
-    #(A / C) * #B ≤ #(A * B) * #(C * B) := by
+theorem ruzsa_triangle_inequality_div_mul_mul (A B C : Finset G)
+    : #(A / C) * #B ≤ #(A * B) * #(C * B) := by
   simpa using ruzsa_triangle_inequality_div_div_div A B⁻¹ C
 
 /-- **Ruzsa's triangle inequality**. Mulinv-mul-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Addneg-add-add version. -/]
-theorem ruzsa_triangle_inequality_mulInv_mul_mul (A B C : Finset G) :
-    #(A * C⁻¹) * #B ≤ #(A * B) * #(C * B) := by
+theorem ruzsa_triangle_inequality_mulInv_mul_mul (A B C : Finset G)
+    : #(A * C⁻¹) * #B ≤ #(A * B) * #(C * B) := by
   simpa using ruzsa_triangle_inequality_mulInv_mulInv_mulInv A B⁻¹ C
 
 /-- **Ruzsa's triangle inequality**. Invmul-mul-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Negadd-add-add version. -/]
-theorem ruzsa_triangle_inequality_invMul_mul_mul (A B C : Finset G) :
-    #B * #(A⁻¹ * C) ≤ #(B * A) * #(B * C) := by
+theorem ruzsa_triangle_inequality_invMul_mul_mul (A B C : Finset G)
+    : #B * #(A⁻¹ * C) ≤ #(B * A) * #(B * C) := by
   simpa using ruzsa_triangle_inequality_invMul_invMul_invMul A B⁻¹ C
-
 
 /-- **Ruzsa's triangle inequality**. Mul-div-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Add-sub-add version. -/]
-theorem ruzsa_triangle_inequality_mul_div_mul (A B C : Finset G) :
-    #B * #(A * C) ≤ #(B / A) * #(B * C) := by
+theorem ruzsa_triangle_inequality_mul_div_mul (A B C : Finset G)
+    : #B * #(A * C) ≤ #(B / A) * #(B * C) := by
   simpa [div_eq_mul_inv] using ruzsa_triangle_inequality_invMul_mul_mul A⁻¹ B C
 
 /-- **Ruzsa's triangle inequality**. Mul-mulinv-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Add-addneg-add version. -/]
-theorem ruzsa_triangle_inequality_mul_mulInv_mul (A B C : Finset G) :
-    #B * #(A * C) ≤ #(B * A⁻¹) * #(B * C) := by
+theorem ruzsa_triangle_inequality_mul_mulInv_mul (A B C : Finset G)
+    : #B * #(A * C) ≤ #(B * A⁻¹) * #(B * C) := by
   simpa [div_eq_mul_inv] using ruzsa_triangle_inequality_mul_div_mul A B C
 
 /-- **Ruzsa's triangle inequality**. Mul-mul-invmul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Add-add-negadd version. -/]
-theorem ruzsa_triangle_inequality_mul_mul_invMul (A B C : Finset G) :
-    #(A * C) * #B ≤ #(A * B) * #(C⁻¹ * B) := by
+theorem ruzsa_triangle_inequality_mul_mul_invMul (A B C : Finset G)
+    : #(A * C) * #B ≤ #(A * B) * #(C⁻¹ * B) := by
   simpa using ruzsa_triangle_inequality_mulInv_mul_mul A B C⁻¹
 
 /-! ### Plünnecke-Petridis inequality -/
 
 @[to_additive]
-theorem pluennecke_petridis_inequality_mul (C : Finset G)
-    (hA : ∀ A' ⊆ A, #(A * B) * #A' ≤ #(A' * B) * #A) :
-    #(C * A * B) * #A ≤ #(A * B) * #(C * A) := by
+theorem pluennecke_petridis_inequality_mul
+    (C : Finset G) (hA : ∀ A' ⊆ A, #(A * B) * #A' ≤ #(A' * B) * #A)
+    : #(C * A * B) * #A ≤ #(A * B) * #(C * A) := by
   induction C using Finset.induction_on with
-  | empty => simp
+  | empty =>
+    simp
   | insert x C _ ih =>
     set A' := A ∩ ({x}⁻¹ * C * A) with hA'
     set C' := insert x C with hC'
@@ -161,22 +160,22 @@ variable [CommGroup G] {A B C : Finset G}
 
 -- Auxiliary lemma for Ruzsa's triangle sum inequality, and the Plünnecke-Ruzsa inequality.
 @[to_additive]
-private theorem mul_aux (hA : A.Nonempty) (hAB : A ⊆ B)
-    (h : ∀ A' ∈ B.powerset.erase ∅, (#(A * C) : ℚ≥0) / #A ≤ #(A' * C) / #A') :
-    ∀ A' ⊆ A, #(A * C) * #A' ≤ #(A' * C) * #A := by
+private theorem mul_aux
+    (hA : A.Nonempty) (hAB : A ⊆ B)
+    (h : ∀ A' ∈ B.powerset.erase ∅, (#(A * C) : ℚ≥0) / #A ≤ #(A' * C) / #A')
+    : ∀ A' ⊆ A, #(A * C) * #A' ≤ #(A' * C) * #A := by
   rintro A' hAA'
   obtain rfl | hA' := A'.eq_empty_or_nonempty
   · simp
   have hA₀ : (0 : ℚ≥0) < #A := cast_pos.2 hA.card_pos
   have hA₀' : (0 : ℚ≥0) < #A' := cast_pos.2 hA'.card_pos
-  exact mod_cast
-    (div_le_div_iff₀ hA₀ hA₀').1
-      (h _ <| mem_erase_of_ne_of_mem hA'.ne_empty <| mem_powerset.2 <| hAA'.trans hAB)
+  exact mod_cast (div_le_div_iff₀ hA₀ hA₀').1
+    (h _ <| mem_erase_of_ne_of_mem hA'.ne_empty <| mem_powerset.2 <| hAA'.trans hAB)
 
 /-- **Ruzsa's triangle inequality**. Multiplication version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Addition version. -/]
-theorem ruzsa_triangle_inequality_mul_mul_mul (A B C : Finset G) :
-    #(A * C) * #B ≤ #(A * B) * #(B * C) := by
+theorem ruzsa_triangle_inequality_mul_mul_mul (A B C : Finset G)
+    : #(A * C) * #B ≤ #(A * B) * #(B * C) := by
   obtain rfl | hB := B.eq_empty_or_nonempty
   · simp
   have hB' : B ∈ B.powerset.erase ∅ := mem_erase_of_ne_of_mem hB.ne_empty (mem_powerset_self _)
@@ -193,33 +192,34 @@ theorem ruzsa_triangle_inequality_mul_mul_mul (A B C : Finset G) :
 
 /-- **Ruzsa's triangle inequality**. Mul-div-div version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Add-sub-sub version. -/]
-theorem ruzsa_triangle_inequality_mul_div_div (A B C : Finset G) :
-    #(A * C) * #B ≤ #(A / B) * #(B / C) := by
+theorem ruzsa_triangle_inequality_mul_div_div (A B C : Finset G)
+    : #(A * C) * #B ≤ #(A / B) * #(B / C) := by
   rw [div_eq_mul_inv, ← card_inv B, ← card_inv (B / C), inv_div', div_inv_eq_mul]
   exact ruzsa_triangle_inequality_mul_mul_mul _ _ _
 
 /-- **Ruzsa's triangle inequality**. Div-mul-div version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Sub-add-sub version. -/]
-theorem ruzsa_triangle_inequality_div_mul_div (A B C : Finset G) :
-    #(A / C) * #B ≤ #(A * B) * #(B / C) := by
+theorem ruzsa_triangle_inequality_div_mul_div (A B C : Finset G)
+    : #(A / C) * #B ≤ #(A * B) * #(B / C) := by
   rw [div_eq_mul_inv, div_eq_mul_inv]
   exact ruzsa_triangle_inequality_mul_mul_mul _ _ _
 
 /-- **Ruzsa's triangle inequality**. Div-div-mul version. -/
 @[to_additive /-- **Ruzsa's triangle inequality**. Sub-sub-add version. -/]
-theorem card_div_mul_le_card_div_mul_card_mul (A B C : Finset G) :
-    #(A / C) * #B ≤ #(A / B) * #(B * C) := by
+theorem card_div_mul_le_card_div_mul_card_mul (A B C : Finset G)
+    : #(A / C) * #B ≤ #(A / B) * #(B * C) := by
   rw [← div_inv_eq_mul, div_eq_mul_inv]
   exact ruzsa_triangle_inequality_mul_div_div _ _ _
 
 -- Auxiliary lemma towards the Plünnecke-Ruzsa inequality
 @[to_additive]
-private lemma card_mul_pow_le (hAB : ∀ A' ⊆ A, #(A * B) * #A' ≤ #(A' * B) * #A) (n : ℕ) :
-    #(A * B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ n * #A := by
+private lemma card_mul_pow_le (hAB : ∀ A' ⊆ A, #(A * B) * #A' ≤ #(A' * B) * #A) (n : ℕ)
+    : #(A * B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ n * #A := by
   obtain rfl | hA := A.eq_empty_or_nonempty
   · simp
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     refine le_of_mul_le_mul_right ?_ (by positivity : (0 : ℚ≥0) < #A)
     calc
@@ -229,12 +229,14 @@ private lemma card_mul_pow_le (hAB : ∀ A' ⊆ A, #(A * B) * #A' ≤ #(A' * B) 
       _ ≤ #(A * B) * ((#(A * B) / #A) ^ n * #A) := by rw [mul_comm _ A]; gcongr
       _ = (#(A * B) / #A) ^ (n + 1) * #A * #A := by simp [field, pow_add]
 
-/-- The **Plünnecke-Ruzsa inequality**. Multiplication version. Note that this is genuinely harder
-than the division version because we cannot use a double counting argument. -/
+/--
+The **Plünnecke-Ruzsa inequality**. Multiplication version. Note that this is genuinely harder
+than the division version because we cannot use a double counting argument.
+-/
 @[to_additive /-- The **Plünnecke-Ruzsa inequality**. Addition version. Note that this is genuinely
 harder than the subtraction version because we cannot use a double counting argument. -/]
-theorem pluennecke_ruzsa_inequality_pow_div_pow_mul (hA : A.Nonempty) (B : Finset G) (m n : ℕ) :
-    #(B ^ m / B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ (m + n) * #A := by
+theorem pluennecke_ruzsa_inequality_pow_div_pow_mul (hA : A.Nonempty) (B : Finset G) (m n : ℕ)
+    : #(B ^ m / B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ (m + n) * #A := by
   have hA' : A ∈ A.powerset.erase ∅ := mem_erase_of_ne_of_mem hA.ne_empty (mem_powerset_self _)
   obtain ⟨C, hC, hCmin⟩ :=
     exists_min_image (A.powerset.erase ∅) (fun C ↦ #(C * B) / #C : _ → ℚ≥0) ⟨A, hA'⟩
@@ -252,21 +254,21 @@ theorem pluennecke_ruzsa_inequality_pow_div_pow_mul (hA : A.Nonempty) (B : Finse
 
 /-- The **Plünnecke-Ruzsa inequality**. Division version. -/
 @[to_additive /-- The **Plünnecke-Ruzsa inequality**. Subtraction version. -/]
-theorem pluennecke_ruzsa_inequality_pow_div_pow_div (hA : A.Nonempty) (B : Finset G) (m n : ℕ) :
-    #(B ^ m / B ^ n) ≤ (#(A / B) / #A : ℚ≥0) ^ (m + n) * #A := by
+theorem pluennecke_ruzsa_inequality_pow_div_pow_div (hA : A.Nonempty) (B : Finset G) (m n : ℕ)
+    : #(B ^ m / B ^ n) ≤ (#(A / B) / #A : ℚ≥0) ^ (m + n) * #A := by
   rw [← card_inv, inv_div', ← inv_pow, ← inv_pow, div_eq_mul_inv A]
   exact pluennecke_ruzsa_inequality_pow_div_pow_mul hA _ _ _
 
 /-- Special case of the **Plünnecke-Ruzsa inequality**. Multiplication version. -/
 @[to_additive /-- Special case of the **Plünnecke-Ruzsa inequality**. Addition version. -/]
-theorem pluennecke_ruzsa_inequality_pow_mul (hA : A.Nonempty) (B : Finset G) (n : ℕ) :
-    #(B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ n * #A := by
+theorem pluennecke_ruzsa_inequality_pow_mul (hA : A.Nonempty) (B : Finset G) (n : ℕ)
+    : #(B ^ n) ≤ (#(A * B) / #A : ℚ≥0) ^ n * #A := by
   simpa only [_root_.pow_zero, div_one] using! pluennecke_ruzsa_inequality_pow_div_pow_mul hA _ _ 0
 
 /-- Special case of the **Plünnecke-Ruzsa inequality**. Division version. -/
 @[to_additive /-- Special case of the **Plünnecke-Ruzsa inequality**. Subtraction version. -/]
-theorem pluennecke_ruzsa_inequality_pow_div (hA : A.Nonempty) (B : Finset G) (n : ℕ) :
-    #(B ^ n) ≤ (#(A / B) / #A : ℚ≥0) ^ n * #A := by
+theorem pluennecke_ruzsa_inequality_pow_div (hA : A.Nonempty) (B : Finset G) (n : ℕ)
+    : #(B ^ n) ≤ (#(A / B) / #A : ℚ≥0) ^ n * #A := by
   simpa only [_root_.pow_zero, div_one] using! pluennecke_ruzsa_inequality_pow_div_pow_div hA _ _ 0
 
 end CommGroup

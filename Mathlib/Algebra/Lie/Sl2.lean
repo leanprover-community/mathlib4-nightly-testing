@@ -27,14 +27,17 @@ about `sl₂`.
 
 @[expose] public section
 
-variable (R L M : Type*) [CommRing R] [LieRing L] [LieAlgebra R L]
-  [AddCommGroup M] [Module R M] [LieRingModule L M] [LieModule R L M]
+variable
+  (R L M : Type*) [CommRing R] [LieRing L] [LieAlgebra R L] [AddCommGroup M] [Module R M]
+  [LieRingModule L M] [LieModule R L M]
 
 open LieModule Module Set
 
 variable {L} in
-/-- An `sl₂` triple within a Lie ring `L` is a triple of elements `h`, `e`, `f` obeying relations
-which ensure that the Lie subalgebra they generate is equivalent to `sl₂`. -/
+/--
+An `sl₂` triple within a Lie ring `L` is a triple of elements `h`, `e`, `f` obeying relations
+which ensure that the Lie subalgebra they generate is equivalent to `sl₂`.
+-/
 structure IsSl2Triple (h e f : L) : Prop where
   h_ne_zero : h ≠ 0
   lie_e_f : ⁅e, f⁆ = h
@@ -52,8 +55,8 @@ lemma symm (ht : IsSl2Triple h e f) : IsSl2Triple (-h) f e where
   lie_h_e_nsmul := by rw [neg_lie, neg_eq_iff_eq_neg, ht.lie_h_f_nsmul]
   lie_h_f_nsmul := by rw [neg_lie, neg_inj, ht.lie_h_e_nsmul]
 
-@[simp] lemma symm_iff : IsSl2Triple (-h) f e ↔ IsSl2Triple h e f :=
-  ⟨fun t ↦ neg_neg h ▸ t.symm, symm⟩
+@[simp]
+lemma symm_iff : IsSl2Triple (-h) f e ↔ IsSl2Triple h e f := ⟨fun t ↦ neg_neg h ▸ t.symm, symm⟩
 
 lemma lie_h_e_smul (t : IsSl2Triple h e f) : ⁅h, e⁆ = (2 : R) • e := by
   simp [t.lie_h_e_nsmul, two_smul]
@@ -73,47 +76,58 @@ lemma f_ne_zero (t : IsSl2Triple h e f) : f ≠ 0 := by
 
 variable {R}
 
-/-- Given a representation of a Lie algebra with distinguished `sl₂` triple, a vector is said to be
+/--
+Given a representation of a Lie algebra with distinguished `sl₂` triple, a vector is said to be
 primitive if it is a simultaneous eigenvector for the action of both `h` and `e`, and the eigenvalue
-for `e` is zero. -/
+for `e` is zero.
+-/
 structure HasPrimitiveVectorWith (t : IsSl2Triple h e f) (m : M) (μ : R) : Prop where
   ne_zero : m ≠ 0
   lie_h : ⁅h, m⁆ = μ • m
   lie_e : ⁅e, m⁆ = 0
 
-/-- Given a representation of a Lie algebra with distinguished `sl₂` triple, a simultaneous
-eigenvector for the action of both `h` and `e` necessarily has eigenvalue zero for `e`. -/
-lemma HasPrimitiveVectorWith.mk' [HasUniqueDiv M] (t : IsSl2Triple h e f) (m : M) (μ ρ : R)
-    (hm : m ≠ 0) (hm' : ⁅h, m⁆ = μ • m) (he : ⁅e, m⁆ = ρ • m) :
-    HasPrimitiveVectorWith t m μ where
+/--
+Given a representation of a Lie algebra with distinguished `sl₂` triple, a simultaneous
+eigenvector for the action of both `h` and `e` necessarily has eigenvalue zero for `e`.
+-/
+lemma HasPrimitiveVectorWith.mk'
+    [HasUniqueDiv M]
+    (t : IsSl2Triple h e f)
+    (m : M) (μ ρ : R) (hm : m ≠ 0) (hm' : ⁅h, m⁆ = μ • m) (he : ⁅e, m⁆ = ρ • m)
+    : HasPrimitiveVectorWith t m μ where
   ne_zero := hm
   lie_h := hm'
   lie_e := by
     suffices 2 • ⁅e, m⁆ = 0 by simpa using this
-    rw [← nsmul_lie, ← t.lie_h_e_nsmul, lie_lie, hm', lie_smul, he, lie_smul, hm',
-      smul_smul, smul_smul, mul_comm ρ μ, sub_self]
+    rw [← nsmul_lie, ← t.lie_h_e_nsmul, lie_lie, hm', lie_smul, he, lie_smul, hm', smul_smul,
+      smul_smul, mul_comm ρ μ, sub_self]
 
 variable (R) in
 open Submodule in
 /-- The subalgebra associated to an `sl₂` triple. -/
-def toLieSubalgebra (t : IsSl2Triple h e f) :
-    LieSubalgebra R L where
+def toLieSubalgebra (t : IsSl2Triple h e f) : LieSubalgebra R L where
   __ := span R {e, f, h}
   lie_mem' {x y} hx hy := by
     simp only [carrier_eq_coe, SetLike.mem_coe] at hx hy ⊢
     induction hx using span_induction with
-    | zero => simp
-    | add u v hu hv hu' hv' => simpa only [add_lie] using add_mem hu' hv'
-    | smul t u hu hu' => simpa only [smul_lie] using smul_mem _ t hu'
+    | zero =>
+      simp
+    | add u v hu hv hu' hv' =>
+      simpa only [add_lie] using add_mem hu' hv'
+    | smul t u hu hu' =>
+      simpa only [smul_lie] using smul_mem _ t hu'
     | mem u hu =>
       induction hy using span_induction with
-      | zero => simp
-      | add u v hu hv hu' hv' => simpa only [lie_add] using add_mem hu' hv'
-      | smul t u hv hv' => simpa only [lie_smul] using smul_mem _ t hv'
+      | zero =>
+        simp
+      | add u v hu hv hu' hv' =>
+        simpa only [lie_add] using add_mem hu' hv'
+      | smul t u hv hv' =>
+        simpa only [lie_smul] using smul_mem _ t hv'
       | mem v hv =>
         push _ ∈ _ at hu hv
-        rcases hu with rfl | rfl | rfl <;>
-        rcases hv with rfl | rfl | rfl <;> (try simp only [lie_self, zero_mem])
+        rcases hu with rfl | rfl | rfl <;> rcases hv with rfl | rfl | rfl
+          <;> (try simp only [lie_self, zero_mem])
         · rw [t.lie_e_f]
           apply subset_span
           simp
@@ -133,8 +147,8 @@ def toLieSubalgebra (t : IsSl2Triple h e f) :
           apply nsmul_mem <| subset_span _
           simp
 
-lemma mem_toLieSubalgebra_iff {x : L} {t : IsSl2Triple h e f} :
-    x ∈ t.toLieSubalgebra R ↔ ∃ c₁ c₂ c₃ : R, x = c₁ • e + c₂ • f + c₃ • ⁅e, f⁆ := by
+lemma mem_toLieSubalgebra_iff {x : L} {t : IsSl2Triple h e f}
+    : x ∈ t.toLieSubalgebra R ↔ ∃ c₁ c₂ c₃ : R, x = c₁ • e + c₂ • f + c₃ • ⁅e, f⁆ := by
   simp_rw [t.lie_e_f, toLieSubalgebra, ← LieSubalgebra.mem_toSubmodule, Submodule.mem_span_triple,
     eq_comm]
 
@@ -147,41 +161,40 @@ local notation "ψ " n => ((toEnd R L M f) ^ n) m
 -- for `lie_h_pow_toEnd_f` and `lie_e_pow_succ_toEnd_f`.
 set_option linter.unusedVariables false in
 @[nolint unusedArguments]
-lemma lie_f_pow_toEnd_f (P : HasPrimitiveVectorWith t m μ) (n : ℕ) :
-    ⁅f, ψ n⁆ = ψ (n + 1) := by
+lemma lie_f_pow_toEnd_f (P : HasPrimitiveVectorWith t m μ) (n : ℕ) : ⁅f, ψ n⁆ = ψ (n + 1) := by
   simp [pow_succ']
 
 variable (P : HasPrimitiveVectorWith t m μ)
 include P
 
-lemma lie_h_pow_toEnd_f (n : ℕ) :
-    ⁅h, ψ n⁆ = (μ - 2 * n) • ψ n := by
+lemma lie_h_pow_toEnd_f (n : ℕ) : ⁅h, ψ n⁆ = (μ - 2 * n) • ψ n := by
   induction n with
-  | zero => simpa using P.lie_h
+  | zero =>
+    simpa using P.lie_h
   | succ n ih =>
     rw [pow_succ', Module.End.mul_apply, toEnd_apply_apply, Nat.cast_add, Nat.cast_one,
       leibniz_lie h, t.lie_lie_smul_f R, ← neg_smul, ih, lie_smul, smul_lie, ← add_smul]
     congr
     ring
 
-lemma lie_e_pow_succ_toEnd_f (n : ℕ) :
-    ⁅e, ψ (n + 1)⁆ = ((n + 1) * (μ - n)) • ψ n := by
+lemma lie_e_pow_succ_toEnd_f (n : ℕ) : ⁅e, ψ (n + 1)⁆ = ((n + 1) * (μ - n)) • ψ n := by
   induction n with
   | zero =>
-      simp only [zero_add, pow_one, toEnd_apply_apply, Nat.cast_zero, sub_zero, one_mul,
-        pow_zero, Module.End.one_apply, leibniz_lie e, t.lie_e_f, P.lie_e, P.lie_h, lie_zero,
-        add_zero]
+    simp only [zero_add, pow_one, toEnd_apply_apply, Nat.cast_zero, sub_zero, one_mul, pow_zero,
+      Module.End.one_apply, leibniz_lie e, t.lie_e_f, P.lie_e, P.lie_h, lie_zero, add_zero]
   | succ n ih =>
     rw [pow_succ', Module.End.mul_apply, toEnd_apply_apply, leibniz_lie e, t.lie_e_f,
-      lie_h_pow_toEnd_f P, ih, lie_smul, lie_f_pow_toEnd_f P, ← add_smul,
-      Nat.cast_add, Nat.cast_one]
+      lie_h_pow_toEnd_f P, ih, lie_smul, lie_f_pow_toEnd_f P, ← add_smul, Nat.cast_add,
+      Nat.cast_one]
     congr
     ring
 
-/-- The eigenvalue of a primitive vector must be a natural number if the representation is
-finite-dimensional. -/
-lemma exists_nat [IsNoetherian R M] [IsTorsionFree R M] [IsDomain R] [CharZero R] :
-    ∃ n : ℕ, μ = n := by
+/--
+The eigenvalue of a primitive vector must be a natural number if the representation is
+finite-dimensional.
+-/
+lemma exists_nat [IsNoetherian R M] [IsTorsionFree R M] [IsDomain R] [CharZero R]
+    : ∃ n : ℕ, μ = n := by
   suffices ∃ n : ℕ, (ψ n) = 0 by
     obtain ⟨n, hn₁, hn₂⟩ := Nat.exists_not_and_succ_of_not_zero_of_exists P.ne_zero this
     refine ⟨n, ?_⟩
@@ -191,33 +204,37 @@ lemma exists_nat [IsNoetherian R M] [IsTorsionFree R M] [IsDomain R] [CharZero R
   have hs : (range <| fun (n : ℕ) ↦ μ - 2 * n).Infinite := by
     rw [infinite_range_iff (fun n m ↦ by simp)]; infer_instance
   by_contra! contra
-  exact hs ((toEnd R L M h).eigenvectors_linearIndependent
-    {μ - 2 * n | n : ℕ}
+  exact hs ((toEnd R L M h).eigenvectors_linearIndependent ({μ - 2 * n | n : ℕ})
     (fun ⟨s, hs⟩ ↦ ψ Classical.choose hs)
-    (fun ⟨r, hr⟩ ↦ by simp [lie_h_pow_toEnd_f P, Classical.choose_spec hr, contra,
-      Module.End.hasEigenvector_iff])).finite
+    (fun ⟨r, hr⟩ ↦ by
+      simp [lie_h_pow_toEnd_f P, Classical.choose_spec hr, contra,
+        Module.End.hasEigenvector_iff])).finite
 
-lemma pow_toEnd_f_ne_zero_of_eq_nat [CharZero R] [IsDomain R] [IsTorsionFree R M]
-    {n : ℕ} (hn : μ = n) {i} (hi : i ≤ n) : (ψ i) ≠ 0 := by
+lemma pow_toEnd_f_ne_zero_of_eq_nat
+    [CharZero R] [IsDomain R] [IsTorsionFree R M] {n : ℕ} (hn : μ = n) {i} (hi : i ≤ n)
+    : (ψ i) ≠ 0 := by
   intro H
   induction i
   · exact P.ne_zero (by simpa using H)
   · next i IH =>
-    have : ((i + 1) * (n - i) : ℤ) • (toEnd R L M f ^ i) m = 0 := by
-      have := congr(⁅e, $H⁆)
-      simpa [← Int.cast_smul_eq_zsmul R, P.lie_e_pow_succ_toEnd_f, hn] using this
-    rw [← Int.cast_smul_eq_zsmul R, smul_eq_zero, Int.cast_eq_zero, mul_eq_zero, sub_eq_zero,
-      Nat.cast_inj, ← @Nat.cast_one ℤ, ← Nat.cast_add, Nat.cast_eq_zero] at this
-    simp only [add_eq_zero, one_ne_zero, and_false, false_or] at this
-    exact (hi.trans_eq (this.resolve_right (IH (i.le_succ.trans hi)))).not_gt i.lt_succ_self
+      have : ((i + 1) * (n - i) : ℤ) • (toEnd R L M f ^ i) m = 0 := by
+        have := congr(⁅e, $H⁆)
+        simpa [← Int.cast_smul_eq_zsmul R, P.lie_e_pow_succ_toEnd_f, hn] using this
+      rw [← Int.cast_smul_eq_zsmul R, smul_eq_zero, Int.cast_eq_zero, mul_eq_zero, sub_eq_zero,
+          Nat.cast_inj, ← @Nat.cast_one ℤ, ← Nat.cast_add, Nat.cast_eq_zero]
+        at this
+      simp only [add_eq_zero, one_ne_zero, and_false, false_or] at this
+      exact (hi.trans_eq (this.resolve_right (IH (i.le_succ.trans hi)))).not_gt i.lt_succ_self
 
-lemma pow_toEnd_f_eq_zero_of_eq_nat [IsDomain R] [CharZero R] [IsNoetherian R M] [IsTorsionFree R M]
-    {n : ℕ} (hn : μ = n) : (ψ (n + 1)) = 0 := by
+lemma pow_toEnd_f_eq_zero_of_eq_nat
+    [IsDomain R] [CharZero R] [IsNoetherian R M] [IsTorsionFree R M] {n : ℕ} (hn : μ = n)
+    : (ψ (n + 1)) = 0 := by
   by_contra h
-  have : t.HasPrimitiveVectorWith (ψ (n + 1)) (n - 2 * (n + 1) : R) :=
-    { ne_zero := h
-      lie_h := (P.lie_h_pow_toEnd_f _).trans (by simp [hn])
-      lie_e := (P.lie_e_pow_succ_toEnd_f _).trans (by simp [hn]) }
+  have : t.HasPrimitiveVectorWith (ψ (n + 1)) (n - 2 * (n + 1) : R) := {
+    ne_zero := h
+    lie_h := (P.lie_h_pow_toEnd_f _).trans (by simp [hn])
+    lie_e := (P.lie_e_pow_succ_toEnd_f _).trans (by simp [hn])
+  }
   obtain ⟨m, hm⟩ := this.exists_nat
   have : (n : ℤ) < m + 2 * (n + 1) := by lia
   exact this.ne (Int.cast_injective (α := R) <| by simpa [sub_eq_iff_eq_add] using hm)
@@ -227,15 +244,13 @@ end HasPrimitiveVectorWith
 variable {m : M} {μ : R}
 local notation "φ " n => ((toEnd R L M e) ^ n) m
 
-lemma lie_e_pow_toEnd_e (n : ℕ) :
-    ⁅e, φ n⁆ = φ (n + 1) := by
-  simp [pow_succ']
+lemma lie_e_pow_toEnd_e (n : ℕ) : ⁅e, φ n⁆ = φ (n + 1) := by simp [pow_succ']
 
-lemma lie_h_pow_toEnd_e (t : IsSl2Triple h e f)
-    (hm : ⁅h, m⁆ = μ • m) (n : ℕ) :
-    ⁅h, φ n⁆ = (μ + 2 * n) • φ n := by
+lemma lie_h_pow_toEnd_e (t : IsSl2Triple h e f) (hm : ⁅h, m⁆ = μ • m) (n : ℕ)
+    : ⁅h, φ n⁆ = (μ + 2 * n) • φ n := by
   induction n with
-  | zero => simpa using hm
+  | zero =>
+    simpa using hm
   | succ n ih =>
     rw [pow_succ', Module.End.mul_apply, toEnd_apply_apply, Nat.cast_add, Nat.cast_one,
       leibniz_lie h, IsSl2Triple.lie_h_e_smul R t, smul_lie, ih, lie_smul, ← add_smul]
@@ -244,12 +259,12 @@ lemma lie_h_pow_toEnd_e (t : IsSl2Triple h e f)
 
 section CharZero
 
-variable [IsDomain R] [CharZero R]
-  [Nontrivial M] [IsTorsionFree R M] [Module.Finite R M] [IsTriangularizable R L M]
+variable
+  [IsDomain R] [CharZero R] [Nontrivial M] [IsTorsionFree R M] [Module.Finite R M]
+  [IsTriangularizable R L M]
   (t : IsSl2Triple h e f)
 
-lemma exists_hasPrimitiveVectorWith :
-    ∃ (μ : R) (m : M), m ≠ 0 ∧ HasPrimitiveVectorWith t m μ := by
+lemma exists_hasPrimitiveVectorWith : ∃ (μ : R) (m : M), m ≠ 0 ∧ HasPrimitiveVectorWith t m μ := by
   obtain ⟨μ₀, hμ₀⟩ := IsTriangularizable.exists_hasEigenvalue R L M h
   obtain ⟨m₀, hm₀⟩ := hμ₀.exists_hasEigenvector
   let evals (n : ℕ) : R := μ₀ + 2 * (n : R)
@@ -266,10 +281,16 @@ lemma exists_hasPrimitiveVectorWith :
     have _i := ((toEnd R L M h).eigenvectors_linearIndependent (range evals) _ aux).finite
     exact (Set.infinite_range_of_injective h_inj) (Set.toFinite _)
   obtain ⟨n, hn_ne, hn_zero⟩ := Nat.exists_not_and_succ_of_not_zero_of_exists hm₀.2 h_exists_zero
-  exact ⟨evals n, e_vecs n, hn_ne,
-    { ne_zero := hn_ne
+  exact ⟨
+    evals n,
+    e_vecs n,
+    hn_ne,
+    {
+      ne_zero := hn_ne
       lie_h := t.lie_h_pow_toEnd_e hm₀.apply_eq_smul n
-      lie_e := by rwa [lie_e_pow_toEnd_e n] }⟩
+      lie_e := by rwa [lie_e_pow_toEnd_e n]
+    }
+  ⟩
 
 end CharZero
 

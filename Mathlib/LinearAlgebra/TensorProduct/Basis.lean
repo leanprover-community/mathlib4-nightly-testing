@@ -18,7 +18,6 @@ and shows that the tensor product of free modules is again free.
 
 @[expose] public section
 
-
 noncomputable section
 
 open LinearMap Module
@@ -27,50 +26,47 @@ open scoped TensorProduct
 
 section CommSemiring
 
-variable {R : Type*} {S : Type*} {M : Type*} {N : Type*} {ι : Type*} {κ : Type*}
+variable
+  {R : Type*} {S : Type*} {M : Type*} {N : Type*} {ι : Type*} {κ : Type*}
   [CommSemiring R] [Semiring S] [Algebra R S] [AddCommMonoid M] [Module R M] [Module S M]
   [IsScalarTower R S M] [AddCommMonoid N] [Module R N]
 
 namespace Module.Basis
 
 /-- If `b : ι → M` and `c : κ → N` are bases then so is `fun i ↦ b i.1 ⊗ₜ c i.2 : ι × κ → M ⊗ N`. -/
-def tensorProduct (b : Basis ι S M) (c : Basis κ R N) :
-    Basis (ι × κ) S (M ⊗[R] N) :=
-  Finsupp.basisSingleOne.map
-    ((TensorProduct.AlgebraTensorModule.congr b.repr c.repr).trans <|
-        (finsuppTensorFinsupp R S _ _ _ _).trans <|
-          Finsupp.lcongr (Equiv.refl _) (TensorProduct.AlgebraTensorModule.rid R S S)).symm
+def tensorProduct (b : Basis ι S M) (c : Basis κ R N) : Basis (ι × κ) S (M ⊗[R] N) :=
+  Finsupp.basisSingleOne.map ((TensorProduct.AlgebraTensorModule.congr b.repr c.repr).trans <|
+    (finsuppTensorFinsupp R S _ _ _ _).trans <|
+      Finsupp.lcongr (Equiv.refl _) (TensorProduct.AlgebraTensorModule.rid R S S)).symm
 
 @[simp]
-theorem tensorProduct_apply (b : Basis ι S M) (c : Basis κ R N) (i : ι) (j : κ) :
-    tensorProduct b c (i, j) = b i ⊗ₜ c j := by
+theorem tensorProduct_apply (b : Basis ι S M) (c : Basis κ R N) (i : ι) (j : κ)
+    : tensorProduct b c (i, j) = b i ⊗ₜ c j := by
   simp [tensorProduct]
 
-theorem tensorProduct_apply' (b : Basis ι S M) (c : Basis κ R N) (i : ι × κ) :
-    tensorProduct b c i = b i.1 ⊗ₜ c i.2 := by
+theorem tensorProduct_apply' (b : Basis ι S M) (c : Basis κ R N) (i : ι × κ)
+    : tensorProduct b c i = b i.1 ⊗ₜ c i.2 := by
   simp [tensorProduct]
 
 @[simp]
-theorem tensorProduct_repr_tmul_apply (b : Basis ι S M) (c : Basis κ R N) (m : M) (n : N)
-    (i : ι) (j : κ) :
-    (tensorProduct b c).repr (m ⊗ₜ n) (i, j) = c.repr n j • b.repr m i := by
+theorem tensorProduct_repr_tmul_apply
+    (b : Basis ι S M) (c : Basis κ R N) (m : M) (n : N) (i : ι) (j : κ)
+    : (tensorProduct b c).repr (m ⊗ₜ n) (i, j) = c.repr n j • b.repr m i := by
   simp [tensorProduct]
 
 variable (S : Type*) [Semiring S] [Algebra R S]
 
 /-- The lift of an `R`-basis of `M` to an `S`-basis of the base change `S ⊗[R] M`. -/
-noncomputable
-def baseChange (b : Basis ι R M) : Basis ι S (S ⊗[R] M) :=
+noncomputable def baseChange (b : Basis ι R M) : Basis ι S (S ⊗[R] M) :=
   (tensorProduct (.singleton Unit S) b).reindex (Equiv.punitProd ι)
 
 @[simp]
-lemma baseChange_repr_tmul (b : Basis ι R M) (x y i) :
-    (b.baseChange S).repr (x ⊗ₜ y) i = b.repr y i • x := by
+lemma baseChange_repr_tmul (b : Basis ι R M) (x y i)
+    : (b.baseChange S).repr (x ⊗ₜ y) i = b.repr y i • x := by
   simp [baseChange, tensorProduct]
 
 @[simp]
-lemma baseChange_apply (b : Basis ι R M) (i) :
-    b.baseChange S i = 1 ⊗ₜ b i := by
+lemma baseChange_apply (b : Basis ι R M) (i) : b.baseChange S i = 1 ⊗ₜ b i := by
   simp [baseChange, tensorProduct]
 
 end Module.Basis
@@ -88,37 +84,36 @@ def TensorProduct.equivFinsuppOfBasisRight : M ⊗[R] N ≃ₗ[R] κ →₀ M :=
   LinearEquiv.lTensor M 𝒞.repr ≪≫ₗ TensorProduct.finsuppScalarRight R R M κ
 
 @[simp]
-lemma TensorProduct.equivFinsuppOfBasisRight_apply_tmul (m : M) (n : N) :
-    (TensorProduct.equivFinsuppOfBasisRight 𝒞) (m ⊗ₜ n) =
-    (𝒞.repr n).mapRange (· • m) (zero_smul _ _) := by
+lemma TensorProduct.equivFinsuppOfBasisRight_apply_tmul (m : M) (n : N)
+    : (TensorProduct.equivFinsuppOfBasisRight 𝒞) (m ⊗ₜ n)
+      = (𝒞.repr n).mapRange (· • m) (zero_smul _ _) := by
   ext; simp [equivFinsuppOfBasisRight]
 
-lemma TensorProduct.equivFinsuppOfBasisRight_apply_tmul_apply
-    (m : M) (n : N) (i : κ) :
-    (TensorProduct.equivFinsuppOfBasisRight 𝒞) (m ⊗ₜ n) i =
-    𝒞.repr n i • m := by
+lemma TensorProduct.equivFinsuppOfBasisRight_apply_tmul_apply (m : M) (n : N) (i : κ)
+    : (TensorProduct.equivFinsuppOfBasisRight 𝒞) (m ⊗ₜ n) i = 𝒞.repr n i • m := by
   simp only [equivFinsuppOfBasisRight_apply_tmul, Finsupp.mapRange_apply]
 
-lemma TensorProduct.equivFinsuppOfBasisRight_symm :
-    (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.toLinearMap =
-    Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N).flip (𝒞 i) := by
+lemma TensorProduct.equivFinsuppOfBasisRight_symm
+    : (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.toLinearMap
+      = Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N).flip (𝒞 i) := by
   ext; simp [equivFinsuppOfBasisRight]
 
 @[simp]
-lemma TensorProduct.equivFinsuppOfBasisRight_symm_apply (b : κ →₀ M) :
-    (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm b = b.sum fun i m ↦ m ⊗ₜ 𝒞 i :=
+lemma TensorProduct.equivFinsuppOfBasisRight_symm_apply (b : κ →₀ M)
+    : (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm b = b.sum fun i m ↦ m ⊗ₜ 𝒞 i :=
   congr($(TensorProduct.equivFinsuppOfBasisRight_symm 𝒞) b)
 
 omit [DecidableEq κ] in
-lemma TensorProduct.sum_tmul_basis_right_injective :
-    Function.Injective (Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N).flip (𝒞 i)) :=
+lemma TensorProduct.sum_tmul_basis_right_injective
+    : Function.Injective (Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N).flip (𝒞 i)) :=
   have := Classical.decEq κ
-  (equivFinsuppOfBasisRight_symm (M := M) 𝒞).symm ▸
-    (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.injective
+  (equivFinsuppOfBasisRight_symm (M := M) 𝒞).symm
+    ▸ (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.injective
 
 omit [DecidableEq κ] in
 lemma TensorProduct.sum_tmul_basis_right_eq_zero
-    (b : κ →₀ M) (h : (b.sum fun i m ↦ m ⊗ₜ[R] 𝒞 i) = 0) : b = 0 :=
+    (b : κ →₀ M) (h : (b.sum fun i m ↦ m ⊗ₜ[R] 𝒞 i) = 0)
+    : b = 0 :=
   have := Classical.decEq κ
   (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.injective (a₂ := 0) <| by simpa
 
@@ -130,64 +125,69 @@ def TensorProduct.equivFinsuppOfBasisLeft : M ⊗[R] N ≃ₗ[R] ι →₀ N :=
   TensorProduct.comm R M N ≪≫ₗ TensorProduct.equivFinsuppOfBasisRight ℬ
 
 @[simp]
-lemma TensorProduct.equivFinsuppOfBasisLeft_apply_tmul (m : M) (n : N) :
-    (TensorProduct.equivFinsuppOfBasisLeft ℬ) (m ⊗ₜ n) =
-    (ℬ.repr m).mapRange (· • n) (zero_smul _ _) := by
+lemma TensorProduct.equivFinsuppOfBasisLeft_apply_tmul (m : M) (n : N)
+    : (TensorProduct.equivFinsuppOfBasisLeft ℬ) (m ⊗ₜ n)
+      = (ℬ.repr m).mapRange (· • n) (zero_smul _ _) := by
   simp [equivFinsuppOfBasisLeft]
 
-lemma TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply
-    (m : M) (n : N) (i : ι) :
-    (TensorProduct.equivFinsuppOfBasisLeft ℬ) (m ⊗ₜ n) i =
-    ℬ.repr m i • n := by
+lemma TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply (m : M) (n : N) (i : ι)
+    : (TensorProduct.equivFinsuppOfBasisLeft ℬ) (m ⊗ₜ n) i = ℬ.repr m i • n := by
   simp only [equivFinsuppOfBasisLeft_apply_tmul, Finsupp.mapRange_apply]
 
-/-- Given a basis `𝒞` of `N`, `x ∈ M ⊗ N` can be written as `∑ᵢ mᵢ ⊗ 𝒞 i`. The coefficient `mᵢ`
-equals the `i`-th coordinate functional applied to the right tensor factor. -/
-lemma TensorProduct.equivFinsuppOfBasisRight_apply (x : M ⊗[R] N) (i : κ) :
-    equivFinsuppOfBasisRight 𝒞 x i = TensorProduct.rid R M ((𝒞.coord i).lTensor _ x) := by
+/--
+Given a basis `𝒞` of `N`, `x ∈ M ⊗ N` can be written as `∑ᵢ mᵢ ⊗ 𝒞 i`. The coefficient `mᵢ`
+equals the `i`-th coordinate functional applied to the right tensor factor.
+-/
+lemma TensorProduct.equivFinsuppOfBasisRight_apply (x : M ⊗[R] N) (i : κ)
+    : equivFinsuppOfBasisRight 𝒞 x i = TensorProduct.rid R M ((𝒞.coord i).lTensor _ x) := by
   induction x <;> simp_all
 
-/-- Given a basis `ℬ` of `M`, `x ∈ M ⊗ N` can be written as `∑ᵢ ℬ i ⊗ nᵢ`. The coefficient `nᵢ`
-equals the `i`-th coordinate functional applied to the left tensor factor. -/
-lemma TensorProduct.equivFinsuppOfBasisLeft_apply (x : M ⊗[R] N) (i : ι) :
-    equivFinsuppOfBasisLeft ℬ x i = TensorProduct.lid R N ((ℬ.coord i).rTensor _ x) := by
+/--
+Given a basis `ℬ` of `M`, `x ∈ M ⊗ N` can be written as `∑ᵢ ℬ i ⊗ nᵢ`. The coefficient `nᵢ`
+equals the `i`-th coordinate functional applied to the left tensor factor.
+-/
+lemma TensorProduct.equivFinsuppOfBasisLeft_apply (x : M ⊗[R] N) (i : ι)
+    : equivFinsuppOfBasisLeft ℬ x i = TensorProduct.lid R N ((ℬ.coord i).rTensor _ x) := by
   induction x <;> simp_all
 
-lemma TensorProduct.equivFinsuppOfBasisLeft_symm :
-    (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.toLinearMap =
-    Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N) (ℬ i) := by
+lemma TensorProduct.equivFinsuppOfBasisLeft_symm
+    : (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.toLinearMap
+      = Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N) (ℬ i) := by
   ext; simp [equivFinsuppOfBasisLeft]
 
 @[simp]
-lemma TensorProduct.equivFinsuppOfBasisLeft_symm_apply (b : ι →₀ N) :
-    (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm b = b.sum fun i n ↦ ℬ i ⊗ₜ n :=
+lemma TensorProduct.equivFinsuppOfBasisLeft_symm_apply (b : ι →₀ N)
+    : (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm b = b.sum fun i n ↦ ℬ i ⊗ₜ n :=
   congr($(TensorProduct.equivFinsuppOfBasisLeft_symm ℬ) b)
 
 omit [DecidableEq κ] in
-/-- Elements in `M ⊗ N` can be represented by sum of elements in `M` tensor elements of basis of
-`N`. -/
-lemma TensorProduct.eq_repr_basis_right :
-    ∃ b : κ →₀ M, b.sum (fun i m ↦ m ⊗ₜ 𝒞 i) = x := by
-  classical simpa using (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.surjective x
+/--
+Elements in `M ⊗ N` can be represented by sum of elements in `M` tensor elements of basis of
+`N`.
+-/
+lemma TensorProduct.eq_repr_basis_right : ∃ b : κ →₀ M, b.sum (fun i m ↦ m ⊗ₜ 𝒞 i) = x := by
+  classical
+  simpa using (TensorProduct.equivFinsuppOfBasisRight 𝒞).symm.surjective x
 
 omit [DecidableEq ι] in
-/-- Elements in `M ⊗ N` can be represented by sum of elements of basis of `M` tensor elements of
-  `N`. -/
-lemma TensorProduct.eq_repr_basis_left :
-    ∃ (c : ι →₀ N), (c.sum fun i n ↦ ℬ i ⊗ₜ n) = x := by
+/--
+Elements in `M ⊗ N` can be represented by sum of elements of basis of `M` tensor elements of
+`N`.
+-/
+lemma TensorProduct.eq_repr_basis_left : ∃ (c : ι →₀ N), (c.sum fun i n ↦ ℬ i ⊗ₜ n) = x := by
   classical obtain ⟨c, rfl⟩ := (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.surjective x
   exact ⟨c, (TensorProduct.comm R M N).injective <| by simp [Finsupp.sum]⟩
 
 omit [DecidableEq ι] in
-lemma TensorProduct.sum_tmul_basis_left_injective :
-    Function.Injective (Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N) (ℬ i)) :=
+lemma TensorProduct.sum_tmul_basis_left_injective
+    : Function.Injective (Finsupp.lsum R fun i ↦ (TensorProduct.mk R M N) (ℬ i)) :=
   have := Classical.decEq ι
-  (equivFinsuppOfBasisLeft_symm (N := N) ℬ).symm ▸
-    (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.injective
+  (equivFinsuppOfBasisLeft_symm (N := N) ℬ).symm
+    ▸ (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.injective
 
 omit [DecidableEq ι] in
-lemma TensorProduct.sum_tmul_basis_left_eq_zero
-    (b : ι →₀ N) (h : (b.sum fun i n ↦ ℬ i ⊗ₜ[R] n) = 0) : b = 0 :=
+lemma TensorProduct.sum_tmul_basis_left_eq_zero (b : ι →₀ N) (h : (b.sum fun i n ↦ ℬ i ⊗ₜ[R] n) = 0)
+    : b = 0 :=
   have := Classical.decEq ι
   (TensorProduct.equivFinsuppOfBasisLeft ℬ).symm.injective (a₂ := 0) <| by simpa
 
@@ -202,20 +202,20 @@ end CommSemiring
 
 namespace LinearMap
 
-variable {R A M N ι : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A]
-  [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N] [Module A N]
-  [IsScalarTower R A N]
+variable
+  {R A M N ι : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] [AddCommMonoid M] [Module R M]
+  [AddCommMonoid N] [Module R N] [Module A N] [IsScalarTower R A N]
 
-lemma liftBaseChange_injective_iff (l : M →ₗ[R] N) (b : Module.Basis ι R M) :
-    Function.Injective (l.liftBaseChange A) ↔ LinearIndependent A (l ∘ b) := by
-  have heq : (l.liftBaseChange A).comp (b.baseChange A).repr.symm.toLinearMap =
-      Finsupp.linearCombination A (l ∘ b) := by
+lemma liftBaseChange_injective_iff (l : M →ₗ[R] N) (b : Module.Basis ι R M)
+    : Function.Injective (l.liftBaseChange A) ↔ LinearIndependent A (l ∘ b) := by
+  have heq
+      : (l.liftBaseChange A).comp (b.baseChange A).repr.symm.toLinearMap
+        = Finsupp.linearCombination A (l ∘ b) := by
     ext i
     simp [Function.comp_def]
   rw [linearIndependent_iff_injective_finsuppLinearCombination, ← heq]
   simpa only [LinearMap.coe_comp, LinearEquiv.coe_toLinearMap] using
-    (Function.Injective.of_comp_iff'
-      (l.liftBaseChange A) (b.baseChange A).repr.symm.bijective).symm
+    (Function.Injective.of_comp_iff' (l.liftBaseChange A) (b.baseChange A).repr.symm.bijective).symm
 
 end LinearMap
 

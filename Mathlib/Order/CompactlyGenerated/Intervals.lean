@@ -17,8 +17,8 @@ variable {ι α : Type*} [CompleteLattice α]
 
 namespace Set.Iic
 
-theorem isCompactElement {a : α} {b : Iic a} (h : IsCompactElement (b : α)) :
-    IsCompactElement b := by
+theorem isCompactElement {a : α} {b : Iic a} (h : IsCompactElement (b : α))
+    : IsCompactElement b := by
   simp only [isCompactElement_iff_exists_le_iSup_of_le_iSup, Finset.sup_eq_iSup] at h ⊢
   intro ι s hb
   replace hb : (b : α) ≤ iSup ((↑) ∘ s) := le_trans hb <| (coe_iSup s) ▸ le_refl _
@@ -26,8 +26,8 @@ theorem isCompactElement {a : α} {b : Iic a} (h : IsCompactElement (b : α)) :
   exact ⟨t, (by simpa using ht : (b : α) ≤ _)⟩
 
 set_option backward.isDefEq.respectTransparency false in
-instance instIsCompactlyGenerated [IsCompactlyGenerated α] {a : α} :
-    IsCompactlyGenerated (Iic a) := by
+instance instIsCompactlyGenerated [IsCompactlyGenerated α] {a : α}
+    : IsCompactlyGenerated (Iic a) := by
   refine ⟨fun ⟨x, (hx : x ≤ a)⟩ ↦ ?_⟩
   obtain ⟨s, hs, rfl⟩ := IsCompactlyGenerated.exists_sSup_eq x
   rw [sSup_le_iff] at hx
@@ -47,10 +47,8 @@ open Set (Iic)
 
 theorem complementedLattice_of_complementedLattice_Iic
     [IsModularLattice α] [IsCompactlyGenerated α]
-    {s : Set ι} {f : ι → α}
-    (h : ∀ i ∈ s, ComplementedLattice <| Iic (f i))
-    (h' : ⨆ i ∈ s, f i = ⊤) :
-    ComplementedLattice α := by
+    {s : Set ι} {f : ι → α} (h : ∀ i ∈ s, ComplementedLattice <| Iic (f i)) (h' : ⨆ i ∈ s, f i = ⊤)
+    : ComplementedLattice α := by
   apply complementedLattice_of_sSup_atoms_eq_top
   have : ∀ i ∈ s, ∃ t : Set α, f i = sSup t ∧ ∀ a ∈ t, IsAtom a := fun i hi ↦ by
     replace h := complementedLattice_iff_isAtomistic.mp (h i hi)

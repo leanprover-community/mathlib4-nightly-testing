@@ -60,15 +60,14 @@ namespace Topology
 section Lawson
 section Preorder
 
-/--
-The Lawson topology is defined as the meet of `Topology.lower` and the `Topology.scott`.
--/
+/-- The Lawson topology is defined as the meet of `Topology.lower` and the `Topology.scott`. -/
 @[instance_reducible]
 def lawson (α : Type*) [Preorder α] : TopologicalSpace α := lower α ⊓ scott α univ
 
 variable (α) [Preorder α] [TopologicalSpace α]
 
-/-- Predicate for an ordered topological space to be equipped with its Lawson topology.
+/--
+Predicate for an ordered topological space to be equipped with its Lawson topology.
 
 The Lawson topology is defined as the meet of `Topology.lower` and the `Topology.scott`.
 -/
@@ -81,15 +80,20 @@ namespace IsLawson
 section Preorder
 variable (α) [Preorder α] [TopologicalSpace α] [IsLawson α]
 
-/-- The complements of the upper closures of finite sets intersected with Scott open sets form
-a basis for the lawson topology. -/
-def lawsonBasis := { s : Set α | ∃ t : Set α, t.Finite ∧ ∃ u : Set α, IsOpen[scott α univ] u ∧
-      u \ upperClosure t = s }
+/--
+The complements of the upper closures of finite sets intersected with Scott open sets form
+a basis for the lawson topology.
+-/
+def lawsonBasis :=
+  { s : Set α | ∃ t : Set α, t.Finite ∧ ∃ u : Set α, IsOpen[scott α univ] u ∧
+    u \ upperClosure t = s }
 
 protected theorem isTopologicalBasis : TopologicalSpace.IsTopologicalBasis (lawsonBasis α) := by
-  have lawsonBasis_image2 : lawsonBasis α =
-      (image2 (fun x x_1 ↦ ⇑WithLower.toLower ⁻¹' x ∩ ⇑WithScott.toScott ⁻¹' x_1)
-        (IsLower.lowerBasis (WithLower α)) {U | IsOpen[scott α univ] U}) := by
+  have lawsonBasis_image2
+      : lawsonBasis α
+        = (image2
+          (fun x x_1 ↦ ⇑WithLower.toLower ⁻¹' x ∩ ⇑WithScott.toScott ⁻¹' x_1)
+          (IsLower.lowerBasis (WithLower α)) {U | IsOpen[scott α univ] U}) := by
     rw [lawsonBasis, image2, IsLower.lowerBasis]
     simp_rw [sdiff_eq_compl_inter]
     aesop
@@ -107,9 +111,7 @@ protected theorem isTopologicalBasis : TopologicalSpace.IsTopologicalBasis (laws
 end Preorder
 end IsLawson
 
-/--
-Type synonym for a preorder equipped with the Lawson topology.
--/
+/-- Type synonym for a preorder equipped with the Lawson topology. -/
 def WithLawson (α : Type*) := α
 
 namespace WithLawson
@@ -131,8 +133,8 @@ lemma ofLawson_inj {a b : WithLawson α} : ofLawson a = ofLawson b ↔ a = b := 
 
 /-- A recursor for `WithLawson`. Use as `induction x`. -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-protected def rec {β : WithLawson α → Sort*}
-    (h : ∀ a, β (toLawson a)) : ∀ a, β a := fun a => h (ofLawson a)
+protected def rec {β : WithLawson α → Sort*} (h : ∀ a, β (toLawson a)) : ∀ a, β a := fun a =>
+  h (ofLawson a)
 
 instance [Nonempty α] : Nonempty (WithLawson α) := ‹Nonempty α›
 instance [Inhabited α] : Inhabited (WithLawson α) := ‹Inhabited α›
@@ -148,19 +150,18 @@ instance instTopologicalSpace : TopologicalSpace (WithLawson α) :=
 
 instance instIsLawson : IsLawson (WithLawson α) := ⟨rfl⟩
 
-/-- If `α` is equipped with the Lawson topology, then it is homeomorphic to `WithLawson α`.
--/
+/-- If `α` is equipped with the Lawson topology, then it is homeomorphic to `WithLawson α`. -/
 def homeomorph [TopologicalSpace α] [IsLawson α] : WithLawson α ≃ₜ α :=
   ofLawson.toHomeomorphOfIsInducing ⟨IsLawson.topology_eq_lawson (α := α) ▸ induced_id.symm⟩
 
-theorem isOpen_preimage_ofLawson {S : Set α} :
-    IsOpen (ofLawson ⁻¹' S) ↔ (lawson α).IsOpen S := Iff.rfl
+theorem isOpen_preimage_ofLawson {S : Set α} : IsOpen (ofLawson ⁻¹' S) ↔ (lawson α).IsOpen S :=
+  Iff.rfl
 
-theorem isClosed_preimage_ofLawson {S : Set α} :
-    IsClosed (ofLawson ⁻¹' S) ↔ IsClosed[lawson α] S := Iff.rfl
+theorem isClosed_preimage_ofLawson {S : Set α} : IsClosed (ofLawson ⁻¹' S) ↔ IsClosed[lawson α] S :=
+  Iff.rfl
 
-theorem isOpen_def {T : Set (WithLawson α)} :
-    IsOpen T ↔ (lawson α).IsOpen (toLawson ⁻¹' T) := Iff.rfl
+theorem isOpen_def {T : Set (WithLawson α)} : IsOpen T ↔ (lawson α).IsOpen (toLawson ⁻¹' T) :=
+  Iff.rfl
 
 end WithLawson
 end Lawson
@@ -176,17 +177,22 @@ lemma lawson_le_lower : lawson α ≤ lower α := inf_le_left
 lemma scottHausdorff_le_lawson : scottHausdorff α univ ≤ lawson α :=
   le_inf scottHausdorff_le_lower scottHausdorff_le_scott
 
-lemma lawsonClosed_of_scottClosed (s : Set α) (h : IsClosed (WithScott.ofScott ⁻¹' s)) :
-    IsClosed (WithLawson.ofLawson ⁻¹' s) := h.mono lawson_le_scott
+lemma lawsonClosed_of_scottClosed (s : Set α) (h : IsClosed (WithScott.ofScott ⁻¹' s))
+    : IsClosed (WithLawson.ofLawson ⁻¹' s) :=
+  h.mono lawson_le_scott
 
-lemma lawsonClosed_of_lowerClosed (s : Set α) (h : IsClosed (WithLower.ofLower ⁻¹' s)) :
-    IsClosed (WithLawson.ofLawson ⁻¹' s) := h.mono lawson_le_lower
+lemma lawsonClosed_of_lowerClosed (s : Set α) (h : IsClosed (WithLower.ofLower ⁻¹' s))
+    : IsClosed (WithLawson.ofLawson ⁻¹' s) :=
+  h.mono lawson_le_lower
 
 /-- An upper set is Lawson open if and only if it is Scott open -/
-lemma lawsonOpen_iff_scottOpen_of_isUpperSet {s : Set α} (h : IsUpperSet s) :
-    IsOpen (WithLawson.ofLawson ⁻¹' s) ↔ IsOpen (WithScott.ofScott ⁻¹' s) :=
-  ⟨fun hs => IsScott.isOpen_iff_isUpperSet_and_scottHausdorff_open (D := univ).mpr
-    ⟨h, (scottHausdorff_le_lawson s) hs⟩, lawson_le_scott _⟩
+lemma lawsonOpen_iff_scottOpen_of_isUpperSet {s : Set α} (h : IsUpperSet s)
+    : IsOpen (WithLawson.ofLawson ⁻¹' s) ↔ IsOpen (WithScott.ofScott ⁻¹' s) := ⟨
+  fun hs =>
+    IsScott.isOpen_iff_isUpperSet_and_scottHausdorff_open (D := univ).mpr
+      ⟨h, (scottHausdorff_le_lawson s) hs⟩,
+  lawson_le_scott _
+⟩
 
 variable (L : TopologicalSpace α) (S : TopologicalSpace α)
 variable [@IsLawson α _ L] [@IsScott α univ _ S]
@@ -200,20 +206,20 @@ lemma scottHausdorff_le_isLawson : scottHausdorff α univ ≤ L := by
   exact scottHausdorff_le_lawson
 
 /-- An upper set is Lawson open if and only if it is Scott open -/
-lemma lawsonOpen_iff_scottOpen_of_isUpperSet' (s : Set α) (h : IsUpperSet s) :
-    IsOpen[L] s ↔ IsOpen[S] s := by
+lemma lawsonOpen_iff_scottOpen_of_isUpperSet' (s : Set α) (h : IsUpperSet s)
+    : IsOpen[L] s ↔ IsOpen[S] s := by
   rw [@IsLawson.topology_eq_lawson α _ L _, @IsScott.topology_eq α univ _ S _]
   exact lawsonOpen_iff_scottOpen_of_isUpperSet h
 
-lemma lawsonClosed_iff_scottClosed_of_isLowerSet (s : Set α) (h : IsLowerSet s) :
-    IsClosed[L] s ↔ IsClosed[S] s := by
+lemma lawsonClosed_iff_scottClosed_of_isLowerSet (s : Set α) (h : IsLowerSet s)
+    : IsClosed[L] s ↔ IsClosed[S] s := by
   rw [← @isOpen_compl_iff, ← isOpen_compl_iff,
     (lawsonOpen_iff_scottOpen_of_isUpperSet' L S _ (isUpperSet_compl.mpr h))]
 
 include S in
 /-- A lower set is Lawson closed if and only if it is closed under sups of directed sets -/
-lemma lawsonClosed_iff_dirSupClosed_of_isLowerSet (s : Set α) (h : IsLowerSet s) :
-    IsClosed[L] s ↔ DirSupClosed s := by
+lemma lawsonClosed_iff_dirSupClosed_of_isLowerSet (s : Set α) (h : IsLowerSet s)
+    : IsClosed[L] s ↔ DirSupClosed s := by
   rw [lawsonClosed_iff_scottClosed_of_isLowerSet L S _ h,
     @IsScott.isClosed_iff_isLowerSet_and_dirSupClosed]
   simp_all

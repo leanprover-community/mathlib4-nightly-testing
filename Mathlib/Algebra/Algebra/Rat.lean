@@ -24,8 +24,9 @@ variable {F R S : Type*}
 namespace RingHom
 
 @[simp]
-theorem map_rat_algebraMap [Semiring R] [Semiring S] [Algebra ℚ R] [Algebra ℚ S] (f : R →+* S)
-    (r : ℚ) : f (algebraMap ℚ R r) = algebraMap ℚ S r :=
+theorem map_rat_algebraMap
+    [Semiring R] [Semiring S] [Algebra ℚ R] [Algebra ℚ S] (f : R →+* S) (r : ℚ)
+    : f (algebraMap ℚ R r) = algebraMap ℚ S r :=
   RingHom.ext_iff.1 (Subsingleton.elim (f.comp (algebraMap ℚ R)) (algebraMap ℚ S)) r
 
 end RingHom
@@ -38,8 +39,8 @@ instance _root_.DivisionSemiring.toNNRatAlgebra : Algebra ℚ≥0 R where
   algebraMap := castHom _
   commutes' := cast_commute
 
-instance _root_.RingHomClass.toLinearMapClassNNRat [FunLike F R S] [RingHomClass F R S] :
-    LinearMapClass F ℚ≥0 R S where
+instance _root_.RingHomClass.toLinearMapClassNNRat [FunLike F R S] [RingHomClass F R S]
+    : LinearMapClass F ℚ≥0 R S where
   map_smulₛₗ f q a := by simp [smul_def, cast_id]
 
 variable [SMul R S]
@@ -60,12 +61,12 @@ instance _root_.DivisionRing.toRatAlgebra : Algebra ℚ R where
   algebraMap := castHom _
   commutes' := cast_commute
 
-instance _root_.RingHomClass.toLinearMapClassRat [FunLike F R S] [RingHomClass F R S] :
-    LinearMapClass F ℚ R S where
+instance _root_.RingHomClass.toLinearMapClassRat [FunLike F R S] [RingHomClass F R S]
+    : LinearMapClass F ℚ R S where
   map_smulₛₗ f q a := by simp [smul_def, cast_id]
 
-instance _root_.RingEquivClass.toLinearEquivClassRat [EquivLike F R S] [RingEquivClass F R S] :
-    LinearEquivClass F ℚ R S where
+instance _root_.RingEquivClass.toLinearEquivClassRat [EquivLike F R S] [RingEquivClass F R S]
+    : LinearEquivClass F ℚ R S where
   map_smulₛₗ f c x := by simp [Algebra.smul_def]
 
 variable [SMul R S]

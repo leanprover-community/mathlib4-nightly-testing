@@ -25,20 +25,20 @@ public section
 
 namespace Matrix
 
-variable {m n L : Type*} [Finite m] [Fintype n] [DecidableEq m] [Field L]
-  (e : m ≃ n) (K : Subfield L) {A : Matrix m n L} {B : Matrix n m L} (hAB : A * B = 1)
+variable
+  {m n L : Type*} [Finite m] [Fintype n] [DecidableEq m] [Field L]
+  (e : m ≃ n) (K : Subfield L)
+  {A : Matrix m n L} {B : Matrix n m L} (hAB : A * B = 1)
 
 include e hAB
 
-lemma mem_subfield_of_mul_eq_one_of_mem_subfield_right
-    (h_mem : ∀ i j, A i j ∈ K) (i : n) (j : m) :
-    B i j ∈ K := by
+lemma mem_subfield_of_mul_eq_one_of_mem_subfield_right (h_mem : ∀ i j, A i j ∈ K) (i : n) (j : m)
+    : B i j ∈ K := by
   cases nonempty_fintype m
   let A' : Matrix m m K := of fun i j ↦ ⟨A.submatrix id e i j, h_mem i (e j)⟩
   have hA' : A'.map K.subtype = A.submatrix id e := rfl
   have hA : IsUnit A' := by
-    have h_unit : IsUnit (A.submatrix id e) :=
-      .of_mul_eq_one (B.submatrix e id) (by simpa)
+    have h_unit : IsUnit (A.submatrix id e) := .of_mul_eq_one (B.submatrix e id) (by simpa)
     have h_det : (A.submatrix id e).det = K.subtype A'.det := by
       simp [A', K.subtype.map_det, map, submatrix]
     simpa [isUnit_iff_isUnit_det, h_det] using! h_unit
@@ -52,9 +52,8 @@ lemma mem_subfield_of_mul_eq_one_of_mem_subfield_right
   classical
   simpa [← Matrix.mul_assoc, (mul_eq_one_comm_of_equiv e).mp hAB] using! congr(B * $hB)
 
-lemma mem_subfield_of_mul_eq_one_of_mem_subfield_left
-    (h_mem : ∀ i j, B i j ∈ K) (i : m) (j : n) :
-    A i j ∈ K := by
+lemma mem_subfield_of_mul_eq_one_of_mem_subfield_left (h_mem : ∀ i j, B i j ∈ K) (i : m) (j : n)
+    : A i j ∈ K := by
   replace hAB : Bᵀ * Aᵀ = 1 := by simpa using congr(transpose $hAB)
   rw [← A.transpose_apply]
   simp_rw [← B.transpose_apply] at h_mem

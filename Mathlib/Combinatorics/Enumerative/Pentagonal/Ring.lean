@@ -42,37 +42,44 @@ $$ a_{k, n} = x^{(k+1)n} \prod_{i=0}^{n} (1 - x^{k + i + 1}) $$
 
 We will also use its sum
 
-$$ A_k = \sum_{n=0}^{\infty} a_{k, n} $$ -/
+$$ A_k = \sum_{n=0}^{\infty} a_{k, n} $$
+-/
 def powMulProdOneSubPow (k n : ℕ) (x : R) : R :=
   x ^ ((k + 1) * n) * ∏ i ∈ Finset.range (n + 1), (1 - x ^ (k + i + 1))
 
-/-- And a second auxiliary sequence
+/--
+And a second auxiliary sequence
 
-$$ b_{k, n} = x^{(k+1)n} (x^{2k + n + 3} - 1) \prod_{i=0}^{n-1} (1 - x^{k + i + 2}) $$ -/
+$$ b_{k, n} = x^{(k+1)n} (x^{2k + n + 3} - 1) \prod_{i=0}^{n-1} (1 - x^{k + i + 2}) $$
+-/
 def aux (k n : ℕ) (x : R) : R :=
   x ^ ((k + 1) * n) * (x ^ (2 * k + n + 3) - 1) * ∏ i ∈ Finset.range n, (1 - x ^ (k + i + 2))
 
-/-- `powMulProdOneSubPow` and `aux` have relation
+/--
+`powMulProdOneSubPow` and `aux` have relation
 
-$$ a_{k,n} + x^{3k + 5}a_{k + 1, n} = b_{k, n+1} - b_{k, n} $$ -/
-theorem aux_sub_aux (k n : ℕ) (x : R) :
-    powMulProdOneSubPow k n x + x ^ (3 * k + 5) * powMulProdOneSubPow (k + 1) n x =
-    aux k (n + 1) x - aux k n x := by
+$$ a_{k,n} + x^{3k + 5}a_{k + 1, n} = b_{k, n+1} - b_{k, n} $$
+-/
+theorem aux_sub_aux (k n : ℕ) (x : R)
+    : powMulProdOneSubPow k n x + x ^ (3 * k + 5) * powMulProdOneSubPow (k + 1) n x
+      = aux k (n + 1) x - aux k n x := by
   simp_rw [aux, Finset.prod_range_succ, powMulProdOneSubPow]
   rw [Finset.prod_range_succ', Finset.prod_range_succ]
   ring_nf
 
 variable [TopologicalSpace R] [IsTopologicalRing R] [T2Space R]
 
-/-- By summing with telescoping, we get a recurrence formula for $A$
+/--
+By summing with telescoping, we get a recurrence formula for $A$
 
 $$ A_k = 1 - x^{2k + 3} - x^{3k + 5}A_{k + 1} $$
 -/
-theorem tsum_powMulProdOneSubPow (k : ℕ) {x : R} (hx : IsTopologicallyNilpotent x)
-    (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
-    (h : ∀ k, Multipliable (fun n ↦ 1 - x ^ (n + k + 1))) :
-    ∑' n, powMulProdOneSubPow k n x =
-      1 - x ^ (2 * k + 3) - x ^ (3 * k + 5) * ∑' n, powMulProdOneSubPow (k + 1) n x := by
+theorem tsum_powMulProdOneSubPow
+    (k : ℕ)
+    {x : R} (hx : IsTopologicallyNilpotent x) (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
+    (h : ∀ k, Multipliable (fun n ↦ 1 - x ^ (n + k + 1)))
+    : ∑' n, powMulProdOneSubPow k n x
+      = 1 - x ^ (2 * k + 3) - x ^ (3 * k + 5) * ∑' n, powMulProdOneSubPow (k + 1) n x := by
   rw [eq_sub_iff_add_eq, show 1 - x ^ (2 * k + 3) = 0 - aux k 0 x by simp [aux]]
   rw [← (hsum _).tsum_mul_left, ← (hsum _).tsum_add ((hsum _).mul_left _)]
   apply HasSum.tsum_eq
@@ -87,13 +94,15 @@ theorem tsum_powMulProdOneSubPow (k : ℕ) {x : R} (hx : IsTopologicallyNilpoten
     convert h (k + 1) using 4
     ring
 
-/-- The Euler function is related to $A_0$ by
+/--
+The Euler function is related to $A_0$ by
 
-$$ \prod_{n = 0}^{\infty} (1 - x^{n + 1}) = 1 - x - x^2 A_0 $$ -/
-theorem tprod_one_sub_pow_eq_powMulProdOneSubPow_zero {x : R}
-    (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
-    (h : ∀ k, Multipliable fun n ↦ 1 - x ^ (n + k + 1)) :
-    ∏' n, (1 - x ^ (n + 1)) = 1 - x - x ^ 2 * ∑' n, powMulProdOneSubPow 0 n x := by
+$$ \prod_{n = 0}^{\infty} (1 - x^{n + 1}) = 1 - x - x^2 A_0 $$
+-/
+theorem tprod_one_sub_pow_eq_powMulProdOneSubPow_zero
+    {x : R} (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
+    (h : ∀ k, Multipliable fun n ↦ 1 - x ^ (n + k + 1))
+    : ∏' n, (1 - x ^ (n + 1)) = 1 - x - x ^ 2 * ∑' n, powMulProdOneSubPow 0 n x := by
   have hsum := hsum 0
   simp_rw [powMulProdOneSubPow, zero_add, one_mul] at hsum
   have hsum' : Summable fun i ↦ x ^ (i + 1) * ∏ n ∈ Finset.range i, (1 - x ^ (n + 1)) := by
@@ -106,54 +115,60 @@ theorem tprod_one_sub_pow_eq_powMulProdOneSubPow_zero {x : R}
   simp_rw [Nat.Iio_eq_range, sub_sub, sub_right_inj, hsum'.tsum_eq_zero_add]
   conv in fun k ↦ x ^ (k + 1 + 1) * _ =>
     ext k
-    rw [pow_add, pow_add, mul_assoc (x ^ k), mul_comm (x ^ k),
-      ← pow_add x 1 1, one_add_one_eq_two, mul_assoc (x ^ 2)]
+    rw [pow_add, pow_add, mul_assoc (x ^ k), mul_comm (x ^ k), ← pow_add x 1 1, one_add_one_eq_two,
+      mul_assoc (x ^ 2)]
   simp [hsum.tsum_mul_left, powMulProdOneSubPow]
 
-/-- Applying the recurrence formula repeatedly, we get
+/--
+Applying the recurrence formula repeatedly, we get
 
 $$ \prod_{n = 0}^{\infty} (1 - x^{n + 1}) =
 \left(\sum_{k=0}^{j} (-1)^k \left(x^{k(3k+1)/2} - x^{(k+1)(3k+2)/2}\right) \right) +
-(-1)^{j+1}x^{(j+1)(3j+4)/2}A_j $$ -/
-theorem tprod_one_sub_pow_eq_powMulProdOneSubPow (j : ℕ) {x : R} (hx : IsTopologicallyNilpotent x)
-    (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
-    (h : ∀ k, Multipliable (fun n ↦ 1 - x ^ (n + k + 1))) :
-    ∏' n, (1 - x ^ (n + 1)) = ∑ k ∈ Finset.range (j + 1),
-      (-1) ^ k * (x ^ (k * (3 * k + 1) / 2) - x ^ ((k + 1) * (3 * k + 2) / 2))
-      + (-1) ^ (j + 1) * x ^ ((j + 1) * (3 * j + 4) / 2) * ∑' n, powMulProdOneSubPow j n x := by
+(-1)^{j+1}x^{(j+1)(3j+4)/2}A_j $$
+-/
+theorem tprod_one_sub_pow_eq_powMulProdOneSubPow
+    (j : ℕ)
+    {x : R} (hx : IsTopologicallyNilpotent x) (hsum : ∀ k, Summable (powMulProdOneSubPow k · x))
+    (h : ∀ k, Multipliable (fun n ↦ 1 - x ^ (n + k + 1)))
+    : ∏' n, (1 - x ^ (n + 1))
+      = ∑ k ∈ Finset.range (j + 1),
+          (-1) ^ k * (x ^ (k * (3 * k + 1) / 2) - x ^ ((k + 1) * (3 * k + 2) / 2))
+        + (-1) ^ (j + 1) * x ^ ((j + 1) * (3 * j + 4) / 2) * ∑' n, powMulProdOneSubPow j n x := by
   induction j with
   | zero =>
     simp [tprod_one_sub_pow_eq_powMulProdOneSubPow_zero hsum h, powMulProdOneSubPow,
       ← sub_eq_add_neg]
   | succ n ih =>
     rw [ih, tsum_powMulProdOneSubPow _ hx hsum h, Finset.sum_range_succ _ (n + 1)]
-    have h (n) : (n + 1 + 1) * (3 * (n + 1) + 2) / 2 =
-        (n + 1) * (3 * n + 4) / 2 + (2 * n + 3) := by
+    have h (n) : (n + 1 + 1) * (3 * (n + 1) + 2) / 2 = (n + 1) * (3 * n + 4) / 2 + (2 * n + 3) := by
       rw [← Nat.add_mul_div_left _ _ (by simp)]
       ring_nf
     simp_rw [h]
-    have h (n) : (n + 1 + 1) * (3 * (n + 1) + 4) / 2 =
-        (n + 1) * (3 * n + 4) / 2 + (3 * n + 5) := by
+    have h (n) : (n + 1 + 1) * (3 * (n + 1) + 4) / 2 = (n + 1) * (3 * n + 4) / 2 + (3 * n + 5) := by
       rw [← Nat.add_mul_div_left _ _ (by simp)]
       ring_nf
     simp_rw [h]
     ring_nf
 
-/-- **Pentagonal number theorem**, assuming appropriate multipliability and summability.
+/--
+**Pentagonal number theorem**, assuming appropriate multipliability and summability.
 
 $$ \prod_{n = 0}^{\infty} (1 - x^{n + 1}) =
-\sum_{k=0}^{\infty} (-1)^k \left(x^{k(3k+1)/2} - x^{(k+1)(3k+2)/2}\right) $$ -/
-public theorem tprod_one_sub_pow {x : R} (hx : IsTopologicallyNilpotent x)
-    (hsum : ∀ k, Summable
-      (fun n ↦ x ^ ((k + 1) * n) * ∏ i ∈ Finset.range (n + 1), (1 - x ^ (k + i + 1))))
+\sum_{k=0}^{\infty} (-1)^k \left(x^{k(3k+1)/2} - x^{(k+1)(3k+2)/2}\right) $$
+-/
+public theorem tprod_one_sub_pow
+    {x : R} (hx : IsTopologicallyNilpotent x)
+    (hsum : ∀ k,
+      Summable (fun n ↦ x ^ ((k + 1) * n) * ∏ i ∈ Finset.range (n + 1), (1 - x ^ (k + i + 1))))
     (hlhs : ∀ k, Multipliable (fun n ↦ 1 - x ^ (n + k + 1)))
-    (hrhs : Summable fun k : ℕ ↦
-      (-1) ^ k * (x ^ pentagonal (-k) - x ^ pentagonal (k + 1)))
-    (htail : Tendsto (fun k ↦ (-1) ^ (k + 1) * x ^ ((k + 1) * (3 * k + 4) / 2) *
-      ∑' (n : ℕ), x ^ ((k + 1) * n) * ∏ i ∈ Finset.range (n + 1), (1 - x ^ (k + i + 1)))
-      atTop (𝓝 0)) :
-    ∏' n, (1 - x ^ (n + 1)) =
-      ∑' (k : ℕ), (-1) ^ k * (x ^ pentagonal (-k) - x ^ pentagonal (k + 1)) := by
+    (hrhs : Summable fun k : ℕ ↦ (-1) ^ k * (x ^ pentagonal (-k) - x ^ pentagonal (k + 1)))
+    (htail : Tendsto
+      (fun k ↦
+        (-1) ^ (k + 1) * x ^ ((k + 1) * (3 * k + 4) / 2)
+          * ∑' (n : ℕ), x ^ ((k + 1) * n) * ∏ i ∈ Finset.range (n + 1), (1 - x ^ (k + i + 1)))
+      atTop (𝓝 0))
+    : ∏' n, (1 - x ^ (n + 1))
+      = ∑' (k : ℕ), (-1) ^ k * (x ^ pentagonal (-k) - x ^ pentagonal (k + 1)) := by
   have h := fun n ↦ tprod_one_sub_pow_eq_powMulProdOneSubPow n hx hsum hlhs
   simp_rw [← sub_eq_iff_eq_add] at h
   refine (HasSum.tsum_eq ?_).symm

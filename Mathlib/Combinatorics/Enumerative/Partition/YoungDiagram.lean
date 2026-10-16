@@ -34,35 +34,32 @@ def toPartition {n : ℕ} (μ : YoungDiagram) (h : μ.card = n) : Nat.Partition 
 
 /-- Convert a partition to a Young diagram. -/
 def ofPartition {n : ℕ} (p : Nat.Partition n) : YoungDiagram :=
-  ofRowLens
-    (p.parts.sort (· ≥ ·))
-    (Multiset.pairwise_sort p.parts (· ≥ ·)).sortedGE
+  ofRowLens (p.parts.sort (· ≥ ·)) (Multiset.pairwise_sort p.parts (· ≥ ·)).sortedGE
 
 @[simp]
-theorem rowLens_ofPartition_eq_sort_parts {n : ℕ} (p : Nat.Partition n) :
-    (ofPartition p).rowLens = p.parts.sort (· ≥ ·) := by
+theorem rowLens_ofPartition_eq_sort_parts {n : ℕ} (p : Nat.Partition n)
+    : (ofPartition p).rowLens = p.parts.sort (· ≥ ·) := by
   grind [ofPartition, rowLens_ofRowLens_eq_self, Multiset.mem_sort]
 
 @[simp]
-theorem card_ofPartition {n : ℕ} (p : Nat.Partition n) :
-    (ofPartition p).card = n := by
+theorem card_ofPartition {n : ℕ} (p : Nat.Partition n) : (ofPartition p).card = n := by
   rw [← sum_rowLens_eq_card, rowLens_ofPartition_eq_sort_parts, ← Multiset.sum_coe,
     Multiset.sort_eq, p.parts_sum]
 
 @[simp]
-theorem ofPartition_toPartition {n : ℕ} {μ : YoungDiagram} (h : μ.card = n) :
-    ofPartition (μ.toPartition h) = μ := by
+theorem ofPartition_toPartition {n : ℕ} {μ : YoungDiagram} (h : μ.card = n)
+    : ofPartition (μ.toPartition h) = μ := by
   simp [ofPartition, toPartition, List.mergeSort_eq_self (· ≥ ·) μ.rowLens_sorted.pairwise,
     ofRowLens_to_rowLens_eq_self]
 
 @[simp]
-theorem toPartition_ofPartition {n : ℕ} {p : Nat.Partition n} :
-    (ofPartition p).toPartition (card_ofPartition p) = p := by
+theorem toPartition_ofPartition {n : ℕ} {p : Nat.Partition n}
+    : (ofPartition p).toPartition (card_ofPartition p) = p := by
   ext
   simp [toPartition]
 
 /-- Equivalence between Young diagrams of cardinality `n` and partitions of `n`. -/
-def equivPartition {n : ℕ} : { μ : YoungDiagram // μ.card = n } ≃ Nat.Partition n where
+def equivPartition {n : ℕ} : {μ : YoungDiagram // μ.card = n} ≃ Nat.Partition n where
   toFun μ := toPartition μ μ.2
   invFun p := ⟨ofPartition p, card_ofPartition p⟩
   left_inv := fun ⟨_, h⟩ => Subtype.mk_eq_mk.mpr (ofPartition_toPartition h)

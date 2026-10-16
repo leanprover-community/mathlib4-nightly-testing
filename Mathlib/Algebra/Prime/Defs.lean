@@ -38,38 +38,37 @@ section Prime
 
 variable [CommMonoidWithZero M]
 
-/-- An element `p` of a commutative monoid with zero (e.g., a ring) is called *prime*,
-if it's not zero, not a unit, and `p ∣ a * b → p ∣ a ∨ p ∣ b` for all `a`, `b`. -/
-def Prime (p : M) : Prop :=
-  p ≠ 0 ∧ ¬IsUnit p ∧ ∀ a b, p ∣ a * b → p ∣ a ∨ p ∣ b
+/--
+An element `p` of a commutative monoid with zero (e.g., a ring) is called *prime*,
+if it's not zero, not a unit, and `p ∣ a * b → p ∣ a ∨ p ∣ b` for all `a`, `b`.
+-/
+def Prime (p : M) : Prop := p ≠ 0 ∧ ¬ IsUnit p ∧ ∀ a b, p ∣ a * b → p ∣ a ∨ p ∣ b
 
 namespace Prime
 
 variable {p : M} (hp : Prime p)
 include hp
 
-theorem ne_zero : p ≠ 0 :=
-  hp.1
+theorem ne_zero : p ≠ 0 := hp.1
 
-theorem not_isUnit : ¬IsUnit p :=
-  hp.2.1
+theorem not_isUnit : ¬ IsUnit p := hp.2.1
 
 @[deprecated (since := "2026-08-02")]
 alias not_unit := not_isUnit
 
-theorem not_dvd_one : ¬p ∣ 1 :=
-  mt (isUnit_of_dvd_one ·) hp.not_isUnit
+theorem not_dvd_one : ¬ p ∣ 1 := mt (isUnit_of_dvd_one ·) hp.not_isUnit
 
 theorem ne_one : p ≠ 1 := fun h => hp.2.1 (h.symm ▸ isUnit_one)
 
-theorem dvd_or_dvd {a b : M} (h : p ∣ a * b) : p ∣ a ∨ p ∣ b :=
-  hp.2.2 a b h
+theorem dvd_or_dvd {a b : M} (h : p ∣ a * b) : p ∣ a ∨ p ∣ b := hp.2.2 a b h
 
 theorem dvd_mul {a b : M} : p ∣ a * b ↔ p ∣ a ∨ p ∣ b :=
   ⟨hp.dvd_or_dvd, (Or.elim · (dvd_mul_of_dvd_left · _) (dvd_mul_of_dvd_right · _))⟩
 
-theorem isPrimal : IsPrimal p := fun _a _b dvd ↦ (hp.dvd_or_dvd dvd).elim
-  (fun h ↦ ⟨p, 1, h, one_dvd _, (mul_one p).symm⟩) fun h ↦ ⟨1, p, one_dvd _, h, (one_mul p).symm⟩
+theorem isPrimal : IsPrimal p := fun _a _b dvd ↦
+  (hp.dvd_or_dvd dvd).elim
+    (fun h ↦ ⟨p, 1, h, one_dvd _, (mul_one p).symm⟩)
+    fun h ↦ ⟨1, p, one_dvd _, h, (one_mul p).symm⟩
 
 theorem not_dvd_mul {a b : M} (ha : ¬ p ∣ a) (hb : ¬ p ∣ b) : ¬ p ∣ a * b :=
   hp.dvd_mul.not.mpr <| not_or.mpr ⟨ha, hb⟩
@@ -92,34 +91,32 @@ theorem dvd_pow_iff_dvd {a : M} {n : ℕ} (hn : n ≠ 0) : p ∣ a ^ n ↔ p ∣
 
 end Prime
 
-@[simp]
-theorem not_prime_zero : ¬Prime (0 : M) := fun h => h.ne_zero rfl
+@[simp] theorem not_prime_zero : ¬ Prime (0 : M) := fun h => h.ne_zero rfl
 
-@[simp]
-theorem not_prime_one : ¬Prime (1 : M) := fun h => h.not_isUnit isUnit_one
+@[simp] theorem not_prime_one : ¬ Prime (1 : M) := fun h => h.not_isUnit isUnit_one
 
 end Prime
 
-theorem Irreducible.not_dvd_isUnit [CommMonoid M] {p u : M} (hp : Irreducible p) (hu : IsUnit u) :
-    ¬p ∣ u :=
+theorem Irreducible.not_dvd_isUnit [CommMonoid M] {p u : M} (hp : Irreducible p) (hu : IsUnit u)
+    : ¬ p ∣ u :=
   mt (isUnit_of_dvd_unit · hu) hp.not_isUnit
 
-theorem Irreducible.not_dvd_one [CommMonoid M] {p : M} (hp : Irreducible p) : ¬p ∣ 1 :=
+theorem Irreducible.not_dvd_one [CommMonoid M] {p : M} (hp : Irreducible p) : ¬ p ∣ 1 :=
   hp.not_dvd_isUnit isUnit_one
 
-theorem Irreducible.not_dvd_unit [CommMonoid M] {p : M} (u : Mˣ) (hp : Irreducible p) :
-    ¬ p ∣ u :=
+theorem Irreducible.not_dvd_unit [CommMonoid M] {p : M} (u : Mˣ) (hp : Irreducible p) : ¬ p ∣ u :=
   hp.not_dvd_isUnit u.isUnit
 
-theorem Irreducible.isUnit_of_mul_self_dvd [CommMonoid M] {p a : M} (hp : Irreducible p)
-    (ha : a * a ∣ p) : IsUnit a := by
+theorem Irreducible.isUnit_of_mul_self_dvd
+    [CommMonoid M] {p a : M} (hp : Irreducible p) (ha : a * a ∣ p)
+    : IsUnit a := by
   obtain ⟨b, hb⟩ := ha
   obtain h | h := hp.isUnit_or_isUnit (mul_assoc a a b ▸ hb)
   · exact h
   · exact isUnit_of_mul_isUnit_left h
 
 @[simp]
-theorem not_irreducible_zero [MonoidWithZero M] : ¬Irreducible (0 : M)
+theorem not_irreducible_zero [MonoidWithZero M] : ¬ Irreducible (0 : M)
   | ⟨hn0, h⟩ =>
     have : IsUnit (0 : M) ∨ IsUnit (0 : M) := h (mul_zero 0).symm
     this.elim hn0 hn0
@@ -128,24 +125,27 @@ theorem Irreducible.ne_zero [MonoidWithZero M] : ∀ {p : M}, Irreducible p → 
   | _, hp, rfl => not_irreducible_zero hp
 
 /-- If `p` and `q` are irreducible, then `p ∣ q` implies `q ∣ p`. -/
-theorem Irreducible.dvd_symm [Monoid M] {p q : M} (hp : Irreducible p) (hq : Irreducible q) :
-    p ∣ q → q ∣ p := by
+theorem Irreducible.dvd_symm [Monoid M] {p q : M} (hp : Irreducible p) (hq : Irreducible q)
+    : p ∣ q → q ∣ p := by
   rintro ⟨q', rfl⟩
   rw [IsUnit.mul_right_dvd (Or.resolve_left (of_irreducible_mul hq) hp.not_isUnit)]
 
-theorem Irreducible.dvd_comm [Monoid M] {p q : M} (hp : Irreducible p) (hq : Irreducible q) :
-    p ∣ q ↔ q ∣ p :=
+theorem Irreducible.dvd_comm [Monoid M] {p q : M} (hp : Irreducible p) (hq : Irreducible q)
+    : p ∣ q ↔ q ∣ p :=
   ⟨hp.dvd_symm hq, hq.dvd_symm hp⟩
 
 section CommMonoidWithZero
 
 variable [CommMonoidWithZero M]
 
-theorem Irreducible.prime_of_isPrimal {a : M}
-    (irr : Irreducible a) (primal : IsPrimal a) : Prime a :=
-  ⟨irr.ne_zero, irr.not_isUnit, fun a b dvd ↦ by
+theorem Irreducible.prime_of_isPrimal {a : M} (irr : Irreducible a) (primal : IsPrimal a)
+    : Prime a := ⟨
+  irr.ne_zero,
+  irr.not_isUnit,
+  fun a b dvd ↦ by
     obtain ⟨d₁, d₂, h₁, h₂, rfl⟩ := primal dvd
-    exact (of_irreducible_mul irr).symm.imp (·.mul_right_dvd.mpr h₁) (·.mul_left_dvd.mpr h₂)⟩
+    exact (of_irreducible_mul irr).symm.imp (·.mul_right_dvd.mpr h₁) (·.mul_left_dvd.mpr h₂)
+⟩
 
 theorem Irreducible.prime [DecompositionMonoid M] {a : M} (irr : Irreducible a) : Prime a :=
   irr.prime_of_isPrimal (DecompositionMonoid.primal a)
@@ -156,14 +156,16 @@ section CancelCommMonoidWithZero
 
 variable [CommMonoidWithZero M] [IsCancelMulZero M] {p : M}
 
-protected theorem Prime.irreducible (hp : Prime p) : Irreducible p :=
-  ⟨hp.not_isUnit, fun a b ↦ by
+protected theorem Prime.irreducible (hp : Prime p) : Irreducible p := ⟨
+  hp.not_isUnit,
+  fun a b ↦ by
     rintro rfl
     exact (hp.dvd_or_dvd dvd_rfl).symm.imp
       (isUnit_of_dvd_one <| (mul_dvd_mul_iff_right <| right_ne_zero_of_mul hp.ne_zero).mp <|
         dvd_mul_of_dvd_right · _)
       (isUnit_of_dvd_one <| (mul_dvd_mul_iff_left <| left_ne_zero_of_mul hp.ne_zero).mp <|
-        dvd_mul_of_dvd_left · _)⟩
+        dvd_mul_of_dvd_left · _)
+⟩
 
 theorem irreducible_iff_prime [DecompositionMonoid M] {a : M} : Irreducible a ↔ Prime a :=
   ⟨Irreducible.prime, Prime.irreducible⟩

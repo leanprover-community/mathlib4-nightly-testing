@@ -55,13 +55,15 @@ def coboundaries : AddSubgroup (Cocycle K L n) where
     exact ⟨m, hm, -β, by aesop⟩
 
 variable {K L n} in
-lemma mem_coboundaries_iff (α : Cocycle K L n) (m : ℤ) (hm : m + 1 = n) :
-    α ∈ coboundaries K L n ↔ ∃ (β : Cochain K L m), δ m n β = α := by
+lemma mem_coboundaries_iff (α : Cocycle K L n) (m : ℤ) (hm : m + 1 = n)
+    : α ∈ coboundaries K L n ↔ ∃ (β : Cochain K L m), δ m n β = α := by
   simp only [coboundaries, AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk]
   grind
 
-/-- The type of cohomology classes of degree `n` in the complex of morphisms
-from `K` to `L`. -/
+/--
+The type of cohomology classes of degree `n` in the complex of morphisms
+from `K` to `L`.
+-/
 def CohomologyClass : Type v := Cocycle K L n ⧸ coboundaries K L n
 
 instance : AddCommGroup (CohomologyClass K L n) :=
@@ -72,43 +74,31 @@ namespace CohomologyClass
 variable {K L n}
 
 /-- The cohomology class of a cocycle. -/
-def mk (x : Cocycle K L n) : CohomologyClass K L n :=
-  Quotient.mk _ x
+def mk (x : Cocycle K L n) : CohomologyClass K L n := Quotient.mk _ x
 
-lemma mk_surjective : Function.Surjective (mk : Cocycle K L n → _) :=
-  Quotient.mk_surjective
+lemma mk_surjective : Function.Surjective (mk : Cocycle K L n → _) := Quotient.mk_surjective
 
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-lemma rec {motive : CohomologyClass K L n → Prop}
-    (mk : ∀ (x : Cocycle K L n), motive (mk x))
-    (x : CohomologyClass K L n) :
-    motive x := by
+lemma rec
+    {motive : CohomologyClass K L n → Prop} (mk : ∀ (x : Cocycle K L n), motive (mk x))
+    (x : CohomologyClass K L n)
+    : motive x := by
   obtain ⟨x, rfl⟩ := x.mk_surjective
   exact mk x
 
 variable (K L n) in
-@[simp]
-lemma mk_zero :
-    mk (0 : Cocycle K L n) = 0 := rfl
+@[simp] lemma mk_zero : mk (0 : Cocycle K L n) = 0 := rfl
 
-@[simp]
-lemma mk_add (x y : Cocycle K L n) :
-    mk (x + y) = mk x + mk y := rfl
+@[simp] lemma mk_add (x y : Cocycle K L n) : mk (x + y) = mk x + mk y := rfl
 
-@[simp]
-lemma mk_sub (x y : Cocycle K L n) :
-    mk (x - y) = mk x - mk y := rfl
+@[simp] lemma mk_sub (x y : Cocycle K L n) : mk (x - y) = mk x - mk y := rfl
 
-@[simp]
-lemma mk_neg (x : Cocycle K L n) :
-    mk (-x) = -mk x := rfl
+@[simp] lemma mk_neg (x : Cocycle K L n) : mk (-x) = - mk x := rfl
 
-lemma mk_eq_zero_iff (x : Cocycle K L n) :
-    mk x = 0 ↔ x ∈ coboundaries K L n :=
+lemma mk_eq_zero_iff (x : Cocycle K L n) : mk x = 0 ↔ x ∈ coboundaries K L n :=
   QuotientAddGroup.eq_zero_iff x
 
-lemma mk_eq_mk_iff (x y : Cocycle K L n) :
-    mk x = mk y ↔ (x - y) ∈ coboundaries K L n := by
+lemma mk_eq_mk_iff (x y : Cocycle K L n) : mk x = mk y ↔ (x - y) ∈ coboundaries K L n := by
   rw [← mk_eq_zero_iff, mk_sub, sub_eq_zero]
 
 variable (K L n) in
@@ -121,48 +111,54 @@ def mkAddMonoidHom : Cocycle K L n →+ CohomologyClass K L n where
 
 section
 
-variable {G : Type*} [AddCommGroup G]
-  (f : Cocycle K L n →+ G) (hf : coboundaries K L n ≤ f.ker)
+variable {G : Type*} [AddCommGroup G] (f : Cocycle K L n →+ G) (hf : coboundaries K L n ≤ f.ker)
 
 /-- Constructor for additive morphisms from `CohomologyClass K L n`. -/
-def descAddMonoidHom :
-    CohomologyClass K L n →+ G :=
-  QuotientAddGroup.lift _ f hf
+def descAddMonoidHom : CohomologyClass K L n →+ G := QuotientAddGroup.lift _ f hf
 
 @[simp]
-lemma descAddMonoidHom_cohomologyClass (x : Cocycle K L n) :
-    descAddMonoidHom f hf (mk x) = f x := rfl
+lemma descAddMonoidHom_cohomologyClass (x : Cocycle K L n) : descAddMonoidHom f hf (mk x) = f x :=
+  rfl
 
 end
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The additive map which sends a cohomology class to the corresponding morphism
-in the homotopy category. -/
-def toHom :
-    CohomologyClass K L n →+
-      ((HomotopyCategory.quotient C _).obj K ⟶ (HomotopyCategory.quotient C _).obj (L⟦n⟧)) :=
+/--
+The additive map which sends a cohomology class to the corresponding morphism
+in the homotopy category.
+-/
+def toHom
+    : CohomologyClass K L n
+      →+ ((HomotopyCategory.quotient C _).obj K ⟶ (HomotopyCategory.quotient C _).obj (L⟦n⟧)) :=
   descAddMonoidHom ((Functor.mapAddHom _).comp Cocycle.equivHomShift.symm.toAddMonoidHom) (by
     rintro ⟨x, _⟩ ⟨m, hm, β, rfl⟩
     simp only [AddMonoidHom.mem_ker, AddMonoidHom.coe_comp, AddMonoidHom.coe_ofClass,
       AddEquiv.toAddMonoidHom_eq_coe, Function.comp_apply, Cocycle.equivHomShift_symm_apply,
       Functor.mapAddHom_apply, HomotopyCategory.quotient_map_eq_zero_iff]
-    exact ⟨(Cochain.equivHomotopy _ _).symm ⟨n.negOnePow • β.rightShift _ _ (by lia),
-      by simp [Cochain.δ_rightShift _ _ _ _ _ _ (zero_add n), smul_smul]⟩⟩)
+    exact ⟨(Cochain.equivHomotopy _ _).symm ⟨
+      n.negOnePow • β.rightShift _ _ (by lia),
+      by simp [Cochain.δ_rightShift _ _ _ _ _ _ (zero_add n), smul_smul]
+    ⟩⟩)
 
-lemma toHom_mk (x : Cocycle K L n) :
-    toHom (mk x) = (HomotopyCategory.quotient C _).map (Cocycle.equivHomShift.symm x) := rfl
+lemma toHom_mk (x : Cocycle K L n)
+    : toHom (mk x) = (HomotopyCategory.quotient C _).map (Cocycle.equivHomShift.symm x) :=
+  rfl
 
-lemma toHom_mk_eq_zero_iff (x : Cocycle K L n) :
-    toHom (mk x) = 0 ↔ x ∈ coboundaries K L n := by
+lemma toHom_mk_eq_zero_iff (x : Cocycle K L n) : toHom (mk x) = 0 ↔ x ∈ coboundaries K L n := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · simp only [coboundaries, exists_prop, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
       AddSubsemigroup.mem_mk, Set.mem_ofPred_eq]
     rw [toHom_mk, HomotopyCategory.quotient_map_eq_zero_iff] at h
     obtain ⟨γ, h⟩ := Cochain.equivHomotopy _ _ h.some
     simp only [Cochain.ofHom_zero, add_zero, Cocycle.equivHomShift_symm_apply,
-      Cocycle.cochain_ofHom_homOf_eq_coe, Cocycle.rightShift_coe] at h
-    exact ⟨n - 1, by simp, n.negOnePow • γ.rightUnshift _ (by lia),
-      by simp [Cochain.δ_rightUnshift _ _ _ _ _ (zero_add n), smul_smul, ← h]⟩
+        Cocycle.cochain_ofHom_homOf_eq_coe, Cocycle.rightShift_coe]
+      at h
+    exact ⟨
+      n - 1,
+      by simp,
+      n.negOnePow • γ.rightUnshift _ (by lia),
+      by simp [Cochain.δ_rightUnshift _ _ _ _ _ (zero_add n), smul_smul, ← h]
+    ⟩
   · rw [← mk_eq_zero_iff] at h
     rw [h, map_zero]
 
@@ -171,16 +167,16 @@ lemma toHom_bijective : Function.Bijective (toHom : CohomologyClass K L n → _)
   refine ⟨fun x y h ↦ ?_, fun f ↦ ?_⟩
   · obtain ⟨x, rfl⟩ := x.mk_surjective
     obtain ⟨y, rfl⟩ := y.mk_surjective
-    rw [← sub_eq_zero, ← mk_sub, mk_eq_zero_iff, ← toHom_mk_eq_zero_iff,
-      mk_sub, map_sub, h, sub_self]
+    rw [← sub_eq_zero, ← mk_sub, mk_eq_zero_iff, ← toHom_mk_eq_zero_iff, mk_sub, map_sub, h,
+      sub_self]
   · obtain ⟨f, rfl⟩ := Functor.map_surjective _ f
     exact ⟨mk (Cocycle.equivHomShift f), by simp [toHom_mk]⟩
 
 /-- Cohomology classes identify to morphisms in the homotopy category. -/
 @[simps! apply]
-noncomputable def homAddEquiv :
-    CohomologyClass K L n ≃+
-      ((HomotopyCategory.quotient C _).obj K ⟶ (HomotopyCategory.quotient C _).obj (L⟦n⟧)) :=
+noncomputable def homAddEquiv
+    : CohomologyClass K L n
+      ≃+ ((HomotopyCategory.quotient C _).obj K ⟶ (HomotopyCategory.quotient C _).obj (L⟦n⟧)) :=
   AddEquiv.ofBijective toHom (toHom_bijective _ _ _)
 
 section
@@ -190,7 +186,8 @@ variable [Linear R C]
 instance : SMul R (CohomologyClass K L n) where
   smul r :=
     CohomologyClass.descAddMonoidHom
-      ((CohomologyClass.mkAddMonoidHom K L n).comp (AddMonoidHom.smul r)) (fun z hz' ↦ by
+      ((CohomologyClass.mkAddMonoidHom K L n).comp (AddMonoidHom.smul r))
+      (fun z hz' ↦ by
         simp only [AddMonoidHom.coe_smul', AddMonoidHom.mem_ker, AddMonoidHom.coe_comp,
           Function.comp_apply, DistribSMul.toAddMonoidHom_apply,
           CohomologyClass.mkAddMonoidHom_apply, CohomologyClass.mk_eq_zero_iff]
@@ -223,11 +220,13 @@ def mkLinearMap [Linear R C] : Cocycle K L n →ₗ[R] CohomologyClass K L n whe
 
 end CohomologyClass
 
-/-- `CohomologyClass K L m` identifies to the cohomology of the complex `HomComplex K L`
-in degree `m`. -/
+/--
+`CohomologyClass K L m` identifies to the cohomology of the complex `HomComplex K L`
+in degree `m`.
+-/
 @[simps, implicit_reducible]
-def leftHomologyData' (hm : n + 1 = m) (hp : m + 1 = p) :
-    ((HomComplex K L).sc' n m p).LeftHomologyData where
+def leftHomologyData' (hm : n + 1 = m) (hp : m + 1 = p)
+    : ((HomComplex K L).sc' n m p).LeftHomologyData where
   K := ↧(Cocycle K L m)
   H := ↧(CohomologyClass K L m)
   i := AddCommGrpCat.ofHom (Cocycle.toCochainAddMonoidHom K L m)
@@ -241,8 +240,8 @@ def leftHomologyData' (hm : n + 1 = m) (hp : m + 1 = p) :
     exact ⟨n, hm, x, rfl⟩
   hπ :=
     Cofork.IsColimit.mk _
-      (fun s ↦ AddCommGrpCat.ofHom (CohomologyClass.descAddMonoidHom s.π.hom
-        (by
+      (fun s ↦
+        AddCommGrpCat.ofHom (CohomologyClass.descAddMonoidHom s.π.hom (by
           rintro ⟨_, _⟩ ⟨q, hq, y, rfl⟩
           obtain rfl : n = q := by lia
           simpa only [zero_comp] using! congr($s.condition y))))
@@ -252,26 +251,29 @@ def leftHomologyData' (hm : n + 1 = m) (hp : m + 1 = p) :
         obtain ⟨y, rfl⟩ := x.mk_surjective
         simpa using! congr($hl y))
 
-lemma leftHomologyData'_f'_apply_coe (hm : n + 1 = m) (hp : m + 1 = p) (x : Cochain K L n) :
-    ((leftHomologyData' K L n m p hm hp).f' x).1 = δ n m x := rfl
+lemma leftHomologyData'_f'_apply_coe (hm : n + 1 = m) (hp : m + 1 = p) (x : Cochain K L n)
+    : ((leftHomologyData' K L n m p hm hp).f' x).1 = δ n m x :=
+  rfl
 
-/-- `CohomologyClass K L n` identifies to the cohomology of the complex `HomComplex K L`
-in degree `n`. -/
+/--
+`CohomologyClass K L n` identifies to the cohomology of the complex `HomComplex K L`
+in degree `n`.
+-/
 @[simps!, implicit_reducible]
-noncomputable def leftHomologyData :
-    ((HomComplex K L).sc n).LeftHomologyData :=
+noncomputable def leftHomologyData : ((HomComplex K L).sc n).LeftHomologyData :=
   leftHomologyData' K L _ n _ (by simp) (by simp)
 
 /-- The homology of `HomComplex K L` in degree `n` identifies to `CohomologyClass K L n`. -/
-noncomputable def homologyAddEquiv :
-    (HomComplex K L).homology n ≃+ CohomologyClass K L n :=
+noncomputable def homologyAddEquiv : (HomComplex K L).homology n ≃+ CohomologyClass K L n :=
   (leftHomologyData K L n).homologyIso.addCommGroupIsoToAddEquiv
 
-/-- `CohomologyClass K L m` identifies to the cohomology of the
-complex `linearHomComplex R K L` in degree `m`. -/
+/--
+`CohomologyClass K L m` identifies to the cohomology of the
+complex `linearHomComplex R K L` in degree `m`.
+-/
 @[simps, implicit_reducible]
-noncomputable def linearLeftHomologyData' [Linear R C] (hm : n + 1 = m) (hp : m + 1 = p) :
-    ((linearHomComplex R K L).sc' n m p).LeftHomologyData where
+noncomputable def linearLeftHomologyData' [Linear R C] (hm : n + 1 = m) (hp : m + 1 = p)
+    : ((linearHomComplex R K L).sc' n m p).LeftHomologyData where
   K := ModuleCat.of R (Cocycle K L m)
   H := ModuleCat.of R (CohomologyClass K L m)
   i := ModuleCat.ofHom (Cocycle.toCochainLinearMap R K L m)
@@ -288,8 +290,7 @@ noncomputable def linearLeftHomologyData' [Linear R C] (hm : n + 1 = m) (hp : m 
   hπ :=
     isColimitOfReflects (forget₂ _ AddCommGrpCat) (by
       refine (CokernelCofork.isColimitMapCoconeEquiv ..).2
-        ((IsColimit.equivOfNatIsoOfIso ?_ _ _ ?_).1
-          (leftHomologyData' K L n m p hm hp).hπ')
+        ((IsColimit.equivOfNatIsoOfIso ?_ _ _ ?_).1 (leftHomologyData' K L n m p hm hp).hπ')
       · refine parallelPair.ext (Iso.refl _) (Iso.refl _) ?_ (by simp)
         ext (x : Cochain K L n)
         dsimp
@@ -298,17 +299,21 @@ noncomputable def linearLeftHomologyData' [Linear R C] (hm : n + 1 = m) (hp : m 
           dsimp% leftHomologyData'_f'_apply_coe K L n m p hm hp x]
       · exact Cofork.ext (Iso.refl _))
 
-/-- `CohomologyClass K L m` identifies to the cohomology of the
-complex `linearHomComplex R K L` in degree `m`. -/
+/--
+`CohomologyClass K L m` identifies to the cohomology of the
+complex `linearHomComplex R K L` in degree `m`.
+-/
 @[simps!, implicit_reducible]
-noncomputable def linearLeftHomologyData [Linear R C] :
-    ((linearHomComplex R K L).sc n).LeftHomologyData :=
+noncomputable def linearLeftHomologyData [Linear R C]
+    : ((linearHomComplex R K L).sc n).LeftHomologyData :=
   linearLeftHomologyData' R K L _ n _ (by simp) (by simp)
 
-/-- The homology of `linearHomComplex R K L` in degree `n` identifies
-to `CohomologyClass K L n`. -/
-noncomputable def homologyLinearEquiv [Linear R C] :
-    (linearHomComplex R K L).homology n ≃ₗ[R] CohomologyClass K L n :=
+/--
+The homology of `linearHomComplex R K L` in degree `n` identifies
+to `CohomologyClass K L n`.
+-/
+noncomputable def homologyLinearEquiv [Linear R C]
+    : (linearHomComplex R K L).homology n ≃ₗ[R] CohomologyClass K L n :=
   (linearLeftHomologyData R K L n).homologyIso.toLinearEquiv
 
 end HomComplex

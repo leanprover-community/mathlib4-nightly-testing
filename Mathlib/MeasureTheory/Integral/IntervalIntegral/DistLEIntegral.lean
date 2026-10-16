@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Calculus.DiffContOnCl
 public import Mathlib.Analysis.Calculus.LineDeriv.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
@@ -19,31 +18,31 @@ In this file we prove several version of the following fact:
 the displacement (`dist (f a) (f b)`) is at most the integral of `‖deriv f‖` over `[a, b]`.
 -/
 
-
 public section
 
 open Filter Set MeasureTheory Metric
 open scoped Topology
 
-variable {E F : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable
+  {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 section Line
 
 variable {f : ℝ → E} {a b : ℝ}
 
-/-- Displacement is at most the integral of an upper estimate on the speed.
+/--
+Displacement is at most the integral of an upper estimate on the speed.
 
 Let `f : ℝ → E` be a function which is continuous on a closed interval `[a, b]`
 and is differentiable on the open interval `(a, b)`.
 If `B t` is an integrable upper estimate on `‖f' t‖`, `a < t < b`,
 then `‖f b - f a‖ ≤ ∫ t in a..b, B t`.
 -/
-lemma norm_sub_le_integral_of_norm_deriv_le_of_le {B : ℝ → ℝ} (hab : a ≤ b)
-    (hfc : ContinuousOn f (Icc a b)) (hfd : DifferentiableOn ℝ f (Ioo a b))
-    (hfB : ∀ᵐ t, t ∈ Ioo a b → ‖deriv f t‖ ≤ B t)
-    (hBi : IntervalIntegrable B volume a b) :
-    ‖f b - f a‖ ≤ ∫ t in a..b, B t := by
+lemma norm_sub_le_integral_of_norm_deriv_le_of_le
+    {B : ℝ → ℝ}
+    (hab : a ≤ b) (hfc : ContinuousOn f (Icc a b)) (hfd : DifferentiableOn ℝ f (Ioo a b))
+    (hfB : ∀ᵐ t, t ∈ Ioo a b → ‖deriv f t‖ ≤ B t) (hBi : IntervalIntegrable B volume a b)
+    : ‖f b - f a‖ ≤ ∫ t in a..b, B t := by
   -- WLOG, the codomain is a complete space.
   wlog hE : CompleteSpace E generalizing E
   · set g : ℝ → UniformSpace.Completion E := (↑) ∘ f with hg
@@ -65,7 +64,7 @@ lemma norm_sub_le_integral_of_norm_deriv_le_of_le {B : ℝ → ℝ} (hab : a ≤
   -- `‖f b - f a‖ = ‖∫ t in a..b, deriv f t‖ ≤ ∫ t in a..b, ‖deriv f t‖`
   have hfB' : (‖deriv f ·‖) ≤ᵐ[volume.restrict (uIoc a b)] B := by
     rwa [uIoc_of_le hab, ← Measure.restrict_congr_set Ioo_ae_eq_Ioc, EventuallyLE,
-        ae_restrict_iff' measurableSet_Ioo]
+      ae_restrict_iff' measurableSet_Ioo]
   rw [← intervalIntegral.integral_eq_sub_of_hasDeriv_right (f' := deriv f)]
   · apply intervalIntegral.norm_integral_le_of_norm_le hab _ hBi
     rwa [← ae_restrict_iff' measurableSet_Ioc, ← uIoc_of_le hab]
@@ -76,16 +75,19 @@ lemma norm_sub_le_integral_of_norm_deriv_le_of_le {B : ℝ → ℝ} (hab : a ≤
   · apply hBi.mono_fun (aestronglyMeasurable_deriv _ _)
     exact hfB'.trans <| .of_forall fun _ ↦ le_abs_self _
 
-/-- Let `f : ℝ → E` be a function which is continuous on `[a, b]` and is differentiable on `(a, b)`.
+/--
+Let `f : ℝ → E` be a function which is continuous on `[a, b]` and is differentiable on `(a, b)`.
 Suppose that `‖f' t‖ ≤ C` for a.e. `t ∈ (a, b)`.
 Then the distance between `f a` and `f b`
 is at most `C` times the measure of `x ∈ (a, b)` such that `f' x ≠ 0`.
 
-This lemma is useful, if `f` is known to have zero derivative at most points of `[a, b]`. -/
-lemma norm_sub_le_mul_volume_of_norm_deriv_le_of_le {C : ℝ} (hab : a ≤ b)
-    (hfc : ContinuousOn f (Icc a b)) (hfd : DifferentiableOn ℝ f (Ioo a b))
-    (hnorm : ∀ᵐ t, t ∈ Ioo a b → ‖deriv f t‖ ≤ C) :
-    ‖f b - f a‖ ≤ C * volume.real {x ∈ Ioo a b | deriv f x ≠ 0} := by
+This lemma is useful, if `f` is known to have zero derivative at most points of `[a, b]`.
+-/
+lemma norm_sub_le_mul_volume_of_norm_deriv_le_of_le
+    {C : ℝ}
+    (hab : a ≤ b) (hfc : ContinuousOn f (Icc a b)) (hfd : DifferentiableOn ℝ f (Ioo a b))
+    (hnorm : ∀ᵐ t, t ∈ Ioo a b → ‖deriv f t‖ ≤ C)
+    : ‖f b - f a‖ ≤ C * volume.real {x ∈ Ioo a b | deriv f x ≠ 0} := by
   set s := toMeasurable volume {x | deriv f x ≠ 0}
   have hsm : MeasurableSet s := by measurability
   calc
@@ -100,10 +102,9 @@ lemma norm_sub_le_mul_volume_of_norm_deriv_le_of_le {C : ℝ} (hab : a ≤ b)
         refine (integrableOn_const ?_ ?_).indicator hsm <;> simp
     _ = C * volume.real {x ∈ Ioo a b | deriv f x ≠ 0} := by
       rw [intervalIntegral.integral_of_le hab, Measure.restrict_congr_set Ioo_ae_eq_Ioc.symm,
-        integral_indicator hsm, Measure.restrict_restrict hsm,
-        setIntegral_const, smul_eq_mul, mul_comm]
-      simp only [s, Measure.real,
-        Measure.measure_toMeasurable_inter_of_sfinite measurableSet_Ioo]
+        integral_indicator hsm, Measure.restrict_restrict hsm, setIntegral_const, smul_eq_mul,
+        mul_comm]
+      simp only [s, Measure.real, Measure.measure_toMeasurable_inter_of_sfinite measurableSet_Ioo]
       simp only [inter_def, mem_ofPred_eq, and_comm]
 
 end Line
@@ -113,18 +114,20 @@ section NormedSpace
 open AffineMap
 variable {f : E → F} {a b : E} {C r : ℝ} {s : Set E}
 
-/-- Consider a function `f : E → F` continuous on a segment `[a, b]`
+/--
+Consider a function `f : E → F` continuous on a segment `[a, b]`
 and line differentiable in the direction `b - a` at all points of the open segment `(a, b)`.
 
 If `‖∂_{b - a} f‖ ≤ C` at a.e. all points of the open segment,
 then `‖f b - f a‖ ≤ C * volume s`, where `s` is the set of points `t ∈ Ioo 0 1`
-such that `f` has nonzero line derivative in the direction `b - a` at `lineMap a b t`. -/
+such that `f` has nonzero line derivative in the direction `b - a` at `lineMap a b t`.
+-/
 lemma norm_sub_le_mul_volume_of_norm_lineDeriv_le
     (hfc : ContinuousOn f (segment ℝ a b))
     (hfd : ∀ t ∈ Ioo (0 : ℝ) 1, LineDifferentiableAt ℝ f (lineMap a b t) (b - a))
-    (hf' : ∀ᵐ t : ℝ, t ∈ Ioo (0 : ℝ) 1 → ‖lineDeriv ℝ f (lineMap a b t) (b - a)‖ ≤ C) :
-    ‖f b - f a‖ ≤
-      C * volume.real {t ∈ Ioo (0 : ℝ) 1 | lineDeriv ℝ f (lineMap a b t) (b - a) ≠ 0} := by
+    (hf' : ∀ᵐ t : ℝ, t ∈ Ioo (0 : ℝ) 1 → ‖lineDeriv ℝ f (lineMap a b t) (b - a)‖ ≤ C)
+    : ‖f b - f a‖
+      ≤ C * volume.real {t ∈ Ioo (0 : ℝ) 1 | lineDeriv ℝ f (lineMap a b t) (b - a) ≠ 0} := by
   set g : ℝ → F := fun t ↦ f (lineMap a b t)
   have hgc : ContinuousOn g (Icc 0 1) := by
     refine hfc.comp ?_ ?_
@@ -142,16 +145,19 @@ lemma norm_sub_le_mul_volume_of_norm_lineDeriv_le
   · exact fun t ht ↦ (hdg t ht).differentiableAt.differentiableWithinAt
   · exact hf'.mono fun t ht ht_mem ↦ by simpa only [(hdg t ht_mem).deriv] using ht ht_mem
 
-/-- Let `f : E → F` be a function differentiable on a set `s` and continuous on its closure.
+/--
+Let `f : E → F` be a function differentiable on a set `s` and continuous on its closure.
 Let `a`, `b` be two points such that the open segment connecting `a` to `b` is a subset of `s`.
 
 If `‖Df‖ ≤ C` everywhere on `s` then `‖f b - f a‖ ≤ C * volume u`,
 where `u` is the set of points `t ∈ Ioo 0 1`
-such that `f` has nonzero derivative at `lineMap a b t`. -/
-lemma norm_sub_le_mul_volume_of_norm_fderiv_le (hs : IsOpen s) (hf : DiffContOnCl ℝ f s)
-    (hab : openSegment ℝ a b ⊆ s) (hC : ∀ x ∈ s, ‖fderiv ℝ f x‖ ≤ C) :
-    ‖f b - f a‖ ≤
-      C * ‖b - a‖ * volume.real {t ∈ Ioo (0 : ℝ) 1 | fderiv ℝ f (lineMap a b t) ≠ 0} := by
+such that `f` has nonzero derivative at `lineMap a b t`.
+-/
+lemma norm_sub_le_mul_volume_of_norm_fderiv_le
+    (hs : IsOpen s) (hf : DiffContOnCl ℝ f s) (hab : openSegment ℝ a b ⊆ s)
+    (hC : ∀ x ∈ s, ‖fderiv ℝ f x‖ ≤ C)
+    : ‖f b - f a‖
+      ≤ C * ‖b - a‖ * volume.real {t ∈ Ioo (0 : ℝ) 1 | fderiv ℝ f (lineMap a b t) ≠ 0} := by
   have hmem_s : ∀ t ∈ Ioo (0 : ℝ) 1, lineMap a b t ∈ s := fun t ht ↦
     hab <| lineMap_mem_openSegment _ a b ht
   have hC₀ : 0 ≤ C := (norm_nonneg _).trans <| hC _ <| hmem_s (1 / 2) (by norm_num)
@@ -170,12 +176,15 @@ lemma norm_sub_le_mul_volume_of_norm_fderiv_le (hs : IsOpen s) (hf : DiffContOnC
     simp
   · simp +contextual [(hf.differentiableAt hs <| hmem_s _ ‹_›).lineDeriv_eq_fderiv]
 
-/-- Let `f : E → F` be a function differentiable in a neighborhood of `a`.
+/--
+Let `f : E → F` be a function differentiable in a neighborhood of `a`.
 If $Df(x) = O(‖x - a‖ ^ r)$ as `x → a`, where `r ≥ 0`,
-then $f(x) - f(a) = O(‖x - a‖ ^ {r + 1})$ as `x → a`. -/
-theorem sub_isBigO_norm_rpow_add_one_of_fderiv (hr : 0 ≤ r)
-    (hdf : ∀ᶠ x in 𝓝 a, DifferentiableAt ℝ f x) (hderiv : fderiv ℝ f =O[𝓝 a] (‖· - a‖ ^ r)) :
-    (f · - f a) =O[𝓝 a] (‖· - a‖ ^ (r + 1)) := by
+then $f(x) - f(a) = O(‖x - a‖ ^ {r + 1})$ as `x → a`.
+-/
+theorem sub_isBigO_norm_rpow_add_one_of_fderiv
+    (hr : 0 ≤ r) (hdf : ∀ᶠ x in 𝓝 a, DifferentiableAt ℝ f x)
+    (hderiv : fderiv ℝ f =O[𝓝 a] (‖· - a‖ ^ r))
+    : (f · - f a) =O[𝓝 a] (‖· - a‖ ^ (r + 1)) := by
   rcases hderiv.exists_pos with ⟨C, hC₀, hC⟩
   rw [Asymptotics.IsBigOWith_def] at hC
   rcases eventually_nhds_iff_ball.mp (hdf.and hC) with ⟨ε, hε₀, hε⟩
@@ -184,8 +193,7 @@ theorem sub_isBigO_norm_rpow_add_one_of_fderiv (hr : 0 ≤ r)
   refine ⟨ε, hε₀, fun y hy ↦ ?_⟩
   rw [Real.norm_of_nonneg (by positivity), Real.rpow_add_one' (by positivity) (by positivity),
     ← mul_assoc]
-  have hsub : closedBall a ‖y - a‖ ⊆ ball a ε :=
-    closedBall_subset_ball (mem_ball_iff_norm.mp hy)
+  have hsub : closedBall a ‖y - a‖ ⊆ ball a ε := closedBall_subset_ball (mem_ball_iff_norm.mp hy)
   apply (convex_closedBall a ‖y - a‖).norm_image_sub_le_of_norm_fderiv_le (𝕜 := ℝ)
   · exact fun z hz ↦ (hε z <| hsub hz).1
   · intro z hz
@@ -193,13 +201,15 @@ theorem sub_isBigO_norm_rpow_add_one_of_fderiv (hr : 0 ≤ r)
   · simp
   · simp [dist_eq_norm_sub]
 
-/-- Let `f : E → F` be a function differentiable in a neighborhood of `a`.
+/--
+Let `f : E → F` be a function differentiable in a neighborhood of `a`.
 If $Df(x) = O(‖x - a‖ ^ r)$ as `x → a`, where `r ≥ 0`, and `f a = 0`,
-then $f(x) = O(‖x - a‖ ^ {r + 1})$ as `x → a`. -/
-theorem isBigO_norm_rpow_add_one_of_fderiv_of_apply_eq_zero (hr : 0 ≤ r)
-    (hdf : ∀ᶠ x in 𝓝 a, DifferentiableAt ℝ f x) (hderiv : fderiv ℝ f =O[𝓝 a] (‖· - a‖ ^ r))
-    (hf₀ : f a = 0) :
-    f =O[𝓝 a] (‖· - a‖ ^ (r + 1)) := by
+then $f(x) = O(‖x - a‖ ^ {r + 1})$ as `x → a`.
+-/
+theorem isBigO_norm_rpow_add_one_of_fderiv_of_apply_eq_zero
+    (hr : 0 ≤ r) (hdf : ∀ᶠ x in 𝓝 a, DifferentiableAt ℝ f x)
+    (hderiv : fderiv ℝ f =O[𝓝 a] (‖· - a‖ ^ r)) (hf₀ : f a = 0)
+    : f =O[𝓝 a] (‖· - a‖ ^ (r + 1)) := by
   simpa [hf₀] using sub_isBigO_norm_rpow_add_one_of_fderiv hr hdf hderiv
 
 end NormedSpace

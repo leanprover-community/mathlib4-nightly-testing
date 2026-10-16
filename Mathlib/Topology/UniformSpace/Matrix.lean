@@ -14,7 +14,6 @@ public import Mathlib.Topology.Instances.Matrix
 
 public section
 
-
 open scoped Uniformity
 
 variable (m n 𝕜 : Type*) [UniformSpace 𝕜]
@@ -24,18 +23,18 @@ namespace Matrix
 instance instUniformSpace : UniformSpace (Matrix m n 𝕜) :=
   inferInstanceAs <| UniformSpace (m → n → 𝕜)
 
-instance instIsUniformAddGroup [AddGroup 𝕜] [IsUniformAddGroup 𝕜] :
-    IsUniformAddGroup (Matrix m n 𝕜) :=
+instance instIsUniformAddGroup [AddGroup 𝕜] [IsUniformAddGroup 𝕜]
+    : IsUniformAddGroup (Matrix m n 𝕜) :=
   inferInstanceAs <| IsUniformAddGroup (m → n → 𝕜)
 
-theorem uniformity :
-    𝓤 (Matrix m n 𝕜) = ⨅ (i : m) (j : n), (𝓤 𝕜).comap fun a => (a.1 i j, a.2 i j) := by
+theorem uniformity
+    : 𝓤 (Matrix m n 𝕜) = ⨅ (i : m) (j : n), (𝓤 𝕜).comap fun a => (a.1 i j, a.2 i j) := by
   erw [Pi.uniformity]
   simp_rw [Pi.uniformity, Filter.comap_iInf, Filter.comap_comap]
   rfl
 
-theorem uniformContinuous {β : Type*} [UniformSpace β] {f : β → Matrix m n 𝕜} :
-    UniformContinuous f ↔ ∀ i j, UniformContinuous fun x => f x i j := by
+theorem uniformContinuous {β : Type*} [UniformSpace β] {f : β → Matrix m n 𝕜}
+    : UniformContinuous f ↔ ∀ i j, UniformContinuous fun x => f x i j := by
   simp only [UniformContinuous, Matrix.uniformity, Filter.tendsto_iInf, Filter.tendsto_comap_iff]
   apply Iff.intro <;> intro a <;> apply a
 

@@ -16,7 +16,6 @@ The fundamental groupoid of punit is naturally isomorphic to `CategoryTheory.Dis
 
 @[expose] public section
 
-
 noncomputable section
 
 open CategoryTheory
@@ -25,8 +24,7 @@ universe u v
 
 namespace Path
 
-instance : Subsingleton (Path PUnit.unit PUnit.unit) :=
-  ⟨fun x y => by ext⟩
+instance : Subsingleton (Path PUnit.unit PUnit.unit) := ⟨fun x y => by ext⟩
 
 end Path
 

@@ -6,7 +6,6 @@ Authors: Christian Merten
 module
 
 public import Mathlib.Algebra.Category.Ring.Constructions
-
 import Mathlib.LinearAlgebra.Basis.VectorSpace
 import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 
@@ -28,10 +27,11 @@ open CategoryTheory Limits TensorProduct
 
 namespace CommRingCat
 
-lemma nontrivial_of_isPushout_of_isField {A B C D : CommRingCat.{u}}
-    (hA : IsField A) {f : A ⟶ B} {g : A ⟶ C} {inl : B ⟶ D} {inr : C ⟶ D}
-    [Nontrivial B] [Nontrivial C]
-    (h : IsPushout f g inl inr) : Nontrivial D := by
+lemma nontrivial_of_isPushout_of_isField
+    {A B C D : CommRingCat.{u}} (hA : IsField A)
+    {f : A ⟶ B} {g : A ⟶ C} {inl : B ⟶ D} {inr : C ⟶ D} [Nontrivial B] [Nontrivial C]
+    (h : IsPushout f g inl inr)
+    : Nontrivial D := by
   let : Field A := hA.toField
   algebraize [f.hom, g.hom]
   let e : D ≅ ↧(B ⊗[A] C) :=

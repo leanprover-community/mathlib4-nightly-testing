@@ -34,33 +34,39 @@ section bounded_sub
 
 open scoped Pointwise
 
-/-- A typeclass saying that `(p : R × R) ↦ p.1 - p.2` maps any product of bounded sets to a bounded
+/--
+A typeclass saying that `(p : R × R) ↦ p.1 - p.2` maps any product of bounded sets to a bounded
 set. This property automatically holds for seminormed additive groups, but it also holds, e.g.,
-for `ℝ≥0`. -/
+for `ℝ≥0`.
+-/
 class BoundedSub (R : Type*) [Bornology R] [Sub R] : Prop where
-  isBounded_sub : ∀ {s t : Set R},
-    Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s - t)
+  isBounded_sub
+    : ∀ {s t : Set R}, Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s - t)
 
 variable {R : Type*}
 
-lemma isBounded_sub [Bornology R] [Sub R] [BoundedSub R] {s t : Set R}
-    (hs : Bornology.IsBounded s) (ht : Bornology.IsBounded t) :
-    Bornology.IsBounded (s - t) := BoundedSub.isBounded_sub hs ht
+lemma isBounded_sub
+    [Bornology R] [Sub R] [BoundedSub R]
+    {s t : Set R} (hs : Bornology.IsBounded s) (ht : Bornology.IsBounded t)
+    : Bornology.IsBounded (s - t) :=
+  BoundedSub.isBounded_sub hs ht
 
-lemma sub_bounded_of_bounded_of_bounded {X : Type*} [PseudoMetricSpace R] [Sub R] [BoundedSub R]
-    {f g : X → R} (f_bdd : ∃ C, ∀ x y, dist (f x) (f y) ≤ C)
-    (g_bdd : ∃ C, ∀ x y, dist (g x) (g y) ≤ C) :
-    ∃ C, ∀ x y, dist ((f - g) x) ((f - g) y) ≤ C := by
-  obtain ⟨C, hC⟩ := Metric.isBounded_iff.mp <|
-    isBounded_sub (Metric.isBounded_range_iff.mpr f_bdd) (Metric.isBounded_range_iff.mpr g_bdd)
+lemma sub_bounded_of_bounded_of_bounded
+    {X : Type*} [PseudoMetricSpace R] [Sub R] [BoundedSub R]
+    {f g : X → R}
+    (f_bdd : ∃ C, ∀ x y, dist (f x) (f y) ≤ C) (g_bdd : ∃ C, ∀ x y, dist (g x) (g y) ≤ C)
+    : ∃ C, ∀ x y, dist ((f - g) x) ((f - g) y) ≤ C := by
+  obtain ⟨C, hC⟩ :=
+    Metric.isBounded_iff.mp <|
+      isBounded_sub (Metric.isBounded_range_iff.mpr f_bdd) (Metric.isBounded_range_iff.mpr g_bdd)
   use C
   intro x y
   exact hC (Set.sub_mem_sub (Set.mem_range_self (f := f) x) (Set.mem_range_self (f := g) x))
-           (Set.sub_mem_sub (Set.mem_range_self (f := f) y) (Set.mem_range_self (f := g) y))
+    (Set.sub_mem_sub (Set.mem_range_self (f := f) y) (Set.mem_range_self (f := g) y))
 
-lemma boundedSub_of_lipschitzWith_sub [PseudoMetricSpace R] [Sub R] {K : NNReal}
-    (lip : LipschitzWith K (fun (p : R × R) ↦ p.1 - p.2)) :
-    BoundedSub R where
+lemma boundedSub_of_lipschitzWith_sub
+    [PseudoMetricSpace R] [Sub R] {K : NNReal} (lip : LipschitzWith K (fun (p : R × R) ↦ p.1 - p.2))
+    : BoundedSub R where
   isBounded_sub {s t} s_bdd t_bdd := by
     have bdd : Bornology.IsBounded (s ×ˢ t) := Bornology.IsBounded.prod s_bdd t_bdd
     convert lip.isBounded_image bdd
@@ -76,32 +82,40 @@ section bounded_mul
 open scoped Pointwise
 open Set
 
-/-- A typeclass saying that `(p : R × R) ↦ p.1 + p.2` maps any product of bounded sets to a bounded
+/--
+A typeclass saying that `(p : R × R) ↦ p.1 + p.2` maps any product of bounded sets to a bounded
 set. This property follows from `LipschitzAdd`, and thus automatically holds, e.g., for seminormed
-additive groups. -/
+additive groups.
+-/
 class BoundedAdd (R : Type*) [Bornology R] [Add R] : Prop where
-  isBounded_add : ∀ {s t : Set R},
-    Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s + t)
+  isBounded_add
+    : ∀ {s t : Set R}, Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s + t)
 
-/-- A typeclass saying that `(p : R × R) ↦ p.1 * p.2` maps any product of bounded sets to a bounded
+/--
+A typeclass saying that `(p : R × R) ↦ p.1 * p.2` maps any product of bounded sets to a bounded
 set. This property automatically holds for non-unital seminormed rings, but it also holds, e.g.,
-for `ℝ≥0`. -/
+for `ℝ≥0`.
+-/
 @[to_additive]
 class BoundedMul (R : Type*) [Bornology R] [Mul R] : Prop where
-  isBounded_mul : ∀ {s t : Set R},
-    Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s * t)
+  isBounded_mul
+    : ∀ {s t : Set R}, Bornology.IsBounded s → Bornology.IsBounded t → Bornology.IsBounded (s * t)
 
 variable {R : Type*}
 
 @[to_additive]
-lemma isBounded_mul [Bornology R] [Mul R] [BoundedMul R] {s t : Set R}
-    (hs : Bornology.IsBounded s) (ht : Bornology.IsBounded t) :
-    Bornology.IsBounded (s * t) := BoundedMul.isBounded_mul hs ht
+lemma isBounded_mul
+    [Bornology R] [Mul R] [BoundedMul R]
+    {s t : Set R} (hs : Bornology.IsBounded s) (ht : Bornology.IsBounded t)
+    : Bornology.IsBounded (s * t) :=
+  BoundedMul.isBounded_mul hs ht
 
 @[to_additive]
-lemma isBounded_pow {R : Type*} [Bornology R] [Monoid R] [BoundedMul R] {s : Set R}
-    (s_bdd : Bornology.IsBounded s) (n : ℕ) :
-    Bornology.IsBounded ((fun x ↦ x ^ n) '' s) := by
+lemma isBounded_pow
+    {R : Type*} [Bornology R] [Monoid R] [BoundedMul R]
+    {s : Set R} (s_bdd : Bornology.IsBounded s)
+    (n : ℕ)
+    : Bornology.IsBounded ((fun x ↦ x ^ n) '' s) := by
   induction n with
   | zero =>
     by_cases s_empty : s = ∅
@@ -119,16 +133,18 @@ lemma isBounded_pow {R : Type*} [Bornology R] [Monoid R] [BoundedMul R] {s : Set
     exact (isBounded_mul hn s_bdd).subset obs
 
 @[to_additive]
-lemma mul_bounded_of_bounded_of_bounded {X : Type*} [PseudoMetricSpace R] [Mul R] [BoundedMul R]
-    {f g : X → R} (f_bdd : ∃ C, ∀ x y, dist (f x) (f y) ≤ C)
-    (g_bdd : ∃ C, ∀ x y, dist (g x) (g y) ≤ C) :
-    ∃ C, ∀ x y, dist ((f * g) x) ((f * g) y) ≤ C := by
-  obtain ⟨C, hC⟩ := Metric.isBounded_iff.mp <|
-    isBounded_mul (Metric.isBounded_range_iff.mpr f_bdd) (Metric.isBounded_range_iff.mpr g_bdd)
+lemma mul_bounded_of_bounded_of_bounded
+    {X : Type*} [PseudoMetricSpace R] [Mul R] [BoundedMul R]
+    {f g : X → R}
+    (f_bdd : ∃ C, ∀ x y, dist (f x) (f y) ≤ C) (g_bdd : ∃ C, ∀ x y, dist (g x) (g y) ≤ C)
+    : ∃ C, ∀ x y, dist ((f * g) x) ((f * g) y) ≤ C := by
+  obtain ⟨C, hC⟩ :=
+    Metric.isBounded_iff.mp <|
+      isBounded_mul (Metric.isBounded_range_iff.mpr f_bdd) (Metric.isBounded_range_iff.mpr g_bdd)
   use C
   intro x y
   exact hC (Set.mul_mem_mul (Set.mem_range_self (f := f) x) (Set.mem_range_self (f := g) x))
-           (Set.mul_mem_mul (Set.mem_range_self (f := f) y) (Set.mem_range_self (f := g) y))
+    (Set.mul_mem_mul (Set.mem_range_self (f := f) y) (Set.mem_range_self (f := g) y))
 
 @[to_additive]
 instance [PseudoMetricSpace R] [Monoid R] [LipschitzMul R] : BoundedMul R where
@@ -153,8 +169,7 @@ section SeminormedAddCommGroup
 
 variable {R : Type*} [SeminormedAddCommGroup R]
 
-lemma SeminormedAddCommGroup.lipschitzWith_sub :
-    LipschitzWith 2 (fun (p : R × R) ↦ p.1 - p.2) := by
+lemma SeminormedAddCommGroup.lipschitzWith_sub : LipschitzWith 2 (fun (p : R × R) ↦ p.1 - p.2) := by
   convert LipschitzWith.prod_fst.sub LipschitzWith.prod_snd
   norm_num
 
@@ -169,8 +184,7 @@ TODO:
 -/
 
 @[simp]
-lemma tendsto_add_const_cobounded (x : R) :
-    Tendsto (· + x) (cobounded R) (cobounded R) := by
+lemma tendsto_add_const_cobounded (x : R) : Tendsto (· + x) (cobounded R) (cobounded R) := by
   intro s hs
   rw [mem_map]
   rw [← isCobounded_def, ← isBounded_compl_iff] at hs ⊢
@@ -180,8 +194,7 @@ lemma tendsto_add_const_cobounded (x : R) :
   simp [sub_eq_iff_eq_add]
 
 @[simp]
-lemma tendsto_const_add_cobounded (x : R) :
-    Tendsto (x + ·) (cobounded R) (cobounded R) := by
+lemma tendsto_const_add_cobounded (x : R) : Tendsto (x + ·) (cobounded R) (cobounded R) := by
   intro s hs
   rw [mem_map]
   rw [← isCobounded_def, ← isBounded_compl_iff] at hs ⊢
@@ -191,13 +204,11 @@ lemma tendsto_const_add_cobounded (x : R) :
   simp
 
 @[simp]
-theorem tendsto_sub_const_cobounded (x : R) :
-    Tendsto (· - x) (cobounded R) (cobounded R) := by
+theorem tendsto_sub_const_cobounded (x : R) : Tendsto (· - x) (cobounded R) (cobounded R) := by
   simpa only [sub_eq_add_neg] using tendsto_add_const_cobounded (-x)
 
 @[simp]
-theorem tendsto_const_sub_cobounded (x : R) :
-    Tendsto (x - ·) (cobounded R) (cobounded R) := by
+theorem tendsto_const_sub_cobounded (x : R) : Tendsto (x - ·) (cobounded R) (cobounded R) := by
   simpa only [sub_eq_add_neg] using! (tendsto_const_add_cobounded x).comp tendsto_neg_cobounded
 
 end SeminormedAddCommGroup
@@ -226,10 +237,11 @@ instance : BoundedMul R where
       apply (norm_mul_le _ _).trans (mul_le_mul _ _ (norm_nonneg _) hAf')
       · exact mem_closedBall_zero_iff.mp (hAf x_in_s)
       · exact mem_closedBall_zero_iff.mp (hAg y_in_t)
-    calc ‖x₁ * y₁ - x₂ * y₂‖
-     _ ≤ ‖x₁ * y₁‖ + ‖x₂ * y₂‖ := norm_sub_le _ _
-     _ ≤ Af * Ag + Af * Ag     := add_le_add (aux hx₁ hy₁) (aux hx₂ hy₂)
-     _ = 2 * Af * Ag           := by simp [← two_mul, mul_assoc]
+    calc
+      ‖x₁ * y₁ - x₂ * y₂‖
+      _ ≤ ‖x₁ * y₁‖ + ‖x₂ * y₂‖ := norm_sub_le _ _
+      _ ≤ Af * Ag + Af * Ag := add_le_add (aux hx₁ hy₁) (aux hx₂ hy₂)
+      _ = 2 * Af * Ag := by simp [← two_mul, mul_assoc]
 
 end NonUnitalSeminormedRing
 

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-
 import Mathlib.Topology.UrysohnsLemma
 
 /-!
@@ -64,29 +63,34 @@ open scoped ENNReal NNReal Topology BoundedContinuousFunction
 
 open MeasureTheory TopologicalSpace ContinuousMap Set Bornology
 
-variable {α : Type*} [TopologicalSpace α] [NormalSpace α]
-  [MeasurableSpace α] [BorelSpace α]
+variable {α : Type*} [TopologicalSpace α] [NormalSpace α] [MeasurableSpace α] [BorelSpace α]
 variable {E : Type*} [NormedAddCommGroup E] {μ : Measure α} {p : ℝ≥0∞}
 
 namespace MeasureTheory
 
 variable [NormedSpace ℝ E]
 
-/-- A variant of Urysohn's lemma, `ℒ^p` version, for an outer regular measure `μ`:
+/--
+A variant of Urysohn's lemma, `ℒ^p` version, for an outer regular measure `μ`:
 consider two sets `s ⊆ u` which are respectively closed and open with `μ s < ∞`, and a vector `c`.
 Then one may find a continuous function `f` equal to `c` on `s` and to `0` outside of `u`,
 bounded by `‖c‖` everywhere, and such that the `ℒ^p` norm of `f - s.indicator (fun y ↦ c)` is
-arbitrarily small. Additionally, this function `f` belongs to `ℒ^p`. -/
-theorem exists_continuous_eLpNorm_sub_le_of_closed [μ.OuterRegular] (hp : p ≠ ∞) {s u : Set α}
-    (s_closed : IsClosed s) (u_open : IsOpen u) (hsu : s ⊆ u) (hs : μ s ≠ ∞) (c : E) {ε : ℝ≥0∞}
-    (hε : ε ≠ 0) :
-    ∃ f : α → E,
-      Continuous f ∧
-        eLpNorm (fun x => f x - s.indicator (fun _y => c) x) p μ ≤ ε ∧
-          (∀ x, ‖f x‖ ≤ ‖c‖) ∧ Function.support f ⊆ u ∧ MemLp f p μ := by
-  obtain ⟨η, η_pos, hη⟩ :
-      ∃ η : ℝ≥0, 0 < η ∧ ∀ s : Set α, μ s ≤ η → NullMeasurableSet s μ →
-          eLpNorm (s.indicator fun _x => c) p μ ≤ ε :=
+arbitrarily small. Additionally, this function `f` belongs to `ℒ^p`.
+-/
+theorem exists_continuous_eLpNorm_sub_le_of_closed
+    [μ.OuterRegular]
+    (hp : p ≠ ∞)
+    {s u : Set α} (s_closed : IsClosed s) (u_open : IsOpen u) (hsu : s ⊆ u) (hs : μ s ≠ ∞)
+    (c : E)
+    {ε : ℝ≥0∞} (hε : ε ≠ 0)
+    : ∃ f : α → E,
+      Continuous f ∧ eLpNorm (fun x => f x - s.indicator (fun _y => c) x) p μ ≤ ε
+        ∧ (∀ x, ‖f x‖ ≤ ‖c‖) ∧ Function.support f ⊆ u ∧ MemLp f p μ := by
+  obtain ⟨η, η_pos, hη⟩
+      : ∃ η : ℝ≥0,
+        0 < η
+          ∧ ∀ s : Set α,
+            μ s ≤ η → NullMeasurableSet s μ → eLpNorm (s.indicator fun _x => c) p μ ≤ ε :=
     exists_eLpNorm_indicator_le hp c hε
   have ηpos : (0 : ℝ≥0∞) < η := ENNReal.coe_lt_coe.2 η_pos
   obtain ⟨V, sV, V_open, h'V, hV⟩ : ∃ (V : Set α), V ⊇ s ∧ IsOpen V ∧ μ V < ∞ ∧ μ (V \ s) < η :=
@@ -105,14 +109,15 @@ theorem exists_continuous_eLpNorm_sub_le_of_closed [μ.OuterRegular] (hp : p ≠
     simp only [norm_smul, g_norm x]
     apply mul_le_of_le_one_left (norm_nonneg _)
     exact (hg_range x).2
-  have gc_bd :
-      ∀ x, ‖g x • c - s.indicator (fun _x => c) x‖ ≤ ‖(v \ s).indicator (fun _x => c) x‖ := by
+  have gc_bd
+      : ∀ x, ‖g x • c - s.indicator (fun _x => c) x‖ ≤ ‖(v \ s).indicator (fun _x => c) x‖ := by
     intro x
     by_cases hv : x ∈ v
     · rw [← Set.sdiff_union_of_subset hsv] at hv
       rcases hv with hsv | hs
       · simpa only [hsv.2, Set.indicator_of_notMem, not_false_iff, sub_zero, hsv,
-          Set.indicator_of_mem] using gc_bd0 x
+            Set.indicator_of_mem]
+          using gc_bd0 x
       · simp [hgs hs, hs]
     · simp [hgv hv, show x ∉ s from fun h => hv (hsv h)]
   have gc_support : (Function.support fun x : α => g x • c) ⊆ v := by
@@ -129,22 +134,34 @@ theorem exists_continuous_eLpNorm_sub_le_of_closed [μ.OuterRegular] (hp : p ≠
     · simp only [hx, abs_of_nonneg (hg_range x).1, (hg_range x).2, Real.norm_eq_abs,
         indicator_of_mem, CStarRing.norm_one]
     · simp only [hgv hx, Pi.zero_apply, Real.norm_eq_abs, abs_zero, abs_nonneg]
-  refine ⟨fun x ↦ g x • c, by fun_prop,
-    (eLpNorm_mono (gc_mem.aestronglyMeasurable.sub
-      (aestronglyMeasurable_const.indicator s_closed.measurableSet)) gc_bd).trans ?_, gc_bd0,
-      gc_support.trans inter_subset_left, gc_mem⟩
+  refine ⟨
+    fun x ↦ g x • c,
+    by fun_prop,
+    (eLpNorm_mono
+        (gc_mem.aestronglyMeasurable.sub (aestronglyMeasurable_const.indicator
+          s_closed.measurableSet))
+        gc_bd).trans
+      ?_,
+    gc_bd0,
+    gc_support.trans inter_subset_left,
+    gc_mem
+  ⟩
   exact hη _ ((measure_mono (sdiff_subset_sdiff inter_subset_right Subset.rfl)).trans hV.le)
     ((u_open.measurableSet.inter V_open.measurableSet).diff
       s_closed.measurableSet).nullMeasurableSet
 
-/-- In a locally compact space, any function in `ℒp` can be approximated by compactly supported
-continuous functions when `p < ∞`, version in terms of `eLpNorm`. -/
+/--
+In a locally compact space, any function in `ℒp` can be approximated by compactly supported
+continuous functions when `p < ∞`, version in terms of `eLpNorm`.
+-/
 theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le
     [R1Space α] [WeaklyLocallyCompactSpace α] [μ.Regular]
-    (hp : p ≠ ∞) {f : α → E} (hf : MemLp f p μ) {ε : ℝ≥0∞} (hε : ε ≠ 0) :
-    ∃ g : α → E, HasCompactSupport g ∧ eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ := by
-  suffices H :
-      ∃ g : α → E, eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ ∧ HasCompactSupport g by
+    (hp : p ≠ ∞)
+    {f : α → E} (hf : MemLp f p μ)
+    {ε : ℝ≥0∞} (hε : ε ≠ 0)
+    : ∃ g : α → E, HasCompactSupport g ∧ eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ := by
+  suffices H
+      : ∃ g : α → E, eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ ∧ HasCompactSupport g by
     rcases H with ⟨g, hg, g_cont, g_mem, g_support⟩
     exact ⟨g, g_support, hg, g_cont, g_mem⟩
   -- It suffices to check that the set of functions we consider approximates characteristic
@@ -159,13 +176,14 @@ theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le
   -- This follows from `exists_continuous_eLpNorm_sub_le_of_closed`.
   intro c t ht htμ ε hε
   rcases exists_Lp_half E μ p hε with ⟨δ, δpos, hδ⟩
-  obtain ⟨η, ηpos, hη⟩ :
-      ∃ η : ℝ≥0, 0 < η ∧ ∀ s : Set α, μ s ≤ η → NullMeasurableSet s μ →
-          eLpNorm (s.indicator fun _x => c) p μ ≤ δ :=
+  obtain ⟨η, ηpos, hη⟩
+      : ∃ η : ℝ≥0,
+        0 < η
+          ∧ ∀ s : Set α,
+            μ s ≤ η → NullMeasurableSet s μ → eLpNorm (s.indicator fun _x => c) p μ ≤ δ :=
     exists_eLpNorm_indicator_le hp c δpos.ne'
   have hη_pos' : (0 : ℝ≥0∞) < η := ENNReal.coe_pos.2 ηpos
-  obtain ⟨s, st, s_compact, s_closed, μs⟩ :
-      ∃ s, s ⊆ t ∧ IsCompact s ∧ IsClosed s ∧ μ (t \ s) < η :=
+  obtain ⟨s, st, s_compact, s_closed, μs⟩ : ∃ s, s ⊆ t ∧ IsCompact s ∧ IsClosed s ∧ μ (t \ s) < η :=
     ht.exists_isCompact_isClosed_sdiff_lt htμ.ne hη_pos'.ne'
   have hsμ : μ s < ∞ := (measure_mono st).trans_lt htμ
   have I1 : eLpNorm ((s.indicator fun _y => c) - t.indicator fun _y => c) p μ ≤ δ := by
@@ -184,62 +202,76 @@ theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le
   contrapose hx
   exact interior_subset (f_support hx)
 
-
-/-- In a locally compact space, any function in `ℒp` can be approximated by compactly supported
-continuous functions when `0 < p < ∞`, version in terms of `∫`. -/
+/--
+In a locally compact space, any function in `ℒp` can be approximated by compactly supported
+continuous functions when `0 < p < ∞`, version in terms of `∫`.
+-/
 theorem MemLp.exists_hasCompactSupport_integral_rpow_sub_le
     [R1Space α] [WeaklyLocallyCompactSpace α] [μ.Regular]
-    {p : ℝ} (hp : 0 < p) {f : α → E} (hf : MemLp f (ENNReal.ofReal p) μ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : α → E,
-      HasCompactSupport g ∧
-        (∫ x, ‖f x - g x‖ ^ p ∂μ) ≤ ε ∧ Continuous g ∧ MemLp g (ENNReal.ofReal p) μ := by
+    {p : ℝ} (hp : 0 < p)
+    {f : α → E} (hf : MemLp f (ENNReal.ofReal p) μ)
+    {ε : ℝ} (hε : 0 < ε)
+    : ∃ g : α → E,
+      HasCompactSupport g ∧ (∫ x, ‖f x - g x‖ ^ p ∂μ) ≤ ε ∧ Continuous g
+        ∧ MemLp g (ENNReal.ofReal p) μ := by
   have I : 0 < ε ^ (1 / p) := Real.rpow_pos_of_pos hε _
-  have A : ENNReal.ofReal (ε ^ (1 / p)) ≠ 0 := by
-    simp only [Ne, ENNReal.ofReal_eq_zero, not_le, I]
+  have A : ENNReal.ofReal (ε ^ (1 / p)) ≠ 0 := by simp only [Ne, ENNReal.ofReal_eq_zero, not_le, I]
   have B : ENNReal.ofReal p ≠ 0 := by simpa only [Ne, ENNReal.ofReal_eq_zero, not_le] using hp
   rcases hf.exists_hasCompactSupport_eLpNorm_sub_le ENNReal.coe_ne_top A with
     ⟨g, g_support, hg, g_cont, g_mem⟩
   change eLpNorm _ (ENNReal.ofReal p) _ ≤ _ at hg
   refine ⟨g, g_support, ?_, g_cont, g_mem⟩
   rwa [(hf.sub g_mem).eLpNorm_eq_integral_rpow_norm B ENNReal.coe_ne_top,
-    ENNReal.ofReal_le_ofReal_iff I.le, one_div, ENNReal.toReal_ofReal hp.le,
-    Real.rpow_le_rpow_iff _ hε.le (inv_pos.2 hp)] at hg
+      ENNReal.ofReal_le_ofReal_iff I.le, one_div, ENNReal.toReal_ofReal hp.le,
+      Real.rpow_le_rpow_iff _ hε.le (inv_pos.2 hp)]
+    at hg
   positivity
 
-
-/-- In a locally compact space, any integrable function can be approximated by compactly supported
-continuous functions, version in terms of `∫⁻`. -/
+/--
+In a locally compact space, any integrable function can be approximated by compactly supported
+continuous functions, version in terms of `∫⁻`.
+-/
 theorem Integrable.exists_hasCompactSupport_lintegral_sub_le
     [R1Space α] [WeaklyLocallyCompactSpace α] [μ.Regular]
-    {f : α → E} (hf : Integrable f μ) {ε : ℝ≥0∞} (hε : ε ≠ 0) :
-    ∃ g : α → E,
+    {f : α → E} (hf : Integrable f μ)
+    {ε : ℝ≥0∞} (hε : ε ≠ 0)
+    : ∃ g : α → E,
       HasCompactSupport g ∧ ∫⁻ x, ‖f x - g x‖ₑ ∂μ ≤ ε ∧ Continuous g ∧ Integrable g μ := by
   obtain ⟨g, hg_support, hg, hg_cont, hg_mem⟩ :=
-    (memLp_one_iff_integrable.2 hf).exists_hasCompactSupport_eLpNorm_sub_le
-      ENNReal.one_ne_top hε
-  exact ⟨g, hg_support, by
-    rwa [eLpNorm_one_eq_lintegral_enorm
-      ((memLp_one_iff_integrable.2 hf).sub hg_mem).aestronglyMeasurable] at hg,
-    hg_cont, memLp_one_iff_integrable.1 hg_mem⟩
+    (memLp_one_iff_integrable.2 hf).exists_hasCompactSupport_eLpNorm_sub_le ENNReal.one_ne_top hε
+  exact ⟨
+    g,
+    hg_support,
+    by
+      rwa [eLpNorm_one_eq_lintegral_enorm ((memLp_one_iff_integrable.2 hf).sub
+          hg_mem).aestronglyMeasurable]
+        at hg,
+    hg_cont,
+    memLp_one_iff_integrable.1 hg_mem
+  ⟩
 
-/-- In a locally compact space, any integrable function can be approximated by compactly supported
-continuous functions, version in terms of `∫`. -/
+/--
+In a locally compact space, any integrable function can be approximated by compactly supported
+continuous functions, version in terms of `∫`.
+-/
 theorem Integrable.exists_hasCompactSupport_integral_sub_le
     [R1Space α] [WeaklyLocallyCompactSpace α] [μ.Regular]
-    {f : α → E} (hf : Integrable f μ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : α → E, HasCompactSupport g ∧ (∫ x, ‖f x - g x‖ ∂μ) ≤ ε ∧
-      Continuous g ∧ Integrable g μ := by
-  simp only [← memLp_one_iff_integrable, ← ENNReal.ofReal_one]
-    at hf ⊢
+    {f : α → E} (hf : Integrable f μ)
+    {ε : ℝ} (hε : 0 < ε)
+    : ∃ g : α → E,
+      HasCompactSupport g ∧ (∫ x, ‖f x - g x‖ ∂μ) ≤ ε ∧ Continuous g ∧ Integrable g μ := by
+  simp only [← memLp_one_iff_integrable, ← ENNReal.ofReal_one] at hf ⊢
   simpa using hf.exists_hasCompactSupport_integral_rpow_sub_le zero_lt_one hε
 
-/-- Any function in `ℒp` can be approximated by bounded continuous functions when `p < ∞`,
-version in terms of `eLpNorm`. -/
-theorem MemLp.exists_boundedContinuous_eLpNorm_sub_le [μ.WeaklyRegular] (hp : p ≠ ∞) {f : α → E}
-    (hf : MemLp f p μ) {ε : ℝ≥0∞} (hε : ε ≠ 0) :
-    ∃ g : α →ᵇ E, eLpNorm (f - (g : α → E)) p μ ≤ ε ∧ MemLp g p μ := by
-  suffices H :
-      ∃ g : α → E, eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ ∧ IsBounded (range g) by
+/--
+Any function in `ℒp` can be approximated by bounded continuous functions when `p < ∞`,
+version in terms of `eLpNorm`.
+-/
+theorem MemLp.exists_boundedContinuous_eLpNorm_sub_le
+    [μ.WeaklyRegular] (hp : p ≠ ∞) {f : α → E} (hf : MemLp f p μ) {ε : ℝ≥0∞} (hε : ε ≠ 0)
+    : ∃ g : α →ᵇ E, eLpNorm (f - (g : α → E)) p μ ≤ ε ∧ MemLp g p μ := by
+  suffices H
+      : ∃ g : α → E, eLpNorm (f - g) p μ ≤ ε ∧ Continuous g ∧ MemLp g p μ ∧ IsBounded (range g) by
     rcases H with ⟨g, hg, g_cont, g_mem, g_bd⟩
     exact ⟨⟨⟨g, g_cont⟩, Metric.isBounded_range_iff.1 g_bd⟩, hg, g_mem⟩
   -- It suffices to check that the set of functions we consider approximates characteristic
@@ -257,9 +289,11 @@ theorem MemLp.exists_boundedContinuous_eLpNorm_sub_le [μ.WeaklyRegular] (hp : p
   -- This follows from `exists_continuous_eLpNorm_sub_le_of_closed`.
   intro c t ht htμ ε hε
   rcases exists_Lp_half E μ p hε with ⟨δ, δpos, hδ⟩
-  obtain ⟨η, ηpos, hη⟩ :
-      ∃ η : ℝ≥0, 0 < η ∧ ∀ s : Set α, μ s ≤ η → NullMeasurableSet s μ →
-          eLpNorm (s.indicator fun _x => c) p μ ≤ δ :=
+  obtain ⟨η, ηpos, hη⟩
+      : ∃ η : ℝ≥0,
+        0 < η
+          ∧ ∀ s : Set α,
+            μ s ≤ η → NullMeasurableSet s μ → eLpNorm (s.indicator fun _x => c) p μ ≤ δ :=
     exists_eLpNorm_indicator_le hp c δpos.ne'
   have hη_pos' : (0 : ℝ≥0∞) < η := ENNReal.coe_pos.2 ηpos
   obtain ⟨s, st, s_closed, μs⟩ : ∃ s, s ⊆ t ∧ IsClosed s ∧ μ (t \ s) < η :=
@@ -269,8 +303,8 @@ theorem MemLp.exists_boundedContinuous_eLpNorm_sub_le [μ.WeaklyRegular] (hp : p
     rw [← eLpNorm_neg, neg_sub, ← indicator_sdiff st]
     exact hη _ μs.le (ht.diff s_closed.measurableSet).nullMeasurableSet
   rcases exists_continuous_eLpNorm_sub_le_of_closed hp s_closed isOpen_univ (subset_univ _) hsμ.ne c
-      δpos.ne' with
-    ⟨f, f_cont, I2, f_bound, -, f_mem⟩
+      δpos.ne'
+    with ⟨f, f_cont, I2, f_bound, -, f_mem⟩
   have I3 : eLpNorm (f - t.indicator fun _y => c) p μ ≤ ε := by
     convert (hδ _ _ I2 I1).le using 2
     ext x
@@ -278,42 +312,54 @@ theorem MemLp.exists_boundedContinuous_eLpNorm_sub_le [μ.WeaklyRegular] (hp : p
   refine ⟨f, I3, f_cont, f_mem, ?_⟩
   exact (BoundedContinuousFunction.ofNormedAddCommGroup f f_cont _ f_bound).isBounded_range
 
-/-- Any function in `ℒp` can be approximated by bounded continuous functions when `0 < p < ∞`,
-version in terms of `∫`. -/
-theorem MemLp.exists_boundedContinuous_integral_rpow_sub_le [μ.WeaklyRegular] {p : ℝ} (hp : 0 < p)
-    {f : α → E} (hf : MemLp f (ENNReal.ofReal p) μ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : α →ᵇ E, (∫ x, ‖f x - g x‖ ^ p ∂μ) ≤ ε ∧ MemLp g (ENNReal.ofReal p) μ := by
+/--
+Any function in `ℒp` can be approximated by bounded continuous functions when `0 < p < ∞`,
+version in terms of `∫`.
+-/
+theorem MemLp.exists_boundedContinuous_integral_rpow_sub_le
+    [μ.WeaklyRegular]
+    {p : ℝ} (hp : 0 < p)
+    {f : α → E} (hf : MemLp f (ENNReal.ofReal p) μ)
+    {ε : ℝ} (hε : 0 < ε)
+    : ∃ g : α →ᵇ E, (∫ x, ‖f x - g x‖ ^ p ∂μ) ≤ ε ∧ MemLp g (ENNReal.ofReal p) μ := by
   have I : 0 < ε ^ (1 / p) := Real.rpow_pos_of_pos hε _
-  have A : ENNReal.ofReal (ε ^ (1 / p)) ≠ 0 := by
-    simp only [Ne, ENNReal.ofReal_eq_zero, not_le, I]
+  have A : ENNReal.ofReal (ε ^ (1 / p)) ≠ 0 := by simp only [Ne, ENNReal.ofReal_eq_zero, not_le, I]
   have B : ENNReal.ofReal p ≠ 0 := by simpa only [Ne, ENNReal.ofReal_eq_zero, not_le] using hp
   rcases hf.exists_boundedContinuous_eLpNorm_sub_le ENNReal.coe_ne_top A with ⟨g, hg, g_mem⟩
   change eLpNorm _ (ENNReal.ofReal p) _ ≤ _ at hg
   refine ⟨g, ?_, g_mem⟩
   rwa [(hf.sub g_mem).eLpNorm_eq_integral_rpow_norm B ENNReal.coe_ne_top,
-    ENNReal.ofReal_le_ofReal_iff I.le, one_div, ENNReal.toReal_ofReal hp.le,
-    Real.rpow_le_rpow_iff _ hε.le (inv_pos.2 hp)] at hg
+      ENNReal.ofReal_le_ofReal_iff I.le, one_div, ENNReal.toReal_ofReal hp.le,
+      Real.rpow_le_rpow_iff _ hε.le (inv_pos.2 hp)]
+    at hg
   positivity
 
-/-- Any integrable function can be approximated by bounded continuous functions,
-version in terms of `∫⁻`. -/
-theorem Integrable.exists_boundedContinuous_lintegral_sub_le [μ.WeaklyRegular] {f : α → E}
-    (hf : Integrable f μ) {ε : ℝ≥0∞} (hε : ε ≠ 0) :
-    ∃ g : α →ᵇ E, ∫⁻ x, ‖f x - g x‖ₑ ∂μ ≤ ε ∧ Integrable g μ := by
-  obtain ⟨g, hg, hg_mem⟩ := (memLp_one_iff_integrable.2 hf).exists_boundedContinuous_eLpNorm_sub_le
-    ENNReal.one_ne_top hε
-  exact ⟨g, by
-    rwa [eLpNorm_one_eq_lintegral_enorm
-      ((memLp_one_iff_integrable.2 hf).sub hg_mem).aestronglyMeasurable] at hg,
-    memLp_one_iff_integrable.1 hg_mem⟩
+/--
+Any integrable function can be approximated by bounded continuous functions,
+version in terms of `∫⁻`.
+-/
+theorem Integrable.exists_boundedContinuous_lintegral_sub_le
+    [μ.WeaklyRegular] {f : α → E} (hf : Integrable f μ) {ε : ℝ≥0∞} (hε : ε ≠ 0)
+    : ∃ g : α →ᵇ E, ∫⁻ x, ‖f x - g x‖ₑ ∂μ ≤ ε ∧ Integrable g μ := by
+  obtain ⟨g, hg, hg_mem⟩ :=
+    (memLp_one_iff_integrable.2 hf).exists_boundedContinuous_eLpNorm_sub_le ENNReal.one_ne_top hε
+  exact ⟨
+    g,
+    by
+      rwa [eLpNorm_one_eq_lintegral_enorm ((memLp_one_iff_integrable.2 hf).sub
+          hg_mem).aestronglyMeasurable]
+        at hg,
+    memLp_one_iff_integrable.1 hg_mem
+  ⟩
 
-/-- Any integrable function can be approximated by bounded continuous functions,
-version in terms of `∫`. -/
-theorem Integrable.exists_boundedContinuous_integral_sub_le [μ.WeaklyRegular] {f : α → E}
-    (hf : Integrable f μ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : α →ᵇ E, (∫ x, ‖f x - g x‖ ∂μ) ≤ ε ∧ Integrable g μ := by
-  simp only [← memLp_one_iff_integrable, ← ENNReal.ofReal_one]
-    at hf ⊢
+/--
+Any integrable function can be approximated by bounded continuous functions,
+version in terms of `∫`.
+-/
+theorem Integrable.exists_boundedContinuous_integral_sub_le
+    [μ.WeaklyRegular] {f : α → E} (hf : Integrable f μ) {ε : ℝ} (hε : 0 < ε)
+    : ∃ g : α →ᵇ E, (∫ x, ‖f x - g x‖ ∂μ) ≤ ε ∧ Integrable g μ := by
+  simp only [← memLp_one_iff_integrable, ← ENNReal.ofReal_one] at hf ⊢
   simpa using hf.exists_boundedContinuous_integral_rpow_sub_le zero_lt_one hε
 
 namespace Lp
@@ -321,21 +367,20 @@ namespace Lp
 variable (E μ)
 
 /-- A function in `Lp` can be approximated in `Lp` by continuous functions. -/
-theorem boundedContinuousFunction_dense [SecondCountableTopologyEither α E] [Fact (1 ≤ p)]
-    (hp : p ≠ ∞) [μ.WeaklyRegular] :
-    Dense (boundedContinuousFunction E p μ : Set (Lp E p μ)) := by
+theorem boundedContinuousFunction_dense
+    [SecondCountableTopologyEither α E] [Fact (1 ≤ p)] (hp : p ≠ ∞) [μ.WeaklyRegular]
+    : Dense (boundedContinuousFunction E p μ : Set (Lp E p μ)) := by
   intro f
   refine (mem_closure_iff_nhds_basis Metric.nhds_basis_closedEBall).2 fun ε hε ↦ ?_
-  obtain ⟨g, hg, g_mem⟩ :
-      ∃ g : α →ᵇ E, eLpNorm ((f : α → E) - (g : α → E)) p μ ≤ ε ∧ MemLp g p μ :=
+  obtain ⟨g, hg, g_mem⟩ : ∃ g : α →ᵇ E, eLpNorm ((f : α → E) - (g : α → E)) p μ ≤ ε ∧ MemLp g p μ :=
     (Lp.memLp f).exists_boundedContinuous_eLpNorm_sub_le hp hε.ne'
   refine ⟨g_mem.toLp _, ⟨g, rfl⟩, ?_⟩
   rwa [Metric.mem_closedEBall', ← Lp.toLp_coeFn f (Lp.memLp f), Lp.edist_toLp_toLp]
 
 /-- A function in `Lp` can be approximated in `Lp` by continuous functions. -/
-theorem boundedContinuousFunction_topologicalClosure [SecondCountableTopologyEither α E]
-    [Fact (1 ≤ p)] (hp : p ≠ ∞) [μ.WeaklyRegular] :
-    (boundedContinuousFunction E p μ).topologicalClosure = ⊤ :=
+theorem boundedContinuousFunction_topologicalClosure
+    [SecondCountableTopologyEither α E] [Fact (1 ≤ p)] (hp : p ≠ ∞) [μ.WeaklyRegular]
+    : (boundedContinuousFunction E p μ).topologicalClosure = ⊤ :=
   SetLike.ext' (boundedContinuousFunction_dense E μ hp).closure_eq
 
 end Lp
@@ -349,20 +394,22 @@ variable (E) (μ)
 
 namespace BoundedContinuousFunction
 
-theorem toLp_denseRange [μ.WeaklyRegular] [IsFiniteMeasure μ] (hp : p ≠ ∞) :
-    DenseRange (toLp p μ 𝕜 : (α →ᵇ E) →L[𝕜] Lp E p μ) := by
-  simpa only [← range_toLp p μ (𝕜 := 𝕜)]
-    using! MeasureTheory.Lp.boundedContinuousFunction_dense E μ hp
+theorem toLp_denseRange [μ.WeaklyRegular] [IsFiniteMeasure μ] (hp : p ≠ ∞)
+    : DenseRange (toLp p μ 𝕜 : (α →ᵇ E) →L[𝕜] Lp E p μ) := by
+  simpa only [← range_toLp p μ (𝕜 := 𝕜)] using!
+    MeasureTheory.Lp.boundedContinuousFunction_dense E μ hp
 
 end BoundedContinuousFunction
 
 namespace ContinuousMap
 
-/-- Continuous functions are dense in `MeasureTheory.Lp`, `1 ≤ p < ∞`. This theorem assumes that
+/--
+Continuous functions are dense in `MeasureTheory.Lp`, `1 ≤ p < ∞`. This theorem assumes that
 the domain is a compact space because otherwise `ContinuousMap.toLp` is undefined. Use
-`BoundedContinuousFunction.toLp_denseRange` if the domain is not a compact space. -/
-theorem toLp_denseRange [CompactSpace α] [μ.WeaklyRegular] [IsFiniteMeasure μ] (hp : p ≠ ∞) :
-    DenseRange (toLp p μ 𝕜 : C(α, E) →L[𝕜] Lp E p μ) := by
+`BoundedContinuousFunction.toLp_denseRange` if the domain is not a compact space.
+-/
+theorem toLp_denseRange [CompactSpace α] [μ.WeaklyRegular] [IsFiniteMeasure μ] (hp : p ≠ ∞)
+    : DenseRange (toLp p μ 𝕜 : C(α, E) →L[𝕜] Lp E p μ) := by
   refine (BoundedContinuousFunction.toLp_denseRange _ _ 𝕜 hp).mono ?_
   refine range_subset_iff.2 fun f ↦ ?_
   exact ⟨f.toContinuousMap, rfl⟩

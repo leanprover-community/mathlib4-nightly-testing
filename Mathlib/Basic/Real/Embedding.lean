@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.Algebra.Order.Hom.Monoid
-
 import Mathlib.Algebra.Order.Group.Pointwise.CompleteLattice
 import Mathlib.Algebra.Order.Module.Defs
 
@@ -25,25 +24,27 @@ This file provides embedding of any archimedean groups into reals.
 
 @[expose] public section
 
-
 variable {M : Type*}
 variable [AddCommGroup M] [LinearOrder M] [IsOrderedAddMonoid M] [One M]
 
-theorem mul_smul_one_lt_iff {num : ℤ} {n den : ℕ} (hn : 0 < n) {x : M} :
-    (num * n) • 1 < (n * den : ℤ) • x ↔ num • 1 < den • x := by
+theorem mul_smul_one_lt_iff {num : ℤ} {n den : ℕ} (hn : 0 < n) {x : M}
+    : (num * n) • 1 < (n * den : ℤ) • x ↔ num • 1 < den • x := by
   rw [mul_comm num, mul_smul, mul_smul, natCast_zsmul x den]
-  exact ⟨fun h ↦ lt_of_smul_lt_smul_left h (Int.natCast_nonneg n),
-    fun h ↦ zsmul_lt_zsmul_right (Int.natCast_pos.mpr hn) h⟩
+  exact ⟨
+    fun h ↦ lt_of_smul_lt_smul_left h (Int.natCast_nonneg n),
+    fun h ↦ zsmul_lt_zsmul_right (Int.natCast_pos.mpr hn) h
+  ⟩
 
-/-- For `u v : ℚ` and `x y : M`, one can informally write
-`u < x → v < y → u + v < x + y`. We formalize this using smul. -/
-theorem num_smul_one_lt_den_smul_add {u v : ℚ} {x y : M}
-    (hu : u.num • 1 < u.den • x) (hv : v.num • 1 < v.den • y) :
-    (u + v).num • 1 < (u + v).den • (x + y) := by
+/--
+For `u v : ℚ` and `x y : M`, one can informally write
+`u < x → v < y → u + v < x + y`. We formalize this using smul.
+-/
+theorem num_smul_one_lt_den_smul_add
+    {u v : ℚ} {x y : M} (hu : u.num • 1 < u.den • x) (hv : v.num • 1 < v.den • y)
+    : (u + v).num • 1 < (u + v).den • (x + y) := by
   have hu' : (u.num * v.den) • 1 < (u.den * v.den : ℤ) • x := by
     simpa [mul_comm] using (mul_smul_one_lt_iff v.den_pos).mpr hu
-  suffices ((u + v).num * u.den * v.den) • 1 <
-      ((u + v).den : ℤ) • (u.den * v.den : ℤ) • (x + y) by
+  suffices ((u + v).num * u.den * v.den) • 1 < ((u + v).den : ℤ) • (u.den * v.den : ℤ) • (x + y) by
     refine (mul_smul_one_lt_iff (mul_pos u.den_pos v.den_pos)).mp ?_
     rwa [Nat.cast_mul, ← mul_assoc, mul_comm _ ((u + v).den : ℤ), ← smul_eq_mul ((u + v).den : ℤ),
       smul_assoc]
@@ -52,25 +53,31 @@ theorem num_smul_one_lt_den_smul_add {u v : ℚ} {x y : M}
   rw [add_smul, smul_add]
   exact add_lt_add hu' ((mul_smul_one_lt_iff u.den_pos).mpr hv)
 
-/-- Given `x` from `M`, one can informally write that, by transitivity,
+/--
+Given `x` from `M`, one can informally write that, by transitivity,
 `num / den ≤ x → x ≤ n → num / den ≤ n` for `den : ℕ` and `num n : ℕ`.
 To avoid writing division for integer `num` and `den`, we express this in terms of
-multiplication. -/
-theorem num_le_nat_mul_den [ZeroLEOneClass M] [NeZero (1 : M)]
+multiplication.
+-/
+theorem num_le_nat_mul_den
+    [ZeroLEOneClass M] [NeZero (1 : M)]
     {num : ℤ} {den : ℕ} {x : M} (h : num • 1 ≤ den • x)
-    {n : ℤ} (hn : x ≤ n • 1) : num ≤ n * den := by
+    {n : ℤ} (hn : x ≤ n • 1)
+    : num ≤ n * den := by
   refine le_of_smul_le_smul_right (h.trans ?_) (by simp)
   rw [mul_comm, ← smul_smul]
   simpa using nsmul_le_nsmul_right hn den
 
 namespace Archimedean
 
-/-- Set of rational numbers that are less than the "number" `x / 1`.
-Formally, these are numbers `p / q` such that `p • 1 < q • x`. -/
+/--
+Set of rational numbers that are less than the "number" `x / 1`.
+Formally, these are numbers `p / q` such that `p • 1 < q • x`.
+-/
 abbrev ratLt (x : M) : Set ℚ := {r | r.num • 1 < r.den • x}
 
-theorem mkRat_mem_ratLt {num : ℤ} {den : ℕ} (hden : den ≠ 0) {x : M} :
-    mkRat num den ∈ ratLt x ↔ num • 1 < den • x := by
+theorem mkRat_mem_ratLt {num : ℤ} {den : ℕ} (hden : den ≠ 0) {x : M}
+    : mkRat num den ∈ ratLt x ↔ num • 1 < den • x := by
   rw [Set.mem_ofPred]
   obtain ⟨m, hm0, hnum, hden⟩ := Rat.mkRat_num_den hden (show mkRat num den = _ by rfl)
   conv in num • 1 => rw [hnum, mul_comm, ← smul_smul, natCast_zsmul]
@@ -83,8 +90,7 @@ theorem mkRat_mem_ratLt {num : ℤ} {den : ℕ} (hden : den ≠ 0) {x : M} :
 noncomputable abbrev ratLt' (x : M) : Set ℝ := (Rat.castHom ℝ) '' (ratLt x)
 
 /-- Mapping `M` to `ℝ`, defined as the supremum of `ratLt' x`. -/
-noncomputable
-abbrev embedRealFun (x : M) := sSup (ratLt' x)
+noncomputable abbrev embedRealFun (x : M) := sSup (ratLt' x)
 
 variable [ZeroLEOneClass M] [NeZero (1 : M)] [Archimedean M]
 
@@ -114,14 +120,16 @@ theorem ratLt_add (x y : M) : ratLt (x + y) = ratLt x + ratLt y := by
   ext a
   rw [Set.mem_add]
   constructor
-  · /- Given `a ∈ ratLt 1 (x + y)`, find `u ∈ ratLt 1 x`, `v ∈ ratLt 1 y`
-      such that `u + v = a`.
-      In a naive attempt, one can take the denominator `d` of `a`,
-      and find the largest `u = p / d < x / 1`.
-      However, `d` could be too "coarse", and `v = a - u` could be 1/d too large than `y / 1`.
-      To ensure a large enough denominator, we take `d * k`, where
-      `1 + 1 ≤ k • (d • (x + y) - a.num • 1)`. -/
-    intro h
+  /-
+  Given `a ∈ ratLt 1 (x + y)`, find `u ∈ ratLt 1 x`, `v ∈ ratLt 1 y`
+  such that `u + v = a`.
+  In a naive attempt, one can take the denominator `d` of `a`,
+  and find the largest `u = p / d < x / 1`.
+  However, `d` could be too "coarse", and `v = a - u` could be 1/d too large than `y / 1`.
+  To ensure a large enough denominator, we take `d * k`, where
+  `1 + 1 ≤ k • (d • (x + y) - a.num • 1)`.
+  -/
+  · intro h
     rw [Set.mem_ofPred_eq] at h
     obtain ⟨k, hk⟩ := Archimedean.arch (1 + 1) <| sub_pos.mpr h
     have hk0 : k ≠ 0 := by
@@ -180,8 +188,8 @@ theorem embedRealFun_zero : embedRealFun (0 : M) = 0 := by
     exact ⟨y, by simpa using hy, hxy⟩
 
 theorem embedRealFun_add (x y : M) : embedRealFun (x + y) = embedRealFun x + embedRealFun y := by
-  rw [embedRealFun, ratLt'_add, csSup_add (ratLt'_nonempty x) (ratLt'_bddAbove x)
-    (ratLt'_nonempty y) (ratLt'_bddAbove y)]
+  rw [embedRealFun, ratLt'_add,
+    csSup_add (ratLt'_nonempty x) (ratLt'_bddAbove x) (ratLt'_nonempty y) (ratLt'_bddAbove y)]
 
 variable (M) in
 theorem embedRealFun_strictMono : StrictMono (embedRealFun (M := M)) := by
@@ -197,8 +205,7 @@ theorem embedRealFun_strictMono : StrictMono (embedRealFun (M := M)) := by
 
 variable (M) in
 /-- The bundled `M →+o ℝ` for archimedean `M` that preserves `1`. -/
-noncomputable
-def embedReal : M →+o ℝ where
+noncomputable def embedReal : M →+o ℝ where
   toFun := embedRealFun
   map_zero' := embedRealFun_zero M
   map_add' := embedRealFun_add
@@ -232,8 +239,7 @@ theorem embedReal_one : (embedReal M) 1 = 1 := by
 
 omit [One M] [ZeroLEOneClass M] [NeZero (1 : M)] in
 variable (M) in
-theorem exists_orderAddMonoidHom_real_injective :
-    ∃ f : M →+o ℝ, Function.Injective f := by
+theorem exists_orderAddMonoidHom_real_injective : ∃ f : M →+o ℝ, Function.Injective f := by
   cases subsingleton_or_nontrivial M
   · exact ⟨0, Function.injective_of_subsingleton _⟩
   · obtain ⟨a, ha⟩ := exists_ne (0 : M)

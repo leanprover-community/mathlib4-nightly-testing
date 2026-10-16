@@ -6,7 +6,6 @@ Authors: Dagur Asgeirsson
 module
 
 public import Mathlib.CategoryTheory.Sites.Coherent.ExtensiveSheaves
-
 import Mathlib.CategoryTheory.Preadditive.Biproducts
 import Mathlib.CategoryTheory.Sites.Limits
 /-!
@@ -30,29 +29,31 @@ open Limits Sheaf GrothendieckTopology Opposite
 
 section
 
-variable {A C J : Type*} [Category* A] [Category* C] [Category* J]
-  [FinitaryExtensive C] [HasColimitsOfShape J A]
+variable
+  {A C J : Type*}
+  [Category* A] [Category* C] [Category* J] [FinitaryExtensive C] [HasColimitsOfShape J A]
 
 set_option backward.defeqAttrib.useBackward true in
-lemma isSheaf_pointwiseColimit [PreservesFiniteProducts (colim (J := J) (C := A))]
-    (G : J ⥤ Sheaf (extensiveTopology C) A) :
-    Presheaf.IsSheaf (extensiveTopology C) (pointwiseCocone (G ⋙ sheafToPresheaf _ A)).pt := by
+lemma isSheaf_pointwiseColimit
+    [PreservesFiniteProducts (colim (J := J) (C := A))] (G : J ⥤ Sheaf (extensiveTopology C) A)
+    : Presheaf.IsSheaf (extensiveTopology C) (pointwiseCocone (G ⋙ sheafToPresheaf _ A)).pt := by
   rw [Presheaf.isSheaf_iff_preservesFiniteProducts]
   dsimp only [pointwiseCocone_pt]
   apply +allowSynthFailures comp_preservesFiniteProducts
   have : ∀ (i : J), PreservesFiniteProducts ((G ⋙ sheafToPresheaf _ A).obj i) := fun i ↦ by
     rw [← Presheaf.isSheaf_iff_preservesFiniteProducts]
     exact (G.obj i).property
-  exact ⟨fun _ ↦ preservesLimitsOfShape_of_evaluation _ _ fun d ↦
-    inferInstanceAs (PreservesLimitsOfShape _ ((G ⋙ sheafToPresheaf _ _).obj d))⟩
+  exact ⟨fun _ ↦
+    preservesLimitsOfShape_of_evaluation _ _ fun d ↦
+      inferInstanceAs (PreservesLimitsOfShape _ ((G ⋙ sheafToPresheaf _ _).obj d))⟩
 
 instance [Preadditive A] : PreservesFiniteProducts (colim (J := J) (C := A)) where
   preserves _ := by
     apply +allowSynthFailures preservesProductsOfShape_of_preservesBiproductsOfShape
     apply preservesBiproductsOfShape_of_preservesCoproductsOfShape
 
-instance [PreservesFiniteProducts (colim (J := J) (C := A))] :
-    PreservesColimitsOfShape J (sheafToPresheaf (extensiveTopology C) A) where
+instance [PreservesFiniteProducts (colim (J := J) (C := A))]
+    : PreservesColimitsOfShape J (sheafToPresheaf (extensiveTopology C) A) where
   preservesColimit {G} := by
     suffices CreatesColimit G (sheafToPresheaf (extensiveTopology C) A) from inferInstance
     refine createsColimitOfIsSheaf _ (fun c hc ↦ ?_)
@@ -61,8 +62,8 @@ instance [PreservesFiniteProducts (colim (J := J) (C := A))] :
     rw [Presheaf.isSheaf_of_iso_iff i]
     exact isSheaf_pointwiseColimit _
 
-instance [Preadditive A] [HasFiniteColimits A] :
-    PreservesFiniteColimits (sheafToPresheaf (extensiveTopology C) A) where
+instance [Preadditive A] [HasFiniteColimits A]
+    : PreservesFiniteColimits (sheafToPresheaf (extensiveTopology C) A) where
   preservesFiniteColimits _ := inferInstance
 
 end

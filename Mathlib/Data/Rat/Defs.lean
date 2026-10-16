@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Group.Defs
 public import Mathlib.Data.Rat.Init
 public import Mathlib.Tactic.Common
-
 import Mathlib.Data.Nat.Basic
 import Mathlib.Order.Basic
 import Mathlib.Tactic.Attr.Core
@@ -47,17 +46,17 @@ theorem pos (a : ℚ) : 0 < a.den := Nat.pos_of_ne_zero a.den_nz
 
 lemma mk'_num_den (q : ℚ) : mk' q.num q.den q.den_nz q.reduced = q := rfl
 
-@[simp]
-theorem ofInt_eq_cast (n : ℤ) : ofInt n = Int.cast n :=
-  rfl
+@[simp] theorem ofInt_eq_cast (n : ℤ) : ofInt n = Int.cast n := rfl
 
 lemma intCast_injective : Injective (Int.cast : ℤ → ℚ) := fun _ _ ↦ congr_arg num
 lemma natCast_injective : Injective (Nat.cast : ℕ → ℚ) :=
   intCast_injective.comp fun _ _ ↦ Int.natCast_inj.1
 
-@[simp high, norm_cast] lemma intCast_eq_one_iff {n : ℤ} : (n : ℚ) = 1 ↔ n = 1 := intCast_inj
+@[simp high, norm_cast]
+lemma intCast_eq_one_iff {n : ℤ} : (n : ℚ) = 1 ↔ n = 1 := intCast_inj
 
-@[simp high, norm_cast] lemma natCast_eq_one_iff {n : ℕ} : (n : ℚ) = 1 ↔ n = 1 := natCast_inj
+@[simp high, norm_cast]
+lemma natCast_eq_one_iff {n : ℕ} : (n : ℚ) = 1 ↔ n = 1 := natCast_inj
 
 lemma mkRat_eq_divInt (n d) : mkRat n d = n /. d := rfl
 
@@ -71,26 +70,28 @@ lemma num_ne_zero {q : ℚ} : q.num ≠ 0 ↔ q ≠ 0 := num_eq_zero.not
 theorem divInt_eq_zero {a b : ℤ} (b0 : b ≠ 0) : a /. b = 0 ↔ a = 0 := by
   rw [← zero_divInt b, divInt_eq_divInt_iff b0 b0, Int.zero_mul, Int.mul_eq_zero, or_iff_left b0]
 
-theorem divInt_ne_zero {a b : ℤ} (b0 : b ≠ 0) : a /. b ≠ 0 ↔ a ≠ 0 :=
-  (divInt_eq_zero b0).not
+theorem divInt_ne_zero {a b : ℤ} (b0 : b ≠ 0) : a /. b ≠ 0 ↔ a ≠ 0 := (divInt_eq_zero b0).not
 
 -- TODO: Rename `mkRat_num_den` in Lean core
 alias mkRat_num_den' := mkRat_self
 
 theorem intCast_eq_divInt (z : ℤ) : (z : ℚ) = z /. 1 := mk_eq_divInt
 
-theorem lift_binop_eq (f : ℚ → ℚ → ℚ) (f₁ : ℤ → ℤ → ℤ → ℤ → ℤ) (f₂ : ℤ → ℤ → ℤ → ℤ → ℤ)
-    (fv :
-      ∀ {n₁ d₁ h₁ c₁ n₂ d₂ h₂ c₂},
-        f ⟨n₁, d₁, h₁, c₁⟩ ⟨n₂, d₂, h₂, c₂⟩ = f₁ n₁ d₁ n₂ d₂ /. f₂ n₁ d₁ n₂ d₂)
-    (f0 : ∀ {n₁ d₁ n₂ d₂}, d₁ ≠ 0 → d₂ ≠ 0 → f₂ n₁ d₁ n₂ d₂ ≠ 0) (a b c d : ℤ)
-    (b0 : b ≠ 0) (d0 : d ≠ 0)
-    (H :
-      ∀ {n₁ d₁ n₂ d₂}, a * d₁ = n₁ * b → c * d₂ = n₂ * d →
-        f₁ n₁ d₁ n₂ d₂ * f₂ a b c d = f₁ a b c d * f₂ n₁ d₁ n₂ d₂) :
-    f (a /. b) (c /. d) = f₁ a b c d /. f₂ a b c d := by
-  generalize ha : a /. b = x; obtain ⟨n₁, d₁, h₁, c₁⟩ := x; rw [mk_eq_divInt] at ha
-  generalize hc : c /. d = x; obtain ⟨n₂, d₂, h₂, c₂⟩ := x; rw [mk_eq_divInt] at hc
+theorem lift_binop_eq
+    (f : ℚ → ℚ → ℚ) (f₁ : ℤ → ℤ → ℤ → ℤ → ℤ) (f₂ : ℤ → ℤ → ℤ → ℤ → ℤ)
+    (fv : ∀ {n₁ d₁ h₁ c₁ n₂ d₂ h₂ c₂},
+      f ⟨n₁, d₁, h₁, c₁⟩ ⟨n₂, d₂, h₂, c₂⟩ = f₁ n₁ d₁ n₂ d₂ /. f₂ n₁ d₁ n₂ d₂)
+    (f0 : ∀ {n₁ d₁ n₂ d₂}, d₁ ≠ 0 → d₂ ≠ 0 → f₂ n₁ d₁ n₂ d₂ ≠ 0)
+    (a b c d : ℤ) (b0 : b ≠ 0) (d0 : d ≠ 0)
+    (H : ∀ {n₁ d₁ n₂ d₂},
+      a * d₁ = n₁ * b → c * d₂ = n₂ * d → f₁ n₁ d₁ n₂ d₂ * f₂ a b c d = f₁ a b c d * f₂ n₁ d₁ n₂ d₂)
+    : f (a /. b) (c /. d) = f₁ a b c d /. f₂ a b c d := by
+  generalize ha : a /. b = x
+  obtain ⟨n₁, d₁, h₁, c₁⟩ := x
+  rw [mk_eq_divInt] at ha
+  generalize hc : c /. d = x
+  obtain ⟨n₂, d₂, h₂, c₂⟩ := x
+  rw [mk_eq_divInt] at hc
   rw [fv]
   have d₁0 := Int.ofNat_ne_zero.2 h₁
   have d₂0 := Int.ofNat_ne_zero.2 h₂
@@ -101,10 +102,12 @@ lemma neg_def (q : ℚ) : -q = -q.num /. q.den := by rw [← neg_divInt, num_div
 
 @[simp] lemma divInt_neg (n d : ℤ) : n /. -d = -n /. d := divInt_neg' ..
 
-lemma mk'_mul_mk' (n₁ n₂ : ℤ) (d₁ d₂ : ℕ) (hd₁ hd₂ hnd₁ hnd₂) (h₁₂ : n₁.natAbs.Coprime d₂)
-    (h₂₁ : n₂.natAbs.Coprime d₁) :
-    mk' n₁ d₁ hd₁ hnd₁ * mk' n₂ d₂ hd₂ hnd₂ = mk' (n₁ * n₂) (d₁ * d₂) (Nat.mul_ne_zero hd₁ hd₂) (by
-      rw [Int.natAbs_mul]; exact (hnd₁.mul_left h₂₁).mul_right (h₁₂.mul_left hnd₂)) := by
+lemma mk'_mul_mk'
+    (n₁ n₂ : ℤ) (d₁ d₂ : ℕ)
+    (hd₁ hd₂ hnd₁ hnd₂) (h₁₂ : n₁.natAbs.Coprime d₂) (h₂₁ : n₂.natAbs.Coprime d₁)
+    : mk' n₁ d₁ hd₁ hnd₁ * mk' n₂ d₂ hd₂ hnd₂
+      = mk' (n₁ * n₂) (d₁ * d₂) (Nat.mul_ne_zero hd₁ hd₂)
+        (by rw [Int.natAbs_mul]; exact (hnd₁.mul_left h₂₁).mul_right (h₁₂.mul_left hnd₂)) := by
   rw [mul_def]; simp [mk_eq_normalize]
 
 lemma mul_eq_mkRat (q r : ℚ) : q * r = mkRat (q.num * r.num) (q.den * r.den) := by
@@ -116,15 +119,18 @@ lemma pow_eq_mkRat (q : ℚ) (n : ℕ) : q ^ n = mkRat (q.num ^ n) (q.den ^ n) :
 lemma pow_eq_divInt (q : ℚ) (n : ℕ) : q ^ n = q.num ^ n /. q.den ^ n := by
   rw [pow_def, mk_eq_divInt, Int.natCast_pow]
 
-@[simp] lemma mk'_pow (num : ℤ) (den : ℕ) (hd hdn) (n : ℕ) :
-    mk' num den hd hdn ^ n = mk' (num ^ n) (den ^ n)
-      (by simp [Nat.pow_eq_zero, hd]) (by rw [Int.natAbs_pow]; exact hdn.pow _ _) := rfl
+@[simp]
+lemma mk'_pow (num : ℤ) (den : ℕ) (hd hdn) (n : ℕ)
+    : mk' num den hd hdn ^ n
+      = mk' (num ^ n) (den ^ n) (by simp [Nat.pow_eq_zero, hd])
+        (by rw [Int.natAbs_pow]; exact hdn.pow _ _) :=
+  rfl
 
-@[simp] lemma inv_mkRat (a : ℤ) (b : ℕ) : (mkRat a b)⁻¹ = b /. a := by
-  rw [mkRat_eq_divInt, inv_divInt]
+@[simp]
+lemma inv_mkRat (a : ℤ) (b : ℕ) : (mkRat a b)⁻¹ = b /. a := by rw [mkRat_eq_divInt, inv_divInt]
 
-@[simp] lemma divInt_div_divInt (n₁ d₁ n₂ d₂) :
-    (n₁ /. d₁) / (n₂ /. d₂) = (n₁ * d₂) /. (d₁ * n₂) := by
+@[simp]
+lemma divInt_div_divInt (n₁ d₁ n₂ d₂) : (n₁ /. d₁) / (n₂ /. d₂) = (n₁ * d₂) /. (d₁ * n₂) := by
   rw [div_def, inv_divInt, divInt_mul_divInt]
 
 lemma div_def' (q r : ℚ) : q / r = (q.num * r.den) /. (q.den * r.num) := by
@@ -143,7 +149,8 @@ attribute [simp] mkRat_eq_zero
 
 -- Extra instances to short-circuit type class resolution
 -- TODO(Mario): this instance slows down Mathlib.Basic.Real.Basic
-instance nontrivial : Nontrivial ℚ where exists_pair_ne := ⟨1, 0, by decide⟩
+instance nontrivial : Nontrivial ℚ where
+  exists_pair_ne := ⟨1, 0, by decide⟩
 
 /-! ### The rational numbers are a group -/
 
@@ -165,7 +172,8 @@ instance addCommGroup : AddCommGroup ℚ where
   zsmul_succ' _ _ := by simp_rw [HSMul.hSMul, SMul.smul]; simp [Rat.add_mul]
   zsmul_neg' _ _ := by
     simp_rw [HSMul.hSMul, SMul.smul]
-    rw [Int.negSucc_eq, Rat.intCast_neg, Rat.neg_mul]; rfl
+    rw [Int.negSucc_eq, Rat.intCast_neg, Rat.neg_mul]
+    rfl
 
 instance addGroup : AddGroup ℚ := by infer_instance
 
@@ -196,34 +204,24 @@ instance commSemigroup : CommSemigroup ℚ := by infer_instance
 
 instance semigroup : Semigroup ℚ := by infer_instance
 
-@[simp]
-theorem den_neg_eq_den (q : ℚ) : (-q).den = q.den :=
-  rfl
+@[simp] theorem den_neg_eq_den (q : ℚ) : (-q).den = q.den := rfl
 
-@[simp]
-theorem num_neg_eq_neg_num (q : ℚ) : (-q).num = -q.num :=
-  rfl
+@[simp] theorem num_neg_eq_neg_num (q : ℚ) : (-q).num = -q.num := rfl
 
 -- Not `@[simp]` as `num_ofNat` is stronger.
-theorem num_zero : Rat.num 0 = 0 :=
-  rfl
+theorem num_zero : Rat.num 0 = 0 := rfl
 
 -- Not `@[simp]` as `den_ofNat` is stronger.
-theorem den_zero : Rat.den 0 = 1 :=
-  rfl
+theorem den_zero : Rat.den 0 = 1 := rfl
 
 lemma zero_of_num_zero {q : ℚ} (hq : q.num = 0) : q = 0 := by simpa [hq] using q.num_divInt_den.symm
 
-theorem zero_iff_num_zero {q : ℚ} : q = 0 ↔ q.num = 0 :=
-  ⟨fun _ => by simp [*], zero_of_num_zero⟩
+theorem zero_iff_num_zero {q : ℚ} : q = 0 ↔ q.num = 0 := ⟨fun _ => by simp [*], zero_of_num_zero⟩
 
 -- `Not `@[simp]` as `num_ofNat` is stronger.
-theorem num_one : (1 : ℚ).num = 1 :=
-  rfl
+theorem num_one : (1 : ℚ).num = 1 := rfl
 
-@[simp]
-theorem den_one : (1 : ℚ).den = 1 :=
-  rfl
+@[simp] theorem den_one : (1 : ℚ).den = 1 := rfl
 
 theorem mk_num_ne_zero_of_ne_zero {q : ℚ} {n d : ℤ} (hq : q ≠ 0) (hqnd : q = n /. d) : n ≠ 0 :=
   fun this => hq <| by simpa [this] using hqnd
@@ -237,7 +235,8 @@ theorem divInt_ne_zero_of_ne_zero {n d : ℤ} (h : n ≠ 0) (hd : d ≠ 0) : n /
 section Casts
 
 protected theorem add_divInt (a b c : ℤ) : (a + b) /. c = a /. c + b /. c :=
-  if h : c = 0 then by simp [h]
+  if h : c = 0 then by
+    simp [h]
   else by
     rw [divInt_add_divInt _ _ h h, divInt_eq_divInt_iff h (Int.mul_ne_zero h h)]
     simp [Int.add_mul, Int.mul_assoc]
@@ -279,8 +278,9 @@ cases r with
 ```
 -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-def divCasesOn {C : ℚ → Sort*} (a : ℚ)
-    (div : ∀ (n : ℤ) (d : ℕ), d ≠ 0 → n.natAbs.Coprime d → C (n / d)) : C a :=
+def divCasesOn
+    {C : ℚ → Sort*} (a : ℚ) (div : ∀ (n : ℤ) (d : ℕ), d ≠ 0 → n.natAbs.Coprime d → C (n / d))
+    : C a :=
   a.casesOn fun n d nz red => by rw [Rat.mk_eq_divInt, Rat.divInt_eq_div]; exact div n d nz red
 
 end Rat

@@ -6,7 +6,6 @@ Authors: Andrew Yang, Dagur Asgeirsson
 module
 
 public import Mathlib.Topology.Bases
-
 import Mathlib.Topology.Compactness.Compact
 
 /-!
@@ -19,9 +18,10 @@ open Set TopologicalSpace
 
 variable {X ι : Type*} [TopologicalSpace X]
 
-lemma eq_finite_iUnion_of_isTopologicalBasis_of_isCompact_open (b : ι → Set X)
-    (hb : IsTopologicalBasis (Set.range b)) (U : Set X) (hUc : IsCompact U) (hUo : IsOpen U) :
-    ∃ s : Set ι, s.Finite ∧ U = ⋃ i ∈ s, b i := by
+lemma eq_finite_iUnion_of_isTopologicalBasis_of_isCompact_open
+    (b : ι → Set X) (hb : IsTopologicalBasis (Set.range b))
+    (U : Set X) (hUc : IsCompact U) (hUo : IsOpen U)
+    : ∃ s : Set ι, s.Finite ∧ U = ⋃ i ∈ s, b i := by
   obtain ⟨Y, f, e, hf⟩ := hb.open_eq_iUnion hUo
   choose f' hf' using hf
   have : b ∘ f' = f := funext hf'
@@ -40,9 +40,9 @@ lemma eq_finite_iUnion_of_isTopologicalBasis_of_isCompact_open (b : ι → Set X
     rw [e]
     exact Set.subset_iUnion (b ∘ f') j
 
-lemma eq_sUnion_finset_of_isTopologicalBasis_of_isCompact_open (b : Set (Set X))
-    (hb : IsTopologicalBasis b) (U : Set X) (hUc : IsCompact U) (hUo : IsOpen U) :
-    ∃ s : Finset b, U = (s : Set b).sUnion := by
+lemma eq_sUnion_finset_of_isTopologicalBasis_of_isCompact_open
+    (b : Set (Set X)) (hb : IsTopologicalBasis b) (U : Set X) (hUc : IsCompact U) (hUo : IsOpen U)
+    : ∃ s : Finset b, U = (s : Set b).sUnion := by
   have hb' : b = range (fun i ↦ i : b → Set X) := by simp
   rw [hb'] at hb
   choose s hs hU using eq_finite_iUnion_of_isTopologicalBasis_of_isCompact_open _ hb U hUc hUo
@@ -51,11 +51,13 @@ lemma eq_sUnion_finset_of_isTopologicalBasis_of_isCompact_open (b : Set (Set X))
   use s.toFinset
   simp [hU]
 
-/-- If `X` has a basis consisting of compact opens, then an open set in `X` is compact open iff
-  it is a finite union of some elements in the basis -/
-theorem isCompact_open_iff_eq_finite_iUnion_of_isTopologicalBasis (b : ι → Set X)
-    (hb : IsTopologicalBasis (Set.range b)) (hb' : ∀ i, IsCompact (b i)) (U : Set X) :
-    IsCompact U ∧ IsOpen U ↔ ∃ s : Set ι, s.Finite ∧ U = ⋃ i ∈ s, b i := by
+/--
+If `X` has a basis consisting of compact opens, then an open set in `X` is compact open iff
+it is a finite union of some elements in the basis
+-/
+theorem isCompact_open_iff_eq_finite_iUnion_of_isTopologicalBasis
+    (b : ι → Set X) (hb : IsTopologicalBasis (Set.range b)) (hb' : ∀ i, IsCompact (b i)) (U : Set X)
+    : IsCompact U ∧ IsOpen U ↔ ∃ s : Set ι, s.Finite ∧ U = ⋃ i ∈ s, b i := by
   constructor
   · exact fun ⟨h₁, h₂⟩ ↦ eq_finite_iUnion_of_isTopologicalBasis_of_isCompact_open _ hb U h₁ h₂
   · rintro ⟨s, hs, rfl⟩

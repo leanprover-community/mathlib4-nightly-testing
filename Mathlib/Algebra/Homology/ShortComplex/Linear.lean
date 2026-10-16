@@ -32,10 +32,7 @@ variable {S₁ S₂ : ShortComplex C}
 attribute [local simp] Hom.comm₁₂ Hom.comm₂₃ mul_smul add_smul
 
 instance : SMul R (S₁ ⟶ S₂) where
-  smul a φ :=
-    { τ₁ := a • φ.τ₁
-      τ₂ := a • φ.τ₂
-      τ₃ := a • φ.τ₃ }
+  smul a φ := { τ₁ := a • φ.τ₁, τ₂ := a • φ.τ₂, τ₃ := a • φ.τ₃ }
 
 @[simp] lemma smul_τ₁ (a : R) (φ : S₁ ⟶ S₂) : (a • φ).τ₁ = a • φ.τ₁ := rfl
 @[simp] lemma smul_τ₂ (a : R) (φ : S₁ ⟶ S₂) : (a • φ).τ₂ = a • φ.τ₂ := rfl
@@ -59,8 +56,10 @@ namespace LeftHomologyMapData
 
 variable (γ : LeftHomologyMapData φ h₁ h₂)
 
-/-- Given a left homology map data for morphism `φ`, this is the induced left homology
-map data for `a • φ`. -/
+/--
+Given a left homology map data for morphism `φ`, this is the induced left homology
+map data for `a • φ`.
+-/
 @[simps]
 def smul (a : R) : LeftHomologyMapData (a • φ) h₁ h₂ where
   φK := a • γ.φK
@@ -72,14 +71,12 @@ variable (h₁ h₂ φ)
 variable (a : R)
 
 @[simp]
-lemma leftHomologyMap'_smul :
-    leftHomologyMap' (a • φ) h₁ h₂ = a • leftHomologyMap' φ h₁ h₂ := by
+lemma leftHomologyMap'_smul : leftHomologyMap' (a • φ) h₁ h₂ = a • leftHomologyMap' φ h₁ h₂ := by
   have γ : LeftHomologyMapData φ h₁ h₂ := default
   simp only [(γ.smul a).leftHomologyMap'_eq, LeftHomologyMapData.smul_φH, γ.leftHomologyMap'_eq]
 
 @[simp]
-lemma cyclesMap'_smul :
-    cyclesMap' (a • φ) h₁ h₂ = a • cyclesMap' φ h₁ h₂ := by
+lemma cyclesMap'_smul : cyclesMap' (a • φ) h₁ h₂ = a • cyclesMap' φ h₁ h₂ := by
   have γ : LeftHomologyMapData φ h₁ h₂ := default
   simp only [(γ.smul a).cyclesMap'_eq, LeftHomologyMapData.smul_φK, γ.cyclesMap'_eq]
 
@@ -91,17 +88,15 @@ variable [S₁.HasLeftHomology] [S₂.HasLeftHomology]
 lemma leftHomologyMap_smul : leftHomologyMap (a • φ) = a • leftHomologyMap φ :=
   leftHomologyMap'_smul _ _ _ _
 
-@[simp]
-lemma cyclesMap_smul : cyclesMap (a • φ) = a • cyclesMap φ :=
-  cyclesMap'_smul _ _ _ _
+@[simp] lemma cyclesMap_smul : cyclesMap (a • φ) = a • cyclesMap φ := cyclesMap'_smul _ _ _ _
 
 end
 
-instance leftHomologyFunctor_linear [HasKernels C] [HasCokernels C] :
-    Functor.Linear R (leftHomologyFunctor C) where
+instance leftHomologyFunctor_linear [HasKernels C] [HasCokernels C]
+  : Functor.Linear R (leftHomologyFunctor C) where
 
-instance cyclesFunctor_linear [HasKernels C] [HasCokernels C] :
-    Functor.Linear R (cyclesFunctor C) where
+instance cyclesFunctor_linear [HasKernels C] [HasCokernels C]
+  : Functor.Linear R (cyclesFunctor C) where
 
 end LeftHomology
 
@@ -113,8 +108,10 @@ namespace RightHomologyMapData
 
 variable (γ : RightHomologyMapData φ h₁ h₂)
 
-/-- Given a right homology map data for morphism `φ`, this is the induced right homology
-map data for `a • φ`. -/
+/--
+Given a right homology map data for morphism `φ`, this is the induced right homology
+map data for `a • φ`.
+-/
 @[simps]
 def smul (a : R) : RightHomologyMapData (a • φ) h₁ h₂ where
   φQ := a • γ.φQ
@@ -126,14 +123,12 @@ variable (h₁ h₂ φ)
 variable (a : R)
 
 @[simp]
-lemma rightHomologyMap'_smul :
-    rightHomologyMap' (a • φ) h₁ h₂ = a • rightHomologyMap' φ h₁ h₂ := by
+lemma rightHomologyMap'_smul : rightHomologyMap' (a • φ) h₁ h₂ = a • rightHomologyMap' φ h₁ h₂ := by
   have γ : RightHomologyMapData φ h₁ h₂ := default
   simp only [(γ.smul a).rightHomologyMap'_eq, RightHomologyMapData.smul_φH, γ.rightHomologyMap'_eq]
 
 @[simp]
-lemma opcyclesMap'_smul :
-    opcyclesMap' (a • φ) h₁ h₂ = a • opcyclesMap' φ h₁ h₂ := by
+lemma opcyclesMap'_smul : opcyclesMap' (a • φ) h₁ h₂ = a • opcyclesMap' φ h₁ h₂ := by
   have γ : RightHomologyMapData φ h₁ h₂ := default
   simp only [(γ.smul a).opcyclesMap'_eq, RightHomologyMapData.smul_φQ, γ.opcyclesMap'_eq]
 
@@ -146,16 +141,15 @@ lemma rightHomologyMap_smul : rightHomologyMap (a • φ) = a • rightHomologyM
   rightHomologyMap'_smul _ _ _ _
 
 @[simp]
-lemma opcyclesMap_smul : opcyclesMap (a • φ) = a • opcyclesMap φ :=
-  opcyclesMap'_smul _ _ _ _
+lemma opcyclesMap_smul : opcyclesMap (a • φ) = a • opcyclesMap φ := opcyclesMap'_smul _ _ _ _
 
 end
 
-instance rightHomologyFunctor_linear [HasKernels C] [HasCokernels C] :
-    Functor.Linear R (rightHomologyFunctor C) where
+instance rightHomologyFunctor_linear [HasKernels C] [HasCokernels C]
+  : Functor.Linear R (rightHomologyFunctor C) where
 
-instance opcyclesFunctor_linear [HasKernels C] [HasCokernels C] :
-    Functor.Linear R (opcyclesFunctor C) where
+instance opcyclesFunctor_linear [HasKernels C] [HasCokernels C]
+  : Functor.Linear R (opcyclesFunctor C) where
 
 end RightHomology
 
@@ -167,8 +161,10 @@ namespace HomologyMapData
 
 variable (γ : HomologyMapData φ h₁ h₂)
 
-/-- Given a homology map data for a morphism `φ`, this is the induced homology
-map data for `a • φ`. -/
+/--
+Given a homology map data for a morphism `φ`, this is the induced homology
+map data for `a • φ`.
+-/
 @[simps]
 def smul (a : R) : HomologyMapData (a • φ) h₁ h₂ where
   left := γ.left.smul a
@@ -180,26 +176,24 @@ variable (h₁ h₂)
 variable (a : R)
 
 @[simp]
-lemma homologyMap'_smul :
-    homologyMap' (a • φ) h₁ h₂ = a • homologyMap' φ h₁ h₂ :=
+lemma homologyMap'_smul : homologyMap' (a • φ) h₁ h₂ = a • homologyMap' φ h₁ h₂ :=
   leftHomologyMap'_smul _ _ _ _
 
 variable (φ φ')
 
 @[simp]
-lemma homologyMap_smul [S₁.HasHomology] [S₂.HasHomology] :
-    homologyMap (a • φ) = a • homologyMap φ :=
+lemma homologyMap_smul [S₁.HasHomology] [S₂.HasHomology]
+    : homologyMap (a • φ) = a • homologyMap φ :=
   homologyMap'_smul _ _ _
 
-instance homologyFunctor_linear [CategoryWithHomology C] :
-    Functor.Linear R (homologyFunctor C) where
+instance homologyFunctor_linear [CategoryWithHomology C]
+  : Functor.Linear R (homologyFunctor C) where
 
 end Homology
 
 /-- Homotopy between morphisms of short complexes is compatible with the scalar multiplication. -/
 @[simps]
-def Homotopy.smul {φ₁ φ₂ : S₁ ⟶ S₂} (h : Homotopy φ₁ φ₂) (a : R) :
-    Homotopy (a • φ₁) (a • φ₂) where
+def Homotopy.smul {φ₁ φ₂ : S₁ ⟶ S₂} (h : Homotopy φ₁ φ₂) (a : R) : Homotopy (a • φ₁) (a • φ₂) where
   h₀ := a • h.h₀
   h₁ := a • h.h₁
   h₂ := a • h.h₂

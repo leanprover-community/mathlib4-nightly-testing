@@ -40,8 +40,8 @@ theorem jacobiTheta_T_sq_smul (τ : ℍ) : jacobiTheta (ModularGroup.T ^ 2 • �
   simp_rw [this, UpperHalfPlane.modular_T_zpow_smul, UpperHalfPlane.coe_vadd]
   norm_cast
 
-theorem jacobiTheta_S_smul (τ : ℍ) :
-    jacobiTheta ↑(ModularGroup.S • τ) = (-I * τ) ^ (1 / 2 : ℂ) * jacobiTheta τ := by
+theorem jacobiTheta_S_smul (τ : ℍ)
+    : jacobiTheta ↑(ModularGroup.S • τ) = (-I * τ) ^ (1 / 2 : ℂ) * jacobiTheta τ := by
   have h0 : (τ : ℂ) ≠ 0 := ne_of_apply_ne im (zero_im.symm ▸ ne_of_gt τ.2)
   have h1 : (-I * τ) ^ (1 / 2 : ℂ) ≠ 0 := by
     rw [Ne, cpow_eq_zero_iff, not_and_or]
@@ -52,15 +52,15 @@ theorem jacobiTheta_S_smul (τ : ℍ) :
     Complex.exp_zero, mul_one, ← mul_assoc, mul_one_div, div_self h1, one_mul,
     inv_neg, neg_div, one_div]
 
-theorem norm_exp_mul_sq_le {τ : ℂ} (hτ : 0 < τ.im) (n : ℤ) :
-    ‖cexp (π * I * (n : ℂ) ^ 2 * τ)‖ ≤ rexp (-π * τ.im) ^ n.natAbs := by
+theorem norm_exp_mul_sq_le {τ : ℂ} (hτ : 0 < τ.im) (n : ℤ)
+    : ‖cexp (π * I * (n : ℂ) ^ 2 * τ)‖ ≤ rexp (-π * τ.im) ^ n.natAbs := by
   let y := rexp (-π * τ.im)
   have h : y < 1 := exp_lt_one_iff.mpr (mul_neg_of_neg_of_pos (neg_lt_zero.mpr pi_pos) hτ)
   refine (le_of_eq ?_).trans (?_ : y ^ n ^ 2 ≤ _)
   · rw [norm_exp]
     have : (π * I * n ^ 2 * τ : ℂ).re = -π * τ.im * (n : ℝ) ^ 2 := by
-      rw [(by push_cast; ring : (π * I * n ^ 2 * τ : ℂ) = (π * n ^ 2 : ℝ) * (τ * I)),
-        re_ofReal_mul, mul_I_re]
+      rw [(by push_cast; ring : (π * I * n ^ 2 * τ : ℂ) = (π * n ^ 2 : ℝ) * (τ * I)), re_ofReal_mul,
+        mul_I_re]
       ring
     obtain ⟨m, hm⟩ := Int.eq_ofNat_of_zero_le (sq_nonneg n)
     rw [this, exp_mul, ← Int.cast_pow, rpow_intCast, hm, zpow_natCast]
@@ -68,8 +68,8 @@ theorem norm_exp_mul_sq_le {τ : ℂ} (hτ : 0 < τ.im) (n : ℤ) :
     rw [this, zpow_natCast]
     exact pow_le_pow_of_le_one (exp_pos _).le h.le ((sq n.natAbs).symm ▸ n.natAbs.le_mul_self)
 
-theorem hasSum_nat_jacobiTheta {τ : ℂ} (hτ : 0 < im τ) :
-    HasSum (fun n : ℕ => cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)) ((jacobiTheta τ - 1) / 2) := by
+theorem hasSum_nat_jacobiTheta {τ : ℂ} (hτ : 0 < im τ)
+    : HasSum (fun n : ℕ => cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)) ((jacobiTheta τ - 1) / 2) := by
   have := hasSum_jacobiTheta₂_term 0 hτ
   simp_rw [jacobiTheta₂_term, mul_zero, zero_add, ← jacobiTheta_eq_jacobiTheta₂] at this
   have := this.nat_add_neg
@@ -81,16 +81,16 @@ theorem hasSum_nat_jacobiTheta {τ : ℂ} (hτ : 0 < im τ) :
   convert this.div_const 2 using 1
   simp_rw [mul_div_cancel_right₀ _ (two_ne_zero' ℂ)]
 
-theorem jacobiTheta_eq_tsum_nat {τ : ℂ} (hτ : 0 < im τ) :
-    jacobiTheta τ = ↑1 + ↑2 * ∑' n : ℕ, cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ) := by
+theorem jacobiTheta_eq_tsum_nat {τ : ℂ} (hτ : 0 < im τ)
+    : jacobiTheta τ = ↑1 + ↑2 * ∑' n : ℕ, cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ) := by
   rw [(hasSum_nat_jacobiTheta hτ).tsum_eq, mul_div_cancel₀ _ (two_ne_zero' ℂ), ← add_sub_assoc,
     add_sub_cancel_left]
 
 /-- An explicit upper bound for `‖jacobiTheta τ - 1‖`. -/
-theorem norm_jacobiTheta_sub_one_le {τ : ℂ} (hτ : 0 < im τ) :
-    ‖jacobiTheta τ - 1‖ ≤ 2 / (1 - rexp (-π * τ.im)) * rexp (-π * τ.im) := by
-  suffices ‖∑' n : ℕ, cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)‖ ≤
-      rexp (-π * τ.im) / (1 - rexp (-π * τ.im)) by
+theorem norm_jacobiTheta_sub_one_le {τ : ℂ} (hτ : 0 < im τ)
+    : ‖jacobiTheta τ - 1‖ ≤ 2 / (1 - rexp (-π * τ.im)) * rexp (-π * τ.im) := by
+  suffices ‖∑' n : ℕ, cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)‖
+      ≤ rexp (-π * τ.im) / (1 - rexp (-π * τ.im)) by
     calc
       ‖jacobiTheta τ - 1‖ = ↑2 * ‖∑' n : ℕ, cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)‖ := by
         rw [sub_eq_iff_eq_add'.mpr (jacobiTheta_eq_tsum_nat hτ), norm_mul, Complex.norm_two]
@@ -99,8 +99,9 @@ theorem norm_jacobiTheta_sub_one_le {τ : ℂ} (hτ : 0 < im τ) :
   have : ∀ n : ℕ, ‖cexp (π * I * ((n : ℂ) + 1) ^ 2 * τ)‖ ≤ rexp (-π * τ.im) ^ (n + 1) := by
     intro n
     simpa only [Int.cast_add, Int.cast_one] using! norm_exp_mul_sq_le hτ (n + 1)
-  have s : HasSum (fun n : ℕ =>
-      rexp (-π * τ.im) ^ (n + 1)) (rexp (-π * τ.im) / (1 - rexp (-π * τ.im))) := by
+  have s : HasSum
+      (fun n : ℕ => rexp (-π * τ.im) ^ (n + 1))
+      (rexp (-π * τ.im) / (1 - rexp (-π * τ.im))) := by
     simp_rw [pow_succ', div_eq_mul_inv, hasSum_mul_left_iff (Real.exp_ne_zero _)]
     exact hasSum_geometric_of_lt_one (exp_pos (-π * τ.im)).le
       (exp_lt_one_iff.mpr <| mul_neg_of_neg_of_pos (neg_lt_zero.mpr pi_pos) hτ)
@@ -109,17 +110,21 @@ theorem norm_jacobiTheta_sub_one_le {τ : ℂ} (hτ : 0 < im τ) :
   exact (norm_tsum_le_tsum_norm aux).trans ((aux.tsum_mono s.summable this).trans_eq s.tsum_eq)
 
 /-- The norm of `jacobiTheta τ - 1` decays exponentially as `im τ → ∞`. -/
-theorem isBigO_at_im_infty_jacobiTheta_sub_one :
-    (fun τ => jacobiTheta τ - 1) =O[comap im atTop] fun τ => rexp (-π * τ.im) := by
+theorem isBigO_at_im_infty_jacobiTheta_sub_one
+    : (fun τ => jacobiTheta τ - 1) =O[comap im atTop] fun τ => rexp (-π * τ.im) := by
   simp_rw [IsBigO, IsBigOWith, Filter.eventually_comap, Filter.eventually_atTop]
-  refine ⟨2 / (1 - rexp (-(π * 1))), 1, fun y hy τ hτ =>
-    (norm_jacobiTheta_sub_one_le (hτ.symm ▸ zero_lt_one.trans_le hy : 0 < im τ)).trans ?_⟩
+  refine ⟨
+    2 / (1 - rexp (-(π * 1))),
+    1,
+    fun y hy τ hτ =>
+      (norm_jacobiTheta_sub_one_le (hτ.symm ▸ zero_lt_one.trans_le hy : 0 < im τ)).trans ?_
+  ⟩
   rw [Real.norm_eq_abs, Real.abs_exp, hτ, neg_mul]
   gcongr
   simp [pi_pos]
 
-theorem differentiableAt_jacobiTheta {τ : ℂ} (hτ : 0 < im τ) :
-    DifferentiableAt ℂ jacobiTheta τ := by
+theorem differentiableAt_jacobiTheta {τ : ℂ} (hτ : 0 < im τ)
+    : DifferentiableAt ℂ jacobiTheta τ := by
   simp_rw [funext jacobiTheta_eq_jacobiTheta₂]
   exact differentiableAt_jacobiTheta₂_snd 0 hτ
 

@@ -81,18 +81,23 @@ namespace MorphismProperty
 
 variable {C : Type u} [Category.{v} C] (I : MorphismProperty C)
 
-/-- A class of morphisms `I : MorphismProperty C` satisfies the property
+/--
+A class of morphisms `I : MorphismProperty C` satisfies the property
 `HasSmallObjectArgument.{w} I` if it permits the small object argument,
 i.e. there exists a regular cardinal `κ : Cardinal.{w}` such that
-`IsCardinalForSmallObjectArgument I κ` holds. -/
+`IsCardinalForSmallObjectArgument I κ` holds.
+-/
 class HasSmallObjectArgument : Prop where
-  exists_cardinal : ∃ (κ : Cardinal.{w}) (_ : Fact κ.IsRegular) (_ : OrderBot κ.ord.ToType),
-    IsCardinalForSmallObjectArgument I κ
+  exists_cardinal
+    : ∃ (κ : Cardinal.{w}) (_ : Fact κ.IsRegular) (_ : OrderBot κ.ord.ToType),
+      IsCardinalForSmallObjectArgument I κ
 
 variable [HasSmallObjectArgument.{w} I]
 
-/-- When `I : MorphismProperty C` permits the small object argument,
-this is a cardinal `κ` such that `IsCardinalForSmallObjectArgument I κ` holds. -/
+/--
+When `I : MorphismProperty C` permits the small object argument,
+this is a cardinal `κ` such that `IsCardinalForSmallObjectArgument I κ` holds.
+-/
 noncomputable def smallObjectκ : Cardinal.{w} :=
   (HasSmallObjectArgument.exists_cardinal (I := I)).choose
 
@@ -102,31 +107,34 @@ local instance smallObjectκ_isRegular : Fact I.smallObjectκ.IsRegular :=
 noncomputable instance : OrderBot I.smallObjectκ.ord.ToType :=
   HasSmallObjectArgument.exists_cardinal.choose_spec.choose_spec.choose
 
-instance isCardinalForSmallObjectArgument_smallObjectκ :
-    IsCardinalForSmallObjectArgument.{w} I I.smallObjectκ :=
+instance isCardinalForSmallObjectArgument_smallObjectκ
+    : IsCardinalForSmallObjectArgument.{w} I I.smallObjectκ :=
   HasSmallObjectArgument.exists_cardinal.choose_spec.choose_spec.choose_spec
 
-instance : HasFunctorialFactorization I.rlp.llp I.rlp :=
-  hasFunctorialFactorization I I.smallObjectκ
+instance : HasFunctorialFactorization I.rlp.llp I.rlp := hasFunctorialFactorization I I.smallObjectκ
 
-/-- If `I : MorphismProperty C` permits the small object argument,
+/--
+If `I : MorphismProperty C` permits the small object argument,
 then the class of morphisms that have the left lifting property with respect to
 the maps that have the right lifting property with respect to `I` are
 exactly the retracts of transfinite compositions (indexed by `I.smallObjectκ.ord.ToType`)
-of pushouts of coproducts of morphisms in `C`. -/
-lemma llp_rlp_of_hasSmallObjectArgument' :
-    I.rlp.llp = (transfiniteCompositionsOfShape (coproducts.{w} I).pushouts
+of pushouts of coproducts of morphisms in `C`.
+-/
+lemma llp_rlp_of_hasSmallObjectArgument'
+    : I.rlp.llp
+      = (transfiniteCompositionsOfShape (coproducts.{w} I).pushouts
         I.smallObjectκ.ord.ToType).retracts :=
   llp_rlp_of_isCardinalForSmallObjectArgument' I I.smallObjectκ
 
-/-- If `I : MorphismProperty C` permits the small object argument,
+/--
+If `I : MorphismProperty C` permits the small object argument,
 then the class of morphisms that have the left lifting property with respect to
 the maps that have the right lifting property with respect to `I` are
 exactly the retracts of transfinite compositions
-of pushouts of coproducts of morphisms in `C`. -/
-lemma llp_rlp_of_hasSmallObjectArgument :
-    I.rlp.llp =
-      (transfiniteCompositions.{w} (coproducts.{w} I).pushouts).retracts :=
+of pushouts of coproducts of morphisms in `C`.
+-/
+lemma llp_rlp_of_hasSmallObjectArgument
+    : I.rlp.llp = (transfiniteCompositions.{w} (coproducts.{w} I).pushouts).retracts :=
   llp_rlp_of_isCardinalForSmallObjectArgument I I.smallObjectκ
 
 end MorphismProperty

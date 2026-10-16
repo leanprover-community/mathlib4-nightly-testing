@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.Order.Bounds.Basic
-
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
@@ -31,8 +30,10 @@ namespace Nat
 
 section Infinite
 
-/-- Euclid's theorem on the **infinitude of primes**.
-Here given in the form: for every `n`, there exists a prime number `p ≥ n`. -/
+/--
+Euclid's theorem on the **infinitude of primes**.
+Here given in the form: for every `n`, there exists a prime number `p ≥ n`.
+-/
 theorem exists_infinite_primes (n : ℕ) : ∃ p, n ≤ p ∧ Prime p :=
   let p := minFac (n ! + 1)
   have f1 : n ! + 1 ≠ 1 := ne_of_gt <| succ_lt_succ <| factorial_pos _
@@ -45,7 +46,7 @@ theorem exists_infinite_primes (n : ℕ) : ∃ p, n ≤ p ∧ Prime p :=
   ⟨p, np, pp⟩
 
 /-- A version of `Nat.exists_infinite_primes` using the `BddAbove` predicate. -/
-theorem not_bddAbove_setOfPred_prime : ¬BddAbove { p | Prime p } := by
+theorem not_bddAbove_setOfPred_prime : ¬ BddAbove { p | Prime p } := by
   rw [not_bddAbove_iff]
   intro n
   obtain ⟨p, hi, hp⟩ := exists_infinite_primes n.succ

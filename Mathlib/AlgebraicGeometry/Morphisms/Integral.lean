@@ -29,8 +29,10 @@ open CategoryTheory TopologicalSpace Opposite MorphismProperty
 
 namespace AlgebraicGeometry
 
-/-- A morphism of schemes `X ⟶ Y` is integral if the preimage of any affine open subset of `Y` is
-affine and the induced ring hom on sections is integral. -/
+/--
+A morphism of schemes `X ⟶ Y` is integral if the preimage of any affine open subset of `Y` is
+affine and the induced ring hom on sections is integral.
+-/
 @[mk_iff]
 class IsIntegralHom {X Y : Scheme} (f : X ⟶ Y) : Prop extends IsAffineHom f where
   isIntegral_app (f) (U : Y.Opens) (hU : IsAffineOpen U) : (f.app U).hom.IsIntegral
@@ -42,8 +44,9 @@ namespace IsIntegralHom
 variable {X Y Z S : Scheme.{u}}
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance hasAffineProperty : HasAffineProperty @IsIntegralHom
-    fun X _ f _ ↦ IsAffine X ∧ RingHom.IsIntegral (f.app ⊤).hom := by
+instance hasAffineProperty
+    : HasAffineProperty @IsIntegralHom fun X _ f _ ↦
+      IsAffine X ∧ RingHom.IsIntegral (f.app ⊤).hom := by
   change HasAffineProperty @IsIntegralHom (affineAnd RingHom.IsIntegral)
   rw [HasAffineProperty.affineAnd_iff _ RingHom.isIntegral_respectsIso
     RingHom.isIntegral_isStableUnderBaseChange.localizationPreserves.away
@@ -80,19 +83,19 @@ instance (f : X ⟶ Y) (V : Y.Opens) [IsIntegralHom f] : IsIntegralHom (f ∣_ V
   IsZariskiLocalAtTarget.restrict ‹_› V
 
 instance : MorphismProperty.HasOfPostcompProperty @IsIntegralHom @IsSeparated :=
-  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr
-    fun _ _ _ _ ↦ inferInstanceAs (IsIntegralHom _)
+  MorphismProperty.hasOfPostcompProperty_iff_le_diagonal.mpr fun _ _ _ _ ↦
+    inferInstanceAs (IsIntegralHom _)
 
-lemma of_comp (f : X ⟶ Y) (g : Y ⟶ Z) [IsIntegralHom (f ≫ g)] [IsSeparated g] :
-    IsIntegralHom f := MorphismProperty.of_postcomp _ _ g ‹_› ‹_›
+lemma of_comp (f : X ⟶ Y) (g : Y ⟶ Z) [IsIntegralHom (f ≫ g)] [IsSeparated g] : IsIntegralHom f :=
+  MorphismProperty.of_postcomp _ _ g ‹_› ‹_›
 
-lemma comp_iff {f : X ⟶ Y} {g : Y ⟶ Z} [IsIntegralHom g] :
-    IsIntegralHom (f ≫ g) ↔ IsIntegralHom f :=
+lemma comp_iff {f : X ⟶ Y} {g : Y ⟶ Z} [IsIntegralHom g]
+    : IsIntegralHom (f ≫ g) ↔ IsIntegralHom f :=
   ⟨fun _ ↦ .of_comp f g, fun _ ↦ inferInstance⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma SpecMap_iff {R S : CommRingCat} {φ : R ⟶ S} :
-    IsIntegralHom (Spec.map φ) ↔ φ.hom.IsIntegral := by
+lemma SpecMap_iff {R S : CommRingCat} {φ : R ⟶ S}
+    : IsIntegralHom (Spec.map φ) ↔ φ.hom.IsIntegral := by
   have := RingHom.toMorphismProperty_respectsIso_iff.mp RingHom.isIntegral_respectsIso
   rw [HasAffineProperty.iff_of_isAffine (P := @IsIntegralHom), and_iff_right]
   exacts [MorphismProperty.arrow_mk_iso_iff (RingHom.toMorphismProperty RingHom.IsIntegral)
@@ -101,16 +104,15 @@ lemma SpecMap_iff {R S : CommRingCat} {φ : R ⟶ S} :
 set_option backward.isDefEq.respectTransparency.types false in
 instance : IsMultiplicative @IsIntegralHom where
 
-instance {U V X : Scheme.{u}} (f : U ⟶ X) (g : V ⟶ X) [IsIntegralHom f] [IsIntegralHom g] :
-    IsIntegralHom (Limits.coprod.desc f g) := by
+instance {U V X : Scheme.{u}} (f : U ⟶ X) (g : V ⟶ X) [IsIntegralHom f] [IsIntegralHom g]
+    : IsIntegralHom (Limits.coprod.desc f g) := by
   refine hasAffineProperty.coprodDesc_affineAnd RingHom.isIntegral_respectsIso ?_ _ _ ‹_› ‹_›
   intros R S T _ _ _ f g _ _
   algebraize [f, g]
   refine algebraMap_isIntegral_iff.mpr inferInstance
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (priority := 100) (f : X ⟶ Y) [IsIntegralHom f] :
-    UniversallyClosed f := by
+instance (priority := 100) (f : X ⟶ Y) [IsIntegralHom f] : UniversallyClosed f := by
   revert X Y f ‹IsIntegralHom f›
   rw [universallyClosed_eq, ← IsStableUnderBaseChange.universally_eq (P := @IsIntegralHom)]
   apply universally_mono
@@ -132,8 +134,8 @@ instance (priority := 100) (f : X ⟶ Y) [IsIntegralHom f] :
   exact PrimeSpectrum.isClosedMap_comap_of_isIntegral _
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma iff_universallyClosed_and_isAffineHom {X Y : Scheme.{u}} {f : X ⟶ Y} :
-    IsIntegralHom f ↔ UniversallyClosed f ∧ IsAffineHom f := by
+lemma iff_universallyClosed_and_isAffineHom {X Y : Scheme.{u}} {f : X ⟶ Y}
+    : IsIntegralHom f ↔ UniversallyClosed f ∧ IsAffineHom f := by
   refine ⟨fun _ ↦ ⟨inferInstance, inferInstance⟩, fun ⟨H₁, H₂⟩ ↦ ?_⟩
   clear * -
   wlog hY : ∃ R, Y = Spec R
@@ -154,10 +156,10 @@ lemma iff_universallyClosed_and_isAffineHom {X Y : Scheme.{u}} {f : X ⟶ Y} :
   exact H₁.universally_isClosedMap (Spec.map (CommRingCat.ofHom Polynomial.C))
     (Spec.map (CommRingCat.ofHom Polynomial.C)) (Spec.map _)
     (isPullback_SpecMap_of_isPushout _ _ _ _
-    (CommRingCat.isPushout_of_isPushout R S (Polynomial R) (Polynomial S))).flip
+      (CommRingCat.isPushout_of_isPushout R S (Polynomial R) (Polynomial S))).flip
 
-lemma eq_universallyClosed_inf_isAffineHom :
-    @IsIntegralHom = (@UniversallyClosed ⊓ @IsAffineHom : MorphismProperty Scheme) := by
+lemma eq_universallyClosed_inf_isAffineHom
+    : @IsIntegralHom = (@UniversallyClosed ⊓ @IsAffineHom : MorphismProperty Scheme) := by
   ext
   exact iff_universallyClosed_and_isAffineHom
 

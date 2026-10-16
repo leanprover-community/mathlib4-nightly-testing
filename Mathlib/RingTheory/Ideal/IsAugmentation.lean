@@ -26,20 +26,25 @@ variable (R : Type*) [CommSemiring R] {A : Type*}
 
 open Submodule Subalgebra
 
-/-- An ideal `I` of an `R`-algebra `A` is an augmentation ideal
-if its underlying module is a complement to `1 : Submodule R A`. -/
+/--
+An ideal `I` of an `R`-algebra `A` is an augmentation ideal
+if its underlying module is a complement to `1 : Submodule R A`.
+-/
 def IsAugmentation [Semiring A] [Algebra R A] (I : Ideal A) : Prop :=
   IsCompl 1 (I.restrictScalars R)
 
-lemma isAugmentation_iff [Semiring A] [Algebra R A] (I : Ideal A) :
-    I.IsAugmentation R ↔ IsCompl 1 (I.restrictScalars R) := Iff.rfl
+lemma isAugmentation_iff [Semiring A] [Algebra R A] (I : Ideal A)
+    : I.IsAugmentation R ↔ IsCompl 1 (I.restrictScalars R) :=
+  Iff.rfl
 
-/-- If `S` is a subalgebra of an `R`-algebra `A`, then an ideal `I`of `A` is an augmentation ideal
+/--
+If `S` is a subalgebra of an `R`-algebra `A`, then an ideal `I`of `A` is an augmentation ideal
 for the `R`-algebra structure
-if and only if it is an augmentation ideal for the `S`-algebra structure. -/
-theorem isAugmentation_subalgebra_iff [CommSemiring A] [Algebra R A]
-    {S : Subalgebra R A} {I : Ideal A} :
-    I.IsAugmentation S ↔ IsCompl S.toSubmodule (I.restrictScalars R) := by
+if and only if it is an augmentation ideal for the `S`-algebra structure.
+-/
+theorem isAugmentation_subalgebra_iff
+    [CommSemiring A] [Algebra R A] {S : Subalgebra R A} {I : Ideal A}
+    : I.IsAugmentation S ↔ IsCompl S.toSubmodule (I.restrictScalars R) := by
   simp [Ideal.IsAugmentation, ← Submodule.isCompl_restrictScalars_iff R]
 
 end Ideal

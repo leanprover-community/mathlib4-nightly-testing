@@ -6,7 +6,6 @@ Authors: Dagur Asgeirsson
 module
 
 public import Mathlib.Condensed.Explicit
-
 import Mathlib.CategoryTheory.Sites.PreservesLimits
 
 /-!
@@ -47,8 +46,7 @@ def compHausToCondensed' : CompHaus.{u} ⥤ Condensed.{u} (Type u) :=
   (coherentTopology CompHaus).yoneda
 
 /-- The yoneda presheaf as an actual condensed set. -/
-def compHausToCondensed : CompHaus.{u} ⥤ CondensedSet.{u} :=
-  compHausToCondensed' ⋙ Condensed.ulift
+def compHausToCondensed : CompHaus.{u} ⥤ CondensedSet.{u} := compHausToCondensed' ⋙ Condensed.ulift
 
 /-- Dot notation for the value of `compHausToCondensed`. -/
 abbrev CompHaus.toCondensed (S : CompHaus.{u}) : CondensedSet.{u} := compHausToCondensed.obj S
@@ -61,14 +59,12 @@ def profiniteToCondensed : Profinite.{u} ⥤ CondensedSet.{u} :=
 abbrev Profinite.toCondensed (S : Profinite.{u}) : CondensedSet.{u} := profiniteToCondensed.obj S
 
 /-- The yoneda presheaf as a condensed set, restricted to Stonean spaces. -/
-def stoneanToCondensed : Stonean.{u} ⥤ CondensedSet.{u} :=
-  Stonean.toCompHaus ⋙ compHausToCondensed
+def stoneanToCondensed : Stonean.{u} ⥤ CondensedSet.{u} := Stonean.toCompHaus ⋙ compHausToCondensed
 
 /-- Dot notation for the value of `stoneanToCondensed`. -/
 abbrev Stonean.toCondensed (S : Stonean.{u}) : CondensedSet.{u} := stoneanToCondensed.obj S
 
-instance : compHausToCondensed'.Full :=
-  inferInstanceAs ((coherentTopology CompHaus).yoneda).Full
+instance : compHausToCondensed'.Full := inferInstanceAs ((coherentTopology CompHaus).yoneda).Full
 
 instance : compHausToCondensed'.Faithful :=
   inferInstanceAs ((coherentTopology CompHaus).yoneda).Faithful

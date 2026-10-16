@@ -24,17 +24,13 @@ namespace Int
 
 variable {α : Type*} [Ring α] [LinearOrder α] [FloorRing α] {a b : α} {n : ℤ}
 
-lemma cast_mem_Ioc_iff : ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc ⌊a⌋ ⌊b⌋ := by
-  simp [floor_lt, le_floor]
+lemma cast_mem_Ioc_iff : ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc (⌊a⌋) ⌊b⌋ := by simp [floor_lt, le_floor]
 
-lemma cast_mem_Ico_iff : ↑n ∈ Set.Ico a b ↔ n ∈ Finset.Ico ⌈a⌉ ⌈b⌉ := by
-  simp [ceil_le, lt_ceil]
+lemma cast_mem_Ico_iff : ↑n ∈ Set.Ico a b ↔ n ∈ Finset.Ico (⌈a⌉) ⌈b⌉ := by simp [ceil_le, lt_ceil]
 
-lemma cast_mem_Icc_iff : ↑n ∈ Set.Icc a b ↔ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋ := by
-  simp [ceil_le, le_floor]
+lemma cast_mem_Icc_iff : ↑n ∈ Set.Icc a b ↔ n ∈ Finset.Icc (⌈a⌉) ⌊b⌋ := by simp [ceil_le, le_floor]
 
-lemma cast_mem_Ioo_iff : ↑n ∈ Set.Ioo a b ↔ n ∈ Finset.Ioo ⌊a⌋ ⌈b⌉ := by
-  simp [floor_lt, lt_ceil]
+lemma cast_mem_Ioo_iff : ↑n ∈ Set.Ioo a b ↔ n ∈ Finset.Ioo (⌊a⌋) ⌈b⌉ := by simp [floor_lt, lt_ceil]
 
 lemma cast_mem_Ioi_iff : ↑n ∈ Set.Ioi a ↔ n ∈ Set.Ioi ⌊a⌋ := by simp [floor_lt]
 
@@ -50,24 +46,21 @@ namespace Nat
 
 variable {α : Type*} [Semiring α] [LinearOrder α] [FloorSemiring α] {a b : α} {n : ℕ}
 
-lemma cast_mem_Ioc_iff (ha : 0 ≤ a) :
-    ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc ⌊a⌋₊ ⌊b⌋₊ := by
+lemma cast_mem_Ioc_iff (ha : 0 ≤ a) : ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc (⌊a⌋₊) ⌊b⌋₊ := by
   rcases le_or_gt 0 b with hb | hb
   · simp [floor_lt ha, le_floor_iff hb]
   · grind [floor_of_nonpos hb.le]
 
 @[deprecated cast_mem_Ioc_iff (since := "2026-07-30")]
-lemma cast_mem_Ioc_iff' (ha : 0 ≤ a) :
-    ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc ⌊a⌋₊ ⌊b⌋₊ :=
+lemma cast_mem_Ioc_iff' (ha : 0 ≤ a) : ↑n ∈ Set.Ioc a b ↔ n ∈ Finset.Ioc (⌊a⌋₊) ⌊b⌋₊ :=
   cast_mem_Ioc_iff ha
 
-lemma cast_mem_Ico_iff : ↑n ∈ Set.Ico a b ↔ n ∈ Finset.Ico ⌈a⌉₊ ⌈b⌉₊ := by
-  simp [ceil_le, lt_ceil]
+lemma cast_mem_Ico_iff : ↑n ∈ Set.Ico a b ↔ n ∈ Finset.Ico (⌈a⌉₊) ⌈b⌉₊ := by simp [ceil_le, lt_ceil]
 
-lemma cast_mem_Icc_iff (hb : 0 ≤ b) : ↑n ∈ Set.Icc a b ↔ n ∈ Finset.Icc ⌈a⌉₊ ⌊b⌋₊ := by
+lemma cast_mem_Icc_iff (hb : 0 ≤ b) : ↑n ∈ Set.Icc a b ↔ n ∈ Finset.Icc (⌈a⌉₊) ⌊b⌋₊ := by
   simp [ceil_le, le_floor_iff hb]
 
-lemma cast_mem_Ioo_iff (ha : 0 ≤ a) : ↑n ∈ Set.Ioo a b ↔ n ∈ Finset.Ioo ⌊a⌋₊ ⌈b⌉₊ := by
+lemma cast_mem_Ioo_iff (ha : 0 ≤ a) : ↑n ∈ Set.Ioo a b ↔ n ∈ Finset.Ioo (⌊a⌋₊) ⌈b⌉₊ := by
   simp [floor_lt ha, lt_ceil]
 
 lemma cast_mem_Iic_iff (hb : 0 ≤ b) : ↑n ∈ Set.Iic b ↔ n ∈ Finset.Iic ⌊b⌋₊ := by

@@ -43,7 +43,8 @@ namespace CategoryTheory
 
 open Limits
 
-variable (C : Type*) [Category* C] [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
+variable
+  (C : Type*) [Category* C] [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
   [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C]
 
 namespace Triangulated
@@ -63,8 +64,9 @@ structure TStructure where
   zero' ⦃X Y : C⦄ (f : X ⟶ Y) (hX : le 0 X) (hY : ge 1 Y) : f = 0
   le_zero_le : le 0 ≤ le 1
   ge_one_le : ge 1 ≤ ge 0
-  exists_triangle_zero_one (A : C) : ∃ (X Y : C) (_ : le 0 X) (_ : ge 1 Y)
-    (f : X ⟶ A) (g : A ⟶ Y) (h : Y ⟶ X⟦(1 : ℤ)⟧), Triangle.mk f g h ∈ distTriang C
+  exists_triangle_zero_one (A : C)
+    : ∃ (X Y : C) (_ : le 0 X) (_ : ge 1 Y) (f : X ⟶ A) (g : A ⟶ Y) (h : Y ⟶ X⟦(1 : ℤ)⟧),
+      Triangle.mk f g h ∈ distTriang C
 
 namespace TStructure
 
@@ -75,9 +77,9 @@ variable (t : TStructure C)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-lemma exists_triangle (A : C) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) :
-    ∃ (X Y : C) (_ : t.le n₀ X) (_ : t.ge n₁ Y) (f : X ⟶ A) (g : A ⟶ Y)
-      (h : Y ⟶ X⟦(1 : ℤ)⟧), Triangle.mk f g h ∈ distTriang C := by
+lemma exists_triangle (A : C) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁)
+    : ∃ (X Y : C) (_ : t.le n₀ X) (_ : t.ge n₁ Y) (f : X ⟶ A) (g : A ⟶ Y) (h : Y ⟶ X⟦(1 : ℤ)⟧),
+      Triangle.mk f g h ∈ distTriang C := by
   obtain ⟨X, Y, hX, hY, f, g, h, mem⟩ := t.exists_triangle_zero_one (A⟦n₀⟧)
   let T := (Triangle.shiftFunctor C (-n₀)).obj (Triangle.mk f g h)
   let e := (shiftEquiv C n₀).unitIso.symm.app A
@@ -85,11 +87,10 @@ lemma exists_triangle (A : C) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) :
     refine isomorphic_distinguished _ (Triangle.shift_distinguished _ mem (-n₀)) _ ?_
     refine Triangle.isoMk _ _ (Iso.refl _) e.symm (Iso.refl _) ?_ ?_ ?_
     all_goals simp [T]
-  exact ⟨_, _, t.le_shift _ _ _ (neg_add_cancel n₀) _ hX,
-    t.ge_shift _ _ _ (by lia) _ hY, _, _, _, hT'⟩
+  exact
+    ⟨_, _, t.le_shift _ _ _ (neg_add_cancel n₀) _ hX, t.ge_shift _ _ _ (by lia) _ hY, _, _, _, hT'⟩
 
-lemma shift_le (a n n' : ℤ) (hn' : a + n = n') :
-    (t.le n).shift a = t.le n' := by
+lemma shift_le (a n n' : ℤ) (hn' : a + n = n') : (t.le n).shift a = t.le n' := by
   ext X
   constructor
   · intro hX
@@ -98,8 +99,7 @@ lemma shift_le (a n n' : ℤ) (hn' : a + n = n') :
   · intro hX
     exact t.le_shift _ _ _ hn' X hX
 
-lemma shift_ge (a n n' : ℤ) (hn' : a + n = n') :
-    (t.ge n).shift a = t.ge n' := by
+lemma shift_ge (a n n' : ℤ) (hn' : a + n = n') : (t.ge n).shift a = t.ge n' := by
   ext X
   constructor
   · intro hX
@@ -154,13 +154,17 @@ lemma ge_antitone : Antitone t.ge := by
   | zero => exact H_zero
   | succ a ha => exact H_add a 1 _ rfl ha H_one
 
-/-- Given a t-structure `t` on a pretriangulated category `C`, the property `t.IsLE X n`
-holds if `X : C` is `≤ n` for the t-structure. -/
+/--
+Given a t-structure `t` on a pretriangulated category `C`, the property `t.IsLE X n`
+holds if `X : C` is `≤ n` for the t-structure.
+-/
 class IsLE (X : C) (n : ℤ) : Prop where
   le : t.le n X
 
-/-- Given a t-structure `t` on a pretriangulated category `C`, the property `t.IsGE X n`
-holds if `X : C` is `≥ n` for the t-structure. -/
+/--
+Given a t-structure `t` on a pretriangulated category `C`, the property `t.IsGE X n`
+holds if `X : C` is `≥ n` for the t-structure.
+-/
 class IsGE (X : C) (n : ℤ) : Prop where
   ge : t.ge n X
 
@@ -181,12 +185,10 @@ lemma isGE_of_ge (X : C) (p q : ℤ) (hpq : p ≤ q := by lia) [t.IsGE X q] : t.
   ge := ge_antitone t hpq _ (t.ge_of_isGE X q)
 
 @[simp]
-lemma le_iff_isLE (X : C) (n : ℤ) : t.le n X ↔ t.IsLE X n :=
-  ⟨fun h ↦ ⟨h⟩, fun _ ↦ t.le_of_isLE X n⟩
+lemma le_iff_isLE (X : C) (n : ℤ) : t.le n X ↔ t.IsLE X n := ⟨fun h ↦ ⟨h⟩, fun _ ↦ t.le_of_isLE X n⟩
 
 @[simp]
-lemma ge_iff_isGE (X : C) (n : ℤ) : t.ge n X ↔ t.IsGE X n :=
-  ⟨fun h ↦ ⟨h⟩, fun _ ↦ t.ge_of_isGE X n⟩
+lemma ge_iff_isGE (X : C) (n : ℤ) : t.ge n X ↔ t.IsGE X n := ⟨fun h ↦ ⟨h⟩, fun _ ↦ t.ge_of_isGE X n⟩
 
 instance (n : ℤ) : (t.le n).IsClosedUnderIsomorphisms where
   of_iso e h := by
@@ -198,42 +200,42 @@ instance (n : ℤ) : (t.ge n).IsClosedUnderIsomorphisms where
     simp only [ge_iff_isGE] at h ⊢
     exact t.isGE_of_iso e _
 
-lemma isLE_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsLE X n] :
-    t.IsLE (X⟦a⟧) n' :=
+lemma isLE_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsLE X n]
+    : t.IsLE (X⟦a⟧) n' :=
   ⟨t.le_shift n a n' hn' X (t.le_of_isLE X n)⟩
 
-lemma isGE_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsGE X n] :
-    t.IsGE (X⟦a⟧) n' :=
+lemma isGE_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsGE X n]
+    : t.IsGE (X⟦a⟧) n' :=
   ⟨t.ge_shift n a n' hn' X (t.ge_of_isGE X n)⟩
 
-lemma isLE_of_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsLE (X⟦a⟧) n'] :
-    t.IsLE X n := by
+lemma isLE_of_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsLE (X⟦a⟧) n']
+    : t.IsLE X n := by
   have h := t.isLE_shift (X⟦a⟧) n' (-a) n
   exact t.isLE_of_iso (show X⟦a⟧⟦-a⟧ ≅ X from (shiftEquiv C a).unitIso.symm.app X) n
 
-lemma isGE_of_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsGE (X⟦a⟧) n'] :
-    t.IsGE X n := by
+lemma isGE_of_shift (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) [t.IsGE (X⟦a⟧) n']
+    : t.IsGE X n := by
   have h := t.isGE_shift (X⟦a⟧) n' (-a) n
   exact t.isGE_of_iso (show X⟦a⟧⟦-a⟧ ≅ X from (shiftEquiv C a).unitIso.symm.app X) n
 
-lemma isLE_shift_iff (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) :
-    t.IsLE (X⟦a⟧) n' ↔ t.IsLE X n := by
+lemma isLE_shift_iff (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia)
+    : t.IsLE (X⟦a⟧) n' ↔ t.IsLE X n := by
   constructor
   · intro
     exact t.isLE_of_shift X n a n' hn'
   · intro
     exact t.isLE_shift X n a n' hn'
 
-lemma isGE_shift_iff (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia) :
-    t.IsGE (X⟦a⟧) n' ↔ t.IsGE X n := by
+lemma isGE_shift_iff (X : C) (n a n' : ℤ) (hn' : a + n' = n := by lia)
+    : t.IsGE (X⟦a⟧) n' ↔ t.IsGE X n := by
   constructor
   · intro
     exact t.isGE_of_shift X n a n' hn'
   · intro
     exact t.isGE_shift X n a n' hn'
 
-lemma zero {X Y : C} (f : X ⟶ Y) (n₀ n₁ : ℤ) (h : n₀ < n₁ := by lia)
-    [t.IsLE X n₀] [t.IsGE Y n₁] : f = 0 := by
+lemma zero {X Y : C} (f : X ⟶ Y) (n₀ n₁ : ℤ) (h : n₀ < n₁ := by lia) [t.IsLE X n₀] [t.IsGE Y n₁]
+    : f = 0 := by
   have := t.isLE_shift X n₀ n₀ 0 (add_zero n₀)
   have := t.isGE_shift Y n₁ n₀ (n₁ - n₀)
   have := t.isGE_of_ge (Y⟦n₀⟧) 1 (n₁ - n₀)
@@ -243,12 +245,13 @@ lemma zero {X Y : C} (f : X ⟶ Y) (n₀ n₁ : ℤ) (h : n₀ < n₁ := by lia)
   · apply t.le_of_isLE
   · apply t.ge_of_isGE
 
-lemma zero_of_isLE_of_isGE {X Y : C} (f : X ⟶ Y) (n₀ n₁ : ℤ) (h : n₀ < n₁)
-    (_ : t.IsLE X n₀) (_ : t.IsGE Y n₁) : f = 0 :=
+lemma zero_of_isLE_of_isGE
+    {X Y : C} (f : X ⟶ Y) (n₀ n₁ : ℤ) (h : n₀ < n₁) (_ : t.IsLE X n₀) (_ : t.IsGE Y n₁)
+    : f = 0 :=
   t.zero f n₀ n₁ h
 
-lemma isZero (X : C) (n₀ n₁ : ℤ) (h : n₀ < n₁ := by lia)
-    [t.IsLE X n₀] [t.IsGE X n₁] : IsZero X := by
+lemma isZero (X : C) (n₀ n₁ : ℤ) (h : n₀ < n₁ := by lia) [t.IsLE X n₀] [t.IsGE X n₁]
+    : IsZero X := by
   rw [IsZero.iff_id_eq_zero]
   exact t.zero _ n₀ n₁ h
 
@@ -265,19 +268,21 @@ instance : t.minus.IsClosedUnderIsomorphisms where
   of_iso e := by rintro ⟨n, _⟩; exact ⟨_, t.isLE_of_iso e n⟩
 
 instance : t.minus.IsStableUnderShift ℤ where
-  isStableUnderShiftBy n :=
-    { le_shift := by
-        rintro X ⟨i, _⟩
-        exact ⟨i - n, t.isLE_shift _ i _ _ (by omega)⟩ }
+  isStableUnderShiftBy n := {
+    le_shift := by
+      rintro X ⟨i, _⟩
+      exact ⟨i - n, t.isLE_shift _ i _ _ (by omega)⟩
+  }
 
 instance : t.plus.IsClosedUnderIsomorphisms where
   of_iso e := by rintro ⟨n, _⟩; exact ⟨_, t.isGE_of_iso e n⟩
 
 instance : t.plus.IsStableUnderShift ℤ where
-  isStableUnderShiftBy n :=
-    { le_shift := by
-        rintro X ⟨i, _⟩
-        exact ⟨i - n, t.isGE_shift _ i _ _ (by omega)⟩ }
+  isStableUnderShiftBy n := {
+    le_shift := by
+      rintro X ⟨i, _⟩
+      exact ⟨i - n, t.isGE_shift _ i _ _ (by omega)⟩
+  }
 
 instance : t.bounded.IsClosedUnderIsomorphisms := by
   dsimp [bounded]

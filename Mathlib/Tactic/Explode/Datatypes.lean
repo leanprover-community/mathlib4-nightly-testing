@@ -27,14 +27,14 @@ inductive Status where
   /-- `├` Start intro (top-level) -/
   | sintro : Status
   /-- `Entry.depth` * `│` + `┌` Normal intro -/
-  | intro  : Status
+  | intro : Status
   /-- `Entry.depth` * `│` + `├` Continuation intro -/
   | cintro : Status
   /-- `Entry.depth` * `│` -/
-  | lam    : Status
+  | lam : Status
   /-- `Entry.depth` * `│` -/
-  | reg    : Status
-  deriving Inhabited
+  | reg : Status
+deriving Inhabited
 
 /-- The row in the Fitch table. -/
 structure Entry where
@@ -46,38 +46,46 @@ structure Entry where
   depth : Nat
   /-- What `Status` this entry has - this only affects how `│`s are displayed. -/
   status : Status
-  /-- What to display in the "theorem applied" column.
-  Make sure to use `addMessageContext` if needed. -/
+  /--
+  What to display in the "theorem applied" column.
+  Make sure to use `addMessageContext` if needed.
+  -/
   thm : MessageData
-  /-- Which other lines (aka rows) this row depends on.
-  `none` means that the dependency has been filtered out of the table. -/
+  /--
+  Which other lines (aka rows) this row depends on.
+  `none` means that the dependency has been filtered out of the table.
+  -/
   deps : List (Option Nat)
-  /-- Whether or not to use this in future deps lists. Generally controlled by the `select` function
-  passed to `explodeCore`. Exception: `∀I` may ignore this for introduced hypotheses. -/
+  /--
+  Whether or not to use this in future deps lists. Generally controlled by the `select` function
+  passed to `explodeCore`. Exception: `∀I` may ignore this for introduced hypotheses.
+  -/
   useAsDep : Bool
 
 /-- Get the `line` for an `Entry` that has been added to the `Entries` structure. -/
 def Entry.line! (entry : Entry) : Nat := entry.line.get!
 
-/-- Instead of simply keeping a list of entries (`List Entry`), we create a datatype `Entries`
-that allows us to compare expressions faster. -/
+/--
+Instead of simply keeping a list of entries (`List Entry`), we create a datatype `Entries`
+that allows us to compare expressions faster.
+-/
 structure Entries : Type where
   /-- Allows us to compare `Expr`s fast. -/
   s : ExprMap Entry
   /-- Simple list of `Expr`s. -/
   l : List Entry
-  deriving Inhabited
+deriving Inhabited
 
 /-- Find a row where `Entry.expr` == `e`. -/
-def Entries.find? (es : Entries) (e : Expr) : Option Entry :=
-  es.s[e]?
+def Entries.find? (es : Entries) (e : Expr) : Option Entry := es.s[e]?
 
 /-- Length of our entries. -/
-def Entries.size (es : Entries) : Nat :=
-  es.s.size
+def Entries.size (es : Entries) : Nat := es.s.size
 
-/-- Add the entry unless it already exists. Sets the `line` field to the next
-available value. -/
+/--
+Add the entry unless it already exists. Sets the `line` field to the next
+available value.
+-/
 def Entries.add (entries : Entries) (expr : Expr) (entry : Entry) : Entry × Entries :=
   if let some entry' := entries.find? expr then
     (entry', entries)
@@ -85,8 +93,10 @@ def Entries.add (entries : Entries) (expr : Expr) (entry : Entry) : Entry × Ent
     let entry := { entry with line := entries.size }
     (entry, ⟨entries.s.insert expr entry, entry :: entries.l⟩)
 
-/-- Add a pre-existing entry to the `ExprMap` for an additional expression.
-This is used by `let` bindings where `expr` is an fvar. -/
+/--
+Add a pre-existing entry to the `ExprMap` for an additional expression.
+This is used by `let` bindings where `expr` is an fvar.
+-/
 def Entries.addSynonym (entries : Entries) (expr : Expr) (entry : Entry) : Entries :=
   ⟨entries.s.insert expr entry, entries.l⟩
 

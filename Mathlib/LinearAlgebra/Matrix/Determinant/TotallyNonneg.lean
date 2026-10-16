@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Star.Basic
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-
 import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
 /-!
@@ -40,47 +39,54 @@ public section
 
 namespace Matrix
 
-variable {ι κ R : Type*} [PartialOrder ι] [PartialOrder κ] [CommRing R] [PartialOrder R]
+variable
+  {ι κ R : Type*} [PartialOrder ι] [PartialOrder κ] [CommRing R] [PartialOrder R]
   {M : Matrix ι ι R} {i j : ι} {f g : κ → ι}
 
 /-- A matrix is totally nonnegative if all its finite minors have nonnegative determinant. -/
 @[expose]
 def IsTotallyNonneg (M : Matrix ι ι R) : Prop :=
-  ∀ ⦃n : ℕ⦄ ⦃rows cols : Fin n → ι⦄, StrictMono rows → StrictMono cols →
-    0 ≤ (M.submatrix rows cols).det
+  ∀ ⦃n : ℕ⦄ ⦃rows cols : Fin n → ι⦄,
+    StrictMono rows → StrictMono cols → 0 ≤ (M.submatrix rows cols).det
 
-protected lemma IsTotallyNonneg.submatrix (hM : M.IsTotallyNonneg) (hf : StrictMono f)
-    (hg : StrictMono g) : (M.submatrix f g).IsTotallyNonneg :=
-  fun n rows cols hrows hcols ↦ by simpa using hM (hf.comp hrows) (hg.comp hcols)
+protected lemma IsTotallyNonneg.submatrix
+    (hM : M.IsTotallyNonneg) (hf : StrictMono f) (hg : StrictMono g)
+    : (M.submatrix f g).IsTotallyNonneg := fun n rows cols hrows hcols ↦ by
+  simpa using hM (hf.comp hrows) (hg.comp hcols)
 
 lemma IsTotallyNonneg.nonneg (hM : M.IsTotallyNonneg) (i j : ι) : 0 ≤ M i j := by
   have hrows : StrictMono ![i] := fun _ _ _ ↦ by lia
   have hcols : StrictMono ![j] := fun _ _ _ ↦ by lia
   grind [det_unique, submatrix_apply, const_fin1_eq, hM hrows hcols]
 
-protected lemma IsTotallyNonneg.transpose (hM : M.IsTotallyNonneg) :
-    Mᵀ.IsTotallyNonneg := fun _ _ _ hrows hcols ↦ by
+protected lemma IsTotallyNonneg.transpose (hM : M.IsTotallyNonneg)
+    : Mᵀ.IsTotallyNonneg := fun _ _ _ hrows hcols ↦ by
   simp [← transpose_submatrix, hM hcols hrows]
 
-@[simp] theorem isTotallyNonneg_transpose_iff :
-    Mᵀ.IsTotallyNonneg ↔ M.IsTotallyNonneg := ⟨(·.transpose), (·.transpose)⟩
+@[simp]
+theorem isTotallyNonneg_transpose_iff : Mᵀ.IsTotallyNonneg ↔ M.IsTotallyNonneg :=
+  ⟨(·.transpose), (·.transpose)⟩
 
-protected lemma IsTotallyNonneg.conjTranspose [StarRing R] [StarOrderedRing R]
-    (hM : M.IsTotallyNonneg) : Mᴴ.IsTotallyNonneg := fun _ _ _ hrows hcols ↦ by
+protected lemma IsTotallyNonneg.conjTranspose
+    [StarRing R] [StarOrderedRing R] (hM : M.IsTotallyNonneg)
+    : Mᴴ.IsTotallyNonneg := fun _ _ _ hrows hcols ↦ by
   simp [← conjTranspose_submatrix, hM hcols hrows]
 
-@[simp] theorem isTotallyNonneg_conjTranspose_iff [StarRing R] [StarOrderedRing R] :
-    Mᴴ.IsTotallyNonneg ↔ M.IsTotallyNonneg := ⟨(by simpa using ·.conjTranspose), (·.conjTranspose)⟩
+@[simp]
+theorem isTotallyNonneg_conjTranspose_iff [StarRing R] [StarOrderedRing R]
+    : Mᴴ.IsTotallyNonneg ↔ M.IsTotallyNonneg :=
+  ⟨(by simpa using ·.conjTranspose), (·.conjTranspose)⟩
 
 variable [IsOrderedRing R]
 
-@[simp] protected lemma IsTotallyNonneg.zero : (0 : Matrix ι ι R).IsTotallyNonneg
+@[simp]
+protected lemma IsTotallyNonneg.zero : (0 : Matrix ι ι R).IsTotallyNonneg
   | 0 => by simp
   | n + 1 => by simp
 
 /-- A diagonal matrix with nonnegative diagonal entries is totally nonnegative. -/
-protected lemma IsTotallyNonneg.diagonal [DecidableEq ι] {f : ι → R} (hf : 0 ≤ f) :
-    (diagonal f).IsTotallyNonneg := by
+protected lemma IsTotallyNonneg.diagonal [DecidableEq ι] {f : ι → R} (hf : 0 ≤ f)
+    : (diagonal f).IsTotallyNonneg := by
   intro n rows cols hrows hcols
   by_cases h_range : Set.range rows = Set.range cols
   · rw [hrows.eq_of_range_eq hcols h_range, submatrix_diagonal _ _ hcols.injective, det_diagonal]
@@ -91,24 +97,25 @@ protected lemma IsTotallyNonneg.diagonal [DecidableEq ι] {f : ι → R} (hf : 0
     have : ∀ j, rows i ≠ cols j := by grind
     simp [det_eq_zero_of_row_eq_zero i, this]
 
-@[simp] lemma isTotallyNonneg_diagonal_iff [DecidableEq ι] {f : ι → R} :
-    (diagonal f).IsTotallyNonneg ↔ 0 ≤ f :=
+@[simp]
+lemma isTotallyNonneg_diagonal_iff [DecidableEq ι] {f : ι → R}
+    : (diagonal f).IsTotallyNonneg ↔ 0 ≤ f :=
   ⟨fun hM i ↦ by simpa using hM.nonneg i i, .diagonal⟩
 
-@[simp] protected lemma IsTotallyNonneg.one [DecidableEq ι] :
-    (1 : Matrix ι ι R).IsTotallyNonneg :=
+@[simp]
+protected lemma IsTotallyNonneg.one [DecidableEq ι] : (1 : Matrix ι ι R).IsTotallyNonneg :=
   IsTotallyNonneg.diagonal zero_le_one
 
-lemma IsTotallyNonneg.smul {M : Matrix ι ι R}
-    (hM : M.IsTotallyNonneg) {c : R} (hc : 0 ≤ c) :
-    (c • M).IsTotallyNonneg := by
+lemma IsTotallyNonneg.smul {M : Matrix ι ι R} (hM : M.IsTotallyNonneg) {c : R} (hc : 0 ≤ c)
+    : (c • M).IsTotallyNonneg := by
   intro _ rows cols hrows hcols
   change 0 ≤ (c • M.submatrix rows cols).det
   grind [det_smul, mul_nonneg, pow_nonneg, hM _]
 
-theorem isTotallyNonneg_smul_iff {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
-    {M : Matrix ι ι R} {c : R} (hc : 0 < c) :
-    (c • M).IsTotallyNonneg ↔ M.IsTotallyNonneg := by
+theorem isTotallyNonneg_smul_iff
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
+    {M : Matrix ι ι R} {c : R} (hc : 0 < c)
+    : (c • M).IsTotallyNonneg ↔ M.IsTotallyNonneg := by
   constructor
   · intro hM _ _ _ hrows hcols
     simpa [submatrix_smul, hc] using hM hrows hcols

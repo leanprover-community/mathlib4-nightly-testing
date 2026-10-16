@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.Find
 public import Mathlib.Data.Set.Basic
-
 import Mathlib.Tactic.ByContra
 
 /-!
@@ -26,23 +25,23 @@ namespace Nat
 
 /-! ### Sets -/
 
-
 instance Subtype.orderBot (s : Set ℕ) [DecidablePred (· ∈ s)] [h : Nonempty s] : OrderBot s where
   bot := ⟨Nat.find (nonempty_subtype.1 h), Nat.find_spec (nonempty_subtype.1 h)⟩
   bot_le x := Nat.find_min' _ x.2
 
-instance Subtype.semilatticeSup (p : ℕ → Prop) : SemilatticeSup (Subtype p) :=
-  { Subtype.instLinearOrder p, LinearOrder.toLattice with }
+instance Subtype.semilatticeSup (p : ℕ → Prop) : SemilatticeSup (Subtype p) := {
+  Subtype.instLinearOrder p, LinearOrder.toLattice with
+}
 
-theorem Subtype.coe_bot {s : Set ℕ} [DecidablePred (· ∈ s)] [h : Nonempty s] :
-    ((⊥ : s) : ℕ) = Nat.find (nonempty_subtype.1 h) :=
+theorem Subtype.coe_bot {s : Set ℕ} [DecidablePred (· ∈ s)] [h : Nonempty s]
+    : ((⊥ : s) : ℕ) = Nat.find (nonempty_subtype.1 h) :=
   rfl
 
 theorem set_eq_univ {S : Set ℕ} : S = Set.univ ↔ 0 ∈ S ∧ ∀ k : ℕ, k ∈ S → k + 1 ∈ S :=
   ⟨by rintro rfl; simp, fun ⟨h0, hs⟩ => Set.eq_univ_of_forall (set_induction h0 hs)⟩
 
-lemma exists_not_and_succ_of_not_zero_of_exists {p : ℕ → Prop} (H' : ¬ p 0) (H : ∃ n, p n) :
-    ∃ n, ¬ p n ∧ p (n + 1) := by
+lemma exists_not_and_succ_of_not_zero_of_exists {p : ℕ → Prop} (H' : ¬ p 0) (H : ∃ n, p n)
+    : ∃ n, ¬ p n ∧ p (n + 1) := by
   classical
   let k := Nat.find H
   have hk : p k := Nat.find_spec H

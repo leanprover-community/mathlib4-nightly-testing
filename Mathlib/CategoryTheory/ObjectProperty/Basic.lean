@@ -41,12 +41,10 @@ section
 
 variable [CategoryStruct.{v} C] [CategoryStruct.{v'} D]
 
-lemma le_def {P Q : ObjectProperty C} :
-    P ≤ Q ↔ ∀ (X : C), P X → Q X := Iff.rfl
+lemma le_def {P Q : ObjectProperty C} : P ≤ Q ↔ ∀ (X : C), P X → Q X := Iff.rfl
 
 @[push]
-lemma not_le_iff_exists {P Q : ObjectProperty C} :
-    ¬ P ≤ Q ↔ ∃ (X : C), P X ∧ ¬ Q X := by
+lemma not_le_iff_exists {P Q : ObjectProperty C} : ¬ P ≤ Q ↔ ∃ (X : C), P X ∧ ¬ Q X := by
   simp [le_def]
 
 /-- The typeclass associated to `P : ObjectProperty C`. -/
@@ -63,8 +61,7 @@ lemma is_of_prop (P : ObjectProperty C) {X : C} (hX : P X) : P.Is X := by rwa [P
 protected class Nonempty (P : ObjectProperty C) : Prop where
   exists_prop : ∃ X, P X
 
-lemma exists_prop_of_nonempty (P : ObjectProperty C) [P.Nonempty] : ∃ X, P X :=
-  Nonempty.exists_prop
+lemma exists_prop_of_nonempty (P : ObjectProperty C) [P.Nonempty] : ∃ X, P X := Nonempty.exists_prop
 
 lemma nonempty_of_prop {P : ObjectProperty C} {X : C} (h : P X) : P.Nonempty := ⟨X, h⟩
 
@@ -85,13 +82,14 @@ section
 
 variable {ι : Type u'} (X : ι → C)
 
-/-- The property of objects that is satisfied by the `X i` for a family
-of objects `X : ι : C`. -/
+/--
+The property of objects that is satisfied by the `X i` for a family
+of objects `X : ι : C`.
+-/
 inductive ofObj : ObjectProperty C
   | mk (i : ι) : ofObj (X i)
 
-@[simp]
-lemma ofObj_apply (i : ι) : ofObj X (X i) := ⟨i⟩
+@[simp] lemma ofObj_apply (i : ι) : ofObj X (X i) := ⟨i⟩
 
 lemma ofObj_iff (Y : C) : ofObj X Y ↔ ∃ i, X i = Y := by
   constructor
@@ -100,8 +98,7 @@ lemma ofObj_iff (Y : C) : ofObj X Y ↔ ∃ i, X i = Y := by
   · rintro ⟨i, rfl⟩
     exact ⟨i⟩
 
-lemma ofObj_le_iff (P : ObjectProperty C) :
-    ofObj X ≤ P ↔ ∀ i, P (X i) :=
+lemma ofObj_le_iff (P : ObjectProperty C) : ofObj X ≤ P ↔ ∀ i, P (X i) :=
   ⟨fun h i ↦ h _ (by simp), fun h ↦ by rintro _ ⟨i⟩; exact h i⟩
 
 instance [Nonempty ι] : (ofObj X).Nonempty :=
@@ -110,30 +107,24 @@ instance [Nonempty ι] : (ofObj X).Nonempty :=
 end
 
 @[simp]
-lemma ofObj_subtypeVal (P : ObjectProperty C) :
-    ofObj (Subtype.val : Subtype P → C) = P := by
+lemma ofObj_subtypeVal (P : ObjectProperty C) : ofObj (Subtype.val : Subtype P → C) = P := by
   ext X
-  exact ⟨by rintro ⟨X, hX⟩; exact hX,
-    fun hX ↦ ofObj_apply Subtype.val ⟨X, hX⟩⟩
+  exact ⟨by rintro ⟨X, hX⟩; exact hX, fun hX ↦ ofObj_apply Subtype.val ⟨X, hX⟩⟩
 
 /-- The property of objects in a category that is satisfied by a single object `X : C`. -/
 abbrev singleton (X : C) : ObjectProperty C := ofObj (fun (_ : Unit) ↦ X)
 
-@[simp]
-lemma singleton_iff (X Y : C) : singleton X Y ↔ X = Y := by simp [ofObj_iff]
+@[simp] lemma singleton_iff (X Y : C) : singleton X Y ↔ X = Y := by simp [ofObj_iff]
 
 @[simp]
-lemma singleton_le_iff {X : C} {P : ObjectProperty C} :
-    singleton X ≤ P ↔ P X := by
+lemma singleton_le_iff {X : C} {P : ObjectProperty C} : singleton X ≤ P ↔ P X := by
   simp [ofObj_le_iff]
 
 /-- The property of objects in a category that is satisfied by `X : C` and `Y : C`. -/
-def pair (X Y : C) : ObjectProperty C :=
-  ofObj (Sum.elim (fun (_ : Unit) ↦ X) (fun (_ : Unit) ↦ Y))
+def pair (X Y : C) : ObjectProperty C := ofObj (Sum.elim (fun (_ : Unit) ↦ X) (fun (_ : Unit) ↦ Y))
 
 @[simp]
-lemma pair_iff (X Y Z : C) :
-    pair X Y Z ↔ X = Z ∨ Y = Z := by
+lemma pair_iff (X Y Z : C) : pair X Y Z ↔ X = Z ∨ Y = Z := by
   constructor
   · rintro ⟨_ | _⟩ <;> tauto
   · rintro (rfl | rfl); exacts [⟨Sum.inl .unit⟩, ⟨Sum.inr .unit⟩]
@@ -147,29 +138,28 @@ section
 variable [Category.{v} C] [Category.{v'} D]
 
 /-- The inverse image of a property of objects by a functor. -/
-def inverseImage (P : ObjectProperty D) (F : C ⥤ D) : ObjectProperty C :=
-  fun X ↦ P (F.obj X)
+def inverseImage (P : ObjectProperty D) (F : C ⥤ D) : ObjectProperty C := fun X ↦ P (F.obj X)
 
 @[simp]
-lemma prop_inverseImage_iff (P : ObjectProperty D) (F : C ⥤ D) (X : C) :
-    P.inverseImage F X ↔ P (F.obj X) := Iff.rfl
+lemma prop_inverseImage_iff (P : ObjectProperty D) (F : C ⥤ D) (X : C)
+    : P.inverseImage F X ↔ P (F.obj X) :=
+  Iff.rfl
 
 /-- The essential image of a property of objects by a functor. -/
-def map (P : ObjectProperty C) (F : C ⥤ D) : ObjectProperty D :=
-  fun Y ↦ ∃ (X : C), P X ∧ Nonempty (F.obj X ≅ Y)
+def map (P : ObjectProperty C) (F : C ⥤ D) : ObjectProperty D := fun Y ↦
+  ∃ (X : C), P X ∧ Nonempty (F.obj X ≅ Y)
 
-lemma prop_map_iff (P : ObjectProperty C) (F : C ⥤ D) (Y : D) :
-    P.map F Y ↔ ∃ (X : C), P X ∧ Nonempty (F.obj X ≅ Y) := Iff.rfl
+lemma prop_map_iff (P : ObjectProperty C) (F : C ⥤ D) (Y : D)
+    : P.map F Y ↔ ∃ (X : C), P X ∧ Nonempty (F.obj X ≅ Y) :=
+  Iff.rfl
 
-lemma prop_map_obj (P : ObjectProperty C) (F : C ⥤ D) {X : C} (hX : P X) :
-    P.map F (F.obj X) :=
+lemma prop_map_obj (P : ObjectProperty C) (F : C ⥤ D) {X : C} (hX : P X) : P.map F (F.obj X) :=
   ⟨X, hX, ⟨Iso.refl _⟩⟩
 
 instance (P : ObjectProperty C) (F : C ⥤ D) [P.Nonempty] : (P.map F).Nonempty :=
   nonempty_of_prop (P.prop_map_obj F P.prop_arbitrary)
 
-lemma map_monotone {P Q : ObjectProperty C} (h : P ≤ Q) (F : C ⥤ D) :
-    P.map F ≤ Q.map F := by
+lemma map_monotone {P Q : ObjectProperty C} (h : P ≤ Q) (F : C ⥤ D) : P.map F ≤ Q.map F := by
   rintro X ⟨Y, hY, ⟨e⟩⟩
   exact ⟨Y, h _ hY, ⟨e⟩⟩
 
@@ -177,36 +167,35 @@ lemma map_monotone {P Q : ObjectProperty C} (h : P ≤ Q) (F : C ⥤ D) :
 inductive strictMap (P : ObjectProperty C) (F : C ⥤ D) : ObjectProperty D
   | mk (X : C) (hX : P X) : strictMap P F (F.obj X)
 
-lemma strictMap_iff (P : ObjectProperty C) (F : C ⥤ D) (Y : D) :
-    P.strictMap F Y ↔ ∃ (X : C), P X ∧ F.obj X = Y :=
+lemma strictMap_iff (P : ObjectProperty C) (F : C ⥤ D) (Y : D)
+    : P.strictMap F Y ↔ ∃ (X : C), P X ∧ F.obj X = Y :=
   ⟨by rintro ⟨X, hX⟩; exact ⟨X, hX, rfl⟩, by rintro ⟨X, hX, rfl⟩; exact ⟨X, hX⟩⟩
 
-lemma strictMap_obj (P : ObjectProperty C) (F : C ⥤ D) {X : C} (hX : P X) :
-    P.strictMap F (F.obj X) :=
+lemma strictMap_obj (P : ObjectProperty C) (F : C ⥤ D) {X : C} (hX : P X)
+    : P.strictMap F (F.obj X) :=
   ⟨X, hX⟩
 
 instance (P : ObjectProperty C) (F : C ⥤ D) [P.Nonempty] : (P.strictMap F).Nonempty :=
   nonempty_of_prop (P.strictMap_obj F P.prop_arbitrary)
 
-lemma strictMap_monotone {P Q : ObjectProperty C} (h : P ≤ Q) (F : C ⥤ D) :
-    P.strictMap F ≤ Q.strictMap F := by
+lemma strictMap_monotone {P Q : ObjectProperty C} (h : P ≤ Q) (F : C ⥤ D)
+    : P.strictMap F ≤ Q.strictMap F := by
   rintro _ ⟨X, hX⟩
   exact ⟨X, h _ hX⟩
 
-lemma strictMap_le_map (P : ObjectProperty C) (F : C ⥤ D) :
-    P.strictMap F ≤ P.map F := by
+lemma strictMap_le_map (P : ObjectProperty C) (F : C ⥤ D) : P.strictMap F ≤ P.map F := by
   rintro _ ⟨X, hX⟩
   exact ⟨X, hX, ⟨Iso.refl _⟩⟩
 
 @[simp]
-lemma strictMap_ofObj {ι : Type u'} (X : ι → C) (F : C ⥤ D) :
-    (ofObj X).strictMap F = ofObj (F.obj ∘ X) := by
+lemma strictMap_ofObj {ι : Type u'} (X : ι → C) (F : C ⥤ D)
+    : (ofObj X).strictMap F = ofObj (F.obj ∘ X) := by
   ext Y
   simp [ofObj_iff, strictMap_iff]
 
 @[simp high]
-lemma strictMap_singleton (X : C) (F : C ⥤ D) :
-    (singleton X).strictMap F = singleton (F.obj X) := by
+lemma strictMap_singleton (X : C) (F : C ⥤ D)
+    : (singleton X).strictMap F = singleton (F.obj X) := by
   ext
   simp [strictMap_iff]
 

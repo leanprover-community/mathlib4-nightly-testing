@@ -51,12 +51,11 @@ class UnivLE : Prop where
 
 attribute [instance] UnivLE.small
 
-
 /- This is useless as an instance due to https://github.com/leanprover/lean4/issues/2297 -/
-theorem univLE_max : UnivLE.{u, max u v} where small α := small_max.{v} α
+theorem univLE_max : UnivLE.{u, max u v} where
+  small α := small_max.{v} α
 
-theorem Small.trans_univLE (α : Type w) [hα : Small.{u} α] [h : UnivLE.{u, v}] :
-    Small.{v} α :=
+theorem Small.trans_univLE (α : Type w) [hα : Small.{u} α] [h : UnivLE.{u, v}] : Small.{v} α :=
   let ⟨β, ⟨f⟩⟩ := hα.equiv_small
   let ⟨_, ⟨g⟩⟩ := (h.small β).equiv_small
   ⟨_, ⟨f.trans g⟩⟩

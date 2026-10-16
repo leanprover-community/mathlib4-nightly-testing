@@ -26,26 +26,30 @@ open scoped Topology Pointwise
 
 open MulAction Set Function
 
-variable {G X : Type*} [TopologicalSpace G] [TopologicalSpace X]
-  [Group G] [IsTopologicalGroup G] [MulAction G X]
-  [SigmaCompactSpace G] [BaireSpace X] [T2Space X]
-  [ContinuousSMul G X] [IsPretransitive G X]
+variable
+  {G X : Type*}
+  [TopologicalSpace G] [TopologicalSpace X] [Group G] [IsTopologicalGroup G] [MulAction G X]
+  [SigmaCompactSpace G] [BaireSpace X] [T2Space X] [ContinuousSMul G X] [IsPretransitive G X]
 
-/-- Consider a sigma-compact group acting continuously and transitively on a Baire space. Then
+/--
+Consider a sigma-compact group acting continuously and transitively on a Baire space. Then
 the orbit map is open around the identity. It follows in `isOpenMap_smul_of_sigmaCompact` that it
-is open around any point. -/
+is open around any point.
+-/
 @[to_additive /-- Consider a sigma-compact additive group acting continuously and transitively on a
 Baire space. Then the orbit map is open around zero. It follows in
 `isOpenMap_vadd_of_sigmaCompact` that it is open around any point. -/]
-theorem smul_singleton_mem_nhds_of_sigmaCompact
-    {U : Set G} (hU : U ∈ 𝓝 1) (x : X) : U • {x} ∈ 𝓝 x := by
-  /- Consider a small closed neighborhood `V` of the identity. Then the group is covered by
+theorem smul_singleton_mem_nhds_of_sigmaCompact {U : Set G} (hU : U ∈ 𝓝 1) (x : X)
+    : U • {x} ∈ 𝓝 x := by
+  /-
+  Consider a small closed neighborhood `V` of the identity. Then the group is covered by
   countably many translates of `V`, say `gᵢ V`. Let also `Kₙ` be a sequence of compact sets covering
   the space. Then the image of `Kₙ ∩ gᵢ V` in the orbit is compact, and their unions covers the
   space. By Baire, one of them has nonempty interior. Then `gᵢ V • x` has nonempty interior, and
   so does `V • x`. Its interior contains a point `g' x` with `g' ∈ V`. Then `g'⁻¹ • V • x` contains
   a neighborhood of `x`, and it is included in `V⁻¹ • V • x`, which is itself contained in `U • x`
-  if `V` is small enough. -/
+  if `V` is small enough.
+  -/
   obtain ⟨V, V_mem, V_closed, V_symm, VU⟩ : ∃ V ∈ 𝓝 (1 : G), IsClosed V ∧ V⁻¹ = V ∧ V * V ⊆ U :=
     exists_closed_nhds_one_inv_eq_mul_subset hU
   obtain ⟨s, s_count, hs⟩ : ∃ (s : Set G), s.Countable ∧ ⋃ g ∈ s, g • V = univ :=
@@ -87,16 +91,20 @@ theorem smul_singleton_mem_nhds_of_sigmaCompact
     exact VU
   exact Filter.mem_of_superset J this
 
-/-- Consider a sigma-compact group acting continuously and transitively on a Baire space. Then
+/--
+Consider a sigma-compact group acting continuously and transitively on a Baire space. Then
 the orbit map is open. This is a version of the open mapping theorem, valid notably for the
-action of a sigma-compact locally compact group on a locally compact space. -/
+action of a sigma-compact locally compact group on a locally compact space.
+-/
 @[to_additive /-- Consider a sigma-compact additive group acting continuously and transitively on a
 Baire space. Then the orbit map is open. This is a version of the open mapping theorem, valid
 notably for the action of a sigma-compact locally compact group on a locally compact space. -/]
 theorem isOpenMap_smul_of_sigmaCompact (x : X) : IsOpenMap (fun (g : G) ↦ g • x) := by
-  /- We have already proved the theorem around the basepoint of the orbit, in
+  /-
+  We have already proved the theorem around the basepoint of the orbit, in
   `smul_singleton_mem_nhds_of_sigmaCompact`. The general statement follows around an arbitrary
-  point by changing basepoints. -/
+  point by changing basepoints.
+  -/
   simp_rw [isOpenMap_iff_nhds_le, Filter.le_map_iff]
   intro g U hU
   have : (· • x) = (· • (g • x)) ∘ (· * g⁻¹) := by
@@ -106,15 +114,17 @@ theorem isOpenMap_smul_of_sigmaCompact (x : X) : IsOpenMap (fun (g : G) ↦ g �
   apply smul_singleton_mem_nhds_of_sigmaCompact
   simpa using isOpenMap_mul_right g⁻¹ |>.image_mem_nhds hU
 
-/-- A surjective morphism of topological groups is open when the source group is sigma-compact and
-the target group is a Baire space (for instance a locally compact group). -/
+/--
+A surjective morphism of topological groups is open when the source group is sigma-compact and
+the target group is a Baire space (for instance a locally compact group).
+-/
 @[to_additive /-- A surjective morphism of additive topological groups is open when the source group
 is sigma-compact and the target group is a Baire space (for instance a locally compact additive
 group). -/]
 theorem MonoidHom.isOpenMap_of_sigmaCompact
     {H : Type*} [Group H] [TopologicalSpace H] [BaireSpace H] [T2Space H] [ContinuousMul H]
-    (f : G →* H) (hf : Function.Surjective f) (h'f : Continuous f) :
-    IsOpenMap f := by
+    (f : G →* H) (hf : Function.Surjective f) (h'f : Continuous f)
+    : IsOpenMap f := by
   let A : MulAction G H := MulAction.compHom _ f
   have : ContinuousSMul G H := continuousSMul_compHom h'f
   have : IsPretransitive G H := isPretransitive_compHom hf

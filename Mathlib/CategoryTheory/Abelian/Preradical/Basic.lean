@@ -65,18 +65,15 @@ class IsIdempotent : Prop where
 
 attribute [instance] IsIdempotent.isIso_whiskerLeft_r_ι
 
-instance [Φ.IsIdempotent] (X : C) :
-    IsIso (Φ.ι.app (Φ.r.obj X)) :=
+instance [Φ.IsIdempotent] (X : C) : IsIso (Φ.ι.app (Φ.r.obj X)) :=
   inferInstanceAs (IsIso ((Functor.whiskerLeft Φ.r Φ.ι).app X))
 
-instance [Φ.IsIdempotent] (X : C) :
-    IsIso (Φ.r.map (Φ.ι.app X)) := by
+instance [Φ.IsIdempotent] (X : C) : IsIso (Φ.r.map (Φ.ι.app X)) := by
   rw [r_map_ι_app]
   infer_instance
 
 set_option backward.defeqAttrib.useBackward true in
-instance {D : Type*} [Category* D] (F : D ⥤ C) :
-    Mono (Functor.whiskerLeft F Φ.ι) := by
+instance {D : Type*} [Category* D] (F : D ⥤ C) : Mono (Functor.whiskerLeft F Φ.ι) := by
   rw [NatTrans.mono_iff_mono_app]
   intro
   dsimp

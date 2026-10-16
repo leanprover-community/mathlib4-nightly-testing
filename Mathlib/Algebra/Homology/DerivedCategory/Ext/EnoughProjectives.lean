@@ -37,28 +37,30 @@ open HomologicalComplex
 
 set_option backward.defeqAttrib.useBackward true in
 lemma isSplitEpi_to_singleFunctor_obj_of_projective
-    {P : C} [Projective P] {K : CochainComplex C ℤ} {i : ℤ}
-    (π : K ⟶ (CochainComplex.singleFunctor C i).obj P) [K.IsStrictlyLE i] [QuasiIsoAt π i] :
-    IsSplitEpi π := by
-  let e := K.iCyclesIso i (i + 1) (by simp)
-    ((K.isZero_of_isStrictlyLE i (i + 1) (by simp)).eq_of_tgt _ _)
+    {P : C} [Projective P]
+    {K : CochainComplex C ℤ} {i : ℤ} (π : K ⟶ (CochainComplex.singleFunctor C i).obj P)
+    [K.IsStrictlyLE i] [QuasiIsoAt π i]
+    : IsSplitEpi π := by
+  let e :=
+    K.iCyclesIso i (i + 1) (by simp) ((K.isZero_of_isStrictlyLE i (i + 1) (by simp)).eq_of_tgt _ _)
   let α := e.inv ≫ K.homologyπ i ≫ homologyMap π i ≫ (singleObjHomologySelfIso _ _ _).hom
   have : π.f i = α ≫ (singleObjXSelf (ComplexShape.up ℤ) i P).inv := by
     rw [← cancel_epi e.hom]
     dsimp [α, e]
-    rw [assoc, assoc, assoc, iCyclesIso_hom_inv_id_assoc,
-      homologyπ_naturality_assoc]
+    rw [assoc, assoc, assoc, iCyclesIso_hom_inv_id_assoc, homologyπ_naturality_assoc]
     dsimp [singleFunctor, singleFunctors]
-    rw [homologyπ_singleObjHomologySelfIso_hom_assoc,
-      ← singleObjCyclesSelfIso_inv_iCycles, Iso.hom_inv_id_assoc, ← cyclesMap_i]
+    rw [homologyπ_singleObjHomologySelfIso_hom_assoc, ← singleObjCyclesSelfIso_inv_iCycles,
+      Iso.hom_inv_id_assoc, ← cyclesMap_i]
   exact ⟨⟨{
-    section_ := mkHomFromSingle (Projective.factorThru (𝟙 P) α) (by
-      rintro _ rfl
-      apply (K.isZero_of_isStrictlyLE i (i + 1) (by simp)).eq_of_tgt)
+    section_ :=
+      mkHomFromSingle (Projective.factorThru (𝟙 P) α) (by
+        rintro _ rfl
+        apply (K.isZero_of_isStrictlyLE i (i + 1) (by simp)).eq_of_tgt)
     id := by
       apply HomologicalComplex.from_single_hom_ext
-      rw [comp_f, mkHomFromSingle_f, assoc, id_f, this, Projective.factorThru_comp_assoc,
-        id_comp, Iso.hom_inv_id] }⟩⟩
+      rw [comp_f, mkHomFromSingle_f, assoc, id_f, this, Projective.factorThru_comp_assoc, id_comp,
+        Iso.hom_inv_id]
+  }⟩⟩
 
 end CochainComplex
 
@@ -66,11 +68,12 @@ namespace DerivedCategory
 
 variable [HasDerivedCategory.{w} C]
 
-lemma from_singleFunctor_obj_eq_zero_of_projective {P : C} [Projective P]
+lemma from_singleFunctor_obj_eq_zero_of_projective
+    {P : C} [Projective P]
     {L : CochainComplex C ℤ} {i : ℤ}
     (φ : Q.obj ((CochainComplex.singleFunctor C i).obj P) ⟶ Q.obj L)
-    (n : ℤ) (hn : n < i) [L.IsStrictlyLE n] :
-    φ = 0 := by
+    (n : ℤ) (hn : n < i) [L.IsStrictlyLE n]
+    : φ = 0 := by
   obtain ⟨K, _, π, h, g, rfl⟩ := right_fac_of_isStrictlyLE φ i
   have hπ : IsSplitEpi π := by
     rw [isIso_Q_map_iff_quasiIso] at h
@@ -94,30 +97,32 @@ namespace Abelian.Ext
 
 open DerivedCategory
 
-lemma eq_zero_of_projective [HasExt.{w} C] {P Y : C} {n : ℕ} [Projective P]
-    (e : Ext P Y (n + 1)) : e = 0 := by
+lemma eq_zero_of_projective [HasExt.{w} C] {P Y : C} {n : ℕ} [Projective P] (e : Ext P Y (n + 1))
+    : e = 0 := by
   let := HasDerivedCategory.standard C
   apply homEquiv.injective
-  simp only [← cancel_mono (((singleFunctors C).shiftIso (n + 1) (-(n + 1)) 0
-    (by lia)).hom.app _), zero_hom, Limits.zero_comp]
+  simp only [← cancel_mono (((singleFunctors C).shiftIso (n + 1) (-(n + 1)) 0 (by lia)).hom.app _),
+    zero_hom, Limits.zero_comp]
   apply from_singleFunctor_obj_eq_zero_of_projective
     (L := (CochainComplex.singleFunctor C (-(n + 1))).obj Y) (n := -(n + 1)) _ (by lia)
 
-lemma subsingleton_of_projective [HasExt.{w} C]
-    (P Y : C) [Projective P] (n : ℕ) : Subsingleton (Ext.{w} P Y (n + 1)) :=
+lemma subsingleton_of_projective [HasExt.{w} C] (P Y : C) [Projective P] (n : ℕ)
+    : Subsingleton (Ext.{w} P Y (n + 1)) :=
   subsingleton_of_forall_eq 0 Ext.eq_zero_of_projective
 
 attribute [local instance] Ext.subsingleton_of_projective in
-/-- For a short exact complex whose middle object is projective, the vanishing of
-`Ext S.X₃ M 1` is equivalent to surjectivity of precomposition along `S.f` on `Ext⁰`. -/
-lemma one_subsingleton_iff_of_projective [HasExt.{w} C] (X : C)
-    (S : ShortComplex C) (S_exact : S.ShortExact) (proj : Projective S.X₂) :
-    Subsingleton (Ext S.X₃ X 1) ↔
-      Function.Surjective ((Ext.mk₀ S.f).precomp X (add_zero 0)) := by
-  refine ⟨fun h x₁ ↦ Ext.contravariant_sequence_exact₁ S_exact _ x₁ (add_zero _)
-    (by subsingleton), fun h ↦ subsingleton_of_forall_eq 0 (fun x₃ ↦ ?_)⟩
-  obtain ⟨x₁, rfl⟩ := Ext.contravariant_sequence_exact₃ S_exact _ x₃
-    (by subsingleton) (add_zero 1)
+/--
+For a short exact complex whose middle object is projective, the vanishing of
+`Ext S.X₃ M 1` is equivalent to surjectivity of precomposition along `S.f` on `Ext⁰`.
+-/
+lemma one_subsingleton_iff_of_projective
+    [HasExt.{w} C] (X : C) (S : ShortComplex C) (S_exact : S.ShortExact) (proj : Projective S.X₂)
+    : Subsingleton (Ext S.X₃ X 1) ↔ Function.Surjective ((Ext.mk₀ S.f).precomp X (add_zero 0)) := by
+  refine ⟨
+    fun h x₁ ↦ Ext.contravariant_sequence_exact₁ S_exact _ x₁ (add_zero _) (by subsingleton),
+    fun h ↦ subsingleton_of_forall_eq 0 (fun x₃ ↦ ?_)
+  ⟩
+  obtain ⟨x₁, rfl⟩ := Ext.contravariant_sequence_exact₃ S_exact _ x₃ (by subsingleton) (add_zero 1)
   obtain ⟨x₂, rfl⟩ := h x₁
   simp
 
@@ -127,13 +132,15 @@ variable (C)
 
 open Abelian
 
-/-- If `C` is a locally `w`-small abelian category with enough projectives,
+/--
+If `C` is a locally `w`-small abelian category with enough projectives,
 then `HasExt.{w} C` holds. We do not make this an instance though:
 for a given category `C`, there may be different reasonable choices for
 the universe `w`, and if we have two `HasExt.{w₁} C` and `HasExt.{w₂} C`
 instances, we would have to specify the universe explicitly almost
 everywhere, which would be an inconvenience. Then, we must be
-very selective regarding `HasExt` instances. -/
+very selective regarding `HasExt` instances.
+-/
 lemma hasExt_of_enoughProjectives [LocallySmall.{w} C] [EnoughProjectives C] : HasExt.{w} C := by
   let := HasDerivedCategory.standard C
   have := hasExt_of_hasDerivedCategory C
@@ -145,11 +152,9 @@ lemma hasExt_of_enoughProjectives [LocallySmall.{w} C] [EnoughProjectives C] : H
     infer_instance
   | succ n hn =>
     let S := ShortComplex.mk _ _ (kernel.condition (Projective.π X))
-    have hS : S.ShortExact :=
-      { exact := ShortComplex.exact_of_f_is_kernel _ (kernelIsKernel S.g) }
+    have hS : S.ShortExact := { exact := ShortComplex.exact_of_f_is_kernel _ (kernelIsKernel S.g) }
     have : Function.Surjective (Ext.precomp hS.extClass Y (add_comm 1 n)) := fun x₃ ↦
-      Ext.contravariant_sequence_exact₃ hS Y x₃
-        (Ext.eq_zero_of_projective _) (by lia)
+      Ext.contravariant_sequence_exact₃ hS Y x₃ (Ext.eq_zero_of_projective _) (by lia)
     exact small_of_surjective.{w} this
 
 end CategoryTheory

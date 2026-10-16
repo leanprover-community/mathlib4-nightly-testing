@@ -46,16 +46,16 @@ public register_option linter.commandRanges : Bool := {
 namespace CommandRanges
 
 @[inherit_doc Mathlib.Linter.linter.commandRanges]
-def commandRangesLinter : Linter where run stx := do
-  unless Linter.getLinterValue linter.commandRanges (← getLinterOptions) do
-    return
-  if Parser.isTerminalCommand stx then
-    return
-  let ranges :=
-    if let some rg := stx.getRange? then #[rg.start, rg.stop] else #[]
-  let ranges : Array String.Pos.Raw :=
-    if let some rg := stx.getRangeWithTrailing? then ranges.push rg.stop else ranges
-  logInfo m!"{ranges}"
+def commandRangesLinter : Linter where
+  run stx := do
+    unless Linter.getLinterValue linter.commandRanges (← getLinterOptions) do
+      return
+    if Parser.isTerminalCommand stx then
+      return
+    let ranges := if let some rg := stx.getRange? then #[rg.start, rg.stop] else #[]
+    let ranges : Array String.Pos.Raw :=
+      if let some rg := stx.getRangeWithTrailing? then ranges.push rg.stop else ranges
+    logInfo m!"{ranges}"
 
 initialize addLinter commandRangesLinter
 

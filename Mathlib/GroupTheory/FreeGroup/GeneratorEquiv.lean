@@ -39,6 +39,6 @@ def Equiv.ofFreeGroupEquiv (e : FreeGroup α ≃* FreeGroup β) : α ≃ β :=
   .ofFreeAbelianGroupEquiv (MulEquiv.toAdditive e.abelianizationCongr)
 
 /-- Isomorphic free groups have equivalent bases (`IsFreeGroup` variant). -/
-def Equiv.ofIsFreeGroupEquiv [Group G] [Group H] [IsFreeGroup G] [IsFreeGroup H] (e : G ≃* H) :
-    Generators G ≃ Generators H :=
+def Equiv.ofIsFreeGroupEquiv [Group G] [Group H] [IsFreeGroup G] [IsFreeGroup H] (e : G ≃* H)
+    : Generators G ≃ Generators H :=
   .ofFreeGroupEquiv <| (toFreeGroup G).symm.trans <| e.trans <| toFreeGroup H

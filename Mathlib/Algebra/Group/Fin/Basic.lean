@@ -86,19 +86,21 @@ instance instIsCancelAdd (n : ℕ) : IsCancelAdd (Fin n) where
   add_right_cancel := Nat.casesOn n finZeroElim fun _i _ _ _ ↦ add_right_cancel
 
 /-- Note this is more general than `Fin.addCommGroup` as it applies (vacuously) to `Fin 0` too. -/
-instance instAddLeftCancelSemigroup (n : ℕ) : AddLeftCancelSemigroup (Fin n) :=
-  { Fin.addCommSemigroup n, Fin.instIsCancelAdd n with }
+instance instAddLeftCancelSemigroup (n : ℕ) : AddLeftCancelSemigroup (Fin n) := {
+  Fin.addCommSemigroup n, Fin.instIsCancelAdd n with
+}
 
 /-- Note this is more general than `Fin.addCommGroup` as it applies (vacuously) to `Fin 0` too. -/
-instance instAddRightCancelSemigroup (n : ℕ) : AddRightCancelSemigroup (Fin n) :=
-  { Fin.addCommSemigroup n, Fin.instIsCancelAdd n with }
+instance instAddRightCancelSemigroup (n : ℕ) : AddRightCancelSemigroup (Fin n) := {
+  Fin.addCommSemigroup n, Fin.instIsCancelAdd n with
+}
 
 /-! ### Miscellaneous lemmas -/
 
 open scoped Fin.NatCast Fin.IntCast in
 /-- Variant of `Fin.intCast_def` with `Nat.cast` on the RHS. -/
-theorem intCast_def' {n : Nat} [NeZero n] (x : Int) :
-    (x : Fin n) = if 0 ≤ x then ↑x.natAbs else -↑x.natAbs :=
+theorem intCast_def' {n : Nat} [NeZero n] (x : Int)
+    : (x : Fin n) = if 0 ≤ x then ↑x.natAbs else - ↑x.natAbs :=
   Fin.intCast_def _
 
 lemma coe_sub_one (a : Fin (n + 1)) : ↑(a - 1) = if a = 0 then n else a - 1 := by
@@ -108,22 +110,18 @@ lemma coe_sub_one (a : Fin (n + 1)) : ↑(a - 1) = if a = 0 then n else a - 1 :=
   · simp [h]
   exact val_sub_one_of_ne_zero h
 
-@[simp]
-lemma lt_sub_iff {n : ℕ} {a b : Fin n} : a < a - b ↔ a < b := by
-  fin_omega
+@[simp] lemma lt_sub_iff {n : ℕ} {a b : Fin n} : a < a - b ↔ a < b := by fin_omega
 
 @[simp]
 lemma sub_le_iff {n : ℕ} {a b : Fin n} : a - b ≤ a ↔ b ≤ a := by
   rw [← not_iff_not, Fin.not_le, Fin.not_le, lt_sub_iff]
 
+@[simp] lemma lt_one_iff {n : ℕ} (x : Fin (n + 2)) : x < 1 ↔ x = 0 := by simp [lt_def]
+
+lemma lt_sub_one_iff {k : Fin (n + 2)} : k < k - 1 ↔ k = 0 := by simp
+
 @[simp]
-lemma lt_one_iff {n : ℕ} (x : Fin (n + 2)) : x < 1 ↔ x = 0 := by
-  simp [lt_def]
-
-lemma lt_sub_one_iff {k : Fin (n + 2)} : k < k - 1 ↔ k = 0 := by
-  simp
-
-@[simp] lemma le_sub_one_iff {k : Fin (n + 1)} : k ≤ k - 1 ↔ k = 0 := by
+lemma le_sub_one_iff {k : Fin (n + 1)} : k ≤ k - 1 ↔ k = 0 := by
   cases n
   · simp [fin_one_eq_zero k]
   rw [le_def, Nat.le_iff_lt_or_eq, val_fin_lt, lt_sub_iff, val_inj, eq_comm, sub_eq_self]
@@ -132,7 +130,7 @@ lemma lt_sub_one_iff {k : Fin (n + 2)} : k < k - 1 ↔ k = 0 := by
 lemma sub_one_lt_iff {k : Fin (n + 1)} : k - 1 < k ↔ 0 < k :=
   not_iff_not.1 <| by simp only [lt_def, Nat.not_lt, val_fin_le, le_sub_one_iff, le_zero_iff]
 
-@[simp] lemma neg_last (n : ℕ) : -Fin.last n = 1 := by simp [neg_eq_iff_add_eq_zero]
+@[simp] lemma neg_last (n : ℕ) : - Fin.last n = 1 := by simp [neg_eq_iff_add_eq_zero]
 
 open Fin.NatCast in
 lemma neg_natCast_eq_one (n : ℕ) : -(n : Fin (n + 1)) = 1 := by
@@ -143,8 +141,7 @@ lemma rev_add (a b : Fin n) : rev (a + b) = rev a - b := by
   · exact a.elim0
   rw [← last_sub, ← last_sub, sub_add_eq_sub_sub]
 
-lemma rev_sub (a b : Fin n) : rev (a - b) = rev a + b := by
-  rw [rev_eq_iff, rev_add, rev_rev]
+lemma rev_sub (a b : Fin n) : rev (a - b) = rev a + b := by rw [rev_eq_iff, rev_add, rev_rev]
 
 lemma lt_add_one_of_succ_lt {n : ℕ} [NeZero n] {a : Fin n} (ha : a + 1 < n) : a < a + 1 := by
   rw [lt_def, val_add, coe_ofNat_eq_mod, Nat.add_mod_mod, Nat.mod_eq_of_lt ha]

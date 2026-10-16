@@ -32,8 +32,7 @@ example : I ^ 7 = -I := by simp only [I_pow_eq_pow_mod', Nat.reduceMod, I_pow_th
 example : I ^ 8 = 1 := by simp only [I_pow_eq_pow_mod', Nat.reduceMod, pow_zero]
 
 -- the appropriate simp only sequence can reduce I ^ n for literal ints n
-example : I ^ (5 : ℤ) = I := by
-  simp only [zpow_ofNat, I_pow_eq_pow_mod', Nat.reduceMod, pow_one]
+example : I ^ (5 : ℤ) = I := by simp only [zpow_ofNat, I_pow_eq_pow_mod', Nat.reduceMod, pow_one]
 
 -- the appropriate simp only sequence can reduce I ^ (-n) for literal nats n
 example : I ^ (-5 : ℤ) = -I := by

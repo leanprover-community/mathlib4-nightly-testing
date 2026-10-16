@@ -31,17 +31,16 @@ open CategoryTheory.Functor
 section
 variable {A B C D : Type*} [Category* A] [Category* B] [Category* C] [Category* D]
 
-
 variable (A) in
 /-- The structural isomorphism for composition of `pseudofunctorRight`. -/
-def mapCompRight (F : B ⥤ C) (G : C ⥤ D) :
-    mapPair (𝟭 A) (F ⋙ G) ≅ mapPair (𝟭 A) F ⋙ mapPair (𝟭 A) G :=
+def mapCompRight (F : B ⥤ C) (G : C ⥤ D)
+    : mapPair (𝟭 A) (F ⋙ G) ≅ mapPair (𝟭 A) F ⋙ mapPair (𝟭 A) G :=
   mapIsoWhiskerRight (Functor.leftUnitor _).symm _ ≪≫ mapPairComp (𝟭 A) F (𝟭 A) G
 
 variable (D) in
 /-- The structural isomorphism for composition of `pseudofunctorLeft`. -/
-def mapCompLeft (F : A ⥤ B) (G : B ⥤ C) :
-    mapPair (F ⋙ G) (𝟭 D) ≅ mapPair F (𝟭 D) ⋙ mapPair G (𝟭 D) :=
+def mapCompLeft (F : A ⥤ B) (G : B ⥤ C)
+    : mapPair (F ⋙ G) (𝟭 D) ≅ mapPair F (𝟭 D) ⋙ mapPair G (𝟭 D) :=
   mapIsoWhiskerLeft _ (Functor.leftUnitor _).symm ≪≫ mapPairComp F (𝟭 D) G (𝟭 D)
 
 #adaptation_note
@@ -56,10 +55,10 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (A) in
 @[reassoc]
-lemma mapWhiskerLeft_whiskerLeft (F : B ⥤ C) {G H : C ⥤ D} (η : G ⟶ H) :
-    mapWhiskerLeft _ (whiskerLeft F η) =
-    (mapCompRight A F G).hom ≫ whiskerLeft (mapPair (𝟭 A) F) (mapWhiskerLeft _ η) ≫
-      (mapCompRight A F H).inv := by
+lemma mapWhiskerLeft_whiskerLeft (F : B ⥤ C) {G H : C ⥤ D} (η : G ⟶ H)
+    : mapWhiskerLeft _ (whiskerLeft F η)
+      = (mapCompRight A F G).hom ≫ whiskerLeft (mapPair (𝟭 A) F) (mapWhiskerLeft _ η)
+        ≫ (mapCompRight A F H).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
 #adaptation_note
@@ -74,30 +73,30 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (D) in
 @[reassoc]
-lemma mapWhiskerRight_whiskerLeft (F : A ⥤ B) {G H : B ⥤ C} (η : G ⟶ H) :
-    mapWhiskerRight (whiskerLeft F η) (𝟭 D) =
-    (mapCompLeft D F G).hom ≫ whiskerLeft (mapPair F (𝟭 D)) (mapWhiskerRight η _) ≫
-      (mapCompLeft D F H).inv := by
+lemma mapWhiskerRight_whiskerLeft (F : A ⥤ B) {G H : B ⥤ C} (η : G ⟶ H)
+    : mapWhiskerRight (whiskerLeft F η) (𝟭 D)
+      = (mapCompLeft D F G).hom ≫ whiskerLeft (mapPair F (𝟭 D)) (mapWhiskerRight η _)
+        ≫ (mapCompLeft D F H).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompLeft]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (A) in
 @[reassoc]
-lemma mapWhiskerLeft_whiskerRight {F G : B ⥤ C} (η : F ⟶ G) (H : C ⥤ D) :
-    mapWhiskerLeft _ (whiskerRight η H) =
-    (mapCompRight A F H).hom ≫ whiskerRight (mapWhiskerLeft _ η) (mapPair (𝟭 A) H) ≫
-      (mapCompRight A G H).inv := by
+lemma mapWhiskerLeft_whiskerRight {F G : B ⥤ C} (η : F ⟶ G) (H : C ⥤ D)
+    : mapWhiskerLeft _ (whiskerRight η H)
+      = (mapCompRight A F H).hom ≫ whiskerRight (mapWhiskerLeft _ η) (mapPair (𝟭 A) H)
+        ≫ (mapCompRight A G H).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (D) in
 @[reassoc]
-lemma mapWhiskerRight_whiskerRight {F G : A ⥤ B} (η : F ⟶ G) (H : B ⥤ C) :
-    mapWhiskerRight (whiskerRight η H) _ =
-    (mapCompLeft D F H).hom ≫ whiskerRight (mapWhiskerRight η _) (mapPair H (𝟭 D)) ≫
-      (mapCompLeft D G H).inv := by
+lemma mapWhiskerRight_whiskerRight {F G : A ⥤ B} (η : F ⟶ G) (H : B ⥤ C)
+    : mapWhiskerRight (whiskerRight η H) _
+      = (mapCompLeft D F H).hom ≫ whiskerRight (mapWhiskerRight η _) (mapPair H (𝟭 D))
+        ≫ (mapCompLeft D G H).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompLeft]
 
 variable {E : Type*} [Category* E]
@@ -105,52 +104,54 @@ variable {E : Type*} [Category* E]
 set_option backward.defeqAttrib.useBackward true in
 variable (A) in
 @[reassoc]
-lemma mapWhiskerLeft_associator_hom (F : B ⥤ C) (G : C ⥤ D) (H : D ⥤ E) :
-    mapWhiskerLeft _ (F.associator G H).hom =
-      (mapCompRight A (F ⋙ G) H).hom ≫ whiskerRight (mapCompRight A F G).hom (mapPair (𝟭 A) H) ≫
-      ((mapPair (𝟭 A) F).associator (mapPair (𝟭 A) G) (mapPair (𝟭 A) H)).hom ≫
-      whiskerLeft (mapPair (𝟭 A) F) (mapCompRight A G H).inv ≫ (mapCompRight A F (G ⋙ H)).inv := by
+lemma mapWhiskerLeft_associator_hom (F : B ⥤ C) (G : C ⥤ D) (H : D ⥤ E)
+    : mapWhiskerLeft _ (F.associator G H).hom
+      = (mapCompRight A (F ⋙ G) H).hom ≫ whiskerRight (mapCompRight A F G).hom (mapPair (𝟭 A) H)
+        ≫ ((mapPair (𝟭 A) F).associator (mapPair (𝟭 A) G) (mapPair (𝟭 A) H)).hom
+        ≫ whiskerLeft (mapPair (𝟭 A) F) (mapCompRight A G H).inv
+        ≫ (mapCompRight A F (G ⋙ H)).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
 set_option backward.defeqAttrib.useBackward true in
 variable (E) in
-lemma mapWhiskerRight_associator_hom (F : A ⥤ B) (G : B ⥤ C) (H : C ⥤ D) :
-    mapWhiskerRight (F.associator G H).hom _ =
-    (mapCompLeft E (F ⋙ G) H).hom ≫ whiskerRight (mapCompLeft E F G).hom (mapPair H (𝟭 E)) ≫
-      ((mapPair F (𝟭 E)).associator (mapPair G (𝟭 E)) (mapPair H (𝟭 E))).hom ≫
-      whiskerLeft (mapPair F (𝟭 E)) (mapCompLeft E G H).inv ≫ (mapCompLeft E F (G ⋙ H)).inv := by
+lemma mapWhiskerRight_associator_hom (F : A ⥤ B) (G : B ⥤ C) (H : C ⥤ D)
+    : mapWhiskerRight (F.associator G H).hom _
+      = (mapCompLeft E (F ⋙ G) H).hom ≫ whiskerRight (mapCompLeft E F G).hom (mapPair H (𝟭 E))
+        ≫ ((mapPair F (𝟭 E)).associator (mapPair G (𝟭 E)) (mapPair H (𝟭 E))).hom
+        ≫ whiskerLeft (mapPair F (𝟭 E)) (mapCompLeft E G H).inv
+        ≫ (mapCompLeft E F (G ⋙ H)).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompLeft]
 
 set_option backward.defeqAttrib.useBackward true in
 variable (A) in
-lemma mapWhiskerLeft_leftUnitor_hom (F : B ⥤ C) :
-    mapWhiskerLeft _ F.leftUnitor.hom =
-    (mapCompRight A (𝟭 _) F).hom ≫ whiskerRight mapPairId.hom (mapPair _ F) ≫
-      (mapPair _ F).leftUnitor.hom := by
+lemma mapWhiskerLeft_leftUnitor_hom (F : B ⥤ C)
+    : mapWhiskerLeft _ F.leftUnitor.hom
+      = (mapCompRight A (𝟭 _) F).hom ≫ whiskerRight mapPairId.hom (mapPair _ F)
+        ≫ (mapPair _ F).leftUnitor.hom := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
 set_option backward.defeqAttrib.useBackward true in
 variable (C) in
-lemma mapWhiskerRight_leftUnitor_hom (F : A ⥤ B) :
-    mapWhiskerRight F.leftUnitor.hom (𝟭 C) =
-    (mapCompLeft C (𝟭 A) F).hom ≫ whiskerRight mapPairId.hom (mapPair F (𝟭 C)) ≫
-      (mapPair F (𝟭 C)).leftUnitor.hom := by
+lemma mapWhiskerRight_leftUnitor_hom (F : A ⥤ B)
+    : mapWhiskerRight F.leftUnitor.hom (𝟭 C)
+      = (mapCompLeft C (𝟭 A) F).hom ≫ whiskerRight mapPairId.hom (mapPair F (𝟭 C))
+        ≫ (mapPair F (𝟭 C)).leftUnitor.hom := by
   apply natTrans_ext <;> ext <;> simp [mapCompLeft]
 
 set_option backward.defeqAttrib.useBackward true in
 variable (A) in
-lemma mapWhiskerLeft_rightUnitor_hom (F : B ⥤ C) :
-    mapWhiskerLeft _ F.rightUnitor.hom =
-    (mapCompRight A F (𝟭 C)).hom ≫ whiskerLeft (mapPair _ F) mapPairId.hom ≫
-      (mapPair (𝟭 A) _).rightUnitor.hom := by
+lemma mapWhiskerLeft_rightUnitor_hom (F : B ⥤ C)
+    : mapWhiskerLeft _ F.rightUnitor.hom
+      = (mapCompRight A F (𝟭 C)).hom ≫ whiskerLeft (mapPair _ F) mapPairId.hom
+        ≫ (mapPair (𝟭 A) _).rightUnitor.hom := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
 set_option backward.defeqAttrib.useBackward true in
 variable (C) in
-lemma mapWhiskerRight_rightUnitor_hom (F : A ⥤ B) :
-    mapWhiskerRight F.rightUnitor.hom _ =
-    (mapCompLeft C F (𝟭 B)).hom ≫ whiskerLeft (mapPair F _) mapPairId.hom ≫
-      (mapPair _ (𝟭 C)).rightUnitor.hom := by
+lemma mapWhiskerRight_rightUnitor_hom (F : A ⥤ B)
+    : mapWhiskerRight F.rightUnitor.hom _
+      = (mapCompLeft C F (𝟭 B)).hom ≫ whiskerLeft (mapPair F _) mapPairId.hom
+        ≫ (mapPair _ (𝟭 C)).rightUnitor.hom := by
   apply natTrans_ext <;> ext <;> simp [mapCompLeft]
 
 end
@@ -160,8 +161,8 @@ end
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The pseudofunctor sending `D` to `C ⋆ D`. -/
 @[simps!]
-def pseudofunctorRight (C : Type u₁) [Category.{v₁} C] :
-    Pseudofunctor Cat.{v₂, u₂} Cat.{max v₁ v₂, max u₁ u₂} where
+def pseudofunctorRight (C : Type u₁) [Category.{v₁} C]
+    : Pseudofunctor Cat.{v₂, u₂} Cat.{max v₁ v₂, max u₁ u₂} where
   obj D := ↧(C ⋆ D)
   map F := (mapPair (𝟭 C) F.toFunctor).toCatHom
   map₂ f := (mapWhiskerLeft (𝟭 C) f.toNatTrans).toCatHom₂
@@ -178,8 +179,8 @@ def pseudofunctorRight (C : Type u₁) [Category.{v₁} C] :
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The pseudofunctor sending `C` to `C ⋆ D`. -/
 @[simps!]
-def pseudofunctorLeft (D : Type u₂) [Category.{v₂} D] :
-    Pseudofunctor Cat.{v₁, u₁} Cat.{max v₁ v₂, max u₁ u₂} where
+def pseudofunctorLeft (D : Type u₂) [Category.{v₂} D]
+    : Pseudofunctor Cat.{v₁, u₁} Cat.{max v₁ v₂, max u₁ u₂} where
   obj C := ↧(C ⋆ D)
   map F := (mapPair F.toFunctor (𝟭 D)).toCatHom
   map₂ := (mapWhiskerRight ·.toNatTrans _ |>.toCatHom₂)

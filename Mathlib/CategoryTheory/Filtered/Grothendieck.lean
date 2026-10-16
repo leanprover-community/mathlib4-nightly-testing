@@ -25,17 +25,29 @@ variable {C : Type u} [Category.{v} C] (F : C ⥤ Cat)
 
 open IsFiltered
 
-instance [IsFilteredOrEmpty C] [∀ c, IsFilteredOrEmpty (F.obj c)] :
-    IsFilteredOrEmpty (Grothendieck F) := by
+instance [IsFilteredOrEmpty C] [∀ c, IsFilteredOrEmpty (F.obj c)]
+    : IsFilteredOrEmpty (Grothendieck F) := by
   refine ⟨?_, ?_⟩
   · rintro ⟨c, f⟩ ⟨d, g⟩
-    exact ⟨⟨max c d, max ((F.map (leftToMax c d)).toFunctor.obj f)
-      ((F.map (rightToMax c d)).toFunctor.obj g)⟩,
-      ⟨leftToMax c d, leftToMax _ _⟩, ⟨rightToMax c d, rightToMax _ _⟩, trivial⟩
+    exact ⟨
+      ⟨
+        max c d,
+        max ((F.map (leftToMax c d)).toFunctor.obj f) ((F.map (rightToMax c d)).toFunctor.obj g)
+      ⟩,
+      ⟨leftToMax c d, leftToMax _ _⟩,
+      ⟨rightToMax c d, rightToMax _ _⟩,
+      trivial
+    ⟩
   · rintro ⟨c, f⟩ ⟨d, g⟩ ⟨u, x⟩ ⟨v, y⟩
-    refine ⟨⟨coeq u v, coeq (eqToHom ?_ ≫
-        (F.map (coeqHom u v)).toFunctor.map x) ((F.map (coeqHom u v)).toFunctor.map y)⟩,
-          ⟨coeqHom u v, coeqHom _ _⟩, ?_⟩
+    refine ⟨
+      ⟨
+        coeq u v,
+        coeq (eqToHom ?_ ≫ (F.map (coeqHom u v)).toFunctor.map x)
+          ((F.map (coeqHom u v)).toFunctor.map y)
+      ⟩,
+      ⟨coeqHom u v, coeqHom _ _⟩,
+      ?_
+    ⟩
     · conv_rhs => rw [← Cat.Hom.comp_obj, ← F.map_comp, coeq_condition, F.map_comp,
         Cat.Hom.comp_obj]
     · set_option backward.isDefEq.respectTransparency.types false in

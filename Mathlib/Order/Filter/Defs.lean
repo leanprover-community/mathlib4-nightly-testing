@@ -67,9 +67,11 @@ assert_not_exists RelIso
 
 open Set
 
-/-- A filter `F` on a type `α` is a collection of sets of `α` which contains the whole `α`,
+/--
+A filter `F` on a type `α` is a collection of sets of `α` which contains the whole `α`,
 is upwards-closed, and is stable under intersection. We do not forbid this collection to be
-all sets of `α`. -/
+all sets of `α`.
+-/
 @[to_dual_dont_translate]
 structure Filter (α : Type*) where
   /-- The set of sets that belong to the filter. -/
@@ -91,30 +93,21 @@ theorem filter_eq : ∀ {f g : Filter α}, f.sets = g.sets → f = g
 /-- If `F` is a filter on `α`, and `U` a subset of `α` then we can write `U ∈ F` as on paper. -/
 instance instMembership : Membership (Set α) (Filter α) := ⟨fun F U => U ∈ F.sets⟩
 
-@[ext]
-protected theorem ext (h : ∀ s, s ∈ f ↔ s ∈ g) : f = g := filter_eq <| Set.ext h
+@[ext] protected theorem ext (h : ∀ s, s ∈ f ↔ s ∈ g) : f = g := filter_eq <| Set.ext h
 
-@[simp]
-protected theorem mem_mk {t : Set (Set α)} {h₁ h₂ h₃} : s ∈ mk t h₁ h₂ h₃ ↔ s ∈ t :=
-  Iff.rfl
+@[simp] protected theorem mem_mk {t : Set (Set α)} {h₁ h₂ h₃} : s ∈ mk t h₁ h₂ h₃ ↔ s ∈ t := Iff.rfl
 
-@[simp]
-protected theorem mem_sets : s ∈ f.sets ↔ s ∈ f :=
-  Iff.rfl
+@[simp] protected theorem mem_sets : s ∈ f.sets ↔ s ∈ f := Iff.rfl
 
-@[simp]
-theorem univ_mem : univ ∈ f :=
-  f.univ_sets
+@[simp] theorem univ_mem : univ ∈ f := f.univ_sets
 
 @[gcongr]
 theorem mem_of_superset {x y : Set α} (hx : x ∈ f) (hxy : x ⊆ y) : y ∈ f :=
   f.sets_of_superset hx hxy
 
-theorem univ_mem' (h : ∀ a, a ∈ s) : s ∈ f :=
-  mem_of_superset univ_mem fun x _ => h x
+theorem univ_mem' (h : ∀ a, a ∈ s) : s ∈ f := mem_of_superset univ_mem fun x _ => h x
 
-theorem inter_mem (hs : s ∈ f) (ht : t ∈ f) : s ∩ t ∈ f :=
-  f.inter_sets hs ht
+theorem inter_mem (hs : s ∈ f) (ht : t ∈ f) : s ∩ t ∈ f := f.inter_sets hs ht
 
 theorem mp_mem (hs : s ∈ f) (h : { x | x ∈ s → x ∈ t } ∈ f) : t ∈ f :=
   mem_of_superset (inter_mem hs h) fun _ ⟨h₁, h₂⟩ => h₂ h₁
@@ -128,20 +121,22 @@ protected def copy (f : Filter α) (S : Set (Set α)) (hmem : ∀ s, s ∈ S ↔
 
 @[simp] theorem mem_copy {S hmem} : s ∈ f.copy S hmem ↔ s ∈ S := Iff.rfl
 
-/-- Construct a filter from a property that is stable under finite unions.
+/--
+Construct a filter from a property that is stable under finite unions.
 A set `s` belongs to `Filter.comk p _ _ _` iff its complement satisfies the predicate `p`.
-This constructor is useful to define filters like `Filter.cofinite`. -/
-def comk (p : Set α → Prop) (he : p ∅) (hmono : ∀ t, p t → ∀ s ⊆ t, p s)
-    (hunion : ∀ s, p s → ∀ t, p t → p (s ∪ t)) : Filter α where
+This constructor is useful to define filters like `Filter.cofinite`.
+-/
+def comk
+    (p : Set α → Prop)
+    (he : p ∅) (hmono : ∀ t, p t → ∀ s ⊆ t, p s) (hunion : ∀ s, p s → ∀ t, p t → p (s ∪ t))
+    : Filter α where
   sets := {t | p tᶜ}
   univ_sets := by simpa
   sets_of_superset := fun ht₁ ht => hmono _ ht₁ _ (compl_subset_compl.2 ht)
   inter_sets := fun ht₁ ht₂ => by simp [compl_inter, hunion _ ht₁ _ ht₂]
 
 @[simp]
-lemma mem_comk {p : Set α → Prop} {he hmono hunion s} :
-    s ∈ comk p he hmono hunion ↔ p sᶜ :=
-  .rfl
+lemma mem_comk {p : Set α → Prop} {he hmono hunion s} : s ∈ comk p he hmono hunion ↔ p sᶜ := .rfl
 
 /-- The principal filter of `s` is the collection of all supersets of `s`. -/
 def principal (s : Set α) : Filter α where
@@ -150,22 +145,21 @@ def principal (s : Set α) : Filter α where
   sets_of_superset hx := Subset.trans hx
   inter_sets := subset_inter
 
-@[inherit_doc]
-scoped notation "𝓟" => Filter.principal
+@[inherit_doc] scoped notation "𝓟" => Filter.principal
 
 @[simp] theorem mem_principal : s ∈ 𝓟 t ↔ t ⊆ s := Iff.rfl
 
-/-- `pure x` is the set of sets that contain `x`. It is equal to `𝓟 {x}` but
-with this definition we have `s ∈ pure a` defeq `a ∈ s`. -/
+/--
+`pure x` is the set of sets that contain `x`. It is equal to `𝓟 {x}` but
+with this definition we have `s ∈ pure a` defeq `a ∈ s`.
+-/
 instance : Pure Filter where
-  pure x := .copy (𝓟 {x}) {s | x ∈ s} fun _ ↦ by simp
+  pure x := .copy (𝓟 {x}) ({s | x ∈ s}) fun _ ↦ by simp
 
-@[simp]
-theorem mem_pure {a : α} {s : Set α} : s ∈ (pure a : Filter α) ↔ a ∈ s :=
-  Iff.rfl
+@[simp] theorem mem_pure {a : α} {s : Set α} : s ∈ (pure a : Filter α) ↔ a ∈ s := Iff.rfl
 
 /-- The *kernel* of a filter is the intersection of all its sets. -/
-def ker (f : Filter α) : Set α := ⋂₀ f.sets
+def ker (f : Filter α) : Set α := ⋂₀f.sets
 
 /-- The join of a filter of filters is defined by the relation `s ∈ join f ↔ {t | s ∈ t} ∈ f`. -/
 def join (f : Filter (Filter α)) : Filter α where
@@ -175,8 +169,7 @@ def join (f : Filter (Filter α)) : Filter α where
   inter_sets hx hy := mem_of_superset (inter_mem hx hy) fun f ⟨h₁, h₂⟩ => inter_mem h₁ h₂
 
 @[simp]
-theorem mem_join {s : Set α} {f : Filter (Filter α)} : s ∈ join f ↔ { t | s ∈ t } ∈ f :=
-  Iff.rfl
+theorem mem_join {s : Set α} {f : Filter (Filter α)} : s ∈ join f ↔ { t | s ∈ t } ∈ f := Iff.rfl
 
 instance : PartialOrder (Filter α) where
   le f g := ∀ ⦃U : Set α⦄, U ∈ g → U ∈ f
@@ -184,19 +177,19 @@ instance : PartialOrder (Filter α) where
   le_refl a := Subset.rfl
   le_trans a b c h₁ h₂ := Subset.trans h₂ h₁
 
-theorem le_def : f ≤ g ↔ ∀ x ∈ g, x ∈ f :=
-  Iff.rfl
+theorem le_def : f ≤ g ↔ ∀ x ∈ g, x ∈ f := Iff.rfl
 
 instance instSupSet : SupSet (Filter α) where
   sSup S := join (𝓟 S)
 
 @[simp] theorem mem_sSup {S : Set (Filter α)} : s ∈ sSup S ↔ ∀ f ∈ S, s ∈ f := .rfl
 
-/-- Infimum of a set of filters.
+/--
+Infimum of a set of filters.
 This definition is marked as irreducible
-so that Lean doesn't try to unfold it when unifying expressions. -/
-@[irreducible]
-protected def sInf (s : Set (Filter α)) : Filter α := sSup (lowerBounds s)
+so that Lean doesn't try to unfold it when unifying expressions.
+-/
+@[irreducible] protected def sInf (s : Set (Filter α)) : Filter α := sSup (lowerBounds s)
 
 instance instInfSet : InfSet (Filter α) where
   sInf := Filter.sInf
@@ -207,8 +200,7 @@ protected theorem sSup_lowerBounds (s : Set (Filter α)) : sSup (lowerBounds s) 
 instance : Top (Filter α) where
   top := .copy (sSup (Set.range pure)) {s | ∀ x, x ∈ s} <| by simp
 
-theorem mem_top_iff_forall {s : Set α} : s ∈ (⊤ : Filter α) ↔ ∀ x, x ∈ s :=
-  Iff.rfl
+theorem mem_top_iff_forall {s : Set α} : s ∈ (⊤ : Filter α) ↔ ∀ x, x ∈ s := Iff.rfl
 
 @[simp]
 theorem mem_top {s : Set α} : s ∈ (⊤ : Filter α) ↔ s = univ := by
@@ -217,32 +209,34 @@ theorem mem_top {s : Set α} : s ∈ (⊤ : Filter α) ↔ s = univ := by
 instance : Bot (Filter α) where
   bot := .copy (sSup ∅) univ <| by simp
 
-@[simp]
-theorem mem_bot {s : Set α} : s ∈ (⊥ : Filter α) :=
-  trivial
+@[simp] theorem mem_bot {s : Set α} : s ∈ (⊥ : Filter α) := trivial
 
-/-- The infimum of filters is the filter generated by intersections
-  of elements of the two filters. -/
-instance instInf : Min (Filter α) :=
-  ⟨fun f g : Filter α =>
-    { sets := { s | ∃ a ∈ f, ∃ b ∈ g, s = a ∩ b }
-      univ_sets := ⟨_, univ_mem, _, univ_mem, by simp⟩
-      sets_of_superset := by
-        rintro x y ⟨a, ha, b, hb, rfl⟩ xy
-        refine ⟨a ∪ y, mem_of_superset ha subset_union_left, b ∪ y,
-          mem_of_superset hb subset_union_left, ?_⟩
-        rw [← inter_union_distrib_right, union_eq_self_of_subset_left xy]
-      inter_sets := by
-        rintro x y ⟨a, ha, b, hb, rfl⟩ ⟨c, hc, d, hd, rfl⟩
-        refine ⟨a ∩ c, inter_mem ha hc, b ∩ d, inter_mem hb hd, ?_⟩
-        ac_rfl }⟩
+/--
+The infimum of filters is the filter generated by intersections
+of elements of the two filters.
+-/
+instance instInf : Min (Filter α) := ⟨fun f g : Filter α => {
+  sets := { s | ∃ a ∈ f, ∃ b ∈ g, s = a ∩ b }
+  univ_sets := ⟨_, univ_mem, _, univ_mem, by simp⟩
+  sets_of_superset := by
+    rintro x y ⟨a, ha, b, hb, rfl⟩ xy
+    refine
+      ⟨a ∪ y, mem_of_superset ha subset_union_left, b ∪ y, mem_of_superset hb subset_union_left, ?_⟩
+    rw [← inter_union_distrib_right, union_eq_self_of_subset_left xy]
+  inter_sets := by
+    rintro x y ⟨a, ha, b, hb, rfl⟩ ⟨c, hc, d, hd, rfl⟩
+    refine ⟨a ∩ c, inter_mem ha hc, b ∩ d, inter_mem hb hd, ?_⟩
+    ac_rfl
+}⟩
 
 /-- The supremum of two filters is the filter that contains sets that belong to both filters. -/
 instance instSup : Max (Filter α) where
   max f g := .copy (sSup {f, g}) {s | s ∈ f ∧ s ∈ g} <| by simp
 
-/-- The relative complement of two filters `f \ g` contains sets
-whose union with any set in `g` lies in `f`. -/
+/--
+The relative complement of two filters `f \ g` contains sets
+whose union with any set in `g` lies in `f`.
+-/
 instance instSDiff : SDiff (Filter α) where
   sdiff f g := {
     sets := {s | ∀ ⦃t⦄, t ∈ g → s ⊆ t → t ∈ f}
@@ -263,78 +257,90 @@ theorem mem_sdiff : s ∈ f \ g ↔ ∀ t ∈ g, s ⊆ t → t ∈ f := .rfl
 
 protected theorem hnot_def : ￢f = 𝓟 f.kerᶜ := rfl
 
-
-/-- A filter is `NeBot` if it is not equal to `⊥`, or equivalently the empty set does not belong to
+/--
+A filter is `NeBot` if it is not equal to `⊥`, or equivalently the empty set does not belong to
 the filter. Bourbaki include this assumption in the definition of a filter but we prefer to have a
-`CompleteLattice` structure on `Filter _`, so we use a typeclass argument in lemmas instead. -/
+`CompleteLattice` structure on `Filter _`, so we use a typeclass argument in lemmas instead.
+-/
 class NeBot (f : Filter α) : Prop where
   /-- The filter is nontrivial: `f ≠ ⊥` or equivalently, `∅ ∉ f`. -/
   ne' : f ≠ ⊥
 
 @[push ←]
-theorem neBot_iff {f : Filter α} : NeBot f ↔ f ≠ ⊥ :=
-  ⟨fun h => h.1, fun h => ⟨h⟩⟩
+theorem neBot_iff {f : Filter α} : NeBot f ↔ f ≠ ⊥ := ⟨fun h => h.1, fun h => ⟨h⟩⟩
 
-/-- `f.Eventually p` or `∀ᶠ x in f, p x` mean that `{x | p x} ∈ f`. E.g., `∀ᶠ x in atTop, p x`
-means that `p` holds true for sufficiently large `x`. -/
-protected def Eventually (p : α → Prop) (f : Filter α) : Prop :=
-  { x | p x } ∈ f
+/--
+`f.Eventually p` or `∀ᶠ x in f, p x` mean that `{x | p x} ∈ f`. E.g., `∀ᶠ x in atTop, p x`
+means that `p` holds true for sufficiently large `x`.
+-/
+protected def Eventually (p : α → Prop) (f : Filter α) : Prop := { x | p x } ∈ f
 
 @[inherit_doc Filter.Eventually]
 notation3 "∀ᶠ "(...)" in "f", "r:(scoped p => Filter.Eventually p f) => r
 
-/-- `f.Frequently p` or `∃ᶠ x in f, p x` mean that `{x | ¬p x} ∉ f`. E.g., `∃ᶠ x in atTop, p x`
-means that there exist arbitrarily large `x` for which `p` holds true. -/
-protected def Frequently (p : α → Prop) (f : Filter α) : Prop :=
-  ¬∀ᶠ x in f, ¬p x
+/--
+`f.Frequently p` or `∃ᶠ x in f, p x` mean that `{x | ¬p x} ∉ f`. E.g., `∃ᶠ x in atTop, p x`
+means that there exist arbitrarily large `x` for which `p` holds true.
+-/
+protected def Frequently (p : α → Prop) (f : Filter α) : Prop := ¬ ∀ᶠ x in f, ¬p x
 
 @[inherit_doc Filter.Frequently]
 notation3 "∃ᶠ "(...)" in "f", "r:(scoped p => Filter.Frequently p f) => r
 
-/-- Two functions `f` and `g` are *eventually equal* along a filter `l` if the set of `x` such that
-`f x = g x` belongs to `l`. -/
-def EventuallyEq (l : Filter α) (f g : α → β) : Prop :=
-  ∀ᶠ x in l, f x = g x
+/--
+Two functions `f` and `g` are *eventually equal* along a filter `l` if the set of `x` such that
+`f x = g x` belongs to `l`.
+-/
+def EventuallyEq (l : Filter α) (f g : α → β) : Prop := ∀ᶠ x in l, f x = g x
 
 /-- A function `f` is eventually less than or equal to a function `g` at a filter `l`. -/
 @[to_dual self (reorder := f g)]
-def EventuallyLE [LE β] (l : Filter α) (f g : α → β) : Prop :=
-  ∀ᶠ x in l, f x ≤ g x
+def EventuallyLE [LE β] (l : Filter α) (f g : α → β) : Prop := ∀ᶠ x in l, f x ≤ g x
 
-/-- Two sets `s` and `t` are *eventually equal* along a filter `l` if the set of `x` such that
+/--
+Two sets `s` and `t` are *eventually equal* along a filter `l` if the set of `x` such that
 `x ∈ s ↔ x ∈ t` belongs to `l`.
 
 This is definitionally `(· ∈ s) =ᶠ[l] (· ∈ t)`, but it is a separate definition (rather than an
-abbreviation) to avoid simp unfolding membership of concrete sets. -/
+abbreviation) to avoid simp unfolding membership of concrete sets.
+-/
 def EventuallyEqSet (l : Filter α) (s t : Set α) : Prop :=
   EventuallyEq l (fun x => x ∈ s) (fun x => x ∈ t)
 
-/-- A set `s` is *eventually contained* in a set `t` along a filter `l` if the set of `x` such that
+/--
+A set `s` is *eventually contained* in a set `t` along a filter `l` if the set of `x` such that
 `x ∈ s → x ∈ t` belongs to `l`.
 
 This is definitionally `(· ∈ s) ≤ᶠ[l] (· ∈ t)`, but it is a separate definition (rather than an
-abbreviation) to avoid simp unfolding membership of concrete sets. -/
+abbreviation) to avoid simp unfolding membership of concrete sets.
+-/
 def EventuallySubset (l : Filter α) (s t : Set α) : Prop :=
   EventuallyLE l (fun x => x ∈ s) (fun x => x ∈ t)
 
-/-- `x =ᶠ[l] y` means that `x` and `y` are *eventually equal* along the filter `l`.
+/--
+`x =ᶠ[l] y` means that `x` and `y` are *eventually equal* along the filter `l`.
 
 This is `Filter.EventuallyEq l x y` if `x` is a function or `Filter.EventuallyEqSet l x y` if `x`
-is a set. -/
+is a set.
+-/
 syntax:50 (name := eventuallyEqStx) term:51 " =ᶠ[" term "] " term:50 : term
 
-/-- `x ≤ᶠ[l] y` means that `x` is *eventually less than or equal to* `y` along the filter `l`.
+/--
+`x ≤ᶠ[l] y` means that `x` is *eventually less than or equal to* `y` along the filter `l`.
 
 This is `Filter.EventuallyLE l x y` if `x` is a function and `Filter.EventuallySubset l x y` if `x`
-is a set. -/
+is a set.
+-/
 syntax:50 (name := eventuallyLEStx) term:51 " ≤ᶠ[" term "] " term:50 : term
 
 open Lean Elab Term Meta in
-/-- Elaborate the left-hand side `x` of an `x =ᶠ[l] y` / `x ≤ᶠ[l] y` on its own, dispatching on
+/--
+Elaborate the left-hand side `x` of an `x =ᶠ[l] y` / `x ≤ᶠ[l] y` on its own, dispatching on
 whether its type is a `Set`. If the type is not yet known (e.g. `x` is the `_` of a `calc` step),
 consult the right-hand side `y` instead. Returns the elaborated sides turned back into syntax
 together with whether they should be interpreted as sets. If `y` is not consulted, it is returned
-unelaborated. -/
+unelaborated.
+-/
 meta def elabEventuallyRelSides (x y : Term) : TermElabM (Term × Term × Bool) := do
   -- Elaborate a side on its own, and return its type in whnf together with the elaborated term
   -- turned back into syntax.
@@ -349,11 +355,14 @@ meta def elabEventuallyRelSides (x y : Term) : TermElabM (Term × Term × Bool) 
     return (x, y, tyx.isAppOfArity ``Set 1)
 
 open Lean Elab Term in
-/-- Elaborator for `x =ᶠ[l] y`, dispatching on the type of `x` (or of `y` if the type of `x` is not
-yet known): `Filter.EventuallyEqSet` for sets, `Filter.EventuallyEq` for functions. -/
+/--
+Elaborator for `x =ᶠ[l] y`, dispatching on the type of `x` (or of `y` if the type of `x` is not
+yet known): `Filter.EventuallyEqSet` for sets, `Filter.EventuallyEq` for functions.
+-/
 @[term_elab eventuallyEqStx]
 meta def elabEventuallyEq : TermElab := fun stx expectedType? => do
-  let `($x =ᶠ[$l] $y) := stx | throwUnsupportedSyntax
+  let `($x =ᶠ[$l] $y) := stx
+    | throwUnsupportedSyntax
   let (x, y, isSet) ← elabEventuallyRelSides x y
   if isSet then
     elabTerm (← `(Filter.EventuallyEqSet $l $x $y)) expectedType?
@@ -361,11 +370,14 @@ meta def elabEventuallyEq : TermElab := fun stx expectedType? => do
     elabTerm (← `(Filter.EventuallyEq $l $x $y)) expectedType?
 
 open Lean Elab Term in
-/-- Elaborator for `x ≤ᶠ[l] y`, dispatching on the type of `x` (or of `y` if the type of `x` is not
-yet known): `Filter.EventuallySubset` for sets, `Filter.EventuallyLE` for functions. -/
+/--
+Elaborator for `x ≤ᶠ[l] y`, dispatching on the type of `x` (or of `y` if the type of `x` is not
+yet known): `Filter.EventuallySubset` for sets, `Filter.EventuallyLE` for functions.
+-/
 @[term_elab eventuallyLEStx]
 meta def elabEventuallyLE : TermElab := fun stx expectedType? => do
-  let `($x ≤ᶠ[$l] $y) := stx | throwUnsupportedSyntax
+  let `($x ≤ᶠ[$l] $y) := stx
+    | throwUnsupportedSyntax
   let (x, y, isSet) ← elabEventuallyRelSides x y
   if isSet then
     elabTerm (← `(Filter.EventuallySubset $l $x $y)) expectedType?
@@ -374,13 +386,15 @@ meta def elabEventuallyLE : TermElab := fun stx expectedType? => do
 
 open Lean.Elab Term.Quotation in
 /-- `quot_precheck` for the `=ᶠ[l]` notation, allowing it to appear inside other notations. -/
-@[quot_precheck Filter.eventuallyEqStx] meta def precheckEventuallyEq : Precheck
+@[quot_precheck Filter.eventuallyEqStx]
+meta def precheckEventuallyEq : Precheck
   | `($x =ᶠ[$l] $y) => do precheck x; precheck l; precheck y
   | _ => throwUnsupportedSyntax
 
 open Lean.Elab Term.Quotation in
 /-- `quot_precheck` for the `≤ᶠ[l]` notation, allowing it to appear inside other notations. -/
-@[quot_precheck Filter.eventuallyLEStx] meta def precheckEventuallyLE : Precheck
+@[quot_precheck Filter.eventuallyLEStx]
+meta def precheckEventuallyLE : Precheck
   | `($x ≤ᶠ[$l] $y) => do precheck x; precheck l; precheck y
   | _ => throwUnsupportedSyntax
 
@@ -415,13 +429,15 @@ def map (m : α → β) (f : Filter α) : Filter β where
   sets_of_superset hs st := mem_of_superset hs fun _x hx ↦ st hx
   inter_sets hs ht := inter_mem hs ht
 
-/-- `Filter.Tendsto` is the generic "limit of a function" predicate.
-  `Tendsto f l₁ l₂` asserts that for every `l₂` neighborhood `a`,
-  the `f`-preimage of `a` is an `l₁` neighborhood. -/
-def Tendsto (f : α → β) (l₁ : Filter α) (l₂ : Filter β) :=
-  l₁.map f ≤ l₂
+/--
+`Filter.Tendsto` is the generic "limit of a function" predicate.
+`Tendsto f l₁ l₂` asserts that for every `l₂` neighborhood `a`,
+the `f`-preimage of `a` is an `l₁` neighborhood.
+-/
+def Tendsto (f : α → β) (l₁ : Filter α) (l₂ : Filter β) := l₁.map f ≤ l₂
 
-/-- The inverse map of a filter. A set `s` belongs to `Filter.comap m f` if either of the following
+/--
+The inverse map of a filter. A set `s` belongs to `Filter.comap m f` if either of the following
 equivalent conditions hold.
 
 1. There exists a set `t ∈ f` such that `m ⁻¹' t ⊆ s`. This is used as a definition.
@@ -440,8 +456,10 @@ def comap (m : α → β) (f : Filter β) : Filter α where
 protected def coprod (f : Filter α) (g : Filter β) : Filter (α × β) :=
   f.comap Prod.fst ⊔ g.comap Prod.snd
 
-/-- Product of filters. This is the filter generated by Cartesian products
-of elements of the component filters. -/
+/--
+Product of filters. This is the filter generated by Cartesian products
+of elements of the component filters.
+-/
 instance instSProd : SProd (Filter α) (Filter β) (Filter (α × β)) where
   sprod f g := f.comap Prod.fst ⊓ g.comap Prod.snd
 
@@ -452,12 +470,13 @@ theorem prod_eq_inf (f : Filter α) (g : Filter β) : f ×ˢ g = f.comap Prod.fs
 def pi {ι : Type*} {α : ι → Type*} (f : ∀ i, Filter (α i)) : Filter (∀ i, α i) :=
   ⨅ i, comap (Function.eval i) (f i)
 
-/-- The monadic bind operation on filter is defined the usual way in terms of `map` and `join`.
+/--
+The monadic bind operation on filter is defined the usual way in terms of `map` and `join`.
 
 Unfortunately, this `bind` does not result in the expected applicative. See `Filter.seq` for the
-applicative instance. -/
-def bind (f : Filter α) (m : α → Filter β) : Filter β :=
-  join (map m f)
+applicative instance.
+-/
+def bind (f : Filter α) (m : α → Filter β) : Filter β := join (map m f)
 
 /-- The applicative sequentiation operation. This is not induced by the bind operation. -/
 def seq (f : Filter (α → β)) (g : Filter α) : Filter β where
@@ -465,44 +484,54 @@ def seq (f : Filter (α → β)) (g : Filter α) : Filter β where
   univ_sets := ⟨univ, univ_mem, univ, univ_mem, fun _ _ _ _ => trivial⟩
   sets_of_superset := fun ⟨t₀, t₁, h₀, h₁, h⟩ hst =>
     ⟨t₀, t₁, h₀, h₁, fun _ hx _ hy => hst <| h _ hx _ hy⟩
-  inter_sets := fun ⟨t₀, ht₀, t₁, ht₁, ht⟩ ⟨u₀, hu₀, u₁, hu₁, hu⟩ =>
-    ⟨t₀ ∩ u₀, inter_mem ht₀ hu₀, t₁ ∩ u₁, inter_mem ht₁ hu₁, fun _ ⟨hx₀, hx₁⟩ _ ⟨hy₀, hy₁⟩ =>
-      ⟨ht _ hx₀ _ hy₀, hu _ hx₁ _ hy₁⟩⟩
+  inter_sets := fun ⟨t₀, ht₀, t₁, ht₁, ht⟩ ⟨u₀, hu₀, u₁, hu₁, hu⟩ => ⟨
+    t₀ ∩ u₀,
+    inter_mem ht₀ hu₀,
+    t₁ ∩ u₁,
+    inter_mem ht₁ hu₁,
+    fun _ ⟨hx₀, hx₁⟩ _ ⟨hy₀, hy₁⟩ => ⟨ht _ hx₀ _ hy₀, hu _ hx₁ _ hy₁⟩
+  ⟩
 
-/-- This filter is characterized by `Filter.eventually_curry_iff`:
+/--
+This filter is characterized by `Filter.eventually_curry_iff`:
 `(∀ᶠ (x : α × β) in f.curry g, p x) ↔ ∀ᶠ (x : α) in f, ∀ᶠ (y : β) in g, p (x, y)`. Useful
 in adding quantifiers to the middle of `Tendsto`s. See
-`hasFDerivAt_of_tendstoUniformlyOnFilter`. -/
-def curry (f : Filter α) (g : Filter β) : Filter (α × β) :=
-  bind f fun a ↦ map (a, ·) g
+`hasFDerivAt_of_tendstoUniformlyOnFilter`.
+-/
+def curry (f : Filter α) (g : Filter β) : Filter (α × β) := bind f fun a ↦ map (a, ·) g
 
-instance : Bind Filter :=
-  ⟨@Filter.bind⟩
+instance : Bind Filter := ⟨@Filter.bind⟩
 
-instance : Functor Filter where map := @Filter.map
+instance : Functor Filter where
+  map := @Filter.map
 
-/-- A variant on `bind` using a function `g` taking a set instead of a member of `α`.
-This is essentially a push-forward along a function mapping each set to a filter. -/
-protected def lift (f : Filter α) (g : Set α → Filter β) :=
-  ⨅ s ∈ f, g s
+/--
+A variant on `bind` using a function `g` taking a set instead of a member of `α`.
+This is essentially a push-forward along a function mapping each set to a filter.
+-/
+protected def lift (f : Filter α) (g : Set α → Filter β) := ⨅ s ∈ f, g s
 
-/-- Specialize `lift` to functions `Set α → Set β`. This can be viewed as a generalization of `map`.
-This is essentially a push-forward along a function mapping each set to a set. -/
-protected def lift' (f : Filter α) (h : Set α → Set β) :=
-  f.lift (𝓟 ∘ h)
+/--
+Specialize `lift` to functions `Set α → Set β`. This can be viewed as a generalization of `map`.
+This is essentially a push-forward along a function mapping each set to a set.
+-/
+protected def lift' (f : Filter α) (h : Set α → Set β) := f.lift (𝓟 ∘ h)
 
-/-- `f.IsBounded r`: the filter `f` is eventually bounded w.r.t. the relation `r`,
+/--
+`f.IsBounded r`: the filter `f` is eventually bounded w.r.t. the relation `r`,
 i.e. eventually, it is bounded by some uniform bound.
-`r` will be usually instantiated with `(· ≤ ·)` or `(· ≥ ·)`. -/
-def IsBounded (r : α → α → Prop) (f : Filter α) :=
-  ∃ b, ∀ᶠ x in f, r x b
+`r` will be usually instantiated with `(· ≤ ·)` or `(· ≥ ·)`.
+-/
+def IsBounded (r : α → α → Prop) (f : Filter α) := ∃ b, ∀ᶠ x in f, r x b
 
-/-- `f.IsBoundedUnder (≺) u`: the image of the filter `f` under `u` is eventually bounded w.r.t.
-the relation `≺`, i.e. eventually, it is bounded by some uniform bound. -/
-def IsBoundedUnder (r : α → α → Prop) (f : Filter β) (u : β → α) :=
-  (map u f).IsBounded r
+/--
+`f.IsBoundedUnder (≺) u`: the image of the filter `f` under `u` is eventually bounded w.r.t.
+the relation `≺`, i.e. eventually, it is bounded by some uniform bound.
+-/
+def IsBoundedUnder (r : α → α → Prop) (f : Filter β) (u : β → α) := (map u f).IsBounded r
 
-/-- `IsCobounded (≺) f` states that the filter `f` does not tend to infinity w.r.t. `≺`. This is
+/--
+`IsCobounded (≺) f` states that the filter `f` does not tend to infinity w.r.t. `≺`. This is
 also called frequently bounded. Will be usually instantiated with `≤` or `≥`.
 
 There is a subtlety in this definition: we want `f.IsCobounded` to hold for any `f` in the case of
@@ -512,14 +541,14 @@ the edge case of the trivial filter containing the empty set: the other natural 
   `¬ ∀ a, ∀ᶠ n in f, a ≤ n`
 would not work as well in this case.
 -/
-def IsCobounded (r : α → α → Prop) (f : Filter α) :=
-  ∃ b, ∀ a, (∀ᶠ x in f, r x a) → r b a
+def IsCobounded (r : α → α → Prop) (f : Filter α) := ∃ b, ∀ a, (∀ᶠ x in f, r x a) → r b a
 
-/-- `IsCoboundedUnder (≺) f u` states that the image of the filter `f` under the map `u` does not
+/--
+`IsCoboundedUnder (≺) f u` states that the image of the filter `f` under the map `u` does not
 tend to infinity w.r.t. `≺`. This is also called frequently bounded. Will be usually instantiated
-with `≤` or `≥`. -/
-def IsCoboundedUnder (r : α → α → Prop) (f : Filter β) (u : β → α) :=
-  (map u f).IsCobounded r
+with `≤` or `≥`.
+-/
+def IsCoboundedUnder (r : α → α → Prop) (f : Filter β) (u : β → α) := (map u f).IsCobounded r
 
 end Filter
 
@@ -541,27 +570,29 @@ The list is an optional parameter, `[]` being its default value.
 Combining both shortcuts is done by writing `filter_upwards [h₁, ⋯, hₙ] with a₁ a₂ ⋯ aₖ using e`.
 Note that in this case, the `aᵢ` terms can be used in `e`.
 -/
-syntax (name := filterUpwards) "filter_upwards" (" [" term,* "]")?
-  (" with" (ppSpace colGt term:max)*)? (" using " term)? : tactic
+syntax (name := filterUpwards)
+  "filter_upwards" (" [" term,* "]")? (" with" (ppSpace colGt term:max)*)? (" using " term)?
+  : tactic
 
 elab_rules : tactic
-| `(tactic| filter_upwards $[[$[$args],*]]? $[with $wth*]? $[using $usingArg]?) => do
-  focus do
-    let config : ApplyConfig := {newGoals := ApplyNewGoals.nonDependentOnly}
-    for e in args.getD #[] |>.reverse do
-      let goal ← getMainGoal
-      replaceMainGoal <| ← goal.withContext <| runTermElab do
-        let m ← mkFreshExprMVar none
-        let lem ← Term.elabTermEnsuringType
-          (← ``(Filter.mp_mem $e $(← Term.exprToSyntax m))) (← goal.getType)
-        goal.assign lem
-        return [m.mvarId!]
-    liftMetaTactic fun goal => do
-      goal.apply (← mkConstWithFreshMVarLevels ``Filter.univ_mem') config
-    evalTactic <|← `(tactic| try dsimp -zeta only [Set.mem_ofPred_eq])
-    if let some l := wth then
-      evalTactic <|← `(tactic| intro $[$l]*)
-    if let some e := usingArg then
-      evalTactic <|← `(tactic| exact $e)
+  | `(tactic| filter_upwards $[[$[$args],*]]? $[with $wth*]? $[using $usingArg]?) => do
+    focus do
+      let config : ApplyConfig := { newGoals := ApplyNewGoals.nonDependentOnly }
+      for e in args.getD #[] |>.reverse do
+        let goal ← getMainGoal
+        replaceMainGoal <| ← goal.withContext <| runTermElab do
+          let m ← mkFreshExprMVar none
+          let lem ←
+            Term.elabTermEnsuringType (← ``(Filter.mp_mem $e $(← Term.exprToSyntax m)))
+              (← goal.getType)
+          goal.assign lem
+          return [m.mvarId!]
+      liftMetaTactic fun goal => do
+        goal.apply (← mkConstWithFreshMVarLevels ``Filter.univ_mem') config
+      evalTactic <| ← `(tactic| try dsimp -zeta only [Set.mem_ofPred_eq])
+      if let some l := wth then
+        evalTactic <| ← `(tactic| intro $[$l]*)
+      if let some e := usingArg then
+        evalTactic <| ← `(tactic| exact $e)
 
 end Mathlib.Tactic

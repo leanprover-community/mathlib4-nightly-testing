@@ -8,7 +8,7 @@ module
 public meta import Lean.Meta.Tactic.TryThis
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public import Lean.Meta.TryThis
 
 /-!
@@ -45,7 +45,8 @@ def reportAdaptationNote (f : Syntax → Meta.Tactic.TryThis.Suggestion) : MetaM
     let stx' := stx'.setArg 1 (mkNullNode #[doc])
     Meta.Tactic.TryThis.addSuggestion (← getRef) (f stx') (origSpan? := ← getRef)
 
-/-- `#adaptation_note /-- comment -/` adds an adaptation note to the current file.
+/--
+`#adaptation_note /-- comment -/` adds an adaptation note to the current file.
 Adaptation notes are comments that are used to indicate that a piece of code
 has been changed to accommodate a change in Lean core.
 They typically require further action/maintenance to be taken in the future.
@@ -68,8 +69,8 @@ def adaptationNoteTermElab : Elab.Term.TermElab
   | `(#adaptation_note $[$_]? $t) => fun expectedType? => do
     reportAdaptationNote (fun s => (⟨s⟩ : Term))
     Elab.Term.elabTerm t expectedType?
-  | _ => fun _ => Elab.throwUnsupportedSyntax
-
+  | _ => fun _ =>
+    Elab.throwUnsupportedSyntax
 
 #adaptation_note /-- This is a test -/
 

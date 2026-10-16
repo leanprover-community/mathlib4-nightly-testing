@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Probability.Distributions.Binomial
 public import Mathlib.Probability.Distributions.Poisson.Basic
-
 import Mathlib.Analysis.SpecialFunctions.Choose
 
 /-!
@@ -44,22 +43,22 @@ open scoped Topology
 
 variable {p : ℕ → ℝ} {r : ℝ} (k : ℕ)
 
-lemma tendsto_zero_of_tendsto_mul_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r)) :
-    Tendsto p atTop (𝓝 0) := by
+lemma tendsto_zero_of_tendsto_mul_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r))
+    : Tendsto p atTop (𝓝 0) := by
   have : (fun n => (n * p n) * (1 / n)) =ᶠ[atTop] p := by
     filter_upwards [eventually_ge_atTop 1] with n hn
     field
   simpa using (hr.mul tendsto_one_div_atTop_nhds_zero_nat).congr' this
 
 open Asymptotics in
-lemma tendsto_choose_mul_pow_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r)) :
-    Tendsto (fun n => n.choose k * (p n) ^ k) atTop (𝓝 (r ^ k / k.factorial)) := by
+lemma tendsto_choose_mul_pow_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r))
+    : Tendsto (fun n => n.choose k * (p n) ^ k) atTop (𝓝 (r ^ k / k.factorial)) := by
   have : (fun n => n.choose k * (p n) ^ k) ~[atTop] (fun n ↦ ((n * p n) ^ k) / k.factorial) :=
     calc
-    _ ~[atTop] (fun n => (n ^ k / k.factorial) * (p n) ^ k) :=
-      (isEquivalent_choose k).mul IsEquivalent.refl
-    _ ~[atTop] (fun n ↦ ((n * p n) ^ k) / k.factorial) :=
-      EventuallyEq.isEquivalent (.of_eq (by ext; field))
+      _ ~[atTop] (fun n => (n ^ k / k.factorial) * (p n) ^ k) :=
+        (isEquivalent_choose k).mul IsEquivalent.refl
+      _ ~[atTop] (fun n ↦ ((n * p n) ^ k) / k.factorial) :=
+        EventuallyEq.isEquivalent (.of_eq (by ext; field))
   refine (IsEquivalent.tendsto_nhds_iff this).mpr ?_
   simpa [div_eq_mul_inv] using (hr.pow k).mul_const ((k.factorial : ℝ)⁻¹)
 
@@ -67,9 +66,10 @@ lemma tendsto_choose_mul_pow_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 
 **Poisson limit Theorem**: If `n * p n → r` as `n → ∞`. Then
 `(n.choose k) * (p n)^k * (1 - p n)^(n - k) → exp (-r) * r^k / k!`.
 -/
-theorem tendsto_choose_mul_pow_of_tendsto_mul_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r)) :
-    Tendsto (fun n => n.choose k * (p n) ^ k * (1 - p n) ^ (n - k))
-    atTop (𝓝 (Real.exp (-r) * (r ^ k) / k.factorial)) := by
+theorem tendsto_choose_mul_pow_of_tendsto_mul_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r))
+    : Tendsto
+      (fun n => n.choose k * (p n) ^ k * (1 - p n) ^ (n - k))
+      atTop (𝓝 (Real.exp (-r) * (r ^ k) / k.factorial)) := by
   rw [mul_div_assoc, mul_comm]
   refine (tendsto_choose_mul_pow_atTop k hr).mul ?_
   have hp_lt_half : ∀ᶠ n in atTop, p n < 1 / 2 :=

@@ -47,8 +47,10 @@ namespace HomotopicalAlgebra
 
 variable {C : Type u} [Category.{v} C]
 
-/-- A pre-path object for `A : C` is the data of a morphism
-`ι : A ⟶ P` equipped with two retractions. -/
+/--
+A pre-path object for `A : C` is the data of a morphism
+`ι : A ⟶ P` equipped with two retractions.
+-/
 structure PrepathObject (A : C) where
   /-- the underlying object of a (pre)path object -/
   P : C
@@ -77,8 +79,7 @@ def symm : PrepathObject A where
 
 /-- The gluing of two pre-path objects. -/
 @[simps]
-noncomputable def trans (P' : PrepathObject A) [HasPullback P.p₁ P'.p₀] :
-    PrepathObject A where
+noncomputable def trans (P' : PrepathObject A) [HasPullback P.p₁ P'.p₀] : PrepathObject A where
   P := pullback P.p₁ P'.p₀
   p₀ := pullback.fst _ _ ≫ P.p₀
   p₁ := pullback.snd _ _ ≫ P'.p₁
@@ -88,9 +89,11 @@ section
 
 variable [HasBinaryProduct A A]
 
-/-- The map from `P.P` to the product of two copies of `A`, when `P` is
+/--
+The map from `P.P` to the product of two copies of `A`, when `P` is
 a pre-path object for `A`. `P` shall be a *good* path object
-when this morphism is a fibration. -/
+when this morphism is a fibration.
+-/
 noncomputable def p : P.P ⟶ A ⨯ A := prod.lift P.p₀ P.p₁
 
 @[reassoc (attr := simp)]
@@ -102,15 +105,16 @@ lemma p_snd : P.p ≫ prod.snd = P.p₁ := by simp [p]
 end
 
 @[simp, reassoc]
-lemma symm_p [HasBinaryProducts C] :
-    P.symm.p = P.p ≫ (prod.braiding A A).hom := by aesop_cat
+lemma symm_p [HasBinaryProducts C] : P.symm.p = P.p ≫ (prod.braiding A A).hom := by aesop_cat
 
-/-- The pre-path object in a full subcategory of `C` induced by a pre-path object
-in the category `C`. -/
+/--
+The pre-path object in a full subcategory of `C` induced by a pre-path object
+in the category `C`.
+-/
 @[simps]
-def toFullSubcategory {P : ObjectProperty C} {X : P.FullSubcategory} (Q : PrepathObject X.obj)
-    (hQ : P Q.P) :
-    PrepathObject X where
+def toFullSubcategory
+    {P : ObjectProperty C} {X : P.FullSubcategory} (Q : PrepathObject X.obj) (hQ : P Q.P)
+    : PrepathObject X where
   P := ⟨Q.P, hQ⟩
   p₀ := P.homMk Q.p₀
   p₁ := P.homMk Q.p₁
@@ -118,8 +122,8 @@ def toFullSubcategory {P : ObjectProperty C} {X : P.FullSubcategory} (Q : Prepat
 
 /-- The image of a pre-path object by a functor. -/
 @[simps]
-def map {X : C} (P : PrepathObject X) {D : Type*} [Category* D] (F : C ⥤ D) :
-    PrepathObject (F.obj X) where
+def map {X : C} (P : PrepathObject X) {D : Type*} [Category* D] (F : C ⥤ D)
+    : PrepathObject (F.obj X) where
   P := F.obj P.P
   p₀ := F.map P.p₀
   p₁ := F.map P.p₁
@@ -129,8 +133,10 @@ def map {X : C} (P : PrepathObject X) {D : Type*} [Category* D] (F : C ⥤ D) :
 
 end PrepathObject
 
-/-- In a category with weak equivalences, a path object is the
-data of a weak equivalence `ι : A ⟶ P` equipped with two retractions. -/
+/--
+In a category with weak equivalences, a path object is the
+data of a weak equivalence `ι : A ⟶ P` equipped with two retractions.
+-/
 structure PathObject [CategoryWithWeakEquivalences C] (A : C) extends PrepathObject A where
   weakEquivalence_ι : WeakEquivalence ι := by infer_instance
 
@@ -150,41 +156,40 @@ def symm : PathObject A where
   weakEquivalence_ι := by dsimp; infer_instance
 
 @[simp, reassoc]
-lemma symm_p [HasBinaryProducts C] :
-    P.symm.p = P.p ≫ (prod.braiding A A).hom :=
+lemma symm_p [HasBinaryProducts C] : P.symm.p = P.p ≫ (prod.braiding A A).hom :=
   P.toPrepathObject.symm_p
 
 section
 
-variable [(weakEquivalences C).HasTwoOutOfThreeProperty]
-  [(weakEquivalences C).ContainsIdentities]
+variable [(weakEquivalences C).HasTwoOutOfThreeProperty] [(weakEquivalences C).ContainsIdentities]
 
-instance : WeakEquivalence P.p₀ :=
-  weakEquivalence_of_precomp_of_fac P.ι_p₀
+instance : WeakEquivalence P.p₀ := weakEquivalence_of_precomp_of_fac P.ι_p₀
 
-instance : WeakEquivalence P.p₁ :=
-  weakEquivalence_of_precomp_of_fac P.ι_p₁
+instance : WeakEquivalence P.p₁ := weakEquivalence_of_precomp_of_fac P.ι_p₁
 
 end
 
-/-- A path object `P` is good if the morphism
-`P.p : P.P ⟶ A ⨯ A` is a fibration. -/
+/--
+A path object `P` is good if the morphism
+`P.p : P.P ⟶ A ⨯ A` is a fibration.
+-/
 class IsGood [HasBinaryProduct A A] [CategoryWithFibrations C] : Prop where
   fibration_p : Fibration P.p := by infer_instance
 
 /-- A good path object `P` is very good if `P.ι` is a (trivial) cofibration. -/
-class IsVeryGood [HasBinaryProduct A A] [CategoryWithFibrations C]
-    [CategoryWithCofibrations C] : Prop extends P.IsGood where
+class IsVeryGood [HasBinaryProduct A A] [CategoryWithFibrations C] [CategoryWithCofibrations C]
+    : Prop
+    extends P.IsGood where
   cofibration_ι : Cofibration P.ι := by infer_instance
 
 attribute [instance] IsGood.fibration_p IsVeryGood.cofibration_ι
 
 section
 
-variable [HasBinaryProduct A A] [CategoryWithFibrations C]
-  [HasTerminal C] [(fibrations C).IsStableUnderComposition]
-  [(fibrations C).IsStableUnderBaseChange]
-  [IsFibrant A] [P.IsGood]
+variable
+  [HasBinaryProduct A A] [CategoryWithFibrations C] [HasTerminal C]
+  [(fibrations C).IsStableUnderComposition] [(fibrations C).IsStableUnderBaseChange] [IsFibrant A]
+  [P.IsGood]
 
 instance : Fibration P.p₀ := by
   rw [← P.p_fst]
@@ -194,14 +199,13 @@ instance : Fibration P.p₁ := by
   rw [← P.p_snd]
   infer_instance
 
-instance : IsFibrant P.P :=
-  isFibrant_of_fibration P.p₀
+instance : IsFibrant P.P := isFibrant_of_fibration P.p₀
 
 end
 
 set_option backward.isDefEq.respectTransparency false in
-instance [HasBinaryProducts C] [CategoryWithFibrations C] [P.IsGood]
-    [(fibrations C).RespectsIso] : P.symm.IsGood where
+instance [HasBinaryProducts C] [CategoryWithFibrations C] [P.IsGood] [(fibrations C).RespectsIso]
+    : P.symm.IsGood where
   fibration_p := by
     have hp : fibrations C P.p := by rw [← fibration_iff]; infer_instance
     rw [P.symm_p, fibration_iff]
@@ -210,15 +214,15 @@ instance [HasBinaryProducts C] [CategoryWithFibrations C] [P.IsGood]
 
 section
 
-variable [CategoryWithFibrations C] [CategoryWithCofibrations C]
+variable
+  [CategoryWithFibrations C] [CategoryWithCofibrations C]
   [(cofibrations C).IsStableUnderComposition]
 
 instance [HasBinaryProduct A A] [HasInitial C] [IsCofibrant A] [P.IsVeryGood] : IsCofibrant P.P :=
   isCofibrant_of_cofibration P.ι
 
 set_option backward.defeqAttrib.useBackward true in
-instance [(fibrations C).RespectsIso] [HasBinaryProducts C] [P.IsVeryGood] :
-    P.symm.IsVeryGood where
+instance [(fibrations C).RespectsIso] [HasBinaryProducts C] [P.IsVeryGood] : P.symm.IsVeryGood where
   cofibration_ι := by dsimp; infer_instance
 
 end
@@ -229,11 +233,12 @@ variable [ModelCategory C] {A : C} (P : PathObject A)
 
 section
 
-variable (h : MorphismProperty.MapFactorizationData
-  (trivialCofibrations C) (fibrations C) (diag A))
+variable (h : MorphismProperty.MapFactorizationData (trivialCofibrations C) (fibrations C) (diag A))
 
-/-- A path object for `A` can be obtained from a factorization of the obvious
-map `A ⟶ A ⨯ A` as a trivial cofibration followed by a fibration. -/
+/--
+A path object for `A` can be obtained from a factorization of the obvious
+map `A ⟶ A ⨯ A` as a trivial cofibration followed by a fibration.
+-/
 @[simps]
 noncomputable def ofFactorizationData : PathObject A where
   P := h.Z
@@ -241,45 +246,39 @@ noncomputable def ofFactorizationData : PathObject A where
   p₁ := h.p ≫ prod.snd
   ι := h.i
 
-@[simp]
-lemma ofFactorizationData_p : (ofFactorizationData h).p = h.p := by aesop_cat
+@[simp] lemma ofFactorizationData_p : (ofFactorizationData h).p = h.p := by aesop_cat
 
 set_option backward.defeqAttrib.useBackward true in
 instance : (ofFactorizationData h).IsVeryGood where
   fibration_p := by simpa using inferInstanceAs (Fibration h.p)
   cofibration_ι := by dsimp; infer_instance
 
-instance [HasInitial C] [IsCofibrant A] [(cofibrations C).IsStableUnderComposition] :
-    IsCofibrant (ofFactorizationData h).P :=
+instance [HasInitial C] [IsCofibrant A] [(cofibrations C).IsStableUnderComposition]
+    : IsCofibrant (ofFactorizationData h).P :=
   isCofibrant_of_cofibration (ofFactorizationData h).ι
 
 end
 
 variable (A) in
-lemma exists_very_good :
-    ∃ (P : PathObject A), P.IsVeryGood :=
-  ⟨ofFactorizationData (MorphismProperty.factorizationData _ _ _),
-    inferInstance⟩
+lemma exists_very_good : ∃ (P : PathObject A), P.IsVeryGood :=
+  ⟨ofFactorizationData (MorphismProperty.factorizationData _ _ _), inferInstance⟩
 
 instance : Nonempty (PathObject A) := ⟨(exists_very_good A).choose⟩
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The gluing of two good path objects. -/
 @[simps!]
-noncomputable def trans [IsFibrant A] (P P' : PathObject A) [P'.IsGood] :
-    PathObject A where
+noncomputable def trans [IsFibrant A] (P P' : PathObject A) [P'.IsGood] : PathObject A where
   __ := P.toPrepathObject.trans P'.toPrepathObject
   weakEquivalence_ι := by
-    have : WeakEquivalence (pullback.lift P.ι P'.ι (by simp) ≫
-        pullback.fst P.p₁ P'.p₀ ≫ P.p₀) := by
+    have : WeakEquivalence (pullback.lift P.ι P'.ι (by simp) ≫ pullback.fst P.p₁ P'.p₀ ≫ P.p₀) := by
       rw [pullback.lift_fst_assoc, PrepathObject.ι_p₀]
       infer_instance
     dsimp
     apply weakEquivalence_of_postcomp _ (pullback.fst P.p₁ P'.p₀ ≫ P.p₀)
 
 set_option backward.isDefEq.respectTransparency false in
-instance [IsFibrant A] (P P' : PathObject A) [P.IsGood] [P'.IsGood] :
-    (P.trans P').IsGood where
+instance [IsFibrant A] (P P' : PathObject A) [P.IsGood] [P'.IsGood] : (P.trans P').IsGood where
   fibration_p := by
     let ψ : (P.trans P').P ⟶ P.P ⨯ A := prod.lift (pullback.fst _ _) (pullback.snd _ _ ≫ P'.p₁)
     rw [show (P.trans P').p = ψ ≫ prod.map P.p₀ (𝟙 A) by simp [PrepathObject.p, ψ]]
@@ -293,15 +292,14 @@ instance [IsFibrant A] (P P' : PathObject A) [P.IsGood] [P'.IsGood] :
       rw [fibration_iff]
       exact (fibrations C).of_isPullback
         (IsPullback.of_right sq fac (IsPullback.of_prod_fst_with_id P.p₁ A)).flip
-          (by rw [← fibration_iff]; infer_instance)
+        (by rw [← fibration_iff]; infer_instance)
     infer_instance
 
 end PathObject
 
 /-- The opposite of a pre-path object is a precylinder object. -/
 @[simps]
-protected def PrepathObject.op {A : C} (P : PrepathObject A) :
-    Precylinder (op A) where
+protected def PrepathObject.op {A : C} (P : PrepathObject A) : Precylinder (op A) where
   I := op P.P
   i₀ := P.p₀.op
   i₁ := P.p₁.op
@@ -311,8 +309,7 @@ protected def PrepathObject.op {A : C} (P : PrepathObject A) :
 
 /-- The precylinder object obtained from a pre-path object in the opposite category. -/
 @[simps]
-protected def PrepathObject.unop {A : Cᵒᵖ} (P : PrepathObject A) :
-    Precylinder A.unop where
+protected def PrepathObject.unop {A : Cᵒᵖ} (P : PrepathObject A) : Precylinder A.unop where
   I := P.P.unop
   i₀ := P.p₀.unop
   i₁ := P.p₁.unop
@@ -322,8 +319,7 @@ protected def PrepathObject.unop {A : Cᵒᵖ} (P : PrepathObject A) :
 
 /-- The opposite of a precylinder object is a pre-path object. -/
 @[simps]
-protected def Precylinder.op {A : C} (P : Precylinder A) :
-    PrepathObject (op A) where
+protected def Precylinder.op {A : C} (P : Precylinder A) : PrepathObject (op A) where
   P := op P.I
   p₀ := P.i₀.op
   p₁ := P.i₁.op
@@ -333,8 +329,7 @@ protected def Precylinder.op {A : C} (P : Precylinder A) :
 
 /-- The pre-path object object obtained from a cylinder in the opposite category. -/
 @[simps]
-protected def Precylinder.unop {A : Cᵒᵖ} (P : Precylinder A) :
-    PrepathObject A.unop where
+protected def Precylinder.unop {A : Cᵒᵖ} (P : Precylinder A) : PrepathObject A.unop where
   P := P.I.unop
   p₀ := P.i₀.unop
   p₁ := P.i₁.unop

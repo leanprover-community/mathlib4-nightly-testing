@@ -40,8 +40,7 @@ structure ProblemPredicate (m n : ℤ) : Prop where
   n_range : n ∈ Ioc 0 (N : ℤ)
   eq_one : (n ^ 2 - m * n - m ^ 2) ^ 2 = 1
 
-def specifiedSet : Set ℤ :=
-  {k : ℤ | ∃ m : ℤ, ∃ n : ℤ, k = m ^ 2 + n ^ 2 ∧ ProblemPredicate N m n}
+def specifiedSet : Set ℤ := {k : ℤ | ∃ m : ℤ, ∃ n : ℤ, k = m ^ 2 + n ^ 2 ∧ ProblemPredicate N m n}
 
 /-
 We want to reduce every solution to a smaller solution. Specifically,
@@ -63,21 +62,22 @@ theorem eq_imp_1 {n : ℤ} (h1 : ProblemPredicate N n n) : n = 1 :=
   have : n * (n * (n * n)) = 1 := by linear_combination h1.eq_one
   eq_one_of_mul_eq_one_right h1.m_range.left.le this
 
-theorem reduction {m n : ℤ} (h1 : ProblemPredicate N m n) (h2 : 1 < n) :
-    ProblemPredicate N (n - m) m := by
+theorem reduction {m n : ℤ} (h1 : ProblemPredicate N m n) (h2 : 1 < n)
+    : ProblemPredicate N (n - m) m := by
   obtain (rfl : m = n) | (h3 : m < n) := h1.m_le_n.eq_or_lt
   · have h4 : m = 1 := h1.eq_imp_1
     exact absurd h4.symm h2.ne
-  exact
-    { n_range := h1.m_range
-      m_range := by
-        have h5 : 0 < n - m := sub_pos.mpr h3
-        have h6 : n - m < N := by
-          calc
-            _ < n := sub_lt_self n h1.m_range.left
-            _ ≤ N := h1.n_range.right
-        exact ⟨h5, h6.le⟩
-      eq_one := by linear_combination h1.eq_one }
+  exact {
+    n_range := h1.m_range
+    m_range := by
+      have h5 : 0 < n - m := sub_pos.mpr h3
+      have h6 : n - m < N := by
+        calc
+          _ < n := sub_lt_self n h1.m_range.left
+          _ ≤ N := h1.n_range.right
+      exact ⟨h5, h6.le⟩
+    eq_one := by linear_combination h1.eq_one
+  }
 
 end ProblemPredicate
 
@@ -85,8 +85,7 @@ end ProblemPredicate
 It will be convenient to have the lemmas above in their natural number form.
 Most of these can be proved with the `norm_cast` family of tactics.
 -/
-def NatPredicate (m n : ℕ) : Prop :=
-  ProblemPredicate N ↑m ↑n
+def NatPredicate (m n : ℕ) : Prop := ProblemPredicate N ↑m ↑n
 
 namespace NatPredicate
 
@@ -96,8 +95,8 @@ nonrec theorem m_le_n {m n : ℕ} (h1 : NatPredicate N m n) : m ≤ n := mod_cas
 
 nonrec theorem eq_imp_1 {n : ℕ} (h1 : NatPredicate N n n) : n = 1 := mod_cast h1.eq_imp_1
 
-nonrec theorem reduction {m n : ℕ} (h1 : NatPredicate N m n) (h2 : 1 < n) :
-    NatPredicate N (n - m) m := by
+nonrec theorem reduction {m n : ℕ} (h1 : NatPredicate N m n) (h2 : 1 < n)
+    : NatPredicate N (n - m) m := by
   have : m ≤ n := h1.m_le_n
   exact mod_cast h1.reduction (mod_cast h2)
 
@@ -107,12 +106,11 @@ theorem m_pos {m n : ℕ} (h1 : NatPredicate N m n) : 0 < m := mod_cast h1.m_ran
 
 theorem n_le_N {m n : ℕ} (h1 : NatPredicate N m n) : n ≤ N := mod_cast h1.n_range.right
 
-/-
-Now we can use induction to show that solutions must be Fibonacci numbers.
--/
-theorem imp_fib {n : ℕ} (m : ℕ) (h : NatPredicate N m n) :
-    ∃ k : ℕ, m = fib k ∧ n = fib (k + 1) := by
-  induction n using Nat.strong_induction_on generalizing m with | h n ih => ?_
+/- Now we can use induction to show that solutions must be Fibonacci numbers. -/
+theorem imp_fib {n : ℕ} (m : ℕ) (h : NatPredicate N m n)
+    : ∃ k : ℕ, m = fib k ∧ n = fib (k + 1) := by
+  induction n using Nat.strong_induction_on generalizing m with
+  | h n ih => ?_
   have h3 : m ≤ n := h.m_le_n
   obtain (rfl : 1 = n) | (h4 : 1 < n) := (succ_le_iff.mpr h.n_pos).eq_or_lt
   · use 1
@@ -156,16 +154,15 @@ theorem m_n_bounds {m n : ℕ} (h1 : NatPredicate N m n) : m ≤ fib K ∧ n ≤
     have h9 : n ≤ N := h1.n_le_N
     exact absurd h7 h9.not_gt
 
-/-
-We spell out the consequences of this result for `specifiedSet N` here.
--/
+/- We spell out the consequences of this result for `specifiedSet N` here. -/
 variable {M : ℕ} (HM : M = fib K ^ 2 + fib (K + 1) ^ 2)
 include HK HM
 
 theorem k_bound {m n : ℤ} (h1 : ProblemPredicate N m n) : m ^ 2 + n ^ 2 ≤ M := by
   have h2 : 0 ≤ m := h1.m_range.left.le
   have h3 : 0 ≤ n := h1.n_range.left.le
-  rw [← natAbs_of_nonneg h2, ← natAbs_of_nonneg h3] at h1; clear h2 h3
+  rw [← natAbs_of_nonneg h2, ← natAbs_of_nonneg h3] at h1
+  clear h2 h3
   obtain ⟨h4 : m.natAbs ≤ fib K, h5 : n.natAbs ≤ fib (K + 1)⟩ := m_n_bounds HK h1
   have h6 : m ^ 2 ≤ (fib K : ℤ) ^ 2 := Int.natAbs_le_iff_sq_le.mp h4
   have h7 : n ^ 2 ≤ (fib (K + 1) : ℤ) ^ 2 := Int.natAbs_le_iff_sq_le.mp h5
@@ -174,8 +171,8 @@ theorem k_bound {m n : ℤ} (h1 : ProblemPredicate N m n) : m ^ 2 + n ^ 2 ≤ M 
 theorem solution_bound : ∀ {k : ℤ}, k ∈ specifiedSet N → k ≤ M
   | _, ⟨_, _, rfl, h⟩ => k_bound HK HM h
 
-theorem solution_greatest (H : ProblemPredicate N (fib K) (fib (K + 1))) :
-    IsGreatest (specifiedSet N) M :=
+theorem solution_greatest (H : ProblemPredicate N (fib K) (fib (K + 1)))
+    : IsGreatest (specifiedSet N) M :=
   ⟨⟨fib K, fib (K + 1), by simp [HM], H⟩, fun k h => solution_bound HK HM h⟩
 
 end Imo1981Q3

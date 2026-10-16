@@ -27,8 +27,8 @@ There exist irrational `a`, `b` with rational `a^b`.
 Note that the positivity assumption on `a` is imposed because of the definition of `rpow` for
 negative bases. See `Real.rpow_def_of_neg` for more details.
 -/
-public theorem not_irrational_rpow :
-    ¬ ∀ a b : ℝ, Irrational a → Irrational b → 0 < a → Irrational (a ^ b) := by
+public theorem not_irrational_rpow
+    : ¬ ∀ a b : ℝ, Irrational a → Irrational b → 0 < a → Irrational (a ^ b) := by
   push Not
   by_cases hc : Irrational (√2 ^ √2)
   · use (√2 ^ √2), √2, hc, irrational_sqrt_two, by positivity

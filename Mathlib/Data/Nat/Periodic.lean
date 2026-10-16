@@ -23,32 +23,34 @@ namespace Nat
 
 open Function
 
-theorem periodic_gcd (a : ℕ) : Periodic (gcd a) a :=
-  a.gcd_add_self_right
+theorem periodic_gcd (a : ℕ) : Periodic (gcd a) a := a.gcd_add_self_right
 
-theorem periodic_coprime (a : ℕ) : Periodic (Coprime a) a :=
-  fun _ ↦ eq_iff_iff.mpr coprime_add_self_right
+theorem periodic_coprime (a : ℕ) : Periodic (Coprime a) a := fun _ ↦
+  eq_iff_iff.mpr coprime_add_self_right
 
-theorem periodic_mod (a : ℕ) : Periodic (fun n => n % a) a :=
-  (add_mod_right · a)
+theorem periodic_mod (a : ℕ) : Periodic (fun n => n % a) a := (add_mod_right · a)
 
-theorem _root_.Function.Periodic.map_mod_nat {α : Type*} {f : ℕ → α} {a : ℕ} (hf : Periodic f a) :
-    ∀ n, f (n % a) = f n := fun n => by
+theorem _root_.Function.Periodic.map_mod_nat {α : Type*} {f : ℕ → α} {a : ℕ} (hf : Periodic f a)
+    : ∀ n, f (n % a) = f n := fun n => by
   conv_rhs => rw [← n.mod_add_div a, mul_comm, ← Nat.nsmul_eq_mul, hf.nsmul]
 
 section Multiset
 
 open Multiset
 
-/-- An interval of length `a` filtered over a periodic predicate of period `a` has cardinality
-equal to the number naturals below `a` for which `p a` is true. -/
-theorem filter_multiset_Ico_card_eq_of_periodic (n a : ℕ) (p : ℕ → Prop) [DecidablePred p]
-    (pp : Periodic p a) : card (filter p (Ico n (n + a))) = a.count p := by
+/--
+An interval of length `a` filtered over a periodic predicate of period `a` has cardinality
+equal to the number naturals below `a` for which `p a` is true.
+-/
+theorem filter_multiset_Ico_card_eq_of_periodic
+    (n a : ℕ) (p : ℕ → Prop) [DecidablePred p] (pp : Periodic p a)
+    : card (filter p (Ico n (n + a))) = a.count p := by
   classical
-  rw [count_eq_card_filter_range, Finset.card, Finset.filter_val, Finset.range_val, ←
-    multiset_Ico_map_mod n, ← map_count_True_eq_filter_card, ← map_count_True_eq_filter_card,
+  rw [count_eq_card_filter_range, Finset.card, Finset.filter_val, Finset.range_val,
+    ← multiset_Ico_map_mod n, ← map_count_True_eq_filter_card, ← map_count_True_eq_filter_card,
     map_map]
-  congr; funext n
+  congr
+  funext n
   exact (pp.map_mod_nat n).symm
 
 end Multiset
@@ -57,10 +59,13 @@ section Finset
 
 open Finset
 
-/-- An interval of length `a` filtered over a periodic predicate of period `a` has cardinality
-equal to the number naturals below `a` for which `p a` is true. -/
-theorem filter_Ico_card_eq_of_periodic (n a : ℕ) (p : ℕ → Prop) [DecidablePred p]
-    (pp : Periodic p a) : ((Ico n (n + a)).filter p).card = a.count p :=
+/--
+An interval of length `a` filtered over a periodic predicate of period `a` has cardinality
+equal to the number naturals below `a` for which `p a` is true.
+-/
+theorem filter_Ico_card_eq_of_periodic
+    (n a : ℕ) (p : ℕ → Prop) [DecidablePred p] (pp : Periodic p a)
+    : ((Ico n (n + a)).filter p).card = a.count p :=
   n.filter_multiset_Ico_card_eq_of_periodic a p pp
 
 end Finset

@@ -6,7 +6,6 @@ Authors: Heather Macbeth
 module
 
 public import Mathlib.Analysis.InnerProductSpace.Convex
-
 import Mathlib.Algebra.Module.LinearMap.Rat
 
 /-!
@@ -55,30 +54,30 @@ inner product space, Hilbert space, norm
 
 @[expose] public section
 
-
 open RCLike
 
 open scoped ComplexConjugate
 
 variable {𝕜 : Type*} [RCLike 𝕜] (E : Type*) [NormedAddCommGroup E]
 
-/-- Predicate for the parallelogram identity to hold in a normed group. This is a scalar-less
+/--
+Predicate for the parallelogram identity to hold in a normed group. This is a scalar-less
 version of `InnerProductSpace`. If you have an `InnerProductSpaceable` assumption, you can
 locally upgrade that to `InnerProductSpace 𝕜 E` using `casesI nonempty_innerProductSpace 𝕜 E`.
 -/
 class InnerProductSpaceable : Prop where
-  parallelogram_identity :
-    ∀ x y : E, ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖)
+  parallelogram_identity
+    : ∀ x y : E, ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖)
 
 variable (𝕜) {E}
 
-theorem InnerProductSpace.toInnerProductSpaceable [InnerProductSpace 𝕜 E] :
-    InnerProductSpaceable E :=
+theorem InnerProductSpace.toInnerProductSpaceable [InnerProductSpace 𝕜 E]
+    : InnerProductSpaceable E :=
   ⟨parallelogram_law_with_norm_mul 𝕜⟩
 
 -- See note [lower instance priority]
-instance (priority := 100) InnerProductSpace.toInnerProductSpaceable_ofReal
-    [InnerProductSpace ℝ E] : InnerProductSpaceable E :=
+instance (priority := 100) InnerProductSpace.toInnerProductSpaceable_ofReal [InnerProductSpace ℝ E]
+    : InnerProductSpaceable E :=
   ⟨parallelogram_law_with_norm_mul ℝ⟩
 
 variable [NormedSpace 𝕜 E]
@@ -88,9 +87,10 @@ local notation "𝓚" => algebraMap ℝ 𝕜
 set_option backward.privateInPublic true in
 /-- Auxiliary definition of the inner product derived from the norm. -/
 private noncomputable def inner_ (x y : E) : 𝕜 :=
-  4⁻¹ * (𝓚 ‖x + y‖ * 𝓚 ‖x + y‖ - 𝓚 ‖x - y‖ * 𝓚 ‖x - y‖ +
-    (I : 𝕜) * 𝓚 ‖(I : 𝕜) • x + y‖ * 𝓚 ‖(I : 𝕜) • x + y‖ -
-    (I : 𝕜) * 𝓚 ‖(I : 𝕜) • x - y‖ * 𝓚 ‖(I : 𝕜) • x - y‖)
+  4⁻¹
+    * (𝓚 ‖x + y‖ * 𝓚 ‖x + y‖ - 𝓚 ‖x - y‖ * 𝓚 ‖x - y‖
+      + (I : 𝕜) * 𝓚 ‖(I : 𝕜) • x + y‖ * 𝓚 ‖(I : 𝕜) • x + y‖
+      - (I : 𝕜) * 𝓚 ‖(I : 𝕜) • x - y‖ * 𝓚 ‖(I : 𝕜) • x - y‖)
 
 namespace InnerProductSpaceable
 
@@ -99,23 +99,22 @@ variable {𝕜} (E)
 set_option backward.privateInPublic true in
 -- This has a prime added to avoid clashing with public `innerProp`
 /-- Auxiliary definition for the `add_left` property. -/
-private def innerProp' (r : 𝕜) : Prop :=
-  ∀ x y : E, inner_ 𝕜 (r • x) y = conj r * inner_ 𝕜 x y
+private def innerProp' (r : 𝕜) : Prop := ∀ x y : E, inner_ 𝕜 (r • x) y = conj r * inner_ 𝕜 x y
 
 variable {E}
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-theorem _root_.Continuous.inner_ {f g : ℝ → E} (hf : Continuous f) (hg : Continuous g) :
-    Continuous fun x => inner_ 𝕜 (f x) (g x) := by
+theorem _root_.Continuous.inner_ {f g : ℝ → E} (hf : Continuous f) (hg : Continuous g)
+    : Continuous fun x => inner_ 𝕜 (f x) (g x) := by
   unfold _root_.inner_
   fun_prop
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 theorem inner_.norm_sq (x : E) : ‖x‖ ^ 2 = re (inner_ 𝕜 x x) := by
-  simp only [inner_, normSq_apply, ofNat_re, ofNat_im, map_sub, map_add,
-    ofReal_re, ofReal_im, mul_re, inv_re, mul_im, I_re, inv_im]
+  simp only [inner_, normSq_apply, ofNat_re, ofNat_im, map_sub, map_add, ofReal_re, ofReal_im,
+    mul_re, inv_re, mul_im, I_re, inv_im]
   have h₁ : ‖x - x‖ = 0 := by simp
   have h₂ : ‖x + x‖ = 2 • ‖x‖ := by convert norm_nsmul 𝕜 2 x; module
   rw [h₁, h₂]
@@ -160,8 +159,8 @@ theorem add_left (x y z : E) : inner_ 𝕜 (x + y) z = inner_ 𝕜 x z + inner_ 
 
 private theorem rat_prop (r : ℚ) : innerProp' E (r : 𝕜) := by
   intro x y
-  let hom : 𝕜 →ₗ[ℚ] 𝕜 := AddMonoidHom.toRatLinearMap <|
-    AddMonoidHom.mk' (fun r ↦ inner_ 𝕜 (r • x) y) <| fun a b ↦ by
+  let hom : 𝕜 →ₗ[ℚ] 𝕜 :=
+    AddMonoidHom.toRatLinearMap <| AddMonoidHom.mk' (fun r ↦ inner_ 𝕜 (r • x) y) <| fun a b ↦ by
       simpa [add_smul] using add_left (a • x) (b • x) y
   simpa [hom, Rat.smul_def] using map_smul hom r 1
 
@@ -200,32 +199,39 @@ open InnerProductSpaceable
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- **Fréchet–von Neumann–Jordan Theorem**. A normed space `E` whose norm satisfies the
-parallelogram identity can be given a compatible inner product. -/
+/--
+**Fréchet–von Neumann–Jordan Theorem**. A normed space `E` whose norm satisfies the
+parallelogram identity can be given a compatible inner product.
+-/
 @[instance_reducible]
 noncomputable def InnerProductSpace.ofNorm
-    (h : ∀ x y : E, ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖)) :
-    InnerProductSpace 𝕜 E :=
+    (h : ∀ x y : E, ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖))
+    : InnerProductSpace 𝕜 E :=
   haveI : InnerProductSpaceable E := ⟨h⟩
-  { inner := inner_ 𝕜
+  {
+    inner := inner_ 𝕜
     norm_sq_eq_re_inner := inner_.norm_sq
     conj_inner_symm := inner_.conj_symm
     add_left := InnerProductSpaceable.add_left
-    smul_left := fun _ _ _ => innerProp _ _ _ }
+    smul_left := fun _ _ _ => innerProp _ _ _
+  }
 
 variable (E)
 variable [InnerProductSpaceable E]
 
-/-- **Fréchet–von Neumann–Jordan Theorem**. A normed space `E` whose norm satisfies the
+/--
+**Fréchet–von Neumann–Jordan Theorem**. A normed space `E` whose norm satisfies the
 parallelogram identity can be given a compatible inner product. Do
 `casesI nonempty_innerProductSpace 𝕜 E` to locally upgrade `InnerProductSpaceable E` to
-`InnerProductSpace 𝕜 E`. -/
-theorem nonempty_innerProductSpace : Nonempty (InnerProductSpace 𝕜 E) :=
-  ⟨{  inner := inner_ 𝕜
-      norm_sq_eq_re_inner := inner_.norm_sq
-      conj_inner_symm := inner_.conj_symm
-      add_left := add_left
-      smul_left := fun _ _ _ => innerProp _ _ _ }⟩
+`InnerProductSpace 𝕜 E`.
+-/
+theorem nonempty_innerProductSpace : Nonempty (InnerProductSpace 𝕜 E) := ⟨{
+  inner := inner_ 𝕜
+  norm_sq_eq_re_inner := inner_.norm_sq
+  conj_inner_symm := inner_.conj_symm
+  add_left := add_left
+  smul_left := fun _ _ _ => innerProp _ _ _
+}⟩
 
 variable {𝕜 E}
 variable [NormedSpace ℝ E]

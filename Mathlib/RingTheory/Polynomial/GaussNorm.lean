@@ -6,7 +6,6 @@ Authors: Fabrizio Barroero
 module
 
 public import Mathlib.RingTheory.PowerSeries.GaussNorm
-
 import Mathlib.Algebra.Order.Ring.IsNonarchimedean
 
 /-!
@@ -49,14 +48,18 @@ namespace Polynomial
 
 variable (p : R[X])
 
-/-- Given a polynomial `p` in `R[X]`, a function `v : R → ℝ` and a real number `c`, the Gauss norm
+/--
+Given a polynomial `p` in `R[X]`, a function `v : R → ℝ` and a real number `c`, the Gauss norm
 is defined as the supremum of the set of all values of `v (p.coeff i) * c ^ i` for all `i` in the
-support of `p`. -/
-def gaussNorm : ℝ := if h : p.support.Nonempty then p.support.sup' h fun i ↦
-    (v (p.coeff i) * c ^ i) else 0
+support of `p`.
+-/
+def gaussNorm : ℝ :=
+  if h : p.support.Nonempty then
+    p.support.sup' h fun i ↦ (v (p.coeff i) * c ^ i)
+  else
+    0
 
-@[simp]
-lemma gaussNorm_zero : gaussNorm v c 0 = 0 := by simp [gaussNorm]
+@[simp] lemma gaussNorm_zero : gaussNorm v c 0 = 0 := by simp [gaussNorm]
 
 variable [ZeroHomClass F R ℝ]
 
@@ -72,15 +75,15 @@ lemma gaussNorm_C (r : R) : (C r).gaussNorm v c = v r := by
   by_cases hr : r = 0 <;> simp [gaussNorm, support_C, hr]
 
 @[simp]
-theorem gaussNorm_monomial (n : ℕ) (r : R) :
-    (monomial n r).gaussNorm v c = v r * c ^ n := by
+theorem gaussNorm_monomial (n : ℕ) (r : R) : (monomial n r).gaussNorm v c = v r * c ^ n := by
   by_cases hr : r = 0 <;> simp [gaussNorm, support_monomial, hr]
 
 variable {c}
 
 omit [ZeroHomClass F R ℝ] in
-private lemma sup'_nonneg_of_ne_zero [NonnegHomClass F R ℝ] {p : R[X]} (h : p.support.Nonempty)
-    (hc : 0 ≤ c) : 0 ≤ p.support.sup' h fun i ↦ (v (p.coeff i) * c ^ i) := by
+private lemma sup'_nonneg_of_ne_zero
+    [NonnegHomClass F R ℝ] {p : R[X]} (h : p.support.Nonempty) (hc : 0 ≤ c)
+    : 0 ≤ p.support.sup' h fun i ↦ (v (p.coeff i) * c ^ i) := by
   simp only [Finset.le_sup'_iff, mem_support_iff]
   use p.natDegree
   simp_all only [support_nonempty, ne_eq, coeff_natDegree, leadingCoeff_eq_zero, not_false_eq_true,
@@ -101,15 +104,17 @@ private lemma aux_bdd : BddAbove {x | ∃ i, v (p.coeff i) * c ^ i = x} := by
 
 variable [NonnegHomClass F R ℝ]
 
-/-- If `v` is a nonnegative function with `v 0 = 0` and `c` is nonnegative, the Gauss norm of a
-polynomial is equal to its Gauss norm as a power series. -/
+/--
+If `v` is a nonnegative function with `v 0 = 0` and `c` is nonnegative, the Gauss norm of a
+polynomial is equal to its Gauss norm as a power series.
+-/
 @[simp]
-theorem gaussNorm_coe_powerSeries (hc : 0 ≤ c) :
-    (p.toPowerSeries).gaussNorm v c = p.gaussNorm v c := by
+theorem gaussNorm_coe_powerSeries (hc : 0 ≤ c)
+    : (p.toPowerSeries).gaussNorm v c = p.gaussNorm v c := by
   by_cases hp : p = 0
   · simp [hp]
   · simp only [PowerSeries.gaussNorm_eq, coeff_coe, gaussNorm, support_nonempty, ne_eq, hp,
-      not_false_eq_true, ↓reduceDIte]
+      not_false_eq_true, ↓ reduceDIte]
     apply le_antisymm
     · apply ciSup_le
       intro n
@@ -117,15 +122,17 @@ theorem gaussNorm_coe_powerSeries (hc : 0 ≤ c) :
       · exact Finset.le_sup' (fun j ↦ v (p.coeff j) * c ^ j) h
       · simp_all [sup'_nonneg_of_ne_zero v (support_nonempty.mpr hp) hc]
     · obtain ⟨i, hi⟩ := exists_eq_gaussNorm v c p
-      simp only [gaussNorm, support_nonempty.mpr hp, ↓reduceDIte] at hi
+      simp only [gaussNorm, support_nonempty.mpr hp, ↓ reduceDIte] at hi
       rw [hi]
       exact le_ciSup (aux_bdd v p) i
 
-/-- If `v x = 0 → x = 0` for all `x : R` and `v` is nonnegative, then the Gauss norm is zero if and
-only if the polynomial is zero. -/
+/--
+If `v x = 0 → x = 0` for all `x : R` and `v` is nonnegative, then the Gauss norm is zero if and
+only if the polynomial is zero.
+-/
 @[simp]
-theorem gaussNorm_eq_zero_iff (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0 < c) :
-    p.gaussNorm v c = 0 ↔ p = 0 := by
+theorem gaussNorm_eq_zero_iff (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0 < c)
+    : p.gaussNorm v c = 0 ↔ p = 0 := by
   rw [← gaussNorm_coe_powerSeries _ _ (le_of_lt hc)]
   convert PowerSeries.gaussNorm_eq_zero_iff v c p (by grind) (by simp) h_eq_zero hc
     (by simpa [PowerSeries.HasGaussNorm] using! aux_bdd v p)
@@ -134,8 +141,8 @@ theorem gaussNorm_eq_zero_iff (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0
 omit [ZeroHomClass F R ℝ] in
 /-- If `v` is a nonnegative function, then the Gauss norm is nonnegative. -/
 theorem gaussNorm_nonneg (hc : 0 ≤ c) : 0 ≤ p.gaussNorm v c := by
-  by_cases hp : p.support.Nonempty <;>
-  simp_all [gaussNorm, sup'_nonneg_of_ne_zero, -Finset.le_sup'_iff]
+  by_cases hp : p.support.Nonempty
+    <;> simp_all [gaussNorm, sup'_nonneg_of_ne_zero, -Finset.le_sup'_iff]
 
 lemma le_gaussNorm (hc : 0 ≤ c) (i : ℕ) : v (p.coeff i) * c ^ i ≤ p.gaussNorm v c := by
   rw [← gaussNorm_coe_powerSeries _ _ hc, ← coeff_coe]
@@ -144,8 +151,7 @@ lemma le_gaussNorm (hc : 0 ≤ c) (i : ℕ) : v (p.coeff i) * c ^ i ≤ p.gaussN
 
 @[simp]
 lemma gaussNorm_zero_right : p.gaussNorm v 0 = v (p.coeff 0) := by
-  have : (fun i ↦ v (p.coeff i) * 0 ^ i) = fun i ↦ if i = 0 then v (p.coeff 0) else 0 := by
-    aesop
+  have : (fun i ↦ v (p.coeff i) * 0 ^ i) = fun i ↦ if i = 0 then v (p.coeff 0) else 0 := by aesop
   rcases eq_or_ne (p.coeff 0) 0 with _ | hcoeff0
   · simp_all [gaussNorm]
   · apply le_antisymm
@@ -153,11 +159,14 @@ lemma gaussNorm_zero_right : p.gaussNorm v 0 = v (p.coeff 0) := by
     · grind [p.le_gaussNorm v (le_refl 0) 0]
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `v` is a nonnegative function with `v 0 = 0` and `c` is nonnegative, there exists a minimal
-index `i` such that the Gauss norm of `p` at `c` is attained at `i`. -/
-lemma exists_min_eq_gaussNorm (p : R[X]) (hc : 0 ≤ c) :
-    ∃ i, p.gaussNorm v c = v (p.coeff i) * c ^ i ∧
-    ∀ j, j < i → v (p.coeff j) * c ^ j < p.gaussNorm v c := by
+/--
+If `v` is a nonnegative function with `v 0 = 0` and `c` is nonnegative, there exists a minimal
+index `i` such that the Gauss norm of `p` at `c` is attained at `i`.
+-/
+lemma exists_min_eq_gaussNorm (p : R[X]) (hc : 0 ≤ c)
+    : ∃ i,
+      p.gaussNorm v c = v (p.coeff i) * c ^ i
+        ∧ ∀ j, j < i → v (p.coeff j) * c ^ j < p.gaussNorm v c := by
   have h_nonempty : {i | gaussNorm v c p = v (p.coeff i) * c ^ i}.Nonempty := by
     obtain ⟨i, hi⟩ := exists_eq_gaussNorm v c p
     exact ⟨i, Set.mem_ofPred.mpr hi⟩
@@ -166,10 +175,12 @@ lemma exists_min_eq_gaussNorm (p : R[X]) (hc : 0 ≤ c) :
   simp only [Nat.lt_find_iff, Set.mem_ofPred_eq] at hj_lt
   exact lt_of_le_of_ne (le_gaussNorm v _ hc j) fun a ↦ hj_lt j (Nat.le_refl j) a.symm
 
-/-- If `v` is a nonnegative nonarchimedean function with `v 0 = 0` and `c` is nonnegative, the
-Gauss norm is nonarchimedean. -/
-theorem isNonarchimedean_gaussNorm (hna : IsNonarchimedean v) {c : ℝ} (hc : 0 ≤ c) :
-    IsNonarchimedean (gaussNorm v c) := by
+/--
+If `v` is a nonnegative nonarchimedean function with `v 0 = 0` and `c` is nonnegative, the
+Gauss norm is nonarchimedean.
+-/
+theorem isNonarchimedean_gaussNorm (hna : IsNonarchimedean v) {c : ℝ} (hc : 0 ≤ c)
+    : IsNonarchimedean (gaussNorm v c) := by
   intro p q
   rcases eq_or_ne p 0 with hp | _
   · simp [hp]
@@ -177,46 +188,46 @@ theorem isNonarchimedean_gaussNorm (hna : IsNonarchimedean v) {c : ℝ} (hc : 0 
   · simp [hq]
   rcases eq_or_ne (p + q) 0 with hpq | hpq
   · simp [hpq, hc, gaussNorm_nonneg]
-  simp only [gaussNorm, support_nonempty, ne_eq, hpq, not_false_eq_true, ↓reduceDIte,
+  simp only [gaussNorm, support_nonempty, ne_eq, hpq, not_false_eq_true, ↓ reduceDIte,
     Finset.sup'_le_iff]
   intro i _
   calc
-  v ((p + q).coeff i) * c ^ i
-    ≤ max (v (p.coeff i)) (v (q.coeff i)) * c ^ i := by
-    rw [coeff_add]
-    gcongr
-    exact hna (p.coeff i) (q.coeff i)
-  _ = max (v (p.coeff i) * c ^ i) (v (q.coeff i) * c ^ i) := by
-    rw [max_mul_of_nonneg _ _ (pow_nonneg hc _)]
-  _ ≤ max (gaussNorm v c p) (gaussNorm v c q) := by
-    apply max_le_max <;>
-    exact le_gaussNorm v _ hc i
+    v ((p + q).coeff i) * c ^ i ≤ max (v (p.coeff i)) (v (q.coeff i)) * c ^ i := by
+      rw [coeff_add]
+      gcongr
+      exact hna (p.coeff i) (q.coeff i)
+    _ = max (v (p.coeff i) * c ^ i) (v (q.coeff i) * c ^ i) := by
+      rw [max_mul_of_nonneg _ _ (pow_nonneg hc _)]
+    _ ≤ max (gaussNorm v c p) (gaussNorm v c q) := by
+      apply max_le_max <;> exact le_gaussNorm v _ hc i
 
 open Finset in
-/-- If `v` is a nonnegative nonarchimedean multiplicative function with `v 0 = 0` and `c` is
-nonnegative, then the Gauss norm is submultiplicative. -/
-theorem gaussNorm_mul_le [MulHomClass F R ℝ] (hna : IsNonarchimedean v) (p q : R[X]) (hc : 0 ≤ c) :
-    (p * q).gaussNorm v c ≤ p.gaussNorm v c * q.gaussNorm v c := by
+/--
+If `v` is a nonnegative nonarchimedean multiplicative function with `v 0 = 0` and `c` is
+nonnegative, then the Gauss norm is submultiplicative.
+-/
+theorem gaussNorm_mul_le [MulHomClass F R ℝ] (hna : IsNonarchimedean v) (p q : R[X]) (hc : 0 ≤ c)
+    : (p * q).gaussNorm v c ≤ p.gaussNorm v c * q.gaussNorm v c := by
   rcases eq_or_ne (p * q) 0 with hpq | hpq
   · simp [hpq, hc, gaussNorm_nonneg, mul_nonneg]
   have h_supp_p : p.support.Nonempty := support_nonempty.mpr <| left_ne_zero_of_mul hpq
   have h_supp_q : q.support.Nonempty := support_nonempty.mpr <| right_ne_zero_of_mul hpq
-  simp only [gaussNorm, support_nonempty, ne_eq, hpq, not_false_eq_true, ↓reduceDIte, h_supp_p,
+  simp only [gaussNorm, support_nonempty, ne_eq, hpq, not_false_eq_true, ↓ reduceDIte, h_supp_p,
     h_supp_q, sup'_le_iff, coeff_mul, Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   intro i _
   obtain ⟨j, _, _⟩ := hna.finset_image_add_of_nonempty _ nonempty_range_add_one
   calc
-  v (∑ j ∈ range (i + 1), p.coeff j * q.coeff (i - j)) * c ^ i
-  _ ≤ v (p.coeff j * q.coeff (i - j)) * c ^ i := by gcongr
-  _ = (v (p.coeff j) * c ^ j) * (v (q.coeff (i - j)) * c ^ (i - j)) := by
+    v (∑ j ∈ range (i + 1), p.coeff j * q.coeff (i - j)) * c ^ i
+    _ ≤ v (p.coeff j * q.coeff (i - j)) * c ^ i := by gcongr
+    _ = (v (p.coeff j) * c ^ j) * (v (q.coeff (i - j)) * c ^ (i - j)) := by
       have : c ^ j * c ^ (i - j) = c ^ i := by simp_all [← pow_add]
       grind
-  _ ≤ (p.support.sup' _ fun i ↦ v (p.coeff i) * c ^ i)
-    * q.support.sup' _ fun i ↦ v (q.coeff i) * c ^ i := by
+    _ ≤ (p.support.sup' _ fun i ↦ v (p.coeff i) * c ^ i)
+        * q.support.sup' _ fun i ↦ v (q.coeff i) * c ^ i := by
       have hp_le := p.le_gaussNorm v hc j
       have hq_le := q.le_gaussNorm v hc (i - j)
       have := p.gaussNorm_nonneg v hc
-      simp_all only [gaussNorm, ↓reduceDIte]
+      simp_all only [gaussNorm, ↓ reduceDIte]
       gcongr
 
 section AbsoluteValue
@@ -225,8 +236,8 @@ variable {R : Type*} [Ring R] {v : AbsoluteValue R ℝ} (hna : IsNonarchimedean 
 
 open Finset in
 include hna hc in
-private theorem mul_gaussNorm_le_gaussNorm_mul (p q : R[X]) :
-    p.gaussNorm v c * q.gaussNorm v c ≤ (p * q).gaussNorm v c := by
+private theorem mul_gaussNorm_le_gaussNorm_mul (p q : R[X])
+    : p.gaussNorm v c * q.gaussNorm v c ≤ (p * q).gaussNorm v c := by
   have hc0 : 0 ≤ c := le_of_lt hc
   obtain ⟨i, hi_p, hlt_p⟩ := p.exists_min_eq_gaussNorm v hc0
   obtain ⟨j, hj_q, hlt_q⟩ := q.exists_min_eq_gaussNorm v hc0
@@ -239,8 +250,10 @@ private theorem mul_gaussNorm_le_gaussNorm_mul (p q : R[X]) :
   -- gaussNorm v c p * gaussNorm v c q is actually equal to v ((p * q).coeff (i + j)) * c ^ (i + j)
   rw [hi_p, hj_q, coeff_mul, Nat.sum_antidiagonal_eq_sum_range_succ_mk,
     hna.apply_sum_eq_of_lt (k := i) _ (v.map_neg) (by simp)]
-  /- IsNonarchimedean.apply_sum_eq_of_lt makes the goal almost trivial so we are left to prove
-  the hmax hypothesis -/
+  /-
+  IsNonarchimedean.apply_sum_eq_of_lt makes the goal almost trivial so we are left to prove
+  the hmax hypothesis
+  -/
   · grind
   intro x hx hneq
   apply lt_of_mul_lt_mul_right _ <| pow_nonneg hc0 (i + j)
@@ -252,41 +265,36 @@ private theorem mul_gaussNorm_le_gaussNorm_mul (p q : R[X]) :
   -- we need to distinguish two cases depending on whether x < i or x > i
   rcases lt_or_gt_of_ne hneq
   · calc
-    v (p.coeff x) * c ^ x * (v (q.coeff (i + j - x)) * c ^ (i + j - x))
-    _ ≤ v (p.coeff x) * c ^ x * gaussNorm v c q := by
+      v (p.coeff x) * c ^ x * (v (q.coeff (i + j - x)) * c ^ (i + j - x))
+      _ ≤ v (p.coeff x) * c ^ x * gaussNorm v c q := by
         gcongr
         exact q.le_gaussNorm v hc0 (i + j - x)
-    _ = v (p.coeff x) * c ^ x * (v (q.coeff j) * c ^ j) := by
-        rw [hj_q]
-    _ < v (p.coeff i) * c ^ i * (v (q.coeff j) * c ^ j) := by
+      _ = v (p.coeff x) * c ^ x * (v (q.coeff j) * c ^ j) := by rw [hj_q]
+      _ < v (p.coeff i) * c ^ i * (v (q.coeff j) * c ^ j) := by
         gcongr 1
         grind
   · calc
-    v (p.coeff x) * c ^ x * (v (q.coeff (i + j - x)) * c ^ (i + j - x))
-    _ ≤ gaussNorm v c p * (v (q.coeff (i + j - x)) * c ^ (i + j - x)) := by
+      v (p.coeff x) * c ^ x * (v (q.coeff (i + j - x)) * c ^ (i + j - x))
+      _ ≤ gaussNorm v c p * (v (q.coeff (i + j - x)) * c ^ (i + j - x)) := by
         gcongr
         exact p.le_gaussNorm v hc0 x
-    _ = v (p.coeff i) * c ^ i * (v (q.coeff (i + j - x)) * c ^ (i + j - x)) := by
-        rw [hi_p]
-    _ < v (p.coeff i) * c ^ i * (v (q.coeff j) * c ^ j) := by
+      _ = v (p.coeff i) * c ^ i * (v (q.coeff (i + j - x)) * c ^ (i + j - x)) := by rw [hi_p]
+      _ < v (p.coeff i) * c ^ i * (v (q.coeff j) * c ^ j) := by
         gcongr 1
         grind
 
 include hna hc in
 /-- If `v` is a nonarchimedean absolute value, then the Gauss norm is multiplicative. -/
-theorem gaussNorm_mul (p q : R[X]) :
-    (p * q).gaussNorm v c = p.gaussNorm v c * q.gaussNorm v c :=
-  le_antisymm (gaussNorm_mul_le v hna p q (le_of_lt hc))
-  <| mul_gaussNorm_le_gaussNorm_mul hna hc p q
+theorem gaussNorm_mul (p q : R[X]) : (p * q).gaussNorm v c = p.gaussNorm v c * q.gaussNorm v c :=
+  le_antisymm (gaussNorm_mul_le v hna p q (le_of_lt hc)) <|
+    mul_gaussNorm_le_gaussNorm_mul hna hc p q
 
 include hna hc in
 /-- If `v` is a nonarchimedean absolute value, then the Gauss norm is an absolute value. -/
-theorem gaussNorm_isAbsoluteValue :
-    IsAbsoluteValue (gaussNorm v c) where
+theorem gaussNorm_isAbsoluteValue : IsAbsoluteValue (gaussNorm v c) where
   abv_nonneg' p := p.gaussNorm_nonneg v <| le_of_lt hc
   abv_eq_zero' := gaussNorm_eq_zero_iff v _ (fun _ hx ↦ (AbsoluteValue.eq_zero v).mp hx) hc
-  abv_add' p q := by
-    grind [isNonarchimedean_gaussNorm v hna (le_of_lt hc) p q, gaussNorm_nonneg]
+  abv_add' p q := by grind [isNonarchimedean_gaussNorm v hna (le_of_lt hc) p q, gaussNorm_nonneg]
   abv_mul' p q := gaussNorm_mul hna hc p q
 
 end AbsoluteValue
@@ -298,13 +306,13 @@ namespace PowerSeries
 variable {c} (r : R)
 
 @[simp]
-theorem gaussNorm_C [ZeroHomClass F R ℝ] [NonnegHomClass F R ℝ] (hc : 0 ≤ c) :
-    (C r).gaussNorm v c = v r := by
+theorem gaussNorm_C [ZeroHomClass F R ℝ] [NonnegHomClass F R ℝ] (hc : 0 ≤ c)
+    : (C r).gaussNorm v c = v r := by
   simp [← Polynomial.coe_C, hc]
 
 @[simp]
-theorem gaussNorm_monomial [ZeroHomClass F R ℝ] [NonnegHomClass F R ℝ] (hc : 0 ≤ c) (n : ℕ) :
-    (monomial n r).gaussNorm v c = v r * c ^ n := by
+theorem gaussNorm_monomial [ZeroHomClass F R ℝ] [NonnegHomClass F R ℝ] (hc : 0 ≤ c) (n : ℕ)
+    : (monomial n r).gaussNorm v c = v r * c ^ n := by
   simp [← Polynomial.coe_monomial, hc]
 
 end PowerSeries

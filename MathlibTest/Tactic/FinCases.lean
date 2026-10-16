@@ -20,11 +20,9 @@ example {p : Fin 4 → Prop} (i : Fin 4) (h : p i) : p i := by
 
 example (f : Nat → Prop) (p : Fin 3) (h0 : f 0) (h1 : f 1) (h2 : f 2) : f p.val := by
   fin_cases p
-  all_goals
-    assumption
+  all_goals assumption
 
-example (f : Nat → Prop) (p : Fin 0) : f p.val := by
-  fin_cases p
+example (f : Nat → Prop) (p : Fin 0) : f p.val := by fin_cases p
 
 example (x2 : Fin 2) (x3 : Fin 3) : True := by
   fin_cases x2, x3
@@ -53,7 +51,7 @@ case «1».«1»
 ⊢ True
 -/
 #guard_msgs in
-example (x y : Fin 2): True := by
+example (x y : Fin 2) : True := by
   fin_cases x, y
   trace_state
   all_goals trivial
@@ -64,8 +62,7 @@ example (x y : Fin 2): True := by
 set_option linter.unusedVariables false in
 example (x2 : Fin 2) (x3 : Fin 3) (n : Nat) (y : Fin n) : x2.val * x3.val = x3.val * x2.val := by
   fin_cases x2 <;> fin_cases x3
-  fail_if_success
-    fin_cases y
+  fail_if_success fin_cases y
   all_goals rfl
 
 -- example (x : ℕ) (h : x ∈ [2,3,5,7]) : True := by

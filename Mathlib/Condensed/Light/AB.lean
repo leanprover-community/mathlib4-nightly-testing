@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Sheaf
 public import Mathlib.Condensed.Light.Epi
-
 import Mathlib.Algebra.Category.ModuleCat.AB
 
 /-!

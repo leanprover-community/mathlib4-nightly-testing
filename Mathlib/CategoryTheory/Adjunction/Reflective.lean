@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Adjunction.FullyFaithful
 public import Mathlib.CategoryTheory.HomCongr
-
 import Mathlib.CategoryTheory.Functor.EpiMono
 
 /-!
@@ -20,7 +19,6 @@ Note properties of reflective functors relating to limits and colimits are inclu
 -/
 
 @[expose] public section
-
 
 universe v₁ v₂ v₃ u₁ u₂ u₃
 
@@ -59,11 +57,10 @@ def Functor.fullyFaithfulOfReflective [Reflective i] : i.FullyFaithful :=
   (reflectorAdjunction i).fullyFaithfulROfIsIsoCounit
 
 -- TODO: This holds more generally for idempotent adjunctions, not just reflective adjunctions.
-/-- For a reflective functor `i` (with left adjoint `L`), with unit `η`, we have `η_iL = iL η`.
--/
-theorem unit_obj_eq_map_unit [Reflective i] (X : C) :
-    (reflectorAdjunction i).unit.app (i.obj ((reflector i).obj X)) =
-      i.map ((reflector i).map ((reflectorAdjunction i).unit.app X)) := by
+/-- For a reflective functor `i` (with left adjoint `L`), with unit `η`, we have `η_iL = iL η`. -/
+theorem unit_obj_eq_map_unit [Reflective i] (X : C)
+    : (reflectorAdjunction i).unit.app (i.obj ((reflector i).obj X))
+      = i.map ((reflector i).map ((reflectorAdjunction i).unit.app X)) := by
   rw [← cancel_mono (i.map ((reflectorAdjunction i).counit.app ((reflector i).obj X))),
     ← i.map_comp]
   simp
@@ -74,24 +71,25 @@ When restricted to objects in `D` given by `i : D ⥤ C`, the unit is an isomorp
 More generally this applies to objects essentially in the reflective subcategory, see
 `Functor.essImage.unit_isIso`.
 -/
-example [Reflective i] {B : D} : IsIso ((reflectorAdjunction i).unit.app (i.obj B)) :=
-  inferInstance
+example [Reflective i] {B : D} : IsIso ((reflectorAdjunction i).unit.app (i.obj B)) := inferInstance
 
 variable {i}
 
-/-- If `A` is essentially in the image of a reflective functor `i`, then `η_A` is an isomorphism.
+/--
+If `A` is essentially in the image of a reflective functor `i`, then `η_A` is an isomorphism.
 This gives that the "witness" for `A` being in the essential image can instead be given as the
 reflection of `A`, with the isomorphism as `η_A`.
 
 (For any `B` in the reflective subcategory, we automatically have that `ε_B` is an iso.)
 -/
-theorem Functor.essImage.unit_isIso [Reflective i] {A : C} (h : i.essImage A) :
-    IsIso ((reflectorAdjunction i).unit.app A) := by
+theorem Functor.essImage.unit_isIso [Reflective i] {A : C} (h : i.essImage A)
+    : IsIso ((reflectorAdjunction i).unit.app A) := by
   rwa [isIso_unit_app_iff_mem_essImage]
 
 /-- If `η_A` is a split monomorphism, then `A` is in the reflective subcategory. -/
-theorem mem_essImage_of_unit_isSplitMono [Reflective i] {A : C}
-    [IsSplitMono ((reflectorAdjunction i).unit.app A)] : i.essImage A := by
+theorem mem_essImage_of_unit_isSplitMono
+    [Reflective i] {A : C} [IsSplitMono ((reflectorAdjunction i).unit.app A)]
+    : i.essImage A := by
   let η : 𝟭 C ⟶ reflector i ⋙ i := (reflectorAdjunction i).unit
   have : IsIso (η.app (i.obj ((reflector i).obj A))) :=
     Functor.essImage.unit_isIso ((i.obj_mem_essImage _))
@@ -103,24 +101,25 @@ theorem mem_essImage_of_unit_isSplitMono [Reflective i] {A : C}
   exact (reflectorAdjunction i).mem_essImage_of_unit_isIso A
 
 /-- Composition of reflective functors. -/
-instance Reflective.comp (F : C ⥤ D) (G : D ⥤ E) [Reflective F] [Reflective G] :
-    Reflective (F ⋙ G) where
+instance Reflective.comp (F : C ⥤ D) (G : D ⥤ E) [Reflective F] [Reflective G]
+    : Reflective (F ⋙ G) where
   L := reflector G ⋙ reflector F
   adj := (reflectorAdjunction G).comp (reflectorAdjunction F)
 
 /-- (Implementation) Auxiliary definition for `unitCompPartialBijective`. -/
-def unitCompPartialBijectiveAux [Reflective i] (A : C) (B : D) :
-    (A ⟶ i.obj B) ≃ (i.obj ((reflector i).obj A) ⟶ i.obj B) :=
+def unitCompPartialBijectiveAux [Reflective i] (A : C) (B : D)
+    : (A ⟶ i.obj B) ≃ (i.obj ((reflector i).obj A) ⟶ i.obj B) :=
   ((reflectorAdjunction i).homEquiv _ _).symm.trans
     (Functor.FullyFaithful.ofFullyFaithful i).homEquiv
 
 /-- The description of the inverse of the bijection `unitCompPartialBijectiveAux`. -/
-theorem unitCompPartialBijectiveAux_symm_apply [Reflective i] {A : C} {B : D}
-    (f : i.obj ((reflector i).obj A) ⟶ i.obj B) :
-    (unitCompPartialBijectiveAux _ _).symm f = (reflectorAdjunction i).unit.app A ≫ f := by
+theorem unitCompPartialBijectiveAux_symm_apply
+    [Reflective i] {A : C} {B : D} (f : i.obj ((reflector i).obj A) ⟶ i.obj B)
+    : (unitCompPartialBijectiveAux _ _).symm f = (reflectorAdjunction i).unit.app A ≫ f := by
   simp [unitCompPartialBijectiveAux, Adjunction.homEquiv_unit]
 
-/-- If `i` has a reflector `L`, then the function `(i.obj (L.obj A) ⟶ B) → (A ⟶ B)` given by
+/--
+If `i` has a reflector `L`, then the function `(i.obj (L.obj A) ⟶ B) → (A ⟶ B)` given by
 precomposing with `η.app A` is a bijection provided `B` is in the essential image of `i`.
 That is, the function `fun (f : i.obj (L.obj A) ⟶ B) ↦ η.app A ≫ f` is bijective,
 as long as `B` is in the essential image of `i`.
@@ -131,33 +130,39 @@ This establishes there is a natural bijection `(A ⟶ B) ≃ (i.obj (L.obj A) �
 from the point of view of objects in `D`, `A` and `i.obj (L.obj A)` look the same: specifically
 that `η.app A` is an isomorphism.
 -/
-def unitCompPartialBijective [Reflective i] (A : C) {B : C} (hB : i.essImage B) :
-    (A ⟶ B) ≃ (i.obj ((reflector i).obj A) ⟶ B) :=
+def unitCompPartialBijective [Reflective i] (A : C) {B : C} (hB : i.essImage B)
+    : (A ⟶ B) ≃ (i.obj ((reflector i).obj A) ⟶ B) :=
   calc
-    (A ⟶ B) ≃ (A ⟶ i.obj (Functor.essImage.witness hB)) := Iso.homCongr (Iso.refl _) hB.getIso.symm
+    (A ⟶ B)
+      ≃ (A ⟶ i.obj (Functor.essImage.witness hB)) := Iso.homCongr (Iso.refl _) hB.getIso.symm
     _ ≃ (i.obj _ ⟶ i.obj (Functor.essImage.witness hB)) := unitCompPartialBijectiveAux _ _
-    _ ≃ (i.obj ((reflector i).obj A) ⟶ B) :=
-      Iso.homCongr (Iso.refl _) (Functor.essImage.getIso hB)
+    _ ≃ (i.obj ((reflector i).obj A) ⟶ B) := Iso.homCongr (Iso.refl _) (Functor.essImage.getIso hB)
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-theorem unitCompPartialBijective_symm_apply [Reflective i] (A : C) {B : C} (hB : i.essImage B)
-    (f) : (unitCompPartialBijective A hB).symm f = (reflectorAdjunction i).unit.app A ≫ f := by
+theorem unitCompPartialBijective_symm_apply [Reflective i] (A : C) {B : C} (hB : i.essImage B) (f)
+    : (unitCompPartialBijective A hB).symm f = (reflectorAdjunction i).unit.app A ≫ f := by
   simp [unitCompPartialBijective, unitCompPartialBijectiveAux_symm_apply]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem unitCompPartialBijective_symm_natural [Reflective i] (A : C) {B B' : C} (h : B ⟶ B')
-    (hB : i.essImage B) (hB' : i.essImage B') (f : i.obj ((reflector i).obj A) ⟶ B) :
-    (unitCompPartialBijective A hB').symm (f ≫ h) = (unitCompPartialBijective A hB).symm f ≫ h := by
+theorem unitCompPartialBijective_symm_natural
+    [Reflective i]
+    (A : C)
+    {B B' : C}
+    (h : B ⟶ B') (hB : i.essImage B) (hB' : i.essImage B') (f : i.obj ((reflector i).obj A) ⟶ B)
+    : (unitCompPartialBijective A hB').symm (f ≫ h)
+      = (unitCompPartialBijective A hB).symm f ≫ h := by
   simp
 
-theorem unitCompPartialBijective_natural [Reflective i] (A : C) {B B' : C} (h : B ⟶ B')
-    (hB : i.essImage B) (hB' : i.essImage B') (f : A ⟶ B) :
-    (unitCompPartialBijective A hB') (f ≫ h) = unitCompPartialBijective A hB f ≫ h := by
+theorem unitCompPartialBijective_natural
+    [Reflective i]
+    (A : C)
+    {B B' : C} (h : B ⟶ B') (hB : i.essImage B) (hB' : i.essImage B') (f : A ⟶ B)
+    : (unitCompPartialBijective A hB') (f ≫ h) = unitCompPartialBijective A hB f ≫ h := by
   rw [← Equiv.eq_symm_apply, unitCompPartialBijective_symm_natural A h hB, Equiv.symm_apply_apply]
 
-instance [Reflective i] (X : Functor.EssImageSubcategory i) :
-    IsIso (NatTrans.app (reflectorAdjunction i).unit X.obj) :=
+instance [Reflective i] (X : Functor.EssImageSubcategory i)
+    : IsIso (NatTrans.app (reflectorAdjunction i).unit X.obj) :=
   Functor.essImage.unit_isIso X.property
 
 set_option backward.defeqAttrib.useBackward true in
@@ -166,15 +171,18 @@ set_option backward.defeqAttrib.useBackward true in
 -- TODO: investigate further.
 attribute [local simp 900] ObjectProperty.ι_map in
 attribute [local ext] Functor.essImage_ext in
-/-- If `i : D ⥤ C` is reflective, the inverse functor of `i ≌ F.essImage` can be explicitly
-defined by the reflector. -/
+/--
+If `i : D ⥤ C` is reflective, the inverse functor of `i ≌ F.essImage` can be explicitly
+defined by the reflector.
+-/
 @[simps]
 def equivEssImageOfReflective [Reflective i] : D ≌ i.EssImageSubcategory where
   functor := i.toEssImage
   inverse := i.essImage.ι ⋙ reflector i
   unitIso := (asIso (reflectorAdjunction i).counit).symm
-  counitIso := Functor.fullyFaithfulCancelRight i.essImage.ι <|
-    NatIso.ofComponents (fun X ↦ (asIso ((reflectorAdjunction i).unit.app X.obj)).symm)
+  counitIso :=
+    Functor.fullyFaithfulCancelRight i.essImage.ι <|
+      NatIso.ofComponents (fun X ↦ (asIso ((reflectorAdjunction i).unit.app X.obj)).symm)
 
 /--
 A functor is *coreflective*, or *a coreflective inclusion*, if it is fully faithful and left
@@ -202,9 +210,9 @@ instance [Coreflective j] : (coreflector j).IsRightAdjoint := ⟨_, ⟨coreflect
 def Functor.fullyFaithfulOfCoreflective [Coreflective j] : j.FullyFaithful :=
   (coreflectorAdjunction j).fullyFaithfulLOfIsIsoUnit
 
-lemma counit_obj_eq_map_counit [Coreflective j] (X : D) :
-    (coreflectorAdjunction j).counit.app (j.obj ((coreflector j).obj X)) =
-      j.map ((coreflector j).map ((coreflectorAdjunction j).counit.app X)) := by
+lemma counit_obj_eq_map_counit [Coreflective j] (X : D)
+    : (coreflectorAdjunction j).counit.app (j.obj ((coreflector j).obj X))
+      = j.map ((coreflector j).map ((coreflectorAdjunction j).counit.app X)) := by
   rw [← cancel_epi (j.map ((coreflectorAdjunction j).unit.app ((coreflector j).obj X))),
     ← j.map_comp]
   simp
@@ -214,12 +222,13 @@ example [Coreflective j] {B : C} : IsIso ((coreflectorAdjunction j).counit.app (
 
 variable {j}
 
-lemma Functor.essImage.counit_isIso [Coreflective j] {A : D} (h : j.essImage A) :
-    IsIso ((coreflectorAdjunction j).counit.app A) := by
+lemma Functor.essImage.counit_isIso [Coreflective j] {A : D} (h : j.essImage A)
+    : IsIso ((coreflectorAdjunction j).counit.app A) := by
   rwa [isIso_counit_app_iff_mem_essImage]
 
-lemma mem_essImage_of_counit_isSplitEpi [Coreflective j] {A : D}
-    [IsSplitEpi ((coreflectorAdjunction j).counit.app A)] : j.essImage A := by
+lemma mem_essImage_of_counit_isSplitEpi
+    [Coreflective j] {A : D} [IsSplitEpi ((coreflectorAdjunction j).counit.app A)]
+    : j.essImage A := by
   let ε : coreflector j ⋙ j ⟶ 𝟭 D := (coreflectorAdjunction j).counit
   have : IsIso (ε.app (j.obj ((coreflector j).obj A))) :=
     Functor.essImage.counit_isIso ((j.obj_mem_essImage _))
@@ -230,8 +239,8 @@ lemma mem_essImage_of_counit_isSplitEpi [Coreflective j] {A : D}
   have := isIso_of_mono_of_isSplitEpi (ε.app A)
   exact (coreflectorAdjunction j).mem_essImage_of_counit_isIso A
 
-instance Coreflective.comp (F : C ⥤ D) (G : D ⥤ E) [Coreflective F] [Coreflective G] :
-    Coreflective (F ⋙ G) where
+instance Coreflective.comp (F : C ⥤ D) (G : D ⥤ E) [Coreflective F] [Coreflective G]
+    : Coreflective (F ⋙ G) where
   R := coreflector G ⋙ coreflector F
   adj := (coreflectorAdjunction F).comp (coreflectorAdjunction G)
 

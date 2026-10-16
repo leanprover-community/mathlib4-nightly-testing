@@ -51,25 +51,29 @@ universe v u v₁ u₁ v₂ u₂
 variable (C : Type u) [Category.{v} C]
 
 open Quiver in
-/-- The relation on the free groupoid on the underlying *quiver* of C that
+/--
+The relation on the free groupoid on the underlying *quiver* of C that
 promotes the prefunctor `C ⥤q FreeGroupoid C` into a functor
-`C ⥤ Quotient (FreeGroupoid.homRel C)`. -/
+`C ⥤ Quotient (FreeGroupoid.homRel C)`.
+-/
 inductive FreeGroupoid.homRel : HomRel (Quiver.FreeGroupoid C) where
-| map_id (X : C) : homRel ((FreeGroupoid.of C).map (𝟙 X)) (𝟙 ((FreeGroupoid.of C).obj X))
-| map_comp {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) : homRel ((FreeGroupoid.of C).map (f ≫ g))
-  ((FreeGroupoid.of C).map f ≫ (FreeGroupoid.of C).map g)
+  | map_id (X : C) : homRel ((FreeGroupoid.of C).map (𝟙 X)) (𝟙 ((FreeGroupoid.of C).obj X))
+  | map_comp {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z)
+    : homRel ((FreeGroupoid.of C).map (f ≫ g))
+      ((FreeGroupoid.of C).map f ≫ (FreeGroupoid.of C).map g)
 
-/-- The underlying type of the free groupoid on a category,
+/--
+The underlying type of the free groupoid on a category,
 defined by quotienting the free groupoid on the underlying quiver of `C`
 by the relation that promotes the prefunctor `C ⥤q FreeGroupoid C` into a functor
-`C ⥤ Quotient (FreeGroupoid.homRel C)`. -/
+`C ⥤ Quotient (FreeGroupoid.homRel C)`.
+-/
 def FreeGroupoid := Quotient (FreeGroupoid.homRel C)
 
 instance [Nonempty C] : Nonempty (FreeGroupoid C) :=
   ⟨Quotient.mk (Quotient.mk ((Paths.of _).obj (Classical.arbitrary C)))⟩
 
-instance : Groupoid (FreeGroupoid C) :=
-  Quotient.groupoid (FreeGroupoid.homRel C)
+instance : Groupoid (FreeGroupoid C) := Quotient.groupoid (FreeGroupoid.homRel C)
 
 namespace FreeGroupoid
 
@@ -93,20 +97,25 @@ lemma of_obj_bijective : Function.Bijective (of C).obj where
   left _ _ h := by cases h; rfl
   right X := ⟨X.as.as, rfl⟩
 
-/-- Induction principle for proving a property for all the morphisms
+/--
+Induction principle for proving a property for all the morphisms
 in the free groupoid of a category `C`: it suffices to prove the property
 for morphisms coming from the category `C`, and that the property is
-stable under inverses and composition. -/
+stable under inverses and composition.
+-/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-lemma hom_rec {motive : ∀ ⦃x y : FreeGroupoid C⦄ (_ : x ⟶ y), Prop}
+lemma hom_rec
+    {motive : ∀ ⦃x y : FreeGroupoid C⦄ (_ : x ⟶ y), Prop}
     (homMk : ∀ ⦃x y : C⦄ (f : x ⟶ y), motive (homMk f))
     (inv : ∀ ⦃x y : FreeGroupoid C⦄ (f : x ⟶ y), motive f → motive (inv f))
-    (comp : ∀ ⦃x y z : FreeGroupoid C⦄ (f : x ⟶ y) (g : y ⟶ z),
-      motive f → motive g → motive (f ≫ g))
-    {x y : FreeGroupoid C} (f : x ⟶ y) :
-    motive f := by
-  induction x with | _ x
-  induction y with | _ y
+    (comp
+      : ∀ ⦃x y z : FreeGroupoid C⦄ (f : x ⟶ y) (g : y ⟶ z), motive f → motive g → motive (f ≫ g))
+    {x y : FreeGroupoid C} (f : x ⟶ y)
+    : motive f := by
+  induction x with
+  | _ x
+  induction y with
+  | _ y
   obtain ⟨f, rfl⟩ := (Quotient.functor (FreeGroupoid.homRel C)).map_surjective f
   induction f with
   | of_map f => exact homMk f
@@ -119,8 +128,10 @@ section UniversalProperty
 variable {G : Type u₁} [Groupoid.{v₁} G]
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The lift of a functor from `C` to a groupoid to a functor from
-`FreeGroupoid C` to the groupoid -/
+/--
+The lift of a functor from `C` to a groupoid to a functor from
+`FreeGroupoid C` to the groupoid
+-/
 def lift (φ : C ⥤ G) : FreeGroupoid C ⥤ G :=
   Quotient.lift (FreeGroupoid.homRel C) (Quiver.FreeGroupoid.lift φ.toPrefunctor)
     (fun _ _ f g r ↦ by
@@ -131,24 +142,24 @@ def lift (φ : C ⥤ G) : FreeGroupoid C ⥤ G :=
 set_option backward.isDefEq.respectTransparency false in
 theorem lift_spec (φ : C ⥤ G) : of C ⋙ lift φ = φ :=
   Functor.toPrefunctor_injective (by
-    change Quiver.FreeGroupoid.of C ⋙q
-      (Quotient.functor (FreeGroupoid.homRel C)).toPrefunctor ⋙q
-        (lift φ).toPrefunctor = φ.toPrefunctor
+    change Quiver.FreeGroupoid.of C ⋙q (Quotient.functor (FreeGroupoid.homRel C)).toPrefunctor
+        ⋙q (lift φ).toPrefunctor
+      = φ.toPrefunctor
     simp [lift, Quotient.lift_spec, Quiver.FreeGroupoid.lift_spec])
 
 @[simp]
-lemma lift_obj_mk {E : Type u₂} [Groupoid.{v₂} E] (φ : C ⥤ E) (X : C) :
-    (lift φ).obj (mk X) = φ.obj X := rfl
+lemma lift_obj_mk {E : Type u₂} [Groupoid.{v₂} E] (φ : C ⥤ E) (X : C)
+    : (lift φ).obj (mk X) = φ.obj X :=
+  rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma lift_map_homMk {E : Type u₂} [Groupoid.{v₂} E] (φ : C ⥤ E) {X Y : C} (f : X ⟶ Y) :
-    (lift φ).map (homMk f) = φ.map f := by
+lemma lift_map_homMk {E : Type u₂} [Groupoid.{v₂} E] (φ : C ⥤ E) {X Y : C} (f : X ⟶ Y)
+    : (lift φ).map (homMk f) = φ.map f := by
   simpa using Functor.congr_hom (lift_spec φ) f
 
-theorem lift_unique (φ : C ⥤ G) (Φ : FreeGroupoid C ⥤ G) (hΦ : of C ⋙ Φ = φ) :
-    Φ = lift φ := by
+theorem lift_unique (φ : C ⥤ G) (Φ : FreeGroupoid C ⥤ G) (hΦ : of C ⋙ Φ = φ) : Φ = lift φ := by
   apply Quotient.lift_unique
   apply Quiver.FreeGroupoid.lift_unique
   congrm $(hΦ).toPrefunctor
@@ -160,18 +171,19 @@ lemma lift_unique' {Φ Φ' : FreeGroupoid C ⥤ G} (h : of C ⋙ Φ = of C ⋙ �
 
 theorem lift_id_comp_of : lift (𝟭 G) ⋙ of G = 𝟭 _ := by
   rw [lift_unique (of G) (lift (𝟭 G) ⋙ of G) (by rw [← Functor.assoc, lift_spec, Functor.id_comp])]
-  symm; apply lift_unique
+  symm
+  apply lift_unique
   rw [Functor.comp_id]
 
-theorem lift_comp {H : Type u₂} [Groupoid.{v₂} H] (φ : C ⥤ G) (ψ : G ⥤ H) :
-    lift (φ ⋙ ψ) = lift φ ⋙ ψ := by
+theorem lift_comp {H : Type u₂} [Groupoid.{v₂} H] (φ : C ⥤ G) (ψ : G ⥤ H)
+    : lift (φ ⋙ ψ) = lift φ ⋙ ψ := by
   symm
   apply lift_unique
   rw [← Functor.assoc, lift_spec]
 
 /-- The universal property of the free groupoid. -/
-def strictUniversalPropertyFixedTarget :
-    Localization.StrictUniversalPropertyFixedTarget (of C) ⊤ G where
+def strictUniversalPropertyFixedTarget
+    : Localization.StrictUniversalPropertyFixedTarget (of C) ⊤ G where
   inverts _ := inferInstance
   lift F _ := lift F
   fac _ _ := lift_spec ..
@@ -182,19 +194,21 @@ attribute [local instance] Localization.groupoid
 instance : (of C).IsLocalization ⊤ :=
   .mk' _ _ strictUniversalPropertyFixedTarget strictUniversalPropertyFixedTarget
 
-/-- In order to define a natural isomorphism `F ≅ G` with `F G : FreeGroupoid ⥤ D`,
-it suffices to do so after precomposing with `FreeGroupoid.of C`. -/
+/--
+In order to define a natural isomorphism `F ≅ G` with `F G : FreeGroupoid ⥤ D`,
+it suffices to do so after precomposing with `FreeGroupoid.of C`.
+-/
 def liftNatIso (F₁ F₂ : FreeGroupoid C ⥤ G) (τ : of C ⋙ F₁ ≅ of C ⋙ F₂) : F₁ ≅ F₂ :=
   Localization.liftNatIso (of C) ⊤ (of C ⋙ F₁) (of C ⋙ F₂) _ _ τ
 
 @[simp]
-lemma liftNatIso_hom_app (F₁ F₂ : FreeGroupoid C ⥤ G) (τ : of C ⋙ F₁ ≅ of C ⋙ F₂) (X) :
-    (liftNatIso F₁ F₂ τ).hom.app (mk X) = τ.hom.app X := by
+lemma liftNatIso_hom_app (F₁ F₂ : FreeGroupoid C ⥤ G) (τ : of C ⋙ F₁ ≅ of C ⋙ F₂) (X)
+    : (liftNatIso F₁ F₂ τ).hom.app (mk X) = τ.hom.app X := by
   simp [liftNatIso]
 
 @[simp]
-lemma liftNatIso_inv_app (F₁ F₂ : FreeGroupoid C ⥤ G) (τ : of C ⋙ F₁ ≅ of C ⋙ F₂) (X) :
-    (liftNatIso F₁ F₂ τ).inv.app (mk X) = τ.inv.app X := by
+lemma liftNatIso_inv_app (F₁ F₂ : FreeGroupoid C ⥤ G) (τ : of C ⋙ F₁ ≅ of C ⋙ F₂) (X)
+    : (liftNatIso F₁ F₂ τ).inv.app (mk X) = τ.inv.app X := by
   simp [liftNatIso]
 
 end UniversalProperty
@@ -204,8 +218,7 @@ section Functoriality
 variable {D : Type u₁} [Category.{v₁} D] {E : Type u₂} [Category.{v₂} E]
 
 /-- The functor between free groupoids induced by a functor between categories. -/
-def map (φ : C ⥤ D) : FreeGroupoid C ⥤ FreeGroupoid D :=
-  lift (φ ⋙ of D)
+def map (φ : C ⥤ D) : FreeGroupoid C ⥤ FreeGroupoid D := lift (φ ⋙ of D)
 
 lemma of_comp_map (F : C ⥤ D) : of C ⋙ map F = F ⋙ of D := rfl
 
@@ -214,24 +227,17 @@ def ofCompMapIso (F : C ⥤ D) : of C ⋙ map F ≅ F ⋙ of D := Iso.refl _
 
 variable (C) in
 /-- The functor induced by the identity is the identity. -/
-def mapId : map (𝟭 C) ≅ 𝟭 (FreeGroupoid C) :=
-  liftNatIso _ _ (Iso.refl _)
+def mapId : map (𝟭 C) ≅ 𝟭 (FreeGroupoid C) := liftNatIso _ _ (Iso.refl _)
 
-@[simp]
-lemma mapId_hom_app (X) : (mapId C).hom.app X = 𝟙 X :=
-  liftNatIso_hom_app ..
+@[simp] lemma mapId_hom_app (X) : (mapId C).hom.app X = 𝟙 X := liftNatIso_hom_app ..
 
-@[simp]
-lemma mapId_inv_app (X) : (mapId C).inv.app X = 𝟙 X :=
-  liftNatIso_inv_app ..
+@[simp] lemma mapId_inv_app (X) : (mapId C).inv.app X = 𝟙 X := liftNatIso_inv_app ..
 
 variable (C) in
-theorem map_id : map (𝟭 C) = 𝟭 (FreeGroupoid C) := by
-  symm; apply lift_unique; rfl
+theorem map_id : map (𝟭 C) = 𝟭 (FreeGroupoid C) := by symm; apply lift_unique; rfl
 
 /-- The functor induced by a composition is the composition of the functors they induce. -/
-def mapComp (φ : C ⥤ D) (φ' : D ⥤ E) : map (φ ⋙ φ') ≅ map φ ⋙ map φ' :=
-  liftNatIso _ _ (Iso.refl _)
+def mapComp (φ : C ⥤ D) (φ' : D ⥤ E) : map (φ ⋙ φ') ≅ map φ ⋙ map φ' := liftNatIso _ _ (Iso.refl _)
 
 @[simp]
 lemma mapComp_hom_app (φ : C ⥤ D) (φ' : D ⥤ E) (X) : (mapComp φ φ').hom.app X = 𝟙 _ :=
@@ -244,12 +250,11 @@ lemma mapComp_inv_app (φ : C ⥤ D) (φ' : D ⥤ E) (X) : (mapComp φ φ').inv.
 theorem map_comp (φ : C ⥤ D) (φ' : D ⥤ E) : map (φ ⋙ φ') = map φ ⋙ map φ' := by
   symm; apply lift_unique; rfl
 
-@[simp]
-lemma map_obj_mk (φ : C ⥤ D) (X : C) : (map φ).obj (mk X) = mk (φ.obj X) := rfl
+@[simp] lemma map_obj_mk (φ : C ⥤ D) (X : C) : (map φ).obj (mk X) = mk (φ.obj X) := rfl
 
 @[simp]
-lemma map_map_homMk (φ : C ⥤ D) {X Y : C} (f : X ⟶ Y) :
-    (map φ).map (homMk f) = homMk (φ.map f) := rfl
+lemma map_map_homMk (φ : C ⥤ D) {X Y : C} (f : X ⟶ Y) : (map φ).map (homMk f) = homMk (φ.map f) :=
+  rfl
 
 variable {E : Type u₂} [Groupoid.{v₂} E]
 
@@ -293,42 +298,37 @@ def free : Cat.{u, u} ⥤ Grpd.{u, u} where
   map_id C := by simp [map_id, id_eq_id]
   map_comp F G := by simp [Grpd.comp_eq_comp, map_comp]
 
-@[simp]
-lemma free_obj (C : Cat.{u, u}) : free.obj C = FreeGroupoid C :=
-  rfl
+@[simp] lemma free_obj (C : Cat.{u, u}) : free.obj C = FreeGroupoid C := rfl
 
-@[simp]
-lemma free_map {C D : Cat.{u, u}} (F : C ⟶ D) : free.map F = map F.toFunctor :=
-  rfl
+@[simp] lemma free_map {C D : Cat.{u, u}} (F : C ⟶ D) : free.map F = map F.toFunctor := rfl
 
 /-- The free-forgetful adjunction between `Grpd` and `Cat`. -/
 def freeForgetAdjunction : free ⊣ Grpd.forgetToCat :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv _ _ := FreeGroupoid.functorEquiv.trans (Functor.equivCatHom _ _)
-      homEquiv_naturality_left_symm _ _ := (FreeGroupoid.map_comp_lift _ _).symm
-      homEquiv_naturality_right _ _ := rfl }
+  Adjunction.mkOfHomEquiv {
+    homEquiv _ _ := FreeGroupoid.functorEquiv.trans (Functor.equivCatHom _ _)
+    homEquiv_naturality_left_symm _ _ := (FreeGroupoid.map_comp_lift _ _).symm
+    homEquiv_naturality_right _ _ := rfl
+  }
 
 variable {C : Type u} [Category.{u} C] {D : Type u} [Groupoid.{u} D]
 
 @[simp]
-lemma freeForgetAdjunction_homEquiv_apply (F : FreeGroupoid C ⥤ D) :
-    (freeForgetAdjunction.homEquiv ↧C ↧D F).toFunctor = FreeGroupoid.of C ⋙ F :=
+lemma freeForgetAdjunction_homEquiv_apply (F : FreeGroupoid C ⥤ D)
+    : (freeForgetAdjunction.homEquiv ↧C ↧D F).toFunctor = FreeGroupoid.of C ⋙ F :=
   rfl
 
 @[simp]
-lemma freeForgetAdjunction_homEquiv_symm_apply (F : C ⥤ D) :
-    (freeForgetAdjunction.homEquiv ↧C ↧D).symm F.toCatHom = map F ⋙ lift (𝟭 D) :=
+lemma freeForgetAdjunction_homEquiv_symm_apply (F : C ⥤ D)
+    : (freeForgetAdjunction.homEquiv ↧C ↧D).symm F.toCatHom = map F ⋙ lift (𝟭 D) :=
   rfl
 
 @[simp]
-lemma freeForgetAdjunction_unit_app :
-    (freeForgetAdjunction.unit.app ↧C).toFunctor = FreeGroupoid.of C :=
+lemma freeForgetAdjunction_unit_app
+    : (freeForgetAdjunction.unit.app ↧C).toFunctor = FreeGroupoid.of C :=
   rfl
 
 @[simp]
-lemma freeForgetAdjunction_counit_app :
-    freeForgetAdjunction.counit.app ↧D = lift (𝟭 D) :=
-  rfl
+lemma freeForgetAdjunction_counit_app : freeForgetAdjunction.counit.app ↧D = lift (𝟭 D) := rfl
 
 instance : Reflective Grpd.forgetToCat where
   L := free

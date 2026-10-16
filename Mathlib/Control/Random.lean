@@ -39,8 +39,10 @@ abbrev RandGT (g : Type) := StateT (ULift g)
 /-- A monad to generate random objects using the generator type `g`. -/
 abbrev RandG (g : Type) := RandGT g Id
 
-/-- A monad transformer to generate random objects using the generator type `StdGen`.
-`RandT m α` should be thought of a random value in `m α`. -/
+/--
+A monad transformer to generate random objects using the generator type `StdGen`.
+`RandT m α` should be thought of a random value in `m α`.
+-/
 abbrev RandT := RandGT StdGen
 
 /-- A monad to generate random objects using the generator type `StdGen`. -/
@@ -49,15 +51,19 @@ abbrev Rand := RandG StdGen
 instance [MonadLift m n] : MonadLiftT (RandGT g m) (RandGT g n) where
   monadLift x := fun s => x s
 
-/-- `Random m α` gives us machinery to generate values of type `α` in the monad `m`.
+/--
+`Random m α` gives us machinery to generate values of type `α` in the monad `m`.
 
-Note that `m` is a parameter as some types may only be sampleable with access to a certain monad. -/
+Note that `m` is a parameter as some types may only be sampleable with access to a certain monad.
+-/
 class Random (m) (α : Type u) where
   /-- Sample an element of this type from the provided generator. -/
   random [RandomGen g] : RandGT g m α
 
-/-- `BoundedRandom m α` gives us machinery to generate values of type `α` between certain bounds in
-the monad `m`. -/
+/--
+`BoundedRandom m α` gives us machinery to generate values of type `α` between certain bounds in
+the monad `m`.
+-/
 class BoundedRandom (m) (α : Type u) [Preorder α] where
   /-- Sample a bounded element of this type from the provided generator. -/
   randomR {g : Type} (lo hi : α) (h : lo ≤ hi) [RandomGen g] : RandGT g m {a // lo ≤ a ∧ a ≤ hi}
@@ -91,21 +97,19 @@ variable [Monad m]
 def rand (α : Type u) [Random m α] [RandomGen g] : RandGT g m α := Random.random
 
 /-- Generate a random value of type `α` between `x` and `y` inclusive. -/
-def randBound (α : Type u)
-    [Preorder α] [BoundedRandom m α] (lo hi : α) (h : lo ≤ hi) [RandomGen g] :
-    RandGT g m {a // lo ≤ a ∧ a ≤ hi} :=
+def randBound (α : Type u) [Preorder α] [BoundedRandom m α] (lo hi : α) (h : lo ≤ hi) [RandomGen g]
+    : RandGT g m {a // lo ≤ a ∧ a ≤ hi} :=
   (BoundedRandom.randomR lo hi h : RandGT g _ _)
 
 /-- Generate a random `Fin`. -/
-def randFin {n : Nat} [NeZero n] [RandomGen g] : RandGT g m (Fin n) :=
-  fun ⟨g⟩ ↦ pure <| randNat g 0 (n - 1) |>.map (Fin.ofNat n) ULift.up
+def randFin {n : Nat} [NeZero n] [RandomGen g] : RandGT g m (Fin n) := fun ⟨g⟩ ↦
+  pure <| randNat g 0 (n - 1) |>.map (Fin.ofNat n) ULift.up
 
 instance {n : Nat} [NeZero n] : Random m (Fin n) where
   random := randFin
 
 /-- Generate a random `Bool`. -/
-def randBool [RandomGen g] : RandGT g m Bool :=
-  return (← rand (Fin 2)) == 1
+def randBool [RandomGen g] : RandGT g m Bool := return (← rand (Fin 2)) == 1
 
 instance : Random m Bool where
   random := randBool
@@ -116,10 +120,7 @@ instance {α : Type u} [ULiftable m m'] [Random m α] : Random m' (ULift.{v} α)
 instance : BoundedRandom m Nat where
   randomR lo hi h _ := do
     let z ← rand (Fin (hi - lo + 1))
-    pure ⟨
-      lo + z.val, Nat.le_add_right _ _,
-      Nat.add_le_of_le_sub' h (Nat.le_of_lt_add_one z.isLt)
-    ⟩
+    pure ⟨lo + z.val, Nat.le_add_right _ _, Nat.add_le_of_le_sub' h (Nat.le_of_lt_add_one z.isLt)⟩
 
 instance : BoundedRandom m Int where
   randomR lo hi h _ := do
@@ -127,17 +128,17 @@ instance : BoundedRandom m Int where
     pure ⟨
       z + lo,
       Int.le_add_of_nonneg_left (Int.natCast_nonneg z),
-      Int.add_le_of_le_sub_right <| Int.le_trans
-        (Int.ofNat_le.mpr h2)
-        (le_of_eq <| Int.natAbs_of_nonneg <| Int.sub_nonneg_of_le h)⟩
+      Int.add_le_of_le_sub_right <| Int.le_trans (Int.ofNat_le.mpr h2)
+        (le_of_eq <| Int.natAbs_of_nonneg <| Int.sub_nonneg_of_le h)
+    ⟩
 
 instance {n : Nat} : BoundedRandom m (Fin n) where
   randomR lo hi h _ := do
     let ⟨r, h1, h2⟩ ← randBound Nat lo.val hi.val h
     pure ⟨⟨r, Nat.lt_of_le_of_lt h2 hi.isLt⟩, h1, h2⟩
 
-instance {α : Type u} [Preorder α] [ULiftable m m'] [BoundedRandom m α] [Monad m'] :
-    BoundedRandom m' (ULift.{v} α) where
+instance {α : Type u} [Preorder α] [ULiftable m m'] [BoundedRandom m α] [Monad m']
+    : BoundedRandom m' (ULift.{v} α) where
   randomR lo hi h := do
     let ⟨x⟩ ← ULiftable.up.{v} (BoundedRandom.randomR lo.down hi.down h)
     pure ⟨ULift.up x.val, x.prop⟩

@@ -30,20 +30,23 @@ open Lean Meta Qq
 
 namespace Mathlib.Tactic.Echelon
 
-/-- The applicability check of the Bareiss method, which requires a commutative domain. It
-returns the commutative ring instance for the downstream functions to use. -/
-def inferBareissRing {u : Level} (α : Q(Type u)) :
-    MetaM (Except MessageData Q(CommRing $α)) := do
+/--
+The applicability check of the Bareiss method, which requires a commutative domain. It
+returns the commutative ring instance for the downstream functions to use.
+-/
+def inferBareissRing {u : Level} (α : Q(Type u)) : MetaM (Except MessageData Q(CommRing $α)) := do
   let .some rα ← trySynthInstanceQ q(CommRing $α)
     | return .error m!"expected the element type to be a commutative ring"
   let .some _ ← trySynthInstanceQ q(IsDomain $α)
     | return .error m!"expected the element type to be a domain"
   return .ok rα
 
-/-- Select the first registered computation model for the element type `α`, or the default
-rational model. -/
-def modelFor {u : Level} (α : Q(Type u)) (rα : Q(CommRing $α)) :
-    MetaM ((c : Carrier) × Model α c.type) := do
+/--
+Select the first registered computation model for the element type `α`, or the default
+rational model.
+-/
+def modelFor {u : Level} (α : Q(Type u)) (rα : Q(CommRing $α))
+    : MetaM ((c : Carrier) × Model α c.type) := do
   for (name, ext) in bareissExt.getState (← getEnv) do
     if let some model ← ext.model? α then
       trace[Tactic.evalRank] "selected the model `{name}` for{indentExpr α}"
@@ -52,10 +55,13 @@ def modelFor {u : Level} (α : Q(Type u)) (rα : Q(CommRing $α)) :
     model for{indentExpr α}"
   return ⟨.int, ← ratModel α rα⟩
 
-/-- The result of producer evaluation and certificate construction, together with the computation
-model. -/
-structure BareissResult {u : Level} {m n : Nat} {α : Q(Type u)} (rα : Q(CommRing $α))
-    (A : Q(Matrix (Fin $m) (Fin $n) $α)) where
+/--
+The result of producer evaluation and certificate construction, together with the computation
+model.
+-/
+structure BareissResult
+    {u : Level} {m n : Nat} {α : Q(Type u)}
+    (rα : Q(CommRing $α)) (A : Q(Matrix (Fin $m) (Fin $n) $α)) where
   /-- The decomposition certificate with its reusable intermediate certificates. -/
   cert : DecompositionCert rα A
   /-- The carrier of the computation model. -/
@@ -66,9 +72,10 @@ structure BareissResult {u : Level} {m n : Nat} {α : Q(Type u)} (rα : Q(CommRi
   data : BareissData carrier.type
 
 /-- Produce the decomposition of the matrix literal `A` and elaborate its certificates. -/
-def mkBareissDecomposition {u : Level} {m n : Nat} {α : Q(Type u)} (rα : Q(CommRing $α))
-    (A : Q(Matrix (Fin $m) (Fin $n) $α)) (entries : Array (Array Q($α))) :
-    MetaM (BareissResult rα A) := do
+def mkBareissDecomposition
+    {u : Level} {m n : Nat} {α : Q(Type u)}
+    (rα : Q(CommRing $α)) (A : Q(Matrix (Fin $m) (Fin $n) $α)) (entries : Array (Array Q($α)))
+    : MetaM (BareissResult rα A) := do
   let ⟨carrier, model⟩ ← modelFor α rα
   let fractions ← entries.mapM fun row => row.mapM model.evalEntry
   let (values, scales) := scaleRows model.ops model.commonMultiple fractions

@@ -27,20 +27,15 @@ variable {α : Sort u} {β : Sort v}
 class IsEmpty (α : Sort u) : Prop where
   protected false : α → False
 
-instance Empty.instIsEmpty : IsEmpty Empty :=
-  ⟨Empty.elim⟩
+instance Empty.instIsEmpty : IsEmpty Empty := ⟨Empty.elim⟩
 
-instance PEmpty.instIsEmpty : IsEmpty PEmpty :=
-  ⟨PEmpty.elim⟩
+instance PEmpty.instIsEmpty : IsEmpty PEmpty := ⟨PEmpty.elim⟩
 
-instance : IsEmpty False :=
-  ⟨id⟩
+instance : IsEmpty False := ⟨id⟩
 
-instance Fin.isEmpty : IsEmpty (Fin 0) :=
-  ⟨fun n ↦ Nat.not_lt_zero n.1 n.2⟩
+instance Fin.isEmpty : IsEmpty (Fin 0) := ⟨fun n ↦ Nat.not_lt_zero n.1 n.2⟩
 
-instance Fin.isEmpty' : IsEmpty (Fin Nat.zero) :=
-  Fin.isEmpty
+instance Fin.isEmpty' : IsEmpty (Fin Nat.zero) := Fin.isEmpty
 
 protected theorem Function.isEmpty [IsEmpty β] (f : α → β) : IsEmpty α :=
   ⟨fun x ↦ IsEmpty.false (f x)⟩
@@ -52,23 +47,18 @@ theorem Function.Surjective.isEmpty [IsEmpty α] {f : α → β} (hf : f.Surject
 instance {p : α → Sort v} [∀ x, IsEmpty (p x)] [h : Nonempty α] : IsEmpty (∀ x, p x) :=
   h.elim fun x ↦ Function.isEmpty fun f ↦ f x
 
-instance PProd.isEmpty_left [IsEmpty α] : IsEmpty (PProd α β) :=
-  Function.isEmpty PProd.fst
+instance PProd.isEmpty_left [IsEmpty α] : IsEmpty (PProd α β) := Function.isEmpty PProd.fst
 
-instance PProd.isEmpty_right [IsEmpty β] : IsEmpty (PProd α β) :=
-  Function.isEmpty PProd.snd
+instance PProd.isEmpty_right [IsEmpty β] : IsEmpty (PProd α β) := Function.isEmpty PProd.snd
 
-instance Prod.isEmpty_left {α β} [IsEmpty α] : IsEmpty (α × β) :=
-  Function.isEmpty Prod.fst
+instance Prod.isEmpty_left {α β} [IsEmpty α] : IsEmpty (α × β) := Function.isEmpty Prod.fst
 
-instance Prod.isEmpty_right {α β} [IsEmpty β] : IsEmpty (α × β) :=
-  Function.isEmpty Prod.snd
+instance Prod.isEmpty_right {α β} [IsEmpty β] : IsEmpty (α × β) := Function.isEmpty Prod.snd
 
 instance Quot.instIsEmpty [IsEmpty α] {r : α → α → Prop} : IsEmpty (Quot r) :=
   Function.Surjective.isEmpty Quot.exists_rep
 
-instance Quotient.instIsEmpty [IsEmpty α] {s : Setoid α} : IsEmpty (Quotient s) :=
-  Quot.instIsEmpty
+instance Quotient.instIsEmpty [IsEmpty α] {s : Setoid α} : IsEmpty (Quotient s) := Quot.instIsEmpty
 
 instance [IsEmpty α] [IsEmpty β] : IsEmpty (α ⊕' β) :=
   ⟨fun x ↦ PSum.rec IsEmpty.false IsEmpty.false x⟩
@@ -77,16 +67,14 @@ instance instIsEmptySum {α β} [IsEmpty α] [IsEmpty β] : IsEmpty (α ⊕ β) 
   ⟨fun x ↦ Sum.rec IsEmpty.false IsEmpty.false x⟩
 
 /-- Subtypes of an empty type are empty. -/
-instance [IsEmpty α] (p : α → Prop) : IsEmpty (Subtype p) :=
-  ⟨fun x ↦ IsEmpty.false x.1⟩
+instance [IsEmpty α] (p : α → Prop) : IsEmpty (Subtype p) := ⟨fun x ↦ IsEmpty.false x.1⟩
 
 /-- Subtypes by an all-false predicate are empty. -/
-theorem Subtype.isEmpty_of_false {p : α → Prop} (hp : ∀ a, ¬p a) : IsEmpty (Subtype p) :=
+theorem Subtype.isEmpty_of_false {p : α → Prop} (hp : ∀ a, ¬ p a) : IsEmpty (Subtype p) :=
   ⟨fun x ↦ hp _ x.2⟩
 
 /-- Subtypes by `False` are empty. -/
-instance Subtype.isEmpty_false : IsEmpty { _a : α // False } :=
-  Subtype.isEmpty_of_false fun _ ↦ id
+instance Subtype.isEmpty_false : IsEmpty {_a : α // False} := Subtype.isEmpty_of_false fun _ ↦ id
 
 instance Sigma.isEmpty_left {α} [IsEmpty α] {E : α → Type v} : IsEmpty (Sigma E) :=
   Function.isEmpty Sigma.fst
@@ -97,41 +85,33 @@ instance Sigma.isEmpty_fibers {α} {E : α → Type v} [∀ a, IsEmpty (E a)] : 
 example [h : Nonempty α] [IsEmpty β] : IsEmpty (α → β) := by infer_instance
 
 /-- Eliminate out of a type that `IsEmpty` (without using projection notation). -/
-@[elab_as_elim]
-def isEmptyElim [IsEmpty α] {p : α → Sort v} (a : α) : p a :=
-  (IsEmpty.false a).elim
+@[elab_as_elim] def isEmptyElim [IsEmpty α] {p : α → Sort v} (a : α) : p a := (IsEmpty.false a).elim
 
-theorem isEmpty_iff : IsEmpty α ↔ α → False :=
-  ⟨@IsEmpty.false α, IsEmpty.mk⟩
+theorem isEmpty_iff : IsEmpty α ↔ α → False := ⟨@IsEmpty.false α, IsEmpty.mk⟩
 
 namespace IsEmpty
 
 /-- Eliminate out of a type that `IsEmpty` (using projection notation). -/
-@[elab_as_elim]
-protected def elim (_ : IsEmpty α) {p : α → Sort v} (a : α) : p a :=
-  isEmptyElim a
+@[elab_as_elim] protected def elim (_ : IsEmpty α) {p : α → Sort v} (a : α) : p a := isEmptyElim a
 
-/-- Non-dependent version of `IsEmpty.elim`. Helpful if the elaborator cannot elaborate `h.elim a`
-correctly. -/
-protected def elim' (h : IsEmpty α) (a : α) : β :=
-  (h.false a).elim
+/--
+Non-dependent version of `IsEmpty.elim`. Helpful if the elaborator cannot elaborate `h.elim a`
+correctly.
+-/
+protected def elim' (h : IsEmpty α) (a : α) : β := (h.false a).elim
 
-protected theorem prop_iff {p : Prop} : IsEmpty p ↔ ¬p :=
-  isEmpty_iff
+protected theorem prop_iff {p : Prop} : IsEmpty p ↔ ¬p := isEmpty_iff
 
 variable [IsEmpty α]
 
-@[simp]
-theorem forall_iff {p : α → Prop} : (∀ a, p a) ↔ True :=
-  iff_true_intro isEmptyElim
+@[simp] theorem forall_iff {p : α → Prop} : (∀ a, p a) ↔ True := iff_true_intro isEmptyElim
 
 @[simp]
 theorem exists_iff {p : α → Prop} : (∃ a, p a) ↔ False :=
   iff_false_intro fun ⟨x, _⟩ ↦ IsEmpty.false x
 
 -- see Note [lower instance priority]
-protected instance (priority := 100) subsingleton : Subsingleton α :=
-  ⟨isEmptyElim⟩
+protected instance (priority := 100) subsingleton : Subsingleton α := ⟨isEmptyElim⟩
 
 protected lemma congr_fun (f g : α → β) : f = g := funext fun a ↦ IsEmpty.elim' inferInstance a
 
@@ -140,5 +120,8 @@ end IsEmpty
 /-- `Fin k` is empty iff `k = 0`. -/
 @[simp, grind =]
 lemma Fin.isEmpty_iff {k : Nat} : IsEmpty (Fin k) ↔ k = 0 where
-  mp h := by cases k with | zero => rfl | succ k => exact h.elim 0
+  mp h := by
+    cases k with
+    | zero => rfl
+    | succ k => exact h.elim 0
   mpr h := by subst h; infer_instance

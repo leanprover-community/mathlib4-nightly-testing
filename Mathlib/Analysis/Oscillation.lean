@@ -6,7 +6,6 @@ Authors: James Sundstrom
 module
 
 public import Mathlib.Topology.EMetricSpace.Diam
-
 import Mathlib.Order.WellFoundedSet
 
 /-!
@@ -41,29 +40,30 @@ noncomputable def oscillation [TopologicalSpace E] (f : E → F) (x : E) : ENNRe
   ⨅ S ∈ (𝓝 x).map f, ediam S
 
 /-- The oscillation of `f : E → F` within `D` at `x`. -/
-noncomputable def oscillationWithin [TopologicalSpace E] (f : E → F) (D : Set E) (x : E) :
-    ENNReal :=
+noncomputable def oscillationWithin [TopologicalSpace E] (f : E → F) (D : Set E) (x : E)
+    : ENNReal :=
   ⨅ S ∈ (𝓝[D] x).map f, ediam S
 
 /-- The oscillation of `f` at `x` within a neighborhood `D` of `x` is equal to `oscillation f x` -/
-theorem oscillationWithin_nhds_eq_oscillation [TopologicalSpace E] (f : E → F) (D : Set E) (x : E)
-    (hD : D ∈ 𝓝 x) : oscillationWithin f D x = oscillation f x := by
+theorem oscillationWithin_nhds_eq_oscillation
+    [TopologicalSpace E] (f : E → F) (D : Set E) (x : E) (hD : D ∈ 𝓝 x)
+    : oscillationWithin f D x = oscillation f x := by
   rw [oscillation, oscillationWithin, nhdsWithin_eq_nhds.2 hD]
 
 /-- The oscillation of `f` at `x` within `univ` is equal to `oscillation f x` -/
-theorem oscillationWithin_univ_eq_oscillation [TopologicalSpace E] (f : E → F) (x : E) :
-    oscillationWithin f univ x = oscillation f x :=
+theorem oscillationWithin_univ_eq_oscillation [TopologicalSpace E] (f : E → F) (x : E)
+    : oscillationWithin f univ x = oscillation f x :=
   oscillationWithin_nhds_eq_oscillation f univ x Filter.univ_mem
 
 namespace ContinuousWithinAt
 
-theorem oscillationWithin_eq_zero [TopologicalSpace E] {f : E → F} {D : Set E}
-    {x : E} (hf : ContinuousWithinAt f D x) : oscillationWithin f D x = 0 := by
+theorem oscillationWithin_eq_zero
+    [TopologicalSpace E] {f : E → F} {D : Set E} {x : E} (hf : ContinuousWithinAt f D x)
+    : oscillationWithin f D x = 0 := by
   rw [← nonpos_iff_eq_zero]
   refine _root_.le_of_forall_pos_le_add fun ε hε ↦ ?_
   rw [zero_add]
-  have : eball (f x) (ε / 2) ∈ (𝓝[D] x).map f :=
-    hf <| eball_mem_nhds _ (by simp [ne_of_gt hε])
+  have : eball (f x) (ε / 2) ∈ (𝓝[D] x).map f := hf <| eball_mem_nhds _ (by simp [ne_of_gt hε])
   refine (biInf_le ediam this).trans (le_of_le_of_eq ediam_eball_le ?_)
   exact (ENNReal.mul_div_cancel (by simp) (by simp))
 
@@ -71,8 +71,8 @@ end ContinuousWithinAt
 
 namespace ContinuousAt
 
-theorem oscillation_eq_zero [TopologicalSpace E] {f : E → F} {x : E} (hf : ContinuousAt f x) :
-    oscillation f x = 0 := by
+theorem oscillation_eq_zero [TopologicalSpace E] {f : E → F} {x : E} (hf : ContinuousAt f x)
+    : oscillation f x = 0 := by
   rw [← continuousWithinAt_univ f x] at hf
   exact oscillationWithin_univ_eq_oscillation f x ▸ hf.oscillationWithin_eq_zero
 
@@ -81,8 +81,9 @@ end ContinuousAt
 namespace OscillationWithin
 
 /-- The oscillation within `D` of `f` at `x ∈ D` is 0 if and only if `ContinuousWithinAt f D x`. -/
-theorem eq_zero_iff_continuousWithinAt [TopologicalSpace E] (f : E → F) {D : Set E}
-    {x : E} (xD : x ∈ D) : oscillationWithin f D x = 0 ↔ ContinuousWithinAt f D x := by
+theorem eq_zero_iff_continuousWithinAt
+    [TopologicalSpace E] (f : E → F) {D : Set E} {x : E} (xD : x ∈ D)
+    : oscillationWithin f D x = 0 ↔ ContinuousWithinAt f D x := by
   refine ⟨fun hf ↦ EMetric.tendsto_nhds.mpr (fun ε ε0 ↦ ?_), fun hf ↦ hf.oscillationWithin_eq_zero⟩
   simp_rw [← hf, oscillationWithin, iInf_lt_iff] at ε0
   obtain ⟨S, hS, Sε⟩ := ε0
@@ -94,8 +95,8 @@ end OscillationWithin
 namespace Oscillation
 
 /-- The oscillation of `f` at `x` is 0 if and only if `f` is continuous at `x`. -/
-theorem eq_zero_iff_continuousAt [TopologicalSpace E] (f : E → F) (x : E) :
-    oscillation f x = 0 ↔ ContinuousAt f x := by
+theorem eq_zero_iff_continuousAt [TopologicalSpace E] (f : E → F) (x : E)
+    : oscillation f x = 0 ↔ ContinuousAt f x := by
   rw [← oscillationWithin_univ_eq_oscillation, ← continuousWithinAt_univ f x]
   exact OscillationWithin.eq_zero_iff_continuousWithinAt f (mem_univ x)
 
@@ -106,19 +107,20 @@ namespace IsCompact
 variable [PseudoEMetricSpace E] {K : Set E}
 variable {f : E → F} {D : Set E} {ε : ENNReal}
 
-/-- If `oscillationWithin f D x < ε` at every `x` in a compact set `K`, then there exists `δ > 0`
-such that the oscillation of `f` on `ball x δ ∩ D` is less than `ε` for every `x` in `K`. -/
-theorem uniform_oscillationWithin (comp : IsCompact K) (hK : ∀ x ∈ K, oscillationWithin f D x < ε) :
-    ∃ δ > 0, ∀ x ∈ K, ediam (f '' (eball x (ENNReal.ofReal δ) ∩ D)) ≤ ε := by
-  let S := fun r ↦
-    {x : E | ∃ (a : ℝ), (a > r ∧ ediam (f '' (eball x (ENNReal.ofReal a) ∩ D)) ≤ ε)}
+/--
+If `oscillationWithin f D x < ε` at every `x` in a compact set `K`, then there exists `δ > 0`
+such that the oscillation of `f` on `ball x δ ∩ D` is less than `ε` for every `x` in `K`.
+-/
+theorem uniform_oscillationWithin (comp : IsCompact K) (hK : ∀ x ∈ K, oscillationWithin f D x < ε)
+    : ∃ δ > 0, ∀ x ∈ K, ediam (f '' (eball x (ENNReal.ofReal δ) ∩ D)) ≤ ε := by
+  let S := fun r ↦ {x : E | ∃ (a : ℝ), (a > r ∧ ediam (f '' (eball x (ENNReal.ofReal a) ∩ D)) ≤ ε)}
   have S_open : ∀ r > 0, IsOpen (S r) := by
-    refine fun r _ ↦ EMetric.isOpen_iff.mpr fun x ⟨a, ar, ha⟩ ↦
-      ⟨ENNReal.ofReal ((a - r) / 2), by simp [ar], ?_⟩
-    refine fun y hy ↦ ⟨a - (a - r) / 2, by linarith,
-      le_trans (ediam_mono (image_mono fun z hz ↦ ?_)) ha⟩
-    refine ⟨lt_of_le_of_lt (edist_triangle z y x) (lt_of_lt_of_eq (ENNReal.add_lt_add hz.1 hy) ?_),
-      hz.2⟩
+    refine fun r _ ↦
+      EMetric.isOpen_iff.mpr fun x ⟨a, ar, ha⟩ ↦ ⟨ENNReal.ofReal ((a - r) / 2), by simp [ar], ?_⟩
+    refine fun y hy ↦
+      ⟨a - (a - r) / 2, by linarith, le_trans (ediam_mono (image_mono fun z hz ↦ ?_)) ha⟩
+    refine
+      ⟨lt_of_le_of_lt (edist_triangle z y x) (lt_of_lt_of_eq (ENNReal.add_lt_add hz.1 hy) ?_), hz.2⟩
     rw [← ofReal_add (by linarith) (by linarith), sub_add_cancel]
   have S_cover : K ⊆ ⋃ r > 0, S r := by
     intro x hx
@@ -127,16 +129,15 @@ theorem uniform_oscillationWithin (comp : IsCompact K) (hK : ∀ x ∈ K, oscill
     obtain ⟨n, hn₁, hn₂⟩ := this
     obtain ⟨r, r0, hr⟩ := EMetric.mem_nhdsWithin_iff.1 hn₁
     simp only [gt_iff_lt, mem_iUnion, exists_prop]
-    have : ∀ r', (ENNReal.ofReal r') ≤ r →
-        ediam (f '' (eball x (ENNReal.ofReal r') ∩ D)) ≤ ε := by
+    have : ∀ r', (ENNReal.ofReal r') ≤ r → ediam (f '' (eball x (ENNReal.ofReal r') ∩ D)) ≤ ε := by
       intro r' hr'
       grw [← hn₂, ← image_subset_iff.2 hr, hr']
     by_cases r_top : r = ⊤
     · exact ⟨1, one_pos, 2, by simp, this 2 (by simp only [r_top, le_top])⟩
     · obtain ⟨r', hr'⟩ := exists_between (toReal_pos (ne_of_gt r0) r_top)
       use r', hr'.1, r.toReal, hr'.2, this r.toReal ofReal_toReal_le
-  have S_antitone : ∀ (r₁ r₂ : ℝ), r₁ ≤ r₂ → S r₂ ⊆ S r₁ :=
-    fun r₁ r₂ hr x ⟨a, ar₂, ha⟩ ↦ ⟨a, lt_of_le_of_lt hr ar₂, ha⟩
+  have S_antitone : ∀ (r₁ r₂ : ℝ), r₁ ≤ r₂ → S r₂ ⊆ S r₁ := fun r₁ r₂ hr x ⟨a, ar₂, ha⟩ ↦
+    ⟨a, lt_of_le_of_lt hr ar₂, ha⟩
   obtain ⟨δ, δ0, hδ⟩ : ∃ r > 0, K ⊆ S r := by
     obtain ⟨T, Tb, Tfin, hT⟩ := comp.elim_finite_subcover_image (b := Ioi 0) S_open S_cover
     by_cases T_nonempty : T.Nonempty
@@ -153,11 +154,13 @@ theorem uniform_oscillationWithin (comp : IsCompact K) (hK : ∀ x ∈ K, oscill
   grw [← ha]
   gcongr
 
-/-- If `oscillation f x < ε` at every `x` in a compact set `K`, then there exists `δ > 0` such
-that the oscillation of `f` on `ball x δ` is less than `ε` for every `x` in `K`. -/
-theorem uniform_oscillation {K : Set E} (comp : IsCompact K)
-    {f : E → F} {ε : ENNReal} (hK : ∀ x ∈ K, oscillation f x < ε) :
-    ∃ δ > 0, ∀ x ∈ K, ediam (f '' (eball x (ENNReal.ofReal δ))) ≤ ε := by
+/--
+If `oscillation f x < ε` at every `x` in a compact set `K`, then there exists `δ > 0` such
+that the oscillation of `f` on `ball x δ` is less than `ε` for every `x` in `K`.
+-/
+theorem uniform_oscillation
+    {K : Set E} (comp : IsCompact K) {f : E → F} {ε : ENNReal} (hK : ∀ x ∈ K, oscillation f x < ε)
+    : ∃ δ > 0, ∀ x ∈ K, ediam (f '' (eball x (ENNReal.ofReal δ))) ≤ ε := by
   simp only [← oscillationWithin_univ_eq_oscillation] at hK
   convert! ← comp.uniform_oscillationWithin hK
   exact inter_univ _

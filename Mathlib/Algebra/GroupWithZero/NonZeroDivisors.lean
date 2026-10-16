@@ -10,7 +10,6 @@ public import Mathlib.Algebra.Group.Submonoid.Membership
 public import Mathlib.Algebra.GroupWithZero.Action.Defs
 public import Mathlib.Algebra.GroupWithZero.Associated
 public import Mathlib.Algebra.Regular.SMul
-
 import Mathlib.Algebra.GroupWithZero.Action.Regular
 import Mathlib.Algebra.GroupWithZero.Regular
 
@@ -39,15 +38,19 @@ assert_not_exists Ring
 
 open Function
 
-lemma Irreducible.coe_ne_zero {M₀ S : Type*} [MonoidWithZero M₀] [SetLike S M₀]
-    [SubmonoidClass S M₀] {s : S} {x : s} (hx : Irreducible x) : (x : M₀) ≠ 0 :=
-  fun h ↦ hx.1 <| by simpa using hx.2 (a := x) (b := x) (by ext; simp [h])
+lemma Irreducible.coe_ne_zero
+    {M₀ S : Type*} [MonoidWithZero M₀] [SetLike S M₀] [SubmonoidClass S M₀]
+    {s : S} {x : s} (hx : Irreducible x)
+    : (x : M₀) ≠ 0 := fun h ↦
+  hx.1 <| by simpa using hx.2 (a := x) (b := x) (by ext; simp [h])
 
 section
 variable (M₀ : Type*) [MonoidWithZero M₀] {x : M₀}
 
-/-- The collection of elements of a `MonoidWithZero` that are not left zero divisors form a
-`Submonoid`. -/
+/--
+The collection of elements of a `MonoidWithZero` that are not left zero divisors form a
+`Submonoid`.
+-/
 def nonZeroDivisorsLeft : Submonoid M₀ where
   carrier := {x | ∀ y, x * y = 0 → y = 0}
   one_mem' := by simp
@@ -56,12 +59,14 @@ def nonZeroDivisorsLeft : Submonoid M₀ where
 @[simp]
 lemma mem_nonZeroDivisorsLeft_iff : x ∈ nonZeroDivisorsLeft M₀ ↔ ∀ y, x * y = 0 → y = 0 := .rfl
 
-lemma notMem_nonZeroDivisorsLeft_iff :
-    x ∉ nonZeroDivisorsLeft M₀ ↔ {y | x * y = 0 ∧ y ≠ 0}.Nonempty := by
+lemma notMem_nonZeroDivisorsLeft_iff
+    : x ∉ nonZeroDivisorsLeft M₀ ↔ {y | x * y = 0 ∧ y ≠ 0}.Nonempty := by
   simp [mem_nonZeroDivisorsLeft_iff, Set.Nonempty]
 
-/-- The collection of elements of a `MonoidWithZero` that are not right zero divisors form a
-`Submonoid`. -/
+/--
+The collection of elements of a `MonoidWithZero` that are not right zero divisors form a
+`Submonoid`.
+-/
 def nonZeroDivisorsRight : Submonoid M₀ where
   carrier := {x | ∀ y, y * x = 0 → y = 0}
   one_mem' := by simp
@@ -70,24 +75,26 @@ def nonZeroDivisorsRight : Submonoid M₀ where
 @[simp]
 lemma mem_nonZeroDivisorsRight_iff : x ∈ nonZeroDivisorsRight M₀ ↔ ∀ y, y * x = 0 → y = 0 := .rfl
 
-lemma notMem_nonZeroDivisorsRight_iff :
-    x ∉ nonZeroDivisorsRight M₀ ↔ {y | y * x = 0 ∧ y ≠ 0}.Nonempty := by
+lemma notMem_nonZeroDivisorsRight_iff
+    : x ∉ nonZeroDivisorsRight M₀ ↔ {y | y * x = 0 ∧ y ≠ 0}.Nonempty := by
   simp [mem_nonZeroDivisorsRight_iff, Set.Nonempty]
 
-lemma nonZeroDivisorsLeft_eq_right (M₀ : Type*) [CommMonoidWithZero M₀] :
-    nonZeroDivisorsLeft M₀ = nonZeroDivisorsRight M₀ := by
+lemma nonZeroDivisorsLeft_eq_right (M₀ : Type*) [CommMonoidWithZero M₀]
+    : nonZeroDivisorsLeft M₀ = nonZeroDivisorsRight M₀ := by
   ext x; simp [mul_comm x]
 
-@[simp] lemma coe_nonZeroDivisorsLeft_eq [NoZeroDivisors M₀] [Nontrivial M₀] :
-    nonZeroDivisorsLeft M₀ = {x : M₀ | x ≠ 0} := by
+@[simp]
+lemma coe_nonZeroDivisorsLeft_eq [NoZeroDivisors M₀] [Nontrivial M₀]
+    : nonZeroDivisorsLeft M₀ = {x : M₀ | x ≠ 0} := by
   ext x
   simp only [SetLike.mem_coe, mem_nonZeroDivisorsLeft_iff, mul_eq_zero, Set.mem_ofPred_eq]
   refine ⟨fun h ↦ ?_, fun hx y hx' ↦ by simp_all⟩
   contrapose! h
   exact ⟨1, Or.inl h, one_ne_zero⟩
 
-@[simp] lemma coe_nonZeroDivisorsRight_eq [NoZeroDivisors M₀] [Nontrivial M₀] :
-    nonZeroDivisorsRight M₀ = {x : M₀ | x ≠ 0} := by
+@[simp]
+lemma coe_nonZeroDivisorsRight_eq [NoZeroDivisors M₀] [Nontrivial M₀]
+    : nonZeroDivisorsRight M₀ = {x : M₀ | x ≠ 0} := by
   ext x
   simp only [SetLike.mem_coe, mem_nonZeroDivisorsRight_iff, mul_eq_zero, forall_eq_or_imp, true_and,
     Set.mem_ofPred_eq]
@@ -104,12 +111,14 @@ def nonZeroDivisors (M₀ : Type*) [MonoidWithZero M₀] : Submonoid M₀ :=
 /-- The notation for the submonoid of non-zero divisors. -/
 scoped[nonZeroDivisors] notation:9000 M₀ "⁰" => nonZeroDivisors M₀
 
-/-- Let `M₀` be a monoid with zero and `M` an additive monoid with an `M₀`-action, then the
+/--
+Let `M₀` be a monoid with zero and `M` an additive monoid with an `M₀`-action, then the
 collection of non-zero smul-divisors forms a submonoid.
 
-These elements are also called `M`-regular. -/
-def nonZeroSMulDivisors (M₀ : Type*) [MonoidWithZero M₀] (M : Type*) [Zero M] [MulAction M₀ M] :
-    Submonoid M₀ where
+These elements are also called `M`-regular.
+-/
+def nonZeroSMulDivisors (M₀ : Type*) [MonoidWithZero M₀] (M : Type*) [Zero M] [MulAction M₀ M]
+    : Submonoid M₀ where
   carrier := { r | ∀ m : M, r • m = 0 → m = 0}
   one_mem' m h := (one_smul M₀ m) ▸ h
   mul_mem' {r₁ r₂} h₁ h₂ m H := h₂ _ <| h₁ _ <| mul_smul r₁ r₂ m ▸ H
@@ -122,25 +131,27 @@ open nonZeroDivisors
 section MonoidWithZero
 variable {F M₀ M₀' : Type*} [MonoidWithZero M₀] [MonoidWithZero M₀'] {r x y : M₀}
 
-lemma nonZeroDivisorsLeft_eq_nonZeroSMulDivisors :
-    nonZeroDivisorsLeft M₀ = nonZeroSMulDivisors M₀ M₀ := rfl
+lemma nonZeroDivisorsLeft_eq_nonZeroSMulDivisors
+    : nonZeroDivisorsLeft M₀ = nonZeroSMulDivisors M₀ M₀ :=
+  rfl
 
-theorem mem_nonZeroDivisors_iff :
-    r ∈ M₀⁰ ↔ (∀ x, r * x = 0 → x = 0) ∧ ∀ x, x * r = 0 → x = 0 := Iff.rfl
+theorem mem_nonZeroDivisors_iff : r ∈ M₀⁰ ↔ (∀ x, r * x = 0 → x = 0) ∧ ∀ x, x * r = 0 → x = 0 :=
+  Iff.rfl
 
-theorem mem_nonZeroDivisors_iff' :
-    r ∈ M₀⁰ ↔ r ∈ nonZeroDivisorsLeft M₀ ∧ r ∈ nonZeroDivisorsRight M₀ := Iff.rfl
+theorem mem_nonZeroDivisors_iff'
+    : r ∈ M₀⁰ ↔ r ∈ nonZeroDivisorsLeft M₀ ∧ r ∈ nonZeroDivisorsRight M₀ :=
+  Iff.rfl
 
-lemma notMem_nonZeroDivisors_iff :
-    r ∉ M₀⁰ ↔ {s | r * s = 0 ∧ s ≠ 0}.Nonempty ∨ {s | s * r = 0 ∧ s ≠ 0}.Nonempty := by
+lemma notMem_nonZeroDivisors_iff
+    : r ∉ M₀⁰ ↔ {s | r * s = 0 ∧ s ≠ 0}.Nonempty ∨ {s | s * r = 0 ∧ s ≠ 0}.Nonempty := by
   simp [-not_and, not_and_or, mem_nonZeroDivisors_iff, Set.nonempty_def]
 
-theorem mul_left_mem_nonZeroDivisorsLeft_eq_zero_iff (hr : r ∈ nonZeroDivisorsLeft M₀) :
-    r * x = 0 ↔ x = 0 :=
+theorem mul_left_mem_nonZeroDivisorsLeft_eq_zero_iff (hr : r ∈ nonZeroDivisorsLeft M₀)
+    : r * x = 0 ↔ x = 0 :=
   ⟨hr _, by simp +contextual⟩
 
-theorem mul_right_mem_nonZeroDivisorsRight_eq_zero_iff (hr : r ∈ nonZeroDivisorsRight M₀) :
-    x * r = 0 ↔ x = 0 :=
+theorem mul_right_mem_nonZeroDivisorsRight_eq_zero_iff (hr : r ∈ nonZeroDivisorsRight M₀)
+    : x * r = 0 ↔ x = 0 :=
   ⟨hr _, by simp +contextual⟩
 
 theorem mul_right_mem_nonZeroDivisors_eq_zero_iff (hr : r ∈ M₀⁰) : x * r = 0 ↔ x = 0 :=
@@ -156,36 +167,34 @@ lemma IsUnit.mem_nonZeroDivisors (hx : IsUnit x) : x ∈ M₀⁰ :=
 variable (M₀) in
 lemma isUnit_le_nonZeroDivisors : IsUnit.submonoid M₀ ≤ M₀⁰ := fun _ ↦ (·.mem_nonZeroDivisors)
 
-lemma mul_mem_nonZeroDivisors_of_mem_nonZeroDivisors (hx : x ∈ M₀⁰) (hy : y ∈ M₀⁰) :
-    x * y ∈ M₀⁰ :=
+lemma mul_mem_nonZeroDivisors_of_mem_nonZeroDivisors (hx : x ∈ M₀⁰) (hy : y ∈ M₀⁰) : x * y ∈ M₀⁰ :=
   mem_nonZeroDivisors_iff'.mpr ⟨Submonoid.mul_mem _ hx.1 hy.1, Submonoid.mul_mem _ hx.2 hy.2⟩
 
 section Nontrivial
 variable [Nontrivial M₀]
 
-theorem zero_notMem_nonZeroDivisorsLeft : 0 ∉ nonZeroDivisorsLeft M₀ :=
-  fun h ↦ one_ne_zero <| h 1 <| zero_mul _
+theorem zero_notMem_nonZeroDivisorsLeft : 0 ∉ nonZeroDivisorsLeft M₀ := fun h ↦
+  one_ne_zero <| h 1 <| zero_mul _
 
-theorem zero_notMem_nonZeroDivisorsRight : 0 ∉ nonZeroDivisorsRight M₀ :=
-  fun h ↦ one_ne_zero <| h 1 <| mul_zero _
+theorem zero_notMem_nonZeroDivisorsRight : 0 ∉ nonZeroDivisorsRight M₀ := fun h ↦
+  one_ne_zero <| h 1 <| mul_zero _
 
 theorem zero_notMem_nonZeroDivisors : 0 ∉ M₀⁰ := fun h ↦ zero_notMem_nonZeroDivisorsLeft h.1
 
 theorem nonZeroDivisors.ne_zero (hx : x ∈ M₀⁰) : x ≠ 0 :=
   ne_of_mem_of_not_mem hx zero_notMem_nonZeroDivisors
 
-@[simp]
-theorem nonZeroDivisors.coe_ne_zero (x : M₀⁰) : (x : M₀) ≠ 0 := nonZeroDivisors.ne_zero x.2
+@[simp] theorem nonZeroDivisors.coe_ne_zero (x : M₀⁰) : (x : M₀) ≠ 0 := nonZeroDivisors.ne_zero x.2
 
 instance [IsLeftCancelMulZero M₀] : LeftCancelMonoid M₀⁰ where
-  mul_left_cancel z _ _ h := Subtype.ext <|
-    mul_left_cancel₀ (nonZeroDivisors.coe_ne_zero z) (by
-      simpa only [Subtype.ext_iff, Submonoid.coe_mul] using h)
+  mul_left_cancel z _ _ h :=
+    Subtype.ext <| mul_left_cancel₀ (nonZeroDivisors.coe_ne_zero z)
+      (by simpa only [Subtype.ext_iff, Submonoid.coe_mul] using h)
 
 instance [IsRightCancelMulZero M₀] : RightCancelMonoid M₀⁰ where
-  mul_right_cancel z _ _ h := Subtype.ext <|
-    mul_right_cancel₀ (nonZeroDivisors.coe_ne_zero z) (by
-      simpa only [Subtype.ext_iff, Submonoid.coe_mul] using h)
+  mul_right_cancel z _ _ h :=
+    Subtype.ext <| mul_right_cancel₀ (nonZeroDivisors.coe_ne_zero z)
+      (by simpa only [Subtype.ext_iff, Submonoid.coe_mul] using h)
 
 end Nontrivial
 
@@ -198,66 +207,79 @@ theorem eq_zero_of_ne_zero_of_mul_right_eq_zero (hx : x ≠ 0) (hxy : y * x = 0)
 theorem eq_zero_of_ne_zero_of_mul_left_eq_zero (hx : x ≠ 0) (hxy : x * y = 0) : y = 0 :=
   Or.resolve_left (eq_zero_or_eq_zero_of_mul_eq_zero hxy) hx
 
-theorem mem_nonZeroDivisors_of_ne_zero (hx : x ≠ 0) : x ∈ M₀⁰ :=
-  ⟨fun _ ↦ eq_zero_of_ne_zero_of_mul_left_eq_zero hx,
-   fun _ ↦ eq_zero_of_ne_zero_of_mul_right_eq_zero hx⟩
+theorem mem_nonZeroDivisors_of_ne_zero (hx : x ≠ 0) : x ∈ M₀⁰ := ⟨
+  fun _ ↦ eq_zero_of_ne_zero_of_mul_left_eq_zero hx,
+  fun _ ↦ eq_zero_of_ne_zero_of_mul_right_eq_zero hx
+⟩
 
-@[simp] lemma mem_nonZeroDivisors_iff_ne_zero [Nontrivial M₀] : x ∈ M₀⁰ ↔ x ≠ 0 :=
+@[simp]
+lemma mem_nonZeroDivisors_iff_ne_zero [Nontrivial M₀] : x ∈ M₀⁰ ↔ x ≠ 0 :=
   ⟨nonZeroDivisors.ne_zero, mem_nonZeroDivisors_of_ne_zero⟩
 
-theorem le_nonZeroDivisors_of_noZeroDivisors {S : Submonoid M₀} (hS : (0 : M₀) ∉ S) :
-    S ≤ M₀⁰ := fun _ hx ↦
-  mem_nonZeroDivisors_of_ne_zero <| by rintro rfl; exact hS hx
+theorem le_nonZeroDivisors_of_noZeroDivisors {S : Submonoid M₀} (hS : (0 : M₀) ∉ S) : S ≤ M₀⁰ :=
+  fun _ hx ↦ mem_nonZeroDivisors_of_ne_zero <| by rintro rfl; exact hS hx
 
 theorem powers_le_nonZeroDivisors_of_noZeroDivisors (hx : x ≠ 0) : Submonoid.powers x ≤ M₀⁰ :=
   le_nonZeroDivisors_of_noZeroDivisors fun h ↦ hx (h.recOn fun _ ↦ eq_zero_of_pow_eq_zero)
 
 end NoZeroDivisors
 
-lemma IsLeftRegular.mem_nonZeroDivisorsLeft (h : IsLeftRegular r) :
-    r ∈ nonZeroDivisorsLeft M₀ := fun _x hx ↦ h.mul_left_eq_zero_iff.mp hx
+lemma IsLeftRegular.mem_nonZeroDivisorsLeft (h : IsLeftRegular r) : r ∈ nonZeroDivisorsLeft M₀ :=
+  fun _x hx ↦ h.mul_left_eq_zero_iff.mp hx
 
-lemma IsRightRegular.mem_nonZeroDivisorsRight (h : IsRightRegular r) :
-    r ∈ nonZeroDivisorsRight M₀ := fun _x hx ↦ h.mul_right_eq_zero_iff.mp hx
+lemma IsRightRegular.mem_nonZeroDivisorsRight (h : IsRightRegular r)
+    : r ∈ nonZeroDivisorsRight M₀ := fun _x hx ↦
+  h.mul_right_eq_zero_iff.mp hx
 
 lemma IsRegular.mem_nonZeroDivisors (h : IsRegular r) : r ∈ M₀⁰ :=
   ⟨h.1.mem_nonZeroDivisorsLeft, h.2.mem_nonZeroDivisorsRight⟩
 
-lemma noZeroDivisors_iff_forall_mem_nonZeroDivisorsLeft :
-    NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ nonZeroDivisorsLeft M₀ :=
+lemma noZeroDivisors_iff_forall_mem_nonZeroDivisorsLeft
+    : NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ nonZeroDivisorsLeft M₀ :=
   noZeroDivisors_iff_right_eq_zero_of_mul
 
-lemma noZeroDivisors_iff_forall_mem_nonZeroDivisorsRight :
-    NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ nonZeroDivisorsRight M₀ :=
+lemma noZeroDivisors_iff_forall_mem_nonZeroDivisorsRight
+    : NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ nonZeroDivisorsRight M₀ :=
   noZeroDivisors_iff_left_eq_zero_of_mul
 
-lemma noZeroDivisors_iff_forall_mem_nonZeroDivisors :
-    NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ M₀⁰ :=
+lemma noZeroDivisors_iff_forall_mem_nonZeroDivisors
+    : NoZeroDivisors M₀ ↔ ∀ x : M₀, x ≠ 0 → x ∈ M₀⁰ :=
   noZeroDivisors_iff_eq_zero_of_mul
 
-lemma IsSMulRegular.mem_nonZeroSMulDivisors {M : Type*} [Zero M] [MulActionWithZero M₀ M] {m₀ : M₀}
-    (h : IsSMulRegular M m₀) : m₀ ∈ nonZeroSMulDivisors M₀ M :=
-  fun _ ↦ h.right_eq_zero_of_smul
+lemma IsSMulRegular.mem_nonZeroSMulDivisors
+    {M : Type*} [Zero M] [MulActionWithZero M₀ M] {m₀ : M₀} (h : IsSMulRegular M m₀)
+    : m₀ ∈ nonZeroSMulDivisors M₀ M := fun _ ↦
+  h.right_eq_zero_of_smul
 
-lemma isSMulRegular_iff_mem_nonZeroSMulDivisors {M : Type*} [AddGroup M] [DistribMulAction M₀ M]
-    {m₀ : M₀} : IsSMulRegular M m₀ ↔ m₀ ∈ nonZeroSMulDivisors M₀ M :=
+lemma isSMulRegular_iff_mem_nonZeroSMulDivisors
+    {M : Type*} [AddGroup M] [DistribMulAction M₀ M] {m₀ : M₀}
+    : IsSMulRegular M m₀ ↔ m₀ ∈ nonZeroSMulDivisors M₀ M :=
   isSMulRegular_iff_right_eq_zero_of_smul
 
 variable [FunLike F M₀ M₀']
 
 -- TODO: nonZeroDivisorsLeft/Right also works
-theorem map_ne_zero_of_mem_nonZeroDivisors [Nontrivial M₀] [ZeroHomClass F M₀ M₀'] (g : F)
-    (hg : Injective (g : M₀ → M₀')) {x : M₀} (h : x ∈ M₀⁰) : g x ≠ 0 := fun h0 ↦
+theorem map_ne_zero_of_mem_nonZeroDivisors
+    [Nontrivial M₀] [ZeroHomClass F M₀ M₀']
+    (g : F) (hg : Injective (g : M₀ → M₀'))
+    {x : M₀} (h : x ∈ M₀⁰)
+    : g x ≠ 0 := fun h0 ↦
   one_ne_zero (h.2 1 ((one_mul x).symm ▸ hg (h0.trans (map_zero g).symm)))
 
-theorem map_mem_nonZeroDivisors [Nontrivial M₀] [NoZeroDivisors M₀'] [ZeroHomClass F M₀ M₀'] (g : F)
-    (hg : Injective g) {x : M₀} (h : x ∈ M₀⁰) : g x ∈ M₀'⁰ :=
-  ⟨fun _ ↦ eq_zero_of_ne_zero_of_mul_left_eq_zero (map_ne_zero_of_mem_nonZeroDivisors g hg h),
-    fun _ ↦ eq_zero_of_ne_zero_of_mul_right_eq_zero (map_ne_zero_of_mem_nonZeroDivisors g hg h)⟩
+theorem map_mem_nonZeroDivisors
+    [Nontrivial M₀] [NoZeroDivisors M₀'] [ZeroHomClass F M₀ M₀']
+    (g : F) (hg : Injective g)
+    {x : M₀} (h : x ∈ M₀⁰)
+    : g x ∈ M₀'⁰ := ⟨
+  fun _ ↦ eq_zero_of_ne_zero_of_mul_left_eq_zero (map_ne_zero_of_mem_nonZeroDivisors g hg h),
+  fun _ ↦ eq_zero_of_ne_zero_of_mul_right_eq_zero (map_ne_zero_of_mem_nonZeroDivisors g hg h)
+⟩
 
-theorem MulEquivClass.map_nonZeroDivisors {M₀ S F : Type*} [MonoidWithZero M₀] [MonoidWithZero S]
-    [EquivLike F M₀ S] [MulEquivClass F M₀ S] (h : F) :
-    Submonoid.map h (nonZeroDivisors M₀) = nonZeroDivisors S := by
+theorem MulEquivClass.map_nonZeroDivisors
+    {M₀ S F : Type*}
+    [MonoidWithZero M₀] [MonoidWithZero S] [EquivLike F M₀ S] [MulEquivClass F M₀ S]
+    (h : F)
+    : Submonoid.map h (nonZeroDivisors M₀) = nonZeroDivisors S := by
   let h : M₀ ≃* S := h
   change Submonoid.map h _ = _
   ext
@@ -265,28 +287,37 @@ theorem MulEquivClass.map_nonZeroDivisors {M₀ S F : Type*} [MonoidWithZero M�
     ← h.symm.forall_congr_right, h.symm.toEquiv_eq_coe, h.symm.coe_toEquiv, ← map_mul,
     map_eq_zero_iff _ h.symm.injective]
 
-theorem map_le_nonZeroDivisors_of_injective [NoZeroDivisors M₀'] [MonoidWithZeroHomClass F M₀ M₀']
-    (f : F) (hf : Injective f) {S : Submonoid M₀} (hS : S ≤ M₀⁰) : S.map f ≤ M₀'⁰ := by
+theorem map_le_nonZeroDivisors_of_injective
+    [NoZeroDivisors M₀'] [MonoidWithZeroHomClass F M₀ M₀']
+    (f : F) (hf : Injective f)
+    {S : Submonoid M₀} (hS : S ≤ M₀⁰)
+    : S.map f ≤ M₀'⁰ := by
   cases subsingleton_or_nontrivial M₀
   · simp [Subsingleton.elim S ⊥]
   · refine le_nonZeroDivisors_of_noZeroDivisors ?_
     rintro ⟨x, hx, hx0⟩
     exact zero_notMem_nonZeroDivisors <| hS <| map_eq_zero_iff f hf |>.mp hx0 ▸ hx
 
-theorem nonZeroDivisors_le_comap_nonZeroDivisors_of_injective [NoZeroDivisors M₀']
-    [MonoidWithZeroHomClass F M₀ M₀'] (f : F) (hf : Injective f) : M₀⁰ ≤ M₀'⁰.comap f :=
+theorem nonZeroDivisors_le_comap_nonZeroDivisors_of_injective
+    [NoZeroDivisors M₀'] [MonoidWithZeroHomClass F M₀ M₀'] (f : F) (hf : Injective f)
+    : M₀⁰ ≤ M₀'⁰.comap f :=
   Submonoid.le_comap_of_map_le _ (map_le_nonZeroDivisors_of_injective _ hf le_rfl)
 
-/-- If an element maps to a non-zero-divisor via injective homomorphism,
-then it is a non-zero-divisor. -/
-theorem mem_nonZeroDivisors_of_injective [MonoidWithZeroHomClass F M₀ M₀'] {f : F}
-    (hf : Injective f) (hx : f x ∈ M₀'⁰) : x ∈ M₀⁰ :=
-  ⟨fun y hy ↦ hf <| map_zero f ▸ hx.1 (f y) (map_mul f x y ▸ map_zero f ▸ congrArg f hy),
-    fun y hy ↦ hf <| map_zero f ▸ hx.2 (f y) (map_mul f y x ▸ map_zero f ▸ congrArg f hy)⟩
+/--
+If an element maps to a non-zero-divisor via injective homomorphism,
+then it is a non-zero-divisor.
+-/
+theorem mem_nonZeroDivisors_of_injective
+    [MonoidWithZeroHomClass F M₀ M₀'] {f : F} (hf : Injective f) (hx : f x ∈ M₀'⁰)
+    : x ∈ M₀⁰ := ⟨
+  fun y hy ↦ hf <| map_zero f ▸ hx.1 (f y) (map_mul f x y ▸ map_zero f ▸ congrArg f hy),
+  fun y hy ↦ hf <| map_zero f ▸ hx.2 (f y) (map_mul f y x ▸ map_zero f ▸ congrArg f hy)
+⟩
 
-theorem comap_nonZeroDivisors_le_of_injective [MonoidWithZeroHomClass F M₀ M₀'] {f : F}
-    (hf : Injective f) : M₀'⁰.comap f ≤ M₀⁰ :=
-  fun _ ha ↦ mem_nonZeroDivisors_of_injective hf (Submonoid.mem_comap.mp ha)
+theorem comap_nonZeroDivisors_le_of_injective
+    [MonoidWithZeroHomClass F M₀ M₀'] {f : F} (hf : Injective f)
+    : M₀'⁰.comap f ≤ M₀⁰ := fun _ ha ↦
+  mem_nonZeroDivisors_of_injective hf (Submonoid.mem_comap.mp ha)
 
 end MonoidWithZero
 
@@ -329,15 +360,17 @@ lemma mul_mem_nonZeroDivisors : a * b ∈ M₀⁰ ↔ a ∈ M₀⁰ ∧ b ∈ M�
     · rw [mul_comm a b, ← mul_assoc, h', zero_mul]
   mpr := fun h ↦ mul_mem h.1 h.2
 
-theorem nonZeroDivisors_dvd_iff_dvd_coe {a b : M₀⁰} :
-    a ∣ b ↔ (a : M₀) ∣ (b : M₀) :=
-  ⟨fun ⟨c, hc⟩ ↦ by simp_rw [hc, Submonoid.coe_mul, dvd_mul_right],
-  fun ⟨c, hc⟩ ↦ ⟨⟨c, (mul_mem_nonZeroDivisors.mp (hc ▸ b.prop)).2⟩,
-    by simp_rw [Subtype.ext_iff, Submonoid.coe_mul, hc]⟩⟩
+theorem nonZeroDivisors_dvd_iff_dvd_coe {a b : M₀⁰} : a ∣ b ↔ (a : M₀) ∣ (b : M₀) := ⟨
+  fun ⟨c, hc⟩ ↦ by simp_rw [hc, Submonoid.coe_mul, dvd_mul_right],
+  fun ⟨c, hc⟩ ↦ ⟨
+    ⟨c, (mul_mem_nonZeroDivisors.mp (hc ▸ b.prop)).2⟩,
+    by simp_rw [Subtype.ext_iff, Submonoid.coe_mul, hc]
+  ⟩
+⟩
 
 lemma prod_mem_nonZeroDivisors_of_mem_nonZeroDivisors
-    {ι : Type*} {s : Finset ι} {f : ι → M₀} (h : ∀ i ∈ s, f i ∈ M₀⁰) :
-    ∏ i ∈ s, f i ∈ M₀⁰ :=
+    {ι : Type*} {s : Finset ι} {f : ι → M₀} (h : ∀ i ∈ s, f i ∈ M₀⁰)
+    : ∏ i ∈ s, f i ∈ M₀⁰ :=
   s.prod_induction _ _ (fun _ _ ↦ and_imp.mp mul_mem_nonZeroDivisors.mpr) (one_mem _) h
 
 end CommMonoidWithZero
@@ -379,10 +412,15 @@ variable [MonoidWithZero M₀] {a b : M₀⁰}
 @[simps]
 def unitsNonZeroDivisorsEquiv : M₀⁰ˣ ≃* M₀ˣ where
   __ := Units.map M₀⁰.subtype
-  invFun u := ⟨⟨u, u.isUnit.mem_nonZeroDivisors⟩, ⟨(u⁻¹ : M₀ˣ), u⁻¹.isUnit.mem_nonZeroDivisors⟩,
-    by simp, by simp⟩
+  invFun u := ⟨
+    ⟨u, u.isUnit.mem_nonZeroDivisors⟩,
+    ⟨(u⁻¹ : M₀ˣ), u⁻¹.isUnit.mem_nonZeroDivisors⟩,
+    by simp,
+    by simp
+  ⟩
 
-@[simp, norm_cast] lemma nonZeroDivisors.associated_coe : Associated (a : M₀) b ↔ Associated a b :=
+@[simp, norm_cast]
+lemma nonZeroDivisors.associated_coe : Associated (a : M₀) b ↔ Associated a b :=
   unitsNonZeroDivisorsEquiv.symm.exists_congr_left.trans <| by simp [Associated]; norm_cast
 
 end MonoidWithZero
@@ -401,13 +439,16 @@ theorem mk_mem_nonZeroDivisors_associates : Associates.mk a ∈ (Associates M₀
   · refine fun ⟨b, hb₁, hb₂⟩ ↦ ⟨Associates.mk b, ?_, by rwa [Associates.mk_ne_zero]⟩
     rw [Associates.mk_mul_mk, hb₁, Associates.mk_zero]
 
-/-- The non-zero divisors of associates of a monoid with zero `M₀` are isomorphic to the associates
-of the non-zero divisors of `M₀` under the map `⟨⟦a⟧, _⟩ ↦ ⟦⟨a, _⟩⟧`. -/
+/--
+The non-zero divisors of associates of a monoid with zero `M₀` are isomorphic to the associates
+of the non-zero divisors of `M₀` under the map `⟨⟦a⟧, _⟩ ↦ ⟦⟨a, _⟩⟧`.
+-/
 def associatesNonZeroDivisorsEquiv : (Associates M₀)⁰ ≃* Associates M₀⁰ where
-  toEquiv := .subtypeQuotientEquivQuotientSubtype _ (s₂ := Associated.setoid _)
-    (· ∈ nonZeroDivisors _ : Associates M₀ → Prop)
-    (by simp [mem_nonZeroDivisors_iff, Associates.forall_associated, Associates.mk_mul_mk])
-    (by simp +instances [Associated.setoid])
+  toEquiv :=
+    .subtypeQuotientEquivQuotientSubtype _ (s₂ := Associated.setoid _)
+      (· ∈ nonZeroDivisors _ : Associates M₀ → Prop)
+      (by simp [mem_nonZeroDivisors_iff, Associates.forall_associated, Associates.mk_mul_mk])
+      (by simp +instances [Associated.setoid])
   map_mul' := by
     simp_rw [Subtype.forall, Associates.forall_associated, Equiv.toFun_as_coe,
       Submonoid.mk_mul_mk, Associates.mk_mul_mk, ← Associates.quotient_mk_eq_mk]
@@ -416,14 +457,15 @@ def associatesNonZeroDivisorsEquiv : (Associates M₀)⁰ ≃* Associates M₀�
     simp [Associates.mk_mul_mk]
 
 @[simp]
-lemma associatesNonZeroDivisorsEquiv_mk_mk (a : M₀) (ha) :
-    associatesNonZeroDivisorsEquiv ⟨.mk a, ha⟩ = .mk ⟨a, mk_mem_nonZeroDivisors_associates.1 ha⟩ :=
+lemma associatesNonZeroDivisorsEquiv_mk_mk (a : M₀) (ha)
+    : associatesNonZeroDivisorsEquiv ⟨.mk a, ha⟩
+      = .mk ⟨a, mk_mem_nonZeroDivisors_associates.1 ha⟩ :=
   rfl
 
 @[simp]
-lemma associatesNonZeroDivisorsEquiv_symm_mk_mk (a : M₀) (ha) :
-    associatesNonZeroDivisorsEquiv.symm (.mk ⟨a, ha⟩) =
-      ⟨.mk a, mk_mem_nonZeroDivisors_associates.2 ha⟩ :=
+lemma associatesNonZeroDivisorsEquiv_symm_mk_mk (a : M₀) (ha)
+    : associatesNonZeroDivisorsEquiv.symm (.mk ⟨a, ha⟩)
+      = ⟨.mk a, mk_mem_nonZeroDivisors_associates.2 ha⟩ :=
   rfl
 
 end CommMonoidWithZero
@@ -432,28 +474,26 @@ section MulDistribMulAction
 
 variable {G M : Type*} [Group G] [MonoidWithZero M] [MulDistribMulAction G M]
 
-theorem smul_mem_nonZeroDivisorsLeft (g : G) {m : M} (hm : m ∈ nonZeroDivisorsLeft M) :
-    g • m ∈ nonZeroDivisorsLeft M := by
+theorem smul_mem_nonZeroDivisorsLeft (g : G) {m : M} (hm : m ∈ nonZeroDivisorsLeft M)
+    : g • m ∈ nonZeroDivisorsLeft M := by
   intro y hy
   rw [← smul_eq_zero_iff_eq' g⁻¹] at hy ⊢
   exact hm _ <| by simpa [smul_mul'] using hy
 
-theorem smul_mem_nonZeroDivisorsRight (g : G) {m : M} (hm : m ∈ nonZeroDivisorsRight M) :
-    g • m ∈ nonZeroDivisorsRight M := by
+theorem smul_mem_nonZeroDivisorsRight (g : G) {m : M} (hm : m ∈ nonZeroDivisorsRight M)
+    : g • m ∈ nonZeroDivisorsRight M := by
   intro y hy
   rw [← smul_eq_zero_iff_eq' g⁻¹] at hy ⊢
   exact hm _ <| by simpa [smul_mul'] using hy
 
-theorem smul_mem_nonZeroDivisors (g : G) {m : M} (hm : m ∈ nonZeroDivisors M) :
-    g • m ∈ nonZeroDivisors M :=
+theorem smul_mem_nonZeroDivisors (g : G) {m : M} (hm : m ∈ nonZeroDivisors M)
+    : g • m ∈ nonZeroDivisors M :=
   ⟨smul_mem_nonZeroDivisorsLeft g hm.1, smul_mem_nonZeroDivisorsRight g hm.2⟩
 
 instance : SMul G M⁰ where
   smul g m := ⟨g • m, smul_mem_nonZeroDivisors g m.prop⟩
 
-@[simp]
-theorem nonZeroDivisors.val_smul (g : G) (m : M⁰) :
-    (g • m : M⁰).val = g • m.val := rfl
+@[simp] theorem nonZeroDivisors.val_smul (g : G) (m : M⁰) : (g • m : M⁰).val = g • m.val := rfl
 
 instance : MulDistribMulAction G M⁰ where
   one_smul m := Subtype.val_injective (by simp)

@@ -54,8 +54,8 @@ namespace Unitization
 variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A]
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [Semiring C] [Algebra R C]
 
-theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C} :
-    (lift f).range ≤ S ↔ NonUnitalAlgHom.range f ≤ S.toNonUnitalSubalgebra := by
+theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C}
+    : (lift f).range ≤ S ↔ NonUnitalAlgHom.range f ≤ S.toNonUnitalSubalgebra := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · rintro - ⟨x, rfl⟩
     exact @h (f x) ⟨x, by simp⟩
@@ -63,8 +63,8 @@ theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C} :
     induction x with
     | _ r a => simpa using! add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
 
-theorem lift_range (f : A →ₙₐ[R] C) :
-    (lift f).range = Algebra.adjoin R (NonUnitalAlgHom.range f : Set C) :=
+theorem lift_range (f : A →ₙₐ[R] C)
+    : (lift f).range = Algebra.adjoin R (NonUnitalAlgHom.range f : Set C) :=
   eq_of_forall_ge_iff fun c ↦ by rw [lift_range_le, Algebra.adjoin_le_iff]; rfl
 
 end Unitization
@@ -73,17 +73,19 @@ namespace NonUnitalSubalgebra
 
 section Semiring
 
-variable {R S A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] [SetLike S A]
-  [hSA : NonUnitalSubsemiringClass S A] [hSRA : SMulMemClass S R A] (s : S)
+variable
+  {R S A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] [SetLike S A]
+  [hSA : NonUnitalSubsemiringClass S A] [hSRA : SMulMemClass S R A]
+  (s : S)
 
-/-- The natural `R`-algebra homomorphism from the unitization of a non-unital subalgebra into
-the algebra containing it. -/
-def unitization : Unitization R s →ₐ[R] A :=
-  Unitization.lift (NonUnitalSubalgebraClass.subtype s)
+/--
+The natural `R`-algebra homomorphism from the unitization of a non-unital subalgebra into
+the algebra containing it.
+-/
+def unitization : Unitization R s →ₐ[R] A := Unitization.lift (NonUnitalSubalgebraClass.subtype s)
 
 @[simp]
-theorem unitization_apply (x : Unitization R s) :
-    unitization s x = algebraMap R A x.fst + x.snd :=
+theorem unitization_apply (x : Unitization R s) : unitization s x = algebraMap R A x.fst + x.snd :=
   rfl
 
 theorem unitization_range : (unitization s).range = Algebra.adjoin R (s : Set A) := by
@@ -92,14 +94,18 @@ theorem unitization_range : (unitization s).range = Algebra.adjoin R (s : Set A)
 
 end Semiring
 
-/-- A sufficient condition for injectivity of `NonUnitalSubalgebra.unitization` when the scalars
+/--
+A sufficient condition for injectivity of `NonUnitalSubalgebra.unitization` when the scalars
 are a commutative ring. When the scalars are a field, one should use the more natural
-`NonUnitalStarSubalgebra.unitization_injective` whose hypothesis is easier to verify. -/
-theorem _root_.AlgHomClass.unitization_injective' {F R S A : Type*} [CommRing R] [Ring A]
-    [Algebra R A] [SetLike S A] [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A]
+`NonUnitalStarSubalgebra.unitization_injective` whose hypothesis is easier to verify.
+-/
+theorem _root_.AlgHomClass.unitization_injective'
+    {F R S A : Type*} [CommRing R] [Ring A] [Algebra R A] [SetLike S A]
+    [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A]
     (s : S) (h : ∀ r, r ≠ 0 → algebraMap R A r ∉ s)
     [FunLike F (Unitization R s) A] [AlgHomClass F R (Unitization R s) A]
-    (f : F) (hf : ∀ x : s, f x = x) : Function.Injective f := by
+    (f : F) (hf : ∀ x : s, f x = x)
+    : Function.Injective f := by
   refine (injective_iff_map_eq_zero f).mpr fun x hx => ?_
   induction x with
   | inl_add_inr r a =>
@@ -111,40 +117,47 @@ theorem _root_.AlgHomClass.unitization_injective' {F R S A : Type*} [CommRing R]
       · simpa [hr] using hx
     · exact (h r hr <| hx ▸ (neg_mem a.property)).elim
 
-/-- This is a generic version which allows us to prove both
-`NonUnitalSubalgebra.unitization_injective` and `NonUnitalStarSubalgebra.unitization_injective`. -/
-theorem _root_.AlgHomClass.unitization_injective {F R S A : Type*} [Field R] [Ring A]
-    [Algebra R A] [SetLike S A] [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A]
+/--
+This is a generic version which allows us to prove both
+`NonUnitalSubalgebra.unitization_injective` and `NonUnitalStarSubalgebra.unitization_injective`.
+-/
+theorem _root_.AlgHomClass.unitization_injective
+    {F R S A : Type*} [Field R] [Ring A] [Algebra R A] [SetLike S A]
+    [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A]
     (s : S) (h1 : 1 ∉ s) [FunLike F (Unitization R s) A] [AlgHomClass F R (Unitization R s) A]
-    (f : F) (hf : ∀ x : s, f x = x) : Function.Injective f := by
+    (f : F) (hf : ∀ x : s, f x = x)
+    : Function.Injective f := by
   refine AlgHomClass.unitization_injective' s (fun r hr hr' ↦ ?_) f hf
   rw [Algebra.algebraMap_eq_smul_one] at hr'
   exact h1 <| inv_smul_smul₀ hr (1 : A) ▸ SMulMemClass.smul_mem r⁻¹ hr'
 
 section Field
 
-variable {R S A : Type*} [Field R] [Ring A] [Algebra R A]
-  [SetLike S A] [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A] (s : S)
+variable
+  {R S A : Type*} [Field R] [Ring A] [Algebra R A] [SetLike S A] [hSA : NonUnitalSubringClass S A]
+  [hSRA : SMulMemClass S R A]
+  (s : S)
 
 theorem unitization_injective (h1 : (1 : A) ∉ s) : Function.Injective (unitization s) :=
   AlgHomClass.unitization_injective s h1 (unitization s) fun _ ↦ by simp
 
-/-- If a `NonUnitalSubalgebra` over a field does not contain `1`, then its unitization is
-isomorphic to its `Algebra.adjoin`. -/
+/--
+If a `NonUnitalSubalgebra` over a field does not contain `1`, then its unitization is
+isomorphic to its `Algebra.adjoin`.
+-/
 @[simps! apply_coe]
-noncomputable def unitizationAlgEquiv (h1 : (1 : A) ∉ s) :
-    Unitization R s ≃ₐ[R] Algebra.adjoin R (s : Set A) :=
+noncomputable def unitizationAlgEquiv (h1 : (1 : A) ∉ s)
+    : Unitization R s ≃ₐ[R] Algebra.adjoin R (s : Set A) :=
   let algHom : Unitization R s →ₐ[R] Algebra.adjoin R (s : Set A) :=
-    ((unitization s).codRestrict _
-      fun x ↦ (unitization_range s).le <| AlgHom.mem_range_self _ x)
+    ((unitization s).codRestrict _ fun x ↦ (unitization_range s).le <| AlgHom.mem_range_self _ x)
   AlgEquiv.ofBijective algHom <| by
     refine ⟨?_, fun x ↦ ?_⟩
-    · have := AlgHomClass.unitization_injective s h1
-        ((Subalgebra.val _).comp algHom) fun _ ↦ by simp [algHom]
+    · have :=
+        AlgHomClass.unitization_injective s h1 ((Subalgebra.val _).comp algHom) fun _ ↦ by
+          simp [algHom]
       rw [AlgHom.coe_comp] at this
       exact this.of_comp
-    · obtain (⟨a, ha⟩ : (x : A) ∈ (unitization s).range) :=
-        (unitization_range s).ge x.property
+    · obtain (⟨a, ha⟩ : (x : A) ∈ (unitization s).range) := (unitization_range s).ge x.property
       exact ⟨a, Subtype.ext ha⟩
 
 end Field
@@ -157,17 +170,16 @@ namespace NonUnitalSubsemiring
 
 variable {R S : Type*} [Semiring R] [SetLike S R] [hSR : NonUnitalSubsemiringClass S R] (s : S)
 
-/-- The natural `ℕ`-algebra homomorphism from the unitization of a non-unital subsemiring to
-its `Subsemiring.closure`. -/
+/--
+The natural `ℕ`-algebra homomorphism from the unitization of a non-unital subsemiring to
+its `Subsemiring.closure`.
+-/
 def unitization : Unitization ℕ s →ₐ[ℕ] R :=
   NonUnitalSubalgebra.unitization (hSRA := AddSubmonoidClass.nsmulMemClass) s
 
-@[simp]
-theorem unitization_apply (x : Unitization ℕ s) : unitization s x = x.fst + x.snd :=
-  rfl
+@[simp] theorem unitization_apply (x : Unitization ℕ s) : unitization s x = x.fst + x.snd := rfl
 
-theorem unitization_range :
-    (unitization s).range = subalgebraOfSubsemiring (.closure s) := by
+theorem unitization_range : (unitization s).range = subalgebraOfSubsemiring (.closure s) := by
   have := AddSubmonoidClass.nsmulMemClass (S := S)
   rw [unitization, NonUnitalSubalgebra.unitization_range (hSRA := this), Algebra.adjoin_nat]
 
@@ -179,17 +191,16 @@ namespace NonUnitalSubring
 
 variable {R S : Type*} [Ring R] [SetLike S R] [hSR : NonUnitalSubringClass S R] (s : S)
 
-/-- The natural `ℤ`-algebra homomorphism from the unitization of a non-unital subring to
-its `Subring.closure`. -/
+/--
+The natural `ℤ`-algebra homomorphism from the unitization of a non-unital subring to
+its `Subring.closure`.
+-/
 def unitization : Unitization ℤ s →ₐ[ℤ] R :=
   NonUnitalSubalgebra.unitization (hSRA := AddSubgroupClass.zsmulMemClass) s
 
-@[simp]
-theorem unitization_apply (x : Unitization ℤ s) : unitization s x = x.fst + x.snd :=
-  rfl
+@[simp] theorem unitization_apply (x : Unitization ℤ s) : unitization s x = x.fst + x.snd := rfl
 
-theorem unitization_range :
-    (unitization s).range = subalgebraOfSubring (.closure s) := by
+theorem unitization_range : (unitization s).range = subalgebraOfSubring (.closure s) := by
   have := AddSubgroupClass.zsmulMemClass (S := S)
   rw [unitization, NonUnitalSubalgebra.unitization_range (hSRA := this), Algebra.adjoin_int]
 
@@ -203,9 +214,8 @@ variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A] [StarRing R] [St
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [StarModule R A]
 variable [Semiring C] [StarRing C] [Algebra R C] [StarModule R C]
 
-theorem starLift_range_le
-    {f : A →⋆ₙₐ[R] C} {S : StarSubalgebra R C} :
-    (starLift f).range ≤ S ↔ NonUnitalStarAlgHom.range f ≤ S.toNonUnitalStarSubalgebra := by
+theorem starLift_range_le {f : A →⋆ₙₐ[R] C} {S : StarSubalgebra R C}
+    : (starLift f).range ≤ S ↔ NonUnitalStarAlgHom.range f ≤ S.toNonUnitalStarSubalgebra := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · rintro - ⟨x, rfl⟩
     exact @h (f x) ⟨x, by simp⟩
@@ -213,8 +223,8 @@ theorem starLift_range_le
     induction x with
     | _ r a => simpa using! add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
 
-theorem starLift_range (f : A →⋆ₙₐ[R] C) :
-    (starLift f).range = StarAlgebra.adjoin R (NonUnitalStarAlgHom.range f : Set C) :=
+theorem starLift_range (f : A →⋆ₙₐ[R] C)
+    : (starLift f).range = StarAlgebra.adjoin R (NonUnitalStarAlgHom.range f : Set C) :=
   eq_of_forall_ge_iff fun c ↦ by
     rw [starLift_range_le, StarAlgebra.adjoin_le_iff]
     rfl
@@ -225,11 +235,15 @@ namespace NonUnitalStarSubalgebra
 
 section Semiring
 
-variable {R S A : Type*} [CommSemiring R] [StarRing R] [Semiring A] [StarRing A] [Algebra R A]
-  [StarModule R A] [SetLike S A] [hSA : NonUnitalSubsemiringClass S A] [hSRA : SMulMemClass S R A]
-  [StarMemClass S A] (s : S)
-/-- The natural star `R`-algebra homomorphism from the unitization of a non-unital star subalgebra
-to its `StarAlgebra.adjoin`. -/
+variable
+  {R S A : Type*}
+  [CommSemiring R] [StarRing R] [Semiring A] [StarRing A] [Algebra R A] [StarModule R A]
+  [SetLike S A] [hSA : NonUnitalSubsemiringClass S A] [hSRA : SMulMemClass S R A] [StarMemClass S A]
+  (s : S)
+/--
+The natural star `R`-algebra homomorphism from the unitization of a non-unital star subalgebra
+to its `StarAlgebra.adjoin`.
+-/
 def unitization : Unitization R s →⋆ₐ[R] A :=
   Unitization.starLift <| NonUnitalStarSubalgebraClass.subtype s
 
@@ -247,29 +261,31 @@ end Semiring
 
 section Field
 
-variable {R S A : Type*} [Field R] [StarRing R] [Ring A] [StarRing A] [Algebra R A]
-  [StarModule R A] [SetLike S A] [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A]
-  [StarMemClass S A] (s : S)
+variable
+  {R S A : Type*} [Field R] [StarRing R] [Ring A] [StarRing A] [Algebra R A] [StarModule R A]
+  [SetLike S A] [hSA : NonUnitalSubringClass S A] [hSRA : SMulMemClass S R A] [StarMemClass S A]
+  (s : S)
 
 theorem unitization_injective (h1 : (1 : A) ∉ s) : Function.Injective (unitization s) :=
   AlgHomClass.unitization_injective s h1 (unitization s) fun _ ↦ by simp
 
-/-- If a `NonUnitalStarSubalgebra` over a field does not contain `1`, then its unitization is
-isomorphic to its `StarAlgebra.adjoin`. -/
+/--
+If a `NonUnitalStarSubalgebra` over a field does not contain `1`, then its unitization is
+isomorphic to its `StarAlgebra.adjoin`.
+-/
 @[simps! apply_coe]
-noncomputable def unitizationStarAlgEquiv (h1 : (1 : A) ∉ s) :
-    Unitization R s ≃⋆ₐ[R] StarAlgebra.adjoin R (s : Set A) :=
+noncomputable def unitizationStarAlgEquiv (h1 : (1 : A) ∉ s)
+    : Unitization R s ≃⋆ₐ[R] StarAlgebra.adjoin R (s : Set A) :=
   let starAlgHom : Unitization R s →⋆ₐ[R] StarAlgebra.adjoin R (s : Set A) :=
-    ((unitization s).codRestrict _
-      fun x ↦ (unitization_range s).le <| Set.mem_range_self x)
+    ((unitization s).codRestrict _ fun x ↦ (unitization_range s).le <| Set.mem_range_self x)
   StarAlgEquiv.ofBijective starAlgHom <| by
     refine ⟨?_, fun x ↦ ?_⟩
-    · have := AlgHomClass.unitization_injective s h1 ((StarSubalgebra.subtype _).comp starAlgHom)
-        fun _ ↦ by simp [starAlgHom]
+    · have :=
+        AlgHomClass.unitization_injective s h1 ((StarSubalgebra.subtype _).comp starAlgHom) fun _ ↦
+          by simp [starAlgHom]
       rw [StarAlgHom.coe_comp] at this
       exact this.of_comp
-    · obtain (⟨a, ha⟩ : (x : A) ∈ (unitization s).range) :=
-        (unitization_range s).ge x.property
+    · obtain (⟨a, ha⟩ : (x : A) ∈ (unitization s).range) := (unitization_range s).ge x.property
       exact ⟨a, Subtype.ext ha⟩
 
 end Field

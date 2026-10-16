@@ -23,21 +23,18 @@ instance instNormedAddCommGroup : NormedAddCommGroup ℤ where
     simp only [dist_eq, norm, cast_add, cast_neg]
     rw [abs_sub_comm, neg_add_eq_sub]
 
-@[norm_cast]
-theorem norm_cast_real (m : ℤ) : ‖(m : ℝ)‖ = ‖m‖ :=
-  rfl
+@[norm_cast] theorem norm_cast_real (m : ℤ) : ‖(m : ℝ)‖ = ‖m‖ := rfl
 
-theorem norm_eq_abs (n : ℤ) : ‖n‖ = |(n : ℝ)| :=
-  rfl
+theorem norm_eq_abs (n : ℤ) : ‖n‖ = |(n : ℝ)| := rfl
 
 theorem norm_natCast (n : ℕ) : ‖(n : ℤ)‖ = n := by simp [Int.norm_eq_abs]
 
 theorem _root_.NNReal.natCast_natAbs (n : ℤ) : (n.natAbs : ℝ≥0) = ‖n‖₊ :=
-  NNReal.eq <|
-    calc
-      ((n.natAbs : ℝ≥0) : ℝ) = (n.natAbs : ℤ) := by simp only [Int.cast_natCast, NNReal.coe_natCast]
-      _ = |(n : ℝ)| := by simp only [Int.natCast_natAbs, Int.cast_abs]
-      _ = ‖n‖ := (norm_eq_abs n).symm
+  NNReal.eq <| calc
+    ((n.natAbs : ℝ≥0) : ℝ)
+      = (n.natAbs : ℤ) := by simp only [Int.cast_natCast, NNReal.coe_natCast]
+    _ = |(n : ℝ)| := by simp only [Int.natCast_natAbs, Int.cast_abs]
+    _ = ‖n‖ := (norm_eq_abs n).symm
 
 theorem abs_le_floor_nnreal_iff (z : ℤ) (c : ℝ≥0) : |z| ≤ ⌊c⌋₊ ↔ ‖z‖₊ ≤ c := by
   rw [Int.abs_eq_natAbs, Int.ofNat_le, Nat.le_floor_iff zero_le, NNReal.natCast_natAbs z]

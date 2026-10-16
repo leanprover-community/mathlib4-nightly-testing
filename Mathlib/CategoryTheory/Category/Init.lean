@@ -6,7 +6,6 @@ Authors: Jannis Limperg
 module
 
 public import Aesop
-
 import Mathlib.Init
 
 /-!
@@ -21,8 +20,10 @@ public section
 
 declare_aesop_rule_sets [CategoryTheory]
 
-/-- Option to control whether the category theory library should use `grind` or `aesop`
-in the `cat_disch` tactic, which is widely used as an autoparameter. -/
+/--
+Option to control whether the category theory library should use `grind` or `aesop`
+in the `cat_disch` tactic, which is widely used as an autoparameter.
+-/
 meta register_option mathlib.tactic.category.grind : Bool := {
   defValue := false
   descr := "The category theory library should use `grind` instead of `aesop`."

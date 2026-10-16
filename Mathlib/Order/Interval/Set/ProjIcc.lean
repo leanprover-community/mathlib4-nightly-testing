@@ -30,7 +30,6 @@ We also prove some trivial properties of these maps.
 
 @[expose] public section
 
-
 variable {α β : Type*} [LinearOrder α]
 
 open Function
@@ -49,11 +48,9 @@ def projIcc (a b : α) (h : a ≤ b) (x : α) : Icc a b :=
 
 variable {a b : α} (h : a ≤ b) {x : α}
 
-@[norm_cast]
-theorem coe_projIci (a x : α) : (projIci a x : α) = max a x := rfl
+@[norm_cast] theorem coe_projIci (a x : α) : (projIci a x : α) = max a x := rfl
 
-@[norm_cast]
-theorem coe_projIic (b x : α) : (projIic b x : α) = min b x := rfl
+@[norm_cast] theorem coe_projIic (b x : α) : (projIic b x : α) = min b x := rfl
 
 @[norm_cast]
 theorem coe_projIcc (a b : α) (h : a ≤ b) (x : α) : (projIcc a b h x : α) = max a (min b x) := rfl
@@ -68,19 +65,15 @@ theorem projIcc_of_le_left (hx : x ≤ a) : projIcc a b h x = ⟨a, left_mem_Icc
 theorem projIcc_of_right_le (hx : b ≤ x) : projIcc a b h x = ⟨b, right_mem_Icc.2 h⟩ := by
   simp [projIcc, hx, h]
 
-@[simp]
-theorem projIci_self (a : α) : projIci a a = ⟨a, le_rfl⟩ := projIci_of_le le_rfl
+@[simp] theorem projIci_self (a : α) : projIci a a = ⟨a, le_rfl⟩ := projIci_of_le le_rfl
+
+@[simp] theorem projIic_self (b : α) : projIic b b = ⟨b, le_rfl⟩ := projIic_of_le le_rfl
 
 @[simp]
-theorem projIic_self (b : α) : projIic b b = ⟨b, le_rfl⟩ := projIic_of_le le_rfl
+theorem projIcc_left : projIcc a b h a = ⟨a, left_mem_Icc.2 h⟩ := projIcc_of_le_left h le_rfl
 
 @[simp]
-theorem projIcc_left : projIcc a b h a = ⟨a, left_mem_Icc.2 h⟩ :=
-  projIcc_of_le_left h le_rfl
-
-@[simp]
-theorem projIcc_right : projIcc a b h b = ⟨b, right_mem_Icc.2 h⟩ :=
-  projIcc_of_right_le h le_rfl
+theorem projIcc_right : projIcc a b h b = ⟨b, right_mem_Icc.2 h⟩ := projIcc_of_right_le h le_rfl
 
 theorem projIci_eq_self : projIci a x = ⟨a, le_rfl⟩ ↔ x ≤ a := by simp [projIci, Subtype.ext_iff]
 
@@ -101,11 +94,9 @@ theorem projIic_of_mem (hx : x ∈ Iic b) : projIic b x = ⟨x, hx⟩ := by simp
 theorem projIcc_of_mem (hx : x ∈ Icc a b) : projIcc a b h x = ⟨x, hx⟩ := by
   simp [projIcc, hx.1, hx.2]
 
-@[simp]
-theorem projIci_coe (x : Ici a) : projIci a x = x := by cases x; apply projIci_of_mem
+@[simp] theorem projIci_coe (x : Ici a) : projIci a x = x := by cases x; apply projIci_of_mem
 
-@[simp]
-theorem projIic_coe (x : Iic b) : projIic b x = x := by cases x; apply projIic_of_mem
+@[simp] theorem projIic_coe (x : Iic b) : projIic b x = x := by cases x; apply projIic_of_mem
 
 @[simp]
 theorem projIcc_val (x : Icc a b) : projIcc a b h x = x := by
@@ -125,15 +116,11 @@ theorem projIic_surjective : Surjective (projIic b) := fun x => ⟨x, projIic_co
 
 theorem projIcc_surjective : Surjective (projIcc a b h) := fun x => ⟨x, projIcc_val h x⟩
 
-@[simp]
-theorem range_projIci : range (projIci a) = univ := projIci_surjective.range_eq
+@[simp] theorem range_projIci : range (projIci a) = univ := projIci_surjective.range_eq
 
-@[simp]
-theorem range_projIic : range (projIic a) = univ := projIic_surjective.range_eq
+@[simp] theorem range_projIic : range (projIic a) = univ := projIic_surjective.range_eq
 
-@[simp]
-theorem range_projIcc : range (projIcc a b h) = univ :=
-  (projIcc_surjective h).range_eq
+@[simp] theorem range_projIcc : range (projIcc a b h) = univ := (projIcc_surjective h).range_eq
 
 theorem monotone_projIci : Monotone (projIci a) := fun _ _ => max_le_max le_rfl
 
@@ -152,16 +139,13 @@ theorem strictMonoOn_projIcc : StrictMonoOn (projIcc a b h) (Icc a b) := fun x h
   simpa only [projIcc_of_mem, hx, hy]
 
 /-- Extend a function `[a, ∞) → β` to a map `α → β`. -/
-def IciExtend (f : Ici a → β) : α → β :=
-  f ∘ projIci a
+def IciExtend (f : Ici a → β) : α → β := f ∘ projIci a
 
 /-- Extend a function `(-∞, b] → β` to a map `α → β`. -/
-def IicExtend (f : Iic b → β) : α → β :=
-  f ∘ projIic b
+def IicExtend (f : Iic b → β) : α → β := f ∘ projIic b
 
 /-- Extend a function `[a, b] → β` to a map `α → β`. -/
-def IccExtend {a b : α} (h : a ≤ b) (f : Icc a b → β) : α → β :=
-  f ∘ projIcc a b h
+def IccExtend {a b : α} (h : a ≤ b) (f : Icc a b → β) : α → β := f ∘ projIcc a b h
 
 theorem IciExtend_apply (f : Ici a → β) (x : α) : IciExtend f x = f ⟨max a x, le_max_left _ _⟩ :=
   rfl
@@ -169,8 +153,9 @@ theorem IciExtend_apply (f : Ici a → β) (x : α) : IciExtend f x = f ⟨max a
 theorem IicExtend_apply (f : Iic b → β) (x : α) : IicExtend f x = f ⟨min b x, min_le_left _ _⟩ :=
   rfl
 
-theorem IccExtend_apply (h : a ≤ b) (f : Icc a b → β) (x : α) :
-    IccExtend h f x = f ⟨max a (min b x), le_max_left _ _, max_le h (min_le_left _ _)⟩ := rfl
+theorem IccExtend_apply (h : a ≤ b) (f : Icc a b → β) (x : α)
+    : IccExtend h f x = f ⟨max a (min b x), le_max_left _ _, max_le h (min_le_left _ _)⟩ :=
+  rfl
 
 @[simp]
 theorem range_IciExtend (f : Ici a → β) : range (IciExtend f) = range f := by
@@ -190,21 +175,19 @@ theorem IciExtend_of_le (f : Ici a → β) (hx : x ≤ a) : IciExtend f x = f �
 theorem IicExtend_of_le (f : Iic b → β) (hx : b ≤ x) : IicExtend f x = f ⟨b, le_rfl⟩ :=
   congr(f $(projIic_of_le hx))
 
-theorem IccExtend_of_le_left (f : Icc a b → β) (hx : x ≤ a) :
-    IccExtend h f x = f ⟨a, left_mem_Icc.2 h⟩ :=
+theorem IccExtend_of_le_left (f : Icc a b → β) (hx : x ≤ a)
+    : IccExtend h f x = f ⟨a, left_mem_Icc.2 h⟩ :=
   congr(f $(projIcc_of_le_left h hx))
 
-theorem IccExtend_of_right_le (f : Icc a b → β) (hx : b ≤ x) :
-    IccExtend h f x = f ⟨b, right_mem_Icc.2 h⟩ :=
+theorem IccExtend_of_right_le (f : Icc a b → β) (hx : b ≤ x)
+    : IccExtend h f x = f ⟨b, right_mem_Icc.2 h⟩ :=
   congr(f $(projIcc_of_right_le h hx))
 
 @[simp]
-theorem IciExtend_self (f : Ici a → β) : IciExtend f a = f ⟨a, le_rfl⟩ :=
-  IciExtend_of_le f le_rfl
+theorem IciExtend_self (f : Ici a → β) : IciExtend f a = f ⟨a, le_rfl⟩ := IciExtend_of_le f le_rfl
 
 @[simp]
-theorem IicExtend_self (f : Iic b → β) : IicExtend f b = f ⟨b, le_rfl⟩ :=
-  IicExtend_of_le f le_rfl
+theorem IicExtend_self (f : Iic b → β) : IicExtend f b = f ⟨b, le_rfl⟩ := IicExtend_of_le f le_rfl
 
 @[simp]
 theorem IccExtend_left (f : Icc a b → β) : IccExtend h f a = f ⟨a, left_mem_Icc.2 h⟩ :=
@@ -224,21 +207,21 @@ theorem IccExtend_of_mem (f : Icc a b → β) (hx : x ∈ Icc a b) : IccExtend h
   congr(f $(projIcc_of_mem h hx))
 
 @[simp]
-theorem IciExtend_coe (f : Ici a → β) (x : Ici a) : IciExtend f x = f x :=
-  congr(f $(projIci_coe x))
+theorem IciExtend_coe (f : Ici a → β) (x : Ici a) : IciExtend f x = f x := congr(f $(projIci_coe x))
 
 @[simp]
-theorem IicExtend_coe (f : Iic b → β) (x : Iic b) : IicExtend f x = f x :=
-  congr(f $(projIic_coe x))
+theorem IicExtend_coe (f : Iic b → β) (x : Iic b) : IicExtend f x = f x := congr(f $(projIic_coe x))
 
 @[simp]
 theorem IccExtend_val (f : Icc a b → β) (x : Icc a b) : IccExtend h f x = f x :=
   congr(f $(projIcc_val h x))
 
-/-- If `f : α → β` is a constant both on $(-∞, a]$ and on $[b, +∞)$, then the extension of this
-function from $[a, b]$ to the whole line is equal to the original function. -/
-theorem IccExtend_eq_self (f : α → β) (ha : ∀ x < a, f x = f a) (hb : ∀ x, b < x → f x = f b) :
-    IccExtend h (f ∘ (↑)) = f := by
+/--
+If `f : α → β` is a constant both on $(-∞, a]$ and on $[b, +∞)$, then the extension of this
+function from $[a, b]$ to the whole line is equal to the original function.
+-/
+theorem IccExtend_eq_self (f : α → β) (ha : ∀ x < a, f x = f a) (hb : ∀ x, b < x → f x = f b)
+    : IccExtend h (f ∘ (↑)) = f := by
   ext x
   rcases lt_or_ge x a with hxa | hax
   · simp [IccExtend_of_le_left _ _ hxa.le, ha x hxa]
@@ -262,28 +245,28 @@ protected theorem Monotone.IicExtend {f : Iic b → β} (hf : Monotone f) : Mono
 protected theorem Monotone.IccExtend (hf : Monotone f) : Monotone (IccExtend h f) :=
   hf.comp <| monotone_projIcc h
 
-theorem StrictMono.strictMonoOn_IciExtend {f : Ici a → β} (hf : StrictMono f) :
-    StrictMonoOn (IciExtend f) (Ici a) :=
+theorem StrictMono.strictMonoOn_IciExtend {f : Ici a → β} (hf : StrictMono f)
+    : StrictMonoOn (IciExtend f) (Ici a) :=
   hf.comp_strictMonoOn strictMonoOn_projIci
 
-theorem StrictMono.strictMonoOn_IicExtend {f : Iic b → β} (hf : StrictMono f) :
-    StrictMonoOn (IicExtend f) (Iic b) :=
+theorem StrictMono.strictMonoOn_IicExtend {f : Iic b → β} (hf : StrictMono f)
+    : StrictMonoOn (IicExtend f) (Iic b) :=
   hf.comp_strictMonoOn strictMonoOn_projIic
 
-theorem StrictMono.strictMonoOn_IccExtend (hf : StrictMono f) :
-    StrictMonoOn (IccExtend h f) (Icc a b) :=
+theorem StrictMono.strictMonoOn_IccExtend (hf : StrictMono f)
+    : StrictMonoOn (IccExtend h f) (Icc a b) :=
   hf.comp_strictMonoOn (strictMonoOn_projIcc h)
 
-protected theorem Set.OrdConnected.IciExtend {s : Set (Ici a)} (hs : s.OrdConnected) :
-    {x | IciExtend (· ∈ s) x}.OrdConnected :=
+protected theorem Set.OrdConnected.IciExtend {s : Set (Ici a)} (hs : s.OrdConnected)
+    : {x | IciExtend (· ∈ s) x}.OrdConnected :=
   ⟨fun _ hx _ hy _ hz => hs.out hx hy ⟨max_le_max le_rfl hz.1, max_le_max le_rfl hz.2⟩⟩
 
-protected theorem Set.OrdConnected.IicExtend {s : Set (Iic b)} (hs : s.OrdConnected) :
-    {x | IicExtend (· ∈ s) x}.OrdConnected :=
+protected theorem Set.OrdConnected.IicExtend {s : Set (Iic b)} (hs : s.OrdConnected)
+    : {x | IicExtend (· ∈ s) x}.OrdConnected :=
   ⟨fun _ hx _ hy _ hz => hs.out hx hy ⟨min_le_min le_rfl hz.1, min_le_min le_rfl hz.2⟩⟩
 
-protected theorem Set.OrdConnected.domRestrict (hs : s.OrdConnected) :
-    {x | domRestrict t (· ∈ s) x}.OrdConnected :=
+protected theorem Set.OrdConnected.domRestrict (hs : s.OrdConnected)
+    : {x | domRestrict t (· ∈ s) x}.OrdConnected :=
   ⟨fun _ hx _ hy _ hz => hs.out hx hy hz⟩
 
 @[deprecated (since := "2026-07-19")]

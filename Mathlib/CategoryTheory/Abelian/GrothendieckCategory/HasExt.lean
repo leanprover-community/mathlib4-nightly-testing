@@ -34,8 +34,8 @@ namespace CategoryTheory
 universe w v u
 
 instance IsGrothendieckAbelian.hasExt
-    (C : Type u) [Category.{v} C] [Abelian C] [IsGrothendieckAbelian.{w} C] :
-    HasExt.{w} C :=
+    (C : Type u) [Category.{v} C] [Abelian C] [IsGrothendieckAbelian.{w} C]
+    : HasExt.{w} C :=
   hasExt_of_enoughInjectives _
 
 end CategoryTheory

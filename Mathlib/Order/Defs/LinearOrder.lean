@@ -33,14 +33,13 @@ section LinearOrder
 -/
 
 /-- Default definition of `max`. -/
-def maxDefault [LE α] [DecidableLE α] (a b : α) :=
-  if a ≤ b then b else a
+def maxDefault [LE α] [DecidableLE α] (a b : α) := if a ≤ b then b else a
 
 /-- Default definition of `min`. -/
-def minDefault [LE α] [DecidableLE α] (a b : α) :=
-  if a ≤ b then a else b
+def minDefault [LE α] [DecidableLE α] (a b : α) := if a ≤ b then a else b
 
-/-- This attempts to prove that a given instance of `compare` is equal to `compareOfLessAndEq` by
+/--
+This attempts to prove that a given instance of `compare` is equal to `compareOfLessAndEq` by
 introducing the arguments and trying the following approaches in order:
 
 1. seeing if `rfl` works
@@ -55,8 +54,10 @@ macro "compareOfLessAndEq_rfl" : tactic =>
     (simp only [compare, compareOfLessAndEq]; split_ifs <;> rfl) |
     (induction a <;> induction b <;> simp +decide only)))
 
-/-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
-We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`. -/
+/--
+A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
+We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`.
+-/
 class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where
   /-- A linear order is total. -/
   protected le_total (a b : α) : a ≤ b ∨ b ≤ a
@@ -88,22 +89,27 @@ attribute [instance_reducible, instance 900] LinearOrder.toDecidableEq
 instance : Std.IsLinearOrder α where
   le_total := LinearOrder.le_total
 
-@[to_dual self] lemma le_total : ∀ a b : α, a ≤ b ∨ b ≤ a := LinearOrder.le_total
+@[to_dual self]
+lemma le_total : ∀ a b : α, a ≤ b ∨ b ≤ a := LinearOrder.le_total
 
-@[to_dual self] lemma le_of_not_ge : ¬a ≤ b → b ≤ a := (le_total a b).resolve_left
-@[to_dual self] lemma lt_of_not_ge (h : ¬b ≤ a) : a < b := lt_of_le_not_ge (le_of_not_ge h) h
+@[to_dual self]
+lemma le_of_not_ge : ¬ a ≤ b → b ≤ a := (le_total a b).resolve_left
+@[to_dual self]
+lemma lt_of_not_ge (h : ¬ b ≤ a) : a < b := lt_of_le_not_ge (le_of_not_ge h) h
 
-@[to_dual self] lemma lt_or_ge (a b : α) : a < b ∨ b ≤ a :=
+@[to_dual self]
+lemma lt_or_ge (a b : α) : a < b ∨ b ≤ a :=
   if hba : b ≤ a then Or.inr hba else Or.inl <| lt_of_not_ge hba
 
-@[to_dual self] lemma le_or_gt (a b : α) : a ≤ b ∨ b < a := (lt_or_ge b a).symm
+@[to_dual self]
+lemma le_or_gt (a b : α) : a ≤ b ∨ b < a := (lt_or_ge b a).symm
 
 @[to_dual gt_trichotomy]
 lemma lt_trichotomy (a b : α) : a < b ∨ a = b ∨ b < a :=
   (lt_or_ge a b).imp_right (fun h ↦ (Decidable.lt_or_eq_of_le' h).symm)
 
 @[to_dual self]
-lemma le_of_not_gt (h : ¬b < a) : a ≤ b := (le_or_gt a b).resolve_right h
+lemma le_of_not_gt (h : ¬ b < a) : a ≤ b := (le_or_gt a b).resolve_right h
 
 @[to_dual gt_or_lt_of_ne]
 lemma lt_or_gt_of_ne (h : a ≠ b) : a < b ∨ b < a :=
@@ -112,18 +118,22 @@ lemma lt_or_gt_of_ne (h : a ≠ b) : a < b ∨ b < a :=
 @[to_dual ne_iff_gt_or_lt]
 lemma ne_iff_lt_or_gt : a ≠ b ↔ a < b ∨ b < a := ⟨lt_or_gt_of_ne, (Or.elim · ne_of_lt ne_of_gt)⟩
 
-@[to_dual self] lemma lt_iff_not_ge : a < b ↔ ¬b ≤ a := ⟨not_le_of_gt, lt_of_not_ge⟩
+@[to_dual self]
+lemma lt_iff_not_ge : a < b ↔ ¬ b ≤ a := ⟨not_le_of_gt, lt_of_not_ge⟩
 
-@[simp, push, to_dual self] lemma not_lt : ¬a < b ↔ b ≤ a := ⟨le_of_not_gt, not_lt_of_ge⟩
-@[simp, push, to_dual self] lemma not_le : ¬a ≤ b ↔ b < a := lt_iff_not_ge.symm
+@[simp, push, to_dual self]
+lemma not_lt : ¬ a < b ↔ b ≤ a := ⟨le_of_not_gt, not_lt_of_ge⟩
+@[simp, push, to_dual self]
+lemma not_le : ¬ a ≤ b ↔ b < a := lt_iff_not_ge.symm
 
 @[to_dual eq_or_lt_of_not_gt]
-lemma eq_or_gt_of_not_lt (h : ¬a < b) : a = b ∨ b < a :=
+lemma eq_or_gt_of_not_lt (h : ¬ a < b) : a = b ∨ b < a :=
   if h₁ : a = b then Or.inl h₁ else Or.inr (lt_of_not_ge fun hge => h (lt_of_le_of_ne hge h₁))
 
 @[to_dual self]
-theorem le_imp_le_of_lt_imp_lt {α β} [Preorder α] [LinearOrder β] {a b : α} {c d : β}
-    (H : d < c → b < a) (h : a ≤ b) : c ≤ d :=
+theorem le_imp_le_of_lt_imp_lt
+    {α β} [Preorder α] [LinearOrder β] {a b : α} {c d : β} (H : d < c → b < a) (h : a ≤ b)
+    : c ≤ d :=
   le_of_not_gt fun h' => not_le_of_gt (H h') h
 
 @[grind =]
@@ -131,15 +141,17 @@ lemma min_def (a b : α) : min a b = if a ≤ b then a else b := LinearOrder.min
 @[grind =]
 lemma max_def (a b : α) : max a b = if a ≤ b then b else a := LinearOrder.max_def a b
 
-theorem min_ind {motive : α → Prop} (ha : a ≤ b → motive a) (hb : b ≤ a → motive b) :
-    motive (min a b) := by
-  rw [min_def]; split_ifs with h
+theorem min_ind {motive : α → Prop} (ha : a ≤ b → motive a) (hb : b ≤ a → motive b)
+    : motive (min a b) := by
+  rw [min_def]
+  split_ifs with h
   exacts [ha h, hb (le_of_not_ge h)]
 
 @[to_dual existing (attr := elab_as_elim)]
-theorem max_ind {motive : α → Prop} (ha : b ≤ a → motive a) (hb : a ≤ b → motive b) :
-    motive (max a b) := by
-  rw [max_def]; split_ifs with h
+theorem max_ind {motive : α → Prop} (ha : b ≤ a → motive a) (hb : a ≤ b → motive b)
+    : motive (max a b) := by
+  rw [max_def]
+  split_ifs with h
   exacts [hb h, ha (le_of_not_ge h)]
 
 @[to_dual le_min_iff]
@@ -189,13 +201,12 @@ lemma min_assoc (a b c : α) : min (min a b) c = min a (min b c) := by
 lemma min_left_comm (a b c : α) : min a (min b c) = min b (min a c) := by
   rw [← min_assoc, min_comm a, min_assoc]
 
-@[to_dual (attr := simp)] lemma min_self (a : α) : min a a = a := by rw [min_def, ite_id]
+@[to_dual (attr := simp)]
+lemma min_self (a : α) : min a a = a := by rw [min_def, ite_id]
 
-@[to_dual]
-lemma min_eq_left (h : a ≤ b) : min a b = a := (eq_min le_rfl h (fun h _ ↦ h)).symm
+@[to_dual] lemma min_eq_left (h : a ≤ b) : min a b = a := (eq_min le_rfl h (fun h _ ↦ h)).symm
 
-@[to_dual]
-lemma min_eq_right (h : b ≤ a) : min a b = b := min_comm b a ▸ min_eq_left h
+@[to_dual] lemma min_eq_right (h : b ≤ a) : min a b = b := min_comm b a ▸ min_eq_left h
 
 @[to_dual] lemma min_eq_left_of_lt (h : a < b) : min a b = a := min_eq_left (le_of_lt h)
 @[to_dual] lemma min_eq_right_of_lt (h : b < a) : min a b = b := min_eq_right (le_of_lt h)
@@ -235,7 +246,8 @@ lemma compare_iff (a b : α) {o : Ordering} : compare a b = o ↔ o.Compares a b
 
 theorem cmp_eq_compare (a b : α) : cmp a b = compare a b := by
   refine ((compare_iff ..).2 ?_).symm
-  unfold cmp cmpUsing; split_ifs with h1 h2
+  unfold cmp cmpUsing
+  split_ifs with h1 h2
   · exact h1
   · exact h2
   · exact le_antisymm (not_lt.1 h2) (not_lt.1 h1)
@@ -245,8 +257,8 @@ theorem cmp_eq_compareOfLessAndEq (a b : α) : cmp a b = compareOfLessAndEq a b 
 
 instance : Std.LawfulBCmp (compare (α := α)) where
   eq_swap {a b} := by
-    cases _ : compare b a <;>
-      simp_all [Ordering.swap, compare_eq_iff_eq, compare_lt_iff_lt, compare_gt_iff_gt]
+    cases _ : compare b a
+      <;> simp_all [Ordering.swap, compare_eq_iff_eq, compare_lt_iff_lt, compare_gt_iff_gt]
   isLE_trans h₁ h₂ := by
     simp only [← Ordering.ne_gt_iff_isLE, compare_le_iff_le] at *
     exact le_trans h₁ h₂
@@ -256,9 +268,11 @@ instance : Std.LawfulBCmp (compare (α := α)) where
 
 end Ord
 
-/-- The category of linear orders.
+/--
+The category of linear orders.
 
-This will get reused to define `OrderType`. -/
+This will get reused to define `OrderType`.
+-/
 structure LinOrd where
   /-- Construct a bundled `LinOrd` from the underlying type and typeclass. -/
   of ::
@@ -272,8 +286,7 @@ initialize_simps_projections LinOrd (carrier → coe, -str)
 
 namespace LinOrd
 
-instance : CoeSort LinOrd (Type _) :=
-  ⟨LinOrd.carrier⟩
+instance : CoeSort LinOrd (Type _) := ⟨LinOrd.carrier⟩
 
 attribute [coe] LinOrd.carrier
 

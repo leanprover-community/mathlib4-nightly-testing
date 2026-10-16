@@ -30,8 +30,10 @@ namespace SimpleGraph
 variable {V W : Type*} {G : SimpleGraph V} {H : SimpleGraph W} {E : Type*} [MetricSpace E]
 
 variable (G E) in
-/-- A unit-distance embedding of a graph into a metric space is a vertex embedding
-such that adjacent vertices are at distance 1 from each other. -/
+/--
+A unit-distance embedding of a graph into a metric space is a vertex embedding
+such that adjacent vertices are at distance 1 from each other.
+-/
 structure UnitDistEmbedding where
   /-- The embedding itself (position of vertices) -/
   p : V ↪ E
@@ -41,13 +43,13 @@ structure UnitDistEmbedding where
 namespace UnitDistEmbedding
 
 /-- An injection into the metric space provides a unit-distance embedding of the empty graph. -/
-@[simps]
-def bot (p : V ↪ E) : (⊥ : SimpleGraph V).UnitDistEmbedding E :=
-  ⟨p, by simp⟩
+@[simps] def bot (p : V ↪ E) : (⊥ : SimpleGraph V).UnitDistEmbedding E := ⟨p, by simp⟩
 
 variable (G) in
-/-- Any graph on a subsingleton vertex type has a unit-distance embedding, provided the metric space
-is nonempty. -/
+/--
+Any graph on a subsingleton vertex type has a unit-distance embedding, provided the metric space
+is nonempty.
+-/
 @[simps]
 def subsingleton [Subsingleton V] (x : E) : G.UnitDistEmbedding E where
   p := ⟨fun _ ↦ x, Function.injective_of_subsingleton _⟩
@@ -64,14 +66,10 @@ def copy (f : H.Copy G) : H.UnitDistEmbedding E where
   unit_dist ha := U.unit_dist (f.toHom.map_adj ha)
 
 /-- `U.copy` specialised to graph embeddings. -/
-@[simps!]
-def embed (f : H ↪g G) : H.UnitDistEmbedding E :=
-  U.copy f.toCopy
+@[simps!] def embed (f : H ↪g G) : H.UnitDistEmbedding E := U.copy f.toCopy
 
 /-- Transfer a unit-distance embedding across a graph isomorphism. -/
-@[simps!]
-def iso (e : G ≃g H) : H.UnitDistEmbedding E :=
-  U.copy e.symm.toCopy
+@[simps!] def iso (e : G ≃g H) : H.UnitDistEmbedding E := U.copy e.symm.toCopy
 
 end UnitDistEmbedding
 

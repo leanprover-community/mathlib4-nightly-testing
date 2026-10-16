@@ -26,11 +26,9 @@ namespace AlexDisc
 
 attribute [instance] is_alexandrovDiscrete
 
-instance : CoeSort AlexDisc (Type _) :=
-  ⟨fun X => X.toTopCat⟩
+instance : CoeSort AlexDisc (Type _) := ⟨fun X => X.toTopCat⟩
 
-instance category : Category AlexDisc :=
-  inferInstanceAs <| Category (InducedCategory _ toTopCat)
+instance category : Category AlexDisc := inferInstanceAs <| Category (InducedCategory _ toTopCat)
 
 instance concreteCategory : ConcreteCategory AlexDisc (C(·, ·)) :=
   inferInstanceAs <| ConcreteCategory (InducedCategory _ toTopCat) _
@@ -47,7 +45,6 @@ instance forgetToTop_faithful : (forget₂ AlexDisc TopCat).Faithful where
     ext x
     congrm $h x
 
-
 /-- Construct a bundled `AlexDisc` from the underlying topological space. -/
 abbrev of (X : Type*) [TopologicalSpace X] [AlexandrovDiscrete X] : AlexDisc where
   toTopCat := ↧X
@@ -59,8 +56,10 @@ meta def delabOf : Delab := CategoryTheory.delabOf
 
 lemma coe_of (α : Type*) [TopologicalSpace α] [AlexandrovDiscrete α] : ↥(of α) = α := rfl
 
-@[simp] lemma forgetToTop_of (α : Type*) [TopologicalSpace α] [AlexandrovDiscrete α] :
-    (forget₂ AlexDisc TopCat).obj (of α) = ↧α := rfl
+@[simp]
+lemma forgetToTop_of (α : Type*) [TopologicalSpace α] [AlexandrovDiscrete α]
+    : (forget₂ AlexDisc TopCat).obj (of α) = ↧α :=
+  rfl
 
 @[simp] lemma coe_forgetToTop (X : AlexDisc) : ↥((forget₂ _ TopCat).obj X) = X := rfl
 
@@ -80,7 +79,9 @@ def alexDiscEquivPreord : AlexDisc ≌ Preord where
   functor := forget₂ _ _ ⋙ topToPreord
   inverse.obj X := ↧(WithUpperSet X)
   inverse.map f := ConcreteCategory.ofHom (WithUpperSet.map f.hom)
-  unitIso := NatIso.ofComponents fun X ↦ AlexDisc.Iso.mk <| by
-    dsimp; exact homeoWithUpperSetTopologyorderIso X
-  counitIso := NatIso.ofComponents fun X ↦ Preord.Iso.mk <| by
-    dsimp; exact (orderIsoSpecializationWithUpperSetTopology X).symm
+  unitIso :=
+    NatIso.ofComponents fun X ↦
+      AlexDisc.Iso.mk <| by dsimp; exact homeoWithUpperSetTopologyorderIso X
+  counitIso :=
+    NatIso.ofComponents fun X ↦
+      Preord.Iso.mk <| by dsimp; exact (orderIsoSpecializationWithUpperSetTopology X).symm

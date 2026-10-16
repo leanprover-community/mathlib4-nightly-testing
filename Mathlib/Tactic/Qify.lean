@@ -75,17 +75,17 @@ example (a b c : ℤ) (h : a / b = c) (hab : b ∣ a) (hb : b ≠ 0) : a = c * b
 syntax (name := qify) "qify" (simpArgs)? (location)? : tactic
 
 macro_rules
-| `(tactic| qify $[[$simpArgs,*]]? $[at $location]?) =>
-  let args := simpArgs.map (·.getElems) |>.getD #[]
-  `(tactic|
-    simp -decide only [zify_simps, qify_simps, push_cast, $args,*]
-      $[at $location]?)
+  | `(tactic| qify $[[$simpArgs,*]]? $[at $location]?) =>
+    let args := simpArgs.map (·.getElems) |>.getD #[]
+    `(tactic|
+      simp -decide only [zify_simps, qify_simps, push_cast, $args,*]
+        $[at $location]?)
 
 @[qify_simps] lemma intCast_eq (a b : ℤ) : a = b ↔ (a : ℚ) = (b : ℚ) := by simp only [Int.cast_inj]
 @[qify_simps] lemma intCast_le (a b : ℤ) : a ≤ b ↔ (a : ℚ) ≤ (b : ℚ) := Int.cast_le.symm
 @[qify_simps] lemma intCast_lt (a b : ℤ) : a < b ↔ (a : ℚ) < (b : ℚ) := Int.cast_lt.symm
-@[qify_simps] lemma intCast_ne (a b : ℤ) : a ≠ b ↔ (a : ℚ) ≠ (b : ℚ) := by
-  simp only [ne_eq, Int.cast_inj]
+@[qify_simps]
+lemma intCast_ne (a b : ℤ) : a ≠ b ↔ (a : ℚ) ≠ (b : ℚ) := by simp only [ne_eq, Int.cast_inj]
 
 end Qify
 

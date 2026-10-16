@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.InvariantBasisNumber
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-
 import Mathlib.LinearAlgebra.Matrix.ToLin
 
 /-!
@@ -39,17 +38,17 @@ variable {A : Matrix n n R}
 
 namespace Matrix
 
-lemma isDetpBalanced_iff_sub_mul_det_eq_zero {R : Type*} [CommRing R] {A : Matrix n n R} {a b : R} :
-    A.IsDetpBalanced a b ↔ (a - b) * A.det = 0 := by
+lemma isDetpBalanced_iff_sub_mul_det_eq_zero {R : Type*} [CommRing R] {A : Matrix n n R} {a b : R}
+    : A.IsDetpBalanced a b ↔ (a - b) * A.det = 0 := by
   grind [IsDetpBalanced, det_eq_detp_sub_detp]
 
-lemma nonsingular_iff_det_mem_nonZeroDivisors {R : Type*} [CommRing R]
-    {A : Matrix n n R} : A.Nonsingular ↔ A.det ∈ nonZeroDivisors R := by
+lemma nonsingular_iff_det_mem_nonZeroDivisors {R : Type*} [CommRing R] {A : Matrix n n R}
+    : A.Nonsingular ↔ A.det ∈ nonZeroDivisors R := by
   simp_rw [Nonsingular, isDetpBalanced_iff_sub_mul_det_eq_zero, mem_nonZeroDivisors_iff_right]
   exact ⟨fun h x eq ↦ h x 0 (by simpa), fun h a b eq ↦ sub_eq_zero.mp <| h _ (by simpa)⟩
 
-lemma nonsingular_iff_det_ne_zero {R : Type*} [CommRing R] [IsDomain R]
-    {A : Matrix n n R} : A.Nonsingular ↔ A.det ≠ 0 := by
+lemma nonsingular_iff_det_ne_zero {R : Type*} [CommRing R] [IsDomain R] {A : Matrix n n R}
+    : A.Nonsingular ↔ A.det ≠ 0 := by
   rw [nonsingular_iff_det_mem_nonZeroDivisors, mem_nonZeroDivisors_iff_ne_zero]
 
 /-- If the columns of a square matrix are linearly independent, then the matrix is nonsingular. -/
@@ -64,14 +63,17 @@ theorem Nonsingular.of_linearIndependent_col (ind : LinearIndependent R A.col) :
   obtain ⟨j₀, h₀⟩ := by simpa [Function.Surjective] using hg
   let D := A.submatrix f g
   let Aj (j : Fin r) := A.submatrix f (Function.update g j j₀)
-  let v (a b : R) : n →₀ R := ∑ j, .single (g j) (a * (Aj j).detp (-1) + b * (Aj j).detp 1) +
-    .single j₀ (a * D.detp 1 + b * D.detp (-1))
+  let v (a b : R) : n →₀ R :=
+    ∑ j, .single (g j) (a * (Aj j).detp (-1) + b * (Aj j).detp 1)
+      + .single j₀ (a * D.detp 1 + b * D.detp (-1))
   suffices h : v a b = v b a by simpa [IsDetpBalanced, v, h₀] using congr($h j₀)
   refine ind (funext fun i ↦ ?_)
   let Ai := A.submatrix (Option.rec i f) (Option.rec j₀ g)
   have (s : ℤˣ) : Ai.detp s = ∑ j, (Aj j).detp (-s) * A.col (g j) i + D.detp s * A.col j₀ i := by
-    simp_rw [mul_comm]; rw [detp_option_expand_row_none, add_comm]
-    congr!; aesop (add simp Function.update)
+    simp_rw [mul_comm]
+    rw [detp_option_expand_row_none, add_comm]
+    congr!
+    aesop (add simp Function.update)
   have (a b : R) : (v a b).linearCombination R A.col i = a * Ai.detp 1 + b * Ai.detp (-1) := by
     simp [v, Finset.sum_add_distrib, mul_assoc, ← Finset.mul_sum, add_add_add_comm, mul_add, this]
   simpa [this, IsDetpBalanced, ← submatrix_submatrix] using
@@ -88,15 +90,23 @@ theorem Nonsingular.of_rightRegular (h : IsRightRegular A) : A.Nonsingular :=
 
 variable [IsCancelAdd R]
 
-/-- If a matrix over a commutative semiring with cancellative addition is nonsingular, then its
-columns are linearly independent. Generalizes `Matrix.linearIndependent_cols_of_det_ne_zero`. -/
+/--
+If a matrix over a commutative semiring with cancellative addition is nonsingular, then its
+columns are linearly independent. Generalizes `Matrix.linearIndependent_cols_of_det_ne_zero`.
+-/
 theorem Nonsingular.linearIndependent_col (hA : A.Nonsingular) : LinearIndependent R A.col :=
-  mulVec_injective_iff.mp fun x y eq ↦ funext fun k ↦ hA _ _ <| show _ = _ by
-    have h v : ((A.adjp 1 * A + A.detp (-1) • 1) *ᵥ v) k =
-        ((A.adjp (-1) * A + A.detp 1 • 1) *ᵥ v) k := by
-      congr 1; ext k i
-      obtain (h | h) := eq_or_ne k i <;> simp [adjp_mul_apply_eq, add_comm, adjp_mul_apply_ne, h]
-    simp [add_mulVec, smul_mulVec, ← mulVec_mulVec] at h; grind
+  mulVec_injective_iff.mp fun x y eq ↦
+    funext fun k ↦
+      hA _ _ <| show _ = _ by
+        have h v
+            : ((A.adjp 1 * A + A.detp (-1) • 1) *ᵥ v) k
+              = ((A.adjp (-1) * A + A.detp 1 • 1) *ᵥ v) k := by
+          congr 1
+          ext k i
+          obtain (h | h) := eq_or_ne k i
+            <;> simp [adjp_mul_apply_eq, add_comm, adjp_mul_apply_ne, h]
+        simp [add_mulVec, smul_mulVec, ← mulVec_mulVec] at h
+        grind
 
 theorem Nonsingular.linearIndependent_row (hA : A.Nonsingular) : LinearIndependent R A.row :=
   hA.transpose.linearIndependent_col
@@ -113,15 +123,17 @@ theorem isLeftRegular_iff_nonsingular : IsLeftRegular A ↔ A.Nonsingular := by
 theorem isRightRegular_iff_nonsingular : IsRightRegular A ↔ A.Nonsingular := by
   rw [isRightRegular_iff_vecMul_injective, vecMul_injective_iff, linearIndependent_row_iff]
 
-lemma Nonsingular.mul {B : Matrix n n R} (hA : A.Nonsingular) (hB : B.Nonsingular) :
-    (A * B).Nonsingular := by
+lemma Nonsingular.mul {B : Matrix n n R} (hA : A.Nonsingular) (hB : B.Nonsingular)
+    : (A * B).Nonsingular := by
   rw [← isLeftRegular_iff_nonsingular] at *
   exact hA.mul hB
 
-lemma nonsingular_mul_iff {A B : Matrix n n R} :
-    (A * B).Nonsingular ↔ A.Nonsingular ∧ B.Nonsingular where
-  mp h := ⟨isRightRegular_iff_nonsingular.mp <| .of_mul <| isRightRegular_iff_nonsingular.mpr h,
-    isLeftRegular_iff_nonsingular.mp <| .of_mul <| isLeftRegular_iff_nonsingular.mpr h⟩
+lemma nonsingular_mul_iff {A B : Matrix n n R}
+    : (A * B).Nonsingular ↔ A.Nonsingular ∧ B.Nonsingular where
+  mp h := ⟨
+    isRightRegular_iff_nonsingular.mp <| .of_mul <| isRightRegular_iff_nonsingular.mpr h,
+    isLeftRegular_iff_nonsingular.mp <| .of_mul <| isLeftRegular_iff_nonsingular.mpr h
+  ⟩
   mpr h := h.1.mul h.2
 
 lemma Nonsingular.pow (hA : A.Nonsingular) : ∀ k, (A ^ k).Nonsingular
@@ -130,31 +142,36 @@ lemma Nonsingular.pow (hA : A.Nonsingular) : ∀ k, (A ^ k).Nonsingular
 
 omit [DecidableEq n] in
 theorem isLeftRegular_iff_isRightRegular : IsLeftRegular A ↔ IsRightRegular A := by
-  classical rw [isLeftRegular_iff_nonsingular, isRightRegular_iff_nonsingular]
+  classical
+  rw [isLeftRegular_iff_nonsingular, isRightRegular_iff_nonsingular]
 
 omit [DecidableEq n] [Fintype n] in
-/-- https://mathoverflow.net/questions/511862/transpose-symmetry-of-injectivity-of-linear-maps-over-semirings
-asks whether this is still true without `IsCancelAdd R`. -/
-theorem linearIndependent_col_iff_row [Finite n] :
-    LinearIndependent R A.col ↔ LinearIndependent R A.row := by
+/--
+https://mathoverflow.net/questions/511862/transpose-symmetry-of-injectivity-of-linear-maps-over-semirings
+asks whether this is still true without `IsCancelAdd R`.
+-/
+theorem linearIndependent_col_iff_row [Finite n]
+    : LinearIndependent R A.col ↔ LinearIndependent R A.row := by
   have := Fintype.ofFinite
-  classical rw [linearIndependent_col_iff, linearIndependent_row_iff]
+  classical
+  rw [linearIndependent_col_iff, linearIndependent_row_iff]
 
 end Matrix
 
 open Matrix
 
 /-- A nontrivial commutative semiring satisfies the strong rank condition. -/
-instance (priority := 100) CommSemiring.strongRankCondition_of_nontrivial [Nontrivial R] :
-    StrongRankCondition R where
+instance (priority := 100) CommSemiring.strongRankCondition_of_nontrivial [Nontrivial R]
+    : StrongRankCondition R where
   le_of_fin_injective {n m} f hf := by
     let g : (Fin m → R) →ₗ[R] (Fin n → R) := .pi fun i ↦ if h : i < m then .proj ⟨i, h⟩ else 0
     by_contra! hnm
-    have hg : Function.Injective g := fun x y eq ↦ funext fun i ↦ by
-      simpa [g] using congr($eq ⟨i, i.prop.trans hnm⟩)
+    have hg : Function.Injective g := fun x y eq ↦
+      funext fun i ↦ by simpa [g] using congr($eq ⟨i, i.prop.trans hnm⟩)
     let A := (g ∘ₗ f).toMatrix'
-    have hA : A.Nonsingular := .of_linearIndependent_col <| mulVec_injective_iff.mp <| by
-      convert hg.comp hf; ext; simp [A, g]
+    have hA : A.Nonsingular :=
+      .of_linearIndependent_col <| mulVec_injective_iff.mp <| by
+        convert hg.comp hf; ext; simp [A, g]
     have : A.row ⟨m, hnm⟩ = 0 := by ext; simp [A, g]
     exact not_subsingleton R
       ⟨by simpa [Nonsingular, IsDetpBalanced, detp_eq_of_row_eq_zero _ this] using hA⟩

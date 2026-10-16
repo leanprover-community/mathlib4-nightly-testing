@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.FieldTheory.IntermediateField.Basic
-
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Topology.Algebra.UniformRing
@@ -18,7 +17,6 @@ import Mathlib.Topology.Algebra.UniformRing
 
 public section
 
-
 section ComplexSubfield
 
 open Complex Set
@@ -26,8 +24,8 @@ open Complex Set
 open scoped ComplexConjugate
 
 /-- The only closed subfields of `ℂ` are `ℝ` and `ℂ`. -/
-theorem Complex.subfield_eq_of_closed {K : Subfield ℂ} (hc : IsClosed (K : Set ℂ)) :
-    K = ofRealHom.fieldRange ∨ K = ⊤ := by
+theorem Complex.subfield_eq_of_closed {K : Subfield ℂ} (hc : IsClosed (K : Set ℂ))
+    : K = ofRealHom.fieldRange ∨ K = ⊤ := by
   suffices range (ofReal : ℝ → ℂ) ⊆ K by
     rw [range_subset_iff, ← coe_algebraMap] at this
     have :=
@@ -47,19 +45,21 @@ theorem Complex.subfield_eq_of_closed {K : Subfield ℂ} (hc : IsClosed (K : Set
   simp only [image_univ]
   rfl
 
-/-- Let `K` a subfield of `ℂ` and let `ψ : K →+* ℂ` a ring homomorphism. Assume that `ψ` is uniform
+/--
+Let `K` a subfield of `ℂ` and let `ψ : K →+* ℂ` a ring homomorphism. Assume that `ψ` is uniform
 continuous, then `ψ` is either the inclusion map or the composition of the inclusion map with the
-complex conjugation. -/
-theorem Complex.uniformContinuous_ringHom_eq_id_or_conj (K : Subfield ℂ) {ψ : K →+* ℂ}
-    (hc : UniformContinuous ψ) : ψ.toFun = K.subtype ∨ ψ.toFun = conj ∘ K.subtype := by
+complex conjugation.
+-/
+theorem Complex.uniformContinuous_ringHom_eq_id_or_conj
+    (K : Subfield ℂ) {ψ : K →+* ℂ} (hc : UniformContinuous ψ)
+    : ψ.toFun = K.subtype ∨ ψ.toFun = conj ∘ K.subtype := by
   let : IsTopologicalDivisionRing ℂ := IsTopologicalDivisionRing.mk
   let : IsTopologicalRing K.topologicalClosure :=
     Subring.instIsTopologicalRing K.topologicalClosure.toSubring
   set ι : K → K.topologicalClosure := ⇑(Subfield.inclusion K.le_topologicalClosure)
-  have ui : IsUniformInducing ι :=
-    ⟨by
-      rw [uniformity_subtype, uniformity_subtype, Filter.comap_comap]
-      congr ⟩
+  have ui : IsUniformInducing ι := ⟨by
+    rw [uniformity_subtype, uniformity_subtype, Filter.comap_comap]
+    congr⟩
   let di := ui.isDenseInducing (?_ : DenseRange ι)
   · -- extψ : closure(K) →+* ℂ is the extension of ψ : K →+* ℂ
     let extψ := IsDenseInducing.extendRingHom ui di.dense hc
@@ -101,12 +101,13 @@ theorem Complex.uniformContinuous_ringHom_eq_id_or_conj (K : Subfield ℂ) {ψ :
         ext1 z
         convert! congr($h z) using 1
         exact (IsDenseInducing.extend_eq di hc.continuous z).symm
-  · let j : { x // x ∈ closure (id '' K) } → (K.topologicalClosure : Set ℂ) :=
-      fun x =>
-      ⟨x, by
+  · let j : {x // x ∈ closure (id '' K)} → (K.topologicalClosure : Set ℂ) := fun x => ⟨
+      x,
+      by
         convert x.prop
         simp only [id, Set.image_id']
-        rfl ⟩
+        rfl
+    ⟩
     convert!
       DenseRange.comp (Function.Surjective.denseRange _) (IsDenseEmbedding.id.subtype (· ∈ K)).dense
         (by fun_prop : Continuous j)

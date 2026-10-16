@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Order.CompleteLattice.Defs
 public import Mathlib.Order.UpperLower.Basic
-
 import Mathlib.Data.Set.Lattice.Bounded
 
 /-!
@@ -33,40 +32,52 @@ open Set
 section Preorder
 variable [Preorder α]
 
-/-- A predicate for a set which is closed under directed suprema of nonempty sets.
-This is the complement of a `DirSupInaccOn` set. -/
+/--
+A predicate for a set which is closed under directed suprema of nonempty sets.
+This is the complement of a `DirSupInaccOn` set.
+-/
 def DirSupClosedOn (D : Set (Set α)) (s : Set α) : Prop :=
   ∀ ⦃d⦄, d ∈ D → d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a⦄, IsLUB d a → a ∈ s
 
-/-- A predicate for a set which is inaccessible by directed suprema of nonempty sets in `D`.
-This is the complement of a `DirSupClosedOn` set. -/
+/--
+A predicate for a set which is inaccessible by directed suprema of nonempty sets in `D`.
+This is the complement of a `DirSupClosedOn` set.
+-/
 def DirSupInaccOn (D : Set (Set α)) (s : Set α) : Prop :=
   ∀ ⦃d⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty
 
-/-- A predicate for a set which is closed under directed suprema of nonempty sets.
-This is the complement of a `DirSupInacc` set. -/
+/--
+A predicate for a set which is closed under directed suprema of nonempty sets.
+This is the complement of a `DirSupInacc` set.
+-/
 def DirSupClosed (s : Set α) : Prop :=
   ∀ ⦃d⦄, d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a⦄, IsLUB d a → a ∈ s
 
-/-- A predicate for a set which is inaccessible by directed suprema of nonempty sets.
-This is the complement of a `DirSupClosed` set. -/
+/--
+A predicate for a set which is inaccessible by directed suprema of nonempty sets.
+This is the complement of a `DirSupClosed` set.
+-/
 def DirSupInacc (s : Set α) : Prop :=
   ∀ ⦃d⦄, d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty
 
-@[simp] lemma dirSupClosedOn_univ : DirSupClosedOn univ s ↔ DirSupClosed s := by
+@[simp]
+lemma dirSupClosedOn_univ : DirSupClosedOn univ s ↔ DirSupClosed s := by
   simp [DirSupClosedOn, DirSupClosed]
 
-@[simp] lemma dirSupInaccOn_univ : DirSupInaccOn univ s ↔ DirSupInacc s := by
+@[simp]
+lemma dirSupInaccOn_univ : DirSupInaccOn univ s ↔ DirSupInacc s := by
   simp [DirSupInaccOn, DirSupInacc]
 
 @[simp] lemma DirSupClosed.dirSupClosedOn : DirSupClosed s → DirSupClosedOn D s := @fun h _ _ ↦ @h _
 @[simp] lemma DirSupInacc.dirSupInaccOn : DirSupInacc s → DirSupInaccOn D s := @fun h _ _ ↦ @h _
 
-@[simp] theorem DirSupClosed.of_isEmpty [IsEmpty α] {s : Set α} : DirSupClosed s :=
-  fun _ _ ⟨a, _⟩ ↦ isEmptyElim a
+@[simp]
+theorem DirSupClosed.of_isEmpty [IsEmpty α] {s : Set α} : DirSupClosed s := fun _ _ ⟨a, _⟩ ↦
+  isEmptyElim a
 
-@[simp] theorem DirSupInacc.of_isEmpty [IsEmpty α] {s : Set α} : DirSupInacc s :=
-  fun _ ⟨a, _⟩ ↦ isEmptyElim a
+@[simp]
+theorem DirSupInacc.of_isEmpty [IsEmpty α] {s : Set α} : DirSupInacc s := fun _ ⟨a, _⟩ ↦
+  isEmptyElim a
 
 theorem DirSupClosedOn.of_isEmpty [IsEmpty α] {s : Set α} : DirSupClosedOn D s := by simp
 theorem DirSupInaccOn.of_isEmpty [IsEmpty α] {s : Set α} : DirSupInaccOn D s := by simp
@@ -76,8 +87,8 @@ lemma DirSupClosedOn.mono (hD : D₁ ⊆ D₂) (hf : DirSupClosedOn D₂ s) : Di
   fun _ a ↦ hf (hD a)
 
 @[gcongr]
-lemma DirSupInaccOn.mono (hD : D₁ ⊆ D₂) (hf : DirSupInaccOn D₂ s) : DirSupInaccOn D₁ s :=
-  fun _ a ↦ hf (hD a)
+lemma DirSupInaccOn.mono (hD : D₁ ⊆ D₂) (hf : DirSupInaccOn D₂ s) : DirSupInaccOn D₁ s := fun _ a ↦
+  hf (hD a)
 
 @[simp]
 lemma dirSupClosedOn_compl : DirSupClosedOn D sᶜ ↔ DirSupInaccOn D s := by
@@ -111,47 +122,46 @@ theorem DirSupInaccOn.empty : DirSupInaccOn D ∅ := by simp
 theorem DirSupClosedOn.univ : DirSupClosedOn D univ := by simp
 theorem DirSupInaccOn.univ : DirSupInaccOn D univ := by simp
 
-theorem DirSupClosedOn.sInter {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupClosedOn D x) :
-    DirSupClosedOn D (⋂₀ s) :=
-  fun _d hD hds hd hd' _a ha t ht ↦ hs t ht hD (hds.trans fun _x hx ↦ hx _ ht) hd hd' ha
+theorem DirSupClosedOn.sInter {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupClosedOn D x)
+    : DirSupClosedOn D (⋂₀s) := fun _d hD hds hd hd' _a ha t ht ↦
+  hs t ht hD (hds.trans fun _x hx ↦ hx _ ht) hd hd' ha
 
-theorem DirSupClosed.sInter {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupClosed x) :
-    DirSupClosed (⋂₀ s) := by
+theorem DirSupClosed.sInter {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupClosed x)
+    : DirSupClosed (⋂₀s) := by
   simpa using DirSupClosedOn.sInter fun x hx ↦ (hs x hx).dirSupClosedOn (D := .univ)
 
-theorem DirSupInaccOn.sUnion {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupInaccOn D x) :
-    DirSupInaccOn D (⋃₀ s) := by
+theorem DirSupInaccOn.sUnion {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupInaccOn D x)
+    : DirSupInaccOn D (⋃₀s) := by
   rw [← dirSupClosedOn_compl, Set.compl_sUnion]
   apply DirSupClosedOn.sInter
   rintro x ⟨x, hx, rfl⟩
   exact (hs x hx).compl
 
-theorem DirSupInacc.sUnion {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupInacc x) :
-    DirSupInacc (⋃₀ s) := by
+theorem DirSupInacc.sUnion {s : Set (Set α)} (hs : ∀ x ∈ s, DirSupInacc x) : DirSupInacc (⋃₀s) := by
   simpa using DirSupInaccOn.sUnion fun x hx ↦ (hs x hx).dirSupInaccOn (D := .univ)
 
-theorem DirSupClosedOn.iInter {ι} {f : ι → Set α} (hs : ∀ i, DirSupClosedOn D (f i)) :
-    DirSupClosedOn D (⋂ i, f i) := by
+theorem DirSupClosedOn.iInter {ι} {f : ι → Set α} (hs : ∀ i, DirSupClosedOn D (f i))
+    : DirSupClosedOn D (⋂ i, f i) := by
   rw [← sInter_range f]
   exact DirSupClosedOn.sInter (by simpa)
 
-theorem DirSupClosed.iInter {ι} {f : ι → Set α} (hs : ∀ i, DirSupClosed (f i)) :
-    DirSupClosed (⋂ i, f i) := by
+theorem DirSupClosed.iInter {ι} {f : ι → Set α} (hs : ∀ i, DirSupClosed (f i))
+    : DirSupClosed (⋂ i, f i) := by
   rw [← sInter_range f]
   exact DirSupClosed.sInter (by simpa)
 
-theorem DirSupInaccOn.iUnion {ι} {f : ι → Set α} (hs : ∀ i, DirSupInaccOn D (f i)) :
-    DirSupInaccOn D (⋃ i, f i) := by
+theorem DirSupInaccOn.iUnion {ι} {f : ι → Set α} (hs : ∀ i, DirSupInaccOn D (f i))
+    : DirSupInaccOn D (⋃ i, f i) := by
   rw [← sUnion_range f]
   exact DirSupInaccOn.sUnion (by simpa)
 
-theorem DirSupInacc.iUnion {ι} {f : ι → Set α} (hs : ∀ i, DirSupInacc (f i)) :
-    DirSupInacc (⋃ i, f i) := by
+theorem DirSupInacc.iUnion {ι} {f : ι → Set α} (hs : ∀ i, DirSupInacc (f i))
+    : DirSupInacc (⋃ i, f i) := by
   rw [← sUnion_range f]
   exact DirSupInacc.sUnion (by simpa)
 
-lemma DirSupClosedOn.inter (hs : DirSupClosedOn D s) (ht : DirSupClosedOn D t) :
-    DirSupClosedOn D (s ∩ t) := by
+lemma DirSupClosedOn.inter (hs : DirSupClosedOn D s) (ht : DirSupClosedOn D t)
+    : DirSupClosedOn D (s ∩ t) := by
   rw [← sInter_pair]
   refine .sInter ?_
   simpa [hs]
@@ -159,15 +169,16 @@ lemma DirSupClosedOn.inter (hs : DirSupClosedOn D s) (ht : DirSupClosedOn D t) :
 lemma DirSupClosed.inter (hs : DirSupClosed s) (ht : DirSupClosed t) : DirSupClosed (s ∩ t) := by
   simpa using hs.dirSupClosedOn.inter ht.dirSupClosedOn (D := .univ)
 
-lemma DirSupInaccOn.union (hs : DirSupInaccOn D s) (ht : DirSupInaccOn D t) :
-    DirSupInaccOn D (s ∪ t) := by
+lemma DirSupInaccOn.union (hs : DirSupInaccOn D s) (ht : DirSupInaccOn D t)
+    : DirSupInaccOn D (s ∪ t) := by
   rw [← dirSupClosedOn_compl, compl_union]; exact hs.compl.inter ht.compl
 
 lemma DirSupInacc.union (hs : DirSupInacc s) (ht : DirSupInacc t) : DirSupInacc (s ∪ t) := by
   simpa using hs.dirSupInaccOn.union ht.dirSupInaccOn (D := .univ)
 
-theorem DirSupClosedOn.union (hDL : IsLowerSet D)
-    (hs : DirSupClosedOn D s) (ht : DirSupClosedOn D t) : DirSupClosedOn D (s ∪ t) := by
+theorem DirSupClosedOn.union
+    (hDL : IsLowerSet D) (hs : DirSupClosedOn D s) (ht : DirSupClosedOn D t)
+    : DirSupClosedOn D (s ∪ t) := by
   intro d hD hdu hd₀ hd₁ a ha
   have hdst : d ∩ s ∪ d ∩ t = d := by grind
   wlog h : DirectedOn (· ≤ ·) (d ∩ s) ∧ IsCofinalFor (d ∩ t) (d ∩ s)
@@ -176,11 +187,11 @@ theorem DirSupClosedOn.union (hDL : IsLowerSet D)
       (directedOn_union_iff.mp (by rwa [hdst])).resolve_right h
   obtain ⟨hds, hcof⟩ := h
   have hcof' : IsCofinalFor d (d ∩ s) := hcof.union_right.mono_left hdst.ge
-  exact .inl <| hs (hDL inter_subset_left hD) inter_subset_right
-    (hcof'.nonempty hd₀) hds (ha.of_isCofinalFor inter_subset_left hcof')
+  exact .inl <| hs (hDL inter_subset_left hD) inter_subset_right (hcof'.nonempty hd₀) hds
+    (ha.of_isCofinalFor inter_subset_left hcof')
 
-theorem DirSupInaccOn.inter (hDL : IsLowerSet D)
-    (hs : DirSupInaccOn D s) (ht : DirSupInaccOn D t) : DirSupInaccOn D (s ∩ t) := by
+theorem DirSupInaccOn.inter (hDL : IsLowerSet D) (hs : DirSupInaccOn D s) (ht : DirSupInaccOn D t)
+    : DirSupInaccOn D (s ∩ t) := by
   rw [← dirSupClosedOn_compl, compl_inter]; exact hs.compl.union hDL ht.compl
 
 theorem DirSupClosed.union (hs : DirSupClosed s) (ht : DirSupClosed t) : DirSupClosed (s ∪ t) := by
@@ -190,75 +201,84 @@ theorem DirSupInacc.inter (hs : DirSupInacc s) (ht : DirSupInacc t) : DirSupInac
   simpa using hs.dirSupInaccOn.inter isLowerSet_univ ht.dirSupInaccOn
 
 theorem DirSupInaccOn.of_inter_subset
-    (h : ∀ ⦃d : Set α⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d →
-      ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s) : DirSupInaccOn D s := by
+    (h : ∀ ⦃d : Set α⦄,
+      d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d
+        → ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s)
+    : DirSupInaccOn D s := by
   intro d hd₀ hd₁ hd₂ a hda hd₃
   obtain ⟨b, hbd, hb⟩ := h hd₀ hd₁ hd₂ hda hd₃
   exact ⟨b, hbd, hb ⟨le_rfl, hbd⟩⟩
 
 theorem DirSupInacc.of_inter_subset
-    (h : ∀ ⦃d : Set α⦄, d.Nonempty → DirectedOn (· ≤ ·) d →
-      ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s) : DirSupInacc s :=
+    (h : ∀ ⦃d : Set α⦄,
+      d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s)
+    : DirSupInacc s :=
   dirSupInaccOn_univ.1 (.of_inter_subset (by simpa))
 
-/-- The condition `(d ∩ s).Nonempty` in `DirSupInaccOn` can be replaced with the stronger
-`∃ b ∈ d, Ici b ∩ d ⊆ s` (under mild assumptions on `D`). -/
-theorem dirSupInaccOn_iff_inter_subset (hDL : IsLowerSet D) :
-    DirSupInaccOn D s ↔ ∀ ⦃d : Set α⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d →
-      ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s where
+/--
+The condition `(d ∩ s).Nonempty` in `DirSupInaccOn` can be replaced with the stronger
+`∃ b ∈ d, Ici b ∩ d ⊆ s` (under mild assumptions on `D`).
+-/
+theorem dirSupInaccOn_iff_inter_subset (hDL : IsLowerSet D)
+    : DirSupInaccOn D s
+      ↔ ∀ ⦃d : Set α⦄,
+        d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d
+          → ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s where
   mpr := .of_inter_subset
   mp h t hD ht₀ ht₁ a ha has := by
     by_contra! H
     have hcof : IsCofinalFor t (t \ s) := by grind [IsCofinalFor, not_subset]
-    obtain ⟨x, hx, hxs⟩ := h (hDL sdiff_subset hD) (hcof.nonempty ht₀)
-      (ht₁.of_isCofinalFor sdiff_subset hcof)
-      (ha.of_isCofinalFor sdiff_subset hcof) has
+    obtain ⟨x, hx, hxs⟩ :=
+      h (hDL sdiff_subset hD) (hcof.nonempty ht₀) (ht₁.of_isCofinalFor sdiff_subset hcof)
+        (ha.of_isCofinalFor sdiff_subset hcof) has
     exact hx.2 hxs
 
-/-- The condition `(d ∩ s).Nonempty` in `DirSupInacc` can be replaced with the stronger
-`∃ b ∈ d, Ici b ∩ d ⊆ s`. -/
-theorem dirSupInacc_iff_inter_subset :
-    DirSupInacc s ↔ ∀ ⦃d : Set α⦄, d.Nonempty → DirectedOn (· ≤ ·) d →
-      ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s := by
+/--
+The condition `(d ∩ s).Nonempty` in `DirSupInacc` can be replaced with the stronger
+`∃ b ∈ d, Ici b ∩ d ⊆ s`.
+-/
+theorem dirSupInacc_iff_inter_subset
+    : DirSupInacc s
+      ↔ ∀ ⦃d : Set α⦄,
+        d.Nonempty → DirectedOn (· ≤ ·) d
+          → ∀ ⦃a : α⦄, IsLUB d a → a ∈ s → ∃ b ∈ d, Ici b ∩ d ⊆ s := by
   simpa using dirSupInaccOn_iff_inter_subset isLowerSet_univ
 
-lemma IsUpperSet.dirSupClosed (hs : IsUpperSet s) : DirSupClosed s :=
-  fun _d hds ⟨_b, hb⟩ _ _a ha ↦ hs (ha.1 hb) <| hds hb
+lemma IsUpperSet.dirSupClosed (hs : IsUpperSet s) : DirSupClosed s := fun _d hds ⟨_b, hb⟩ _ _a ha ↦
+  hs (ha.1 hb) <| hds hb
 
 lemma IsUpperSet.dirSupClosedOn (hs : IsUpperSet s) : DirSupClosedOn D s :=
   hs.dirSupClosed.dirSupClosedOn
 
-lemma IsLowerSet.dirSupInacc (hs : IsLowerSet s) : DirSupInacc s :=
-  .of_compl hs.compl.dirSupClosed
+lemma IsLowerSet.dirSupInacc (hs : IsLowerSet s) : DirSupInacc s := .of_compl hs.compl.dirSupClosed
 
 lemma IsLowerSet.dirSupInaccOn (hs : IsLowerSet s) : DirSupInaccOn D s :=
   .of_compl hs.compl.dirSupClosedOn
 
-theorem DirSupClosed.mem_imp_of_antisymmRel (hs : DirSupClosed s) {a b : α}
-    (h : AntisymmRel (· ≤ ·) a b) (ha : a ∈ s) : b ∈ s := by
+theorem DirSupClosed.mem_imp_of_antisymmRel
+    (hs : DirSupClosed s) {a b : α} (h : AntisymmRel (· ≤ ·) a b) (ha : a ∈ s)
+    : b ∈ s := by
   apply hs (singleton_subset_iff.2 ha) ⟨a, rfl⟩ (directedOn_singleton a)
   rw [← isLUB_congr_of_antisymmRel h]
   exact isLUB_singleton
 
-theorem DirSupClosed.mem_iff_of_antisymmRel (hs : DirSupClosed s) {a b : α}
-    (h : AntisymmRel (· ≤ ·) a b) : a ∈ s ↔ b ∈ s :=
+theorem DirSupClosed.mem_iff_of_antisymmRel
+    (hs : DirSupClosed s) {a b : α} (h : AntisymmRel (· ≤ ·) a b)
+    : a ∈ s ↔ b ∈ s :=
   ⟨hs.mem_imp_of_antisymmRel h, hs.mem_imp_of_antisymmRel h.symm⟩
 
-theorem DirSupInacc.mem_iff_of_antisymmRel (hs : DirSupInacc s) {a b : α}
-    (h : AntisymmRel (· ≤ ·) a b) : a ∈ s ↔ b ∈ s := by
+theorem DirSupInacc.mem_iff_of_antisymmRel
+    (hs : DirSupInacc s) {a b : α} (h : AntisymmRel (· ≤ ·) a b)
+    : a ∈ s ↔ b ∈ s := by
   simpa [not_iff_not] using hs.compl.mem_iff_of_antisymmRel h
 
-lemma dirSupClosed_Iic (a : α) : DirSupClosed (Iic a) :=
-  fun _d h _ _ _a ha ↦ (isLUB_le_iff ha).2 h
+lemma dirSupClosed_Iic (a : α) : DirSupClosed (Iic a) := fun _d h _ _ _a ha ↦ (isLUB_le_iff ha).2 h
 
-lemma dirSupClosedOn_Iic (a : α) : DirSupClosedOn D (Iic a) :=
-  (dirSupClosed_Iic a).dirSupClosedOn
+lemma dirSupClosedOn_Iic (a : α) : DirSupClosedOn D (Iic a) := (dirSupClosed_Iic a).dirSupClosedOn
 
-lemma dirSupInacc_Iic (a : α) : DirSupInacc (Iic a) :=
-  (isLowerSet_Iic a).dirSupInacc
+lemma dirSupInacc_Iic (a : α) : DirSupInacc (Iic a) := (isLowerSet_Iic a).dirSupInacc
 
-lemma dirSupInaccOn_Iic (a : α) : DirSupInaccOn D (Iic a) :=
-  (isLowerSet_Iic a).dirSupInaccOn
+lemma dirSupInaccOn_Iic (a : α) : DirSupInaccOn D (Iic a) := (isLowerSet_Iic a).dirSupInaccOn
 
 end Preorder
 
@@ -279,21 +299,21 @@ end PartialOrder
 section LinearOrder
 variable [LinearOrder α]
 
-theorem dirSupClosedOn_iff_of_linearOrder :
-    DirSupClosedOn D s ↔ ∀ ⦃d⦄, d ∈ D → d ⊆ s → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s := by
+theorem dirSupClosedOn_iff_of_linearOrder
+    : DirSupClosedOn D s ↔ ∀ ⦃d⦄, d ∈ D → d ⊆ s → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s := by
   simp [DirSupClosedOn]
 
-theorem dirSupClosed_iff_of_linearOrder :
-    DirSupClosed s ↔ ∀ ⦃d⦄, d ⊆ s → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s := by
+theorem dirSupClosed_iff_of_linearOrder
+    : DirSupClosed s ↔ ∀ ⦃d⦄, d ⊆ s → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s := by
   simp [DirSupClosed]
 
-theorem dirSupInaccOn_iff_of_linearOrder :
-    DirSupInaccOn D s ↔
-      ∀ ⦃d⦄, d ∈ D → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty := by
+theorem dirSupInaccOn_iff_of_linearOrder
+    : DirSupInaccOn D s
+      ↔ ∀ ⦃d⦄, d ∈ D → d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty := by
   simp [DirSupInaccOn]
 
-theorem dirSupInacc_iff_of_linearOrder :
-    DirSupInacc s ↔ ∀ ⦃d⦄, d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty := by
+theorem dirSupInacc_iff_of_linearOrder
+    : DirSupInacc s ↔ ∀ ⦃d⦄, d.Nonempty → ∀ ⦃a⦄, IsLUB d a → a ∈ s → (d ∩ s).Nonempty := by
   simp [DirSupInacc]
 
 end LinearOrder
@@ -301,20 +321,22 @@ end LinearOrder
 section CompleteLattice
 variable [CompleteLattice α]
 
-lemma dirSupClosedOn_iff_forall_sSup : DirSupClosedOn D s ↔
-    ∀ ⦃d⦄, d ∈ D → d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s := by
+lemma dirSupClosedOn_iff_forall_sSup
+    : DirSupClosedOn D s
+      ↔ ∀ ⦃d⦄, d ∈ D → d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s := by
   simp [DirSupClosedOn, isLUB_iff_sSup_eq]
 
-lemma dirSupInaccOn_iff_forall_sSup : DirSupInaccOn D s ↔
-    ∀ ⦃d⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s → (d ∩ s).Nonempty := by
+lemma dirSupInaccOn_iff_forall_sSup
+    : DirSupInaccOn D s
+      ↔ ∀ ⦃d⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s → (d ∩ s).Nonempty := by
   simp [DirSupInaccOn, isLUB_iff_sSup_eq]
 
-lemma dirSupClosed_iff_forall_sSup : DirSupClosed s ↔
-    ∀ ⦃d⦄, d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s := by
+lemma dirSupClosed_iff_forall_sSup
+    : DirSupClosed s ↔ ∀ ⦃d⦄, d ⊆ s → d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s := by
   simp [DirSupClosed, isLUB_iff_sSup_eq]
 
-lemma dirSupInacc_iff_forall_sSup : DirSupInacc s ↔
-    ∀ ⦃d⦄, d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s → (d ∩ s).Nonempty := by
+lemma dirSupInacc_iff_forall_sSup
+    : DirSupInacc s ↔ ∀ ⦃d⦄, d.Nonempty → DirectedOn (· ≤ ·) d → sSup d ∈ s → (d ∩ s).Nonempty := by
   simp [DirSupInacc, isLUB_iff_sSup_eq]
 
 end CompleteLattice

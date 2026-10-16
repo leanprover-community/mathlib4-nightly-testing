@@ -38,17 +38,16 @@ variable {γ : Type*}
 ### Uniformity on compact spaces
 -/
 
-
 /-- The unique uniform structure inducing a given compact topological structure. -/
 @[instance_reducible]
 def uniformSpaceOfCompactR1 [TopologicalSpace γ] [CompactSpace γ] [R1Space γ] : UniformSpace γ where
   uniformity := 𝓝ˢ (diagonal γ)
   symm := continuous_swap.tendsto_nhdsSet fun _ => Eq.symm
   comp := by
-      /-
-        This is the difficult part of the proof. We need to prove that, for each neighborhood `W`
-        of the diagonal `Δ`, there exists a smaller neighborhood `V` such that `V ○ V ⊆ W`.
-      -/
+    /-
+    This is the difficult part of the proof. We need to prove that, for each neighborhood `W`
+    of the diagonal `Δ`, there exists a smaller neighborhood `V` such that `V ○ V ⊆ W`.
+    -/
     set 𝓝Δ := 𝓝ˢ (diagonal γ)
     -- The filter of neighborhoods of Δ
     set F := 𝓝Δ.lift' fun s : Set (γ × γ) => s ○ s
@@ -63,18 +62,17 @@ def uniformSpaceOfCompactR1 [TopologicalSpace γ] [CompactSpace γ] [R1Space γ]
     -- In particular (x, y) is a cluster point of 𝓟 Vᶜ, hence is not in the interior of V,
     -- so x and y are inseparable
     have clV : ClusterPt (x, y) (𝓟 <| Vᶜ) := hxy.of_inf_right
-    have ninsep_xy : ¬Inseparable x y := by
+    have ninsep_xy : ¬ Inseparable x y := by
       intro h
-      rw [← mem_closure_iff_clusterPt, (h.prod .rfl).mem_closed_iff isClosed_closure,
-        closure_compl] at clV
+      rw [← mem_closure_iff_clusterPt, (h.prod .rfl).mem_closed_iff isClosed_closure, closure_compl]
+        at clV
       apply clV
       rw [mem_interior_iff_mem_nhds]
       exact nhds_le_nhdsSet (mem_diagonal y) V_in
     -- Since γ is compact and Hausdorff, it is T₄, hence T₃.
     -- So there are closed neighborhoods V₁ and V₂ of x and y contained in
     -- disjoint open neighborhoods U₁ and U₂.
-    obtain
-      ⟨U₁, -, V₁, V₁_in, U₂, -, V₂, V₂_in, V₁_cl, V₂_cl, U₁_op, U₂_op, VU₁, VU₂, hU₁₂⟩ :=
+    obtain ⟨U₁, -, V₁, V₁_in, U₂, -, V₂, V₂_in, V₁_cl, V₂_cl, U₁_op, U₂_op, VU₁, VU₂, hU₁₂⟩ :=
       disjoint_nested_nhds_of_not_inseparable ninsep_xy
     -- We set U₃ := (V₁ ∪ V₂)ᶜ so that W := U₁ ×ˢ U₁ ∪ U₂ ×ˢ U₂ ∪ U₃ ×ˢ U₃ is an open
     -- neighborhood of Δ.

@@ -19,7 +19,6 @@ Note this implies that the category of presheaves on a small category `C` is Car
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 noncomputable section
@@ -32,26 +31,28 @@ variable {C : Type v₂} [Category.{v₁} C]
 
 section MonoidalClosed
 
-/-- The adjunction `tensorLeft.obj X ⊣ coyoneda.obj (Opposite.op X)`
-for any `X : Type v₁`. -/
-def Types.tensorProductAdjunction (X : Type v₁) :
-    tensorLeft X ⊣ coyoneda.obj (Opposite.op X) where
+/--
+The adjunction `tensorLeft.obj X ⊣ coyoneda.obj (Opposite.op X)`
+for any `X : Type v₁`.
+-/
+def Types.tensorProductAdjunction (X : Type v₁) : tensorLeft X ⊣ coyoneda.obj (Opposite.op X) where
   unit := { app Z := ↾fun z ↦ ↾fun x => ⟨x, z⟩ }
   counit := { app _ := ↾fun xf => xf.2.hom xf.1 }
 
-instance (X : Type v₁) : (tensorLeft X).IsLeftAdjoint :=
-  ⟨_, ⟨Types.tensorProductAdjunction X⟩⟩
+instance (X : Type v₁) : (tensorLeft X).IsLeftAdjoint := ⟨_, ⟨Types.tensorProductAdjunction X⟩⟩
 
-instance : MonoidalClosed (Type v₁) := MonoidalClosed.mk
-  fun X => Closed.mk _ (Types.tensorProductAdjunction X)
+instance : MonoidalClosed (Type v₁) :=
+  MonoidalClosed.mk fun X => Closed.mk _ (Types.tensorProductAdjunction X)
 
-/-- The category of functors from a small category to types is monoidal closed.
-Use the instance in `Mathlib.CategoryTheory.Monoidal.Closed.FunctorToTypes` instead. -/
+/--
+The category of functors from a small category to types is monoidal closed.
+Use the instance in `Mathlib.CategoryTheory.Monoidal.Closed.FunctorToTypes` instead.
+-/
 @[deprecated "Use the instance in `Mathlib.CategoryTheory.Monoidal.Closed.FunctorToTypes` instead"
   (since := "2026-09-25"),
-instance_reducible]
-def cartesianClosedFunctorToTypesSmall {C : Type v₁} [SmallCategory C] :
-    MonoidalClosed (C ⥤ Type v₁) :=
+  instance_reducible]
+def cartesianClosedFunctorToTypesSmall {C : Type v₁} [SmallCategory C]
+    : MonoidalClosed (C ⥤ Type v₁) :=
   MonoidalClosed.mk fun F => by
     haveI : ∀ X : Type v₁, PreservesColimits (tensorLeft X) := by infer_instance
     letI : PreservesColimits (tensorLeft F) := ⟨by infer_instance⟩
@@ -61,17 +62,20 @@ def cartesianClosedFunctorToTypesSmall {C : Type v₁} [SmallCategory C] :
 -- TODO: once we have `MonoidalClosed` instances for functor categories into general monoidal
 -- closed categories, replace this with that, as it will be a more explicit construction.
 attribute [local instance] uliftCategory cartesianClosedFunctorToTypesSmall in
-/-- This is not a good instance because of the universe levels. Below is the instance where the
-target category is `Type (max u₁ v₁)`. -/
+/--
+This is not a good instance because of the universe levels. Below is the instance where the
+target category is `Type (max u₁ v₁)`.
+-/
 @[deprecated "Use the instance in `Mathlib.CategoryTheory.Monoidal.Closed.FunctorToTypes` instead"
   (since := "2026-09-25"),
-instance_reducible]
-def cartesianClosedFunctorToTypes {C : Type u₁} [Category.{v₁} C] :
-    MonoidalClosed (C ⥤ Type (max u₁ v₁ u₂)) :=
-  let e : (ULiftHom.{max u₁ v₁ u₂} (ULift.{max u₁ v₁ u₂} C)) ⥤ Type (max u₁ v₁ u₂) ≌
-      C ⥤ Type (max u₁ v₁ u₂) :=
-      Functor.asEquivalence ((Functor.whiskeringLeft _ _ _).obj
-        (ULift.equivalence.trans ULiftHom.equiv).functor)
+  instance_reducible]
+def cartesianClosedFunctorToTypes {C : Type u₁} [Category.{v₁} C]
+    : MonoidalClosed (C ⥤ Type (max u₁ v₁ u₂)) :=
+  let e
+      : (ULiftHom.{max u₁ v₁ u₂} (ULift.{max u₁ v₁ u₂} C)) ⥤ Type (max u₁ v₁ u₂)
+        ≌ C ⥤ Type (max u₁ v₁ u₂) :=
+    Functor.asEquivalence ((Functor.whiskeringLeft _ _ _).obj
+      (ULift.equivalence.trans ULiftHom.equiv).functor)
   cartesianClosedOfEquiv e
 
 end MonoidalClosed

@@ -10,7 +10,6 @@ import Plausible
 import ProofWidgets
 import Qq
 import Std
-
 -- ImportGraph asserts Lake.Workspace is not imported, but Mathlib doesn't import it either.
 -- So import it for the sake of testing.
 import Lake.Config.Workspace

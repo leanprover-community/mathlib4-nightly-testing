@@ -29,8 +29,8 @@ section DirectSum
 def directSum (ψ : ∀ i, AddChar (G i) R) : AddChar (⨁ i, G i) R :=
   toAddMonoidHomEquiv.symm <| DirectSum.toAddMonoid fun i ↦ toAddMonoidHomEquiv (ψ i)
 
-lemma directSum_injective :
-    Injective (directSum : (∀ i, AddChar (G i) R) → AddChar (⨁ i, G i) R) := by
+lemma directSum_injective
+    : Injective (directSum : (∀ i, AddChar (G i) R) → AddChar (⨁ i, G i) R) := by
   refine toAddMonoidHomEquiv.symm.injective.comp <| DirectSum.toAddMonoid_injective.comp ?_
   rintro ψ χ h
   simpa [funext_iff] using h

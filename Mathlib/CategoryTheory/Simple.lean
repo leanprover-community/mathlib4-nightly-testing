@@ -33,7 +33,6 @@ We show that any simple object is indecomposable.
 
 public section
 
-
 noncomputable section
 
 open CategoryTheory.Limits
@@ -56,64 +55,73 @@ class Simple (X : C) : Prop where
 theorem isIso_of_mono_of_nonzero {X Y : C} [Simple Y] {f : X ⟶ Y} [Mono f] (w : f ≠ 0) : IsIso f :=
   (Simple.mono_isIso_iff_nonzero f).mpr w
 
-theorem Functor.simple_of_simple_obj {D : Type*} [Category* D] [HasZeroMorphisms D] (F : C ⥤ D)
+theorem Functor.simple_of_simple_obj
+    {D : Type*} [Category* D] [HasZeroMorphisms D]
+    (F : C ⥤ D)
     [F.PreservesMonomorphisms] [F.PreservesZeroMorphisms] [F.ReflectsIsomorphisms] [F.Faithful]
-    (X : C) [Simple (F.obj X)] : Simple X :=
+    (X : C) [Simple (F.obj X)]
+    : Simple X :=
   .mk fun {Y} g _ ↦ by
-    rw [← isIso_iff_of_reflects_iso g F, Simple.mono_isIso_iff_nonzero (F.map g),
-      ne_eq, ne_eq, not_iff_not, F.map_eq_zero_iff]
+    rw [← isIso_iff_of_reflects_iso g F, Simple.mono_isIso_iff_nonzero (F.map g), ne_eq, ne_eq,
+      not_iff_not, F.map_eq_zero_iff]
 
-theorem Simple.of_iso {X Y : C} [Simple Y] (i : X ≅ Y) : Simple X :=
-  { mono_isIso_iff_nonzero := fun f m => by
-      constructor
-      · intro h w
-        have j : IsIso (f ≫ i.hom) := by infer_instance
-        rw [Simple.mono_isIso_iff_nonzero] at j
-        subst w
-        simp at j
-      · intro h
-        have j : IsIso (f ≫ i.hom) := by
-          apply isIso_of_mono_of_nonzero
-          intro w
-          apply h
-          simpa using (cancel_mono i.inv).2 w
-        rw [← Category.comp_id f, ← i.hom_inv_id, ← Category.assoc]
-        infer_instance }
+theorem Simple.of_iso {X Y : C} [Simple Y] (i : X ≅ Y) : Simple X := {
+  mono_isIso_iff_nonzero := fun f m => by
+    constructor
+    · intro h w
+      have j : IsIso (f ≫ i.hom) := by infer_instance
+      rw [Simple.mono_isIso_iff_nonzero] at j
+      subst w
+      simp at j
+    · intro h
+      have j : IsIso (f ≫ i.hom) := by
+        apply isIso_of_mono_of_nonzero
+        intro w
+        apply h
+        simpa using (cancel_mono i.inv).2 w
+      rw [← Category.comp_id f, ← i.hom_inv_id, ← Category.assoc]
+      infer_instance
+}
 
 theorem Simple.iff_of_iso {X Y : C} (i : X ≅ Y) : Simple X ↔ Simple Y :=
   ⟨fun _ => Simple.of_iso i.symm, fun _ => Simple.of_iso i⟩
 
-theorem simple_obj {D : Type*} [Category* D] [HasZeroMorphisms D] (F : C ⥤ D)
-    [F.IsEquivalence] (X : C) [Simple X] : Simple (F.obj X) := by
+theorem simple_obj
+    {D : Type*} [Category* D] [HasZeroMorphisms D] (F : C ⥤ D) [F.IsEquivalence] (X : C) [Simple X]
+    : Simple (F.obj X) := by
   rw [← F.asEquivalence_functor]
   have := F.asEquivalence.counitIso.app (F.asEquivalence.functor.obj X)
   rw [Functor.comp_obj, Functor.id_obj] at this
   have := Simple.of_iso <| Functor.preimageIso _ this
   exact Functor.simple_of_simple_obj F.asEquivalence.inverse _
 
-theorem simple_obj_iff {D : Type*} [Category* D] [HasZeroMorphisms D] (F : C ⥤ D)
-    [F.IsEquivalence] (X : C) :
-    Simple (F.obj X) ↔ Simple X :=
+theorem simple_obj_iff
+    {D : Type*} [Category* D] [HasZeroMorphisms D] (F : C ⥤ D) [F.IsEquivalence] (X : C)
+    : Simple (F.obj X) ↔ Simple X :=
   ⟨fun _ ↦ Functor.simple_of_simple_obj F X, fun _ ↦ simple_obj F X⟩
 
-theorem kernel_zero_of_nonzero_from_simple {X Y : C} [Simple X] {f : X ⟶ Y} [HasKernel f]
-    (w : f ≠ 0) : kernel.ι f = 0 := by
+theorem kernel_zero_of_nonzero_from_simple
+    {X Y : C} [Simple X] {f : X ⟶ Y} [HasKernel f] (w : f ≠ 0)
+    : kernel.ι f = 0 := by
   by_contra h
   have := isIso_of_mono_of_nonzero h
   exact w (eq_zero_of_epi_kernel f)
 
 -- See also `mono_of_nonzero_from_simple`, which requires `Preadditive C`.
-/-- A nonzero morphism `f` to a simple object is an epimorphism
+/--
+A nonzero morphism `f` to a simple object is an epimorphism
 (assuming `f` has an image, and `C` has equalizers).
 -/
-theorem epi_of_nonzero_to_simple [HasEqualizers C] {X Y : C} [Simple Y] {f : X ⟶ Y} [HasImage f]
-    (w : f ≠ 0) : Epi f := by
+theorem epi_of_nonzero_to_simple
+    [HasEqualizers C] {X Y : C} [Simple Y] {f : X ⟶ Y} [HasImage f] (w : f ≠ 0)
+    : Epi f := by
   rw [← image.fac f]
   have : IsIso (image.ι f) := isIso_of_mono_of_nonzero fun h => w (eq_zero_of_image_eq_zero h)
   apply epi_comp
 
-theorem mono_to_simple_zero_of_not_iso {X Y : C} [Simple Y] {f : X ⟶ Y} [Mono f]
-    (w : IsIso f → False) : f = 0 := by
+theorem mono_to_simple_zero_of_not_iso
+    {X Y : C} [Simple Y] {f : X ⟶ Y} [Mono f] (w : IsIso f → False)
+    : f = 0 := by
   by_contra h
   exact w (isIso_of_mono_of_nonzero h)
 
@@ -125,7 +133,7 @@ instance (X : C) [Simple.{v} X] : Nontrivial (End X) :=
 
 section
 
-theorem Simple.not_isZero (X : C) [Simple X] : ¬IsZero X := by
+theorem Simple.not_isZero (X : C) [Simple X] : ¬ IsZero X := by
   simpa [Limits.IsZero.iff_id_eq_zero] using id_nonzero X
 
 variable [HasZeroObject C]
@@ -147,22 +155,23 @@ section Abelian
 
 variable [Abelian C]
 
-/-- In an abelian category, an object satisfying the dual of the definition of a simple object is
-simple. -/
-theorem simple_of_cosimple (X : C) (h : ∀ {Z : C} (f : X ⟶ Z) [Epi f], IsIso f ↔ f ≠ 0) :
-    Simple X :=
-  ⟨fun {Y} f I => by
-    fconstructor
-    · intros
-      have hx := cokernel.π_of_epi f
-      by_contra h
-      subst h
-      exact (h _).mp inferInstance hx
-    · intro hf
-      suffices Epi f by exact isIso_of_mono_of_epi _
-      apply Preadditive.epi_of_cokernel_zero
-      by_contra h'
-      exact cokernel_not_iso_of_nonzero hf ((h _).mpr h')⟩
+/--
+In an abelian category, an object satisfying the dual of the definition of a simple object is
+simple.
+-/
+theorem simple_of_cosimple (X : C) (h : ∀ {Z : C} (f : X ⟶ Z) [Epi f], IsIso f ↔ f ≠ 0)
+    : Simple X := ⟨fun {Y} f I => by
+  fconstructor
+  · intros
+    have hx := cokernel.π_of_epi f
+    by_contra h
+    subst h
+    exact (h _).mp inferInstance hx
+  · intro hf
+    suffices Epi f by exact isIso_of_mono_of_epi _
+    apply Preadditive.epi_of_cokernel_zero
+    by_contra h'
+    exact cokernel_not_iso_of_nonzero hf ((h _).mpr h')⟩
 
 /-- A nonzero epimorphism from a simple object is an isomorphism. -/
 theorem isIso_of_epi_of_nonzero {X Y : C} [Simple X] {f : X ⟶ Y} [Epi f] (w : f ≠ 0) : IsIso f :=
@@ -171,14 +180,15 @@ theorem isIso_of_epi_of_nonzero {X Y : C} [Simple X] {f : X ⟶ Y} [Epi f] (w : 
     Preadditive.mono_of_kernel_zero (mono_to_simple_zero_of_not_iso (kernel_not_iso_of_nonzero w))
   isIso_of_mono_of_epi f
 
-theorem cokernel_zero_of_nonzero_to_simple {X Y : C} [Simple Y] {f : X ⟶ Y} (w : f ≠ 0) :
-    cokernel.π f = 0 := by
+theorem cokernel_zero_of_nonzero_to_simple {X Y : C} [Simple Y] {f : X ⟶ Y} (w : f ≠ 0)
+    : cokernel.π f = 0 := by
   by_contra h
   have := isIso_of_epi_of_nonzero h
   exact w (eq_zero_of_mono_cokernel f)
 
-theorem epi_from_simple_zero_of_not_iso {X Y : C} [Simple X] {f : X ⟶ Y} [Epi f]
-    (w : IsIso f → False) : f = 0 := by
+theorem epi_from_simple_zero_of_not_iso
+    {X Y : C} [Simple X] {f : X ⟶ Y} [Epi f] (w : IsIso f → False)
+    : f = 0 := by
   by_contra h
   exact w (isIso_of_epi_of_nonzero h)
 
@@ -201,14 +211,16 @@ theorem Biprod.isIso_inl_iff_isZero (X Y : C) : IsIso (biprod.inl : X ⟶ X ⊞ 
     rw [h, zero_comp]
 
 /-- Any simple object in a preadditive category is indecomposable. -/
-theorem indecomposable_of_simple (X : C) [Simple X] : Indecomposable X :=
-  ⟨Simple.not_isZero X, fun Y Z i => by
+theorem indecomposable_of_simple (X : C) [Simple X] : Indecomposable X := ⟨
+  Simple.not_isZero X,
+  fun Y Z i => by
     refine or_iff_not_imp_left.mpr fun h => ?_
     rw [IsZero.iff_isSplitMono_eq_zero (biprod.inl : Y ⟶ Y ⊞ Z)] at h
     change biprod.inl ≠ 0 at h
     have : Simple (Y ⊞ Z) := Simple.of_iso i.symm
     rw [← Simple.mono_isIso_iff_nonzero biprod.inl] at h
-    rwa [Biprod.isIso_inl_iff_isZero] at h⟩
+    rwa [Biprod.isIso_inl_iff_isZero] at h
+⟩
 
 end Indecomposable
 
@@ -232,7 +244,9 @@ instance {X : C} [Simple X] : IsSimpleOrder (Subobject X) where
 
 /-- If `X` has subobject lattice `{⊥, ⊤}`, then `X` is simple. -/
 theorem simple_of_isSimpleOrder_subobject (X : C) [IsSimpleOrder (Subobject X)] : Simple X := by
-  constructor; intro Y f hf; constructor
+  constructor
+  intro Y f hf
+  constructor
   · intro i
     rw [Subobject.isIso_iff_mk_eq_top] at i
     intro w
@@ -245,12 +259,14 @@ theorem simple_of_isSimpleOrder_subobject (X : C) [IsSimpleOrder (Subobject X)] 
     · exact (Subobject.isIso_iff_mk_eq_top _).mpr h
 
 /-- `X` is simple iff it has subobject lattice `{⊥, ⊤}`. -/
-theorem simple_iff_subobject_isSimpleOrder (X : C) : Simple X ↔ IsSimpleOrder (Subobject X) :=
-  ⟨by
+theorem simple_iff_subobject_isSimpleOrder (X : C) : Simple X ↔ IsSimpleOrder (Subobject X) := ⟨
+  by
     intro h
-    infer_instance, by
+    infer_instance,
+  by
     intro h
-    exact simple_of_isSimpleOrder_subobject X⟩
+    exact simple_of_isSimpleOrder_subobject X
+⟩
 
 /-- A subobject is simple iff it is an atom in the subobject lattice. -/
 theorem subobject_simple_iff_isAtom {X : C} (Y : Subobject X) : Simple (Y : C) ↔ IsAtom Y :=

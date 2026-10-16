@@ -62,8 +62,7 @@ instance (X : D) : EffectiveEpi (F.effectiveEpiOver X) :=
   (EffectivelyEnough.presentation X).some.effectiveEpi
 
 /-- An effective presentation of an object with respect to an equivalence of categories. -/
-def equivalenceEffectivePresentation (e : C ≌ D) (X : D) :
-    EffectivePresentation e.functor X where
+def equivalenceEffectivePresentation (e : C ≌ D) (X : D) : EffectivePresentation e.functor X where
   p := e.inverse.obj X
   f := e.counit.app _
   effectiveEpi := inferInstance

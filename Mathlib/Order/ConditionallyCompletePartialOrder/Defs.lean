@@ -44,30 +44,36 @@ public section
 
 variable {ι : Sort*} {α : Type*}
 
-/-- Conditionally complete partial orders (with infima) are partial orders
-where every nonempty, directed set which is bounded below has a greatest lower bound. -/
-class ConditionallyCompletePartialOrderInf (α : Type*)
-    extends PartialOrder α, InfSet α where
-  /-- For each nonempty, directed set `s` which is bounded below, `sInf s` is
-  the greatest lower bound of `s`. -/
-  isGLB_csInf_of_directed :
-    ∀ s, DirectedOn (· ≥ ·) s → s.Nonempty → BddBelow s → IsGLB s (sInf s)
+/--
+Conditionally complete partial orders (with infima) are partial orders
+where every nonempty, directed set which is bounded below has a greatest lower bound.
+-/
+class ConditionallyCompletePartialOrderInf (α : Type*) extends PartialOrder α, InfSet α where
+  /--
+  For each nonempty, directed set `s` which is bounded below, `sInf s` is
+  the greatest lower bound of `s`.
+  -/
+  isGLB_csInf_of_directed : ∀ s, DirectedOn (· ≥ ·) s → s.Nonempty → BddBelow s → IsGLB s (sInf s)
 
-/-- Conditionally complete partial orders (with suprema) are partial orders
-where every nonempty, directed set which is bounded above has a least upper bound. -/
+/--
+Conditionally complete partial orders (with suprema) are partial orders
+where every nonempty, directed set which is bounded above has a least upper bound.
+-/
 @[to_dual existing]
-class ConditionallyCompletePartialOrderSup (α : Type*)
-    extends PartialOrder α, SupSet α where
-  /-- For each nonempty, directed set `s` which is bounded above, `sSup s` is
-  the least upper bound of `s`. -/
-  isLUB_csSup_of_directed :
-    ∀ s, DirectedOn (· ≤ ·) s → s.Nonempty → BddAbove s → IsLUB s (sSup s)
+class ConditionallyCompletePartialOrderSup (α : Type*) extends PartialOrder α, SupSet α where
+  /--
+  For each nonempty, directed set `s` which is bounded above, `sSup s` is
+  the least upper bound of `s`.
+  -/
+  isLUB_csSup_of_directed : ∀ s, DirectedOn (· ≤ ·) s → s.Nonempty → BddAbove s → IsLUB s (sSup s)
 
-/-- Conditionally complete partial orders (with suprema and infima) are partial orders
+/--
+Conditionally complete partial orders (with suprema and infima) are partial orders
 where every nonempty, directed set which is bounded above (respectively, below) has a
-least upper (respectively, greatest lower) bound. -/
+least upper (respectively, greatest lower) bound.
+-/
 class ConditionallyCompletePartialOrder (α : Type*)
-    extends ConditionallyCompletePartialOrderSup α, ConditionallyCompletePartialOrderInf α where
+  extends ConditionallyCompletePartialOrderSup α, ConditionallyCompletePartialOrderInf α where
 
 attribute [to_dual existing]
   ConditionallyCompletePartialOrder.toConditionallyCompletePartialOrderSup
@@ -76,26 +82,29 @@ variable [ConditionallyCompletePartialOrderSup α]
 variable {f : ι → α} {s : Set α} {a : α}
 
 @[to_dual]
-protected lemma DirectedOn.isLUB_csSup (h_dir : DirectedOn (· ≤ ·) s)
-    (h_non : s.Nonempty) (h_bdd : BddAbove s) : IsLUB s (sSup s) :=
+protected lemma DirectedOn.isLUB_csSup
+    (h_dir : DirectedOn (· ≤ ·) s) (h_non : s.Nonempty) (h_bdd : BddAbove s)
+    : IsLUB s (sSup s) :=
   ConditionallyCompletePartialOrderSup.isLUB_csSup_of_directed s h_dir h_non h_bdd
 
 @[to_dual csInf_le]
-protected lemma DirectedOn.le_csSup (hs : DirectedOn (· ≤ ·) s)
-    (h_bdd : BddAbove s) (ha : a ∈ s) : a ≤ sSup s :=
+protected lemma DirectedOn.le_csSup (hs : DirectedOn (· ≤ ·) s) (h_bdd : BddAbove s) (ha : a ∈ s)
+    : a ≤ sSup s :=
   (hs.isLUB_csSup ⟨a, ha⟩ h_bdd).1 ha
 
 @[to_dual le_csInf]
-protected lemma DirectedOn.csSup_le (hd : DirectedOn (· ≤ ·) s) (h_non : s.Nonempty)
-    (ha : ∀ b ∈ s, b ≤ a) : sSup s ≤ a :=
+protected lemma DirectedOn.csSup_le
+    (hd : DirectedOn (· ≤ ·) s) (h_non : s.Nonempty) (ha : ∀ b ∈ s, b ≤ a)
+    : sSup s ≤ a :=
   (hd.isLUB_csSup h_non ⟨a, ha⟩).2 ha
 
 @[to_dual ciInf_le]
-protected lemma Directed.le_ciSup (hf : Directed (· ≤ ·) f)
-    (hf_bdd : BddAbove (Set.range f)) (i : ι) : f i ≤ ⨆ j, f j :=
+protected lemma Directed.le_ciSup
+    (hf : Directed (· ≤ ·) f) (hf_bdd : BddAbove (Set.range f)) (i : ι)
+    : f i ≤ ⨆ j, f j :=
   hf.directedOn_range.le_csSup hf_bdd <| Set.mem_range_self _
 
 @[to_dual le_ciInf]
-protected lemma Directed.ciSup_le [Nonempty ι] (hf : Directed (· ≤ ·) f)
-    (ha : ∀ i, f i ≤ a) : ⨆ i, f i ≤ a :=
+protected lemma Directed.ciSup_le [Nonempty ι] (hf : Directed (· ≤ ·) f) (ha : ∀ i, f i ≤ a)
+    : ⨆ i, f i ≤ a :=
   hf.directedOn_range.csSup_le (Set.range_nonempty _) <| Set.forall_mem_range.2 ha

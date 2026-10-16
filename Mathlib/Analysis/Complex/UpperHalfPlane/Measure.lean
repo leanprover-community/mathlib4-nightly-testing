@@ -8,7 +8,6 @@ module
 
 public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-
 import Mathlib.MeasureTheory.Function.Jacobian
 
 /-!
@@ -34,17 +33,17 @@ lemma measurableEmbedding_coe : MeasurableEmbedding UpperHalfPlane.coe :=
   isOpenEmbedding_coe.measurableEmbedding
 
 @[fun_prop]
-lemma measurable_coe : Measurable UpperHalfPlane.coe :=
-  measurableEmbedding_coe.measurable
+lemma measurable_coe : Measurable UpperHalfPlane.coe := measurableEmbedding_coe.measurable
 
 /-- The invariant measure on the upper half-plane, defined by `dx dy / y ^ 2`. -/
 instance : MeasureSpace ℍ :=
-  ⟨(volume.comap UpperHalfPlane.coe).withDensity
-    fun z ↦ ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2)⟩
+  ⟨(volume.comap UpperHalfPlane.coe).withDensity fun z ↦
+    ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2)⟩
 
-theorem volume_def :
-    (volume : Measure ℍ) = (volume.comap UpperHalfPlane.coe).withDensity fun z ↦
-      ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2) :=
+theorem volume_def
+    : (volume : Measure ℍ)
+      = (volume.comap UpperHalfPlane.coe).withDensity fun z ↦
+        ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2) :=
   rfl
 
 instance : IsFiniteMeasureOnCompacts (volume.comap UpperHalfPlane.coe) :=
@@ -68,16 +67,18 @@ instance : SigmaFinite (volume : Measure ℍ) := inferInstance
 
 instance : SFinite (volume : Measure ℍ) := inferInstance
 
-/-- Express the volume of a measurable set as a Lebesgue integral
-over the corresponding subset of `ℂ`. -/
-lemma volume_eq_lintegral (s : Set ℍ) :
-    volume s = ∫⁻ z : ℂ in (↑) '' s, ↑((1 / ‖z.im‖₊) ^ 2 : NNReal) := by
+/--
+Express the volume of a measurable set as a Lebesgue integral
+over the corresponding subset of `ℂ`.
+-/
+lemma volume_eq_lintegral (s : Set ℍ)
+    : volume s = ∫⁻ z : ℂ in (↑) '' s, ↑((1 / ‖z.im‖₊) ^ 2 : NNReal) := by
   have : MeasurePreserving UpperHalfPlane.coe (volume.comap UpperHalfPlane.coe)
       (volume.restrict (.range UpperHalfPlane.coe)) :=
     ⟨measurable_coe, by rw [measurableEmbedding_coe.map_comap]⟩
   rw [volume_def, withDensity_apply',
-    ← Set.inter_eq_self_of_subset_left (Set.image_subset_range _ _),
-    ← Measure.restrict_restrict', ← this.setLIntegral_comp_emb measurableEmbedding_coe]
+    ← Set.inter_eq_self_of_subset_left (Set.image_subset_range _ _), ← Measure.restrict_restrict',
+    ← this.setLIntegral_comp_emb measurableEmbedding_coe]
   · simp [Real.nnnorm_of_nonneg (im_pos _).le]
   · exact measurableEmbedding_coe.measurableSet_range
 
@@ -90,12 +91,12 @@ instance : SMulInvariantMeasure (GL (Fin 2) ℝ) ℍ volume := by
   -- We want to apply the Jacobian change-of-variable formula.
   have hinj : Set.InjOn (fun z ↦ ↑(g • ofComplex z) : ℂ → ℂ) (UpperHalfPlane.coe '' s) :=
     .image_of_comp <| by simp
-  have main := MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul
-      volume (measurableEmbedding_coe.measurableSet_image.mpr hs)
+  have main :=
+    MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul volume
+      (measurableEmbedding_coe.measurableSet_image.mpr hs)
       (Set.forall_mem_image.mpr fun z hz ↦
         (hasStrictFDerivAt_smul g _).hasFDerivAt.hasFDerivWithinAt)
-      hinj
-      (fun z ↦ ↑((1 / ‖z.im‖₊) ^ 2 : NNReal))
+      hinj (fun z ↦ ↑((1 / ‖z.im‖₊) ^ 2 : NNReal))
   convert main using 1
   · simp [Set.image_image]
   · apply setLIntegral_congr_fun (measurableEmbedding_coe.measurableSet_image.mpr hs)

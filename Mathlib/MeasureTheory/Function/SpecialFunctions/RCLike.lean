@@ -6,7 +6,6 @@ Authors: Yury Kudryashov
 module
 
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-
 import Mathlib.Analysis.RCLike.Lemmas
 
 /-!
@@ -20,18 +19,15 @@ namespace RCLike
 
 variable {𝕜 : Type*} [RCLike 𝕜]
 
-theorem measurable_re : Measurable (re : 𝕜 → ℝ) :=
-  continuous_re.measurable
+theorem measurable_re : Measurable (re : 𝕜 → ℝ) := continuous_re.measurable
 
-theorem measurable_im : Measurable (im : 𝕜 → ℝ) :=
-  continuous_im.measurable
+theorem measurable_im : Measurable (im : 𝕜 → ℝ) := continuous_im.measurable
 
 end RCLike
 
 section RCLikeComposition
 
-variable {α 𝕜 : Type*} [RCLike 𝕜] {m : MeasurableSpace α} {f : α → 𝕜}
-  {μ : MeasureTheory.Measure α}
+variable {α 𝕜 : Type*} [RCLike 𝕜] {m : MeasurableSpace α} {f : α → 𝕜} {μ : MeasureTheory.Measure α}
 
 @[fun_prop]
 theorem Measurable.re (hf : Measurable f) : Measurable fun x => RCLike.re (f x) :=
@@ -56,18 +52,20 @@ section
 variable {α 𝕜 : Type*} [RCLike 𝕜] [MeasurableSpace α] {f : α → 𝕜} {μ : MeasureTheory.Measure α}
 
 @[fun_prop]
-theorem RCLike.measurable_ofReal : Measurable ((↑) : ℝ → 𝕜) :=
-  RCLike.continuous_ofReal.measurable
+theorem RCLike.measurable_ofReal : Measurable ((↑) : ℝ → 𝕜) := RCLike.continuous_ofReal.measurable
 
-theorem measurable_of_re_im (hre : Measurable fun x => RCLike.re (f x))
-    (him : Measurable fun x => RCLike.im (f x)) : Measurable f := by
+theorem measurable_of_re_im
+    (hre : Measurable fun x => RCLike.re (f x)) (him : Measurable fun x => RCLike.im (f x))
+    : Measurable f := by
   convert!
     Measurable.fun_add (M := 𝕜) (RCLike.measurable_ofReal.comp hre)
       ((RCLike.measurable_ofReal.comp him).mul_const RCLike.I)
   exact (RCLike.re_add_im _).symm
 
-theorem aemeasurable_of_re_im (hre : AEMeasurable (fun x => RCLike.re (f x)) μ)
-    (him : AEMeasurable (fun x => RCLike.im (f x)) μ) : AEMeasurable f μ := by
+theorem aemeasurable_of_re_im
+    (hre : AEMeasurable (fun x => RCLike.re (f x)) μ)
+    (him : AEMeasurable (fun x => RCLike.im (f x)) μ)
+    : AEMeasurable f μ := by
   convert!
     AEMeasurable.fun_add (M := 𝕜) (RCLike.measurable_ofReal.comp_aemeasurable hre)
       ((RCLike.measurable_ofReal.comp_aemeasurable him).mul_const RCLike.I)

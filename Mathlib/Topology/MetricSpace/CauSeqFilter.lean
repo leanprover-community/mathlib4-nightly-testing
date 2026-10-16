@@ -6,7 +6,6 @@ Authors: Robert Y. Lewis, Sébastien Gouëzel
 module
 
 public import Mathlib.Analysis.Normed.Field.Basic
-
 import Mathlib.Topology.MetricSpace.Cauchy
 
 /-!
@@ -27,20 +26,22 @@ open scoped Topology
 
 variable {β : Type v}
 
-theorem CauSeq.tendsto_limit [NormedRing β] [hn : IsAbsoluteValue (norm : β → ℝ)]
-    (f : CauSeq β norm) [CauSeq.IsComplete β norm] : Tendsto f atTop (𝓝 f.lim) :=
-  tendsto_nhds.mpr
-    (by
-      intro s os lfs
-      suffices ∃ a : ℕ, ∀ b : ℕ, b ≥ a → f b ∈ s by simpa using this
-      rcases Metric.isOpen_iff.1 os _ lfs with ⟨ε, ⟨hε, hεs⟩⟩
-      obtain ⟨N, hN⟩ := Setoid.symm (CauSeq.equiv_lim f) _ hε
-      exists N
-      intro b hb
-      apply hεs
-      dsimp [Metric.ball]
-      rw [dist_comm, dist_eq_norm]
-      solve_by_elim)
+theorem CauSeq.tendsto_limit
+    [NormedRing β] [hn : IsAbsoluteValue (norm : β → ℝ)]
+    (f : CauSeq β norm)
+    [CauSeq.IsComplete β norm]
+    : Tendsto f atTop (𝓝 f.lim) :=
+  tendsto_nhds.mpr (by
+    intro s os lfs
+    suffices ∃ a : ℕ, ∀ b : ℕ, b ≥ a → f b ∈ s by simpa using this
+    rcases Metric.isOpen_iff.1 os _ lfs with ⟨ε, ⟨hε, hεs⟩⟩
+    obtain ⟨N, hN⟩ := Setoid.symm (CauSeq.equiv_lim f) _ hε
+    exists N
+    intro b hb
+    apply hεs
+    dsimp [Metric.ball]
+    rw [dist_comm, dist_eq_norm]
+    solve_by_elim)
 
 variable [NormedField β]
 
@@ -56,8 +57,9 @@ open Metric
 theorem CauchySeq.isCauSeq {f : ℕ → β} (hf : CauchySeq f) : IsCauSeq norm f := by
   obtain ⟨hf1, hf2⟩ := cauchy_iff.1 hf
   intro ε hε
-  rcases hf2 { x | dist x.1 x.2 < ε } (dist_mem_uniformity hε) with ⟨t, ⟨ht, htsub⟩⟩
-  simp only [mem_map, mem_atTop_sets, mem_preimage] at ht; obtain ⟨N, hN⟩ := ht
+  rcases hf2 ({ x | dist x.1 x.2 < ε }) (dist_mem_uniformity hε) with ⟨t, ⟨ht, htsub⟩⟩
+  simp only [mem_map, mem_atTop_sets, mem_preimage] at ht
+  obtain ⟨N, hN⟩ := ht
   exists N
   intro j hj
   rw [← dist_eq_norm]
@@ -82,16 +84,18 @@ theorem CauSeq.cauchySeq (f : CauSeq β norm) : CauchySeq f := by
     apply hN <;> assumption
 
 /-- In a normed field, `CauSeq` coincides with the usual notion of Cauchy sequences. -/
-theorem isCauSeq_iff_cauchySeq {α : Type u} [NormedField α] {u : ℕ → α} :
-    IsCauSeq norm u ↔ CauchySeq u :=
+theorem isCauSeq_iff_cauchySeq {α : Type u} [NormedField α] {u : ℕ → α}
+    : IsCauSeq norm u ↔ CauchySeq u :=
   ⟨fun h => CauSeq.cauchySeq ⟨u, h⟩, fun h => h.isCauSeq⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
 -- see Note [lower instance priority]
-/-- A complete normed field is complete as a metric space, as Cauchy sequences converge by
-assumption and this suffices to characterize completeness. -/
-instance (priority := 100) completeSpace_of_cauSeq_isComplete [CauSeq.IsComplete β norm] :
-    CompleteSpace β := by
+/--
+A complete normed field is complete as a metric space, as Cauchy sequences converge by
+assumption and this suffices to characterize completeness.
+-/
+instance (priority := 100) completeSpace_of_cauSeq_isComplete [CauSeq.IsComplete β norm]
+    : CompleteSpace β := by
   apply complete_of_cauchySeq_tendsto
   intro u hu
   have C : IsCauSeq norm u := isCauSeq_iff_cauchySeq.2 hu

@@ -43,10 +43,11 @@ local notation "Φ" => range P.root
 local notation "α" => P.root
 
 /-- SGA3 XXI Prop. 2.3.1 -/
-lemma coxeterWeightIn_le_four (S : Type*)
-    [CommRing S] [LinearOrder S] [IsStrictOrderedRing S] [Algebra S R] [FaithfulSMul S R]
-    [Module S M] [IsScalarTower S R M] [P.IsValuedIn S] (i j : ι) :
-    P.coxeterWeightIn S i j ≤ 4 := by
+lemma coxeterWeightIn_le_four
+    (S : Type*) [CommRing S] [LinearOrder S] [IsStrictOrderedRing S] [Algebra S R]
+    [FaithfulSMul S R] [Module S M] [IsScalarTower S R M] [P.IsValuedIn S]
+    (i j : ι)
+    : P.coxeterWeightIn S i j ≤ 4 := by
   have : Fintype ι := Fintype.ofFinite ι
   let ri : span S Φ := ⟨α i, Submodule.subset_span (mem_range_self _)⟩
   let rj : span S Φ := ⟨α j, Submodule.subset_span (mem_range_self _)⟩
@@ -66,14 +67,14 @@ lemma coxeterWeightIn_le_four (S : Type*)
   have key : 4 • lij ^ 2 = P.coxeterWeightIn S i j • (li * lj) := by
     apply algebraMap_injective S R
     simpa [map_ofNat, lij, posRootForm, ri, rj, li, lj] using
-       P.four_smul_rootForm_sq_eq_coxeterWeight_smul i j
+      P.four_smul_rootForm_sq_eq_coxeterWeight_smul i j
   simp only [nsmul_eq_mul, smul_eq_mul, Nat.cast_ofNat] at key
   rwa [key, mul_le_mul_iff_left₀ (by positivity)] at cs
 
 variable [CharZero R] [P.IsCrystallographic] (i j : ι)
 
-lemma coxeterWeightIn_mem_set_of_isCrystallographic :
-    P.coxeterWeightIn ℤ i j ∈ ({0, 1, 2, 3, 4} : Set ℤ) := by
+lemma coxeterWeightIn_mem_set_of_isCrystallographic
+    : P.coxeterWeightIn ℤ i j ∈ ({0, 1, 2, 3, 4} : Set ℤ) := by
   have : Fintype ι := Fintype.ofFinite ι
   obtain ⟨n, hcn⟩ : ∃ n : ℕ, P.coxeterWeightIn ℤ i j = n := by
     have : 0 ≤ P.coxeterWeightIn ℤ i j := by
@@ -89,56 +90,70 @@ variable [IsDomain R]
 -- This makes an `HasUniqueDiv R` instance available, which `grind` needs below.
 open scoped IsDomain
 
-lemma pairingIn_pairingIn_mem_set_of_isCrystallographic :
-    (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈
-      ({(0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
-        (-3, -1), (4, 1), (1, 4), (-4, -1), (-1, -4), (2, 2), (-2, -2)} : Set (ℤ × ℤ)) := by
+lemma pairingIn_pairingIn_mem_set_of_isCrystallographic
+    : (P.pairingIn ℤ i j, P.pairingIn ℤ j i)
+      ∈ ({
+          (0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
+          (-3, -1), (4, 1), (1, 4), (-4, -1), (-1, -4), (2, 2), (-2, -2)
+        }
+        : Set (ℤ × ℤ)) := by
   refine (Int.mul_mem_zero_one_two_three_four_iff ?_).mp
     (P.coxeterWeightIn_mem_set_of_isCrystallographic i j)
   simpa [← P.algebraMap_pairingIn ℤ] using P.pairing_eq_zero_iff' (i := i) (j := j)
 
-lemma pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed [P.IsReduced] :
-    (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈
-      ({(0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
-        (-3, -1), (2, 2), (-2, -2)} : Set (ℤ × ℤ)) := by
+lemma pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed [P.IsReduced]
+    : (P.pairingIn ℤ i j, P.pairingIn ℤ j i)
+      ∈ ({
+          (0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
+          (-3, -1), (2, 2), (-2, -2)
+        }
+        : Set (ℤ × ℤ)) := by
   have : Module.IsReflexive R M := .of_isPerfPair P.toLinearMap
-  rcases eq_or_ne i j with rfl | h₁; · simp
-  rcases eq_or_ne (α i) (-α j) with h₂ | h₂; · simp_all
+  rcases eq_or_ne i j with rfl | h₁
+  · simp
+  rcases eq_or_ne (α i) (- α j) with h₂ | h₂
+  · simp_all
   have aux₁ := P.pairingIn_pairingIn_mem_set_of_isCrystallographic i j
   have aux₂ : P.pairingIn ℤ i j * P.pairingIn ℤ j i ≠ 4 := P.coxeterWeightIn_ne_four ℤ h₁ h₂
   aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
 
-lemma pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed' [P.IsReduced]
-    (hij : α i ≠ α j) (hij' : α i ≠ -α j) :
-    (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈
-      ({(0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
-        (-3, -1)} : Set (ℤ × ℤ)) := by
+lemma pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed'
+    [P.IsReduced] (hij : α i ≠ α j) (hij' : α i ≠ - α j)
+    : (P.pairingIn ℤ i j, P.pairingIn ℤ j i)
+      ∈ ({
+          (0, 0), (1, 1), (-1, -1), (1, 2), (2, 1), (-1, -2), (-2, -1), (1, 3), (3, 1), (-1, -3),
+          (-3, -1)
+        }
+        : Set (ℤ × ℤ)) := by
   have : Module.IsReflexive R M := .of_isPerfPair P.toLinearMap
   have := P.pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed i j
   simp_all
 
 variable {P} in
-lemma RootPositiveForm.rootLength_le_of_pairingIn_eq (B : P.RootPositiveForm ℤ) {i j : ι}
-    (hij : P.pairingIn ℤ i j = -1 ∨ P.pairingIn ℤ i j = 1) :
-    B.rootLength i ≤ B.rootLength j := by
-  have h : (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈
-      ({(1, 1), (1, 2), (1, 3), (1, 4), (-1, -1), (-1, -2), (-1, -3), (-1, -4)} : Set (ℤ × ℤ)) := by
+lemma RootPositiveForm.rootLength_le_of_pairingIn_eq
+    (B : P.RootPositiveForm ℤ) {i j : ι} (hij : P.pairingIn ℤ i j = -1 ∨ P.pairingIn ℤ i j = 1)
+    : B.rootLength i ≤ B.rootLength j := by
+  have h
+      : (P.pairingIn ℤ i j, P.pairingIn ℤ j i)
+        ∈ ({(1, 1), (1, 2), (1, 3), (1, 4), (-1, -1), (-1, -2), (-1, -3), (-1, -4)}
+          : Set (ℤ × ℤ)) := by
     have := P.pairingIn_pairingIn_mem_set_of_isCrystallographic i j
     aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
   simp only [mem_insert_iff, mem_singleton_iff, Prod.mk_one_one, Prod.mk_eq_one, Prod.mk.injEq] at h
   have h' := B.pairingIn_mul_eq_pairingIn_mul_swap i j
   have hi := B.rootLength_pos i
-  rcases h with hij' | hij' | hij' | hij' | hij' | hij' | hij' | hij' <;>
-  rw [hij'.1, hij'.2] at h' <;> lia
+  rcases h with hij' | hij' | hij' | hij' | hij' | hij' | hij' | hij' <;> rw [hij'.1, hij'.2] at h'
+    <;> lia
 
 variable {P} in
 lemma RootPositiveForm.rootLength_lt_of_pairingIn_notMem
-    (B : P.RootPositiveForm ℤ) {i j : ι}
-    (hne : α i ≠ α j) (hne' : α i ≠ -α j)
-    (hij : P.pairingIn ℤ i j ∉ ({-1, 0, 1} : Set ℤ)) :
-    B.rootLength j < B.rootLength i := by
-  have hij' : P.pairingIn ℤ i j = -3 ∨ P.pairingIn ℤ i j = -2 ∨ P.pairingIn ℤ i j = 2 ∨
-      P.pairingIn ℤ i j = 3 ∨ P.pairingIn ℤ i j = -4 ∨ P.pairingIn ℤ i j = 4 := by
+    (B : P.RootPositiveForm ℤ)
+    {i j : ι}
+    (hne : α i ≠ α j) (hne' : α i ≠ - α j) (hij : P.pairingIn ℤ i j ∉ ({-1, 0, 1} : Set ℤ))
+    : B.rootLength j < B.rootLength i := by
+  have hij'
+      : P.pairingIn ℤ i j = -3 ∨ P.pairingIn ℤ i j = -2 ∨ P.pairingIn ℤ i j = 2
+        ∨ P.pairingIn ℤ i j = 3 ∨ P.pairingIn ℤ i j = -4 ∨ P.pairingIn ℤ i j = 4 := by
     have := P.pairingIn_pairingIn_mem_set_of_isCrystallographic i j
     aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
   have aux₁ : P.pairingIn ℤ j i = -1 ∨ P.pairingIn ℤ j i = 1 := by
@@ -147,14 +162,14 @@ lemma RootPositiveForm.rootLength_lt_of_pairingIn_notMem
     aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
   have aux₂ := B.pairingIn_mul_eq_pairingIn_mul_swap i j
   have hi := B.rootLength_pos i
-  rcases aux₁ with hji | hji <;> rcases hij' with hij' | hij' | hij' | hij' | hij' | hij' <;>
-  rw [hji, hij'] at aux₂ <;> lia
+  rcases aux₁ with hji | hji <;> rcases hij' with hij' | hij' | hij' | hij' | hij' | hij'
+    <;> rw [hji, hij'] at aux₂ <;> lia
 
 variable {i j} in
-lemma pairingIn_pairingIn_mem_set_of_length_eq {B : P.InvariantForm}
-    (len_eq : B.form (α i) (α i) = B.form (α j) (α j)) :
-    (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈
-      ({(0, 0), (1, 1), (-1, -1), (2, 2), (-2, -2)} : Set (ℤ × ℤ)) := by
+lemma pairingIn_pairingIn_mem_set_of_length_eq
+    {B : P.InvariantForm} (len_eq : B.form (α i) (α i) = B.form (α j) (α j))
+    : (P.pairingIn ℤ i j, P.pairingIn ℤ j i)
+      ∈ ({(0, 0), (1, 1), (-1, -1), (2, 2), (-2, -2)} : Set (ℤ × ℤ)) := by
   replace len_eq : P.pairingIn ℤ i j = P.pairingIn ℤ j i := by
     simp only [← (FaithfulSMul.algebraMap_injective ℤ R).eq_iff, algebraMap_pairingIn]
     exact mul_right_cancel₀ (B.ne_zero j) (len_eq ▸ B.pairing_mul_eq_pairing_mul_swap j i)
@@ -162,27 +177,27 @@ lemma pairingIn_pairingIn_mem_set_of_length_eq {B : P.InvariantForm}
   aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
 
 variable {i j} in
-lemma pairingIn_pairingIn_mem_set_of_length_eq_of_ne {B : P.InvariantForm}
-    (len_eq : B.form (α i) (α i) = B.form (α j) (α j))
-    (ne : i ≠ j) (ne' : α i ≠ -α j) :
-    (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈ ({(0, 0), (1, 1), (-1, -1)} : Set (ℤ × ℤ)) := by
+lemma pairingIn_pairingIn_mem_set_of_length_eq_of_ne
+    {B : P.InvariantForm} (len_eq : B.form (α i) (α i) = B.form (α j) (α j))
+    (ne : i ≠ j) (ne' : α i ≠ - α j)
+    : (P.pairingIn ℤ i j, P.pairingIn ℤ j i) ∈ ({(0, 0), (1, 1), (-1, -1)} : Set (ℤ × ℤ)) := by
   have : Module.IsReflexive R M := .of_isPerfPair P.toLinearMap
   have := P.pairingIn_pairingIn_mem_set_of_length_eq len_eq
   simp_all
 
 omit [Finite ι] in
-lemma coxeterWeightIn_eq_zero_iff :
-    P.coxeterWeightIn ℤ i j = 0 ↔ P.pairingIn ℤ i j = 0 := by
+lemma coxeterWeightIn_eq_zero_iff : P.coxeterWeightIn ℤ i j = 0 ↔ P.pairingIn ℤ i j = 0 := by
   refine ⟨fun h ↦ ?_, fun h ↦ by rw [coxeterWeightIn, h, zero_mul]⟩
   rwa [← (algebraMap_injective ℤ R).eq_iff, map_zero, algebraMap_coxeterWeightIn,
-    RootPairing.coxeterWeight_zero_iff_isOrthogonal, IsOrthogonal,
-    P.pairing_eq_zero_iff' (i := j) (j := i), and_self, ← P.algebraMap_pairingIn ℤ,
-    FaithfulSMul.algebraMap_eq_zero_iff] at h
+      RootPairing.coxeterWeight_zero_iff_isOrthogonal, IsOrthogonal,
+      P.pairing_eq_zero_iff' (i := j) (j := i), and_self, ← P.algebraMap_pairingIn ℤ,
+      FaithfulSMul.algebraMap_eq_zero_iff]
+    at h
 
 variable {i j}
 
-lemma root_sub_root_mem_of_pairingIn_pos (h : 0 < P.pairingIn ℤ i j) (h' : i ≠ j) :
-    α i - α j ∈ Φ := by
+lemma root_sub_root_mem_of_pairingIn_pos (h : 0 < P.pairingIn ℤ i j) (h' : i ≠ j)
+    : α i - α j ∈ Φ := by
   have : Module.IsReflexive R M := .of_isPerfPair P.toLinearMap
   have : Module.IsReflexive R N := .of_isPerfPair P.flip.toLinearMap
   have : HasUniqueDiv M := .of_isTorsionFree R M
@@ -219,34 +234,36 @@ lemma root_sub_root_mem_of_pairingIn_pos (h : 0 < P.pairingIn ℤ i j) (h' : i �
     · rw [and_comm] at hij
       simp [(P.pairingIn_one_four_iff ℤ j i).mp hij, two_smul]
 
-/-- If two roots make an obtuse angle then their sum is a root (provided it is not zero).
+/--
+If two roots make an obtuse angle then their sum is a root (provided it is not zero).
 
-See `RootPairing.pairingIn_le_zero_of_root_add_mem` for a partial converse. -/
-lemma root_add_root_mem_of_pairingIn_neg (h : P.pairingIn ℤ i j < 0) (h' : α i ≠ -α j) :
-    α i + α j ∈ Φ := by
+See `RootPairing.pairingIn_le_zero_of_root_add_mem` for a partial converse.
+-/
+lemma root_add_root_mem_of_pairingIn_neg (h : P.pairingIn ℤ i j < 0) (h' : α i ≠ - α j)
+    : α i + α j ∈ Φ := by
   let _i := P.indexNeg
   replace h : 0 < P.pairingIn ℤ i (-j) := by simpa
   replace h' : i ≠ -j := by contrapose h'; simp [h']
   simpa using P.root_sub_root_mem_of_pairingIn_pos h h'
 
-lemma pairingIn_eq_zero_of_add_notMem_of_sub_notMem (hp : i ≠ j) (hn : α i ≠ -α j)
-    (h_add : α i + α j ∉ Φ) (h_sub : α i - α j ∉ Φ) :
-    P.pairingIn ℤ i j = 0 := by
+lemma pairingIn_eq_zero_of_add_notMem_of_sub_notMem
+    (hp : i ≠ j) (hn : α i ≠ - α j) (h_add : α i + α j ∉ Φ) (h_sub : α i - α j ∉ Φ)
+    : P.pairingIn ℤ i j = 0 := by
   apply le_antisymm
   · contrapose! h_sub
     exact root_sub_root_mem_of_pairingIn_pos P h_sub hp
   · contrapose! h_add
     exact root_add_root_mem_of_pairingIn_neg P h_add hn
 
-lemma pairing_eq_zero_of_add_notMem_of_sub_notMem (hp : i ≠ j) (hn : α i ≠ -α j)
-    (h_add : α i + α j ∉ Φ) (h_sub : α i - α j ∉ Φ) :
-    P.pairing i j = 0 := by
+lemma pairing_eq_zero_of_add_notMem_of_sub_notMem
+    (hp : i ≠ j) (hn : α i ≠ - α j) (h_add : α i + α j ∉ Φ) (h_sub : α i - α j ∉ Φ)
+    : P.pairing i j = 0 := by
   rw [← P.algebraMap_pairingIn ℤ, P.pairingIn_eq_zero_of_add_notMem_of_sub_notMem hp hn h_add h_sub,
     map_zero]
 
-lemma exists_coroot_sub_coroot_eq_zsmul {k : ι}
-    (hk : P.root k = P.root j - P.root i) (hij : P.pairingIn ℤ i j ≤ 0) :
-    ∃ n : ℤ, 2 ≤ n ∧ P.coroot j - P.coroot i = n • P.coroot k := by
+lemma exists_coroot_sub_coroot_eq_zsmul
+    {k : ι} (hk : P.root k = P.root j - P.root i) (hij : P.pairingIn ℤ i j ≤ 0)
+    : ∃ n : ℤ, 2 ≤ n ∧ P.coroot j - P.coroot i = n • P.coroot k := by
   have _i : Module.IsReflexive R M := .of_isPerfPair P.toLinearMap
   have hne := (P.pairingIn_two_two_iff ℤ k j).not.mpr fun h ↦ P.ne_zero i <| by grind
   have : 2 = P.pairingIn ℤ k j + P.pairingIn ℤ i j := by
@@ -255,14 +272,16 @@ lemma exists_coroot_sub_coroot_eq_zsmul {k : ι}
     have := P.pairingIn_pairingIn_mem_set_of_isCrystallographic k j
     simp only [mem_insert_iff, mem_singleton_iff, Prod.mk.injEq] at this
     omega
-  replace hjk : P.reflectionPerm k j = i := P.root.injective <| by
-    simp [reflection_apply_root' ℤ, hjk, hk]
+  replace hjk : P.reflectionPerm k j = i :=
+    P.root.injective <| by simp [reflection_apply_root' ℤ, hjk, hk]
   refine ⟨P.pairingIn ℤ k j, by lia, ?_⟩
   simp [← hjk, coreflection_apply_coroot, ← P.algebraMap_pairingIn ℤ, Int.cast_smul_eq_zsmul]
 
-lemma root_sub_root_notMem_range' (f : Module.Dual ℤ (P.corootSpan ℤ))
-    (hf : f (P.corootSpanMem ℤ j) - f (P.corootSpanMem ℤ i) = 1) (hij : P.pairingIn ℤ i j ≤ 0) :
-    P.root j - P.root i ∉ Φ := by
+lemma root_sub_root_notMem_range'
+    (f : Module.Dual ℤ (P.corootSpan ℤ))
+    (hf : f (P.corootSpanMem ℤ j) - f (P.corootSpanMem ℤ i) = 1)
+    (hij : P.pairingIn ℤ i j ≤ 0)
+    : P.root j - P.root i ∉ Φ := by
   rintro ⟨k, hk⟩
   obtain ⟨n, hn', hn⟩ := P.exists_coroot_sub_coroot_eq_zsmul hk hij
   replace hn : P.corootSpanMem ℤ j - P.corootSpanMem ℤ i = n • P.corootSpanMem ℤ k := Subtype.ext hn
@@ -270,35 +289,40 @@ lemma root_sub_root_notMem_range' (f : Module.Dual ℤ (P.corootSpan ℤ))
   exact (Int.le_of_dvd one_pos ⟨_, hf.symm⟩).not_gt hn'
 
 open Module Submodule in
-lemma root_sub_root_notMem_range {s : Finset ι} (h₀ : LinearIndepOn ℤ P.coroot s)
-    (h₃ : ∀ k, P.coroot k ∈ span ℤ (P.coroot '' s)) {i j : s} (hij : P.pairingIn ℤ i j ≤ 0) :
-    P.root j - P.root i ∉ Φ := by
+lemma root_sub_root_notMem_range
+    {s : Finset ι} (h₀ : LinearIndepOn ℤ P.coroot s) (h₃ : ∀ k, P.coroot k ∈ span ℤ (P.coroot '' s))
+    {i j : s} (hij : P.pairingIn ℤ i j ≤ 0)
+    : P.root j - P.root i ∉ Φ := by
   have hji : j ≠ i := by rintro rfl; simp at hij
-  let b : Basis s ℤ (P.corootSpan ℤ) := (Basis.span h₀.linearIndependent).map <|
-    .ofEq _ (P.corootSpan ℤ) <| (span_mono (range_comp_subset_range _ _)).antisymm <|
-      span_le.mpr <| range_subset_iff.mpr <| by simpa [range_comp] using h₃
+  let b : Basis s ℤ (P.corootSpan ℤ) :=
+    (Basis.span h₀.linearIndependent).map <| .ofEq _ (P.corootSpan ℤ) <|
+      (span_mono (range_comp_subset_range _ _)).antisymm <| span_le.mpr <| range_subset_iff.mpr <|
+        by simpa [range_comp] using h₃
   have hb (k : s) : P.corootSpanMem ℤ k = b k := by ext; simp [b]
   exact P.root_sub_root_notMem_range' (b.coord j) (by simp [hb, hji]) hij
 
-lemma exists_pos_pairingIn {s : Finset ι} (h₀ : LinearIndepOn ℤ P.root s)
-    (h₁ : Set.Pairwise s fun i j ↦ P.pairingIn ℤ i j ≤ 0)
-    {c : s → ℤ} (hc : ∑ k, c k • P.root k = P.root i) (hc₀ : ¬ c ≤ 0) :
-    ∃ j, 0 < c j ∧ 0 < P.pairingIn ℤ i j := by
+lemma exists_pos_pairingIn
+    {s : Finset ι}
+    (h₀ : LinearIndepOn ℤ P.root s) (h₁ : Set.Pairwise s fun i j ↦ P.pairingIn ℤ i j ≤ 0)
+    {c : s → ℤ} (hc : ∑ k, c k • P.root k = P.root i) (hc₀ : ¬ c ≤ 0)
+    : ∃ j, 0 < c j ∧ 0 < P.pairingIn ℤ i j := by
   have := Fintype.ofFinite ι
   let B := P.posRootForm ℤ
-  obtain ⟨j, hj, hij⟩ := B.posForm.exists_pos_and_pos_apply_sum_smul
-    (v := fun k : s ↦ P.rootSpanMem ℤ k) (fun _ ↦ P.posRootForm_posForm_pos_of_ne_zero ℤ)
-    (.of_comp (P.rootSpan ℤ).subtype h₀.linearIndependent)
-    (fun k l hkl ↦ (B.posForm_apply_root_root_le_zero_iff k l).mpr <| h₁ k.2 l.2 (by simpa)) hc₀
+  obtain ⟨j, hj, hij⟩ :=
+    B.posForm.exists_pos_and_pos_apply_sum_smul
+      (v := fun k : s ↦ P.rootSpanMem ℤ k)
+      (fun _ ↦ P.posRootForm_posForm_pos_of_ne_zero ℤ)
+      (.of_comp (P.rootSpan ℤ).subtype h₀.linearIndependent)
+      (fun k l hkl ↦ (B.posForm_apply_root_root_le_zero_iff k l).mpr <| h₁ k.2 l.2 (by simpa))
+      hc₀
   rw [show ∑ k, c k • P.rootSpanMem ℤ k = P.rootSpanMem ℤ i by aesop] at hij
   exact ⟨j, hj, (B.zero_lt_apply_root_root_iff i j).mp hij⟩
 
 omit [Finite ι] in
 lemma root_mem_submodule_iff_of_add_mem_invtSubmodule
-    {K : Type*} [Field K] [NeZero (2 : K)] [Module K M] [Module K N] {P : RootPairing ι K M N}
-    (q : P.invtRootSubmodule)
-    (hij : P.root i + P.root j ∈ range P.root) :
-    P.root i ∈ (q : Submodule K M) ↔ P.root j ∈ (q : Submodule K M) := by
+    {K : Type*} [Field K] [NeZero (2 : K)] [Module K M] [Module K N]
+    {P : RootPairing ι K M N} (q : P.invtRootSubmodule) (hij : P.root i + P.root j ∈ range P.root)
+    : P.root i ∈ (q : Submodule K M) ↔ P.root j ∈ (q : Submodule K M) := by
   obtain ⟨q, hq⟩ := q
   rw [mem_invtRootSubmodule_iff] at hq
   suffices ∀ i j, P.root i + P.root j ∈ range P.root → P.root i ∈ q → P.root j ∈ q by
@@ -321,39 +345,40 @@ namespace InvariantForm
 variable [P.IsReduced] (B : P.InvariantForm)
 variable {P}
 
-lemma apply_eq_or_aux (i j : ι) (h : P.pairingIn ℤ i j ≠ 0) :
-    B.form (α i) (α i) = B.form (α j) (α j) ∨
-    B.form (α i) (α i) = 2 * B.form (α j) (α j) ∨
-    B.form (α i) (α i) = 3 * B.form (α j) (α j) ∨
-    B.form (α j) (α j) = 2 * B.form (α i) (α i) ∨
-    B.form (α j) (α j) = 3 * B.form (α i) (α i) := by
+lemma apply_eq_or_aux (i j : ι) (h : P.pairingIn ℤ i j ≠ 0)
+    : B.form (α i) (α i) = B.form (α j) (α j) ∨ B.form (α i) (α i) = 2 * B.form (α j) (α j)
+      ∨ B.form (α i) (α i) = 3 * B.form (α j) (α j) ∨ B.form (α j) (α j) = 2 * B.form (α i) (α i)
+      ∨ B.form (α j) (α j) = 3 * B.form (α i) (α i) := by
   have h₁ := P.pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed i j
-  have h₂ : algebraMap ℤ R (P.pairingIn ℤ j i) * B.form (α i) (α i) =
-            algebraMap ℤ R (P.pairingIn ℤ i j) * B.form (α j) (α j) := by
+  have h₂
+      : algebraMap ℤ R (P.pairingIn ℤ j i) * B.form (α i) (α i)
+        = algebraMap ℤ R (P.pairingIn ℤ i j) * B.form (α j) (α j) := by
     simpa only [algebraMap_pairingIn] using B.pairing_mul_eq_pairing_mul_swap i j
   aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
 
 variable [P.IsIrreducible]
 
-/-- Relative of lengths of roots in a reduced irreducible finite crystallographic root pairing are
-very constrained. -/
-lemma apply_eq_or (i j : ι) :
-    B.form (α i) (α i) = B.form (α j) (α j) ∨
-    B.form (α i) (α i) = 2 * B.form (α j) (α j) ∨
-    B.form (α i) (α i) = 3 * B.form (α j) (α j) ∨
-    B.form (α j) (α j) = 2 * B.form (α i) (α i) ∨
-    B.form (α j) (α j) = 3 * B.form (α i) (α i) := by
+/--
+Relative of lengths of roots in a reduced irreducible finite crystallographic root pairing are
+very constrained.
+-/
+lemma apply_eq_or (i j : ι)
+    : B.form (α i) (α i) = B.form (α j) (α j) ∨ B.form (α i) (α i) = 2 * B.form (α j) (α j)
+      ∨ B.form (α i) (α i) = 3 * B.form (α j) (α j) ∨ B.form (α j) (α j) = 2 * B.form (α i) (α i)
+      ∨ B.form (α j) (α j) = 3 * B.form (α i) (α i) := by
   obtain ⟨j', h₁, h₂⟩ := P.exists_form_eq_form_and_form_ne_zero B i j
   suffices P.pairingIn ℤ i j' ≠ 0 by simp only [← h₁, B.apply_eq_or_aux i j' this]
   contrapose h₂
   replace h₂ : P.pairing i j' = 0 := by rw [← P.algebraMap_pairingIn ℤ, h₂, map_zero]
   exact (B.apply_root_root_zero_iff i j').mpr h₂
 
-/-- A reduced irreducible finite crystallographic root system has roots of at most two different
-lengths. -/
-lemma exists_apply_eq_or [Nonempty ι] : ∃ i j, ∀ k,
-    B.form (α k) (α k) = B.form (α i) (α i) ∨
-    B.form (α k) (α k) = B.form (α j) (α j) := by
+/--
+A reduced irreducible finite crystallographic root system has roots of at most two different
+lengths.
+-/
+lemma exists_apply_eq_or [Nonempty ι]
+    : ∃ i j, ∀ k,
+      B.form (α k) (α k) = B.form (α i) (α i) ∨ B.form (α k) (α k) = B.form (α j) (α j) := by
   obtain ⟨i⟩ := (inferInstance : Nonempty ι)
   by_cases! h : (∀ j, B.form (α j) (α j) = B.form (α i) (α i))
   · refine ⟨i, i, fun j ↦ by simp [h j]⟩
@@ -365,26 +390,21 @@ lemma exists_apply_eq_or [Nonempty ι] : ∃ i j, ∀ k,
     have hjk := (B.apply_eq_or j k).resolve_left hkj_ne.symm
     grind
 
-lemma apply_eq_or_of_apply_ne
-    (h : B.form (α i) (α i) ≠ B.form (α j) (α j)) (k : ι) :
-    B.form (α k) (α k) = B.form (α i) (α i) ∨
-    B.form (α k) (α k) = B.form (α j) (α j) := by
+lemma apply_eq_or_of_apply_ne (h : B.form (α i) (α i) ≠ B.form (α j) (α j)) (k : ι)
+    : B.form (α k) (α k) = B.form (α i) (α i) ∨ B.form (α k) (α k) = B.form (α j) (α j) := by
   have : Nonempty ι := ⟨i⟩
   obtain ⟨i', j', h'⟩ := B.exists_apply_eq_or
-  rcases h' i with hi | hi <;>
-  rcases h' j with hj | hj <;>
-  specialize h' k <;>
-  aesop
+  rcases h' i with hi | hi <;> rcases h' j with hj | hj <;> specialize h' k <;> aesop
 
 end InvariantForm
 
-lemma forall_pairing_eq_swap_or [P.IsReduced] [P.IsIrreducible] :
-    (∀ i j, P.pairing i j = P.pairing j i ∨
-            P.pairing i j = 2 * P.pairing j i ∨
-            P.pairing j i = 2 * P.pairing i j) ∨
-    (∀ i j, P.pairing i j = P.pairing j i ∨
-            P.pairing i j = 3 * P.pairing j i ∨
-            P.pairing j i = 3 * P.pairing i j) := by
+lemma forall_pairing_eq_swap_or [P.IsReduced] [P.IsIrreducible]
+    : (∀ i j,
+        P.pairing i j = P.pairing j i ∨ P.pairing i j = 2 * P.pairing j i
+          ∨ P.pairing j i = 2 * P.pairing i j)
+      ∨ (∀ i j,
+        P.pairing i j = P.pairing j i ∨ P.pairing i j = 3 * P.pairing j i
+          ∨ P.pairing j i = 3 * P.pairing i j) := by
   have : Fintype ι := Fintype.ofFinite ι
   have B := (P.posRootForm ℤ).toInvariantForm
   by_cases! h : ∀ i j, B.form (α i) (α i) = B.form (α j) (α j)
@@ -400,23 +420,22 @@ lemma forall_pairing_eq_swap_or [P.IsReduced] [P.IsIrreducible] :
   rcases this with this | this
   · refine Or.inl fun k₁ k₂ ↦ ?_
     have hk := B.pairing_mul_eq_pairing_mul_swap k₁ k₂
-    rcases this with h₀ | h₀ <;> rcases key k₁ with h₁ | h₁ <;> rcases key k₂ with h₂ | h₂ <;>
-    simp only [h₁, h₂, h₀, ← mul_assoc, mul_comm, mul_eq_mul_right_iff] at hk <;>
-    aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
+    rcases this with h₀ | h₀ <;> rcases key k₁ with h₁ | h₁ <;> rcases key k₂ with h₂ | h₂
+      <;> simp only [h₁, h₂, h₀, ← mul_assoc, mul_comm, mul_eq_mul_right_iff] at hk <;> aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
   · refine Or.inr fun k₁ k₂ ↦ ?_
     have hk := B.pairing_mul_eq_pairing_mul_swap k₁ k₂
-    rcases this with h₀ | h₀ <;> rcases key k₁ with h₁ | h₁ <;> rcases key k₂ with h₂ | h₂ <;>
-    simp only [h₁, h₂, h₀, ← mul_assoc, mul_comm, mul_eq_mul_right_iff] at hk <;>
-    aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
+    rcases this with h₀ | h₀ <;> rcases key k₁ with h₁ | h₁ <;> rcases key k₂ with h₂ | h₂
+      <;> simp only [h₁, h₂, h₀, ← mul_assoc, mul_comm, mul_eq_mul_right_iff] at hk <;> aesop -- https://github.com/leanprover-community/mathlib4/issues/24551 (this should be faster)
 
-lemma forall_pairingIn_eq_swap_or [P.IsReduced] [P.IsIrreducible] :
-    (∀ i j, P.pairingIn ℤ i j = P.pairingIn ℤ j i ∨
-            P.pairingIn ℤ i j = 2 * P.pairingIn ℤ j i ∨
-            P.pairingIn ℤ j i = 2 * P.pairingIn ℤ i j) ∨
-    (∀ i j, P.pairingIn ℤ i j = P.pairingIn ℤ j i ∨
-            P.pairingIn ℤ i j = 3 * P.pairingIn ℤ j i ∨
-            P.pairingIn ℤ j i = 3 * P.pairingIn ℤ i j) := by
+lemma forall_pairingIn_eq_swap_or [P.IsReduced] [P.IsIrreducible]
+    : (∀ i j,
+        P.pairingIn ℤ i j = P.pairingIn ℤ j i ∨ P.pairingIn ℤ i j = 2 * P.pairingIn ℤ j i
+          ∨ P.pairingIn ℤ j i = 2 * P.pairingIn ℤ i j)
+      ∨ (∀ i j,
+        P.pairingIn ℤ i j = P.pairingIn ℤ j i ∨ P.pairingIn ℤ i j = 3 * P.pairingIn ℤ j i
+          ∨ P.pairingIn ℤ j i = 3 * P.pairingIn ℤ i j) := by
   simpa only [← P.algebraMap_pairingIn ℤ, eq_intCast, ← Int.cast_mul, Int.cast_inj,
-    ← map_ofNat (algebraMap ℤ R)] using P.forall_pairing_eq_swap_or
+      ← map_ofNat (algebraMap ℤ R)]
+    using P.forall_pairing_eq_swap_or
 
 end RootPairing

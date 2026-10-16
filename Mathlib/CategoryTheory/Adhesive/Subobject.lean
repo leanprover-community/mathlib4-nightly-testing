@@ -27,16 +27,21 @@ universe v u
 
 variable {C : Type u} [Category.{v} C] [Adhesive C] {X : C}
 
-/-- Given an object `X` of an adhesive category `C`, the coproduct of two subobjects of `X` is their
-  pushout in `C` over their pullback. -/
-noncomputable def isColimitBinaryCofan (a b : Subobject X) :
-    IsColimit (BinaryCofan.mk (P := Subobject.mk (pushout.desc a.arrow b.arrow pullback.condition))
+/--
+Given an object `X` of an adhesive category `C`, the coproduct of two subobjects of `X` is their
+pushout in `C` over their pullback.
+-/
+noncomputable def isColimitBinaryCofan (a b : Subobject X)
+    : IsColimit (BinaryCofan.mk
+      (P := Subobject.mk (pushout.desc a.arrow b.arrow pullback.condition))
       (le_mk_of_comm (pushout.inl _ _) (pushout.inl_desc _ _ _)).hom
       (le_mk_of_comm (pushout.inr _ _) (pushout.inr_desc _ _ _)).hom) :=
-  BinaryCofan.isColimitMk (fun s ↦ (mk_le_of_comm
-      (pushout.desc (underlying.map (s.ι.app ⟨WalkingPair.left⟩))
-      (underlying.map (s.ι.app ⟨WalkingPair.right⟩))
-      (by ext; simp [pullback.condition])) (by cat_disch)).hom)
+  BinaryCofan.isColimitMk
+    (fun s ↦
+      (mk_le_of_comm
+        (pushout.desc (underlying.map (s.ι.app ⟨WalkingPair.left⟩))
+          (underlying.map (s.ι.app ⟨WalkingPair.right⟩)) (by ext; simp [pullback.condition]))
+        (by cat_disch)).hom)
     (by intros; rfl) (by intros; rfl) (by intros; rfl)
 
 instance : HasBinaryCoproducts (Subobject X) where

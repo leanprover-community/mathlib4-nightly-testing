@@ -26,7 +26,6 @@ forms an extension of `L`.
 
 -/
 
-
 @[expose] public section
 
 namespace LieAlgebra
@@ -36,16 +35,17 @@ The semi-direct sum of two Lie algebras `K` and `L` over `R`, relative to a Lie 
 `ψ: L → LieDerivation R K K`. As a set, it is just `K × L`, however the Lie bracket is twisted by
 `ψ`.
 -/
-@[ext] structure SemiDirectSum {R : Type*} [CommRing R] (K : Type*) [LieRing K] [LieAlgebra R K]
+@[ext]
+structure SemiDirectSum
+    {R : Type*} [CommRing R]
+    (K : Type*) [LieRing K] [LieAlgebra R K]
     (L : Type*) [LieRing L] [LieAlgebra R L] (_ : L →ₗ⁅R⁆ LieDerivation R K K) where
   /-- The element of K -/
   left : K
   /-- The element of L -/
   right : L
 
-@[inherit_doc]
-notation:35 K " ⋊⁅" ψ:35 "⁆ " L:35 => SemiDirectSum K L ψ
-
+@[inherit_doc] notation:35 K " ⋊⁅" ψ:35 "⁆ " L:35 => SemiDirectSum K L ψ
 
 namespace SemiDirectSum
 
@@ -66,19 +66,14 @@ def toProd : K ⋊⁅ψ⁆ L ≃ K × L where
 
 @[simp] lemma toProd_apply (x : K ⋊⁅ψ⁆ L) : toProd x = ⟨x.left, x.right⟩ := rfl
 
-@[simp] lemma toProd_symm_apply (x : K × L) : (toProd : K ⋊⁅ψ⁆ L ≃ K × L).symm x = ⟨x.1, x.2⟩ :=
-  rfl
+@[simp] lemma toProd_symm_apply (x : K × L) : (toProd : K ⋊⁅ψ⁆ L ≃ K × L).symm x = ⟨x.1, x.2⟩ := rfl
 
 instance : AddCommGroup (K ⋊⁅ψ⁆ L) := toProd.addCommGroup
 
-instance : Module R (K ⋊⁅ψ⁆ L) :=
-  { toProd with map_add' _ _ := rfl : (K ⋊⁅ψ⁆ L) ≃+ K × L }.module R
+instance : Module R (K ⋊⁅ψ⁆ L) := { toProd with map_add' _ _ := rfl : (K ⋊⁅ψ⁆ L) ≃+ K × L }.module R
 
 /-- `LieAlgebra.SemiDirectSum.toProd` as a linear equivalence. -/
-def toProdl : (K ⋊⁅ψ⁆ L) ≃ₗ[R] K × L :=
-  { __ := toProd
-    map_add' _ _ := rfl
-    map_smul' _ _ := rfl }
+def toProdl : (K ⋊⁅ψ⁆ L) ≃ₗ[R] K × L := { __ := toProd, map_add' _ _ := rfl, map_smul' _ _ := rfl }
 
 @[simp] lemma toProdl_coe (x : K ⋊⁅ψ⁆ L) : toProdl ψ x = toProd x := rfl
 @[simp] lemma toProdl_symm_coe (x : K × L) : (toProdl ψ).symm x = toProd.symm x := rfl
@@ -91,8 +86,9 @@ instance : Bracket (K ⋊⁅ψ⁆ L) (K ⋊⁅ψ⁆ L) where
 @[simp] lemma sub_eq_mk (x y : K ⋊⁅ψ⁆ L) : x - y = ⟨x.left - y.left, x.right - y.right⟩ := rfl
 @[simp] lemma neg_eq_mk (x : K ⋊⁅ψ⁆ L) : -x = ⟨-x.left, -x.right⟩ := rfl
 @[simp] lemma smul_eq_mk (t : R) (x : K ⋊⁅ψ⁆ L) : t • x = ⟨t • x.left, t • x.right⟩ := rfl
-@[simp] lemma lie_eq_mk (x y : K ⋊⁅ψ⁆ L) :
-    ⁅x, y⁆ = ⟨⁅x.left, y.left⁆ + ψ x.right y.left - ψ y.right x.left, ⁅x.right, y.right⁆⟩ :=
+@[simp]
+lemma lie_eq_mk (x y : K ⋊⁅ψ⁆ L)
+    : ⁅x, y⁆ = ⟨⁅x.left, y.left⁆ + ψ x.right y.left - ψ y.right x.left, ⁅x.right, y.right⁆⟩ :=
   rfl
 
 instance : LieRing (K ⋊⁅ψ⁆ L) where
@@ -121,8 +117,7 @@ def inr : L →ₗ⁅R⁆ K ⋊⁅ψ⁆ L where
 @[simp] lemma inl_eq_mk (x : K) : inl ψ x = ⟨x, 0⟩ := rfl
 @[simp] lemma inr_eq_mk (x : L) : inr ψ x = ⟨0, x⟩ := rfl
 
-@[simp]
-lemma inl_injective : Function.Injective (inl ψ) := by intro; simp [inl]
+@[simp] lemma inl_injective : Function.Injective (inl ψ) := by intro; simp [inl]
 
 /-- The canonical projection of the semi-direct sum K ⋊⁅ψ⁆ L to G. -/
 def projr : K ⋊⁅ψ⁆ L →ₗ⁅R⁆ L where
@@ -131,8 +126,10 @@ def projr : K ⋊⁅ψ⁆ L →ₗ⁅R⁆ L where
   map_smul' _ _ := by simp
   map_lie' := by simp
 
-/-- The canonical projection of the semi-direct sum K ⋊⁅ψ⁆ L to G.
-It is not, in general, a Lie algebra homomorphism, just a linear map. -/
+/--
+The canonical projection of the semi-direct sum K ⋊⁅ψ⁆ L to G.
+It is not, in general, a Lie algebra homomorphism, just a linear map.
+-/
 def projl : K ⋊⁅ψ⁆ L →ₗ[R] K where
   toFun x := x.left
   map_add' _ _ := by simp
@@ -146,9 +143,7 @@ lemma projr_inr_apply {x : L} : projr ψ (inr ψ x) = x := by simp
 lemma projl_inr_apply {x : L} : projl ψ (inr ψ x) = 0 := by simp
 lemma projl_inl_apply {x : K} : projl ψ (inl ψ x) = x := by simp
 
-@[simp]
-lemma projr_surjective : Function.Surjective (projr ψ) :=
-  fun x ↦ ⟨inr ψ x, by simp⟩
+@[simp] lemma projr_surjective : Function.Surjective (projr ψ) := fun x ↦ ⟨inr ψ x, by simp⟩
 
 instance : LieAlgebra.IsExtension (inl ψ) (projr ψ) where
   ker_eq_bot := by simp [LieHom.ker_eq_bot]

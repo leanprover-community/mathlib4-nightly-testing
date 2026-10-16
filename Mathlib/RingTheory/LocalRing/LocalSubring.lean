@@ -46,15 +46,16 @@ attribute [instance] isLocalRing
 lemma toSubring_injective : Function.Injective (toSubring (R := R)) := by
   rintro ⟨a, b⟩ ⟨c, d⟩ rfl; rfl
 
-/-- Copy of a local subring with a new `carrier` equal to the old one.
-Useful to fix definitional equalities. -/
+/--
+Copy of a local subring with a new `carrier` equal to the old one.
+Useful to fix definitional equalities.
+-/
 protected def copy (S : LocalSubring R) (s : Set R) (hs : s = ↑S.toSubring) : LocalSubring R :=
   LocalSubring.mk (S.toSubring.copy s hs) (isLocalRing := hs ▸ S.2)
 
 /-- The image of a `LocalSubring` as a `LocalSubring`. -/
 @[simps! toSubring]
-def map [Nontrivial S] (f : R →+* S) (s : LocalSubring R) : LocalSubring S :=
-  mk (s.1.map f)
+def map [Nontrivial S] (f : R →+* S) (s : LocalSubring R) : LocalSubring S := mk (s.1.map f)
 
 /-- The range of a ring homomorphism from a local ring as a `LocalSubring`. -/
 @[simps! toSubring]
@@ -73,29 +74,30 @@ instance : PartialOrder (LocalSubring R) where
   le_antisymm A B h₁ h₂ := toSubring_injective (le_antisymm h₁.1 h₂.1)
 
 /-- `A` dominates `B` if and only if `B ≤ A` (as subrings) and `m_A ∩ B = m_B`. -/
-lemma le_def {A B : LocalSubring R} :
-    A ≤ B ↔ ∃ h : A.toSubring ≤ B.toSubring, IsLocalHom (Subring.inclusion h) := Iff.rfl
+lemma le_def {A B : LocalSubring R}
+    : A ≤ B ↔ ∃ h : A.toSubring ≤ B.toSubring, IsLocalHom (Subring.inclusion h) :=
+  Iff.rfl
 
-lemma toSubring_mono : Monotone (toSubring (R := R)) :=
-  fun _ _ e ↦ e.1
+lemma toSubring_mono : Monotone (toSubring (R := R)) := fun _ _ e ↦ e.1
 
 section ofPrime
 
 variable (A : Subring K) (P : Ideal A) [P.IsPrime]
 
-/-- The localization of a subring at a prime, as a local subring.
-Also see `Localization.subalgebra.ofField` -/
-noncomputable
-def ofPrime (A : Subring K) (P : Ideal A) [P.IsPrime] : LocalSubring K :=
-  range (IsLocalization.lift (M := P.primeCompl) (S := Localization.AtPrime P)
-    (g := A.subtype) (by simp [Ideal.primeCompl, not_imp_not]))
+/--
+The localization of a subring at a prime, as a local subring.
+Also see `Localization.subalgebra.ofField`
+-/
+noncomputable def ofPrime (A : Subring K) (P : Ideal A) [P.IsPrime] : LocalSubring K :=
+  range (IsLocalization.lift (M := P.primeCompl) (S := Localization.AtPrime P) (g := A.subtype)
+    (by simp [Ideal.primeCompl, not_imp_not]))
 
 lemma le_ofPrime : A ≤ (ofPrime A P).toSubring := by
   intro x hx
   exact ⟨algebraMap A _ ⟨x, hx⟩, by simp⟩
 
-noncomputable
-instance : Algebra A (ofPrime A P).toSubring := (Subring.inclusion (le_ofPrime A P)).toAlgebra
+noncomputable instance : Algebra A (ofPrime A P).toSubring :=
+  (Subring.inclusion (le_ofPrime A P)).toAlgebra
 
 instance : IsScalarTower A (ofPrime A P).toSubring K := .of_algebraMap_eq (fun _ ↦ rfl)
 
@@ -103,17 +105,19 @@ set_option backward.isDefEq.respectTransparency false in
 -- see https://github.com/leanprover-community/mathlib4/issues/29041
 set_option linter.unusedSimpArgs false in
 /-- The localization of a subring at a prime is indeed isomorphic to its abstract localization. -/
-noncomputable
-def ofPrimeEquiv : Localization.AtPrime P ≃ₐ[A] (ofPrime A P).toSubring := by
-  refine AlgEquiv.ofInjective (IsLocalization.liftAlgHom (M := P.primeCompl)
-    (S := Localization.AtPrime P) (f := Algebra.ofId A K) _) ?_
+noncomputable def ofPrimeEquiv : Localization.AtPrime P ≃ₐ[A] (ofPrime A P).toSubring := by
+  refine AlgEquiv.ofInjective
+    (IsLocalization.liftAlgHom (M := P.primeCompl) (S := Localization.AtPrime P)
+      (f := Algebra.ofId A K) _)
+    ?_
   intro x y e
   obtain ⟨x, s, rfl⟩ := IsLocalization.exists_mk'_eq P.primeCompl x
   obtain ⟨y, t, rfl⟩ := IsLocalization.exists_mk'_eq P.primeCompl y
   have H : ∀ x : P.primeCompl, x.1 ≠ 0 := by rintro ⟨x, hx⟩ rfl; aesop
   have : x.1 = y.1 * t.1.1⁻¹ * s.1.1 := by
-    simpa [IsLocalization.lift_mk', Algebra.ofId_apply, H,
-      Algebra.algebraMap_ofSubsemiring_apply, IsUnit.coe_liftRight] using congr($e * s.1.1)
+    simpa [IsLocalization.lift_mk', Algebra.ofId_apply, H, Algebra.algebraMap_ofSubsemiring_apply,
+        IsUnit.coe_liftRight]
+      using congr($e * s.1.1)
   rw [IsLocalization.mk'_eq_iff_eq]
   congr 1
   ext

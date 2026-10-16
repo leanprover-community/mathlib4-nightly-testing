@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 public import Mathlib.Order.Interval.Finset.Defs
-
 import Mathlib.Algebra.Order.Group.Pointwise.Interval
 
 /-! # Pointwise operations on intervals
@@ -39,8 +38,8 @@ variable [Mul α] [Preorder α] [DecidableEq α]
 variable [MulLeftMono α] [MulRightMono α]
 
 @[to_additive Icc_add_Icc_subset]
-theorem Icc_mul_Icc_subset' [LocallyFiniteOrder α] (a b c d : α) :
-    Icc a b * Icc c d ⊆ Icc (a * c) (b * d) :=
+theorem Icc_mul_Icc_subset' [LocallyFiniteOrder α] (a b c d : α)
+    : Icc a b * Icc c d ⊆ Icc (a * c) (b * d) :=
   Finset.coe_subset.mp <| by simpa using Set.Icc_mul_Icc_subset' _ _ _ _
 
 @[to_additive Iic_add_Iic_subset]
@@ -59,23 +58,23 @@ variable [Mul α] [PartialOrder α] [DecidableEq α]
 variable [MulLeftStrictMono α] [MulRightStrictMono α]
 
 @[to_additive Icc_add_Ico_subset]
-theorem Icc_mul_Ico_subset' [LocallyFiniteOrder α] (a b c d : α) :
-    Icc a b * Ico c d ⊆ Ico (a * c) (b * d) :=
+theorem Icc_mul_Ico_subset' [LocallyFiniteOrder α] (a b c d : α)
+    : Icc a b * Ico c d ⊆ Ico (a * c) (b * d) :=
   Finset.coe_subset.mp <| by simpa using Set.Icc_mul_Ico_subset' _ _ _ _
 
 @[to_additive Ico_add_Icc_subset]
-theorem Ico_mul_Icc_subset' [LocallyFiniteOrder α] (a b c d : α) :
-    Ico a b * Icc c d ⊆ Ico (a * c) (b * d) :=
+theorem Ico_mul_Icc_subset' [LocallyFiniteOrder α] (a b c d : α)
+    : Ico a b * Icc c d ⊆ Ico (a * c) (b * d) :=
   Finset.coe_subset.mp <| by simpa using Set.Ico_mul_Icc_subset' _ _ _ _
 
 @[to_additive Ioc_add_Ico_subset]
-theorem Ioc_mul_Ico_subset' [LocallyFiniteOrder α] (a b c d : α) :
-    Ioc a b * Ico c d ⊆ Ioo (a * c) (b * d) :=
+theorem Ioc_mul_Ico_subset' [LocallyFiniteOrder α] (a b c d : α)
+    : Ioc a b * Ico c d ⊆ Ioo (a * c) (b * d) :=
   Finset.coe_subset.mp <| by simpa using Set.Ioc_mul_Ico_subset' _ _ _ _
 
 @[to_additive Ico_add_Ioc_subset]
-theorem Ico_mul_Ioc_subset' [LocallyFiniteOrder α] (a b c d : α) :
-    Ico a b * Ioc c d ⊆ Ioo (a * c) (b * d) :=
+theorem Ico_mul_Ioc_subset' [LocallyFiniteOrder α] (a b c d : α)
+    : Ico a b * Ioc c d ⊆ Ioo (a * c) (b * d) :=
   Finset.coe_subset.mp <| by simpa using Set.Ico_mul_Ioc_subset' _ _ _ _
 
 @[to_additive Iic_add_Iio_subset]

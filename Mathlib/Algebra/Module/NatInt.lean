@@ -61,8 +61,8 @@ instance AddCommMonoid.toNatModule : Module ℕ M where
   zero_smul := zero_nsmul
   add_smul r s x := add_nsmul x r s
 
-theorem DistribSMul.toAddMonoidHom_eq_nsmulAddMonoidHom :
-    toAddMonoidHom M = nsmulAddMonoidHom := rfl
+theorem DistribSMul.toAddMonoidHom_eq_nsmulAddMonoidHom : toAddMonoidHom M = nsmulAddMonoidHom :=
+  rfl
 
 end AddCommMonoid
 
@@ -78,17 +78,18 @@ instance AddCommGroup.toIntModule : Module ℤ M where
   zero_smul := zero_zsmul
   add_smul r s x := add_zsmul x r s
 
-theorem DistribSMul.toAddMonoidHom_eq_zsmulAddGroupHom :
-    toAddMonoidHom M = zsmulAddGroupHom := rfl
+theorem DistribSMul.toAddMonoidHom_eq_zsmulAddGroupHom : toAddMonoidHom M = zsmulAddGroupHom := rfl
 
 end AddCommGroup
 
 variable (R) in
-/-- An `AddCommMonoid` that is a `Module` over a `Ring` carries a natural `AddCommGroup`
+/--
+An `AddCommMonoid` that is a `Module` over a `Ring` carries a natural `AddCommGroup`
 structure.
-See note [reducible non-instances]. -/
-abbrev Module.addCommMonoidToAddCommGroup
-    [Ring R] [AddCommMonoid M] [Module R M] : AddCommGroup M where
+See note [reducible non-instances].
+-/
+abbrev Module.addCommMonoidToAddCommGroup [Ring R] [AddCommMonoid M] [Module R M]
+    : AddCommGroup M where
   neg := fun a => (-1 : R) • a
   neg_add_cancel := fun a =>
     show (-1 : R) • a + a = 0 by
@@ -117,19 +118,22 @@ lemma Nat.cast_smul_eq_nsmul (n : ℕ) (b : M) : (n : R) • b = n • b := by
   | succ n ih => rw [Nat.cast_succ, add_smul, add_smul, one_smul, ih, one_smul]
 
 /-- `nsmul` is equal to any other module structure via a cast. -/
-lemma ofNat_smul_eq_nsmul (n : ℕ) [n.AtLeastTwo] (b : M) :
-    (ofNat(n) : R) • b = ofNat(n) • b := Nat.cast_smul_eq_nsmul ..
+lemma ofNat_smul_eq_nsmul (n : ℕ) [n.AtLeastTwo] (b : M) : (ofNat(n) : R) • b = ofNat(n) • b :=
+  Nat.cast_smul_eq_nsmul ..
 
 end
 
-/-- Convert back any exotic `ℕ`-smul to the canonical instance. This should not be needed since in
+/--
+Convert back any exotic `ℕ`-smul to the canonical instance. This should not be needed since in
 mathlib all `AddCommMonoid`s should normally have exactly one `ℕ`-module structure by design.
 -/
 theorem nat_smul_eq_nsmul (h : Module ℕ M) (n : ℕ) (x : M) : h.smul n x = n • x :=
   Nat.cast_smul_eq_nsmul ..
 
-/-- All `ℕ`-module structures are equal. Not an instance since in mathlib all `AddCommMonoid`
-should normally have exactly one `ℕ`-module structure by design. -/
+/--
+All `ℕ`-module structures are equal. Not an instance since in mathlib all `AddCommMonoid`
+should normally have exactly one `ℕ`-module structure by design.
+-/
 @[instance_reducible]
 def AddCommMonoid.uniqueNatModule : Unique (Module ℕ M) where
   default := inferInstance
@@ -147,9 +151,13 @@ instance AddCommMonoid.nat_isScalarTower : IsScalarTower ℕ R M where
 
 end AddCommMonoid
 
-theorem map_natCast_smul [AddCommMonoid M] [AddCommMonoid M₂] {F : Type*} [FunLike F M M₂]
-    [AddMonoidHomClass F M M₂] (f : F) (R S : Type*) [Semiring R] [Semiring S] [Module R M]
-    [Module S M₂] (x : ℕ) (a : M) : f ((x : R) • a) = (x : S) • f a := by
+theorem map_natCast_smul
+    [AddCommMonoid M] [AddCommMonoid M₂]
+    {F : Type*} [FunLike F M M₂] [AddMonoidHomClass F M M₂]
+    (f : F)
+    (R S : Type*) [Semiring R] [Semiring S] [Module R M] [Module S M₂]
+    (x : ℕ) (a : M)
+    : f ((x : R) • a) = (x : S) • f a := by
   simp only [Nat.cast_smul_eq_nsmul, map_nsmul]
 
 theorem Nat.smul_one_eq_cast {R : Type*} [NonAssocSemiring R] (m : ℕ) : m • (1 : R) = ↑m := by
@@ -175,13 +183,17 @@ lemma Int.cast_smul_eq_zsmul (n : ℤ) (b : M) : (n : R) • b = n • b := by
 
 end
 
-/-- Convert back any exotic `ℤ`-smul to the canonical instance. This should not be needed since in
-mathlib all `AddCommGroup`s should normally have exactly one `ℤ`-module structure by design. -/
+/--
+Convert back any exotic `ℤ`-smul to the canonical instance. This should not be needed since in
+mathlib all `AddCommGroup`s should normally have exactly one `ℤ`-module structure by design.
+-/
 theorem int_smul_eq_zsmul (h : Module ℤ M) (n : ℤ) (x : M) : h.smul n x = n • x :=
   Int.cast_smul_eq_zsmul ..
 
-/-- All `ℤ`-module structures are equal. Not an instance since in mathlib all `AddCommGroup`
-should normally have exactly one `ℤ`-module structure by design. -/
+/--
+All `ℤ`-module structures are equal. Not an instance since in mathlib all `AddCommGroup`
+should normally have exactly one `ℤ`-module structure by design.
+-/
 @[instance_reducible]
 def AddCommGroup.uniqueIntModule : Unique (Module ℤ M) where
   default := inferInstance
@@ -195,22 +207,29 @@ instance AddCommMonoid.subsingletonIntModule [AddCommMonoid M] : Subsingleton (M
     let : AddCommGroup M := Module.addCommMonoidToAddCommGroup ℤ
     AddCommGroup.uniqueIntModule.instSubsingleton.allEq a b
 
-theorem map_intCast_smul [AddCommGroup M] [AddCommGroup M₂] {F : Type*} [FunLike F M M₂]
-    [AddMonoidHomClass F M M₂] (f : F) (R S : Type*) [Ring R] [Ring S] [Module R M] [Module S M₂]
-    (x : ℤ) (a : M) :
-    f ((x : R) • a) = (x : S) • f a := by simp only [Int.cast_smul_eq_zsmul, map_zsmul]
+theorem map_intCast_smul
+    [AddCommGroup M] [AddCommGroup M₂]
+    {F : Type*} [FunLike F M M₂] [AddMonoidHomClass F M M₂]
+    (f : F)
+    (R S : Type*) [Ring R] [Ring S] [Module R M] [Module S M₂]
+    (x : ℤ) (a : M)
+    : f ((x : R) • a) = (x : S) • f a := by
+  simp only [Int.cast_smul_eq_zsmul, map_zsmul]
 
-instance AddCommGroup.intIsScalarTower {R : Type u} {M : Type v} [Ring R] [AddCommGroup M]
-    [Module R M] : IsScalarTower ℤ R M where
+instance AddCommGroup.intIsScalarTower
+    {R : Type u} {M : Type v} [Ring R] [AddCommGroup M] [Module R M]
+    : IsScalarTower ℤ R M where
   smul_assoc n x y := by
     cases n with
     | ofNat => simp [mul_smul, Nat.cast_smul_eq_nsmul]
     | negSucc => simp [mul_smul, add_smul, Nat.cast_smul_eq_nsmul]
 
 variable (M) in
-/-- If `M` is an `R`-module with one and `M` has characteristic zero, then `R` has characteristic
-zero as well. Usually `M` is an `R`-algebra. -/
-lemma CharZero.of_module [Semiring R] [AddCommMonoidWithOne M] [CharZero M] [Module R M] :
-    CharZero R := by
+/--
+If `M` is an `R`-module with one and `M` has characteristic zero, then `R` has characteristic
+zero as well. Usually `M` is an `R`-algebra.
+-/
+lemma CharZero.of_module [Semiring R] [AddCommMonoidWithOne M] [CharZero M] [Module R M]
+    : CharZero R := by
   refine ⟨fun m n h => @Nat.cast_injective M _ _ _ _ ?_⟩
   rw [← nsmul_one, ← nsmul_one, ← Nat.cast_smul_eq_nsmul R, ← Nat.cast_smul_eq_nsmul R, h]

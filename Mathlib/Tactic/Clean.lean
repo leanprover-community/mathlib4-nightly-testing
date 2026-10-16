@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Michail Karatarakis, Kyle Miller
 module
 
 public meta import Lean.Elab.SyntheticMVars
-
 import Mathlib.Init
 
 /-!
@@ -21,14 +20,17 @@ open Lean Meta Elab
 
 namespace Lean.Expr
 
-/-- List of names removed by the `clean` tactic.
-All of these names must resolve to functions defeq `id`. -/
+/--
+List of names removed by the `clean` tactic.
+All of these names must resolve to functions defeq `id`.
+-/
 -- Note: one could also add `hidden`, but this doesn't arise from type hints.
-def cleanConsts : List Name :=
-  [``id]
+def cleanConsts : List Name := [``id]
 
-/-- Clean an expression by eliminating identify functions listed in `cleanConsts`.
-Also eliminates `fun x => x` applications and tautological `let`/`have` bindings. -/
+/--
+Clean an expression by eliminating identify functions listed in `cleanConsts`.
+Also eliminates `fun x => x` applications and tautological `let`/`have` bindings.
+-/
 def clean (e : Expr) : Expr :=
   e.replace fun
     | .app (.app (.const n _) _) e' => if n ∈ cleanConsts then some e' else none
@@ -67,7 +69,8 @@ def elabClean : Term.TermElab := fun stx expectedType? =>
   | `(clean% $t) => do
     let e ← Term.withSynthesize <| Term.elabTerm t expectedType?
     return (← instantiateMVars e).clean
-  | _ => throwUnsupportedSyntax
+  | _ =>
+    throwUnsupportedSyntax
 
 /-- (Deprecated) `clean t` is a macro for `exact clean% t`. -/
 @[deprecated "`clean' is not used/needed anymore" (since := "2026-09-03")]

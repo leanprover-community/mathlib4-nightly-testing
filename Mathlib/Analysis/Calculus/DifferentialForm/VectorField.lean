@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Calculus.DifferentialForm.Basic
 public import Mathlib.Analysis.Calculus.VectorField
-
 import Mathlib.Analysis.Calculus.FDeriv.ContinuousAlternatingMap
 
 /-!
@@ -40,12 +39,10 @@ public section
 open ContinuousAlternatingMap Finset VectorField
 open scoped Topology
 
-variable {𝕜 E F : Type*}
-  [NontriviallyNormedField 𝕜]
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable
+  {𝕜 E F : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
-  {n : ℕ}
-  {s : Set E} {x : E}
+  {n : ℕ} {s : Set E} {x : E}
 
 /--
 If `ω` is a differentiable `(n + 1)`-form and `V i` are `n + 2` differentiable vector fields, then
@@ -83,20 +80,20 @@ which changes the sign before the sum from `+` to `-`.
 theorem extDerivWithin_apply_vectorField
     {ω : E → E [⋀^Fin (n + 1)]→L[𝕜] F} {V : Fin (n + 2) → E → E}
     (hω : DifferentiableWithinAt 𝕜 ω s x) (hV : ∀ i, DifferentiableWithinAt 𝕜 (V i) s x)
-    (hsx : UniqueDiffWithinAt 𝕜 s x) :
-    extDerivWithin ω s x (V · x) =
-      (∑ i, (-1) ^ i.val • fderivWithin 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) s x (V i x)) -
-        ∑ i : Fin (n + 1), ∑ j ≥ i,
-          (-1) ^ (i + j : ℕ) •
-            ω x (Matrix.vecCons (lieBracketWithin 𝕜 (V i.castSucc) (V j.succ) s x)
-              (j.removeNth <| i.castSucc.removeNth (V · x))) := by
-  have H₀ (i : Fin (n + 2)) (j : Fin (n + 1)) :
-      DifferentiableWithinAt 𝕜 (fun y ↦ i.removeNth (V · y) j) s x := hV ..
+    (hsx : UniqueDiffWithinAt 𝕜 s x)
+    : extDerivWithin ω s x (V · x)
+      = (∑ i, (-1) ^ i.val • fderivWithin 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) s x (V i x))
+        - ∑ i : Fin (n + 1), ∑ j ≥ i,
+            (-1) ^ (i + j : ℕ) •
+              ω x (Matrix.vecCons (lieBracketWithin 𝕜 (V i.castSucc) (V j.succ) s x)
+                (j.removeNth <| i.castSucc.removeNth (V · x))) := by
+  have H₀ (i : Fin (n + 2)) (j : Fin (n + 1))
+      : DifferentiableWithinAt 𝕜 (fun y ↦ i.removeNth (V · y) j) s x :=
+    hV ..
   symm
-  simp only [extDerivWithin_apply,
-    fderivWithin_continuousAlternatingMap_apply_const_apply,
-    fderivWithin_continuousAlternatingMap_apply_apply hω (H₀ _) hsx, *,
-    smul_add, sum_add_distrib, add_sub_assoc, add_eq_left, sub_eq_zero, smul_sum]
+  simp only [extDerivWithin_apply, fderivWithin_continuousAlternatingMap_apply_const_apply,
+    fderivWithin_continuousAlternatingMap_apply_apply hω (H₀ _) hsx, *, smul_add, sum_add_distrib,
+    add_sub_assoc, add_eq_left, sub_eq_zero, smul_sum]
   rw [Fin.sum_sum_eq_sum_triangle_add]
   refine Fintype.sum_congr _ _ fun i ↦ sum_congr rfl fun j hj ↦ ?_
   rw [mem_Ici] at hj
@@ -106,7 +103,7 @@ theorem extDerivWithin_apply_vectorField
   have H₂ : j.predAbove i.castSucc = i := by simp [Fin.predAbove_of_le_castSucc, hj]
   have H₃ : j.succ.succAbove i = i.castSucc := by simp [Fin.succAbove_of_castSucc_lt, hj]
   simp +unfoldPartialApp [pow_add, lieBracketWithin, mul_smul, smul_comm ((-1) ^ (j : ℕ)), smul_sub,
-      ← sub_eq_add_neg, H₁, H₂, H₃, Fin.removeNth]
+    ← sub_eq_add_neg, H₁, H₂, H₃, Fin.removeNth]
 
 /--
 If `ω` is a differentiable `(n + 1)`-form and `V i` are `n + 2` differentiable vector fields, then
@@ -141,19 +138,22 @@ in the sum used in informal texts.
 For this reason, `i + j` in our sum has the opposite parity compared to informal texts,
 which changes the sign before the sum from `+` to `-`.
 -/
-theorem extDeriv_apply_vectorField {ω : E → E [⋀^Fin (n + 1)]→L[𝕜] F} {V : Fin (n + 2) → E → E}
-    (hω : DifferentiableAt 𝕜 ω x) (hV : ∀ i, DifferentiableAt 𝕜 (V i) x) :
-    extDeriv ω x (V · x) =
-      (∑ i, (-1) ^ i.val • fderiv 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) x (V i x)) -
-        ∑ i : Fin (n + 1), ∑ j ≥ i,
-          (-1) ^ (i + j : ℕ) •
-            ω x (Matrix.vecCons (lieBracket 𝕜 (V i.castSucc) (V j.succ) x)
-              (j.removeNth <| i.castSucc.removeNth (V · x))) := by
+theorem extDeriv_apply_vectorField
+    {ω : E → E [⋀^Fin (n + 1)]→L[𝕜] F} {V : Fin (n + 2) → E → E}
+    (hω : DifferentiableAt 𝕜 ω x) (hV : ∀ i, DifferentiableAt 𝕜 (V i) x)
+    : extDeriv ω x (V · x)
+      = (∑ i, (-1) ^ i.val • fderiv 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) x (V i x))
+        - ∑ i : Fin (n + 1), ∑ j ≥ i,
+            (-1) ^ (i + j : ℕ) •
+              ω x (Matrix.vecCons (lieBracket 𝕜 (V i.castSucc) (V j.succ) x)
+                (j.removeNth <| i.castSucc.removeNth (V · x))) := by
   simp only [← differentiableWithinAt_univ, ← extDerivWithin_univ, ← fderivWithin_univ,
-    ← lieBracketWithin_univ] at *
+      ← lieBracketWithin_univ]
+    at *
   exact extDerivWithin_apply_vectorField hω hV (by simp)
 
-/-- Let `ω` be a differentiable `n`-form and `V i` be `n + 1` differentiable vector fields.
+/--
+Let `ω` be a differentiable `n`-form and `V i` be `n + 1` differentiable vector fields.
 If `V i` pairwise commute at `x`, i.e., $[V_i, V_j](x) = 0$ for all `i ≠ j`, then
 
 $$
@@ -165,9 +165,9 @@ theorem extDerivWithin_apply_vectorField_of_pairwise_commute
     {ω : E → E [⋀^Fin n]→L[𝕜] F} {V : Fin (n + 1) → E → E}
     (hω : DifferentiableWithinAt 𝕜 ω s x) (hV : ∀ i, DifferentiableWithinAt 𝕜 (V i) s x)
     (hsx : UniqueDiffWithinAt 𝕜 s x)
-    (hcomm : Pairwise fun i j ↦ lieBracketWithin 𝕜 (V i) (V j) s x = 0) :
-    extDerivWithin ω s x (V · x) =
-      (∑ i, (-1) ^ i.val • fderivWithin 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) s x (V i x)) := by
+    (hcomm : Pairwise fun i j ↦ lieBracketWithin 𝕜 (V i) (V j) s x = 0)
+    : extDerivWithin ω s x (V · x)
+      = (∑ i, (-1) ^ i.val • fderivWithin 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) s x (V i x)) := by
   cases n with
   | zero =>
     simp [extDerivWithin_apply, fderivWithin_continuousAlternatingMap_apply_const_apply,
@@ -175,10 +175,10 @@ theorem extDerivWithin_apply_vectorField_of_pairwise_commute
   | succ n =>
     rw [extDerivWithin_apply_vectorField hω hV hsx, sub_eq_self]
     refine Fintype.sum_eq_zero _ fun i ↦ sum_eq_zero fun j hj ↦ ?_
-    rw [hcomm (ne_of_lt <| by simpa using hj), (ω x).map_coord_zero 0] <;>
-      simp
+    rw [hcomm (ne_of_lt <| by simpa using hj), (ω x).map_coord_zero 0] <;> simp
 
-/-- Let `ω` be a differentiable `n`-form and `V i` be `n + 1` differentiable vector fields.
+/--
+Let `ω` be a differentiable `n`-form and `V i` be `n + 1` differentiable vector fields.
 If `V i` pairwise commute at `x`, i.e., $[V_i, V_j](x) = 0$ for all `i ≠ j`, then
 
 $$
@@ -189,9 +189,10 @@ $$
 theorem extDeriv_apply_vectorField_of_pairwise_commute
     {ω : E → E [⋀^Fin n]→L[𝕜] F} {V : Fin (n + 1) → E → E}
     (hω : DifferentiableAt 𝕜 ω x) (hV : ∀ i, DifferentiableAt 𝕜 (V i) x)
-    (hcomm : Pairwise fun i j ↦ lieBracket 𝕜 (V i) (V j) x = 0) :
-    extDeriv ω x (V · x) =
-      (∑ i, (-1) ^ i.val • fderiv 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) x (V i x)) := by
+    (hcomm : Pairwise fun i j ↦ lieBracket 𝕜 (V i) (V j) x = 0)
+    : extDeriv ω x (V · x)
+      = (∑ i, (-1) ^ i.val • fderiv 𝕜 (fun x ↦ ω x (i.removeNth (V · x))) x (V i x)) := by
   simp only [← differentiableWithinAt_univ, ← lieBracketWithin_univ, ← extDerivWithin_univ,
-    ← fderivWithin_univ] at *
+      ← fderivWithin_univ]
+    at *
   exact extDerivWithin_apply_vectorField_of_pairwise_commute hω hV (by simp) hcomm

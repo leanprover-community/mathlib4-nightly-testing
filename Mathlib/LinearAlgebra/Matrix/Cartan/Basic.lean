@@ -7,7 +7,6 @@ module
 
 public import Mathlib.GroupTheory.Perm.Cycle.Concrete
 public import Mathlib.LinearAlgebra.Matrix.PosDef
-
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.NormDet
 
@@ -52,53 +51,64 @@ namespace CartanMatrix
 
 /-! ### Exceptional Cartan matrices -/
 
-/-- The generalized Cartan matrix of type Eₙ, extending E₆, E₇, E₈ by the same Dynkin-diagram
-pattern. -/
+/--
+The generalized Cartan matrix of type Eₙ, extending E₆, E₇, E₈ by the same Dynkin-diagram
+pattern.
+-/
 def E (n : ℕ) : Matrix (Fin n) (Fin n) ℤ :=
   .of fun i j =>
-    if i = j then 2
-    else if (i.val = 0 ∧ j.val = 2) ∨ (j.val = 0 ∧ i.val = 2) ∨
-      (i.val = 1 ∧ j.val = 3) ∨ (j.val = 1 ∧ i.val = 3) ∨
-      (2 ≤ i.val ∧ i.val + 1 = j.val) ∨ (2 ≤ j.val ∧ j.val + 1 = i.val)
-    then -1 else 0
+    if i = j then
+      2
+    else if (i.val = 0 ∧ j.val = 2) ∨ (j.val = 0 ∧ i.val = 2) ∨ (i.val = 1 ∧ j.val = 3)
+        ∨ (j.val = 1 ∧ i.val = 3) ∨ (2 ≤ i.val ∧ i.val + 1 = j.val)
+        ∨ (2 ≤ j.val ∧ j.val + 1 = i.val) then
+      -1
+    else
+      0
 
 /-- `E 6` is the Cartan matrix of type E₆. See [bourbaki1968] plate V, page 277. -/
-lemma E_six_eq :
-    E 6 = !![ 2,  0, -1,  0,  0,  0;
-              0,  2,  0, -1,  0,  0;
-             -1,  0,  2, -1,  0,  0;
-              0, -1, -1,  2, -1,  0;
-              0,  0,  0, -1,  2, -1;
-              0,  0,  0,  0, -1,  2] := by decide
+lemma E_six_eq
+    : E 6
+      = !![ 2,  0, -1,  0,  0,  0;
+            0,  2,  0, -1,  0,  0;
+           -1,  0,  2, -1,  0,  0;
+            0, -1, -1,  2, -1,  0;
+            0,  0,  0, -1,  2, -1;
+            0,  0,  0,  0, -1,  2] := by
+  decide
 
 /-- Deprecated alias for `E 6`. -/
 @[deprecated "Use `E 6` instead" (since := "2026-07-29")]
 abbrev E₆ : Matrix (Fin 6) (Fin 6) ℤ := E 6
 
 /-- `E 7` is the Cartan matrix of type E₇. See [bourbaki1968] plate VI, page 281. -/
-lemma E_seven_eq :
-    E 7 = !![ 2,  0, -1,  0,  0,  0,  0;
-              0,  2,  0, -1,  0,  0,  0;
-             -1,  0,  2, -1,  0,  0,  0;
-              0, -1, -1,  2, -1,  0,  0;
-              0,  0,  0, -1,  2, -1,  0;
-              0,  0,  0,  0, -1,  2, -1;
-              0,  0,  0,  0,  0, -1,  2] := by decide
+lemma E_seven_eq
+    : E 7
+      = !![ 2,  0, -1,  0,  0,  0,  0;
+            0,  2,  0, -1,  0,  0,  0;
+           -1,  0,  2, -1,  0,  0,  0;
+            0, -1, -1,  2, -1,  0,  0;
+            0,  0,  0, -1,  2, -1,  0;
+            0,  0,  0,  0, -1,  2, -1;
+            0,  0,  0,  0,  0, -1,  2] := by
+  decide
 
 /-- Deprecated alias for `E 7`. -/
 @[deprecated "Use `E 7` instead" (since := "2026-07-29")]
 abbrev E₇ : Matrix (Fin 7) (Fin 7) ℤ := E 7
 
 /-- `E 8` is the Cartan matrix of type E₈. See [bourbaki1968] plate VII, page 285. -/
-lemma E_eight_eq :
-    E 8 = !![ 2,  0, -1,  0,  0,  0,  0,  0;
-              0,  2,  0, -1,  0,  0,  0,  0;
-             -1,  0,  2, -1,  0,  0,  0,  0;
-              0, -1, -1,  2, -1,  0,  0,  0;
-              0,  0,  0, -1,  2, -1,  0,  0;
-              0,  0,  0,  0, -1,  2, -1,  0;
-              0,  0,  0,  0,  0, -1,  2, -1;
-              0,  0,  0,  0,  0,  0, -1,  2] := by decide
+lemma E_eight_eq
+    : E 8
+      = !![ 2,  0, -1,  0,  0,  0,  0,  0;
+            0,  2,  0, -1,  0,  0,  0,  0;
+           -1,  0,  2, -1,  0,  0,  0,  0;
+            0, -1, -1,  2, -1,  0,  0,  0;
+            0,  0,  0, -1,  2, -1,  0,  0;
+            0,  0,  0,  0, -1,  2, -1,  0;
+            0,  0,  0,  0,  0, -1,  2, -1;
+            0,  0,  0,  0,  0,  0, -1,  2] := by
+  decide
 
 /-- Deprecated alias for `E 8`. -/
 @[deprecated "Use `E 8` instead" (since := "2026-07-29")]
@@ -111,8 +121,10 @@ def F₄ : Matrix (Fin 4) (Fin 4) ℤ :=
       0, -1,  2, -1;
       0,  0, -1,  2]
 
-/-- The Cartan matrix of type G₂. See [bourbaki1968] plate IX, page 290.
-We use the transpose of Bourbaki's matrix for consistency with F₄. -/
+/--
+The Cartan matrix of type G₂. See [bourbaki1968] plate IX, page 290.
+We use the transpose of Bourbaki's matrix for consistency with F₄.
+-/
 def G₂ : Matrix (Fin 2) (Fin 2) ℤ :=
   !![ 2, -3;
      -1,  2]
@@ -122,38 +134,54 @@ def G₂ : Matrix (Fin 2) (Fin 2) ℤ :=
 /-- The Cartan matrix of type Aₙ₋₁ (rank n-1, corresponding to sl(n)). -/
 def A (n : ℕ) : Matrix (Fin n) (Fin n) ℤ :=
   Matrix.of fun i j =>
-    if i = j then 2
-    else if i.val + 1 = j.val ∨ j.val + 1 = i.val then -1
-    else 0
+    if i = j then
+      2
+    else if i.val + 1 = j.val ∨ j.val + 1 = i.val then
+      -1
+    else
+      0
 
 /-- The Cartan matrix of type Bₙ (rank n, corresponding to so(2n+1)). -/
 def B (n : ℕ) : Matrix (Fin n) (Fin n) ℤ :=
   Matrix.of fun i j =>
-    if i = j then 2
+    if i = j then
+      2
     else if i.val + 1 = j.val then
       if j.val = n - 1 then -2 else -1
-    else if j.val + 1 = i.val then -1
-    else 0
+    else if j.val + 1 = i.val then
+      -1
+    else
+      0
 
 /-- The Cartan matrix of type Cₙ (rank n, corresponding to sp(2n)). -/
 def C (n : ℕ) : Matrix (Fin n) (Fin n) ℤ :=
   Matrix.of fun i j =>
-    if i = j then 2
-    else if i.val + 1 = j.val then -1
+    if i = j then
+      2
+    else if i.val + 1 = j.val then
+      -1
     else if j.val + 1 = i.val then
       if i.val = n - 1 then -2 else -1
-    else 0
+    else
+      0
 
 /-- The Cartan matrix of type Dₙ (rank n, corresponding to so(2n)). -/
 def D (n : ℕ) : Matrix (Fin n) (Fin n) ℤ :=
   Matrix.of fun i j =>
-    if i = j then 2
-    else if n ≤ 2 then 0
-    else if i.val + 1 = j.val ∧ j.val + 2 < n then -1
-    else if j.val + 1 = i.val ∧ i.val + 2 < n then -1
-    else if i.val + 3 = n ∧ (j.val + 2 = n ∨ j.val + 1 = n) then -1
-    else if j.val + 3 = n ∧ (i.val + 2 = n ∨ i.val + 1 = n) then -1
-    else 0
+    if i = j then
+      2
+    else if n ≤ 2 then
+      0
+    else if i.val + 1 = j.val ∧ j.val + 2 < n then
+      -1
+    else if j.val + 1 = i.val ∧ i.val + 2 < n then
+      -1
+    else if i.val + 3 = n ∧ (j.val + 2 = n ∨ j.val + 1 = n) then
+      -1
+    else if j.val + 3 = n ∧ (i.val + 2 = n ∨ i.val + 1 = n) then
+      -1
+    else
+      0
 
 /-! ### Properties -/
 
@@ -180,18 +208,21 @@ theorem D_off_diag_nonpos (i j : Fin n) (h : i ≠ j) : D n i j ≤ 0 := by
 
 /-! ### Transpose properties -/
 
-@[simp] theorem A_transpose : (A n).transpose = A n := by
+@[simp]
+theorem A_transpose : (A n).transpose = A n := by
   ext; simp only [A, transpose_apply, of_apply]; grind
 
 theorem A_isSymm : (A n).IsSymm := A_transpose n
 
-@[simp] theorem B_transpose : (B n).transpose = C n := by
+@[simp]
+theorem B_transpose : (B n).transpose = C n := by
   ext; simp only [B, C, transpose_apply, of_apply]; grind
 
-@[simp] theorem C_transpose : (C n).transpose = B n := by
-  rw [← (B n).transpose_transpose, B_transpose]
+@[simp]
+theorem C_transpose : (C n).transpose = B n := by rw [← (B n).transpose_transpose, B_transpose]
 
-@[simp] theorem D_transpose : (D n).transpose = D n := by
+@[simp]
+theorem D_transpose : (D n).transpose = D n := by
   ext; simp only [D, transpose_apply, of_apply]; grind
 
 theorem D_isSymm : (D n).IsSymm := D_transpose n
@@ -200,12 +231,18 @@ theorem D_isSymm : (D n).IsSymm := D_transpose n
 
 theorem A_one : A 1 = !![2] := by decide
 
-theorem A_two : A 2 = !![ 2, -1;
-                         -1,  2] := by decide
+theorem A_two
+    : A 2
+      = !![ 2, -1;
+           -1,  2] := by
+  decide
 
-theorem A_three : A 3 = !![ 2, -1,  0;
-                           -1,  2, -1;
-                            0, -1,  2] := by decide
+theorem A_three
+    : A 3
+      = !![ 2, -1,  0;
+           -1,  2, -1;
+            0, -1,  2] := by
+  decide
 
 theorem B_one : B 1 = A 1 := by decide
 
@@ -213,32 +250,44 @@ theorem C_one : C 1 = A 1 := by decide
 
 theorem D_one : D 1 = A 1 := by decide
 
-theorem D_two : D 2 = !![2, 0;
-                         0, 2] := by decide
+theorem D_two
+    : D 2
+      = !![2, 0;
+           0, 2] := by
+  decide
 
-theorem B_two : B 2 = !![ 2, -2;
-                         -1,  2] := by decide
+theorem B_two
+    : B 2
+      = !![ 2, -2;
+           -1,  2] := by
+  decide
 
-theorem C_two : C 2 = !![ 2, -1;
-                         -2,  2] := by decide
+theorem C_two
+    : C 2
+      = !![ 2, -1;
+           -2,  2] := by
+  decide
 
-theorem D_three : D 3 = !![ 2, -1, -1;
-                           -1,  2,  0;
-                           -1,  0,  2] := by decide
+theorem D_three
+    : D 3
+      = !![ 2, -1, -1;
+           -1,  2,  0;
+           -1,  0,  2] := by
+  decide
 
-theorem D_three' : (D 3).reindex c[0, 1] c[0, 1] = A 3 := by decide
+theorem D_three' : (D 3).reindex (c[0, 1]) c[0, 1] = A 3 := by decide
 
-theorem D_four : D 4 = !![ 2, -1,  0,  0;
-                          -1,  2, -1, -1;
-                           0, -1,  2,  0;
-                           0, -1,  0,  2] := by decide
-
-
+theorem D_four
+    : D 4
+      = !![ 2, -1,  0,  0;
+           -1,  2, -1, -1;
+            0, -1,  2,  0;
+            0, -1,  0,  2] := by
+  decide
 
 /-! ### Exceptional matrix diagonal entries -/
 
-@[simp] theorem E_diag (n : ℕ) (i : Fin n) : E n i i = 2 := by
-  simp [E]
+@[simp] theorem E_diag (n : ℕ) (i : Fin n) : E n i i = 2 := by simp [E]
 
 @[deprecated "Use `E_diag` instead" (since := "2026-08-11")]
 theorem E₆_diag (i : Fin 6) : E 6 i i = 2 := E_diag 6 i
@@ -253,7 +302,6 @@ theorem E₈_diag (i : Fin 8) : E 8 i i = 2 := E_diag 8 i
 
 @[simp] theorem G₂_diag (i : Fin 2) : G₂ i i = 2 := by fin_cases i <;> decide
 
-
 /-! ### Exceptional matrix off-diagonal entries -/
 
 theorem E_off_diag_nonpos (n : ℕ) (i j : Fin n) (h : i ≠ j) : E n i j ≤ 0 := by
@@ -261,16 +309,13 @@ theorem E_off_diag_nonpos (n : ℕ) (i j : Fin n) (h : i ≠ j) : E n i j ≤ 0 
   split_ifs <;> lia
 
 @[deprecated "Use `E_off_diag_nonpos` instead" (since := "2026-08-11")]
-theorem E₆_off_diag_nonpos (i j : Fin 6) (h : i ≠ j) : E 6 i j ≤ 0 :=
-  E_off_diag_nonpos 6 i j h
+theorem E₆_off_diag_nonpos (i j : Fin 6) (h : i ≠ j) : E 6 i j ≤ 0 := E_off_diag_nonpos 6 i j h
 
 @[deprecated "Use `E_off_diag_nonpos` instead" (since := "2026-08-11")]
-theorem E₇_off_diag_nonpos (i j : Fin 7) (h : i ≠ j) : E 7 i j ≤ 0 :=
-  E_off_diag_nonpos 7 i j h
+theorem E₇_off_diag_nonpos (i j : Fin 7) (h : i ≠ j) : E 7 i j ≤ 0 := E_off_diag_nonpos 7 i j h
 
 @[deprecated "Use `E_off_diag_nonpos` instead" (since := "2026-08-11")]
-theorem E₈_off_diag_nonpos (i j : Fin 8) (h : i ≠ j) : E 8 i j ≤ 0 :=
-  E_off_diag_nonpos 8 i j h
+theorem E₈_off_diag_nonpos (i j : Fin 8) (h : i ≠ j) : E 8 i j ≤ 0 := E_off_diag_nonpos 8 i j h
 
 theorem F₄_off_diag_nonpos (i j : Fin 4) (h : i ≠ j) : F₄ i j ≤ 0 := by
   fin_cases i <;> fin_cases j <;> simp_all [F₄]
@@ -280,7 +325,8 @@ theorem G₂_off_diag_nonpos (i j : Fin 2) (h : i ≠ j) : G₂ i j ≤ 0 := by
 
 /-! ### Exceptional matrix transpose properties -/
 
-@[simp] theorem E_transpose (n : ℕ) : (E n).transpose = E n := by
+@[simp]
+theorem E_transpose (n : ℕ) : (E n).transpose = E n := by
   ext i j
   simp only [E, transpose_apply, of_apply]
   grind
@@ -311,23 +357,26 @@ theorem G₂_det : G₂.det = 1 := by decide
 
 theorem F₄_det : F₄.det = 1 := by decide
 
-/-- Append a new node to the end of a path-like Dynkin diagram: `M` occupies the top-left block
-and the new node (index `Fin.last`) is joined to the previous final node by a `-1` edge. -/
-private def extendPath {n : ℕ} (M : Matrix (Fin n) (Fin n) ℤ) :
-    Matrix (Fin n.succ) (Fin n.succ) ℤ :=
+/--
+Append a new node to the end of a path-like Dynkin diagram: `M` occupies the top-left block
+and the new node (index `Fin.last`) is joined to the previous final node by a `-1` edge.
+-/
+private def extendPath {n : ℕ} (M : Matrix (Fin n) (Fin n) ℤ)
+    : Matrix (Fin n.succ) (Fin n.succ) ℤ :=
   letI tailLink := fun i : Fin n ↦ if i.val + 1 = n then -1 else 0
   fun i j ↦
     Fin.lastCases (Fin.lastCases 2 tailLink j)
-      (fun i ↦ Fin.lastCases (tailLink i) (fun j ↦ M i j) j) i
+      (fun i ↦ Fin.lastCases (tailLink i) (fun j ↦ M i j) j)
+      i
 
-private theorem extendPath_tail {n : ℕ} (M : Matrix (Fin n) (Fin n) ℤ) :
-    (extendPath M).submatrix Fin.castSucc Fin.castSucc = M := by
+private theorem extendPath_tail {n : ℕ} (M : Matrix (Fin n) (Fin n) ℤ)
+    : (extendPath M).submatrix Fin.castSucc Fin.castSucc = M := by
   ext i j
   simp [extendPath]
 
-private theorem extendPath_minor {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ) ℤ) :
-    ((extendPath M).submatrix Fin.castSucc (Fin.succAbove (Fin.castSucc (Fin.last n)))).det =
-      -(M.submatrix Fin.castSucc Fin.castSucc).det := by
+private theorem extendPath_minor {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ) ℤ)
+    : ((extendPath M).submatrix Fin.castSucc (Fin.succAbove (Fin.castSucc (Fin.last n)))).det
+      = -(M.submatrix Fin.castSucc Fin.castSucc).det := by
   let B := (extendPath M).submatrix Fin.castSucc (Fin.succAbove (Fin.castSucc (Fin.last n)))
   have hlast : B (Fin.last n) (Fin.last n) = -1 := by simp [B, extendPath]
   have hzero (i : Fin n) : B i.castSucc (Fin.last n) = 0 := by simp [B, extendPath]; grind
@@ -336,11 +385,11 @@ private theorem extendPath_minor {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ)
   change B.det = _
   simp [Matrix.det_succ_column B (Fin.last n), Fin.sum_univ_castSucc, hlast, hzero, hminor]
 
-private theorem extendPath_det {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ) ℤ) :
-    (extendPath M).det = 2 * M.det - (M.submatrix Fin.castSucc Fin.castSucc).det := by
+private theorem extendPath_det {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ) ℤ)
+    : (extendPath M).det = 2 * M.det - (M.submatrix Fin.castSucc Fin.castSucc).det := by
   rw [Matrix.det_succ_row (extendPath M) (Fin.last _), Fin.sum_univ_castSucc]
-  simp only [extendPath, extendPath_tail, Fin.lastCases_last, Fin.lastCases_castSucc,
-    Fin.val_last, Fin.val_castSucc, Fin.succAbove_last]
+  simp only [extendPath, extendPath_tail, Fin.lastCases_last, Fin.lastCases_castSucc, Fin.val_last,
+    Fin.val_castSucc, Fin.succAbove_last]
   rw [Finset.sum_eq_single_of_mem (Fin.last n) (Finset.mem_univ _)]
   · rw [ite_eq_left (by rfl), extendPath_minor, Fin.val_last, Odd.neg_one_pow ⟨n, by ring⟩,
       Even.neg_one_pow ⟨n + 1, rfl⟩]
@@ -349,53 +398,51 @@ private theorem extendPath_det {n : ℕ} (M : Matrix (Fin n.succ) (Fin n.succ) �
     rw [ite_eq_right (fun h => hb (Fin.ext (by rw [Fin.val_last]; lia)))]
     ring
 
-private theorem E_succ (n : ℕ) (hn : 4 ≤ n) :
-    E (n + 1) = extendPath (E n) := by
+private theorem E_succ (n : ℕ) (hn : 4 ≤ n) : E (n + 1) = extendPath (E n) := by
   ext i j
   refine Fin.lastCases ?_ (fun i ↦ Fin.lastCases ?_ (fun j ↦ ?_) j) i
   · refine Fin.lastCases ?_ (fun j ↦ ?_) j
     · simp [E, extendPath]
-    · simp only [E, of_apply, extendPath, Fin.lastCases_last, Fin.lastCases_castSucc,
-        Fin.val_last, Fin.val_castSucc]
+    · simp only [E, of_apply, extendPath, Fin.lastCases_last, Fin.lastCases_castSucc, Fin.val_last,
+        Fin.val_castSucc]
       grind
-  · simp only [E, of_apply, extendPath, Fin.lastCases_last, Fin.lastCases_castSucc,
-      Fin.val_last, Fin.val_castSucc]
+  · simp only [E, of_apply, extendPath, Fin.lastCases_last, Fin.lastCases_castSucc, Fin.val_last,
+      Fin.val_castSucc]
     grind
-  · simp only [E, of_apply, extendPath, Fin.lastCases_castSucc, Fin.val_castSucc,
-      Fin.castSucc_inj]
+  · simp only [E, of_apply, extendPath, Fin.lastCases_castSucc, Fin.val_castSucc, Fin.castSucc_inj]
 
-theorem det_E_add_two (n : ℕ) (hn : 4 ≤ n) :
-    (E (n + 2)).det = 2 * (E (n + 1)).det - (E n).det := by
+theorem det_E_add_two (n : ℕ) (hn : 4 ≤ n) : (E (n + 2)).det = 2 * (E (n + 1)).det - (E n).det := by
   have htail : (E (n + 1)).submatrix Fin.castSucc Fin.castSucc = E n := by
     rw [E_succ n hn, extendPath_tail]
   rw [E_succ (n + 1) (by lia), extendPath_det, htail]
 
 /-- The determinant of `E n` is `9 - n` for `n ≥ 3`. -/
 theorem E_det {n : ℕ} (hn : 3 ≤ n) : (E n).det = 9 - n := by
-  rcases eq_or_ne n 3 with rfl | hn; · decide
+  rcases eq_or_ne n 3 with rfl | hn
+  · decide
   obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_le' (show 4 ≤ n by lia)
   induction n using Nat.twoStepInduction with
-  | zero => decide
+  | zero =>
+    decide
   | one =>
-    have : E 5 =
-      !![ 2,  0, -1,  0,  0;
-          0,  2,  0, -1,  0;
-         -1,  0,  2, -1,  0;
-          0, -1, -1,  2, -1;
-          0,  0,  0, -1,  2] := by decide
+    have : E 5
+        = !![ 2,  0, -1,  0,  0;
+              0,  2,  0, -1,  0;
+             -1,  0,  2, -1,  0;
+              0, -1, -1,  2, -1;
+              0,  0,  0, -1,  2] := by
+      decide
     simp [this, norm_det]
-  | more n hn hn1 => rw [det_E_add_two (n + 4) (by lia)]; grind
+  | more n hn hn1 =>
+    rw [det_E_add_two (n + 4) (by lia)]; grind
 
 /-! The determinants of E₆, E₇, E₈ are 3, 2, 1 respectively. -/
 
-theorem E₆_det : (E 6).det = 3 := by
-  simp only [E_six_eq, norm_det]
+theorem E₆_det : (E 6).det = 3 := by simp only [E_six_eq, norm_det]
 
-theorem E₇_det : (E 7).det = 2 := by
-  simp only [E_seven_eq, norm_det]
+theorem E₇_det : (E 7).det = 2 := by simp only [E_seven_eq, norm_det]
 
-theorem E₈_det : (E 8).det = 1 := by
-  simp only [E_eight_eq, norm_det]
+theorem E₈_det : (E 8).det = 1 := by simp only [E_eight_eq, norm_det]
 
 /-- A Cartan matrix is simply laced if its off-diagonal entries are all `0` or `-1`. -/
 def _root_.Matrix.IsSimplyLaced {ι : Type*} (A : Matrix ι ι ℤ) : Prop :=
@@ -407,8 +454,8 @@ instance {ι : Type*} [Fintype ι] [DecidableEq ι] : DecidablePred (Matrix.IsSi
     DecidablePred fun A : Matrix ι ι ℤ ↦ ∀ ⦃i j : ι⦄, i ≠ j → (fun i j ↦ A i j = 0 ∨ A i j = -1) i j
 
 lemma _root_.Matrix.isSimplyLaced_iff_of_linearOrder
-    {ι : Type*} [LinearOrder ι] (A : Matrix ι ι ℤ) (hA : A.IsSymm) :
-    A.IsSimplyLaced ↔ ∀ ⦃i j : ι⦄, j < i → (A i j = 0 ∨ A i j = -1) := by
+    {ι : Type*} [LinearOrder ι] (A : Matrix ι ι ℤ) (hA : A.IsSymm)
+    : A.IsSimplyLaced ↔ ∀ ⦃i j : ι⦄, j < i → (A i j = 0 ∨ A i j = -1) := by
   constructor
   · intro h i j hij
     exact h hij.ne'
@@ -417,8 +464,9 @@ lemma _root_.Matrix.isSimplyLaced_iff_of_linearOrder
     · simpa only [hA.apply i j] using h hij
     · exact h hij
 
-@[simp] theorem _root_.Matrix.isSimplyLaced_transpose {ι : Type*} (A : Matrix ι ι ℤ) :
-    A.transpose.IsSimplyLaced ↔ A.IsSimplyLaced := by
+@[simp]
+theorem _root_.Matrix.isSimplyLaced_transpose {ι : Type*} (A : Matrix ι ι ℤ)
+    : A.transpose.IsSimplyLaced ↔ A.IsSimplyLaced := by
   rw [IsSimplyLaced, IsSimplyLaced, Pairwise, Pairwise, forall_comm]
   aesop
 
@@ -458,8 +506,8 @@ end Properties
 end CartanMatrix
 
 /-- The proposition that a matrix is a finite-type Cartan matrix. -/
-structure Matrix.IsFiniteCartan {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (M : Matrix ι ι ℤ) : Prop where
+structure Matrix.IsFiniteCartan {ι : Type*} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℤ)
+    : Prop where
   diag : ∀ i, M i i = 2
   offDiag_nonpos : ∀ i j, i ≠ j → M i j ≤ 0
   zero_comm : ∀ i j, M i j = 0 ↔ M j i = 0
@@ -470,29 +518,28 @@ namespace Matrix.IsFiniteCartan
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {M : Matrix ι ι ℤ} (hM : M.IsFiniteCartan)
 include hM
 
-lemma det_pos :
-    0 < M.det := by
+lemma det_pos : 0 < M.det := by
   obtain ⟨d, hd, hd'⟩ := hM.exists_posDef
   replace hd : 0 < (diagonal d).det := by simpa using Finset.prod_pos fun i a ↦ hd i
   replace hd' : 0 < (diagonal d).det * M.det := by simpa only [← det_mul] using hd'.det_pos
   nlinarith
 
-protected lemma isUnit_map (k : Type*) [Field k] [CharZero k] :
-    IsUnit <| M.map (Int.cast : ℤ → k) := by
+protected lemma isUnit_map (k : Type*) [Field k] [CharZero k]
+    : IsUnit <| M.map (Int.cast : ℤ → k) := by
   suffices IsUnit <| (Int.castRingHom k).mapMatrix M by simpa
   rw [Matrix.isUnit_iff_isUnit_det, ← RingHom.map_det]
   simpa using hM.det_pos.ne'
 
-protected lemma transpose :
-    Mᵀ.IsFiniteCartan := by
+protected lemma transpose : Mᵀ.IsFiniteCartan := by
   obtain ⟨d, hd_pos, hdM⟩ := hM.exists_posDef
   set d' : ι → ℤ := fun i ↦ ∏ j ∈ Finset.univ.erase i, d j with hd'
   have hd'_pos (i : ι) : 0 < d' i := Finset.prod_pos fun j _ ↦ hd_pos j
-  suffices (diagonal d' * Mᵀ).PosDef from
-    { diag i := by simpa using hM.diag i
-      offDiag_nonpos i j hij := by simpa using hM.offDiag_nonpos j i hij.symm
-      zero_comm i j := by simpa using hM.zero_comm j i
-      exists_posDef := ⟨d', hd'_pos, this⟩ }
+  suffices (diagonal d' * Mᵀ).PosDef from {
+    diag i := by simpa using hM.diag i
+    offDiag_nonpos i j hij := by simpa using hM.offDiag_nonpos j i hij.symm
+    zero_comm i j := by simpa using hM.zero_comm j i
+    exists_posDef := ⟨d', hd'_pos, this⟩
+  }
   set C : ℤ := ∏ j, d j with hC
   have hCd (i : ι) : d i * d' i = C := Finset.mul_prod_erase _ _ (Finset.mem_univ i)
   have hsymm (i j : ι) : d' i * M j i = d' j * M i j := by
@@ -506,15 +553,16 @@ protected lemma transpose :
     simp only [dotProduct, mulVec, diagonal_mul, transpose_apply, Finset.mul_sum, Pi.mul_apply]
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
     linear_combination (M i j * d' j * v i * v j) * hCd i - (C * v i * v j) * hsymm i j
-  have hpos := hdM.dotProduct_mulVec_pos (x := d' * v) <|
-    fun h ↦ hv (funext fun i ↦ by simpa [(hd'_pos i).ne'] using congr_fun h i)
+  have hpos :=
+    hdM.dotProduct_mulVec_pos (x := d' * v) <| fun h ↦
+      hv (funext fun i ↦ by simpa [(hd'_pos i).ne'] using congr_fun h i)
   rw [star_trivial, key] at hpos
   have hCpos : 0 < C := Finset.prod_pos fun j _ ↦ hd_pos j
   rwa [star_trivial, ← mul_pos_iff_of_pos_left hCpos]
 
 omit hM in
-@[simp] protected lemma transpose_iff :
-    Mᵀ.IsFiniteCartan ↔ M.IsFiniteCartan :=
+@[simp]
+protected lemma transpose_iff : Mᵀ.IsFiniteCartan ↔ M.IsFiniteCartan :=
   ⟨fun h ↦ by simpa using h.transpose, IsFiniteCartan.transpose⟩
 
 end Matrix.IsFiniteCartan

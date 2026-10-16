@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
-
 import Mathlib.LinearAlgebra.FreeModule.StrongRankCondition
 import Mathlib.RingTheory.Localization.Finiteness
 
@@ -40,32 +39,43 @@ then any `Rₛ`-basis of `Mₛ` for some `S : Submonoid R` can be lifted to
 a `Rᵣ`-basis of `Mᵣ` for some `r ∈ S`.
 -/
 lemma Module.FinitePresentation.exists_basis_localizedModule_powers
-    (Rₛ) [CommRing Rₛ] [Algebra R Rₛ] [Module Rₛ M'] [IsScalarTower R Rₛ M']
-    [IsLocalization S Rₛ] [Module.FinitePresentation R M]
-    {I} [Finite I] (b : Basis I Rₛ M') :
-    ∃ (r : R) (hr : r ∈ S)
-      (b' : Basis I (Localization (.powers r)) (LocalizedModule.Away r M)),
-      ∀ i, (LocalizedModule.lift (.powers r) f fun s ↦ IsLocalizedModule.map_units f
-        ⟨s.1, mem_of_le_of_mem (Submonoid.powers_le.mpr hr) s.2⟩) (b' i) = b i := by
+    (Rₛ) [CommRing Rₛ] [Algebra R Rₛ] [Module Rₛ M'] [IsScalarTower R Rₛ M'] [IsLocalization S Rₛ]
+    [Module.FinitePresentation R M]
+    {I} [Finite I]
+    (b : Basis I Rₛ M')
+    : ∃ (r : R) (hr : r ∈ S) (b' : Basis I (Localization (.powers r)) (LocalizedModule.Away r M)),
+      ∀ i,
+        (LocalizedModule.lift (.powers r) f fun s ↦
+              IsLocalizedModule.map_units f
+                ⟨s.1, mem_of_le_of_mem (Submonoid.powers_le.mpr hr) s.2⟩)
+            (b' i)
+          = b i := by
   have : Module.FinitePresentation R (I →₀ R) := Module.finitePresentation_of_projective _ _
-  obtain ⟨r, hr, e, he⟩ := Module.FinitePresentation.exists_lift_equiv_of_isLocalizedModule S f
-    (Finsupp.mapRange.linearMap (Algebra.linearMap R Rₛ)) (b.repr.restrictScalars R)
-  let e' := IsLocalizedModule.iso (.powers r) (Finsupp.mapRange.linearMap (α := I)
-    (Algebra.linearMap R (Localization (.powers r))))
+  obtain ⟨r, hr, e, he⟩ :=
+    Module.FinitePresentation.exists_lift_equiv_of_isLocalizedModule S f
+      (Finsupp.mapRange.linearMap (Algebra.linearMap R Rₛ)) (b.repr.restrictScalars R)
+  let e' :=
+    IsLocalizedModule.iso (.powers r)
+      (Finsupp.mapRange.linearMap (α := I) (Algebra.linearMap R (Localization (.powers r))))
   refine ⟨r, hr, .ofRepr (e ≪≫ₗ ?_), ?_⟩
-  · exact
-    { __ := e',
-      toLinearMap := e'.extendScalarsOfIsLocalization (.powers r) (Localization (.powers r)) }
+  · exact {
+      __ := e'
+      toLinearMap := e'.extendScalarsOfIsLocalization (.powers r) (Localization (.powers r))
+    }
   · intro i
-    have : e'.symm _ = _ := LinearMap.congr_fun (IsLocalizedModule.iso_symm_comp (.powers r)
-      (Finsupp.mapRange.linearMap (Algebra.linearMap R (Localization (.powers r)))))
-      (Finsupp.single i 1)
+    have : e'.symm _ = _ :=
+      LinearMap.congr_fun
+        (IsLocalizedModule.iso_symm_comp (.powers r)
+          (Finsupp.mapRange.linearMap (Algebra.linearMap R (Localization (.powers r)))))
+        (Finsupp.single i 1)
     simp only [Finsupp.mapRange.linearMap_apply, Finsupp.mapRange_single, Algebra.linearMap_apply,
-      map_one, LocalizedModule.mkLinearMap_apply] at this
+        map_one, LocalizedModule.mkLinearMap_apply]
+      at this
     change LocalizedModule.lift _ _ _ (e.symm (e'.symm _)) = _
     replace he := congr($he (e.symm (e'.symm (.single i 1))))
     simp only [LinearMap.coe_comp, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe,
-      Function.comp_apply, LinearEquiv.apply_symm_apply, LinearEquiv.restrictScalars_apply] at he
+        Function.comp_apply, LinearEquiv.apply_symm_apply, LinearEquiv.restrictScalars_apply]
+      at he
     apply b.repr.injective
     rw [← he, Basis.repr_self, this, LocalizedModule.lift_mk]
     simp
@@ -78,16 +88,18 @@ then `Mᵣ` is already free over `Rᵣ` for some `r ∈ S`.
 -/
 lemma Module.FinitePresentation.exists_free_localizedModule_powers
     (Rₛ) [CommRing Rₛ] [Algebra R Rₛ] [Module Rₛ M'] [IsScalarTower R Rₛ M'] [Nontrivial Rₛ]
-    [IsLocalization S Rₛ] [Module.FinitePresentation R M] [Module.Free Rₛ M'] :
-    ∃ r, r ∈ S ∧
-      Module.Free (Localization (.powers r)) (LocalizedModule.Away r M) ∧
-      Module.finrank (Localization (.powers r)) (LocalizedModule.Away r M) =
-        Module.finrank Rₛ M' := by
+    [IsLocalization S Rₛ] [Module.FinitePresentation R M] [Module.Free Rₛ M']
+    : ∃ r,
+      r ∈ S ∧ Module.Free (Localization (.powers r)) (LocalizedModule.Away r M)
+        ∧ Module.finrank (Localization (.powers r)) (LocalizedModule.Away r M)
+          = Module.finrank Rₛ M' := by
   let I := Module.Free.ChooseBasisIndex Rₛ M'
   let b : Basis I Rₛ M' := Module.Free.chooseBasis Rₛ M'
   have : Module.Finite Rₛ M' := Module.Finite.of_isLocalizedModule S (Rₚ := Rₛ) f
   obtain ⟨r, hr, b', _⟩ := Module.FinitePresentation.exists_basis_localizedModule_powers S f Rₛ b
-  have := (show Localization (.powers r) →+* Rₛ from IsLocalization.map (M := .powers r) (T := S) _
-    (RingHom.id _) (Submonoid.powers_le.mpr hr)).domain_nontrivial
+  have :=
+    (show Localization (.powers r) →+* Rₛ from
+      IsLocalization.map (M := .powers r) (T := S) _ (RingHom.id _)
+        (Submonoid.powers_le.mpr hr)).domain_nontrivial
   refine ⟨r, hr, .of_basis b', ?_⟩
   rw [Module.finrank_eq_nat_card_basis b, Module.finrank_eq_nat_card_basis b']

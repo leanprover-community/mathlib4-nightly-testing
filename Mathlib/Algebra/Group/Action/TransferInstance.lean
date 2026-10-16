@@ -32,10 +32,10 @@ protected abbrev mulAction (e : α ≃ β) [MulAction M β] : MulAction M α whe
 variable (M N) [SMul M β] [SMul N β] in
 /-- Transfer `SMulCommClass` across an `Equiv` -/
 @[to_additive /-- Transfer `VAddCommClass` across an `Equiv` -/]
-protected lemma smulCommClass (e : α ≃ β) [SMulCommClass M N β] :
-    letI := e.smul M
-    letI := e.smul N
-    SMulCommClass M N α :=
+protected lemma smulCommClass (e : α ≃ β) [SMulCommClass M N β]
+    : letI := e.smul M
+      letI := e.smul N
+      SMulCommClass M N α :=
   letI := e.smul M
   letI := e.smul N
   { smul_comm := by simp [smul_def, smul_comm] }
@@ -43,10 +43,10 @@ protected lemma smulCommClass (e : α ≃ β) [SMulCommClass M N β] :
 variable (M N) [SMul M N] [SMul M β] [SMul N β] in
 /-- Transfer `IsScalarTower` across an `Equiv` -/
 @[to_additive /-- Transfer `VAddAssocClass` across an `Equiv` -/]
-protected lemma isScalarTower (e : α ≃ β) [IsScalarTower M N β] :
-    letI := e.smul M
-    letI := e.smul N
-    IsScalarTower M N α :=
+protected lemma isScalarTower (e : α ≃ β) [IsScalarTower M N β]
+    : letI := e.smul M
+      letI := e.smul N
+      IsScalarTower M N α :=
   letI := e.smul M
   letI := e.smul N
   { smul_assoc := by simp [smul_def, smul_assoc] }
@@ -54,36 +54,42 @@ protected lemma isScalarTower (e : α ≃ β) [IsScalarTower M N β] :
 variable (M) [SMul M β] [SMul Mᵐᵒᵖ β] in
 /-- Transfer `IsCentralScalar` across an `Equiv` -/
 @[to_additive /-- Transfer `IsCentralVAdd` across an `Equiv` -/]
-protected lemma isCentralScalar (e : α ≃ β) [IsCentralScalar M β] :
-    letI := e.smul M
-    letI := e.smul Mᵐᵒᵖ
-    IsCentralScalar M α :=
+protected lemma isCentralScalar (e : α ≃ β) [IsCentralScalar M β]
+    : letI := e.smul M
+      letI := e.smul Mᵐᵒᵖ
+      IsCentralScalar M α :=
   letI := e.smul M
   letI := e.smul Mᵐᵒᵖ
   { op_smul_eq_smul := by simp [smul_def, op_smul_eq_smul] }
 
 variable (M) [Monoid M] [Monoid O] in
 /-- Transfer `MulDistribMulAction` across an `Equiv` -/
-protected abbrev mulDistribMulAction (e : N ≃ O) [MulDistribMulAction M O] :
-    letI := e.monoid
-    MulDistribMulAction M N :=
+protected abbrev mulDistribMulAction (e : N ≃ O) [MulDistribMulAction M O]
+    : letI := e.monoid
+      MulDistribMulAction M N :=
   letI := e.monoid
-  { e.mulAction M with
+  {
+    e.mulAction M with
     smul_one := by simp [one_def, smul_def, smul_one]
-    smul_mul := by simp [mul_def, smul_def, smul_mul'] }
+    smul_mul := by simp [mul_def, smul_def, smul_mul']
+  }
 
 variable (M) [SMul M β] in
-/-- Transfer `FaithfulSMul` across an `Equiv`.
+/--
+Transfer `FaithfulSMul` across an `Equiv`.
 
-See `FaithfulSMul.of_injective` for the general statement not about transferring. -/
+See `FaithfulSMul.of_injective` for the general statement not about transferring.
+-/
 @[to_additive /-- Transfer `FaithfulVAdd` across an `Equiv`
 
 See `FaithfulVAdd.of_injective` for the general statement not about transferring. -/]
-protected lemma faithfulSMul (e : α ≃ β) [FaithfulSMul M β] :
-    letI := e.smul M
-    FaithfulSMul M α :=
+protected lemma faithfulSMul (e : α ≃ β) [FaithfulSMul M β]
+    : letI := e.smul M
+      FaithfulSMul M α :=
   letI := e.smul M
-  { eq_of_smul_eq_smul {m₁ m₂} := by
-      simpa [← e.forall_congr_right, smul_def] using eq_of_smul_eq_smul (α := β) }
+  {
+    eq_of_smul_eq_smul {m₁ m₂} := by
+      simpa [← e.forall_congr_right, smul_def] using eq_of_smul_eq_smul (α := β)
+  }
 
 end Equiv

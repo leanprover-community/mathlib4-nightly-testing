@@ -19,8 +19,10 @@ namespace CategoryTheory.Enriched
 
 open Limits HasConicalLimit
 
-/-- A category has a conical terminal object
-if it has a conical limit over the empty diagram. -/
+/--
+A category has a conical terminal object
+if it has a conical limit over the empty diagram.
+-/
 abbrev HasConicalTerminal := HasConicalLimitsOfShape (Discrete.{0} PEmpty)
 
 variable (V : Type u') [Category.{v'} V] [MonoidalCategory V]
@@ -28,8 +30,8 @@ variable (C : Type u) [Category.{v} C] [EnrichedOrdinaryCategory V C]
 
 example [HasConicalTerminal V C] : HasTerminal C := inferInstance
 
-instance HasConicalProducts.hasConicalTerminal [HasConicalProducts.{w} V C] :
-    HasConicalTerminal V C :=
+instance HasConicalProducts.hasConicalTerminal [HasConicalProducts.{w} V C]
+    : HasConicalTerminal V C :=
   HasConicalLimitsOfShape.of_equiv V C emptyEquivalence.functor
 
 end CategoryTheory.Enriched

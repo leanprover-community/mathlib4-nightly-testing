@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.Analysis.Real.Sqrt
-
 import Mathlib.Algebra.Order.BigOperators.Expect
 import Mathlib.Analysis.Normed.Group.InfiniteSum
 import Mathlib.Tactic.ContinuousFunctionalCalculus
@@ -30,7 +29,8 @@ open Filter
 open scoped Topology
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
-/-- **Tannery's theorem**: topological sums commute with termwise limits, when the norms of the
+/--
+**Tannery's theorem**: topological sums commute with termwise limits, when the norms of the
 summands are eventually uniformly bounded by a summable function.
 
 (This is the special case of the Lebesgue dominated convergence theorem for the counting measure
@@ -43,12 +43,11 @@ See also:
   with more assumptions on `G`)
 * `continuous_tsum` (continuity of infinite sums in a parameter)
 -/
-lemma tendsto_tsum_of_dominated_convergence {α β G : Type*} {𝓕 : Filter α}
-    [NormedAddCommGroup G] [CompleteSpace G]
+lemma tendsto_tsum_of_dominated_convergence
+    {α β G : Type*} {𝓕 : Filter α} [NormedAddCommGroup G] [CompleteSpace G]
     {f : α → β → G} {g : β → G} {bound : β → ℝ} (h_sum : Summable bound)
-    (hab : ∀ k : β, Tendsto (f · k) 𝓕 (𝓝 (g k)))
-    (h_bound : ∀ᶠ n in 𝓕, ∀ k, ‖f n k‖ ≤ bound k) :
-    Tendsto (∑' k, f · k) 𝓕 (𝓝 (∑' k, g k)) := by
+    (hab : ∀ k : β, Tendsto (f · k) 𝓕 (𝓝 (g k))) (h_bound : ∀ᶠ n in 𝓕, ∀ k, ‖f n k‖ ≤ bound k)
+    : Tendsto (∑' k, f · k) 𝓕 (𝓝 (∑' k, g k)) := by
   -- WLOG β is nonempty
   rcases isEmpty_or_nonempty β
   · simpa only [tsum_empty] using tendsto_const_nhds
@@ -71,9 +70,10 @@ lemma tendsto_tsum_of_dominated_convergence {α β G : Type*} {𝓕 : Filter α}
     rw [HasSum, Metric.tendsto_nhds] at hS
     exact Eventually.exists <| hS _ (by positivity)
   have h1 : ∑' (k : (Tᶜ : Set β)), bound k < ε / 3 := by
-    calc _ ≤ ‖∑' (k : (Tᶜ : Set β)), bound k‖ := Real.le_norm_self _
-         _ = ‖S - ∑ b ∈ T, bound b‖           := congrArg _ ?_
-         _ < ε / 3                            := by rwa [dist_eq_norm, norm_sub_rev] at hT
+    calc
+      _ ≤ ‖∑' (k : (Tᶜ : Set β)), bound k‖ := Real.le_norm_self _
+      _ = ‖S - ∑ b ∈ T, bound b‖ := congrArg _ ?_
+      _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
     simpa only [h_sum.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hS.tsum_eq
   have h2 : Tendsto (∑ k ∈ T, f · k) 𝓕 (𝓝 (T.sum g)) := tendsto_finsetSum _ (fun i _ ↦ hab i)
   rw [Metric.tendsto_nhds] at h2

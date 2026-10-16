@@ -29,8 +29,8 @@ lemma IsGroupLikeElem.one : IsGroupLikeElem R (1 : A) where
   comul_eq_tmul_self := comul_one
 
 /-- Group-like elements in a bialgebra are stable under multiplication. -/
-lemma IsGroupLikeElem.mul (ha : IsGroupLikeElem R a) (hb : IsGroupLikeElem R b) :
-    IsGroupLikeElem R (a * b) where
+lemma IsGroupLikeElem.mul (ha : IsGroupLikeElem R a) (hb : IsGroupLikeElem R b)
+    : IsGroupLikeElem R (a * b) where
   counit_eq_one := by simp [ha, hb]
   comul_eq_tmul_self := by simp [ha, hb]
 
@@ -46,28 +46,33 @@ lemma IsGroupLikeElem.pow {n : ℕ} (ha : IsGroupLikeElem R a) : IsGroupLikeElem
   (groupLikeSubmonoid R A).pow_mem ha _
 
 /-- Group-like elements in a bialgebra are stable under inverses, when they exist. -/
-lemma IsGroupLikeElem.of_mul_eq_one (hab : a * b = 1) (hba : b * a = 1) (ha : IsGroupLikeElem R a) :
-    IsGroupLikeElem R b where
+lemma IsGroupLikeElem.of_mul_eq_one (hab : a * b = 1) (hba : b * a = 1) (ha : IsGroupLikeElem R a)
+    : IsGroupLikeElem R b where
   counit_eq_one :=
     left_inv_eq_right_inv (a := counit a) (by simp [← counit_mul, hba]) (by simp [ha])
-  comul_eq_tmul_self := left_inv_eq_right_inv (a := comul a) (by simp [← comul_mul, hba])
-    (by simp [ha, hab, Algebra.TensorProduct.one_def])
+  comul_eq_tmul_self :=
+    left_inv_eq_right_inv (a := comul a) (by simp [← comul_mul, hba])
+      (by simp [ha, hab, Algebra.TensorProduct.one_def])
 
 /-- Group-like elements in a bialgebra are stable under inverses, when they exist. -/
-lemma isGroupLikeElem_iff_of_mul_eq_one (hab : a * b = 1) (hba : b * a = 1) :
-    IsGroupLikeElem R a ↔ IsGroupLikeElem R b := ⟨.of_mul_eq_one hab hba, .of_mul_eq_one hba hab⟩
+lemma isGroupLikeElem_iff_of_mul_eq_one (hab : a * b = 1) (hba : b * a = 1)
+    : IsGroupLikeElem R a ↔ IsGroupLikeElem R b :=
+  ⟨.of_mul_eq_one hab hba, .of_mul_eq_one hba hab⟩
 
-@[simp] lemma isGroupLikeElem_unitsInv {u : Aˣ} :
-    IsGroupLikeElem R u⁻¹.val ↔ IsGroupLikeElem R u.val :=
+@[simp]
+lemma isGroupLikeElem_unitsInv {u : Aˣ} : IsGroupLikeElem R u⁻¹.val ↔ IsGroupLikeElem R u.val :=
   isGroupLikeElem_iff_of_mul_eq_one (by simp) (by simp)
 
 alias ⟨IsGroupLikeElem.of_unitsInv, IsGroupLikeElem.unitsInv⟩ := isGroupLikeElem_unitsInv
 
 namespace GroupLike
 
-instance : One (GroupLike R A) where one := ⟨1, .one⟩
-instance : Mul (GroupLike R A) where mul a b := ⟨a * b, a.2.mul b.2⟩
-instance : Pow (GroupLike R A) ℕ where pow a n := ⟨a ^ n, a.2.pow⟩
+instance : One (GroupLike R A) where
+  one := ⟨1, .one⟩
+instance : Mul (GroupLike R A) where
+  mul a b := ⟨a * b, a.2.mul b.2⟩
+instance : Pow (GroupLike R A) ℕ where
+  pow a n := ⟨a ^ n, a.2.pow⟩
 
 @[simp] lemma val_one : (1 : GroupLike R A) = (1 : A) := rfl
 @[simp] lemma val_mul (a b : GroupLike R A) : ↑(a * b) = (a * b : A) := rfl
@@ -77,7 +82,8 @@ instance : Monoid (GroupLike R A) := val_injective.monoid val val_one val_mul va
 
 variable (R A) in
 /-- `GroupLike.val` as a monoid hom. -/
-@[simps] def valMonoidHom : GroupLike R A →* A where
+@[simps]
+def valMonoidHom : GroupLike R A →* A where
   toFun := val
   map_one' := val_one
   map_mul' := val_mul

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Metrizable.Basic
 public import Mathlib.Topology.UniformSpace.CompactConvergence
-
 import Mathlib.Algebra.Order.Module.Field
 import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
@@ -24,9 +23,9 @@ open TopologicalSpace
 
 namespace ContinuousMap
 
-variable {X Y : Type*}
-  [TopologicalSpace X] [WeaklyLocallyCompactSpace X] [SigmaCompactSpace X]
-  [TopologicalSpace Y]
+variable
+  {X Y : Type*}
+  [TopologicalSpace X] [WeaklyLocallyCompactSpace X] [SigmaCompactSpace X] [TopologicalSpace Y]
 
 instance [PseudoMetrizableSpace Y] : PseudoMetrizableSpace C(X, Y) :=
   let := pseudoMetrizableSpaceUniformity Y

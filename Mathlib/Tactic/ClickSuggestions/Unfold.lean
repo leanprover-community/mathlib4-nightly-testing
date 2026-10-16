@@ -6,7 +6,6 @@ Authors: Jovan Gerbscheid
 module
 
 public import Mathlib.Tactic.ClickSuggestions.Util
-
 import ProofWidgets.Component.Basic
 
 /-!
@@ -58,24 +57,34 @@ open Lean Meta ProofWidgets
 
 namespace Mathlib.Tactic.ClickSuggestions
 
-/-- Unfold a class projection if the instance is tagged with `@[default_instance]`.
+/--
+Unfold a class projection if the instance is tagged with `@[default_instance]`.
 This is used in the `unfold?` tactic in order to not show these unfolds to the user.
-Similar to `Lean.Meta.unfoldProjInst?`. -/
+Similar to `Lean.Meta.unfoldProjInst?`.
+-/
 def unfoldProjDefaultInst? (e : Expr) : MetaM (Option Expr) := do
-  let .const declName _ := e.getAppFn | return none
-  let some { fromClass := true, ctorName, .. } ← getProjectionFnInfo? declName | return none
+  let .const declName _ := e.getAppFn
+    | return none
+  let some { fromClass := true, ctorName, .. } ← getProjectionFnInfo? declName
+    | return none
   -- get the list of default instances of the class
-  let some (ConstantInfo.ctorInfo ci) := (← getEnv).find? ctorName | return none
+  let some (ConstantInfo.ctorInfo ci) := (← getEnv).find? ctorName
+    | return none
   let defaults ← getDefaultInstances ci.induct
   if defaults.isEmpty then return none
 
-  let some e ← withDefault <| unfoldDefinition? e | return none
-  let .proj _ i c := e.getAppFn | return none
+  let some e ← withDefault <| unfoldDefinition? e
+    | return none
+  let .proj _ i c := e.getAppFn
+    | return none
   -- check that the structure `c` comes from one of the default instances
-  let .const inst _ := c.getAppFn | return none
-  unless defaults.any (·.1 == inst) do return none
+  let .const inst _ := c.getAppFn
+    | return none
+  unless defaults.any (·.1 == inst) do
+    return none
 
-  let some r ← withReducibleAndInstances <| project? c i | return none
+  let some r ← withReducibleAndInstances <| project? c i
+    | return none
   return mkAppN r e.getAppArgs |>.headBeta
 
 /-- Return the consecutive unfoldings of `e`. -/
@@ -101,54 +110,61 @@ where
           let e ← whnfCore e
           return ← go e (acc.push e)
         return acc)
-      fun _ =>
-        return acc
+      fun _ => return acc
 
-/-- Determine whether `e` contains no internal names or raw projections.
+/--
+Determine whether `e` contains no internal names or raw projections.
 We only consider the explicit parts of `e`, because it may happen that an
-instance implicit argument is marked as an internal detail, but that is not a problem. -/
+instance implicit argument is marked as an internal detail, but that is not a problem.
+-/
 partial def isUserFriendly (e : Expr) : MetaM Bool := do
   match e with
-  | .const name _ => return !name.isInternalDetail
-  | .proj .. => return false
+  | .const name _ =>
+    return !name.isInternalDetail
+  | .proj .. =>
+    return false
   | .app .. =>
     e.withApp fun f args => do
-    (isUserFriendly f) <&&> do
-      let finfo ← getFunInfoNArgs f e.getAppNumArgs
-      e.getAppNumArgs.allM fun i _ =>
-        if finfo.paramInfo[i]?.all (·.isExplicit) then isUserFriendly args[i]! else return true
-  | _ => return true
+      (isUserFriendly f) <&&> do
+        let finfo ← getFunInfoNArgs f e.getAppNumArgs
+        e.getAppNumArgs.allM fun i _ =>
+          if finfo.paramInfo[i]?.all (·.isExplicit) then isUserFriendly args[i]! else return true
+  | _ =>
+    return true
 
 /-- Return the consecutive unfoldings of `e` that are user friendly. -/
 def filteredUnfolds (e : Expr) : MetaM (Array Expr) :=
   withDefault do (← unfolds e).filterM isUserFriendly
 
 /-- Return the tactic string that does the unfolding. -/
-def tacticSyntax (e eNew : Expr) (rwKind : RwKind) :
-    ClickSuggestionsM (TSyntax `tactic) := do
+def tacticSyntax (e eNew : Expr) (rwKind : RwKind) : ClickSuggestionsM (TSyntax `tactic) := do
   let e ← PrettyPrinter.delab e
   let eNew ← PrettyPrinter.delab eNew
   let fromRfl ← `(show $e = $eNew from $(mkIdent `rfl))
   mkRewrite rwKind false fromRfl (← getHypIdent?)
 
-/-- Render the unfolds of `e` as given by `filteredUnfolds`, with buttons at each suggestion
-for pasting the rewrite tactic. Return `none` when there are no unfolds. -/
-public def suggestUnfold (e : Expr) (rwKind : RwKind) :
-    ClickSuggestionsM (Option Html) := do
+/--
+Render the unfolds of `e` as given by `filteredUnfolds`, with buttons at each suggestion
+for pasting the rewrite tactic. Return `none` when there are no unfolds.
+-/
+public def suggestUnfold (e : Expr) (rwKind : RwKind) : ClickSuggestionsM (Option Html) := do
   let results ← filteredUnfolds e
   if results.isEmpty then
     return none
-  let htmls ← results.mapM fun unfold => do
-    let tactic ← tacticSyntax e unfold rwKind
-    mkSuggestion tactic (← exprToHtml unfold)
+  let htmls ←
+    results.mapM fun unfold => do
+      let tactic ← tacticSyntax e unfold rwKind
+      mkSuggestion tactic (← exprToHtml unfold)
   return jsx%{<details>
     <summary className="mv2 pointer"> unfold </summary>
     {.element "div" #[] htmls}
   </details>}
 
 open Elab in
-/-- `#unfold? e` gives all unfolds of `e`.
-In tactic mode, use `unfold?` instead. -/
+/--
+`#unfold? e` gives all unfolds of `e`.
+In tactic mode, use `unfold?` instead.
+-/
 elab "#unfold? " e:term : command => do
   Command.runTermElabM fun _ => do
     let e ← Term.elabTerm e none
@@ -156,10 +172,9 @@ elab "#unfold? " e:term : command => do
     let e ← Term.levelMVarToParam (← instantiateMVars e)
     let unfolds ← filteredUnfolds e
     if unfolds.isEmpty then
-      logInfo m! "No unfolds found for {e}"
+      logInfo m!"No unfolds found for {e}"
     else
-      let unfolds := unfolds.toList.map (m! "· {·}")
-      logInfo (m! "Unfolds for {e}:\n"
-        ++ .joinSep unfolds "\n")
+      let unfolds := unfolds.toList.map (m!"· {·}")
+      logInfo (m!"Unfolds for {e}:\n" ++ .joinSep unfolds "\n")
 
 end Mathlib.Tactic.ClickSuggestions

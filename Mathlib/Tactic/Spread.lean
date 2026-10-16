@@ -56,15 +56,17 @@ def elabLetImplDetail : TermElab := fun stx expectedType? =>
           let body ← instantiateMVars body
           mkLetFVars #[x] body (usedLetOnly := false)
     pure result
-  | _ => throwUnsupportedSyntax
+  | _ =>
+    throwUnsupportedSyntax
 
 macro_rules
-| `({ $[$srcs,* with]? $[$fields],* $[: $ty?]? }) => show MacroM Term from do
-    let mut spreads := #[]
-    let mut newFields := #[]
+  | `({ $[$srcs,* with]? $[$fields],* $[: $ty?]? }) =>
+    show MacroM Term from do
+      let mut spreads := #[]
+      let mut newFields := #[]
 
-    for field in fields do
-      match field.1 with
+      for field in fields do
+        match field.1 with
         | `(structInstField| $name:ident := $arg) =>
           if name.getId.eraseMacroScopes == `__ then do
             spreads := spreads.push arg
@@ -73,12 +75,13 @@ macro_rules
         | _ =>
           throwUnsupported
 
-    if spreads.isEmpty then throwUnsupported
+      if spreads.isEmpty then throwUnsupported
 
-    let spreadData ← withFreshMacroScope <| spreads.mapIdxM fun i spread => do
-      let n := Name.num `__spread i
-      return (mkIdent <| ← Macro.addMacroScope n, spread)
+      let spreadData ←
+        withFreshMacroScope <| spreads.mapIdxM fun i spread => do
+          let n := Name.num `__spread i
+          return (mkIdent <| ← Macro.addMacroScope n, spread)
 
-    let srcs := (srcs.map (·.getElems)).getD {} ++ spreadData.map Prod.fst
-    let body ← `({ $srcs,* with $[$newFields],* $[: $ty?]? })
-    spreadData.foldrM (init := body) fun (id, val) body => `(let_impl_detail $id := $val; $body)
+      let srcs := (srcs.map (·.getElems)).getD {} ++ spreadData.map Prod.fst
+      let body ← `({ $srcs,* with $[$newFields],* $[: $ty?]? })
+      spreadData.foldrM (init := body) fun (id, val) body => `(let_impl_detail $id := $val; $body)

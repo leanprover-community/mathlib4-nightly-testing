@@ -59,12 +59,17 @@ variable {M α}
 
 namespace IwasawaStructure
 
-/-- The Iwasawa criterion : If a quasiprimitive action of a group G on X
-  has an Iwasawa structure, then any normal subgroup that acts nontrivially
-  contains the group of commutators. -/
-theorem commutator_le (IwaS : IwasawaStructure M α) [IsQuasiPreprimitive M α]
-    (N : Subgroup M) [nN : N.Normal] (hNX : MulAction.fixedPoints N α ≠ .univ) :
-    commutator M ≤ N := by
+/--
+The Iwasawa criterion : If a quasiprimitive action of a group G on X
+has an Iwasawa structure, then any normal subgroup that acts nontrivially
+contains the group of commutators.
+-/
+theorem commutator_le
+    (IwaS : IwasawaStructure M α)
+    [IsQuasiPreprimitive M α]
+    (N : Subgroup M) [nN : N.Normal]
+    (hNX : MulAction.fixedPoints N α ≠ .univ)
+    : commutator M ≤ N := by
   have is_transN := IsQuasiPreprimitive.isPretransitive_of_normal hNX
   have ntα : Nontrivial α := nontrivial_of_fixedPoints_ne_univ hNX
   obtain a : α := Nontrivial.to_nonempty.some
@@ -80,9 +85,12 @@ theorem commutator_le (IwaS : IwasawaStructure M α) [IsQuasiPreprimitive M α]
   exact (N ⊔ IwaS.T a).mul_mem ((N ⊔ IwaS.T a).mul_mem hg' hk') ((N ⊔ IwaS.T a).inv_mem hg')
 
 /-- The Iwasawa criterion for simplicity -/
-theorem isSimpleGroup [Nontrivial M] (is_perfect : commutator M = ⊤)
-    [IsQuasiPreprimitive M α] (IwaS : IwasawaStructure M α) (is_faithful : FaithfulSMul M α) :
-    IsSimpleGroup M := by
+theorem isSimpleGroup
+    [Nontrivial M]
+    (is_perfect : commutator M = ⊤)
+    [IsQuasiPreprimitive M α]
+    (IwaS : IwasawaStructure M α) (is_faithful : FaithfulSMul M α)
+    : IsSimpleGroup M := by
   apply IsSimpleGroup.mk
   intro N nN
   cases or_iff_not_imp_left.mpr (IwaS.commutator_le N) with
@@ -92,6 +100,7 @@ theorem isSimpleGroup [Nontrivial M] (is_perfect : commutator M = ⊤)
     intro x
     rw [one_smul]
     exact Set.eq_univ_iff_forall.mp h x ⟨n, hn⟩
-  | inr h => exact Or.inr (top_le_iff.mp (le_trans (ge_of_eq is_perfect) h))
+  | inr h =>
+    exact Or.inr (top_le_iff.mp (le_trans (ge_of_eq is_perfect) h))
 
 end MulAction.IwasawaStructure

@@ -22,7 +22,6 @@ has the left lifting property in `C` with respect to `F.map p`.
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 open Category
@@ -37,45 +36,50 @@ section
 
 variable {A B : C} {X Y : D} {i : A ⟶ B} {p : X ⟶ Y} {u : G.obj A ⟶ X} {v : G.obj B ⟶ Y}
 
-/-- When we have an adjunction `G ⊣ F`, any commutative square where the left
+/--
+When we have an adjunction `G ⊣ F`, any commutative square where the left
 map is of the form `G.map i` and the right map is `p` has an "adjoint" commutative
-square whose left map is `i` and whose right map is `F.map p`. -/
+square whose left map is `i` and whose right map is `F.map p`.
+-/
 @[to_dual
-/-- When we have an adjunction `G ⊣ F`, any commutative square where the left
+  /-- When we have an adjunction `G ⊣ F`, any commutative square where the left
 map is of the form `i` and the right map is `F.map p` has an "adjoint" commutative
 square whose left map is `G.map i` and whose right map is `p`. -/]
-theorem right_adjoint (sq : CommSq u (G.map i) p v) (adj : G ⊣ F) :
-    CommSq (adj.homEquiv _ _ u) i (F.map p) (adj.homEquiv _ _ v) :=
-  ⟨by
-    simp only [Adjunction.homEquiv_unit, assoc, ← F.map_comp, sq.w]
-    rw [F.map_comp, Adjunction.unit_naturality_assoc]⟩
+theorem right_adjoint (sq : CommSq u (G.map i) p v) (adj : G ⊣ F)
+    : CommSq (adj.homEquiv _ _ u) i (F.map p) (adj.homEquiv _ _ v) := ⟨by
+  simp only [Adjunction.homEquiv_unit, assoc, ← F.map_comp, sq.w]
+  rw [F.map_comp, Adjunction.unit_naturality_assoc]⟩
 
 variable (sq : CommSq u (G.map i) p v) (adj : G ⊣ F)
 
-/-- The liftings of a commutative are in bijection with the liftings of its (right)
-adjoint square. -/
+/--
+The liftings of a commutative are in bijection with the liftings of its (right)
+adjoint square.
+-/
 @[to_dual
-/-- The liftings of a commutative are in bijection with the liftings of its (left)
+  /-- The liftings of a commutative are in bijection with the liftings of its (left)
 adjoint square. -/]
 def rightAdjointLiftStructEquiv : sq.LiftStruct ≃ (sq.right_adjoint adj).LiftStruct where
-  toFun l :=
-    { l := adj.homEquiv _ _ l.l
-      fac_left := by rw [← adj.homEquiv_naturality_left, l.fac_left]
-      fac_right := by rw [← Adjunction.homEquiv_naturality_right, l.fac_right] }
-  invFun l :=
-    { l := (adj.homEquiv _ _).symm l.l
-      fac_left := by
-        rw [← Adjunction.homEquiv_naturality_left_symm, l.fac_left]
-        apply (adj.homEquiv _ _).left_inv
-      fac_right := by
-        rw [← Adjunction.homEquiv_naturality_right_symm, l.fac_right]
-        apply (adj.homEquiv _ _).left_inv }
+  toFun l := {
+    l := adj.homEquiv _ _ l.l
+    fac_left := by rw [← adj.homEquiv_naturality_left, l.fac_left]
+    fac_right := by rw [← Adjunction.homEquiv_naturality_right, l.fac_right]
+  }
+  invFun l := {
+    l := (adj.homEquiv _ _).symm l.l
+    fac_left := by
+      rw [← Adjunction.homEquiv_naturality_left_symm, l.fac_left]
+      apply (adj.homEquiv _ _).left_inv
+    fac_right := by
+      rw [← Adjunction.homEquiv_naturality_right_symm, l.fac_right]
+      apply (adj.homEquiv _ _).left_inv
+  }
   left_inv := by cat_disch
   right_inv := by cat_disch
 
 /-- A (right) adjoint square has a lifting if and only if the original square has a lifting. -/
 @[to_dual
-/-- A (left) adjoint square has a lifting if and only if the original square has a lifting. -/]
+  /-- A (left) adjoint square has a lifting if and only if the original square has a lifting. -/]
 theorem right_adjoint_hasLift_iff : HasLift (sq.right_adjoint adj) ↔ HasLift sq := by
   simp only [HasLift.iff]
   exact Equiv.nonempty_congr (sq.rightAdjointLiftStructEquiv adj).symm
@@ -92,8 +96,8 @@ end CommSq
 namespace Adjunction
 
 @[to_dual none]
-theorem hasLiftingProperty_iff (adj : G ⊣ F) {A B : C} {X Y : D} (i : A ⟶ B) (p : X ⟶ Y) :
-    HasLiftingProperty (G.map i) p ↔ HasLiftingProperty i (F.map p) := by
+theorem hasLiftingProperty_iff (adj : G ⊣ F) {A B : C} {X Y : D} (i : A ⟶ B) (p : X ⟶ Y)
+    : HasLiftingProperty (G.map i) p ↔ HasLiftingProperty i (F.map p) := by
   constructor <;> intro <;> constructor <;> intro f g sq
   · rw [← sq.left_adjoint_hasLift_iff adj]
     infer_instance

@@ -31,8 +31,8 @@ open Nat
 
 variable {p : ℕ}
 
-theorem padicValNat_eq_emultiplicity_of_ne_one (hp : p ≠ 1) {n : ℕ} (hn : n ≠ 0) :
-    padicValNat p n = emultiplicity p n := by
+theorem padicValNat_eq_emultiplicity_of_ne_one (hp : p ≠ 1) {n : ℕ} (hn : n ≠ 0)
+    : padicValNat p n = emultiplicity p n := by
   rw [eq_comm, emultiplicity_eq_coe, pow_dvd_iff_le_padicValNat hp hn,
     pow_dvd_iff_le_padicValNat hp hn]
   simp
@@ -47,37 +47,40 @@ theorem Nat.toNat_emultiplicity (p n : ℕ) : (emultiplicity p n).toNat = padicV
 
 @[deprecated (since := "2026-09-08")] alias padicValNat_def' := padicValNat_def
 
-/-- A simplification of `padicValNat` when one input is prime, by analogy with
-`padicValRat_def`. -/
-theorem padicValNat_eq_emultiplicity [hp : Fact p.Prime] {n : ℕ} (hn : n ≠ 0) :
-    padicValNat p n = emultiplicity p n :=
+/--
+A simplification of `padicValNat` when one input is prime, by analogy with
+`padicValRat_def`.
+-/
+theorem padicValNat_eq_emultiplicity [hp : Fact p.Prime] {n : ℕ} (hn : n ≠ 0)
+    : padicValNat p n = emultiplicity p n :=
   padicValNat_eq_emultiplicity_of_ne_one hp.out.ne_one hn
 
 namespace padicValNat
 
 @[simp]
-theorem eq_zero_iff {n : ℕ} : padicValNat p n = 0 ↔ p = 1 ∨ n = 0 ∨ ¬p ∣ n := by
-  rcases eq_or_ne n 0 with rfl | hn₀; · simp
-  rcases eq_or_ne p 1 with rfl | hp₁; · simp
+theorem eq_zero_iff {n : ℕ} : padicValNat p n = 0 ↔ p = 1 ∨ n = 0 ∨ ¬ p ∣ n := by
+  rcases eq_or_ne n 0 with rfl | hn₀
+  · simp
+  rcases eq_or_ne p 1 with rfl | hp₁
+  · simp
   simpa [*] using pow_dvd_iff_le_padicValNat (k := 1) hp₁ hn₀ |>.symm |>.not
 
 end padicValNat
 
 open List
 
-theorem le_emultiplicity_iff_replicate_subperm_primeFactorsList {a b : ℕ} {n : ℕ} (ha : a.Prime)
-    (hb : b ≠ 0) :
-    ↑n ≤ emultiplicity a b ↔ replicate n a <+~ b.primeFactorsList :=
-  (replicate_subperm_primeFactorsList_iff ha hb).trans
-    pow_dvd_iff_le_emultiplicity |>.symm
+theorem le_emultiplicity_iff_replicate_subperm_primeFactorsList
+    {a b : ℕ} {n : ℕ} (ha : a.Prime) (hb : b ≠ 0)
+    : ↑n ≤ emultiplicity a b ↔ replicate n a <+~ b.primeFactorsList :=
+  (replicate_subperm_primeFactorsList_iff ha hb).trans pow_dvd_iff_le_emultiplicity |>.symm
 
-theorem le_padicValNat_iff_replicate_subperm_primeFactorsList {a b : ℕ} {n : ℕ} (ha : a.Prime)
-    (hb : b ≠ 0) :
-    n ≤ padicValNat a b ↔ replicate n a <+~ b.primeFactorsList := by
+theorem le_padicValNat_iff_replicate_subperm_primeFactorsList
+    {a b : ℕ} {n : ℕ} (ha : a.Prime) (hb : b ≠ 0)
+    : n ≤ padicValNat a b ↔ replicate n a <+~ b.primeFactorsList := by
   rw [← le_emultiplicity_iff_replicate_subperm_primeFactorsList ha hb,
     Nat.finiteMultiplicity_iff.2 ⟨ha.ne_one, Nat.pos_of_ne_zero hb⟩
-      |>.emultiplicity_eq_multiplicity, ← padicValNat_def,
-    ENat.natCast_le_natCast]
+      |>.emultiplicity_eq_multiplicity,
+    ← padicValNat_def, ENat.natCast_le_natCast]
 
 /-- A weak upper bound on `padicValNat p n`. -/
 theorem mul_padicValNat_le {p n : ℕ} : p * padicValNat p n ≤ n := by

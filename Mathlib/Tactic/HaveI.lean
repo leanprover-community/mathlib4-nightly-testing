@@ -30,8 +30,7 @@ macro_rules
 
 (This is the do-notation version of the term-mode `haveI`.)
 -/
-macro "haveI' " hd:letDecl : doElem =>
-  `(doElem| assert! haveIDummy $hd:letDecl)
+macro "haveI' " hd:letDecl : doElem => `(doElem| assert! haveIDummy $hd:letDecl)
 
 local syntax "letIDummy" letDecl : term
 macro_rules
@@ -42,7 +41,6 @@ macro_rules
 
 (This is the do-notation version of the term-mode `haveI`.)
 -/
-macro "letI' " hd:letDecl : doElem =>
-  `(doElem| assert! letIDummy $hd:letDecl)
+macro "letI' " hd:letDecl : doElem => `(doElem| assert! letIDummy $hd:letDecl)
 
 end Mathlib.Tactic.HaveI

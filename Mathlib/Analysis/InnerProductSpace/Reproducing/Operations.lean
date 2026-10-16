@@ -38,13 +38,13 @@ variable [RKHS 𝕜 H X V] [RKHS 𝕜 H' X V]
 
 /-- The operator `(f, g) ↦ ⇑f + ⇑g`, where addition is in `X → V`. -/
 def generator : WithLp 2 (H × H') →L[𝕜] (X → V) :=
-  ((coeCLM (H:=H) 𝕜).coprod (coeCLM (H:=H') 𝕜)) ∘L
-    (WithLp.prodContinuousLinearEquiv 2 𝕜 H H').toContinuousLinearMap
+  ((coeCLM (H := H) 𝕜).coprod (coeCLM (H := H') 𝕜))
+    ∘L (WithLp.prodContinuousLinearEquiv 2 𝕜 H H').toContinuousLinearMap
 
 variable {H H'} in
 @[simp]
-lemma generator_apply (f : H) (g : H') (x : X) :
-    generator H H' (WithLp.toLp 2 (f,g)) x = f x + g x := by
+lemma generator_apply (f : H) (g : H') (x : X)
+    : generator H H' (WithLp.toLp 2 (f, g)) x = f x + g x := by
   rfl
 
 instance : IsClosed ((generator H H').ker : Set (WithLp 2 (H × H'))) :=
@@ -64,24 +64,25 @@ instance : RKHS 𝕜 (H + H') X V where
     refine (Function.Injective.eq_iff ?_).mp hfg
     simp [← LinearMap.ker_eq_bot, ker_liftQ_eq_bot]
 
-lemma mk_eq (f : WithLp 2 (H × H')) :
-    Submodule.Quotient.mk (p:=(generator H H').ker) f = generator H H' f := rfl
+lemma mk_eq (f : WithLp 2 (H × H'))
+    : Submodule.Quotient.mk (p := (generator H H').ker) f = generator H H' f :=
+  rfl
 
 section CompleteSpaceV
 
 variable [CompleteSpace V]
 
-lemma kerFun_mem_orthogonal (x : X) (v : V) :
-    (WithLp.toLp 2 (kerFun H x v, kerFun H' x v)) ∈ (generator H H').kerᗮ := by
+lemma kerFun_mem_orthogonal (x : X) (v : V)
+    : (WithLp.toLp 2 (kerFun H x v, kerFun H' x v)) ∈ (generator H H').kerᗮ := by
   intro p hp
   rw [LinearMap.mem_ker, funext_iff] at hp
   simp_all [generator, ← inner_add_left]
 
-lemma kerFun_apply_eq_mk (x : X) (v : V) :
-    kerFun (H + H') x v = Submodule.Quotient.mk (WithLp.toLp 2 (kerFun H x v, kerFun H' x v)) := by
-  rw [← quotientEquivOrthogonal_symm_eq_mk (generator H H').ker _
-    (kerFun_mem_orthogonal H H' x v), (generator H H').ker.quotientEquivOrthogonal.eq_symm_apply,
-    ext_iff_inner_right (𝕜 := 𝕜)]
+lemma kerFun_apply_eq_mk (x : X) (v : V)
+    : kerFun (H + H') x v
+      = Submodule.Quotient.mk (WithLp.toLp 2 (kerFun H x v, kerFun H' x v)) := by
+  rw [← quotientEquivOrthogonal_symm_eq_mk (generator H H').ker _ (kerFun_mem_orthogonal H H' x v),
+    (generator H H').ker.quotientEquivOrthogonal.eq_symm_apply, ext_iff_inner_right (𝕜 := 𝕜)]
   intro f
   rw [(generator H H').ker.quotientEquivOrthogonal.inner_map_eq_flip,
     (generator H H').ker.quotientEquivOrthogonal_symm_eq_mk, kerFun_inner]
@@ -100,25 +101,29 @@ variable [Fact K.PosSemidef] [Fact K'.PosSemidef]
 scoped instance : Fact (K + K').PosSemidef :=
   ⟨Matrix.PosSemidef.add (Fact.out : K.PosSemidef) (Fact.out : K'.PosSemidef)⟩
 
-/-- The RKHSs constructed from the sum of two kernels is linearly isometrically isomorphic to the
-sum of the RKHSs created by the consituant kernels. -/
-def OfKernelAddEquiv : OfKernel (K + K') ≃ₗᵢ[𝕜] OfKernel K + OfKernel K' := equiv
-  (by simp [OfKernel.kernel_ofKernel, kernel_sum_eq_sum_of_kernel])
+/--
+The RKHSs constructed from the sum of two kernels is linearly isometrically isomorphic to the
+sum of the RKHSs created by the consituant kernels.
+-/
+def OfKernelAddEquiv : OfKernel (K + K') ≃ₗᵢ[𝕜] OfKernel K + OfKernel K' :=
+  equiv (by simp [OfKernel.kernel_ofKernel, kernel_sum_eq_sum_of_kernel])
 
 end OfKernel
 
 end CompleteSpaceV
 
-/-- Projection that takes a function `f : H + H'` to the unique pair in `H × H'` that achieves
-its norm. -/
+/--
+Projection that takes a function `f : H + H'` to the unique pair in `H × H'` that achieves
+its norm.
+-/
 def projection : H + H' →ₗᵢ[𝕜] WithLp 2 (H × H') :=
   ((generator H H').kerᗮ).subtypeₗᵢ.comp
     (generator H H').ker.quotientEquivOrthogonal.toLinearIsometry
 
 @[simp low]
-lemma projection_apply (f : H + H') :
-    projection H H' f =
-      (((generator H H').kerᗮ).subtype ∘ (generator H H').ker.quotientEquivOrthogonal) f := by
+lemma projection_apply (f : H + H')
+    : projection H H' f
+      = (((generator H H').kerᗮ).subtype ∘ (generator H H').ker.quotientEquivOrthogonal) f := by
   rfl
 
 theorem range_projection : (projection H H').range = (generator H H').kerᗮ := by
@@ -127,25 +132,25 @@ theorem range_projection : (projection H H').range = (generator H H').kerᗮ := 
   simp [projection, Set.range_comp]
 
 variable {H H'} in
-lemma mk_projection (f : H + H') :
-    Submodule.Quotient.mk (projection H H' f : WithLp 2 (H × H')) = f := by
+lemma mk_projection (f : H + H')
+    : Submodule.Quotient.mk (projection H H' f : WithLp 2 (H × H')) = f := by
   rw [← quotientEquivOrthogonal_symm_eq_mk _ _ _, LinearIsometryEquiv.symm_apply_eq]
   · simp
   rw [← range_projection H H']
   exact LinearMap.mem_range_self _ f
 
 variable [CompleteSpace V] in
-theorem projection_kerFun (x : X) (v : V) :
-    projection H H' (kerFun (H + H') x v) = .toLp 2 ⟨kerFun H x v, kerFun H' x v⟩ := by
+theorem projection_kerFun (x : X) (v : V)
+    : projection H H' (kerFun (H + H') x v) = .toLp 2 ⟨kerFun H x v, kerFun H' x v⟩ := by
   simp [projection, kerFun_apply_eq_mk, kerFun_mem_orthogonal]
 
 variable [CompleteSpace V] in
-theorem norm_sq_kerFun_add (x : X) (v : V) :
-    ‖kerFun (H + H') x v‖ ^ 2 = ‖kerFun H x v‖ ^ 2 + ‖kerFun H' x v‖ ^ 2 := by
+theorem norm_sq_kerFun_add (x : X) (v : V)
+    : ‖kerFun (H + H') x v‖ ^ 2 = ‖kerFun H x v‖ ^ 2 + ‖kerFun H' x v‖ ^ 2 := by
   simp [← (projection H H').norm_map, projection_kerFun, WithLp.prod_norm_sq_eq_of_L2]
 
-theorem exists_eq_add_and_norm_sq_eq_add (f : H + H') :
-    ∃ (f₁ : H) (f₂ : H'), (⇑f = f₁ + f₂) ∧ ‖f‖ ^ 2 = ‖f₁‖ ^ 2 + ‖f₂‖ ^ 2 := by
+theorem exists_eq_add_and_norm_sq_eq_add (f : H + H')
+    : ∃ (f₁ : H) (f₂ : H'), (⇑f = f₁ + f₂) ∧ ‖f‖ ^ 2 = ‖f₁‖ ^ 2 + ‖f₂‖ ^ 2 := by
   let p := projection H H' f
   have hp : projection H H' f = p := rfl
   use p.ofLp.1, p.ofLp.2
@@ -156,8 +161,8 @@ theorem exists_eq_add_and_norm_sq_eq_add (f : H + H') :
     exact generator_apply p.fst p.snd _
   · simp [← (projection H H').norm_map, hp, WithLp.prod_norm_sq_eq_of_L2]
 
-theorem norm_sq_le (f : H + H') (f₁ : H) (f₂ : H') (h : ⇑f = f₁ + f₂) :
-    ‖f‖ ^ 2 ≤ ‖f₁‖ ^ 2 + ‖f₂‖ ^ 2 := by
+theorem norm_sq_le (f : H + H') (f₁ : H) (f₂ : H') (h : ⇑f = f₁ + f₂)
+    : ‖f‖ ^ 2 ≤ ‖f₁‖ ^ 2 + ‖f₂‖ ^ 2 := by
   calc
     ‖f‖ ^ 2 = ‖Submodule.Quotient.mk (p := (generator H H').ker) (WithLp.toLp 2 (f₁, f₂))‖ ^ 2 := by
       congr

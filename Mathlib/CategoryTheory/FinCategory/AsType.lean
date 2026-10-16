@@ -24,21 +24,18 @@ namespace FinCategory
 variable (α : Type*) [Fintype α] [SmallCategory α] [FinCategory α]
 
 /-- A FinCategory `α` is equivalent to a category with objects in `Type`. -/
---@[nolint unused_arguments]
-abbrev ObjAsType : Type :=
-  InducedCategory α (Fintype.equivFin α).symm
+-- @[nolint unused_arguments]
+abbrev ObjAsType : Type := InducedCategory α (Fintype.equivFin α).symm
 
-instance {i j : ObjAsType α} : Fintype (i ⟶ j) :=
-  Fintype.ofEquiv _ InducedCategory.homEquiv.symm
+instance {i j : ObjAsType α} : Fintype (i ⟶ j) := Fintype.ofEquiv _ InducedCategory.homEquiv.symm
 
 /-- The constructed category is indeed equivalent to `α`. -/
 noncomputable def objAsTypeEquiv : ObjAsType α ≌ α :=
   (inducedFunctor (Fintype.equivFin α).symm).asEquivalence
 
 /-- A FinCategory `α` is equivalent to a FinCategory in `Type`. -/
---@[nolint unused_arguments]
-abbrev AsType : Type :=
-  Fin (Fintype.card α)
+-- @[nolint unused_arguments]
+abbrev AsType : Type := Fin (Fintype.card α)
 
 @[simps -isSimp id comp]
 noncomputable instance categoryAsType : SmallCategory (AsType α) where
@@ -73,8 +70,7 @@ noncomputable instance asTypeFinCategory : FinCategory (AsType α) where
   fintypeHom := fun _ _ => show Fintype (Fin _) from inferInstance
 
 /-- The constructed category (`AsType α`) is indeed equivalent to `α`. -/
-noncomputable def equivAsType : AsType α ≌ α :=
-  (asTypeEquivObjAsType α).trans (objAsTypeEquiv α)
+noncomputable def equivAsType : AsType α ≌ α := (asTypeEquivObjAsType α).trans (objAsTypeEquiv α)
 
 end FinCategory
 

@@ -22,7 +22,7 @@ namespace Mathlib.Tactic.Linarith.SimplexAlgorithm
 /-- An exception in the `SimplexAlgorithmM` monad. -/
 inductive SimplexAlgorithmException
   /-- The solution is infeasible. -/
-| infeasible : SimplexAlgorithmException
+  | infeasible : SimplexAlgorithmException
 
 /-- The monad for the Simplex Algorithm. -/
 abbrev SimplexAlgorithmM (matType : Nat → Nat → Type) [UsableInSimplexAlgorithm matType] :=
@@ -64,8 +64,8 @@ nonnegative.
 -/
 def checkSuccess : SimplexAlgorithmM matType Bool := do
   let lastIdx := (← get).free.size - 1
-  return (← get).mat[(0, lastIdx)]! > 0 &&
-    (← (← get).basic.size.allM (fun i _ => do return (← get).mat[(i, lastIdx)]! ≥ 0))
+  return (← get).mat[(0, lastIdx)]! > 0
+    && (← (← get).basic.size.allM (fun i _ => do return (← get).mat[(i, lastIdx)]! ≥ 0))
 
 /--
 Chooses an entering variable: among the variables with a positive coefficient in the objective
@@ -75,8 +75,7 @@ def chooseEnteringVar : SimplexAlgorithmM matType Nat := do
   let mut enterIdxOpt : Option Nat := none -- index of entering variable in the `free` array
   let mut minIdx := 0
   for i in [:(← get).free.size - 1] do
-    if (← get).mat[(0, i)]! > 0 &&
-        (enterIdxOpt.isNone || (← get).free[i]! < minIdx) then
+    if (← get).mat[(0, i)]! > 0 && (enterIdxOpt.isNone || (← get).free[i]! < minIdx) then
       enterIdxOpt := i
       minIdx := (← get).free[i]!
 
@@ -98,8 +97,7 @@ def chooseExitingVar (enterIdx : Nat) : SimplexAlgorithmM matType Nat := do
       continue
     let lastIdx := (← get).free.size - 1
     let coef := -(← get).mat[(i, lastIdx)]! / (← get).mat[(i, enterIdx)]!
-    if exitIdxOpt.isNone || coef < minCoef ||
-        (coef == minCoef && (← get).basic[i]! < minIdx) then
+    if exitIdxOpt.isNone || coef < minCoef || (coef == minCoef && (← get).basic[i]! < minIdx) then
       exitIdxOpt := i
       minCoef := coef
       minIdx := (← get).basic[i]!

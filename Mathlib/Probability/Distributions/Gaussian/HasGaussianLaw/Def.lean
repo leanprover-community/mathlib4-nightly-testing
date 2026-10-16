@@ -24,12 +24,16 @@ Gaussian random variable
 
 open MeasureTheory
 
-/-- The predicate `HasGaussianLaw X P` means that under the measure `P`,
-`X` has a Gaussian distribution. -/
+/--
+The predicate `HasGaussianLaw X P` means that under the measure `P`,
+`X` has a Gaussian distribution.
+-/
 @[fun_prop]
-public structure ProbabilityTheory.HasGaussianLaw {Ω E : Type*} {mΩ : MeasurableSpace Ω}
+public structure ProbabilityTheory.HasGaussianLaw
+    {Ω E : Type*} {mΩ : MeasurableSpace Ω}
     [TopologicalSpace E] [AddCommMonoid E] [Module ℝ E] [mE : MeasurableSpace E]
-    (X : Ω → E) (P : Measure Ω) : Prop where
+    (X : Ω → E) (P : Measure Ω)
+    : Prop where
   protected aemeasurable : AEMeasurable X P := by fun_prop
   protected isGaussian_map : IsGaussian (P.map X)
 

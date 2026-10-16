@@ -6,7 +6,6 @@ Authors: Miyahara Kō
 module
 
 public import Aesop
-
 import Mathlib.Init
 
 /-!

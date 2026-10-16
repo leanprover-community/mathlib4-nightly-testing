@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Ring.Basic
 public import Mathlib.Data.Nat.ModEq
 public import Mathlib.Order.Filter.AtTopBot.Monoid
-
 import Mathlib.Algebra.Order.Group.Nat
 import Mathlib.Algebra.Ring.Divisibility.Basic
 import Mathlib.Algebra.Ring.Int.Defs
@@ -21,7 +20,6 @@ In this file we prove that `m ≡ d [MOD n]` frequently as `m → ∞`.
 -/
 
 public section
-
 
 open Filter
 
@@ -43,8 +41,9 @@ theorem frequently_odd : ∃ᶠ m : ℕ in atTop, Odd m := by
 
 end Nat
 
-theorem Filter.nonneg_of_eventually_pow_nonneg {α : Type*}
-    [Ring α] [LinearOrder α] [IsStrictOrderedRing α] {a : α}
-    (h : ∀ᶠ n in atTop, 0 ≤ a ^ (n : ℕ)) : 0 ≤ a :=
+theorem Filter.nonneg_of_eventually_pow_nonneg
+    {α : Type*} [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
+    {a : α} (h : ∀ᶠ n in atTop, 0 ≤ a ^ (n : ℕ))
+    : 0 ≤ a :=
   let ⟨_n, ho, hn⟩ := (Nat.frequently_odd.and_eventually h).exists
   ho.pow_nonneg_iff.1 hn

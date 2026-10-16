@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Basic
 public import Mathlib.Topology.Algebra.Constructions.DomMulAct
-
 import Mathlib.MeasureTheory.Function.LpSpace.ContinuousCompMeasurePreserving
 
 /-!
@@ -41,13 +40,12 @@ open DomMulAct
 
 namespace MeasureTheory
 
-variable {X M E : Type*}
-  [TopologicalSpace X] [R1Space X] [MeasurableSpace X] [BorelSpace X]
-  [Monoid M] [TopologicalSpace M] [MeasurableSpace M] [OpensMeasurableSpace M]
-  [SMul M X] [ContinuousSMul M X]
+variable
+  {X M E : Type*} [TopologicalSpace X] [R1Space X] [MeasurableSpace X] [BorelSpace X] [Monoid M]
+  [TopologicalSpace M] [MeasurableSpace M] [OpensMeasurableSpace M] [SMul M X] [ContinuousSMul M X]
   [NormedAddCommGroup E]
-  {μ : Measure X} [IsLocallyFiniteMeasure μ] [μ.InnerRegularCompactLTTop]
-  [SMulInvariantMeasure M X μ]
+  {μ : Measure X}
+  [IsLocallyFiniteMeasure μ] [μ.InnerRegularCompactLTTop] [SMulInvariantMeasure M X μ]
   {p : ℝ≥0∞} [Fact (1 ≤ p)] [hp : Fact (p ≠ ∞)]
 
 @[to_additive]

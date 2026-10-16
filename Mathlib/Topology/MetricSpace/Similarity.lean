@@ -6,7 +6,6 @@ Authors: Jovan Gerbscheid, Newell Jensen
 module
 
 public import Mathlib.Topology.MetricSpace.Congruence
-
 import Mathlib.Tactic.FinCases
 
 /-!
@@ -37,8 +36,10 @@ section PseudoEMetricSpace
 
 variable [PseudoEMetricSpace P₁] [PseudoEMetricSpace P₂] [PseudoEMetricSpace P₃]
 
-/-- Similarity between indexed sets of vertices v₁ and v₂.
-Use `open scoped Similar` to access the `v₁ ∼ v₂` notation. -/
+/--
+Similarity between indexed sets of vertices v₁ and v₂.
+Use `open scoped Similar` to access the `v₁ ∼ v₂` notation.
+-/
 def Similar (v₁ : ι → P₁) (v₂ : ι → P₂) : Prop :=
   ∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (edist (v₁ i₁) (v₁ i₂) = r * edist (v₂ i₁) (v₂ i₂))
 
@@ -46,16 +47,19 @@ def Similar (v₁ : ι → P₁) (v₂ : ι → P₂) : Prop :=
 scoped[Similar] infixl:25 " ∼ " => Similar
 
 /-- Similarity holds if and only if all extended distances are proportional. -/
-lemma similar_iff_exists_edist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (edist (v₁ i₁) (v₁ i₂) =
-      r * edist (v₂ i₁) (v₂ i₂))) :=
+lemma similar_iff_exists_edist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (edist (v₁ i₁) (v₁ i₂) = r * edist (v₂ i₁) (v₂ i₂))) :=
   Iff.rfl
 
-/-- Similarity holds if and only if all extended distances between points with different
-indices are proportional. -/
-lemma similar_iff_exists_pairwise_edist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (edist (v₁ i₁) (v₁ i₂) =
-      r * edist (v₂ i₁) (v₂ i₂))) := by
+/--
+Similarity holds if and only if all extended distances between points with different
+indices are proportional.
+-/
+lemma similar_iff_exists_pairwise_edist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0,
+        r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (edist (v₁ i₁) (v₁ i₂) = r * edist (v₂ i₁) (v₂ i₂))) := by
   rw [similar_iff_exists_edist_eq]
   refine ⟨?_, ?_⟩ <;> rintro ⟨r, hr, h⟩ <;> refine ⟨r, hr, fun i₁ i₂ ↦ ?_⟩
   · exact fun _ ↦ h i₁ i₂
@@ -83,10 +87,17 @@ alias ⟨exists_pairwise_edist_eq, _⟩ := similar_iff_exists_pairwise_edist_eq
 `similar_iff_exists_pairwise_edist_eq`. -/
 alias ⟨_, of_exists_pairwise_edist_eq⟩ := similar_iff_exists_pairwise_edist_eq
 
-@[refl] protected lemma refl (v₁ : ι → P₁) : v₁ ∼ v₁ :=
-  ⟨1, one_ne_zero, fun _ _ => by {norm_cast; rw [one_mul]}⟩
+@[refl]
+protected lemma refl (v₁ : ι → P₁) : v₁ ∼ v₁ := ⟨
+  1,
+  one_ne_zero,
+  fun _ _ => by {
+    norm_cast; rw [one_mul]
+  }
+⟩
 
-@[symm] protected lemma symm (h : v₁ ∼ v₂) : v₂ ∼ v₁ := by
+@[symm]
+protected lemma symm (h : v₁ ∼ v₂) : v₂ ∼ v₁ := by
   rcases h with ⟨r, hr, h⟩
   refine ⟨r⁻¹, inv_ne_zero hr, fun _ _ => ?_⟩
   rw [ENNReal.coe_inv hr, ← ENNReal.div_eq_inv_mul, ENNReal.eq_div_iff _ ENNReal.coe_ne_top, h]
@@ -94,8 +105,10 @@ alias ⟨_, of_exists_pairwise_edist_eq⟩ := similar_iff_exists_pairwise_edist_
 
 lemma _root_.similar_comm : v₁ ∼ v₂ ↔ v₂ ∼ v₁ := ⟨Similar.symm, Similar.symm⟩
 
-@[trans] protected lemma trans (h₁ : v₁ ∼ v₂) (h₂ : v₂ ∼ v₃) : v₁ ∼ v₃ := by
-  rcases h₁ with ⟨r₁, hr₁, h₁⟩; rcases h₂ with ⟨r₂, hr₂, h₂⟩
+@[trans]
+protected lemma trans (h₁ : v₁ ∼ v₂) (h₂ : v₂ ∼ v₃) : v₁ ∼ v₃ := by
+  rcases h₁ with ⟨r₁, hr₁, h₁⟩
+  rcases h₂ with ⟨r₂, hr₂, h₂⟩
   refine ⟨r₁ * r₂, mul_ne_zero hr₁ hr₂, fun _ _ => ?_⟩
   rw [ENNReal.coe_mul, mul_assoc, h₁, h₂]
 
@@ -107,8 +120,7 @@ lemma index_map (h : v₁ ∼ v₂) (f : ι' → ι) : (v₁ ∘ f) ∼ (v₂ �
 
 /-- Change between equivalent index sets ι and ι'. -/
 @[simp]
-lemma index_equiv (f : ι' ≃ ι) (v₁ : ι → P₁) (v₂ : ι → P₂) :
-    v₁ ∘ f ∼ v₂ ∘ f ↔ v₁ ∼ v₂ := by
+lemma index_equiv (f : ι' ≃ ι) (v₁ : ι → P₁) (v₂ : ι → P₂) : v₁ ∘ f ∼ v₂ ∘ f ↔ v₁ ∼ v₂ := by
   refine ⟨fun h => ?_, fun h => Similar.index_map h f⟩
   rcases h with ⟨r, hr, h⟩
   refine ⟨r, hr, fun i₁ i₂ => ?_⟩
@@ -116,16 +128,14 @@ lemma index_equiv (f : ι' ≃ ι) (v₁ : ι → P₁) (v₂ : ι → P₂) :
 
 /-- Families with at most a single point are always similar. -/
 @[nontriviality, simp]
-lemma of_subsingleton_index [Subsingleton ι] : v₁ ∼ v₂ :=
-  Congruent.of_subsingleton_index.similar
+lemma of_subsingleton_index [Subsingleton ι] : v₁ ∼ v₂ := Congruent.of_subsingleton_index.similar
 
 /-! Similarity is preserved under dilations. -/
 
 section Dilation
 variable {F}
 
-lemma comp_left [FunLike F P₁ P₃] [DilationClass F P₁ P₃] (f : F) (h : v₁ ∼ v₂) :
-    f ∘ v₁ ∼ v₂ :=
+lemma comp_left [FunLike F P₁ P₃] [DilationClass F P₁ P₃] (f : F) (h : v₁ ∼ v₂) : f ∘ v₁ ∼ v₂ :=
   .trans ⟨Dilation.ratio f, Dilation.ratio_ne_zero f, fun _ _ => Dilation.edist_eq f _ _⟩ h
 
 lemma comp_right [FunLike F P₂ P₃] [DilationClass F P₂ P₃] (f : F) (h : v₁ ∼ v₂) : v₁ ∼ f ∘ v₂ :=
@@ -171,8 +181,7 @@ section Triangle
 variable {a b c : P₁} {a' b' c' : P₂}
 
 /-- Swapping the first two vertices preserves similarity. -/
-theorem comm_left (h : ![a, b, c] ∼ ![a', b', c']) :
-    ![b, a, c] ∼ ![b', a', c'] := by
+theorem comm_left (h : ![a, b, c] ∼ ![a', b', c']) : ![b, a, c] ∼ ![b', a', c'] := by
   have hl : ![b, a, c] = ![a, b, c] ∘ Equiv.swap 0 1 := by
     ext i
     fin_cases i <;> simp [Equiv.swap_apply_of_ne_of_ne]
@@ -182,8 +191,7 @@ theorem comm_left (h : ![a, b, c] ∼ ![a', b', c']) :
   grind [index_equiv]
 
 /-- Swapping the last two vertices preserves similarity. -/
-theorem comm_right (h : ![a, b, c] ∼ ![a', b', c']) :
-    ![a, c, b] ∼ ![a', c', b'] := by
+theorem comm_right (h : ![a, b, c] ∼ ![a', b', c']) : ![a, c, b] ∼ ![a', c', b'] := by
   have hl : ![a, c, b] = ![a, b, c] ∘ Equiv.swap 1 2 := by
     ext i
     fin_cases i <;> simp [Equiv.swap_apply_of_ne_of_ne]
@@ -193,8 +201,7 @@ theorem comm_right (h : ![a, b, c] ∼ ![a', b', c']) :
   grind [index_equiv]
 
 /-- Reversing the order of vertices preserves similarity. -/
-theorem reverse_of_three (h : ![a, b, c] ∼ ![a', b', c']) :
-    ![c, b, a] ∼ ![c', b', a'] :=
+theorem reverse_of_three (h : ![a, b, c] ∼ ![a', b', c']) : ![c, b, a] ∼ ![c', b', a'] :=
   h.comm_left.comm_right.comm_left
 
 end Triangle
@@ -208,47 +215,58 @@ section PseudoMetricSpace
 variable [PseudoMetricSpace P₁] [PseudoMetricSpace P₂]
 
 /-- Similarity holds if and only if all non-negative distances are proportional. -/
-lemma similar_iff_exists_nndist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (nndist (v₁ i₁) (v₁ i₂) =
-      r * nndist (v₂ i₁) (v₂ i₂))) :=
-  exists_congr <| fun _ => and_congr Iff.rfl <| forall₂_congr <|
-  fun _ _ => by { rw [edist_nndist, edist_nndist]; norm_cast }
+lemma similar_iff_exists_nndist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (nndist (v₁ i₁) (v₁ i₂) = r * nndist (v₂ i₁) (v₂ i₂))) :=
+  exists_congr <| fun _ =>
+    and_congr Iff.rfl <| forall₂_congr <| fun _ _ => by {
+      rw [edist_nndist, edist_nndist]; norm_cast
+    }
 
-/-- Similarity holds if and only if all non-negative distances between points with different
-indices are proportional. -/
-lemma similar_iff_exists_pairwise_nndist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (nndist (v₁ i₁) (v₁ i₂) =
-      r * nndist (v₂ i₁) (v₂ i₂))) := by
+/--
+Similarity holds if and only if all non-negative distances between points with different
+indices are proportional.
+-/
+lemma similar_iff_exists_pairwise_nndist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0,
+        r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (nndist (v₁ i₁) (v₁ i₂) = r * nndist (v₂ i₁) (v₂ i₂))) := by
   simp_rw [similar_iff_exists_pairwise_edist_eq, edist_nndist]
   exact_mod_cast Iff.rfl
 
 /-- Similarity holds if and only if all distances are proportional. -/
-lemma similar_iff_exists_dist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (dist (v₁ i₁) (v₁ i₂) =
-      r * dist (v₂ i₁) (v₂ i₂))) :=
-  similar_iff_exists_nndist_eq.trans
-  (exists_congr <| fun _ => and_congr Iff.rfl <| forall₂_congr <|
-    fun _ _ => by { rw [dist_nndist, dist_nndist]; norm_cast })
+lemma similar_iff_exists_dist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ ∀ (i₁ i₂ : ι), (dist (v₁ i₁) (v₁ i₂) = r * dist (v₂ i₁) (v₂ i₂))) :=
+  similar_iff_exists_nndist_eq.trans (exists_congr <| fun _ =>
+    and_congr Iff.rfl <| forall₂_congr <| fun _ _ => by {
+      rw [dist_nndist, dist_nndist]; norm_cast
+    })
 
-/-- Similarity holds if and only if all distances between points with different indices are
-proportional. -/
-lemma similar_iff_exists_pairwise_dist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ≥0, r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (dist (v₁ i₁) (v₁ i₂) =
-      r * dist (v₂ i₁) (v₂ i₂))) := by
+/--
+Similarity holds if and only if all distances between points with different indices are
+proportional.
+-/
+lemma similar_iff_exists_pairwise_dist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ≥0,
+        r ≠ 0 ∧ Pairwise fun i₁ i₂ ↦ (dist (v₁ i₁) (v₁ i₂) = r * dist (v₂ i₁) (v₂ i₂))) := by
   simp_rw [similar_iff_exists_pairwise_nndist_eq, dist_nndist]
   exact_mod_cast Iff.rfl
 
 /-- Similarity holds if and only if all distances are proportional with a positive real ratio. -/
-lemma similar_iff_exists_pos_dist_eq : Similar v₁ v₂ ↔
-    (∃ r : ℝ, 0 < r ∧ ∀ (i₁ i₂ : ι), (dist (v₁ i₁) (v₁ i₂) = r * dist (v₂ i₁) (v₂ i₂))) := by
+lemma similar_iff_exists_pos_dist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ, 0 < r ∧ ∀ (i₁ i₂ : ι), (dist (v₁ i₁) (v₁ i₂) = r * dist (v₂ i₁) (v₂ i₂))) := by
   rw [similar_iff_exists_dist_eq]
   simp_rw [← pos_iff_ne_zero, NNReal.exists, ← NNReal.coe_pos, NNReal.coe_mk]
   grind
 
 /-- Similarity holds iff pairwise distances are proportional with a positive ratio. -/
-lemma similar_iff_exists_pos_pairwise_dist_eq :
-    Similar v₁ v₂ ↔ (∃ r : ℝ, 0 < r ∧ Pairwise fun i₁ i₂ ↦ (dist (v₁ i₁) (v₁ i₂) =
-      r * dist (v₂ i₁) (v₂ i₂))) := by
+lemma similar_iff_exists_pos_pairwise_dist_eq
+    : Similar v₁ v₂
+      ↔ (∃ r : ℝ,
+        0 < r ∧ Pairwise fun i₁ i₂ ↦ (dist (v₁ i₁) (v₁ i₂) = r * dist (v₂ i₁) (v₂ i₂))) := by
   simp_rw [similar_iff_exists_pairwise_dist_eq]
   simp_rw [← pos_iff_ne_zero, NNReal.exists, ← NNReal.coe_pos, NNReal.coe_mk]
   grind
@@ -308,19 +326,24 @@ section Triangle
 
 variable {a b c : P₁} {a' b' c' : P₂}
 
-/-- If two triangles have two pairs of proportional adjacent sides, then the triangles are similar.
+/--
+If two triangles have two pairs of proportional adjacent sides, then the triangles are similar.
 -/
-theorem similar_of_dist_mul_eq_dist_mul_eq (h_ne : dist a b ≠ 0) (h_ne' : dist a' b' ≠ 0)
+theorem similar_of_dist_mul_eq_dist_mul_eq
+    (h_ne : dist a b ≠ 0) (h_ne' : dist a' b' ≠ 0)
     (heq1 : dist a b * dist b' c' = dist b c * dist a' b')
-    (heq2 : dist a b * dist c' a' = dist c a * dist a' b') :
-    Similar ![a, b, c] ![a', b', c'] := by
+    (heq2 : dist a b * dist c' a' = dist c a * dist a' b')
+    : Similar (![a, b, c]) ![a', b', c'] := by
   set r : ℝ := (dist a b / dist a' b') with hr
   have hr_pos : 0 < r := by positivity
   apply Similar.of_exists_pos_pairwise_dist_eq
   use r
   refine ⟨hr_pos, ?_⟩
   intro i j hij
-  fin_cases i <;> fin_cases j <;> try {rw [dist_self, dist_self, mul_zero]}
+  fin_cases i <;> fin_cases j
+    <;> try {
+      rw [dist_self, dist_self, mul_zero]
+    }
   all_goals simp; grind [dist_comm]
 
 alias similar_of_side_side := similar_of_dist_mul_eq_dist_mul_eq

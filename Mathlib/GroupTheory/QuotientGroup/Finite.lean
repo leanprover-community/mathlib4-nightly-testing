@@ -18,7 +18,6 @@ public import Mathlib.GroupTheory.QuotientGroup.Basic
 open Function QuotientGroup Subgroup
 open scoped Pointwise
 
-
 variable {F G H : Type*} [Group F] [Group G] [Group H] [Fintype F] [Fintype H]
 variable (f : F →* G) (g : G →* H)
 
@@ -27,16 +26,16 @@ namespace Group
 open scoped Classical in
 /-- If `F` and `H` are finite such that `ker(G →* H) ≤ im(F →* G)`, then `G` is finite. -/
 @[to_additive (attr := instance_reducible)
-/-- If `F` and `H` are finite such that `ker(G →+ H) ≤ im(F →+ G)`, then `G` is finite. -/]
+  /-- If `F` and `H` are finite such that `ker(G →+ H) ≤ im(F →+ G)`, then `G` is finite. -/]
 noncomputable def fintypeOfKerLeRange (h : g.ker ≤ f.range) : Fintype G :=
   @Fintype.ofEquiv _ _
-    (@instFintypeProd _ _ (Fintype.ofInjective _ <| kerLift_injective g) <|
-      Fintype.ofInjective _ <| inclusion_injective h)
+    (@instFintypeProd _ _ (Fintype.ofInjective _ <| kerLift_injective g) <| Fintype.ofInjective _ <|
+      inclusion_injective h)
     groupEquivQuotientProdSubgroup.symm
 
 /-- If `F` and `H` are finite such that `ker(G →* H) = im(F →* G)`, then `G` is finite. -/
 @[to_additive (attr := instance_reducible)
-/-- If `F` and `H` are finite such that `ker(G →+ H) = im(F →+ G)`, then `G` is finite. -/]
+  /-- If `F` and `H` are finite such that `ker(G →+ H) = im(F →+ G)`, then `G` is finite. -/]
 noncomputable def fintypeOfKerEqRange (h : g.ker = f.range) : Fintype G :=
   fintypeOfKerLeRange _ _ h.le
 

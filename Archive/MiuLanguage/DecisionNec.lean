@@ -37,8 +37,8 @@ the `en : Miustr` is derived from `st`, then `count I en` modulo 3 is either equ
 `count I st`, modulo 3.
 -/
 
-
-/-- Given `st en : Miustr`, the relation `CountEquivOrEquivTwoMulMod3 st en` holds if `st` and
+/--
+Given `st en : Miustr`, the relation `CountEquivOrEquivTwoMulMod3 st en` holds if `st` and
 `en` either have equal `count I`, modulo 3, or `count I en` is twice `count I st`, modulo 3.
 -/
 def CountEquivOrEquivTwoMulMod3 (st en : Miustr) : Prop :=
@@ -46,51 +46,57 @@ def CountEquivOrEquivTwoMulMod3 (st en : Miustr) : Prop :=
   let b := count I en
   b ≡ a [MOD 3] ∨ b ≡ 2 * a [MOD 3]
 
-example : CountEquivOrEquivTwoMulMod3 "II" "MIUI" :=
-  Or.inl rfl
+example : CountEquivOrEquivTwoMulMod3 "II" "MIUI" := Or.inl rfl
 
-example : CountEquivOrEquivTwoMulMod3 "IUIM" "MI" :=
-  Or.inr rfl
+example : CountEquivOrEquivTwoMulMod3 "IUIM" "MI" := Or.inr rfl
 
-/-- If `a` is 1 or 2 mod 3 and if `b` is `a` or twice `a` mod 3, then `b` is 1 or 2 mod 3.
--/
-theorem mod3_eq_1_or_mod3_eq_2 {a b : ℕ} (h1 : a % 3 = 1 ∨ a % 3 = 2)
-    (h2 : b % 3 = a % 3 ∨ b % 3 = 2 * a % 3) : b % 3 = 1 ∨ b % 3 = 2 := by
+/-- If `a` is 1 or 2 mod 3 and if `b` is `a` or twice `a` mod 3, then `b` is 1 or 2 mod 3. -/
+theorem mod3_eq_1_or_mod3_eq_2
+    {a b : ℕ} (h1 : a % 3 = 1 ∨ a % 3 = 2) (h2 : b % 3 = a % 3 ∨ b % 3 = 2 * a % 3)
+    : b % 3 = 1 ∨ b % 3 = 2 := by
   rcases h2 with h2 | h2
   · rw [h2]; exact h1
   · rcases h1 with h1 | h1
     · right; simp [h2, mul_mod, h1]
     · left; simp only [h2, mul_mod, h1, mod_mod]
 
-/-- `count_equiv_one_or_two_mod3_of_derivable` shows any derivable string must have a `count I` that
+/--
+`count_equiv_one_or_two_mod3_of_derivable` shows any derivable string must have a `count I` that
 is 1 or 2 modulo 3.
 -/
-theorem count_equiv_one_or_two_mod3_of_derivable (en : Miustr) :
-    Derivable en → count I en % 3 = 1 ∨ count I en % 3 = 2 := by
+theorem count_equiv_one_or_two_mod3_of_derivable (en : Miustr)
+    : Derivable en → count I en % 3 = 1 ∨ count I en % 3 = 2 := by
   intro h
   induction h with
-  | mk => left; rfl
+  | mk =>
+    left; rfl
   | r1 _ h_ih =>
-    apply mod3_eq_1_or_mod3_eq_2 h_ih; left
-    rw [count_append, count_append]; rfl
+    apply mod3_eq_1_or_mod3_eq_2 h_ih
+    left
+    rw [count_append, count_append]
+    rfl
   | r2 _ h_ih =>
-    apply mod3_eq_1_or_mod3_eq_2 h_ih; right
+    apply mod3_eq_1_or_mod3_eq_2 h_ih
+    right
     simp_rw [count_append, count_cons, beq_iff_eq, reduceCtorEq, ite_false, add_zero, two_mul]
   | r3 _ h_ih =>
-    apply mod3_eq_1_or_mod3_eq_2 h_ih; left
+    apply mod3_eq_1_or_mod3_eq_2 h_ih
+    left
     rw [count_append, count_append, count_append]
     simp_rw [count_cons_self, count_nil, count_cons, beq_iff_eq, reduceCtorEq, ite_false,
       add_right_comm, add_mod_right, add_zero]
   | r4 _ h_ih =>
-    apply mod3_eq_1_or_mod3_eq_2 h_ih; left
+    apply mod3_eq_1_or_mod3_eq_2 h_ih
+    left
     rw [count_append, count_append, count_append]
     simp only [ne_eq, not_false_eq_true, count_cons_of_ne, count_nil, add_zero, reduceCtorEq]
 
-/-- Using the above theorem, we solve the MU puzzle, showing that `"MU"` is not derivable.
+/--
+Using the above theorem, we solve the MU puzzle, showing that `"MU"` is not derivable.
 Once we have proved that `Derivable` is an instance of `DecidablePred`, this will follow
 immediately from `dec_trivial`.
 -/
-theorem not_derivable_mu : ¬Derivable "MU" := by
+theorem not_derivable_mu : ¬ Derivable "MU" := by
   intro h
   cases count_equiv_one_or_two_mod3_of_derivable _ h <;> contradiction
 
@@ -101,15 +107,11 @@ That solves the MU puzzle, but we'll proceed by demonstrating the other necessar
 string to be derivable, namely that the string must start with an M and contain no M in its tail.
 -/
 
-
-/-- `Goodm xs` holds if `xs : Miustr` begins with `M` and has no `M` in its tail.
--/
-def Goodm (xs : Miustr) : Prop :=
-  List.headI xs = M ∧ M ∉ List.tail xs
+/-- `Goodm xs` holds if `xs : Miustr` begins with `M` and has no `M` in its tail. -/
+def Goodm (xs : Miustr) : Prop := List.headI xs = M ∧ M ∉ List.tail xs
 deriving Decidable
 
-/-- Demonstration that `"MI"` starts with `M` and has no `M` in its tail.
--/
+/-- Demonstration that `"MI"` starts with `M` and has no `M` in its tail. -/
 theorem goodmi : Goodm [M, I] := by
   constructor
   · rfl
@@ -120,9 +122,8 @@ We'll show, for each `i` from 1 to 4, that if `en` follows by Rule `i` from `st`
 `Goodm st` holds, then so does `Goodm en`.
 -/
 
-
-theorem goodm_of_rule1 (xs : Miustr) (h₁ : Derivable (xs ++ [I])) (h₂ : Goodm (xs ++ [I])) :
-    Goodm (xs ++ [I, U]) := by
+theorem goodm_of_rule1 (xs : Miustr) (h₁ : Derivable (xs ++ [I])) (h₂ : Goodm (xs ++ [I]))
+    : Goodm (xs ++ [I, U]) := by
   obtain ⟨mhead, nmtail⟩ := h₂
   constructor
   · cases xs <;> simp_all
@@ -131,8 +132,8 @@ theorem goodm_of_rule1 (xs : Miustr) (h₁ : Derivable (xs ++ [I])) (h₂ : Good
     · simp_rw [mem_append, mem_singleton, reduceCtorEq, or_false]; exact nmtail
     · simp
 
-theorem goodm_of_rule2 (xs : Miustr) (_ : Derivable (M :: xs)) (h₂ : Goodm (M :: xs)) :
-    Goodm ((M :: xs) ++ xs) := by
+theorem goodm_of_rule2 (xs : Miustr) (_ : Derivable (M :: xs)) (h₂ : Goodm (M :: xs))
+    : Goodm ((M :: xs) ++ xs) := by
   constructor
   · rfl
   · obtain ⟨mhead, mtail⟩ := h₂
@@ -140,8 +141,9 @@ theorem goodm_of_rule2 (xs : Miustr) (_ : Derivable (M :: xs)) (h₂ : Goodm (M 
     rw [cons_append] at mtail
     exact or_self_iff.mp (mem_append.mp mtail)
 
-theorem goodm_of_rule3 (as bs : Miustr) (h₁ : Derivable (as ++ [I, I, I] ++ bs))
-    (h₂ : Goodm (as ++ [I, I, I] ++ bs)) : Goodm (as ++ (U :: bs)) := by
+theorem goodm_of_rule3
+    (as bs : Miustr) (h₁ : Derivable (as ++ [I, I, I] ++ bs)) (h₂ : Goodm (as ++ [I, I, I] ++ bs))
+    : Goodm (as ++ (U :: bs)) := by
   obtain ⟨mhead, nmtail⟩ := h₂
   have k : as ≠ nil := by rintro rfl; contradiction
   constructor
@@ -157,9 +159,9 @@ theorem goodm_of_rule3 (as bs : Miustr) (h₁ : Derivable (as ++ [I, I, I] ++ bs
 The proof of the next lemma is identical, on the tactic level, to the previous proof.
 -/
 
-
-theorem goodm_of_rule4 (as bs : Miustr) (h₁ : Derivable (as ++ [U, U] ++ bs))
-    (h₂ : Goodm (as ++ [U, U] ++ bs)) : Goodm (as ++ bs) := by
+theorem goodm_of_rule4
+    (as bs : Miustr) (h₁ : Derivable (as ++ [U, U] ++ bs)) (h₂ : Goodm (as ++ [U, U] ++ bs))
+    : Goodm (as ++ bs) := by
   obtain ⟨mhead, nmtail⟩ := h₂
   have k : as ≠ nil := by rintro rfl; contradiction
   constructor
@@ -171,8 +173,7 @@ theorem goodm_of_rule4 (as bs : Miustr) (h₁ : Derivable (as ++ [U, U] ++ bs))
     simp_rw [cons_append] at nmtail ⊢
     simpa using nmtail
 
-/-- Any derivable string must begin with `M` and have no `M` in its tail.
--/
+/-- Any derivable string must begin with `M` and have no `M` in its tail. -/
 theorem goodm_of_derivable (en : Miustr) : Derivable en → Goodm en := by
   intro h
   induction h
@@ -187,17 +188,14 @@ We put together our two conditions to give one necessary condition `Decstr` for 
 derivable.
 -/
 
-
 /--
 `Decstr en` is the condition that `count I en` is 1 or 2 modulo 3, that `en` starts with `M`, and
 that `en` has no `M` in its tail. We automatically derive that this is a decidable predicate.
 -/
-def Decstr (en : Miustr) :=
-  Goodm en ∧ (count I en % 3 = 1 ∨ count I en % 3 = 2)
+def Decstr (en : Miustr) := Goodm en ∧ (count I en % 3 = 1 ∨ count I en % 3 = 2)
 deriving Decidable
 
-/-- Suppose `en : Miustr`. If `en` is `Derivable`, then the condition `Decstr en` holds.
--/
+/-- Suppose `en : Miustr`. If `en` is `Derivable`, then the condition `Decstr en` holds. -/
 theorem decstr_of_der {en : Miustr} : Derivable en → Decstr en := by
   intro h
   constructor

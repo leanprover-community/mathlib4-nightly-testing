@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Mathlib.NumberTheory.ModularForms.JacobiTheta.OneVariable
-
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 
 /-!
@@ -23,8 +22,7 @@ Prove smoothness (in terms of `Smooth`).
 
 public section
 
-
 open scoped UpperHalfPlane Manifold
 
-theorem mdifferentiable_jacobiTheta : MDiff (jacobiTheta ∘ (↑) : ℍ → ℂ) :=
-  fun τ => (differentiableAt_jacobiTheta τ.2).mdifferentiableAt.comp τ τ.mdifferentiable_coe
+theorem mdifferentiable_jacobiTheta : MDiff (jacobiTheta ∘ (↑) : ℍ → ℂ) := fun τ =>
+  (differentiableAt_jacobiTheta τ.2).mdifferentiableAt.comp τ τ.mdifferentiable_coe

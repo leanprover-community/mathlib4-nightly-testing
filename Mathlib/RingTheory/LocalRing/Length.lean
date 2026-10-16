@@ -24,7 +24,8 @@ public section
 
 open IsLocalRing LinearMap Module Submodule TensorProduct AlgebraTensorModule
 
-variable {A B M : Type*} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B] [Algebra A B]
+variable
+  {A B M : Type*} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B] [Algebra A B]
   [IsLocalHom (algebraMap A B)] [AddCommGroup M] [Module A M]
 
 section tower
@@ -32,8 +33,8 @@ section tower
 variable [Module B M] [IsScalarTower A B M]
 
 variable (A) in
-theorem CovBy.length_restrictScalars {p q : Submodule B M} (h : p ⋖ q) :
-    length A q = Module.length A p + Module.length (ResidueField A) (ResidueField B) := by
+theorem CovBy.length_restrictScalars {p q : Submodule B M} (h : p ⋖ q)
+    : length A q = Module.length A p + Module.length (ResidueField A) (ResidueField B) := by
   let f : p →ₗ[B] q := inclusion h.le
   have key : IsSimpleModule B (q ⧸ f.range) := by
     rwa [range_inclusion, ← covBy_iff_quot_is_simple h.le]
@@ -44,15 +45,18 @@ theorem CovBy.length_restrictScalars {p q : Submodule B M} (h : p ⋖ q) :
   have : Function.Injective f := inclusion_injective _
   have : Function.Surjective g := e.surjective.comp f.range.mkQ_surjective
   have : Function.Exact f g := exact_iff.mpr ((e.ker_comp f.range.mkQ).trans f.range.ker_mkQ)
-  rw [length_eq_add_of_exact (f.restrictScalars A) (g.restrictScalars A)
-    (by simpa) (by simpa) (by simpa), Module.length_eq_of_surjective (M := ResidueField B)
-      (residue_surjective (R := A)), Module.length_eq_rank]
+  rw [length_eq_add_of_exact (f.restrictScalars A) (g.restrictScalars A) (by simpa) (by simpa)
+      (by simpa),
+    Module.length_eq_of_surjective (M := ResidueField B) (residue_surjective (R := A)),
+    Module.length_eq_rank]
 
 variable (A B M) in
-/-- If `B/A` is an extension of local rings, and if `M` is a `B`-module, then
-`ℓ_A(M) = ℓ_B(M) * [κ(B) : κ(A)]`. -/
-theorem IsLocalRing.length_restrictScalars :
-    length A M = length B M * Module.length (ResidueField A) (ResidueField B) := by
+/--
+If `B/A` is an extension of local rings, and if `M` is a `B`-module, then
+`ℓ_A(M) = ℓ_B(M) * [κ(B) : κ(A)]`.
+-/
+theorem IsLocalRing.length_restrictScalars
+    : length A M = length B M * Module.length (ResidueField A) (ResidueField B) := by
   by_cases h : IsFiniteLength B M
   · obtain ⟨s, hs_bot, hs_top⟩ := isFiniteLength_iff_exists_compositionSeries.mp h
     rw [← length_compositionSeries s hs_bot hs_top]
@@ -79,9 +83,9 @@ section flat
 variable [Flat A B]
 
 variable (B) in
-theorem CovBy.length_baseChange {p q : Submodule A M} (h : p ⋖ q) :
-    length B (q.baseChange B) =
-      length B (p.baseChange B) + length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) := by
+theorem CovBy.length_baseChange {p q : Submodule A M} (h : p ⋖ q)
+    : length B (q.baseChange B)
+      = length B (p.baseChange B) + length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) := by
   -- Reduce the statement to ℓ_B(B ⊗[A] p) = ℓ_B(B ⊗[A] q) + ℓ_B(B ⧸ m_A B)
   rw [← (toBaseChange.toLinearEquiv B p).length_eq, ← (toBaseChange.toLinearEquiv B q).length_eq]
   -- Identify q / p with A / m_A, so (B ⊗[A] p ⧸ B ⊗[A] q) ≃ₗ B ⧸ m_A B
@@ -100,15 +104,17 @@ theorem CovBy.length_baseChange {p q : Submodule A M} (h : p ⋖ q) :
     (Algebra.TensorProduct.quotIdealMapEquivTensorQuot B (maximalIdeal A)).toLinearEquiv.length_eq]
 
 variable (A B M) in
-/-- If `B/A` is a flat extension of local rings, and if `M` is an `A`-module, then
-`ℓ_B(B ⊗[A] M) = ℓ_A(M) * ℓ_B(B ⧸ m_A)`. -/
-theorem IsLocalRing.length_baseChange :
-    length B (B ⊗[A] M) = length A M * length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) := by
+/--
+If `B/A` is a flat extension of local rings, and if `M` is an `A`-module, then
+`ℓ_B(B ⊗[A] M) = ℓ_A(M) * ℓ_B(B ⧸ m_A)`.
+-/
+theorem IsLocalRing.length_baseChange
+    : length B (B ⊗[A] M) = length A M * length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) := by
   by_cases h : IsFiniteLength A M
   · obtain ⟨s, hs_bot, hs_top⟩ := isFiniteLength_iff_exists_compositionSeries.mp h
     rw [← length_compositionSeries s hs_bot hs_top]
-    suffices ∀ k, length B ((s k).baseChange B) =
-        k * length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) by
+    suffices ∀ k,
+        length B ((s k).baseChange B) = k * length B (B ⧸ (maximalIdeal A).map (algebraMap A B)) by
       rw [← Fin.val_last s.length, ← this, ← RelSeries.last, hs_top, baseChange_top, length_top]
     intro k
     induction k using Fin.induction with

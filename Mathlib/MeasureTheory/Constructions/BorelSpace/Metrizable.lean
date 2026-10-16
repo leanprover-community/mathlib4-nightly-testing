@@ -28,11 +28,14 @@ variable [TopologicalSpace β] [PseudoMetrizableSpace β] [MeasurableSpace β] [
 
 open Metric
 
-/-- A limit (over a general filter) of measurable functions valued in a (pseudo) metrizable space is
-measurable. -/
-theorem measurable_of_tendsto_metrizable' {ι} {f : ι → α → β} {g : α → β} (u : Filter ι) [NeBot u]
-    [IsCountablyGenerated u] (hf : ∀ i, Measurable (f i)) (lim : Tendsto f u (𝓝 g)) :
-    Measurable g := by
+/--
+A limit (over a general filter) of measurable functions valued in a (pseudo) metrizable space is
+measurable.
+-/
+theorem measurable_of_tendsto_metrizable'
+    {ι} {f : ι → α → β} {g : α → β} (u : Filter ι) [NeBot u] [IsCountablyGenerated u]
+    (hf : ∀ i, Measurable (f i)) (lim : Tendsto f u (𝓝 g))
+    : Measurable g := by
   let : PseudoMetricSpace β := pseudoMetrizableSpacePseudoMetric β
   apply measurable_of_isClosed'
   intro s h1s h2s h3s
@@ -48,15 +51,20 @@ theorem measurable_of_tendsto_metrizable' {ι} {f : ι → α → β} {g : α �
   rw [h4s]
   exact this (measurableSet_singleton 0)
 
-/-- A sequential limit of measurable functions valued in a (pseudo) metrizable space is
-measurable. -/
-theorem measurable_of_tendsto_metrizable {f : ℕ → α → β} {g : α → β} (hf : ∀ i, Measurable (f i))
-    (lim : Tendsto f atTop (𝓝 g)) : Measurable g :=
+/--
+A sequential limit of measurable functions valued in a (pseudo) metrizable space is
+measurable.
+-/
+theorem measurable_of_tendsto_metrizable
+    {f : ℕ → α → β} {g : α → β} (hf : ∀ i, Measurable (f i)) (lim : Tendsto f atTop (𝓝 g))
+    : Measurable g :=
   measurable_of_tendsto_metrizable' atTop hf lim
 
-theorem aemeasurable_of_tendsto_metrizable_ae {ι} {μ : Measure α} {f : ι → α → β} {g : α → β}
-    (u : Filter ι) [hu : NeBot u] [IsCountablyGenerated u] (hf : ∀ n, AEMeasurable (f n) μ)
-    (h_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) u (𝓝 (g x))) : AEMeasurable g μ := by
+theorem aemeasurable_of_tendsto_metrizable_ae
+    {ι} {μ : Measure α} {f : ι → α → β} {g : α → β} (u : Filter ι)
+    [hu : NeBot u] [IsCountablyGenerated u]
+    (hf : ∀ n, AEMeasurable (f n) μ) (h_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) u (𝓝 (g x)))
+    : AEMeasurable g μ := by
   classical
   rcases u.exists_seq_tendsto with ⟨v, hv⟩
   have h'f : ∀ n, AEMeasurable (f (v n)) μ := fun n => hf (v n)
@@ -64,31 +72,34 @@ theorem aemeasurable_of_tendsto_metrizable_ae {ι} {μ : Measure α} {f : ι →
   have hp : ∀ᵐ x ∂μ, p x fun n => f (v n) x := by
     filter_upwards [h_tendsto] with x hx using hx.comp hv
   set aeSeqLim := fun x => ite (x ∈ aeSeqSet h'f p) (g x) (⟨f (v 0) x⟩ : Nonempty β).some
-  refine
-    ⟨aeSeqLim,
-      measurable_of_tendsto_metrizable' atTop (aeSeq.measurable h'f p)
-        (tendsto_pi_nhds.mpr fun x => ?_),
-      ?_⟩
+  refine ⟨
+    aeSeqLim,
+    measurable_of_tendsto_metrizable' atTop (aeSeq.measurable h'f p)
+      (tendsto_pi_nhds.mpr fun x => ?_),
+    ?_
+  ⟩
   · simp_rw [aeSeqLim, aeSeq]
     split_ifs with hx
     · simp_rw [aeSeq.mk_eq_fun_of_mem_aeSeqSet h'f hx]
       exact @aeSeq.fun_prop_of_mem_aeSeqSet _ α β _ _ _ _ _ h'f x hx
     · exact tendsto_const_nhds
-  · exact
-      (ite_ae_eq_of_measure_compl_zero g (fun x => (⟨f (v 0) x⟩ : Nonempty β).some) (aeSeqSet h'f p)
-          (aeSeq.measure_compl_aeSeqSet_eq_zero h'f hp)).symm
+  · exact (ite_ae_eq_of_measure_compl_zero g
+      (fun x => (⟨f (v 0) x⟩ : Nonempty β).some)
+      (aeSeqSet h'f p) (aeSeq.measure_compl_aeSeqSet_eq_zero h'f hp)).symm
 
-theorem aemeasurable_of_tendsto_metrizable_ae' {μ : Measure α} {f : ℕ → α → β} {g : α → β}
-    (hf : ∀ n, AEMeasurable (f n) μ)
-    (h_ae_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) : AEMeasurable g μ :=
+theorem aemeasurable_of_tendsto_metrizable_ae'
+    {μ : Measure α} {f : ℕ → α → β} {g : α → β} (hf : ∀ n, AEMeasurable (f n) μ)
+    (h_ae_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x)))
+    : AEMeasurable g μ :=
   aemeasurable_of_tendsto_metrizable_ae atTop hf h_ae_tendsto
 
-theorem aemeasurable_of_unif_approx {β} [MeasurableSpace β] [PseudoMetricSpace β] [BorelSpace β]
+theorem aemeasurable_of_unif_approx
+    {β} [MeasurableSpace β] [PseudoMetricSpace β] [BorelSpace β]
     {μ : Measure α} {g : α → β}
-    (hf : ∀ ε > (0 : ℝ), ∃ f : α → β, AEMeasurable f μ ∧ ∀ᵐ x ∂μ, dist (f x) (g x) ≤ ε) :
-    AEMeasurable g μ := by
-  obtain ⟨u, -, u_pos, u_lim⟩ :
-    ∃ u : ℕ → ℝ, StrictAnti u ∧ (∀ n : ℕ, 0 < u n) ∧ Tendsto u atTop (𝓝 0) :=
+    (hf : ∀ ε > (0 : ℝ), ∃ f : α → β, AEMeasurable f μ ∧ ∀ᵐ x ∂μ, dist (f x) (g x) ≤ ε)
+    : AEMeasurable g μ := by
+  obtain ⟨u, -, u_pos, u_lim⟩
+      : ∃ u : ℕ → ℝ, StrictAnti u ∧ (∀ n : ℕ, 0 < u n) ∧ Tendsto u atTop (𝓝 0) :=
     exists_seq_strictAnti_tendsto (0 : ℝ)
   choose f Hf using fun n : ℕ => hf (u n) (u_pos n)
   have : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x)) := by
@@ -99,16 +110,20 @@ theorem aemeasurable_of_unif_approx {β} [MeasurableSpace β] [PseudoMetricSpace
     exact squeeze_zero (fun n => dist_nonneg) hx u_lim
   exact aemeasurable_of_tendsto_metrizable_ae' (fun n => (Hf n).1) this
 
-theorem measurable_of_tendsto_metrizable_ae {μ : Measure α} [μ.IsComplete] {f : ℕ → α → β}
-    {g : α → β} (hf : ∀ n, Measurable (f n))
-    (h_ae_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) : Measurable g :=
+theorem measurable_of_tendsto_metrizable_ae
+    {μ : Measure α} [μ.IsComplete]
+    {f : ℕ → α → β} {g : α → β}
+    (hf : ∀ n, Measurable (f n)) (h_ae_tendsto : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x)))
+    : Measurable g :=
   aemeasurable_iff_measurable.mp
     (aemeasurable_of_tendsto_metrizable_ae' (fun i => (hf i).aemeasurable) h_ae_tendsto)
 
-theorem measurable_limit_of_tendsto_metrizable_ae {ι} [Nonempty ι] {μ : Measure α}
-    {f : ι → α → β} {L : Filter ι} [L.IsCountablyGenerated] (hf : ∀ n, AEMeasurable (f n) μ)
-    (h_ae_tendsto : ∀ᵐ x ∂μ, ∃ l : β, Tendsto (fun n => f n x) L (𝓝 l)) :
-    ∃ f_lim : α → β, Measurable f_lim ∧ ∀ᵐ x ∂μ, Tendsto (fun n => f n x) L (𝓝 (f_lim x)) := by
+theorem measurable_limit_of_tendsto_metrizable_ae
+    {ι} [Nonempty ι]
+    {μ : Measure α} {f : ι → α → β} {L : Filter ι} [L.IsCountablyGenerated]
+    (hf : ∀ n, AEMeasurable (f n) μ)
+    (h_ae_tendsto : ∀ᵐ x ∂μ, ∃ l : β, Tendsto (fun n => f n x) L (𝓝 l))
+    : ∃ f_lim : α → β, Measurable f_lim ∧ ∀ᵐ x ∂μ, Tendsto (fun n => f n x) L (𝓝 (f_lim x)) := by
   classical
   inhabit ι
   rcases eq_or_neBot L with (rfl | hL)
@@ -132,21 +147,26 @@ section TendstoIndicator
 variable {α : Type*} [MeasurableSpace α] {A : Set α}
 variable {ι : Type*} (L : Filter ι) [IsCountablyGenerated L] {As : ι → Set α}
 
-/-- If the indicator functions of measurable sets `Aᵢ` converge to the indicator function of
-a set `A` along a nontrivial countably generated filter, then `A` is also measurable. -/
-lemma measurableSet_of_tendsto_indicator [NeBot L] (As_mble : ∀ i, MeasurableSet (As i))
-    (h_lim : ∀ x, ∀ᶠ i in L, x ∈ As i ↔ x ∈ A) :
-    MeasurableSet A := by
+/--
+If the indicator functions of measurable sets `Aᵢ` converge to the indicator function of
+a set `A` along a nontrivial countably generated filter, then `A` is also measurable.
+-/
+lemma measurableSet_of_tendsto_indicator
+    [NeBot L] (As_mble : ∀ i, MeasurableSet (As i)) (h_lim : ∀ x, ∀ᶠ i in L, x ∈ As i ↔ x ∈ A)
+    : MeasurableSet A := by
   simp_rw [← measurable_indicator_const_iff (1 : ℝ≥0∞)] at As_mble ⊢
   exact ENNReal.measurable_of_tendsto' L As_mble
     ((tendsto_indicator_const_iff_forall_eventually L (1 : ℝ≥0∞)).mpr h_lim)
 
-/-- If the indicator functions of a.e.-measurable sets `Aᵢ` converge a.e. to the indicator function
-of a set `A` along a nontrivial countably generated filter, then `A` is also a.e.-measurable. -/
-lemma nullMeasurableSet_of_tendsto_indicator [NeBot L] {μ : Measure α}
-    (As_mble : ∀ i, NullMeasurableSet (As i) μ)
-    (h_lim : ∀ᵐ x ∂μ, ∀ᶠ i in L, x ∈ As i ↔ x ∈ A) :
-    NullMeasurableSet A μ := by
+/--
+If the indicator functions of a.e.-measurable sets `Aᵢ` converge a.e. to the indicator function
+of a set `A` along a nontrivial countably generated filter, then `A` is also a.e.-measurable.
+-/
+lemma nullMeasurableSet_of_tendsto_indicator
+    [NeBot L]
+    {μ : Measure α}
+    (As_mble : ∀ i, NullMeasurableSet (As i) μ) (h_lim : ∀ᵐ x ∂μ, ∀ᶠ i in L, x ∈ As i ↔ x ∈ A)
+    : NullMeasurableSet A μ := by
   simp_rw [← aemeasurable_indicator_const_iff (1 : ℝ≥0∞)] at As_mble ⊢
   apply aemeasurable_of_tendsto_metrizable_ae L As_mble
   simpa [tendsto_indicator_const_apply_iff_eventually] using h_lim

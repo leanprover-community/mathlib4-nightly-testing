@@ -19,7 +19,6 @@ This allows us to use these monads in category theory.
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 section
@@ -28,13 +27,11 @@ universe u
 
 variable (m : Type u → Type u) [_root_.Monad m] [LawfulMonad m]
 
-/-- A lawful `Control.Monad` gives a category theory `Monad` on the category of types.
--/
+/-- A lawful `Control.Monad` gives a category theory `Monad` on the category of types. -/
 @[simps! obj map η_app μ_app]
 def ofTypeMonad : Monad (Type u) where
   toFunctor := ofTypeFunctor m
-  η := ⟨fun X ↦ ↾(@pure m _ X), fun _ _ f => by
-    ext x; exact (LawfulApplicative.map_pure f x).symm⟩
+  η := ⟨fun X ↦ ↾(@pure m _ X), fun _ _ f => by ext x; exact (LawfulApplicative.map_pure f x).symm⟩
   μ := ⟨fun X ↦ ↾(@joinM m _ X), fun _ _ _ => by ext _; exact joinM_map_map _ _⟩
   assoc _ := by ext; exact joinM_map_joinM _
   left_unit _ := by ext; exact joinM_pure _
@@ -42,28 +39,31 @@ def ofTypeMonad : Monad (Type u) where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The `Kleisli` category of a `Control.Monad` is equivalent to the `Kleisli` category of its
+/--
+The `Kleisli` category of a `Control.Monad` is equivalent to the `Kleisli` category of its
 category-theoretic version, provided the monad is lawful.
 -/
 @[simps]
 def kleisliCatEquivKleisli : KleisliCat m ≌ Kleisli (ofTypeMonad m) where
-  functor :=
-    { obj X := Kleisli.mk _ X
-      map f := ⟨↾f⟩
-      map_id := fun _ => rfl
-      map_comp := fun f g => by
-        ext
-        simp [joinM]
-        rfl }
-  inverse :=
-    { obj X := X.of
-      map f x := f.of x
-      map_id := fun _ => rfl
-      map_comp := fun f g => by
-        dsimp
-        ext t
-        simp [joinM]
-        rfl }
+  functor := {
+    obj X := Kleisli.mk _ X
+    map f := ⟨↾f⟩
+    map_id := fun _ => rfl
+    map_comp := fun f g => by
+      ext
+      simp [joinM]
+      rfl
+  }
+  inverse := {
+    obj X := X.of
+    map f x := f.of x
+    map_id := fun _ => rfl
+    map_comp := fun f g => by
+      dsimp
+      ext t
+      simp [joinM]
+      rfl
+  }
   unitIso := by
     refine NatIso.ofComponents (fun X => Iso.refl X) fun f => ?_
     change f >=> pure = pure >=> f

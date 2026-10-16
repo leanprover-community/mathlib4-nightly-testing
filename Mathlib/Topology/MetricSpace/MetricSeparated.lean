@@ -38,12 +38,14 @@ variable {s t : Set X} {ε δ : ℝ≥0∞} {x : X} {y : Y}
 In this section we define the predicate `Metric.IsSeparated` for `ε`-separated sets.
 -/
 
-/-- A set `s` is `ε`-separated if the extended distance between any two distinct
-elements is strictly greater than `ε`. -/
+/--
+A set `s` is `ε`-separated if the extended distance between any two distinct
+elements is strictly greater than `ε`.
+-/
 def IsSeparated (ε : ℝ≥0∞) (s : Set X) : Prop := s.Pairwise (ε < edist · ·)
 
-lemma isSeparated_iff_setRelIsSeparated :
-    IsSeparated ε s ↔ SetRel.IsSeparated {(x, y) | edist x y ≤ ε} s := by
+lemma isSeparated_iff_setRelIsSeparated
+    : IsSeparated ε s ↔ SetRel.IsSeparated ({(x, y) | edist x y ≤ ε}) s := by
   simp [IsSeparated, SetRel.IsSeparated]
 
 @[grind .]
@@ -59,26 +61,27 @@ nonrec lemma IsSeparated.anti (hεδ : ε ≤ δ) (hs : IsSeparated δ s) : IsSe
 
 lemma IsSeparated.subset (hst : s ⊆ t) (hs : IsSeparated ε t) : IsSeparated ε s := hs.mono hst
 
-lemma isSeparated_insert :
-    IsSeparated ε (insert x s) ↔ IsSeparated ε s ∧ ∀ y ∈ s, x ≠ y → ε < edist x y :=
+lemma isSeparated_insert
+    : IsSeparated ε (insert x s) ↔ IsSeparated ε s ∧ ∀ y ∈ s, x ≠ y → ε < edist x y :=
   have : Std.Symm (α := X) (ε < edist · ·) := by simp [symm_def, edist_comm]
   pairwise_insert_of_symm
 
-lemma isSeparated_insert_of_notMem (hx : x ∉ s) :
-    IsSeparated ε (insert x s) ↔ IsSeparated ε s ∧ ∀ y ∈ s, ε < edist x y :=
+lemma isSeparated_insert_of_notMem (hx : x ∉ s)
+    : IsSeparated ε (insert x s) ↔ IsSeparated ε s ∧ ∀ y ∈ s, ε < edist x y :=
   have : Std.Symm (α := X) (ε < edist · ·) := by simp [symm_def, edist_comm]
   pairwise_insert_of_symm_of_notMem hx
 
-protected lemma IsSeparated.insert (hs : IsSeparated ε s) (h : ∀ y ∈ s, x ≠ y → ε < edist x y) :
-    IsSeparated ε (insert x s) := isSeparated_insert.2 ⟨hs, h⟩
+protected lemma IsSeparated.insert (hs : IsSeparated ε s) (h : ∀ y ∈ s, x ≠ y → ε < edist x y)
+    : IsSeparated ε (insert x s) :=
+  isSeparated_insert.2 ⟨hs, h⟩
 
 @[simp]
 lemma isSeparated_zero {X : Type*} [EMetricSpace X] (s : Set X) : IsSeparated 0 s := by
   simp [IsSeparated, Set.Pairwise]
 
-lemma IsSeparated.image_antilipschitz {ε K₁ : ℝ≥0} {f : X → Y}
-    (hs : IsSeparated ε s) (hf : AntilipschitzWith K₁ f) (hK₁ : 0 < K₁) :
-    IsSeparated ↑(ε / K₁) (f '' s) := by
+lemma IsSeparated.image_antilipschitz
+    {ε K₁ : ℝ≥0} {f : X → Y} (hs : IsSeparated ε s) (hf : AntilipschitzWith K₁ f) (hK₁ : 0 < K₁)
+    : IsSeparated (↑(ε / K₁)) (f '' s) := by
   rintro x' ⟨x, hx, rfl⟩ y' ⟨y, hy, rfl⟩ hne
   have hmul : (↑ε : ℝ≥0∞) < edist (f x) (f y) * ↑K₁ :=
     lt_of_lt_of_le (hs hx hy (by grind)) (by rw [mul_comm]; exact hf x y)
@@ -94,8 +97,10 @@ In this section we define the predicate `Metric.AreSeparated`. We say that two s
 This notion is useful, e.g., to define metric outer measures.
 -/
 
-/-- Two sets in an (extended) metric space are called *metric separated* if the (extended) distance
-between `x ∈ s` and `y ∈ t` is bounded from below by a positive constant. -/
+/--
+Two sets in an (extended) metric space are called *metric separated* if the (extended) distance
+between `x ∈ s` and `y ∈ t` is bounded from below by a positive constant.
+-/
 def AreSeparated (s t : Set X) := ∃ r, r ≠ 0 ∧ ∀ x ∈ s, ∀ y ∈ t, r ≤ edist x y
 
 namespace AreSeparated
@@ -107,13 +112,9 @@ theorem symm (h : AreSeparated s t) : AreSeparated t s :=
 
 theorem comm : AreSeparated s t ↔ AreSeparated t s := ⟨symm, symm⟩
 
-@[simp]
-theorem empty_left (s : Set X) : AreSeparated ∅ s :=
-  ⟨1, one_ne_zero, fun _x => False.elim⟩
+@[simp] theorem empty_left (s : Set X) : AreSeparated ∅ s := ⟨1, one_ne_zero, fun _x => False.elim⟩
 
-@[simp]
-theorem empty_right (s : Set X) : AreSeparated s ∅ :=
-  (empty_left s).symm
+@[simp] theorem empty_right (s : Set X) : AreSeparated s ∅ := (empty_left s).symm
 
 protected theorem disjoint (h : AreSeparated s t) : Disjoint s t :=
   let ⟨r, r0, hr⟩ := h
@@ -123,9 +124,8 @@ theorem subset_compl_right (h : AreSeparated s t) : s ⊆ tᶜ := fun _ hs ht =>
   h.disjoint.le_bot ⟨hs, ht⟩
 
 @[gcongr, mono]
-theorem mono {s' t'} (hs : s ⊆ s') (ht : t ⊆ t') :
-    AreSeparated s' t' → AreSeparated s t := fun ⟨r, r0, hr⟩ =>
-  ⟨r, r0, fun x hx y hy => hr x (hs hx) y (ht hy)⟩
+theorem mono {s' t'} (hs : s ⊆ s') (ht : t ⊆ t') : AreSeparated s' t' → AreSeparated s t :=
+  fun ⟨r, r0, hr⟩ => ⟨r, r0, fun x hx y hy => hr x (hs hx) y (ht hy)⟩
 
 theorem mono_left {s'} (h' : AreSeparated s' t) (hs : s ⊆ s') : AreSeparated s t :=
   h'.mono hs Subset.rfl
@@ -133,8 +133,8 @@ theorem mono_left {s'} (h' : AreSeparated s' t) (hs : s ⊆ s') : AreSeparated s
 theorem mono_right {t'} (h' : AreSeparated s t') (ht : t ⊆ t') : AreSeparated s t :=
   h'.mono Subset.rfl ht
 
-theorem union_left {s'} (h : AreSeparated s t) (h' : AreSeparated s' t) :
-    AreSeparated (s ∪ s') t := by
+theorem union_left {s'} (h : AreSeparated s t) (h' : AreSeparated s' t)
+    : AreSeparated (s ∪ s') t := by
   rcases h, h' with ⟨⟨r, r0, hr⟩, ⟨r', r0', hr'⟩⟩
   refine ⟨min r r', ?_, fun x hx y hy => hx.elim ?_ ?_⟩
   · rw [← pos_iff_ne_zero] at r0 r0' ⊢
@@ -143,42 +143,41 @@ theorem union_left {s'} (h : AreSeparated s t) (h' : AreSeparated s' t) :
   · exact fun hx => (min_le_right _ _).trans (hr' _ hx _ hy)
 
 @[simp]
-theorem union_left_iff {s'} :
-    AreSeparated (s ∪ s') t ↔ AreSeparated s t ∧ AreSeparated s' t :=
-  ⟨fun h => ⟨h.mono_left subset_union_left, h.mono_left subset_union_right⟩, fun h =>
-    h.1.union_left h.2⟩
+theorem union_left_iff {s'} : AreSeparated (s ∪ s') t ↔ AreSeparated s t ∧ AreSeparated s' t := ⟨
+  fun h => ⟨h.mono_left subset_union_left, h.mono_left subset_union_right⟩,
+  fun h => h.1.union_left h.2
+⟩
 
-theorem union_right {t'} (h : AreSeparated s t) (h' : AreSeparated s t') :
-    AreSeparated s (t ∪ t') :=
+theorem union_right {t'} (h : AreSeparated s t) (h' : AreSeparated s t')
+    : AreSeparated s (t ∪ t') :=
   (h.symm.union_left h'.symm).symm
 
 @[simp]
-theorem union_right_iff {t'} :
-    AreSeparated s (t ∪ t') ↔ AreSeparated s t ∧ AreSeparated s t' :=
+theorem union_right_iff {t'} : AreSeparated s (t ∪ t') ↔ AreSeparated s t ∧ AreSeparated s t' :=
   comm.trans <| union_left_iff.trans <| and_congr comm comm
 
-theorem finite_iUnion_left_iff {ι : Type*} {I : Set ι} (hI : I.Finite) {s : ι → Set X}
-    {t : Set X} : AreSeparated (⋃ i ∈ I, s i) t ↔ ∀ i ∈ I, AreSeparated (s i) t := by
+theorem finite_iUnion_left_iff {ι : Type*} {I : Set ι} (hI : I.Finite) {s : ι → Set X} {t : Set X}
+    : AreSeparated (⋃ i ∈ I, s i) t ↔ ∀ i ∈ I, AreSeparated (s i) t := by
   induction I, hI using Set.Finite.induction_on with
   | empty => simp
   | insert _ _ hI => rw [biUnion_insert, forall_mem_insert, union_left_iff, hI]
 
 alias ⟨_, finite_iUnion_left⟩ := finite_iUnion_left_iff
 
-theorem finite_iUnion_right_iff {ι : Type*} {I : Set ι} (hI : I.Finite) {s : Set X}
-    {t : ι → Set X} : AreSeparated s (⋃ i ∈ I, t i) ↔ ∀ i ∈ I, AreSeparated s (t i) := by
+theorem finite_iUnion_right_iff {ι : Type*} {I : Set ι} (hI : I.Finite) {s : Set X} {t : ι → Set X}
+    : AreSeparated s (⋃ i ∈ I, t i) ↔ ∀ i ∈ I, AreSeparated s (t i) := by
   simpa only [@comm _ _ s] using finite_iUnion_left_iff hI
 
 @[simp]
-theorem finset_iUnion_left_iff {ι : Type*} {I : Finset ι} {s : ι → Set X} {t : Set X} :
-    AreSeparated (⋃ i ∈ I, s i) t ↔ ∀ i ∈ I, AreSeparated (s i) t :=
+theorem finset_iUnion_left_iff {ι : Type*} {I : Finset ι} {s : ι → Set X} {t : Set X}
+    : AreSeparated (⋃ i ∈ I, s i) t ↔ ∀ i ∈ I, AreSeparated (s i) t :=
   finite_iUnion_left_iff I.finite_toSet
 
 alias ⟨_, finset_iUnion_left⟩ := finset_iUnion_left_iff
 
 @[simp]
-theorem finset_iUnion_right_iff {ι : Type*} {I : Finset ι} {s : Set X} {t : ι → Set X} :
-    AreSeparated s (⋃ i ∈ I, t i) ↔ ∀ i ∈ I, AreSeparated s (t i) :=
+theorem finset_iUnion_right_iff {ι : Type*} {I : Finset ι} {s : Set X} {t : ι → Set X}
+    : AreSeparated s (⋃ i ∈ I, t i) ↔ ∀ i ∈ I, AreSeparated s (t i) :=
   finite_iUnion_right_iff I.finite_toSet
 
 alias ⟨_, finset_iUnion_right⟩ := finset_iUnion_right_iff

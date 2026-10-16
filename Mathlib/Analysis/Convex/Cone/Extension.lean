@@ -58,17 +58,21 @@ open Submodule
 
 variable (s : PointedCone ℝ E) (f : E →ₗ.[ℝ] ℝ)
 
-/-- Induction step in M. Riesz extension theorem. Given a convex cone `s` in a vector space `E`,
+/--
+Induction step in M. Riesz extension theorem. Given a convex cone `s` in a vector space `E`,
 a partially defined linear map `f : f.domain → ℝ`, assume that `f` is nonnegative on `f.domain ∩ p`
 and `p + s = E`. If `f` is not defined on the whole `E`, then we can extend it to a larger
-submodule without breaking the non-negativity condition. -/
-theorem step (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x)
-    (dense : ∀ y, ∃ x : f.domain, (x : E) + y ∈ s) (hdom : f.domain ≠ ⊤) :
-    ∃ g, f < g ∧ ∀ x : g.domain, (x : E) ∈ s → 0 ≤ g x := by
+submodule without breaking the non-negativity condition.
+-/
+theorem step
+    (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x) (dense : ∀ y, ∃ x : f.domain, (x : E) + y ∈ s)
+    (hdom : f.domain ≠ ⊤)
+    : ∃ g, f < g ∧ ∀ x : g.domain, (x : E) ∈ s → 0 ≤ g x := by
   obtain ⟨y, -, hy⟩ : ∃ y ∈ ⊤, y ∉ f.domain := IsConcreteLE.exists_of_lt (lt_top_iff_ne_top.2 hdom)
-  obtain ⟨c, le_c, c_le⟩ :
-      ∃ c, (∀ x : f.domain, -(x : E) - y ∈ s → f x ≤ c) ∧
-        ∀ x : f.domain, (x : E) + y ∈ s → c ≤ f x := by
+  obtain ⟨c, le_c, c_le⟩
+      : ∃ c,
+        (∀ x : f.domain, -(x : E) - y ∈ s → f x ≤ c)
+          ∧ ∀ x : f.domain, (x : E) + y ∈ s → c ≤ f x := by
     set Sp := f '' { x : f.domain | (x : E) + y ∈ s }
     set Sn := f '' { x : f.domain | -(x : E) - y ∈ s }
     suffices (upperBounds Sn ∩ lowerBounds Sp).Nonempty by
@@ -98,7 +102,8 @@ theorem step (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x)
           mul_inv_cancel₀ hr.ne, one_smul, sub_eq_add_neg, neg_smul, neg_neg]
       replace := le_c (r⁻¹ • ⟨x, hx⟩) this
       rwa [← mul_le_mul_iff_right₀ (neg_pos.2 hr), neg_mul, neg_mul, neg_le_neg_iff, f.map_smul,
-        smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hr.ne, one_mul] at this
+          smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hr.ne, one_mul]
+        at this
     · subst r
       simp only [zero_smul, add_zero] at hzs ⊢
       rw [RingHom.id_apply, zero_smul]
@@ -108,11 +113,13 @@ theorem step (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x)
         rwa [← s.smul_mem_iff hr, smul_add, smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
       replace := c_le (r⁻¹ • ⟨x, hx⟩) this
       rwa [← mul_le_mul_iff_right₀ hr, f.map_smul, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hr.ne',
-        one_mul] at this
+          one_mul]
+        at this
 
-theorem exists_top (p : E →ₗ.[ℝ] ℝ) (hp_nonneg : ∀ x : p.domain, (x : E) ∈ s → 0 ≤ p x)
-    (hp_dense : ∀ y, ∃ x : p.domain, (x : E) + y ∈ s) :
-    ∃ q ≥ p, q.domain = ⊤ ∧ ∀ x : q.domain, (x : E) ∈ s → 0 ≤ q x := by
+theorem exists_top
+    (p : E →ₗ.[ℝ] ℝ) (hp_nonneg : ∀ x : p.domain, (x : E) ∈ s → 0 ≤ p x)
+    (hp_dense : ∀ y, ∃ x : p.domain, (x : E) + y ∈ s)
+    : ∃ q ≥ p, q.domain = ⊤ ∧ ∀ x : q.domain, (x : E) ∈ s → 0 ≤ q x := by
   set S := { p : E →ₗ.[ℝ] ℝ | ∀ x : p.domain, (x : E) ∈ s → 0 ≤ p x }
   have hSc : ∀ c, c ⊆ S → IsChain (· ≤ ·) c → ∀ y ∈ c, ∃ ub ∈ S, ∀ z ∈ c, z ≤ ub := by
     intro c hcs c_chain y hy
@@ -138,34 +145,39 @@ theorem exists_top (p : E →ₗ.[ℝ] ℝ) (hp_nonneg : ∀ x : p.domain, (x : 
 
 end RieszExtension
 
-/-- M. **Riesz extension theorem**: given a convex cone `s` in a vector space `E`, a submodule `p`,
+/--
+M. **Riesz extension theorem**: given a convex cone `s` in a vector space `E`, a submodule `p`,
 and a linear `f : p → ℝ`, assume that `f` is nonnegative on `p ∩ s` and `p + s = E`. Then
 there exists a globally defined linear function `g : E → ℝ` that agrees with `f` on `p`,
-and is nonnegative on `s`. -/
-theorem riesz_extension (s : PointedCone ℝ E) (f : E →ₗ.[ℝ] ℝ)
-    (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x)
-    (dense : ∀ y, ∃ x : f.domain, (x : E) + y ∈ s) :
-    ∃ g : E →ₗ[ℝ] ℝ, (∀ x : f.domain, g x = f x) ∧ ∀ x ∈ s, 0 ≤ g x := by
-  rcases RieszExtension.exists_top s f nonneg dense
-    with ⟨⟨g_dom, g⟩, ⟨-, hfg⟩, rfl : g_dom = ⊤, hgs⟩
+and is nonnegative on `s`.
+-/
+theorem riesz_extension
+    (s : PointedCone ℝ E) (f : E →ₗ.[ℝ] ℝ)
+    (nonneg : ∀ x : f.domain, (x : E) ∈ s → 0 ≤ f x) (dense : ∀ y, ∃ x : f.domain, (x : E) + y ∈ s)
+    : ∃ g : E →ₗ[ℝ] ℝ, (∀ x : f.domain, g x = f x) ∧ ∀ x ∈ s, 0 ≤ g x := by
+  rcases RieszExtension.exists_top s f nonneg dense with
+    ⟨⟨g_dom, g⟩, ⟨-, hfg⟩, rfl : g_dom = ⊤, hgs⟩
   refine ⟨g.comp (LinearMap.id.codRestrict ⊤ fun _ ↦ trivial), ?_, ?_⟩
   · exact fun x => (hfg rfl).symm
   · exact fun x hx => hgs ⟨x, _⟩ hx
 
-/-- **Hahn-Banach theorem**: if `N : E → ℝ` is a sublinear map, `f` is a linear map
+/--
+**Hahn-Banach theorem**: if `N : E → ℝ` is a sublinear map, `f` is a linear map
 defined on a subspace of `E`, and `f x ≤ N x` for all `x` in the domain of `f`,
 then `f` can be extended to the whole space to a linear map `g` such that `g x ≤ N x`
-for all `x`. -/
-theorem exists_extension_of_le_sublinear (f : E →ₗ.[ℝ] ℝ) (N : E → ℝ)
-    (N_hom : ∀ c : ℝ, 0 < c → ∀ x, N (c • x) = c * N x) (N_add : ∀ x y, N (x + y) ≤ N x + N y)
-    (hf : ∀ x : f.domain, f x ≤ N x) :
-    ∃ g : E →ₗ[ℝ] ℝ, (∀ x : f.domain, g x = f x) ∧ ∀ x, g x ≤ N x := by
+for all `x`.
+-/
+theorem exists_extension_of_le_sublinear
+    (f : E →ₗ.[ℝ] ℝ) (N : E → ℝ) (N_hom : ∀ c : ℝ, 0 < c → ∀ x, N (c • x) = c * N x)
+    (N_add : ∀ x y, N (x + y) ≤ N x + N y) (hf : ∀ x : f.domain, f x ≤ N x)
+    : ∃ g : E →ₗ[ℝ] ℝ, (∀ x : f.domain, g x = f x) ∧ ∀ x, g x ≤ N x := by
   have N_0 : N 0 = 0 := by grind [N_hom 2 (by simp) 0, smul_zero]
-  let s : PointedCone ℝ (E × ℝ) :=
-    { carrier := { p : E × ℝ | N p.1 ≤ p.2 }
-      zero_mem' := by simp [N_0]
-      smul_mem' := fun ⟨_, hc⟩ _ _ => by rcases eq_or_lt_of_le' hc <;> simp_all
-      add_mem' := fun hx hy => (N_add _ _).trans (add_le_add hx hy) }
+  let s : PointedCone ℝ (E × ℝ) := {
+    carrier := { p : E × ℝ | N p.1 ≤ p.2 }
+    zero_mem' := by simp [N_0]
+    smul_mem' := fun ⟨_, hc⟩ _ _ => by rcases eq_or_lt_of_le' hc <;> simp_all
+    add_mem' := fun hx hy => (N_add _ _).trans (add_le_add hx hy)
+  }
   set f' := (-f).coprod (LinearMap.id.toPMap ⊤)
   have hf'_nonneg : ∀ x : f'.domain, x.1 ∈ s → 0 ≤ f' x := fun x (hx : N x.1.1 ≤ x.1.2) ↦ by
     simpa [f'] using le_trans (hf ⟨x.1.1, x.2.1⟩) hx
@@ -175,8 +187,10 @@ theorem exists_extension_of_le_sublinear (f : E →ₗ.[ℝ] ℝ) (N : E → ℝ
   obtain ⟨g, g_eq, g_nonneg⟩ := riesz_extension s f' hf'_nonneg hf'_dense
   replace g_eq : ∀ (x : f.domain) (y : ℝ), g (x, y) = y - f x := fun x y ↦
     (g_eq ⟨(x, y), ⟨x.2, trivial⟩⟩).trans (sub_eq_neg_add _ _).symm
-  refine ⟨-g.comp (inl ℝ E ℝ), fun x ↦ ?_, fun x ↦ ?_⟩
+  refine ⟨- g.comp (inl ℝ E ℝ), fun x ↦ ?_, fun x ↦ ?_⟩
   · simp [g_eq x 0]
-  · calc -g (x, 0) = g (0, N x) - g (x, N x) := by simp [← map_sub, ← map_neg]
+  · calc
+      - g (x, 0)
+        = g (0, N x) - g (x, N x) := by simp [← map_sub, ← map_neg]
       _ = N x - g (x, N x) := by simpa using g_eq 0 (N x)
       _ ≤ N x := by simpa using g_nonneg ⟨x, N x⟩ (le_refl (N x))

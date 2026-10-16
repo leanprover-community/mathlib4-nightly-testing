@@ -6,7 +6,6 @@ Authors: Dagur Asgeirsson
 module
 
 public import Mathlib.CategoryTheory.Sites.LeftExact
-
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.Functor.RegularEpi
 import Mathlib.CategoryTheory.Limits.FunctorCategory.Shapes.Images
@@ -47,21 +46,26 @@ open Limits
 
 variable {C D : Type*} [Category C] [Category D]
 
-lemma isRegularEpiCategory_sheaf (J : GrothendieckTopology C)
+lemma isRegularEpiCategory_sheaf
+    (J : GrothendieckTopology C)
     [HasPullbacks D] [HasPushouts D] [IsRegularEpiCategory D]
     (h : ∀ {F G : Sheaf J D} (f : F ⟶ G) [Epi f], ∃ (I : Cᵒᵖ ⥤ D) (p : F.obj ⟶ I) (i : I ⟶ G.obj),
       Epi p ∧ Mono i ∧ p ≫ i = f.hom)
-    [HasSheafify J D] [Balanced (Sheaf J D)] : IsRegularEpiCategory (Sheaf J D) where
+    [HasSheafify J D] [Balanced (Sheaf J D)]
+    : IsRegularEpiCategory (Sheaf J D) where
   regularEpiOfEpi {F G} f _ := by
     -- Factor `f` on the level of presheaves as an epimorphism `p` followed by a monomorphism `i`.
     obtain ⟨I, p, i, hp, hi, hpi⟩ := h f
     -- The sheafification of `f.hom` is `f` pre- and postcomposed with isomorphisms.
-    have h₁ : (presheafToSheaf J D).map f.hom =
-          (sheafificationAdjunction J D).counit.app F ≫ f ≫
-          inv ((sheafificationAdjunction J D).counit.app G) := by
-        simpa [← Category.assoc] using (sheafificationAdjunction J D).counit_naturality f
-    have h₂ : f = inv ((sheafificationAdjunction J D).counit.app F) ≫
-        (presheafToSheaf J D).map f.hom ≫ (sheafificationAdjunction J D).counit.app G := by
+    have h₁
+        : (presheafToSheaf J D).map f.hom
+          = (sheafificationAdjunction J D).counit.app F ≫ f
+            ≫ inv ((sheafificationAdjunction J D).counit.app G) := by
+      simpa [← Category.assoc] using (sheafificationAdjunction J D).counit_naturality f
+    have h₂
+        : f
+          = inv ((sheafificationAdjunction J D).counit.app F) ≫ (presheafToSheaf J D).map f.hom
+            ≫ (sheafificationAdjunction J D).counit.app G := by
       simp [h₁]
     -- The sheafification of `f.val` is still an epimorphism
     have : Epi ((presheafToSheaf J D).map f.hom) := by
@@ -74,8 +78,7 @@ lemma isRegularEpiCategory_sheaf (J : GrothendieckTopology C)
       exact epi_of_epi ((presheafToSheaf J D).map p) _
     -- Since the sheafification of `i` is both a monomorphism and an epimorphism, it is an
     -- isomorphism.
-    have : IsIso ((presheafToSheaf J D).map i) :=
-      Balanced.isIso_of_mono_of_epi _
+    have : IsIso ((presheafToSheaf J D).map i) := Balanced.isIso_of_mono_of_epi _
     -- The next five lines show that it suffices to show that the sheafification of `p` is a
     -- regular epimorphism.
     rw [h₂, isRegularEpi_iff_effectiveEpi]
@@ -100,15 +103,16 @@ lemma isRegularEpiCategory_sheaf (J : GrothendieckTopology C)
         exact isColimitCoforkMapOfIsColimit (presheafToSheaf J D) _
           (isColimitCoforkOfEffectiveEpi p _
             (PullbackCone.isLimitOfFactors f.hom f.hom i _ _ hpi hpi _
-              ((isLimitPullbackConeMapOfIsLimit (sheafToPresheaf _ _) _
-                (pullbackIsPullback f f))))) }⟩⟩
+              ((isLimitPullbackConeMapOfIsLimit (sheafToPresheaf _ _) _ (pullbackIsPullback f f)))))
+    }⟩⟩
 
-instance (J : GrothendieckTopology C) [HasSheafify J (Type u)] :
-    IsRegularEpiCategory (Sheaf J (Type u)) := isRegularEpiCategory_sheaf J fun f hf ↦
-  ⟨image f.hom, factorThruImage f.hom, image.ι f.hom, inferInstance, inferInstance, by simp⟩
+instance (J : GrothendieckTopology C) [HasSheafify J (Type u)]
+    : IsRegularEpiCategory (Sheaf J (Type u)) :=
+  isRegularEpiCategory_sheaf J fun f hf ↦
+    ⟨image f.hom, factorThruImage f.hom, image.ι f.hom, inferInstance, inferInstance, by simp⟩
 
-example {C : Type u} [Category.{v} C] (J : GrothendieckTopology C) :
-    IsRegularEpiCategory (Sheaf J (Type (max u v))) :=
+example {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
+    : IsRegularEpiCategory (Sheaf J (Type (max u v))) :=
   inferInstance
 
 end CategoryTheory

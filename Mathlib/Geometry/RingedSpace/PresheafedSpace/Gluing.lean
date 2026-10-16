@@ -56,7 +56,6 @@ commute with the maps in the diagram (the green arrows), which is just a lengthy
 
 @[expose] public section
 
-
 noncomputable section
 
 open TopologicalSpace CategoryTheory Opposite Topology
@@ -75,7 +74,8 @@ variable (C : Type u) [Category.{v} C]
 
 namespace PresheafedSpace
 
-/-- A family of gluing data consists of
+/--
+A family of gluing data consists of
 1. An index type `J`
 2. A presheafed space `U i` for each `i : J`.
 3. A presheafed space `V i j` for each `i j : J`.
@@ -119,20 +119,21 @@ local notation "π₂⁻¹ " i ", " j ", " k =>
   (PresheafedSpace.IsOpenImmersion.pullbackSndOfLeft (D.f i j) (D.f i k)).invApp
 
 /-- The glue data of topological spaces associated to a family of glue data of PresheafedSpaces. -/
-abbrev toTopGlueData : TopCat.GlueData :=
-  { f_open := fun i j => (D.f_open i j).base_open
-    toGlueData := 𝖣.mapGlueData (forget C) }
+abbrev toTopGlueData : TopCat.GlueData := {
+  f_open := fun i j => (D.f_open i j).base_open
+  toGlueData := 𝖣.mapGlueData (forget C)
+}
 
 set_option backward.isDefEq.respectTransparency false in
 theorem ι_isOpenEmbedding [HasLimits C] (i : D.J) : IsOpenEmbedding (𝖣.ι i).base := by
   rw [← show _ = (𝖣.ι i).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) _, TopCat.coe_comp]
   exact (TopCat.homeoOfIso (𝖣.gluedIso (PresheafedSpace.forget _)).symm).isOpenEmbedding.comp
-      (D.toTopGlueData.ι_isOpenEmbedding i)
+    (D.toTopGlueData.ι_isOpenEmbedding i)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem pullback_base (i j k : D.J) (S : Set (D.V (i, j)).carrier) :
-    (π₂ i, j, k) '' (π₁ i, j, k) ⁻¹' S = D.f i k ⁻¹' D.f i j '' S := by
+theorem pullback_base (i j k : D.J) (S : Set (D.V (i, j)).carrier)
+    : (π₂ i, j, k) '' (π₁ i, j, k) ⁻¹' S = D.f i k ⁻¹' D.f i j '' S := by
   have eq₁ : _ = (π₁ i, j, k).base := PreservesPullback.iso_hom_fst (forget C) _ _
   have eq₂ : _ = (π₂ i, j, k).base := PreservesPullback.iso_hom_snd (forget C) _ _
   rw [← eq₁, ← eq₂, TopCat.coe_comp, Set.image_comp, TopCat.coe_comp, Set.preimage_comp,
@@ -144,38 +145,37 @@ theorem pullback_base (i j k : D.J) (S : Set (D.V (i, j)).carrier) :
 set_option backward.isDefEq.respectTransparency false in
 /-- The red and the blue arrows in ![this diagram](https://i.imgur.com/0GiBUh6.png) commute. -/
 @[simp, reassoc]
-theorem f_invApp_f_app (i j k : D.J) (U : Opens (D.V (i, j)).carrier) :
-    (D.f_open i j).invApp _ U ≫ (D.f i k).c.app _ =
-      (π₁ i, j, k).c.app (op U) ≫
-        (π₂⁻¹ i, j, k) (unop _) ≫
-          (D.V _).presheaf.map
-            (eqToHom
-              (by
-                delta IsOpenImmersion.opensFunctor IsOpenEmbedding.functor
-                dsimp only [Functor.op, IsOpenMap.functor, Opens.map, unop_op]
-                congr
-                apply pullback_base)) := by
+theorem f_invApp_f_app (i j k : D.J) (U : Opens (D.V (i, j)).carrier)
+    : (D.f_open i j).invApp _ U ≫ (D.f i k).c.app _
+      = (π₁ i, j, k).c.app (op U) ≫ (π₂⁻¹ i, j, k) (unop _)
+        ≫ (D.V _).presheaf.map
+          (eqToHom (by
+            delta IsOpenImmersion.opensFunctor IsOpenEmbedding.functor
+            dsimp only [Functor.op, IsOpenMap.functor, Opens.map, unop_op]
+            congr
+            apply pullback_base)) := by
   have := PresheafedSpace.congr_app (@pullback.condition _ _ _ _ _ (D.f i j) (D.f i k) _)
   dsimp only [comp_c_app] at this
   rw [← cancel_epi (inv ((D.f_open i j).invApp _ U)), IsIso.inv_hom_id_assoc,
     IsOpenImmersion.inv_invApp]
   simp_rw [Category.assoc]
   erw [(π₁ i, j, k).c.naturality_assoc, reassoc_of% this, ← Functor.map_comp_assoc,
-    IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc, ←
-    (D.V (i, k)).presheaf.map_comp, ← (D.V (i, k)).presheaf.map_comp]
+    IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc,
+    ← (D.V (i, k)).presheaf.map_comp, ← (D.V (i, k)).presheaf.map_comp]
   convert (Category.comp_id _).symm
   erw [(D.V (i, k)).presheaf.map_id]
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- We can prove the `eq` along with the lemma. Thus this is bundled together here, and the
+/--
+We can prove the `eq` along with the lemma. Thus this is bundled together here, and the
 lemma itself is separated below.
 -/
-theorem snd_invApp_t_app' (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)).carrier) :
-    ∃ eq,
-      (π₂⁻¹ i, j, k) U ≫ (D.t k i).c.app _ ≫ (D.V (k, i)).presheaf.map (eqToHom eq) =
-        (D.t' k i j).c.app _ ≫ (π₁⁻¹ k, j, i) (unop _) := by
+theorem snd_invApp_t_app' (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)).carrier)
+    : ∃ eq,
+      (π₂⁻¹ i, j, k) U ≫ (D.t k i).c.app _ ≫ (D.V (k, i)).presheaf.map (eqToHom eq)
+        = (D.t' k i j).c.app _ ≫ (π₁⁻¹ k, j, i) (unop _) := by
   fconstructor
   -- Porting note: I don't know what the magic was in Lean3 proof, it just skipped the proof of `eq`
   · delta IsOpenImmersion.opensFunctor IsOpenEmbedding.functor
@@ -223,11 +223,10 @@ theorem snd_invApp_t_app' (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)
 set_option backward.isDefEq.respectTransparency false in -- Needed in ιInvApp
 /-- The red and the blue arrows in ![this diagram](https://i.imgur.com/q6X1GJ9.png) commute. -/
 @[simp, reassoc]
-theorem snd_invApp_t_app (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)).carrier) :
-    (π₂⁻¹ i, j, k) U ≫ (D.t k i).c.app _ =
-      (D.t' k i j).c.app _ ≫
-        (π₁⁻¹ k, j, i) (unop _) ≫
-          (D.V (k, i)).presheaf.map (eqToHom (D.snd_invApp_t_app' i j k U).choose.symm) := by
+theorem snd_invApp_t_app (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)).carrier)
+    : (π₂⁻¹ i, j, k) U ≫ (D.t k i).c.app _
+      = (D.t' k i j).c.app _ ≫ (π₁⁻¹ k, j, i) (unop _)
+        ≫ (D.V (k, i)).presheaf.map (eqToHom (D.snd_invApp_t_app' i j k U).choose.symm) := by
   have e := (D.snd_invApp_t_app' i j k U).choose_spec
   replace e := reassoc_of% e
   rw [← e]
@@ -237,14 +236,14 @@ variable [HasLimits C]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
-    (Opens.map (𝖣.ι j).base).obj ((D.ι_isOpenEmbedding i).functor.obj U) =
-      (opensFunctor (D.f j i)).obj
+theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier)
+    : (Opens.map (𝖣.ι j).base).obj ((D.ι_isOpenEmbedding i).functor.obj U)
+      = (opensFunctor (D.f j i)).obj
         ((Opens.map (𝖣.t j i).base).obj ((Opens.map (𝖣.f i j).base).obj U)) := by
   ext1
   dsimp only [Opens.map_coe, IsOpenMap.coe_functor_obj]
-  rw [← show _ = (𝖣.ι i).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) i, ←
-    show _ = (𝖣.ι j).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) j]
+  rw [← show _ = (𝖣.ι i).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) i,
+    ← show _ = (𝖣.ι j).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) j]
   rw [TopCat.coe_comp, TopCat.coe_comp, Set.image_comp, Set.preimage_comp, Set.preimage_image_eq]
   · refine Eq.trans (D.toTopGlueData.preimage_image_eq_image' _ _ _) ?_
     dsimp
@@ -260,21 +259,18 @@ theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
     infer_instance
 
 /-- (Implementation). The map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_{U_j}, 𝖣.ι j ⁻¹' 𝖣.ι i '' U)` -/
-def opensImagePreimageMap (i j : D.J) (U : Opens (D.U i).carrier) :
-    (D.U i).presheaf.obj (op U) ⟶
-    (D.U j).presheaf.obj (op <|
-      (Opens.map (𝖣.ι j).base).obj ((D.ι_isOpenEmbedding i).functor.obj U)) :=
-  (D.f i j).c.app (op U) ≫
-    (D.t j i).c.app _ ≫
-      (D.f_open j i).invApp _ (unop _) ≫
-        (𝖣.U j).presheaf.map (eqToHom (D.ι_image_preimage_eq i j U)).op
+def opensImagePreimageMap (i j : D.J) (U : Opens (D.U i).carrier)
+    : (D.U i).presheaf.obj (op U) ⟶ (D.U j).presheaf.obj
+      (op <| (Opens.map (𝖣.ι j).base).obj ((D.ι_isOpenEmbedding i).functor.obj U)) :=
+  (D.f i j).c.app (op U) ≫ (D.t j i).c.app _ ≫ (D.f_open j i).invApp _ (unop _)
+    ≫ (𝖣.U j).presheaf.map (eqToHom (D.ι_image_preimage_eq i j U)).op
 
 set_option backward.isDefEq.respectTransparency false in
-theorem opensImagePreimageMap_app' (i j k : D.J) (U : Opens (D.U i).carrier) :
-    ∃ eq,
-      D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _ =
-        ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫
-          (π₂⁻¹ j, i, k) (unop _) ≫ (D.V (j, k)).presheaf.map (eqToHom eq) := by
+theorem opensImagePreimageMap_app' (i j k : D.J) (U : Opens (D.U i).carrier)
+    : ∃ eq,
+      D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _
+        = ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫ (π₂⁻¹ j, i, k) (unop _)
+          ≫ (D.V (j, k)).presheaf.map (eqToHom eq) := by
   constructor
   · delta opensImagePreimageMap
     simp_rw [Category.assoc]
@@ -288,44 +284,49 @@ theorem opensImagePreimageMap_app' (i j k : D.J) (U : Opens (D.U i).carrier) :
     congr
 
 /-- The red and the blue arrows in ![this diagram](https://i.imgur.com/mBzV1Rx.png) commute. -/
-theorem opensImagePreimageMap_app (i j k : D.J) (U : Opens (D.U i).carrier) :
-    D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _ =
-      ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫
-        (π₂⁻¹ j, i, k) (unop _) ≫
-          (D.V (j, k)).presheaf.map (eqToHom (opensImagePreimageMap_app' D i j k U).choose) :=
+theorem opensImagePreimageMap_app (i j k : D.J) (U : Opens (D.U i).carrier)
+    : D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _
+      = ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫ (π₂⁻¹ j, i, k) (unop _)
+        ≫ (D.V (j, k)).presheaf.map (eqToHom (opensImagePreimageMap_app' D i j k U).choose) :=
   (opensImagePreimageMap_app' D i j k U).choose_spec
 
 -- This is proved separately since `reassoc` somehow timeouts.
-theorem opensImagePreimageMap_app_assoc (i j k : D.J) (U : Opens (D.U i).carrier) {X' : C}
-    (f' : _ ⟶ X') :
-    D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _ ≫ f' =
-      ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫
-        (π₂⁻¹ j, i, k) (unop _) ≫
-          (D.V (j, k)).presheaf.map
-            (eqToHom (opensImagePreimageMap_app' D i j k U).choose) ≫ f' := by
+theorem opensImagePreimageMap_app_assoc
+    (i j k : D.J) (U : Opens (D.U i).carrier) {X' : C} (f' : _ ⟶ X')
+    : D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _ ≫ f'
+      = ((π₁ j, i, k) ≫ D.t j i ≫ D.f i j).c.app (op U) ≫ (π₂⁻¹ j, i, k) (unop _)
+        ≫ (D.V (j, k)).presheaf.map (eqToHom (opensImagePreimageMap_app' D i j k U).choose)
+        ≫ f' := by
   simpa only [Category.assoc] using congr($(opensImagePreimageMap_app D i j k U) ≫ f')
 
-/-- (Implementation) Given an open subset of one of the spaces `U ⊆ Uᵢ`, the sheaf component of
-the image `ι '' U` in the glued space is the limit of this diagram. -/
-abbrev diagramOverOpen {i : D.J} (U : Opens (D.U i).carrier) :
-    (WalkingMultispan (.prod D.J))ᵒᵖ ⥤ C :=
+/--
+(Implementation) Given an open subset of one of the spaces `U ⊆ Uᵢ`, the sheaf component of
+the image `ι '' U` in the glued space is the limit of this diagram.
+-/
+abbrev diagramOverOpen {i : D.J} (U : Opens (D.U i).carrier)
+    : (WalkingMultispan (.prod D.J))ᵒᵖ ⥤ C :=
   componentwiseDiagram 𝖣.diagram.multispan ((D.ι_isOpenEmbedding i).functor.obj U)
 
-/-- (Implementation)
-The projection from the limit of `diagram_over_open` to a component of `D.U j`. -/
+/--
+(Implementation)
+The projection from the limit of `diagram_over_open` to a component of `D.U j`.
+-/
 abbrev diagramOverOpenπ {i : D.J} (U : Opens (D.U i).carrier) (j : D.J) :=
   limit.π (D.diagramOverOpen U) (op (WalkingMultispan.right j))
 
 set_option backward.isDefEq.respectTransparency false in
-/-- (Implementation) We construct the map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_V, U_V)` for each `V` in the gluing
-diagram. We will lift these maps into `ιInvApp`. -/
-def ιInvAppπApp {i : D.J} (U : Opens (D.U i).carrier) (j) :
-    (𝖣.U i).presheaf.obj (op U) ⟶ (D.diagramOverOpen U).obj (op j) := by
+/--
+(Implementation) We construct the map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_V, U_V)` for each `V` in the gluing
+diagram. We will lift these maps into `ιInvApp`.
+-/
+def ιInvAppπApp {i : D.J} (U : Opens (D.U i).carrier) (j)
+    : (𝖣.U i).presheaf.obj (op U) ⟶ (D.diagramOverOpen U).obj (op j) := by
   rcases j with (⟨j, k⟩ | j)
-  · refine
-      D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _ ≫ (D.V (j, k)).presheaf.map (eqToHom ?_)
+  · refine D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _
+      ≫ (D.V (j, k)).presheaf.map (eqToHom ?_)
     rw [Functor.op_obj]
-    congr 1; ext1
+    congr 1
+    ext1
     dsimp only [Functor.op_obj, Opens.map_coe, unop_op, IsOpenMap.coe_functor_obj]
     rw [Set.preimage_preimage]
     change (D.f j k ≫ 𝖣.ι j).base ⁻¹' _ = _
@@ -335,66 +336,74 @@ def ιInvAppπApp {i : D.J} (U : Opens (D.U i).carrier) (j) :
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- (Implementation) The natural map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_X, 𝖣.ι i '' U)`.
-This forms the inverse of `(𝖣.ι i).c.app (op U)`. -/
-def ιInvApp {i : D.J} (U : Opens (D.U i).carrier) :
-    (D.U i).presheaf.obj (op U) ⟶ limit (D.diagramOverOpen U) :=
-  limit.lift (D.diagramOverOpen U)
-    { pt := (D.U i).presheaf.obj (op U)
-      π :=
-        { app := fun j => D.ιInvAppπApp U (unop j)
-          naturality := fun {X Y} f' => by
-            induction X with | op X => ?_
-            induction Y with | op Y => ?_
-            let f : Y ⟶ X := f'.unop; have : f' = f.op := rfl; clear_value f; subst this
-            rcases f with (_ | ⟨j, k⟩ | ⟨j, k⟩)
-            · simp
-            · simp only [Functor.const_obj_obj, Functor.const_obj_map, Category.id_comp]
-              congr 1
-            simp only [Functor.const_obj_obj, Functor.const_obj_map, Category.id_comp]
-            -- It remains to show that the blue is equal to red + green in the original diagram.
-            -- The proof strategy is illustrated in ![this diagram](https://i.imgur.com/mBzV1Rx.png)
-            -- where we prove red = pink = light-blue = green = blue.
-            change
-              D.opensImagePreimageMap i j U ≫
-                  (D.f j k).c.app _ ≫ (D.V (j, k)).presheaf.map (eqToHom _) =
-                D.opensImagePreimageMap _ _ _ ≫
-                  ((D.f k j).c.app _ ≫ (D.t j k).c.app _) ≫ (D.V (j, k)).presheaf.map (eqToHom _)
-            rw [opensImagePreimageMap_app_assoc]
-            simp_rw [Category.assoc]
-            rw [opensImagePreimageMap_app_assoc, (D.t j k).c.naturality_assoc,
-                snd_invApp_t_app_assoc,
-                ← PresheafedSpace.comp_c_app_assoc]
-            -- light-blue = green is relatively easy since the part that differs does not involve
-            -- partial inverses.
-            have :
-              D.t' j k i ≫ (π₁ k, i, j) ≫ D.t k i ≫ 𝖣.f i k =
-                (pullbackSymmetry _ _).hom ≫ (π₁ j, i, k) ≫ D.t j i ≫ D.f i j := by
-              rw [← 𝖣.t_fac_assoc, 𝖣.t'_comp_eq_pullbackSymmetry_assoc,
-                pullbackSymmetry_hom_comp_snd_assoc, pullback.condition, 𝖣.t_fac_assoc]
-            rw [congr_app this,
-                PresheafedSpace.comp_c_app_assoc (pullbackSymmetry _ _).hom]
-            simp_rw [Category.assoc]
-            congr 1
-            rw [← IsIso.eq_inv_comp, IsOpenImmersion.inv_invApp, Category.assoc,
-              NatTrans.naturality_assoc]
-            simp_rw [Functor.op_obj]
-            rw [← PresheafedSpace.comp_c_app_assoc, congr_app (pullbackSymmetry_hom_comp_snd _ _)]
-            simp_rw [Category.assoc, Functor.op_obj, comp_base, Opens.map_comp_obj,
-              TopCat.Presheaf.pushforward_obj_map]
-            rw [IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.inv_naturality_assoc,
-              IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc]
-            repeat rw [← (D.V (j, k)).presheaf.map_comp]
-            rfl } }
+/--
+(Implementation) The natural map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_X, 𝖣.ι i '' U)`.
+This forms the inverse of `(𝖣.ι i).c.app (op U)`.
+-/
+def ιInvApp {i : D.J} (U : Opens (D.U i).carrier)
+    : (D.U i).presheaf.obj (op U) ⟶ limit (D.diagramOverOpen U) :=
+  limit.lift (D.diagramOverOpen U) {
+    pt := (D.U i).presheaf.obj (op U)
+    π := {
+      app := fun j => D.ιInvAppπApp U (unop j)
+      naturality := fun {X Y} f' => by
+        induction X with
+        | op X => ?_
+        induction Y with
+        | op Y => ?_
+        let f : Y ⟶ X := f'.unop
+        have : f' = f.op := rfl
+        clear_value f
+        subst this
+        rcases f with (_ | ⟨j, k⟩ | ⟨j, k⟩)
+        · simp
+        · simp only [Functor.const_obj_obj, Functor.const_obj_map, Category.id_comp]
+          congr 1
+        simp only [Functor.const_obj_obj, Functor.const_obj_map, Category.id_comp]
+        -- It remains to show that the blue is equal to red + green in the original diagram.
+        -- The proof strategy is illustrated in ![this diagram](https://i.imgur.com/mBzV1Rx.png)
+        -- where we prove red = pink = light-blue = green = blue.
+        change D.opensImagePreimageMap i j U ≫ (D.f j k).c.app _
+            ≫ (D.V (j, k)).presheaf.map (eqToHom _)
+          = D.opensImagePreimageMap _ _ _ ≫ ((D.f k j).c.app _ ≫ (D.t j k).c.app _)
+            ≫ (D.V (j, k)).presheaf.map (eqToHom _)
+        rw [opensImagePreimageMap_app_assoc]
+        simp_rw [Category.assoc]
+        rw [opensImagePreimageMap_app_assoc, (D.t j k).c.naturality_assoc, snd_invApp_t_app_assoc,
+          ← PresheafedSpace.comp_c_app_assoc]
+        -- light-blue = green is relatively easy since the part that differs does not involve
+        -- partial inverses.
+        have : D.t' j k i ≫ (π₁ k, i, j) ≫ D.t k i ≫ 𝖣.f i k
+            = (pullbackSymmetry _ _).hom ≫ (π₁ j, i, k) ≫ D.t j i ≫ D.f i j := by
+          rw [← 𝖣.t_fac_assoc, 𝖣.t'_comp_eq_pullbackSymmetry_assoc,
+            pullbackSymmetry_hom_comp_snd_assoc, pullback.condition, 𝖣.t_fac_assoc]
+        rw [congr_app this, PresheafedSpace.comp_c_app_assoc (pullbackSymmetry _ _).hom]
+        simp_rw [Category.assoc]
+        congr 1
+        rw [← IsIso.eq_inv_comp, IsOpenImmersion.inv_invApp, Category.assoc,
+          NatTrans.naturality_assoc]
+        simp_rw [Functor.op_obj]
+        rw [← PresheafedSpace.comp_c_app_assoc, congr_app (pullbackSymmetry_hom_comp_snd _ _)]
+        simp_rw [Category.assoc, Functor.op_obj, comp_base, Opens.map_comp_obj,
+          TopCat.Presheaf.pushforward_obj_map]
+        rw [IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.inv_naturality_assoc,
+          IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc]
+        repeat rw [← (D.V (j, k)).presheaf.map_comp]
+        rfl
+    }
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `ιInvApp` is the left inverse of `D.ι i` on `U`. -/
-theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier) :
-    ∃ eq, D.ιInvApp U ≫ D.diagramOverOpenπ U i = (D.U i).presheaf.map (eqToHom eq) := by
+theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier)
+    : ∃ eq, D.ιInvApp U ≫ D.diagramOverOpenπ U i = (D.U i).presheaf.map (eqToHom eq) := by
   fconstructor
   -- Porting note: I don't know what the magic was in Lean3 proof, it just skipped the proof of `eq`
-  · congr; ext1; change _ = _ ⁻¹' _ '' _; ext1 x
+  · congr
+    ext1
+    change _ = _ ⁻¹' _ '' _
+    ext1 x
     simp only [SetLike.mem_coe, unop_op, Set.mem_preimage, Set.mem_image]
     refine ⟨fun h => ⟨_, h, rfl⟩, ?_⟩
     rintro ⟨y, h1, h2⟩
@@ -427,12 +436,15 @@ abbrev ιInvAppπEqMap {i : D.J} (U : Opens (D.U i).carrier) :=
 
 set_option backward.isDefEq.respectTransparency false in
 /-- `ιInvApp` is the right inverse of `D.ι i` on `U`. -/
-theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier) :
-    D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U ≫ D.diagramOverOpenπ U j =
-      D.diagramOverOpenπ U j := by
+theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier)
+    : D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U ≫ D.diagramOverOpenπ U j
+      = D.diagramOverOpenπ U j := by
   rw [← @cancel_mono
-          (f := (componentwiseDiagram 𝖣.diagram.multispan _).map
-            (Quiver.Hom.op (WalkingMultispan.Hom.snd (i, j))) ≫ 𝟙 _) ..]
+    (f :=
+      (componentwiseDiagram 𝖣.diagram.multispan _).map
+          (Quiver.Hom.op (WalkingMultispan.Hom.snd (i, j)))
+        ≫ 𝟙 _)
+    ..]
   · simp_rw [Category.assoc]
     rw [limit.w_assoc]
     erw [limit.lift_π_assoc]
@@ -462,10 +474,11 @@ theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier) :
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- `ιInvApp` is the inverse of `D.ι i` on `U`. -/
-theorem π_ιInvApp_eq_id (i : D.J) (U : Opens (D.U i).carrier) :
-    D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U = 𝟙 _ := by
+theorem π_ιInvApp_eq_id (i : D.J) (U : Opens (D.U i).carrier)
+    : D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U = 𝟙 _ := by
   ext j
-  induction j with | op j => ?_
+  induction j with
+  | op j => ?_
   rcases j with (⟨j, k⟩ | ⟨j⟩)
   · rw [← limit.w (componentwiseDiagram 𝖣.diagram.multispan _)
         (Quiver.Hom.op (WalkingMultispan.Hom.fst (j, k))),
@@ -478,8 +491,8 @@ theorem π_ιInvApp_eq_id (i : D.J) (U : Opens (D.U i).carrier) :
     apply π_ιInvApp_π
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance componentwise_diagram_π_isIso (i : D.J) (U : Opens (D.U i).carrier) :
-    IsIso (D.diagramOverOpenπ U i) := by
+instance componentwise_diagram_π_isIso (i : D.J) (U : Opens (D.U i).carrier)
+    : IsIso (D.diagramOverOpenπ U i) := by
   use D.ιInvAppπEqMap U ≫ D.ιInvApp U
   constructor
   · apply π_ιInvApp_eq_id
@@ -493,7 +506,8 @@ instance ιIsOpenImmersion (i : D.J) : IsOpenImmersion (𝖣.ι i) where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
+/--
+The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
 
 ```
 Vᵢⱼ ⟶ Uᵢ
@@ -507,11 +521,9 @@ def vPullbackConeIsLimit (i j : D.J) : IsLimit (𝖣.vPullbackCone i j) :=
     refine ⟨?_, ?_, ?_, ?_⟩
     · refine PresheafedSpace.IsOpenImmersion.lift (D.f i j) s.fst ?_
       erw [← D.toTopGlueData.preimage_range j i]
-      have :
-        s.fst.base ≫ D.toTopGlueData.ι i =
-          s.snd.base ≫ D.toTopGlueData.ι j := by
-        rw [← 𝖣.ι_gluedIso_hom (PresheafedSpace.forget _) _, ←
-          𝖣.ι_gluedIso_hom (PresheafedSpace.forget _) _]
+      have : s.fst.base ≫ D.toTopGlueData.ι i = s.snd.base ≫ D.toTopGlueData.ι j := by
+        rw [← 𝖣.ι_gluedIso_hom (PresheafedSpace.forget _) _,
+          ← 𝖣.ι_gluedIso_hom (PresheafedSpace.forget _) _]
         have := congr($(s.condition).base)
         rw [comp_base, comp_base] at this
         replace this := reassoc_of% this
@@ -538,7 +550,8 @@ end PresheafedSpace
 
 namespace SheafedSpace
 
-/-- A family of gluing data consists of
+/--
+A family of gluing data consists of
 1. An index type `J`
 2. A sheafed space `U i` for each `i : J`.
 3. A sheafed space `V i j` for each `i j : J`.
@@ -570,19 +583,20 @@ variable (D : GlueData C)
 local notation "𝖣" => D.toGlueData
 
 /-- The glue data of presheafed spaces associated to a family of glue data of sheafed spaces. -/
-abbrev toPresheafedSpaceGlueData : PresheafedSpace.GlueData C :=
-  { f_open := D.f_open
-    toGlueData := 𝖣.mapGlueData forgetToPresheafedSpace }
+abbrev toPresheafedSpaceGlueData : PresheafedSpace.GlueData C := {
+  f_open := D.f_open
+  toGlueData := 𝖣.mapGlueData forgetToPresheafedSpace
+}
 
 variable [HasLimits C]
 
 /-- The gluing as sheafed spaces is isomorphic to the gluing as presheafed spaces. -/
-abbrev isoPresheafedSpace :
-    𝖣.glued.toPresheafedSpace ≅ D.toPresheafedSpaceGlueData.toGlueData.glued :=
+abbrev isoPresheafedSpace
+    : 𝖣.glued.toPresheafedSpace ≅ D.toPresheafedSpaceGlueData.toGlueData.glued :=
   𝖣.gluedIso forgetToPresheafedSpace
 
-theorem ι_isoPresheafedSpace_inv (i : D.J) :
-    D.toPresheafedSpaceGlueData.toGlueData.ι i ≫ D.isoPresheafedSpace.inv = (𝖣.ι i).hom :=
+theorem ι_isoPresheafedSpace_inv (i : D.J)
+    : D.toPresheafedSpaceGlueData.toGlueData.ι i ≫ D.isoPresheafedSpace.inv = (𝖣.ι i).hom :=
   𝖣.ι_gluedIso_inv _ _
 
 set_option backward.isDefEq.respectTransparency false in
@@ -595,7 +609,8 @@ instance ιIsOpenImmersion (i : D.J) : IsOpenImmersion (𝖣.ι i) := by
 theorem ι_jointly_surjective (x : 𝖣.glued) : ∃ (i : D.J) (y : D.U i), (𝖣.ι i).hom.base y = x :=
   𝖣.ι_jointly_surjective (SheafedSpace.forget _ ⋙ CategoryTheory.forget TopCat) x
 
-/-- The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
+/--
+The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
 
 ```
 Vᵢⱼ ⟶ Uᵢ
@@ -614,7 +629,8 @@ end SheafedSpace
 
 namespace LocallyRingedSpace
 
-/-- A family of gluing data consists of
+/--
+A family of gluing data consists of
 1. An index type `J`
 2. A locally ringed space `U i` for each `i : J`.
 3. A locally ringed space `V i j` for each `i j : J`.
@@ -645,18 +661,18 @@ variable (D : GlueData.{u})
 local notation "𝖣" => D.toGlueData
 
 /-- The glue data of ringed spaces associated to a family of glue data of locally ringed spaces. -/
-abbrev toSheafedSpaceGlueData : SheafedSpace.GlueData CommRingCat :=
-  { f_open := D.f_open
-    toGlueData := 𝖣.mapGlueData forgetToSheafedSpace }
+abbrev toSheafedSpaceGlueData : SheafedSpace.GlueData CommRingCat := {
+  f_open := D.f_open
+  toGlueData := 𝖣.mapGlueData forgetToSheafedSpace
+}
 
 /-- The gluing as locally ringed spaces is isomorphic to the gluing as ringed spaces. -/
 abbrev isoSheafedSpace : 𝖣.glued.toSheafedSpace ≅ D.toSheafedSpaceGlueData.toGlueData.glued :=
   𝖣.gluedIso forgetToSheafedSpace
 
 @[reassoc]
-theorem ι_isoSheafedSpace_inv (i : D.J) :
-    D.toSheafedSpaceGlueData.toGlueData.ι i ≫ D.isoSheafedSpace.inv =
-      (𝖣.ι i).toShHom :=
+theorem ι_isoSheafedSpace_inv (i : D.J)
+    : D.toSheafedSpaceGlueData.toGlueData.ι i ≫ D.isoSheafedSpace.inv = (𝖣.ι i).toShHom :=
   𝖣.ι_gluedIso_inv forgetToSheafedSpace i
 
 instance ι_isOpenImmersion (i : D.J) : IsOpenImmersion (𝖣.ι i) := by
@@ -671,10 +687,12 @@ instance (i j k : D.J) : PreservesLimit (cospan (𝖣.f i j) (𝖣.f i k)) forge
 
 theorem ι_jointly_surjective (x : 𝖣.glued) : ∃ (i : D.J) (y : D.U i), (𝖣.ι i).base y = x :=
   𝖣.ι_jointly_surjective
-    ((LocallyRingedSpace.forgetToSheafedSpace.{u} ⋙ SheafedSpace.forget CommRingCat.{u}) ⋙
-      forget TopCat.{u}) x
+    ((LocallyRingedSpace.forgetToSheafedSpace.{u} ⋙ SheafedSpace.forget CommRingCat.{u})
+      ⋙ forget TopCat.{u})
+    x
 
-/-- The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
+/--
+The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
 ```
 Vᵢⱼ ⟶ Uᵢ
  |      |

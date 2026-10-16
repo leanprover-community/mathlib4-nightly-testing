@@ -27,16 +27,14 @@ open Filter Interval MeasureTheory MeromorphicOn Metric Real
 
 section IntervalIntegrable
 
-variable
-  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {f : ℝ → E} {a b : ℝ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {f : ℝ → E} {a b : ℝ}
 
 /--
 If `f` is real-meromorphic on a compact interval, then `log⁺ ‖f ·‖` is interval integrable on this
 interval.
 -/
-theorem MeromorphicOn.intervalIntegrable_posLog_norm (hf : MeromorphicOn f [[a, b]]) :
-    IntervalIntegrable (log⁺ ‖f ·‖) volume a b := by
+theorem MeromorphicOn.intervalIntegrable_posLog_norm (hf : MeromorphicOn f [[a, b]])
+    : IntervalIntegrable (log⁺ ‖f ·‖) volume a b := by
   simp_rw [← half_mul_log_add_log_abs, mul_add]
   apply IntervalIntegrable.add
   · apply hf.intervalIntegrable_log_norm.const_mul
@@ -50,29 +48,25 @@ end IntervalIntegrable
 
 section CircleIntegrable
 
-variable
-  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-  {c : ℂ} {R : ℝ} {f : ℂ → E}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {c : ℂ} {R : ℝ} {f : ℂ → E}
 
 /--
 If `f` is complex meromorphic on a circle in the complex plane, then `log⁺ ‖f ·‖` is circle
 integrable over that circle.
 -/
 @[fun_prop]
-theorem MeromorphicOn.circleIntegrable_posLog_norm (hf : MeromorphicOn f (sphere c |R|)) :
-    CircleIntegrable (log⁺ ‖f ·‖) c R := by
+theorem MeromorphicOn.circleIntegrable_posLog_norm (hf : MeromorphicOn f (sphere c |R|))
+    : CircleIntegrable (log⁺ ‖f ·‖) c R := by
   simp_rw [← half_mul_log_add_log_abs, mul_add]
   apply CircleIntegrable.add
   · apply hf.circleIntegrable_log_norm.const_mul
   · apply hf.circleIntegrable_log_norm.abs.const_mul
 
-/--
-Variant of `MeromorphicOn.circleIntegrable_posLog_norm` for non-negative radii.
--/
+/-- Variant of `MeromorphicOn.circleIntegrable_posLog_norm` for non-negative radii. -/
 @[fun_prop]
-theorem MeromorphicOn.circleIntegrable_posLog_norm_of_nonneg (hf : MeromorphicOn f (sphere c R))
-    (hR : 0 ≤ R) :
-    CircleIntegrable (log⁺ ‖f ·‖) c R := by
+theorem MeromorphicOn.circleIntegrable_posLog_norm_of_nonneg
+    (hf : MeromorphicOn f (sphere c R)) (hR : 0 ≤ R)
+    : CircleIntegrable (log⁺ ‖f ·‖) c R := by
   rw [← abs_of_nonneg hR] at hf
   exact hf.circleIntegrable_posLog_norm
 

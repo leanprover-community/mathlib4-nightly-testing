@@ -7,7 +7,6 @@ module
 
 public meta import Lean.Elab.Tactic.Basic
 public import Qq
-
 import Mathlib.Init
 import Qq.Typ
 
@@ -30,8 +29,8 @@ returned expression.
 -- In Lean3 this was called `solve_aux`,
 -- and took a `TacticM α` and captured the produced value in `α`.
 -- As this was barely used, we've simplified here.
-def synthesizeUsing {u : Level} (type : Q(Sort u)) (tac : TacticM Unit) :
-    MetaM (List MVarId × Q($type)) := do
+def synthesizeUsing {u : Level} (type : Q(Sort u)) (tac : TacticM Unit)
+    : MetaM (List MVarId × Q($type)) := do
   let m ← mkFreshExprMVar type
   let goals ← (Term.withoutErrToSorry <| run m.mvarId! tac).run'
   return (goals, ← instantiateMVars m)
@@ -46,7 +45,8 @@ def synthesizeUsing' {u : Level} (type : Q(Sort u)) (tac : TacticM Unit) : MetaM
   -- Note: does not use `tac *> Tactic.done` since that just adds a message
   -- rather than raising an error.
   unless goals.isEmpty do
-    throwError m!"synthesizeUsing': unsolved goals\n{goalsToMessageData goals}"
+    throwError m!"synthesizeUsing': unsolved goals\
+      \n{goalsToMessageData goals}"
   return e
 
 /--
@@ -61,8 +61,8 @@ let (gs, e) ← synthesizeUsingTactic ty (← `(tactic| congr!))
 The tactic `tac` is allowed to leave goals open, and these remain as metavariables in the
 returned expression.
 -/
-def synthesizeUsingTactic {u : Level} (type : Q(Sort u)) (tac : Syntax) :
-    MetaM (List MVarId × Q($type)) := do
+def synthesizeUsingTactic {u : Level} (type : Q(Sort u)) (tac : Syntax)
+    : MetaM (List MVarId × Q($type)) := do
   synthesizeUsing type (do evalTactic tac)
 
 /--

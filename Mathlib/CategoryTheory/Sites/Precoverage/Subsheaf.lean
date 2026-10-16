@@ -40,25 +40,30 @@ namespace Precoverage
 
 variable {F : Cᵒᵖ ⥤ Type w}
 
-/-- Closure of a family of elements of a presheaf under restriction and gluing of
-sections over coverings in `K`. -/
-inductive SubsheafClosure (K : Precoverage C) {F : Cᵒᵖ ⥤ Type w}
-    (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) :
-    ∀ Z : C, F.obj (.op Z) → Prop where
+/--
+Closure of a family of elements of a presheaf under restriction and gluing of
+sections over coverings in `K`.
+-/
+inductive SubsheafClosure (K : Precoverage C) {F : Cᵒᵖ ⥤ Type w} (𝒮 : ∀ Z : C, Set (F.obj (.op Z)))
+    : ∀ Z : C, F.obj (.op Z) → Prop where
   /-- Element of the initial family. -/
   | base {Z : C} {a : F.obj (.op Z)} : a ∈ 𝒮 Z → K.SubsheafClosure 𝒮 Z a
   /-- Restriction of an element in the closure along a morphism. -/
-  | restrict {Z W : C} (h : Z ⟶ W) {a : F.obj (.op W)} :
-      K.SubsheafClosure 𝒮 W a → K.SubsheafClosure 𝒮 Z (F.map h.op a)
+  | restrict {Z W : C} (h : Z ⟶ W) {a : F.obj (.op W)}
+    : K.SubsheafClosure 𝒮 W a → K.SubsheafClosure 𝒮 Z (F.map h.op a)
   /-- Gluing of sections in the closure. -/
-  | amalgamate {Z : C} {R : Presieve Z} (hR : R ∈ K Z)
-      {y : Presieve.FamilyOfElements F R} (hy : y.Compatible)
-      (hmem : ∀ ⦃W : C⦄ (r : W ⟶ Z) (hr : R r), K.SubsheafClosure 𝒮 W (y r hr))
-      {t : F.obj (.op Z)} (ht : y.IsAmalgamation t) : K.SubsheafClosure 𝒮 Z t
+  | amalgamate
+    {Z : C} {R : Presieve Z} (hR : R ∈ K Z)
+    {y : Presieve.FamilyOfElements F R}
+    (hy : y.Compatible) (hmem : ∀ ⦃W : C⦄ (r : W ⟶ Z) (hr : R r), K.SubsheafClosure 𝒮 W (y r hr))
+    {t : F.obj (.op Z)} (ht : y.IsAmalgamation t)
+    : K.SubsheafClosure 𝒮 Z t
 
 variable (K) in
-/-- The `K`-sheafification of a family of sets `𝒮` in `F`: If `F` is
-a sheaf for `K`, this is the smallest subsheaf of `F` containing `𝒮`. -/
+/--
+The `K`-sheafification of a family of sets `𝒮` in `F`: If `F` is
+a sheaf for `K`, this is the smallest subsheaf of `F` containing `𝒮`.
+-/
 @[simps]
 def subsheafify (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) : Subfunctor F where
   obj U := { x | K.SubsheafClosure 𝒮 U.unop x }
@@ -66,11 +71,13 @@ def subsheafify (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) : Subfunctor F where
 
 variable (𝒮 : ∀ Z : C, Set (F.obj (.op Z)))
 
-/-- If `F` is a sheaf for `R` and `R ∈ K X`, then the `K`-sheafification of `𝒮` is a
-sheaf for `R`. -/
-lemma isSheafFor_subsheafify (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) {X : C} {R : Presieve X}
-    (h : R ∈ K X) (h' : R.IsSheafFor F) :
-    R.IsSheafFor (K.subsheafify 𝒮).toFunctor := by
+/--
+If `F` is a sheaf for `R` and `R ∈ K X`, then the `K`-sheafification of `𝒮` is a
+sheaf for `R`.
+-/
+lemma isSheafFor_subsheafify
+    (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) {X : C} {R : Presieve X} (h : R ∈ K X) (h' : R.IsSheafFor F)
+    : R.IsSheafFor (K.subsheafify 𝒮).toFunctor := by
   let G := K.subsheafify 𝒮
   rw [← Presieve.isSeparatedFor_and_exists_isAmalgamation_iff_isSheafFor]
   refine ⟨.of_mono G.ι h'.isSeparatedFor, fun x hx ↦ ?_⟩
@@ -80,52 +87,64 @@ lemma isSheafFor_subsheafify (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) {X : C} {R 
 namespace SmallConstruction
 
 variable (K) in
-/-- Upper bound for the sections of `Precoverage.subsheafify`: If for every `X : C`,
+/--
+Upper bound for the sections of `Precoverage.subsheafify`: If for every `X : C`,
 the underlying type of `𝒮 X` embeds into `ι X`, the sections of `K.subsheafify 𝒮`
-on `X` embed into `Witness K ι X`. -/
+on `X` embed into `Witness K ι X`.
+-/
 private inductive Witness (ι : C → Type w) : C → Type max w u v where
   | base (X : C) : ι X → Witness ι X
   | restrict {X Y : C} (f : X ⟶ Y) : Witness ι Y → Witness ι X
   /-- Family of elements over a covering in `K`. Note that it is not necessarily compatible. -/
-  | amalgamate {X : C} {R : Presieve X} (hR : R ∈ K X)
-      (h : ∀ ⦃W⦄ (r : W ⟶ X), R r → Witness ι W) : Witness ι X
+  | amalgamate {X : C} {R : Presieve X} (hR : R ∈ K X) (h : ∀ ⦃W⦄ (r : W ⟶ X), R r → Witness ι W)
+    : Witness ι X
 
-/-- Realization of a term of `Witness K ι X` as a section of `F` over `X`. By
+/--
+Realization of a term of `Witness K ι X` as a section of `F` over `X`. By
 construction, the sections will lie in the subsheaf `K.subsheafify 𝒮`.
 This takes values in `Option`, because not every term constructed from
-the `Witness.amalgamate` constructor corresponds to a compatible family. -/
-private noncomputable
-def Witness.eval (hF : ∀ ⦃X : C⦄ (R : Presieve X), R ∈ K X → Presieve.IsSheafFor F R)
-    (ι : C → Type max u v) (t : ∀ X, ι X → F.obj (.op X)) :
-    {X : C} → Witness K ι X → Option (F.obj (.op X))
-  | _, .base X i => t _ i
-  | _, .restrict f i => do F.map f.op (← eval hF _ t i)
+the `Witness.amalgamate` constructor corresponds to a compatible family.
+-/
+private noncomputable def Witness.eval
+    (hF : ∀ ⦃X : C⦄ (R : Presieve X), R ∈ K X → Presieve.IsSheafFor F R)
+    (ι : C → Type max u v) (t : ∀ X, ι X → F.obj (.op X))
+    : {X : C} → Witness K ι X → Option (F.obj (.op X))
+  | _, .base X i =>
+    t _ i
+  | _, .restrict f i => do
+    F.map f.op (← eval hF _ t i)
   | _, .amalgamate (R := R) hR h =>
     open scoped Classical in
     let vals := fun W (r : W ⟶ _) (hr : R r) ↦ eval hF _ t (h r hr)
-    /- If all elements of the family are evaluatable and the resulting family is compatible, take
-    the glued section. Otherwise, return `none`. -/
+    /-
+    If all elements of the family are evaluatable and the resulting family is compatible, take
+    the glued section. Otherwise, return `none`.
+    -/
     if hall : ∀ (W : C) (r : W ⟶ _) (hr : R r), (vals W r hr).isSome then
       let y : R.FamilyOfElements F := fun _ _ hr ↦ (vals _ _ _).get (hall _ _ hr)
       if hy : y.Compatible then some (hF _ hR _ hy).choose else none
-    else none
+    else
+      none
 
 end SmallConstruction
 
 open SmallConstruction in
-/-- If `𝒮 Z` is `max u v`-small for every `Z`, then the subsheaf generated by `𝒮 Z` has
-`max u v`-small sections. -/
+/--
+If `𝒮 Z` is `max u v`-small for every `Z`, then the subsheaf generated by `𝒮 Z` has
+`max u v`-small sections.
+-/
 lemma small_subsheafify_of_small
     (hF : ∀ ⦃X : C⦄ (R : Presieve X), R ∈ K X → Presieve.IsSheafFor F R)
-    (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) (h : ∀ Z, _root_.Small.{max u v} (𝒮 Z)) :
-    FunctorToTypes.Small.{max u v} (K.subsheafify 𝒮).toFunctor := by
+    (𝒮 : ∀ Z : C, Set (F.obj (.op Z))) (h : ∀ Z, _root_.Small.{max u v} (𝒮 Z))
+    : FunctorToTypes.Small.{max u v} (K.subsheafify 𝒮).toFunctor := by
   rintro ⟨X⟩
   let ι (X : C) := Shrink.{max u v} (𝒮 X)
   let t (X : C) (i : ι X) : F.obj (Opposite.op X) := ((equivShrink _).symm i).val
-  have (x : F.obj (.op X)) (hx : K.SubsheafClosure 𝒮 X x) :
-      ∃ (i : Witness K ι X), Witness.eval hF _ t i = x := by
+  have (x : F.obj (.op X)) (hx : K.SubsheafClosure 𝒮 X x)
+      : ∃ (i : Witness K ι X), Witness.eval hF _ t i = x := by
     induction hx with
-    | base ha => exact ⟨.base _ (equivShrink _ ⟨_, ha⟩), by grind [Witness.eval]⟩
+    | base ha =>
+      exact ⟨.base _ (equivShrink _ ⟨_, ha⟩), by grind [Witness.eval]⟩
     | restrict f ha ih =>
       obtain ⟨i, hi⟩ := ih
       use .restrict f i
@@ -138,14 +157,17 @@ lemma small_subsheafify_of_small
       family eta-expanded as `fun x x_1 hr ↦ y x_1 hr`, and `grind` does not identify
       `Presieve.FamilyOfElements.Compatible` at that spelling with `hy : y.Compatible`.
       Supplying `hy` by hand and finishing with uniqueness avoids the issue. -/
-      exact ⟨.amalgamate hR x, by
-        simp only [Witness.eval, hx, Option.isSome_some, implies_true, ↓reduceDIte,
-          Option.get_some, Option.dite_none_right_eq_some, Option.some.injEq]
-        refine ⟨hy, ?_⟩
-        have hu := (hF _ hR) _ hy
-        exact hu.unique hu.choose_spec.1 ht⟩
+      exact ⟨
+        .amalgamate hR x,
+        by
+          simp only [Witness.eval, hx, Option.isSome_some, implies_true, ↓ reduceDIte,
+            Option.get_some, Option.dite_none_right_eq_some, Option.some.injEq]
+          refine ⟨hy, ?_⟩
+          have hu := (hF _ hR) _ hy
+          exact hu.unique hu.choose_spec.1 ht
+      ⟩
   choose i hi using this
-  have : Function.Injective (fun x : { x // K.SubsheafClosure 𝒮 X x } ↦ i x x.prop) := by
+  have : Function.Injective (fun x : {x // K.SubsheafClosure 𝒮 X x} ↦ i x x.prop) := by
     intro x y hxy
     ext
     apply Option.some_injective

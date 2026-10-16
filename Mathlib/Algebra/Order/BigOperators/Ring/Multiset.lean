@@ -20,9 +20,11 @@ public section
 open Multiset
 
 @[simp]
-lemma CanonicallyOrderedAdd.multiset_prod_pos {R : Type*}
+lemma CanonicallyOrderedAdd.multiset_prod_pos
+    {R : Type*}
     [CommSemiring R] [PartialOrder R] [CanonicallyOrderedAdd R] [NoZeroDivisors R] [Nontrivial R]
-    {m : Multiset R} : 0 < m.prod ↔ ∀ x ∈ m, 0 < x := by
+    {m : Multiset R}
+    : 0 < m.prod ↔ ∀ x ∈ m, 0 < x := by
   rcases m with ⟨l⟩
   rw [Multiset.quot_mk_to_coe'', Multiset.prod_coe]
   exact CanonicallyOrderedAdd.list_prod_pos
@@ -31,10 +33,13 @@ section OrderedCommSemiring
 
 variable {α β : Type*} [CommMonoid α] [CommMonoidWithZero β] [PartialOrder β] [PosMulMono β]
 
-theorem Multiset.le_prod_of_submultiplicative_on_pred_of_nonneg (f : α → β) (p : α → Prop)
+theorem Multiset.le_prod_of_submultiplicative_on_pred_of_nonneg
+    (f : α → β)
+    (p : α → Prop)
     (h0 : ∀ a, 0 ≤ f a) (h_one : f 1 ≤ 1) (h_mul : ∀ a b, p a → p b → f (a * b) ≤ f a * f b)
-    (hp_mul : ∀ a b, p a → p b → p (a * b)) (s : Multiset α) (hps : ∀ a, a ∈ s → p a) :
-    f s.prod ≤ (s.map f).prod := by
+    (hp_mul : ∀ a b, p a → p b → p (a * b))
+    (s : Multiset α) (hps : ∀ a, a ∈ s → p a)
+    : f s.prod ≤ (s.map f).prod := by
   revert s
   refine Multiset.induction (by simp [h_one]) ?_
   intro a s hs hpsa
@@ -46,18 +51,25 @@ theorem Multiset.le_prod_of_submultiplicative_on_pred_of_nonneg (f : α → β) 
     exact (h_mul a s.prod (hpsa a (mem_cons_self a s)) hp_prod).trans
       (by gcongr; exacts [h0 _, hs hps])
 
-theorem Multiset.le_prod_of_submultiplicative_of_nonneg (f : α → β) (h0 : ∀ a, 0 ≤ f a)
-    (h_one : f 1 ≤ 1) (h_mul : ∀ a b, f (a * b) ≤ f a * f b) (s : Multiset α) :
-    f s.prod ≤ (s.map f).prod :=
-  le_prod_of_submultiplicative_on_pred_of_nonneg f (fun _ ↦ True) h0 h_one
-    (fun x y _ _ ↦ h_mul x y) (by simp) s (by simp)
+theorem Multiset.le_prod_of_submultiplicative_of_nonneg
+    (f : α → β) (h0 : ∀ a, 0 ≤ f a) (h_one : f 1 ≤ 1) (h_mul : ∀ a b, f (a * b) ≤ f a * f b)
+    (s : Multiset α)
+    : f s.prod ≤ (s.map f).prod :=
+  le_prod_of_submultiplicative_on_pred_of_nonneg f
+    (fun _ ↦ True)
+    h0 h_one
+    (fun x y _ _ ↦ h_mul x y)
+    (by simp) s (by simp)
 
 omit [CommMonoid α] in
-lemma Multiset.mem_le_prod_of_one_le [ZeroLEOneClass β] {f : α → β} (h1 : ∀ a : α, 1 ≤ f a)
-    {s : Multiset α} {a : α} (ha : a ∈ s) : f a ≤ (s.map f).prod := by
+lemma Multiset.mem_le_prod_of_one_le
+    [ZeroLEOneClass β] {f : α → β} (h1 : ∀ a : α, 1 ≤ f a) {s : Multiset α} {a : α} (ha : a ∈ s)
+    : f a ≤ (s.map f).prod := by
   obtain ⟨s', rfl⟩ := exists_cons_of_mem ha
   rw [map_cons, prod_cons]
-  calc f a = f a * 1 := (mul_one (f a)).symm
+  calc
+    f a
+      = f a * 1 := (mul_one (f a)).symm
     _ ≤ f a * (s'.map f).prod := by
       gcongr
       · exact le_trans (zero_le_one' β) (h1 a)

@@ -6,7 +6,6 @@ Authors: Geoffrey Irving
 module
 
 public import Mathlib.Analysis.Complex.CauchyIntegral
-
 import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 
 /-!
@@ -20,8 +19,8 @@ public section
 open Complex Set
 open scoped Topology
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-  {f g : E → ℂ} {z : ℂ} {x : E} {s : Set E}
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {f g : E → ℂ} {z : ℂ} {x : E} {s : Set E}
 
 /-- `log` is analytic away from nonpositive reals -/
 @[fun_prop]
@@ -33,26 +32,27 @@ theorem analyticAt_clog (m : z ∈ slitPlane) : AnalyticAt ℂ log z := by
 
 /-- `log` is analytic away from nonpositive reals -/
 @[fun_prop]
-theorem AnalyticAt.clog (fa : AnalyticAt ℂ f x) (m : f x ∈ slitPlane) :
-    AnalyticAt ℂ (fun z ↦ log (f z)) x :=
+theorem AnalyticAt.clog (fa : AnalyticAt ℂ f x) (m : f x ∈ slitPlane)
+    : AnalyticAt ℂ (fun z ↦ log (f z)) x :=
   (analyticAt_clog m).comp fa
 
-theorem AnalyticWithinAt.clog (fa : AnalyticWithinAt ℂ f s x) (m : f x ∈ slitPlane) :
-    AnalyticWithinAt ℂ (fun z ↦ log (f z)) s x :=
+theorem AnalyticWithinAt.clog (fa : AnalyticWithinAt ℂ f s x) (m : f x ∈ slitPlane)
+    : AnalyticWithinAt ℂ (fun z ↦ log (f z)) s x :=
   (analyticAt_clog m).comp_analyticWithinAt fa
 
 /-- `log` is analytic away from nonpositive reals -/
-theorem AnalyticOnNhd.clog (fs : AnalyticOnNhd ℂ f s) (m : ∀ z ∈ s, f z ∈ slitPlane) :
-    AnalyticOnNhd ℂ (fun z ↦ log (f z)) s :=
-  fun z n ↦ (analyticAt_clog (m z n)).comp (fs z n)
+theorem AnalyticOnNhd.clog (fs : AnalyticOnNhd ℂ f s) (m : ∀ z ∈ s, f z ∈ slitPlane)
+    : AnalyticOnNhd ℂ (fun z ↦ log (f z)) s := fun z n ↦
+  (analyticAt_clog (m z n)).comp (fs z n)
 
-theorem AnalyticOn.clog (fs : AnalyticOn ℂ f s) (m : ∀ z ∈ s, f z ∈ slitPlane) :
-    AnalyticOn ℂ (fun z ↦ log (f z)) s :=
-  fun z n ↦ (analyticAt_clog (m z n)).analyticWithinAt.comp (fs z n) m
+theorem AnalyticOn.clog (fs : AnalyticOn ℂ f s) (m : ∀ z ∈ s, f z ∈ slitPlane)
+    : AnalyticOn ℂ (fun z ↦ log (f z)) s := fun z n ↦
+  (analyticAt_clog (m z n)).analyticWithinAt.comp (fs z n) m
 
 /-- `f z ^ g z` is analytic if `f z` is not a nonpositive real -/
-theorem AnalyticWithinAt.cpow (fa : AnalyticWithinAt ℂ f s x) (ga : AnalyticWithinAt ℂ g s x)
-    (m : f x ∈ slitPlane) : AnalyticWithinAt ℂ (fun z ↦ f z ^ g z) s x := by
+theorem AnalyticWithinAt.cpow
+    (fa : AnalyticWithinAt ℂ f s x) (ga : AnalyticWithinAt ℂ g s x) (m : f x ∈ slitPlane)
+    : AnalyticWithinAt ℂ (fun z ↦ f z ^ g z) s x := by
   have e : (fun z ↦ f z ^ g z) =ᶠ[𝓝[insert x s] x] fun z ↦ exp (log (f z) * g z) := by
     filter_upwards [(fa.continuousWithinAt_insert.eventually_ne (slitPlane_ne_zero m))]
     intro z fz
@@ -62,62 +62,62 @@ theorem AnalyticWithinAt.cpow (fa : AnalyticWithinAt ℂ f s x) (ga : AnalyticWi
 
 /-- `f z ^ g z` is analytic if `f z` is not a nonpositive real -/
 @[fun_prop]
-theorem AnalyticAt.cpow (fa : AnalyticAt ℂ f x) (ga : AnalyticAt ℂ g x)
-    (m : f x ∈ slitPlane) : AnalyticAt ℂ (fun z ↦ f z ^ g z) x := by
+theorem AnalyticAt.cpow (fa : AnalyticAt ℂ f x) (ga : AnalyticAt ℂ g x) (m : f x ∈ slitPlane)
+    : AnalyticAt ℂ (fun z ↦ f z ^ g z) x := by
   rw [← analyticWithinAt_univ] at fa ga ⊢
   exact fa.cpow ga m
 
 /-- `f z ^ g z` is analytic if `f z` avoids nonpositive reals -/
-theorem AnalyticOn.cpow (fs : AnalyticOn ℂ f s) (gs : AnalyticOn ℂ g s)
-    (m : ∀ z ∈ s, f z ∈ slitPlane) : AnalyticOn ℂ (fun z ↦ f z ^ g z) s :=
-  fun z n ↦ (fs z n).cpow (gs z n) (m z n)
+theorem AnalyticOn.cpow
+    (fs : AnalyticOn ℂ f s) (gs : AnalyticOn ℂ g s) (m : ∀ z ∈ s, f z ∈ slitPlane)
+    : AnalyticOn ℂ (fun z ↦ f z ^ g z) s := fun z n ↦
+  (fs z n).cpow (gs z n) (m z n)
 
 /-- `f z ^ g z` is analytic if `f z` avoids nonpositive reals -/
-theorem AnalyticOnNhd.cpow (fs : AnalyticOnNhd ℂ f s) (gs : AnalyticOnNhd ℂ g s)
-    (m : ∀ z ∈ s, f z ∈ slitPlane) : AnalyticOnNhd ℂ (fun z ↦ f z ^ g z) s :=
-  fun z n ↦ (fs z n).cpow (gs z n) (m z n)
+theorem AnalyticOnNhd.cpow
+    (fs : AnalyticOnNhd ℂ f s) (gs : AnalyticOnNhd ℂ g s) (m : ∀ z ∈ s, f z ∈ slitPlane)
+    : AnalyticOnNhd ℂ (fun z ↦ f z ^ g z) s := fun z n ↦
+  (fs z n).cpow (gs z n) (m z n)
 
 section ReOfReal
 
 variable {f : ℂ → ℂ} {s : Set ℝ} {x : ℝ}
 
 @[fun_prop]
-lemma AnalyticAt.re_ofReal (hf : AnalyticAt ℂ f x) :
-    AnalyticAt ℝ (fun x : ℝ ↦ (f x).re) x :=
+lemma AnalyticAt.re_ofReal (hf : AnalyticAt ℂ f x) : AnalyticAt ℝ (fun x : ℝ ↦ (f x).re) x :=
   (Complex.reCLM.analyticAt _).comp (hf.restrictScalars.comp (Complex.ofRealCLM.analyticAt _))
 
 @[fun_prop]
-lemma AnalyticAt.im_ofReal (hf : AnalyticAt ℂ f x) :
-    AnalyticAt ℝ (fun x : ℝ ↦ (f x).im) x :=
+lemma AnalyticAt.im_ofReal (hf : AnalyticAt ℂ f x) : AnalyticAt ℝ (fun x : ℝ ↦ (f x).im) x :=
   (Complex.imCLM.analyticAt _).comp (hf.restrictScalars.comp (Complex.ofRealCLM.analyticAt _))
 
-lemma AnalyticWithinAt.re_ofReal (hf : AnalyticWithinAt ℂ f (ofReal '' s) x) :
-    AnalyticWithinAt ℝ (fun x : ℝ ↦ (f x).re) s x :=
+lemma AnalyticWithinAt.re_ofReal (hf : AnalyticWithinAt ℂ f (ofReal '' s) x)
+    : AnalyticWithinAt ℝ (fun x : ℝ ↦ (f x).re) s x :=
   ((Complex.reCLM.analyticWithinAt _ _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticWithinAt _ _) (mapsTo_image ofReal s)
 
-lemma AnalyticWithinAt.im_ofReal (hf : AnalyticWithinAt ℂ f (ofReal '' s) x) :
-    AnalyticWithinAt ℝ (fun x : ℝ ↦ (f x).im) s x :=
+lemma AnalyticWithinAt.im_ofReal (hf : AnalyticWithinAt ℂ f (ofReal '' s) x)
+    : AnalyticWithinAt ℝ (fun x : ℝ ↦ (f x).im) s x :=
   ((Complex.imCLM.analyticWithinAt _ _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticWithinAt _ _) (mapsTo_image ofReal s)
 
-lemma AnalyticOn.re_ofReal (hf : AnalyticOn ℂ f (ofReal '' s)) :
-    AnalyticOn ℝ (fun x : ℝ ↦ (f x).re) s :=
+lemma AnalyticOn.re_ofReal (hf : AnalyticOn ℂ f (ofReal '' s))
+    : AnalyticOn ℝ (fun x : ℝ ↦ (f x).re) s :=
   ((Complex.reCLM.analyticOn _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticOn _) (mapsTo_image ofReal s)
 
-lemma AnalyticOn.im_ofReal (hf : AnalyticOn ℂ f (ofReal '' s)) :
-    AnalyticOn ℝ (fun x : ℝ ↦ (f x).im) s :=
+lemma AnalyticOn.im_ofReal (hf : AnalyticOn ℂ f (ofReal '' s))
+    : AnalyticOn ℝ (fun x : ℝ ↦ (f x).im) s :=
   ((Complex.imCLM.analyticOn _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticOn _) (mapsTo_image ofReal s)
 
-lemma AnalyticOnNhd.re_ofReal (hf : AnalyticOnNhd ℂ f (ofReal '' s)) :
-    AnalyticOnNhd ℝ (fun x : ℝ ↦ (f x).re) s :=
+lemma AnalyticOnNhd.re_ofReal (hf : AnalyticOnNhd ℂ f (ofReal '' s))
+    : AnalyticOnNhd ℝ (fun x : ℝ ↦ (f x).re) s :=
   ((Complex.reCLM.analyticOnNhd _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticOnNhd _) (mapsTo_image ofReal s)
 
-lemma AnalyticOnNhd.im_ofReal (hf : AnalyticOnNhd ℂ f (ofReal '' s)) :
-    AnalyticOnNhd ℝ (fun x : ℝ ↦ (f x).im) s :=
+lemma AnalyticOnNhd.im_ofReal (hf : AnalyticOnNhd ℂ f (ofReal '' s))
+    : AnalyticOnNhd ℝ (fun x : ℝ ↦ (f x).im) s :=
   ((Complex.imCLM.analyticOnNhd _).comp hf.restrictScalars (mapsTo_image f _)).comp
     (Complex.ofRealCLM.analyticOnNhd _) (mapsTo_image ofReal s)
 
@@ -139,34 +139,34 @@ lemma analyticOnNhd_log : AnalyticOnNhd ℝ Real.log (Set.Ioi 0) := fun _ hx ↦
 lemma analyticOn_log : AnalyticOn ℝ Real.log (Set.Ioi 0) := analyticOnNhd_log.analyticOn
 
 @[fun_prop]
-lemma AnalyticAt.log (fa : AnalyticAt ℝ f x) (m : 0 < f x) :
-    AnalyticAt ℝ (fun z ↦ Real.log (f z)) x :=
+lemma AnalyticAt.log (fa : AnalyticAt ℝ f x) (m : 0 < f x)
+    : AnalyticAt ℝ (fun z ↦ Real.log (f z)) x :=
   (analyticAt_log m).comp fa
 
-lemma AnalyticWithinAt.log (fa : AnalyticWithinAt ℝ f s x) (m : 0 < f x) :
-    AnalyticWithinAt ℝ (fun z ↦ Real.log (f z)) s x :=
+lemma AnalyticWithinAt.log (fa : AnalyticWithinAt ℝ f s x) (m : 0 < f x)
+    : AnalyticWithinAt ℝ (fun z ↦ Real.log (f z)) s x :=
   (analyticAt_log m).comp_analyticWithinAt fa
 
-lemma AnalyticOnNhd.log (fs : AnalyticOnNhd ℝ f s) (m : ∀ x ∈ s, 0 < f x) :
-    AnalyticOnNhd ℝ (fun z ↦ Real.log (f z)) s :=
-  fun z n ↦ (analyticAt_log (m z n)).comp (fs z n)
+lemma AnalyticOnNhd.log (fs : AnalyticOnNhd ℝ f s) (m : ∀ x ∈ s, 0 < f x)
+    : AnalyticOnNhd ℝ (fun z ↦ Real.log (f z)) s := fun z n ↦
+  (analyticAt_log (m z n)).comp (fs z n)
 
-lemma AnalyticOn.log (fs : AnalyticOn ℝ f s) (m : ∀ x ∈ s, 0 < f x) :
-    AnalyticOn ℝ (fun z ↦ Real.log (f z)) s :=
-  fun z n ↦ (analyticAt_log (m z n)).analyticWithinAt.comp (fs z n) (t := .Ioi 0) m
+lemma AnalyticOn.log (fs : AnalyticOn ℝ f s) (m : ∀ x ∈ s, 0 < f x)
+    : AnalyticOn ℝ (fun z ↦ Real.log (f z)) s := fun z n ↦
+  (analyticAt_log (m z n)).analyticWithinAt.comp (fs z n) (t := .Ioi 0) m
 
-theorem iteratedDeriv_succ_log {n : ℕ} {x : ℂ} (hx : x ∈ slitPlane) :
-    iteratedDeriv (n + 1) log x = (-1 : ℂ) ^ n * n.factorial * x ^ (-(n : ℤ) - 1) := by
+theorem iteratedDeriv_succ_log {n : ℕ} {x : ℂ} (hx : x ∈ slitPlane)
+    : iteratedDeriv (n + 1) log x = (-1 : ℂ) ^ n * n.factorial * x ^ (-(n : ℤ) - 1) := by
   have h_eq : deriv log =ᶠ[𝓝 x] Inv.inv := by
     filter_upwards [isOpen_slitPlane.mem_nhds hx] with y hy
     simp [Complex.deriv_log hy]
   rw [iteratedDeriv_succ', h_eq.iteratedDeriv_eq, iteratedDeriv_eq_iterate, iter_deriv_inv]
   grind
 
-theorem hasFPowerSeriesAt_clog_one :
-    HasFPowerSeriesAt log (.ofScalars ℂ (fun n ↦ -(-1 : ℂ) ^ n / n)) 1 := by
-  suffices ((FormalMultilinearSeries.ofScalars ℂ (fun n ↦ -(-1 : ℂ) ^ n / n)) =
-      FormalMultilinearSeries.ofScalars ℂ (fun n ↦ iteratedDeriv n log 1 / (n.factorial : ℂ))) by
+theorem hasFPowerSeriesAt_clog_one
+    : HasFPowerSeriesAt log (.ofScalars ℂ (fun n ↦ - (-1 : ℂ) ^ n / n)) 1 := by
+  suffices ((FormalMultilinearSeries.ofScalars ℂ (fun n ↦ - (-1 : ℂ) ^ n / n))
+      = FormalMultilinearSeries.ofScalars ℂ (fun n ↦ iteratedDeriv n log 1 / (n.factorial : ℂ))) by
     convert AnalyticAt.hasFPowerSeriesAt _ using 1 <;> try infer_instance
     exact analyticAt_clog (by simp)
   ext n
@@ -177,15 +177,15 @@ theorem hasFPowerSeriesAt_clog_one :
   simp [iteratedDeriv_succ_log one_mem_slitPlane, Nat.factorial_succ, pow_succ]
   field_simp [show n.factorial ≠ 0 by positivity]
 
-theorem hasFPowerSeriesAt_clog_one_add :
-    HasFPowerSeriesAt (fun x ↦ log (1 + x)) (.ofScalars ℂ (fun n ↦ -(-1 : ℂ) ^ n / n)) 0 := by
+theorem hasFPowerSeriesAt_clog_one_add
+    : HasFPowerSeriesAt (fun x ↦ log (1 + x)) (.ofScalars ℂ (fun n ↦ - (-1 : ℂ) ^ n / n)) 0 := by
   convert HasFPowerSeriesAt.comp_sub hasFPowerSeriesAt_clog_one (-1) using 3 <;> ring
 
-theorem hasFPowerSeriesAt_log_one :
-    HasFPowerSeriesAt Real.log (.ofScalars ℝ (fun n ↦ -(-1 : ℝ) ^ n / n)) 1 := by
+theorem hasFPowerSeriesAt_log_one
+    : HasFPowerSeriesAt Real.log (.ofScalars ℝ (fun n ↦ - (-1 : ℝ) ^ n / n)) 1 := by
   obtain ⟨r, hp⟩ := hasFPowerSeriesAt_clog_one
   have : HasFPowerSeriesOnBall log
-      ((FormalMultilinearSeries.ofScalars ℂ (fun n ↦ -(-1 : ℂ) ^ n / n)).restrictScalars ℝ)
+      ((FormalMultilinearSeries.ofScalars ℂ (fun n ↦ - (-1 : ℂ) ^ n / n)).restrictScalars ℝ)
       (ofRealCLM 1) r := by
     simpa using hp.restrictScalars
   convert ((reCLM.comp_hasFPowerSeriesOnBall this.compContinuousLinearMap).congr
@@ -197,8 +197,10 @@ theorem hasFPowerSeriesAt_log_one :
   simp
   norm_cast
 
-theorem hasFPowerSeriesAt_log_one_add :
-    HasFPowerSeriesAt (fun x ↦ Real.log (1 + x)) (.ofScalars ℝ (fun n ↦ -(-1 : ℝ) ^ n / n)) 0 := by
+theorem hasFPowerSeriesAt_log_one_add
+    : HasFPowerSeriesAt
+      (fun x ↦ Real.log (1 + x))
+      (.ofScalars ℝ (fun n ↦ - (-1 : ℝ) ^ n / n)) 0 := by
   convert HasFPowerSeriesAt.comp_sub hasFPowerSeriesAt_log_one (-1) using 3 <;> ring
 
 end Real

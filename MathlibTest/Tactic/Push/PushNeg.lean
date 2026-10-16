@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alice Laroche, Frédéric Dupuis, Jireh Loreaux
 -/
 module
+
 import Mathlib.Order.Defs.LinearOrder
 import Mathlib.Data.Set.Basic
 import Mathlib.Tactic.Push
@@ -12,10 +13,9 @@ private axiom test_sorry : ∀ {α}, α
 set_option autoImplicit true
 variable {α β : Type} [LinearOrder β] {p q : Prop} {p' q' : α → Prop}
 
-example : ¬ False := by
-  push Not
+example : ¬False := by push Not
 
-example (h : ¬ True) : False := by
+example (h : ¬True) : False := by
   push Not at h
   exact h
 
@@ -34,21 +34,21 @@ example : ¬(p ∧ q) → (p → ¬q) := by
 example : (∀ (x : α), ¬ p' x) → ¬ ∃ (x : α), p' x := by
   intro h
   push Not
-  guard_target = ∀ (x : α), ¬p' x
+  guard_target = ∀ (x : α), ¬ p' x
   exact h
 
 example : (¬ ∀ (x : α), p' x) → (∃ (x : α), ¬ p' x) := by
   intro h
   push Not at h
-  guard_hyp h : ∃ (x : α), ¬p' x
+  guard_hyp h : ∃ (x : α), ¬ p' x
   exact h
 
-example (p : Bool) : decide (¬ ¬ p) = p := by
+example (p : Bool) : decide (¬ ¬p) = p := by
   push Not
   guard_target = decide p = p
   cases p <;> rfl
 
-example : ((fun x => x+x) 1) = 2 := by
+example : ((fun x => x + x) 1) = 2 := by
   push Not
   guard_target = 1 + 1 = 2
   simp
@@ -68,28 +68,28 @@ example (a b : β) (h : a ≤ b) : ¬ a > b := by
   guard_target = a ≤ b
   exact h
 
-example (x y : α) (h : x = y) : ¬ (x ≠ y) := by
+example (x y : α) (h : x = y) : ¬(x ≠ y) := by
   push Not
   guard_target = x = y
   exact h
 
-example : ¬∃ (y : Unit), (y ≠ ()) := by
+example : ¬ ∃ (y : Unit), (y ≠ ()) := by
   push Not
   guard_target = ∀ (y : Unit), y = ()
   simp
 
-example (h : ∃ y : Nat, ¬(y=1)): ¬∀ (y : Nat), (y = 1) := by
+example (h : ∃ y : Nat, ¬(y = 1)) : ¬ ∀ (y : Nat), (y = 1) := by
   push Not
   guard_target = ∃ (y : Nat), y ≠ 1
   exact h
 
-example (x y : β) (h : y < x) : ¬¬¬ (x ≤ y) := by
+example (x y : β) (h : y < x) : ¬ ¬ ¬(x ≤ y) := by
   push Not
   guard_target = y < x
   exact h
 
 set_option linter.unusedVariables false in
-example (x y : β) (h₁ : ¬¬¬(x < y)) (h₂ : ¬∃ (x y : Nat), x = y) : ¬ ∀ (x y : Nat), x = y := by
+example (x y : β) (h₁ : ¬ ¬ ¬(x < y)) (h₂ : ¬ ∃ (x y : Nat), x = y) : ¬ ∀ (x y : Nat), x = y := by
   push Not at *
   guard_target = ∃ (x y : Nat), x ≠ y
   guard_hyp h₁ : y ≤ x
@@ -97,14 +97,14 @@ example (x y : β) (h₁ : ¬¬¬(x < y)) (h₂ : ¬∃ (x y : Nat), x = y) : ¬
   exact ⟨0, 1, by simp⟩
 
 set_option linter.unusedVariables false in
-example (x y : β) (h₁ : ¬¬¬(x < y)) (h₂ : ¬∃ (x y : Nat), x = y) : ¬ ∀ (x y : Nat), x = y := by
+example (x y : β) (h₁ : ¬ ¬ ¬(x < y)) (h₂ : ¬ ∃ (x y : Nat), x = y) : ¬ ∀ (x y : Nat), x = y := by
   push Not at h₁ h₂ ⊢
   guard_target = ∃ (x y : Nat), x ≠ y
   guard_hyp h₁ : y ≤ x
   guard_hyp h₂ : ∀ (x y : Nat), x ≠ y
   exact ⟨0, 1, by simp⟩
 
-example (h : p → ¬ q) : ¬ (p ∧ q) := by
+example (h : p → ¬q) : ¬(p ∧ q) := by
   push Not
   guard_target = p → ¬q
   exact h
@@ -137,9 +137,9 @@ example (r : LinearOrder α) (s : Preorder α) (a b : α) : ¬(r.lt a b → s.lt
   exact test_sorry
 
 -- check that `push Not` does not expand `let` definitions
-example (h : p ∧ q) : ¬¬(p ∧ q) := by
+example (h : p ∧ q) : ¬ ¬(p ∧ q) := by
   let r := p ∧ q
-  change ¬¬r
+  change ¬ ¬r
   push Not
   guard_target =ₛ r
   exact h
@@ -170,19 +170,19 @@ example {P : Prop} (h : P) : P := by push Not
 
 section use_distrib
 
-example (h : ¬ p ∨ ¬ q) : ¬ (p ∧ q) := by
+example (h : ¬p ∨ ¬q) : ¬(p ∧ q) := by
   push +distrib Not
   guard_target = ¬p ∨ ¬q
   exact h
 
 set_option push_neg.use_distrib true
 
-example (h : ¬ p ∨ ¬ q) : ¬ (p ∧ q) := by
+example (h : ¬p ∨ ¬q) : ¬(p ∧ q) := by
   push Not
   guard_target = ¬p ∨ ¬q
   exact h
 
-example : p → ¬ ¬ ¬ ¬ ¬ ¬ p := by
+example : p → ¬ ¬ ¬ ¬ ¬ ¬p := by
   push Not
   guard_target = p → p
   exact id
@@ -194,7 +194,7 @@ example (h : x = 0 ∧ y ≠ 0) : ¬(x = 0 → y = 0) := by
 
 end use_distrib
 
-example (a : α) (o : Option α) (h : ¬∀ hs, o.get hs ≠ a) : ∃ hs, o.get hs = a := by
+example (a : α) (o : Option α) (h : ¬ ∀ hs, o.get hs ≠ a) : ∃ hs, o.get hs = a := by
   push Not at h
   exact h
 
@@ -228,9 +228,9 @@ example {p q : Nat} : ¬ g.Adj p q := by
   fail_if_success push Not
   guard_target =ₛ ¬ G.Adj { Adj := fun a b => (a ≠ b) ∧ ((a ∣ b) ∨ (b ∣ a)) } p q
   dsimp only
-  guard_target =ₛ ¬ ((p ≠ q) ∧ ((p ∣ q) ∨ (q ∣ p)))
+  guard_target =ₛ ¬((p ≠ q) ∧ ((p ∣ q) ∨ (q ∣ p)))
   push Not
-  guard_target =ₛ p ≠ q → ¬p ∣ q ∧ ¬q ∣ p
+  guard_target =ₛ p ≠ q → ¬ p ∣ q ∧ ¬ q ∣ p
   exact test_sorry
 
 end no_proj

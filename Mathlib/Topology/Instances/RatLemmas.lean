@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import Mathlib.Topology.Instances.Rat
-
 import Mathlib.Topology.Instances.Irrational
 import Mathlib.Topology.Metrizable.Uniformity
 
@@ -32,7 +31,6 @@ compactification.
 
 public section
 
-
 open Set Filter TopologicalSpace
 
 open OnePoint
@@ -53,34 +51,37 @@ theorem dense_compl_compact (hs : IsCompact s) : Dense sᶜ :=
 
 instance cocompact_inf_nhds_neBot : NeBot (cocompact ℚ ⊓ 𝓝 p) := by
   refine (hasBasis_cocompact.inf (nhds_basis_opens _)).neBot_iff.2 ?_
-  rintro ⟨s, o⟩ ⟨hs, hpo, ho⟩; rw [inter_comm]
+  rintro ⟨s, o⟩ ⟨hs, hpo, ho⟩
+  rw [inter_comm]
   exact (dense_compl_compact hs).inter_open_nonempty _ ho ⟨p, hpo⟩
 
-theorem not_countably_generated_cocompact : ¬IsCountablyGenerated (cocompact ℚ) := by
+theorem not_countably_generated_cocompact : ¬ IsCountablyGenerated (cocompact ℚ) := by
   intro H
   rcases exists_seq_tendsto (cocompact ℚ ⊓ 𝓝 0) with ⟨x, hx⟩
-  rw [tendsto_inf] at hx; rcases hx with ⟨hxc, hx0⟩
+  rw [tendsto_inf] at hx
+  rcases hx with ⟨hxc, hx0⟩
   obtain ⟨n, hn⟩ : ∃ n : ℕ, x n ∉ insert (0 : ℚ) (range x) :=
     (hxc.eventually hx0.isCompact_insert_range.compl_mem_cocompact).exists
   exact hn (Or.inr ⟨n, rfl⟩)
 
-theorem not_countably_generated_nhds_infty_opc : ¬IsCountablyGenerated (𝓝 (∞ : ℚ∞)) := by
+theorem not_countably_generated_nhds_infty_opc : ¬ IsCountablyGenerated (𝓝 (∞ : ℚ∞)) := by
   intro
   have : IsCountablyGenerated (comap (OnePoint.some : ℚ → ℚ∞) (𝓝 ∞)) := by infer_instance
   rw [OnePoint.comap_coe_nhds_infty, coclosedCompact_eq_cocompact] at this
   exact not_countably_generated_cocompact this
 
-theorem not_firstCountableTopology_opc : ¬FirstCountableTopology ℚ∞ := by
+theorem not_firstCountableTopology_opc : ¬ FirstCountableTopology ℚ∞ := by
   intro
   exact not_countably_generated_nhds_infty_opc inferInstance
 
-theorem not_secondCountableTopology_opc : ¬SecondCountableTopology ℚ∞ := by
+theorem not_secondCountableTopology_opc : ¬ SecondCountableTopology ℚ∞ := by
   intro
   exact not_firstCountableTopology_opc inferInstance
 
 instance : TotallyDisconnectedSpace ℚ := by
   clear p s
-  refine ⟨fun s hsu hs x hx y hy => ?_⟩; clear hsu
+  refine ⟨fun s hsu hs x hx y hy => ?_⟩
+  clear hsu
   by_contra H : x ≠ y
   wlog hlt : x < y
   · apply this s hs y hy x hx H.symm <| H.lt_or_gt.resolve_left hlt

@@ -17,11 +17,9 @@ in an `OrderTopology`.
 
 public section
 
-instance : TopologicalSpace SignType :=
-  ⊥
+instance : TopologicalSpace SignType := ⊥
 
-instance : DiscreteTopology SignType :=
-  ⟨rfl⟩
+instance : DiscreteTopology SignType := ⟨rfl⟩
 
 variable {α : Type*} [Zero α] [TopologicalSpace α]
 

@@ -25,7 +25,6 @@ public section
 
 assert_not_exists MonoidWithZero
 
-
 variable {ι : Type*} {M N : Type*} {α : ι → Type*}
 
 namespace Sigma
@@ -35,29 +34,23 @@ section SMul
 variable [∀ i, SMul M (α i)] [∀ i, SMul N (α i)] (a : M) (i : ι) (b : α i) (x : Σ i, α i)
 
 @[to_additive Sigma.VAdd]
-instance : SMul M (Σ i, α i) :=
-  ⟨fun a => (Sigma.map id) fun _ => (a • ·)⟩
+instance : SMul M (Σ i, α i) := ⟨fun a => (Sigma.map id) fun _ => (a • ·)⟩
 
-@[to_additive]
-theorem smul_def : a • x = x.map id fun _ => (a • ·) :=
-  rfl
+@[to_additive] theorem smul_def : a • x = x.map id fun _ => (a • ·) := rfl
 
 @[to_additive (attr := simp)]
-theorem smul_mk : a • mk i b = ⟨i, a • b⟩ :=
-  rfl
+theorem smul_mk : a • mk i b = ⟨i, a • b⟩ := rfl
 
 @[to_additive]
-instance instIsScalarTowerOfSMul [SMul M N] [∀ i, IsScalarTower M N (α i)] :
-    IsScalarTower M N (Σ i, α i) :=
-  ⟨fun a b x => by
-    cases x
-    rw [smul_mk, smul_mk, smul_mk, smul_assoc]⟩
+instance instIsScalarTowerOfSMul [SMul M N] [∀ i, IsScalarTower M N (α i)]
+    : IsScalarTower M N (Σ i, α i) := ⟨fun a b x => by
+  cases x
+  rw [smul_mk, smul_mk, smul_mk, smul_assoc]⟩
 
 @[to_additive]
-instance [∀ i, SMulCommClass M N (α i)] : SMulCommClass M N (Σ i, α i) :=
-  ⟨fun a b x => by
-    cases x
-    rw [smul_mk, smul_mk, smul_mk, smul_mk, smul_comm]⟩
+instance [∀ i, SMulCommClass M N (α i)] : SMulCommClass M N (Σ i, α i) := ⟨fun a b x => by
+  cases x
+  rw [smul_mk, smul_mk, smul_mk, smul_mk, smul_comm]⟩
 
 @[to_additive]
 instance [∀ i, SMul Mᵐᵒᵖ (α i)] [∀ i, IsCentralScalar M (α i)] : IsCentralScalar M (Σ i, α i) :=
@@ -77,8 +70,7 @@ instance [Nonempty ι] [∀ i, FaithfulSMul M (α i)] : FaithfulSMul M (Σ i, α
 end SMul
 
 @[to_additive]
-instance {m : Monoid M} [∀ i, MulAction M (α i)] :
-    MulAction M (Σ i, α i) where
+instance {m : Monoid M} [∀ i, MulAction M (α i)] : MulAction M (Σ i, α i) where
   mul_smul a b x := by
     cases x
     rw [smul_mk, smul_mk, smul_mk, mul_smul]

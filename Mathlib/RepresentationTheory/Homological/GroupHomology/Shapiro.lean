@@ -46,13 +46,15 @@ open CategoryTheory Rep
 
 variable {k G : Type u} [CommRing k] [Group G] (S : Subgroup G) (A : Rep k S)
 
-/-- Given a projective resolution `P` of `k` as a `k`-linear `G`-representation, a subgroup
+/--
+Given a projective resolution `P` of `k` as a `k`-linear `G`-representation, a subgroup
 `S ≤ G`, and a `k`-linear `S`-representation `A`, this is an isomorphism of complexes
-`(A ⊗ Res(S)(P))_S ≅ (Ind_S^G(A) ⊗ P)_G`. -/
+`(A ⊗ Res(S)(P))_S ≅ (Ind_S^G(A) ⊗ P)_G`.
+-/
 noncomputable abbrev coinvariantsTensorResProjectiveResolutionIso
-    (P : ProjectiveResolution (Rep.trivial k G k)) :
-    ((resFunctor S.subtype).mapProjectiveResolution P).complex.coinvariantsTensorObj A ≅
-      P.complex.coinvariantsTensorObj (ind S.subtype A) :=
+    (P : ProjectiveResolution (Rep.trivial k G k))
+    : ((resFunctor S.subtype).mapProjectiveResolution P).complex.coinvariantsTensorObj A
+      ≅ P.complex.coinvariantsTensorObj (ind S.subtype A) :=
   (NatIso.mapHomologicalComplex (coinvariantsTensorIndNatIso S.subtype A).symm _).app _
 
 -- The smiley face in this proof can be avoided if you replace `ind` with `ind.{_, _, _, u}`.
@@ -60,14 +62,16 @@ noncomputable abbrev coinvariantsTensorResProjectiveResolutionIso
 -- unification issues.
 -- Similarly, replacing `resFunctor.{u}` with `resFunctor` works but makes the proof
 -- three times as slow.
-/-- Shapiro's lemma: given a subgroup `S ≤ G` and an `S`-representation `A`, we have
-`Hₙ(G, Ind_S^G(A)) ≅ Hₙ(S, A).` -/
-noncomputable def indIso [DecidableEq G] (A : Rep.{u} k S) (n : ℕ) :
-    groupHomology (ind S.subtype A) n ≅ groupHomology A n :=
+/--
+Shapiro's lemma: given a subgroup `S ≤ G` and an `S`-representation `A`, we have
+`Hₙ(G, Ind_S^G(A)) ≅ Hₙ(S, A).`
+-/
+noncomputable def indIso [DecidableEq G] (A : Rep.{u} k S) (n : ℕ)
+    : groupHomology (ind S.subtype A) n ≅ groupHomology A n :=
   (HomologicalComplex.homologyFunctor (ModuleCat k) (ComplexShape.down ℕ) n).mapIso
-  (inhomogeneousChainsIso (ind S.subtype A :) ≪≫
-    (coinvariantsTensorResProjectiveResolutionIso S A (barResolution k G)).symm) ≪≫
-  (groupHomologyIso A n ((resFunctor.{u} S.subtype).mapProjectiveResolution <|
-    barResolution k G)).symm
+      (inhomogeneousChainsIso (ind S.subtype A :)
+        ≪≫ (coinvariantsTensorResProjectiveResolutionIso S A (barResolution k G)).symm)
+    ≪≫ (groupHomologyIso A n
+      ((resFunctor.{u} S.subtype).mapProjectiveResolution <| barResolution k G)).symm
 
 end groupHomology

@@ -34,8 +34,7 @@ namespace SimpleGraph
 variable {V : Type*} {G : SimpleGraph V} (r : V)
 
 /-- The star graph on `V` centered at `r`: every non-center vertex is adjacent to `r`. -/
-def starGraph (r : V) : SimpleGraph V :=
-  .fromRel fun v _ ↦ v = r
+def starGraph (r : V) : SimpleGraph V := .fromRel fun v _ ↦ v = r
 
 instance [DecidableEq V] (r : V) : DecidableRel (starGraph r).Adj :=
   inferInstanceAs (DecidableRel fun x y ↦ x ≠ y ∧ (x = r ∨ y = r))
@@ -98,36 +97,35 @@ theorem IsCompleteMultipartite.starGraph : (starGraph r).IsCompleteMultipartite 
   grind [IsCompleteMultipartite, isTrans_def]
 
 /-- Every non-center vertex of a starGraph has degree one. -/
-lemma degree_starGraph_of_ne_center [Fintype V] [DecidableEq V] {r v : V} (h : v ≠ r) :
-    (starGraph r).degree v = 1 :=
+lemma degree_starGraph_of_ne_center [Fintype V] [DecidableEq V] {r v : V} (h : v ≠ r)
+    : (starGraph r).degree v = 1 :=
   degree_eq_one_iff_existsUnique_adj.mpr ⟨r, by simp [h], by grind⟩
 
 /-- The center vertex of a starGraph has degree (card V) - 1. -/
-lemma degree_starGraph_center [Fintype V] [DecidableEq V] {r : V} :
-    (starGraph r).degree r = Fintype.card V - 1 := by
+lemma degree_starGraph_center [Fintype V] [DecidableEq V] {r : V}
+    : (starGraph r).degree r = Fintype.card V - 1 := by
   simp
 
 theorem cliqueFree_starGraph_three (r : V) : starGraph r |>.CliqueFree 3 :=
   isAcyclic_starGraph r |>.cliqueFree_three
 
-theorem eq_starGraph_of_isUniversal_of_cliqueFree_three {v : V} (hv : G.IsUniversal v)
-    (h3 : G.CliqueFree 3) : G = starGraph v := by
+theorem eq_starGraph_of_isUniversal_of_cliqueFree_three
+    {v : V} (hv : G.IsUniversal v) (h3 : G.CliqueFree 3)
+    : G = starGraph v := by
   by_contra! hne
   have := hne.lt_of_le' <| starGraph_le_iff.mpr hv
   obtain ⟨⟨a, b⟩, he, he'⟩ := Set.exists_of_ssubset <| edgeSet_strict_mono this
   classical
-  refine h3 {v, a, b} <| is3Clique_triple_iff.mpr ⟨hv ?_, hv ?_, he⟩ <;>
-    intro rfl <;> simp [he.ne] at he'
+  refine h3 {v, a, b} <| is3Clique_triple_iff.mpr ⟨hv ?_, hv ?_, he⟩ <;> intro rfl
+    <;> simp [he.ne] at he'
 
-theorem IsUniversal.isAcyclic_iff_cliqueFree_three {v : V} (hv : G.IsUniversal v) :
-    G.IsAcyclic ↔ G.CliqueFree 3 where
+theorem IsUniversal.isAcyclic_iff_cliqueFree_three {v : V} (hv : G.IsUniversal v)
+    : G.IsAcyclic ↔ G.CliqueFree 3 where
   mp := IsAcyclic.cliqueFree_three
   mpr h3 := eq_starGraph_of_isUniversal_of_cliqueFree_three hv h3 ▸ isAcyclic_starGraph v
 
-theorem starGraph_inl_unitMk : starGraph (.inl ()) = completeBipartiteGraph Unit V := by
-  grind
+theorem starGraph_inl_unitMk : starGraph (.inl ()) = completeBipartiteGraph Unit V := by grind
 
-theorem starGraph_inr_unitMk : starGraph (.inr ()) = completeBipartiteGraph V Unit := by
-  grind
+theorem starGraph_inr_unitMk : starGraph (.inr ()) = completeBipartiteGraph V Unit := by grind
 
 end SimpleGraph

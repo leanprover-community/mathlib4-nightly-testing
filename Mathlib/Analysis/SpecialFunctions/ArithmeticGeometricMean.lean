@@ -6,7 +6,6 @@ Authors: Jeremy Tan
 module
 
 public import Mathlib.Analysis.Real.Sqrt
-
 import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
@@ -41,8 +40,9 @@ lemma sqrt_mul_lt_half_add_of_ne {x y : ℝ≥0} (h : x ≠ y) : sqrt (x * y) < 
     rwa [mul_comm, add_comm]
   have key : 0 < (x - y) ^ 2 := sq_pos_iff.mpr (by rwa [← zero_lt_iff, tsub_pos_iff_lt])
   rw [sq, tsub_mul, mul_tsub, mul_tsub, tsub_tsub_eq_add_tsub_of_le (by gcongr),
-    tsub_add_eq_add_tsub (by gcongr), tsub_tsub, show x * y + y * x = 2 * x * y by ring,
-    tsub_pos_iff_lt, ← sq, ← sq] at key
+      tsub_add_eq_add_tsub (by gcongr), tsub_tsub, show x * y + y * x = 2 * x * y by ring,
+      tsub_pos_iff_lt, ← sq, ← sq]
+    at key
   rw [← sqrt_sq (_ / 2), sqrt_lt_sqrt, div_pow, lt_div_iff₀' (by positivity),
     show (2 : ℝ≥0) ^ 2 * (x * y) = 2 * x * y + 2 * x * y by ring, add_sq, add_right_comm]
   gcongr
@@ -51,23 +51,26 @@ open Function Filter
 
 open scoped Topology
 
-/-- `agmSequences x y` is the sequence of (geometric, arithmetic) means
-converging to the arithmetic-geometric mean starting from `x` and `y`. -/
-noncomputable def agmSequences (x y : ℝ≥0) : ℕ → ℝ≥0 × ℝ≥0 :=
-  fun n ↦ (fun p ↦ (sqrt (p.1 * p.2), (p.1 + p.2) / 2))^[n + 1] (x, y)
+/--
+`agmSequences x y` is the sequence of (geometric, arithmetic) means
+converging to the arithmetic-geometric mean starting from `x` and `y`.
+-/
+noncomputable def agmSequences (x y : ℝ≥0) : ℕ → ℝ≥0 × ℝ≥0 := fun n ↦
+  (fun p ↦ (sqrt (p.1 * p.2), (p.1 + p.2) / 2))^[n + 1] (x, y)
 
 variable {x y : ℝ≥0} {n : ℕ}
 
-@[simp]
-lemma agmSequences_zero : agmSequences x y 0 = (sqrt (x * y), (x + y) / 2) := rfl
+@[simp] lemma agmSequences_zero : agmSequences x y 0 = (sqrt (x * y), (x + y) / 2) := rfl
 
 lemma agmSequences_succ : agmSequences x y (n + 1) = agmSequences (sqrt (x * y)) ((x + y) / 2) n :=
   rfl
 
-lemma agmSequences_succ' :
-    agmSequences x y (n + 1) =
-    (sqrt ((agmSequences x y n).1 * (agmSequences x y n).2),
-      ((agmSequences x y n).1 + (agmSequences x y n).2) / 2) := by
+lemma agmSequences_succ'
+    : agmSequences x y (n + 1)
+      = (
+        sqrt ((agmSequences x y n).1 * (agmSequences x y n).2),
+        ((agmSequences x y n).1 + (agmSequences x y n).2) / 2
+      ) := by
   rw [agmSequences, agmSequences, iterate_succ', comp_apply]
 
 lemma agmSequences_comm : agmSequences x y = agmSequences y x := by
@@ -98,10 +101,11 @@ lemma dist_gm_am_le : dist (sqrt (x * y)) ((x + y) / 2) ≤ dist x y / 2 := by
       rw [add_div, add_tsub_add_eq_tsub_left, ← tsub_div, NNReal.coe_div, NNReal.coe_two, dist_comm,
         dist_eq, ← NNReal.coe_sub h, abs_eq]
 
-lemma agmSequences_monotone_and_antitone :
-    (Monotone fun n ↦ (agmSequences x y n).1) ∧ Antitone fun n ↦ (agmSequences x y n).2 := by
-  suffices ∀ n, (agmSequences x y n).1 ≤ (agmSequences x y (n + 1)).1 ∧
-      (agmSequences x y (n + 1)).2 ≤ (agmSequences x y n).2 from
+lemma agmSequences_monotone_and_antitone
+    : (Monotone fun n ↦ (agmSequences x y n).1) ∧ Antitone fun n ↦ (agmSequences x y n).2 := by
+  suffices ∀ n,
+      (agmSequences x y n).1 ≤ (agmSequences x y (n + 1)).1
+        ∧ (agmSequences x y (n + 1)).2 ≤ (agmSequences x y n).2 from
     ⟨monotone_nat_of_le_succ (this · |>.1), antitone_nat_of_succ_le (this · |>.2)⟩
   intro n
   induction n generalizing x y with
@@ -124,15 +128,16 @@ lemma agmSequences_fst_le_snd (n m : ℕ) : (agmSequences x y n).1 ≤ (agmSeque
   | zero => exact sqrt_mul_le_half_add ..
   | succ n ih => exact ih
 
-lemma agmSequences_fst_lt_snd_of_ne (h : x ≠ y) (n m : ℕ) :
-    (agmSequences x y n).1 < (agmSequences x y m).2 := by
+lemma agmSequences_fst_lt_snd_of_ne (h : x ≠ y) (n m : ℕ)
+    : (agmSequences x y n).1 < (agmSequences x y m).2 := by
   suffices ∀ {k}, (agmSequences x y k).1 < (agmSequences x y k).2 by
     obtain h | h := le_total n m
     · exact (agmSequences_fst_monotone h).trans_lt this
     · exact this.trans_le (agmSequences_snd_antitone h)
   intro k
   induction k generalizing x y with
-  | zero => exact sqrt_mul_lt_half_add_of_ne h
+  | zero =>
+    exact sqrt_mul_lt_half_add_of_ne h
   | succ n ih =>
     rw [agmSequences_succ']
     exact sqrt_mul_lt_half_add_of_ne (ih h).ne
@@ -142,18 +147,19 @@ lemma agmSequences_min_max : agmSequences (min x y) (max x y) = agmSequences x y
   · rw [min_eq_left h, max_eq_right h]
   · rw [min_eq_right h, max_eq_left h, agmSequences_comm]
 
-lemma dist_agmSequences_fst_snd (n : ℕ) :
-    dist (agmSequences x y n).1 (agmSequences x y n).2 ≤ dist x y / 2 ^ (n + 1) := by
+lemma dist_agmSequences_fst_snd (n : ℕ)
+    : dist (agmSequences x y n).1 (agmSequences x y n).2 ≤ dist x y / 2 ^ (n + 1) := by
   induction n with
-  | zero => simp [dist_gm_am_le]
+  | zero =>
+    simp [dist_gm_am_le]
   | succ n ih =>
     rw [agmSequences_succ']
     apply dist_gm_am_le.trans
     rw [pow_succ, ← div_div]
     gcongr
 
-lemma tendsto_dist_agmSequences_atTop_zero :
-    Tendsto (fun n ↦ dist (agmSequences x y n).1 (agmSequences x y n).2) atTop (𝓝 0) := by
+lemma tendsto_dist_agmSequences_atTop_zero
+    : Tendsto (fun n ↦ dist (agmSequences x y n).1 (agmSequences x y n).2) atTop (𝓝 0) := by
   apply squeeze_zero (fun _ ↦ dist_nonneg) dist_agmSequences_fst_snd
   conv =>
     rw [← zero_mul (dist x y / 2)]
@@ -162,8 +168,7 @@ lemma tendsto_dist_agmSequences_atTop_zero :
   exact (_root_.tendsto_pow_atTop_nhds_zero_of_lt_one (by simp) (by norm_num)).mul_const _
 
 /-- The arithmetic-geometric mean of two `NNReal`s, defined as the infimum of arithmetic means. -/
-noncomputable def agm (x y : ℝ≥0) : ℝ≥0 :=
-  ⨅ n, (agmSequences x y n).2
+noncomputable def agm (x y : ℝ≥0) : ℝ≥0 := ⨅ n, (agmSequences x y n).2
 
 lemma agm_comm : agm x y = agm y x := by
   unfold agm
@@ -201,8 +206,8 @@ lemma agm_eq_ciSup : agm x y = ⨆ n, (agmSequences x y n).1 := by
     rw [dist_comm]
   exact tendsto_dist_agmSequences_atTop_zero
 
-lemma tendsto_agmSequences_fst_agm :
-    Tendsto (fun n ↦ (agmSequences x y n).1) atTop (𝓝 (agm x y)) := by
+lemma tendsto_agmSequences_fst_agm
+    : Tendsto (fun n ↦ (agmSequences x y n).1) atTop (𝓝 (agm x y)) := by
   rw [agm_eq_ciSup]
   exact tendsto_atTop_ciSup agmSequences_fst_monotone bddAbove_range_agmSequences_fst
 
@@ -232,17 +237,14 @@ lemma agm_zero_left : agm 0 y = 0 := by
   intro n
   induction n with
   | zero => simp [agmSequences]
-  | succ n ih =>
-    rw [agmSequences_succ', ih, zero_mul, sqrt_zero]
+  | succ n ih => rw [agmSequences_succ', ih, zero_mul, sqrt_zero]
 
-@[simp]
-lemma agm_zero_right : agm x 0 = 0 := by
-  rw [agm_comm, agm_zero_left]
+@[simp] lemma agm_zero_right : agm x 0 = 0 := by rw [agm_comm, agm_zero_left]
 
 lemma agm_pos (hx : 0 < x) (hy : 0 < y) : 0 < agm x y := (lt_min hx hy).trans_le min_le_agm
 
-lemma agm_eq_agm_agmSequences_fst_agmSequences_snd (n : ℕ) :
-    agm x y = agm (agmSequences x y n).1 (agmSequences x y n).2 := by
+lemma agm_eq_agm_agmSequences_fst_agmSequences_snd (n : ℕ)
+    : agm x y = agm (agmSequences x y n).1 (agmSequences x y n).2 := by
   have key := @tendsto_agmSequences_snd_agm x y
   rw [← tendsto_add_atTop_iff_nat (n + 1)] at key
   refine tendsto_nhds_unique_of_forall key tendsto_agmSequences_snd_agm fun m ↦ ?_
@@ -251,8 +253,8 @@ lemma agm_eq_agm_agmSequences_fst_agmSequences_snd (n : ℕ) :
 lemma agm_eq_agm_gm_am : agm x y = agm (sqrt (x * y)) ((x + y) / 2) := by
   simpa using agm_eq_agm_agmSequences_fst_agmSequences_snd 0
 
-lemma agmSequences_fst_lt_agm_of_pos_of_ne (hx : 0 < x) (hy : 0 < y) (hn : x ≠ y) (n : ℕ) :
-    (agmSequences x y n).1 < agm x y := by
+lemma agmSequences_fst_lt_agm_of_pos_of_ne (hx : 0 < x) (hy : 0 < y) (hn : x ≠ y) (n : ℕ)
+    : (agmSequences x y n).1 < agm x y := by
   rw [agm_eq_agm_agmSequences_fst_agmSequences_snd n]
   set p := (agmSequences x y n).1
   set q := (agmSequences x y n).2
@@ -294,9 +296,10 @@ lemma agm_mul_distrib {k : ℝ≥0} : agm (k * x) (k * y) = k * agm x y := by
   simp_rw [agm, mul_iInf]
   congr! with n
   induction n generalizing x y with
-  | zero => simp [← mul_div_assoc, mul_add]
+  | zero =>
+    simp [← mul_div_assoc, mul_add]
   | succ n ih =>
-    rw [agmSequences_succ, ← mul_add, mul_div_assoc, mul_mul_mul_comm,
-      ← sq, sqrt_mul, sqrt_sq, ih, agmSequences_succ]
+    rw [agmSequences_succ, ← mul_add, mul_div_assoc, mul_mul_mul_comm, ← sq, sqrt_mul, sqrt_sq, ih,
+      agmSequences_succ]
 
 end NNReal

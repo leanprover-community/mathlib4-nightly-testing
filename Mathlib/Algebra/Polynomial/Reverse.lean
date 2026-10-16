@@ -20,7 +20,6 @@ coefficients of `f` and `g` do not multiply to zero.
 
 @[expose] public section
 
-
 namespace Polynomial
 
 open Finsupp Finset
@@ -31,11 +30,11 @@ section Semiring
 
 variable {R : Type*} [Semiring R] {f : R[X]}
 
-/-- If `i ≤ N`, then `revAtFun N i` returns `N - i`, otherwise it returns `i`.
+/--
+If `i ≤ N`, then `revAtFun N i` returns `N - i`, otherwise it returns `i`.
 This is the map used by the embedding `revAt`.
 -/
-def revAtFun (N i : ℕ) : ℕ :=
-  ite (i ≤ N) (N - i) i
+def revAtFun (N i : ℕ) : ℕ := ite (i ≤ N) (N - i) i
 
 theorem revAtFun_invol {N i : ℕ} : revAtFun N (revAtFun N i) = i := by
   unfold revAtFun
@@ -45,7 +44,8 @@ theorem revAtFun_inj {N : ℕ} : Function.Injective (revAtFun N) := by
   intro a b hab
   rw [← @revAtFun_invol N a, hab, revAtFun_invol]
 
-/-- If `i ≤ N`, then `revAt N i` returns `N - i`, otherwise it returns `i`.
+/--
+If `i ≤ N`, then `revAt N i` returns `N - i`, otherwise it returns `i`.
 Essentially, this embedding is only used for `i ≤ N`.
 The advantage of `revAt N i` over `N - i` is that `revAt` is an involution.
 -/
@@ -54,23 +54,18 @@ def revAt (N : ℕ) : Function.Embedding ℕ ℕ where
   inj' := revAtFun_inj
 
 /-- We prefer to use the bundled `revAt` over unbundled `revAtFun`. -/
-@[simp]
-theorem revAtFun_eq (N i : ℕ) : revAtFun N i = revAt N i :=
-  rfl
+@[simp] theorem revAtFun_eq (N i : ℕ) : revAtFun N i = revAt N i := rfl
 
 @[simp, grind =]
-theorem revAt_invol {N i : ℕ} : (revAt N) (revAt N i) = i :=
-  revAtFun_invol
+theorem revAt_invol {N i : ℕ} : (revAt N) (revAt N i) = i := revAtFun_invol
 
-@[simp]
-theorem revAt_le {N i : ℕ} (H : i ≤ N) : revAt N i = N - i :=
-  ite_eq_left H
+@[simp] theorem revAt_le {N i : ℕ} (H : i ≤ N) : revAt N i = N - i := ite_eq_left H
 
 set_option backward.isDefEq.respectTransparency false in
 lemma revAt_eq_self_of_lt {N i : ℕ} (h : N < i) : revAt N i = i := by simp [revAt, Nat.not_le.mpr h]
 
-theorem revAt_add {N O n o : ℕ} (hn : n ≤ N) (ho : o ≤ O) :
-    revAt (N + O) (n + o) = revAt N n + revAt O o := by
+theorem revAt_add {N O n o : ℕ} (hn : n ≤ N) (ho : o ≤ O)
+    : revAt (N + O) (n + o) = revAt N n + revAt O o := by
   rcases Nat.le.dest hn with ⟨n', rfl⟩
   rcases Nat.le.dest ho with ⟨o', rfl⟩
   repeat' rw [revAt_le (le_add_right rfl.le)]
@@ -79,17 +74,20 @@ theorem revAt_add {N O n o : ℕ} (hn : n ≤ N) (ho : o ≤ O) :
 
 theorem revAt_zero (N : ℕ) : revAt N 0 = N := by simp
 
-/-- `reflect N f` is the polynomial such that `(reflect N f).coeff i = f.coeff (revAt N i)`.
+/--
+`reflect N f` is the polynomial such that `(reflect N f).coeff i = f.coeff (revAt N i)`.
 In other words, the terms with exponent `[0, ..., N]` now have exponent `[N, ..., 0]`.
 
 In practice, `reflect` is only used when `N` is at least as large as the degree of `f`.
 
-Eventually, it will be used with `N` exactly equal to the degree of `f`. -/
+Eventually, it will be used with `N` exactly equal to the degree of `f`.
+-/
 noncomputable def reflect (N : ℕ) : R[X] → R[X]
   | ⟨f⟩ => ⟨.ofCoeff <| f.coeff.embDomain (revAt N)⟩
 
-theorem reflect_support (N : ℕ) (f : R[X]) :
-    (reflect N f).support = Finset.image (revAt N) f.support := by cases f; ext1; simp [reflect]
+theorem reflect_support (N : ℕ) (f : R[X])
+    : (reflect N f).support = Finset.image (revAt N) f.support := by
+  cases f; ext1; simp [reflect]
 
 @[simp, grind =]
 theorem coeff_reflect (N : ℕ) (f : R[X]) (i : ℕ) : coeff (reflect N f) i = f.coeff (revAt N i) := by
@@ -102,9 +100,7 @@ theorem coeff_reflect (N : ℕ) (f : R[X]) (i : ℕ) : coeff (reflect N f) i = f
 
 @[simp] lemma reflect_reflect {N : ℕ} {p : R[X]} : (p.reflect N).reflect N = p := by ext; simp
 
-@[simp]
-theorem reflect_zero {N : ℕ} : reflect N (0 : R[X]) = 0 :=
-  rfl
+@[simp] theorem reflect_zero {N : ℕ} : reflect N (0 : R[X]) = 0 := rfl
 
 @[simp]
 lemma reflect_eq_zero_iff {N : ℕ} {f : R[X]} : reflect N (f : R[X]) = 0 ↔ f = 0 := by simp [reflect]
@@ -131,20 +127,21 @@ theorem reflect_C (r : R) (N : ℕ) : reflect N (C r) = C r * X ^ N := by
 theorem reflect_monomial (N n : ℕ) : reflect N ((X : R[X]) ^ n) = X ^ revAt N n := by
   rw [← one_mul (X ^ n), ← one_mul (X ^ revAt N n), ← C_1, reflect_C_mul_X_pow]
 
-@[simp] lemma reflect_one_X : reflect 1 (X : R[X]) = 1 := by
-  simpa using reflect_monomial 1 1 (R := R)
+@[simp]
+lemma reflect_one_X : reflect 1 (X : R[X]) = 1 := by simpa using reflect_monomial 1 1 (R := R)
 
-lemma reflect_map {S : Type*} [Semiring S] (f : R →+* S) (p : R[X]) (n : ℕ) :
-    (p.map f).reflect n = (p.reflect n).map f := by
+lemma reflect_map {S : Type*} [Semiring S] (f : R →+* S) (p : R[X]) (n : ℕ)
+    : (p.map f).reflect n = (p.reflect n).map f := by
   ext; simp
 
 @[simp]
 lemma reflect_one (n : ℕ) : (1 : R[X]).reflect n = Polynomial.X ^ n := by
   rw [← C.map_one, reflect_C, map_one, one_mul]
 
-theorem reflect_mul_induction (cf cg : ℕ) (N O : ℕ) (f g : R[X]) (Cf : #f.support ≤ cf.succ)
-    (Cg : #g.support ≤ cg.succ) (Nf : f.natDegree ≤ N) (Og : g.natDegree ≤ O) :
-    reflect (N + O) (f * g) = reflect N f * reflect O g := by
+theorem reflect_mul_induction
+    (cf cg : ℕ) (N O : ℕ) (f g : R[X]) (Cf : #f.support ≤ cf.succ) (Cg : #g.support ≤ cg.succ)
+    (Nf : f.natDegree ≤ N) (Og : g.natDegree ≤ O)
+    : reflect (N + O) (f * g) = reflect N f * reflect O g := by
   induction cf generalizing f with
   | zero =>
     induction cg generalizing g with
@@ -171,25 +168,25 @@ theorem reflect_mul_induction (cf cg : ℕ) (N O : ℕ) (f g : R[X]) (Cf : #f.su
     · exact le_trans eraseLead_natDegree_le_aux Nf
 
 @[simp]
-theorem reflect_mul (f g : R[X]) {F G : ℕ} (Ff : f.natDegree ≤ F) (Gg : g.natDegree ≤ G) :
-    reflect (F + G) (f * g) = reflect F f * reflect G g :=
+theorem reflect_mul (f g : R[X]) {F G : ℕ} (Ff : f.natDegree ≤ F) (Gg : g.natDegree ≤ G)
+    : reflect (F + G) (f * g) = reflect F f * reflect G g :=
   reflect_mul_induction _ _ F G f g (#f.support).le_succ (#g.support).le_succ Ff Gg
 
 set_option backward.isDefEq.respectTransparency false in
-lemma natDegree_reflect_le {N : ℕ} {p : R[X]} :
-    (p.reflect N).natDegree ≤ max N p.natDegree := by
-  simp +contextual [-le_max_iff, natDegree_le_iff_coeff_eq_zero,
-    revAt, not_le_of_gt, coeff_eq_zero_of_natDegree_lt]
+lemma natDegree_reflect_le {N : ℕ} {p : R[X]} : (p.reflect N).natDegree ≤ max N p.natDegree := by
+  simp +contextual [-le_max_iff, natDegree_le_iff_coeff_eq_zero, revAt, not_le_of_gt,
+    coeff_eq_zero_of_natDegree_lt]
 
 section Eval₂
 
 variable {S : Type*} [CommSemiring S]
 
-theorem eval₂_reflect_mul_pow (i : R →+* S) (x : S) [Invertible x] (N : ℕ) (f : R[X])
-    (hf : f.natDegree ≤ N) : eval₂ i (⅟x) (reflect N f) * x ^ N = eval₂ i x f := by
-  refine
-    induction_with_natDegree_le (fun f => eval₂ i (⅟x) (reflect N f) * x ^ N = eval₂ i x f) _ ?_ ?_
-      ?_ f hf
+theorem eval₂_reflect_mul_pow
+    (i : R →+* S) (x : S) [Invertible x] (N : ℕ) (f : R[X]) (hf : f.natDegree ≤ N)
+    : eval₂ i (⅟x) (reflect N f) * x ^ N = eval₂ i x f := by
+  refine induction_with_natDegree_le
+    (fun f => eval₂ i (⅟x) (reflect N f) * x ^ N = eval₂ i x f)
+    _ ?_ ?_ ?_ f hf
   · simp
   · intro n r _ hnN
     simp only [revAt_le hnN, reflect_C_mul_X_pow, eval₂_X_pow, eval₂_C, eval₂_mul]
@@ -198,8 +195,9 @@ theorem eval₂_reflect_mul_pow (i : R →+* S) (x : S) [Invertible x] (N : ℕ)
   · intros
     simp [*, add_mul]
 
-theorem eval₂_reflect_eq_zero_iff (i : R →+* S) (x : S) [Invertible x] (N : ℕ) (f : R[X])
-    (hf : f.natDegree ≤ N) : eval₂ i (⅟x) (reflect N f) = 0 ↔ eval₂ i x f = 0 := by
+theorem eval₂_reflect_eq_zero_iff
+    (i : R →+* S) (x : S) [Invertible x] (N : ℕ) (f : R[X]) (hf : f.natDegree ≤ N)
+    : eval₂ i (⅟x) (reflect N f) = 0 ↔ eval₂ i x f = 0 := by
   conv_rhs => rw [← eval₂_reflect_mul_pow i x N f hf]
   constructor
   · intro h
@@ -210,10 +208,11 @@ theorem eval₂_reflect_eq_zero_iff (i : R →+* S) (x : S) [Invertible x] (N : 
 
 end Eval₂
 
-/-- The reverse of a polynomial f is the polynomial obtained by "reading f backwards".
-Even though this is not the actual definition, `reverse f = f (1/X) * X ^ f.natDegree`. -/
-noncomputable def reverse (f : R[X]) : R[X] :=
-  reflect f.natDegree f
+/--
+The reverse of a polynomial f is the polynomial obtained by "reading f backwards".
+Even though this is not the actual definition, `reverse f = f (1/X) * X ^ f.natDegree`.
+-/
+noncomputable def reverse (f : R[X]) : R[X] := reflect f.natDegree f
 
 theorem coeff_reverse (f : R[X]) (n : ℕ) : f.reverse.coeff n = f.coeff (revAt f.natDegree n) := by
   rw [reverse, coeff_reflect]
@@ -222,12 +221,9 @@ theorem coeff_reverse (f : R[X]) (n : ℕ) : f.reverse.coeff n = f.coeff (revAt 
 theorem coeff_zero_reverse (f : R[X]) : coeff (reverse f) 0 = leadingCoeff f := by
   rw [coeff_reverse, revAt_le zero_le, tsub_zero, leadingCoeff]
 
-@[simp]
-theorem reverse_zero : reverse (0 : R[X]) = 0 :=
-  rfl
+@[simp] theorem reverse_zero : reverse (0 : R[X]) = 0 := rfl
 
-@[simp]
-theorem reverse_eq_zero : f.reverse = 0 ↔ f = 0 := by simp [reverse]
+@[simp] theorem reverse_eq_zero : f.reverse = 0 ↔ f = 0 := by simp [reverse]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem reverse_natDegree_le (f : R[X]) : f.reverse.natDegree ≤ f.natDegree := by
@@ -237,8 +233,8 @@ theorem reverse_natDegree_le (f : R[X]) : f.reverse.natDegree ≤ f.natDegree :=
   rw [coeff_reverse, revAt, Function.Embedding.coeFn_mk, ite_eq_right (not_le_of_gt hn),
     coeff_eq_zero_of_natDegree_lt hn]
 
-theorem natDegree_eq_reverse_natDegree_add_natTrailingDegree (f : R[X]) :
-    f.natDegree = f.reverse.natDegree + f.natTrailingDegree := by
+theorem natDegree_eq_reverse_natDegree_add_natTrailingDegree (f : R[X])
+    : f.natDegree = f.reverse.natDegree + f.natTrailingDegree := by
   by_cases hf : f = 0
   · rw [hf, reverse_zero, natDegree_zero, natTrailingDegree_zero]
   apply le_antisymm
@@ -255,8 +251,8 @@ theorem reverse_natDegree (f : R[X]) : f.reverse.natDegree = f.natDegree - f.nat
   rw [f.natDegree_eq_reverse_natDegree_add_natTrailingDegree, add_tsub_cancel_right]
 
 theorem reverse_leadingCoeff (f : R[X]) : f.reverse.leadingCoeff = f.trailingCoeff := by
-  rw [leadingCoeff, reverse_natDegree, ← revAt_le f.natTrailingDegree_le_natDegree,
-    coeff_reverse, revAt_invol, trailingCoeff]
+  rw [leadingCoeff, reverse_natDegree, ← revAt_le f.natTrailingDegree_le_natDegree, coeff_reverse,
+    revAt_invol, trailingCoeff]
 
 theorem natTrailingDegree_reverse (f : R[X]) : f.reverse.natTrailingDegree = 0 := by
   rw [natTrailingDegree_eq_zero, reverse_eq_zero, coeff_zero_reverse, leadingCoeff_ne_zero]
@@ -265,22 +261,22 @@ theorem natTrailingDegree_reverse (f : R[X]) : f.reverse.natTrailingDegree = 0 :
 theorem reverse_trailingCoeff (f : R[X]) : f.reverse.trailingCoeff = f.leadingCoeff := by
   rw [trailingCoeff, natTrailingDegree_reverse, coeff_zero_reverse]
 
-theorem reverse_mul {f g : R[X]} (fg : f.leadingCoeff * g.leadingCoeff ≠ 0) :
-    reverse (f * g) = reverse f * reverse g := by
+theorem reverse_mul {f g : R[X]} (fg : f.leadingCoeff * g.leadingCoeff ≠ 0)
+    : reverse (f * g) = reverse f * reverse g := by
   unfold reverse
   rw [natDegree_mul' fg, reflect_mul f g rfl.le rfl.le]
 
 @[simp]
-theorem reverse_mul_of_domain {R : Type*} [Semiring R] [NoZeroDivisors R] (f g : R[X]) :
-    reverse (f * g) = reverse f * reverse g := by
+theorem reverse_mul_of_domain {R : Type*} [Semiring R] [NoZeroDivisors R] (f g : R[X])
+    : reverse (f * g) = reverse f * reverse g := by
   by_cases f0 : f = 0
   · simp only [f0, zero_mul, reverse_zero]
   by_cases g0 : g = 0
   · rw [g0, mul_zero, reverse_zero, mul_zero]
   simp [reverse_mul, *]
 
-theorem trailingCoeff_mul {R : Type*} [Semiring R] [NoZeroDivisors R] (p q : R[X]) :
-    (p * q).trailingCoeff = p.trailingCoeff * q.trailingCoeff := by
+theorem trailingCoeff_mul {R : Type*} [Semiring R] [NoZeroDivisors R] (p q : R[X])
+    : (p * q).trailingCoeff = p.trailingCoeff * q.trailingCoeff := by
   rw [← reverse_leadingCoeff, reverse_mul_of_domain, leadingCoeff_mul, reverse_leadingCoeff,
     reverse_leadingCoeff]
 
@@ -293,46 +289,47 @@ theorem coeff_one_reverse (f : R[X]) : coeff (reverse f) 1 = nextCoeff f := by
   · rw [revAt_le]
     exact Nat.succ_le_iff.2 (pos_iff_ne_zero.2 hf)
 
-@[simp] lemma reverse_C (t : R) :
-    reverse (C t) = C t := by
-  simp [reverse]
+@[simp] lemma reverse_C (t : R) : reverse (C t) = C t := by simp [reverse]
 
-@[simp] lemma reverse_mul_X (p : R[X]) : reverse (p * X) = reverse p := by
+@[simp]
+lemma reverse_mul_X (p : R[X]) : reverse (p * X) = reverse p := by
   nontriviality R
   rcases eq_or_ne p 0 with rfl | hp
   · simp
   · simp [reverse, hp]
 
-@[simp] lemma reverse_X_mul (p : R[X]) : reverse (X * p) = reverse p := by
-  rw [commute_X p, reverse_mul_X]
+@[simp]
+lemma reverse_X_mul (p : R[X]) : reverse (X * p) = reverse p := by rw [commute_X p, reverse_mul_X]
 
-@[simp] lemma reverse_mul_X_pow (p : R[X]) (n : ℕ) : reverse (p * X ^ n) = reverse p := by
+@[simp]
+lemma reverse_mul_X_pow (p : R[X]) (n : ℕ) : reverse (p * X ^ n) = reverse p := by
   induction n with
   | zero => simp
   | succ n ih => rw [pow_succ, ← mul_assoc, reverse_mul_X, ih]
 
-@[simp] lemma reverse_X_pow_mul (p : R[X]) (n : ℕ) : reverse (X ^ n * p) = reverse p := by
+@[simp]
+lemma reverse_X_pow_mul (p : R[X]) (n : ℕ) : reverse (X ^ n * p) = reverse p := by
   rw [commute_X_pow p, reverse_mul_X_pow]
 
-@[simp] lemma reverse_add_C (p : R[X]) (t : R) :
-    reverse (p + C t) = reverse p + C t * X ^ p.natDegree := by
+@[simp]
+lemma reverse_add_C (p : R[X]) (t : R) : reverse (p + C t) = reverse p + C t * X ^ p.natDegree := by
   simp [reverse]
 
-@[simp] lemma reverse_C_add (p : R[X]) (t : R) :
-    reverse (C t + p) = C t * X ^ p.natDegree + reverse p := by
+@[simp]
+lemma reverse_C_add (p : R[X]) (t : R) : reverse (C t + p) = C t * X ^ p.natDegree + reverse p := by
   rw [add_comm, reverse_add_C, add_comm]
 
 section Eval₂
 
 variable {S : Type*} [CommSemiring S]
 
-theorem eval₂_reverse_mul_pow (i : R →+* S) (x : S) [Invertible x] (f : R[X]) :
-    eval₂ i (⅟x) (reverse f) * x ^ f.natDegree = eval₂ i x f :=
+theorem eval₂_reverse_mul_pow (i : R →+* S) (x : S) [Invertible x] (f : R[X])
+    : eval₂ i (⅟x) (reverse f) * x ^ f.natDegree = eval₂ i x f :=
   eval₂_reflect_mul_pow i _ _ f le_rfl
 
 @[simp]
-theorem eval₂_reverse_eq_zero_iff (i : R →+* S) (x : S) [Invertible x] (f : R[X]) :
-    eval₂ i (⅟x) (reverse f) = 0 ↔ eval₂ i x f = 0 :=
+theorem eval₂_reverse_eq_zero_iff (i : R →+* S) (x : S) [Invertible x] (f : R[X])
+    : eval₂ i (⅟x) (reverse f) = 0 ↔ eval₂ i x f = 0 :=
   eval₂_reflect_eq_zero_iff i x _ _ le_rfl
 
 end Eval₂
@@ -344,7 +341,7 @@ section Ring
 variable {R : Type*} [Ring R]
 
 @[simp]
-theorem reflect_neg (f : R[X]) (N : ℕ) : reflect N (-f) = -reflect N f := by
+theorem reflect_neg (f : R[X]) (N : ℕ) : reflect N (-f) = - reflect N f := by
   rw [neg_eq_neg_one_mul, ← C_1, ← C_neg, reflect_C_mul, C_neg, C_1, ← neg_eq_neg_one_mul]
 
 @[simp]
@@ -352,7 +349,7 @@ theorem reflect_sub (f g : R[X]) (N : ℕ) : reflect N (f - g) = reflect N f - r
   rw [sub_eq_add_neg, sub_eq_add_neg, reflect_add, reflect_neg]
 
 @[simp]
-theorem reverse_neg (f : R[X]) : reverse (-f) = -reverse f := by
+theorem reverse_neg (f : R[X]) : reverse (-f) = - reverse f := by
   rw [reverse, reverse, reflect_neg, natDegree_neg]
 
 end Ring

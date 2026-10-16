@@ -76,50 +76,44 @@ open CategoryTheory Limits
 
 namespace GrpCat
 
-/-- The universe lift functor for groups is fully faithful.
--/
+/-- The universe lift functor for groups is fully faithful. -/
 @[to_additive
   /-- The universe lift functor for additive groups is fully faithful. -/]
 def uliftFunctorFullyFaithful : uliftFunctor.{u, v}.FullyFaithful where
-  preimage f := GrpCat.ofHom (MulEquiv.ulift.toMonoidHom.comp
-    (f.hom.comp MulEquiv.ulift.symm.toMonoidHom))
+  preimage f :=
+    GrpCat.ofHom (MulEquiv.ulift.toMonoidHom.comp (f.hom.comp MulEquiv.ulift.symm.toMonoidHom))
   map_preimage _ := rfl
   preimage_map _ := rfl
 
-/-- The universe lift functor for groups is faithful.
--/
+/-- The universe lift functor for groups is faithful. -/
 @[to_additive
   /-- The universe lift functor for additive groups is faithful. -/]
 instance : uliftFunctor.{u, v}.Faithful := uliftFunctorFullyFaithful.faithful
 
-
-/-- The universe lift functor for groups is full.
--/
+/-- The universe lift functor for groups is full. -/
 @[to_additive
   /-- The universe lift functor for additive groups is full. -/]
 instance : uliftFunctor.{u, v}.Full := uliftFunctorFullyFaithful.full
 
 @[to_additive]
-noncomputable instance uliftFunctor_preservesLimit {J : Type w} [Category.{w'} J]
-    (K : J ⥤ GrpCat.{u}) : PreservesLimit K uliftFunctor.{v, u} where
-  preserves lc := ⟨isLimitOfReflects (forget GrpCat) <|
-    isLimitOfPreserves CategoryTheory.uliftFunctor.{v} (isLimitOfPreserves (forget GrpCat) lc)⟩
+noncomputable instance uliftFunctor_preservesLimit
+    {J : Type w} [Category.{w'} J] (K : J ⥤ GrpCat.{u})
+    : PreservesLimit K uliftFunctor.{v, u} where
+  preserves lc :=
+    ⟨isLimitOfReflects (forget GrpCat) <|
+      isLimitOfPreserves CategoryTheory.uliftFunctor.{v} (isLimitOfPreserves (forget GrpCat) lc)⟩
 
 @[to_additive]
-noncomputable instance uliftFunctor_preservesLimitsOfShape {J : Type w} [Category.{w'} J] :
-    PreservesLimitsOfShape J uliftFunctor.{v, u} where
+noncomputable instance uliftFunctor_preservesLimitsOfShape {J : Type w} [Category.{w'} J]
+  : PreservesLimitsOfShape J uliftFunctor.{v, u} where
 
-/--
-The universe lift for groups preserves limits of arbitrary size.
--/
+/-- The universe lift for groups preserves limits of arbitrary size. -/
 @[to_additive
   /-- The universe lift functor for additive groups preserves limits of arbitrary size. -/]
-noncomputable instance uliftFunctor_preservesLimitsOfSize :
-    PreservesLimitsOfSize.{w', w} uliftFunctor.{v, u} where
+noncomputable instance uliftFunctor_preservesLimitsOfSize
+  : PreservesLimitsOfSize.{w', w} uliftFunctor.{v, u} where
 
-/--
-The universe lift functor on `GrpCat.{u}` creates `u`-small limits.
--/
+/-- The universe lift functor on `GrpCat.{u}` creates `u`-small limits. -/
 @[to_additive
   /-- The universe lift functor on `AddGrpCat.{u}` creates `u`-small limits. -/]
 noncomputable instance : CreatesLimitsOfSize.{w, u} uliftFunctor.{v, u} where
@@ -129,13 +123,12 @@ end GrpCat
 
 namespace CommGrpCat
 
-/-- The universe lift functor for commutative groups is fully faithful.
--/
+/-- The universe lift functor for commutative groups is fully faithful. -/
 @[to_additive
   /-- The universe lift functor for commutative additive groups is fully faithful. -/]
 def uliftFunctorFullyFaithful : uliftFunctor.{u, v}.FullyFaithful where
-  preimage f := CommGrpCat.ofHom (MulEquiv.ulift.toMonoidHom.comp
-    (f.hom.comp MulEquiv.ulift.symm.toMonoidHom))
+  preimage f :=
+    CommGrpCat.ofHom (MulEquiv.ulift.toMonoidHom.comp (f.hom.comp MulEquiv.ulift.symm.toMonoidHom))
   map_preimage _ := rfl
   preimage_map _ := rfl
 
@@ -150,26 +143,24 @@ instance : uliftFunctor.{u, v}.Faithful := uliftFunctorFullyFaithful.faithful
 instance : uliftFunctor.{u, v}.Full := uliftFunctorFullyFaithful.full
 
 @[to_additive]
-noncomputable instance uliftFunctor_preservesLimit {J : Type w} [Category.{w'} J]
-    (K : J ⥤ CommGrpCat.{u}) : PreservesLimit K uliftFunctor.{v, u} where
-  preserves lc := ⟨isLimitOfReflects (forget CommGrpCat) <|
-    isLimitOfPreserves CategoryTheory.uliftFunctor.{v} (isLimitOfPreserves (forget CommGrpCat) lc)⟩
+noncomputable instance uliftFunctor_preservesLimit
+    {J : Type w} [Category.{w'} J] (K : J ⥤ CommGrpCat.{u})
+    : PreservesLimit K uliftFunctor.{v, u} where
+  preserves lc :=
+    ⟨isLimitOfReflects (forget CommGrpCat) <| isLimitOfPreserves CategoryTheory.uliftFunctor.{v}
+      (isLimitOfPreserves (forget CommGrpCat) lc)⟩
 
 @[to_additive]
-noncomputable instance uliftFunctor_preservesLimitsOfShape {J : Type w} [Category.{w'} J] :
-    PreservesLimitsOfShape J uliftFunctor.{v, u} where
+noncomputable instance uliftFunctor_preservesLimitsOfShape {J : Type w} [Category.{w'} J]
+  : PreservesLimitsOfShape J uliftFunctor.{v, u} where
 
-/--
-The universe lift for commutative groups preserves limits of arbitrary size.
--/
+/-- The universe lift for commutative groups preserves limits of arbitrary size. -/
 @[to_additive /-- The universe lift functor for commutative additive groups preserves limits of
   arbitrary size. -/]
-noncomputable instance uliftFunctor_preservesLimitsOfSize :
-    PreservesLimitsOfSize.{w', w} uliftFunctor.{v, u} where
+noncomputable instance uliftFunctor_preservesLimitsOfSize
+  : PreservesLimitsOfSize.{w', w} uliftFunctor.{v, u} where
 
-/--
-The universe lift functor on `CommGrpCat.{u}` creates `u`-small limits.
--/
+/-- The universe lift functor on `CommGrpCat.{u}` creates `u`-small limits. -/
 @[to_additive
   /-- The universe lift functor on `AddCommGrpCat.{u}` creates `u`-small limits. -/]
 noncomputable instance : CreatesLimitsOfSize.{w, u} uliftFunctor.{v, u} where
@@ -179,10 +170,8 @@ end CommGrpCat
 
 namespace AddCommGrpCat
 
-/-- The universe lift for commutative additive groups is additive.
--/
-instance uliftFunctor_additive :
-    AddCommGrpCat.uliftFunctor.{u, v}.Additive where
+/-- The universe lift for commutative additive groups is additive. -/
+instance uliftFunctor_additive : AddCommGrpCat.uliftFunctor.{u, v}.Additive where
 
 open Colimits in
 /--
@@ -190,20 +179,23 @@ The functor `uliftFunctor : AddCommGrpCat.{u} ⥤ AddCommGrpCat.{max u v}` prese
 of arbitrary size.
 -/
 noncomputable instance : PreservesColimitsOfSize.{w', w} uliftFunctor.{v, u} where
-  preservesColimitsOfShape {J _} :=
-  { preservesColimit := fun {F} ↦
-    { preserves := fun {c} hc ↦ by
+  preservesColimitsOfShape {J _} := {
+    preservesColimit := fun {F} ↦ {
+      preserves := fun {c} hc ↦ by
         classical
-        rw [isColimit_iff_bijective_desc, ← Function.Bijective.of_comp_iff _
-          (quotQuotUliftAddEquiv F).bijective, ← AddEquiv.coe_toAddMonoidHom,
-          ← AddMonoidHom.coe_comp, Quot.desc_quotQuotUliftAddEquiv]
-        exact ULift.up_bijective.comp ((isColimit_iff_bijective_desc c).mp (Nonempty.intro hc)) } }
+        rw [isColimit_iff_bijective_desc,
+          ← Function.Bijective.of_comp_iff _ (quotQuotUliftAddEquiv F).bijective,
+          ← AddEquiv.coe_toAddMonoidHom, ← AddMonoidHom.coe_comp, Quot.desc_quotQuotUliftAddEquiv]
+        exact ULift.up_bijective.comp ((isColimit_iff_bijective_desc c).mp (Nonempty.intro hc))
+    }
+  }
 
 /--
 The functor `uliftFunctor : AddCommGrpCat.{u} ⥤ AddCommGrpCat.{max u v}` creates `u`-small colimits.
 -/
 noncomputable instance : CreatesColimitsOfSize.{w, u} uliftFunctor.{v, u} where
-  CreatesColimitsOfShape :=
-    { CreatesColimit := fun {_} ↦ createsColimitOfReflectsIsomorphismsOfPreserves }
+  CreatesColimitsOfShape := {
+    CreatesColimit := fun {_} ↦ createsColimitOfReflectsIsomorphismsOfPreserves
+  }
 
 end AddCommGrpCat

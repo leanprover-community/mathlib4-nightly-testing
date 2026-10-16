@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Algebra.Group.Action.Hom
 public import Mathlib.Algebra.Group.Submonoid.Defs
-
 import Mathlib.Data.List.FinRange
 
 /-!
@@ -90,12 +89,10 @@ graded monoid
 
 @[expose] public section
 
-
 variable {ι : Type*}
 
 /-- A type alias of sigma types for graded monoids. -/
-def GradedMonoid (A : ι → Type*) :=
-  Sigma A
+def GradedMonoid (A : ι → Type*) := Sigma A
 
 namespace GradedMonoid
 
@@ -103,8 +100,7 @@ instance {A : ι → Type*} [Inhabited ι] [Inhabited (A default)] : Inhabited (
   inferInstanceAs <| Inhabited (Sigma _)
 
 /-- Construct an element of a graded monoid. -/
-def mk {A : ι → Type*} : ∀ i, A i → GradedMonoid A :=
-  Sigma.mk
+def mk {A : ι → Type*} : ∀ i, A i → GradedMonoid A := Sigma.mk
 
 /-! ### Actions -/
 
@@ -115,28 +111,23 @@ variable {α β} {A : ι → Type*}
 instance [∀ i, SMul α (A i)] : SMul α (GradedMonoid A) where
   smul r g := GradedMonoid.mk g.1 (r • g.2)
 
-@[simp] theorem fst_smul [∀ i, SMul α (A i)] (a : α) (x : GradedMonoid A) :
-    (a • x).fst = x.fst := rfl
+@[simp]
+theorem fst_smul [∀ i, SMul α (A i)] (a : α) (x : GradedMonoid A) : (a • x).fst = x.fst := rfl
 
-@[simp] theorem snd_smul [∀ i, SMul α (A i)] (a : α) (x : GradedMonoid A) :
-    (a • x).snd = a • x.snd := rfl
+@[simp]
+theorem snd_smul [∀ i, SMul α (A i)] (a : α) (x : GradedMonoid A) : (a • x).snd = a • x.snd := rfl
 
-theorem smul_mk [∀ i, SMul α (A i)] {i} (c : α) (a : A i) :
-    c • mk i a = mk i (c • a) :=
-  rfl
+theorem smul_mk [∀ i, SMul α (A i)] {i} (c : α) (a : A i) : c • mk i a = mk i (c • a) := rfl
 
-instance [∀ i, SMul α (A i)] [∀ i, SMul β (A i)]
-    [∀ i, SMulCommClass α β (A i)] :
-    SMulCommClass α β (GradedMonoid A) where
+instance [∀ i, SMul α (A i)] [∀ i, SMul β (A i)] [∀ i, SMulCommClass α β (A i)]
+    : SMulCommClass α β (GradedMonoid A) where
   smul_comm a b g := Sigma.ext rfl <| heq_of_eq <| smul_comm a b g.2
 
-instance [SMul α β] [∀ i, SMul α (A i)] [∀ i, SMul β (A i)]
-    [∀ i, IsScalarTower α β (A i)] :
-    IsScalarTower α β (GradedMonoid A) where
+instance [SMul α β] [∀ i, SMul α (A i)] [∀ i, SMul β (A i)] [∀ i, IsScalarTower α β (A i)]
+    : IsScalarTower α β (GradedMonoid A) where
   smul_assoc a b g := Sigma.ext rfl <| heq_of_eq <| smul_assoc a b g.2
 
-instance [Monoid α] [∀ i, MulAction α (A i)] :
-    MulAction α (GradedMonoid A) where
+instance [Monoid α] [∀ i, MulAction α (A i)] : MulAction α (GradedMonoid A) where
   one_smul g := Sigma.ext rfl <| heq_of_eq <| one_smul _ g.2
   mul_smul r₁ r₂ g := Sigma.ext rfl <| heq_of_eq <| mul_smul r₁ r₂ g.2
 
@@ -154,15 +145,16 @@ class GOne [Zero ι] where
   one : A 0
 
 /-- `GOne` implies `One (GradedMonoid A)` -/
-instance GOne.toOne [Zero ι] [GOne A] : One (GradedMonoid A) :=
-  ⟨⟨_, GOne.one⟩⟩
+instance GOne.toOne [Zero ι] [GOne A] : One (GradedMonoid A) := ⟨⟨_, GOne.one⟩⟩
 
 @[simp] theorem fst_one [Zero ι] [GOne A] : (1 : GradedMonoid A).fst = 0 := rfl
 
 @[simp] theorem snd_one [Zero ι] [GOne A] : (1 : GradedMonoid A).snd = GOne.one := rfl
 
-/-- A graded version of `Mul`. Multiplication combines grades additively, like
-`AddMonoidAlgebra`. -/
+/--
+A graded version of `Mul`. Multiplication combines grades additively, like
+`AddMonoidAlgebra`.
+-/
 class GMul [Add ι] where
   /-- The homogeneous multiplication map `mul` -/
   mul {i j} : A i → A j → A (i + j)
@@ -171,14 +163,13 @@ class GMul [Add ι] where
 instance GMul.toMul [Add ι] [GMul A] : Mul (GradedMonoid A) :=
   ⟨fun x y => ⟨_, GMul.mul x.snd y.snd⟩⟩
 
-@[simp] theorem fst_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
-    (x * y).fst = x.fst + y.fst := rfl
+@[simp] theorem fst_mul [Add ι] [GMul A] (x y : GradedMonoid A) : (x * y).fst = x.fst + y.fst := rfl
 
-@[simp] theorem snd_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
-    (x * y).snd = GMul.mul x.snd y.snd := rfl
+@[simp]
+theorem snd_mul [Add ι] [GMul A] (x y : GradedMonoid A) : (x * y).snd = GMul.mul x.snd y.snd := rfl
 
-theorem mk_mul_mk [Add ι] [GMul A] {i j} (a : A i) (b : A j) :
-    mk i a * mk j b = mk (i + j) (GMul.mul a b) :=
+theorem mk_mul_mk [Add ι] [GMul A] {i j} (a : A i) (b : A j)
+    : mk i a * mk j b = mk (i + j) (GMul.mul a b) :=
   rfl
 
 namespace GMonoid
@@ -186,19 +177,23 @@ namespace GMonoid
 variable {A}
 variable [AddMonoid ι] [GMul A] [GOne A]
 
-/-- A default implementation of power on a graded monoid, like `npowRec`.
-`GMonoid.gnpow` should be used instead. -/
+/--
+A default implementation of power on a graded monoid, like `npowRec`.
+`GMonoid.gnpow` should be used instead.
+-/
 def gnpowRec : ∀ (n : ℕ) {i}, A i → A (n • i)
-  | 0, i, _ => cast congr(A $((zero_nsmul i).symm)) GOne.one
-  | n + 1, i, a => cast congr(A $((succ_nsmul i n).symm)) (GMul.mul (gnpowRec _ a) a)
+  | 0, i, _ =>
+    cast (congr(A $((zero_nsmul i).symm))) GOne.one
+  | n + 1, i, a =>
+    cast (congr(A $((succ_nsmul i n).symm))) (GMul.mul (gnpowRec _ a) a)
 
 @[simp]
 theorem gnpowRec_zero (a : GradedMonoid A) : GradedMonoid.mk _ (gnpowRec 0 a.snd) = 1 :=
   Sigma.ext (zero_nsmul _) (heq_of_cast_eq _ rfl).symm
 
 @[simp]
-theorem gnpowRec_succ (n : ℕ) (a : GradedMonoid A) :
-    (GradedMonoid.mk _ <| gnpowRec n.succ a.snd) = ⟨_, gnpowRec n a.snd⟩ * a :=
+theorem gnpowRec_succ (n : ℕ) (a : GradedMonoid A)
+    : (GradedMonoid.mk _ <| gnpowRec n.succ a.snd) = ⟨_, gnpowRec n a.snd⟩ * a :=
   Sigma.ext (succ_nsmul _ _) (heq_of_cast_eq _ rfl).symm
 
 end GMonoid
@@ -208,10 +203,12 @@ macro "apply_gmonoid_gnpowRec_zero_tac" : tactic => `(tactic| apply GMonoid.gnpo
 /-- A tactic to for use as an optional value for `GMonoid.gnpow_succ'`. -/
 macro "apply_gmonoid_gnpowRec_succ_tac" : tactic => `(tactic| apply GMonoid.gnpowRec_succ)
 
-/-- A graded version of `Monoid`
+/--
+A graded version of `Monoid`
 
 Like `Monoid.npow`, this has an optional `GMonoid.gnpow` field to allow definitional control of
-natural powers of a graded monoid. -/
+natural powers of a graded monoid.
+-/
 class GMonoid [AddMonoid ι] extends GMul A, GOne A where
   /-- Multiplication by `one` on the left is the identity -/
   one_mul (a : GradedMonoid A) : 1 * a = a
@@ -225,9 +222,9 @@ class GMonoid [AddMonoid ι] extends GMul A, GOne A where
   gnpow_zero' : ∀ a : GradedMonoid A, GradedMonoid.mk _ (gnpow 0 a.snd) = 1 := by
     apply_gmonoid_gnpowRec_zero_tac
   /-- Successor powers behave as expected -/
-  gnpow_succ' :
-    ∀ (n : ℕ) (a : GradedMonoid A),
-      (GradedMonoid.mk _ <| gnpow n.succ a.snd) = ⟨_, gnpow n a.snd⟩ * a := by
+  gnpow_succ'
+      : ∀ (n : ℕ) (a : GradedMonoid A),
+        (GradedMonoid.mk _ <| gnpow n.succ a.snd) = ⟨_, gnpow n a.snd⟩ * a := by
     apply_gmonoid_gnpowRec_succ_tac
 
 /-- `GMonoid` implies a `Monoid (GradedMonoid A)`. -/
@@ -239,24 +236,30 @@ instance GMonoid.toMonoid [AddMonoid ι] [GMonoid A] : Monoid (GradedMonoid A) w
   mul_one := GMonoid.mul_one
   mul_assoc := GMonoid.mul_assoc
 
-@[simp] theorem fst_pow [AddMonoid ι] [GMonoid A] (x : GradedMonoid A) (n : ℕ) :
-    (x ^ n).fst = n • x.fst := rfl
+@[simp]
+theorem fst_pow [AddMonoid ι] [GMonoid A] (x : GradedMonoid A) (n : ℕ) : (x ^ n).fst = n • x.fst :=
+  rfl
 
-@[simp] theorem snd_pow [AddMonoid ι] [GMonoid A] (x : GradedMonoid A) (n : ℕ) :
-    (x ^ n).snd = GMonoid.gnpow n x.snd := rfl
+@[simp]
+theorem snd_pow [AddMonoid ι] [GMonoid A] (x : GradedMonoid A) (n : ℕ)
+    : (x ^ n).snd = GMonoid.gnpow n x.snd :=
+  rfl
 
-theorem mk_pow [AddMonoid ι] [GMonoid A] {i} (a : A i) (n : ℕ) :
-    mk i a ^ n = mk (n • i) (GMonoid.gnpow _ a) := rfl
+theorem mk_pow [AddMonoid ι] [GMonoid A] {i} (a : A i) (n : ℕ)
+    : mk i a ^ n = mk (n • i) (GMonoid.gnpow _ a) :=
+  rfl
 
 /-- A graded version of `CommMonoid`. -/
 class GCommMonoid [AddCommMonoid ι] extends GMonoid A where
   /-- Multiplication is commutative -/
   mul_comm (a : GradedMonoid A) (b : GradedMonoid A) : a * b = b * a
 
-/-- `GCommMonoid` implies a `CommMonoid (GradedMonoid A)`, although this is only used as an
-instance locally to define notation in `gmonoid` and similar typeclasses. -/
-instance GCommMonoid.toCommMonoid [AddCommMonoid ι] [GCommMonoid A] :
-    CommMonoid (GradedMonoid A) where
+/--
+`GCommMonoid` implies a `CommMonoid (GradedMonoid A)`, although this is only used as an
+instance locally to define notation in `gmonoid` and similar typeclasses.
+-/
+instance GCommMonoid.toCommMonoid [AddCommMonoid ι] [GCommMonoid A]
+    : CommMonoid (GradedMonoid A) where
   mul_comm := GCommMonoid.mul_comm
 
 end Defs
@@ -266,7 +269,6 @@ end Defs
 The various `g*` instances are enough to promote the `AddCommMonoid (A 0)` structure to various
 types of multiplicative structure.
 -/
-
 
 section GradeZero
 
@@ -278,8 +280,7 @@ variable [Zero ι] [GOne A]
 
 /-- `1 : A 0` is the value provided in `GOne.one`. -/
 @[nolint unusedArguments]
-instance (priority := 900) GradeZero.one : One (A 0) :=
-  ⟨GOne.one⟩
+instance (priority := 900) GradeZero.one : One (A 0) := ⟨GOne.one⟩
 
 end One
 
@@ -287,16 +288,19 @@ section Mul
 
 variable [AddZeroClass ι] [GMul A]
 
-/-- `(•) : A 0 → A i → A i` is the value provided in `GradedMonoid.GMul.mul`, composed with
+/--
+`(•) : A 0 → A i → A i` is the value provided in `GradedMonoid.GMul.mul`, composed with
 an `Eq.rec` to turn `A (0 + i)` into `A i`.
 -/
 instance GradeZero.smul (i : ι) : SMul (A 0) (A i) where
   smul x y := @Eq.rec ι (0 + i) (fun a _ => A a) (GMul.mul x y) i (zero_add i)
 
-/-- `(*) : A 0 → A 0 → A 0` is the value provided in `GradedMonoid.GMul.mul`, composed with
+/--
+`(*) : A 0 → A 0 → A 0` is the value provided in `GradedMonoid.GMul.mul`, composed with
 an `Eq.rec` to turn `A (0 + 0)` into `A 0`.
 -/
-instance (priority := 900) GradeZero.mul : Mul (A 0) where mul := (· • ·)
+instance (priority := 900) GradeZero.mul : Mul (A 0) where
+  mul := (· • ·)
 
 variable {A}
 
@@ -305,9 +309,7 @@ theorem mk_zero_smul {i} (a : A 0) (b : A i) : mk _ (a • b) = mk _ a * mk _ b 
   Sigma.ext (zero_add _).symm <| eqRec_heq _ _
 
 -- For the use of `scoped` rather than `simp`, see library note [Simp lemmas with weak keys]
-@[scoped simp]
-theorem GradeZero.smul_eq_mul (a b : A 0) : a • b = a * b :=
-  rfl
+@[scoped simp] theorem GradeZero.smul_eq_mul (a b : A 0) : a • b = a * b := rfl
 
 end Mul
 
@@ -343,8 +345,7 @@ section MulAction
 
 variable [AddMonoid ι] [GMonoid A]
 
-/-- `GradedMonoid.mk 0` is a `MonoidHom`, using the `GradedMonoid.GradeZero.monoid` structure.
--/
+/-- `GradedMonoid.mk 0` is a `MonoidHom`, using the `GradedMonoid.GradeZero.monoid` structure. -/
 def mkZeroMonoidHom : A 0 →* GradedMonoid A where
   toFun := mk 0
   map_one' := rfl
@@ -363,87 +364,91 @@ end GradedMonoid
 
 /-! ### Dependent products of graded elements -/
 
-
 section DProd
 
 variable {α : Type*} {A : ι → Type*} [AddMonoid ι] [GradedMonoid.GMonoid A]
 
-/-- The index used by `List.dProd`. Propositionally this is equal to `(l.map fι).Sum`, but
-definitionally it needs to have a different form to avoid introducing `Eq.rec`s in `List.dProd`. -/
-def List.dProdIndex (l : List α) (fι : α → ι) : ι :=
-  l.foldr (fun i b => fι i + b) 0
+/--
+The index used by `List.dProd`. Propositionally this is equal to `(l.map fι).Sum`, but
+definitionally it needs to have a different form to avoid introducing `Eq.rec`s in `List.dProd`.
+-/
+def List.dProdIndex (l : List α) (fι : α → ι) : ι := l.foldr (fun i b => fι i + b) 0
+
+@[simp] theorem List.dProdIndex_nil (fι : α → ι) : ([] : List α).dProdIndex fι = 0 := rfl
 
 @[simp]
-theorem List.dProdIndex_nil (fι : α → ι) : ([] : List α).dProdIndex fι = 0 :=
+theorem List.dProdIndex_cons (a : α) (l : List α) (fι : α → ι)
+    : (a :: l).dProdIndex fι = fι a + l.dProdIndex fι :=
   rfl
 
-@[simp]
-theorem List.dProdIndex_cons (a : α) (l : List α) (fι : α → ι) :
-    (a :: l).dProdIndex fι = fι a + l.dProdIndex fι :=
-  rfl
-
-theorem List.dProdIndex_eq_map_sum (l : List α) (fι : α → ι) :
-    l.dProdIndex fι = (l.map fι).sum := by
+theorem List.dProdIndex_eq_map_sum (l : List α) (fι : α → ι)
+    : l.dProdIndex fι = (l.map fι).sum := by
   match l with
   | [] => simp
-  | head::tail => simp [List.dProdIndex_eq_map_sum tail fι]
+  | head :: tail => simp [List.dProdIndex_eq_map_sum tail fι]
 
-/-- A dependent product for graded monoids represented by the indexed family of types `A i`.
+/--
+A dependent product for graded monoids represented by the indexed family of types `A i`.
 This is a dependent version of `(l.map fA).prod`.
 
 For a list `l : List α`, this computes the product of `fA a` over `a`, where each `fA` is of type
-`A (fι a)`. -/
+`A (fι a)`.
+-/
 def List.dProd (l : List α) (fι : α → ι) (fA : ∀ a, A (fι a)) : A (l.dProdIndex fι) :=
   l.foldrRecOn _ GradedMonoid.GOne.one fun _ x a _ => GradedMonoid.GMul.mul (fA a) x
 
 @[simp]
-theorem List.dProd_nil (fι : α → ι) (fA : ∀ a, A (fι a)) :
-    (List.nil : List α).dProd fι fA = GradedMonoid.GOne.one :=
+theorem List.dProd_nil (fι : α → ι) (fA : ∀ a, A (fι a))
+    : (List.nil : List α).dProd fι fA = GradedMonoid.GOne.one :=
   rfl
 
 -- the `( :)` in this lemma statement results in the type on the RHS not being unfolded, which
 -- is nicer in the goal view.
 @[simp]
-theorem List.dProd_cons (fι : α → ι) (fA : ∀ a, A (fι a)) (a : α) (l : List α) :
-    (a :: l).dProd fι fA = (GradedMonoid.GMul.mul (fA a) (l.dProd fι fA) :) :=
+theorem List.dProd_cons (fι : α → ι) (fA : ∀ a, A (fι a)) (a : α) (l : List α)
+    : (a :: l).dProd fι fA = (GradedMonoid.GMul.mul (fA a) (l.dProd fι fA) :) :=
   rfl
 
-theorem GradedMonoid.mk_list_dProd (l : List α) (fι : α → ι) (fA : ∀ a, A (fι a)) :
-    GradedMonoid.mk _ (l.dProd fι fA) = (l.map fun a => GradedMonoid.mk (fι a) (fA a)).prod := by
+theorem GradedMonoid.mk_list_dProd (l : List α) (fι : α → ι) (fA : ∀ a, A (fι a))
+    : GradedMonoid.mk _ (l.dProd fι fA) = (l.map fun a => GradedMonoid.mk (fι a) (fA a)).prod := by
   match l with
-  | [] => simp only [List.dProdIndex_nil, List.dProd_nil, List.map_nil, List.prod_nil]; rfl
-  | head::tail =>
+  | [] =>
+    simp only [List.dProdIndex_nil, List.dProd_nil, List.map_nil, List.prod_nil]; rfl
+  | head :: tail =>
     simp [← GradedMonoid.mk_list_dProd tail _ _, GradedMonoid.mk_mul_mk, List.prod_cons]
 
 set_option backward.isDefEq.respectTransparency false in
 /-- A variant of `GradedMonoid.mk_list_dProd` for rewriting in the other direction. -/
-theorem GradedMonoid.list_prod_map_eq_dProd (l : List α) (f : α → GradedMonoid A) :
-    (l.map f).prod = GradedMonoid.mk _ (l.dProd (fun i => (f i).1) fun i => (f i).2) := by
+theorem GradedMonoid.list_prod_map_eq_dProd (l : List α) (f : α → GradedMonoid A)
+    : (l.map f).prod = GradedMonoid.mk _ (l.dProd (fun i => (f i).1) fun i => (f i).2) := by
   rw [GradedMonoid.mk_list_dProd, GradedMonoid.mk]
   simp_rw [Sigma.eta]
 
-theorem GradedMonoid.list_prod_ofFn_eq_dProd {n : ℕ} (f : Fin n → GradedMonoid A) :
-    (List.ofFn f).prod =
-      GradedMonoid.mk _ ((List.finRange n).dProd (fun i => (f i).1) fun i => (f i).2) := by
+theorem GradedMonoid.list_prod_ofFn_eq_dProd {n : ℕ} (f : Fin n → GradedMonoid A)
+    : (List.ofFn f).prod
+      = GradedMonoid.mk _ ((List.finRange n).dProd (fun i => (f i).1) fun i => (f i).2) := by
   rw [List.ofFn_eq_map, GradedMonoid.list_prod_map_eq_dProd]
 
 end DProd
 
 /-! ### Concrete instances -/
 
-
 section
 
 variable (ι) {R : Type*}
 
 @[simps one]
-instance One.gOne [Zero ι] [One R] : GradedMonoid.GOne fun _ : ι => R where one := 1
+instance One.gOne [Zero ι] [One R] : GradedMonoid.GOne fun _ : ι => R where
+  one := 1
 
 @[simps mul]
-instance Mul.gMul [Add ι] [Mul R] : GradedMonoid.GMul fun _ : ι => R where mul x y := x * y
+instance Mul.gMul [Add ι] [Mul R] : GradedMonoid.GMul fun _ : ι => R where
+  mul x y := x * y
 
-/-- If all grades are the same type and themselves form a monoid, then there is a trivial grading
-structure. -/
+/--
+If all grades are the same type and themselves form a monoid, then there is a trivial grading
+structure.
+-/
 @[simps gnpow]
 instance Monoid.gMonoid [AddMonoid ι] [Monoid R] : GradedMonoid.GMonoid fun _ : ι => R where
   one_mul := fun _ => Sigma.ext (zero_add _) (heq_of_eq (one_mul _))
@@ -453,28 +458,29 @@ instance Monoid.gMonoid [AddMonoid ι] [Monoid R] : GradedMonoid.GMonoid fun _ :
   gnpow_zero' := fun _ => Sigma.ext (zero_nsmul _) (heq_of_eq (Monoid.npow_zero _))
   gnpow_succ' := fun _ ⟨_, _⟩ => Sigma.ext (succ_nsmul _ _) (heq_of_eq (Monoid.npow_succ _ _))
 
-/-- If all grades are the same type and themselves form a commutative monoid, then there is a
-trivial grading structure. -/
-instance CommMonoid.gCommMonoid [AddCommMonoid ι] [CommMonoid R] :
-    GradedMonoid.GCommMonoid fun _ : ι => R where
+/--
+If all grades are the same type and themselves form a commutative monoid, then there is a
+trivial grading structure.
+-/
+instance CommMonoid.gCommMonoid [AddCommMonoid ι] [CommMonoid R]
+    : GradedMonoid.GCommMonoid fun _ : ι => R where
   mul_comm := fun _ _ => Sigma.ext (add_comm _ _) (heq_of_eq (mul_comm _ _))
 
 /-- When all the indexed types are the same, the dependent product is just the regular product. -/
 @[simp]
-theorem List.dProd_monoid {α} [AddMonoid ι] [Monoid R] (l : List α) (fι : α → ι) (fA : α → R) :
-    @List.dProd _ _ (fun _ : ι => R) _ _ l fι fA = (l.map fA).prod := by
+theorem List.dProd_monoid {α} [AddMonoid ι] [Monoid R] (l : List α) (fι : α → ι) (fA : α → R)
+    : @List.dProd _ _ (fun _ : ι => R) _ _ l fι fA = (l.map fA).prod := by
   match l with
   | [] =>
     rw [List.dProd_nil, List.map_nil, List.prod_nil]
     rfl
-  | head::tail =>
+  | head :: tail =>
     rw [List.dProd_cons, List.map_cons, List.prod_cons, List.dProd_monoid tail _ _]
     rfl
 
 end
 
 /-! ### Shorthands for creating instance of the above typeclasses for collections of subobjects -/
-
 
 section Subobjects
 
@@ -485,17 +491,19 @@ class SetLike.GradedOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → 
   /-- One has grade zero -/
   one_mem : (1 : R) ∈ A 0
 
-theorem SetLike.one_mem_graded {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S)
-    [SetLike.GradedOne A] : (1 : R) ∈ A 0 :=
+theorem SetLike.one_mem_graded
+    {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S) [SetLike.GradedOne A]
+    : (1 : R) ∈ A 0 :=
   SetLike.GradedOne.one_mem
 
-instance SetLike.gOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S)
-    [SetLike.GradedOne A] : GradedMonoid.GOne fun i => A i where
+instance SetLike.gOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S) [SetLike.GradedOne A]
+    : GradedMonoid.GOne fun i => A i where
   one := ⟨1, SetLike.one_mem_graded _⟩
 
 @[simp]
-theorem SetLike.coe_gOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S)
-    [SetLike.GradedOne A] : ↑(@GradedMonoid.GOne.one _ (fun i => A i) _ _) = (1 : R) :=
+theorem SetLike.coe_gOne
+    {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S) [SetLike.GradedOne A]
+    : ↑(@GradedMonoid.GOne.one _ (fun i => A i) _ _) = (1 : R) :=
   rfl
 
 /-- A version of `GradedMonoid.ghas_one` for internally graded objects. -/
@@ -503,23 +511,28 @@ class SetLike.GradedMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S
   /-- Multiplication is homogeneous -/
   mul_mem : ∀ ⦃i j⦄ {gi gj}, gi ∈ A i → gj ∈ A j → gi * gj ∈ A (i + j)
 
-theorem SetLike.mul_mem_graded {S : Type*} [SetLike S R] [Mul R] [Add ι] {A : ι → S}
-    [SetLike.GradedMul A] ⦃i j⦄ {gi gj} (hi : gi ∈ A i) (hj : gj ∈ A j) : gi * gj ∈ A (i + j) :=
+theorem SetLike.mul_mem_graded
+    {S : Type*} [SetLike S R] [Mul R] [Add ι]
+    {A : ι → S} [SetLike.GradedMul A]
+    ⦃i j⦄ {gi gj} (hi : gi ∈ A i) (hj : gj ∈ A j)
+    : gi * gj ∈ A (i + j) :=
   SetLike.GradedMul.mul_mem hi hj
 
-instance SetLike.gMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S)
-    [SetLike.GradedMul A] : GradedMonoid.GMul fun i => A i where
+instance SetLike.gMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S) [SetLike.GradedMul A]
+    : GradedMonoid.GMul fun i => A i where
   mul := fun a b => ⟨(a * b : R), SetLike.mul_mem_graded a.prop b.prop⟩
 
 @[simp]
-theorem SetLike.coe_gMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S)
-    [SetLike.GradedMul A] {i j : ι} (x : A i) (y : A j) :
-    ↑(@GradedMonoid.GMul.mul _ (fun i => A i) _ _ _ _ x y) = (x * y : R) :=
+theorem SetLike.coe_gMul
+    {S : Type*} [SetLike S R] [Mul R] [Add ι]
+    (A : ι → S) [SetLike.GradedMul A]
+    {i j : ι} (x : A i) (y : A j)
+    : ↑(@GradedMonoid.GMul.mul _ (fun i => A i) _ _ _ _ x y) = (x * y : R) :=
   rfl
 
 /-- A version of `GradedMonoid.GMonoid` for internally graded objects. -/
 class SetLike.GradedMonoid {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A : ι → S) : Prop
-    extends SetLike.GradedOne A, SetLike.GradedMul A
+  extends SetLike.GradedOne A, SetLike.GradedMul A
 
 namespace SetLike
 
@@ -537,15 +550,13 @@ def submonoid : Submonoid R where
 
 -- TODO: it might be expensive to unify `A` in this instance in practice
 /-- The monoid `A 0` inherited from `R` in the presence of `SetLike.GradedMonoid A`. -/
-instance instMonoid : Monoid (A 0) :=
-  inferInstanceAs <| Monoid (GradeZero.submonoid A)
+instance instMonoid : Monoid (A 0) := inferInstanceAs <| Monoid (GradeZero.submonoid A)
 
 -- TODO: it might be expensive to unify `A` in this instance in practice
 /-- The commutative monoid `A 0` inherited from `R` in the presence of `SetLike.GradedMonoid A`. -/
 instance instCommMonoid
-    {R S : Type*} [SetLike S R] [CommMonoid R]
-    {A : ι → S} [SetLike.GradedMonoid A] :
-    CommMonoid (A 0) :=
+    {R S : Type*} [SetLike S R] [CommMonoid R] {A : ι → S} [SetLike.GradedMonoid A]
+    : CommMonoid (A 0) :=
   inferInstanceAs <| CommMonoid (GradeZero.submonoid A)
 
 @[simp, norm_cast] theorem coe_one : ↑(1 : A 0) = (1 : R) := rfl
@@ -565,45 +576,50 @@ theorem pow_mem_graded (n : ℕ) {r : R} {i : ι} (h : r ∈ A i) : r ^ n ∈ A 
     rw [pow_succ', succ_nsmul']
     exact mul_mem_graded h (pow_mem_graded n h)
 
-theorem list_prod_map_mem_graded {ι'} (l : List ι') (i : ι' → ι) (r : ι' → R)
-    (h : ∀ j ∈ l, r j ∈ A (i j)) : (l.map r).prod ∈ A (l.map i).sum := by
+theorem list_prod_map_mem_graded
+    {ι'} (l : List ι') (i : ι' → ι) (r : ι' → R) (h : ∀ j ∈ l, r j ∈ A (i j))
+    : (l.map r).prod ∈ A (l.map i).sum := by
   match l with
   | [] =>
     rw [List.map_nil, List.map_nil, List.prod_nil, List.sum_nil]
     exact one_mem_graded _
-  | head::tail =>
+  | head :: tail =>
     rw [List.map_cons, List.map_cons, List.prod_cons, List.sum_cons]
-    exact
-      mul_mem_graded (h _ List.mem_cons_self)
-        (list_prod_map_mem_graded tail _ _ fun j hj => h _ <| List.mem_cons_of_mem _ hj)
+    exact mul_mem_graded (h _ List.mem_cons_self)
+      (list_prod_map_mem_graded tail _ _ fun j hj => h _ <| List.mem_cons_of_mem _ hj)
 
-theorem list_prod_ofFn_mem_graded {n} (i : Fin n → ι) (r : Fin n → R) (h : ∀ j, r j ∈ A (i j)) :
-    (List.ofFn r).prod ∈ A (List.ofFn i).sum := by
+theorem list_prod_ofFn_mem_graded {n} (i : Fin n → ι) (r : Fin n → R) (h : ∀ j, r j ∈ A (i j))
+    : (List.ofFn r).prod ∈ A (List.ofFn i).sum := by
   rw [List.ofFn_eq_map, List.ofFn_eq_map]
   exact list_prod_map_mem_graded _ _ _ fun _ _ => h _
 
 end SetLike
 
 /-- Build a `GMonoid` instance for a collection of subobjects. -/
-instance SetLike.gMonoid {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A : ι → S)
-    [SetLike.GradedMonoid A] : GradedMonoid.GMonoid fun i => A i where
+instance SetLike.gMonoid
+    {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A : ι → S) [SetLike.GradedMonoid A]
+    : GradedMonoid.GMonoid fun i => A i where
   one_mul := fun ⟨_, _, _⟩ => Sigma.subtype_ext (zero_add _) (one_mul _)
   mul_one := fun ⟨_, _, _⟩ => Sigma.subtype_ext (add_zero _) (mul_one _)
   mul_assoc := fun ⟨_, _, _⟩ ⟨_, _, _⟩ ⟨_, _, _⟩ =>
     Sigma.subtype_ext (add_assoc _ _ _) (mul_assoc _ _ _)
-  gnpow := fun n _ a => ⟨(a:R)^n, SetLike.pow_mem_graded n a.prop⟩
+  gnpow := fun n _ a => ⟨(a : R) ^ n, SetLike.pow_mem_graded n a.prop⟩
   gnpow_zero' := fun _ => Sigma.subtype_ext (zero_nsmul _) (pow_zero _)
   gnpow_succ' := fun _ _ => Sigma.subtype_ext (succ_nsmul _ _) (pow_succ _ _)
 
 @[simp]
-theorem SetLike.coe_gnpow {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A : ι → S)
-    [SetLike.GradedMonoid A] {i : ι} (x : A i) (n : ℕ) :
-    ↑(@GradedMonoid.GMonoid.gnpow _ (fun i => A i) _ _ n _ x) = (x : R) ^ n :=
+theorem SetLike.coe_gnpow
+    {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι]
+    (A : ι → S) [SetLike.GradedMonoid A]
+    {i : ι} (x : A i)
+    (n : ℕ)
+    : ↑(@GradedMonoid.GMonoid.gnpow _ (fun i => A i) _ _ n _ x) = (x : R) ^ n :=
   rfl
 
 /-- Build a `GCommMonoid` instance for a collection of subobjects. -/
-instance SetLike.gCommMonoid {S : Type*} [SetLike S R] [CommMonoid R] [AddCommMonoid ι] (A : ι → S)
-    [SetLike.GradedMonoid A] : GradedMonoid.GCommMonoid fun i => A i where
+instance SetLike.gCommMonoid
+    {S : Type*} [SetLike S R] [CommMonoid R] [AddCommMonoid ι] (A : ι → S) [SetLike.GradedMonoid A]
+    : GradedMonoid.GCommMonoid fun i => A i where
   mul_comm := fun ⟨_, _, _⟩ ⟨_, _, _⟩ => Sigma.subtype_ext (add_comm _ _) (mul_comm _ _)
 
 section DProd
@@ -613,23 +629,23 @@ open SetLike SetLike.GradedMonoid
 variable {α S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι]
 
 @[simp]
-theorem SetLike.coe_list_dProd (A : ι → S) [SetLike.GradedMonoid A] (fι : α → ι)
-    (fA : ∀ a, A (fι a)) (l : List α) : ↑(@List.dProd _ _ (fun i => ↥(A i)) _ _ l fι fA)
-    = (List.prod (l.map fun a => fA a) : R) := by
+theorem SetLike.coe_list_dProd
+    (A : ι → S) [SetLike.GradedMonoid A] (fι : α → ι) (fA : ∀ a, A (fι a)) (l : List α)
+    : ↑(@List.dProd _ _ (fun i => ↥(A i)) _ _ l fι fA) = (List.prod (l.map fun a => fA a) : R) := by
   match l with
   | [] =>
     rw [List.dProd_nil, coe_gOne, List.map_nil, List.prod_nil]
-  | head::tail =>
-    rw [List.dProd_cons, coe_gMul, List.map_cons, List.prod_cons,
-      SetLike.coe_list_dProd _ _ _ tail]
+  | head :: tail =>
+    rw [List.dProd_cons, coe_gMul, List.map_cons, List.prod_cons, SetLike.coe_list_dProd _ _ _ tail]
 
 /-- A version of `List.coe_dProd_set_like` with `Subtype.mk`. -/
-theorem SetLike.list_dProd_eq (A : ι → S) [SetLike.GradedMonoid A] (fι : α → ι) (fA : ∀ a, A (fι a))
-    (l : List α) :
-    (@List.dProd _ _ (fun i => ↥(A i)) _ _ l fι fA) =
-      ⟨List.prod (l.map fun a => fA a),
-        (l.dProdIndex_eq_map_sum fι).symm ▸
-          list_prod_map_mem_graded l _ _ fun i _ => (fA i).prop⟩ :=
+theorem SetLike.list_dProd_eq
+    (A : ι → S) [SetLike.GradedMonoid A] (fι : α → ι) (fA : ∀ a, A (fι a)) (l : List α)
+    : (@List.dProd _ _ (fun i => ↥(A i)) _ _ l fι fA)
+      = ⟨
+        List.prod (l.map fun a => fA a),
+        (l.dProdIndex_eq_map_sum fι).symm ▸ list_prod_map_mem_graded l _ _ fun i _ => (fA i).prop
+      ⟩ :=
   Subtype.ext <| SetLike.coe_list_dProd _ _ _ _
 
 end DProd
@@ -641,26 +657,25 @@ section HomogeneousElements
 variable {R S : Type*} [SetLike S R]
 
 /-- An element `a : R` is said to be homogeneous if there is some `i : ι` such that `a ∈ A i`. -/
-def SetLike.IsHomogeneousElem (A : ι → S) (a : R) : Prop :=
-  ∃ i, a ∈ A i
+def SetLike.IsHomogeneousElem (A : ι → S) (a : R) : Prop := ∃ i, a ∈ A i
 
 @[simp]
-theorem SetLike.isHomogeneousElem_coe {A : ι → S} {i} (x : A i) :
-    SetLike.IsHomogeneousElem A (x : R) :=
+theorem SetLike.isHomogeneousElem_coe {A : ι → S} {i} (x : A i)
+    : SetLike.IsHomogeneousElem A (x : R) :=
   ⟨i, x.prop⟩
 
-theorem SetLike.isHomogeneousElem_one [Zero ι] [One R] (A : ι → S) [SetLike.GradedOne A] :
-    SetLike.IsHomogeneousElem A (1 : R) :=
+theorem SetLike.isHomogeneousElem_one [Zero ι] [One R] (A : ι → S) [SetLike.GradedOne A]
+    : SetLike.IsHomogeneousElem A (1 : R) :=
   ⟨0, SetLike.one_mem_graded _⟩
 
-theorem SetLike.IsHomogeneousElem.mul [Add ι] [Mul R] {A : ι → S} [SetLike.GradedMul A] {a b : R} :
-    SetLike.IsHomogeneousElem A a → SetLike.IsHomogeneousElem A b →
-    SetLike.IsHomogeneousElem A (a * b)
+theorem SetLike.IsHomogeneousElem.mul [Add ι] [Mul R] {A : ι → S} [SetLike.GradedMul A] {a b : R}
+    : SetLike.IsHomogeneousElem A a → SetLike.IsHomogeneousElem A b
+      → SetLike.IsHomogeneousElem A (a * b)
   | ⟨i, hi⟩, ⟨j, hj⟩ => ⟨i + j, SetLike.mul_mem_graded hi hj⟩
 
 /-- When `A` is a `SetLike.GradedMonoid A`, then the homogeneous elements forms a submonoid. -/
-def SetLike.homogeneousSubmonoid [AddMonoid ι] [Monoid R] (A : ι → S) [SetLike.GradedMonoid A] :
-    Submonoid R where
+def SetLike.homogeneousSubmonoid [AddMonoid ι] [Monoid R] (A : ι → S) [SetLike.GradedMonoid A]
+    : Submonoid R where
   carrier := { a | SetLike.IsHomogeneousElem A a }
   one_mem' := SetLike.isHomogeneousElem_one A
   mul_mem' a b := SetLike.IsHomogeneousElem.mul a b
@@ -681,12 +696,12 @@ theorem prod_mem_graded (hF : ∀ k ∈ F, g k ∈ A (i k)) : ∏ k ∈ F, g k �
   induction F using Finset.induction_on
   · simp [GradedOne.one_mem]
   · case insert j F' hF2 h3 =>
-    rw [Finset.prod_insert hF2, Finset.sum_insert hF2]
-    apply SetLike.mul_mem_graded (by grind)
-    grind
+      rw [Finset.prod_insert hF2, Finset.sum_insert hF2]
+      apply SetLike.mul_mem_graded (by grind)
+      grind
 
-theorem prod_pow_mem_graded (n : κ → ℕ) (hF : ∀ k ∈ F, g k ∈ A (i k)) :
-    ∏ k ∈ F, g k ^ n k ∈ A (∑ k ∈ F, n k • i k) :=
+theorem prod_pow_mem_graded (n : κ → ℕ) (hF : ∀ k ∈ F, g k ∈ A (i k))
+    : ∏ k ∈ F, g k ^ n k ∈ A (∑ k ∈ F, n k • i k) :=
   prod_mem_graded A _ _ fun k hk ↦ pow_mem_graded _ (hF k hk)
 
 end SetLike

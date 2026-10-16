@@ -50,16 +50,13 @@ theorem Commute.commutator_eq (h : Commute g₁ g₂) : ⁅g₁, g₂⁆ = 1 :=
 variable (g₁ g₂ g₃ g)
 
 @[to_additive (attr := simp)]
-theorem commutatorElement_one_right : ⁅g, (1 : G)⁆ = 1 :=
-  (Commute.one_right g).commutator_eq
+theorem commutatorElement_one_right : ⁅g, (1 : G)⁆ = 1 := (Commute.one_right g).commutator_eq
 
 @[to_additive (attr := simp)]
-theorem commutatorElement_one_left : ⁅(1 : G), g⁆ = 1 :=
-  (Commute.one_left g).commutator_eq
+theorem commutatorElement_one_left : ⁅(1 : G), g⁆ = 1 := (Commute.one_left g).commutator_eq
 
 @[to_additive (attr := simp)]
-theorem commutatorElement_self : ⁅g, g⁆ = 1 :=
-  (Commute.refl g).commutator_eq
+theorem commutatorElement_self : ⁅g, g⁆ = 1 := (Commute.refl g).commutator_eq
 
 @[to_additive (attr := simp)]
 theorem commutatorElement_inv : ⁅g₁, g₂⁆⁻¹ = ⁅g₂, g₁⁆ := by
@@ -74,30 +71,34 @@ theorem conjugate_commutatorElement : g₃ * ⁅g₁, g₂⁆ * g₃⁻¹ = ⁅g
   simp [mul_assoc, commutatorElement_def]
 
 @[to_additive]
-theorem commutatorElement_mul_left_eq_conj_mul (a b c : G) :
-    ⁅a * b, c⁆ = a * ⁅b, c⁆ * a⁻¹ * ⁅a, c⁆ := by
+theorem commutatorElement_mul_left_eq_conj_mul (a b c : G)
+    : ⁅a * b, c⁆ = a * ⁅b, c⁆ * a⁻¹ * ⁅a, c⁆ := by
   simp [mul_assoc, commutatorElement_def]
 
 @[to_additive]
-theorem commutatorElement_mul_right_eq_mul_conj (a b c : G) :
-    ⁅a, b * c⁆ = ⁅a, b⁆ * b * ⁅a, c⁆ * b⁻¹ := by
+theorem commutatorElement_mul_right_eq_mul_conj (a b c : G)
+    : ⁅a, b * c⁆ = ⁅a, b⁆ * b * ⁅a, c⁆ * b⁻¹ := by
   simp [mul_assoc, commutatorElement_def]
 
 @[to_additive]
-theorem Commute.commutatorElement_pow_left {a b : G} (h : Commute a ⁅a, b⁆) (n : ℕ) :
-    ⁅a, b⁆ ^ n = ⁅a ^ n, b⁆ := by
+theorem Commute.commutatorElement_pow_left {a b : G} (h : Commute a ⁅a, b⁆) (n : ℕ)
+    : ⁅a, b⁆ ^ n = ⁅a ^ n, b⁆ := by
   induction n with
-  | zero => simp
-  | succ n ih => rw [pow_succ, pow_succ', commutatorElement_mul_left_eq_conj_mul, ← ih,
-      (h.pow_right n).eq, mul_inv_cancel_right]
+  | zero =>
+    simp
+  | succ n ih =>
+    rw [pow_succ, pow_succ', commutatorElement_mul_left_eq_conj_mul, ← ih, (h.pow_right n).eq,
+      mul_inv_cancel_right]
 
 @[to_additive]
-theorem Commute.commutatorElement_pow_right {a b : G} (h : Commute b ⁅a, b⁆) (n : ℕ) :
-    ⁅a, b⁆ ^ n = ⁅a, b ^ n⁆ := by
+theorem Commute.commutatorElement_pow_right {a b : G} (h : Commute b ⁅a, b⁆) (n : ℕ)
+    : ⁅a, b⁆ ^ n = ⁅a, b ^ n⁆ := by
   induction n with
-  | zero => simp
-  | succ n ih => rw [pow_succ', pow_succ', commutatorElement_mul_right_eq_mul_conj, ← ih,
-        (h.pow_right n).right_comm, mul_inv_cancel_right]
+  | zero =>
+    simp
+  | succ n ih =>
+    rw [pow_succ', pow_succ', commutatorElement_mul_right_eq_mul_conj, ← ih,
+      (h.pow_right n).right_comm, mul_inv_cancel_right]
 
 @[to_additive]
 theorem commutatorElement_inv_left (a b : G) : ⁅a⁻¹, b⁆ = a⁻¹ * ⁅b, a⁆ * a := by
@@ -109,26 +110,26 @@ theorem commutatorElement_inv_right (a b : G) : ⁅a, b⁻¹⁆ = b⁻¹ * ⁅b,
 
 /-- **The Hall-Witt identity** -/
 @[to_additive /-- **The Hall-Witt identity** -/]
-theorem conj_commutatorElement_left_commutatorElement_mul (a b c : G) :
-    a * ⁅⁅a⁻¹, b⁆, c⁆ * a⁻¹ * c * ⁅⁅c⁻¹, a⁆, b⁆ * c⁻¹ * b * ⁅⁅b⁻¹, c⁆, a⁆ * b⁻¹ = 1 := by
+theorem conj_commutatorElement_left_commutatorElement_mul (a b c : G)
+    : a * ⁅⁅a⁻¹, b⁆, c⁆ * a⁻¹ * c * ⁅⁅c⁻¹, a⁆, b⁆ * c⁻¹ * b * ⁅⁅b⁻¹, c⁆, a⁆ * b⁻¹ = 1 := by
   simp [mul_assoc, commutatorElement_def]
 
 /-- **The Hall-Witt identity** -/
 @[to_additive /-- **The Hall-Witt identity** -/]
-theorem conj_commutatorElement_right_commutatorElement_mul (a b c : G) :
-    b * ⁅a, ⁅b⁻¹, c⁆⁆ * b⁻¹ * c * ⁅b, ⁅c⁻¹, a⁆⁆ * c⁻¹ * a * ⁅c, ⁅a⁻¹, b⁆⁆ * a⁻¹ = 1 := by
+theorem conj_commutatorElement_right_commutatorElement_mul (a b c : G)
+    : b * ⁅a, ⁅b⁻¹, c⁆⁆ * b⁻¹ * c * ⁅b, ⁅c⁻¹, a⁆⁆ * c⁻¹ * a * ⁅c, ⁅a⁻¹, b⁆⁆ * a⁻¹ = 1 := by
   simp [mul_assoc, commutatorElement_def]
 
 /-- **The Hall-Witt identity** -/
 @[to_additive /-- **The Hall-Witt identity** -/]
-theorem commutatorElement_commutatorElement_conj_mul (a b c : G) :
-    ⁅⁅a, b⁆, b * c * b⁻¹⁆ * ⁅⁅b, c⁆, c * a * c⁻¹⁆ * ⁅⁅c, a⁆, a * b * a⁻¹⁆ = 1 := by
+theorem commutatorElement_commutatorElement_conj_mul (a b c : G)
+    : ⁅⁅a, b⁆, b * c * b⁻¹⁆ * ⁅⁅b, c⁆, c * a * c⁻¹⁆ * ⁅⁅c, a⁆, a * b * a⁻¹⁆ = 1 := by
   simp [mul_assoc, commutatorElement_def]
 
 /-- **The Hall-Witt identity** -/
 @[to_additive /-- **The Hall-Witt identity** -/]
-theorem commutatorElement_conj_commutatorElement_mul (a b c : G) :
-    ⁅a * b * a⁻¹, ⁅c, a⁆⁆ * ⁅c * a * c⁻¹, ⁅b, c⁆⁆ * ⁅b * c * b⁻¹, ⁅a, b⁆⁆ = 1 := by
+theorem commutatorElement_conj_commutatorElement_mul (a b c : G)
+    : ⁅a * b * a⁻¹, ⁅c, a⁆⁆ * ⁅c * a * c⁻¹, ⁅b, c⁆⁆ * ⁅b * c * b⁻¹, ⁅a, b⁆⁆ = 1 := by
   simp [mul_assoc, commutatorElement_def]
 
 @[to_additive]
@@ -147,8 +148,8 @@ instance commutator : Bracket (Subgroup G) (Subgroup G) :=
   ⟨fun H₁ H₂ => closure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g }⟩
 
 @[to_additive]
-theorem commutator_def (H₁ H₂ : Subgroup G) :
-    ⁅H₁, H₂⁆ = closure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g } :=
+theorem commutator_def (H₁ H₂ : Subgroup G)
+    : ⁅H₁, H₂⁆ = closure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g } :=
   rfl
 
 variable {g₁ g₂ g₃} {H H₁ H₂ H₃ K K₁ K₂ : Subgroup G}
@@ -167,12 +168,10 @@ theorem commutator_mono (h₁ : H₁ ≤ K₁) (h₂ : H₂ ≤ K₂) : ⁅H₁,
   commutator_le.mpr fun _g₁ hg₁ _g₂ hg₂ => commutator_mem_commutator (h₁ hg₁) (h₂ hg₂)
 
 @[to_additive (attr := gcongr)]
-theorem commutator_mono_left (h : H₁ ≤ H₂) : ⁅H₁, K⁆ ≤ ⁅H₂, K⁆ :=
-  commutator_mono h le_rfl
+theorem commutator_mono_left (h : H₁ ≤ H₂) : ⁅H₁, K⁆ ≤ ⁅H₂, K⁆ := commutator_mono h le_rfl
 
 @[to_additive (attr := gcongr)]
-theorem commutator_mono_right (h : K₁ ≤ K₂) : ⁅H, K₁⁆ ≤ ⁅H, K₂⁆ :=
-  commutator_mono le_rfl h
+theorem commutator_mono_right (h : K₁ ≤ K₂) : ⁅H, K₁⁆ ≤ ⁅H, K₂⁆ := commutator_mono le_rfl h
 
 @[to_additive]
 theorem commutator_eq_bot_iff_le_centralizer : ⁅H₁, H₂⁆ = ⊥ ↔ H₁ ≤ centralizer H₂ := by
@@ -183,8 +182,8 @@ theorem commutator_eq_bot_iff_le_centralizer : ⁅H₁, H₂⁆ = ⊥ ↔ H₁ �
 
 /-- **The Three Subgroups Lemma** (via the Hall-Witt identity) -/
 @[to_additive /-- **The Three Subgroups Lemma** (via the Hall-Witt identity) -/]
-theorem commutator_commutator_eq_bot_of_rotate (h1 : ⁅⁅H₂, H₃⁆, H₁⁆ = ⊥) (h2 : ⁅⁅H₃, H₁⁆, H₂⁆ = ⊥) :
-    ⁅⁅H₁, H₂⁆, H₃⁆ = ⊥ := by
+theorem commutator_commutator_eq_bot_of_rotate (h1 : ⁅⁅H₂, H₃⁆, H₁⁆ = ⊥) (h2 : ⁅⁅H₃, H₁⁆, H₂⁆ = ⊥)
+    : ⁅⁅H₁, H₂⁆, H₃⁆ = ⊥ := by
   simp_rw [commutator_eq_bot_iff_le_centralizer, commutator_le,
     mem_centralizer_iff_commutator_eq_one] at h1 h2 ⊢
   intro x hx y hy z hz
@@ -243,8 +242,8 @@ instance commutator_normal [h₁ : H₁.Normal] [h₂ : H₂.Normal] : Normal �
   exact ⟨_, h₁.conj_mem c hc d, _, h₂.conj_mem e he d, (conjugate_commutatorElement c e d).symm⟩
 
 @[to_additive]
-theorem commutator_def' [H₁.Normal] [H₂.Normal] :
-    ⁅H₁, H₂⁆ = normalClosure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g } :=
+theorem commutator_def' [H₁.Normal] [H₂.Normal]
+    : ⁅H₁, H₂⁆ = normalClosure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g } :=
   le_antisymm closure_le_normalClosure (normalClosure_le_normal subset_closure)
 
 @[to_additive]
@@ -275,8 +274,7 @@ theorem le_normalizer_iff_commutator_le_left : H ≤ normalizer K ↔ ⁅K, H⁆
   commutator_comm H K ▸ le_normalizer_iff_commutator_le_right
 
 @[to_additive (attr := simp)]
-theorem commutator_bot_left : ⁅(⊥ : Subgroup G), H₁⁆ = ⊥ :=
-  le_bot_iff.mp (commutator_le_left ⊥ H₁)
+theorem commutator_bot_left : ⁅(⊥ : Subgroup G), H₁⁆ = ⊥ := le_bot_iff.mp (commutator_le_left ⊥ H₁)
 
 @[to_additive (attr := simp)]
 theorem commutator_bot_right : ⁅H₁, ⊥⁆ = (⊥ : Subgroup G) :=
@@ -287,8 +285,8 @@ theorem commutator_le_inf [Normal H₁] [Normal H₂] : ⁅H₁, H₂⁆ ≤ H�
   le_inf (commutator_le_left H₁ H₂) (commutator_le_right H₁ H₂)
 
 variable {H₁ H₂} in
-theorem commutator_eq_bot_of_disjoint [H₁.Normal] [H₂.Normal] (h : Disjoint H₁ H₂) :
-    ⁅H₁, H₂⁆ = ⊥ := by
+theorem commutator_eq_bot_of_disjoint [H₁.Normal] [H₂.Normal] (h : Disjoint H₁ H₂)
+    : ⁅H₁, H₂⁆ = ⊥ := by
   grw [eq_bot_iff, commutator_le_inf, h.eq_bot.le]
 
 end Normal
@@ -316,8 +314,8 @@ theorem normalizer_commutator_ge_right : H₂ ≤ normalizer (⁅H₁, H₂⁆ :
 
 @[to_additive]
 instance normal_subgroupOf_commutator_sup : (⁅H₁, H₂⁆.subgroupOf <| H₁ ⊔ H₂).Normal :=
-  normal_subgroupOf_of_le_normalizer <| sup_le
-    (normalizer_commutator_ge_left H₁ H₂) (normalizer_commutator_ge_right H₁ H₂)
+  normal_subgroupOf_of_le_normalizer <|
+    sup_le (normalizer_commutator_ge_left H₁ H₂) (normalizer_commutator_ge_right H₁ H₂)
 
 @[to_additive]
 theorem map_commutator (f : G →* G') : map f ⁅H₁, H₂⁆ = ⁅map f H₁, map f H₂⁆ := by
@@ -332,21 +330,23 @@ theorem map_commutator (f : G →* G') : map f ⁅H₁, H₂⁆ = ⁅map f H₁,
 variable {H₁ H₂}
 
 @[to_additive]
-theorem commutator_le_map_commutator {f : G →* G'} {K₁ K₂ : Subgroup G'} (h₁ : K₁ ≤ H₁.map f)
-    (h₂ : K₂ ≤ H₂.map f) : ⁅K₁, K₂⁆ ≤ ⁅H₁, H₂⁆.map f :=
+theorem commutator_le_map_commutator
+    {f : G →* G'} {K₁ K₂ : Subgroup G'} (h₁ : K₁ ≤ H₁.map f) (h₂ : K₂ ≤ H₂.map f)
+    : ⁅K₁, K₂⁆ ≤ ⁅H₁, H₂⁆.map f :=
   (commutator_mono h₁ h₂).trans (ge_of_eq (map_commutator H₁ H₂ f))
 
 variable (H₁ H₂)
 
 @[to_additive]
-private theorem commutator_sup_right_of_normal (H K N : Subgroup G) [(⁅H, N⁆ ⊔ ⁅K, N⁆).Normal] :
-    ⁅H ⊔ K, N⁆ = ⁅H, N⁆ ⊔ ⁅K, N⁆ := by
+private theorem commutator_sup_right_of_normal (H K N : Subgroup G) [(⁅H, N⁆ ⊔ ⁅K, N⁆).Normal]
+    : ⁅H ⊔ K, N⁆ = ⁅H, N⁆ ⊔ ⁅K, N⁆ := by
   refine le_antisymm ?_
     (sup_le (commutator_mono_left le_sup_left) (commutator_mono_left le_sup_right))
   have hH : ⁅H, N⁆ ≤ ⁅H, N⁆ ⊔ ⁅K, N⁆ := le_sup_left
   have hK : ⁅K, N⁆ ≤ ⁅H, N⁆ ⊔ ⁅K, N⁆ := le_sup_right
-  rw [← QuotientGroup.ker_mk' (⁅H, N⁆ ⊔ ⁅K, N⁆), ← Subgroup.map_eq_bot_iff,
-    map_commutator, Subgroup.commutator_eq_bot_iff_le_centralizer] at hH hK ⊢
+  rw [← QuotientGroup.ker_mk' (⁅H, N⁆ ⊔ ⁅K, N⁆), ← Subgroup.map_eq_bot_iff, map_commutator,
+      Subgroup.commutator_eq_bot_iff_le_centralizer]
+    at hH hK ⊢
   rw [map_sup]
   exact sup_le hH hK
 
@@ -376,35 +376,35 @@ theorem commutator_sup_left (N H K : Subgroup G) [N.Normal] : ⁅N, H ⊔ K⁆ =
   simp_rw [commutator_comm N, commutator_sup_right]
 
 @[to_additive]
-instance commutator_characteristic [h₁ : Characteristic H₁] [h₂ : Characteristic H₂] :
-    Characteristic ⁅H₁, H₂⁆ :=
+instance commutator_characteristic [h₁ : Characteristic H₁] [h₂ : Characteristic H₂]
+    : Characteristic ⁅H₁, H₂⁆ :=
   characteristic_iff_le_map.mpr fun ϕ =>
     commutator_le_map_commutator (characteristic_iff_le_map.mp h₁ ϕ)
       (characteristic_iff_le_map.mp h₂ ϕ)
 
 @[to_additive]
-theorem commutator_prod_prod (K₁ K₂ : Subgroup G') :
-    ⁅H₁.prod K₁, H₂.prod K₂⁆ = ⁅H₁, H₂⁆.prod ⁅K₁, K₂⁆ := by
+theorem commutator_prod_prod (K₁ K₂ : Subgroup G')
+    : ⁅H₁.prod K₁, H₂.prod K₂⁆ = ⁅H₁, H₂⁆.prod ⁅K₁, K₂⁆ := by
   apply le_antisymm
   · rw [commutator_le]
     rintro ⟨p₁, p₂⟩ ⟨hp₁, hp₂⟩ ⟨q₁, q₂⟩ ⟨hq₁, hq₂⟩
     exact ⟨commutator_mem_commutator hp₁ hq₁, commutator_mem_commutator hp₂ hq₂⟩
   · rw [prod_le_iff]
-    constructor <;>
-      · rw [map_commutator]
-        apply commutator_mono <;>
-          simp [le_prod_iff, map_map, MonoidHom.fst_comp_inl, MonoidHom.snd_comp_inl,
-            MonoidHom.fst_comp_inr, MonoidHom.snd_comp_inr]
+    constructor
+      <;> · rw [map_commutator]
+            apply commutator_mono <;> simp [le_prod_iff, map_map, MonoidHom.fst_comp_inl,
+              MonoidHom.snd_comp_inl, MonoidHom.fst_comp_inr, MonoidHom.snd_comp_inr]
 
-/-- The commutator of direct product is contained in the direct product of the commutators.
+/--
+The commutator of direct product is contained in the direct product of the commutators.
 
 See `commutator_pi_pi_of_finite` for equality given `Fintype η`.
 -/
 @[to_additive /-- The commutator of direct product is contained in the direct product of the
 commutators. See `commutator_pi_pi_of_finite` for equality given `Fintype η`. -/]
-theorem commutator_pi_pi_le {η : Type*} {Gs : η → Type*} [∀ i, Group (Gs i)]
-    (H K : ∀ i, Subgroup (Gs i)) :
-    ⁅Subgroup.pi Set.univ H, Subgroup.pi Set.univ K⁆ ≤ Subgroup.pi Set.univ fun i => ⁅H i, K i⁆ :=
+theorem commutator_pi_pi_le
+    {η : Type*} {Gs : η → Type*} [∀ i, Group (Gs i)] (H K : ∀ i, Subgroup (Gs i))
+    : ⁅Subgroup.pi Set.univ H, Subgroup.pi Set.univ K⁆ ≤ Subgroup.pi Set.univ fun i => ⁅H i, K i⁆ :=
   commutator_le.mpr fun _p hp _q hq i hi => commutator_mem_commutator (hp i hi) (hq i hi)
 
 end Subgroup
@@ -415,35 +415,29 @@ variable (G)
 
 /-- The set of commutator elements `⁅g₁, g₂⁆` in `G`. -/
 @[to_additive /-- The set of additive commutator elements `⁅g₁, g₂⁆` in `G`. -/]
-def commutatorSet : Set G :=
-  { g | ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g }
+def commutatorSet : Set G := { g | ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g }
 
 @[to_additive]
-theorem commutatorSet_def : commutatorSet G = { g | ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g } :=
-  rfl
+theorem commutatorSet_def : commutatorSet G = { g | ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g } := rfl
 
 @[to_additive]
-theorem one_mem_commutatorSet : (1 : G) ∈ commutatorSet G :=
-  ⟨1, 1, commutatorElement_self 1⟩
+theorem one_mem_commutatorSet : (1 : G) ∈ commutatorSet G := ⟨1, 1, commutatorElement_self 1⟩
 
-@[to_additive]
-instance : Nonempty (commutatorSet G) :=
-  ⟨⟨1, one_mem_commutatorSet G⟩⟩
+@[to_additive] instance : Nonempty (commutatorSet G) := ⟨⟨1, one_mem_commutatorSet G⟩⟩
 
 variable {G g}
 
 @[to_additive]
-theorem mem_commutatorSet_iff : g ∈ commutatorSet G ↔ ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g :=
-  Iff.rfl
+theorem mem_commutatorSet_iff : g ∈ commutatorSet G ↔ ∃ g₁ g₂ : G, ⁅g₁, g₂⁆ = g := Iff.rfl
 
-@[to_additive]
-theorem commutator_mem_commutatorSet : ⁅g₁, g₂⁆ ∈ commutatorSet G :=
-  ⟨g₁, g₂, rfl⟩
+@[to_additive] theorem commutator_mem_commutatorSet : ⁅g₁, g₂⁆ ∈ commutatorSet G := ⟨g₁, g₂, rfl⟩
 
 variable (G)
 
-/-- The commutator subgroup of a group G is the normal subgroup
-  generated by the commutators `[p,q] = p * q * p⁻¹ * q⁻¹`. -/
+/--
+The commutator subgroup of a group G is the normal subgroup
+generated by the commutators `[p,q] = p * q * p⁻¹ * q⁻¹`.
+-/
 @[to_additive /-- The commutator subgroup of an additive group G is the normal additive subgroup
   generated by the additive commutators `[p,q] = p + q + -p + -q`. -/]
 def commutator : Subgroup G := ⁅(⊤ : Subgroup G), ⊤⁆
@@ -452,9 +446,7 @@ deriving Subgroup.Normal, Subgroup.Characteristic
 attribute [to_additive] instNormalCommutator
 attribute [to_additive] instCharacteristicCommutator
 
-@[to_additive]
-lemma commutator_def : commutator G = ⁅(⊤ : Subgroup G), ⊤⁆ :=
-  rfl
+@[to_additive] lemma commutator_def : commutator G = ⁅(⊤ : Subgroup G), ⊤⁆ := rfl
 
 @[to_additive]
 lemma commutator_eq_closure : commutator G = Subgroup.closure (commutatorSet G) := by
@@ -466,8 +458,8 @@ lemma commutator_eq_normalClosure : commutator G = Subgroup.normalClosure (commu
 
 variable {G} in
 @[to_additive]
-lemma Subgroup.map_subtype_commutator (H : Subgroup G) :
-    (_root_.commutator H).map H.subtype = ⁅H, H⁆ := by
+lemma Subgroup.map_subtype_commutator (H : Subgroup G)
+    : (_root_.commutator H).map H.subtype = ⁅H, H⁆ := by
   rw [_root_.commutator_def, map_commutator, Subgroup.map_top, H.range_subtype]
 
 variable {G} in
@@ -476,8 +468,8 @@ lemma Subgroup.commutator_le_self (H : Subgroup G) : ⁅H, H⁆ ≤ H :=
   H.map_subtype_commutator.symm.trans_le (map_subtype_le _)
 
 @[to_additive]
-theorem Subgroup.Normal.of_commutator_le {H : Subgroup G} (h : _root_.commutator G ≤ H) :
-    H.Normal :=
+theorem Subgroup.Normal.of_commutator_le {H : Subgroup G} (h : _root_.commutator G ≤ H)
+    : H.Normal :=
   commutator_top_left_le_iff.mp <| commutator_mono le_top le_top |>.trans h
 
 @[to_additive]
@@ -493,10 +485,10 @@ theorem commutator_eq_bot [hG : IsMulCommutative G] : commutator G = ⊥ :=
   (commutator_eq_bot_iff G).mpr hG
 
 @[to_additive]
-lemma commutator_centralizer_commutator_le_center :
-    ⁅centralizer (commutator G : Set G), centralizer (commutator G)⁆ ≤ Subgroup.center G := by
-  rw [← Subgroup.centralizer_univ, ← Subgroup.coe_top, ←
-    Subgroup.commutator_eq_bot_iff_le_centralizer]
+lemma commutator_centralizer_commutator_le_center
+    : ⁅centralizer (commutator G : Set G), centralizer (commutator G)⁆ ≤ Subgroup.center G := by
+  rw [← Subgroup.centralizer_univ, ← Subgroup.coe_top,
+    ← Subgroup.commutator_eq_bot_iff_le_centralizer]
   suffices ⁅⁅⊤, centralizer (commutator G : Set G)⁆, centralizer (commutator G : Set G)⁆ = ⊥ by
     refine Subgroup.commutator_commutator_eq_bot_of_rotate ?_ this
     rwa [Subgroup.commutator_comm (centralizer (commutator G : Set G))]
@@ -515,14 +507,14 @@ variable {G} in
 @[to_additive]
 lemma map_commutator_eq (f : G →* G') : (commutator G).map f = ⁅f.range, f.range⁆ := by
   rw [_root_.commutator_def, Subgroup.map_commutator]
-  apply congr_arg₂ <;>
-  · rw [Subgroup.map_eq_range_iff]
-    rw [codisjoint_iff, top_sup_eq]
+  apply congr_arg₂
+    <;> · rw [Subgroup.map_eq_range_iff]
+          rw [codisjoint_iff, top_sup_eq]
 
 variable {G} in
 @[to_additive]
-theorem map_commutator_of_surjective {f : G →* G'} (hf : Function.Surjective f) :
-    (commutator G).map f = commutator G' := by
+theorem map_commutator_of_surjective {f : G →* G'} (hf : Function.Surjective f)
+    : (commutator G).map f = commutator G' := by
   rw [map_commutator_eq, f.range_eq_top_of_surjective hf, commutator_def]
 
 section commutatorRepresentatives
@@ -545,25 +537,30 @@ noncomputable def closureCommutatorRepresentatives : Subgroup G :=
   closure (Prod.fst '' commutatorRepresentatives G ∪ Prod.snd '' commutatorRepresentatives G)
 
 @[to_additive]
-lemma image_commutatorSet_closureCommutatorRepresentatives :
-    (closureCommutatorRepresentatives G).subtype ''
-        commutatorSet (closureCommutatorRepresentatives G) =
-      commutatorSet G := by
+lemma image_commutatorSet_closureCommutatorRepresentatives
+    : (closureCommutatorRepresentatives G).subtype
+        '' commutatorSet (closureCommutatorRepresentatives G)
+      = commutatorSet G := by
   apply Set.Subset.antisymm
   · rintro - ⟨-, ⟨g₁, g₂, rfl⟩, rfl⟩
     exact ⟨g₁, g₂, rfl⟩
-  · exact fun g hg ↦
-      ⟨_, ⟨⟨_, subset_closure <| .inl ⟨_, ⟨⟨g, hg⟩, rfl⟩, rfl⟩⟩,
-          ⟨_, subset_closure <| .inr ⟨_, ⟨⟨g, hg⟩, rfl⟩, rfl⟩⟩, rfl⟩,
-        hg.choose_spec.choose_spec⟩
+  · exact fun g hg ↦ ⟨
+      _,
+      ⟨
+        ⟨_, subset_closure <| .inl ⟨_, ⟨⟨g, hg⟩, rfl⟩, rfl⟩⟩,
+        ⟨_, subset_closure <| .inr ⟨_, ⟨⟨g, hg⟩, rfl⟩, rfl⟩⟩,
+        rfl
+      ⟩,
+      hg.choose_spec.choose_spec
+    ⟩
 
 end commutatorRepresentatives
 
 variable {G}
 
 @[to_additive]
-theorem Subgroup.Normal.quotient_commutative_iff_commutator_le {N : Subgroup G} [N.Normal] :
-    IsMulCommutative (G ⧸ N) ↔ _root_.commutator G ≤ N := by
+theorem Subgroup.Normal.quotient_commutative_iff_commutator_le {N : Subgroup G} [N.Normal]
+    : IsMulCommutative (G ⧸ N) ↔ _root_.commutator G ≤ N := by
   rw [← commutator_eq_bot_iff, ← map_commutator_of_surjective (QuotientGroup.mk'_surjective N),
     map_eq_bot_iff, QuotientGroup.ker_mk']
 
@@ -571,12 +568,15 @@ open IsMulCommutative in
 instance : IsMulCommutative (G ⧸ _root_.commutator G) :=
   Subgroup.Normal.quotient_commutative_iff_commutator_le.mpr le_rfl
 
-/-- If `N` is a normal subgroup of `G` and `H` a commutative subgroup such that `H ⊔ N = ⊤`,
-  then `N` contains `commutator G`. -/
+/--
+If `N` is a normal subgroup of `G` and `H` a commutative subgroup such that `H ⊔ N = ⊤`,
+then `N` contains `commutator G`.
+-/
 @[to_additive /-- If `N` is a normal additive subgroup of `G` and `H` a commutative additive
 subgroup such that `H ⊔ N = ⊤`, then `N` contains `addCommutator G`. -/]
-theorem Subgroup.Normal.commutator_le_of_self_sup_commutative_eq_top {N : Subgroup G} [N.Normal]
-    {H : Subgroup G} (hHN : N ⊔ H = ⊤) [IsMulCommutative H] : _root_.commutator G ≤ N := by
+theorem Subgroup.Normal.commutator_le_of_self_sup_commutative_eq_top
+    {N : Subgroup G} [N.Normal] {H : Subgroup G} (hHN : N ⊔ H = ⊤) [IsMulCommutative H]
+    : _root_.commutator G ≤ N := by
   rw [← QuotientGroup.ker_mk' N, ← map_eq_bot_iff, _root_.commutator_def, ← hHN, map_commutator,
     commutator_self_eq_bot_iff, map_sup, QuotientGroup.map_mk'_self, bot_sup_eq]
   infer_instance

@@ -45,8 +45,8 @@ example : 1 < 2 := by
   -- h : ¬ 1 < 2 ⊢ False
 ```
 -/
-syntax (name := byContra!)
-  "by_contra!" optConfig (ppSpace colGt rcasesPatMed)? (" : " term)? : tactic
+syntax (name := byContra!) "by_contra!" optConfig (ppSpace colGt rcasesPatMed)? (" : " term)?
+  : tactic
 
 local elab "try_push_neg_at" cfg:optConfig h:ident : tactic => do
   Push.push (← Push.elabPushConfig cfg) none (.const ``Not) (.targets #[h] false)
@@ -57,17 +57,20 @@ local elab "try_push_neg" cfg:optConfig : tactic => do
     (ifUnchanged := .silent)
 
 macro_rules
-| `(tactic| by_contra! $cfg $[$pat?]? $[: $ty?]?) => do
-  let pat ← pat?.getDM `(rcasesPatMed| $(mkIdent `this):ident)
-  let replaceTac ← match ty? with
-    | some ty => `(tactic|
-      replace h : $ty := by try_push_neg $cfg; exact h) -- Let `h` have type `ty`.
-    | none => `(tactic| skip)
-  -- We have to use `revert h; rintro $pat` instead of `obtain $pat := h`,
-  -- because if `$pat` is a variable, `obtain $pat := h` doesn't do anything.
-  `(tactic| (
-    by_contra h;
-    try_push_neg_at $cfg h; $replaceTac;
-    revert h; rintro ($pat:rcasesPatMed)))
+  | `(tactic| by_contra! $cfg $[$pat?]? $[: $ty?]?) => do
+    let pat ← pat?.getDM `(rcasesPatMed| $(mkIdent `this):ident)
+    let replaceTac ←
+      match ty? with
+      | some ty =>
+        `(tactic|
+          replace h : $ty := by try_push_neg $cfg; exact h) -- Let `h` have type `ty`.
+      | none =>
+        `(tactic| skip)
+    -- We have to use `revert h; rintro $pat` instead of `obtain $pat := h`,
+    -- because if `$pat` is a variable, `obtain $pat := h` doesn't do anything.
+    `(tactic| (
+      by_contra h;
+      try_push_neg_at $cfg h; $replaceTac;
+      revert h; rintro ($pat:rcasesPatMed)))
 
 end Mathlib.Tactic.ByContra

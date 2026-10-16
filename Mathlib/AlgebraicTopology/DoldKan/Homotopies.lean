@@ -59,7 +59,6 @@ compatible with the application of additive functors (see `map_Hσ`).
 
 @[expose] public section
 
-
 open CategoryTheory CategoryTheory.Category CategoryTheory.Limits CategoryTheory.Preadditive
   CategoryTheory.SimplicialObject Homotopy Opposite
 
@@ -74,26 +73,30 @@ namespace DoldKan
 variable {C : Type*} [Category* C] [Preadditive C]
 variable {X : SimplicialObject C}
 
-/-- As we are using chain complexes indexed by `ℕ`, we shall need the relation
-`c` such `c m n` if and only if `n+1=m`. -/
-abbrev c :=
-  ComplexShape.down ℕ
+/--
+As we are using chain complexes indexed by `ℕ`, we shall need the relation
+`c` such `c m n` if and only if `n+1=m`.
+-/
+abbrev c := ComplexShape.down ℕ
 
-/-- Helper when we need some `c.rel i j` (i.e. `ComplexShape.down ℕ`),
-e.g. `c_mk n (n+1) rfl` -/
-theorem c_mk (i j : ℕ) (h : j + 1 = i) : c.Rel i j :=
-  ComplexShape.down_mk i j h
+/--
+Helper when we need some `c.rel i j` (i.e. `ComplexShape.down ℕ`),
+e.g. `c_mk n (n+1) rfl`
+-/
+theorem c_mk (i j : ℕ) (h : j + 1 = i) : c.Rel i j := ComplexShape.down_mk i j h
 
 set_option backward.defeqAttrib.useBackward true in
 /-- This lemma is meant to be used with `nullHomotopicMap'_f_of_not_rel_left` -/
-theorem cs_down_0_not_rel_left (j : ℕ) : ¬c.Rel 0 j := by
+theorem cs_down_0_not_rel_left (j : ℕ) : ¬ c.Rel 0 j := by
   intro hj
   dsimp at hj
   apply Nat.not_succ_le_zero j
   rw [Nat.succ_eq_add_one, hj]
 
-/-- The sequence of maps which gives the null homotopic maps `Hσ` that shall be in
-the inductive construction of the projections `P q : K[X] ⟶ K[X]` -/
+/--
+The sequence of maps which gives the null homotopic maps `Hσ` that shall be in
+the inductive construction of the projections `P q : K[X] ⟶ K[X]`
+-/
 def hσ (q : ℕ) (n : ℕ) : X _⦋n⦌ ⟶ X _⦋n + 1⦌ :=
   if n < q then 0 else (-1 : ℤ) ^ (n - q) • X.σ ⟨n - q, Nat.lt_succ_of_le (Nat.sub_le _ _)⟩
 
@@ -101,34 +104,32 @@ def hσ (q : ℕ) (n : ℕ) : X _⦋n⦌ ⟶ X _⦋n + 1⦌ :=
 def hσ' (q : ℕ) : ∀ n m, c.Rel m n → (K[X].X n ⟶ K[X].X m) := fun n m hnm =>
   hσ q n ≫ eqToHom (by congr)
 
-theorem hσ'_eq_zero {q n m : ℕ} (hnq : n < q) (hnm : c.Rel m n) :
-    (hσ' q n m hnm : X _⦋n⦌ ⟶ X _⦋m⦌) = 0 := by
+theorem hσ'_eq_zero {q n m : ℕ} (hnq : n < q) (hnm : c.Rel m n)
+    : (hσ' q n m hnm : X _⦋n⦌ ⟶ X _⦋m⦌) = 0 := by
   simp only [hσ', hσ]
   split_ifs
   exact zero_comp
 
-theorem hσ'_eq {q n a m : ℕ} (ha : n = a + q) (hnm : c.Rel m n) :
-    (hσ' q n m hnm : X _⦋n⦌ ⟶ X _⦋m⦌) =
-      ((-1 : ℤ) ^ a • X.σ ⟨a, Nat.lt_succ_iff.mpr (Nat.le.intro (Eq.symm ha))⟩) ≫
-        eqToHom (by congr) := by
+theorem hσ'_eq {q n a m : ℕ} (ha : n = a + q) (hnm : c.Rel m n)
+    : (hσ' q n m hnm : X _⦋n⦌ ⟶ X _⦋m⦌)
+      = ((-1 : ℤ) ^ a • X.σ ⟨a, Nat.lt_succ_iff.mpr (Nat.le.intro (Eq.symm ha))⟩)
+        ≫ eqToHom (by congr) := by
   #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/13166
   (replacing grind's canonicalizer with a type-directed normalizer), `grind` closed this goal.
   It is not yet clear whether this is due to defeq abuse in Mathlib or a problem in the new
   canonicalizer; a minimization would help. The original proof was: `grind [hσ', hσ]` -/
   simp [hσ', hσ, ha]
 
-theorem hσ'_eq' {q n a : ℕ} (ha : n = a + q) :
-    (hσ' q n (n + 1) rfl : X _⦋n⦌ ⟶ X _⦋n + 1⦌) =
-      (-1 : ℤ) ^ a • X.σ ⟨a, Nat.lt_succ_iff.mpr (Nat.le.intro (Eq.symm ha))⟩ := by
+theorem hσ'_eq' {q n a : ℕ} (ha : n = a + q)
+    : (hσ' q n (n + 1) rfl : X _⦋n⦌ ⟶ X _⦋n + 1⦌)
+      = (-1 : ℤ) ^ a • X.σ ⟨a, Nat.lt_succ_iff.mpr (Nat.le.intro (Eq.symm ha))⟩ := by
   rw [hσ'_eq ha rfl, eqToHom_refl, comp_id]
 
 /-- The null homotopic map $(hσ q) ∘ d + d ∘ (hσ q)$ -/
-def Hσ (q : ℕ) : K[X] ⟶ K[X] :=
-  nullHomotopicMap' (hσ' q)
+def Hσ (q : ℕ) : K[X] ⟶ K[X] := nullHomotopicMap' (hσ' q)
 
 /-- `Hσ` is null homotopic -/
-def homotopyHσToZero (q : ℕ) : Homotopy (Hσ q : K[X] ⟶ K[X]) 0 :=
-  nullHomotopy' (hσ' q)
+def homotopyHσToZero (q : ℕ) : Homotopy (Hσ q : K[X] ⟶ K[X]) 0 := nullHomotopy' (hσ' q)
 
 /-- In degree `0`, the null homotopic map `Hσ` is zero. -/
 theorem Hσ_eq_zero (q : ℕ) : (Hσ q : K[X] ⟶ K[X]).f 0 = 0 := by
@@ -136,14 +137,14 @@ theorem Hσ_eq_zero (q : ℕ) : (Hσ q : K[X] ⟶ K[X]).f 0 = 0 := by
   rw [nullHomotopicMap'_f_of_not_rel_left (c_mk 1 0 rfl) cs_down_0_not_rel_left]
   rcases q with (_ | q)
   · rw [hσ'_eq (show 0 = 0 + 0 by rfl) (c_mk 1 0 rfl)]
-    suffices X.σ 0 ≫ X.δ 0 + -X.σ 0 ≫ X.δ 1 = 0 by simpa
+    suffices X.σ 0 ≫ X.δ 0 + - X.σ 0 ≫ X.δ 1 = 0 by simpa
     rw [← Fin.succ_zero_eq_one, δ_comp_σ_succ, δ_comp_σ_self' X (Fin.castSucc_zero.symm)]
     simp
   · rw [hσ'_eq_zero (Nat.succ_pos q) (c_mk 1 0 rfl), zero_comp]
 
 /-- The maps `hσ' q n m hnm` are natural on the simplicial object -/
-theorem hσ'_naturality (q : ℕ) (n m : ℕ) (hnm : c.Rel m n) {X Y : SimplicialObject C} (f : X ⟶ Y) :
-    f.app (op ⦋n⦌) ≫ hσ' q n m hnm = hσ' q n m hnm ≫ f.app (op ⦋m⦌) := by
+theorem hσ'_naturality (q : ℕ) (n m : ℕ) (hnm : c.Rel m n) {X Y : SimplicialObject C} (f : X ⟶ Y)
+    : f.app (op ⦋n⦌) ≫ hσ' q n m hnm = hσ' q n m hnm ≫ f.app (op ⦋m⦌) := by
   obtain rfl : n + 1 = m := hnm
   -- `simp? [hσ', hσ]` says:
   simp only [AlternatingFaceMapComplex.obj_X, hσ', hσ, Int.reduceNeg, eqToHom_refl, comp_id]
@@ -162,10 +163,13 @@ def natTransHσ (q : ℕ) : alternatingFaceMapComplex C ⟶ alternatingFaceMapCo
     simp only [alternatingFaceMapComplex_map_f, hσ'_naturality]
 
 /-- The maps `hσ' q n m hnm` are compatible with the application of additive functors. -/
-theorem map_hσ' {D : Type*} [Category* D] [Preadditive D] (G : C ⥤ D) [G.Additive]
-    (X : SimplicialObject C) (q n m : ℕ) (hnm : c.Rel m n) :
-    (hσ' q n m hnm : K[((whiskering _ _).obj G).obj X].X n ⟶ _) =
-      G.map (hσ' q n m hnm : K[X].X n ⟶ _) := by
+theorem map_hσ'
+    {D : Type*} [Category* D] [Preadditive D]
+    (G : C ⥤ D) [G.Additive]
+    (X : SimplicialObject C)
+    (q n m : ℕ) (hnm : c.Rel m n)
+    : (hσ' q n m hnm : K[((whiskering _ _).obj G).obj X].X n ⟶ _)
+      = G.map (hσ' q n m hnm : K[X].X n ⟶ _) := by
   unfold hσ' hσ
   split_ifs
   · simp only [Functor.map_zero, zero_comp]
@@ -173,9 +177,11 @@ theorem map_hσ' {D : Type*} [Category* D] [Preadditive D] (G : C ⥤ D) [G.Addi
     rfl
 
 /-- The null homotopic maps `Hσ` are compatible with the application of additive functors. -/
-theorem map_Hσ {D : Type*} [Category* D] [Preadditive D] (G : C ⥤ D) [G.Additive]
-    (X : SimplicialObject C) (q n : ℕ) :
-    (Hσ q : K[((whiskering C D).obj G).obj X] ⟶ _).f n = G.map ((Hσ q : K[X] ⟶ _).f n) := by
+theorem map_Hσ
+    {D : Type*} [Category* D] [Preadditive D]
+    (G : C ⥤ D) [G.Additive]
+    (X : SimplicialObject C) (q n : ℕ)
+    : (Hσ q : K[((whiskering C D).obj G).obj X] ⟶ _).f n = G.map ((Hσ q : K[X] ⟶ _).f n) := by
   unfold Hσ
   have eq := congr($(map_nullHomotopicMap' G (@hσ' _ _ _ X q)).f n)
   simp only [Functor.mapHomologicalComplex_map_f, ← map_hσ'] at eq

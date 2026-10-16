@@ -33,12 +33,13 @@ universe u v w x
 
 variable {α : Type u} {β : Type v} {γ : Type w} {ι : Sort x}
 
-/-- A Galois connection is a pair of functions `l` and `u` satisfying
+/--
+A Galois connection is a pair of functions `l` and `u` satisfying
 `l a ≤ b ↔ a ≤ u b`. They are special cases of adjoint functors in category theory,
-but do not depend on the category theory library in mathlib. -/
+but do not depend on the category theory library in mathlib.
+-/
 @[to_dual self (reorder := α β, 3 4, l u)]
-def GaloisConnection [Preorder α] [Preorder β] (l : α → β) (u : β → α) :=
-  ∀ a b, l a ≤ b ↔ a ≤ u b
+def GaloisConnection [Preorder α] [Preorder β] (l : α → β) (u : β → α) := ∀ a b, l a ≤ b ↔ a ≤ u b
 
 to_dual_insert_cast GaloisConnection := by
   rw [forall_comm]; simp only [Iff.comm]
@@ -52,41 +53,39 @@ section
 variable [Preorder α] [Preorder β] {l : α → β} {u : β → α}
 
 @[to_dual self (reorder := α β, 3 4, l u, hu hl, h_u_l h_l_u)]
-theorem monotone_intro (hu : Monotone u) (hl : Monotone l) (h_u_l : ∀ a, a ≤ u (l a))
-    (h_l_u : ∀ a, l (u a) ≤ a) : GaloisConnection l u := fun _ _ =>
+theorem monotone_intro
+    (hu : Monotone u) (hl : Monotone l) (h_u_l : ∀ a, a ≤ u (l a)) (h_l_u : ∀ a, l (u a) ≤ a)
+    : GaloisConnection l u := fun _ _ =>
   ⟨fun h => (h_u_l _).trans (hu h), fun h => (hl h).trans (h_l_u _)⟩
 
 @[to_dual self]
-protected theorem dual {l : α → β} {u : β → α} (gc : GaloisConnection l u) :
-    GaloisConnection (OrderDual.toDual ∘ u ∘ OrderDual.ofDual)
-      (OrderDual.toDual ∘ l ∘ OrderDual.ofDual) :=
-  fun a b => (gc b a).symm
+protected theorem dual {l : α → β} {u : β → α} (gc : GaloisConnection l u)
+    : GaloisConnection (OrderDual.toDual ∘ u ∘ OrderDual.ofDual)
+      (OrderDual.toDual ∘ l ∘ OrderDual.ofDual) := fun a b =>
+  (gc b a).symm
 
 variable (gc : GaloisConnection l u)
 include gc
 
 @[to_dual none]
-theorem le_iff_le {a : α} {b : β} : l a ≤ b ↔ a ≤ u b :=
-  gc _ _
+theorem le_iff_le {a : α} {b : β} : l a ≤ b ↔ a ≤ u b := gc _ _
 
 @[to_dual le_u]
-theorem l_le {a : α} {b : β} : a ≤ u b → l a ≤ b :=
-  (gc _ _).mpr
+theorem l_le {a : α} {b : β} : a ≤ u b → l a ≤ b := (gc _ _).mpr
 
 @[to_dual l_u_le]
-theorem le_u_l (a) : a ≤ u (l a) :=
-  gc.le_u le_rfl
+theorem le_u_l (a) : a ≤ u (l a) := gc.le_u le_rfl
 
-@[to_dual]
-theorem monotone_u : Monotone u := fun a _ H => gc.le_u ((gc.l_u_le a).trans H)
+@[to_dual] theorem monotone_u : Monotone u := fun a _ H => gc.le_u ((gc.l_u_le a).trans H)
 
-@[to_dual]
-theorem monotone_l_comp_u : Monotone (l ∘ u) := gc.monotone_l.comp gc.monotone_u
+@[to_dual] theorem monotone_l_comp_u : Monotone (l ∘ u) := gc.monotone_l.comp gc.monotone_u
 
-/-- If `(l, u)` is a Galois connection, then the relation `x ≤ u (l y)` is a transitive relation.
+/--
+If `(l, u)` is a Galois connection, then the relation `x ≤ u (l y)` is a transitive relation.
 If `l` is a closure operator (`Submodule.span`, `Subgroup.closure`, ...) and `u` is the coercion to
 `Set`, this reads as "if `U` is in the closure of `V` and `V` is in the closure of `W` then `U` is
-in the closure of `W`". -/
+in the closure of `W`".
+-/
 @[to_dual l_u_le_trans]
 theorem le_u_l_trans {x y z : α} (hxy : x ≤ u (l y)) (hyz : y ≤ u (l z)) : x ≤ u (l z) :=
   hxy.trans (gc.monotone_u <| gc.l_le hyz)
@@ -102,13 +101,12 @@ include gc
 theorem u_l_u_eq_u (b : β) : u (l (u b)) = u b :=
   (gc.monotone_u (gc.l_u_le _)).antisymm (gc.le_u_l _)
 
-@[to_dual]
-theorem u_l_u_eq_u' : u ∘ l ∘ u = u :=
-  funext gc.u_l_u_eq_u
+@[to_dual] theorem u_l_u_eq_u' : u ∘ l ∘ u = u := funext gc.u_l_u_eq_u
 
 @[to_dual]
-theorem u_unique {l' : α → β} {u' : β → α} (gc' : GaloisConnection l' u') (hl : ∀ a, l a = l' a)
-    {b : β} : u b = u' b :=
+theorem u_unique
+    {l' : α → β} {u' : β → α} (gc' : GaloisConnection l' u') (hl : ∀ a, l a = l' a) {b : β}
+    : u b = u' b :=
   le_antisymm (gc'.le_u <| hl (u b) ▸ gc.l_u_le _) (gc.le_u <| (hl (u' b)).symm ▸ gc'.l_u_le _)
 
 /-- If there exists a `b` such that `a = u a`, then `b = l a` is one such element. -/
@@ -160,47 +158,68 @@ section Constructions
 protected theorem id [pα : Preorder α] : @GaloisConnection α α pα pα id id := fun _ _ =>
   Iff.intro (fun x => x) fun x => x
 
-protected theorem compose [Preorder α] [Preorder β] [Preorder γ] {l1 : α → β} {u1 : β → α}
-    {l2 : β → γ} {u2 : γ → β} (gc1 : GaloisConnection l1 u1) (gc2 : GaloisConnection l2 u2) :
-    GaloisConnection (l2 ∘ l1) (u1 ∘ u2) := fun _ _ ↦ (gc2 _ _).trans (gc1 _ _)
+protected theorem compose
+    [Preorder α] [Preorder β] [Preorder γ]
+    {l1 : α → β} {u1 : β → α} {l2 : β → γ} {u2 : γ → β}
+    (gc1 : GaloisConnection l1 u1) (gc2 : GaloisConnection l2 u2)
+    : GaloisConnection (l2 ∘ l1) (u1 ∘ u2) := fun _ _ ↦
+  (gc2 _ _).trans (gc1 _ _)
 
-protected theorem dfun {ι : Type u} {α : ι → Type v} {β : ι → Type w} [∀ i, Preorder (α i)]
-    [∀ i, Preorder (β i)] (l : ∀ i, α i → β i) (u : ∀ i, β i → α i)
-    (gc : ∀ i, GaloisConnection (l i) (u i)) :
-    GaloisConnection (fun (a : ∀ i, α i) i => l i (a i)) fun b i => u i (b i) := fun a b =>
+protected theorem dfun
+    {ι : Type u} {α : ι → Type v} {β : ι → Type w} [∀ i, Preorder (α i)] [∀ i, Preorder (β i)]
+    (l : ∀ i, α i → β i) (u : ∀ i, β i → α i) (gc : ∀ i, GaloisConnection (l i) (u i))
+    : GaloisConnection (fun (a : ∀ i, α i) i => l i (a i)) fun b i => u i (b i) := fun a b =>
   forall_congr' fun i => gc i (a i) (b i)
 
 end Constructions
 
-theorem l_comm_of_u_comm {X : Type*} [Preorder X] {Y : Type*} [Preorder Y] {Z : Type*}
-    [Preorder Z] {W : Type*} [PartialOrder W] {lYX : X → Y} {uXY : Y → X}
-    (hXY : GaloisConnection lYX uXY) {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
-    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW) {lZX : X → Z} {uXZ : Z → X}
-    (hXZ : GaloisConnection lZX uXZ) (h : ∀ w, uXZ (uZW w) = uXY (uYW w)) {x : X} :
-    lWZ (lZX x) = lWY (lYX x) :=
+theorem l_comm_of_u_comm
+    {X : Type*} [Preorder X]
+    {Y : Type*} [Preorder Y]
+    {Z : Type*} [Preorder Z]
+    {W : Type*} [PartialOrder W]
+    {lYX : X → Y} {uXY : Y → X} (hXY : GaloisConnection lYX uXY)
+    {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
+    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW)
+    {lZX : X → Z} {uXZ : Z → X}
+    (hXZ : GaloisConnection lZX uXZ) (h : ∀ w, uXZ (uZW w) = uXY (uYW w))
+    {x : X}
+    : lWZ (lZX x) = lWY (lYX x) :=
   (hXZ.compose hZW).l_unique (hXY.compose hWY) h
 
-theorem u_comm_of_l_comm {X : Type*} [PartialOrder X] {Y : Type*} [Preorder Y] {Z : Type*}
-    [Preorder Z] {W : Type*} [Preorder W] {lYX : X → Y} {uXY : Y → X}
-    (hXY : GaloisConnection lYX uXY) {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
-    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW) {lZX : X → Z} {uXZ : Z → X}
-    (hXZ : GaloisConnection lZX uXZ) (h : ∀ x, lWZ (lZX x) = lWY (lYX x)) {w : W} :
-    uXZ (uZW w) = uXY (uYW w) :=
+theorem u_comm_of_l_comm
+    {X : Type*} [PartialOrder X]
+    {Y : Type*} [Preorder Y]
+    {Z : Type*} [Preorder Z]
+    {W : Type*} [Preorder W]
+    {lYX : X → Y} {uXY : Y → X} (hXY : GaloisConnection lYX uXY)
+    {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
+    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW)
+    {lZX : X → Z} {uXZ : Z → X}
+    (hXZ : GaloisConnection lZX uXZ) (h : ∀ x, lWZ (lZX x) = lWY (lYX x))
+    {w : W}
+    : uXZ (uZW w) = uXY (uYW w) :=
   (hXZ.compose hZW).u_unique (hXY.compose hWY) h
 
-theorem l_comm_iff_u_comm {X : Type*} [PartialOrder X] {Y : Type*} [Preorder Y] {Z : Type*}
-    [Preorder Z] {W : Type*} [PartialOrder W] {lYX : X → Y} {uXY : Y → X}
-    (hXY : GaloisConnection lYX uXY) {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
-    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW) {lZX : X → Z} {uXZ : Z → X}
-    (hXZ : GaloisConnection lZX uXZ) :
-    (∀ w : W, uXZ (uZW w) = uXY (uYW w)) ↔ ∀ x : X, lWZ (lZX x) = lWY (lYX x) :=
+theorem l_comm_iff_u_comm
+    {X : Type*} [PartialOrder X]
+    {Y : Type*} [Preorder Y]
+    {Z : Type*} [Preorder Z]
+    {W : Type*} [PartialOrder W]
+    {lYX : X → Y} {uXY : Y → X} (hXY : GaloisConnection lYX uXY)
+    {lWZ : Z → W} {uZW : W → Z} (hZW : GaloisConnection lWZ uZW)
+    {lWY : Y → W} {uYW : W → Y} (hWY : GaloisConnection lWY uYW)
+    {lZX : X → Z} {uXZ : Z → X} (hXZ : GaloisConnection lZX uXZ)
+    : (∀ w : W, uXZ (uZW w) = uXY (uYW w)) ↔ ∀ x : X, lWZ (lZX x) = lWY (lYX x) :=
   ⟨hXY.l_comm_of_u_comm hZW hWY hXZ, hXY.u_comm_of_l_comm hZW hWY hXZ⟩
 
 end GaloisConnection
 
-/-- A Galois insertion is a Galois connection where `l ∘ u = id`. It also contains a constructive
+/--
+A Galois insertion is a Galois connection where `l ∘ u = id`. It also contains a constructive
 choice function, to give better definitional equalities when lifting order structures. Dual
-to `GaloisCoinsertion` -/
+to `GaloisCoinsertion`
+-/
 structure GaloisInsertion {α β : Type*} [Preorder α] [Preorder β] (l : α → β) (u : β → α) where
   /-- A constructive choice function for images of `l`. -/
   choice : ∀ x : α, u (l x) ≤ x → β
@@ -211,9 +230,11 @@ structure GaloisInsertion {α β : Type*} [Preorder α] [Preorder β] (l : α �
   /-- Property of the choice function. -/
   choice_eq : ∀ a h, choice a h = l a
 
-/-- A Galois coinsertion is a Galois connection where `u ∘ l = id`. It also contains a constructive
+/--
+A Galois coinsertion is a Galois connection where `u ∘ l = id`. It also contains a constructive
 choice function, to give better definitional equalities when lifting order structures. Dual to
-`GaloisInsertion` -/
+`GaloisInsertion`
+-/
 @[to_dual (reorder := α β, 3 4, l u)]
 structure GaloisCoinsertion [Preorder α] [Preorder β] (l : α → β) (u : β → α) where
   /-- A constructive choice function for images of `u`. -/
@@ -227,10 +248,12 @@ structure GaloisCoinsertion [Preorder α] [Preorder β] (l : α → β) (u : β 
 
 /-- A constructor for a Galois insertion with the trivial `choice` function. -/
 @[to_dual (reorder := hu hl)
-/-- A constructor for a Galois coinsertion with the trivial `choice` function. -/]
-def GaloisInsertion.monotoneIntro {α β : Type*} [Preorder α] [Preorder β] {l : α → β} {u : β → α}
-    (hu : Monotone u) (hl : Monotone l) (h_u_l : ∀ a, a ≤ u (l a)) (h_l_u : ∀ b, l (u b) = b) :
-    GaloisInsertion l u where
+  /-- A constructor for a Galois coinsertion with the trivial `choice` function. -/]
+def GaloisInsertion.monotoneIntro
+    {α β : Type*} [Preorder α] [Preorder β]
+    {l : α → β} {u : β → α}
+    (hu : Monotone u) (hl : Monotone l) (h_u_l : ∀ a, a ≤ u (l a)) (h_l_u : ∀ b, l (u b) = b)
+    : GaloisInsertion l u where
   choice x _ := l x
   gc := GaloisConnection.monotone_intro hu hl h_u_l fun b => le_of_eq (h_l_u b)
   le_l_u b := le_of_eq (h_l_u b).symm
@@ -239,18 +262,22 @@ def GaloisInsertion.monotoneIntro {α β : Type*} [Preorder α] [Preorder β] {l
 /-- Make a `GaloisInsertion l u` from a `GaloisConnection l u` such that `∀ b, b ≤ l (u b)` -/
 @[to_dual /-- Make a `GaloisCoinsertion` between `αᵒᵈ` and `βᵒᵈ` from a `GaloisInsertion` between
 `α` and `β`. -/]
-def GaloisConnection.toGaloisInsertion {α β : Type*} [Preorder α] [Preorder β] {l : α → β}
-    {u : β → α} (gc : GaloisConnection l u) (h : ∀ b, b ≤ l (u b)) : GaloisInsertion l u :=
-  { choice := fun x _ => l x
-    gc
-    le_l_u := h
-    choice_eq := fun _ _ => rfl }
+def GaloisConnection.toGaloisInsertion
+    {α β : Type*} [Preorder α] [Preorder β]
+    {l : α → β} {u : β → α} (gc : GaloisConnection l u) (h : ∀ b, b ≤ l (u b))
+    : GaloisInsertion l u := {
+  choice := fun x _ => l x
+  gc
+  le_l_u := h
+  choice_eq := fun _ _ => rfl
+}
 
 /-- Lift the bottom along a Galois connection -/
 @[to_dual (attr := instance_reducible) /-- Lift the top along a Galois connection -/]
-def GaloisConnection.liftOrderBot {α β : Type*} [Preorder α] [OrderBot α] [PartialOrder β]
-    {l : α → β} {u : β → α} (gc : GaloisConnection l u) :
-    OrderBot β where
+def GaloisConnection.liftOrderBot
+    {α β : Type*} [Preorder α] [OrderBot α] [PartialOrder β]
+    {l : α → β} {u : β → α} (gc : GaloisConnection l u)
+    : OrderBot β where
   bot := l ⊥
   bot_le _ := gc.l_le bot_le
 
@@ -263,13 +290,13 @@ theorem l_u_eq [Preorder α] [PartialOrder β] (gi : GaloisInsertion l u) (b : �
   (gi.gc.l_u_le _).antisymm (gi.le_l_u _)
 
 @[to_dual]
-theorem leftInverse_l_u [Preorder α] [PartialOrder β] (gi : GaloisInsertion l u) :
-    LeftInverse l u :=
+theorem leftInverse_l_u [Preorder α] [PartialOrder β] (gi : GaloisInsertion l u)
+    : LeftInverse l u :=
   gi.l_u_eq
 
 @[to_dual]
-theorem l_top [Preorder α] [PartialOrder β] [OrderTop α] [OrderTop β]
-    (gi : GaloisInsertion l u) : l ⊤ = ⊤ :=
+theorem l_top [Preorder α] [PartialOrder β] [OrderTop α] [OrderTop β] (gi : GaloisInsertion l u)
+    : l ⊤ = ⊤ :=
   top_unique <| (gi.le_l_u _).trans <| gi.gc.monotone_l le_top
 
 @[to_dual]
@@ -290,18 +317,22 @@ theorem strictMono_u [Preorder α] [Preorder β] (gi : GaloisInsertion l u) : St
 
 end GaloisInsertion
 
-/-- Make a `GaloisInsertion` between `αᵒᵈ` and `βᵒᵈ` from a `GaloisCoinsertion` between `α` and
-`β`. -/
+/--
+Make a `GaloisInsertion` between `αᵒᵈ` and `βᵒᵈ` from a `GaloisCoinsertion` between `α` and
+`β`.
+-/
 @[to_dual /-- Make a `GaloisCoinsertion` between `αᵒᵈ` and `βᵒᵈ` from a `GaloisInsertion` between
 `α` and `β`. -/]
-def GaloisCoinsertion.dual [Preorder α] [Preorder β] {l : α → β} {u : β → α} :
-    GaloisCoinsertion l u → GaloisInsertion (toDual ∘ u ∘ ofDual) (toDual ∘ l ∘ ofDual) :=
+def GaloisCoinsertion.dual [Preorder α] [Preorder β] {l : α → β} {u : β → α}
+    : GaloisCoinsertion l u → GaloisInsertion (toDual ∘ u ∘ ofDual) (toDual ∘ l ∘ ofDual) :=
   fun x => ⟨x.1, x.2.dual, x.3, x.4⟩
 
-/-- Make a `GaloisInsertion` between `α` and `β` from a `GaloisCoinsertion` between `αᵒᵈ` and
-`βᵒᵈ`. -/
+/--
+Make a `GaloisInsertion` between `α` and `β` from a `GaloisCoinsertion` between `αᵒᵈ` and
+`βᵒᵈ`.
+-/
 @[to_dual /-- Make a `GaloisCoinsertion` between `α` and `β` from a `GaloisInsertion` between `αᵒᵈ`
 and `βᵒᵈ`. -/]
-def GaloisCoinsertion.ofDual [Preorder α] [Preorder β] {l : αᵒᵈ → βᵒᵈ} {u : βᵒᵈ → αᵒᵈ} :
-    GaloisCoinsertion l u → GaloisInsertion (ofDual ∘ u ∘ toDual) (ofDual ∘ l ∘ toDual) :=
+def GaloisCoinsertion.ofDual [Preorder α] [Preorder β] {l : αᵒᵈ → βᵒᵈ} {u : βᵒᵈ → αᵒᵈ}
+    : GaloisCoinsertion l u → GaloisInsertion (ofDual ∘ u ∘ toDual) (ofDual ∘ l ∘ toDual) :=
   fun x => ⟨x.1, x.2.dual, x.3, x.4⟩

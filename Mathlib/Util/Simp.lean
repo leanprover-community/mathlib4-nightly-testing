@@ -7,7 +7,6 @@ module
 
 public meta import Lean.Meta.Tactic.Simp.Types
 public import Qq
-
 import Mathlib.Init
 
 /-! # Additional simp utilities
@@ -22,11 +21,13 @@ open Lean Meta Qq
 
 namespace Lean.Meta.Simp
 
-/-- `Qq` version of `Lean.Meta.Simp.Methods.discharge?`, which avoids having to use `~q` matching
+/--
+`Qq` version of `Lean.Meta.Simp.Methods.discharge?`, which avoids having to use `~q` matching
 on the proof expression returned by `discharge?`
 
 `dischargeQ? (a : Q(Prop))` attempts to prove `a` using the discharger, returning
-`some (pf : Q(a))` if a proof is found and `none` otherwise. -/
+`some (pf : Q(a))` if a proof is found and `none` otherwise.
+-/
 @[inline]
 def Methods.dischargeQ? (M : Methods) (a : Q(Prop)) : SimpM <| Option Q($a) := M.discharge? a
 

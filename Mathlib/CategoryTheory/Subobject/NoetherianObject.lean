@@ -8,7 +8,6 @@ module
 public import Mathlib.CategoryTheory.Limits.Constructions.EventuallyConstant
 public import Mathlib.CategoryTheory.ObjectProperty.EpiMono
 public import Mathlib.CategoryTheory.Subobject.Lattice
-
 import Mathlib.Order.OrderIsoNat
 
 /-!
@@ -37,41 +36,40 @@ open Limits ZeroObject
 
 variable {C : Type u} [Category.{v} C]
 
-/-- An object `X` in a category `C` is Noetherian if `Subobject X`
+/--
+An object `X` in a category `C` is Noetherian if `Subobject X`
 satisfies the ascending chain condition. This definition is a
 term in `ObjectProperty C` which allows to study the stability
 properties of Noetherian objects. For statements regarding
 specific objects, it is advisable to use the type class
-`IsNoetherianObject` instead. -/
+`IsNoetherianObject` instead.
+-/
 @[stacks 0FCG]
-def isNoetherianObject : ObjectProperty C :=
-  fun X ↦ WellFoundedGT (Subobject X)
+def isNoetherianObject : ObjectProperty C := fun X ↦ WellFoundedGT (Subobject X)
 
 variable (X Y : C)
 
-/-- An object `X` in a category `C` is Noetherian if `Subobject X`
-satisfies the ascending chain condition. -/
+/--
+An object `X` in a category `C` is Noetherian if `Subobject X`
+satisfies the ascending chain condition.
+-/
 @[stacks 0FCG]
 abbrev IsNoetherianObject : Prop := isNoetherianObject.Is X
 
-instance [IsNoetherianObject X] : WellFoundedGT (Subobject X) :=
-  isNoetherianObject.prop_of_is X
+instance [IsNoetherianObject X] : WellFoundedGT (Subobject X) := isNoetherianObject.prop_of_is X
 
-lemma isNoetherianObject_iff_monotone_chain_condition :
-    IsNoetherianObject X ↔ ∀ (f : ℕ →o Subobject X),
-      ∃ (n : ℕ), ∀ (m : ℕ), n ≤ m → f n = f m := by
+lemma isNoetherianObject_iff_monotone_chain_condition
+    : IsNoetherianObject X ↔ ∀ (f : ℕ →o Subobject X), ∃ (n : ℕ), ∀ (m : ℕ), n ≤ m → f n = f m := by
   dsimp only [IsNoetherianObject]
-  rw [ObjectProperty.is_iff, isNoetherianObject,
-    wellFoundedGT_iff_monotone_chain_condition]
+  rw [ObjectProperty.is_iff, isNoetherianObject, wellFoundedGT_iff_monotone_chain_condition]
 
 variable {X} in
-lemma monotone_chain_condition_of_isNoetherianObject
-    [IsNoetherianObject X] (f : ℕ →o Subobject X) :
-    ∃ (n : ℕ), ∀ (m : ℕ), n ≤ m → f n = f m :=
+lemma monotone_chain_condition_of_isNoetherianObject [IsNoetherianObject X] (f : ℕ →o Subobject X)
+    : ∃ (n : ℕ), ∀ (m : ℕ), n ≤ m → f n = f m :=
   (isNoetherianObject_iff_monotone_chain_condition X).1 inferInstance f
 
-lemma isNoetherianObject_iff_not_strictMono :
-    IsNoetherianObject X ↔ ∀ (f : ℕ → Subobject X), ¬ StrictMono f := by
+lemma isNoetherianObject_iff_not_strictMono
+    : IsNoetherianObject X ↔ ∀ (f : ℕ → Subobject X), ¬ StrictMono f := by
   refine ⟨fun _ ↦ not_strictMono_of_wellFoundedGT, fun h ↦ ?_⟩
   dsimp only [IsNoetherianObject]
   rw [ObjectProperty.is_iff, isNoetherianObject, WellFoundedGT,
@@ -79,15 +77,13 @@ lemma isNoetherianObject_iff_not_strictMono :
   exact ⟨fun f ↦ h f.toFun (fun a b h ↦ f.map_rel_iff.2 h)⟩
 
 variable {X} in
-lemma not_strictMono_of_isNoetherianObject
-    [IsNoetherianObject X] (f : ℕ → Subobject X) :
-    ¬ StrictMono f :=
+lemma not_strictMono_of_isNoetherianObject [IsNoetherianObject X] (f : ℕ → Subobject X)
+    : ¬ StrictMono f :=
   (isNoetherianObject_iff_not_strictMono X).1 inferInstance f
 
 set_option backward.defeqAttrib.useBackward true in
-lemma isNoetherianObject_iff_isEventuallyConstant :
-    IsNoetherianObject X ↔ ∀ (F : ℕ ⥤ MonoOver X),
-      IsFiltered.IsEventuallyConstant F := by
+lemma isNoetherianObject_iff_isEventuallyConstant
+    : IsNoetherianObject X ↔ ∀ (F : ℕ ⥤ MonoOver X), IsFiltered.IsEventuallyConstant F := by
   rw [isNoetherianObject_iff_monotone_chain_condition]
   refine ⟨fun h G ↦ ?_, fun h F ↦ ?_⟩
   · obtain ⟨n, hn⟩ := h (G ⋙ (Subobject.equivMonoOver _).inverse).toOrderHom
@@ -97,11 +93,12 @@ lemma isNoetherianObject_iff_isEventuallyConstant :
   · obtain ⟨n, hn⟩ := h (F.monotone.functor ⋙ Subobject.representative)
     refine ⟨n, fun m hm ↦ ?_⟩
     simpa [← MonoOver.isIso_iff_isIso_hom_left, isIso_iff_of_reflects_iso,
-      PartialOrder.isIso_iff_eq] using hn (homOfLE hm)
+        PartialOrder.isIso_iff_eq]
+      using hn (homOfLE hm)
 
 variable {X} in
-lemma isEventuallyConstant_of_isNoetherianObject [IsNoetherianObject X]
-    (F : ℕ ⥤ MonoOver X) : IsFiltered.IsEventuallyConstant F :=
+lemma isEventuallyConstant_of_isNoetherianObject [IsNoetherianObject X] (F : ℕ ⥤ MonoOver X)
+    : IsFiltered.IsEventuallyConstant F :=
   (isNoetherianObject_iff_isEventuallyConstant X).1 inferInstance F
 
 variable {X Y}
@@ -113,16 +110,20 @@ lemma isNoetherianObject_of_isZero (hX : IsZero X) : IsNoetherianObject X := by
   exact ⟨0, fun m hm ↦ Subsingleton.elim _ _⟩
 
 instance [HasZeroObject C] : (isNoetherianObject (C := C)).ContainsZero where
-  exists_zero := ⟨0, isZero_zero _, by
-    rw [← isNoetherianObject.is_iff]
-    exact isNoetherianObject_of_isZero (isZero_zero C)⟩
+  exists_zero := ⟨
+    0,
+    isZero_zero _,
+    by
+      rw [← isNoetherianObject.is_iff]
+      exact isNoetherianObject_of_isZero (isZero_zero C)
+  ⟩
 
-lemma isNoetherianObject_of_mono (i : X ⟶ Y) [Mono i] [IsNoetherianObject Y] :
-    IsNoetherianObject X := by
+lemma isNoetherianObject_of_mono (i : X ⟶ Y) [Mono i] [IsNoetherianObject Y]
+    : IsNoetherianObject X := by
   rw [isNoetherianObject_iff_monotone_chain_condition]
   intro f
-  obtain ⟨n, hn⟩ := monotone_chain_condition_of_isNoetherianObject
-    ⟨_, (Subobject.map i).monotone.comp f.2⟩
+  obtain ⟨n, hn⟩ :=
+    monotone_chain_condition_of_isNoetherianObject ⟨_, (Subobject.map i).monotone.comp f.2⟩
   exact ⟨n, fun m hm ↦ Subobject.map_obj_injective i (hn m hm)⟩
 
 instance : (isNoetherianObject (C := C)).IsClosedUnderSubobjects where

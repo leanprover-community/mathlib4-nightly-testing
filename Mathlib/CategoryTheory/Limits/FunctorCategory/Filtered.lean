@@ -6,7 +6,6 @@ Authors: Markus Himmel
 module
 
 public import Mathlib.CategoryTheory.Limits.Filtered
-
 import Mathlib.CategoryTheory.Limits.FunctorCategory.Basic
 
 /-!

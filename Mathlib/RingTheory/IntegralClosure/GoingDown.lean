@@ -7,7 +7,6 @@ module
 
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 public import Mathlib.RingTheory.Ideal.GoingDown
-
 import Mathlib.RingTheory.IntegralClosure.Algebra.Ideal
 
 /-!
@@ -26,9 +25,8 @@ open Polynomial
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
 lemma Polynomial.coeff_mem_radical_span_coeff_of_dvd
-    (p : R[X]) (q : R[X]) (hp : p.Monic) (hq : q.Monic)
-    (H : q ∣ p) (i : ℕ) (hi : i ≠ q.natDegree) :
-    q.coeff i ∈ (Ideal.span { p.coeff i | i < p.natDegree }).radical := by
+    (p : R[X]) (q : R[X]) (hp : p.Monic) (hq : q.Monic) (H : q ∣ p) (i : ℕ) (hi : i ≠ q.natDegree)
+    : q.coeff i ∈ (Ideal.span { p.coeff i | i < p.natDegree }).radical := by
   rw [Ideal.radical_eq_sInf, Ideal.mem_sInf]
   rintro P ⟨hPJ, hP⟩
   have : p.map (Ideal.Quotient.mk P) = X ^ p.natDegree := by
@@ -46,8 +44,8 @@ lemma Polynomial.coeff_mem_radical_span_coeff_of_dvd
   simpa [hi, Ideal.Quotient.eq_zero_iff_mem] using congr(($ha).coeff i)
 
 @[stacks 00H8]
-instance [IsDomain S] [FaithfulSMul R S] [Algebra.IsIntegral R S] [IsIntegrallyClosed R] :
-    Algebra.HasGoingDown R S := by
+instance [IsDomain S] [FaithfulSMul R S] [Algebra.IsIntegral R S] [IsIntegrallyClosed R]
+    : Algebra.HasGoingDown R S := by
   have := (FaithfulSMul.algebraMap_injective R S).isDomain
   constructor
   intro p _ Q _ hpQ
@@ -61,7 +59,8 @@ instance [IsDomain S] [FaithfulSMul R S] [Algebra.IsIntegral R S] [IsIntegrallyC
   intro x hx
   obtain ⟨a, ha, haQ⟩ : ∃ a, x • a ∈ Ideal.map (algebraMap R S) p ∧ a ∉ Q := by
     simpa [Algebra.smul_def, IsScalarTower.algebraMap_eq R S SQ, ← Ideal.map_map,
-      IsLocalization.mem_map_algebraMap_iff Q.primeCompl, ← map_mul] using hx
+        IsLocalization.mem_map_algebraMap_iff Q.primeCompl, ← map_mul]
+      using hx
   obtain ⟨f, hfm, hfa, hf⟩ := exists_monic_aeval_eq_zero_forall_mem_of_mem_map ha
   obtain ⟨i, hi, hip⟩ : ∃ i ≠ (minpoly R a).natDegree, (minpoly R a).coeff i ∉ p := by
     set g := minpoly R a
@@ -77,13 +76,16 @@ instance [IsDomain S] [FaithfulSMul R S] [Algebra.IsIntegral R S] [IsIntegrallyC
         congr(aeval (Ideal.Quotient.mk (Ideal.map (algebraMap R S) p) a) $this).symm
     exact haQ (‹Q.IsPrime›.mem_of_pow_mem _
       (Ideal.map_le_iff_le_comap.mpr hpQ.le (Ideal.Quotient.eq_zero_iff_mem.mp this)))
-  by_cases hx0 : x = 0; · simp [hx0]
-  have := Polynomial.coeff_mem_radical_span_coeff_of_dvd _ _ hfm
-    (minpoly.monic (Algebra.IsIntegral.isIntegral _))
-    (minpoly.isIntegrallyClosed_dvd (Algebra.IsIntegral.isIntegral _) hfa)
+  by_cases hx0 : x = 0
+  · simp [hx0]
+  have :=
+    Polynomial.coeff_mem_radical_span_coeff_of_dvd _ _ hfm
+      (minpoly.monic (Algebra.IsIntegral.isIntegral _))
+      (minpoly.isIntegrallyClosed_dvd (Algebra.IsIntegral.isIntegral _) hfa)
   simp only [IsIntegrallyClosed.minpoly_smul hx0 (Algebra.IsIntegral.isIntegral _),
-    natDegree_scaleRoots, coeff_scaleRoots, Ideal.radical_eq_sInf, Submodule.mem_sInf,
-    Set.mem_ofPred_eq, and_imp] at this
-  refine ‹p.IsPrime›.mem_of_pow_mem _ ((‹p.IsPrime›.mem_or_mem
-    (this i hi p ?_ inferInstance)).resolve_left hip)
+      natDegree_scaleRoots, coeff_scaleRoots, Ideal.radical_eq_sInf, Submodule.mem_sInf,
+      Set.mem_ofPred_eq, and_imp]
+    at this
+  refine ‹p.IsPrime›.mem_of_pow_mem _
+    ((‹p.IsPrime›.mem_or_mem (this i hi p ?_ inferInstance)).resolve_left hip)
   simp +contextual [Ideal.span_le, Set.subset_def, LT.lt.ne, hf]

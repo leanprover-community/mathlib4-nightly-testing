@@ -40,8 +40,7 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab PartOrd.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-instance : CoeSort PartOrd (Type _) :=
-  ⟨PartOrd.carrier⟩
+instance : CoeSort PartOrd (Type _) := ⟨PartOrd.carrier⟩
 
 attribute [coe] PartOrd.carrier
 
@@ -62,8 +61,7 @@ instance : ConcreteCategory PartOrd (· →o ·) where
   ofHom := Hom._mkInternal
 
 /-- Turn a morphism in `PartOrd` back into a `OrderHom`. -/
-abbrev Hom.hom {X Y : PartOrd.{u}} (f : Hom X Y) :=
-  ConcreteCategory.hom (C := PartOrd) f
+abbrev Hom.hom {X Y : PartOrd.{u}} (f : Hom X Y) := ConcreteCategory.hom (C := PartOrd) f
 
 /-- Typecheck a `OrderHom` as a morphism in `PartOrd`. -/
 abbrev ofHom {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X →o Y) : of X ⟶ of Y :=
@@ -71,8 +69,7 @@ abbrev ofHom {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X →o Y) : o
 
 variable {R} in
 /-- Use the `ConcreteCategory.hom` projection for `@[simps]` lemmas. -/
-def Hom.Simps.hom (X Y : PartOrd.{u}) (f : Hom X Y) :=
-  f.hom
+def Hom.Simps.hom (X Y : PartOrd.{u}) (f : Hom X Y) := f.hom
 
 initialize_simps_projections Hom (hom' → hom)
 
@@ -91,49 +88,40 @@ lemma ext {X Y : PartOrd} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
 -- This is not `simp` to avoid rewriting in types of terms.
 theorem coe_of (X : Type u) [PartialOrder X] : (PartOrd.of X : Type u) = X := rfl
 
-@[simp]
-lemma hom_id {X : PartOrd} : (𝟙 X : X ⟶ X).hom = OrderHom.id := rfl
+@[simp] lemma hom_id {X : PartOrd} : (𝟙 X : X ⟶ X).hom = OrderHom.id := rfl
 
 /- Provided for rewriting. -/
-lemma id_apply (X : PartOrd) (x : X) :
-    (𝟙 X : X ⟶ X) x = x := by simp
+lemma id_apply (X : PartOrd) (x : X) : (𝟙 X : X ⟶ X) x = x := by simp
 
 @[simp]
-lemma hom_comp {X Y Z : PartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom = g.hom.comp f.hom := rfl
+lemma hom_comp {X Y Z : PartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).hom = g.hom.comp f.hom := rfl
 
 /- Provided for rewriting. -/
-lemma comp_apply {X Y Z : PartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-    (f ≫ g) x = g (f x) := by simp
+lemma comp_apply {X Y Z : PartOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) : (f ≫ g) x = g (f x) := by simp
 
-@[ext]
-lemma hom_ext {X Y : PartOrd} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
-  Hom.ext hf
+@[ext] lemma hom_ext {X Y : PartOrd} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
 @[simp]
 lemma hom_ofHom {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X →o Y) : (ofHom f).hom = f :=
   rfl
 
-@[simp]
-lemma ofHom_hom {X Y : PartOrd} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
+@[simp] lemma ofHom_hom {X Y : PartOrd} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
+
+@[simp] lemma ofHom_id {X : Type u} [PartialOrder X] : ofHom OrderHom.id = 𝟙 (of X) := rfl
 
 @[simp]
-lemma ofHom_id {X : Type u} [PartialOrder X] : ofHom OrderHom.id = 𝟙 (of X) := rfl
-
-@[simp]
-lemma ofHom_comp {X Y Z : Type u} [PartialOrder X] [PartialOrder Y] [PartialOrder Z]
-    (f : X →o Y) (g : Y →o Z) :
-    ofHom (g.comp f) = ofHom f ≫ ofHom g :=
+lemma ofHom_comp
+    {X Y Z : Type u} [PartialOrder X] [PartialOrder Y] [PartialOrder Z] (f : X →o Y) (g : Y →o Z)
+    : ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-lemma ofHom_apply {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X →o Y) (x : X) :
-    (ofHom f) x = f x := rfl
+lemma ofHom_apply {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X →o Y) (x : X)
+    : (ofHom f) x = f x :=
+  rfl
 
-lemma inv_hom_apply {X Y : PartOrd} (e : X ≅ Y) (x : X) : e.inv (e.hom x) = x := by
-  simp
+lemma inv_hom_apply {X Y : PartOrd} (e : X ≅ Y) (x : X) : e.inv (e.hom x) = x := by simp
 
-lemma hom_inv_apply {X Y : PartOrd} (e : X ≅ Y) (s : Y) : e.hom (e.inv s) = s := by
-  simp
+lemma hom_inv_apply {X Y : PartOrd} (e : X ≅ Y) (s : Y) : e.hom (e.inv s) = s := by simp
 
 instance hasForgetToPreord : HasForget₂ PartOrd Preord where
   forget₂.obj X := ↧X
@@ -163,14 +151,12 @@ def dualEquiv : PartOrd ≌ PartOrd where
 @[simps]
 def uliftFunctor : PartOrd.{u} ⥤ PartOrd.{max u v} where
   obj X := ↧(ULift.{v} X)
-  map f := PartOrd.ofHom ⟨fun x ↦ ULift.up (f (ULift.down x)),
-    fun x y hxy ↦ f.hom.monotone hxy⟩
+  map f := PartOrd.ofHom ⟨fun x ↦ ULift.up (f (ULift.down x)), fun x y hxy ↦ f.hom.monotone hxy⟩
 
 end PartOrd
 
-theorem partOrd_dual_comp_forget_to_preord :
-    PartOrd.dual ⋙ forget₂ PartOrd Preord =
-      forget₂ PartOrd Preord ⋙ Preord.dual :=
+theorem partOrd_dual_comp_forget_to_preord
+    : PartOrd.dual ⋙ forget₂ PartOrd Preord = forget₂ PartOrd Preord ⋙ Preord.dual :=
   rfl
 
 /-- `Antisymmetrization` as a functor. It is the free functor. -/
@@ -186,37 +172,42 @@ def preordToPartOrd : Preord.{u} ⥤ PartOrd where
     induction x using Quotient.inductionOn'
     exact OrderHom.antisymmetrization_apply_mk ..
 
-/-- `preordToPartOrd` is left adjoint to the forgetful functor, meaning it is the free
-functor from `Preord` to `PartOrd`. -/
-def preordToPartOrdForgetAdjunction :
-    preordToPartOrd.{u} ⊣ forget₂ PartOrd Preord :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv _ _ :=
-        { toFun f := Preord.ofHom
-            ⟨f ∘ toAntisymmetrization (· ≤ ·), f.hom.mono.comp toAntisymmetrization_mono⟩
-          invFun f := PartOrd.ofHom
-            ⟨fun a => Quotient.liftOn' a f (fun _ _ h => (AntisymmRel.image h f.hom.mono).eq),
-              fun a b => Quotient.inductionOn₂' a b fun _ _ h => f.hom.mono h⟩
-          left_inv _ := PartOrd.ext fun x => Quotient.inductionOn' x fun _ => rfl }
-      homEquiv_naturality_left_symm _ _ :=
-        PartOrd.ext fun x => Quotient.inductionOn' x fun _ => rfl }
+/--
+`preordToPartOrd` is left adjoint to the forgetful functor, meaning it is the free
+functor from `Preord` to `PartOrd`.
+-/
+def preordToPartOrdForgetAdjunction : preordToPartOrd.{u} ⊣ forget₂ PartOrd Preord :=
+  Adjunction.mkOfHomEquiv {
+    homEquiv _ _ := {
+      toFun f :=
+        Preord.ofHom ⟨f ∘ toAntisymmetrization (· ≤ ·), f.hom.mono.comp toAntisymmetrization_mono⟩
+      invFun f :=
+        PartOrd.ofHom ⟨
+          fun a => Quotient.liftOn' a f (fun _ _ h => (AntisymmRel.image h f.hom.mono).eq),
+          fun a b => Quotient.inductionOn₂' a b fun _ _ h => f.hom.mono h
+        ⟩
+      left_inv _ := PartOrd.ext fun x => Quotient.inductionOn' x fun _ => rfl
+    }
+    homEquiv_naturality_left_symm _ _ := PartOrd.ext fun x => Quotient.inductionOn' x fun _ => rfl
+  }
 
 -- The `simpNF` linter would complain as `Functor.comp_obj`, `Preord.dual_obj` both apply to LHS
 -- of `preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd_hom_app_coe`
 /-- `PreordToPartOrd` and `OrderDual` commute. -/
 @[simps! -isSimp hom_app_hom_coe inv_app_hom_coe]
-def preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd :
-    preordToPartOrd.{u} ⋙ PartOrd.dual ≅ Preord.dual ⋙ preordToPartOrd :=
-  NatIso.ofComponents (fun _ => PartOrd.Iso.mk <| OrderIso.dualAntisymmetrization _)
+def preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd
+    : preordToPartOrd.{u} ⋙ PartOrd.dual ≅ Preord.dual ⋙ preordToPartOrd :=
+  NatIso.ofComponents
+    (fun _ => PartOrd.Iso.mk <| OrderIso.dualAntisymmetrization _)
     (fun _ => PartOrd.ext fun x => Quotient.inductionOn' x fun _ => rfl)
 
 -- `simp`-normal form for `preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd_inv_app_hom_coe`
 @[simp]
-lemma preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd_inv_app_hom_coe' (X)
-    (a : preordToPartOrd.obj (Preord.dual.obj X)) :
-    (PartOrd.Hom.hom
-        (X := preordToPartOrd.obj (Preord.dual.obj X))
-        (Y := PartOrd.dual.obj (preordToPartOrd.obj X))
-        (preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd.inv.app X)) a =
-      (OrderIso.dualAntisymmetrization ↑X).symm a :=
+lemma preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd_inv_app_hom_coe'
+    (X) (a : preordToPartOrd.obj (Preord.dual.obj X))
+    : (PartOrd.Hom.hom (X := preordToPartOrd.obj (Preord.dual.obj X))
+          (Y := PartOrd.dual.obj (preordToPartOrd.obj X))
+          (preordToPartOrdCompToDualIsoToDualCompPreordToPartOrd.inv.app X))
+        a
+      = (OrderIso.dualAntisymmetrization ↑X).symm a :=
   rfl

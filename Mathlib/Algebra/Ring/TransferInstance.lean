@@ -23,33 +23,35 @@ assert_not_exists Field Module
 namespace Equiv
 variable {α β : Type*} (e : α ≃ β)
 
-/-- An equivalence `e : α ≃ β` gives a ring equivalence `α ≃+* β`
+/--
+An equivalence `e : α ≃ β` gives a ring equivalence `α ≃+* β`
 where the ring structure on `α` is
 the one obtained by transporting a ring structure on `β` back along `e`.
 -/
-def ringEquiv (e : α ≃ β) [Add β] [Mul β] : by
-    let add := Equiv.add e
-    let mul := Equiv.mul e
-    exact α ≃+* β := by
+def ringEquiv (e : α ≃ β) [Add β] [Mul β]
+    : by
+      let add := Equiv.add e
+      let mul := Equiv.mul e
+      exact α ≃+* β := by
   intros
-  exact
-    { e with
-      map_add' := fun x y => by
-        simp [add_def]
-      map_mul' := fun x y => by
-        simp [mul_def] }
+  exact {
+    e with
+    map_add' := fun x y => by simp [add_def]
+    map_mul' := fun x y => by simp [mul_def]
+  }
 
-@[simp]
-lemma ringEquiv_apply (e : α ≃ β) [Add β] [Mul β] (a : α) : ringEquiv e a = e a := rfl
+@[simp] lemma ringEquiv_apply (e : α ≃ β) [Add β] [Mul β] (a : α) : ringEquiv e a = e a := rfl
 
-lemma ringEquiv_symm_apply (e : α ≃ β) [Add β] [Mul β] (b : β) : by
-    letI := Equiv.add e
-    letI := Equiv.mul e
-    exact (ringEquiv e).symm b = e.symm b := rfl
+lemma ringEquiv_symm_apply (e : α ≃ β) [Add β] [Mul β] (b : β)
+    : by
+      letI := Equiv.add e
+      letI := Equiv.mul e
+      exact (ringEquiv e).symm b = e.symm b :=
+  rfl
 
 /-- Transfer `NonUnitalNonAssocSemiring` across an `Equiv` -/
-protected abbrev nonUnitalNonAssocSemiring [NonUnitalNonAssocSemiring β] :
-    NonUnitalNonAssocSemiring α := by
+protected abbrev nonUnitalNonAssocSemiring [NonUnitalNonAssocSemiring β]
+    : NonUnitalNonAssocSemiring α := by
   let zero := e.zero
   let add := e.add
   let mul := e.mul
@@ -66,20 +68,21 @@ protected abbrev nonUnitalSemiring [NonUnitalSemiring β] : NonUnitalSemiring α
 
 -- See note [instance transfer via equivalence]
 /-- Transfer `AddMonoidWithOne` across an `Equiv` -/
-protected abbrev addMonoidWithOne [AddMonoidWithOne β] : AddMonoidWithOne α :=
-  { e.addMonoid, e.one with
-    natCast := fun n => e.invFun n
-    natCast_zero := e.injective (by simp [zero_def])
-    natCast_succ := fun n => e.injective (by simp [add_def, one_def]) }
+protected abbrev addMonoidWithOne [AddMonoidWithOne β] : AddMonoidWithOne α := {
+  e.addMonoid, e.one with
+  natCast := fun n => e.invFun n
+  natCast_zero := e.injective (by simp [zero_def])
+  natCast_succ := fun n => e.injective (by simp [add_def, one_def])
+}
 
 /-- Transfer `AddGroupWithOne` across an `Equiv` -/
-protected abbrev addGroupWithOne [AddGroupWithOne β] : AddGroupWithOne α :=
-  { e.addMonoidWithOne,
-    e.addGroup with
-    intCast := fun n => e.invFun n
-    intCast_ofNat := fun n => by simp only [Int.cast_natCast]; rfl
-    intCast_negSucc := fun _ =>
-      congr(e.symm $((Int.cast_negSucc _).trans <| congr_arg _ (e.apply_symm_apply _).symm)) }
+protected abbrev addGroupWithOne [AddGroupWithOne β] : AddGroupWithOne α := {
+  e.addMonoidWithOne, e.addGroup with
+  intCast := fun n => e.invFun n
+  intCast_ofNat := fun n => by simp only [Int.cast_natCast]; rfl
+  intCast_negSucc := fun _ =>
+    congr(e.symm $((Int.cast_negSucc _).trans <| congr_arg _ (e.apply_symm_apply _).symm))
+}
 
 /-- Transfer `NonAssocSemiring` across an `Equiv` -/
 protected abbrev nonAssocSemiring [NonAssocSemiring β] : NonAssocSemiring α := by
@@ -163,9 +166,9 @@ protected abbrev commRing [CommRing β] : CommRing α := by
   apply e.injective.commRing _ <;> intros <;> exact e.apply_symm_apply _
 
 /-- Transfer `IsDomain` across an `Equiv` -/
-protected lemma isDomain [Semiring β] [IsDomain β] (e : α ≃ β) :
-    letI := e.semiring
-    IsDomain α :=
+protected lemma isDomain [Semiring β] [IsDomain β] (e : α ≃ β)
+    : letI := e.semiring
+      IsDomain α :=
   letI := e.semiring; e.injective.isDomain e.ringEquiv
 
 end Equiv

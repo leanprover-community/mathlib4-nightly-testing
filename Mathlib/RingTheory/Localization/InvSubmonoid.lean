@@ -28,7 +28,6 @@ commutative ring, field of fractions
 
 @[expose] public section
 
-
 variable {R : Type*} [CommRing R] (M : Submonoid R) (S : Type*) [CommRing S]
 variable [Algebra R S]
 
@@ -39,8 +38,7 @@ namespace IsLocalization
 section InvSubmonoid
 
 /-- The submonoid of `S = M⁻¹R` consisting of `{ 1 / x | x ∈ M }`. -/
-def invSubmonoid : Submonoid S :=
-  (M.map (algebraMap R S)).leftInv
+def invSubmonoid : Submonoid S := (M.map (algebraMap R S)).leftInv
 
 variable [IsLocalization M S]
 
@@ -90,11 +88,13 @@ theorem toInvSubmonoid_eq_mk' (x : M) : (toInvSubmonoid M S x : S) = mk' S 1 x :
   rw [← (IsLocalization.map_units S x).mul_left_inj]
   simp
 
-theorem mem_invSubmonoid_iff_exists_mk' (x : S) :
-    x ∈ invSubmonoid M S ↔ ∃ m : M, mk' S 1 m = x := by
+theorem mem_invSubmonoid_iff_exists_mk' (x : S)
+    : x ∈ invSubmonoid M S ↔ ∃ m : M, mk' S 1 m = x := by
   simp_rw [← toInvSubmonoid_eq_mk']
-  exact ⟨fun h => ⟨_, congr($((toInvSubmonoid_surjective M S ⟨x, h⟩).choose_spec).val)⟩,
-    fun h => h.choose_spec ▸ (toInvSubmonoid M S h.choose).prop⟩
+  exact ⟨
+    fun h => ⟨_, congr($((toInvSubmonoid_surjective M S ⟨x, h⟩).choose_spec).val)⟩,
+    fun h => h.choose_spec ▸ (toInvSubmonoid M S h.choose).prop
+  ⟩
 
 variable (S)
 
@@ -115,8 +115,10 @@ theorem finiteType_of_monoid_fg [Monoid.FG M] : Algebra.FiniteType R S := by
   rw [Algebra.adjoin_eq_span, hs, span_invSubmonoid]
   trivial
 
-instance {R S : Type*} [CommRing R] [CommRing S] [Algebra R S] [Algebra.FiniteType R S]
-    (M : Submonoid S) [Monoid.FG M] : Algebra.FiniteType R (Localization M) :=
+instance
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S] [Algebra.FiniteType R S]
+    (M : Submonoid S) [Monoid.FG M]
+    : Algebra.FiniteType R (Localization M) :=
   .trans ‹_› (IsLocalization.finiteType_of_monoid_fg M _)
 
 end InvSubmonoid

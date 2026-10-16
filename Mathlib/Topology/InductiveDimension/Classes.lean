@@ -6,7 +6,6 @@ Authors: Fernando Chu, Andrew Yang, Felix Pernegger
 module
 
 public import Mathlib.Topology.Bases
-
 import Mathlib.Data.Fintype.Option
 import Mathlib.Topology.Clopen
 import Mathlib.Topology.Compactness.Compact
@@ -49,19 +48,20 @@ inductively defined as follows. Empty spaces have small inductive dimension less
 topological space has dimension less than `n + 1` if it has a topological basis whose elements have
 frontiers of dimension strictly less `n`.
 -/
-class inductive HasSmallInductiveDimensionLT.{u} :
-  ∀ (X : Type u) [TopologicalSpace X], ℕ → Prop where
+class inductive HasSmallInductiveDimensionLT.{u}
+    : ∀ (X : Type u) [TopologicalSpace X], ℕ → Prop where
   | zero {X : Type u} [TopologicalSpace X] [IsEmpty X] : HasSmallInductiveDimensionLT X 0
-  | succ {X : Type u} [TopologicalSpace X] (n : ℕ) (s : Set (Set X)) (hs : IsTopologicalBasis s)
-      (h : ∀ U ∈ s, HasSmallInductiveDimensionLT (frontier U) n) :
-      HasSmallInductiveDimensionLT X (n + 1)
+  | succ
+    {X : Type u} [TopologicalSpace X]
+    (n : ℕ) (s : Set (Set X))
+    (hs : IsTopologicalBasis s) (h : ∀ U ∈ s, HasSmallInductiveDimensionLT (frontier U) n)
+    : HasSmallInductiveDimensionLT X (n + 1)
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 variable (X) in
 /-- A topological space has dimension `≤ n` if it has dimension `< n + 1`. -/
-abbrev HasSmallInductiveDimensionLE (n : ℕ) :=
-  HasSmallInductiveDimensionLT X (n + 1)
+abbrev HasSmallInductiveDimensionLE (n : ℕ) := HasSmallInductiveDimensionLT X (n + 1)
 
 @[simp]
 theorem hasSmallInductiveDimensionLT_zero_iff : HasSmallInductiveDimensionLT X 0 ↔ IsEmpty X :=
@@ -70,24 +70,29 @@ theorem hasSmallInductiveDimensionLT_zero_iff : HasSmallInductiveDimensionLT X 0
 @[deprecated (since := "2026-06-21")]
 alias HasSmallInductiveDimensionLT_zero_iff := hasSmallInductiveDimensionLT_zero_iff
 
-theorem HasSmallInductiveDimensionLT.mono {m n : ℕ} (hmn : m ≤ n)
-    (H : HasSmallInductiveDimensionLT X m) : HasSmallInductiveDimensionLT X n := by
+theorem HasSmallInductiveDimensionLT.mono
+    {m n : ℕ} (hmn : m ≤ n) (H : HasSmallInductiveDimensionLT X m)
+    : HasSmallInductiveDimensionLT X n := by
   induction n generalizing m X with
-  | zero => simp_all
+  | zero =>
+    simp_all
   | succ m IH =>
     cases H with
-    | zero => exact .succ _ ∅ (by simpa) (by simp)
+    | zero =>
+      exact .succ _ ∅ (by simpa) (by simp)
     | succ n s hs h =>
       refine .succ _ s hs fun U hU ↦ IH ?_ (h U hU)
       rwa [Nat.add_le_add_iff_right] at hmn
 
-theorem HasSmallInductiveDimensionLE.mono {m n : ℕ} (hmn : m ≤ n)
-    (H : HasSmallInductiveDimensionLE X m) : HasSmallInductiveDimensionLE X n := by
+theorem HasSmallInductiveDimensionLE.mono
+    {m n : ℕ} (hmn : m ≤ n) (H : HasSmallInductiveDimensionLE X m)
+    : HasSmallInductiveDimensionLE X n := by
   apply HasSmallInductiveDimensionLT.mono _ H
   rwa [Nat.add_le_add_iff_right]
 
-theorem HasSmallInductiveDimensionLT.hasSmallInductiveDimensionLE {n : ℕ}
-    (H : HasSmallInductiveDimensionLT X n) : HasSmallInductiveDimensionLE X n :=
+theorem HasSmallInductiveDimensionLT.hasSmallInductiveDimensionLE
+    {n : ℕ} (H : HasSmallInductiveDimensionLT X n)
+    : HasSmallInductiveDimensionLE X n :=
   HasSmallInductiveDimensionLT.mono n.le_succ H
 
 instance (n : ℕ) [IsEmpty X] : HasSmallInductiveDimensionLT X n :=
@@ -96,23 +101,23 @@ instance (n : ℕ) [IsEmpty X] : HasSmallInductiveDimensionLT X n :=
 /-! ### Zero-dimensional spaces -/
 
 variable (X) in
-/-- A zero-dimensional topological space is defined as one with small inductive dimension ≤ 0. In
+/--
+A zero-dimensional topological space is defined as one with small inductive dimension ≤ 0. In
 particular, our definition of `ZeroDimensionalSpace` allows the empty space even though, strictly
 speaking, it is (-1)-dimensional.
 
 An equivalent characterization is that a zero-dimensional space is one with a basis of clopen
-sets. -/
-abbrev ZeroDimensionalSpace :=
-  HasSmallInductiveDimensionLT X 1
+sets.
+-/
+abbrev ZeroDimensionalSpace := HasSmallInductiveDimensionLT X 1
 
-theorem zeroDimensionalSpace_def : ZeroDimensionalSpace X ↔ HasSmallInductiveDimensionLT X 1 :=
-  .rfl
+theorem zeroDimensionalSpace_def : ZeroDimensionalSpace X ↔ HasSmallInductiveDimensionLT X 1 := .rfl
 
 theorem zeroDimensionalSpace_def' : ZeroDimensionalSpace X ↔ HasSmallInductiveDimensionLE X 0 :=
   .rfl
 
-lemma zeroDimensionalSpace_iff_isTopologicalBasis_isClopen :
-    ZeroDimensionalSpace X ↔ IsTopologicalBasis { s : Set X | IsClopen s } := by
+lemma zeroDimensionalSpace_iff_isTopologicalBasis_isClopen
+    : ZeroDimensionalSpace X ↔ IsTopologicalBasis { s : Set X | IsClopen s } := by
   constructor
   · intro (.succ _ s hs h)
     refine hs.of_isOpen_of_subset (fun _ hU ↦ hU.isOpen) (fun U hU ↦ ⟨?_, hs.isOpen hU⟩)
@@ -127,33 +132,35 @@ alias hasSmallInductiveDimensionLT_one_iff := zeroDimensionalSpace_iff_isTopolog
 @[deprecated (since := "2026-06-21")]
 alias HasSmallInductiveDimensionLT_one_iff := zeroDimensionalSpace_iff_isTopologicalBasis_isClopen
 
-theorem isTopologicalBasis_isClopen [ZeroDimensionalSpace X] :
-    IsTopologicalBasis { s : Set X | IsClopen s } :=
+theorem isTopologicalBasis_isClopen [ZeroDimensionalSpace X]
+    : IsTopologicalBasis { s : Set X | IsClopen s } :=
   zeroDimensionalSpace_iff_isTopologicalBasis_isClopen.1 ‹_›
 
-theorem ZeroDimensionalSpace.of_isTopologicalBasis {u : Set (Set X)} (hs : ∀ s ∈ u, IsClopen s)
-    (hu : IsTopologicalBasis u) : ZeroDimensionalSpace X := by
+theorem ZeroDimensionalSpace.of_isTopologicalBasis
+    {u : Set (Set X)} (hs : ∀ s ∈ u, IsClopen s) (hu : IsTopologicalBasis u)
+    : ZeroDimensionalSpace X := by
   rw [zeroDimensionalSpace_iff_isTopologicalBasis_isClopen]
   exact hu.of_isOpen_of_subset (fun _ ↦ IsClopen.isOpen) hs
 
-theorem zeroDimensionalSpace_iff_nhds_hasBasis_isClopen :
-    ZeroDimensionalSpace X ↔ ∀ x : X, (𝓝 x).HasBasis (fun s ↦ IsClopen s ∧ x ∈ s) id where
+theorem zeroDimensionalSpace_iff_nhds_hasBasis_isClopen
+    : ZeroDimensionalSpace X ↔ ∀ x : X, (𝓝 x).HasBasis (fun s ↦ IsClopen s ∧ x ∈ s) id where
   mp _ _ := isTopologicalBasis_isClopen.nhds_hasBasis
   mpr H := by
     rw [zeroDimensionalSpace_iff_isTopologicalBasis_isClopen]
     exact .of_hasBasis_nhds H
 
-theorem nhds_basis_isClopen [ZeroDimensionalSpace X] (x : X) :
-    (𝓝 x).HasBasis (fun s : Set X ↦ IsClopen s ∧ x ∈ s) id :=
+theorem nhds_basis_isClopen [ZeroDimensionalSpace X] (x : X)
+    : (𝓝 x).HasBasis (fun s : Set X ↦ IsClopen s ∧ x ∈ s) id :=
   (isTopologicalBasis_isClopen (X := X)).nhds_hasBasis
 
 @[deprecated nhds_basis_isClopen +typeChanged (since := "2026-10-08")]
-theorem nhds_basis_clopen [ZeroDimensionalSpace X] (x : X) :
-    (𝓝 x).HasBasis (fun s : Set X ↦ x ∈ s ∧ IsClopen s) id := by
+theorem nhds_basis_clopen [ZeroDimensionalSpace X] (x : X)
+    : (𝓝 x).HasBasis (fun s : Set X ↦ x ∈ s ∧ IsClopen s) id := by
   simp_rw [and_comm]; exact nhds_basis_isClopen x
 
-theorem exists_isClopen_mem_of_isOpen [ZeroDimensionalSpace X] {x : X} {U : Set X}
-    (hU : IsOpen U) (hx : x ∈ U) : ∃ V : Set X, IsClopen V ∧ x ∈ V ∧ V ⊆ U :=
+theorem exists_isClopen_mem_of_isOpen
+    [ZeroDimensionalSpace X] {x : X} {U : Set X} (hU : IsOpen U) (hx : x ∈ U)
+    : ∃ V : Set X, IsClopen V ∧ x ∈ V ∧ V ⊆ U :=
   isTopologicalBasis_isClopen.mem_nhds_iff.1 (hU.mem_nhds hx)
 
 @[deprecated (since := "2026-10-08")]
@@ -161,8 +168,8 @@ alias compact_exists_isClopen_in_isOpen := exists_isClopen_mem_of_isOpen
 
 theorem ZeroDimensionalSpace.of_hasBasis
     (H : ∀ x : X, ∃ (ι : Sort*) (p : ι → Prop) (s : ι → Set X),
-      (∀ i, p i → IsClopen (s i)) ∧ (𝓝 x).HasBasis p s) :
-    ZeroDimensionalSpace X := by
+      (∀ i, p i → IsClopen (s i)) ∧ (𝓝 x).HasBasis p s)
+    : ZeroDimensionalSpace X := by
   rw [zeroDimensionalSpace_iff_nhds_hasBasis_isClopen]
   intro x
   obtain ⟨ι, p, s, hx, hx'⟩ := H x
@@ -182,11 +189,13 @@ instance [IndiscreteTopology X] : ZeroDimensionalSpace X := by
 section CompactSpace
 variable [ZeroDimensionalSpace X] [CompactSpace X]
 
-/-- In a zero-dimensional compact space `X`, if `Z ⊆ U` are subsets with `Z` closed
-and `U` open, there exists a clopen `C` with `Z ⊆ C ⊆ U`. -/
+/--
+In a zero-dimensional compact space `X`, if `Z ⊆ U` are subsets with `Z` closed
+and `U` open, there exists a clopen `C` with `Z ⊆ C ⊆ U`.
+-/
 theorem exists_clopen_of_closed_subset_open
-    {Z U : Set X} (hZ : IsClosed Z) (hU : IsOpen U) (hZU : Z ⊆ U) :
-    ∃ C : Set X, IsClopen C ∧ Z ⊆ C ∧ C ⊆ U := by
+    {Z U : Set X} (hZ : IsClosed Z) (hU : IsOpen U) (hZU : Z ⊆ U)
+    : ∃ C : Set X, IsClopen C ∧ Z ⊆ C ∧ C ⊆ U := by
   -- every `z ∈ Z` has clopen neighborhood `V z ⊆ U`
   choose V hV using fun z : Z ↦ exists_isClopen_mem_of_isOpen hU (hZU z.property)
   -- the `V z` cover `Z`
@@ -196,26 +205,38 @@ theorem exists_clopen_of_closed_subset_open
   -- the union of this finite subcover does the job
   exact ⟨⋃ i ∈ I, V i, I.finite_toSet.isClopen_biUnion (fun i _ ↦ (hV i).1), hI, by simp_all⟩
 
-/-- Let `X` be a zero-dimensional compact Hausdorff space, `D i ⊆ X` a finite family of clopens,
+/--
+Let `X` be a zero-dimensional compact Hausdorff space, `D i ⊆ X` a finite family of clopens,
 and `Z i ⊆ D i` closed. Assume that the `Z i` are pairwise disjoint. Then there exist clopens
-`Z i ⊆ C i ⊆ D i` with the `C i` disjoint, and such that `∪ D i ⊆ ∪ C i`. -/
+`Z i ⊆ C i ⊆ D i` with the `C i` disjoint, and such that `∪ D i ⊆ ∪ C i`.
+-/
 theorem exists_clopen_partition_of_clopen_cover
-    {I : Type*} [Finite I] {Z D : I → Set X}
-    (Z_closed : ∀ i, IsClosed (Z i)) (D_clopen : ∀ i, IsClopen (D i))
-    (Z_subset_D : ∀ i, Z i ⊆ D i) (Z_disj : univ.PairwiseDisjoint Z) :
-    ∃ C : I → Set X, (∀ i, IsClopen (C i)) ∧ (∀ i, Z i ⊆ C i) ∧ (∀ i, C i ⊆ D i) ∧
-    ⋃ i, D i ⊆ ⋃ i, C i ∧ univ.PairwiseDisjoint C := by
+    {I : Type*} [Finite I]
+    {Z D : I → Set X} (Z_closed : ∀ i, IsClosed (Z i)) (D_clopen : ∀ i, IsClopen (D i))
+    (Z_subset_D : ∀ i, Z i ⊆ D i) (Z_disj : univ.PairwiseDisjoint Z)
+    : ∃ C : I → Set X,
+      (∀ i, IsClopen (C i)) ∧ (∀ i, Z i ⊆ C i) ∧ (∀ i, C i ⊆ D i) ∧ ⋃ i, D i ⊆ ⋃ i, C i
+        ∧ univ.PairwiseDisjoint C := by
   induction I using Finite.induction_empty_option with
   | of_equiv e IH =>
-    obtain ⟨C, h1, h2, h3, h4, h5⟩ := IH (Z := Z ∘ e) (D := D ∘ e)
-      (fun i ↦ Z_closed (e i)) (fun i ↦ D_clopen (e i))
-      (fun i ↦ Z_subset_D (e i)) (by simpa [← e.injective.injOn.pairwiseDisjoint_image])
-    refine ⟨C ∘ e.symm, fun i ↦ h1 (e.symm i), fun i ↦ by simpa using h2 (e.symm i),
-      fun i ↦ by simpa using h3 (e.symm i), ?_,
-      by simpa [← e.symm.injective.injOn.pairwiseDisjoint_image]⟩
+    obtain ⟨C, h1, h2, h3, h4, h5⟩ :=
+      IH (Z := Z ∘ e) (D := D ∘ e)
+        (fun i ↦ Z_closed (e i))
+        (fun i ↦ D_clopen (e i))
+        (fun i ↦ Z_subset_D (e i))
+        (by simpa [← e.injective.injOn.pairwiseDisjoint_image])
+    refine ⟨
+      C ∘ e.symm,
+      fun i ↦ h1 (e.symm i),
+      fun i ↦ by simpa using h2 (e.symm i),
+      fun i ↦ by simpa using h3 (e.symm i),
+      ?_,
+      by simpa [← e.symm.injective.injOn.pairwiseDisjoint_image]
+    ⟩
     simp only [Function.comp_apply, iUnion_subset_iff] at h4
     simpa [e.symm.surjective.iUnion_comp C] using fun i ↦ h4 (e.symm i)
-  | h_empty => exact ⟨fun _ ↦ univ, by simp, by simp, by simp, by simp, fun i ↦ PEmpty.elim i⟩
+  | h_empty =>
+    exact ⟨fun _ ↦ univ, by simp, by simp, by simp, by simp, fun i ↦ PEmpty.elim i⟩
   | @h_option I _ IH =>
     -- let `Z'` be the restriction of `Z` along `some : I → Option I`
     let Z' : I → Set X := fun i ↦ Z (some i)
@@ -225,8 +246,8 @@ theorem exists_clopen_partition_of_clopen_cover
       exact PairwiseDisjoint.subset Z_disj (by simp)
     -- find `Z none ⊆ V ⊆ D none \ ⋃ Z'` using `exists_clopen_of_closed_subset_open`
     let U : Set X := D none \ ⋃ i, Z (some i)
-    have U_open : IsOpen U := IsOpen.sdiff (D_clopen none).2
-      (isClosed_iUnion_of_finite (fun i ↦ Z_closed (some i)))
+    have U_open : IsOpen U :=
+      IsOpen.sdiff (D_clopen none).2 (isClosed_iUnion_of_finite (fun i ↦ Z_closed (some i)))
     have Z0_subset_U : Z none ⊆ U := by
       rw [subset_sdiff]
       simpa using ⟨Z_subset_D none, fun i ↦ (by apply Z_disj; all_goals simp)⟩
@@ -255,12 +276,18 @@ theorem exists_clopen_partition_of_clopen_cover
     all_goals try rintro (_ | i); all_goals grind
     · intro x hx
       rw [mem_iUnion] at hx ⊢
-      by_cases hx0 : x ∈ C0; { exact ⟨none, hx0⟩ }
+      by_cases hx0 : x ∈ C0
+      {
+        exact ⟨none, hx0⟩
+      }
       by_cases hxD : x ∈ D none
       · have hxC' : x ∈ ⋃ i, C' i := by grind
         obtain ⟨i, hi⟩ := mem_iUnion.mp hxC'
         exact ⟨some i, hi⟩
-      · obtain ⟨none | j, hi⟩ := hx; {grind}
+      · obtain ⟨none | j, hi⟩ := hx
+        {
+          grind
+        }
         have hxD' : x ∈ ⋃ i, D' i := mem_iUnion.mpr ⟨j, by grind⟩
         obtain ⟨k, hk⟩ := mem_iUnion.mp <| C'_cover_D' hxD'
         exact ⟨some k, hk⟩

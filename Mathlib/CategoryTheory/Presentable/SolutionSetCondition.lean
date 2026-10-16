@@ -28,16 +28,19 @@ namespace CategoryTheory
 
 variable {C D : Type*} [Category* C] [Category* D]
 
-/-- An accessible functor between accessible categories satisfies the solution set condition.
-This is corollary 2.45 in [Adamek_Rosicky_1994]. -/
+/--
+An accessible functor between accessible categories satisfies the solution set condition.
+This is corollary 2.45 in [Adamek_Rosicky_1994].
+-/
 lemma SolutionSetCondition.of_isCardinalAccessible
     [IsAccessibleCategory.{w} C] [IsAccessibleCategory.{w} D]
-    (F : C ⥤ D) [Functor.IsAccessible.{w} F] :
-    SolutionSetCondition.{w} F := by
+    (F : C ⥤ D) [Functor.IsAccessible.{w} F]
+    : SolutionSetCondition.{w} F := by
   intro Y
   obtain ⟨κ, _, _⟩ := IsAccessibleCategory.exists_cardinal.{w} (StructuredArrow Y F)
-  obtain ⟨ι, X₀, h⟩ := ObjectProperty.EssentiallySmall.exists_eq_isoClosure_ofObj.{w}
-    (isCardinalPresentable (StructuredArrow Y F) κ)
+  obtain ⟨ι, X₀, h⟩ :=
+    ObjectProperty.EssentiallySmall.exists_eq_isoClosure_ofObj.{w} (isCardinalPresentable
+      (StructuredArrow Y F) κ)
   refine ⟨ι, fun i ↦ (X₀ i).right, fun i ↦ (X₀ i).hom, fun X g ↦ ?_⟩
   let E := CostructuredArrow (isCardinalPresentable _ κ).ι (StructuredArrow.mk g)
   have : IsFiltered E := isFiltered_of_isCardinalFiltered _ κ

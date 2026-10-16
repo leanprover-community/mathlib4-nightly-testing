@@ -3,21 +3,15 @@ import Mathlib.Basic.Real.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 
 open Quaternion
-/--
-info: { re := 0, imI := 0, imJ := 0, imK := 0 }
--/
+/-- info: { re := 0, imI := 0, imJ := 0, imK := 0 } -/
 #guard_msgs in
 #eval (0 : ℍ[ℚ])
 
-/--
-info: { re := 1, imI := 0, imJ := 0, imK := 0 }
--/
+/-- info: { re := 1, imI := 0, imJ := 0, imK := 0 } -/
 #guard_msgs in
 #eval (1 : ℍ[ℚ])
 
-/--
-info: { re := 4, imI := 0, imJ := 0, imK := 0 }
--/
+/-- info: { re := 4, imI := 0, imJ := 0, imK := 0 } -/
 #guard_msgs in
 #eval (4 : ℍ[ℚ])
 
@@ -33,8 +27,6 @@ info: { re := Real.ofCauchy (sorry /- 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ... -/), imI
 #guard_msgs in
 #eval (⟨1, 2, 3, 4⟩ : ℍ[ℝ])
 
-/--
-info: { re := ⟨0, 0⟩, imI := ⟨0, 0⟩, imJ := ⟨0, 0⟩, imK := ⟨0, 0⟩ }
--/
+/-- info: { re := ⟨0, 0⟩, imI := ⟨0, 0⟩, imJ := ⟨0, 0⟩, imK := ⟨0, 0⟩ } -/
 #guard_msgs in
 #eval (0 : ℍ[GaussianInt])

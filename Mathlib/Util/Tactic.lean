@@ -34,8 +34,7 @@ Conditions on `f`:
 
 If `mvarId` does not refer to a declared metavariable, nothing happens.
 -/
-def modifyMetavarDecl [MonadMCtx m] (mvarId : MVarId)
-    (f : MetavarDecl → MetavarDecl) : m Unit :=
+def modifyMetavarDecl [MonadMCtx m] (mvarId : MVarId) (f : MetavarDecl → MetavarDecl) : m Unit :=
   modifyMCtx fun mctx ↦
     match mctx.decls.find? mvarId with
     | none => mctx
@@ -47,8 +46,7 @@ def modifyMetavarDecl [MonadMCtx m] (mvarId : MVarId)
 a declared metavariable, nothing happens.
 -/
 def modifyTarget [MonadMCtx m] (mvarId : MVarId) (f : Expr → Expr) : m Unit :=
-  modifyMetavarDecl mvarId fun mdecl ↦
-    { mdecl with type := f mdecl.type }
+  modifyMetavarDecl mvarId fun mdecl ↦ { mdecl with type := f mdecl.type }
 
 /--
 `modifyLocalContext mvarId f` updates the local context of the metavariable
@@ -58,10 +56,8 @@ context must be defeq to their equivalents in the old local context.
 
 If `mvarId` does not refer to a declared metavariable, nothing happens.
 -/
-def modifyLocalContext [MonadMCtx m] (mvarId : MVarId)
-    (f : LocalContext → LocalContext) : m Unit :=
-  modifyMetavarDecl mvarId fun mdecl ↦
-    { mdecl with lctx := f mdecl.lctx }
+def modifyLocalContext [MonadMCtx m] (mvarId : MVarId) (f : LocalContext → LocalContext) : m Unit :=
+  modifyMetavarDecl mvarId fun mdecl ↦ { mdecl with lctx := f mdecl.lctx }
 
 /--
 `modifyLocalDecl mvarId fvarId f` updates the local decl `fvarId` in the local
@@ -73,8 +69,8 @@ any).
 If `mvarId` does not refer to a declared metavariable or if `fvarId` does not
 exist in the local context of `mvarId`, nothing happens.
 -/
-def modifyLocalDecl [MonadMCtx m] (mvarId : MVarId) (fvarId : FVarId)
-    (f : LocalDecl → LocalDecl) : m Unit :=
+def modifyLocalDecl [MonadMCtx m] (mvarId : MVarId) (fvarId : FVarId) (f : LocalDecl → LocalDecl)
+    : m Unit :=
   modifyLocalContext mvarId fun lctx ↦ lctx.modifyLocalDecl fvarId f
 
 end Mathlib.Tactic

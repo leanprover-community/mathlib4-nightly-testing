@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Calculus.TangentCone.Basic
 public import Mathlib.Analysis.Normed.Module.Basic
-
 import Mathlib.Analysis.SpecificLimits.Normed
 
 /-!
@@ -26,7 +25,8 @@ public section
 open Filter
 open scoped Topology
 
-/-- In a vector space with first countable topology, a vector `y` belongs to `tangentConeAt 𝕜 s x`
+/--
+In a vector space with first countable topology, a vector `y` belongs to `tangentConeAt 𝕜 s x`
 if and only if there exist sequences `c n` and `d n` such that
 
 - `d n` tends to zero as `n → ∞`;
@@ -34,15 +34,20 @@ if and only if there exist sequences `c n` and `d n` such that
 - `c n • d n` tends to `y` as `n → ∞`.
 
 See `mem_tangentConeAt_of_seq` and `exists_fun_of_mem_tangentConeAt`
-for versions of two implications of this theorem that don't assume first countable topology. -/
-theorem mem_tangentConeAt_iff_exists_seq {R E : Type*} [AddCommGroup E] [SMul R E]
-    [TopologicalSpace E] [FirstCountableTopology E] {s : Set E} {x y : E} :
-    y ∈ tangentConeAt R s x ↔ ∃ (c : ℕ → R) (d : ℕ → E), Tendsto d atTop (𝓝 0) ∧
-      (∀ᶠ n in atTop, x + d n ∈ s) ∧ Tendsto (fun n ↦ c n • d n) atTop (𝓝 y) := by
+for versions of two implications of this theorem that don't assume first countable topology.
+-/
+theorem mem_tangentConeAt_iff_exists_seq
+    {R E : Type*} [AddCommGroup E] [SMul R E] [TopologicalSpace E] [FirstCountableTopology E]
+    {s : Set E} {x y : E}
+    : y ∈ tangentConeAt R s x
+      ↔ ∃ (c : ℕ → R) (d : ℕ → E),
+        Tendsto d atTop (𝓝 0) ∧ (∀ᶠ n in atTop, x + d n ∈ s)
+          ∧ Tendsto (fun n ↦ c n • d n) atTop (𝓝 y) := by
   constructor
   · intro h
     simp only [tangentConeAt_def, Set.mem_ofPred, ← map₂_smul, ← map_prod_eq_map₂, ClusterPt,
-      ← neBot_inf_comap_iff_map'] at h
+        ← neBot_inf_comap_iff_map']
+      at h
     rcases @exists_seq_tendsto _ _ _ h with ⟨cd, hcd⟩
     simp only [tendsto_inf, tendsto_comap_iff, tendsto_prod_iff', tendsto_nhdsWithin_iff] at hcd
     exact ⟨Prod.fst ∘ cd, Prod.snd ∘ cd, hcd.2.2.1, hcd.2.2.2, hcd.1⟩
@@ -50,29 +55,36 @@ theorem mem_tangentConeAt_iff_exists_seq {R E : Type*} [AddCommGroup E] [SMul R 
     exact mem_tangentConeAt_of_seq atTop c d hd₀ hds hcd
 
 section
-variable {𝕜 E : Type*} [NormedDivisionRing 𝕜] [AddCommGroup E] [Module 𝕜 E]
-  [TopologicalSpace E] [ContinuousSMul 𝕜 E] {s : Set E} {x y : E} {r : 𝕜}
+variable
+  {𝕜 E : Type*}
+  [NormedDivisionRing 𝕜] [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [ContinuousSMul 𝕜 E]
+  {s : Set E} {x y : E} {r : 𝕜}
 
-/-- Auxiliary lemma ensuring that, under the assumptions from an old definition of the tangent cone,
-the sequence `d` tends to 0 at infinity. -/
-theorem tangentConeAt.lim_zero {α : Type*} (l : Filter α) {c : α → 𝕜} {d : α → E} {y : E}
-    (hc : Tendsto (fun n => ‖c n‖) l atTop) (hd : Tendsto (fun n => c n • d n) l (𝓝 y)) :
-    Tendsto d l (𝓝 0) := by
+/--
+Auxiliary lemma ensuring that, under the assumptions from an old definition of the tangent cone,
+the sequence `d` tends to 0 at infinity.
+-/
+theorem tangentConeAt.lim_zero
+    {α : Type*} (l : Filter α)
+    {c : α → 𝕜} {d : α → E} {y : E}
+    (hc : Tendsto (fun n => ‖c n‖) l atTop) (hd : Tendsto (fun n => c n • d n) l (𝓝 y))
+    : Tendsto d l (𝓝 0) := by
   have : ∀ᶠ n in l, (c n)⁻¹ • c n • d n = d n :=
     (eventually_ne_of_tendsto_norm_atTop hc 0).mono fun n hn ↦ inv_smul_smul₀ hn (d n)
   rw [tendsto_norm_atTop_iff_cobounded] at hc
   simpa using Tendsto.congr' this <| (tendsto_inv₀_cobounded.comp hc).smul hd
 
-theorem mem_tangentConeAt_of_pow_smul (hr₀ : r ≠ 0) (hr : ‖r‖ < 1)
-    (hs : ∀ᶠ n : ℕ in atTop, x + r ^ n • y ∈ s) :
-    y ∈ tangentConeAt 𝕜 s x := by
+theorem mem_tangentConeAt_of_pow_smul
+    (hr₀ : r ≠ 0) (hr : ‖r‖ < 1) (hs : ∀ᶠ n : ℕ in atTop, x + r ^ n • y ∈ s)
+    : y ∈ tangentConeAt 𝕜 s x := by
   refine mem_tangentConeAt_of_add_smul_mem
     (tendsto_nhdsWithin_iff.mpr ⟨tendsto_pow_atTop_nhds_zero_of_norm_lt_one hr, ?_⟩) hs
   simp [hr₀]
 
 end
 
-/-- In a normed space over a nontrivially normed field,
+/--
+In a normed space over a nontrivially normed field,
 a point `y` belongs to the tangent cone of a set `s` at `x`
 iff there exists a sequence of scalars `c n` and a sequence of points `d n` such that
 
@@ -86,12 +98,13 @@ the right-hand side of this equivalence was the definition of the tangent cone.
 In most cases, `exists_fun_of_mem_tangentConeAt` and/or `mem_tangentConeAt_of_seq`
 can be used to generalize a proof using this lemma to topological vector spaces.
 -/
-theorem mem_tangentConeAt_iff_exists_seq_norm_tendsto_atTop {𝕜 E : Type*}
-    [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    {s : Set E} {x y : E} :
-    y ∈ tangentConeAt 𝕜 s x ↔
-      ∃ (c : ℕ → 𝕜) (d : ℕ → E), Tendsto (‖c ·‖) atTop atTop ∧ (∀ᶠ n in atTop, x + d n ∈ s) ∧
-        Tendsto (fun n ↦ c n • d n) atTop (𝓝 y) := by
+theorem mem_tangentConeAt_iff_exists_seq_norm_tendsto_atTop
+    {𝕜 E : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    {s : Set E} {x y : E}
+    : y ∈ tangentConeAt 𝕜 s x
+      ↔ ∃ (c : ℕ → 𝕜) (d : ℕ → E),
+        Tendsto (‖c ·‖) atTop atTop ∧ (∀ᶠ n in atTop, x + d n ∈ s)
+          ∧ Tendsto (fun n ↦ c n • d n) atTop (𝓝 y) := by
   constructor
   · rcases eq_or_ne y 0 with rfl | hy₀
     · rw [zero_mem_tangentConeAt_iff]

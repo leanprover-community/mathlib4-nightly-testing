@@ -6,7 +6,6 @@ Authors: Riccardo Brasca, Pietro Monticone
 module
 
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
-
 import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
 import Mathlib.RingTheory.Fintype
 
@@ -48,8 +47,8 @@ lemma _root_.IsPrimitiveRoot.toInteger_cube_eq_one : hζ.toInteger ^ 3 = 1 :=
 /-- Let `u` be a unit in `(𝓞 K)ˣ`, then `u ∈ [1, -1, η, -η, η^2, -η^2]`. -/
 -- Here `List` is more convenient than `Finset`, even if further from the informal statement.
 -- For example, `fin_cases` below does not work with a `Finset`.
-theorem Units.mem [NumberField K] [IsCyclotomicExtension {3} ℚ K] :
-    u ∈ [1, -1, η, -η, η ^ 2, -η ^ 2] := by
+theorem Units.mem [NumberField K] [IsCyclotomicExtension {3} ℚ K]
+    : u ∈ [1, -1, η, -η, η ^ 2, - η ^ 2] := by
   have hrank : rank K = 0 := by
     dsimp only [rank]
     rw [card_eq_nrRealPlaces_add_nrComplexPlaces, nrRealPlaces_eq_zero (n := 3) K (by decide),
@@ -69,10 +68,11 @@ theorem Units.mem [NumberField K] [IsCyclotomicExtension {3} ℚ K] :
     convert map_one (algebraMap (𝓞 K) K)
     rw_mod_cast [hxu, hn]
     simp
-  obtain ⟨r, hr3, hru⟩ := hζ.exists_pow_or_neg_mul_pow_of_isOfFinOrder (by decide)
-    (isOfFinOrder_iff_pow_eq_one.2 ⟨n, hnpos, hn⟩)
+  obtain ⟨r, hr3, hru⟩ :=
+    hζ.exists_pow_or_neg_mul_pow_of_isOfFinOrder (by decide)
+      (isOfFinOrder_iff_pow_eq_one.2 ⟨n, hnpos, hn⟩)
   replace hr : r ∈ Finset.Ico 0 3 := Finset.mem_Ico.2 ⟨by simp, hr3⟩
-  replace hru : ↑u = η ^ r ∨ ↑u = -η ^ r := by
+  replace hru : ↑u = η ^ r ∨ ↑u = - η ^ r := by
     rcases hru with h | h
     · left; ext; exact h
     · right; ext; exact h
@@ -82,24 +82,28 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- We have that `λ ^ 2 = -3 * η`. -/
 private lemma lambda_sq : λ ^ 2 = -3 * η := by
   ext
-  calc (λ ^ 2 : K) = η ^ 2 + η + 1 - 3 * η := by
-        simp only [IsUnit.unit_spec]; ring
-  _ = 0 - 3 * η := by simpa using hζ.isRoot_cyclotomic (by decide)
-  _ = -3 * η := by ring
+  calc
+    (λ ^ 2 : K)
+      = η ^ 2 + η + 1 - 3 * η := by simp only [IsUnit.unit_spec]; ring
+    _ = 0 - 3 * η := by simpa using hζ.isRoot_cyclotomic (by decide)
+    _ = -3 * η := by ring
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- We have that `η ^ 2 = -η - 1`. -/
 lemma eta_sq : (η ^ 2 : 𝓞 K) = -η - 1 := by
   rw [← neg_add', ← add_eq_zero_iff_eq_neg, ← add_assoc]
-  ext; simpa using hζ.isRoot_cyclotomic (by decide)
+  ext
+  simpa using hζ.isRoot_cyclotomic (by decide)
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- If a unit `u` is congruent to an integer modulo `λ ^ 2`, then `u = 1` or `u = -1`.
+/--
+If a unit `u` is congruent to an integer modulo `λ ^ 2`, then `u = 1` or `u = -1`.
 
-This is a special case of the so-called *Kummer's lemma*. -/
+This is a special case of the so-called *Kummer's lemma*.
+-/
 theorem eq_one_or_neg_one_of_unit_of_congruent
-    [NumberField K] [IsCyclotomicExtension {3} ℚ K] (hcong : ∃ n : ℤ, λ ^ 2 ∣ (u - n : 𝓞 K)) :
-    u = 1 ∨ u = -1 := by
+    [NumberField K] [IsCyclotomicExtension {3} ℚ K] (hcong : ∃ n : ℤ, λ ^ 2 ∣ (u - n : 𝓞 K))
+    : u = 1 ∨ u = -1 := by
   replace hcong : ∃ n : ℤ, (3 : 𝓞 K) ∣ (↑u - n : 𝓞 K) := by
     obtain ⟨n, x, hx⟩ := hcong
     exact ⟨n, -η * x, by rw [← mul_assoc, mul_neg, ← neg_mul, ← lambda_sq, hx]⟩
@@ -128,8 +132,8 @@ theorem eq_one_or_neg_one_of_unit_of_congruent
 variable (x : 𝓞 K)
 
 /-- Let `(x : 𝓞 K)`. Then we have that `λ` divides one amongst `x`, `x - 1` and `x + 1`. -/
-lemma lambda_dvd_or_dvd_sub_one_or_dvd_add_one [NumberField K] [IsCyclotomicExtension {3} ℚ K] :
-    λ ∣ x ∨ λ ∣ x - 1 ∨ λ ∣ x + 1 := by
+lemma lambda_dvd_or_dvd_sub_one_or_dvd_add_one [NumberField K] [IsCyclotomicExtension {3} ℚ K]
+    : λ ∣ x ∨ λ ∣ x - 1 ∨ λ ∣ x + 1 := by
   classical
   have := hζ.finite_quotient_toInteger_sub_one (by decide)
   let _ := Fintype.ofFinite (𝓞 K ⧸ Ideal.span {λ})
@@ -145,10 +149,12 @@ lemma lambda_dvd_or_dvd_sub_one_or_dvd_add_one [NumberField K] [IsCyclotomicExte
   rcases this with h | h | h
   · left
     exact Ideal.mem_span_singleton.1 <| Ideal.Quotient.eq_zero_iff_mem.1 h
-  · right; left
+  · right
+    left
     refine Ideal.mem_span_singleton.1 <| Ideal.Quotient.eq_zero_iff_mem.1 ?_
     rw [RingHom.map_sub, h, RingHom.map_one, sub_self]
-  · right; right
+  · right
+    right
     refine Ideal.mem_span_singleton.1 <| Ideal.Quotient.eq_zero_iff_mem.1 ?_
     rw [RingHom.map_add, h, RingHom.map_one, neg_add_cancel]
 
@@ -160,10 +166,11 @@ lemma eta_sq_add_eta_add_one : (η : 𝓞 K) ^ 2 + η + 1 = 0 := by
 /-- We have that `x ^ 3 - 1 = (x - 1) * (x - η) * (x - η ^ 2)`. -/
 lemma cube_sub_one_eq_mul : x ^ 3 - 1 = (x - 1) * (x - η) * (x - η ^ 2) := by
   symm
-  calc _ = x ^ 3 - x ^ 2 * (η ^ 2 + η + 1) + x * (η ^ 2 + η + η ^ 3) - η ^ 3 := by ring
-  _ = x ^ 3 - x ^ 2 * (η ^ 2 + η + 1) + x * (η ^ 2 + η + 1) - 1 := by
-    simp [hζ.toInteger_cube_eq_one]
-  _ = x ^ 3 - 1 := by rw [eta_sq_add_eta_add_one hζ]; ring
+  calc
+    _ = x ^ 3 - x ^ 2 * (η ^ 2 + η + 1) + x * (η ^ 2 + η + η ^ 3) - η ^ 3 := by ring
+    _ = x ^ 3 - x ^ 2 * (η ^ 2 + η + 1) + x * (η ^ 2 + η + 1) - 1 := by
+      simp [hζ.toInteger_cube_eq_one]
+    _ = x ^ 3 - 1 := by rw [eta_sq_add_eta_add_one hζ]; ring
 
 variable [NumberField K] [IsCyclotomicExtension {3} ℚ K]
 
@@ -177,19 +184,20 @@ lemma lambda_dvd_mul_sub_one_mul_sub_eta_add_one : λ ∣ x * (x - 1) * (x - (η
     exact dvd_sub h <| dvd_add dvd_rfl hζ.toInteger_sub_one_dvd_prime'
 
 /-- If `λ` divides `x - 1`, then `λ ^ 4` divides `x ^ 3 - 1`. -/
-lemma lambda_pow_four_dvd_cube_sub_one_of_dvd_sub_one {x : 𝓞 K} (h : λ ∣ x - 1) :
-    λ ^ 4 ∣ x ^ 3 - 1 := by
+lemma lambda_pow_four_dvd_cube_sub_one_of_dvd_sub_one {x : 𝓞 K} (h : λ ∣ x - 1)
+    : λ ^ 4 ∣ x ^ 3 - 1 := by
   obtain ⟨y, hy⟩ := h
   have : x ^ 3 - 1 = λ ^ 3 * (y * (y - 1) * (y - (η + 1))) := by
-    calc _ = (x - 1) * (x - 1 - λ) * (x - 1 - λ * (η + 1)) := by
-          simp only [coe_eta, cube_sub_one_eq_mul hζ x]; ring
-    _ = _ := by rw [hy]; ring
+    calc
+      _ = (x - 1) * (x - 1 - λ) * (x - 1 - λ * (η + 1)) := by
+        simp only [coe_eta, cube_sub_one_eq_mul hζ x]; ring
+      _ = _ := by rw [hy]; ring
   rw [this, pow_succ]
   exact mul_dvd_mul_left _ (lambda_dvd_mul_sub_one_mul_sub_eta_add_one hζ y)
 
 /-- If `λ` divides `x + 1`, then `λ ^ 4` divides `x ^ 3 + 1`. -/
-lemma lambda_pow_four_dvd_cube_add_one_of_dvd_add_one {x : 𝓞 K} (h : λ ∣ x + 1) :
-    λ ^ 4 ∣ x ^ 3 + 1 := by
+lemma lambda_pow_four_dvd_cube_add_one_of_dvd_add_one {x : 𝓞 K} (h : λ ∣ x + 1)
+    : λ ^ 4 ∣ x ^ 3 + 1 := by
   replace h : λ ∣ -x - 1 := by
     convert h.neg_right using 1
     exact (neg_add' x 1).symm
@@ -197,8 +205,8 @@ lemma lambda_pow_four_dvd_cube_add_one_of_dvd_add_one {x : 𝓞 K} (h : λ ∣ x
   ring
 
 /-- If `λ` does not divide `x`, then `λ ^ 4` divides `x ^ 3 - 1` or `x ^ 3 + 1`. -/
-lemma lambda_pow_four_dvd_cube_sub_one_or_add_one_of_lambda_not_dvd {x : 𝓞 K} (h : ¬ λ ∣ x) :
-    λ ^ 4 ∣ x ^ 3 - 1 ∨ λ ^ 4 ∣ x ^ 3 + 1 := by
+lemma lambda_pow_four_dvd_cube_sub_one_or_add_one_of_lambda_not_dvd {x : 𝓞 K} (h : ¬ λ ∣ x)
+    : λ ^ 4 ∣ x ^ 3 - 1 ∨ λ ^ 4 ∣ x ^ 3 + 1 := by
   rcases lambda_dvd_or_dvd_sub_one_or_dvd_add_one hζ x with H | H | H
   · contradiction
   · left

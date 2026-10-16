@@ -28,8 +28,10 @@ objects, and we provide a translation of the main constructions on augmented (co
 
 open CategoryTheory
 
-/-- The `AugmentedSimplexCategory` is the category obtained from `SimplexCategory` by adjoining an
-initial object. -/
+/--
+The `AugmentedSimplexCategory` is the category obtained from `SimplexCategory` by adjoining an
+initial object.
+-/
 abbrev AugmentedSimplexCategory := WithInitial SimplexCategory
 
 namespace AugmentedSimplexCategory
@@ -37,8 +39,7 @@ namespace AugmentedSimplexCategory
 variable {C : Type*} [Category* C]
 
 /-- The canonical inclusion from `SimplexCategory` to `AugmentedSimplexCategory`. -/
-@[simps!]
-def inclusion : SimplexCategory ⥤ AugmentedSimplexCategory := WithInitial.incl
+@[simps!] def inclusion : SimplexCategory ⥤ AugmentedSimplexCategory := WithInitial.incl
 
 instance : inclusion.Full := inferInstanceAs WithInitial.incl.Full
 instance : inclusion.Faithful := inferInstanceAs WithInitial.incl.Faithful
@@ -46,81 +47,97 @@ instance : inclusion.Faithful := inferInstanceAs WithInitial.incl.Faithful
 instance : Limits.HasInitial AugmentedSimplexCategory :=
   inferInstanceAs <| Limits.HasInitial <| WithInitial _
 
-/-- The equivalence between functors out of `AugmentedSimplexCategory` and augmented
-cosimplicial objects. -/
+/--
+The equivalence between functors out of `AugmentedSimplexCategory` and augmented
+cosimplicial objects.
+-/
 @[simps!]
-def equivAugmentedCosimplicialObject :
-    (AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C :=
+def equivAugmentedCosimplicialObject
+    : (AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C :=
   WithInitial.equivComma
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
-/-- Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
+/--
+Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
 dropping the augmentation corresponds to precomposition with
-`inclusion : SimplexCategory ⥤ AugmentedSimplexCategory`. -/
+`inclusion : SimplexCategory ⥤ AugmentedSimplexCategory`.
+-/
 @[simps!]
-def equivAugmentedCosimplicialObjectFunctorCompDropIso :
-    equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.drop ≅
-    (Functor.whiskeringLeft _ _ C).obj inclusion :=
+def equivAugmentedCosimplicialObjectFunctorCompDropIso
+    : equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.drop
+      ≅ (Functor.whiskeringLeft _ _ C).obj inclusion :=
   .refl _
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
-/-- Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
-taking the point of the augmentation corresponds to evaluation at the initial object. -/
+/--
+Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
+taking the point of the augmentation corresponds to evaluation at the initial object.
+-/
 @[simps!]
-def equivAugmentedCosimplicialObjectFunctorCompPointIso :
-    equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.point ≅
-    ((evaluation _ _).obj .star : (AugmentedSimplexCategory ⥤ C) ⥤ C) :=
+def equivAugmentedCosimplicialObjectFunctorCompPointIso
+    : equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.point
+      ≅ ((evaluation _ _).obj .star : (AugmentedSimplexCategory ⥤ C) ⥤ C) :=
   .refl _
 
-/-- Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
+/--
+Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
 the arrow attached to the cosimplicial object is the one obtained by evaluation at the unique arrow
-`star ⟶ of [0]`. -/
+`star ⟶ of [0]`.
+-/
 @[simps!]
-def equivAugmentedCosimplicialObjectFunctorCompToArrowIso :
-    equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.toArrow ≅
-    Functor.mapArrowFunctor _ C ⋙
-      (evaluation _ _ |>.obj <| .mk <| WithInitial.homTo <| .mk 0) :=
+def equivAugmentedCosimplicialObjectFunctorCompToArrowIso
+    : equivAugmentedCosimplicialObject.functor ⋙ CosimplicialObject.Augmented.toArrow
+      ≅ Functor.mapArrowFunctor _ C
+        ⋙ (evaluation _ _ |>.obj <| .mk <| WithInitial.homTo <| .mk 0) :=
   .refl _
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The equivalence between functors out of `AugmentedSimplexCategory` and augmented simplicial
-objects. -/
+/--
+The equivalence between functors out of `AugmentedSimplexCategory` and augmented simplicial
+objects.
+-/
 @[simps!]
-def equivAugmentedSimplicialObject :
-    (AugmentedSimplexCategoryᵒᵖ ⥤ C) ≌ SimplicialObject.Augmented C :=
+def equivAugmentedSimplicialObject
+    : (AugmentedSimplexCategoryᵒᵖ ⥤ C) ≌ SimplicialObject.Augmented C :=
   WithInitial.opEquiv SimplexCategory |>.congrLeft |>.trans WithTerminal.equivComma
 
-/-- Through the equivalence `(AugmentedSimplexCategoryᵒᵖ ⥤ C) ≌ SimplicialObject.Augmented C`,
+/--
+Through the equivalence `(AugmentedSimplexCategoryᵒᵖ ⥤ C) ≌ SimplicialObject.Augmented C`,
 dropping the augmentation corresponds to precomposition with
-`inclusionᵒᵖ : SimplexCategoryᵒᵖ ⥤ AugmentedSimplexCategoryᵒᵖ`. -/
+`inclusionᵒᵖ : SimplexCategoryᵒᵖ ⥤ AugmentedSimplexCategoryᵒᵖ`.
+-/
 @[simps!]
-def equivAugmentedSimplicialObjectFunctorCompDropIso :
-    equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.drop ≅
-    (Functor.whiskeringLeft _ _ C).obj inclusion.op :=
+def equivAugmentedSimplicialObjectFunctorCompDropIso
+    : equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.drop
+      ≅ (Functor.whiskeringLeft _ _ C).obj inclusion.op :=
   .refl _
 
-/-- Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
-taking the point of the augmentation corresponds to evaluation at the initial object. -/
+/--
+Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
+taking the point of the augmentation corresponds to evaluation at the initial object.
+-/
 @[simps!]
-def equivAugmentedSimplicialObjectFunctorCompPointIso :
-    equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.point ≅
-    (evaluation _ C).obj (.op .star) :=
+def equivAugmentedSimplicialObjectFunctorCompPointIso
+    : equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.point
+      ≅ (evaluation _ C).obj (.op .star) :=
   .refl _
 
-/-- Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
+/--
+Through the equivalence `(AugmentedSimplexCategory ⥤ C) ≌ CosimplicialObject.Augmented C`,
 the arrow attached to the cosimplicial object is the one obtained by evaluation at the unique arrow
-`star ⟶ of [0]`. -/
+`star ⟶ of [0]`.
+-/
 @[simps!]
-def equivAugmentedSimplicialObjectFunctorCompToArrowIso :
-    equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.toArrow ≅
-    Functor.mapArrowFunctor _ C ⋙
-      (evaluation _ _ |>.obj <| .mk <| .op <| WithInitial.homTo <| .mk 0) :=
+def equivAugmentedSimplicialObjectFunctorCompToArrowIso
+    : equivAugmentedSimplicialObject.functor ⋙ SimplicialObject.Augmented.toArrow
+      ≅ Functor.mapArrowFunctor _ C
+        ⋙ (evaluation _ _ |>.obj <| .mk <| .op <| WithInitial.homTo <| .mk 0) :=
   .refl _
 
 end AugmentedSimplexCategory

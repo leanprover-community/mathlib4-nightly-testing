@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Invariant.Basic
 public import Mathlib.RingTheory.Unramified.Locus
-
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
@@ -50,8 +49,10 @@ Let `G` be a finite group acting on a ring `S`, and `R` is the fixed subring of 
 
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
-/-- `φ : S →ₐ[R] S` is an (arithmetic) Frobenius at `Q` if
-`φ x ≡ x ^ #(R/p) (mod Q)` for all `x : S` (`AlgHom.IsArithFrobAt`). -/
+/--
+`φ : S →ₐ[R] S` is an (arithmetic) Frobenius at `Q` if
+`φ x ≡ x ^ #(R/p) (mod Q)` for all `x : S` (`AlgHom.IsArithFrobAt`).
+-/
 def AlgHom.IsArithFrobAt (φ : S →ₐ[R] S) (Q : Ideal S) : Prop :=
   ∀ x, φ x - x ^ Nat.card (R ⧸ Q.under R) ∈ Q
 
@@ -87,15 +88,13 @@ def restrict : S ⧸ Q →ₐ[R ⧸ Q.under R] S ⧸ Q where
     obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
     congrm Ideal.Quotient.mk Q $(φ.commutes x)
 
-lemma restrict_apply (x : S ⧸ Q) :
-    H.restrict x = x ^ Nat.card (R ⧸ Q.under R) := by
+lemma restrict_apply (x : S ⧸ Q) : H.restrict x = x ^ Nat.card (R ⧸ Q.under R) := by
   obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
   exact H.mk_apply x
 
 lemma restrict_mk (x : S) : H.restrict ↑x = ↑(φ x) := rfl
 
-lemma restrict_injective [Q.IsPrime] :
-    Function.Injective H.restrict := by
+lemma restrict_injective [Q.IsPrime] : Function.Injective H.restrict := by
   rw [injective_iff_map_eq_zero]
   intro x hx
   simpa [restrict_apply, H.card_pos.ne'] using hx
@@ -105,10 +104,12 @@ lemma comap_eq [Q.IsPrime] : Q.comap φ = Q := by
   rwa [← Ideal.Quotient.eq_zero_iff_mem, ← H.restrict_injective.eq_iff, map_zero, restrict_mk,
     Ideal.Quotient.eq_zero_iff_mem, ← Ideal.mem_comap]
 
-/-- Suppose `S` is a domain, and `φ : S →ₐ[R] S` is a Frobenius at `Q : Ideal S`.
-Let `ζ` be a `m`-th root of unity with `Q ∤ m`, then `φ` sends `ζ` to `ζ ^ q`. -/
-lemma apply_of_pow_eq_one [IsDomain S] {ζ : S} {m : ℕ} (hζ : ζ ^ m = 1) (hk' : ↑m ∉ Q) :
-    φ ζ = ζ ^ Nat.card (R ⧸ Q.under R) := by
+/--
+Suppose `S` is a domain, and `φ : S →ₐ[R] S` is a Frobenius at `Q : Ideal S`.
+Let `ζ` be a `m`-th root of unity with `Q ∤ m`, then `φ` sends `ζ` to `ζ ^ q`.
+-/
+lemma apply_of_pow_eq_one [IsDomain S] {ζ : S} {m : ℕ} (hζ : ζ ^ m = 1) (hk' : ↑m ∉ Q)
+    : φ ζ = ζ ^ Nat.card (R ⧸ Q.under R) := by
   set q := Nat.card (R ⧸ Q.under R)
   have hm : m ≠ 0 := by rintro rfl; exact hk' (by simp)
   obtain ⟨k, hk, hζ⟩ := IsPrimitiveRoot.exists_pos hζ hm
@@ -116,9 +117,9 @@ lemma apply_of_pow_eq_one [IsDomain S] {ζ : S} {m : ℕ} (hζ : ζ ^ m = 1) (hk
   have : NeZero k := ⟨hk.ne'⟩
   obtain ⟨i, hi, e⟩ := hζ.eq_pow_of_pow_eq_one (ξ := φ ζ) (by rw [← map_pow, hζ.1, map_one])
   have (j : _) : 1 - ζ ^ ((q + k - i) * j) ∈ Q := by
-    rw [← Ideal.mul_unit_mem_iff_mem _ ((hζ.isUnit NeZero.out).pow (i * j)),
-      sub_mul, one_mul, ← pow_add, ← add_mul, tsub_add_cancel_of_le (by linarith), add_mul,
-        pow_add, pow_mul _ k, hζ.1, one_pow, mul_one, pow_mul, e, ← map_pow, mul_comm, pow_mul]
+    rw [← Ideal.mul_unit_mem_iff_mem _ ((hζ.isUnit NeZero.out).pow (i * j)), sub_mul, one_mul,
+      ← pow_add, ← add_mul, tsub_add_cancel_of_le (by linarith), add_mul, pow_add, pow_mul _ k,
+      hζ.1, one_pow, mul_one, pow_mul, e, ← map_pow, mul_comm, pow_mul]
     exact H _
   have h₁ := sum_mem (t := Finset.range k) fun j _ ↦ this j
   have h₂ := geom_sum_mul (ζ ^ (q + k - i)) k
@@ -131,24 +132,24 @@ lemma apply_of_pow_eq_one [IsDomain S] {ζ : S} {m : ℕ} (hζ : ζ ^ m = 1) (hk
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- A Frobenius element at `Q` restricts to an automorphism of `S_Q`. -/
-noncomputable
-def localize [Q.IsPrime] : Localization.AtPrime Q →ₐ[R] Localization.AtPrime Q where
+noncomputable def localize [Q.IsPrime] : Localization.AtPrime Q →ₐ[R] Localization.AtPrime Q where
   toRingHom := Localization.localRingHom _ _ φ H.comap_eq.symm
   commutes' x := by
     simp [IsScalarTower.algebraMap_apply R S (Localization.AtPrime Q),
       Localization.localRingHom_to_map]
 
 @[simp]
-lemma localize_algebraMap [Q.IsPrime] (x : S) :
-    H.localize (algebraMap _ _ x) = algebraMap _ _ (φ x) :=
+lemma localize_algebraMap [Q.IsPrime] (x : S)
+    : H.localize (algebraMap _ _ x) = algebraMap _ _ (φ x) :=
   Localization.localRingHom_to_map _ _ _ H.comap_eq.symm _
 
 open IsLocalRing nonZeroDivisors
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma isArithFrobAt_localize [Q.IsPrime] : H.localize.IsArithFrobAt (maximalIdeal _) := by
-  have h : Nat.card (R ⧸ (maximalIdeal _).comap (algebraMap R (Localization.AtPrime Q))) =
-      Nat.card (R ⧸ Q.under R) := by
+  have h
+      : Nat.card (R ⧸ (maximalIdeal _).comap (algebraMap R (Localization.AtPrime Q)))
+        = Nat.card (R ⧸ Q.under R) := by
     congr 2
     rw [← Ideal.under_def, ← Ideal.under_under (B := S), Localization.AtPrime.under_maximalIdeal]
   intro x
@@ -160,11 +161,16 @@ lemma isArithFrobAt_localize [Q.IsPrime] : H.localize.IsArithFrobAt (maximalIdea
   simp only [SubmonoidClass.coe_pow, ← Ideal.Quotient.eq_zero_iff_mem]
   simp [H.mk_apply]
 
-/-- Suppose `S` is Noetherian and `Q` is a prime of `S` containing all zero divisors.
-If `S/R` is unramified at `Q`, then the Frobenius `φ : S →ₐ[R] S` over `Q` is unique. -/
+/--
+Suppose `S` is Noetherian and `Q` is a prime of `S` containing all zero divisors.
+If `S/R` is unramified at `Q`, then the Frobenius `φ : S →ₐ[R] S` over `Q` is unique.
+-/
 lemma eq_of_isUnramifiedAt
-    (H' : ψ.IsArithFrobAt Q) [Q.IsPrime] (hQ : Q.primeCompl ≤ S⁰)
-    [Algebra.IsUnramifiedAt R Q] [IsNoetherianRing S] : φ = ψ := by
+    (H' : ψ.IsArithFrobAt Q)
+    [Q.IsPrime]
+    (hQ : Q.primeCompl ≤ S⁰)
+    [Algebra.IsUnramifiedAt R Q] [IsNoetherianRing S]
+    : φ = ψ := by
   have : H.localize = H'.localize := by
     apply Algebra.FormallyUnramified.ext_of_iInf _
       (Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal _) Ideal.IsPrime.ne_top')
@@ -181,8 +187,9 @@ variable (R) in
 Suppose `S` is an `R` algebra, `M` is a monoid acting on `S` whose action is trivial on `R`
 `σ : M` is an (arithmetic) Frobenius at an ideal `Q` of `S` if `σ • x ≡ x ^ q (mod Q)` for all `x`.
 -/
-abbrev IsArithFrobAt {M : Type*} [Monoid M] [MulSemiringAction M S] [SMulCommClass M R S]
-    (σ : M) (Q : Ideal S) : Prop :=
+abbrev IsArithFrobAt
+    {M : Type*} [Monoid M] [MulSemiringAction M S] [SMulCommClass M R S] (σ : M) (Q : Ideal S)
+    : Prop :=
   (MulSemiringAction.toAlgHom R S σ).IsArithFrobAt Q
 
 namespace IsArithFrobAt
@@ -198,8 +205,8 @@ theorem mem_stabilizer [Q.IsPrime] (h : IsArithFrobAt R σ Q) : σ ∈ MulAction
   rw [Ideal.pointwise_smul_def]
   exact Q.map_comap_eq_self_of_equiv (MulSemiringAction.toRingEquiv G S σ)
 
-lemma mul_inv_mem_inertia (H : IsArithFrobAt R σ Q) (H' : IsArithFrobAt R σ' Q) :
-    σ * σ'⁻¹ ∈ Q.inertia G := by
+lemma mul_inv_mem_inertia (H : IsArithFrobAt R σ Q) (H' : IsArithFrobAt R σ' Q)
+    : σ * σ'⁻¹ ∈ Q.inertia G := by
   intro x
   simpa [mul_smul] using sub_mem (H (σ'⁻¹ • x)) (H' (σ'⁻¹ • x))
 
@@ -216,9 +223,11 @@ variable [Finite G] [Algebra.IsInvariant R S G]
 
 variable (R G Q) in
 attribute [local instance] Ideal.Quotient.field in
-/-- Let `G` be a finite group acting on `S`, and `R` be the fixed subring.
+/--
+Let `G` be a finite group acting on `S`, and `R` be the fixed subring.
 If `Q` is a prime of `S` with finite residue field,
-then there exists a Frobenius element `σ : G` at `Q`. -/
+then there exists a Frobenius element `σ : G` at `Q`.
+-/
 lemma exists_of_isInvariant [Q.IsPrime] [Finite (S ⧸ Q)] : ∃ σ : G, IsArithFrobAt R σ Q := by
   let P := Q.under R
   have := Algebra.IsInvariant.isIntegral R S G
@@ -229,50 +238,56 @@ lemma exists_of_isInvariant [Q.IsPrime] [Finite (S ⧸ Q)] : ∃ σ : G, IsArith
   obtain ⟨k, hp, hk⟩ := FiniteField.card (R ⧸ P) p
   have := CharP.of_ringHom_of_ne_zero (algebraMap (R ⧸ P) (S ⧸ Q)) p hp.ne_zero
   have : ExpChar (S ⧸ Q) p := .prime hp
-  let l : (S ⧸ Q) ≃ₐ[R ⧸ P] S ⧸ Q :=
-    { __ := iterateFrobeniusEquiv (S ⧸ Q) p k,
-      commutes' r := by
-        dsimp [iterateFrobenius_def]
-        rw [← map_pow, ← hk, FiniteField.pow_card] }
+  let l : (S ⧸ Q) ≃ₐ[R ⧸ P] S ⧸ Q := {
+    __ := iterateFrobeniusEquiv (S ⧸ Q) p k
+    commutes' r := by
+      dsimp [iterateFrobenius_def]
+      rw [← map_pow, ← hk, FiniteField.pow_card]
+  }
   obtain ⟨σ, hσ⟩ := Ideal.Quotient.stabilizerHom_surjective G P Q l
   refine ⟨σ, fun x ↦ ?_⟩
   rw [← Ideal.Quotient.eq, Nat.card_eq_fintype_card, hk]
   congrm $hσ (Ideal.Quotient.mk Q x)
 
 variable (S G) in
-lemma exists_primesOver_isConj (P : Ideal R)
-    (hP : ∃ Q : Ideal.primesOver P S, Finite (S ⧸ Q.1)) :
-    ∃ σ : Ideal.primesOver P S → G, (∀ Q, IsArithFrobAt R (σ Q) Q.1) ∧
-      (∀ Q₁ Q₂, IsConj (σ Q₁) (σ Q₂)) := by
+lemma exists_primesOver_isConj (P : Ideal R) (hP : ∃ Q : Ideal.primesOver P S, Finite (S ⧸ Q.1))
+    : ∃ σ : Ideal.primesOver P S → G,
+      (∀ Q, IsArithFrobAt R (σ Q) Q.1) ∧ (∀ Q₁ Q₂, IsConj (σ Q₁) (σ Q₂)) := by
   obtain ⟨⟨Q, hQ₁, hQ₂⟩, hQ₃⟩ := hP
   have (Q' : Ideal.primesOver P S) : ∃ σ : G, Q'.1 = σ • Q :=
     Algebra.IsInvariant.exists_smul_of_under_eq R S G _ _ (hQ₂.over.symm.trans Q'.2.2.over)
   choose τ hτ using this
   obtain ⟨σ, hσ⟩ := exists_of_isInvariant R G Q
-  refine ⟨fun Q' ↦ τ Q' * σ * (τ Q')⁻¹, fun Q' ↦ hτ Q' ▸ hσ.conj (τ Q'), fun Q₁ Q₂ ↦
-    .trans (.symm (isConj_iff.mpr ⟨τ Q₁, rfl⟩)) (isConj_iff.mpr ⟨τ Q₂, rfl⟩)⟩
+  refine ⟨
+    fun Q' ↦ τ Q' * σ * (τ Q')⁻¹,
+    fun Q' ↦ hτ Q' ▸ hσ.conj (τ Q'),
+    fun Q₁ Q₂ ↦ .trans (.symm (isConj_iff.mpr ⟨τ Q₁, rfl⟩)) (isConj_iff.mpr ⟨τ Q₂, rfl⟩)
+  ⟩
 
 variable (R G Q)
 
-/-- Let `G` be a finite group acting on `S`, `R` be the fixed subring, and `Q` be a prime of `S`
+/--
+Let `G` be a finite group acting on `S`, `R` be the fixed subring, and `Q` be a prime of `S`
 with finite residue field. This is an arbitrary choice of a Frobenius over `Q`. It is chosen so that
-the Frobenius elements of `Q₁` and `Q₂` are conjugate if they lie over the same prime. -/
-noncomputable
-def _root_.arithFrobAt [Q.IsPrime] [Finite (S ⧸ Q)] : G :=
-  (exists_primesOver_isConj S G (Q.under R)
-    ⟨⟨Q, ‹_›, ⟨rfl⟩⟩, ‹Finite (S ⧸ Q)›⟩).choose ⟨Q, ‹_›, ⟨rfl⟩⟩
+the Frobenius elements of `Q₁` and `Q₂` are conjugate if they lie over the same prime.
+-/
+noncomputable def _root_.arithFrobAt [Q.IsPrime] [Finite (S ⧸ Q)] : G :=
+  (exists_primesOver_isConj S G (Q.under R) ⟨⟨Q, ‹_›, ⟨rfl⟩⟩, ‹Finite (S ⧸ Q)›⟩).choose
+    ⟨Q, ‹_›, ⟨rfl⟩⟩
 
 protected lemma arithFrobAt [Q.IsPrime] [Finite (S ⧸ Q)] : IsArithFrobAt R (arithFrobAt R G Q) Q :=
-  (exists_primesOver_isConj S G (Q.under R)
-    ⟨⟨Q, ‹_›, ⟨rfl⟩⟩, ‹Finite (S ⧸ Q)›⟩).choose_spec.1 ⟨Q, ‹_›, ⟨rfl⟩⟩
+  (exists_primesOver_isConj S G (Q.under R) ⟨⟨Q, ‹_›, ⟨rfl⟩⟩, ‹Finite (S ⧸ Q)›⟩).choose_spec.1
+    ⟨Q, ‹_›, ⟨rfl⟩⟩
 
-theorem arithFrobAt_mem_stabilizer [Q.IsPrime] [Finite (S ⧸ Q)] :
-    arithFrobAt R G Q ∈ MulAction.stabilizer G Q :=
+theorem arithFrobAt_mem_stabilizer [Q.IsPrime] [Finite (S ⧸ Q)]
+    : arithFrobAt R G Q ∈ MulAction.stabilizer G Q :=
   mem_stabilizer (.arithFrobAt R G Q)
 
 lemma _root_.isConj_arithFrobAt
-    [Q.IsPrime] [Finite (S ⧸ Q)] (Q' : Ideal S) [Q'.IsPrime] [Finite (S ⧸ Q')]
-    (H : Q.under R = Q'.under R) : IsConj (arithFrobAt R G Q) (arithFrobAt R G Q') := by
+    [Q.IsPrime] [Finite (S ⧸ Q)]
+    (Q' : Ideal S) [Q'.IsPrime] [Finite (S ⧸ Q')]
+    (H : Q.under R = Q'.under R)
+    : IsConj (arithFrobAt R G Q) (arithFrobAt R G Q') := by
   obtain ⟨P, hP, h₁, h₂⟩ : ∃ P : Ideal R, P.IsPrime ∧ P = Q.under R ∧ P = Q'.under R :=
     ⟨Q.under R, inferInstance, rfl, H⟩
   convert

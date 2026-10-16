@@ -8,7 +8,6 @@ module
 public import Mathlib.Basic.NNReal.Basic
 public import Mathlib.Basic.Real.ENatENNReal
 public import Mathlib.Data.ENat.Lattice
-
 import Mathlib.Basic.ENNReal.Operations
 
 /-!
@@ -47,12 +46,14 @@ namespace ENat
 variable {r s : ℝ≥0∞} {n : ℕ∞}
 
 /-- `⌊r⌋ₑ` is the greatest extended natural `n` such that `n ≤ r`. -/
-@[expose] noncomputable def floor : ℝ≥0∞ → ℕ∞
+@[expose]
+noncomputable def floor : ℝ≥0∞ → ℕ∞
   | ∞ => ⊤
   | (r : ℝ≥0) => ⌊r⌋₊
 
 /-- `⌈r⌉ₑ` is the least extended natural `n` such that `r ≤ n` -/
-@[expose] noncomputable def ceil : ℝ≥0∞ → ℕ∞
+@[expose]
+noncomputable def ceil : ℝ≥0∞ → ℕ∞
   | ∞ => ⊤
   | (r : ℝ≥0) => ⌈r⌉₊
 
@@ -91,7 +92,8 @@ lemma gc_ceil_toENNReal : GaloisConnection ceil (↑) := fun _ _ ↦ ceil_le
 
 @[simp] lemma floor_le (hn : n ≠ ⊤) : ⌊r⌋ₑ ≤ n ↔ r < n + 1 := by simp [← lt_add_one_iff hn]
 
-@[simp] lemma le_ceil (hn₀ : n ≠ 0) (hn : n ≠ ⊤) : n ≤ ⌈r⌉ₑ ↔ n - 1 < r := by
+@[simp]
+lemma le_ceil (hn₀ : n ≠ 0) (hn : n ≠ ⊤) : n ≤ ⌈r⌉ₑ ↔ n - 1 < r := by
   lift n to ℕ using hn
   cases r
   · simp only [ceil_top, le_top, toENNReal_coe, true_iff]
@@ -104,11 +106,12 @@ lemma gc_ceil_toENNReal : GaloisConnection ceil (↑) := fun _ _ ↦ ceil_le
 
 @[simp] lemma lt_floor (hn : n ≠ ⊤) : n < ⌊r⌋ₑ ↔ n + 1 ≤ r := by simp [← add_one_le_iff hn]
 
-@[simp] lemma ceil_lt (hn₀ : n ≠ 0) (hn : n ≠ ⊤) : ⌈r⌉ₑ < n ↔ r ≤ n - 1 := by
+@[simp]
+lemma ceil_lt (hn₀ : n ≠ 0) (hn : n ≠ ⊤) : ⌈r⌉ₑ < n ↔ r ≤ n - 1 := by
   simpa using (le_ceil hn₀ hn).not
 
-lemma floor_mono : Monotone (floor : ℝ≥0∞ → ℕ∞) :=
-  fun r s hrs ↦ by simpa using hrs.trans' floor_le_self
+lemma floor_mono : Monotone (floor : ℝ≥0∞ → ℕ∞) := fun r s hrs ↦ by
+  simpa using hrs.trans' floor_le_self
 
 lemma ceil_mono : Monotone (ceil : ℝ≥0∞ → ℕ∞) := fun r s hrs ↦ by simpa using hrs.trans le_ceil_self
 
@@ -132,7 +135,8 @@ lemma ceil_pos : 0 < ⌈r⌉ₑ ↔ 0 < r := by simp
 
 @[bound] lemma floor_le_ceil : ⌊r⌋ₑ ≤ ⌈r⌉ₑ := mod_cast floor_le_self.trans le_ceil_self
 
-@[bound] lemma ceil_le_floor_add_one : ∀ r : ℝ≥0∞, ⌈r⌉ₑ ≤ ⌊r⌋ₑ + 1
+@[bound]
+lemma ceil_le_floor_add_one : ∀ r : ℝ≥0∞, ⌈r⌉ₑ ≤ ⌊r⌋ₑ + 1
   | ∞ => le_rfl
   | (r : ℝ≥0) => by simpa using mod_cast Nat.ceil_le_floor_add_one r
 
@@ -141,24 +145,32 @@ lemma floor_lt_ceil (hrs : r < s) : ⌊r⌋ₑ < ⌈s⌉ₑ := floor_lt.2 <| hrs
 lemma floor_congr (h : ∀ n : ℕ∞, n ≤ r ↔ n ≤ s) : ⌊r⌋ₑ = ⌊s⌋ₑ := eq_of_forall_le_iff <| by simpa
 lemma ceil_congr (h : ∀ n : ℕ∞, r ≤ n ↔ s ≤ n) : ⌈r⌉ₑ = ⌈s⌉ₑ := eq_of_forall_ge_iff <| by simpa
 
-@[simp] lemma floor_add_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌊r + n⌋ₑ = ⌊r⌋ₑ + n
-  | ∞, _ => by simp
-  | _, ⊤ => by simp
+@[simp]
+lemma floor_add_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌊r + n⌋ₑ = ⌊r⌋ₑ + n
+  | ∞, _ => by
+    simp
+  | _, ⊤ => by
+    simp
   | (r : ℝ≥0), (n : ℕ) => by
     -- FIXME: Why does `norm_cast` not use `ENNReal.ofNNReal_add_natCast`?
     norm_cast; rw [← ENNReal.ofNNReal_add_natCast]; norm_cast; exact n.floor_add_natCast zero_le
 
-@[simp] lemma ceil_add_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌈r + n⌉ₑ = ⌈r⌉ₑ + n
-  | ∞, _ => by simp
-  | _, ⊤ => by simp
+@[simp]
+lemma ceil_add_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌈r + n⌉ₑ = ⌈r⌉ₑ + n
+  | ∞, _ => by
+    simp
+  | _, ⊤ => by
+    simp
   | (r : ℝ≥0), (n : ℕ) => by
     -- FIXME: Why does `norm_cast` not use `ENNReal.ofNNReal_sub_natCast`?
     norm_cast; rw [← ENNReal.ofNNReal_add_natCast]; norm_cast; exact Nat.ceil_add_natCast zero_le _
 
-@[simp] lemma floor_toENNReal_add (r : ℝ≥0∞) (n : ℕ∞) : ⌊n + r⌋ₑ = n + ⌊r⌋ₑ := by
+@[simp]
+lemma floor_toENNReal_add (r : ℝ≥0∞) (n : ℕ∞) : ⌊n + r⌋ₑ = n + ⌊r⌋ₑ := by
   simp [add_comm, floor_add_toENNReal]
 
-@[simp] lemma ceil_toENNReal_add (r : ℝ≥0∞) (n : ℕ∞) : ⌈n + r⌉ₑ = n + ⌈r⌉ₑ := by
+@[simp]
+lemma ceil_toENNReal_add (r : ℝ≥0∞) (n : ℕ∞) : ⌈n + r⌉ₑ = n + ⌈r⌉ₑ := by
   simp [add_comm, ceil_add_toENNReal]
 
 @[simp] lemma floor_add_natCast (r : ℝ≥0∞) (n : ℕ) : ⌊r + n⌋ₑ = ⌊r⌋ₑ + n := floor_add_toENNReal r n
@@ -178,18 +190,26 @@ lemma floor_add_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] : ⌊r + ofNat(n
 lemma ceil_add_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] : ⌈r + ofNat(n)⌉ₑ = ⌈r⌉ₑ + ofNat(n) :=
   ceil_add_natCast r n
 
-@[simp] lemma floor_sub_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌊r - n⌋ₑ = ⌊r⌋ₑ - n
-  | ∞, ⊤ => by simp
-  | ∞, (n : ℕ) => by simp
-  | (r : ℝ≥0), ⊤ => by simp
+@[simp]
+lemma floor_sub_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌊r - n⌋ₑ = ⌊r⌋ₑ - n
+  | ∞, ⊤ => by
+    simp
+  | ∞, (n : ℕ) => by
+    simp
+  | (r : ℝ≥0), ⊤ => by
+    simp
   | (r : ℝ≥0), (n : ℕ) => by
     -- FIXME: Why does `norm_cast` not use `ENNReal.ofNNReal_sub_natCast`?
     norm_cast; rw [← ENNReal.ofNNReal_sub_natCast]; norm_cast; exact Nat.floor_sub_natCast ..
 
-@[simp] lemma ceil_sub_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌈r - n⌉ₑ = ⌈r⌉ₑ - n
-  | ∞, ⊤ => by simp
-  | ∞, (n : ℕ) => by simp
-  | (r : ℝ≥0), ⊤ => by simp
+@[simp]
+lemma ceil_sub_toENNReal : ∀ (r : ℝ≥0∞) (n : ℕ∞), ⌈r - n⌉ₑ = ⌈r⌉ₑ - n
+  | ∞, ⊤ => by
+    simp
+  | ∞, (n : ℕ) => by
+    simp
+  | (r : ℝ≥0), ⊤ => by
+    simp
   | (r : ℝ≥0), (n : ℕ) => by
     -- FIXME: Why does `norm_cast` not use `ENNReal.ofNNReal_sub_natCast`?
     norm_cast; rw [← ENNReal.ofNNReal_sub_natCast]; norm_cast; exact Nat.ceil_sub_natCast ..
@@ -204,8 +224,9 @@ lemma ceil_add_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] : ⌈r + ofNat(n)
 lemma floor_sub_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] : ⌊r - ofNat(n)⌋ₑ = ⌊r⌋ₑ - ofNat(n) :=
   floor_sub_toENNReal r n
 
-@[simp] lemma ceil_sub_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] :
-    ⌈r - ofNat(n)⌉ₑ = ⌈r⌉ₑ - ofNat(n) := ceil_sub_toENNReal r n
+@[simp]
+lemma ceil_sub_ofNat (r : ℝ≥0∞) (n : ℕ) [n.AtLeastTwo] : ⌈r - ofNat(n)⌉ₑ = ⌈r⌉ₑ - ofNat(n) :=
+  ceil_sub_toENNReal r n
 
 @[bound]
 lemma ceil_lt_add_one (hr : r ≠ ∞) : (⌈r⌉ₑ : ℝ≥0∞) < r + 1 := by
@@ -213,39 +234,48 @@ lemma ceil_lt_add_one (hr : r ≠ ∞) : (⌈r⌉ₑ : ℝ≥0∞) < r + 1 := by
 
 @[bound]
 lemma ceil_add_le : ∀ (r s : ℝ≥0∞), ⌈r + s⌉ₑ ≤ ⌈r⌉ₑ + ⌈s⌉ₑ
-  | ∞, _ => by simp
-  | _, ∞ => by simp
-  | (r : ℝ≥0), (s : ℝ≥0) => mod_cast Nat.ceil_add_le r s
+  | ∞, _ => by
+    simp
+  | _, ∞ => by
+    simp
+  | (r : ℝ≥0), (s : ℝ≥0) =>
+    mod_cast Nat.ceil_add_le r s
 
-@[simp] lemma toENNReal_iSup {ι : Sort*} (f : ι → ℕ∞) :
-    toENNReal (⨆ i, f i) = ⨆ i, toENNReal (f i) := eq_of_forall_ge_iff fun _ ↦ by simp [← le_floor]
+@[simp]
+lemma toENNReal_iSup {ι : Sort*} (f : ι → ℕ∞) : toENNReal (⨆ i, f i) = ⨆ i, toENNReal (f i) :=
+  eq_of_forall_ge_iff fun _ ↦ by simp [← le_floor]
 
-@[simp] lemma toENNReal_iInf {ι : Sort*} (f : ι → ℕ∞) :
-    toENNReal (⨅ i, f i) = ⨅ i, toENNReal (f i) := eq_of_forall_le_iff fun _ ↦ by simp [← ceil_le]
+@[simp]
+lemma toENNReal_iInf {ι : Sort*} (f : ι → ℕ∞) : toENNReal (⨅ i, f i) = ⨅ i, toENNReal (f i) :=
+  eq_of_forall_le_iff fun _ ↦ by simp [← ceil_le]
 
-@[simp] lemma preimage_toENNReal_Ioi (a : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Ioi a = Set.Ioi ⌊a⌋ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Ioi (a : ℝ≥0∞) : toENNReal ⁻¹' Set.Ioi a = Set.Ioi ⌊a⌋ₑ := by ext; simp
 
-@[simp] lemma preimage_toENNReal_Iio (a : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Iio a = Set.Iio ⌈a⌉ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Iio (a : ℝ≥0∞) : toENNReal ⁻¹' Set.Iio a = Set.Iio ⌈a⌉ₑ := by ext; simp
 
-@[simp] lemma preimage_toENNReal_Iic (a : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Iic a = Set.Iic ⌊a⌋ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Iic (a : ℝ≥0∞) : toENNReal ⁻¹' Set.Iic a = Set.Iic ⌊a⌋ₑ := by ext; simp
 
-@[simp] lemma preimage_toENNReal_Ici (a : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Ici a = Set.Ici ⌈a⌉ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Ici (a : ℝ≥0∞) : toENNReal ⁻¹' Set.Ici a = Set.Ici ⌈a⌉ₑ := by ext; simp
 
-@[simp] lemma preimage_toENNReal_Icc (a b : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Icc a b = Set.Icc ⌈a⌉ₑ ⌊b⌋ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Icc (a b : ℝ≥0∞) : toENNReal ⁻¹' Set.Icc a b = Set.Icc (⌈a⌉ₑ) ⌊b⌋ₑ := by
+  ext; simp
 
-@[simp] lemma preimage_toENNReal_Ico (a b : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Ico a b = Set.Ico ⌈a⌉ₑ ⌈b⌉ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Ico (a b : ℝ≥0∞) : toENNReal ⁻¹' Set.Ico a b = Set.Ico (⌈a⌉ₑ) ⌈b⌉ₑ := by
+  ext; simp
 
-@[simp] lemma preimage_toENNReal_Ioc (a b : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Ioc a b = Set.Ioc ⌊a⌋ₑ ⌊b⌋ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Ioc (a b : ℝ≥0∞) : toENNReal ⁻¹' Set.Ioc a b = Set.Ioc (⌊a⌋ₑ) ⌊b⌋ₑ := by
+  ext; simp
 
-@[simp] lemma preimage_toENNReal_Ioo (a b : ℝ≥0∞) :
-    toENNReal ⁻¹' Set.Ioo a b = Set.Ioo ⌊a⌋ₑ ⌈b⌉ₑ := by ext; simp
+@[simp]
+lemma preimage_toENNReal_Ioo (a b : ℝ≥0∞) : toENNReal ⁻¹' Set.Ioo a b = Set.Ioo (⌊a⌋ₑ) ⌈b⌉ₑ := by
+  ext; simp
 
 end ENat
 
@@ -256,16 +286,22 @@ alias ⟨_, natCeil_pos⟩ := ENat.ceil_pos
 
 /-- Extension for the `positivity` tactic: `ENat.ceil` is positive if its input is. -/
 @[positivity ⌈_⌉ₑ]
-meta def evalENatCeil : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(ℕ∞), ~q(ENat.ceil $r) =>
-    match ← core q(inferInstance) (some q(inferInstance)) r with
-    | .positive pr =>
-      assertInstancesCommute
-      pure (.positive q(natCeil_pos $pr))
-    | _ => pure .none
-  | _, _, _ => throwError "failed to match on ENat.ceil application"
+meta def evalENatCeil : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(ℕ∞), ~q(ENat.ceil $r) =>
+        match ← core (q(inferInstance)) (some q(inferInstance)) r with
+        | .positive pr =>
+          assertInstancesCommute
+          pure (.positive q(natCeil_pos $pr))
+        | _ =>
+          pure .none
+      | _, _, _ =>
+        throwError "failed to match on ENat.ceil application"
 
 example {r : ℝ≥0∞} (hr : 0 < r) : 0 < ⌈r⌉ₑ := by positivity
 

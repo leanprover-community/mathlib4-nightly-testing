@@ -45,15 +45,16 @@ lemma ker_surjective : Surjective (ker : Filter α → Set α) := giPrincipalKer
 @[simp] lemma ker_top : ker (⊤ : Filter α) = univ := giPrincipalKer.gc.u_top
 @[simp] lemma ker_eq_univ : ker f = univ ↔ f = ⊤ := giPrincipalKer.gc.u_eq_top.trans <| by simp
 @[simp] lemma ker_inf (f g : Filter α) : ker (f ⊓ g) = ker f ∩ ker g := giPrincipalKer.gc.u_inf
-@[simp] lemma ker_iInf (f : ι → Filter α) : ker (⨅ i, f i) = ⋂ i, ker (f i) :=
-  giPrincipalKer.gc.u_iInf
-@[simp] lemma ker_sInf (S : Set (Filter α)) : ker (sInf S) = ⋂ f ∈ S, ker f :=
-  giPrincipalKer.gc.u_sInf
+@[simp]
+lemma ker_iInf (f : ι → Filter α) : ker (⨅ i, f i) = ⋂ i, ker (f i) := giPrincipalKer.gc.u_iInf
+@[simp]
+lemma ker_sInf (S : Set (Filter α)) : ker (sInf S) = ⋂ f ∈ S, ker f := giPrincipalKer.gc.u_sInf
 @[simp] lemma ker_principal (s : Set α) : ker (𝓟 s) = s := giPrincipalKer.u_l_eq _
 
 @[simp] lemma ker_pure (a : α) : ker (pure a) = {a} := by rw [← principal_singleton, ker_principal]
 
-@[simp] lemma ker_comap (m : α → β) (f : Filter β) : ker (comap m f) = m ⁻¹' ker f := by
+@[simp]
+lemma ker_comap (m : α → β) (f : Filter β) : ker (comap m f) = m ⁻¹' ker f := by
   ext a
   simp only [mem_ker, mem_comap, forall_exists_index, and_imp, @forall_comm (Set α), mem_preimage]
   exact forall₂_congr fun s _ ↦ ⟨fun h ↦ h _ Subset.rfl, fun ha t ht ↦ ht ha⟩
@@ -68,8 +69,7 @@ theorem ker_iSup (f : ι → Filter α) : ker (⨆ i, f i) = ⋃ i, ker (f i) :=
   exact mem_iSup.2 fun i ↦ mem_of_superset (hsf i) (subset_iUnion s i)
 
 @[simp]
-theorem ker_sSup (S : Set (Filter α)) : ker (sSup S) = ⋃ f ∈ S, ker f := by
-  simp [sSup_eq_iSup]
+theorem ker_sSup (S : Set (Filter α)) : ker (sSup S) = ⋃ f ∈ S, ker f := by simp [sSup_eq_iSup]
 
 @[simp]
 theorem ker_sup (f g : Filter α) : ker (f ⊔ g) = ker f ∪ ker g := by
@@ -80,8 +80,8 @@ lemma ker_prod (f : Filter α) (g : Filter β) : ker (f ×ˢ g) = ker f ×ˢ ker
   simp [Set.prod_eq, Filter.prod_eq_inf]
 
 @[simp]
-lemma ker_pi {ι : Type*} {α : ι → Type*} (f : (i : ι) → Filter (α i)) :
-    ker (Filter.pi f) = univ.pi (fun i => ker (f i)) := by
+lemma ker_pi {ι : Type*} {α : ι → Type*} (f : (i : ι) → Filter (α i))
+    : ker (Filter.pi f) = univ.pi (fun i => ker (f i)) := by
   simp [Set.pi_def, Filter.pi]
 
 end Filter

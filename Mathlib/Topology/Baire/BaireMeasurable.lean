@@ -81,11 +81,13 @@ theorem closure_residualEq {s : Set α} (hs : IsLocallyClosed s) : closure s =�
   nth_rewrite 2 [← closure_inter_coborder (s := s)]
   simp [hx]
 
-/-- We say a set is a `BaireMeasurableSet` if it differs from some Borel set by
+/--
+We say a set is a `BaireMeasurableSet` if it differs from some Borel set by
 a meager set. This forms a σ-algebra.
 
 It is equivalent, and a more standard definition, to say that the set differs from
-some *open* set by a meager set. See `BaireMeasurableSet.iff_residualEq_isOpen` -/
+some *open* set by a meager set. See `BaireMeasurableSet.iff_residualEq_isOpen`
+-/
 def BaireMeasurableSet (s : Set α) : Prop :=
   @MeasurableSet _ (eventuallyMeasurableSpace (borel _) (residual _)) s
 
@@ -96,8 +98,9 @@ namespace BaireMeasurableSet
 theorem of_mem_residual (h : s ∈ residual _) : BaireMeasurableSet s :=
   eventuallyMeasurableSet_of_mem_filter (α := α) h
 
-theorem _root_.MeasurableSet.baireMeasurableSet [MeasurableSpace α] [BorelSpace α]
-    (h : MeasurableSet s) : BaireMeasurableSet s := by
+theorem _root_.MeasurableSet.baireMeasurableSet
+    [MeasurableSpace α] [BorelSpace α] (h : MeasurableSet s)
+    : BaireMeasurableSet s := by
   borelize α
   exact h.eventuallyMeasurableSet
 
@@ -112,40 +115,43 @@ theorem of_compl (h : BaireMeasurableSet sᶜ) : BaireMeasurableSet s := Measura
 theorem _root_.IsMeagre.baireMeasurableSet (h : IsMeagre s) : BaireMeasurableSet s :=
   (of_mem_residual h).of_compl
 
-theorem iUnion {ι : Sort*} [Countable ι] {s : ι → Set α}
-    (h : ∀ i, BaireMeasurableSet (s i)) : BaireMeasurableSet (⋃ i, s i) :=
+theorem iUnion {ι : Sort*} [Countable ι] {s : ι → Set α} (h : ∀ i, BaireMeasurableSet (s i))
+    : BaireMeasurableSet (⋃ i, s i) :=
   MeasurableSet.iUnion h
 
-theorem biUnion {ι : Type*} {s : ι → Set α} {t : Set ι} (ht : t.Countable)
-    (h : ∀ i ∈ t, BaireMeasurableSet (s i)) : BaireMeasurableSet (⋃ i ∈ t, s i) :=
+theorem biUnion
+    {ι : Type*} {s : ι → Set α} {t : Set ι}
+    (ht : t.Countable) (h : ∀ i ∈ t, BaireMeasurableSet (s i))
+    : BaireMeasurableSet (⋃ i ∈ t, s i) :=
   MeasurableSet.biUnion ht h
 
-theorem sUnion {s : Set (Set α)} (hs : s.Countable)
-    (h : ∀ t ∈ s, BaireMeasurableSet t) : BaireMeasurableSet (⋃₀ s) :=
+theorem sUnion {s : Set (Set α)} (hs : s.Countable) (h : ∀ t ∈ s, BaireMeasurableSet t)
+    : BaireMeasurableSet (⋃₀s) :=
   MeasurableSet.sUnion hs h
 
-theorem iInter {ι : Sort*} [Countable ι] {s : ι → Set α}
-    (h : ∀ i, BaireMeasurableSet (s i)) : BaireMeasurableSet (⋂ i, s i) :=
+theorem iInter {ι : Sort*} [Countable ι] {s : ι → Set α} (h : ∀ i, BaireMeasurableSet (s i))
+    : BaireMeasurableSet (⋂ i, s i) :=
   MeasurableSet.iInter h
 
-theorem biInter {ι : Type*} {s : ι → Set α} {t : Set ι} (ht : t.Countable)
-    (h : ∀ i ∈ t, BaireMeasurableSet (s i)) : BaireMeasurableSet (⋂ i ∈ t, s i) :=
+theorem biInter
+    {ι : Type*} {s : ι → Set α} {t : Set ι}
+    (ht : t.Countable) (h : ∀ i ∈ t, BaireMeasurableSet (s i))
+    : BaireMeasurableSet (⋂ i ∈ t, s i) :=
   MeasurableSet.biInter ht h
 
-theorem sInter {s : Set (Set α)} (hs : s.Countable)
-    (h : ∀ t ∈ s, BaireMeasurableSet t) : BaireMeasurableSet (⋂₀ s) :=
+theorem sInter {s : Set (Set α)} (hs : s.Countable) (h : ∀ t ∈ s, BaireMeasurableSet t)
+    : BaireMeasurableSet (⋂₀s) :=
   MeasurableSet.sInter hs h
 
-theorem union (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t) :
-    BaireMeasurableSet (s ∪ t) :=
+theorem union (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t)
+    : BaireMeasurableSet (s ∪ t) :=
   MeasurableSet.union hs ht
 
-theorem inter (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t) :
-    BaireMeasurableSet (s ∩ t) :=
+theorem inter (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t)
+    : BaireMeasurableSet (s ∩ t) :=
   MeasurableSet.inter hs ht
 
-theorem diff (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t) :
-    BaireMeasurableSet (s \ t) :=
+theorem diff (hs : BaireMeasurableSet s) (ht : BaireMeasurableSet t) : BaireMeasurableSet (s \ t) :=
   MeasurableSet.diff hs ht
 
 theorem congr (hs : BaireMeasurableSet s) (h : s =ᵇ t) : BaireMeasurableSet t :=
@@ -156,10 +162,11 @@ end BaireMeasurableSet
 open Filter
 
 /-- Any Borel set differs from some open set by a meager set. -/
-theorem MeasurableSet.residualEq_isOpen [MeasurableSpace α] [BorelSpace α] (h : MeasurableSet s) :
-    ∃ u : Set α, IsOpen u ∧ s =ᵇ u := by
+theorem MeasurableSet.residualEq_isOpen [MeasurableSpace α] [BorelSpace α] (h : MeasurableSet s)
+    : ∃ u : Set α, IsOpen u ∧ s =ᵇ u := by
   induction s, h using MeasurableSet.induction_on_open with
-  | isOpen U hU => exact ⟨U, hU, .rfl⟩
+  | isOpen U hU =>
+    exact ⟨U, hU, .rfl⟩
   | compl s _ ihs =>
     obtain ⟨U, Uo, hsU⟩ := ihs
     use (closure U)ᶜ, isClosed_closure.isOpen_compl
@@ -169,16 +176,16 @@ theorem MeasurableSet.residualEq_isOpen [MeasurableSpace α] [BorelSpace α] (h 
     exact ⟨⋃ i, u i, isOpen_iUnion uo, .countable_iUnion su⟩
 
 /-- Any `BaireMeasurableSet` differs from some open set by a meager set. -/
-theorem BaireMeasurableSet.residualEq_isOpen (h : BaireMeasurableSet s) :
-    ∃ u : Set α, (IsOpen u) ∧ s =ᵇ u := by
+theorem BaireMeasurableSet.residualEq_isOpen (h : BaireMeasurableSet s)
+    : ∃ u : Set α, (IsOpen u) ∧ s =ᵇ u := by
   borelize α
   rcases h with ⟨t, ht, hst⟩
   rcases ht.residualEq_isOpen with ⟨u, hu, htu⟩
   exact ⟨u, hu, hst.trans htu⟩
 
 /-- A set is Baire measurable if and only if it differs from some open set by a meager set. -/
-theorem BaireMeasurableSet.iff_residualEq_isOpen :
-    BaireMeasurableSet s ↔ ∃ u : Set α, (IsOpen u) ∧ s =ᵇ u :=
+theorem BaireMeasurableSet.iff_residualEq_isOpen
+    : BaireMeasurableSet s ↔ ∃ u : Set α, (IsOpen u) ∧ s =ᵇ u :=
   ⟨fun h => h.residualEq_isOpen, fun ⟨_, uo, ueq⟩ => uo.baireMeasurableSet.congr ueq.symm⟩
 
 section Map
@@ -187,20 +194,22 @@ open Set
 
 variable {f : α → β}
 
-theorem tendsto_residual_of_isOpenMap (hc : Continuous f) (ho : IsOpenMap f) :
-    Tendsto f (residual α) (residual β) := by
+theorem tendsto_residual_of_isOpenMap (hc : Continuous f) (ho : IsOpenMap f)
+    : Tendsto f (residual α) (residual β) := by
   apply le_countableGenerate_iff_of_countableInterFilter.mpr
   rintro t ⟨ht, htd⟩
   exact residual_of_dense_open (ht.preimage hc) (htd.preimage ho)
 
 /-- The preimage of a meager set under a continuous open map is meager. -/
-theorem IsMeagre.preimage_of_isOpenMap (hc : Continuous f) (ho : IsOpenMap f)
-    {s : Set β} (h : IsMeagre s) : IsMeagre (f ⁻¹' s) :=
+theorem IsMeagre.preimage_of_isOpenMap
+    (hc : Continuous f) (ho : IsOpenMap f) {s : Set β} (h : IsMeagre s)
+    : IsMeagre (f ⁻¹' s) :=
   tendsto_residual_of_isOpenMap hc ho h
 
 /-- The preimage of a `BaireMeasurableSet` under a continuous open map is Baire measurable. -/
-theorem BaireMeasurableSet.preimage (hc : Continuous f) (ho : IsOpenMap f)
-    {s : Set β} (h : BaireMeasurableSet s) : BaireMeasurableSet (f ⁻¹' s) := by
+theorem BaireMeasurableSet.preimage
+    (hc : Continuous f) (ho : IsOpenMap f) {s : Set β} (h : BaireMeasurableSet s)
+    : BaireMeasurableSet (f ⁻¹' s) := by
   rcases h with ⟨u, hu, hsu⟩
   refine ⟨f ⁻¹' u, ?_, hsu.filter_mono <| tendsto_residual_of_isOpenMap hc ho⟩
   borelize α β

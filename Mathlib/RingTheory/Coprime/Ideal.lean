@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Ideal.BigOperators
 public import Mathlib.RingTheory.Ideal.Operations
-
 import Mathlib.LinearAlgebra.DFinsupp
 
 /-!
@@ -19,22 +18,23 @@ It is on a separate file due to import requirements.
 
 public section
 
-
 namespace Ideal
 
 variable {ι R : Type*} [CommSemiring R]
 
-/-- A finite family of ideals is pairwise coprime (that is, any two of them generate the whole ring)
+/--
+A finite family of ideals is pairwise coprime (that is, any two of them generate the whole ring)
 iff when taking all the possible intersections of all but one of these ideals, the resulting family
 of ideals still generate the whole ring.
 
 For example with three ideals : `I ⊔ J = I ⊔ K = J ⊔ K = ⊤ ↔ (I ⊓ J) ⊔ (I ⊓ K) ⊔ (J ⊓ K) = ⊤`.
 
 When ideals are all of the form `I i = R ∙ s i`, this is equivalent to the
-`exists_sum_eq_one_iff_pairwise_coprime` lemma. -/
-theorem iSup_iInf_eq_top_iff_pairwise {t : Finset ι} (h : t.Nonempty) (I : ι → Ideal R) :
-    (⨆ i ∈ t, ⨅ (j) (_ : j ∈ t) (_ : j ≠ i), I j) = ⊤ ↔
-      (t : Set ι).Pairwise fun i j => I i ⊔ I j = ⊤ := by
+`exists_sum_eq_one_iff_pairwise_coprime` lemma.
+-/
+theorem iSup_iInf_eq_top_iff_pairwise {t : Finset ι} (h : t.Nonempty) (I : ι → Ideal R)
+    : (⨆ i ∈ t, ⨅ (j) (_ : j ∈ t) (_ : j ≠ i), I j) = ⊤
+      ↔ (t : Set ι).Pairwise fun i j => I i ⊔ I j = ⊤ := by
   have : DecidableEq ι := Classical.decEq ι
   rw [eq_top_iff_one, Submodule.mem_iSup_finset_iff_exists_sum]
   refine h.cons_induction ?_ ?_ <;> clear t h
@@ -52,7 +52,7 @@ theorem iSup_iInf_eq_top_iff_pairwise {t : Finset ι} (h : t.Nonempty) (I : ι �
     case a1 =>
       have := Submodule.coe_mem (μ a)
       rw [mem_iInf] at this ⊢
-      --for some reason `simp only [mem_iInf]` times out
+      -- for some reason `simp only [mem_iInf]` times out
       intro i
       specialize this i
       rw [mem_iInf, mem_iInf] at this ⊢
@@ -67,7 +67,7 @@ theorem iSup_iInf_eq_top_iff_pairwise {t : Finset ι} (h : t.Nonempty) (I : ι �
       exact this _ (Finset.subset_cons _ hj) ij
     case a3 =>
       rw [← @ite_eq_left _ _ h.choose_spec R (μ a) 0, ← Finset.sum_pi_single',
-        ← Finset.sum_add_distrib]
+          ← Finset.sum_add_distrib]
         at hμ
       convert! hμ
       rename_i i _

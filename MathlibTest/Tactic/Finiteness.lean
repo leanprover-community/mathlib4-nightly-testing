@@ -85,17 +85,15 @@ end
 example {a b : ℝ≥0∞} (_ha : a ≠ ∞) (_hb : b ≠ ∞) : max a b < ∞ := by finiteness
 
 -- finiteness can split on a condition by proving each branch individually.
-example {p : Prop} [Decidable p] {a b c : ℝ≥0∞} (ha : a ≠ ∞) (hb : b ≠ ∞) (hc : c ≠ ∞) :
-    (if c ≠ 37 ∨ ¬p then c + a else b + 1) < ∞ := by
+example {p : Prop} [Decidable p] {a b c : ℝ≥0∞} (ha : a ≠ ∞) (hb : b ≠ ∞) (hc : c ≠ ∞)
+    : (if c ≠ 37 ∨ ¬p then c + a else b + 1) < ∞ := by
   finiteness
 
 -- finiteness can use the condition to help prove the goal. Test dite and ite versions:
-example {a b c : ℝ≥0∞} (hb : b ≠ ∞) (hc : c ≠ ∞) :
-    (if _ : a ≠ ∞ then c + a else b + 1) < ∞ := by
+example {a b c : ℝ≥0∞} (hb : b ≠ ∞) (hc : c ≠ ∞) : (if _ : a ≠ ∞ then c + a else b + 1) < ∞ := by
   finiteness
 
-example {a b c : ℝ≥0∞} (hb : b ≠ ∞) (hc : c ≠ ∞) :
-    (if a ≠ ∞ then c + a else b + 1) < ∞ := by
+example {a b c : ℝ≥0∞} (hb : b ≠ ∞) (hc : c ≠ ∞) : (if a ≠ ∞ then c + a else b + 1) < ∞ := by
   finiteness
 
 /--

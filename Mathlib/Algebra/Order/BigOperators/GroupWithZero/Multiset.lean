@@ -31,29 +31,29 @@ lemma one_le_prod {s : Multiset R} (h : ∀ a ∈ s, 1 ≤ a) : 1 ≤ s.prod := 
   simp only [quot_mk_to_coe, mem_coe, prod_coe] at *
   apply List.one_le_prod h
 
-theorem prod_map_le_prod_map₀ {ι : Type*} {s : Multiset ι} (f : ι → R) (g : ι → R)
-    (h0 : ∀ i ∈ s, 0 ≤ f i) (h : ∀ i ∈ s, f i ≤ g i) :
-    (map f s).prod ≤ (map g s).prod := by
+theorem prod_map_le_prod_map₀
+    {ι : Type*} {s : Multiset ι}
+    (f : ι → R) (g : ι → R) (h0 : ∀ i ∈ s, 0 ≤ f i) (h : ∀ i ∈ s, f i ≤ g i)
+    : (map f s).prod ≤ (map g s).prod := by
   cases s using Quotient.ind
   simp only [quot_mk_to_coe, mem_coe, map_coe, prod_coe] at *
   apply List.prod_map_le_prod_map₀ f g h0 h
 
-theorem prod_map_le_pow_card {F L : Type*} [FunLike F L R] {f : F} {r : R} {t : Multiset L}
-    (hf0 : ∀ x ∈ t, 0 ≤ f x) (hf : ∀ x ∈ t, f x ≤ r) :
-    (map f t).prod ≤ r ^ card t := by
+theorem prod_map_le_pow_card
+    {F L : Type*} [FunLike F L R]
+    {f : F} {r : R} {t : Multiset L} (hf0 : ∀ x ∈ t, 0 ≤ f x) (hf : ∀ x ∈ t, f x ≤ r)
+    : (map f t).prod ≤ r ^ card t := by
   induction t using Quotient.inductionOn
   simp_all [List.prod_map_le_pow_length₀]
 
 variable {α : Type*}
 
-lemma prod_map_nonneg {s : Multiset α} {f : α → R} (h : ∀ a ∈ s, 0 ≤ f a) :
-    0 ≤ (s.map f).prod := by
+lemma prod_map_nonneg {s : Multiset α} {f : α → R} (h : ∀ a ∈ s, 0 ≤ f a) : 0 ≤ (s.map f).prod := by
   refine prod_nonneg fun r hr ↦ ?_
   obtain ⟨a, ha, rfl⟩ := mem_map.mp hr
   exact h a ha
 
-lemma one_le_prod_map {s : Multiset α} {f : α → R} (h : ∀ a ∈ s, 1 ≤ f a) :
-    1 ≤ (s.map f).prod := by
+lemma one_le_prod_map {s : Multiset α} {f : α → R} (h : ∀ a ∈ s, 1 ≤ f a) : 1 ≤ (s.map f).prod := by
   refine one_le_prod fun r hr ↦ ?_
   obtain ⟨a, ha, rfl⟩ := mem_map.mp hr
   exact h a ha
@@ -66,9 +66,10 @@ lemma prod_pos {s : Multiset R} (h : ∀ a ∈ s, 0 < a) : 0 < s.prod := by
   simp only [quot_mk_to_coe, mem_coe, prod_coe] at *
   apply List.prod_pos h
 
-theorem prod_map_lt_prod_map {ι : Type*} {s : Multiset ι} (hs : s ≠ 0)
-    (f : ι → R) (g : ι → R) (h0 : ∀ i ∈ s, 0 < f i) (h : ∀ i ∈ s, f i < g i) :
-    (map f s).prod < (map g s).prod := by
+theorem prod_map_lt_prod_map
+    {ι : Type*} {s : Multiset ι}
+    (hs : s ≠ 0) (f : ι → R) (g : ι → R) (h0 : ∀ i ∈ s, 0 < f i) (h : ∀ i ∈ s, f i < g i)
+    : (map f s).prod < (map g s).prod := by
   cases s using Quotient.ind
   simp only [quot_mk_to_coe, mem_coe, map_coe, prod_coe, ne_eq, coe_eq_zero] at *
   apply List.prod_map_lt_prod_map hs f g h0 h

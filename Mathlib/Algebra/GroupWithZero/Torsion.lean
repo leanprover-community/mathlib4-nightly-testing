@@ -6,7 +6,6 @@ Authors: Kenny Lau, Xavier Roblot
 module
 
 public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors
-
 import Mathlib.Algebra.Regular.Basic
 
 /-!
@@ -23,9 +22,9 @@ public section
 
 variable {M : Type*} [CommMonoidWithZero M]
 
-theorem HasUniqueRoots.mk' [IsReduced M]
-    (ih : ∀ x ≠ 0, ∀ y ≠ 0, ∀ n ≠ 0, (x ^ n : M) = y ^ n → x = y) :
-    HasUniqueRoots M := by
+theorem HasUniqueRoots.mk'
+    [IsReduced M] (ih : ∀ x ≠ 0, ∀ y ≠ 0, ∀ n ≠ 0, (x ^ n : M) = y ^ n → x = y)
+    : HasUniqueRoots M := by
   refine ⟨fun n hn x y hxy ↦ ?_⟩
   by_cases h : x ≠ 0 ∧ y ≠ 0
   · exact ih x h.1 y h.2 n hn hxy
@@ -42,10 +41,12 @@ instance : HasUniqueRoots M := by
   obtain ⟨u, hu⟩ : Associated x y := by
     have := (Associated.of_eq hxy).normalizedFactors_eq
     rwa [normalizedFactors_pow, normalizedFactors_pow, nsmul_right_inj hn,
-      ← associated_iff_normalizedFactors_eq_normalizedFactors hx hy] at this
+        ← associated_iff_normalizedFactors_eq_normalizedFactors hx hy]
+      at this
   replace hx : IsLeftRegular (x ^ n) := (IsLeftCancelMulZero.mul_left_cancel_of_ne_zero hx).pow n
   rw [← hu, mul_pow, eq_comm, IsLeftRegular.mul_left_eq_self_iff hx, ← Units.val_pow_eq_pow_val,
-    Units.val_eq_one, pow_eq_one_iff_left hn] at hxy
+      Units.val_eq_one, pow_eq_one_iff_left hn]
+    at hxy
   rwa [hxy, Units.val_one, mul_one] at hu
 
 end UniqueFactorizationMonoid

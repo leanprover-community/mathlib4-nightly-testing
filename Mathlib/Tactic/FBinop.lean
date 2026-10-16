@@ -36,20 +36,26 @@ open Lean Elab Term Meta
 
 initialize registerTraceClass `Elab.fbinop
 
-/-- `fbinop% f x y` elaborates `f x y` for `x : S α` and `y : S' β`, taking into account
-any coercions that the "functors" `S` and `S'` possess. -/
+/--
+`fbinop% f x y` elaborates `f x y` for `x : S α` and `y : S' β`, taking into account
+any coercions that the "functors" `S` and `S'` possess.
+-/
 syntax:max (name := prodSyntax) "fbinop% " ident ppSpace term:max ppSpace term:max : term
 
 /-- Tree recording the structure of the `fbinop%` expression. -/
 private inductive Tree where
   /-- Leaf of the tree. Stores the generated `InfoTree` from elaborating `val`. -/
   | term (ref : Syntax) (infoTrees : PersistentArray InfoTree) (val : Expr)
-  /-- An `fbinop%` node.
+  /--
+  An `fbinop%` node.
   `ref` is the original syntax that expanded into `binop%`.
-  `f` is the constant for the binary operator -/
+  `f` is the constant for the binary operator
+  -/
   | binop (ref : Syntax) (f : Expr) (lhs rhs : Tree)
-  /-- Store macro expansion information to make sure that "go to definition" behaves
-  similarly to notation defined without using `fbinop%`. -/
+  /--
+  Store macro expansion information to make sure that "go to definition" behaves
+  similarly to notation defined without using `fbinop%`.
+  -/
   | macroExpansion (macroName : Name) (stx stx' : Syntax) (nested : Tree)
 
 private partial def toTree (s : Syntax) : TermElabM Tree := do
@@ -59,7 +65,8 @@ private partial def toTree (s : Syntax) : TermElabM Tree := do
 where
   go (s : Syntax) : TermElabM Tree := do
     match s with
-    | `(fbinop% $f $lhs $rhs) => processBinOp s f lhs rhs
+    | `(fbinop% $f $lhs $rhs) =>
+      processBinOp s f lhs rhs
     | `(($h:hygieneInfo $e)) =>
       if hasCDot e h.getHygieneInfo then
         processLeaf s
@@ -70,12 +77,13 @@ where
         match ← liftMacroM <| expandMacroImpl? (← getEnv) s with
         | some (macroName, s?) =>
           let s' ← liftMacroM <| liftExcept s?
-          withPushMacroExpansionStack s s' do
-            return .macroExpansion macroName s s' (← go s')
-        | none => processLeaf s
+          withPushMacroExpansionStack s s' do return .macroExpansion macroName s s' (← go s')
+        | none =>
+          processLeaf s
 
   processBinOp (ref : Syntax) (f lhs rhs : Syntax) := do
-    let some f ← resolveId? f | throwUnknownConstant f.getId
+    let some f ← resolveId? f
+      | throwUnknownConstant f.getId
     return .binop ref f (← go lhs) (← go rhs)
 
   processLeaf (s : Syntax) := do
@@ -83,60 +91,76 @@ where
     let info ← getResetInfoTrees
     return .term s info e
 
-/-- Records a "functor", which is some function `Type u → Type v`. We only
-allow `c a1 ... an` for `c` a constant. This is so we can abstract out the universe variables. -/
+/--
+Records a "functor", which is some function `Type u → Type v`. We only
+allow `c a1 ... an` for `c` a constant. This is so we can abstract out the universe variables.
+-/
 structure SRec where
   name : Name
   args : Array Expr
-  deriving Inhabited, ToExpr
+deriving Inhabited, ToExpr
 
-/-- Given a type expression, try to remove the last argument(s) and create an `SRec` for the
+/--
+Given a type expression, try to remove the last argument(s) and create an `SRec` for the
 underlying "functor". Only applies to function applications with a constant head, and,
 after dropping all instance arguments, it requires that the remaining last argument be a type.
-Returns the `SRec` and the argument. -/
+Returns the `SRec` and the argument.
+-/
 private partial def extractS (e : Expr) : TermElabM (Option (SRec × Expr)) :=
   match e with
-  | .letE .. => extractS (e.letBody!.instantiate1 e.letValue!)
-  | .mdata _ b => extractS b
+  | .letE .. =>
+    extractS (e.letBody!.instantiate1 e.letValue!)
+  | .mdata _ b =>
+    extractS b
   | .app .. => do
     let f := e.getAppFn
-    let .const n _ := f | return none
+    let .const n _ := f
+      | return none
     let mut args := e.getAppArgs
     let mut info := (← getFunInfoNArgs f args.size).paramInfo
-    for _ in [0 : args.size - 1] do
+    for _ in [0:args.size - 1] do
       if info.back!.isInstImplicit then
         args := args.pop
         info := info.pop
       else
         break
     let x := args.back!
-    unless ← Meta.isType x do return none
-    return some ({name := n, args := args.pop}, x)
-  | _ => return none
+    unless ← Meta.isType x do
+      return none
+    return some ({ name := n, args := args.pop }, x)
+  | _ =>
+    return none
 
-/-- Computes `S x := c a1 ... an x` if it is type correct.
-Inserts instance arguments after `x`. -/
+/--
+Computes `S x := c a1 ... an x` if it is type correct.
+Inserts instance arguments after `x`.
+-/
 private def applyS (S : SRec) (x : Expr) : TermElabM (Option Expr) :=
   try
     let f ← mkConstWithFreshMVarLevels S.name
-    let v ← elabAppArgs f #[] ((S.args.push x).map .expr)
-      (expectedType? := none) (explicit := true) (ellipsis := false)
+    let v ←
+      elabAppArgs f #[] ((S.args.push x).map .expr) (expectedType? := none) (explicit := true)
+        (ellipsis := false)
     -- Now elaborate any remaining instance arguments
     elabAppArgs v #[] #[] (expectedType? := none) (explicit := false) (ellipsis := false)
   catch _ =>
     return none
 
-/-- For a given argument `x`, checks if there is a coercion from `fromS x` to `toS x`
-if these expressions are type correct. -/
+/--
+For a given argument `x`, checks if there is a coercion from `fromS x` to `toS x`
+if these expressions are type correct.
+-/
 private def hasCoeS (fromS toS : SRec) (x : Expr) : TermElabM Bool := do
-  let some fromType ← applyS fromS x | return false
-  let some toType ← applyS toS x | return false
+  let some fromType ← applyS fromS x
+    | return false
+  let some toType ← applyS toS x
+    | return false
   trace[Elab.fbinop] m!"fromType = {fromType}, toType = {toType}"
   withLocalDeclD `v fromType fun v => do
     match ← coerceSimple? v toType with
     | .some _ => return true
-    | .none   => return false
-    | .undef  => return false -- TODO: should we do something smarter here?
+    | .none => return false
+    | .undef => return false -- TODO: should we do something smarter here?
 
 /-- Result returned by `analyze`. -/
 private structure AnalyzeResult where
@@ -148,7 +172,8 @@ private structure AnalyzeResult where
 private def analyze (t : Tree) (expectedType? : Option Expr) : TermElabM AnalyzeResult := do
   let maxS? ←
     match expectedType? with
-    | none => pure none
+    | none =>
+      pure none
     | some expectedType =>
       let expectedType ← instantiateMVars expectedType
       if let some (S, _) ← extractS expectedType then
@@ -160,16 +185,20 @@ where
   go (t : Tree) : StateRefT AnalyzeResult TermElabM Unit := do
     unless (← get).hasUncomparable do
       match t with
-      | .macroExpansion _ _ _ nested => go nested
-      | .binop _ _ lhs rhs => go lhs; go rhs
+      | .macroExpansion _ _ _ nested =>
+        go nested
+      | .binop _ _ lhs rhs =>
+        go lhs; go rhs
       | .term _ _ val =>
         let type ← instantiateMVars (← inferType val)
         let some (S, x) ← extractS type
           | return -- Rather than marking as incomparable, let's hope there's a coercion!
         match (← get).maxS? with
-        | none     => modify fun s => { s with maxS? := S }
+        | none =>
+          modify fun s => { s with maxS? := S }
         | some maxS =>
-          let some maxSx ← applyS maxS x | return -- Same here.
+          let some maxSx ← applyS maxS x
+            | return -- Same here.
           unless ← withNewMCtxDepth <| isDefEqGuarded maxSx type do
             if ← hasCoeS S maxS x then
               return ()
@@ -180,8 +209,8 @@ where
               modify fun s => { s with hasUncomparable := true }
 
 private def mkBinOp (f : Expr) (lhs rhs : Expr) : TermElabM Expr := do
-  elabAppArgs f #[] #[Arg.expr lhs, Arg.expr rhs] (expectedType? := none)
-    (explicit := false) (ellipsis := false) (resultIsOutParamSupport := false)
+  elabAppArgs f #[] #[Arg.expr lhs, Arg.expr rhs] (expectedType? := none) (explicit := false)
+    (ellipsis := false) (resultIsOutParamSupport := false)
 
 /-- Turn a tree back into an expression. -/
 private def toExprCore (t : Tree) : TermElabM Expr := do
@@ -194,13 +223,11 @@ private def toExprCore (t : Tree) : TermElabM Expr := do
       let mut rhs ← toExprCore rhs
       mkBinOp f lhs rhs
   | .macroExpansion macroName stx stx' nested =>
-    withRef stx <| withTermInfoContext' macroName stx do
-      withMacroExpansion stx stx' do
-        toExprCore nested
+    withRef stx <|
+      withTermInfoContext' macroName stx do withMacroExpansion stx stx' do toExprCore nested
 
 /-- Try to coerce elements in the tree to `maxS` when needed. -/
-private def applyCoe (t : Tree) (maxS : SRec) : TermElabM Tree := do
-  go t none
+private def applyCoe (t : Tree) (maxS : SRec) : TermElabM Tree := do go t none
 where
   go (t : Tree) (f? : Option Expr) : TermElabM Tree := do
     match t with
@@ -214,7 +241,8 @@ where
       let some (_, x) ← extractS type
         | -- We want our operators to be "homogeneous" so do a defeq check as an elaboration hint
           let x' ← mkFreshExprMVar none
-          let some maxType ← applyS maxS x' | trace[Elab.fbinop] "mvar apply failed"; return t
+          let some maxType ← applyS maxS x'
+            | trace[Elab.fbinop] "mvar apply failed"; return t
           trace[Elab.fbinop] "defeq hint {maxType} =?= {type}"
           _ ← isDefEqGuarded maxType type
           return t
@@ -243,7 +271,6 @@ private def toExpr (tree : Tree) (expectedType? : Option Expr) : TermElabM Expr 
     ensureHasType expectedType? result
 
 @[term_elab prodSyntax]
-def elabBinOp : TermElab := fun stx expectedType? => do
-  toExpr (← toTree stx) expectedType?
+def elabBinOp : TermElab := fun stx expectedType? => do toExpr (← toTree stx) expectedType?
 
 end FBinopElab

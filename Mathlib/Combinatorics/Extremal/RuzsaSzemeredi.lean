@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Combinatorics.Additive.AP.Three.Behrend
 public import Mathlib.Combinatorics.SimpleGraph.Triangle.Tripartite
-
 import Mathlib.Tactic.Qify
 
 /-!
@@ -42,33 +41,37 @@ section ruzsaSzemerediNumber
 variable [DecidableEq α] [DecidableEq β] [Fintype α] [Fintype β] {G : SimpleGraph α}
 
 variable (α) in
-/-- The **Ruzsa-Szemerédi number** of a fintype is the maximum number of edges a locally linear
+/--
+The **Ruzsa-Szemerédi number** of a fintype is the maximum number of edges a locally linear
 graph on that type can have.
 
 In other words, `ruzsaSzemerediNumber α` is the maximum number of edges a graph on `α` can have such
-that each edge belongs to exactly one triangle. -/
+that each edge belongs to exactly one triangle.
+-/
 noncomputable def ruzsaSzemerediNumber : ℕ := by
   classical
-  exact Nat.findGreatest (fun m ↦ ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj),
-    #(G.cliqueFinset 3) = m ∧ G.LocallyLinear) ((card α).choose 3)
+  exact Nat.findGreatest
+    (fun m ↦
+      ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj), #(G.cliqueFinset 3) = m ∧ G.LocallyLinear)
+    ((card α).choose 3)
 
 lemma ruzsaSzemerediNumber_le : ruzsaSzemerediNumber α ≤ (card α).choose 3 := by
   classical
   exact Nat.findGreatest_le _
 
-lemma ruzsaSzemerediNumber_spec :
-    ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj),
+lemma ruzsaSzemerediNumber_spec
+    : ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj),
       #(G.cliqueFinset 3) = ruzsaSzemerediNumber α ∧ G.LocallyLinear := by
   classical
   exact @Nat.findGreatest_spec _
-    (fun m ↦ ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj),
-      #(G.cliqueFinset 3) = m ∧ G.LocallyLinear) _ _ (Nat.zero_le _)
-    ⟨⊥, inferInstance, by simp, locallyLinear_bot⟩
+    (fun m ↦
+      ∃ (G : SimpleGraph α) (_ : DecidableRel G.Adj), #(G.cliqueFinset 3) = m ∧ G.LocallyLinear)
+    _ _ (Nat.zero_le _) ⟨⊥, inferInstance, by simp, locallyLinear_bot⟩
 
 variable {n : ℕ}
 
-lemma SimpleGraph.LocallyLinear.le_ruzsaSzemerediNumber [DecidableRel G.Adj]
-    (hG : G.LocallyLinear) : #(G.cliqueFinset 3) ≤ ruzsaSzemerediNumber α := by
+lemma SimpleGraph.LocallyLinear.le_ruzsaSzemerediNumber [DecidableRel G.Adj] (hG : G.LocallyLinear)
+    : #(G.cliqueFinset 3) ≤ ruzsaSzemerediNumber α := by
   classical
   exact le_findGreatest card_cliqueFinset_le ⟨G, inferInstance, by congr, hG⟩
 
@@ -83,11 +86,13 @@ lemma ruzsaSzemerediNumber_mono (f : α ↪ β) : ruzsaSzemerediNumber α ≤ ru
 lemma ruzsaSzemerediNumber_congr (e : α ≃ β) : ruzsaSzemerediNumber α = ruzsaSzemerediNumber β :=
   (ruzsaSzemerediNumber_mono (e : α ↪ β)).antisymm <| ruzsaSzemerediNumber_mono e.symm
 
-/-- The `n`-th **Ruzsa-Szemerédi number** is the maximum number of edges a locally linear graph on
+/--
+The `n`-th **Ruzsa-Szemerédi number** is the maximum number of edges a locally linear graph on
 `n` vertices can have.
 
 In other words, `ruzsaSzemerediNumberNat n` is the maximum number of edges a graph on `n` vertices
-can have such that each edge belongs to exactly one triangle. -/
+can have such that each edge belongs to exactly one triangle.
+-/
 noncomputable def ruzsaSzemerediNumberNat (n : ℕ) : ℕ := ruzsaSzemerediNumber (Fin n)
 
 @[simp]
@@ -101,13 +106,16 @@ lemma ruzsaSzemerediNumberNat_mono : Monotone ruzsaSzemerediNumberNat := fun _m 
 lemma ruzsaSzemerediNumberNat_le : ruzsaSzemerediNumberNat n ≤ n.choose 3 :=
   ruzsaSzemerediNumber_le.trans_eq <| by rw [Fintype.card_fin]
 
-@[simp] lemma ruzsaSzemerediNumberNat_zero : ruzsaSzemerediNumberNat 0 = 0 :=
+@[simp]
+lemma ruzsaSzemerediNumberNat_zero : ruzsaSzemerediNumberNat 0 = 0 :=
   le_zero_iff.1 ruzsaSzemerediNumberNat_le
 
-@[simp] lemma ruzsaSzemerediNumberNat_one : ruzsaSzemerediNumberNat 1 = 0 :=
+@[simp]
+lemma ruzsaSzemerediNumberNat_one : ruzsaSzemerediNumberNat 1 = 0 :=
   le_zero_iff.1 ruzsaSzemerediNumberNat_le
 
-@[simp] lemma ruzsaSzemerediNumberNat_two : ruzsaSzemerediNumberNat 2 = 0 :=
+@[simp]
+lemma ruzsaSzemerediNumberNat_two : ruzsaSzemerediNumberNat 2 = 0 :=
   le_zero_iff.1 ruzsaSzemerediNumberNat_le
 
 end ruzsaSzemerediNumber
@@ -119,25 +127,27 @@ variable [Fintype α] [CommRing α] {s : Finset α} {x : α × α × α}
 
 /-- The triangle indices for the Ruzsa-Szemerédi construction. -/
 private def triangleIndices (s : Finset α) : Finset (α × α × α) :=
-  (univ ×ˢ s).map
-    ⟨fun xa ↦ (xa.1, xa.1 + xa.2, xa.1 + 2 * xa.2), by
+  (univ ×ˢ s).map ⟨
+    fun xa ↦ (xa.1, xa.1 + xa.2, xa.1 + 2 * xa.2),
+    by
       rintro ⟨x, a⟩ ⟨y, b⟩ h
       simp only [Prod.ext_iff] at h
       obtain rfl := h.1
       obtain rfl := add_right_injective _ h.2.1
-      rfl⟩
+      rfl
+  ⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
-private lemma mem_triangleIndices :
-    x ∈ triangleIndices s ↔ ∃ y, ∃ a ∈ s, (y, y + a, y + 2 * a) = x := by simp [triangleIndices]
-
-@[simp]
-private lemma card_triangleIndices : #(triangleIndices s) = card α * #s := by
+private lemma mem_triangleIndices
+    : x ∈ triangleIndices s ↔ ∃ y, ∃ a ∈ s, (y, y + a, y + 2 * a) = x := by
   simp [triangleIndices]
 
-private lemma noAccidental (hs : ThreeAPFree (s : Set α)) :
-    NoAccidental (triangleIndices s : Finset (α × α × α)) where
+@[simp]
+private lemma card_triangleIndices : #(triangleIndices s) = card α * #s := by simp [triangleIndices]
+
+private lemma noAccidental (hs : ThreeAPFree (s : Set α))
+    : NoAccidental (triangleIndices s : Finset (α × α × α)) where
   eq_or_eq_or_eq := by
     simp only [mem_triangleIndices, Prod.mk_inj, forall_exists_index, and_imp]
     rintro _ _ _ _ _ _ d a ha rfl rfl rfl b' b hb rfl rfl h₁ d' c hc rfl h₂ rfl
@@ -161,12 +171,12 @@ private instance : ExplicitDisjoint (triangleIndices s : Finset (α × α × α)
     rintro _ _ _ _ x a ha rfl rfl rfl y b hb rfl h rfl
     simpa [(Fact.out (p := IsUnit (2 : α))).mul_right_inj, eq_comm] using h
 
-private lemma locallyLinear (hs : ThreeAPFree (s : Set α)) :
-    (graph <| triangleIndices s).LocallyLinear :=
+private lemma locallyLinear (hs : ThreeAPFree (s : Set α))
+    : (graph <| triangleIndices s).LocallyLinear :=
   haveI := noAccidental hs; TripartiteFromTriangles.locallyLinear _
 
-private lemma card_edgeFinset (hs : ThreeAPFree (s : Set α)) [DecidableEq α] :
-    #(graph <| triangleIndices s).edgeFinset = 3 * card α * #s := by
+private lemma card_edgeFinset (hs : ThreeAPFree (s : Set α)) [DecidableEq α]
+    : #(graph <| triangleIndices s).edgeFinset = 3 * card α * #s := by
   have := noAccidental hs
   rw [(locallyLinear hs).card_edgeFinset, card_triangles, card_triangleIndices, mul_assoc]
 
@@ -174,41 +184,43 @@ end RuzsaSzemeredi
 
 variable (α) [Fintype α] [DecidableEq α] [CommRing α] [Fact <| IsUnit (2 : α)]
 
-lemma addRothNumber_le_ruzsaSzemerediNumber :
-    card α * addRothNumber (univ : Finset α) ≤ ruzsaSzemerediNumber (Sum α (Sum α α)) := by
+lemma addRothNumber_le_ruzsaSzemerediNumber
+    : card α * addRothNumber (univ : Finset α) ≤ ruzsaSzemerediNumber (Sum α (Sum α α)) := by
   obtain ⟨s, -, hscard, hs⟩ := addRothNumber_spec (univ : Finset α)
   have := noAccidental hs
   rw [← hscard, ← card_triangleIndices, ← card_triangles]
   exact (locallyLinear hs).le_ruzsaSzemerediNumber
 
-lemma rothNumberNat_le_ruzsaSzemerediNumberNat (n : ℕ) :
-    (2 * n + 1) * rothNumberNat n ≤ ruzsaSzemerediNumberNat (6 * n + 3) := by
+lemma rothNumberNat_le_ruzsaSzemerediNumberNat (n : ℕ)
+    : (2 * n + 1) * rothNumberNat n ≤ ruzsaSzemerediNumberNat (6 * n + 3) := by
   let α := Fin (2 * n + 1)
   have : Nat.Coprime 2 (2 * n + 1) := by simp
-  have : Fact (IsUnit (2 : Fin (2 * n + 1))) := ⟨by simpa
-    using! (ZMod.unitOfCoprime 2 this).isUnit⟩
+  have : Fact (IsUnit (2 : Fin (2 * n + 1))) := ⟨by simpa using! (ZMod.unitOfCoprime 2 this).isUnit⟩
   open scoped Fin.CommRing in
   calc
     (2 * n + 1) * rothNumberNat n
     _ = Fintype.card α * addRothNumber (Iio (⟨n, by lia⟩ : α)) := by
       rw [Fin.addRothNumber_eq_rothNumberNat (by simp), Fintype.card_fin]
-    _ ≤ Fintype.card α * addRothNumber (univ : Finset α) := by
-      gcongr; exact subset_univ _
+    _ ≤ Fintype.card α * addRothNumber (univ : Finset α) := by gcongr; exact subset_univ _
     _ ≤ ruzsaSzemerediNumber (Sum α (Sum α α)) := addRothNumber_le_ruzsaSzemerediNumber _
     _ = ruzsaSzemerediNumberNat (6 * n + 3) := by
       simp_rw [← ruzsaSzemerediNumberNat_card, Fintype.card_sum, α, Fintype.card_fin]
       ring_nf
 
-/-- Lower bound on the **Ruzsa-Szemerédi problem** in terms of 3AP-free sets.
+/--
+Lower bound on the **Ruzsa-Szemerédi problem** in terms of 3AP-free sets.
 
 If there exists a 3AP-free subset of `[1, ..., (n - 3) / 6]` of size `m`, then there exists a graph
 with `n` vertices and `(n / 3 - 2) * m` edges such that each edge belongs to exactly one triangle.
 -/
-theorem rothNumberNat_le_ruzsaSzemerediNumberNat' :
-    ∀ n : ℕ, (n / 3 - 2 : ℝ) * rothNumberNat ((n - 3) / 6) ≤ ruzsaSzemerediNumberNat n
-  | 0 => by simp
-  | 1 => by simp
-  | 2 => by simp
+theorem rothNumberNat_le_ruzsaSzemerediNumberNat'
+    : ∀ n : ℕ, (n / 3 - 2 : ℝ) * rothNumberNat ((n - 3) / 6) ≤ ruzsaSzemerediNumberNat n
+  | 0 => by
+    simp
+  | 1 => by
+    simp
+  | 2 => by
+    simp
   | n + 3 => by
     calc
       _ ≤ (↑(2 * (n / 6) + 1) : ℝ) * rothNumberNat (n / 6) :=
@@ -224,30 +236,33 @@ theorem rothNumberNat_le_ruzsaSzemerediNumberNat' :
     · norm_cast
       exact rothNumberNat_le_ruzsaSzemerediNumberNat _
 
-/-- Explicit lower bound on the **Ruzsa-Szemerédi problem**.
+/--
+Explicit lower bound on the **Ruzsa-Szemerédi problem**.
 
 There exists a graph with `n` vertices and
 `(n / 3 - 2) * (n - 3) / 6 * exp (-4 * √(log ((n - 3) / 6)))` edges such that each edge belongs
-to exactly one triangle. -/
-theorem ruzsaSzemerediNumberNat_lower_bound (n : ℕ) :
-    (n / 3 - 2 : ℝ) * ↑((n - 3) / 6) * exp (-4 * √(log ↑((n - 3) / 6))) ≤
-      ruzsaSzemerediNumberNat n := by
+to exactly one triangle.
+-/
+theorem ruzsaSzemerediNumberNat_lower_bound (n : ℕ)
+    : (n / 3 - 2 : ℝ) * ↑((n - 3) / 6) * exp (-4 * √(log ↑((n - 3) / 6)))
+      ≤ ruzsaSzemerediNumberNat n := by
   rw [mul_assoc]
   obtain hn | hn := le_total (n / 3 - 2 : ℝ) 0
   · exact (mul_nonpos_of_nonpos_of_nonneg hn <| by positivity).trans (Nat.cast_nonneg _)
-  exact
-    (mul_le_mul_of_nonneg_left Behrend.roth_lower_bound hn).trans
-      (rothNumberNat_le_ruzsaSzemerediNumberNat' _)
+  exact (mul_le_mul_of_nonneg_left Behrend.roth_lower_bound hn).trans
+    (rothNumberNat_le_ruzsaSzemerediNumberNat' _)
 
 open Asymptotics Filter
 
-/-- Asymptotic lower bound on the **Ruzsa-Szemerédi problem**.
+/--
+Asymptotic lower bound on the **Ruzsa-Szemerédi problem**.
 
 There exists a graph with `n` vertices and `Ω((n ^ 2 * exp (-4 * √(log n))))` edges such that
-each edge belongs to exactly one triangle. -/
-theorem ruzsaSzemerediNumberNat_asymptotic_lower_bound :
-    (fun n ↦ n ^ 2 * exp (-4 * √(log n)) : ℕ → ℝ) =O[atTop]
-     fun n ↦ (ruzsaSzemerediNumberNat n : ℝ) := by
+each edge belongs to exactly one triangle.
+-/
+theorem ruzsaSzemerediNumberNat_asymptotic_lower_bound
+    : (fun n ↦ n ^ 2 * exp (-4 * √(log n)) : ℕ → ℝ) =O[atTop]
+       fun n ↦ (ruzsaSzemerediNumberNat n : ℝ) := by
   trans fun n ↦ (n / 3 - 2) * ↑((n - 3) / 6) * exp (-4 * √(log ↑((n - 3) / 6)))
   · simp_rw [sq]
     refine (IsBigO.mul ?_ ?_).mul ?_

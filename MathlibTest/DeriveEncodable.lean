@@ -10,10 +10,9 @@ Structures
 structure Struct where
   x : Nat
   y : Bool
-  deriving Encodable
+deriving Encodable
 
 example : Encodable Struct := inferInstance
-
 
 /-!
 Inductive types with parameters
@@ -22,7 +21,7 @@ Inductive types with parameters
 inductive T (α : Type) where
   | a (x : α) (y : Bool) (z : T α)
   | b
-  deriving Encodable, Repr
+deriving Encodable, Repr
 
 example : Encodable (T Nat) := inferInstance
 /--
@@ -31,7 +30,8 @@ error: failed to synthesize instance of type class
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
-#guard_msgs in example : Encodable (Nat → Bool) := inferInstance
+#guard_msgs in
+example : Encodable (Nat → Bool) := inferInstance
 
 /-- info: 96964472478917 -/
 #guard_msgs in
@@ -41,7 +41,6 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 #guard_msgs in
 #eval (Encodable.decode 96964472478917 : Option <| T Nat)
 
-
 /-!
 Mutually recursive types
 -/
@@ -49,16 +48,15 @@ mutual
 inductive T1 where
   | a
   | b (x : T1) (y : T2)
-  deriving Encodable
+deriving Encodable
 inductive T2 where
   | c (n : Nat)
   | d (x y : T1)
-  deriving Encodable
+deriving Encodable
 end
 
 example : Encodable T1 := inferInstance
 example : Encodable T2 := inferInstance
-
 
 /-!
 Not supported: indexed types
@@ -67,7 +65,7 @@ Not supported: indexed types
 #guard_msgs in
 inductive Idx : Nat → Type where
   | a (i : Nat) (j : Nat) : Idx (i + j)
-  deriving Encodable
+deriving Encodable
 
 /-!
 Not supported: nested inductive types
@@ -76,7 +74,7 @@ Not supported: nested inductive types
 #guard_msgs in
 inductive Nested where
   | mk (xs : List Nested)
-  deriving Encodable
+deriving Encodable
 
 /-!
 Not supported: reflexive inductive types
@@ -85,4 +83,4 @@ Not supported: reflexive inductive types
 #guard_msgs in
 inductive Reflex where
   | mk (f : Bool → Reflex)
-  deriving Encodable
+deriving Encodable

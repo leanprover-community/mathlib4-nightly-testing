@@ -34,8 +34,10 @@ universe w v u
 
 variable {B : Type u} [Bicategory.{w, v} B]
 
-/-- A comonad in a bicategory `B` is a 1-morphism `t : a ⟶ a` together with 2-morphisms
-`Δ : t ⟶ t ≫ t` and `ε : t ⟶ 𝟙 a` satisfying the comonad laws. -/
+/--
+A comonad in a bicategory `B` is a 1-morphism `t : a ⟶ a` together with 2-morphisms
+`Δ : t ⟶ t ≫ t` and `ε : t ⟶ 𝟙 a` satisfying the comonad laws.
+-/
 abbrev Comonad {a : B} (t : a ⟶ a) := ComonObj t
 
 /-- The counit 2-morphism of the comonad. -/
@@ -73,13 +75,12 @@ theorem comul_assoc_flip : Δ ≫ Δ ▷ t = Δ ≫ t ◁ Δ ≫ (α_ t t t).inv
 end
 
 @[simps! counit]
-instance {a : B} : Comonad (𝟙 a) :=
-  ComonObj.instTensorUnit (a ⟶ a)
+instance {a : B} : Comonad (𝟙 a) := ComonObj.instTensorUnit (a ⟶ a)
 
 /-- An oplax functor from the trivial bicategory to `B` defines a comonad in `B`. -/
 @[instance_reducible]
-def ofOplaxFromUnit (F : LocallyDiscrete (Discrete Unit) ⥤ᵒᵖᴸ B) :
-    Comonad (F.map (𝟙 ⟨⟨Unit.unit⟩⟩)) where
+def ofOplaxFromUnit (F : LocallyDiscrete (Discrete Unit) ⥤ᵒᵖᴸ B)
+    : Comonad (F.map (𝟙 ⟨⟨Unit.unit⟩⟩)) where
   comul := F.map₂ (ρ_ _).inv ≫ F.mapComp _ _
   counit := F.mapId _
   comul_assoc := by
@@ -108,15 +109,16 @@ def toOplax {a : B} (t : a ⟶ a) [Comonad t] : LocallyDiscrete (Discrete Unit) 
 
 end Comonad
 
-/- In this section, we define bicategory structure on comonads by using the bicategory structure on
+/-
+In this section, we define bicategory structure on comonads by using the bicategory structure on
 oplax functors. We may use oplax, lax, or pseudonatural transformations to provide the bicategory
 structure, and the namespace below indicates that we use oplax transformations here. The
-constructions for the other two cases would be given in the corresponding namespaces. -/
+constructions for the other two cases would be given in the corresponding namespaces.
+-/
 namespace OplaxTrans
 
 /-- The bicategory of comonads in `B`. -/
-def ComonadBicat (B : Type u) [Bicategory.{w, v} B] :=
-  LocallyDiscrete (Discrete Unit) ⥤ᵒᵖᴸ B
+def ComonadBicat (B : Type u) [Bicategory.{w, v} B] := LocallyDiscrete (Discrete Unit) ⥤ᵒᵖᴸ B
 
 namespace ComonadBicat
 
@@ -126,23 +128,19 @@ scoped instance : Bicategory (ComonadBicat B) :=
   inferInstanceAs <| Bicategory (LocallyDiscrete (Discrete PUnit) ⥤ᵒᵖᴸ B)
 
 /-- The oplax functor from the trivial bicategory to `B` associated with the comonad. -/
-def toOplax (m : ComonadBicat B) : LocallyDiscrete (Discrete PUnit) ⥤ᵒᵖᴸ B :=
-  m
+def toOplax (m : ComonadBicat B) : LocallyDiscrete (Discrete PUnit) ⥤ᵒᵖᴸ B := m
 
 /-- The object in `B` associated with the comonad. -/
-def obj (m : ComonadBicat B) :=
-  m.toOplax.obj ⟨⟨PUnit.unit⟩⟩
+def obj (m : ComonadBicat B) := m.toOplax.obj ⟨⟨PUnit.unit⟩⟩
 
 /-- The morphism in `B` associated with the comonad. -/
 def hom (m : ComonadBicat B) : m.obj ⟶ m.obj :=
   m.toOplax.map (𝟙 (⟨⟨PUnit.unit⟩⟩ : LocallyDiscrete (Discrete PUnit)))
 
-instance (m : ComonadBicat B) : Comonad m.hom :=
-  Comonad.ofOplaxFromUnit m.toOplax
+instance (m : ComonadBicat B) : Comonad m.hom := Comonad.ofOplaxFromUnit m.toOplax
 
 /-- Construct a comonad as an object in `ComonadBicat B`. -/
-def mkOfComonad {a : B} (t : a ⟶ a) [Comonad t] : ComonadBicat B :=
-  Comonad.toOplax t
+def mkOfComonad {a : B} (t : a ⟶ a) [Comonad t] : ComonadBicat B := Comonad.toOplax t
 
 section
 

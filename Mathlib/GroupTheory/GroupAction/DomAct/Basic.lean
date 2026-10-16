@@ -87,9 +87,11 @@ group action, function, domain
 
 open Function
 
-/-- If `M` multiplicatively acts on `α`, then `DomMulAct M` acts on `α → β` as well as some
+/--
+If `M` multiplicatively acts on `α`, then `DomMulAct M` acts on `α → β` as well as some
 bundled maps from `α`. This is a type synonym for `MulOpposite M`, so this corresponds to a right
-action of `M`. -/
+action of `M`.
+-/
 @[to_additive /-- If `M` additively acts on `α`, then `DomAddAct M` acts on `α → β` as
 well as some bundled maps from `α`. This is a type synonym for `AddOpposite M`, so this corresponds
 to a right action of `M`. -/]
@@ -112,15 +114,19 @@ def mk : M ≃ Mᵈᵐᵃ := MulOpposite.opEquiv
 
 set_option hygiene false in
 run_cmd
-  for n in [`Mul, `One, `Inv, `Semigroup, `CommSemigroup, `LeftCancelSemigroup,
-    `RightCancelSemigroup, `MulOneClass, `Monoid, `CommMonoid, `LeftCancelMonoid,
-    `RightCancelMonoid, `CancelMonoid, `CancelCommMonoid, `InvolutiveInv, `DivInvMonoid,
-    `InvOneClass, `DivInvOneMonoid, `DivisionMonoid, `DivisionCommMonoid, `Group,
-    `CommGroup, `NonAssocSemiring, `NonUnitalSemiring, `Semiring,
-    `Ring, `CommRing].map Lean.mkIdent do
-  Lean.Elab.Command.elabCommand (← `(
-    @[to_additive] instance [$n Mᵐᵒᵖ] : $n Mᵈᵐᵃ := ‹_›
-  ))
+  for n
+      in [
+          `Mul, `One, `Inv, `Semigroup, `CommSemigroup, `LeftCancelSemigroup,
+          `RightCancelSemigroup, `MulOneClass, `Monoid, `CommMonoid, `LeftCancelMonoid,
+          `RightCancelMonoid, `CancelMonoid, `CancelCommMonoid, `InvolutiveInv, `DivInvMonoid,
+          `InvOneClass, `DivInvOneMonoid, `DivisionMonoid, `DivisionCommMonoid, `Group,
+          `CommGroup, `NonAssocSemiring, `NonUnitalSemiring, `Semiring,
+          `Ring, `CommRing
+        ].map
+        Lean.mkIdent do
+    Lean.Elab.Command.elabCommand (← `(
+        @[to_additive] instance [$n Mᵐᵒᵖ] : $n Mᵈᵐᵃ := ‹_›
+      ))
 
 @[to_additive] instance [Mul Mᵐᵒᵖ] [IsLeftCancelMul Mᵐᵒᵖ] : IsLeftCancelMul Mᵈᵐᵃ := ‹_›
 @[to_additive] instance [Mul Mᵐᵒᵖ] [IsRightCancelMul Mᵐᵒᵖ] : IsRightCancelMul Mᵈᵐᵃ := ‹_›
@@ -179,12 +185,13 @@ instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass Mᵈᵐ�
 
 @[to_additive]
 instance [SMul M α] [FaithfulSMul M α] [Nontrivial β] : FaithfulSMul Mᵈᵐᵃ (α → β) where
-  eq_of_smul_eq_smul {c₁ c₂} h := mk.symm.injective <| eq_of_smul_eq_smul fun a : α ↦ by
-    rcases exists_pair_ne β with ⟨x, y, hne⟩
-    contrapose! hne
-    have := Classical.decEq α
-    replace h := congr_fun (h (update (const α x) (mk.symm c₂ • a) y)) a
-    simpa [smul_apply, hne] using h
+  eq_of_smul_eq_smul {c₁ c₂} h :=
+    mk.symm.injective <| eq_of_smul_eq_smul fun a : α ↦ by
+      rcases exists_pair_ne β with ⟨x, y, hne⟩
+      contrapose! hne
+      have := Classical.decEq α
+      replace h := congr_fun (h (update (const α x) (mk.symm c₂ • a) y)) a
+      simpa [smul_apply, hne] using h
 
 instance [SMul M α] [Zero β] : SMulZeroClass Mᵈᵐᵃ (α → β) where
   smul_zero _ := rfl
@@ -212,12 +219,11 @@ variable {M M' A B : Type*} [Monoid M] [Monoid A] [MulDistribMulAction M A] [Mul
 instance : SMul Mᵈᵐᵃ (A →* B) where
   smul c f := f.comp (MulDistribMulAction.toMonoidHom _ (mk.symm c))
 
-instance [Monoid M'] [MulDistribMulAction M' A] [SMulCommClass M M' A] :
-    SMulCommClass Mᵈᵐᵃ M'ᵈᵐᵃ (A →* B) :=
+instance [Monoid M'] [MulDistribMulAction M' A] [SMulCommClass M M' A]
+    : SMulCommClass Mᵈᵐᵃ M'ᵈᵐᵃ (A →* B) :=
   DFunLike.coe_injective.smulCommClass (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
 
-theorem smul_monoidHom_apply (c : Mᵈᵐᵃ) (f : A →* B) (a : A) : (c • f) a = f (mk.symm c • a) :=
-  rfl
+theorem smul_monoidHom_apply (c : Mᵈᵐᵃ) (f : A →* B) (a : A) : (c • f) a = f (mk.symm c • a) := rfl
 
 @[simp]
 theorem mk_smul_monoidHom_apply (c : M) (f : A →* B) (a : A) : (mk c • f) a = f (c • a) := rfl
@@ -247,22 +253,22 @@ theorem smul_addMonoidHom_apply (c : Mᵈᵐᵃ) (f : A →+ B) (a : A) : (c •
 @[simp]
 theorem mk_smul_addMonoidHom_apply (c : M) (f : A →+ B) (a : A) : (mk c • f) a = f (c • a) := rfl
 
-theorem coe_smul_addMonoidHom (c : Mᵈᵐᵃ) (f : A →+ B) : ⇑(c • f) = c • ⇑f :=
-  rfl
+theorem coe_smul_addMonoidHom (c : Mᵈᵐᵃ) (f : A →+ B) : ⇑(c • f) = c • ⇑f := rfl
 
 end DistribSMul
 
 variable {A M B : Type*}
 
-instance [Monoid M] [AddMonoid A] [DistribMulAction M A] [AddZeroClass B] :
-    MulAction Mᵈᵐᵃ (A →+ B) := DFunLike.coe_injective.mulAction (⇑) fun _ _ ↦ rfl
+instance [Monoid M] [AddMonoid A] [DistribMulAction M A] [AddZeroClass B]
+    : MulAction Mᵈᵐᵃ (A →+ B) :=
+  DFunLike.coe_injective.mulAction (⇑) fun _ _ ↦ rfl
 
-instance [Monoid M] [AddMonoid A] [DistribMulAction M A] [AddCommMonoid B] :
-    DistribMulAction Mᵈᵐᵃ (A →+ B) :=
+instance [Monoid M] [AddMonoid A] [DistribMulAction M A] [AddCommMonoid B]
+    : DistribMulAction Mᵈᵐᵃ (A →+ B) :=
   DFunLike.coe_injective.distribMulAction (AddMonoidHom.coeFn A B) fun _ _ ↦ rfl
 
-instance [Monoid M] [Monoid A] [MulDistribMulAction M A] [CommMonoid B] :
-    MulDistribMulAction Mᵈᵐᵃ (A →* B) :=
+instance [Monoid M] [Monoid A] [MulDistribMulAction M A] [CommMonoid B]
+    : MulDistribMulAction Mᵈᵐᵃ (A →* B) :=
   DFunLike.coe_injective.mulDistribMulAction (MonoidHom.coeFn A B) fun _ _ ↦ rfl
 
 end AddMonoidHom

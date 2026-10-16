@@ -20,13 +20,14 @@ public section
 open Set
 
 namespace Convexity
-variable {R X Y : Type*} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [ConvexSpace R X]
-  [ConvexSpace R Y] {C s t : Set X} {x y : X}
+variable
+  {R X Y : Type*}
+  [Semiring R] [PartialOrder R] [IsStrictOrderedRing R] [ConvexSpace R X] [ConvexSpace R Y]
+  {C s t : Set X} {x y : X}
 
 variable (R) in
 /-- The convex hull of a set `s` is the minimal convex set that includes `s`. -/
-def convexHull : ClosureOperator (Set X) :=
-  .ofCompletePred (IsConvexSet R) (fun _ ↦ .sInter)
+def convexHull : ClosureOperator (Set X) := .ofCompletePred (IsConvexSet R) (fun _ ↦ .sInter)
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma subset_convexHull_iff : t ⊆ convexHull R s ↔ ∀ C, s ⊆ C → IsConvexSet R C → t ⊆ C := by
@@ -38,8 +39,8 @@ protected lemma IsConvexSet.convexHull : IsConvexSet R (convexHull R s) :=
   ClosureOperator.isClosed_closure (.ofCompletePred (IsConvexSet R) _) s
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma convexHull_eq_iInter :
-    convexHull R s = ⋂ (t : Set X) (_ : s ⊆ t) (_ : IsConvexSet R t), t := by
+lemma convexHull_eq_iInter
+    : convexHull R s = ⋂ (t : Set X) (_ : s ⊆ t) (_ : IsConvexSet R t), t := by
   simp [convexHull, iInter_subtype, iInter_and]
 
 lemma mem_convexHull_iff : x ∈ convexHull R s ↔ ∀ t, s ⊆ t → IsConvexSet R t → x ∈ t := by
@@ -64,25 +65,28 @@ lemma convexHull_subset_self : convexHull R C ⊆ C ↔ IsConvexSet R C := by
 protected alias ⟨_, IsConvexSet.convexHull_eq_self⟩ := convexHull_eq_self
 
 variable (R) in
-@[simp] lemma convexHull_empty : convexHull R (∅ : Set X) = ∅ :=
-  IsConvexSet.empty.convexHull_eq_self
+@[simp]
+lemma convexHull_empty : convexHull R (∅ : Set X) = ∅ := IsConvexSet.empty.convexHull_eq_self
 
-@[simp] lemma convexHull_eq_empty : convexHull R s = ∅ ↔ s = ∅ := by
+@[simp]
+lemma convexHull_eq_empty : convexHull R s = ∅ ↔ s = ∅ := by
   simp [← subset_empty_iff, IsConvexSet.empty.convexHull_subset_iff]
 
-@[simp] lemma convexHull_nonempty : (convexHull R s).Nonempty ↔ s.Nonempty := by
+@[simp]
+lemma convexHull_nonempty : (convexHull R s).Nonempty ↔ s.Nonempty := by
   simp [nonempty_iff_ne_empty]
 
 protected alias ⟨_, Set.Nonempty.convexHull'⟩ := convexHull_nonempty
 
 variable (R x) in
-@[simp] lemma convexHull_singleton : convexHull R {x} = {x} :=
-  IsConvexSet.singleton.convexHull_eq_self
+@[simp]
+lemma convexHull_singleton : convexHull R {x} = {x} := IsConvexSet.singleton.convexHull_eq_self
 
-@[simp] lemma convexHull_univ : convexHull R (univ : Set X) = univ :=
-  IsConvexSet.univ.convexHull_eq_self
+@[simp]
+lemma convexHull_univ : convexHull R (univ : Set X) = univ := IsConvexSet.univ.convexHull_eq_self
 
-@[simp] lemma convexHull_eq_singleton : convexHull R s = {x} ↔ s = {x} where
+@[simp]
+lemma convexHull_eq_singleton : convexHull R s = {x} ↔ s = {x} where
   mp hs := by
     rw [← Set.Nonempty.subset_singleton_iff, ← hs]
     · exact subset_convexHull_self
@@ -92,18 +96,16 @@ variable (R x) in
 
 variable (R s t) in
 @[simp]
-lemma convexHull_convexHull_union :
-    convexHull R (convexHull R s ∪ t) = convexHull R (s ∪ t) :=
+lemma convexHull_convexHull_union : convexHull R (convexHull R s ∪ t) = convexHull R (s ∪ t) :=
   ClosureOperator.closure_sup_closure_left ..
 
 variable (R s t) in
 @[simp]
-lemma convexHull_union_convexHull :
-    convexHull R (s ∪ convexHull R t) = convexHull R (s ∪ t) :=
+lemma convexHull_union_convexHull : convexHull R (s ∪ convexHull R t) = convexHull R (s ∪ t) :=
   ClosureOperator.closure_sup_closure_right ..
 
-lemma IsConvexSet.sdiff_singleton_iff_notMem_convexHull (hs : IsConvexSet R s) :
-    IsConvexSet R (s \ {x}) ↔ x ∉ convexHull R (s \ {x}) where
+lemma IsConvexSet.sdiff_singleton_iff_notMem_convexHull (hs : IsConvexSet R s)
+    : IsConvexSet R (s \ {x}) ↔ x ∉ convexHull R (s \ {x}) where
   mp hsx hx := by
     rw [hsx.convexHull_eq_self] at hx
     exact hx.2 (mem_singleton _)
@@ -112,11 +114,11 @@ lemma IsConvexSet.sdiff_singleton_iff_notMem_convexHull (hs : IsConvexSet R s) :
     rintro y hy
     exact ⟨convexHull_min sdiff_subset hs hy, by rintro rfl; exact hx hy⟩
 
-lemma IsAffineMap.image_convexHull {f : X → Y} (hf : IsAffineMap R f) (s : Set X) :
-    f '' convexHull R s = convexHull R (f '' s) := by
-  rw [subset_antisymm_iff,
-    image_subset_iff, (IsConvexSet.convexHull.preimage hf).convexHull_subset_iff,
-    ← image_subset_iff, (IsConvexSet.convexHull.image hf).convexHull_subset_iff]
+lemma IsAffineMap.image_convexHull {f : X → Y} (hf : IsAffineMap R f) (s : Set X)
+    : f '' convexHull R s = convexHull R (f '' s) := by
+  rw [subset_antisymm_iff, image_subset_iff,
+    (IsConvexSet.convexHull.preimage hf).convexHull_subset_iff, ← image_subset_iff,
+    (IsConvexSet.convexHull.image hf).convexHull_subset_iff]
   exact ⟨subset_convexHull_self, image_mono subset_convexHull_self⟩
 
 end Convexity

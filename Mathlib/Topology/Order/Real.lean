@@ -46,10 +46,12 @@ end EReal
 
 namespace ENNReal
 
-/-- Topology on `ℝ≥0∞`.
+/--
+Topology on `ℝ≥0∞`.
 
 Note: this is different from the `EMetricSpace` topology. The `EMetricSpace` topology has
-`IsOpen {∞}`, while this topology doesn't have singleton elements. -/
+`IsOpen {∞}`, while this topology doesn't have singleton elements.
+-/
 instance : TopologicalSpace ℝ≥0∞ := Preorder.topology ℝ≥0∞
 
 instance : OrderTopology ℝ≥0∞ := ⟨rfl⟩

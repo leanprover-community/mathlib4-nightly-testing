@@ -6,7 +6,6 @@ Authors: Weiyi Wang
 module
 
 public import Mathlib.Combinatorics.Enumerative.Partition.GenFun
-
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 
 /-!
@@ -43,14 +42,17 @@ open PowerSeries PowerSeries.WithPiTopology Finset
 section Semiring
 variable [CommSemiring R]
 
-/-- The generating function of `Nat.Partition.restricted n p` is
+/--
+The generating function of `Nat.Partition.restricted n p` is
 $$
 \prod_{i \in p} \sum_{j = 0}^{\infty} X^{ij}
-$$ -/
-theorem hasProd_powerSeriesMk_card_restricted [IsTopologicalSemiring R]
-    (p : ℕ → Prop) [DecidablePred p] :
-    HasProd (fun i ↦ if p (i + 1) then ∑' j : ℕ, X ^ ((i + 1) * j) else 1)
-    (PowerSeries.mk fun n ↦ (#(restricted n p) : R)) := by
+$$
+-/
+theorem hasProd_powerSeriesMk_card_restricted
+    [IsTopologicalSemiring R] (p : ℕ → Prop) [DecidablePred p]
+    : HasProd
+      (fun i ↦ if p (i + 1) then ∑' j : ℕ, X ^ ((i + 1) * j) else 1)
+      (PowerSeries.mk fun n ↦ (#(restricted n p) : R)) := by
   convert hasProd_genFun (fun i c ↦ if p i then (1 : R) else 0) using 1
   · ext1 i
     split_ifs
@@ -63,24 +65,27 @@ theorem hasProd_powerSeriesMk_card_restricted [IsTopologicalSemiring R]
   · simp_rw [genFun, restricted, card_filter, Finsupp.prod, prod_boole]
     simp
 
-theorem multipliable_powerSeriesMk_card_restricted [IsTopologicalSemiring R]
-    (p : ℕ → Prop) [DecidablePred p] :
-    Multipliable (fun i ↦ if p (i + 1) then ∑' j : ℕ, (X ^ ((i + 1) * j) : R⟦X⟧) else 1) :=
+theorem multipliable_powerSeriesMk_card_restricted
+    [IsTopologicalSemiring R] (p : ℕ → Prop) [DecidablePred p]
+    : Multipliable (fun i ↦ if p (i + 1) then ∑' j : ℕ, (X ^ ((i + 1) * j) : R⟦X⟧) else 1) :=
   (hasProd_powerSeriesMk_card_restricted R p).multipliable
 
-theorem powerSeriesMk_card_restricted_eq_tprod [IsTopologicalSemiring R]
-    (p : ℕ → Prop) [DecidablePred p] :
-    PowerSeries.mk (fun n ↦ (#(restricted n p) : R)) =
-    ∏' i, if p (i + 1) then ∑' j : ℕ, X ^ ((i + 1) * j) else 1 :=
+theorem powerSeriesMk_card_restricted_eq_tprod
+    [IsTopologicalSemiring R] (p : ℕ → Prop) [DecidablePred p]
+    : PowerSeries.mk (fun n ↦ (#(restricted n p) : R))
+      = ∏' i, if p (i + 1) then ∑' j : ℕ, X ^ ((i + 1) * j) else 1 :=
   (hasProd_powerSeriesMk_card_restricted R p).tprod_eq.symm
 
-/-- The generating function of `Nat.Partition.countRestricted n m` is
+/--
+The generating function of `Nat.Partition.countRestricted n m` is
 $$
 \prod_{i = 1}^{\infty} \sum_{j = 0}^{m - 1} X^{ij}
-$$ -/
-theorem hasProd_powerSeriesMk_card_countRestricted {m : ℕ} (hm : 0 < m) :
-    HasProd (fun i ↦ ∑ j ∈ range m, X ^ ((i + 1) * j))
-    (PowerSeries.mk fun n ↦ (#(countRestricted n m) : R)) := by
+$$
+-/
+theorem hasProd_powerSeriesMk_card_countRestricted {m : ℕ} (hm : 0 < m)
+    : HasProd
+      (fun i ↦ ∑ j ∈ range m, X ^ ((i + 1) * j))
+      (PowerSeries.mk fun n ↦ (#(countRestricted n m) : R)) := by
   nontriviality R using Subsingleton.eq_one (α := R⟦X⟧)
   convert hasProd_genFun (fun i c ↦ if c < m then (1 : R) else 0) using 1
   · ext1 i
@@ -95,15 +100,15 @@ theorem hasProd_powerSeriesMk_card_countRestricted {m : ℕ} (hm : 0 < m) :
   · simp_rw [genFun, countRestricted, card_filter, Finsupp.prod, prod_boole]
     simp
 
-theorem multipliable_powerSeriesMk_card_countRestricted (m : ℕ) :
-    Multipliable fun i ↦ ∑ j ∈ range m, (X ^ ((i + 1) * j) : R⟦X⟧) := by
+theorem multipliable_powerSeriesMk_card_countRestricted (m : ℕ)
+    : Multipliable fun i ↦ ∑ j ∈ range m, (X ^ ((i + 1) * j) : R⟦X⟧) := by
   rcases Nat.eq_zero_or_pos m with rfl | hm
   · simpa using multipliable_of_exists_eq_zero ⟨0, rfl⟩
   · exact (hasProd_powerSeriesMk_card_countRestricted R hm).multipliable
 
-theorem powerSeriesMk_card_countRestricted_eq_tprod {m : ℕ} (hm : 0 < m) :
-    PowerSeries.mk (fun n ↦ (#(countRestricted n m) : R)) =
-    ∏' i, ∑ j ∈ range m, X ^ ((i + 1) * j) :=
+theorem powerSeriesMk_card_countRestricted_eq_tprod {m : ℕ} (hm : 0 < m)
+    : PowerSeries.mk (fun n ↦ (#(countRestricted n m) : R))
+      = ∏' i, ∑ j ∈ range m, X ^ ((i + 1) * j) :=
   (hasProd_powerSeriesMk_card_countRestricted R hm).tprod_eq.symm
 
 end Semiring
@@ -111,9 +116,9 @@ end Semiring
 section Ring
 variable [CommRing R] [NoZeroDivisors R]
 
-private theorem aux_mul_one_sub_X_pow [IsTopologicalRing R] {m : ℕ} (hm : 0 < m) :
-    (∏' i, if ¬m ∣ i + 1 then ∑' j, (X : R⟦X⟧) ^ ((i + 1) * j) else 1) * ∏' i, (1 - X ^ (i + 1)) =
-    ∏' i, (1 - X ^ ((i + 1) * m)) := by
+private theorem aux_mul_one_sub_X_pow [IsTopologicalRing R] {m : ℕ} (hm : 0 < m)
+    : (∏' i, if ¬m ∣ i + 1 then ∑' j, (X : R⟦X⟧) ^ ((i + 1) * j) else 1) * ∏' i, (1 - X ^ (i + 1))
+      = ∏' i, (1 - X ^ ((i + 1) * m)) := by
   nontriviality R
   rw [← (multipliable_powerSeriesMk_card_restricted R (¬ m ∣ ·)).tprod_mul
     (multipliable_one_sub_X_pow _)]
@@ -135,9 +140,9 @@ private theorem aux_mul_one_sub_X_pow [IsTopologicalRing R] {m : ℕ} (hm : 0 < 
     simp [this, pow_mul]
 
 omit [TopologicalSpace R] in
-theorem powerSeriesMk_card_restricted_eq_powerSeriesMk_card_countRestricted {m : ℕ} (hm : 0 < m) :
-    (PowerSeries.mk fun n ↦ (#(restricted n (¬ m ∣ ·)) : R)) =
-    PowerSeries.mk fun n ↦ (#(countRestricted n m) : R) := by
+theorem powerSeriesMk_card_restricted_eq_powerSeriesMk_card_countRestricted {m : ℕ} (hm : 0 < m)
+    : (PowerSeries.mk fun n ↦ (#(restricted n (¬ m ∣ ·)) : R))
+      = PowerSeries.mk fun n ↦ (#(countRestricted n m) : R) := by
   nontriviality R
   let _ : TopologicalSpace R := ⊥
   have _ : DiscreteTopology R := ⟨rfl⟩
@@ -151,10 +156,11 @@ theorem powerSeriesMk_card_restricted_eq_powerSeriesMk_card_countRestricted {m :
 
 end Ring
 
-theorem card_restricted_eq_card_countRestricted (n : ℕ) {m : ℕ} (hm : 0 < m) :
-    #(restricted n (¬ m ∣ ·)) = #(countRestricted n m) := by
-  simpa using PowerSeries.ext_iff.mp
-    (powerSeriesMk_card_restricted_eq_powerSeriesMk_card_countRestricted ℤ hm) n
+theorem card_restricted_eq_card_countRestricted (n : ℕ) {m : ℕ} (hm : 0 < m)
+    : #(restricted n (¬ m ∣ ·)) = #(countRestricted n m) := by
+  simpa using
+    PowerSeries.ext_iff.mp
+      (powerSeriesMk_card_restricted_eq_powerSeriesMk_card_countRestricted ℤ hm) n
 
 theorem card_odds_eq_card_distincts (n : ℕ) : #(odds n) = #(distincts n) := by
   simp_rw [← countRestricted_two, odds, even_iff_two_dvd]

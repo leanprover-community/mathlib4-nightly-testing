@@ -25,7 +25,6 @@ identities.
 
 public section
 
-
 namespace CategoryTheory
 
 open Bicategory
@@ -34,7 +33,8 @@ universe w v u
 
 variable (B : Type u) [Bicategory.{w, v} B]
 
-/-- A bicategory is called `Strict` if the left unitors, the right unitors, and the associators are
+/--
+A bicategory is called `Strict` if the left unitors, the right unitors, and the associators are
 isomorphisms given by equalities.
 -/
 class Bicategory.Strict : Prop where
@@ -50,8 +50,8 @@ class Bicategory.Strict : Prop where
   /-- The right unitors are given by equalities -/
   rightUnitor_eqToIso : ∀ {a b : B} (f : a ⟶ b), ρ_ f = eqToIso (comp_id f) := by cat_disch
   /-- The associators are given by equalities -/
-  associator_eqToIso :
-    ∀ {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d), α_ f g h = eqToIso (assoc f g h) := by
+  associator_eqToIso
+      : ∀ {a b c d : B} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d), α_ f g h = eqToIso (assoc f g h) := by
     cat_disch
 
 -- see Note [lower instance priority]
@@ -66,14 +66,14 @@ namespace Bicategory
 variable {B}
 
 @[simp]
-theorem whiskerLeft_eqToHom {a b c : B} (f : a ⟶ b) {g h : b ⟶ c} (η : g = h) :
-    f ◁ eqToHom η = eqToHom congr(_ ≫ $η) := by
+theorem whiskerLeft_eqToHom {a b c : B} (f : a ⟶ b) {g h : b ⟶ c} (η : g = h)
+    : f ◁ eqToHom η = eqToHom congr(_ ≫ $η) := by
   cases η
   simp only [whiskerLeft_id, eqToHom_refl]
 
 @[simp]
-theorem eqToHom_whiskerRight {a b c : B} {f g : a ⟶ b} (η : f = g) (h : b ⟶ c) :
-    eqToHom η ▷ h = eqToHom congr($η ≫ _) := by
+theorem eqToHom_whiskerRight {a b c : B} {f g : a ⟶ b} (η : f = g) (h : b ⟶ c)
+    : eqToHom η ▷ h = eqToHom congr($η ≫ _) := by
   cases η
   simp only [id_whiskerRight, eqToHom_refl]
 

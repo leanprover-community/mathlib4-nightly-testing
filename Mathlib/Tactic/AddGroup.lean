@@ -5,7 +5,7 @@ Authors: Kevin Buzzard
 -/
 module
 
-public import Mathlib.Tactic.Group  -- shake: keep
+public import Mathlib.Tactic.Group -- shake: keep
 -- tactic dependency: `addCommutatorElement_def`, `_zsmul_trick` lemmas
 
 /-!
@@ -59,29 +59,29 @@ open Lean Meta Parser Tactic
 -- They handle the case where a negated element `-b` appears adjacent to a `zsmul` of the same
 -- element, or adjacent to another negated copy.
 -- This means we also want to convert `(-1) • b` to `-b` in order to apply these lemmas.
-theorem _zsmul_neg_trick {G : Type*} [AddGroup G] (b : G) (n : ℤ) :
-    n • b + (-b) = (n + (-1)) • b := by
+theorem _zsmul_neg_trick {G : Type*} [AddGroup G] (b : G) (n : ℤ)
+    : n • b + (-b) = (n + (-1)) • b := by
   rw [← neg_one_zsmul b, ← add_zsmul]
 
-theorem _neg_zsmul_trick {G : Type*} [AddGroup G] (b : G) (n : ℤ) :
-    (-b) + n • b = ((-1) + n) • b := by
+theorem _neg_zsmul_trick {G : Type*} [AddGroup G] (b : G) (n : ℤ)
+    : (-b) + n • b = ((-1) + n) • b := by
   rw [← neg_one_zsmul b, ← add_zsmul]
 
-theorem _neg_neg_trick {G : Type*} [AddGroup G] (b : G) :
-    (-b) + (-b) = (-2 : ℤ) • b := by
+theorem _neg_neg_trick {G : Type*} [AddGroup G] (b : G) : (-b) + (-b) = (-2 : ℤ) • b := by
   have h : -b = (-1 : ℤ) • b := (neg_one_zsmul b).symm
-  rw [h, ← add_zsmul]; norm_num
+  rw [h, ← add_zsmul]
+  norm_num
 
-theorem _add_zsmul_neg_trick {G : Type*} [AddGroup G] (a b : G) (n : ℤ) :
-    a + n • b + (-b) = a + (n + (-1)) • b := by
+theorem _add_zsmul_neg_trick {G : Type*} [AddGroup G] (a b : G) (n : ℤ)
+    : a + n • b + (-b) = a + (n + (-1)) • b := by
   rw [add_assoc, _zsmul_neg_trick]
 
-theorem _add_neg_zsmul_trick {G : Type*} [AddGroup G] (a b : G) (n : ℤ) :
-    a + (-b) + n • b = a + ((-1) + n) • b := by
+theorem _add_neg_zsmul_trick {G : Type*} [AddGroup G] (a b : G) (n : ℤ)
+    : a + (-b) + n • b = a + ((-1) + n) • b := by
   rw [add_assoc, _neg_zsmul_trick]
 
-theorem _add_neg_neg_trick {G : Type*} [AddGroup G] (a b : G) :
-    a + (-b) + (-b) = a + (-2 : ℤ) • b := by
+theorem _add_neg_neg_trick {G : Type*} [AddGroup G] (a b : G)
+    : a + (-b) + (-b) = a + (-2 : ℤ) • b := by
   rw [add_assoc, _neg_neg_trick]
 
 /--
@@ -107,29 +107,29 @@ example {G : Type} [AddGroup G] (a b c d : G) (h : c = (a + 2 • b) + (-(b + b)
 syntax (name := addGroup) "add_group" (location)? : tactic
 
 macro_rules
-| `(tactic| add_group $[$loc]?) =>
-  `(tactic| first
-    | fail_if_no_progress
-        simp -decide -failIfUnchanged only [sub_eq_add_neg] $[$loc]?
-        repeat fail_if_no_progress
-          (simp -decide -failIfUnchanged only
-            [addCommutatorElement_def, add_zero, zero_add,
-              neg_add_rev, neg_zero, zsmul_neg, ← neg_zsmul,
-              ← natCast_zsmul, ← mul_zsmul',
-              Int.natCast_add, Int.natCast_mul, neg_neg,
-              zsmul_zero, zero_zsmul, one_zsmul, neg_one_zsmul,
-              ← add_assoc,
-              ← add_zsmul, ← add_one_zsmul, ← one_add_zsmul,
-              Mathlib.Tactic.Group._zsmul_trick,
-              Mathlib.Tactic.Group._zsmul_trick_one,
-              Mathlib.Tactic.Group._zsmul_trick_one',
-              _zsmul_neg_trick, _neg_zsmul_trick, _neg_neg_trick,
-              _add_zsmul_neg_trick, _add_neg_zsmul_trick, _add_neg_neg_trick,
-              add_neg_cancel_right, neg_add_cancel_right,
-              tsub_self, sub_self, add_neg_cancel, neg_add_cancel]
-            $[$loc]?
-          <;> ring_nf (ifUnchanged := .silent) $[$loc]?)
-    | fail "`add_group` made no progress")
+  | `(tactic| add_group $[$loc]?) =>
+    `(tactic| first
+      | fail_if_no_progress
+          simp -decide -failIfUnchanged only [sub_eq_add_neg] $[$loc]?
+          repeat fail_if_no_progress
+            (simp -decide -failIfUnchanged only
+              [addCommutatorElement_def, add_zero, zero_add,
+                neg_add_rev, neg_zero, zsmul_neg, ← neg_zsmul,
+                ← natCast_zsmul, ← mul_zsmul',
+                Int.natCast_add, Int.natCast_mul, neg_neg,
+                zsmul_zero, zero_zsmul, one_zsmul, neg_one_zsmul,
+                ← add_assoc,
+                ← add_zsmul, ← add_one_zsmul, ← one_add_zsmul,
+                Mathlib.Tactic.Group._zsmul_trick,
+                Mathlib.Tactic.Group._zsmul_trick_one,
+                Mathlib.Tactic.Group._zsmul_trick_one',
+                _zsmul_neg_trick, _neg_zsmul_trick, _neg_neg_trick,
+                _add_zsmul_neg_trick, _add_neg_zsmul_trick, _add_neg_neg_trick,
+                add_neg_cancel_right, neg_add_cancel_right,
+                tsub_self, sub_self, add_neg_cancel, neg_add_cancel]
+              $[$loc]?
+            <;> ring_nf (ifUnchanged := .silent) $[$loc]?)
+      | fail "`add_group` made no progress")
 
 end Mathlib.Tactic.AddGroup
 

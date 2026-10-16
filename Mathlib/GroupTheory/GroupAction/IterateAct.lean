@@ -19,8 +19,10 @@ It is useful to convert between definitions and theorems about maps and monoid a
 
 public section
 
-/-- A structure with a single field `val : ℕ`
-that additively acts on `α` by `⟨n⟩ +ᵥ x = f^[n] x`. -/
+/--
+A structure with a single field `val : ℕ`
+that additively acts on `α` by `⟨n⟩ +ᵥ x = f^[n] x`.
+-/
 structure IterateAddAct {α : Type*} (f : α → α) where
   /-- The value of `n : IterateAddAct f`. -/
   val : ℕ

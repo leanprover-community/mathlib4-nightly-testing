@@ -23,12 +23,12 @@ variable {R A : Type*}
 section Semiring
 variable [CommSemiring R] [Semiring A] [HopfAlgebra R A] {a b : A}
 
-@[simp] lemma IsGroupLikeElem.antipode_mul_cancel (ha : IsGroupLikeElem R a) :
-    antipode R a * a = 1 := by
+@[simp]
+lemma IsGroupLikeElem.antipode_mul_cancel (ha : IsGroupLikeElem R a) : antipode R a * a = 1 := by
   simpa [ha, -mul_antipode_lTensor_comul_apply] using mul_antipode_rTensor_comul_apply (R := R) a
 
-@[simp] lemma IsGroupLikeElem.mul_antipode_cancel (ha : IsGroupLikeElem R a) :
-    a * antipode R a = 1 := by
+@[simp]
+lemma IsGroupLikeElem.mul_antipode_cancel (ha : IsGroupLikeElem R a) : a * antipode R a = 1 := by
   simpa [ha, -mul_antipode_lTensor_comul_apply] using mul_antipode_lTensor_comul_apply (R := R) a
 
 variable (R) in
@@ -47,17 +47,20 @@ def GroupLike.toUnits : GroupLike R A →* Aˣ where
 lemma IsGroupLikeElem.isUnit (ha : IsGroupLikeElem R a) : IsUnit a :=
   (GroupLike.toUnits R ⟨a, ha⟩).isUnit
 
-@[simp] protected lemma IsGroupLikeElem.antipode (ha : IsGroupLikeElem R a) :
-    IsGroupLikeElem R (antipode R a) :=
+@[simp]
+protected lemma IsGroupLikeElem.antipode (ha : IsGroupLikeElem R a)
+    : IsGroupLikeElem R (antipode R a) :=
   ha.of_mul_eq_one ha.mul_antipode_cancel ha.antipode_mul_cancel
 
-@[simp] lemma IsGroupLikeElem.antipode_antipode (ha : IsGroupLikeElem R a) :
-    antipode R (antipode R a) = a :=
+@[simp]
+lemma IsGroupLikeElem.antipode_antipode (ha : IsGroupLikeElem R a)
+    : antipode R (antipode R a) = a :=
   left_inv_eq_right_inv ha.antipode.antipode_mul_cancel ha.antipode_mul_cancel
 
 namespace GroupLike
 
-instance : Inv (GroupLike R A) where inv a := ⟨antipode R a, a.2.antipode⟩
+instance : Inv (GroupLike R A) where
+  inv a := ⟨antipode R a, a.2.antipode⟩
 
 @[simp] lemma val_inv (a : GroupLike R A) : ↑(a⁻¹) = (antipode R a : A) := rfl
 

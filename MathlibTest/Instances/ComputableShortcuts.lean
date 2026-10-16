@@ -19,8 +19,7 @@ version is available.
 TODO: test this more exhaustively.
 -/
 
-macro "#guard_computable" t:term : command =>
-  `(#guard_msgs (drop info) in #eval $t)
+macro "#guard_computable" t:term : command => `(#guard_msgs (drop info) in #eval $t)
 
 section Real
 

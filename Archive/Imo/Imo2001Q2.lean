@@ -35,10 +35,11 @@ variable {a b c : ℝ}
 
 namespace Imo2001Q2
 
-theorem bound (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
-    a ^ 4 / (a ^ 4 + b ^ 4 + c ^ 4) ≤ a ^ 3 / sqrt ((a ^ 3) ^ 2 + ↑8 * b ^ 3 * c ^ 3) := by
+theorem bound (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
+    : a ^ 4 / (a ^ 4 + b ^ 4 + c ^ 4) ≤ a ^ 3 / sqrt ((a ^ 3) ^ 2 + ↑8 * b ^ 3 * c ^ 3) := by
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  calc a ^ 4 * sqrt ((a ^ 3) ^ 2 + (8 : ℝ) * b ^ 3 * c ^ 3)
+  calc
+    a ^ 4 * sqrt ((a ^ 3) ^ 2 + (8 : ℝ) * b ^ 3 * c ^ 3)
       = a ^ 3 * (a * sqrt ((a ^ 3) ^ 2 + (8 : ℝ) * b ^ 3 * c ^ 3)) := by ring
     _ ≤ a ^ 3 * (a ^ 4 + b ^ 4 + c ^ 4) := ?_
   gcongr
@@ -46,14 +47,16 @@ theorem bound (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
   rw [mul_pow, sq_sqrt (by positivity), ← sub_nonneg]
   calc
     (a ^ 4 + b ^ 4 + c ^ 4) ^ 2 - a ^ 2 * ((a ^ 3) ^ 2 + 8 * b ^ 3 * c ^ 3)
-      = 2 * (a ^ 2 * (b ^ 2 - c ^ 2)) ^ 2 + (b ^ 4 - c ^ 4) ^ 2 +
-        (2 * (a ^ 2 * b * c - b ^ 2 * c ^ 2)) ^ 2 := by ring
+        = 2 * (a ^ 2 * (b ^ 2 - c ^ 2)) ^ 2 + (b ^ 4 - c ^ 4) ^ 2
+          + (2 * (a ^ 2 * b * c - b ^ 2 * c ^ 2)) ^ 2 := by
+      ring
     _ ≥ 0 := by positivity
 
-theorem imo2001_q2' (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
-    ↑1 ≤ a ^ 3 / sqrt ((a ^ 3) ^ 2 + ↑8 * b ^ 3 * c ^ 3) +
-      b ^ 3 / sqrt ((b ^ 3) ^ 2 + ↑8 * c ^ 3 * a ^ 3) +
-        c ^ 3 / sqrt ((c ^ 3) ^ 2 + ↑8 * a ^ 3 * b ^ 3) :=
+theorem imo2001_q2' (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
+    : ↑1
+      ≤ a ^ 3 / sqrt ((a ^ 3) ^ 2 + ↑8 * b ^ 3 * c ^ 3)
+        + b ^ 3 / sqrt ((b ^ 3) ^ 2 + ↑8 * c ^ 3 * a ^ 3)
+        + c ^ 3 / sqrt ((c ^ 3) ^ 2 + ↑8 * a ^ 3 * b ^ 3) :=
   have H : a ^ 4 + b ^ 4 + c ^ 4 ≠ 0 := by positivity
   calc
     _ ≥ _ := add_le_add (add_le_add (bound ha hb hc) (bound hb hc ha)) (bound hc ha hb)
@@ -63,8 +66,10 @@ end Imo2001Q2
 
 open Imo2001Q2
 
-theorem imo2001_q2 (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) : ↑1 ≤
-    a / sqrt (a ^ 2 + ↑8 * b * c) + b / sqrt (b ^ 2 + ↑8 * c * a) + c / sqrt (c ^ 2 + ↑8 * a * b) :=
+theorem imo2001_q2 (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
+    : ↑1
+      ≤ a / sqrt (a ^ 2 + ↑8 * b * c) + b / sqrt (b ^ 2 + ↑8 * c * a)
+        + c / sqrt (c ^ 2 + ↑8 * a * b) :=
   have h3 : ∀ {x : ℝ}, 0 < x → (x ^ (3 : ℝ)⁻¹) ^ 3 = x := fun hx =>
     show ↑3 = (3 : ℝ) by simp ▸ rpow_inv_natCast_pow hx.le three_ne_zero
   calc

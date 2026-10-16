@@ -26,17 +26,14 @@ variable {G : Type*} [Group G] {A : Type*} [MulAction G A]
 variable {H : Subgroup G} [H.Normal]
 
 instance : MulAction (G ⧸ H) (fixedPoints H A) :=
-  ofEndHom <|
-    QuotientGroup.lift H (toEndHom : G →* Function.End (fixedPoints H A))
+  ofEndHom <| QuotientGroup.lift H (toEndHom : G →* Function.End (fixedPoints H A))
     (fun g hg ↦ by funext a; ext; exact a.2 ⟨g, hg⟩)
 
 @[simp]
-lemma coe_quotient_smul_fixedPoints (g : G) (a : fixedPoints H A) :
-    (g : G ⧸ H) • a = g • a := rfl
+lemma coe_quotient_smul_fixedPoints (g : G) (a : fixedPoints H A) : (g : G ⧸ H) • a = g • a := rfl
 
 @[simp]
-lemma quotient_out_smul_fixedPoints (g : G ⧸ H) (a : fixedPoints H A) :
-    g.out • a = g • a := by
+lemma quotient_out_smul_fixedPoints (g : G ⧸ H) (a : fixedPoints H A) : g.out • a = g • a := by
   conv_rhs => rw [← g.out_eq]
   rfl
 

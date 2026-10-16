@@ -41,8 +41,10 @@ namespace Module
 
 variable (R : Type*) [Semiring R] {M : Type*} [AddCommMonoid M] [Module R M]
 
-/-- An element `v` of an `R`-module is *unimodular* if some linear functional takes the value
-`1` at `v`. -/
+/--
+An element `v` of an `R`-module is *unimodular* if some linear functional takes the value
+`1` at `v`.
+-/
 def IsUnimodular (v : M) : Prop := ∃ f : M →ₗ[R] R, f v = 1
 
 variable {R} {v : M}
@@ -59,10 +61,12 @@ section CommSemiring
 
 variable {R : Type*} [CommSemiring R] {M : Type*} [AddCommMonoid M] [Module R M]
 
-/-- The coordinates of `v` in a basis `b` generate the ideal of values taken at `v` by the linear
-functionals on `M`. In particular this ideal does not depend on `b`. -/
-theorem span_repr_eq_range_applyₗ {ι : Type*} (b : Basis ι R M) (v : M) :
-    Ideal.span (Set.range (b.repr v)) = LinearMap.range (LinearMap.applyₗ v) := by
+/--
+The coordinates of `v` in a basis `b` generate the ideal of values taken at `v` by the linear
+functionals on `M`. In particular this ideal does not depend on `b`.
+-/
+theorem span_repr_eq_range_applyₗ {ι : Type*} (b : Basis ι R M) (v : M)
+    : Ideal.span (Set.range (b.repr v)) = LinearMap.range (LinearMap.applyₗ v) := by
   refine le_antisymm (Ideal.span_le.mpr ?_) ?_
   · rintro _ ⟨i, rfl⟩
     exact ⟨b.coord i, rfl⟩
@@ -72,10 +76,12 @@ theorem span_repr_eq_range_applyₗ {ι : Type*} (b : Basis ι R M) (v : M) :
     exact Submodule.finsuppSum_mem R _ _ _ fun i _ ↦
       Ideal.mul_mem_right _ _ Ideal.mem_span_range_self
 
-/-- Coordinate characterisation of unimodularity in the free case: given a basis `b`, the
-coordinates of `v` generate the unit ideal iff `v` is unimodular. -/
-theorem isUnimodular_iff_span_repr_eq_top {ι : Type*} {b : Basis ι R M} {v : M} :
-    IsUnimodular R v ↔ Ideal.span (Set.range (b.repr v)) = ⊤ := by
+/--
+Coordinate characterisation of unimodularity in the free case: given a basis `b`, the
+coordinates of `v` generate the unit ideal iff `v` is unimodular.
+-/
+theorem isUnimodular_iff_span_repr_eq_top {ι : Type*} {b : Basis ι R M} {v : M}
+    : IsUnimodular R v ↔ Ideal.span (Set.range (b.repr v)) = ⊤ := by
   simp [Ideal.eq_top_iff_one, span_repr_eq_range_applyₗ, isUnimodular_iff]
 
 end CommSemiring
@@ -96,15 +102,18 @@ namespace Module.IsUnimodular
 
 variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M] [Module.Free R M]
 
-/-- A unimodular vector of a rank-two module can be completed to a basis: it is the first
-vector of a basis. -/
-theorem exists_basis_zero_eq (hM : Module.finrank R M = 2) {v : M} (hv : IsUnimodular R v) :
-    ∃ e : Basis (Fin 2) R M, e 0 = v := by
+/--
+A unimodular vector of a rank-two module can be completed to a basis: it is the first
+vector of a basis.
+-/
+theorem exists_basis_zero_eq (hM : Module.finrank R M = 2) {v : M} (hv : IsUnimodular R v)
+    : ∃ e : Basis (Fin 2) R M, e 0 = v := by
   have : Nontrivial R := not_subsingleton_iff_nontrivial.mp fun _ ↦ by simp at hM
   have : Module.Finite R M := Module.finite_of_finrank_eq_succ hM
   obtain ⟨f, hf⟩ := isUnimodular_iff.mp hv
-  let b := (Module.Free.chooseBasis R M).reindex
-    (Fintype.equivFinOfCardEq ((Module.finrank_eq_card_chooseBasisIndex R M).symm.trans hM))
+  let b :=
+    (Module.Free.chooseBasis R M).reindex
+      (Fintype.equivFinOfCardEq ((Module.finrank_eq_card_chooseBasisIndex R M).symm.trans hM))
   let N : Matrix (Fin 2) (Fin 2) R := !![b.repr v 0, -(f (b 1)); b.repr v 1, f (b 0)]
   have hdet : N.det = 1 := by
     rw [Matrix.det_fin_two_of, neg_mul, sub_neg_eq_add, mul_comm (f (b 1)) (b.repr v 1), ← hf]

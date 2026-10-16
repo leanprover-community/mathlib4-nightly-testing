@@ -27,19 +27,24 @@ namespace CategoryTheory.MorphismProperty
 
 variable {K : Precoverage C}
 
-/-- The source-local closure of `P` along a precoverage `K` is the weakest property
-containing `P` that is local on the source. -/
+/--
+The source-local closure of `P` along a precoverage `K` is the weakest property
+containing `P` that is local on the source.
+-/
 inductive sourceLocalClosure (K : Precoverage C) (P : MorphismProperty C) : MorphismProperty C
   /-- Force `P ≤ sourceLocalClosure K P`. -/
   | of {X Y : C} (f : X ⟶ Y) : P f → sourceLocalClosure K P f
   /-- Force `RespectsIso`. -/
-  | of_iso {X Y X' Y' : C} (f : X ⟶ Y) (g : X' ⟶ Y') (e : Arrow.mk f ≅ Arrow.mk g) :
-      sourceLocalClosure K P f → sourceLocalClosure K P g
-  | comp {X Y : C} (f : X ⟶ Y) (hf : sourceLocalClosure K P f) (R : Presieve X) (hR : R ∈ K X)
-      {U : C} (g : U ⟶ X) : R g → sourceLocalClosure K P (g ≫ f)
-  | of_presieve {X Y : C} (f : X ⟶ Y) (R : Presieve X) (hR : R ∈ K X)
-      (h : ∀ (U : C) (g : U ⟶ X), R g → sourceLocalClosure K P (g ≫ f)) :
-      sourceLocalClosure K P f
+  | of_iso {X Y X' Y' : C} (f : X ⟶ Y) (g : X' ⟶ Y') (e : Arrow.mk f ≅ Arrow.mk g)
+    : sourceLocalClosure K P f → sourceLocalClosure K P g
+  | comp
+    {X Y : C} (f : X ⟶ Y) (hf : sourceLocalClosure K P f) (R : Presieve X) (hR : R ∈ K X)
+    {U : C} (g : U ⟶ X)
+    : R g → sourceLocalClosure K P (g ≫ f)
+  | of_presieve
+    {X Y : C} (f : X ⟶ Y) (R : Presieve X) (hR : R ∈ K X)
+    (h : ∀ (U : C) (g : U ⟶ X), R g → sourceLocalClosure K P (g ≫ f))
+    : sourceLocalClosure K P f
 
 namespace sourceLocalClosure
 
@@ -53,8 +58,7 @@ instance : (sourceLocalClosure K P).IsLocalAtSource K where
   comp hR _ g hg hf := .comp _ hf _ hR _ hg
   of_forall_comp hR h := .of_presieve _ _ hR h
 
-lemma le : P ≤ sourceLocalClosure K P :=
-  fun _ _ _ ↦ .of _
+lemma le : P ≤ sourceLocalClosure K P := fun _ _ _ ↦ .of _
 
 lemma le_of_isLocalAtSource (h : P ≤ Q) [Q.IsLocalAtSource K] : sourceLocalClosure K P ≤ Q := by
   intro X Y f hf
@@ -67,11 +71,12 @@ lemma le_of_isLocalAtSource (h : P ≤ Q) [Q.IsLocalAtSource K] : sourceLocalClo
 instance [P.ContainsIdentities] : ContainsIdentities (sourceLocalClosure K P) where
   id_mem _ := le _ (P.id_mem _)
 
-instance [P.IsStableUnderBaseChange] [K.IsStableUnderBaseChange] [HasPullbacks C] :
-    IsStableUnderBaseChange (sourceLocalClosure K P) where
+instance [P.IsStableUnderBaseChange] [K.IsStableUnderBaseChange] [HasPullbacks C]
+    : IsStableUnderBaseChange (sourceLocalClosure K P) where
   of_isPullback {Y} X W Z g f fst snd h hf := by
     induction hf generalizing W snd with
-    | of f' hf' => exact .of _ (P.of_isPullback h hf')
+    | of f' hf' =>
+      exact .of _ (P.of_isPullback h hf')
     | of_iso f' g' e hf' ih =>
       exact ih _ (g ≫ e.inv.right) (fst ≫ e.inv.left) _ (h.paste_horiz (.of_horiz_isIso ⟨e.inv.w⟩))
     | comp f' hf' R hR g' hg' ih =>
@@ -91,14 +96,16 @@ instance [P.IsStableUnderBaseChange] [K.IsStableUnderBaseChange] [HasPullbacks C
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma sourceLocalClosure_iff_of_respectsLeft [P.RespectsIso] [P.RespectsLeft K.morphismProperty]
-    [K.HasIsos] [K.IsStableUnderBaseChange] [K.IsStableUnderComposition] [K.HasPullbacks] {X Y : C}
-    {f : X ⟶ Y} :
-    sourceLocalClosure K P f ↔ ∃ R ∈ K X, ∀ (U : C) (g : U ⟶ X), R g → P (g ≫ f) := by
+lemma sourceLocalClosure_iff_of_respectsLeft
+    [P.RespectsIso] [P.RespectsLeft K.morphismProperty] [K.HasIsos] [K.IsStableUnderBaseChange]
+    [K.IsStableUnderComposition] [K.HasPullbacks]
+    {X Y : C} {f : X ⟶ Y}
+    : sourceLocalClosure K P f ↔ ∃ R ∈ K X, ∀ (U : C) (g : U ⟶ X), R g → P (g ≫ f) := by
   refine ⟨?_, ?_⟩
   · intro h
     induction h with
-    | of f hf => exact ⟨.singleton (𝟙 _), K.mem_coverings_of_isIso _, fun U g ⟨⟩ ↦ by simpa⟩
+    | of f hf =>
+      exact ⟨.singleton (𝟙 _), K.mem_coverings_of_isIso _, fun U g ⟨⟩ ↦ by simpa⟩
     | of_iso f g e hf h =>
       obtain ⟨R, hR, h⟩ := h
       rw [K.mem_iff_exists_zeroHypercover] at hR

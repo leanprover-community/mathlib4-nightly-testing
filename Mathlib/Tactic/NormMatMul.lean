@@ -9,7 +9,7 @@ public meta import Mathlib.Tactic.Matrix.MulExpand
 public import Mathlib.Tactic.Matrix.MulExpand
 public import Mathlib.Tactic.Matrix.OfLists
 public import Mathlib.Tactic.Matrix.Parsing
-public import Mathlib.Tactic.NormNum.Basic  -- shake: keep (`+`/`*` extensions run by `norm_matmul`)
+public import Mathlib.Tactic.NormNum.Basic -- shake: keep (`+`/`*` extensions run by `norm_matmul`)
 
 /-!
 # The `norm_matmul` simproc
@@ -37,7 +37,8 @@ namespace Mathlib.Tactic.Matrix
 
 /-- Core of the `norm_matmul` simproc. -/
 def normMatMulCore : Simp.Simproc := fun e => do
-  let_expr HMul.hMul _ _ _ _ A B := e | return .continue
+  let_expr HMul.hMul _ _ _ _ A B := e
+    | return .continue
   let some (l, m, R, rowsA) ← matchMatrixLit? A (closed := false)
     | trace[Tactic.norm_matmul] "not a matrix literal{indentExpr A}"
       return .continue
@@ -65,6 +66,8 @@ end Mathlib.Tactic.Matrix
 
 open Mathlib.Tactic.Matrix
 
-/-- Rewrite a product of matrix literals to the literal of the product, with the entries
-normalised by `norm_num` if possible. -/
+/--
+Rewrite a product of matrix literals to the literal of the product, with the entries
+normalised by `norm_num` if possible.
+-/
 simproc_decl norm_matmul ((_ * _ : Matrix (Fin _) (Fin _) _)) := normMatMulCore

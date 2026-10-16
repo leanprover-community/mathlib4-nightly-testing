@@ -9,7 +9,7 @@ public meta import Mathlib.Util.AtomM
 public meta import Qq
 public import Batteries.Tactic.Exact
 public import Batteries.Tactic.Init
-public import Mathlib.Basic.Logic.Basic  -- shake: keep (Qq output dependency)
+public import Mathlib.Basic.Logic.Basic -- shake: keep (Qq output dependency)
 public import Mathlib.Util.AtomM
 
 /-!
@@ -84,27 +84,31 @@ propositional logic, intuitionistic logic, decision procedure
 
 public meta section
 
-
 open Std (TreeMap TreeSet)
 
 namespace Mathlib.Tactic.ITauto
 
-/-- Different propositional constructors that are variants of "and" for the purposes of the
-theorem prover. -/
-inductive AndKind | and | iff | eq
-  deriving Lean.ToExpr, DecidableEq
+/--
+Different propositional constructors that are variants of "and" for the purposes of the
+theorem prover.
+-/
+inductive AndKind
+  | and
+  | iff
+  | eq
+deriving Lean.ToExpr, DecidableEq
 
 instance : Inhabited AndKind := ⟨AndKind.and⟩
 
 /-- A reified inductive type for propositional logic. -/
 inductive IProp : Type
-  | var : Nat → IProp            -- propositional atoms P_i
-  | true : IProp                 -- ⊤
-  | false : IProp                -- ⊥
+  | var : Nat → IProp -- propositional atoms P_i
+  | true : IProp -- ⊤
+  | false : IProp -- ⊥
   | and' : AndKind → IProp → IProp → IProp -- p ∧ q, p ↔ q, p = q
-  | or : IProp → IProp → IProp   -- p ∨ q
-  | imp : IProp → IProp → IProp  -- p → q
-  deriving Lean.ToExpr
+  | or : IProp → IProp → IProp -- p ∨ q
+  | imp : IProp → IProp → IProp -- p → q
+deriving Lean.ToExpr
 
 /-- Constructor for `p ∧ q`. -/
 @[match_pattern, expose] def IProp.and : IProp → IProp → IProp := .and' .and
@@ -125,8 +129,10 @@ instance : Inhabited IProp := ⟨IProp.true⟩
 
 /-- Given the contents of an `And` variant, return the two conjuncts. -/
 def AndKind.sides : AndKind → IProp → IProp → IProp × IProp
-  | .and, A, B => (A, B)
-  | _, A, B => (A.imp B, B.imp A)
+  | .and, A, B =>
+    (A, B)
+  | _, A, B =>
+    (A.imp B, B.imp A)
 
 /-- Debugging printer for propositions. -/
 def IProp.format : IProp → Std.Format
@@ -204,7 +210,8 @@ inductive Proof
   * `ak = .eq`: `(p: (A = B) → C) ⊢ (A → B) → (B → A) → C`
   -/
   | curry (ak : AndKind) (p : Proof) : Proof
-  /-- This is a partial application of curry.
+  /--
+  This is a partial application of curry.
   * `ak = .and`: `(p: A ∧ B → C) (q : A) ⊢ B → C`
   * `ak = .iff`: `(p: (A ↔ B) → C) (q: A → B) ⊢ (B → A) → C`
   * `ak = .eq`: `(p: (A ↔ B) → C) (q: A → B) ⊢ (B → A) → C`
@@ -229,11 +236,12 @@ inductive Proof
   * `classical = true`: `(p: Prop) ⊢ p ∨ ¬p`
   -/
   | em (classical : Bool) (p : Name) : Proof
-  /-- The variable `x` here names the variable that will be used in the elaborated proof.
+  /--
+  The variable `x` here names the variable that will be used in the elaborated proof.
   * `(p: ((x:A) → B) → C) ⊢ B → C`
   -/
   | impImpSimp (x : Name) (p : Proof) : Proof
-  deriving Lean.ToExpr
+deriving Lean.ToExpr
 
 instance : Inhabited Proof := ⟨Proof.triv⟩
 
@@ -264,23 +272,35 @@ instance : Std.ToFormat Proof := ⟨Proof.format⟩
 
 /-- A variant on `Proof.exfalso'` that performs opportunistic simplification. -/
 def Proof.exfalso : IProp → Proof → Proof
-  | .false, p => p
-  | _, p => .exfalso' p
+  | .false, p =>
+    p
+  | _, p =>
+    .exfalso' p
 
 /-- A variant on `Proof.orElim'` that performs opportunistic simplification. -/
 def Proof.orElim : Proof → Name → Proof → Proof → Proof
-  | .em cl p, x, q, r => .decidableElim cl p x q r
-  | p, x, q, r => .orElim' p x q r
+  | .em cl p, x, q, r =>
+    .decidableElim cl p x q r
+  | p, x, q, r =>
+    .orElim' p x q r
 
-/-- A variant on `Proof.app'` that performs opportunistic simplification.
-(This doesn't do full normalization because we don't want the proof size to blow up.) -/
+/--
+A variant on `Proof.app'` that performs opportunistic simplification.
+(This doesn't do full normalization because we don't want the proof size to blow up.)
+-/
 def Proof.app : Proof → Proof → Proof
-  | .curry ak p, q => .curry₂ ak p q
-  | .curry₂ ak p q, r => p.app (q.andIntro ak r)
-  | .orImpL p, q => p.app q.orInL
-  | .orImpR p, q => p.app q.orInR
-  | .impImpSimp x p, q => p.app (.intro x q)
-  | p, q => p.app' q
+  | .curry ak p, q =>
+    .curry₂ ak p q
+  | .curry₂ ak p q, r =>
+    p.app (q.andIntro ak r)
+  | .orImpL p, q =>
+    p.app q.orInL
+  | .orImpR p, q =>
+    p.app q.orInR
+  | .impImpSimp x p, q =>
+    p.app (.intro x q)
+  | p, q =>
+    p.app' q
 
 -- Note(Mario): the typechecker is disabled because it requires proofs to carry around additional
 -- props. These can be retrieved from the git history (rev 6c96d2ff7) if you want to re-enable this.
@@ -353,34 +373,47 @@ def Context.format (Γ : Context) : Std.Format :=
 
 instance : Std.ToFormat Context := ⟨Context.format⟩
 
-/-- Insert a proposition and its proof into the context, as in `have : A := p`. This will eagerly
+/--
+Insert a proposition and its proof into the context, as in `have : A := p`. This will eagerly
 apply all level 1 rules on the spot, which are rules that don't split the goal and are validity
 preserving: specifically, we drop `⊤` and `A → ⊤` hypotheses, close the goal if we find a `⊥`
 hypothesis, split all conjunctions, and also simplify `⊥ → A` (drop), `⊤ → A` (simplify to `A`),
-`A ∧ B → C` (curry to `A → B → C`) and `A ∨ B → C` (rewrite to `(A → C) ∧ (B → C)` and split). -/
+`A ∧ B → C` (curry to `A → B → C`) and `A ∨ B → C` (rewrite to `(A → C) ∧ (B → C)` and split).
+-/
 partial def Context.add : IProp → Proof → Context → Except (IProp → Proof) Context
-  | .true, _, Γ => pure Γ
-  | .false, p, _ => throw fun A => .exfalso A p
+  | .true, _, Γ =>
+    pure Γ
+  | .false, p, _ =>
+    throw fun A => .exfalso A p
   | .and' ak A B, p, Γ => do
     let (A, B) := ak.sides A B
     let Γ ← Γ.add A (p.andLeft ak)
     Γ.add B (p.andRight ak)
-  | .imp .false _, _, Γ => pure Γ
-  | .imp .true A, p, Γ => Γ.add A (p.app .triv)
+  | .imp .false _, _, Γ =>
+    pure Γ
+  | .imp .true A, p, Γ =>
+    Γ.add A (p.app .triv)
   | .imp (.and' ak A B) C, p, Γ =>
     let (A, B) := ak.sides A B
     Γ.add (A.imp (B.imp C)) (p.curry ak)
   | .imp (.or A B) C, p, Γ => do
     let Γ ← Γ.add (A.imp C) p.orImpL
     Γ.add (B.imp C) p.orImpR
-  | .imp _ .true, _, Γ => pure Γ
-  | A, p, Γ => pure (Γ.insert A p)
+  | .imp _ .true, _, Γ =>
+    pure Γ
+  | A, p, Γ =>
+    pure (Γ.insert A p)
 
-/-- Add `A` to the context `Γ` with proof `p`. This version of `Context.add` takes a continuation
+/--
+Add `A` to the context `Γ` with proof `p`. This version of `Context.add` takes a continuation
 and a target proposition `B`, so that in the case that `⊥` is found we can skip the continuation
-and just prove `B` outright. -/
-@[inline] def Context.withAdd (Γ : Context) (A : IProp) (p : Proof) (B : IProp)
-    (f : Context → IProp → StateM Nat (Bool × Proof)) : StateM Nat (Bool × Proof) :=
+and just prove `B` outright.
+-/
+@[inline]
+def Context.withAdd
+    (Γ : Context) (A : IProp) (p : Proof) (B : IProp)
+    (f : Context → IProp → StateM Nat (Bool × Proof))
+    : StateM Nat (Bool × Proof) :=
   match Γ.add A p with
   | .ok Γ_A => f Γ_A B
   | .error p => pure (true, p B)
@@ -396,12 +429,15 @@ def isOk : (Bool × Proof) × Nat → Option (Proof × Nat)
 
 /-- Skip the continuation and return a failed proof if the Boolean is false. -/
 def whenOk : Bool → IProp → StateM Nat (Bool × Proof) → StateM Nat (Bool × Proof)
-  | false, _, _ => pure (false, .sorry)
-  | true, _, f => f
+  | false, _, _ =>
+    pure (false, .sorry)
+  | true, _, f =>
+    f
 
 mutual
 
-/-- The search phase, which deals with the level 3 rules, which are rules that are not validity
+/--
+The search phase, which deals with the level 3 rules, which are rules that are not validity
 preserving and so require proof search. One obvious one is the or-introduction rule: we prove
 `A ∨ B` by proving `A` or `B`, and we might have to try one and backtrack.
 
@@ -411,31 +447,39 @@ assumption), and `(A₁ → A₂) → C ⊢ B`. We decompose the double implicat
 prove `A₁ → A₂`, which can be written `A₂ → C, A₁ ⊢ A₂` (where we used `A₁` to simplify
 `(A₁ → A₂) → C`), and one to use the consequent, `C ⊢ B`. The search here is that there are
 potentially many implications to split like this, and we have to try all of them if we want to be
-complete. -/
+complete.
+-/
 partial def search (Γ : Context) (B : IProp) : StateM Nat (Bool × Proof) := do
   if let some p := Γ[B]? then return (true, p)
   fun n =>
-  let search₁ := Γ.foldl (init := none) fun r A p => do
-    if let some r := r then return r
-    let .imp A' C := A | none
-    if let some q := Γ[A']? then
-      isOk <| Context.withAdd (Γ.erase A) C (p.app q) B prove n
+    let search₁ :=
+      Γ.foldl (init := none) fun r A p => do
+        if let some r := r then return r
+        let .imp A' C := A
+          | none
+        if let some q := Γ[A']? then
+          isOk <| Context.withAdd (Γ.erase A) C (p.app q) B prove n
+        else
+          let .imp A₁ A₂ := A'
+            | none
+          let Γ : Context := Γ.erase A
+          let (a, n) := freshName n
+          let (p₁, n) ←
+            isOk <| Γ.withAdd A₁ (.hyp a) A₂
+              (fun Γ_A₁ A₂ => Γ_A₁.withAdd (IProp.imp A₂ C) (.impImpSimp a p) A₂ prove)
+              n
+          isOk <| Γ.withAdd C (p.app (.intro a p₁)) B prove n
+    if let some (r, n) := search₁ then
+      ((true, r), n)
+    else if let .or B₁ B₂ := B then
+      match (mapProof .orInL <$> prove Γ B₁) n with
+      | ((false, _), _) => (mapProof .orInR <$> prove Γ B₂) n
+      | r => r
     else
-      let .imp A₁ A₂ := A' | none
-      let Γ : Context := Γ.erase A
-      let (a, n) := freshName n
-      let (p₁, n) ← isOk <| Γ.withAdd A₁ (.hyp a) A₂ (fun Γ_A₁ A₂ =>
-        Γ_A₁.withAdd (IProp.imp A₂ C) (.impImpSimp a p) A₂ prove) n
-      isOk <| Γ.withAdd C (p.app (.intro a p₁)) B prove n
-  if let some (r, n) := search₁ then
-    ((true, r), n)
-  else if let .or B₁ B₂ := B then
-    match (mapProof .orInL <$> prove Γ B₁) n with
-    | ((false, _), _) => (mapProof .orInR <$> prove Γ B₂) n
-    | r => r
-  else ((false, .sorry), n)
+      ((false, .sorry), n)
 
-/-- The main prover. This receives a context of proven or assumed lemmas and a target proposition,
+/--
+The main prover. This receives a context of proven or assumed lemmas and a target proposition,
 and returns a proof or `none` (with state for the fresh variable generator).
 The intuitionistic logic rules are separated into three groups:
 
@@ -452,7 +496,8 @@ we don't make any more progress, we go to the search phase.
 -/
 partial def prove (Γ : Context) (B : IProp) : StateM Nat (Bool × Proof) :=
   match B with
-  | .true => pure (true, .triv)
+  | .true =>
+    pure (true, .triv)
   | .imp A B => do
     let a ← freshName
     mapProof (.intro a) <$> Γ.withAdd A (.hyp a) B prove
@@ -468,46 +513,62 @@ partial def prove (Γ : Context) (B : IProp) : StateM Nat (Bool × Proof) :=
           let Γ : Context := Γ.erase A
           let a ← freshName
           let (ok, p₁) ← Γ.withAdd A₁ (.hyp a) B fun Γ _ => IH true Γ
-          mapProof (.orElim p a p₁) <$>
-            whenOk ok B (Γ.withAdd A₂ (.hyp a) B fun Γ _ => IH true Γ)
-        else IH found Γ)
+          mapProof (.orElim p a p₁) <$> whenOk ok B (Γ.withAdd A₂ (.hyp a) B fun Γ _ => IH true Γ)
+        else
+          IH found Γ)
       (found := false) (Γ := Γ)
 
 end
 
 open Lean Qq Meta
 
-/-- Reify an `Expr` into a `IProp`, allocating anything non-propositional as an atom in the
-`AtomM` state. -/
+/--
+Reify an `Expr` into a `IProp`, allocating anything non-propositional as an atom in the
+`AtomM` state.
+-/
 partial def reify (e : Q(Prop)) : AtomM IProp :=
   match e with
-  | ~q(True) => return .true
-  | ~q(False) => return .false
-  | ~q(¬ $a) => return .not (← reify a)
-  | ~q($a ∧ $b) => return .and (← reify a) (← reify b)
-  | ~q($a ∨ $b) => return .or (← reify a) (← reify b)
-  | ~q($a ↔ $b) => return .iff (← reify a) (← reify b)
-  | ~q(Xor $a $b) => return .xor (← reify a) (← reify b)
-  | ~q(@Eq Prop $a $b) => return .eq (← reify a) (← reify b)
-  | ~q(@Ne Prop $a $b) => return .not (.eq (← reify a) (← reify b))
+  | ~q(True) =>
+    return .true
+  | ~q(False) =>
+    return .false
+  | ~q(¬ $a) =>
+    return .not (← reify a)
+  | ~q($a ∧ $b) =>
+    return .and (← reify a) (← reify b)
+  | ~q($a ∨ $b) =>
+    return .or (← reify a) (← reify b)
+  | ~q($a ↔ $b) =>
+    return .iff (← reify a) (← reify b)
+  | ~q(Xor $a $b) =>
+    return .xor (← reify a) (← reify b)
+  | ~q(@Eq Prop $a $b) =>
+    return .eq (← reify a) (← reify b)
+  | ~q(@Ne Prop $a $b) =>
+    return .not (.eq (← reify a) (← reify b))
   | e =>
-    if e.isArrow then return .imp (← reify e.bindingDomain!) (← reify e.bindingBody!)
-    else return .var (← AtomM.addAtom e).1
+    if e.isArrow then
+      return .imp (← reify e.bindingDomain!) (← reify e.bindingBody!)
+    else
+      return .var (← AtomM.addAtom e).1
 
 /-- Once we have a proof object, we have to apply it to the goal. -/
 partial def applyProof (g : MVarId) (Γ : NameMap Expr) (p : Proof) : MetaM Unit :=
   match p with
-  | .sorry => throwError "itauto failed\n{g}"
-  | .hyp n => do g.assignIfDefEq (← liftOption (Γ.find? n))
-  | .triv => g.assignIfDefEq q(trivial)
+  | .sorry =>
+    throwError "itauto failed\
+      \n{g}"
+  | .hyp n => do
+    g.assignIfDefEq (← liftOption (Γ.find? n))
+  | .triv =>
+    g.assignIfDefEq q(trivial)
   | .exfalso' p => do
     let A ← mkFreshExprMVarQ q(Prop)
     let t ← mkFreshExprMVarQ q(False)
     g.assignIfDefEq q(@False.elim $A $t)
     applyProof t.mvarId! Γ p
   | .intro x p => do
-    let (e, g) ← g.intro x; g.withContext do
-      applyProof g (Γ.insert x (.fvar e)) p
+    let (e, g) ← g.intro x; g.withContext do applyProof g (Γ.insert x (.fvar e)) p
   | .andLeft .and p => do
     let A ← mkFreshExprMVarQ q(Prop)
     let B ← mkFreshExprMVarQ q(Prop)
@@ -597,14 +658,15 @@ partial def applyProof (g : MVarId) (Γ : NameMap Expr) (p : Proof) : MetaM Unit
     let t₃ ← mkFreshExprMVarQ q($B → $C)
     g.assignIfDefEq q(Or.elim $t₁ $t₂ $t₃)
     applyProof t₁.mvarId! Γ p
-    let (e, t₂) ← t₂.mvarId!.intro x; t₂.withContext do
-      applyProof t₂ (Γ.insert x (.fvar e)) p₁
-    let (e, t₃) ← t₃.mvarId!.intro x; t₃.withContext do
-      applyProof t₃ (Γ.insert x (.fvar e)) p₂
+    let (e, t₂) ← t₂.mvarId!.intro x
+    t₂.withContext do applyProof t₂ (Γ.insert x (.fvar e)) p₁
+    let (e, t₃) ← t₃.mvarId!.intro x
+    t₃.withContext do applyProof t₃ (Γ.insert x (.fvar e)) p₂
   | .em false n => do
     let A ← mkFreshExprMVarQ q(Prop)
     let e : Q(Decidable $A) ← liftOption (Γ.find? n)
-    let .true ← Meta.isDefEq (← Meta.inferType e) q(Decidable $A) | failure
+    let .true ← Meta.isDefEq (← Meta.inferType e) q(Decidable $A)
+      | failure
     g.assignIfDefEq q(@Decidable.em $A $e)
   | .em true n => do
     let A : Q(Prop) ← liftOption (Γ.find? n)
@@ -612,30 +674,32 @@ partial def applyProof (g : MVarId) (Γ : NameMap Expr) (p : Proof) : MetaM Unit
   | .decidableElim false n x p₁ p₂ => do
     let A ← mkFreshExprMVarQ q(Prop)
     let e : Q(Decidable $A) ← liftOption (Γ.find? n)
-    let .true ← Meta.isDefEq (← Meta.inferType e) q(Decidable $A) | failure
+    let .true ← Meta.isDefEq (← Meta.inferType e) q(Decidable $A)
+      | failure
     let B ← mkFreshExprMVarQ q(Prop)
     let t₁ ← mkFreshExprMVarQ q($A → $B)
     let t₂ ← mkFreshExprMVarQ q(¬$A → $B)
     g.assignIfDefEq q(@dite $B $A $e $t₁ $t₂)
-    let (e, t₁) ← t₁.mvarId!.intro x; t₁.withContext do
-      applyProof t₁ (Γ.insert x (.fvar e)) p₁
-    let (e, t₂) ← t₂.mvarId!.intro x; t₂.withContext do
-      applyProof t₂ (Γ.insert x (.fvar e)) p₂
+    let (e, t₁) ← t₁.mvarId!.intro x
+    t₁.withContext do applyProof t₁ (Γ.insert x (.fvar e)) p₁
+    let (e, t₂) ← t₂.mvarId!.intro x
+    t₂.withContext do applyProof t₂ (Γ.insert x (.fvar e)) p₂
   | .decidableElim true n x p₁ p₂ => do
     let A : Q(Prop) ← liftOption (Γ.find? n)
     let B ← mkFreshExprMVarQ q(Prop)
     let t₁ ← mkFreshExprMVarQ q($A → $B)
     let t₂ ← mkFreshExprMVarQ q(¬$A → $B)
     g.assignIfDefEq q(@Classical.byCases $A $B $t₁ $t₂)
-    let (e, t₁) ← t₁.mvarId!.intro x; t₁.withContext do
-      applyProof t₁ (Γ.insert x (.fvar e)) p₁
-    let (e, t₂) ← t₂.mvarId!.intro x; t₂.withContext do
-      applyProof t₂ (Γ.insert x (.fvar e)) p₂
+    let (e, t₁) ← t₁.mvarId!.intro x
+    t₁.withContext do applyProof t₁ (Γ.insert x (.fvar e)) p₁
+    let (e, t₂) ← t₂.mvarId!.intro x
+    t₂.withContext do applyProof t₂ (Γ.insert x (.fvar e)) p₂
   | .curry .. | .curry₂ .. | .orImpL .. | .orImpR .. | .impImpSimp .. => do
-    let (e, g) ← g.intro1; g.withContext do
-      applyProof g (Γ.insert e.name (.fvar e)) (p.app (.hyp e.name))
+    let (e, g) ← g.intro1
+    g.withContext do applyProof g (Γ.insert e.name (.fvar e)) (p.app (.hyp e.name))
 
-/-- A decision procedure for intuitionistic propositional logic.
+/--
+A decision procedure for intuitionistic propositional logic.
 
 * `useDec` will add `a ∨ ¬ a` to the context for every decidable atomic proposition `a`.
 * `useClassical` will allow `a ∨ ¬ a` to be added even if the proposition is not decidable,
@@ -643,8 +707,7 @@ partial def applyProof (g : MVarId) (Γ : NameMap Expr) (p : Proof) : MetaM Unit
 * `extraDec` will add `a ∨ ¬ a` to the context for specified (not necessarily atomic)
   propositions `a`.
 -/
-def itautoCore (g : MVarId)
-    (useDec useClassical : Bool) (extraDec : Array Expr) : MetaM Unit := do
+def itautoCore (g : MVarId) (useDec useClassical : Bool) (extraDec : Array Expr) : MetaM Unit := do
   AtomM.run (← getTransparency) do
     let mut hs := mkNameMap Expr
     let t ← g.getType
@@ -673,19 +736,23 @@ def itautoCore (g : MVarId)
         if force then _ ← synthInstance dec_e
         pure decs
       else
-        pure (decs.insert A (match res with | .some e => (false, e) | _ => (true, e)))
+        pure (decs.insert A
+          (match res with
+            | .some e => (false, e)
+            | _ => (true, e)))
     decs ← extraDec.foldlM (addDec true) decs
     if useDec then
       let mut decided := TreeSet.empty (cmp := compare)
       if let .ok Γ' := Γ then
-        decided := Γ'.foldl (init := decided) fun m p _ =>
-          match p with
-          | .var i => m.insert i
-          | .not (.var i) => m.insert i
-          | _ => m
+        decided :=
+          Γ'.foldl (init := decided) fun m p _ =>
+            match p with
+            | .var i => m.insert i
+            | .not (.var i) => m.insert i
+            | _ => m
       let ats := (← get).atoms
       for e in ats, i in [0:ats.size] do
-        if !decided.contains i then
+        if ! decided.contains i then
           decs ← addDec false decs e
     for (A, cl, pf) in decs do
       let n ← mkFreshId
@@ -699,7 +766,8 @@ def itautoCore (g : MVarId)
 
 open Elab Tactic
 
-/-- `itauto` solves the main goal when it is a tautology of intuitionistic propositional logic.
+/--
+`itauto` solves the main goal when it is a tautology of intuitionistic propositional logic.
 Unlike `grind` and `tauto!` this tactic never uses the law of excluded middle (without the `!`
 option), and the proof search is tailored for this use case. `itauto` is complete for intuitionistic
 propositional logic: it will solve any goal that is provable in this logic.
@@ -720,13 +788,17 @@ example (p : Prop) : ¬ (p ↔ ¬ p) := by itauto
 syntax (name := itauto) "itauto" "!"? (" *" <|> (" [" term,* "]"))? : tactic
 
 elab_rules : tactic
-  | `(tactic| itauto $[!%$cl]?) => liftMetaTactic (itautoCore · false cl.isSome #[] *> pure [])
-  | `(tactic| itauto $[!%$cl]? *) => liftMetaTactic (itautoCore · true cl.isSome #[] *> pure [])
-  | `(tactic| itauto $[!%$cl]? [$hs,*]) => withMainContext do
-    let hs ← hs.getElems.mapM (Term.elabTermAndSynthesize · none)
-    liftMetaTactic (itautoCore · true cl.isSome hs *> pure [])
+  | `(tactic| itauto $[!%$cl]?) =>
+    liftMetaTactic (itautoCore · false cl.isSome #[] *> pure [])
+  | `(tactic| itauto $[!%$cl]? *) =>
+    liftMetaTactic (itautoCore · true cl.isSome #[] *> pure [])
+  | `(tactic| itauto $[!%$cl]? [$hs,*]) =>
+    withMainContext do
+      let hs ← hs.getElems.mapM (Term.elabTermAndSynthesize · none)
+      liftMetaTactic (itautoCore · true cl.isSome hs *> pure [])
 
-@[tactic_alt itauto] syntax (name := itauto!) "itauto!" (" *" <|> (" [" term,* "]"))? : tactic
+@[tactic_alt itauto]
+syntax (name := itauto!) "itauto!" (" *" <|> (" [" term,* "]"))? : tactic
 
 macro_rules
   | `(tactic| itauto!) => `(tactic| itauto !)

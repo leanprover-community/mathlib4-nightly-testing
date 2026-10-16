@@ -25,23 +25,26 @@ open scoped DirectSum
 
 variable (R M)
 
-/-- A version of `TensorAlgebra.ι` that maps directly into the graded structure. This is
-primarily an auxiliary construction used to provide `TensorAlgebra.gradedAlgebra`. -/
+/--
+A version of `TensorAlgebra.ι` that maps directly into the graded structure. This is
+primarily an auxiliary construction used to provide `TensorAlgebra.gradedAlgebra`.
+-/
 nonrec def GradedAlgebra.ι : M →ₗ[R] ⨁ i : ℕ, ↥(LinearMap.range (ι R : M →ₗ[_] _) ^ i) :=
-  DirectSum.lof R ℕ (fun i => ↥(LinearMap.range (ι R : M →ₗ[_] _) ^ i)) 1 ∘ₗ
-    (ι R).codRestrict _ fun m => by simpa only [pow_one] using LinearMap.mem_range_self _ m
+  DirectSum.lof R ℕ (fun i => ↥(LinearMap.range (ι R : M →ₗ[_] _) ^ i)) 1
+    ∘ₗ (ι R).codRestrict _ fun m => by simpa only [pow_one] using LinearMap.mem_range_self _ m
 
-theorem GradedAlgebra.ι_apply (m : M) :
-    GradedAlgebra.ι R M m =
-      DirectSum.of (fun (i : ℕ) => ↥(LinearMap.range (TensorAlgebra.ι R : M →ₗ[_] _) ^ i)) 1
-        ⟨TensorAlgebra.ι R m, by simpa only [pow_one] using LinearMap.mem_range_self _ m⟩ :=
+theorem GradedAlgebra.ι_apply (m : M)
+    : GradedAlgebra.ι R M m
+      = DirectSum.of
+        (fun (i : ℕ) => ↥(LinearMap.range (TensorAlgebra.ι R : M →ₗ[_] _) ^ i))
+        1 ⟨TensorAlgebra.ι R m, by simpa only [pow_one] using LinearMap.mem_range_self _ m⟩ :=
   rfl
 
 variable {R M}
 
 /-- The tensor algebra is graded by the powers of the submodule `(TensorAlgebra.ι R).range`. -/
-instance gradedAlgebra :
-    GradedAlgebra ((LinearMap.range (ι R : M →ₗ[R] TensorAlgebra R M) ^ ·) : ℕ → Submodule R _) :=
+instance gradedAlgebra
+    : GradedAlgebra ((LinearMap.range (ι R : M →ₗ[R] TensorAlgebra R M) ^ ·) : ℕ → Submodule R _) :=
   fast_instance% GradedAlgebra.ofAlgHom _ (lift R <| GradedAlgebra.ι R M)
     (by
       ext m

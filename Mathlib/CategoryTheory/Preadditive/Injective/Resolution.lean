@@ -26,7 +26,6 @@ I⁰ ---> I¹ ---> ... ----> Iⁿ ---> ...
 
 @[expose] public section
 
-
 noncomputable section
 
 universe v u
@@ -65,8 +64,10 @@ section
 
 variable (C)
 
-/-- You will rarely use this typeclass directly: it is implied by the combination
-`[EnoughInjectives C]` and `[Abelian C]`. -/
+/--
+You will rarely use this typeclass directly: it is implied by the combination
+`[EnoughInjectives C]` and `[Abelian C]`.
+-/
 class HasInjectiveResolutions : Prop where
   out : ∀ Z : C, HasInjectiveResolution Z
 
@@ -78,43 +79,41 @@ namespace InjectiveResolution
 
 variable {Z : C} (I : InjectiveResolution Z)
 
-lemma cocomplex_exactAt_succ (n : ℕ) :
-    I.cocomplex.ExactAt (n + 1) := by
+lemma cocomplex_exactAt_succ (n : ℕ) : I.cocomplex.ExactAt (n + 1) := by
   rw [← quasiIsoAt_iff_exactAt I.ι (n + 1) (exactAt_succ_single_obj _ _)]
   infer_instance
 
-lemma exact_succ (n : ℕ) :
-    (ShortComplex.mk _ _ (I.cocomplex.d_comp_d n (n + 1) (n + 2))).Exact :=
+lemma exact_succ (n : ℕ) : (ShortComplex.mk _ _ (I.cocomplex.d_comp_d n (n + 1) (n + 2))).Exact :=
   (HomologicalComplex.exactAt_iff' _ n (n + 1) (n + 2) (by simp)
-    (by simp only [CochainComplex.next]; rfl)).1 (I.cocomplex_exactAt_succ n)
+      (by simp only [CochainComplex.next]; rfl)).1
+    (I.cocomplex_exactAt_succ n)
 
 @[simp]
 theorem ι_f_succ (n : ℕ) : I.ι.f (n + 1) = 0 :=
   (isZero_single_obj_X _ _ _ _ (by simp)).eq_of_src _ _
 
 set_option backward.isDefEq.respectTransparency false in
-@[reassoc]
-theorem ι_f_zero_comp_complex_d :
-    I.ι.f 0 ≫ I.cocomplex.d 0 1 = 0 := by
+@[reassoc] theorem ι_f_zero_comp_complex_d : I.ι.f 0 ≫ I.cocomplex.d 0 1 = 0 := by simp
+
+theorem complex_d_comp (n : ℕ) : I.cocomplex.d n (n + 1) ≫ I.cocomplex.d (n + 1) (n + 2) = 0 := by
   simp
 
-theorem complex_d_comp (n : ℕ) :
-    I.cocomplex.d n (n + 1) ≫ I.cocomplex.d (n + 1) (n + 2) = 0 := by
-  simp
-
-/-- The (limit) kernel fork given by the composition
-`Z ⟶ I.cocomplex.X 0 ⟶ I.cocomplex.X 1` when `I : InjectiveResolution Z`. -/
+/--
+The (limit) kernel fork given by the composition
+`Z ⟶ I.cocomplex.X 0 ⟶ I.cocomplex.X 1` when `I : InjectiveResolution Z`.
+-/
 @[simp]
-def kernelFork : KernelFork (I.cocomplex.d 0 1) :=
-  KernelFork.ofι _ I.ι_f_zero_comp_complex_d
+def kernelFork : KernelFork (I.cocomplex.d 0 1) := KernelFork.ofι _ I.ι_f_zero_comp_complex_d
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `Z` is the kernel of `I.cocomplex.X 0 ⟶ I.cocomplex.X 1` when `I : InjectiveResolution Z`. -/
 def isLimitKernelFork : IsLimit (I.kernelFork) := by
   refine IsLimit.ofIsoLimit (I.cocomplex.cyclesIsKernel 0 1 (by simp)) (Iso.symm ?_)
-  refine Fork.ext ((singleObjHomologySelfIso _ _ _).symm ≪≫
-    isoOfQuasiIsoAt I.ι 0 ≪≫ I.cocomplex.isoHomologyπ₀.symm) ?_
+  refine Fork.ext
+    ((singleObjHomologySelfIso _ _ _).symm ≪≫ isoOfQuasiIsoAt I.ι 0
+      ≪≫ I.cocomplex.isoHomologyπ₀.symm)
+    ?_
   rw [← cancel_epi (singleObjHomologySelfIso (ComplexShape.up ℕ) _ _).hom,
     ← cancel_epi (isoHomologyπ₀ _).hom,
     ← cancel_epi (singleObjCyclesSelfIso (ComplexShape.up ℕ) _ _).inv]
@@ -142,9 +141,11 @@ def self [Injective Z] : InjectiveResolution Z where
 
 variable {Z} {Z' : C} (I' : InjectiveResolution Z')
 
-/-- Given injective resolutions `I` and `I'` of two objects `Z` and `Z'`,
+/--
+Given injective resolutions `I` and `I'` of two objects `Z` and `Z'`,
 and a morphism `f : Z ⟶ Z'`, this structure contains the data of a morphism
-`I.cocomplex ⟶ I'.cocomplex` which is compatible with `f` -/
+`I.cocomplex ⟶ I'.cocomplex` which is compatible with `f`
+-/
 structure Hom (f : Z ⟶ Z') where
   /-- A morphism between the cocomplexes -/
   hom : I.cocomplex ⟶ I'.cocomplex
@@ -157,8 +158,8 @@ attribute [reassoc (attr := simp)] ι_f_zero_comp_hom_f_zero
 set_option backward.isDefEq.respectTransparency false in
 variable {I I'} in
 @[reassoc (attr := simp)]
-lemma ι_comp_hom {f : Z ⟶ Z'} (φ : Hom I I' f) :
-    I.ι ≫ φ.hom = (single₀ C).map f ≫ I'.ι := by cat_disch
+lemma ι_comp_hom {f : Z ⟶ Z'} (φ : Hom I I' f) : I.ι ≫ φ.hom = (single₀ C).map f ≫ I'.ι := by
+  cat_disch
 
 end Hom
 

@@ -27,8 +27,10 @@ universe u w
 
 open CategoryTheory TopologicalSpace
 
-/-- `CompactlyGenerated.{u, w}` is the type of `u`-compactly generated `w`-small topological spaces.
-This should always be used with explicit universe parameters. -/
+/--
+`CompactlyGenerated.{u, w}` is the type of `u`-compactly generated `w`-small topological spaces.
+This should always be used with explicit universe parameters.
+-/
 structure CompactlyGenerated where
   /-- The underlying topological space of an object of `CompactlyGenerated`. -/
   toTop : TopCat.{w}
@@ -37,11 +39,9 @@ structure CompactlyGenerated where
 
 namespace CompactlyGenerated
 
-instance : Inhabited CompactlyGenerated.{u, w} :=
-  ⟨{ toTop := ↧(ULift (Fin 37)) }⟩
+instance : Inhabited CompactlyGenerated.{u, w} := ⟨{ toTop := ↧(ULift (Fin 37)) }⟩
 
-instance : CoeSort CompactlyGenerated Type* :=
-  ⟨fun X => X.toTop⟩
+instance : CoeSort CompactlyGenerated Type* := ⟨fun X => X.toTop⟩
 
 attribute [instance] is_compactly_generated
 
@@ -73,9 +73,7 @@ abbrev ofHom (f : C(X, Y)) : of X ⟶ of Y := ConcreteCategory.ofHom f
 end
 
 /-- The fully faithful embedding of `CompactlyGenerated` in `TopCat`. -/
-@[simps!]
-def compactlyGeneratedToTop : CompactlyGenerated.{u, w} ⥤ TopCat.{w} :=
-  inducedFunctor _
+@[simps!] def compactlyGeneratedToTop : CompactlyGenerated.{u, w} ⥤ TopCat.{w} := inducedFunctor _
 
 /-- `compactlyGeneratedToTop` is fully faithful. -/
 def fullyFaithfulCompactlyGeneratedToTop : compactlyGeneratedToTop.{u, w}.FullyFaithful :=
@@ -107,8 +105,10 @@ def homeoOfIso {X Y : CompactlyGenerated.{u, w}} (f : X ≅ Y) : X ≃ₜ Y wher
   continuous_toFun := f.hom.hom.hom.continuous
   continuous_invFun := f.inv.hom.hom.continuous
 
-/-- The equivalence between isomorphisms in `CompactlyGenerated` and homeomorphisms
-of topological spaces. -/
+/--
+The equivalence between isomorphisms in `CompactlyGenerated` and homeomorphisms
+of topological spaces.
+-/
 @[simps]
 def isoEquivHomeo {X Y : CompactlyGenerated.{u, w}} : (X ≅ Y) ≃ (X ≃ₜ Y) where
   toFun := homeoOfIso

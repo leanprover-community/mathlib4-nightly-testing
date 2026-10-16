@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 public import Mathlib.RingTheory.Spectrum.Prime.Topology
-
 import Mathlib.RingTheory.Flat.Localization
 
 /-!
@@ -42,15 +41,17 @@ The condition only asks for `<` which is easier to prove, use
 -/
 @[stacks 00HV "(2)"]
 class Algebra.HasGoingDown (R S : Type*) [CommRing R] [CommRing S] [Algebra R S] : Prop where
-  exists_ideal_le_liesOver_of_lt {p : Ideal R} [p.IsPrime] (Q : Ideal S) [Q.IsPrime] :
-    p < Q.under R → ∃ P ≤ Q, P.IsPrime ∧ P.LiesOver p
+  exists_ideal_le_liesOver_of_lt {p : Ideal R} [p.IsPrime] (Q : Ideal S) [Q.IsPrime]
+    : p < Q.under R → ∃ P ≤ Q, P.IsPrime ∧ P.LiesOver p
 
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
-lemma Ideal.exists_ideal_le_liesOver_of_le [Algebra.HasGoingDown R S]
-    {p q : Ideal R} [p.IsPrime] [q.IsPrime] (Q : Ideal S) [Q.IsPrime] [Q.LiesOver q]
-    (hle : p ≤ q) :
-    ∃ P ≤ Q, P.IsPrime ∧ P.LiesOver p := by
+lemma Ideal.exists_ideal_le_liesOver_of_le
+    [Algebra.HasGoingDown R S]
+    {p q : Ideal R} [p.IsPrime] [q.IsPrime]
+    (Q : Ideal S) [Q.IsPrime] [Q.LiesOver q]
+    (hle : p ≤ q)
+    : ∃ P ≤ Q, P.IsPrime ∧ P.LiesOver p := by
   by_cases h : p = q
   · subst h
     use Q
@@ -58,9 +59,12 @@ lemma Ideal.exists_ideal_le_liesOver_of_le [Algebra.HasGoingDown R S]
     subst this
     exact Algebra.HasGoingDown.exists_ideal_le_liesOver_of_lt Q (lt_of_le_of_ne hle h)
 
-lemma Ideal.exists_ideal_lt_liesOver_of_lt [Algebra.HasGoingDown R S]
-    {p q : Ideal R} [p.IsPrime] [q.IsPrime] (Q : Ideal S) [Q.IsPrime] [Q.LiesOver q]
-    (hpq : p < q) : ∃ P < Q, P.IsPrime ∧ P.LiesOver p := by
+lemma Ideal.exists_ideal_lt_liesOver_of_lt
+    [Algebra.HasGoingDown R S]
+    {p q : Ideal R} [p.IsPrime] [q.IsPrime]
+    (Q : Ideal S) [Q.IsPrime] [Q.LiesOver q]
+    (hpq : p < q)
+    : ∃ P < Q, P.IsPrime ∧ P.LiesOver p := by
   obtain ⟨P, hPQ, _, _⟩ := Q.exists_ideal_le_liesOver_of_le (p := p) (q := q) hpq.le
   refine ⟨P, ?_, inferInstance, inferInstance⟩
   by_contra hc
@@ -68,12 +72,12 @@ lemma Ideal.exists_ideal_lt_liesOver_of_lt [Algebra.HasGoingDown R S]
   subst this
   simp [P.over_def p, P.over_def q] at hpq
 
-lemma Ideal.exists_ltSeries_of_hasGoingDown [Algebra.HasGoingDown R S]
-    (l : LTSeries (PrimeSpectrum R)) (P : Ideal S) [P.IsPrime] [lo : P.LiesOver l.last.asIdeal] :
-    ∃ (L : LTSeries (PrimeSpectrum S)),
-      L.length = l.length ∧
-      L.last = ⟨P, inferInstance⟩ ∧
-      List.map (PrimeSpectrum.comap (algebraMap R S)) L.toList = l.toList := by
+lemma Ideal.exists_ltSeries_of_hasGoingDown
+    [Algebra.HasGoingDown R S]
+    (l : LTSeries (PrimeSpectrum R)) (P : Ideal S) [P.IsPrime] [lo : P.LiesOver l.last.asIdeal]
+    : ∃ (L : LTSeries (PrimeSpectrum S)),
+      L.length = l.length ∧ L.last = ⟨P, inferInstance⟩
+        ∧ List.map (PrimeSpectrum.comap (algebraMap R S)) L.toList = l.toList := by
   induction l using RelSeries.inductionOn generalizing P with
   | singleton q =>
     use RelSeries.singleton _ ⟨P, inferInstance⟩
@@ -100,17 +104,18 @@ namespace Algebra.HasGoingDown
 
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
-/-- An `R`-algebra `S` has the going down property if and only if generalizations lift
-along `Spec S → Spec R`. -/
+/--
+An `R`-algebra `S` has the going down property if and only if generalizations lift
+along `Spec S → Spec R`.
+-/
 @[stacks 00HW "(1)"]
-lemma iff_generalizingMap_primeSpectrumComap :
-    Algebra.HasGoingDown R S ↔
-      GeneralizingMap (PrimeSpectrum.comap (algebraMap R S)) := by
+lemma iff_generalizingMap_primeSpectrumComap
+    : Algebra.HasGoingDown R S ↔ GeneralizingMap (PrimeSpectrum.comap (algebraMap R S)) := by
   refine ⟨?_, fun h ↦ ⟨fun {p} hp Q hQ hlt ↦ ?_⟩⟩
   · intro h Q p hp
     rw [← PrimeSpectrum.le_iff_specializes] at hp
-    obtain ⟨P, hle, hP, h⟩ := Q.asIdeal.exists_ideal_le_liesOver_of_le (p := p.asIdeal)
-      (q := Q.asIdeal.under R) hp
+    obtain ⟨P, hle, hP, h⟩ :=
+      Q.asIdeal.exists_ideal_le_liesOver_of_le (p := p.asIdeal) (q := Q.asIdeal.under R) hp
     refine ⟨⟨P, hP⟩, (PrimeSpectrum.le_iff_specializes _ Q).mp hle, ?_⟩
     ext : 1
     exact h.over.symm
@@ -122,25 +127,28 @@ lemma iff_generalizingMap_primeSpectrumComap :
 
 variable (R S) in
 @[stacks 00HX]
-lemma trans (T : Type*) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower R S T]
-    [Algebra.HasGoingDown R S] [Algebra.HasGoingDown S T] :
-    Algebra.HasGoingDown R T := by
+lemma trans
+    (T : Type*) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower R S T]
+    [Algebra.HasGoingDown R S] [Algebra.HasGoingDown S T]
+    : Algebra.HasGoingDown R T := by
   rw [iff_generalizingMap_primeSpectrumComap, IsScalarTower.algebraMap_eq R S T]
   simp only [PrimeSpectrum.comap_comp]
   apply GeneralizingMap.comp
   · rwa [← iff_generalizingMap_primeSpectrumComap]
   · rwa [← iff_generalizingMap_primeSpectrumComap]
 
-/-- If for every prime of `S`, the map `Spec Sₚ → Spec Rₚ` is surjective,
-the algebra satisfies going down. -/
+/--
+If for every prime of `S`, the map `Spec Sₚ → Spec Rₚ` is surjective,
+the algebra satisfies going down.
+-/
 lemma of_comap_localRingHom_surjective
-    (H : ∀ (P : Ideal S) [P.IsPrime], Function.Surjective
-      (PrimeSpectrum.comap <| Localization.localRingHom (P.under R) P (algebraMap R S) rfl)) :
-    Algebra.HasGoingDown R S where
+    (H : ∀ (P : Ideal S) [P.IsPrime],
+      Function.Surjective (PrimeSpectrum.comap <|
+        Localization.localRingHom (P.under R) P (algebraMap R S) rfl))
+    : Algebra.HasGoingDown R S where
   exists_ideal_le_liesOver_of_lt {p} _ Q _ hlt := by
     let pl : Ideal (Localization.AtPrime <| Q.under R) := p.map (algebraMap R _)
-    have : pl.IsPrime :=
-      Ideal.isPrime_map_of_isLocalizationAtPrime (Q.under R) hlt.le
+    have : pl.IsPrime := Ideal.isPrime_map_of_isLocalizationAtPrime (Q.under R) hlt.le
     obtain ⟨⟨Pl, _⟩, hl⟩ := H Q ⟨pl, inferInstance⟩
     refine ⟨Pl.under S, ?_, Ideal.IsPrime.under S Pl, ⟨?_⟩⟩
     · exact (IsLocalization.AtPrime.orderIsoOfPrime _ Q ⟨Pl, inferInstance⟩).2.2

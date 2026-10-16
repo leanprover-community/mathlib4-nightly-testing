@@ -19,7 +19,6 @@ tests for these can be found in `MathlibTest/Linter/Flexible/ImportHeavy.lean`
 TODO: make output message appear only once for wildcard
 -/
 
-
 def n : Nat := 1
 def m : Nat := 1
 
@@ -176,8 +175,10 @@ example {a b : Nat} (h : a = b) : a + 0 = b := by
 example {a b : Nat} (h : a = b) : a + 0 = b := by
   simp
   by_cases a = b
-  subst h; rfl
-  subst h; rfl
+  subst h
+  rfl
+  subst h
+  rfl
 
 -- `induction` does not use the goal
 /--
@@ -216,11 +217,9 @@ uses `h`, which was modified by the flexible tactic `simp` on line
 -/
 #guard_msgs (substring := true) in
 example (h : 0 = 0 ∨ 0 = 0) : True := by
-  cases h <;>
-    rename_i h <;>
-    simp at h
+  cases h <;> rename_i h <;> simp at h
   · exact h
-  · assumption --exact h
+  · assumption -- exact h
 
 /--
 warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
@@ -298,7 +297,7 @@ uses `h`, which was modified by the flexible tactic `simp` on line
 #guard_msgs (substring := true) in
 -- `simp at h` stains `h` but not other locations
 example {h : 0 = 0} {k : 1 = 1} : True := by
-  simp at h k;
+  simp at h k
   rw [← Classical.not_not (a := True)]
   -- flag the two below vvv do not above ^^^
   rw [← Classical.not_not (a := True)] at k
@@ -403,12 +402,12 @@ uses `h`, which was modified by the flexible tactic `simp` on line
 -/
 #guard_msgs (substring := true) in
 -- `simp at h` stains `h` but not other locations
-example {h : 0 = 0} {k : 1 = 1} : ¬ ¬ True := by
+example {h : 0 = 0} {k : 1 = 1} : ¬ ¬True := by
   simp at h
   rw [← Nat.add_zero 1] at k
   -- flag below vvv do not flag above ^^^
   rw [← Classical.not_not (a := True)] at h
-  --exact h -- <-- flagged
+  -- exact h -- <-- flagged
   assumption
 
 /--
@@ -496,26 +495,32 @@ open Lean Mathlib.Linter Flexible
 /-- `flex? tac` logs an info `true` if the tactic is flexible, logs a warning `false` otherwise. -/
 elab "flex? " tac:tactic : command => do
   match flexible? tac with
-    | true  => logWarningAt tac m!"{flexible? tac}"
-    | false => logInfoAt tac m!"{flexible? tac}"
+  | true => logWarningAt tac m!"{flexible? tac}"
+  | false => logInfoAt tac m!"{flexible? tac}"
 
 section
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
-/-- info: false -/#guard_msgs in
+/-- info: false -/
+#guard_msgs in
 flex? done
-/-- info: false -/#guard_msgs in
+/-- info: false -/
+#guard_msgs in
 flex? simp only
-/-- info: false -/#guard_msgs in
+/-- info: false -/
+#guard_msgs in
 flex? simp_all only
-/-- warning: true -/#guard_msgs in
+/-- warning: true -/
+#guard_msgs in
 flex? simp
-/-- warning: true -/#guard_msgs in
+/-- warning: true -/
+#guard_msgs in
 flex? simp_all
 
 end
 
-/-- info: #[h] -/ #guard_msgs in
+/-- info: #[h] -/
+#guard_msgs in
 #eval show CoreM _ from do
   let h := mkIdent `h
   let hc ← `(Lean.Parser.Tactic.elimTarget|$h:ident)

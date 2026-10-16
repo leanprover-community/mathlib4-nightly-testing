@@ -27,22 +27,20 @@ public section
 
 open scoped MonoidAlgebra
 
-variable [Monoid G] [Field k] [AddCommGroup V] [Module k V]
-  (ρ : Representation k G V)
+variable [Monoid G] [Field k] [AddCommGroup V] [Module k V] (ρ : Representation k G V)
 
 /-- A representation is semisimple when every subrepresentation has a complement. -/
-abbrev IsSemisimpleRepresentation :=
-  ComplementedLattice (Subrepresentation ρ)
+abbrev IsSemisimpleRepresentation := ComplementedLattice (Subrepresentation ρ)
 
-theorem isSemisimpleRepresentation_iff_isSemisimpleModule_asModule :
-    IsSemisimpleRepresentation ρ ↔ IsSemisimpleModule k[G] ρ.asModule := by
+theorem isSemisimpleRepresentation_iff_isSemisimpleModule_asModule
+    : IsSemisimpleRepresentation ρ ↔ IsSemisimpleModule (k[G]) ρ.asModule := by
   rw [isSemisimpleModule_iff]
   exact OrderIso.complementedLattice_iff Subrepresentation.subrepresentationSubmoduleOrderIso
 
 set_option backward.isDefEq.respectTransparency false in
-theorem isSemisimpleModule_iff_isSemisimpleRepresentation_ofModule (M : Type*) [AddCommGroup M]
-    [Module k[G] M] :
-    IsSemisimpleModule k[G] M ↔ IsSemisimpleRepresentation (ofModule (k := k) (G := G) M) := by
+theorem isSemisimpleModule_iff_isSemisimpleRepresentation_ofModule
+    (M : Type*) [AddCommGroup M] [Module (k[G]) M]
+    : IsSemisimpleModule (k[G]) M ↔ IsSemisimpleRepresentation (ofModule (k := k) (G := G) M) := by
   rw [isSemisimpleModule_iff]
   exact OrderIso.complementedLattice_iff Subrepresentation.submoduleSubrepresentationOrderIso
 

@@ -24,15 +24,15 @@ universe u
 
 variable {α : Type u}
 
-theorem Invertible.ne_zero [MulZeroOneClass α] (a : α) [Nontrivial α] [Invertible a] : a ≠ 0 :=
-  fun ha =>
-  zero_ne_one <|
-    calc
-      0 = ⅟a * a := by simp [ha]
-      _ = 1 := invOf_mul_self
+theorem Invertible.ne_zero [MulZeroOneClass α] (a : α) [Nontrivial α] [Invertible a]
+    : a ≠ 0 := fun ha =>
+  zero_ne_one <| calc
+    0 = ⅟a * a := by simp [ha]
+    _ = 1 := invOf_mul_self
 
-instance (priority := 100) Invertible.toNeZero [MulZeroOneClass α] [Nontrivial α] (a : α)
-    [Invertible a] : NeZero a :=
+instance (priority := 100) Invertible.toNeZero
+    [MulZeroOneClass α] [Nontrivial α] (a : α) [Invertible a]
+    : NeZero a :=
   ⟨Invertible.ne_zero a⟩
 
 section MonoidWithZero
@@ -66,8 +66,7 @@ theorem mul_inv_cancel_of_invertible (a : α) [Invertible a] : a * a⁻¹ = 1 :=
   mul_inv_cancel₀ (Invertible.ne_zero a)
 
 /-- `a` is the inverse of `a⁻¹` -/
-instance invertibleInv {a : α} [Invertible a] : Invertible a⁻¹ :=
-  ⟨a, by simp, by simp⟩
+instance invertibleInv {a : α} [Invertible a] : Invertible a⁻¹ := ⟨a, by simp, by simp⟩
 
 @[simp]
 theorem div_mul_cancel_of_invertible (a b : α) [Invertible b] : a / b * b = a :=
@@ -78,16 +77,14 @@ theorem mul_div_cancel_of_invertible (a b : α) [Invertible b] : a * b / b = a :
   mul_div_cancel_right₀ a (Invertible.ne_zero b)
 
 @[simp]
-theorem div_self_of_invertible (a : α) [Invertible a] : a / a = 1 :=
-  div_self (Invertible.ne_zero a)
+theorem div_self_of_invertible (a : α) [Invertible a] : a / a = 1 := div_self (Invertible.ne_zero a)
 
 /-- `b / a` is the inverse of `a / b` -/
 @[instance_reducible]
 def invertibleDiv (a b : α) [Invertible a] [Invertible b] : Invertible (a / b) :=
   ⟨b / a, by simp [← mul_div_assoc], by simp [← mul_div_assoc]⟩
 
-theorem invOf_div (a b : α) [Invertible a] [Invertible b] [Invertible (a / b)] :
-    ⅟(a / b) = b / a :=
+theorem invOf_div (a b : α) [Invertible a] [Invertible b] [Invertible (a / b)] : ⅟(a / b) = b / a :=
   invOf_eq_right_inv (by simp [← mul_div_assoc])
 
 end GroupWithZero

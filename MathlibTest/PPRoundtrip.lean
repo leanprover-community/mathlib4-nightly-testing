@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Linter.PPRoundtrip
 
 /--
@@ -13,7 +14,7 @@ Note: This linter can be disabled with `set_option linter.ppRoundtrip false`
 -/
 #guard_msgs in
 set_option linter.ppRoundtrip true in
-#eval "    a   a\n       "    |>.trimAscii.copy
+#eval "    a   a\n       " |>.trimAscii.copy
 
 /--
 warning: source context
@@ -25,7 +26,7 @@ Note: This linter can be disabled with `set_option linter.ppRoundtrip false`
 -/
 #guard_msgs in
 set_option linter.ppRoundtrip true in
-#guard ¬   false
+#guard ¬false
 
 /--
 warning: source context
@@ -37,7 +38,7 @@ Note: This linter can be disabled with `set_option linter.ppRoundtrip false`
 -/
 #guard_msgs in
 set_option linter.ppRoundtrip true in
-variable {a: Nat}
+variable {a : Nat}
 
 /--
 warning: source context
@@ -49,7 +50,7 @@ Note: This linter can be disabled with `set_option linter.ppRoundtrip false`
 -/
 #guard_msgs in
 set_option linter.ppRoundtrip true in
-variable {a :Nat}
+variable {a : Nat}
 
 /--
 info: (fun x1 x2 => x1 + x2) 0 1 : Nat
@@ -63,10 +64,9 @@ Note: This linter can be disabled with `set_option linter.ppRoundtrip false`
 -/
 #guard_msgs in
 set_option linter.ppRoundtrip true in
-#check (·+·) 0 1
+#check (· + ·) 0 1
 
 #guard_msgs in
 set_option linter.ppRoundtrip true in
 -- check that trailing comments do not trigger the linter
-example : 0 = 0 := by
-  rw [] -- this goal is closed by the `rfl` implied by `rw`
+example : 0 = 0 := by rw [] -- this goal is closed by the `rfl` implied by `rw`

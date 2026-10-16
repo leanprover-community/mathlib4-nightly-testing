@@ -24,8 +24,10 @@ namespace IsSepClosed
 
 variable [IsSepClosed F]
 
-/-- A separably closed field `F` satisfies `HasEnoughRootsOfUnity F n` for all `n`
-that are not divisible by the characteristic of `F`. -/
+/--
+A separably closed field `F` satisfies `HasEnoughRootsOfUnity F n` for all `n`
+that are not divisible by the characteristic of `F`.
+-/
 instance hasEnoughRootsOfUnity : HasEnoughRootsOfUnity F n where
   prim := by
     have : NeZero n := .of_neZero_natCast F

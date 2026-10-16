@@ -26,18 +26,22 @@ open scoped NNReal
 
 namespace ApproximatesLinearOn
 
-/-- In a real vector space, a function `f` that approximates a linear equivalence on a subset `s`
-can be extended to a homeomorphism of the whole space. -/
-theorem exists_homeomorph_extension {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] {s : Set E}
-    {f : E → F} {f' : E ≃L[ℝ] F} {c : ℝ≥0} (hf : ApproximatesLinearOn f (f' : E →L[ℝ] F) s c)
-    (hc : Subsingleton E ∨ lipschitzExtensionConstant F * c < ‖(f'.symm : F →L[ℝ] E)‖₊⁻¹) :
-    ∃ g : E ≃ₜ F, EqOn f g s := by
+/--
+In a real vector space, a function `f` that approximates a linear equivalence on a subset `s`
+can be extended to a homeomorphism of the whole space.
+-/
+theorem exists_homeomorph_extension
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {s : Set E} {f : E → F} {f' : E ≃L[ℝ] F} {c : ℝ≥0}
+    (hf : ApproximatesLinearOn f (f' : E →L[ℝ] F) s c)
+    (hc : Subsingleton E ∨ lipschitzExtensionConstant F * c < ‖(f'.symm : F →L[ℝ] E)‖₊⁻¹)
+    : ∃ g : E ≃ₜ F, EqOn f g s := by
   -- the difference `f - f'` is Lipschitz on `s`. It can be extended to a Lipschitz function `u`
   -- on the whole space, with a slightly worse Lipschitz constant. Then `f' + u` will be the
   -- desired homeomorphism.
-  obtain ⟨u, hu, uf⟩ :
-    ∃ u : E → F, LipschitzWith (lipschitzExtensionConstant F * c) u ∧ EqOn (f - ⇑f') u s :=
+  obtain ⟨u, hu, uf⟩
+      : ∃ u : E → F, LipschitzWith (lipschitzExtensionConstant F * c) u ∧ EqOn (f - ⇑f') u s :=
     hf.lipschitzOnWith.extend_finite_dimension
   let g : E → F := fun x => f' x + u x
   have fg : EqOn f g s := fun x hx => by simp_rw [g, ← uf hx, Pi.sub_apply, add_sub_cancel]

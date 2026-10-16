@@ -34,19 +34,21 @@ namespace AlgebraicGeometry
 
 variable {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S)
 
-/-- We say that morphism `f : X ⟶ Y` is geometrically integral if for all `Spec K ⟶ Y` with `K`
-a field, `X ×[Y] Spec K` is integral. -/
+/--
+We say that morphism `f : X ⟶ Y` is geometrically integral if for all `Spec K ⟶ Y` with `K`
+a field, `X ×[Y] Spec K` is integral.
+-/
 @[mk_iff]
 class GeometricallyIntegral (f : X ⟶ Y) : Prop where
   geometrically_isIntegral : geometrically IsIntegral f
 
-lemma GeometricallyIntegral.eq_geometrically :
-    @GeometricallyIntegral = geometrically IsIntegral := by
+lemma GeometricallyIntegral.eq_geometrically
+    : @GeometricallyIntegral = geometrically IsIntegral := by
   ext; exact geometricallyIntegral_iff _
 
-lemma GeometricallyIntegral.eq_geometricallyReduced_inf_geometricallyIrreducible :
-    @GeometricallyIntegral =
-      (@GeometricallyReduced ⊓ @GeometricallyIrreducible : MorphismProperty Scheme) := by
+lemma GeometricallyIntegral.eq_geometricallyReduced_inf_geometricallyIrreducible
+    : @GeometricallyIntegral
+      = (@GeometricallyReduced ⊓ @GeometricallyIrreducible : MorphismProperty Scheme) := by
   rw [eq_geometrically, GeometricallyReduced.eq_geometrically,
     GeometricallyIrreducible.eq_geometrically, ← geometrically_inf]
   eta_expand
@@ -59,8 +61,8 @@ instance (priority := low) [GeometricallyIntegral f] : GeometricallyIrreducible 
   (GeometricallyIntegral.eq_geometricallyReduced_inf_geometricallyIrreducible.le _ _ _ ‹_›).2
 
 lemma GeometricallyIntegral.of_geometricallyReduced_of_geometricallyIrreducible
-    [GeometricallyReduced f] [GeometricallyIrreducible f] :
-    GeometricallyIntegral f :=
+    [GeometricallyReduced f] [GeometricallyIrreducible f]
+    : GeometricallyIntegral f :=
   GeometricallyIntegral.eq_geometricallyReduced_inf_geometricallyIrreducible.ge _ _ _ ⟨‹_›, ‹_›⟩
 
 instance : IsStableUnderBaseChange @GeometricallyIntegral :=
@@ -78,8 +80,7 @@ instance (V : S.Opens) [GeometricallyIntegral f] : GeometricallyIntegral (f ∣_
   MorphismProperty.of_isPullback (isPullback_morphismRestrict ..).flip ‹_›
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance (s : S) [GeometricallyIntegral f] :
-    GeometricallyIntegral (f.fiberToSpecResidueField s) :=
+instance (s : S) [GeometricallyIntegral f] : GeometricallyIntegral (f.fiberToSpecResidueField s) :=
   MorphismProperty.pullback_snd _ _ inferInstance
 
 instance (s : S) [GeometricallyIntegral f] : IsIntegral (f.fiber s) :=
@@ -89,32 +90,40 @@ instance (priority := low) [GeometricallyIntegral f] : Surjective f :=
   ⟨fun x ↦ ⟨_, (f.range_fiberι x).le ⟨Nonempty.some inferInstance, rfl⟩⟩⟩
 
 lemma GeometricallyIntegral.isIntegral_of_isLocallyNoetherian
-    [GeometricallyIntegral f] [Flat f] [UniversallyOpen f]
-    [IsIntegral S] [IsLocallyNoetherian S] : IsIntegral X := by
+    [GeometricallyIntegral f] [Flat f] [UniversallyOpen f] [IsIntegral S] [IsLocallyNoetherian S]
+    : IsIntegral X := by
   rw [isIntegral_iff_irreducibleSpace_and_isReduced]
-  exact ⟨GeometricallyIrreducible.irreducibleSpace f f.isOpenMap,
-    GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian f⟩
+  exact ⟨
+    GeometricallyIrreducible.irreducibleSpace f f.isOpenMap,
+    GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian f
+  ⟩
 
 /-- If `X` is geometrically integral over a field, then it is integral. -/
 lemma GeometricallyIntegral.isIntegral_of_subsingleton
-    [GeometricallyIntegral f] [Subsingleton S] [IsIntegral S] : IsIntegral X := by
+    [GeometricallyIntegral f] [Subsingleton S] [IsIntegral S]
+    : IsIntegral X := by
   rw [isIntegral_iff_irreducibleSpace_and_isReduced]
-  refine ⟨GeometricallyIrreducible.irreducibleSpace_of_subsingleton f,
-    GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian f⟩
+  refine ⟨
+    GeometricallyIrreducible.irreducibleSpace_of_subsingleton f,
+    GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian f
+  ⟩
 
-/-- If `X` is geometrically integral and flat and universally open over `S` and `Y` is integral
-and locally noetherian, then `X ×ₛ Y` is integral. -/
-instance [GeometricallyIntegral f] [Flat f] [UniversallyOpen f] [IsIntegral Y]
-    [IsLocallyNoetherian Y] : IsIntegral (pullback f g) :=
+/--
+If `X` is geometrically integral and flat and universally open over `S` and `Y` is integral
+and locally noetherian, then `X ×ₛ Y` is integral.
+-/
+instance
+    [GeometricallyIntegral f] [Flat f] [UniversallyOpen f] [IsIntegral Y] [IsLocallyNoetherian Y]
+    : IsIntegral (pullback f g) :=
   GeometricallyIntegral.isIntegral_of_isLocallyNoetherian (pullback.snd _ _)
 
-instance [GeometricallyIntegral g] [Flat g] [UniversallyOpen g]
-    [IsIntegral X] [IsLocallyNoetherian X] :
-    IsIntegral (pullback f g) :=
+instance
+    [GeometricallyIntegral g] [Flat g] [UniversallyOpen g] [IsIntegral X] [IsLocallyNoetherian X]
+    : IsIntegral (pullback f g) :=
   GeometricallyIntegral.isIntegral_of_isLocallyNoetherian (pullback.fst _ _)
 
-lemma GeometricallyIntegral.iff_geometricallyIntegral_fiber :
-    GeometricallyIntegral f ↔ ∀ s, GeometricallyIntegral (f.fiberToSpecResidueField s) := by
+lemma GeometricallyIntegral.iff_geometricallyIntegral_fiber
+    : GeometricallyIntegral f ↔ ∀ s, GeometricallyIntegral (f.fiberToSpecResidueField s) := by
   simp only [GeometricallyIntegral.eq_geometrically,
     ← geometrically_iff_forall_fiberToSpecResidueField]
 

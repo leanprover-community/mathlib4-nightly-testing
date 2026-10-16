@@ -9,7 +9,6 @@ public meta import Batteries.Data.List.Basic
 public meta import Batteries.Lean.Expr
 public meta import Lean.Elab.Tactic.Induction
 public import Mathlib.Init
-
 import all Lean.Elab.Tactic.Induction -- for `getElimNameInfo`
 
 /-!
@@ -49,10 +48,11 @@ private def getAltNumFields (elimInfo : ElimInfo) (altName : Name) : TermElabM N
       return altInfo.numFields
   throwError "unknown alternative name '{altName}'"
 
-def ElimApp.evalNames (elimInfo : ElimInfo) (alts : Array ElimApp.Alt) (withArg : Syntax)
+def ElimApp.evalNames
+    (elimInfo : ElimInfo) (alts : Array ElimApp.Alt) (withArg : Syntax)
     (numEqs := 0) (generalized : Array FVarId := #[]) (toClear : Array FVarId := #[])
-    (toTag : Array (Ident × FVarId) := #[]) :
-    TermElabM (Array MVarId) := do
+    (toTag : Array (Ident × FVarId) := #[])
+    : TermElabM (Array MVarId) := do
   let mut names : List Syntax := withArg[1].getArgs |>.toList
   let mut subgoals := #[]
   for { name := altName, mvarId := g, .. } in alts do
@@ -60,10 +60,12 @@ def ElimApp.evalNames (elimInfo : ElimInfo) (alts : Array ElimApp.Alt) (withArg 
     let (altVarNames, names') := names.splitAtD numFields (Unhygienic.run `(_))
     names := names'
     let (fvars, g) ← g.introN numFields <| altVarNames.map (getNameOfIdent' ·[0])
-    let some (g, subst) ← Cases.unifyEqs? numEqs g {} | pure ()
+    let some (g, subst) ← Cases.unifyEqs? numEqs g {}
+      | pure ()
     let (introduced, g) ← g.introNP generalized.size
-    let subst := (generalized.zip introduced).foldl (init := subst) fun subst (a, b) =>
-      subst.insert a (.fvar b)
+    let subst :=
+      (generalized.zip introduced).foldl (init := subst) fun subst (a, b) =>
+        subst.insert a (.fvar b)
     let g ← liftM <| toClear.foldlM (·.tryClear) g
     g.withContext do
       for (stx, fvar) in toTag do
@@ -73,7 +75,8 @@ def ElimApp.evalNames (elimInfo : ElimInfo) (alts : Array ElimApp.Alt) (withArg 
     subgoals := subgoals.push g
   pure subgoals
 
-/-- `induction' x` applies induction on the variable `x` of the inductive type `t` to the main goal,
+/--
+`induction' x` applies induction on the variable `x` of the inductive type `t` to the main goal,
 producing one goal for each constructor of `t`, in which `x` is replaced by that constructor
 applied to newly introduced variables. `induction'` adds an inductive hypothesis for
 each recursive argument to the constructor. This is a backwards-compatible variant of the
@@ -116,12 +119,14 @@ example (n : ℕ) : 0 < factorial n := by
     apply mul_pos (succ_pos n) ih
 ```
 -/
-elab (name := induction') "induction' " tgts:(Parser.Tactic.elimTarget,+)
-    usingArg:((" using " ident)?)
-    withArg:((" with" (ppSpace colGt binderIdent)+)?)
-    genArg:((" generalizing" (ppSpace colGt ident)+)?) : tactic => do
+elab (name := induction')
+      "induction' " tgts:(Parser.Tactic.elimTarget,+) usingArg:((" using " ident)?)
+      withArg:((" with" (ppSpace colGt binderIdent)+)?)
+      genArg:((" generalizing" (ppSpace colGt ident)+)?)
+    : tactic => do
   let (targets, toTag) ← elabElimTargets tgts.1.getSepArgs
-  let g :: gs ← getUnsolvedGoals | throwNoGoalsToBeSolved
+  let g :: gs ← getUnsolvedGoals
+    | throwNoGoalsToBeSolved
   g.withContext do
     let elimInfo ← getElimNameInfo usingArg targets (induction := true)
     let targets ← addImplicitTargets elimInfo targets
@@ -145,11 +150,13 @@ elab (name := induction') "induction' " tgts:(Parser.Tactic.elimTarget,+)
         let elimArgs := result.elimApp.getAppArgs
         ElimApp.setMotiveArg g elimArgs[elimInfo.motivePos]!.mvarId! targetFVarIds
         g.assign result.elimApp
-        let subgoals ← ElimApp.evalNames elimInfo result.alts withArg
-          (generalized := fvarIds) (toClear := targetFVarIds) (toTag := toTag)
+        let subgoals ←
+          ElimApp.evalNames elimInfo result.alts withArg (generalized := fvarIds)
+            (toClear := targetFVarIds) (toTag := toTag)
         setGoals <| (subgoals ++ result.others).toList ++ gs
 
-/-- `cases' x`, where the variable `x` has inductive type `t`, splits the main goal,
+/--
+`cases' x`, where the variable `x` has inductive type `t`, splits the main goal,
 producing one goal for each constructor of `t`, in which `x` is replaced by that constructor
 applied to newly introduced variables. This is a backwards-compatible variant of the
 `cases` tactic in Lean 4 core.
@@ -187,10 +194,13 @@ example (h : p ∨ q) : q ∨ p := by
   · exact Or.inl hq
 ```
 -/
-elab (name := cases') "cases' " tgts:(Parser.Tactic.elimTarget,+) usingArg:((" using " ident)?)
-  withArg:((" with" (ppSpace colGt binderIdent)+)?) : tactic => do
+elab (name := cases')
+      "cases' " tgts:(Parser.Tactic.elimTarget,+) usingArg:((" using " ident)?)
+      withArg:((" with" (ppSpace colGt binderIdent)+)?)
+    : tactic => do
   let (targets, toTag) ← elabElimTargets tgts.1.getSepArgs
-  let g :: gs ← getUnsolvedGoals | throwNoGoalsToBeSolved
+  let g :: gs ← getUnsolvedGoals
+    | throwNoGoalsToBeSolved
   g.withContext do
     let elimInfo ← getElimNameInfo usingArg targets (induction := false)
     let targets ← addImplicitTargets elimInfo targets
@@ -203,8 +213,9 @@ elab (name := cases') "cases' " tgts:(Parser.Tactic.elimTarget,+) usingArg:((" u
     g.withContext do
       ElimApp.setMotiveArg g motive.mvarId! targetsNew
       g.assign result.elimApp
-      let subgoals ← ElimApp.evalNames elimInfo result.alts withArg
-         (numEqs := targets.size) (toClear := targetsNew) (toTag := toTag)
+      let subgoals ←
+        ElimApp.evalNames elimInfo result.alts withArg (numEqs := targets.size)
+          (toClear := targetsNew) (toTag := toTag)
       setGoals <| subgoals.toList ++ gs
 
 end Mathlib.Tactic

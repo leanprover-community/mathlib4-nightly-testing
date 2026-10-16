@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Finset.Sort
 public import Mathlib.Topology.Category.Profinite.Nobeling.Basic
-
 import Mathlib.Tactic.NoncommRing
 import Mathlib.Topology.Category.Profinite.CofilteredLimit
 
@@ -44,19 +43,17 @@ section Fin
 variable (s : Finset I)
 
 /-- The `ℤ`-linear map induced by precomposition of the projection `C → π C (· ∈ s)`. -/
-noncomputable
-def πJ : LocallyConstant (π C (· ∈ s)) ℤ →ₗ[ℤ] LocallyConstant C ℤ :=
+noncomputable def πJ : LocallyConstant (π C (· ∈ s)) ℤ →ₗ[ℤ] LocallyConstant C ℤ :=
   LocallyConstant.comapₗ ℤ ⟨_, (continuous_projRestrict C (· ∈ s))⟩
 
-theorem eval_eq_πJ (l : Products I) (hl : l.isGood (π C (· ∈ s))) :
-    l.eval C = πJ C s (l.eval (π C (· ∈ s))) := by
+theorem eval_eq_πJ (l : Products I) (hl : l.isGood (π C (· ∈ s)))
+    : l.eval C = πJ C s (l.eval (π C (· ∈ s))) := by
   ext f
   simp only [πJ, LocallyConstant.comapₗ]
   exact (congr($(Products.evalFacProp C (· ∈ s) (Products.prop_of_isGood C (· ∈ s) hl)) _)).symm
 
 /-- `π C (· ∈ s)` is finite for a finite set `s`. -/
-noncomputable
-instance : Fintype (π C (· ∈ s)) := by
+noncomputable instance : Fintype (π C (· ∈ s)) := by
   let f : π C (· ∈ s) → (s → Bool) := fun x j ↦ x.val j.val
   refine Fintype.ofInjective f ?_
   intro ⟨_, x, hx, rfl⟩ ⟨_, y, hy, rfl⟩ h
@@ -67,8 +64,7 @@ instance : Fintype (π C (· ∈ s)) := by
 
 open scoped Classical in
 /-- The Kronecker delta as a locally constant map from `π C (· ∈ s)` to `ℤ`. -/
-noncomputable
-def spanFinBasis (x : π C (· ∈ s)) : LocallyConstant (π C (· ∈ s)) ℤ where
+noncomputable def spanFinBasis (x : π C (· ∈ s)) : LocallyConstant (π C (· ∈ s)) ℤ where
   toFun := fun y ↦ if y = x then 1 else 0
   isLocallyConstant :=
     haveI : DiscreteTopology (π C (· ∈ s)) := Finite.instDiscreteTopology
@@ -80,9 +76,9 @@ theorem spanFinBasis.span : ⊤ ≤ Submodule.span ℤ (Set.range (spanFinBasis 
   use Finsupp.onFinset (Finset.univ) f.toFun (fun _ _ ↦ Finset.mem_univ _)
   ext x
   change LocallyConstant.evalₗ ℤ x _ = _
-  simp only [zsmul_eq_mul, map_finsuppSum, LocallyConstant.evalₗ_apply,
-    LocallyConstant.coe_mul, Pi.mul_apply, spanFinBasis, LocallyConstant.coe_mk, mul_ite, mul_one,
-    mul_zero, Finsupp.sum_ite_eq, Finsupp.mem_support_iff, ne_eq, ite_not]
+  simp only [zsmul_eq_mul, map_finsuppSum, LocallyConstant.evalₗ_apply, LocallyConstant.coe_mul,
+    Pi.mul_apply, spanFinBasis, LocallyConstant.coe_mk, mul_ite, mul_one, mul_zero,
+    Finsupp.sum_ite_eq, Finsupp.mem_support_iff, ne_eq, ite_not]
   split_ifs with h <;> [exact h.symm; rfl]
 
 /--
@@ -90,16 +86,17 @@ A certain explicit list of locally constant maps. The theorem `factors_prod_eq_b
 product of the elements in this list is the delta function `spanFinBasis C s x`.
 -/
 def factors (x : π C (· ∈ s)) : List (LocallyConstant (π C (· ∈ s)) ℤ) :=
-  List.map (fun i ↦ if x.val i = true then e (π C (· ∈ s)) i else (1 - (e (π C (· ∈ s)) i)))
+  List.map
+    (fun i ↦ if x.val i = true then e (π C (· ∈ s)) i else (1 - (e (π C (· ∈ s)) i)))
     (s.sort (· ≥ ·))
 
-theorem list_prod_apply {I} (C : Set (I → Bool)) (x : C) (l : List (LocallyConstant C ℤ)) :
-    l.prod x = (l.map (LocallyConstant.evalMonoidHom x)).prod := by
+theorem list_prod_apply {I} (C : Set (I → Bool)) (x : C) (l : List (LocallyConstant C ℤ))
+    : l.prod x = (l.map (LocallyConstant.evalMonoidHom x)).prod := by
   rw [← map_list_prod (LocallyConstant.evalMonoidHom x) l, LocallyConstant.evalMonoidHom_apply]
 
 set_option backward.defeqAttrib.useBackward true in
-theorem factors_prod_eq_basis_of_eq {x y : (π C fun x ↦ x ∈ s)} (h : y = x) :
-    (factors C s x).prod y = 1 := by
+theorem factors_prod_eq_basis_of_eq {x y : (π C fun x ↦ x ∈ s)} (h : y = x)
+    : (factors C s x).prod y = 1 := by
   rw [list_prod_apply (π C (· ∈ s)) y _]
   apply List.prod_eq_one
   simp only [h, List.mem_map, LocallyConstant.evalMonoidHom, factors]
@@ -111,23 +108,24 @@ theorem factors_prod_eq_basis_of_eq {x y : (π C fun x ↦ x ∈ s)} (h : y = x)
       ite_eq_right hh]
     simp only [LocallyConstant.toFun_eq_coe, LocallyConstant.coe_one, Pi.one_apply, sub_zero]
 
-theorem e_mem_of_eq_true {x : (π C (· ∈ s))} {a : I} (hx : x.val a = true) :
-    e (π C (· ∈ s)) a ∈ factors C s x := by
+theorem e_mem_of_eq_true {x : (π C (· ∈ s))} {a : I} (hx : x.val a = true)
+    : e (π C (· ∈ s)) a ∈ factors C s x := by
   rcases x with ⟨_, z, hz, rfl⟩
   simp only [factors, List.mem_map, Finset.mem_sort]
   refine ⟨a, ?_, ite_eq_left hx⟩
   aesop (add simp Proj)
 
-theorem one_sub_e_mem_of_false {x y : (π C (· ∈ s))} {a : I} (ha : y.val a = true)
-    (hx : x.val a = false) : 1 - e (π C (· ∈ s)) a ∈ factors C s x := by
+theorem one_sub_e_mem_of_false
+    {x y : (π C (· ∈ s))} {a : I} (ha : y.val a = true) (hx : x.val a = false)
+    : 1 - e (π C (· ∈ s)) a ∈ factors C s x := by
   simp only [factors, List.mem_map, Finset.mem_sort]
   use a
   simp only [hx]
   rcases y with ⟨_, z, hz, rfl⟩
   aesop (add simp Proj)
 
-theorem factors_prod_eq_basis_of_ne {x y : (π C (· ∈ s))} (h : y ≠ x) :
-    (factors C s x).prod y = 0 := by
+theorem factors_prod_eq_basis_of_ne {x y : (π C (· ∈ s))} (h : y ≠ x)
+    : (factors C s x).prod y = 0 := by
   rw [list_prod_apply (π C (· ∈ s)) y _]
   apply List.prod_eq_zero
   simp only [List.mem_map]
@@ -135,26 +133,27 @@ theorem factors_prod_eq_basis_of_ne {x y : (π C (· ∈ s))} (h : y ≠ x) :
   cases hx : x.val a
   · rw [hx, ne_eq, Bool.not_eq_false] at ha
     refine ⟨1 - (e (π C (· ∈ s)) a), ⟨one_sub_e_mem_of_false _ _ ha hx, ?_⟩⟩
-    rw [e, LocallyConstant.evalMonoidHom_apply, LocallyConstant.sub_apply,
-      LocallyConstant.coe_one, Pi.one_apply, LocallyConstant.coe_mk, ite_eq_left ha, sub_self]
+    rw [e, LocallyConstant.evalMonoidHom_apply, LocallyConstant.sub_apply, LocallyConstant.coe_one,
+      Pi.one_apply, LocallyConstant.coe_mk, ite_eq_left ha, sub_self]
   · refine ⟨e (π C (· ∈ s)) a, ⟨e_mem_of_eq_true _ _ hx, ?_⟩⟩
     rw [hx] at ha
     rw [LocallyConstant.evalMonoidHom_apply, e, LocallyConstant.coe_mk, ite_eq_right ha]
 
-/-- If `s` is finite, the product of the elements of the list `factors C s x`
-is the delta function at `x`. -/
-theorem factors_prod_eq_basis (x : π C (· ∈ s)) :
-    (factors C s x).prod = spanFinBasis C s x := by
+/--
+If `s` is finite, the product of the elements of the list `factors C s x`
+is the delta function at `x`.
+-/
+theorem factors_prod_eq_basis (x : π C (· ∈ s)) : (factors C s x).prod = spanFinBasis C s x := by
   ext y
   dsimp [spanFinBasis]
   split_ifs with h <;> [exact factors_prod_eq_basis_of_eq _ _ h;
     exact factors_prod_eq_basis_of_ne _ _ h]
 
-theorem GoodProducts.finsuppSum_mem_span_eval {a : I} {as : List I}
-    (ha : List.IsChain (· > ·) (a :: as)) {c : Products I →₀ ℤ}
-    (hc : (c.support : Set (Products I)) ⊆ {m | m.val ≤ as}) :
-    (Finsupp.sum c fun a_1 b ↦ e (π C (· ∈ s)) a * b • Products.eval (π C (· ∈ s)) a_1) ∈
-      Submodule.span ℤ (Products.eval (π C (· ∈ s)) '' {m | m.val ≤ a :: as}) := by
+theorem GoodProducts.finsuppSum_mem_span_eval
+    {a : I} {as : List I} (ha : List.IsChain (· > ·) (a :: as))
+    {c : Products I →₀ ℤ} (hc : (c.support : Set (Products I)) ⊆ {m | m.val ≤ as})
+    : (Finsupp.sum c fun a_1 b ↦ e (π C (· ∈ s)) a * b • Products.eval (π C (· ∈ s)) a_1)
+      ∈ Submodule.span ℤ (Products.eval (π C (· ∈ s)) '' {m | m.val ≤ a :: as}) := by
   apply Submodule.finsuppSum_mem
   intro m hm
   have hsm := (LinearMap.mulLeft ℤ (e (π C (· ∈ s)) a)).map_smul
@@ -169,8 +168,8 @@ theorem GoodProducts.finsuppSum_mem_span_eval {a : I} {as : List I}
   simp only [Products.eval, List.map, List.prod_cons]
 
 /-- If `s` is a finite subset of `I`, then the good products span. -/
-theorem GoodProducts.spanFin [WellFoundedLT I] :
-    ⊤ ≤ Submodule.span ℤ (Set.range (eval (π C (· ∈ s)))) := by
+theorem GoodProducts.spanFin [WellFoundedLT I]
+    : ⊤ ≤ Submodule.span ℤ (Set.range (eval (π C (· ∈ s)))) := by
   rw [span_iff_products]
   refine le_trans (spanFinBasis.span C s) ?_
   rw [Submodule.span_le]
@@ -178,17 +177,20 @@ theorem GoodProducts.spanFin [WellFoundedLT I] :
   rw [← factors_prod_eq_basis]
   let l := s.sort (· ≥ ·)
   dsimp [factors]
-  suffices l.SortedGT → (l.map (fun i ↦ if x.val i = true then e (π C (· ∈ s)) i
-      else (1 - (e (π C (· ∈ s)) i)))).prod ∈
-      Submodule.span ℤ ((Products.eval (π C (· ∈ s))) '' {m | m.val ≤ l}) from
-    Submodule.span_mono (Set.image_subset_range _ _)
-      (this (Finset.sortedGT_sort _))
+  suffices l.SortedGT
+      → (l.map (fun i ↦
+          if x.val i = true then
+            e (π C (· ∈ s)) i
+          else
+            (1 - (e (π C (· ∈ s)) i)))).prod
+        ∈ Submodule.span ℤ ((Products.eval (π C (· ∈ s))) '' {m | m.val ≤ l}) from
+    Submodule.span_mono (Set.image_subset_range _ _) (this (Finset.sortedGT_sort _))
   rw [List.sortedGT_iff_isChain]
   induction l with
   | nil =>
     intro _
     apply Submodule.subset_span
-    exact ⟨⟨[], List.isChain_nil⟩,⟨Or.inl rfl, rfl⟩⟩
+    exact ⟨⟨[], List.isChain_nil⟩, ⟨Or.inl rfl, rfl⟩⟩
   | cons a as ih =>
     rw [List.map_cons, List.prod_cons]
     intro ha
@@ -196,7 +198,8 @@ theorem GoodProducts.spanFin [WellFoundedLT I] :
     rw [Finsupp.mem_span_image_iff_linearCombination] at ih
     simp only [Finsupp.mem_supported, Finsupp.linearCombination_apply] at ih
     obtain ⟨c, hc, hc'⟩ := ih
-    rw [← hc']; clear hc'
+    rw [← hc']
+    clear hc'
     have hmap := fun g ↦ map_finsuppSum (LinearMap.mulLeft ℤ (e (π C (· ∈ s)) a)) c g
     dsimp at hmap ⊢
     split_ifs
@@ -217,7 +220,8 @@ theorem GoodProducts.spanFin [WellFoundedLT I] :
           hc (by simpa only [Finset.mem_coe, Finsupp.mem_support_iff] using hm)
         refine le_trans hmas ?_
         cases as with
-        | nil => exact (List.nil_lt_cons a []).le
+        | nil =>
+          exact (List.nil_lt_cons a []).le
         | cons b bs =>
           apply le_of_lt
           rw [List.isChain_cons_cons] at ha
@@ -227,19 +231,17 @@ theorem GoodProducts.spanFin [WellFoundedLT I] :
 
 end Fin
 
-theorem fin_comap_jointlySurjective
-    (hC : IsClosed C)
-    (f : LocallyConstant C ℤ) : ∃ (s : Finset I)
-    (g : LocallyConstant (π C (· ∈ s)) ℤ), f = g.comap ⟨(ProjRestrict C (· ∈ s)),
-      continuous_projRestrict _ _⟩ := by
-  obtain ⟨J, g, h⟩ := @Profinite.exists_locallyConstant (Finset I)ᵒᵖ _ _ _
-    (spanCone hC.isCompact) ℤ
-    (spanCone_isLimit hC.isCompact) f
+theorem fin_comap_jointlySurjective (hC : IsClosed C) (f : LocallyConstant C ℤ)
+    : ∃ (s : Finset I) (g : LocallyConstant (π C (· ∈ s)) ℤ),
+      f = g.comap ⟨(ProjRestrict C (· ∈ s)), continuous_projRestrict _ _⟩ := by
+  obtain ⟨J, g, h⟩ :=
+    @Profinite.exists_locallyConstant ((Finset I)ᵒᵖ) _ _ _ (spanCone hC.isCompact) ℤ
+      (spanCone_isLimit hC.isCompact) f
   exact ⟨(Opposite.unop J), g, h⟩
 
 /-- The good products span all of `LocallyConstant C ℤ` if `C` is closed. -/
-theorem GoodProducts.span [WellFoundedLT I] (hC : IsClosed C) :
-    ⊤ ≤ Submodule.span ℤ (Set.range (eval C)) := by
+theorem GoodProducts.span [WellFoundedLT I] (hC : IsClosed C)
+    : ⊤ ≤ Submodule.span ℤ (Set.range (eval C)) := by
   rw [span_iff_products]
   intro f _
   obtain ⟨K, f', rfl⟩ : ∃ K f', f = πJ C K f' := fin_comap_jointlySurjective C hC f

@@ -33,9 +33,9 @@ noncomputable section
 
 section FourierTransform
 
-variable {E F : Type*}
-  [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
-  [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
+variable
+  {E F : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E] [NormedAddCommGroup F]
+  [InnerProductSpace ℂ F] [CompleteSpace F]
 
 open SchwartzMap MeasureTheory FourierTransform
 
@@ -49,8 +49,8 @@ variable (E F) in
 /-- The Fourier transform on `L2` as a linear isometry equivalence. -/
 @[wikidata Q6520159]
 def fourierTransformₗᵢ : (Lp (α := E) F 2) ≃ₗᵢ[ℂ] (Lp (α := E) F 2) :=
-  (fourierEquiv ℂ 𝓢(E, F)).extendOfIsometry
-    (toLpCLM ℂ (E := E) F 2 volume) (toLpCLM ℂ (E := E) F 2 volume)
+  (fourierEquiv ℂ 𝓢(E, F)).extendOfIsometry (toLpCLM ℂ (E := E) F 2 volume)
+    (toLpCLM ℂ (E := E) F 2 volume)
     -- Not explicitly stating the measure as being the volume causes time-outs in the proofs below
     (denseRange_toLpCLM ENNReal.ofNat_ne_top) (denseRange_toLpCLM ENNReal.ofNat_ne_top)
     norm_fourier_toL2_eq
@@ -118,8 +118,8 @@ theorem SchwartzMap.toLp_fourierInv_eq (f : 𝓢(E, F)) : 𝓕⁻ (f.toLp 2) = (
 namespace MeasureTheory.Lp
 
 /-- The `𝓢'`-Fourier transform and the `L2`-Fourier transform coincide on `L2`. -/
-theorem fourier_toTemperedDistribution_eq (f : Lp (α := E) F 2) :
-    𝓕 (f : 𝓢'(E, F)) = (𝓕 f : Lp (α := E) F 2) := by
+theorem fourier_toTemperedDistribution_eq (f : Lp (α := E) F 2)
+    : 𝓕 (f : 𝓢'(E, F)) = (𝓕 f : Lp (α := E) F 2) := by
   set p := fun f : Lp (α := E) F 2 ↦ 𝓕 (f : 𝓢'(E, F)) = (𝓕 f : Lp (α := E) F 2)
   apply DenseRange.induction_on (p := p)
     (SchwartzMap.denseRange_toLpCLM (p := 2) ENNReal.ofNat_ne_top) f
@@ -130,13 +130,12 @@ theorem fourier_toTemperedDistribution_eq (f : Lp (α := E) F 2) :
   simp [p, TemperedDistribution.fourier_toTemperedDistributionCLM_eq]
 
 /-- The `𝓢'`-inverse Fourier transform and the `L2`-inverse Fourier transform coincide on `L2`. -/
-theorem fourierInv_toTemperedDistribution_eq (f : Lp (α := E) F 2) :
-    𝓕⁻ (f : 𝓢'(E, F)) = (𝓕⁻ f : Lp (α := E) F 2) := calc
-  _ = 𝓕⁻ (Lp.toTemperedDistribution (𝓕 (𝓕⁻ f))) := by
-    congr; exact (fourier_fourierInv_eq f).symm
-  _ = 𝓕⁻ (𝓕 (Lp.toTemperedDistribution (𝓕⁻ f))) := by
-    rw [fourier_toTemperedDistribution_eq]
-  _ = _ := fourierInv_fourier_eq _
+theorem fourierInv_toTemperedDistribution_eq (f : Lp (α := E) F 2)
+    : 𝓕⁻ (f : 𝓢'(E, F)) = (𝓕⁻ f : Lp (α := E) F 2) :=
+  calc
+    _ = 𝓕⁻ (Lp.toTemperedDistribution (𝓕 (𝓕⁻ f))) := by congr; exact (fourier_fourierInv_eq f).symm
+    _ = 𝓕⁻ (𝓕 (Lp.toTemperedDistribution (𝓕⁻ f))) := by rw [fourier_toTemperedDistribution_eq]
+    _ = _ := fourierInv_fourier_eq _
 
 end MeasureTheory.Lp
 

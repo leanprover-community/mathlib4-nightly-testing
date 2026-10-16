@@ -46,8 +46,8 @@ variable {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
 Compositions of continuous ℝ-linear maps with functions that are harmonic on a set and continuous
 on its closure are again harmonic on the set and continuous on its closure.
 -/
-theorem HarmonicContOnCl.comp_CLM {f : E → F} {s : Set E} (h : HarmonicContOnCl f s)
-    (l : F →L[ℝ] G) : HarmonicContOnCl (l ∘ f) s :=
+theorem HarmonicContOnCl.comp_CLM {f : E → F} {s : Set E} (h : HarmonicContOnCl f s) (l : F →L[ℝ] G)
+    : HarmonicContOnCl (l ∘ f) s :=
   ⟨h.1.comp_CLM l, l.continuous.comp_continuousOn h.2⟩
 
 end
@@ -64,23 +64,24 @@ The Mean Value Property of harmonic functions: If f : ℂ → F is harmonic in a
 closed disc of radius R and center c, then the circle average circleAverage f c R equals
 f c.
 -/
-theorem HarmonicOnNhd.circleAverage_eq (hf : HarmonicOnNhd f (closedBall c |R|)) :
-    circleAverage f c R = f c := by
+theorem HarmonicOnNhd.circleAverage_eq (hf : HarmonicOnNhd f (closedBall c |R|))
+    : circleAverage f c R = f c := by
   have h : CircleIntegrable f c R :=
     (hf.continuousOn.mono sphere_subset_closedBall).circleIntegrable'
   rw [SeparatingDual.eq_iff_forall_dual_eq (R := ℝ)]
   intro g
   rw [← g.circleAverage_comp_comm h]
-  obtain ⟨e, h₁e, h₂e⟩ := (isCompact_closedBall c |R|).exists_thickening_subset_open
-    (isOpen_setOfPred_harmonicAt (g ∘ f)) (hf.comp_CLM g)
+  obtain ⟨e, h₁e, h₂e⟩ :=
+    (isCompact_closedBall c |R|).exists_thickening_subset_open (isOpen_setOfPred_harmonicAt (g ∘ f))
+      (hf.comp_CLM g)
   rw [thickening_closedBall h₁e (abs_nonneg R)] at h₂e
   obtain ⟨F, h₁F, h₂F⟩ := InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq h₂e
   have h₃F : DifferentiableOn ℂ F (closure (ball c |R|)) := by
     intro x hx
     apply (h₁F x _).differentiableWithinAt
     grind [mem_ball, mem_closedBall.1 (closure_ball_subset_closedBall hx)]
-  have h₄F : Set.EqOn (Complex.reCLM ∘ F) (⇑g ∘ f) (sphere c |R|) :=
-    fun x hx ↦ h₂F (sphere_subset_ball (lt_add_of_pos_left |R| h₁e) hx)
+  have h₄F : Set.EqOn (Complex.reCLM ∘ F) (⇑g ∘ f) (sphere c |R|) := fun x hx ↦
+    h₂F (sphere_subset_ball (lt_add_of_pos_left (|R|) h₁e) hx)
   rw [← circleAverage_congr_sphere h₄F, Complex.reCLM.circleAverage_comp_comm,
     h₃F.diffContOnCl.circleAverage]
   · apply h₂F
@@ -92,8 +93,8 @@ The Mean Value Property of harmonic functions: If f : ℂ → F is harmonic on a
 |R| and center c and continuous on its closure, then the circle average circleAverage f c R
 equals f c.
 -/
-theorem HarmonicContOnCl.circleAverage_eq (hf : HarmonicContOnCl f (ball c |R|)) :
-    circleAverage f c R = f c := by
+theorem HarmonicContOnCl.circleAverage_eq (hf : HarmonicContOnCl f (ball c |R|))
+    : circleAverage f c R = f c := by
   have h : CircleIntegrable f c R :=
     (hf.continuousOn_ball.mono sphere_subset_closedBall).circleIntegrable'
   rw [SeparatingDual.eq_iff_forall_dual_eq (R := ℝ)]

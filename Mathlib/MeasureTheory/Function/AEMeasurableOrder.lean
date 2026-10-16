@@ -24,32 +24,45 @@ as possible.
 
 public section
 
-
 open ENNReal MeasureTheory Set TopologicalSpace
 
 variable {α : Type*} {m : MeasurableSpace α} (μ : Measure α)
 
-/-- If a function `f : α → β` is such that the level sets `{f < p}` and `{q < f}` have measurable
+/--
+If a function `f : α → β` is such that the level sets `{f < p}` and `{q < f}` have measurable
 supersets which are disjoint up to measure zero when `p < q`, then `f` is almost-everywhere
-measurable. It is even enough to have this for `p` and `q` in a countable dense set. -/
-theorem MeasureTheory.aemeasurable_of_exist_almost_disjoint_supersets {β : Type*}
-    [CompleteLinearOrder β] [DenselyOrdered β] [TopologicalSpace β] [OrderTopology β]
-    [SecondCountableTopology β] [MeasurableSpace β] [BorelSpace β] (s : Set β)
-    (s_count : s.Countable) (s_dense : Dense s) (f : α → β)
-    (h : ∀ p ∈ s, ∀ q ∈ s, p < q → ∃ u v, MeasurableSet u ∧ MeasurableSet v ∧
-      { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v ∧ μ (u ∩ v) = 0) :
-    AEMeasurable f μ := by
+measurable. It is even enough to have this for `p` and `q` in a countable dense set.
+-/
+theorem MeasureTheory.aemeasurable_of_exist_almost_disjoint_supersets
+    {β : Type*} [CompleteLinearOrder β] [DenselyOrdered β] [TopologicalSpace β] [OrderTopology β]
+    [SecondCountableTopology β] [MeasurableSpace β] [BorelSpace β]
+    (s : Set β) (s_count : s.Countable) (s_dense : Dense s)
+    (f : α → β)
+    (h : ∀ p ∈ s, ∀ q ∈ s,
+      p < q
+        → ∃ u v,
+          MeasurableSet u ∧ MeasurableSet v ∧ { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v
+            ∧ μ (u ∩ v) = 0)
+    : AEMeasurable f μ := by
   classical
   have : Encodable s := s_count.toEncodable
-  have h' : ∀ p q, ∃ u v, MeasurableSet u ∧ MeasurableSet v ∧
-      { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v ∧ (p ∈ s → q ∈ s → p < q → μ (u ∩ v) = 0) := by
+  have h'
+      : ∀ p q, ∃ u v,
+        MeasurableSet u ∧ MeasurableSet v ∧ { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v
+          ∧ (p ∈ s → q ∈ s → p < q → μ (u ∩ v) = 0) := by
     intro p q
     by_cases H : p ∈ s ∧ q ∈ s ∧ p < q
     · rcases h p H.1 q H.2.1 H.2.2 with ⟨u, v, hu, hv, h'u, h'v, hμ⟩
       exact ⟨u, v, hu, hv, h'u, h'v, fun _ _ _ => hμ⟩
-    · refine
-        ⟨univ, univ, MeasurableSet.univ, MeasurableSet.univ, subset_univ _, subset_univ _,
-          fun ps qs pq => ?_⟩
+    · refine ⟨
+        univ,
+        univ,
+        MeasurableSet.univ,
+        MeasurableSet.univ,
+        subset_univ _,
+        subset_univ _,
+        fun ps qs pq => ?_
+      ⟩
       exact (H ⟨ps, qs, pq⟩).elim
   choose! u v huv using h'
   let u' : β → Set α := fun p => ⋂ q ∈ s ∩ Ioi p, u p q
@@ -96,13 +109,19 @@ theorem MeasureTheory.aemeasurable_of_exist_almost_disjoint_supersets {β : Type
       simp only [A, rq, piecewise_eq_of_mem]
   exact ⟨f', f'_meas, ff'⟩
 
-/-- If a function `f : α → ℝ≥0∞` is such that the level sets `{f < p}` and `{q < f}` have measurable
+/--
+If a function `f : α → ℝ≥0∞` is such that the level sets `{f < p}` and `{q < f}` have measurable
 supersets which are disjoint up to measure zero when `p` and `q` are finite numbers satisfying
-`p < q`, then `f` is almost-everywhere measurable. -/
-theorem ENNReal.aemeasurable_of_exist_almost_disjoint_supersets (f : α → ℝ≥0∞)
-    (h : ∀ p q, p < q → ∃ u v, MeasurableSet u ∧ MeasurableSet v ∧
-        { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v ∧ μ (u ∩ v) = 0) :
-    AEMeasurable f μ := by
+`p < q`, then `f` is almost-everywhere measurable.
+-/
+theorem ENNReal.aemeasurable_of_exist_almost_disjoint_supersets
+    (f : α → ℝ≥0∞)
+    (h : ∀ p q,
+      p < q
+        → ∃ u v,
+          MeasurableSet u ∧ MeasurableSet v ∧ { x | f x < p } ⊆ u ∧ { x | q < f x } ⊆ v
+            ∧ μ (u ∩ v) = 0)
+    : AEMeasurable f μ := by
   obtain ⟨s, s_count, s_dense⟩ := TopologicalSpace.exists_countable_dense ENNReal
   apply MeasureTheory.aemeasurable_of_exist_almost_disjoint_supersets μ s s_count s_dense
   exact fun p _ q _ hpq ↦ h p q hpq

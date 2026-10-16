@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.Action.Pi
 public import Mathlib.Algebra.Group.End
 public import Mathlib.Algebra.Group.Pointwise.Set.Scalar
 public import Mathlib.Algebra.Torsor.Defs
-
 import Mathlib.Algebra.Group.Action.Basic
 
 /-!
@@ -23,7 +22,6 @@ increasing imports there.
 
 open scoped Pointwise
 
-
 section General
 
 variable {G : Type*} {P : Type*} [Group G] [T : Torsor G P]
@@ -35,7 +33,7 @@ theorem singleton_sdiv_self (p : P) : ({p} : Set P) /ₛ {p} = {(1 : G)} := by
   rw [Set.singleton_sdiv_singleton, sdiv_self]
 
 @[to_additive (attr := simp)]
-theorem one_mem_sdiv_iff {s t : Set P} : (1 : G) ∈ s /ₛ t ↔ ¬Disjoint s t := by
+theorem one_mem_sdiv_iff {s t : Set P} : (1 : G) ∈ s /ₛ t ↔ ¬ Disjoint s t := by
   simp [not_disjoint_iff_nonempty_inter, mem_sdiv, Set.Nonempty]
 
 @[to_additive]
@@ -50,8 +48,10 @@ results, those points are equal. -/]
 theorem sdiv_left_cancel {p₁ p₂ p : P} (h : p₁ /ₛ p = p₂ /ₛ p) : p₁ = p₂ := by
   rwa [← div_eq_one, sdiv_div_sdiv_cancel_right, sdiv_eq_one_iff_eq] at h
 
-/-- Dividing two points by the same point produces equal results
-if and only if those points are equal. -/
+/--
+Dividing two points by the same point produces equal results
+if and only if those points are equal.
+-/
 @[to_additive (attr := simp) /-- The same point subtracted from two points produces equal results
 if and only if those points are equal. -/]
 theorem sdiv_left_cancel_iff {p₁ p₂ p : P} : p₁ /ₛ p = p₂ /ₛ p ↔ p₁ = p₂ :=
@@ -69,8 +69,10 @@ theorem sdiv_right_cancel {p₁ p₂ p : P} (h : p /ₛ p₁ = p /ₛ p₂) : p�
   refine smul_left_cancel (p /ₛ p₂) ?_
   rw [sdiv_smul, ← h, sdiv_smul]
 
-/-- Subtracting two points from the same point produces equal results
-if and only if those points are equal. -/
+/--
+Subtracting two points from the same point produces equal results
+if and only if those points are equal.
+-/
 @[to_additive (attr := simp)]
 theorem sdiv_right_cancel_iff {p₁ p₂ p : P} : p /ₛ p₁ = p /ₛ p₂ ↔ p₁ = p₂ :=
   ⟨sdiv_right_cancel, fun h => h ▸ rfl⟩
@@ -96,13 +98,13 @@ theorem smul_sdiv_smul_cancel_left (v : G) (p₁ p₂ : P) : (v • p₁) /ₛ (
   rw [sdiv_smul_eq_sdiv_div, smul_sdiv_assoc, mul_div_cancel_left]
 
 @[to_additive]
-theorem smul_sdiv_smul_comm (v₁ v₂ : G) (p₁ p₂ : P) :
-    (v₁ • p₁) /ₛ (v₂ • p₂) = (v₁ / v₂) * (p₁ /ₛ p₂) := by
+theorem smul_sdiv_smul_comm (v₁ v₂ : G) (p₁ p₂ : P)
+    : (v₁ • p₁) /ₛ (v₂ • p₂) = (v₁ / v₂) * (p₁ /ₛ p₂) := by
   rw [sdiv_smul_eq_sdiv_div, smul_sdiv_assoc, mul_div_assoc, ← mul_comm_div]
 
 @[to_additive]
-theorem div_mul_sdiv_comm (v₁ v₂ : G) (p₁ p₂ : P) :
-    (v₁ / v₂) * (p₁ /ₛ p₂) = (v₁ • p₁) /ₛ (v₂ • p₂) :=
+theorem div_mul_sdiv_comm (v₁ v₂ : G) (p₁ p₂ : P)
+    : (v₁ / v₂) * (p₁ /ₛ p₂) = (v₁ • p₁) /ₛ (v₂ • p₂) :=
   smul_sdiv_smul_comm _ _ _ _ |>.symm
 
 @[to_additive]
@@ -111,13 +113,13 @@ theorem sdiv_smul_comm (p₁ p₂ p₃ : P) : (p₁ /ₛ p₂ : G) • p₃ = (p
   simp
 
 @[to_additive]
-theorem smul_eq_smul_iff_div_eq_sdiv {v₁ v₂ : G} {p₁ p₂ : P} :
-    v₁ • p₁ = v₂ • p₂ ↔ v₂ / v₁ = p₁ /ₛ p₂ := by
+theorem smul_eq_smul_iff_div_eq_sdiv {v₁ v₂ : G} {p₁ p₂ : P}
+    : v₁ • p₁ = v₂ • p₂ ↔ v₂ / v₁ = p₁ /ₛ p₂ := by
   rw [smul_eq_smul_iff_inv_mul_eq_sdiv, inv_mul_eq_div]
 
 @[to_additive]
-theorem sdiv_div_sdiv_comm (p₁ p₂ p₃ p₄ : P) :
-    (p₁ /ₛ p₂) / (p₃ /ₛ p₄) = (p₁ /ₛ p₃) / (p₂ /ₛ p₄) := by
+theorem sdiv_div_sdiv_comm (p₁ p₂ p₃ p₄ : P)
+    : (p₁ /ₛ p₂) / (p₃ /ₛ p₄) = (p₁ /ₛ p₃) / (p₂ /ₛ p₄) := by
   rw [← sdiv_smul_eq_sdiv_div, sdiv_smul_comm, sdiv_smul_eq_sdiv_div]
 
 namespace Set
@@ -144,28 +146,23 @@ instance instTorsor : Torsor (G × G') (P × P') where
   smul_sdiv' _ _ := Prod.ext (smul_sdiv _ _) (smul_sdiv _ _)
 
 @[to_additive (attr := simp)]
-theorem fst_smul (v : G × G') (p : P × P') : (v • p).1 = v.1 • p.1 :=
-  rfl
+theorem fst_smul (v : G × G') (p : P × P') : (v • p).1 = v.1 • p.1 := rfl
 
 @[to_additive (attr := simp)]
-theorem snd_smul (v : G × G') (p : P × P') : (v • p).2 = v.2 • p.2 :=
-  rfl
+theorem snd_smul (v : G × G') (p : P × P') : (v • p).2 = v.2 • p.2 := rfl
 
 @[to_additive (attr := simp)]
-theorem mk_smul_mk (v : G) (v' : G') (p : P) (p' : P') : (v, v') • (p, p') = (v • p, v' • p') :=
-  rfl
+theorem mk_smul_mk (v : G) (v' : G') (p : P) (p' : P') : (v, v') • (p, p') = (v • p, v' • p') := rfl
 
 @[to_additive (attr := simp)]
-theorem fst_sdiv (p₁ p₂ : P × P') : (p₁ /ₛ p₂ : G × G').1 = p₁.1 /ₛ p₂.1 :=
-  rfl
+theorem fst_sdiv (p₁ p₂ : P × P') : (p₁ /ₛ p₂ : G × G').1 = p₁.1 /ₛ p₂.1 := rfl
 
 @[to_additive (attr := simp)]
-theorem snd_sdiv (p₁ p₂ : P × P') : (p₁ /ₛ p₂ : G × G').2 = p₁.2 /ₛ p₂.2 :=
-  rfl
+theorem snd_sdiv (p₁ p₂ : P × P') : (p₁ /ₛ p₂ : G × G').2 = p₁.2 /ₛ p₂.2 := rfl
 
 @[to_additive (attr := simp)]
-theorem mk_sdiv_mk (p₁ p₂ : P) (p₁' p₂' : P') :
-    ((p₁, p₁') /ₛ (p₂, p₂') : G × G') = (p₁ /ₛ p₂, p₁' /ₛ p₂') :=
+theorem mk_sdiv_mk (p₁ p₂ : P) (p₁' p₂' : P')
+    : ((p₁, p₁') /ₛ (p₂, p₂') : G × G') = (p₁ /ₛ p₂, p₁' /ₛ p₂') :=
   rfl
 
 end Prod
@@ -175,8 +172,8 @@ namespace Set
 variable {G G' P P' : Type*} [Group G] [Group G'] [Torsor G P] [Torsor G' P']
 
 @[to_additive prod_vsub_prod_comm]
-theorem prod_sdiv_prod_comm (s₁ s₂ : Set P) (t₁ t₂ : Set P') :
-    (s₁ ×ˢ t₁) /ₛ (s₂ ×ˢ t₂) = (s₁ /ₛ s₂) ×ˢ (t₁ /ₛ t₂) := by
+theorem prod_sdiv_prod_comm (s₁ s₂ : Set P) (t₁ t₂ : Set P')
+    : (s₁ ×ˢ t₁) /ₛ (s₂ ×ˢ t₂) = (s₁ /ₛ s₂) ×ˢ (t₁ /ₛ t₂) := by
   aesop (add norm simp [mem_sdiv, mem_prod])
 
 end Set
@@ -185,8 +182,8 @@ namespace Pi
 
 universe u v w
 
-variable {I : Type u} {fg : I → Type v} [∀ i, Group (fg i)] {fp : I → Type w}
-  [∀ i, Torsor (fg i) (fp i)]
+variable
+  {I : Type u} {fg : I → Type v} [∀ i, Group (fg i)] {fp : I → Type w} [∀ i, Torsor (fg i) (fp i)]
 
 /-- A product of `Torsor`s is a `Torsor`. -/
 @[to_additive /-- A product of `AddTorsor`s is an `AddTorsor`. -/]
@@ -196,12 +193,10 @@ instance instTorsor : Torsor (∀ i, fg i) (∀ i, fp i) where
   smul_sdiv' g p := funext fun i => smul_sdiv (g i) (p i)
 
 @[to_additive (attr := simp)]
-theorem sdiv_apply (p q : ∀ i, fp i) (i : I) : (p /ₛ q) i = p i /ₛ q i :=
-  rfl
+theorem sdiv_apply (p q : ∀ i, fp i) (i : I) : (p /ₛ q) i = p i /ₛ q i := rfl
 
 @[to_additive (attr := push ←)]
-theorem sdiv_def (p q : ∀ i, fp i) : p /ₛ q = fun i => p i /ₛ q i :=
-  rfl
+theorem sdiv_def (p q : ∀ i, fp i) : p /ₛ q = fun i => p i /ₛ q i := rfl
 
 end Pi
 
@@ -210,8 +205,7 @@ namespace Equiv
 variable (G : Type*) (P : Type*) [Group G] [Torsor G P]
 
 @[to_additive (attr := simp)]
-theorem constSMul_one : constSMul P (1 : G) = 1 :=
-  ext <| one_smul G
+theorem constSMul_one : constSMul P (1 : G) = 1 := ext <| one_smul G
 
 variable {G}
 
@@ -220,8 +214,8 @@ theorem constSMul_mul (v₁ v₂ : G) : constSMul P (v₁ * v₂) = constSMul P 
   ext <| mul_smul v₁ v₂
 
 /-- `Equiv.constVAdd` as a homomorphism from `Multiplicative G` to `Equiv.perm P` -/
-def constVAddHom (G : Type*) (P : Type*) [AddGroup G] [AddTorsor G P] :
-    Multiplicative G →* Equiv.Perm P where
+def constVAddHom (G : Type*) (P : Type*) [AddGroup G] [AddTorsor G P]
+    : Multiplicative G →* Equiv.Perm P where
   toFun v := constVAdd P (v.toAdd)
   map_one' := constVAdd_zero G P
   map_mul' v v' := constVAdd_add P v.toAdd v'.toAdd
@@ -244,47 +238,52 @@ theorem left_vsub_pointReflection (x y : P) : x -ᵥ pointReflection x y = y -�
 theorem right_vsub_pointReflection (x y : P) : y -ᵥ pointReflection x y = 2 • (y -ᵥ x) :=
   neg_injective <| by simp [← neg_nsmul]
 
-/-- `x` is the only fixed point of `pointReflection x`. This lemma requires
-`x + x = y + y ↔ x = y`. There is no typeclass to use here, so we add it as an explicit argument. -/
-theorem pointReflection_fixed_iff_of_injective_two_nsmul {x y : P} (h : Injective (2 • · : G → G)) :
-    pointReflection x y = y ↔ y = x := by
+/--
+`x` is the only fixed point of `pointReflection x`. This lemma requires
+`x + x = y + y ↔ x = y`. There is no typeclass to use here, so we add it as an explicit argument.
+-/
+theorem pointReflection_fixed_iff_of_injective_two_nsmul {x y : P} (h : Injective (2 • · : G → G))
+    : pointReflection x y = y ↔ y = x := by
   rw [pointReflection_apply, eq_comm, eq_vadd_iff_vsub_eq, ← neg_vsub_eq_vsub_rev,
     neg_eq_iff_add_eq_zero, ← two_nsmul, ← nsmul_zero 2, h.eq_iff, vsub_eq_zero_iff_eq, eq_comm]
 
-theorem injective_pointReflection_left_of_injective_two_nsmul {G P : Type*} [AddCommGroup G]
-    [AddTorsor G P] (h : Injective (2 • · : G → G)) (y : P) :
-    Injective fun x : P => pointReflection x y :=
-  fun x₁ x₂ (hy : pointReflection x₁ y = pointReflection x₂ y) => by
+theorem injective_pointReflection_left_of_injective_two_nsmul
+    {G P : Type*} [AddCommGroup G] [AddTorsor G P] (h : Injective (2 • · : G → G)) (y : P)
+    : Injective fun x : P =>
+      pointReflection x y := fun x₁ x₂ (hy : pointReflection x₁ y = pointReflection x₂ y) => by
   rwa [pointReflection_apply, pointReflection_apply, vadd_eq_vadd_iff_sub_eq_vsub,
-    vsub_sub_vsub_cancel_right, ← neg_vsub_eq_vsub_rev, neg_eq_iff_add_eq_zero,
-    ← two_nsmul, ← nsmul_zero 2, h.eq_iff, vsub_eq_zero_iff_eq] at hy
+      vsub_sub_vsub_cancel_right, ← neg_vsub_eq_vsub_rev, neg_eq_iff_add_eq_zero, ← two_nsmul,
+      ← nsmul_zero 2, h.eq_iff, vsub_eq_zero_iff_eq]
+    at hy
 
-/-- In the special case of additive commutative groups (as opposed to just additive torsors),
-`Equiv.pointReflection x` coincides with `Equiv.subLeft (2 • x)`. -/
-lemma pointReflection_eq_subLeft {G : Type*} [AddCommGroup G] (x : G) :
-    pointReflection x = Equiv.subLeft (2 • x) := by
+/--
+In the special case of additive commutative groups (as opposed to just additive torsors),
+`Equiv.pointReflection x` coincides with `Equiv.subLeft (2 • x)`.
+-/
+lemma pointReflection_eq_subLeft {G : Type*} [AddCommGroup G] (x : G)
+    : pointReflection x = Equiv.subLeft (2 • x) := by
   ext; simp [pointReflection, sub_add_eq_add_sub, two_nsmul]
 
 end Equiv
 
 /-- Pullback of a torsor along an injective map. -/
 @[to_additive /-- Pullback of an add torsor along an injective map. -/]
-abbrev Function.Injective.torsor {G P Q : Type*}
-    [Group G] [Torsor G P] [SMul G Q] [SDiv G Q] [Nonempty Q] (f : Q → P)
-    (hf : Function.Injective f)
-    (smul : ∀ (c : G) (x : Q), f (c • x) = c • f x)
-    (sdiv : ∀ (x y : Q), x /ₛ y = f x /ₛ f y) : Torsor G Q where
+abbrev Function.Injective.torsor
+    {G P Q : Type*} [Group G] [Torsor G P] [SMul G Q] [SDiv G Q] [Nonempty Q]
+    (f : Q → P) (hf : Function.Injective f) (smul : ∀ (c : G) (x : Q), f (c • x) = c • f x)
+    (sdiv : ∀ (x y : Q), x /ₛ y = f x /ₛ f y)
+    : Torsor G Q where
   __ := hf.mulAction f smul
   sdiv_smul' x y := hf <| by simp only [sdiv, smul, sdiv_smul]
   smul_sdiv' c x := by simp [sdiv, smul]
 
 /-- Pushforward of a torsor along a surjective map. -/
 @[to_additive /-- Pushforward of an add torsor along a surjective map. -/]
-abbrev Function.Surjective.torsor {G P Q : Type*}
-    [Group G] [Torsor G P] [SMul G Q] [SDiv G Q]
-    (f : P → Q) (hf : Surjective f)
-    (smul : ∀ (c : G) (x : P), f (c • x) = c • f x)
-    (sdiv : ∀ (x y : P), x /ₛ y = f x /ₛ f y) : Torsor G Q where
+abbrev Function.Surjective.torsor
+    {G P Q : Type*} [Group G] [Torsor G P] [SMul G Q] [SDiv G Q]
+    (f : P → Q) (hf : Surjective f) (smul : ∀ (c : G) (x : P), f (c • x) = c • f x)
+    (sdiv : ∀ (x y : P), x /ₛ y = f x /ₛ f y)
+    : Torsor G Q where
   __ := hf.mulAction f smul
   nonempty := Torsor.nonempty.map f
   sdiv_smul' := by simp [hf.forall, ← smul, ← sdiv]

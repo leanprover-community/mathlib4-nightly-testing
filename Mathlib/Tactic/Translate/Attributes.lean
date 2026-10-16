@@ -24,11 +24,13 @@ open Lean
 initialize generatingAttrs : IO.Ref (NameMap (Name → Syntax → AttributeKind → AttrM (Array Name))) ←
   IO.mkRef {}
 
-/-- For an attribute that generates new declarations,
+/--
+For an attribute that generates new declarations,
 register the implementation that returns the generated declarations.
-This will be used by translation attributes for translating between generated declarations. -/
-def registerGeneratingAttr (attr : Name)
-    (impl : Name → Syntax → AttributeKind → AttrM (Array Name)) : BaseIO Unit :=
+This will be used by translation attributes for translating between generated declarations.
+-/
+def registerGeneratingAttr (attr : Name) (impl : Name → Syntax → AttributeKind → AttrM (Array Name))
+    : BaseIO Unit :=
   generatingAttrs.modify (·.insert attr impl)
 
 end Mathlib.Tactic

@@ -21,7 +21,6 @@ of `Z` in degree zero.
 
 @[expose] public section
 
-
 universe v u v' u'
 
 namespace CategoryTheory
@@ -53,14 +52,14 @@ structure ProjectiveResolution (Z : C) where
 open ProjectiveResolution in
 attribute [instance] projective hasHomology ProjectiveResolution.quasiIso
 
-/-- An object admits a projective resolution.
--/
+/-- An object admits a projective resolution. -/
 class HasProjectiveResolution (Z : C) : Prop where
   out : Nonempty (ProjectiveResolution Z)
 
 variable (C)
 
-/-- You will rarely use this typeclass directly: it is implied by the combination
+/--
+You will rarely use this typeclass directly: it is implied by the combination
 `[EnoughProjectives C]` and `[Abelian C]`.
 By itself it's enough to set up the basic theory of derived functors.
 -/
@@ -74,31 +73,29 @@ namespace ProjectiveResolution
 variable {C}
 variable {Z : C} (P : ProjectiveResolution Z)
 
-lemma complex_exactAt_succ (n : ℕ) :
-    P.complex.ExactAt (n + 1) := by
+lemma complex_exactAt_succ (n : ℕ) : P.complex.ExactAt (n + 1) := by
   rw [← quasiIsoAt_iff_exactAt' P.π (n + 1) (exactAt_succ_single_obj _ _)]
   infer_instance
 
-lemma exact_succ (n : ℕ) :
-    (ShortComplex.mk _ _ (P.complex.d_comp_d (n + 2) (n + 1) n)).Exact :=
-  ((HomologicalComplex.exactAt_iff' _ (n + 2) (n + 1) n) (by simp only [prev]; rfl)
-    (by simp)).1 (P.complex_exactAt_succ n)
+lemma exact_succ (n : ℕ) : (ShortComplex.mk _ _ (P.complex.d_comp_d (n + 2) (n + 1) n)).Exact :=
+  ((HomologicalComplex.exactAt_iff' _ (n + 2) (n + 1) n) (by simp only [prev]; rfl) (by simp)).1
+    (P.complex_exactAt_succ n)
 
 @[simp]
 theorem π_f_succ (n : ℕ) : P.π.f (n + 1) = 0 :=
   (isZero_single_obj_X _ _ _ _ (by simp)).eq_of_tgt _ _
 
 @[reassoc (attr := simp)]
-theorem complex_d_comp_π_f_zero :
-    P.complex.d 1 0 ≫ P.π.f 0 = 0 := by
+theorem complex_d_comp_π_f_zero : P.complex.d 1 0 ≫ P.π.f 0 = 0 := by
   rw [← P.π.comm 1 0, single_obj_d, comp_zero]
 
-theorem complex_d_succ_comp (n : ℕ) :
-    P.complex.d n (n + 1) ≫ P.complex.d (n + 1) (n + 2) = 0 := by
+theorem complex_d_succ_comp (n : ℕ) : P.complex.d n (n + 1) ≫ P.complex.d (n + 1) (n + 2) = 0 := by
   simp
 
-/-- The (limit) cokernel cofork given by the composition
-`P.complex.X 1 ⟶ P.complex.X 0 ⟶ Z` when `P : ProjectiveResolution Z`. -/
+/--
+The (limit) cokernel cofork given by the composition
+`P.complex.X 1 ⟶ P.complex.X 0 ⟶ Z` when `P : ProjectiveResolution Z`.
+-/
 @[simp]
 noncomputable def cokernelCofork : CokernelCofork (P.complex.d 1 0) :=
   CokernelCofork.ofπ _ P.complex_d_comp_π_f_zero
@@ -108,8 +105,8 @@ set_option backward.defeqAttrib.useBackward true in
 /-- `Z` is the cokernel of `P.complex.X 1 ⟶ P.complex.X 0` when `P : ProjectiveResolution Z`. -/
 noncomputable def isColimitCokernelCofork : IsColimit (P.cokernelCofork) := by
   refine IsColimit.ofIsoColimit (P.complex.opcyclesIsCokernel 1 0 (by simp)) ?_
-  refine Cofork.ext (P.complex.isoHomologyι₀.symm ≪≫ isoOfQuasiIsoAt P.π 0 ≪≫
-    singleObjHomologySelfIso _ _ _) ?_
+  refine Cofork.ext
+    (P.complex.isoHomologyι₀.symm ≪≫ isoOfQuasiIsoAt P.π 0 ≪≫ singleObjHomologySelfIso _ _ _) ?_
   rw [← cancel_mono (singleObjHomologySelfIso (ComplexShape.down ℕ) 0 _).inv,
     ← cancel_mono (isoHomologyι₀ _).hom]
   dsimp
@@ -139,9 +136,11 @@ noncomputable def self [Projective Z] : ProjectiveResolution Z where
 
 variable {Z} {Z' : C} (P' : ProjectiveResolution Z')
 
-/-- Given projective resolutions `P` and `P'` of two objects `Z` and `Z'`,
+/--
+Given projective resolutions `P` and `P'` of two objects `Z` and `Z'`,
 and a morphism `f : Z ⟶ Z'`, this structure contains the data of a morphism
-`P.complex ⟶ P'.complex` which is compatible with `f` -/
+`P.complex ⟶ P'.complex` which is compatible with `f`
+-/
 structure Hom (f : Z ⟶ Z') where
   /-- A morphism between the cocomplexes -/
   hom : P.complex ⟶ P'.complex
@@ -154,8 +153,8 @@ attribute [reassoc (attr := simp)] hom_f_zero_comp_π_f_zero
 set_option backward.isDefEq.respectTransparency false in
 variable {I I'} in
 @[reassoc (attr := simp)]
-lemma hom_comp_π {f : Z ⟶ Z'} (φ : Hom P P' f) :
-    φ.hom ≫ P'.π = P.π ≫ (single₀ C).map f := by cat_disch
+lemma hom_comp_π {f : Z ⟶ Z'} (φ : Hom P P' f) : φ.hom ≫ P'.π = P.π ≫ (single₀ C).map f := by
+  cat_disch
 
 end Hom
 
@@ -165,19 +164,24 @@ namespace Functor
 
 open Limits
 
-variable {C : Type u} [Category* C] [HasZeroObject C] [Preadditive C]
+variable
+  {C : Type u} [Category* C] [HasZeroObject C] [Preadditive C]
   {D : Type u'} [Category.{v'} D] [HasZeroObject D] [Preadditive D] [CategoryWithHomology D]
 
-/-- An additive functor `F` which preserves homology and sends projective objects to projective
-objects sends a projective resolution of `Z` to a projective resolution of `F.obj Z`. -/
+/--
+An additive functor `F` which preserves homology and sends projective objects to projective
+objects sends a projective resolution of `Z` to a projective resolution of `F.obj Z`.
+-/
 @[simps complex π]
-noncomputable def mapProjectiveResolution (F : C ⥤ D) [F.Additive]
-    [F.PreservesProjectiveObjects] [F.PreservesHomology] {Z : C} (P : ProjectiveResolution Z) :
-    ProjectiveResolution (F.obj Z) where
+noncomputable def mapProjectiveResolution
+    (F : C ⥤ D) [F.Additive] [F.PreservesProjectiveObjects] [F.PreservesHomology]
+    {Z : C} (P : ProjectiveResolution Z)
+    : ProjectiveResolution (F.obj Z) where
   complex := (F.mapHomologicalComplex _).obj P.complex
   projective n := PreservesProjectiveObjects.projective_obj (P.projective n)
-  π := (F.mapHomologicalComplex _).map P.π ≫
-    (HomologicalComplex.singleMapHomologicalComplex _ _ _).hom.app _
+  π :=
+    (F.mapHomologicalComplex _).map P.π
+      ≫ (HomologicalComplex.singleMapHomologicalComplex _ _ _).hom.app _
   quasiIso := inferInstance
 
 end CategoryTheory.Functor

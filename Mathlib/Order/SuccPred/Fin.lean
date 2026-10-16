@@ -19,11 +19,11 @@ to a specific `Fin` instance.
 
 public section
 
-
 namespace Fin
 
 instance : ∀ {n : ℕ}, SuccOrder (Fin n)
-  | 0 => by constructor <;> intro a <;> exact elim0 a
+  | 0 => by
+    constructor <;> intro a <;> exact elim0 a
   | n + 1 =>
     SuccOrder.ofCore (Fin.lastCases (Fin.last n) Fin.succ)
       (fun {i} hi j ↦ by
@@ -33,27 +33,24 @@ instance : ∀ {n : ℕ}, SuccOrder (Fin n)
         obtain rfl : i = Fin.last n := by simpa using! hi
         simp)
 
-lemma orderSucc_eq {n : ℕ} :
-    Order.succ = Fin.lastCases (Fin.last n) Fin.succ := rfl
+lemma orderSucc_eq {n : ℕ} : Order.succ = Fin.lastCases (Fin.last n) Fin.succ := rfl
 
-lemma orderSucc_apply {n : ℕ} (i : Fin (n + 1)) :
-    Order.succ i = Fin.lastCases (Fin.last n) Fin.succ i := rfl
-
-@[simp]
-lemma orderSucc_last (n : ℕ) :
-    Order.succ (Fin.last n) = Fin.last n := by
-  simp [orderSucc_apply]
+lemma orderSucc_apply {n : ℕ} (i : Fin (n + 1))
+    : Order.succ i = Fin.lastCases (Fin.last n) Fin.succ i :=
+  rfl
 
 @[simp]
-lemma orderSucc_castSucc {n : ℕ} (i : Fin n) :
-    Order.succ i.castSucc = i.succ := by
+lemma orderSucc_last (n : ℕ) : Order.succ (Fin.last n) = Fin.last n := by simp [orderSucc_apply]
+
+@[simp]
+lemma orderSucc_castSucc {n : ℕ} (i : Fin n) : Order.succ i.castSucc = i.succ := by
   simp [orderSucc_apply]
 
 instance : ∀ {n : ℕ}, PredOrder (Fin n)
-  | 0 => by constructor <;> first | intro a; exact elim0 a
+  | 0 => by
+    constructor <;> first | intro a; exact elim0 a
   | n + 1 =>
-    PredOrder.ofCore
-      (Fin.cases 0 Fin.castSucc)
+    PredOrder.ofCore (Fin.cases 0 Fin.castSucc)
       (fun {i} hi j ↦ by
         obtain ⟨i, rfl⟩ := Fin.eq_succ_of_ne_zero (by simpa using! hi)
         simp [le_castSucc_iff])
@@ -67,21 +64,13 @@ lemma orderSucc_lt_iff : ∀ {n : ℕ} {i j : Fin n}, Order.succ j < i ↔ (j : 
     | last => rw [Fin.orderSucc_last]; grind
     | cast j' => rw [Fin.orderSucc_castSucc]; grind
 
-lemma orderPred_eq {n : ℕ} :
-    Order.pred = Fin.cases 0 Fin.castSucc (n := n) := rfl
+lemma orderPred_eq {n : ℕ} : Order.pred = Fin.cases 0 Fin.castSucc (n := n) := rfl
 
-lemma orderPred_apply {n : ℕ} (i : Fin (n + 1)) :
-    Order.pred i = Fin.cases 0 Fin.castSucc i := rfl
+lemma orderPred_apply {n : ℕ} (i : Fin (n + 1)) : Order.pred i = Fin.cases 0 Fin.castSucc i := rfl
 
-@[simp]
-lemma orderPred_zero (n : ℕ) :
-    Order.pred (0 : Fin (n + 1)) = 0 :=
-  rfl
+@[simp] lemma orderPred_zero (n : ℕ) : Order.pred (0 : Fin (n + 1)) = 0 := rfl
 
-@[simp]
-lemma orderPred_succ {n : ℕ} (i : Fin n) :
-    Order.pred i.succ = i.castSucc :=
-  rfl
+@[simp] lemma orderPred_succ {n : ℕ} (i : Fin n) : Order.pred i.succ = i.castSucc := rfl
 
 lemma lt_orderPred_iff : ∀ {n : ℕ} {i j : Fin n}, i < Order.pred j ↔ (i : ℕ) + 1 < j
   | n + 1, i, j => by

@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Group.SelfInv
 public import Mathlib.Algebra.Opposites
 public import Mathlib.Algebra.Ring.Defs
 public import Mathlib.Tactic.TFAE
-
 import Mathlib.Algebra.GroupWithZero.NeZero
 
 /-!
@@ -68,7 +67,8 @@ def mulRight (r : R) : R →+ R where
 
 lemma mulRight_apply (a r : R) : mulRight r a = a * r := rfl
 
-/-- Multiplication of an element of a (semi)ring is an `AddMonoidHom` in both arguments.
+/--
+Multiplication of an element of a (semi)ring is an `AddMonoidHom` in both arguments.
 
 This is a more-strongly bundled version of `AddMonoidHom.mulLeft` and `AddMonoidHom.mulRight`.
 
@@ -85,12 +85,13 @@ lemma mul_apply (x y : R) : mul x y = x * y := rfl
 @[simp, norm_cast] lemma coe_mul : ⇑(mul : R →+ R →+ R) = mulLeft := rfl
 @[simp, norm_cast] lemma coe_flip_mul : ⇑(mul : R →+ R →+ R).flip = mulRight := rfl
 
-/-- An `AddMonoidHom` preserves multiplication if pre- and post- composition with
+/--
+An `AddMonoidHom` preserves multiplication if pre- and post- composition with
 `mul` are equivalent. By converting the statement into an equality of
 `AddMonoidHom`s, this lemma allows various specialized `ext` lemmas about `→+` to then be applied.
 -/
-lemma map_mul_iff (f : R →+ S) :
-    (∀ x y, f (x * y) = f x * f y) ↔ (mul : R →+ R →+ R).compr₂ f = (mul.comp f).compl₂ f :=
+lemma map_mul_iff (f : R →+ S)
+    : (∀ x y, f (x * y) = f x * f y) ↔ (mul : R →+ R →+ R).compr₂ f = (mul.comp f).compl₂ f :=
   Iff.symm ext_iff₂
 
 lemma mulLeft_eq_mulRight_iff_forall_commute : mulLeft a = mulRight a ↔ ∀ b, Commute a b :=
@@ -106,12 +107,10 @@ section NonUnitalNonAssocSemiring
 variable [NonUnitalNonAssocSemiring R]
 
 /-- The left multiplication map: `(a, b) ↦ a * b`. See also `AddMonoidHom.mulLeft`. -/
-@[simps!]
-def mulLeft : R →+ AddMonoid.End R := .mul
+@[simps!] def mulLeft : R →+ AddMonoid.End R := .mul
 
 /-- The right multiplication map: `(a, b) ↦ b * a`. See also `AddMonoidHom.mulRight`. -/
-@[simps!]
-def mulRight : R →+ AddMonoid.End R := (.mul : R →+ AddMonoid.End R).flip
+@[simps!] def mulRight : R →+ AddMonoid.End R := (.mul : R →+ AddMonoid.End R).flip
 
 end NonUnitalNonAssocSemiring
 
@@ -147,12 +146,14 @@ variable {α : Type*} [NonUnitalCommRing α]
 
 attribute [local simp] add_assoc add_comm add_left_comm mul_comm
 
-/-- Vieta's formula for a quadratic equation, relating the coefficients of the polynomial with
-  its roots. This particular version states that if we have a root `x` of a monic quadratic
-  polynomial, then there is another root `y` such that `x + y` is negative the `a_1` coefficient
-  and `x * y` is the `a_0` coefficient. -/
-theorem vieta_formula_quadratic {b c x : α} (h : x * x - b * x + c = 0) :
-    ∃ y : α, y * y - b * y + c = 0 ∧ x + y = b ∧ x * y = c := by
+/--
+Vieta's formula for a quadratic equation, relating the coefficients of the polynomial with
+its roots. This particular version states that if we have a root `x` of a monic quadratic
+polynomial, then there is another root `y` such that `x + y` is negative the `a_1` coefficient
+and `x * y` is the `a_0` coefficient.
+-/
+theorem vieta_formula_quadratic {b c x : α} (h : x * x - b * x + c = 0)
+    : ∃ y : α, y * y - b * y + c = 0 ∧ x + y = b ∧ x * y = c := by
   have : c = x * (b - x) := (eq_neg_of_add_eq_zero_right h).trans (by simp [mul_sub, mul_comm])
   refine ⟨b - x, ?_, by simp, by rw [this]⟩
   rw [this, sub_add, ← sub_mul, sub_self]
@@ -181,15 +182,18 @@ lemma isRightRegular_iff_left_eq_zero_of_mul : IsRightRegular r ↔ ∀ x, x * r
   mp h r' eq := h (by simp_rw [eq, zero_mul])
   mpr h r₁ r₂ eq := sub_eq_zero.mp <| h _ <| by simp_rw [sub_mul, eq, sub_self]
 
-lemma isRegular_iff_eq_zero_of_mul :
-    IsRegular r ↔ (∀ x, r * x = 0 → x = 0) ∧ (∀ x, x * r = 0 → x = 0) := by
+lemma isRegular_iff_eq_zero_of_mul
+    : IsRegular r ↔ (∀ x, r * x = 0 → x = 0) ∧ (∀ x, x * r = 0 → x = 0) := by
   rw [isRegular_iff, isLeftRegular_iff_right_eq_zero_of_mul, isRightRegular_iff_left_eq_zero_of_mul]
 
-/-- A (not necessarily unital or associative) ring with no zero divisors has cancellative
+/--
+A (not necessarily unital or associative) ring with no zero divisors has cancellative
 multiplication on both sides. Since either left or right cancellative multiplication implies
-the absence of zero divisors, the four conditions are equivalent to each other. -/
-lemma noZeroDivisors_tfae : List.TFAE
-    [NoZeroDivisors R, IsLeftCancelMulZero R, IsRightCancelMulZero R, IsCancelMulZero R] := by
+the absence of zero divisors, the four conditions are equivalent to each other.
+-/
+lemma noZeroDivisors_tfae
+    : List.TFAE
+      [NoZeroDivisors R, IsLeftCancelMulZero R, IsRightCancelMulZero R, IsCancelMulZero R] := by
   simp_rw [isLeftCancelMulZero_iff, isRightCancelMulZero_iff, isCancelMulZero_iff_forall_isRegular,
     isLeftRegular_iff_right_eq_zero_of_mul, isRightRegular_iff_left_eq_zero_of_mul,
     isRegular_iff_eq_zero_of_mul]
@@ -203,18 +207,19 @@ lemma isCancelMulZero_iff_noZeroDivisors : IsCancelMulZero R ↔ NoZeroDivisors 
   noZeroDivisors_tfae.out 4 1
 
 variable (R) in
-instance (priority := 100) NoZeroDivisors.to_isCancelMulZero
-    [NoZeroDivisors R] : IsCancelMulZero R :=
+instance (priority := 100) NoZeroDivisors.to_isCancelMulZero [NoZeroDivisors R]
+    : IsCancelMulZero R :=
   isCancelMulZero_iff_noZeroDivisors.mpr ‹_›
 
 end NonUnitalNonAssocRing
 
-lemma NoZeroDivisors.to_isDomain [Ring α] [h : Nontrivial α] [NoZeroDivisors α] :
-    IsDomain α :=
-  { NoZeroDivisors.to_isCancelMulZero α, h with .. }
+lemma NoZeroDivisors.to_isDomain [Ring α] [h : Nontrivial α] [NoZeroDivisors α] : IsDomain α := {
+  NoZeroDivisors.to_isCancelMulZero α, h with
+  ..
+}
 
-instance (priority := 100) IsDomain.to_noZeroDivisors [Semiring α] [IsDomain α] :
-    NoZeroDivisors α :=
+instance (priority := 100) IsDomain.to_noZeroDivisors [Semiring α] [IsDomain α]
+    : NoZeroDivisors α :=
   IsRightCancelMulZero.to_noZeroDivisors α
 
 instance Subsingleton.to_isCancelMulZero [Mul α] [Zero α] [Subsingleton α] : IsCancelMulZero α where
@@ -229,22 +234,22 @@ lemma Subsingleton.to_noZeroDivisors [Mul α] [Zero α] [Subsingleton α] : NoZe
 
 scoped[Subsingleton] attribute [instance] Subsingleton.to_noZeroDivisors
 
-lemma isDomain_iff_cancelMulZero_and_nontrivial [Semiring α] :
-    IsDomain α ↔ IsCancelMulZero α ∧ Nontrivial α :=
+lemma isDomain_iff_cancelMulZero_and_nontrivial [Semiring α]
+    : IsDomain α ↔ IsCancelMulZero α ∧ Nontrivial α :=
   ⟨fun _ ↦ ⟨inferInstance, inferInstance⟩, fun ⟨_, _⟩ ↦ {}⟩
 
-lemma isCancelMulZero_iff_isDomain_or_subsingleton [Semiring α] :
-    IsCancelMulZero α ↔ IsDomain α ∨ Subsingleton α := by
+lemma isCancelMulZero_iff_isDomain_or_subsingleton [Semiring α]
+    : IsCancelMulZero α ↔ IsDomain α ∨ Subsingleton α := by
   refine ⟨fun t ↦ ?_, fun h ↦ h.elim (fun _ ↦ inferInstance) (fun _ ↦ inferInstance)⟩
   rw [or_iff_not_imp_right, not_subsingleton_iff_nontrivial]
   exact fun _ ↦ {}
 
-lemma isDomain_iff_noZeroDivisors_and_nontrivial [Ring α] :
-    IsDomain α ↔ NoZeroDivisors α ∧ Nontrivial α := by
+lemma isDomain_iff_noZeroDivisors_and_nontrivial [Ring α]
+    : IsDomain α ↔ NoZeroDivisors α ∧ Nontrivial α := by
   rw [← isCancelMulZero_iff_noZeroDivisors, isDomain_iff_cancelMulZero_and_nontrivial]
 
-lemma noZeroDivisors_iff_isDomain_or_subsingleton [Ring α] :
-    NoZeroDivisors α ↔ IsDomain α ∨ Subsingleton α := by
+lemma noZeroDivisors_iff_isDomain_or_subsingleton [Ring α]
+    : NoZeroDivisors α ↔ IsDomain α ∨ Subsingleton α := by
   rw [← isCancelMulZero_iff_noZeroDivisors, isCancelMulZero_iff_isDomain_or_subsingleton]
 
 end NoZeroDivisors
@@ -258,14 +263,16 @@ lemma one_div_neg_one_eq_neg_one : (1 : R) / -1 = -1 :=
 
 lemma one_div_neg_eq_neg_one_div (a : R) : 1 / -a = -(1 / a) :=
   calc
-    1 / -a = 1 / (-1 * a) := by rw [neg_eq_neg_one_mul]
+    1 / -a
+      = 1 / (-1 * a) := by rw [neg_eq_neg_one_mul]
     _ = 1 / a * (1 / -1) := by rw [one_div_mul_one_div_rev]
     _ = 1 / a * -1 := by rw [one_div_neg_one_eq_neg_one]
     _ = -(1 / a) := by rw [mul_neg, mul_one]
 
 lemma div_neg_eq_neg_div (a b : R) : b / -a = -(b / a) :=
   calc
-    b / -a = b * (1 / -a) := by rw [← inv_eq_one_div, division_def]
+    b / -a
+      = b * (1 / -a) := by rw [← inv_eq_one_div, division_def]
     _ = b * -(1 / a) := by rw [one_div_neg_eq_neg_one_div]
     _ = -(b * (1 / a)) := by rw [neg_mul_eq_mul_neg]
     _ = -(b / a) := by rw [mul_one_div]
@@ -284,8 +291,7 @@ lemma div_neg (a : R) : a / -b = -(a / b) := by rw [← div_neg_eq_neg_div]
 
 lemma div_neg_eq_neg_div' (a : R) : a / -b = -a / b := neg_div b a ▸ div_neg _
 
-@[simp]
-lemma inv_neg : (-a)⁻¹ = -a⁻¹ := by rw [neg_inv]
+@[simp] lemma inv_neg : (-a)⁻¹ = -a⁻¹ := by rw [neg_inv]
 
 lemma inv_neg_one : (-1 : R)⁻¹ = -1 := by rw [← neg_inv, inv_one]
 

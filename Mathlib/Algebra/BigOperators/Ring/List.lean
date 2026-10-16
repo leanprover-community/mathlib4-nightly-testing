@@ -28,7 +28,8 @@ variable [NonUnitalNonAssocSemiring R]
 
 lemma list_sum_right (a : R) (l : List R) (h : ∀ b ∈ l, Commute a b) : Commute a l.sum := by
   induction l with
-  | nil => exact Commute.zero_right _
+  | nil =>
+    exact Commute.zero_right _
   | cons x xs ih =>
     rw [List.sum_cons]
     exact (h _ mem_cons_self).add_right (ih fun j hj ↦ h _ <| mem_cons_of_mem _ hj)
@@ -43,8 +44,7 @@ section HasDistribNeg
 variable [Monoid M] [HasDistribNeg M]
 
 @[simp]
-lemma prod_map_neg (l : List M) :
-    (l.map Neg.neg).prod = (-1) ^ l.length * l.prod := by
+lemma prod_map_neg (l : List M) : (l.map Neg.neg).prod = (-1) ^ l.length * l.prod := by
   induction l <;> simp [*, pow_succ, Commute.left_comm]
 
 end HasDistribNeg
@@ -52,9 +52,11 @@ end HasDistribNeg
 section MonoidWithZero
 variable [MonoidWithZero M₀] {l : List M₀}
 
-/-- If zero is an element of a list `l`, then `List.prod l = 0`. If the domain is a nontrivial
+/--
+If zero is an element of a list `l`, then `List.prod l = 0`. If the domain is a nontrivial
 monoid with zero with no zero divisors, then this implication becomes an `iff`, see
-`List.prod_eq_zero_iff`. -/
+`List.prod_eq_zero_iff`.
+-/
 lemma prod_eq_zero : ∀ {l : List M₀}, (0 : M₀) ∈ l → l.prod = 0
   -- |  absurd h (not_mem_nil _)
   | a :: l, h => by
@@ -64,9 +66,12 @@ lemma prod_eq_zero : ∀ {l : List M₀}, (0 : M₀) ∈ l → l.prod = 0
 
 variable [Nontrivial M₀] [NoZeroDivisors M₀]
 
-/-- Product of elements of a list `l` equals zero if and only if `0 ∈ l`. See also
-`List.prod_eq_zero` for an implication that needs weaker typeclass assumptions. -/
-@[simp] lemma prod_eq_zero_iff : ∀ {l : List M₀}, l.prod = 0 ↔ (0 : M₀) ∈ l
+/--
+Product of elements of a list `l` equals zero if and only if `0 ∈ l`. See also
+`List.prod_eq_zero` for an implication that needs weaker typeclass assumptions.
+-/
+@[simp]
+lemma prod_eq_zero_iff : ∀ {l : List M₀}, l.prod = 0 ↔ (0 : M₀) ∈ l
   | [] => by simp
   | a :: l => by rw [prod_cons, mul_eq_zero, prod_eq_zero_iff, mem_cons, eq_comm]
 
@@ -87,16 +92,21 @@ end NonUnitalNonAssocSemiring
 
 lemma dvd_sum [NonUnitalSemiring R] {a} {l : List R} (h : ∀ x ∈ l, a ∣ x) : a ∣ l.sum := by
   induction l with
-  | nil => exact dvd_zero _
+  | nil =>
+    exact dvd_zero _
   | cons x l ih =>
     rw [List.sum_cons]
     exact dvd_add (h _ mem_cons_self) (ih fun x hx ↦ h x (mem_cons_of_mem _ hx))
 
-@[simp] lemma sum_zipWith_distrib_left [NonUnitalNonAssocSemiring R] (f : ι → κ → R) (a : R) :
-    ∀ (l₁ : List ι) (l₂ : List κ),
+@[simp]
+lemma sum_zipWith_distrib_left [NonUnitalNonAssocSemiring R] (f : ι → κ → R) (a : R)
+    : ∀ (l₁ : List ι) (l₂ : List κ),
       (zipWith (fun i j ↦ a * f i j) l₁ l₂).sum = a * (zipWith f l₁ l₂).sum
-  | [], _ => by simp
-  | _, [] => by simp
-  | i :: l₁, j :: l₂ => by simp [sum_zipWith_distrib_left, mul_add]
+  | [], _ => by
+    simp
+  | _, [] => by
+    simp
+  | i :: l₁, j :: l₂ => by
+    simp [sum_zipWith_distrib_left, mul_add]
 
 end List

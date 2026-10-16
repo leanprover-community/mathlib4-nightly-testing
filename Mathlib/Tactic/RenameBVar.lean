@@ -22,10 +22,8 @@ namespace Mathlib.Tactic
 open Lean Parser Elab Tactic
 
 /-- Renames a bound variable in a hypothesis. -/
-def renameBVarHyp (mvarId : MVarId) (fvarId : FVarId) (old new : Name) :
-    MetaM Unit :=
-  modifyLocalDecl mvarId fvarId fun ldecl ↦
-    ldecl.setType <| ldecl.type.renameBVar old new
+def renameBVarHyp (mvarId : MVarId) (fvarId : FVarId) (old new : Name) : MetaM Unit :=
+  modifyLocalDecl mvarId fvarId fun ldecl ↦ ldecl.setType <| ldecl.type.renameBVar old new
 
 /-- Renames a bound variable in the target. -/
 def renameBVarTarget (mvarId : MVarId) (old new : Name) : MetaM Unit :=
@@ -47,7 +45,8 @@ elab "rename_bvar " old:ident " → " new:ident loc?:(location)? : tactic => do
   let mvarId ← getMainGoal
   instantiateMVarDeclMVars mvarId
   match loc? with
-  | none => renameBVarTarget mvarId old.getId new.getId
+  | none =>
+    renameBVarTarget mvarId old.getId new.getId
   | some loc =>
     withLocation (expandLocation loc)
       (fun fvarId ↦ renameBVarHyp mvarId fvarId old.getId new.getId)

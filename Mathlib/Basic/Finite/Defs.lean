@@ -69,7 +69,8 @@ open Function
 
 variable {α β : Sort*}
 
-/-- A type is `Finite` if it is in bijective correspondence to some `Fin n`.
+/--
+A type is `Finite` if it is in bijective correspondence to some `Fin n`.
 
 This is similar to `Fintype`, but `Finite` is a proposition rather than data.
 A particular benefit to this is that `Finite` instances are definitionally equal to one another
@@ -123,44 +124,38 @@ variable (α) in
 theorem Finite.nonempty_decidableEq [Finite α] : Nonempty (DecidableEq α) :=
   let ⟨_n, ⟨e⟩⟩ := Finite.exists_equiv_fin α; ⟨e.decidableEq⟩
 
-instance [Finite α] : Finite (PLift α) :=
-  Finite.of_equiv α Equiv.plift.symm
+instance [Finite α] : Finite (PLift α) := Finite.of_equiv α Equiv.plift.symm
 
-instance {α : Type v} [Finite α] : Finite (ULift.{u} α) :=
-  Finite.of_equiv α Equiv.ulift.symm
+instance {α : Type v} [Finite α] : Finite (ULift.{u} α) := Finite.of_equiv α Equiv.ulift.symm
 
-/-- A type is said to be infinite if it is not finite. Note that `Infinite α` is equivalent to
-`IsEmpty (Fintype α)` or `IsEmpty (Finite α)`. -/
+/--
+A type is said to be infinite if it is not finite. Note that `Infinite α` is equivalent to
+`IsEmpty (Fintype α)` or `IsEmpty (Finite α)`.
+-/
 class Infinite (α : Sort*) : Prop where
   /-- assertion that `α` is `¬Finite` -/
-  not_finite : ¬Finite α
+  not_finite : ¬ Finite α
 
 @[simp, push]
-theorem not_finite_iff_infinite : ¬Finite α ↔ Infinite α :=
-  ⟨Infinite.mk, fun h => h.1⟩
+theorem not_finite_iff_infinite : ¬ Finite α ↔ Infinite α := ⟨Infinite.mk, fun h => h.1⟩
 
 @[simp, push]
-theorem not_infinite_iff_finite : ¬Infinite α ↔ Finite α :=
-  not_finite_iff_infinite.not_right.symm
+theorem not_infinite_iff_finite : ¬ Infinite α ↔ Finite α := not_finite_iff_infinite.not_right.symm
 
 theorem Equiv.infinite_iff (e : α ≃ β) : Infinite α ↔ Infinite β :=
   not_finite_iff_infinite.symm.trans <| e.finite_iff.not.trans not_finite_iff_infinite
 
-instance [Infinite α] : Infinite (PLift α) :=
-  Equiv.plift.infinite_iff.2 ‹_›
+instance [Infinite α] : Infinite (PLift α) := Equiv.plift.infinite_iff.2 ‹_›
 
-instance {α : Type v} [Infinite α] : Infinite (ULift.{u} α) :=
-  Equiv.ulift.infinite_iff.2 ‹_›
+instance {α : Type v} [Infinite α] : Infinite (ULift.{u} α) := Equiv.ulift.infinite_iff.2 ‹_›
 
 theorem finite_or_infinite (α : Sort*) : Finite α ∨ Infinite α :=
   or_iff_not_imp_left.2 not_finite_iff_infinite.1
 
 /-- `Infinite α` is not `Finite` -/
-theorem not_finite (α : Sort*) [Infinite α] [Finite α] : False :=
-  @Infinite.not_finite α ‹_› ‹_›
+theorem not_finite (α : Sort*) [Infinite α] [Finite α] : False := @Infinite.not_finite α ‹_› ‹_›
 
-protected theorem Finite.false [Infinite α] (_ : Finite α) : False :=
-  not_finite α
+protected theorem Finite.false [Infinite α] (_ : Finite α) : False := not_finite α
 
 protected theorem Infinite.false [Finite α] (_ : Infinite α) : False :=
   @Infinite.not_finite α ‹_› ‹_›
@@ -180,8 +175,10 @@ variable {α : Type u} {β : Type v}
 
 namespace Set
 
-/-- A set is finite if the corresponding `Subtype` is finite,
-i.e., if there exists a natural `n : ℕ` and an equivalence `s ≃ Fin n`. -/
+/--
+A set is finite if the corresponding `Subtype` is finite,
+i.e., if there exists a natural `n : ℕ` and an equivalence `s ≃ Fin n`.
+-/
 protected def Finite (s : Set α) : Prop := Finite s
 
 -- The `protected` attribute does not take effect within the same namespace block.
@@ -194,36 +191,34 @@ theorem finite_coe_iff {s : Set α} : Finite s ↔ s.Finite := .rfl
 /-- Constructor for `Set.Finite` using a `Finite` instance. -/
 theorem toFinite (s : Set α) [Finite s] : s.Finite := ‹_›
 
-/-- Projection of `Set.Finite` to its `Finite` instance.
+/--
+Projection of `Set.Finite` to its `Finite` instance.
 This is intended to be used with dot notation.
-See also `Set.Finite.Fintype` and `Set.Finite.nonempty_fintype`. -/
+See also `Set.Finite.Fintype` and `Set.Finite.nonempty_fintype`.
+-/
 protected theorem Finite.to_subtype {s : Set α} (h : s.Finite) : Finite s := h
 
-/-- A set is infinite if it is not finite.
+/--
+A set is infinite if it is not finite.
 
-This is protected so that it does not conflict with global `Infinite`. -/
-protected def Infinite (s : Set α) : Prop :=
-  ¬s.Finite
+This is protected so that it does not conflict with global `Infinite`.
+-/
+protected def Infinite (s : Set α) : Prop := ¬s.Finite
 
-@[simp, push]
-theorem not_finite {s : Set α} : ¬s.Finite ↔ s.Infinite := .rfl
+@[simp, push] theorem not_finite {s : Set α} : ¬s.Finite ↔ s.Infinite := .rfl
 
-@[simp, push]
-theorem not_infinite {s : Set α} : ¬s.Infinite ↔ s.Finite :=
-  not_not
+@[simp, push] theorem not_infinite {s : Set α} : ¬s.Infinite ↔ s.Finite := not_not
 
 alias ⟨_, Finite.not_infinite⟩ := not_infinite
 
-@[simp] lemma Infinite.not_finite {s : Set α} (hs : s.Infinite) : ¬ s.Finite := hs
+@[simp] lemma Infinite.not_finite {s : Set α} (hs : s.Infinite) : ¬s.Finite := hs
 
 attribute [simp] Finite.not_infinite
 
 /-- See also `finite_or_infinite`, `fintypeOrInfinite`. -/
-protected theorem finite_or_infinite (s : Set α) : s.Finite ∨ s.Infinite :=
-  em _
+protected theorem finite_or_infinite (s : Set α) : s.Finite ∨ s.Infinite := em _
 
-protected theorem infinite_or_finite (s : Set α) : s.Infinite ∨ s.Finite :=
-  em' _
+protected theorem infinite_or_finite (s : Set α) : s.Infinite ∨ s.Finite := em' _
 
 end Set
 

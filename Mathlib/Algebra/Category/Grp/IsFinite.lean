@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Homology.ShortComplex.Ab
 public import Mathlib.CategoryTheory.Abelian.SerreClass.Basic
-
 import Mathlib.Algebra.Category.Grp.Zero
 
 /-!
@@ -26,17 +25,16 @@ open CategoryTheory Limits ZeroObject
 
 namespace AddCommGrpCat
 
-/-- The Serre class of finite abelian groups
-in the category of abelian groups. -/
-def isFinite : ObjectProperty AddCommGrpCat.{u} :=
-  fun M ↦ Finite M
+/--
+The Serre class of finite abelian groups
+in the category of abelian groups.
+-/
+def isFinite : ObjectProperty AddCommGrpCat.{u} := fun M ↦ Finite M
 
-@[simp]
-lemma prop_isFinite_iff (M : AddCommGrpCat.{u}) : isFinite M ↔ Finite M := Iff.rfl
+@[simp] lemma prop_isFinite_iff (M : AddCommGrpCat.{u}) : isFinite M ↔ Finite M := Iff.rfl
 
 instance : isFinite.{u}.IsSerreClass where
-  exists_zero := ⟨↧PUnit, isZero_of_subsingleton _,
-    by rw [prop_isFinite_iff]; infer_instance⟩
+  exists_zero := ⟨↧PUnit, isZero_of_subsingleton _, by rw [prop_isFinite_iff]; infer_instance⟩
   prop_of_mono {M N} f hf hN := by
     rw [AddCommGrpCat.mono_iff_injective] at hf
     simp only [prop_isFinite_iff] at hN ⊢
@@ -51,8 +49,8 @@ instance : isFinite.{u}.IsSerreClass where
     rw [AddCommGrpCat.epi_iff_surjective] at hg
     obtain ⟨s, hs⟩ := hg.hasRightInverse
     have hφ : Function.Surjective (fun (x₁, x₃) ↦ S.f x₁ + s x₃) := fun x₂ ↦ by
-      obtain ⟨x₁, hx₁⟩ := (ShortComplex.ab_exact_iff S).1 hS.exact (x₂ - s (S.g x₂))
-        (by simp [hs (S.g x₂)])
+      obtain ⟨x₁, hx₁⟩ :=
+        (ShortComplex.ab_exact_iff S).1 hS.exact (x₂ - s (S.g x₂)) (by simp [hs (S.g x₂)])
       exact ⟨⟨x₁, S.g x₂⟩, by simp [hx₁]⟩
     exact Finite.of_surjective _ hφ
 

@@ -15,12 +15,14 @@ public section
 
 open scoped NNReal
 
-/-- Although the instance `RCLike.toStarOrderedRing` exists, it is locked behind the
+/--
+Although the instance `RCLike.toStarOrderedRing` exists, it is locked behind the
 `ComplexOrder` scope because currently the order on `ℂ` is not enabled globally. But we
 want `StarOrderedRing ℝ` to be available globally, so we include this instance separately.
 In addition, providing this instance here makes it available earlier in the import
 hierarchy; otherwise in order to access it we would need to import
-`Mathlib/Analysis/RCLike/Basic.lean`. -/
+`Mathlib/Analysis/RCLike/Basic.lean`.
+-/
 instance Real.instStarOrderedRing : StarOrderedRing ℝ :=
   StarOrderedRing.of_nonneg_iff' add_le_add_right fun r => by
     refine ⟨fun hr => ⟨√r, (mul_self_sqrt hr).symm⟩, ?_⟩
@@ -37,7 +39,6 @@ instance NNReal.instStarOrderedRing : StarOrderedRing ℝ≥0 := by
 
 -- for lack of a better place with the necessary imports, we place this here
 -- this exists only to satisfy the trivial instances of this class
-instance {R : Type*} [AddGroup R] [Lattice R] [AddLeftMono R] [Star R] :
-    SelfAdjointDecompose R where
-  exists_nonneg_sub_nonneg {a} _ :=
-    ⟨a⁺, a⁻, posPart_nonneg a, negPart_nonneg a, by simp⟩
+instance {R : Type*} [AddGroup R] [Lattice R] [AddLeftMono R] [Star R]
+    : SelfAdjointDecompose R where
+  exists_nonneg_sub_nonneg {a} _ := ⟨a⁺, a⁻, posPart_nonneg a, negPart_nonneg a, by simp⟩

@@ -40,19 +40,18 @@ namespace MulAction
 @[to_additive
   /-- An additive action of an additive group is pretransitive
   iff any element can be moved from a fixed given one. -/]
-theorem isPretransitive_iff_base (a : X) :
-    IsPretransitive G X ↔ ∀ x : X, ∃ g : G, g • a = x where
+theorem isPretransitive_iff_base (a : X) : IsPretransitive G X ↔ ∀ x : X, ∃ g : G, g • a = x where
   mp hG x := exists_smul_eq _ a x
-  mpr hG := .mk fun x y ↦ by
-    obtain ⟨g, hx⟩ := hG x
-    obtain ⟨h, hy⟩ := hG y
-    exact ⟨h * g⁻¹, by rw [← hx, smul_smul, inv_mul_cancel_right, hy]⟩
+  mpr hG :=
+    .mk fun x y ↦ by
+      obtain ⟨g, hx⟩ := hG x
+      obtain ⟨h, hy⟩ := hG y
+      exact ⟨h * g⁻¹, by rw [← hx, smul_smul, inv_mul_cancel_right, hy]⟩
 
 /-- An action of a group is pretransitive iff the orbit of every given element is full -/
 @[to_additive
   /-- An action of a group is pretransitive iff the orbit of every given element is full -/]
-theorem isPretransitive_iff_orbit_eq_univ (a : X) :
-    IsPretransitive G X ↔ orbit G a = .univ := by
+theorem isPretransitive_iff_orbit_eq_univ (a : X) : IsPretransitive G X ↔ orbit G a = .univ := by
   rw [isPretransitive_iff_base a, Set.ext_iff]
   apply forall_congr'
   intro x
@@ -61,9 +60,9 @@ theorem isPretransitive_iff_orbit_eq_univ (a : X) :
 variable {M N α β : Type*} [Monoid M] [Monoid N] [MulAction M α] [MulAction N β]
 
 @[to_additive]
-theorem IsPretransitive.of_surjective_map {φ : M → N} {f : α →ₑ[φ] β}
-    (hf : Function.Surjective f) (h : IsPretransitive M α) :
-    IsPretransitive N β := by
+theorem IsPretransitive.of_surjective_map
+    {φ : M → N} {f : α →ₑ[φ] β} (hf : Function.Surjective f) (h : IsPretransitive M α)
+    : IsPretransitive N β := by
   apply MulAction.IsPretransitive.mk
   intro x y
   obtain ⟨x', rfl⟩ := hf x
@@ -72,9 +71,9 @@ theorem IsPretransitive.of_surjective_map {φ : M → N} {f : α →ₑ[φ] β}
   exact ⟨φ g, by simp only [map_smulₛₗ]⟩
 
 @[to_additive]
-theorem isPretransitive_congr {φ : M → N} {f : α →ₑ[φ] β}
-    (hφ : Function.Surjective φ) (hf : Function.Bijective f) :
-    IsPretransitive M α ↔ IsPretransitive N β := by
+theorem isPretransitive_congr
+    {φ : M → N} {f : α →ₑ[φ] β} (hφ : Function.Surjective φ) (hf : Function.Bijective f)
+    : IsPretransitive M α ↔ IsPretransitive N β := by
   constructor
   · apply IsPretransitive.of_surjective_map hf.surjective
   · intro hN

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Fin.Tuple.Embedding
 public import Mathlib.SetTheory.Cardinal.NatCard
-
 import Mathlib.Data.Set.Finite.Range
 
 /-! # Existence of embeddings from finite types
@@ -42,8 +41,8 @@ namespace Fin.Embedding
 variable {α : Type*} {m n : ℕ} {s : Set α}
 
 theorem exists_embedding_disjoint_range_of_add_le_ENat_card
-    [Finite s] (hs : s.ncard + n ≤ ENat.card α) :
-    ∃ y : Fin n ↪ α, Disjoint s (range y) := by
+    [Finite s] (hs : s.ncard + n ≤ ENat.card α)
+    : ∃ y : Fin n ↪ α, Disjoint s (range y) := by
   rsuffices ⟨y⟩ : Nonempty (Fin n ↪ (sᶜ : Set α))
   · use y.trans (subtype _)
     rw [Set.disjoint_right]
@@ -53,20 +52,19 @@ theorem exists_embedding_disjoint_range_of_add_le_ENat_card
   · let _ : Fintype α := Fintype.ofFinite α
     classical
     apply nonempty_of_card_le
-    rwa [Fintype.card_fin, ← add_le_add_iff_left s.ncard,
-      ← Nat.card_eq_fintype_card, Nat.card_coe_set_eq,
-        ncard_add_ncard_compl, ← ENat.natCast_le_natCast,
-        ← ENat.card_eq_coe_natCard, ENat.natCast_add]
+    rwa [Fintype.card_fin, ← add_le_add_iff_left s.ncard, ← Nat.card_eq_fintype_card,
+      Nat.card_coe_set_eq, ncard_add_ncard_compl, ← ENat.natCast_le_natCast,
+      ← ENat.card_eq_coe_natCard, ENat.natCast_add]
   · exact ⟨valEmbedding.trans s.toFinite.infinite_compl.to_subtype.natEmbedding⟩
 
 theorem exists_embedding_disjoint_range_of_add_le_Nat_card
-    [Finite α] (hs : s.ncard + n ≤ Nat.card α) :
-    ∃ y : Fin n ↪ α, Disjoint s (range y) := by
+    [Finite α] (hs : s.ncard + n ≤ Nat.card α)
+    : ∃ y : Fin n ↪ α, Disjoint s (range y) := by
   apply exists_embedding_disjoint_range_of_add_le_ENat_card
   rwa [← ENat.natCast_add, ENat.card_eq_coe_natCard, ENat.natCast_le_natCast]
 
-theorem restrictSurjective_of_add_le_ENatCard (hn : m + n ≤ ENat.card α) :
-    Surjective (fun (x : Fin (m + n) ↪ α) ↦ (Fin.castAddEmb n).trans x) := by
+theorem restrictSurjective_of_add_le_ENatCard (hn : m + n ≤ ENat.card α)
+    : Surjective (fun (x : Fin (m + n) ↪ α) ↦ (Fin.castAddEmb n).trans x) := by
   intro x
   obtain ⟨y, hxy⟩ :=
     exists_embedding_disjoint_range_of_add_le_ENat_card (s := range x)
@@ -75,18 +73,18 @@ theorem restrictSurjective_of_add_le_ENatCard (hn : m + n ≤ ENat.card α) :
   ext i
   simp [trans_apply, coe_castAddEmb, append]
 
-theorem restrictSurjective_of_le_ENatCard (hmn : m ≤ n) (hn : n ≤ ENat.card α) :
-    Function.Surjective (fun x : Fin n ↪ α ↦ (castLEEmb hmn).trans x) := by
+theorem restrictSurjective_of_le_ENatCard (hmn : m ≤ n) (hn : n ≤ ENat.card α)
+    : Function.Surjective (fun x : Fin n ↪ α ↦ (castLEEmb hmn).trans x) := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
   exact Fin.Embedding.restrictSurjective_of_add_le_ENatCard hn
 
-theorem restrictSurjective_of_add_le_natCard [Finite α] (hn : m + n ≤ Nat.card α) :
-    Surjective (fun x : Fin (m + n) ↪ α ↦ (castAddEmb n).trans x) := by
+theorem restrictSurjective_of_add_le_natCard [Finite α] (hn : m + n ≤ Nat.card α)
+    : Surjective (fun x : Fin (m + n) ↪ α ↦ (castAddEmb n).trans x) := by
   apply restrictSurjective_of_add_le_ENatCard
   rwa [← ENat.natCast_add, ENat.card_eq_coe_natCard, ENat.natCast_le_natCast]
 
-theorem restrictSurjective_of_le_natCard [Finite α] (hmn : m ≤ n) (hn : n ≤ Nat.card α) :
-    Function.Surjective (fun x : Fin n ↪ α ↦ (castLEEmb hmn).trans x) := by
+theorem restrictSurjective_of_le_natCard [Finite α] (hmn : m ≤ n) (hn : n ≤ Nat.card α)
+    : Function.Surjective (fun x : Fin n ↪ α ↦ (castLEEmb hmn).trans x) := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
   exact Fin.Embedding.restrictSurjective_of_add_le_natCard hn
 

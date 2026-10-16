@@ -32,17 +32,21 @@ variable [LinearOrder σ] [WellFoundedGT σ]
 /-- The lex order on multivariate power series. -/
 noncomputable def lexOrder (φ : MvPowerSeries σ R) : (WithTop (Lex (σ →₀ ℕ))) := by
   classical
-  exact if h : φ = 0 then ⊤ else by
-    have ne : Set.Nonempty (toLex '' φ.support) := (Function.support_nonempty_iff.mpr h).image _
-    apply WithTop.some
-    apply WellFounded.min _ (toLex '' φ.support) ne
-    · exact Finsupp.instLTLex.lt
-    · exact wellFounded_lt
+  exact
+    if h : φ = 0 then
+      ⊤
+    else by
+      have ne : Set.Nonempty (toLex '' φ.support) := (Function.support_nonempty_iff.mpr h).image _
+      apply WithTop.some
+      apply WellFounded.min _ (toLex '' φ.support) ne
+      · exact Finsupp.instLTLex.lt
+      · exact wellFounded_lt
 
-theorem lexOrder_def_of_ne_zero {φ : MvPowerSeries σ R} (hφ : φ ≠ 0) :
-    ∃ (ne : Set.Nonempty (toLex '' φ.support)),
-      lexOrder φ = WithTop.some ((@wellFounded_lt (Lex (σ →₀ ℕ))
-        (instLTLex) (Lex.wellFoundedLT)).min (toLex '' φ.support) ne) := by
+theorem lexOrder_def_of_ne_zero {φ : MvPowerSeries σ R} (hφ : φ ≠ 0)
+    : ∃ (ne : Set.Nonempty (toLex '' φ.support)),
+      lexOrder φ
+        = WithTop.some ((@wellFounded_lt (Lex (σ →₀ ℕ)) (instLTLex) (Lex.wellFoundedLT)).min
+          (toLex '' φ.support) ne) := by
   suffices ne : Set.Nonempty (toLex '' φ.support) by
     use ne
     unfold lexOrder
@@ -50,25 +54,25 @@ theorem lexOrder_def_of_ne_zero {φ : MvPowerSeries σ R} (hφ : φ ≠ 0) :
   exact (Function.support_nonempty_iff.mpr hφ).image _
 
 @[simp]
-theorem lexOrder_eq_top_iff_eq_zero (φ : MvPowerSeries σ R) :
-    lexOrder φ = ⊤ ↔ φ = 0 := by
+theorem lexOrder_eq_top_iff_eq_zero (φ : MvPowerSeries σ R) : lexOrder φ = ⊤ ↔ φ = 0 := by
   unfold lexOrder
   split_ifs with h
   · simp only [h]
   · simp only [h, WithTop.coe_ne_top]
 
-@[simp] theorem lexOrder_zero : lexOrder (0 : MvPowerSeries σ R) = ⊤ := by
+@[simp]
+theorem lexOrder_zero : lexOrder (0 : MvPowerSeries σ R) = ⊤ := by
   unfold lexOrder
   rw [dite_eq_left rfl]
 
-theorem exists_finsupp_eq_lexOrder_of_ne_zero {φ : MvPowerSeries σ R} (hφ : φ ≠ 0) :
-    ∃ (d : σ →₀ ℕ), lexOrder φ = toLex d := by
+theorem exists_finsupp_eq_lexOrder_of_ne_zero {φ : MvPowerSeries σ R} (hφ : φ ≠ 0)
+    : ∃ (d : σ →₀ ℕ), lexOrder φ = toLex d := by
   simp only [ne_eq, ← lexOrder_eq_top_iff_eq_zero, WithTop.ne_top_iff_exists] at hφ
   obtain ⟨p, hp⟩ := hφ
   exact ⟨ofLex p, by simp only [toLex_ofLex, hp]⟩
 
-theorem coeff_ne_zero_of_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ ℕ}
-    (h : toLex d = lexOrder φ) : coeff d φ ≠ 0 := by
+theorem coeff_ne_zero_of_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ ℕ} (h : toLex d = lexOrder φ)
+    : coeff d φ ≠ 0 := by
   have hφ : φ ≠ 0 := by
     simp only [ne_eq, ← lexOrder_eq_top_iff_eq_zero, ← h, WithTop.coe_ne_top, not_false_eq_true]
   have hφ' := lexOrder_def_of_ne_zero hφ
@@ -80,8 +84,8 @@ theorem coeff_ne_zero_of_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ ℕ}
   rw [hφ']
   apply WellFounded.min_mem
 
-theorem coeff_eq_zero_of_lt_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ ℕ}
-    (h : toLex d < lexOrder φ) : coeff d φ = 0 := by
+theorem coeff_eq_zero_of_lt_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ ℕ} (h : toLex d < lexOrder φ)
+    : coeff d φ = 0 := by
   by_cases hφ : φ = 0
   · simp only [hφ, map_zero]
   · rcases lexOrder_def_of_ne_zero hφ with ⟨ne, hφ'⟩
@@ -89,14 +93,14 @@ theorem coeff_eq_zero_of_lt_lexOrder {φ : MvPowerSeries σ R} {d : σ →₀ �
     by_contra h'
     exact WellFounded.not_lt_min _ (toLex '' φ.support) (Set.mem_image_equiv.mpr h') h
 
-theorem lexOrder_le_of_coeff_ne_zero {φ : MvPowerSeries σ R} {d : σ →₀ ℕ}
-    (h : coeff d φ ≠ 0) : lexOrder φ ≤ toLex d := by
+theorem lexOrder_le_of_coeff_ne_zero {φ : MvPowerSeries σ R} {d : σ →₀ ℕ} (h : coeff d φ ≠ 0)
+    : lexOrder φ ≤ toLex d := by
   rw [← not_lt]
   intro h'
   exact h (coeff_eq_zero_of_lt_lexOrder h')
 
-theorem le_lexOrder_iff {φ : MvPowerSeries σ R} {w : WithTop (Lex (σ →₀ ℕ))} :
-    w ≤ lexOrder φ ↔ (∀ (d : σ →₀ ℕ) (_ : toLex d < w), coeff d φ = 0) := by
+theorem le_lexOrder_iff {φ : MvPowerSeries σ R} {w : WithTop (Lex (σ →₀ ℕ))}
+    : w ≤ lexOrder φ ↔ (∀ (d : σ →₀ ℕ) (_ : toLex d < w), coeff d φ = 0) := by
   constructor
   · intro h d hd
     apply coeff_eq_zero_of_lt_lexOrder
@@ -111,16 +115,16 @@ theorem le_lexOrder_iff {φ : MvPowerSeries σ R} {w : WithTop (Lex (σ →₀ �
     refine coeff_ne_zero_of_lexOrder hd.symm (h d ?_)
     rwa [← hd]
 
-theorem min_lexOrder_le {φ ψ : MvPowerSeries σ R} :
-    min (lexOrder φ) (lexOrder ψ) ≤ lexOrder (φ + ψ) := by
+theorem min_lexOrder_le {φ ψ : MvPowerSeries σ R}
+    : min (lexOrder φ) (lexOrder ψ) ≤ lexOrder (φ + ψ) := by
   rw [le_lexOrder_iff]
   intro d hd
   simp only [lt_min_iff] at hd
   rw [map_add, coeff_eq_zero_of_lt_lexOrder hd.1, coeff_eq_zero_of_lt_lexOrder hd.2, add_zero]
 
-theorem coeff_mul_of_add_lexOrder {φ ψ : MvPowerSeries σ R}
-    {p q : σ →₀ ℕ} (hp : lexOrder φ = toLex p) (hq : lexOrder ψ = toLex q) :
-    coeff (p + q) (φ * ψ) = coeff p φ * coeff q ψ := by
+theorem coeff_mul_of_add_lexOrder
+    {φ ψ : MvPowerSeries σ R} {p q : σ →₀ ℕ} (hp : lexOrder φ = toLex p) (hq : lexOrder ψ = toLex q)
+    : coeff (p + q) (φ * ψ) = coeff p φ * coeff q ψ := by
   rw [coeff_mul, Finset.sum_eq_single_of_mem ⟨p, q⟩ (by simp)]
   rintro ⟨u, v⟩ h h'
   simp only [Finset.mem_antidiagonal] at h
@@ -133,8 +137,7 @@ theorem coeff_mul_of_add_lexOrder {φ ψ : MvPowerSeries σ R}
     rw [hq]
     norm_cast
 
-theorem le_lexOrder_mul (φ ψ : MvPowerSeries σ R) :
-    lexOrder φ + lexOrder ψ ≤ lexOrder (φ * ψ) := by
+theorem le_lexOrder_mul (φ ψ : MvPowerSeries σ R) : lexOrder φ + lexOrder ψ ≤ lexOrder (φ * ψ) := by
   rw [le_lexOrder_iff]
   intro d hd
   rw [coeff_mul]
@@ -154,8 +157,8 @@ theorem le_lexOrder_mul (φ ψ : MvPowerSeries σ R) :
 
 alias lexOrder_mul_ge := le_lexOrder_mul
 
-theorem lexOrder_mul [NoZeroDivisors R] (φ ψ : MvPowerSeries σ R) :
-    lexOrder (φ * ψ) = lexOrder φ + lexOrder ψ := by
+theorem lexOrder_mul [NoZeroDivisors R] (φ ψ : MvPowerSeries σ R)
+    : lexOrder (φ * ψ) = lexOrder φ + lexOrder ψ := by
   obtain rfl | hφ := eq_or_ne φ 0
   · simp
   obtain rfl | hψ := eq_or_ne ψ 0

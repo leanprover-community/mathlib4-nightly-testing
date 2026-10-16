@@ -28,8 +28,8 @@ open Fin.CommRing
 
 variable {n : ℕ} {k : Fin n}
 
-theorem even_succAbove_add_predAbove (i : Fin (n + 1)) (j : Fin n) :
-    Even (i.succAbove j + j.predAbove i : ℕ) ↔ Odd (i + j : ℕ) := by
+theorem even_succAbove_add_predAbove (i : Fin (n + 1)) (j : Fin n)
+    : Even (i.succAbove j + j.predAbove i : ℕ) ↔ Odd (i + j : ℕ) := by
   rcases lt_or_ge j.castSucc i with hji | hij
   · have : 1 ≤ (i : ℕ) := (Nat.zero_le j).trans_lt hji
     simp [succAbove_of_castSucc_lt _ _ hji, predAbove_of_castSucc_lt _ _ hji, this, iff_comm,
@@ -37,9 +37,9 @@ theorem even_succAbove_add_predAbove (i : Fin (n + 1)) (j : Fin n) :
   · simp [succAbove_of_le_castSucc _ _ hij, predAbove_of_le_castSucc _ _ hij,
       ← Nat.not_even_iff_odd, not_iff, not_iff_comm, parity_simps]
 
-lemma neg_one_pow_succAbove_add_predAbove {R : Type*} [Monoid R] [HasDistribNeg R]
-    (i : Fin (n + 1)) (j : Fin n) :
-    (-1 : R) ^ (i.succAbove j + j.predAbove i : ℕ) = -(-1) ^ (i + j : ℕ) := by
+lemma neg_one_pow_succAbove_add_predAbove
+    {R : Type*} [Monoid R] [HasDistribNeg R] (i : Fin (n + 1)) (j : Fin n)
+    : (-1 : R) ^ (i.succAbove j + j.predAbove i : ℕ) = - (-1) ^ (i + j : ℕ) := by
   rw [← neg_one_mul (_ ^ _), ← pow_succ', neg_one_pow_congr]
   rw [even_succAbove_add_predAbove, Nat.even_add_one, Nat.not_even_iff_odd]
 
@@ -80,8 +80,10 @@ lemma odd_iff_of_even [NeZero n] (hn : Even n) : Odd k ↔ Odd k.val := by
     Nat.not_odd_iff_even]
   simp
 
-/-- In `Fin n`, all elements are even for odd `n`,
-otherwise an element is even iff its `Fin.val` value is even. -/
+/--
+In `Fin n`, all elements are even for odd `n`,
+otherwise an element is even iff its `Fin.val` value is even.
+-/
 lemma even_iff : Even k ↔ (Odd n ∨ Even k.val) := by
   refine ⟨fun hk ↦ ?_, or_imp.mpr ⟨(even_of_odd · k), even_of_val⟩⟩
   rw [← Nat.not_even_iff_odd, ← imp_iff_not_or]
@@ -91,8 +93,10 @@ lemma even_iff_imp : Even k ↔ (Even n → Even k.val) := by
   rw [imp_iff_not_or, Nat.not_even_iff_odd]
   exact even_iff
 
-/-- In `Fin n`, all elements are odd for odd `n`,
-otherwise an element is odd iff its `Fin.val` value is odd. -/
+/--
+In `Fin n`, all elements are odd for odd `n`,
+otherwise an element is odd iff its `Fin.val` value is odd.
+-/
 lemma odd_iff [NeZero n] : Odd k ↔ Odd n ∨ Odd k.val := by
   refine ⟨fun hk ↦ ?_, or_imp.mpr ⟨(odd_of_odd · k), odd_of_val⟩⟩
   rw [← Nat.not_even_iff_odd, ← imp_iff_not_or]
@@ -110,11 +114,11 @@ lemma odd_iff_mod_of_even [NeZero n] (hn : Even n) : Odd k ↔ k.val % 2 = 1 := 
   rw [odd_iff_of_even hn]
   exact Nat.odd_iff
 
-lemma not_odd_iff_even_of_even [NeZero n] (hn : Even n) : ¬Odd k ↔ Even k := by
+lemma not_odd_iff_even_of_even [NeZero n] (hn : Even n) : ¬ Odd k ↔ Even k := by
   rw [even_iff_of_even hn, odd_iff_of_even hn]
   exact Nat.not_odd_iff_even
 
-lemma not_even_iff_odd_of_even [NeZero n] (hn : Even n) : ¬Even k ↔ Odd k := by
+lemma not_even_iff_odd_of_even [NeZero n] (hn : Even n) : ¬ Even k ↔ Odd k := by
   rw [even_iff_of_even hn, odd_iff_of_even hn]
   exact Nat.not_even_iff_odd
 

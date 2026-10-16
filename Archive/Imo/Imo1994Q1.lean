@@ -46,10 +46,10 @@ end Imo1994Q1
 
 open Imo1994Q1
 
-theorem imo1994_q1 (n : ℕ) (m : ℕ) (A : Finset ℕ) (hm : #A = m + 1)
-    (hrange : ∀ a ∈ A, 0 < a ∧ a ≤ n)
-    (hadd : ∀ a ∈ A, ∀ b ∈ A, a + b ≤ n → a + b ∈ A) :
-    (m + 1) * (n + 1) ≤ 2 * ∑ x ∈ A, x := by
+theorem imo1994_q1
+    (n : ℕ) (m : ℕ) (A : Finset ℕ) (hm : #A = m + 1) (hrange : ∀ a ∈ A, 0 < a ∧ a ≤ n)
+    (hadd : ∀ a ∈ A, ∀ b ∈ A, a + b ≤ n → a + b ∈ A)
+    : (m + 1) * (n + 1) ≤ 2 * ∑ x ∈ A, x := by
   set a := orderEmbOfFin A hm
   -- We sort the elements of `A`
   have ha : ∀ i, a i ∈ A := fun i => orderEmbOfFin_mem A hm i
@@ -58,15 +58,19 @@ theorem imo1994_q1 (n : ℕ) (m : ℕ) (A : Finset ℕ) (hm : #A = m + 1)
   -- We reindex the sum by fin (m+1)
   have : ∑ x ∈ A, x = ∑ i : Fin (m + 1), a i := by
     convert! sum_image fun x _ y _ => a.eq_iff_eq.1
-    rw [← coe_inj]; simp [a]
-  rw [this]; clear this
+    rw [← coe_inj]
+    simp [a]
+  rw [this]
+  clear this
   -- The main proof is a simple calculation by rearranging one of the two sums
-  suffices hpair : ∀ k ∈ univ, a k + a (rev k) ≥ n + 1 by calc
-    2 * ∑ i : Fin (m + 1), a i = ∑ i : Fin (m + 1), a i + ∑ i : Fin (m + 1), a i := two_mul _
-    _ = ∑ i : Fin (m + 1), a i + ∑ i : Fin (m + 1), a (rev i) := by rw [Equiv.sum_comp rev]
-    _ = ∑ i : Fin (m + 1), (a i + a (rev i)) := sum_add_distrib.symm
-    _ ≥ ∑ i : Fin (m + 1), (n + 1) := sum_le_sum hpair
-    _ = (m + 1) * (n + 1) := by rw [sum_const, card_fin, Nat.nsmul_eq_mul]
+  suffices hpair : ∀ k ∈ univ, a k + a (rev k) ≥ n + 1 by
+    calc
+      2 * ∑ i : Fin (m + 1), a i
+        = ∑ i : Fin (m + 1), a i + ∑ i : Fin (m + 1), a i := two_mul _
+      _ = ∑ i : Fin (m + 1), a i + ∑ i : Fin (m + 1), a (rev i) := by rw [Equiv.sum_comp rev]
+      _ = ∑ i : Fin (m + 1), (a i + a (rev i)) := sum_add_distrib.symm
+      _ ≥ ∑ i : Fin (m + 1), (n + 1) := sum_le_sum hpair
+      _ = (m + 1) * (n + 1) := by rw [sum_const, card_fin, Nat.nsmul_eq_mul]
   -- It remains to prove the key inequality, by contradiction
   rintro k -
   by_contra! h : a k + a (rev k) < n + 1
@@ -78,7 +82,8 @@ theorem imo1994_q1 (n : ℕ) (m : ℕ) (A : Finset ℕ) (hm : #A = m + 1)
     intro x hx
     simp only [Equiv.subLeft_apply, a, rev] at h
     simp only [mem_map, mem_Icc, mem_Ioc, Fin.zero_le, true_and, Equiv.subLeft_apply,
-      Function.Embedding.coeFn_mk, RelEmbedding.coe_toEmbedding, f, rev] at hx ⊢
+        Function.Embedding.coeFn_mk, RelEmbedding.coe_toEmbedding, f, rev]
+      at hx ⊢
     rcases hx with ⟨i, ⟨hi, rfl⟩⟩
     have h1 : a i + a (Fin.last m - k) ≤ n := by unfold a; linarith only [h, a.monotone hi]
     have h2 : a i + a (Fin.last m - k) ∈ A := hadd _ (ha _) _ (ha _) h1

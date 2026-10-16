@@ -6,7 +6,6 @@ Authors: Haitian Wang, Malvin Gattinger
 module
 
 public import Mathlib.Algebra.Order.Monoid.Multiset
-
 import Mathlib.Algebra.Order.Sub.Unbundled.Basic
 
 /-!
@@ -45,15 +44,11 @@ variable {α : Type*} [Preorder α] {M N P : Multiset α} {a : α}
 
 /-- The standard Dershowitz–Manna ordering. -/
 def IsDershowitzMannaLT (M N : Multiset α) : Prop :=
-  ∃ X Y Z,
-      Z ≠ ∅
-    ∧ M = X + Y
-    ∧ N = X + Z
-    ∧ ∀ y ∈ Y, ∃ z ∈ Z, y < z
+  ∃ X Y Z, Z ≠ ∅ ∧ M = X + Y ∧ N = X + Z ∧ ∀ y ∈ Y, ∃ z ∈ Z, y < z
 
 /-- `IsDershowitzMannaLT` is transitive. -/
-lemma IsDershowitzMannaLT.trans :
-    IsDershowitzMannaLT M N → IsDershowitzMannaLT N P → IsDershowitzMannaLT M P := by
+lemma IsDershowitzMannaLT.trans
+    : IsDershowitzMannaLT M N → IsDershowitzMannaLT N P → IsDershowitzMannaLT M P := by
   classical
   rintro ⟨X₁, Y₁, Z₁, -, rfl, rfl, hYZ₁⟩ ⟨X₂, Y₂, Z₂, hZ₂, hXZXY, rfl, hYZ₂⟩
   rw [add_comm X₁, add_comm X₂] at hXZXY
@@ -72,21 +67,19 @@ lemma IsDershowitzMannaLT.trans :
   · obtain ⟨z, hz, hyz⟩ := hYZ₂ y <| mem_of_le (Multiset.sub_le_self ..) hy
     exact ⟨z, .inl hz, hyz⟩
 
-/-- A special case of `IsDershowitzMannaLT`. The transitive closure of it is used to define
-an equivalent (proved later) version of the ordering. -/
-private def OneStep (M N : Multiset α) : Prop :=
-  ∃ X Y a,
-      M = X + Y
-    ∧ N = X + {a}
-    ∧ ∀ y ∈ Y, y < a
+/--
+A special case of `IsDershowitzMannaLT`. The transitive closure of it is used to define
+an equivalent (proved later) version of the ordering.
+-/
+private def OneStep (M N : Multiset α) : Prop := ∃ X Y a, M = X + Y ∧ N = X + {a} ∧ ∀ y ∈ Y, y < a
 
 private lemma isDershowitzMannaLT_of_oneStep : OneStep M N → IsDershowitzMannaLT M N := by
   rintro ⟨X, Y, a, M_def, N_def, ys_lt_a⟩
   use X, Y, {a}, by simp, M_def, N_def
   simpa
 
-private lemma isDershowitzMannaLT_singleton_insert (h : OneStep N (a ::ₘ M)) :
-    ∃ M', N = a ::ₘ M' ∧ OneStep M' M ∨ N = M + M' ∧ ∀ x ∈ M', x < a := by
+private lemma isDershowitzMannaLT_singleton_insert (h : OneStep N (a ::ₘ M))
+    : ∃ M', N = a ::ₘ M' ∧ OneStep M' M ∨ N = M + M' ∧ ∀ x ∈ M', x < a := by
   classical
   obtain ⟨X, Y, b, rfl, h0, h2⟩ := h
   obtain rfl | hab := eq_or_ne a b
@@ -102,11 +95,13 @@ private lemma isDershowitzMannaLT_singleton_insert (h : OneStep N (a ::ₘ M)) :
     have : b ∈ a ::ₘ M := by simp [h0]
     simpa [hab.symm] using this
 
-private lemma acc_oneStep_cons_of_acc_lt (ha : Acc LT.lt a) :
-    ∀ {M}, Acc OneStep M → Acc OneStep (a ::ₘ M) := by
-  induction ha with | _ a _ ha
+private lemma acc_oneStep_cons_of_acc_lt (ha : Acc LT.lt a)
+    : ∀ {M}, Acc OneStep M → Acc OneStep (a ::ₘ M) := by
+  induction ha with
+  | _ a _ ha
   rintro M hM
-  induction hM with | _ M hM ihM
+  induction hM with
+  | _ M hM ihM
   refine .intro _ fun N hNM ↦ ?_
   obtain ⟨N, ⟨rfl, hNM'⟩ | ⟨rfl, hN⟩⟩ := isDershowitzMannaLT_singleton_insert hNM
   · exact ihM _ hNM'
@@ -119,24 +114,26 @@ private lemma acc_oneStep_cons_of_acc_lt (ha : Acc LT.lt a) :
     obtain ⟨hba, hN⟩ := hN
     exact ha _ hba <| ihN hN
 
-/-- If all elements of a multiset `M` are accessible with `<`, then the multiset `M` is
-accessible given the `OneStep` relation. -/
+/--
+If all elements of a multiset `M` are accessible with `<`, then the multiset `M` is
+accessible given the `OneStep` relation.
+-/
 private lemma acc_oneStep_of_acc_lt (hM : ∀ x ∈ M, Acc LT.lt x) : Acc OneStep M := by
   induction M using Multiset.induction_on with
   | empty =>
     constructor
     simp [OneStep, eq_comm (b := _ + _)]
   | cons a M ih =>
-    exact acc_oneStep_cons_of_acc_lt (hM _ <| mem_cons_self ..) <| ih fun x hx ↦
-      hM _ <| mem_cons_of_mem hx
+    exact acc_oneStep_cons_of_acc_lt (hM _ <| mem_cons_self ..) <|
+      ih fun x hx ↦ hM _ <| mem_cons_of_mem hx
 
 /-- Over a well-founded order, `OneStep` is well-founded. -/
-private lemma isDershowitzMannaLT_singleton_wf [WellFoundedLT α] :
-    WellFounded (OneStep : Multiset α → Multiset α → Prop) :=
+private lemma isDershowitzMannaLT_singleton_wf [WellFoundedLT α]
+    : WellFounded (OneStep : Multiset α → Multiset α → Prop) :=
   ⟨fun _M ↦ acc_oneStep_of_acc_lt fun a _ ↦ WellFoundedLT.apply a⟩
 
-private lemma transGen_oneStep_of_isDershowitzMannaLT :
-    IsDershowitzMannaLT M N → TransGen OneStep M N := by
+private lemma transGen_oneStep_of_isDershowitzMannaLT
+    : IsDershowitzMannaLT M N → TransGen OneStep M N := by
   classical
   rintro ⟨X, Y, Z, hZ, hM, hN, hYZ⟩
   induction Z using Multiset.induction_on generalizing X Y M N with
@@ -151,24 +148,24 @@ private lemma transGen_oneStep_of_isDershowitzMannaLT :
   · simp only [sub_filter_eq_filter_not, mem_filter, Y'] at hy
     simpa [hy.2] using hYZ y (by simp_all)
 
-private lemma isDershowitzMannaLT_of_transGen_oneStep (hMN : TransGen OneStep M N) :
-    IsDershowitzMannaLT M N :=
+private lemma isDershowitzMannaLT_of_transGen_oneStep (hMN : TransGen OneStep M N)
+    : IsDershowitzMannaLT M N :=
   hMN.trans_induction_on (by rintro _ _ ⟨X, Y, a, rfl, rfl, hYa⟩; exact ⟨X, Y, {a}, by simpa⟩)
     fun _ _ ↦ .trans
 
 /-- `TransGen OneStep` and `IsDershowitzMannaLT` are equivalent. -/
-private lemma transGen_oneStep_eq_isDershowitzMannaLT :
-    (TransGen OneStep : Multiset α → Multiset α → Prop) = IsDershowitzMannaLT := by
+private lemma transGen_oneStep_eq_isDershowitzMannaLT
+    : (TransGen OneStep : Multiset α → Multiset α → Prop) = IsDershowitzMannaLT := by
   ext M N
   exact ⟨isDershowitzMannaLT_of_transGen_oneStep, transGen_oneStep_of_isDershowitzMannaLT⟩
 
 /-- Over a well-founded order, the Dershowitz-Manna order on multisets is well-founded. -/
-theorem wellFounded_isDershowitzMannaLT [WellFoundedLT α] :
-    WellFounded (IsDershowitzMannaLT : Multiset α → Multiset α → Prop) := by
+theorem wellFounded_isDershowitzMannaLT [WellFoundedLT α]
+    : WellFounded (IsDershowitzMannaLT : Multiset α → Multiset α → Prop) := by
   rw [← transGen_oneStep_eq_isDershowitzMannaLT]
   exact isDershowitzMannaLT_singleton_wf.transGen
 
 instance instWellFoundedIsDershowitzMannaLT [WellFoundedLT α] : WellFoundedRelation (Multiset α) :=
-    ⟨IsDershowitzMannaLT, wellFounded_isDershowitzMannaLT⟩
+  ⟨IsDershowitzMannaLT, wellFounded_isDershowitzMannaLT⟩
 
 end Multiset

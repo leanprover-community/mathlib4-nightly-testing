@@ -24,15 +24,17 @@ universe w v u
 variable {C : Type u} [Category.{v} C] [CartesianMonoidalCategory C] [BraidedCategory C] {X : C}
 
 variable (X) in
-/-- Abbreviation for an unbundled commutative group object. It is a group object that is a
-commutative monoid object. -/
+/--
+Abbreviation for an unbundled commutative group object. It is a group object that is a
+commutative monoid object.
+-/
 class abbrev CommGrpObj := GrpObj X, IsCommMonObj X
 
 variable (X) in
 /-- If `X` represents a presheaf of commutative groups, then `X` is a commutative group object. -/
 @[instance_reducible]
-def CommGrpObj.ofRepresentableBy (F : Cᵒᵖ ⥤ CommGrpCat.{w})
-    (α : (F ⋙ forget _).RepresentableBy X) : CommGrpObj X where
+def CommGrpObj.ofRepresentableBy (F : Cᵒᵖ ⥤ CommGrpCat.{w}) (α : (F ⋙ forget _).RepresentableBy X)
+    : CommGrpObj X where
   __ := GrpObj.ofRepresentableBy X (F ⋙ forget₂ CommGrpCat GrpCat) α
   __ := IsCommMonObj.ofRepresentableBy X (F ⋙ forget₂ CommGrpCat CommMonCat) α
 
@@ -41,12 +43,14 @@ set_option backward.defeqAttrib.useBackward true in
 @[simps]
 def yonedaCommGrpGrpObj (G : CommGrp C) : (Grp C)ᵒᵖ ⥤ CommGrpCat where
   obj H := .of (unop H ⟶ G.toGrp)
-  map {H I} f := CommGrpCat.ofHom {
-    toFun := (f.unop ≫ ·)
-    map_one' := by ext; simp [Mon.Hom.hom_one]
-    map_mul' g h := by
-      ext
-      simpa using! ((yonedaGrpObj G.X).map f.unop.hom.hom.op).hom.map_mul g.hom.hom h.hom.hom }
+  map {H I} f :=
+    CommGrpCat.ofHom {
+      toFun := (f.unop ≫ ·)
+      map_one' := by ext; simp [Mon.Hom.hom_one]
+      map_mul' g h := by
+        ext
+        simpa using! ((yonedaGrpObj G.X).map f.unop.hom.hom.op).hom.map_mul g.hom.hom h.hom.hom
+    }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -55,11 +59,14 @@ set_option backward.isDefEq.respectTransparency false in
 def yonedaCommGrpGrp : CommGrp C ⥤ (Grp C)ᵒᵖ ⥤ CommGrpCat where
   obj := yonedaCommGrpGrpObj
   map {X₁ X₂} ψ := {
-    app Y := CommGrpCat.ofHom {
-      toFun := (· ≫ ψ.hom)
-      map_one' := by ext; simp
-      map_mul' f g := by
-        ext
-        simpa using ((yonedaGrp.map ψ.hom).app (op (unop Y).X)).hom.map_mul f.hom.hom g.hom.hom } }
+    app Y :=
+      CommGrpCat.ofHom {
+        toFun := (· ≫ ψ.hom)
+        map_one' := by ext; simp
+        map_mul' f g := by
+          ext
+          simpa using ((yonedaGrp.map ψ.hom).app (op (unop Y).X)).hom.map_mul f.hom.hom g.hom.hom
+      }
+  }
 
 end CategoryTheory

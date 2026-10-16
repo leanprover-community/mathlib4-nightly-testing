@@ -40,25 +40,18 @@ variable [Mul S]
 
 /-- Any element commutes with itself. -/
 @[to_additive (attr := refl, simp) /-- Any element commutes with itself. -/]
-protected theorem refl (a : S) : Commute a a :=
-  Eq.refl (a * a)
+protected theorem refl (a : S) : Commute a a := Eq.refl (a * a)
 
 /-- If `a` commutes with `b`, then `b` commutes with `a`. -/
 @[to_additive (attr := symm) /-- If `a` commutes with `b`, then `b` commutes with `a`. -/]
-protected theorem symm {a b : S} (h : Commute a b) : Commute b a :=
-  Eq.symm h
+protected theorem symm {a b : S} (h : Commute a b) : Commute b a := Eq.symm h
 
-@[to_additive]
-protected theorem semiconjBy {a b : S} (h : Commute a b) : SemiconjBy a b b :=
-  h
+@[to_additive] protected theorem semiconjBy {a b : S} (h : Commute a b) : SemiconjBy a b b := h
 
 @[to_additive (attr := grind =)]
-protected theorem symm_iff {a b : S} : Commute a b ↔ Commute b a :=
-  ⟨Commute.symm, Commute.symm⟩
+protected theorem symm_iff {a b : S} : Commute a b ↔ Commute b a := ⟨Commute.symm, Commute.symm⟩
 
-@[to_additive]
-instance : @Std.Refl S Commute :=
-  ⟨Commute.refl⟩
+@[to_additive] instance : @Std.Refl S Commute := ⟨Commute.refl⟩
 
 @[to_additive]
 instance : @Std.Symm S Commute where
@@ -66,8 +59,7 @@ instance : @Std.Symm S Commute where
 
 -- This instance is useful for `Finset.noncommProd`
 @[to_additive]
-instance on_refl {f : G → S} : Std.Refl fun a b => Commute (f a) (f b) :=
-  ⟨fun _ => Commute.refl _⟩
+instance on_refl {f : G → S} : Std.Refl fun a b => Commute (f a) (f b) := ⟨fun _ => Commute.refl _⟩
 
 end Mul
 
@@ -77,13 +69,13 @@ variable [Semigroup S] {a b c : S}
 
 /-- If `a` commutes with both `b` and `c`, then it commutes with their product. -/
 @[to_additive (attr := simp)
-/-- If `a` commutes with both `b` and `c`, then it commutes with their sum. -/]
+  /-- If `a` commutes with both `b` and `c`, then it commutes with their sum. -/]
 theorem mul_right (hab : Commute a b) (hac : Commute a c) : Commute a (b * c) :=
   SemiconjBy.mul_right hab hac
 
 /-- If both `a` and `b` commute with `c`, then their product commutes with `c`. -/
 @[to_additive (attr := simp)
-/-- If both `a` and `b` commute with `c`, then their product commutes with `c`. -/]
+  /-- If both `a` and `b` commute with `c`, then their product commutes with `c`. -/]
 theorem mul_left (hac : Commute a c) (hbc : Commute b c) : Commute (a * b) c :=
   SemiconjBy.mul_left hac hbc
 
@@ -96,26 +88,23 @@ protected theorem left_comm (h : Commute a b) (c) : a * (b * c) = b * (a * c) :=
   simp only [← mul_assoc, h.eq]
 
 @[to_additive]
-protected theorem mul_mul_mul_comm (hbc : Commute b c) (a d : S) :
-    a * b * (c * d) = a * c * (b * d) := by simp only [hbc.left_comm, mul_assoc]
+protected theorem mul_mul_mul_comm (hbc : Commute b c) (a d : S)
+    : a * b * (c * d) = a * c * (b * d) := by
+  simp only [hbc.left_comm, mul_assoc]
 
 end Semigroup
 
-@[to_additive]
-protected theorem all [CommMagma S] (a b : S) : Commute a b :=
-  mul_comm a b
+@[to_additive] protected theorem all [CommMagma S] (a b : S) : Commute a b := mul_comm a b
 
 section MulOneClass
 
 variable [MulOneClass M]
 
 @[to_additive (attr := simp)]
-theorem one_right (a : M) : Commute a 1 :=
-  SemiconjBy.one_right a
+theorem one_right (a : M) : Commute a 1 := SemiconjBy.one_right a
 
 @[to_additive (attr := simp)]
-theorem one_left (a : M) : Commute 1 a :=
-  SemiconjBy.one_left a
+theorem one_left (a : M) : Commute 1 a := SemiconjBy.one_left a
 
 end MulOneClass
 
@@ -124,31 +113,23 @@ section Monoid
 variable [Monoid M] {a b : M}
 
 @[to_additive (attr := simp)]
-theorem pow_right (h : Commute a b) (n : ℕ) : Commute a (b ^ n) :=
-  SemiconjBy.pow_right h n
+theorem pow_right (h : Commute a b) (n : ℕ) : Commute a (b ^ n) := SemiconjBy.pow_right h n
 
 @[to_additive (attr := simp)]
-theorem pow_left (h : Commute a b) (n : ℕ) : Commute (a ^ n) b :=
-  (h.symm.pow_right n).symm
+theorem pow_left (h : Commute a b) (n : ℕ) : Commute (a ^ n) b := (h.symm.pow_right n).symm
 
 -- todo: should nat power be called `nsmul` here?
-@[to_additive]
-theorem pow_pow (h : Commute a b) (m n : ℕ) : Commute (a ^ m) (b ^ n) := by
-  simp [h]
+@[to_additive] theorem pow_pow (h : Commute a b) (m n : ℕ) : Commute (a ^ m) (b ^ n) := by simp [h]
+
+@[to_additive] theorem self_pow (a : M) (n : ℕ) : Commute a (a ^ n) := (Commute.refl a).pow_right n
+
+@[to_additive] theorem pow_self (a : M) (n : ℕ) : Commute (a ^ n) a := (Commute.refl a).pow_left n
 
 @[to_additive]
-theorem self_pow (a : M) (n : ℕ) : Commute a (a ^ n) :=
-  (Commute.refl a).pow_right n
+theorem pow_pow_self (a : M) (m n : ℕ) : Commute (a ^ m) (a ^ n) := (Commute.refl a).pow_pow m n
 
 @[to_additive]
-theorem pow_self (a : M) (n : ℕ) : Commute (a ^ n) a :=
-  (Commute.refl a).pow_left n
-
-@[to_additive]
-theorem pow_pow_self (a : M) (m n : ℕ) : Commute (a ^ m) (a ^ n) :=
-  (Commute.refl a).pow_pow m n
-
-@[to_additive] lemma mul_pow (h : Commute a b) : ∀ n, (a * b) ^ n = a ^ n * b ^ n
+lemma mul_pow (h : Commute a b) : ∀ n, (a * b) ^ n = a ^ n * b ^ n
   | 0 => by rw [pow_zero, pow_zero, pow_zero, one_mul]
   | n + 1 => by simp only [pow_succ', h.mul_pow n, ← mul_assoc, (h.pow_left n).right_comm]
 
@@ -185,7 +166,8 @@ theorem mul_inv_cancel_assoc (h : Commute a b) : a * (b * a⁻¹) = b := by
 
 @[to_additive nsmul_sub]
 lemma div_pow (h : Commute a b) : ∀ n, (a / b) ^ n = a ^ n / b ^ n
-  | 0 => by rw [pow_zero, pow_zero, pow_zero, div_self']
+  | 0 => by
+    rw [pow_zero, pow_zero, pow_zero, div_self']
   | n + 1 => by
     rw [pow_succ', pow_succ', pow_succ, h.div_pow n]
     simp only [div_eq_mul_inv, mul_assoc, mul_right_inj]
@@ -194,7 +176,8 @@ lemma div_pow (h : Commute a b) : ∀ n, (a / b) ^ n = a ^ n / b ^ n
 
 @[to_additive zsmul_sub]
 lemma div_zpow (h : Commute a b) : ∀ n : ℤ, (a / b) ^ n = a ^ n / b ^ n
-  | (n : ℕ) => by simpa using h.div_pow n
+  | (n : ℕ) => by
+    simpa using h.div_pow n
   | .negSucc n => by
     rw [zpow_negSucc, h.div_pow]
     apply inv_eq_of_mul_eq_one_left
@@ -204,10 +187,13 @@ end Group
 
 end Commute
 
-@[to_additive] protected lemma IsLeftRegular.commute_mul_left_iff [Semigroup S] {a b : S}
-    (reg : IsLeftRegular a) : Commute (a * b) a ↔ Commute a b := by
+@[to_additive]
+protected lemma IsLeftRegular.commute_mul_left_iff [Semigroup S] {a b : S} (reg : IsLeftRegular a)
+    : Commute (a * b) a ↔ Commute a b := by
   simp [commute_iff_eq, mul_assoc, reg.eq_iff, eq_comm]
 
-@[to_additive] protected lemma IsRightRegular.commute_mul_right_iff [Semigroup S] {a b : S}
-    (reg : IsRightRegular a) : Commute (b * a) a ↔ Commute a b := by
+@[to_additive]
+protected lemma IsRightRegular.commute_mul_right_iff
+    [Semigroup S] {a b : S} (reg : IsRightRegular a)
+    : Commute (b * a) a ↔ Commute a b := by
   simp [commute_iff_eq, ← mul_assoc, reg.eq_iff, eq_comm]

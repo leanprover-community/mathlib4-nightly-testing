@@ -25,8 +25,10 @@ variable {G : SimpleGraph V}
 
 namespace SimpleGraph.ConnectedComponent
 
-/-- A set of vertices represents a set of components if it contains exactly one vertex from
-each component. -/
+/--
+A set of vertices represents a set of components if it contains exactly one vertex from
+each component.
+-/
 def Represents (s : Set V) (C : Set G.ConnectedComponent) : Prop :=
   Set.BijOn G.connectedComponentMk s C
 
@@ -35,12 +37,13 @@ namespace Represents
 variable {C : Set G.ConnectedComponent} {s : Set V} {c : G.ConnectedComponent}
 
 set_option backward.isDefEq.respectTransparency false in
-lemma image_out (C : Set G.ConnectedComponent) :
-    Represents (Quot.out '' C) C :=
-  Set.BijOn.mk (by rintro c ⟨x, ⟨hx, rfl⟩⟩; simp_all [connectedComponentMk]) (by
-    rintro x ⟨c, ⟨hc, rfl⟩⟩ y ⟨d, ⟨hd, rfl⟩⟩ hxy
-    simp only [connectedComponentMk] at hxy
-    aesop) (fun _ _ ↦ by simpa [connectedComponentMk])
+lemma image_out (C : Set G.ConnectedComponent) : Represents (Quot.out '' C) C :=
+  Set.BijOn.mk (by rintro c ⟨x, ⟨hx, rfl⟩⟩; simp_all [connectedComponentMk])
+    (by
+      rintro x ⟨c, ⟨hc, rfl⟩⟩ y ⟨d, ⟨hd, rfl⟩⟩ hxy
+      simp only [connectedComponentMk] at hxy
+      aesop)
+    (fun _ _ ↦ by simpa [connectedComponentMk])
 
 lemma existsUnique_rep (hrep : Represents s C) (h : c ∈ C) : ∃! x, x ∈ s ∩ c.supp := by
   obtain ⟨x, ⟨hx, rfl⟩⟩ := hrep.2.2 h
@@ -66,24 +69,25 @@ lemma ncard_inter (hrep : Represents s C) (h : c ∈ C) : (s ∩ c.supp).ncard =
 lemma ncard_eq (hrep : Represents s C) : s.ncard = C.ncard :=
   hrep.image_eq ▸ hrep.injOn.ncard_image.symm
 
-lemma ncard_sdiff_of_mem (hrep : Represents s C) (h : c ∈ C) :
-    (c.supp \ s).ncard = c.supp.ncard - 1 := by
+lemma ncard_sdiff_of_mem (hrep : Represents s C) (h : c ∈ C)
+    : (c.supp \ s).ncard = c.supp.ncard - 1 := by
   obtain ⟨a, ha⟩ := exists_inter_eq_singleton hrep h
   rw [← Set.sdiff_inter_self_eq_sdiff, ha, Set.ncard_sdiff, Set.ncard_singleton]
   simp [← ha]
 
-lemma ncard_sdiff_of_notMem (hrep : Represents s C) (h : c ∉ C) :
-    (c.supp \ s).ncard = c.supp.ncard := by
+lemma ncard_sdiff_of_notMem (hrep : Represents s C) (h : c ∉ C)
+    : (c.supp \ s).ncard = c.supp.ncard := by
   rw [(disjoint_supp_of_notMem hrep h).sdiff_eq_right]
 
 end ConnectedComponent.Represents
 
-lemma ConnectedComponent.even_ncard_supp_sdiff_rep {s : Set V} (K : G.ConnectedComponent)
-    (hrep : ConnectedComponent.Represents s G.oddComponents) :
-    Even (K.supp \ s).ncard := by
+lemma ConnectedComponent.even_ncard_supp_sdiff_rep
+    {s : Set V} (K : G.ConnectedComponent) (hrep : ConnectedComponent.Represents s G.oddComponents)
+    : Even (K.supp \ s).ncard := by
   by_cases h : Even K.supp.ncard
-  · simpa [hrep.ncard_sdiff_of_notMem
-      (by simpa [Set.ncard_image_of_injective, ← Nat.not_odd_iff_even] using h)] using h
+  · simpa [hrep.ncard_sdiff_of_notMem (by
+        simpa [Set.ncard_image_of_injective, ← Nat.not_odd_iff_even] using h)]
+      using h
   · have : K.supp.ncard ≠ 0 := Nat.ne_of_odd_add (Nat.not_even_iff_odd.mp h)
     rw [hrep.ncard_sdiff_of_mem (Nat.not_even_iff_odd.mp h), Nat.even_sub (by lia)]
     simpa [Nat.even_sub] using Nat.not_even_iff_odd.mp h

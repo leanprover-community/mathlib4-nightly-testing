@@ -9,7 +9,8 @@ import Mathlib.Tactic.Contrapose
 import all Mathlib.Tactic.Linter.TextBased
 import all Mathlib.Tactic.Linter.TextBased.UnicodeLinter
 -- This import line is longer than a 100 characters, and used to trigger the longLine linter.
-import all MathlibTest.AModuleWithAVeryLongModuleNameToTestTheLineLengthLinterXXXXXXXXXXXXXXXXXXXXXXXX
+import all
+  MathlibTest.AModuleWithAVeryLongModuleNameToTestTheLineLengthLinterXXXXXXXXXXXXXXXXXXXXXXXX
 
 /-! Tests for all the style linters. -/
 
@@ -227,7 +228,8 @@ warning: Please, use '·' (typed as `\.`) instead of '.' as 'cdot'.
 Note: This linter can be disabled with `set_option linter.style.cdot false`
 -/
 #guard_msgs in
-example : Add Nat where add := (. + ·)
+example : Add Nat where
+  add := (. + ·)
 
 /--
 warning: Please, use '·' (typed as `\.`) instead of '.' as 'cdot'.
@@ -235,7 +237,8 @@ warning: Please, use '·' (typed as `\.`) instead of '.' as 'cdot'.
 Note: This linter can be disabled with `set_option linter.style.cdot false`
 -/
 #guard_msgs in
-example : Add Nat where add := (. + ·)
+example : Add Nat where
+  add := (. + ·)
 
 /--
 warning: Please, use '·' (typed as `\.`) instead of '.' as 'cdot'.
@@ -257,7 +260,6 @@ example : Nat := by
       -- some empty have
       have := 0
       ·
-
         -- another
         have := 1
         . exact 2
@@ -370,14 +372,16 @@ Note: This linter can be disabled with `set_option linter.style.lambdaSyntax fal
 #guard_msgs in
 example : True := by
   have : 0 = 0 ∧ 0 = 0 ∧ 1 + 3 = 4 := by
-    refine ⟨by trivial, by
-      let _f := λ n : ℕ ↦ 0;
-      have : ℕ := by
-        · -- comment
-          · have := λ k : ℕ ↦ -5
-            · exact 0
-      refine ⟨by trivial, have := λ k : ℕ ↦ -5; by simp⟩
-      ⟩
+    refine ⟨
+      by trivial,
+      by
+        let _f := λ n : ℕ ↦ 0
+        have : ℕ := by
+          · -- comment
+            · have := λ k : ℕ ↦ -5
+              · exact 0
+        refine ⟨by trivial, have := λ k : ℕ ↦ -5; by simp⟩
+    ⟩
   trivial
 
 -- Code such as the following would require walking the infotree instead:
@@ -427,7 +431,8 @@ warning: This line exceeds the 100 character limit, please shorten it!
 
 Note: This linter can be disabled with `set_option linter.style.longLine false`
 -/
-#guard_msgs in                                                                            #guard true
+#guard_msgs in
+#guard true
 
 -- However, the *doc-string* of #guard_msgs is exempt from the linter:
 -- these are automatically generated, hence linting them is not helpful.
@@ -442,7 +447,7 @@ info: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 /-- info: "                              \"                " : String -/
 #guard_msgs in
 #check "                              \"                \
-                                                                  "
+  "
 
 /-! Tests for the `nameCheck` linter -/
 section
@@ -672,13 +677,15 @@ open Mathlib.Linter.TextBased.UnicodeLinter
 /- No character is both a non-emoji and unrestricted. -/
 #guard nonEmojis.toList ∩ unrestricted.toList = ∅
 
-def allLinterDefinedCharacterLists : List (List Char) := [
-  withVSCodeAbbrev,
-  othersInMathlib,
-  emojis,
-  nonEmojis,
-  unrestricted
-].map Array.toList
+def allLinterDefinedCharacterLists : List (List Char) :=
+  [
+    withVSCodeAbbrev,
+    othersInMathlib,
+    emojis,
+    nonEmojis,
+    unrestricted
+  ].map
+    Array.toList
 
 /- Ensure none of the lists contain duplicates -/
 #guard allLinterDefinedCharacterLists.all <| (List.Pairwise (· != ·) ·)
@@ -686,11 +693,11 @@ def allLinterDefinedCharacterLists : List (List Char) := [
 /- See [Private Use Area](https://en.wikipedia.org/wiki/Private_Use_Areas). -/
 def isPrivateUseAreaChar (c : Char) : Bool :=
   letI N := c.toNat
-  (0xE000 ≤ N && N ≤ 0xF8FF) ||
-  (0xF0000 ≤ N && N ≤ 0xFFFFF) ||
-  (0x100000 ≤ N && N ≤ 0x10FFFF)
+  (0xE000 ≤ N && N ≤ 0xF8FF) || (0xF0000 ≤ N && N ≤ 0xFFFFF) || (0x100000 ≤ N && N ≤ 0x10FFFF)
 
-/- Ensure no list contains [Private Use Area](https://en.wikipedia.org/wiki/Private_Use_Areas) characters. -/
+/-
+Ensure no list contains [Private Use Area](https://en.wikipedia.org/wiki/Private_Use_Areas) characters.
+-/
 #guard !(allLinterDefinedCharacterLists.any <| (List.any · isPrivateUseAreaChar))
 
 /-!
@@ -717,8 +724,8 @@ open UnicodeLinter.UnicodeVariant in
 /-- info: some "Wrong" -/
 #guard_msgs in
 open UnicodeLinter.UnicodeVariant in
-#eval
-  ((StyleError.errorMessage (.unicodeVariant "A\uFE0F" (some emoji))).splitToList (· == ' '))[0]?
+#eval ((StyleError.errorMessage (.unicodeVariant "A\uFE0F" (some emoji))).splitToList
+  (· == ' '))[0]?
 
 /-- info: some "Unexpected" -/
 #guard_msgs in
@@ -733,8 +740,7 @@ open UnicodeLinter.UnicodeVariant in
 /-- info: some "\"AB\"" -/
 #guard_msgs in
 open UnicodeLinter.UnicodeVariant in
-#eval
-  ((StyleError.errorMessage (.unicodeVariant "AB" (some emoji))).splitToList (· == ' '))[4]?
+#eval ((StyleError.errorMessage (.unicodeVariant "AB" (some emoji))).splitToList (· == ' '))[4]?
 
 /-- info: some "\"AB\"" -/
 #guard_msgs in
@@ -749,8 +755,7 @@ open UnicodeLinter.UnicodeVariant in
 /-- info: some "emoji" -/
 #guard_msgs in
 open UnicodeLinter.UnicodeVariant in
-#eval
-  ((StyleError.errorMessage (.unicodeVariant "AB" (some emoji))).splitToList (· == ' '))[9]?
+#eval ((StyleError.errorMessage (.unicodeVariant "AB" (some emoji))).splitToList (· == ' '))[9]?
 
 /-- info: none -/
 #guard_msgs in
@@ -760,14 +765,17 @@ open UnicodeLinter.UnicodeVariant in
 -- Testing that error messages can be parsed back correctly
 
 meta instance : ToString StyleError where
-  toString error := match error with
-    | .unwantedUnicode char => s!"{error.errorCode}: {char}"
+  toString error :=
+    match error with
+    | .unwantedUnicode char =>
+      s!"{error.errorCode}: {char}"
     | .unicodeVariant s none =>
       s!"{error.errorCode}: {(" ".intercalate <| s.toList.map Char.printCodepointHex)} (none)"
     | .unicodeVariant s (some sel) =>
       s!"{error.errorCode}: {(" ".intercalate <| s.toList.map Char.printCodepointHex)} \
         ({Char.printCodepointHex sel})"
-    | other => s!"{other.errorCode}"
+    | other =>
+      s!"{other.errorCode}"
 
 meta instance : ToString ErrorContext where
   toString error := s!"{error.error}:l.{error.lineNumber}, {error.path}"
@@ -778,65 +786,85 @@ meta def ErrorContext.isValid_parse?_error_context (ec : ErrorContext) : Bool :=
   -- dbg_trace msg
   match parse?_errorContext <| msg with
   | none => False
-  | some parsed =>
-    ec == parsed
+  | some parsed => ec == parsed
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .adaptationNote,
-  lineNumber := 1234, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .adaptationNote
+  lineNumber := 1234
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .windowsLineEnding,
-  lineNumber := 1234, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .windowsLineEnding
+  lineNumber := 1234
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .semicolon,
-  lineNumber := 1234, path := "Mathlib/Tactic/Measurability/Init.lean"}
+  error := .semicolon
+  lineNumber := 1234
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unwantedUnicode '\u1234',
-  lineNumber := 1234, path:="./MYFILE.lean"}
+  error := .unwantedUnicode '\u1234'
+  lineNumber := 1234
+  path := "./MYFILE.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unwantedUnicode '\u00a0',
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unwantedUnicode '\u00a0'
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 -- "missing" variant selector
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d" UnicodeVariant.emoji,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d" UnicodeVariant.emoji
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d" UnicodeVariant.text,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d" UnicodeVariant.text
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 -- "wrong" variant selector
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d\uFE0E" UnicodeVariant.emoji,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d\uFE0E" UnicodeVariant.emoji
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d\uFE0F" UnicodeVariant.text,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d\uFE0F" UnicodeVariant.text
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 -- "unexpected" variant selector
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d\uFE0E" none,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d\uFE0E" none
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
 #guard ErrorContext.isValid_parse?_error_context {
-  error := .unicodeVariant "\u271d\uFE0F" none,
-  lineNumber := 22, path:="Mathlib/Tactic/Measurability/Init.lean"}
+  error := .unicodeVariant "\u271d\uFE0F" none
+  lineNumber := 22
+  path := "Mathlib/Tactic/Measurability/Init.lean"
+}
 
-/-- An error in this proof could mean that `replaceDisallowed` contains a character
-which is not disallowed by `isAllowedCharacter`. -/
-private theorem disallowed_of_replaceable (c : Char) (creplaced : replaceDisallowed c ≠ none) :
-    !isAllowedCharacter c := by
+/--
+An error in this proof could mean that `replaceDisallowed` contains a character
+which is not disallowed by `isAllowedCharacter`.
+-/
+private theorem disallowed_of_replaceable (c : Char) (creplaced : replaceDisallowed c ≠ none)
+    : ! isAllowedCharacter c := by
   unfold replaceDisallowed at creplaced
-  split at creplaced <;>
-  first
-  | native_decide
-  | exact absurd rfl creplaced
+  split at creplaced <;> first | native_decide | exact absurd rfl creplaced
 
 end unicodeLinter
 

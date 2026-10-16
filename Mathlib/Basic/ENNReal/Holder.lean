@@ -27,7 +27,8 @@ public section
 
 namespace ENNReal
 
-/-- A class stating that `p q r : ℝ≥0∞` satisfy `p⁻¹ + q⁻¹ = r⁻¹`.
+/--
+A class stating that `p q r : ℝ≥0∞` satisfy `p⁻¹ + q⁻¹ = r⁻¹`.
 This is exactly the condition for which **Hölder's inequality** is valid
 (see `MeasureTheory.MemLp.smul`).
 
@@ -37,7 +38,8 @@ This class exists so that we can define a heterogeneous scalar multiplication
 on `MeasureTheory.Lp`, and this is why `r` must be marked as a
 `semiOutParam`. We don't mark it as an `outParam` because this would
 prevent Lean from using `HolderTriple p q r` and `HolderTriple p q r'`
-within a single proof, as may be occasionally convenient. -/
+within a single proof, as may be occasionally convenient.
+-/
 @[mk_iff]
 class HolderTriple (p q : ℝ≥0∞) (r : semiOutParam ℝ≥0∞) : Prop where
   inv_add_inv_eq_inv (p q r) : p⁻¹ + q⁻¹ = r⁻¹
@@ -52,13 +54,17 @@ lemma holderConjugate_iff {p q : ℝ≥0∞} : HolderConjugate p q ↔ p⁻¹ + 
 
 namespace HolderTriple
 
-/-- This is not marked as an instance so that Lean doesn't always find this one
-and a more canonical value of `r` can be used. -/
+/--
+This is not marked as an instance so that Lean doesn't always find this one
+and a more canonical value of `r` can be used.
+-/
 lemma of (p q : ℝ≥0∞) : HolderTriple p q (p⁻¹ + q⁻¹)⁻¹ where
   inv_add_inv_eq_inv := inv_inv _ |>.symm
 
-/- This instance causes a trivial loop, but this is exactly the kind of loop that
-Lean should be able to detect and avoid. -/
+/-
+This instance causes a trivial loop, but this is exactly the kind of loop that
+Lean should be able to detect and avoid.
+-/
 instance symm {p q r : ℝ≥0∞} [hpqr : HolderTriple p q r] : HolderTriple q p r where
   inv_add_inv_eq_inv := add_comm p⁻¹ q⁻¹ ▸ hpqr.inv_add_inv_eq_inv
 
@@ -77,25 +83,22 @@ lemma unique (r' : ℝ≥0∞) [hr' : HolderTriple p q r'] : r = r' := by
 
 lemma one_div_add_one_div : 1 / p + 1 / q = 1 / r := by simpa using inv_add_inv_eq_inv ..
 
-lemma one_div_eq : 1 / r = 1 / p + 1 / q :=
-  one_div_add_one_div p q r |>.symm
+lemma one_div_eq : 1 / r = 1 / p + 1 / q := one_div_add_one_div p q r |>.symm
 
-lemma inv_inv_add_inv : (p⁻¹ + q⁻¹)⁻¹ = r := by
-  simp [inv_add_inv_eq_inv p q r]
+lemma inv_inv_add_inv : (p⁻¹ + q⁻¹)⁻¹ = r := by simp [inv_add_inv_eq_inv p q r]
 
 include q in
-lemma le : r ≤ p := by
-  simp [← ENNReal.inv_le_inv, ← @inv_inv_add_inv p q r, inv_inv]
+lemma le : r ≤ p := by simp [← ENNReal.inv_le_inv, ← @inv_inv_add_inv p q r, inv_inv]
 
 include q in
-protected lemma inv_le_inv : p⁻¹ ≤ r⁻¹ := by
-  simp [ENNReal.inv_le_inv, le p q r]
+protected lemma inv_le_inv : p⁻¹ ≤ r⁻¹ := by simp [ENNReal.inv_le_inv, le p q r]
 
 variable {r} in
 lemma inv_sub_inv_eq_inv (hr : r ≠ 0) : r⁻¹ - q⁻¹ = p⁻¹ := by
   apply ENNReal.sub_eq_of_eq_add (ne_of_lt ?_) (inv_eq p q r)
   calc
-    q⁻¹ ≤ r⁻¹ := HolderTriple.inv_le_inv q p r
+    q⁻¹
+      ≤ r⁻¹ := HolderTriple.inv_le_inv q p r
     _ < ∞ := by simpa using pos_iff_ne_zero.mpr hr
 
 /-- assumes `q ≠ 0` instead of `r ≠ 0`. -/
@@ -103,10 +106,12 @@ lemma inv_sub_inv_eq_inv' (hq : q ≠ 0) : r⁻¹ - q⁻¹ = p⁻¹ := by
   obtain (rfl | hr) := eq_zero_or_pos r
   · suffices p = 0 by simpa [this]
     by_contra! hp
-    have := calc
-      0⁻¹ = p⁻¹ + q⁻¹ := inv_eq p q 0
-      _ < ⊤ + ⊤ := by simp [hp, hq, pos_iff_ne_zero]
-      _ = ⊤ := by simp
+    have :=
+      calc
+        0⁻¹
+          = p⁻¹ + q⁻¹ := inv_eq p q 0
+        _ < ⊤ + ⊤ := by simp [hp, hq, pos_iff_ne_zero]
+        _ = ⊤ := by simp
     simp_all
   · exact inv_sub_inv_eq_inv p q hr.ne'
 
@@ -125,10 +130,11 @@ end HolderTriple
 
 namespace HolderConjugate
 
-/- This instance causes a trivial loop, but this is exactly the kind of loop that
-Lean should be able to detect and avoid. -/
-instance symm {p q : ℝ≥0∞} [hpq : HolderConjugate p q] : HolderConjugate q p :=
-  inferInstance
+/-
+This instance causes a trivial loop, but this is exactly the kind of loop that
+Lean should be able to detect and avoid.
+-/
+instance symm {p q : ℝ≥0∞} [hpq : HolderConjugate p q] : HolderConjugate q p := inferInstance
 
 instance instTwoTwo : HolderConjugate 2 2 where
   inv_add_inv_eq_inv := by
@@ -166,8 +172,7 @@ lemma eq_top_iff_eq_one : p = ∞ ↔ q = 1 := by
     rw [← inv_inv p, ← one_sub_inv 1 p]
     simp
 
-lemma ne_top_iff_ne_one : p ≠ ∞ ↔ q ≠ 1 := by
-  rw [not_iff_not, eq_top_iff_eq_one p q]
+lemma ne_top_iff_ne_one : p ≠ ∞ ↔ q ≠ 1 := by rw [not_iff_not, eq_top_iff_eq_one p q]
 
 lemma lt_top_iff_one_lt : p < ∞ ↔ 1 < q := by
   rw [lt_top_iff_ne_top, ne_top_iff_ne_one _ q, ne_comm, lt_iff_le_and_ne]

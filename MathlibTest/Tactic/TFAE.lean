@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.TFAE
 import Mathlib.Tactic.SuccessIfFailWithMsg
 
@@ -7,7 +8,7 @@ set_option autoImplicit true
 
 section zeroOne
 
-example : TFAE []  := by tfae_finish
+example : TFAE [] := by tfae_finish
 example : TFAE [P] := by tfae_finish
 
 end zeroOne
@@ -101,8 +102,7 @@ example (n : ℕ) : List.TFAE [n = 1, n + 1 = 2] := by
   tfae_have 1 ↔ 2 := by simp
   tfae_finish
 
-example (h₁ : P → Q) (h₂ : Q → P) : TFAE [P, Q] := by
-  tfae_finish
+example (h₁ : P → Q) (h₂ : Q → P) : TFAE [P, Q] := by tfae_finish
 
 end context
 
@@ -161,13 +161,15 @@ To turn this warning off, use set_option Mathlib.Tactic.TFAE.useDeprecated true
 -/
 #guard_msgs in
 example : TFAE [P, Q] := by
-  tfae_have 1 → 2; exact pq
+  tfae_have 1 → 2
+  exact pq
   tfae_have 2 → 1 := qp
   tfae_finish
 
 set_option Mathlib.Tactic.TFAE.useDeprecated true in
 example : TFAE [P, Q] := by
-  tfae_have 1 → 2; exact pq
+  tfae_have 1 → 2
+  exact pq
   tfae_have 2 → 1 := qp
   tfae_finish
 

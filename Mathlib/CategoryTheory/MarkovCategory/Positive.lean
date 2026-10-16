@@ -51,12 +51,14 @@ namespace CategoryTheory
 open MonoidalCategory CopyDiscardCategory ComonObj
 
 /-- Markov category where copy is natural given deterministic composition of morphisms. -/
-class PositiveCategory (C : Type u) [Category.{v} C] [MonoidalCategory C] extends
-    MarkovCategory C where
-  /-- Given morphisms `f : X ⟶ Y` and `g : Y ⟶ Z`, if their composition is deterministic, then
-  process `f`, copy and then process `g` equals copy and process `f` and `g` independently. -/
-  copy_comp_natural {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) [h : Deterministic (f ≫ g)] :
-      f ≫ Δ ≫ (g ⊗ₘ 𝟙 Y) = Δ ≫ (f ≫ g ⊗ₘ f)
+class PositiveCategory (C : Type u) [Category.{v} C] [MonoidalCategory C]
+    extends MarkovCategory C where
+  /--
+  Given morphisms `f : X ⟶ Y` and `g : Y ⟶ Z`, if their composition is deterministic, then
+  process `f`, copy and then process `g` equals copy and process `f` and `g` independently.
+  -/
+  copy_comp_natural {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) [h : Deterministic (f ≫ g)]
+    : f ≫ Δ ≫ (g ⊗ₘ 𝟙 Y) = Δ ≫ (f ≫ g ⊗ₘ f)
 
 variable {C : Type u} [Category.{v} C] [MonoidalCategory C]
 
@@ -67,18 +69,14 @@ variable [PositiveCategory C]
 instance {X Y : C} (f : X ⟶ Y) [IsIso f] : Deterministic f where
   hom_comul := by
     calc
-    _ = f ≫ Δ ≫ (inv f ⊗ₘ 𝟙 Y) ≫ (f ⊗ₘ 𝟙 Y) := by
-      cat_disch
-    _ = (f ≫ Δ ≫ (inv f ⊗ₘ 𝟙 Y)) ≫ (f ⊗ₘ 𝟙 Y) := by
-      simp
-    _ = (Δ ≫ (𝟙 X ⊗ₘ f)) ≫ (f ⊗ₘ 𝟙 Y) := by
-      rw [copy_comp_natural (h := by rw [IsIso.hom_inv_id]; infer_instance)]
-      simp
-    _ = Δ ≫ (𝟙 X ⊗ₘ f) ≫ (f ⊗ₘ 𝟙 Y) := by
-      simp
-    _ = Δ ≫ ((𝟙 X ≫ f) ⊗ₘ (f ≫ 𝟙 Y)) := by
-      rw [MonoidalCategory.tensorHom_comp_tensorHom]
-    _ = Δ ≫ (f ⊗ₘ f) := by cat_disch
+      _ = f ≫ Δ ≫ (inv f ⊗ₘ 𝟙 Y) ≫ (f ⊗ₘ 𝟙 Y) := by cat_disch
+      _ = (f ≫ Δ ≫ (inv f ⊗ₘ 𝟙 Y)) ≫ (f ⊗ₘ 𝟙 Y) := by simp
+      _ = (Δ ≫ (𝟙 X ⊗ₘ f)) ≫ (f ⊗ₘ 𝟙 Y) := by
+        rw [copy_comp_natural (h := by rw [IsIso.hom_inv_id]; infer_instance)]
+        simp
+      _ = Δ ≫ (𝟙 X ⊗ₘ f) ≫ (f ⊗ₘ 𝟙 Y) := by simp
+      _ = Δ ≫ ((𝟙 X ≫ f) ⊗ₘ (f ≫ 𝟙 Y)) := by rw [MonoidalCategory.tensorHom_comp_tensorHom]
+      _ = Δ ≫ (f ⊗ₘ f) := by cat_disch
 
 end PositiveCategory
 

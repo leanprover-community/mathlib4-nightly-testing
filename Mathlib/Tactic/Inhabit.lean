@@ -24,8 +24,10 @@ namespace Lean.Elab.Tactic
 noncomputable def nonempty_to_inhabited (α : Sort*) (_ : Nonempty α) : Inhabited α :=
   Inhabited.mk (Classical.ofNonempty)
 
-/-- Derives `Inhabited α` from `Nonempty α` without `Classical.choice`
-assuming `α` is of type `Prop`. -/
+/--
+Derives `Inhabited α` from `Nonempty α` without `Classical.choice`
+assuming `α` is of type `Prop`.
+-/
 @[instance_reducible]
 def nonempty_prop_to_inhabited (α : Prop) (α_nonempty : Nonempty α) : Inhabited α :=
   Inhabited.mk <| Nonempty.elim α_nonempty id
@@ -37,8 +39,10 @@ If the target is a `Prop`, this is done constructively. Otherwise, it uses `Clas
 -/
 syntax (name := inhabit) "inhabit " atomic(ident " : ")? term : tactic
 
-/-- `evalInhabit` takes in the MVarId of the main goal, runs the core portion of the inhabit tactic,
-and returns the resulting MVarId -/
+/--
+`evalInhabit` takes in the MVarId of the main goal, runs the core portion of the inhabit tactic,
+and returns the resulting MVarId
+-/
 def evalInhabit (goal : MVarId) (h_name : Option Ident) (term : Syntax) : TacticM MVarId := do
   goal.withContext do
     let e ← Tactic.elabTerm term none
@@ -51,8 +55,10 @@ def evalInhabit (goal : MVarId) (h_name : Option Ident) (term : Syntax) : Tactic
       | some h_name => h_name.getId
       | none => `inhabited_h
     let pf ←
-      if ← isProp e then Meta.mkAppM ``nonempty_prop_to_inhabited #[e, nonempty_e_pf]
-      else Meta.mkAppM ``nonempty_to_inhabited #[e, nonempty_e_pf]
+      if ← isProp e then
+        Meta.mkAppM ``nonempty_prop_to_inhabited #[e, nonempty_e_pf]
+      else
+        Meta.mkAppM ``nonempty_to_inhabited #[e, nonempty_e_pf]
     let (_, r) ← (← goal.assert h_name inhabited_e pf).intro1P
     return r
 

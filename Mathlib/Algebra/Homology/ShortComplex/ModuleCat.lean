@@ -29,65 +29,68 @@ namespace ShortComplex
 
 noncomputable instance : (forget₂ (ModuleCat.{v} R) Ab).PreservesHomology where
 
-/-- Constructor for short complexes in `ModuleCat.{v} R` taking as inputs
-linear maps `f` and `g` and the vanishing of their composition. -/
+/--
+Constructor for short complexes in `ModuleCat.{v} R` taking as inputs
+linear maps `f` and `g` and the vanishing of their composition.
+-/
 @[simps]
-def moduleCatMk {X₁ X₂ X₃ : Type v} [AddCommGroup X₁] [AddCommGroup X₂] [AddCommGroup X₃]
-    [Module R X₁] [Module R X₂] [Module R X₃] (f : X₁ →ₗ[R] X₂) (g : X₂ →ₗ[R] X₃)
-    (hfg : g.comp f = 0) : ShortComplex (ModuleCat.{v} R) :=
+def moduleCatMk
+    {X₁ X₂ X₃ : Type v}
+    [AddCommGroup X₁] [AddCommGroup X₂] [AddCommGroup X₃] [Module R X₁] [Module R X₂] [Module R X₃]
+    (f : X₁ →ₗ[R] X₂) (g : X₂ →ₗ[R] X₃) (hfg : g.comp f = 0)
+    : ShortComplex (ModuleCat.{v} R) :=
   ShortComplex.mk (ModuleCat.ofHom f) (ModuleCat.ofHom g) (ModuleCat.hom_ext hfg)
 
 variable (S : ShortComplex (ModuleCat.{v} R))
 
-@[simp]
-lemma moduleCat_zero_apply (x : S.X₁) : S.g (S.f x) = 0 :=
-  S.zero_apply x
+@[simp] lemma moduleCat_zero_apply (x : S.X₁) : S.g (S.f x) = 0 := S.zero_apply x
 
-lemma moduleCat_exact_iff :
-    S.Exact ↔ ∀ (x₂ : S.X₂) (_ : S.g x₂ = 0), ∃ (x₁ : S.X₁), S.f x₁ = x₂ :=
+lemma moduleCat_exact_iff : S.Exact ↔ ∀ (x₂ : S.X₂) (_ : S.g x₂ = 0), ∃ (x₁ : S.X₁), S.f x₁ = x₂ :=
   S.exact_iff_of_hasForget
 
-lemma moduleCat_exact_iff_ker_sub_range :
-    S.Exact ↔ LinearMap.ker S.g.hom ≤ LinearMap.range S.f.hom := by
+lemma moduleCat_exact_iff_ker_sub_range
+    : S.Exact ↔ LinearMap.ker S.g.hom ≤ LinearMap.range S.f.hom := by
   rw [moduleCat_exact_iff]
   aesop
 
-lemma moduleCat_exact_iff_range_eq_ker :
-    S.Exact ↔ LinearMap.range S.f.hom = LinearMap.ker S.g.hom := by
+lemma moduleCat_exact_iff_range_eq_ker
+    : S.Exact ↔ LinearMap.range S.f.hom = LinearMap.ker S.g.hom := by
   rw [moduleCat_exact_iff_ker_sub_range]
   aesop
 
 variable {S}
 
-lemma Exact.moduleCat_range_eq_ker (hS : S.Exact) :
-    LinearMap.range S.f.hom = LinearMap.ker S.g.hom := by
+lemma Exact.moduleCat_range_eq_ker (hS : S.Exact)
+    : LinearMap.range S.f.hom = LinearMap.ker S.g.hom := by
   simpa only [moduleCat_exact_iff_range_eq_ker] using hS
 
-lemma ShortExact.moduleCat_injective_f (hS : S.ShortExact) :
-    Function.Injective S.f :=
+lemma ShortExact.moduleCat_injective_f (hS : S.ShortExact) : Function.Injective S.f :=
   hS.injective_f
 
-lemma ShortExact.moduleCat_surjective_g (hS : S.ShortExact) :
-    Function.Surjective S.g :=
+lemma ShortExact.moduleCat_surjective_g (hS : S.ShortExact) : Function.Surjective S.g :=
   hS.surjective_g
 
 variable (S)
 
-lemma ShortExact.moduleCat_exact_iff_function_exact :
-    S.Exact ↔ Function.Exact S.f S.g := by
+lemma ShortExact.moduleCat_exact_iff_function_exact : S.Exact ↔ Function.Exact S.f S.g := by
   rw [moduleCat_exact_iff_range_eq_ker, LinearMap.exact_iff]
   tauto
 
-/-- Constructor for short complexes in `ModuleCat.{v} R` taking as inputs
-morphisms `f` and `g` and the assumption `LinearMap.range f ≤ LinearMap.ker g`. -/
+/--
+Constructor for short complexes in `ModuleCat.{v} R` taking as inputs
+morphisms `f` and `g` and the assumption `LinearMap.range f ≤ LinearMap.ker g`.
+-/
 @[simps]
-def moduleCatMkOfKerLERange {X₁ X₂ X₃ : ModuleCat.{v} R} (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃)
-    (hfg : LinearMap.range f.hom ≤ LinearMap.ker g.hom) : ShortComplex (ModuleCat.{v} R) :=
+def moduleCatMkOfKerLERange
+    {X₁ X₂ X₃ : ModuleCat.{v} R}
+    (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃) (hfg : LinearMap.range f.hom ≤ LinearMap.ker g.hom)
+    : ShortComplex (ModuleCat.{v} R) :=
   ShortComplex.mk f g (by aesop)
 
-lemma Exact.moduleCat_of_range_eq_ker {X₁ X₂ X₃ : ModuleCat.{v} R}
-    (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃) (hfg : LinearMap.range f.hom = LinearMap.ker g.hom) :
-    (moduleCatMkOfKerLERange f g (by rw [hfg])).Exact := by
+lemma Exact.moduleCat_of_range_eq_ker
+    {X₁ X₂ X₃ : ModuleCat.{v} R}
+    (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃) (hfg : LinearMap.range f.hom = LinearMap.ker g.hom)
+    : (moduleCatMkOfKerLERange f g (by rw [hfg])).Exact := by
   simpa only [moduleCat_exact_iff_range_eq_ker] using! hfg
 
 /-- The canonical linear map `S.X₁ →ₗ[R] LinearMap.ker S.g` induced by `S.f`. -/
@@ -95,9 +98,11 @@ abbrev moduleCatToCycles : S.X₁ →ₗ[R] LinearMap.ker S.g.hom :=
   S.f.hom.codRestrict _ S.moduleCat_zero_apply
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The explicit left homology data of a short complex of modules that is
+/--
+The explicit left homology data of a short complex of modules that is
 given by a kernel and a quotient given by the `LinearMap` API. The projections to `K` and `H` are
-not simp lemmas because the generic lemmas about `LeftHomologyData` are more useful here. -/
+not simp lemmas because the generic lemmas about `LeftHomologyData` are more useful here.
+-/
 @[simps! K H i_hom π_hom]
 def moduleCatLeftHomologyData : S.LeftHomologyData where
   K := ↧S.g.hom.ker
@@ -110,88 +115,99 @@ def moduleCatLeftHomologyData : S.LeftHomologyData where
   hπ := ModuleCat.cokernelIsColimit (ModuleCat.ofHom S.moduleCatToCycles)
 
 @[simp]
-lemma moduleCatLeftHomologyData_f'_hom :
-    S.moduleCatLeftHomologyData.f'.hom = S.moduleCatToCycles := rfl
+lemma moduleCatLeftHomologyData_f'_hom : S.moduleCatLeftHomologyData.f'.hom = S.moduleCatToCycles :=
+  rfl
 
 @[simp]
-lemma moduleCatLeftHomologyData_descH_hom {M : ModuleCat R}
-    (φ : S.moduleCatLeftHomologyData.K ⟶ M) (h : S.moduleCatLeftHomologyData.f' ≫ φ = 0) :
-    (S.moduleCatLeftHomologyData.descH φ h).hom =
-      (LinearMap.range <| ModuleCat.Hom.hom _).liftQ
-         φ.hom (LinearMap.range_le_ker_iff.2 <| ModuleCat.hom_ext_iff.1 h) := rfl
+lemma moduleCatLeftHomologyData_descH_hom
+    {M : ModuleCat R}
+    (φ : S.moduleCatLeftHomologyData.K ⟶ M) (h : S.moduleCatLeftHomologyData.f' ≫ φ = 0)
+    : (S.moduleCatLeftHomologyData.descH φ h).hom
+      = (LinearMap.range <| ModuleCat.Hom.hom _).liftQ φ.hom
+        (LinearMap.range_le_ker_iff.2 <| ModuleCat.hom_ext_iff.1 h) :=
+  rfl
 
 @[simp]
-lemma moduleCatLeftHomologyData_liftK_hom {M : ModuleCat R} (φ : M ⟶ S.X₂) (h : φ ≫ S.g = 0) :
-    (S.moduleCatLeftHomologyData.liftK φ h).hom =
-      φ.hom.codRestrict (LinearMap.ker S.g.hom) (fun m => congr($h m)) := rfl
+lemma moduleCatLeftHomologyData_liftK_hom {M : ModuleCat R} (φ : M ⟶ S.X₂) (h : φ ≫ S.g = 0)
+    : (S.moduleCatLeftHomologyData.liftK φ h).hom
+      = φ.hom.codRestrict (LinearMap.ker S.g.hom) (fun m => congr($h m)) :=
+  rfl
 
-/-- Given a short complex `S` of modules, this is the isomorphism between
+/--
+Given a short complex `S` of modules, this is the isomorphism between
 the abstract `S.cycles` of the homology API and the more concrete description as
-`LinearMap.ker S.g`. -/
+`LinearMap.ker S.g`.
+-/
 noncomputable def moduleCatCyclesIso : S.cycles ≅ S.moduleCatLeftHomologyData.K :=
   S.moduleCatLeftHomologyData.cyclesIso
 
 @[reassoc (attr := simp, elementwise)]
-lemma moduleCatCyclesIso_hom_i :
-    S.moduleCatCyclesIso.hom ≫ S.moduleCatLeftHomologyData.i = S.iCycles :=
+lemma moduleCatCyclesIso_hom_i
+    : S.moduleCatCyclesIso.hom ≫ S.moduleCatLeftHomologyData.i = S.iCycles :=
   S.moduleCatLeftHomologyData.cyclesIso_hom_comp_i
 
 @[reassoc (attr := simp, elementwise)]
-lemma moduleCatCyclesIso_inv_iCycles :
-    S.moduleCatCyclesIso.inv ≫ S.iCycles = S.moduleCatLeftHomologyData.i :=
+lemma moduleCatCyclesIso_inv_iCycles
+    : S.moduleCatCyclesIso.inv ≫ S.iCycles = S.moduleCatLeftHomologyData.i :=
   S.moduleCatLeftHomologyData.cyclesIso_inv_comp_iCycles
 
 @[reassoc (attr := simp, elementwise)]
-lemma toCycles_moduleCatCyclesIso_hom :
-    S.toCycles ≫ S.moduleCatCyclesIso.hom = S.moduleCatLeftHomologyData.f' := by
+lemma toCycles_moduleCatCyclesIso_hom
+    : S.toCycles ≫ S.moduleCatCyclesIso.hom = S.moduleCatLeftHomologyData.f' := by
   simp [← cancel_mono S.moduleCatLeftHomologyData.i]
 
-/-- Given a short complex `S` of modules, this is the isomorphism between the abstract `S.opcycles`
-of the homology API and the more concrete description as `S.X₂ ⧸ LinearMap.range S.f.hom`. -/
+/--
+Given a short complex `S` of modules, this is the isomorphism between the abstract `S.opcycles`
+of the homology API and the more concrete description as `S.X₂ ⧸ LinearMap.range S.f.hom`.
+-/
 noncomputable def moduleCatOpcyclesIso : S.opcycles ≅ ↧(S.X₂ ⧸ S.f.hom.range) :=
   S.opcyclesIsoCokernel ≪≫ ModuleCat.cokernelIsoRangeQuotient _
 
 @[reassoc (attr := simp), elementwise (attr := simp)]
-theorem pOpcycles_comp_moduleCatOpcyclesIso_hom :
-    S.pOpcycles ≫ S.moduleCatOpcyclesIso.hom = ModuleCat.ofHom (Submodule.mkQ _) := by
+theorem pOpcycles_comp_moduleCatOpcyclesIso_hom
+    : S.pOpcycles ≫ S.moduleCatOpcyclesIso.hom = ModuleCat.ofHom (Submodule.mkQ _) := by
   simp [moduleCatOpcyclesIso]
 
-theorem moduleCat_pOpcycles_eq_iff (x y : S.X₂) :
-    S.pOpcycles x = S.pOpcycles y ↔ x - y ∈ LinearMap.range S.f.hom :=
-  Iff.trans ⟨fun h => by simpa using congr(S.moduleCatOpcyclesIso.hom $h),
-    fun h => (ModuleCat.mono_iff_injective S.moduleCatOpcyclesIso.hom).1 inferInstance (by simpa)⟩
+theorem moduleCat_pOpcycles_eq_iff (x y : S.X₂)
+    : S.pOpcycles x = S.pOpcycles y ↔ x - y ∈ LinearMap.range S.f.hom :=
+  Iff.trans
+    ⟨
+      fun h => by simpa using congr(S.moduleCatOpcyclesIso.hom $h),
+      fun h => (ModuleCat.mono_iff_injective S.moduleCatOpcyclesIso.hom).1 inferInstance (by simpa)
+    ⟩
     (Submodule.Quotient.eq _)
 
-theorem moduleCat_pOpcycles_eq_zero_iff (x : S.X₂) :
-    S.pOpcycles x = 0 ↔ x ∈ LinearMap.range S.f.hom := by
+theorem moduleCat_pOpcycles_eq_zero_iff (x : S.X₂)
+    : S.pOpcycles x = 0 ↔ x ∈ LinearMap.range S.f.hom := by
   simpa using moduleCat_pOpcycles_eq_iff _ x 0
 
-/-- Given a short complex `S` of modules, this is the isomorphism between
+/--
+Given a short complex `S` of modules, this is the isomorphism between
 the abstract `S.homology` of the homology API and the more explicit
 quotient of `LinearMap.ker S.g` by the image of
-`S.moduleCatToCycles : S.X₁ →ₗ[R] LinearMap.ker S.g`. -/
-noncomputable def moduleCatHomologyIso :
-    S.homology ≅ S.moduleCatLeftHomologyData.H :=
+`S.moduleCatToCycles : S.X₁ →ₗ[R] LinearMap.ker S.g`.
+-/
+noncomputable def moduleCatHomologyIso : S.homology ≅ S.moduleCatLeftHomologyData.H :=
   S.moduleCatLeftHomologyData.homologyIso
 
 @[reassoc (attr := simp, elementwise)]
-lemma π_moduleCatCyclesIso_hom :
-    S.homologyπ ≫ S.moduleCatHomologyIso.hom =
-      S.moduleCatCyclesIso.hom ≫ S.moduleCatLeftHomologyData.π :=
+lemma π_moduleCatCyclesIso_hom
+    : S.homologyπ ≫ S.moduleCatHomologyIso.hom
+      = S.moduleCatCyclesIso.hom ≫ S.moduleCatLeftHomologyData.π :=
   S.moduleCatLeftHomologyData.homologyπ_comp_homologyIso_hom
 
 @[reassoc (attr := simp, elementwise)]
-lemma moduleCatCyclesIso_inv_π :
-    S.moduleCatCyclesIso.inv ≫ S.homologyπ =
-       S.moduleCatLeftHomologyData.π ≫ S.moduleCatHomologyIso.inv :=
+lemma moduleCatCyclesIso_inv_π
+    : S.moduleCatCyclesIso.inv ≫ S.homologyπ
+      = S.moduleCatLeftHomologyData.π ≫ S.moduleCatHomologyIso.inv :=
   S.moduleCatLeftHomologyData.π_comp_homologyIso_inv
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma exact_iff_surjective_moduleCatToCycles :
-    S.Exact ↔ Function.Surjective S.moduleCatToCycles := by
-  simp [S.moduleCatLeftHomologyData.exact_iff_epi_f',
-    ModuleCat.epi_iff_surjective, moduleCatLeftHomologyData_K]
+lemma exact_iff_surjective_moduleCatToCycles
+    : S.Exact ↔ Function.Surjective S.moduleCatToCycles := by
+  simp [S.moduleCatLeftHomologyData.exact_iff_epi_f', ModuleCat.epi_iff_surjective,
+    moduleCatLeftHomologyData_K]
 
 end ShortComplex
 
@@ -209,34 +225,38 @@ abbrev LinearMap.shortComplexKer (f : M →ₗ[R] N) : ShortComplex (ModuleCat.{
   g := ModuleCat.ofHom.{v} f
   zero := by ext; simp
 
-theorem LinearMap.shortExact_shortComplexKer {f : M →ₗ[R] N} (h : Function.Surjective f) :
-    f.shortComplexKer.ShortExact where
-  exact := (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).mpr
-    fun _ ↦ by simp [shortComplexKer]
+theorem LinearMap.shortExact_shortComplexKer {f : M →ₗ[R] N} (h : Function.Surjective f)
+    : f.shortComplexKer.ShortExact where
+  exact :=
+    (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).mpr fun _ ↦ by
+      simp [shortComplexKer]
   mono_f := (ModuleCat.mono_iff_injective _).mpr (LinearMap.ker f).injective_subtype
   epi_g := (ModuleCat.epi_iff_surjective _).mpr h
 
 variable {L : Type v} [AddCommGroup L] [Module R L]
 
 /-- The short complex in `ModuleCat` obtained from two linear map with composition equal to zero. -/
-abbrev ModuleCat.shortComplexOfCompEqZero (f : M →ₗ[R] N) (g : N →ₗ[R] L) (eq0 : g.comp f = 0) :
-    ShortComplex (ModuleCat.{v} R) where
+abbrev ModuleCat.shortComplexOfCompEqZero (f : M →ₗ[R] N) (g : N →ₗ[R] L) (eq0 : g.comp f = 0)
+    : ShortComplex (ModuleCat.{v} R) where
   f := ModuleCat.ofHom f
   g := ModuleCat.ofHom g
 
-lemma ModuleCat.shortComplex_exact (S : ShortComplex (ModuleCat.{v} R))
-    (exac : Function.Exact S.f S.g) : S.Exact :=
+lemma ModuleCat.shortComplex_exact
+    (S : ShortComplex (ModuleCat.{v} R)) (exac : Function.Exact S.f S.g)
+    : S.Exact :=
   (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).mpr exac
 
-lemma ModuleCat.shortComplex_shortExact (S : ShortComplex (ModuleCat.{v} R))
-    (exac : Function.Exact S.f S.g) (inj : Function.Injective S.f)
-    (surj : Function.Surjective S.g) : S.ShortExact where
+lemma ModuleCat.shortComplex_shortExact
+    (S : ShortComplex (ModuleCat.{v} R))
+    (exac : Function.Exact S.f S.g) (inj : Function.Injective S.f) (surj : Function.Surjective S.g)
+    : S.ShortExact where
   exact := (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).mpr exac
   mono_f := (ModuleCat.mono_iff_injective _).mpr inj
   epi_g := (ModuleCat.epi_iff_surjective _).mpr surj
 
-variable {M' N' L' : Type*} [AddCommGroup M'] [AddCommGroup N'] [AddCommGroup L']
-  [Module R M'] [Module R N'] [Module R L']
+variable
+  {M' N' L' : Type*}
+  [AddCommGroup M'] [AddCommGroup N'] [AddCommGroup L'] [Module R M'] [Module R N'] [Module R L']
 
 variable (eM : M ≃ₗ[R] M') (eN : N ≃ₗ[R] N') (eL : L ≃ₗ[R] L') (f : M' →ₗ[R] N') (g : N' →ₗ[R] L')
 
@@ -253,25 +273,26 @@ M'-----> N'-----> L'
 This complex is exact when we have `Function.Exact f g`, see
 `ModuleCat.shortComplexOfConj_exact`.
 -/
-abbrev ModuleCat.shortComplexOfConj (eq0 : g ∘ₗ f = 0) :
-    ShortComplex (ModuleCat.{v} R) :=
+abbrev ModuleCat.shortComplexOfConj (eq0 : g ∘ₗ f = 0) : ShortComplex (ModuleCat.{v} R) :=
   ModuleCat.shortComplexOfCompEqZero ((eN.symm.comp f).comp eM.toLinearMap)
-    (eL.symm.comp (g.comp eN.toLinearMap)) (by
+    (eL.symm.comp (g.comp eN.toLinearMap))
+    (by
       ext x
       simpa using congr($eq0 (eM x)))
 
-private lemma exact_conj_of_exact (exact : Function.Exact f g) : Function.Exact
-    ((eN.symm.comp f).comp eM.toLinearMap) (eL.symm.comp (g.comp eN.toLinearMap)) := by
+private lemma exact_conj_of_exact (exact : Function.Exact f g)
+    : Function.Exact ((eN.symm.comp f).comp eM.toLinearMap)
+      (eL.symm.comp (g.comp eN.toLinearMap)) := by
   rwa [LinearEquiv.precomp_exact_iff_exact, LinearEquiv.postcomp_exact_iff_exact,
     LinearEquiv.conj_symm_exact_iff_exact]
 
-lemma ModuleCat.shortComplexOfConj_exact (exact : Function.Exact f g) :
-    (ModuleCat.shortComplexOfConj eM eN eL f g exact.linearMap_comp_eq_zero).Exact :=
+lemma ModuleCat.shortComplexOfConj_exact (exact : Function.Exact f g)
+    : (ModuleCat.shortComplexOfConj eM eN eL f g exact.linearMap_comp_eq_zero).Exact :=
   ModuleCat.shortComplex_exact _ (exact_conj_of_exact eM eN eL f g exact)
 
-lemma ModuleCat.shortComplexOfConj_shortExact (exact : Function.Exact f g)
-    (inj : Function.Injective f) (surj : Function.Surjective g) :
-    (ModuleCat.shortComplexOfConj eM eN eL f g exact.linearMap_comp_eq_zero).ShortExact := by
+lemma ModuleCat.shortComplexOfConj_shortExact
+    (exact : Function.Exact f g) (inj : Function.Injective f) (surj : Function.Surjective g)
+    : (ModuleCat.shortComplexOfConj eM eN eL f g exact.linearMap_comp_eq_zero).ShortExact := by
   refine ModuleCat.shortComplex_shortExact _ (exact_conj_of_exact eM eN eL f g exact) ?_ ?_
   all_goals simpa
 

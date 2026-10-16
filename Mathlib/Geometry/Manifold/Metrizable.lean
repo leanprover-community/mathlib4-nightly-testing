@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Mathlib.Geometry.Manifold.IsManifold.Basic
-
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Metrizable.Urysohn
 
@@ -20,16 +19,20 @@ vector space is metrizable.
 
 public section
 
-
 open TopologicalSpace
 
-/-- A σ-compact Hausdorff topological manifold over a finite-dimensional real vector space is
-metrizable. -/
-theorem Manifold.metrizableSpace {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
-    (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [SigmaCompactSpace M] [T2Space M] :
-    MetrizableSpace M := by
-  have := I.locallyCompactSpace; have := ChartedSpace.locallyCompactSpace H M
+/--
+A σ-compact Hausdorff topological manifold over a finite-dimensional real vector space is
+metrizable.
+-/
+theorem Manifold.metrizableSpace
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    (I : ModelWithCorners ℝ E H)
+    (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [SigmaCompactSpace M] [T2Space M]
+    : MetrizableSpace M := by
+  have := I.locallyCompactSpace
+  have := ChartedSpace.locallyCompactSpace H M
   have := I.secondCountableTopology
   have := ChartedSpace.secondCountable_of_sigmaCompact H M
   exact metrizableSpace_of_t3_secondCountable M

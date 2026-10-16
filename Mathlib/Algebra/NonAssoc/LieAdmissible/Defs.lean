@@ -41,15 +41,20 @@ Frames.**][munthe-kaas_lundervold_2013]
 
 public section
 
-/-- A `LieAdmissibleRing` is a `NonUnitalNonAssocRing` such that the canonical bracket
-`⁅x, y⁆ := x * y - y * x` turns it into a `LieRing`. This is expressed by an associator identity. -/
+/--
+A `LieAdmissibleRing` is a `NonUnitalNonAssocRing` such that the canonical bracket
+`⁅x, y⁆ := x * y - y * x` turns it into a `LieRing`. This is expressed by an associator identity.
+-/
 @[ext]
 class LieAdmissibleRing (L : Type*) extends NonUnitalNonAssocRing L where
-  assoc_def (x y z : L) : associator x y z + associator z x y + associator y z x =
-    associator y x z + associator z y x + associator x z y
+  assoc_def (x y z : L)
+    : associator x y z + associator z x y + associator y z x
+      = associator y x z + associator z y x + associator x z y
 
-/-- A `LieAdmissibleAlgebra` is a `LieAdmissibleRing` equipped with a compatible action by scalars
-from a commutative ring. -/
+/--
+A `LieAdmissibleAlgebra` is a `LieAdmissibleRing` equipped with a compatible action by scalars
+from a commutative ring.
+-/
 @[ext]
 class LieAdmissibleAlgebra (R L : Type*) [CommRing R] [LieAdmissibleRing L]
   extends Module R L, IsScalarTower R L L, SMulCommClass R L L
@@ -80,8 +85,7 @@ namespace LieAdmissibleAlgebra
 
 /-- Every `LieAdmissibleAlgebra` is a `LieAlgebra` with the commutator bracket. -/
 instance instLieAlgebra [LieAdmissibleRing L] [LieAdmissibleAlgebra R L] : LieAlgebra R L where
-  lie_smul r x y := by
-    simp [Ring.lie_def, mul_smul_comm, smul_mul_assoc, ← smul_sub]
+  lie_smul r x y := by simp [Ring.lie_def, mul_smul_comm, smul_mul_assoc, ← smul_sub]
 
 end LieAdmissibleAlgebra
 
@@ -89,8 +93,10 @@ namespace LeftPreLieRing
 
 variable [LeftPreLieRing L]
 
-/-- `LeftPreLieRings` are examples of `LieAdmissibleRings` by the commutativity assumption on the
-associator. -/
+/--
+`LeftPreLieRings` are examples of `LieAdmissibleRings` by the commutativity assumption on the
+associator.
+-/
 instance instLieAdmissibleRing : LieAdmissibleRing L where
   assoc_def x y z := by
     have assoc_xyz := LeftPreLieRing.assoc_symm' x y z
@@ -112,8 +118,10 @@ namespace RightPreLieRing
 
 variable [RightPreLieRing L]
 
-/-- `RightPreLieRings` are examples of `LieAdmissibleRings` by the commutativity assumption on
-the associator. -/
+/--
+`RightPreLieRings` are examples of `LieAdmissibleRings` by the commutativity assumption on
+the associator.
+-/
 instance instLieAdmissibleRing : LieAdmissibleRing L where
   assoc_def x y z := by
     have assoc_xyz := RightPreLieRing.assoc_symm' x y z
@@ -135,8 +143,10 @@ namespace Ring
 
 variable [Ring L]
 
-/-- Every ring is Lie-admissible.
-See note [reducible non-instances]. -/
+/--
+Every ring is Lie-admissible.
+See note [reducible non-instances].
+-/
 abbrev instLieAdmissibleRing : LieAdmissibleRing L where
   assoc_def := by
     suffices ∀ a b c : L, associator a b c = 0 by simp
@@ -149,8 +159,10 @@ namespace Algebra
 variable [Ring L] [Algebra R L]
 attribute [local instance] Ring.instLieAdmissibleRing
 
-/-- Every algebra is Lie-admissible.
-See note [reducible non-instances]. -/
+/--
+Every algebra is Lie-admissible.
+See note [reducible non-instances].
+-/
 abbrev instLieAdmissibleAlgebra : LieAdmissibleAlgebra R L where
   smul_comm := by simp
 

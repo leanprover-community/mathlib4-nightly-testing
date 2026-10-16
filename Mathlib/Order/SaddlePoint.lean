@@ -6,7 +6,6 @@ Authors: Antoine Chambert-Loir, Anatole Dedecker
 module
 
 public import Mathlib.Order.ConditionallyCompleteLattice.Basic
-
 import Mathlib.Tactic.Common
 import Mathlib.Tactic.SetLike
 
@@ -34,37 +33,42 @@ variable {E F : Type*} {β : Type*}
 variable (X : Set E) (Y : Set F) (f : E → F → β)
 
 /-- The trivial minimax inequality -/
-theorem iSup₂_iInf₂_le_iInf₂_iSup₂ [CompleteLinearOrder β] :
-    ⨆ y ∈ Y, ⨅ x ∈ X, f x y ≤ ⨅ x ∈ X, ⨆ y ∈ Y, f x y := by
-  rw [iSup₂_le_iff]; intro y hy
-  rw [le_iInf₂_iff]; intro x hx
+theorem iSup₂_iInf₂_le_iInf₂_iSup₂ [CompleteLinearOrder β]
+    : ⨆ y ∈ Y, ⨅ x ∈ X, f x y ≤ ⨅ x ∈ X, ⨆ y ∈ Y, f x y := by
+  rw [iSup₂_le_iff]
+  intro y hy
+  rw [le_iInf₂_iff]
+  intro x hx
   exact iInf₂_le_of_le x hx (le_iSup₂_of_le y hy (le_refl _))
 
 -- [Hiriart-Urruty, (4.1.4)]
-/-- The pair `(a, b)` is a saddle point of `f` on `X × Y`
+/--
+The pair `(a, b)` is a saddle point of `f` on `X × Y`
 if `f a y ≤ f x b` for all `x ∈ X` and all `y` in `Y`.
 
-Note: we do not require that `a ∈ X` and `b ∈ Y`. -/
-def IsSaddlePointOn [Preorder β] (a : E) (b : F) : Prop :=
-  ∀ x ∈ X, ∀ y ∈ Y, f a y ≤ f x b
+Note: we do not require that `a ∈ X` and `b ∈ Y`.
+-/
+def IsSaddlePointOn [Preorder β] (a : E) (b : F) : Prop := ∀ x ∈ X, ∀ y ∈ Y, f a y ≤ f x b
 
 variable {X Y f}
 
-lemma IsSaddlePointOn.swap_left [Preorder β] {a a' : E} {b b' : F} (ha' : a' ∈ X) (hb : b ∈ Y)
-    (h : IsSaddlePointOn X Y f a b) (h' : IsSaddlePointOn X Y f a' b') :
-    IsSaddlePointOn X Y f a b' := fun x hx y hy ↦
+lemma IsSaddlePointOn.swap_left
+    [Preorder β]
+    {a a' : E} {b b' : F}
+    (ha' : a' ∈ X) (hb : b ∈ Y) (h : IsSaddlePointOn X Y f a b) (h' : IsSaddlePointOn X Y f a' b')
+    : IsSaddlePointOn X Y f a b' := fun x hx y hy ↦
   le_trans (h a' ha' y hy) (h' x hx b hb)
 
-lemma IsSaddlePointOn.swap_right [Preorder β] {a a' : E} {b b' : F} (ha : a ∈ X) (hb' : b' ∈ Y)
-    (h : IsSaddlePointOn X Y f a b) (h' : IsSaddlePointOn X Y f a' b') :
-    IsSaddlePointOn X Y f a' b :=
+lemma IsSaddlePointOn.swap_right
+    [Preorder β]
+    {a a' : E} {b b' : F}
+    (ha : a ∈ X) (hb' : b' ∈ Y) (h : IsSaddlePointOn X Y f a b) (h' : IsSaddlePointOn X Y f a' b')
+    : IsSaddlePointOn X Y f a' b :=
   IsSaddlePointOn.swap_left ha hb' h' h
 
 -- [Hiriart-Urruty, (4.1.1)]
-lemma isSaddlePointOn_iff [CompleteLinearOrder β]
-    {a : E} (ha : a ∈ X) {b : F} (hb : b ∈ Y) :
-    IsSaddlePointOn X Y f a b ↔
-      ⨆ y ∈ Y, f a y = f a b ∧ ⨅ x ∈ X, f x b = f a b := by
+lemma isSaddlePointOn_iff [CompleteLinearOrder β] {a : E} (ha : a ∈ X) {b : F} (hb : b ∈ Y)
+    : IsSaddlePointOn X Y f a b ↔ ⨆ y ∈ Y, f a y = f a b ∧ ⨅ x ∈ X, f x b = f a b := by
   refine ⟨fun h ↦ ⟨?_, ?_⟩, fun ⟨h, h'⟩ x hx y hy ↦ ?_⟩
   · apply le_antisymm
     · simp only [iSup_le_iff]
@@ -84,10 +88,8 @@ lemma isSaddlePointOn_iff [CompleteLinearOrder β]
       apply iInf₂_le x hx
 
 -- [Hiriart-Urruty, Prop. 4.2.2]
-lemma isSaddlePointOn_iff' [CompleteLinearOrder β]
-    {a : E} (ha : a ∈ X) {b : F} (hb : b ∈ Y) :
-    IsSaddlePointOn X Y f a b ↔
-      ⨆ y ∈ Y, f a y ≤ ⨅ x ∈ X, f x b := by
+lemma isSaddlePointOn_iff' [CompleteLinearOrder β] {a : E} (ha : a ∈ X) {b : F} (hb : b ∈ Y)
+    : IsSaddlePointOn X Y f a b ↔ ⨆ y ∈ Y, f a y ≤ ⨅ x ∈ X, f x b := by
   rw [isSaddlePointOn_iff ha hb]
   refine ⟨fun ⟨h, h'⟩ ↦ ?_, fun h ↦ ⟨?_, ?_⟩⟩
   · exact le_trans (le_of_eq h) (le_of_eq h'.symm)
@@ -101,11 +103,11 @@ lemma isSaddlePointOn_iff' [CompleteLinearOrder β]
 -- [Hiriart-Urruty, Prop. 4.2.2]
 -- The converse doesn't seem to hold
 /-- Minimax formulation of saddle points -/
-lemma isSaddlePointOn_value [CompleteLinearOrder β]
-    {a : E} (ha : a ∈ X) {b : F} (hb : b ∈ Y)
-    (h : IsSaddlePointOn X Y f a b) :
-    ⨅ x ∈ X, ⨆ y ∈ Y, f x y = f a b ∧
-      ⨆ y ∈ Y, ⨅ x ∈ X, f x y = f a b := by
+lemma isSaddlePointOn_value
+    [CompleteLinearOrder β]
+    {a : E} (ha : a ∈ X)
+    {b : F} (hb : b ∈ Y) (h : IsSaddlePointOn X Y f a b)
+    : ⨅ x ∈ X, ⨆ y ∈ Y, f x y = f a b ∧ ⨆ y ∈ Y, ⨅ x ∈ X, f x y = f a b := by
   rw [isSaddlePointOn_iff ha hb] at h
   constructor
   · apply le_antisymm

@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.GroupWithZero.NonZeroDivisors
 public import Mathlib.Algebra.Regular.Basic
 public import Mathlib.Algebra.Ring.Basic
-
 import Mathlib.Algebra.Regular.Opposite
 
 /-!
@@ -26,8 +25,8 @@ section Monoid
 variable {R : Type*} [Monoid R] {r : R}
 
 @[to_additive]
-theorem IsLeftRegular.pow_injective [IsMulTorsionFree R]
-    (hx : IsLeftRegular r) (hx' : r ≠ 1) : Function.Injective (fun n ↦ r ^ n) := by
+theorem IsLeftRegular.pow_injective [IsMulTorsionFree R] (hx : IsLeftRegular r) (hx' : r ≠ 1)
+    : Function.Injective (fun n ↦ r ^ n) := by
   intro n m hnm
   have main {n m} (h₁ : n ≤ m) (h₂ : r ^ n = r ^ m) : n = m := by
     obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le h₁
@@ -39,26 +38,35 @@ theorem IsLeftRegular.pow_injective [IsMulTorsionFree R]
   · exact (main h hnm.symm).symm
 
 @[to_additive]
-theorem IsRightRegular.pow_injective {M : Type*} [Monoid M] [IsMulTorsionFree M] {x : M}
-    (hx : IsRightRegular x) (hx' : x ≠ 1) : Function.Injective (fun n ↦ x ^ n) :=
+theorem IsRightRegular.pow_injective
+    {M : Type*} [Monoid M] [IsMulTorsionFree M] {x : M} (hx : IsRightRegular x) (hx' : x ≠ 1)
+    : Function.Injective (fun n ↦ x ^ n) :=
   MulOpposite.unop_injective.comp <| (isLeftRegular_op.mpr hx).pow_injective <|
     (MulOpposite.op_eq_one_iff x).not.mpr hx'
 
-theorem IsMulTorsionFree.pow_right_injective {M : Type*} [CancelMonoid M] [IsMulTorsionFree M]
-    {x : M} (hx : x ≠ 1) : Function.Injective (fun n ↦ x ^ n) :=
+theorem IsMulTorsionFree.pow_right_injective
+    {M : Type*} [CancelMonoid M] [IsMulTorsionFree M] {x : M} (hx : x ≠ 1)
+    : Function.Injective (fun n ↦ x ^ n) :=
   IsLeftRegular.pow_injective (IsLeftRegular.all x) hx
 
 @[simp]
-theorem IsMulTorsionFree.pow_right_inj {M : Type*} [CancelMonoid M] [IsMulTorsionFree M] {x : M}
-    (hx : x ≠ 1) {n m : ℕ} : x ^ n = x ^ m ↔ n = m := (pow_right_injective hx).eq_iff
+theorem IsMulTorsionFree.pow_right_inj
+    {M : Type*} [CancelMonoid M] [IsMulTorsionFree M] {x : M} (hx : x ≠ 1) {n m : ℕ}
+    : x ^ n = x ^ m ↔ n = m :=
+  (pow_right_injective hx).eq_iff
 
-theorem IsMulTorsionFree.pow_right_injective₀ {M : Type*} [MonoidWithZero M] [IsLeftCancelMulZero M]
-    [IsMulTorsionFree M] {x : M} (hx : x ≠ 1) (hx' : x ≠ 0) : Function.Injective (fun n ↦ x ^ n) :=
+theorem IsMulTorsionFree.pow_right_injective₀
+    {M : Type*} [MonoidWithZero M] [IsLeftCancelMulZero M] [IsMulTorsionFree M]
+    {x : M} (hx : x ≠ 1) (hx' : x ≠ 0)
+    : Function.Injective (fun n ↦ x ^ n) :=
   IsLeftRegular.pow_injective (IsLeftCancelMulZero.mul_left_cancel_of_ne_zero hx') hx
 
 @[simp]
-theorem IsMulTorsionFree.pow_right_inj₀ {M : Type*} [MonoidWithZero M] [IsLeftCancelMulZero M]
-    [IsMulTorsionFree M] {x : M} (hx : x ≠ 1) (hx' : x ≠ 0) {n m : ℕ} : x ^ n = x ^ m ↔ n = m :=
+theorem IsMulTorsionFree.pow_right_inj₀
+    {M : Type*} [MonoidWithZero M] [IsLeftCancelMulZero M] [IsMulTorsionFree M]
+    {x : M} (hx : x ≠ 1) (hx' : x ≠ 0)
+    {n m : ℕ}
+    : x ^ n = x ^ m ↔ n = m :=
   (pow_right_injective₀ hx hx').eq_iff
 
 variable [Finite R]
@@ -87,25 +95,24 @@ lemma isRightRegular_iff_mem_nonZeroDivisorsRight : IsRightRegular r ↔ r ∈ n
 
 lemma isRegular_iff_mem_nonZeroDivisors : IsRegular r ↔ r ∈ R⁰ := isRegular_iff_eq_zero_of_mul
 
-lemma le_nonZeroDivisorsLeft_iff_isLeftRegular {S : Submonoid R} :
-    S ≤ nonZeroDivisorsLeft R ↔ ∀ s : S, IsLeftRegular (s : R) := by
+lemma le_nonZeroDivisorsLeft_iff_isLeftRegular {S : Submonoid R}
+    : S ≤ nonZeroDivisorsLeft R ↔ ∀ s : S, IsLeftRegular (s : R) := by
   simp_rw [IsConcreteLE.le_iff, isLeftRegular_iff_mem_nonZeroDivisorsLeft, Subtype.forall]
 
-lemma le_nonZeroDivisorsRight_iff_isRightRegular {S : Submonoid R} :
-    S ≤ nonZeroDivisorsRight R ↔ ∀ s : S, IsRightRegular (s : R) := by
+lemma le_nonZeroDivisorsRight_iff_isRightRegular {S : Submonoid R}
+    : S ≤ nonZeroDivisorsRight R ↔ ∀ s : S, IsRightRegular (s : R) := by
   simp_rw [IsConcreteLE.le_iff, isRightRegular_iff_mem_nonZeroDivisorsRight, Subtype.forall]
 
-lemma le_nonZeroDivisors_iff_isRegular {S : Submonoid R} :
-    S ≤ R⁰ ↔ ∀ s : S, IsRegular (s : R) := by
+lemma le_nonZeroDivisors_iff_isRegular {S : Submonoid R} : S ≤ R⁰ ↔ ∀ s : S, IsRegular (s : R) := by
   simp_rw [nonZeroDivisors, le_inf_iff, le_nonZeroDivisorsLeft_iff_isLeftRegular,
     le_nonZeroDivisorsRight_iff_isRightRegular, isRegular_iff, forall_and]
 
-lemma mul_cancel_left_mem_nonZeroDivisorsLeft (hr : r ∈ nonZeroDivisorsLeft R) :
-    r * x = r * y ↔ x = y :=
+lemma mul_cancel_left_mem_nonZeroDivisorsLeft (hr : r ∈ nonZeroDivisorsLeft R)
+    : r * x = r * y ↔ x = y :=
   ⟨(isLeftRegular_iff_mem_nonZeroDivisorsLeft.mpr hr ·), congr_arg (r * ·)⟩
 
-lemma mul_cancel_right_mem_nonZeroDivisorsRight (hr : r ∈ nonZeroDivisorsRight R) :
-    x * r = y * r ↔ x = y :=
+lemma mul_cancel_right_mem_nonZeroDivisorsRight (hr : r ∈ nonZeroDivisorsRight R)
+    : x * r = y * r ↔ x = y :=
   ⟨(isRightRegular_iff_mem_nonZeroDivisorsRight.mpr hr ·), congr_arg (· * r)⟩
 
 @[simp]

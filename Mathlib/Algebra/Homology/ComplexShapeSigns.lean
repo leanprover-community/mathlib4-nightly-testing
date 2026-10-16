@@ -30,15 +30,17 @@ satisfying certain properties (see `ComplexShape.TensorSigns`).
 
 assert_not_exists Field TwoSidedIdeal
 
-variable {I₁ I₂ I₃ I₁₂ I₂₃ J : Type*}
-  (c₁ : ComplexShape I₁) (c₂ : ComplexShape I₂) (c₃ : ComplexShape I₃)
+variable
+  {I₁ I₂ I₃ I₁₂ I₂₃ J : Type*} (c₁ : ComplexShape I₁) (c₂ : ComplexShape I₂) (c₃ : ComplexShape I₃)
   (c₁₂ : ComplexShape I₁₂) (c₂₃ : ComplexShape I₂₃) (c : ComplexShape J)
 
-/-- A total complex shape for three complex shapes `c₁`, `c₂`, `c₁₂` on three types
+/--
+A total complex shape for three complex shapes `c₁`, `c₂`, `c₁₂` on three types
 `I₁`, `I₂` and `I₁₂` consists of the data and properties that will allow the construction
 of a total complex functor `HomologicalComplex₂ C c₁ c₂ ⥤ HomologicalComplex C c₁₂` which
 sends `K` to a complex which in degree `i₁₂ : I₁₂` consists of the coproduct
-of the `(K.X i₁).X i₂` such that `π ⟨i₁, i₂⟩ = i₁₂`. -/
+of the `(K.X i₁).X i₂` such that `π ⟨i₁, i₂⟩ = i₁₂`.
+-/
 class TotalComplexShape where
   /-- a map on indices -/
   π : I₁ × I₂ → I₁₂
@@ -48,8 +50,8 @@ class TotalComplexShape where
   ε₂ : I₁ × I₂ → ℤˣ
   rel₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂) : c₁₂.Rel (π ⟨i₁, i₂⟩) (π ⟨i₁', i₂⟩)
   rel₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂') : c₁₂.Rel (π ⟨i₁, i₂⟩) (π ⟨i₁, i₂'⟩)
-  ε₂_ε₁ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂') :
-    ε₂ ⟨i₁, i₂⟩ * ε₁ ⟨i₁, i₂'⟩ = - ε₁ ⟨i₁, i₂⟩ * ε₂ ⟨i₁', i₂⟩
+  ε₂_ε₁ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂')
+    : ε₂ ⟨i₁, i₂⟩ * ε₁ ⟨i₁, i₂'⟩ = - ε₁ ⟨i₁, i₂⟩ * ε₂ ⟨i₁', i₂⟩
 
 namespace ComplexShape
 
@@ -66,56 +68,58 @@ abbrev ε₂ (i : I₁ × I₂) : ℤˣ := TotalComplexShape.ε₂ c₁ c₂ c�
 
 variable {c₁}
 
-lemma rel_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂) :
-    c₁₂.Rel (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) (π c₁ c₂ c₁₂ ⟨i₁', i₂⟩) :=
+lemma rel_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂)
+    : c₁₂.Rel (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) (π c₁ c₂ c₁₂ ⟨i₁', i₂⟩) :=
   TotalComplexShape.rel₁ h i₂
 
-lemma next_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂) :
-    c₁₂.next (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁', i₂⟩ :=
+lemma next_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂)
+    : c₁₂.next (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁', i₂⟩ :=
   c₁₂.next_eq' (rel_π₁ c₂ c₁₂ h i₂)
 
-lemma prev_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂) :
-    c₁₂.prev (π c₁ c₂ c₁₂ ⟨i₁', i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ :=
+lemma prev_π₁ {i₁ i₁' : I₁} (h : c₁.Rel i₁ i₁') (i₂ : I₂)
+    : c₁₂.prev (π c₁ c₂ c₁₂ ⟨i₁', i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ :=
   c₁₂.prev_eq' (rel_π₁ c₂ c₁₂ h i₂)
 
 variable (c₁) {c₂}
 
-lemma rel_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂') :
-    c₁₂.Rel (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) (π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩) :=
+lemma rel_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂')
+    : c₁₂.Rel (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) (π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩) :=
   TotalComplexShape.rel₂ i₁ h
 
-lemma next_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂') :
-    c₁₂.next (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩ :=
+lemma next_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂')
+    : c₁₂.next (π c₁ c₂ c₁₂ ⟨i₁, i₂⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩ :=
   c₁₂.next_eq' (rel_π₂ c₁ c₁₂ i₁ h)
 
-lemma prev_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂') :
-    c₁₂.prev (π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ :=
+lemma prev_π₂ (i₁ : I₁) {i₂ i₂' : I₂} (h : c₂.Rel i₂ i₂')
+    : c₁₂.prev (π c₁ c₂ c₁₂ ⟨i₁, i₂'⟩) = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ :=
   c₁₂.prev_eq' (rel_π₂ c₁ c₁₂ i₁ h)
 
 variable {c₁}
 
-lemma ε₂_ε₁ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂') :
-    ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂'⟩ =
-      - ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₂ c₁ c₂ c₁₂ ⟨i₁', i₂⟩ :=
+lemma ε₂_ε₁ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂')
+    : ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂'⟩
+      = - ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₂ c₁ c₂ c₁₂ ⟨i₁', i₂⟩ :=
   TotalComplexShape.ε₂_ε₁ h₁ h₂
 
-lemma ε₁_ε₂ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂') :
-    ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ =
-      - ε₂ c₁ c₂ c₁₂ ⟨i₁', i₂⟩ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂'⟩ :=
+lemma ε₁_ε₂ {i₁ i₁' : I₁} {i₂ i₂' : I₂} (h₁ : c₁.Rel i₁ i₁') (h₂ : c₂.Rel i₂ i₂')
+    : ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ * ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩
+      = - ε₂ c₁ c₂ c₁₂ ⟨i₁', i₂⟩ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂'⟩ :=
   Eq.trans (mul_one _).symm (by
     rw [← Int.units_mul_self (ComplexShape.ε₁ c₁ c₂ c₁₂ (i₁, i₂')), mul_assoc]
     conv_lhs =>
       arg 2
       rw [← mul_assoc, ε₂_ε₁ c₁₂ h₁ h₂]
-    rw [neg_mul, neg_mul, neg_mul, mul_neg, neg_inj, ← mul_assoc, ← mul_assoc,
-      Int.units_mul_self, one_mul])
+    rw [neg_mul, neg_mul, neg_mul, mul_neg, neg_inj, ← mul_assoc, ← mul_assoc, Int.units_mul_self,
+      one_mul])
 
 section
 
 variable {I : Type*} [AddMonoid I] (c : ComplexShape I)
 
-/-- If `I` is an additive monoid and `c : ComplexShape I`, `c.TensorSigns` contains the data of
-map `ε : I → ℤˣ` and properties which allows the construction of a `TotalComplexShape c c c`. -/
+/--
+If `I` is an additive monoid and `c : ComplexShape I`, `c.TensorSigns` contains the data of
+map `ε : I → ℤˣ` and properties which allows the construction of a `TotalComplexShape c c c`.
+-/
 class TensorSigns where
   /-- the signs which appear in the vertical differential of the total complex -/
   ε' : Multiplicative I →* ℤˣ
@@ -134,22 +138,16 @@ lemma rel_add {p q : I} (hpq : c.Rel p q) (r : I) : c.Rel (p + r) (q + r) :=
 lemma add_rel (r : I) {p q : I} (hpq : c.Rel p q) : c.Rel (r + p) (r + q) :=
   TensorSigns.add_rel _ _ _ hpq
 
-@[simp]
-lemma ε_zero : c.ε 0 = 1 := by
-  apply map_one
+@[simp] lemma ε_zero : c.ε 0 = 1 := by apply map_one
 
-lemma ε_succ {p q : I} (hpq : c.Rel p q) : c.ε q = - c.ε p :=
-  TensorSigns.ε'_succ p q hpq
+lemma ε_succ {p q : I} (hpq : c.Rel p q) : c.ε q = - c.ε p := TensorSigns.ε'_succ p q hpq
 
-lemma ε_add (p q : I) : c.ε (p + q) = c.ε p * c.ε q := by
-  apply map_mul
+lemma ε_add (p q : I) : c.ε (p + q) = c.ε p * c.ε q := by apply map_mul
 
-lemma next_add (p q : I) (hp : c.Rel p (c.next p)) :
-    c.next (p + q) = c.next p + q :=
+lemma next_add (p q : I) (hp : c.Rel p (c.next p)) : c.next (p + q) = c.next p + q :=
   c.next_eq' (c.rel_add hp q)
 
-lemma next_add' (p q : I) (hq : c.Rel q (c.next q)) :
-    c.next (p + q) = p + c.next q :=
+lemma next_add' (p q : I) (hq : c.Rel q (c.next q)) : c.next (p + q) = p + c.next q :=
   c.next_eq' (c.add_rel p hq)
 
 @[simps]
@@ -174,8 +172,7 @@ instance : TensorSigns (ComplexShape.down ℕ) where
     dsimp
     rw [pow_add, pow_one, mul_neg, mul_one, neg_neg]
 
-@[simp]
-lemma ε_down_ℕ (n : ℕ) : (ComplexShape.down ℕ).ε n = (-1 : ℤˣ) ^ n := rfl
+@[simp] lemma ε_down_ℕ (n : ℕ) : (ComplexShape.down ℕ).ε n = (-1 : ℤˣ) ^ n := rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
@@ -188,8 +185,7 @@ instance : TensorSigns (ComplexShape.up ℤ) where
     dsimp
     rw [Int.negOnePow_succ]
 
-@[simp]
-lemma ε_up_ℤ (n : ℤ) : (ComplexShape.up ℤ).ε n = n.negOnePow := rfl
+@[simp] lemma ε_up_ℤ (n : ℤ) : (ComplexShape.up ℤ).ε n = n.negOnePow := rfl
 
 end
 
@@ -198,51 +194,55 @@ section
 variable (c₁ c₂)
 variable [TotalComplexShape c₁₂ c₃ c] [TotalComplexShape c₂ c₃ c₂₃] [TotalComplexShape c₁ c₂₃ c]
 
-/-- When we have six complex shapes `c₁`, `c₂`, `c₃`, `c₁₂`, `c₂₃`, `c`, and total functors
+/--
+When we have six complex shapes `c₁`, `c₂`, `c₃`, `c₁₂`, `c₂₃`, `c`, and total functors
 `HomologicalComplex₂ C c₁ c₂ ⥤ HomologicalComplex C c₁₂`,
 `HomologicalComplex₂ C c₁₂ c₃ ⥤ HomologicalComplex C c`,
 `HomologicalComplex₂ C c₂ c₃ ⥤ HomologicalComplex C c₂₃`,
 `HomologicalComplex₂ C c₁ c₂₂₃ ⥤ HomologicalComplex C c`, we get two ways to
 compute the total complex of a triple complex in `HomologicalComplex₃ C c₁ c₂ c₃`, then
 under this assumption `[Associative c₁ c₂ c₃ c₁₂ c₂₃ c]`, these two complexes
-canonically identify (without introducing signs). -/
+canonically identify (without introducing signs).
+-/
 class Associative : Prop where
-  assoc (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    π c₁₂ c₃ c ⟨π c₁ c₂ c₁₂ ⟨i₁, i₂⟩, i₃⟩ = π c₁ c₂₃ c ⟨i₁, π c₂ c₃ c₂₃ ⟨i₂, i₃⟩⟩
-  ε₁_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₁ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) =
-      ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₁ c₁ c₂ c₁₂ (i₁, i₂)
-  ε₂_ε₁ (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₁ c₂ c₃ c₂₃ (i₂, i₃) =
-      ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₂ c₁ c₂ c₁₂ (i₁, i₂)
-  ε₂_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₂ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) =
-      (ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₂ c₂ c₃ c₂₃ (i₂, i₃))
+  assoc (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : π c₁₂ c₃ c ⟨π c₁ c₂ c₁₂ ⟨i₁, i₂⟩, i₃⟩ = π c₁ c₂₃ c ⟨i₁, π c₂ c₃ c₂₃ ⟨i₂, i₃⟩⟩
+  ε₁_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₁ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃))
+      = ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₁ c₁ c₂ c₁₂ (i₁, i₂)
+  ε₂_ε₁ (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₁ c₂ c₃ c₂₃ (i₂, i₃)
+      = ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₂ c₁ c₂ c₁₂ (i₁, i₂)
+  ε₂_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₂ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃)
+      = (ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₂ c₂ c₃ c₂₃ (i₂, i₃))
 
 variable [Associative c₁ c₂ c₃ c₁₂ c₂₃ c]
 
-lemma assoc (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    π c₁₂ c₃ c ⟨π c₁ c₂ c₁₂ ⟨i₁, i₂⟩, i₃⟩ = π c₁ c₂₃ c ⟨i₁, π c₂ c₃ c₂₃ ⟨i₂, i₃⟩⟩ := by
+lemma assoc (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : π c₁₂ c₃ c ⟨π c₁ c₂ c₁₂ ⟨i₁, i₂⟩, i₃⟩ = π c₁ c₂₃ c ⟨i₁, π c₂ c₃ c₂₃ ⟨i₂, i₃⟩⟩ := by
   apply Associative.assoc
 
-lemma associative_ε₁_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₁ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) =
-      ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₁ c₁ c₂ c₁₂ (i₁, i₂) := by
+lemma associative_ε₁_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₁ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃))
+      = ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₁ c₁ c₂ c₁₂ (i₁, i₂) := by
   apply Associative.ε₁_eq_mul
 
-lemma associative_ε₂_ε₁ (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₁ c₂ c₃ c₂₃ (i₂, i₃) =
-      ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₂ c₁ c₂ c₁₂ (i₁, i₂) := by
+lemma associative_ε₂_ε₁ (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₁ c₂ c₃ c₂₃ (i₂, i₃)
+      = ε₁ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) * ε₂ c₁ c₂ c₁₂ (i₁, i₂) := by
   apply Associative.ε₂_ε₁
 
-lemma associative_ε₂_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃) :
-    ε₂ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃) =
-      (ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₂ c₂ c₃ c₂₃ (i₂, i₃)) := by
+lemma associative_ε₂_eq_mul (i₁ : I₁) (i₂ : I₂) (i₃ : I₃)
+    : ε₂ c₁₂ c₃ c (π c₁ c₂ c₁₂ (i₁, i₂), i₃)
+      = (ε₂ c₁ c₂₃ c (i₁, π c₂ c₃ c₂₃ (i₂, i₃)) * ε₂ c₂ c₃ c₂₃ (i₂, i₃)) := by
   apply Associative.ε₂_eq_mul
 
-/-- The map `I₁ × I₂ × I₃ → j` that is obtained using `TotalComplexShape c₁ c₂ c₁₂`
+/--
+The map `I₁ × I₂ × I₃ → j` that is obtained using `TotalComplexShape c₁ c₂ c₁₂`
 and `TotalComplexShape c₁₂ c₃ c` when `c₁ : ComplexShape I₁`, `c₂ : ComplexShape I₂`,
-`c₃ : ComplexShape I₃`, `c₁₂ : ComplexShape I₁₂` and `c : ComplexShape J`. -/
+`c₃ : ComplexShape I₃`, `c₁₂ : ComplexShape I₁₂` and `c : ComplexShape J`.
+-/
 def r : I₁ × I₂ × I₃ → J := fun ⟨i₁, i₂, i₃⟩ ↦ π c₁₂ c₃ c ⟨π c₁ c₂ c₁₂ ⟨i₁, i₂⟩, i₃⟩
 
 open CategoryTheory
@@ -265,8 +265,8 @@ def ρ₂₃ : GradedObject.BifunctorComp₂₃IndexData (r c₁ c₂ c₃ c₁�
 
 end
 
-instance {I : Type*} [AddMonoid I] (c : ComplexShape I) [c.TensorSigns] :
-    Associative c c c c c c where
+instance {I : Type*} [AddMonoid I] (c : ComplexShape I) [c.TensorSigns]
+    : Associative c c c c c c where
   assoc := add_assoc
   ε₁_eq_mul _ _ _ := by dsimp; rw [one_mul]
   ε₂_ε₁ _ _ _ := by dsimp; rw [one_mul, mul_one]
@@ -274,73 +274,72 @@ instance {I : Type*} [AddMonoid I] (c : ComplexShape I) [c.TensorSigns] :
 
 end ComplexShape
 
-/-- The total complex shape for `c₂`, `c₁` and `c₁₂` that is deduced
-from a total complex shape for `c₁`, `c₂` and `c₁₂`. -/
+/--
+The total complex shape for `c₂`, `c₁` and `c₁₂` that is deduced
+from a total complex shape for `c₁`, `c₂` and `c₁₂`.
+-/
 @[instance_reducible]
-def TotalComplexShape.symm [TotalComplexShape c₁ c₂ c₁₂] :
-    TotalComplexShape c₂ c₁ c₁₂ where
+def TotalComplexShape.symm [TotalComplexShape c₁ c₂ c₁₂] : TotalComplexShape c₂ c₁ c₁₂ where
   π := fun ⟨i₂, i₁⟩ ↦ ComplexShape.π c₁ c₂ c₁₂ ⟨i₁, i₂⟩
   ε₁ := fun ⟨i₂, i₁⟩ ↦ ComplexShape.ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩
   ε₂ := fun ⟨i₂, i₁⟩ ↦ ComplexShape.ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩
   rel₁ h i₁ := ComplexShape.rel_π₂ c₁ c₁₂ i₁ h
   rel₂ i₂ _ _ h := ComplexShape.rel_π₁ c₂ c₁₂ h i₂
-  ε₂_ε₁ h₂ h₁ := by
-    rw [neg_mul, ComplexShape.ε₂_ε₁ c₁₂ h₁ h₂, neg_mul, neg_neg]
+  ε₂_ε₁ h₂ h₁ := by rw [neg_mul, ComplexShape.ε₂_ε₁ c₁₂ h₁ h₂, neg_mul, neg_neg]
 
-/-- A total complex shape symmetry contains the data and properties which allow the
+/--
+A total complex shape symmetry contains the data and properties which allow the
 identification of the two total complex functors
 `HomologicalComplex₂ C c₁ c₂ ⥤ HomologicalComplex C c₁₂`
-and `HomologicalComplex₂ C c₂ c₁ ⥤ HomologicalComplex C c₁₂` via the flip. -/
+and `HomologicalComplex₂ C c₂ c₁ ⥤ HomologicalComplex C c₁₂` via the flip.
+-/
 class TotalComplexShapeSymmetry [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂] where
   symm (i₁ : I₁) (i₂ : I₂) : ComplexShape.π c₂ c₁ c₁₂ ⟨i₂, i₁⟩ = ComplexShape.π c₁ c₂ c₁₂ ⟨i₁, i₂⟩
   /-- the signs involved in the symmetry isomorphism of the total complex -/
   σ (i₁ : I₁) (i₂ : I₂) : ℤˣ
-  σ_ε₁ {i₁ i₁' : I₁} (h₁ : c₁.Rel i₁ i₁') (i₂ : I₂) :
-    σ i₁ i₂ * ComplexShape.ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ComplexShape.ε₂ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ i₁' i₂
-  σ_ε₂ (i₁ : I₁) {i₂ i₂' : I₂} (h₂ : c₂.Rel i₂ i₂') :
-    σ i₁ i₂ * ComplexShape.ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ComplexShape.ε₁ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ i₁ i₂'
+  σ_ε₁ {i₁ i₁' : I₁} (h₁ : c₁.Rel i₁ i₁') (i₂ : I₂)
+    : σ i₁ i₂ * ComplexShape.ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ComplexShape.ε₂ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ i₁' i₂
+  σ_ε₂ (i₁ : I₁) {i₂ i₂' : I₂} (h₂ : c₂.Rel i₂ i₂')
+    : σ i₁ i₂ * ComplexShape.ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ComplexShape.ε₁ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ i₁ i₂'
 
-/-- The symmetry between the total complex shape for `c₁`, `c₂` and `c₁₂`,
-and its symmetric total complex shape. -/
+/--
+The symmetry between the total complex shape for `c₁`, `c₂` and `c₁₂`,
+and its symmetric total complex shape.
+-/
 @[instance_reducible]
-def TotalComplexShape.symmSymmetry [TotalComplexShape c₁ c₂ c₁₂] :
-    letI := TotalComplexShape.symm c₁ c₂ c₁₂
-    TotalComplexShapeSymmetry c₁ c₂ c₁₂ :=
+def TotalComplexShape.symmSymmetry [TotalComplexShape c₁ c₂ c₁₂]
+    : letI := TotalComplexShape.symm c₁ c₂ c₁₂
+      TotalComplexShapeSymmetry c₁ c₂ c₁₂ :=
   letI := TotalComplexShape.symm c₁ c₂ c₁₂
-  { symm i₁ i₂ := rfl
-    σ _ _ := 1
-    σ_ε₁ _ _ := by aesop
-    σ_ε₂ _ _ := by aesop }
+  { symm i₁ i₂ := rfl, σ _ _ := 1, σ_ε₁ _ _ := by aesop, σ_ε₂ _ _ := by aesop }
 
 namespace ComplexShape
 
-variable [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂]
-  [TotalComplexShapeSymmetry c₁ c₂ c₁₂]
+variable
+  [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂] [TotalComplexShapeSymmetry c₁ c₂ c₁₂]
 
 /-- The signs involved in the symmetry isomorphism of the total complex. -/
 abbrev σ (i₁ : I₁) (i₂ : I₂) : ℤˣ := TotalComplexShapeSymmetry.σ c₁ c₂ c₁₂ i₁ i₂
 
-lemma π_symm (i₁ : I₁) (i₂ : I₂) :
-    π c₂ c₁ c₁₂ ⟨i₂, i₁⟩ = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ := by
+lemma π_symm (i₁ : I₁) (i₂ : I₂) : π c₂ c₁ c₁₂ ⟨i₂, i₁⟩ = π c₁ c₂ c₁₂ ⟨i₁, i₂⟩ := by
   apply TotalComplexShapeSymmetry.symm
 
 /-- The symmetry bijection `(π c₂ c₁ c₁₂ ⁻¹' {j}) ≃ (π c₁ c₂ c₁₂ ⁻¹' {j})`. -/
 @[simps]
-def symmetryEquiv (j : I₁₂) :
-    (π c₂ c₁ c₁₂ ⁻¹' {j}) ≃ (π c₁ c₂ c₁₂ ⁻¹' {j}) where
+def symmetryEquiv (j : I₁₂) : (π c₂ c₁ c₁₂ ⁻¹' {j}) ≃ (π c₁ c₂ c₁₂ ⁻¹' {j}) where
   toFun := fun ⟨⟨i₂, i₁⟩, h⟩ => ⟨⟨i₁, i₂⟩, by simpa [π_symm] using h⟩
   invFun := fun ⟨⟨i₁, i₂⟩, h⟩ => ⟨⟨i₂, i₁⟩, by simpa [π_symm] using h⟩
 
 variable {c₁}
 
-lemma σ_ε₁ {i₁ i₁' : I₁} (h₁ : c₁.Rel i₁ i₁') (i₂ : I₂) :
-    σ c₁ c₂ c₁₂ i₁ i₂ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ε₂ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ c₁ c₂ c₁₂ i₁' i₂ :=
+lemma σ_ε₁ {i₁ i₁' : I₁} (h₁ : c₁.Rel i₁ i₁') (i₂ : I₂)
+    : σ c₁ c₂ c₁₂ i₁ i₂ * ε₁ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ε₂ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ c₁ c₂ c₁₂ i₁' i₂ :=
   TotalComplexShapeSymmetry.σ_ε₁ h₁ i₂
 
 variable (c₁) {c₂}
 
-lemma σ_ε₂ (i₁ : I₁) {i₂ i₂' : I₂} (h₂ : c₂.Rel i₂ i₂') :
-    σ c₁ c₂ c₁₂ i₁ i₂ * ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ε₁ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ c₁ c₂ c₁₂ i₁ i₂' :=
+lemma σ_ε₂ (i₁ : I₁) {i₂ i₂' : I₂} (h₂ : c₂.Rel i₂ i₂')
+    : σ c₁ c₂ c₁₂ i₁ i₂ * ε₂ c₁ c₂ c₁₂ ⟨i₁, i₂⟩ = ε₁ c₂ c₁ c₁₂ ⟨i₂, i₁⟩ * σ c₁ c₂ c₁₂ i₁ i₂' :=
   TotalComplexShapeSymmetry.σ_ε₂ i₁ h₂
 
 @[simps]
@@ -359,42 +358,47 @@ instance : TotalComplexShapeSymmetry (up ℤ) (up ℤ) (up ℤ) where
 
 end ComplexShape
 
-/-- The obvious `TotalComplexShapeSymmetry c₂ c₁ c₁₂` deduced from a
-`TotalComplexShapeSymmetry c₁ c₂ c₁₂`. -/
+/--
+The obvious `TotalComplexShapeSymmetry c₂ c₁ c₁₂` deduced from a
+`TotalComplexShapeSymmetry c₁ c₂ c₁₂`.
+-/
 @[instance_reducible]
-def TotalComplexShapeSymmetry.symmetry [TotalComplexShape c₁ c₂ c₁₂]
-    [TotalComplexShape c₂ c₁ c₁₂] [TotalComplexShapeSymmetry c₁ c₂ c₁₂] :
-    TotalComplexShapeSymmetry c₂ c₁ c₁₂ where
+def TotalComplexShapeSymmetry.symmetry
+    [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂]
+    [TotalComplexShapeSymmetry c₁ c₂ c₁₂]
+    : TotalComplexShapeSymmetry c₂ c₁ c₁₂ where
   symm i₂ i₁ := (ComplexShape.π_symm c₁ c₂ c₁₂ i₁ i₂).symm
   σ i₂ i₁ := ComplexShape.σ c₁ c₂ c₁₂ i₁ i₂
   σ_ε₁ {i₂ i₂'} h₂ i₁ := by
     apply mul_right_cancel (b := ComplexShape.ε₂ c₁ c₂ c₁₂ (i₁, i₂))
     rw [mul_assoc]
     nth_rw 2 [mul_comm]
-    rw [← mul_assoc, ComplexShape.σ_ε₂ c₁ c₁₂ i₁ h₂, mul_comm, ← mul_assoc,
-      Int.units_mul_self, one_mul, mul_comm, ← mul_assoc, Int.units_mul_self, one_mul]
+    rw [← mul_assoc, ComplexShape.σ_ε₂ c₁ c₁₂ i₁ h₂, mul_comm, ← mul_assoc, Int.units_mul_self,
+      one_mul, mul_comm, ← mul_assoc, Int.units_mul_self, one_mul]
   σ_ε₂ i₂ i₁ i₁' h₁ := by
     apply mul_right_cancel (b := ComplexShape.ε₁ c₁ c₂ c₁₂ (i₁, i₂))
     rw [mul_assoc]
     nth_rw 2 [mul_comm]
-    rw [← mul_assoc, ComplexShape.σ_ε₁ c₂ c₁₂ h₁ i₂, mul_comm, ← mul_assoc,
-      Int.units_mul_self, one_mul, mul_comm, ← mul_assoc, Int.units_mul_self, one_mul]
+    rw [← mul_assoc, ComplexShape.σ_ε₁ c₂ c₁₂ h₁ i₂, mul_comm, ← mul_assoc, Int.units_mul_self,
+      one_mul, mul_comm, ← mul_assoc, Int.units_mul_self, one_mul]
 
-/-- This typeclass expresses that the signs given by `[TotalComplexShapeSymmetry c₁ c₂ c₁₂]`
-and by `[TotalComplexShapeSymmetry c₂ c₁ c₁₂]` are compatible. -/
-class TotalComplexShapeSymmetrySymmetry [TotalComplexShape c₁ c₂ c₁₂]
-    [TotalComplexShape c₂ c₁ c₁₂] [TotalComplexShapeSymmetry c₁ c₂ c₁₂]
-    [TotalComplexShapeSymmetry c₂ c₁ c₁₂] : Prop where
+/--
+This typeclass expresses that the signs given by `[TotalComplexShapeSymmetry c₁ c₂ c₁₂]`
+and by `[TotalComplexShapeSymmetry c₂ c₁ c₁₂]` are compatible.
+-/
+class TotalComplexShapeSymmetrySymmetry
+    [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂]
+    [TotalComplexShapeSymmetry c₁ c₂ c₁₂] [TotalComplexShapeSymmetry c₂ c₁ c₁₂]
+    : Prop where
   σ_symm i₁ i₂ : ComplexShape.σ c₂ c₁ c₁₂ i₂ i₁ = ComplexShape.σ c₁ c₂ c₁₂ i₁ i₂
 
 namespace ComplexShape
 
-variable [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂]
-  [TotalComplexShapeSymmetry c₁ c₂ c₁₂] [TotalComplexShapeSymmetry c₂ c₁ c₁₂]
-  [TotalComplexShapeSymmetrySymmetry c₁ c₂ c₁₂]
+variable
+  [TotalComplexShape c₁ c₂ c₁₂] [TotalComplexShape c₂ c₁ c₁₂] [TotalComplexShapeSymmetry c₁ c₂ c₁₂]
+  [TotalComplexShapeSymmetry c₂ c₁ c₁₂] [TotalComplexShapeSymmetrySymmetry c₁ c₂ c₁₂]
 
-lemma σ_symm (i₁ : I₁) (i₂ : I₂) :
-    σ c₂ c₁ c₁₂ i₂ i₁ = σ c₁ c₂ c₁₂ i₁ i₂ := by
+lemma σ_symm (i₁ : I₁) (i₂ : I₂) : σ c₂ c₁ c₁₂ i₂ i₁ = σ c₁ c₂ c₁₂ i₁ i₂ := by
   apply TotalComplexShapeSymmetrySymmetry.σ_symm
 
 end ComplexShape

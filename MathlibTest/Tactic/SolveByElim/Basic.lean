@@ -8,7 +8,6 @@ import Mathlib.Tactic.Constructor
 import Batteries.Tactic.PermuteGoals
 import MathlibTest.Tactic.SolveByElim.DummyLabelAttr
 
-
 example (h : Nat) : Nat := by solve_by_elim
 example {α β : Type} (f : α → β) (a : α) : β := by solve_by_elim
 example {α β : Type} (f : α → α → β) (a : α) : β := by solve_by_elim
@@ -51,8 +50,8 @@ example (h₁ h₂ : False) : Empty := by
   solve_by_elim only [*, -h₁]
 
 -- Verify that already assigned metavariables are skipped.
-example (P₁ P₂ : α → Prop) (f : ∀ (a : α), P₁ a → P₂ a → β)
-    (a : α) (ha₁ : P₁ a) (ha₂ : P₂ a) : β := by
+example (P₁ P₂ : α → Prop) (f : ∀ (a : α), P₁ a → P₂ a → β) (a : α) (ha₁ : P₁ a) (ha₂ : P₂ a)
+    : β := by
   solve_by_elim
 
 example {X : Type} (x : X) : x = x := by
@@ -71,13 +70,14 @@ example : True := by
   -- uses the `trivial` lemma, which should now be removed from the default set:
   solve_by_elim -constructor
 
-example : True := by
-  solve_by_elim only -- uses the constructor discharger.
+example : True := by solve_by_elim only -- uses the constructor discharger.
 
 -- Requires backtracking.
-example (P₁ P₂ : α → Prop) (f : ∀ (a: α), P₁ a → P₂ a → β)
+example
+    (P₁ P₂ : α → Prop) (f : ∀ (a : α), P₁ a → P₂ a → β)
     (a : α) (_ha₁ : P₁ a)
-    (a' : α) (ha'₁ : P₁ a') (ha'₂ : P₂ a') : β := by
+    (a' : α) (ha'₁ : P₁ a') (ha'₂ : P₂ a')
+    : β := by
   fail_if_success solve_by_elim (config := .noBackTracking)
   solve_by_elim
 
@@ -129,8 +129,7 @@ example (P : Prop) : P → P := by
   fail_if_success solve_by_elim -intro
   solve_by_elim
 
-example (P Q : Prop) : P ∧ Q → P ∧ Q := by
-  solve_by_elim
+example (P Q : Prop) : P ∧ Q → P ∧ Q := by solve_by_elim
 
 section apply_assumption
 
@@ -138,8 +137,7 @@ example {a b : Type} (h₀ : a → b) (h₁ : a) : b := by
   apply_assumption
   apply_assumption
 
-example {α : Type} {p : α → Prop} (h₀ : ∀ x, p x) (y : α) : p y := by
-  apply_assumption
+example {α : Type} {p : α → Prop} (h₀ : ∀ x, p x) (y : α) : p y := by apply_assumption
 
 -- Check that `apply_assumption` uses `symm`.
 example (a b : α) (h : b = a) : a = b := by
@@ -147,7 +145,7 @@ example (a b : α) (h : b = a) : a = b := by
   apply_assumption
 
 -- Check that `apply_assumption` uses `exfalso`.
-example {P Q : Prop} (p : P) (q : Q) (h : P → ¬ Q) : Nat := by
+example {P Q : Prop} (p : P) (q : Q) (h : P → ¬Q) : Nat := by
   fail_if_success apply_assumption -exfalso
   apply_assumption <;> assumption
 

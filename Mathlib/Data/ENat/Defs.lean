@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.Notation
 public import Mathlib.Order.TypeTags
-
 import Mathlib.Tactic.Basify.Attr
 
 /-! # Definition and notation for extended natural numbers -/
@@ -15,7 +14,8 @@ import Mathlib.Tactic.Basify.Attr
 @[expose] public section
 
 /-- Extended natural numbers `ℕ∞ = WithTop ℕ`. -/
-def ENat : Type := WithTop ℕ deriving Top, Inhabited
+def ENat : Type := WithTop ℕ
+deriving Top, Inhabited
 
 @[inherit_doc] notation "ℕ∞" => ENat
 
@@ -30,13 +30,11 @@ def recTopCoe {C : ℕ∞ → Sort*} (top : C ⊤) (coe : ∀ a : ℕ, C a) : �
   | Option.some a => coe a
 
 @[simp]
-theorem recTopCoe_top {C : ℕ∞ → Sort*} (d : C ⊤) (f : ∀ a : ℕ, C a) :
-    @recTopCoe C d f ⊤ = d :=
-  rfl
+theorem recTopCoe_top {C : ℕ∞ → Sort*} (d : C ⊤) (f : ∀ a : ℕ, C a) : @recTopCoe C d f ⊤ = d := rfl
 
 @[simp]
-theorem recTopCoe_natCast {C : ℕ∞ → Sort*} (d : C ⊤) (f : ∀ a : ℕ, C a) (x : ℕ) :
-    @recTopCoe C d f ↑x = f x :=
+theorem recTopCoe_natCast {C : ℕ∞ → Sort*} (d : C ⊤) (f : ∀ a : ℕ, C a) (x : ℕ)
+    : @recTopCoe C d f ↑x = f x :=
   rfl
 
 @[deprecated (since := "2026-07-17")] alias recTopCoe_coe := recTopCoe_natCast

@@ -34,8 +34,10 @@ section HopfAlgebraStruct
 variable [HopfAlgebraStruct R A]
 
 variable (R) in
-/-- An ideal whose underlying `R`-submodule is a coideal and which is stable under the
-antipode (`S(I) ⊆ I`). Together with `I.IsTwoSided`, this makes `I` a *Hopf ideal*. -/
+/--
+An ideal whose underlying `R`-submodule is a coideal and which is stable under the
+antipode (`S(I) ⊆ I`). Together with `I.IsTwoSided`, this makes `I` a *Hopf ideal*.
+-/
 @[mk_iff]
 class Ideal.IsHopfIdeal (I : Ideal A) : Prop extends (I.restrictScalars R).IsCoideal where
   antipode_mem : ∀ ⦃x : A⦄, x ∈ I → antipode R x ∈ I
@@ -49,17 +51,20 @@ section HopfAlgebraStruct
 variable [HopfAlgebraStruct R A] (I : Ideal A) [I.IsTwoSided] [I.IsHopfIdeal R]
 
 instance : HopfAlgebraStruct R (A ⧸ I) where
-  antipode := Submodule.mapQ (I.restrictScalars R) (I.restrictScalars R)
-    (antipode R) (Ideal.IsHopfIdeal.antipode_mem (R := R))
+  antipode :=
+    Submodule.mapQ (I.restrictScalars R) (I.restrictScalars R) (antipode R)
+      (Ideal.IsHopfIdeal.antipode_mem (R := R))
 
 @[simp]
-lemma antipode_mk (a : A) :
-    antipode R (Ideal.Quotient.mk I a) = Ideal.Quotient.mk I (antipode R a) := rfl
+lemma antipode_mk (a : A)
+    : antipode R (Ideal.Quotient.mk I a) = Ideal.Quotient.mk I (antipode R a) :=
+  rfl
 
 @[deprecated antipode_mk +typeChanged (since := "2026-09-19")]
-lemma antipode_comp_mkₐ :
-    antipode R ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap =
-      (Ideal.Quotient.mkₐ R I).toLinearMap ∘ₗ antipode R := by ext; simp
+lemma antipode_comp_mkₐ
+    : antipode R ∘ₗ (Ideal.Quotient.mkₐ R I).toLinearMap
+      = (Ideal.Quotient.mkₐ R I).toLinearMap ∘ₗ antipode R := by
+  ext; simp
 
 end HopfAlgebraStruct
 

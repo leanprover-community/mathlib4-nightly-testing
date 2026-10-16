@@ -68,11 +68,9 @@ instance : PartialOrder (TwoSidedIdeal R) := .ofSetLike (TwoSidedIdeal R)
 
 lemma mem_iff (x : R) : x ∈ I ↔ I.ringCon x 0 := Iff.rfl
 
-@[simp]
-lemma mem_ofRingCon {x : R} {c : RingCon R} : x ∈ ofRingCon c ↔ c x 0 := Iff.rfl
+@[simp] lemma mem_ofRingCon {x : R} {c : RingCon R} : x ∈ ofRingCon c ↔ c x 0 := Iff.rfl
 
-@[simp, norm_cast]
-lemma coe_ofRingCon {c : RingCon R} : (ofRingCon c : Set R) = {x | c x 0} := rfl
+@[simp, norm_cast] lemma coe_ofRingCon {c : RingCon R} : (ofRingCon c : Set R) = {x | c x 0} := rfl
 
 /-- A deprecated alias for `ofRingCon`. -/
 @[deprecated ofRingCon (since := "2026-06-18")]
@@ -90,9 +88,7 @@ lemma rel_iff (x y : R) : I.ringCon x y ↔ x - y ∈ I := by
   · intro h; convert I.ringCon.sub h (I.ringCon.refl y); abel
   · intro h; convert I.ringCon.add h (I.ringCon.refl y) <;> abel
 
-/--
-the coercion from two-sided-ideals to sets is an order embedding
--/
+/-- the coercion from two-sided-ideals to sets is an order embedding -/
 @[simps]
 def coeOrderEmbedding : TwoSidedIdeal R ↪o Set R where
   toFun := SetLike.coe
@@ -106,8 +102,11 @@ lemma le_iff {I J : TwoSidedIdeal R} : I ≤ J ↔ (I : Set R) ⊆ (J : Set R) :
 def orderIsoRingCon : TwoSidedIdeal R ≃o RingCon R where
   toFun := TwoSidedIdeal.ringCon
   invFun := ofRingCon
-  map_rel_iff' {I J} := Iff.symm <| le_iff.trans ⟨fun h x y r => by rw [rel_iff] at r ⊢; exact h r,
-    fun h x hx => by rw [SetLike.mem_coe, mem_iff] at hx ⊢; exact h hx⟩
+  map_rel_iff' {I J} :=
+    Iff.symm <| le_iff.trans ⟨
+      fun h x y r => by rw [rel_iff] at r ⊢; exact h r,
+      fun h x hx => by rw [SetLike.mem_coe, mem_iff] at hx ⊢; exact h hx
+    ⟩
 
 lemma ringCon_injective : Function.Injective (TwoSidedIdeal.ringCon (R := R)) := by
   rintro ⟨x⟩ ⟨y⟩ rfl; rfl
@@ -155,36 +154,41 @@ The "set-theoretic-way" of constructing a two-sided ideal by providing:
 - a proof that `x * y ∈ S` if `y ∈ S`;
 - a proof that `x * y ∈ S` if `x ∈ S`.
 -/
-def mk' (carrier : Set R)
-    (zero_mem : 0 ∈ carrier)
-    (add_mem : ∀ {x y}, x ∈ carrier → y ∈ carrier → x + y ∈ carrier)
+def mk'
+    (carrier : Set R)
+    (zero_mem : 0 ∈ carrier) (add_mem : ∀ {x y}, x ∈ carrier → y ∈ carrier → x + y ∈ carrier)
     (neg_mem : ∀ {x}, x ∈ carrier → -x ∈ carrier)
     (mul_mem_left : ∀ {x y}, y ∈ carrier → x * y ∈ carrier)
-    (mul_mem_right : ∀ {x y}, x ∈ carrier → x * y ∈ carrier) : TwoSidedIdeal R where
-  ringCon :=
-    { r := fun x y ↦ x - y ∈ carrier
-      iseqv :=
-      { refl := fun x ↦ by simpa using zero_mem
-        symm := fun h ↦ by simpa using neg_mem h
-        trans := fun {x y z} h1 h2 ↦ by
-          simpa only [show x - z = (x - y) + (y - z) by abel] using add_mem h1 h2 }
-      mul' := fun {a b c d} (h1 : a - b ∈ carrier) (h2 : c - d ∈ carrier) ↦ show _ ∈ carrier by
+    (mul_mem_right : ∀ {x y}, x ∈ carrier → x * y ∈ carrier)
+    : TwoSidedIdeal R where
+  ringCon := {
+    r := fun x y ↦ x - y ∈ carrier
+    iseqv := {
+      refl := fun x ↦ by simpa using zero_mem
+      symm := fun h ↦ by simpa using neg_mem h
+      trans := fun {x y z} h1 h2 ↦ by
+        simpa only [show x - z = (x - y) + (y - z) by abel] using add_mem h1 h2
+    }
+    mul' := fun {a b c d} (h1 : a - b ∈ carrier) (h2 : c - d ∈ carrier) ↦
+      show _ ∈ carrier by
         rw [show a * c - b * d = a * (c - d) + (a - b) * d by rw [mul_sub, sub_mul]; abel]
         exact add_mem (mul_mem_left h2) (mul_mem_right h1)
-      add' := fun {a b c d} (h1 : a - b ∈ carrier) (h2 : c - d ∈ carrier) ↦ show _ ∈ carrier by
+    add' := fun {a b c d} (h1 : a - b ∈ carrier) (h2 : c - d ∈ carrier) ↦
+      show _ ∈ carrier by
         rw [show a + c - (b + d) = (a - b) + (c - d) by abel]
-        exact add_mem h1 h2 }
+        exact add_mem h1 h2
+  }
 
 @[simp]
-lemma mem_mk' (carrier : Set R) (zero_mem add_mem neg_mem mul_mem_left mul_mem_right) (x : R) :
-    x ∈ mk' carrier zero_mem add_mem neg_mem mul_mem_left mul_mem_right ↔ x ∈ carrier := by
+lemma mem_mk' (carrier : Set R) (zero_mem add_mem neg_mem mul_mem_left mul_mem_right) (x : R)
+    : x ∈ mk' carrier zero_mem add_mem neg_mem mul_mem_left mul_mem_right ↔ x ∈ carrier := by
   rw [mem_iff]
   simp [mk']
 
 set_option linter.docPrime false in
 @[simp]
-lemma coe_mk' (carrier : Set R) (zero_mem add_mem neg_mem mul_mem_left mul_mem_right) :
-    (mk' carrier zero_mem add_mem neg_mem mul_mem_left mul_mem_right : Set R) = carrier :=
+lemma coe_mk' (carrier : Set R) (zero_mem add_mem neg_mem mul_mem_left mul_mem_right)
+    : (mk' carrier zero_mem add_mem neg_mem mul_mem_left mul_mem_right : Set R) = carrier :=
   Set.ext <| mem_mk' carrier zero_mem add_mem neg_mem mul_mem_left mul_mem_right
 
 instance : SMulMemClass (TwoSidedIdeal R) R R where
@@ -196,21 +200,31 @@ instance : SMulMemClass (TwoSidedIdeal R) R R where
 theorem instSMulMemClassMulOpposite : SMulMemClass (TwoSidedIdeal R) Rᵐᵒᵖ R where
   smul_mem _ _ h := TwoSidedIdeal.mul_mem_right _ _ _ h
 
-instance : Add I where add x y := ⟨x.1 + y.1, I.add_mem x.2 y.2⟩
+instance : Add I where
+  add x y := ⟨x.1 + y.1, I.add_mem x.2 y.2⟩
 
-instance : Zero I where zero := ⟨0, I.zero_mem⟩
+instance : Zero I where
+  zero := ⟨0, I.zero_mem⟩
 
-instance : SMul ℕ I where smul n x := ⟨n • x.1, I.nsmul_mem n x.2⟩
+instance : SMul ℕ I where
+  smul n x := ⟨n • x.1, I.nsmul_mem n x.2⟩
 
-instance : Neg I where neg x := ⟨-x.1, I.neg_mem x.2⟩
+instance : Neg I where
+  neg x := ⟨-x.1, I.neg_mem x.2⟩
 
-instance : Sub I where sub x y := ⟨x.1 - y.1, I.sub_mem x.2 y.2⟩
+instance : Sub I where
+  sub x y := ⟨x.1 - y.1, I.sub_mem x.2 y.2⟩
 
-instance : SMul ℤ I where smul n x := ⟨n • x.1, I.zsmul_mem n x.2⟩
+instance : SMul ℤ I where
+  smul n x := ⟨n • x.1, I.zsmul_mem n x.2⟩
 
 instance addCommGroup : AddCommGroup I :=
-  Function.Injective.addCommGroup _ Subtype.coe_injective
-    rfl (fun _ _ ↦ rfl) (fun _ ↦ rfl) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
+  Function.Injective.addCommGroup _ Subtype.coe_injective rfl
+    (fun _ _ ↦ rfl)
+    (fun _ ↦ rfl)
+    (fun _ _ ↦ rfl)
+    (fun _ _ ↦ rfl)
+    (fun _ _ ↦ rfl)
 
 /-- The coercion into the ring as a `AddMonoidHom` -/
 @[simps]
@@ -224,14 +238,11 @@ def coeAddMonoidHom : I →+ R where
 def op (I : TwoSidedIdeal R) : TwoSidedIdeal Rᵐᵒᵖ where
   ringCon := I.ringCon.op
 
-@[simp]
-lemma mem_op_iff {I : TwoSidedIdeal R} {x : Rᵐᵒᵖ} : x ∈ I.op ↔ x.unop ∈ I :=
-  I.ringCon.comm'
+@[simp] lemma mem_op_iff {I : TwoSidedIdeal R} {x : Rᵐᵒᵖ} : x ∈ I.op ↔ x.unop ∈ I := I.ringCon.comm'
 
 @[simp, norm_cast]
 lemma coe_op {I : TwoSidedIdeal R} : (I.op : Set Rᵐᵒᵖ) = MulOpposite.unop ⁻¹' I :=
   Set.ext fun _ => mem_op_iff
-
 
 /-- If `I` is a two-sided ideal of `Rᵐᵒᵖ`, then `{x.unop | x ∈ I}` is a two-sided ideal in `R`. -/
 @[simps]
@@ -246,9 +257,7 @@ lemma mem_unop_iff {I : TwoSidedIdeal Rᵐᵒᵖ} {x : R} : x ∈ I.unop ↔ Mul
 lemma coe_unop {I : TwoSidedIdeal Rᵐᵒᵖ} : (I.unop : Set R) = MulOpposite.op ⁻¹' I :=
   Set.ext fun _ => mem_unop_iff
 
-/--
-Two-sided-ideals of `A` and that of `Aᵒᵖ` corresponds bijectively to each other.
--/
+/-- Two-sided-ideals of `A` and that of `Aᵒᵖ` corresponds bijectively to each other. -/
 @[simps]
 def opOrderIso : TwoSidedIdeal R ≃o TwoSidedIdeal Rᵐᵒᵖ where
   toFun := op

@@ -26,7 +26,6 @@ Please try to keep them in sync.
 
 @[expose] public section
 
-
 universe v₁ u₁
 
 namespace CategoryTheory
@@ -43,7 +42,6 @@ variable {T : Comonad C} (X : Coalgebra T)
 Show that any coalgebra is an equalizer of cofree coalgebras.
 -/
 
-
 /-- The top map in the equalizer diagram we will construct. -/
 @[simps!]
 def CofreeEqualizer.topMap : (Comonad.cofree T).obj X.A ⟶ (Comonad.cofree T).obj (T.obj X.A) :=
@@ -51,8 +49,8 @@ def CofreeEqualizer.topMap : (Comonad.cofree T).obj X.A ⟶ (Comonad.cofree T).o
 
 /-- The bottom map in the equalizer diagram we will construct. -/
 @[simps]
-def CofreeEqualizer.bottomMap :
-    (Comonad.cofree T).obj X.A ⟶ (Comonad.cofree T).obj (T.obj X.A) where
+def CofreeEqualizer.bottomMap
+    : (Comonad.cofree T).obj X.A ⟶ (Comonad.cofree T).obj (T.obj X.A) where
   f := T.δ.app X.A
   h := T.coassoc X.A
 
@@ -62,9 +60,9 @@ def CofreeEqualizer.ι : X ⟶ (Comonad.cofree T).obj X.A where
   f := X.a
   h := X.coassoc.symm
 
-theorem CofreeEqualizer.condition :
-    CofreeEqualizer.ι X ≫ CofreeEqualizer.topMap X =
-      CofreeEqualizer.ι X ≫ CofreeEqualizer.bottomMap X :=
+theorem CofreeEqualizer.condition
+    : CofreeEqualizer.ι X ≫ CofreeEqualizer.topMap X
+      = CofreeEqualizer.ι X ≫ CofreeEqualizer.bottomMap X :=
   Coalgebra.Hom.ext X.coassoc.symm
 
 set_option backward.defeqAttrib.useBackward true in
@@ -77,7 +75,8 @@ instance : IsCoreflexivePair (CofreeEqualizer.topMap X) (CofreeEqualizer.bottomM
   · ext
     apply Comonad.right_counit
 
-/-- Construct the Beck fork in the category of coalgebras. This fork is coreflexive as well as an
+/--
+Construct the Beck fork in the category of coalgebras. This fork is coreflexive as well as an
 equalizer.
 -/
 @[simps!]
@@ -86,7 +85,8 @@ def beckCoalgebraFork : Fork (CofreeEqualizer.topMap X) (CofreeEqualizer.bottomM
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The fork constructed is a limit. This shows that any coalgebra is a (coreflexive) equalizer of
+/--
+The fork constructed is a limit. This shows that any coalgebra is a (coreflexive) equalizer of
 cofree coalgebras.
 -/
 def beckCoalgebraEqualizer : IsLimit (beckCoalgebraFork X) :=
@@ -97,8 +97,8 @@ def beckCoalgebraEqualizer : IsLimit (beckCoalgebraFork X) :=
     · dsimp
       rw [Functor.map_comp, reassoc_of% h₂, Comonad.right_counit]
       dsimp
-      rw [Category.comp_id, Category.assoc, ← T.counit_naturality,
-        reassoc_of% h₁, Comonad.left_counit]
+      rw [Category.comp_id, Category.assoc, ← T.counit_naturality, reassoc_of% h₁,
+        Comonad.left_counit]
       simp
     · ext
       simpa [← T.ε.naturality_assoc, T.left_counit_assoc] using! h₁ =≫ T.ε.app ((T : C ⥤ C).obj X.A)
@@ -114,20 +114,16 @@ def beckSplitEqualizer : IsSplitEqualizer (T.map X.a) (T.δ.app _) X.a :=
 
 /-- This is the Beck fork. It is a split equalizer, in particular an equalizer. -/
 @[simps! pt]
-def beckFork : Fork (T.map X.a) (T.δ.app _) :=
-  (beckSplitEqualizer X).asFork
+def beckFork : Fork (T.map X.a) (T.δ.app _) := (beckSplitEqualizer X).asFork
 
-@[simp]
-theorem beckFork_ι : (beckFork X).ι = X.a :=
-  rfl
+@[simp] theorem beckFork_ι : (beckFork X).ι = X.a := rfl
 
 /-- The Beck fork is an equalizer. -/
-def beckEqualizer : IsLimit (beckFork X) :=
-  (beckSplitEqualizer X).isEqualizer
+def beckEqualizer : IsLimit (beckFork X) := (beckSplitEqualizer X).isEqualizer
 
 @[simp]
-theorem beckEqualizer_lift (s : Fork (T.toFunctor.map X.a) (T.δ.app X.A)) :
-    (beckEqualizer X).lift s = s.ι ≫ T.ε.app _ :=
+theorem beckEqualizer_lift (s : Fork (T.toFunctor.map X.a) (T.δ.app X.A))
+    : (beckEqualizer X).lift s = s.ι ≫ T.ε.app _ :=
   rfl
 
 end Comonad

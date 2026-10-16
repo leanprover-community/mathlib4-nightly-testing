@@ -9,7 +9,6 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.MeasureTheory.Constructions.Polish.EmbeddingReal
 public import Mathlib.Topology.Algebra.Module.ModuleTopology
-
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
@@ -65,23 +64,20 @@ noncomputable def sigmoid (x : ℝ) := (1 + exp (-x))⁻¹
 
 lemma sigmoid_def (x : ℝ) : sigmoid x = (1 + exp (-x))⁻¹ := rfl
 
-@[simp]
-lemma sigmoid_zero : sigmoid 0 = 2⁻¹ := by norm_num [sigmoid]
+@[simp] lemma sigmoid_zero : sigmoid 0 = 2⁻¹ := by norm_num [sigmoid]
 
 @[bound]
 lemma sigmoid_pos (x : ℝ) : 0 < sigmoid x := by
   change 0 < (1 + exp (-x))⁻¹
   positivity
 
-@[bound]
-lemma sigmoid_nonneg (x : ℝ) : 0 ≤ sigmoid x := (sigmoid_pos x).le
+@[bound] lemma sigmoid_nonneg (x : ℝ) : 0 ≤ sigmoid x := (sigmoid_pos x).le
 
 @[bound]
 lemma sigmoid_lt_one (x : ℝ) : sigmoid x < 1 :=
   inv_lt_one_of_one_lt₀ <| (lt_add_iff_pos_right 1).mpr <| exp_pos _
 
-@[bound]
-lemma sigmoid_le_one (x : ℝ) : sigmoid x ≤ 1 := (sigmoid_lt_one x).le
+@[bound] lemma sigmoid_le_one (x : ℝ) : sigmoid x ≤ 1 := (sigmoid_lt_one x).le
 
 @[gcongr, mono]
 lemma sigmoid_strictMono : StrictMono sigmoid := fun a b hab ↦ by
@@ -90,21 +86,17 @@ lemma sigmoid_strictMono : StrictMono sigmoid := fun a b hab ↦ by
 
 lemma sigmoid_le_iff {a b : ℝ} : sigmoid a ≤ sigmoid b ↔ a ≤ b := sigmoid_strictMono.le_iff_le
 
-@[gcongr]
-lemma sigmoid_le {a b : ℝ} : a ≤ b → sigmoid a ≤ sigmoid b := sigmoid_le_iff.mpr
+@[gcongr] lemma sigmoid_le {a b : ℝ} : a ≤ b → sigmoid a ≤ sigmoid b := sigmoid_le_iff.mpr
 
 lemma sigmoid_lt_iff {a b : ℝ} : sigmoid a < sigmoid b ↔ a < b := sigmoid_strictMono.lt_iff_lt
 
-@[gcongr]
-lemma sigmoid_lt {a b : ℝ} : a < b → sigmoid a < sigmoid b := sigmoid_lt_iff.mpr
+@[gcongr] lemma sigmoid_lt {a b : ℝ} : a < b → sigmoid a < sigmoid b := sigmoid_lt_iff.mpr
 
-@[mono]
-lemma sigmoid_monotone : Monotone sigmoid := sigmoid_strictMono.monotone
+@[mono] lemma sigmoid_monotone : Monotone sigmoid := sigmoid_strictMono.monotone
 
 lemma sigmoid_injective : Function.Injective sigmoid := sigmoid_strictMono.injective
 
-@[simp]
-lemma sigmoid_inj {a b : ℝ} : sigmoid a = sigmoid b ↔ a = b := sigmoid_injective.eq_iff
+@[simp] lemma sigmoid_inj {a b : ℝ} : sigmoid a = sigmoid b ↔ a = b := sigmoid_injective.eq_iff
 
 lemma sigmoid_neg (x : ℝ) : sigmoid (-x) = 1 - sigmoid x := by
   simp only [sigmoid_def]
@@ -129,15 +121,14 @@ open Filter
 open scoped Topology
 
 lemma tendsto_sigmoid_atTop : Tendsto sigmoid atTop (𝓝 1) := by
-  simpa using! Real.tendsto_exp_comp_nhds_zero.mpr tendsto_neg_atTop_atBot |>.const_add 1 |>.inv₀ <|
-    by simp
+  simpa using!
+    Real.tendsto_exp_comp_nhds_zero.mpr tendsto_neg_atTop_atBot |>.const_add 1 |>.inv₀ <| by simp
 
 lemma tendsto_sigmoid_atBot : Tendsto sigmoid atBot (𝓝 0) :=
   tendsto_const_nhds.add_atTop (tendsto_exp_comp_atTop.mpr tendsto_neg_atBot_atTop)
     |>.inv_tendsto_atTop
 
-lemma hasDerivAt_sigmoid (x : ℝ) :
-    HasDerivAt sigmoid (sigmoid x * (1 - sigmoid x)) x := by
+lemma hasDerivAt_sigmoid (x : ℝ) : HasDerivAt sigmoid (sigmoid x * (1 - sigmoid x)) x := by
   convert! (hasDerivAt_neg' x |>.exp.const_add 1 |>.inv <| by positivity) using 1
   rw [← sigmoid_neg, ← sigmoid_mul_rexp_neg x, sigmoid_def]
   field [sq]
@@ -160,17 +151,16 @@ lemma AnalyticAt.sigmoid {x : E} (fa : AnalyticAt ℝ f x) : AnalyticAt ℝ (sig
   analyticAt_sigmoid.comp fa
 
 @[fun_prop]
-lemma AnalyticAt.sigmoid' {x : E} (fa : AnalyticAt ℝ f x) :
-    AnalyticAt ℝ (fun z ↦ Real.sigmoid (f z)) x := fa.sigmoid
+lemma AnalyticAt.sigmoid' {x : E} (fa : AnalyticAt ℝ f x)
+    : AnalyticAt ℝ (fun z ↦ Real.sigmoid (f z)) x :=
+  fa.sigmoid
 
-lemma analyticOnNhd_sigmoid : AnalyticOnNhd ℝ sigmoid Set.univ :=
-  fun _ _ ↦ analyticAt_sigmoid
+lemma analyticOnNhd_sigmoid : AnalyticOnNhd ℝ sigmoid Set.univ := fun _ _ ↦ analyticAt_sigmoid
 
 lemma AnalyticOnNhd.sigmoid (fs : AnalyticOnNhd ℝ f s) : AnalyticOnNhd ℝ (sigmoid ∘ f) s :=
   fun z n ↦ analyticAt_sigmoid.comp (fs z n)
 
-lemma analyticOn_sigmoid : AnalyticOn ℝ sigmoid Set.univ :=
-  analyticOnNhd_sigmoid.analyticOn
+lemma analyticOn_sigmoid : AnalyticOn ℝ sigmoid Set.univ := analyticOnNhd_sigmoid.analyticOn
 
 lemma AnalyticOn.sigmoid (fs : AnalyticOn ℝ f s) : AnalyticOn ℝ (sigmoid ∘ f) s :=
   analyticOnNhd_sigmoid.comp_analyticOn fs (mapsTo_univ _ _)
@@ -178,12 +168,12 @@ lemma AnalyticOn.sigmoid (fs : AnalyticOn ℝ f s) : AnalyticOn ℝ (sigmoid ∘
 lemma analyticWithinAt_sigmoid {s : Set ℝ} : AnalyticWithinAt ℝ sigmoid s x :=
   analyticAt_sigmoid.analyticWithinAt
 
-lemma AnalyticWithinAt.sigmoid {x : E} (fa : AnalyticWithinAt ℝ f s x) :
-  AnalyticWithinAt ℝ (sigmoid ∘ f) s x := analyticAt_sigmoid.comp_analyticWithinAt fa
+lemma AnalyticWithinAt.sigmoid {x : E} (fa : AnalyticWithinAt ℝ f s x)
+    : AnalyticWithinAt ℝ (sigmoid ∘ f) s x :=
+  analyticAt_sigmoid.comp_analyticWithinAt fa
 
 open ContDiff in
-@[fun_prop]
-lemma contDiff_sigmoid : ContDiff ℝ ω sigmoid := analyticOn_sigmoid.contDiff
+@[fun_prop] lemma contDiff_sigmoid : ContDiff ℝ ω sigmoid := analyticOn_sigmoid.contDiff
 
 open ContDiff in
 @[fun_prop]
@@ -199,16 +189,16 @@ lemma Differentiable.sigmoid (hf : Differentiable ℝ f) : Differentiable ℝ (s
   differentiable_sigmoid.comp hf
 
 @[fun_prop]
-lemma differentiableAt_sigmoid : DifferentiableAt ℝ sigmoid x :=
-  differentiable_sigmoid x
+lemma differentiableAt_sigmoid : DifferentiableAt ℝ sigmoid x := differentiable_sigmoid x
 
 @[fun_prop]
-lemma DifferentiableAt.sigmoid {x : E} (hf : DifferentiableAt ℝ f x) :
-    DifferentiableAt ℝ (sigmoid ∘ f) x := differentiableAt_sigmoid.comp x hf
+lemma DifferentiableAt.sigmoid {x : E} (hf : DifferentiableAt ℝ f x)
+    : DifferentiableAt ℝ (sigmoid ∘ f) x :=
+  differentiableAt_sigmoid.comp x hf
 
 @[fun_prop]
 lemma continuous_sigmoid : Continuous sigmoid := by
-  apply Differentiable.continuous (𝕜 := ℝ)  -- fun_prop can't choose `𝕜`
+  apply Differentiable.continuous (𝕜 := ℝ) -- fun_prop can't choose `𝕜`
   fun_prop
 
 omit [NormedSpace ℝ E] in
@@ -221,35 +211,27 @@ namespace unitInterval
 /-- The sigmoid function from `ℝ` to `I`. -/
 noncomputable def sigmoid : ℝ → I := Subtype.coind Real.sigmoid (fun _ ↦ ⟨by bound, by bound⟩)
 
-@[bound]
-lemma sigmoid_pos (x : ℝ) : 0 < sigmoid x := Real.sigmoid_pos x
+@[bound] lemma sigmoid_pos (x : ℝ) : 0 < sigmoid x := Real.sigmoid_pos x
 
-@[bound]
-lemma sigmoid_lt_one (x : ℝ) : sigmoid x < 1 := Real.sigmoid_lt_one x
+@[bound] lemma sigmoid_lt_one (x : ℝ) : sigmoid x < 1 := Real.sigmoid_lt_one x
 
-@[gcongr, mono]
-lemma sigmoid_strictMono : StrictMono sigmoid := Real.sigmoid_strictMono
+@[gcongr, mono] lemma sigmoid_strictMono : StrictMono sigmoid := Real.sigmoid_strictMono
 
 lemma sigmoid_le_iff {a b : ℝ} : sigmoid a ≤ sigmoid b ↔ a ≤ b := Real.sigmoid_le_iff
 
-@[gcongr]
-lemma sigmoid_le {a b : ℝ} : a ≤ b → sigmoid a ≤ sigmoid b := sigmoid_le_iff.mpr
+@[gcongr] lemma sigmoid_le {a b : ℝ} : a ≤ b → sigmoid a ≤ sigmoid b := sigmoid_le_iff.mpr
 
 lemma sigmoid_lt_iff {a b : ℝ} : sigmoid a < sigmoid b ↔ a < b := Real.sigmoid_lt_iff
 
-@[gcongr]
-lemma sigmoid_lt {a b : ℝ} : a < b → sigmoid a < sigmoid b := sigmoid_lt_iff.mpr
+@[gcongr] lemma sigmoid_lt {a b : ℝ} : a < b → sigmoid a < sigmoid b := sigmoid_lt_iff.mpr
 
-@[mono]
-lemma sigmoid_monotone : Monotone sigmoid := sigmoid_strictMono.monotone
+@[mono] lemma sigmoid_monotone : Monotone sigmoid := sigmoid_strictMono.monotone
 
 lemma sigmoid_injective : Function.Injective sigmoid := sigmoid_strictMono.injective
 
-@[simp]
-lemma sigmoid_inj {a b : ℝ} : sigmoid a = sigmoid b ↔ a = b := sigmoid_injective.eq_iff
+@[simp] lemma sigmoid_inj {a b : ℝ} : sigmoid a = sigmoid b ↔ a = b := sigmoid_injective.eq_iff
 
-@[fun_prop]
-lemma continuous_sigmoid : Continuous sigmoid := _root_.continuous_sigmoid.subtype_mk _
+@[fun_prop] lemma continuous_sigmoid : Continuous sigmoid := _root_.continuous_sigmoid.subtype_mk _
 
 lemma sigmoid_neg (x : ℝ) : sigmoid (-x) = σ (sigmoid x) := by
   ext
@@ -283,16 +265,16 @@ noncomputable def OrderEmbedding.sigmoid : ℝ ↪o I :=
   OrderEmbedding.ofStrictMono unitInterval.sigmoid unitInterval.sigmoid_strictMono
 
 lemma Topology.isEmbedding_sigmoid : IsEmbedding unitInterval.sigmoid :=
-  OrderEmbedding.sigmoid.isEmbedding_of_ordConnected (ordConnected_of_Ioo <|
-    fun a _ b _ _ => unitInterval.range_sigmoid ▸ Ioo_subset_Ioo a.2.1 b.2.2)
+  OrderEmbedding.sigmoid.isEmbedding_of_ordConnected (ordConnected_of_Ioo <| fun a _ b _ _ =>
+    unitInterval.range_sigmoid ▸ Ioo_subset_Ioo a.2.1 b.2.2)
 
 lemma measurableEmbedding_sigmoid : MeasurableEmbedding unitInterval.sigmoid :=
   Topology.isEmbedding_sigmoid.measurableEmbedding <| unitInterval.range_sigmoid ▸ measurableSet_Ioo
 
 variable (α : Type*) [MeasurableSpace α] [StandardBorelSpace α]
 
-lemma measurableEmbedding_sigmoid_comp_embeddingReal :
-    MeasurableEmbedding (unitInterval.sigmoid ∘ MeasureTheory.embeddingReal α) :=
+lemma measurableEmbedding_sigmoid_comp_embeddingReal
+    : MeasurableEmbedding (unitInterval.sigmoid ∘ MeasureTheory.embeddingReal α) :=
   measurableEmbedding_sigmoid.comp (MeasureTheory.measurableEmbedding_embeddingReal α)
 
 end Embedding

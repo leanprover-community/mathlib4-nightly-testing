@@ -40,46 +40,54 @@ universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
 
 namespace CategoryTheory
 
-variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D] {E : Type u₃}
-  [Category.{v₃} E] {E' : Type u₄} [Category.{v₄} E']
+variable
+  {C : Type u₁} [Category.{v₁} C]
+  {D : Type u₂} [Category.{v₂} D]
+  {E : Type u₃} [Category.{v₃} E]
+  {E' : Type u₄} [Category.{v₄} E']
 
 namespace Iso
 
-/-- The application of a natural isomorphism to an object. We put this definition in a different
-namespace, so that we can use `α.app` -/
+/--
+The application of a natural isomorphism to an object. We put this definition in a different
+namespace, so that we can use `α.app`
+-/
 @[implicit_reducible, simps (attr := grind =)]
-def app {F G : C ⥤ D} (α : F ≅ G) (X : C) :
-    F.obj X ≅ G.obj X where
+def app {F G : C ⥤ D} (α : F ≅ G) (X : C) : F.obj X ≅ G.obj X where
   hom := α.hom.app X
   inv := α.inv.app X
 
 attribute [to_dual existing app_inv] app_hom
 
 @[map (attr := reassoc +to_dual (attr := simp)), grind =]
-theorem hom_inv_id_app {F G : C ⥤ D} (α : F ≅ G) (X : C) :
-    α.hom.app X ≫ α.inv.app X = 𝟙 (F.obj X) := by cat_disch
+theorem hom_inv_id_app {F G : C ⥤ D} (α : F ≅ G) (X : C)
+    : α.hom.app X ≫ α.inv.app X = 𝟙 (F.obj X) := by
+  cat_disch
 
 @[map (attr := reassoc +to_dual (attr := simp)), grind =]
-theorem inv_hom_id_app {F G : C ⥤ D} (α : F ≅ G) (X : C) :
-    α.inv.app X ≫ α.hom.app X = 𝟙 (G.obj X) := by cat_disch
+theorem inv_hom_id_app {F G : C ⥤ D} (α : F ≅ G) (X : C)
+    : α.inv.app X ≫ α.hom.app X = 𝟙 (G.obj X) := by
+  cat_disch
 
 @[reassoc +to_dual (attr := simp)]
-lemma hom_inv_id_app_app {F G : C ⥤ D ⥤ E} (e : F ≅ G) (X₁ : C) (X₂ : D) :
-    (e.hom.app X₁).app X₂ ≫ (e.inv.app X₁).app X₂ = 𝟙 _ := by cat_disch
+lemma hom_inv_id_app_app {F G : C ⥤ D ⥤ E} (e : F ≅ G) (X₁ : C) (X₂ : D)
+    : (e.hom.app X₁).app X₂ ≫ (e.inv.app X₁).app X₂ = 𝟙 _ := by
+  cat_disch
 
 @[reassoc +to_dual (attr := simp)]
-lemma inv_hom_id_app_app {F G : C ⥤ D ⥤ E} (e : F ≅ G) (X₁ : C) (X₂ : D) :
-    (e.inv.app X₁).app X₂ ≫ (e.hom.app X₁).app X₂ = 𝟙 _ := by cat_disch
+lemma inv_hom_id_app_app {F G : C ⥤ D ⥤ E} (e : F ≅ G) (X₁ : C) (X₂ : D)
+    : (e.inv.app X₁).app X₂ ≫ (e.hom.app X₁).app X₂ = 𝟙 _ := by
+  cat_disch
 
 @[reassoc +to_dual (attr := simp)]
-lemma hom_inv_id_app_app_app {F G : C ⥤ D ⥤ E ⥤ E'} (e : F ≅ G)
-    (X₁ : C) (X₂ : D) (X₃ : E) :
-    ((e.hom.app X₁).app X₂).app X₃ ≫ ((e.inv.app X₁).app X₂).app X₃ = 𝟙 _ := by cat_disch
+lemma hom_inv_id_app_app_app {F G : C ⥤ D ⥤ E ⥤ E'} (e : F ≅ G) (X₁ : C) (X₂ : D) (X₃ : E)
+    : ((e.hom.app X₁).app X₂).app X₃ ≫ ((e.inv.app X₁).app X₂).app X₃ = 𝟙 _ := by
+  cat_disch
 
 @[reassoc +to_dual (attr := simp)]
-lemma inv_hom_id_app_app_app {F G : C ⥤ D ⥤ E ⥤ E'} (e : F ≅ G)
-    (X₁ : C) (X₂ : D) (X₃ : E) :
-    ((e.inv.app X₁).app X₂).app X₃ ≫ ((e.hom.app X₁).app X₂).app X₃ = 𝟙 _ := by cat_disch
+lemma inv_hom_id_app_app_app {F G : C ⥤ D ⥤ E ⥤ E'} (e : F ≅ G) (X₁ : C) (X₂ : D) (X₃ : E)
+    : ((e.inv.app X₁).app X₂).app X₃ ≫ ((e.hom.app X₁).app X₂).app X₃ = 𝟙 _ := by
+  cat_disch
 
 end Iso
 
@@ -88,8 +96,8 @@ namespace NatIso
 open CategoryTheory.Category CategoryTheory.Functor
 
 @[simp]
-theorem trans_app {F G H : C ⥤ D} (α : F ≅ G) (β : G ≅ H) (X : C) :
-    (α ≪≫ β).app X = α.app X ≪≫ β.app X :=
+theorem trans_app {F G H : C ⥤ D} (α : F ≅ G) (β : G ≅ H) (X : C)
+    : (α ≪≫ β).app X = α.app X ≪≫ β.app X :=
   rfl
 
 variable {F G : C ⥤ D}
@@ -111,27 +119,28 @@ In the future, we should consider a redesign that changes this simp normal form,
 but for now it breaks too many proofs.
 -/
 
-
 variable (α : F ≅ G)
 
 @[to_dual (attr := simp) cancel_natIso_inv_right]
-theorem cancel_natIso_hom_left {X : C} {Y : D} (g g' : G.obj X ⟶ Y) :
-    α.hom.app X ≫ g = α.hom.app X ≫ g' ↔ g = g' := by simp only [cancel_epi, refl]
+theorem cancel_natIso_hom_left {X : C} {Y : D} (g g' : G.obj X ⟶ Y)
+    : α.hom.app X ≫ g = α.hom.app X ≫ g' ↔ g = g' := by
+  simp only [cancel_epi, refl]
 
 @[to_dual (attr := simp) cancel_natIso_hom_right]
-theorem cancel_natIso_inv_left {X : C} {Y : D} (g g' : F.obj X ⟶ Y) :
-    α.inv.app X ≫ g = α.inv.app X ≫ g' ↔ g = g' := by simp only [cancel_epi, refl]
+theorem cancel_natIso_inv_left {X : C} {Y : D} (g g' : F.obj X ⟶ Y)
+    : α.inv.app X ≫ g = α.inv.app X ≫ g' ↔ g = g' := by
+  simp only [cancel_epi, refl]
 
 @[simp, to_dual none]
-theorem cancel_natIso_hom_right_assoc {W X X' : D} {Y : C} (f : W ⟶ X) (g : X ⟶ F.obj Y)
-    (f' : W ⟶ X') (g' : X' ⟶ F.obj Y) :
-    f ≫ g ≫ α.hom.app Y = f' ≫ g' ≫ α.hom.app Y ↔ f ≫ g = f' ≫ g' := by
+theorem cancel_natIso_hom_right_assoc
+    {W X X' : D} {Y : C} (f : W ⟶ X) (g : X ⟶ F.obj Y) (f' : W ⟶ X') (g' : X' ⟶ F.obj Y)
+    : f ≫ g ≫ α.hom.app Y = f' ≫ g' ≫ α.hom.app Y ↔ f ≫ g = f' ≫ g' := by
   simp only [← Category.assoc, cancel_mono, refl]
 
 @[simp, to_dual none]
-theorem cancel_natIso_inv_right_assoc {W X X' : D} {Y : C} (f : W ⟶ X) (g : X ⟶ G.obj Y)
-    (f' : W ⟶ X') (g' : X' ⟶ G.obj Y) :
-    f ≫ g ≫ α.inv.app Y = f' ≫ g' ≫ α.inv.app Y ↔ f ≫ g = f' ≫ g' := by
+theorem cancel_natIso_inv_right_assoc
+    {W X X' : D} {Y : C} (f : W ⟶ X) (g : X ⟶ G.obj Y) (f' : W ⟶ X') (g' : X' ⟶ G.obj Y)
+    : f ≫ g ≫ α.inv.app Y = f' ≫ g' ≫ α.inv.app Y ↔ f ≫ g = f' ≫ g' := by
   simp only [← Category.assoc, cancel_mono, refl]
 
 @[to_dual (attr := simp) inv_hom_app]
@@ -151,12 +160,14 @@ theorem naturality_2 (α : F ≅ G) (f : X ⟶ Y) : α.hom.app X ≫ G.map f ≫
   simp
 
 @[to_dual none, reassoc]
-theorem naturality_1' (α : F ⟶ G) (f : X ⟶ Y) {_ : IsIso (α.app X)} :
-    inv (α.app X) ≫ F.map f ≫ α.app Y = G.map f := by simp
+theorem naturality_1' (α : F ⟶ G) (f : X ⟶ Y) {_ : IsIso (α.app X)}
+    : inv (α.app X) ≫ F.map f ≫ α.app Y = G.map f := by
+  simp
 
 @[to_dual none, reassoc (attr := simp)]
-theorem naturality_2' (α : F ⟶ G) (f : X ⟶ Y) {_ : IsIso (α.app Y)} :
-    α.app X ≫ G.map f ≫ inv (α.app Y) = F.map f := by cat_disch
+theorem naturality_2' (α : F ⟶ G) (f : X ⟶ Y) {_ : IsIso (α.app Y)}
+    : α.app X ≫ G.map f ≫ inv (α.app Y) = F.map f := by
+  cat_disch
 
 /-- The components of a natural isomorphism are isomorphisms. -/
 @[to_dual self]
@@ -167,33 +178,38 @@ instance isIso_app_of_isIso (α : F ⟶ G) [IsIso α] (X) : IsIso (α.app X) :=
 theorem isIso_inv_app (α : F ⟶ G) [IsIso α] (X) : (inv α).app X = inv (α.app X) := by cat_disch
 
 @[to_dual (attr := simp) inv_map_hom_app]
-theorem inv_map_inv_app (F : C ⥤ D ⥤ E) {X Y : C} (e : X ≅ Y) (Z : D) :
-    inv ((F.map e.inv).app Z) = (F.map e.hom).app Z := by cat_disch
+theorem inv_map_inv_app (F : C ⥤ D ⥤ E) {X Y : C} (e : X ≅ Y) (Z : D)
+    : inv ((F.map e.inv).app Z) = (F.map e.hom).app Z := by
+  cat_disch
 
-/-- Construct a natural isomorphism between functors by giving object level isomorphisms,
+/--
+Construct a natural isomorphism between functors by giving object level isomorphisms,
 and checking naturality only in the forward direction.
 -/
-@[implicit_reducible, to_dual (attr := simps (attr := grind =)) ofComponents'
-/-- The dual of `ofComponents` -/]
-def ofComponents (app : ∀ X : C, F.obj X ≅ G.obj X)
-    (naturality : ∀ {X Y : C} (f : X ⟶ Y),
-      F.map f ≫ (app Y).hom = (app X).hom ≫ G.map f := by cat_disch) :
-    F ≅ G where
+@[implicit_reducible,
+  to_dual (attr := simps (attr := grind =)) ofComponents'
+    /-- The dual of `ofComponents` -/]
+def ofComponents
+    (app : ∀ X : C, F.obj X ≅ G.obj X)
+    (naturality : ∀ {X Y : C} (f : X ⟶ Y), F.map f ≫ (app Y).hom = (app X).hom ≫ G.map f := by
+      cat_disch)
+    : F ≅ G where
   hom := { app := fun X => (app X).hom }
-  inv :=
-    { app := fun X => (app X).inv,
-      naturality := fun X Y f => by
-        have h := congr((app X).inv ≫ $((naturality f).symm) ≫ (app Y).inv)
-        simp only [Iso.inv_hom_id_assoc, Iso.hom_inv_id, assoc, comp_id] at h
-        exact h }
+  inv := {
+    app := fun X => (app X).inv
+    naturality := fun X Y f => by
+      have h := congr((app X).inv ≫ $((naturality f).symm) ≫ (app Y).inv)
+      simp only [Iso.inv_hom_id_assoc, Iso.hom_inv_id, assoc, comp_id] at h
+      exact h
+  }
 
 @[to_dual (attr := simp)]
-theorem ofComponents.app (app' : ∀ X : C, F.obj X ≅ G.obj X) (naturality) (X) :
-    (ofComponents app' naturality).app X = app' X := by cat_disch
+theorem ofComponents.app (app' : ∀ X : C, F.obj X ≅ G.obj X) (naturality) (X)
+    : (ofComponents app' naturality).app X = app' X := by
+  cat_disch
 
 -- Making this an instance would cause a typeclass inference loop with `isIso_app_of_isIso`.
-/-- A natural transformation is an isomorphism if all its components are isomorphisms.
--/
+/-- A natural transformation is an isomorphism if all its components are isomorphisms. -/
 @[to_dual self]
 theorem isIso_of_isIso_app (α : F ⟶ G) [∀ X : C, IsIso (α.app X)] : IsIso α :=
   (ofComponents (fun X => asIso (α.app X)) (by simp)).isIso_hom
@@ -207,8 +223,8 @@ def hcomp {F G : C ⥤ D} {H I : D ⥤ E} (α : F ≅ G) (β : H ≅ I) : F ⋙ 
 attribute [to_dual existing hcomp_inv] hcomp_hom
 
 @[to_dual self]
-theorem isIso_map_iff {F₁ F₂ : C ⥤ D} (e : F₁ ≅ F₂) {X Y : C} (f : X ⟶ Y) :
-    IsIso (F₁.map f) ↔ IsIso (F₂.map f) := by
+theorem isIso_map_iff {F₁ F₂ : C ⥤ D} (e : F₁ ≅ F₂) {X Y : C} (f : X ⟶ Y)
+    : IsIso (F₁.map f) ↔ IsIso (F₂.map f) := by
   revert F₁ F₂
   suffices ∀ {F₁ F₂ : C ⥤ D} (_ : F₁ ≅ F₂) (_ : IsIso (F₁.map f)), IsIso (F₂.map f) from
     fun F₁ F₂ e => ⟨this e, this e.symm⟩
@@ -218,37 +234,36 @@ theorem isIso_map_iff {F₁ F₂ : C ⥤ D} (e : F₁ ≅ F₂) {X Y : C} (f : X
 end NatIso
 
 @[to_dual self]
-lemma NatTrans.isIso_iff_isIso_app {F G : C ⥤ D} (τ : F ⟶ G) :
-    IsIso τ ↔ ∀ X, IsIso (τ.app X) :=
+lemma NatTrans.isIso_iff_isIso_app {F G : C ⥤ D} (τ : F ⟶ G) : IsIso τ ↔ ∀ X, IsIso (τ.app X) :=
   ⟨fun _ ↦ inferInstance, fun _ ↦ NatIso.isIso_of_isIso_app _⟩
 
 namespace Functor
 
 variable (F : C ⥤ D) (obj : C → D) (e : ∀ X, F.obj X ≅ obj X)
 
-/-- Constructor for a functor that is isomorphic to a given functor `F : C ⥤ D`,
+/--
+Constructor for a functor that is isomorphic to a given functor `F : C ⥤ D`,
 while being definitionally equal on objects to a given map `obj : C → D`
-such that for all `X : C`, we have an isomorphism `F.obj X ≅ obj X`. -/
+such that for all `X : C`, we have an isomorphism `F.obj X ≅ obj X`.
+-/
 @[simps obj]
 def copyObj : C ⥤ D where
   obj := obj
   map f := (e _).inv ≫ F.map f ≫ (e _).hom
 
 /-- The functor constructed with `copyObj` is isomorphic to the given functor. -/
-@[simps!]
-def isoCopyObj : F ≅ F.copyObj obj e :=
-  NatIso.ofComponents e (by simp [Functor.copyObj])
+@[simps!] def isoCopyObj : F ≅ F.copyObj obj e := NatIso.ofComponents e (by simp [Functor.copyObj])
 
 end Functor
 
 @[to_dual none, reassoc]
-lemma NatTrans.naturality_1 {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (e : X ≅ Y) :
-    F.map e.inv ≫ α.app X ≫ G.map e.hom = α.app Y := by
+lemma NatTrans.naturality_1 {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (e : X ≅ Y)
+    : F.map e.inv ≫ α.app X ≫ G.map e.hom = α.app Y := by
   simp
 
 @[to_dual none, reassoc]
-lemma NatTrans.naturality_2 {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (e : X ≅ Y) :
-    F.map e.hom ≫ α.app Y ≫ G.map e.inv = α.app X := by
+lemma NatTrans.naturality_2 {F G : C ⥤ D} (α : F ⟶ G) {X Y : C} (e : X ≅ Y)
+    : F.map e.hom ≫ α.app Y ≫ G.map e.inv = α.app X := by
   simp
 
 end CategoryTheory

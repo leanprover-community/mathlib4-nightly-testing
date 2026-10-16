@@ -35,23 +35,29 @@ protected theorem inf_le_sup [Lattice α] (s : Sym2 α) : s.inf ≤ s.sup := by
 
 /-- In a linear order, symmetric squares are canonically identified with ordered pairs. -/
 @[simps!]
-def sortEquiv [LinearOrder α] : Sym2 α ≃ { p : α × α // p.1 ≤ p.2 } where
+def sortEquiv [LinearOrder α] : Sym2 α ≃ {p : α × α // p.1 ≤ p.2} where
   toFun s := ⟨(s.inf, s.sup), Sym2.inf_le_sup _⟩
   invFun p := s(p.1.1, p.1.2)
-  left_inv := Sym2.ind fun a b => eq_iff.mpr <| by
-    cases le_total a b with
-    | inl h => simp [h]
-    | inr h => simp [h]
-  right_inv := Subtype.rec <| Prod.rec fun x y hxy =>
-    Subtype.ext <| Prod.ext (by simp [hxy]) (by simp [hxy])
+  left_inv :=
+    Sym2.ind fun a b =>
+      eq_iff.mpr <| by
+        cases le_total a b with
+        | inl h => simp [h]
+        | inr h => simp [h]
+  right_inv :=
+    Subtype.rec <| Prod.rec fun x y hxy => Subtype.ext <| Prod.ext (by simp [hxy]) (by simp [hxy])
 
-/-- In a linear order, two symmetric squares are equal if and only if
-they have the same infimum and supremum. -/
-theorem inf_eq_inf_and_sup_eq_sup [LinearOrder α] {s t : Sym2 α} :
-    s.inf = t.inf ∧ s.sup = t.sup ↔ s = t := by
-  induction s with | _ a b
-  induction t with | _ c d
-  obtain hab | hba := le_total a b <;> obtain hcd | hdc := le_total c d <;>
-    aesop (add unsafe le_antisymm)
+/--
+In a linear order, two symmetric squares are equal if and only if
+they have the same infimum and supremum.
+-/
+theorem inf_eq_inf_and_sup_eq_sup [LinearOrder α] {s t : Sym2 α}
+    : s.inf = t.inf ∧ s.sup = t.sup ↔ s = t := by
+  induction s with
+  | _ a b
+  induction t with
+  | _ c d
+  obtain hab | hba := le_total a b <;> obtain hcd | hdc := le_total c d
+    <;> aesop (add unsafe le_antisymm)
 
 end Sym2

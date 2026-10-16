@@ -21,17 +21,19 @@ In this file we provide an order isomorphism `orderIsoIooNegOneOne` between the 
 open Set
 
 set_option backward.isDefEq.respectTransparency false in
-/-- In a linear ordered field, the whole field is order isomorphic to the open interval `(-1, 1)`.
+/--
+In a linear ordered field, the whole field is order isomorphic to the open interval `(-1, 1)`.
 We consider the actual implementation to be a "black box", so it is irreducible.
 -/
 @[irreducible]
-def orderIsoIooNegOneOne (k : Type*) [Field k] [LinearOrder k] [IsStrictOrderedRing k] :
-    k ≃o Ioo (-1 : k) 1 := by
+def orderIsoIooNegOneOne (k : Type*) [Field k] [LinearOrder k] [IsStrictOrderedRing k]
+    : k ≃o Ioo (-1 : k) 1 := by
   refine StrictMono.orderIsoOfRightInverse ?_ ?_ (fun x ↦ x / (1 - |↑x|)) ?_
   · refine codRestrict (fun x ↦ x / (1 + |x|)) _ fun x ↦ abs_lt.1 ?_
     have H : 0 < 1 + |x| := (abs_nonneg x).trans_lt (lt_one_add _)
     calc
-      |x / (1 + |x|)| = |x| / (1 + |x|) := by rw [abs_div, abs_of_pos H]
+      |x / (1 + |x|)|
+        = |x| / (1 + |x|) := by rw [abs_div, abs_of_pos H]
       _ < 1 := (div_lt_one H).2 (lt_one_add _)
   · refine (strictMono_of_odd_strictMonoOn_nonneg ?_ ?_).codRestrict _
     · intro x

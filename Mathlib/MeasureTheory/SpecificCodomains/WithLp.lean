@@ -30,7 +30,8 @@ variable {ι : Type*} [Fintype ι] {E : ι → Type*} [∀ i, NormedAddCommGroup
 lemma memLp_piLp_iff : MemLp f p μ ↔ ∀ i, MemLp (f · i) p μ := by
   simp_rw [← memLp_pi_iff, ← Function.comp_apply (f := WithLp.ofLp)]
   exact (PiLp.lipschitzWith_ofLp q E).memLp_comp_iff_of_antilipschitz
-    (PiLp.antilipschitzWith_ofLp q E) (by simp) |>.symm
+      (PiLp.antilipschitzWith_ofLp q E) (by simp)
+    |>.symm
 
 alias ⟨MemLp.eval_piLp, MemLp.of_eval_piLp⟩ := memLp_piLp_iff
 
@@ -41,8 +42,8 @@ alias ⟨Integrable.eval_piLp, Integrable.of_eval_piLp⟩ := integrable_piLp_iff
 
 variable [∀ i, NormedSpace ℝ (E i)] [∀ i, CompleteSpace (E i)]
 
-lemma eval_integral_piLp (hf : ∀ i, Integrable (f · i) μ) (i : ι) :
-    (∫ x, f x ∂μ) i = ∫ x, f x i ∂μ := by
+lemma eval_integral_piLp (hf : ∀ i, Integrable (f · i) μ) (i : ι)
+    : (∫ x, f x ∂μ) i = ∫ x, f x i ∂μ := by
   rw [← PiLp.proj_apply (𝕜 := ℝ) q E i (∫ x, f x ∂μ), ← ContinuousLinearMap.integral_comp_comm]
   · simp
   exact Integrable.of_eval_piLp hf
@@ -53,11 +54,12 @@ section Prod
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedAddCommGroup F] {f : X → WithLp q (E × F)}
 
-lemma memLp_prodLp_iff :
-    MemLp f p μ ↔ MemLp (fun x ↦ (f x).fst) p μ ∧ MemLp (fun x ↦ (f x).snd) p μ := by
+lemma memLp_prodLp_iff
+    : MemLp f p μ ↔ MemLp (fun x ↦ (f x).fst) p μ ∧ MemLp (fun x ↦ (f x).snd) p μ := by
   simp_rw [← WithLp.ofLp_fst, ← WithLp.ofLp_snd, ← memLp_prod_iff]
   exact (WithLp.prod_lipschitzWith_ofLp q E F).memLp_comp_iff_of_antilipschitz
-    (WithLp.prod_antilipschitzWith_ofLp q E F) (by simp) |>.symm
+      (WithLp.prod_antilipschitzWith_ofLp q E F) (by simp)
+    |>.symm
 
 lemma MemLp.prodLp_fst (h : MemLp f p μ) : MemLp (fun x ↦ (f x).fst) p μ :=
   memLp_prodLp_iff.1 h |>.1
@@ -67,10 +69,8 @@ lemma MemLp.prodLp_snd (h : MemLp f p μ) : MemLp (fun x ↦ (f x).snd) p μ :=
 
 alias ⟨_, MemLp.of_fst_of_snd_prodLp⟩ := memLp_prodLp_iff
 
-lemma integrable_prodLp_iff :
-    Integrable f μ ↔
-    Integrable (fun x ↦ (f x).fst) μ ∧
-    Integrable (fun x ↦ (f x).snd) μ := by
+lemma integrable_prodLp_iff
+    : Integrable f μ ↔ Integrable (fun x ↦ (f x).fst) μ ∧ Integrable (fun x ↦ (f x).snd) μ := by
   simp_rw [← memLp_one_iff_integrable, memLp_prodLp_iff]
 
 lemma Integrable.prodLp_fst (h : Integrable f μ) : Integrable (fun x ↦ (f x).fst) μ :=
@@ -83,16 +83,16 @@ alias ⟨_, Integrable.of_fst_of_snd_prodLp⟩ := integrable_prodLp_iff
 
 variable [NormedSpace ℝ E] [NormedSpace ℝ F]
 
-theorem fst_integral_withLp [CompleteSpace F] (hf : Integrable f μ) :
-    (∫ x, f x ∂μ).fst = ∫ x, (f x).fst ∂μ := by
+theorem fst_integral_withLp [CompleteSpace F] (hf : Integrable f μ)
+    : (∫ x, f x ∂μ).fst = ∫ x, (f x).fst ∂μ := by
   rw [← WithLp.ofLp_fst]
   conv => enter [1, 1]; change WithLp.prodContinuousLinearEquiv q ℝ E F _
   rw [← ContinuousLinearEquiv.integral_comp_comm, fst_integral]
   · rfl
   · exact (ContinuousLinearEquiv.integrable_comp_iff _).2 hf
 
-theorem snd_integral_withLp [CompleteSpace E] (hf : Integrable f μ) :
-    (∫ x, f x ∂μ).snd = ∫ x, (f x).snd ∂μ := by
+theorem snd_integral_withLp [CompleteSpace E] (hf : Integrable f μ)
+    : (∫ x, f x ∂μ).snd = ∫ x, (f x).snd ∂μ := by
   rw [← WithLp.ofLp_snd]
   conv => enter [1, 1]; change WithLp.prodContinuousLinearEquiv q ℝ E F _
   rw [← ContinuousLinearEquiv.integral_comp_comm, snd_integral]

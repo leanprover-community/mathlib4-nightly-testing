@@ -66,18 +66,18 @@ syntax (name := congrM) "congrm " term : tactic
 elab_rules : tactic
   | `(tactic| congrm $expr:term) => do
     -- Wrap all synthetic holes `?m` as `c(?m)` to form `congr(...)` pattern
-    let pattern ← expr.raw.replaceM fun stx =>
-      if stx.isOfKind ``Parser.Term.syntheticHole then
-        pure <| stx.mkAntiquotNode `term
-      else if stx.isAntiquots then
-        -- Don't look into `$(..)` expressions
-        pure stx
-      else
-        pure none
+    let pattern ←
+      expr.raw.replaceM fun stx =>
+        if stx.isOfKind ``Parser.Term.syntheticHole then
+          pure <| stx.mkAntiquotNode `term
+        else if stx.isAntiquots then
+          -- Don't look into `$(..)` expressions
+          pure stx
+        else
+          pure none
     trace[Tactic.congrm] "pattern: {pattern}"
     -- Chain together transformations as needed to convert the goal to an Eq if possible.
-    liftMetaTactic fun g => do
-      return [← liftReflToEq (← g.iffOfEq)]
+    liftMetaTactic fun g => do return [← liftReflToEq (← g.iffOfEq)]
     -- Apply `congr(...)`
     withMainContext do
       let gStx ← Term.exprToSyntax (← getMainTarget)

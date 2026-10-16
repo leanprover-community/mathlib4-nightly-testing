@@ -22,7 +22,6 @@ This is in a separate file to avoid having to import the development of the abel
 
 public section
 
-
 universe v u
 
 open CategoryTheory.Preadditive Opposite CategoryTheory.Limits
@@ -38,18 +37,18 @@ instance preservesLimits_preadditiveYonedaObj (X : C) : PreservesLimits (preaddi
     (inferInstance : PreservesLimits (yoneda.obj X))
   preservesLimits_of_reflects_of_preserves _ (forget _)
 
-instance preservesLimits_preadditiveCoyonedaObj (X : C) :
-    PreservesLimits (preadditiveCoyonedaObj X) :=
+instance preservesLimits_preadditiveCoyonedaObj (X : C)
+    : PreservesLimits (preadditiveCoyonedaObj X) :=
   have : PreservesLimits (preadditiveCoyonedaObj X ⋙ forget _) :=
     (inferInstance : PreservesLimits (coyoneda.obj (op X)))
   preservesLimits_of_reflects_of_preserves _ (forget _)
 
-instance preservesLimits_preadditiveYoneda_obj (X : C) :
-    PreservesLimits (preadditiveYoneda.obj X) :=
+instance preservesLimits_preadditiveYoneda_obj (X : C)
+    : PreservesLimits (preadditiveYoneda.obj X) :=
   show PreservesLimits (preadditiveYonedaObj X ⋙ forget₂ _ _) from inferInstance
 
-instance preservesLimits_preadditiveCoyoneda_obj (X : Cᵒᵖ) :
-    PreservesLimits (preadditiveCoyoneda.obj X) :=
+instance preservesLimits_preadditiveCoyoneda_obj (X : Cᵒᵖ)
+    : PreservesLimits (preadditiveCoyoneda.obj X) :=
   show PreservesLimits (preadditiveCoyonedaObj (unop X) ⋙ forget₂ _ _) from inferInstance
 
 end CategoryTheory

@@ -43,13 +43,17 @@ namespace AlgebraicClosure
 /-- The subtype of monic polynomials. -/
 def Monics : Type u := {f : k[X] // f.Monic}
 
-/-- `Vars k` provides `n` variables $X_{f,1}, \dots, X_{f,n}$ for each monic polynomial
-`f : k[X]` of degree `n`. -/
+/--
+`Vars k` provides `n` variables $X_{f,1}, \dots, X_{f,n}$ for each monic polynomial
+`f : k[X]` of degree `n`.
+-/
 def Vars : Type u := Σ f : Monics k, Fin f.1.natDegree
 
 variable {k} in
-/-- Given a monic polynomial `f : k[X]`,
-`subProdXSubC f` is the polynomial $f - \prod_i (X - X_{f,i})$. -/
+/--
+Given a monic polynomial `f : k[X]`,
+`subProdXSubC f` is the polynomial $f - \prod_i (X - X_{f,i})$.
+-/
 def subProdXSubC (f : Monics k) : (MvPolynomial (Vars k) k)[X] :=
   f.1.map (algebraMap _ _) - ∏ i : Fin f.1.natDegree, (X - C (MvPolynomial.X ⟨f, i⟩))
 
@@ -59,39 +63,43 @@ def spanCoeffs : Ideal (MvPolynomial (Vars k) k) :=
 
 variable {k}
 
-/-- If a monic polynomial `f : k[X]` splits in `K`,
-then it has as many roots (counting multiplicity) as its degree. -/
-def finEquivRoots {K} [Field K] [DecidableEq K] {i : k →+* K} {f : Monics k}
-    (hf : (f.1.map i).Splits) : Fin f.1.natDegree ≃ (f.1.map i).roots.toEnumFinset :=
+/--
+If a monic polynomial `f : k[X]` splits in `K`,
+then it has as many roots (counting multiplicity) as its degree.
+-/
+def finEquivRoots
+    {K} [Field K] [DecidableEq K] {i : k →+* K} {f : Monics k} (hf : (f.1.map i).Splits)
+    : Fin f.1.natDegree ≃ (f.1.map i).roots.toEnumFinset :=
   .symm <| Finset.equivFinOfCardEq <| by
-    rwa [splits_iff_card_roots,
-      ← Multiset.card_toEnumFinset, f.2.natDegree_map] at hf
+    rwa [splits_iff_card_roots, ← Multiset.card_toEnumFinset, f.2.natDegree_map] at hf
 
-lemma Monics.splits_finsetProd {s : Finset (Monics k)} {f : Monics k} (hf : f ∈ s) :
-    (f.1.map (algebraMap k (SplittingField (∏ f ∈ s, f.1)))).Splits :=
+lemma Monics.splits_finsetProd {s : Finset (Monics k)} {f : Monics k} (hf : f ∈ s)
+    : (f.1.map (algebraMap k (SplittingField (∏ f ∈ s, f.1)))).Splits :=
   (splits_prod_iff fun j _ ↦ map_ne_zero j.2.ne_zero).mp
     (by simpa [Polynomial.map_prod] using SplittingField.splits (∏ f ∈ s, f.1)) f hf
 
 open scoped Classical in
-/-- Given a finite set of monic polynomials, construct an algebra homomorphism
+/--
+Given a finite set of monic polynomials, construct an algebra homomorphism
 to the splitting field of the product of the polynomials
-sending indeterminates $X_{f_i}$ to the distinct roots of `f`. -/
-def toSplittingField (s : Finset (Monics k)) :
-    MvPolynomial (Vars k) k →ₐ[k] SplittingField (∏ f ∈ s, f.1) :=
+sending indeterminates $X_{f_i}$ to the distinct roots of `f`.
+-/
+def toSplittingField (s : Finset (Monics k))
+    : MvPolynomial (Vars k) k →ₐ[k] SplittingField (∏ f ∈ s, f.1) :=
   MvPolynomial.aeval fun fi ↦
     if hf : fi.1 ∈ s then (finEquivRoots (Monics.splits_finsetProd hf) fi.2).1.1 else 37
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem toSplittingField_coeff {s : Finset (Monics k)} {f} (h : f ∈ s) (n) :
-    toSplittingField s ((subProdXSubC f).coeff n) = 0 := by
+theorem toSplittingField_coeff {s : Finset (Monics k)} {f} (h : f ∈ s) (n)
+    : toSplittingField s ((subProdXSubC f).coeff n) = 0 := by
   classical
   simp_rw [← AlgHom.coe_toRingHom, ← coeff_map, subProdXSubC, Polynomial.map_sub,
     Polynomial.map_prod, Polynomial.map_sub, map_X, map_C, toSplittingField,
     AlgHom.coe_toRingHom, MvPolynomial.aeval_X, dite_eq_left h,
     ← (finEquivRoots (Monics.splits_finsetProd h)).symm.prod_comp, Equiv.apply_symm_apply]
-  rw [Finset.prod_coe_sort (f := fun x : _ × ℕ ↦ X - C x.1), (Multiset.toEnumFinset _)
-    |>.prod_eq_multiset_prod, ← Function.comp_def (X - C ·) Prod.fst, ← Multiset.map_map,
-    Multiset.map_toEnumFinset_fst, map_map, AlgHom.comp_algebraMap]
+  rw [Finset.prod_coe_sort (f := fun x : _ × ℕ ↦ X - C x.1),
+    (Multiset.toEnumFinset _) |>.prod_eq_multiset_prod, ← Function.comp_def (X - C ·) Prod.fst,
+    ← Multiset.map_map, Multiset.map_toEnumFinset_fst, map_map, AlgHom.comp_algebraMap]
   conv in map _ _ => rw [Splits.eq_prod_roots (Monics.splits_finsetProd h)]
   rw [leadingCoeff_map, f.2, map_one, C_1, one_mul, sub_self, coeff_zero]
 
@@ -121,11 +129,12 @@ theorem le_maxIdeal : spanCoeffs k ≤ maxIdeal k :=
 end AlgebraicClosure
 
 open AlgebraicClosure in
-/-- The canonical algebraic closure of a field, the direct limit of adding roots to the field for
-each polynomial over the field. -/
+/--
+The canonical algebraic closure of a field, the direct limit of adding roots to the field for
+each polynomial over the field.
+-/
 @[stacks 09GT]
-def AlgebraicClosure : Type u :=
-  MvPolynomial (Vars k) k ⧸ maxIdeal k
+def AlgebraicClosure : Type u := MvPolynomial (Vars k) k ⧸ maxIdeal k
 
 namespace AlgebraicClosure
 
@@ -135,15 +144,17 @@ instance {S : Type*} [DistribSMul S k] [IsScalarTower S k k] : SMul S (Algebraic
   inferInstanceAs <| SMul S (_ ⧸ _)
 
 instance : CommRing (AlgebraicClosure k) where
-  nsmul := letI := AlgebraicClosure.instSMulOfIsScalarTower k (S := ℕ); (· • · )
-  zsmul := letI := AlgebraicClosure.instSMulOfIsScalarTower k (S := ℤ); (· • · )
+  nsmul := letI := AlgebraicClosure.instSMulOfIsScalarTower k (S := ℕ); (· • ·)
+  zsmul := letI := AlgebraicClosure.instSMulOfIsScalarTower k (S := ℤ); (· • ·)
   __ : CommRing (AlgebraicClosure k) := inferInstanceAs <| CommRing (_ ⧸ _)
 
 instance instAlgebra {R : Type*} [CommSemiring R] [Algebra R k] : Algebra R (AlgebraicClosure k) :=
   inferInstanceAs <| Algebra R (_ ⧸ _)
 
-instance {R S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S] [Algebra S k] [Algebra R k]
-    [IsScalarTower R S k] : IsScalarTower R S (AlgebraicClosure k) :=
+instance
+    {R S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S] [Algebra S k] [Algebra R k]
+    [IsScalarTower R S k]
+    : IsScalarTower R S (AlgebraicClosure k) :=
   inferInstanceAs <| IsScalarTower R S (_ ⧸ _)
 
 attribute [local instance] Ideal.Quotient.field in
@@ -160,15 +171,19 @@ instance instField : Field (AlgebraicClosure k) where
   nnratCast_def q := by change algebraMap k _ _ = _; simp_rw [NNRat.cast_def, map_div₀, map_natCast]
   ratCast_def q := by
     change algebraMap k _ _ = _; rw [Rat.cast_def, map_div₀, map_intCast, map_natCast]
-  nnqsmul_def q x := Quotient.inductionOn x fun p ↦ congr(Quotient.mk'' $(by
-    ext; simp [MvPolynomial.algebraMap_eq, NNRat.smul_def]))
-  qsmul_def q x := Quotient.inductionOn x fun p ↦ congr(Quotient.mk'' $(by
-    ext; simp [MvPolynomial.algebraMap_eq, Rat.smul_def]))
+  nnqsmul_def q x :=
+    Quotient.inductionOn x fun p ↦
+      congr(Quotient.mk'' $(by
+        ext; simp [MvPolynomial.algebraMap_eq, NNRat.smul_def]))
+  qsmul_def q x :=
+    Quotient.inductionOn x fun p ↦
+      congr(Quotient.mk'' $(by
+        ext; simp [MvPolynomial.algebraMap_eq, Rat.smul_def]))
 
 set_option backward.isDefEq.respectTransparency false in
-theorem Monics.map_eq_prod {f : Monics k} :
-    f.1.map (algebraMap k (AlgebraicClosure k)) =
-      ∏ i, map (Ideal.Quotient.mk <| maxIdeal k) (X - C (MvPolynomial.X ⟨f, i⟩)) := by
+theorem Monics.map_eq_prod {f : Monics k}
+    : f.1.map (algebraMap k (AlgebraicClosure k))
+      = ∏ i, map (Ideal.Quotient.mk <| maxIdeal k) (X - C (MvPolynomial.X ⟨f, i⟩)) := by
   ext
   dsimp [AlgebraicClosure]
   rw [← Ideal.Quotient.mk_comp_algebraMap, ← map_map, ← Polynomial.map_prod, ← sub_eq_zero,
@@ -176,29 +191,31 @@ theorem Monics.map_eq_prod {f : Monics k} :
   refine le_maxIdeal _ (Ideal.subset_span ⟨⟨f, _⟩, rfl⟩)
 
 set_option backward.isDefEq.respectTransparency false in
-instance isAlgebraic : Algebra.IsAlgebraic k (AlgebraicClosure k) :=
-  ⟨fun z =>
-    IsIntegral.isAlgebraic <| by
-      let ⟨p, hp⟩ := Ideal.Quotient.mk_surjective z
-      rw [← hp]
-      induction p using MvPolynomial.induction_on generalizing z with
-        | C => exact isIntegral_algebraMap
-        | add _ _ ha hb => exact (ha _ rfl).add (hb _ rfl)
-        | mul_X p fi ih =>
-          rw [map_mul]
-          refine (ih _ rfl).mul ⟨_, fi.1.2, ?_⟩
-          simp_rw [← eval_map, Monics.map_eq_prod, eval_prod, Polynomial.map_sub, eval_sub]
-          apply Finset.prod_eq_zero (Finset.mem_univ fi.2)
-          rw [map_C]
-          -- The `erw` is needed here because the `R` in `eval` is `AlgebraicClosure k`,
-          -- but this has been unfolded in the arguments of `eval`.
-          erw [eval_C]
-          simp⟩
+instance isAlgebraic : Algebra.IsAlgebraic k (AlgebraicClosure k) := ⟨fun z =>
+  IsIntegral.isAlgebraic <| by
+    let ⟨p, hp⟩ := Ideal.Quotient.mk_surjective z
+    rw [← hp]
+    induction p using MvPolynomial.induction_on generalizing z with
+    | C =>
+      exact isIntegral_algebraMap
+    | add _ _ ha hb =>
+      exact (ha _ rfl).add (hb _ rfl)
+    | mul_X p fi ih =>
+      rw [map_mul]
+      refine (ih _ rfl).mul ⟨_, fi.1.2, ?_⟩
+      simp_rw [← eval_map, Monics.map_eq_prod, eval_prod, Polynomial.map_sub, eval_sub]
+      apply Finset.prod_eq_zero (Finset.mem_univ fi.2)
+      rw [map_C]
+      -- The `erw` is needed here because the `R` in `eval` is `AlgebraicClosure k`,
+      -- but this has been unfolded in the arguments of `eval`.
+      erw [eval_C]
+      simp⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance : IsAlgClosure k (AlgebraicClosure k) := .of_splits fun f hf _ ↦ by
-  rw [show f = (⟨f, hf⟩ : Monics k) from rfl, Monics.map_eq_prod]
-  exact Splits.prod fun _ _ ↦ (Splits.X_sub_C _).map _
+instance : IsAlgClosure k (AlgebraicClosure k) :=
+  .of_splits fun f hf _ ↦ by
+    rw [show f = (⟨f, hf⟩ : Monics k) from rfl, Monics.map_eq_prod]
+    exact Splits.prod fun _ _ ↦ (Splits.X_sub_C _).map _
 
 instance isAlgClosed : IsAlgClosed (AlgebraicClosure k) := IsAlgClosure.isAlgClosed k
 
@@ -208,8 +225,8 @@ instance [CharZero k] : CharZero (AlgebraicClosure k) :=
 instance {p : ℕ} [CharP k p] : CharP (AlgebraicClosure k) p :=
   charP_of_injective_algebraMap (RingHom.injective (algebraMap k (AlgebraicClosure k))) p
 
-instance {L : Type*} [Field L] [Algebra k L] [Algebra.IsAlgebraic k L] :
-    IsAlgClosure k (AlgebraicClosure L) where
+instance {L : Type*} [Field L] [Algebra k L] [Algebra.IsAlgebraic k L]
+    : IsAlgClosure k (AlgebraicClosure L) where
   isAlgebraic := .trans k L _
   isAlgClosed := inferInstance
 
@@ -222,13 +239,13 @@ variable {K L : Type*} [Field K] [Field L] [Algebra K L] (E : IntermediateField 
 instance [Algebra.IsAlgebraic K E] : IsAlgClosure K (AlgebraicClosure E) :=
   ⟨AlgebraicClosure.isAlgClosed E, Algebra.IsAlgebraic.trans K E (AlgebraicClosure E)⟩
 
-theorem AdjoinSimple.normal_algebraicClosure {x : L} (hx : IsIntegral K x) :
-    Normal K (AlgebraicClosure K⟮x⟯) :=
+theorem AdjoinSimple.normal_algebraicClosure {x : L} (hx : IsIntegral K x)
+    : Normal K (AlgebraicClosure K⟮x⟯) :=
   have : Algebra.IsAlgebraic K K⟮x⟯ := isAlgebraic_adjoin_simple hx
   IsAlgClosure.normal _ _
 
-theorem AdjoinDouble.normal_algebraicClosure {x y : L} (hx : IsIntegral K x)
-    (hy : IsIntegral K y) : Normal K (AlgebraicClosure K⟮x, y⟯) :=
+theorem AdjoinDouble.normal_algebraicClosure {x y : L} (hx : IsIntegral K x) (hy : IsIntegral K y)
+    : Normal K (AlgebraicClosure K⟮x, y⟯) :=
   have : Algebra.IsAlgebraic K K⟮x, y⟯ := isAlgebraic_adjoin_pair hx hy
   IsAlgClosure.normal _ _
 

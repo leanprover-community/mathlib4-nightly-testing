@@ -45,12 +45,11 @@ section Order
 
 /-- The inclusion map `Fin n → ℕ` is an embedding. -/
 @[simps -fullyApplied apply]
-def valEmbedding : Fin n ↪ ℕ :=
-  ⟨val, val_injective⟩
+def valEmbedding : Fin n ↪ ℕ := ⟨val, val_injective⟩
 
 @[simp]
-theorem equivSubtype_symm_trans_valEmbedding :
-    equivSubtype.symm.toEmbedding.trans valEmbedding = Embedding.subtype (· < n) :=
+theorem equivSubtype_symm_trans_valEmbedding
+    : equivSubtype.symm.toEmbedding.trans valEmbedding = Embedding.subtype (· < n) :=
   rfl
 
 end Order
@@ -66,9 +65,7 @@ def succEmb (n : ℕ) : Fin n ↪ Fin (n + 1) where
   toFun := succ
   inj' := succ_injective _
 
-@[simp]
-theorem coe_succEmb : ⇑(succEmb n) = Fin.succ :=
-  rfl
+@[simp] theorem coe_succEmb : ⇑(succEmb n) = Fin.succ := rfl
 
 attribute [simp] castSucc_inj
 
@@ -80,32 +77,36 @@ def castLEEmb (h : n ≤ m) : Fin n ↪ Fin m where
 
 @[simp, norm_cast] lemma coe_castLEEmb {m n} (hmn : m ≤ n) : castLEEmb hmn = castLE hmn := rfl
 
-/- The next proof can be golfed a lot using `Fintype.card`.
+/-
+The next proof can be golfed a lot using `Fintype.card`.
 It is written this way to define `ENat.card` and `Nat.card` without a `Fintype` dependency
-(not done yet). -/
+(not done yet).
+-/
 lemma nonempty_embedding_iff : Nonempty (Fin n ↪ Fin m) ↔ n ≤ m := by
   refine ⟨fun h ↦ ?_, fun h ↦ ⟨castLEEmb h⟩⟩
   induction n generalizing m with
-  | zero => exact m.zero_le
+  | zero =>
+    exact m.zero_le
   | succ n ihn =>
     obtain ⟨e⟩ := h
-    rcases exists_eq_succ_of_ne_zero (Nat.ne_of_gt (pos_iff_nonempty.2 ⟨e 0⟩))
-      with ⟨m, rfl⟩
+    rcases exists_eq_succ_of_ne_zero (Nat.ne_of_gt (pos_iff_nonempty.2 ⟨e 0⟩)) with ⟨m, rfl⟩
     refine Nat.succ_le_succ <| ihn ⟨?_⟩
-    refine ⟨fun i ↦ (e.setValue 0 0 i.succ).pred (mt e.setValue_eq_iff.1 i.succ_ne_zero),
-      fun i j h ↦ ?_⟩
+    refine
+      ⟨fun i ↦ (e.setValue 0 0 i.succ).pred (mt e.setValue_eq_iff.1 i.succ_ne_zero), fun i j h ↦ ?_⟩
     simpa only [pred_inj, EmbeddingLike.apply_eq_iff_eq, succ_inj] using h
 
-lemma equiv_iff_eq : Nonempty (Fin m ≃ Fin n) ↔ m = n :=
-  ⟨fun ⟨e⟩ ↦ Nat.le_antisymm (nonempty_embedding_iff.1 ⟨e⟩) (nonempty_embedding_iff.1 ⟨e.symm⟩),
-    fun h ↦ h ▸ ⟨.refl _⟩⟩
+lemma equiv_iff_eq : Nonempty (Fin m ≃ Fin n) ↔ m = n := ⟨
+  fun ⟨e⟩ ↦ Nat.le_antisymm (nonempty_embedding_iff.1 ⟨e⟩) (nonempty_embedding_iff.1 ⟨e.symm⟩),
+  fun h ↦ h ▸ ⟨.refl _⟩
+⟩
 
-/-- `Fin.castAdd` as an `Embedding`, `castAddEmb m i` embeds `i : Fin n` in `Fin (n+m)`.
-See also `Fin.natAddEmb` and `Fin.addNatEmb`. -/
+/--
+`Fin.castAdd` as an `Embedding`, `castAddEmb m i` embeds `i : Fin n` in `Fin (n+m)`.
+See also `Fin.natAddEmb` and `Fin.addNatEmb`.
+-/
 def castAddEmb (m) : Fin n ↪ Fin (n + m) := castLEEmb (le_add_right n m)
 
-@[simp]
-lemma coe_castAddEmb (m) : (castAddEmb m : Fin n → Fin (n + m)) = castAdd m := rfl
+@[simp] lemma coe_castAddEmb (m) : (castAddEmb m : Fin n → Fin (n + m)) = castAdd m := rfl
 
 lemma castAddEmb_apply (m) (i : Fin n) : castAddEmb m i = castAdd m i := rfl
 
@@ -140,20 +141,24 @@ def succAboveEmb (p : Fin (n + 1)) : Fin n ↪ Fin (n + 1) := ⟨p.succAbove, su
 
 @[simp, norm_cast] lemma coe_succAboveEmb (p : Fin (n + 1)) : p.succAboveEmb = p.succAbove := rfl
 
-/-- `Fin.natAdd_castLEEmb` as an `Embedding` from `Fin n` to `Fin m`, by appending the former
+/--
+`Fin.natAdd_castLEEmb` as an `Embedding` from `Fin n` to `Fin m`, by appending the former
 at the end of the latter.
-`natAdd_castLEEmb hmn i` maps `i : Fin m` to `i + (m - n) : Fin n` by adding `m - n` to `i` -/
+`natAdd_castLEEmb hmn i` maps `i : Fin m` to `i + (m - n) : Fin n` by adding `m - n` to `i`
+-/
 @[simps!]
 def natAdd_castLEEmb (hmn : n ≤ m) : Fin n ↪ Fin m :=
   (addNatEmb (m - n)).trans (finCongr (by lia)).toEmbedding
 
-lemma range_natAdd_castLEEmb {n m : ℕ} (hmn : n ≤ m) :
-    Set.range (natAdd_castLEEmb hmn) = {i | m - n ≤ i.1} := by
+lemma range_natAdd_castLEEmb {n m : ℕ} (hmn : n ≤ m)
+    : Set.range (natAdd_castLEEmb hmn) = {i | m - n ≤ i.1} := by
   simp only [natAdd_castLEEmb, Nat.sub_le_iff_le_add]
   ext y
-  exact ⟨fun ⟨x, hx⟩ ↦ by simp [← hx]; lia,
-    fun xin ↦ ⟨subNat (m - n) (y.cast (Nat.add_sub_of_le hmn).symm)
-    (Nat.sub_le_of_le_add xin), by simp⟩⟩
+  exact ⟨
+    fun ⟨x, hx⟩ ↦ by simp [← hx]; lia,
+    fun xin ↦
+      ⟨subNat (m - n) (y.cast (Nat.add_sub_of_le hmn).symm) (Nat.sub_le_of_le_add xin), by simp⟩
+  ⟩
 
 end SuccAbove
 

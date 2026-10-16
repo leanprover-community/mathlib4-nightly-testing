@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Kim Morrison
 module
 
 public import Lean.ToExpr
-
 import Mathlib.Init
 
 /-!

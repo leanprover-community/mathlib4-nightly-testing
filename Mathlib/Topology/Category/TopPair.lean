@@ -28,8 +28,7 @@ universe u
 open TopologicalSpace TopCat CategoryTheory MonoidalCategory
 
 /-- A pair of topological spaces consists of an embedding `f : A ⟶ X` in `TopCat`. -/
-abbrev TopPair :=
-  MorphismProperty.Arrow TopCat.isEmbedding ⊤ ⊤
+abbrev TopPair := MorphismProperty.Arrow TopCat.isEmbedding ⊤ ⊤
 
 namespace TopPair
 
@@ -51,8 +50,9 @@ abbrev of {A X : TopCat.{u}} (f : A ⟶ X) (h : Topology.IsEmbedding f) : TopPai
   MorphismProperty.Arrow.mk (P := TopCat.isEmbedding) f h
 
 /-- Constructor for a topological pair (X, A) where A ⊆ X. -/
-abbrev ofSubset {X : TopCat.{u}} (A : Set X) : TopPair.{u} := TopPair.of (A := ↧A)
-  (X := X) (TopCat.ofHom { toFun := Subtype.val }) Topology.IsEmbedding.subtypeVal
+abbrev ofSubset {X : TopCat.{u}} (A : Set X) : TopPair.{u} :=
+  TopPair.of (A := ↧A) (X := X) (TopCat.ofHom { toFun := Subtype.val })
+    Topology.IsEmbedding.subtypeVal
 
 /-- Constructs the topological pair `(X, ∅)` from `X : TopCat`. -/
 abbrev ofTopCat (X : TopCat.{u}) : TopPair.{u} :=
@@ -71,31 +71,37 @@ abbrev Hom.fst (f : X ⟶ Y) : X.fst ⟶ Y.fst := f.hom.right
 abbrev Hom.snd (f : X ⟶ Y) : X.snd ⟶ Y.snd := f.hom.left
 
 @[reassoc, elementwise]
-lemma Hom.w {X Y : TopPair.{u}} (f : X ⟶ Y) :
-    Hom.snd f ≫ Y.map = X.map ≫ Hom.fst f :=
-  f.hom.w
+lemma Hom.w {X Y : TopPair.{u}} (f : X ⟶ Y) : Hom.snd f ≫ Y.map = X.map ≫ Hom.fst f := f.hom.w
 
 attribute [local simp] Hom.w_apply
 
-/-- The functor from topological pairs to topological spaces that forgets the second space, i.e. the
-projection to the first space. -/
+/--
+The functor from topological pairs to topological spaces that forgets the second space, i.e. the
+projection to the first space.
+-/
 abbrev proj₁ : TopPair.{u} ⥤ TopCat.{u} :=
   MorphismProperty.Arrow.forget _ _ _ ⋙ CategoryTheory.Arrow.rightFunc
 
-/-- The functor from topological pairs to topological spaces that forgets the first space, i.e. the
-projection to the second space. -/
+/--
+The functor from topological pairs to topological spaces that forgets the first space, i.e. the
+projection to the second space.
+-/
 abbrev proj₂ : TopPair.{u} ⥤ TopCat.{u} :=
   MorphismProperty.Arrow.forget _ _ _ ⋙ CategoryTheory.Arrow.leftFunc
 
-/-- The inclusion functor from topological spaces to topological pairs that sends a space X to
-(X, ∅). -/
+/--
+The inclusion functor from topological spaces to topological pairs that sends a space X to
+(X, ∅).
+-/
 @[simps]
 def incl : TopCat.{u} ⥤ TopPair.{u} where
   obj X := ofTopCat X
   map f := TopPair.ofHom f (𝟙 _) <| by ext x; induction x
 
-/-- The functor from topological spaces to topological pairs that sends a space X to the identity
-morphism on X. -/
+/--
+The functor from topological spaces to topological pairs that sends a space X to the identity
+morphism on X.
+-/
 abbrev diag : TopCat.{u} ⥤ TopPair.{u} where
   obj X := TopPair.of (𝟙 X) Topology.IsEmbedding.id
   map f := TopPair.ofHom f f
@@ -120,8 +126,10 @@ set_option backward.defeqAttrib.useBackward true in
 abbrev j (X : TopPair.{u}) : TopPair.incl.obj X.fst ⟶ X :=
   TopPair.ofHom (𝟙 _) (TopCat.isInitialPEmpty.to _)
 
-/-- A homotopy of maps between topological pairs is a homotopy on the first space and a homotopy on
-the second space that fit in a commutative square with the maps of the pairs. -/
+/--
+A homotopy of maps between topological pairs is a homotopy on the first space and a homotopy on
+the second space that fit in a commutative square with the maps of the pairs.
+-/
 @[ext]
 structure Homotopy (f g : X ⟶ Y) where
   /-- The homotopy on the first space. -/
@@ -140,12 +148,13 @@ attribute [local simp] Homotopy.w Homotopy.w_apply
 namespace Homotopy
 
 @[local simp]
-lemma w_apply' {f g : X ⟶ Y} (H : Homotopy f g) (x : TopPair.snd) (t : unitInterval) :
-    H.fst (t, X.map x) = Y.map (H.snd (t, x)) := by
+lemma w_apply' {f g : X ⟶ Y} (H : Homotopy f g) (x : TopPair.snd) (t : unitInterval)
+    : H.fst (t, X.map x) = Y.map (H.snd (t, x)) := by
   have := w_apply H (x, I.homeomorph.symm t)
   cat_disch
 
-/-- Given a morphism `f` of topological pairs, we can define a `Homotopy f f` by
+/--
+Given a morphism `f` of topological pairs, we can define a `Homotopy f f` by
 `TopCat.Homotopy.refl` on the first and second components.
 -/
 @[simps]
@@ -153,11 +162,11 @@ def refl (f : X ⟶ Y) : Homotopy f f where
   fst := TopCat.Homotopy.refl (Hom.fst f)
   snd := TopCat.Homotopy.refl (Hom.snd f)
 
-instance : Inhabited (Homotopy (𝟙 X) (𝟙 X)) :=
-  ⟨Homotopy.refl _⟩
+instance : Inhabited (Homotopy (𝟙 X) (𝟙 X)) := ⟨Homotopy.refl _⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- Given a `Homotopy f₀ f₁`, we can define a `Homotopy f₁ f₀` by `TopCat.Homotopy.symm` on
+/--
+Given a `Homotopy f₀ f₁`, we can define a `Homotopy f₁ f₀` by `TopCat.Homotopy.symm` on
 the first and second components.
 -/
 @[simps]
@@ -165,12 +174,10 @@ def symm {f₀ f₁ : X ⟶ Y} (F : Homotopy f₀ f₁) : Homotopy f₁ f₀ whe
   fst := F.fst.symm
   snd := F.snd.symm
 
-@[simp]
-theorem symm_symm {f₀ f₁ : X ⟶ Y} (F : Homotopy f₀ f₁) : F.symm.symm = F := by
-  cat_disch
+@[simp] theorem symm_symm {f₀ f₁ : X ⟶ Y} (F : Homotopy f₀ f₁) : F.symm.symm = F := by cat_disch
 
-theorem symm_bijective {f₀ f₁ : X ⟶ Y} :
-    Function.Bijective (Homotopy.symm : Homotopy f₀ f₁ → Homotopy f₁ f₀) :=
+theorem symm_bijective {f₀ f₁ : X ⟶ Y}
+    : Function.Bijective (Homotopy.symm : Homotopy f₀ f₁ → Homotopy f₁ f₀) :=
   Function.bijective_iff_has_inverse.mpr ⟨_, symm_symm, symm_symm⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -179,8 +186,8 @@ Given `Homotopy f₀ f₁` and `Homotopy f₁ f₂`, we can define a `Homotopy f
 `TopCat.Homotopy.trans` on the first and second components.
 -/
 @[simps]
-noncomputable def trans {f₀ f₁ f₂ : X ⟶ Y} (F : Homotopy f₀ f₁) (G : Homotopy f₁ f₂) :
-    Homotopy f₀ f₂ where
+noncomputable def trans {f₀ f₁ f₂ : X ⟶ Y} (F : Homotopy f₀ f₁) (G : Homotopy f₁ f₂)
+    : Homotopy f₀ f₂ where
   fst := F.fst.trans G.fst
   snd := F.snd.trans G.snd
   w := by
@@ -188,17 +195,18 @@ noncomputable def trans {f₀ f₁ f₂ : X ⟶ Y} (F : Homotopy f₀ f₁) (G :
     simp only [TopCat.comp_app, Homotopy.h_hom_apply, ContinuousMap.Homotopy.trans_apply]
     cat_disch
 
-theorem symm_trans {f₀ f₁ f₂ : X ⟶ Y} (F : Homotopy f₀ f₁) (G : Homotopy f₁ f₂) :
-    (F.trans G).symm = G.symm.trans F.symm := by
-      ext : 1 <;> exact ContinuousMap.Homotopy.symm_trans _ _
+theorem symm_trans {f₀ f₁ f₂ : X ⟶ Y} (F : Homotopy f₀ f₁) (G : Homotopy f₁ f₂)
+    : (F.trans G).symm = G.symm.trans F.symm := by
+  ext : 1 <;> exact ContinuousMap.Homotopy.symm_trans _ _
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If we have a `Homotopy g₀ g₁` and a `Homotopy f₀ f₁`, we can define a
+/--
+If we have a `Homotopy g₀ g₁` and a `Homotopy f₀ f₁`, we can define a
 `Homotopy (f₀ ≫ g₀) (f₁ ≫ g₁)` by `TopCat.Homotopy.comp` on the first and second components.
 -/
 @[simps]
-def comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁) :
-    Homotopy (f₀ ≫ g₀) (f₁ ≫ g₁) where
+def comp {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z} (G : Homotopy g₀ g₁) (F : Homotopy f₀ f₁)
+    : Homotopy (f₀ ≫ g₀) (f₁ ≫ g₁) where
   fst := G.fst.comp F.fst
   snd := G.snd.comp F.snd
 

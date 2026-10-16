@@ -19,10 +19,12 @@ an order isomorphism `Fin (n + 1) ≃o ({i}ᶜ : Finset (Fin (n + 2)))`.
 
 open Finset
 
-/-- Given `i : Fin (n + 2)`, this is the order isomorphism
-between `Fin (n + 1)` and the finite set `{i}ᶜ`. -/
-noncomputable def Fin.succAboveOrderIso {n : ℕ} (i : Fin (n + 2)) :
-    Fin (n + 1) ≃o ({i}ᶜ : Finset (Fin (n + 2))) where
+/--
+Given `i : Fin (n + 2)`, this is the order isomorphism
+between `Fin (n + 1)` and the finite set `{i}ᶜ`.
+-/
+noncomputable def Fin.succAboveOrderIso {n : ℕ} (i : Fin (n + 2))
+    : Fin (n + 1) ≃o ({i}ᶜ : Finset (Fin (n + 2))) where
   toEquiv :=
     Equiv.ofBijective (f := fun a ↦ ⟨Fin.succAboveOrderEmb i a, by simp⟩) (by
       constructor

@@ -29,12 +29,13 @@ elab (name := inferOptParam) "infer_param" : tactic => do
     liftMetaTactic fun goal => do goal.assign val; pure []
   else if let some (.const tacticDecl ..) := tgt.getAutoParamTactic? then
     match evalSyntaxConstant (← getEnv) (← getOptions) tacticDecl with
-    | .error err => throwError err
+    | .error err =>
+      throwError err
     | Except.ok tacticSyntax =>
-      liftMetaTactic1 fun goal => do
-        goal.replaceTargetDefEq (← goal.getType).consumeTypeAnnotations
+      liftMetaTactic1 fun goal => do goal.replaceTargetDefEq (← goal.getType).consumeTypeAnnotations
       evalTactic tacticSyntax
-  else throwError
-    "`infer_param` only solves goals of the form `optParam _ _` or `autoParam _ _`, not {tgt}"
+  else
+    throwError
+      "`infer_param` only solves goals of the form `optParam _ _` or `autoParam _ _`, not {tgt}"
 
 end Mathlib.Tactic

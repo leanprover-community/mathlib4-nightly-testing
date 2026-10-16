@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 module
 
 public import Mathlib.Basic.Rel
-
 import Mathlib.Data.Set.Pairwise.Basic
 
 /-!
@@ -34,8 +33,10 @@ open Set
 namespace SetRel
 variable {X : Type*} {R S : SetRel X X} {s t : Set X} {x : X}
 
-/-- Given a relation `R`, a set `s` is `R`-separated if its elements are pairwise `R`-unrelated from
-each other. -/
+/--
+Given a relation `R`, a set `s` is `R`-separated if its elements are pairwise `R`-unrelated from
+each other.
+-/
 def IsSeparated (R : SetRel X X) (s : Set X) : Prop := s.Pairwise fun x y ↦ ¬ x ~[R] y
 
 protected lemma IsSeparated.empty : IsSeparated R (∅ : Set X) := pairwise_empty _
@@ -50,27 +51,28 @@ nonrec lemma IsSeparated.mono_left (hUV : R ⊆ S) (hs : IsSeparated S s) : IsSe
 
 lemma IsSeparated.mono_right (hst : s ⊆ t) (ht : IsSeparated R t) : IsSeparated R s := ht.mono hst
 
-lemma isSeparated_insert' :
-    IsSeparated R (insert x s) ↔ IsSeparated R s ∧ (∀ y ∈ s, x ~[R] y → x = y) ∧
-        ∀ y ∈ s, y ~[R] x → x = y := by
+lemma isSeparated_insert'
+    : IsSeparated R (insert x s)
+      ↔ IsSeparated R s ∧ (∀ y ∈ s, x ~[R] y → x = y) ∧ ∀ y ∈ s, y ~[R] x → x = y := by
   simp [IsSeparated, pairwise_insert, not_imp_comm (a := _ = _), -not_and, forall_and]
 
-lemma isSeparated_insert [R.IsSymm] :
-    IsSeparated R (insert x s) ↔ IsSeparated R s ∧ ∀ y ∈ s, x ~[R] y → x = y := by
-  have : Std.Symm fun x y ↦ ¬(x, y) ∈ R := { symm _ _ := mt R.symm }
-  simpa [not_imp_not, IsSeparated] using pairwise_insert_of_symm (r := fun x y ↦ ¬(x, y) ∈ R)
+lemma isSeparated_insert [R.IsSymm]
+    : IsSeparated R (insert x s) ↔ IsSeparated R s ∧ ∀ y ∈ s, x ~[R] y → x = y := by
+  have : Std.Symm fun x y ↦ ¬ (x, y) ∈ R := { symm _ _ := mt R.symm }
+  simpa [not_imp_not, IsSeparated] using pairwise_insert_of_symm (r := fun x y ↦ ¬ (x, y) ∈ R)
 
-lemma isSeparated_insert_of_notMem [R.IsSymm] (hx : x ∉ s) :
-    IsSeparated R (insert x s) ↔ IsSeparated R s ∧ ∀ y ∈ s, ¬ x ~[R] y :=
-  have : Std.Symm fun x y ↦ ¬(x, y) ∈ R := { symm _ _ := mt R.symm }
+lemma isSeparated_insert_of_notMem [R.IsSymm] (hx : x ∉ s)
+    : IsSeparated R (insert x s) ↔ IsSeparated R s ∧ ∀ y ∈ s, ¬ x ~[R] y :=
+  have : Std.Symm fun x y ↦ ¬ (x, y) ∈ R := { symm _ _ := mt R.symm }
   pairwise_insert_of_symm_of_notMem hx
 
-protected lemma IsSeparated.insert' (hs : IsSeparated R s) (h : ∀ y ∈ s, x ~[R] y → x = y)
-    (h' : ∀ y ∈ s, y ~[R] x → x = y) : IsSeparated R (insert x s) :=
+protected lemma IsSeparated.insert'
+    (hs : IsSeparated R s) (h : ∀ y ∈ s, x ~[R] y → x = y) (h' : ∀ y ∈ s, y ~[R] x → x = y)
+    : IsSeparated R (insert x s) :=
   isSeparated_insert'.2 ⟨hs, h, h'⟩
 
-protected lemma IsSeparated.insert [R.IsSymm] (hs : IsSeparated R s)
-    (h : ∀ y ∈ s, x ~[R] y → x = y) : IsSeparated R (insert x s) :=
+protected lemma IsSeparated.insert [R.IsSymm] (hs : IsSeparated R s) (h : ∀ y ∈ s, x ~[R] y → x = y)
+    : IsSeparated R (insert x s) :=
   isSeparated_insert.2 ⟨hs, h⟩
 
 end SetRel

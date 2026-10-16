@@ -26,10 +26,12 @@ namespace CategoryTheory
 
 open CategoryTheory.Functor
 
-variable {C D E : Type*} [Category C] [Category D] [Category E]
+variable
+  {C D E : Type*} [Category C] [Category D] [Category E]
   {A : Type*} [AddMonoid A] [HasShift D A] [HasShift E A]
-  (F : SingleFunctors C E A) (G : D ⥤ E) [G.CommShift A]
-  [G.Full] [G.Faithful] (Φ : A → C ⥤ D) (hΦ : ∀ a, Φ a ⋙ G ≅ F.functor a)
+  (F : SingleFunctors C E A)
+  (G : D ⥤ E) [G.CommShift A] [G.Full] [G.Faithful]
+  (Φ : A → C ⥤ D) (hΦ : ∀ a, Φ a ⋙ G ≅ F.functor a)
 
 namespace SingleFunctors
 
@@ -39,30 +41,30 @@ variable {F G Φ}
 
 /-- Auxiliary definition for `SingleFunctors.lift`. -/
 @[irreducible]
-noncomputable def shiftIso (n a a' : A) (h : n + a = a') :
-    Φ a' ⋙ shiftFunctor D n ≅ Φ a :=
+noncomputable def shiftIso (n a a' : A) (h : n + a = a') : Φ a' ⋙ shiftFunctor D n ≅ Φ a :=
   ((FullyFaithful.ofFullyFaithful G).whiskeringRight _).preimageIso
-    (associator _ _ _ ≪≫
-      isoWhiskerLeft _ (G.commShiftIso n) ≪≫ (Functor.associator _ _ _).symm ≪≫
-      isoWhiskerRight (hΦ a') _ ≪≫ F.shiftIso n a a' h ≪≫ (hΦ a).symm)
+    (associator _ _ _ ≪≫ isoWhiskerLeft _ (G.commShiftIso n) ≪≫ (Functor.associator _ _ _).symm
+      ≪≫ isoWhiskerRight (hΦ a') _ ≪≫ F.shiftIso n a a' h ≪≫ (hΦ a).symm)
 
 set_option backward.defeqAttrib.useBackward true in
-private lemma map_shiftIso_hom_app (n a a' : A) (h : n + a = a') (X : C) :
-    dsimp% G.map ((lift.shiftIso hΦ n a a' h).hom.app X) =
-      (G.commShiftIso n).hom.app _ ≫ (shiftFunctor E n).map ((hΦ a').hom.app X) ≫
-        (F.shiftIso n a a' h).hom.app X ≫ (hΦ a).inv.app X := by
+private lemma map_shiftIso_hom_app (n a a' : A) (h : n + a = a') (X : C)
+    : dsimp% G.map ((lift.shiftIso hΦ n a a' h).hom.app X) =
+        (G.commShiftIso n).hom.app _ ≫ (shiftFunctor E n).map ((hΦ a').hom.app X) ≫
+          (F.shiftIso n a a' h).hom.app X ≫ (hΦ a).inv.app X := by
   simp [shiftIso]
 
 end lift
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Let `C`, `D` and `E` be categories. Let `A` be an additive monoid.
+/--
+Let `C`, `D` and `E` be categories. Let `A` be an additive monoid.
 Assume that `D` and `E` have shifts by `A` and that we have
 a fully faithful functor `G : D ⥤ A` which commutes with shifts.
 Given `F : SingleFunctors C E A`, and a family of functors
 `Φ a : C ⥤ D` with isomorphisms `Φ a ⋙ G ≅ F.functor a` for all `a : A`,
 this is a term in `SingleFunctors C D A` which is given by the functors `Φ a`
-for all `a`. -/
+for all `a`.
+-/
 @[simps functor]
 noncomputable def lift : SingleFunctors C D A where
   functor := Φ
@@ -81,15 +83,17 @@ noncomputable def lift : SingleFunctors C D A where
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
-lemma map_lift_shiftIso_hom_app (n a a' : A) (h : n + a = a') (X : C) :
-    dsimp% G.map (((lift F G Φ hΦ).shiftIso n a a' h).hom.app X) =
-      (G.commShiftIso n).hom.app _ ≫ (shiftFunctor E n).map ((hΦ a').hom.app X) ≫
-        (F.shiftIso n a a' h).hom.app X ≫ (hΦ a).inv.app X :=
+lemma map_lift_shiftIso_hom_app (n a a' : A) (h : n + a = a') (X : C)
+    : dsimp% G.map (((lift F G Φ hΦ).shiftIso n a a' h).hom.app X) =
+        (G.commShiftIso n).hom.app _ ≫ (shiftFunctor E n).map ((hΦ a').hom.app X) ≫
+          (F.shiftIso n a a' h).hom.app X ≫ (hΦ a).inv.app X :=
   lift.map_shiftIso_hom_app ..
 
 set_option backward.defeqAttrib.useBackward true in
-/-- After postcomposition with the fully faithful functor `G`,
-`lift F G Φ hΦ` becomes isomorphic to `F`. -/
+/--
+After postcomposition with the fully faithful functor `G`,
+`lift F G Φ hΦ` becomes isomorphic to `F`.
+-/
 @[simps!]
 noncomputable def liftPostcompIso : (lift F G Φ hΦ).postcomp G ≅ F :=
   isoMk (hΦ) (fun n a a' ha' ↦ by
@@ -99,8 +103,9 @@ noncomputable def liftPostcompIso : (lift F G Φ hΦ).postcomp G ≅ F :=
     simp [map_lift_shiftIso_hom_app, this])
 
 set_option backward.defeqAttrib.useBackward true in
-instance [Preadditive C] [Preadditive D] [Preadditive E] [G.Additive] (a : A)
-    [(F.functor a).Additive] : ((lift F G Φ hΦ).functor a).Additive := by
+instance
+    [Preadditive C] [Preadditive D] [Preadditive E] [G.Additive] (a : A) [(F.functor a).Additive]
+    : ((lift F G Φ hΦ).functor a).Additive := by
   have : ((lift F G Φ hΦ).functor a ⋙ G).Additive := by
     dsimp
     rwa [Functor.additive_iff_of_iso (hΦ a)]

@@ -37,23 +37,17 @@ attribute [local trans] Subset.trans Superset.trans
 
 /-! ### Lattice structure -/
 
-
 section Lattice
 
 variable [DecidableEq α] {s s₁ s₂ t : Finset α} {a b : α}
 
-theorem disjoint_iff_inter_eq_empty : Disjoint s t ↔ s ∩ t = ∅ :=
-  disjoint_iff
+theorem disjoint_iff_inter_eq_empty : Disjoint s t ↔ s ∩ t = ∅ := disjoint_iff
 
 /-! #### union -/
 
-@[simp]
-theorem union_empty (s : Finset α) : s ∪ ∅ = s :=
-  ext fun x => mem_union.trans <| by simp
+@[simp] theorem union_empty (s : Finset α) : s ∪ ∅ = s := ext fun x => mem_union.trans <| by simp
 
-@[simp]
-theorem empty_union (s : Finset α) : ∅ ∪ s = s :=
-  ext fun x => mem_union.trans <| by simp
+@[simp] theorem empty_union (s : Finset α) : ∅ ∪ s = s := ext fun x => mem_union.trans <| by simp
 
 @[aesop unsafe apply (rule_sets := [finsetNonempty])]
 theorem Nonempty.inl {s t : Finset α} (h : s.Nonempty) : (s ∪ t).Nonempty :=
@@ -63,15 +57,15 @@ theorem Nonempty.inl {s t : Finset α} (h : s.Nonempty) : (s ∪ t).Nonempty :=
 theorem Nonempty.inr {s t : Finset α} (h : t.Nonempty) : (s ∪ t).Nonempty :=
   h.mono subset_union_right
 
-theorem insert_eq (a : α) (s : Finset α) : insert a s = {a} ∪ s :=
-  rfl
+theorem insert_eq (a : α) (s : Finset α) : insert a s = {a} ∪ s := rfl
 
 @[simp, grind =]
-lemma singleton_union (x : α) (s : Finset α) : {x} ∪ s = insert x s :=
-  rfl
+lemma singleton_union (x : α) (s : Finset α) : {x} ∪ s = insert x s := rfl
 
-/- We lower the simp-priority of `union_singleton` to ensure that `{x} ∪ {y}`
-simplifies to `{x, y}` and not `{y, x}`. -/
+/-
+We lower the simp-priority of `union_singleton` to ensure that `{x} ∪ {y}`
+simplifies to `{x, y}` and not `{y, x}`.
+-/
 
 @[simp 900, grind =]
 lemma union_singleton (x : α) (s : Finset α) : s ∪ {x} = insert x s := by
@@ -85,19 +79,21 @@ theorem insert_union (a : α) (s t : Finset α) : insert a s ∪ t = insert a (s
 theorem union_insert (a : α) (s t : Finset α) : s ∪ insert a t = insert a (s ∪ t) := by
   simp only [insert_eq, union_left_comm]
 
-theorem insert_union_distrib (a : α) (s t : Finset α) :
-    insert a (s ∪ t) = insert a s ∪ insert a t := by
+theorem insert_union_distrib (a : α) (s t : Finset α)
+    : insert a (s ∪ t) = insert a s ∪ insert a t := by
   simp only [insert_union, union_insert, insert_idem]
 
-/-- To prove a relation on pairs of `Finset X`, it suffices to show that it is
-  * symmetric,
-  * it holds when one of the `Finset`s is empty,
-  * it holds for pairs of singletons,
-  * if it holds for `[a, c]` and for `[b, c]`, then it holds for `[a ∪ b, c]`.
+/--
+To prove a relation on pairs of `Finset X`, it suffices to show that it is
+* symmetric,
+* it holds when one of the `Finset`s is empty,
+* it holds for pairs of singletons,
+* if it holds for `[a, c]` and for `[b, c]`, then it holds for `[a ∪ b, c]`.
 -/
-theorem induction_on_union (P : Finset α → Finset α → Prop) (symm : ∀ {a b}, P a b → P b a)
-    (empty_right : ∀ {a}, P a ∅) (singletons : ∀ {a b}, P {a} {b})
-    (union_of : ∀ {a b c}, P a c → P b c → P (a ∪ b) c) : ∀ a b, P a b := by
+theorem induction_on_union
+    (P : Finset α → Finset α → Prop) (symm : ∀ {a b}, P a b → P b a) (empty_right : ∀ {a}, P a ∅)
+    (singletons : ∀ {a b}, P {a} {b}) (union_of : ∀ {a b c}, P a c → P b c → P (a ∪ b) c)
+    : ∀ a b, P a b := by
   intro a b
   refine Finset.induction_on b empty_right fun x s _xs hi => symm ?_
   rw [Finset.insert_eq]
@@ -108,44 +104,42 @@ theorem induction_on_union (P : Finset α → Finset α → Prop) (symm : ∀ {a
 
 /-! #### inter -/
 
-@[simp]
-theorem inter_empty (s : Finset α) : s ∩ ∅ = ∅ :=
-  ext fun _ => mem_inter.trans <| by simp
+@[simp] theorem inter_empty (s : Finset α) : s ∩ ∅ = ∅ := ext fun _ => mem_inter.trans <| by simp
+
+@[simp] theorem empty_inter (s : Finset α) : ∅ ∩ s = ∅ := ext fun _ => mem_inter.trans <| by simp
 
 @[simp]
-theorem empty_inter (s : Finset α) : ∅ ∩ s = ∅ :=
-  ext fun _ => mem_inter.trans <| by simp
-
-@[simp]
-theorem insert_inter_of_mem {s₁ s₂ : Finset α} {a : α} (h : a ∈ s₂) :
-    insert a s₁ ∩ s₂ = insert a (s₁ ∩ s₂) :=
+theorem insert_inter_of_mem {s₁ s₂ : Finset α} {a : α} (h : a ∈ s₂)
+    : insert a s₁ ∩ s₂ = insert a (s₁ ∩ s₂) :=
   ext fun x => by
     have : x = a ∨ x ∈ s₂ ↔ x ∈ s₂ := or_iff_right_of_imp <| by rintro rfl; exact h
     simp only [mem_inter, mem_insert, or_and_left, this]
 
 @[simp]
-theorem inter_insert_of_mem {s₁ s₂ : Finset α} {a : α} (h : a ∈ s₁) :
-    s₁ ∩ insert a s₂ = insert a (s₁ ∩ s₂) := by rw [inter_comm, insert_inter_of_mem h, inter_comm]
+theorem inter_insert_of_mem {s₁ s₂ : Finset α} {a : α} (h : a ∈ s₁)
+    : s₁ ∩ insert a s₂ = insert a (s₁ ∩ s₂) := by
+  rw [inter_comm, insert_inter_of_mem h, inter_comm]
 
 @[simp]
-theorem insert_inter_of_notMem {s₁ s₂ : Finset α} {a : α} (h : a ∉ s₂) :
-    insert a s₁ ∩ s₂ = s₁ ∩ s₂ :=
+theorem insert_inter_of_notMem {s₁ s₂ : Finset α} {a : α} (h : a ∉ s₂)
+    : insert a s₁ ∩ s₂ = s₁ ∩ s₂ :=
   ext fun x => by
     have : ¬(x = a ∧ x ∈ s₂) := by rintro ⟨rfl, H⟩; exact h H
     simp only [mem_inter, mem_insert, or_and_right, this, false_or]
 
 @[simp]
-theorem inter_insert_of_notMem {s₁ s₂ : Finset α} {a : α} (h : a ∉ s₁) :
-    s₁ ∩ insert a s₂ = s₁ ∩ s₂ := by rw [inter_comm, insert_inter_of_notMem h, inter_comm]
+theorem inter_insert_of_notMem {s₁ s₂ : Finset α} {a : α} (h : a ∉ s₁)
+    : s₁ ∩ insert a s₂ = s₁ ∩ s₂ := by
+  rw [inter_comm, insert_inter_of_notMem h, inter_comm]
 
 @[grind =]
-theorem inter_insert {s₁ s₂ : Finset α} {a : α} :
-    insert a s₁ ∩ s₂ = if a ∈ s₂ then insert a (s₁ ∩ s₂) else s₁ ∩ s₂ := by
+theorem inter_insert {s₁ s₂ : Finset α} {a : α}
+    : insert a s₁ ∩ s₂ = if a ∈ s₂ then insert a (s₁ ∩ s₂) else s₁ ∩ s₂ := by
   split_ifs <;> simp [*]
 
 @[grind =]
-theorem insert_inter {s₁ s₂ : Finset α} {a : α} :
-    s₁ ∩ insert a s₂ = if a ∈ s₁ then insert a (s₁ ∩ s₂) else s₁ ∩ s₂ := by
+theorem insert_inter {s₁ s₂ : Finset α} {a : α}
+    : s₁ ∩ insert a s₂ = if a ∈ s₁ then insert a (s₁ ∩ s₂) else s₁ ∩ s₂ := by
   split_ifs <;> simp [*]
 
 @[simp]
@@ -154,12 +148,10 @@ theorem singleton_inter_of_mem {a : α} {s : Finset α} (H : a ∈ s) : {a} ∩ 
 
 @[simp]
 theorem singleton_inter_of_notMem {a : α} {s : Finset α} (H : a ∉ s) : {a} ∩ s = ∅ :=
-  eq_empty_of_forall_notMem <| by
-    simp only [mem_inter, mem_singleton]; rintro x ⟨rfl, h⟩; exact H h
+  eq_empty_of_forall_notMem <| by simp only [mem_inter, mem_singleton]; rintro x ⟨rfl, h⟩; exact H h
 
 @[grind =]
-lemma singleton_inter {a : α} {s : Finset α} :
-    {a} ∩ s = if a ∈ s then {a} else ∅ := by
+lemma singleton_inter {a : α} {s : Finset α} : {a} ∩ s = if a ∈ s then {a} else ∅ := by
   split_ifs with h <;> simp [h]
 
 @[simp]
@@ -170,12 +162,12 @@ theorem inter_singleton_of_mem {a : α} {s : Finset α} (h : a ∈ s) : s ∩ {a
 theorem inter_singleton_of_notMem {a : α} {s : Finset α} (h : a ∉ s) : s ∩ {a} = ∅ := by
   rw [inter_comm, singleton_inter_of_notMem h]
 
-lemma inter_singleton {a : α} {s : Finset α} :
-    s ∩ {a} = if a ∈ s then {a} else ∅ := by
+lemma inter_singleton {a : α} {s : Finset α} : s ∩ {a} = if a ∈ s then {a} else ∅ := by
   split_ifs with h <;> simp [h]
 
 @[simp] lemma union_eq_empty : s ∪ t = ∅ ↔ s = ∅ ∧ t = ∅ := sup_eq_bot_iff
-@[simp] lemma union_nonempty : (s ∪ t).Nonempty ↔ s.Nonempty ∨ t.Nonempty :=
+@[simp]
+lemma union_nonempty : (s ∪ t).Nonempty ↔ s.Nonempty ∨ t.Nonempty :=
   mod_cast Set.union_nonempty (α := α) (s := s) (t := t)
 
 theorem insert_union_comm (s t : Finset α) (a : α) : insert a s ∪ t = s ∪ insert a t := by

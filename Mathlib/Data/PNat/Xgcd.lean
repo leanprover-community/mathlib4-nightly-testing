@@ -6,7 +6,6 @@ Authors: Neil Strickland
 module
 
 public import Mathlib.Data.PNat.Prime
-
 import Mathlib.Tactic.Ring
 
 /-!
@@ -37,12 +36,12 @@ See `Nat.Xgcd` for a very similar algorithm allowing values in `ℤ`.
 
 @[expose] public section
 
-
 open Nat
 
 namespace PNat
 
-/-- A term of `XgcdType` is a system of six naturals.  They should
+/--
+A term of `XgcdType` is a system of six naturals.  They should
 be thought of as representing the matrix
 `[[w, x], [y, z]] = [[wp + 1, x], [y, zp + 1]]`
 together with the vector `[a, b] = [ap + 1, bp + 1]`.
@@ -60,56 +59,52 @@ structure XgcdType where
   ap : ℕ
   /-- `bp` is a variable which changes through the algorithm. -/
   bp : ℕ
-  deriving Inhabited
+deriving Inhabited
 
 namespace XgcdType
 
 variable (u : XgcdType)
 
-instance : SizeOf XgcdType :=
-  ⟨fun u => u.bp⟩
+instance : SizeOf XgcdType := ⟨fun u => u.bp⟩
 
-/-- The `Repr` instance converts terms to strings in a way that
-reflects the matrix/vector interpretation as above. -/
+/--
+The `Repr` instance converts terms to strings in a way that
+reflects the matrix/vector interpretation as above.
+-/
 instance : Repr XgcdType where
   reprPrec
-  | g, _ => s!"[[[{repr (g.wp + 1)}, {repr g.x}], \
-                 [{repr g.y}, {repr (g.zp + 1)}]], \
-                [{repr (g.ap + 1)}, {repr (g.bp + 1)}]]"
+    | g, _ =>
+      s!"[[[{repr (g.wp + 1)}, {repr g.x}], \
+        [{repr g.y}, {repr (g.zp + 1)}]], \
+        [{repr (g.ap + 1)}, {repr (g.bp + 1)}]]"
 
 /-- Another `mk` using ℕ and ℕ+ -/
 def mk' (w : ℕ+) (x : ℕ) (y : ℕ) (z : ℕ+) (a : ℕ+) (b : ℕ+) : XgcdType :=
   mk w.val.pred x y z.val.pred a.val.pred b.val.pred
 
 /-- `w = wp + 1` -/
-def w : ℕ+ :=
-  succPNat u.wp
+def w : ℕ+ := succPNat u.wp
 
 /-- `z = zp + 1` -/
-def z : ℕ+ :=
-  succPNat u.zp
+def z : ℕ+ := succPNat u.zp
 
 /-- `a = ap + 1` -/
-def a : ℕ+ :=
-  succPNat u.ap
+def a : ℕ+ := succPNat u.ap
 
 /-- `b = bp + 1` -/
-def b : ℕ+ :=
-  succPNat u.bp
+def b : ℕ+ := succPNat u.bp
 
 /-- `r = a % b`: remainder -/
-def r : ℕ :=
-  (u.ap + 1) % (u.bp + 1)
+def r : ℕ := (u.ap + 1) % (u.bp + 1)
 
 /-- `q = ap / bp`: quotient -/
-def q : ℕ :=
-  (u.ap + 1) / (u.bp + 1)
+def q : ℕ := (u.ap + 1) / (u.bp + 1)
 
 /-- `qp = q - 1` -/
-def qp : ℕ :=
-  u.q - 1
+def qp : ℕ := u.q - 1
 
-/-- The map `v` gives the product of the matrix
+/--
+The map `v` gives the product of the matrix
 `[[w, x], [y, z]] = [[wp + 1, x], [y, zp + 1]]`
 and the vector `[a, b] = [ap + 1, bp + 1]`.  The map
 `vp` gives `[sp, tp]` such that `v = [sp + 1, tp + 1]`.
@@ -118,48 +113,44 @@ def vp : ℕ × ℕ :=
   ⟨u.wp + u.x + u.ap + u.wp * u.ap + u.x * u.bp, u.y + u.zp + u.bp + u.y * u.ap + u.zp * u.bp⟩
 
 /-- `v = [sp + 1, tp + 1]`, check `vp` -/
-def v : ℕ × ℕ :=
-  ⟨u.w * u.a + u.x * u.b, u.y * u.a + u.z * u.b⟩
+def v : ℕ × ℕ := ⟨u.w * u.a + u.x * u.b, u.y * u.a + u.z * u.b⟩
 
 /-- `succ₂ [t.1, t.2] = [t.1.succ, t.2.succ]` -/
-def succ₂ (t : ℕ × ℕ) : ℕ × ℕ :=
-  ⟨t.1.succ, t.2.succ⟩
+def succ₂ (t : ℕ × ℕ) : ℕ × ℕ := ⟨t.1.succ, t.2.succ⟩
 
-theorem v_eq_succ_vp : u.v = succ₂ u.vp := by
-  ext <;> dsimp [v, vp, w, z, a, b, succ₂] <;> ring_nf
+theorem v_eq_succ_vp : u.v = succ₂ u.vp := by ext <;> dsimp [v, vp, w, z, a, b, succ₂] <;> ring_nf
 
 /-- `IsSpecial` holds if the matrix has determinant one. -/
-def IsSpecial : Prop :=
-  u.wp + u.zp + u.wp * u.zp = u.x * u.y
+def IsSpecial : Prop := u.wp + u.zp + u.wp * u.zp = u.x * u.y
 
 /-- `IsSpecial'` is an alternative of `IsSpecial`. -/
-def IsSpecial' : Prop :=
-  u.w * u.z = succPNat (u.x * u.y)
+def IsSpecial' : Prop := u.w * u.z = succPNat (u.x * u.y)
 
 set_option backward.isDefEq.respectTransparency false in
 theorem isSpecial_iff : u.IsSpecial ↔ u.IsSpecial' := by
   dsimp [IsSpecial, IsSpecial']
   let ⟨wp, x, y, zp, ap, bp⟩ := u
-  constructor <;> intro h <;> simp only [w, succPNat, succ_eq_add_one, z] at * <;>
-    simp only [← coe_inj, mul_coe, mk_coe] at *
+  constructor <;> intro h <;> simp only [w, succPNat, succ_eq_add_one, z] at *
+    <;> simp only [← coe_inj, mul_coe, mk_coe] at *
   · simp_all [← h]; ring
   · simp only [Nat.mul_add, Nat.add_mul, one_mul, mul_one, ← Nat.add_assoc,
-      Nat.add_right_cancel_iff] at h
-    rw [← h]; ring
+        Nat.add_right_cancel_iff]
+      at h
+    rw [← h]
+    ring
 
-/-- `IsReduced` holds if the two entries in the vector are the
+/--
+`IsReduced` holds if the two entries in the vector are the
 same.  The reduction algorithm will produce a system with this
 property, whose product vector is the same as for the original
-system. -/
-def IsReduced : Prop :=
-  u.ap = u.bp
+system.
+-/
+def IsReduced : Prop := u.ap = u.bp
 
 /-- `IsReduced'` is an alternative of `IsReduced`. -/
-def IsReduced' : Prop :=
-  u.a = u.b
+def IsReduced' : Prop := u.a = u.b
 
-theorem isReduced_iff : u.IsReduced ↔ u.IsReduced' :=
-  succPNat_inj.symm
+theorem isReduced_iff : u.IsReduced ↔ u.IsReduced' := succPNat_inj.symm
 
 /-- `flip` flips the placement of variables during the algorithm. -/
 def flip : XgcdType where
@@ -170,29 +161,17 @@ def flip : XgcdType where
   ap := u.bp
   bp := u.ap
 
-@[simp]
-theorem flip_w : (flip u).w = u.z :=
-  rfl
+@[simp] theorem flip_w : (flip u).w = u.z := rfl
 
-@[simp]
-theorem flip_x : (flip u).x = u.y :=
-  rfl
+@[simp] theorem flip_x : (flip u).x = u.y := rfl
 
-@[simp]
-theorem flip_y : (flip u).y = u.x :=
-  rfl
+@[simp] theorem flip_y : (flip u).y = u.x := rfl
 
-@[simp]
-theorem flip_z : (flip u).z = u.w :=
-  rfl
+@[simp] theorem flip_z : (flip u).z = u.w := rfl
 
-@[simp]
-theorem flip_a : (flip u).a = u.b :=
-  rfl
+@[simp] theorem flip_a : (flip u).a = u.b := rfl
 
-@[simp]
-theorem flip_b : (flip u).b = u.a :=
-  rfl
+@[simp] theorem flip_b : (flip u).b = u.a := rfl
 
 theorem flip_isReduced : (flip u).IsReduced ↔ u.IsReduced := by
   dsimp [IsReduced, flip]
@@ -211,8 +190,7 @@ theorem flip_v : (flip u).v = u.v.swap := by
     ring
 
 /-- Properties of division with remainder for a / b. -/
-theorem rq_eq : u.r + (u.bp + 1) * u.q = u.ap + 1 :=
-  Nat.mod_add_div (u.ap + 1) (u.bp + 1)
+theorem rq_eq : u.r + (u.bp + 1) * u.q = u.ap + 1 := Nat.mod_add_div (u.ap + 1) (u.bp + 1)
 
 theorem qp_eq (hr : u.r = 0) : u.q = u.qp + 1 := by
   by_cases hq : u.q = 0
@@ -221,16 +199,15 @@ theorem qp_eq (hr : u.r = 0) : u.q = u.qp + 1 := by
     cases h
   · exact (Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hq)).symm
 
-/-- The following function provides the starting point for
+/--
+The following function provides the starting point for
 our algorithm.  We will apply an iterative reduction process
 to it, which will produce a system satisfying IsReduced.
 The gcd can be read off from this final system.
 -/
-def start (a b : ℕ+) : XgcdType :=
-  ⟨0, 0, 0, 0, a - 1, b - 1⟩
+def start (a b : ℕ+) : XgcdType := ⟨0, 0, 0, 0, a - 1, b - 1⟩
 
-theorem start_isSpecial (a b : ℕ+) : (start a b).IsSpecial := by
-  dsimp [start, IsSpecial]
+theorem start_isSpecial (a b : ℕ+) : (start a b).IsSpecial := by dsimp [start, IsSpecial]
 
 theorem start_v (a b : ℕ+) : (start a b).v = ⟨a, b⟩ := by
   dsimp [start, v, XgcdType.a, XgcdType.b, w, z]
@@ -265,13 +242,17 @@ theorem finish_v (hr : u.r = 0) : u.finish.v = u.v := by
     rw [← ha, u.qp_eq hr]
     ring
 
-/-- This is the main reduction step, which is used when u.r ≠ 0, or
-equivalently b does not divide a. -/
+/--
+This is the main reduction step, which is used when u.r ≠ 0, or
+equivalently b does not divide a.
+-/
 def step : XgcdType :=
   XgcdType.mk (u.y * u.q + u.zp) u.y ((u.wp + 1) * u.q + u.x) u.wp u.bp (u.r - 1)
 
-/-- We will apply the above step recursively.  The following result
-is used to ensure that the process terminates. -/
+/--
+We will apply the above step recursively.  The following result
+is used to ensure that the process terminates.
+-/
 theorem step_wf (hr : u.r ≠ 0) : SizeOf.sizeOf u.step < SizeOf.sizeOf u := by
   change u.r - 1 < u.bp
   have h₀ : u.r - 1 + 1 = u.r := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hr)
@@ -296,16 +277,17 @@ theorem step_v (hr : u.r ≠ 0) : u.step.v = u.v.swap := by
     rw [← ha, hr]
     ring
 
-/-- We can now define the full reduction function, which applies
+/--
+We can now define the full reduction function, which applies
 step as long as possible, and then applies finish. Note that the
 "have" statement puts a fact in the local context, and the
 equation compiler uses this fact to help construct the full
 definition in terms of well-founded recursion.  The same fact
 needs to be introduced in all the inductive proofs of properties
-given below. -/
+given below.
+-/
 def reduce (u : XgcdType) : XgcdType :=
-  dite (u.r = 0) (fun _ => u.finish) fun _h =>
-    flip (reduce u.step)
+  dite (u.r = 0) (fun _ => u.finish) fun _h => flip (reduce u.step)
 decreasing_by apply u.step_wf _h
 
 theorem reduce_a {u : XgcdType} (h : u.r = 0) : u.reduce = u.finish := by
@@ -323,9 +305,9 @@ theorem reduce_isReduced : ∀ u : XgcdType, u.reduce.IsReduced
         rw [reduce_a h]
         exact u.finish_isReduced)
       fun h => by
-      have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
-      rw [reduce_b h, flip_isReduced]
-      apply reduce_isReduced
+        have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
+        rw [reduce_b h, flip_isReduced]
+        apply reduce_isReduced
 
 theorem reduce_isReduced' (u : XgcdType) : u.reduce.IsReduced' :=
   (isReduced_iff _).mp u.reduce_isReduced
@@ -337,18 +319,20 @@ theorem reduce_isSpecial : ∀ u : XgcdType, u.IsSpecial → u.reduce.IsSpecial
         rw [reduce_a h]
         exact u.finish_isSpecial hs)
       fun h hs => by
-      have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
-      rw [reduce_b h]
-      exact (flip_isSpecial _).mpr (reduce_isSpecial _ (u.step_isSpecial hs))
+        have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
+        rw [reduce_b h]
+        exact (flip_isSpecial _).mpr (reduce_isSpecial _ (u.step_isSpecial hs))
 
 theorem reduce_isSpecial' (u : XgcdType) (hs : u.IsSpecial) : u.reduce.IsSpecial' :=
   (isSpecial_iff _).mp (u.reduce_isSpecial hs)
 
 theorem reduce_v : ∀ u : XgcdType, u.reduce.v = u.v
   | u =>
-    dite (u.r = 0) (fun h => by rw [reduce_a h, finish_v u h]) fun h => by
-      have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
-      rw [reduce_b h, flip_v, reduce_v (step u), step_v u h, Prod.swap_swap]
+    dite (u.r = 0)
+      (fun h => by rw [reduce_a h, finish_v u h])
+      fun h => by
+        have : SizeOf.sizeOf u.step < SizeOf.sizeOf u := u.step_wf h
+        rw [reduce_b h, flip_v, reduce_v (step u), step_v u h, Prod.swap_swap]
 
 end XgcdType
 
@@ -357,36 +341,28 @@ section gcd
 variable (a b : ℕ+)
 
 /-- Extended Euclidean algorithm -/
-def xgcd : XgcdType :=
-  (XgcdType.start a b).reduce
+def xgcd : XgcdType := (XgcdType.start a b).reduce
 
 /-- `gcdD a b = gcd a b` -/
-def gcdD : ℕ+ :=
-  (xgcd a b).a
+def gcdD : ℕ+ := (xgcd a b).a
 
 /-- Final value of `w` -/
-def gcdW : ℕ+ :=
-  (xgcd a b).w
+def gcdW : ℕ+ := (xgcd a b).w
 
 /-- Final value of `x` -/
-def gcdX : ℕ :=
-  (xgcd a b).x
+def gcdX : ℕ := (xgcd a b).x
 
 /-- Final value of `y` -/
-def gcdY : ℕ :=
-  (xgcd a b).y
+def gcdY : ℕ := (xgcd a b).y
 
 /-- Final value of `z` -/
-def gcdZ : ℕ+ :=
-  (xgcd a b).z
+def gcdZ : ℕ+ := (xgcd a b).z
 
 /-- Final value of `a / d` -/
-def gcdA' : ℕ+ :=
-  succPNat ((xgcd a b).wp + (xgcd a b).x)
+def gcdA' : ℕ+ := succPNat ((xgcd a b).wp + (xgcd a b).x)
 
 /-- Final value of `b / d` -/
-def gcdB' : ℕ+ :=
-  succPNat ((xgcd a b).y + (xgcd a b).zp)
+def gcdB' : ℕ+ := succPNat ((xgcd a b).y + (xgcd a b).zp)
 
 theorem gcdA'_coe : (gcdA' a b : ℕ) = gcdW a b + gcdX a b := by
   dsimp [gcdA', gcdX, gcdW, XgcdType.w]
@@ -396,19 +372,16 @@ theorem gcdB'_coe : (gcdB' a b : ℕ) = gcdY a b + gcdZ a b := by
   dsimp [gcdB', gcdY, gcdZ, XgcdType.z]
   rw [add_assoc]
 
-theorem gcd_props :
-    let d := gcdD a b
-    let w := gcdW a b
-    let x := gcdX a b
-    let y := gcdY a b
-    let z := gcdZ a b
-    let a' := gcdA' a b
-    let b' := gcdB' a b
-    w * z = succPNat (x * y) ∧
-      a = a' * d ∧
-        b = b' * d ∧
-          z * a' = succPNat (x * b') ∧
-            w * b' = succPNat (y * a') ∧ (z * a : ℕ) = x * b + d ∧ (w * b : ℕ) = y * a + d := by
+theorem gcd_props
+    : let d := gcdD a b
+      let w := gcdW a b
+      let x := gcdX a b
+      let y := gcdY a b
+      let z := gcdZ a b
+      let a' := gcdA' a b
+      let b' := gcdB' a b
+      w * z = succPNat (x * y) ∧ a = a' * d ∧ b = b' * d ∧ z * a' = succPNat (x * b')
+        ∧ w * b' = succPNat (y * a') ∧ (z * a : ℕ) = x * b + d ∧ (w * b : ℕ) = y * a + d := by
   intro d w x y z a' b'
   let u := XgcdType.start a b
   let ur := u.reduce
@@ -454,14 +427,11 @@ theorem gcd_eq : gcdD a b = gcd a b := by
     rw [dvd_iff]
     exact (Nat.dvd_add_iff_right h₈).mpr h₇
 
-theorem gcd_det_eq : gcdW a b * gcdZ a b = succPNat (gcdX a b * gcdY a b) :=
-  (gcd_props a b).1
+theorem gcd_det_eq : gcdW a b * gcdZ a b = succPNat (gcdX a b * gcdY a b) := (gcd_props a b).1
 
-theorem gcd_a_eq : a = gcdA' a b * gcd a b :=
-  gcd_eq a b ▸ (gcd_props a b).2.1
+theorem gcd_a_eq : a = gcdA' a b * gcd a b := gcd_eq a b ▸ (gcd_props a b).2.1
 
-theorem gcd_b_eq : b = gcdB' a b * gcd a b :=
-  gcd_eq a b ▸ (gcd_props a b).2.2.1
+theorem gcd_b_eq : b = gcdB' a b * gcd a b := gcd_eq a b ▸ (gcd_props a b).2.2.1
 
 theorem gcd_rel_left' : gcdZ a b * gcdA' a b = succPNat (gcdX a b * gcdB' a b) :=
   (gcd_props a b).2.2.2.1

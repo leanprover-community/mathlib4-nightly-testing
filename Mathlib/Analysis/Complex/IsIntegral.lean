@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-
 import Mathlib.Algebra.Polynomial.Monic
 
 /-!

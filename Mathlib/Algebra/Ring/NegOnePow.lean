@@ -29,15 +29,12 @@ def negOnePow (n : ℤ) : ℤˣ := (-1 : ℤˣ) ^ n
 
 lemma negOnePow_def (n : ℤ) : n.negOnePow = (-1 : ℤˣ) ^ n := rfl
 
-lemma negOnePow_add (n₁ n₂ : ℤ) :
-    (n₁ + n₂).negOnePow = n₁.negOnePow * n₂.negOnePow :=
+lemma negOnePow_add (n₁ n₂ : ℤ) : (n₁ + n₂).negOnePow = n₁.negOnePow * n₂.negOnePow :=
   zpow_add _ _ _
 
-@[simp]
-lemma negOnePow_zero : negOnePow 0 = 1 := rfl
+@[simp] lemma negOnePow_zero : negOnePow 0 = 1 := rfl
 
-@[simp]
-lemma negOnePow_one : negOnePow 1 = -1 := rfl
+@[simp] lemma negOnePow_one : negOnePow 1 = -1 := rfl
 
 lemma negOnePow_succ (n : ℤ) : (n + 1).negOnePow = -n.negOnePow := by
   rw [negOnePow_add, negOnePow_one, mul_neg, mul_one]
@@ -46,17 +43,14 @@ lemma negOnePow_even (n : ℤ) (hn : Even n) : n.negOnePow = 1 := by
   obtain ⟨k, rfl⟩ := hn
   rw [negOnePow_add, units_mul_self]
 
-@[simp]
-lemma negOnePow_two_mul (n : ℤ) : (2 * n).negOnePow = 1 :=
-  negOnePow_even _ ⟨n, two_mul n⟩
+@[simp] lemma negOnePow_two_mul (n : ℤ) : (2 * n).negOnePow = 1 := negOnePow_even _ ⟨n, two_mul n⟩
 
 lemma negOnePow_odd (n : ℤ) (hn : Odd n) : n.negOnePow = -1 := by
   obtain ⟨k, rfl⟩ := hn
   simp only [negOnePow_add, negOnePow_two_mul, negOnePow_one, mul_neg, mul_one]
 
 @[simp]
-lemma negOnePow_two_mul_add_one (n : ℤ) : (2 * n + 1).negOnePow = -1 :=
-  negOnePow_odd _ ⟨n, rfl⟩
+lemma negOnePow_two_mul_add_one (n : ℤ) : (2 * n + 1).negOnePow = -1 := negOnePow_odd _ ⟨n, rfl⟩
 
 lemma negOnePow_eq_one_iff (n : ℤ) : n.negOnePow = 1 ↔ Even n := by
   constructor
@@ -88,18 +82,16 @@ lemma negOnePow_neg (n : ℤ) : (-n).negOnePow = n.negOnePow := by
 lemma negOnePow_abs (n : ℤ) : |n|.negOnePow = n.negOnePow := by
   obtain h | h := abs_choice n <;> simp only [h, negOnePow_neg]
 
-lemma negOnePow_sub (n₁ n₂ : ℤ) :
-    (n₁ - n₂).negOnePow = n₁.negOnePow * n₂.negOnePow := by
+lemma negOnePow_sub (n₁ n₂ : ℤ) : (n₁ - n₂).negOnePow = n₁.negOnePow * n₂.negOnePow := by
   simp only [sub_eq_add_neg, negOnePow_add, negOnePow_neg]
 
-lemma negOnePow_eq_iff (n₁ n₂ : ℤ) :
-    n₁.negOnePow = n₂.negOnePow ↔ Even (n₁ - n₂) := by
+lemma negOnePow_eq_iff (n₁ n₂ : ℤ) : n₁.negOnePow = n₂.negOnePow ↔ Even (n₁ - n₂) := by
   by_cases h₂ : Even n₂
   · rw [negOnePow_even _ h₂, Int.even_sub, negOnePow_eq_one_iff]
     tauto
   · rw [Int.not_even_iff_odd] at h₂
-    rw [negOnePow_odd _ h₂, Int.even_sub, negOnePow_eq_neg_one_iff,
-      ← Int.not_odd_iff_even, ← Int.not_odd_iff_even]
+    rw [negOnePow_odd _ h₂, Int.even_sub, negOnePow_eq_neg_one_iff, ← Int.not_odd_iff_even,
+      ← Int.not_odd_iff_even]
     tauto
 
 @[simp]
@@ -113,8 +105,7 @@ lemma coe_negOnePow_natCast (n : ℕ) : negOnePow n = (-1 : ℤ) ^ n := cast_neg
 
 /-- The cast of `negOnePow n` to a ring equals `(-1) ^ n.natAbs`. -/
 @[simp]
-lemma coe_negOnePow (R : Type*) [Ring R] (n : ℤ) :
-    (n.negOnePow : R) = (-1 : R) ^ n.natAbs := by
+lemma coe_negOnePow (R : Type*) [Ring R] (n : ℤ) : (n.negOnePow : R) = (-1 : R) ^ n.natAbs := by
   cases n with
   | ofNat n => exact cast_negOnePow_natCast R n
   | negSucc n => simp [negOnePow_def, Units.val_pow_eq_pow_val]

@@ -34,16 +34,16 @@ open CategoryTheory
 /-- The category of delta-generated topological spaces. -/
 abbrev DeltaGenerated := GeneratedByTopCat.{u} (fun n ↦ Fin n → ℝ)
 
-/-- The faithful (but not full) functor taking each topological space to its delta-generated
-  coreflection. -/
-abbrev TopCat.toDeltaGenerated : TopCat.{u} ⥤ DeltaGenerated.{u} :=
-  TopCat.toGeneratedByTopCat
+/--
+The faithful (but not full) functor taking each topological space to its delta-generated
+coreflection.
+-/
+abbrev TopCat.toDeltaGenerated : TopCat.{u} ⥤ DeltaGenerated.{u} := TopCat.toGeneratedByTopCat
 
 namespace DeltaGenerated
 
 /-- Constructor for objects of the category `DeltaGenerated` -/
-abbrev of (X : Type u) [TopologicalSpace X] [DeltaGeneratedSpace X] : DeltaGenerated.{u} :=
-  ↧X
+abbrev of (X : Type u) [TopologicalSpace X] [DeltaGeneratedSpace X] : DeltaGenerated.{u} := ↧X
 
 open Lean.PrettyPrinter.Delaborator in
 /-- This prints `DeltaGenerated.of X` as `↧X`. -/
@@ -51,8 +51,7 @@ open Lean.PrettyPrinter.Delaborator in
 meta def delabOf : Delab := CategoryTheory.delabOf
 
 /-- The forgetful functor `DeltaGenerated ⥤ TopCat` -/
-abbrev deltaGeneratedToTop : DeltaGenerated.{u} ⥤ TopCat.{u} :=
-  GeneratedByTopCat.toTopCat
+abbrev deltaGeneratedToTop : DeltaGenerated.{u} ⥤ TopCat.{u} := GeneratedByTopCat.toTopCat
 
 /-- `deltaGeneratedToTop` is fully faithful. -/
 abbrev fullyFaithfulDeltaGeneratedToTop : deltaGeneratedToTop.{u}.FullyFaithful :=

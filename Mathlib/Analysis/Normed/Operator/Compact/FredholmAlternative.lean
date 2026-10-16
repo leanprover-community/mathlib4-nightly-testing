@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Normed.Operator.Compact.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
-
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Normed.Module.RieszLemma
 import Mathlib.Analysis.Normed.Operator.Banach
@@ -47,14 +46,16 @@ variable {T : X →L[𝕜] X} {μ : 𝕜}
 open Module End
 
 open Filter Topology in
-/-- If `T : X →L[𝕜] X` is a compact operator on a Banach space `X`, and `μ ≠ 0` is not an
+/--
+If `T : X →L[𝕜] X` is a compact operator on a Banach space `X`, and `μ ≠ 0` is not an
 eigenvalue of `T`, then `T - μ • 1` is antilipschitz with positive constant.
 That is, `T - μ • 1` is bounded below as an operator.
 
-This is a useful step in the proof of the Fredholm alternative for compact operators. -/
-theorem antilipschitz_of_not_hasEigenvalue (hT : IsCompactOperator T) (hμ : μ ≠ 0)
-    (h : ¬ HasEigenvalue (T : End 𝕜 X) μ) :
-    ∃ K, AntilipschitzWith K (T - μ • 1 : X →L[𝕜] X) := by
+This is a useful step in the proof of the Fredholm alternative for compact operators.
+-/
+theorem antilipschitz_of_not_hasEigenvalue
+    (hT : IsCompactOperator T) (hμ : μ ≠ 0) (h : ¬ HasEigenvalue (T : End 𝕜 X) μ)
+    : ∃ K, AntilipschitzWith K (T - μ • 1 : X →L[𝕜] X) := by
   -- Suppose not, and attempt to find an eigenvector with eigenvalue `μ`.
   rw [antilipschitzWith_iff_exists_mul_le_norm]
   contrapose! h
@@ -124,18 +125,20 @@ range of `S ^ n` but is at least `1` away from any vector in the range of `S ^ (
 This is a useful construction for the proof of the Fredholm alternative for compact operators.
 The conditions about `c` and `R` are to mimic those in Riesz's lemma.
 -/
-private theorem exists_seq {S : End 𝕜 X} (hS_not_surj : ¬ (S : X → X).Surjective)
-    (hS_anti : Topology.IsClosedEmbedding S)
-    {c : 𝕜} (hc : 1 < ‖c‖) {R : ℝ} (hR : ‖c‖ < R) :
-    ∃ f : ℕ → X,
-      (∀ n, 1 ≤ ‖f n‖) ∧ (∀ n, ‖f n‖ ≤ R) ∧ (∀ n, f n ∈ (S ^ n).range) ∧
-      (∀ n, ∀ y ∈ (S ^ (n + 1)).range, 1 ≤ ‖f n - y‖) := by
+private theorem exists_seq
+    {S : End 𝕜 X} (hS_not_surj : ¬(S : X → X).Surjective) (hS_anti : Topology.IsClosedEmbedding S)
+    {c : 𝕜} (hc : 1 < ‖c‖)
+    {R : ℝ} (hR : ‖c‖ < R)
+    : ∃ f : ℕ → X,
+      (∀ n, 1 ≤ ‖f n‖) ∧ (∀ n, ‖f n‖ ≤ R) ∧ (∀ n, f n ∈ (S ^ n).range)
+        ∧ (∀ n, ∀ y ∈ (S ^ (n + 1)).range, 1 ≤ ‖f n - y‖) := by
   -- Construct the sequence of submodules `V n := (S ^ n).range`, and show that they are closed.
   let V (n : ℕ) : Submodule 𝕜 X := S.iterateRange n
   have hV_succ (n : ℕ) : V (n + 1) = (V n).map (S : End 𝕜 X) := LinearMap.iterateRange_succ
   have hV_closed (n : ℕ) : IsClosed (V n : Set X) := by
     induction n with
-    | zero => simp [V, Module.End.one_eq_id]
+    | zero =>
+      simp [V, Module.End.one_eq_id]
     | succ n ih =>
       rw [hV_succ]
       apply hS_anti.isClosedMap _ ih
@@ -144,12 +147,17 @@ private theorem exists_seq {S : End 𝕜 X} (hS_not_surj : ¬ (S : X → X).Surj
     have h₁ : IsClosed ((V (n + 1)).comap (V n).subtype : Set (V n)) := by
       simpa using! (hV_closed (n + 1)).preimage_val
     have h₂ : ∃ x : V n, x ∉ (V (n + 1)).comap (V n).subtype := by
-      simpa [iterate_succ, V, (iterate_injective hS_anti.injective n).eq_iff,
-        Function.Surjective] using! hS_not_surj
+      simpa [iterate_succ, V, (iterate_injective hS_anti.injective n).eq_iff, Function.Surjective]
+        using! hS_not_surj
     obtain ⟨⟨x, hx⟩, hxn, hxy⟩ := riesz_lemma_of_norm_lt hc hR h₁ h₂
     simp only [Submodule.mem_comap, Submodule.subtype_apply, Subtype.forall] at hxn hxy
-    exact ⟨x, hx, by simpa using! hxy 0, hxn,
-      fun y hy ↦ hxy y (S.iterateRange.monotone (by simp) hy) hy⟩
+    exact ⟨
+      x,
+      hx,
+      by simpa using! hxy 0,
+      hxn,
+      fun y hy ↦ hxy y (S.iterateRange.monotone (by simp) hy) hy
+    ⟩
   -- Use the existential claim to construct the sequence `f n`.
   choose x hxv hxn hxn' hxy using x
   exact ⟨x, hxn, hxn', hxv, hxy⟩
@@ -162,27 +170,27 @@ then either `μ` is an eigenvalue of `T`, or `μ` is in the resolvent set of `T`
 See also `hasEigenvalue_iff_mem_spectrum`, which says that the nonzero eigenvalues of a compact
 operator are exactly the nonzero points in the spectrum of the operator.
 -/
-theorem hasEigenvalue_or_mem_resolventSet (hT : IsCompactOperator T) (hμ : μ ≠ 0) :
-    HasEigenvalue (T : End 𝕜 X) μ ∨ μ ∈ resolventSet 𝕜 T := by
+theorem hasEigenvalue_or_mem_resolventSet (hT : IsCompactOperator T) (hμ : μ ≠ 0)
+    : HasEigenvalue (T : End 𝕜 X) μ ∨ μ ∈ resolventSet 𝕜 T := by
   -- Suppose not, then `μ` is not an eigenvalue and is in the spectrum.
   by_contra!
   obtain ⟨h₁, h₂⟩ := this
   -- Defining S := `T - μ • 1`, we deduce that S is antilipschitz and not surjective.
   let S := T - μ • 1
   obtain ⟨K, hK : AntilipschitzWith K S⟩ := antilipschitz_of_not_hasEigenvalue hT hμ h₁
-  replace h₂ : ¬ (S : X → X).Bijective := by
-    rw [spectrum.mem_resolventSet_iff, ← IsUnit.neg_iff,
-      ContinuousLinearMap.isUnit_iff_bijective] at h₂
+  replace h₂ : ¬(S : X → X).Bijective := by
+    rw [spectrum.mem_resolventSet_iff, ← IsUnit.neg_iff, ContinuousLinearMap.isUnit_iff_bijective]
+      at h₂
     convert h₂
     ext x
     simp [S]
-  replace h₂ : ¬ (S : X → X).Surjective := by grind [Function.Bijective, hK.injective]
+  replace h₂ : ¬(S : X → X).Surjective := by grind [Function.Bijective, hK.injective]
   -- Take a sequence of vectors `f n` in the range of `S ^ n` such that `‖f n‖` is in the
   -- interval `[1, ‖c‖ + 1]` and such that `f n` is at least `1` away from any vector in the range
   -- of `S ^ (n + 1)`.
   obtain ⟨c, hc⟩ := NormedField.exists_one_lt_norm 𝕜
-  obtain ⟨f, hf_norm_lower, hf_norm_upper, hf_mem, hf_far⟩ := exists_seq h₂
-    (hK.isClosedEmbedding S.uniformContinuous) hc (R := ‖c‖ + 1) (by simp)
+  obtain ⟨f, hf_norm_lower, hf_norm_upper, hf_mem, hf_far⟩ :=
+    exists_seq h₂ (hK.isClosedEmbedding S.uniformContinuous) hc (R := ‖c‖ + 1) (by simp)
   replace hf_mem {n m : ℕ} (h : m ≤ n) : f n ∈ ((S : End 𝕜 X) ^ m).range :=
     (S : End 𝕜 X).iterateRange.monotone (by lia) (hf_mem _)
   have hf_mem' {n m : ℕ} (h : m ≤ n) : S (f n) ∈ ((S : End 𝕜 X) ^ (m + 1)).range := by
@@ -210,7 +218,7 @@ theorem hasEigenvalue_or_mem_resolventSet (hT : IsCompactOperator T) (hμ : μ �
   obtain ⟨y, hyK, ψ, hψ, hψy⟩ := hK.tendsto_subseq (fun n ↦ hK' ⟨f n, by simp [*], rfl⟩)
   replace hψy := hψy.cauchySeq
   rw [Metric.cauchySeq_iff'] at hψy
-  obtain ⟨N, hN⟩ := hψy ‖μ‖ (by positivity)
+  obtain ⟨N, hN⟩ := hψy (‖μ‖) (by positivity)
   have : ‖T (f (ψ (N + 1))) - T (f (ψ N))‖ < ‖μ‖ := by simpa [dist_eq_norm_sub] using hN (N + 1)
   refine this.not_ge (hp ?_)
   simp [hψ.injective.eq_iff]
@@ -218,9 +226,10 @@ theorem hasEigenvalue_or_mem_resolventSet (hT : IsCompactOperator T) (hμ : μ �
 /--
 If `T` is a compact operator on a Banach space, then the nonzero eigenvalues of `T` are exactly
 the nonzero points in the spectrum of `T`. This is a consequence of the Fredholm alternative for
-compact operators. -/
-theorem hasEigenvalue_iff_mem_spectrum (hT : IsCompactOperator T) (hμ : μ ≠ 0) :
-    HasEigenvalue (T : End 𝕜 X) μ ↔ μ ∈ spectrum 𝕜 T := by
+compact operators.
+-/
+theorem hasEigenvalue_iff_mem_spectrum (hT : IsCompactOperator T) (hμ : μ ≠ 0)
+    : HasEigenvalue (T : End 𝕜 X) μ ↔ μ ∈ spectrum 𝕜 T := by
   constructor
   · intro hμ'
     rw [ContinuousLinearMap.spectrum_eq]

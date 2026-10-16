@@ -21,25 +21,26 @@ variable (α : Type*) [DecidableEq α] [Fintype α]
 
 section Ranges
 
-/-- For any `c : List ℕ` whose sum is at most `Fintype.card α`,
-  we can find `o : List (List α)` whose members have no duplicate,
-  whose lengths given by `c`, and which are pairwise disjoint -/
-theorem List.exists_pw_disjoint_with_card {α : Type*} [Fintype α]
-    {c : List ℕ} (hc : c.sum ≤ Fintype.card α) :
-    ∃ o : List (List α),
-      o.map length = c ∧ (∀ s ∈ o, s.Nodup) ∧ Pairwise List.Disjoint o := by
+/--
+For any `c : List ℕ` whose sum is at most `Fintype.card α`,
+we can find `o : List (List α)` whose members have no duplicate,
+whose lengths given by `c`, and which are pairwise disjoint
+-/
+theorem List.exists_pw_disjoint_with_card
+    {α : Type*} [Fintype α] {c : List ℕ} (hc : c.sum ≤ Fintype.card α)
+    : ∃ o : List (List α), o.map length = c ∧ (∀ s ∈ o, s.Nodup) ∧ Pairwise List.Disjoint o := by
   let klift (n : ℕ) (hn : n < Fintype.card α) : Fin (Fintype.card α) :=
     (⟨n, hn⟩ : Fin (Fintype.card α))
-  let klift' (l : List ℕ) (hl : ∀ a ∈ l, a < Fintype.card α) :
-    List (Fin (Fintype.card α)) := List.pmap klift l hl
+  let klift' (l : List ℕ) (hl : ∀ a ∈ l, a < Fintype.card α) : List (Fin (Fintype.card α)) :=
+    List.pmap klift l hl
   have hc'_lt : ∀ l ∈ c.ranges, ∀ n ∈ l, n < Fintype.card α := by
     intro l hl n hn
     apply lt_of_lt_of_le _ hc
     rw [← mem_mem_ranges_iff_lt_sum]
     exact ⟨l, hl, hn⟩
   let l := (ranges c).pmap klift' hc'_lt
-  have hl : ∀ (a : List ℕ) (ha : a ∈ c.ranges),
-    (klift' a (hc'_lt a ha)).map Fin.valEmbedding = a := by
+  have hl
+      : ∀ (a : List ℕ) (ha : a ∈ c.ranges), (klift' a (hc'_lt a ha)).map Fin.valEmbedding = a := by
     intro a ha
     conv_rhs => rw [← List.map_id a]
     rw [List.map_pmap]
@@ -48,8 +49,7 @@ theorem List.exists_pw_disjoint_with_card {α : Type*} [Fintype α]
   constructor
   · -- length
     rw [← ranges_length c]
-    simp only [l, klift', map_pmap, length_pmap,
-      pmap_eq_map]
+    simp only [l, klift', map_pmap, length_pmap, pmap_eq_map]
   constructor
   · -- nodup
     intro s
@@ -72,11 +72,12 @@ theorem List.exists_pw_disjoint_with_card {α : Type*} [Fintype α]
 
 end Ranges
 
-/-- There are permutations with cycleType `m` if and only if
-  its sum is at most `Fintype.card α` and its members are at least 2. -/
-theorem Equiv.Perm.exists_with_cycleType_iff {m : Multiset ℕ} :
-    (∃ g : Equiv.Perm α, g.cycleType = m) ↔
-      (m.sum ≤ Fintype.card α ∧ ∀ a ∈ m, 2 ≤ a) := by
+/--
+There are permutations with cycleType `m` if and only if
+its sum is at most `Fintype.card α` and its members are at least 2.
+-/
+theorem Equiv.Perm.exists_with_cycleType_iff {m : Multiset ℕ}
+    : (∃ g : Equiv.Perm α, g.cycleType = m) ↔ (m.sum ≤ Fintype.card α ∧ ∀ a ∈ m, 2 ≤ a) := by
   constructor
   · -- empty case
     intro h
@@ -102,9 +103,11 @@ theorem Equiv.Perm.exists_with_cycleType_iff {m : Multiset ℕ} :
     · -- lengths
       rw [← Multiset.coe_toList m]
       apply congr_arg
-      rw [List.map_map]; rw [← hp_length]
+      rw [List.map_map]
+      rw [← hp_length]
       apply List.map_congr_left
-      intro x hx; simp only [Function.comp_apply]
+      intro x hx
+      simp only [Function.comp_apply]
       rw [List.support_formPerm_of_nodup x (hp_nodup x hx)]
       · -- length
         rw [List.toFinset_card_of_nodup (hp_nodup x hx)]

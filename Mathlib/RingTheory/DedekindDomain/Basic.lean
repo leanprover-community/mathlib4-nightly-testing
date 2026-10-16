@@ -48,7 +48,6 @@ dedekind domain, dedekind ring
 
 public section
 
-
 variable (R A K : Type*) [CommRing R] [CommRing A] [Field K]
 
 open scoped nonZeroDivisors Polynomial
@@ -59,43 +58,48 @@ class Ring.DimensionLEOne : Prop where
 
 open Ideal Ring
 
-theorem Ideal.IsPrime.isMaximal {R : Type*} [CommRing R] [DimensionLEOne R]
-    {p : Ideal R} (h : p.IsPrime) (hp : p ≠ ⊥) : p.IsMaximal :=
+theorem Ideal.IsPrime.isMaximal
+    {R : Type*} [CommRing R] [DimensionLEOne R] {p : Ideal R} (h : p.IsPrime) (hp : p ≠ ⊥)
+    : p.IsMaximal :=
   DimensionLEOne.maximalOfPrime hp h
 
-theorem Ideal.mem_minimalPrimes_of_ne_bot {R : Type*} [CommRing R] [Ring.DimensionLEOne R]
-    {p q : Ideal R} [q.IsPrime] (hp : p ≠ ⊥) (hpq : p ≤ q) : q ∈ p.minimalPrimes :=
-  ⟨⟨‹_›, hpq⟩, fun r ⟨hr1, hr2⟩ h ↦
-    ((hr1.isMaximal (ne_bot_of_le_ne_bot hp hr2)).eq_of_le Ideal.IsPrime.ne_top' h).ge⟩
+theorem Ideal.mem_minimalPrimes_of_ne_bot
+    {R : Type*} [CommRing R] [Ring.DimensionLEOne R]
+    {p q : Ideal R} [q.IsPrime]
+    (hp : p ≠ ⊥) (hpq : p ≤ q)
+    : q ∈ p.minimalPrimes := ⟨
+  ⟨‹_›, hpq⟩,
+  fun r ⟨hr1, hr2⟩ h ↦
+    ((hr1.isMaximal (ne_bot_of_le_ne_bot hp hr2)).eq_of_le Ideal.IsPrime.ne_top' h).ge
+⟩
 
 namespace Ring.DimensionLEOne
 
-instance principal_ideal_ring [IsDomain A] [IsPrincipalIdealRing A] :
-    DimensionLEOne A where
-  maximalOfPrime := fun nonzero _ =>
-    IsPrime.to_maximal_ideal nonzero
+instance principal_ideal_ring [IsDomain A] [IsPrincipalIdealRing A] : DimensionLEOne A where
+  maximalOfPrime := fun nonzero _ => IsPrime.to_maximal_ideal nonzero
 
-theorem of_isIntegral (B : Type*) [CommRing B] [IsDomain B] [Nontrivial R]
-    [Algebra R B] [Algebra.IsIntegral R B] [DimensionLEOne R] :
-    DimensionLEOne B where
+theorem of_isIntegral
+    (B : Type*) [CommRing B] [IsDomain B] [Nontrivial R] [Algebra R B] [Algebra.IsIntegral R B]
+    [DimensionLEOne R]
+    : DimensionLEOne B where
   maximalOfPrime := fun {p} ne_bot _ =>
     IsIntegral.isMaximal_of_isMaximal_under p
       (Ideal.IsPrime.isMaximal inferInstance (IsIntegral.under_ne_bot R ne_bot))
 
 @[deprecated (since := "2026-05-08")] alias isIntegralClosure := of_isIntegral
 
-nonrec instance integralClosure [Nontrivial R] [IsDomain A] [Algebra R A] [DimensionLEOne R] :
-    DimensionLEOne (integralClosure R A) :=
+nonrec instance integralClosure [Nontrivial R] [IsDomain A] [Algebra R A] [DimensionLEOne R]
+    : DimensionLEOne (integralClosure R A) :=
   DimensionLEOne.of_isIntegral R (integralClosure R A)
 
 variable {R}
 
-theorem not_lt_lt [Ring.DimensionLEOne R] (p₀ p₁ p₂ : Ideal R) [hp₁ : p₁.IsPrime]
-    [hp₂ : p₂.IsPrime] : ¬(p₀ < p₁ ∧ p₁ < p₂)
+theorem not_lt_lt [Ring.DimensionLEOne R] (p₀ p₁ p₂ : Ideal R) [hp₁ : p₁.IsPrime] [hp₂ : p₂.IsPrime]
+    : ¬(p₀ < p₁ ∧ p₁ < p₂)
   | ⟨h01, h12⟩ => h12.ne ((hp₁.isMaximal (bot_le.trans_lt h01).ne').eq_of_le hp₂.ne_top h12.le)
 
-theorem eq_bot_of_lt [Ring.DimensionLEOne R] (p P : Ideal R) [p.IsPrime] [P.IsPrime] (hpP : p < P) :
-    p = ⊥ :=
+theorem eq_bot_of_lt [Ring.DimensionLEOne R] (p P : Ideal R) [p.IsPrime] [P.IsPrime] (hpP : p < P)
+    : p = ⊥ :=
   by_contra fun hp0 => not_lt_lt ⊥ p P ⟨Ne.bot_lt hp0, hpP⟩
 
 variable {A} in
@@ -112,7 +116,8 @@ instance (priority := low) {R : Type*} [CommRing R] [Ring.DimensionLEOne R] : Ri
 
 end Ring.DimensionLEOne
 
-/-- A Dedekind ring is a commutative ring that is Noetherian, integrally closed, and
+/--
+A Dedekind ring is a commutative ring that is Noetherian, integrally closed, and
 has Krull dimension at most one.
 
 This is exactly `IsDedekindDomain` minus the `IsDomain` hypothesis.
@@ -123,18 +128,21 @@ use `isDedekindRing_iff` to prove `IsDedekindRing` for a given `fraction_map`.
 class IsDedekindRing : Prop
   extends IsNoetherianRing A, DimensionLEOne A, IsIntegralClosure A A (FractionRing A)
 
-/-- An integral domain is a Dedekind domain if and only if it is
+/--
+An integral domain is a Dedekind domain if and only if it is
 Noetherian, has dimension ≤ 1, and is integrally closed in a given fraction field.
-In particular, this definition does not depend on the choice of this fraction field. -/
-theorem isDedekindRing_iff (K : Type*) [CommRing K] [Algebra A K] [IsFractionRing A K] :
-    IsDedekindRing A ↔
-      IsNoetherianRing A ∧ DimensionLEOne A ∧
-        ∀ {x : K}, IsIntegral A x → ∃ y, algebraMap A K y = x :=
-  ⟨fun _ => ⟨inferInstance, inferInstance,
-             fun {_} => (isIntegrallyClosed_iff K).mp inferInstance⟩,
-   fun ⟨hr, hd, hi⟩ => { hr, hd, (isIntegrallyClosed_iff K).mpr @hi with }⟩
+In particular, this definition does not depend on the choice of this fraction field.
+-/
+theorem isDedekindRing_iff (K : Type*) [CommRing K] [Algebra A K] [IsFractionRing A K]
+    : IsDedekindRing A
+      ↔ IsNoetherianRing A ∧ DimensionLEOne A
+        ∧ ∀ {x : K}, IsIntegral A x → ∃ y, algebraMap A K y = x := ⟨
+  fun _ => ⟨inferInstance, inferInstance, fun {_} => (isIntegrallyClosed_iff K).mp inferInstance⟩,
+  fun ⟨hr, hd, hi⟩ => { hr, hd, (isIntegrallyClosed_iff K).mpr @hi with }
+⟩
 
-/-- A Dedekind domain is an integral domain that is Noetherian, integrally closed, and
+/--
+A Dedekind domain is an integral domain that is Noetherian, integrally closed, and
 has Krull dimension at most one.
 
 This is definition 3.2 of [Neukirch1992].
@@ -145,13 +153,14 @@ The integral closure condition is independent of the choice of field of fraction
 use `isDedekindDomain_iff` to prove `IsDedekindDomain` for a given `fraction_map`.
 
 See also `isDedekindDomain_iff_isDiscreteValuationRing_atPrime` and
-`isDedekindDomain_iff_mul_inv_cancel`. -/
-class IsDedekindDomain : Prop
-  extends IsDomain A, IsDedekindRing A
+`isDedekindDomain_iff_mul_inv_cancel`.
+-/
+class IsDedekindDomain : Prop extends IsDomain A, IsDedekindRing A
 
 attribute [instance 90] IsDedekindDomain.toIsDomain
 
-/-- Make a Dedekind domain from a Dedekind ring given that it is a domain.
+/--
+Make a Dedekind domain from a Dedekind ring given that it is a domain.
 
 `IsDedekindRing` and `IsDedekindDomain` form a cycle in the typeclass hierarchy:
 `IsDedekindRing R + IsDomain R` imply `IsDedekindDomain R`, which implies `IsDedekindRing R`.
@@ -160,28 +169,39 @@ which the tabled typeclass synthesis algorithm can deal with.
 -/
 instance [IsDomain A] [IsDedekindRing A] : IsDedekindDomain A where
 
-/-- An integral domain is a Dedekind domain iff and only if it is
+/--
+An integral domain is a Dedekind domain iff and only if it is
 Noetherian, has dimension ≤ 1, and is integrally closed in a given fraction field.
-In particular, this definition does not depend on the choice of this fraction field. -/
-theorem isDedekindDomain_iff (K : Type*) [CommRing K] [Algebra A K] [IsFractionRing A K] :
-    IsDedekindDomain A ↔
-      IsDomain A ∧ IsNoetherianRing A ∧ DimensionLEOne A ∧
-        ∀ {x : K}, IsIntegral A x → ∃ y, algebraMap A K y = x :=
-  ⟨fun _ => ⟨inferInstance, inferInstance, inferInstance,
-             fun {_} => (isIntegrallyClosed_iff K).mp inferInstance⟩,
-   fun ⟨hid, hr, hd, hi⟩ => { hid, hr, hd, (isIntegrallyClosed_iff K).mpr @hi with }⟩
+In particular, this definition does not depend on the choice of this fraction field.
+-/
+theorem isDedekindDomain_iff (K : Type*) [CommRing K] [Algebra A K] [IsFractionRing A K]
+    : IsDedekindDomain A
+      ↔ IsDomain A ∧ IsNoetherianRing A ∧ DimensionLEOne A
+        ∧ ∀ {x : K}, IsIntegral A x → ∃ y, algebraMap A K y = x := ⟨
+  fun _ => ⟨
+    inferInstance,
+    inferInstance,
+    inferInstance,
+    fun {_} => (isIntegrallyClosed_iff K).mp inferInstance
+  ⟩,
+  fun ⟨hid, hr, hd, hi⟩ => { hid, hr, hd, (isIntegrallyClosed_iff K).mpr @hi with }
+⟩
 
 -- See library note [lower instance priority]
 instance (priority := 100) IsPrincipalIdealRing.isDedekindDomain
-    [IsDomain A] [IsPrincipalIdealRing A] :
-    IsDedekindDomain A :=
-  { PrincipalIdealRing.isNoetherianRing, Ring.DimensionLEOne.principal_ideal_ring A,
-    UniqueFactorizationMonoid.instIsIntegrallyClosed with }
+    [IsDomain A] [IsPrincipalIdealRing A]
+    : IsDedekindDomain A := {
+  PrincipalIdealRing.isNoetherianRing,
+  Ring.DimensionLEOne.principal_ideal_ring A,
+  UniqueFactorizationMonoid.instIsIntegrallyClosed with
+}
 
 variable {R} in
-theorem IsLocalRing.primesOver_eq [IsLocalRing A] [IsDedekindDomain A] [Algebra R A]
-    [FaithfulSMul R A] [Module.Finite R A] {p : Ideal R} [p.IsMaximal] (hp0 : p ≠ ⊥) :
-    Ideal.primesOver p A = {IsLocalRing.maximalIdeal A} := by
+theorem IsLocalRing.primesOver_eq
+    [IsLocalRing A] [IsDedekindDomain A] [Algebra R A] [FaithfulSMul R A] [Module.Finite R A]
+    {p : Ideal R} [p.IsMaximal]
+    (hp0 : p ≠ ⊥)
+    : Ideal.primesOver p A = {IsLocalRing.maximalIdeal A} := by
   have : IsDomain R := .of_faithfulSMul R A
   refine Set.eq_singleton_iff_nonempty_unique_mem.mpr ⟨?_, fun P hP ↦ ?_⟩
   · obtain ⟨w', hmax, hover⟩ := exists_maximal_ideal_liesOver_of_isIntegral (S := A) p

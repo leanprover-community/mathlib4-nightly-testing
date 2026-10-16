@@ -74,14 +74,20 @@ def mkContext? (e : Expr) : MetaM (Option Context) := do
     match (← whnfR fType).getAppFnArgs with
     | (``Quiver.Hom, #[_, _, a, _]) =>
       let B ← inferType a
-      let .succ level₀ ← getLevel B | return none
-      let .succ level₁ ← getLevel fType | return none
-      let .succ level₂ ← getLevel type | return none
-      let some instBicategory ← synthInstance?
-        (mkAppN (.const ``Bicategory [level₂, level₁, level₀]) #[B]) | return none
+      let .succ level₀ ← getLevel B
+        | return none
+      let .succ level₁ ← getLevel fType
+        | return none
+      let .succ level₂ ← getLevel type
+        | return none
+      let some instBicategory ←
+          synthInstance? (mkAppN (.const ``Bicategory [level₂, level₁, level₀]) #[B])
+        | return none
       return some ⟨level₂, level₁, level₀, B, instBicategory⟩
-    | _ => return none
-  | _ => return none
+    | _ =>
+      return none
+  | _ =>
+    return none
 
 instance : BicategoryLike.Context Bicategory.Context where
   mkContext? := Bicategory.mkContext?
@@ -94,7 +100,7 @@ instance : MonadMor₁ BicategoryM where
     let ctx ← read
     let _bicat := ctx.instBicategory
     have a_e : Q($ctx.B) := a.e
-    return .id q(𝟙 $a_e) a
+    return .id (q(𝟙 $a_e)) a
   comp₁M f g := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -103,36 +109,37 @@ instance : MonadMor₁ BicategoryM where
     have c : Q($ctx.B) := g.tgt.e
     have f_e : Q($a ⟶ $b) := f.e
     have g_e : Q($b ⟶ $c) := g.e
-    return .comp q($f_e ≫ $g_e) f g
+    return .comp (q($f_e ≫ $g_e)) f g
 
 section
 
 universe w v u
 variable {B : Type u} [Bicategory.{w, v} B] {a b c : B}
 
-theorem structuralIso_inv {f g : a ⟶ b} (η : f ≅ g) :
-    η.symm.hom = η.inv := by
+theorem structuralIso_inv {f g : a ⟶ b} (η : f ≅ g) : η.symm.hom = η.inv := by
   simp only [Iso.symm_hom]
 
-theorem structuralIsoOfExpr_comp {f g h : a ⟶ b}
-    (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η)
-    (θ : g ⟶ h) (θ' : g ≅ h) (ih_θ : θ'.hom = θ) :
-    (η' ≪≫ θ').hom  = η ≫ θ := by
+theorem structuralIsoOfExpr_comp
+    {f g h : a ⟶ b}
+    (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η) (θ : g ⟶ h) (θ' : g ≅ h) (ih_θ : θ'.hom = θ)
+    : (η' ≪≫ θ').hom = η ≫ θ := by
   simp [ih_η, ih_θ]
 
-theorem structuralIsoOfExpr_whiskerLeft (f : a ⟶ b) {g h : b ⟶ c}
-    (η : g ⟶ h) (η' : g ≅ h) (ih_η : η'.hom = η) :
-    (whiskerLeftIso f η').hom = f ◁ η := by
+theorem structuralIsoOfExpr_whiskerLeft
+    (f : a ⟶ b) {g h : b ⟶ c} (η : g ⟶ h) (η' : g ≅ h) (ih_η : η'.hom = η)
+    : (whiskerLeftIso f η').hom = f ◁ η := by
   simp [ih_η]
 
-theorem structuralIsoOfExpr_whiskerRight {f g : a ⟶ b} (h : b ⟶ c)
-    (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η) :
-    (whiskerRightIso η' h).hom = η ▷ h := by
+theorem structuralIsoOfExpr_whiskerRight
+    {f g : a ⟶ b} (h : b ⟶ c) (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η)
+    : (whiskerRightIso η' h).hom = η ▷ h := by
   simp [ih_η]
 
-theorem StructuralOfExpr_bicategoricalComp {f g h i : a ⟶ b} [BicategoricalCoherence g h]
-    (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η) (θ : h ⟶ i) (θ' : h ≅ i) (ih_θ : θ'.hom = θ) :
-    (bicategoricalIsoComp η' θ').hom = η ⊗≫ θ := by
+theorem StructuralOfExpr_bicategoricalComp
+    {f g h i : a ⟶ b} [BicategoricalCoherence g h]
+    (η : f ⟶ g) (η' : f ≅ g) (ih_η : η'.hom = η)
+    (θ : h ⟶ i) (θ' : h ≅ i) (ih_θ : θ'.hom = θ)
+    : (bicategoricalIsoComp η' θ').hom = η ⊗≫ θ := by
   simp [ih_η, ih_θ, bicategoricalIsoComp, bicategoricalComp]
 
 end
@@ -150,28 +157,28 @@ instance : MonadMor₂Iso BicategoryM where
     have f_e : Q($a ⟶ $b) := f.e
     have g_e : Q($b ⟶ $c) := g.e
     have h_e : Q($c ⟶ $d) := h.e
-    return .associator q(α_ $f_e $g_e $h_e) f g h
+    return .associator (q(α_ $f_e $g_e $h_e)) f g h
   leftUnitorM f := do
     let ctx ← read
     let _bicat := ctx.instBicategory
     have a : Q($ctx.B) := f.src.e
     have b : Q($ctx.B) := f.tgt.e
     have f_e : Q($a ⟶ $b) := f.e
-    return .leftUnitor q(λ_ $f_e) f
+    return .leftUnitor (q(λ_ $f_e)) f
   rightUnitorM f := do
     let ctx ← read
     let _bicat := ctx.instBicategory
     have a : Q($ctx.B) := f.src.e
     have b : Q($ctx.B) := f.tgt.e
     have f_e : Q($a ⟶ $b) := f.e
-    return .rightUnitor q(ρ_ $f_e) f
+    return .rightUnitor (q(ρ_ $f_e)) f
   id₂M f := do
     let ctx ← read
     let _bicat := ctx.instBicategory
     have a : Q($ctx.B) := f.src.e
     have b : Q($ctx.B) := f.tgt.e
     have f_e : Q($a ⟶ $b) := f.e
-    return .id q(Iso.refl $f_e) f
+    return .id (q(Iso.refl $f_e)) f
   coherenceHomM f g inst := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -184,7 +191,8 @@ instance : MonadMor₂Iso BicategoryM where
     | (``BicategoricalCoherence.mk, #[_, _, _, _, _, _, α]) =>
       let e : Q($f_e ≅ $g_e) := q(BicategoricalCoherence.iso)
       return ⟨e, f, g, inst, α⟩
-    | _ => throwError m!"failed to unfold {inst}"
+    | _ =>
+      throwError m!"failed to unfold {inst}"
   comp₂M η θ := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -198,7 +206,7 @@ instance : MonadMor₂Iso BicategoryM where
     have h_e : Q($a ⟶ $b) := h.e
     have η_e : Q($f_e ≅ $g_e) := η.e
     have θ_e : Q($g_e ≅ $h_e) := θ.e
-    return .comp q($η_e ≪≫ $θ_e) f g h η θ
+    return .comp (q($η_e ≪≫ $θ_e)) f g h η θ
   whiskerLeftM f η := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -211,7 +219,7 @@ instance : MonadMor₂Iso BicategoryM where
     have g_e : Q($b ⟶ $c) := g.e
     have h_e : Q($b ⟶ $c) := h.e
     have η_e : Q($g_e ≅ $h_e) := η.e
-    return .whiskerLeft q(whiskerLeftIso $f_e $η_e) f g h η
+    return .whiskerLeft (q(whiskerLeftIso $f_e $η_e)) f g h η
   whiskerRightM η h := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -224,7 +232,7 @@ instance : MonadMor₂Iso BicategoryM where
     have g_e : Q($a ⟶ $b) := g.e
     have h_e : Q($b ⟶ $c) := h.e
     have η_e : Q($f_e ≅ $g_e) := η.e
-    return .whiskerRight q(whiskerRightIso $η_e $h_e) f g η h
+    return .whiskerRight (q(whiskerRightIso $η_e $h_e)) f g η h
   horizontalCompM _ _ := throwError "horizontal composition is not implemented"
   symmM η := do
     let ctx ← read
@@ -236,7 +244,7 @@ instance : MonadMor₂Iso BicategoryM where
     have f_e : Q($a ⟶ $b) := f.e
     have g_e : Q($a ⟶ $b) := g.e
     have η_e : Q($f_e ≅ $g_e) := η.e
-    return .inv q(Iso.symm $η_e) f g η
+    return .inv (q(Iso.symm $η_e)) f g η
   coherenceCompM α η θ := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -253,7 +261,7 @@ instance : MonadMor₂Iso BicategoryM where
     have _inst : Q(BicategoricalCoherence $g_e $h_e) := α.inst
     have η_e : Q($f_e ≅ $g_e) := η.e
     have θ_e : Q($h_e ≅ $i_e) := θ.e
-    return .coherenceComp q($η_e ≪⊗≫ $θ_e) f g h i α η θ
+    return .coherenceComp (q($η_e ≪⊗≫ $θ_e)) f g h i α η θ
 
 open MonadMor₂Iso
 
@@ -270,7 +278,7 @@ instance : MonadMor₂ BicategoryM where
     have η_e : Q($f_e ≅ $g_e) := η.e
     let e : Q($f_e ⟶ $g_e) := q(Iso.hom $η_e)
     have eq : Q(Iso.hom $η_e = $e) := q(rfl)
-    return .isoHom q(Iso.hom $η_e) ⟨η, eq⟩ η
+    return .isoHom (q(Iso.hom $η_e)) ⟨η, eq⟩ η
   atomHomM η := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -281,7 +289,7 @@ instance : MonadMor₂ BicategoryM where
     have f_e : Q($a ⟶ $b) := f.e
     have g_e : Q($a ⟶ $b) := g.e
     have η_e : Q($f_e ≅ $g_e) := η.e
-    return .mk q(Iso.hom $η_e) f g
+    return .mk (q(Iso.hom $η_e)) f g
   invM η := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -306,7 +314,7 @@ instance : MonadMor₂ BicategoryM where
     have f_e : Q($a ⟶ $b) := f.e
     have g_e : Q($a ⟶ $b) := g.e
     have η_e : Q($f_e ≅ $g_e) := η.e
-    return .mk q(Iso.inv $η_e) g f
+    return .mk (q(Iso.inv $η_e)) g f
   id₂M f := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -329,15 +337,17 @@ instance : MonadMor₂ BicategoryM where
     have h_e : Q($a ⟶ $b) := h.e
     have η_e : Q($f_e ⟶ $g_e) := η.e
     have θ_e : Q($g_e ⟶ $h_e) := θ.e
-    let iso_lift? ← (match (η.isoLift?, θ.isoLift?) with
-      | (some η_iso, some θ_iso) =>
-        have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
-        have θ_iso_e : Q($g_e ≅ $h_e) := θ_iso.e.e
-        have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
-        have θ_iso_eq : Q(Iso.hom $θ_iso_e = $θ_e) := θ_iso.eq
-        let eq := q(structuralIsoOfExpr_comp _ _ $η_iso_eq _ _ $θ_iso_eq)
-        return some ⟨← comp₂M η_iso.e θ_iso.e, eq⟩
-      | _ => return none)
+    let iso_lift? ←
+      (match (η.isoLift?, θ.isoLift?) with
+        | (some η_iso, some θ_iso) =>
+          have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
+          have θ_iso_e : Q($g_e ≅ $h_e) := θ_iso.e.e
+          have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
+          have θ_iso_eq : Q(Iso.hom $θ_iso_e = $θ_e) := θ_iso.eq
+          let eq := q(structuralIsoOfExpr_comp _ _ $η_iso_eq _ _ $θ_iso_eq)
+          return some ⟨← comp₂M η_iso.e θ_iso.e, eq⟩
+        | _ =>
+          return none)
     let e : Q($f_e ⟶ $h_e) := q($η_e ≫ $θ_e)
     return .comp e iso_lift? f g h η θ
   whiskerLeftM f η := do
@@ -352,13 +362,15 @@ instance : MonadMor₂ BicategoryM where
     have g_e : Q($b ⟶ $c) := g.e
     have h_e : Q($b ⟶ $c) := h.e
     have η_e : Q($g_e ⟶ $h_e) := η.e
-    let iso_lift? ← (match η.isoLift? with
-      | some η_iso => do
-        have η_iso_e : Q($g_e ≅ $h_e) := η_iso.e.e
-        have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
-        let eq := q(structuralIsoOfExpr_whiskerLeft $f_e _ _ $η_iso_eq)
-        return some ⟨← whiskerLeftM f η_iso.e, eq⟩
-      | _ => return none)
+    let iso_lift? ←
+      (match η.isoLift? with
+        | some η_iso => do
+          have η_iso_e : Q($g_e ≅ $h_e) := η_iso.e.e
+          have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
+          let eq := q(structuralIsoOfExpr_whiskerLeft $f_e _ _ $η_iso_eq)
+          return some ⟨← whiskerLeftM f η_iso.e, eq⟩
+        | _ =>
+          return none)
     let e : Q($f_e ≫ $g_e ⟶ $f_e ≫ $h_e) := q($f_e ◁ $η_e)
     return .whiskerLeft e iso_lift? f g h η
   whiskerRightM η h := do
@@ -373,13 +385,15 @@ instance : MonadMor₂ BicategoryM where
     have g_e : Q($a ⟶ $b) := g.e
     have h_e : Q($b ⟶ $c) := h.e
     have η_e : Q($f_e ⟶ $g_e) := η.e
-    let iso_lift? ← (match η.isoLift? with
-      | some η_iso => do
-        have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
-        have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
-        let eq := q(structuralIsoOfExpr_whiskerRight $h_e _ _ $η_iso_eq)
-        return some ⟨← whiskerRightM η_iso.e h, eq⟩
-      | _ => return none)
+    let iso_lift? ←
+      (match η.isoLift? with
+        | some η_iso => do
+          have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
+          have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
+          let eq := q(structuralIsoOfExpr_whiskerRight $h_e _ _ $η_iso_eq)
+          return some ⟨← whiskerRightM η_iso.e h, eq⟩
+        | _ =>
+          return none)
     let e : Q($f_e ≫ $h_e ⟶ $g_e ≫ $h_e) := q($η_e ▷ $h_e)
     return .whiskerRight e iso_lift? f g η h
   horizontalCompM _ _ := throwError "horizontal composition is not implemented"
@@ -399,15 +413,17 @@ instance : MonadMor₂ BicategoryM where
     have _inst : Q(BicategoricalCoherence $g_e $h_e) := α.inst
     have η_e : Q($f_e ⟶ $g_e) := η.e
     have θ_e : Q($h_e ⟶ $i_e) := θ.e
-    let iso_lift? ← (match (η.isoLift?, θ.isoLift?) with
-      | (some η_iso, some θ_iso) => do
-        have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
-        have θ_iso_e : Q($h_e ≅ $i_e) := θ_iso.e.e
-        have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
-        have θ_iso_eq : Q(Iso.hom $θ_iso_e = $θ_e) := θ_iso.eq
-        let eq := q(StructuralOfExpr_bicategoricalComp _ _ $η_iso_eq _ _ $θ_iso_eq)
-        return some ⟨← coherenceCompM α η_iso.e θ_iso.e, eq⟩
-      | _ => return none)
+    let iso_lift? ←
+      (match (η.isoLift?, θ.isoLift?) with
+        | (some η_iso, some θ_iso) => do
+          have η_iso_e : Q($f_e ≅ $g_e) := η_iso.e.e
+          have θ_iso_e : Q($h_e ≅ $i_e) := θ_iso.e.e
+          have η_iso_eq : Q(Iso.hom $η_iso_e = $η_e) := η_iso.eq
+          have θ_iso_eq : Q(Iso.hom $θ_iso_e = $θ_e) := θ_iso.eq
+          let eq := q(StructuralOfExpr_bicategoricalComp _ _ $η_iso_eq _ _ $θ_iso_eq)
+          return some ⟨← coherenceCompM α η_iso.e θ_iso.e, eq⟩
+        | _ =>
+          return none)
     let e : Q($f_e ⟶ $i_e) := q($η_e ⊗≫ $θ_e)
     return .coherenceComp e iso_lift? f g h i α η θ
 
@@ -444,7 +460,8 @@ def comp? (e : Expr) : BicategoryM (Option (Mor₁ × Mor₁)) := do
 partial def mor₁OfExpr (e : Expr) : BicategoryM Mor₁ := do
   let e ← instantiateMVars e
   if e.hasExprMVar then
-    throwError m!"expression contains metavariables:\n{e}"
+    throwError m!"expression contains metavariables:\
+      \n{e}"
   if let some f := (← get).cache.find? e then
     return f
   let f ←
@@ -453,7 +470,7 @@ partial def mor₁OfExpr (e : Expr) : BicategoryM Mor₁ := do
     else if let some (f, g) ← comp? e then
       MonadMor₁.comp₁M (← mor₁OfExpr f.e) (← mor₁OfExpr g.e)
     else
-      return Mor₁.of ⟨e, ⟨← srcExpr e⟩, ⟨ ← tgtExpr e⟩⟩
+      return Mor₁.of ⟨e, ⟨← srcExpr e⟩, ⟨← tgtExpr e⟩⟩
   modify fun s => { s with cache := s.cache.insert e f }
   return f
 
@@ -492,11 +509,15 @@ open MonadMor₂ in
 partial def Mor₂OfExpr (e : Expr) : BicategoryM Mor₂ := do
   match ← whnfR e with
   -- whnfR version of `Iso.hom η`
-  | .proj ``Iso 0 η => homM (← Mor₂IsoOfExpr η)
+  | .proj ``Iso 0 η =>
+    homM (← Mor₂IsoOfExpr η)
   -- whnfR version of `Iso.inv η`
-  | .proj ``Iso 1 η => invM (← Mor₂IsoOfExpr η)
-  | .app .. => match (← whnfR e).getAppFnArgs with
-    | (``CategoryStruct.id, #[_, _, f]) => id₂M (← MkMor₁.ofExpr f)
+  | .proj ``Iso 1 η =>
+    invM (← Mor₂IsoOfExpr η)
+  | .app .. =>
+    match (← whnfR e).getAppFnArgs with
+    | (``CategoryStruct.id, #[_, _, f]) =>
+      id₂M (← MkMor₁.ofExpr f)
     | (``CategoryStruct.comp, #[_, _, _, _, _, η, θ]) =>
       comp₂M (← Mor₂OfExpr η) (← Mor₂OfExpr θ)
     | (``Bicategory.whiskerLeft, #[_, _, _, _, _, f, _, _, η]) =>
@@ -506,7 +527,8 @@ partial def Mor₂OfExpr (e : Expr) : BicategoryM Mor₂ := do
     | (``bicategoricalComp, #[_, _, _, _, _, g, h, _, inst, η, θ]) =>
       let α ← coherenceHomM (← MkMor₁.ofExpr g) (← MkMor₁.ofExpr h) inst
       coherenceCompM α (← Mor₂OfExpr η) (← Mor₂OfExpr θ)
-    | _ => return .of ⟨e, ← MkMor₁.ofExpr (← srcExpr e), ← MkMor₁.ofExpr (← tgtExpr e)⟩
+    | _ =>
+      return .of ⟨e, ← MkMor₁.ofExpr (← srcExpr e), ← MkMor₁.ofExpr (← tgtExpr e)⟩
   | _ =>
     return .of ⟨e, ← MkMor₁.ofExpr (← srcExpr e), ← MkMor₁.ofExpr (← tgtExpr e)⟩
 

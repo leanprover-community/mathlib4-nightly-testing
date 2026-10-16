@@ -42,8 +42,8 @@ protected class Loopless (G : Graph α β) : Prop where
 lemma not_isLoopAt (G : Graph α β) [G.Loopless] (e : β) (x : α) : ¬ G.IsLoopAt e x :=
   Loopless.not_isLoopAt e x
 
-lemma not_adj_self (G : Graph α β) [G.Loopless] (x : α) : ¬ G.Adj x x :=
-  fun ⟨e, he⟩ ↦ Loopless.not_isLoopAt e x he
+lemma not_adj_self (G : Graph α β) [G.Loopless] (x : α) : ¬ G.Adj x x := fun ⟨e, he⟩ ↦
+  Loopless.not_isLoopAt e x he
 
 lemma Adj.ne [G.Loopless] (hxy : G.Adj u v) : u ≠ v := fun h ↦ G.not_adj_self u <| h ▸ hxy
 
@@ -52,8 +52,8 @@ lemma IsLink.ne [G.Loopless] (he : G.IsLink e u v) : u ≠ v := Adj.ne ⟨e, he�
 lemma loopless_iff_forall_ne_of_adj : G.Loopless ↔ ∀ u v, G.Adj u v → u ≠ v :=
   ⟨fun _ _ _ h ↦ h.ne, fun h ↦ ⟨fun _ x hex ↦ h x x hex.adj rfl⟩⟩
 
-lemma vertexSet_nontrivial_of_edgeSet_nonempty_of_loopless [G.Loopless] (hE : E(G).Nonempty) :
-    V(G).Nontrivial := by
+lemma vertexSet_nontrivial_of_edgeSet_nonempty_of_loopless [G.Loopless] (hE : E(G).Nonempty)
+    : V(G).Nontrivial := by
   obtain ⟨e, he⟩ := hE
   obtain ⟨x, y, hxy⟩ := exists_isLink_of_mem_edgeSet he
   exact ⟨x, hxy.left_mem, y, hxy.right_mem, hxy.adj.ne⟩
@@ -70,16 +70,17 @@ end Loopless
 
 section Simple
 
-/-- A `Simple` graph is a `Loopless` graph where no pair of vertices are the ends of more than one
-edge. -/
+/--
+A `Simple` graph is a `Loopless` graph where no pair of vertices are the ends of more than one
+edge.
+-/
 @[mk_iff]
 class Simple (G : Graph α β) : Prop extends G.Loopless where
   eq_of_isLink : ∀ ⦃e f x y⦄, G.IsLink e x y → G.IsLink f x y → e = f
 
 variable [G.Simple]
 
-lemma IsLink.eq (h : G.IsLink e u v) (h' : G.IsLink f u v) : e = f :=
-  Simple.eq_of_isLink h h'
+lemma IsLink.eq (h : G.IsLink e u v) (h' : G.IsLink f u v) : e = f := Simple.eq_of_isLink h h'
 
 lemma Simple.anti (hle : H ≤ G) : H.Simple where
   not_isLoopAt e x := by simp [toLoopless.anti hle]
@@ -122,18 +123,20 @@ def ofSimpleGraph (G : SimpleGraph α) : Graph α (Sym2 α) where
   IsLink e x y := e = s(x, y) ∧ e ∈ G.edgeSet
   isLink_symm e he := ⟨fun u v ↦ by simp [Sym2.eq_swap]⟩
   eq_or_eq_of_isLink_of_isLink e u v x y he hf := by grind
-  edge_mem_iff_exists_isLink e := by induction e with | h u v => grind
+  edge_mem_iff_exists_isLink e := by
+    induction e with
+    | h u v => grind
 
 @[simp]
-lemma ofSimpleGraph_adj_iff {G : SimpleGraph α} (u v : α) :
-    (ofSimpleGraph G).Adj u v ↔ G.Adj u v := by simp [Adj]
+lemma ofSimpleGraph_adj_iff {G : SimpleGraph α} (u v : α)
+    : (ofSimpleGraph G).Adj u v ↔ G.Adj u v := by
+  simp [Adj]
 
 /-- The isomorphism between `toSimpleGraph (ofSimpleGraph G)` and `G`. -/
-def toSimpleGraphOfSimpleGraphIso (G : SimpleGraph α) :
-    (toSimpleGraph (ofSimpleGraph G)) ≃g G := by
+def toSimpleGraphOfSimpleGraphIso (G : SimpleGraph α) : (toSimpleGraph (ofSimpleGraph G)) ≃g G := by
   use Equiv.Set.univ α
-  refine ⟨fun h ↦ ⟨fun h' ↦ h.ne (congrArg Subtype.val h'), ?_⟩, fun ⟨_, h⟩ ↦ ?_⟩ <;>
-    revert h <;> rw [ofSimpleGraph_adj_iff] <;> exact id
+  refine ⟨fun h ↦ ⟨fun h' ↦ h.ne (congrArg Subtype.val h'), ?_⟩, fun ⟨_, h⟩ ↦ ?_⟩ <;> revert h
+    <;> rw [ofSimpleGraph_adj_iff] <;> exact id
 
 end toSimpleGraph
 

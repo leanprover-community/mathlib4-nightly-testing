@@ -7,7 +7,6 @@ module
 
 public import Mathlib.FieldTheory.Minpoly.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.LinearMap
-
 import Mathlib.RingTheory.FiniteType
 
 /-!
@@ -27,8 +26,7 @@ open Polynomial
 namespace minpoly
 
 variable (A) in
-theorem natDegree_le_spanFinrank :
-    (minpoly A x).natDegree ≤ (⊤ : Submodule A B).spanFinrank := by
+theorem natDegree_le_spanFinrank : (minpoly A x).natDegree ≤ (⊤ : Submodule A B).spanFinrank := by
   rcases LinearMap.exists_monic_and_natDegree_eq_and_aeval_eq_zero _ (Algebra.lmul A _ x) with
     ⟨f, f_monic, f_deg, f_aeval⟩
   refine f_deg ▸ (natDegree_le_natDegree <| minpoly.min _ _ f_monic ?_)

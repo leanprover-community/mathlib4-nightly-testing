@@ -25,7 +25,8 @@ open Real Set
 
 namespace Imo1960Q2
 
-/-- The predicate says that `x` satisfies the inequality
+/--
+The predicate says that `x` satisfies the inequality
 
 \[\dfrac{4x^2}{(1 - \sqrt {2x + 1})^2} < 2x + 9\]
 
@@ -40,8 +41,10 @@ structure IsGood (x : ℝ) : Prop where
   /-- The number belongs to the domain of the denominator. -/
   denom_dom : (1 - sqrt (2 * x + 1)) ^ 2 ≠ 0
 
-/-- Solution of IMO 1960 Q2: solutions of the inequality
-are the numbers of the half-closed interval \([-1/2, 45/8)\) except for the number zero. -/
+/--
+Solution of IMO 1960 Q2: solutions of the inequality
+are the numbers of the half-closed interval \([-1/2, 45/8)\) except for the number zero.
+-/
 theorem isGood_iff {x} : IsGood x ↔ x ∈ Ico (-1 / 2) (45 / 8) \ {0} := by
   -- First, note that the denominator is equal to zero at `x = 0`, hence it's not a solution.
   rcases eq_or_ne x 0 with rfl | hx

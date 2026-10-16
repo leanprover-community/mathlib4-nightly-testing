@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Constructions.UnitInterval
 public import Mathlib.Probability.Kernel.Defs
-
 import Mathlib.Analysis.SpecialFunctions.Sigmoid
 import Mathlib.Probability.CDF
 
@@ -37,37 +36,40 @@ open MeasureTheory ProbabilityTheory Set ENNReal unitInterval Filter Function
 
 open scoped Topology
 
-variable {X Y : Type*} {mX : MeasurableSpace X} [Nonempty Y] {mY : MeasurableSpace Y}
-    [StandardBorelSpace Y]
+variable
+  {X Y : Type*} {mX : MeasurableSpace X} [Nonempty Y]
+  {mY : MeasurableSpace Y} [StandardBorelSpace Y]
 
 namespace ProbabilityTheory.Kernel
 
-private lemma exists_measurable_map_eq_unitInterval_aux (κ : Kernel X I) [IsMarkovKernel κ] :
-    ∃ (f : X → I → I), Measurable (uncurry f) ∧ ∀ a, volume.map (f a) = κ a := by
+private lemma exists_measurable_map_eq_unitInterval_aux (κ : Kernel X I) [IsMarkovKernel κ]
+    : ∃ (f : X → I → I), Measurable (uncurry f) ∧ ∀ a, volume.map (f a) = κ a := by
   let f := fun s (t : I) ↦ sSup {x | (κ s).real (Icc 0 x) < t}
   have measurable_f : Measurable (uncurry f) := by
     refine measurable_of_Ioi fun a ↦ ?_
     simp only [preimage, uncurry, mem_Ioi]
-    have h_monotone s : Monotone (fun x ↦ (κ s).real (Icc 0 x)) :=
-      fun x y hxy ↦ measureReal_mono (by gcongr)
-    have sSup_eq_iUnion_rat : {x : X × I | a < f x.1 x.2} =
-        ⋃ (q : ℚ) (hqI : ↑q ∈ I) (_ : a < (q : ℝ)), {e | (κ e.1).real (Icc 0 ⟨q, hqI⟩) < e.2} := by
-      ext e
-      simp_all only [lt_sSup_iff, mem_ofPred_eq, Subtype.exists, mem_Icc, Rat.cast_nonneg,
-        mem_iUnion, exists_prop, exists_and_left, f]
-      constructor
-      · rintro ⟨y, hyI, y_mem, (hy : a.1 < y)⟩
-        obtain ⟨q, hqa, hqy⟩ := exists_rat_btwn hy
-        refine ⟨q, hqa, ⟨?_, hqy.le.trans hyI.2⟩, lt_of_lt_of_le' y_mem (h_monotone e.1 hqy.le)⟩
-        simp [← Rat.cast_nonneg (K := ℝ), a.2.1.trans hqa.le]
-      · intro he
-        obtain ⟨q, hqa, hqI, h⟩ := he
-        refine ⟨q, ⟨by simp [hqI.1], hqI.2⟩, h, ?_⟩
-        change a.1 < q
-        simp [hqa]
+    have h_monotone s : Monotone (fun x ↦ (κ s).real (Icc 0 x)) := fun x y hxy ↦
+      measureReal_mono (by gcongr)
+    have sSup_eq_iUnion_rat
+        : {x : X × I | a < f x.1 x.2}
+          = ⋃ (q : ℚ) (hqI : ↑q ∈ I) (_ : a < (q : ℝ)), {e | (κ e.1).real (Icc 0 ⟨q, hqI⟩) < e.2} :=
+      by
+        ext e
+        simp_all only [lt_sSup_iff, mem_ofPred_eq, Subtype.exists, mem_Icc, Rat.cast_nonneg,
+          mem_iUnion, exists_prop, exists_and_left, f]
+        constructor
+        · rintro ⟨y, hyI, y_mem, (hy : a.1 < y)⟩
+          obtain ⟨q, hqa, hqy⟩ := exists_rat_btwn hy
+          refine ⟨q, hqa, ⟨?_, hqy.le.trans hyI.2⟩, lt_of_lt_of_le' y_mem (h_monotone e.1 hqy.le)⟩
+          simp [← Rat.cast_nonneg (K := ℝ), a.2.1.trans hqa.le]
+        · intro he
+          obtain ⟨q, hqa, hqI, h⟩ := he
+          refine ⟨q, ⟨by simp [hqI.1], hqI.2⟩, h, ?_⟩
+          change a.1 < q
+          simp [hqa]
     rw [sSup_eq_iUnion_rat]
-    refine MeasurableSet.iUnion (fun b ↦ MeasurableSet.iUnion
-      (fun bI ↦ MeasurableSet.iUnion (fun _ ↦ ?_)))
+    refine MeasurableSet.iUnion (fun b ↦
+      MeasurableSet.iUnion (fun bI ↦ MeasurableSet.iUnion (fun _ ↦ ?_)))
     refine measurableSet_lt ?_ measurable_snd.subtype_val
     simp_rw [measureReal_def]
     have hκ := κ.measurable_coe (s := Icc 0 ⟨b, bI⟩) measurableSet_Icc
@@ -107,8 +109,8 @@ private lemma exists_measurable_map_eq_unitInterval_aux (κ : Kernel X I) [IsMar
     gcongr
     simp
 
-theorem exists_measurable_map_eq_unitInterval (κ : Kernel X Y) [IsMarkovKernel κ] :
-    ∃ (f : X → I → Y), Measurable (uncurry f) ∧ ∀ a, volume.map (f a) = κ a := by
+theorem exists_measurable_map_eq_unitInterval (κ : Kernel X Y) [IsMarkovKernel κ]
+    : ∃ (f : X → I → Y), Measurable (uncurry f) ∧ ∀ a, volume.map (f a) = κ a := by
   let g := sigmoid ∘ embeddingReal Y
   have hg := measurableEmbedding_sigmoid_comp_embeddingReal Y
   have hκg : IsMarkovKernel (κ.map g) := IsMarkovKernel.map κ hg.measurable
@@ -122,8 +124,8 @@ theorem exists_measurable_map_eq_unitInterval (κ : Kernel X Y) [IsMarkovKernel 
 
 end ProbabilityTheory.Kernel
 
-theorem MeasureTheory.Measure.exists_measurable_map_eq (μ : Measure Y) [IsProbabilityMeasure μ] :
-    ∃ (f : I → Y), Measurable f ∧ volume.map f = μ := by
+theorem MeasureTheory.Measure.exists_measurable_map_eq (μ : Measure Y) [IsProbabilityMeasure μ]
+    : ∃ (f : I → Y), Measurable f ∧ volume.map f = μ := by
   obtain ⟨f, hf_meas, hf_map⟩ := Kernel.exists_measurable_map_eq_unitInterval (Kernel.const Unit μ)
   specialize hf_map ()
   exact ⟨f (), by fun_prop, by simpa⟩

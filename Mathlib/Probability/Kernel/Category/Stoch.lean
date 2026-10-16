@@ -80,10 +80,11 @@ instance : Deterministic (ε[X]) where
     simp only [WideSubcategory.comp_def, MorphismProperty.counit_hom]
     cat_disch
 
-instance (X Y : Stoch) (κ : Kernel X.obj Y.obj) [IsDeterministic κ] [IsMarkovKernel κ] :
-    Deterministic (X := X) (Y := Y) (⟨⟨κ, inferInstance⟩, inferInstance⟩ : X ⟶ Y) where
+instance (X Y : Stoch) (κ : Kernel X.obj Y.obj) [IsDeterministic κ] [IsMarkovKernel κ]
+    : Deterministic (X := X) (Y := Y) (⟨⟨κ, inferInstance⟩, inferInstance⟩ : X ⟶ Y) where
   hom_comul := by
-    ext : 1; dsimp
+    ext : 1
+    dsimp
     exact Deterministic.copy_natural _
 
 section PositiveCategory

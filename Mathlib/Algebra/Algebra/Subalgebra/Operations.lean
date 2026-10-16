@@ -38,13 +38,16 @@ open Algebra
 variable {R S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S]
 variable (S' : Subalgebra R S)
 
-/-- Suppose we are given `∑ i, lᵢ * sᵢ = 1` ∈ `S`, and `S'` a subalgebra of `S` that contains
+/--
+Suppose we are given `∑ i, lᵢ * sᵢ = 1` ∈ `S`, and `S'` a subalgebra of `S` that contains
 `lᵢ` and `sᵢ`. To check that an `x : S` falls in `S'`, we only need to show that
-`sᵢ ^ n • x ∈ S'` for some `n` for each `sᵢ`. -/
+`sᵢ ^ n • x ∈ S'` for some `n` for each `sᵢ`.
+-/
 theorem mem_of_finsetSum_eq_one_of_pow_smul_mem
-    {ι : Type*} (ι' : Finset ι) (s : ι → S) (l : ι → S)
-    (e : ∑ i ∈ ι', l i * s i = 1) (hs : ∀ i, s i ∈ S') (hl : ∀ i, l i ∈ S') (x : S)
-    (H : ∀ i, ∃ n : ℕ, (s i ^ n : S) • x ∈ S') : x ∈ S' := by
+    {ι : Type*} (ι' : Finset ι) (s : ι → S) (l : ι → S) (e : ∑ i ∈ ι', l i * s i = 1)
+    (hs : ∀ i, s i ∈ S') (hl : ∀ i, l i ∈ S')
+    (x : S) (H : ∀ i, ∃ n : ℕ, (s i ^ n : S) • x ∈ S')
+    : x ∈ S' := by
   suffices x ∈ Subalgebra.toSubmodule (Algebra.ofId S' S).range by
     obtain ⟨x, rfl⟩ := this
     exact x.2
@@ -73,9 +76,10 @@ theorem mem_of_finsetSum_eq_one_of_pow_smul_mem
 alias mem_of_finset_sum_eq_one_of_pow_smul_mem := mem_of_finsetSum_eq_one_of_pow_smul_mem
 
 theorem mem_of_span_eq_top_of_smul_pow_mem
-    (s : Set S) (l : s →₀ S) (hs : Finsupp.linearCombination S ((↑) : s → S) l = 1)
-    (hs' : s ⊆ S') (hl : ∀ i, l i ∈ S') (x : S) (H : ∀ r : s, ∃ n : ℕ, (r : S) ^ n • x ∈ S') :
-    x ∈ S' :=
+    (s : Set S) (l : s →₀ S)
+    (hs : Finsupp.linearCombination S ((↑) : s → S) l = 1) (hs' : s ⊆ S') (hl : ∀ i, l i ∈ S')
+    (x : S) (H : ∀ r : s, ∃ n : ℕ, (r : S) ^ n • x ∈ S')
+    : x ∈ S' :=
   mem_of_finsetSum_eq_one_of_pow_smul_mem S' l.support (↑) l hs (fun x => hs' x.2) hl x H
 
 end Subalgebra
@@ -83,8 +87,9 @@ end Subalgebra
 section MulSemiringAction
 
 variable (A B B' : Type*) [CommSemiring A] [Ring B] [Semiring B'] [Algebra A B] [Algebra A B']
-variable (G : Type*) [Monoid G] [MulSemiringAction G B] [SMulCommClass G A B]
-  [MulSemiringAction G B'] [SMulCommClass G A B']
+variable
+  (G : Type*) [Monoid G] [MulSemiringAction G B] [SMulCommClass G A B] [MulSemiringAction G B']
+  [SMulCommClass G A B']
 
 /-- The set of fixed points under a group action, as a subring. -/
 def FixedPoints.subsemiring : Subsemiring B' where
@@ -111,8 +116,8 @@ instance : SMulCommClass G (FixedPoints.subalgebra A B' G) B' :=
   inferInstanceAs (SMulCommClass G (FixedPoints.subsemiring B' G) B')
 
 variable {A B' G} in
-theorem FixedPoints.mem_subalgebra {x : B'} :
-    x ∈ FixedPoints.subalgebra A B' G ↔ ∀ g : G, g • x = x :=
+theorem FixedPoints.mem_subalgebra {x : B'}
+    : x ∈ FixedPoints.subalgebra A B' G ↔ ∀ g : G, g • x = x :=
   Iff.rfl
 
 end MulSemiringAction

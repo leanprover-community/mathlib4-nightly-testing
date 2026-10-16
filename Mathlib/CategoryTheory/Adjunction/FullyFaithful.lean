@@ -31,7 +31,6 @@ See `CategoryTheory.Adjunction.isIso_unit_of_iso` and
 
 @[expose] public section
 
-
 open CategoryTheory
 
 namespace CategoryTheory.Adjunction
@@ -66,8 +65,7 @@ noncomputable def unitSplitEpiOfLFull [L.Full] (X : C) : SplitEpi (h.unit.app X)
 instance unit_isSplitEpi_of_L_full [L.Full] (X : C) : IsSplitEpi (h.unit.app X) :=
   ⟨⟨h.unitSplitEpiOfLFull X⟩⟩
 
-instance [L.Full] [L.Faithful] (X : C) : IsIso (h.unit.app X) :=
-  isIso_of_mono_of_isSplitEpi _
+instance [L.Full] [L.Faithful] (X : C) : IsIso (h.unit.app X) := isIso_of_mono_of_isSplitEpi _
 
 /-- If the left adjoint is fully faithful, then the unit is an isomorphism. -/
 instance unit_isIso_of_L_fully_faithful [L.Full] [L.Faithful] : IsIso (Adjunction.unit h) :=
@@ -88,18 +86,19 @@ noncomputable def counitSplitMonoOfRFull [R.Full] (X : D) : SplitMono (h.counit.
 instance counit_isSplitMono_of_R_full [R.Full] (X : D) : IsSplitMono (h.counit.app X) :=
   ⟨⟨h.counitSplitMonoOfRFull X⟩⟩
 
-instance [R.Full] [R.Faithful] (X : D) : IsIso (h.counit.app X) :=
-  isIso_of_epi_of_isSplitMono _
+instance [R.Full] [R.Faithful] (X : D) : IsIso (h.counit.app X) := isIso_of_epi_of_isSplitMono _
 
 /-- If the right adjoint is fully faithful, then the counit is an isomorphism. -/
 instance counit_isIso_of_R_fully_faithful [R.Full] [R.Faithful] : IsIso (Adjunction.counit h) :=
   NatIso.isIso_of_isIso_app _
 
-/-- If the unit of an adjunction is an isomorphism, then its inverse on the image of L is given
-by L whiskered with the counit. -/
+/--
+If the unit of an adjunction is an isomorphism, then its inverse on the image of L is given
+by L whiskered with the counit.
+-/
 @[simp]
-theorem inv_map_unit {X : C} [IsIso (h.unit.app X)] :
-    inv (L.map (h.unit.app X)) = h.counit.app (L.obj X) :=
+theorem inv_map_unit {X : C} [IsIso (h.unit.app X)]
+    : inv (L.map (h.unit.app X)) = h.counit.app (L.obj X) :=
   IsIso.inv_eq_of_hom_inv_id (h.left_triangle_components X)
 
 /-- If the unit of an adjunction is an isomorphism, then one has an isomorphism `L ⋙ R ⋙ L ≅ L`. -/
@@ -107,15 +106,19 @@ theorem inv_map_unit {X : C} [IsIso (h.unit.app X)] :
 noncomputable def whiskerLeftLCounitIsoOfIsIsoUnit [IsIso h.unit] : L ⋙ R ⋙ L ≅ L :=
   (L.associator R L).symm ≪≫ isoWhiskerRight (asIso h.unit).symm L ≪≫ Functor.leftUnitor _
 
-/-- If the counit of an adjunction is an isomorphism, then its inverse on the image of R is given
-by R whiskered with the unit. -/
+/--
+If the counit of an adjunction is an isomorphism, then its inverse on the image of R is given
+by R whiskered with the unit.
+-/
 @[simp]
-theorem inv_counit_map {X : D} [IsIso (h.counit.app X)] :
-    inv (R.map (h.counit.app X)) = h.unit.app (R.obj X) :=
+theorem inv_counit_map {X : D} [IsIso (h.counit.app X)]
+    : inv (R.map (h.counit.app X)) = h.unit.app (R.obj X) :=
   IsIso.inv_eq_of_inv_hom_id (h.right_triangle_components X)
 
-/-- If the counit of an adjunction is an isomorphism, then one has an isomorphism
-`(R ⋙ L ⋙ R) ≅ R`. -/
+/--
+If the counit of an adjunction is an isomorphism, then one has an isomorphism
+`(R ⋙ L ⋙ R) ≅ R`.
+-/
 @[simps!]
 noncomputable def whiskerLeftRUnitIsoOfIsIsoCounit [IsIso h.counit] : R ⋙ L ⋙ R ≅ R :=
   (R.associator L R).symm ≪≫ isoWhiskerRight (asIso h.counit) R ≪≫ Functor.leftUnitor _
@@ -134,8 +137,8 @@ lemma full_L_of_isSplitEpi_unit_app [∀ X, IsSplitEpi (h.unit.app X)] : L.Full 
     use ((h.homEquiv X (L.obj Y)) f ≫ section_ (h.unit.app Y))
     suffices L.map (section_ (h.unit.app Y)) = h.counit.app (L.obj Y) by simp [this]
     rw [← comp_id (L.map (section_ (h.unit.app Y)))]
-    simp only [Functor.id_obj, ← h.left_triangle_components Y,
-      ← assoc, ← Functor.map_comp, IsSplitEpi.id, Functor.map_id, id_comp]
+    simp only [Functor.id_obj, ← h.left_triangle_components Y, ← assoc, ← Functor.map_comp,
+      IsSplitEpi.id, Functor.map_id, id_comp]
 
 /-- If the unit is an isomorphism, then the left adjoint is fully faithful. -/
 noncomputable def fullyFaithfulLOfIsIsoUnit [IsIso h.unit] : L.FullyFaithful where
@@ -155,37 +158,38 @@ lemma full_R_of_isSplitMono_counit_app [∀ X, IsSplitMono (h.counit.app X)] : R
     use (retraction (h.counit.app X) ≫ (h.homEquiv (R.obj X) Y).symm f)
     suffices R.map (retraction (h.counit.app X)) = h.unit.app (R.obj X) by simp [this]
     rw [← id_comp (R.map (retraction (h.counit.app X)))]
-    simp only [Functor.id_obj, ← h.right_triangle_components X,
-      assoc, ← Functor.map_comp, IsSplitMono.id, Functor.map_id, comp_id]
+    simp only [Functor.id_obj, ← h.right_triangle_components X, assoc, ← Functor.map_comp,
+      IsSplitMono.id, Functor.map_id, comp_id]
 
 /-- If the counit is an isomorphism, then the right adjoint is fully faithful. -/
 noncomputable def fullyFaithfulROfIsIsoCounit [IsIso h.counit] : R.FullyFaithful where
   preimage {X Y} f := inv (h.counit.app X) ≫ (h.homEquiv (R.obj X) Y).symm f
 
-instance whiskerLeft_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful] :
-    IsIso (whiskerLeft L h.counit) := by
+instance whiskerLeft_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful]
+    : IsIso (whiskerLeft L h.counit) := by
   have := ((Functor.associator ..).inv ≫ whiskerRight (inv h.unit) L) ≫= h.left_triangle
   simp only [assoc, ← whiskerRight_comp_assoc, IsIso.inv_hom_id, whiskerRight_id', id_comp,
-    Iso.inv_hom_id_assoc] at this
+      Iso.inv_hom_id_assoc]
+    at this
   rw [this]
   infer_instance
 
-instance whiskerRight_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful] :
-    IsIso (whiskerRight h.counit R) := by
+instance whiskerRight_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful]
+    : IsIso (whiskerRight h.counit R) := by
   have := h.right_triangle
   rw [← IsIso.eq_inv_comp, Iso.inv_comp_eq] at this
   rw [this]
   infer_instance
 
-instance whiskerLeft_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful] :
-    IsIso (whiskerLeft R h.unit) := by
+instance whiskerLeft_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful]
+    : IsIso (whiskerLeft R h.unit) := by
   have := h.right_triangle
   rw [← IsIso.eq_comp_inv] at this
   rw [this]
   infer_instance
 
-instance whiskerRight_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful] :
-    IsIso (whiskerRight h.unit L) := by
+instance whiskerRight_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful]
+    : IsIso (whiskerRight h.unit L) := by
   have := h.left_triangle
   rw [← IsIso.eq_comp_inv] at this
   rw [this]
@@ -197,8 +201,8 @@ instance [L.Faithful] [L.Full] {Y : C} : IsIso (h.counit.app (L.obj Y)) :=
 instance [L.Faithful] [L.Full] {Y : D} : IsIso (R.map (h.counit.app Y)) :=
   isIso_of_hom_comp_eq_id _ (h.right_triangle_components Y)
 
-lemma isIso_counit_app_iff_mem_essImage [L.Faithful] [L.Full] {X : D} :
-    IsIso (h.counit.app X) ↔ L.essImage X := by
+lemma isIso_counit_app_iff_mem_essImage [L.Faithful] [L.Full] {X : D}
+    : IsIso (h.counit.app X) ↔ L.essImage X := by
   constructor
   · intro
     exact ⟨R.obj X, ⟨asIso (h.counit.app X)⟩⟩
@@ -206,12 +210,11 @@ lemma isIso_counit_app_iff_mem_essImage [L.Faithful] [L.Full] {X : D} :
     rw [NatTrans.isIso_app_iff_of_iso _ i.symm]
     infer_instance
 
-lemma mem_essImage_of_counit_isIso (A : D)
-    [IsIso (h.counit.app A)] : L.essImage A :=
+lemma mem_essImage_of_counit_isIso (A : D) [IsIso (h.counit.app A)] : L.essImage A :=
   ⟨R.obj A, ⟨asIso (h.counit.app A)⟩⟩
 
-lemma isIso_counit_app_of_iso [L.Faithful] [L.Full] {X : D} {Y : C} (e : X ≅ L.obj Y) :
-    IsIso (h.counit.app X) :=
+lemma isIso_counit_app_of_iso [L.Faithful] [L.Full] {X : D} {Y : C} (e : X ≅ L.obj Y)
+    : IsIso (h.counit.app X) :=
   (isIso_counit_app_iff_mem_essImage h).mpr ⟨Y, ⟨e.symm⟩⟩
 
 instance [R.Faithful] [R.Full] {Y : D} : IsIso (h.unit.app (R.obj Y)) :=
@@ -220,8 +223,8 @@ instance [R.Faithful] [R.Full] {Y : D} : IsIso (h.unit.app (R.obj Y)) :=
 instance [R.Faithful] [R.Full] {X : C} : IsIso (L.map (h.unit.app X)) :=
   isIso_of_comp_hom_eq_id _ (h.left_triangle_components X)
 
-lemma isIso_unit_app_iff_mem_essImage [R.Faithful] [R.Full] {Y : C} :
-    IsIso (h.unit.app Y) ↔ R.essImage Y := by
+lemma isIso_unit_app_iff_mem_essImage [R.Faithful] [R.Full] {Y : C}
+    : IsIso (h.unit.app Y) ↔ R.essImage Y := by
   constructor
   · intro
     exact ⟨L.obj Y, ⟨(asIso (h.unit.app Y)).symm⟩⟩
@@ -230,12 +233,11 @@ lemma isIso_unit_app_iff_mem_essImage [R.Faithful] [R.Full] {Y : C} :
     infer_instance
 
 /-- If `η_A` is an isomorphism, then `A` is in the essential image of `i`. -/
-theorem mem_essImage_of_unit_isIso (A : C)
-    [IsIso (h.unit.app A)] : R.essImage A :=
+theorem mem_essImage_of_unit_isIso (A : C) [IsIso (h.unit.app A)] : R.essImage A :=
   ⟨L.obj A, ⟨(asIso (h.unit.app A)).symm⟩⟩
 
-lemma isIso_unit_app_of_iso [R.Faithful] [R.Full] {X : D} {Y : C} (e : Y ≅ R.obj X) :
-    IsIso (h.unit.app Y) :=
+lemma isIso_unit_app_of_iso [R.Faithful] [R.Full] {X : D} {Y : C} (e : Y ≅ R.obj X)
+    : IsIso (h.unit.app Y) :=
   (isIso_unit_app_iff_mem_essImage h).mpr ⟨X, ⟨e.symm⟩⟩
 
 instance [R.IsEquivalence] : IsIso h.unit := by
@@ -261,9 +263,11 @@ instance [R.IsEquivalence] : IsIso h.counit := by
   infer_instance
 
 set_option backward.defeqAttrib.useBackward true in
-theorem isIso_map_unit_of_isLeftAdjoint_comp {E : Type*} [Category* E]
-    {T : C ⥤ E} {S : E ⥤ D} {X : C} (adj2 : T ⊣ S ⋙ R) [R.Faithful] [R.Full] :
-    IsIso (T.map (h.unit.app X)) := by
+theorem isIso_map_unit_of_isLeftAdjoint_comp
+    {E : Type*} [Category* E]
+    {T : C ⥤ E} {S : E ⥤ D} {X : C} (adj2 : T ⊣ S ⋙ R)
+    [R.Faithful] [R.Full]
+    : IsIso (T.map (h.unit.app X)) := by
   let FF := FullyFaithful.ofFullyFaithful R
   apply isIso_of_coyoneda_map_bijective
   intro Y

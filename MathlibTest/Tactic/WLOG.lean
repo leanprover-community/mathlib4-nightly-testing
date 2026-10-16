@@ -4,12 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon, Johan Commelin
 -/
 module
+
 import Mathlib.Tactic.WLOG
 import Mathlib.Algebra.Ring.Nat
 
 example {x y : ℕ} : True := by
   wlog h : x ≤ y
-  · guard_hyp h :ₛ ¬x ≤ y
+  · guard_hyp h :ₛ ¬ x ≤ y
     guard_hyp this :ₛ ∀ {x y : ℕ}, x ≤ y → True -- `wlog` generalizes by default
     guard_target =ₛ True
     trivial
@@ -29,7 +30,7 @@ example {x y : ℕ} : True := by
 
 example {x y : ℕ} : True := by
   wlog h : x ≤ y generalizing x with H
-  · guard_hyp h : ¬x ≤ y
+  · guard_hyp h : ¬ x ≤ y
     guard_hyp H :ₛ ∀ {x : ℕ}, x ≤ y → True -- only `x` was generalized
     guard_target =ₛ True
     trivial
@@ -117,7 +118,7 @@ example (α : Type := ℕ) (x : Option α := none) (y : Option α := by exact 0)
 example {x y : ℕ} : True := by
   wlog _ : x ≤ y
   case _ h => -- if these hypotheses weren't inaccessible, they wouldn't be renamed by `case`
-    guard_hyp h :ₛ ¬x ≤ y
+    guard_hyp h :ₛ ¬ x ≤ y
     guard_hyp this :ₛ ∀ {x y : ℕ}, x ≤ y → True
     guard_target =ₛ True
     trivial

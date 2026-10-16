@@ -25,8 +25,8 @@ namespace Polynomial
 
 variable {R : Type*} [CommRing R] {a : R}
 
-theorem mem_span_C_X_sub_C_X_sub_C_iff_eval_eval_eq_zero {b : R[X]} {P : R[X][X]} :
-    P ∈ Ideal.span {C (X - C a), X - C b} ↔ (P.eval b).eval a = 0 := by
+theorem mem_span_C_X_sub_C_X_sub_C_iff_eval_eval_eq_zero {b : R[X]} {P : R[X][X]}
+    : P ∈ Ideal.span {C (X - C a), X - C b} ↔ (P.eval b).eval a = 0 := by
   rw [Ideal.mem_span_pair]
   constructor <;> intro h
   · rcases h with ⟨_, _, rfl⟩
@@ -40,8 +40,8 @@ theorem ker_evalRingHom (x : R) : RingHom.ker (evalRingHom x) = Ideal.span {X - 
   simp [Ideal.mem_span_singleton, dvd_iff_isRoot, RingHom.mem_ker]
 
 @[simp]
-theorem ker_modByMonicHom {q : R[X]} (hq : q.Monic) :
-    LinearMap.ker (Polynomial.modByMonicHom q) = (Ideal.span {q}).restrictScalars R :=
+theorem ker_modByMonicHom {q : R[X]} (hq : q.Monic)
+    : LinearMap.ker (Polynomial.modByMonicHom q) = (Ideal.span {q}).restrictScalars R :=
   Submodule.ext fun _ => (mem_ker_modByMonic hq).trans Ideal.mem_span_singleton.symm
 
 @[simp]
@@ -56,17 +56,18 @@ namespace Algebra
 
 variable {R S : Type*}
 
-lemma mem_ideal_map_adjoin [CommSemiring R] [Semiring S] [Algebra R S] (x : S) (I : Ideal R)
-    {y : R[x]} :
-    y ∈ I.map (algebraMap R (R[x])) ↔
-      ∃ p : R[X], (∀ i, p.coeff i ∈ I) ∧ Polynomial.aeval x p = y := by
+lemma mem_ideal_map_adjoin
+    [CommSemiring R] [Semiring S] [Algebra R S] (x : S) (I : Ideal R) {y : R[x]}
+    : y ∈ I.map (algebraMap R (R[x]))
+      ↔ ∃ p : R[X], (∀ i, p.coeff i ∈ I) ∧ Polynomial.aeval x p = y := by
   constructor
   · intro H
     induction H using Submodule.span_induction with
     | mem a ha =>
       obtain ⟨a, ha, rfl⟩ := ha
       exact ⟨C a, fun i ↦ by rw [coeff_C]; aesop, aeval_C _ _⟩
-    | zero => exact ⟨0, by simp, aeval_zero _⟩
+    | zero =>
+      exact ⟨0, by simp, aeval_zero _⟩
     | add a b ha hb ha' hb' =>
       obtain ⟨a, ha, ha'⟩ := ha'
       obtain ⟨b, hb, hb'⟩ := hb'
@@ -87,10 +88,13 @@ lemma mem_ideal_map_adjoin [CommSemiring R] [Semiring S] [Algebra R S] (x : S) (
     simp_rw [this, Algebra.smul_def]
     exact sum_mem fun i _ ↦ Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ (hp i))
 
-lemma exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top [CommRing R] [CommRing S]
-    [Algebra R S] (x : S) (I : Ideal R) (hI : I ≠ ⊤) [Invertible x]
-    (h : I.map (algebraMap R (R[x])) ⊔ .span {⟨x, subset_adjoin rfl⟩} = ⊤) :
-    ∃ p : R[X], p.leadingCoeff - 1 ∈ I ∧ p.aeval ⅟x = 0 := by
+lemma exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top
+    [CommRing R] [CommRing S] [Algebra R S]
+    (x : S)
+    (I : Ideal R) (hI : I ≠ ⊤)
+    [Invertible x]
+    (h : I.map (algebraMap R (R[x])) ⊔ .span {⟨x, subset_adjoin rfl⟩} = ⊤)
+    : ∃ p : R[X], p.leadingCoeff - 1 ∈ I ∧ p.aeval ⅟x = 0 := by
   rw [← Ideal.one_eq_top, ← Ideal.add_eq_sup, Ideal.add_eq_one_iff] at h
   have ⟨y, hy, z, hz, eq⟩ := h
   have ⟨p, hp⟩ := (mem_ideal_map_adjoin ..).mp hy

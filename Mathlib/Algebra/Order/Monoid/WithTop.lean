@@ -20,29 +20,36 @@ variable {α : Type u}
 namespace WithTop
 
 @[to_dual]
-instance [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α] :
-    IsOrderedAddMonoid (WithTop α) where
+instance [AddCommMonoid α] [PartialOrder α] [IsOrderedAddMonoid α]
+    : IsOrderedAddMonoid (WithTop α) where
   add_le_add_left _ _ := add_le_add_left
   add_le_add_right _ _ := add_le_add_right
 
-instance canonicallyOrderedAdd [Add α] [Preorder α] [CanonicallyOrderedAdd α] :
-    CanonicallyOrderedAdd (WithTop α) where
+instance canonicallyOrderedAdd [Add α] [Preorder α] [CanonicallyOrderedAdd α]
+    : CanonicallyOrderedAdd (WithTop α) where
   le_self_add
-  | ⊤, _ => le_rfl
-  | (a : α), ⊤ => le_top
-  | (a : α), (b : α) => WithTop.coe_le_coe.2 le_self_add
+    | ⊤, _ =>
+      le_rfl
+    | (a : α), ⊤ =>
+      le_top
+    | (a : α), (b : α) =>
+      WithTop.coe_le_coe.2 le_self_add
   le_add_self
-  | ⊤, ⊤ | ⊤, (b : α) => le_rfl
-  | (a : α), ⊤ => le_top
-  | (a : α), (b : α) => WithTop.coe_le_coe.2 le_add_self
+    | ⊤, ⊤
+    | ⊤, (b : α) =>
+      le_rfl
+    | (a : α), ⊤ =>
+      le_top
+    | (a : α), (b : α) =>
+      WithTop.coe_le_coe.2 le_add_self
 
 end WithTop
 
 namespace WithBot
 
-protected theorem le_self_add [Add α] [LE α] [CanonicallyOrderedAdd α]
-    {x : WithBot α} (hx : x ≠ ⊥) (y : WithBot α) :
-    y ≤ y + x := by
+protected theorem le_self_add
+    [Add α] [LE α] [CanonicallyOrderedAdd α] {x : WithBot α} (hx : x ≠ ⊥) (y : WithBot α)
+    : y ≤ y + x := by
   induction x
   · simp at hx
   induction y
@@ -50,9 +57,9 @@ protected theorem le_self_add [Add α] [LE α] [CanonicallyOrderedAdd α]
   · rw [← WithBot.coe_add, WithBot.coe_le_coe]
     exact le_self_add
 
-protected theorem le_add_self [AddCommMagma α] [LE α] [CanonicallyOrderedAdd α]
-    {x : WithBot α} (hx : x ≠ ⊥) (y : WithBot α) :
-    y ≤ x + y := by
+protected theorem le_add_self
+    [AddCommMagma α] [LE α] [CanonicallyOrderedAdd α] {x : WithBot α} (hx : x ≠ ⊥) (y : WithBot α)
+    : y ≤ x + y := by
   induction x
   · simp at hx
   induction y
@@ -61,19 +68,22 @@ protected theorem le_add_self [AddCommMagma α] [LE α] [CanonicallyOrderedAdd �
     exact le_add_self
 
 @[simp]
-protected theorem top_add_of_ne_bot [PartialOrder α] [OrderTop α] [Add α] [CanonicallyOrderedAdd α]
-    {a : WithBot α} (h : a ≠ ⊥) : ⊤ + a = ⊤ := by
+protected theorem top_add_of_ne_bot
+    [PartialOrder α] [OrderTop α] [Add α] [CanonicallyOrderedAdd α] {a : WithBot α} (h : a ≠ ⊥)
+    : ⊤ + a = ⊤ := by
   lift a to α using h
   exact WithBot.coe_inj.mpr (by simp [eq_top_iff])
 
 @[simp]
-protected theorem add_top_of_ne_bot [PartialOrder α] [OrderTop α] [Add α] [CanonicallyOrderedAdd α]
-    {a : WithBot α} (h : a ≠ ⊥) : a + ⊤ = ⊤ := by
+protected theorem add_top_of_ne_bot
+    [PartialOrder α] [OrderTop α] [Add α] [CanonicallyOrderedAdd α] {a : WithBot α} (h : a ≠ ⊥)
+    : a + ⊤ = ⊤ := by
   lift a to α using h
   exact WithBot.coe_inj.mpr (by simp [eq_top_iff])
 
-lemma lt_zero_iff_eq_bot {α : Type*} [AddMonoid α] [Preorder α] [CanonicallyOrderedAdd α]
-    (a : WithBot α) : a < 0 ↔ a = ⊥ := by
+lemma lt_zero_iff_eq_bot
+    {α : Type*} [AddMonoid α] [Preorder α] [CanonicallyOrderedAdd α] (a : WithBot α)
+    : a < 0 ↔ a = ⊥ := by
   induction a <;> simp
 
 end WithBot

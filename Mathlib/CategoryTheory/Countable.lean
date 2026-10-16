@@ -34,8 +34,8 @@ class CountableCategory (J : Type*) [Category* J] : Prop where
 
 attribute [instance] CountableCategory.countableObj CountableCategory.countableHom
 
-instance countableCategoryDiscreteOfCountable (J : Type*) [Countable J] :
-    CountableCategory (Discrete J) where
+instance countableCategoryDiscreteOfCountable (J : Type*) [Countable J]
+  : CountableCategory (Discrete J) where
 
 instance {J : Type u} [Countable J] [Category* J] [Quiver.IsThin J] : CountableCategory J :=
   CountableCategory.mk inferInstance (fun _ _ ↦ ⟨fun _ ↦ 0, fun _ _ _ ↦ Subsingleton.elim _ _⟩)
@@ -47,8 +47,7 @@ namespace CountableCategory
 variable (α : Type u) [Category.{v} α] [CountableCategory α]
 
 /-- A countable category `α` is equivalent to a category with objects in `Type`. -/
-abbrev ObjAsType : Type :=
-  InducedCategory α (equivShrink.{0} α).symm
+abbrev ObjAsType : Type := InducedCategory α (equivShrink.{0} α).symm
 
 instance : Countable (ObjAsType α) := Countable.of_equiv α (equivShrink.{0} α)
 
@@ -72,8 +71,8 @@ instance : SmallCategory (HomAsType α) := inferInstanceAs <| SmallCategory (Shr
 instance : Countable (HomAsType α) := Countable.of_equiv α (equivShrink.{0} α)
 
 instance {i j : HomAsType α} : Countable (i ⟶ j) :=
-  Countable.of_equiv ((ShrinkHoms.equivalence _).inverse.obj i ⟶
-    (ShrinkHoms.equivalence _).inverse.obj j)
+  Countable.of_equiv
+    ((ShrinkHoms.equivalence _).inverse.obj i ⟶ (ShrinkHoms.equivalence _).inverse.obj j)
     (Functor.FullyFaithful.ofFullyFaithful _).homEquiv.symm
 
 instance : CountableCategory (HomAsType α) where
@@ -89,15 +88,15 @@ instance (α : Type*) [SmallCategory α] [FinCategory α] : CountableCategory α
 open Opposite
 
 /-- The opposite of a countable category is countable. -/
-instance countableCategoryOpposite {J : Type*} [Category* J] [CountableCategory J] :
-    CountableCategory Jᵒᵖ where
+instance countableCategoryOpposite {J : Type*} [Category* J] [CountableCategory J]
+    : CountableCategory Jᵒᵖ where
   countableObj := Countable.of_equiv _ equivToOpposite
   countableHom j j' := Countable.of_equiv _ (opEquiv j j').symm
 
 attribute [local instance] uliftCategory in
 /-- Applying `ULift` to morphisms and objects of a category preserves countability. -/
-instance countableCategoryUlift {J : Type v} [Category.{v} J] [CountableCategory J] :
-    CountableCategory.{max w v} (ULiftHom.{w, max w v} (ULift.{w, v} J)) where
+instance countableCategoryUlift {J : Type v} [Category.{v} J] [CountableCategory J]
+    : CountableCategory.{max w v} (ULiftHom.{w, max w v} (ULift.{w, v} J)) where
   countableObj := instCountableULift
   countableHom := fun i j =>
     have : Countable ((ULiftHom.objDown i).down ⟶ (ULiftHom.objDown j).down) := inferInstance

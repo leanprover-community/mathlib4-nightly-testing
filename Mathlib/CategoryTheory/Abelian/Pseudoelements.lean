@@ -75,7 +75,6 @@ writing `g a` raises a "function expected" error. This error can be fixed by wri
 
 @[expose] public section
 
-
 open CategoryTheory
 
 open CategoryTheory.Limits
@@ -92,16 +91,18 @@ variable {C : Type u} [Category.{v} C]
 
 attribute [local instance] Over.coeFromHom
 
-/-- This is just composition of morphisms in `C`. Another way to express this would be
-`(Over.map f).obj a`, but our definition has nicer definitional properties. -/
-def app {P Q : C} (f : P ⟶ Q) (a : Over P) : Over Q :=
-  a.hom ≫ f
+/--
+This is just composition of morphisms in `C`. Another way to express this would be
+`(Over.map f).obj a`, but our definition has nicer definitional properties.
+-/
+def app {P Q : C} (f : P ⟶ Q) (a : Over P) : Over Q := a.hom ≫ f
 
-@[simp]
-theorem app_hom {P Q : C} (f : P ⟶ Q) (a : Over P) : (app f a).hom = a.hom ≫ f := rfl
+@[simp] theorem app_hom {P Q : C} (f : P ⟶ Q) (a : Over P) : (app f a).hom = a.hom ≫ f := rfl
 
-/-- Two arrows `f : X ⟶ P` and `g : Y ⟶ P` are called pseudo-equal if there is some object
-`R` and epimorphisms `p : R ⟶ X` and `q : R ⟶ Y` such that `p ≫ f = q ≫ g`. -/
+/--
+Two arrows `f : X ⟶ P` and `g : Y ⟶ P` are called pseudo-equal if there is some object
+`R` and epimorphisms `p : R ⟶ X` and `q : R ⟶ Y` such that `p ≫ f = q ≫ g`.
+-/
 def PseudoEqual (P : C) (f g : Over P) : Prop :=
   ∃ (R : C) (p : R ⟶ f.1) (q : R ⟶ g.1) (_ : Epi p) (_ : Epi q), p ≫ f.hom = q ≫ g.hom
 
@@ -115,12 +116,14 @@ variable [Abelian.{v} C]
 
 section
 
-/-- Pseudoequality is transitive: Just take the pullback. The pullback morphisms will
-be epimorphisms since in an abelian category, pullbacks of epimorphisms are epimorphisms. -/
+/--
+Pseudoequality is transitive: Just take the pullback. The pullback morphisms will
+be epimorphisms since in an abelian category, pullbacks of epimorphisms are epimorphisms.
+-/
 instance pseudoEqual_trans {P : C} : IsTrans (Over P) (PseudoEqual P) := by
   refine ⟨fun f g h ⟨R, p, q, ep, Eq, comm⟩ ⟨R', p', q', ep', eq', comm'⟩ ↦ ?_⟩
-  refine ⟨pullback q p', pullback.fst _ _ ≫ p, pullback.snd _ _ ≫ q',
-    epi_comp _ _, epi_comp _ _, ?_⟩
+  refine
+    ⟨pullback q p', pullback.fst _ _ ≫ p, pullback.snd _ _ ≫ q', epi_comp _ _, epi_comp _ _, ?_⟩
   rw [Category.assoc, comm, ← Category.assoc, pullback.condition, Category.assoc, comm',
     Category.assoc]
 
@@ -133,17 +136,16 @@ def Pseudoelement.setoid (P : C) : Setoid (Over P) :=
 
 attribute [local instance] Pseudoelement.setoid
 
-/-- A `Pseudoelement` of `P` is just an equivalence class of arrows ending in `P` by being
-pseudo-equal. -/
-def Pseudoelement (P : C) : Type max u v :=
-  Quotient (Pseudoelement.setoid P)
+/--
+A `Pseudoelement` of `P` is just an equivalence class of arrows ending in `P` by being
+pseudo-equal.
+-/
+def Pseudoelement (P : C) : Type max u v := Quotient (Pseudoelement.setoid P)
 
 namespace Pseudoelement
 
 /-- A coercion from an object of an abelian category to its pseudoelements. -/
-@[instance_reducible]
-def objectToSort : CoeSort C (Type max u v) :=
-  ⟨fun P => Pseudoelement P⟩
+@[instance_reducible] def objectToSort : CoeSort C (Type max u v) := ⟨fun P => Pseudoelement P⟩
 
 attribute [local instance] objectToSort
 
@@ -151,16 +153,15 @@ scoped[Pseudoelement] attribute [instance] CategoryTheory.Abelian.Pseudoelement.
 
 /-- A coercion from an arrow with codomain `P` to its associated pseudoelement. -/
 @[instance_reducible]
-def overToSort {P : C} : Coe (Over P) (Pseudoelement P) :=
-  ⟨Quot.mk (PseudoEqual P)⟩
+def overToSort {P : C} : Coe (Over P) (Pseudoelement P) := ⟨Quot.mk (PseudoEqual P)⟩
 
 attribute [local instance] overToSort
 
 theorem over_coe_def {P Q : C} (a : Q ⟶ P) : (a : Pseudoelement P) = ⟦↑a⟧ := rfl
 
 /-- If two elements are pseudo-equal, then their composition with a morphism is, too. -/
-theorem pseudoApply_aux {P Q : C} (f : P ⟶ Q) (a b : Over P) : a ≈ b → app f a ≈ app f b :=
-  fun ⟨R, p, q, ep, Eq, comm⟩ =>
+theorem pseudoApply_aux {P Q : C} (f : P ⟶ Q) (a b : Over P)
+    : a ≈ b → app f a ≈ app f b := fun ⟨R, p, q, ep, Eq, comm⟩ =>
   ⟨R, p, q, ep, Eq, show p ≫ a.hom ≫ f = q ≫ b.hom ≫ f by rw [reassoc_of% comm]⟩
 
 /-- A morphism `f` induces a function `pseudoApply f` on pseudoelements. -/
@@ -168,9 +169,7 @@ def pseudoApply {P Q : C} (f : P ⟶ Q) : P → Q :=
   Quotient.map (fun g : Over P => app f g) (pseudoApply_aux f)
 
 /-- A coercion from morphisms to functions on pseudoelements. -/
-@[instance_reducible]
-def homToFun {P Q : C} : CoeFun (P ⟶ Q) fun _ => P → Q :=
-  ⟨pseudoApply⟩
+@[instance_reducible] def homToFun {P Q : C} : CoeFun (P ⟶ Q) fun _ => P → Q := ⟨pseudoApply⟩
 
 attribute [local instance] homToFun
 
@@ -178,8 +177,10 @@ scoped[Pseudoelement] attribute [instance] CategoryTheory.Abelian.Pseudoelement.
 
 theorem pseudoApply_mk' {P Q : C} (f : P ⟶ Q) (a : Over P) : f ⟦a⟧ = ⟦↑(a.hom ≫ f)⟧ := rfl
 
-/-- Applying a pseudoelement to a composition of morphisms is the same as composing
-with each morphism. Sadly, this is not a definitional equality, but at least it is true. -/
+/--
+Applying a pseudoelement to a composition of morphisms is the same as composing
+with each morphism. Sadly, this is not a definitional equality, but at least it is true.
+-/
 theorem comp_apply {P Q R : C} (f : P ⟶ Q) (g : Q ⟶ R) (a : P) : (f ≫ g) a = g (f a) :=
   Quotient.inductionOn a fun x =>
     Quotient.sound <| by
@@ -198,38 +199,40 @@ precisely all the zero morphisms ending in `P` and use this to define *the* zero
 pseudoelement.
 -/
 
-
 section
 
 attribute [local instance] HasBinaryBiproducts.of_hasBinaryProducts
 
 /-- The arrows pseudo-equal to a zero morphism are precisely the zero morphisms. -/
-theorem pseudoZero_aux {P : C} (Q : C) (f : Over P) : f ≈ (0 : Q ⟶ P) ↔ f.hom = 0 :=
-  ⟨fun ⟨R, p, q, _, _, comm⟩ => zero_of_epi_comp p (by simp [comm]), fun hf =>
-    ⟨biprod f.1 Q, biprod.fst, biprod.snd, inferInstance, inferInstance, by
-      rw [hf, Over.coe_hom, HasZeroMorphisms.comp_zero, HasZeroMorphisms.comp_zero]⟩⟩
+theorem pseudoZero_aux {P : C} (Q : C) (f : Over P) : f ≈ (0 : Q ⟶ P) ↔ f.hom = 0 := ⟨
+  fun ⟨R, p, q, _, _, comm⟩ => zero_of_epi_comp p (by simp [comm]),
+  fun hf => ⟨
+    biprod f.1 Q,
+    biprod.fst,
+    biprod.snd,
+    inferInstance,
+    inferInstance,
+    by rw [hf, Over.coe_hom, HasZeroMorphisms.comp_zero, HasZeroMorphisms.comp_zero]
+  ⟩
+⟩
 
 end
 
-theorem zero_eq_zero' {P Q R : C} :
-    (⟦((0 : Q ⟶ P) : Over P)⟧ : Pseudoelement P) = ⟦((0 : R ⟶ P) : Over P)⟧ :=
+theorem zero_eq_zero' {P Q R : C}
+    : (⟦((0 : Q ⟶ P) : Over P)⟧ : Pseudoelement P) = ⟦((0 : R ⟶ P) : Over P)⟧ :=
   Quotient.sound <| (pseudoZero_aux R _).2 rfl
 
 /-- The zero pseudoelement is the class of a zero morphism. -/
-def pseudoZero {P : C} : P :=
-  ⟦(0 : P ⟶ P)⟧
+def pseudoZero {P : C} : P := ⟦(0 : P ⟶ P)⟧
 
-instance hasZero {P : C} : Zero P :=
-  ⟨pseudoZero⟩
+instance hasZero {P : C} : Zero P := ⟨pseudoZero⟩
 
-instance {P : C} : Inhabited P :=
-  ⟨0⟩
+instance {P : C} : Inhabited P := ⟨0⟩
 
 theorem pseudoZero_def {P : C} : (0 : Pseudoelement P) = ⟦↑(0 : P ⟶ P)⟧ := rfl
 
 @[simp]
-theorem zero_eq_zero {P Q : C} : ⟦((0 : Q ⟶ P) : Over P)⟧ = (0 : Pseudoelement P) :=
-  zero_eq_zero'
+theorem zero_eq_zero {P Q : C} : ⟦((0 : Q ⟶ P) : Over P)⟧ = (0 : Pseudoelement P) := zero_eq_zero'
 
 /-- The pseudoelement induced by an arrow is zero precisely when that arrow is zero. -/
 theorem pseudoZero_iff {P : C} (a : Over P) : a = (0 : P) ↔ a.hom = 0 := by
@@ -237,7 +240,6 @@ theorem pseudoZero_iff {P : C} (a : Over P) : a = (0 : P) ↔ a.hom = 0 := by
   exact Quotient.eq'
 
 end Zero
-
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Morphisms map the zero pseudoelement to the zero pseudoelement. -/
@@ -267,38 +269,53 @@ theorem eq_zero_iff {P Q : C} (f : P ⟶ Q) : f = 0 ↔ ∀ a, f a = 0 :=
 /-- A monomorphism is injective on pseudoelements. -/
 theorem pseudo_injective_of_mono {P Q : C} (f : P ⟶ Q) [Mono f] : Function.Injective f := by
   intro abar abar'
-  induction abar, abar' using Quotient.inductionOn₂ with | _ a a'
+  induction abar, abar' using Quotient.inductionOn₂ with
+  | _ a a'
   refine fun ha ↦ Quotient.sound ?_
-  have : (⟦(a.hom ≫ f : Over Q)⟧ : Quotient (setoid Q)) = ⟦↑(a'.hom ≫ f)⟧ := by convert!
-    ha
+  have : (⟦(a.hom ≫ f : Over Q)⟧ : Quotient (setoid Q)) = ⟦↑(a'.hom ≫ f)⟧ := by
+    convert!
+      ha
   have ⟨R, p, q, ep, Eq, comm⟩ := Quotient.exact this
-  exact ⟨R, p, q, ep, Eq, (cancel_mono f).1 <| by
-    simp only [Category.assoc]
-    exact comm⟩
+  exact ⟨
+    R,
+    p,
+    q,
+    ep,
+    Eq,
+    (cancel_mono f).1 <| by
+      simp only [Category.assoc]
+      exact comm
+  ⟩
 
 /-- A morphism that is injective on pseudoelements only maps the zero element to zero. -/
-theorem zero_of_map_zero {P Q : C} (f : P ⟶ Q) : Function.Injective f → ∀ a, f a = 0 → a = 0 :=
-  fun h a ha => by
+theorem zero_of_map_zero {P Q : C} (f : P ⟶ Q)
+    : Function.Injective f → ∀ a, f a = 0 → a = 0 := fun h a ha => by
   rw [← apply_zero f] at ha
   exact h ha
 
 /-- A morphism that only maps the zero pseudoelement to zero is a monomorphism. -/
-theorem mono_of_zero_of_map_zero {P Q : C} (f : P ⟶ Q) : (∀ a, f a = 0 → a = 0) → Mono f :=
-  fun h => (mono_iff_cancel_zero _).2 fun _ g hg =>
-    (pseudoZero_iff (g : Over P)).1 <|
-      h _ <| show f g = 0 from (pseudoZero_iff (g ≫ f : Over Q)).2 hg
+theorem mono_of_zero_of_map_zero {P Q : C} (f : P ⟶ Q) : (∀ a, f a = 0 → a = 0) → Mono f := fun h =>
+  (mono_iff_cancel_zero _).2 fun _ g hg =>
+    (pseudoZero_iff (g : Over P)).1 <| h _ <|
+      show f g = 0 from (pseudoZero_iff (g ≫ f : Over Q)).2 hg
 
 section
 
 set_option backward.isDefEq.respectTransparency false in
 /-- An epimorphism is surjective on pseudoelements. -/
-theorem pseudo_surjective_of_epi {P Q : C} (f : P ⟶ Q) [Epi f] : Function.Surjective f :=
-  fun qbar =>
-  Quotient.inductionOn qbar fun q =>
-    ⟨(pullback.fst f q.hom : Over P),
-      Quotient.sound
-        ⟨pullback f q.hom, 𝟙 (pullback f q.hom), pullback.snd _ _, inferInstance, inferInstance, by
-          rw [Category.id_comp, ← pullback.condition, app_hom, Over.coe_hom]⟩⟩
+theorem pseudo_surjective_of_epi {P Q : C} (f : P ⟶ Q) [Epi f]
+    : Function.Surjective f := fun qbar =>
+  Quotient.inductionOn qbar fun q => ⟨
+    (pullback.fst f q.hom : Over P),
+    Quotient.sound ⟨
+      pullback f q.hom,
+      𝟙 (pullback f q.hom),
+      pullback.snd _ _,
+      inferInstance,
+      inferInstance,
+      by rw [Category.id_comp, ← pullback.condition, app_hom, Over.coe_hom]
+    ⟩
+  ⟩
 
 end
 
@@ -320,132 +337,155 @@ section
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Two morphisms in an exact sequence are exact on pseudoelements. -/
-theorem pseudo_exact_of_exact {S : ShortComplex C} (hS : S.Exact) :
-    ∀ b, S.g b = 0 → ∃ a, S.f a = b :=
-  fun b' =>
-    Quotient.inductionOn b' fun b hb => by
-      have hb' : b.hom ≫ S.g = 0 := (pseudoZero_iff _).1 hb
-      -- By exactness, `b` factors through `im f = ker g` via some `c`.
-      obtain ⟨c, hc⟩ := KernelFork.IsLimit.lift' hS.isLimitImage _ hb'
-      -- We compute the pullback of the map into the image and `c`.
-      -- The pseudoelement induced by the first pullback map will be our preimage.
-      use pullback.fst (Abelian.factorThruImage S.f) c
-      -- It remains to show that the image of this element under `f` is pseudo-equal to `b`.
-      apply Quotient.sound
-      refine ⟨pullback (Abelian.factorThruImage S.f) c, 𝟙 _,
-              pullback.snd _ _, inferInstance, inferInstance, ?_⟩
-      -- Now we can verify that the diagram commutes.
-      calc
-        𝟙 (pullback (Abelian.factorThruImage S.f) c) ≫ pullback.fst _ _ ≫ S.f =
-          pullback.fst _ _ ≫ S.f :=
-          Category.id_comp _
-        _ = pullback.fst _ _ ≫ Abelian.factorThruImage S.f ≫ kernel.ι (cokernel.π S.f) := by
-          rw [Abelian.image.fac]
-        _ = (pullback.snd _ _ ≫ c) ≫ kernel.ι (cokernel.π S.f) := by
-          rw [← Category.assoc, pullback.condition]
-        _ = pullback.snd _ _ ≫ b.hom := by
-          rw [Category.assoc]
-          congr
+theorem pseudo_exact_of_exact {S : ShortComplex C} (hS : S.Exact)
+    : ∀ b, S.g b = 0 → ∃ a, S.f a = b := fun b' =>
+  Quotient.inductionOn b' fun b hb => by
+    have hb' : b.hom ≫ S.g = 0 := (pseudoZero_iff _).1 hb
+    -- By exactness, `b` factors through `im f = ker g` via some `c`.
+    obtain ⟨c, hc⟩ := KernelFork.IsLimit.lift' hS.isLimitImage _ hb'
+    -- We compute the pullback of the map into the image and `c`.
+    -- The pseudoelement induced by the first pullback map will be our preimage.
+    use pullback.fst (Abelian.factorThruImage S.f) c
+    -- It remains to show that the image of this element under `f` is pseudo-equal to `b`.
+    apply Quotient.sound
+    refine ⟨
+      pullback (Abelian.factorThruImage S.f) c,
+      𝟙 _,
+      pullback.snd _ _,
+      inferInstance,
+      inferInstance,
+      ?_
+    ⟩
+    -- Now we can verify that the diagram commutes.
+    calc
+      𝟙 (pullback (Abelian.factorThruImage S.f) c) ≫ pullback.fst _ _ ≫ S.f
+        = pullback.fst _ _ ≫ S.f := Category.id_comp _
+      _ = pullback.fst _ _ ≫ Abelian.factorThruImage S.f ≫ kernel.ι (cokernel.π S.f) := by
+        rw [Abelian.image.fac]
+      _ = (pullback.snd _ _ ≫ c) ≫ kernel.ι (cokernel.π S.f) := by
+        rw [← Category.assoc, pullback.condition]
+      _ = pullback.snd _ _ ≫ b.hom := by
+        rw [Category.assoc]
+        congr
 
 end
 
 set_option backward.defeqAttrib.useBackward true in
-theorem apply_eq_zero_of_comp_eq_zero {P Q R : C} (f : Q ⟶ R) (a : P ⟶ Q) : a ≫ f = 0 → f a = 0 :=
-  fun h => by simp [over_coe_def, pseudoApply_mk', h]
+theorem apply_eq_zero_of_comp_eq_zero {P Q R : C} (f : Q ⟶ R) (a : P ⟶ Q)
+    : a ≫ f = 0 → f a = 0 := fun h => by
+  simp [over_coe_def, pseudoApply_mk', h]
 
 section
 
 set_option backward.isDefEq.respectTransparency false in
 /-- If two morphisms are exact on pseudoelements, they are exact. -/
-theorem exact_of_pseudo_exact (S : ShortComplex C)
-    (hS : ∀ b, S.g b = 0 → ∃ a, S.f a = b) : S.Exact :=
+theorem exact_of_pseudo_exact (S : ShortComplex C) (hS : ∀ b, S.g b = 0 → ∃ a, S.f a = b)
+    : S.Exact :=
   (S.exact_iff_kernel_ι_comp_cokernel_π_zero).2 (by
-      -- If we apply `g` to the pseudoelement induced by its kernel, we get 0 (of course!).
-      have : S.g (kernel.ι S.g) = 0 := apply_eq_zero_of_comp_eq_zero _ _ (kernel.condition _)
-      -- By pseudo-exactness, we get a preimage.
-      obtain ⟨a', ha⟩ := hS _ this
-      obtain ⟨a, ha'⟩ := Quotient.exists_rep a'
-      rw [← ha'] at ha
-      obtain ⟨Z, r, q, _, eq, comm⟩ := Quotient.exact ha
-      -- Consider the pullback of `kernel.ι (cokernel.π f)` and `kernel.ι g`.
-      -- The commutative diagram given by the pseudo-equality `f a = b` induces
-      -- a cone over this pullback, so we get a factorization `z`.
-      obtain ⟨z, _, hz₂⟩ := @pullback.lift' _ _ _ _ _ _ (kernel.ι (cokernel.π S.f))
-        (kernel.ι S.g) _ (r ≫ a.hom ≫ Abelian.factorThruImage S.f) q (by
+    -- If we apply `g` to the pseudoelement induced by its kernel, we get 0 (of course!).
+    have : S.g (kernel.ι S.g) = 0 := apply_eq_zero_of_comp_eq_zero _ _ (kernel.condition _)
+    -- By pseudo-exactness, we get a preimage.
+    obtain ⟨a', ha⟩ := hS _ this
+    obtain ⟨a, ha'⟩ := Quotient.exists_rep a'
+    rw [← ha'] at ha
+    obtain ⟨Z, r, q, _, eq, comm⟩ := Quotient.exact ha
+    -- Consider the pullback of `kernel.ι (cokernel.π f)` and `kernel.ι g`.
+    -- The commutative diagram given by the pseudo-equality `f a = b` induces
+    -- a cone over this pullback, so we get a factorization `z`.
+    obtain ⟨z, _, hz₂⟩ :=
+      @pullback.lift' _ _ _ _ _ _ (kernel.ι (cokernel.π S.f)) (kernel.ι S.g) _
+        (r ≫ a.hom ≫ Abelian.factorThruImage S.f) q
+        (by
           simp only [Category.assoc, Abelian.image.fac]
           exact comm)
-      -- Let's give a name to the second pullback morphism.
-      let j : pullback (kernel.ι (cokernel.π S.f)) (kernel.ι S.g) ⟶ kernel S.g := pullback.snd _ _
-      -- Since `q` is an epimorphism, in particular this means that `j` is an epimorphism.
-      have pe : Epi j := epi_of_epi_fac hz₂
-      -- But it is also a monomorphism, because `kernel.ι (cokernel.π f)` is: A kernel is
-      -- always a monomorphism and the pullback of a monomorphism is a monomorphism.
-      -- But mono + epi = iso, so `j` is an isomorphism.
-      have : IsIso j := isIso_of_mono_of_epi _
-      -- But then `kernel.ι g` can be expressed using all of the maps of the pullback square, and we
-      -- are done.
-      rw [(Iso.eq_inv_comp (asIso j)).2 pullback.condition.symm]
-      simp only [Category.assoc, kernel.condition, HasZeroMorphisms.comp_zero])
+    -- Let's give a name to the second pullback morphism.
+    let j : pullback (kernel.ι (cokernel.π S.f)) (kernel.ι S.g) ⟶ kernel S.g := pullback.snd _ _
+    -- Since `q` is an epimorphism, in particular this means that `j` is an epimorphism.
+    have pe : Epi j := epi_of_epi_fac hz₂
+    -- But it is also a monomorphism, because `kernel.ι (cokernel.π f)` is: A kernel is
+    -- always a monomorphism and the pullback of a monomorphism is a monomorphism.
+    -- But mono + epi = iso, so `j` is an isomorphism.
+    have : IsIso j := isIso_of_mono_of_epi _
+    -- But then `kernel.ι g` can be expressed using all of the maps of the pullback square, and we
+    -- are done.
+    rw [(Iso.eq_inv_comp (asIso j)).2 pullback.condition.symm]
+    simp only [Category.assoc, kernel.condition, HasZeroMorphisms.comp_zero])
 
 end
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If two pseudoelements `x` and `y` have the same image under some morphism `f`, then we can form
+/--
+If two pseudoelements `x` and `y` have the same image under some morphism `f`, then we can form
 their "difference" `z`. This pseudoelement has the properties that `f z = 0` and for all
-morphisms `g`, if `g y = 0` then `g z = g x`. -/
-theorem sub_of_eq_image {P Q : C} (f : P ⟶ Q) (x y : P) :
-    f x = f y → ∃ z, f z = 0 ∧ ∀ (R : C) (g : P ⟶ R), (g : P ⟶ R) y = 0 → g z = g x :=
+morphisms `g`, if `g y = 0` then `g z = g x`.
+-/
+theorem sub_of_eq_image {P Q : C} (f : P ⟶ Q) (x y : P)
+    : f x = f y → ∃ z, f z = 0 ∧ ∀ (R : C) (g : P ⟶ R), (g : P ⟶ R) y = 0 → g z = g x :=
   Quotient.inductionOn₂ x y fun a a' h =>
     match Quotient.exact h with
     | ⟨R, p, q, ep, _, comm⟩ =>
       let a'' : R ⟶ P := (p ≫ a.hom : R ⟶ P) - (q ≫ a'.hom : R ⟶ P)
-      ⟨a'',
-        ⟨show ⟦(a'' ≫ f : Over Q)⟧ = ⟦↑(0 : Q ⟶ Q)⟧ by
+      ⟨
+        a'',
+        ⟨
+          show ⟦(a'' ≫ f : Over Q)⟧ = ⟦↑(0 : Q ⟶ Q)⟧ by
             dsimp at comm
             simp [a'', sub_eq_zero.2 comm],
           fun Z g hh => by
-          obtain ⟨X, p', q', ep', _, comm'⟩ := Quotient.exact hh
-          have : a'.hom ≫ g = 0 := by
-            apply (epi_iff_cancel_zero _).1 ep' _ (a'.hom ≫ g)
-            simpa using comm'
-          apply Quotient.sound
-          -- Can we prevent quotient.sound from giving us this weird `coe_b` thingy?
-          change app g (a'' : Over P) ≈ app g a
-          exact ⟨R, 𝟙 R, p, inferInstance, ep, by simp [a'', sub_eq_add_neg, this]⟩⟩⟩
+            obtain ⟨X, p', q', ep', _, comm'⟩ := Quotient.exact hh
+            have : a'.hom ≫ g = 0 := by
+              apply (epi_iff_cancel_zero _).1 ep' _ (a'.hom ≫ g)
+              simpa using comm'
+            apply Quotient.sound
+            -- Can we prevent quotient.sound from giving us this weird `coe_b` thingy?
+            change app g (a'' : Over P) ≈ app g a
+            exact ⟨R, 𝟙 R, p, inferInstance, ep, by simp [a'', sub_eq_add_neg, this]⟩
+        ⟩
+      ⟩
 
 variable [Limits.HasPullbacks C]
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `f : P ⟶ R` and `g : Q ⟶ R` are morphisms and `p : P` and `q : Q` are pseudoelements such
+/--
+If `f : P ⟶ R` and `g : Q ⟶ R` are morphisms and `p : P` and `q : Q` are pseudoelements such
 that `f p = g q`, then there is some `s : pullback f g` such that `fst s = p` and `snd s = q`.
 
 Remark: Borceux claims that `s` is unique, but this is false. See
-`Counterexamples/Pseudoelement.lean` for details. -/
-theorem pseudo_pullback {P Q R : C} {f : P ⟶ R} {g : Q ⟶ R} {p : P} {q : Q} :
-    f p = g q →
-      ∃ s, pullback.fst f g s = p ∧ pullback.snd f g s = q :=
+`Counterexamples/Pseudoelement.lean` for details.
+-/
+theorem pseudo_pullback {P Q R : C} {f : P ⟶ R} {g : Q ⟶ R} {p : P} {q : Q}
+    : f p = g q → ∃ s, pullback.fst f g s = p ∧ pullback.snd f g s = q :=
   Quotient.inductionOn₂ p q fun x y h => by
     obtain ⟨Z, a, b, ea, eb, comm⟩ := Quotient.exact h
-    obtain ⟨l, hl₁, hl₂⟩ := @pullback.lift' _ _ _ _ _ _ f g _ (a ≫ x.hom) (b ≫ y.hom) (by
-      simp only [Category.assoc]
-      exact comm)
-    exact ⟨l, ⟨Quotient.sound ⟨Z, 𝟙 Z, a, inferInstance, ea, by rwa [Category.id_comp]⟩,
-      Quotient.sound ⟨Z, 𝟙 Z, b, inferInstance, eb, by rwa [Category.id_comp]⟩⟩⟩
+    obtain ⟨l, hl₁, hl₂⟩ :=
+      @pullback.lift' _ _ _ _ _ _ f g _ (a ≫ x.hom) (b ≫ y.hom) (by
+        simp only [Category.assoc]
+        exact comm)
+    exact ⟨
+      l,
+      ⟨
+        Quotient.sound ⟨Z, 𝟙 Z, a, inferInstance, ea, by rwa [Category.id_comp]⟩,
+        Quotient.sound ⟨Z, 𝟙 Z, b, inferInstance, eb, by rwa [Category.id_comp]⟩
+      ⟩
+    ⟩
 
 section Module
 
-/-- In the category `ModuleCat R`, if `x` and `y` are pseudoequal, then the range of the associated
-morphisms is the same. -/
-theorem ModuleCat.eq_range_of_pseudoequal {R : Type*} [Ring R] {G : ModuleCat R} {x y : Over G}
-    (h : PseudoEqual G x y) : LinearMap.range x.hom.hom = LinearMap.range y.hom.hom := by
+/--
+In the category `ModuleCat R`, if `x` and `y` are pseudoequal, then the range of the associated
+morphisms is the same.
+-/
+theorem ModuleCat.eq_range_of_pseudoequal
+    {R : Type*} [Ring R] {G : ModuleCat R} {x y : Over G} (h : PseudoEqual G x y)
+    : LinearMap.range x.hom.hom = LinearMap.range y.hom.hom := by
   obtain ⟨P, p, q, hp, hq, H⟩ := h
   refine Submodule.ext fun a => ⟨fun ha => ?_, fun ha => ?_⟩
   · obtain ⟨a', ha'⟩ := ha
     obtain ⟨a'', ha''⟩ := (ModuleCat.epi_iff_surjective p).1 hp a'
     refine ⟨q a'', ?_⟩
     dsimp at ha' ⊢
-    rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, ← H,
-      ModuleCat.hom_comp, LinearMap.comp_apply, ha'', ha']
+    rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, ← H, ModuleCat.hom_comp, LinearMap.comp_apply,
+      ha'', ha']
   · obtain ⟨a', ha'⟩ := ha
     obtain ⟨a'', ha''⟩ := (ModuleCat.epi_iff_surjective q).1 hq a'
     refine ⟨p a'', ?_⟩

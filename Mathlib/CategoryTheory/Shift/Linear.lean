@@ -24,26 +24,33 @@ namespace CategoryTheory
 
 namespace Shift
 
-variable (R : Type*) [Ring R] {C : Type _} [Category* C] [Preadditive C] [Linear R C]
+variable
+  (R : Type*) [Ring R]
+  {C : Type _} [Category* C] [Preadditive C] [Linear R C]
   {D : Type*} [Category* D] [Preadditive D] [Linear R D]
-  {M : Type*} [AddMonoid M] [HasShift C M]
-  [∀ (n : M), (shiftFunctor C n).Linear R]
+  {M : Type*} [AddMonoid M] [HasShift C M] [∀ (n : M), (shiftFunctor C n).Linear R]
   (L : C ⥤ D) (W : MorphismProperty C)
 
-lemma linear_of_localization [L.IsLocalization W] [L.Linear R] [HasShift D M]
-    [L.CommShift M] (n : M) : (shiftFunctor D n).Linear R := by
+lemma linear_of_localization
+    [L.IsLocalization W] [L.Linear R] [HasShift D M] [L.CommShift M] (n : M)
+    : (shiftFunctor D n).Linear R := by
   have : Localization.Lifting L W (shiftFunctor C n ⋙ L) (shiftFunctor D n) :=
     ⟨(L.commShiftIso n).symm⟩
   rw [← Localization.functor_linear_iff L W R (shiftFunctor C n ⋙ L) (shiftFunctor D n)]
   infer_instance
 
-instance [HasShift W.Localization M] [W.Q.CommShift M] [Preadditive W.Localization]
-    [Linear R W.Localization] [W.Q.Linear R] (n : M) :
-    (shiftFunctor W.Localization n).Linear R := linear_of_localization _ W.Q W _
+instance
+    [HasShift W.Localization M] [W.Q.CommShift M] [Preadditive W.Localization]
+    [Linear R W.Localization] [W.Q.Linear R]
+    (n : M)
+    : (shiftFunctor W.Localization n).Linear R :=
+  linear_of_localization _ W.Q W _
 
-instance (n : M) [W.HasLocalization] [HasShift W.Localization' M] [W.Q'.CommShift M]
-    [Preadditive W.Localization'] [Linear R W.Localization'] [W.Q'.Linear R] :
-    (shiftFunctor W.Localization' n).Linear R :=
+instance
+    (n : M)
+    [W.HasLocalization] [HasShift W.Localization' M] [W.Q'.CommShift M]
+    [Preadditive W.Localization'] [Linear R W.Localization'] [W.Q'.Linear R]
+    : (shiftFunctor W.Localization' n).Linear R :=
   linear_of_localization _ W.Q' W _
 
 end Shift

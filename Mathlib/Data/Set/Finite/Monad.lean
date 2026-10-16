@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Set.Finite.Lattice
 public import Mathlib.Data.Set.Functor
-
 import Mathlib.Basic.Finite.Prod
 
 /-!
@@ -40,29 +39,33 @@ section FintypeInstances
 section monad
 attribute [local instance] Set.monad
 
-/-- If `s : Set α` is a set with `Fintype` instance and `f : α → Set β` is a function such that
-each `f a`, `a ∈ s`, has a `Fintype` structure, then `s >>= f` has a `Fintype` structure. -/
+/--
+If `s : Set α` is a set with `Fintype` instance and `f : α → Set β` is a function such that
+each `f a`, `a ∈ s`, has a `Fintype` structure, then `s >>= f` has a `Fintype` structure.
+-/
 @[instance_reducible]
-def fintypeBind {α β} [DecidableEq β] (s : Set α) [Fintype s] (f : α → Set β)
-    (H : ∀ a ∈ s, Fintype (f a)) : Fintype (s >>= f) :=
+def fintypeBind
+    {α β} [DecidableEq β] (s : Set α) [Fintype s] (f : α → Set β) (H : ∀ a ∈ s, Fintype (f a))
+    : Fintype (s >>= f) :=
   Set.fintypeBiUnion s f H
 
-instance fintypeBind' {α β} [DecidableEq β] (s : Set α) [Fintype s] (f : α → Set β)
-    [∀ a, Fintype (f a)] : Fintype (s >>= f) :=
+instance fintypeBind'
+    {α β} [DecidableEq β] (s : Set α) [Fintype s] (f : α → Set β) [∀ a, Fintype (f a)]
+    : Fintype (s >>= f) :=
   Set.fintypeBiUnion' s f
 
 end monad
 
-instance fintypePure : ∀ a : α, Fintype (pure a : Set α) :=
-  Set.fintypeSingleton
+instance fintypePure : ∀ a : α, Fintype (pure a : Set α) := Set.fintypeSingleton
 
-instance fintypeSeq [DecidableEq β] (f : Set (α → β)) (s : Set α) [Fintype f] [Fintype s] :
-    Fintype (f.seq s) := by
+instance fintypeSeq [DecidableEq β] (f : Set (α → β)) (s : Set α) [Fintype f] [Fintype s]
+    : Fintype (f.seq s) := by
   rw [seq_def]
   apply Set.fintypeBiUnion'
 
-instance fintypeSeq' {α β : Type u} [DecidableEq β] (f : Set (α → β)) (s : Set α) [Fintype f]
-    [Fintype s] : Fintype (f <*> s) :=
+instance fintypeSeq'
+    {α β : Type u} [DecidableEq β] (f : Set (α → β)) (s : Set α) [Fintype f] [Fintype s]
+    : Fintype (f <*> s) :=
   Set.fintypeSeq f s
 
 end FintypeInstances
@@ -80,11 +83,9 @@ Some set instances do not appear here since they are consequences of others, for
 `Subtype.Finite` for subsets of a finite type.
 -/
 
-
 namespace Finite.Set
 
-theorem finite_pure (a : α) : (pure a : Set α).Finite :=
-  toFinite _
+theorem finite_pure (a : α) : (pure a : Set α).Finite := toFinite _
 
 instance finite_seq (f : Set (α → β)) (s : Set α) [Finite f] [Finite s] : Finite (f.seq s) := by
   rw [seq_def]
@@ -103,24 +104,23 @@ The implementation of these constructors ideally should be no more than `Set.toF
 after possibly setting up some `Fintype` and classical `Decidable` instances.
 -/
 
-
 section SetFiniteConstructors
 
 section monad
 attribute [local instance] Set.monad
 
-theorem Finite.bind {α β} {s : Set α} {f : α → Set β} (h : s.Finite) (hf : ∀ a ∈ s, (f a).Finite) :
-    (s >>= f).Finite :=
+theorem Finite.bind {α β} {s : Set α} {f : α → Set β} (h : s.Finite) (hf : ∀ a ∈ s, (f a).Finite)
+    : (s >>= f).Finite :=
   h.biUnion hf
 
 end monad
 
-theorem Finite.seq {f : Set (α → β)} {s : Set α} (hf : f.Finite) (hs : s.Finite) :
-    (f.seq s).Finite :=
+theorem Finite.seq {f : Set (α → β)} {s : Set α} (hf : f.Finite) (hs : s.Finite)
+    : (f.seq s).Finite :=
   hf.image2 _ hs
 
-theorem Finite.seq' {α β : Type u} {f : Set (α → β)} {s : Set α} (hf : f.Finite) (hs : s.Finite) :
-    (f <*> s).Finite :=
+theorem Finite.seq' {α β : Type u} {f : Set (α → β)} {s : Set α} (hf : f.Finite) (hs : s.Finite)
+    : (f <*> s).Finite :=
   hf.seq hs
 
 end SetFiniteConstructors

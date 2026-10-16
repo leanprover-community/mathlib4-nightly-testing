@@ -35,17 +35,21 @@ universe u
 
 variable {G α X : Type*} [TopologicalSpace X]
 
-/-- Basic hypothesis to talk about a topological additive group. A topological additive group
+/--
+Basic hypothesis to talk about a topological additive group. A topological additive group
 over `M`, for example, is obtained by requiring the instances `AddGroup M` and
-`ContinuousAdd M` and `ContinuousNeg M`. -/
+`ContinuousAdd M` and `ContinuousNeg M`.
+-/
 class ContinuousNeg (G : Type u) [TopologicalSpace G] [Neg G] : Prop where
   continuous_neg : Continuous fun a : G => -a
 
 attribute [continuity, fun_prop] ContinuousNeg.continuous_neg
 
-/-- Basic hypothesis to talk about a topological group. A topological group over `M`, for example,
+/--
+Basic hypothesis to talk about a topological group. A topological group over `M`, for example,
 is obtained by requiring the instances `Group M` and `ContinuousMul M` and
-`ContinuousInv M`. -/
+`ContinuousInv M`.
+-/
 @[to_additive (attr := continuity)]
 class ContinuousInv (G : Type u) [TopologicalSpace G] [Inv G] : Prop where
   continuous_inv : Continuous fun a : G => a⁻¹
@@ -59,65 +63,72 @@ section ContinuousInv
 
 variable [TopologicalSpace G] [Inv G] [ContinuousInv G]
 
-/-- If a function converges to a value in a multiplicative topological group, then its inverse
+/--
+If a function converges to a value in a multiplicative topological group, then its inverse
 converges to the inverse of this value.
 For the version in topological groups with zero (including topological fields)
-assuming additionally that the limit is nonzero, use `Filter.Tendsto.inv₀`. -/
+assuming additionally that the limit is nonzero, use `Filter.Tendsto.inv₀`.
+-/
 @[to_additive
   /-- If a function converges to a value in an additive topological group, then its
   negation converges to the negation of this value. -/]
-theorem Filter.Tendsto.inv {f : α → G} {l : Filter α} {y : G} (h : Tendsto f l (𝓝 y)) :
-    Tendsto (fun x => (f x)⁻¹) l (𝓝 y⁻¹) :=
+theorem Filter.Tendsto.inv {f : α → G} {l : Filter α} {y : G} (h : Tendsto f l (𝓝 y))
+    : Tendsto (fun x => (f x)⁻¹) l (𝓝 y⁻¹) :=
   (continuous_inv.tendsto y).comp h
 
 variable {f : X → G} {s : Set X} {x : X}
 
 @[to_fun (attr := to_additive (attr := continuity, fun_prop))]
-theorem Continuous.inv (hf : Continuous f) : Continuous f⁻¹ :=
-  continuous_inv.comp hf
+theorem Continuous.inv (hf : Continuous f) : Continuous f⁻¹ := continuous_inv.comp hf
 
 @[to_fun (attr := to_additive (attr := fun_prop))]
-nonrec theorem ContinuousWithinAt.inv (hf : ContinuousWithinAt f s x) :
-    ContinuousWithinAt f⁻¹ s x :=
+nonrec theorem ContinuousWithinAt.inv (hf : ContinuousWithinAt f s x)
+    : ContinuousWithinAt f⁻¹ s x :=
   hf.inv
 
 @[to_fun (attr := to_additive (attr := fun_prop))]
-nonrec theorem ContinuousAt.inv (hf : ContinuousAt f x) : ContinuousAt f⁻¹ x :=
-  hf.inv
+nonrec theorem ContinuousAt.inv (hf : ContinuousAt f x) : ContinuousAt f⁻¹ x := hf.inv
 
 @[to_fun (attr := to_additive (attr := fun_prop))]
-theorem ContinuousOn.inv (hf : ContinuousOn f s) : ContinuousOn f⁻¹ s := fun x hx ↦
-  (hf x hx).inv
+theorem ContinuousOn.inv (hf : ContinuousOn f s) : ContinuousOn f⁻¹ s := fun x hx ↦ (hf x hx).inv
 
 end ContinuousInv
 
-/-- A topological (additive) group is a group in which the addition and negation operations are
+/--
+A topological (additive) group is a group in which the addition and negation operations are
 continuous.
 
 When you declare an instance that does not already have a `UniformSpace` instance,
 you should also provide an instance of `UniformSpace` and `IsUniformAddGroup` using
-`IsTopologicalAddGroup.rightUniformSpace` and `isUniformAddGroup_of_addCommGroup`. -/
+`IsTopologicalAddGroup.rightUniformSpace` and `isUniformAddGroup_of_addCommGroup`.
+-/
 class IsTopologicalAddGroup (G : Type u) [TopologicalSpace G] [AddGroup G] : Prop
-    extends ContinuousAdd G, ContinuousNeg G
+  extends ContinuousAdd G, ContinuousNeg G
 
-/-- A topological group is a group in which the multiplication and inversion operations are
+/--
+A topological group is a group in which the multiplication and inversion operations are
 continuous.
 
 When you declare an instance that does not already have a `UniformSpace` instance,
 you should also provide an instance of `UniformSpace` and `IsUniformGroup` using
-`IsTopologicalGroup.rightUniformSpace` and `isUniformGroup_of_commGroup`. -/
+`IsTopologicalGroup.rightUniformSpace` and `isUniformGroup_of_commGroup`.
+-/
 @[to_additive]
 class IsTopologicalGroup (G : Type*) [TopologicalSpace G] [Group G] : Prop
-    extends ContinuousMul G, ContinuousInv G
+  extends ContinuousMul G, ContinuousInv G
 
-/-- A typeclass saying that `p : G × G ↦ p.1 - p.2` is a continuous function. This property
-automatically holds for topological additive groups but it also holds, e.g., for `ℝ≥0`. -/
+/--
+A typeclass saying that `p : G × G ↦ p.1 - p.2` is a continuous function. This property
+automatically holds for topological additive groups but it also holds, e.g., for `ℝ≥0`.
+-/
 class ContinuousSub (G : Type*) [TopologicalSpace G] [Sub G] : Prop where
   continuous_sub : Continuous fun p : G × G => p.1 - p.2
 
-/-- A typeclass saying that `p : G × G ↦ p.1 / p.2` is a continuous function. This property
+/--
+A typeclass saying that `p : G × G ↦ p.1 / p.2` is a continuous function. This property
 automatically holds for topological groups. Lemmas using this class have primes.
-The unprimed version is for `GroupWithZero`. -/
+The unprimed version is for `GroupWithZero`.
+-/
 @[to_additive existing]
 class ContinuousDiv (G : Type*) [TopologicalSpace G] [Div G] : Prop where
   continuous_div' : Continuous fun p : G × G => p.1 / p.2
@@ -125,7 +136,8 @@ class ContinuousDiv (G : Type*) [TopologicalSpace G] [Div G] : Prop where
 -- see Note [lower instance priority]
 @[to_additive]
 instance (priority := 100) IsTopologicalGroup.to_continuousDiv
-    {G : Type u} [TopologicalSpace G] [Group G] [IsTopologicalGroup G] : ContinuousDiv G where
+    {G : Type u} [TopologicalSpace G] [Group G] [IsTopologicalGroup G]
+    : ContinuousDiv G where
   continuous_div' := by
     simp only [div_eq_mul_inv]
     exact continuous_mul.comp₂ continuous_fst <| continuous_inv.comp continuous_snd
@@ -138,25 +150,27 @@ section ContinuousDiv
 variable [TopologicalSpace G] [Div G] [ContinuousDiv G]
 
 @[to_additive sub]
-theorem Filter.Tendsto.div' {f g : α → G} {l : Filter α} {a b : G} (hf : Tendsto f l (𝓝 a))
-    (hg : Tendsto g l (𝓝 b)) : Tendsto (fun x => f x / g x) l (𝓝 (a / b)) :=
+theorem Filter.Tendsto.div'
+    {f g : α → G} {l : Filter α} {a b : G} (hf : Tendsto f l (𝓝 a)) (hg : Tendsto g l (𝓝 b))
+    : Tendsto (fun x => f x / g x) l (𝓝 (a / b)) :=
   (continuous_div'.tendsto (a, b)).comp (hf.prodMk_nhds hg)
 
 variable {f g : X → G} {s : Set X} {x : X}
 
 @[to_additive (attr := to_fun (attr := fun_prop)) sub]
-nonrec theorem ContinuousAt.div' (hf : ContinuousAt f x) (hg : ContinuousAt g x) :
-    ContinuousAt (f / g) x :=
+nonrec theorem ContinuousAt.div' (hf : ContinuousAt f x) (hg : ContinuousAt g x)
+    : ContinuousAt (f / g) x :=
   hf.div' hg
 
 @[to_additive (attr := to_fun (attr := fun_prop)) sub]
-theorem ContinuousWithinAt.div' (hf : ContinuousWithinAt f s x) (hg : ContinuousWithinAt g s x) :
-    ContinuousWithinAt (f / g) s x :=
+theorem ContinuousWithinAt.div' (hf : ContinuousWithinAt f s x) (hg : ContinuousWithinAt g s x)
+    : ContinuousWithinAt (f / g) s x :=
   Filter.Tendsto.div' hf hg
 
 @[to_additive (attr := to_fun (attr := fun_prop)) sub]
-theorem ContinuousOn.div' (hf : ContinuousOn f s) (hg : ContinuousOn g s) :
-    ContinuousOn (f / g) s := fun x hx => (hf x hx).div' (hg x hx)
+theorem ContinuousOn.div' (hf : ContinuousOn f s) (hg : ContinuousOn g s)
+    : ContinuousOn (f / g) s := fun x hx =>
+  (hf x hx).div' (hg x hx)
 
 @[to_additive (attr := to_fun (attr := continuity, fun_prop)) sub]
 theorem Continuous.div' (hf : Continuous f) (hg : Continuous g) : Continuous (f / g) :=

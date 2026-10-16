@@ -36,17 +36,18 @@ open CategoryTheory Limits MorphismProperty
 
 namespace HomotopicalAlgebra
 
-variable {C : Type*} [Category* C] [ModelCategory C]
-  {X Y : C} (f : X ⟶ Y)
+variable {C : Type*} [Category* C] [ModelCategory C] {X Y : C} (f : X ⟶ Y)
 
-/-- Given a morphism `f : X ⟶ Y` in a model category,
+/--
+Given a morphism `f : X ⟶ Y` in a model category,
 this structure contains the data of a factorization `i ≫ p = f`
 with `i` a cofibration, `p` a trivial fibration which
 has a section `s` that is a cofibration.
 That this structure is nonempty when `X`
-and `Y` are cofibrant is Ken Brown's factorization lemma. -/
-structure CofibrantBrownFactorization extends
-    MapFactorizationData (cofibrations C) (trivialFibrations C) f where
+and `Y` are cofibrant is Ken Brown's factorization lemma.
+-/
+structure CofibrantBrownFactorization
+    extends MapFactorizationData (cofibrations C) (trivialFibrations C) f where
   /-- a cofibration that is a section of `p` -/
   s : Y ⟶ Z
   s_p : s ≫ p = 𝟙 Y := by cat_disch
@@ -59,19 +60,20 @@ attribute [instance] cofibration_s
 
 variable (h : CofibrantBrownFactorization f)
 
-instance [WeakEquivalence f] : WeakEquivalence h.i :=
-  weakEquivalence_of_postcomp_of_fac h.fac
+instance [WeakEquivalence f] : WeakEquivalence h.i := weakEquivalence_of_postcomp_of_fac h.fac
 
-instance : WeakEquivalence h.s :=
-  weakEquivalence_of_postcomp_of_fac h.s_p
+instance : WeakEquivalence h.s := weakEquivalence_of_postcomp_of_fac h.s_p
 
-/-- The term in `CofibrantBrownFactorization f` that is deduced from
+/--
+The term in `CofibrantBrownFactorization f` that is deduced from
 a factorization of `coprod.desc f (𝟙 Y) : X ⨿ Y ⟶ Y`
-as a cofibration followed by a trivial fibration. -/
+as a cofibration followed by a trivial fibration.
+-/
 @[simps]
-noncomputable def mk' [IsCofibrant X] [IsCofibrant Y]
-    (h : MapFactorizationData (cofibrations C) (trivialFibrations C) (coprod.desc f (𝟙 Y))) :
-    CofibrantBrownFactorization f where
+noncomputable def mk'
+    [IsCofibrant X] [IsCofibrant Y]
+    (h : MapFactorizationData (cofibrations C) (trivialFibrations C) (coprod.desc f (𝟙 Y)))
+    : CofibrantBrownFactorization f where
   Z := h.Z
   i := coprod.inl ≫ h.i
   p := h.p
@@ -81,20 +83,21 @@ noncomputable def mk' [IsCofibrant X] [IsCofibrant Y]
 
 variable (h : MapFactorizationData (cofibrations C) (trivialFibrations C) (coprod.desc f (𝟙 Y)))
 
-instance [IsCofibrant X] [IsCofibrant Y] :
-    Nonempty (CofibrantBrownFactorization f) :=
+instance [IsCofibrant X] [IsCofibrant Y] : Nonempty (CofibrantBrownFactorization f) :=
   ⟨.mk' f (MorphismProperty.factorizationData _ _ _)⟩
 
 end CofibrantBrownFactorization
 
-/-- Given a morphism `f : X ⟶ Y` in a model category,
+/--
+Given a morphism `f : X ⟶ Y` in a model category,
 this structure contains the data of a factorization `i ≫ p = f`
 with `p` a fibration, `i` a trivial cofibration which
 has a retraction `r` that is a fibration.
 That this structure is nonempty when `X`
-and `Y` are fibrant is Ken Brown's factorization lemma. -/
-structure FibrantBrownFactorization extends
-    MapFactorizationData (trivialCofibrations C) (fibrations C) f where
+and `Y` are fibrant is Ken Brown's factorization lemma.
+-/
+structure FibrantBrownFactorization
+    extends MapFactorizationData (trivialCofibrations C) (fibrations C) f where
   /-- a fibration that is a retraction of `i` -/
   r : Z ⟶ X
   i_r : i ≫ r = 𝟙 X := by cat_disch
@@ -107,19 +110,20 @@ attribute [instance] fibration_r
 
 variable (h : FibrantBrownFactorization f)
 
-instance [WeakEquivalence f] : WeakEquivalence h.p :=
-  weakEquivalence_of_precomp_of_fac h.fac
+instance [WeakEquivalence f] : WeakEquivalence h.p := weakEquivalence_of_precomp_of_fac h.fac
 
-instance : WeakEquivalence h.r :=
-  weakEquivalence_of_precomp_of_fac h.i_r
+instance : WeakEquivalence h.r := weakEquivalence_of_precomp_of_fac h.i_r
 
-/-- The term in `CofibrantBrownFactorization f` that is deduced from
+/--
+The term in `CofibrantBrownFactorization f` that is deduced from
 a factorization of `prod.lift f (𝟙 X) : X ⟶ Y ⨯ X`
-as a cofibration followed by a trivial fibration. -/
+as a cofibration followed by a trivial fibration.
+-/
 @[simps]
-noncomputable def mk' [IsFibrant X] [IsFibrant Y]
-    (h : MapFactorizationData (trivialCofibrations C) (fibrations C) (prod.lift f (𝟙 X))) :
-    FibrantBrownFactorization f where
+noncomputable def mk'
+    [IsFibrant X] [IsFibrant Y]
+    (h : MapFactorizationData (trivialCofibrations C) (fibrations C) (prod.lift f (𝟙 X)))
+    : FibrantBrownFactorization f where
   Z := h.Z
   i := h.i
   p := h.p ≫ prod.fst
@@ -127,8 +131,7 @@ noncomputable def mk' [IsFibrant X] [IsFibrant Y]
   hi := by rw [mem_trivialCofibrations_iff]; constructor <;> infer_instance
   hp := by rw [← fibration_iff]; infer_instance
 
-instance [IsFibrant X] [IsFibrant Y] :
-    Nonempty (FibrantBrownFactorization f) :=
+instance [IsFibrant X] [IsFibrant Y] : Nonempty (FibrantBrownFactorization f) :=
   ⟨.mk' f (MorphismProperty.factorizationData _ _ _)⟩
 
 end FibrantBrownFactorization

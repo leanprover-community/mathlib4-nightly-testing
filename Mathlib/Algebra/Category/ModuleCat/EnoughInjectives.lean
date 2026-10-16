@@ -6,7 +6,6 @@ Authors: Jujian Zhang
 module
 
 public import Mathlib.Algebra.Category.Grp.EnoughInjectives
-
 import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
 import Mathlib.Algebra.Ring.Shrink
 

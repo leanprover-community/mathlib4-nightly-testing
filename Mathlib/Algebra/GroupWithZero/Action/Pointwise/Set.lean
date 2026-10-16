@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Group.Action.Pointwise.Set.Basic
 public import Mathlib.Algebra.GroupWithZero.Action.Basic
 public import Mathlib.Algebra.GroupWithZero.Pointwise.Set.Basic
-
 import Mathlib.Algebra.GroupWithZero.Action.Units
 
 /-!
@@ -32,20 +31,28 @@ variable {α β : Type*}
 
 namespace Set
 
-lemma smul_set_pi₀ {M ι : Type*} {α : ι → Type*} [GroupWithZero M] [∀ i, MulAction M (α i)]
-    {c : M} (hc : c ≠ 0) (I : Set ι) (s : ∀ i, Set (α i)) : c • I.pi s = I.pi (c • s) :=
+lemma smul_set_pi₀
+    {M ι : Type*} {α : ι → Type*} [GroupWithZero M] [∀ i, MulAction M (α i)]
+    {c : M} (hc : c ≠ 0)
+    (I : Set ι) (s : ∀ i, Set (α i))
+    : c • I.pi s = I.pi (c • s) :=
   smul_set_pi_of_isUnit (.mk0 _ hc) I s
 
 /-- A slightly more general version of `Set.smul_set_pi₀`. -/
-lemma smul_set_pi₀' {M ι : Type*} {α : ι → Type*} [GroupWithZero M] [∀ i, MulAction M (α i)]
-    {c : M} {I : Set ι} (h : c ≠ 0 ∨ I = univ) (s : ∀ i, Set (α i)) : c • I.pi s = I.pi (c • s) :=
+lemma smul_set_pi₀'
+    {M ι : Type*} {α : ι → Type*} [GroupWithZero M] [∀ i, MulAction M (α i)]
+    {c : M} {I : Set ι} (h : c ≠ 0 ∨ I = univ)
+    (s : ∀ i, Set (α i))
+    : c • I.pi s = I.pi (c • s) :=
   h.elim (fun hc ↦ smul_set_pi_of_isUnit (.mk0 _ hc) I s) (fun hI ↦ hI ▸ smul_set_univ_pi ..)
 
 section SMulZeroClass
 variable [Zero β] [SMulZeroClass α β] {s : Set α} {t : Set β} {a : α}
 
-/-- If scalar multiplication by elements of `α` sends `(0 : β)` to zero,
-then the same is true for `(0 : Set β)`. -/
+/--
+If scalar multiplication by elements of `α` sends `(0 : β)` to zero,
+then the same is true for `(0 : Set β)`.
+-/
 @[instance_reducible]
 protected def smulZeroClassSet : SMulZeroClass α (Set β) where
   smul_zero _ := image_singleton.trans <| by rw [smul_zero, singleton_zero]
@@ -75,7 +82,8 @@ lemma Nonempty.zero_smul (ht : t.Nonempty) : (0 : Set α) • t = 0 :=
   t.zero_smul_subset.antisymm <| by simpa [mem_smul] using! ht
 
 /-- A nonempty set is scaled by zero to the singleton set containing 0. -/
-@[simp] lemma zero_smul_set {s : Set β} (h : s.Nonempty) : (0 : α) • s = (0 : Set β) := by
+@[simp]
+lemma zero_smul_set {s : Set β} (h : s.Nonempty) : (0 : α) • s = (0 : Set β) := by
   simp only [← image_smul, zero_smul, h.image_const, singleton_zero]
 
 lemma zero_smul_set_subset (s : Set β) : (0 : α) • s ⊆ 0 :=
@@ -86,27 +94,31 @@ lemma subsingleton_zero_smul_set (s : Set β) : ((0 : α) • s).Subsingleton :=
 
 end SMulWithZero
 
-/-- If the scalar multiplication `(· • ·) : α → β → β` is distributive,
-then so is `(· • ·) : α → Set β → Set β`. -/
+/--
+If the scalar multiplication `(· • ·) : α → β → β` is distributive,
+then so is `(· • ·) : α → Set β → Set β`.
+-/
 @[instance_reducible]
-protected noncomputable def distribSMulSet [AddZeroClass β] [DistribSMul α β] :
-    DistribSMul α (Set β) where
+protected noncomputable def distribSMulSet [AddZeroClass β] [DistribSMul α β]
+    : DistribSMul α (Set β) where
   smul_add _ _ _ := image_image2_distrib <| smul_add _
 
 scoped[Pointwise] attribute [instance] Set.distribSMulSet
 
-/-- A distributive multiplicative action of a monoid on an additive monoid `β` gives a distributive
-multiplicative action on `Set β`. -/
+/--
+A distributive multiplicative action of a monoid on an additive monoid `β` gives a distributive
+multiplicative action on `Set β`.
+-/
 @[instance_reducible]
-protected noncomputable def distribMulActionSet [Monoid α] [AddMonoid β] [DistribMulAction α β] :
-    DistribMulAction α (Set β) where
+protected noncomputable def distribMulActionSet [Monoid α] [AddMonoid β] [DistribMulAction α β]
+    : DistribMulAction α (Set β) where
   smul_add := smul_add
   smul_zero := smul_zero
 
 /-- A multiplicative action of a monoid on a monoid `β` gives a multiplicative action on `Set β`. -/
 @[instance_reducible]
-protected noncomputable def mulDistribMulActionSet [Monoid α] [Monoid β] [MulDistribMulAction α β] :
-    MulDistribMulAction α (Set β) where
+protected noncomputable def mulDistribMulActionSet [Monoid α] [Monoid β] [MulDistribMulAction α β]
+    : MulDistribMulAction α (Set β) where
   smul_mul _ _ _ := image_image2_distrib <| smul_mul' _
   smul_one _ := image_singleton.trans <| by rw [smul_one, singleton_one]
 
@@ -163,7 +175,7 @@ lemma smul_set_symmDiff₀ (ha : a ≠ 0) : a • s ∆ t = (a • s) ∆ (a •
 lemma smul_set_univ₀ (ha : a ≠ 0) : a • (univ : Set β) = univ :=
   image_univ_of_surjective <| MulAction.surjective₀ ha
 
-lemma smul_univ₀ {s : Set α} (hs : ¬s ⊆ 0) : s • (univ : Set β) = univ :=
+lemma smul_univ₀ {s : Set α} (hs : ¬ s ⊆ 0) : s • (univ : Set β) = univ :=
   let ⟨a, ha, ha₀⟩ := not_subset.1 hs
   eq_univ_of_forall fun b ↦ ⟨a, ha, a⁻¹ • b, trivial, smul_inv_smul₀ ha₀ _⟩
 
@@ -171,13 +183,15 @@ lemma smul_univ₀' {s : Set α} (hs : s.Nontrivial) : s • (univ : Set β) = u
   smul_univ₀ hs.not_subset_singleton
 
 open scoped RightActions in
-@[simp] lemma inv_smul_set_distrib₀ (a : α) (s : Set α) : (a • s)⁻¹ = s⁻¹ <• a⁻¹ := by
+@[simp]
+lemma inv_smul_set_distrib₀ (a : α) (s : Set α) : (a • s)⁻¹ = s⁻¹ <• a⁻¹ := by
   obtain rfl | ha := eq_or_ne a 0
   · obtain rfl | hs := s.eq_empty_or_nonempty <;> simp [*]
   · ext; simp [mem_smul_set_iff_inv_smul_mem₀, *]
 
 open scoped RightActions in
-@[simp] lemma inv_op_smul_set_distrib₀ (a : α) (s : Set α) : (s <• a)⁻¹ = a⁻¹ • s⁻¹ := by
+@[simp]
+lemma inv_op_smul_set_distrib₀ (a : α) (s : Set α) : (s <• a)⁻¹ = a⁻¹ • s⁻¹ := by
   obtain rfl | ha := eq_or_ne a 0
   · obtain rfl | hs := s.eq_empty_or_nonempty <;> simp [*]
   · ext; simp [mem_smul_set_iff_inv_smul_mem₀, *]

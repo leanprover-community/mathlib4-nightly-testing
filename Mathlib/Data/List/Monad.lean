@@ -6,7 +6,6 @@ Authors: Leonardo de Moura
 module
 
 public import Batteries.Control.AlternativeMonad
-
 import Mathlib.Init
 /-!
 # Monad instances for `List`
@@ -27,11 +26,11 @@ instance instMonad : Monad List.{u} where
 
 @[simp] theorem pure_def (a : α) : pure a = [a] := rfl
 
-instance instLawfulMonad : LawfulMonad List.{u} := LawfulMonad.mk'
-  (id_map := map_id)
-  (pure_bind := fun _ _ => List.append_nil _)
-  (bind_assoc := fun _ _ _ => List.flatMap_assoc)
-  (bind_pure_comp := fun _ _ => map_eq_flatMap.symm)
+instance instLawfulMonad : LawfulMonad List.{u} :=
+  LawfulMonad.mk' (id_map := map_id)
+    (pure_bind := fun _ _ => List.append_nil _)
+    (bind_assoc := fun _ _ _ => List.flatMap_assoc)
+    (bind_pure_comp := fun _ _ => map_eq_flatMap.symm)
 
 instance : AlternativeMonad List.{u} where
   failure := @List.nil

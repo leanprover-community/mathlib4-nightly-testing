@@ -16,7 +16,6 @@ functor `F` such that `F (α₀..αᵢ₋₁, αᵢ, αᵢ₊₁..αₙ₋₁) =
 
 @[expose] public section
 
-
 universe u v
 
 namespace MvQPF
@@ -34,7 +33,8 @@ instance Prj.inhabited {v : TypeVec.{u} n} [Inhabited (v i)] : Inhabited (Prj i 
 /-- `map` on functor `Prj i` -/
 def Prj.map ⦃α β : TypeVec n⦄ (f : α ⟹ β) : Prj i α → Prj i β := f _
 
-instance Prj.mvfunctor : MvFunctor (Prj i) where map := @Prj.map _ i
+instance Prj.mvfunctor : MvFunctor (Prj i) where
+  map := @Prj.map _ i
 
 /-- Polynomial representation of the projection functor -/
 def Prj.P : MvPFunctor.{u} n where

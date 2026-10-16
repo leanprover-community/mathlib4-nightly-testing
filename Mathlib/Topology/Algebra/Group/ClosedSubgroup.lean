@@ -38,8 +38,8 @@ structure ClosedSubgroup (G : Type u) [Group G] [TopologicalSpace G] extends Sub
 
 /-- The type of closed subgroups of an additive topological group. -/
 @[ext]
-structure ClosedAddSubgroup (G : Type u) [AddGroup G] [TopologicalSpace G] extends
-    AddSubgroup G where
+structure ClosedAddSubgroup (G : Type u) [AddGroup G] [TopologicalSpace G]
+    extends AddSubgroup G where
   isClosed' : IsClosed carrier
 
 attribute [to_additive] ClosedSubgroup
@@ -52,9 +52,9 @@ variable (G : Type u) [Group G] [TopologicalSpace G]
 
 variable {G} in
 @[to_additive]
-theorem toSubgroup_injective : Function.Injective
-    (ClosedSubgroup.toSubgroup : ClosedSubgroup G → Subgroup G) :=
-  fun A B h ↦ by
+theorem toSubgroup_injective
+    : Function.Injective
+      (ClosedSubgroup.toSubgroup : ClosedSubgroup G → Subgroup G) := fun A B h ↦ by
   ext
   rw [h]
 
@@ -96,8 +96,8 @@ namespace Subgroup
 variable {G : Type u} [Group G] [TopologicalSpace G] [SeparatelyContinuousMul G]
 
 @[to_additive]
-lemma normalCore_isClosed (H : Subgroup G) (h : IsClosed (H : Set G)) :
-    IsClosed (H.normalCore : Set G) := by
+lemma normalCore_isClosed (H : Subgroup G) (h : IsClosed (H : Set G))
+    : IsClosed (H.normalCore : Set G) := by
   rw [normalCore_eq_iInf_comap_conj]
   push_cast
   apply isClosed_iInter
@@ -105,8 +105,8 @@ lemma normalCore_isClosed (H : Subgroup G) (h : IsClosed (H : Set G)) :
   exact h.preimage (IsTopologicalGroup.continuous_conj g)
 
 @[to_additive]
-lemma isOpen_of_isClosed_of_finiteIndex (H : Subgroup G) [H.FiniteIndex]
-    (h : IsClosed (H : Set G)) : IsOpen (H : Set G) := by
+lemma isOpen_of_isClosed_of_finiteIndex (H : Subgroup G) [H.FiniteIndex] (h : IsClosed (H : Set G))
+    : IsOpen (H : Set G) := by
   rw [← QuotientGroup.t1Space_iff] at h
   rw [← QuotientGroup.discreteTopology_iff]
   infer_instance

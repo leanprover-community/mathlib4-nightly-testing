@@ -22,11 +22,13 @@ open CategoryTheory
 
 open scoped Simplicial
 
-/-- The category whose objects are denoted `⦋n⦌ₛ` for `n : ℕ` and
+/--
+The category whose objects are denoted `⦋n⦌ₛ` for `n : ℕ` and
 morphisms `⦋n⦌ₛ ⟶ ⦋m⦌ₛ` are order embeddings `Fin (n.len + 1) ↪o Fin (m.len + 1)`.
 (This identifies to a wide subcategory of the category `SemiSimplex`, which
 has the "same" objects, and morphisms `Fin (n.len + 1) →o Fin (m.len + 1)`,
-see the faithful functor `SemiSimplexCategory.toSimplexCategory`.) -/
+see the faithful functor `SemiSimplexCategory.toSimplexCategory`.)
+-/
 @[ext]
 structure SemiSimplexCategory : Type where
   /-- Constructor `ℕ → SemiSimplexCategory`. -/
@@ -39,9 +41,11 @@ namespace SemiSimplexCategory
 /-- The object of `SemiSimplexCategory` corresponding to `n : ℕ` is denoted `⦋n⦌ₛ`. -/
 scoped[Simplicial] notation "⦋" n "⦌ₛ" => SemiSimplexCategory.mk n
 
-/-- The type of morphisms in the semi-simplex category are order embeddings.
+/--
+The type of morphisms in the semi-simplex category are order embeddings.
 This type is made irreducible: use `SemiSimplexCategory.homEquiv` to make
-the conversion. -/
+the conversion.
+-/
 def Hom (n m : SemiSimplexCategory) := Fin (n.len + 1) ↪o Fin (m.len + 1)
 
 instance smallCategory : SmallCategory.{0} SemiSimplexCategory where
@@ -49,25 +53,23 @@ instance smallCategory : SmallCategory.{0} SemiSimplexCategory where
   id _ := .refl _
   comp f g := f.trans g
 
-/-- Morphisms `n ⟶ m` in `SemiSimplexCategory` identify to order embeddings
-`Fin (n.len + 1) ↪o Fin (m.len + 1)`. -/
-def homEquiv {n m : SemiSimplexCategory} :
-    (n ⟶ m) ≃ (Fin (n.len + 1) ↪o Fin (m.len + 1)) :=
-  .refl _
+/--
+Morphisms `n ⟶ m` in `SemiSimplexCategory` identify to order embeddings
+`Fin (n.len + 1) ↪o Fin (m.len + 1)`.
+-/
+def homEquiv {n m : SemiSimplexCategory} : (n ⟶ m) ≃ (Fin (n.len + 1) ↪o Fin (m.len + 1)) := .refl _
+
+@[simp] lemma homEquiv_id (a : SemiSimplexCategory) : homEquiv (𝟙 a) = .refl _ := rfl
 
 @[simp]
-lemma homEquiv_id (a : SemiSimplexCategory) :
-    homEquiv (𝟙 a) = .refl _ := rfl
-
-@[simp]
-lemma homEquiv_comp {a b c : SemiSimplexCategory} (f : a ⟶ b) (g : b ⟶ c) :
-    homEquiv (f ≫ g) = (homEquiv f).trans (homEquiv g) := rfl
+lemma homEquiv_comp {a b c : SemiSimplexCategory} (f : a ⟶ b) (g : b ⟶ c)
+    : homEquiv (f ≫ g) = (homEquiv f).trans (homEquiv g) :=
+  rfl
 
 attribute [irreducible] Hom
 
 @[ext]
-theorem hom_ext {a b : SemiSimplexCategory} {f g : a ⟶ b}
-    (h : homEquiv f = homEquiv g) : f = g :=
+theorem hom_ext {a b : SemiSimplexCategory} {f g : a ⟶ b} (h : homEquiv f = homEquiv g) : f = g :=
   homEquiv.injective h
 
 /-- The inclusion functor `SemiSimplexCategory ⥤ SimplexCategory`. -/
@@ -75,9 +77,7 @@ def toSimplexCategory : SemiSimplexCategory ⥤ SimplexCategory where
   obj n := ⦋n.len⦌
   map f := SimplexCategory.Hom.mk (homEquiv f).toOrderHom
 
-@[simp]
-lemma toSimplexCategory_obj (n : ℕ) :
-    toSimplexCategory.obj ⦋n⦌ₛ = ⦋n⦌ := rfl
+@[simp] lemma toSimplexCategory_obj (n : ℕ) : toSimplexCategory.obj ⦋n⦌ₛ = ⦋n⦌ := rfl
 
 instance : toSimplexCategory.Faithful where
   map_injective h := by
@@ -93,18 +93,21 @@ instance {n m : SemiSimplexCategory} (f : n ⟶ m) : Mono f where
     apply toSimplexCategory.map_injective
     simp only [← cancel_mono (toSimplexCategory.map f), ← Functor.map_comp, h]
 
-/-- Constructor for morphisms in `SemiSimplexCategory` which takes as an input
-a monomorphism in `SimplexCategory`. -/
-def homOfMono {n m : SemiSimplexCategory}
-    (f : toSimplexCategory.obj n ⟶ toSimplexCategory.obj m) [Mono f] : n ⟶ m :=
+/--
+Constructor for morphisms in `SemiSimplexCategory` which takes as an input
+a monomorphism in `SimplexCategory`.
+-/
+def homOfMono
+    {n m : SemiSimplexCategory} (f : toSimplexCategory.obj n ⟶ toSimplexCategory.obj m) [Mono f]
+    : n ⟶ m :=
   homEquiv.symm (OrderEmbedding.ofStrictMono f.toOrderHom
     ((SimplexCategory.Hom.toOrderHom f).monotone.strictMono_of_injective
       (by rwa [← SimplexCategory.mono_iff_injective])))
 
 @[simp]
-lemma toSimplexCategory_map_homOfMono {n m : SemiSimplexCategory}
-    (f : toSimplexCategory.obj n ⟶ toSimplexCategory.obj m) [Mono f] :
-    toSimplexCategory.map (homOfMono f) = f := by
+lemma toSimplexCategory_map_homOfMono
+    {n m : SemiSimplexCategory} (f : toSimplexCategory.obj n ⟶ toSimplexCategory.obj m) [Mono f]
+    : toSimplexCategory.map (homOfMono f) = f := by
   aesop
 
 end SemiSimplexCategory

@@ -46,10 +46,11 @@ namespace PowerSeries
 
 variable {R : Type*} [Semiring R] (v : R → ℝ) (c : ℝ) (f : PowerSeries R)
 
-/-- Given a power series `f` in, a function `v : R → ℝ` and a real number `c`, the Gauss norm is
-  defined as the supremum of the set of all values of `v (coeff t f) * c ^ t` for all `t : ℕ`. -/
-noncomputable
-abbrev gaussNorm : ℝ := MvPowerSeries.gaussNorm v (fun _ => c) f
+/--
+Given a power series `f` in, a function `v : R → ℝ` and a real number `c`, the Gauss norm is
+defined as the supremum of the set of all values of `v (coeff t f) * c ^ t` for all `t : ℕ`.
+-/
+noncomputable abbrev gaussNorm : ℝ := MvPowerSeries.gaussNorm v (fun _ => c) f
 
 lemma gaussNorm_eq : gaussNorm v c f = ⨆ i : ℕ, v (f.coeff i) * c ^ i := by
   refine Equiv.iSup_congr (Finsupp.uniqueEquiv ()) ?_
@@ -57,14 +58,16 @@ lemma gaussNorm_eq : gaussNorm v c f = ⨆ i : ℕ, v (f.coeff i) * c ^ i := by
   simp only [coeff, Finsupp.uniqueEquiv_apply, PUnit.default_eq_unit, Finsupp.prod_pow,
     Finset.univ_unique, Finset.prod_singleton, show (Finsupp.single () (x PUnit.unit)) = x by grind]
 
-/-- We say `f` HasGaussNorm if the values `v (coeff t f) * c ^ t` is bounded above, that is
-  `gaussNormC f` is finite. -/
+/--
+We say `f` HasGaussNorm if the values `v (coeff t f) * c ^ t` is bounded above, that is
+`gaussNormC f` is finite.
+-/
 abbrev HasGaussNorm := BddAbove (Set.range (fun (t : ℕ) ↦ (v (coeff t f) * c ^ t)))
 
-lemma HasGaussNorm.hasMvGaussNorm (h : HasGaussNorm v c f) :
-    MvPowerSeries.HasGaussNorm v (fun _ ↦ c) f := by
-  suffices (Set.range (fun (t : ℕ) ↦ (v (coeff t f) * c ^ t))) =
-      Set.range fun t ↦ v ((MvPowerSeries.coeff t) f) * t.prod fun _ x2 ↦ c ^ x2 by
+lemma HasGaussNorm.hasMvGaussNorm (h : HasGaussNorm v c f)
+    : MvPowerSeries.HasGaussNorm v (fun _ ↦ c) f := by
+  suffices (Set.range (fun (t : ℕ) ↦ (v (coeff t f) * c ^ t)))
+      = Set.range fun t ↦ v ((MvPowerSeries.coeff t) f) * t.prod fun _ x2 ↦ c ^ x2 by
     simpa only [MvPowerSeries.HasGaussNorm, ← this]
   refine Set.ext (fun _ ↦ ?_)
   simp only [Set.mem_range, Finsupp.prod_pow, Finset.univ_unique, PUnit.default_eq_unit,
@@ -85,25 +88,31 @@ alias HasGaussNorm.HasMvGaussNorm := HasGaussNorm.hasMvGaussNorm
 theorem gaussNorm_zero (vZero : v 0 = 0) : gaussNorm v c 0 = 0 :=
   MvPowerSeries.gaussNorm_zero v (fun _ ↦ c) vZero
 
-lemma le_gaussNorm (hbd : HasGaussNorm v c f) (t : ℕ) :
-    v (coeff t f) * c ^ t ≤ gaussNorm v c f := by
+lemma le_gaussNorm (hbd : HasGaussNorm v c f) (t : ℕ)
+    : v (coeff t f) * c ^ t ≤ gaussNorm v c f := by
   rw [gaussNorm_eq]
   apply le_ciSup hbd
 
 lemma gaussNorm_nonneg (vNonneg : ∀ a, v a ≥ 0) : 0 ≤ gaussNorm v c f :=
   MvPowerSeries.gaussNorm_nonneg v (fun _ ↦ c) f vNonneg
 
-lemma gaussNorm_eq_zero_iff (vZero : v 0 = 0) (vNonneg : ∀ a, v a ≥ 0)
-    (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0 < c) (hbd : HasGaussNorm v c f) :
-    gaussNorm v c f = 0 ↔ f = 0 :=
-  MvPowerSeries.gaussNorm_eq_zero_iff v (fun _ ↦ c) f vZero vNonneg h_eq_zero
-    (by grind) hbd.hasMvGaussNorm
+lemma gaussNorm_eq_zero_iff
+    (vZero : v 0 = 0) (vNonneg : ∀ a, v a ≥ 0) (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0 < c)
+    (hbd : HasGaussNorm v c f)
+    : gaussNorm v c f = 0 ↔ f = 0 :=
+  MvPowerSeries.gaussNorm_eq_zero_iff v
+    (fun _ ↦ c)
+    f vZero vNonneg h_eq_zero (by grind) hbd.hasMvGaussNorm
 
-lemma gaussNorm_add_le_max (g : PowerSeries R) (hc : 0 ≤ c)
-    (vNonneg : ∀ a, v a ≥ 0) (hv : ∀ x y, v (x + y) ≤ max (v x) (v y))
-    (hbfd : HasGaussNorm v c f) (hbgd : HasGaussNorm v c g) :
-    gaussNorm v c (f + g) ≤ max (gaussNorm v c f) (gaussNorm v c g) :=
-  MvPowerSeries.gaussNorm_add_le_max v (fun _ ↦ c) f g (fun _ => by simp [hc]) vNonneg hv
-    hbfd.hasMvGaussNorm hbgd.hasMvGaussNorm
+lemma gaussNorm_add_le_max
+    (g : PowerSeries R)
+    (hc : 0 ≤ c) (vNonneg : ∀ a, v a ≥ 0) (hv : ∀ x y, v (x + y) ≤ max (v x) (v y))
+    (hbfd : HasGaussNorm v c f) (hbgd : HasGaussNorm v c g)
+    : gaussNorm v c (f + g) ≤ max (gaussNorm v c f) (gaussNorm v c g) :=
+  MvPowerSeries.gaussNorm_add_le_max v
+    (fun _ ↦ c)
+    f g
+    (fun _ => by simp [hc])
+    vNonneg hv hbfd.hasMvGaussNorm hbgd.hasMvGaussNorm
 
 end PowerSeries

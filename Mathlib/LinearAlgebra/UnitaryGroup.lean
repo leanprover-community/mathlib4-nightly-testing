@@ -40,7 +40,6 @@ matrix group, group, unitary group, orthogonal group
 
 @[expose] public section
 
-
 universe u v
 
 namespace Matrix
@@ -54,35 +53,36 @@ variable [DecidableEq m] [DecidableEq n] [Fintype m] [Fintype n] [Semiring R] [S
 
 /-- Diagonal matrices are unitary if their entries are. -/
 @[simp]
-theorem diagonal_mem_unitary {d : n → R} :
-    diagonal d ∈ unitary (Matrix n n R) ↔ d ∈ unitary (n → R) := by
+theorem diagonal_mem_unitary {d : n → R}
+    : diagonal d ∈ unitary (Matrix n n R) ↔ d ∈ unitary (n → R) := by
   simp_rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
     diagonal_mul_diagonal, diagonal_eq_one, Pi.star_def, Pi.mul_def]
 
 @[simp]
-theorem natCast_mem_unitary [Nonempty n] {k : ℕ} :
-    ↑k ∈ unitary (Matrix n n R) ↔ ↑k ∈ unitary R :=
+theorem natCast_mem_unitary [Nonempty n] {k : ℕ} : ↑k ∈ unitary (Matrix n n R) ↔ ↑k ∈ unitary R :=
   diagonal_mem_unitary.trans Pi.const_mem_unitary_iff
 
 @[simp]
-theorem ofNat_mem_unitary [Nonempty n] {k : ℕ} [k.AtLeastTwo] :
-    ofNat(k) ∈ unitary (Matrix n n R) ↔ ofNat(k) ∈ unitary R :=
+theorem ofNat_mem_unitary [Nonempty n] {k : ℕ} [k.AtLeastTwo]
+    : ofNat(k) ∈ unitary (Matrix n n R) ↔ ofNat(k) ∈ unitary R :=
   natCast_mem_unitary
 
 /-- A reindexed unitary matrix is unitary. -/
 @[simp]
-theorem submatrix_equiv_mem_unitary {A : Matrix m m R} {e₁ e₂ : n ≃ m} :
-    A.submatrix e₁ e₂ ∈ unitary (Matrix n n R) ↔ A ∈ unitary (Matrix m m R) := by
+theorem submatrix_equiv_mem_unitary {A : Matrix m m R} {e₁ e₂ : n ≃ m}
+    : A.submatrix e₁ e₂ ∈ unitary (Matrix n n R) ↔ A ∈ unitary (Matrix m m R) := by
   simp [Unitary.mem_iff, star_eq_conjTranspose]
 
 open scoped Kronecker in
 /-- The kronecker product of two unitary matrices is unitary. -/
-theorem kronecker_mem_unitary {U₁ : Matrix n n R} {U₂ : Matrix m m R}
-    (hU₁ : U₁ ∈ unitary (Matrix n n R)) (hU₂ : U₂ ∈ unitary (Matrix m m R)) :
-    U₁ ⊗ₖ U₂ ∈ unitary (Matrix (n × m) (n × m) R) := by
+theorem kronecker_mem_unitary
+    {U₁ : Matrix n n R} {U₂ : Matrix m m R}
+    (hU₁ : U₁ ∈ unitary (Matrix n n R)) (hU₂ : U₂ ∈ unitary (Matrix m m R))
+    : U₁ ⊗ₖ U₂ ∈ unitary (Matrix (n × m) (n × m) R) := by
   simp_rw [Unitary.mem_iff, star_eq_conjTranspose, conjTranspose_kronecker']
-  constructor <;> ext <;> simp only [mul_apply, submatrix_apply, kroneckerMap_apply, Prod.fst_swap,
-    conjTranspose_apply, ← star_apply, Prod.snd_swap, ← mul_assoc]
+  constructor <;> ext
+    <;> simp only [mul_apply, submatrix_apply, kroneckerMap_apply, Prod.fst_swap,
+      conjTranspose_apply, ← star_apply, Prod.snd_swap, ← mul_assoc]
   · simp_rw [mul_assoc _ (star U₁ _ _), ← Finset.univ_product_univ, Finset.sum_product]
     rw [Finset.sum_comm]
     simp_rw [← Finset.sum_mul, ← Finset.mul_sum, ← Matrix.mul_apply, hU₁.1, Matrix.one_apply,
@@ -99,11 +99,11 @@ section
 variable (n : Type u) [DecidableEq n] [Fintype n]
 variable (α : Type v) [CommRing α] [StarRing α]
 
-/-- `Matrix.unitaryGroup n` is the group of `n` by `n` matrices where the star-transpose is the
+/--
+`Matrix.unitaryGroup n` is the group of `n` by `n` matrices where the star-transpose is the
 inverse.
 -/
-abbrev unitaryGroup : Submonoid (Matrix n n α) :=
-  unitary (Matrix n n α)
+abbrev unitaryGroup : Submonoid (Matrix n n α) := unitary (Matrix n n α)
 
 -- the group and star structure is already defined in another file
 example : Group (unitaryGroup n α) := inferInstance
@@ -122,25 +122,28 @@ theorem mem_unitaryGroup_iff' : A ∈ Matrix.unitaryGroup n α ↔ star A * A = 
   refine ⟨And.left, fun hA => ⟨hA, ?_⟩⟩
   rwa [mul_eq_one_comm] at hA
 
-theorem det_of_mem_unitary {A : Matrix n n α} (hA : A ∈ Matrix.unitaryGroup n α) :
-    A.det ∈ unitary α := by
+theorem det_of_mem_unitary {A : Matrix n n α} (hA : A ∈ Matrix.unitaryGroup n α)
+    : A.det ∈ unitary α := by
   constructor
   · simpa [star, det_transpose] using congr(det $(hA.1))
   · simpa [star, det_transpose] using congr(det $(hA.2))
 
 section TensorProduct
-variable {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
+variable
+  {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
   [StarRing A] [StarRing B] [StarRing R] [StarModule R A] [StarModule R B]
 
 open scoped TensorProduct Kronecker
 
-theorem _root_.Unitary.tmul_mem {U : A} {V : B} (hU : U ∈ unitary A) (hV : V ∈ unitary B) :
-    U ⊗ₜ[R] V ∈ unitary (A ⊗[R] B) := by
+theorem _root_.Unitary.tmul_mem {U : A} {V : B} (hU : U ∈ unitary A) (hV : V ∈ unitary B)
+    : U ⊗ₜ[R] V ∈ unitary (A ⊗[R] B) := by
   simp [Unitary.mem_iff, hU, hV, Algebra.TensorProduct.one_def]
 
-theorem kroneckerTMul_mem_unitary {m : Type*} [Fintype m] [DecidableEq m] {U : Matrix m m A}
-    {V : Matrix n n B} (hU : U ∈ unitary (Matrix m m A)) (hV : V ∈ unitary (Matrix n n B)) :
-    U ⊗ₖₜ[R] V ∈ unitary (Matrix (m × n) (m × n) (A ⊗[R] B)) := by
+theorem kroneckerTMul_mem_unitary
+    {m : Type*} [Fintype m] [DecidableEq m]
+    {U : Matrix m m A} {V : Matrix n n B}
+    (hU : U ∈ unitary (Matrix m m A)) (hV : V ∈ unitary (Matrix n n B))
+    : U ⊗ₖₜ[R] V ∈ unitary (Matrix (m × n) (m × n) (A ⊗[R] B)) := by
   simp_rw [Unitary.mem_iff, star_eq_conjTranspose] at hU hV ⊢
   simp [conjTranspose_kroneckerTMul, ← mul_kroneckerTMul_mul, hU, hV]
 
@@ -148,18 +151,18 @@ end TensorProduct
 
 namespace UnitaryGroup
 
-instance coeMatrix : Coe (unitaryGroup n α) (Matrix n n α) :=
-  ⟨Subtype.val⟩
+instance coeMatrix : Coe (unitaryGroup n α) (Matrix n n α) := ⟨Subtype.val⟩
 
-instance coeFun : CoeFun (unitaryGroup n α) fun _ => n → n → α where coe A := A.val
+instance coeFun : CoeFun (unitaryGroup n α) fun _ => n → n → α where
+  coe A := A.val
 
-/-- `Matrix.UnitaryGroup.toLin' A` is matrix multiplication of vectors by `A`, as a linear map.
+/--
+`Matrix.UnitaryGroup.toLin' A` is matrix multiplication of vectors by `A`, as a linear map.
 
 After the group structure on `Matrix.unitaryGroup n` is defined, we show in
 `Matrix.UnitaryGroup.toLinearEquiv` that this gives a linear equivalence.
 -/
-def toLin' (A : unitaryGroup n α) :=
-  Matrix.toLin' A.1
+def toLin' (A : unitaryGroup n α) := Matrix.toLin' A.1
 
 theorem ext_iff (A B : unitaryGroup n α) : A = B ↔ ∀ i j, A i j = B i j :=
   Subtype.ext_iff.trans ⟨fun h i j => congr($h i j), Matrix.ext⟩
@@ -168,8 +171,7 @@ theorem ext_iff (A B : unitaryGroup n α) : A = B ↔ ∀ i j, A i j = B i j :=
 theorem ext (A B : unitaryGroup n α) : (∀ i j, A i j = B i j) → A = B :=
   (UnitaryGroup.ext_iff A B).mpr
 
-theorem star_mul_self (A : unitaryGroup n α) : star A.1 * A.1 = 1 :=
-  A.2.1
+theorem star_mul_self (A : unitaryGroup n α) : star A.1 * A.1 = 1 := A.2.1
 
 @[simp]
 theorem det_isUnit (A : unitaryGroup n α) : IsUnit (A : Matrix n n α).det :=
@@ -192,12 +194,9 @@ variable (A B : unitaryGroup n α)
 @[simp] theorem one_apply : ⇑(1 : unitaryGroup n α) = (1 : Matrix n n α) := rfl
 
 @[simp]
-theorem toLin'_mul : toLin' (A * B) = (toLin' A).comp (toLin' B) :=
-  Matrix.toLin'_mul A.1 B.1
+theorem toLin'_mul : toLin' (A * B) = (toLin' A).comp (toLin' B) := Matrix.toLin'_mul A.1 B.1
 
-@[simp]
-theorem toLin'_one : toLin' (1 : unitaryGroup n α) = LinearMap.id :=
-  Matrix.toLin'_one
+@[simp] theorem toLin'_one : toLin' (1 : unitaryGroup n α) = LinearMap.id := Matrix.toLin'_one
 
 end CoeLemmas
 
@@ -206,19 +205,24 @@ end CoeLemmas
 example : unitaryGroup n α →* GeneralLinearGroup α (n → α) :=
   .toHomUnits ⟨⟨toLin', toLin'_one⟩, toLin'_mul⟩
 
-/-- `Matrix.unitaryGroup.toLinearEquiv A` is matrix multiplication of vectors by `A`, as a linear
-equivalence. -/
-def toLinearEquiv (A : unitaryGroup n α) : (n → α) ≃ₗ[α] n → α :=
-  { Matrix.toLin' A.1 with
-    invFun := toLin' A⁻¹
-    left_inv := fun x =>
-      calc
-        (toLin' A⁻¹).comp (toLin' A) x = (toLin' (A⁻¹ * A)) x := by rw [← toLin'_mul]
-        _ = x := by rw [inv_mul_cancel, toLin'_one, id_apply]
-    right_inv := fun x =>
-      calc
-        (toLin' A).comp (toLin' A⁻¹) x = toLin' (A * A⁻¹) x := by rw [← toLin'_mul]
-        _ = x := by rw [mul_inv_cancel, toLin'_one, id_apply] }
+/--
+`Matrix.unitaryGroup.toLinearEquiv A` is matrix multiplication of vectors by `A`, as a linear
+equivalence.
+-/
+def toLinearEquiv (A : unitaryGroup n α) : (n → α) ≃ₗ[α] n → α := {
+  Matrix.toLin' A.1 with
+  invFun := toLin' A⁻¹
+  left_inv := fun x =>
+    calc
+      (toLin' A⁻¹).comp (toLin' A) x
+        = (toLin' (A⁻¹ * A)) x := by rw [← toLin'_mul]
+      _ = x := by rw [inv_mul_cancel, toLin'_one, id_apply]
+  right_inv := fun x =>
+    calc
+      (toLin' A).comp (toLin' A⁻¹) x
+        = toLin' (A * A⁻¹) x := by rw [← toLin'_mul]
+      _ = x := by rw [mul_inv_cancel, toLin'_one, id_apply]
+}
 
 /-- `Matrix.unitaryGroup.toGL` is the map from the unitary group to the general linear group -/
 def toGL (A : unitaryGroup n α) : GeneralLinearGroup α (n → α) :=
@@ -227,44 +231,53 @@ def toGL (A : unitaryGroup n α) : GeneralLinearGroup α (n → α) :=
 theorem coe_toGL (A : unitaryGroup n α) : (toGL A).1 = toLin' A := rfl
 
 @[simp]
-theorem toGL_one : toGL (1 : unitaryGroup n α) = 1 := Units.ext <| by
-  simp only [coe_toGL, toLin'_one]
-  rfl
+theorem toGL_one : toGL (1 : unitaryGroup n α) = 1 :=
+  Units.ext <| by
+    simp only [coe_toGL, toLin'_one]
+    rfl
 
 @[simp]
-theorem toGL_mul (A B : unitaryGroup n α) : toGL (A * B) = toGL A * toGL B := Units.ext <| by
-  simp only [coe_toGL, toLin'_mul]
-  rfl
+theorem toGL_mul (A B : unitaryGroup n α) : toGL (A * B) = toGL A * toGL B :=
+  Units.ext <| by
+    simp only [coe_toGL, toLin'_mul]
+    rfl
 
-/-- `Matrix.unitaryGroup.embeddingGL` is the embedding from `Matrix.unitaryGroup n α` to
-`LinearMap.GeneralLinearGroup n α`. -/
+/--
+`Matrix.unitaryGroup.embeddingGL` is the embedding from `Matrix.unitaryGroup n α` to
+`LinearMap.GeneralLinearGroup n α`.
+-/
 def embeddingGL : unitaryGroup n α →* GeneralLinearGroup α (n → α) :=
   ⟨⟨fun A => toGL A, toGL_one⟩, toGL_mul⟩
 
-theorem _root_.Matrix.transpose_mem_unitaryGroup_iff {U : Matrix n n α} :
-    Uᵀ ∈ unitaryGroup n α ↔ U ∈ unitaryGroup n α := by
+theorem _root_.Matrix.transpose_mem_unitaryGroup_iff {U : Matrix n n α}
+    : Uᵀ ∈ unitaryGroup n α ↔ U ∈ unitaryGroup n α := by
   conv_rhs => rw [mem_unitaryGroup_iff']
   rw [mem_unitaryGroup_iff, show star Uᵀ = (star U)ᵀ by rfl, ← transpose_mul, ← transpose_inj]
   simp
 
-theorem _root_.Matrix.map_star_mem_unitaryGroup_iff {U : Matrix n n α} :
-    U.map star ∈ unitaryGroup n α ↔ U ∈ unitaryGroup n α := by
+theorem _root_.Matrix.map_star_mem_unitaryGroup_iff {U : Matrix n n α}
+    : U.map star ∈ unitaryGroup n α ↔ U ∈ unitaryGroup n α := by
   simp [← conjTranspose_transpose, transpose_mem_unitaryGroup_iff, ← star_eq_conjTranspose]
 
 /-- The transpose of a unitary matrix as a unitary matrix. -/
-@[simps] def transpose (U : unitaryGroup n α) : unitaryGroup n α :=
+@[simps]
+def transpose (U : unitaryGroup n α) : unitaryGroup n α :=
   ⟨Uᵀ, transpose_mem_unitaryGroup_iff.mpr (SetLike.coe_mem _)⟩
 
-/-- The `Matrix.map star` of a unitary matrix (i.e., taking the `star` of
-each element in the matrix) as a unitary matrix. -/
-@[simps] def map_star (U : unitaryGroup n α) : unitaryGroup n α :=
+/--
+The `Matrix.map star` of a unitary matrix (i.e., taking the `star` of
+each element in the matrix) as a unitary matrix.
+-/
+@[simps]
+def map_star (U : unitaryGroup n α) : unitaryGroup n α :=
   ⟨(U : Matrix n n α).map star, map_star_mem_unitaryGroup_iff.mpr (SetLike.coe_mem _)⟩
 
-theorem map_star_inv_eq_transpose (U : unitaryGroup n α) :
-    (map_star U)⁻¹ = UnitaryGroup.transpose U := by ext; simp
+theorem map_star_inv_eq_transpose (U : unitaryGroup n α)
+    : (map_star U)⁻¹ = UnitaryGroup.transpose U := by
+  ext; simp
 
-theorem transpose_inv_eq_map_star (U : unitaryGroup n α) :
-    (UnitaryGroup.transpose U)⁻¹ = map_star U := by
+theorem transpose_inv_eq_map_star (U : unitaryGroup n α)
+    : (UnitaryGroup.transpose U)⁻¹ = map_star U := by
   simp [← map_star_inv_eq_transpose]
 
 end UnitaryGroup
@@ -273,8 +286,10 @@ section specialUnitaryGroup
 
 variable (n) (α)
 
-/-- `Matrix.specialUnitaryGroup` is the group of unitary `n` by `n` matrices where the determinant
-is 1. (This definition is only correct if 2 is invertible.) -/
+/--
+`Matrix.specialUnitaryGroup` is the group of unitary `n` by `n` matrices where the determinant
+is 1. (This definition is only correct if 2 is invertible.)
+-/
 def specialUnitaryGroup : Submonoid (Matrix n n α) := unitaryGroup n α ⊓ MonoidHom.mker detMonoidHom
 
 variable {n} {α}
@@ -282,8 +297,8 @@ variable {n} {α}
 theorem specialUnitaryGroup_le_unitaryGroup : specialUnitaryGroup n α ≤ unitaryGroup n α :=
   inf_le_left
 
-theorem mem_specialUnitaryGroup_iff :
-    A ∈ specialUnitaryGroup n α ↔ A ∈ unitaryGroup n α ∧ A.det = 1 :=
+theorem mem_specialUnitaryGroup_iff
+    : A ∈ specialUnitaryGroup n α ↔ A ∈ unitaryGroup n α ∧ A.det = 1 :=
   Iff.rfl
 
 instance : StarMul (specialUnitaryGroup n α) where
@@ -294,10 +309,10 @@ instance : StarMul (specialUnitaryGroup n α) where
 @[simp, norm_cast]
 theorem specialUnitaryGroup.coe_star (A : specialUnitaryGroup n α) : (star A).1 = star A.1 := rfl
 
-instance : Inv (specialUnitaryGroup n α) where inv := star
+instance : Inv (specialUnitaryGroup n α) where
+  inv := star
 
-theorem star_eq_inv (A : specialUnitaryGroup n α) : star A = A⁻¹ :=
-  rfl
+theorem star_eq_inv (A : specialUnitaryGroup n α) : star A = A⁻¹ := rfl
 
 instance : Group (specialUnitaryGroup n α) where
   inv_mul_cancel A := Subtype.ext A.prop.1.1
@@ -313,16 +328,16 @@ variable (n) (R : Type v) [CommRing R]
 -- at the same time?
 attribute [local instance] starRingOfComm
 
-/-- `Matrix.orthogonalGroup n` is the group of `n` by `n` matrices where the transpose is the
-inverse. -/
+/--
+`Matrix.orthogonalGroup n` is the group of `n` by `n` matrices where the transpose is the
+inverse.
+-/
 abbrev orthogonalGroup := unitaryGroup n R
 
-theorem mem_orthogonalGroup_iff {A : Matrix n n R} :
-    A ∈ Matrix.orthogonalGroup n R ↔ A * Aᵀ = 1 :=
+theorem mem_orthogonalGroup_iff {A : Matrix n n R} : A ∈ Matrix.orthogonalGroup n R ↔ A * Aᵀ = 1 :=
   mem_unitaryGroup_iff
 
-theorem mem_orthogonalGroup_iff' {A : Matrix n n R} :
-    A ∈ Matrix.orthogonalGroup n R ↔ Aᵀ * A = 1 :=
+theorem mem_orthogonalGroup_iff' {A : Matrix n n R} : A ∈ Matrix.orthogonalGroup n R ↔ Aᵀ * A = 1 :=
   mem_unitaryGroup_iff'
 
 end OrthogonalGroup
@@ -333,8 +348,10 @@ variable (n) (R : Type v) [CommRing R]
 
 attribute [local instance] starRingOfComm
 
-/-- `Matrix.specialOrthogonalGroup n` is the group of orthogonal `n` by `n` where the determinant
-is one. (This definition is only correct if 2 is invertible.) -/
+/--
+`Matrix.specialOrthogonalGroup n` is the group of orthogonal `n` by `n` where the determinant
+is one. (This definition is only correct if 2 is invertible.)
+-/
 abbrev specialOrthogonalGroup : Submonoid (Matrix n n R) := specialUnitaryGroup n R
 
 variable {n} {R} {A : Matrix n n R}
@@ -343,24 +360,24 @@ variable {n} {R} {A : Matrix n n R}
 example : Group (specialOrthogonalGroup n R) := inferInstance
 example : StarMul (specialOrthogonalGroup n R) := inferInstance
 
-theorem mem_specialOrthogonalGroup_iff :
-    A ∈ specialOrthogonalGroup n R ↔ A ∈ orthogonalGroup n R ∧ A.det = 1 :=
+theorem mem_specialOrthogonalGroup_iff
+    : A ∈ specialOrthogonalGroup n R ↔ A ∈ orthogonalGroup n R ∧ A.det = 1 :=
   Iff.rfl
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-lemma of_mem_specialOrthogonalGroup_fin_two_iff {a b c d : R} :
-    !![a, b; c, d] ∈ Matrix.specialOrthogonalGroup (Fin 2) R ↔
-      a = d ∧ b = -c ∧ a ^ 2 + b ^ 2 = 1 := by
+lemma of_mem_specialOrthogonalGroup_fin_two_iff {a b c d : R}
+    : !![a, b; c, d] ∈ Matrix.specialOrthogonalGroup (Fin 2) R
+      ↔ a = d ∧ b = -c ∧ a ^ 2 + b ^ 2 = 1 := by
   trans ((a * a + b * b = 1 ∧ a * c + b * d = 0) ∧
     c * a + d * b = 0 ∧ c * c + d * d = 1) ∧ a * d - b * c = 1
-  · simp [Matrix.mem_specialOrthogonalGroup_iff, Matrix.mem_orthogonalGroup_iff,
-      ← Matrix.ext_iff, Fin.forall_fin_succ, Matrix.vecHead, Matrix.vecTail]
+  · simp [Matrix.mem_specialOrthogonalGroup_iff, Matrix.mem_orthogonalGroup_iff, ← Matrix.ext_iff,
+      Fin.forall_fin_succ, Matrix.vecHead, Matrix.vecTail]
   grind
 
-lemma mem_specialOrthogonalGroup_fin_two_iff {M : Matrix (Fin 2) (Fin 2) R} :
-    M ∈ Matrix.specialOrthogonalGroup (Fin 2) R ↔
-      M 0 0 = M 1 1 ∧ M 0 1 = - M 1 0 ∧ M 0 0 ^ 2 + M 0 1 ^ 2 = 1 := by
+lemma mem_specialOrthogonalGroup_fin_two_iff {M : Matrix (Fin 2) (Fin 2) R}
+    : M ∈ Matrix.specialOrthogonalGroup (Fin 2) R
+      ↔ M 0 0 = M 1 1 ∧ M 0 1 = - M 1 0 ∧ M 0 0 ^ 2 + M 0 1 ^ 2 = 1 := by
   rw [← M.etaExpand_eq]
   exact of_mem_specialOrthogonalGroup_fin_two_iff
 

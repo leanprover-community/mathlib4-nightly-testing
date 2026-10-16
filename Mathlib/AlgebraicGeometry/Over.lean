@@ -30,9 +30,7 @@ open CategoryTheory
 
 variable {X Y : Scheme.{u}} (f : X.Hom Y) (S : Scheme.{u})
 
-/--
-`X.Over S` is the typeclass containing the data of a structure morphism `X ↘ S : X ⟶ S`.
--/
+/-- `X.Over S` is the typeclass containing the data of a structure morphism `X ↘ S : X ⟶ S`. -/
 protected abbrev Over (X S : Scheme.{u}) := OverClass X S
 
 /--
@@ -41,8 +39,10 @@ and that `S` is (uniquely) inferable from the structure of `X`.
 -/
 abbrev CanonicallyOver (X S : Scheme.{u}) := CanonicallyOverClass X S
 
-/-- Given `X.Over S` and `Y.Over S` and `f : X ⟶ Y`,
-`f.IsOver S` is the typeclass asserting `f` commutes with the structure morphisms. -/
+/--
+Given `X.Over S` and `Y.Over S` and `f : X ⟶ Y`,
+`f.IsOver S` is the typeclass asserting `f` commutes with the structure morphisms.
+-/
 abbrev Hom.IsOver (f : X.Hom Y) (S : Scheme.{u}) [X.Over S] [Y.Over S] := HomIsOver f S
 
 @[simp]

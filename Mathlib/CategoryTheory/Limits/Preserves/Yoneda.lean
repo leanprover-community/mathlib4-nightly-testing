@@ -39,35 +39,41 @@ open CategoryTheory.Limits Opposite CategoryTheory.Functor
 
 variable {C : Type u₁} [Category.{v₁} C]
 
-variable {J : Type u₂} [Category.{v₂} J] [HasColimitsOfShape J (Type v₁)]
-  [HasColimitsOfShape J (Type (max u₁ v₁))] (F : J ⥤ Cᵒᵖ ⥤ Type v₁)
+variable
+  {J : Type u₂}
+  [Category.{v₂} J] [HasColimitsOfShape J (Type v₁)] [HasColimitsOfShape J (Type (max u₁ v₁))]
+  (F : J ⥤ Cᵒᵖ ⥤ Type v₁)
 
 /-- Naturally in `X`, we have `Hom(YX, colim_i Fi) ≅ colim_i Hom(YX, Fi)`. -/
-noncomputable def yonedaYonedaColimit :
-    yoneda.op ⋙ yoneda.obj (colimit F) ≅ yoneda.op ⋙ colimit (F ⋙ yoneda) := calc
-  yoneda.op ⋙ yoneda.obj (colimit F)
-    ≅ colimit F ⋙ uliftFunctor.{u₁} := yonedaOpCompYonedaObj (colimit F)
-  _ ≅ F.flip ⋙ colim ⋙ uliftFunctor.{u₁} :=
-        isoWhiskerRight (colimitIsoFlipCompColim F) uliftFunctor.{u₁}
-  _ ≅ F.flip ⋙ (whiskeringRight _ _ _).obj uliftFunctor.{u₁} ⋙ colim :=
-        isoWhiskerLeft F.flip (preservesColimitNatIso uliftFunctor.{u₁})
-  _ ≅ (yoneda.op ⋙ coyoneda ⋙ (whiskeringLeft _ _ _).obj F) ⋙ colim := isoWhiskerRight
-        (isoWhiskerRight largeCurriedYonedaLemma.symm ((whiskeringLeft _ _ _).obj F)) colim
-  _ ≅ yoneda.op ⋙ colimit (F ⋙ yoneda) :=
-        isoWhiskerLeft yoneda.op (colimitIsoFlipCompColim (F ⋙ yoneda)).symm
+noncomputable def yonedaYonedaColimit
+    : yoneda.op ⋙ yoneda.obj (colimit F) ≅ yoneda.op ⋙ colimit (F ⋙ yoneda) :=
+  calc
+    yoneda.op ⋙ yoneda.obj (colimit F)
+      ≅ colimit F ⋙ uliftFunctor.{u₁} := yonedaOpCompYonedaObj (colimit F)
+    _ ≅ F.flip ⋙ colim ⋙ uliftFunctor.{u₁} :=
+      isoWhiskerRight (colimitIsoFlipCompColim F) uliftFunctor.{u₁}
+    _ ≅ F.flip ⋙ (whiskeringRight _ _ _).obj uliftFunctor.{u₁} ⋙ colim :=
+      isoWhiskerLeft F.flip (preservesColimitNatIso uliftFunctor.{u₁})
+    _ ≅ (yoneda.op ⋙ coyoneda ⋙ (whiskeringLeft _ _ _).obj F) ⋙ colim :=
+      isoWhiskerRight (isoWhiskerRight largeCurriedYonedaLemma.symm ((whiskeringLeft _ _ _).obj F))
+        colim
+    _ ≅ yoneda.op ⋙ colimit (F ⋙ yoneda) :=
+      isoWhiskerLeft yoneda.op (colimitIsoFlipCompColim (F ⋙ yoneda)).symm
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem yonedaYonedaColimit_app_inv {X : C} : ((yonedaYonedaColimit F).app (op X)).inv =
-    (colimitObjIsoColimitCompEvaluation _ _).hom ≫
-      (colimit.post F (coyoneda.obj (op (yoneda.obj X)))) := by
+theorem yonedaYonedaColimit_app_inv {X : C}
+    : ((yonedaYonedaColimit F).app (op X)).inv
+      = (colimitObjIsoColimitCompEvaluation _ _).hom
+        ≫ (colimit.post F (coyoneda.obj (op (yoneda.obj X)))) := by
   dsimp [yonedaYonedaColimit]
   simp only [Category.assoc, Iso.cancel_iso_hom_left]
   apply colimit.hom_ext
   intro j
   rw [HasColimit.ι_isoOfNatIso_hom_assoc, ι_colimMap_assoc]
-  change _ = colimit.ι (F ⋙ coyoneda.obj (op (yoneda.obj X))) j ≫
-    colimit.post F (coyoneda.obj (op (yoneda.obj X)))
+  change _
+    = colimit.ι (F ⋙ coyoneda.obj (op (yoneda.obj X))) j
+      ≫ colimit.post F (coyoneda.obj (op (yoneda.obj X)))
   rw [colimit.ι_post]
   simp only [← CategoryTheory.Functor.assoc, comp_evaluation]
   rw [ι_preservesColimitIso_inv_assoc]

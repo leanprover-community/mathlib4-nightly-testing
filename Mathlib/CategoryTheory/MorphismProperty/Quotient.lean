@@ -28,20 +28,24 @@ namespace MorphismProperty
 
 variable {C : Type*} [Category* C]
 
-/-- Let `W : MorphismProperty C` and `homRel : HomRel C`. We say that `W` induces
+/--
+Let `W : MorphismProperty C` and `homRel : HomRel C`. We say that `W` induces
 a class of morphisms on the quotient category by `homRel` if `homRel` is stable under
-pre- and postcomposition and if `W f ↔ W g` whenever `homRel f g` hold. -/
-class HasQuotient (W : MorphismProperty C) (homRel : HomRel C)
-    [HomRel.IsStableUnderPrecomp homRel]
-    [HomRel.IsStableUnderPostcomp homRel] : Prop where
+pre- and postcomposition and if `W f ↔ W g` whenever `homRel f g` hold.
+-/
+class HasQuotient
+    (W : MorphismProperty C)
+    (homRel : HomRel C) [HomRel.IsStableUnderPrecomp homRel] [HomRel.IsStableUnderPostcomp homRel]
+    : Prop where
   iff (W) : ∀ ⦃X Y : C⦄ ⦃f g : X ⟶ Y⦄, homRel f g → (W f ↔ W g)
 
-variable (W : MorphismProperty C) {homRel : HomRel C}
-  [HomRel.IsStableUnderPrecomp homRel]
-  [HomRel.IsStableUnderPostcomp homRel]
+variable
+  (W : MorphismProperty C)
+  {homRel : HomRel C} [HomRel.IsStableUnderPrecomp homRel] [HomRel.IsStableUnderPostcomp homRel]
 
-lemma HasQuotient.iff_of_eqvGen [W.HasQuotient homRel] {X Y : C} {f g : X ⟶ Y}
-    (h : Relation.EqvGen (@homRel _ _) f g) : W f ↔ W g := by
+lemma HasQuotient.iff_of_eqvGen
+    [W.HasQuotient homRel] {X Y : C} {f g : X ⟶ Y} (h : Relation.EqvGen (@homRel _ _) f g)
+    : W f ↔ W g := by
   induction h with
   | rel _ _ h => exact iff W h
   | refl => rfl
@@ -50,23 +54,26 @@ lemma HasQuotient.iff_of_eqvGen [W.HasQuotient homRel] {X Y : C} {f g : X ⟶ Y}
 
 variable (homRel)
 
-/-- The property of morphisms that is induced by `W : MorphismProperty C`
-on the quotient category by `homRel : HomRel C` when `W.HasQuotient homRel` holds. -/
+/--
+The property of morphisms that is induced by `W : MorphismProperty C`
+on the quotient category by `homRel : HomRel C` when `W.HasQuotient homRel` holds.
+-/
 @[nolint unusedArguments]
-def quotient [W.HasQuotient homRel] : MorphismProperty (Quotient homRel) :=
-  fun ⟨X⟩ ⟨Y⟩ f ↦ ∃ (f' : X ⟶ Y) (_ : W f'), f = (Quotient.functor _).map f'
+def quotient [W.HasQuotient homRel] : MorphismProperty (Quotient homRel) := fun ⟨X⟩ ⟨Y⟩ f ↦
+  ∃ (f' : X ⟶ Y) (_ : W f'), f = (Quotient.functor _).map f'
 
 variable [W.HasQuotient homRel]
 
-lemma quotient_iff {X Y : C} (f : X ⟶ Y) :
-    W.quotient homRel ((Quotient.functor homRel).map f) ↔ W f := by
+lemma quotient_iff {X Y : C} (f : X ⟶ Y)
+    : W.quotient homRel ((Quotient.functor homRel).map f) ↔ W f := by
   refine ⟨fun ⟨f', hf', h⟩ ↦ ?_, fun hf ↦ ⟨f, hf, rfl⟩⟩
   rw [← Functor.homRel_iff, Quotient.functor_homRel_eq_compClosure_eqvGen,
-    HomRel.compClosure_eq_self homRel] at h
+      HomRel.compClosure_eq_self homRel]
+    at h
   rwa [HasQuotient.iff_of_eqvGen W h]
 
-lemma eq_inverseImage_quotientFunctor :
-    W = (W.quotient homRel).inverseImage (Quotient.functor _) := by
+lemma eq_inverseImage_quotientFunctor
+    : W = (W.quotient homRel).inverseImage (Quotient.functor _) := by
   ext
   exact (quotient_iff _ _ _).symm
 

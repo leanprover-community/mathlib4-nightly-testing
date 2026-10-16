@@ -47,22 +47,22 @@ section ToLinearEquiv'
 
 variable [DecidableEq n]
 
-/-- An invertible matrix yields a linear equivalence from the free module to itself.
+/--
+An invertible matrix yields a linear equivalence from the free module to itself.
 
 See `Matrix.toLinearEquiv` for the same map on arbitrary modules.
 -/
 def toLinearEquiv' (P : Matrix n n R) (_ : Invertible P) : (n → R) ≃ₗ[R] n → R :=
-  GeneralLinearGroup.generalLinearEquiv _ _ <|
-    Matrix.GeneralLinearGroup.toLin <| unitOfInvertible P
+  GeneralLinearGroup.generalLinearEquiv _ _ <| Matrix.GeneralLinearGroup.toLin <| unitOfInvertible P
 
 @[simp]
-theorem toLinearEquiv'_apply (P : Matrix n n R) (h : Invertible P) :
-    (P.toLinearEquiv' h : Module.End R (n → R)) = Matrix.toLin' P :=
+theorem toLinearEquiv'_apply (P : Matrix n n R) (h : Invertible P)
+    : (P.toLinearEquiv' h : Module.End R (n → R)) = Matrix.toLin' P :=
   rfl
 
 @[simp]
-theorem toLinearEquiv'_symm_apply (P : Matrix n n R) (h : Invertible P) :
-    (↑(P.toLinearEquiv' h).symm : Module.End R (n → R)) = Matrix.toLin' (⅟P) :=
+theorem toLinearEquiv'_symm_apply (P : Matrix n n R) (h : Invertible P)
+    : (↑(P.toLinearEquiv' h).symm : Module.End R (n → R)) = Matrix.toLin' (⅟P) :=
   rfl
 
 end ToLinearEquiv'
@@ -71,14 +71,15 @@ section ToLinearEquiv
 
 variable (b : Basis n R M)
 
-/-- Given `hA : IsUnit A.det` and `b : Basis R b`, `A.toLinearEquiv b hA` is
+/--
+Given `hA : IsUnit A.det` and `b : Basis R b`, `A.toLinearEquiv b hA` is
 the `LinearEquiv` arising from `toLin b b A`.
 
 See `Matrix.toLinearEquiv'` for this result on `n → R`.
 -/
 @[simps apply]
-noncomputable def toLinearEquiv [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det) :
-    M ≃ₗ[R] M where
+noncomputable def toLinearEquiv [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det)
+    : M ≃ₗ[R] M where
   __ := toLin b b A
   toFun := toLin b b A
   invFun := toLin b b A⁻¹
@@ -89,12 +90,12 @@ noncomputable def toLinearEquiv [DecidableEq n] (A : Matrix n n R) (hA : IsUnit 
     simp_rw [← LinearMap.comp_apply, ← Matrix.toLin_mul b b b, Matrix.mul_nonsing_inv _ hA,
       toLin_one, LinearMap.id_apply]
 
-theorem ker_toLin_eq_bot [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det) :
-    LinearMap.ker (toLin b b A) = ⊥ :=
+theorem ker_toLin_eq_bot [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det)
+    : LinearMap.ker (toLin b b A) = ⊥ :=
   ker_eq_bot.mpr (toLinearEquiv b A hA).injective
 
-theorem range_toLin_eq_top [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det) :
-    LinearMap.range (toLin b b A) = ⊤ :=
+theorem range_toLin_eq_top [DecidableEq n] (A : Matrix n n R) (hA : IsUnit A.det)
+    : LinearMap.range (toLin b b A) = ⊤ :=
   range_eq_top.mpr (toLinearEquiv b A hA).surjective
 
 end ToLinearEquiv
@@ -103,10 +104,13 @@ section Nondegenerate
 
 open Matrix
 
-/-- This holds for all integral domains (see `Matrix.exists_mulVec_eq_zero_iff`),
-not just fields, but it's easier to prove it for the field of fractions first. -/
-private theorem exists_mulVec_eq_zero_iff_aux {K : Type*} [DecidableEq n] [Field K]
-    {M : Matrix n n K} : (∃ v ≠ 0, M *ᵥ v = 0) ↔ M.det = 0 := by
+/--
+This holds for all integral domains (see `Matrix.exists_mulVec_eq_zero_iff`),
+not just fields, but it's easier to prove it for the field of fractions first.
+-/
+private theorem exists_mulVec_eq_zero_iff_aux
+    {K : Type*} [DecidableEq n] [Field K] {M : Matrix n n K}
+    : (∃ v ≠ 0, M *ᵥ v = 0) ↔ M.det = 0 := by
   constructor
   · rintro ⟨v, hv, mul_eq⟩
     contrapose! hv
@@ -121,13 +125,15 @@ private theorem exists_mulVec_eq_zero_iff_aux {K : Type*} [DecidableEq n] [Field
       exact (LinearEquiv.ofInjectiveEndo (Matrix.toLin' M) this).apply_symm_apply v
     exact Matrix.det_ne_zero_of_right_inverse this
 
-private theorem exists_mulVec_eq_zero_iff' {A : Type*} (K : Type*) [DecidableEq n] [CommRing A]
-    [Nontrivial A] [Field K] [Algebra A K] [IsFractionRing A K] {M : Matrix n n A} :
-    (∃ v ≠ 0, M *ᵥ v = 0) ↔ M.det = 0 := by
-  have : (∃ v ≠ 0, (algebraMap A K).mapMatrix M *ᵥ v = 0) ↔ _ :=
-    exists_mulVec_eq_zero_iff_aux
+private theorem exists_mulVec_eq_zero_iff'
+    {A : Type*} (K : Type*)
+    [DecidableEq n] [CommRing A] [Nontrivial A] [Field K] [Algebra A K] [IsFractionRing A K]
+    {M : Matrix n n A}
+    : (∃ v ≠ 0, M *ᵥ v = 0) ↔ M.det = 0 := by
+  have : (∃ v ≠ 0, (algebraMap A K).mapMatrix M *ᵥ v = 0) ↔ _ := exists_mulVec_eq_zero_iff_aux
   rw [← RingHom.map_det, IsFractionRing.to_map_eq_zero_iff] at this
-  refine Iff.trans ?_ this; constructor <;> rintro ⟨v, hv, mul_eq⟩
+  refine Iff.trans ?_ this
+  constructor <;> rintro ⟨v, hv, mul_eq⟩
   · refine ⟨fun i => algebraMap _ _ (v i), mt (fun h => funext fun i => ?_) hv, ?_⟩
     · exact IsFractionRing.to_map_eq_zero_iff.mp congr($h i)
     · ext i
@@ -137,18 +143,21 @@ private theorem exists_mulVec_eq_zero_iff' {A : Type*} (K : Type*) [DecidableEq 
     obtain ⟨⟨b, hb⟩, ba_eq⟩ :=
       IsLocalization.exist_integer_multiples_of_finset (nonZeroDivisors A) (Finset.univ.image v)
     choose f hf using ba_eq
-    refine
-      ⟨fun i => f _ (Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩),
-        mt (fun h => funext fun i => ?_) hv, ?_⟩
+    refine ⟨
+      fun i => f _ (Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩),
+      mt (fun h => funext fun i => ?_) hv,
+      ?_
+    ⟩
     · have := congr(algebraMap A K ($h i))
       rw [hf, Subtype.coe_mk, Pi.zero_apply, map_zero, Algebra.smul_def, mul_eq_zero,
-        IsFractionRing.to_map_eq_zero_iff] at this
+          IsFractionRing.to_map_eq_zero_iff]
+        at this
       exact this.resolve_left (nonZeroDivisors.ne_zero hb)
     · ext i
       refine IsFractionRing.injective A K ?_
       calc
-        algebraMap A K ((M *ᵥ (fun i : n => f (v i) _)) i) =
-            ((algebraMap A K).mapMatrix M *ᵥ algebraMap _ K b • v) i := ?_
+        algebraMap A K ((M *ᵥ (fun i : n => f (v i) _)) i)
+          = ((algebraMap A K).mapMatrix M *ᵥ algebraMap _ K b • v) i := ?_
         _ = 0 := ?_
         _ = algebraMap A K 0 := (map_zero _).symm
       · simp_rw [RingHom.map_mulVec, mulVec, dotProduct, Function.comp_apply, hf,
@@ -196,21 +205,21 @@ theorem separatingLeft_iff_separatingRight [Finite n] : M.SeparatingLeft ↔ M.S
 alias ⟨SeparatingLeft.separatingRight, SeparatingRight.separatingLeft⟩ :=
   separatingLeft_iff_separatingRight
 
-theorem Nondegenerate.mul_iff_right (h : N.Nondegenerate) :
-    (M * N).Nondegenerate ↔ M.Nondegenerate := by
+theorem Nondegenerate.mul_iff_right (h : N.Nondegenerate)
+    : (M * N).Nondegenerate ↔ M.Nondegenerate := by
   classical
   simp only [nondegenerate_iff_det_ne_zero, det_mul] at h ⊢
   exact mul_ne_zero_iff_right h
 
-theorem Nondegenerate.mul_iff_left (h : M.Nondegenerate) :
-    (M * N).Nondegenerate ↔ N.Nondegenerate := by
+theorem Nondegenerate.mul_iff_left (h : M.Nondegenerate)
+    : (M * N).Nondegenerate ↔ N.Nondegenerate := by
   classical
   simp only [nondegenerate_iff_det_ne_zero, det_mul] at h ⊢
   exact mul_ne_zero_iff_left h
 
 omit [Fintype n] in
-theorem Nondegenerate.smul_iff [Finite n] {t : A} (h : t ≠ 0) :
-    (t • M).Nondegenerate ↔ M.Nondegenerate := by
+theorem Nondegenerate.smul_iff [Finite n] {t : A} (h : t ≠ 0)
+    : (t • M).Nondegenerate ↔ M.Nondegenerate := by
   have := Fintype.ofFinite
   rw [nondegenerate_def, nondegenerate_def]
   simp [smul_mulVec, mul_eq_zero_iff_left h]
@@ -223,12 +232,15 @@ end LinearEquiv
 
 section Determinant
 
-/-- A matrix whose nondiagonal entries are negative with the sum of the entries of each
-column positive has nonzero determinant. -/
-lemma det_ne_zero_of_sum_col_pos [DecidableEq n]
+/--
+A matrix whose nondiagonal entries are negative with the sum of the entries of each
+column positive has nonzero determinant.
+-/
+lemma det_ne_zero_of_sum_col_pos
+    [DecidableEq n]
     {S : Type*} [CommRing S] [LinearOrder S] [IsStrictOrderedRing S]
-    {A : Matrix n n S} (h1 : Pairwise fun i j => A i j < 0) (h2 : ∀ j, 0 < ∑ i, A i j) :
-    A.det ≠ 0 := by
+    {A : Matrix n n S} (h1 : Pairwise fun i j => A i j < 0) (h2 : ∀ j, 0 < ∑ i, A i j)
+    : A.det ≠ 0 := by
   cases isEmpty_or_nonempty n
   · simp
   · contrapose! h2
@@ -251,12 +263,15 @@ lemma det_ne_zero_of_sum_col_pos [DecidableEq n]
       · rw [h]
       · exact (mul_le_mul_right_of_neg (h1 h)).mpr (h_j₀ ▸ Finset.le_sup' v hi)
 
-/-- A matrix whose nondiagonal entries are negative with the sum of the entries of each
-row positive has nonzero determinant. -/
-lemma det_ne_zero_of_sum_row_pos [DecidableEq n]
+/--
+A matrix whose nondiagonal entries are negative with the sum of the entries of each
+row positive has nonzero determinant.
+-/
+lemma det_ne_zero_of_sum_row_pos
+    [DecidableEq n]
     {S : Type*} [CommRing S] [LinearOrder S] [IsStrictOrderedRing S]
-    {A : Matrix n n S} (h1 : Pairwise fun i j => A i j < 0) (h2 : ∀ i, 0 < ∑ j, A i j) :
-    A.det ≠ 0 := by
+    {A : Matrix n n S} (h1 : Pairwise fun i j => A i j < 0) (h2 : ∀ i, 0 < ∑ j, A i j)
+    : A.det ≠ 0 := by
   rw [← Matrix.det_transpose]
   refine det_ne_zero_of_sum_col_pos ?_ ?_
   · simp_rw [Matrix.transpose_apply]

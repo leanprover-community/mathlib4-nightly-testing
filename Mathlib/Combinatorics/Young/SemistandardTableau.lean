@@ -46,13 +46,14 @@ Semistandard Young tableau
 
 @[expose] public section
 
-
-/-- A semistandard Young tableau is a filling of the cells of a Young diagram by natural
+/--
+A semistandard Young tableau is a filling of the cells of a Young diagram by natural
 numbers, such that the entries in each row are weakly increasing (left to right), and the entries
 in each column are strictly increasing (top to bottom).
 
 Here, a semistandard Young tableau is represented as an unrestricted function `ℕ → ℕ → ℕ` that, for
-reasons of extensionality, is required to vanish outside `μ`. -/
+reasons of extensionality, is required to vanish outside `μ`.
+-/
 structure SemistandardYoungTableau (μ : YoungDiagram) where
   /-- `entry i j` is value of the `(i, j)` entry of the SSYT `μ`. -/
   entry : ℕ → ℕ → ℕ
@@ -74,55 +75,68 @@ instance instFunLike {μ : YoungDiagram} : FunLike (SemistandardYoungTableau μ)
     congr
 
 @[simp]
-theorem to_fun_eq_coe {μ : YoungDiagram} {T : SemistandardYoungTableau μ} :
-    T.entry = (T : ℕ → ℕ → ℕ) :=
+theorem to_fun_eq_coe {μ : YoungDiagram} {T : SemistandardYoungTableau μ}
+    : T.entry = (T : ℕ → ℕ → ℕ) :=
   rfl
 
 @[ext]
-theorem ext {μ : YoungDiagram} {T T' : SemistandardYoungTableau μ} (h : ∀ i j, T i j = T' i j) :
-    T = T' :=
+theorem ext {μ : YoungDiagram} {T T' : SemistandardYoungTableau μ} (h : ∀ i j, T i j = T' i j)
+    : T = T' :=
   DFunLike.ext T T' fun _ ↦ by
     funext
     apply h
 
-/-- Copy of an `SemistandardYoungTableau μ` with a new `entry` equal to the old one. Useful to fix
-definitional equalities. -/
-protected def copy {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ)
-    (h : entry' = T) : SemistandardYoungTableau μ where
+/--
+Copy of an `SemistandardYoungTableau μ` with a new `entry` equal to the old one. Useful to fix
+definitional equalities.
+-/
+protected def copy
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ) (h : entry' = T)
+    : SemistandardYoungTableau μ where
   entry := entry'
   row_weak' := h.symm ▸ T.row_weak'
   col_strict' := h.symm ▸ T.col_strict'
   zeros' := h.symm ▸ T.zeros'
 
 @[simp]
-theorem coe_copy {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ)
-    (h : entry' = T) : ⇑(T.copy entry' h) = entry' :=
+theorem coe_copy
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ) (h : entry' = T)
+    : ⇑(T.copy entry' h) = entry' :=
   rfl
 
-theorem copy_eq {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ)
-    (h : entry' = T) : T.copy entry' h = T :=
+theorem copy_eq
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ) (entry' : ℕ → ℕ → ℕ) (h : entry' = T)
+    : T.copy entry' h = T :=
   DFunLike.ext' h
 
-theorem row_weak {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i j1 j2 : ℕ} (hj : j1 < j2)
-    (hcell : (i, j2) ∈ μ) : T i j1 ≤ T i j2 :=
+theorem row_weak
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ)
+    {i j1 j2 : ℕ} (hj : j1 < j2) (hcell : (i, j2) ∈ μ)
+    : T i j1 ≤ T i j2 :=
   T.row_weak' hj hcell
 
-theorem col_strict {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i1 i2 j : ℕ} (hi : i1 < i2)
-    (hcell : (i2, j) ∈ μ) : T i1 j < T i2 j :=
+theorem col_strict
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ)
+    {i1 i2 j : ℕ} (hi : i1 < i2) (hcell : (i2, j) ∈ μ)
+    : T i1 j < T i2 j :=
   T.col_strict' hi hcell
 
-theorem zeros {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i j : ℕ}
-    (not_cell : (i, j) ∉ μ) : T i j = 0 :=
+theorem zeros {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i j : ℕ} (not_cell : (i, j) ∉ μ)
+    : T i j = 0 :=
   T.zeros' not_cell
 
-theorem row_weak_of_le {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i j1 j2 : ℕ}
-    (hj : j1 ≤ j2) (cell : (i, j2) ∈ μ) : T i j1 ≤ T i j2 := by
+theorem row_weak_of_le
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ)
+    {i j1 j2 : ℕ} (hj : j1 ≤ j2) (cell : (i, j2) ∈ μ)
+    : T i j1 ≤ T i j2 := by
   rcases eq_or_lt_of_le hj with h | h
   · rw [h]
   · exact T.row_weak h cell
 
-theorem col_weak {μ : YoungDiagram} (T : SemistandardYoungTableau μ) {i1 i2 j : ℕ} (hi : i1 ≤ i2)
-    (cell : (i2, j) ∈ μ) : T i1 j ≤ T i2 j := by
+theorem col_weak
+    {μ : YoungDiagram} (T : SemistandardYoungTableau μ)
+    {i1 i2 j : ℕ} (hi : i1 ≤ i2) (cell : (i2, j) ∈ μ)
+    : T i1 j ≤ T i2 j := by
   rcases eq_or_lt_of_le hi with h | h
   · rw [h]
   · exact le_of_lt (T.col_strict h cell)
@@ -137,11 +151,10 @@ def highestWeight (μ : YoungDiagram) : SemistandardYoungTableau μ where
   zeros' not_cell := ite_eq_right not_cell
 
 @[simp]
-theorem highestWeight_apply {μ : YoungDiagram} {i j : ℕ} :
-    highestWeight μ i j = if (i, j) ∈ μ then i else 0 :=
+theorem highestWeight_apply {μ : YoungDiagram} {i j : ℕ}
+    : highestWeight μ i j = if (i, j) ∈ μ then i else 0 :=
   rfl
 
-instance {μ : YoungDiagram} : Inhabited (SemistandardYoungTableau μ) :=
-  ⟨highestWeight μ⟩
+instance {μ : YoungDiagram} : Inhabited (SemistandardYoungTableau μ) := ⟨highestWeight μ⟩
 
 end SemistandardYoungTableau

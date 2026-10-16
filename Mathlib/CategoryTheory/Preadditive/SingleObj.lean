@@ -15,7 +15,6 @@ public import Mathlib.CategoryTheory.SingleObj
 
 public section
 
-
 namespace CategoryTheory
 
 variable {α : Type*} [Ring α]

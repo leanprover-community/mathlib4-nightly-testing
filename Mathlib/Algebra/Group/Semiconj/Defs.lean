@@ -40,26 +40,32 @@ section Semigroup
 
 variable [Semigroup S] {a b x y z x' y' : S}
 
-/-- If `a` semiconjugates `x` to `y` and `x'` to `y'`,
-then it semiconjugates `x * x'` to `y * y'`. -/
+/--
+If `a` semiconjugates `x` to `y` and `x'` to `y'`,
+then it semiconjugates `x * x'` to `y * y'`.
+-/
 @[to_additive (attr := simp) /-- If `a` semiconjugates `x` to `y` and `x'` to `y'`,
 then it semiconjugates `x + x'` to `y + y'`. -/]
-theorem mul_right (h : SemiconjBy a x y) (h' : SemiconjBy a x' y') :
-    SemiconjBy a (x * x') (y * y') := by
+theorem mul_right (h : SemiconjBy a x y) (h' : SemiconjBy a x' y')
+    : SemiconjBy a (x * x') (y * y') := by
   unfold SemiconjBy
   -- TODO this could be done using `assoc_rw` if/when this is ported to mathlib4
   rw [← mul_assoc, h.eq, mul_assoc, h'.eq, ← mul_assoc]
 
-/-- If `b` semiconjugates `x` to `y` and `a` semiconjugates `y` to `z`, then `a * b`
-semiconjugates `x` to `z`. -/
+/--
+If `b` semiconjugates `x` to `y` and `a` semiconjugates `y` to `z`, then `a * b`
+semiconjugates `x` to `z`.
+-/
 @[to_additive /-- If `b` semiconjugates `x` to `y` and `a` semiconjugates `y` to `z`, then `a + b`
 semiconjugates `x` to `z`. -/]
 theorem mul_left (ha : SemiconjBy a y z) (hb : SemiconjBy b x y) : SemiconjBy (a * b) x z := by
   unfold SemiconjBy
   rw [mul_assoc, hb.eq, ← mul_assoc, ha.eq, mul_assoc]
 
-/-- The relation “there exists an element that semiconjugates `a` to `b`” on a semigroup
-is transitive. -/
+/--
+The relation “there exists an element that semiconjugates `a` to `b`” on a semigroup
+is transitive.
+-/
 @[to_additive /-- The relation “there exists an element that semiconjugates `a` to `b`” on an
 additive semigroup is transitive. -/]
 protected theorem isTrans : IsTrans S fun a b ↦ ∃ c, SemiconjBy c a b :=
@@ -77,11 +83,12 @@ theorem one_right (a : M) : SemiconjBy a 1 1 := by rw [SemiconjBy, mul_one, one_
 
 /-- One semiconjugates any element to itself. -/
 @[to_additive (attr := simp) /-- Zero semiconjugates any element to itself. -/]
-theorem one_left (x : M) : SemiconjBy 1 x x :=
-  Eq.symm <| one_right x
+theorem one_left (x : M) : SemiconjBy 1 x x := Eq.symm <| one_right x
 
-/-- The relation “there exists an element that semiconjugates `a` to `b`” on a monoid (or, more
-generally, on `MulOneClass` type) is reflexive. -/
+/--
+The relation “there exists an element that semiconjugates `a` to `b`” on a monoid (or, more
+generally, on `MulOneClass` type) is reflexive.
+-/
 @[to_additive /-- The relation “there exists an element that semiconjugates `a` to `b`” on an
 additive monoid (or, more generally, on an `AddZeroClass` type) is reflexive. -/]
 protected theorem refl : Std.Refl fun a b : M ↦ ∃ c, SemiconjBy c a b where
@@ -115,8 +122,8 @@ theorem conj_mk (a x : G) : SemiconjBy a x (a * x * a⁻¹) := by
   unfold SemiconjBy; rw [mul_assoc, inv_mul_cancel, mul_one]
 
 @[to_additive (attr := simp)]
-theorem conj_iff {a x y b : G} :
-    SemiconjBy (b * a * b⁻¹) (b * x * b⁻¹) (b * y * b⁻¹) ↔ SemiconjBy a x y := by
+theorem conj_iff {a x y b : G}
+    : SemiconjBy (b * a * b⁻¹) (b * x * b⁻¹) (b * y * b⁻¹) ↔ SemiconjBy a x y := by
   unfold SemiconjBy
   simp only [← mul_assoc, inv_mul_cancel_right]
   repeat rw [mul_assoc]

@@ -41,9 +41,11 @@ namespace MorphismProperty
 
 variable {C D : Type*} [Category* C] [Category* D] (W₁ W₂ : MorphismProperty C)
 
-/-- Given two classes of morphisms `W₁` and `W₂` on a category `C`, this is
+/--
+Given two classes of morphisms `W₁` and `W₂` on a category `C`, this is
 the data of the factorization of a morphism `f : X ⟶ Y` as `i ≫ p` with
-`W₁ i` and `W₂ p`. -/
+`W₁ i` and `W₂ p`.
+-/
 structure MapFactorizationData {X Y : C} (f : X ⟶ Y) where
   /-- the intermediate object in the factorization -/
   Z : C
@@ -63,8 +65,8 @@ variable {X Y : C} (f : X ⟶ Y)
 
 /-- The opposite of a factorization. -/
 @[simps]
-def op {X Y : C} {f : X ⟶ Y} (hf : MapFactorizationData W₁ W₂ f) :
-    MapFactorizationData W₂.op W₁.op f.op where
+def op {X Y : C} {f : X ⟶ Y} (hf : MapFactorizationData W₁ W₂ f)
+    : MapFactorizationData W₂.op W₁.op f.op where
   Z := Opposite.op hf.Z
   i := hf.p.op
   p := hf.i.op
@@ -74,9 +76,9 @@ def op {X Y : C} {f : X ⟶ Y} (hf : MapFactorizationData W₁ W₂ f) :
 
 /-- The factorization obtained from a factorization in the opposite category. -/
 @[simps]
-protected def unop {W₁ W₂ : MorphismProperty Cᵒᵖ} {X Y : Cᵒᵖ} {f : X ⟶ Y}
-    (φ : MapFactorizationData W₁ W₂ f) :
-    MapFactorizationData W₂.unop W₁.unop f.unop where
+protected def unop
+    {W₁ W₂ : MorphismProperty Cᵒᵖ} {X Y : Cᵒᵖ} {f : X ⟶ Y} (φ : MapFactorizationData W₁ W₂ f)
+    : MapFactorizationData W₂.unop W₁.unop f.unop where
   Z := φ.Z.unop
   i := φ.p.unop
   p := φ.i.unop
@@ -86,8 +88,8 @@ protected def unop {W₁ W₂ : MorphismProperty Cᵒᵖ} {X Y : Cᵒᵖ} {f : X
 
 /-- The bijection between factorizations in `C` and factorizations in `Cᵒᵖ`. -/
 @[simps]
-def opEquiv {W₁ W₂ : MorphismProperty C} {X Y : C} {f : X ⟶ Y} :
-    MapFactorizationData W₁ W₂ f ≃ MapFactorizationData W₂.op W₁.op f.op where
+def opEquiv {W₁ W₂ : MorphismProperty C} {X Y : C} {f : X ⟶ Y}
+    : MapFactorizationData W₁ W₂ f ≃ MapFactorizationData W₂.op W₁.op f.op where
   toFun φ := φ.op
   invFun φ := φ.unop
 
@@ -96,15 +98,17 @@ end MapFactorizationData
 /-- The data of a term in `MapFactorizationData W₁ W₂ f` for any morphism `f`. -/
 abbrev FactorizationData := ∀ {X Y : C} (f : X ⟶ Y), MapFactorizationData W₁ W₂ f
 
-/-- The factorization axiom for two classes of morphisms `W₁` and `W₂` in a category `C`. It
+/--
+The factorization axiom for two classes of morphisms `W₁` and `W₂` in a category `C`. It
 asserts that any morphism can be factored as a morphism in `W₁` followed by a morphism
-in `W₂`. -/
+in `W₂`.
+-/
 class HasFactorization : Prop where
   nonempty_mapFactorizationData {X Y : C} (f : X ⟶ Y) : Nonempty (MapFactorizationData W₁ W₂ f)
 
 /-- A chosen term in `FactorizationData W₁ W₂` when `HasFactorization W₁ W₂` holds. -/
-noncomputable def factorizationData [HasFactorization W₁ W₂] : FactorizationData W₁ W₂ :=
-  fun _ => Nonempty.some (HasFactorization.nonempty_mapFactorizationData _)
+noncomputable def factorizationData [HasFactorization W₁ W₂] : FactorizationData W₁ W₂ := fun _ =>
+  Nonempty.some (HasFactorization.nonempty_mapFactorizationData _)
 
 instance [HasFactorization W₁ W₂] : HasFactorization W₂.op W₁.op where
   nonempty_mapFactorizationData f := ⟨(factorizationData W₁ W₂ f.unop).op⟩
@@ -123,8 +127,10 @@ lemma comp_eq_top_iff : W₁.comp W₂ = ⊤ ↔ HasFactorization W₁ W₂ := b
     simp only [top_apply, iff_true]
     exact ⟨factorizationData W₁ W₂ f⟩
 
-/-- The data of a functorial factorization of any morphism in `C` as a morphism in `W₁`
-followed by a morphism in `W₂`. -/
+/--
+The data of a functorial factorization of any morphism in `C` as a morphism in `W₁`
+followed by a morphism in `W₂`.
+-/
 structure FunctorialFactorizationData where
   /-- the intermediate objects in the factorizations -/
   Z : Arrow C ⥤ C
@@ -147,10 +153,12 @@ attribute [reassoc (attr := simp)] fac
 lemma fac_app {f : Arrow C} : data.i.app f ≫ data.p.app f = f.hom := by
   rw [← NatTrans.comp_app, fac, Arrow.leftToRight_app]
 
-/-- If `W₁ ≤ W₁'` and `W₂ ≤ W₂'`, then a functorial factorization for `W₁` and `W₂` induces
-a functorial factorization for `W₁'` and `W₂'`. -/
-def ofLE {W₁' W₂' : MorphismProperty C} (le₁ : W₁ ≤ W₁') (le₂ : W₂ ≤ W₂') :
-    FunctorialFactorizationData W₁' W₂' where
+/--
+If `W₁ ≤ W₁'` and `W₂ ≤ W₂'`, then a functorial factorization for `W₁` and `W₂` induces
+a functorial factorization for `W₁'` and `W₂'`.
+-/
+def ofLE {W₁' W₂' : MorphismProperty C} (le₁ : W₁ ≤ W₁') (le₂ : W₂ ≤ W₂')
+    : FunctorialFactorizationData W₁' W₂' where
   Z := data.Z
   i := data.i
   p := data.p
@@ -158,47 +166,47 @@ def ofLE {W₁' W₂' : MorphismProperty C} (le₁ : W₁ ≤ W₁') (le₂ : W�
   hp f := le₂ _ (data.hp f)
 
 /-- The term in `FactorizationData W₁ W₂` that is deduced from a functorial factorization. -/
-def factorizationData : FactorizationData W₁ W₂ := fun f =>
-  { Z := data.Z.obj (Arrow.mk f)
-    i := data.i.app (Arrow.mk f)
-    p := data.p.app (Arrow.mk f)
-    hi := data.hi _
-    hp := data.hp _ }
+def factorizationData : FactorizationData W₁ W₂ := fun f => {
+  Z := data.Z.obj (Arrow.mk f)
+  i := data.i.app (Arrow.mk f)
+  p := data.p.app (Arrow.mk f)
+  hi := data.hi _
+  hp := data.hp _
+}
 
 section
 
 variable {X Y X' Y' : C} {f : X ⟶ Y} {g : X' ⟶ Y'} (φ : Arrow.mk f ⟶ Arrow.mk g)
 
-/-- When `data : FunctorialFactorizationData W₁ W₂`, this is the
+/--
+When `data : FunctorialFactorizationData W₁ W₂`, this is the
 morphism `(data.factorizationData f).Z ⟶ (data.factorizationData g).Z` expressing the
 functoriality of the intermediate objects of the factorizations
-for `φ : Arrow.mk f ⟶ Arrow.mk g`. -/
+for `φ : Arrow.mk f ⟶ Arrow.mk g`.
+-/
 def mapZ : (data.factorizationData f).Z ⟶ (data.factorizationData g).Z := data.Z.map φ
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
-lemma i_mapZ :
-    (data.factorizationData f).i ≫ data.mapZ φ = φ.left ≫ (data.factorizationData g).i :=
+lemma i_mapZ : (data.factorizationData f).i ≫ data.mapZ φ = φ.left ≫ (data.factorizationData g).i :=
   (data.i.naturality φ).symm
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
-lemma mapZ_p :
-    data.mapZ φ ≫ (data.factorizationData g).p = (data.factorizationData f).p ≫ φ.right :=
+lemma mapZ_p
+    : data.mapZ φ ≫ (data.factorizationData g).p = (data.factorizationData f).p ≫ φ.right :=
   data.p.naturality φ
 
 variable (f) in
-@[simp]
-lemma mapZ_id : data.mapZ (𝟙 (Arrow.mk f)) = 𝟙 _ :=
-  data.Z.map_id _
+@[simp] lemma mapZ_id : data.mapZ (𝟙 (Arrow.mk f)) = 𝟙 _ := data.Z.map_id _
 
 @[reassoc, simp]
-lemma mapZ_comp {X'' Y'' : C} {h : X'' ⟶ Y''} (ψ : Arrow.mk g ⟶ Arrow.mk h) :
-    data.mapZ (φ ≫ ψ) = data.mapZ φ ≫ data.mapZ ψ :=
+lemma mapZ_comp {X'' Y'' : C} {h : X'' ⟶ Y''} (ψ : Arrow.mk g ⟶ Arrow.mk h)
+    : data.mapZ (φ ≫ ψ) = data.mapZ φ ≫ data.mapZ ψ :=
   data.Z.map_comp _ _
 
 end
@@ -211,22 +219,24 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary definition for `FunctorialFactorizationData.functorCategory`. -/
 @[simps]
 def functorCategory.Z : Arrow (J ⥤ C) ⥤ J ⥤ C where
-  obj f :=
-    { obj j := (data.factorizationData (f.hom.app j)).Z
-      map φ := data.mapZ (Arrow.homMk (f.left.map φ) (f.right.map φ))
-      map_id j := by
-        rw [← data.mapZ_id (f.hom.app j)]
-        congr <;> simp
-      map_comp _ _ := by
-        rw [← data.mapZ_comp]
-        congr <;> simp }
-  map τ :=
-    { app j := data.mapZ (Arrow.homMk (τ.left.app j) (τ.right.app j) (congr_app τ.w j))
-      naturality _ _ _ := by
-        dsimp
-        rw [← data.mapZ_comp, ← data.mapZ_comp]
-        congr 1
-        ext <;> simp }
+  obj f := {
+    obj j := (data.factorizationData (f.hom.app j)).Z
+    map φ := data.mapZ (Arrow.homMk (f.left.map φ) (f.right.map φ))
+    map_id j := by
+      rw [← data.mapZ_id (f.hom.app j)]
+      congr <;> simp
+    map_comp _ _ := by
+      rw [← data.mapZ_comp]
+      congr <;> simp
+  }
+  map τ := {
+    app j := data.mapZ (Arrow.homMk (τ.left.app j) (τ.right.app j) (congr_app τ.w j))
+    naturality _ _ _ := by
+      dsimp
+      rw [← data.mapZ_comp, ← data.mapZ_comp]
+      congr 1
+      ext <;> simp
+  }
   map_id f := by
     ext j
     dsimp
@@ -240,8 +250,8 @@ def functorCategory.Z : Arrow (J ⥤ C) ⥤ J ⥤ C where
 
 set_option backward.defeqAttrib.useBackward true in
 /-- A functorial factorization in the category `C` extends to the functor category `J ⥤ C`. -/
-def functorCategory :
-    FunctorialFactorizationData (W₁.functorCategory J) (W₂.functorCategory J) where
+def functorCategory
+    : FunctorialFactorizationData (W₁.functorCategory J) (W₂.functorCategory J) where
   Z := functorCategory.Z data J
   i := { app := fun f => { app := fun j => (data.factorizationData (f.hom.app j)).i } }
   p := { app := fun f => { app := fun j => (data.factorizationData (f.hom.app j)).p } }
@@ -252,34 +262,40 @@ end
 
 end FunctorialFactorizationData
 
-/-- The functorial factorization axiom for two classes of morphisms `W₁` and `W₂` in a
+/--
+The functorial factorization axiom for two classes of morphisms `W₁` and `W₂` in a
 category `C`. It asserts that any morphism can be factored in a functorial manner
-as a morphism in `W₁` followed by a morphism in `W₂`. -/
+as a morphism in `W₁` followed by a morphism in `W₂`.
+-/
 class HasFunctorialFactorization : Prop where
   nonempty_functorialFactorizationData : Nonempty (FunctorialFactorizationData W₁ W₂)
 
-/-- A chosen term in `FunctorialFactorizationData W₁ W₂` when the functorial factorization
-axiom `HasFunctorialFactorization W₁ W₂` holds. -/
-noncomputable def functorialFactorizationData [HasFunctorialFactorization W₁ W₂] :
-    FunctorialFactorizationData W₁ W₂ :=
+/--
+A chosen term in `FunctorialFactorizationData W₁ W₂` when the functorial factorization
+axiom `HasFunctorialFactorization W₁ W₂` holds.
+-/
+noncomputable def functorialFactorizationData [HasFunctorialFactorization W₁ W₂]
+    : FunctorialFactorizationData W₁ W₂ :=
   Nonempty.some (HasFunctorialFactorization.nonempty_functorialFactorizationData)
 
 instance [HasFunctorialFactorization W₁ W₂] : HasFactorization W₁ W₂ where
   nonempty_mapFactorizationData f := ⟨(functorialFactorizationData W₁ W₂).factorizationData f⟩
 
-instance [HasFunctorialFactorization W₁ W₂] (J : Type*) [Category* J] :
-    HasFunctorialFactorization (W₁.functorCategory J) (W₂.functorCategory J) :=
+instance [HasFunctorialFactorization W₁ W₂] (J : Type*) [Category* J]
+    : HasFunctorialFactorization (W₁.functorCategory J) (W₂.functorCategory J) :=
   ⟨⟨(functorialFactorizationData W₁ W₂).functorCategory J⟩⟩
 
 set_option backward.defeqAttrib.useBackward true in
 variable {W₁ W₂} in
-/-- The term in `MapFactorizationData (W₁.inverseImage F) (W₂.inverseImage F) f`
+/--
+The term in `MapFactorizationData (W₁.inverseImage F) (W₂.inverseImage F) f`
 deduced from `h : MapFactorizationData W₁ W₂ (F.map f)` when `F` is an equivalence
-of categories and both `W₁` and `W₂` respect isomorphisms. -/
-noncomputable def MapFactorizationData.ofIsEquivalence {F : D ⥤ C}
-    [F.IsEquivalence] [W₁.RespectsIso] [W₂.RespectsIso]
-    {X Y : D} {f : X ⟶ Y} (h : MapFactorizationData W₁ W₂ (F.map f)) :
-    MapFactorizationData (W₁.inverseImage F) (W₂.inverseImage F) f where
+of categories and both `W₁` and `W₂` respect isomorphisms.
+-/
+noncomputable def MapFactorizationData.ofIsEquivalence
+    {F : D ⥤ C} [F.IsEquivalence] [W₁.RespectsIso] [W₂.RespectsIso]
+    {X Y : D} {f : X ⟶ Y} (h : MapFactorizationData W₁ W₂ (F.map f))
+    : MapFactorizationData (W₁.inverseImage F) (W₂.inverseImage F) f where
   Z := F.objPreimage h.Z
   i := F.preimage (h.i ≫ (F.objObjPreimageIso h.Z).inv)
   p := F.preimage ((F.objObjPreimageIso h.Z).hom ≫ h.p)
@@ -293,11 +309,9 @@ noncomputable def MapFactorizationData.ofIsEquivalence {F : D ⥤ C}
     simp [F.map_preimage]
   fac := F.map_injective (by simp)
 
-instance (F : D ⥤ C) [F.IsEquivalence]
-    [W₁.RespectsIso] [W₂.RespectsIso] [HasFactorization W₁ W₂] :
-    HasFactorization (W₁.inverseImage F) (W₂.inverseImage F) where
-  nonempty_mapFactorizationData f :=
-    ⟨(factorizationData W₁ W₂ (F.map f)).ofIsEquivalence⟩
+instance (F : D ⥤ C) [F.IsEquivalence] [W₁.RespectsIso] [W₂.RespectsIso] [HasFactorization W₁ W₂]
+    : HasFactorization (W₁.inverseImage F) (W₂.inverseImage F) where
+  nonempty_mapFactorizationData f := ⟨(factorizationData W₁ W₂ (F.map f)).ofIsEquivalence⟩
 
 end MorphismProperty
 

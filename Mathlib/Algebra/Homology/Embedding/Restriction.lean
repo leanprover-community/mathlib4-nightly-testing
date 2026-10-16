@@ -25,12 +25,15 @@ variable {ι ι' : Type*} {c : ComplexShape ι} {c' : ComplexShape ι'}
 
 namespace HomologicalComplex
 
-variable {C : Type*} [Category* C] [HasZeroMorphisms C]
+variable
+  {C : Type*} [Category* C] [HasZeroMorphisms C]
   (K L M : HomologicalComplex C c') (φ : K ⟶ L) (φ' : L ⟶ M)
   (e : c.Embedding c') [e.IsRelIff]
 
-/-- Given `K : HomologicalComplex C c'` and `e : c.Embedding c'` (satisfying `[e.IsRelIff]`),
-this is the homological complex in `HomologicalComplex C c` obtained by restriction. -/
+/--
+Given `K : HomologicalComplex C c'` and `e : c.Embedding c'` (satisfying `[e.IsRelIff]`),
+this is the homological complex in `HomologicalComplex C c` obtained by restriction.
+-/
 @[simps]
 def restriction : HomologicalComplex C c where
   X i := K.X (e.f i)
@@ -38,16 +41,15 @@ def restriction : HomologicalComplex C c where
   shape i j hij := K.shape _ _ (by simpa only [← e.rel_iff] using hij)
 
 /-- The isomorphism `(K.restriction e).X i ≅ K.X i'` when `e.f i = i'`. -/
-def restrictionXIso {i : ι} {i' : ι'} (h : e.f i = i') :
-    (K.restriction e).X i ≅ K.X i' :=
+def restrictionXIso {i : ι} {i' : ι'} (h : e.f i = i') : (K.restriction e).X i ≅ K.X i' :=
   eqToIso (h ▸ rfl)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
-lemma restriction_d_eq {i j : ι} {i' j' : ι'} (hi : e.f i = i') (hj : e.f j = j') :
-    (K.restriction e).d i j = (K.restrictionXIso e hi).hom ≫ K.d i' j' ≫
-      (K.restrictionXIso e hj).inv := by
+lemma restriction_d_eq {i j : ι} {i' j' : ι'} (hi : e.f i = i') (hj : e.f j = j')
+    : (K.restriction e).d i j
+      = (K.restrictionXIso e hi).hom ≫ K.d i' j' ≫ (K.restrictionXIso e hj).inv := by
   subst hi hj
   simp [restrictionXIso]
 
@@ -62,20 +64,19 @@ def restrictionMap : K.restriction e ⟶ L.restriction e where
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
-lemma restrictionMap_f' {i : ι} {i' : ι'} (hi : e.f i = i') :
-    (restrictionMap φ e).f i = (K.restrictionXIso e hi).hom ≫
-      φ.f i' ≫ (L.restrictionXIso e hi).inv := by
+lemma restrictionMap_f' {i : ι} {i' : ι'} (hi : e.f i = i')
+    : (restrictionMap φ e).f i
+      = (K.restrictionXIso e hi).hom ≫ φ.f i' ≫ (L.restrictionXIso e hi).inv := by
   subst hi
   simp [restrictionXIso]
 
 variable (K)
 
-@[simp]
-lemma restrictionMap_id : restrictionMap (𝟙 K) e = 𝟙 _ := rfl
+@[simp] lemma restrictionMap_id : restrictionMap (𝟙 K) e = 𝟙 _ := rfl
 
 @[simp, reassoc]
-lemma restrictionMap_comp :
-    restrictionMap (φ ≫ φ') e = restrictionMap φ e ≫ restrictionMap φ' e := rfl
+lemma restrictionMap_comp : restrictionMap (φ ≫ φ') e = restrictionMap φ e ≫ restrictionMap φ' e :=
+  rfl
 
 end HomologicalComplex
 
@@ -83,11 +84,12 @@ namespace ComplexShape.Embedding
 
 variable (e : Embedding c c') (C : Type*) [Category* C] [HasZeroObject C] [e.IsRelIff]
 
-/-- Given `e : ComplexShape.Embedding c c'`, this is the restriction
-functor `HomologicalComplex C c' ⥤ HomologicalComplex C c`. -/
+/--
+Given `e : ComplexShape.Embedding c c'`, this is the restriction
+functor `HomologicalComplex C c' ⥤ HomologicalComplex C c`.
+-/
 @[simps]
-def restrictionFunctor [HasZeroMorphisms C] :
-    HomologicalComplex C c' ⥤ HomologicalComplex C c where
+def restrictionFunctor [HasZeroMorphisms C] : HomologicalComplex C c' ⥤ HomologicalComplex C c where
   obj K := K.restriction e
   map φ := HomologicalComplex.restrictionMap φ e
 

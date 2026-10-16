@@ -33,13 +33,12 @@ theorem eq_X_add_C_of_degree_le_one (h : degree p ≤ 1) : p = C (p.coeff 1) * X
         have : degree p < m.succ.succ := lt_of_le_of_lt h Nat.one_lt_ofNat
         simp [coeff_eq_zero_of_degree_lt this]
 
-theorem eq_X_add_C_of_degree_eq_one (h : degree p = 1) :
-    p = C p.leadingCoeff * X + C (p.coeff 0) :=
+theorem eq_X_add_C_of_degree_eq_one (h : degree p = 1) : p = C p.leadingCoeff * X + C (p.coeff 0) :=
   (eq_X_add_C_of_degree_le_one h.le).trans
     (by rw [← Nat.cast_one] at h; rw [leadingCoeff, natDegree_eq_of_degree_eq_some h])
 
-theorem eq_X_add_C_of_natDegree_le_one (h : natDegree p ≤ 1) :
-    p = C (p.coeff 1) * X + C (p.coeff 0) :=
+theorem eq_X_add_C_of_natDegree_le_one (h : natDegree p ≤ 1)
+    : p = C (p.coeff 1) * X + C (p.coeff 0) :=
   eq_X_add_C_of_degree_le_one <| degree_le_of_natDegree_le h
 
 theorem Monic.eq_X_add_C (hm : p.Monic) (hnd : p.natDegree = 1) : p = X + C (p.coeff 0) := by
@@ -61,8 +60,7 @@ theorem ne_zero_of_coe_le_degree (hdeg : ↑n ≤ p.degree) : p ≠ 0 :=
   zero_le_degree_iff.mp <| (WithBot.coe_le_coe.mpr n.zero_le).trans hdeg
 
 theorem le_natDegree_of_coe_le_degree (hdeg : ↑n ≤ p.degree) : n ≤ p.natDegree :=
-  WithBot.coe_le_coe.mp <| by
-    rwa [degree_eq_natDegree <| ne_zero_of_coe_le_degree hdeg] at hdeg
+  WithBot.coe_le_coe.mp <| by rwa [degree_eq_natDegree <| ne_zero_of_coe_le_degree hdeg] at hdeg
 
 theorem degree_linear_le : degree (C a * X + C b) ≤ 1 :=
   degree_add_le_of_degree_le (degree_C_mul_X_le _) <| le_trans degree_C_le Nat.WithBot.coe_nonneg
@@ -82,8 +80,7 @@ theorem natDegree_linear (ha : a ≠ 0) : natDegree (C a * X + C b) = 1 := by
 
 @[simp]
 theorem leadingCoeff_linear (ha : a ≠ 0) : leadingCoeff (C a * X + C b) = a := by
-  rw [add_comm, leadingCoeff_add_of_degree_lt (degree_C_lt_degree_C_mul_X ha),
-    leadingCoeff_C_mul_X]
+  rw [add_comm, leadingCoeff_add_of_degree_lt (degree_C_lt_degree_C_mul_X ha), leadingCoeff_C_mul_X]
 
 theorem degree_quadratic_le : degree (C a * X ^ 2 + C b * X + C c) ≤ 2 := by
   simpa only [add_assoc] using!
@@ -93,8 +90,8 @@ theorem degree_quadratic_le : degree (C a * X ^ 2 + C b * X + C c) ≤ 2 := by
 theorem degree_quadratic_lt : degree (C a * X ^ 2 + C b * X + C c) < 3 :=
   degree_quadratic_le.trans_lt <| WithBot.coe_lt_coe.mpr <| lt_add_one 2
 
-theorem degree_linear_lt_degree_C_mul_X_sq (ha : a ≠ 0) :
-    degree (C b * X + C c) < degree (C a * X ^ 2) := by
+theorem degree_linear_lt_degree_C_mul_X_sq (ha : a ≠ 0)
+    : degree (C b * X + C c) < degree (C a * X ^ 2) := by
   simpa only [degree_C_mul_X_pow 2 ha] using! degree_linear_lt
 
 @[simp]
@@ -122,8 +119,8 @@ theorem degree_cubic_le : degree (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) ≤
 theorem degree_cubic_lt : degree (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) < 4 :=
   degree_cubic_le.trans_lt <| WithBot.coe_lt_coe.mpr <| lt_add_one 3
 
-theorem degree_quadratic_lt_degree_C_mul_X_cb (ha : a ≠ 0) :
-    degree (C b * X ^ 2 + C c * X + C d) < degree (C a * X ^ 3) := by
+theorem degree_quadratic_lt_degree_C_mul_X_cb (ha : a ≠ 0)
+    : degree (C b * X ^ 2 + C c * X + C d) < degree (C a * X ^ 3) := by
   simpa only [degree_C_mul_X_pow 3 ha] using! degree_quadratic_lt
 
 @[simp]
@@ -140,8 +137,8 @@ theorem natDegree_cubic (ha : a ≠ 0) : natDegree (C a * X ^ 3 + C b * X ^ 2 + 
   natDegree_eq_of_degree_eq_some <| degree_cubic ha
 
 @[simp]
-theorem leadingCoeff_cubic (ha : a ≠ 0) :
-    leadingCoeff (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) = a := by
+theorem leadingCoeff_cubic (ha : a ≠ 0)
+    : leadingCoeff (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) = a := by
   rw [add_assoc, add_assoc, ← add_assoc (C b * X ^ 2), add_comm,
     leadingCoeff_add_of_degree_lt <| degree_quadratic_lt_degree_C_mul_X_cb ha,
     leadingCoeff_C_mul_X_pow]

@@ -49,8 +49,10 @@ open Limits
 section presheaf
 
 variable (C) in
-/-- The truth morphism in the category of presheaves. At each component `X : C`, it is the constant
-map returning `⊤ : Sieve X`. -/
+/--
+The truth morphism in the category of presheaves. At each component `X : C`, it is the constant
+map returning `⊤ : Sieve X`.
+-/
 @[simps]
 def Presheaf.truth : (Functor.const _).obj PUnit ⟶ Functor.sieves C where
   app X := ↾fun _ ↦ (⊤ : Sieve X.unop)
@@ -66,22 +68,24 @@ to the (closed) sieve on X where `f : Y → X` is in the sieve iff
 -/
 @[simps app]
 def Presheaf.χ (m : F ⟶ G) : G ⟶ Functor.sieves C where
-  app X := ↾fun x ↦ ⟨fun Y f => ∃ a, G.map f.op x = m.app (.op Y) a, by
-    intro Y Z f ⟨a, ha⟩ g
-    use F.map g.op a
-    simp [ha, NatTrans.naturality_apply]⟩
+  app X :=
+    ↾fun x ↦ ⟨fun Y f => ∃ a, G.map f.op x = m.app (.op Y) a, by
+      intro Y Z f ⟨a, ha⟩ g
+      use F.map g.op a
+      simp [ha, NatTrans.naturality_apply]⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma Presheaf.comp_χ_eq (m : F ⟶ G) : m ≫ Presheaf.χ m =
-    (Functor.isTerminalConst _ Types.isTerminalPUnit).from F ≫ Presheaf.truth C := by
+lemma Presheaf.comp_χ_eq (m : F ⟶ G)
+    : m ≫ Presheaf.χ m
+      = (Functor.isTerminalConst _ Types.isTerminalPUnit).from F ≫ Presheaf.truth C := by
   ext
   apply Sieve.ext
   simp [← NatTrans.naturality_apply]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma Presheaf.isPullback_χ_truth (m : F ⟶ G) [Mono m] :
-    IsPullback m ((Functor.isTerminalConst _ Types.isTerminalPUnit).from F) (χ m) (truth C) := by
+lemma Presheaf.isPullback_χ_truth (m : F ⟶ G) [Mono m]
+    : IsPullback m ((Functor.isTerminalConst _ Types.isTerminalPUnit).from F) (χ m) (truth C) := by
   refine IsPullback.of_forall_isPullback_app fun X => ?_
   rw [Types.isPullback_iff]
   refine ⟨congr(($(comp_χ_eq m)).app X), ?_, ?_⟩
@@ -94,14 +98,16 @@ lemma Presheaf.isPullback_χ_truth (m : F ⟶ G) [Mono m] :
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma Presheaf.χ_unique (m : F ⟶ G) (χ' : G ⟶ Functor.sieves C)
-    (hχ' : IsPullback m ((Functor.isTerminalConst _ Types.isTerminalPUnit).from _) χ' (truth C)) :
-    χ' = χ m := by
+lemma Presheaf.χ_unique
+    (m : F ⟶ G) (χ' : G ⟶ Functor.sieves C)
+    (hχ' : IsPullback m ((Functor.isTerminalConst _ Types.isTerminalPUnit).from _) χ' (truth C))
+    : χ' = χ m := by
   ext X x
   simp only [IsPullback.iff_app, Functor.const_obj_obj, Functor.sieves_obj,
-    Functor.isTerminalConst_from_app, truth_app, Types.isPullback_iff,
-    Types.isTerminalPUnit_from_apply, and_true, TypeCat.hom_ofHom, TypeCat.Fun.coe_mk,
-    forall_const, forall_and] at hχ'
+      Functor.isTerminalConst_from_app, truth_app, Types.isPullback_iff,
+      Types.isTerminalPUnit_from_apply, and_true, TypeCat.hom_ofHom, TypeCat.Fun.coe_mk,
+      forall_const, forall_and]
+    at hχ'
   obtain ⟨h₁, h₂, h₃⟩ := hχ'
   refine Sieve.ext fun Y f => ?_
   simp only [χ_app, Opposite.op_unop]
@@ -127,8 +133,9 @@ def Presheaf.classifier : Subobject.Classifier (Cᵒᵖ ⥤ Type (max u v)) :=
 
 /-- Presheaf categories on an essentially small domain have a subobject classifier. -/
 instance [EssentiallySmall.{w} C] : HasSubobjectClassifier (Cᵒᵖ ⥤ Type w) where
-  exists_classifier := ⟨(Presheaf.classifier (SmallModel C)).ofEquivalence
-    (Equivalence.congrLeft (E := Type w) (equivSmallModel C).op).symm⟩
+  exists_classifier :=
+    ⟨(Presheaf.classifier (SmallModel C)).ofEquivalence
+      (Equivalence.congrLeft (E := Type w) (equivSmallModel C).op).symm⟩
 
 end presheaf
 
@@ -137,9 +144,10 @@ variable {J : GrothendieckTopology C}
 set_option backward.isDefEq.respectTransparency.types false in
 open Presheaf in
 lemma GrothendieckTopology.isClosed_χ_app_apply_of_isSheaf_of_isSeparated
-    {F G : Cᵒᵖ ⥤ Type (max u v)} (m : F ⟶ G) [Mono m] (hF : Presieve.IsSheaf J F)
-    (hG : Presieve.IsSeparated J G) (X : Cᵒᵖ) (x : G.obj X) :
-    J.IsClosed ((Presheaf.χ m).app X x) := by
+    {F G : Cᵒᵖ ⥤ Type (max u v)} (m : F ⟶ G) [Mono m]
+    (hF : Presieve.IsSheaf J F) (hG : Presieve.IsSeparated J G)
+    (X : Cᵒᵖ) (x : G.obj X)
+    : J.IsClosed ((Presheaf.χ m).app X x) := by
   intro Y f hf
   simp only [Presheaf.χ_app, Opposite.op_unop] at hf ⊢
   choose a ha using fun Z (g : Z ⟶ Y) (hg : (Sieve.pullback f ((χ m).app X x)).arrows g) => hg
@@ -149,8 +157,8 @@ lemma GrothendieckTopology.isClosed_χ_app_apply_of_isSheaf_of_isSeparated
     simp_rw [NatTrans.naturality_apply, ← ha, ← Functor.map_comp_apply, ← op_comp,
       reassoc_of% h]
   · refine (hG _ hf).ext fun Z f' hf' => ?_
-    rw [← NatTrans.naturality_apply, (hF _ hf).valid_glue _ _ hf', ← (ha _ _ _),
-      op_comp, Functor.map_comp_apply]
+    rw [← NatTrans.naturality_apply, (hF _ hf).valid_glue _ _ hf', ← (ha _ _ _), op_comp,
+      Functor.map_comp_apply]
 
 namespace Sheaf
 open CategoryTheory.Functor
@@ -167,8 +175,7 @@ def Ω (J : GrothendieckTopology C) : Sheaf J (Type max u v) where
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The morphism `t : 1 ⟶ Ω` which picks out the maximal sieve -/
 @[simps]
-def truth (J : GrothendieckTopology C) :
-    Sheaf.terminal J (Types.isTerminalPUnit) ⟶ Sheaf.Ω J where
+def truth (J : GrothendieckTopology C) : Sheaf.terminal J (Types.isTerminalPUnit) ⟶ Sheaf.Ω J where
   hom := (Functor.closedSieves J).lift (Presheaf.truth C) fun {X} x => by cat_disch
 
 /--
@@ -178,17 +185,18 @@ to the (closed) sieve on X where `f : Y → X` is in the sieve iff
 -/
 @[simps]
 def χ (m : F ⟶ G) [Mono m] : G ⟶ Sheaf.Ω J where
-  hom := (closedSieves J).lift (Presheaf.χ m.hom) (by
-    intro X
-    simp only [Subfunctor.range_obj, closedSieves_obj, Set.range_subset_iff]
-    exact J.isClosed_χ_app_apply_of_isSheaf_of_isSeparated m.hom
-      ((isSheaf_iff_isSheaf_of_type _ _).mp F.property)
-      ((isSheaf_iff_isSheaf_of_type _ _).mp G.property).isSeparated _)
+  hom :=
+    (closedSieves J).lift (Presheaf.χ m.hom) (by
+      intro X
+      simp only [Subfunctor.range_obj, closedSieves_obj, Set.range_subset_iff]
+      exact J.isClosed_χ_app_apply_of_isSheaf_of_isSeparated m.hom
+        ((isSheaf_iff_isSheaf_of_type _ _).mp F.property)
+        ((isSheaf_iff_isSheaf_of_type _ _).mp G.property).isSeparated _)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-lemma isPullback_χ_truth (m : F ⟶ G) [Mono m] :
-    IsPullback m ((isTerminalTerminal J _).from F) (Sheaf.χ m) (Sheaf.truth J) := by
+lemma isPullback_χ_truth (m : F ⟶ G) [Mono m]
+    : IsPullback m ((isTerminalTerminal J _).from F) (Sheaf.χ m) (Sheaf.truth J) := by
   apply IsPullback.of_map (sheafToPresheaf J _)
   · ext : 1
     simp only [Ω_obj, ObjectProperty.FullSubcategory.comp_hom, χ_hom, terminal_obj, truth_hom,
@@ -203,16 +211,16 @@ lemma isPullback_χ_truth (m : F ⟶ G) [Mono m] :
     · simp_all
 
 set_option backward.isDefEq.respectTransparency false in
-lemma χ_unique (m : F ⟶ G) [Mono m] (χ' : G ⟶ Sheaf.Ω J)
-    (hχ' : IsPullback m ((isTerminalTerminal J _).from F) χ' (Sheaf.truth J)) :
-    χ' = Sheaf.χ m := by
+lemma χ_unique
+    (m : F ⟶ G) [Mono m]
+    (χ' : G ⟶ Sheaf.Ω J) (hχ' : IsPullback m ((isTerminalTerminal J _).from F) χ' (Sheaf.truth J))
+    : χ' = Sheaf.χ m := by
   ext : 1
   rw [← cancel_mono (closedSieves J).ι, χ_hom, Subfunctor.lift_ι]
   apply Presheaf.χ_unique _
-  have pb : IsPullback (𝟙 G.obj) χ'.hom (χ'.hom ≫ (closedSieves J).ι)
-    (closedSieves J).ι := IsPullback.of_horiz_isIso_mono (by simp)
-  have : IsPullback m.hom ?_ χ'.hom (truth J).hom := by
-    simpa using hχ'.map (sheafToPresheaf J _)
+  have pb : IsPullback (𝟙 G.obj) χ'.hom (χ'.hom ≫ (closedSieves J).ι) (closedSieves J).ι :=
+    IsPullback.of_horiz_isIso_mono (by simp)
+  have : IsPullback m.hom ?_ χ'.hom (truth J).hom := by simpa using hχ'.map (sheafToPresheaf J _)
   simpa using this.paste_horiz pb
 
 /--
@@ -227,8 +235,9 @@ def classifier (J : GrothendieckTopology C) : Subobject.Classifier (Sheaf J (Typ
 
 /-- Sheaf categories on essentially small sites have a subobject classifier. -/
 instance [EssentiallySmall.{w} C] : HasSubobjectClassifier (Sheaf J (Type w)) where
-  exists_classifier := ⟨Sheaf.classifier ((equivSmallModel C).inverse.inducedTopology J)
-    |>.ofEquivalence (Equivalence.sheafCongr _ _ (equivSmallModel C) _).symm⟩
+  exists_classifier :=
+    ⟨Sheaf.classifier ((equivSmallModel C).inverse.inducedTopology J)
+      |>.ofEquivalence (Equivalence.sheafCongr _ _ (equivSmallModel C) _).symm⟩
 
 end Sheaf
 

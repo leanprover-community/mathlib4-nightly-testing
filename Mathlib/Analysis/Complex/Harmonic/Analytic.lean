@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Complex.Conformal
 public import Mathlib.Analysis.InnerProductSpace.Harmonic.Basic
-
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Complex.HasPrimitives
 
@@ -23,16 +22,13 @@ public section
 
 open Complex InnerProductSpace Metric Set
 
-variable
-  {f : ℂ → ℝ} {x : ℂ}
+variable {f : ℂ → ℝ} {x : ℂ}
 
-/--
-If `f : ℂ → ℝ` is harmonic at `x`, then `∂f/∂1 - I • ∂f/∂I` is complex differentiable at `x`.
--/
-theorem HarmonicAt.differentiableAt_complex_partial (hf : HarmonicAt f x) :
-    DifferentiableAt ℂ (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I) x := by
-  have : (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I) =
-      (ofRealCLM ∘ (fderiv ℝ f · 1) - I • ofRealCLM ∘ (fderiv ℝ f · I)) := by
+/-- If `f : ℂ → ℝ` is harmonic at `x`, then `∂f/∂1 - I • ∂f/∂I` is complex differentiable at `x`. -/
+theorem HarmonicAt.differentiableAt_complex_partial (hf : HarmonicAt f x)
+    : DifferentiableAt ℂ (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I) x := by
+  have : (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I)
+      = (ofRealCLM ∘ (fderiv ℝ f · 1) - I • ofRealCLM ∘ (fderiv ℝ f · I)) := by
     ext; simp
   rw [this]
   have h₁f := hf.1
@@ -51,15 +47,14 @@ theorem HarmonicAt.differentiableAt_complex_partial (hf : HarmonicAt f x) :
     apply h₁f.isSymmSndFDerivAt (by simp)
   · have h₂f := hf.2.eq_of_nhds
     simp only [laplacian_eq_iteratedFDeriv_complexPlane, iteratedFDeriv_two_apply, Fin.isValue,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, Pi.zero_apply,
-      add_eq_zero_iff_eq_neg] at h₂f
+        Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, Pi.zero_apply,
+        add_eq_zero_iff_eq_neg]
+      at h₂f
     simp [h₂f]
 
-/--
-If `f : ℂ → ℝ` is harmonic at `x`, then `∂f/∂1 - I • ∂f/∂I` is complex analytic at `x`.
--/
-theorem HarmonicAt.analyticAt_complex_partial (hf : HarmonicAt f x) :
-    AnalyticAt ℂ (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I) x :=
+/-- If `f : ℂ → ℝ` is harmonic at `x`, then `∂f/∂1 - I • ∂f/∂I` is complex analytic at `x`. -/
+theorem HarmonicAt.analyticAt_complex_partial (hf : HarmonicAt f x)
+    : AnalyticAt ℂ (fun z ↦ fderiv ℝ f z 1 - I * fderiv ℝ f z I) x :=
   DifferentiableOn.analyticAt (s := { x | HarmonicAt f x })
     (fun _ hy ↦ (HarmonicAt.differentiableAt_complex_partial hy).differentiableWithinAt)
     ((isOpen_setOfPred_harmonicAt f).mem_nhds hf)
@@ -68,17 +63,17 @@ theorem HarmonicAt.analyticAt_complex_partial (hf : HarmonicAt f x) :
 If a function `f : ℂ → ℝ` is harmonic on an open ball, then `f` is the real part of a function
 `F : ℂ → ℂ` that is holomorphic on the ball.
 -/
-theorem InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq {z : ℂ} {R : ℝ}
-    (hf : HarmonicOnNhd f (ball z R)) :
-    ∃ F : ℂ → ℂ, (AnalyticOnNhd ℂ F (ball z R)) ∧ ((ball z R).EqOn (fun z ↦ (F z).re) f) := by
+theorem InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq
+    {z : ℂ} {R : ℝ} (hf : HarmonicOnNhd f (ball z R))
+    : ∃ F : ℂ → ℂ, (AnalyticOnNhd ℂ F (ball z R)) ∧ ((ball z R).EqOn (fun z ↦ (F z).re) f) := by
   by_cases hR : R ≤ 0
   · simp [ball_eq_empty.2 hR]
   let g := ofRealCLM ∘ (fderiv ℝ f · 1) - I • ofRealCLM ∘ (fderiv ℝ f · I)
-  have hg : DifferentiableOn ℂ g (ball z R) :=
-    fun x hx ↦ (HarmonicAt.differentiableAt_complex_partial (hf x hx)).differentiableWithinAt
+  have hg : DifferentiableOn ℂ g (ball z R) := fun x hx ↦
+    (HarmonicAt.differentiableAt_complex_partial (hf x hx)).differentiableWithinAt
   obtain ⟨F, hF⟩ := hg.isExactOn_ball.with_val_at z (f z)
-  have h₁F : DifferentiableOn ℂ F (ball z R) :=
-    fun x hx ↦ (hF.2 x hx).differentiableAt.differentiableWithinAt
+  have h₁F : DifferentiableOn ℂ F (ball z R) := fun x hx ↦
+    (hF.2 x hx).differentiableAt.differentiableWithinAt
   have h₂F : DifferentiableOn ℝ F (ball z R) := h₁F.restrictScalars (𝕜 := ℝ) (𝕜' := ℂ)
   use F, h₁F.analyticOnNhd isOpen_ball
   rw [(by aesop : (fun z ↦ (F z).re) = Complex.reCLM ∘ F)]
@@ -91,24 +86,24 @@ theorem InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq {z : ℂ
     have h₄F := (hF.2 y hy).differentiableAt
     have h₅F := h₄F.restrictScalars (𝕜 := ℝ) (𝕜' := ℂ)
     rw [fderivWithin_eq_fderiv (isOpen_ball.uniqueDiffWithinAt hy)
-      (reCLM.differentiableAt.comp y h₅F), fderivWithin_eq_fderiv
-      (isOpen_ball.uniqueDiffWithinAt hy) ((hf y hy).1.differentiableAt two_ne_zero), fderiv_comp y
-      (by fun_prop) h₅F, ContinuousLinearMap.fderiv, h₄F.fderiv_restrictScalars (𝕜 := ℝ)]
+        (reCLM.differentiableAt.comp y h₅F),
+      fderivWithin_eq_fderiv (isOpen_ball.uniqueDiffWithinAt hy)
+        ((hf y hy).1.differentiableAt two_ne_zero),
+      fderiv_comp y (by fun_prop) h₅F, ContinuousLinearMap.fderiv,
+      h₄F.fderiv_restrictScalars (𝕜 := ℝ)]
     ext a
     nth_rw 2 [(by simp : a = a.re • (1 : ℂ) + a.im • (I : ℂ))]
     rw [map_add, map_smul, map_smul]
     simp [HasDerivAt.deriv (hF.2 y hy), g]
   all_goals simp_all
 
-/--
-If a function `f : ℂ → ℝ` is harmonic, then `f` is the real part of a holomorphic function.
--/
-theorem InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_univ_re_eq {f : ℂ → ℝ}
-    (hf : HarmonicOnNhd f univ) :
-    ∃ F : ℂ → ℂ, (AnalyticOnNhd ℂ F univ) ∧ ((fun z ↦ (F z).re) = f) := by
+/-- If a function `f : ℂ → ℝ` is harmonic, then `f` is the real part of a holomorphic function. -/
+theorem InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_univ_re_eq
+    {f : ℂ → ℝ} (hf : HarmonicOnNhd f univ)
+    : ∃ F : ℂ → ℂ, (AnalyticOnNhd ℂ F univ) ∧ ((fun z ↦ (F z).re) = f) := by
   let g := ofRealCLM ∘ (fderiv ℝ f · 1) - I • ofRealCLM ∘ (fderiv ℝ f · I)
-  have hg : Differentiable ℂ g :=
-    fun x ↦ (HarmonicAt.differentiableAt_complex_partial (hf x (mem_univ x)))
+  have hg : Differentiable ℂ g := fun x ↦
+    (HarmonicAt.differentiableAt_complex_partial (hf x (mem_univ x)))
   obtain ⟨F, hF⟩ := hg.isExactOn_univ.with_val_at 0 (f 0)
   have h₁F : ∀ z₁, HasDerivAt F (g z₁) z₁ := by simp_all
   have h₂F : Differentiable ℂ F := fun x ↦ (h₁F x).differentiableAt
@@ -135,7 +130,7 @@ TODO: Prove this for harmonic functions on an arbitrary f.d. inner product space
 -/
 theorem HarmonicAt.analyticAt (hf : HarmonicAt f x) : AnalyticAt ℝ f x := by
   obtain ⟨ε, h₁ε, h₂ε⟩ := isOpen_iff.1 (isOpen_setOfPred_harmonicAt (f := f)) x hf
-  obtain ⟨F, h₁F, h₂F⟩ := InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq
-    (fun _ hy ↦ h₂ε hy)
+  obtain ⟨F, h₁F, h₂F⟩ :=
+    InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq (fun _ hy ↦ h₂ε hy)
   rw [analyticAt_congr (Filter.eventually_of_mem (ball_mem_nhds x h₁ε) (fun y hy ↦ h₂F.symm hy))]
   exact (reCLM.analyticAt (F x)).comp (h₁F x (mem_ball_self h₁ε)).restrictScalars

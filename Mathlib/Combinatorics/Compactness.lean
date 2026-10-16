@@ -8,7 +8,6 @@ module
 public import Mathlib.Basic.Finite.Defs
 public import Mathlib.Data.Finset.Defs
 public import Mathlib.Tactic.ToAdditive
-
 import Mathlib.Data.Finset.Attr
 import Mathlib.Topology.Compactness.Compact
 
@@ -65,8 +64,8 @@ there is some larger `t` such that `χ` agrees with `g t` on `s`.
 Informally, we are stitching together the local functions `g s` into a global `χ` such that on
 each `s`, `χ` can be expressed in terms of one of the `g`.
 -/
-theorem Finset.rado_selection (g : Finset α → (a : α) → β a) :
-    ∃ χ : (a : α) → β a, ∀ s : Finset α, ∃ t : Finset α, s ⊆ t ∧ ∀ x ∈ s, χ x = g t x := by
+theorem Finset.rado_selection (g : Finset α → (a : α) → β a)
+    : ∃ χ : (a : α) → β a, ∀ s : Finset α, ∃ t : Finset α, s ⊆ t ∧ ∀ x ∈ s, χ x = g t x := by
   classical
   let instTop (a : α) : TopologicalSpace (β a) := ⊥
   have instDiscr (a : α) : DiscreteTopology (β a) := discreteTopology_bot _
@@ -89,9 +88,9 @@ there is some larger `t` such that `χ` agrees with `g t` on `s`.
 Informally, we are stitching together the local functions `g s` into a global `χ` such that on
 each `s`, `χ` can be expressed in terms of one of the `g`.
 -/
-theorem Finset.rado_selection_subtype (g : (s : Finset α) → (a : s) → β a) :
-    ∃ χ : (a : α) → β a, ∀ s : Finset α,
-      ∃ (t : Finset α) (hst : s ⊆ t), ∀ x : s, χ x = g t (Set.inclusion hst x) := by
+theorem Finset.rado_selection_subtype (g : (s : Finset α) → (a : s) → β a)
+    : ∃ χ : (a : α) → β a, ∀ s : Finset α, ∃ (t : Finset α) (hst : s ⊆ t), ∀ x : s,
+      χ x = g t (Set.inclusion hst x) := by
   classical
   have (a : α) : Nonempty (β a) := ⟨g {a} ⟨a, by simp⟩⟩
   let g' (s) (a : α) : β a := if ha : a ∈ s then g s ⟨a, ha⟩ else Classical.arbitrary (β a)
@@ -105,9 +104,9 @@ there is some larger `t` such that `χ` agrees with `g t` on `s`.
 Informally, we are stitching together the local functions `g s` into a global `χ` such that on
 each `s`, `χ` can be expressed in terms of one of the `g`.
 -/
-theorem Set.Finite.rado_selection (g : (s : Set α) → s.Finite → (a : α) → β a) :
-    ∃ χ : (a : α) → β a, ∀ s : Set α, s.Finite →
-      ∃ (t : Set α) (ht : t.Finite), s ⊆ t ∧ ∀ x ∈ s, χ x = g t ht x := by
+theorem Set.Finite.rado_selection (g : (s : Set α) → s.Finite → (a : α) → β a)
+    : ∃ χ : (a : α) → β a, ∀ s : Set α,
+      s.Finite → ∃ (t : Set α) (ht : t.Finite), s ⊆ t ∧ ∀ x ∈ s, χ x = g t ht x := by
   obtain ⟨χ, hχ⟩ := Finset.rado_selection (fun s ↦ g s s.finite_toSet)
   refine ⟨χ, fun s hs ↦ ?_⟩
   obtain ⟨t, ht, ht'⟩ := hχ hs.toFinset
@@ -120,9 +119,11 @@ there is some larger `t` such that `χ` agrees with `g t` on `s`.
 Informally, we are stitching together the local functions `g s` into a global `χ` such that on
 each `s`, `χ` can be expressed in terms of one of the `g`.
 -/
-theorem Set.Finite.rado_selection_subtype (g : (s : Set α) → s.Finite → (a : s) → β a) :
-    ∃ χ : (a : α) → β a, ∀ s : Set α, s.Finite →
-      ∃ (t : Set α) (ht : t.Finite) (hst : s ⊆ t), ∀ x : s, χ x = g t ht (Set.inclusion hst x) := by
+theorem Set.Finite.rado_selection_subtype (g : (s : Set α) → s.Finite → (a : s) → β a)
+    : ∃ χ : (a : α) → β a, ∀ s : Set α,
+      s.Finite
+        → ∃ (t : Set α) (ht : t.Finite) (hst : s ⊆ t), ∀ x : s,
+          χ x = g t ht (Set.inclusion hst x) := by
   obtain ⟨χ, hχ⟩ := Finset.rado_selection_subtype (β := β) (fun s ↦ g s s.finite_toSet)
   refine ⟨χ, fun s hs ↦ ?_⟩
   obtain ⟨t, ht, hst⟩ := hχ hs.toFinset

@@ -88,7 +88,8 @@ assert_not_exists Field Finset Module.End
 
 universe u v w u₁ v₁
 
-/-- An associative unital `R`-algebra is a semiring `A` equipped with a map into its center `R → A`.
+/--
+An associative unital `R`-algebra is a semiring `A` equipped with a map into its center `R → A`.
 
 See the implementation notes in this file for discussion of the details of this definition.
 -/
@@ -100,48 +101,38 @@ class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SM
 
 export Algebra (algebraMap)
 
-theorem Algebra.subsingleton (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] [Algebra R A]
-    [Subsingleton R] : Subsingleton A :=
+theorem Algebra.subsingleton
+    (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] [Algebra R A] [Subsingleton R]
+    : Subsingleton A :=
   (algebraMap R A).codomain_trivial
 
 /-- Coercion from a commutative semiring to an algebra over this semiring. -/
 @[coe, reducible]
-def Algebra.cast {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] : R → A :=
-  algebraMap R A
+def Algebra.cast {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] : R → A := algebraMap R A
 
 namespace algebraMap
 
-scoped instance coeHTCT (R A : Type*) [CommSemiring R] [Semiring A] [Algebra R A] :
-    CoeHTCT R A :=
+scoped instance coeHTCT (R A : Type*) [CommSemiring R] [Semiring A] [Algebra R A] : CoeHTCT R A :=
   ⟨Algebra.cast⟩
 
 section CommSemiringSemiring
 
 variable {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A]
 
-@[norm_cast]
-theorem coe_zero : (↑(0 : R) : A) = 0 :=
-  map_zero (algebraMap R A)
+@[norm_cast] theorem coe_zero : (↑(0 : R) : A) = 0 := map_zero (algebraMap R A)
+
+@[norm_cast] theorem coe_one : (↑(1 : R) : A) = 1 := map_one (algebraMap R A)
+
+@[norm_cast] theorem coe_natCast (a : ℕ) : (↑(a : R) : A) = a := map_natCast (algebraMap R A) a
 
 @[norm_cast]
-theorem coe_one : (↑(1 : R) : A) = 1 :=
-  map_one (algebraMap R A)
+theorem coe_add (a b : R) : (↑(a + b : R) : A) = ↑a + ↑b := map_add (algebraMap R A) a b
 
 @[norm_cast]
-theorem coe_natCast (a : ℕ) : (↑(a : R) : A) = a :=
-  map_natCast (algebraMap R A) a
+theorem coe_mul (a b : R) : (↑(a * b : R) : A) = ↑a * ↑b := map_mul (algebraMap R A) a b
 
 @[norm_cast]
-theorem coe_add (a b : R) : (↑(a + b : R) : A) = ↑a + ↑b :=
-  map_add (algebraMap R A) a b
-
-@[norm_cast]
-theorem coe_mul (a b : R) : (↑(a * b : R) : A) = ↑a * ↑b :=
-  map_mul (algebraMap R A) a b
-
-@[norm_cast]
-theorem coe_pow (a : R) (n : ℕ) : (↑(a ^ n : R) : A) = (a : A) ^ n :=
-  map_pow (algebraMap R A) _ _
+theorem coe_pow (a : R) (n : ℕ) : (↑(a ^ n : R) : A) = (a : A) ^ n := map_pow (algebraMap R A) _ _
 
 end CommSemiringSemiring
 
@@ -149,27 +140,26 @@ section CommRingRing
 
 variable {R A : Type*} [CommRing R] [Ring A] [Algebra R A]
 
-@[norm_cast]
-theorem coe_neg (x : R) : (↑(-x : R) : A) = -↑x :=
-  map_neg (algebraMap R A) x
+@[norm_cast] theorem coe_neg (x : R) : (↑(-x : R) : A) = - ↑x := map_neg (algebraMap R A) x
 
 @[norm_cast]
-theorem coe_sub (a b : R) :
-    (↑(a - b : R) : A) = ↑a - ↑b :=
-  map_sub (algebraMap R A) a b
+theorem coe_sub (a b : R) : (↑(a - b : R) : A) = ↑a - ↑b := map_sub (algebraMap R A) a b
 
 end CommRingRing
 
 end algebraMap
 
-/-- Creating an algebra from a morphism to the center of a semiring.
+/--
+Creating an algebra from a morphism to the center of a semiring.
 See note [reducible non-instances].
 
 *Warning:* In general this should not be used if `S` already has a `SMul R S`
 instance, since this creates another `SMul R S` instance from the supplied `RingHom` and
-this will likely create a diamond. -/
-abbrev RingHom.toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S)
-    (h : ∀ c x, i c * x = x * i c) : Algebra R S where
+this will likely create a diamond.
+-/
+abbrev RingHom.toAlgebra'
+    {R S} [CommSemiring R] [Semiring S] (i : R →+* S) (h : ∀ c x, i c * x = x * i c)
+    : Algebra R S where
   smul c x := i c * x
   commutes' := h
   smul_def' _ _ := rfl
@@ -177,64 +167,76 @@ abbrev RingHom.toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S)
 
 -- just simple lemmas for a declaration that is itself primed, no need for docstrings
 set_option linter.docPrime false in
-theorem RingHom.smul_toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S)
-    (h : ∀ c x, i c * x = x * i c) (r : R) (s : S) :
-    let _ := RingHom.toAlgebra' i h
-    r • s = i r * s := rfl
-
-set_option linter.docPrime false in
-theorem RingHom.algebraMap_toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S)
-    (h : ∀ c x, i c * x = x * i c) :
-    @algebraMap R S _ _ (i.toAlgebra' h) = i :=
+theorem RingHom.smul_toAlgebra'
+    {R S} [CommSemiring R] [Semiring S] (i : R →+* S) (h : ∀ c x, i c * x = x * i c) (r : R) (s : S)
+    : let _ := RingHom.toAlgebra' i h
+      r • s = i r * s :=
   rfl
 
-/-- Creating an algebra from a morphism to a commutative semiring.
+set_option linter.docPrime false in
+theorem RingHom.algebraMap_toAlgebra'
+    {R S} [CommSemiring R] [Semiring S] (i : R →+* S) (h : ∀ c x, i c * x = x * i c)
+    : @algebraMap R S _ _ (i.toAlgebra' h) = i :=
+  rfl
+
+/--
+Creating an algebra from a morphism to a commutative semiring.
 See note [reducible non-instances].
 
 *Warning:* In general this should not be used if `S` already has a `SMul R S`
 instance, since this creates another `SMul R S` instance from the supplied `RingHom` and
-this will likely create a diamond. -/
+this will likely create a diamond.
+-/
 abbrev RingHom.toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S) : Algebra R S :=
   i.toAlgebra' fun _ => mul_comm _
 
-theorem RingHom.smul_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S)
-    (r : R) (s : S) :
-    let _ := RingHom.toAlgebra i
-    r • s = i r * s := rfl
+theorem RingHom.smul_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S) (r : R) (s : S)
+    : let _ := RingHom.toAlgebra i
+      r • s = i r * s :=
+  rfl
 
-theorem RingHom.algebraMap_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S) :
-    @algebraMap R S _ _ i.toAlgebra = i :=
+theorem RingHom.algebraMap_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S)
+    : @algebraMap R S _ _ i.toAlgebra = i :=
   rfl
 
 namespace Algebra
 
 variable {R : Type u} {S : Type v} {A : Type w}
 
-/-- Let `R` be a commutative semiring, let `A` be a semiring with a `Module R` structure.
+/--
+Let `R` be a commutative semiring, let `A` be a semiring with a `Module R` structure.
 If `(r • 1) * x = x * (r • 1) = r • x` for all `r : R` and `x : A`, then `A` is an `Algebra`
 over `R`.
 
-See note [reducible non-instances]. -/
-abbrev ofModule' [CommSemiring R] [Semiring A] [Module R A]
+See note [reducible non-instances].
+-/
+abbrev ofModule'
+    [CommSemiring R] [Semiring A] [Module R A]
     (h₁ : ∀ (r : R) (x : A), r • (1 : A) * x = r • x)
-    (h₂ : ∀ (r : R) (x : A), x * r • (1 : A) = r • x) : Algebra R A where
-  algebraMap :=
-  { toFun r := r • (1 : A)
+    (h₂ : ∀ (r : R) (x : A), x * r • (1 : A) = r • x)
+    : Algebra R A where
+  algebraMap := {
+    toFun r := r • (1 : A)
     map_one' := one_smul _ _
     map_mul' r₁ r₂ := by simp only [h₁, mul_smul]
     map_zero' := zero_smul _ _
-    map_add' r₁ r₂ := add_smul r₁ r₂ 1 }
+    map_add' r₁ r₂ := add_smul r₁ r₂ 1
+  }
   commutes' r x := by simp [h₁, h₂]
   smul_def' r x := by simp [h₁]
 
-/-- Let `R` be a commutative semiring, let `A` be a semiring with a `Module R` structure.
+/--
+Let `R` be a commutative semiring, let `A` be a semiring with a `Module R` structure.
 If `(r • x) * y = x * (r • y) = r • (x * y)` for all `r : R` and `x y : A`, then `A`
 is an `Algebra` over `R`.
 
-See note [reducible non-instances]. -/
-abbrev ofModule [CommSemiring R] [Semiring A] [Module R A]
+See note [reducible non-instances].
+-/
+abbrev ofModule
+    [CommSemiring R] [Semiring A] [Module R A]
     (h₁ : ∀ (r : R) (x y : A), r • x * y = r • (x * y))
-    (h₂ : ∀ (r : R) (x y : A), x * r • y = r • (x * y)) : Algebra R A :=
+    (h₂ : ∀ (r : R) (x y : A), x * r • y = r • (x * y))
+    : Algebra R A :=
   ofModule' (fun r x => by rw [h₁, one_mul]) fun r x => by rw [h₂, mul_one]
 
 section Semiring
@@ -243,13 +245,16 @@ variable [CommSemiring R] [CommSemiring S]
 variable [Semiring A] [Algebra R A]
 
 -- We'll later use this to show `Algebra ℤ M` is a subsingleton.
-/-- To prove two algebra structures on a fixed `[CommSemiring R] [Semiring A]` agree,
+/--
+To prove two algebra structures on a fixed `[CommSemiring R] [Semiring A]` agree,
 it suffices to check the `algebraMap`s agree.
 -/
 @[ext]
-theorem algebra_ext {R : Type*} [CommSemiring R] {A : Type*} [Semiring A] (P Q : Algebra R A)
-    (h : ∀ r : R, (haveI := P; algebraMap R A r) = haveI := Q; algebraMap R A r) :
-    P = Q := by
+theorem algebra_ext
+    {R : Type*} [CommSemiring R]
+    {A : Type*} [Semiring A]
+    (P Q : Algebra R A) (h : ∀ r : R, (haveI := P; algebraMap R A r) = haveI := Q; algebraMap R A r)
+    : P = Q := by
   replace h : P.algebraMap = Q.algebraMap := DFunLike.ext _ _ h
   have h' : (haveI := P; (· • ·) : R → A → A) = (haveI := Q; (· • ·) : R → A → A) := by
     funext r a
@@ -257,15 +262,16 @@ theorem algebra_ext {R : Type*} [CommSemiring R] {A : Type*} [Semiring A] (P Q :
   rcases P with @⟨⟨P⟩⟩
   congr
 
-/-- An auxiliary lemma used to prove theorems of the form
-`RingHom.X (algebraMap R S) ↔ Algebra.X R S`. -/
-lemma _root_.toAlgebra_algebraMap [Algebra R S] :
-    (algebraMap R S).toAlgebra = ‹_› :=
+/--
+An auxiliary lemma used to prove theorems of the form
+`RingHom.X (algebraMap R S) ↔ Algebra.X R S`.
+-/
+lemma _root_.toAlgebra_algebraMap [Algebra R S] : (algebraMap R S).toAlgebra = ‹_› :=
   algebra_ext _ _ fun _ ↦ rfl
 
 -- see Note [lower instance priority]
-instance (priority := 200) toModule {R A} {_ : CommSemiring R} {_ : Semiring A} [Algebra R A] :
-    Module R A where
+instance (priority := 200) toModule {R A} {_ : CommSemiring R} {_ : Semiring A} [Algebra R A]
+    : Module R A where
   one_smul _ := by simp [smul_def']
   mul_smul := by simp [smul_def', mul_assoc]
   smul_add := by simp [smul_def', mul_add]
@@ -273,12 +279,12 @@ instance (priority := 200) toModule {R A} {_ : CommSemiring R} {_ : Semiring A} 
   add_smul := by simp [smul_def', add_mul]
   zero_smul := by simp [smul_def']
 
-theorem smul_def (r : R) (x : A) : r • x = algebraMap R A r * x :=
-  Algebra.smul_def' r x
+theorem smul_def (r : R) (x : A) : r • x = algebraMap R A r * x := Algebra.smul_def' r x
 
 theorem algebraMap_eq_smul_one (r : R) : algebraMap R A r = r • (1 : A) :=
   calc
-    algebraMap R A r = algebraMap R A r * 1 := (mul_one _).symm
+    algebraMap R A r
+      = algebraMap R A r * 1 := (mul_one _).symm
     _ = r • (1 : A) := (Algebra.smul_def r 1).symm
 
 theorem algebraMap_eq_smul_one' : ⇑(algebraMap R A) = fun r => r • (1 : A) :=
@@ -288,20 +294,19 @@ theorem algebraMap_eq_smul_one' : ⇑(algebraMap R A) = fun r => r • (1 : A) :
 theorem commutes (r : R) (x : A) : algebraMap R A r * x = x * algebraMap R A r :=
   Algebra.commutes' r x
 
-lemma commute_algebraMap_left (r : R) (x : A) : Commute (algebraMap R A r) x :=
-  Algebra.commutes r x
+lemma commute_algebraMap_left (r : R) (x : A) : Commute (algebraMap R A r) x := Algebra.commutes r x
 
 lemma commute_algebraMap_right (r : R) (x : A) : Commute x (algebraMap R A r) :=
   (Algebra.commutes r x).symm
 
 /-- `mul_left_comm` for `Algebra`s when one element is from the base ring. -/
-theorem left_comm (x : A) (r : R) (y : A) :
-    x * (algebraMap R A r * y) = algebraMap R A r * (x * y) := by
+theorem left_comm (x : A) (r : R) (y : A)
+    : x * (algebraMap R A r * y) = algebraMap R A r * (x * y) := by
   rw [← mul_assoc, ← commutes, mul_assoc]
 
 /-- `mul_right_comm` for `Algebra`s when one element is from the base ring. -/
-theorem right_comm (x : A) (r : R) (y : A) :
-    x * algebraMap R A r * y = x * y * algebraMap R A r := by
+theorem right_comm (x : A) (r : R) (y : A)
+    : x * algebraMap R A r * y = x * y * algebraMap R A r := by
   rw [mul_assoc, commutes, ← mul_assoc]
 
 /-- This has high priority because it is almost always the right instance when it applies. -/
@@ -315,21 +320,25 @@ theorem _root_.RingHom.smulOneHom_eq_algebraMap : RingHom.smulOneHom = algebraMa
 -- TODO: set up `IsScalarTower.smulCommClass` earlier so that we can actually prove this using
 -- `mul_smul_comm s x y`.
 
-/-- This is just a special case of the global `mul_smul_comm` lemma that requires less typeclass
-search (and was here first). -/
+/--
+This is just a special case of the global `mul_smul_comm` lemma that requires less typeclass
+search (and was here first).
+-/
 @[simp]
 protected theorem mul_smul_comm (s : R) (x y : A) : x * s • y = s • (x * y) := by
   rw [smul_def, smul_def, left_comm]
 
-/-- This is just a special case of the global `smul_mul_assoc` lemma that requires less typeclass
-search (and was here first). -/
+/--
+This is just a special case of the global `smul_mul_assoc` lemma that requires less typeclass
+search (and was here first).
+-/
 @[simp]
-protected theorem smul_mul_assoc (r : R) (x y : A) : r • x * y = r • (x * y) :=
-  smul_mul_assoc r x y
+protected theorem smul_mul_assoc (r : R) (x y : A) : r • x * y = r • (x * y) := smul_mul_assoc r x y
 
 @[simp]
-theorem _root_.smul_algebraMap {α : Type*} [Monoid α] [MulDistribMulAction α A]
-    [SMulCommClass α R A] (a : α) (r : R) : a • algebraMap R A r = algebraMap R A r := by
+theorem _root_.smul_algebraMap
+    {α : Type*} [Monoid α] [MulDistribMulAction α A] [SMulCommClass α R A] (a : α) (r : R)
+    : a • algebraMap R A r = algebraMap R A r := by
   rw [algebraMap_eq_smul_one, smul_comm a r (1 : A), smul_one]
 
 section compHom
@@ -347,38 +356,40 @@ abbrev compHom : Algebra S A where
   commutes' _ _ := Algebra.commutes _ _
   smul_def' _ _ := Algebra.smul_def _ _
 
-theorem compHom_smul_def (s : S) (x : A) :
-    letI := compHom A f
-    s • x = f s • x := rfl
+theorem compHom_smul_def (s : S) (x : A)
+    : letI := compHom A f
+      s • x = f s • x :=
+  rfl
 
-theorem compHom_algebraMap_eq :
-    letI := compHom A f
-    algebraMap S A = (algebraMap R A).comp f := rfl
+theorem compHom_algebraMap_eq
+    : letI := compHom A f
+      algebraMap S A = (algebraMap R A).comp f :=
+  rfl
 
-theorem compHom_algebraMap_apply (s : S) :
-    letI := compHom A f
-    algebraMap S A s = (algebraMap R A) (f s) := rfl
+theorem compHom_algebraMap_apply (s : S)
+    : letI := compHom A f
+      algebraMap S A s = (algebraMap R A) (f s) :=
+  rfl
 
 end compHom
 
-
 variable (R A)
 
-/-- The canonical ring homomorphism `algebraMap R A : R →+* A` for any `R`-algebra `A`,
+/--
+The canonical ring homomorphism `algebraMap R A : R →+* A` for any `R`-algebra `A`,
 packaged as an `R`-linear map.
 -/
-protected def linearMap : R →ₗ[R] A :=
-  { algebraMap R A with map_smul' := fun x y => by simp [Algebra.smul_def] }
+protected def linearMap : R →ₗ[R] A := {
+  algebraMap R A with
+  map_smul' := fun x y => by simp [Algebra.smul_def]
+}
 
 @[inherit_doc] scoped[RingTheory.LinearMap] notation "η" => Algebra.linearMap _ _
 @[inherit_doc] scoped[RingTheory.LinearMap] notation "η[" R "]" => Algebra.linearMap R _
 
-@[simp]
-theorem linearMap_apply (r : R) : Algebra.linearMap R A r = algebraMap R A r :=
-  rfl
+@[simp] theorem linearMap_apply (r : R) : Algebra.linearMap R A r = algebraMap R A r := rfl
 
-theorem coe_linearMap : ⇑(Algebra.linearMap R A) = algebraMap R A :=
-  rfl
+theorem coe_linearMap : ⇑(Algebra.linearMap R A) = algebraMap R A := rfl
 
 -- see Note [higher instance priority]
 /-- The identity map inducing an `Algebra` structure. -/
@@ -402,31 +413,37 @@ end Algebra
 
 section algebraMap
 
-variable {A B : Type*} (a : A) (b : B) (C : Type*)
-  [SMul A B] [CommSemiring B] [Semiring C] [Algebra B C]
+variable
+  {A B : Type*} (a : A) (b : B) (C : Type*) [SMul A B] [CommSemiring B] [Semiring C] [Algebra B C]
 
 @[norm_cast]
 theorem algebraMap.coe_smul [SMul A C] [IsScalarTower A B C] : (a • b : B) = a • (b : C) := by
   simp [Algebra.algebraMap_eq_smul_one]
 
 @[norm_cast]
-theorem algebraMap.coe_smul' [Monoid A] [MulDistribMulAction A C] [SMulDistribClass A B C] :
-    (a • b : B) = a • (b : C) := by
+theorem algebraMap.coe_smul' [Monoid A] [MulDistribMulAction A C] [SMulDistribClass A B C]
+    : (a • b : B) = a • (b : C) := by
   simp [Algebra.algebraMap_eq_smul_one, smul_distrib_smul]
 
-theorem algebraMap.smul [SMul A C] [IsScalarTower A B C] :
-    algebraMap B C (a • b) = a • (algebraMap B C b) := coe_smul _ _ _
+theorem algebraMap.smul [SMul A C] [IsScalarTower A B C]
+    : algebraMap B C (a • b) = a • (algebraMap B C b) :=
+  coe_smul _ _ _
 
-theorem algebraMap.smul' [Monoid A] [MulDistribMulAction A C] [SMulDistribClass A B C] :
-    algebraMap B C (a • b) = a • (algebraMap B C b) := coe_smul' _ _ _
+theorem algebraMap.smul' [Monoid A] [MulDistribMulAction A C] [SMulDistribClass A B C]
+    : algebraMap B C (a • b) = a • (algebraMap B C b) :=
+  coe_smul' _ _ _
 
 end algebraMap
 
 attribute [local instance] IsUnital.toSemiring in
-/-- A unital non-unital algebra is an algebra.
+/--
+A unital non-unital algebra is an algebra.
 
 This constructor is primarily intended to be used within proofs since it creates bad definitional
-equalities. -/
-noncomputable abbrev IsUnital.toAlgebra {R A : Type*} [CommSemiring R] [NonUnitalSemiring A]
-    [Module R A] [IsScalarTower R A A] [SMulCommClass R A A] [IsUnital A] : Algebra R A :=
+equalities.
+-/
+noncomputable abbrev IsUnital.toAlgebra
+    {R A : Type*} [CommSemiring R] [NonUnitalSemiring A] [Module R A] [IsScalarTower R A A]
+    [SMulCommClass R A A] [IsUnital A]
+    : Algebra R A :=
   .ofModule smul_mul_assoc mul_smul_comm

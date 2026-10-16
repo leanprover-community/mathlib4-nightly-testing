@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Category.MonCat.Basic
 public import Mathlib.Algebra.Group.Submonoid.Operations
 public import Mathlib.CategoryTheory.Subfunctor.Basic
-
 import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
 
 /-!
@@ -36,8 +35,10 @@ namespace CategoryTheory
 variable {C : Type u} [Category.{v} C] {M : C ⥤ MonCat.{w}}
 
 variable (M) in
-/-- A submonoid functor consists of a submonoid of `M.obj U` for every `U`,
-compatible with the restriction maps `M.map i`. -/
+/--
+A submonoid functor consists of a submonoid of `M.obj U` for every `U`,
+compatible with the restriction maps `M.map i`.
+-/
 @[ext]
 structure SubmonoidFunctor where
   /-- A submonoid of `M.obj U` for all `U : C`. -/
@@ -75,29 +76,30 @@ instance : PartialOrder (SubmonoidFunctor M) :=
 
 @[simps! top_obj bot_obj sup_obj inf_obj sInf_obj sSup_obj]
 instance : CompleteLattice (SubmonoidFunctor M) where
-  sup F G :=
-    { obj _ := F.obj _ ⊔ G.obj _
-      map i := by grw [F.map i, G.map i, (Submonoid.monotone_comap).le_map_sup] }
+  sup F G := {
+    obj _ := F.obj _ ⊔ G.obj _
+    map i := by grw [F.map i, G.map i, (Submonoid.monotone_comap).le_map_sup]
+  }
   le_sup_left _ _ _ := by simp
   le_sup_right _ _ _ := by simp
   sup_le F G H h₁ h₂ U := by simp [h₁ U, h₂ U]
-  inf S T :=
-    { obj _ := S.obj _ ⊓ T.obj _
-      map _ _ h := ⟨S.map _ h.1, T.map _ h.2⟩ }
+  inf S T := { obj _ := S.obj _ ⊓ T.obj _, map _ _ h := ⟨S.map _ h.1, T.map _ h.2⟩ }
   inf_le_left _ _ _ _ h := h.1
   inf_le_right _ _ _ _ h := h.2
   le_inf _ _ _ h₁ h₂ _ _ h := ⟨h₁ _ h, h₂ _ h⟩
-  sSup S :=
-    { obj _ := ⨆ F ∈ S, F.obj _
-      map {U V} f := by
-        grw [← Submonoid.monotone_comap.le_map_iSup₂]
-        exact iSup₂_mono fun F _ ↦ F.map f }
+  sSup S := {
+    obj _ := ⨆ F ∈ S, F.obj _
+    map {U V} f := by
+      grw [← Submonoid.monotone_comap.le_map_iSup₂]
+      exact iSup₂_mono fun F _ ↦ F.map f
+  }
   isLUB_sSup _ := ⟨fun a ha U ↦ le_iSup₂_of_le a ha le_rfl, fun _ _ _ ↦ by aesop⟩
-  sInf S :=
-    { obj _ := ⨅ F ∈ S, F.obj _
-      map f := by
-        rw [(Submonoid.gc_map_comap (M.map f).hom).u_iInf₂]
-        exact iInf₂_mono fun F _ ↦ F.map f }
+  sInf S := {
+    obj _ := ⨅ F ∈ S, F.obj _
+    map f := by
+      rw [(Submonoid.gc_map_comap (M.map f).hom).u_iInf₂]
+      exact iInf₂_mono fun F _ ↦ F.map f
+  }
   isGLB_sInf _ := ⟨fun _ _ _ _ ↦ by aesop, fun _ _ _ ↦ by aesop⟩
   bot := { obj _ := ⊥ }
   bot_le _ _ := bot_le
@@ -128,11 +130,9 @@ def image (S : SubmonoidFunctor M) : SubmonoidFunctor M' where
     grw [S.map_le]
 
 variable (M) in
-@[simp]
-lemma image_id : image (𝟙 M) ⊤ = ⊤ := by aesop
+@[simp] lemma image_id : image (𝟙 M) ⊤ = ⊤ := by aesop
 
-@[simp]
-lemma image_comp (p' : M' ⟶ M'') : S.image (p ≫ p') = (S.image p).image p' := by cat_disch
+@[simp] lemma image_comp (p' : M' ⟶ M'') : S.image (p ≫ p') = (S.image p).image p' := by cat_disch
 
 end image
 
@@ -149,27 +149,25 @@ def comap (S' : SubmonoidFunctor M') : SubmonoidFunctor M where
     exact Submonoid.mem_comap.mp (Set.mem_of_mem_of_subset h (S'.map _))
 
 variable (M) in
-@[simp]
-lemma comap_id : comap (𝟙 M) ⊤ = ⊤ := rfl
+@[simp] lemma comap_id : comap (𝟙 M) ⊤ = ⊤ := rfl
 
-@[simp]
-lemma comap_comp (p' : M' ⟶ M'') : S''.comap (p ≫ p') = (S''.comap p').comap p := by rfl
+@[simp] lemma comap_comp (p' : M' ⟶ M'') : S''.comap (p ≫ p') = (S''.comap p').comap p := by rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-@[simp]
-lemma image_comap_ι : image S.ι (comap S.ι S) = S := by aesop
+@[simp] lemma image_comap_ι : image S.ι (comap S.ι S) = S := by aesop
 
 end comap
 
 section lift
 
-variable (p : M ⟶ M') (S : SubmonoidFunctor M) (S' : SubmonoidFunctor M')
-  (hp : image p ⊤ ≤ S')
+variable (p : M ⟶ M') (S : SubmonoidFunctor M) (S' : SubmonoidFunctor M') (hp : image p ⊤ ≤ S')
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If the image of morphism `M' ⟶ M` lands in a submonoid functor `S`,
-then the morphism factors through it. -/
+/--
+If the image of morphism `M' ⟶ M` lands in a submonoid functor `S`,
+then the morphism factors through it.
+-/
 @[simps! app]
 def lift : M ⟶ S'.toFunctor where
   app U := MonCat.ofHom <| MonoidHom.codRestrict (p.app U).hom _ fun x ↦ hp _ (by simp)

@@ -41,24 +41,26 @@ open scoped nonZeroDivisors Polynomial
 namespace FractionalIdeal
 
 variable {R₁ : Type*} [CommRing R₁] [IsDomain R₁] [Algebra R₁ K] [IsFractionRing R₁ K]
-variable {I J : FractionalIdeal R₁⁰ K}
+variable {I J : FractionalIdeal (R₁⁰) K}
 
-noncomputable instance : Inv (FractionalIdeal R₁⁰ K) := ⟨fun I => 1 / I⟩
+noncomputable instance : Inv (FractionalIdeal (R₁⁰) K) := ⟨fun I => 1 / I⟩
 
 theorem inv_eq : I⁻¹ = 1 / I := rfl
 
-theorem inv_zero' : (0 : FractionalIdeal R₁⁰ K)⁻¹ = 0 := div_zero
+theorem inv_zero' : (0 : FractionalIdeal (R₁⁰) K)⁻¹ = 0 := div_zero
 
-theorem inv_of_ne_zero {J : FractionalIdeal R₁⁰ K} (h : J ≠ 0) :
-    J⁻¹ = ⟨(1 : FractionalIdeal R₁⁰ K) / J, isFractional_div_of_ne_zero h⟩ := div_of_ne_zero h
+theorem inv_of_ne_zero {J : FractionalIdeal (R₁⁰) K} (h : J ≠ 0)
+    : J⁻¹ = ⟨(1 : FractionalIdeal (R₁⁰) K) / J, isFractional_div_of_ne_zero h⟩ :=
+  div_of_ne_zero h
 
-theorem coe_inv_of_ne_zero {J : FractionalIdeal R₁⁰ K} (h : J ≠ 0) :
-    (↑J⁻¹ : Submodule R₁ K) = IsLocalization.coeSubmodule K ⊤ / (J : Submodule R₁ K) := by
+theorem coe_inv_of_ne_zero {J : FractionalIdeal (R₁⁰) K} (h : J ≠ 0)
+    : (↑J⁻¹ : Submodule R₁ K) = IsLocalization.coeSubmodule K ⊤ / (J : Submodule R₁ K) := by
   simp_rw [inv_of_ne_zero _ h, coe_one, coe_mk, IsLocalization.coeSubmodule_top]
 
 variable {K}
 
-theorem mem_inv_iff (hI : I ≠ 0) {x : K} : x ∈ I⁻¹ ↔ ∀ y ∈ I, x * y ∈ (1 : FractionalIdeal R₁⁰ K) :=
+theorem mem_inv_iff (hI : I ≠ 0) {x : K}
+    : x ∈ I⁻¹ ↔ ∀ y ∈ I, x * y ∈ (1 : FractionalIdeal (R₁⁰) K) :=
   mem_div_iff_of_ne_zero hI
 
 theorem inv_anti_mono (hI : I ≠ 0) (hJ : J ≠ 0) (hIJ : I ≤ J) : J⁻¹ ≤ I⁻¹ := by
@@ -66,75 +68,77 @@ theorem inv_anti_mono (hI : I ≠ 0) (hJ : J ≠ 0) (hIJ : I ≤ J) : J⁻¹ ≤
   simp only [mem_inv_iff hJ, mem_inv_iff hI]
   exact fun h y hy => h y (hIJ hy)
 
-theorem le_self_mul_inv {I : FractionalIdeal R₁⁰ K} (hI : I ≤ (1 : FractionalIdeal R₁⁰ K)) :
-    I ≤ I * I⁻¹ :=
+theorem le_self_mul_inv {I : FractionalIdeal (R₁⁰) K} (hI : I ≤ (1 : FractionalIdeal (R₁⁰) K))
+    : I ≤ I * I⁻¹ :=
   le_self_mul_one_div hI
 
 variable (K)
 
-theorem coe_ideal_le_self_mul_inv (I : Ideal R₁) :
-    (I : FractionalIdeal R₁⁰ K) ≤ I * (I : FractionalIdeal R₁⁰ K)⁻¹ :=
+theorem coe_ideal_le_self_mul_inv (I : Ideal R₁)
+    : (I : FractionalIdeal (R₁⁰) K) ≤ I * (I : FractionalIdeal (R₁⁰) K)⁻¹ :=
   le_self_mul_inv coeIdeal_le_one
 
 /-- `I⁻¹` is the inverse of `I` if `I` has an inverse. -/
-theorem right_inverse_eq (I J : FractionalIdeal R₁⁰ K) (h : I * J = 1) : J = I⁻¹ :=
+theorem right_inverse_eq (I J : FractionalIdeal (R₁⁰) K) (h : I * J = 1) : J = I⁻¹ :=
   eq_one_div_of_mul_eq_one_right _ _ h
 
-theorem mul_inv_cancel_iff {I : FractionalIdeal R₁⁰ K} : I * I⁻¹ = 1 ↔ ∃ J, I * J = 1 :=
+theorem mul_inv_cancel_iff {I : FractionalIdeal (R₁⁰) K} : I * I⁻¹ = 1 ↔ ∃ J, I * J = 1 :=
   ⟨fun h => ⟨I⁻¹, h⟩, fun ⟨J, hJ⟩ => by rwa [← right_inverse_eq K I J hJ]⟩
 
-theorem mul_inv_cancel_iff_isUnit {I : FractionalIdeal R₁⁰ K} : I * I⁻¹ = 1 ↔ IsUnit I :=
+theorem mul_inv_cancel_iff_isUnit {I : FractionalIdeal (R₁⁰) K} : I * I⁻¹ = 1 ↔ IsUnit I :=
   (mul_inv_cancel_iff K).trans isUnit_iff_exists_inv.symm
 
 variable {K' : Type*} [Field K'] [Algebra R₁ K'] [IsFractionRing R₁ K']
 
 @[simp]
-protected theorem map_inv (I : FractionalIdeal R₁⁰ K) (h : K ≃ₐ[R₁] K') :
-    I⁻¹.map (h : K →ₐ[R₁] K') = (I.map h)⁻¹ := by
+protected theorem map_inv (I : FractionalIdeal (R₁⁰) K) (h : K ≃ₐ[R₁] K')
+    : I⁻¹.map (h : K →ₐ[R₁] K') = (I.map h)⁻¹ := by
   rw [inv_eq, FractionalIdeal.map_div, FractionalIdeal.map_one, inv_eq]
 
 open Submodule Submodule.IsPrincipal
 
 @[simp]
-theorem spanSingleton_inv (x : K) : (spanSingleton R₁⁰ x)⁻¹ = spanSingleton _ x⁻¹ :=
+theorem spanSingleton_inv (x : K) : (spanSingleton (R₁⁰) x)⁻¹ = spanSingleton _ x⁻¹ :=
   one_div_spanSingleton x
 
-theorem spanSingleton_div_spanSingleton (x y : K) :
-    spanSingleton R₁⁰ x / spanSingleton R₁⁰ y = spanSingleton R₁⁰ (x / y) := by
+theorem spanSingleton_div_spanSingleton (x y : K)
+    : spanSingleton (R₁⁰) x / spanSingleton (R₁⁰) y = spanSingleton (R₁⁰) (x / y) := by
   rw [div_spanSingleton, mul_comm, ← map_mul, div_eq_mul_inv]
 
-theorem spanSingleton_div_self {x : K} (hx : x ≠ 0) :
-    spanSingleton R₁⁰ x / spanSingleton R₁⁰ x = 1 := by
+theorem spanSingleton_div_self {x : K} (hx : x ≠ 0)
+    : spanSingleton (R₁⁰) x / spanSingleton (R₁⁰) x = 1 := by
   rw [spanSingleton_div_spanSingleton, div_self hx, map_one]
 
-theorem coe_ideal_span_singleton_div_self {x : R₁} (hx : x ≠ 0) :
-    (Ideal.span ({x} : Set R₁) : FractionalIdeal R₁⁰ K) / Ideal.span ({x} : Set R₁) = 1 := by
+theorem coe_ideal_span_singleton_div_self {x : R₁} (hx : x ≠ 0)
+    : (Ideal.span ({x} : Set R₁) : FractionalIdeal (R₁⁰) K) / Ideal.span ({x} : Set R₁) = 1 := by
   rw [coeIdeal_span_singleton,
     spanSingleton_div_self K <|
       (map_ne_zero_iff _ <| FaithfulSMul.algebraMap_injective R₁ K).mpr hx]
 
-theorem spanSingleton_mul_inv {x : K} (hx : x ≠ 0) :
-    spanSingleton R₁⁰ x * (spanSingleton R₁⁰ x)⁻¹ = 1 := by
+theorem spanSingleton_mul_inv {x : K} (hx : x ≠ 0)
+    : spanSingleton (R₁⁰) x * (spanSingleton (R₁⁰) x)⁻¹ = 1 := by
   rw [spanSingleton_inv, ← map_mul, mul_inv_cancel₀ hx, map_one]
 
-theorem coe_ideal_span_singleton_mul_inv {x : R₁} (hx : x ≠ 0) :
-    (Ideal.span ({x} : Set R₁) : FractionalIdeal R₁⁰ K) *
-    (Ideal.span ({x} : Set R₁) : FractionalIdeal R₁⁰ K)⁻¹ = 1 := by
+theorem coe_ideal_span_singleton_mul_inv {x : R₁} (hx : x ≠ 0)
+    : (Ideal.span ({x} : Set R₁) : FractionalIdeal (R₁⁰) K)
+        * (Ideal.span ({x} : Set R₁) : FractionalIdeal (R₁⁰) K)⁻¹
+      = 1 := by
   rw [coeIdeal_span_singleton,
-    spanSingleton_mul_inv K <|
-      (map_ne_zero_iff _ <| FaithfulSMul.algebraMap_injective R₁ K).mpr hx]
+    spanSingleton_mul_inv K <| (map_ne_zero_iff _ <| FaithfulSMul.algebraMap_injective R₁ K).mpr hx]
 
-theorem spanSingleton_inv_mul {x : K} (hx : x ≠ 0) :
-    (spanSingleton R₁⁰ x)⁻¹ * spanSingleton R₁⁰ x = 1 := by
+theorem spanSingleton_inv_mul {x : K} (hx : x ≠ 0)
+    : (spanSingleton (R₁⁰) x)⁻¹ * spanSingleton (R₁⁰) x = 1 := by
   rw [mul_comm, spanSingleton_mul_inv K hx]
 
-theorem coe_ideal_span_singleton_inv_mul {x : R₁} (hx : x ≠ 0) :
-    (Ideal.span ({x} : Set R₁) : FractionalIdeal R₁⁰ K)⁻¹ * Ideal.span ({x} : Set R₁) = 1 := by
+theorem coe_ideal_span_singleton_inv_mul {x : R₁} (hx : x ≠ 0)
+    : (Ideal.span ({x} : Set R₁) : FractionalIdeal (R₁⁰) K)⁻¹ * Ideal.span ({x} : Set R₁) = 1 := by
   rw [mul_comm, coe_ideal_span_singleton_mul_inv K hx]
 
-theorem mul_generator_self_inv {R₁ : Type*} [CommRing R₁] [Algebra R₁ K] [IsLocalization R₁⁰ K]
-    (I : FractionalIdeal R₁⁰ K) [Submodule.IsPrincipal (I : Submodule R₁ K)] (h : I ≠ 0) :
-    I * spanSingleton _ (generator (I : Submodule R₁ K))⁻¹ = 1 := by
+theorem mul_generator_self_inv
+    {R₁ : Type*} [CommRing R₁] [Algebra R₁ K] [IsLocalization (R₁⁰) K]
+    (I : FractionalIdeal (R₁⁰) K) [Submodule.IsPrincipal (I : Submodule R₁ K)]
+    (h : I ≠ 0)
+    : I * spanSingleton _ (generator (I : Submodule R₁ K))⁻¹ = 1 := by
   -- Rewrite only the `I` that appears alone.
   conv_lhs => congr; rw [eq_spanSingleton_of_principal I]
   rw [← map_mul, mul_inv_cancel₀, map_one]
@@ -142,14 +146,15 @@ theorem mul_generator_self_inv {R₁ : Type*} [CommRing R₁] [Algebra R₁ K] [
   apply h
   rw [eq_spanSingleton_of_principal I, generator_I_eq_zero, map_zero]
 
-theorem invertible_of_principal (I : FractionalIdeal R₁⁰ K)
-    [Submodule.IsPrincipal (I : Submodule R₁ K)] (h : I ≠ 0) : I * I⁻¹ = 1 :=
+theorem invertible_of_principal
+    (I : FractionalIdeal (R₁⁰) K) [Submodule.IsPrincipal (I : Submodule R₁ K)] (h : I ≠ 0)
+    : I * I⁻¹ = 1 :=
   mul_div_self_cancel_iff.mpr
     ⟨spanSingleton _ (generator (I : Submodule R₁ K))⁻¹, mul_generator_self_inv _ I h⟩
 
-theorem invertible_iff_generator_nonzero (I : FractionalIdeal R₁⁰ K)
-    [Submodule.IsPrincipal (I : Submodule R₁ K)] :
-    I * I⁻¹ = 1 ↔ generator (I : Submodule R₁ K) ≠ 0 := by
+theorem invertible_iff_generator_nonzero
+    (I : FractionalIdeal (R₁⁰) K) [Submodule.IsPrincipal (I : Submodule R₁ K)]
+    : I * I⁻¹ = 1 ↔ generator (I : Submodule R₁ K) ≠ 0 := by
   constructor
   · intro hI hg
     apply ne_zero_of_mul_eq_one _ _ hI
@@ -158,12 +163,13 @@ theorem invertible_iff_generator_nonzero (I : FractionalIdeal R₁⁰ K)
     apply invertible_of_principal
     rw [eq_spanSingleton_of_principal I]
     intro hI
-    have := mem_spanSingleton_self R₁⁰ (generator (I : Submodule R₁ K))
+    have := mem_spanSingleton_self (R₁⁰) (generator (I : Submodule R₁ K))
     rw [hI, mem_zero_iff] at this
     contradiction
 
-theorem isPrincipal_inv (I : FractionalIdeal R₁⁰ K) [Submodule.IsPrincipal (I : Submodule R₁ K)]
-    (h : I ≠ 0) : Submodule.IsPrincipal I⁻¹.1 := by
+theorem isPrincipal_inv
+    (I : FractionalIdeal (R₁⁰) K) [Submodule.IsPrincipal (I : Submodule R₁ K)] (h : I ≠ 0)
+    : Submodule.IsPrincipal I⁻¹.1 := by
   rw [val_eq_coe, isPrincipal_iff]
   use (generator (I : Submodule R₁ K))⁻¹
   have hI : I * spanSingleton _ (generator (I : Submodule R₁ K))⁻¹ = 1 :=
@@ -172,8 +178,8 @@ theorem isPrincipal_inv (I : FractionalIdeal R₁⁰ K) [Submodule.IsPrincipal (
 
 variable {K}
 
-lemma den_mem_inv {I : FractionalIdeal R₁⁰ K} (hI : I ≠ ⊥) :
-    algebraMap R₁ K (I.den : R₁) ∈ I⁻¹ := by
+lemma den_mem_inv {I : FractionalIdeal (R₁⁰) K} (hI : I ≠ ⊥)
+    : algebraMap R₁ K (I.den : R₁) ∈ I⁻¹ := by
   rw [mem_inv_iff hI]
   intro i hi
   rw [← Algebra.smul_def (I.den : R₁) i, ← mem_coe, coe_one]
@@ -182,7 +188,7 @@ lemma den_mem_inv {I : FractionalIdeal R₁⁰ K} (hI : I ≠ ⊥) :
   apply le_trans <| map_mono (show I.num ≤ 1 by simp only [Ideal.one_eq_top, le_top])
   rw [Ideal.one_eq_top, Submodule.map_top, one_eq_range]
 
-lemma num_le_mul_inv (I : FractionalIdeal R₁⁰ K) : I.num ≤ I * I⁻¹ := by
+lemma num_le_mul_inv (I : FractionalIdeal (R₁⁰) K) : I.num ≤ I * I⁻¹ := by
   by_cases hI : I = 0
   · rw [hI, num_zero_eq <| FaithfulSMul.algebraMap_injective R₁ K, zero_mul, zero_eq_bot,
       coeIdeal_bot]
@@ -190,9 +196,9 @@ lemma num_le_mul_inv (I : FractionalIdeal R₁⁰ K) : I.num ≤ I * I⁻¹ := b
     gcongr
     exact spanSingleton_le_iff_mem.2 (den_mem_inv hI)
 
-lemma bot_lt_mul_inv {I : FractionalIdeal R₁⁰ K} (hI : I ≠ ⊥) : ⊥ < I * I⁻¹ :=
+lemma bot_lt_mul_inv {I : FractionalIdeal (R₁⁰) K} (hI : I ≠ ⊥) : ⊥ < I * I⁻¹ :=
   lt_of_lt_of_le (coeIdeal_ne_zero.2 (hI ∘ num_eq_zero_iff.1)).bot_lt I.num_le_mul_inv
 
-noncomputable instance : InvOneClass (FractionalIdeal R₁⁰ K) := { inv_one := div_one }
+noncomputable instance : InvOneClass (FractionalIdeal (R₁⁰) K) := { inv_one := div_one }
 
 end FractionalIdeal

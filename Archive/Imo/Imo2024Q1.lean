@@ -61,8 +61,8 @@ lemma condition_sub_two_mul_int_iff {α : ℝ} (m : ℤ) : Condition (α - 2 * m
   rw [Int.floor_intCast]
   simp
 
-lemma condition_toIcoMod_iff {α : ℝ} :
-    Condition (toIcoMod (by simp : (0 : ℝ) < 2) 0 α) ↔ Condition α := by
+lemma condition_toIcoMod_iff {α : ℝ}
+    : Condition (toIcoMod (by simp : (0 : ℝ) < 2) 0 α) ↔ Condition α := by
   rw [toIcoMod, zsmul_eq_mul, mul_comm, condition_sub_two_mul_int_iff]
 
 namespace Condition
@@ -86,9 +86,11 @@ lemma mem_Ico_one_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) : α ∈ Set.Ico 1 2 := by
   · rw [Int.floor_eq_iff]
     constructor
     · rw [Int.cast_one]
-      calc 1 ≤ α⁻¹ * α := by simp [h0.ne']
+      calc
+        1 ≤ α⁻¹ * α := by simp [h0.ne']
         _ ≤ ⌈α⁻¹⌉₊ * α := by gcongr; exact Nat.le_ceil α⁻¹
-    · calc ⌈α⁻¹⌉₊ * α
+    · calc
+        ⌈α⁻¹⌉₊ * α
         _ < (α⁻¹ + 1) * α := by gcongr; exact Nat.ceil_lt_add_one (inv_nonneg.2 h0.le)
         _ = 1 + α := by field
         _ ≤ (1 : ℕ) + 1 := by gcongr; norm_cast
@@ -97,22 +99,23 @@ lemma mem_Ico_one_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) : α ∈ Set.Ico 1 2 := by
     rw [Int.floor_eq_zero_iff]
     refine ⟨by positivity, ?_⟩
     rw [Finset.mem_Ico, Nat.lt_ceil] at hx
-    calc x * α < α⁻¹ * α := by gcongr; exact hx.2
+    calc
+      x * α
+        < α⁻¹ * α := by gcongr; exact hx.2
       _ = 1 := by simp [h0.ne']
 
-lemma mem_Ico_n_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) {n : ℕ} (hn : 0 < n) :
-    α ∈ Set.Ico ((2 * n - 1) / n : ℝ) 2 := by
+lemma mem_Ico_n_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) {n : ℕ} (hn : 0 < n)
+    : α ∈ Set.Ico ((2 * n - 1) / n : ℝ) 2 := by
   suffices ∑ i ∈ Finset.Icc 1 n, ⌊i * α⌋ = n ^ 2 ∧ α ∈ Set.Ico ((2 * n - 1) / n : ℝ) 2 from this.2
   induction n, hn using Nat.le_induction with
   | base =>
     obtain ⟨h1, h2⟩ := hc.mem_Ico_one_of_mem_Ioo h
     simp only [Finset.Icc_self, Finset.sum_singleton, Nat.cast_one, one_mul, one_pow,
-               Int.floor_eq_iff, Int.cast_one, mul_one, div_one, Set.mem_Ico, tsub_le_iff_right]
+      Int.floor_eq_iff, Int.cast_one, mul_one, div_one, Set.mem_Ico, tsub_le_iff_right]
     exact ⟨⟨h1, by linarith⟩, by linarith, h2⟩
   | succ k kpos hk =>
     rcases hk with ⟨hks, hkl, hk2⟩
-    have hs : (∑ i ∈ Finset.Icc 1 (k + 1), ⌊i * α⌋) =
-         ⌊(k + 1 : ℕ) * α⌋ + ((k : ℕ) : ℤ) ^ 2 := by
+    have hs : (∑ i ∈ Finset.Icc 1 (k + 1), ⌊i * α⌋) = ⌊(k + 1 : ℕ) * α⌋ + ((k : ℕ) : ℤ) ^ 2 := by
       have hn11 : k + 1 ∉ Finset.Icc 1 k := by
         rw [Finset.mem_Icc]
         lia
@@ -121,7 +124,9 @@ lemma mem_Ico_n_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) {n : ℕ} (hn : 0 < n) :
     rw [hs] at hc ⊢
     have hkl' : 2 * k ≤ ⌊(k + 1 : ℕ) * α⌋ := by
       rw [Int.le_floor]
-      calc ((2 * k : ℤ) : ℝ) = ((2 * k : ℤ) : ℝ) + 0 := (add_zero _).symm
+      calc
+        ((2 * k : ℤ) : ℝ)
+          = ((2 * k : ℤ) : ℝ) + 0 := (add_zero _).symm
         _ ≤ ((2 * k : ℤ) : ℝ) + (k - 1) / k := by gcongr; norm_cast; positivity
         _ = (k + 1 : ℕ) * ((2 * (k : ℕ) - 1) / ((k : ℕ) : ℝ)) := by simp [field]; ring
         _ ≤ (k + 1 : ℕ) * α := by gcongr
@@ -150,7 +155,7 @@ lemma mem_Ico_n_of_mem_Ioo (h : α ∈ Set.Ioo 0 2) {n : ℕ} (hn : 0 < n) :
 
 end Condition
 
-lemma not_condition_of_mem_Ioo {α : ℝ} (h : α ∈ Set.Ioo 0 2) : ¬Condition α := by
+lemma not_condition_of_mem_Ioo {α : ℝ} (h : α ∈ Set.Ioo 0 2) : ¬ Condition α := by
   intro hc
   let n : ℕ := ⌊(2 - α)⁻¹⌋₊ + 1
   have hn : 0 < n := by lia
@@ -180,7 +185,8 @@ recall Imo2024Q1.solutionSet := {α : ℝ | ∃ m : ℤ, α = 2 * m}
 theorem result (α : ℝ) : Condition α ↔ α ∈ solutionSet := by
   refine ⟨fun h ↦ ?_, ?_⟩
   · rw [← condition_toIcoMod_iff, condition_iff_of_mem_Ico (toIcoMod_mem_Ico' _ _),
-        ← AddCommGroup.modEq_iff_toIcoMod_eq_left, AddCommGroup.modEq_iff_zsmul'] at h
+        ← AddCommGroup.modEq_iff_toIcoMod_eq_left, AddCommGroup.modEq_iff_zsmul']
+      at h
     simp_rw [sub_zero] at h
     rcases h with ⟨m, rfl⟩
     rw [zsmul_eq_mul, mul_comm]

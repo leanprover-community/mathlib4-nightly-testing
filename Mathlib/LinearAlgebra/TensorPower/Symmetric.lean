@@ -6,7 +6,6 @@ Authors: Kenny Lau
 module
 
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
-
 import Mathlib.Tactic.SuppressCompilation
 
 /-!
@@ -42,16 +41,19 @@ open TensorProduct Equiv
 
 variable (R ι : Type u) [CommSemiring R] (M : Type v) [AddCommMonoid M] [Module R M] (s : ι → M)
 
-/-- The relation on the `ι`-indexed tensor power of `M` where two tensors are equal
-if they are related by a permutation of `ι`. -/
+/--
+The relation on the `ι`-indexed tensor power of `M` where two tensors are equal
+if they are related by a permutation of `ι`.
+-/
 inductive SymmetricPower.Rel : (⨂[R] _, M) → (⨂[R] _, M) → Prop
   | perm : (e : Perm ι) → (f : ι → M) → Rel (⨂ₜ[R] i, f i) (⨂ₜ[R] i, f (e i))
 
-/-- The `ι`-indexed symmetric tensor power of a semimodule `M` over a commutative semiring `R`
+/--
+The `ι`-indexed symmetric tensor power of a semimodule `M` over a commutative semiring `R`
 is the quotient of the `ι`-indexed tensor power of `M` by the relation that two tensors are equal
-if they are related by a permutation of `ι`. -/
-def SymmetricPower : Type max u v :=
-  (addConGen (SymmetricPower.Rel R ι M)).Quotient
+if they are related by a permutation of `ι`.
+-/
+def SymmetricPower : Type max u v := (addConGen (SymmetricPower.Rel R ι M)).Quotient
 deriving AddCommMonoid
 
 @[inherit_doc]
@@ -62,15 +64,16 @@ scoped[TensorProduct] notation:max "Sym[" R "]^" n:arg M:arg => Sym[R] (Fin n) M
 
 namespace SymmetricPower
 
-instance (R : Type u) [CommRing R] (M : Type v) [AddCommGroup M] [Module R M] :
-    AddCommGroup (Sym[R] ι M) :=
+instance (R : Type u) [CommRing R] (M : Type v) [AddCommGroup M] [Module R M]
+    : AddCommGroup (Sym[R] ι M) :=
   inferInstanceAs <| AddCommGroup (AddCon.Quotient _)
 
 variable {R ι M} in
-lemma smul (r : R) (x y : ⨂[R] _, M) (h : addConGen (Rel R ι M) x y) :
-    addConGen (Rel R ι M) (r • x) (r • y) := by
+lemma smul (r : R) (x y : ⨂[R] _, M) (h : addConGen (Rel R ι M) x y)
+    : addConGen (Rel R ι M) (r • x) (r • y) := by
   induction h with
-  | of x y h => cases h with
+  | of x y h =>
+    cases h with
     | perm e f =>
       apply isEmpty_or_nonempty ι |>.elim <;> intro h
       · convert addConGen (Rel R ι M) |>.refl _
@@ -81,19 +84,26 @@ lemma smul (r : R) (x y : ⨂[R] _, M) (h : addConGen (Rel R ι M) x y) :
             SymmetricPower.Rel.perm (R := R) (ι := ι) e <| Function.update f i (r • f i)
         · rw [MultilinearMap.map_update_smul, Function.update_eq_self]
         · simp_rw [Function.update_apply_equiv_apply, MultilinearMap.map_update_smul,
-              ← Function.update_comp_equiv, Function.update_eq_self]; rfl
-  | refl => exact AddCon.refl _ _
-  | symm => apply AddCon.symm; assumption
-  | trans => apply AddCon.trans <;> assumption
-  | add => rw [smul_add, smul_add]; apply AddCon.add <;> assumption
+              ← Function.update_comp_equiv, Function.update_eq_self]
+          rfl
+  | refl =>
+    exact AddCon.refl _ _
+  | symm =>
+    apply AddCon.symm; assumption
+  | trans =>
+    apply AddCon.trans <;> assumption
+  | add =>
+    rw [smul_add, smul_add]; apply AddCon.add <;> assumption
 
 variable {R} in
 /-- Scalar multiplication by `r : R`. Use `•` instead. -/
 def smul' (r : R) : Sym[R] ι M →+ Sym[R] ι M :=
-  AddCon.lift _ (AddMonoidHom.comp (AddCon.mk' _) {
+  AddCon.lift _
+    (AddMonoidHom.comp (AddCon.mk' _) {
       toFun := (r • ·)
       map_zero' := smul_zero r
-      map_add' := smul_add r })
+      map_add' := smul_add r
+    })
     (fun x y h ↦ Quotient.sound (smul r x y h))
 
 instance module : Module R (Sym[R] ι M) where
@@ -111,8 +121,10 @@ def mk : (⨂[R] (_ : ι), M) →ₗ[R] Sym[R] ι M where
   __ := AddCon.mk' _
 
 variable {M ι} in
-/-- The multilinear map that takes `ι`-indexed elements of `M` and
-returns their symmetric tensor power. Denoted `⨂ₛ[R] i, f i`. -/
+/--
+The multilinear map that takes `ι`-indexed elements of `M` and
+returns their symmetric tensor power. Denoted `⨂ₛ[R] i, f i`.
+-/
 def tprod : MultilinearMap R (fun _ : ι ↦ M) Sym[R] ι M :=
   (mk R ι M).compMultilinearMap (PiTensorProduct.tprod R)
 
@@ -121,20 +133,22 @@ unsuppress_compilation in
 notation3:100 "⨂ₛ["R"] "(...)", "r:(scoped f => tprod R f) => r
 
 variable {R ι M} in
-@[simp] lemma tprod_equiv (e : Perm ι) (f : ι → M) :
-    (⨂ₛ[R] i, f (e i)) = ⨂ₛ[R] i, f i :=
+@[simp]
+lemma tprod_equiv (e : Perm ι) (f : ι → M) : (⨂ₛ[R] i, f (e i)) = ⨂ₛ[R] i, f i :=
   Eq.symm <| Quot.sound <| AddConGen.Rel.of _ _ <| Rel.perm e f
 
 variable {R M n} in
-@[simp] lemma domDomCongr_tprod (e : Perm ι) :
-    (tprod R (ι := ι) (M := M)).domDomCongr e = tprod R :=
+@[simp]
+lemma domDomCongr_tprod (e : Perm ι) : (tprod R (ι := ι) (M := M)).domDomCongr e = tprod R :=
   MultilinearMap.ext <| tprod_equiv e
 
 theorem range_mk : LinearMap.range (mk R ι M) = ⊤ :=
   LinearMap.range_eq_top_of_surjective _ AddCon.mk'_surjective
 
-/-- The pure tensors (i.e. the elements of the image of `SymmetricPower.tprod`) span the symmetric
-tensor power. -/
+/--
+The pure tensors (i.e. the elements of the image of `SymmetricPower.tprod`) span the symmetric
+tensor power.
+-/
 theorem span_tprod_eq_top : Submodule.span R (Set.range (tprod R (ι := ι) (M := M))) = ⊤ := by
   rw [tprod, LinearMap.coe_compMultilinearMap, Set.range_comp, Submodule.span_image,
     PiTensorProduct.span_tprod_eq_top, Submodule.map_top, range_mk]

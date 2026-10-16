@@ -1,11 +1,13 @@
 module
+
 import Batteries.Logic
 import Mathlib.Tactic.Cases
 import Mathlib.Data.Nat.Notation
 
 set_option autoImplicit true
 example (x : α × β × γ) : True := by
-  cases' x with a b; cases' b with b c
+  cases' x with a b
+  cases' b with b c
   guard_hyp a : α
   guard_hyp b : β
   guard_hyp c : γ
@@ -19,11 +21,11 @@ example {α β γ : Type u} (x : α × β × γ) : True := by
   guard_hyp h : x = (a, b)
   trivial
 
-noncomputable def my_rec :
-  {motive : ℕ → Sort u_1} →
-  (zee : motive 0) →
-  (soo : (n : ℕ) → motive n → motive (n + 1)) →
-  (t : ℕ) → motive t := @Nat.rec
+noncomputable def my_rec
+    : {motive : ℕ → Sort u_1} → (zee : motive 0) → (soo : (n : ℕ) → motive n → motive (n + 1))
+      → (t : ℕ)
+      → motive t :=
+  @Nat.rec
 
 example (x : ℕ) : True := by
   cases' h: x using my_rec with y
@@ -52,56 +54,79 @@ example (x : Bar 0) : True := by
 example (n : Nat) : n = n := by
   induction' n with n ih
   · guard_target =ₛ 0 = 0; rfl
-  · guard_hyp n : Nat; guard_hyp ih : n = n
-    guard_target =ₛ n + 1 = n + 1; exact congr_arg (· + 1) ih
+  · guard_hyp n : Nat
+    guard_hyp ih : n = n
+    guard_target =ₛ n + 1 = n + 1
+    exact congr_arg (· + 1) ih
 
 example (n : Nat) (h : n < 5) : n = n := by
   induction' n with n ih
   · guard_target =ₛ 0 = 0; rfl
-  · guard_hyp n : Nat; guard_hyp ih : n < 5 → n = n; guard_hyp h :ₛ n + 1 < 5
-    guard_target =ₛ n + 1 = n + 1; rfl
+  · guard_hyp n : Nat
+    guard_hyp ih : n < 5 → n = n
+    guard_hyp h :ₛ n + 1 < 5
+    guard_target =ₛ n + 1 = n + 1
+    rfl
 
 set_option linter.unusedVariables false in
 example (n : Nat) {m} (h : m < 5) : n = n := by
   induction' n with n ih
   · guard_target = Nat.zero = Nat.zero; rfl
-  · guard_hyp n : Nat; guard_hyp ih : n = n; guard_hyp h : m < 5
-    guard_target = Nat.succ n = Nat.succ n; rfl
+  · guard_hyp n : Nat
+    guard_hyp ih : n = n
+    guard_hyp h : m < 5
+    guard_target = Nat.succ n = Nat.succ n
+    rfl
 
 example (n : Nat) {m} (h : m < 5) : n = n := by
   induction' n with n ih generalizing m
   · guard_target = Nat.zero = Nat.zero; rfl
-  · guard_hyp n : Nat; guard_hyp ih : ∀ {m}, m < 5 → n = n; guard_hyp h : m < 5
-    guard_target = Nat.succ n = Nat.succ n; rfl
+  · guard_hyp n : Nat
+    guard_hyp ih : ∀ {m}, m < 5 → n = n
+    guard_hyp h : m < 5
+    guard_target = Nat.succ n = Nat.succ n
+    rfl
 
 example (n : Nat) : n = n := by
   induction' e : n with m ih
   · guard_hyp e : n = Nat.zero; guard_target = Nat.zero = Nat.zero; rfl
-  · guard_hyp m : Nat; guard_hyp ih : n = m → m = m
-    guard_hyp e : n = Nat.succ m; guard_target = Nat.succ m = Nat.succ m; rfl
+  · guard_hyp m : Nat
+    guard_hyp ih : n = m → m = m
+    guard_hyp e : n = Nat.succ m
+    guard_target = Nat.succ m = Nat.succ m
+    rfl
 
 example (n : Nat) : n = n := by
   induction' e : n using my_rec with m ih
-  case zee =>
-    guard_hyp e : n = 0; guard_target = 0 = 0; rfl
+  case zee => guard_hyp e : n = 0; guard_target = 0 = 0; rfl
   case soo =>
-    guard_hyp m : Nat; guard_hyp ih : n = m → m = m
-    guard_hyp e : n = m + 1; guard_target = m + 1 = m + 1; rfl
+    guard_hyp m : Nat
+    guard_hyp ih : n = m → m = m
+    guard_hyp e : n = m + 1
+    guard_target = m + 1 = m + 1
+    rfl
 
 example (x : Foo α Nat) : True := by
   induction' x with a a' b' a'' b'' c'' ih
   case A => guard_hyp a : α; trivial
   case B => guard_hyp a' : α; guard_hyp b' : Nat; trivial
-  case C => guard_hyp a'' : α; guard_hyp b'' : Nat; guard_hyp c'' : Foo α Nat
-            guard_hyp ih : True; trivial
+  case C =>
+    guard_hyp a'' : α
+    guard_hyp b'' : Nat
+    guard_hyp c'' : Foo α Nat
+    guard_hyp ih : True
+    trivial
 
 example (x : Bar n) : x = x := by
   induction' x with a b c d h ih
   case A => guard_target = Bar.A a b = Bar.A a b; rfl
-  case B => guard_hyp h : Bar (c + 1); guard_hyp ih : h = h
-            guard_target = Bar.B c d h = Bar.B c d h; rfl
+  case B =>
+    guard_hyp h : Bar (c + 1)
+    guard_hyp ih : h = h
+    guard_target = Bar.B c d h = Bar.B c d h
+    rfl
 
-example (p q : Prop) : (p → ¬ q) → ¬ (p ∧ q) := by
+example (p q : Prop) : (p → ¬q) → ¬(p ∧ q) := by
   intro hpnq hpq
   apply hpnq
   cases' hpq with hp hq
@@ -130,13 +155,11 @@ example (a b : ℕ) (h : a + b = a) : b = 0 := by
 
 /-- error: unnecessary 'generalizing' argument, variable 'a' is generalized automatically -/
 #guard_msgs in
-example (n : ℕ) (a : Fin n) : True := by
-  induction' n generalizing a
+example (n : ℕ) (a : Fin n) : True := by induction' n generalizing a
 
 /--
 error: variable cannot be generalized because target depends on it
   m
 -/
 #guard_msgs in
-example (m : ℕ) : True := by
-  induction' m generalizing m
+example (m : ℕ) : True := by induction' m generalizing m

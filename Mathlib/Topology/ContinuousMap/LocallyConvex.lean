@@ -19,12 +19,11 @@ public section
 
 open scoped Topology
 
-instance ContinuousMap.instLocallyConvexSpace {X 𝕜 E : Type*}
-    [TopologicalSpace X]
-    [Semiring 𝕜] [PartialOrder 𝕜]
-    [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [LocallyConvexSpace 𝕜 E]
-    [IsTopologicalAddGroup E] [ContinuousConstSMul 𝕜 E] :
-    LocallyConvexSpace 𝕜 C(X, E) :=
+instance ContinuousMap.instLocallyConvexSpace
+    {X 𝕜 E : Type*} [TopologicalSpace X] [Semiring 𝕜] [PartialOrder 𝕜] [AddCommGroup E] [Module 𝕜 E]
+    [TopologicalSpace E] [LocallyConvexSpace 𝕜 E] [IsTopologicalAddGroup E]
+    [ContinuousConstSMul 𝕜 E]
+    : LocallyConvexSpace 𝕜 C(X, E) :=
   .ofBasisZero _ _ _ _ (LocallyConvexSpace.convex_basis_zero 𝕜 E).nhds_continuousMapConst <| by
     rintro ⟨K, U⟩ ⟨hK, hU₀, hUc⟩ f hf g hg a b ha hb hab x hx
     exact hUc (hf hx) (hg hx) ha hb hab

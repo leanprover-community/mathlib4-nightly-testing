@@ -19,14 +19,14 @@ namespace Test
 
 inductive Single where
   | test
-  deriving Countable
+deriving Countable
 
 example : Countable Single := inferInstance
 
 inductive Tree where
   | leaf (n : Nat)
   | node (l r : Tree)
-  deriving Countable
+deriving Countable
 
 example : Countable Tree := inferInstance
 

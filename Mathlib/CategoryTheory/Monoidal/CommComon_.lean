@@ -59,22 +59,19 @@ end
 attribute [local instance] ComonObj.instTensorUnit in
 variable (C) in
 /-- The trivial commutative comonoid object. We later show this is initial in `CommComon C`. -/
-@[simps!]
-def trivial : CommComon C := mk (𝟙_ C)
+@[simps!] def trivial : CommComon C := mk (𝟙_ C)
 
-instance : Inhabited (CommComon C) :=
-  ⟨trivial C⟩
+instance : Inhabited (CommComon C) := ⟨trivial C⟩
 
 instance : Category (CommComon C) :=
   inferInstanceAs (Category (InducedCategory _ CommComon.toComon))
 
 @[simp]
-theorem id_hom (A : CommComon C) : Comon.Hom.hom (InducedCategory.Hom.hom (𝟙 A)) = 𝟙 A.X :=
-  rfl
+theorem id_hom (A : CommComon C) : Comon.Hom.hom (InducedCategory.Hom.hom (𝟙 A)) = 𝟙 A.X := rfl
 
 @[simp]
-theorem comp_hom {R S T : CommComon C} (f : R ⟶ S) (g : S ⟶ T) :
-    Comon.Hom.hom (f ≫ g).hom = f.hom.hom ≫ g.hom.hom :=
+theorem comp_hom {R S T : CommComon C} (f : R ⟶ S) (g : S ⟶ T)
+    : Comon.Hom.hom (f ≫ g).hom = f.hom.hom ≫ g.hom.hom :=
   rfl
 
 @[ext]
@@ -86,17 +83,16 @@ section
 variable (C)
 
 /-- The forgetful functor from commutative comonoid objects to comonoid objects. -/
-@[simps!]
-def forget₂Comon : CommComon C ⥤ Comon C :=
-  inducedFunctor _
+@[simps!] def forget₂Comon : CommComon C ⥤ Comon C := inducedFunctor _
 
 end
 
 end CommComon
 
-instance {C : Type*} [Category* C] [MonoidalCategory C] [SymmetricCategory C]
-    (A B : C) [ComonObj A] [ComonObj B]
-    [IsCommComonObj A] [IsCommComonObj B] : IsCommComonObj (A ⊗ B) where
+instance
+    {C : Type*} [Category* C] [MonoidalCategory C] [SymmetricCategory C]
+    (A B : C) [ComonObj A] [ComonObj B] [IsCommComonObj A] [IsCommComonObj B]
+    : IsCommComonObj (A ⊗ B) where
   comul_comm := by
     rw [Comon.tensorObj_comul, Category.assoc, SymmetricCategory.tensorμ_braid_swap]
     simp

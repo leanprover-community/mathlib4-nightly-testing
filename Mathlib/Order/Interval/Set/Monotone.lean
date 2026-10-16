@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Set.Monotone
 public import Mathlib.Order.SuccPred.Archimedean
-
 import Mathlib.Order.Interval.Set.Disjoint
 
 /-!
@@ -18,7 +17,6 @@ about functions monotone on intervals in `SuccOrder`s.
 -/
 
 public section
-
 
 open Set
 
@@ -82,68 +80,68 @@ protected theorem Antitone.Iio (hf : Antitone f) : Antitone fun x => Iio (f x) :
 protected theorem AntitoneOn.Iio (hf : AntitoneOn f s) : AntitoneOn (fun x => Iio (f x)) s :=
   monotone_Iio.comp_antitoneOn hf
 
-protected theorem Monotone.Icc (hf : Monotone f) (hg : Antitone g) :
-    Antitone fun x => Icc (f x) (g x) :=
+protected theorem Monotone.Icc (hf : Monotone f) (hg : Antitone g)
+    : Antitone fun x => Icc (f x) (g x) :=
   hf.Ici.inter hg.Iic
 
-protected theorem MonotoneOn.Icc (hf : MonotoneOn f s) (hg : AntitoneOn g s) :
-    AntitoneOn (fun x => Icc (f x) (g x)) s :=
+protected theorem MonotoneOn.Icc (hf : MonotoneOn f s) (hg : AntitoneOn g s)
+    : AntitoneOn (fun x => Icc (f x) (g x)) s :=
   hf.Ici.inter hg.Iic
 
-protected theorem Antitone.Icc (hf : Antitone f) (hg : Monotone g) :
-    Monotone fun x => Icc (f x) (g x) :=
+protected theorem Antitone.Icc (hf : Antitone f) (hg : Monotone g)
+    : Monotone fun x => Icc (f x) (g x) :=
   hf.Ici.inter hg.Iic
 
-protected theorem AntitoneOn.Icc (hf : AntitoneOn f s) (hg : MonotoneOn g s) :
-    MonotoneOn (fun x => Icc (f x) (g x)) s :=
+protected theorem AntitoneOn.Icc (hf : AntitoneOn f s) (hg : MonotoneOn g s)
+    : MonotoneOn (fun x => Icc (f x) (g x)) s :=
   hf.Ici.inter hg.Iic
 
-protected theorem Monotone.Ico (hf : Monotone f) (hg : Antitone g) :
-    Antitone fun x => Ico (f x) (g x) :=
+protected theorem Monotone.Ico (hf : Monotone f) (hg : Antitone g)
+    : Antitone fun x => Ico (f x) (g x) :=
   hf.Ici.inter hg.Iio
 
-protected theorem MonotoneOn.Ico (hf : MonotoneOn f s) (hg : AntitoneOn g s) :
-    AntitoneOn (fun x => Ico (f x) (g x)) s :=
+protected theorem MonotoneOn.Ico (hf : MonotoneOn f s) (hg : AntitoneOn g s)
+    : AntitoneOn (fun x => Ico (f x) (g x)) s :=
   hf.Ici.inter hg.Iio
 
-protected theorem Antitone.Ico (hf : Antitone f) (hg : Monotone g) :
-    Monotone fun x => Ico (f x) (g x) :=
+protected theorem Antitone.Ico (hf : Antitone f) (hg : Monotone g)
+    : Monotone fun x => Ico (f x) (g x) :=
   hf.Ici.inter hg.Iio
 
-protected theorem AntitoneOn.Ico (hf : AntitoneOn f s) (hg : MonotoneOn g s) :
-    MonotoneOn (fun x => Ico (f x) (g x)) s :=
+protected theorem AntitoneOn.Ico (hf : AntitoneOn f s) (hg : MonotoneOn g s)
+    : MonotoneOn (fun x => Ico (f x) (g x)) s :=
   hf.Ici.inter hg.Iio
 
-protected theorem Monotone.Ioc (hf : Monotone f) (hg : Antitone g) :
-    Antitone fun x => Ioc (f x) (g x) :=
+protected theorem Monotone.Ioc (hf : Monotone f) (hg : Antitone g)
+    : Antitone fun x => Ioc (f x) (g x) :=
   hf.Ioi.inter hg.Iic
 
-protected theorem MonotoneOn.Ioc (hf : MonotoneOn f s) (hg : AntitoneOn g s) :
-    AntitoneOn (fun x => Ioc (f x) (g x)) s :=
+protected theorem MonotoneOn.Ioc (hf : MonotoneOn f s) (hg : AntitoneOn g s)
+    : AntitoneOn (fun x => Ioc (f x) (g x)) s :=
   hf.Ioi.inter hg.Iic
 
-protected theorem Antitone.Ioc (hf : Antitone f) (hg : Monotone g) :
-    Monotone fun x => Ioc (f x) (g x) :=
+protected theorem Antitone.Ioc (hf : Antitone f) (hg : Monotone g)
+    : Monotone fun x => Ioc (f x) (g x) :=
   hf.Ioi.inter hg.Iic
 
-protected theorem AntitoneOn.Ioc (hf : AntitoneOn f s) (hg : MonotoneOn g s) :
-    MonotoneOn (fun x => Ioc (f x) (g x)) s :=
+protected theorem AntitoneOn.Ioc (hf : AntitoneOn f s) (hg : MonotoneOn g s)
+    : MonotoneOn (fun x => Ioc (f x) (g x)) s :=
   hf.Ioi.inter hg.Iic
 
-protected theorem Monotone.Ioo (hf : Monotone f) (hg : Antitone g) :
-    Antitone fun x => Ioo (f x) (g x) :=
+protected theorem Monotone.Ioo (hf : Monotone f) (hg : Antitone g)
+    : Antitone fun x => Ioo (f x) (g x) :=
   hf.Ioi.inter hg.Iio
 
-protected theorem MonotoneOn.Ioo (hf : MonotoneOn f s) (hg : AntitoneOn g s) :
-    AntitoneOn (fun x => Ioo (f x) (g x)) s :=
+protected theorem MonotoneOn.Ioo (hf : MonotoneOn f s) (hg : AntitoneOn g s)
+    : AntitoneOn (fun x => Ioo (f x) (g x)) s :=
   hf.Ioi.inter hg.Iio
 
-protected theorem Antitone.Ioo (hf : Antitone f) (hg : Monotone g) :
-    Monotone fun x => Ioo (f x) (g x) :=
+protected theorem Antitone.Ioo (hf : Antitone f) (hg : Monotone g)
+    : Monotone fun x => Ioo (f x) (g x) :=
   hf.Ioi.inter hg.Iio
 
-protected theorem AntitoneOn.Ioo (hf : AntitoneOn f s) (hg : MonotoneOn g s) :
-    MonotoneOn (fun x => Ioo (f x) (g x)) s :=
+protected theorem AntitoneOn.Ioo (hf : AntitoneOn f s) (hg : MonotoneOn g s)
+    : MonotoneOn (fun x => Ioo (f x) (g x)) s :=
   hf.Ioi.inter hg.Iio
 
 end Ixx
@@ -152,11 +150,12 @@ section iUnion
 
 variable {α β : Type*} [SemilatticeSup α] [LinearOrder β] {f g : α → β} {a b : β}
 
-theorem iUnion_Ioo_of_mono_of_isGLB_of_isLUB (hf : Antitone f) (hg : Monotone g)
-    (ha : IsGLB (range f) a) (hb : IsLUB (range g) b) : ⋃ x, Ioo (f x) (g x) = Ioo a b :=
+theorem iUnion_Ioo_of_mono_of_isGLB_of_isLUB
+    (hf : Antitone f) (hg : Monotone g) (ha : IsGLB (range f) a) (hb : IsLUB (range g) b)
+    : ⋃ x, Ioo (f x) (g x) = Ioo a b :=
   calc
-    ⋃ x, Ioo (f x) (g x) = (⋃ x, Ioi (f x)) ∩ ⋃ x, Iio (g x) :=
-      iUnion_inter_of_monotone hf.Ioi hg.Iio
+    ⋃ x, Ioo (f x) (g x)
+      = (⋃ x, Ioi (f x)) ∩ ⋃ x, Iio (g x) := iUnion_inter_of_monotone hf.Ioi hg.Iio
     _ = Ioi a ∩ Iio b := congr($ha.iUnion_Ioi_eq ∩ $hb.iUnion_Iio_eq)
 
 end iUnion
@@ -167,24 +166,30 @@ open Order
 
 variable {α β : Type*} [PartialOrder α] [Preorder β] {ψ : α → β}
 
-/-- A function `ψ` on a `SuccOrder` is strictly monotone before some `n` if for all `m` such that
-`m < n`, we have `ψ m < ψ (succ m)`. -/
-theorem strictMonoOn_Iic_of_lt_succ [SuccOrder α] [IsSuccArchimedean α] {n : α}
-    (hψ : ∀ m, m < n → ψ m < ψ (succ m)) : StrictMonoOn ψ (Set.Iic n) :=
+/--
+A function `ψ` on a `SuccOrder` is strictly monotone before some `n` if for all `m` such that
+`m < n`, we have `ψ m < ψ (succ m)`.
+-/
+theorem strictMonoOn_Iic_of_lt_succ
+    [SuccOrder α] [IsSuccArchimedean α] {n : α} (hψ : ∀ m, m < n → ψ m < ψ (succ m))
+    : StrictMonoOn ψ (Set.Iic n) :=
   strictMonoOn_of_lt_succ ordConnected_Iic fun _a ha' _ ha ↦
     hψ _ <| (succ_le_iff_of_not_isMax ha').1 ha
 
-theorem strictAntiOn_Iic_of_succ_lt [SuccOrder α] [IsSuccArchimedean α] {n : α}
-    (hψ : ∀ m, m < n → ψ (succ m) < ψ m) : StrictAntiOn ψ (Set.Iic n) := fun i hi j hj hij =>
-  @strictMonoOn_Iic_of_lt_succ α βᵒᵈ _ _ ψ _ _ n hψ i hi j hj hij
+theorem strictAntiOn_Iic_of_succ_lt
+    [SuccOrder α] [IsSuccArchimedean α] {n : α} (hψ : ∀ m, m < n → ψ (succ m) < ψ m)
+    : StrictAntiOn ψ (Set.Iic n) := fun i hi j hj hij =>
+  @strictMonoOn_Iic_of_lt_succ α (βᵒᵈ) _ _ ψ _ _ n hψ i hi j hj hij
 
-theorem strictMonoOn_Ici_of_pred_lt [PredOrder α] [IsPredArchimedean α] {n : α}
-    (hψ : ∀ m, n < m → ψ (pred m) < ψ m) : StrictMonoOn ψ (Set.Ici n) := fun i hi j hj hij =>
-  @strictMonoOn_Iic_of_lt_succ αᵒᵈ βᵒᵈ _ _ ψ _ _ n hψ j hj i hi hij
+theorem strictMonoOn_Ici_of_pred_lt
+    [PredOrder α] [IsPredArchimedean α] {n : α} (hψ : ∀ m, n < m → ψ (pred m) < ψ m)
+    : StrictMonoOn ψ (Set.Ici n) := fun i hi j hj hij =>
+  @strictMonoOn_Iic_of_lt_succ (αᵒᵈ) (βᵒᵈ) _ _ ψ _ _ n hψ j hj i hi hij
 
-theorem strictAntiOn_Ici_of_lt_pred [PredOrder α] [IsPredArchimedean α] {n : α}
-    (hψ : ∀ m, n < m → ψ m < ψ (pred m)) : StrictAntiOn ψ (Set.Ici n) := fun i hi j hj hij =>
-  @strictAntiOn_Iic_of_succ_lt αᵒᵈ βᵒᵈ _ _ ψ _ _ n hψ j hj i hi hij
+theorem strictAntiOn_Ici_of_lt_pred
+    [PredOrder α] [IsPredArchimedean α] {n : α} (hψ : ∀ m, n < m → ψ m < ψ (pred m))
+    : StrictAntiOn ψ (Set.Ici n) := fun i hi j hj hij =>
+  @strictAntiOn_Iic_of_succ_lt (αᵒᵈ) (βᵒᵈ) _ _ ψ _ _ n hψ j hj i hi hij
 
 end SuccOrder
 
@@ -194,12 +199,15 @@ open Order
 
 variable {α : Type*} [LinearOrder α]
 
-theorem StrictMonoOn.Iic_id_le [SuccOrder α] [IsSuccArchimedean α] [OrderBot α] {n : α} {φ : α → α}
-    (hφ : StrictMonoOn φ (Set.Iic n)) : ∀ m ≤ n, m ≤ φ m := by
+theorem StrictMonoOn.Iic_id_le
+    [SuccOrder α] [IsSuccArchimedean α] [OrderBot α]
+    {n : α} {φ : α → α} (hφ : StrictMonoOn φ (Set.Iic n))
+    : ∀ m ≤ n, m ≤ φ m := by
   revert hφ
-  refine
-    Succ.rec_bot (fun n => StrictMonoOn φ (Set.Iic n) → ∀ m ≤ n, m ≤ φ m)
-      (fun _ _ hm => hm.trans bot_le) ?_ _
+  refine Succ.rec_bot
+    (fun n => StrictMonoOn φ (Set.Iic n) → ∀ m ≤ n, m ≤ φ m)
+    (fun _ _ hm => hm.trans bot_le)
+    ?_ _
   rintro k ih hφ m hm
   by_cases hk : IsMax k
   · rw [succ_eq_iff_isMax.2 hk] at hm
@@ -211,8 +219,10 @@ theorem StrictMonoOn.Iic_id_le [SuccOrder α] [IsSuccArchimedean α] [OrderBot �
     exact lt_succ_of_not_isMax hk
   · exact ih (StrictMonoOn.mono hφ fun x hx => le_trans hx (le_succ _)) _ h
 
-theorem StrictMonoOn.Ici_le_id [PredOrder α] [IsPredArchimedean α] [OrderTop α] {n : α} {φ : α → α}
-    (hφ : StrictMonoOn φ (Set.Ici n)) : ∀ m, n ≤ m → φ m ≤ m :=
+theorem StrictMonoOn.Ici_le_id
+    [PredOrder α] [IsPredArchimedean α] [OrderTop α]
+    {n : α} {φ : α → α} (hφ : StrictMonoOn φ (Set.Ici n))
+    : ∀ m, n ≤ m → φ m ≤ m :=
   StrictMonoOn.Iic_id_le (α := αᵒᵈ) fun _ hi _ hj hij => hφ hj hi hij
 
 end LinearOrder

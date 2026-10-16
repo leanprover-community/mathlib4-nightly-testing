@@ -20,19 +20,21 @@ public section
 open Filter Set Metric NormedField
 open scoped Topology
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 
 /-- In a proper space, the tangent cone at a non-isolated point is nontrivial. -/
-theorem tangentConeAt_nonempty_of_properSpace [ProperSpace E]
-    {s : Set E} {x : E} (hx : AccPt x (𝓟 s)) :
-    (tangentConeAt 𝕜 s x ∩ {0}ᶜ).Nonempty := by
-  /- Take a sequence `d n` tending to `0` such that `x + d n ∈ s`. Taking `c n` of the order
+theorem tangentConeAt_nonempty_of_properSpace
+    [ProperSpace E] {s : Set E} {x : E} (hx : AccPt x (𝓟 s))
+    : (tangentConeAt 𝕜 s x ∩ {0}ᶜ).Nonempty := by
+  /-
+  Take a sequence `d n` tending to `0` such that `x + d n ∈ s`. Taking `c n` of the order
   of `1 / d n`. Then `c n • d n` belongs to a fixed annulus. By compactness, one can extract
   a subsequence converging to a limit `l`. Then `l` is nonzero, and by definition it belongs to
-  the tangent cone. -/
-  obtain ⟨u, -, u_pos, u_lim⟩ :
-      ∃ u, StrictAnti u ∧ (∀ (n : ℕ), 0 < u n) ∧ Tendsto u atTop (𝓝 (0 : ℝ)) :=
+  the tangent cone.
+  -/
+  obtain ⟨u, -, u_pos, u_lim⟩
+      : ∃ u, StrictAnti u ∧ (∀ (n : ℕ), 0 < u n) ∧ Tendsto u atTop (𝓝 (0 : ℝ)) :=
     exists_seq_strictAnti_tendsto (0 : ℝ)
   have A n : ∃ y ∈ closedBall x (u n) ∩ s, y ≠ x :=
     accPt_iff_nhds.mp hx _ (closedBall_mem_nhds _ (u_pos n))
@@ -43,14 +45,15 @@ theorem tangentConeAt_nonempty_of_properSpace [ProperSpace E]
   let ⟨r, hr⟩ := exists_one_lt_norm 𝕜
   have W n := rescale_to_shell hr zero_lt_one (x := d n) (by simpa using (M n).2)
   choose c c_ne c_le le_c hc using W
-  obtain ⟨l, l_mem, φ, φ_strict, hφ⟩ :
-      ∃ l ∈ Metric.closedBall (0 : E) 1 \ Metric.ball (0 : E) (1 / ‖r‖),
-      ∃ (φ : ℕ → ℕ), StrictMono φ ∧ Tendsto ((fun n ↦ c n • d n) ∘ φ) atTop (𝓝 l) := by
+  obtain ⟨l, l_mem, φ, φ_strict, hφ⟩
+      : ∃ l ∈ Metric.closedBall (0 : E) 1 \ Metric.ball (0 : E) (1 / ‖r‖), ∃ (φ : ℕ → ℕ),
+        StrictMono φ ∧ Tendsto ((fun n ↦ c n • d n) ∘ φ) atTop (𝓝 l) := by
     apply IsCompact.tendsto_subseq _ (fun n ↦ ?_)
     · exact (isCompact_closedBall 0 1).diff Metric.isOpen_ball
-    simp only [Set.mem_sdiff, Metric.mem_closedBall, dist_zero_right, (c_le n).le,
-      Metric.mem_ball, not_lt, true_and, le_c n]
-  refine ⟨l, ?_, ?_⟩; swap
+    simp only [Set.mem_sdiff, Metric.mem_closedBall, dist_zero_right, (c_le n).le, Metric.mem_ball,
+      not_lt, true_and, le_c n]
+  refine ⟨l, ?_, ?_⟩
+  swap
   · push _ ∈ _
     contrapose l_mem
     simp only [one_div, l_mem, Set.mem_sdiff, Metric.mem_closedBall, dist_self, zero_le_one,

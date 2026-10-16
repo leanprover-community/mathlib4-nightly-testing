@@ -8,7 +8,7 @@ module
 public meta import Lean.Elab.Command
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public import Lean.Parser.Term
 
 /-!
@@ -54,7 +54,8 @@ public register_option linter.style.multiGoal : Bool := {
 
 namespace Style.multiGoal
 
-/-- The `SyntaxNodeKind`s in `exclusions` correspond to tactics that the linter allows,
+/--
+The `SyntaxNodeKind`s in `exclusions` correspond to tactics that the linter allows,
 even though there are multiple active goals.
 Reasons for admitting a kind in `exclusions` include
 * the tactic focuses on one goal, e.g. `·`, `focus`, `on_goal i =>`, ...;
@@ -66,7 +67,8 @@ There is some overlap in scope between `ignoreBranch` and `exclusions`.
 
 Tactic combinators like `repeat` or `try` are a mix of both.
 -/
-abbrev exclusions : Std.HashSet SyntaxNodeKind := .ofArray #[
+abbrev exclusions : Std.HashSet SyntaxNodeKind :=
+  .ofArray #[
     -- structuring a proof
     ``Lean.Parser.Term.cdot,
     ``cdot,
@@ -121,7 +123,8 @@ abbrev exclusions : Std.HashSet SyntaxNodeKind := .ofArray #[
     `tacticSleep_heartbeats_
   ]
 
-/-- The `SyntaxNodeKind`s in `ignoreBranch` correspond to tactics that disable the linter from
+/--
+The `SyntaxNodeKind`s in `ignoreBranch` correspond to tactics that disable the linter from
 their first application until the corresponding proof branch is closed.
 Reasons for ignoring these tactics include
 * the linter gets confused by the proof management, e.g. `conv`;
@@ -129,7 +132,8 @@ Reasons for ignoring these tactics include
 
 There is some overlap in scope between `exclusions` and `ignoreBranch`.
 -/
-abbrev ignoreBranch : Std.HashSet SyntaxNodeKind := .ofArray #[
+abbrev ignoreBranch : Std.HashSet SyntaxNodeKind :=
+  .ofArray #[
     ``Lean.Parser.Tactic.Conv.conv,
     `Mathlib.Tactic.Conv.convLHS,
     `Mathlib.Tactic.Conv.convRHS,
@@ -148,7 +152,8 @@ abbrev ignoreBranch : Std.HashSet SyntaxNodeKind := .ofArray #[
     `Mathlib.Tactic.successIfFailWithMsg
   ]
 
-/-- `getManyGoals t` returns the syntax nodes of the `InfoTree` `t` corresponding to tactic calls
+/--
+`getManyGoals t` returns the syntax nodes of the `InfoTree` `t` corresponding to tactic calls
 which
 * leave at least one goal that was present before it ran
   (with the exception of tactics that leave the sole goal unchanged);
@@ -157,42 +162,52 @@ which
 together with the number of goals before the tactic,
 the number of goals after the tactic, and the number of unaffected goals.
 -/
-partial
-def getManyGoals : InfoTree → Array (Syntax × Nat × Nat × Nat)
+partial def getManyGoals : InfoTree → Array (Syntax × Nat × Nat × Nat)
   | .node info args =>
     let kargs := (args.map getManyGoals).toArray.flatten
     if let .ofTacticInfo info := info then
-      if ignoreBranch.contains info.stx.getKind then #[]
+      if ignoreBranch.contains info.stx.getKind then
+        #[]
       -- Ideal case: one goal, and it might or might not be closed.
-      else if info.goalsBefore.length == 1 && info.goalsAfter.length ≤ 1 then kargs
+      else if info.goalsBefore.length == 1 && info.goalsAfter.length ≤ 1 then
+        kargs
       else if let .original .. := info.stx.getHeadInfo then
         let backgroundGoals := info.goalsAfter.filter (info.goalsBefore.contains ·)
-        if backgroundGoals.length != 0 && !exclusions.contains info.stx.getKind then
-          kargs.push (info.stx,
-                      info.goalsBefore.length, info.goalsAfter.length, backgroundGoals.length)
-        else kargs
-      else kargs
-    else kargs
-  | .context _ t => getManyGoals t
-  | _ => default
+        if backgroundGoals.length != 0 && ! exclusions.contains info.stx.getKind then
+          kargs.push
+            (info.stx, info.goalsBefore.length, info.goalsAfter.length, backgroundGoals.length)
+        else
+          kargs
+      else
+        kargs
+    else
+      kargs
+  | .context _ t =>
+    getManyGoals t
+  | _ =>
+    default
 
 @[inherit_doc Mathlib.Linter.linter.style.multiGoal]
-def multiGoalLinter : Linter where run := withSetOptionIn fun _stx ↦ do
-    unless getLinterValue linter.style.multiGoal (← getLinterOptions) do
-      return
-    if (← get).messages.hasErrors then
-      return
-    let trees ← getInfoTrees
-    for t in trees do
-      for (s, before, after, n) in getManyGoals t do
-        let goals (k : Nat) := if k == 1 then f!"1 goal" else f!"{k} goals"
-        let fmt ← Command.liftCoreM
-          try PrettyPrinter.ppTactic ⟨s⟩ catch _ => pure f!"(failed to pretty print)"
-        Linter.logLint linter.style.multiGoal s m!"\
-          The following tactic starts with {goals before} and ends with {goals after}, \
-          {n} of which {if n == 1 then "is" else "are"} not operated on.\
-          {indentD fmt}\n\
-          Please focus on the current goal, for instance using `·` (typed as \"\\.\")."
+def multiGoalLinter : Linter where
+  run :=
+    withSetOptionIn fun _stx ↦ do
+      unless getLinterValue linter.style.multiGoal (← getLinterOptions) do
+        return
+      if (← get).messages.hasErrors then
+        return
+      let trees ← getInfoTrees
+      for t in trees do
+        for (s, before, after, n) in getManyGoals t do
+          let goals (k : Nat) := if k == 1 then f!"1 goal" else f!"{k} goals"
+          let fmt ←
+            Command.liftCoreM
+              try PrettyPrinter.ppTactic ⟨s⟩ catch _ => pure f!"(failed to pretty print)"
+          Linter.logLint linter.style.multiGoal s
+            m!"\
+              The following tactic starts with {goals before} and ends with {goals after}, \
+              {n} of which {if n == 1 then "is" else "are"} not operated on.\
+              {indentD fmt}\n\
+              Please focus on the current goal, for instance using `·` (typed as \"\\.\")."
 
 initialize addLinter multiGoalLinter
 

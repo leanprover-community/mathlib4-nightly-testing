@@ -15,5 +15,4 @@ public section
 
 variable (R A : Type*) [CommRing R] [Semiring A] [Algebra R A] [IsSimpleRing R] [Nontrivial A]
 
-instance : FaithfulSMul R A :=
-  faithfulSMul_iff_algebraMap_injective R A |>.2 <| RingHom.injective _
+instance : FaithfulSMul R A := faithfulSMul_iff_algebraMap_injective R A |>.2 <| RingHom.injective _

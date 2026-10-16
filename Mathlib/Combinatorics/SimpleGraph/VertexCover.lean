@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Combinatorics.SimpleGraph.Clique
 public import Mathlib.Data.ENat.Lattice
-
 import Mathlib.SetTheory.Cardinal.NatCard
 import Mathlib.Tactic.ENatToNat
 
@@ -32,28 +31,23 @@ variable {V W : Type*} {G G' : SimpleGraph V} {H : SimpleGraph W}
 section IsVertexCover
 
 /-- `c` is a vertex cover of `G` if every edge in `G` is incident to at least one vertex in `c`. -/
-def IsVertexCover (G : SimpleGraph V) (c : Set V) : Prop :=
-  ∀ ⦃v w : V⦄, G.Adj v w → v ∈ c ∨ w ∈ c
+def IsVertexCover (G : SimpleGraph V) (c : Set V) : Prop := ∀ ⦃v w : V⦄, G.Adj v w → v ∈ c ∨ w ∈ c
 
 @[simp]
 theorem isVertexCover_empty : IsVertexCover G ∅ ↔ G = ⊥ := by
   simp [IsVertexCover, eq_bot_iff_forall_not_adj]
 
-@[simp]
-theorem isVertexCover_univ : IsVertexCover G .univ := by
-  simp [IsVertexCover]
+@[simp] theorem isVertexCover_univ : IsVertexCover G .univ := by simp [IsVertexCover]
 
-@[simp]
-theorem isVertexCover_bot (c : Set V) : IsVertexCover ⊥ c := by
-  simp [IsVertexCover]
+@[simp] theorem isVertexCover_bot (c : Set V) : IsVertexCover ⊥ c := by simp [IsVertexCover]
 
-theorem IsVertexCover.subset {c d : Set V} (hcd : c ⊆ d) (hc : IsVertexCover G c) :
-    IsVertexCover G d := by
+theorem IsVertexCover.subset {c d : Set V} (hcd : c ⊆ d) (hc : IsVertexCover G c)
+    : IsVertexCover G d := by
   grind [IsVertexCover]
 
-theorem IsVertexCover.mono {c : Set V} (hG : G ≤ G') (hc : IsVertexCover G' c) :
-    IsVertexCover G c :=
-  fun _ _ hadj ↦ hc (hG hadj)
+theorem IsVertexCover.mono {c : Set V} (hG : G ≤ G') (hc : IsVertexCover G' c)
+    : IsVertexCover G c := fun _ _ hadj ↦
+  hc (hG hadj)
 
 /-- A set `c` is a vertex cover iff the complement of `c` is an independent set. -/
 @[simp]
@@ -66,22 +60,22 @@ theorem isIndepSet_compl_iff_isVertexCover {c : Set V} : G.IsIndepSet cᶜ ↔ I
 theorem isVertexCover_compl {c : Set V} : G.IsVertexCover cᶜ ↔ G.IsIndepSet c := by
   simp [← isIndepSet_compl_iff_isVertexCover]
 
-theorem IsVertexCover.preimage {F : Type*} [FunLike F V W] [HomClass F G H]
-    (f : F) {c : Set W} (hc : IsVertexCover H c) :
-    IsVertexCover G (f ⁻¹' c) :=
-  fun _ _ hadj ↦ hc (map_rel f hadj)
+theorem IsVertexCover.preimage
+    {F : Type*} [FunLike F V W] [HomClass F G H] (f : F) {c : Set W} (hc : IsVertexCover H c)
+    : IsVertexCover G (f ⁻¹' c) := fun _ _ hadj ↦
+  hc (map_rel f hadj)
 
 @[simp]
-theorem isVertexCover_preimage_iso (f : G ≃g H) {c : Set W} :
-    IsVertexCover G (f ⁻¹' c) ↔ IsVertexCover H c where
+theorem isVertexCover_preimage_iso (f : G ≃g H) {c : Set W}
+    : IsVertexCover G (f ⁻¹' c) ↔ IsVertexCover H c where
   mp h := by
-    simpa [← RelIso.image_eq_preimage_symm, Set.image_preimage_eq _ f.surjective]
-      using h.preimage f.symm
+    simpa [← RelIso.image_eq_preimage_symm, Set.image_preimage_eq _ f.surjective] using
+      h.preimage f.symm
   mpr := .preimage f
 
 @[simp]
-theorem isVertexCover_image_iso (f : G ≃g H) {c : Set V} :
-    IsVertexCover H (f '' c) ↔ IsVertexCover G c := by
+theorem isVertexCover_image_iso (f : G ≃g H) {c : Set V}
+    : IsVertexCover H (f '' c) ↔ IsVertexCover G c := by
   simp [RelIso.image_eq_preimage_symm]
 
 end IsVertexCover
@@ -92,22 +86,22 @@ section vertexCoverNum
 noncomputable def vertexCoverNum (G : SimpleGraph V) : ℕ∞ :=
   ⨅ (s : Set V) (_ : IsVertexCover G s), s.encard
 
-theorem vertexCoverNum_le_iff {n : ℕ∞} :
-    vertexCoverNum G ≤ n ↔ ∀ (m : ℕ∞), (∀ s, IsVertexCover G s → m ≤ s.encard) → m ≤ n := by
+theorem vertexCoverNum_le_iff {n : ℕ∞}
+    : vertexCoverNum G ≤ n ↔ ∀ (m : ℕ∞), (∀ s, IsVertexCover G s → m ≤ s.encard) → m ≤ n := by
   simp [vertexCoverNum, iInf_le_iff]
 
-theorem IsVertexCover.vertexCoverNum_le {c : Set V} (hc : IsVertexCover G c) :
-    vertexCoverNum G ≤ c.encard :=
+theorem IsVertexCover.vertexCoverNum_le {c : Set V} (hc : IsVertexCover G c)
+    : vertexCoverNum G ≤ c.encard :=
   vertexCoverNum_le_iff.mpr fun _ hm ↦ hm c hc
 
-theorem vertexCoverNum_exists (G) :
-    ∃ s : Set V, s.encard = vertexCoverNum G ∧ IsVertexCover G s := by
+theorem vertexCoverNum_exists (G)
+    : ∃ s : Set V, s.encard = vertexCoverNum G ∧ IsVertexCover G s := by
   have : Nonempty {s : Set V // IsVertexCover G s} := nonempty_subtype.mpr ⟨Set.univ, by simp⟩
   obtain ⟨s, hs⟩ := @ENat.exists_eq_iInf _ this (·.val.encard)
   exact ⟨s.val, hs ▸ iInf_subtype, s.property⟩
 
-theorem exists_of_le_vertexCoverNum (n : ℕ) (h₁ : vertexCoverNum G ≤ n)
-    (h₂ : n ≤ ENat.card V) : ∃ s : Set V, s.encard = n ∧ IsVertexCover G s := by
+theorem exists_of_le_vertexCoverNum (n : ℕ) (h₁ : vertexCoverNum G ≤ n) (h₂ : n ≤ ENat.card V)
+    : ∃ s : Set V, s.encard = n ∧ IsVertexCover G s := by
   obtain ⟨s, hs₁, hs₂⟩ := vertexCoverNum_exists G
   obtain ⟨r, hr₁, _, hr₃⟩ :=
     Set.exists_superset_subset_encard_eq (by simp) (le_of_eq_of_le hs₁ h₁) (Set.encard_univ _ ▸ h₂)
@@ -149,8 +143,7 @@ theorem vertexCoverNum_le_encard_edgeSet : vertexCoverNum G ≤ G.edgeSet.encard
   · simp [h', SimpleGraph.edgeSet_eq_empty.mp]
   refine ENat.forall_natCast_le_iff_le.mp fun n hn ↦ ?_
   simp only [vertexCoverNum, le_iInf_iff] at hn
-  have := hn ((·.out.1) '' G.edgeSet)
-    (fun v w _ ↦ by grind [Sym2.out_fst_mem s(v, w), mem_edgeSet])
+  have := hn ((·.out.1) '' G.edgeSet) (fun v w _ ↦ by grind [Sym2.out_fst_mem s(v, w), mem_edgeSet])
   grind [Set.encard_image_le]
 
 @[simp]
@@ -178,8 +171,8 @@ theorem vertexCoverNum_top : vertexCoverNum (completeGraph V) = ENat.card V - 1 
   have := @ht₂ a b (by simp [hne])
   grind
 
-theorem IsContained.vertexCoverNum_le_vertexCoverNum (h : G ⊑ H) :
-    vertexCoverNum G ≤ vertexCoverNum H := by
+theorem IsContained.vertexCoverNum_le_vertexCoverNum (h : G ⊑ H)
+    : vertexCoverNum G ≤ vertexCoverNum H := by
   have ⟨f, hf⟩ := h
   obtain ⟨s, hs₁, hs₂⟩ := vertexCoverNum_exists H
   have := H.isIndepSet_iff_isAntichain_adj.mp <| isIndepSet_compl_iff_isVertexCover.mpr hs₂

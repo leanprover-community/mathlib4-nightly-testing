@@ -51,13 +51,14 @@ noncomputable def Measure.toFiniteAux (μ : Measure α) [SFinite μ] : Measure �
   letI := Classical.dec
   if IsFiniteMeasure μ then μ else (exists_isFiniteMeasure_absolutelyContinuous μ).choose
 
-/-- A finite measure obtained from an s-finite measure `μ`, such that
+/--
+A finite measure obtained from an s-finite measure `μ`, such that
 `μ = μ.toFinite.withDensity (μ.rnDeriv μ.toFinite)`
 (see `MeasureTheory.Measure.withDensity_rnDeriv_eq` along with
 `MeasureTheory.absolutelyContinuous_toFinite`). If `μ` is non-zero, then `μ.toFinite` is a
-probability measure. -/
-noncomputable def Measure.toFinite (μ : Measure α) [SFinite μ] : Measure α :=
-  μ.toFiniteAux[|univ]
+probability measure.
+-/
+noncomputable def Measure.toFinite (μ : Measure α) [SFinite μ] : Measure α := μ.toFiniteAux[|univ]
 
 @[local simp]
 lemma ae_toFiniteAux [SFinite μ] : ae μ.toFiniteAux = ae μ := by
@@ -86,8 +87,7 @@ lemma toFinite_apply_eq_zero_iff [SFinite μ] {s : Set α} : μ.toFinite s = 0 �
 lemma toFinite_eq_zero_iff [SFinite μ] : μ.toFinite = 0 ↔ μ = 0 := by
   simp_rw [← Measure.measure_univ_eq_zero, toFinite_apply_eq_zero_iff]
 
-@[simp]
-lemma toFinite_zero : Measure.toFinite (0 : Measure α) = 0 := by simp
+@[simp] lemma toFinite_zero : Measure.toFinite (0 : Measure α) = 0 := by simp
 
 lemma toFinite_eq_self [IsProbabilityMeasure μ] : μ.toFinite = μ := by
   rw [Measure.toFinite, Measure.toFiniteAux, ite_eq_left, ProbabilityTheory.cond_univ]
@@ -104,15 +104,15 @@ instance [SFinite μ] [NeZero μ] : IsProbabilityMeasure μ.toFinite := by
 lemma absolutelyContinuous_toFinite (μ : Measure α) [SFinite μ] : μ ≪ μ.toFinite :=
   Measure.ae_le_iff_absolutelyContinuous.mp ae_toFinite.ge
 
-lemma sfiniteSeq_absolutelyContinuous_toFinite (μ : Measure α) [SFinite μ] (n : ℕ) :
-    sfiniteSeq μ n ≪ μ.toFinite :=
+lemma sfiniteSeq_absolutelyContinuous_toFinite (μ : Measure α) [SFinite μ] (n : ℕ)
+    : sfiniteSeq μ n ≪ μ.toFinite :=
   (sfiniteSeq_le μ n).absolutelyContinuous.trans (absolutelyContinuous_toFinite μ)
 
 lemma toFinite_absolutelyContinuous (μ : Measure α) [SFinite μ] : μ.toFinite ≪ μ :=
   Measure.ae_le_iff_absolutelyContinuous.mp ae_toFinite.le
 
-lemma restrict_compl_sigmaFiniteSet [SFinite μ] :
-    μ.restrict μ.sigmaFiniteSetᶜ = ∞ • μ.toFinite.restrict μ.sigmaFiniteSetᶜ := by
+lemma restrict_compl_sigmaFiniteSet [SFinite μ]
+    : μ.restrict μ.sigmaFiniteSetᶜ = ∞ • μ.toFinite.restrict μ.sigmaFiniteSetᶜ := by
   rw [Measure.sigmaFiniteSet,
     restrict_compl_sigmaFiniteSetWRT (Measure.AbsolutelyContinuous.refl μ)]
   ext t ht

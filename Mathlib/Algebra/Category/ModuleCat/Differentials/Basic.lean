@@ -32,8 +32,10 @@ namespace ModuleCat
 
 variable {A B : CommRingCat.{u}} (M : ModuleCat.{v} B) (f : A ⟶ B)
 
-/-- The type of derivations with values in a `B`-module `M` relative
-to a morphism `f : A ⟶ B` in the category `CommRingCat`. -/
+/--
+The type of derivations with values in a `B`-module `M` relative
+to a morphism `f : A ⟶ B` in the category `CommRingCat`.
+-/
 def Derivation : Type _ :=
   letI := f.hom.toAlgebra
   letI := Module.compHom M f.hom
@@ -44,13 +46,15 @@ namespace Derivation
 variable {M f}
 
 /-- Constructor for `ModuleCat.Derivation`. -/
-def mk (d : B → M) (d_add : ∀ (b b' : B), d (b + b') = d b + d b' := by simp)
+def mk
+    (d : B → M) (d_add : ∀ (b b' : B), d (b + b') = d b + d b' := by simp)
     (d_mul : ∀ (b b' : B), d (b * b') = b • d b' + b' • d b := by simp)
-    (d_map : ∀ (a : A), d (f a) = 0 := by simp) :
-    M.Derivation f :=
+    (d_map : ∀ (a : A), d (f a) = 0 := by simp)
+    : M.Derivation f :=
   letI := f.hom.toAlgebra
   letI := Module.compHom M f.hom
-  { toFun := d
+  {
+    toFun := d
     map_add' := d_add
     map_smul' := fun a b ↦ by
       dsimp
@@ -59,23 +63,24 @@ def mk (d : B → M) (d_add : ∀ (b b' : B), d (b + b') = d b + d b' := by simp
     map_one_eq_zero' := by
       dsimp
       rw [← f.hom.map_one, d_map]
-    leibniz' := d_mul }
+    leibniz' := d_mul
+  }
 
 variable (D : M.Derivation f)
 
-/-- The underlying map `B → M` of a derivation `M.Derivation f` when `M : ModuleCat B`
-and `f : A ⟶ B` is a morphism in `CommRingCat`. -/
+/--
+The underlying map `B → M` of a derivation `M.Derivation f` when `M : ModuleCat B`
+and `f : A ⟶ B` is a morphism in `CommRingCat`.
+-/
 def d (b : B) : M :=
   letI := f.hom.toAlgebra
   letI := Module.compHom M f.hom
   _root_.Derivation.toLinearMap D b
 
-@[simp]
-lemma d_add (b b' : B) : D.d (b + b') = D.d b + D.d b' := by simp [d]
+@[simp] lemma d_add (b b' : B) : D.d (b + b') = D.d b + D.d b' := by simp [d]
 
 set_option backward.isDefEq.respectTransparency.types false in
-@[simp]
-lemma d_mul (b b' : B) : D.d (b * b') = b • D.d b' + b' • D.d b := by simp [d]
+@[simp] lemma d_mul (b b' : B) : D.d (b * b') = b • D.d b' + b' • D.d b := by simp [d]
 
 @[simp]
 lemma d_map (a : A) : D.d (f a) = 0 :=
@@ -89,8 +94,9 @@ end ModuleCat
 
 namespace CommRingCat
 
-variable {A B A' B' : CommRingCat.{u}} {f : A ⟶ B} {f' : A' ⟶ B'}
-  {g : A ⟶ A'} {g' : B ⟶ B'} (fac : g ≫ f' = f ≫ g')
+variable
+  {A B A' B' : CommRingCat.{u}} {f : A ⟶ B} {f' : A' ⟶ B'} {g : A ⟶ A'} {g' : B ⟶ B'}
+  (fac : g ≫ f' = f ≫ g')
 
 variable (f) in
 /-- The module of differentials of a morphism `f : A ⟶ B` in the category `CommRingCat`. -/
@@ -102,22 +108,26 @@ namespace KaehlerDifferential
 
 set_option backward.isDefEq.respectTransparency false in
 variable (f) in
-/-- The (universal) derivation in `(KaehlerDifferential f).Derivation f`
-when `f : A ⟶ B` is a morphism in the category `CommRingCat`. -/
+/--
+The (universal) derivation in `(KaehlerDifferential f).Derivation f`
+when `f : A ⟶ B` is a morphism in the category `CommRingCat`.
+-/
 noncomputable def D : (KaehlerDifferential f).Derivation f :=
   letI := f.hom.toAlgebra
   ModuleCat.Derivation.mk
-    (fun b ↦ _root_.KaehlerDifferential.D A B b) (by simp) (by simp)
-      (_root_.KaehlerDifferential.D A B).map_algebraMap
+    (fun b ↦ _root_.KaehlerDifferential.D A B b)
+    (by simp) (by simp) (_root_.KaehlerDifferential.D A B).map_algebraMap
 
-/-- When `f : A ⟶ B` is a morphism in the category `CommRingCat`, this is the
-differential map `B → KaehlerDifferential f`. -/
+/--
+When `f : A ⟶ B` is a morphism in the category `CommRingCat`, this is the
+differential map `B → KaehlerDifferential f`.
+-/
 noncomputable abbrev d (b : B) : KaehlerDifferential f := (D f).d b
 
 set_option backward.isDefEq.respectTransparency false in
 @[ext]
-lemma ext {M : ModuleCat B} {α β : KaehlerDifferential f ⟶ M}
-    (h : ∀ (b : B), α (d b) = β (d b)) : α = β := by
+lemma ext {M : ModuleCat B} {α β : KaehlerDifferential f ⟶ M} (h : ∀ (b : B), α (d b) = β (d b))
+    : α = β := by
   rw [← sub_eq_zero]
   have : ⊤ ≤ LinearMap.ker (α - β).hom := by
     rw [← KaehlerDifferential.span_range_derivation, Submodule.span_le]
@@ -129,12 +139,13 @@ lemma ext {M : ModuleCat B} {α β : KaehlerDifferential f ⟶ M}
   exact this
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The map `KaehlerDifferential f ⟶ (ModuleCat.restrictScalars g').obj (KaehlerDifferential f')`
+/--
+The map `KaehlerDifferential f ⟶ (ModuleCat.restrictScalars g').obj (KaehlerDifferential f')`
 induced by a commutative square (given by an equality `g ≫ f' = f ≫ g'`)
-in the category `CommRingCat`. -/
-noncomputable def map :
-    KaehlerDifferential f ⟶
-      (ModuleCat.restrictScalars g'.hom).obj (KaehlerDifferential f') :=
+in the category `CommRingCat`.
+-/
+noncomputable def map
+    : KaehlerDifferential f ⟶ (ModuleCat.restrictScalars g'.hom).obj (KaehlerDifferential f') :=
   letI := f.hom.toAlgebra
   letI := f'.hom.toAlgebra
   letI := g.hom.toAlgebra
@@ -144,10 +155,11 @@ noncomputable def map :
   have := IsScalarTower.of_algebraMap_eq' (congrArg Hom.hom fac)
   -- TODO: after https://github.com/leanprover-community/mathlib4/pull/19511 we need to hint `(Y := ...)`.
   -- This suggests `restrictScalars` needs to be redesigned.
-  ModuleCat.ofHom (Y := (ModuleCat.restrictScalars g'.hom).obj (KaehlerDifferential f'))
-  { toFun := fun x ↦ _root_.KaehlerDifferential.map A A' B B' x
+  ModuleCat.ofHom (Y := (ModuleCat.restrictScalars g'.hom).obj (KaehlerDifferential f')) {
+    toFun := fun x ↦ _root_.KaehlerDifferential.map A A' B B' x
     map_add' := by simp
-    map_smul' := by simp }
+    map_smul' := by simp
+  }
 
 @[simp]
 lemma map_d (b : B) : map fac (d b) = d (g' b) := by
@@ -161,12 +173,13 @@ end CommRingCat
 
 namespace ModuleCat.Derivation
 
-variable {A B : CommRingCat.{u}} {f : A ⟶ B}
-  {M : ModuleCat.{u} B} (D : M.Derivation f)
+variable {A B : CommRingCat.{u}} {f : A ⟶ B} {M : ModuleCat.{u} B} (D : M.Derivation f)
 
-/-- Given `f : A ⟶ B` a morphism in the category `CommRingCat`, `M : ModuleCat B`,
+/--
+Given `f : A ⟶ B` a morphism in the category `CommRingCat`, `M : ModuleCat B`,
 and `D : M.Derivation f`, this is the induced
-morphism `CommRingCat.KaehlerDifferential f ⟶ M`. -/
+morphism `CommRingCat.KaehlerDifferential f ⟶ M`.
+-/
 noncomputable def desc : CommRingCat.KaehlerDifferential f ⟶ M :=
   letI := f.hom.toAlgebra
   letI := Module.compHom M f.hom

@@ -41,8 +41,10 @@ namespace Module.Dual
 
 variable [AddCommGroup F] [Module ℝ F] [Module 𝕜 F] [IsScalarTower ℝ 𝕜 F]
 
-/-- Extend `fr : Dual ℝ F` to `Dual 𝕜 F` in a way that will also be continuous and have its norm
-(as a continuous linear map) equal to `‖fr‖` when `fr` is itself continuous on a normed space. -/
+/--
+Extend `fr : Dual ℝ F` to `Dual 𝕜 F` in a way that will also be continuous and have its norm
+(as a continuous linear map) equal to `‖fr‖` when `fr` is itself continuous on a normed space.
+-/
 noncomputable def extendRCLike (fr : Dual ℝ F) : Dual 𝕜 F :=
   letI fc : F → 𝕜 := fun x => (fr x : 𝕜) - (I : 𝕜) * fr ((I : 𝕜) • x)
   have add (x y) : fc (x + y) = fc x + fc y := by
@@ -58,29 +60,29 @@ noncomputable def extendRCLike (fr : Dual ℝ F) : Dual 𝕜 F :=
   have smul_𝕜 (c : 𝕜) (x : F) : fc (c • x) = c • fc x := by
     rw [← re_add_im c]
     simp only [add_smul, ← smul_smul, add, smul_ℝ, smul_I, ← mul_assoc, smul_eq_mul, add_mul]
-  { toFun := fc
-    map_add' := add
-    map_smul' := smul_𝕜 }
+  { toFun := fc, map_add' := add, map_smul' := smul_𝕜 }
 
-theorem extendRCLike_apply (fr : Dual ℝ F) (x : F) :
-    fr.extendRCLike x = (fr x : 𝕜) - (I : 𝕜) * (fr ((I : 𝕜) • x) : 𝕜) := rfl
+theorem extendRCLike_apply (fr : Dual ℝ F) (x : F)
+    : fr.extendRCLike x = (fr x : 𝕜) - (I : 𝕜) * (fr ((I : 𝕜) • x) : 𝕜) :=
+  rfl
 
 @[simp]
 theorem re_extendRCLike_apply (fr : Dual ℝ F) (x : F) : re (fr.extendRCLike x : 𝕜) = fr x := by
   simp only [extendRCLike_apply, map_sub, zero_mul, mul_zero, sub_zero, rclike_simps]
 
 @[simp]
-lemma im_extendRCLike_apply (g : Dual ℝ F) (x : F) :
-    im ((extendRCLike g) x : 𝕜) = - g ((I : 𝕜) • x) := by
+lemma im_extendRCLike_apply (g : Dual ℝ F) (x : F)
+    : im ((extendRCLike g) x : 𝕜) = - g ((I : 𝕜) • x) := by
   obtain (h | h) := RCLike.I_eq_zero_or_im_I_eq_one (K := 𝕜)
   all_goals simp [h, extendRCLike_apply]
 
-theorem norm_extendRCLike_apply_sq (fr : Dual ℝ F) (x : F) :
-    ‖(fr.extendRCLike x : 𝕜)‖ ^ 2 = fr (conj (fr.extendRCLike x : 𝕜) • x) := calc
-  ‖(fr.extendRCLike x : 𝕜)‖ ^ 2 = re (conj (fr.extendRCLike x) * fr.extendRCLike x : 𝕜) := by
-    rw [RCLike.conj_mul, ← ofReal_pow, ofReal_re]
-  _ = fr (conj (fr.extendRCLike x : 𝕜) • x) := by
-    rw [← smul_eq_mul, ← map_smul, re_extendRCLike_apply]
+theorem norm_extendRCLike_apply_sq (fr : Dual ℝ F) (x : F)
+    : ‖(fr.extendRCLike x : 𝕜)‖ ^ 2 = fr (conj (fr.extendRCLike x : 𝕜) • x) :=
+  calc
+    ‖(fr.extendRCLike x : 𝕜)‖ ^ 2 = re (conj (fr.extendRCLike x) * fr.extendRCLike x : 𝕜) := by
+      rw [RCLike.conj_mul, ← ofReal_pow, ofReal_re]
+    _ = fr (conj (fr.extendRCLike x : 𝕜) • x) := by
+      rw [← smul_eq_mul, ← map_smul, re_extendRCLike_apply]
 
 /-- The extension `Module.Dual.extendRCLike` as a linear equivalence between the algebraic duals. -/
 @[simps -isSimp apply symm_apply]
@@ -99,32 +101,36 @@ namespace StrongDual
 variable [TopologicalSpace F] [AddCommGroup F] [Module 𝕜 F] [ContinuousConstSMul 𝕜 F]
 variable [Module ℝ F] [IsScalarTower ℝ 𝕜 F]
 
-/-- Extend `fr : StrongDual ℝ F` to `StrongDual 𝕜 F`.
+/--
+Extend `fr : StrongDual ℝ F` to `StrongDual 𝕜 F`.
 
 Norm properties of this extension can be found in
-`Mathlib/Analysis/Normed/Module/RCLike/Extend.lean`. -/
+`Mathlib/Analysis/Normed/Module/RCLike/Extend.lean`.
+-/
 noncomputable def extendRCLike (fr : StrongDual ℝ F) : StrongDual 𝕜 F where
   __ := Module.Dual.extendRCLike fr.toLinearMap
   cont := show Continuous fun x ↦ (fr x : 𝕜) - (I : 𝕜) * (fr ((I : 𝕜) • x) : 𝕜) by fun_prop
 
-theorem extendRCLike_apply (fr : StrongDual ℝ F) (x : F) :
-    fr.extendRCLike x = (fr x : 𝕜) - (I : 𝕜) * (fr ((I : 𝕜) • x) : 𝕜) := rfl
+theorem extendRCLike_apply (fr : StrongDual ℝ F) (x : F)
+    : fr.extendRCLike x = (fr x : 𝕜) - (I : 𝕜) * (fr ((I : 𝕜) • x) : 𝕜) :=
+  rfl
 
 @[simp]
-lemma re_extendRCLike_apply (g : StrongDual ℝ F) (x : F) :
-    re ((extendRCLike g) x : 𝕜) = g x := by
+lemma re_extendRCLike_apply (g : StrongDual ℝ F) (x : F) : re ((extendRCLike g) x : 𝕜) = g x := by
   simp [extendRCLike_apply]
 
 @[simp]
-lemma im_extendRCLike_apply (g : StrongDual ℝ F) (x : F) :
-    im ((extendRCLike g) x : 𝕜) = - g ((I : 𝕜) • x) := by
+lemma im_extendRCLike_apply (g : StrongDual ℝ F) (x : F)
+    : im ((extendRCLike g) x : 𝕜) = - g ((I : 𝕜) • x) := by
   obtain (h | h) := RCLike.I_eq_zero_or_im_I_eq_one (K := 𝕜)
   all_goals simp [h, extendRCLike_apply]
 
-/-- The extension `StrongDual.extendRCLike` as a linear equivalence between the algebraic duals.
+/--
+The extension `StrongDual.extendRCLike` as a linear equivalence between the algebraic duals.
 
 When `F` is a normed space, this can be upgraded to an *isometric* linear equivalence, see
-`StrongDual.extendRCLikeₗᵢ`. -/
+`StrongDual.extendRCLikeₗᵢ`.
+-/
 @[simps -isSimp apply symm_apply]
 noncomputable def extendRCLikeₗ : StrongDual ℝ F ≃ₗ[ℝ] StrongDual 𝕜 F where
   toFun := StrongDual.extendRCLike (𝕜 := 𝕜)

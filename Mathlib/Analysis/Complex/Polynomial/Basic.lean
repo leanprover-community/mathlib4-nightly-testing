@@ -32,17 +32,21 @@ open scoped ComplexConjugate
 
 namespace Complex
 
-/-- **Fundamental theorem of algebra**: every nonconstant complex polynomial
-  has a root. -/
+/--
+**Fundamental theorem of algebra**: every nonconstant complex polynomial
+has a root.
+-/
 theorem exists_root {f : ℂ[X]} (hf : 0 < degree f) : ∃ z : ℂ, IsRoot f z := by
   by_contra! hf'
-  /- Since `f` has no roots, `f⁻¹` is differentiable. And since `f` is a polynomial, it tends to
-  infinity at infinity, thus `f⁻¹` tends to zero at infinity. By Liouville's theorem, `f⁻¹ = 0`. -/
+  /-
+  Since `f` has no roots, `f⁻¹` is differentiable. And since `f` is a polynomial, it tends to
+  infinity at infinity, thus `f⁻¹` tends to zero at infinity. By Liouville's theorem, `f⁻¹ = 0`.
+  -/
   have (z : ℂ) : (f.eval z)⁻¹ = 0 :=
     (f.differentiable.inv hf').apply_eq_of_tendsto_cocompact z <|
       Metric.cobounded_eq_cocompact (α := ℂ) ▸ (Filter.tendsto_inv₀_cobounded.comp <| by
-        simpa only [tendsto_norm_atTop_iff_cobounded]
-          using f.tendsto_norm_atTop hf tendsto_norm_cobounded_atTop)
+        simpa only [tendsto_norm_atTop_iff_cobounded] using
+          f.tendsto_norm_atTop hf tendsto_norm_cobounded_atTop)
   -- Thus `f = 0`, contradicting the fact that `0 < degree f`.
   obtain rfl : f = C 0 := Polynomial.funext fun z ↦ inv_injective <| by simp [this]
   simp at hf
@@ -55,34 +59,34 @@ instance isAlgClosed : IsAlgClosed ℂ :=
 end Complex
 
 /-- An algebraic extension of ℝ is isomorphic to either ℝ or ℂ as an ℝ-algebra. -/
-theorem Real.nonempty_algEquiv_or (F : Type*) [Field F] [Algebra ℝ F] [Algebra.IsAlgebraic ℝ F] :
-    Nonempty (F ≃ₐ[ℝ] ℝ) ∨ Nonempty (F ≃ₐ[ℝ] ℂ) :=
+theorem Real.nonempty_algEquiv_or (F : Type*) [Field F] [Algebra ℝ F] [Algebra.IsAlgebraic ℝ F]
+    : Nonempty (F ≃ₐ[ℝ] ℝ) ∨ Nonempty (F ≃ₐ[ℝ] ℂ) :=
   IsAlgClosed.nonempty_algEquiv_or_of_finrank_eq_two F Complex.finrank_real_complex
 
 namespace Polynomial.Gal
 
 section Rationals
 
-theorem splits_ℚ_ℂ {p : ℚ[X]} : Fact ((p.map (algebraMap ℚ ℂ)).Splits) :=
-  ⟨IsAlgClosed.splits _⟩
+theorem splits_ℚ_ℂ {p : ℚ[X]} : Fact ((p.map (algebraMap ℚ ℂ)).Splits) := ⟨IsAlgClosed.splits _⟩
 
 attribute [local instance] splits_ℚ_ℂ
 attribute [local ext] Complex.ext
 
-/-- The number of complex roots equals the number of real roots plus
-the number of roots not fixed by complex conjugation (i.e. with some imaginary component). -/
-theorem card_complex_roots_eq_card_real_add_card_not_gal_inv (p : ℚ[X]) :
-    (p.rootSet ℂ).toFinset.card =
-      (p.rootSet ℝ).toFinset.card +
-        (galActionHom p ℂ (restrict p ℂ
-        (AlgEquiv.restrictScalars ℚ Complex.conjAe))).support.card := by
+/--
+The number of complex roots equals the number of real roots plus
+the number of roots not fixed by complex conjugation (i.e. with some imaginary component).
+-/
+theorem card_complex_roots_eq_card_real_add_card_not_gal_inv (p : ℚ[X])
+    : (p.rootSet ℂ).toFinset.card
+      = (p.rootSet ℝ).toFinset.card + (galActionHom p ℂ
+        (restrict p ℂ (AlgEquiv.restrictScalars ℚ Complex.conjAe))).support.card := by
   by_cases hp : p = 0
   · have : IsEmpty (p.rootSet ℂ) := by rw [hp, rootSet_zero]; infer_instance
     simp_rw [(galActionHom p ℂ _).support.eq_empty_of_isEmpty, hp, rootSet_zero,
       Set.toFinset_empty, Finset.card_empty]
   have inj : Function.Injective (IsScalarTower.toAlgHom ℚ ℝ ℂ) := (algebraMap ℝ ℂ).injective
-  rw [← Finset.card_image_of_injective _ Subtype.coe_injective, ←
-    Finset.card_image_of_injective _ inj]
+  rw [← Finset.card_image_of_injective _ Subtype.coe_injective,
+    ← Finset.card_image_of_injective _ inj]
   let a : Finset ℂ := ?_
   on_goal 1 => let b : Finset ℂ := ?_
   on_goal 1 => let c : Finset ℂ := ?_
@@ -101,9 +105,10 @@ theorem card_complex_roots_eq_card_real_add_card_not_gal_inv (p : ℚ[X]) :
         · rfl
         · rw [hz2]; rfl
       exact ⟨z.re, inj (by rwa [← aeval_algHom_apply, key, map_zero]), key⟩
-  have hc0 :
-    ∀ w : p.rootSet ℂ, galActionHom p ℂ (restrict p ℂ (Complex.conjAe.restrictScalars ℚ)) w = w ↔
-        w.val.im = 0 := by
+  have hc0
+      : ∀ w : p.rootSet ℂ,
+        galActionHom p ℂ (restrict p ℂ (Complex.conjAe.restrictScalars ℚ)) w = w
+          ↔ w.val.im = 0 := by
     intro w
     rw [Subtype.ext_iff, galActionHom_restrict]
     exact Complex.conj_eq_iff_im
@@ -125,24 +130,25 @@ theorem card_complex_roots_eq_card_real_add_card_not_gal_inv (p : ℚ[X]) :
     tauto
 
 /-- An irreducible polynomial of prime degree with two non-real roots has full Galois group. -/
-theorem galActionHom_bijective_of_prime_degree {p : ℚ[X]} (p_irr : Irreducible p)
-    (p_deg : p.natDegree.Prime)
-    (p_roots : Fintype.card (p.rootSet ℂ) = Fintype.card (p.rootSet ℝ) + 2) :
-    Function.Bijective (galActionHom p ℂ) := by
+theorem galActionHom_bijective_of_prime_degree
+    {p : ℚ[X]} (p_irr : Irreducible p) (p_deg : p.natDegree.Prime)
+    (p_roots : Fintype.card (p.rootSet ℂ) = Fintype.card (p.rootSet ℝ) + 2)
+    : Function.Bijective (galActionHom p ℂ) := by
   have h1 : Fintype.card (p.rootSet ℂ) = p.natDegree := by
     simp_rw [rootSet_def, Finset.coe_sort_coe, Fintype.card_coe]
     rw [Multiset.toFinset_card_of_nodup, ← Splits.natDegree_eq_card_roots, natDegree_map]
     · exact IsAlgClosed.splits _
     · exact nodup_roots ((separable_map (algebraMap ℚ ℂ)).mpr p_irr.separable)
   let conj' := restrict p ℂ (Complex.conjAe.restrictScalars ℚ)
-  refine
-    ⟨galActionHom_injective p ℂ, fun x =>
-      congr(x ∈ $(show (galActionHom p ℂ).range = ⊤ from ?_)).mpr (Subgroup.mem_top x)⟩
+  refine ⟨
+    galActionHom_injective p ℂ,
+    fun x => congr(x ∈ $(show (galActionHom p ℂ).range = ⊤ from ?_)).mpr (Subgroup.mem_top x)
+  ⟩
   apply Equiv.Perm.subgroup_eq_top_of_swap_mem
   · rwa [h1]
   · rw [h1]
     simpa only [Fintype.card_eq_nat_card,
-      Nat.card_congr (MonoidHom.ofInjective (galActionHom_injective p ℂ)).toEquiv.symm]
+        Nat.card_congr (MonoidHom.ofInjective (galActionHom_injective p ℂ)).toEquiv.symm]
       using prime_degree_dvd_card p_irr p_deg
   · exact ⟨conj', rfl⟩
   · rw [← Equiv.Perm.card_support_eq_two]
@@ -151,20 +157,18 @@ theorem galActionHom_bijective_of_prime_degree {p : ℚ[X]} (p_irr : Irreducible
     exact (card_complex_roots_eq_card_real_add_card_not_gal_inv p).symm
 
 /-- An irreducible polynomial of prime degree with 1-3 non-real roots has full Galois group. -/
-theorem galActionHom_bijective_of_prime_degree' {p : ℚ[X]} (p_irr : Irreducible p)
-    (p_deg : p.natDegree.Prime)
+theorem galActionHom_bijective_of_prime_degree'
+    {p : ℚ[X]} (p_irr : Irreducible p) (p_deg : p.natDegree.Prime)
     (p_roots1 : Fintype.card (p.rootSet ℝ) + 1 ≤ Fintype.card (p.rootSet ℂ))
-    (p_roots2 : Fintype.card (p.rootSet ℂ) ≤ Fintype.card (p.rootSet ℝ) + 3) :
-    Function.Bijective (galActionHom p ℂ) := by
+    (p_roots2 : Fintype.card (p.rootSet ℂ) ≤ Fintype.card (p.rootSet ℝ) + 3)
+    : Function.Bijective (galActionHom p ℂ) := by
   apply galActionHom_bijective_of_prime_degree p_irr p_deg
   let n := (galActionHom p ℂ (restrict p ℂ (Complex.conjAe.restrictScalars ℚ))).support.card
   have hn : 2 ∣ n :=
-    Equiv.Perm.two_dvd_card_support
-      (by
-         rw [← map_pow, ← map_pow,
-          show AlgEquiv.restrictScalars ℚ Complex.conjAe ^ 2 = 1 from
-            AlgEquiv.ext Complex.conj_conj,
-          map_one, map_one])
+    Equiv.Perm.two_dvd_card_support (by
+      rw [← map_pow, ← map_pow,
+        show AlgEquiv.restrictScalars ℚ Complex.conjAe ^ 2 = 1 from AlgEquiv.ext Complex.conj_conj,
+        map_one, map_one])
   have key := card_complex_roots_eq_card_real_add_card_not_gal_inv p
   simp_rw [Set.toFinset_card] at key
   lia
@@ -173,17 +177,21 @@ end Rationals
 
 end Polynomial.Gal
 
-lemma Polynomial.mul_star_dvd_of_aeval_eq_zero_im_ne_zero (p : ℝ[X]) {z : ℂ} (h0 : aeval z p = 0)
-    (hz : z.im ≠ 0) : (X - C ((starRingEnd ℂ) z)) * (X - C z) ∣ map (algebraMap ℝ ℂ) p := by
+lemma Polynomial.mul_star_dvd_of_aeval_eq_zero_im_ne_zero
+    (p : ℝ[X]) {z : ℂ} (h0 : aeval z p = 0) (hz : z.im ≠ 0)
+    : (X - C ((starRingEnd ℂ) z)) * (X - C z) ∣ map (algebraMap ℝ ℂ) p := by
   apply IsCoprime.mul_dvd
   · exact isCoprime_X_sub_C_of_isUnit_sub <| .mk0 _ <| sub_ne_zero.2 <| mt conj_eq_iff_im.1 hz
   · simpa [dvd_iff_isRoot, aeval_conj]
   · simpa [dvd_iff_isRoot]
 
-/-- If `z` is a non-real complex root of a real polynomial,
-then `p` is divisible by a quadratic polynomial. -/
-lemma Polynomial.quadratic_dvd_of_aeval_eq_zero_im_ne_zero (p : ℝ[X]) {z : ℂ} (h0 : aeval z p = 0)
-    (hz : z.im ≠ 0) : X ^ 2 - C (2 * z.re) * X + C (‖z‖ ^ 2) ∣ p := by
+/--
+If `z` is a non-real complex root of a real polynomial,
+then `p` is divisible by a quadratic polynomial.
+-/
+lemma Polynomial.quadratic_dvd_of_aeval_eq_zero_im_ne_zero
+    (p : ℝ[X]) {z : ℂ} (h0 : aeval z p = 0) (hz : z.im ≠ 0)
+    : X ^ 2 - C (2 * z.re) * X + C (‖z‖ ^ 2) ∣ p := by
   rw [← map_dvd_map' (algebraMap ℝ ℂ)]
   convert p.mul_star_dvd_of_aeval_eq_zero_im_ne_zero h0 hz
   calc

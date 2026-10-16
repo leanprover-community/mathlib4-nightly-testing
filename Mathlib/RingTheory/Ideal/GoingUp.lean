@@ -35,19 +35,20 @@ section
 variable {R : Type*} [CommRing R]
 variable {S : Type*} [CommRing S] {f : R →+* S} {I : Ideal S}
 
-theorem coeff_zero_mem_comap_of_root_mem_of_eval_mem {r : S} (hr : r ∈ I) {p : R[X]}
-    (hp : p.eval₂ f r ∈ I) : p.coeff 0 ∈ I.comap f := by
+theorem coeff_zero_mem_comap_of_root_mem_of_eval_mem
+    {r : S} (hr : r ∈ I) {p : R[X]} (hp : p.eval₂ f r ∈ I)
+    : p.coeff 0 ∈ I.comap f := by
   rw [← p.divX_mul_X_add, eval₂_add, eval₂_C, eval₂_mul, eval₂_X] at hp
   refine mem_comap.mpr ((I.add_mem_iff_right ?_).mp hp)
   exact I.mul_mem_left _ hr
 
-theorem coeff_zero_mem_comap_of_root_mem {r : S} (hr : r ∈ I) {p : R[X]} (hp : p.eval₂ f r = 0) :
-    p.coeff 0 ∈ I.comap f :=
+theorem coeff_zero_mem_comap_of_root_mem {r : S} (hr : r ∈ I) {p : R[X]} (hp : p.eval₂ f r = 0)
+    : p.coeff 0 ∈ I.comap f :=
   coeff_zero_mem_comap_of_root_mem_of_eval_mem hr (hp.symm ▸ I.zero_mem)
 
-theorem exists_coeff_ne_zero_mem_comap_of_non_zero_divisor_root_mem {r : S}
-    (r_non_zero_divisor : ∀ {x}, x * r = 0 → x = 0) (hr : r ∈ I) {p : R[X]} :
-    p ≠ 0 → p.eval₂ f r = 0 → ∃ i, p.coeff i ≠ 0 ∧ p.coeff i ∈ I.comap f := by
+theorem exists_coeff_ne_zero_mem_comap_of_non_zero_divisor_root_mem
+    {r : S} (r_non_zero_divisor : ∀ {x}, x * r = 0 → x = 0) (hr : r ∈ I) {p : R[X]}
+    : p ≠ 0 → p.eval₂ f r = 0 → ∃ i, p.coeff i ≠ 0 ∧ p.coeff i ∈ I.comap f := by
   refine p.recOnHorner ?_ ?_ ?_
   · intro h
     contradiction
@@ -61,25 +62,25 @@ theorem exists_coeff_ne_zero_mem_comap_of_non_zero_divisor_root_mem {r : S}
     · simp [hi]
     · simpa [hi] using mem
 
-/-- Let `P` be an ideal in `R[x]`.  The map
+/--
+Let `P` be an ideal in `R[x]`.  The map
 `R[x]/P → (R / (P ∩ R))[x] / (P / (P ∩ R))`
 is injective.
 -/
-theorem injective_quotient_le_comap_map (P : Ideal R[X]) :
-    Function.Injective <|
-      Ideal.quotientMap
-        (Ideal.map (Polynomial.mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)
-        (Polynomial.mapRingHom (Ideal.Quotient.mk (P.comap (C : R →+* R[X]))))
-        le_comap_map := by
+theorem injective_quotient_le_comap_map (P : Ideal R[X])
+    : Function.Injective <| Ideal.quotientMap
+      (Ideal.map (Polynomial.mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)
+      (Polynomial.mapRingHom (Ideal.Quotient.mk (P.comap (C : R →+* R[X])))) le_comap_map := by
   refine quotientMap_injective' (le_of_eq ?_)
   rw [comap_map_of_surjective (mapRingHom (Ideal.Quotient.mk (P.comap (C : R →+* R[X]))))
-      (map_surjective (Ideal.Quotient.mk (P.comap (C : R →+* R[X]))) Ideal.Quotient.mk_surjective)]
+    (map_surjective (Ideal.Quotient.mk (P.comap (C : R →+* R[X]))) Ideal.Quotient.mk_surjective)]
   refine le_antisymm (sup_le le_rfl ?_) (le_sup_of_le_left le_rfl)
   refine fun p hp =>
     polynomial_mem_ideal_of_coeff_mem_ideal P p fun n => Ideal.Quotient.eq_zero_iff_mem.mp ?_
   simpa only [coeff_map, coe_mapRingHom] using! ext_iff.mp (Ideal.mem_bot.mp (mem_comap.mp hp)) n
 
-/-- The identity in this lemma asserts that the "obvious" square
+/--
+The identity in this lemma asserts that the "obvious" square
 ```
     R    → (R / (P ∩ R))
     ↓          ↓
@@ -88,27 +89,27 @@ R[x] / P → (R / (P ∩ R))[x] / (P / (P ∩ R))
 commutes.  It is used, for instance, in the proof of `quotient_mk_comp_C_is_integral_of_jacobson`,
 in the file `Mathlib/RingTheory/Jacobson/Polynomial.lean`.
 -/
-theorem quotient_mk_maps_eq (P : Ideal R[X]) :
-    ((Quotient.mk (map (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)).comp C).comp
-        (Quotient.mk (P.comap (C : R →+* R[X]))) =
-      (Ideal.quotientMap (map (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)
-            (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) le_comap_map).comp
+theorem quotient_mk_maps_eq (P : Ideal R[X])
+    : ((Quotient.mk (map (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)).comp C).comp
+        (Quotient.mk (P.comap (C : R →+* R[X])))
+      = (Ideal.quotientMap (map (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) P)
+          (mapRingHom (Quotient.mk (P.comap (C : R →+* R[X])))) le_comap_map).comp
         ((Quotient.mk P).comp C) := by
   ext
   simp
 
-/-- This technical lemma asserts the existence of a polynomial `p` in an ideal `P ⊂ R[x]`
+/--
+This technical lemma asserts the existence of a polynomial `p` in an ideal `P ⊂ R[x]`
 that is non-zero in the quotient `R / (P ∩ R) [x]`.  The assumptions are equivalent to
 `P ≠ 0` and `P ∩ R = (0)`.
 -/
-theorem exists_nonzero_mem_of_ne_bot {P : Ideal R[X]} (Pb : P ≠ ⊥) (hP : ∀ x : R, C x ∈ P → x = 0) :
-    ∃ p : R[X], p ∈ P ∧ Polynomial.map (Quotient.mk (P.comap (C : R →+* R[X]))) p ≠ 0 := by
+theorem exists_nonzero_mem_of_ne_bot {P : Ideal R[X]} (Pb : P ≠ ⊥) (hP : ∀ x : R, C x ∈ P → x = 0)
+    : ∃ p : R[X], p ∈ P ∧ Polynomial.map (Quotient.mk (P.comap (C : R →+* R[X]))) p ≠ 0 := by
   obtain ⟨m, hm⟩ := Submodule.nonzero_mem_of_bot_lt (bot_lt_iff_ne_bot.mpr Pb)
   refine ⟨m, Submodule.coe_mem m, fun pp0 => hm (Submodule.coe_eq_zero.mp ?_)⟩
-  refine
-    (injective_iff_map_eq_zero (Polynomial.mapRingHom (Ideal.Quotient.mk
-      (P.comap (C : R →+* R[X]))))).mp
-      ?_ _ pp0
+  refine (injective_iff_map_eq_zero (Polynomial.mapRingHom (Ideal.Quotient.mk (P.comap
+      (C : R →+* R[X]))))).mp
+    ?_ _ pp0
   refine map_injective _ ((RingHom.injective_iff_ker_eq_bot (Ideal.Quotient.mk (P.comap C))).mpr ?_)
   rw [mk_ker]
   exact (Submodule.eq_bot_iff _).mpr fun x hx => hP x (mem_comap.mp hx)
@@ -120,24 +121,28 @@ section IsDomain
 variable {R : Type*} [CommRing R]
 variable {S : Type*} [CommRing S] {f : R →+* S} {I J : Ideal S}
 
-theorem exists_coeff_ne_zero_mem_comap_of_root_mem [IsDomain S] {r : S} (r_ne_zero : r ≠ 0)
-    (hr : r ∈ I) {p : R[X]} :
-    p ≠ 0 → p.eval₂ f r = 0 → ∃ i, p.coeff i ≠ 0 ∧ p.coeff i ∈ I.comap f :=
+theorem exists_coeff_ne_zero_mem_comap_of_root_mem
+    [IsDomain S] {r : S} (r_ne_zero : r ≠ 0) (hr : r ∈ I) {p : R[X]}
+    : p ≠ 0 → p.eval₂ f r = 0 → ∃ i, p.coeff i ≠ 0 ∧ p.coeff i ∈ I.comap f :=
   exists_coeff_ne_zero_mem_comap_of_non_zero_divisor_root_mem
-    (fun {_} h => Or.resolve_right (mul_eq_zero.mp h) r_ne_zero) hr
+    (fun {_} h => Or.resolve_right (mul_eq_zero.mp h) r_ne_zero)
+    hr
 
-theorem exists_coeff_mem_comap_sdiff_comap_of_root_mem_sdiff [IsPrime I] (hIJ : I ≤ J) {r : S}
-    (hr : r ∈ (J : Set S) \ I) {p : R[X]} (p_ne_zero : p.map (Quotient.mk (I.comap f)) ≠ 0)
-    (hpI : p.eval₂ f r ∈ I) : ∃ i, p.coeff i ∈ (J.comap f : Set R) \ I.comap f := by
+theorem exists_coeff_mem_comap_sdiff_comap_of_root_mem_sdiff
+    [IsPrime I]
+    (hIJ : I ≤ J)
+    {r : S} (hr : r ∈ (J : Set S) \ I)
+    {p : R[X]} (p_ne_zero : p.map (Quotient.mk (I.comap f)) ≠ 0) (hpI : p.eval₂ f r ∈ I)
+    : ∃ i, p.coeff i ∈ (J.comap f : Set R) \ I.comap f := by
   obtain ⟨hrJ, hrI⟩ := hr
   have rbar_ne_zero : Ideal.Quotient.mk I r ≠ 0 := mt (Quotient.mk_eq_zero I).mp hrI
   have rbar_mem_J : Ideal.Quotient.mk I r ∈ J.map (Ideal.Quotient.mk I) := mem_map_of_mem _ hrJ
   have quotient_f : ∀ x ∈ I.comap f, (Ideal.Quotient.mk I).comp f x = 0 := by
     simp [Quotient.eq_zero_iff_mem]
-  have rbar_root :
-    (p.map (Ideal.Quotient.mk (I.comap f))).eval₂ (Quotient.lift (I.comap f) _ quotient_f)
-        (Ideal.Quotient.mk I r) =
-      0 := by
+  have rbar_root
+      : (p.map (Ideal.Quotient.mk (I.comap f))).eval₂ (Quotient.lift (I.comap f) _ quotient_f)
+          (Ideal.Quotient.mk I r)
+        = 0 := by
     convert Quotient.eq_zero_iff_mem.mpr hpI
     exact _root_.trans (eval₂_map _ _ _) (hom_eval₂ p f (Ideal.Quotient.mk I) r).symm
   obtain ⟨i, ne_zero, mem⟩ :=
@@ -147,18 +152,22 @@ theorem exists_coeff_mem_comap_sdiff_comap_of_root_mem_sdiff [IsPrime I] (hIJ : 
   · simpa using mem
   simp [Quotient.eq_zero_iff_mem]
 
-theorem comap_lt_comap_of_root_mem_sdiff [I.IsPrime] (hIJ : I ≤ J) {r : S}
-    (hr : r ∈ (J : Set S) \ I) {p : R[X]} (p_ne_zero : p.map (Quotient.mk (I.comap f)) ≠ 0)
-    (hp : p.eval₂ f r ∈ I) : I.comap f < J.comap f :=
+theorem comap_lt_comap_of_root_mem_sdiff
+    [I.IsPrime]
+    (hIJ : I ≤ J)
+    {r : S} (hr : r ∈ (J : Set S) \ I)
+    {p : R[X]} (p_ne_zero : p.map (Quotient.mk (I.comap f)) ≠ 0) (hp : p.eval₂ f r ∈ I)
+    : I.comap f < J.comap f :=
   let ⟨i, hJ, hI⟩ := exists_coeff_mem_comap_sdiff_comap_of_root_mem_sdiff hIJ hr p_ne_zero hp
   IsConcreteLE.lt_iff_le_and_exists.mpr ⟨comap_mono hIJ, p.coeff i, hJ, hI⟩
 
-theorem mem_of_one_mem (h : (1 : S) ∈ I) (x) : x ∈ I :=
-  (I.eq_top_iff_one.mpr h).symm ▸ mem_top
+theorem mem_of_one_mem (h : (1 : S) ∈ I) (x) : x ∈ I := (I.eq_top_iff_one.mpr h).symm ▸ mem_top
 
-theorem under_lt_under_of_integral_mem_sdiff [Algebra R S] [hI : I.IsPrime] (hIJ : I ≤ J) {x : S}
-    (mem : x ∈ (J : Set S) \ I) (integral : IsIntegral R x) :
-    I.under R < J.under R := by
+theorem under_lt_under_of_integral_mem_sdiff
+    [Algebra R S] [hI : I.IsPrime]
+    (hIJ : I ≤ J)
+    {x : S} (mem : x ∈ (J : Set S) \ I) (integral : IsIntegral R x)
+    : I.under R < J.under R := by
   obtain ⟨p, p_monic, hpx⟩ := integral
   refine comap_lt_comap_of_root_mem_sdiff hIJ mem (map_monic_ne_zero p_monic) ?_
   convert I.zero_mem
@@ -166,21 +175,27 @@ theorem under_lt_under_of_integral_mem_sdiff [Algebra R S] [hI : I.IsPrime] (hIJ
 @[deprecated (since := "2026-09-03")] alias comap_lt_comap_of_integral_mem_sdiff :=
   under_lt_under_of_integral_mem_sdiff
 
-theorem comap_ne_bot_of_root_mem [IsDomain S] {r : S} (r_ne_zero : r ≠ 0) (hr : r ∈ I) {p : R[X]}
-    (p_ne_zero : p ≠ 0) (hp : p.eval₂ f r = 0) : I.comap f ≠ ⊥ := fun h =>
+theorem comap_ne_bot_of_root_mem
+    [IsDomain S]
+    {r : S} (r_ne_zero : r ≠ 0) (hr : r ∈ I)
+    {p : R[X]} (p_ne_zero : p ≠ 0) (hp : p.eval₂ f r = 0)
+    : I.comap f ≠ ⊥ := fun h =>
   let ⟨_, hi, mem⟩ := exists_coeff_ne_zero_mem_comap_of_root_mem r_ne_zero hr p_ne_zero hp
   absurd (mem_bot.mp (eq_bot_iff.mp h mem)) hi
 
-theorem isMaximal_of_isIntegral_of_isMaximal_under [Algebra R S] [Algebra.IsIntegral R S]
-    (I : Ideal S) [I.IsPrime] (hI : IsMaximal (I.under R)) : IsMaximal I :=
-  ⟨⟨mt comap_eq_top_iff.mpr hI.1.1, fun _ I_lt_J =>
-      let ⟨I_le_J, x, hxJ, hxI⟩ := IsConcreteLE.lt_iff_le_and_exists.mp I_lt_J
-      comap_eq_top_iff.1 <|
-        hI.1.2 _ (under_lt_under_of_integral_mem_sdiff I_le_J ⟨hxJ, hxI⟩
-          (Algebra.IsIntegral.isIntegral x))⟩⟩
+theorem isMaximal_of_isIntegral_of_isMaximal_under
+    [Algebra R S] [Algebra.IsIntegral R S] (I : Ideal S) [I.IsPrime] (hI : IsMaximal (I.under R))
+    : IsMaximal I := ⟨⟨
+  mt comap_eq_top_iff.mpr hI.1.1,
+  fun _ I_lt_J =>
+    let ⟨I_le_J, x, hxJ, hxI⟩ := IsConcreteLE.lt_iff_le_and_exists.mp I_lt_J
+    comap_eq_top_iff.1 <| hI.1.2 _
+      (under_lt_under_of_integral_mem_sdiff I_le_J ⟨hxJ, hxI⟩ (Algebra.IsIntegral.isIntegral x))
+⟩⟩
 
-theorem isMaximal_of_isIntegral_of_isMaximal_comap (f : R →+* S) (hf : f.IsIntegral) (I : Ideal S)
-    [I.IsPrime] (hI : IsMaximal (I.comap f)) : IsMaximal I :=
+theorem isMaximal_of_isIntegral_of_isMaximal_comap
+    (f : R →+* S) (hf : f.IsIntegral) (I : Ideal S) [I.IsPrime] (hI : IsMaximal (I.comap f))
+    : IsMaximal I :=
   let _ : Algebra R S := f.toAlgebra
   have : Algebra.IsIntegral R S := ⟨hf⟩
   isMaximal_of_isIntegral_of_isMaximal_under (R := R) (S := S) I hI
@@ -190,23 +205,26 @@ theorem isMaximal_of_isIntegral_of_isMaximal_comap (f : R →+* S) (hf : f.IsInt
 
 variable [Algebra R S]
 
-theorem under_ne_bot_of_algebraic_mem [IsDomain S] {x : S} (x_ne_zero : x ≠ 0) (x_mem : x ∈ I)
-    (hx : IsAlgebraic R x) : I.under R ≠ ⊥ :=
+theorem under_ne_bot_of_algebraic_mem
+    [IsDomain S] {x : S} (x_ne_zero : x ≠ 0) (x_mem : x ∈ I) (hx : IsAlgebraic R x)
+    : I.under R ≠ ⊥ :=
   let ⟨_, p_ne_zero, hp⟩ := hx
   comap_ne_bot_of_root_mem x_ne_zero x_mem p_ne_zero hp
 
 @[deprecated (since := "2026-09-03")] alias comap_ne_bot_of_algebraic_mem :=
   under_ne_bot_of_algebraic_mem
 
-theorem under_ne_bot_of_integral_mem [Nontrivial R] [IsDomain S] {x : S} (x_ne_zero : x ≠ 0)
-    (x_mem : x ∈ I) (hx : IsIntegral R x) : I.under R ≠ ⊥ :=
+theorem under_ne_bot_of_integral_mem
+    [Nontrivial R] [IsDomain S] {x : S} (x_ne_zero : x ≠ 0) (x_mem : x ∈ I) (hx : IsIntegral R x)
+    : I.under R ≠ ⊥ :=
   under_ne_bot_of_algebraic_mem x_ne_zero x_mem hx.isAlgebraic
 
 @[deprecated (since := "2026-09-03")] alias comap_ne_bot_of_integral_mem :=
   under_ne_bot_of_integral_mem
 
-theorem eq_bot_of_under_eq_bot [Nontrivial R] [IsDomain S] [Algebra.IsIntegral R S]
-    (hI : I.under R = ⊥) : I = ⊥ := by
+theorem eq_bot_of_under_eq_bot
+    [Nontrivial R] [IsDomain S] [Algebra.IsIntegral R S] (hI : I.under R = ⊥)
+    : I = ⊥ := by
   refine eq_bot_iff.2 fun x hx => ?_
   by_cases hx0 : x = 0
   · exact hx0.symm ▸ Ideal.zero_mem ⊥
@@ -215,14 +233,18 @@ theorem eq_bot_of_under_eq_bot [Nontrivial R] [IsDomain S] [Algebra.IsIntegral R
 @[deprecated (since := "2026-09-03")] alias eq_bot_of_comap_eq_bot :=
   eq_bot_of_under_eq_bot
 
-theorem isMaximal_under_of_isIntegral_of_isMaximal [Algebra.IsIntegral R S] (I : Ideal S)
-    [hI : I.IsMaximal] : IsMaximal (I.under R) := by
+theorem isMaximal_under_of_isIntegral_of_isMaximal
+    [Algebra.IsIntegral R S] (I : Ideal S) [hI : I.IsMaximal]
+    : IsMaximal (I.under R) := by
   refine Ideal.Quotient.maximal_of_isField _ ?_
-  exact isField_of_isIntegral_of_isField
-    algebraMap_quotient_injective (by rwa [← Quotient.maximal_ideal_iff_isField_quotient])
+  exact isField_of_isIntegral_of_isField algebraMap_quotient_injective
+    (by rwa [← Quotient.maximal_ideal_iff_isField_quotient])
 
-theorem isMaximal_comap_of_isIntegral_of_isMaximal {R S : Type*} [CommRing R] [CommRing S]
-    (f : R →+* S) (hf : f.IsIntegral) (I : Ideal S) [I.IsMaximal] : IsMaximal (I.comap f) :=
+theorem isMaximal_comap_of_isIntegral_of_isMaximal
+    {R S : Type*} [CommRing R] [CommRing S]
+    (f : R →+* S) (hf : f.IsIntegral)
+    (I : Ideal S) [I.IsMaximal]
+    : IsMaximal (I.comap f) :=
   let _ : Algebra R S := f.toAlgebra
   have : Algebra.IsIntegral R S := ⟨hf⟩
   isMaximal_under_of_isIntegral_of_isMaximal (R := R) (S := S) I
@@ -234,8 +256,8 @@ section IsIntegral
 
 variable {A : Type*} [CommRing A] [Algebra R A] [Algebra.IsIntegral R A]
 
-theorem IsIntegral.under_lt_under {I J : Ideal A} [I.IsPrime] (I_lt_J : I < J) :
-    I.under R < J.under R :=
+theorem IsIntegral.under_lt_under {I J : Ideal A} [I.IsPrime] (I_lt_J : I < J)
+    : I.under R < J.under R :=
   let ⟨I_le_J, x, hxJ, hxI⟩ := IsConcreteLE.lt_iff_le_and_exists.mp I_lt_J
   under_lt_under_of_integral_mem_sdiff I_le_J ⟨hxJ, hxI⟩ (Algebra.IsIntegral.isIntegral x)
 
@@ -244,8 +266,9 @@ theorem IsIntegral.under_lt_under {I J : Ideal A} [I.IsPrime] (I_lt_J : I < J) :
 @[deprecated (since := "2026-05-08")] alias IsIntegralClosure.comap_le_comap :=
   IsIntegral.under_lt_under
 
-theorem IsIntegral.isMaximal_of_isMaximal_under (I : Ideal A) [I.IsPrime]
-    (hI : IsMaximal (I.under R)) : IsMaximal I :=
+theorem IsIntegral.isMaximal_of_isMaximal_under
+    (I : Ideal A) [I.IsPrime] (hI : IsMaximal (I.under R))
+    : IsMaximal I :=
   isMaximal_of_isIntegral_of_isMaximal_under I hI
 
 @[deprecated (since := "2026-09-03")] alias IsIntegral.isMaximal_of_isMaximal_comap :=
@@ -254,8 +277,8 @@ theorem IsIntegral.isMaximal_of_isMaximal_under (I : Ideal A) [I.IsPrime]
 @[deprecated (since := "2026-05-08")] alias IsIntegralClosure.isMaximal_of_isMaximal_comap :=
   IsIntegral.isMaximal_of_isMaximal_under
 
-theorem IsIntegral.mem_minimalPrimes_map_under (I : Ideal A) [I.IsPrime] :
-    I ∈ ((I.under R).map (algebraMap R A)).minimalPrimes := by
+theorem IsIntegral.mem_minimalPrimes_map_under (I : Ideal A) [I.IsPrime]
+    : I ∈ ((I.under R).map (algebraMap R A)).minimalPrimes := by
   refine ⟨⟨inferInstance, map_comap_le⟩, fun r ⟨hr, hpr⟩ hrq ↦ ?_⟩
   contrapose hpr
   exact mt map_le_iff_le_comap.mp (not_le_of_gt (IsIntegral.under_lt_under (hrq.lt_of_not_ge hpr)))
@@ -263,8 +286,7 @@ theorem IsIntegral.mem_minimalPrimes_map_under (I : Ideal A) [I.IsPrime] :
 variable [IsDomain A]
 
 variable (R) in
-theorem IsIntegral.under_ne_bot [Nontrivial R] {I : Ideal A} (I_ne_bot : I ≠ ⊥) :
-    I.under R ≠ ⊥ :=
+theorem IsIntegral.under_ne_bot [Nontrivial R] {I : Ideal A} (I_ne_bot : I ≠ ⊥) : I.under R ≠ ⊥ :=
   let ⟨x, x_mem, x_ne_zero⟩ := I.ne_bot_iff.mp I_ne_bot
   under_ne_bot_of_integral_mem x_ne_zero x_mem (Algebra.IsIntegral.isIntegral x)
 
@@ -274,8 +296,7 @@ theorem IsIntegral.under_ne_bot [Nontrivial R] {I : Ideal A} (I_ne_bot : I ≠ �
   IsIntegral.under_ne_bot
 
 variable (R) in
-theorem IsIntegral.eq_bot_of_under_eq_bot [Nontrivial R] {I : Ideal A} :
-    I.under R = ⊥ → I = ⊥ := by
+theorem IsIntegral.eq_bot_of_under_eq_bot [Nontrivial R] {I : Ideal A} : I.under R = ⊥ → I = ⊥ := by
   contrapose
   exact IsIntegral.under_ne_bot R
 
@@ -302,11 +323,13 @@ variable [IsDomain S]
 @[deprecated (since := "2026-05-08")] alias IntegralClosure.eq_bot_of_comap_eq_bot :=
   IsIntegral.eq_bot_of_under_eq_bot
 
-/-- `comap (algebraMap R S)` is a surjection from the prime spec of `R` to prime spec of `S`.
-`hP : (algebraMap R S).ker ≤ P` is a slight generalization of the extension being injective -/
-theorem exists_ideal_over_prime_of_isIntegral_of_isDomain [Algebra.IsIntegral R S] (P : Ideal R)
-    [IsPrime P] (hP : RingHom.ker (algebraMap R S) ≤ P) :
-    ∃ Q : Ideal S, IsPrime Q ∧ Q.under R = P := by
+/--
+`comap (algebraMap R S)` is a surjection from the prime spec of `R` to prime spec of `S`.
+`hP : (algebraMap R S).ker ≤ P` is a slight generalization of the extension being injective
+-/
+theorem exists_ideal_over_prime_of_isIntegral_of_isDomain
+    [Algebra.IsIntegral R S] (P : Ideal R) [IsPrime P] (hP : RingHom.ker (algebraMap R S) ≤ P)
+    : ∃ Q : Ideal S, IsPrime Q ∧ Q.under R = P := by
   have hP0 : (0 : S) ∉ Algebra.algebraMapSubmonoid S P.primeCompl := by
     rintro ⟨x, ⟨hx, x0⟩⟩
     exact absurd (hP x0) hx
@@ -323,60 +346,74 @@ theorem exists_ideal_over_prime_of_isIntegral_of_isDomain [Algebra.IsIntegral R 
 
 end
 
-/-- More general going-up theorem than `exists_ideal_over_prime_of_isIntegral_of_isDomain`.
-Generalized to arbitrary length chains in `Ideal.exists_ltSeries_of_hasGoingUp`. -/
+/--
+More general going-up theorem than `exists_ideal_over_prime_of_isIntegral_of_isDomain`.
+Generalized to arbitrary length chains in `Ideal.exists_ltSeries_of_hasGoingUp`.
+-/
 theorem exists_ideal_over_prime_of_isIntegral_of_isPrime
-    [Algebra.IsIntegral R S] (P : Ideal R) [IsPrime P]
-    (I : Ideal S) [IsPrime I] (hIP : I.under R ≤ P) :
-    ∃ Q ≥ I, IsPrime Q ∧ Q.under R = P := by
+    [Algebra.IsIntegral R S]
+    (P : Ideal R) [IsPrime P]
+    (I : Ideal S) [IsPrime I]
+    (hIP : I.under R ≤ P)
+    : ∃ Q ≥ I, IsPrime Q ∧ Q.under R = P := by
   obtain ⟨Q' : Ideal (S ⧸ I), ⟨Q'_prime, hQ'⟩⟩ :=
     @exists_ideal_over_prime_of_isIntegral_of_isDomain (R ⧸ I.under R) _ (S ⧸ I) _
-      Ideal.quotientAlgebra _ _
-      (map (Ideal.Quotient.mk (I.under R)) P)
+      Ideal.quotientAlgebra _ _ (map (Ideal.Quotient.mk (I.under R)) P)
       (map_isPrime_of_surjective Quotient.mk_surjective (by simp [hIP]))
       (le_trans (le_of_eq ((RingHom.injective_iff_ker_eq_bot _).1 algebraMap_quotient_injective))
         bot_le)
   refine ⟨Q'.under S, le_trans (le_of_eq mk_ker.symm) (ker_le_comap _), ⟨inferInstance, ?_⟩⟩
   rw [under_under]
-  refine _root_.trans ?_ (_root_.trans congr(comap (Ideal.Quotient.mk
-    (comap (algebraMap R S) I)) $hQ') ?_)
+  refine _root_.trans ?_
+    (_root_.trans
+      (congr(comap (Ideal.Quotient.mk
+        (comap (algebraMap R S) I)) $hQ'))
+      ?_)
   · rw [comap_comap]
     congrm comap $(RingHom.ext fun r => rfl) Q'
   · refine _root_.trans (comap_map_of_surjective _ Quotient.mk_surjective _) (sup_eq_left.2 ?_)
     simpa [← RingHom.ker_eq_comap_bot] using hIP
 
-theorem exists_ideal_over_prime_of_isIntegral [Algebra.IsIntegral R S] (P : Ideal R) [IsPrime P]
-    (I : Ideal S) (hIP : I.under R ≤ P) :
-    ∃ Q ≥ I, IsPrime Q ∧ Q.under R = P := by
+theorem exists_ideal_over_prime_of_isIntegral
+    [Algebra.IsIntegral R S] (P : Ideal R) [IsPrime P] (I : Ideal S) (hIP : I.under R ≤ P)
+    : ∃ Q ≥ I, IsPrime Q ∧ Q.under R = P := by
   have ⟨P', hP, hP', hP''⟩ := exists_ideal_comap_le_prime P I hIP
   obtain ⟨Q, hQ, hQ', hQ''⟩ := exists_ideal_over_prime_of_isIntegral_of_isPrime P P' hP''
   exact ⟨Q, hP.trans hQ, hQ', hQ''⟩
 
-instance nonempty_primesOver [Algebra.IsIntegral R S] [FaithfulSMul R S] (P : Ideal R) [P.IsPrime] :
-    Nonempty (primesOver P S) := by
-  obtain ⟨Q, _, hQ₁, hQ₂⟩ := exists_ideal_over_prime_of_isIntegral P (⊥ : Ideal S)
-    (by simp [← RingHom.ker_eq_comap_bot])
+instance nonempty_primesOver [Algebra.IsIntegral R S] [FaithfulSMul R S] (P : Ideal R) [P.IsPrime]
+    : Nonempty (primesOver P S) := by
+  obtain ⟨Q, _, hQ₁, hQ₂⟩ :=
+    exists_ideal_over_prime_of_isIntegral P (⊥ : Ideal S) (by simp [← RingHom.ker_eq_comap_bot])
   exact ⟨Q, ⟨hQ₁, (liesOver_iff _ _).mpr hQ₂.symm⟩⟩
 
-/-- `comap (algebraMap R S)` is a surjection from the max spec of `S` to max spec of `R`.
-`hP : (algebraMap R S).ker ≤ P` is a slight generalization of the extension being injective -/
-theorem exists_ideal_over_maximal_of_isIntegral [Algebra.IsIntegral R S]
-    (P : Ideal R) [P_max : IsMaximal P] (hP : RingHom.ker (algebraMap R S) ≤ P) :
-    ∃ Q : Ideal S, IsMaximal Q ∧ Q.under R = P := by
+/--
+`comap (algebraMap R S)` is a surjection from the max spec of `S` to max spec of `R`.
+`hP : (algebraMap R S).ker ≤ P` is a slight generalization of the extension being injective
+-/
+theorem exists_ideal_over_maximal_of_isIntegral
+    [Algebra.IsIntegral R S]
+    (P : Ideal R) [P_max : IsMaximal P]
+    (hP : RingHom.ker (algebraMap R S) ≤ P)
+    : ∃ Q : Ideal S, IsMaximal Q ∧ Q.under R = P := by
   obtain ⟨Q, -, Q_prime, hQ⟩ := exists_ideal_over_prime_of_isIntegral P ⊥ hP
   exact ⟨Q, isMaximal_of_isIntegral_of_isMaximal_under _ (hQ.symm ▸ P_max), hQ⟩
 
-theorem exists_maximal_ideal_liesOver_of_isIntegral [Algebra.IsIntegral R S] [FaithfulSMul R S]
-    (P : Ideal R) [P.IsMaximal] :
-    ∃ (Q : Ideal S), Q.IsMaximal ∧ Q.LiesOver P := by
+theorem exists_maximal_ideal_liesOver_of_isIntegral
+    [Algebra.IsIntegral R S] [FaithfulSMul R S] (P : Ideal R) [P.IsMaximal]
+    : ∃ (Q : Ideal S), Q.IsMaximal ∧ Q.LiesOver P := by
   simp_rw [liesOver_iff, eq_comm (a := P)]
-  exact exists_ideal_over_maximal_of_isIntegral P (by
-    simp [(RingHom.injective_iff_ker_eq_bot _).mp (FaithfulSMul.algebraMap_injective R S)])
+  exact exists_ideal_over_maximal_of_isIntegral P
+    (by simp [(RingHom.injective_iff_ker_eq_bot _).mp (FaithfulSMul.algebraMap_injective R S)])
 
-lemma map_eq_top_iff_of_ker_le {R S} [CommRing R] [CommRing S]
-    (f : R →+* S) {I : Ideal R} (hf₁ : RingHom.ker f ≤ I) (hf₂ : f.IsIntegral) :
-    I.map f = ⊤ ↔ I = ⊤ := by
-  constructor; swap
+lemma map_eq_top_iff_of_ker_le
+    {R S} [CommRing R] [CommRing S]
+    (f : R →+* S)
+    {I : Ideal R} (hf₁ : RingHom.ker f ≤ I)
+    (hf₂ : f.IsIntegral)
+    : I.map f = ⊤ ↔ I = ⊤ := by
+  constructor
+  swap
   · rintro rfl; exact Ideal.map_top _
   contrapose
   intro h
@@ -387,22 +424,31 @@ lemma map_eq_top_iff_of_ker_le {R S} [CommRing R] [CommRing S]
   rw [← map_le_iff_le_comap] at hm
   exact (hm.trans_lt (lt_top_iff_ne_top.mpr (IsMaximal.ne_top ‹_›))).ne
 
-lemma map_eq_top_iff {R S} [CommRing R] [CommRing S]
-    (f : R →+* S) {I : Ideal R} (hf₁ : Function.Injective f) (hf₂ : f.IsIntegral) :
-    I.map f = ⊤ ↔ I = ⊤ :=
+lemma map_eq_top_iff
+    {R S} [CommRing R] [CommRing S]
+    (f : R →+* S)
+    {I : Ideal R}
+    (hf₁ : Function.Injective f) (hf₂ : f.IsIntegral)
+    : I.map f = ⊤ ↔ I = ⊤ :=
   map_eq_top_iff_of_ker_le f (by simp [(RingHom.injective_iff_ker_eq_bot f).mp hf₁]) hf₂
 
-/-- If `S` is an integral `R`-algebra such that `q` is the unique prime of `S` lying over
-a prime `p` of `R`, then any `x ∉ q` divides some `r ∉ p`. -/
+/--
+If `S` is an integral `R`-algebra such that `q` is the unique prime of `S` lying over
+a prime `p` of `R`, then any `x ∉ q` divides some `r ∉ p`.
+-/
 lemma exists_notMem_dvd_algebraMap_of_primesOver_eq_singleton
-    {p : Ideal R} [p.IsPrime] {q : Ideal S} [q.IsPrime] (hq : p.primesOver S = {q})
-    [Algebra.IsIntegral R S] (x : S) (hx : x ∉ q) : ∃ r ∉ p, x ∣ algebraMap _ _ r := by
+    {p : Ideal R} [p.IsPrime]
+    {q : Ideal S} [q.IsPrime]
+    (hq : p.primesOver S = {q})
+    [Algebra.IsIntegral R S]
+    (x : S) (hx : x ∉ q)
+    : ∃ r ∉ p, x ∣ algebraMap _ _ r := by
   simp only [dvd_def, eq_comm, mul_comm x]
   by_contra!
-  obtain ⟨Q, hQ, hxQ, hQp⟩ := Ideal.exists_le_prime_disjoint (.span {x})
-    (Algebra.algebraMapSubmonoid _ p.primeCompl)
-    (by simpa [Set.disjoint_iff_forall_ne, Ideal.mem_span_singleton',
-      Algebra.algebraMapSubmonoid, @forall_comm S])
+  obtain ⟨Q, hQ, hxQ, hQp⟩ :=
+    Ideal.exists_le_prime_disjoint (.span {x}) (Algebra.algebraMapSubmonoid _ p.primeCompl) (by
+      simpa [Set.disjoint_iff_forall_ne, Ideal.mem_span_singleton', Algebra.algebraMapSubmonoid,
+        @forall_comm S])
   have hQp' : Q.under _ ≤ p := by
     intro x hxQ
     by_contra hxp
@@ -415,12 +461,16 @@ end IsDomain
 
 section IsIntegral
 
-variable {A : Type*} [CommRing A] {B : Type*} [CommRing B] [Algebra A B] [Algebra.IsIntegral A B]
+variable
+  {A : Type*} [CommRing A]
+  {B : Type*} [CommRing B] [Algebra A B] [Algebra.IsIntegral A B]
   (P : Ideal B) (p : Ideal A) [P.LiesOver p]
 
 variable (A) in
-/-- If `B` is an integral `A`-algebra, `P` is a maximal ideal of `B`, then the pull back of
-  `P` is also a maximal ideal of `A`. -/
+/--
+If `B` is an integral `A`-algebra, `P` is a maximal ideal of `B`, then the pull back of
+`P` is also a maximal ideal of `A`.
+-/
 instance IsMaximal.under [P.IsMaximal] : (P.under A).IsMaximal :=
   isMaximal_under_of_isIntegral_of_isMaximal P
 
@@ -433,13 +483,12 @@ theorem IsMaximal.of_isMaximal_liesOver [P.IsMaximal] : p.IsMaximal := by
   exact isMaximal_under_of_isIntegral_of_isMaximal P
 
 variable (A) in
-theorem eq_bot_of_liesOver_bot [Nontrivial A] [IsDomain B] [h : P.LiesOver (⊥ : Ideal A)] :
-    P = ⊥ :=
+theorem eq_bot_of_liesOver_bot [Nontrivial A] [IsDomain B] [h : P.LiesOver (⊥ : Ideal A)] : P = ⊥ :=
   eq_bot_of_under_eq_bot ((liesOver_iff _ _).mp h).symm
 
 variable (A) {P} in
-theorem under_ne_bot [Nontrivial A] [IsDomain B] (hP : P ≠ ⊥) : under A P ≠ ⊥ :=
-  fun h ↦ hP <| eq_bot_of_under_eq_bot h
+theorem under_ne_bot [Nontrivial A] [IsDomain B] (hP : P ≠ ⊥) : under A P ≠ ⊥ := fun h ↦
+  hP <| eq_bot_of_under_eq_bot h
 
 /-- `B ⧸ P` is an integral `A ⧸ p`-algebra if `B` is an integral `A`-algebra. -/
 instance Quotient.algebra_isIntegral_of_liesOver : Algebra.IsIntegral (A ⧸ p) (B ⧸ P) :=
@@ -449,18 +498,20 @@ end IsIntegral
 
 section IsIntegral
 
-variable {A : Type*} [CommRing A] {p : Ideal A} [p.IsMaximal] {B : Type*} [CommRing B]
-  [Algebra A B] [Algebra.IsIntegral A B] (Q : primesOver p B)
+variable
+  {A : Type*} [CommRing A]
+  {p : Ideal A} [p.IsMaximal]
+  {B : Type*} [CommRing B] [Algebra A B] [Algebra.IsIntegral A B]
+  (Q : primesOver p B)
 
-instance primesOver.isMaximal : Q.1.IsMaximal :=
-  Ideal.IsMaximal.of_liesOver_isMaximal Q.1 p
+instance primesOver.isMaximal : Q.1.IsMaximal := Ideal.IsMaximal.of_liesOver_isMaximal Q.1 p
 
 theorem isMaximal_of_mem_primesOver {P : Ideal B} (hP : P ∈ primesOver p B) : P.IsMaximal :=
   primesOver.isMaximal ⟨P, hP⟩
 
 variable (A B) in
-lemma primesOver_bot [Module.IsTorsionFree A B] [IsDomain A] [IsDomain B] :
-    primesOver (⊥ : Ideal A) B = {⊥} := by
+lemma primesOver_bot [Module.IsTorsionFree A B] [IsDomain A] [IsDomain B]
+    : primesOver (⊥ : Ideal A) B = {⊥} := by
   ext p
   refine ⟨fun ⟨_, ⟨h⟩⟩ ↦ p.eq_bot_of_under_eq_bot h.symm, ?_⟩
   rintro rfl

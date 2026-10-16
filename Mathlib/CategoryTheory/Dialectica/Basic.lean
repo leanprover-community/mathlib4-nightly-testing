@@ -49,10 +49,12 @@ universe v u
 variable {C : Type u} [Category.{v} C] [HasFiniteProducts C] [HasPullbacks C]
 
 variable (C) in
-/-- The Dialectica category. An object of the category is a triple `⟨U, X, α ⊆ U × X⟩`,
+/--
+The Dialectica category. An object of the category is a triple `⟨U, X, α ⊆ U × X⟩`,
 and a morphism from `⟨U, X, α⟩` to `⟨V, Y, β⟩` is a pair `(f : U ⟶ V, F : U ⨯ Y ⟶ X)` such that
 `{(u,y) | α(u, F(u, y))} ⊆ {(u,y) | β(f(u), y)}`. The subset `α` is actually encoded as an element
-of `Subobject (U × X)`, and the above inequality is expressed using pullbacks. -/
+of `Subobject (U × X)`, and the above inequality is expressed using pullbacks.
+-/
 structure Dial where
   /-- The source object -/
   src : C
@@ -67,34 +69,31 @@ local notation "π₁" => prod.fst
 local notation "π₂" => prod.snd
 local notation "π(" a ", " b ")" => prod.lift a b
 
-/-- A morphism in the `Dial C` category from `⟨U, X, α⟩` to `⟨V, Y, β⟩` is a pair
-`(f : U ⟶ V, F : U ⨯ Y ⟶ X)` such that `{(u,y) | α(u, F(u, y))} ≤ {(u,y) | β(f(u), y)}`. -/
-@[ext] structure Hom (X Y : Dial C) where
+/--
+A morphism in the `Dial C` category from `⟨U, X, α⟩` to `⟨V, Y, β⟩` is a pair
+`(f : U ⟶ V, F : U ⨯ Y ⟶ X)` such that `{(u,y) | α(u, F(u, y))} ≤ {(u,y) | β(f(u), y)}`.
+-/
+@[ext]
+structure Hom (X Y : Dial C) where
   /-- Maps the sources -/
   f : X.src ⟶ Y.src
   /-- Maps the targets (contravariantly) -/
   F : X.src ⨯ Y.tgt ⟶ X.tgt
   /-- This says `{(u, y) | α(u, F(u, y))} ⊆ {(u, y) | β(f(u), y)}` using subobject pullbacks -/
-  le :
-    (Subobject.pullback π(π₁, F)).obj X.rel ≤
-    (Subobject.pullback (prod.map f (𝟙 _))).obj Y.rel
+  le : (Subobject.pullback π(π₁, F)).obj X.rel ≤ (Subobject.pullback (prod.map f (𝟙 _))).obj Y.rel
 
-theorem comp_le_lemma {X Y Z : Dial C} (F : Dial.Hom X Y) (G : Dial.Hom Y Z) :
-    (Subobject.pullback π(π₁, π(π₁, prod.map F.f (𝟙 _) ≫ G.F) ≫ F.F)).obj X.rel ≤
-    (Subobject.pullback (prod.map (F.f ≫ G.f) (𝟙 Z.tgt))).obj Z.rel := by
-  refine
-    le_trans ?_ <| ((Subobject.pullback (π(π₁, prod.map F.f (𝟙 _) ≫ G.F))).monotone F.le).trans <|
-    le_trans ?_ <| ((Subobject.pullback (prod.map F.f (𝟙 Z.tgt))).monotone G.le).trans ?_
+theorem comp_le_lemma {X Y Z : Dial C} (F : Dial.Hom X Y) (G : Dial.Hom Y Z)
+    : (Subobject.pullback π(π₁, π(π₁, prod.map F.f (𝟙 _) ≫ G.F) ≫ F.F)).obj X.rel
+      ≤ (Subobject.pullback (prod.map (F.f ≫ G.f) (𝟙 Z.tgt))).obj Z.rel := by
+  refine le_trans ?_ <|
+      ((Subobject.pullback (π(π₁, prod.map F.f (𝟙 _) ≫ G.F))).monotone F.le).trans <| le_trans ?_ <|
+        ((Subobject.pullback (prod.map F.f (𝟙 Z.tgt))).monotone G.le).trans ?_
     <;> simp [← Subobject.pullback_comp]
 
 @[simps]
 instance : Category (Dial C) where
   Hom := Dial.Hom
-  id X := {
-    f := 𝟙 _
-    F := π₂
-    le := by simp
-  }
+  id X := { f := 𝟙 _, F := π₂, le := by simp }
   comp {_ _ _} (F G : Dial.Hom ..) := {
     f := F.f ≫ G.f
     F := π(π₁, prod.map F.f (𝟙 _) ≫ G.F) ≫ F.F
@@ -102,18 +101,23 @@ instance : Category (Dial C) where
   }
   assoc f g h := by
     simp only [Category.assoc, Hom.mk.injEq, true_and]
-    rw [← Category.assoc, ← Category.assoc]; congr 1
+    rw [← Category.assoc, ← Category.assoc]
+    congr 1
     ext <;> simp
 
-@[ext] theorem hom_ext {X Y : Dial C} {x y : X ⟶ Y} (hf : x.f = y.f) (hF : x.F = y.F) : x = y :=
+@[ext]
+theorem hom_ext {X Y : Dial C} {x y : X ⟶ Y} (hf : x.f = y.f) (hF : x.F = y.F) : x = y :=
   Hom.ext hf hF
 
 /--
 An isomorphism in `Dial C` can be induced by isomorphisms on the source and target,
 which respect the respective relations on `X` and `Y`.
 -/
-@[simps] def isoMk {X Y : Dial C} (e₁ : X.src ≅ Y.src) (e₂ : X.tgt ≅ Y.tgt)
-    (eq : X.rel = (Subobject.pullback (prod.map e₁.hom e₂.hom)).obj Y.rel) : X ≅ Y where
+@[simps]
+def isoMk
+    {X Y : Dial C} (e₁ : X.src ≅ Y.src) (e₂ : X.tgt ≅ Y.tgt)
+    (eq : X.rel = (Subobject.pullback (prod.map e₁.hom e₂.hom)).obj Y.rel)
+    : X ≅ Y where
   hom := {
     f := e₁.hom
     F := π₂ ≫ e₂.inv

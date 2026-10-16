@@ -20,8 +20,8 @@ namespace NormNum
 
 open Qq Lean Elab.Tactic Mathlib.Meta.NormNum
 
-lemma nat_sqrt_helper {x y r : ℕ} (hr : y * y + r = x) (hle : Nat.ble r (2 * y)) :
-    Nat.sqrt x = y := by
+lemma nat_sqrt_helper {x y r : ℕ} (hr : y * y + r = x) (hle : Nat.ble r (2 * y))
+    : Nat.sqrt x = y := by
   rw [← hr, ← pow_two]
   rw [two_mul] at hle
   exact Nat.sqrt_add_eq' _ (Nat.le_of_ble_eq_true hle)
@@ -29,12 +29,16 @@ lemma nat_sqrt_helper {x y r : ℕ} (hr : y * y + r = x) (hle : Nat.ble r (2 * y
 theorem isNat_sqrt : {x nx z : ℕ} → IsNat x nx → Nat.sqrt nx = z → IsNat (Nat.sqrt x) z
   | _, _, _, ⟨rfl⟩, rfl => ⟨rfl⟩
 
-/-- Given the natural number literal `ex`, returns its square root as a natural number literal
-and an equality proof. Panics if `ex` isn't a natural number literal. -/
+/--
+Given the natural number literal `ex`, returns its square root as a natural number literal
+and an equality proof. Panics if `ex` isn't a natural number literal.
+-/
 def proveNatSqrt (ex : Q(ℕ)) : (ey : Q(ℕ)) × Q(Nat.sqrt $ex = $ey) :=
   match ex.natLit! with
-  | 0 => have : $ex =Q nat_lit 0 := ⟨⟩; ⟨q(nat_lit 0), q(Nat.sqrt_zero)⟩
-  | 1 => have : $ex =Q nat_lit 1 := ⟨⟩; ⟨q(nat_lit 1), q(Nat.sqrt_one)⟩
+  | 0 =>
+    have : $ex =Q nat_lit 0 := ⟨⟩; ⟨q(nat_lit 0), q(Nat.sqrt_zero)⟩
+  | 1 =>
+    have : $ex =Q nat_lit 1 := ⟨⟩; ⟨q(nat_lit 1), q(Nat.sqrt_one)⟩
   | x =>
     let y := Nat.sqrt x
     have ey : Q(ℕ) := mkRawNatLit y
@@ -45,13 +49,15 @@ def proveNatSqrt (ex : Q(ℕ)) : (ey : Q(ℕ)) × Q(Nat.sqrt $ex = $ey) :=
 
 /-- Evaluates the `Nat.sqrt` function. -/
 @[norm_num Nat.sqrt _]
-def evalNatSqrt : NormNumExt where eval {_ _} e := do
-  let .app _ (x : Q(ℕ)) ← Meta.whnfR e | failure
-  let sℕ : Q(AddMonoidWithOne ℕ) := q(Nat.instAddMonoidWithOne)
-  let ⟨ex, p⟩ ← deriveNat x sℕ
-  let ⟨ey, pf⟩ := proveNatSqrt ex
-  let pf' : Q(IsNat (Nat.sqrt $x) $ey) := q(isNat_sqrt $p $pf)
-  return .isNat sℕ ey pf'
+def evalNatSqrt : NormNumExt where
+  eval {_ _} e := do
+    let .app _ (x : Q(ℕ)) ← Meta.whnfR e
+      | failure
+    let sℕ : Q(AddMonoidWithOne ℕ) := q(Nat.instAddMonoidWithOne)
+    let ⟨ex, p⟩ ← deriveNat x sℕ
+    let ⟨ey, pf⟩ := proveNatSqrt ex
+    let pf' : Q(IsNat (Nat.sqrt $x) $ey) := q(isNat_sqrt $p $pf)
+    return .isNat sℕ ey pf'
 
 end NormNum
 

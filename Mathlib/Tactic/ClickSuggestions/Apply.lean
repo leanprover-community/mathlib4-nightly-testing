@@ -7,7 +7,6 @@ module
 
 public meta import Mathlib.Tactic.ClickSuggestions.Util
 public import Mathlib.Tactic.ClickSuggestions.SectionState
-
 import all Lean.Meta.Tactic.Apply
 
 /-!
@@ -41,21 +40,17 @@ deriving Inhabited
 
 instance : Ord ApplyKey where
   compare a b :=
-    (compare a.1 b.1).then <|
-    (compare a.2 b.2).then <|
-    (compare a.3 b.3).then
-    (compare a.4 b.4)
+    (compare a.1 b.1).then <| (compare a.2 b.2).then <| (compare a.3 b.3).then (compare a.4 b.4)
 
 /-- Whether the two suggestions are duplicates of each other. -/
 def ApplyKey.isDuplicate (a b : ApplyKey) : MetaM Bool :=
-  pure (a.newGoals.size == b.newGoals.size) <&&>
-  a.newGoals.size.allM fun i _ =>
+  pure (a.newGoals.size == b.newGoals.size) <&&> a.newGoals.size.allM fun i _ =>
     pure (a.newGoals[i]!.mvars.size == b.newGoals[i]!.mvars.size)
       <&&> isExplicitEq a.newGoals[i]!.expr b.newGoals[i]!.expr
 
 /-- Return the `apply` tactic that performs the application. -/
-private def tacticSyntax (lemmaName : Premise) (proof : Expr) (isClosing justLemmaName : Bool) :
-    MetaM (TSyntax `tactic) := do
+private def tacticSyntax (lemmaName : Premise) (proof : Expr) (isClosing justLemmaName : Bool)
+    : MetaM (TSyntax `tactic) := do
   if justLemmaName then
     let id := mkIdent (← lemmaName.unresolveName)
     -- We can only use `exact` instead of `apply` if the proof has no explicit arguments.
@@ -72,14 +67,15 @@ private def tacticSyntax (lemmaName : Premise) (proof : Expr) (isClosing justLem
 where
   hasOnlyImplicitArgs (e : Expr) : MetaM Bool := do
     let info ← getFunInfoNArgs e.getAppFn e.getAppNumArgs
-    return !info.paramInfo.any (·.binderInfo.isExplicit)
+    return ! info.paramInfo.any (·.binderInfo.isExplicit)
 
 /-- Generate the suggestion for applying `lem`. -/
-def ApplyLemma.try (lem : ApplyLemma) (assignableMVars : Array Expr) :
-    ClickSuggestionsM (Result ApplyKey) := do
+def ApplyLemma.try (lem : ApplyLemma) (assignableMVars : Array Expr)
+    : ClickSuggestionsM (Result ApplyKey) := do
   let (proof, mvars, binderInfos, e) ← lem.name.forallMetaTelescopeReducing
   let target ← (← read).goal.getType
-  unless ← isDefEq e target do throwError "{e} does not unify with {target}"
+  unless ← isDefEq e target do
+    throwError "{e} does not unify with {target}"
   synthAppInstances `click_suggestions default mvars binderInfos false false
   let mvars ← mvars.filterM (not <$> ·.mvarId!.isAssigned)
   -- Reorder the goals as `apply` would.
@@ -100,16 +96,16 @@ def ApplyLemma.try (lem : ApplyLemma) (assignableMVars : Array Expr) :
   let key := {
     numGoals := newGoals.size
     nameLength := lem.name.length
-    replacementSize := ← newGoals.foldlM (init := 0) fun s g =>
-      return (← ppExpr g).pretty.length + s
+    replacementSize :=
+      ← newGoals.foldlM (init := 0) fun s g => return (← ppExpr g).pretty.length + s
     name := lem.name.toString
     newGoals := ← newGoals.mapM (abstractMVars ·)
   }
   let tactic ← tacticSyntax lem.name proof (isClosing := isClosing) (justLemmaName := justLemmaName)
   let mut htmls := #[]
   for goal in newGoals do
-    htmls := htmls.push
-      jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
+    htmls :=
+      htmls.push jsx%{<div><strong className="goal-vdash">⊢ </strong>{← exprToHtml goal}</div>}
   if isClosing then
     htmls := #[.text "Goal accomplished! 🎉️"]
     addSolvedSuggestion tactic

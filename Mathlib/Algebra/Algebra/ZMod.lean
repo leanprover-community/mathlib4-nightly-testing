@@ -27,8 +27,10 @@ section
 
 variable {n : ℕ} (m : ℕ) [CharP R m]
 
-/-- The `ZMod n`-algebra structure on rings whose characteristic `m` divides `n`.
-See note [reducible non-instances]. -/
+/--
+The `ZMod n`-algebra structure on rings whose characteristic `m` divides `n`.
+See note [reducible non-instances].
+-/
 abbrev algebra' (h : m ∣ n) : Algebra (ZMod n) R where
   algebraMap := ZMod.castHom h R
   smul := fun a r => cast a * r
@@ -41,18 +43,22 @@ abbrev algebra' (h : m ∣ n) : Algebra (ZMod n) R where
 
 end
 
-/-- The `ZMod p`-algebra structure on a ring of characteristic `p`. This is not an
+/--
+The `ZMod p`-algebra structure on a ring of characteristic `p`. This is not an
 instance since it creates a diamond with `Algebra.id`.
-See note [reducible non-instances]. -/
-abbrev algebra (p : ℕ) [CharP R p] : Algebra (ZMod p) R :=
-  algebra' R p dvd_rfl
+See note [reducible non-instances].
+-/
+abbrev algebra (p : ℕ) [CharP R p] : Algebra (ZMod p) R := algebra' R p dvd_rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Any ring with a `ZMod p`-module structure can be upgraded to a `ZMod p`-algebra. Not an
-instance because this is usually not the default way, and this will cause typeclass search loop. -/
+/--
+Any ring with a `ZMod p`-module structure can be upgraded to a `ZMod p`-algebra. Not an
+instance because this is usually not the default way, and this will cause typeclass search loop.
+-/
 @[instance_reducible]
 def algebraOfModule (n : ℕ) (R : Type*) [Ring R] [Module (ZMod n) R] : Algebra (ZMod n) R :=
-  Algebra.ofModule' (proof · · |>.1) (proof · · |>.2) where
+  Algebra.ofModule' (proof · · |>.1) (proof · · |>.2)
+where
   proof (r : ZMod n) (x : R) : r • 1 * x = r • x ∧ x * r • 1 = r • x := by
     obtain _ | n := n
     · obtain rfl : ((inferInstance : Module ℤ R)) = ‹_› := Subsingleton.elim _ _
@@ -60,9 +66,10 @@ def algebraOfModule (n : ℕ) (R : Type*) [Ring R] [Module (ZMod n) R] : Algebra
     · obtain ⟨r, rfl⟩ := ZMod.natCast_zmod_surjective r
       simp [Nat.cast_smul_eq_nsmul, Nat.cast_comm]
 
-instance instIsScalarTower (n : ℕ) (R M : Type*) [Ring R] [AddCommGroup M]
-    [Module (ZMod n) R] [m₁ : Module (ZMod n) M] [Module R M] :
-    IsScalarTower (ZMod n) R M := by
+instance instIsScalarTower
+    (n : ℕ) (R M : Type*)
+    [Ring R] [AddCommGroup M] [Module (ZMod n) R] [m₁ : Module (ZMod n) M] [Module R M]
+    : IsScalarTower (ZMod n) R M := by
   let := ZMod.algebraOfModule n R
   let m₂ := Module.compHom M (algebraMap (ZMod n) R)
   obtain rfl : m₁ = m₂ := Subsingleton.elim _ _

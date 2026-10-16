@@ -35,18 +35,21 @@ variable [WellFoundedLT ι]
 instance : InfSet (Πₗ i, α i) where
   sInf s := toLex (inf s)
 
-theorem sInf_apply (s : Set (Πₗ i, α i)) (i : ι) :
-    sInf s i = ⨅ e : {e ∈ s | ∀ j < i, e j = sInf s j}, e.1 i := by
+theorem sInf_apply (s : Set (Πₗ i, α i)) (i : ι)
+    : sInf s i = ⨅ e : {e ∈ s | ∀ j < i, e j = sInf s j}, e.1 i := by
   -- This still works without excluding `iInf_of_isEmpty`, but very slowly
   simp [sInf, inf, -iInf_of_isEmpty]
 
-theorem sInf_apply_le {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
-    (he : e ∈ s) (h : ∀ j < i, e j = sInf s j) : sInf s i ≤ e i := by
+theorem sInf_apply_le
+    {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i} (he : e ∈ s) (h : ∀ j < i, e j = sInf s j)
+    : sInf s i ≤ e i := by
   rw [sInf_apply]
   exact sInf_le ⟨⟨e, he, h⟩, rfl⟩
 
-theorem le_sInf_apply {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
-    (h : ∀ f ∈ s, (∀ j < i, f j = sInf s j) → e i ≤ f i) : e i ≤ sInf s i := by
+theorem le_sInf_apply
+    {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
+    (h : ∀ f ∈ s, (∀ j < i, f j = sInf s j) → e i ≤ f i)
+    : e i ≤ sInf s i := by
   rw [sInf_apply]
   apply le_sInf
   grind
@@ -67,16 +70,19 @@ private theorem isGLB_sInf {s : Set (Πₗ i, α i)} : IsGLB s (sInf s) := by
 instance : SupSet (Πₗ i, α i) where
   sSup s := sInf (α := Πₗ i, (α i)ᵒᵈ) s
 
-theorem sSup_apply (s : Set (Πₗ i, α i)) (i : ι) :
-    sSup s i = ⨆ e : {e ∈ s | ∀ j < i, e j = sSup s j}, e.1 i :=
+theorem sSup_apply (s : Set (Πₗ i, α i)) (i : ι)
+    : sSup s i = ⨆ e : {e ∈ s | ∀ j < i, e j = sSup s j}, e.1 i :=
   sInf_apply (α := fun i ↦ (α i)ᵒᵈ) ..
 
-theorem le_sSup_apply {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
-    (he : e ∈ s) (h : ∀ j < i, e j = sSup s j) : e i ≤ sSup s i :=
+theorem le_sSup_apply
+    {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i} (he : e ∈ s) (h : ∀ j < i, e j = sSup s j)
+    : e i ≤ sSup s i :=
   sInf_apply_le (α := fun i ↦ (α i)ᵒᵈ) he h
 
-theorem sSup_apply_le {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
-    (h : ∀ f ∈ s, (∀ j < i, f j = sSup s j) → f i ≤ e i) : sSup s i ≤ e i :=
+theorem sSup_apply_le
+    {s : Set (Πₗ i, α i)} {i : ι} {e : Πₗ i, α i}
+    (h : ∀ f ∈ s, (∀ j < i, f j = sSup s j) → f i ≤ e i)
+    : sSup s i ≤ e i :=
   le_sInf_apply (α := fun i ↦ (α i)ᵒᵈ) h
 
 private theorem isLUB_sSup {s : Set (Πₗ i, α i)} : IsLUB s (sSup s) := by
@@ -111,18 +117,22 @@ instance : InfSet (Colex ((i : ι) → α i)) where
   sInf s := sInf (α := Πₗ i : ιᵒᵈ, α i) s
 
 set_option backward.isDefEq.respectTransparency false in
-theorem sInf_apply (s : Set (Colex ((i : ι) → α i))) (i : ι) :
-    sInf s i = ⨅ e : {e ∈ s | ∀ j > i, e j = sInf s j}, e.1 i :=
+theorem sInf_apply (s : Set (Colex ((i : ι) → α i))) (i : ι)
+    : sInf s i = ⨅ e : {e ∈ s | ∀ j > i, e j = sInf s j}, e.1 i :=
   Lex.sInf_apply (ι := ιᵒᵈ) s i
 
 set_option backward.isDefEq.respectTransparency false in
-theorem sInf_apply_le {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
-    (he : e ∈ s) (h : ∀ j > i, e j = sInf s j) : sInf s i ≤ e i :=
+theorem sInf_apply_le
+    {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
+    (he : e ∈ s) (h : ∀ j > i, e j = sInf s j)
+    : sInf s i ≤ e i :=
   Lex.sInf_apply_le (ι := ιᵒᵈ) he h
 
 set_option backward.isDefEq.respectTransparency false in
-theorem le_sInf_apply {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
-    (h : ∀ f ∈ s, (∀ j > i, f j = sInf s j) → e i ≤ f i) : e i ≤ sInf s i :=
+theorem le_sInf_apply
+    {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
+    (h : ∀ f ∈ s, (∀ j > i, f j = sInf s j) → e i ≤ f i)
+    : e i ≤ sInf s i :=
   Lex.le_sInf_apply (ι := ιᵒᵈ) h
 
 -- TODO: figure out how to use `to_dual` here
@@ -133,18 +143,22 @@ instance : SupSet (Colex ((i : ι) → α i)) where
   sSup s := sSup (α := Πₗ i : ιᵒᵈ, α i) s
 
 set_option backward.isDefEq.respectTransparency false in
-theorem sSup_apply (s : Set (Colex ((i : ι) → α i))) (i : ι) :
-    sSup s i = ⨆ e : {e ∈ s | ∀ j > i, e j = sSup s j}, e.1 i :=
+theorem sSup_apply (s : Set (Colex ((i : ι) → α i))) (i : ι)
+    : sSup s i = ⨆ e : {e ∈ s | ∀ j > i, e j = sSup s j}, e.1 i :=
   Lex.sSup_apply (ι := ιᵒᵈ) s i
 
 set_option backward.isDefEq.respectTransparency false in
-theorem le_sSup_apply {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
-    (he : e ∈ s) (h : ∀ j > i, e j = sSup s j) : e i ≤ sSup s i :=
+theorem le_sSup_apply
+    {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
+    (he : e ∈ s) (h : ∀ j > i, e j = sSup s j)
+    : e i ≤ sSup s i :=
   Lex.le_sSup_apply (ι := ιᵒᵈ) he h
 
 set_option backward.isDefEq.respectTransparency false in
-theorem sSup_apply_le {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
-    (h : ∀ f ∈ s, (∀ j > i, f j = sSup s j) → f i ≤ e i) : sSup s i ≤ e i :=
+theorem sSup_apply_le
+    {s : Set (Colex ((i : ι) → α i))} {i : ι} {e : Colex ((i : ι) → α i)}
+    (h : ∀ f ∈ s, (∀ j > i, f j = sSup s j) → f i ≤ e i)
+    : sSup s i ≤ e i :=
   Lex.sSup_apply_le (ι := ιᵒᵈ) h
 
 set_option backward.isDefEq.respectTransparency false in

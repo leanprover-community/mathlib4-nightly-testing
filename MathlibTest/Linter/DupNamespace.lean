@@ -29,9 +29,10 @@ set_option linter.dupNamespace true in
 @[to_additive] theorem add.mul : True := .intro
 
 --  However, the declaration `Foo.add.add` is present in the environment.
-run_cmd Lean.Elab.Command.liftTermElabM do
-  let decl := (← Lean.getEnv).find? ``Foo.add.add
-  guard decl.isSome
+run_cmd
+  Lean.Elab.Command.liftTermElabM do
+    let decl := (← Lean.getEnv).find? ``Foo.add.add
+    guard decl.isSome
 
 namespace Nat
 

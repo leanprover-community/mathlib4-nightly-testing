@@ -17,7 +17,6 @@ since they are used by some lemmas for `Iso`, which is used everywhere.
 
 @[expose] public section
 
-
 universe v₁ v₂ u₁ u₂
 
 namespace CategoryTheory
@@ -33,16 +32,15 @@ instance op_epi_of_mono {A B : C} (f : A ⟶ B) [Mono f] : Epi f.op :=
   ⟨fun _ _ eq => Quiver.Hom.unop_inj ((cancel_mono f).1 (Quiver.Hom.op_inj eq))⟩
 
 @[to_dual (attr := simp)]
-lemma op_epi_iff {X Y : C} (f : X ⟶ Y) :
-    Epi f.op ↔ Mono f :=
+lemma op_epi_iff {X Y : C} (f : X ⟶ Y) : Epi f.op ↔ Mono f :=
   ⟨fun _ ↦ unop_mono_of_epi f.op, fun _ ↦ inferInstance⟩
 
 @[to_dual (attr := simp)]
-lemma unop_epi_iff {X Y : Cᵒᵖ} (f : X ⟶ Y) :
-    Epi f.unop ↔ Mono f :=
+lemma unop_epi_iff {X Y : Cᵒᵖ} (f : X ⟶ Y) : Epi f.unop ↔ Mono f :=
   ⟨fun _ ↦ op_mono_of_epi f.unop, fun _ ↦ inferInstance⟩
 
-/-- A split monomorphism is a morphism `f : X ⟶ Y` with a given retraction `retraction f : Y ⟶ X`
+/--
+A split monomorphism is a morphism `f : X ⟶ Y` with a given retraction `retraction f : Y ⟶ X`
 such that `f ≫ retraction f = 𝟙 X`.
 
 Every split monomorphism is a monomorphism.
@@ -58,7 +56,8 @@ class IsSplitMono {X Y : C} (f : X ⟶ Y) : Prop where
   /-- There is a splitting -/
   exists_splitMono : Nonempty (SplitMono f)
 
-/-- A split epimorphism is a morphism `f : X ⟶ Y` with a given section `section_ f : Y ⟶ X`
+/--
+A split epimorphism is a morphism `f : X ⟶ Y` with a given section `section_ f : Y ⟶ X`
 such that `section_ f ≫ f = 𝟙 Y`.
 (Note that `section` is a reserved keyword, so we append an underscore.)
 
@@ -84,17 +83,17 @@ attribute [reassoc (attr := simp)] SplitMono.id SplitEpi.id
 
 /-- A composition of `SplitEpi` is a split `SplitEpi`. -/
 @[to_dual (attr := simps) (reorder := X Z, f g, sef seg) (rename := f ↔ g, sef → smg, seg → smf)
-/-- A composition of `SplitMono` is a `SplitMono`. -/]
-def SplitEpi.comp {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z} (sef : SplitEpi f) (seg : SplitEpi g) :
-    SplitEpi (f ≫ g) where
+  /-- A composition of `SplitMono` is a `SplitMono`. -/]
+def SplitEpi.comp {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z} (sef : SplitEpi f) (seg : SplitEpi g)
+    : SplitEpi (f ≫ g) where
   section_ := seg.section_ ≫ sef.section_
 
 /-- A constructor for `IsSplitEpi f` taking a `SplitEpi f` as an argument -/
 @[to_dual /-- A constructor for `IsSplitMono f` taking a `SplitMono f` as an argument -/]
-theorem IsSplitEpi.mk' {X Y : C} {f : X ⟶ Y} (se : SplitEpi f) : IsSplitEpi f :=
-  ⟨Nonempty.intro se⟩
+theorem IsSplitEpi.mk' {X Y : C} {f : X ⟶ Y} (se : SplitEpi f) : IsSplitEpi f := ⟨Nonempty.intro se⟩
 
-/-- The chosen section of a split epimorphism.
+/--
+The chosen section of a split epimorphism.
 (Note that `section` is a reserved keyword, so we append an underscore.)
 -/
 @[to_dual retraction /-- The chosen retraction of a split monomorphism. -/]
@@ -112,7 +111,7 @@ def SplitEpi.splitMono {X Y : C} {f : X ⟶ Y} (se : SplitEpi f) : SplitMono se.
 
 /-- The section of a split epimorphism is itself a split monomorphism. -/
 @[to_dual retraction_isSplitEpi
-/-- The retraction of a split monomorphism is itself a split epimorphism. -/]
+  /-- The retraction of a split monomorphism is itself a split epimorphism. -/]
 instance section_isSplitMono {X Y : C} (f : X ⟶ Y) [IsSplitEpi f] : IsSplitMono (section_ f) :=
   IsSplitMono.mk' (SplitEpi.splitMono _)
 
@@ -127,8 +126,9 @@ instance (priority := 100) IsSplitEpi.of_iso {X Y : C} (f : X ⟶ Y) [IsIso f] :
   IsSplitEpi.mk' { section_ := inv f }
 
 @[to_dual]
-theorem SplitEpi.epi {X Y : C} {f : X ⟶ Y} (se : SplitEpi f) : Epi f :=
-  { left_cancellation := fun g h w => by replace w := se.section_ ≫= w; simpa using w }
+theorem SplitEpi.epi {X Y : C} {f : X ⟶ Y} (se : SplitEpi f) : Epi f := {
+  left_cancellation := fun g h w => by replace w := se.section_ ≫= w; simpa using w
+}
 
 /-- Every split epi is an epi. -/
 @[to_dual /-- Every split mono is a mono. -/]
@@ -136,30 +136,31 @@ instance (priority := 100) IsSplitEpi.epi {X Y : C} (f : X ⟶ Y) [hf : IsSplitE
   hf.exists_splitEpi.some.epi
 
 @[to_dual]
-instance {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z} [hf : IsSplitEpi f] [hg : IsSplitEpi g] :
-    IsSplitEpi (f ≫ g) := IsSplitEpi.mk' <| hf.exists_splitEpi.some.comp hg.exists_splitEpi.some
+instance {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z} [hf : IsSplitEpi f] [hg : IsSplitEpi g]
+    : IsSplitEpi (f ≫ g) :=
+  IsSplitEpi.mk' <| hf.exists_splitEpi.some.comp hg.exists_splitEpi.some
 
 /-- Every split epi whose section is epi is an iso. -/
 @[to_dual /-- Every split mono whose retraction is mono is an iso. -/]
-theorem IsIso.of_epi_section' {X Y : C} {f : X ⟶ Y} (hf : SplitEpi f) [Epi hf.section_] :
-    IsIso f :=
+theorem IsIso.of_epi_section' {X Y : C} {f : X ⟶ Y} (hf : SplitEpi f) [Epi hf.section_] : IsIso f :=
   ⟨⟨hf.section_, ⟨(cancel_epi_id hf.section_).mp (by simp), by simp⟩⟩⟩
 
 /-- Every split epi whose section is epi is an iso. -/
 @[to_dual /-- Every split mono whose retraction is mono is an iso. -/]
-theorem IsIso.of_epi_section {X Y : C} (f : X ⟶ Y) [hf : IsSplitEpi f] [hf' : Epi <| section_ f] :
-    IsIso f :=
+theorem IsIso.of_epi_section {X Y : C} (f : X ⟶ Y) [hf : IsSplitEpi f] [hf' : Epi <| section_ f]
+    : IsIso f :=
   @IsIso.of_epi_section' _ _ _ _ _ hf.exists_splitEpi.some hf'
 
 -- FIXME this has unnecessarily become noncomputable!
 /-- A category where every morphism has a `Trunc` retraction is computably a groupoid. -/
 @[instance_reducible]
 noncomputable def Groupoid.ofTruncSplitMono
-    (all_split_mono : ∀ {X Y : C} (f : X ⟶ Y), Trunc (IsSplitMono f)) : Groupoid.{v₁} C := by
+    (all_split_mono : ∀ {X Y : C} (f : X ⟶ Y), Trunc (IsSplitMono f))
+    : Groupoid.{v₁} C := by
   apply Groupoid.ofIsIso
   intro X Y f
-  have ⟨a,_⟩ := Trunc.exists_rep <| all_split_mono f
-  have ⟨b,_⟩ := Trunc.exists_rep <| all_split_mono <| retraction f
+  have ⟨a, _⟩ := Trunc.exists_rep <| all_split_mono f
+  have ⟨b, _⟩ := Trunc.exists_rep <| all_split_mono <| retraction f
   apply IsIso.of_mono_retraction
 
 section
@@ -179,10 +180,12 @@ class SplitEpiCategory : Prop where
 
 end
 
-/-- In a category in which every epimorphism is split, every epimorphism splits. This is not an
-instance because it would create an instance loop. -/
+/--
+In a category in which every epimorphism is split, every epimorphism splits. This is not an
+instance because it would create an instance loop.
+-/
 @[to_dual
-/-- In a category in which every monomorphism is split, every monomorphism splits. This is not an
+  /-- In a category in which every monomorphism is split, every monomorphism splits. This is not an
 instance because it would create an instance loop. -/]
 theorem isSplitEpi_of_epi [SplitEpiCategory C] {X Y : C} (f : X ⟶ Y) [Epi f] : IsSplitEpi f :=
   SplitEpiCategory.isSplitEpi_of_epi _
@@ -207,16 +210,15 @@ section
 
 /-- When `f` is an epimorphism, `f ≫ g` is epic iff `g` is. -/
 @[to_dual (attr := simp) (reorder := g f 7)
-/-- When `g` is a monomorphism, `f ≫ g` is monic iff `f` is. -/]
-lemma epi_comp_iff_of_epi {X Y Z : C} (f : X ⟶ Y) [Epi f] (g : Y ⟶ Z) :
-    Epi (f ≫ g) ↔ Epi g :=
+  /-- When `g` is a monomorphism, `f ≫ g` is monic iff `f` is. -/]
+lemma epi_comp_iff_of_epi {X Y Z : C} (f : X ⟶ Y) [Epi f] (g : Y ⟶ Z) : Epi (f ≫ g) ↔ Epi g :=
   ⟨fun _ ↦ epi_of_epi f _, fun _ ↦ inferInstance⟩
 
 /-- When `g` is an isomorphism, `f ≫ g` is epic iff `f` is. -/
 @[to_dual (attr := simp) (reorder := g f 8)
-/-- When `f` is an isomorphism, `f ≫ g` is monic iff `g` is. -/]
-lemma epi_comp_iff_of_isIso {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g] :
-    Epi (f ≫ g) ↔ Epi f := by
+  /-- When `f` is an isomorphism, `f ≫ g` is monic iff `g` is. -/]
+lemma epi_comp_iff_of_isIso {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g]
+    : Epi (f ≫ g) ↔ Epi f := by
   refine ⟨fun h ↦ ?_, fun h ↦ inferInstance⟩
   simpa using (inferInstance : Epi ((f ≫ g) ≫ inv g))
 
@@ -232,60 +234,70 @@ def SplitEpi.op (h : SplitEpi f) : SplitMono f.op where
   retraction := h.section_.op
   id := Quiver.Hom.unop_inj (by simp)
 
-@[to_dual]
-instance [IsSplitMono f] : IsSplitEpi f.op :=
-  .mk' IsSplitMono.exists_splitMono.some.op
+@[to_dual] instance [IsSplitMono f] : IsSplitEpi f.op := .mk' IsSplitMono.exists_splitMono.some.op
 
 end Opposite
 
-
 section cubeLemma
 
-variable {M000 M001 M010 M011 M100 M101 M110 M111 : C}
+variable
+  {M000 M001 M010 M011 M100 M101 M110 M111 : C}
   (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)
   (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)
   (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)
 
-/-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,
-  then the sixth face must also commute. -/
-theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)
+/--
+This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,
+then the sixth face must also commute.
+-/
+theorem cube_lemma_of_epi
+    (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)
     (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)
-    (hxx0 : f0x0 ≫ fx10 = fx00 ≫ f1x0) [Epi f00x] : f0x1 ≫ fx11 = fx01 ≫ f1x1 := by
+    (hxx0 : f0x0 ≫ fx10 = fx00 ≫ f1x0)
+    [Epi f00x]
+    : f0x1 ≫ fx11 = fx01 ≫ f1x1 := by
   rw [← cancel_epi f00x]
   grind
 
-/-- This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,
-  then the sixth face must also commute. -/
-theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)
+/--
+This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,
+then the sixth face must also commute.
+-/
+theorem cube_lemma_of_mono
+    (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)
     (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)
-    (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1) [Mono f11x] : f0x0 ≫ fx10 = fx00 ≫ f1x0 := by
+    (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1)
+    [Mono f11x]
+    : f0x0 ≫ fx10 = fx00 ≫ f1x0 := by
   rw [← cancel_mono f11x]
   grind
 
-theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)
-    (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)
-    (hx1x : CommSq fx10 f01x f11x fx11) (hxx0 : CommSq f0x0 fx00 fx10 f1x0) [Epi f00x] :
-    CommSq f0x1 fx01 fx11 f1x1 :=
-  ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x
-      f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩
+theorem CommSq.cube_lemma_of_epi
+    (h0xx : CommSq f0x0 f00x f01x f0x1) (h1xx : CommSq f1x0 f10x f11x f1x1)
+    (hx0x : CommSq fx00 f00x f10x fx01) (hx1x : CommSq fx10 f01x f11x fx11)
+    (hxx0 : CommSq f0x0 fx00 fx10 f1x0)
+    [Epi f00x]
+    : CommSq f0x1 fx01 fx11 f1x1 :=
+  ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11
+    h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩
 
-theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)
-    (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)
-    (hx1x : CommSq fx10 f01x f11x fx11) (hxx1 : CommSq f0x1 fx01 fx11 f1x1) [Mono f11x] :
-    CommSq f0x0 fx00 fx10 f1x0 :=
-  ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x
-      f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx1.w⟩
+theorem CommSq.cube_lemma_of_mono
+    (h0xx : CommSq f0x0 f00x f01x f0x1) (h1xx : CommSq f1x0 f10x f11x f1x1)
+    (hx0x : CommSq fx00 f00x f10x fx01) (hx1x : CommSq fx10 f01x f11x fx11)
+    (hxx1 : CommSq f0x1 fx01 fx11 f1x1)
+    [Mono f11x]
+    : CommSq f0x0 fx00 fx10 f1x0 :=
+  ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11
+    h0xx.w h1xx.w hx0x.w hx1x.w hxx1.w⟩
 
 end cubeLemma
 
 variable (C) in
 /-- The class of morphisms consisting of split monomorphisms. -/
-abbrev MorphismProperty.splitMonomorphisms : MorphismProperty C :=
-  fun _ _ f ↦ IsSplitMono f
+abbrev MorphismProperty.splitMonomorphisms : MorphismProperty C := fun _ _ f ↦ IsSplitMono f
 
 variable (C) in
 /-- The class of morphisms consisting of split epimorphisms. -/
-abbrev MorphismProperty.splitEpimorphisms : MorphismProperty C :=
-  fun _ _ f ↦ IsSplitEpi f
+abbrev MorphismProperty.splitEpimorphisms : MorphismProperty C := fun _ _ f ↦ IsSplitEpi f
 
 end CategoryTheory

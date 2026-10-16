@@ -9,7 +9,6 @@ public import Mathlib.AlgebraicGeometry.Cover.Sigma
 public import Mathlib.AlgebraicGeometry.Sites.Pretopology
 public import Mathlib.CategoryTheory.Sites.CoproductSheafCondition
 public import Mathlib.Topology.Category.TopCat.GrothendieckTopology
-
 import Mathlib.CategoryTheory.Sites.Preserves
 
 /-!
@@ -44,12 +43,10 @@ namespace AlgebraicGeometry
 namespace Scheme
 
 /-- The Zariski pretopology on the category of schemes. -/
-def zariskiPretopology : Pretopology Scheme.{u} :=
-  pretopology @IsOpenImmersion
+def zariskiPretopology : Pretopology Scheme.{u} := pretopology @IsOpenImmersion
 
 /-- The Zariski topology on the category of schemes. -/
-abbrev zariskiTopology : GrothendieckTopology Scheme.{u} :=
-  grothendieckTopology IsOpenImmersion
+abbrev zariskiTopology : GrothendieckTopology Scheme.{u} := grothendieckTopology IsOpenImmersion
 
 lemma zariskiTopology_eq : zariskiTopology.{u} = zariskiPretopology.toGrothendieck :=
   Precoverage.toGrothendieck_toPretopology_eq_toGrothendieck.symm
@@ -61,10 +58,11 @@ instance subcanonical_zariskiTopology : zariskiTopology.Subcanonical := by
   rw [Precoverage.isSheaf_toGrothendieck_iff_of_isStableUnderBaseChange]
   rintro Y S hS x hx
   obtain ⟨(𝓤 : OpenCover Y), rfl⟩ := exists_cover_of_mem_pretopology hS
-  let e : Y ⟶ X := 𝓤.glueMorphisms (fun j => x (𝓤.f _) (.mk _)) <| by
-    intro i j
-    apply hx
-    exact Limits.pullback.condition
+  let e : Y ⟶ X :=
+    𝓤.glueMorphisms (fun j => x (𝓤.f _) (.mk _)) <| by
+      intro i j
+      apply hx
+      exact Limits.pullback.condition
   refine ⟨e, ?_, ?_⟩
   · rintro Z e ⟨j⟩
     dsimp [e]
@@ -91,8 +89,7 @@ instance : Scheme.forgetToTop.{u}.IsContinuous zariskiTopology TopCat.grothendie
 set_option backward.isDefEq.respectTransparency.types false in
 /-- A Zariski-`1`-hypercover of a scheme where all components are affine. -/
 @[simps! toPreOneHypercover_toPreZeroHypercover]
-noncomputable
-def affineOneHypercover (X : Scheme.{u}) : zariskiTopology.OneHypercover X :=
+noncomputable def affineOneHypercover (X : Scheme.{u}) : zariskiTopology.OneHypercover X :=
   .mk'
     (X.affineCover.refineOneHypercover fun i j ↦
       (pullback (X.affineCover.f i) (X.affineCover.f j)).affineCover.toPreZeroHypercover)
@@ -102,15 +99,16 @@ def affineOneHypercover (X : Scheme.{u}) : zariskiTopology.OneHypercover X :=
 end Scheme
 
 /-- Zariski sheaves preserve products. -/
-lemma preservesLimitsOfShape_discrete_of_isSheaf_zariskiTopology {F : Scheme.{u}ᵒᵖ ⥤ Type v}
-    {ι : Type*} [Small.{u} ι] [Small.{v} ι] (hF : Presieve.IsSheaf Scheme.zariskiTopology F) :
-    PreservesLimitsOfShape (Discrete ι) F := by
+lemma preservesLimitsOfShape_discrete_of_isSheaf_zariskiTopology
+    {F : Scheme.{u}ᵒᵖ ⥤ Type v} {ι : Type*} [Small.{u} ι] [Small.{v} ι]
+    (hF : Presieve.IsSheaf Scheme.zariskiTopology F)
+    : PreservesLimitsOfShape (Discrete ι) F := by
   apply (config := { allowSynthFailures := true }) preservesLimitsOfShape_of_discrete
   intro X
   have (i : ι) : Mono (Cofan.inj (Sigma.cocone (Discrete.functor <| unop ∘ X)) i) :=
     inferInstanceAs <| Mono (Sigma.ι _ _)
   refine Presieve.preservesProduct_of_isSheafFor F ?_ initialIsInitial
-      (Sigma.cocone (Discrete.functor <| unop ∘ X)) (coproductIsCoproduct' _) ?_ ?_
+    (Sigma.cocone (Discrete.functor <| unop ∘ X)) (coproductIsCoproduct' _) ?_ ?_
   · apply hF.isSheafFor
     convert (⊥_ Scheme).bot_mem_grothendieckTopology
     rw [eq_bot_iff]
@@ -121,15 +119,18 @@ lemma preservesLimitsOfShape_discrete_of_isSheaf_zariskiTopology {F : Scheme.{u}
       (coproductIsCoproduct' <| Discrete.functor <| unop ∘ X) initialIsInitial
   · exact hF.isSheafFor _ (sigmaOpenCover _).mem_grothendieckTopology
 
-/-- Let `F` be a locally directed diagram of open immersions, i.e., a diagram of schemes
+/--
+Let `F` be a locally directed diagram of open immersions, i.e., a diagram of schemes
 for which whenever `xᵢ ∈ Fᵢ` and `xⱼ ∈ Fⱼ` map to the same `xₖ ∈ Fₖ`, there exists
 some `xₗ ∈ Fₗ` that maps to `xᵢ` and `xⱼ` (e.g, the diagram indexing a coproduct).
-Then the colimit inclusions are a Zariski covering. -/
-lemma ofArrows_ι_mem_zariskiTopology_of_isColimit {J : Type*} [Category J]
+Then the colimit inclusions are a Zariski covering.
+-/
+lemma ofArrows_ι_mem_zariskiTopology_of_isColimit
+    {J : Type*} [Category J]
     (F : J ⥤ Scheme.{u}) [∀ {i j : J} (f : i ⟶ j), IsOpenImmersion (F.map f)]
     [(F.comp Scheme.forget).IsLocallyDirected] [Quiver.IsThin J] [Small.{u} J]
-    (c : Cocone F) (hc : IsColimit c) :
-    Sieve.ofArrows _ c.ι.app ∈ Scheme.zariskiTopology c.pt := by
+    (c : Cocone F) (hc : IsColimit c)
+    : Sieve.ofArrows _ c.ι.app ∈ Scheme.zariskiTopology c.pt := by
   let iso : c.pt ≅ colimit F := hc.coconePointUniqueUpToIso (colimit.isColimit F)
   rw [← GrothendieckTopology.pullback_mem_iff_of_isIso (i := iso.inv)]
   apply GrothendieckTopology.superset_covering _ ?_ ?_
@@ -141,12 +142,12 @@ lemma ofArrows_ι_mem_zariskiTopology_of_isColimit {J : Type*} [Category J]
 
 -- TODO: This holds more generally if `𝒰.J` is `u`-small and can be generalized
 -- when we have `PreExtensive` categories
-lemma Scheme.Cover.isSheafFor_sigma_iff {P : MorphismProperty Scheme.{u}}
-    {F : Scheme.{u}ᵒᵖ ⥤ Type*} [IsZariskiLocalAtSource P]
+lemma Scheme.Cover.isSheafFor_sigma_iff
+    {P : MorphismProperty Scheme.{u}} {F : Scheme.{u}ᵒᵖ ⥤ Type*} [IsZariskiLocalAtSource P]
     (hF : Presieve.IsSheaf Scheme.zariskiTopology F)
-    {S : Scheme.{u}} (𝒰 : S.Cover (precoverage P)) [Finite 𝒰.I₀] :
-    Presieve.IsSheafFor F (.ofArrows 𝒰.sigma.X 𝒰.sigma.f) ↔
-      Presieve.IsSheafFor F (.ofArrows 𝒰.X 𝒰.f) := by
+    {S : Scheme.{u}} (𝒰 : S.Cover (precoverage P)) [Finite 𝒰.I₀]
+    : Presieve.IsSheafFor F (.ofArrows 𝒰.sigma.X 𝒰.sigma.f)
+      ↔ Presieve.IsSheafFor F (.ofArrows 𝒰.X 𝒰.f) := by
   have : PreservesLimitsOfShape (Discrete (𝒰.I₀ × 𝒰.I₀)) F :=
     preservesLimitsOfShape_discrete_of_isSheaf_zariskiTopology hF
   have : PreservesLimitsOfShape (Discrete 𝒰.I₀) F :=

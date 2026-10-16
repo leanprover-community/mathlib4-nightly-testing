@@ -18,16 +18,18 @@ namespace String
 
 lemma congr_append (a b : String) : a ++ b = String.ofList (a.toList ++ b.toList) := by simp
 
-@[simp] lemma length_replicate (n : ℕ) (c : Char) : (replicate n c).length = n := by
+@[simp]
+lemma length_replicate (n : ℕ) (c : Char) : (replicate n c).length = n := by
   simp only [← length_toList, String.replicate, String.toList_ofList, List.length_replicate]
 
-lemma length_eq_list_length (l : List Char) : (String.ofList l).length = l.length := by
-  simp
+lemma length_eq_list_length (l : List Char) : (String.ofList l).length = l.length := by simp
 
-/-- The length of the String returned by `String.leftpad n a c` is equal
-  to the larger of `n` and `s.length` -/
-@[simp] lemma length_leftpad (n : ℕ) (c : Char) :
-    ∀ (s : String), (leftpad n c s).length = max n s.length
+/--
+The length of the String returned by `String.leftpad n a c` is equal
+to the larger of `n` and `s.length`
+-/
+@[simp]
+lemma length_leftpad (n : ℕ) (c : Char) : ∀ (s : String), (leftpad n c s).length = max n s.length
   | s => by simp [leftpad, length_toList, Nat.sub_add_eq_max]
 
 lemma leftpad_prefix (n : ℕ) (c : Char) : ∀ s, IsPrefix (replicate (n - length s) c) (leftpad n c s)

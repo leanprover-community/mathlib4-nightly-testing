@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.ClearExclamation
 
 set_option linter.unusedVariables false
@@ -16,8 +17,8 @@ example [delete_this : Inhabited Nat] : Inhabited Nat := by
   infer_instance
 
 -- Confirms clear! can clear the dependencies of multiple hypotheses
-example (delete_this : Nat) (delete_this2 : Nat) (_delete_this_dep : delete_this = delete_this2) :
-    Nat := by
+example (delete_this : Nat) (delete_this2 : Nat) (_delete_this_dep : delete_this = delete_this2)
+    : Nat := by
   clear! delete_this delete_this2
   fail_if_success assumption
   exact 0

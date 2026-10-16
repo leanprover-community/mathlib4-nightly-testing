@@ -34,18 +34,19 @@ open scoped Simplicial
 
 namespace SSet
 
-/-- The boundary `∂Δ[n]` of the `n`-th standard simplex consists of
+/--
+The boundary `∂Δ[n]` of the `n`-th standard simplex consists of
 all `m`-simplices of `stdSimplex n` that are not surjective
-(when viewed as monotone function `m → n`). -/
+(when viewed as monotone function `m → n`).
+-/
 def boundary (n : ℕ) : (Δ[n] : SSet.{u}).Subcomplex where
-  obj _ := Set.ofPred (fun s ↦ ¬Function.Surjective (stdSimplex.asOrderHom s))
+  obj _ := Set.ofPred (fun s ↦ ¬ Function.Surjective (stdSimplex.asOrderHom s))
   map _ _ hs h := hs (Function.Surjective.of_comp h)
 
 /-- The boundary `∂Δ[n]` of the `n`-th standard simplex -/
 scoped[Simplicial] notation3 "∂Δ[" n "]" => SSet.boundary n
 
-lemma boundary_eq_iSup (n : ℕ) :
-    boundary.{u} n = ⨆ (i : Fin (n + 1)), stdSimplex.face {i}ᶜ := by
+lemma boundary_eq_iSup (n : ℕ) : boundary.{u} n = ⨆ (i : Fin (n + 1)), stdSimplex.face {i}ᶜ := by
   ext
   simp [stdSimplex.face_obj, boundary, Function.Surjective]
   tauto
@@ -55,37 +56,37 @@ instance {n : ℕ} : HasDimensionLT (boundary n) n := by
   intro i
   exact stdSimplex.hasDimensionLT_face _ _ (by simp [Finset.card_compl])
 
-lemma mem_boundary_iff_notMem_range {n d : ℕ} (s : Δ[n] _⦋d⦌) :
-    s ∈ (boundary n).obj _ ↔ ∃ (j : Fin (n + 1)), j ∉ Set.range s := by
+lemma mem_boundary_iff_notMem_range {n d : ℕ} (s : Δ[n] _⦋d⦌)
+    : s ∈ (boundary n).obj _ ↔ ∃ (j : Fin (n + 1)), j ∉ Set.range s := by
   rw [boundary_eq_iSup]
   simp
 
-lemma face_singleton_compl_le_boundary {n : ℕ} (i : Fin (n + 1)) :
-    stdSimplex.face.{u} {i}ᶜ ≤ boundary n := by
+lemma face_singleton_compl_le_boundary {n : ℕ} (i : Fin (n + 1))
+    : stdSimplex.face.{u} {i}ᶜ ≤ boundary n := by
   rw [boundary_eq_iSup]
-  exact le_iSup (fun (i : Fin (n +1)) ↦ stdSimplex.face {i}ᶜ) i
+  exact le_iSup (fun (i : Fin (n + 1)) ↦ stdSimplex.face {i}ᶜ) i
 
-lemma stdSimplex.notMem_boundary (n : ℕ) :
-    stdSimplex.objMk (m := op ⦋n⦌) .id ∉ (boundary.{u} n).obj (op ⦋n⦌) := by
+lemma stdSimplex.notMem_boundary (n : ℕ)
+    : stdSimplex.objMk (m := op ⦋n⦌) .id ∉ (boundary.{u} n).obj (op ⦋n⦌) := by
   rw [boundary_eq_iSup, Subfunctor.iSup_obj, Set.mem_iUnion, not_exists]
   intro i hi
   simpa using @hi i (by aesop)
 
-lemma boundary_lt_top (n : ℕ) :
-    boundary.{u} n < ⊤ :=
+lemma boundary_lt_top (n : ℕ) : boundary.{u} n < ⊤ :=
   lt_of_le_not_ge (by simp) (fun h ↦ stdSimplex.notMem_boundary n (h _ (by simp)))
 
-lemma boundary_obj_eq_univ (m n : ℕ) (h : m < n := by lia) :
-    (boundary.{u} n).obj (op ⦋m⦌) = .univ := by
+lemma boundary_obj_eq_univ (m n : ℕ) (h : m < n := by lia)
+    : (boundary.{u} n).obj (op ⦋m⦌) = .univ := by
   ext x
   obtain ⟨f, rfl⟩ := stdSimplex.objEquiv.symm.surjective x
   simp only [Set.mem_univ, iff_true]
   obtain _ | n := n
   · simp at h
-  · obtain ⟨i, q, rfl⟩ := SimplexCategory.eq_comp_δ_of_not_surjective f (fun hf ↦ by
-      rw [← SimplexCategory.epi_iff_surjective] at hf
-      have : n + 1 ≤ m := SimplexCategory.len_le_of_epi f
-      lia)
+  · obtain ⟨i, q, rfl⟩ :=
+      SimplexCategory.eq_comp_δ_of_not_surjective f (fun hf ↦ by
+        rw [← SimplexCategory.epi_iff_surjective] at hf
+        have : n + 1 ≤ m := SimplexCategory.len_le_of_epi f
+        lia)
     apply face_singleton_compl_le_boundary i
     rw [stdSimplex.face_singleton_compl, stdSimplex.objEquiv_symm_comp,
       ← Subcomplex.ofSimplex_le_iff]
@@ -99,23 +100,21 @@ lemma boundary_zero : boundary.{u} 0 = ⊥ := by
   intro x
   exact ⟨0, by subsingleton⟩
 
-lemma op_boundary (n : ℕ) :
-    ∂Δ[n].op.preimage (stdSimplex.opIso.{u} ⦋n⦌).inv = ∂Δ[n] := by
+lemma op_boundary (n : ℕ) : ∂Δ[n].op.preimage (stdSimplex.opIso.{u} ⦋n⦌).inv = ∂Δ[n] := by
   ext ⟨⟨d⟩⟩ j
   simp only [Subcomplex.preimage_obj, Set.mem_preimage, stdSimplex.opIso_inv_app_hom_apply,
     Subcomplex.mem_op_obj_iff, mem_boundary_iff_notMem_range, Set.mem_range,
     stdSimplex.opObjEquiv_opObjEquiv_symm_apply, not_exists]
   constructor
   all_goals
-  · rintro ⟨k, hk⟩
-    exact ⟨k.rev, fun l _ ↦ hk l.rev (by aesop)⟩
+    · rintro ⟨k, hk⟩
+      exact ⟨k.rev, fun l _ ↦ hk l.rev (by aesop)⟩
 
 namespace stdSimplex
 
 variable {n : ℕ} (A : (Δ[n] : SSet.{u}).Subcomplex)
 
-lemma subcomplex_hasDimensionLT_of_neq_top (h : A ≠ ⊤) :
-    HasDimensionLT A n where
+lemma subcomplex_hasDimensionLT_of_neq_top (h : A ≠ ⊤) : HasDimensionLT A n where
   degenerate_eq_top i hi := by
     ext ⟨a, ha⟩
     rw [A.mem_degenerate_iff]
@@ -126,8 +125,7 @@ lemma subcomplex_hasDimensionLT_of_neq_top (h : A ≠ ⊤) :
       rintro rfl
       exact h (le_antisymm (by simp) (by simpa [← ofSimplex_objEquiv_symm_id]))
 
-lemma le_boundary_iff :
-    A ≤ boundary.{u} n ↔ A ≠ ⊤ := by
+lemma le_boundary_iff : A ≤ boundary.{u} n ↔ A ≠ ⊤ := by
   refine ⟨fun h ↦ ?_, fun hA ↦ ?_⟩
   · rintro rfl
     exact lt_irrefl _ (lt_of_le_of_lt h (boundary_lt_top n))
@@ -137,11 +135,10 @@ lemma le_boundary_iff :
     dsimp at h₂ ⊢
     by_cases! h₃ : m < n
     · simp [boundary_obj_eq_univ m n h₃]
-    · simp [← A.mem_nonDegenerate_iff ⟨x, h₂⟩,
-        nonDegenerate_eq_empty_of_hasDimensionLT _ _ _ h₃] at h₁
+    · simp [← A.mem_nonDegenerate_iff ⟨x, h₂⟩, nonDegenerate_eq_empty_of_hasDimensionLT _ _ _ h₃]
+        at h₁
 
-lemma eq_boundary_iff :
-    A = boundary n ↔ boundary n ≤ A ∧ A ≠ ⊤ := by
+lemma eq_boundary_iff : A = boundary n ↔ boundary n ≤ A ∧ A ≠ ⊤ := by
   constructor
   · rintro rfl
     exact ⟨by rfl, (boundary_lt_top n).ne⟩
@@ -153,34 +150,32 @@ end stdSimplex
 namespace boundary
 
 /-- The inclusion of a face of `∂Δ[n]`. -/
-def faceι {n : ℕ} (i : Fin (n + 1)) :
-    (stdSimplex.face {i}ᶜ : SSet.{u}) ⟶ ∂Δ[n] :=
+def faceι {n : ℕ} (i : Fin (n + 1)) : (stdSimplex.face {i}ᶜ : SSet.{u}) ⟶ ∂Δ[n] :=
   Subcomplex.homOfLE (face_singleton_compl_le_boundary i)
 
-instance {n : ℕ} (i : Fin (n + 1)) : Mono (faceι.{u} i) := by
-  dsimp [faceι]; infer_instance
+instance {n : ℕ} (i : Fin (n + 1)) : Mono (faceι.{u} i) := by dsimp [faceι]; infer_instance
 
 @[reassoc (attr := simp)]
-lemma faceι_ι {n : ℕ} (i : Fin (n + 2)) :
-    faceι i ≫ (boundary.{u} (n + 1)).ι = (stdSimplex.face {i}ᶜ).ι := by
+lemma faceι_ι {n : ℕ} (i : Fin (n + 2))
+    : faceι i ≫ (boundary.{u} (n + 1)).ι = (stdSimplex.face {i}ᶜ).ι := by
   simp [faceι]
 
-/-- The morphism `Δ[n] ⟶ ∂Δ[n + 1]` corresponding to face
-the face `i : Fin (n + 2)`. -/
-def ι {n : ℕ} (i : Fin (n + 2)) :
-    Δ[n] ⟶ (∂Δ[n + 1] : SSet.{u}) :=
+/--
+The morphism `Δ[n] ⟶ ∂Δ[n + 1]` corresponding to face
+the face `i : Fin (n + 2)`.
+-/
+def ι {n : ℕ} (i : Fin (n + 2)) : Δ[n] ⟶ (∂Δ[n + 1] : SSet.{u}) :=
   Subcomplex.lift ((stdSimplex.{u}.map (SimplexCategory.δ i))) (by
     simp only [Subcomplex.range_eq_ofSimplex]
     refine le_trans ?_ (face_singleton_compl_le_boundary i)
     rw [stdSimplex.face_singleton_compl, yonedaEquiv_map])
 
 @[reassoc (attr := simp)]
-lemma ι_ι {n : ℕ} (i : Fin (n + 2)) :
-    ι.{u} i ≫ ∂Δ[n + 1].ι = stdSimplex.δ i := rfl
+lemma ι_ι {n : ℕ} (i : Fin (n + 2)) : ι.{u} i ≫ ∂Δ[n + 1].ι = stdSimplex.δ i := rfl
 
 @[reassoc (attr := simp)]
-lemma faceSingletonComplIso_inv_ι {n : ℕ} (i : Fin (n + 2)) :
-    (stdSimplex.faceSingletonComplIso i).inv ≫ ι i = boundary.faceι i := by
+lemma faceSingletonComplIso_inv_ι {n : ℕ} (i : Fin (n + 2))
+    : (stdSimplex.faceSingletonComplIso i).inv ≫ ι i = boundary.faceι i := by
   rw [← cancel_epi (stdSimplex.faceSingletonComplIso i).hom, Iso.hom_inv_id_assoc]
   rfl
 
@@ -194,12 +189,14 @@ instance {n : ℕ} (i : Fin (n + 2)) : Mono (stdSimplex.{u}.δ i) := by
   infer_instance
 
 @[ext]
-lemma hom_ext {n : ℕ} {X : SSet.{u}} {f g : (∂Δ[n + 1] : SSet) ⟶ X}
-    (h : ∀ (i : Fin (n + 2)), ι i ≫ f = ι i ≫ g) :
-    f = g := by
+lemma hom_ext
+    {n : ℕ} {X : SSet.{u}} {f g : (∂Δ[n + 1] : SSet) ⟶ X}
+    (h : ∀ (i : Fin (n + 2)), ι i ≫ f = ι i ≫ g)
+    : f = g := by
   ext m ⟨x, hx⟩
-  simp only [boundary_eq_iSup, stdSimplex.face_singleton_compl, Subfunctor.iSup_obj,
-    Set.mem_iUnion, Subcomplex.mem_ofSimplex_obj_iff, op_unop] at hx
+  simp only [boundary_eq_iSup, stdSimplex.face_singleton_compl, Subfunctor.iSup_obj, Set.mem_iUnion,
+      Subcomplex.mem_ofSimplex_obj_iff, op_unop]
+    at hx
   obtain ⟨i, ⟨y, rfl⟩⟩ := hx
   congrm $(h i).app _ _
 

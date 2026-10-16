@@ -63,7 +63,8 @@ namespace VeroffAlgebra
 
 variable [VeroffAlgebra α] (a b c : α)
 
-instance : Compl α where compl a := a | a
+instance : Compl α where
+  compl a := a | a
 
 lemma compl_def : aᶜ = a | a := rfl
 
@@ -85,8 +86,7 @@ lemma abba : a | b | b | a = aᶜ := by
   have l1 := (ababc a (a | b) b).symm
   rwa [comm _ b, veroff, comm a, comm b] at l1
 
-lemma aba_abb : a | (b | a) = a | bᶜ := by
-  rw [← ababc, comm b, comm _ (b | a), abba]
+lemma aba_abb : a | (b | a) = a | bᶜ := by rw [← ababc, comm b, comm _ (b | a), abba]
 
 lemma sheffer : a | (b | bᶜ) = aᶜ := by
   have l1 := veroff a (b | b | b) b
@@ -156,13 +156,13 @@ lemma sup_def : a ⊔ b = aᶜ | bᶜ := rfl
 lemma inf_def : a ⊓ b = (a | b)ᶜ := rfl
 
 /-- The top element, equal to `a | aᶜ` for any `a`. -/
-def top : α :=
-  default | defaultᶜ
+def top : α := default | defaultᶜ
 
 lemma f_compl_const : a | aᶜ = b | bᶜ := by
   have l1 := meredith (b | bᶜ) a
   rwa [← sheffer (b | bᶜ) a, comm _ (a | aᶜ), sheffer, ← compl_compl (_ | a),
-    ← sheffer (_ | a)ᶜ a, comm _ (a | aᶜ), meredith] at l1
+      ← sheffer ((_ | a)ᶜ) a, comm _ (a | aᶜ), meredith]
+    at l1
 
 lemma sup_compl_eq_top : a ⊔ aᶜ = top := f_compl_const aᶜ default
 
@@ -194,8 +194,8 @@ instance : BooleanAlgebra α where
       ← le_iff_compl_sup]
     nth_rw 3 [← sup_idem a]
     rw [sup_sup_sup_comm]
-    apply sup_le_sup <;>
-    rw [le_iff_compl_sup, compl_compl, sup_left_comm, sup_comm, sup_comm a, sup_compl_eq_top]
+    apply sup_le_sup
+      <;> rw [le_iff_compl_sup, compl_compl, sup_left_comm, sup_comm, sup_comm a, sup_compl_eq_top]
 
 end VeroffAlgebra
 

@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.RSuffices
 import Mathlib.Tactic.ExistsI
 import Mathlib.Algebra.Ring.Nat
@@ -6,7 +7,6 @@ import Mathlib.Data.Set.Defs
 
 set_option autoImplicit true
 /-- These next few are duplicated from `rcases/obtain` tests, with the goal order swapped. -/
-
 example : True := by
   rsuffices ⟨n : ℕ, h : n = n, -⟩ : ∃ n : ℕ, n = n ∧ True
   · guard_hyp n : ℕ
@@ -54,7 +54,6 @@ example (x y : α ⊕ β) : True := by
     guard_hyp d : β
     trivial
   exact ⟨x, y⟩
-
 
 protected def Set.foo {α β} (_ : Set α) (_ : Set β) : Set (α × β) := ∅
 

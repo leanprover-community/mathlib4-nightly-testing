@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Group.Action.Pointwise.Finset
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.SetTheory.Cardinal.Finite
-
 import Mathlib.Tactic.Positivity.Finset
 
 /-!
@@ -29,18 +28,18 @@ variable [DecidableEq G] {A B : Finset G}
 
 /-- **Ruzsa's covering lemma**. -/
 @[to_additive /-- **Ruzsa's covering lemma** -/]
-theorem ruzsa_covering_mul (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B) :
-    ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * (B / B) := by
+theorem ruzsa_covering_mul (hB : B.Nonempty) (hK : #(A * B) ≤ K * #B)
+    : ∃ F ⊆ A, #F ≤ K ∧ A ⊆ F * (B / B) := by
   have : ∀ F, Decidable ((F : Set G).PairwiseDisjoint (· • B)) := fun F ↦ Classical.dec _
   set C := {F ∈ A.powerset | (SetLike.coe F).PairwiseDisjoint (· • B)}
-  obtain ⟨F, hFmax⟩ := C.exists_maximal <| filter_nonempty_iff.2
-    ⟨∅, empty_mem_powerset _, by simp [coe_empty]⟩
+  obtain ⟨F, hFmax⟩ :=
+    C.exists_maximal <| filter_nonempty_iff.2 ⟨∅, empty_mem_powerset _, by simp [coe_empty]⟩
   simp only [C, mem_filter, mem_powerset] at hFmax
   obtain ⟨hFA, hF⟩ := hFmax.1
   refine ⟨F, hFA, le_of_mul_le_mul_right ?_ (by positivity : (0 : ℝ) < #B), fun a ha ↦ ?_⟩
   · calc
-      (#F * #B : ℝ) = #(F * B) := by
-        rw [card_mul_iff.2 <| pairwiseDisjoint_smul_iff.1 hF, Nat.cast_mul]
+      (#F * #B : ℝ)
+        = #(F * B) := by rw [card_mul_iff.2 <| pairwiseDisjoint_smul_iff.1 hF, Nat.cast_mul]
       _ ≤ #(A * B) := by gcongr
       _ ≤ K * #B := hK
   by_cases hau : a ∈ F
@@ -60,9 +59,9 @@ variable {A B : Set G}
 
 /-- **Ruzsa's covering lemma** for sets. See also `Finset.ruzsa_covering_mul`. -/
 @[to_additive /-- **Ruzsa's covering lemma** for sets. See also `Finset.ruzsa_covering_add`. -/]
-lemma ruzsa_covering_mul (hA : A.Finite) (hB : B.Finite) (hB₀ : B.Nonempty)
-    (hK : Nat.card (A * B) ≤ K * Nat.card B) :
-    ∃ F ⊆ A, Nat.card F ≤ K ∧ A ⊆ F * (B / B) ∧ F.Finite := by
+lemma ruzsa_covering_mul
+    (hA : A.Finite) (hB : B.Finite) (hB₀ : B.Nonempty) (hK : Nat.card (A * B) ≤ K * Nat.card B)
+    : ∃ F ⊆ A, Nat.card F ≤ K ∧ A ⊆ F * (B / B) ∧ F.Finite := by
   lift A to Finset G using hA
   lift B to Finset G using hB
   classical

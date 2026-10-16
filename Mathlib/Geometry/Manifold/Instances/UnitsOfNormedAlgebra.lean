@@ -39,36 +39,37 @@ namespace Units
 
 variable {R : Type*} [NormedRing R] [CompleteSpace R] {n : ℕ∞ω}
 
-instance : ChartedSpace R Rˣ :=
-  isOpenEmbedding_val.singletonChartedSpace
+instance : ChartedSpace R Rˣ := isOpenEmbedding_val.singletonChartedSpace
 
-theorem chartAt_apply {a : Rˣ} {b : Rˣ} : chartAt R a b = b :=
-  rfl
+theorem chartAt_apply {a : Rˣ} {b : Rˣ} : chartAt R a b = b := rfl
 
-theorem chartAt_source {a : Rˣ} : (chartAt R a).source = Set.univ :=
-  rfl
+theorem chartAt_source {a : Rˣ} : (chartAt R a).source = Set.univ := rfl
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [NormedAlgebra 𝕜 R]
-  {H : Type*} [TopologicalSpace H] {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜] [NormedAlgebra 𝕜 R]
+  {H : Type*} [TopologicalSpace H]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   {I : ModelWithCorners 𝕜 E H} {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
-instance : IsManifold 𝓘(𝕜, R) n Rˣ :=
-  isOpenEmbedding_val.isManifold_singleton
+instance : IsManifold (𝓘(𝕜, R)) n Rˣ := isOpenEmbedding_val.isManifold_singleton
 
-/-- For a complete normed ring `R`, the embedding of the units `Rˣ` into `R` is a `C^n` map between
-manifolds. -/
-lemma contMDiff_val : ContMDiff 𝓘(𝕜, R) 𝓘(𝕜, R) n (val : Rˣ → R) :=
+/--
+For a complete normed ring `R`, the embedding of the units `Rˣ` into `R` is a `C^n` map between
+manifolds.
+-/
+lemma contMDiff_val : ContMDiff (𝓘(𝕜, R)) (𝓘(𝕜, R)) n (val : Rˣ → R) :=
   contMDiff_isOpenEmbedding Units.isOpenEmbedding_val
 
 /-- The units of a complete normed ring form a Lie group. -/
-instance : LieGroup 𝓘(𝕜, R) n Rˣ where
+instance : LieGroup (𝓘(𝕜, R)) n Rˣ where
   contMDiff_mul := by
     apply ContMDiff.of_comp_isOpenEmbedding Units.isOpenEmbedding_val
-    have : (val : Rˣ → R) ∘ (fun x : Rˣ × Rˣ => x.1 * x.2) =
-      (fun x : R × R => x.1 * x.2) ∘ (fun x : Rˣ × Rˣ => (x.1, x.2)) := by ext; simp
+    have : (val : Rˣ → R) ∘ (fun x : Rˣ × Rˣ => x.1 * x.2)
+        = (fun x : R × R => x.1 * x.2) ∘ (fun x : Rˣ × Rˣ => (x.1, x.2)) := by
+      ext; simp
     rw [this]
-    have : ContMDiff (𝓘(𝕜, R).prod 𝓘(𝕜, R)) 𝓘(𝕜, R × R) n
-      (fun x : Rˣ × Rˣ => ((x.1 : R), (x.2 : R))) :=
+    have : ContMDiff (𝓘(𝕜, R).prod 𝓘(𝕜, R)) (𝓘(𝕜, R × R)) n
+        (fun x : Rˣ × Rˣ => ((x.1 : R), (x.2 : R))) :=
       (contMDiff_val.comp contMDiff_fst).prodMk_space (contMDiff_val.comp contMDiff_snd)
     refine ContMDiff.comp ?_ this
     rw [contMDiff_iff_contDiff]
@@ -81,19 +82,22 @@ instance : LieGroup 𝓘(𝕜, R) n Rˣ where
     rw [contMDiffAt_iff_contDiffAt]
     exact contDiffAt_ringInverse _ _
 
-/-- If a complete normed ring `R` acts continuously differentiably on a manifold `M`, its
-submanifold of units does as well. -/
-instance contMDiffSMul [MulAction R M] [ContMDiffSMul 𝓘(𝕜, R) I n R M] :
-    ContMDiffSMul 𝓘(𝕜, R) I n Rˣ M :=
+/--
+If a complete normed ring `R` acts continuously differentiably on a manifold `M`, its
+submanifold of units does as well.
+-/
+instance contMDiffSMul [MulAction R M] [ContMDiffSMul (𝓘(𝕜, R)) I n R M]
+    : ContMDiffSMul (𝓘(𝕜, R)) I n Rˣ M :=
   MulAction.contMDiffSMul_compHom (f := coeHom R) contMDiff_val
 
 /-- The general linear group `(V →L[𝕜] V)ˣ` of a Banach space `V` is a Lie group. -/
-example {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [CompleteSpace V] (n : ℕ∞ω) :
-    LieGroup 𝓘(𝕜, V →L[𝕜] V) n (V →L[𝕜] V)ˣ := inferInstance
+example {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [CompleteSpace V] (n : ℕ∞ω)
+    : LieGroup (𝓘(𝕜, V →L[𝕜] V)) n (V →L[𝕜] V)ˣ :=
+  inferInstance
 
 /-- The general linear group `(V →L[𝕜] V)ˣ` of a Banach space `V` acts smoothly on `V`. -/
-example {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [CompleteSpace V] (n : ℕ∞ω) :
-    ContMDiffSMul 𝓘(𝕜, V →L[𝕜] V) 𝓘(𝕜, V) n (V →L[𝕜] V)ˣ V :=
+example {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [CompleteSpace V] (n : ℕ∞ω)
+    : ContMDiffSMul (𝓘(𝕜, V →L[𝕜] V)) (𝓘(𝕜, V)) n (V →L[𝕜] V)ˣ V :=
   inferInstance
 
 end Units

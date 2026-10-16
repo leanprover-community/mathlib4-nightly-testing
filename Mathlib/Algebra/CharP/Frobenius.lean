@@ -40,8 +40,7 @@ variable (R)
 lemma iterateFrobenius_eq_pow : iterateFrobenius R p n = frobenius R p ^ n := by
   ext; simp [iterateFrobenius_def, iterate_frobenius]
 
-lemma coe_iterateFrobenius : iterateFrobenius R p n = (frobenius R p)^[n] :=
-  (pow_iterate p n).symm
+lemma coe_iterateFrobenius : iterateFrobenius R p n = (frobenius R p)^[n] := (pow_iterate p n).symm
 
 lemma iterateFrobenius_one_apply : iterateFrobenius R p 1 x = x ^ p := by
   rw [iterateFrobenius_def, pow_one]
@@ -57,16 +56,16 @@ lemma iterateFrobenius_zero_apply : iterateFrobenius R p 0 x = x := by
 lemma iterateFrobenius_zero : iterateFrobenius R p 0 = RingHom.id R :=
   RingHom.ext (iterateFrobenius_zero_apply R p)
 
-lemma iterateFrobenius_add_apply :
-    iterateFrobenius R p (m + n) x = iterateFrobenius R p m (iterateFrobenius R p n x) := by
+lemma iterateFrobenius_add_apply
+    : iterateFrobenius R p (m + n) x = iterateFrobenius R p m (iterateFrobenius R p n x) := by
   simp_rw [iterateFrobenius_def, add_comm m n, pow_add, pow_mul]
 
-lemma iterateFrobenius_add :
-    iterateFrobenius R p (m + n) = (iterateFrobenius R p m).comp (iterateFrobenius R p n) :=
+lemma iterateFrobenius_add
+    : iterateFrobenius R p (m + n) = (iterateFrobenius R p m).comp (iterateFrobenius R p n) :=
   RingHom.ext (iterateFrobenius_add_apply R p m n)
 
-lemma iterateFrobenius_mul_apply :
-    iterateFrobenius R p (m * n) x = (iterateFrobenius R p m)^[n] x := by
+lemma iterateFrobenius_mul_apply
+    : iterateFrobenius R p (m * n) x = (iterateFrobenius R p m)^[n] x := by
   simp_rw [coe_iterateFrobenius, Function.iterate_mul]
 
 lemma coe_iterateFrobenius_mul : iterateFrobenius R p (m * n) = (iterateFrobenius R p m)^[n] :=
@@ -77,36 +76,37 @@ variable {R}
 lemma MonoidHom.map_frobenius : f (frobenius R p x) = frobenius S p (f x) := map_pow f x p
 lemma RingHom.map_frobenius : g (frobenius R p x) = frobenius S p (g x) := map_pow g x p
 
-lemma MonoidHom.map_iterate_frobenius (n : ℕ) :
-    f ((frobenius R p)^[n] x) = (frobenius S p)^[n] (f x) :=
+lemma MonoidHom.map_iterate_frobenius (n : ℕ)
+    : f ((frobenius R p)^[n] x) = (frobenius S p)^[n] (f x) :=
   Function.Semiconj.iterate_right (f.map_frobenius p) n x
 
-lemma MonoidHom.map_iterateFrobenius (n : ℕ) :
-    f (iterateFrobenius R p n x) = iterateFrobenius S p n (f x) := by
+lemma MonoidHom.map_iterateFrobenius (n : ℕ)
+    : f (iterateFrobenius R p n x) = iterateFrobenius S p n (f x) := by
   simp [iterateFrobenius_def]
 
-lemma RingHom.map_iterate_frobenius (n : ℕ) :
-    g ((frobenius R p)^[n] x) = (frobenius S p)^[n] (g x) :=
+lemma RingHom.map_iterate_frobenius (n : ℕ)
+    : g ((frobenius R p)^[n] x) = (frobenius S p)^[n] (g x) :=
   g.toMonoidHom.map_iterate_frobenius p x n
 
-lemma RingHom.map_iterateFrobenius (n : ℕ) :
-    g (iterateFrobenius R p n x) = iterateFrobenius S p n (g x) :=
+lemma RingHom.map_iterateFrobenius (n : ℕ)
+    : g (iterateFrobenius R p n x) = iterateFrobenius S p n (g x) :=
   g.toMonoidHom.map_iterateFrobenius p x n
 
-lemma MonoidHom.iterate_map_frobenius (f : R →* R) (p : ℕ) [ExpChar R p] (n : ℕ) :
-    f^[n] (frobenius R p x) = frobenius R p (f^[n] x) :=
+lemma MonoidHom.iterate_map_frobenius (f : R →* R) (p : ℕ) [ExpChar R p] (n : ℕ)
+    : f^[n] (frobenius R p x) = frobenius R p (f^[n] x) :=
   iterate_map_pow f _ _ _
 
-lemma RingHom.iterate_map_frobenius (f : R →+* R) (p : ℕ) [ExpChar R p] (n : ℕ) :
-    f^[n] (frobenius R p x) = frobenius R p (f^[n] x) := iterate_map_pow f _ _ _
+lemma RingHom.iterate_map_frobenius (f : R →+* R) (p : ℕ) [ExpChar R p] (n : ℕ)
+    : f^[n] (frobenius R p x) = frobenius R p (f^[n] x) :=
+  iterate_map_pow f _ _ _
 
 /-- The Frobenius endomorphism commutes with any ring homomorphism. -/
 lemma RingHom.frobenius_comm : g.comp (frobenius R p) = (frobenius S p).comp g :=
   ext <| map_frobenius g p
 
 /-- The iterated Frobenius endomorphism commutes with any ring homomorphism. -/
-lemma RingHom.iterateFrobenius_comm (n : ℕ) :
-    g.comp (iterateFrobenius R p n) = (iterateFrobenius S p n).comp g :=
+lemma RingHom.iterateFrobenius_comm (n : ℕ)
+    : g.comp (iterateFrobenius R p n) = (iterateFrobenius S p n).comp g :=
   ext fun x ↦ map_iterateFrobenius g p x n
 
 variable (R S)
@@ -114,18 +114,21 @@ variable (R S)
 /-- The Frobenius map of an algebra as a Frobenius-semilinear map. -/
 nonrec def LinearMap.frobenius [Algebra R S] : S →ₛₗ[frobenius R p] S where
   __ := frobenius S p
-  map_smul' r s := show frobenius S p _ = _ by
-    simp_rw [Algebra.smul_def, map_mul, ← (algebraMap R S).map_frobenius]; rfl
+  map_smul' r s :=
+    show frobenius S p _ = _ by
+      simp_rw [Algebra.smul_def, map_mul, ← (algebraMap R S).map_frobenius]; rfl
 
 /-- The iterated Frobenius map of an algebra as an iterated-Frobenius-semilinear map. -/
 nonrec def LinearMap.iterateFrobenius [Algebra R S] : S →ₛₗ[iterateFrobenius R p n] S where
   __ := iterateFrobenius S p n
-  map_smul' f s := show iterateFrobenius S p n _ = _ by
-    simp_rw [iterateFrobenius_def, Algebra.smul_def, mul_pow, ← map_pow]; rfl
+  map_smul' f s :=
+    show iterateFrobenius S p n _ = _ by
+      simp_rw [iterateFrobenius_def, Algebra.smul_def, mul_pow, ← map_pow]; rfl
 
 theorem LinearMap.frobenius_def [Algebra R S] (x : S) : frobenius R S p x = x ^ p := rfl
 
-theorem LinearMap.iterateFrobenius_def [Algebra R S] (n : ℕ) (x : S) :
-    iterateFrobenius R S p n x = x ^ p ^ n := rfl
+theorem LinearMap.iterateFrobenius_def [Algebra R S] (n : ℕ) (x : S)
+    : iterateFrobenius R S p n x = x ^ p ^ n :=
+  rfl
 
 end CommSemiring

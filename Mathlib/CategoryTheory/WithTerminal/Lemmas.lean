@@ -26,14 +26,20 @@ open IsCofiltered in
 instance [IsCofilteredOrEmpty C] : IsCofiltered (WithTerminal C) where
   cone_objs x y :=
     match x, y with
-    | star, y => ⟨y, default, 𝟙 y, trivial⟩
-    | x, star => ⟨x, 𝟙 x, default, trivial⟩
-    | of x, of y => ⟨.of <| min x y, minToLeft _ _, minToRight _ _, trivial⟩
+    | star, y =>
+      ⟨y, default, 𝟙 y, trivial⟩
+    | x, star =>
+      ⟨x, 𝟙 x, default, trivial⟩
+    | of x, of y =>
+      ⟨.of <| min x y, minToLeft _ _, minToRight _ _, trivial⟩
   cone_maps x y f g :=
     match x, y with
-    | star, _ => ⟨star, 𝟙 _, (IsIso.eq_comp_inv f).mp rfl⟩
-    | x, star => ⟨x, 𝟙 _, Subsingleton.elim _ _⟩
-    | of _, of _ => ⟨.of <| eq f g, eqHom _ _, eq_condition _ _⟩
+    | star, _ =>
+      ⟨star, 𝟙 _, (IsIso.eq_comp_inv f).mp rfl⟩
+    | x, star =>
+      ⟨x, 𝟙 _, Subsingleton.elim _ _⟩
+    | of _, of _ =>
+      ⟨.of <| eq f g, eqHom _ _, eq_condition _ _⟩
 
 end WithTerminal
 

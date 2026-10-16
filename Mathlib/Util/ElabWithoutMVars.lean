@@ -17,8 +17,9 @@ public meta section
 open Lean Elab Tactic
 
 /-- Elaborates a term with `errToSorry = false` and ensuring it has no metavariables. -/
-def elabTermWithoutNewMVars (tactic : Name) (t : Term) : TacticM Expr := Term.withoutErrToSorry do
-  let (e, mvars) ← elabTermWithHoles t none tactic
-  unless mvars.isEmpty do
-    throwErrorAt t "Argument passed to {tactic} has metavariables:{indentD e}"
-  return e
+def elabTermWithoutNewMVars (tactic : Name) (t : Term) : TacticM Expr :=
+  Term.withoutErrToSorry do
+    let (e, mvars) ← elabTermWithHoles t none tactic
+    unless mvars.isEmpty do
+      throwErrorAt t "Argument passed to {tactic} has metavariables:{indentD e}"
+    return e

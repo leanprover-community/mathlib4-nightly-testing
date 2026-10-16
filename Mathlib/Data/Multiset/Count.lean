@@ -30,22 +30,17 @@ section
 
 variable (p : α → Prop) [DecidablePred p]
 
-
 /-! ### countP -/
 
+/--
+`countP p s` counts the number of elements of `s` (with multiplicity) that
+satisfy `p`.
+-/
+def countP (s : Multiset α) : ℕ := Quot.liftOn s (List.countP p) fun _l₁ _l₂ => Perm.countP_eq (p ·)
 
-/-- `countP p s` counts the number of elements of `s` (with multiplicity) that
-  satisfy `p`. -/
-def countP (s : Multiset α) : ℕ :=
-  Quot.liftOn s (List.countP p) fun _l₁ _l₂ => Perm.countP_eq (p ·)
+@[simp] theorem coe_countP (l : List α) : countP p l = l.countP p := rfl
 
-@[simp]
-theorem coe_countP (l : List α) : countP p l = l.countP p :=
-  rfl
-
-@[simp]
-theorem countP_zero : countP p 0 = 0 :=
-  rfl
+@[simp] theorem countP_zero : countP p 0 = 0 := rfl
 
 variable {p}
 
@@ -54,7 +49,7 @@ theorem countP_cons_of_pos {a : α} (s) : p a → countP p (a ::ₘ s) = countP 
   Quot.inductionOn s <| by simpa using fun _ => List.countP_cons_of_pos (p := (p ·))
 
 @[simp]
-theorem countP_cons_of_neg {a : α} (s) : ¬p a → countP p (a ::ₘ s) = countP p s :=
+theorem countP_cons_of_neg {a : α} (s) : ¬ p a → countP p (a ::ₘ s) = countP p s :=
   Quot.inductionOn s <| by simpa using fun _ => List.countP_cons_of_neg (p := (p ·))
 
 variable (p)
@@ -65,7 +60,7 @@ theorem countP_cons (b : α) (s) : countP p (b ::ₘ s) = countP p s + if p b th
 theorem countP_le_card (s) : countP p s ≤ card s :=
   Quot.inductionOn s fun _l => countP_le_length (p := (p ·))
 
-theorem card_eq_countP_add_countP (s) : card s = countP p s + countP (fun x => ¬p x) s :=
+theorem card_eq_countP_add_countP (s) : card s = countP p s + countP (fun x => ¬ p x) s :=
   Quot.inductionOn s fun l => by simp [l.length_eq_countP_add_countP p]
 
 @[gcongr]
@@ -87,50 +82,45 @@ lemma countP_attach (s : Multiset α) : s.attach.countP (fun a : {a // a ∈ s} 
 
 variable {p}
 
-theorem countP_pos {s} : 0 < countP p s ↔ ∃ a ∈ s, p a :=
-  Quot.inductionOn s fun _l => by simp
+theorem countP_pos {s} : 0 < countP p s ↔ ∃ a ∈ s, p a := Quot.inductionOn s fun _l => by simp
 
-theorem countP_eq_zero {s} : countP p s = 0 ↔ ∀ a ∈ s, ¬p a :=
+theorem countP_eq_zero {s} : countP p s = 0 ↔ ∀ a ∈ s, ¬ p a :=
   Quot.inductionOn s fun _l => by simp [List.countP_eq_zero]
 
 theorem countP_eq_card {s} : countP p s = card s ↔ ∀ a ∈ s, p a :=
   Quot.inductionOn s fun _l => by simp [List.countP_eq_length]
 
-theorem countP_pos_of_mem {s a} (h : a ∈ s) (pa : p a) : 0 < countP p s :=
-  countP_pos.2 ⟨_, h, pa⟩
+theorem countP_pos_of_mem {s a} (h : a ∈ s) (pa : p a) : 0 < countP p s := countP_pos.2 ⟨_, h, pa⟩
 
 @[congr]
-theorem countP_congr {s s' : Multiset α} (hs : s = s')
+theorem countP_congr
+    {s s' : Multiset α} (hs : s = s')
     {p p' : α → Prop} [DecidablePred p] [DecidablePred p']
-    (hp : ∀ x ∈ s, p x = p' x) : s.countP p = s'.countP p' := by
+    (hp : ∀ x ∈ s, p x = p' x)
+    : s.countP p = s'.countP p' := by
   revert hs hp
-  exact Quot.induction_on₂ s s'
-    (fun l l' hs hp => by
-      simp only [quot_mk_to_coe'', coe_eq_coe] at hs
-      apply hs.countP_congr
-      simpa using hp)
+  exact Quot.induction_on₂ s s' (fun l l' hs hp => by
+    simp only [quot_mk_to_coe'', coe_eq_coe] at hs
+    apply hs.countP_congr
+    simpa using hp)
 
 end
 
 /-! ### Multiplicity of an element -/
-
 
 section
 
 variable [DecidableEq α] {s t u : Multiset α}
 
 /-- `count a s` is the multiplicity of `a` in `s`. -/
-def count (a : α) : Multiset α → ℕ :=
-  countP (a = ·)
+def count (a : α) : Multiset α → ℕ := countP (a = ·)
 
 @[simp]
 theorem coe_count (a : α) (l : List α) : count a (ofList l) = l.count a := by
   simp_rw [count, List.count, coe_countP (a = ·) l, @eq_comm _ a]
   rfl
 
-@[simp]
-theorem count_zero (a : α) : count a 0 = 0 :=
-  rfl
+@[simp] theorem count_zero (a : α) : count a 0 = 0 := rfl
 
 @[simp]
 theorem count_cons_self (a : α) (s : Multiset α) : count a (a ::ₘ s) = count a s + 1 :=
@@ -140,18 +130,15 @@ theorem count_cons_self (a : α) (s : Multiset α) : count a (a ::ₘ s) = count
 theorem count_cons_of_ne {a b : α} (h : a ≠ b) (s : Multiset α) : count a (b ::ₘ s) = count a s :=
   countP_cons_of_neg _ h
 
-theorem count_le_card (a : α) (s) : count a s ≤ card s :=
-  countP_le_card _ _
+theorem count_le_card (a : α) (s) : count a s ≤ card s := countP_le_card _ _
 
-@[gcongr]
-theorem count_le_of_le (a : α) {s t} : s ≤ t → count a s ≤ count a t :=
-  countP_le_of_le _
+@[gcongr] theorem count_le_of_le (a : α) {s t} : s ≤ t → count a s ≤ count a t := countP_le_of_le _
 
 theorem count_le_count_cons (a b : α) (s : Multiset α) : count a s ≤ count a (b ::ₘ s) :=
   count_le_of_le _ (le_cons_self _ _)
 
-theorem count_cons (a b : α) (s : Multiset α) :
-    count a (b ::ₘ s) = count a s + if a = b then 1 else 0 :=
+theorem count_cons (a b : α) (s : Multiset α)
+    : count a (b ::ₘ s) = count a s + if a = b then 1 else 0 :=
   countP_cons (a = ·) _ _
 
 theorem count_singleton_self (a : α) : count a ({a} : Multiset α) = 1 :=
@@ -181,16 +168,15 @@ theorem count_eq_card {a : α} {s} : count a s = card s ↔ ∀ x ∈ s, a = x :
   simp [countP_eq_card, count, @eq_comm _ a]
 
 theorem ext {s t : Multiset α} : s = t ↔ ∀ a, count a s = count a t :=
-  Quotient.inductionOn₂ s t fun _l₁ _l₂ => Quotient.eq.trans <| by
-    simp only [quot_mk_to_coe, coe_count]
-    apply perm_iff_count
+  Quotient.inductionOn₂ s t fun _l₁ _l₂ =>
+    Quotient.eq.trans <| by
+      simp only [quot_mk_to_coe, coe_count]
+      apply perm_iff_count
 
-@[ext]
-theorem ext' {s t : Multiset α} : (∀ a, count a s = count a t) → s = t :=
-  ext.2
+@[ext] theorem ext' {s t : Multiset α} : (∀ a, count a s = count a t) → s = t := ext.2
 
-lemma count_injective : Injective fun (s : Multiset α) a ↦ s.count a :=
-  fun _s _t hst ↦ ext' <| congr_fun hst
+lemma count_injective : Injective fun (s : Multiset α) a ↦ s.count a := fun _s _t hst ↦
+  ext' <| congr_fun hst
 
 theorem le_iff_count {s t : Multiset α} : s ≤ t ↔ ∀ a, count a s ≤ count a t :=
   Quotient.inductionOn₂ s t fun _ _ ↦ by simp [subperm_iff_count]
@@ -203,10 +189,15 @@ section Rel
 
 variable {δ : Type*} {r : α → β → Prop} {p : γ → δ → Prop}
 
-theorem Rel.countP_eq (r : α → α → Prop) [IsTrans α r] [Std.Symm r] {s t : Multiset α} (x : α)
-    [DecidablePred (r x)] (h : Rel r s t) : countP (r x) s = countP (r x) t := by
+theorem Rel.countP_eq
+    (r : α → α → Prop) [IsTrans α r] [Std.Symm r]
+    {s t : Multiset α}
+    (x : α) [DecidablePred (r x)]
+    (h : Rel r s t)
+    : countP (r x) s = countP (r x) t := by
   induction s using Multiset.induction_on generalizing t with
-  | empty => rw [rel_zero_left.mp h]
+  | empty =>
+    rw [rel_zero_left.mp h]
   | cons y s ih =>
     obtain ⟨b, bs, hb1, hb2, rfl⟩ := rel_cons_left.mp h
     rw [countP_cons, countP_cons, ih hb2]
@@ -228,12 +219,12 @@ theorem nodup_iff_count_eq_one [DecidableEq α] : Nodup s ↔ ∀ a ∈ s, count
   Quot.induction_on s fun _l => by simpa using List.nodup_iff_count_eq_one
 
 @[simp]
-theorem count_eq_one_of_mem [DecidableEq α] {a : α} {s : Multiset α} (d : Nodup s) (h : a ∈ s) :
-    count a s = 1 :=
+theorem count_eq_one_of_mem [DecidableEq α] {a : α} {s : Multiset α} (d : Nodup s) (h : a ∈ s)
+    : count a s = 1 :=
   nodup_iff_count_eq_one.mp d a h
 
-theorem count_eq_of_nodup [DecidableEq α] {a : α} {s : Multiset α} (d : Nodup s) :
-    count a s = if a ∈ s then 1 else 0 := by
+theorem count_eq_of_nodup [DecidableEq α] {a : α} {s : Multiset α} (d : Nodup s)
+    : count a s = if a ∈ s then 1 else 0 := by
   split_ifs with h
   · exact count_eq_one_of_mem d h
   · exact count_eq_zero_of_notMem h

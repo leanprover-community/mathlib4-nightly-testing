@@ -17,13 +17,14 @@ class DivisionRing (K : Type) extends Ring K, DivInvMonoid K, Nontrivial K where
 
 class Field (K : Type) extends CommRing K, DivisionRing K
 
-instance {K : Type} [Field K] : Lean.Grind.Field K :=
-  { CommRing.toGrindCommRing K, ‹Field K› with
-    zpow := ⟨fun a n => a^n⟩
-    zpow_zero a := sorry
-    zpow_succ a n := sorry
-    zpow_neg a n := sorry
-    zero_ne_one := sorry }
+instance {K : Type} [Field K] : Lean.Grind.Field K := {
+  CommRing.toGrindCommRing K, ‹Field K› with
+  zpow := ⟨fun a n => a ^ n⟩
+  zpow_zero a := sorry
+  zpow_succ a n := sorry
+  zpow_neg a n := sorry
+  zero_ne_one := sorry
+}
 
 instance {K : Type} [Field K] : IsDomain K := sorry
 noncomputable def normalizedFactors {α : Type} [CommMonoidWithZero α] (a : α) : Set α := sorry
@@ -38,22 +39,23 @@ variable (I J : Ideal R)
 
 instance commRing {R} [CommRing R] (I : Ideal R) : CommRing I.Quotient := sorry
 
-protected noncomputable abbrev groupWithZero [hI : I.IsMaximal] :
-    GroupWithZero (I.Quotient) :=
-  { inv := sorry
-    mul_inv_cancel := sorry
-    inv_zero := sorry
-    exists_pair_ne := sorry }
+protected noncomputable abbrev groupWithZero [hI : I.IsMaximal] : GroupWithZero (I.Quotient) := {
+  inv := sorry
+  mul_inv_cancel := sorry
+  inv_zero := sorry
+  exists_pair_ne := sorry
+}
 
 protected noncomputable abbrev divisionRing [I.IsMaximal] : DivisionRing (I.Quotient) :=
   fast_instance% -- The panic seems to rely on this specific `fast_instance%`.
   { __ := commRing _
     __ := Quotient.groupWithZero _ }
 
-protected noncomputable abbrev field {R} [CommRing R] (I : Ideal R) [I.IsMaximal] :
-    Field (I.Quotient) :=
-  { __ := commRing _
-    __ := Quotient.divisionRing I }
+protected noncomputable abbrev field {R} [CommRing R] (I : Ideal R) [I.IsMaximal]
+    : Field (I.Quotient) := {
+  __ := commRing _
+  __ := Quotient.divisionRing I
+}
 
 end Ideal.Quotient
 
@@ -61,6 +63,8 @@ attribute [local instance] Ideal.Quotient.field
 
 open Classical in
 theorem normalizedFactorsMapEquivNormalizedFactorsMinPolyMk_symm_apply_eq_span.extracted_1_3
-  {R : Type} [CommRing R] {I : Ideal R} [I.IsMaximal] {mapQ mapMinpoly : I.Quotient}
-  (_ : mapQ ∈ normalizedFactors mapMinpoly) :
-  0 = 0 := by grind
+    {R : Type} [CommRing R]
+    {I : Ideal R} [I.IsMaximal]
+    {mapQ mapMinpoly : I.Quotient} (_ : mapQ ∈ normalizedFactors mapMinpoly)
+    : 0 = 0 := by
+  grind

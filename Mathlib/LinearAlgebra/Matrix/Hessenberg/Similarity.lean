@@ -30,7 +30,8 @@ namespace Matrix.Hessenberg
 
 variable {m R : Type*} [CommRing R] [Fintype m] [DecidableEq m] [LinearOrder m] [SuccOrder m]
 
-/-- A certificate of a Hessenberg similarity of `A` consisting of a permutation `σ` of its rows and
+/--
+A certificate of a Hessenberg similarity of `A` consisting of a permutation `σ` of its rows and
 columns, a lower triangular matrix `L` with nonzero diagonal and an upper Hessenberg matrix `H`
 satisfying `A.reindex σ σ * L = L * H`.
 
@@ -47,16 +48,16 @@ structure Similarity (A : Matrix m m R) where
   mul_eq_mul : A.reindex σ σ * L = L * H
   isLowerTriangular : L.IsLowerTriangular
   diag_ne_zero (i : m) : L.diag i ≠ 0
-  isUpperHessenberg: H.IsUpperHessenberg
+  isUpperHessenberg : H.IsUpperHessenberg
 
 @[simp]
-theorem Similarity.charpoly_eq [IsDomain R] {A : Matrix m m R} (cert : Similarity A) :
-    cert.H.charpoly = A.charpoly :=
-  calc cert.H.charpoly = (A.reindex cert.σ cert.σ).charpoly :=
-        (Matrix.charpoly_eq_of_mul_eq_mul
-          (cert.isLowerTriangular.det_ne_zero_iff.mpr cert.diag_ne_zero) cert.mul_eq_mul).symm
-    _ = A.charpoly :=
-      Matrix.charpoly_reindex cert.σ A
+theorem Similarity.charpoly_eq [IsDomain R] {A : Matrix m m R} (cert : Similarity A)
+    : cert.H.charpoly = A.charpoly :=
+  calc
+    cert.H.charpoly = (A.reindex cert.σ cert.σ).charpoly :=
+      (Matrix.charpoly_eq_of_mul_eq_mul
+        (cert.isLowerTriangular.det_ne_zero_iff.mpr cert.diag_ne_zero) cert.mul_eq_mul).symm
+    _ = A.charpoly := Matrix.charpoly_reindex cert.σ A
 
 end Matrix.Hessenberg
 

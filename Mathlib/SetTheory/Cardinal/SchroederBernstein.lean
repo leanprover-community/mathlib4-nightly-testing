@@ -29,7 +29,6 @@ Cardinals are defined and further developed in the folder `SetTheory.Cardinal`.
 
 public section
 
-
 open Set Function
 
 universe u v
@@ -42,13 +41,15 @@ section antisymm
 
 variable {α : Type u} {β : Type v}
 
-/-- **The Schröder-Bernstein Theorem**:
+/--
+**The Schröder-Bernstein Theorem**:
 Given injections `α → β` and `β → α` that satisfy a pointwise property `R`, we can get a bijection
-`α → β` that satisfies that same pointwise property. -/
-theorem schroeder_bernstein_of_rel {f : α → β} {g : β → α} (hf : Function.Injective f)
-    (hg : Function.Injective g) (R : α → β → Prop) (hp₁ : ∀ a : α, R a (f a))
-    (hp₂ : ∀ b : β, R (g b) b) :
-    ∃ h : α → β, Bijective h ∧ ∀ a : α, R a (h a) := by
+`α → β` that satisfies that same pointwise property.
+-/
+theorem schroeder_bernstein_of_rel
+    {f : α → β} {g : β → α} (hf : Function.Injective f) (hg : Function.Injective g)
+    (R : α → β → Prop) (hp₁ : ∀ a : α, R a (f a)) (hp₂ : ∀ b : β, R (g b) b)
+    : ∃ h : α → β, Bijective h ∧ ∀ a : α, R a (h a) := by
   classical
   rcases isEmpty_or_nonempty β with hβ | hβ
   · have : IsEmpty α := Function.isEmpty f
@@ -85,15 +86,20 @@ theorem schroeder_bernstein_of_rel {f : α → β} {g : β → α} (hf : Functio
       exact Function.invFun_eq ⟨x, hx⟩
     grind
 
-/-- **The Schröder-Bernstein Theorem**:
-Given injections `α → β` and `β → α`, we can get a bijection `α → β`. -/
-theorem schroeder_bernstein {f : α → β} {g : β → α} (hf : Function.Injective f)
-    (hg : Function.Injective g) : ∃ h : α → β, Bijective h := by
+/--
+**The Schröder-Bernstein Theorem**:
+Given injections `α → β` and `β → α`, we can get a bijection `α → β`.
+-/
+theorem schroeder_bernstein
+    {f : α → β} {g : β → α} (hf : Function.Injective f) (hg : Function.Injective g)
+    : ∃ h : α → β, Bijective h := by
   obtain ⟨f, hf, _⟩ := schroeder_bernstein_of_rel hf hg (fun x y ↦ True) (by simp) (by simp)
   exact ⟨f, hf⟩
 
-/-- **The Schröder-Bernstein Theorem**: Given embeddings `α ↪ β` and `β ↪ α`, there exists an
-equivalence `α ≃ β`. -/
+/--
+**The Schröder-Bernstein Theorem**: Given embeddings `α ↪ β` and `β ↪ α`, there exists an
+equivalence `α ≃ β`.
+-/
 theorem antisymm : (α ↪ β) → (β ↪ α) → Nonempty (α ≃ β)
   | ⟨_, h₁⟩, ⟨_, h₂⟩ =>
     let ⟨f, hf⟩ := schroeder_bernstein h₁ h₂
@@ -106,27 +112,29 @@ section Wo
 variable {ι : Type u} (β : ι → Type v)
 
 /-- `sets β` -/
-private abbrev sets :=
-  { s : Set (∀ i, β i) | ∀ i : ι, s.InjOn fun x => x i }
+private abbrev sets := { s : Set (∀ i, β i) | ∀ i : ι, s.InjOn fun x => x i }
 
-/-- The cardinals are well-ordered. We express it here by the fact that in any set of cardinals
+/--
+The cardinals are well-ordered. We express it here by the fact that in any set of cardinals
 there is an element that injects into the others.
-See `Cardinal.conditionallyCompleteLinearOrderBot` for (one of) the lattice instances. -/
+See `Cardinal.conditionallyCompleteLinearOrderBot` for (one of) the lattice instances.
+-/
 theorem min_injective [I : Nonempty ι] : ∃ i, Nonempty (∀ j, β i ↪ β j) :=
-  let ⟨s, hs⟩ := show ∃ s, Maximal (· ∈ sets β) s by
-    refine zorn_subset _ fun c hc hcc ↦
-      ⟨⋃₀ c, fun i x ⟨p, hpc, hxp⟩ y ⟨q, hqc, hyq⟩ hi ↦ ?_, fun _ ↦ subset_sUnion_of_mem⟩
-    exact (hcc.total hpc hqc).elim (fun h ↦ hc hqc i (h hxp) hyq hi)
-      fun h ↦ hc hpc i hxp (h hyq) hi
+  let ⟨s, hs⟩ :=
+    show ∃ s, Maximal (· ∈ sets β) s by
+      refine zorn_subset _ fun c hc hcc ↦
+        ⟨⋃₀c, fun i x ⟨p, hpc, hxp⟩ y ⟨q, hqc, hyq⟩ hi ↦ ?_, fun _ ↦ subset_sUnion_of_mem⟩
+      exact
+        (hcc.total hpc hqc).elim (fun h ↦ hc hqc i (h hxp) hyq hi) fun h ↦ hc hpc i hxp (h hyq) hi
   let ⟨i, e⟩ :=
     show ∃ i, Surjective fun x : s => x.val i from
       Classical.by_contradiction fun h =>
-        have h : ∀ i, ∃ y, ∀ x ∈ s, (x : ∀ i, β i) i ≠ y := by
-          simpa [Surjective] using h
+        have h : ∀ i, ∃ y, ∀ x ∈ s, (x : ∀ i, β i) i ≠ y := by simpa [Surjective] using h
         let ⟨f, hf⟩ := Classical.axiom_of_choice h
         have : f ∈ s :=
           have : insert f s ∈ sets β := fun i x hx y hy => by
-            rcases hx with hx | hx <;> rcases hy with hy | hy; · simp [hx, hy]
+            rcases hx with hx | hx <;> rcases hy with hy | hy
+            · simp [hx, hy]
             · subst x
               exact fun e => (hf i y hy e.symm).elim
             · subst y
@@ -135,17 +143,21 @@ theorem min_injective [I : Nonempty ι] : ∃ i, Nonempty (∀ j, β i ↪ β j)
           hs.eq_of_subset this (subset_insert _ _) ▸ mem_insert ..
         let ⟨i⟩ := I
         hf i f this rfl
-  ⟨i, ⟨fun j => ⟨s.domRestrict (fun x => x j) ∘ surjInv e,
-    ((hs.1 j).injective).comp (injective_surjInv _)⟩⟩⟩
+  ⟨
+    i,
+    ⟨fun j =>
+      ⟨s.domRestrict (fun x => x j) ∘ surjInv e, ((hs.1 j).injective).comp (injective_surjInv _)⟩⟩
+  ⟩
 
 end Wo
 
-/-- The cardinals are totally ordered. See
+/--
+The cardinals are totally ordered. See
 `Cardinal.conditionallyCompleteLinearOrderBot` for (one of) the lattice
-instance. -/
+instance.
+-/
 theorem total (α : Type u) (β : Type v) : Nonempty (α ↪ β) ∨ Nonempty (β ↪ α) :=
-  match @min_injective Bool (fun b => cond b (ULift α) (ULift.{max u v, v} β)) ⟨true⟩
-    with
+  match @min_injective Bool (fun b => cond b (ULift α) (ULift.{max u v, v} β)) ⟨true⟩ with
   | ⟨true, ⟨h⟩⟩ =>
     let ⟨f, hf⟩ := h false
     Or.inl ⟨Embedding.congr Equiv.ulift Equiv.ulift ⟨f, hf⟩⟩

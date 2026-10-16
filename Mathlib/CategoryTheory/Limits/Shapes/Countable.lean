@@ -39,16 +39,18 @@ A category has all countable limits if every functor `J ⥤ C` with a `Countable
 instance and `J : Type` has a limit.
 -/
 class HasCountableLimits : Prop where
-  /-- `C` has all limits over any type `J` whose objects and morphisms lie in the same universe
-  and which has countably many objects and morphisms -/
+  /--
+  `C` has all limits over any type `J` whose objects and morphisms lie in the same universe
+  and which has countably many objects and morphisms
+  -/
   out (J : Type) [SmallCategory J] [CountableCategory J] : HasLimitsOfShape J C := by infer_instance
 
-instance (priority := 100) hasFiniteLimits_of_hasCountableLimits [HasCountableLimits C] :
-    HasFiniteLimits C where
+instance (priority := 100) hasFiniteLimits_of_hasCountableLimits [HasCountableLimits C]
+    : HasFiniteLimits C where
   out J := HasCountableLimits.out J
 
-instance (priority := 100) hasCountableLimits_of_hasLimits [HasLimits C] :
-    HasCountableLimits C where
+instance (priority := 100) hasCountableLimits_of_hasLimits [HasLimits C]
+    : HasCountableLimits C where
   out := inferInstance
 
 universe v in
@@ -65,18 +67,18 @@ instance [HasCountableProducts C] (J : Type*) [Countable J] : HasProductsOfShape
   have : HasLimitsOfShape (Discrete (Shrink.{0} J)) C := HasCountableProducts.out _
   hasLimitsOfShape_of_equivalence (Discrete.equivalence (equivShrink.{0} J)).symm
 
-instance (priority := 100) hasCountableProducts_of_hasProducts [HasProducts C] :
-    HasCountableProducts C where
+instance (priority := 100) hasCountableProducts_of_hasProducts [HasProducts C]
+    : HasCountableProducts C where
   out _ :=
     have : HasProducts.{0} C := has_smallest_products_of_hasProducts
     inferInstance
 
-instance (priority := 100) hasCountableProducts_of_hasCountableLimits [HasCountableLimits C] :
-    HasCountableProducts C where
+instance (priority := 100) hasCountableProducts_of_hasCountableLimits [HasCountableLimits C]
+    : HasCountableProducts C where
   out _ := inferInstance
 
-instance (priority := 100) hasFiniteProducts_of_hasCountableProducts [HasCountableProducts C] :
-    HasFiniteProducts C where
+instance (priority := 100) hasFiniteProducts_of_hasCountableProducts [HasCountableProducts C]
+    : HasFiniteProducts C where
   out _ := inferInstance
 
 /--
@@ -84,22 +86,24 @@ A category has all countable colimits if every functor `J ⥤ C` with a `Countab
 instance and `J : Type` has a colimit.
 -/
 class HasCountableColimits : Prop where
-  /-- `C` has all limits over any type `J` whose objects and morphisms lie in the same universe
-  and which has countably many objects and morphisms -/
+  /--
+  `C` has all limits over any type `J` whose objects and morphisms lie in the same universe
+  and which has countably many objects and morphisms
+  -/
   out (J : Type) [SmallCategory J] [CountableCategory J] : HasColimitsOfShape J C
 
-instance (priority := 100) hasFiniteColimits_of_hasCountableColimits [HasCountableColimits C] :
-    HasFiniteColimits C where
+instance (priority := 100) hasFiniteColimits_of_hasCountableColimits [HasCountableColimits C]
+    : HasFiniteColimits C where
   out J := HasCountableColimits.out J
 
-instance (priority := 100) hasCountableColimits_of_hasColimits [HasColimits C] :
-    HasCountableColimits C where
+instance (priority := 100) hasCountableColimits_of_hasColimits [HasColimits C]
+    : HasCountableColimits C where
   out := inferInstance
 
 -- See note [instance argument order]
 universe v in
-instance [HasCountableColimits C] (J : Type*) [Category.{v} J] [CountableCategory J] :
-    HasColimitsOfShape J C :=
+instance [HasCountableColimits C] (J : Type*) [Category.{v} J] [CountableCategory J]
+    : HasColimitsOfShape J C :=
   have : HasColimitsOfShape (HomAsType J) C := HasCountableColimits.out (HomAsType J)
   hasColimitsOfShape_of_equivalence (homAsTypeEquiv J)
 
@@ -107,8 +111,8 @@ instance [HasCountableColimits C] (J : Type*) [Category.{v} J] [CountableCategor
 class HasCountableCoproducts where
   out (J : Type) [Countable J] : HasCoproductsOfShape J C
 
-instance (priority := 100) hasCountableCoproducts_of_hasCoproducts [HasCoproducts C] :
-    HasCountableCoproducts C where
+instance (priority := 100) hasCountableCoproducts_of_hasCoproducts [HasCoproducts C]
+    : HasCountableCoproducts C where
   out _ :=
     have : HasCoproducts.{0} C := has_smallest_coproducts_of_hasCoproducts
     inferInstance
@@ -119,12 +123,12 @@ instance [HasCountableCoproducts C] (J : Type*) [Countable J] : HasCoproductsOfS
   have : HasColimitsOfShape (Discrete (Shrink.{0} J)) C := HasCountableCoproducts.out _
   hasColimitsOfShape_of_equivalence (Discrete.equivalence (equivShrink.{0} J)).symm
 
-instance (priority := 100) hasCountableCoproducts_of_hasCountableColimits [HasCountableColimits C] :
-    HasCountableCoproducts C where
+instance (priority := 100) hasCountableCoproducts_of_hasCountableColimits [HasCountableColimits C]
+    : HasCountableCoproducts C where
   out _ := inferInstance
 
-instance (priority := 100) hasFiniteCoproducts_of_hasCountableCoproducts
-    [HasCountableCoproducts C] : HasFiniteCoproducts C where
+instance (priority := 100) hasFiniteCoproducts_of_hasCountableCoproducts [HasCountableCoproducts C]
+    : HasFiniteCoproducts C where
   out _ := inferInstance
 
 section Preorder
@@ -137,8 +141,10 @@ variable {C} [Preorder J] [IsFiltered J]
 
 /-- The object part of the initial functor `ℕᵒᵖ ⥤ J` -/
 noncomputable def sequentialFunctor_obj : ℕ → J := fun
-  | .zero => (exists_surjective_nat _).choose 0
-  | .succ n => (IsFilteredOrEmpty.cocone_objs ((exists_surjective_nat _).choose n)
+  | .zero =>
+    (exists_surjective_nat _).choose 0
+  | .succ n =>
+    (IsFilteredOrEmpty.cocone_objs ((exists_surjective_nat _).choose n)
       (sequentialFunctor_obj n)).choose
 
 theorem sequentialFunctor_map : Monotone (sequentialFunctor_obj J) :=
@@ -157,14 +163,14 @@ noncomputable def sequentialFunctor : ℕ ⥤ J where
 theorem sequentialFunctor_final_aux (j : J) : ∃ (n : ℕ), j ≤ sequentialFunctor_obj J n := by
   obtain ⟨m, h⟩ := (exists_surjective_nat _).choose_spec j
   refine ⟨m + 1, ?_⟩
-  simpa only [h] using! leOfHom (IsFilteredOrEmpty.cocone_objs ((exists_surjective_nat _).choose m)
-    (sequentialFunctor_obj J m)).choose_spec.choose
+  simpa only [h] using!
+    leOfHom (IsFilteredOrEmpty.cocone_objs ((exists_surjective_nat _).choose m)
+      (sequentialFunctor_obj J m)).choose_spec.choose
 
 instance sequentialFunctor_final : (sequentialFunctor J).Final where
   out d := by
     obtain ⟨n, (g : d ≤ (sequentialFunctor J).obj n)⟩ := sequentialFunctor_final_aux J d
-    have : Nonempty (StructuredArrow d (sequentialFunctor J)) :=
-      ⟨StructuredArrow.mk (homOfLE g)⟩
+    have : Nonempty (StructuredArrow d (sequentialFunctor J)) := ⟨StructuredArrow.mk (homOfLE g)⟩
     apply isConnected_of_zigzag
     refine fun i j ↦ ⟨[j], ?_⟩
     simp only [List.isChain_cons_cons, Zag, List.isChain_singleton, and_true, ne_eq,
@@ -185,8 +191,10 @@ variable {C} [Preorder J] [IsCofiltered J]
 
 /-- The object part of the initial functor `ℕᵒᵖ ⥤ J` -/
 noncomputable def sequentialFunctor_obj : ℕ → J := fun
-  | .zero => (exists_surjective_nat _).choose 0
-  | .succ n => (IsCofilteredOrEmpty.cone_objs ((exists_surjective_nat _).choose n)
+  | .zero =>
+    (exists_surjective_nat _).choose 0
+  | .succ n =>
+    (IsCofilteredOrEmpty.cone_objs ((exists_surjective_nat _).choose n)
       (sequentialFunctor_obj n)).choose
 
 theorem sequentialFunctor_map : Antitone (sequentialFunctor_obj J) :=
@@ -208,8 +216,9 @@ noncomputable def sequentialFunctor : ℕᵒᵖ ⥤ J where
 theorem sequentialFunctor_initial_aux (j : J) : ∃ (n : ℕ), sequentialFunctor_obj J n ≤ j := by
   obtain ⟨m, h⟩ := (exists_surjective_nat _).choose_spec j
   refine ⟨m + 1, ?_⟩
-  simpa only [h] using! leOfHom (IsCofilteredOrEmpty.cone_objs ((exists_surjective_nat _).choose m)
-    (sequentialFunctor_obj J m)).choose_spec.choose
+  simpa only [h] using!
+    leOfHom (IsCofilteredOrEmpty.cone_objs ((exists_surjective_nat _).choose m)
+      (sequentialFunctor_obj J m)).choose_spec.choose
 
 instance sequentialFunctor_initial : (sequentialFunctor J).Initial where
   out d := by

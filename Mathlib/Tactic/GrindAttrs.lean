@@ -7,7 +7,6 @@ Authors: Floris van Doorn
 module
 
 public import Lean.Meta.Tactic.Grind.RegisterCommand
-
 import Mathlib.Init
 
 /-!
@@ -60,14 +59,17 @@ that involve other properties, e.g. `IsCompact.inter_left`
 
 open Lean Parser Tactic
 
-/-- A hash set of the grind attributes in Mathlib.
+/--
+A hash set of the grind attributes in Mathlib.
 
-When adding a new grind attribute, manually add it to this hash set as well. -/
-def Mathlib.grindAttrs : Std.HashSet Name :=
- {`compactness, `closedness}
+When adding a new grind attribute, manually add it to this hash set as well.
+-/
+def Mathlib.grindAttrs : Std.HashSet Name := {`compactness, `closedness}
 
-/-- The `compactness` attribute is a custom grind-set specialized to prove that sets are compact.
-It is called by the `compactness` tactic. -/
+/--
+The `compactness` attribute is a custom grind-set specialized to prove that sets are compact.
+It is called by the `compactness` tactic.
+-/
 register_grind_attr compactness
 
 /--
@@ -87,10 +89,12 @@ macro (name := compactnessTac) "compactness" config:optConfig : tactic =>
 
 @[inherit_doc compactnessTac]
 macro "compactness?" config:optConfig : tactic =>
-    `(tactic|grind? $config only [$(mkIdent `compactness):term])
+  `(tactic|grind? $config only [$(mkIdent `compactness):term])
 
-/-- The `closedness` attribute is a custom grind-set specialized to prove that sets are closed.
-It is called by the `closedness` tactic. -/
+/--
+The `closedness` attribute is a custom grind-set specialized to prove that sets are closed.
+It is called by the `closedness` tactic.
+-/
 register_grind_attr closedness
 
 /--
@@ -108,4 +112,4 @@ macro (name := closednessTac) "closedness" config:optConfig : tactic =>
 
 @[inherit_doc closednessTac]
 macro "closedness?" config:optConfig : tactic =>
-    `(tactic|grind? $config only [$(mkIdent `closedness):term])
+  `(tactic|grind? $config only [$(mkIdent `closedness):term])

@@ -16,7 +16,6 @@ The quotient with respect to this relation defines a functor from our category t
 
 @[expose] public section
 
-
 universe v u
 
 namespace CategoryTheory
@@ -38,12 +37,13 @@ def isIsomorphicSetoid : Setoid C where
 
 end Category
 
-/-- The functor that sends each category to the quotient space of its objects up to an isomorphism.
+/--
+The functor that sends each category to the quotient space of its objects up to an isomorphism.
 -/
 def isomorphismClasses : Cat.{v, u} ⥤ Type u where
   obj C := Quotient (isIsomorphicSetoid C.α)
   map {_ _} F := ↾(Quot.map F.toFunctor.obj fun _ _ ⟨f⟩ => ⟨F.toFunctor.mapIso f⟩)
-  map_id {C} := by  -- Porting note: this used to be `tidy`
+  map_id {C} := by -- Porting note: this used to be `tidy`
     ext x
     apply @Quot.recOn _ _ _ x
     all_goals cat_disch
@@ -52,8 +52,8 @@ def isomorphismClasses : Cat.{v, u} ⥤ Type u where
     apply @Quot.recOn _ _ _ x
     all_goals cat_disch
 
-theorem Groupoid.isIsomorphic_iff_nonempty_hom {C : Type u} [Groupoid.{v} C] {X Y : C} :
-    IsIsomorphic X Y ↔ Nonempty (X ⟶ Y) :=
+theorem Groupoid.isIsomorphic_iff_nonempty_hom {C : Type u} [Groupoid.{v} C] {X Y : C}
+    : IsIsomorphic X Y ↔ Nonempty (X ⟶ Y) :=
   (Groupoid.isoEquivHom X Y).nonempty_congr
 
 end CategoryTheory

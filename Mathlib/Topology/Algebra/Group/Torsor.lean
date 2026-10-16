@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Torsor.Basic
 public import Mathlib.Tactic.Bound.Init
 public import Mathlib.Topology.Algebra.MulAction
-
 import Mathlib.Topology.Algebra.Group.Pointwise
 
 /-!
@@ -24,16 +23,20 @@ open scoped Topology
 
 section Torsor
 
-/-- A topological torsor over a topological additive group is a torsor where `+ᵥ` and `-ᵥ` are
-continuous. -/
-class IsTopologicalAddTorsor {V : Type*} [AddGroup V] [TopologicalSpace V]
-    (P : Type*) [AddTorsor V P] [TopologicalSpace P] extends ContinuousVAdd V P where
+/--
+A topological torsor over a topological additive group is a torsor where `+ᵥ` and `-ᵥ` are
+continuous.
+-/
+class IsTopologicalAddTorsor
+    {V : Type*} [AddGroup V] [TopologicalSpace V] (P : Type*) [AddTorsor V P] [TopologicalSpace P]
+    extends ContinuousVAdd V P where
   continuous_vsub : Continuous (fun x : P × P => x.1 -ᵥ x.2)
 
 /-- A topological torsor over a topological group is a torsor where `•` and `/ₛ` are continuous. -/
 @[to_additive]
-class IsTopologicalTorsor {V : Type*} [Group V] [TopologicalSpace V]
-    (P : Type*) [Torsor V P] [TopologicalSpace P] extends ContinuousSMul V P where
+class IsTopologicalTorsor
+    {V : Type*} [Group V] [TopologicalSpace V] (P : Type*) [Torsor V P] [TopologicalSpace P]
+    extends ContinuousSMul V P where
   continuous_sdiv : Continuous (fun x : P × P => x.1 /ₛ x.2)
 
 variable {V P α : Type*} [Group V] [TopologicalSpace V] [Torsor V P] [TopologicalSpace P]
@@ -47,38 +50,42 @@ attribute [fun_prop] continuous_vsub continuous_sdiv
 variable [IsTopologicalTorsor P]
 
 @[to_additive]
-theorem Filter.Tendsto.sdiv {l : Filter α} {f g : α → P} {x y : P} (hf : Tendsto f l (𝓝 x))
-    (hg : Tendsto g l (𝓝 y)) : Tendsto (f /ₛ g) l (𝓝 (x /ₛ y)) :=
+theorem Filter.Tendsto.sdiv
+    {l : Filter α} {f g : α → P} {x y : P} (hf : Tendsto f l (𝓝 x)) (hg : Tendsto g l (𝓝 y))
+    : Tendsto (f /ₛ g) l (𝓝 (x /ₛ y)) :=
   (continuous_sdiv.tendsto (x, y)).comp (hf.prodMk_nhds hg)
 
 variable [TopologicalSpace α]
 
 @[to_additive (attr := fun_prop)]
-theorem Continuous.sdiv {f g : α → P} (hf : Continuous f) (hg : Continuous g) :
-    Continuous (fun x ↦ f x /ₛ g x) :=
+theorem Continuous.sdiv {f g : α → P} (hf : Continuous f) (hg : Continuous g)
+    : Continuous (fun x ↦ f x /ₛ g x) :=
   continuous_sdiv.comp₂ hf hg
 
 @[to_additive (attr := fun_prop)]
-nonrec theorem ContinuousAt.sdiv {f g : α → P} {x : α} (hf : ContinuousAt f x)
-    (hg : ContinuousAt g x) :
-    ContinuousAt (fun x ↦ f x /ₛ g x) x :=
+nonrec theorem ContinuousAt.sdiv
+    {f g : α → P} {x : α} (hf : ContinuousAt f x) (hg : ContinuousAt g x)
+    : ContinuousAt (fun x ↦ f x /ₛ g x) x :=
   hf.sdiv hg
 
 @[to_additive (attr := fun_prop)]
-nonrec theorem ContinuousWithinAt.sdiv {f g : α → P} {x : α} {s : Set α}
-    (hf : ContinuousWithinAt f s x) (hg : ContinuousWithinAt g s x) :
-    ContinuousWithinAt (fun x ↦ f x /ₛ g x) s x :=
+nonrec theorem ContinuousWithinAt.sdiv
+    {f g : α → P} {x : α} {s : Set α}
+    (hf : ContinuousWithinAt f s x) (hg : ContinuousWithinAt g s x)
+    : ContinuousWithinAt (fun x ↦ f x /ₛ g x) s x :=
   hf.sdiv hg
 
 @[to_additive (attr := fun_prop)]
-theorem ContinuousOn.sdiv {f g : α → P} {s : Set α} (hf : ContinuousOn f s)
-    (hg : ContinuousOn g s) : ContinuousOn (fun x ↦ f x /ₛ g x) s := fun x hx ↦
+theorem ContinuousOn.sdiv {f g : α → P} {s : Set α} (hf : ContinuousOn f s) (hg : ContinuousOn g s)
+    : ContinuousOn (fun x ↦ f x /ₛ g x) s := fun x hx ↦
   (hf x hx).sdiv (hg x hx)
 
 include P in
 variable (V P) in
-/-- The underlying group of a topological torsor is a topological group. This is not an instance, as
-`P` cannot be inferred. -/
+/--
+The underlying group of a topological torsor is a topological group. This is not an instance, as
+`P` cannot be inferred.
+-/
 @[to_additive /-- The underlying group of a topological additive torsor is a topological additive
 group. This is not an instance, as `P` cannot be inferred. -/]
 theorem IsTopologicalTorsor.to_isTopologicalGroup : IsTopologicalGroup V where
@@ -102,7 +109,7 @@ def Homeomorph.smulConst (p : P) : V ≃ₜ P where
 
 /-- The map `p' ↦ p /ₛ p'` as a homeomorphism: `Equiv.constSDiv` as a homeomorphism -/
 @[to_additive (attr := simps!)
-/-- The map `p' ↦ p -ᵥ p'` as a homeomorphism: `Equiv.constVSub` as a homeomorphism -/]
+  /-- The map `p' ↦ p -ᵥ p'` as a homeomorphism: `Equiv.constVSub` as a homeomorphism -/]
 def Homeomorph.constSDiv (p : P) : P ≃ₜ V where
   toEquiv := Equiv.constSDiv p
   continuous_invFun := by
@@ -121,14 +128,20 @@ instance (priority := 100) IsTopologicalTorsor.regularSpace : RegularSpace P :=
   (Homeomorph.smulConst p).symm.isInducing.regularSpace
 
 /-- `Equiv.pointReflection` as a homeomorphism -/
-def Homeomorph.pointReflection {V P : Type*} [AddGroup V] [TopologicalSpace V] [AddTorsor V P]
-    [TopologicalSpace P] [IsTopologicalAddTorsor P] (p : P) : P ≃ₜ P :=
+def Homeomorph.pointReflection
+    {V P : Type*} [AddGroup V] [TopologicalSpace V] [AddTorsor V P] [TopologicalSpace P]
+    [IsTopologicalAddTorsor P]
+    (p : P)
+    : P ≃ₜ P :=
   (Homeomorph.constVSub p).trans (Homeomorph.vaddConst p)
 
 @[simp]
-lemma Homeomorph.coe_pointReflection {V P : Type*} [AddGroup V] [TopologicalSpace V] [AddTorsor V P]
-    [TopologicalSpace P] [IsTopologicalAddTorsor P] (p : P) :
-    (Homeomorph.pointReflection p : P → P) = Equiv.pointReflection p := rfl
+lemma Homeomorph.coe_pointReflection
+    {V P : Type*} [AddGroup V] [TopologicalSpace V] [AddTorsor V P] [TopologicalSpace P]
+    [IsTopologicalAddTorsor P]
+    (p : P)
+    : (Homeomorph.pointReflection p : P → P) = Equiv.pointReflection p :=
+  rfl
 
 end Torsor
 
@@ -146,10 +159,8 @@ section Prod
 
 variable
   {V W P Q : Type*}
-  [CommGroup V] [TopologicalSpace V]
-  [Torsor V P] [TopologicalSpace P] [IsTopologicalTorsor P]
-  [CommGroup W] [TopologicalSpace W]
-  [Torsor W Q] [TopologicalSpace Q] [IsTopologicalTorsor Q]
+  [CommGroup V] [TopologicalSpace V] [Torsor V P] [TopologicalSpace P] [IsTopologicalTorsor P]
+  [CommGroup W] [TopologicalSpace W] [Torsor W Q] [TopologicalSpace Q] [IsTopologicalTorsor Q]
 
 @[to_additive instIsTopologicalAddTorsorProd]
 instance instIsTopologicalTorsorProd : IsTopologicalTorsor (P × Q) where
@@ -161,8 +172,7 @@ end Prod
 section Pi
 
 variable
-  {ι : Type*} {V P : ι → Type*}
-  [∀ i, CommGroup (V i)] [∀ i, TopologicalSpace (V i)]
+  {ι : Type*} {V P : ι → Type*} [∀ i, CommGroup (V i)] [∀ i, TopologicalSpace (V i)]
   [∀ i, Torsor (V i) (P i)] [∀ i, TopologicalSpace (P i)] [∀ i, IsTopologicalTorsor (P i)]
 
 @[to_additive]

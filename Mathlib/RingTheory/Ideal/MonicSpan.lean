@@ -6,7 +6,6 @@ Authors: Nailin Guan
 module
 
 public import Mathlib.RingTheory.Polynomial.Basic
-
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Algebra.Polynomial.Lifts
 import Mathlib.RingTheory.Ideal.Quotient.Operations
@@ -25,17 +24,17 @@ open Ideal
 
 namespace Polynomial
 
-lemma exists_monic_span {k : Type*} [Field k] (I : Ideal k[X]) (ne : I ≠ ⊥) :
-    ∃ f, f.Monic ∧ I = Ideal.span {f} := by
+lemma exists_monic_span {k : Type*} [Field k] (I : Ideal k[X]) (ne : I ≠ ⊥)
+    : ∃ f, f.Monic ∧ I = Ideal.span {f} := by
   classical
   obtain ⟨x, h, spanx⟩ := Ideal.exists_normalized_span_of_isPrincipal I
   refine ⟨x, (Polynomial.normalize_eq_self_iff_monic ?_).mp h, spanx⟩
   by_contra eq0
   simp [eq0, spanx] at ne
 
-lemma exists_monic_span_sup_map_eq (p : Ideal R[X])
-    (ism : (p.comap C).IsMaximal) (ne : p ≠ (p.comap C).map C) :
-    ∃ f : R[X], f.Monic ∧ p = (p.comap C).map C ⊔ Ideal.span {f} := by
+lemma exists_monic_span_sup_map_eq
+    (p : Ideal R[X]) (ism : (p.comap C).IsMaximal) (ne : p ≠ (p.comap C).map C)
+    : ∃ f : R[X], f.Monic ∧ p = (p.comap C).map C ⊔ Ideal.span {f} := by
   let q := p.comap C
   let : Field (R ⧸ q) := Ideal.Quotient.field q
   have ne' : Ideal.map (mapRingHom (Ideal.Quotient.mk q)) p ≠ ⊥ := by
@@ -49,7 +48,7 @@ lemma exists_monic_span_sup_map_eq (p : Ideal R[X])
   · rw [Ideal.map_span, coe_mapRingHom, Set.image_singleton, hf, ← hy,
       Ideal.comap_map_of_surjective' _ (map_surjective _ Ideal.Quotient.mk_surjective)]
     simpa [Polynomial.ker_mapRingHom, q] using Ideal.map_comap_le
-  · rw [Ideal.comap_map_of_surjective' _ (map_surjective _ Ideal.Quotient.mk_surjective),
-      sup_comm, Polynomial.ker_mapRingHom, mk_ker]
+  · rw [Ideal.comap_map_of_surjective' _ (map_surjective _ Ideal.Quotient.mk_surjective), sup_comm,
+      Polynomial.ker_mapRingHom, mk_ker]
 
 end Polynomial

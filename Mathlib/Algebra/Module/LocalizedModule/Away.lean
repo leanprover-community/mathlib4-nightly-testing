@@ -17,13 +17,16 @@ public section
 
 namespace IsLocalizedModule.Away
 
-variable {R : Type*} [CommSemiring R] {M N : Type*} [AddCommMonoid M] [AddCommMonoid N]
-  [Module R M] [Module R N] {f : M →ₗ[R] N} {r : R}
+variable
+  {R : Type*} [CommSemiring R]
+  {M N : Type*} [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module R N]
+  {f : M →ₗ[R] N} {r : R}
 
-lemma mk (h₁ : IsUnit (algebraMap R (Module.End R N) r))
+lemma mk
+    (h₁ : IsUnit (algebraMap R (Module.End R N) r))
     (h₂ : ∀ (x : N), ∃ (n : ℕ) (y : M), r ^ n • x = f y)
-    (h₃ : ∀ (x y : M), f x = f y → ∃ (n : ℕ), r ^ n • x = r ^ n • y) :
-    IsLocalizedModule.Away r f where
+    (h₃ : ∀ (x y : M), f x = f y → ∃ (n : ℕ), r ^ n • x = r ^ n • y)
+    : IsLocalizedModule.Away r f where
   map_units := fun ⟨_, ⟨n, rfl⟩⟩ ↦ by simp [h₁.pow]
   surj x := by
     obtain ⟨n, y, hy⟩ := h₂ x
@@ -32,11 +35,12 @@ lemma mk (h₁ : IsUnit (algebraMap R (Module.End R N) r))
     obtain ⟨n, hn⟩ := h₃ _ _ hxy
     use ⟨_, n, rfl⟩, hn
 
-lemma mk_of_addCommGroup {M N : Type*} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
+lemma mk_of_addCommGroup
+    {M N : Type*} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
     {f : M →ₗ[R] N} {r : R} (h₁ : IsUnit (algebraMap R (Module.End R N) r))
     (h₂ : ∀ (x : N), ∃ (n : ℕ) (y : M), r ^ n • x = f y)
-    (h₃ : ∀ (x : M), f x = 0 → ∃ (n : ℕ), r ^ n • x = 0) :
-    IsLocalizedModule.Away r f := by
+    (h₃ : ∀ (x : M), f x = 0 → ∃ (n : ℕ), r ^ n • x = 0)
+    : IsLocalizedModule.Away r f := by
   refine IsLocalizedModule.Away.mk h₁ h₂ fun x y hxy ↦ ?_
   have : f (x - y) = 0 := by simp [hxy]
   obtain ⟨n, hn⟩ := h₃ _ this
@@ -59,8 +63,8 @@ lemma surj (y : N) : ∃ (n : ℕ) (x : M), r ^ n • y = f x := by
   obtain ⟨⟨x, ⟨_, n, rfl⟩⟩, h⟩ := IsLocalizedModule.surj (S := .powers r) f y
   use n, x, h
 
-lemma of_associated {r r' : R} (h : Associated r r') [IsLocalizedModule.Away r f] :
-    IsLocalizedModule.Away r' f := by
+lemma of_associated {r r' : R} (h : Associated r r') [IsLocalizedModule.Away r f]
+    : IsLocalizedModule.Away r' f := by
   obtain ⟨u, rfl⟩ := h
   rw [mul_comm]
   refine .mk ?_ ?_ ?_
@@ -74,8 +78,8 @@ lemma of_associated {r r' : R} (h : Associated r r') [IsLocalizedModule.Away r f
     use n
     simp [mul_pow, mul_smul, hn]
 
-lemma iff_of_associated {r r' : R} (h : Associated r r') :
-    IsLocalizedModule.Away r f ↔ IsLocalizedModule.Away r' f :=
+lemma iff_of_associated {r r' : R} (h : Associated r r')
+    : IsLocalizedModule.Away r f ↔ IsLocalizedModule.Away r' f :=
   ⟨fun _ ↦ .of_associated h, fun _ ↦ .of_associated h.symm⟩
 
 end IsLocalizedModule.Away

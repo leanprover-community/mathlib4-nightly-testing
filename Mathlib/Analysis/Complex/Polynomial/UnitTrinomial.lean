@@ -23,10 +23,11 @@ namespace Polynomial.IsUnitTrinomial
 variable {p : ℤ[X]}
 
 /-- A unit trinomial is irreducible if it has no complex roots in common with its mirror. -/
-theorem irreducible_of_coprime' (hp : IsUnitTrinomial p)
-    (h : ∀ z : ℂ, ¬(aeval z p = 0 ∧ aeval z (mirror p) = 0)) : Irreducible p := by
+theorem irreducible_of_coprime'
+    (hp : IsUnitTrinomial p) (h : ∀ z : ℂ, ¬(aeval z p = 0 ∧ aeval z (mirror p) = 0))
+    : Irreducible p := by
   refine hp.irreducible_of_coprime fun q hq hq' => ?_
-  suffices ¬0 < q.natDegree by
+  suffices ¬ 0 < q.natDegree by
     rcases hq with ⟨p, rfl⟩
     replace hp := hp.leadingCoeff_isUnit
     rw [leadingCoeff_mul] at hp

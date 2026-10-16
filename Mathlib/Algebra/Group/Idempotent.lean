@@ -52,8 +52,9 @@ end Mul
 section Semigroup
 variable [Semigroup S] {a b : S}
 
-lemma mul_of_commute (hab : Commute a b) (ha : IsIdempotentElem a) (hb : IsIdempotentElem b) :
-    IsIdempotentElem (a * b) := by rw [IsIdempotentElem, hab.symm.mul_mul_mul_comm, ha.eq, hb.eq]
+lemma mul_of_commute (hab : Commute a b) (ha : IsIdempotentElem a) (hb : IsIdempotentElem b)
+    : IsIdempotentElem (a * b) := by
+  rw [IsIdempotentElem, hab.symm.mul_mul_mul_comm, ha.eq, hb.eq]
 
 end Semigroup
 
@@ -70,7 +71,8 @@ variable [MulOneClass M] {a : M}
 
 lemma one : IsIdempotentElem (1 : M) := mul_one _
 
-instance : One {a : M // IsIdempotentElem a} where one := ⟨1, one⟩
+instance : One {a : M // IsIdempotentElem a} where
+  one := ⟨1, one⟩
 
 @[simp, norm_cast] lemma coe_one : ↑(1 : {a : M // IsIdempotentElem a}) = (1 : M) := rfl
 
@@ -107,16 +109,19 @@ variable [CancelMonoid M] {a : M}
 
 end CancelMonoid
 
-lemma map {M N F} [Mul M] [Mul N] [FunLike F M N] [MulHomClass F M N] {e : M}
-    (he : IsIdempotentElem e) (f : F) : IsIdempotentElem (f e) := by
+lemma map
+    {M N F} [Mul M] [Mul N] [FunLike F M N] [MulHomClass F M N]
+    {e : M} (he : IsIdempotentElem e)
+    (f : F)
+    : IsIdempotentElem (f e) := by
   rw [IsIdempotentElem, ← map_mul, he.eq]
 
-lemma mul_mul_self {M : Type*} [Semigroup M] {x : M}
-    (hx : IsIdempotentElem x) (y : M) : y * x * x = y * x :=
+lemma mul_mul_self {M : Type*} [Semigroup M] {x : M} (hx : IsIdempotentElem x) (y : M)
+    : y * x * x = y * x :=
   mul_assoc y x x ▸ congrArg (y * ·) hx.eq
 
-lemma mul_self_mul {M : Type*} [Semigroup M] {x : M}
-    (hx : IsIdempotentElem x) (y : M) : x * (x * y) = x * y :=
+lemma mul_self_mul {M : Type*} [Semigroup M] {x : M} (hx : IsIdempotentElem x) (y : M)
+    : x * (x * y) = x * y :=
   mul_assoc x x y ▸ congrArg (· * y) hx.eq
 
 end IsIdempotentElem

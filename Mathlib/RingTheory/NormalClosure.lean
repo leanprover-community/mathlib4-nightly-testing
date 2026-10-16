@@ -34,8 +34,9 @@ namespace Ring
 
 noncomputable section NormalClosure
 
-variable (R S : Type*) [CommRing R] [CommRing S] [IsDomain R] [IsDomain S]
-  [Algebra R S] [Module.IsTorsionFree R S]
+variable
+  (R S : Type*)
+  [CommRing R] [CommRing S] [IsDomain R] [IsDomain S] [Algebra R S] [Module.IsTorsionFree R S]
 
 /--
 We register this specific instance as a local instance rather than making
@@ -49,7 +50,6 @@ local notation3 "L" => FractionRing S
 local notation3 "E" => IntermediateField.normalClosure (FractionRing R) (FractionRing S)
     (AlgebraicClosure (FractionRing S))
 
-
 /--
 This is a local instance since it is only used in this file to construct `Ring.NormalClosure`.
 -/
@@ -59,7 +59,8 @@ local instance : IsScalarTower S L E := IsScalarTower.of_algebraMap_eq' rfl
 
 /--
 The normal closure of an extension of domains `R ⊆ S`. It is defined as a domain `T` such that
-`R ⊆ S ⊆ T` and `Frac T / Frac R` is Galois. -/
+`R ⊆ S ⊆ T` and `Frac T / Frac R` is Galois.
+-/
 def NormalClosure : Type _ := integralClosure S E
 
 local notation3 "T" => NormalClosure R S
@@ -79,8 +80,7 @@ local instance : Algebra T E := inferInstanceAs (Algebra (integralClosure S E) E
 
 instance : Algebra R T := ((algebraMap S T).comp (algebraMap R S)).toAlgebra
 
-local instance : IsScalarTower S T E :=
-  inferInstanceAs (IsScalarTower S (integralClosure S E) E)
+local instance : IsScalarTower S T E := inferInstanceAs (IsScalarTower S (integralClosure S E) E)
 
 local instance : IsIntegralClosure T S E := integralClosure.isIntegralClosure S E
 
@@ -92,49 +92,45 @@ local instance : IsScalarTower R S E := IsScalarTower.to₁₂₄ R S L E
 
 local instance : IsScalarTower R T E := IsScalarTower.to₁₃₄ R S T E
 
-local instance : FaithfulSMul S E := (faithfulSMul_iff_algebraMap_injective S E).mpr <|
-      (FaithfulSMul.algebraMap_injective L E).comp (FaithfulSMul.algebraMap_injective S L)
+local instance : FaithfulSMul S E :=
+  (faithfulSMul_iff_algebraMap_injective S E).mpr <|
+    (FaithfulSMul.algebraMap_injective L E).comp (FaithfulSMul.algebraMap_injective S L)
 
 instance : Module.IsTorsionFree S T := Subalgebra.instIsTorsionFree (integralClosure S E)
 
 instance : FaithfulSMul R T :=
   (faithfulSMul_iff_algebraMap_injective R T).mpr <|
-      (FaithfulSMul.algebraMap_injective S T).comp (FaithfulSMul.algebraMap_injective R S)
+    (FaithfulSMul.algebraMap_injective S T).comp (FaithfulSMul.algebraMap_injective R S)
 
 variable [Module.Finite R S]
 
 local instance : FiniteDimensional L E := Module.Finite.right K L E
 
-local instance : IsFractionRing T E :=
-  integralClosure.isFractionRing_of_finite_extension L E
+local instance : IsFractionRing T E := integralClosure.isFractionRing_of_finite_extension L E
 
-instance : IsIntegrallyClosed T :=
-  integralClosure.isIntegrallyClosedOfFiniteExtension L
+instance : IsIntegrallyClosed T := integralClosure.isIntegrallyClosedOfFiniteExtension L
 
 variable [Algebra.IsSeparable (FractionRing R) (FractionRing S)]
 
-local instance : Algebra.IsSeparable L E :=
-  Algebra.isSeparable_tower_top_of_isSeparable K L E
+local instance : Algebra.IsSeparable L E := Algebra.isSeparable_tower_top_of_isSeparable K L E
 
 instance : IsGalois K (FractionRing T) := by
   refine IsGalois.of_equiv_equiv (F := K) («E» := E)
     (f := (FractionRing.algEquiv R K).symm.toRingEquiv)
     (g := (FractionRing.algEquiv T E).symm.toRingEquiv) ?_
   ext
-  simpa using! IsFractionRing.algEquiv_commutes (FractionRing.algEquiv R K).symm
-    (FractionRing.algEquiv T E).symm _
+  simpa using!
+    IsFractionRing.algEquiv_commutes (FractionRing.algEquiv R K).symm
+      (FractionRing.algEquiv T E).symm _
 
 variable [IsDedekindDomain S]
 
 set_option linter.overlappingInstances false
 
-instance : Module.Finite S T :=
-  IsIntegralClosure.finite S L E T
+instance : Module.Finite S T := IsIntegralClosure.finite S L E T
 
-instance : Module.Finite R T :=
-  Module.Finite.trans S T
+instance : Module.Finite R T := Module.Finite.trans S T
 
-instance : IsDedekindDomain T :=
-  integralClosure.isDedekindDomain S L E
+instance : IsDedekindDomain T := integralClosure.isDedekindDomain S L E
 
 end Ring.NormalClosure

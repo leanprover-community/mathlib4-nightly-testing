@@ -6,7 +6,6 @@ Authors: Yongshun Ye
 module
 
 public import Mathlib.Data.Nat.Prime.Defs
-
 import Mathlib.Data.Nat.GCD.Basic
 
 /-!

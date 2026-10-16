@@ -73,8 +73,9 @@ structure MonomialOrder (σ : Type*) where
   /-- `syn` is a well ordering -/
   wellFoundedLT_syn : WellFoundedLT syn := by infer_instance
 
-attribute [instance] MonomialOrder.addCommMonoidSyn MonomialOrder.linearOrderSyn
-  MonomialOrder.isOrderedAddMonoid_syn MonomialOrder.wellFoundedLT_syn
+attribute [instance]
+  MonomialOrder.addCommMonoidSyn MonomialOrder.linearOrderSyn MonomialOrder.isOrderedAddMonoid_syn
+  MonomialOrder.wellFoundedLT_syn
 
 namespace MonomialOrder
 
@@ -97,8 +98,7 @@ instance isOrderedCancelAddMonoid_syn : IsOrderedCancelAddMonoid m.syn :=
 /-- A `WithBot m.syn` version of `m.toSyn`. -/
 noncomputable def toWithBotSyn : WithBot (σ →₀ ℕ) ≃+ WithBot m.syn := m.toSyn.withBotCongr
 
-lemma le_add_right (a b : σ →₀ ℕ) :
-    m.toSyn a ≤ m.toSyn a + m.toSyn b := by
+lemma le_add_right (a b : σ →₀ ℕ) : m.toSyn a ≤ m.toSyn a + m.toSyn b := by
   rw [← map_add]
   exact m.toSyn_monotone le_self_add
 
@@ -108,38 +108,30 @@ instance orderBot : OrderBot (m.syn) where
     have := m.le_add_right 0 (m.toSyn.symm a)
     simpa [map_add, zero_add]
 
-@[simp]
-theorem bot_eq_zero : (⊥ : m.syn) = 0 := rfl
+@[simp] theorem bot_eq_zero : (⊥ : m.syn) = 0 := rfl
 
-@[simp]
-lemma zero_le (a : m.syn) : 0 ≤ a := bot_le
+@[simp] lemma zero_le (a : m.syn) : 0 ≤ a := bot_le
 
 theorem eq_zero_iff {a : m.syn} : a = 0 ↔ a ≤ 0 := eq_bot_iff
 
-lemma toSyn_eq_zero_iff (a : σ →₀ ℕ) :
-    m.toSyn a = 0 ↔ a = 0 := AddEquiv.map_eq_zero_iff m.toSyn
+lemma toSyn_eq_zero_iff (a : σ →₀ ℕ) : m.toSyn a = 0 ↔ a = 0 := AddEquiv.map_eq_zero_iff m.toSyn
 
-lemma toSyn_lt_iff_ne_zero {a : m.syn} :
-    0 < a ↔ a ≠ 0 := bot_lt_iff_ne_bot
+lemma toSyn_lt_iff_ne_zero {a : m.syn} : 0 < a ↔ a ≠ 0 := bot_lt_iff_ne_bot
 
 lemma toSyn_strictMono : StrictMono (m.toSyn) := by
   apply m.toSyn_monotone.strictMono_of_injective m.toSyn.injective
 
-@[simp]
-lemma toWithBotSyn_apply_bot : m.toWithBotSyn ⊥ = ⊥ := rfl
+@[simp] lemma toWithBotSyn_apply_bot : m.toWithBotSyn ⊥ = ⊥ := rfl
 
-@[simp]
-lemma toWithBotSyn_symm_apply_bot : m.toWithBotSyn.symm ⊥ = ⊥ := rfl
+@[simp] lemma toWithBotSyn_symm_apply_bot : m.toWithBotSyn.symm ⊥ = ⊥ := rfl
 
 @[simp]
 lemma toWithBotSyn_apply_eq_bot_iff (a) : m.toWithBotSyn a = ⊥ ↔ a = ⊥ := by
   simp [← m.toWithBotSyn.eq_symm_apply]
 
-lemma toWithBotSyn_apply_le_bot_iff (a) : m.toWithBotSyn a ≤ ⊥ ↔ a = ⊥ := by
-  simp
+lemma toWithBotSyn_apply_le_bot_iff (a) : m.toWithBotSyn a ≤ ⊥ ↔ a = ⊥ := by simp
 
-@[simp]
-lemma toWithBotSyn_apply_coe (a : σ →₀ ℕ) : m.toWithBotSyn a = m.toSyn a := rfl
+@[simp] lemma toWithBotSyn_apply_coe (a : σ →₀ ℕ) : m.toWithBotSyn a = m.toSyn a := rfl
 
 @[simp]
 lemma bot_lt_toWithBotSyn_apply_iff (a) : ⊥ < m.toWithBotSyn a ↔ ⊥ < a := by
@@ -152,23 +144,23 @@ lemma toWithBotSyn_symm_apply_eq_bot (a) : m.toWithBotSyn.symm a = ⊥ ↔ a = �
 lemma toWithBotSyn_apply (a : WithBot (σ →₀ ℕ)) : m.toWithBotSyn a = a.map m.toSyn := rfl
 
 /-- Given a monomial order, notation for the corresponding strict order relation on `σ →₀ ℕ` -/
-scoped
-notation:50 c " ≺[" m:25 "] " d:50 => (MonomialOrder.toSyn m c < MonomialOrder.toSyn m d)
+scoped notation:50 c " ≺[" m:25 "] " d:50 => (MonomialOrder.toSyn m c < MonomialOrder.toSyn m d)
 
 /-- Given a monomial order, notation for the corresponding order relation on `σ →₀ ℕ` -/
-scoped
-notation:50 c " ≼[" m:25 "] " d:50 => (MonomialOrder.toSyn m c ≤ MonomialOrder.toSyn m d)
+scoped notation:50 c " ≼[" m:25 "] " d:50 => (MonomialOrder.toSyn m c ≤ MonomialOrder.toSyn m d)
 
-/-- Given a monomial order with bot, notation for the corresponding strict order relation on
-`WithBot (σ →₀ ℕ)` -/
-scoped
-notation:50 c " ≺'[" m:25 "] " d:50 =>
+/--
+Given a monomial order with bot, notation for the corresponding strict order relation on
+`WithBot (σ →₀ ℕ)`
+-/
+scoped notation:50 c " ≺'[" m:25 "] " d:50 =>
   (MonomialOrder.toWithBotSyn m c < MonomialOrder.toWithBotSyn m d)
 
-/-- Given a monomial order with bot, notation for the corresponding order relation on
-`WithBot (σ →₀ ℕ)` -/
-scoped
-notation:50 c " ≼'[" m:25 "] " d:50 =>
+/--
+Given a monomial order with bot, notation for the corresponding order relation on
+`WithBot (σ →₀ ℕ)`
+-/
+scoped notation:50 c " ≼'[" m:25 "] " d:50 =>
   (MonomialOrder.toWithBotSyn m c ≤ MonomialOrder.toWithBotSyn m d)
 
 end MonomialOrder
@@ -180,9 +172,9 @@ open Finsupp
 open scoped MonomialOrder
 
 -- The linear order on `Finsupp`s obtained by the lexicographic ordering. -/
-noncomputable instance {α N : Type*} [LinearOrder α]
-    [AddCommMonoid N] [PartialOrder N] [IsOrderedCancelAddMonoid N] :
-    IsOrderedCancelAddMonoid (Lex (α →₀ N)) where
+noncomputable instance
+    {α N : Type*} [LinearOrder α] [AddCommMonoid N] [PartialOrder N] [IsOrderedCancelAddMonoid N]
+    : IsOrderedCancelAddMonoid (Lex (α →₀ N)) where
   le_of_add_le_add_left a b c h := by simpa only [add_le_add_iff_left] using h
   add_le_add_left a b h c := by simpa using h
 
@@ -191,36 +183,33 @@ example : toLex (Finsupp.single 0 2) > toLex (Finsupp.single 0 1 + Finsupp.singl
   use 0; simp
 
 /-- for the lexicographic ordering, X 1 < X 0 -/
-example : toLex (Finsupp.single 1 1) < toLex (Finsupp.single 0 1) := by
-  use 0; simp
+example : toLex (Finsupp.single 1 1) < toLex (Finsupp.single 0 1) := by use 0; simp
 
 /-- for the lexicographic ordering, X 1 < X 0 ^ 2 -/
-example : toLex (Finsupp.single 1 1) < toLex (Finsupp.single 0 2) := by
-  use 0; simp
+example : toLex (Finsupp.single 1 1) < toLex (Finsupp.single 0 2) := by use 0; simp
 
 variable {σ : Type*} [LinearOrder σ]
 
 /-- The lexicographic order on `σ →₀ ℕ`, as a `MonomialOrder` -/
-noncomputable def MonomialOrder.lex [WellFoundedGT σ] :
-    MonomialOrder σ where
+noncomputable def MonomialOrder.lex [WellFoundedGT σ] : MonomialOrder σ where
   syn := Lex (σ →₀ ℕ)
-  toSyn :=
-  { toEquiv := toLex
-    map_add' := toLex_add }
+  toSyn := { toEquiv := toLex, map_add' := toLex_add }
   toSyn_monotone := Finsupp.toLex_monotone
 
-theorem MonomialOrder.lex_le_iff [WellFoundedGT σ] {c d : σ →₀ ℕ} :
-    c ≼[lex] d ↔ toLex c ≤ toLex d := Iff.rfl
+theorem MonomialOrder.lex_le_iff [WellFoundedGT σ] {c d : σ →₀ ℕ}
+    : c ≼[lex] d ↔ toLex c ≤ toLex d :=
+  Iff.rfl
 
-theorem MonomialOrder.lex_lt_iff [WellFoundedGT σ] {c d : σ →₀ ℕ} :
-    c ≺[lex] d ↔ toLex c < toLex d := Iff.rfl
+theorem MonomialOrder.lex_lt_iff [WellFoundedGT σ] {c d : σ →₀ ℕ}
+    : c ≺[lex] d ↔ toLex c < toLex d :=
+  Iff.rfl
 
-theorem MonomialOrder.lex_lt_iff_of_unique [Unique σ] {c d : σ →₀ ℕ} :
-    c ≺[lex] d ↔ c default < d default := by
+theorem MonomialOrder.lex_lt_iff_of_unique [Unique σ] {c d : σ →₀ ℕ}
+    : c ≺[lex] d ↔ c default < d default := by
   simp only [MonomialOrder.lex_lt_iff, Finsupp.Lex.lt_iff_of_unique, ofLex_toLex]
 
-theorem MonomialOrder.lex_le_iff_of_unique [Unique σ] {c d : σ →₀ ℕ} :
-    c ≼[lex] d ↔ c default ≤ d default := by
+theorem MonomialOrder.lex_le_iff_of_unique [Unique σ] {c d : σ →₀ ℕ}
+    : c ≼[lex] d ↔ c default ≤ d default := by
   simp only [MonomialOrder.lex_le_iff, Finsupp.Lex.le_iff_of_unique, ofLex_toLex]
 
 end Lex

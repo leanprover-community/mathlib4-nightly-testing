@@ -40,9 +40,11 @@ variable {R : Type*} [NormedRing R] [HasSummableGeomSeries R]
 
 namespace Units
 
-/-- In a normed ring with summable geometric series, a perturbation of a unit `x` by an
+/--
+In a normed ring with summable geometric series, a perturbation of a unit `x` by an
 element `t` of distance less than `‖x⁻¹‖⁻¹` from `x` is a unit.
-Here we construct its `Units` structure. -/
+Here we construct its `Units` structure.
+-/
 @[simps! val]
 def add (x : Rˣ) (t : R) (h : ‖t‖ < ‖(↑x⁻¹ : R)‖⁻¹) : Rˣ :=
   Units.copy -- to make `add_val` true definitionally, for convenience
@@ -50,20 +52,25 @@ def add (x : Rˣ) (t : R) (h : ‖t‖ < ‖(↑x⁻¹ : R)‖⁻¹) : Rˣ :=
       nontriviality R using zero_lt_one
       have hpos : 0 < ‖(↑x⁻¹ : R)‖ := Units.norm_pos x⁻¹
       calc
-        ‖-(↑x⁻¹ * t)‖ = ‖↑x⁻¹ * t‖ := by rw [norm_neg]
+        ‖-(↑x⁻¹ * t)‖
+          = ‖↑x⁻¹ * t‖ := by rw [norm_neg]
         _ ≤ ‖(↑x⁻¹ : R)‖ * ‖t‖ := norm_mul_le (x⁻¹).1 _
         _ < ‖(↑x⁻¹ : R)‖ * ‖(↑x⁻¹ : R)‖⁻¹ := by nlinarith only [h, hpos]
         _ = 1 := mul_inv_cancel₀ (ne_of_gt hpos)))
     (x + t) (by simp [mul_add]) _ rfl
 
-/-- In a normed ring with summable geometric series, an element `y` of distance less
-than `‖x⁻¹‖⁻¹` from `x` is a unit. Here we construct its `Units` structure. -/
+/--
+In a normed ring with summable geometric series, an element `y` of distance less
+than `‖x⁻¹‖⁻¹` from `x` is a unit. Here we construct its `Units` structure.
+-/
 @[simps! val]
 def ofNearby (x : Rˣ) (y : R) (h : ‖y - x‖ < ‖(↑x⁻¹ : R)‖⁻¹) : Rˣ :=
   (x.add (y - x : R) h).copy y (by simp) _ rfl
 
-/-- The group of units of a normed ring with summable geometric series is an open subset
-of the ring. -/
+/--
+The group of units of a normed ring with summable geometric series is an open subset
+of the ring.
+-/
 protected theorem isOpen : IsOpen { x : R | IsUnit x } := by
   nontriviality R
   rw [Metric.isOpen_iff]
@@ -79,14 +86,15 @@ end Units
 
 namespace nonunits
 
-/-- The `nonunits` in a normed ring with summable geometric series are contained in the
-complement of the ball of radius `1` centered at `1 : R`. -/
-theorem subset_compl_ball : nonunits R ⊆ (Metric.ball (1 : R) 1)ᶜ := fun x hx h₁ ↦ hx <|
-  sub_sub_self 1 x ▸ (Units.oneSub (1 - x) (by rwa [mem_ball_iff_norm'] at h₁)).isUnit
+/--
+The `nonunits` in a normed ring with summable geometric series are contained in the
+complement of the ball of radius `1` centered at `1 : R`.
+-/
+theorem subset_compl_ball : nonunits R ⊆ (Metric.ball (1 : R) 1)ᶜ := fun x hx h₁ ↦
+  hx <| sub_sub_self 1 x ▸ (Units.oneSub (1 - x) (by rwa [mem_ball_iff_norm'] at h₁)).isUnit
 
 -- The `nonunits` in a normed ring with summable geometric series are a closed set
-protected theorem isClosed : IsClosed (nonunits R) :=
-  Units.isOpen.isClosed_compl
+protected theorem isClosed : IsClosed (nonunits R) := Units.isOpen.isClosed_compl
 
 end nonunits
 
@@ -97,10 +105,11 @@ open Asymptotics Filter Metric Finset Ring
 theorem inverse_one_sub (t : R) (h : ‖t‖ < 1) : inverse (1 - t) = ↑(Units.oneSub t h)⁻¹ := by
   rw [← inverse_unit (Units.oneSub t h), Units.val_oneSub]
 
-/-- The formula `Ring.inverse (x + t) = Ring.inverse (1 + x⁻¹ * t) * x⁻¹` holds for `t` sufficiently
-small. -/
-theorem inverse_add (x : Rˣ) :
-    ∀ᶠ t in 𝓝 0, ((x : R) + t)⁻¹ʳ = (1 + ↑x⁻¹ * t)⁻¹ʳ * ↑x⁻¹ := by
+/--
+The formula `Ring.inverse (x + t) = Ring.inverse (1 + x⁻¹ * t) * x⁻¹` holds for `t` sufficiently
+small.
+-/
+theorem inverse_add (x : Rˣ) : ∀ᶠ t in 𝓝 0, ((x : R) + t)⁻¹ʳ = (1 + ↑x⁻¹ * t)⁻¹ʳ * ↑x⁻¹ := by
   nontriviality R
   rw [Metric.eventually_nhds_iff]
   refine ⟨‖(↑x⁻¹ : R)‖⁻¹, by cancel_denoms, fun t ht ↦ ?_⟩
@@ -108,27 +117,30 @@ theorem inverse_add (x : Rˣ) :
   rw [← x.val_add t ht, inverse_unit, Units.add, Units.copy_eq, mul_inv_rev, Units.val_mul,
     ← inverse_unit, Units.val_oneSub, sub_neg_eq_add]
 
-theorem inverse_one_sub_nth_order' (n : ℕ) {t : R} (ht : ‖t‖ < 1) :
-    inverse ((1 : R) - t) = (∑ i ∈ range n, t ^ i) + t ^ n * inverse (1 - t) :=
+theorem inverse_one_sub_nth_order' (n : ℕ) {t : R} (ht : ‖t‖ < 1)
+    : inverse ((1 : R) - t) = (∑ i ∈ range n, t ^ i) + t ^ n * inverse (1 - t) :=
   have := _root_.summable_geometric_of_norm_lt_one ht
-  calc inverse (1 - t) = ∑' i : ℕ, t ^ i := inverse_one_sub t ht
+  calc
+    inverse (1 - t)
+      = ∑' i : ℕ, t ^ i := inverse_one_sub t ht
     _ = ∑ i ∈ range n, t ^ i + ∑' i : ℕ, t ^ (i + n) := (this.sum_add_tsum_nat_add _).symm
     _ = (∑ i ∈ range n, t ^ i) + t ^ n * inverse (1 - t) := by
       simp only [inverse_one_sub t ht, add_comm _ n, pow_add, this.tsum_mul_left]; rfl
 
-theorem inverse_one_sub_nth_order (n : ℕ) :
-    ∀ᶠ t in 𝓝 0, inverse ((1 : R) - t) = (∑ i ∈ range n, t ^ i) + t ^ n * inverse (1 - t) :=
-  Metric.eventually_nhds_iff.2 ⟨1, one_pos, fun t ht ↦ inverse_one_sub_nth_order' n <| by
-    rwa [← dist_zero_right]⟩
+theorem inverse_one_sub_nth_order (n : ℕ)
+    : ∀ᶠ t in 𝓝 0, inverse ((1 : R) - t) = (∑ i ∈ range n, t ^ i) + t ^ n * inverse (1 - t) :=
+  Metric.eventually_nhds_iff.2
+    ⟨1, one_pos, fun t ht ↦ inverse_one_sub_nth_order' n <| by rwa [← dist_zero_right]⟩
 
-
-/-- The formula
+/--
+The formula
 `Ring.inverse (x + t) =
   (∑ i ∈ Finset.range n, (- x⁻¹ * t) ^ i) * x⁻¹ + (- x⁻¹ * t) ^ n * Ring.inverse (x + t)`
-holds for `t` sufficiently small. -/
-theorem inverse_add_nth_order (x : Rˣ) (n : ℕ) :
-    ∀ᶠ t in 𝓝 0, ((x : R) + t)⁻¹ʳ =
-      (∑ i ∈ range n, (-↑x⁻¹ * t) ^ i) * ↑x⁻¹ + (-↑x⁻¹ * t) ^ n * (x + t)⁻¹ʳ := by
+holds for `t` sufficiently small.
+-/
+theorem inverse_add_nth_order (x : Rˣ) (n : ℕ)
+    : ∀ᶠ t in 𝓝 0, ((x : R) + t)⁻¹ʳ =
+        (∑ i ∈ range n, (-↑x⁻¹ * t) ^ i) * ↑x⁻¹ + (-↑x⁻¹ * t) ^ n * (x + t)⁻¹ʳ := by
   have hzero : Tendsto (-(↑x⁻¹ : R) * ·) (𝓝 0) (𝓝 0) :=
     (mulLeft_continuous _).tendsto' _ _ <| mul_zero _
   filter_upwards [inverse_add x, hzero.eventually (inverse_one_sub_nth_order n)] with t ht ht'
@@ -155,12 +167,14 @@ theorem inverse_add_norm (x : Rˣ) : (fun t : R => inverse (↑x + t)) =O[𝓝 0
     (mulLeft_continuous _).tendsto' _ _ <| mul_zero _
   exact (inverse_one_sub_norm.comp_tendsto hzero).mul (isBigO_const_const _ one_ne_zero _)
 
-/-- The function
+/--
+The function
 `fun t ↦ Ring.inverse (x + t) - (∑ i ∈ Finset.range n, (- x⁻¹ * t) ^ i) * x⁻¹`
-is `O(t ^ n)` as `t → 0`. -/
-theorem inverse_add_norm_diff_nth_order (x : Rˣ) (n : ℕ) :
-    (fun t : R => (↑x + t)⁻¹ʳ - (∑ i ∈ range n, (-↑x⁻¹ * t) ^ i) * ↑x⁻¹) =O[𝓝 (0 : R)]
-      fun t => ‖t‖ ^ n := by
+is `O(t ^ n)` as `t → 0`.
+-/
+theorem inverse_add_norm_diff_nth_order (x : Rˣ) (n : ℕ)
+    : (fun t : R => (↑x + t)⁻¹ʳ - (∑ i ∈ range n, (-↑x⁻¹ * t) ^ i) * ↑x⁻¹) =O[𝓝 (0 : R)]
+        fun t => ‖t‖ ^ n := by
   refine EventuallyEq.trans_isBigO (.fun_sub (inverse_add_nth_order x n) (.refl _ _)) ?_
   simp only [add_sub_cancel_left]
   refine ((isBigO_refl _ _).norm_right.mul (inverse_add_norm x)).trans ?_
@@ -168,13 +182,13 @@ theorem inverse_add_norm_diff_nth_order (x : Rˣ) (n : ℕ) :
   exact ((isBigO_refl _ _).norm_right.const_mul_left _).pow _
 
 /-- The function `fun t ↦ Ring.inverse (x + t) - x⁻¹` is `O(t)` as `t → 0`. -/
-theorem inverse_add_norm_diff_first_order (x : Rˣ) :
-    (fun t : R => (↑x + t)⁻¹ʳ - ↑x⁻¹) =O[𝓝 0] fun t => ‖t‖ := by
+theorem inverse_add_norm_diff_first_order (x : Rˣ)
+    : (fun t : R => (↑x + t)⁻¹ʳ - ↑x⁻¹) =O[𝓝 0] fun t => ‖t‖ := by
   simpa using inverse_add_norm_diff_nth_order x 1
 
 /-- The function `fun t ↦ Ring.inverse (x + t) - x⁻¹ + x⁻¹ * t * x⁻¹` is `O(t ^ 2)` as `t → 0`. -/
-theorem inverse_add_norm_diff_second_order (x : Rˣ) :
-    (fun t : R => (↑x + t)⁻¹ʳ - ↑x⁻¹ + ↑x⁻¹ * t * ↑x⁻¹) =O[𝓝 0] fun t => ‖t‖ ^ 2 := by
+theorem inverse_add_norm_diff_second_order (x : Rˣ)
+    : (fun t : R => (↑x + t)⁻¹ʳ - ↑x⁻¹ + ↑x⁻¹ * t * ↑x⁻¹) =O[𝓝 0] fun t => ‖t‖ ^ 2 := by
   convert! inverse_add_norm_diff_nth_order x 2 using 2
   simp only [sum_range_succ, sum_range_zero, zero_add, pow_zero, pow_one, add_mul, one_mul,
     ← sub_sub, neg_mul, sub_neg_eq_add]
@@ -195,17 +209,22 @@ namespace Units
 
 open NormedRing
 
-/-- In a normed ring with summable geometric series, the coercion from `Rˣ` (equipped with the
-induced topology from the embedding in `R × R`) to `R` is an open embedding. -/
+/--
+In a normed ring with summable geometric series, the coercion from `Rˣ` (equipped with the
+induced topology from the embedding in `R × R`) to `R` is an open embedding.
+-/
 theorem isOpenEmbedding_val : IsOpenEmbedding (val : Rˣ → R) where
-  toIsEmbedding := isEmbedding_val_mk'
-    (fun _ ⟨u, hu⟩ ↦ hu ▸ (inverse_continuousAt u).continuousWithinAt) Ring.inverse_unit
+  toIsEmbedding :=
+    isEmbedding_val_mk'
+      (fun _ ⟨u, hu⟩ ↦ hu ▸ (inverse_continuousAt u).continuousWithinAt)
+      Ring.inverse_unit
   isOpen_range := Units.isOpen
 
-/-- In a normed ring with summable geometric series, the coercion from `Rˣ` (equipped with the
-induced topology from the embedding in `R × R`) to `R` is an open map. -/
-theorem isOpenMap_val : IsOpenMap (val : Rˣ → R) :=
-  isOpenEmbedding_val.isOpenMap
+/--
+In a normed ring with summable geometric series, the coercion from `Rˣ` (equipped with the
+induced topology from the embedding in `R × R`) to `R` is an open map.
+-/
+theorem isOpenMap_val : IsOpenMap (val : Rˣ → R) := isOpenEmbedding_val.isOpenMap
 
 end Units
 
@@ -217,14 +236,18 @@ theorem eq_top_of_norm_lt_one (I : Ideal R) {x : R} (hxI : x ∈ I) (hx : ‖1 -
   I.eq_top_iff_one.mpr <| by
     simpa only [show u.inv * x = 1 by simp [u]] using I.mul_mem_left u.inv hxI
 
-/-- The `Ideal.closure` of a proper ideal in a normed ring with summable
-geometric series is proper. -/
+/--
+The `Ideal.closure` of a proper ideal in a normed ring with summable
+geometric series is proper.
+-/
 theorem closure_ne_top (I : Ideal R) (hI : I ≠ ⊤) : I.closure ≠ ⊤ := by
   have h := closure_minimal (coe_subset_nonunits hI) nonunits.isClosed
   simpa only [I.closure.eq_top_iff_one, Ne] using! mt (@h 1) one_notMem_nonunits
 
-/-- The `Ideal.closure` of a maximal ideal in a normed ring with summable
-geometric series is the ideal itself. -/
+/--
+The `Ideal.closure` of a maximal ideal in a normed ring with summable
+geometric series is the ideal itself.
+-/
 theorem IsMaximal.closure_eq {I : Ideal R} (hI : I.IsMaximal) : I.closure = I :=
   (hI.eq_of_le (I.closure_ne_top hI.ne_top) subset_closure).symm
 

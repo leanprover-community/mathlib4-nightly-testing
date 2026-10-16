@@ -35,62 +35,67 @@ open Finset (range sum_const)
 
 namespace Imo1987Q1
 
-/-- The set of pairs `(x : α, σ : Perm α)` such that `σ x = x` is equivalent to the set of pairs
-`(x : α, σ : Perm {x}ᶜ)`. -/
-def fixedPointsEquiv : { σx : α × Perm α // σx.2 σx.1 = σx.1 } ≃ Σ x : α, Perm ({x}ᶜ : Set α) :=
+/--
+The set of pairs `(x : α, σ : Perm α)` such that `σ x = x` is equivalent to the set of pairs
+`(x : α, σ : Perm {x}ᶜ)`.
+-/
+def fixedPointsEquiv : {σx : α × Perm α // σx.2 σx.1 = σx.1} ≃ Σ x : α, Perm ({x}ᶜ : Set α) :=
   calc
-    { σx : α × Perm α // σx.2 σx.1 = σx.1 } ≃ Σ x : α, { σ : Perm α // σ x = x } :=
-      setProdEquivSigma {σx : α × Perm α | σx.2 σx.1 = σx.1}
-    _ ≃ Σ x : α, { σ : Perm α // ∀ y : ({x} : Set α), σ y = Equiv.refl (↥({x} : Set α)) y } :=
+    {σx : α × Perm α // σx.2 σx.1 = σx.1}
+      ≃ Σ x : α, {σ : Perm α // σ x = x} := setProdEquivSigma {σx : α × Perm α | σx.2 σx.1 = σx.1}
+    _ ≃ Σ x : α, {σ : Perm α // ∀ y : ({x} : Set α), σ y = Equiv.refl (↥({x} : Set α)) y} :=
       sigmaCongrRight fun x => Equiv.subtypeEquivRight (by simp)
     _ ≃ Σ x : α, Perm ({x}ᶜ : Set α) := sigmaCongrRight fun x => by apply Equiv.Set.compl
 
-theorem card_fixed_points :
-    card { σx : α × Perm α // σx.2 σx.1 = σx.1 } = card α * (card α - 1)! := by
+theorem card_fixed_points
+    : card {σx : α × Perm α // σx.2 σx.1 = σx.1} = card α * (card α - 1)! := by
   simp only [card_congr (fixedPointsEquiv α), card_sigma, card_perm]
-  have h (x : α) : ({x}ᶜ : Set α) = Finset.univ.erase x := by
-    ext; simp
+  have h (x : α) : ({x}ᶜ : Set α) = Finset.univ.erase x := by ext; simp
   simp_rw [h, Fintype.card_subtype, SetLike.mem_coe, Finset.filter_univ_mem]
   simp
 
-/-- Given `α : Type*` and `k : ℕ`, `fiber α k` is the set of permutations of `α` with exactly `k`
-fixed points. -/
-def fiber (k : ℕ) : Set (Perm α) :=
-  {σ : Perm α | card (fixedPoints σ) = k}
+/--
+Given `α : Type*` and `k : ℕ`, `fiber α k` is the set of permutations of `α` with exactly `k`
+fixed points.
+-/
+def fiber (k : ℕ) : Set (Perm α) := {σ : Perm α | card (fixedPoints σ) = k}
 
 instance {k : ℕ} : Fintype (fiber α k) := inferInstanceAs <| Fintype (Set.ofPred _)
 
-@[simp]
-theorem mem_fiber {σ : Perm α} {k : ℕ} : σ ∈ fiber α k ↔ card (fixedPoints σ) = k :=
-  Iff.rfl
+@[simp] theorem mem_fiber {σ : Perm α} {k : ℕ} : σ ∈ fiber α k ↔ card (fixedPoints σ) = k := Iff.rfl
 
 /-- `p α k` is the number of permutations of `α` with exactly `k` fixed points. -/
-def p (k : ℕ) :=
-  card (fiber α k)
+def p (k : ℕ) := card (fiber α k)
 
-/-- The set of triples `(k ≤ card α, σ ∈ fiber α k, x ∈ fixedPoints σ)` is equivalent
+/--
+The set of triples `(k ≤ card α, σ ∈ fiber α k, x ∈ fixedPoints σ)` is equivalent
 to the set of pairs `(x : α, σ : Perm α)` such that `σ x = x`. The equivalence sends
 `(k, σ, x)` to `(x, σ)` and `(x, σ)` to `(card (fixedPoints σ), σ, x)`.
 
 It is easy to see that the cardinality of the LHS is given by
-`∑ k : Fin (card α + 1), k * p α k`. -/
-def fixedPointsEquiv' :
-    (Σ (k : Fin (card α + 1)) (σ : fiber α k), fixedPoints σ.1) ≃
-      { σx : α × Perm α // σx.2 σx.1 = σx.1 } where
+`∑ k : Fin (card α + 1), k * p α k`.
+-/
+def fixedPointsEquiv'
+    : (Σ (k : Fin (card α + 1)) (σ : fiber α k), fixedPoints σ.1)
+      ≃ {σx : α × Perm α // σx.2 σx.1 = σx.1} where
   toFun p := ⟨⟨p.2.2, p.2.1⟩, p.2.2.2⟩
-  invFun p :=
-    ⟨⟨card (fixedPoints p.1.2), (card_subtype_le _).trans_lt (Nat.lt_succ_self _)⟩, ⟨p.1.2, rfl⟩,
-      ⟨p.1.1, p.2⟩⟩
+  invFun p := ⟨
+    ⟨card (fixedPoints p.1.2), (card_subtype_le _).trans_lt (Nat.lt_succ_self _)⟩,
+    ⟨p.1.2, rfl⟩,
+    ⟨p.1.1, p.2⟩
+  ⟩
   left_inv := fun ⟨⟨k, hk⟩, ⟨σ, hσ⟩, ⟨x, hx⟩⟩ => by
     simp only [mem_fiber] at hσ
-    subst k; rfl
+    subst k
+    rfl
   right_inv := fun ⟨⟨x, σ⟩, h⟩ => rfl
 
 /-- Main statement for any `(α : Type*) [Fintype α]`. -/
 theorem main_fintype : ∑ k ∈ range (card α + 1), k * p α k = card α * (card α - 1)! := by
   have A : ∀ (k) (σ : fiber α k), card (fixedPoints (↑σ : Perm α)) = k := fun k σ => σ.2
   simpa [A, ← Fin.sum_univ_eq_sum_range, -card_ofFinset, Finset.card_univ, card_fixed_points,
-    mul_comm] using! card_congr (fixedPointsEquiv' α)
+      mul_comm]
+    using! card_congr (fixedPointsEquiv' α)
 
 /-- Main statement for permutations of `Fin n`, a version that works for `n = 0`. -/
 theorem main₀ (n : ℕ) : ∑ k ∈ range (n + 1), k * p (Fin n) k = n * (n - 1)! := by

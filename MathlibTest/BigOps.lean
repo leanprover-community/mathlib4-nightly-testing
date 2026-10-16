@@ -3,8 +3,10 @@ import Mathlib.Order.Interval.Finset.Nat
 import Mathlib.Data.Fintype.Basic
 
 section
-variable {ι M : Type*} [CommMonoid M] [AddCommMonoid M] [Fintype ι] {s : Finset ι} {p : ι → Prop}
-  [DecidablePred p] {f : ι → M}
+variable
+  {ι M : Type*} [CommMonoid M] [AddCommMonoid M] [Fintype ι]
+  {s : Finset ι} {p : ι → Prop} [DecidablePred p]
+  {f : ι → M}
 
 /-! ### Big operators over a finset -/
 
@@ -18,11 +20,11 @@ variable {ι M : Type*} [CommMonoid M] [AddCommMonoid M] [Fintype ι] {s : Finse
 
 /-- info: ∑ i ∈ s with p i, f i : M -/
 #guard_msgs in
-#check Finset.sum {j ∈ s | p j} fun i ↦ f i
+#check Finset.sum ({j ∈ s | p j}) fun i ↦ f i
 
 /-- info: ∏ i ∈ s with p i, f i : M -/
 #guard_msgs in
-#check Finset.prod {j ∈ s | p j} fun i ↦ f i
+#check Finset.prod ({j ∈ s | p j}) fun i ↦ f i
 
 /-! ### Big operators over a finset with `funBinderTypes` on -/
 
@@ -38,11 +40,11 @@ set_option pp.funBinderTypes true
 
 /-- info: ∑ i : ι with p i, f i : M -/
 #guard_msgs in
-#check Finset.sum {j | p j} fun i ↦ f i
+#check Finset.sum ({j | p j}) fun i ↦ f i
 
 /-- info: ∏ i : ι with p i, f i : M -/
 #guard_msgs in
-#check Finset.prod {j | p j} fun i ↦ f i
+#check Finset.prod ({j | p j}) fun i ↦ f i
 
 /-! ### Big operators over a finset with `funBinderTypes` off -/
 
@@ -58,11 +60,11 @@ set_option pp.funBinderTypes false
 
 /-- info: ∑ i with p i, f i : M -/
 #guard_msgs in
-#check Finset.sum {j | p j} fun i ↦ f i
+#check Finset.sum ({j | p j}) fun i ↦ f i
 
 /-- info: ∏ i with p i, f i : M -/
 #guard_msgs in
-#check Finset.prod {j | p j} fun i ↦ f i
+#check Finset.prod ({j | p j}) fun i ↦ f i
 
 /-! ### Big operators over a finset with `pp.analyze` on -/
 
@@ -97,12 +99,12 @@ set_option pp.analyze true in
 /-- info: ∑ i ∈ s with p i, f i : M -/
 #guard_msgs in
 set_option pp.analyze true in
-#check Finset.sum {j ∈ s | p j} fun i ↦ f i
+#check Finset.sum ({j ∈ s | p j}) fun i ↦ f i
 
 /-- info: ∏ i ∈ s with p i, f i : M -/
 #guard_msgs in
 set_option pp.analyze true in
-#check Finset.prod {j ∈ s | p j} fun i ↦ f i
+#check Finset.prod ({j ∈ s | p j}) fun i ↦ f i
 
 /-- info: ∑ i : ι, f i : M -/
 #guard_msgs in
@@ -117,12 +119,12 @@ set_option pp.analyze true in
 /-- info: ∑ i : ι with p i, f i : M -/
 #guard_msgs in
 set_option pp.analyze true in
-#check Finset.sum {j | p j} fun i ↦ f i
+#check Finset.sum ({j | p j}) fun i ↦ f i
 
 /-- info: ∏ i : ι with p i, f i : M -/
 #guard_msgs in
 set_option pp.analyze true in
-#check Finset.prod {j | p j} fun i ↦ f i
+#check Finset.prod ({j | p j}) fun i ↦ f i
 
 /-! ### Big operators over ordered sets -/
 

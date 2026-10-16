@@ -6,7 +6,6 @@ Authors: Michael Stoll
 module
 
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
-
 import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
@@ -32,8 +31,8 @@ public noncomputable def FiniteField.primitiveChar_to_Complex : AddChar F ℂ :=
   refine MonoidHom.compAddChar ?_ ch.char
   exact (IsCyclotomicExtension.algEquiv {(ch.n : ℕ)} ℂ (CyclotomicField ch.n ℂ) ℂ).toMonoidHom
 
-public lemma FiniteField.primitiveChar_to_Complex_isPrimitive :
-    (primitiveChar_to_Complex F).IsPrimitive := by
+public lemma FiniteField.primitiveChar_to_Complex_isPrimitive
+    : (primitiveChar_to_Complex F).IsPrimitive := by
   refine IsPrimitive.compMulHom_of_isPrimitive (PrimitiveAddChar.prim _) ?_
   let nn := (primitiveChar F ℂ <| ringChar_ne F).n
   exact (IsCyclotomicExtension.algEquiv {(nn : ℕ)} ℂ (CyclotomicField nn ℂ) ℂ).injective

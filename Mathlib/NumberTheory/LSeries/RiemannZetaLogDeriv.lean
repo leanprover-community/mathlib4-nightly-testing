@@ -25,13 +25,15 @@ relating `ζ'/ζ (s)` and `ζ'/ζ (1 - s)`, involving the digamma function `ψ` 
 open scoped Real
 open Complex Filter Topology
 
-/-- **The functional equation for the Riemann zeta function, in logarithmic-derivative form.**
+/--
+**The functional equation for the Riemann zeta function, in logarithmic-derivative form.**
 For `s` not an integer with `riemannZeta s ≠ 0`,
 `ζ'/ζ (s) = -ζ'/ζ (1 - s) + log (2 π) - ψ s + (π / 2) * tan (π s / 2)`, where `ψ` is the digamma
-function. -/
-theorem logDeriv_riemannZeta_one_sub {s : ℂ} (hs : ∀ n : ℤ, s ≠ n) (hz : riemannZeta s ≠ 0) :
-    logDeriv riemannZeta s =
-      -logDeriv riemannZeta (1 - s) + log (2 * π) - digamma s + π / 2 * tan (π * s / 2) := by
+function.
+-/
+theorem logDeriv_riemannZeta_one_sub {s : ℂ} (hs : ∀ n : ℤ, s ≠ n) (hz : riemannZeta s ≠ 0)
+    : logDeriv riemannZeta s
+      = - logDeriv riemannZeta (1 - s) + log (2 * π) - digamma s + π / 2 * tan (π * s / 2) := by
   have h2π : 2 * (π : ℂ) ≠ 0 := mod_cast by positivity
   have (m : ℕ) : s ≠ -m := mod_cast hs (-m)
   have : s ≠ 1 := mod_cast hs 1
@@ -47,5 +49,6 @@ theorem logDeriv_riemannZeta_one_sub {s : ℂ} (hs : ∀ n : ℤ, s ≠ n) (hz :
     exact riemannZeta_one_sub (fun n h ↦ hz (-n) (by simp [h])) (by grind [hz 1])
   have := (logDeriv_congr_nhds this).eq_of_nhds
   rw [logDeriv_comp, logDeriv_fun_mul, logDeriv_fun_mul, logDeriv_fun_mul, logDeriv_fun_mul,
-    logDeriv_fun_comp (f := cos), ← digamma_def] at this
-  <;> first | fun_prop | simp_all; try grind [differentiableAt_riemannZeta, Gamma_ne_zero, hs 0]
+        logDeriv_fun_comp (f := cos), ← digamma_def]
+      at this
+    <;> first | fun_prop | simp_all; try grind [differentiableAt_riemannZeta, Gamma_ne_zero, hs 0]

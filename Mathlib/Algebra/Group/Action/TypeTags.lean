@@ -28,16 +28,18 @@ section
 
 open Additive Multiplicative
 
-instance Additive.vadd [SMul α β] : VAdd (Additive α) β where vadd a := (a.toMul • ·)
+instance Additive.vadd [SMul α β] : VAdd (Additive α) β where
+  vadd a := (a.toMul • ·)
 
-instance Multiplicative.smul [VAdd α β] : SMul (Multiplicative α) β where smul a := (a.toAdd +ᵥ ·)
+instance Multiplicative.smul [VAdd α β] : SMul (Multiplicative α) β where
+  smul a := (a.toAdd +ᵥ ·)
 
 @[simp] lemma toMul_smul [SMul α β] (a : Additive α) (b : β) : (a.toMul : α) • b = a +ᵥ b := rfl
 
 @[simp] lemma ofMul_vadd [SMul α β] (a : α) (b : β) : ofMul a +ᵥ b = a • b := rfl
 
-@[simp] lemma toAdd_vadd [VAdd α β] (a : Multiplicative α) (b : β) : (a.toAdd : α) +ᵥ b = a • b :=
-  rfl
+@[simp]
+lemma toAdd_vadd [VAdd α β] (a : Multiplicative α) (b : β) : (a.toAdd : α) +ᵥ b = a • b := rfl
 
 @[simp] lemma ofAdd_smul [VAdd α β] (a : α) (b : β) : ofAdd a • b = a +ᵥ b := rfl
 
@@ -45,17 +47,17 @@ instance Additive.addAction [Monoid α] [MulAction α β] : AddAction (Additive 
   zero_vadd := MulAction.one_smul
   add_vadd := mul_smul (α := α)
 
-instance Multiplicative.mulAction [AddMonoid α] [AddAction α β] :
-    MulAction (Multiplicative α) β where
+instance Multiplicative.mulAction [AddMonoid α] [AddAction α β]
+    : MulAction (Multiplicative α) β where
   one_smul := AddAction.zero_vadd
   mul_smul := add_vadd (G := α)
 
-instance Additive.vaddCommClass [SMul α γ] [SMul β γ] [SMulCommClass α β γ] :
-    VAddCommClass (Additive α) (Additive β) γ :=
+instance Additive.vaddCommClass [SMul α γ] [SMul β γ] [SMulCommClass α β γ]
+    : VAddCommClass (Additive α) (Additive β) γ :=
   ⟨@smul_comm α β _ _ _ _⟩
 
-instance Multiplicative.smulCommClass [VAdd α γ] [VAdd β γ] [VAddCommClass α β γ] :
-    SMulCommClass (Multiplicative α) (Multiplicative β) γ :=
+instance Multiplicative.smulCommClass [VAdd α γ] [VAdd β γ] [VAddCommClass α β γ]
+    : SMulCommClass (Multiplicative α) (Multiplicative β) γ :=
   ⟨@vadd_comm α β _ _ _ _⟩
 
 end

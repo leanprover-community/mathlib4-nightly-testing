@@ -36,22 +36,19 @@ open Lean.Meta.Tactic.TryThis
 namespace Mathlib.Tactic.Says
 
 /-- If this option is `true`, verify for `X says Y` that `X says` outputs `Y`. -/
-register_option says.verify : Bool :=
-  { defValue := false
-    descr := "Verify the output" }
+register_option says.verify : Bool := { defValue := false, descr := "Verify the output" }
 
 /-- This option is only used in CI to negate `says.verify`. -/
-register_option says.no_verify_in_CI : Bool :=
-  { defValue := false
-    descr := "Disable reverification, even if the `CI` environment variable is set." }
+register_option says.no_verify_in_CI : Bool := {
+  defValue := false
+  descr := "Disable reverification, even if the `CI` environment variable is set."
+}
 
 open Parser Tactic
 
-/--
-Run `evalTactic`, capturing a "Try this:" message and converting it back to syntax.
--/
+/-- Run `evalTactic`, capturing a "Try this:" message and converting it back to syntax. -/
 def evalTacticCapturingTryThis (tac : TSyntax `tactic) : TacticM (TSyntax ``tacticSeq) := do
-  let { trees, ..} ← withResetServerInfo <| evalTactic tac
+  let { trees, .. } ← withResetServerInfo <| evalTactic tac
   let suggestions := collectTryThisSuggestions trees
   let some s := suggestions[0]?
     | throwError m!"Tactic `{tac}` did not produce a 'Try this:' suggestion."
@@ -69,8 +66,11 @@ def evalTacticCapturingTryThis (tac : TSyntax `tactic) : TacticM (TSyntax ``tact
     throwError m!"Tactic `{tac}` produced a 'Try this:' suggestion with a non-tactic syntax: {stx}"
   | .string s =>
     match Mathlib.GuardExceptions.parseAsTacticSeq (← getEnv) s with
-    | .ok stx => return stx
-    | .error err => throwError m!"Failed to parse 'Try this:' suggestion: {s}\n{err}"
+    | .ok stx =>
+      return stx
+    | .error err =>
+      throwError m!"Failed to parse 'Try this:' suggestion: {s}\
+        \n{err}"
 
 /--
 `tac₁ says tac₂` runs `tac₂`. In CI it also runs `tac₁` and validates that `tac₁` produces
@@ -87,23 +87,26 @@ syntax (name := says) tactic " says" (colGt tacticSeq)? : tactic
 
 elab_rules : tactic
   | `(tactic| $tac:tactic says%$tk $[$result:tacticSeq]?) => do
-  let verify := says.verify.get (← getOptions) ||
-    !says.no_verify_in_CI.get (← getOptions) && (← IO.getEnv "CI").isSome
-  match result, verify with
-  | some _, true
-  | none, _ =>
-    let stx ← evalTacticCapturingTryThis tac
-    match result with
-    | some r =>
+    let verify :=
+      says.verify.get (← getOptions)
+        || ! says.no_verify_in_CI.get (← getOptions) && (← IO.getEnv "CI").isSome
+    match result, verify with
+    | some _, true
+    | none, _ =>
+      let stx ← evalTacticCapturingTryThis tac
+      match result with
+      | some r =>
         let stx' := (← Lean.PrettyPrinter.ppTactic ⟨Syntax.stripPos stx⟩).pretty
         let r' := (← Lean.PrettyPrinter.ppTactic ⟨Syntax.stripPos r⟩).pretty
         if stx' != r' then
-          throwError m!"Tactic `{tac}` produced `{stx'}`,\nbut was expecting it to produce `{r'}`!"
-            ++ m!"\n\nYou can reproduce this error locally using `set_option says.verify true`."
-    | none =>
-    addSuggestion tk (← `(tactic| $tac says $stx)) (origSpan? := (← `(tactic| $tac says)))
-  | some result, false =>
-    evalTactic result
+          throwError
+            m!"Tactic `{tac}` produced `{stx'}`,\
+                \nbut was expecting it to produce `{r'}`!"
+              ++ m!"\n\nYou can reproduce this error locally using `set_option says.verify true`."
+      | none =>
+        addSuggestion tk (← `(tactic| $tac says $stx)) (origSpan? := (← `(tactic| $tac says)))
+    | some result, false =>
+      evalTactic result
 
 initialize Batteries.Linter.UnreachableTactic.addIgnoreTacticKind `Mathlib.Tactic.Says.says
 

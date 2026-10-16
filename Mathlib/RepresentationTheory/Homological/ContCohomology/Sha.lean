@@ -7,7 +7,6 @@ module
 
 public import Mathlib.FieldTheory.AbsoluteGaloisGroup
 public import Mathlib.RepresentationTheory.Homological.ContCohomology.Functoriality
-
 import Mathlib.FieldTheory.IsSepClosed
 
 /-!
@@ -60,8 +59,10 @@ lattice, which is different from the definition in this PR. See Section 1 of [Fl
 
 universe u v
 
-variable {K : Type u} {V : Type v} [Field K] (f : V → Type u) [∀ v, Field (f v)]
-  [∀ v, Algebra K (f v)] (A : TopRep ℤ (Field.absoluteGaloisGroup K)) (n : ℕ)
+variable
+  {K : Type u} {V : Type v} [Field K]
+  (f : V → Type u) [∀ v, Field (f v)] [∀ v, Algebra K (f v)]
+  (A : TopRep ℤ (Field.absoluteGaloisGroup K)) (n : ℕ)
 
 open CategoryTheory
 
@@ -72,19 +73,26 @@ namespace ContinuousCohomology
 noncomputable def tateShafarevich : AddSubgroup (continuousCohomology n A) :=
   ⨅ v, (map (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom.toAddMonoidHom.ker
 
-lemma tateShafarevich_eq_iInf : tateShafarevich f A n =
-    ⨅ v : V, (ContinuousCohomology.map
-      (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom.toAddMonoidHom.ker := rfl
+lemma tateShafarevich_eq_iInf
+    : tateShafarevich f A n
+      = ⨅ v : V, (ContinuousCohomology.map
+          (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom.toAddMonoidHom.ker :=
+  rfl
 
-lemma tateShafarevich_eq_ker_pi : tateShafarevich f A n =
-    (AddMonoidHom.pi fun v : V ↦ (ContinuousCohomology.map
-      (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom.toAddMonoidHom).ker := by
+lemma tateShafarevich_eq_ker_pi
+    : tateShafarevich f A n
+      = (AddMonoidHom.pi fun v : V ↦
+        (ContinuousCohomology.map (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _)
+          n).hom.toAddMonoidHom).ker := by
   ext; simp [tateShafarevich_eq_iInf, funext_iff]
 
 @[simp]
-lemma mem_tateShafarevich (x : continuousCohomology n A) : x ∈ tateShafarevich f A n ↔
-    ∀ v : V, (ContinuousCohomology.map
-      (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom x = 0 := by
+lemma mem_tateShafarevich (x : continuousCohomology n A)
+    : x ∈ tateShafarevich f A n
+      ↔ ∀ v : V,
+        (ContinuousCohomology.map (Field.absoluteGaloisGroup.map (algebraMap K (f v))) (𝟙 _) n).hom
+            x
+          = 0 := by
   simp [tateShafarevich_eq_iInf]
 
 end ContinuousCohomology

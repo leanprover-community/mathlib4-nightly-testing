@@ -8,8 +8,8 @@ example (h : a → b) : (a ∧ ¬b) ∨ c → (b ∧ ¬a) ∨ c := by gcongr ?_ 
 example (h : d → b) : (a ∨ b ∧ c → d) → (a ∨ d ∧ c → b) := by gcongr
 example (h : d → b) : (a ∨ b ∧ c → d) → (a ∨ d ∧ c → b) := by gcongr a ∨ ?_ ∧ c → ?_
 
-example (h : a → b) : ¬ ¬ ¬ b → ¬ ¬ ¬ a := by gcongr
-example (h : a → b) : ¬ ¬ ¬ b → ¬ ¬ ¬ a := by gcongr ¬ ¬ ¬ ?_
+example (h : a → b) : ¬ ¬ ¬b → ¬ ¬ ¬a := by gcongr
+example (h : a → b) : ¬ ¬ ¬b → ¬ ¬ ¬a := by gcongr ¬ ¬ ¬ ?_
 
 example (h : a → b) : (∃ i, ∀ j, i ∧ b → j) → (∃ i, ∀ j, i ∧ a → j) := by gcongr
 example (h : a → b) : (∃ i, ∀ j, i ∧ b → j) → (∃ i, ∀ j, i ∧ a → j) := by
@@ -33,15 +33,14 @@ example (h : ∀ n : Nat, 0 ≤ n) : ∀ n : Int, 0 ≤ n := by
 
 def True' := True
 
-example (h : a → b) : (b → True) → (a → True') := by
-  gcongr ?_ → _
+example (h : a → b) : (b → True) → (a → True') := by gcongr ?_ → _
 
 example (h : a → b) : (b → True) → (a → True') := by
   gcongr
   exact id
 
 -- Binder names are inferred, using the binder names in the LHS.
-example (f g : Nat → Nat → Prop) (h : ∀ i j, f i j → g i j) :
-    (∃ ε > 0, ∃ δ > 0, f ε δ) → (∃ ε' > 0, ∃ δ' > 0, g ε' δ') := by
+example (f g : Nat → Nat → Prop) (h : ∀ i j, f i j → g i j)
+    : (∃ ε > 0, ∃ δ > 0, f ε δ) → (∃ ε' > 0, ∃ δ' > 0, g ε' δ') := by
   gcongr
   exact h ε δ

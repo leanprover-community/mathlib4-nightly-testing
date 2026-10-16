@@ -17,13 +17,13 @@ We first prove the problem statement for `f : ℕ → ℕ`
 then we use it to prove the statement for positive naturals.
 -/
 
-
 namespace Imo1977Q6
 
 public theorem imo1977_q6_nat (f : ℕ → ℕ) (h : ∀ n, f (f n) < f (n + 1)) : ∀ n, f n = n := by
   have h' (k n : ℕ) (hk : k ≤ n) : k ≤ f n := by
     induction k generalizing n with
-    | zero => exact Nat.zero_le _
+    | zero =>
+      exact Nat.zero_le _
     | succ k h_ind =>
       apply Nat.succ_le_of_lt
       calc
@@ -42,7 +42,8 @@ public theorem imo1977_q6 (f : ℕ+ → ℕ+) (h : ∀ n, f (f n) < f (n + 1)) :
   intro n
   have := by
     refine imo1977_q6_nat (fun m => if 0 < m then f m.toPNat' else 0) ?_ n
-    intro x; cases x
+    intro x
+    cases x
     · simp
     · simpa using! h _
   simpa

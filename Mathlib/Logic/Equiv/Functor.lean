@@ -25,7 +25,6 @@ def Bifunctor.mapEquiv (F : Type u → Type v → Type w) [Bifunctor F] [LawfulB
 
 @[expose] public section
 
-
 universe u v w
 
 variable {α β : Type u}
@@ -43,13 +42,11 @@ def mapEquiv (h : α ≃ β) : f α ≃ f β where
   left_inv x := by simp [map_map]
   right_inv x := by simp [map_map]
 
-@[simp]
-theorem mapEquiv_apply (h : α ≃ β) (x : f α) : (mapEquiv f h : f α ≃ f β) x = map h x :=
-  rfl
+@[simp] theorem mapEquiv_apply (h : α ≃ β) (x : f α) : (mapEquiv f h : f α ≃ f β) x = map h x := rfl
 
 @[simp]
-theorem mapEquiv_symm_apply (h : α ≃ β) (y : f β) :
-    (mapEquiv f h : f α ≃ f β).symm y = map h.symm y :=
+theorem mapEquiv_symm_apply (h : α ≃ β) (y : f β)
+    : (mapEquiv f h : f α ≃ f β).symm y = map h.symm y :=
   rfl
 
 @[simp]
@@ -72,13 +69,13 @@ def mapEquiv (h : α ≃ β) (h' : α' ≃ β') : F α α' ≃ F β β' where
   right_inv x := by simp [bimap_bimap, id_bimap]
 
 @[simp]
-theorem mapEquiv_apply (h : α ≃ β) (h' : α' ≃ β') (x : F α α') :
-    (mapEquiv F h h' : F α α' ≃ F β β') x = bimap h h' x :=
+theorem mapEquiv_apply (h : α ≃ β) (h' : α' ≃ β') (x : F α α')
+    : (mapEquiv F h h' : F α α' ≃ F β β') x = bimap h h' x :=
   rfl
 
 @[simp]
-theorem mapEquiv_symm_apply (h : α ≃ β) (h' : α' ≃ β') (y : F β β') :
-    (mapEquiv F h h' : F α α' ≃ F β β').symm y = bimap h.symm h'.symm y :=
+theorem mapEquiv_symm_apply (h : α ≃ β) (h' : α' ≃ β') (y : F β β')
+    : (mapEquiv F h h' : F α α' ≃ F β β').symm y = bimap h.symm h'.symm y :=
   rfl
 
 @[simp]

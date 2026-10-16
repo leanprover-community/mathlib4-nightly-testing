@@ -13,18 +13,19 @@ require "leanprover-community" / "aesop" @ git "nightly-testing"
 require "leanprover-community" / "proofwidgets" @ git "nightly-testing"
   with NameMap.empty.insert `errorOnBuild
     "ProofWidgets failed to reuse pre-built JS code. \
-    Please report this issue on the Lean Zulip."
+      Please report this issue on the Lean Zulip."
 require "leanprover-community" / "importGraph" @ git "main"
 require "leanprover-community" / "LeanSearchClient" @ git "main"
 require "leanprover-community" / "plausible" @ git "nightly-testing"
-
 
 /-!
 ## Options for building mathlib
 -/
 
-/-- These options are used as `leanOptions`, prefixed by `` `weak``, so that
-`lake build` uses them, as well as `Archive` and `Counterexamples`. -/
+/--
+These options are used as `leanOptions`, prefixed by `` `weak``, so that
+`lake build` uses them, as well as `Archive` and `Counterexamples`.
+-/
 abbrev mathlibOnlyLinters : Array LeanOption := #[
   ⟨`linter.mathlibStandardSet, true⟩,
   -- Explicitly enable the header linter, since the standard set is defined in `Mathlib.Init`
@@ -33,26 +34,30 @@ abbrev mathlibOnlyLinters : Array LeanOption := #[
   ⟨`linter.checkInitImports, true⟩,
   ⟨`linter.allScriptsDocumented, true⟩,
   ⟨`linter.style.longFile, .ofNat 1500⟩,
-  -- ⟨`linter.nightlyRegressionSet, true⟩,
-  -- `latest_import.yml` uses this comment: if you edit it, make sure that the workflow still works
+-- ⟨`linter.nightlyRegressionSet, true⟩,
+-- `latest_import.yml` uses this comment: if you edit it, make sure that the workflow still works
 ]
 
-/-- These options are passed as `leanOptions` to building mathlib, as well as the
-`Archive` and `Counterexamples`. -/
-abbrev mathlibLeanOptions := #[
+/--
+These options are passed as `leanOptions` to building mathlib, as well as the
+`Archive` and `Counterexamples`.
+-/
+abbrev mathlibLeanOptions :=
+  #[
     ⟨`pp.unicode.fun, true⟩, -- pretty-prints `fun a ↦ b`
     ⟨`autoImplicit, false⟩,
     ⟨`maxSynthPendingDepth, .ofNat 3⟩,
     ⟨`weak.linter.unreachableTactic, false⟩, -- superseded by the unused tactic linter
     ⟨`weak.linter.unnecessarySeqFocus, false⟩, -- superseded by the unused tactic linter
-  ] ++ -- options that are used in `lake build`
-    mathlibOnlyLinters.map fun s ↦ { s with name := `weak ++ s.name }
+  ] -- options that are used in `lake build`
+    ++ mathlibOnlyLinters.map fun s ↦ { s with name := `weak ++ s.name }
 
-/-- These options are passed as `leanOptions` when building `MathlibTest`. We don't use the typical
-mathlib options in order to simulate the default downstream environment. -/
-abbrev mathlibTestOptions : Array LeanOption := #[
-    ⟨`pp.mvars.anonymous, false⟩ -- test stability: pretty-print `?m.37` as `?_`
-  ]
+/--
+These options are passed as `leanOptions` when building `MathlibTest`. We don't use the typical
+mathlib options in order to simulate the default downstream environment.
+-/
+-- test stability: pretty-print `?m.37` as `?_`
+abbrev mathlibTestOptions : Array LeanOption := #[⟨`pp.mvars.anonymous, false⟩]
 
 package mathlib where
   testDriver := "MathlibTest"
@@ -67,11 +72,11 @@ package mathlib where
   -- Mathlib currently expects artifacts to be in the build directory.
   restoreAllArtifacts := true
   requiresModuleSystem := true
-  -- These are additional settings which do not affect the lake hash,
-  -- so they can be enabled in CI and disabled locally or vice versa.
-  -- Warning: Do not put any options here that actually change the olean files,
-  -- or inconsistent behavior may result
-  -- weakLeanArgs := #[]
+-- These are additional settings which do not affect the lake hash,
+-- so they can be enabled in CI and disabled locally or vice versa.
+-- Warning: Do not put any options here that actually change the olean files,
+-- or inconsistent behavior may result
+-- weakLeanArgs := #[]
 
 /-!
 ## Mathlib libraries
@@ -101,7 +106,8 @@ lean_lib Archive where
 lean_lib Counterexamples where
   leanOptions := mathlibLeanOptions
 
-/-- Wanted statements: `Wanted/X/Y/Z.lean` contains the `proof_wanted` statements
+/--
+Wanted statements: `Wanted/X/Y/Z.lean` contains the `proof_wanted` statements
 corresponding to `Mathlib/X/Y/Z.lean`. Each file carries a copyright header naming the
 author of the original statements, but beyond that contains only imports, context setup
 (`open`/`namespace`/`variable`) and `proof_wanted` statements; in particular there are no
@@ -109,10 +115,12 @@ module docstrings, so the header style linter is disabled.
 `proof_wanted` elaborates to a `private` placeholder declaration, so every module here
 consists solely of private declarations; the `privateModule` linter is disabled accordingly
 (neither `@[expose] public section` nor a `public` modifier suppresses it, since the
-placeholder is unconditionally `private`). -/
+placeholder is unconditionally `private`).
+-/
 lean_lib Wanted where
-  leanOptions := mathlibLeanOptions.push ⟨`weak.linter.style.header, false⟩
-    |>.push ⟨`weak.linter.privateModule, false⟩
+  leanOptions :=
+    mathlibLeanOptions.push ⟨`weak.linter.style.header, false⟩
+      |>.push ⟨`weak.linter.privateModule, false⟩
 
 /-- Additional documentation in the form of modules that only contain module docstrings. -/
 lean_lib docs where
@@ -139,13 +147,17 @@ lean_exe cache where
   -- executable's configuration does not inherit the library's.
   allowNonModules := true
 
-/-- `lake exe cache-test` runs the cache tool's unit tests (container URL
+/--
+`lake exe cache-test` runs the cache tool's unit tests (container URL
 construction, per-repo trust-ordered allowlist, `--cache-from` parsing).
-Runnable standalone — does not require building Mathlib or `MathlibTest`. -/
+Runnable standalone — does not require building Mathlib or `MathlibTest`.
+-/
 lean_exe «cache-test» where
   root := `Cache.Test
 
-/-- `lake exe check-yaml` verifies that all declarations referred to in `docs/*.yaml` files exist. -/
+/--
+`lake exe check-yaml` verifies that all declarations referred to in `docs/*.yaml` files exist.
+-/
 lean_exe «check-yaml» where
   srcDir := "scripts"
   supportInterpreter := true
@@ -168,8 +180,10 @@ lean_exe «lint-style» where
   -- Executables which import `Lake` must set `-lLake`.
   weakLinkArgs := #["-lLake"]
 
-/-- `lake exe check-title-labels` checks if a PR title obeys some basic formatting requirements.
-Currently, these checks are quite lenient, but could be made stricter in the future. -/
+/--
+`lake exe check-title-labels` checks if a PR title obeys some basic formatting requirements.
+Currently, these checks are quite lenient, but could be made stricter in the future.
+-/
 lean_exe «check_title_labels» where
   srcDir := "scripts"
   -- TODO: modulise this script, so remove the need for this option
@@ -198,9 +212,10 @@ post_update pkg do
     -- Check if Lake version matches toolchain version
     let toolchainFile := rootPkg.dir / "lean-toolchain"
     let toolchainContent ← IO.FS.readFile toolchainFile
-    let toolchainVersion := match toolchainContent.trimAscii.copy.splitOn ":" with
+    let toolchainVersion :=
+      match toolchainContent.trimAscii.copy.splitOn ":" with
       | [_, version] => version
-      | _ => toolchainContent.trimAscii.copy  -- fallback to full content if format is unexpected
+      | _ => toolchainContent.trimAscii.copy -- fallback to full content if format is unexpected
     -- Lean.versionString does not start with a `v`, while the `lean-toolchain` file is flexible.
     let toolchainVersion := (toolchainVersion.dropPrefix "v").copy
     if Lean.versionString ≠ toolchainVersion then
@@ -213,10 +228,11 @@ post_update pkg do
     -- Run the command in the root package directory,
     -- which is the one that holds the .lake folder and lean-toolchain file.
     let cwd ← IO.Process.getCurrentDir
-    let exitCode ← try
-      IO.Process.setCurrentDir rootPkg.dir
-      env exeFile.toString #["get"]
-    finally
-      IO.Process.setCurrentDir cwd
+    let exitCode ←
+      try
+        IO.Process.setCurrentDir rootPkg.dir
+        env exeFile.toString #["get"]
+      finally
+        IO.Process.setCurrentDir cwd
     if exitCode ≠ 0 then
       error s!"{pkg.baseName}: failed to fetch cache"

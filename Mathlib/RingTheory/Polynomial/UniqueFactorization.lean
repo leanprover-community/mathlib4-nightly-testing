@@ -35,12 +35,10 @@ variable {R : Type*} [CommSemiring R] [NoZeroDivisors R] [WfDvdMonoid R] {f : R[
 
 instance (priority := 100) wfDvdMonoid : WfDvdMonoid R[X] := by
   classical
-  refine
-    RelHomClass.wellFounded
-      (⟨fun p : R[X] =>
-          ((if p = 0 then ⊤ else ↑p.degree : WithTop (WithBot ℕ)), p.leadingCoeff), ?_⟩ :
-        DvdNotUnit →r Prod.Lex (· < ·) DvdNotUnit)
-      (wellFounded_lt.prod_lex ‹WfDvdMonoid R›)
+  refine RelHomClass.wellFounded
+    (⟨fun p : R[X] => ((if p = 0 then ⊤ else ↑p.degree : WithTop (WithBot ℕ)), p.leadingCoeff), ?_⟩
+      : DvdNotUnit →r Prod.Lex (· < ·) DvdNotUnit)
+    (wellFounded_lt.prod_lex ‹WfDvdMonoid R›)
   rintro a b ⟨ane0, ⟨c, ⟨not_unit_c, rfl⟩⟩⟩
   rw [Polynomial.degree_mul, ite_eq_right ane0]
   split_ifs with hac
@@ -65,7 +63,8 @@ instance (priority := 100) wfDvdMonoid : WfDvdMonoid R[X] := by
 variable [Nontrivial R]
 
 theorem exists_irreducible_of_degree_pos (hf : 0 < f.degree) : ∃ g, Irreducible g ∧ g ∣ f :=
-  WfDvdMonoid.exists_irreducible_factor (fun huf => ne_of_gt hf <| degree_eq_zero_of_isUnit huf)
+  WfDvdMonoid.exists_irreducible_factor
+    (fun huf => ne_of_gt hf <| degree_eq_zero_of_isUnit huf)
     fun hf0 => not_lt_of_gt hf <| hf0.symm ▸ (@degree_zero R _).symm ▸ WithBot.bot_lt_coe _
 
 theorem exists_irreducible_of_natDegree_pos (hf : 0 < f.natDegree) : ∃ g, Irreducible g ∧ g ∣ f :=
@@ -73,8 +72,8 @@ theorem exists_irreducible_of_natDegree_pos (hf : 0 < f.natDegree) : ∃ g, Irre
     contrapose! hf
     exact natDegree_le_of_degree_le hf
 
-theorem exists_irreducible_of_natDegree_ne_zero (hf : f.natDegree ≠ 0) :
-    ∃ g, Irreducible g ∧ g ∣ f :=
+theorem exists_irreducible_of_natDegree_ne_zero (hf : f.natDegree ≠ 0)
+    : ∃ g, Irreducible g ∧ g ∣ f :=
   exists_irreducible_of_natDegree_pos <| Nat.pos_of_ne_zero hf
 
 end Polynomial
@@ -91,17 +90,19 @@ instance (priority := 100) uniqueFactorizationMonoid : UniqueFactorizationMonoid
   let := Classical.arbitrary (NormalizedGCDMonoid D)
   exact ufm_of_decomposition_of_wfDvdMonoid
 
-/-- If `D` is a unique factorization domain, `f` is a non-zero polynomial in `D[X]`, then `f` has
+/--
+If `D` is a unique factorization domain, `f` is a non-zero polynomial in `D[X]`, then `f` has
 only finitely many monic factors.
 (Note that its factors up to unit may be more than monic factors.)
-See also `UniqueFactorizationMonoid.fintypeSubtypeDvd`. -/
+See also `UniqueFactorizationMonoid.fintypeSubtypeDvd`.
+-/
 @[instance_reducible]
-noncomputable def fintypeSubtypeMonicDvd (f : D[X]) (hf : f ≠ 0) :
-    Fintype { g : D[X] // g.Monic ∧ g ∣ f } := by
+noncomputable def fintypeSubtypeMonicDvd (f : D[X]) (hf : f ≠ 0)
+    : Fintype {g : D[X] // g.Monic ∧ g ∣ f} := by
   set G := { g : D[X] // g.Monic ∧ g ∣ f }
   let y : Associates D[X] := Associates.mk f
   have hy : y ≠ 0 := Associates.mk_ne_zero.mpr hf
-  let H := { x : Associates D[X] // x ∣ y }
+  let H := {x : Associates D[X] // x ∣ y}
   let hfin : Fintype H := UniqueFactorizationMonoid.fintypeSubtypeDvd y hy
   let i : G → H := fun x ↦ ⟨Associates.mk x.1, Associates.mk_dvd_mk.2 x.2.2⟩
   refine Fintype.ofInjective i fun x y heq ↦ ?_
@@ -113,8 +114,8 @@ end Polynomial
 namespace MvPolynomial
 variable (d : ℕ)
 
-private theorem uniqueFactorizationMonoid_of_fintype [Finite σ] :
-    UniqueFactorizationMonoid (MvPolynomial σ D) :=
+private theorem uniqueFactorizationMonoid_of_fintype [Finite σ]
+    : UniqueFactorizationMonoid (MvPolynomial σ D) :=
   have := Fintype.ofFinite σ
   (renameEquiv D (Fintype.equivFin σ)).toMulEquiv.symm.uniqueFactorizationMonoid <| by
     induction Fintype.card σ with
@@ -125,32 +126,39 @@ private theorem uniqueFactorizationMonoid_of_fintype [Finite σ] :
       apply (finSuccEquiv D d).toMulEquiv.symm.uniqueFactorizationMonoid
       exact Polynomial.uniqueFactorizationMonoid
 
-instance (priority := 100) uniqueFactorizationMonoid :
-    UniqueFactorizationMonoid (MvPolynomial σ D) := by
+instance (priority := 100) uniqueFactorizationMonoid
+    : UniqueFactorizationMonoid (MvPolynomial σ D) := by
   rw [iff_exists_prime_factors]
-  intro a ha; obtain ⟨s, a', rfl⟩ := exists_finset_rename a
+  intro a ha
+  obtain ⟨s, a', rfl⟩ := exists_finset_rename a
   obtain ⟨w, h, u, hw⟩ :=
     iff_exists_prime_factors.1 (uniqueFactorizationMonoid_of_fintype s) a' fun h =>
       ha <| by simp [h]
-  exact
-    ⟨w.map (rename (↑)), fun b hb =>
+  exact ⟨
+    w.map (rename (↑)),
+    fun b hb =>
       let ⟨b', hb', he⟩ := Multiset.mem_map.1 hb
       he ▸ (prime_rename_iff (σ := σ) ↑s).2 (h b' hb'),
-      Units.map (@rename s σ D _ (↑)).toRingHom.toMonoidHom u, by
+    Units.map (@rename s σ D _ (↑)).toRingHom.toMonoidHom u,
+    by
       rw [Multiset.prod_hom, Units.coe_map, AlgHom.toRingHom_eq_coe, RingHom.toMonoidHom_eq_coe,
-        AlgHom.toRingHom_toMonoidHom, MonoidHom.coe_ofClass, ← map_mul, hw]⟩
+        AlgHom.toRingHom_toMonoidHom, MonoidHom.coe_ofClass, ← map_mul, hw]
+  ⟩
 
 end MvPolynomial
 
 end UniqueFactorizationDomain
 
-/-- A polynomial over a field which is not a unit must have a monic irreducible factor.
-See also `WfDvdMonoid.exists_irreducible_factor`. -/
-theorem Polynomial.exists_monic_irreducible_factor {F : Type*} [Field F] (f : F[X])
-    (hu : ¬IsUnit f) : ∃ g : F[X], g.Monic ∧ Irreducible g ∧ g ∣ f := by
+/--
+A polynomial over a field which is not a unit must have a monic irreducible factor.
+See also `WfDvdMonoid.exists_irreducible_factor`.
+-/
+theorem Polynomial.exists_monic_irreducible_factor
+    {F : Type*} [Field F] (f : F[X]) (hu : ¬ IsUnit f)
+    : ∃ g : F[X], g.Monic ∧ Irreducible g ∧ g ∣ f := by
   by_cases hf : f = 0
   · exact ⟨X, monic_X, irreducible_X, hf ▸ dvd_zero X⟩
   obtain ⟨g, hi, hf⟩ := WfDvdMonoid.exists_irreducible_factor hu hf
-  have ha : Associated g (g * C g.leadingCoeff⁻¹) := associated_mul_unit_right _ _ <|
-    isUnit_C.2 (leadingCoeff_ne_zero.2 hi.ne_zero).isUnit.inv
+  have ha : Associated g (g * C g.leadingCoeff⁻¹) :=
+    associated_mul_unit_right _ _ <| isUnit_C.2 (leadingCoeff_ne_zero.2 hi.ne_zero).isUnit.inv
   exact ⟨_, monic_mul_leadingCoeff_inv hi.ne_zero, ha.irreducible hi, ha.dvd_iff_dvd_left.1 hf⟩

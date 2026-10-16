@@ -6,7 +6,6 @@ Authors: Markus Himmel
 module
 
 public import Mathlib.CategoryTheory.Limits.Indization.ParallelPair
-
 import Mathlib.CategoryTheory.Limits.Indization.FilteredColimits
 
 /-!
@@ -53,8 +52,8 @@ are closed under equalizers.
 This is Proposition 6.1.16(i) in [Kashiwara2006].
 -/
 theorem isIndObject_limit_comp_yoneda_comp_colim
-    (hF : ∀ i, IsIndObject (limit (F.flip.obj i ⋙ yoneda))) :
-    IsIndObject (limit (F ⋙ (Functor.whiskeringRight _ _ _).obj yoneda ⋙ colim)) := by
+    (hF : ∀ i, IsIndObject (limit (F.flip.obj i ⋙ yoneda)))
+    : IsIndObject (limit (F ⋙ (Functor.whiskeringRight _ _ _).obj yoneda ⋙ colim)) := by
   let G : J ⥤ I ⥤ (Cᵒᵖ ⥤ Type v) := F ⋙ (Functor.whiskeringRight _ _ _).obj yoneda
   apply IsIndObject.map (HasLimit.isoOfNatIso (colimitFlipIsoCompColim G)).hom
   apply IsIndObject.map (colimitLimitIso G).hom
@@ -63,20 +62,21 @@ theorem isIndObject_limit_comp_yoneda_comp_colim
 
 end
 
-/-- If `C` has equalizers. then ind-objects are closed under equalizers.
+/--
+If `C` has equalizers. then ind-objects are closed under equalizers.
 
 This is Proposition 6.1.17(i) in [Kashiwara2006].
 -/
-instance isClosedUnderLimitsOfShape_isIndObject_walkingParallelPair [HasEqualizers C] :
-    ObjectProperty.IsClosedUnderLimitsOfShape (IsIndObject (C := C)) WalkingParallelPair :=
+instance isClosedUnderLimitsOfShape_isIndObject_walkingParallelPair [HasEqualizers C]
+    : ObjectProperty.IsClosedUnderLimitsOfShape (IsIndObject (C := C)) WalkingParallelPair :=
   .mk' (by
     rintro _ ⟨F, h⟩
-    obtain ⟨P⟩ := nonempty_indParallelPairPresentation (h WalkingParallelPair.zero)
-      (h WalkingParallelPair.one) (F.map WalkingParallelPairHom.left)
-      (F.map WalkingParallelPairHom.right)
+    obtain ⟨P⟩ :=
+      nonempty_indParallelPairPresentation (h WalkingParallelPair.zero) (h WalkingParallelPair.one)
+        (F.map WalkingParallelPairHom.left) (F.map WalkingParallelPairHom.right)
     exact IsIndObject.map
-      (HasLimit.isoOfNatIso (P.parallelPairIsoParallelPairCompYoneda.symm ≪≫
-        (diagramIsoParallelPair _).symm)).hom
+      (HasLimit.isoOfNatIso
+        (P.parallelPairIsoParallelPairCompYoneda.symm ≪≫ (diagramIsoParallelPair _).symm)).hom
       (isIndObject_limit_comp_yoneda_comp_colim (parallelPair P.φ P.ψ)
         (fun i => isIndObject_limit_comp_yoneda _)))
 

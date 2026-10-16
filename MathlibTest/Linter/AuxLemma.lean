@@ -53,7 +53,7 @@ warning: `S._sizeOf_1` refers to an auto-generated auxiliary declaration. These 
 
 Note: This linter can be disabled with `set_option linter.auxLemma false`
 -/
-#guard_msgs(drop info, warning) in
+#guard_msgs (drop info, warning) in
 #check @S._sizeOf_1
 
 -- No warning on ordinary references, including names that merely resemble the auxiliary
@@ -73,9 +73,10 @@ example := @foo.match_1
 -- `_aux_1` refers to the first field of the instance `fooAux`
 open Std Iterators in
 universe w w' w'' in
-instance fooAux {α β γ : Type w} {m : Type w → Type w'} {n : Type w → Type w''} [Monad n]
-    [Iterator α m β] {lift : ⦃α : Type w⦄ → m α → n α} {f : β → PostconditionT n γ} :
-    Iterator (Types.Map α m n lift f) n γ :=
+instance fooAux
+    {α β γ : Type w} {m : Type w → Type w'} {n : Type w → Type w''} [Monad n] [Iterator α m β]
+    {lift : ⦃α : Type w⦄ → m α → n α} {f : β → PostconditionT n γ}
+    : Iterator (Types.Map α m n lift f) n γ :=
   inferInstanceAs <| Iterator (Types.FilterMap α m n lift _) n γ
 
 /--
@@ -83,7 +84,7 @@ warning: `fooAux._aux_1` refers to an auto-generated auxiliary declaration. Thes
 
 Note: This linter can be disabled with `set_option linter.auxLemma false`
 -/
-#guard_msgs(drop info,warning) in
+#guard_msgs (drop info, warning) in
 #check fooAux._aux_1
 
 -- minimised from `BitVec.lt_of_msb_false_of_msb_true` at the time of writing this test
@@ -95,8 +96,7 @@ def Foo.bar (_x : Foo) : Bool := false
 instance : LT (Foo) := ⟨fun x y ↦ x.data < y.data⟩
 
 axiom silentSorry {α} : α
-@[simp]
-theorem fooBar {x y : Foo} (_hx : x.bar = false) (_hy : y.bar = true) : x < y := silentSorry
+@[simp] theorem fooBar {x y : Foo} (_hx : x.bar = false) (_hy : y.bar = true) : x < y := silentSorry
 /--
 warning: `fooBar._simp_1` refers to an auto-generated auxiliary declaration. These are not stable across refactors; consider using a different approach.
 

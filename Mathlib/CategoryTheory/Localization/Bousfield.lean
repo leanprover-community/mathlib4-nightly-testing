@@ -48,19 +48,23 @@ section
 
 variable (P : ObjectProperty C)
 
-/-- Given `P : ObjectProperty C`, this is the class of morphisms `f : X ⟶ Y`
+/--
+Given `P : ObjectProperty C`, this is the class of morphisms `f : X ⟶ Y`
 such that for all `Z : C` such that `P Z`, the precomposition with `f` induces
 a bijection `(Y ⟶ Z) ≃ (X ⟶ Z)`. (One of the applications of this notion
-is the left Bousfield localization of model categories.) -/
+is the left Bousfield localization of model categories.)
+-/
 def isLocal : MorphismProperty C := fun _ _ f =>
   ∀ Z, P Z → Function.Bijective (fun (g : _ ⟶ Z) => f ≫ g)
 
 variable {P} in
-/-- The bijection `(Y ⟶ Z) ≃ (X ⟶ Z)` induced by `f : X ⟶ Y` when `P.isLocal f`
-and `P Z`. -/
+/--
+The bijection `(Y ⟶ Z) ≃ (X ⟶ Z)` induced by `f : X ⟶ Y` when `P.isLocal f`
+and `P Z`.
+-/
 @[simps! apply]
-noncomputable def isLocal.homEquiv {X Y : C} {f : X ⟶ Y} (hf : P.isLocal f) (Z : C) (hZ : P Z) :
-    (Y ⟶ Z) ≃ (X ⟶ Z) :=
+noncomputable def isLocal.homEquiv {X Y : C} {f : X ⟶ Y} (hf : P.isLocal f) (Z : C) (hZ : P Z)
+    : (Y ⟶ Z) ≃ (X ⟶ Z) :=
   Equiv.ofBijective _ (hf Z hZ)
 
 lemma isoClosure_isLocal : P.isoClosure.isLocal = P.isLocal := by
@@ -80,8 +84,7 @@ lemma isoClosure_isLocal : P.isoClosure.isLocal = P.isLocal := by
 
 instance : P.isLocal.IsMultiplicative where
   id_mem X Z _ := by simpa [id_comp] using! Function.bijective_id
-  comp_mem f g hf hg Z hZ := by
-    simpa using! Function.Bijective.comp (hf Z hZ) (hg Z hZ)
+  comp_mem f g hf hg Z hZ := by simpa using! Function.Bijective.comp (hf Z hZ) (hg Z hZ)
 
 instance : P.isLocal.HasTwoOutOfThreeProperty where
   of_postcomp f g hg hfg Z hZ := by
@@ -98,8 +101,7 @@ lemma isLocal_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] : P.isLocal f := fun Z 
   · intro g
     exact ⟨inv f ≫ g, by simp⟩
 
-lemma isLocal_iff_isIso {X Y : C} (f : X ⟶ Y) (hX : P X) (hY : P Y) :
-    P.isLocal f ↔ IsIso f := by
+lemma isLocal_iff_isIso {X Y : C} (f : X ⟶ Y) (hX : P X) (hY : P Y) : P.isLocal f ↔ IsIso f := by
   constructor
   · intro hf
     obtain ⟨g, hg⟩ := (hf _ hX).2 (𝟙 X)
@@ -110,13 +112,12 @@ instance : P.isLocal.RespectsIso where
   precomp f (_ : IsIso f) g hg := P.isLocal.comp_mem f g (isLocal_of_isIso _ f) hg
   postcomp f (_ : IsIso f) g hg := P.isLocal.comp_mem g f hg (isLocal_of_isIso _ f)
 
-lemma le_isLocal_iff (P : ObjectProperty C) (W : MorphismProperty C) :
-    W ≤ P.isLocal ↔ P ≤ W.isLocal :=
-  ⟨fun h _ hZ _ _ _ hf ↦ h _ hf _ hZ,
-    fun h _ _ _ hf _ hZ ↦ h _ hZ _ hf⟩
+lemma le_isLocal_iff (P : ObjectProperty C) (W : MorphismProperty C)
+    : W ≤ P.isLocal ↔ P ≤ W.isLocal :=
+  ⟨fun h _ hZ _ _ _ hf ↦ h _ hf _ hZ, fun h _ _ _ hf _ hZ ↦ h _ hZ _ hf⟩
 
-lemma galoisConnection_isLocal :
-    GaloisConnection (OrderDual.toDual ∘ isLocal (C := C))
+lemma galoisConnection_isLocal
+    : GaloisConnection (OrderDual.toDual ∘ isLocal (C := C))
       (MorphismProperty.isLocal ∘ OrderDual.ofDual) :=
   le_isLocal_iff
 
@@ -128,19 +129,23 @@ section
 
 variable (P : ObjectProperty C)
 
-/-- Given `P : ObjectProperty C`, this is the class of morphisms `g : Y ⟶ Z`
+/--
+Given `P : ObjectProperty C`, this is the class of morphisms `g : Y ⟶ Z`
 such that for all `X : C` such that `P X`, the postcomposition with `g` induces
 a bijection `(X ⟶ Y) ≃ (X ⟶ Z)`. (One of the applications of this notion
-is the right Bousfield localization of model categories.) -/
+is the right Bousfield localization of model categories.)
+-/
 def isColocal : MorphismProperty C := fun _ _ g =>
   ∀ X, P X → Function.Bijective (fun (f : X ⟶ _) => f ≫ g)
 
 variable {P} in
-/-- The bijection `(X ⟶ Y) ≃ (X ⟶ Z)` induced by `g : Y ⟶ Z` when `P.isColocal g`
-and `P X`. -/
+/--
+The bijection `(X ⟶ Y) ≃ (X ⟶ Z)` induced by `g : Y ⟶ Z` when `P.isColocal g`
+and `P X`.
+-/
 @[simps! apply]
-noncomputable def isColocal.homEquiv {Y Z : C} {g : Y ⟶ Z} (hg : P.isColocal g) (X : C) (hX : P X) :
-    (X ⟶ Y) ≃ (X ⟶ Z) :=
+noncomputable def isColocal.homEquiv {Y Z : C} {g : Y ⟶ Z} (hg : P.isColocal g) (X : C) (hX : P X)
+    : (X ⟶ Y) ≃ (X ⟶ Z) :=
   Equiv.ofBijective _ (hg X hX)
 
 lemma isoClosure_isColocal : P.isoClosure.isColocal = P.isColocal := by
@@ -181,8 +186,8 @@ lemma isColocal_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] : P.isColocal f := fu
   · intro g
     exact ⟨g ≫ inv f, by simp⟩
 
-lemma isColocal_iff_isIso {X Y : C} (f : X ⟶ Y) (hX : P X) (hY : P Y) :
-    P.isColocal f ↔ IsIso f := by
+lemma isColocal_iff_isIso {X Y : C} (f : X ⟶ Y) (hX : P X) (hY : P Y)
+    : P.isColocal f ↔ IsIso f := by
   constructor
   · intro hf
     obtain ⟨g, hg⟩ := (hf _ hY).2 (𝟙 Y)
@@ -193,13 +198,12 @@ instance : P.isColocal.RespectsIso where
   precomp f (_ : IsIso f) g hg := P.isColocal.comp_mem f g (isColocal_of_isIso _ f) hg
   postcomp f (_ : IsIso f) g hg := P.isColocal.comp_mem g f hg (isColocal_of_isIso _ f)
 
-lemma le_isColocal_iff (P : ObjectProperty C) (W : MorphismProperty C) :
-    W ≤ P.isColocal ↔ P ≤ W.isColocal :=
-  ⟨fun h _ hZ _ _ _ hf ↦ h _ hf _ hZ,
-    fun h _ _ _ hf _ hZ ↦ h _ hZ _ hf⟩
+lemma le_isColocal_iff (P : ObjectProperty C) (W : MorphismProperty C)
+    : W ≤ P.isColocal ↔ P ≤ W.isColocal :=
+  ⟨fun h _ hZ _ _ _ hf ↦ h _ hf _ hZ, fun h _ _ _ hf _ hZ ↦ h _ hZ _ hf⟩
 
-lemma galoisConnection_isColocal :
-    GaloisConnection (OrderDual.toDual ∘ isColocal (C := C))
+lemma galoisConnection_isColocal
+    : GaloisConnection (OrderDual.toDual ∘ isColocal (C := C))
       (MorphismProperty.isColocal ∘ OrderDual.ofDual) :=
   le_isColocal_iff
 
@@ -220,17 +224,17 @@ lemma isLocal_adj_unit_app (X : D) : isLocal (· ∈ Set.range F.obj) (adj.unit.
   dsimp [Adjunction.homEquiv]
   aesop
 
-lemma isLocal_iff_isIso_map {X Y : D} (f : X ⟶ Y) :
-    isLocal (· ∈ Set.range F.obj) f ↔ IsIso (G.map f) := by
+lemma isLocal_iff_isIso_map {X Y : D} (f : X ⟶ Y)
+    : isLocal (· ∈ Set.range F.obj) f ↔ IsIso (G.map f) := by
   have := adj.unit.naturality f
   dsimp at this
-  rw [← (isLocal (· ∈ Set.range F.obj)).postcomp_iff _ _ (isLocal_adj_unit_app adj Y),
-    this, (isLocal (· ∈ Set.range F.obj)).precomp_iff _ _ (isLocal_adj_unit_app adj X),
+  rw [← (isLocal (· ∈ Set.range F.obj)).postcomp_iff _ _ (isLocal_adj_unit_app adj Y), this,
+    (isLocal (· ∈ Set.range F.obj)).precomp_iff _ _ (isLocal_adj_unit_app adj X),
     isLocal_iff_isIso _ _ ⟨_, rfl⟩ ⟨_, rfl⟩]
   exact ⟨fun _ ↦ isIso_of_fully_faithful F (G.map f), fun _ ↦ inferInstance⟩
 
-lemma isLocal_eq_inverseImage_isomorphisms :
-    isLocal (· ∈ Set.range F.obj) = (MorphismProperty.isomorphisms _).inverseImage G := by
+lemma isLocal_eq_inverseImage_isomorphisms
+    : isLocal (· ∈ Set.range F.obj) = (MorphismProperty.isomorphisms _).inverseImage G := by
   ext P₁ P₂ f
   rw [isLocal_iff_isIso_map adj]
   rfl
@@ -254,17 +258,17 @@ lemma isColocal_adj_counit_app (X : C) : isColocal (· ∈ Set.range G.obj) (adj
   dsimp [Adjunction.homEquiv]
   cat_disch
 
-lemma isColocal_iff_isIso_map {X Y : C} (f : X ⟶ Y) :
-    isColocal (· ∈ Set.range G.obj) f ↔ IsIso (F.map f) := by
+lemma isColocal_iff_isIso_map {X Y : C} (f : X ⟶ Y)
+    : isColocal (· ∈ Set.range G.obj) f ↔ IsIso (F.map f) := by
   have := adj.counit.naturality f
   dsimp at this
-  rw [← (isColocal _).precomp_iff _ _ (isColocal_adj_counit_app adj X),
-    ← this, (isColocal _).postcomp_iff _ _ (isColocal_adj_counit_app adj Y),
+  rw [← (isColocal _).precomp_iff _ _ (isColocal_adj_counit_app adj X), ← this,
+    (isColocal _).postcomp_iff _ _ (isColocal_adj_counit_app adj Y),
     isColocal_iff_isIso _ _ ⟨_, rfl⟩ ⟨_, rfl⟩]
   exact ⟨fun _ ↦ isIso_of_fully_faithful G (F.map f), fun _ ↦ inferInstance⟩
 
-lemma isColocal_eq_inverseImage_isomorphisms :
-    isColocal (· ∈ Set.range G.obj) = (MorphismProperty.isomorphisms _).inverseImage F := by
+lemma isColocal_eq_inverseImage_isomorphisms
+    : isColocal (· ∈ Set.range G.obj) = (MorphismProperty.isomorphisms _).inverseImage F := by
   ext P₁ P₂ f
   rw [isColocal_iff_isIso_map adj]
   rfl
@@ -279,20 +283,17 @@ end ObjectProperty
 
 open Localization
 
-lemma ObjectProperty.le_isLocal_isLocal (P : ObjectProperty C) :
-    P ≤ P.isLocal.isLocal := by
+lemma ObjectProperty.le_isLocal_isLocal (P : ObjectProperty C) : P ≤ P.isLocal.isLocal := by
   rw [← le_isLocal_iff]
 
-lemma MorphismProperty.le_isLocal_isLocal (W : MorphismProperty C) :
-    W ≤ W.isLocal.isLocal := by
+lemma MorphismProperty.le_isLocal_isLocal (W : MorphismProperty C) : W ≤ W.isLocal.isLocal := by
   rw [ObjectProperty.le_isLocal_iff]
 
-lemma ObjectProperty.le_isColocal_isColocal (P : ObjectProperty C) :
-    P ≤ P.isColocal.isColocal := by
+lemma ObjectProperty.le_isColocal_isColocal (P : ObjectProperty C) : P ≤ P.isColocal.isColocal := by
   rw [← le_isColocal_iff]
 
-lemma MorphismProperty.le_isColocal_isColocal (W : MorphismProperty C) :
-    W ≤ W.isColocal.isColocal := by
+lemma MorphismProperty.le_isColocal_isColocal (W : MorphismProperty C)
+    : W ≤ W.isColocal.isColocal := by
   rw [ObjectProperty.le_isColocal_iff]
 
 end CategoryTheory

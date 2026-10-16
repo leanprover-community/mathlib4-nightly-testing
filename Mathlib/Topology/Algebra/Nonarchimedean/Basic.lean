@@ -30,29 +30,35 @@ public section
 open Topology
 open scoped Pointwise
 
-/-- A topological additive group is nonarchimedean if every neighborhood of 0
-  contains an open subgroup. -/
+/--
+A topological additive group is nonarchimedean if every neighborhood of 0
+contains an open subgroup.
+-/
 class NonarchimedeanAddGroup (G : Type*) [AddGroup G] [TopologicalSpace G] : Prop
-  extends IsTopologicalAddGroup G where
+    extends IsTopologicalAddGroup G where
   is_nonarchimedean : ∀ U ∈ 𝓝 (0 : G), ∃ V : OpenAddSubgroup G, (V : Set G) ⊆ U
 
 /-- A topological group is nonarchimedean if every neighborhood of 1 contains an open subgroup. -/
 @[to_additive]
 class NonarchimedeanGroup (G : Type*) [Group G] [TopologicalSpace G] : Prop
-  extends IsTopologicalGroup G where
+    extends IsTopologicalGroup G where
   is_nonarchimedean : ∀ U ∈ 𝓝 (1 : G), ∃ V : OpenSubgroup G, (V : Set G) ⊆ U
 
-/-- A topological ring is nonarchimedean if its underlying topological additive
-  group is nonarchimedean. -/
+/--
+A topological ring is nonarchimedean if its underlying topological additive
+group is nonarchimedean.
+-/
 class NonarchimedeanRing (R : Type*) [Ring R] [TopologicalSpace R] : Prop
-  extends IsTopologicalRing R where
+    extends IsTopologicalRing R where
   is_nonarchimedean : ∀ U ∈ 𝓝 (0 : R), ∃ V : OpenAddSubgroup R, (V : Set R) ⊆ U
 
 -- see Note [lower instance priority]
 /-- Every nonarchimedean ring is naturally a nonarchimedean additive group. -/
-instance (priority := 100) NonarchimedeanRing.to_nonarchimedeanAddGroup (R : Type*) [Ring R]
-    [TopologicalSpace R] [t : NonarchimedeanRing R] : NonarchimedeanAddGroup R :=
-  { t with }
+instance (priority := 100) NonarchimedeanRing.to_nonarchimedeanAddGroup
+    (R : Type*) [Ring R] [TopologicalSpace R] [t : NonarchimedeanRing R]
+    : NonarchimedeanAddGroup R := {
+  t with
+}
 
 namespace NonarchimedeanGroup
 
@@ -63,21 +69,24 @@ variable {K : Type*} [Group K] [TopologicalSpace K] [NonarchimedeanGroup K]
 /-- If a topological group embeds into a nonarchimedean group, then it is nonarchimedean. -/
 @[to_additive /-- If a topological additive group embeds into a nonarchimedean additive group, then
 it is nonarchimedean. -/]
-theorem nonarchimedean_of_emb (f : G →* H) (emb : IsOpenEmbedding f) : NonarchimedeanGroup H :=
-  { is_nonarchimedean := fun U hU =>
-      have h₁ : f ⁻¹' U ∈ 𝓝 (1 : G) := by
-        apply emb.continuous.tendsto
-        rwa [f.map_one]
-      let ⟨V, hV⟩ := is_nonarchimedean (f ⁻¹' U) h₁
-      ⟨{ Subgroup.map f V with isOpen' := emb.isOpenMap _ V.isOpen }, Set.image_subset_iff.2 hV⟩ }
+theorem nonarchimedean_of_emb (f : G →* H) (emb : IsOpenEmbedding f) : NonarchimedeanGroup H := {
+  is_nonarchimedean := fun U hU =>
+    have h₁ : f ⁻¹' U ∈ 𝓝 (1 : G) := by
+      apply emb.continuous.tendsto
+      rwa [f.map_one]
+    let ⟨V, hV⟩ := is_nonarchimedean (f ⁻¹' U) h₁
+    ⟨{ Subgroup.map f V with isOpen' := emb.isOpenMap _ V.isOpen }, Set.image_subset_iff.2 hV⟩
+}
 
-/-- An open neighborhood of the identity in the Cartesian product of two nonarchimedean groups
-contains the Cartesian product of an open neighborhood in each group. -/
+/--
+An open neighborhood of the identity in the Cartesian product of two nonarchimedean groups
+contains the Cartesian product of an open neighborhood in each group.
+-/
 @[to_additive NonarchimedeanAddGroup.prod_subset /-- An open neighborhood of the identity in
 the Cartesian product of two nonarchimedean groups contains the Cartesian product of
 an open neighborhood in each group. -/]
-theorem prod_subset {U} (hU : U ∈ 𝓝 (1 : G × K)) :
-    ∃ (V : OpenSubgroup G) (W : OpenSubgroup K), (V : Set G) ×ˢ (W : Set K) ⊆ U := by
+theorem prod_subset {U} (hU : U ∈ 𝓝 (1 : G × K))
+    : ∃ (V : OpenSubgroup G) (W : OpenSubgroup K), (V : Set G) ×ˢ (W : Set K) ⊆ U := by
   rw [nhds_prod_eq, Filter.mem_prod_iff] at hU
   rcases hU with ⟨U₁, hU₁, U₂, hU₂, h⟩
   obtain ⟨V, hV⟩ := is_nonarchimedean _ hU₁
@@ -85,13 +94,15 @@ theorem prod_subset {U} (hU : U ∈ 𝓝 (1 : G × K)) :
   use V
   grind
 
-/-- An open neighborhood of the identity in the Cartesian square of a nonarchimedean group
-contains the Cartesian square of an open neighborhood in the group. -/
+/--
+An open neighborhood of the identity in the Cartesian square of a nonarchimedean group
+contains the Cartesian square of an open neighborhood in the group.
+-/
 @[to_additive NonarchimedeanAddGroup.prod_self_subset /-- An open neighborhood of the identity in
 the Cartesian square of a nonarchimedean group contains the Cartesian square of
 an open neighborhood in the group. -/]
-theorem prod_self_subset {U} (hU : U ∈ 𝓝 (1 : G × G)) :
-    ∃ V : OpenSubgroup G, (V : Set G) ×ˢ (V : Set G) ⊆ U :=
+theorem prod_self_subset {U} (hU : U ∈ 𝓝 (1 : G × G))
+    : ∃ V : OpenSubgroup G, (V : Set G) ×ˢ (V : Set G) ⊆ U :=
   let ⟨V, W, h⟩ := prod_subset hU
   ⟨V ⊓ W, by refine Set.Subset.trans (Set.prod_mono ?_ ?_) ‹_› <;> simp⟩
 
@@ -116,16 +127,19 @@ variable [Ring S] [TopologicalSpace S] [NonarchimedeanRing S]
 instance : NonarchimedeanRing (R × S) where
   is_nonarchimedean := NonarchimedeanAddGroup.is_nonarchimedean
 
-/-- Given an open subgroup `U` and an element `r` of a nonarchimedean ring, there is an open
-  subgroup `V` such that `r • V` is contained in `U`. -/
-theorem left_mul_subset (U : OpenAddSubgroup R) (r : R) :
-    ∃ V : OpenAddSubgroup R, r • (V : Set R) ⊆ U :=
+/--
+Given an open subgroup `U` and an element `r` of a nonarchimedean ring, there is an open
+subgroup `V` such that `r • V` is contained in `U`.
+-/
+theorem left_mul_subset (U : OpenAddSubgroup R) (r : R)
+    : ∃ V : OpenAddSubgroup R, r • (V : Set R) ⊆ U :=
   ⟨U.comap (AddMonoidHom.mulLeft r) (continuous_const_mul r), (U : Set R).image_preimage_subset _⟩
 
 /-- An open subgroup of a nonarchimedean ring contains the square of another one. -/
 theorem mul_subset (U : OpenAddSubgroup R) : ∃ V : OpenAddSubgroup R, (V : Set R) * V ⊆ U := by
-  let ⟨V, H⟩ := prod_self_subset <| (U.isOpen.preimage continuous_mul).mem_nhds <| by
-    simpa only [Set.mem_preimage, Prod.snd_zero, mul_zero] using! U.zero_mem
+  let ⟨V, H⟩ :=
+    prod_self_subset <| (U.isOpen.preimage continuous_mul).mem_nhds <| by
+      simpa only [Set.mem_preimage, Prod.snd_zero, mul_zero] using! U.zero_mem
   use V
   rintro v ⟨a, ha, b, hb, hv⟩
   have hy := H (Set.mk_mem_prod ha hb)

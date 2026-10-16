@@ -26,17 +26,17 @@ variable {M N α : Type*}
 namespace OrderDual
 
 @[to_additive]
-instance [Monoid M] [MulAction M α] : MulAction Mᵒᵈ α := inferInstanceAs <| MulAction M α
+instance [Monoid M] [MulAction M α] : MulAction (Mᵒᵈ) α := inferInstanceAs <| MulAction M α
 
 @[to_additive]
 instance [Monoid M] [MulAction M α] : MulAction M αᵒᵈ := inferInstanceAs <| MulAction M α
 
 @[to_additive]
-instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass Mᵒᵈ N α :=
+instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass (Mᵒᵈ) N α :=
   ‹SMulCommClass M N α›
 
 @[to_additive]
-instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass M Nᵒᵈ α :=
+instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass M (Nᵒᵈ) α :=
   ‹SMulCommClass M N α›
 
 @[to_additive]
@@ -44,11 +44,11 @@ instance [SMul M α] [SMul N α] [SMulCommClass M N α] : SMulCommClass M N α�
   ‹SMulCommClass M N α›
 
 @[to_additive]
-instance [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] : IsScalarTower Mᵒᵈ N α :=
+instance [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] : IsScalarTower (Mᵒᵈ) N α :=
   ‹IsScalarTower M N α›
 
 @[to_additive]
-instance [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] : IsScalarTower M Nᵒᵈ α :=
+instance [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] : IsScalarTower M (Nᵒᵈ) α :=
   ‹IsScalarTower M N α›
 
 @[to_additive]
@@ -68,27 +68,33 @@ instance instMulAction' [Monoid M] [MulAction M α] : MulAction M (Lex α) :=
   inferInstanceAs <| MulAction M α
 
 @[to_additive]
-instance instSMulCommClass [SMul M α] [SMul N α] [SMulCommClass M N α] :
-    SMulCommClass (Lex M) N α := inferInstanceAs <| SMulCommClass M N α
+instance instSMulCommClass [SMul M α] [SMul N α] [SMulCommClass M N α]
+    : SMulCommClass (Lex M) N α :=
+  inferInstanceAs <| SMulCommClass M N α
 
 @[to_additive]
-instance instSMulCommClass' [SMul M α] [SMul N α] [SMulCommClass M N α] :
-    SMulCommClass M (Lex N) α := inferInstanceAs <| SMulCommClass M N α
+instance instSMulCommClass' [SMul M α] [SMul N α] [SMulCommClass M N α]
+    : SMulCommClass M (Lex N) α :=
+  inferInstanceAs <| SMulCommClass M N α
 
 @[to_additive]
-instance instSMulCommClass'' [SMul M α] [SMul N α] [SMulCommClass M N α] :
-    SMulCommClass M N (Lex α) := inferInstanceAs <| SMulCommClass M N α
+instance instSMulCommClass'' [SMul M α] [SMul N α] [SMulCommClass M N α]
+    : SMulCommClass M N (Lex α) :=
+  inferInstanceAs <| SMulCommClass M N α
 
 @[to_additive]
-instance instIsScalarTower [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] :
-    IsScalarTower (Lex M) N α := inferInstanceAs <| IsScalarTower M N α
+instance instIsScalarTower [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α]
+    : IsScalarTower (Lex M) N α :=
+  inferInstanceAs <| IsScalarTower M N α
 
 @[to_additive]
-instance instIsScalarTower' [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] :
-    IsScalarTower M (Lex N) α := inferInstanceAs <| IsScalarTower M N α
+instance instIsScalarTower' [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α]
+    : IsScalarTower M (Lex N) α :=
+  inferInstanceAs <| IsScalarTower M N α
 
 @[to_additive]
-instance instIsScalarTower'' [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α] :
-    IsScalarTower M N (Lex α) := inferInstanceAs <| IsScalarTower M N α
+instance instIsScalarTower'' [SMul M N] [SMul M α] [SMul N α] [IsScalarTower M N α]
+    : IsScalarTower M N (Lex α) :=
+  inferInstanceAs <| IsScalarTower M N α
 
 end Lex

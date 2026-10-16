@@ -30,7 +30,6 @@ the set family made of its `r`-sets.
 
 @[expose] public section
 
-
 open Finset Nat
 
 variable {α : Type*} {ι : Sort*} {κ : ι → Sort*}
@@ -41,7 +40,6 @@ variable {A B : Set (Finset α)} {s : Finset α} {r : ℕ}
 
 /-! ### Families of `r`-sets -/
 
-
 /-- `Sized r A` means that every Finset in `A` has size `r`. -/
 def Sized (r : ℕ) (A : Set (Finset α)) : Prop := ∀ ⦃x⦄, x ∈ A → #x = r
 
@@ -50,21 +48,22 @@ theorem Sized.mono (h : A ⊆ B) (hB : B.Sized r) : A.Sized r := fun _x hx => hB
 @[simp] lemma sized_empty : (∅ : Set (Finset α)).Sized r := by simp [Sized]
 @[simp] lemma sized_singleton : ({s} : Set (Finset α)).Sized r ↔ #s = r := by simp [Sized]
 
-theorem sized_union : (A ∪ B).Sized r ↔ A.Sized r ∧ B.Sized r :=
-  ⟨fun hA => ⟨hA.mono subset_union_left, hA.mono subset_union_right⟩, fun hA _x hx =>
-    hx.elim (fun h => hA.1 h) fun h => hA.2 h⟩
+theorem sized_union : (A ∪ B).Sized r ↔ A.Sized r ∧ B.Sized r := ⟨
+  fun hA => ⟨hA.mono subset_union_left, hA.mono subset_union_right⟩,
+  fun hA _x hx => hx.elim (fun h => hA.1 h) fun h => hA.2 h
+⟩
 
 alias ⟨_, sized.union⟩ := sized_union
 
---TODO: A `forall_iUnion` lemma would be handy here.
+-- TODO: A `forall_iUnion` lemma would be handy here.
 @[simp]
 theorem sized_iUnion {f : ι → Set (Finset α)} : (⋃ i, f i).Sized r ↔ ∀ i, (f i).Sized r := by
   simp_rw [Set.Sized, Set.mem_iUnion, forall_exists_index]
   exact forall_comm
 
 -- `simp` normal form is `sized_iUnion`.
-theorem sized_iUnion₂ {f : ∀ i, κ i → Set (Finset α)} :
-    (⋃ (i) (j), f i j).Sized r ↔ ∀ i j, (f i j).Sized r := by
+theorem sized_iUnion₂ {f : ∀ i, κ i → Set (Finset α)}
+    : (⋃ (i) (j), f i j).Sized r ↔ ∀ i j, (f i j).Sized r := by
   simp only [Set.sized_iUnion]
 
 protected theorem Sized.isAntichain (hA : A.Sized r) : IsAntichain (· ⊆ ·) A :=
@@ -76,8 +75,7 @@ protected theorem Sized.subsingleton (hA : A.Sized 0) : A.Subsingleton :=
 theorem Sized.subsingleton' [Fintype α] (hA : A.Sized (Fintype.card α)) : A.Subsingleton :=
   subsingleton_of_forall_eq Finset.univ fun s hs => s.card_eq_iff_eq_univ.1 <| hA hs
 
-theorem Sized.empty_mem_iff (hA : A.Sized r) : ∅ ∈ A ↔ A = {∅} :=
-  hA.isAntichain.bot_mem_iff
+theorem Sized.empty_mem_iff (hA : A.Sized r) : ∅ ∈ A ↔ A = {∅} := hA.isAntichain.bot_mem_iff
 
 theorem Sized.univ_mem_iff [Fintype α] (hA : A.Sized r) : Finset.univ ∈ A ↔ A = {Finset.univ} :=
   hA.isAntichain.top_mem_iff
@@ -98,15 +96,14 @@ theorem subset_powersetCard_univ_iff : 𝒜 ⊆ powersetCard r univ ↔ (𝒜 : 
 
 alias ⟨_, _root_.Set.Sized.subset_powersetCard_univ⟩ := subset_powersetCard_univ_iff
 
-theorem _root_.Set.Sized.card_le (h𝒜 : (𝒜 : Set (Finset α)).Sized r) :
-    #𝒜 ≤ (Fintype.card α).choose r := by
+theorem _root_.Set.Sized.card_le (h𝒜 : (𝒜 : Set (Finset α)).Sized r)
+    : #𝒜 ≤ (Fintype.card α).choose r := by
   rw [Fintype.card, ← card_powersetCard]
   exact card_le_card (subset_powersetCard_univ_iff.mpr h𝒜)
 
 end Sized
 
 /-! ### Slices -/
-
 
 section Slice
 
@@ -119,12 +116,10 @@ def slice (𝒜 : Finset (Finset α)) (r : ℕ) : Finset (Finset α) := {A ∈ �
 scoped[Finset] infixl:90 " # " => Finset.slice
 
 /-- `A` is in the `r`-th slice of `𝒜` iff it's in `𝒜` and has cardinality `r`. -/
-theorem mem_slice : A ∈ 𝒜 # r ↔ A ∈ 𝒜 ∧ #A = r :=
-  mem_filter
+theorem mem_slice : A ∈ 𝒜 # r ↔ A ∈ 𝒜 ∧ #A = r := mem_filter
 
 /-- The `r`-th slice of `𝒜` is a subset of `𝒜`. -/
-theorem slice_subset : 𝒜 # r ⊆ 𝒜 :=
-  filter_subset _ _
+theorem slice_subset : 𝒜 # r ⊆ 𝒜 := filter_subset _ _
 
 /-- Everything in the `r`-th slice of `𝒜` has size `r`. -/
 theorem sized_slice : (𝒜 # r : Set (Finset α)).Sized r := fun _ => And.right ∘ mem_slice.mp

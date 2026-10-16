@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Algebra.Category.ModuleCat.Colimits
 import Mathlib.Algebra.Category.ModuleCat.Limits
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
@@ -20,7 +21,7 @@ section Large
 
 variable {C : Type (u + 1)} [LargeCategory C] (J : GrothendieckTopology C)
 
-example (R : Type (u + 1)) [Ring R] : PreservesSheafification J (forget (ModuleCat.{u+1} R)) :=
+example (R : Type (u + 1)) [Ring R] : PreservesSheafification J (forget (ModuleCat.{u + 1} R)) :=
   inferInstance
 
 variable [EssentiallySmall.{u} C]

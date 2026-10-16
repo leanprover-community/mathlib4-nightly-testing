@@ -29,8 +29,7 @@ namespace Module
 open Order
 
 /-- The krull dimension of module, defined as `krullDim` of its support. -/
-noncomputable def supportDim : WithBot ℕ∞ :=
-  krullDim (Module.support R M)
+noncomputable def supportDim : WithBot ℕ∞ := krullDim (Module.support R M)
 
 @[nontriviality]
 lemma supportDim_eq_bot_of_subsingleton [Subsingleton M] : supportDim R M = ⊥ := by
@@ -46,8 +45,8 @@ lemma supportDim_eq_bot_iff_subsingleton : supportDim R M = ⊥ ↔ Subsingleton
 lemma supportDim_ne_bot_iff_nontrivial : supportDim R M ≠ ⊥ ↔ Nontrivial M := by
   simp [supportDim, krullDim_eq_bot_iff, support_eq_empty_iff, not_subsingleton_iff_nontrivial]
 
-lemma supportDim_eq_ringKrullDim_quotient_annihilator [Module.Finite R M] :
-    supportDim R M = ringKrullDim (R ⧸ annihilator R M) := by
+lemma supportDim_eq_ringKrullDim_quotient_annihilator [Module.Finite R M]
+    : supportDim R M = ringKrullDim (R ⧸ annihilator R M) := by
   simp only [supportDim]
   rw [support_eq_zeroLocus, ringKrullDim_quotient]
 
@@ -62,22 +61,23 @@ lemma supportDim_le_ringKrullDim : supportDim R M ≤ ringKrullDim R :=
 
 variable {R M N}
 
-lemma supportDim_quotient_eq_ringKrullDim (I : Ideal R) :
-    supportDim R (R ⧸ I) = ringKrullDim (R ⧸ I) := by
+lemma supportDim_quotient_eq_ringKrullDim (I : Ideal R)
+    : supportDim R (R ⧸ I) = ringKrullDim (R ⧸ I) := by
   rw [supportDim_eq_ringKrullDim_quotient_annihilator, Ideal.annihilator_quotient]
 
-lemma supportDim_le_of_injective (f : M →ₗ[R] N) (h : Function.Injective f) :
-    supportDim R M ≤ supportDim R N :=
-  krullDim_le_of_strictMono (fun a ↦ ⟨a.1, Module.support_subset_of_injective f h a.2⟩)
+lemma supportDim_le_of_injective (f : M →ₗ[R] N) (h : Function.Injective f)
+    : supportDim R M ≤ supportDim R N :=
+  krullDim_le_of_strictMono
+    (fun a ↦ ⟨a.1, Module.support_subset_of_injective f h a.2⟩)
     (fun {_ _} lt ↦ lt)
 
-lemma supportDim_le_of_surjective (f : M →ₗ[R] N) (h : Function.Surjective f) :
-    supportDim R N ≤ supportDim R M :=
-  krullDim_le_of_strictMono (fun a ↦ ⟨a.1, Module.support_subset_of_surjective f h a.2⟩)
+lemma supportDim_le_of_surjective (f : M →ₗ[R] N) (h : Function.Surjective f)
+    : supportDim R N ≤ supportDim R M :=
+  krullDim_le_of_strictMono
+    (fun a ↦ ⟨a.1, Module.support_subset_of_surjective f h a.2⟩)
     (fun {_ _} lt ↦ lt)
 
-lemma supportDim_eq_of_equiv (e : M ≃ₗ[R] N) :
-    supportDim R M = supportDim R N :=
+lemma supportDim_eq_of_equiv (e : M ≃ₗ[R] N) : supportDim R M = supportDim R N :=
   le_antisymm (supportDim_le_of_injective e e.injective)
     (supportDim_le_of_surjective e e.surjective)
 
@@ -85,9 +85,8 @@ end Module
 
 open Ideal IsLocalRing
 
-lemma support_of_supportDim_eq_zero [IsLocalRing R]
-    (dim : Module.supportDim R N = 0) :
-    Module.support R N = PrimeSpectrum.zeroLocus (maximalIdeal R) := by
+lemma support_of_supportDim_eq_zero [IsLocalRing R] (dim : Module.supportDim R N = 0)
+    : Module.support R N = PrimeSpectrum.zeroLocus (maximalIdeal R) := by
   let _ : Nontrivial N := by simp [← Module.supportDim_ne_bot_iff_nontrivial R, dim]
   rw [PrimeSpectrum.zeroLocus_eq_singleton]
   apply le_antisymm

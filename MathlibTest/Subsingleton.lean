@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Subsingleton
 
 private axiom test_sorry : ∀ {α}, α
@@ -57,8 +58,8 @@ end AvoidSurprise
 Handles `BEq` instances if there are `LawfulBEq` instances for each.
 -/
 set_option linter.overlappingInstances false in
-example (α : Type) (inst1 inst2 : BEq α) [@LawfulBEq α inst1] [@LawfulBEq α inst2] :
-    inst1 = inst2 := by
+example (α : Type) (inst1 inst2 : BEq α) [@LawfulBEq α inst1] [@LawfulBEq α inst2]
+    : inst1 = inst2 := by
   subsingleton
 
 /-!
@@ -69,8 +70,7 @@ info: Try this:
   [apply] rfl
 -/
 #guard_msgs in
-example : 1 + 1 = 2 := by
-  subsingleton
+example : 1 + 1 = 2 := by subsingleton
 
 /-!
 `subsingleton` does not itself try `rfl` if it's not in error recovery mode
@@ -85,14 +85,12 @@ info: Try this:
   [apply] (intros; rfl)
 -/
 #guard_msgs in
-example : ∀ (n : Nat), n = n := by
-  subsingleton
+example : ∀ (n : Nat), n = n := by subsingleton
 
 /-!
 Passing subsingleton instances to the tactic.
 -/
-example {α : Type} (x y : α) : x = y := by
-  subsingleton [(test_sorry : Subsingleton α)]
+example {α : Type} (x y : α) : x = y := by subsingleton [(test_sorry : Subsingleton α)]
 
 /-!
 No linting yet for unused instances.
@@ -104,15 +102,13 @@ example {α : Type} (x y : α) : x = y := by
 /-!
 Abstraction, with specified universe levels.
 -/
-example {α : Type} (x y : α) : x = y := by
-  subsingleton [(test_sorry : Subsingleton.{1} _)]
+example {α : Type} (x y : α) : x = y := by subsingleton [(test_sorry : Subsingleton.{1} _)]
 
 /-!
 Abstraction, with unspecified universe levels.
 -/
 #guard_msgs in
-example {α : Type} (x y : α) : x = y := by
-  subsingleton [(test_sorry : Subsingleton _)]
+example {α : Type} (x y : α) : x = y := by subsingleton [(test_sorry : Subsingleton _)]
 
 /-!
 Not an instance.
@@ -122,14 +118,12 @@ error: Not an instance. Term has type
   Bool
 -/
 #guard_msgs in
-example {α : Type} (x y : α) : x = y := by
-  subsingleton [true]
+example {α : Type} (x y : α) : x = y := by subsingleton [true]
 
 /-!
 When abstracting, metavariables become instance implicit if they're for classes.
 -/
-example {α : Type} [BEq α] (f : BEq α → Subsingleton α) (x y : α) : x = y := by
-  subsingleton [f _]
+example {α : Type} [BEq α] (f : BEq α → Subsingleton α) (x y : α) : x = y := by subsingleton [f _]
 
 /-!
 This too abstracts some metavariables and ensures that `BEq` is instance implicit.
@@ -144,5 +138,4 @@ set_option warn.classDefReducibility false in
 set_option linter.defProp false in
 def fdef : ∀ {β : Type _} [BEq β], Subsingleton β := test_sorry
 
-example {α : Type} [BEq α] (x y : α) : x = y := by
-  subsingleton [fdef]
+example {α : Type} [BEq α] (x y : α) : x = y := by subsingleton [fdef]

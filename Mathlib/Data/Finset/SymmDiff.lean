@@ -50,11 +50,12 @@ theorem coe_symmDiff : (↑(s ∆ t) : Set α) = (s : Set α) ∆ t :=
   Set.ext fun x => by simp [mem_symmDiff, Set.mem_symmDiff]
 
 @[simp] lemma symmDiff_eq_empty : s ∆ t = ∅ ↔ s = t := symmDiff_eq_bot
-@[simp] lemma symmDiff_nonempty : (s ∆ t).Nonempty ↔ s ≠ t :=
+@[simp]
+lemma symmDiff_nonempty : (s ∆ t).Nonempty ↔ s ≠ t :=
   nonempty_iff_ne_empty.trans symmDiff_eq_empty.not
 
-theorem image_symmDiff [DecidableEq β] {f : α → β} (s t : Finset α) (hf : Injective f) :
-    (s ∆ t).image f = s.image f ∆ t.image f :=
+theorem image_symmDiff [DecidableEq β] {f : α → β} (s t : Finset α) (hf : Injective f)
+    : (s ∆ t).image f = s.image f ∆ t.image f :=
   mod_cast Set.image_symmDiff hf s t
 
 /-- See `symmDiff_subset_sdiff'` for the swapped version of this. -/

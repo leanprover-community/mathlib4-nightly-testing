@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Category.ModuleCat.Free
 public import Mathlib.Topology.Category.Profinite.Nobeling.Span
-
 import Mathlib.Topology.Category.Profinite.Nobeling.Successor
 import Mathlib.Topology.Category.Profinite.Nobeling.ZeroLimit
 
@@ -65,37 +64,38 @@ theorem GoodProducts.P0 : P I 0 := fun _ C _ hsC ↦ by
   · subst C
     exact linearIndependentSingleton
 
-theorem GoodProducts.Plimit (o : Ordinal) (ho : Order.IsSuccLimit o) :
-    (∀ (o' : Ordinal), o' < o → P I o') → P I o := by
+theorem GoodProducts.Plimit (o : Ordinal) (ho : Order.IsSuccLimit o)
+    : (∀ (o' : Ordinal), o' < o → P I o') → P I o := by
   intro h hho C hC hsC
   rw [linearIndependent_iff_union_smaller C ho hsC, linearIndependent_subtype_iff]
   exact linearIndepOn_iUnion_of_directed
-    (Monotone.directed_le fun _ _ h ↦ GoodProducts.smaller_mono C h) fun ⟨o', ho'⟩ ↦
-    (linearIndependent_iff_smaller _ _).mp (h o' ho' (ho'.le.trans hho)
-    (π C (ord I · < o')) (isClosed_proj _ _ hC) (contained_proj _ _))
+    (Monotone.directed_le fun _ _ h ↦ GoodProducts.smaller_mono C h)
+    fun ⟨o', ho'⟩ ↦
+      (linearIndependent_iff_smaller _ _).mp
+        (h o' ho' (ho'.le.trans hho) (π C (ord I · < o')) (isClosed_proj _ _ hC)
+          (contained_proj _ _))
 
 theorem GoodProducts.linearIndependentAux (μ : Ordinal) : P I μ := by
-  refine Ordinal.limitRecOn μ P0 (fun o h ho C hC hsC ↦ ?_)
-      (fun o ho h ↦ (GoodProducts.Plimit o ho (fun o' ho' ↦ (h o' ho'))))
-  have ho' : o < Ordinal.type (· < · : I → I → Prop) :=
-    lt_of_lt_of_le (Order.lt_succ _) ho
+  refine Ordinal.limitRecOn μ P0
+    (fun o h ho C hC hsC ↦ ?_)
+    (fun o ho h ↦ (GoodProducts.Plimit o ho (fun o' ho' ↦ (h o' ho'))))
+  have ho' : o < Ordinal.type (· < · : I → I → Prop) := lt_of_lt_of_le (Order.lt_succ _) ho
   rw [linearIndependent_iff_sum C hsC ho']
   refine ModuleCat.linearIndependent_leftExact (succ_exact C hC hsC ho') ?_ ?_ (succ_mono C o)
     (square_commutes C ho')
   · exact h (le_of_lt ho') (π C (ord I · < o)) (isClosed_proj C o hC) (contained_proj C o)
-  · exact linearIndependent_comp_of_eval C hC hsC ho' (span (π C (ord I · < o))
-      (isClosed_proj C o hC)) (h (le_of_lt ho') (C' C ho') (isClosed_C' C hC ho')
-      (contained_C' C ho'))
+  · exact linearIndependent_comp_of_eval C hC hsC ho'
+      (span (π C (ord I · < o)) (isClosed_proj C o hC))
+      (h (le_of_lt ho') (C' C ho') (isClosed_C' C hC ho') (contained_C' C ho'))
 
-theorem GoodProducts.linearIndependent (hC : IsClosed C) :
-    LinearIndependent ℤ (GoodProducts.eval C) :=
-  GoodProducts.linearIndependentAux (Ordinal.type (· < · : I → I → Prop)) (le_refl _)
-    C hC (fun _ _ _ _ ↦ Ordinal.typein_lt_type _ _)
+theorem GoodProducts.linearIndependent (hC : IsClosed C)
+    : LinearIndependent ℤ (GoodProducts.eval C) :=
+  GoodProducts.linearIndependentAux (Ordinal.type (· < · : I → I → Prop)) (le_refl _) C hC
+    (fun _ _ _ _ ↦ Ordinal.typein_lt_type _ _)
 
 /-- `GoodProducts C` as a `ℤ`-basis for `LocallyConstant C ℤ`. -/
-noncomputable
-def GoodProducts.Basis (hC : IsClosed C) :
-    Basis (GoodProducts C) ℤ (LocallyConstant C ℤ) :=
+noncomputable def GoodProducts.Basis (hC : IsClosed C)
+    : Basis (GoodProducts C) ℤ (LocallyConstant C ℤ) :=
   Basis.mk (GoodProducts.linearIndependent C hC) (GoodProducts.span C hC)
 
 end Induction
@@ -107,9 +107,9 @@ include hι
 Given a profinite set `S` and a closed embedding `S → (I → Bool)`, the `ℤ`-module
 `LocallyConstant C ℤ` is free.
 -/
-theorem Nobeling_aux : Module.Free ℤ (LocallyConstant S ℤ) := Module.Free.of_equiv'
-  (Module.Free.of_basis <| GoodProducts.Basis _ hι.isClosed_range) (LocallyConstant.congrLeftₗ ℤ
-    hι.isEmbedding.toHomeomorph).symm
+theorem Nobeling_aux : Module.Free ℤ (LocallyConstant S ℤ) :=
+  Module.Free.of_equiv' (Module.Free.of_basis <| GoodProducts.Basis _ hι.isClosed_range)
+    (LocallyConstant.congrLeftₗ ℤ hι.isEmbedding.toHomeomorph).symm
 
 end NobelingProof
 
@@ -117,8 +117,7 @@ variable (S : Profinite.{u})
 
 open scoped Classical in
 /-- The embedding `S → (I → Bool)` where `I` is the set of clopens of `S`. -/
-noncomputable
-def Nobeling.ι : S → ({C : Set S // IsClopen C} → Bool) := fun s C => decide (s ∈ C.1)
+noncomputable def Nobeling.ι : S → ({C : Set S // IsClopen C} → Bool) := fun s C => decide (s ∈ C.1)
 
 /-- The map `Nobeling.ι` is a closed embedding. -/
 theorem Nobeling.isClosedEmbedding : IsClosedEmbedding (Nobeling.ι S) := by
@@ -149,9 +148,11 @@ end Profinite
 
 open Profinite NobelingProof
 
-/-- **Nöbeling's theorem**. The `ℤ`-module `LocallyConstant S ℤ` is free for every
-`S : Profinite`. -/
-instance LocallyConstant.freeOfProfinite (S : Profinite.{u}) :
-    Module.Free ℤ (LocallyConstant S ℤ) := by
+/--
+**Nöbeling's theorem**. The `ℤ`-module `LocallyConstant S ℤ` is free for every
+`S : Profinite`.
+-/
+instance LocallyConstant.freeOfProfinite (S : Profinite.{u})
+    : Module.Free ℤ (LocallyConstant S ℤ) := by
   obtain ⟨_, _⟩ := exists_wellFoundedLT {C : Set S // IsClopen C}
   exact @Nobeling_aux {C : Set S // IsClopen C} _ _ S (Nobeling.ι S) (Nobeling.isClosedEmbedding S)

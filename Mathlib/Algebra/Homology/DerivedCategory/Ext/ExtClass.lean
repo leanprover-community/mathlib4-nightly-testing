@@ -58,23 +58,24 @@ instance : HasSmallLocalizedShiftedHom.{w} W ℤ (S').X₃ (S').X₁ := by
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.privateInPublic true in
 include hS in
-private lemma hasSmallLocalizedHom_S'_X₃_K :
-    HasSmallLocalizedHom.{w} W (S').X₃ K := by
+private lemma hasSmallLocalizedHom_S'_X₃_K : HasSmallLocalizedHom.{w} W (S').X₃ K := by
   rw [Localization.hasSmallLocalizedHom_iff_target W (S').X₃ qis hqis]
   dsimp
   apply Localization.hasSmallLocalizedHom_of_hasSmallLocalizedShiftedHom₀ (M := ℤ)
 
 set_option backward.privateInPublic true in
 include hS in
-private lemma hasSmallLocalizedShiftedHom_K_S'_X₁ :
-    HasSmallLocalizedShiftedHom.{w} W ℤ K (S').X₁ := by
+private lemma hasSmallLocalizedShiftedHom_K_S'_X₁
+    : HasSmallLocalizedShiftedHom.{w} W ℤ K (S').X₁ := by
   rw [Localization.hasSmallLocalizedShiftedHom_iff_source.{w} W ℤ qis hqis (S').X₁]
   infer_instance
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- The class in `Ext S.X₃ S.X₁ 1` that is attached to a short exact
-short complex `S` in an abelian category. -/
+/--
+The class in `Ext S.X₃ S.X₁ 1` that is attached to a short exact
+short complex `S` in an abelian category.
+-/
 noncomputable def extClass : Ext.{w} S.X₃ S.X₁ 1 := by
   have := hS.hasSmallLocalizedHom_S'_X₃_K
   have := hS.hasSmallLocalizedShiftedHom_K_S'_X₁
@@ -96,34 +97,30 @@ end
 lemma comp_extClass : (Ext.mk₀ S.g).comp hS.extClass (zero_add 1) = 0 := by
   let := HasDerivedCategory.standard C
   ext
-  simp only [Ext.comp_hom, Ext.mk₀_hom, extClass_hom, Ext.zero_hom,
-    ShiftedHom.mk₀_comp]
+  simp only [Ext.comp_hom, Ext.mk₀_hom, extClass_hom, Ext.zero_hom, ShiftedHom.mk₀_comp]
   exact comp_distTriang_mor_zero₂₃ _ hS.singleTriangle_distinguished
 
 @[simp]
-lemma comp_extClass_assoc {Y : C} {n : ℕ} (γ : Ext S.X₁ Y n) {n' : ℕ} (h : 1 + n = n') :
-    (Ext.mk₀ S.g).comp (hS.extClass.comp γ h) (zero_add n') = 0 := by
-  rw [← Ext.comp_assoc (a₁₂ := 1) _ _ _ (by lia) (by lia) (by lia),
-    comp_extClass, Ext.zero_comp]
+lemma comp_extClass_assoc {Y : C} {n : ℕ} (γ : Ext S.X₁ Y n) {n' : ℕ} (h : 1 + n = n')
+    : (Ext.mk₀ S.g).comp (hS.extClass.comp γ h) (zero_add n') = 0 := by
+  rw [← Ext.comp_assoc (a₁₂ := 1) _ _ _ (by lia) (by lia) (by lia), comp_extClass, Ext.zero_comp]
 
 @[simp]
 lemma extClass_comp : hS.extClass.comp (Ext.mk₀ S.f) (add_zero 1) = 0 := by
   let := HasDerivedCategory.standard C
   ext
-  simp only [Ext.comp_hom, Ext.mk₀_hom, extClass_hom, Ext.zero_hom,
-    ShiftedHom.comp_mk₀]
+  simp only [Ext.comp_hom, Ext.mk₀_hom, extClass_hom, Ext.zero_hom, ShiftedHom.comp_mk₀]
   exact comp_distTriang_mor_zero₃₁ _ hS.singleTriangle_distinguished
 
 @[simp]
-lemma extClass_comp_assoc {Y : C} {n : ℕ} (γ : Ext S.X₂ Y n) {n' : ℕ} {h : 1 + n = n'} :
-    hS.extClass.comp ((Ext.mk₀ S.f).comp γ (zero_add n)) h = 0 := by
-  rw [← Ext.comp_assoc (a₁₂ := 1) _ _ _ (by lia) (by lia) (by lia),
-    extClass_comp, Ext.zero_comp]
+lemma extClass_comp_assoc {Y : C} {n : ℕ} (γ : Ext S.X₂ Y n) {n' : ℕ} {h : 1 + n = n'}
+    : hS.extClass.comp ((Ext.mk₀ S.f).comp γ (zero_add n)) h = 0 := by
+  rw [← Ext.comp_assoc (a₁₂ := 1) _ _ _ (by lia) (by lia) (by lia), extClass_comp, Ext.zero_comp]
 
-lemma extClass_naturality {S₁ S₂ : ShortComplex C}
-    (h₁ : S₁.ShortExact) (h₂ : S₂.ShortExact) (f : S₁ ⟶ S₂) :
-    h₁.extClass.comp (Ext.mk₀ f.τ₁) (add_zero 1) =
-      (Ext.mk₀ f.τ₃).comp h₂.extClass (zero_add 1) := by
+lemma extClass_naturality
+    {S₁ S₂ : ShortComplex C} (h₁ : S₁.ShortExact) (h₂ : S₂.ShortExact) (f : S₁ ⟶ S₂)
+    : h₁.extClass.comp (Ext.mk₀ f.τ₁) (add_zero 1)
+      = (Ext.mk₀ f.τ₃).comp h₂.extClass (zero_add 1) := by
   let := HasDerivedCategory.standard C
   ext
   simpa [ShiftedHom.comp_mk₀, ShiftedHom.mk₀_comp] using! (singleTriangle.map h₁ h₂ f).comm₃

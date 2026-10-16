@@ -9,27 +9,30 @@ set_option autoImplicit true
 
 example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] {a : R} (h : 0 < a) : 0 < a := by
   nontriviality
-  rename_i inst; guard_hyp inst : Nontrivial R
+  rename_i inst
+  guard_hyp inst : Nontrivial R
   assumption
 
 /-! ### Test `nontriviality` with equality or non-strict inequality goals -/
 
-
 example {R : Type} [CommRing R] {r s : R} : r * s = s * r := by
   nontriviality
-  rename_i inst; guard_hyp inst : Nontrivial R
+  rename_i inst
+  guard_hyp inst : Nontrivial R
   apply mul_comm
 
 /-! ### Test deducing `nontriviality` by instance search -/
 
 example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] : 0 ≤ (1 : R) := by
   nontriviality R
-  rename_i inst; guard_hyp inst : Nontrivial R
+  rename_i inst
+  guard_hyp inst : Nontrivial R
   exact zero_le_one
 
 example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] : 0 ≤ (1 : R) := by
   nontriviality ℕ
-  rename_i inst; guard_hyp inst : Nontrivial ℕ
+  rename_i inst
+  guard_hyp inst : Nontrivial ℕ
   exact zero_le_one
 
 example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] : 0 ≤ (2 : R) := by
@@ -38,17 +41,16 @@ example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] : 0 ≤ (2 : R) :
 
 example {R : Type} [Ring R] [PartialOrder R] [IsOrderedRing R] {a : R} (_ : 0 < a) : 2 ∣ 4 := by
   nontriviality R
-  rename_i inst; guard_hyp inst : Nontrivial R
+  rename_i inst
+  guard_hyp inst : Nontrivial R
   decide
 
 /-! Test using `@[nontriviality]` lemmas in `nontriviality` and custom `simp` lemmas -/
 
-
-def EmptyOrUniv {α : Type _} (s : Set α) : Prop :=
-  s = ∅ ∨ s = Set.univ
+def EmptyOrUniv {α : Type _} (s : Set α) : Prop := s = ∅ ∨ s = Set.univ
 
 theorem Subsingleton.set_empty_or_univ {α} [Subsingleton α] (s : Set α) : s = ∅ ∨ s = Set.univ :=
-test_sorry
+  test_sorry
 
 theorem Subsingleton.set_empty_or_univ' {α} [Subsingleton α] (s : Set α) : EmptyOrUniv s :=
   Subsingleton.set_empty_or_univ s
@@ -81,10 +83,10 @@ example {α : Type _} (s : Set α) (hs : s = ∅ ∪ Set.univ) : EmptyOrUniv s :
 
 /-! Test with nonatomic type argument -/
 
-
 example (α : ℕ → Type) (a b : α 0) (h : a = b) : a = b := by
   nontriviality α 0 using Nat.zero_lt_one
-  rename_i inst; guard_hyp inst : Nontrivial (α 0)
+  rename_i inst
+  guard_hyp inst : Nontrivial (α 0)
   exact h
 
 class Foo (α : Type) : Prop
@@ -93,9 +95,9 @@ instance : Foo α := {}
 example (α : Type) : Foo α := by nontriviality α; infer_instance
 
 -- simulate the type of MvPolynomial
-def R : Type u → Type v → Sort (max (u+1) (v+1)) := test_sorry
+def R : Type u → Type v → Sort (max (u + 1) (v + 1)) := test_sorry
 noncomputable instance : CommRing (R c d) := test_sorry
 
-example (p : R PUnit.{u+1} PUnit.{v+1}) : p = p := by
+example (p : R PUnit.{u + 1} PUnit.{v + 1}) : p = p := by
   nontriviality
   exact test_sorry

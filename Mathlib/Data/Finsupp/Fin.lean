@@ -30,30 +30,21 @@ namespace Finsupp
 variable {n : ℕ} (i : Fin n) {M : Type*} [Zero M] (y : M) (t : Fin (n + 1) →₀ M) (s : Fin n →₀ M)
 
 /-- `tail` for maps `Fin (n + 1) →₀ M`. See `Fin.tail` for more details. -/
-def tail (s : Fin (n + 1) →₀ M) : Fin n →₀ M :=
-  Finsupp.equivFunOnFinite.symm (Fin.tail s)
+def tail (s : Fin (n + 1) →₀ M) : Fin n →₀ M := Finsupp.equivFunOnFinite.symm (Fin.tail s)
 
 /-- `cons` for maps `Fin n →₀ M`. See `Fin.cons` for more details. -/
 def cons (y : M) (s : Fin n →₀ M) : Fin (n + 1) →₀ M :=
   Finsupp.equivFunOnFinite.symm (Fin.cons y s : Fin (n + 1) → M)
 
-theorem tail_apply : tail t i = t i.succ :=
-  rfl
+theorem tail_apply : tail t i = t i.succ := rfl
 
-@[simp]
-theorem cons_zero : cons y s 0 = y :=
-  rfl
+@[simp] theorem cons_zero : cons y s 0 = y := rfl
 
-@[simp]
-theorem cons_succ : cons y s i.succ = s i :=
-  rfl
+@[simp] theorem cons_succ : cons y s i.succ = s i := rfl
 
-@[simp]
-theorem tail_cons : tail (cons y s) = s :=
-  ext fun k => by simp only [tail_apply, cons_succ]
+@[simp] theorem tail_cons : tail (cons y s) = s := ext fun k => by simp only [tail_apply, cons_succ]
 
-@[simp]
-theorem tail_update_zero : tail (update t 0 y) = tail t := by simp [tail]
+@[simp] theorem tail_update_zero : tail (update t 0 y) = tail t := by simp [tail]
 
 @[simp]
 theorem tail_update_succ : tail (update t i.succ y) = update (tail t) i y := by ext; simp [tail]
@@ -73,8 +64,7 @@ lemma cons_zero_single_eq_single_succ : cons 0 (single i y) = single i.succ y :=
   ext j
   cases j using Fin.cases <;> simp [single_apply]
 
-@[simp]
-theorem cons_zero_zero : cons 0 (0 : Fin n →₀ M) = 0 := by simp [cons_zero_eq_single_zero]
+@[simp] theorem cons_zero_zero : cons 0 (0 : Fin n →₀ M) = 0 := by simp [cons_zero_eq_single_zero]
 
 variable {s} {y}
 
@@ -94,7 +84,7 @@ theorem cons_ne_zero_iff : cons y s ≠ 0 ↔ y ≠ 0 ∨ s ≠ 0 := by
 
 lemma cons_support : (s.cons y).support ⊆ insert 0 (s.support.map (Fin.succEmb n)) := by
   intro i hi
-  suffices i = 0 ∨ ∃ a, ¬s a = 0 ∧ a.succ = i by simpa
+  suffices i = 0 ∨ ∃ a, ¬ s a = 0 ∧ a.succ = i by simpa
   apply (Fin.eq_zero_or_eq_succ i).imp id (Exists.imp _)
   rintro i rfl
   simpa [Finsupp.mem_support_iff] using hi

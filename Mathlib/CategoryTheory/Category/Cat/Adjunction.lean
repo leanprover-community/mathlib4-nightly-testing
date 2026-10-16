@@ -34,9 +34,12 @@ set_option backward.privateInPublic true in
 private def typeToCatObjectsAdjHomEquiv : (typeToCat.obj X ⟶ C) ≃ (X ⟶ Cat.objects.obj C) where
   toFun F := ↾fun x ↦ F.toFunctor.obj ⟨x⟩
   invFun f := (Discrete.functor f).toCatHom
-  left_inv F := Hom.ext <| Functor.ext (fun _ ↦ rfl) (fun ⟨_⟩ ⟨_⟩ f => by
-    obtain rfl := Discrete.eq_of_hom f
-    simp)
+  left_inv F :=
+    Hom.ext <| Functor.ext
+      (fun _ ↦ rfl)
+      (fun ⟨_⟩ ⟨_⟩ f => by
+        obtain rfl := Discrete.eq_of_hom f
+        simp)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
@@ -54,10 +57,13 @@ def typeToCatObjectsAdj : typeToCat ⊣ Cat.objects :=
     unit := { app := fun _ ↦ ↾Discrete.mk }
     counit := {
       app C := (typeToCatObjectsAdjCounitApp C).toCatHom
-      naturality := fun _ _ _ ↦ Hom.ext <| Functor.hext (fun _ ↦ rfl)
-        (by intro ⟨_⟩ ⟨_⟩ f
-            obtain rfl := Discrete.eq_of_hom f
-            cat_disch) } }
+      naturality := fun _ _ _ ↦
+        Hom.ext <| Functor.hext (fun _ ↦ rfl) (by
+          intro ⟨_⟩ ⟨_⟩ f
+          obtain rfl := Discrete.eq_of_hom f
+          cat_disch)
+    }
+  }
 
 /-- The connected components functor -/
 def connectedComponents : Cat.{v, u} ⥤ Type u where
@@ -71,21 +77,24 @@ def connectedComponentsTypeToCatAdj : connectedComponents.{u} ⊣ typeToCat.{u} 
   Adjunction.mk' {
     homEquiv := fun C X ↦ by
       refine TypeCat.homEquiv.trans ?_
-      exact (ConnectedComponents.typeToCatHomEquiv _ _).trans
-        (Functor.equivCatHom _ _)
-    unit :=
-      { app := fun C ↦ Functor.toCatHom <|
-          ConnectedComponents.functorToDiscrete _ (𝟙 (connectedComponents.obj C)) }
+      exact (ConnectedComponents.typeToCatHomEquiv _ _).trans (Functor.equivCatHom _ _)
+    unit := {
+      app := fun C ↦
+        Functor.toCatHom <| ConnectedComponents.functorToDiscrete _ (𝟙 (connectedComponents.obj C))
+    }
     counit := {
-        app := fun X => ↾(ConnectedComponents.liftFunctor _
+      app := fun X =>
+        ↾(ConnectedComponents.liftFunctor _
           (𝟙 typeToCat.obj X).toFunctor)
-        naturality := fun _ _ _ => by
-          ext xcc
-          obtain ⟨x, h⟩ := Quotient.exists_rep xcc
-          cat_disch }
+      naturality := fun _ _ _ => by
+        ext xcc
+        obtain ⟨x, h⟩ := Quotient.exists_rep xcc
+        cat_disch
+    }
     homEquiv_counit := fun {C X G} => by
       ext cc
       obtain ⟨_, _⟩ := Quotient.exists_rep cc
-      cat_disch }
+      cat_disch
+  }
 
 end CategoryTheory.Cat

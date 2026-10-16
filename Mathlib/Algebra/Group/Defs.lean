@@ -22,7 +22,8 @@ open Function
 
 variable {G : Type*}
 
-/-- A `Group` is a `Monoid` with an operation `⁻¹` satisfying `a⁻¹ * a = 1`.
+/--
+A `Group` is a `Monoid` with an operation `⁻¹` satisfying `a⁻¹ * a = 1`.
 
 There is also a division operation `/` such that `a / b = a * b⁻¹`,
 with a default so that `a / b = a * b⁻¹` holds by definition.
@@ -33,7 +34,8 @@ on a type with the minimum proof obligations.
 class Group (G : Type*) extends DivInvMonoid G where
   protected inv_mul_cancel : ∀ a : G, a⁻¹ * a = 1
 
-/-- An `AddGroup` is an `AddMonoid` with a unary `-` satisfying `-a + a = 0`.
+/--
+An `AddGroup` is an `AddMonoid` with a unary `-` satisfying `-a + a = 0`.
 
 There is also a binary operation `-` such that `a - b = a + -b`,
 with a default so that `a - b = a + -b` holds by definition.
@@ -51,8 +53,7 @@ section Group
 variable [Group G] {a b : G}
 
 @[to_additive (attr := simp)]
-theorem inv_mul_cancel (a : G) : a⁻¹ * a = 1 :=
-  Group.inv_mul_cancel a
+theorem inv_mul_cancel (a : G) : a⁻¹ * a = 1 := Group.inv_mul_cancel a
 
 @[to_additive]
 private theorem inv_eq_of_mul (h : a * b = 1) : a⁻¹ = b :=
@@ -86,8 +87,7 @@ theorem inv_mul_cancel_right (a b : G) : a * b⁻¹ * b = a := by
   rw [mul_assoc, inv_mul_cancel, mul_one]
 
 @[to_additive (attr := simp)]
-theorem div_mul_cancel (a b : G) : a / b * b = a := by
-  rw [div_eq_mul_inv, inv_mul_cancel_right a b]
+theorem div_mul_cancel (a b : G) : a / b * b = a := by rw [div_eq_mul_inv, inv_mul_cancel_right a b]
 
 @[to_additive]
 instance (priority := 100) Group.toDivisionMonoid : DivisionMonoid G where
@@ -121,28 +121,31 @@ variable [CommGroup G]
 
 -- see Note [lower instance priority]
 @[to_additive]
-instance (priority := 100) CommGroup.toCancelCommMonoid : CancelCommMonoid G :=
-  { ‹CommGroup G›, Group.toCancelMonoid with }
+instance (priority := 100) CommGroup.toCancelCommMonoid : CancelCommMonoid G := {
+  ‹CommGroup G›, Group.toCancelMonoid with
+}
 
 -- see Note [lower instance priority]
 @[to_additive]
-instance (priority := 100) CommGroup.toDivisionCommMonoid : DivisionCommMonoid G :=
-  { ‹CommGroup G›, Group.toDivisionMonoid with }
+instance (priority := 100) CommGroup.toDivisionCommMonoid : DivisionCommMonoid G := {
+  ‹CommGroup G›, Group.toDivisionMonoid with
+}
 
-@[to_additive (attr := simp)] lemma inv_mul_cancel_comm (a b : G) : a⁻¹ * b * a = b := by
-  rw [mul_comm, mul_inv_cancel_left]
+@[to_additive (attr := simp)]
+lemma inv_mul_cancel_comm (a b : G) : a⁻¹ * b * a = b := by rw [mul_comm, mul_inv_cancel_left]
 
 @[to_additive (attr := simp)]
 lemma mul_inv_cancel_comm (a b : G) : a * b * a⁻¹ = b := by rw [mul_comm, inv_mul_cancel_left]
 
-@[to_additive (attr := simp)] lemma inv_mul_cancel_comm_assoc (a b : G) : a⁻¹ * (b * a) = b := by
+@[to_additive (attr := simp)]
+lemma inv_mul_cancel_comm_assoc (a b : G) : a⁻¹ * (b * a) = b := by
   rw [mul_comm, mul_inv_cancel_right]
 
-@[to_additive (attr := simp)] lemma mul_inv_cancel_comm_assoc (a b : G) : a * (b * a⁻¹) = b := by
+@[to_additive (attr := simp)]
+lemma mul_inv_cancel_comm_assoc (a b : G) : a * (b * a⁻¹) = b := by
   rw [mul_comm, inv_mul_cancel_right]
 
 end CommGroup
-
 
 /-! We initialize the projections for the group structures for `@[simps]` here.
 

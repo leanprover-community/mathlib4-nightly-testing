@@ -43,14 +43,18 @@ Perhaps one could be favored but there is no real reason to.
 
 public section
 
-/-- `LeftPreLieRing`s are `NonUnitalNonAssocRing`s such that the `associator` is symmetric in the
-first two variables. -/
+/--
+`LeftPreLieRing`s are `NonUnitalNonAssocRing`s such that the `associator` is symmetric in the
+first two variables.
+-/
 @[ext]
 class LeftPreLieRing (L : Type*) extends NonUnitalNonAssocRing L where
   assoc_symm' (x y z : L) : associator x y z = associator y x z
 
-/-- `RightPreLieRing`s are `NonUnitalNonAssocRing`s such that the `associator` is symmetric in the
-last two variables. -/
+/--
+`RightPreLieRing`s are `NonUnitalNonAssocRing`s such that the `associator` is symmetric in the
+last two variables.
+-/
 @[ext]
 class RightPreLieRing (L : Type*) extends NonUnitalNonAssocRing L where
   assoc_symm' (x y z : L) : associator x y z = associator x z y
@@ -59,17 +63,21 @@ section algebras
 
 variable (R : Type*) [CommRing R]
 
-/-- A `LeftPreLieAlgebra` is a `LeftPreLieRing` with an action of a `CommRing` satisfying
-`r • x * y = r • (x * y)` and ` x * (r • y) = r • (x * y)`. -/
+/--
+A `LeftPreLieAlgebra` is a `LeftPreLieRing` with an action of a `CommRing` satisfying
+`r • x * y = r • (x * y)` and ` x * (r • y) = r • (x * y)`.
+-/
 @[ext]
-class LeftPreLieAlgebra (L : Type*) [LeftPreLieRing L] : Type _ extends
-  Module R L, IsScalarTower R L L, SMulCommClass R L L
+class LeftPreLieAlgebra (L : Type*) [LeftPreLieRing L] : Type _
+  extends Module R L, IsScalarTower R L L, SMulCommClass R L L
 
-/-- A `RightPreLieAlgebra` is a `RightPreLieRing` with an action of a `CommRing` satisfying
-`r • x * y = r • (x * y)` and ` x * (r • y) = r • (x * y)`. -/
+/--
+A `RightPreLieAlgebra` is a `RightPreLieRing` with an action of a `CommRing` satisfying
+`r • x * y = r • (x * y)` and ` x * (r • y) = r • (x * y)`.
+-/
 @[ext]
-class RightPreLieAlgebra (L : Type*) [RightPreLieRing L] : Type _ extends
-  Module R L, IsScalarTower R L L, SMulCommClass R L L
+class RightPreLieAlgebra (L : Type*) [RightPreLieRing L] : Type _
+  extends Module R L, IsScalarTower R L L, SMulCommClass R L L
 
 end algebras
 
@@ -79,13 +87,12 @@ namespace LeftPreLieRing
 
 variable [LeftPreLieRing L]
 
-theorem assoc_symm (x y z : L) :
-    associator x y z = associator y x z := LeftPreLieRing.assoc_symm' x y z
+theorem assoc_symm (x y z : L) : associator x y z = associator y x z :=
+  LeftPreLieRing.assoc_symm' x y z
 
 /-- Every left pre-Lie ring is a right pre-Lie ring with the opposite multiplication -/
 instance : RightPreLieRing Lᵐᵒᵖ where
-  assoc_symm' x y z := by
-    simp [assoc_symm]
+  assoc_symm' x y z := by simp [assoc_symm]
 
 end LeftPreLieRing
 
@@ -102,13 +109,12 @@ namespace RightPreLieRing
 
 variable [RightPreLieRing L]
 
-theorem assoc_symm (x y z : L) :
-    associator x y z = associator x z y := RightPreLieRing.assoc_symm' x y z
+theorem assoc_symm (x y z : L) : associator x y z = associator x z y :=
+  RightPreLieRing.assoc_symm' x y z
 
 /-- Every left pre-Lie ring is a right pre-Lie ring with the opposite multiplication -/
 instance : LeftPreLieRing Lᵐᵒᵖ where
-  assoc_symm' x y z := by
-    simp [assoc_symm]
+  assoc_symm' x y z := by simp [assoc_symm]
 
 end RightPreLieRing
 

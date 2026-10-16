@@ -44,22 +44,21 @@ namespace PowerSeries
 variable [CommRing R] [BinomialRing R]
 
 /-- The power series for `(1 + X) ^ r`. -/
-def binomialSeries (A) [One A] [SMul R A] (r : R) : PowerSeries A :=
-  mk fun n => Ring.choose r n • 1
+def binomialSeries (A) [One A] [SMul R A] (r : R) : PowerSeries A := mk fun n => Ring.choose r n • 1
 
 @[simp]
-lemma binomialSeries_coeff [Semiring A] [SMul R A] (r : R) (n : ℕ) :
-    coeff n (binomialSeries A r) = Ring.choose r n • 1 :=
+lemma binomialSeries_coeff [Semiring A] [SMul R A] (r : R) (n : ℕ)
+    : coeff n (binomialSeries A r) = Ring.choose r n • 1 :=
   coeff_mk n fun n ↦ Ring.choose r n • 1
 
 @[simp]
-lemma binomialSeries_constantCoeff [Ring A] [Algebra R A] (r : R) :
-    constantCoeff (binomialSeries A r) = 1 := by
+lemma binomialSeries_constantCoeff [Ring A] [Algebra R A] (r : R)
+    : constantCoeff (binomialSeries A r) = 1 := by
   simp [← coeff_zero_eq_constantCoeff_apply]
 
 @[simp]
-lemma binomialSeries_add [Ring A] [Algebra R A] (r s : R) :
-    binomialSeries A (r + s) = binomialSeries A r * binomialSeries A s := by
+lemma binomialSeries_add [Ring A] [Algebra R A] (r s : R)
+    : binomialSeries A (r + s) = binomialSeries A r * binomialSeries A s := by
   ext n
   simp only [binomialSeries_coeff, Ring.add_choose_eq n (Commute.all r s), coeff_mul,
     Algebra.mul_smul_comm, mul_one, sum_smul]
@@ -67,21 +66,19 @@ lemma binomialSeries_add [Ring A] [Algebra R A] (r s : R) :
   rw [mul_comm, mul_smul]
 
 @[simp]
-lemma binomialSeries_nat [Ring A] [Algebra R A] (d : ℕ) :
-    binomialSeries A (d : R) = (1 + X) ^ d := by
+lemma binomialSeries_nat [Ring A] [Algebra R A] (d : ℕ)
+    : binomialSeries A (d : R) = (1 + X) ^ d := by
   ext n
-  have hright : (1 + X) ^ d = (((1 : Polynomial A) + (Polynomial.X)) ^ d).toPowerSeries := by
-    simp
+  have hright : (1 + X) ^ d = (((1 : Polynomial A) + (Polynomial.X)) ^ d).toPowerSeries := by simp
   rw [hright, Polynomial.coeff_coe, binomialSeries_coeff, Polynomial.coeff_one_add_X_pow]
   simp [Ring.choose_natCast, Nat.cast_smul_eq_nsmul]
 
 @[simp]
-lemma binomialSeries_zero [Ring A] [Algebra R A] :
-    binomialSeries A (0 : R) = (1 : A⟦X⟧) := by
+lemma binomialSeries_zero [Ring A] [Algebra R A] : binomialSeries A (0 : R) = (1 : A⟦X⟧) := by
   simpa using binomialSeries_nat 0
 
-lemma rescale_neg_one_invOneSubPow [CommRing A] (d : ℕ) :
-    rescale (-1 : A) (invOneSubPow A d) = binomialSeries A (-d : ℤ) := by
+lemma rescale_neg_one_invOneSubPow [CommRing A] (d : ℕ)
+    : rescale (-1 : A) (invOneSubPow A d) = binomialSeries A (-d : ℤ) := by
   ext n
   rw [coeff_rescale, binomialSeries_coeff, ← Int.cast_negOnePow_natCast, ← zsmul_eq_mul]
   cases d with

@@ -6,7 +6,6 @@ Authors: Kevin Buzzard, Antoine Labelle
 module
 
 public import Mathlib.LinearAlgebra.TensorProduct.Basis
-
 import Mathlib.Basic.UnivLE
 
 /-!
@@ -62,43 +61,51 @@ open LinearMap hiding id
 open DirectSum hiding id_apply
 open Finsupp
 
-/- The actual implementation we choose: `P` is projective if the natural surjection
-from the free `R`-module on `P` to `P` splits. -/
-/-- An R-module is projective if it is a direct summand of a free module, or equivalently
+/-
+The actual implementation we choose: `P` is projective if the natural surjection
+from the free `R`-module on `P` to `P` splits.
+-/
+/--
+An R-module is projective if it is a direct summand of a free module, or equivalently
 if maps from the module lift along surjections. There are several other equivalent
-definitions. -/
+definitions.
+-/
 @[wikidata Q942423]
-class Module.Projective (R : Type*) [Semiring R] (P : Type*) [AddCommMonoid P] [Module R P] :
-    Prop where
+class Module.Projective (R : Type*) [Semiring R] (P : Type*) [AddCommMonoid P] [Module R P]
+    : Prop where
   out : ∃ s : P →ₗ[R] P →₀ R, Function.LeftInverse (Finsupp.linearCombination R id) s
 
 namespace Module
 
 section Semiring
 
-variable {R : Type*} [Semiring R] {P : Type*} [AddCommMonoid P] [Module R P] {M : Type*}
-  [AddCommMonoid M] [Module R M] {N : Type*} [AddCommMonoid N] [Module R N]
+variable
+  {R : Type*} [Semiring R]
+  {P : Type*} [AddCommMonoid P] [Module R P]
+  {M : Type*} [AddCommMonoid M] [Module R M]
+  {N : Type*} [AddCommMonoid N] [Module R N]
 
-theorem projective_def :
-    Projective R P ↔ ∃ s : P →ₗ[R] P →₀ R, Function.LeftInverse (linearCombination R id) s :=
+theorem projective_def
+    : Projective R P ↔ ∃ s : P →ₗ[R] P →₀ R, Function.LeftInverse (linearCombination R id) s :=
   ⟨fun h => h.1, fun h => ⟨h⟩⟩
 
-theorem projective_def' :
-    Projective R P ↔ ∃ s : P →ₗ[R] P →₀ R, Finsupp.linearCombination R id ∘ₗ s = .id := by
+theorem projective_def'
+    : Projective R P ↔ ∃ s : P →ₗ[R] P →₀ R, Finsupp.linearCombination R id ∘ₗ s = .id := by
   simp_rw [projective_def, DFunLike.ext_iff, Function.LeftInverse, comp_apply, id_apply]
 
 /-- A projective R-module has the property that maps from it lift along surjections. -/
-theorem projective_lifting_property [h : Projective R P] (f : M →ₗ[R] N) (g : P →ₗ[R] N)
-    (hf : Function.Surjective f) : ∃ h : P →ₗ[R] M, f ∘ₗ h = g := by
+theorem projective_lifting_property
+    [h : Projective R P] (f : M →ₗ[R] N) (g : P →ₗ[R] N) (hf : Function.Surjective f)
+    : ∃ h : P →ₗ[R] M, f ∘ₗ h = g := by
   /-
-    Here's the first step of the proof.
-    Recall that `X →₀ R` is Lean's way of talking about the free `R`-module
-    on a type `X`. The universal property `Finsupp.linearCombination` says that to a map
-    `X → N` from a type to an `R`-module, we get an associated R-module map
-    `(X →₀ R) →ₗ N`. Apply this to a (noncomputable) map `P → M` coming from the map
-    `P →ₗ N` and a random splitting of the surjection `M →ₗ N`, and we get
-    a map `φ : (P →₀ R) →ₗ M`.
-    -/
+  Here's the first step of the proof.
+  Recall that `X →₀ R` is Lean's way of talking about the free `R`-module
+  on a type `X`. The universal property `Finsupp.linearCombination` says that to a map
+  `X → N` from a type to an `R`-module, we get an associated R-module map
+  `(X →₀ R) →ₗ N`. Apply this to a (noncomputable) map `P → M` coming from the map
+  `P →ₗ N` and a random splitting of the surjection `M →ₗ N`, and we get
+  a map `φ : (P →₀ R) →ₗ M`.
+  -/
   let φ : (P →₀ R) →ₗ[R] M := Finsupp.linearCombination _ fun p => Function.surjInv hf (g p)
   -- By projectivity we have a map `P →ₗ (P →₀ R)`;
   obtain ⟨s, hs⟩ := h.out
@@ -108,23 +115,29 @@ theorem projective_lifting_property [h : Projective R P] (f : M →ₗ[R] N) (g 
   conv_rhs => rw [← hs p]
   simp [φ, Finsupp.linearCombination_apply, Function.surjInv_eq hf, map_finsuppSum]
 
-theorem _root_.LinearMap.exists_rightInverse_of_surjective [Projective R P]
-    (f : M →ₗ[R] P) (hf_surj : range f = ⊤) : ∃ g : P →ₗ[R] M, f ∘ₗ g = LinearMap.id :=
+theorem _root_.LinearMap.exists_rightInverse_of_surjective
+    [Projective R P] (f : M →ₗ[R] P) (hf_surj : range f = ⊤)
+    : ∃ g : P →ₗ[R] M, f ∘ₗ g = LinearMap.id :=
   projective_lifting_property f (.id : P →ₗ[R] P) (LinearMap.range_eq_top.1 hf_surj)
 
 open Function in
-theorem _root_.Function.Surjective.surjective_linearMapComp_left [Projective R P]
-    {f : M →ₗ[R] P} (hf_surj : Surjective f) : Surjective (fun g : N →ₗ[R] M ↦ f.comp g) :=
-  surjective_comp_left_of_exists_rightInverse <|
-    f.exists_rightInverse_of_surjective <| range_eq_top_of_surjective f hf_surj
+theorem _root_.Function.Surjective.surjective_linearMapComp_left
+    [Projective R P] {f : M →ₗ[R] P} (hf_surj : Surjective f)
+    : Surjective (fun g : N →ₗ[R] M ↦ f.comp g) :=
+  surjective_comp_left_of_exists_rightInverse <| f.exists_rightInverse_of_surjective <|
+    range_eq_top_of_surjective f hf_surj
 
-/-- A module which satisfies the universal property is projective: If all surjections of
+/--
+A module which satisfies the universal property is projective: If all surjections of
 `R`-modules `(P →₀ R) →ₗ[R] P` have `R`-linear left inverse maps, then `P` is
-projective. -/
-theorem Projective.of_lifting_property'' {R : Type u} [Semiring R] {P : Type v} [AddCommMonoid P]
-    [Module R P] (huniv : ∀ (f : (P →₀ R) →ₗ[R] P), Function.Surjective f →
-      ∃ h : P →ₗ[R] (P →₀ R), f.comp h = .id) :
-    Projective R P :=
+projective.
+-/
+theorem Projective.of_lifting_property''
+    {R : Type u} [Semiring R]
+    {P : Type v} [AddCommMonoid P] [Module R P]
+    (huniv
+      : ∀ (f : (P →₀ R) →ₗ[R] P), Function.Surjective f → ∃ h : P →ₗ[R] (P →₀ R), f.comp h = .id)
+    : Projective R P :=
   projective_def'.2 <| huniv (Finsupp.linearCombination R (id : P → P))
     (linearCombination_surjective _ Function.surjective_id)
 
@@ -142,11 +155,11 @@ variable {ι : Type*} (A : ι → Type*) [∀ i : ι, AddCommMonoid (A i)] [∀ 
 instance [h : ∀ i : ι, Projective R (A i)] : Projective R (Π₀ i, A i) :=
   .of_lifting_property'' fun f hf ↦ by
     classical
-      choose g hg using fun i ↦ projective_lifting_property f (DFinsupp.lsingle i) hf
-      replace hg : ∀ i x, f (g i x) = DFinsupp.single i x := fun i ↦ DFunLike.congr_fun (hg i)
-      refine ⟨DFinsupp.coprodMap g, ?_⟩
-      ext i x j
-      simp only [comp_apply, id_apply, DFinsupp.lsingle_apply, DFinsupp.coprodMap_apply_single, hg]
+    choose g hg using fun i ↦ projective_lifting_property f (DFinsupp.lsingle i) hf
+    replace hg : ∀ i x, f (g i x) = DFinsupp.single i x := fun i ↦ DFunLike.congr_fun (hg i)
+    refine ⟨DFinsupp.coprodMap g, ?_⟩
+    ext i x j
+    simp only [comp_apply, id_apply, DFinsupp.lsingle_apply, DFinsupp.coprodMap_apply_single, hg]
 
 /-- Free modules are projective. -/
 theorem Projective.of_basis {ι : Type*} (b : Basis ι R P) : Projective R P := by
@@ -162,31 +175,35 @@ instance (priority := 100) Projective.of_free [Module.Free R P] : Module.Project
   .of_basis <| Module.Free.chooseBasis R P
 
 /-- A direct summand of a projective module is projective. -/
-theorem Projective.of_split [Module.Projective R M]
-    (i : P →ₗ[R] M) (s : M →ₗ[R] P) (H : s.comp i = LinearMap.id) : Module.Projective R P := by
-  obtain ⟨g, hg⟩ := projective_lifting_property (Finsupp.linearCombination R id) s
-    (fun x ↦ ⟨Finsupp.single x 1, by simp⟩)
+theorem Projective.of_split
+    [Module.Projective R M] (i : P →ₗ[R] M) (s : M →ₗ[R] P) (H : s.comp i = LinearMap.id)
+    : Module.Projective R P := by
+  obtain ⟨g, hg⟩ :=
+    projective_lifting_property (Finsupp.linearCombination R id) s
+      (fun x ↦ ⟨Finsupp.single x 1, by simp⟩)
   refine ⟨g.comp i, fun x ↦ ?_⟩
-  rw [LinearMap.comp_apply, ← LinearMap.comp_apply, hg,
-    ← LinearMap.comp_apply, H, LinearMap.id_apply]
+  rw [LinearMap.comp_apply, ← LinearMap.comp_apply, hg, ← LinearMap.comp_apply, H,
+    LinearMap.id_apply]
 
-theorem Projective.of_equiv {R S} [Semiring R] [Semiring S] {M N}
-    [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module S N]
+theorem Projective.of_equiv
+    {R S} [Semiring R] [Semiring S]
+    {M N} [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module S N]
     {σ : R →+* S} {σ' : S →+* R} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
     (e₂ : M ≃ₛₗ[σ] N)
-    [Projective R M] : Projective S N := by
+    [Projective R M]
+    : Projective S N := by
   let e₁ : R ≃+* S := RingHomInvPair.toRingEquiv σ σ'
   obtain ⟨f, hf⟩ := ‹Projective R M›
-  let g : N →ₗ[S] N →₀ S :=
-  { toFun := fun x ↦ (equivCongrLeft e₂ (f (e₂.symm x))).mapRange e₁ e₁.map_zero
+  let g : N →ₗ[S] N →₀ S := {
+    toFun := fun x ↦ (equivCongrLeft e₂ (f (e₂.symm x))).mapRange e₁ e₁.map_zero
     map_add' := fun x y ↦ by ext; simp
-    map_smul' := fun r v ↦ by ext i; simp [e₁, e₂.symm.map_smulₛₗ] }
+    map_smul' := fun r v ↦ by ext i; simp [e₁, e₂.symm.map_smulₛₗ]
+  }
   refine ⟨⟨g, fun x ↦ ?_⟩⟩
   replace hf := congr(e₂ $(hf (e₂.symm x)))
   simpa [linearCombination_apply, sum_mapRange_index, g, map_finsuppSum, e₂.map_smulₛₗ] using! hf
 
-theorem Projective.of_equiv' [Module.Projective R M]
-    (e : M ≃ₗ[R] P) : Module.Projective R P :=
+theorem Projective.of_equiv' [Module.Projective R M] (e : M ≃ₗ[R] P) : Module.Projective R P :=
   .of_equiv e
 
 instance [Projective R M] : Projective R (ULift.{w} M) :=
@@ -202,9 +219,9 @@ theorem Projective.of_shrink [Small.{w} M] [Projective R (Shrink.{w} M)] : Proje
   Projective.of_equiv' (Shrink.linearEquiv R M)
 
 /-- A quotient of a projective module is projective iff it is a direct summand. -/
-theorem Projective.iff_split_of_projective [Module.Projective R M] (s : M →ₗ[R] P)
-    (hs : Function.Surjective s) :
-    Module.Projective R P ↔ ∃ i, s ∘ₗ i = LinearMap.id :=
+theorem Projective.iff_split_of_projective
+    [Module.Projective R M] (s : M →ₗ[R] P) (hs : Function.Surjective s)
+    : Module.Projective R P ↔ ∃ i, s ∘ₗ i = LinearMap.id :=
   ⟨fun _ ↦ projective_lifting_property _ _ hs, fun ⟨i, H⟩ ↦ Projective.of_split i s H⟩
 
 end Semiring
@@ -215,37 +232,52 @@ variable {R : Type u} [Semiring R] {P : Type v} [AddCommMonoid P] [Module R P]
 variable {R₀ M N} [CommSemiring R₀] [Algebra R₀ R] [AddCommMonoid M] [Module R₀ M] [Module R M]
 variable [IsScalarTower R₀ R M] [AddCommMonoid N] [Module R₀ N]
 
-/-- A variant of `Projective.iff_split` allowing for a more flexible selection of the universe
-  for the free module `M`. -/
-theorem Projective.iff_split' [Small.{w} R] [Small.{w} P] : Module.Projective R P ↔
-    ∃ (M : Type w) (_ : AddCommMonoid M) (_ : Module R M) (_ : Module.Free R M)
-      (i : P →ₗ[R] M) (s : M →ₗ[R] P), s.comp i = LinearMap.id := by
+/--
+A variant of `Projective.iff_split` allowing for a more flexible selection of the universe
+for the free module `M`.
+-/
+theorem Projective.iff_split' [Small.{w} R] [Small.{w} P]
+    : Module.Projective R P
+      ↔ ∃ (M : Type w) (_ : AddCommMonoid M) (_ : Module R M) (_ : Module.Free R M) (i : P →ₗ[R] M)
+          (s : M →ₗ[R] P),
+        s.comp i = LinearMap.id := by
   let e : (Shrink.{w, v} P →₀ Shrink.{w, u} R) ≃ₗ[R] P →₀ R :=
-    Finsupp.mapDomain.linearEquiv _ R (equivShrink P).symm ≪≫ₗ
-      Finsupp.mapRange.linearEquiv (Shrink.linearEquiv R R)
-  refine ⟨fun ⟨i, hi⟩ ↦ ⟨(Shrink.{w} P) →₀ (Shrink.{w} R), _, _, Free.of_basis ⟨e⟩,
-    e.symm.toLinearMap ∘ₗ i, (linearCombination R id) ∘ₗ e.toLinearMap, ?_⟩,
-      fun ⟨_, _, _, _, i, s, H⟩ ↦ Projective.of_split i s H⟩
+    Finsupp.mapDomain.linearEquiv _ R (equivShrink P).symm
+      ≪≫ₗ Finsupp.mapRange.linearEquiv (Shrink.linearEquiv R R)
+  refine ⟨
+    fun ⟨i, hi⟩ ↦ ⟨
+      (Shrink.{w} P) →₀ (Shrink.{w} R),
+      _,
+      _,
+      Free.of_basis ⟨e⟩,
+      e.symm.toLinearMap ∘ₗ i,
+      (linearCombination R id) ∘ₗ e.toLinearMap,
+      ?_
+    ⟩,
+    fun ⟨_, _, _, _, i, s, H⟩ ↦ Projective.of_split i s H
+  ⟩
   apply LinearMap.ext
   simp only [coe_comp, LinearEquiv.coe_coe, Function.comp_apply, e.apply_symm_apply]
   exact hi
 
 /-- A module is projective iff it is the direct summand of a free module. -/
-theorem Projective.iff_split : Module.Projective R P ↔
-    ∃ (M : Type max u v) (_ : AddCommMonoid M) (_ : Module R M) (_ : Module.Free R M)
-      (i : P →ₗ[R] M) (s : M →ₗ[R] P), s.comp i = LinearMap.id :=
+theorem Projective.iff_split
+    : Module.Projective R P
+      ↔ ∃ (M : Type max u v) (_ : AddCommMonoid M) (_ : Module R M) (_ : Module.Free R M)
+          (i : P →ₗ[R] M) (s : M →ₗ[R] P),
+        s.comp i = LinearMap.id :=
   Projective.iff_split'.{max u v}
 
 open TensorProduct in
-instance Projective.tensorProduct [hM : Module.Projective R M] [hN : Module.Projective R₀ N] :
-    Module.Projective R (M ⊗[R₀] N) := by
+instance Projective.tensorProduct [hM : Module.Projective R M] [hN : Module.Projective R₀ N]
+    : Module.Projective R (M ⊗[R₀] N) := by
   obtain ⟨sM, hsM⟩ := hM
   obtain ⟨sN, hsN⟩ := hN
   have : Module.Projective R (M ⊗[R₀] (N →₀ R₀)) := by
     fapply Projective.of_split (R := R) (M := ((M →₀ R) ⊗[R₀] (N →₀ R₀)))
     · exact (AlgebraTensorModule.map sM (LinearMap.id (R := R₀) (M := N →₀ R₀)))
-    · exact (AlgebraTensorModule.map
-        (Finsupp.linearCombination R id) (LinearMap.id (R := R₀) (M := N →₀ R₀)))
+    · exact (AlgebraTensorModule.map (Finsupp.linearCombination R id)
+        (LinearMap.id (R := R₀) (M := N →₀ R₀)))
     · ext; simp [hsM _]
   fapply Projective.of_split (R := R) (M := (M ⊗[R₀] (N →₀ R₀)))
   · exact (AlgebraTensorModule.map (LinearMap.id (R := R) (M := M)) sN)
@@ -257,29 +289,33 @@ end Ring
 section OfLiftingProperty
 
 /-- A module which satisfies the universal property is projective. -/
-theorem Projective.of_lifting_property' {R : Type u} [Semiring R] {P : Type v}
-    [AddCommMonoid P] [Module R P] [Small.{v} R]
+theorem Projective.of_lifting_property'
+    {R : Type u} [Semiring R]
+    {P : Type v} [AddCommMonoid P] [Module R P] [Small.{v} R]
     -- If for all surjections of `R`-modules `M →ₗ N`, all maps `P →ₗ N` lift to `P →ₗ M`,
-    (h : ∀ {M : Type v} {N : Type v} [AddCommMonoid M] [AddCommMonoid N]
-      [Module R M] [Module R N] (f : M →ₗ[R] N) (g : P →ₗ[R] N),
-        Function.Surjective f → ∃ h : P →ₗ[R] M, f.comp h = g) :
+    (h : ∀ {M : Type v} {N : Type v} [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module R N]
+        (f : M →ₗ[R] N) (g : P →ₗ[R] N),
+      Function.Surjective f → ∃ h : P →ₗ[R] M, f.comp h = g)
     -- then `P` is projective.
-    Projective R P := by
+    : Projective R P := by
   refine of_lifting_property'' (fun p hp ↦ ?_)
   let e := Finsupp.mapRange.linearEquiv (α := P) (Shrink.linearEquiv R R)
   rcases h (p ∘ₗ e.toLinearMap) LinearMap.id (hp.comp e.surjective) with ⟨g, hg⟩
   exact ⟨e.toLinearMap ∘ₗ g, hg⟩
 
-/-- A variant of `of_lifting_property'` when we're working over a `[Ring R]`,
-  which only requires quantifying over modules with an `AddCommGroup` instance. -/
-theorem Projective.of_lifting_property {R : Type u} [Ring R] {P : Type v} [AddCommGroup P]
-    [Module R P] [Small.{v} R]
+/--
+A variant of `of_lifting_property'` when we're working over a `[Ring R]`,
+which only requires quantifying over modules with an `AddCommGroup` instance.
+-/
+theorem Projective.of_lifting_property
+    {R : Type u} [Ring R]
+    {P : Type v} [AddCommGroup P] [Module R P] [Small.{v} R]
     -- If for all surjections of `R`-modules `M →ₗ N`, all maps `P →ₗ N` lift to `P →ₗ M`,
-    (h : ∀ {M : Type v} {N : Type v} [AddCommGroup M] [AddCommGroup N]
-      [Module R M] [Module R N] (f : M →ₗ[R] N) (g : P →ₗ[R] N),
-        Function.Surjective f → ∃ h : P →ₗ[R] M, f.comp h = g) :
+    (h : ∀ {M : Type v} {N : Type v} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
+        (f : M →ₗ[R] N) (g : P →ₗ[R] N),
+      Function.Surjective f → ∃ h : P →ₗ[R] M, f.comp h = g)
     -- then `P` is projective.
-    Projective R P := by
+    : Projective R P := by
   refine of_lifting_property'' (fun p hp ↦ ?_)
   let e := Finsupp.mapRange.linearEquiv (α := P) (Shrink.linearEquiv R R)
   rcases h (p ∘ₗ e.toLinearMap) LinearMap.id (hp.comp e.surjective) with ⟨g, hg⟩

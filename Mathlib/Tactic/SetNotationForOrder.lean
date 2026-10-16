@@ -29,8 +29,10 @@ since they have both `≤` and `⊆` defined on them, with different meanings.
 TODO: Unify more order operations such as `∪`/`⊔` and `∩`/`⊓`.
 -/
 
-/-- `UsesSetNotationForOrder` is used to track whether a type is tagged with
-`@[use_set_notation_for_order]`. -/
+/--
+`UsesSetNotationForOrder` is used to track whether a type is tagged with
+`@[use_set_notation_for_order]`.
+-/
 public class UsesSetNotationForOrder (α : Type*)
 
 meta section
@@ -42,27 +44,31 @@ open Mathlib.Tactic Lean Meta Elab Term PrettyPrinter.Delaborator SubExpr
 /-- Add an instance of `UsesSetNotationForOrder` for `declName`. -/
 def mkUsesSetNotationForOrderInstance (declName : Name) (kind : AttributeKind) : CoreM Unit :=
   MetaM.run' do
-  let cinfo ← getConstInfo declName
-  forallTelescope cinfo.type fun xs _ ↦ do
-  let instName := .str declName "instUsesSetNotationForOrder"
-  let app := mkAppN (.const declName (cinfo.levelParams.map .param)) xs
-  addDecl <| Declaration.defnDecl {
-    name := instName
-    levelParams := cinfo.levelParams
-    type := ← mkForallFVars xs <| ← mkAppM ``UsesSetNotationForOrder #[app]
-    value := ← mkLambdaFVars xs <| ← mkAppOptM ``UsesSetNotationForOrder.mk #[app]
-    hints := .regular 0
-    safety := .safe }
-  registerInstance instName kind (eval_prio default)
+    let cinfo ← getConstInfo declName
+    forallTelescope cinfo.type fun xs _ ↦ do
+      let instName := .str declName "instUsesSetNotationForOrder"
+      let app := mkAppN (.const declName (cinfo.levelParams.map .param)) xs
+      addDecl <| Declaration.defnDecl {
+        name := instName
+        levelParams := cinfo.levelParams
+        type := ← mkForallFVars xs <| ← mkAppM ``UsesSetNotationForOrder #[app]
+        value := ← mkLambdaFVars xs <| ← mkAppOptM ``UsesSetNotationForOrder.mk #[app]
+        hints := .regular 0
+        safety := .safe
+      }
+      registerInstance instName kind (eval_prio default)
 
-/-- The `@[use_set_notation_for_order]` attribute marks that order operations on the given type
+/--
+The `@[use_set_notation_for_order]` attribute marks that order operations on the given type
 should use set-style notation. For example, `⊆` for `≤` and `∪` for `⊔`.
-This affects both elaboration and delaboration. -/
+This affects both elaboration and delaboration.
+-/
 initialize
   registerBuiltinAttribute {
     name := `use_set_notation_for_order
     descr := "use set notation for order operations on this type"
-    add declName _stx kind := mkUsesSetNotationForOrderInstance declName kind }
+    add declName _stx kind := mkUsesSetNotationForOrderInstance declName kind
+  }
 
 /-- Whether to use set notation for the given type or not. -/
 def useSetNotationFor (type : Expr) : MetaM Bool := do
@@ -72,67 +78,79 @@ def useSetNotationFor (type : Expr) : MetaM Bool := do
 
 /-- Delaborate `x ≤ y` into `x ⊆ y` if the type is tagged with `@[use_set_notation_for_order]`. -/
 @[app_delab LE.le]
-public def delabLe : Delab := whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
-  let_expr LE.le α _ _ _ := ← getExpr | failure
-  guard <| ← useSetNotationFor α
-  let x ← withNaryArg 2 delab
-  let y ← withNaryArg 3 delab
-  let stx ← `($x ⊆ $y)
-  annotateGoToDef stx decl_name%
+public def delabLe : Delab :=
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
+    let_expr LE.le α _ _ _ := ← getExpr
+      | failure
+    guard <| ← useSetNotationFor α
+    let x ← withNaryArg 2 delab
+    let y ← withNaryArg 3 delab
+    let stx ← `($x ⊆ $y)
+    annotateGoToDef stx decl_name%
 
 /-- Delaborate `x < y` into `x ⊂ y` if the type is tagged with `@[use_set_notation_for_order]`. -/
 @[app_delab LT.lt]
-public def delabLt : Delab := whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
-  let_expr LT.lt α _ _ _ := ← getExpr | failure
-  guard <| ← useSetNotationFor α
-  let x ← withNaryArg 2 delab
-  let y ← withNaryArg 3 delab
-  let stx ← `($x ⊂ $y)
-  annotateGoToDef stx decl_name%
+public def delabLt : Delab :=
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
+    let_expr LT.lt α _ _ _ := ← getExpr
+      | failure
+    guard <| ← useSetNotationFor α
+    let x ← withNaryArg 2 delab
+    let y ← withNaryArg 3 delab
+    let stx ← `($x ⊂ $y)
+    annotateGoToDef stx decl_name%
 
 /-- Delaborate `x ≥ y` into `x ⊇ y` if the type is tagged with `@[use_set_notation_for_order]`. -/
 @[app_delab GE.ge]
-public def delabGe : Delab := whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
-  let_expr GE.ge α _ _ _ := ← getExpr | failure
-  guard <| ← useSetNotationFor α
-  let x ← withNaryArg 2 delab
-  let y ← withNaryArg 3 delab
-  let stx ← `($x ⊇ $y)
-  annotateGoToDef stx decl_name%
+public def delabGe : Delab :=
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
+    let_expr GE.ge α _ _ _ := ← getExpr
+      | failure
+    guard <| ← useSetNotationFor α
+    let x ← withNaryArg 2 delab
+    let y ← withNaryArg 3 delab
+    let stx ← `($x ⊇ $y)
+    annotateGoToDef stx decl_name%
 
 /-- Delaborate `x > y` into `x ⊃ y` if the type is tagged with `@[use_set_notation_for_order]`. -/
 @[app_delab GT.gt]
-public def delabGt : Delab := whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
-  let_expr GT.gt α _ _ _ := ← getExpr | failure
-  guard <| ← useSetNotationFor α
-  let x ← withNaryArg 2 delab
-  let y ← withNaryArg 3 delab
-  let stx ← `($x ⊃ $y)
-  annotateGoToDef stx decl_name%
+public def delabGt : Delab :=
+  whenNotPPOption getPPExplicit <| whenPPOption getPPNotation do
+    let_expr GT.gt α _ _ _ := ← getExpr
+      | failure
+    guard <| ← useSetNotationFor α
+    let x ← withNaryArg 2 delab
+    let y ← withNaryArg 3 delab
+    let stx ← `($x ⊃ $y)
+    annotateGoToDef stx decl_name%
 
 /-! ## Elaboration -/
 
 /-- Linter for ambiguous use of subset notation notation. -/
 register_option linter.setNotationForOrder : Bool := {
   defValue := true
-  descr := "Linter for ambiguous use of subset notation notation" }
+  descr := "Linter for ambiguous use of subset notation notation"
+}
 
 /-- This relation is an implementation detail of the `⊆` elaborator. -/
 public opaque SubsetElabAux.{u} {α : Type u} : α → α → Prop
 
-/-- Elaborate a notation like `a ⊆ b` by elaborating `a` and `b`, and then deciding
+/--
+Elaborate a notation like `a ⊆ b` by elaborating `a` and `b`, and then deciding
 based on their type whether to return `a ⊆ b` or `a ≤ b`.
 Use `a ≤ b` whenever `useSetNotationFor` returns true for the type.
 If the type is not known, elaboration of this term is postponed.
 
 We assume that `le` and `sub` are names for declarations of exactly the form
 `decl.{u} {α : Type u} [Cls.{u} α] (a b : α) : Prop`, and that likewise `leCls` and `subCls` are
-names for declarations of exactly the form  `Cls.{u} (α : Type u) : Type u`. -/
-def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Option Expr) :
-    TermElabM Expr := do
+names for declarations of exactly the form  `Cls.{u} (α : Type u) : Type u`.
+-/
+def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Option Expr)
+    : TermElabM Expr := do
   let rel ← `(SubsetElabAux $x $y)
   let e ← elabApp rel expectedType?
-  let_expr f@SubsetElabAux α x y := e | throwError "unexpected result {e} when elaborating {rel}"
+  let_expr f@SubsetElabAux α x y := e
+    | throwError "unexpected result {e} when elaborating {rel}"
   -- If the type cannot be determined yet, we postpone elaboration until it is known.
   -- This behaviour is inspired by `resolveLValLoop` from the file `Lean.Elab.App`.
   if ← isMVarApp α then
@@ -141,9 +159,9 @@ def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Op
     if ← isMVarApp α then
       Linter.logLintIf linter.setNotationForOrder (← getRef)
         m!"Ambiguous use of subset notation: the type is a metavariable.\n\
-        Consider adding a type annotation, e.g. `(_ : Set _) ⊆ _`.\n\
-        The term will elaborate to a different constant depending on \
-        whether the type is tagged with `@[use_set_notation_for_order]`."
+          Consider adding a type annotation, e.g. `(_ : Set _) ⊆ _`.\n\
+          The term will elaborate to a different constant depending on \
+          whether the type is tagged with `@[use_set_notation_for_order]`."
   let (rel, cls) := if ← useSetNotationFor α then (le, leCls) else (sub, subCls)
   let inst ← mkInstMVar <| .app (.const cls f.constLevels!) α
   let rel := mkApp2 (.const rel f.constLevels!) α inst
@@ -151,28 +169,36 @@ def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Op
   addTermInfo' (← getRef) rel (isDisplayableTerm := true)
   return mkApp2 rel x y
 
-/-- Subset relation: `a ⊆ b`.
+/--
+Subset relation: `a ⊆ b`.
 For types tagged with `@[use_set_notation_for_order]`,
 the relation `LE.le` is used instead of `Subset`.
-The hover info shows which one is used. -/
+The hover info shows which one is used.
+-/
 syntax:50 (name := subsetStx') (priority := high) term:51 " ⊆ " term:51 : term
 
-/-- Strict subset relation: `a ⊂ b`.
+/--
+Strict subset relation: `a ⊂ b`.
 For types tagged with `@[use_set_notation_for_order]`,
 the relation `LT.lt` is used instead of `SSubset`.
-The hover info shows which one is used. -/
+The hover info shows which one is used.
+-/
 syntax:50 (name := ssubsetStx') (priority := high) term:51 " ⊂ " term:51 : term
 
-/-- Superset relation: `a ⊇ b`.
+/--
+Superset relation: `a ⊇ b`.
 For types tagged with `@[use_set_notation_for_order]`,
 the relation `GE.ge` is used instead of `Superset`.
-The hover info shows which one is used. -/
+The hover info shows which one is used.
+-/
 syntax:50 (name := supsetStx') (priority := high) term:51 " ⊇ " term:51 : term
 
-/-- Strict superset relation: `a ⊃ b`.
+/--
+Strict superset relation: `a ⊃ b`.
 For types tagged with `@[use_set_notation_for_order]`,
 the relation `GT.gt` is used instead of `SSuperset`.
-The hover info shows which one is used. -/
+The hover info shows which one is used.
+-/
 syntax:50 (name := ssupsetStx') (priority := high) term:51 " ⊃ " term:51 : term
 
 recommended_spelling "subset" for "⊆" in [subsetStx']
@@ -185,49 +211,63 @@ recommended_spelling "ssuperset" for "⊃" in [ssupsetStx']
 public def elabSubsetStx' : TermElab
   | `($x ⊆ $y), expectedType? =>
     elabSubsetLike x y ``LE.le ``LE ``Subset ``HasSubset expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
 /-- Elaborator for `x ⊂ y` notation. -/
 @[term_elab ssubsetStx']
 public def elabSSubsetStx' : TermElab
   | `($x ⊂ $y), expectedType? =>
     elabSubsetLike x y ``LT.lt ``LT ``SSubset ``HasSSubset expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
 /-- Elaborator for `x ⊇ y` notation. -/
 @[term_elab supsetStx']
 public def elabSupsetStx' : TermElab
   | `($x ⊇ $y), expectedType? =>
     elabSubsetLike x y ``GE.ge ``LE ``Superset ``HasSubset expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
 /-- Elaborator for `x ⊃ y` notation. -/
 @[term_elab ssupsetStx']
 public def elabSSupsetStx' : TermElab
   | `($x ⊃ $y), expectedType? =>
     elabSubsetLike x y ``GT.gt ``LT ``SSuperset ``HasSSubset expectedType?
-  | _, _ => throwUnsupportedSyntax
+  | _, _ =>
+    throwUnsupportedSyntax
 
-/-- Declare `∀ x ⊆ y, ...` as syntax for `∀ x, x ⊆ y → ...` and `∃ x ⊆ y, ...` as syntax for
-`∃ x, x ⊆ y ∧ ...` -/
+/--
+Declare `∀ x ⊆ y, ...` as syntax for `∀ x, x ⊆ y → ...` and `∃ x ⊆ y, ...` as syntax for
+`∃ x, x ⊆ y ∧ ...`
+-/
 binder_predicate (priority := high) x " ⊆ " y:term => `($x ⊆ $y)
 
-/-- Declare `∀ x ⊂ y, ...` as syntax for `∀ x, x ⊂ y → ...` and `∃ x ⊂ y, ...` as syntax for
-`∃ x, x ⊂ y ∧ ...` -/
+/--
+Declare `∀ x ⊂ y, ...` as syntax for `∀ x, x ⊂ y → ...` and `∃ x ⊂ y, ...` as syntax for
+`∃ x, x ⊂ y ∧ ...`
+-/
 binder_predicate (priority := high) x " ⊂ " y:term => `($x ⊂ $y)
 
-/-- Declare `∀ x ⊇ y, ...` as syntax for `∀ x, x ⊇ y → ...` and `∃ x ⊇ y, ...` as syntax for
-`∃ x, x ⊇ y ∧ ...` -/
+/--
+Declare `∀ x ⊇ y, ...` as syntax for `∀ x, x ⊇ y → ...` and `∃ x ⊇ y, ...` as syntax for
+`∃ x, x ⊇ y ∧ ...`
+-/
 binder_predicate (priority := high) x " ⊇ " y:term => `($x ⊇ $y)
 
-/-- Declare `∀ x ⊃ y, ...` as syntax for `∀ x, x ⊃ y → ...` and `∃ x ⊃ y, ...` as syntax for
-`∃ x, x ⊃ y ∧ ...` -/
+/--
+Declare `∀ x ⊃ y, ...` as syntax for `∀ x, x ⊃ y → ...` and `∃ x ⊃ y, ...` as syntax for
+`∃ x, x ⊃ y ∧ ...`
+-/
 binder_predicate (priority := high) x " ⊃ " y:term => `($x ⊃ $y)
 
 /-! ## Dot-notation namespace linter -/
 
-/-- A temporary linter to help adapt to `@[set_notation_for_order]`.
-It gives a warning when a lemma is in the wrong namespace for dot-notation. -/
+/--
+A temporary linter to help adapt to `@[set_notation_for_order]`.
+It gives a warning when a lemma is in the wrong namespace for dot-notation.
+-/
 @[env_linter]
 public def subsetDotNotationLinter : Batteries.Tactic.Lint.Linter where
   noErrorsFound := "all names are correct"
@@ -237,7 +277,8 @@ public def subsetDotNotationLinter : Batteries.Tactic.Lint.Linter where
     let n := declName.getNumParts
     if n ≤ 2 then return none
     let (nameStart, rest) := declName.splitAt (n - 2)
-    let otherStart ← match nameStart with
+    let otherStart ←
+      match nameStart with
       | ``Subset => pure ``LE.le
       | ``SSubset => pure ``LT.lt
       | _ => return none
@@ -252,20 +293,22 @@ public def subsetDotNotationLinter : Batteries.Tactic.Lint.Linter where
 /-! ## Lemma translation -/
 
 @[inherit_doc GuessName.GuessNameData.nameDict]
-def nameDict : Std.HashMap String (List String) := .ofList [
-  ("le", ["Subset"]),
-  ("ge", ["Superset"]),
-  ("lt", ["SSubset"]),
-  ("gt", ["SSuperset"]),
-  ("inf", ["Inter"]),
-  ("sup", ["Union"]),
-  ("sInf", ["SInter"]),
-  ("sSup", ["SUnion"]),
-  ("iInf", ["IInter"]),
-  ("iSup", ["IUnion"]),
-]
+def nameDict : Std.HashMap String (List String) :=
+  .ofList [
+    ("le", ["Subset"]),
+    ("ge", ["Superset"]),
+    ("lt", ["SSubset"]),
+    ("gt", ["SSuperset"]),
+    ("inf", ["Inter"]),
+    ("sup", ["Union"]),
+    ("sInf", ["SInter"]),
+    ("sSup", ["SUnion"]),
+    ("iInf", ["IInter"]),
+    ("iSup", ["IUnion"]),
+  ]
 
-/-- Generate a variant of a theorem by restricting the order on the specified types to those
+/--
+Generate a variant of a theorem by restricting the order on the specified types to those
 that are tagged `@[use_set_notation_for_order]`.
 
 Explicitly, `to_set_notation` inserts a `[UsesSetNotationForOrder α]` type class
@@ -282,22 +325,23 @@ initialize
     add src stx kind := do
       unless kind == .global do
         throwAttrMustBeGlobal `to_set_notation kind
-      let .str srcRoot srcStr := src | throwError "invalid name `{src}`"
+      let .str srcRoot srcStr := src
+        | throwError "invalid name `{src}`"
       let tgt := srcRoot.str <| GuessName.guessName { nameDict, abbreviationDict := {} } srcStr
       MetaM.run' <| addRelatedDecl src tgt stx ⟨mkNullNode⟩
         (docstringPrefix? := s!"Set notation form of `{src}`") (hoverInfo := true)
         fun value levels => do
-        forallTelescope (← inferType value) fun xs _ ↦ do
-          let mut value := mkAppN value xs
-          for x in xs.reverse do
-            if let .sort (.succ u) ← inferType x then
-              -- If `x` is a type,
-              -- create a constant lambda expression for the proof that now assumes `cls`.
-              let cls := .app (.const ``UsesSetNotationForOrder [u]) x
-              let ident ← withFreshMacroScope <| MonadQuotation.addMacroScope `inst
-              value := .lam ident cls value .instImplicit
-            value ← mkLambdaFVars #[x] value
-          return (value, levels)
+          forallTelescope (← inferType value) fun xs _ ↦ do
+            let mut value := mkAppN value xs
+            for x in xs.reverse do
+              if let .sort (.succ u) ← inferType x then
+                -- If `x` is a type,
+                -- create a constant lambda expression for the proof that now assumes `cls`.
+                let cls := .app (.const ``UsesSetNotationForOrder [u]) x
+                let ident ← withFreshMacroScope <| MonadQuotation.addMacroScope `inst
+                value := .lam ident cls value .instImplicit
+              value ← mkLambdaFVars #[x] value
+            return (value, levels)
       liftCommandElabM <| Elab.Command.elabCommand (← `(command|
         attribute [nolint unusedArguments] $(mkCIdent tgt)))
   }

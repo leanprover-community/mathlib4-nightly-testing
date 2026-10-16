@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.RingTheory.Polynomial.GaussNorm
 
-
 /-!
 # Sup Norm of Polynomials
 
@@ -38,36 +37,35 @@ theorem implying that the squared `l^2` norm of a complex polynomial is the inte
 the polynomial's value on the unit circle.
 -/
 
-
 @[expose] public section supnorm_seminorm
 
 variable {A : Type*} [SeminormedRing A] (p : Polynomial A)
 
 namespace Polynomial
 
-/-- The sup norm of a polynomial on a semi-normed ring, defined as the maximum of its coefficients.
+/--
+The sup norm of a polynomial on a semi-normed ring, defined as the maximum of its coefficients.
 Often called the _(naive) height_ of the polynomial.
 
-This is defined in terms of `Polynomial.gaussNorm`. -/
+This is defined in terms of `Polynomial.gaussNorm`.
+-/
 noncomputable def supNorm : ℝ := p.gaussNorm (SeminormedRing.toRingSeminorm A) 1
 
 /-- The direct definition of the supNorm -/
-lemma supNorm_def' : p.supNorm =
-    if hp : p.support.Nonempty then p.support.sup' hp (norm ∘ p.coeff) else 0 := by
+lemma supNorm_def'
+    : p.supNorm = if hp : p.support.Nonempty then p.support.sup' hp (norm ∘ p.coeff) else 0 := by
   split_ifs with h
-  · simp only [supNorm, gaussNorm, h, ↓reduceDIte, one_pow, mul_one, Function.comp_apply]
+  · simp only [supNorm, gaussNorm, h, ↓ reduceDIte, one_pow, mul_one, Function.comp_apply]
     congr
   · simp [supNorm, gaussNorm, h]
 
-@[simp]
-lemma supNorm_zero : (0 : A[X]).supNorm = 0 := gaussNorm_zero ..
+@[simp] lemma supNorm_zero : (0 : A[X]).supNorm = 0 := gaussNorm_zero ..
 
 lemma supNorm_nonneg : 0 ≤ p.supNorm := by
   apply gaussNorm_nonneg
   simp
 
-@[simp]
-lemma supNorm_C {a : A} : (C a).supNorm = ‖a‖ := gaussNorm_C ..
+@[simp] lemma supNorm_C {a : A} : (C a).supNorm = ‖a‖ := gaussNorm_C ..
 
 @[simp]
 lemma supNorm_monomial (n : ℕ) {a : A} : (monomial n a).supNorm = ‖a‖ := by
@@ -88,8 +86,10 @@ lemma exists_eq_supNorm : ∃ i : ℕ, p.supNorm = ‖p.coeff i‖ := by
 lemma isGreatest_supNorm : IsGreatest (Set.range (‖p.coeff ·‖)) p.supNorm :=
   ⟨by simpa [eq_comm] using exists_eq_supNorm p, by simpa [mem_upperBounds] using le_supNorm p⟩
 
-/-- The supNorm can also be defined with an iSup. Note that this uses the fact that `norm` is both
-a `ZeroHom` and `NonnegHom` so is not _a priori_ true from the `gaussNorm` definition. -/
+/--
+The supNorm can also be defined with an iSup. Note that this uses the fact that `norm` is both
+a `ZeroHom` and `NonnegHom` so is not _a priori_ true from the `gaussNorm` definition.
+-/
 lemma supNorm_eq_iSup : p.supNorm = ⨆ i, ‖p.coeff i‖ := p.isGreatest_supNorm.csSup_eq.symm
 
 end Polynomial

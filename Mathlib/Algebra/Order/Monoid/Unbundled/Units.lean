@@ -33,17 +33,17 @@ theorem inv_mul_le_iff : u⁻¹ * a ≤ b ↔ a ≤ u * b := by
 theorem le_inv_mul_iff : a ≤ u⁻¹ * b ↔ u * a ≤ b := by
   rw [← u.mul_le_mul_iff_left, mul_inv_cancel_left]
 
-@[simp] theorem one_le_inv : (1 : M) ≤ u⁻¹ ↔ (u : M) ≤ 1 := by
+@[simp]
+theorem one_le_inv : (1 : M) ≤ u⁻¹ ↔ (u : M) ≤ 1 := by
   rw [← u.mul_le_mul_iff_left, mul_one, mul_inv]
 
-@[simp] theorem inv_le_one : u⁻¹ ≤ (1 : M) ↔ (1 : M) ≤ u := by
+@[simp]
+theorem inv_le_one : u⁻¹ ≤ (1 : M) ↔ (1 : M) ≤ u := by
   rw [← u.mul_le_mul_iff_left, mul_one, mul_inv]
 
-theorem one_le_inv_mul : 1 ≤ u⁻¹ * a ↔ u ≤ a := by
-  rw [u.le_inv_mul_iff, mul_one]
+theorem one_le_inv_mul : 1 ≤ u⁻¹ * a ↔ u ≤ a := by rw [u.le_inv_mul_iff, mul_one]
 
-theorem inv_mul_le_one : u⁻¹ * a ≤ 1 ↔ a ≤ u := by
-  rw [u.inv_mul_le_iff, mul_one]
+theorem inv_mul_le_one : u⁻¹ * a ≤ 1 ↔ a ≤ u := by rw [u.inv_mul_le_iff, mul_one]
 
 alias ⟨le_mul_of_inv_mul_le, inv_mul_le_of_le_mul⟩ := inv_mul_le_iff
 alias ⟨mul_le_of_le_inv_mul, le_inv_mul_of_mul_le⟩ := le_inv_mul_iff
@@ -66,11 +66,9 @@ theorem mul_inv_le_iff : a * u⁻¹ ≤ b ↔ a ≤ b * u := by
 theorem le_mul_inv_iff : a ≤ b * u⁻¹ ↔ a * u ≤ b := by
   rw [← u.mul_le_mul_iff_right, inv_mul_cancel_right]
 
-theorem one_le_mul_inv : 1 ≤ a * u⁻¹ ↔ u ≤ a := by
-  rw [u.le_mul_inv_iff, one_mul]
+theorem one_le_mul_inv : 1 ≤ a * u⁻¹ ↔ u ≤ a := by rw [u.le_mul_inv_iff, one_mul]
 
-theorem mul_inv_le_one : a * u⁻¹ ≤ 1 ↔ a ≤ u := by
-  rw [u.mul_inv_le_iff, one_mul]
+theorem mul_inv_le_one : a * u⁻¹ ≤ 1 ↔ a ≤ u := by rw [u.mul_inv_le_iff, one_mul]
 
 alias ⟨le_mul_of_mul_inv_le, mul_inv_le_of_le_mul⟩ := mul_inv_le_iff
 alias ⟨mul_le_of_le_mul_inv, le_mul_inv_of_mul_le⟩ := le_mul_inv_iff
@@ -88,11 +86,9 @@ variable [MulLeftMono M] {a b c : M} (ha : IsUnit a)
 
 include ha
 
-theorem mulLECancellable : MulLECancellable a :=
-  ha.unit.mulLECancellable_val
+theorem mulLECancellable : MulLECancellable a := ha.unit.mulLECancellable_val
 
-theorem mul_le_mul_left : a * b ≤ a * c ↔ b ≤ c :=
-  ha.unit.mul_le_mul_iff_left
+theorem mul_le_mul_left : a * b ≤ a * c ↔ b ≤ c := ha.unit.mul_le_mul_iff_left
 
 alias ⟨le_of_mul_le_mul_left, _⟩ := mul_le_mul_left
 
@@ -103,8 +99,7 @@ variable [MulRightMono M] {a b c : M} (hc : IsUnit c)
 
 include hc
 
-theorem mul_le_mul_right : a * c ≤ b * c ↔ a ≤ b :=
-  hc.unit.mul_le_mul_iff_right
+theorem mul_le_mul_right : a * c ≤ b * c ↔ a ≤ b := hc.unit.mul_le_mul_iff_right
 
 alias ⟨le_of_mul_le_mul_right, _⟩ := mul_le_mul_right
 

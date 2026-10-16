@@ -24,13 +24,10 @@ instance : MyInv Nat where
 def MyNat : Type := Nat
 
 -- `inferInstanceAs` leaks the source type `Nat` as the carrier
-@[instance_reducible]
-def myNatInv_leaky : MyInv MyNat :=
-  inferInstanceAs (MyInv Nat)
+@[instance_reducible] def myNatInv_leaky : MyInv MyNat := inferInstanceAs (MyInv Nat)
 
 -- `inferInstanceAs%` fixes this — the carrier and lambda domain are `MyNat`
-instance myNatInv_fixed : MyInv MyNat :=
-  inferInstanceAs% (MyInv Nat)
+instance myNatInv_fixed : MyInv MyNat := inferInstanceAs% (MyInv Nat)
 
 -- The binder type is `MyNat`:
 /--
@@ -83,12 +80,10 @@ def testField_direct : TestField TestNat where
   neg n := n
 
 -- Leaky: internal lambda domains use Nat instead of TestNat
-@[instance_reducible]
-def testField_leaky : TestField TestNat := inferInstanceAs (TestField Nat)
+@[instance_reducible] def testField_leaky : TestField TestNat := inferInstanceAs (TestField Nat)
 
 -- Fixed: inferInstanceAs% patches lambda domains to use TestNat
-@[instance_reducible]
-def testField_fixed : TestField TestNat := inferInstanceAs% (TestField Nat)
+@[instance_reducible] def testField_fixed : TestField TestNat := inferInstanceAs% (TestField Nat)
 
 -- All three are defeq at default transparency (Nat = TestNat at this level).
 example : testField_leaky = testField_direct := rfl

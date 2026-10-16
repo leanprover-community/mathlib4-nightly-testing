@@ -43,13 +43,11 @@ namespace HopfAlgCat
 
 open HopfAlgebra
 
-instance : CoeSort (HopfAlgCat.{v} R) (Type v) :=
-  ⟨(·.carrier)⟩
+instance : CoeSort (HopfAlgCat.{v} R) (Type v) := ⟨(·.carrier)⟩
 
 variable (R) in
 /-- The object in the category of `R`-Hopf algebras associated to an `R`-Hopf algebra. -/
-abbrev of (X : Type v) [Ring X] [HopfAlgebra R X] :
-    HopfAlgCat R where
+abbrev of (X : Type v) [Ring X] [HopfAlgebra R X] : HopfAlgCat R where
   carrier := X
 
 open Lean.PrettyPrinter.Delaborator in
@@ -58,15 +56,19 @@ open Lean.PrettyPrinter.Delaborator in
 meta def delabOf : Delab := CategoryTheory.delabOf
 
 @[simp]
-lemma of_comul {X : Type v} [Ring X] [HopfAlgebra R X] :
-    Coalgebra.comul (A := of R X) = Coalgebra.comul (R := R) (A := X) := rfl
+lemma of_comul {X : Type v} [Ring X] [HopfAlgebra R X]
+    : Coalgebra.comul (A := of R X) = Coalgebra.comul (R := R) (A := X) :=
+  rfl
 
 @[simp]
-lemma of_counit {X : Type v} [Ring X] [HopfAlgebra R X] :
-    Coalgebra.counit (A := of R X) = Coalgebra.counit (R := R) (A := X) := rfl
+lemma of_counit {X : Type v} [Ring X] [HopfAlgebra R X]
+    : Coalgebra.counit (A := of R X) = Coalgebra.counit (R := R) (A := X) :=
+  rfl
 
-/-- A type alias for `BialgHom` to avoid confusion between the categorical and
-algebraic spellings of composition. -/
+/--
+A type alias for `BialgHom` to avoid confusion between the categorical and
+algebraic spellings of composition.
+-/
 @[ext]
 structure Hom (V W : HopfAlgCat.{v} R) where
   /-- The underlying `BialgHom`. -/
@@ -86,41 +88,36 @@ abbrev Hom.toBialgHom {X Y : HopfAlgCat R} (f : Hom X Y) :=
   ConcreteCategory.hom (C := HopfAlgCat R) f
 
 /-- Typecheck a `BialgHom` as a morphism in `HopfAlgCat R`. -/
-abbrev ofHom {X Y : Type v} [Ring X] [Ring Y]
-    [HopfAlgebra R X] [HopfAlgebra R Y] (f : X →ₐc[R] Y) :
-    of R X ⟶ of R Y :=
+abbrev ofHom {X Y : Type v} [Ring X] [Ring Y] [HopfAlgebra R X] [HopfAlgebra R Y] (f : X →ₐc[R] Y)
+    : of R X ⟶ of R Y :=
   ConcreteCategory.ofHom f
 
-lemma Hom.toBialgHom_injective (V W : HopfAlgCat.{v} R) :
-    Function.Injective (Hom.toBialgHom : Hom V W → _) :=
-  fun ⟨f⟩ ⟨g⟩ _ => by congr
+lemma Hom.toBialgHom_injective (V W : HopfAlgCat.{v} R)
+    : Function.Injective (Hom.toBialgHom : Hom V W → _) := fun ⟨f⟩ ⟨g⟩ _ => by
+  congr
 
 @[ext]
-lemma hom_ext {X Y : HopfAlgCat.{v} R} (f g : X ⟶ Y) (h : f.toBialgHom = g.toBialgHom) :
-    f = g :=
+lemma hom_ext {X Y : HopfAlgCat.{v} R} (f g : X ⟶ Y) (h : f.toBialgHom = g.toBialgHom) : f = g :=
   Hom.ext h
 
-@[simp] theorem toBialgHom_comp {X Y Z : HopfAlgCat.{v} R} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).toBialgHom = g.toBialgHom.comp f.toBialgHom :=
+@[simp]
+theorem toBialgHom_comp {X Y Z : HopfAlgCat.{v} R} (f : X ⟶ Y) (g : Y ⟶ Z)
+    : (f ≫ g).toBialgHom = g.toBialgHom.comp f.toBialgHom :=
   rfl
 
-@[simp] theorem toBialgHom_id {M : HopfAlgCat.{v} R} :
-    Hom.toBialgHom (𝟙 M) = BialgHom.id _ _ :=
-  rfl
+@[simp] theorem toBialgHom_id {M : HopfAlgCat.{v} R} : Hom.toBialgHom (𝟙 M) = BialgHom.id _ _ := rfl
 
 instance hasForgetToBialgebra : HasForget₂ (HopfAlgCat R) (BialgCat R) where
-  forget₂ :=
-    { obj := fun X => ↧X
-      map := fun {_ _} f => BialgCat.ofHom f.toBialgHom }
+  forget₂ := { obj := fun X => ↧X, map := fun {_ _} f => BialgCat.ofHom f.toBialgHom }
 
 @[simp]
-theorem forget₂_bialgebra_obj (X : HopfAlgCat R) :
-    (forget₂ (HopfAlgCat R) (BialgCat R)).obj X = ↧X :=
+theorem forget₂_bialgebra_obj (X : HopfAlgCat R)
+    : (forget₂ (HopfAlgCat R) (BialgCat R)).obj X = ↧X :=
   rfl
 
 @[simp]
-theorem forget₂_bialgebra_map (X Y : HopfAlgCat R) (f : X ⟶ Y) :
-    (forget₂ (HopfAlgCat R) (BialgCat R)).map f = BialgCat.ofHom f.toBialgHom :=
+theorem forget₂_bialgebra_map (X Y : HopfAlgCat R) (f : X ⟶ Y)
+    : (forget₂ (HopfAlgCat R) (BialgCat R)).map f = BialgCat.ofHom f.toBialgHom :=
   rfl
 
 end HopfAlgCat
@@ -133,8 +130,10 @@ variable {X Y Z : Type v}
 variable [Ring X] [Ring Y] [Ring Z]
 variable [HopfAlgebra R X] [HopfAlgebra R Y] [HopfAlgebra R Z]
 
-/-- Build an isomorphism in the category `HopfAlgCat R` from a
-`BialgEquiv`. -/
+/--
+Build an isomorphism in the category `HopfAlgCat R` from a
+`BialgEquiv`.
+-/
 @[simps]
 def toHopfAlgIso (e : X ≃ₐc[R] Y) : HopfAlgCat.of R X ≅ HopfAlgCat.of R Y where
   hom := HopfAlgCat.ofHom e
@@ -142,16 +141,14 @@ def toHopfAlgIso (e : X ≃ₐc[R] Y) : HopfAlgCat.of R X ≅ HopfAlgCat.of R Y 
   hom_inv_id := Hom.ext <| DFunLike.ext _ _ e.left_inv
   inv_hom_id := Hom.ext <| DFunLike.ext _ _ e.right_inv
 
-@[simp] theorem toHopfAlgIso_refl :
-    toHopfAlgIso (BialgEquiv.refl R X) = .refl _ :=
-  rfl
+@[simp] theorem toHopfAlgIso_refl : toHopfAlgIso (BialgEquiv.refl R X) = .refl _ := rfl
 
-@[simp] theorem toHopfAlgIso_symm (e : X ≃ₐc[R] Y) :
-    toHopfAlgIso e.symm = (toHopfAlgIso e).symm :=
-  rfl
+@[simp]
+theorem toHopfAlgIso_symm (e : X ≃ₐc[R] Y) : toHopfAlgIso e.symm = (toHopfAlgIso e).symm := rfl
 
-@[simp] theorem toHopfAlgIso_trans (e : X ≃ₐc[R] Y) (f : Y ≃ₐc[R] Z) :
-    toHopfAlgIso (e.trans f) = toHopfAlgIso e ≪≫ toHopfAlgIso f :=
+@[simp]
+theorem toHopfAlgIso_trans (e : X ≃ₐc[R] Y) (f : Y ≃ₐc[R] Z)
+    : toHopfAlgIso (e.trans f) = toHopfAlgIso e ≪≫ toHopfAlgIso f :=
   rfl
 
 end BialgEquiv
@@ -162,32 +159,33 @@ open HopfAlgebra
 
 variable {X Y Z : HopfAlgCat.{v} R}
 
-/-- Build a `BialgEquiv` from an isomorphism in the category
-`HopfAlgCat R`. -/
-def toHopfAlgEquiv (i : X ≅ Y) : X ≃ₐc[R] Y :=
-  { i.hom.toBialgHom with
-    invFun := i.inv.toBialgHom
-    left_inv := fun x => congr($(i.3).toBialgHom x)
-    right_inv := fun x => congr($(i.4).toBialgHom x) }
+/--
+Build a `BialgEquiv` from an isomorphism in the category
+`HopfAlgCat R`.
+-/
+def toHopfAlgEquiv (i : X ≅ Y) : X ≃ₐc[R] Y := {
+  i.hom.toBialgHom with
+  invFun := i.inv.toBialgHom
+  left_inv := fun x => congr($(i.3).toBialgHom x)
+  right_inv := fun x => congr($(i.4).toBialgHom x)
+}
 
-@[simp] theorem toHopfAlgEquiv_toBialgHom (i : X ≅ Y) :
-    (i.toHopfAlgEquiv : X →ₐc[R] Y) = i.hom.1 := rfl
+@[simp]
+theorem toHopfAlgEquiv_toBialgHom (i : X ≅ Y) : (i.toHopfAlgEquiv : X →ₐc[R] Y) = i.hom.1 := rfl
 
-@[simp] theorem toHopfAlgEquiv_refl : toHopfAlgEquiv (.refl X) = .refl _ _ :=
-  rfl
+@[simp] theorem toHopfAlgEquiv_refl : toHopfAlgEquiv (.refl X) = .refl _ _ := rfl
 
-@[simp] theorem toHopfAlgEquiv_symm (e : X ≅ Y) :
-    toHopfAlgEquiv e.symm = (toHopfAlgEquiv e).symm :=
-  rfl
+@[simp]
+theorem toHopfAlgEquiv_symm (e : X ≅ Y) : toHopfAlgEquiv e.symm = (toHopfAlgEquiv e).symm := rfl
 
-@[simp] theorem toHopfAlgEquiv_trans (e : X ≅ Y) (f : Y ≅ Z) :
-    toHopfAlgEquiv (e ≪≫ f) = e.toHopfAlgEquiv.trans f.toHopfAlgEquiv :=
+@[simp]
+theorem toHopfAlgEquiv_trans (e : X ≅ Y) (f : Y ≅ Z)
+    : toHopfAlgEquiv (e ≪≫ f) = e.toHopfAlgEquiv.trans f.toHopfAlgEquiv :=
   rfl
 
 end CategoryTheory.Iso
 
-instance HopfAlgCat.forget_reflects_isos :
-    (forget (HopfAlgCat.{v} R)).ReflectsIsomorphisms where
+instance HopfAlgCat.forget_reflects_isos : (forget (HopfAlgCat.{v} R)).ReflectsIsomorphisms where
   reflects {X Y} f _ := by
     let i := asIso ((forget (HopfAlgCat.{v} R)).map f)
     let e : X ≃ₐc[R] Y := { f.toBialgHom, i.toEquiv with }

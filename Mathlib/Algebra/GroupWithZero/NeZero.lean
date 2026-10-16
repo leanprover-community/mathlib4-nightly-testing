@@ -35,23 +35,26 @@ instance NeZero.one : NeZero (1 : M₀) := ⟨by
     _ = y := by rw [one_mul]⟩
 
 /-- Pullback a `Nontrivial` instance along a function sending `0` to `0` and `1` to `1`. -/
-theorem domain_nontrivial [Zero M₀'] [One M₀'] (f : M₀' → M₀) (zero : f 0 = 0) (one : f 1 = 1) :
-    Nontrivial M₀' :=
-  ⟨⟨0, 1, mt (congr_arg f) <| by
+theorem domain_nontrivial [Zero M₀'] [One M₀'] (f : M₀' → M₀) (zero : f 0 = 0) (one : f 1 = 1)
+    : Nontrivial M₀' := ⟨⟨
+  0,
+  1,
+  mt (congr_arg f) <| by
     rw [zero, one]
-    exact zero_ne_one⟩⟩
+    exact zero_ne_one
+⟩⟩
 
 section GroupWithZero
 
 variable {G₀ : Type*} [GroupWithZero G₀] {a : G₀}
 
-theorem inv_ne_zero (h : a ≠ 0) : a⁻¹ ≠ 0 := fun a_eq_0 => by
-  simpa [a_eq_0] using mul_inv_cancel₀ h
+theorem inv_ne_zero (h : a ≠ 0) : a⁻¹ ≠ 0 := fun a_eq_0 => by simpa [a_eq_0] using mul_inv_cancel₀ h
 
 @[simp high] -- should take priority over `IsUnit.inv_mul_cancel`
 theorem inv_mul_cancel₀ (h : a ≠ 0) : a⁻¹ * a = 1 :=
   calc
-    a⁻¹ * a = a⁻¹ * a * a⁻¹ * a⁻¹⁻¹ := by simp [inv_ne_zero h]
+    a⁻¹ * a
+      = a⁻¹ * a * a⁻¹ * a⁻¹⁻¹ := by simp [inv_ne_zero h]
     _ = a⁻¹ * a⁻¹⁻¹ := by simp [h]
     _ = 1 := by simp [inv_ne_zero h]
 

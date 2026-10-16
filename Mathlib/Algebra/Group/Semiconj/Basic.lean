@@ -34,25 +34,29 @@ end DivisionMonoid
 section Group
 variable [Group G] {a x y : G}
 
-@[to_additive (attr := simp)] lemma inv_symm_left_iff : SemiconjBy a⁻¹ y x ↔ SemiconjBy a x y := by
+@[to_additive (attr := simp)]
+lemma inv_symm_left_iff : SemiconjBy a⁻¹ y x ↔ SemiconjBy a x y := by
   simp_rw [SemiconjBy, eq_mul_inv_iff_mul_eq, mul_assoc, inv_mul_eq_iff_eq_mul, eq_comm]
 
 @[to_additive] alias ⟨_, inv_symm_left⟩ := inv_symm_left_iff
 
-@[to_additive (attr := simp)] lemma inv_right_iff : SemiconjBy a x⁻¹ y⁻¹ ↔ SemiconjBy a x y := by
+@[to_additive (attr := simp)]
+lemma inv_right_iff : SemiconjBy a x⁻¹ y⁻¹ ↔ SemiconjBy a x y := by
   rw [← inv_symm_left_iff, inv_inv_symm_iff]
 
 @[to_additive] alias ⟨_, inv_right⟩ := inv_right_iff
 
-@[to_additive (attr := simp)] lemma zpow_right (h : SemiconjBy a x y) :
-    ∀ m : ℤ, SemiconjBy a (x ^ m) (y ^ m)
-  | (n : ℕ) => by simp [zpow_natCast, h.pow_right n]
+@[to_additive (attr := simp)]
+lemma zpow_right (h : SemiconjBy a x y) : ∀ m : ℤ, SemiconjBy a (x ^ m) (y ^ m)
+  | (n : ℕ) => by
+    simp [zpow_natCast, h.pow_right n]
   | .negSucc n => by
     simp only [zpow_negSucc, inv_right_iff]
     apply pow_right h
 
 variable (a) in
-@[to_additive] lemma eq_one_iff (h : SemiconjBy a x y) : x = 1 ↔ y = 1 := by
+@[to_additive]
+lemma eq_one_iff (h : SemiconjBy a x y) : x = 1 ↔ y = 1 := by
   rw [← conj_eq_one_iff (a := a) (b := x), h.eq, mul_inv_cancel_right]
 
 end Group

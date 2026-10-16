@@ -20,33 +20,24 @@ namespace PLift
 variable {α : Sort u} {β : Sort v}
 
 /-- Functorial action. -/
-protected def map (f : α → β) (a : PLift α) : PLift β :=
-  PLift.up (f a.down)
+protected def map (f : α → β) (a : PLift α) : PLift β := PLift.up (f a.down)
 
-@[simp]
-theorem map_up (f : α → β) (a : α) : (PLift.up a).map f = PLift.up (f a) :=
-  rfl
+@[simp] theorem map_up (f : α → β) (a : α) : (PLift.up a).map f = PLift.up (f a) := rfl
 
 /-- Embedding of pure values. -/
-@[simp]
-protected def pure : α → PLift α :=
-  up
+@[simp] protected def pure : α → PLift α := up
 
 /-- Applicative sequencing. -/
 protected def seq (f : PLift (α → β)) (x : Unit → PLift α) : PLift β :=
   PLift.up (f.down (x ()).down)
 
 @[simp]
-theorem seq_up (f : α → β) (x : α) : (PLift.up f).seq (fun _ => PLift.up x) = PLift.up (f x) :=
-  rfl
+theorem seq_up (f : α → β) (x : α) : (PLift.up f).seq (fun _ => PLift.up x) = PLift.up (f x) := rfl
 
 /-- Monadic bind. -/
-protected def bind (a : PLift α) (f : α → PLift β) : PLift β :=
-  f a.down
+protected def bind (a : PLift α) (f : α → PLift β) : PLift β := f a.down
 
-@[simp]
-theorem bind_up (a : α) (f : α → PLift β) : (PLift.up a).bind f = f a :=
-  rfl
+@[simp] theorem bind_up (a : α) (f : α → PLift β) : (PLift.up a).bind f = f a := rfl
 
 instance : Monad PLift where
   map := @PLift.map
@@ -74,8 +65,9 @@ instance : LawfulMonad PLift where
   bind_assoc := @fun _ _ _ ⟨_⟩ _ _ => rfl
 
 @[simp]
-theorem rec.constant {α : Sort u} {β : Type v} (b : β) :
-    (@PLift.rec α (fun _ => β) fun _ => b) = fun _ => b := rfl
+theorem rec.constant {α : Sort u} {β : Type v} (b : β)
+    : (@PLift.rec α (fun _ => β) fun _ => b) = fun _ => b :=
+  rfl
 
 end PLift
 
@@ -86,29 +78,22 @@ variable {α : Type u} {β : Type v}
 /-- Functorial action. -/
 protected def map (f : α → β) (a : ULift.{u'} α) : ULift.{v'} β := ULift.up.{v'} (f a.down)
 
-@[simp]
-theorem map_up (f : α → β) (a : α) : (ULift.up.{u'} a).map f = ULift.up.{v'} (f a) := rfl
+@[simp] theorem map_up (f : α → β) (a : α) : (ULift.up.{u'} a).map f = ULift.up.{v'} (f a) := rfl
 
 /-- Embedding of pure values. -/
-@[simp]
-protected def pure : α → ULift α :=
-  up
+@[simp] protected def pure : α → ULift α := up
 
 /-- Applicative sequencing. -/
 protected def seq {α β} (f : ULift (α → β)) (x : Unit → ULift α) : ULift β :=
   ULift.up.{u} (f.down (x ()).down)
 
 @[simp]
-theorem seq_up (f : α → β) (x : α) : (ULift.up f).seq (fun _ => ULift.up x) = ULift.up (f x) :=
-  rfl
+theorem seq_up (f : α → β) (x : α) : (ULift.up f).seq (fun _ => ULift.up x) = ULift.up (f x) := rfl
 
 /-- Monadic bind. -/
-protected def bind (a : ULift α) (f : α → ULift β) : ULift β :=
-  f a.down
+protected def bind (a : ULift α) (f : α → ULift β) : ULift β := f a.down
 
-@[simp]
-theorem bind_up (a : α) (f : α → ULift β) : (ULift.up a).bind f = f a :=
-  rfl
+@[simp] theorem bind_up (a : α) (f : α → ULift β) : (ULift.up a).bind f = f a := rfl
 
 instance : Monad ULift where
   map := @ULift.map
@@ -136,7 +121,8 @@ instance : LawfulMonad ULift where
   bind_assoc := @fun _ _ _ ⟨_⟩ _ _ => rfl
 
 @[simp]
-theorem rec.constant {α : Type u} {β : Sort v} (b : β) :
-    (@ULift.rec α (fun _ => β) fun _ => b) = fun _ => b := rfl
+theorem rec.constant {α : Type u} {β : Sort v} (b : β)
+    : (@ULift.rec α (fun _ => β) fun _ => b) = fun _ => b :=
+  rfl
 
 end ULift

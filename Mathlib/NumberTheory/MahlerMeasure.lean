@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.Polynomial.MahlerMeasure
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Mathlib.RingTheory.SimpleRing.Principal
-
 import Mathlib.Algebra.Polynomial.OfFn
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Data.Pi.Interval
@@ -39,8 +38,8 @@ namespace Polynomial
 
 open Int
 
-lemma one_le_mahlerMeasure_of_ne_zero {p : ℤ[X]} (hp : p ≠ 0) :
-    1 ≤ (p.map (castRingHom ℂ)).mahlerMeasure := by
+lemma one_le_mahlerMeasure_of_ne_zero {p : ℤ[X]} (hp : p ≠ 0)
+    : 1 ≤ (p.map (castRingHom ℂ)).mahlerMeasure := by
   apply le_trans _ (p.map (castRingHom ℂ)).leadingCoeff_le_mahlerMeasure
   rw [leadingCoeff_map_of_injective (castRingHom ℂ).injective_int, eq_intCast]
   norm_cast
@@ -50,8 +49,10 @@ section Northcott
 
 variable (n : ℕ) (B₁ B₂ : Fin (n + 1) → ℝ)
 
-/-- The set of polynomials whose coefficients are bounded between `B₁` and `B₂`. This
-construction is used as part of our proof of Northcott's theorem. -/
+/--
+The set of polynomials whose coefficients are bounded between `B₁` and `B₂`. This
+construction is used as part of our proof of Northcott's theorem.
+-/
 def boxPoly : Set ℤ[X] := {p : ℤ[X] | p.natDegree ≤ n ∧ ∀ i, B₁ i ≤ p.coeff i ∧ p.coeff i ≤ B₂ i}
 
 theorem ncard_boxPoly : (boxPoly n B₁ B₂).ncard = ∏ i, (⌊B₂ i⌋ - ⌈B₁ i⌉ + 1).toNat := by
@@ -70,13 +71,13 @@ theorem ncard_boxPoly : (boxPoly n B₁ B₂).ncard = ∏ i, (⌊B₂ i⌋ - ⌈
 
 open NNReal
 
-private lemma card_mahlerMeasure (n : ℕ) (B : ℝ≥0) :
-    Set.Finite {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B} ∧
-    Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B} ≤
-    ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) := by
-  have h_card :
-      Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ ∀ i : Fin (n + 1), ‖p.coeff i‖ ≤ n.choose i * B} =
-      ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) := by
+private lemma card_mahlerMeasure (n : ℕ) (B : ℝ≥0)
+    : Set.Finite {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B}
+      ∧ Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B}
+        ≤ ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) := by
+  have h_card
+      : Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ ∀ i : Fin (n + 1), ‖p.coeff i‖ ≤ n.choose i * B}
+        = ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) := by
     simp_rw [norm_eq_abs, abs_le]
     rw [← boxPoly, ncard_boxPoly]
     simp only [ceil_neg, sub_neg_eq_add, ← two_mul]
@@ -85,9 +86,9 @@ private lemma card_mahlerMeasure (n : ℕ) (B : ℝ≥0) :
     rw [toNat_of_nonneg (by positivity), ← natCast_floor_eq_floor (by positivity)]
     norm_cast
   rw [← h_card]
-  have h_subset :
-      {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (Int.castRingHom ℂ)).mahlerMeasure ≤ B} ⊆
-      {p : ℤ[X] | p.natDegree ≤ n ∧ ∀ i : Fin (n + 1), ‖p.coeff i‖ ≤ n.choose i * B} := by
+  have h_subset
+      : {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (Int.castRingHom ℂ)).mahlerMeasure ≤ B}
+        ⊆ {p : ℤ[X] | p.natDegree ≤ n ∧ ∀ i : Fin (n + 1), ‖p.coeff i‖ ≤ n.choose i * B} := by
     gcongr with p hp
     intro hB d
     rw [show ‖p.coeff d‖ = ‖(p.map (castRingHom ℂ)).coeff d‖ by aesop]
@@ -102,25 +103,30 @@ private lemma card_mahlerMeasure (n : ℕ) (B : ℝ≥0) :
     grind
   exact ⟨h_finite.subset h_subset, Set.ncard_le_ncard h_subset h_finite⟩
 
-/-- **Northcott's Theorem:** the set of integer polynomials of degree at most `n` and
-Mahler measure at most `B` is finite. -/
-theorem finite_mahlerMeasure_le (n : ℕ) (B : ℝ≥0) :
-    Set.Finite {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B} :=
+/--
+**Northcott's Theorem:** the set of integer polynomials of degree at most `n` and
+Mahler measure at most `B` is finite.
+-/
+theorem finite_mahlerMeasure_le (n : ℕ) (B : ℝ≥0)
+    : Set.Finite {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B} :=
   (card_mahlerMeasure n B).1
 
-/-- An upper bound on the number of integer polynomials of degree at most `n` and Mahler measure at
-most `B`. -/
-theorem card_mahlerMeasure_le_prod (n : ℕ) (B : ℝ≥0) :
-    Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B} ≤
-    ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) := (card_mahlerMeasure n B).2
+/--
+An upper bound on the number of integer polynomials of degree at most `n` and Mahler measure at
+most `B`.
+-/
+theorem card_mahlerMeasure_le_prod (n : ℕ) (B : ℝ≥0)
+    : Set.ncard {p : ℤ[X] | p.natDegree ≤ n ∧ (p.map (castRingHom ℂ)).mahlerMeasure ≤ B}
+      ≤ ∏ i : Fin (n + 1), (2 * ⌊n.choose i * B⌋₊ + 1) :=
+  (card_mahlerMeasure n B).2
 
 end Northcott
 
 section Cyclotomic
 
 /-- The Mahler measure of a cyclotomic polynomial is 1. -/
-theorem cyclotomic_mahlerMeasure_eq_one {R : Type*} [CommRing R] [Algebra R ℂ] (n : ℕ) :
-    ((cyclotomic n R).map (algebraMap R ℂ)).mahlerMeasure = 1 := by
+theorem cyclotomic_mahlerMeasure_eq_one {R : Type*} [CommRing R] [Algebra R ℂ] (n : ℕ)
+    : ((cyclotomic n R).map (algebraMap R ℂ)).mahlerMeasure = 1 := by
   rcases eq_or_ne n 0 with hn | hn
   · simp [hn]
   have : NeZero n := ⟨hn⟩
@@ -134,8 +140,8 @@ theorem cyclotomic_mahlerMeasure_eq_one {R : Type*} [CommRing R] [Algebra R ℂ]
 variable {p : ℤ[X]} (h : (p.map (castRingHom ℂ)).mahlerMeasure = 1)
 
 include h in
-lemma norm_leadingCoeff_eq_one_of_mahlerMeasure_eq_one :
-    ‖(p.map (castRingHom ℂ)).leadingCoeff‖ = 1 := by
+lemma norm_leadingCoeff_eq_one_of_mahlerMeasure_eq_one
+    : ‖(p.map (castRingHom ℂ)).leadingCoeff‖ = 1 := by
   rcases eq_or_ne p 0 with _ | hp
   · simp_all
   have h_ineq := h ▸ (leadingCoeff_le_mahlerMeasure <| p.map (castRingHom ℂ))
@@ -152,42 +158,52 @@ lemma abs_leadingCoeff_eq_one_of_mahlerMeasure_eq_one : |p.leadingCoeff| = 1 := 
 variable {z : ℂ} (hz₀ : z ≠ 0) (hz : z ∈ p.aroots ℂ)
 
 include hz h in
-/-- If an integer polynomial has Mahler measure equal to 1, then all its complex roots are integral
-over ℤ. -/
+/--
+If an integer polynomial has Mahler measure equal to 1, then all its complex roots are integral
+over ℤ.
+-/
 theorem isIntegral_of_mahlerMeasure_eq_one : IsIntegral ℤ z := by
-  have : p.leadingCoeff = 1 ∨ p.leadingCoeff = -1 := abs_eq_abs.mp <|
-    abs_leadingCoeff_eq_one_of_mahlerMeasure_eq_one h
+  have : p.leadingCoeff = 1 ∨ p.leadingCoeff = -1 :=
+    abs_eq_abs.mp <| abs_leadingCoeff_eq_one_of_mahlerMeasure_eq_one h
   have : (C (1 / p.leadingCoeff) * p).Monic := by aesop (add safe (by simp [Monic.def]))
   grind [IsIntegral, RingHom.IsIntegralElem, mem_roots', IsRoot.def, eval₂_mul, eval_map]
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 open Multiset in
 include h hz in
-/-- If an integer polynomial has Mahler measure equal to 1, then all its complex roots have norm at
-most 1. -/
+/--
+If an integer polynomial has Mahler measure equal to 1, then all its complex roots have norm at
+most 1.
+-/
 lemma norm_root_le_one_of_mahlerMeasure_eq_one : ‖z‖ ≤ 1 := by
   calc
-  ‖z‖ ≤ max 1 ‖z‖ := le_max_right 1 ‖z‖
-  _   ≤ ((p.map (castRingHom ℂ)).roots.map (fun a ↦ max 1 ‖a‖)).prod :=
-        mem_le_prod_of_one_le (fun a ↦ le_max_left 1 ‖a‖) hz
-  _   ≤ 1 := by grind [prod_max_one_norm_roots_le_mahlerMeasure_of_one_le_leadingCoeff,
+    ‖z‖
+      ≤ max 1 ‖z‖ := le_max_right 1 ‖z‖
+    _ ≤ ((p.map (castRingHom ℂ)).roots.map (fun a ↦ max 1 ‖a‖)).prod :=
+      mem_le_prod_of_one_le (fun a ↦ le_max_left 1 ‖a‖) hz
+    _ ≤ 1 := by
+      grind [prod_max_one_norm_roots_le_mahlerMeasure_of_one_le_leadingCoeff,
         norm_leadingCoeff_eq_one_of_mahlerMeasure_eq_one]
 
 open IntermediateField in
 include hz₀ hz h in
-/-- If an integer polynomial has Mahler measure equal to 1, then all its complex nonzero roots are
-roots of unity. -/
-theorem pow_eq_one_of_mahlerMeasure_eq_one : ∃ n, 0 < n ∧ z ^ n = 1 := by
-/- We want to use `NumberField.Embeddings.pow_eq_one_of_norm_le_one` but it can only be applied to
-elements of number fields. We thus first construct the number field `K` obtained by adjoining `z`
-to `ℚ`.
+/--
+If an integer polynomial has Mahler measure equal to 1, then all its complex nonzero roots are
+roots of unity.
 -/
+theorem pow_eq_one_of_mahlerMeasure_eq_one : ∃ n, 0 < n ∧ z ^ n = 1 := by
+  /-
+  We want to use `NumberField.Embeddings.pow_eq_one_of_norm_le_one` but it can only be applied to
+  elements of number fields. We thus first construct the number field `K` obtained by adjoining `z`
+  to `ℚ`.
+  -/
   let K := ℚ⟮z⟯
   let : NumberField K := {
-    to_charZero := ℚ⟮z⟯.charZero,
-    to_finiteDimensional := adjoin.finiteDimensional
-      (isIntegral_of_mahlerMeasure_eq_one h hz).tower_top }
--- `y` is `z` as an element of `K`
+    to_charZero := ℚ⟮z⟯.charZero
+    to_finiteDimensional :=
+      adjoin.finiteDimensional (isIntegral_of_mahlerMeasure_eq_one h hz).tower_top
+  }
+  -- `y` is `z` as an element of `K`
   let y : K := ⟨z, mem_adjoin_simple_self ℚ z⟩
   suffices ∃ (n : ℕ) (_ : 0 < n), y ^ n = 1 by
     obtain ⟨n, hn₀, hn₁⟩ := this
@@ -205,21 +221,24 @@ to `ℚ`.
   exact hz.2
 
 include h hz₀ hz in
-/-- If an integer polynomial has Mahler measure equal to 1, then all its complex nonzero roots are
-roots of unity. -/
+/--
+If an integer polynomial has Mahler measure equal to 1, then all its complex nonzero roots are
+roots of unity.
+-/
 theorem isPrimitiveRoot_of_mahlerMeasure_eq_one : ∃ n, 0 < n ∧ IsPrimitiveRoot z n := by
   obtain ⟨_, _, hz_pow⟩ := pow_eq_one_of_mahlerMeasure_eq_one h hz₀ hz
   exact IsPrimitiveRoot.exists_pos hz_pow (by omega)
 
 include h in
-/-- If an integer non-constant polynomial has Mahler measure equal to 1 and is not a multiple of
-`X`, then it is divisible by a cyclotomic polynomial. -/
-theorem cyclotomic_dvd_of_mahlerMeasure_eq_one (hX : ¬ X ∣ p) (hpdeg : p.degree ≠ 0) :
-    ∃ n, 0 < n ∧ cyclotomic n ℤ ∣ p := by
+/--
+If an integer non-constant polynomial has Mahler measure equal to 1 and is not a multiple of
+`X`, then it is divisible by a cyclotomic polynomial.
+-/
+theorem cyclotomic_dvd_of_mahlerMeasure_eq_one (hX : ¬ X ∣ p) (hpdeg : p.degree ≠ 0)
+    : ∃ n, 0 < n ∧ cyclotomic n ℤ ∣ p := by
   have hpdegC : (p.map (castRingHom ℂ)).degree ≠ 0 := by
     rwa [p.degree_map_eq_of_injective (castRingHom ℂ).injective_int]
-  obtain ⟨z, _⟩ := Splits.exists_eval_eq_zero (IsAlgClosed.splits <| p.map (castRingHom ℂ))
-    hpdegC
+  obtain ⟨z, _⟩ := Splits.exists_eval_eq_zero (IsAlgClosed.splits <| p.map (castRingHom ℂ)) hpdegC
   have hz₀ : z ≠ 0 := by
     contrapose hX
     simp_all [X_dvd_iff, coeff_zero_eq_aeval_zero]

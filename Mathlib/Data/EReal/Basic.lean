@@ -33,10 +33,9 @@ noncomputable section
 /-- The type of extended real numbers `[-∞, ∞]`, constructed as `WithBot (WithTop ℝ)`. -/
 @[wikidata Q2039387]
 def EReal := WithBot (WithTop ℝ)
-deriving Nontrivial,
-  Zero, One, AddMonoid, AddCommMonoid, AddCommMonoidWithOne, CharZero,
-  Top, Bot, SupSet, InfSet, PartialOrder, LinearOrder, CompleteLinearOrder, DenselyOrdered,
-  ZeroLEOneClass, IsOrderedAddMonoid
+deriving Nontrivial, Zero, One, AddMonoid, AddCommMonoid, AddCommMonoidWithOne, CharZero, Top, Bot,
+  SupSet, InfSet, PartialOrder, LinearOrder, CompleteLinearOrder, DenselyOrdered, ZeroLEOneClass,
+  IsOrderedAddMonoid
 
 /-- The canonical inclusion from reals to ereals. Registered as a coercion. -/
 @[coe] def Real.toEReal : ℝ → EReal := WithBot.some ∘ WithTop.some
@@ -48,8 +47,7 @@ instance : Coe ℝ EReal := ⟨Real.toEReal⟩
 theorem coe_strictMono : StrictMono Real.toEReal :=
   WithBot.coe_strictMono.comp WithTop.coe_strictMono
 
-theorem coe_injective : Injective Real.toEReal :=
-  coe_strictMono.injective
+theorem coe_injective : Injective Real.toEReal := coe_strictMono.injective
 
 @[simp, norm_cast]
 protected theorem coe_le_coe_iff {x y : ℝ} : (x : EReal) ≤ (y : EReal) ↔ x ≤ y :=
@@ -70,8 +68,7 @@ protected theorem coe_eq_coe_iff {x y : ℝ} : (x : EReal) = (y : EReal) ↔ x =
 protected theorem coe_ne_coe_iff {x y : ℝ} : (x : EReal) ≠ (y : EReal) ↔ x ≠ y :=
   coe_injective.ne_iff
 
-@[simp, norm_cast]
-protected theorem coe_natCast {n : ℕ} : ((n : ℝ) : EReal) = n := rfl
+@[simp, norm_cast] protected theorem coe_natCast {n : ℕ} : ((n : ℝ) : EReal) = n := rfl
 
 /-- The order embedding of `ℝ` into `EReal`. -/
 def orderEmbedding : ℝ ↪o EReal where
@@ -82,51 +79,56 @@ def orderEmbedding : ℝ ↪o EReal where
 theorem coe_orderEmbedding : ⇑orderEmbedding = Real.toEReal := rfl
 
 /-- The canonical map from nonnegative extended reals to extended reals. -/
-@[coe] def _root_.ENNReal.toEReal : ℝ≥0∞ → EReal
+@[coe]
+def _root_.ENNReal.toEReal : ℝ≥0∞ → EReal
   | ⊤ => ⊤
   | .some x => x.1
 
-instance : Coe ℝ≥0∞ EReal :=
-  ⟨ENNReal.toEReal⟩
+instance : Coe ℝ≥0∞ EReal := ⟨ENNReal.toEReal⟩
 
 @[simp] lemma _root_.ENNReal.toEReal_natCast (n : ℕ) : ((n : ℝ≥0∞) : EReal) = n := rfl
 
 @[simp, norm_cast] lemma _root_.ENNReal.toEReal_zero : ((0 : ℝ≥0∞) : EReal) = 0 := rfl
 @[simp, norm_cast] lemma _root_.ENNReal.toEReal_one : ((1 : ℝ≥0∞) : EReal) = 1 := rfl
 
-lemma _root_.ENNReal.toEReal_ofNat (n : ℕ) [n.AtLeastTwo] :
-    ((ofNat(n) : ℝ) : EReal) = ofNat(n) := rfl
+lemma _root_.ENNReal.toEReal_ofNat (n : ℕ) [n.AtLeastTwo] : ((ofNat(n) : ℝ) : EReal) = ofNat(n) :=
+  rfl
 
 instance : Inhabited EReal := ⟨0⟩
 
-@[simp, norm_cast]
-theorem coe_zero : ((0 : ℝ) : EReal) = 0 := rfl
+@[simp, norm_cast] theorem coe_zero : ((0 : ℝ) : EReal) = 0 := rfl
 
-@[simp, norm_cast]
-theorem coe_one : ((1 : ℝ) : EReal) = 1 := rfl
+@[simp, norm_cast] theorem coe_one : ((1 : ℝ) : EReal) = 1 := rfl
 
-/-- A recursor for `EReal` in terms of the coercion.
+/--
+A recursor for `EReal` in terms of the coercion.
 
 When working in term mode, note that pattern matching can be used directly,
-although this is prone to leaking the implementation details in terms of `Option`. -/
+although this is prone to leaking the implementation details in terms of `Option`.
+-/
 @[elab_as_elim, induction_eliminator, cases_eliminator]
-protected def rec {motive : EReal → Sort*}
-    (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤) : ∀ a : EReal, motive a
+protected def rec
+    {motive : EReal → Sort*} (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤)
+    : ∀ a : EReal, motive a
   | ⊥ => bot
   | (a : ℝ) => coe a
   | ⊤ => top
 
-@[simp] theorem rec_bot {motive : EReal → Sort*}
-    (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤) : EReal.rec bot coe top ⊥ = bot :=
+@[simp]
+theorem rec_bot {motive : EReal → Sort*} (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤)
+    : EReal.rec bot coe top ⊥ = bot :=
   rfl
 
-@[simp] theorem rec_top {motive : EReal → Sort*}
-    (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤) : EReal.rec bot coe top ⊤ = top :=
+@[simp]
+theorem rec_top {motive : EReal → Sort*} (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤)
+    : EReal.rec bot coe top ⊤ = top :=
   rfl
 
-@[simp] theorem rec_coe {motive : EReal → Sort*}
-    (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤) (a : ℝ) :
-    EReal.rec bot coe top a = coe a := rfl
+@[simp]
+theorem rec_coe
+    {motive : EReal → Sort*} (bot : motive ⊥) (coe : ∀ a : ℝ, motive a) (top : motive ⊤) (a : ℝ)
+    : EReal.rec bot coe top a = coe a :=
+  rfl
 
 protected lemma «forall» {p : EReal → Prop} : (∀ r, p r) ↔ p ⊥ ∧ p ⊤ ∧ ∀ r : ℝ, p r where
   mp h := ⟨h _, h _, fun _ ↦ h _⟩
@@ -136,67 +138,116 @@ protected lemma «exists» {p : EReal → Prop} : (∃ r, p r) ↔ p ⊥ ∨ p �
   mp := by rintro ⟨r, hr⟩; cases r <;> aesop
   mpr := by rintro (h | h | ⟨r, hr⟩) <;> exact ⟨_, ‹_›⟩
 
-/-- The multiplication on `EReal`. Our definition satisfies `0 * x = x * 0 = 0` for any `x`, and
-picks the only sensible value elsewhere. -/
+/--
+The multiplication on `EReal`. Our definition satisfies `0 * x = x * 0 = 0` for any `x`, and
+picks the only sensible value elsewhere.
+-/
 protected def mul : EReal → EReal → EReal
-  | ⊥, ⊥ => ⊤
-  | ⊥, ⊤ => ⊥
-  | ⊥, (y : ℝ) => if 0 < y then ⊥ else if y = 0 then 0 else ⊤
-  | ⊤, ⊥ => ⊥
-  | ⊤, ⊤ => ⊤
-  | ⊤, (y : ℝ) => if 0 < y then ⊤ else if y = 0 then 0 else ⊥
-  | (x : ℝ), ⊤ => if 0 < x then ⊤ else if x = 0 then 0 else ⊥
-  | (x : ℝ), ⊥ => if 0 < x then ⊥ else if x = 0 then 0 else ⊤
-  | (x : ℝ), (y : ℝ) => (x * y : ℝ)
+  | ⊥, ⊥ =>
+    ⊤
+  | ⊥, ⊤ =>
+    ⊥
+  | ⊥, (y : ℝ) =>
+    if 0 < y then
+      ⊥
+    else if y = 0 then
+      0
+    else
+      ⊤
+  | ⊤, ⊥ =>
+    ⊥
+  | ⊤, ⊤ =>
+    ⊤
+  | ⊤, (y : ℝ) =>
+    if 0 < y then
+      ⊤
+    else if y = 0 then
+      0
+    else
+      ⊥
+  | (x : ℝ), ⊤ =>
+    if 0 < x then
+      ⊤
+    else if x = 0 then
+      0
+    else
+      ⊥
+  | (x : ℝ), ⊥ =>
+    if 0 < x then
+      ⊥
+    else if x = 0 then
+      0
+    else
+      ⊤
+  | (x : ℝ), (y : ℝ) =>
+    (x * y : ℝ)
 
 instance : Mul EReal := ⟨EReal.mul⟩
 
-@[simp, norm_cast]
-theorem coe_mul (x y : ℝ) : (↑(x * y) : EReal) = x * y :=
-  rfl
+@[simp, norm_cast] theorem coe_mul (x y : ℝ) : (↑(x * y) : EReal) = x * y := rfl
 
-/-- Induct on two `EReal`s by performing case splits on the sign of one whenever the other is
-infinite. -/
+/--
+Induct on two `EReal`s by performing case splits on the sign of one whenever the other is
+infinite.
+-/
 @[elab_as_elim]
-theorem induction₂ {P : EReal → EReal → Prop} (top_top : P ⊤ ⊤) (top_pos : ∀ x : ℝ, 0 < x → P ⊤ x)
+theorem induction₂
+    {P : EReal → EReal → Prop} (top_top : P ⊤ ⊤) (top_pos : ∀ x : ℝ, 0 < x → P ⊤ x)
     (top_zero : P ⊤ 0) (top_neg : ∀ x : ℝ, x < 0 → P ⊤ x) (top_bot : P ⊤ ⊥)
     (pos_top : ∀ x : ℝ, 0 < x → P x ⊤) (pos_bot : ∀ x : ℝ, 0 < x → P x ⊥) (zero_top : P 0 ⊤)
     (coe_coe : ∀ x y : ℝ, P x y) (zero_bot : P 0 ⊥) (neg_top : ∀ x : ℝ, x < 0 → P x ⊤)
     (neg_bot : ∀ x : ℝ, x < 0 → P x ⊥) (bot_top : P ⊥ ⊤) (bot_pos : ∀ x : ℝ, 0 < x → P ⊥ x)
-    (bot_zero : P ⊥ 0) (bot_neg : ∀ x : ℝ, x < 0 → P ⊥ x) (bot_bot : P ⊥ ⊥) : ∀ x y, P x y
-  | ⊥, ⊥ => bot_bot
+    (bot_zero : P ⊥ 0) (bot_neg : ∀ x : ℝ, x < 0 → P ⊥ x) (bot_bot : P ⊥ ⊥)
+    : ∀ x y, P x y
+  | ⊥, ⊥ =>
+    bot_bot
   | ⊥, (y : ℝ) => by
     rcases lt_trichotomy y 0 with (hy | rfl | hy)
     exacts [bot_neg y hy, bot_zero, bot_pos y hy]
-  | ⊥, ⊤ => bot_top
+  | ⊥, ⊤ =>
+    bot_top
   | (x : ℝ), ⊥ => by
     rcases lt_trichotomy x 0 with (hx | rfl | hx)
     exacts [neg_bot x hx, zero_bot, pos_bot x hx]
-  | (x : ℝ), (y : ℝ) => coe_coe _ _
+  | (x : ℝ), (y : ℝ) =>
+    coe_coe _ _
   | (x : ℝ), ⊤ => by
     rcases lt_trichotomy x 0 with (hx | rfl | hx)
     exacts [neg_top x hx, zero_top, pos_top x hx]
-  | ⊤, ⊥ => top_bot
+  | ⊤, ⊥ =>
+    top_bot
   | ⊤, (y : ℝ) => by
     rcases lt_trichotomy y 0 with (hy | rfl | hy)
     exacts [top_neg y hy, top_zero, top_pos y hy]
-  | ⊤, ⊤ => top_top
+  | ⊤, ⊤ =>
+    top_top
 
-/-- Induct on two `EReal`s by performing case splits on the sign of one whenever the other is
-infinite. This version eliminates some cases by assuming that the relation is symmetric. -/
+/--
+Induct on two `EReal`s by performing case splits on the sign of one whenever the other is
+infinite. This version eliminates some cases by assuming that the relation is symmetric.
+-/
 @[elab_as_elim]
-theorem induction₂_symm {P : EReal → EReal → Prop} (symm : ∀ {x y}, P x y → P y x)
-    (top_top : P ⊤ ⊤) (top_pos : ∀ x : ℝ, 0 < x → P ⊤ x) (top_zero : P ⊤ 0)
-    (top_neg : ∀ x : ℝ, x < 0 → P ⊤ x) (top_bot : P ⊤ ⊥) (pos_bot : ∀ x : ℝ, 0 < x → P x ⊥)
-    (coe_coe : ∀ x y : ℝ, P x y) (zero_bot : P 0 ⊥) (neg_bot : ∀ x : ℝ, x < 0 → P x ⊥)
-    (bot_bot : P ⊥ ⊥) : ∀ x y, P x y :=
-  @induction₂ P top_top top_pos top_zero top_neg top_bot (fun _ h => symm <| top_pos _ h)
-    pos_bot (symm top_zero) coe_coe zero_bot (fun _ h => symm <| top_neg _ h) neg_bot (symm top_bot)
-    (fun _ h => symm <| pos_bot _ h) (symm zero_bot) (fun _ h => symm <| neg_bot _ h) bot_bot
+theorem induction₂_symm
+    {P : EReal → EReal → Prop} (symm : ∀ {x y}, P x y → P y x) (top_top : P ⊤ ⊤)
+    (top_pos : ∀ x : ℝ, 0 < x → P ⊤ x) (top_zero : P ⊤ 0) (top_neg : ∀ x : ℝ, x < 0 → P ⊤ x)
+    (top_bot : P ⊤ ⊥) (pos_bot : ∀ x : ℝ, 0 < x → P x ⊥) (coe_coe : ∀ x y : ℝ, P x y)
+    (zero_bot : P 0 ⊥) (neg_bot : ∀ x : ℝ, x < 0 → P x ⊥) (bot_bot : P ⊥ ⊥)
+    : ∀ x y, P x y :=
+  @induction₂ P top_top top_pos top_zero top_neg top_bot
+    (fun _ h => symm <| top_pos _ h)
+    pos_bot (symm top_zero) coe_coe zero_bot
+    (fun _ h => symm <| top_neg _ h)
+    neg_bot (symm top_bot)
+    (fun _ h => symm <| pos_bot _ h)
+    (symm zero_bot)
+    (fun _ h => symm <| neg_bot _ h)
+    bot_bot
 
 protected theorem mul_comm (x y : EReal) : x * y = y * x := by
-  induction x <;> induction y <;>
-    try { rfl }
+  induction x <;> induction y
+    <;> try {
+      rfl
+    }
   rw [← coe_mul, ← coe_mul, mul_comm]
 
 protected theorem one_mul : ∀ x : EReal, 1 * x = x
@@ -230,73 +281,39 @@ def toReal : EReal → ℝ
   | ⊤ => 0
   | (x : ℝ) => x
 
-@[simp]
-theorem toReal_top : toReal ⊤ = 0 :=
-  rfl
+@[simp] theorem toReal_top : toReal ⊤ = 0 := rfl
 
-@[simp]
-theorem toReal_bot : toReal ⊥ = 0 :=
-  rfl
+@[simp] theorem toReal_bot : toReal ⊥ = 0 := rfl
 
-@[simp]
-theorem toReal_zero : toReal 0 = 0 :=
-  rfl
+@[simp] theorem toReal_zero : toReal 0 = 0 := rfl
 
-@[simp]
-theorem toReal_one : toReal 1 = 1 :=
-  rfl
+@[simp] theorem toReal_one : toReal 1 = 1 := rfl
 
-@[simp]
-theorem toReal_coe (x : ℝ) : toReal (x : EReal) = x :=
-  rfl
+@[simp] theorem toReal_coe (x : ℝ) : toReal (x : EReal) = x := rfl
 
-@[simp]
-theorem bot_lt_coe (x : ℝ) : (⊥ : EReal) < x :=
-  WithBot.bot_lt_coe _
+@[simp] theorem bot_lt_coe (x : ℝ) : (⊥ : EReal) < x := WithBot.bot_lt_coe _
 
-@[simp]
-theorem coe_ne_bot (x : ℝ) : (x : EReal) ≠ ⊥ :=
-  (bot_lt_coe x).ne'
+@[simp] theorem coe_ne_bot (x : ℝ) : (x : EReal) ≠ ⊥ := (bot_lt_coe x).ne'
 
-@[simp]
-theorem bot_ne_coe (x : ℝ) : (⊥ : EReal) ≠ x :=
-  (bot_lt_coe x).ne
+@[simp] theorem bot_ne_coe (x : ℝ) : (⊥ : EReal) ≠ x := (bot_lt_coe x).ne
 
-@[simp]
-theorem coe_lt_top (x : ℝ) : (x : EReal) < ⊤ :=
-  WithBot.coe_lt_coe.2 <| WithTop.coe_lt_top _
+@[simp] theorem coe_lt_top (x : ℝ) : (x : EReal) < ⊤ := WithBot.coe_lt_coe.2 <| WithTop.coe_lt_top _
 
-@[simp]
-theorem coe_ne_top (x : ℝ) : (x : EReal) ≠ ⊤ :=
-  (coe_lt_top x).ne
+@[simp] theorem coe_ne_top (x : ℝ) : (x : EReal) ≠ ⊤ := (coe_lt_top x).ne
 
-@[simp]
-theorem top_ne_coe (x : ℝ) : (⊤ : EReal) ≠ x :=
-  (coe_lt_top x).ne'
+@[simp] theorem top_ne_coe (x : ℝ) : (⊤ : EReal) ≠ x := (coe_lt_top x).ne'
 
-@[simp]
-theorem bot_lt_zero : (⊥ : EReal) < 0 :=
-  bot_lt_coe 0
+@[simp] theorem bot_lt_zero : (⊥ : EReal) < 0 := bot_lt_coe 0
 
-@[simp]
-theorem bot_ne_zero : (⊥ : EReal) ≠ 0 :=
-  (coe_ne_bot 0).symm
+@[simp] theorem bot_ne_zero : (⊥ : EReal) ≠ 0 := (coe_ne_bot 0).symm
 
-@[simp]
-theorem zero_ne_bot : (0 : EReal) ≠ ⊥ :=
-  coe_ne_bot 0
+@[simp] theorem zero_ne_bot : (0 : EReal) ≠ ⊥ := coe_ne_bot 0
 
-@[simp]
-theorem zero_lt_top : (0 : EReal) < ⊤ :=
-  coe_lt_top 0
+@[simp] theorem zero_lt_top : (0 : EReal) < ⊤ := coe_lt_top 0
 
-@[simp]
-theorem zero_ne_top : (0 : EReal) ≠ ⊤ :=
-  coe_ne_top 0
+@[simp] theorem zero_ne_top : (0 : EReal) ≠ ⊤ := coe_ne_top 0
 
-@[simp]
-theorem top_ne_zero : (⊤ : EReal) ≠ 0 :=
-  (coe_ne_top 0).symm
+@[simp] theorem top_ne_zero : (⊤ : EReal) ≠ 0 := (coe_ne_top 0).symm
 
 theorem range_coe : range Real.toEReal = {⊥, ⊤}ᶜ := by
   ext x
@@ -306,9 +323,7 @@ theorem range_coe_eq_Ioo : range Real.toEReal = Ioo ⊥ ⊤ := by
   ext x
   induction x <;> simp
 
-@[simp, norm_cast]
-theorem coe_add (x y : ℝ) : (↑(x + y) : EReal) = x + y :=
-  rfl
+@[simp, norm_cast] theorem coe_add (x y : ℝ) : (↑(x + y) : EReal) = x + y := rfl
 
 /-- The additive homomorphism from `ℝ` to `EReal`. -/
 def _root_.Real.toERealAddHom : ℝ →+ EReal where
@@ -324,45 +339,34 @@ def _root_.Real.toERealAddHom : ℝ →+ EReal where
 theorem coe_nsmul (n : ℕ) (x : ℝ) : (↑(n • x) : EReal) = n • (x : EReal) :=
   map_nsmul Real.toERealAddHom _ _
 
-@[simp, norm_cast]
-theorem coe_eq_zero {x : ℝ} : (x : EReal) = 0 ↔ x = 0 :=
-  EReal.coe_eq_coe_iff
+@[simp, norm_cast] theorem coe_eq_zero {x : ℝ} : (x : EReal) = 0 ↔ x = 0 := EReal.coe_eq_coe_iff
+
+@[simp, norm_cast] theorem coe_eq_one {x : ℝ} : (x : EReal) = 1 ↔ x = 1 := EReal.coe_eq_coe_iff
+
+theorem coe_ne_zero {x : ℝ} : (x : EReal) ≠ 0 ↔ x ≠ 0 := EReal.coe_ne_coe_iff
+
+theorem coe_ne_one {x : ℝ} : (x : EReal) ≠ 1 ↔ x ≠ 1 := EReal.coe_ne_coe_iff
 
 @[simp, norm_cast]
-theorem coe_eq_one {x : ℝ} : (x : EReal) = 1 ↔ x = 1 :=
-  EReal.coe_eq_coe_iff
-
-theorem coe_ne_zero {x : ℝ} : (x : EReal) ≠ 0 ↔ x ≠ 0 :=
-  EReal.coe_ne_coe_iff
-
-theorem coe_ne_one {x : ℝ} : (x : EReal) ≠ 1 ↔ x ≠ 1 :=
-  EReal.coe_ne_coe_iff
+protected theorem coe_nonneg {x : ℝ} : (0 : EReal) ≤ x ↔ 0 ≤ x := EReal.coe_le_coe_iff
 
 @[simp, norm_cast]
-protected theorem coe_nonneg {x : ℝ} : (0 : EReal) ≤ x ↔ 0 ≤ x :=
-  EReal.coe_le_coe_iff
+protected theorem coe_nonpos {x : ℝ} : (x : EReal) ≤ 0 ↔ x ≤ 0 := EReal.coe_le_coe_iff
 
 @[simp, norm_cast]
-protected theorem coe_nonpos {x : ℝ} : (x : EReal) ≤ 0 ↔ x ≤ 0 :=
-  EReal.coe_le_coe_iff
+protected theorem coe_pos {x : ℝ} : (0 : EReal) < x ↔ 0 < x := EReal.coe_lt_coe_iff
 
 @[simp, norm_cast]
-protected theorem coe_pos {x : ℝ} : (0 : EReal) < x ↔ 0 < x :=
-  EReal.coe_lt_coe_iff
+protected theorem coe_neg' {x : ℝ} : (x : EReal) < 0 ↔ x < 0 := EReal.coe_lt_coe_iff
 
-@[simp, norm_cast]
-protected theorem coe_neg' {x : ℝ} : (x : EReal) < 0 ↔ x < 0 :=
-  EReal.coe_lt_coe_iff
-
-lemma toReal_eq_zero_iff {x : EReal} : x.toReal = 0 ↔ x = 0 ∨ x = ⊤ ∨ x = ⊥ := by
-  cases x <;> simp
+lemma toReal_eq_zero_iff {x : EReal} : x.toReal = 0 ↔ x = 0 ∨ x = ⊤ ∨ x = ⊥ := by cases x <;> simp
 
 lemma toReal_ne_zero_iff {x : EReal} : x.toReal ≠ 0 ↔ x ≠ 0 ∧ x ≠ ⊤ ∧ x ≠ ⊥ := by
   simp only [ne_eq, toReal_eq_zero_iff, not_or]
 
-lemma toReal_eq_toReal {x y : EReal} (hx_top : x ≠ ⊤) (hx_bot : x ≠ ⊥)
-    (hy_top : y ≠ ⊤) (hy_bot : y ≠ ⊥) :
-    x.toReal = y.toReal ↔ x = y := by
+lemma toReal_eq_toReal
+    {x y : EReal} (hx_top : x ≠ ⊤) (hx_bot : x ≠ ⊥) (hy_top : y ≠ ⊤) (hy_bot : y ≠ ⊥)
+    : x.toReal = y.toReal ↔ x = y := by
   lift x to ℝ using ⟨hx_top, hx_bot⟩
   lift y to ℝ using ⟨hy_top, hy_bot⟩
   simp
@@ -387,7 +391,8 @@ lemma toReal_neg {x : EReal} (hx : x < 0) (h'x : x ≠ ⊥) : x.toReal < 0 := by
   lift x to ℝ using by aesop
   simpa using hx
 
-@[simp] lemma toReal_image_Ioo_zero_top : toReal '' (Ioo 0 ⊤) = Ioi 0 := by
+@[simp]
+lemma toReal_image_Ioo_zero_top : toReal '' (Ioo 0 ⊤) = Ioi 0 := by
   ext x
   constructor
   · rintro ⟨y, ⟨hy0, _⟩, rfl⟩
@@ -397,7 +402,8 @@ lemma toReal_neg {x : EReal} (hx : x < 0) (h'x : x ≠ ⊥) : x.toReal < 0 := by
     use (x : EReal)
     simpa using hx
 
-@[simp] lemma toReal_image_Ioo_bot_zero : toReal '' (Ioo ⊥ 0) = Iio 0 := by
+@[simp]
+lemma toReal_image_Ioo_bot_zero : toReal '' (Ioo ⊥ 0) = Iio 0 := by
   ext x
   constructor
   · rintro ⟨y, ⟨_, hy0⟩, rfl⟩
@@ -407,8 +413,8 @@ lemma toReal_neg {x : EReal} (hx : x < 0) (h'x : x ≠ ⊥) : x.toReal < 0 := by
     use (x : EReal)
     simpa using hx
 
-theorem toReal_le_toReal {x y : EReal} (h : x ≤ y) (hx : x ≠ ⊥) (hy : y ≠ ⊤) :
-    x.toReal ≤ y.toReal := by
+theorem toReal_le_toReal {x y : EReal} (h : x ≤ y) (hx : x ≠ ⊥) (hy : y ≠ ⊤)
+    : x.toReal ≤ y.toReal := by
   lift x to ℝ using ⟨ne_top_of_le_ne_top hy h, hx⟩
   lift y to ℝ using ⟨hy, ne_bot_of_le_ne_bot hx h⟩
   simpa using h
@@ -588,34 +594,24 @@ theorem toReal_coe_ennreal : ∀ {x : ℝ≥0∞}, toReal (x : EReal) = ENNReal.
   | ⊤ => rfl
   | .some _ => rfl
 
-@[simp]
-theorem coe_ennreal_ofReal {x : ℝ} : (ENNReal.ofReal x : EReal) = max x 0 :=
-  rfl
+@[simp] theorem coe_ennreal_ofReal {x : ℝ} : (ENNReal.ofReal x : EReal) = max x 0 := rfl
 
 lemma coe_ennreal_toReal {x : ℝ≥0∞} (hx : x ≠ ∞) : (x.toReal : EReal) = x := by
   lift x to ℝ≥0 using hx
   rfl
 
-theorem coe_nnreal_eq_coe_real (x : ℝ≥0) : ((x : ℝ≥0∞) : EReal) = (x : ℝ) :=
-  rfl
+theorem coe_nnreal_eq_coe_real (x : ℝ≥0) : ((x : ℝ≥0∞) : EReal) = (x : ℝ) := rfl
 
-@[simp, norm_cast]
-theorem coe_ennreal_zero : ((0 : ℝ≥0∞) : EReal) = 0 :=
-  rfl
+@[simp, norm_cast] theorem coe_ennreal_zero : ((0 : ℝ≥0∞) : EReal) = 0 := rfl
 
-@[simp, norm_cast]
-theorem coe_ennreal_one : ((1 : ℝ≥0∞) : EReal) = 1 :=
-  rfl
+@[simp, norm_cast] theorem coe_ennreal_one : ((1 : ℝ≥0∞) : EReal) = 1 := rfl
 
-@[simp, norm_cast]
-theorem coe_ennreal_top : ((⊤ : ℝ≥0∞) : EReal) = ⊤ :=
-  rfl
+@[simp, norm_cast] theorem coe_ennreal_top : ((⊤ : ℝ≥0∞) : EReal) = ⊤ := rfl
 
 theorem coe_ennreal_strictMono : StrictMono ((↑) : ℝ≥0∞ → EReal) :=
   WithTop.strictMono_iff.2 ⟨fun _ _ => EReal.coe_lt_coe_iff.2, fun _ => coe_lt_top _⟩
 
-theorem coe_ennreal_injective : Injective ((↑) : ℝ≥0∞ → EReal) :=
-  coe_ennreal_strictMono.injective
+theorem coe_ennreal_injective : Injective ((↑) : ℝ≥0∞ → EReal) := coe_ennreal_strictMono.injective
 
 @[simp]
 theorem coe_ennreal_eq_top_iff {x : ℝ≥0∞} : (x : EReal) = ⊤ ↔ x = ⊤ :=
@@ -623,8 +619,7 @@ theorem coe_ennreal_eq_top_iff {x : ℝ≥0∞} : (x : EReal) = ⊤ ↔ x = ⊤ 
 
 theorem coe_nnreal_ne_top (x : ℝ≥0) : ((x : ℝ≥0∞) : EReal) ≠ ⊤ := coe_ne_top x
 
-@[simp]
-theorem coe_nnreal_lt_top (x : ℝ≥0) : ((x : ℝ≥0∞) : EReal) < ⊤ := coe_lt_top x
+@[simp] theorem coe_nnreal_lt_top (x : ℝ≥0) : ((x : ℝ≥0∞) : EReal) < ⊤ := coe_lt_top x
 
 @[simp, norm_cast]
 theorem coe_ennreal_le_coe_ennreal_iff {x y : ℝ≥0∞} : (x : EReal) ≤ (y : EReal) ↔ x ≤ y :=
@@ -650,18 +645,17 @@ theorem coe_ennreal_eq_one {x : ℝ≥0∞} : (x : EReal) = 1 ↔ x = 1 := by
   rw [← coe_ennreal_eq_coe_ennreal_iff, coe_ennreal_one]
 
 @[norm_cast]
-theorem coe_ennreal_ne_zero {x : ℝ≥0∞} : (x : EReal) ≠ 0 ↔ x ≠ 0 :=
-  coe_ennreal_eq_zero.not
+theorem coe_ennreal_ne_zero {x : ℝ≥0∞} : (x : EReal) ≠ 0 ↔ x ≠ 0 := coe_ennreal_eq_zero.not
 
 @[norm_cast]
-theorem coe_ennreal_ne_one {x : ℝ≥0∞} : (x : EReal) ≠ 1 ↔ x ≠ 1 :=
-  coe_ennreal_eq_one.not
+theorem coe_ennreal_ne_one {x : ℝ≥0∞} : (x : EReal) ≠ 1 ↔ x ≠ 1 := coe_ennreal_eq_one.not
 
-theorem coe_ennreal_nonneg (x : ℝ≥0∞) : (0 : EReal) ≤ x :=
-  coe_ennreal_le_coe_ennreal_iff.2 zero_le
+theorem coe_ennreal_nonneg (x : ℝ≥0∞) : (0 : EReal) ≤ x := coe_ennreal_le_coe_ennreal_iff.2 zero_le
 
-@[simp] theorem range_coe_ennreal : range ((↑) : ℝ≥0∞ → EReal) = Set.Ici 0 :=
-  Subset.antisymm (range_subset_iff.2 coe_ennreal_nonneg) fun x => match x with
+@[simp]
+theorem range_coe_ennreal : range ((↑) : ℝ≥0∞ → EReal) = Set.Ici 0 :=
+  Subset.antisymm (range_subset_iff.2 coe_ennreal_nonneg) fun x =>
+    match x with
     | ⊥ => fun h => absurd h bot_lt_zero.not_ge
     | ⊤ => fun _ => ⟨⊤, rfl⟩
     | (x : ℝ) => fun h => ⟨.some ⟨x, EReal.coe_nonneg.1 h⟩, rfl⟩
@@ -679,9 +673,7 @@ theorem coe_ennreal_pos_iff_ne_zero {x : ℝ≥0∞} : (0 : EReal) < x ↔ x ≠
 theorem bot_lt_coe_ennreal (x : ℝ≥0∞) : (⊥ : EReal) < x :=
   (bot_lt_coe 0).trans_le (coe_ennreal_nonneg _)
 
-@[simp]
-theorem coe_ennreal_ne_bot (x : ℝ≥0∞) : (x : EReal) ≠ ⊥ :=
-  (bot_lt_coe_ennreal x).ne'
+@[simp] theorem coe_ennreal_ne_bot (x : ℝ≥0∞) : (x : EReal) ≠ ⊥ := (bot_lt_coe_ennreal x).ne'
 
 @[simp, norm_cast]
 theorem coe_ennreal_add (x y : ENNReal) : ((x + y : ℝ≥0∞) : EReal) = x + y := by
@@ -695,8 +687,10 @@ private theorem coe_ennreal_top_mul (x : ℝ≥0) : ((⊤ * x : ℝ≥0∞) : ER
 
 @[simp, norm_cast]
 theorem coe_ennreal_mul : ∀ x y : ℝ≥0∞, ((x * y : ℝ≥0∞) : EReal) = (x : EReal) * y
-  | ⊤, ⊤ => rfl
-  | ⊤, (y : ℝ≥0) => coe_ennreal_top_mul y
+  | ⊤, ⊤ =>
+    rfl
+  | ⊤, (y : ℝ≥0) =>
+    coe_ennreal_top_mul y
   | (x : ℝ≥0), ⊤ => by
     rw [mul_comm, coe_ennreal_top_mul, EReal.mul_comm, coe_ennreal_top]
   | (x : ℝ≥0), (y : ℝ≥0) => by
@@ -710,8 +704,10 @@ theorem coe_ennreal_nsmul (n : ℕ) (x : ℝ≥0∞) : (↑(n • x) : EReal) = 
 
 /-- `x.toENNReal` returns `x` if it is nonnegative, `0` otherwise. -/
 noncomputable def toENNReal (x : EReal) : ℝ≥0∞ :=
-  if x = ⊤ then ⊤
-  else ENNReal.ofReal x.toReal
+  if x = ⊤ then
+    ⊤
+  else
+    ENNReal.ofReal x.toReal
 
 @[simp] lemma toENNReal_top : (⊤ : EReal).toENNReal = ⊤ := rfl
 
@@ -776,8 +772,8 @@ lemma toReal_toENNReal {x : EReal} (hx : 0 ≤ x) : x.toENNReal.toReal = x.toRea
   · simp [h]
   · simp [h, toReal_nonneg hx]
 
-lemma toENNReal_eq_toENNReal {x y : EReal} (hx : 0 ≤ x) (hy : 0 ≤ y) :
-    x.toENNReal = y.toENNReal ↔ x = y := by
+lemma toENNReal_eq_toENNReal {x y : EReal} (hx : 0 ≤ x) (hy : 0 ≤ y)
+    : x.toENNReal = y.toENNReal ↔ x = y := by
   induction x <;> induction y <;> simp_all
 
 lemma toENNReal_le_toENNReal {x y : EReal} (h : x ≤ y) : x.toENNReal ≤ y.toENNReal := by
@@ -785,31 +781,27 @@ lemma toENNReal_le_toENNReal {x y : EReal} (h : x ≤ y) : x.toENNReal ≤ y.toE
   · simp
   · by_cases hy_top : y = ⊤
     · simp [hy_top]
-    simp only [toENNReal, coe_ne_top, ↓reduceIte, toReal_coe, hy_top]
+    simp only [toENNReal, coe_ne_top, ↓ reduceIte, toReal_coe, hy_top]
     exact ENNReal.ofReal_le_ofReal <| EReal.toReal_le_toReal h (coe_ne_bot _) hy_top
   · simp_all
 
-lemma toENNReal_lt_toENNReal {x y : EReal} (hx : 0 ≤ x) (hxy : x < y) :
-    x.toENNReal < y.toENNReal :=
-  lt_of_le_of_ne (toENNReal_le_toENNReal hxy.le)
-    fun h ↦ hxy.ne <| (toENNReal_eq_toENNReal hx (hx.trans_lt hxy).le).mp h
+lemma toENNReal_lt_toENNReal {x y : EReal} (hx : 0 ≤ x) (hxy : x < y) : x.toENNReal < y.toENNReal :=
+  lt_of_le_of_ne (toENNReal_le_toENNReal hxy.le) fun h ↦
+    hxy.ne <| (toENNReal_eq_toENNReal hx (hx.trans_lt hxy).le).mp h
 
 /-! ### nat coercion -/
 
 theorem coe_coe_eq_natCast (n : ℕ) : (n : ℝ) = (n : EReal) := rfl
 
-@[simp]
-theorem natCast_ne_bot (n : ℕ) : (n : EReal) ≠ ⊥ := Ne.symm (ne_of_beq_false rfl)
+@[simp] theorem natCast_ne_bot (n : ℕ) : (n : EReal) ≠ ⊥ := Ne.symm (ne_of_beq_false rfl)
 
-@[simp]
-theorem natCast_ne_top (n : ℕ) : (n : EReal) ≠ ⊤ := Ne.symm (ne_of_beq_false rfl)
+@[simp] theorem natCast_ne_top (n : ℕ) : (n : EReal) ≠ ⊤ := Ne.symm (ne_of_beq_false rfl)
 
 @[norm_cast]
 theorem natCast_eq_iff {m n : ℕ} : (m : EReal) = (n : EReal) ↔ m = n := by
   rw [← coe_coe_eq_natCast n, ← coe_coe_eq_natCast m, EReal.coe_eq_coe_iff, Nat.cast_inj]
 
-theorem natCast_ne_iff {m n : ℕ} : (m : EReal) ≠ (n : EReal) ↔ m ≠ n :=
-  not_iff_not.2 natCast_eq_iff
+theorem natCast_ne_iff {m n : ℕ} : (m : EReal) ≠ (n : EReal) ↔ m ≠ n := not_iff_not.2 natCast_eq_iff
 
 @[norm_cast]
 theorem natCast_le_iff {m n : ℕ} : (m : EReal) ≤ (n : EReal) ↔ m ≤ n := by
@@ -820,8 +812,7 @@ theorem natCast_lt_iff {m n : ℕ} : (m : EReal) < (n : EReal) ↔ m < n := by
   rw [← coe_coe_eq_natCast n, ← coe_coe_eq_natCast m, EReal.coe_lt_coe_iff, Nat.cast_lt]
 
 @[simp, norm_cast]
-theorem natCast_mul (m n : ℕ) :
-    (m * n : ℕ) = (m : EReal) * (n : EReal) := by
+theorem natCast_mul (m n : ℕ) : (m * n : ℕ) = (m : EReal) * (n : EReal) := by
   rw [← coe_coe_eq_natCast, ← coe_coe_eq_natCast, ← coe_coe_eq_natCast, Nat.cast_mul, EReal.coe_mul]
 
 @[simp, norm_cast]
@@ -842,29 +833,35 @@ lemma natCast_lt_ennrealToEReal {r : ℝ≥0∞} {n : ℕ} : n < (r : EReal) ↔
 
 /-! ### Miscellaneous lemmas -/
 
-theorem exists_rat_btwn_of_lt :
-    ∀ {a b : EReal}, a < b → ∃ x : ℚ, a < (x : ℝ) ∧ ((x : ℝ) : EReal) < b
-  | ⊤, _, h => (not_top_lt h).elim
-  | (a : ℝ), ⊥, h => (lt_irrefl _ ((bot_lt_coe a).trans h)).elim
-  | (a : ℝ), (b : ℝ), h => by simp [exists_rat_btwn (EReal.coe_lt_coe_iff.1 h)]
+theorem exists_rat_btwn_of_lt
+    : ∀ {a b : EReal}, a < b → ∃ x : ℚ, a < (x : ℝ) ∧ ((x : ℝ) : EReal) < b
+  | ⊤, _, h =>
+    (not_top_lt h).elim
+  | (a : ℝ), ⊥, h =>
+    (lt_irrefl _ ((bot_lt_coe a).trans h)).elim
+  | (a : ℝ), (b : ℝ), h => by
+    simp [exists_rat_btwn (EReal.coe_lt_coe_iff.1 h)]
   | (a : ℝ), ⊤, _ =>
     let ⟨b, hab⟩ := exists_rat_gt a
     ⟨b, by simpa using hab, coe_lt_top _⟩
-  | ⊥, ⊥, h => (lt_irrefl _ h).elim
+  | ⊥, ⊥, h =>
+    (lt_irrefl _ h).elim
   | ⊥, (a : ℝ), _ =>
     let ⟨b, hab⟩ := exists_rat_lt a
     ⟨b, bot_lt_coe _, by simpa using hab⟩
-  | ⊥, ⊤, _ => ⟨0, bot_lt_coe _, coe_lt_top _⟩
+  | ⊥, ⊤, _ =>
+    ⟨0, bot_lt_coe _, coe_lt_top _⟩
 
-theorem lt_iff_exists_rat_btwn {a b : EReal} :
-    a < b ↔ ∃ x : ℚ, a < (x : ℝ) ∧ ((x : ℝ) : EReal) < b :=
+theorem lt_iff_exists_rat_btwn {a b : EReal}
+    : a < b ↔ ∃ x : ℚ, a < (x : ℝ) ∧ ((x : ℝ) : EReal) < b :=
   ⟨fun hab => exists_rat_btwn_of_lt hab, fun ⟨_x, ax, xb⟩ => ax.trans xb⟩
 
-theorem lt_iff_exists_real_btwn {a b : EReal} : a < b ↔ ∃ x : ℝ, a < x ∧ (x : EReal) < b :=
-  ⟨fun hab =>
+theorem lt_iff_exists_real_btwn {a b : EReal} : a < b ↔ ∃ x : ℝ, a < x ∧ (x : EReal) < b := ⟨
+  fun hab =>
     let ⟨x, ax, xb⟩ := exists_rat_btwn_of_lt hab
     ⟨(x : ℝ), ax, xb⟩,
-    fun ⟨_x, ax, xb⟩ => ax.trans xb⟩
+  fun ⟨_x, ax, xb⟩ => ax.trans xb
+⟩
 
 /-- The set of numbers in `EReal` that are not equal to `±∞` is equivalent to `ℝ`. -/
 def neTopBotEquivReal : ({⊥, ⊤}ᶜ : Set EReal) ≃ ℝ where
@@ -884,64 +881,87 @@ open Lean Meta Qq Function
 
 /-- Extension for the `positivity` tactic: cast from `ℝ` to `EReal`. -/
 @[positivity Real.toEReal _]
-meta def evalRealToEReal : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(EReal), ~q(Real.toEReal $a) =>
-    assertInstancesCommute
-    let ra ← core q(inferInstance) (some q(inferInstance)) a
-    match ra with
-    | .positive pa => pure (.positive q(EReal.coe_pos.2 $pa))
-    | .nonnegative pa => pure (.nonnegative q(EReal.coe_nonneg.2 $pa))
-    | .nonzero pa => pure (.nonzero q(EReal.coe_ne_zero.2 $pa))
-    | _ => pure .none
-  | _, _, _ => throwError "not Real.toEReal"
+meta def evalRealToEReal : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(EReal), ~q(Real.toEReal $a) =>
+        assertInstancesCommute
+        let ra ← core (q(inferInstance)) (some q(inferInstance)) a
+        match ra with
+        | .positive pa => pure (.positive q(EReal.coe_pos.2 $pa))
+        | .nonnegative pa => pure (.nonnegative q(EReal.coe_nonneg.2 $pa))
+        | .nonzero pa => pure (.nonzero q(EReal.coe_ne_zero.2 $pa))
+        | _ => pure .none
+      | _, _, _ =>
+        throwError "not Real.toEReal"
 
 /-- Extension for the `positivity` tactic: cast from `ℝ≥0∞` to `EReal`. -/
 @[positivity ENNReal.toEReal _]
-meta def evalENNRealToEReal : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(EReal), ~q(ENNReal.toEReal $a) =>
-    assertInstancesCommute
-    let ra ← core q(inferInstance) (some q(inferInstance)) a
-    match ra with
-    | .positive pa => pure (.positive q(EReal.coe_ennreal_pos.2 $pa))
-    | .nonzero pa => pure (.positive q(EReal.coe_ennreal_pos_iff_ne_zero.2 $pa))
-    | _ => pure (.nonnegative q(EReal.coe_ennreal_nonneg $a))
-  | _, _, _ => throwError "not ENNReal.toEReal"
+meta def evalENNRealToEReal : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(EReal), ~q(ENNReal.toEReal $a) =>
+        assertInstancesCommute
+        let ra ← core (q(inferInstance)) (some q(inferInstance)) a
+        match ra with
+        | .positive pa => pure (.positive q(EReal.coe_ennreal_pos.2 $pa))
+        | .nonzero pa => pure (.positive q(EReal.coe_ennreal_pos_iff_ne_zero.2 $pa))
+        | _ => pure (.nonnegative q(EReal.coe_ennreal_nonneg $a))
+      | _, _, _ =>
+        throwError "not ENNReal.toEReal"
 
-/-- Extension for the `positivity` tactic: projection from `EReal` to `ℝ`.
+/--
+Extension for the `positivity` tactic: projection from `EReal` to `ℝ`.
 
 We prove that `EReal.toReal x` is nonnegative whenever `x` is nonnegative.
 Since `EReal.toReal ⊤ = 0`, we cannot prove a stronger statement,
-at least without relying on a tactic like `finiteness`. -/
+at least without relying on a tactic like `finiteness`.
+-/
 @[positivity EReal.toReal _]
-meta def evalERealToReal : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(Real), ~q(EReal.toReal $a) =>
-    assertInstancesCommute
-    match (← core q(inferInstance) (some q(inferInstance)) a).toNonneg with
-    | .some pa => pure (.nonnegative q(EReal.toReal_nonneg $pa))
-    | _ => pure .none
-  | _, _, _ => throwError "not EReal.toReal"
+meta def evalERealToReal : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(Real), ~q(EReal.toReal $a) =>
+        assertInstancesCommute
+        match (← core (q(inferInstance)) (some q(inferInstance)) a).toNonneg with
+        | .some pa => pure (.nonnegative q(EReal.toReal_nonneg $pa))
+        | _ => pure .none
+      | _, _, _ =>
+        throwError "not EReal.toReal"
 
-/-- Extension for the `positivity` tactic: projection from `EReal` to `ℝ≥0∞`.
+/--
+Extension for the `positivity` tactic: projection from `EReal` to `ℝ≥0∞`.
 
 We show that `EReal.toENNReal x` is positive whenever `x` is positive,
 and it is nonnegative otherwise.
 We cannot deduce any corollaries from `x ≠ 0`, since `EReal.toENNReal x = 0` for `x < 0`.
 -/
 @[positivity EReal.toENNReal _]
-meta def evalERealToENNReal : PositivityExt where eval {u α} _zα pα? e :=
-  match pα? with | none => pure .none | some _ => do
-  match u, α, e with
-  | 0, ~q(ENNReal), ~q(EReal.toENNReal $a) =>
-    assertInstancesCommute
-    match ← core q(inferInstance) (some q(inferInstance)) a with
-    | .positive pa => pure (.positive q(EReal.toENNReal_pos_iff.2 $pa))
-    | _ => pure (.nonnegative q(zero_le (a := $e)))
-  | _, _, _ => throwError "not EReal.toENNReal"
+meta def evalERealToENNReal : PositivityExt where
+  eval {u α} _zα pα? e :=
+    match pα? with
+    | none =>
+      pure .none
+    | some _ => do
+      match u, α, e with
+      | 0, ~q(ENNReal), ~q(EReal.toENNReal $a) =>
+        assertInstancesCommute
+        match ← core (q(inferInstance)) (some q(inferInstance)) a with
+        | .positive pa => pure (.positive q(EReal.toENNReal_pos_iff.2 $pa))
+        | _ => pure (.nonnegative q(zero_le (a := $e)))
+      | _, _, _ =>
+        throwError "not EReal.toENNReal"
 
 end Mathlib.Meta.Positivity

@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Mathlib.MeasureTheory.Measure.Hausdorff
 public import Mathlib.Topology.Algebra.Module.Equiv.Submodule
-
 import Mathlib.Geometry.Euclidean.Projection
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
@@ -64,23 +63,22 @@ on a `d`-dimensional Euclidean space. While this is defined on any (e)metric spa
 to be used for affine space associated with an inner product space, where it agrees with the volume
 measure on the inner product space.
 -/
-noncomputable
-def MeasureTheory.Measure.euclideanHausdorffMeasure (d : ℕ) : Measure X :=
+noncomputable def MeasureTheory.Measure.euclideanHausdorffMeasure (d : ℕ) : Measure X :=
   addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] • μH[d]
 
 @[inherit_doc]
 scoped[MeasureTheory] notation "μHE[" d "]" => MeasureTheory.Measure.euclideanHausdorffMeasure d
 
-theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def (d : ℕ) :
-    (μHE[d] : Measure X) =
-    addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] • μH[d] := by
+theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def (d : ℕ)
+    : (μHE[d] : Measure X)
+      = addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] • μH[d] := by
   rfl
 
 set_option backward.isDefEq.respectTransparency false in -- needed by simplifying `1 • _`
 /-- `μHE[0]` and `μH[0]` are equal. -/
 @[simp]
-theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero :
-    (μHE[0] : Measure X) = (μH[0] : Measure X) := by
+theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero
+    : (μHE[0] : Measure X) = (μH[0] : Measure X) := by
   let basis : OrthonormalBasis (Fin 0) ℝ (EuclideanSpace ℝ (Fin 0)) :=
     EuclideanSpace.basisFun (Fin 0) ℝ
   have heq : ({0} : Set (EuclideanSpace ℝ (Fin 0))) = parallelepiped basis := by
@@ -93,17 +91,18 @@ theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero :
   simp [euclideanHausdorffMeasure_def, h]
 
 /-- The scalar that defines `μHE[d]` is non-zero. -/
-theorem MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (d : ℕ) :
-    addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] ≠ 0 := by
+theorem MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (d : ℕ)
+    : addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] ≠ 0 := by
   intro h0
   obtain h := isAddLeftInvariant_eq_smul (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d]
   obtain h := congr($h (parallelepiped (stdOrthonormalBasis ℝ (EuclideanSpace ℝ (Fin d)))))
   simp [OrthonormalBasis.volume_parallelepiped, h0] at h
 
 set_option backward.isDefEq.respectTransparency false in -- needed by `ENNReal.smul_def`
-instance MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure {E : Type*}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E]
-    [BorelSpace E] : (μHE[Module.finrank ℝ E] : Measure E).IsAddHaarMeasure := by
+instance MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E]
+    [BorelSpace E]
+    : (μHE[Module.finrank ℝ E] : Measure E).IsAddHaarMeasure := by
   rw [euclideanHausdorffMeasure_def, ENNReal.smul_def]
   exact IsAddHaarMeasure.smul _
     (by simpa using addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (Module.finrank ℝ E))
@@ -111,8 +110,9 @@ instance MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure {E : Type*}
 
 set_option backward.isDefEq.respectTransparency false in -- needed by `ENNReal.smul_top`
 /-- If `d₁ < d₂`, then for any set s we have either `μHE[d₂] s = 0`, or `μHE[d₁] s = ∞`. -/
-theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero_or_top {d₁ d₂ : ℕ} (h : d₁ < d₂)
-    (s : Set X) : μHE[d₂] s = 0 ∨ μHE[d₁] s = ⊤ := by
+theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero_or_top
+    {d₁ d₂ : ℕ} (h : d₁ < d₂) (s : Set X)
+    : μHE[d₂] s = 0 ∨ μHE[d₁] s = ⊤ := by
   simp_rw [euclideanHausdorffMeasure_def]
   obtain h | h := hausdorffMeasure_zero_or_top (show (d₁ : ℝ) < d₂ by simpa using h) s
   · simp [h]
@@ -124,22 +124,23 @@ theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero_or_top {d₁ d₂ :
 ### `μHE[d]` is preserved through isometry
 -/
 
-theorem IsometryEquiv.measurePreserving_euclideanHausdorffMeasure (e : X ≃ᵢ Y) (d : ℕ) :
-    MeasurePreserving e μHE[d] μHE[d] :=
+theorem IsometryEquiv.measurePreserving_euclideanHausdorffMeasure (e : X ≃ᵢ Y) (d : ℕ)
+    : MeasurePreserving e (μHE[d]) μHE[d] :=
   (IsometryEquiv.measurePreserving_hausdorffMeasure e d).smul_measure _
 
-theorem Isometry.euclideanHausdorffMeasure_image {f : X → Y} {d : ℕ} (hf : Isometry f) (s : Set X) :
-    μHE[d] (f '' s) = μHE[d] s := by
+theorem Isometry.euclideanHausdorffMeasure_image {f : X → Y} {d : ℕ} (hf : Isometry f) (s : Set X)
+    : μHE[d] (f '' s) = μHE[d] s := by
   simp_rw [euclideanHausdorffMeasure_def, Measure.smul_apply]
   rw [Isometry.hausdorffMeasure_image hf (by simp)]
 
-theorem Isometry.euclideanHausdorffMeasure_preimage {f : X → Y} {d : ℕ} (hf : Isometry f)
-    (s : Set Y) : μHE[d] (f ⁻¹' s) = μHE[d] (s ∩ Set.range f) := by
+theorem Isometry.euclideanHausdorffMeasure_preimage
+    {f : X → Y} {d : ℕ} (hf : Isometry f) (s : Set Y)
+    : μHE[d] (f ⁻¹' s) = μHE[d] (s ∩ Set.range f) := by
   simp_rw [euclideanHausdorffMeasure_def, Measure.smul_apply]
   rw [Isometry.hausdorffMeasure_preimage hf (by simp)]
 
-theorem Isometry.map_euclideanHausdorffMeasure {f : X → Y} {d : ℕ} (hf : Isometry f) :
-    μHE[d].map f = μHE[d].restrict (Set.range f) := by
+theorem Isometry.map_euclideanHausdorffMeasure {f : X → Y} {d : ℕ} (hf : Isometry f)
+    : μHE[d].map f = μHE[d].restrict (Set.range f) := by
   simp_rw [euclideanHausdorffMeasure_def]
   rw [Measure.map_smul _ hf.continuous.aemeasurable, map_hausdorffMeasure hf (by simp),
     Measure.restrict_smul]
@@ -149,27 +150,31 @@ theorem Isometry.map_euclideanHausdorffMeasure {f : X → Y} {d : ℕ} (hf : Iso
 -/
 
 open scoped Pointwise in
-theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀ {𝕜 : Type*} {E : Type*}
-    [NormedAddCommGroup E] [NormedDivisionRing 𝕜] [Module 𝕜 E] [NormSMulClass 𝕜 E]
-    [MeasurableSpace E] [BorelSpace E] (d : ℕ) {r : 𝕜} (hr : r ≠ 0) (s : Set E) :
-    μHE[d] (r • s) = ‖r‖₊ ^ d • μHE[d] s := by
+theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀
+    {𝕜 : Type*} {E : Type*} [NormedAddCommGroup E] [NormedDivisionRing 𝕜] [Module 𝕜 E]
+    [NormSMulClass 𝕜 E] [MeasurableSpace E] [BorelSpace E]
+    (d : ℕ)
+    {r : 𝕜} (hr : r ≠ 0)
+    (s : Set E)
+    : μHE[d] (r • s) = ‖r‖₊ ^ d • μHE[d] s := by
   rw [euclideanHausdorffMeasure_def, Measure.smul_apply, hausdorffMeasure_smul₀ (by simp) hr,
     Measure.smul_apply, smul_comm]
   simp
 
 section Homothety
-variable {𝕜 V P : Type*} [NormedField 𝕜] [NormedAddCommGroup V] [NormedSpace 𝕜 V]
-  [MeasurableSpace P] [MetricSpace P] [NormedAddTorsor V P] [BorelSpace P]
+variable
+  {𝕜 V P : Type*} [NormedField 𝕜] [NormedAddCommGroup V] [NormedSpace 𝕜 V] [MeasurableSpace P]
+  [MetricSpace P] [NormedAddTorsor V P] [BorelSpace P]
 
-theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image (d : ℕ) (x : P) {c : 𝕜}
-    (hc : c ≠ 0) (s : Set P) :
-    μHE[d] (AffineMap.homothety x c '' s) = ‖c‖₊ ^ d • μHE[d] s := by
+theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image
+    (d : ℕ) (x : P) {c : 𝕜} (hc : c ≠ 0) (s : Set P)
+    : μHE[d] (AffineMap.homothety x c '' s) = ‖c‖₊ ^ d • μHE[d] s := by
   simp_rw [euclideanHausdorffMeasure_def, Measure.smul_apply]
   rw [hausdorffMeasure_homothety_image (by simp) x hc, smul_comm, NNReal.rpow_natCast]
 
-theorem MeasureTheory.euclideanHausdorffMeasure_homothety_preimage (d : ℕ) (x : P) {c : 𝕜}
-    (hc : c ≠ 0) (s : Set P) :
-    μHE[d] (AffineMap.homothety x c ⁻¹' s) = ‖c‖₊⁻¹ ^ d • μHE[d] s := by
+theorem MeasureTheory.euclideanHausdorffMeasure_homothety_preimage
+    (d : ℕ) (x : P) {c : 𝕜} (hc : c ≠ 0) (s : Set P)
+    : μHE[d] (AffineMap.homothety x c ⁻¹' s) = ‖c‖₊⁻¹ ^ d • μHE[d] s := by
   simp_rw [euclideanHausdorffMeasure_def, Measure.smul_apply]
   rw [hausdorffMeasure_homothety_preimage (by simp) x hc, smul_comm, NNReal.rpow_natCast]
 
@@ -184,33 +189,37 @@ variable [MetricSpace P] [MeasurableSpace P] [BorelSpace P] [NormedAddTorsor V P
 ### `μHE[d]` agree with the volume measure on inner product spaces
 -/
 
-theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume (d : ℕ) :
-    (μHE[d] : Measure (EuclideanSpace ℝ (Fin d))) = volume := by
+theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume (d : ℕ)
+    : (μHE[d] : Measure (EuclideanSpace ℝ (Fin d))) = volume := by
   rw [euclideanHausdorffMeasure_def, ← isAddLeftInvariant_eq_smul]
 
-theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume :
-    (μHE[finrank ℝ V] : Measure V) = volume := by
+theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume
+    : (μHE[finrank ℝ V] : Measure V) = volume := by
   rw [← (stdOrthonormalBasis ℝ V).measurePreserving_repr_symm.map_eq,
     ← (stdOrthonormalBasis ℝ V).repr.toIsometryEquiv
-      |>.symm.measurePreserving_euclideanHausdorffMeasure _ |>.map_eq,
+      |>.symm.measurePreserving_euclideanHausdorffMeasure _
+      |>.map_eq,
     EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
   simp
 
 /-!
 ### `μHE[d]` on an affine space matches the volume measure on the associated inner product space.
 -/
-/-- We may want to endow an affine space with a `MeasureSpace` that transfers `volume` from its
+/--
+We may want to endow an affine space with a `MeasureSpace` that transfers `volume` from its
 associated inner product space. If it is implemented, we can unify this lemma with the previous one.
 -/
-theorem EuclideanGeometry.euclideanHausdorffMeasure_eq (p : P) :
-    μHE[finrank ℝ V] = volume.map (IsometryEquiv.vaddConst p) := by
-  have h := (IsometryEquiv.vaddConst p)
-    |>.measurePreserving_euclideanHausdorffMeasure (finrank ℝ V) |>.map_eq
+theorem EuclideanGeometry.euclideanHausdorffMeasure_eq (p : P)
+    : μHE[finrank ℝ V] = volume.map (IsometryEquiv.vaddConst p) := by
+  have h :=
+    (IsometryEquiv.vaddConst p)
+      |>.measurePreserving_euclideanHausdorffMeasure (finrank ℝ V)
+      |>.map_eq
   rw [InnerProductSpace.euclideanHausdorffMeasure_eq_volume] at h
   exact h.symm
 
-theorem EuclideanGeometry.measurePreserving_vaddConst (p : P) :
-    MeasurePreserving (IsometryEquiv.vaddConst p) volume μHE[finrank ℝ V] where
+theorem EuclideanGeometry.measurePreserving_vaddConst (p : P)
+    : MeasurePreserving (IsometryEquiv.vaddConst p) volume μHE[finrank ℝ V] where
   measurable := (IsometryEquiv.vaddConst p).toHomeomorph.measurable
   map_eq := (euclideanHausdorffMeasure_eq p).symm
 
@@ -223,17 +232,17 @@ open EuclideanGeometry
 namespace AffineSubspace
 omit [MeasurableSpace V] [BorelSpace V] [FiniteDimensional ℝ V]
 
-theorem euclideanHausdorffMeasure_coe_image (d : ℕ) (s : AffineSubspace ℝ P)
-    (t : Set s) : μHE[d] (Subtype.val '' t) = μHE[d] t :=
+theorem euclideanHausdorffMeasure_coe_image (d : ℕ) (s : AffineSubspace ℝ P) (t : Set s)
+    : μHE[d] (Subtype.val '' t) = μHE[d] t :=
   isometry_subtype_coe.euclideanHausdorffMeasure_image _
 
-theorem euclideanHausdorffMeasure_preimage_coe (d : ℕ) {s : AffineSubspace ℝ P} {t : Set P} :
-    μHE[d] ((Subtype.val : s → P) ⁻¹' t) = μHE[d] (t ∩ s) := by
+theorem euclideanHausdorffMeasure_preimage_coe (d : ℕ) {s : AffineSubspace ℝ P} {t : Set P}
+    : μHE[d] ((Subtype.val : s → P) ⁻¹' t) = μHE[d] (t ∩ s) := by
   rw [isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe]
 
-theorem euclideanHausdorffMeasure_preimage_coe_of_subset (d : ℕ) {s : AffineSubspace ℝ P}
-    {t : Set P} (ht : t ⊆ s) :
-    μHE[d] ((Subtype.val : s → P) ⁻¹' t) = μHE[d] t := by
+theorem euclideanHausdorffMeasure_preimage_coe_of_subset
+    (d : ℕ) {s : AffineSubspace ℝ P} {t : Set P} (ht : t ⊆ s)
+    : μHE[d] ((Subtype.val : s → P) ⁻¹' t) = μHE[d] t := by
   rw [euclideanHausdorffMeasure_preimage_coe, Set.inter_eq_left.mpr ht]
 
 end AffineSubspace
@@ -242,18 +251,17 @@ end AffineSubspace
 ### `μHE[d]` is translation invariant
 -/
 
-instance {α : Type*} [AddGroup α] [AddAction α X] [IsIsometricVAdd α X] (d : ℕ) :
-    VAddInvariantMeasure α X μHE[d] := by
+instance {α : Type*} [AddGroup α] [AddAction α X] [IsIsometricVAdd α X] (d : ℕ)
+    : VAddInvariantMeasure α X μHE[d] := by
   rw [euclideanHausdorffMeasure_def]
   infer_instance
 
-instance [AddGroup X] [IsIsometricVAdd X X] (d : ℕ) :
-    (μHE[d] : Measure X).IsAddLeftInvariant := by
+instance [AddGroup X] [IsIsometricVAdd X X] (d : ℕ) : (μHE[d] : Measure X).IsAddLeftInvariant := by
   rw [euclideanHausdorffMeasure_def]
   infer_instance
 
-instance [AddGroup X] [IsIsometricVAdd Xᵃᵒᵖ X] (d : ℕ) :
-    (μHE[d] : Measure X).IsAddRightInvariant := by
+instance [AddGroup X] [IsIsometricVAdd Xᵃᵒᵖ X] (d : ℕ)
+    : (μHE[d] : Measure X).IsAddRightInvariant := by
   rw [euclideanHausdorffMeasure_def]
   infer_instance
 
@@ -261,7 +269,8 @@ instance [AddGroup X] [IsIsometricVAdd Xᵃᵒᵖ X] (d : ℕ) :
 ### Integration formula for `μHE[d]`
 -/
 
-/-- A measurable equivalence between an affine space and its orthogonal decomposition by a base
+/--
+A measurable equivalence between an affine space and its orthogonal decomposition by a base
 point and a direction. We show that this is measure preserving between `μHE[finrank ℝ V]` and
 `volume` at `Submodule.measurePreserving_measurableEquivProd`.
 
@@ -270,38 +279,40 @@ side is not with L²-norm, this is not an isometry.
 -/
 noncomputable def Submodule.measurableEquivProd (s : Submodule ℝ V) (p : P) : P ≃ᵐ s × sᗮ :=
   (IsometryEquiv.vaddConst p).toHomeomorph.toMeasurableEquiv.symm.trans <|
-  s.orthogonalDecomposition.toHomeomorph.toMeasurableEquiv.trans
-  (MeasurableEquiv.toLp 2 _).symm
+    s.orthogonalDecomposition.toHomeomorph.toMeasurableEquiv.trans (MeasurableEquiv.toLp 2 _).symm
 
 @[simp]
-theorem Submodule.measurableEquivProd_apply (s : Submodule ℝ V) (p q : P) :
-    s.measurableEquivProd p q =
-    (s.orthogonalProjectionOnto (q -ᵥ p), sᗮ.orthogonalProjectionOnto (q -ᵥ p)) := by
+theorem Submodule.measurableEquivProd_apply (s : Submodule ℝ V) (p q : P)
+    : s.measurableEquivProd p q
+      = (s.orthogonalProjectionOnto (q -ᵥ p), sᗮ.orthogonalProjectionOnto (q -ᵥ p)) := by
   simp [measurableEquivProd]
 
 @[simp]
-theorem Submodule.measurableEquivProd_symm_apply (s : Submodule ℝ V) (p : P) (q : s × sᗮ) :
-    (s.measurableEquivProd p).symm q = (q.1.val + q.2.val) +ᵥ p := by
+theorem Submodule.measurableEquivProd_symm_apply (s : Submodule ℝ V) (p : P) (q : s × sᗮ)
+    : (s.measurableEquivProd p).symm q = (q.1.val + q.2.val) +ᵥ p := by
   simp [measurableEquivProd]
 
-theorem Submodule.measurePreserving_measurableEquivProd (s : Submodule ℝ V) (p : P) :
-    MeasurePreserving (s.measurableEquivProd p) μHE[finrank ℝ V] := by
+theorem Submodule.measurePreserving_measurableEquivProd (s : Submodule ℝ V) (p : P)
+    : MeasurePreserving (s.measurableEquivProd p) μHE[finrank ℝ V] := by
   refine (measurePreserving_vaddConst _).symm.trans ?_
   refine s.orthogonalDecomposition.measurePreserving.trans ?_
   exact WithLp.volume_preserving_ofLp _ _
 
-/-- The $n$-dimensional volume of an object in an $n$-dimensional space is equal to the integral
+/--
+The $n$-dimensional volume of an object in an $n$-dimensional space is equal to the integral
 of the volume of $(n-d)$-dimensional cross-section along an orthogonal $d$-dimensional subspace.
-This is an analogue to `MeasureTheory.Measure.prod_apply`. -/
-theorem AffineSubspace.euclideanHausdorffMeasure_eq_lintegral (s : AffineSubspace ℝ P)
-    [hs : Nonempty s] {t : Set P} (ht : MeasurableSet t) :
-    μHE[finrank ℝ V] t = ∫⁻ (x : s), μHE[finrank ℝ s.directionᗮ] (t ∩ mk' x.val s.directionᗮ)
-      ∂μHE[finrank ℝ s.direction] := by
+This is an analogue to `MeasureTheory.Measure.prod_apply`.
+-/
+theorem AffineSubspace.euclideanHausdorffMeasure_eq_lintegral
+    (s : AffineSubspace ℝ P) [hs : Nonempty s] {t : Set P} (ht : MeasurableSet t)
+    : μHE[finrank ℝ V] t
+      = ∫⁻ (x : s), μHE[finrank ℝ s.directionᗮ] (t ∩ mk' x.val s.directionᗮ)
+        ∂μHE[finrank ℝ s.direction] := by
   obtain p := hs.some
   rw [← (s.direction.measurePreserving_measurableEquivProd p.val).symm.measure_preimage_equiv,
     volume_eq_prod, prod_apply (by measurability), euclideanHausdorffMeasure_eq,
-    MeasurableEmbedding.lintegral_map
-        (by simpa using (IsometryEquiv.vaddConst p).toHomeomorph.measurableEmbedding)]
+    MeasurableEmbedding.lintegral_map (by
+      simpa using (IsometryEquiv.vaddConst p).toHomeomorph.measurableEmbedding)]
   congr with x
   let u : Set (mk' (x +ᵥ p).val s.directionᗮ) := Subtype.val ⁻¹' (t ∩ mk' (x +ᵥ p).val s.directionᗮ)
   have hu : MeasurableSet u :=
@@ -314,10 +325,12 @@ theorem AffineSubspace.euclideanHausdorffMeasure_eq_lintegral (s : AffineSubspac
     rw [direction_mk']
   rw [IsometryEquiv.vaddConst_apply, hinter, euclideanHausdorffMeasure_coe_image, hrank,
     euclideanHausdorffMeasure_eq ⟨x +ᵥ p, hxp⟩, map_apply (by fun_prop) hu]
-  /- we have ⊢ volume (a : Set A) = volume (b : Set B). We'd like show a = b, but A and B are
-    non-defeq subspaces!
-    Lucky we have just developed euclideanHausdorffMeasure, which allows us to move the measure to
-    the global vector space. -/
+  /-
+  we have ⊢ volume (a : Set A) = volume (b : Set B). We'd like show a = b, but A and B are
+  non-defeq subspaces!
+  Lucky we have just developed euclideanHausdorffMeasure, which allows us to move the measure to
+  the global vector space.
+  -/
   simp_rw [← InnerProductSpace.euclideanHausdorffMeasure_eq_volume]
   conv_lhs => rw [← isometry_subtype_coe.euclideanHausdorffMeasure_image]
   conv_rhs => rw [← isometry_subtype_coe.euclideanHausdorffMeasure_image]
@@ -325,14 +338,16 @@ theorem AffineSubspace.euclideanHausdorffMeasure_eq_lintegral (s : AffineSubspac
   ext y
   simp [u, vadd_vadd, add_comm]
 
-/-- The $n$-dimensional volume of an object in an $n$-dimensional space is equal to the integral
+/--
+The $n$-dimensional volume of an object in an $n$-dimensional space is equal to the integral
 of the volume of $(n-1)$-dimensional orthogonal cross-section along a line defined by a direction
 vector. This is a special case of `AffineSubspace.euclideanHausdorffMeasure_eq_lintegral` with a
-one-dimensional subspace. -/
-theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral (p : P) {v : V} (hv : v ≠ 0)
-    {t : Set P} (ht : MeasurableSet t) :
-    μHE[finrank ℝ V] t =
-      ‖v‖ₑ * ∫⁻ (x : ℝ), μHE[finrank ℝ V - 1] (t ∩ AffineSubspace.mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) := by
+one-dimensional subspace.
+-/
+theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral
+    (p : P) {v : V} (hv : v ≠ 0) {t : Set P} (ht : MeasurableSet t)
+    : μHE[finrank ℝ V] t
+      = ‖v‖ₑ * ∫⁻ (x : ℝ), μHE[finrank ℝ V - 1] (t ∩ AffineSubspace.mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) := by
   have hrank : finrank ℝ (AffineSubspace.mk' p (ℝ ∙ v)).direction = 1 := by
     rw [AffineSubspace.direction_mk']
     apply finrank_span_singleton hv
@@ -341,15 +356,16 @@ theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral (p : P) {v : V}
       Nat.add_sub_cancel_left]
   let f : ℝ ≃L[ℝ] (AffineSubspace.mk' p (ℝ ∙ v)).direction :=
     (ContinuousLinearEquiv.toSpanNonzeroSingleton ℝ v hv).trans
-    (ContinuousLinearEquiv.ofEq (ℝ ∙ v) ((AffineSubspace.mk' p (ℝ ∙ v)).direction) (by simp))
+      (ContinuousLinearEquiv.ofEq (ℝ ∙ v) ((AffineSubspace.mk' p (ℝ ∙ v)).direction) (by simp))
   have hf : MeasurableEmbedding f := f.toHomeomorph.measurableEmbedding
   let p' : AffineSubspace.mk' p (ℝ ∙ v) := ⟨p, by simp⟩
   let g : ℝ → AffineSubspace.mk' p (ℝ ∙ v) := IsometryEquiv.vaddConst p' ∘ f
   have hadd : MeasurableEmbedding (IsometryEquiv.vaddConst p') :=
     (IsometryEquiv.vaddConst p').toHomeomorph.measurableEmbedding
   have hg : MeasurableEmbedding g := hadd.comp hf
-  have hm : μHE[finrank ℝ (AffineSubspace.mk' p (ℝ ∙ v)).direction] =
-      ‖v‖ₑ • (volume : Measure ℝ).map g := by
+  have hm
+      : μHE[finrank ℝ (AffineSubspace.mk' p (ℝ ∙ v)).direction]
+        = ‖v‖ₑ • (volume : Measure ℝ).map g := by
     unfold g
     rw [euclideanHausdorffMeasure_eq p', ← map_map hadd.measurable hf.measurable,
       ← Measure.map_smul _ (by fun_prop)]
@@ -362,22 +378,26 @@ theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral (p : P) {v : V}
     hm, lintegral_smul_measure, hg.lintegral_map, smul_eq_mul, hrank', AffineSubspace.direction_mk']
 
 omit [FiniteDimensional ℝ V] in
-/-- An alternative version of `EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral` that allows
+/--
+An alternative version of `EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral` that allows
 the ambient space to have a dimension larger than the measure dimension. It still requires the set
-to be contained in a subspace of the measure dimension. -/
-theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral_of_subset (p : P) {v : V}
-    (hv : v ≠ 0) {t : Set P} (ht : MeasurableSet t) {s : AffineSubspace ℝ P} (hvs : v ∈ s.direction)
-    (hts : t ⊆ s) [FiniteDimensional ℝ s.direction] :
-    μHE[finrank ℝ s.direction] t =
-      ‖v‖ₑ * ∫⁻ (x : ℝ), μHE[finrank ℝ s.direction - 1] (t ∩ mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) := by
+to be contained in a subspace of the measure dimension.
+-/
+theorem EuclideanGeometry.euclideanHausdorffMeasure_eq_lintegral_of_subset
+    (p : P)
+    {v : V} (hv : v ≠ 0)
+    {t : Set P} (ht : MeasurableSet t)
+    {s : AffineSubspace ℝ P} (hvs : v ∈ s.direction) (hts : t ⊆ s) [FiniteDimensional ℝ s.direction]
+    : μHE[finrank ℝ s.direction] t
+      = ‖v‖ₑ * ∫⁻ (x : ℝ), μHE[finrank ℝ s.direction - 1] (t ∩ mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) := by
   have : Nonempty s := (s.nonempty_iff_ne_bot.mpr fun h ↦ hv (by simpa [h] using hvs)).to_subtype
   let v' : s.direction := ⟨v, hvs⟩
   rw [← s.euclideanHausdorffMeasure_preimage_coe_of_subset _ hts,
     euclideanHausdorffMeasure_eq_lintegral (orthogonalProjection s p)
       (show v' ≠ 0 by simpa [v'] using hv) (ht.preimage measurable_subtype_coe)]
   congrm ‖v'‖ₑ * ∫⁻ (x : ℝ), ?_
-  suffices mk' (x • v' +ᵥ orthogonalProjection s p) (ℝ ∙ v')ᗮ =
-      comap s.subtype (mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) from by
+  suffices mk' (x • v' +ᵥ orthogonalProjection s p) (ℝ ∙ v')ᗮ
+      = comap s.subtype (mk' (x • v +ᵥ p) (ℝ ∙ v)ᗮ) from by
     simp [this, ← Set.preimage_inter,
       s.euclideanHausdorffMeasure_preimage_coe_of_subset _ (Set.inter_subset_left.trans hts)]
   rw [comap_subtype_mk' s _

@@ -42,22 +42,25 @@ public section
 
 open Set TopologicalSpace
 
-variable {X E : Type*} [TopologicalSpace X] [HereditarilyLindelofSpace X] [LinearOrder E]
+variable
+  {X E : Type*} [TopologicalSpace X] [HereditarilyLindelofSpace X] [LinearOrder E]
   [TopologicalSpace E] [OrderClosedTopology E] [DenselyOrdered E] [SeparableSpace E]
 -- Note: we shouldn't really need a topology on `E`: we just want the conclusion of
 -- `SeparableSpace` + `Dense.exists_between`.
 
-/-- If a function `s : X → E` can be written as the infimum of a family `𝓕` of upper semicontinuous
+/--
+If a function `s : X → E` can be written as the infimum of a family `𝓕` of upper semicontinuous
 functions then, assuming that `X` is hereditarily Lindelöf (for example, second countable),
 `s` can in fact be written as the infimum of some *countable* subfamily `𝓕'`.
 
 This is implication a) ⇒ b) in
 [N. Bourbaki, *Topologie Générale*, Chapitre IX, Appendice I, Proposition 3][bourbaki1974]
 
-See the module docstring for a discussion of the assumptions on `E`. -/
-theorem exists_countable_upperSemicontinuous_isGLB {s : X → E} {𝓕 : Set (X → E)}
-    (h𝓕_cont : ∀ f ∈ 𝓕, UpperSemicontinuous f) (h𝓕 : IsGLB 𝓕 s) :
-    ∃ 𝓕' ⊆ 𝓕, 𝓕'.Countable ∧ IsGLB 𝓕' s := by
+See the module docstring for a discussion of the assumptions on `E`.
+-/
+theorem exists_countable_upperSemicontinuous_isGLB
+    {s : X → E} {𝓕 : Set (X → E)} (h𝓕_cont : ∀ f ∈ 𝓕, UpperSemicontinuous f) (h𝓕 : IsGLB 𝓕 s)
+    : ∃ 𝓕' ⊆ 𝓕, 𝓕'.Countable ∧ IsGLB 𝓕' s := by
   simp_rw [isGLB_pi] at *
   rcases exists_countable_dense E with ⟨D, D_count, D_dense⟩
   let U (f : X → E) (d : E) : Set X := {x | f x < d}
@@ -83,17 +86,19 @@ theorem exists_countable_upperSemicontinuous_isGLB {s : X → E} {𝓕 : Set (X 
   suffices e < e by simpa
   exact (he (mem_image_of_mem _ (mem_iUnion₂_of_mem d_mem f_mem))).trans_lt hf |>.trans hd.2
 
-/-- If a function `s : X → E` can be written as the supremum of a family `𝓕` of lower semicontinuous
+/--
+If a function `s : X → E` can be written as the supremum of a family `𝓕` of lower semicontinuous
 functions then, assuming that `X` is hereditarily Lindelöf (for example, second countable),
 `s` can in fact be written as the supremum of some *countable* subfamily `𝓕'`.
 
 This is implication a) ⇒ b) in
 [N. Bourbaki, *Topologie Générale*, Chapitre IX, Appendice I, Proposition 3][bourbaki1974]
 
-See the module docstring for a discussion of the assumptions on `E`. -/
-theorem exists_countable_lowerSemicontinuous_isLUB {s : X → E} {𝓕 : Set (X → E)}
-    (h𝓕_cont : ∀ f ∈ 𝓕, LowerSemicontinuous f) (h𝓕 : IsLUB 𝓕 s) :
-    ∃ 𝓕' ⊆ 𝓕, 𝓕'.Countable ∧ IsLUB 𝓕' s :=
+See the module docstring for a discussion of the assumptions on `E`.
+-/
+theorem exists_countable_lowerSemicontinuous_isLUB
+    {s : X → E} {𝓕 : Set (X → E)} (h𝓕_cont : ∀ f ∈ 𝓕, LowerSemicontinuous f) (h𝓕 : IsLUB 𝓕 s)
+    : ∃ 𝓕' ⊆ 𝓕, 𝓕'.Countable ∧ IsLUB 𝓕' s :=
   exists_countable_upperSemicontinuous_isGLB (E := Eᵒᵈ) h𝓕_cont h𝓕
 
 end

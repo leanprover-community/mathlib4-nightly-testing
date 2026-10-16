@@ -10,15 +10,20 @@ set_option pp.unicode.fun true
 open Bundle Filter Function Topology
 open scoped Manifold ContDiff
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H} {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {H' : Type*} [TopologicalSpace H']
-  {I' : ModelWithCorners 𝕜 E' H'} {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' n M']
-  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] {G : Type*} [TopologicalSpace G] {J : ModelWithCorners 𝕜 F G}
-  {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J n N]
-  {s t : Set M} {x : M}
-  {n : ℕ∞ω}
+  {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners 𝕜 E H} {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+  {H' : Type*} [TopologicalSpace H']
+  {I' : ModelWithCorners 𝕜 E' H'} {M' : Type*}
+  [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' n M']
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  {G : Type*} [TopologicalSpace G]
+  {J : ModelWithCorners 𝕜 F G} {N : Type*}
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J n N]
+  {s t : Set M} {x : M} {n : ℕ∞ω}
 
 variable {f : M → 𝕜} {g : M → F}
 

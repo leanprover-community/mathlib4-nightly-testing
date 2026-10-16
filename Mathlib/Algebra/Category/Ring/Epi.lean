@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Algebra.Epi
 public import Mathlib.Algebra.Category.Ring.Basic
-
 import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
 
 /-!
@@ -23,14 +22,17 @@ open CategoryTheory TensorProduct
 
 universe u
 
-lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
-    Epi (CommRingCat.ofHom (algebraMap R S)) ↔ Algebra.IsEpi R S := by
+lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+    : Epi (CommRingCat.ofHom (algebraMap R S)) ↔ Algebra.IsEpi R S := by
   simp_rw [Algebra.isEpi_iff_forall_one_tmul_eq, eq_comm]
   constructor
   · intro H
-    have := H.1 (CommRingCat.ofHom Algebra.TensorProduct.includeLeftRingHom)
-      (CommRingCat.ofHom (Algebra.TensorProduct.includeRight (R := R) (A := S)).toRingHom)
-      (by ext r; change algebraMap R S r ⊗ₜ 1 = 1 ⊗ₜ algebraMap R S r;
+    have :=
+      H.1 (CommRingCat.ofHom Algebra.TensorProduct.includeLeftRingHom)
+        (CommRingCat.ofHom (Algebra.TensorProduct.includeRight (R := R) (A := S)).toRingHom)
+        (by
+          ext r
+          change algebraMap R S r ⊗ₜ 1 = 1 ⊗ₜ algebraMap R S r
           simp only [Algebra.algebraMap_eq_smul_one, smul_tmul])
     exact RingHom.congr_fun (congrArg Hom.hom this)
   · refine fun H ↦ ⟨fun {T} f g e ↦ ?_⟩
@@ -40,13 +42,14 @@ lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra 
     ext s
     simpa using! congr(Algebra.TensorProduct.lift f' g' (fun _ _ ↦ .all _ _) $(H s))
 
-lemma RingHom.surjective_of_epi_of_finite {R S : CommRingCat} (f : R ⟶ S) [Epi f]
-    (h₂ : RingHom.Finite f.hom) : Function.Surjective f := by
+lemma RingHom.surjective_of_epi_of_finite
+    {R S : CommRingCat} (f : R ⟶ S) [Epi f] (h₂ : RingHom.Finite f.hom)
+    : Function.Surjective f := by
   algebraize [f.hom]
   have : Algebra.IsEpi R S := CommRingCat.epi_iff_epi.mp <| inferInstanceAs (Epi f)
   rwa [Algebra.isEpi_iff_surjective_algebraMap_of_finite] at this
 
-lemma RingHom.surjective_iff_epi_and_finite {R S : CommRingCat} {f : R ⟶ S} :
-    Function.Surjective f ↔ Epi f ∧ RingHom.Finite f.hom where
+lemma RingHom.surjective_iff_epi_and_finite {R S : CommRingCat} {f : R ⟶ S}
+    : Function.Surjective f ↔ Epi f ∧ RingHom.Finite f.hom where
   mp h := ⟨ConcreteCategory.epi_of_surjective f h, .of_surjective f.hom h⟩
   mpr := fun ⟨_, h⟩ ↦ surjective_of_epi_of_finite f h

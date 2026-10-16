@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 module
 
 public import Mathlib.Combinatorics.Additive.PluenneckeRuzsa
-
 import Mathlib.Data.Finset.Density
 
 /-!
@@ -24,20 +23,24 @@ namespace Finset
 section Group
 variable {G : Type*} [Group G] [DecidableEq G] {A B : Finset G}
 
-/-- The doubling constant `σₘ[A, B]` of two finsets `A` and `B` in a group is `|A * B| / |A|`.
+/--
+The doubling constant `σₘ[A, B]` of two finsets `A` and `B` in a group is `|A * B| / |A|`.
 
-The notation `σₘ[A, B]` is available in scope `Combinatorics.Additive`. -/
+The notation `σₘ[A, B]` is available in scope `Combinatorics.Additive`.
+-/
 @[to_additive
-/-- The doubling constant `σ[A, B]` of two finsets `A` and `B` in a group is `|A + B| / |A|`.
+  /-- The doubling constant `σ[A, B]` of two finsets `A` and `B` in a group is `|A + B| / |A|`.
 
 The notation `σ[A, B]` is available in scope `Combinatorics.Additive`. -/]
 def mulConst (A B : Finset G) : ℚ≥0 := #(A * B) / #A
 
-/-- The difference constant `δₘ[A, B]` of two finsets `A` and `B` in a group is `|A / B| / |A|`.
+/--
+The difference constant `δₘ[A, B]` of two finsets `A` and `B` in a group is `|A / B| / |A|`.
 
-The notation `δₘ[A, B]` is available in scope `Combinatorics.Additive`. -/
+The notation `δₘ[A, B]` is available in scope `Combinatorics.Additive`.
+-/
 @[to_additive
-/-- The difference constant `σ[A, B]` of two finsets `A` and `B` in a group is `|A - B| / |A|`.
+  /-- The difference constant `σ[A, B]` of two finsets `A` and `B` in a group is `|A - B| / |A|`.
 
 The notation `δ[A, B]` is available in scope `Combinatorics.Additive`. -/]
 def divConst (A B : Finset G) : ℚ≥0 := #(A / B) / #A
@@ -114,16 +117,14 @@ lemma one_le_mulConst (hA : A.Nonempty) (hB : B.Nonempty) : 1 ≤ σₘ[A, B] :=
   · exact mod_cast card_le_card_mul_right hB
   · simpa
 
-@[to_additive]
-lemma one_le_mulConst_self (hA : A.Nonempty) : 1 ≤ σₘ[A] := one_le_mulConst hA hA
+@[to_additive] lemma one_le_mulConst_self (hA : A.Nonempty) : 1 ≤ σₘ[A] := one_le_mulConst hA hA
 
 @[to_additive]
 lemma one_le_divConst (hA : A.Nonempty) (hB : B.Nonempty) : 1 ≤ δₘ[A, B] := by
   rw [← mulConst_inv_right]
   apply one_le_mulConst hA (by simpa)
 
-@[to_additive]
-lemma one_le_divConst_self (hA : A.Nonempty) : 1 ≤ δₘ[A] := one_le_divConst hA hA
+@[to_additive] lemma one_le_divConst_self (hA : A.Nonempty) : 1 ≤ δₘ[A] := one_le_divConst hA hA
 
 @[to_additive]
 lemma mulConst_le_card : σₘ[A, B] ≤ #B := by
@@ -178,11 +179,13 @@ lemma card_mul_cast_mulConst (A B : Finset G) : (#A * σₘ[A, B] : 𝕜) = #(A 
 lemma card_mul_cast_divConst (A B : Finset G) : (#A * δₘ[A, B] : 𝕜) = #(A / B) := by
   norm_cast; exact card_mul_divConst _ _
 
-/-- If `A` has small doubling, then it has small difference, with the constant squared.
+/--
+If `A` has small doubling, then it has small difference, with the constant squared.
 
-This is a consequence of the Ruzsa triangle inequality. -/
+This is a consequence of the Ruzsa triangle inequality.
+-/
 @[to_additive
-/-- If `A` has small doubling, then it has small difference, with the constant squared.
+  /-- If `A` has small doubling, then it has small difference, with the constant squared.
 
 This is a consequence of the Ruzsa triangle inequality. -/]
 lemma divConst_le_mulConst_sq : δₘ[A] ≤ σₘ[A] ^ 2 := by
@@ -209,11 +212,13 @@ lemma mulConst_inv_left (A B : Finset G) : σₘ[A⁻¹, B] = δₘ[A, B] := by
 lemma divConst_inv_left (A B : Finset G) : δₘ[A⁻¹, B] = σₘ[A, B] := by
   rw [mulConst, divConst, card_inv, ← card_inv, inv_div, div_inv_eq_mul, mul_comm]
 
-/-- If `A` has small difference, then it has small doubling, with the constant squared.
+/--
+If `A` has small difference, then it has small doubling, with the constant squared.
 
-This is a consequence of the Ruzsa triangle inequality. -/
+This is a consequence of the Ruzsa triangle inequality.
+-/
 @[to_additive
-/-- If `A` has small difference, then it has small doubling, with the constant squared.
+  /-- If `A` has small difference, then it has small doubling, with the constant squared.
 
 This is a consequence of the Ruzsa triangle inequality. -/]
 lemma mulConst_le_divConst_sq : σₘ[A] ≤ δₘ[A] ^ 2 := by

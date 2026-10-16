@@ -47,40 +47,40 @@ variable (R M) in
 def Module.support : Set (PrimeSpectrum R) :=
   { p | Nontrivial (LocalizedModule p.asIdeal.primeCompl M) }
 
-lemma Module.mem_support_iff :
-    p ∈ Module.support R M ↔ Nontrivial (LocalizedModule p.asIdeal.primeCompl M) := Iff.rfl
+lemma Module.mem_support_iff
+    : p ∈ Module.support R M ↔ Nontrivial (LocalizedModule p.asIdeal.primeCompl M) :=
+  Iff.rfl
 
-lemma Module.notMem_support_iff :
-    p ∉ Module.support R M ↔ Subsingleton (LocalizedModule p.asIdeal.primeCompl M) :=
+lemma Module.notMem_support_iff
+    : p ∉ Module.support R M ↔ Subsingleton (LocalizedModule p.asIdeal.primeCompl M) :=
   not_nontrivial_iff_subsingleton
 
-lemma Module.notMem_support_iff' :
-    p ∉ Module.support R M ↔ ∀ m : M, ∃ r ∉ p.asIdeal, r • m = 0 := by
+lemma Module.notMem_support_iff'
+    : p ∉ Module.support R M ↔ ∀ m : M, ∃ r ∉ p.asIdeal, r • m = 0 := by
   simp only [notMem_support_iff, Ideal.primeCompl, LocalizedModule.subsingleton_iff,
     Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_compl_iff, SetLike.mem_coe]
 
-lemma Module.mem_support_iff' :
-    p ∈ Module.support R M ↔ ∃ m : M, ∀ r ∉ p.asIdeal, r • m ≠ 0 := by
+lemma Module.mem_support_iff' : p ∈ Module.support R M ↔ ∃ m : M, ∀ r ∉ p.asIdeal, r • m ≠ 0 := by
   rw [← @not_not (_ ∈ _), notMem_support_iff']
   push Not
   rfl
 
-lemma Module.mem_support_iff_exists_annihilator :
-    p ∈ Module.support R M ↔ ∃ m : M, (R ∙ m).annihilator ≤ p.asIdeal := by
+lemma Module.mem_support_iff_exists_annihilator
+    : p ∈ Module.support R M ↔ ∃ m : M, (R ∙ m).annihilator ≤ p.asIdeal := by
   rw [Module.mem_support_iff']
   simp_rw [not_imp_not, IsConcreteLE.le_iff, Submodule.mem_annihilator_span_singleton]
 
-lemma Module.mem_support_mono {p q : PrimeSpectrum R} (H : p ≤ q) (hp : p ∈ Module.support R M) :
-    q ∈ Module.support R M := by
+lemma Module.mem_support_mono {p q : PrimeSpectrum R} (H : p ≤ q) (hp : p ∈ Module.support R M)
+    : q ∈ Module.support R M := by
   rw [Module.mem_support_iff_exists_annihilator] at hp ⊢
   exact ⟨_, hp.choose_spec.trans H⟩
 
-lemma Module.mem_support_iff_of_span_eq_top {s : Set M} (hs : Submodule.span R s = ⊤) :
-    p ∈ Module.support R M ↔ ∃ m ∈ s, (R ∙ m).annihilator ≤ p.asIdeal := by
+lemma Module.mem_support_iff_of_span_eq_top {s : Set M} (hs : Submodule.span R s = ⊤)
+    : p ∈ Module.support R M ↔ ∃ m ∈ s, (R ∙ m).annihilator ≤ p.asIdeal := by
   constructor
   · contrapose
-    rw [notMem_support_iff, LocalizedModule.subsingleton_iff_ker_eq_top, ← top_le_iff,
-      ← hs, Submodule.span_le, Set.subset_def]
+    rw [notMem_support_iff, LocalizedModule.subsingleton_iff_ker_eq_top, ← top_le_iff, ← hs,
+      Submodule.span_le, Set.subset_def]
     simp_rw [IsConcreteLE.le_iff, Submodule.mem_annihilator_span_singleton, SetLike.mem_coe,
       LocalizedModule.mem_ker_mkLinearMap_iff]
     push Not
@@ -89,14 +89,14 @@ lemma Module.mem_support_iff_of_span_eq_top {s : Set M} (hs : Submodule.span R s
   · intro ⟨m, _, hm⟩
     exact mem_support_iff_exists_annihilator.mpr ⟨m, hm⟩
 
-lemma Module.annihilator_le_of_mem_support (hp : p ∈ Module.support R M) :
-    Module.annihilator R M ≤ p.asIdeal := by
+lemma Module.annihilator_le_of_mem_support (hp : p ∈ Module.support R M)
+    : Module.annihilator R M ≤ p.asIdeal := by
   obtain ⟨m, hm⟩ := mem_support_iff_exists_annihilator.mp hp
   exact le_trans ((Submodule.subtype _).annihilator_le_of_injective Subtype.val_injective) hm
 
-lemma LocalizedModule.subsingleton_iff_support_subset {f : R} :
-    Subsingleton (LocalizedModule.Away f M) ↔
-      Module.support R M ⊆ PrimeSpectrum.zeroLocus {f} := by
+lemma LocalizedModule.subsingleton_iff_support_subset {f : R}
+    : Subsingleton (LocalizedModule.Away f M)
+      ↔ Module.support R M ⊆ PrimeSpectrum.zeroLocus {f} := by
   rw [LocalizedModule.subsingleton_iff]
   constructor
   · rintro H x hx' f rfl
@@ -114,35 +114,32 @@ lemma LocalizedModule.subsingleton_iff_support_subset {f : R} :
       simpa using H (Module.mem_support_iff_exists_annihilator (p := ⟨p, hp'⟩).mpr ⟨_, hp⟩)
     exact ⟨_, ⟨n, rfl⟩, (Submodule.mem_annihilator_span_singleton _ _).mp hn⟩
 
-lemma Module.support_eq_empty_iff :
-    Module.support R M = ∅ ↔ Subsingleton M := by
+lemma Module.support_eq_empty_iff : Module.support R M = ∅ ↔ Subsingleton M := by
   rw [← Set.subset_empty_iff, ← PrimeSpectrum.zeroLocus_singleton_one,
     ← LocalizedModule.subsingleton_iff_support_subset, LocalizedModule.subsingleton_iff,
     subsingleton_iff_forall_eq 0]
   simp only [Submonoid.powers_one, Submonoid.mem_bot, exists_eq_left, one_smul]
 
-lemma Module.nonempty_support_iff :
-    (Module.support R M).Nonempty ↔ Nontrivial M := by
-  rw [Set.nonempty_iff_ne_empty, ne_eq,
-    Module.support_eq_empty_iff, ← not_subsingleton_iff_nontrivial]
+lemma Module.nonempty_support_iff : (Module.support R M).Nonempty ↔ Nontrivial M := by
+  rw [Set.nonempty_iff_ne_empty, ne_eq, Module.support_eq_empty_iff,
+    ← not_subsingleton_iff_nontrivial]
 
 lemma Module.nonempty_support_of_nontrivial [Nontrivial M] : (Module.support R M).Nonempty :=
   Module.nonempty_support_iff.mpr ‹_›
 
-lemma Module.support_eq_empty [Subsingleton M] :
-    Module.support R M = ∅ :=
+lemma Module.support_eq_empty [Subsingleton M] : Module.support R M = ∅ :=
   Module.support_eq_empty_iff.mpr ‹_›
 
-lemma Module.support_of_algebra {A : Type*} [Ring A] [Algebra R A] :
-    Module.support R A = PrimeSpectrum.zeroLocus (RingHom.ker (algebraMap R A)) := by
+lemma Module.support_of_algebra {A : Type*} [Ring A] [Algebra R A]
+    : Module.support R A = PrimeSpectrum.zeroLocus (RingHom.ker (algebraMap R A)) := by
   ext p
   simp only [mem_support_iff', ne_eq, PrimeSpectrum.mem_zeroLocus, SetLike.coe_subset_coe]
   refine ⟨fun ⟨m, hm⟩ x hx ↦ not_not.mp fun hx' ↦ ?_, fun H ↦ ⟨1, fun r hr e ↦ ?_⟩⟩
   · simpa [Algebra.smul_def, (show _ = _ from hx)] using hm _ hx'
   · exact hr (H ((Algebra.algebraMap_eq_smul_one _).trans e))
 
-lemma Module.support_of_isTorsionFree [IsDomain R] [IsTorsionFree R M] [Nontrivial M] :
-    Module.support R M = Set.univ := by
+lemma Module.support_of_isTorsionFree [IsDomain R] [IsTorsionFree R M] [Nontrivial M]
+    : Module.support R M = Set.univ := by
   simp only [Set.eq_univ_iff_forall, mem_support_iff', ne_eq, smul_eq_zero, not_or]
   obtain ⟨x, hx⟩ := exists_ne (0 : M)
   exact fun p ↦ ⟨x, fun r hr ↦ ⟨fun e ↦ hr (e ▸ p.asIdeal.zero_mem), hx⟩⟩
@@ -154,15 +151,15 @@ variable {N P : Type*} [AddCommGroup N] [Module R N] [AddCommGroup P] [Module R 
 variable (f : M →ₗ[R] N) (g : N →ₗ[R] P)
 
 @[stacks 00L3 "(2)"]
-lemma Module.support_subset_of_injective (hf : Function.Injective f) :
-    Module.support R M ⊆ Module.support R N := by
+lemma Module.support_subset_of_injective (hf : Function.Injective f)
+    : Module.support R M ⊆ Module.support R N := by
   simp_rw [Set.subset_def, mem_support_iff']
   rintro x ⟨m, hm⟩
   exact ⟨f m, fun r hr ↦ by simpa using hf.ne (hm r hr)⟩
 
 @[stacks 00L3 "(3)"]
-lemma Module.support_subset_of_surjective (hf : Function.Surjective f) :
-    Module.support R N ⊆ Module.support R M := by
+lemma Module.support_subset_of_surjective (hf : Function.Surjective f)
+    : Module.support R N ⊆ Module.support R M := by
   simp_rw [Set.subset_def, mem_support_iff']
   rintro x ⟨m, hm⟩
   obtain ⟨m, rfl⟩ := hf m
@@ -171,11 +168,12 @@ lemma Module.support_subset_of_surjective (hf : Function.Surjective f) :
 variable {f g} in
 /-- Given an exact sequence `0 → M → N → P → 0` of `R`-modules, `Supp N = Supp M ∪ Supp P`. -/
 @[stacks 00L3 "(4)"]
-lemma Module.support_of_exact (h : Function.Exact f g)
-    (hf : Function.Injective f) (hg : Function.Surjective g) :
-    Module.support R N = Module.support R M ∪ Module.support R P := by
-  refine subset_antisymm ?_ (Set.union_subset (Module.support_subset_of_injective f hf)
-    (Module.support_subset_of_surjective g hg))
+lemma Module.support_of_exact
+    (h : Function.Exact f g) (hf : Function.Injective f) (hg : Function.Surjective g)
+    : Module.support R N = Module.support R M ∪ Module.support R P := by
+  refine subset_antisymm ?_
+    (Set.union_subset (Module.support_subset_of_injective f hf)
+      (Module.support_subset_of_surjective g hg))
   intro x
   contrapose
   simp only [Set.mem_union, not_or, and_imp, notMem_support_iff']
@@ -186,8 +184,7 @@ lemma Module.support_of_exact (h : Function.Exact f g)
   obtain ⟨s, hs, e₁⟩ := H₁ m'
   exact ⟨_, x.asIdeal.primeCompl.mul_mem hs hr, by rw [mul_smul, ← hm', ← map_smul, e₁, map_zero]⟩
 
-lemma LinearEquiv.support_eq (e : M ≃ₗ[R] N) :
-    Module.support R M = Module.support R N :=
+lemma LinearEquiv.support_eq (e : M ≃ₗ[R] N) : Module.support R M = Module.support R N :=
   (Module.support_subset_of_injective e.toLinearMap e.injective).antisymm
     (Module.support_subset_of_surjective e.toLinearMap e.surjective)
 
@@ -197,8 +194,8 @@ variable [Module.Finite R M]
 
 open PrimeSpectrum
 
-lemma Module.mem_support_iff_of_finite :
-    p ∈ Module.support R M ↔ Module.annihilator R M ≤ p.asIdeal := by
+lemma Module.mem_support_iff_of_finite
+    : p ∈ Module.support R M ↔ Module.annihilator R M ≤ p.asIdeal := by
   obtain ⟨s, hs⟩ := ‹Module.Finite R M›
   refine ⟨annihilator_le_of_mem_support, fun H ↦ (mem_support_iff_of_span_eq_top hs).mpr ?_⟩
   simp only [IsConcreteLE.le_iff, Submodule.mem_annihilator_span_singleton] at H ⊢
@@ -213,41 +210,46 @@ lemma Module.mem_support_iff_of_finite :
 
 /-- If `M` is `R`-finite, then `Supp M = Z(Ann(M))`. -/
 @[stacks 00L2]
-lemma Module.support_eq_zeroLocus :
-    Module.support R M = zeroLocus (Module.annihilator R M) :=
+lemma Module.support_eq_zeroLocus : Module.support R M = zeroLocus (Module.annihilator R M) :=
   Set.ext fun _ ↦ mem_support_iff_of_finite
 
-/-- If `M` is a finite module such that `Mₚ = 0` for some `p`,
-then `M[1/f] = 0` for some `p ∈ D(f)`. -/
-lemma LocalizedModule.exists_subsingleton_away (p : Ideal R) [p.IsPrime]
-    [Subsingleton (LocalizedModule p.primeCompl M)] :
-    ∃ f ∉ p, Subsingleton (LocalizedModule.Away f M) := by
-  have : ⟨p, inferInstance⟩ ∈ (Module.support R M)ᶜ := by
-    simpa [Module.notMem_support_iff]
+/--
+If `M` is a finite module such that `Mₚ = 0` for some `p`,
+then `M[1/f] = 0` for some `p ∈ D(f)`.
+-/
+lemma LocalizedModule.exists_subsingleton_away
+    (p : Ideal R) [p.IsPrime] [Subsingleton (LocalizedModule p.primeCompl M)]
+    : ∃ f ∉ p, Subsingleton (LocalizedModule.Away f M) := by
+  have : ⟨p, inferInstance⟩ ∈ (Module.support R M)ᶜ := by simpa [Module.notMem_support_iff]
   rw [Module.support_eq_zeroLocus, ← Set.biUnion_of_singleton (Module.annihilator R M : Set R),
-    PrimeSpectrum.zeroLocus_iUnion₂, Set.compl_iInter₂, Set.mem_iUnion₂] at this
+      PrimeSpectrum.zeroLocus_iUnion₂, Set.compl_iInter₂, Set.mem_iUnion₂]
+    at this
   obtain ⟨f, hf, hf'⟩ := this
-  exact ⟨f, by simpa using hf', subsingleton_iff.mpr
-    fun m ↦ ⟨f, Submonoid.mem_powers f, Module.mem_annihilator.mp hf _⟩⟩
+  exact ⟨
+    f,
+    by simpa using hf',
+    subsingleton_iff.mpr fun m ↦ ⟨f, Submonoid.mem_powers f, Module.mem_annihilator.mp hf _⟩
+  ⟩
 
-lemma IsLocalizedModule.exists_subsingleton_away {M' : Type*} [AddCommMonoid M'] [Module R M']
-    (l : M →ₗ[R] M') (p : Ideal R) [p.IsPrime] [IsLocalizedModule p.primeCompl l]
-    [Subsingleton M'] :
-    ∃ f ∉ p, Subsingleton (LocalizedModule.Away f M) := by
+lemma IsLocalizedModule.exists_subsingleton_away
+    {M' : Type*} [AddCommMonoid M'] [Module R M']
+    (l : M →ₗ[R] M') (p : Ideal R) [p.IsPrime] [IsLocalizedModule p.primeCompl l] [Subsingleton M']
+    : ∃ f ∉ p, Subsingleton (LocalizedModule.Away f M) := by
   let e := IsLocalizedModule.iso p.primeCompl l
   have : Subsingleton (LocalizedModule p.primeCompl M) := e.subsingleton
   exact LocalizedModule.exists_subsingleton_away p
 
-lemma Module.exists_localizedMap_away_surjective_of_localizedMap_atPrime_surjective (p : Ideal R)
-    [p.IsPrime] (φ : N →ₗ[R] M) (hφ : Function.Surjective (LocalizedModule.map p.primeCompl φ)) :
-    ∃ a ∉ p, Function.Surjective (LocalizedModule.map (Submonoid.powers a) φ) := by
+lemma Module.exists_localizedMap_away_surjective_of_localizedMap_atPrime_surjective
+    (p : Ideal R) [p.IsPrime]
+    (φ : N →ₗ[R] M) (hφ : Function.Surjective (LocalizedModule.map p.primeCompl φ))
+    : ∃ a ∉ p, Function.Surjective (LocalizedModule.map (Submonoid.powers a) φ) := by
   simp_rw [φ.localizedMap_surjective_iff_subsingleton_localized_coker] at hφ ⊢
   exact LocalizedModule.exists_subsingleton_away p
 
 /-- `Supp(M/IM) = Supp(M) ∩ Z(I)`. -/
 @[stacks 00L3 "(1)"]
-theorem Module.support_quotient (I : Ideal R) :
-    support R (M ⧸ (I • ⊤ : Submodule R M)) = support R M ∩ zeroLocus I := by
+theorem Module.support_quotient (I : Ideal R)
+    : support R (M ⧸ (I • ⊤ : Submodule R M)) = support R M ∩ zeroLocus I := by
   apply subset_antisymm
   · refine Set.subset_inter ?_ ?_
     · exact Module.support_subset_of_surjective _ (Submodule.mkQ_surjective _)
@@ -261,9 +263,10 @@ theorem Module.support_quotient (I : Ideal R) :
     let Mₚ := LocalizedModule p.asIdeal.primeCompl M
     set Mₚ' := LocalizedModule p.asIdeal.primeCompl (M ⧸ (I • ⊤ : Submodule R M))
     let Mₚ'' := Mₚ ⧸ I.map (algebraMap R Rₚ) • (⊤ : Submodule Rₚ Mₚ)
-    let e : Mₚ' ≃ₗ[Rₚ] Mₚ'' := (localizedQuotientEquiv _ _).symm ≪≫ₗ
-      Submodule.quotEquivOfEq _ _ (by rw [Submodule.localized,
-        Submodule.localized'_smul, Ideal.localized'_eq_map, Submodule.localized'_top])
+    let e : Mₚ' ≃ₗ[Rₚ] Mₚ'' :=
+      (localizedQuotientEquiv _ _).symm ≪≫ₗ Submodule.quotEquivOfEq _ _ (by
+        rw [Submodule.localized, Submodule.localized'_smul, Ideal.localized'_eq_map,
+          Submodule.localized'_top])
     have : Nontrivial Mₚ'' := by
       rw [Submodule.Quotient.nontrivial_iff, ne_comm]
       apply Submodule.top_ne_ideal_smul_of_le_jacobson_annihilator
@@ -274,10 +277,11 @@ theorem Module.support_quotient (I : Ideal R) :
 
 open scoped Pointwise in
 @[simp]
-theorem Module.support_quotSMulTop (x : R) :
-    support R (QuotSMulTop x M) = support R M ∩ zeroLocus {x} :=
+theorem Module.support_quotSMulTop (x : R)
+    : support R (QuotSMulTop x M) = support R M ∩ zeroLocus {x} :=
   (x • (⊤ : Submodule R M)).quotEquivOfEq (Ideal.span {x} • ⊤)
-    ((⊤ : Submodule R M).ideal_span_singleton_smul x).symm |>.support_eq.trans <|
-      (support_quotient _).trans <| by rw [zeroLocus_span]
+        ((⊤ : Submodule R M).ideal_span_singleton_smul x).symm
+      |>.support_eq.trans <|
+    (support_quotient _).trans <| by rw [zeroLocus_span]
 
 end Finite

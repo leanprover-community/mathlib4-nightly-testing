@@ -24,7 +24,6 @@ ultrafilter, ultraproduct
 
 public section
 
-
 universe u v
 
 variable {α : Type u} {β : Type v} {φ : Ultrafilter α}
@@ -42,8 +41,11 @@ local notation "β*" => Germ (φ : Filter α) β
 instance instGroupWithZero [GroupWithZero β] : GroupWithZero β* where
   __ := instDivInvMonoid
   __ := instMonoidWithZero
-  mul_inv_cancel f := inductionOn f fun f hf ↦ coe_eq.2 <| (φ.em fun y ↦ f y = 0).elim
-    (fun H ↦ (hf <| coe_eq.2 H).elim) fun H ↦ H.mono fun _ ↦ mul_inv_cancel₀
+  mul_inv_cancel f :=
+    inductionOn f fun f hf ↦
+      coe_eq.2 <| (φ.em fun y ↦ f y = 0).elim
+        (fun H ↦ (hf <| coe_eq.2 H).elim)
+        fun H ↦ H.mono fun _ ↦ mul_inv_cancel₀
   inv_zero := coe_eq.2 <| by simp only [Function.comp_def, inv_zero, EventuallyEq.rfl]
 
 instance instDivisionSemiring [DivisionSemiring β] : DivisionSemiring β* where
@@ -69,11 +71,9 @@ instance instField [Field β] : Field β* where
 theorem coe_lt [Preorder β] {f g : α → β} : (f : β*) < g ↔ ∀* x, f x < g x := by
   simp only [lt_iff_le_not_ge, eventually_and, coe_le, eventually_not, EventuallyLE]
 
-theorem coe_pos [Preorder β] [Zero β] {f : α → β} : 0 < (f : β*) ↔ ∀* x, 0 < f x :=
-  coe_lt
+theorem coe_pos [Preorder β] [Zero β] {f : α → β} : 0 < (f : β*) ↔ ∀* x, 0 < f x := coe_lt
 
-theorem const_lt [Preorder β] {x y : β} : x < y → (↑x : β*) < ↑y :=
-  coe_lt.mpr ∘ liftRel_const
+theorem const_lt [Preorder β] {x y : β} : x < y → (↑x : β*) < ↑y := coe_lt.mpr ∘ liftRel_const
 
 @[simp, norm_cast]
 theorem const_lt_iff [Preorder β] {x y : β} : (↑x : β*) < ↑y ↔ x < y :=
@@ -83,21 +83,23 @@ theorem lt_def [Preorder β] : ((· < ·) : β* → β* → Prop) = LiftRel (· 
   ext ⟨f⟩ ⟨g⟩
   exact coe_lt
 
-instance total [LE β] [@Std.Total β (· ≤ ·)] : @Std.Total β* (· ≤ ·) :=
-  ⟨fun f g =>
-    inductionOn₂ f g fun _f _g => eventually_or.1 <| Eventually.of_forall fun _x => total_of _ _ _⟩
+instance total [LE β] [@Std.Total β (· ≤ ·)] : @Std.Total β* (· ≤ ·) := ⟨fun f g =>
+  inductionOn₂ f g fun _f _g => eventually_or.1 <| Eventually.of_forall fun _x => total_of _ _ _⟩
 
 open scoped Classical in
 /-- If `φ` is an ultrafilter then the ultraproduct is a linear order. -/
-noncomputable instance instLinearOrder [LinearOrder β] : LinearOrder β* :=
-  Lattice.toLinearOrder _
+noncomputable instance instLinearOrder [LinearOrder β] : LinearOrder β* := Lattice.toLinearOrder _
 
-instance instIsStrictOrderedRing [Semiring β] [PartialOrder β] [IsStrictOrderedRing β] :
-    IsStrictOrderedRing β* where
-  mul_lt_mul_of_pos_left x := inductionOn x fun _f hf y z ↦ inductionOn₂ y z fun _g _h hgh ↦
-    coe_lt.2 <| (coe_lt.1 hf).mp <| (coe_lt.1 hgh).mono fun _a ↦ mul_lt_mul_of_pos_left
-  mul_lt_mul_of_pos_right x := inductionOn x fun _f hf y z ↦ inductionOn₂ y z fun _g _h hgh ↦
-    coe_lt.2 <| (coe_lt.1 hf).mp <| (coe_lt.1 hgh).mono fun _a ↦ mul_lt_mul_of_pos_right
+instance instIsStrictOrderedRing [Semiring β] [PartialOrder β] [IsStrictOrderedRing β]
+    : IsStrictOrderedRing β* where
+  mul_lt_mul_of_pos_left x :=
+    inductionOn x fun _f hf y z ↦
+      inductionOn₂ y z fun _g _h hgh ↦
+        coe_lt.2 <| (coe_lt.1 hf).mp <| (coe_lt.1 hgh).mono fun _a ↦ mul_lt_mul_of_pos_left
+  mul_lt_mul_of_pos_right x :=
+    inductionOn x fun _f hf y z ↦
+      inductionOn₂ y z fun _g _h hgh ↦
+        coe_lt.2 <| (coe_lt.1 hf).mp <| (coe_lt.1 hgh).mono fun _a ↦ mul_lt_mul_of_pos_right
 
 theorem max_def [LinearOrder β] (x y : β*) : max x y = map₂ max x y :=
   inductionOn₂ x y fun a b => by
@@ -115,8 +117,7 @@ theorem min_def [K : LinearOrder β] (x y : β*) : min x y = map₂ min x y :=
     · rw [min_eq_right h, map₂_coe, coe_eq]
       exact h.mono fun i hi => (min_eq_right hi).symm
 
-theorem abs_def [AddCommGroup β] [LinearOrder β] (x : β*) :
-    |x| = map abs x :=
+theorem abs_def [AddCommGroup β] [LinearOrder β] (x : β*) : |x| = map abs x :=
   inductionOn x fun _a => rfl
 
 @[simp]
@@ -128,8 +129,7 @@ theorem const_min [LinearOrder β] (x y : β) : (↑(min x y : β) : β*) = min 
   rw [min_def, map₂_const]
 
 @[simp]
-theorem const_abs [AddCommGroup β] [LinearOrder β] (x : β) :
-    (↑|x| : β*) = |↑x| := by
+theorem const_abs [AddCommGroup β] [LinearOrder β] (x : β) : (↑ |x| : β*) = |↑x| := by
   rw [abs_def, map_const]
 
 end Germ

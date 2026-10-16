@@ -51,8 +51,7 @@ variable {C C₁ C₂ : PointedCone R M} {F F₁ F₂ : Face C}
 -- but as of August 2026 it does not. See:
 -- see https://leanprover.zulipchat.com/#narrow/channel/270676-lean4/topic/Structure.20extensions.20vs.20abbrev.20difference.20in.20dot.20notation/with/581169071
 /-- Converts a face of a pointed cone into a pointed cone. -/
-@[coe]
-abbrev toPointedCone {C : PointedCone R M} (F : Face C) : PointedCone R M := F.toSubmodule
+@[coe] abbrev toPointedCone {C : PointedCone R M} (F : Face C) : PointedCone R M := F.toSubmodule
 
 instance : CoeOut (Face C) (PointedCone R M) := ⟨toPointedCone⟩
 
@@ -64,19 +63,19 @@ instance : PartialOrder (Face C) := .ofSetLike (Face C)
 
 lemma toPointedCone_le : F ≤ C := F.isFaceOf.le
 
-@[ext]
-theorem ext (h : ∀ x, x ∈ F₁ ↔ x ∈ F₂) : F₁ = F₂ := SetLike.ext h
+@[ext] theorem ext (h : ∀ x, x ∈ F₁ ↔ x ∈ F₂) : F₁ = F₂ := SetLike.ext h
 
 @[simp]
-theorem toPointedCone_le_toPointedCone {F₁ F₂ : Face C} :
-    F₁.toPointedCone ≤ F₂.toPointedCone ↔ F₁ ≤ F₂ := .rfl
+theorem toPointedCone_le_toPointedCone {F₁ F₂ : Face C}
+    : F₁.toPointedCone ≤ F₂.toPointedCone ↔ F₁ ≤ F₂ :=
+  .rfl
 
 @[simp]
-theorem toPointedCone_lt_toPointedCone {F₁ F₂ : Face C} :
-    F₁.toPointedCone < F₂.toPointedCone ↔ F₁ < F₂ := .rfl
+theorem toPointedCone_lt_toPointedCone {F₁ F₂ : Face C}
+    : F₁.toPointedCone < F₂.toPointedCone ↔ F₁ < F₂ :=
+  .rfl
 
-@[simp]
-theorem mem_toPointedCone {F : Face C} (x : M) : x ∈ F.toPointedCone ↔ x ∈ F := .rfl
+@[simp] theorem mem_toPointedCone {F : Face C} (x : M) : x ∈ F.toPointedCone ↔ x ∈ F := .rfl
 
 /-! ### Infimum, supremum and lattice -/
 
@@ -85,9 +84,10 @@ instance : Min (Face C) where
   min F₁ F₂ := ⟨F₁ ⊓ F₂, F₁.isFaceOf.inf_left F₂.isFaceOf⟩
 
 instance : InfSet (Face C) where
-  sInf S :=
-    { toSubmodule := C ⊓ sInf {s.1 | s ∈ S}
-      isFaceOf := IsFaceOf.sInf _ (fun F Fs ↦ by obtain ⟨F, Fss, rfl⟩ := Fs; exact F.isFaceOf) }
+  sInf S := {
+    toSubmodule := C ⊓ sInf {s.1 | s ∈ S}
+    isFaceOf := IsFaceOf.sInf _ (fun F Fs ↦ by obtain ⟨F, Fss, rfl⟩ := Fs; exact F.isFaceOf)
+  }
 
 instance : SemilatticeInf (Face C) where
   inf := min
@@ -103,7 +103,7 @@ instance : CompleteSemilatticeInf (Face C) where
       refine inf_le_of_right_le ?_
       simpa [LE.le] using fun _ xs ↦ xs f fS
     · simp only [sInf, Set.mem_ofPred_eq, Set.iInter_exists, Set.biInter_and',
-      Set.iInter_iInter_eq_right, ← toPointedCone_le_toPointedCone, toPointedCone, le_inf_iff]
+        Set.iInter_iInter_eq_right, ← toPointedCone_le_toPointedCone, toPointedCone, le_inf_iff]
       refine ⟨f.isFaceOf.le, ?_⟩
       simpa [LE.le] using fun ⦃x⦄ a _ i ↦ (mem_toPointedCone x).mp (fS i a)
 
@@ -123,8 +123,10 @@ section DivisionRing
 
 namespace Face
 
-variable [DivisionRing R] [LinearOrder R] [IsOrderedRing R] [AddCommGroup M] [Module R M]
-  [AddCommGroup N] [Module R N] {C C₁ : PointedCone R M} {C₂ : PointedCone R N}
+variable
+  [DivisionRing R] [LinearOrder R] [IsOrderedRing R] [AddCommGroup M] [Module R M] [AddCommGroup N]
+  [Module R N]
+  {C C₁ : PointedCone R M} {C₂ : PointedCone R N}
 
 /-- The bottom face of `C` is its lineality space. -/
 theorem lineal_eq_bot : ((⊥ : Face C) : PointedCone R M) = C.lineal := by
@@ -136,8 +138,10 @@ section Prod
 
 open Submodule
 
-/-- The face of `C₁ × C₂` obtained by taking the (submodule) product of faces `F₁ ≤ C₁` and
-`F₂ ≤ C₂`. -/
+/--
+The face of `C₁ × C₂` obtained by taking the (submodule) product of faces `F₁ ≤ C₁` and
+`F₂ ≤ C₂`.
+-/
 def prod (F₁ : Face C₁) (F₂ : Face C₂) : Face (C₁.prod C₂) := ⟨_, F₁.isFaceOf.prod F₂.isFaceOf⟩
 
 /-- The face of `C₁` obtained by projecting to the first component of a face `F ≤ C₁ × C₂`. -/
@@ -172,21 +176,24 @@ theorem fst_prod_snd (G : Face (C₁.prod C₂)) : G.fst.prod G.snd = G := by
   · intro h; exact ⟨⟨x.2, h⟩, ⟨x.1, h⟩⟩
 
 @[gcongr]
-theorem prod_mono {F₁ F₁' : Face C₁} {F₂ F₂' : Face C₂} (h₁ : F₁ ≤ F₁') (h₂ : F₂ ≤ F₂') :
-    prod F₁ F₂ ≤ prod F₁' F₂' :=
+theorem prod_mono {F₁ F₁' : Face C₁} {F₂ F₂' : Face C₂} (h₁ : F₁ ≤ F₁') (h₂ : F₂ ≤ F₂')
+    : prod F₁ F₂ ≤ prod F₁' F₂' :=
   Submodule.prod_mono h₁ h₂
 
-/-- The face lattice of the product of two cones is isomorphic to the product of their face
-lattices. -/
-def prodOrderIso (C : PointedCone R M) (D : PointedCone R N) :
-    Face (C.prod D) ≃o Face C × Face D where
+/--
+The face lattice of the product of two cones is isomorphic to the product of their face
+lattices.
+-/
+def prodOrderIso (C : PointedCone R M) (D : PointedCone R N)
+    : Face (C.prod D) ≃o Face C × Face D where
   toFun G := ⟨fst G, snd G⟩
   invFun G := G.1.prod G.2
   left_inv G := by simp [fst_prod_snd]
   right_inv G := by simp
   map_rel_iff' := by
     simp only [Equiv.coe_fn_mk, ge_iff_le, Prod.mk_le_mk]
-    intro F₁ F₂; constructor <;> intro a
+    intro F₁ F₂
+    constructor <;> intro a
     · simpa [fst_prod_snd, toPointedCone_le_toPointedCone] using Face.prod_mono a.1 a.2
     · constructor <;> exact fun _ d ↦ Submodule.map_mono a d
 

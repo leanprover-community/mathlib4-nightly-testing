@@ -8,7 +8,6 @@ module
 public import Mathlib.Basic.Real.ENatENNReal
 public import Mathlib.Topology.Instances.ENat
 public import Mathlib.Topology.Order.Real
-
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Module.Field
 import Mathlib.Data.EReal.Operations

@@ -33,18 +33,20 @@ public noncomputable section
 
 namespace MulAction
 
-variable {M : Type*} [TopologicalSpace M]
-  {G : Type*} [Group G] [MulAction G M]
-  [ProperlyDiscontinuousSMul G M] [ContinuousConstSMul G M] [IsCancelSMul G M]
-  [T2Space M] [LocallyCompactSpace M]
+variable
+  {M : Type*} [TopologicalSpace M]
+  {G : Type*} [Group G] [MulAction G M] [ProperlyDiscontinuousSMul G M] [ContinuousConstSMul G M]
+  [IsCancelSMul G M] [T2Space M] [LocallyCompactSpace M]
   {H : Type*} [TopologicalSpace H] [ChartedSpace H M]
 
 /-!
 ## Charted space structure on quotient by a group
 -/
 
-/-- The induced charted space structure on the quotient of a charted space by a free, properly
-discontinuous group action. -/
+/--
+The induced charted space structure on the quotient of a charted space by a free, properly
+discontinuous group action.
+-/
 @[to_additive /-- The induced charted space structure on the quotient of a charted space by a free,
 properly discontinuous additive group action. -/]
 instance instChartedSpaceQuotient : ChartedSpace H (orbitRel.Quotient G M) :=

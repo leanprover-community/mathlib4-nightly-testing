@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Category.FGModuleCat.Basic
 public import Mathlib.Algebra.Category.ModuleCat.Colimits
 public import Mathlib.LinearAlgebra.DirectSum.Finite
-
 import Mathlib.Algebra.Category.ModuleCat.EpiMono
 import Mathlib.Algebra.Category.ModuleCat.Products
 import Mathlib.CategoryTheory.Limits.Constructions.LimitsOfProductsAndEqualizers
@@ -32,15 +31,17 @@ namespace FGModuleCat
 
 variable {J : Type} [SmallCategory J] [FinCategory J] {k : Type u} [Ring k]
 
-instance {J : Type} [Finite J] (Z : J → ModuleCat.{v} k) [∀ j, Module.Finite k (Z j)] :
-    Module.Finite k (∐ fun j => Z j : ModuleCat.{v} k) := by
+instance {J : Type} [Finite J] (Z : J → ModuleCat.{v} k) [∀ j, Module.Finite k (Z j)]
+    : Module.Finite k (∐ fun j => Z j : ModuleCat.{v} k) := by
   classical
-exact (Module.Finite.equiv_iff (ModuleCat.coprodIsoDirectSum Z).toLinearEquiv).mpr inferInstance
+  exact (Module.Finite.equiv_iff (ModuleCat.coprodIsoDirectSum Z).toLinearEquiv).mpr inferInstance
 
-/-- Finite colimits of finite modules are finite, because we can realise them as quotients
-of a finite coproduct. -/
-instance (F : J ⥤ FGModuleCat k) :
-    Module.Finite k (colimit (F ⋙ forget₂ (FGModuleCat k) (ModuleCat.{v} k)) : ModuleCat.{v} k) :=
+/--
+Finite colimits of finite modules are finite, because we can realise them as quotients
+of a finite coproduct.
+-/
+instance (F : J ⥤ FGModuleCat k)
+    : Module.Finite k (colimit (F ⋙ forget₂ (FGModuleCat k) (ModuleCat.{v} k)) : ModuleCat.{v} k) :=
   have (j : J) : Module.Finite k ((F ⋙ forget₂ (FGModuleCat k) (ModuleCat.{v} k)).obj j) :=
     inferInstanceAs <| Module.Finite k (F.obj j)
   Module.Finite.of_surjective
@@ -49,20 +50,21 @@ instance (F : J ⥤ FGModuleCat k) :
 
 /-- The forgetful functor from `FGModuleCat k` to `ModuleCat k` creates all finite colimits. -/
 @[instance_reducible]
-def forget₂CreatesColimit (F : J ⥤ FGModuleCat k) :
-    CreatesColimit F (forget₂ (FGModuleCat k) (ModuleCat.{v} k)) :=
+def forget₂CreatesColimit (F : J ⥤ FGModuleCat k)
+    : CreatesColimit F (forget₂ (FGModuleCat k) (ModuleCat.{v} k)) :=
   createsColimitOfFullyFaithfulOfIso
-    ⟨(colimit (F ⋙ forget₂ (FGModuleCat k) (ModuleCat.{v} k)) : ModuleCat.{v} k),
-      by rw [ModuleCat.isFG_iff]; infer_instance⟩
+    ⟨
+      (colimit (F ⋙ forget₂ (FGModuleCat k) (ModuleCat.{v} k)) : ModuleCat.{v} k),
+      by rw [ModuleCat.isFG_iff]; infer_instance
+    ⟩
     (Iso.refl _)
 
 instance : CreatesColimitsOfShape J (forget₂ (FGModuleCat k) (ModuleCat.{v} k)) where
   CreatesColimit {F} := forget₂CreatesColimit F
 
-instance (J : Type) [SmallCategory J] [FinCategory J] :
-    HasColimitsOfShape J (FGModuleCat.{v} k) :=
-  hasColimitsOfShape_of_hasColimitsOfShape_createsColimitsOfShape
-    (forget₂ (FGModuleCat k) (ModuleCat.{v} k))
+instance (J : Type) [SmallCategory J] [FinCategory J] : HasColimitsOfShape J (FGModuleCat.{v} k) :=
+  hasColimitsOfShape_of_hasColimitsOfShape_createsColimitsOfShape (forget₂ (FGModuleCat k)
+    (ModuleCat.{v} k))
 
 instance : HasFiniteColimits (FGModuleCat.{v} k) where
   out _ _ _ := inferInstance

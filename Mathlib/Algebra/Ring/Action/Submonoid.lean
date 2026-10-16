@@ -26,8 +26,7 @@ def FixedPoints.addSubmonoid : AddSubmonoid α where
   add_mem' ha hb _ := by rw [smul_add, ha, hb]
 
 @[simp]
-lemma FixedPoints.mem_addSubmonoid (a : α) : a ∈ addSubmonoid M α ↔ ∀ m : M, m • a = a :=
-  Iff.rfl
+lemma FixedPoints.mem_addSubmonoid (a : α) : a ∈ addSubmonoid M α ↔ ∀ m : M, m • a = a := Iff.rfl
 
 end AddMonoid
 
@@ -44,8 +43,8 @@ lemma FixedPoints.mem_addSubgroup (a : α) : a ∈ FixedPoints.addSubgroup M α 
   Iff.rfl
 
 @[simp]
-lemma FixedPoints.addSubgroup_toAddSubmonoid :
-    (FixedPoints.addSubgroup M α).toAddSubmonoid = addSubmonoid M α :=
+lemma FixedPoints.addSubgroup_toAddSubmonoid
+    : (FixedPoints.addSubgroup M α).toAddSubmonoid = addSubmonoid M α :=
   rfl
 
 end AddGroup

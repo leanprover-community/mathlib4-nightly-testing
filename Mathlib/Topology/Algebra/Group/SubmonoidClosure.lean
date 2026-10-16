@@ -6,7 +6,6 @@ Authors: Yury Kudryashov
 module
 
 public import Mathlib.Topology.Algebra.Group.Subgroup
-
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Filter.AtTopBot.Group
 
@@ -29,23 +28,22 @@ open scoped Topology
 variable {G : Type*}
 
 @[to_additive]
-theorem mapClusterPt_atTop_zpow_iff_pow [DivInvMonoid G] [TopologicalSpace G] {x y : G} :
-    MapClusterPt x atTop (y ^ · : ℤ → G) ↔ MapClusterPt x atTop (y ^ · : ℕ → G) := by
+theorem mapClusterPt_atTop_zpow_iff_pow [DivInvMonoid G] [TopologicalSpace G] {x y : G}
+    : MapClusterPt x atTop (y ^ · : ℤ → G) ↔ MapClusterPt x atTop (y ^ · : ℕ → G) := by
   simp_rw [MapClusterPt, ← Nat.map_cast_int_atTop, map_map, comp_def, zpow_natCast]
 
 variable [Group G] [TopologicalSpace G] [CompactSpace G] [IsTopologicalGroup G]
 
 @[to_additive]
-theorem mapClusterPt_self_zpow_atTop_pow (x : G) (m : ℤ) :
-    MapClusterPt (x ^ m) atTop (x ^ · : ℕ → G) := by
-  obtain ⟨y, hy⟩ : ∃ y, MapClusterPt y atTop (x ^ · : ℤ → G) :=
-    exists_clusterPt_of_compactSpace _
+theorem mapClusterPt_self_zpow_atTop_pow (x : G) (m : ℤ)
+    : MapClusterPt (x ^ m) atTop (x ^ · : ℕ → G) := by
+  obtain ⟨y, hy⟩ : ∃ y, MapClusterPt y atTop (x ^ · : ℤ → G) := exists_clusterPt_of_compactSpace _
   rw [← mapClusterPt_atTop_zpow_iff_pow]
   have H : MapClusterPt (x ^ m) (atTop.curry atTop) ↿(fun a b ↦ x ^ (m + b - a)) := by
     have : ContinuousAt (fun yz ↦ x ^ m * yz.2 / yz.1) (y, y) := by fun_prop
     simpa only [comp_def, ← zpow_sub, ← zpow_add, div_eq_mul_inv, Prod.map, mul_inv_cancel_right]
       using! (hy.curry_prodMap hy).continuousAt_comp this
-  suffices Tendsto ↿(fun a b ↦ m + b - a) (atTop.curry atTop) atTop from H.of_comp this
+  suffices Tendsto (↿(fun a b ↦ m + b - a)) (atTop.curry atTop) atTop from H.of_comp this
   refine Tendsto.curry <| .of_forall fun a ↦ ?_
   simp only [sub_eq_add_neg] -- TODO: add `Tendsto.atTop_sub_const` etc
   exact tendsto_atTop_add_const_right _ _ (tendsto_atTop_add_const_left atTop m tendsto_id)
@@ -59,12 +57,13 @@ theorem mapClusterPt_self_atTop_pow (x : G) : MapClusterPt x atTop (x ^ · : ℕ
   simpa using mapClusterPt_self_zpow_atTop_pow x 1
 
 @[to_additive]
-theorem mapClusterPt_atTop_pow_tfae (x y : G) :
-    List.TFAE [
+theorem mapClusterPt_atTop_pow_tfae (x y : G)
+    : List.TFAE [
       MapClusterPt x atTop (y ^ · : ℕ → G),
       MapClusterPt x atTop (y ^ · : ℤ → G),
       x ∈ closure (range (y ^ · : ℕ → G)),
-      x ∈ closure (range (y ^ · : ℤ → G))] := by
+      x ∈ closure (range (y ^ · : ℤ → G))
+    ] := by
   tfae_have 2 ↔ 1 := mapClusterPt_atTop_zpow_iff_pow
   tfae_have 3 → 4 := by
     refine fun h ↦ closure_mono (range_subset_iff.2 fun n ↦ ?_) h
@@ -78,30 +77,30 @@ theorem mapClusterPt_atTop_pow_tfae (x y : G) :
   tfae_finish
 
 @[to_additive]
-theorem mapClusterPt_atTop_pow_iff_mem_topologicalClosure_zpowers {x y : G} :
-    MapClusterPt x atTop (y ^ · : ℕ → G) ↔ x ∈ (Subgroup.zpowers y).topologicalClosure :=
+theorem mapClusterPt_atTop_pow_iff_mem_topologicalClosure_zpowers {x y : G}
+    : MapClusterPt x atTop (y ^ · : ℕ → G) ↔ x ∈ (Subgroup.zpowers y).topologicalClosure :=
   (mapClusterPt_atTop_pow_tfae x y).out 1 4
 
 @[to_additive (attr := simp)]
-theorem mapClusterPt_inv_atTop_pow {x y : G} :
-    MapClusterPt x⁻¹ atTop (y ^ · : ℕ → G) ↔ MapClusterPt x atTop (y ^ · : ℕ → G) := by
+theorem mapClusterPt_inv_atTop_pow {x y : G}
+    : MapClusterPt x⁻¹ atTop (y ^ · : ℕ → G) ↔ MapClusterPt x atTop (y ^ · : ℕ → G) := by
   simp only [mapClusterPt_atTop_pow_iff_mem_topologicalClosure_zpowers, inv_mem_iff]
 
 @[to_additive]
-theorem closure_range_zpow_eq_pow (x : G) :
-    closure (range (x ^ · : ℤ → G)) = closure (range (x ^ · : ℕ → G)) := by
+theorem closure_range_zpow_eq_pow (x : G)
+    : closure (range (x ^ · : ℤ → G)) = closure (range (x ^ · : ℕ → G)) := by
   ext y
   exact (mapClusterPt_atTop_pow_tfae y x).out 4 3
 
 @[to_additive]
-theorem denseRange_zpow_iff_pow {x : G} :
-    DenseRange (x ^ · : ℤ → G) ↔ DenseRange (x ^ · : ℕ → G) := by
+theorem denseRange_zpow_iff_pow {x : G}
+    : DenseRange (x ^ · : ℤ → G) ↔ DenseRange (x ^ · : ℕ → G) := by
   simp only [DenseRange, dense_iff_closure_eq, closure_range_zpow_eq_pow]
 
 @[to_additive]
-theorem topologicalClosure_subgroupClosure_toSubmonoid (s : Set G) :
-    (Subgroup.closure s).toSubmonoid.topologicalClosure =
-      (Submonoid.closure s).topologicalClosure := by
+theorem topologicalClosure_subgroupClosure_toSubmonoid (s : Set G)
+    : (Subgroup.closure s).toSubmonoid.topologicalClosure
+      = (Submonoid.closure s).topologicalClosure := by
   refine le_antisymm ?_ (closure_mono <| Subgroup.le_closure_toSubmonoid _)
   refine Submonoid.topologicalClosure_minimal _ ?_ isClosed_closure
   rw [Subgroup.closure_toSubmonoid, Submonoid.closure_le]
@@ -112,11 +111,11 @@ theorem topologicalClosure_subgroupClosure_toSubmonoid (s : Set G) :
   exact subset_closure <| Subgroup.mem_zpowers _
 
 @[to_additive]
-theorem closure_submonoidClosure_eq_closure_subgroupClosure (s : Set G) :
-    closure (Submonoid.closure s : Set G) = closure (Subgroup.closure s) :=
+theorem closure_submonoidClosure_eq_closure_subgroupClosure (s : Set G)
+    : closure (Submonoid.closure s : Set G) = closure (Subgroup.closure s) :=
   congrArg SetLike.coe (topologicalClosure_subgroupClosure_toSubmonoid s).symm
 
 @[to_additive]
-theorem dense_submonoidClosure_iff_subgroupClosure {s : Set G} :
-    Dense (Submonoid.closure s : Set G) ↔ Dense (Subgroup.closure s : Set G) := by
+theorem dense_submonoidClosure_iff_subgroupClosure {s : Set G}
+    : Dense (Submonoid.closure s : Set G) ↔ Dense (Subgroup.closure s : Set G) := by
   simp only [dense_iff_closure_eq, closure_submonoidClosure_eq_closure_subgroupClosure]

@@ -1,9 +1,10 @@
 module
+
 import Mathlib.Tactic.Basic
 
 example : (α : Type) × List α := by
   constructor
-  · exact [0,1]
+  · exact [0, 1]
 
 -- example : (α : Type) × List α := by
 --   fsplit

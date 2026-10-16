@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Lenny Taelman
 -/
 module
+
 import Mathlib.Tactic.TautoSet
 
 variable {α : Type} {A B C D E : Set α}
 
-
 example (h : B ∪ C ⊆ A ∪ A) : B ⊆ A := by tauto_set
 example (h : B ∩ B ∩ C ⊇ A) : A ⊆ B := by tauto_set
-example (hABC : A ⊆ B ∪ C) (hCD : C ⊆ D): A ⊆ B ∪ D := by tauto_set
+example (hABC : A ⊆ B ∪ C) (hCD : C ⊆ D) : A ⊆ B ∪ D := by tauto_set
 
 example (h : A = Aᶜ) : B = ∅ := by tauto_set
 example (h : A = Aᶜ) : B = C := by tauto_set
@@ -23,16 +23,16 @@ example (h : Set.univ ⊆ ((A ∪ B) ∩ C) ∩ ((Aᶜ ∩ Bᶜ) ∪ Cᶜ)) : D 
 
 example (h : A ∩ B ⊆ C) (h2 : C ∩ D ⊆ E) : A ∩ B ∩ D ⊆ E := by tauto_set
 example (h : E = Aᶜᶜ ∩ Cᶜᶜᶜ ∩ D) : D ∩ (B ∪ Cᶜ) ∩ A = E ∪ (A ∩ Dᶜᶜ ∩ B)ᶜᶜ := by tauto_set
-example (h : E ⊇ Aᶜᶜ ∩ Cᶜᶜᶜ ∩ D) : D ∩ (B ∪ Cᶜ) ∩ A ⊆  E ∪ (A ∩ Dᶜᶜ ∩ B)ᶜᶜ := by tauto_set
+example (h : E ⊇ Aᶜᶜ ∩ Cᶜᶜᶜ ∩ D) : D ∩ (B ∪ Cᶜ) ∩ A ⊆ E ∪ (A ∩ Dᶜᶜ ∩ B)ᶜᶜ := by tauto_set
 
 example (h1 : A = B) : A = B := by tauto_set
-example (h1 : A = B) (h2 : B ⊆ C): A ⊆ C := by tauto_set
+example (h1 : A = B) (h2 : B ⊆ C) : A ⊆ C := by tauto_set
 
 example (h1 : A ∩ B = Set.univ) : A = Set.univ := by tauto_set
 example (h1 : A ∪ B = ∅) : A = ∅ := by tauto_set
 
-example (h: Aᶜ ⊆ ∅) : A = Set.univ := by tauto_set
-example (h: Set.univ ⊆ Aᶜ) : A = ∅ := by tauto_set
+example (h : Aᶜ ⊆ ∅) : A = Set.univ := by tauto_set
+example (h : Set.univ ⊆ Aᶜ) : A = ∅ := by tauto_set
 
 example : A ∩ ∅ = ∅ := by tauto_set
 example : A ∪ Set.univ = Set.univ := by tauto_set
@@ -40,7 +40,7 @@ example : A ∪ Set.univ = Set.univ := by tauto_set
 example : ∅ ⊆ A := by tauto_set
 example : A ⊆ Set.univ := by tauto_set
 
-example (hAB : A ⊆ B) (hBA: B ⊆ A) : A = B := by tauto_set
+example (hAB : A ⊆ B) (hBA : B ⊆ A) : A = B := by tauto_set
 
 example : A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C) := by tauto_set
 example : A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C) := by tauto_set
@@ -51,7 +51,7 @@ example : A ⊆ (A ∪ B) ∪ C := by tauto_set
 example : A ∩ B ⊆ A := by tauto_set
 example : A ⊆ A ∪ B := by tauto_set
 
-example (hBA : B ⊆ A) (hB : Set.univ ⊆ B): Set.univ = A := by tauto_set
+example (hBA : B ⊆ A) (hB : Set.univ ⊆ B) : Set.univ = A := by tauto_set
 
 example (hAB : A ⊆ B) (hCD : C ⊆ D) : C \ B ⊆ D \ A := by tauto_set
 
@@ -66,16 +66,15 @@ example : (Aᶜ ∩ B ∩ Cᶜᶜ)ᶜᶜᶜᶜᶜ = Cᶜ ∪ Bᶜ ∪ ∅ ∪ A 
 
 example : D ∩ (B ∪ Cᶜ) ∩ A = (Aᶜᶜ ∩ Cᶜᶜᶜ ∩ D) ∪ (A ∩ Dᶜᶜ ∩ B)ᶜᶜ := by tauto_set
 
-example (hAB : A ⊆ B) (hBC : B ⊆ C) (hCD : C ⊆ D) (hDE : D = E) (hEA : E ⊆ A) :
-    (Aᶜ ∩ B ∪ (C ∩ Bᶜ)ᶜ ∩ (Eᶜ ∪ A))ᶜ ∩ (B ∪ Eᶜᶜ)ᶜ =
-    (Dᶜ ∩ C ∪ (B ∩ Aᶜ)ᶜ ∩ (Eᶜ ∪ E))ᶜ ∩ (D ∪ Cᶜᶜ)ᶜ := by tauto_set
-
-
+example (hAB : A ⊆ B) (hBC : B ⊆ C) (hCD : C ⊆ D) (hDE : D = E) (hEA : E ⊆ A)
+    : (Aᶜ ∩ B ∪ (C ∩ Bᶜ)ᶜ ∩ (Eᶜ ∪ A))ᶜ ∩ (B ∪ Eᶜᶜ)ᶜ
+      = (Dᶜ ∩ C ∪ (B ∩ Aᶜ)ᶜ ∩ (Eᶜ ∪ E))ᶜ ∩ (D ∪ Cᶜᶜ)ᶜ := by
+  tauto_set
 
 /-
-  Examples from the Matroid Decomposition Theorem Verification,
-  see https://github.com/Ivan-Sergeyev/seymour, and in particular
-  https://github.com/Ivan-Sergeyev/seymour/blob/d8fcfa23336efe50b09fa0939e8a4ec3a5601ae9/Seymour/ForMathlib/SetTheory.lean
+Examples from the Matroid Decomposition Theorem Verification,
+see https://github.com/Ivan-Sergeyev/seymour, and in particular
+https://github.com/Ivan-Sergeyev/seymour/blob/d8fcfa23336efe50b09fa0939e8a4ec3a5601ae9/Seymour/ForMathlib/SetTheory.lean
 -/
 
 -- setminus_inter_union_eq_union
@@ -124,8 +123,7 @@ example (hAB : A ∩ B = {a}) : Disjoint A (B \ {a}) := by tauto_set
 example (hAB : A ∩ B = {a}) : Disjoint (A \ {a}) (B \ {a}) := by tauto_set
 
 -- union_subset_union_iff
-example (hAC : Disjoint A C) (hBC : Disjoint B C) :
-    A ∪ C ⊆ B ∪ C ↔ A ⊆ B := by
+example (hAC : Disjoint A C) (hBC : Disjoint B C) : A ∪ C ⊆ B ∪ C ↔ A ⊆ B := by
   constructor <;> (intro; tauto_set)
 
 -- symmDiff_eq_alt

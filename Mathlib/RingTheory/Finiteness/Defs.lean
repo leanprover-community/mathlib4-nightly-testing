@@ -43,8 +43,7 @@ variable {R : Type*} {M : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
 open Set
 
 /-- A submodule of `M` is finitely generated if it is the span of a finite subset of `M`. -/
-def FG (N : Submodule R M) : Prop :=
-  ∃ S : Finset M, span R ↑S = N
+def FG (N : Submodule R M) : Prop := ∃ S : Finset M, span R ↑S = N
 
 theorem fg_def {N : Submodule R M} : N.FG ↔ ∃ S : Set M, S.Finite ∧ span R S = N := by
   refine ⟨fun ⟨t, h⟩ => ⟨_, t.finite_toSet, h⟩, ?_⟩
@@ -56,13 +55,13 @@ theorem fg_iff_addSubmonoid_fg (P : Submodule ℕ M) : P.FG ↔ P.toAddSubmonoid
   simp_rw [fg_def, ← toAddSubmonoid_inj, span_nat_eq_addSubmonoidClosure,
     AddSubmonoid.isAddFG_iff_finite]
 
-theorem fg_iff_addSubgroup_fg {G : Type*} [AddCommGroup G] (P : Submodule ℤ G) :
-    P.FG ↔ P.toAddSubgroup.FG := by
+theorem fg_iff_addSubgroup_fg {G : Type*} [AddCommGroup G] (P : Submodule ℤ G)
+    : P.FG ↔ P.toAddSubgroup.FG := by
   simp_rw [fg_def, ← toAddSubgroup_inj, span_int_eq_addSubgroupClosure,
     AddSubgroup.isAddFG_iff_finite]
 
-theorem fg_iff_exists_fin_generating_family {N : Submodule R M} :
-    N.FG ↔ ∃ (n : ℕ) (s : Fin n → M), span R (range s) = N := by
+theorem fg_iff_exists_fin_generating_family {N : Submodule R M}
+    : N.FG ↔ ∃ (n : ℕ) (s : Fin n → M), span R (range s) = N := by
   rw [fg_def]
   constructor
   · rintro ⟨S, Sfin, hS⟩
@@ -72,9 +71,9 @@ theorem fg_iff_exists_fin_generating_family {N : Submodule R M} :
     exact ⟨range s, finite_range s, hs⟩
 
 universe w v u in
-lemma fg_iff_exists_finite_generating_family {A : Type u} [Semiring A] {M : Type v}
-    [AddCommMonoid M] [Module A M] {N : Submodule A M} :
-    N.FG ↔ ∃ (G : Type w) (_ : Finite G) (g : G → M), span A (range g) = N := by
+lemma fg_iff_exists_finite_generating_family
+    {A : Type u} [Semiring A] {M : Type v} [AddCommMonoid M] [Module A M] {N : Submodule A M}
+    : N.FG ↔ ∃ (G : Type w) (_ : Finite G) (g : G → M), span A (range g) = N := by
   constructor
   · intro hN
     obtain ⟨n, f, h⟩ := fg_iff_exists_fin_generating_family.mp hN
@@ -86,8 +85,8 @@ lemma fg_iff_exists_finite_generating_family {A : Type u} [Semiring A] {M : Type
     have := Fintype.ofFinite (range g)
     exact ⟨(range g).toFinset, by simpa⟩
 
-theorem fg_span_iff_fg_span_finset_subset (s : Set M) :
-    (span R s).FG ↔ ∃ s' : Finset M, ↑s' ⊆ s ∧ span R s = span R s' := by
+theorem fg_span_iff_fg_span_finset_subset (s : Set M)
+    : (span R s).FG ↔ ∃ s' : Finset M, ↑s' ⊆ s ∧ span R s = span R s' := by
   constructor
   · intro ⟨s'', hs''⟩
     obtain ⟨s', hs's, hss'⟩ := subset_span_finite_of_subset_span <| hs'' ▸ subset_span
@@ -105,11 +104,12 @@ namespace Ideal
 
 variable {R : Type*} [Semiring R]
 
-/-- An ideal of `R` is finitely generated if it is the span of a finite subset of `R`.
+/--
+An ideal of `R` is finitely generated if it is the span of a finite subset of `R`.
 
-This is defeq to `Submodule.FG`, but unfolds more nicely. -/
-def FG (I : Ideal R) : Prop :=
-  ∃ S : Finset R, span ↑S = I
+This is defeq to `Submodule.FG`, but unfolds more nicely.
+-/
+def FG (I : Ideal R) : Prop := ∃ S : Finset R, span ↑S = I
 
 end Ideal
 
@@ -120,7 +120,7 @@ variable (R A M : Type*)
 /-- A module over a semiring is `Module.Finite` if it is finitely generated as a module. -/
 protected class Module.Finite [Semiring R] [AddCommMonoid M] [Module R M] : Prop where
   of_fg_top ::
-    fg_top : (⊤ : Submodule R M).FG
+  fg_top : (⊤ : Submodule R M).FG
 
 attribute [inherit_doc Module.Finite] Module.Finite.fg_top
 
@@ -129,21 +129,23 @@ namespace Module
 variable [Semiring R] [AddCommMonoid M] [Module R M]
 
 /-- See also `Module.Finite.iff_fg` for a version when `M` is itself a submodule. -/
-theorem finite_def {R M} [Semiring R] [AddCommMonoid M] [Module R M] :
-    Module.Finite R M ↔ (⊤ : Submodule R M).FG :=
+theorem finite_def {R M} [Semiring R] [AddCommMonoid M] [Module R M]
+    : Module.Finite R M ↔ (⊤ : Submodule R M).FG :=
   ⟨(·.fg_top), .of_fg_top⟩
 
 namespace Finite
 
 open Submodule Set
 
-theorem iff_addMonoid_fg {M : Type*} [AddCommMonoid M] : Module.Finite ℕ M ↔ AddMonoid.FG M :=
-  ⟨fun h => AddMonoid.fg_def.mpr <| (fg_iff_addSubmonoid_fg ⊤).mp h.fg_top,
-    fun h => of_fg_top <| (fg_iff_addSubmonoid_fg ⊤).mpr (AddMonoid.fg_def.mp h)⟩
+theorem iff_addMonoid_fg {M : Type*} [AddCommMonoid M] : Module.Finite ℕ M ↔ AddMonoid.FG M := ⟨
+  fun h => AddMonoid.fg_def.mpr <| (fg_iff_addSubmonoid_fg ⊤).mp h.fg_top,
+  fun h => of_fg_top <| (fg_iff_addSubmonoid_fg ⊤).mpr (AddMonoid.fg_def.mp h)
+⟩
 
-theorem iff_addGroup_fg {G : Type*} [AddCommGroup G] : Module.Finite ℤ G ↔ AddGroup.FG G :=
-  ⟨fun h => AddGroup.fg_def.mpr <| (fg_iff_addSubgroup_fg ⊤).mp h.fg_top,
-    fun h => of_fg_top <| (fg_iff_addSubgroup_fg ⊤).mpr (AddGroup.fg_def.mp h)⟩
+theorem iff_addGroup_fg {G : Type*} [AddCommGroup G] : Module.Finite ℤ G ↔ AddGroup.FG G := ⟨
+  fun h => AddGroup.fg_def.mpr <| (fg_iff_addSubgroup_fg ⊤).mp h.fg_top,
+  fun h => of_fg_top <| (fg_iff_addSubgroup_fg ⊤).mpr (AddGroup.fg_def.mp h)
+⟩
 
 variable {R M N}
 
@@ -155,12 +157,11 @@ end Finite
 
 end Module
 
-instance AddMonoid.FG.to_moduleFinite_nat {M : Type*} [AddCommMonoid M] [FG M] :
-    Module.Finite ℕ M :=
+instance AddMonoid.FG.to_moduleFinite_nat {M : Type*} [AddCommMonoid M] [FG M]
+    : Module.Finite ℕ M :=
   Module.Finite.iff_addMonoid_fg.mpr ‹_›
 
-instance AddMonoid.FG.to_moduleFinite_int {G : Type*} [AddCommGroup G] [FG G] :
-    Module.Finite ℤ G :=
+instance AddMonoid.FG.to_moduleFinite_int {G : Type*} [AddCommGroup G] [FG G] : Module.Finite ℤ G :=
   Module.Finite.iff_addGroup_fg.mpr <| AddGroup.fg_iff_addMonoid_fg.mpr ‹_›
 
 end ModuleAndAlgebra
@@ -176,8 +177,7 @@ def Finite (f : A →+* B) : Prop :=
   Module.Finite A B
 
 @[simp]
-lemma finite_algebraMap [Algebra A B] :
-    (algebraMap A B).Finite ↔ Module.Finite A B := by
+lemma finite_algebraMap [Algebra A B] : (algebraMap A B).Finite ↔ Module.Finite A B := by
   rw [Finite, toAlgebra_algebraMap]
 
 end RingHom
@@ -188,9 +188,10 @@ variable {R A B : Type*} [CommRing R]
 variable [CommRing A] [CommRing B]
 variable [Algebra R A] [Algebra R B]
 
-/-- An algebra morphism `A →ₐ[R] B` is finite if it is finite as ring morphism.
-In other words, if `B` is finitely generated as `A`-module. -/
-def Finite (f : A →ₐ[R] B) : Prop :=
-  f.toRingHom.Finite
+/--
+An algebra morphism `A →ₐ[R] B` is finite if it is finite as ring morphism.
+In other words, if `B` is finitely generated as `A`-module.
+-/
+def Finite (f : A →ₐ[R] B) : Prop := f.toRingHom.Finite
 
 end AlgHom

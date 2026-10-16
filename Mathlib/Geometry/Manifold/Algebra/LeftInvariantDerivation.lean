@@ -30,94 +30,91 @@ therefore be favored to construct a theory of Lie groups in suitable generality.
 
 @[expose] public section
 
-
 noncomputable section
 
 open scoped LieGroup Manifold Derivation ContDiff
 
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCommGroup E]
-  [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H) (G : Type*)
-  [TopologicalSpace G] [ChartedSpace H G] [Monoid G] [ContMDiffMul I ∞ G] (g h : G)
+variable
+  {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H]
+  (I : ModelWithCorners 𝕜 E H) (G : Type*)
+  [TopologicalSpace G] [ChartedSpace H G] [Monoid G] [ContMDiffMul I ∞ G]
+  (g h : G)
 
-/-- Left-invariant global derivations.
+/--
+Left-invariant global derivations.
 
 A global derivation is left-invariant if it is equal to its pullback along left multiplication by
 an arbitrary element of `G`.
 -/
-structure LeftInvariantDerivation extends Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯ where
-  left_invariant'' :
-    ∀ g, 𝒅ₕ (smoothLeftMul_one I g) (Derivation.evalAt 1 toDerivation) =
-      Derivation.evalAt g toDerivation
+structure LeftInvariantDerivation extends Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯ where
+  left_invariant''
+    : ∀ g,
+      𝒅ₕ (smoothLeftMul_one I g) (Derivation.evalAt 1 toDerivation)
+        = Derivation.evalAt g toDerivation
 
 variable {I G}
 
 namespace LeftInvariantDerivation
 
-instance : Coe (LeftInvariantDerivation I G) (Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯) :=
+instance : Coe (LeftInvariantDerivation I G) (Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯) :=
   ⟨toDerivation⟩
 
 attribute [coe] toDerivation
 
-theorem toDerivation_injective :
-    Function.Injective (toDerivation : LeftInvariantDerivation I G → _) :=
-  fun X Y h => by cases X; cases Y; congr
+theorem toDerivation_injective
+    : Function.Injective (toDerivation : LeftInvariantDerivation I G → _) := fun X Y h => by
+  cases X; cases Y; congr
 
 @[macro_inline]
-instance : FunLike (LeftInvariantDerivation I G) C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯ where
+instance : FunLike (LeftInvariantDerivation I G) (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯ where
   coe f := f.toDerivation
   coe_injective _ _ h := toDerivation_injective <| DFunLike.ext' h
 
-instance : LinearMapClass (LeftInvariantDerivation I G) 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯ where
+instance : LinearMapClass (LeftInvariantDerivation I G) 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯ where
   map_add f := map_add f.1
   map_smulₛₗ f := map_smul f.1.1
 
 variable {r : 𝕜} {X Y : LeftInvariantDerivation I G} {f f' : C^∞⟮I, G; 𝕜⟯}
 
-theorem toFun_eq_coe : X.toFun = ⇑X :=
-  rfl
+theorem toFun_eq_coe : X.toFun = ⇑X := rfl
 
-theorem coe_injective :
-    @Function.Injective (LeftInvariantDerivation I G) (_ → C^∞⟮I, G; 𝕜⟯) DFunLike.coe :=
+theorem coe_injective
+    : @Function.Injective (LeftInvariantDerivation I G) (_ → C^∞⟮I, G; 𝕜⟯) DFunLike.coe :=
   DFunLike.coe_injective
 
-@[ext]
-theorem ext (h : ∀ f, X f = Y f) : X = Y := DFunLike.ext _ _ h
+@[ext] theorem ext (h : ∀ f, X f = Y f) : X = Y := DFunLike.ext _ _ h
 
 variable (X Y f)
 
-theorem coe_derivation :
-    ⇑(X : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯) = (X : C^∞⟮I, G; 𝕜⟯ → C^∞⟮I, G; 𝕜⟯) :=
+theorem coe_derivation
+    : ⇑(X : Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯) = (X : C^∞⟮I, G; 𝕜⟯ → C^∞⟮I, G; 𝕜⟯) :=
   rfl
 
 /-- Premature version of the lemma. Prefer using `left_invariant` instead. -/
-theorem left_invariant' :
-    𝒅ₕ (smoothLeftMul_one I g) (Derivation.evalAt (1 : G) ↑X) = Derivation.evalAt g ↑X :=
+theorem left_invariant'
+    : 𝒅ₕ (smoothLeftMul_one I g) (Derivation.evalAt (1 : G) ↑X) = Derivation.evalAt g ↑X :=
   left_invariant'' X g
 
 protected theorem map_add : X (f + f') = X f + X f' := by simp
 
 protected theorem map_zero : X 0 = 0 := by simp
 
-protected theorem map_neg : X (-f) = -X f := by simp
+protected theorem map_neg : X (-f) = - X f := by simp
 
 protected theorem map_sub : X (f - f') = X f - X f' := by simp
 
 protected theorem map_smul : X (r • f) = r • X f := by simp
 
-@[simp]
-theorem leibniz : X (f * f') = f • X f' + f' • X f :=
-  X.leibniz' _ _
+@[simp] theorem leibniz : X (f * f') = f • X f' + f' • X f := X.leibniz' _ _
 
-instance : Zero (LeftInvariantDerivation I G) :=
-  ⟨⟨0, fun g => by simp only [map_zero]⟩⟩
+instance : Zero (LeftInvariantDerivation I G) := ⟨⟨0, fun g => by simp only [map_zero]⟩⟩
 
-instance : Inhabited (LeftInvariantDerivation I G) :=
-  ⟨0⟩
+instance : Inhabited (LeftInvariantDerivation I G) := ⟨0⟩
 
 instance : Add (LeftInvariantDerivation I G) where
-  add X Y :=
-    ⟨X + Y, fun g => by
-      simp only [map_add, left_invariant']⟩
+  add X Y := ⟨X + Y, fun g => by simp only [map_add, left_invariant']⟩
 
 instance : Neg (LeftInvariantDerivation I G) where
   neg X := ⟨-X, fun g => by simp [left_invariant']⟩
@@ -125,29 +122,20 @@ instance : Neg (LeftInvariantDerivation I G) where
 instance : Sub (LeftInvariantDerivation I G) where
   sub X Y := ⟨X - Y, fun g => by simp [left_invariant']⟩
 
-@[simp]
-theorem coe_add : ⇑(X + Y) = X + Y :=
-  rfl
+@[simp] theorem coe_add : ⇑(X + Y) = X + Y := rfl
 
-@[simp]
-theorem coe_zero : ⇑(0 : LeftInvariantDerivation I G) = 0 :=
-  rfl
+@[simp] theorem coe_zero : ⇑(0 : LeftInvariantDerivation I G) = 0 := rfl
 
-@[simp]
-theorem coe_neg : ⇑(-X) = -X :=
-  rfl
+@[simp] theorem coe_neg : ⇑(-X) = -X := rfl
 
-@[simp]
-theorem coe_sub : ⇑(X - Y) = X - Y :=
-  rfl
+@[simp] theorem coe_sub : ⇑(X - Y) = X - Y := rfl
 
 @[simp, norm_cast]
-theorem lift_add : (↑(X + Y) : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯) = X + Y :=
-  rfl
+theorem lift_add : (↑(X + Y) : Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯) = X + Y := rfl
 
 @[simp, norm_cast]
-theorem lift_zero :
-    (↑(0 : LeftInvariantDerivation I G) : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯) = 0 :=
+theorem lift_zero
+    : (↑(0 : LeftInvariantDerivation I G) : Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯) = 0 :=
   rfl
 
 instance hasNatScalar : SMul ℕ (LeftInvariantDerivation I G) where
@@ -160,18 +148,14 @@ instance : AddCommGroup (LeftInvariantDerivation I G) :=
   coe_injective.addCommGroup _ coe_zero coe_add coe_neg coe_sub (fun _ _ => rfl) fun _ _ => rfl
 
 instance : SMul 𝕜 (LeftInvariantDerivation I G) where
-  smul r X := ⟨r • X.1, fun g => by
-    simp only [LinearMap.map_smul_of_tower, map_smul]; rw [left_invariant']⟩
+  smul r X :=
+    ⟨r • X.1, fun g => by simp only [LinearMap.map_smul_of_tower, map_smul]; rw [left_invariant']⟩
 
 variable (r)
 
-@[simp]
-theorem coe_smul : ⇑(r • X) = r • ⇑X :=
-  rfl
+@[simp] theorem coe_smul : ⇑(r • X) = r • ⇑X := rfl
 
-@[simp]
-theorem lift_smul (k : 𝕜) : (k • X).1 = k • X.1 :=
-  rfl
+@[simp] theorem lift_smul (k : 𝕜) : (k • X).1 = k • X.1 := rfl
 
 variable (I G)
 
@@ -185,19 +169,18 @@ variable {I G}
 instance : Module 𝕜 (LeftInvariantDerivation I G) :=
   coe_injective.module _ (coeFnAddMonoidHom I G) coe_smul
 
-/-- Evaluation at a point for left invariant derivations. Same thing as for generic global
-derivations (`Derivation.evalAt`). -/
+/--
+Evaluation at a point for left invariant derivations. Same thing as for generic global
+derivations (`Derivation.evalAt`).
+-/
 def evalAt : LeftInvariantDerivation I G →ₗ[𝕜] PointDerivation I g where
   toFun X := Derivation.evalAt g X.1
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-theorem evalAt_apply : evalAt g X f = (X f) g :=
-  rfl
+theorem evalAt_apply : evalAt g X f = (X f) g := rfl
 
-@[simp]
-theorem evalAt_coe : Derivation.evalAt g ↑X = evalAt g X :=
-  rfl
+@[simp] theorem evalAt_coe : Derivation.evalAt g ↑X = evalAt g X := rfl
 
 theorem left_invariant : 𝒅ₕ (smoothLeftMul_one I g) (evalAt (1 : G) X) = evalAt g X :=
   X.left_invariant'' g
@@ -217,8 +200,9 @@ theorem comp_L : (X f).comp (𝑳 I g) = X (f.comp (𝑳 I g)) := by
 
 set_option backward.isDefEq.respectTransparency false in
 instance : Bracket (LeftInvariantDerivation I G) (LeftInvariantDerivation I G) where
-  bracket X Y :=
-    ⟨⁅(X : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯), Y⁆, fun g => by
+  bracket X Y := ⟨
+    ⁅(X : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯), Y⁆,
+    fun g => by
       ext f
       have hX := congr($(left_invariant' g X) (Y f))
       have hY := congr($(left_invariant' g Y) (X f))
@@ -227,17 +211,17 @@ instance : Bracket (LeftInvariantDerivation I G) (LeftInvariantDerivation I G) w
       rw [Derivation.commutator_apply, ContMDiffMap.coe_sub, Pi.sub_apply, coe_derivation]
       rw [coe_derivation] at hX hY ⊢
       rw [hX, hY]
-      rfl⟩
+      rfl
+  ⟩
 
 @[simp]
-theorem commutator_coe_derivation :
-    ⇑⁅X, Y⁆ =
-      (⁅(X : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯), Y⁆ :
-        Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯) :=
+theorem commutator_coe_derivation
+    : ⇑ ⁅X, Y⁆
+      = (⁅(X : Derivation 𝕜 C^∞⟮I, G; 𝕜⟯ C^∞⟮I, G; 𝕜⟯), Y⁆
+        : Derivation 𝕜 (C^∞⟮I, G; 𝕜⟯) C^∞⟮I, G; 𝕜⟯) :=
   rfl
 
-theorem commutator_apply : ⁅X, Y⁆ f = X (Y f) - Y (X f) :=
-  rfl
+theorem commutator_apply : ⁅X, Y⁆ f = X (Y f) - Y (X f) := rfl
 
 instance : LieRing (LeftInvariantDerivation I G) where
   add_lie X Y Z := by

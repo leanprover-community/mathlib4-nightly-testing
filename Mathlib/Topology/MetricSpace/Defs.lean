@@ -51,7 +51,8 @@ universe u v w
 variable {α : Type u} {β : Type v} {X : Type*}
 variable [PseudoMetricSpace α]
 
-/-- A metric space is a type endowed with a `ℝ`-valued distance `dist` satisfying
+/--
+A metric space is a type endowed with a `ℝ`-valued distance `dist` satisfying
 `dist x y = 0 ↔ x = y`, commutativity `dist x y = dist y x`, and the triangle inequality
 `dist x z ≤ dist x y + dist y z`.
 
@@ -65,40 +66,44 @@ We make the uniformity/topology part of the data instead of deriving it from the
 This e.g. ensures that we do not get a diamond when doing
 `[MetricSpace α] [MetricSpace β] : TopologicalSpace (α × β)`:
 The product metric and product topology agree, but not definitionally so.
-See Note [forgetful inheritance]. -/
+See Note [forgetful inheritance].
+-/
 @[wikidata Q180953]
 class MetricSpace (α : Type u) : Type u extends PseudoMetricSpace α where
   eq_of_dist_eq_zero : ∀ {x y : α}, dist x y = 0 → x = y
 
 /-- Two metric space structures with the same distance coincide. -/
 @[ext]
-theorem MetricSpace.ext {α : Type*} {m m' : MetricSpace α} (h : m.toDist = m'.toDist) :
-    m = m' := by
+theorem MetricSpace.ext {α : Type*} {m m' : MetricSpace α} (h : m.toDist = m'.toDist) : m = m' := by
   cases m; cases m'; congr; ext1; assumption
 
-/-- Construct a metric space structure whose underlying topological space structure
+/--
+Construct a metric space structure whose underlying topological space structure
 (definitionally) agrees which a pre-existing topology which is compatible with a given distance
-function. -/
+function.
+-/
 @[instance_reducible]
-def MetricSpace.ofDistTopology {α : Type u} [TopologicalSpace α] (dist : α → α → ℝ)
+def MetricSpace.ofDistTopology
+    {α : Type u} [TopologicalSpace α]
+    (dist : α → α → ℝ)
     (dist_self : ∀ x : α, dist x x = 0) (dist_comm : ∀ x y : α, dist x y = dist y x)
     (dist_triangle : ∀ x y z : α, dist x z ≤ dist x y + dist y z)
     (H : ∀ s : Set α, IsOpen s ↔ ∀ x ∈ s, ∃ ε > 0, ∀ y, dist x y < ε → y ∈ s)
-    (eq_of_dist_eq_zero : ∀ x y : α, dist x y = 0 → x = y) : MetricSpace α :=
-  { PseudoMetricSpace.ofDistTopology dist dist_self dist_comm dist_triangle H with
-    eq_of_dist_eq_zero := eq_of_dist_eq_zero _ _ }
+    (eq_of_dist_eq_zero : ∀ x y : α, dist x y = 0 → x = y)
+    : MetricSpace α := {
+  PseudoMetricSpace.ofDistTopology dist dist_self dist_comm dist_triangle H with
+  eq_of_dist_eq_zero := eq_of_dist_eq_zero _ _
+}
 
 variable {γ : Type w} [MetricSpace γ]
 
-theorem eq_of_dist_eq_zero {x y : γ} : dist x y = 0 → x = y :=
-  MetricSpace.eq_of_dist_eq_zero
+theorem eq_of_dist_eq_zero {x y : γ} : dist x y = 0 → x = y := MetricSpace.eq_of_dist_eq_zero
 
 @[simp]
 theorem dist_eq_zero {x y : γ} : dist x y = 0 ↔ x = y :=
   Iff.intro eq_of_dist_eq_zero fun this => this ▸ dist_self _
 
-@[simp]
-theorem zero_eq_dist {x y : γ} : 0 = dist x y ↔ x = y := by rw [eq_comm, dist_eq_zero]
+@[simp] theorem zero_eq_dist {x y : γ} : 0 = dist x y ↔ x = y := by rw [eq_comm, dist_eq_zero]
 
 theorem dist_ne_zero {x y : γ} : dist x y ≠ 0 ↔ x ≠ y := by
   simpa only [not_iff_not] using dist_eq_zero
@@ -147,46 +152,59 @@ theorem subsingleton_sphere (x : γ) {r : ℝ} (hr : r ≤ 0) : (sphere x r).Sub
 
 end Metric
 
-/-- Build a new metric space from an old one where the bundled uniform structure is provably
+/--
+Build a new metric space from an old one where the bundled uniform structure is provably
 (but typically non-definitionally) equal to some given uniform structure.
 See Note [forgetful inheritance].
 See Note [reducible non-instances].
 -/
-abbrev MetricSpace.replaceUniformity {γ} [U : UniformSpace γ] (m : MetricSpace γ)
-    (H : 𝓤[U] = 𝓤[PseudoEMetricSpace.toUniformSpace]) : MetricSpace γ where
+abbrev MetricSpace.replaceUniformity
+    {γ} [U : UniformSpace γ] (m : MetricSpace γ) (H : 𝓤[U] = 𝓤[PseudoEMetricSpace.toUniformSpace])
+    : MetricSpace γ where
   toPseudoMetricSpace := PseudoMetricSpace.replaceUniformity m.toPseudoMetricSpace H
   eq_of_dist_eq_zero := @eq_of_dist_eq_zero _ _
 
-theorem MetricSpace.replaceUniformity_eq {γ} [U : UniformSpace γ] (m : MetricSpace γ)
-    (H : 𝓤[U] = 𝓤[PseudoEMetricSpace.toUniformSpace]) : m.replaceUniformity H = m := by
+theorem MetricSpace.replaceUniformity_eq
+    {γ} [U : UniformSpace γ] (m : MetricSpace γ) (H : 𝓤[U] = 𝓤[PseudoEMetricSpace.toUniformSpace])
+    : m.replaceUniformity H = m := by
   ext; rfl
 
-/-- Build a new metric space from an old one where the bundled topological structure is provably
+/--
+Build a new metric space from an old one where the bundled topological structure is provably
 (but typically non-definitionally) equal to some given topological structure.
 See Note [forgetful inheritance].
 See Note [reducible non-instances].
 -/
-abbrev MetricSpace.replaceTopology {γ} [U : TopologicalSpace γ] (m : MetricSpace γ)
-    (H : U = m.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace) : MetricSpace γ :=
+abbrev MetricSpace.replaceTopology
+    {γ} [U : TopologicalSpace γ]
+    (m : MetricSpace γ) (H : U = m.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace)
+    : MetricSpace γ :=
   @MetricSpace.replaceUniformity γ (m.toUniformSpace.replaceTopology H) m rfl
 
-theorem MetricSpace.replaceTopology_eq {γ} [U : TopologicalSpace γ] (m : MetricSpace γ)
-    (H : U = m.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace) :
-    m.replaceTopology H = m := by
+theorem MetricSpace.replaceTopology_eq
+    {γ} [U : TopologicalSpace γ]
+    (m : MetricSpace γ) (H : U = m.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace)
+    : m.replaceTopology H = m := by
   ext; rfl
 
-/-- Build a new metric space from an old one where the bundled bornology structure is provably
+/--
+Build a new metric space from an old one where the bundled bornology structure is provably
 (but typically non-definitionally) equal to some given bornology structure.
 See Note [forgetful inheritance].
 See Note [reducible non-instances].
 -/
-abbrev MetricSpace.replaceBornology {α} [B : Bornology α] (m : MetricSpace α)
-    (H : ∀ s, @IsBounded _ B s ↔ @IsBounded _ PseudoMetricSpace.toBornology s) : MetricSpace α :=
-  { PseudoMetricSpace.replaceBornology _ H, m with toBornology := B }
+abbrev MetricSpace.replaceBornology
+    {α} [B : Bornology α]
+    (m : MetricSpace α) (H : ∀ s, @IsBounded _ B s ↔ @IsBounded _ PseudoMetricSpace.toBornology s)
+    : MetricSpace α := {
+  PseudoMetricSpace.replaceBornology _ H, m with
+  toBornology := B
+}
 
-theorem MetricSpace.replaceBornology_eq {α} [m : MetricSpace α] [B : Bornology α]
-    (H : ∀ s, @IsBounded _ B s ↔ @IsBounded _ PseudoMetricSpace.toBornology s) :
-    MetricSpace.replaceBornology _ H = m := by
+theorem MetricSpace.replaceBornology_eq
+    {α} [m : MetricSpace α] [B : Bornology α]
+    (H : ∀ s, @IsBounded _ B s ↔ @IsBounded _ PseudoMetricSpace.toBornology s)
+    : MetricSpace.replaceBornology _ H = m := by
   ext
   rfl
 
@@ -208,15 +226,13 @@ instance : MetricSpace PUnit.{u + 1} where
   eq_of_dist_eq_zero _ := Subsingleton.elim _ _
   dist_triangle _ _ _ := show (0 : ℝ) ≤ 0 + 0 by rw [add_zero]
   toUniformSpace := inferInstance
-  uniformity_dist := by
-    simp +contextual [principal_univ, eq_top_of_neBot (𝓤 PUnit)]
+  uniformity_dist := by simp +contextual [principal_univ, eq_top_of_neBot (𝓤 PUnit)]
 
 /-!
 ### `Additive`, `Multiplicative`
 
 The distance on those type synonyms is inherited without change.
 -/
-
 
 open Additive Multiplicative
 

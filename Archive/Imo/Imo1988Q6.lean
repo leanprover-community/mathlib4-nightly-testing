@@ -31,7 +31,8 @@ attribute [local simp] sq
 
 namespace Imo1988Q6
 
-/-- Constant descent Vieta jumping.
+/--
+Constant descent Vieta jumping.
 
 This proof technique allows one to prove an arbitrary proposition `claim`,
 by running a descent argument on a hyperbola `H` in the first quadrant of the plane,
@@ -62,13 +63,17 @@ The user must provide a proof that the proposition `claim` is true
 if there exists an integral point `(x,y)` on the hyperbola `H` that lies in the base locus.
 If such a base locus is not necessary, once can simply let it be `fun x y ↦ False`.
 -/
-theorem constant_descent_vieta_jumping (x y : ℕ) {claim : Prop} {H : ℕ → ℕ → Prop} (h₀ : H x y)
+theorem constant_descent_vieta_jumping
+    (x y : ℕ)
+    {claim : Prop} {H : ℕ → ℕ → Prop} (h₀ : H x y)
     (B : ℕ → ℤ) (C : ℕ → ℤ) (base : ℕ → ℕ → Prop)
     (H_quad : ∀ {x y}, H x y ↔ (y : ℤ) * y - B x * y + C x = 0) (H_symm : ∀ {x y}, H x y ↔ H y x)
     (H_zero : ∀ {x}, H x 0 → claim) (H_diag : ∀ {x}, H x x → claim)
-    (H_desc : ∀ {x y}, 0 < x → x < y → ¬base x y → H x y →
-      ∀ y', y' * y' - B x * y' + C x = 0 → y' = B x - y → y' * y = C x → 0 ≤ y' ∧ y' ≤ x)
-    (H_base : ∀ {x y}, H x y → base x y → claim) : claim := by
+    (H_desc : ∀ {x y},
+      0 < x → x < y → ¬ base x y → H x y
+        → ∀ y', y' * y' - B x * y' + C x = 0 → y' = B x - y → y' * y = C x → 0 ≤ y' ∧ y' ≤ x)
+    (H_base : ∀ {x y}, H x y → base x y → claim)
+    : claim := by
   -- First of all, we may assume that x ≤ y.
   -- We justify this using H_symm.
   wlog hxy : x ≤ y
@@ -164,7 +169,8 @@ theorem constant_descent_vieta_jumping (x y : ℕ) {claim : Prop} {H : ℕ → �
   let p' : ℕ × ℕ := ⟨c, mx⟩
   use p'
   -- The second condition is rather easy to check, so we do that first.
-  constructor; swap
+  constructor
+  swap
   · rwa [m_eq] at mx_lt_my
   -- Now we need to show that p' projects onto S. In other words, that c ∈ S.
   -- We do that, by showing that it lies in the upper branch
@@ -184,33 +190,41 @@ theorem constant_descent_vieta_jumping (x y : ℕ) {claim : Prop} {H : ℕ → �
     contrapose hm_B₂
     subst c
     simp [hV₁]
-    -- Hence p' = (c, m_x) lies on the upper branch, and we are done.
+-- Hence p' = (c, m_x) lies on the upper branch, and we are done.
 
 end Imo1988Q6
 
 open Imo1988Q6
 
-/-- Question 6 of IMO1988. If a and b are two natural numbers
-such that a*b+1 divides a^2 + b^2, show that their quotient is a perfect square. -/
-theorem imo1988_q6 {a b : ℕ} (h : a * b + 1 ∣ a ^ 2 + b ^ 2) :
-    ∃ d, d ^ 2 = (a ^ 2 + b ^ 2) / (a * b + 1) := by
+/--
+Question 6 of IMO1988. If a and b are two natural numbers
+such that a*b+1 divides a^2 + b^2, show that their quotient is a perfect square.
+-/
+theorem imo1988_q6 {a b : ℕ} (h : a * b + 1 ∣ a ^ 2 + b ^ 2)
+    : ∃ d, d ^ 2 = (a ^ 2 + b ^ 2) / (a * b + 1) := by
   rcases h with ⟨k, hk⟩
   rw [hk, Nat.mul_div_cancel_left _ (Nat.succ_pos (a * b))]
   simp only [sq] at hk
-  apply constant_descent_vieta_jumping a b (H := fun a b => a * a + b * b = (a * b + 1) * k)
-      hk (fun x => k * x) (fun x => x * x - k) fun _ _ => False <;>
-    clear hk a b
+  apply constant_descent_vieta_jumping a b
+      (H := fun a b => a * a + b * b = (a * b + 1) * k)
+      hk
+      (fun x => k * x)
+      (fun x => x * x - k)
+      fun _ _ => False
+    <;> clear hk a b
   · -- We will now show that the fibers of the solution set are described by a quadratic equation.
     intro x y
     rw [← Int.natCast_inj, ← sub_eq_zero]
     apply eq_iff_eq_cancel_right.2
-    simp; ring
+    simp
+    ring
   · -- Show that the solution set is symmetric in a and b.
     intro x y
     simp [add_comm (x * x), mul_comm x]
   · -- Show that the claim is true if b = 0.
     suffices ∀ a, a * a = k → ∃ d, d * d = k by simpa
-    rintro x rfl; use x
+    rintro x rfl
+    use x
   · -- Show that the claim is true if a = b.
     intro x hx
     suffices k ≤ 1 by
@@ -221,7 +235,8 @@ theorem imo1988_q6 {a b : ℕ} (h : a * b + 1 ∣ a ^ 2 + b ^ 2) :
     contrapose! hx with k_lt_one
     apply ne_of_lt
     calc
-      x * x + x * x = x * x * 2 := by rw [mul_two]
+      x * x + x * x
+        = x * x * 2 := by rw [mul_two]
       _ ≤ x * x * k := Nat.mul_le_mul_left (x * x) k_lt_one
       _ < (x * x + 1) * k := by linarith
   · -- Show the descent step.
@@ -241,7 +256,8 @@ theorem imo1988_q6 {a b : ℕ} (h : a * b + 1 ∣ a ^ 2 + b ^ 2) :
     · contrapose! hV₀ with x_lt_z
       apply ne_of_gt
       calc
-        z * y > x * x := by apply mul_lt_mul' <;> lia
+        z * y
+          > x * x := by apply mul_lt_mul' <;> lia
         _ ≥ x * x - k := sub_le_self _ (Int.natCast_nonneg k)
   · -- There is no base case in this application of Vieta jumping.
     simp
@@ -254,14 +270,19 @@ example {a b : ℕ} (h : a * b ∣ a ^ 2 + b ^ 2 + 1) : 3 * a * b = a ^ 2 + b ^ 
   rcases h with ⟨k, hk⟩
   suffices k = 3 by simp_all; ring
   simp only [sq] at hk
-  apply constant_descent_vieta_jumping a b (H := fun a b => a * a + b * b + 1 = a * b * k)
-      hk (fun x => k * x) (fun x => x * x + 1) fun x _ => x ≤ 1 <;>
-    clear hk a b
+  apply constant_descent_vieta_jumping a b
+      (H := fun a b => a * a + b * b + 1 = a * b * k)
+      hk
+      (fun x => k * x)
+      (fun x => x * x + 1)
+      fun x _ => x ≤ 1
+    <;> clear hk a b
   · -- We will now show that the fibers of the solution set are described by a quadratic equation.
     intro x y
     rw [← Int.natCast_inj, ← sub_eq_zero]
     apply eq_iff_eq_cancel_right.2
-    simp; ring
+    simp
+    ring
   · -- Show that the solution set is symmetric in a and b.
     intro x y; ring_nf
   · -- Show that the claim is true if b = 0.
@@ -283,7 +304,8 @@ example {a b : ℕ} (h : a * b ∣ a ^ 2 + b ^ 2 + 1) : 3 * a * b = a ^ 2 + b ^ 
       apply ne_of_gt
       push Not at h_base
       calc
-        z * y > x * y := by gcongr; lia
+        z * y
+          > x * y := by gcongr; lia
         _ ≥ x * (x + 1) := by apply mul_le_mul <;> lia
         _ > x * x + 1 := by
           rw [mul_add]

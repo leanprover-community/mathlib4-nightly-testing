@@ -40,37 +40,37 @@ variable (R : Type*) {S : Type*} [CommRing R]
 variable [IsPrincipalIdealRing R] [CommRing S] [Algebra R S]
 namespace Algebra
 
-/-- The denominator of an element `x` of an `R`-algebra: a generator of the ideal of scalars
+/--
+The denominator of an element `x` of an `R`-algebra: a generator of the ideal of scalars
 `r : R` such that `r • x` is integral over `R`. It is nonzero as soon as `x` is algebraic over
-`R`; see `IsAlgebraic.denominator_ne_zero`. -/
+`R`; see `IsAlgebraic.denominator_ne_zero`.
+-/
 noncomputable def denominator (x : S) : R :=
   Submodule.IsPrincipal.generator ((integralClosure R S).toSubmodule.colon {x})
 
-lemma denominator_def (x : S) :
-    denominator R x =
-      Submodule.IsPrincipal.generator ((integralClosure R S).toSubmodule.colon {x}) := by
+lemma denominator_def (x : S)
+    : denominator R x
+      = Submodule.IsPrincipal.generator ((integralClosure R S).toSubmodule.colon {x}) := by
   rfl
 
 variable {R}
 
-theorem denominator_dvd_iff {r : R} {x : S} :
-    denominator R x ∣ r ↔ IsIntegral R (r • x) := by
-  rw [denominator_def, ← Submodule.IsPrincipal.mem_iff_generator_dvd,
-    Submodule.mem_colon_singleton, Subalgebra.mem_toSubmodule, mem_integralClosure_iff]
+theorem denominator_dvd_iff {r : R} {x : S} : denominator R x ∣ r ↔ IsIntegral R (r • x) := by
+  rw [denominator_def, ← Submodule.IsPrincipal.mem_iff_generator_dvd, Submodule.mem_colon_singleton,
+    Subalgebra.mem_toSubmodule, mem_integralClosure_iff]
 
 theorem isIntegral_denominator_smul (x : S) : IsIntegral R (denominator R x • x) :=
   denominator_dvd_iff.mp dvd_rfl
 
-/-- The natural-number denominator of an element `x` of a ring: it is the absolute value of the
-denominator of `x` over `ℤ`. -/
-noncomputable def natDenominator (x : S) : ℕ :=
-  (denominator ℤ x).natAbs
+/--
+The natural-number denominator of an element `x` of a ring: it is the absolute value of the
+denominator of `x` over `ℤ`.
+-/
+noncomputable def natDenominator (x : S) : ℕ := (denominator ℤ x).natAbs
 
-theorem natDenominator_def (x : S) : natDenominator x = (denominator ℤ x).natAbs := by
-  rfl
+theorem natDenominator_def (x : S) : natDenominator x = (denominator ℤ x).natAbs := by rfl
 
-theorem natDenominator_dvd_iff {n : ℕ} {x : S} :
-    natDenominator x ∣ n ↔ IsIntegral ℤ (n • x) := by
+theorem natDenominator_dvd_iff {n : ℕ} {x : S} : natDenominator x ∣ n ↔ IsIntegral ℤ (n • x) := by
   rw [natDenominator_def, ← Int.ofNat_dvd_right, denominator_dvd_iff, natCast_zsmul]
 
 theorem isIntegral_natDenominator_smul (x : S) : IsIntegral ℤ (natDenominator x • x) :=
@@ -90,11 +90,12 @@ theorem natDenominator_ne_zero {x : S} (hx : IsAlgebraic ℤ x) : Algebra.natDen
 
 end IsAlgebraic
 
-/- The algebraicity hypothesis in `IsAlgebraic.denominator_ne_zero` cannot be dropped: the
+/-
+The algebraicity hypothesis in `IsAlgebraic.denominator_ne_zero` cannot be dropped: the
 variable `X` of `ℤ[X]` is transcendental over `ℤ`, so no nonzero multiple of it is integral and
-its denominator vanishes. -/
+its denominator vanishes.
+-/
 example : Algebra.denominator ℤ (Polynomial.X : Polynomial ℤ) = 0 := by
   by_contra h
   exact Polynomial.transcendental_X ℤ
-    ((Algebra.isIntegral_denominator_smul _).isAlgebraic.of_smul
-      (mem_nonZeroDivisors_of_ne_zero h))
+    ((Algebra.isIntegral_denominator_smul _).isAlgebraic.of_smul (mem_nonZeroDivisors_of_ne_zero h))

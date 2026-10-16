@@ -26,8 +26,11 @@ from `hneg` directly), finally raising a contradiction with `k' < k'`.
 
 (Authored by Stanislas Polu inspired by Ruben Van de Velde).
 -/
-theorem imo1972_q5 (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y) = 2 * f x * g y)
-    (hf2 : ∀ y, ‖f y‖ ≤ 1) (hf3 : ∃ x, f x ≠ 0) (y : ℝ) : ‖g y‖ ≤ 1 := by
+theorem imo1972_q5
+    (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y) = 2 * f x * g y) (hf2 : ∀ y, ‖f y‖ ≤ 1)
+    (hf3 : ∃ x, f x ≠ 0)
+    (y : ℝ)
+    : ‖g y‖ ≤ 1 := by
   -- Suppose the conclusion does not hold.
   by_contra! hneg
   set S := Set.range fun x => ‖f x‖
@@ -41,7 +44,8 @@ theorem imo1972_q5 (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y
   -- Show that `2 * (‖f x‖ * ‖g y‖) ≤ 2 * k`.
   have hk₂ : ∀ x, 2 * (‖f x‖ * ‖g y‖) ≤ 2 * k := fun x ↦
     calc
-      2 * (‖f x‖ * ‖g y‖) = ‖2 * f x * g y‖ := by simp [mul_assoc]
+      2 * (‖f x‖ * ‖g y‖)
+        = ‖2 * f x * g y‖ := by simp [mul_assoc]
       _ = ‖f (x + y) + f (x - y)‖ := by rw [hf1]
       _ ≤ ‖f (x + y)‖ + ‖f (x - y)‖ := norm_add_le _ _
       _ ≤ k + k := add_le_add (hk₁ _) (hk₁ _)
@@ -71,10 +75,12 @@ theorem imo1972_q5 (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y
   -- Conclude by obtaining a contradiction, `k' < k'`.
   apply lt_irrefl k'
   calc
-    k' < k := H₁
+    k'
+      < k := H₁
     _ ≤ k' := H₂
 
-/-- IMO 1972 Q5
+/--
+IMO 1972 Q5
 
 Problem: `f` and `g` are real-valued functions defined on the real line. For all `x` and `y`,
 `f(x + y) + f(x - y) = 2f(x)g(y)`. `f` is not identically zero and `|f(x)| ≤ 1` for all `x`.
@@ -82,8 +88,11 @@ Prove that `|g(x)| ≤ 1` for all `x`.
 
 This is a more concise version of the proof proposed by Ruben Van de Velde.
 -/
-theorem imo1972_q5' (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y) = 2 * f x * g y)
-    (hf2 : BddAbove (Set.range fun x => ‖f x‖)) (hf3 : ∃ x, f x ≠ 0) (y : ℝ) : ‖g y‖ ≤ 1 := by
+theorem imo1972_q5'
+    (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - y) = 2 * f x * g y)
+    (hf2 : BddAbove (Set.range fun x => ‖f x‖)) (hf3 : ∃ x, f x ≠ 0)
+    (y : ℝ)
+    : ‖g y‖ ≤ 1 := by
   obtain ⟨x, hx⟩ := hf3
   set k := ⨆ x, ‖f x‖
   have h : ∀ x, ‖f x‖ ≤ k := le_ciSup hf2
@@ -97,7 +106,8 @@ theorem imo1972_q5' (f g : ℝ → ℝ) (hf1 : ∀ x, ∀ y, f (x + y) + f (x - 
     suffices 2 * (‖f x‖ * ‖g y‖) ≤ 2 * k by
       rwa [le_div_iff₀ hgy, ← mul_le_mul_iff_right₀ (zero_lt_two : (0 : ℝ) < 2)]
     calc
-      2 * (‖f x‖ * ‖g y‖) = ‖2 * f x * g y‖ := by simp [mul_assoc]
+      2 * (‖f x‖ * ‖g y‖)
+        = ‖2 * f x * g y‖ := by simp [mul_assoc]
       _ = ‖f (x + y) + f (x - y)‖ := by rw [hf1]
       _ ≤ ‖f (x + y)‖ + ‖f (x - y)‖ := abs_add_le _ _
       _ ≤ 2 * k := by linarith [h (x + y), h (x - y)]

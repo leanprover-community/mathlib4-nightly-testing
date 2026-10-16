@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Set.Finite.Lemmas
 public import Mathlib.Order.Filter.AtTopBot.Basic
-
 import Mathlib.Order.Filter.Bases.Finite
 
 /-!
@@ -26,8 +25,8 @@ open Set
 namespace Filter
 
 @[to_dual eventually_forall_le_atBot]
-theorem eventually_forall_ge_atTop [Preorder α] {p : α → Prop} :
-    (∀ᶠ x in atTop, ∀ y, x ≤ y → p y) ↔ ∀ᶠ x in atTop, p x := by
+theorem eventually_forall_ge_atTop [Preorder α] {p : α → Prop}
+    : (∀ᶠ x in atTop, ∀ y, x ≤ y → p y) ↔ ∀ᶠ x in atTop, p x := by
   refine ⟨fun h ↦ h.mono fun x hx ↦ hx x le_rfl, fun h ↦ ?_⟩
   rcases (hasBasis_iInf_principal_finite _).eventually_iff.1 h with ⟨S, hSf, hS⟩
   refine mem_iInf_of_iInter hSf (V := fun x ↦ Ici x.1) (fun _ ↦ Subset.rfl) fun x hx y hy ↦ ?_
@@ -35,58 +34,64 @@ theorem eventually_forall_ge_atTop [Preorder α] {p : α → Prop} :
   exact hS fun z hz ↦ le_trans (hx ⟨z, hz⟩) hy
 
 @[to_dual eventually_forall_le_atBot]
-theorem Tendsto.eventually_forall_ge_atTop [Preorder β] {l : Filter α}
-    {p : β → Prop} {f : α → β} (hf : Tendsto f l atTop) (h_evtl : ∀ᶠ x in atTop, p x) :
-    ∀ᶠ x in l, ∀ y, f x ≤ y → p y := by
+theorem Tendsto.eventually_forall_ge_atTop
+    [Preorder β]
+    {l : Filter α} {p : β → Prop} {f : α → β} (hf : Tendsto f l atTop) (h_evtl : ∀ᶠ x in atTop, p x)
+    : ∀ᶠ x in l, ∀ y, f x ≤ y → p y := by
   rw [← Filter.eventually_forall_ge_atTop] at h_evtl; exact (h_evtl.comap f).filter_mono hf.le_comap
 
 /-!
 ### Sequences
 -/
 
-/-- If `u` is a sequence which is unbounded above,
+/--
+If `u` is a sequence which is unbounded above,
 then after any point, it reaches a value strictly greater than all previous values.
 -/
 @[to_dual low_scores
-/-- If `u` is a sequence which is unbounded below,
+  /-- If `u` is a sequence which is unbounded below,
 then after any point, it reaches a value strictly smaller than all previous values.
--/]
-theorem high_scores [LinearOrder β] [NoMaxOrder β] {u : ℕ → β} (hu : Tendsto u atTop atTop) :
-    ∀ N, ∃ n ≥ N, ∀ k < n, u k < u n := by
+  -/]
+theorem high_scores [LinearOrder β] [NoMaxOrder β] {u : ℕ → β} (hu : Tendsto u atTop atTop)
+    : ∀ N, ∃ n ≥ N, ∀ k < n, u k < u n := by
   intro N
   obtain ⟨k : ℕ, - : k ≤ N, hku : ∀ l ≤ N, u l ≤ u k⟩ : ∃ k ≤ N, ∀ l ≤ N, u l ≤ u k :=
     exists_max_image _ u (finite_le_nat N) ⟨N, le_refl N⟩
   have ex : ∃ n ≥ N, u k < u n := exists_lt_of_tendsto_atTop hu _ _
-  obtain ⟨n : ℕ, hnN : n ≥ N, hnk : u k < u n, hn_min : ∀ m, m < n → N ≤ m → u m ≤ u k⟩ :
-      ∃ n ≥ N, u k < u n ∧ ∀ m, m < n → N ≤ m → u m ≤ u k := by
+  obtain ⟨n : ℕ, hnN : n ≥ N, hnk : u k < u n, hn_min : ∀ m, m < n → N ≤ m → u m ≤ u k⟩
+      : ∃ n ≥ N, u k < u n ∧ ∀ m, m < n → N ≤ m → u m ≤ u k := by
     rcases Nat.findX ex with ⟨n, ⟨hnN, hnk⟩, hn_min⟩
     push Not at hn_min
     exact ⟨n, hnN, hnk, hn_min⟩
   use n, hnN
   grind
 
-/-- If `u` is a sequence which is unbounded above,
+/--
+If `u` is a sequence which is unbounded above,
 then it `Frequently` reaches a value strictly greater than all previous values.
 -/
 @[to_dual frequently_low_scores
-/-- If `u` is a sequence which is unbounded below,
+  /-- If `u` is a sequence which is unbounded below,
 then it `Frequently` reaches a value strictly smaller than all previous values.
--/]
-theorem frequently_high_scores [LinearOrder β] [NoMaxOrder β] {u : ℕ → β}
-    (hu : Tendsto u atTop atTop) : ∃ᶠ n in atTop, ∀ k < n, u k < u n := by
+  -/]
+theorem frequently_high_scores
+    [LinearOrder β] [NoMaxOrder β] {u : ℕ → β} (hu : Tendsto u atTop atTop)
+    : ∃ᶠ n in atTop, ∀ k < n, u k < u n := by
   simpa [frequently_atTop] using high_scores hu
 
-theorem strictMono_subseq_of_tendsto_atTop [LinearOrder β] [NoMaxOrder β] {u : ℕ → β}
-    (hu : Tendsto u atTop atTop) : ∃ φ : ℕ → ℕ, StrictMono φ ∧ StrictMono (u ∘ φ) :=
+theorem strictMono_subseq_of_tendsto_atTop
+    [LinearOrder β] [NoMaxOrder β] {u : ℕ → β} (hu : Tendsto u atTop atTop)
+    : ∃ φ : ℕ → ℕ, StrictMono φ ∧ StrictMono (u ∘ φ) :=
   let ⟨φ, h, h'⟩ := extraction_of_frequently_atTop (frequently_high_scores hu)
   ⟨φ, h, fun _ m hnm => h' m _ (h hnm)⟩
 
-theorem strictMono_subseq_of_id_le {u : ℕ → ℕ} (hu : ∀ n, n ≤ u n) :
-    ∃ φ : ℕ → ℕ, StrictMono φ ∧ StrictMono (u ∘ φ) :=
+theorem strictMono_subseq_of_id_le {u : ℕ → ℕ} (hu : ∀ n, n ≤ u n)
+    : ∃ φ : ℕ → ℕ, StrictMono φ ∧ StrictMono (u ∘ φ) :=
   strictMono_subseq_of_tendsto_atTop (tendsto_atTop_mono hu tendsto_id)
 
-theorem Eventually.atTop_of_arithmetic {p : ℕ → Prop} {n : ℕ} (hn : n ≠ 0)
-    (hp : ∀ k < n, ∀ᶠ a in atTop, p (n * a + k)) : ∀ᶠ a in atTop, p a := by
+theorem Eventually.atTop_of_arithmetic
+    {p : ℕ → Prop} {n : ℕ} (hn : n ≠ 0) (hp : ∀ k < n, ∀ᶠ a in atTop, p (n * a + k))
+    : ∀ᶠ a in atTop, p a := by
   simp only [eventually_atTop] at hp ⊢
   choose! N hN using hp
   refine ⟨(Finset.range n).sup (n * N ·), fun b hb => ?_⟩
@@ -96,12 +101,16 @@ theorem Eventually.atTop_of_arithmetic {p : ℕ → Prop} {n : ℕ} (hn : n ≠ 
   rw [Nat.le_div_iff_mul_le hn.bot_lt, mul_comm]
   exact (Finset.le_sup (f := (n * N ·)) (Finset.mem_range.2 hlt)).trans hb
 
-/-- Given an antitone basis `s : ℕ → Set α` of a filter, extract an antitone subbasis `s ∘ φ`,
+/--
+Given an antitone basis `s : ℕ → Set α` of a filter, extract an antitone subbasis `s ∘ φ`,
 `φ : ℕ → ℕ`, such that `m < n` implies `r (φ m) (φ n)`. This lemma can be used to extract an
-antitone basis with basis sets decreasing "sufficiently fast". -/
-theorem HasAntitoneBasis.subbasis_with_rel {f : Filter α} {s : ℕ → Set α}
-    (hs : f.HasAntitoneBasis s) {r : ℕ → ℕ → Prop} (hr : ∀ m, ∀ᶠ n in atTop, r m n) :
-    ∃ φ : ℕ → ℕ, StrictMono φ ∧ (∀ ⦃m n⦄, m < n → r (φ m) (φ n)) ∧ f.HasAntitoneBasis (s ∘ φ) := by
+antitone basis with basis sets decreasing "sufficiently fast".
+-/
+theorem HasAntitoneBasis.subbasis_with_rel
+    {f : Filter α} {s : ℕ → Set α} (hs : f.HasAntitoneBasis s)
+    {r : ℕ → ℕ → Prop} (hr : ∀ m, ∀ᶠ n in atTop, r m n)
+    : ∃ φ : ℕ → ℕ,
+      StrictMono φ ∧ (∀ ⦃m n⦄, m < n → r (φ m) (φ n)) ∧ f.HasAntitoneBasis (s ∘ φ) := by
   rsuffices ⟨φ, hφ, hrφ⟩ : ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ m n, m < n → r (φ m) (φ n)
   · exact ⟨φ, hφ, hrφ, hs.comp_strictMono hφ⟩
   have : ∀ t : Set ℕ, t.Finite → ∀ᶠ n in atTop, ∀ m ∈ t, m < n ∧ r m n := fun t ht =>
@@ -138,8 +147,7 @@ theorem eventually_pow_lt_factorial_sub (c d : ℕ) : ∀ᶠ n in atTop, c ^ n <
   · exact Nat.pow_lt_pow_left (Nat.lt_succ_self _) (Nat.succ_ne_zero _)
   · exact (Nat.factorial_pos _)
 
-theorem eventually_mul_pow_lt_factorial_sub (a c d : ℕ) :
-    ∀ᶠ n in atTop, a * c ^ n < (n - d)! := by
+theorem eventually_mul_pow_lt_factorial_sub (a c d : ℕ) : ∀ᶠ n in atTop, a * c ^ n < (n - d)! := by
   filter_upwards [Nat.eventually_pow_lt_factorial_sub (a * c) d, Filter.eventually_gt_atTop 0]
     with n hn hn0
   rw [mul_pow] at hn

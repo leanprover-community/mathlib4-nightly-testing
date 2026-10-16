@@ -63,25 +63,26 @@ def toLinHomAux₁ (A : BilinForm R M) (x : M) : M →ₗ[R] R := A x
 
 variable (B)
 
-theorem sum_left {α} (t : Finset α) (g : α → M) (w : M) :
-    B (∑ i ∈ t, g i) w = ∑ i ∈ t, B (g i) w :=
+theorem sum_left {α} (t : Finset α) (g : α → M) (w : M) : B (∑ i ∈ t, g i) w = ∑ i ∈ t, B (g i) w :=
   B.map_sum₂ t g w
 
 variable (w : M)
 
-theorem sum_right {α} (t : Finset α) (w : M) (g : α → M) :
-    B w (∑ i ∈ t, g i) = ∑ i ∈ t, B w (g i) := map_sum _ _ _
+theorem sum_right {α} (t : Finset α) (w : M) (g : α → M)
+    : B w (∑ i ∈ t, g i) = ∑ i ∈ t, B w (g i) :=
+  map_sum _ _ _
 
-theorem sum_apply {α} (t : Finset α) (B : α → BilinForm R M) (v w : M) :
-    (∑ i ∈ t, B i) v w = ∑ i ∈ t, B i v w := by
+theorem sum_apply {α} (t : Finset α) (B : α → BilinForm R M) (v w : M)
+    : (∑ i ∈ t, B i) v w = ∑ i ∈ t, B i v w := by
   simp only [coe_sum, Finset.sum_apply]
 
 variable {B}
 
-/-- The linear map obtained from a `BilinForm` by fixing the right co-ordinate and evaluating in
-the left. -/
-def toLinHomFlip : BilinForm R M →ₗ[R] M →ₗ[R] M →ₗ[R] R :=
-  flipHom.toLinearMap
+/--
+The linear map obtained from a `BilinForm` by fixing the right co-ordinate and evaluating in
+the left.
+-/
+def toLinHomFlip : BilinForm R M →ₗ[R] M →ₗ[R] M →ₗ[R] R := flipHom.toLinearMap
 
 theorem toLin'Flip_apply (A : BilinForm R M) (x : M) : toLinHomFlip (M := M) A x = fun y => A y x :=
   rfl
@@ -115,26 +116,25 @@ variable {M' : Type w} [AddCommMonoid M'] [Module R M']
 def comp (B : BilinForm R M') (l r : M →ₗ[R] M') : BilinForm R M := B.compl₁₂ l r
 
 /-- Apply a linear map to the left argument of a bilinear form. -/
-def compLeft (B : BilinForm R M) (f : M →ₗ[R] M) : BilinForm R M :=
-  B.comp f LinearMap.id
+def compLeft (B : BilinForm R M) (f : M →ₗ[R] M) : BilinForm R M := B.comp f LinearMap.id
 
 /-- Apply a linear map to the right argument of a bilinear form. -/
-def compRight (B : BilinForm R M) (f : M →ₗ[R] M) : BilinForm R M :=
-  B.comp LinearMap.id f
+def compRight (B : BilinForm R M) (f : M →ₗ[R] M) : BilinForm R M := B.comp LinearMap.id f
 
-theorem comp_comp {M'' : Type*} [AddCommMonoid M''] [Module R M''] (B : BilinForm R M'')
-    (l r : M →ₗ[R] M') (l' r' : M' →ₗ[R] M'') :
-    (B.comp l' r').comp l r = B.comp (l'.comp l) (r'.comp r) :=
+theorem comp_comp
+    {M'' : Type*} [AddCommMonoid M''] [Module R M'']
+    (B : BilinForm R M'') (l r : M →ₗ[R] M') (l' r' : M' →ₗ[R] M'')
+    : (B.comp l' r').comp l r = B.comp (l'.comp l) (r'.comp r) :=
   rfl
 
 @[simp]
-theorem compLeft_compRight (B : BilinForm R M) (l r : M →ₗ[R] M) :
-    (B.compLeft l).compRight r = B.comp l r :=
+theorem compLeft_compRight (B : BilinForm R M) (l r : M →ₗ[R] M)
+    : (B.compLeft l).compRight r = B.comp l r :=
   rfl
 
 @[simp]
-theorem compRight_compLeft (B : BilinForm R M) (l r : M →ₗ[R] M) :
-    (B.compRight r).compLeft l = B.comp l r :=
+theorem compRight_compLeft (B : BilinForm R M) (l r : M →ₗ[R] M)
+    : (B.compRight r).compLeft l = B.comp l r :=
   rfl
 
 @[simp]
@@ -150,14 +150,14 @@ theorem compRight_apply (B : BilinForm R M) (f : M →ₗ[R] M) (v w) : B.compRi
   rfl
 
 @[simp]
-theorem comp_id_left (B : BilinForm R M) (r : M →ₗ[R] M) :
-    B.comp LinearMap.id r = B.compRight r := by
+theorem comp_id_left (B : BilinForm R M) (r : M →ₗ[R] M)
+    : B.comp LinearMap.id r = B.compRight r := by
   ext
   rfl
 
 @[simp]
-theorem comp_id_right (B : BilinForm R M) (l : M →ₗ[R] M) :
-    B.comp l LinearMap.id = B.compLeft l := by
+theorem comp_id_right (B : BilinForm R M) (l : M →ₗ[R] M)
+    : B.comp l LinearMap.id = B.compLeft l := by
   ext
   rfl
 
@@ -178,8 +178,10 @@ theorem comp_id_id (B : BilinForm R M) : B.comp LinearMap.id LinearMap.id = B :=
   ext
   rfl
 
-theorem comp_inj (B₁ B₂ : BilinForm R M') {l r : M →ₗ[R] M'} (hₗ : Function.Surjective l)
-    (hᵣ : Function.Surjective r) : B₁.comp l r = B₂.comp l r ↔ B₁ = B₂ := by
+theorem comp_inj
+    (B₁ B₂ : BilinForm R M')
+    {l r : M →ₗ[R] M'} (hₗ : Function.Surjective l) (hᵣ : Function.Surjective r)
+    : B₁.comp l r = B₂.comp l r ↔ B₁ = B₂ := by
   constructor <;> intro h
   · -- B₁.comp l r = B₂.comp l r → B₁ = B₂
     ext x y
@@ -201,35 +203,32 @@ def congr (e : M ≃ₗ[R] M') : BilinForm R M ≃ₗ[R] BilinForm R M' :=
   LinearEquiv.congrRight (LinearEquiv.congrLeft _ _ e) ≪≫ₗ LinearEquiv.congrLeft _ _ e
 
 @[simp]
-theorem congr_apply (e : M ≃ₗ[R] M') (B : BilinForm R M) (x y : M') :
-    congr e B x y = B (e.symm x) (e.symm y) :=
+theorem congr_apply (e : M ≃ₗ[R] M') (B : BilinForm R M) (x y : M')
+    : congr e B x y = B (e.symm x) (e.symm y) :=
   rfl
 
-@[simp]
-theorem congr_symm (e : M ≃ₗ[R] M') : (congr e).symm = congr e.symm := by
-  rfl
+@[simp] theorem congr_symm (e : M ≃ₗ[R] M') : (congr e).symm = congr e.symm := by rfl
 
 @[simp]
 theorem congr_refl : congr (LinearEquiv.refl R M) = LinearEquiv.refl R _ :=
   LinearEquiv.ext fun _ => ext₂ fun _ _ => rfl
 
-theorem congr_trans (e : M ≃ₗ[R] M') (f : M' ≃ₗ[R] M'') :
-    (congr e).trans (congr f) = congr (e.trans f) :=
+theorem congr_trans (e : M ≃ₗ[R] M') (f : M' ≃ₗ[R] M'')
+    : (congr e).trans (congr f) = congr (e.trans f) :=
   rfl
 
-theorem congr_congr (e : M' ≃ₗ[R] M'') (f : M ≃ₗ[R] M') (B : BilinForm R M) :
-    congr e (congr f B) = congr (f.trans e) B :=
+theorem congr_congr (e : M' ≃ₗ[R] M'') (f : M ≃ₗ[R] M') (B : BilinForm R M)
+    : congr e (congr f B) = congr (f.trans e) B :=
   rfl
 
-theorem congr_comp (e : M ≃ₗ[R] M') (B : BilinForm R M) (l r : M'' →ₗ[R] M') :
-    (congr e B).comp l r =
-      B.comp (LinearMap.comp (e.symm : M' →ₗ[R] M) l)
-        (LinearMap.comp (e.symm : M' →ₗ[R] M) r) :=
+theorem congr_comp (e : M ≃ₗ[R] M') (B : BilinForm R M) (l r : M'' →ₗ[R] M')
+    : (congr e B).comp l r
+      = B.comp (LinearMap.comp (e.symm : M' →ₗ[R] M) l) (LinearMap.comp (e.symm : M' →ₗ[R] M) r) :=
   rfl
 
-theorem comp_congr (e : M' ≃ₗ[R] M'') (B : BilinForm R M) (l r : M' →ₗ[R] M) :
-    congr e (B.comp l r) =
-      B.comp (l.comp (e.symm : M'' →ₗ[R] M')) (r.comp (e.symm : M'' →ₗ[R] M')) :=
+theorem comp_congr (e : M' ≃ₗ[R] M'') (B : BilinForm R M) (l r : M' →ₗ[R] M)
+    : congr e (B.comp l r)
+      = B.comp (l.comp (e.symm : M'' →ₗ[R] M')) (r.comp (e.symm : M'' →ₗ[R] M')) :=
   rfl
 
 end congr
@@ -240,27 +239,31 @@ variable {N₁ N₂ N₃ : Type*}
 variable [AddCommMonoid N₁] [AddCommMonoid N₂] [AddCommMonoid N₃]
 variable [Module R N₁] [Module R N₂] [Module R N₃]
 
-/-- When `N₁` and `N₂` are equivalent, bilinear maps on `M` into `N₁` are equivalent to bilinear
-maps into `N₂`. -/
+/--
+When `N₁` and `N₂` are equivalent, bilinear maps on `M` into `N₁` are equivalent to bilinear
+maps into `N₂`.
+-/
 def _root_.LinearEquiv.congrRight₂ (e : N₁ ≃ₗ[R] N₂) : BilinMap R M N₁ ≃ₗ[R] BilinMap R M N₂ :=
   LinearEquiv.congrRight (LinearEquiv.congrRight e)
 
 @[simp]
-theorem _root_.LinearEquiv.congrRight₂_apply (e : N₁ ≃ₗ[R] N₂) (B : BilinMap R M N₁) :
-    LinearEquiv.congrRight₂ e B = compr₂ B e := rfl
-
-@[simp]
-theorem _root_.LinearEquiv.congrRight₂_refl :
-    LinearEquiv.congrRight₂ (.refl R N₁) = .refl R (BilinMap R M N₁) := rfl
-
-@[simp]
-theorem _root_.LinearEquiv.congrRight_symm (e : N₁ ≃ₗ[R] N₂) :
-    (LinearEquiv.congrRight₂ e (M := M)).symm = LinearEquiv.congrRight₂ e.symm :=
+theorem _root_.LinearEquiv.congrRight₂_apply (e : N₁ ≃ₗ[R] N₂) (B : BilinMap R M N₁)
+    : LinearEquiv.congrRight₂ e B = compr₂ B e :=
   rfl
 
-theorem _root_.LinearEquiv.congrRight₂_trans (e₁₂ : N₁ ≃ₗ[R] N₂) (e₂₃ : N₂ ≃ₗ[R] N₃) :
-    LinearEquiv.congrRight₂ (M := M) (e₁₂ ≪≫ₗ e₂₃) =
-    LinearEquiv.congrRight₂ e₁₂ ≪≫ₗ LinearEquiv.congrRight₂ e₂₃ :=
+@[simp]
+theorem _root_.LinearEquiv.congrRight₂_refl
+    : LinearEquiv.congrRight₂ (.refl R N₁) = .refl R (BilinMap R M N₁) :=
+  rfl
+
+@[simp]
+theorem _root_.LinearEquiv.congrRight_symm (e : N₁ ≃ₗ[R] N₂)
+    : (LinearEquiv.congrRight₂ e (M := M)).symm = LinearEquiv.congrRight₂ e.symm :=
+  rfl
+
+theorem _root_.LinearEquiv.congrRight₂_trans (e₁₂ : N₁ ≃ₗ[R] N₂) (e₂₃ : N₂ ≃ₗ[R] N₃)
+    : LinearEquiv.congrRight₂ (M := M) (e₁₂ ≪≫ₗ e₂₃)
+      = LinearEquiv.congrRight₂ e₁₂ ≪≫ₗ LinearEquiv.congrRight₂ e₂₃ :=
   rfl
 
 end congrRight₂
@@ -272,23 +275,20 @@ def linMulLin (f g : M →ₗ[R] R) : BilinForm R M := (LinearMap.mul R R).compl
 
 variable {f g : M →ₗ[R] R}
 
+@[simp] theorem linMulLin_apply (x y) : linMulLin f g x y = f x * g y := rfl
+
 @[simp]
-theorem linMulLin_apply (x y) : linMulLin f g x y = f x * g y :=
+theorem linMulLin_comp (l r : M' →ₗ[R] M)
+    : (linMulLin f g).comp l r = linMulLin (f.comp l) (g.comp r) :=
   rfl
 
 @[simp]
-theorem linMulLin_comp (l r : M' →ₗ[R] M) :
-    (linMulLin f g).comp l r = linMulLin (f.comp l) (g.comp r) :=
+theorem linMulLin_compLeft (l : M →ₗ[R] M) : (linMulLin f g).compLeft l = linMulLin (f.comp l) g :=
   rfl
 
 @[simp]
-theorem linMulLin_compLeft (l : M →ₗ[R] M) :
-    (linMulLin f g).compLeft l = linMulLin (f.comp l) g :=
-  rfl
-
-@[simp]
-theorem linMulLin_compRight (r : M →ₗ[R] M) :
-    (linMulLin f g).compRight r = linMulLin f (g.comp r) :=
+theorem linMulLin_compRight (r : M →ₗ[R] M)
+    : (linMulLin f g).compRight r = linMulLin f (g.comp r) :=
   rfl
 
 end LinMulLin
@@ -303,8 +303,8 @@ theorem ext_basis (h : ∀ i j, B (b i) (b j) = F₂ (b i) (b j)) : B = F₂ :=
   b.ext fun i => b.ext fun j => h i j
 
 /-- Write out `B x y` as a sum over `B (b i) (b j)` if `b` is a basis. -/
-theorem sum_repr_mul_repr_mul (x y : M) :
-    ((b.repr x).sum fun i xi => (b.repr y).sum fun j yj => xi • yj • B (b i) (b j)) = B x y := by
+theorem sum_repr_mul_repr_mul (x y : M)
+    : ((b.repr x).sum fun i xi => (b.repr y).sum fun j yj => xi • yj • B (b i) (b j)) = B x y := by
   conv_rhs => rw [← b.linearCombination_repr x, ← b.linearCombination_repr y]
   simp_rw [Finsupp.linearCombination_apply, Finsupp.sum, sum_left, sum_right, smul_left, smul_right,
     smul_eq_mul]

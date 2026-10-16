@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Module.Projective
 public import Mathlib.LinearAlgebra.SesquilinearForm.Basic
 public import Mathlib.RingTheory.Bialgebra.Basic
-
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 /-!
@@ -70,8 +69,9 @@ public section
 open TensorProduct LinearMap Coalgebra
 open scoped RingTheory.LinearMap
 
-variable {R A : Type*} [CommSemiring R] [NonUnitalNonAssocSemiring A] [Module R A]
-  [SMulCommClass R A A] [IsScalarTower R A A]
+variable
+  {R A : Type*} [CommSemiring R] [NonUnitalNonAssocSemiring A] [Module R A] [SMulCommClass R A A]
+  [IsScalarTower R A A]
 
 local notation3 "α" => (TensorProduct.assoc R _ _ _).toLinearMap
 local notation3 "α⁻¹" => (TensorProduct.assoc R _ _ _).symm.toLinearMap
@@ -96,7 +96,8 @@ lemma Coalgebra.IsFrobenius.left_def : left R A = lT A μ[R] ∘ₗ α ∘ₗ rT
 
 lemma Coalgebra.IsFrobenius.right_def : right R A = rT A μ[R] ∘ₗ α⁻¹ ∘ₗ lT A δ := rfl
 
-/-- A coalgebra with an algebra structure is said to be **Frobenius** when
+/--
+A coalgebra with an algebra structure is said to be **Frobenius** when
 the Frobenius equation is satisfied, i.e., `IsFrobenius.left` and `IsFrobenius.right` are equal,
 in other words,
 
@@ -107,7 +108,8 @@ being equal to `comul ∘ mul'`.
 
 When the Frobenius equations are satisfied, the bilinear form `mul.compr₂ counit` is
 nondegenerate and bijective (see `IsFrobenius.nondegenerate_compr₂_mul_counit` and
-`IsFrobenius.bijective_compr₂_mul_counit`). -/
+`IsFrobenius.bijective_compr₂_mul_counit`).
+-/
 class Coalgebra.IsFrobenius : Prop where
   /-- The Frobenius equation. -/
   left_eq_right : IsFrobenius.left R A = IsFrobenius.right R A
@@ -142,17 +144,18 @@ When our coalgebra is unital and satisfies the Frobenius equations, we get that 
 nondegenerate, and that it is finite and projective. -/
 
 section nonAssoc
-variable {A : Type*} [NonAssocSemiring A] [Module R A] [Coalgebra R A]
-  [SMulCommClass R A A] [IsScalarTower R A A] [IsFrobenius R A]
+variable
+  {A : Type*} [NonAssocSemiring A] [Module R A] [Coalgebra R A] [SMulCommClass R A A]
+  [IsScalarTower R A A] [IsFrobenius R A]
 
-private lemma sum_counit_mul_left_smul_of_comul_one {S : Finset (A × A)}
-    (hS : δ (1 : A) = ∑ i ∈ S, i.1 ⊗ₜ[R] i.2) (a : A) :
-    ∑ x ∈ S, (ε : _ →ₗ[R] _) (a * x.1) • x.2 = a := by
+private lemma sum_counit_mul_left_smul_of_comul_one
+    {S : Finset (A × A)} (hS : δ (1 : A) = ∑ i ∈ S, i.1 ⊗ₜ[R] i.2) (a : A)
+    : ∑ x ∈ S, (ε : _ →ₗ[R] _) (a * x.1) • x.2 = a := by
   simpa [hS, tmul_sum, right_def] using congr(β (rT A ε ($right_eq_comul_comp_mul' (a ⊗ₜ[R] 1))))
 
-private lemma sum_counit_mul_right_smul_of_comul_one {S : Finset (A × A)}
-    (hS : δ (1 : A) = ∑ i ∈ S, i.1 ⊗ₜ[R] i.2) (a : A) :
-    ∑ x ∈ S, (ε : _ →ₗ[R] _) (x.2 * a) • x.1 = a := by
+private lemma sum_counit_mul_right_smul_of_comul_one
+    {S : Finset (A × A)} (hS : δ (1 : A) = ∑ i ∈ S, i.1 ⊗ₜ[R] i.2) (a : A)
+    : ∑ x ∈ S, (ε : _ →ₗ[R] _) (x.2 * a) • x.1 = a := by
   simpa [hS, sum_tmul, left_def] using
     congr(TensorProduct.rid R A (lT A ε ($left_eq_comul_comp_mul' (1 ⊗ₜ[R] a))))
 
@@ -165,17 +168,22 @@ instance instFinite : Module.Finite R A := by
 instance instProjective : Module.Projective R A := by
   have ⟨S, hS⟩ := exists_finset (R := R) (δ (1 : A))
   refine Module.projective_def'.mpr ⟨∑ p ∈ S, (ε ∘ₗ mulRight R p.1).smulRight (.single p.2 1), ?_⟩
-  ext; simp [sum_counit_mul_left_smul_of_comul_one hS]
+  ext
+  simp [sum_counit_mul_left_smul_of_comul_one hS]
 
-/-- The bilinear form `(mul R A).compr₂ counit` is separating left.
-This is the simplified version, see `nondegenerate_compr₂_mul_counit`. -/
+/--
+The bilinear form `(mul R A).compr₂ counit` is separating left.
+This is the simplified version, see `nondegenerate_compr₂_mul_counit`.
+-/
 lemma forall_counit_mul_left_eq_zero_iff {a : A} : (∀ b, (ε : _ →ₗ[R] _) (a * b) = 0) ↔ a = 0 := by
   refine ⟨fun h ↦ ?_, fun h _ ↦ by simp [h]⟩
   have ⟨S, hS⟩ := exists_finset (R := R) (δ (1 : A))
   simpa [h] using (sum_counit_mul_left_smul_of_comul_one hS a).symm
 
-/-- The bilinear form `(mul R A).compr₂ counit` is separating right.
-This is the simplified version, see `nondegenerate_compr₂_mul_counit`. -/
+/--
+The bilinear form `(mul R A).compr₂ counit` is separating right.
+This is the simplified version, see `nondegenerate_compr₂_mul_counit`.
+-/
 lemma forall_counit_mul_right_eq_zero_iff {a : A} : (∀ b, (ε : _ →ₗ[R] _) (b * a) = 0) ↔ a = 0 := by
   refine ⟨fun h ↦ ?_, fun h _ ↦ by simp [h]⟩
   have ⟨S, hS⟩ := exists_finset (R := R) (δ (1 : A))
@@ -192,7 +200,8 @@ lemma compr₂_mul_counit_bijective : (⇑((mul R A).compr₂ ε)).Bijective := 
   · rw [← sum_counit_mul_left_smul_of_comul_one hS b]
     simp only [LinearMap.ext_iff, compr₂_apply, mul_apply_apply] at h
     simp [← h, sum_counit_mul_left_smul_of_comul_one hS]
-  · calc _ = ∑ x ∈ S, (ε (x.2 * b) : R) • f x.1 := by simp [mul_comm (f _)]
+  · calc
+      _ = ∑ x ∈ S, (ε (x.2 * b) : R) • f x.1 := by simp [mul_comm (f _)]
       _ = _ := by simp only [← map_smul, ← map_sum, sum_counit_mul_right_smul_of_comul_one hS]
 
 end nonAssoc
@@ -205,22 +214,26 @@ equations. -/
 section Algebra
 variable {A : Type*} [Semiring A] [Algebra R A] [Coalgebra R A] [IsFrobenius R A]
 
-/-- Composing the left Frobenius equation with `Coalgebra.counit` and `Algebra.linearMap`.
+/--
+Composing the left Frobenius equation with `Coalgebra.counit` and `Algebra.linearMap`.
 See `rTensor_counit_comp_right_comp_lTensor_algebraLinearMap` for the right Frobenius equation
 version.
 
-(This is sometimes known as the left snake equation.) -/
-lemma lTensor_counit_comp_left_comp_rTensor_algebraLinearMap :
-    lT A ε ∘ₗ left R A ∘ₗ rT A η[R] = (TensorProduct.comm R R A).toLinearMap := by
+(This is sometimes known as the left snake equation.)
+-/
+lemma lTensor_counit_comp_left_comp_rTensor_algebraLinearMap
+    : lT A ε ∘ₗ left R A ∘ₗ rT A η[R] = (TensorProduct.comm R R A).toLinearMap := by
   ext; simp [left_eq_comul_comp_mul']
 
-/-- Composing the right Frobenius equation with `Coalgebra.counit` and `Algebra.linearMap`.
+/--
+Composing the right Frobenius equation with `Coalgebra.counit` and `Algebra.linearMap`.
 See `lTensor_counit_comp_left_comp_rTensor_algebraLinearMap` for the left Frobenius equation
 version.
 
-(This is sometimes known as the right snake equation.) -/
-lemma rTensor_counit_comp_right_comp_lTensor_algebraLinearMap :
-    rT A ε ∘ₗ right R A ∘ₗ lT A η[R] = (TensorProduct.comm R A R).toLinearMap := by
+(This is sometimes known as the right snake equation.)
+-/
+lemma rTensor_counit_comp_right_comp_lTensor_algebraLinearMap
+    : rT A ε ∘ₗ right R A ∘ₗ lT A η[R] = (TensorProduct.comm R A R).toLinearMap := by
   ext; simp [right_eq_comul_comp_mul']
 
 end Algebra
@@ -235,14 +248,16 @@ isomorphic to the underlying ring `R`. -/
 namespace Bialgebra
 variable {A : Type*} [Semiring A] [Bialgebra R A] [IsFrobenius R A]
 
-@[simp] lemma comul_apply_eq_of_isFrobenius (a : A) : δ a = a ⊗ₜ[R] 1 := by
+@[simp]
+lemma comul_apply_eq_of_isFrobenius (a : A) : δ a = a ⊗ₜ[R] 1 := by
   simpa [Algebra.TensorProduct.one_def, IsFrobenius.right_def] using
     congr($IsFrobenius.right_eq_comul_comp_mul' (a ⊗ₜ[R] 1)).symm
 
 lemma comul_eq_of_isFrobenius : δ = (TensorProduct.mk R A A).flip 1 :=
   ext comul_apply_eq_of_isFrobenius
 
-@[simp] lemma algebraMap_counit_of_isFrobenius (a : A) : algebraMap R A (ε a) = a := by
+@[simp]
+lemma algebraMap_counit_of_isFrobenius (a : A) : algebraMap R A (ε a) = a := by
   simpa [Algebra.algebraMap_eq_smul_one] using congr(β ($rTensor_counit_comp_comul a))
 
 lemma algebraMap_bijective_of_isFrobenius : Function.Bijective (algebraMap R A) :=
@@ -251,8 +266,10 @@ lemma algebraMap_bijective_of_isFrobenius : Function.Bijective (algebraMap R A) 
 lemma counit_bijective_of_isFrobenius : Function.Bijective (ε : A →ₗ[R] R) :=
   ⟨Function.LeftInverse.injective algebraMap_counit_of_isFrobenius, counit_surjective⟩
 
-/-- When a bialgebra satisfies the Frobenius equations, we get `R ≃ A`.
-So if `R` and `A` are not isomorphic, then `A` cannot satisfy the Frobenius equations. -/
+/--
+When a bialgebra satisfies the Frobenius equations, we get `R ≃ A`.
+So if `R` and `A` are not isomorphic, then `A` cannot satisfy the Frobenius equations.
+-/
 lemma algebraOfId_bijective_of_isFrobenius : Function.Bijective (Algebra.ofId R A) :=
   algebraMap_bijective_of_isFrobenius
 

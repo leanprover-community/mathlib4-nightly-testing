@@ -35,8 +35,7 @@ Consider replacing these hypotheses with the corresponding instances of `Finite`
 Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
 -/
 #guard_msgs in
-theorem foo₂ (a : Type) [∀ α : Type, Fintype α] (_ : Unit) [Fintype a] : True :=
-  trivial
+theorem foo₂ (a : Type) [∀ α : Type, Fintype α] (_ : Unit) [Fintype a] : True := trivial
 
 /--
 warning: `foo₃` does not use the following hypotheses in its type:
@@ -65,20 +64,21 @@ theorem foo₄ {β} : let _ := 2; ∀ [Fintype β], True := trivial
 -- Linter should not fire when `sorry` appears in the type, even though the instances are unused
 /-- warning: declaration uses `sorry` -/
 #guard_msgs in
-theorem fooSorry {β} [∀ α : Type, Fintype α] [Fintype β] (b : sorry) : True :=
-  trivial
+theorem fooSorry {β} [∀ α : Type, Fintype α] [Fintype β] (b : sorry) : True := trivial
 
 end unused
 
 section used
 
-/- The linter either should not fire on these declarations because the instance hypotheses are used
-in the type, or not fire on *every* instance in these declarations. -/
+/-
+The linter either should not fire on these declarations because the instance hypotheses are used
+in the type, or not fire on *every* instance in these declarations.
+-/
 
 theorem fooUsing [Fintype (Nat → Nat)] : UsesInstanceOf (Fintype (Nat → Nat)) := trivial
 
-theorem fooUsing₁ [Fintype (Nat → Nat)] : UsesInstanceOf (Fintype (Nat → Nat)) → True :=
-  fun _ => trivial
+theorem fooUsing₁ [Fintype (Nat → Nat)] : UsesInstanceOf (Fintype (Nat → Nat)) → True := fun _ =>
+  trivial
 
 -- Should fire on parameter #1 but not parameter #2
 /--
@@ -90,19 +90,20 @@ Consider replacing this hypothesis with the corresponding instance of `Finite` a
 Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
 -/
 #guard_msgs in
-theorem fooUsing₂ [Fintype Bool] [Fintype (Nat → Nat)] :
-    UsesInstanceOf (Fintype (Nat → Nat)) → True :=
-  fun _ => trivial
+theorem fooUsing₂ [Fintype Bool] [Fintype (Nat → Nat)]
+    : UsesInstanceOf (Fintype (Nat → Nat)) → True := fun _ =>
+  trivial
 
 -- Note `optParam` test
-theorem fooUsing₃ [Fintype Bool] [Fintype (Nat → Nat)]
-    (_ : UsesInstanceOf (Fintype Bool) := trivial) : UsesInstanceOf (Fintype (Nat → Nat)) → True :=
-  fun _ => trivial
+theorem fooUsing₃
+    [Fintype Bool] [Fintype (Nat → Nat)] (_ : UsesInstanceOf (Fintype Bool) := trivial)
+    : UsesInstanceOf (Fintype (Nat → Nat)) → True := fun _ =>
+  trivial
 
 set_option linter.unusedFintypeInType false in
-theorem fooUsing₂' [Fintype Bool] [Fintype (Nat → Nat)] :
-    UsesInstanceOf (Fintype (Nat → Nat)) → True :=
-  fun _ => trivial
+theorem fooUsing₂' [Fintype Bool] [Fintype (Nat → Nat)]
+    : UsesInstanceOf (Fintype (Nat → Nat)) → True := fun _ =>
+  trivial
 
 end used
 

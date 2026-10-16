@@ -30,9 +30,7 @@ namespace Counterexample
 def B : BilinForm F (F × F) :=
   (mul F F).compl₁₂ (fst _ _ _) (snd _ _ _) + (mul F F).compl₁₂ (snd _ _ _) (fst _ _ _)
 
-@[simp]
-theorem B_apply (x y : F × F) : B F x y = x.1 * y.2 + x.2 * y.1 :=
-  rfl
+@[simp] theorem B_apply (x y : F × F) : B F x y = x.1 * y.2 + x.2 * y.1 := rfl
 
 theorem isSymm_B : (B F).IsSymm := ⟨fun x y => by simp [mul_comm, add_comm]⟩
 
@@ -41,12 +39,13 @@ theorem isAlt_B [CharP F 2] : (B F).IsAlt := fun x => by
 
 theorem B_ne_zero [Nontrivial F] : B F ≠ 0 := fun h => by simpa using congr($h ((1, 0)) ((1, 1)))
 
-/-- `LinearMap.BilinForm.toQuadraticForm` is not injective on symmetric bilinear forms.
+/--
+`LinearMap.BilinForm.toQuadraticForm` is not injective on symmetric bilinear forms.
 
 This disproves a weaker version of `QuadraticForm.associated_left_inverse`.
 -/
-theorem LinearMap.BilinForm.not_injOn_toQuadraticForm_isSymm.{u} :
-    ¬∀ {R M : Type u} [CommSemiring R] [AddCommMonoid M], ∀ [Module R M],
+theorem LinearMap.BilinForm.not_injOn_toQuadraticForm_isSymm.{u}
+    : ¬ ∀ {R M : Type u} [CommSemiring R] [AddCommMonoid M], ∀ [Module R M],
       Set.InjOn (toQuadraticMap : BilinForm R M → QuadraticForm R M) {B | B.IsSymm} := by
   intro h
   let F := ULift.{u} (ZMod 2)

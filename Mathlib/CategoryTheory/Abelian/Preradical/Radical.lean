@@ -54,23 +54,21 @@ namespace Preradical
 
 variable (C)
 /-- A preradical `Φ` is *radical* if `Φ.colon Φ ≅ Φ`. -/
-def isRadical : ObjectProperty (Preradical C) :=
-  fun Φ ↦ IsIso (toColon Φ Φ)
+def isRadical : ObjectProperty (Preradical C) := fun Φ ↦ IsIso (toColon Φ Φ)
 
-lemma isRadical_iff_isIso (Φ : Preradical C) :
-    isRadical C Φ ↔ IsIso (toColon Φ Φ) :=
-  Iff.rfl
+lemma isRadical_iff_isIso (Φ : Preradical C) : isRadical C Φ ↔ IsIso (toColon Φ Φ) := Iff.rfl
 
 /-- A preradical `Φ` is radical if and only if it `Φ` vanishes on the quotient `Φ.quotient`. -/
-lemma isRadical_iff_isZero (Φ : Preradical C) :
-    isRadical C Φ ↔ IsZero (Φ.quotient ⋙ Φ.r) := by
+lemma isRadical_iff_isZero (Φ : Preradical C) : isRadical C Φ ↔ IsZero (Φ.quotient ⋙ Φ.r) := by
   rw [isRadical_iff_isIso, isIso_toColon_iff]
 
 end Preradical
 
 variable (C) in
-/-- The category of radicals on `C`, defined as the full subcategory of
-`Preradical C` consisting of preradicals `Φ` such that `toColon Φ Φ` is an isomorphism. -/
+/--
+The category of radicals on `C`, defined as the full subcategory of
+`Preradical C` consisting of preradicals `Φ` such that `toColon Φ Φ` is an isomorphism.
+-/
 abbrev Radical := (Preradical.isRadical C).FullSubcategory
 
 namespace Radical

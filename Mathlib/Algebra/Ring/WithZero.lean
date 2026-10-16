@@ -17,17 +17,19 @@ public section
 namespace WithZero
 variable {α : Type*}
 
-instance instLeftDistribClass [Mul α] [Add α] [LeftDistribClass α] :
-    LeftDistribClass (WithZero α) where
+instance instLeftDistribClass [Mul α] [Add α] [LeftDistribClass α]
+    : LeftDistribClass (WithZero α) where
   left_distrib a b c := by
-    cases a; · rfl
+    cases a
+    · rfl
     cases b <;> cases c <;> try rfl
     congrm some $(left_distrib ..)
 
-instance instRightDistribClass [Mul α] [Add α] [RightDistribClass α] :
-    RightDistribClass (WithZero α) where
+instance instRightDistribClass [Mul α] [Add α] [RightDistribClass α]
+    : RightDistribClass (WithZero α) where
   right_distrib a b c := by
-    cases c; · simp
+    cases c
+    · simp
     cases a <;> cases b <;> try rfl
     congrm some $(right_distrib ..)
 

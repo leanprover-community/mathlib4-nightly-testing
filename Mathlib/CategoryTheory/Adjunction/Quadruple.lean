@@ -66,19 +66,19 @@ def rightTriple : Triple F G R where
   adj₁ := q.adj₂
   adj₂ := q.adj₃
 
-/-- The adjoint quadruple `R.op ⊣ G.op ⊣ F.op ⊣ L.op` dual to an
-adjoint quadruple `L ⊣ F ⊣ G ⊣ R`. -/
+/--
+The adjoint quadruple `R.op ⊣ G.op ⊣ F.op ⊣ L.op` dual to an
+adjoint quadruple `L ⊣ F ⊣ G ⊣ R`.
+-/
 @[simps]
 protected def op : Quadruple R.op G.op F.op L.op where
   adj₁ := q.adj₃.op
   adj₂ := q.adj₂.op
   adj₃ := q.adj₁.op
 
-@[simp]
-lemma op_leftTriple : q.op.leftTriple = q.rightTriple.op := rfl
+@[simp] lemma op_leftTriple : q.op.leftTriple = q.rightTriple.op := rfl
 
-@[simp]
-lemma op_rightTriple : q.op.rightTriple = q.leftTriple.op := rfl
+@[simp] lemma op_rightTriple : q.op.rightTriple = q.leftTriple.op := rfl
 
 section RightFullyFaithful
 
@@ -86,15 +86,18 @@ variable [F.Full] [F.Faithful]
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `F` (and hence also `R`) is fully faithful, all
+/--
+For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `F` (and hence also `R`) is fully faithful, all
 components of the natural transformation `G ⟶ L` are epimorphisms iff all components of the natural
-transformation `F ⟶ R` are monomorphisms. -/
-lemma epi_leftTriple_rightToLeft_app_iff_mono_rightTriple_leftToRight_app :
-    (∀ X, Epi (q.leftTriple.rightToLeft.app X)) ↔ ∀ X, Mono (q.rightTriple.leftToRight.app X) := by
+transformation `F ⟶ R` are monomorphisms.
+-/
+lemma epi_leftTriple_rightToLeft_app_iff_mono_rightTriple_leftToRight_app
+    : (∀ X, Epi (q.leftTriple.rightToLeft.app X))
+      ↔ ∀ X, Mono (q.rightTriple.leftToRight.app X) := by
   simp_rw [mono_leftToRight_app_iff_mono_adj₂_unit_app, rightToLeft_eq_counits]
   dsimp
-  simp only [NatIso.isIso_inv_app, Functor.comp_obj, Functor.id_obj,
-    whiskerLeft_app, Category.comp_id, Category.id_comp]
+  simp only [NatIso.isIso_inv_app, Functor.comp_obj, Functor.id_obj, whiskerLeft_app,
+    Category.comp_id, Category.id_comp]
   simp_rw [epi_comp_iff_of_epi, epi_iff_forall_injective, mono_iff_forall_injective]
   rw [forall_comm]
   refine forall_congr' fun X ↦ forall_congr' fun Y ↦ ?_
@@ -105,11 +108,13 @@ lemma epi_leftTriple_rightToLeft_app_iff_mono_rightTriple_leftToRight_app :
   simp [Function.comp_def, ← q.adj₂.homEquiv_symm_id, ← q.adj₂.homEquiv_naturality_right_symm,
     ← q.adj₃.homEquiv_id, ← q.adj₃.homEquiv_naturality_left]
 
-/-- For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `F` (and hence also `R`) is fully faithful and
+/--
+For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `F` (and hence also `R`) is fully faithful and
 its domain / codomain has all pushouts resp. pullbacks, the natural transformation `G ⟶ L` is an
-epimorphism iff the natural transformation `F ⟶ R` is a monomorphism. -/
-lemma epi_leftTriple_rightToLeft_iff_mono_rightTriple_leftToRight [HasPullbacks C] [HasPushouts D] :
-    Epi q.leftTriple.rightToLeft ↔ Mono q.rightTriple.leftToRight := by
+epimorphism iff the natural transformation `F ⟶ R` is a monomorphism.
+-/
+lemma epi_leftTriple_rightToLeft_iff_mono_rightTriple_leftToRight [HasPullbacks C] [HasPushouts D]
+    : Epi q.leftTriple.rightToLeft ↔ Mono q.rightTriple.leftToRight := by
   rw [NatTrans.epi_iff_epi_app, NatTrans.mono_iff_mono_app]
   exact q.epi_leftTriple_rightToLeft_app_iff_mono_rightTriple_leftToRight_app
 
@@ -120,21 +125,26 @@ section LeftFullyFaithful
 variable [L.Full] [L.Faithful] [G.Full] [G.Faithful]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `L` and `G` are fully faithful, all components
+/--
+For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `L` and `G` are fully faithful, all components
 of the natural transformation `L ⟶ G` are epimorphisms iff all components of the natural
-transformation `R ⟶ F` are monomorphisms. -/
-lemma epi_leftTriple_leftToRight_app_iff_mono_rightTriple_rightToLeft_app :
-    (∀ X, Epi (q.leftTriple.leftToRight.app X)) ↔ ∀ X, Mono (q.rightTriple.rightToLeft.app X) := by
+transformation `R ⟶ F` are monomorphisms.
+-/
+lemma epi_leftTriple_leftToRight_app_iff_mono_rightTriple_rightToLeft_app
+    : (∀ X, Epi (q.leftTriple.leftToRight.app X))
+      ↔ ∀ X, Mono (q.rightTriple.rightToLeft.app X) := by
   have h := q.op.epi_leftTriple_rightToLeft_app_iff_mono_rightTriple_leftToRight_app
   rw [← (Opposite.equivToOpposite (α := C)).forall_congr_right] at h
   rw [← (Opposite.equivToOpposite (α := D)).forall_congr_right] at h
   simpa using h.symm
 
-/-- For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `L` and `G` are fully faithful and their domain
+/--
+For an adjoint quadruple `L ⊣ F ⊣ G ⊣ R` where `L` and `G` are fully faithful and their domain
 and codomain have all pullbacks resp. pushouts, the natural transformation `L ⟶ G` is an
-epimorphism iff the natural transformation `R ⟶ F` is a monomorphism. -/
-lemma epi_leftTriple_leftToRight_iff_mono_rightTriple_rightToLeft [HasPullbacks C] [HasPushouts D] :
-    Epi q.leftTriple.leftToRight ↔ Mono q.rightTriple.rightToLeft := by
+epimorphism iff the natural transformation `R ⟶ F` is a monomorphism.
+-/
+lemma epi_leftTriple_leftToRight_iff_mono_rightTriple_rightToLeft [HasPullbacks C] [HasPushouts D]
+    : Epi q.leftTriple.leftToRight ↔ Mono q.rightTriple.rightToLeft := by
   rw [NatTrans.epi_iff_epi_app, NatTrans.mono_iff_mono_app]
   exact q.epi_leftTriple_leftToRight_app_iff_mono_rightTriple_rightToLeft_app
 

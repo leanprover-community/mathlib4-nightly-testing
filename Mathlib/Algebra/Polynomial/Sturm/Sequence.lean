@@ -60,33 +60,38 @@ namespace Polynomial
 
 variable {K : Type*} [Field K] [DecidableEq K]
 
-/-- The Sturm sequence of `p` and `q`: the list `[p, q, -(p % q), …]` of successive negated
-remainders, ending at the last nonzero one. -/
+/--
+The Sturm sequence of `p` and `q`: the list `[p, q, -(p % q), …]` of successive negated
+remainders, ending at the last nonzero one.
+-/
 noncomputable def sturmSeq (p q : K[X]) : List K[X] :=
   if p = 0 then
     []
   else
     p :: (sturmSeq q (-p % q))
-  termination_by if p = 0 then 0 else if q = 0 then 1 else 2 + natDegree q
-  decreasing_by
-    have hdeg := fun (h : -p % q ≠ 0) (hq : q ≠ 0) =>
-      natDegree_lt_natDegree h (degree_mod_lt (-p) hq)
-    grind
+termination_by
+  if p = 0 then
+    0
+  else if q = 0 then
+    1
+  else
+    2 + natDegree q
+decreasing_by
+  have hdeg := fun (h : -p % q ≠ 0) (hq : q ≠ 0) => natDegree_lt_natDegree h (degree_mod_lt (-p) hq)
+  grind
 
 /-- The Sturm sequence of `0` and `q` is the empty sequence. -/
-@[simp]
-lemma sturmSeq_zero_left (q : K[X]) :
-    sturmSeq 0 q = [] := by simp [sturmSeq]
+@[simp] lemma sturmSeq_zero_left (q : K[X]) : sturmSeq 0 q = [] := by simp [sturmSeq]
 
-/-- If `p` is not `0`, the Sturm sequence of `p` and `q` is `p` followed by the Sturm sequence of
-`q` and `-p % q`. -/
-lemma sturmSeq_cons {p q : K[X]} (hp : p ≠ 0) :
-    sturmSeq p q = p :: sturmSeq q (-p % q) := by
+/--
+If `p` is not `0`, the Sturm sequence of `p` and `q` is `p` followed by the Sturm sequence of
+`q` and `-p % q`.
+-/
+lemma sturmSeq_cons {p q : K[X]} (hp : p ≠ 0) : sturmSeq p q = p :: sturmSeq q (-p % q) := by
   rw [sturmSeq, ite_eq_right hp]
 
 @[simp]
-lemma sturmSeq_eq_nil_iff {p q : K[X]} :
-    sturmSeq p q = [] ↔ p = 0 := by
+lemma sturmSeq_eq_nil_iff {p q : K[X]} : sturmSeq p q = [] ↔ p = 0 := by
   constructor
   · intro hs
     by_contra hp
@@ -96,14 +101,12 @@ lemma sturmSeq_eq_nil_iff {p q : K[X]} :
     exact sturmSeq_zero_left q
 
 @[simp]
-lemma sturmSeq_zero_right (p : K[X]) :
-    sturmSeq p 0 = if p = 0 then [] else [p] := by
+lemma sturmSeq_zero_right (p : K[X]) : sturmSeq p 0 = if p = 0 then [] else [p] := by
   split_ifs with hp
   · exact sturmSeq_eq_nil_iff.mpr hp
   · rw [sturmSeq_cons hp, sturmSeq_zero_left]
 
-lemma mem_sturmSeq_self {p q : K[X]} (hp : p ≠ 0) :
-    p ∈ sturmSeq p q := by
+lemma mem_sturmSeq_self {p q : K[X]} (hp : p ≠ 0) : p ∈ sturmSeq p q := by
   rw [sturmSeq_cons hp]; exact List.mem_cons_self
 
 lemma zero_notMem_sturmSeq (p q : K[X]) : 0 ∉ sturmSeq p q := by
@@ -118,14 +121,15 @@ lemma ne_zero_of_mem_sturmSeq {p q s : K[X]} (hs : s ∈ sturmSeq p q) : s ≠ 0
 
 /-- The first entry of the Sturm sequence of a nonzero polynomial is the polynomial itself. -/
 @[simp]
-lemma head?_sturmSeq {p q : K[X]} (hp : p ≠ 0) :
-    (sturmSeq p q).head? = some p := by
+lemma head?_sturmSeq {p q : K[X]} (hp : p ≠ 0) : (sturmSeq p q).head? = some p := by
   rw [sturmSeq_cons hp, List.head?_cons]
 
-/-- Every common divisor of `p` and `q` divides every entry of their Sturm sequence. In
-particular this holds for `gcd p q`. -/
-lemma dvd_of_mem_sturmSeq {d p q s : K[X]} (hp : d ∣ p) (hq : d ∣ q)
-    (hs : s ∈ sturmSeq p q) : d ∣ s := by
+/--
+Every common divisor of `p` and `q` divides every entry of their Sturm sequence. In
+particular this holds for `gcd p q`.
+-/
+lemma dvd_of_mem_sturmSeq {d p q s : K[X]} (hp : d ∣ p) (hq : d ∣ q) (hs : s ∈ sturmSeq p q)
+    : d ∣ s := by
   induction p, q using sturmSeq.induct
   next q => simp at hs
   next p q hp0 ih =>
@@ -134,10 +138,12 @@ lemma dvd_of_mem_sturmSeq {d p q s : K[X]} (hp : d ∣ p) (hq : d ∣ q)
     · exact hp
     · exact ih hq ((EuclideanDomain.dvd_mod_iff hq).mpr (dvd_neg.mpr hp)) hs
 
-/-- Multiplying both arguments by a nonzero polynomial multiplies every entry of the Sturm
-sequence by it. -/
-lemma sturmSeq_mul_left {r : K[X]} (hr : r ≠ 0) (p q : K[X]) :
-    sturmSeq (r * p) (r * q) = (sturmSeq p q).map (r * ·) := by
+/--
+Multiplying both arguments by a nonzero polynomial multiplies every entry of the Sturm
+sequence by it.
+-/
+lemma sturmSeq_mul_left {r : K[X]} (hr : r ≠ 0) (p q : K[X])
+    : sturmSeq (r * p) (r * q) = (sturmSeq p q).map (r * ·) := by
   induction p, q using sturmSeq.induct
   next q => simp
   next p q hp ih =>

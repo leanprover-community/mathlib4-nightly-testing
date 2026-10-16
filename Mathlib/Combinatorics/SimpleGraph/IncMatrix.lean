@@ -52,32 +52,35 @@ namespace SimpleGraph
 
 variable (R : Type*) {α : Type*} (G : SimpleGraph α)
 
-/-- `G.incMatrix R` is the `α × Sym2 α` matrix whose `(a, e)`-entry is `1` if `e` is incident to
-`a` and `0` otherwise. -/
+/--
+`G.incMatrix R` is the `α × Sym2 α` matrix whose `(a, e)`-entry is `1` if `e` is incident to
+`a` and `0` otherwise.
+-/
 def incMatrix [Zero R] [One R] [DecidableEq α] [DecidableRel G.Adj] : Matrix α (Sym2 α) R :=
-  .of fun a e =>
-    if e ∈ G.incidenceSet a then 1 else 0
+  .of fun a e => if e ∈ G.incidenceSet a then 1 else 0
 
 variable {R}
 
-theorem incMatrix_apply [Zero R] [One R] [DecidableEq α] [DecidableRel G.Adj] {a : α} {e : Sym2 α} :
-    G.incMatrix R a e = (G.incidenceSet a).indicator 1 e := by
+theorem incMatrix_apply [Zero R] [One R] [DecidableEq α] [DecidableRel G.Adj] {a : α} {e : Sym2 α}
+    : G.incMatrix R a e = (G.incidenceSet a).indicator 1 e := by
   simp [incMatrix, Set.indicator]
 
 /-- Entries of the incidence matrix can be computed given additional decidable instances. -/
-theorem incMatrix_apply' [Zero R] [One R] [DecidableEq α] [DecidableRel G.Adj] {a : α}
-    {e : Sym2 α} : G.incMatrix R a e = if e ∈ G.incidenceSet a then 1 else 0 := rfl
+theorem incMatrix_apply' [Zero R] [One R] [DecidableEq α] [DecidableRel G.Adj] {a : α} {e : Sym2 α}
+    : G.incMatrix R a e = if e ∈ G.incidenceSet a then 1 else 0 :=
+  rfl
 
 section MulZeroOneClass
 
 variable [MulZeroOneClass R] [DecidableEq α] [DecidableRel G.Adj] {a b : α} {e : Sym2 α}
 
-theorem incMatrix_apply_mul_incMatrix_apply : G.incMatrix R a e * G.incMatrix R b e =
-    (G.incidenceSet a ∩ G.incidenceSet b).indicator 1 e := by
+theorem incMatrix_apply_mul_incMatrix_apply
+    : G.incMatrix R a e * G.incMatrix R b e
+      = (G.incidenceSet a ∩ G.incidenceSet b).indicator 1 e := by
   simp [incMatrix_apply', Set.indicator_apply, ← ite_and, and_comm]
 
-theorem incMatrix_apply_mul_incMatrix_apply_of_not_adj (hab : a ≠ b) (h : ¬G.Adj a b) :
-    G.incMatrix R a e * G.incMatrix R b e = 0 := by
+theorem incMatrix_apply_mul_incMatrix_apply_of_not_adj (hab : a ≠ b) (h : ¬ G.Adj a b)
+    : G.incMatrix R a e * G.incMatrix R b e = 0 := by
   rw [incMatrix_apply_mul_incMatrix_apply, Set.indicator_of_notMem]
   rw [G.incidenceSet_inter_incidenceSet_of_not_adj h hab]
   exact Set.notMem_empty e
@@ -103,19 +106,19 @@ section NonAssocSemiring
 
 variable [NonAssocSemiring R] [DecidableEq α] [DecidableRel G.Adj] {a : α} {e : Sym2 α}
 
-theorem sum_incMatrix_apply [Fintype (Sym2 α)] [Fintype (neighborSet G a)] :
-    ∑ e, G.incMatrix R a e = G.degree a := by
+theorem sum_incMatrix_apply [Fintype (Sym2 α)] [Fintype (neighborSet G a)]
+    : ∑ e, G.incMatrix R a e = G.degree a := by
   simp [incMatrix_apply', sum_boole, Set.filter_mem_univ_eq_toFinset, card_incidenceSet_eq_degree,
     -Set.fintypeCard_eq_ncard]
 
-theorem incMatrix_mul_transpose_diag [Fintype (Sym2 α)] [Fintype (neighborSet G a)] :
-    (G.incMatrix R * (G.incMatrix R)ᵀ) a a = G.degree a := by
+theorem incMatrix_mul_transpose_diag [Fintype (Sym2 α)] [Fintype (neighborSet G a)]
+    : (G.incMatrix R * (G.incMatrix R)ᵀ) a a = G.degree a := by
   rw [← sum_incMatrix_apply]
   simp only [mul_apply, incMatrix_apply', transpose_apply, mul_ite, mul_one, mul_zero]
   simp_all only [ite_true, sum_boole]
 
-theorem sum_incMatrix_apply_of_mem_edgeSet [Fintype α] :
-    e ∈ G.edgeSet → ∑ a, G.incMatrix R a e = 2 := by
+theorem sum_incMatrix_apply_of_mem_edgeSet [Fintype α]
+    : e ∈ G.edgeSet → ∑ a, G.incMatrix R a e = 2 := by
   refine e.ind ?_
   intro a b h
   rw [mem_edgeSet] at h
@@ -125,12 +128,12 @@ theorem sum_incMatrix_apply_of_mem_edgeSet [Fintype α] :
   ext e
   simp
 
-theorem sum_incMatrix_apply_of_notMem_edgeSet [Fintype α] (h : e ∉ G.edgeSet) :
-    ∑ a, G.incMatrix R a e = 0 :=
+theorem sum_incMatrix_apply_of_notMem_edgeSet [Fintype α] (h : e ∉ G.edgeSet)
+    : ∑ a, G.incMatrix R a e = 0 :=
   sum_eq_zero fun _ _ => G.incMatrix_of_notMem_incidenceSet fun he => h he.1
 
-theorem incMatrix_transpose_mul_diag [Fintype α] [Decidable (e ∈ G.edgeSet)] :
-    ((G.incMatrix R)ᵀ * G.incMatrix R) e e = if e ∈ G.edgeSet then 2 else 0 := by
+theorem incMatrix_transpose_mul_diag [Fintype α] [Decidable (e ∈ G.edgeSet)]
+    : ((G.incMatrix R)ᵀ * G.incMatrix R) e e = if e ∈ G.edgeSet then 2 else 0 := by
   simp only [Matrix.mul_apply, incMatrix_apply', transpose_apply, ite_zero_mul_ite_zero, one_mul,
     sum_boole, and_self_iff]
   split_ifs with h
@@ -153,8 +156,8 @@ section Semiring
 
 variable [Fintype (Sym2 α)] [DecidableEq α] [DecidableRel G.Adj] [Semiring R] {a b : α}
 
-theorem incMatrix_mul_transpose_apply_of_adj (h : G.Adj a b) :
-    (G.incMatrix R * (G.incMatrix R)ᵀ) a b = (1 : R) := by
+theorem incMatrix_mul_transpose_apply_of_adj (h : G.Adj a b)
+    : (G.incMatrix R * (G.incMatrix R)ᵀ) a b = (1 : R) := by
   simp_rw [Matrix.mul_apply, Matrix.transpose_apply, incMatrix_apply_mul_incMatrix_apply,
     Set.indicator_apply, Pi.one_apply, sum_boole]
   convert @Nat.cast_one R _
@@ -162,9 +165,15 @@ theorem incMatrix_mul_transpose_apply_of_adj (h : G.Adj a b) :
   rw [← coe_eq_singleton, coe_filter_univ]
   exact G.incidenceSet_inter_incidenceSet_of_adj h
 
-theorem incMatrix_mul_transpose [G.LocallyFinite] :
-    G.incMatrix R * (G.incMatrix R)ᵀ =
-      of fun a b => if a = b then (G.degree a : R) else if G.Adj a b then 1 else 0 := by
+theorem incMatrix_mul_transpose [G.LocallyFinite]
+    : G.incMatrix R * (G.incMatrix R)ᵀ
+      = of fun a b =>
+        if a = b then
+          (G.degree a : R)
+        else if G.Adj a b then
+          1
+        else
+          0 := by
   ext a b
   dsimp
   split_ifs with h h'

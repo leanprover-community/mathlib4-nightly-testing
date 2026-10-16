@@ -48,11 +48,13 @@ section PreGNS
 variable [NonUnitalRing A] [PartialOrder A] [Module ℂ A] (f : A →ₚ[ℂ] ℂ)
 
 set_option linter.unusedVariables false in
-/-- The Gelfand─Naimark─Segal (GNS) space constructed from a positive linear functional on a
+/--
+The Gelfand─Naimark─Segal (GNS) space constructed from a positive linear functional on a
 non-unital C⋆-algebra. This is a type synonym of `A`.
 
 This space is only a pre-inner product space. Its Hilbert space completion is
-`PositiveLinearMap.GNS`. -/
+`PositiveLinearMap.GNS`.
+-/
 @[nolint unusedArguments]
 def PreGNS (f : A →ₚ[ℂ] ℂ) := A
 
@@ -65,14 +67,13 @@ def toPreGNS : A ≃ₗ[ℂ] f.PreGNS := LinearEquiv.refl ℂ _
 /-- The map from the GNS space to the C⋆-algebra, as a linear equivalence. -/
 def ofPreGNS : f.PreGNS ≃ₗ[ℂ] A := f.toPreGNS.symm
 
-@[simp]
-lemma toPreGNS_ofPreGNS (a : f.PreGNS) : f.toPreGNS (f.ofPreGNS a) = a := rfl
+@[simp] lemma toPreGNS_ofPreGNS (a : f.PreGNS) : f.toPreGNS (f.ofPreGNS a) = a := rfl
 
-@[simp]
-lemma ofPreGNS_toPreGNS (a : A) : f.ofPreGNS (f.toPreGNS a) = a := rfl
+@[simp] lemma ofPreGNS_toPreGNS (a : A) : f.ofPreGNS (f.toPreGNS a) = a := rfl
 
-variable [StarRing A] [StarOrderedRing A] [SelfAdjointDecompose A] [StarModule ℂ A]
-    [IsScalarTower ℂ A A] (f : A →ₚ[ℂ] ℂ)
+variable
+  [StarRing A] [StarOrderedRing A] [SelfAdjointDecompose A] [StarModule ℂ A] [IsScalarTower ℂ A A]
+  (f : A →ₚ[ℂ] ℂ)
 
 /--
 The (semi-)inner product space whose elements are the elements of `A`, but which has an
@@ -90,47 +91,48 @@ noncomputable instance : SeminormedAddCommGroup f.PreGNS :=
 noncomputable instance : InnerProductSpace ℂ f.PreGNS :=
   InnerProductSpace.ofCore f.preGNSpreInnerProdSpace
 
-lemma preGNS_inner_def (a b : f.PreGNS) :
-    ⟪a, b⟫_ℂ = f (star (f.ofPreGNS a) * f.ofPreGNS b) := rfl
+lemma preGNS_inner_def (a b : f.PreGNS) : ⟪a, b⟫_ℂ = f (star (f.ofPreGNS a) * f.ofPreGNS b) := rfl
 
-lemma preGNS_norm_def (a : f.PreGNS) :
-    ‖a‖ = √(f (star (f.ofPreGNS a) * f.ofPreGNS a)).re := rfl
+lemma preGNS_norm_def (a : f.PreGNS) : ‖a‖ = √(f (star (f.ofPreGNS a) * f.ofPreGNS a)).re := rfl
 
-lemma preGNS_norm_sq (a : f.PreGNS) :
-    ‖a‖ ^ 2 = f (star (f.ofPreGNS a) * f.ofPreGNS a) := by
+lemma preGNS_norm_sq (a : f.PreGNS) : ‖a‖ ^ 2 = f (star (f.ofPreGNS a) * f.ofPreGNS a) := by
   have : 0 ≤ f (star (f.ofPreGNS a) * f.ofPreGNS a) := f.map_nonneg (star_mul_self_nonneg _)
   simp [preGNS_norm_def, ← ofReal_pow, Real.sq_sqrt this.1, conj_eq_iff_re.mp this.star_eq]
 
-lemma preGNS_norm_def' (f : A →ₚ[ℂ] ℂ) (a : f.PreGNS) :
-    ‖a‖ = √‖f (star (f.ofPreGNS a) * f.ofPreGNS a)‖ := by
+lemma preGNS_norm_def' (f : A →ₚ[ℂ] ℂ) (a : f.PreGNS)
+    : ‖a‖ = √ ‖f (star (f.ofPreGNS a) * f.ofPreGNS a)‖ := by
   rw [← sq_eq_sq₀ (by positivity) (by positivity), ← Complex.ofReal_inj]
   simp [preGNS_norm_sq, ← Complex.eq_coe_norm_of_nonneg, map_nonneg]
 
 variable {F : Type*} [FunLike F A ℂ] [LinearMapClass F ℂ A ℂ] [OrderHomClass F A ℂ]
 
-/-- The **Cauchy--Schwarz** lemma for positive linear functionals on a non-unital
-star-ordered `ℂ`-algebra. -/
-lemma norm_map_star_mul_le (f : F) (x y : A) :
-    ‖f (star x * y)‖ ≤ √‖f (star x * x)‖ * √‖f (star y * y)‖ := by
+/--
+The **Cauchy--Schwarz** lemma for positive linear functionals on a non-unital
+star-ordered `ℂ`-algebra.
+-/
+lemma norm_map_star_mul_le (f : F) (x y : A)
+    : ‖f (star x * y)‖ ≤ √ ‖f (star x * x)‖ * √ ‖f (star y * y)‖ := by
   simpa [preGNS_inner_def, preGNS_norm_def'] using!
     norm_inner_le_norm ((ofClass f).toPreGNS x) ((ofClass f).toPreGNS y)
 
 alias cauchy_schwarz_star_mul := norm_map_star_mul_le
 
-lemma norm_map_star_mul_sq_le (f : F) (x y : A) :
-    ‖f (star x * y)‖ ^ 2 ≤ ‖f (star x * x)‖ * ‖f (star y * y)‖ := by
+lemma norm_map_star_mul_sq_le (f : F) (x y : A)
+    : ‖f (star x * y)‖ ^ 2 ≤ ‖f (star x * x)‖ * ‖f (star y * y)‖ := by
   grw [norm_map_star_mul_le, mul_pow]; simp
 
-/-- The **Cauchy--Schwarz** lemma for positive linear functionals on a non-unital
-star-ordered `ℂ`-algebra. -/
-lemma norm_map_mul_star_le (f : F) (x y : A) :
-    ‖f (x * star y)‖ ≤ √‖f (x * star x)‖ * √‖f (y * star y)‖ := by
+/--
+The **Cauchy--Schwarz** lemma for positive linear functionals on a non-unital
+star-ordered `ℂ`-algebra.
+-/
+lemma norm_map_mul_star_le (f : F) (x y : A)
+    : ‖f (x * star y)‖ ≤ √ ‖f (x * star x)‖ * √ ‖f (y * star y)‖ := by
   simpa using cauchy_schwarz_star_mul f (star x) (star y)
 
 alias cauchy_schwarz_mul_star := norm_map_mul_star_le
 
-lemma norm_map_mul_star_sq_le (f : F) (x y : A) :
-    ‖f (x * star y)‖ ^ 2 ≤ ‖f (x * star x)‖ * ‖f (y * star y)‖ := by
+lemma norm_map_mul_star_sq_le (f : F) (x y : A)
+    : ‖f (x * star y)‖ ^ 2 ≤ ‖f (x * star x)‖ * ‖f (y * star y)‖ := by
   grw [norm_map_mul_star_le, mul_pow]; simp
 
 end PreGNS
@@ -141,9 +143,7 @@ section NonUnital
 
 variable [NonUnitalCStarAlgebra A] [PartialOrder A] [StarOrderedRing A] (f : A →ₚ[ℂ] ℂ)
 
-/--
-The Hilbert space constructed from a positive linear functional on a C⋆-algebra.
--/
+/-- The Hilbert space constructed from a positive linear functional on a C⋆-algebra. -/
 abbrev GNS := UniformSpace.Completion f.PreGNS
 
 /--
@@ -156,22 +156,23 @@ This is the map that is lifted to the completion of `f.PreGNS` (i.e. `f.GNS`) in
 -/
 @[simps!]
 noncomputable def leftMulMapPreGNS (a : A) : f.PreGNS →L[ℂ] f.PreGNS :=
-  f.toPreGNS.toLinearMap ∘ₗ mul ℂ A a ∘ₗ f.ofPreGNS.toLinearMap |>.mkContinuous ‖a‖ fun x ↦ by
-    rw [← sq_le_sq₀ (by positivity) (by positivity), mul_pow, ← RCLike.ofReal_le_ofReal (K := ℂ),
-      RCLike.ofReal_pow, RCLike.ofReal_eq_complex_ofReal, preGNS_norm_sq]
-    have : star (f.ofPreGNS x) * star a * (a * f.ofPreGNS x) ≤
-        ‖a‖ ^ 2 • star (f.ofPreGNS x) * f.ofPreGNS x := by
-      rw [← mul_assoc, mul_assoc _ (star a), sq, ← CStarRing.norm_star_mul_self (x := a),
-        smul_mul_assoc]
-      exact CStarAlgebra.star_left_conjugate_le_norm_smul ..
-    calc
-      _ ≤ f (‖a‖ ^ 2 • star (f.ofPreGNS x) * f.ofPreGNS x) := by
-        simpa using OrderHomClass.mono f this
-      _ = _ := by simp [← Complex.coe_smul, preGNS_norm_sq, smul_mul_assoc]
+  f.toPreGNS.toLinearMap ∘ₗ mul ℂ A a ∘ₗ f.ofPreGNS.toLinearMap
+    |>.mkContinuous (‖a‖) fun x ↦ by
+      rw [← sq_le_sq₀ (by positivity) (by positivity), mul_pow, ← RCLike.ofReal_le_ofReal (K := ℂ),
+        RCLike.ofReal_pow, RCLike.ofReal_eq_complex_ofReal, preGNS_norm_sq]
+      have : star (f.ofPreGNS x) * star a * (a * f.ofPreGNS x)
+          ≤ ‖a‖ ^ 2 • star (f.ofPreGNS x) * f.ofPreGNS x := by
+        rw [← mul_assoc, mul_assoc _ (star a), sq, ← CStarRing.norm_star_mul_self (x := a),
+          smul_mul_assoc]
+        exact CStarAlgebra.star_left_conjugate_le_norm_smul ..
+      calc
+        _ ≤ f (‖a‖ ^ 2 • star (f.ofPreGNS x) * f.ofPreGNS x) := by
+          simpa using OrderHomClass.mono f this
+        _ = _ := by simp [← Complex.coe_smul, preGNS_norm_sq, smul_mul_assoc]
 
 @[simp]
-lemma leftMulMapPreGNS_mul_eq_comp (a b : A) :
-    f.leftMulMapPreGNS (a * b) = f.leftMulMapPreGNS a ∘L f.leftMulMapPreGNS b := by
+lemma leftMulMapPreGNS_mul_eq_comp (a b : A)
+    : f.leftMulMapPreGNS (a * b) = f.leftMulMapPreGNS a ∘L f.leftMulMapPreGNS b := by
   ext c; simp [mul_assoc]
 
 /--
@@ -179,14 +180,15 @@ This proves map_smul' of gnsNonUnitalStarAlgHom so that map_zero' can be proven 
 consequence.
 -/
 @[simp]
-private lemma completion_leftMulMapPreGNS_map_smul (m : ℂ) (x : A) :
-    (f.leftMulMapPreGNS (m • x)).completion = m • (f.leftMulMapPreGNS x).completion := by
+private lemma completion_leftMulMapPreGNS_map_smul (m : ℂ) (x : A)
+    : (f.leftMulMapPreGNS (m • x)).completion = m • (f.leftMulMapPreGNS x).completion := by
   ext a
   induction a using induction_on with
   | hp =>
     exact isClosed_eq (f.leftMulMapPreGNS (m • x)).completion.continuous
       (m • (f.leftMulMapPreGNS x).completion).continuous
-  | ih a => simp [smul_mul_assoc]
+  | ih a =>
+    simp [smul_mul_assoc]
 
 /--
 The non-unital ⋆-homomorphism/⋆-representation of `A` into the algebra of bounded operators on
@@ -200,27 +202,29 @@ noncomputable def gnsNonUnitalStarAlgHom : A →⋆ₙₐ[ℂ] (f.GNS →L[ℂ] 
   map_add' _ _ := by
     ext c
     induction c using induction_on with
-      | hp => apply isClosed_eq <;> fun_prop
-      | ih c => simp [add_mul, Completion.coe_add]
+    | hp => apply isClosed_eq <;> fun_prop
+    | ih c => simp [add_mul, Completion.coe_add]
   map_mul' _ _ := by
     ext c
     induction c using induction_on with
-      | hp => apply isClosed_eq <;> fun_prop
-      | ih c => simp
+    | hp => apply isClosed_eq <;> fun_prop
+    | ih c => simp
   map_star' a := by
     refine (eq_adjoint_iff (f.leftMulMapPreGNS (star a)).completion
-      (f.leftMulMapPreGNS a).completion).mpr ?_
+        (f.leftMulMapPreGNS a).completion).mpr
+      ?_
     intro x y
     induction x, y using induction_on₂ with
     | hp => apply isClosed_eq <;> fun_prop
     | ih x y => simp [mul_assoc, preGNS_inner_def]
 
-lemma gnsNonUnitalStarAlgHom_apply {a : A} :
-    f.gnsNonUnitalStarAlgHom a = (f.leftMulMapPreGNS a).completion := rfl
+lemma gnsNonUnitalStarAlgHom_apply {a : A}
+    : f.gnsNonUnitalStarAlgHom a = (f.leftMulMapPreGNS a).completion :=
+  rfl
 
 @[simp]
-lemma gnsNonUnitalStarAlgHom_apply_coe {a : A} {b : f.PreGNS} :
-    f.gnsNonUnitalStarAlgHom a b = f.leftMulMapPreGNS a b := by
+lemma gnsNonUnitalStarAlgHom_apply_coe {a : A} {b : f.PreGNS}
+    : f.gnsNonUnitalStarAlgHom a b = f.leftMulMapPreGNS a b := by
   simp [gnsNonUnitalStarAlgHom_apply]
 
 end NonUnital

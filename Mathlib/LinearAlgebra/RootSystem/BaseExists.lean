@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Irreducible.Indecomposable
 public import Mathlib.LinearAlgebra.RootSystem.Base
-
 import Mathlib.Algebra.Module.LinearMap.Rat
 import Mathlib.Algebra.Module.Submodule.Union
 import Mathlib.LinearAlgebra.Dimension.OrzechProperty
@@ -46,32 +45,38 @@ variable {ι R M N : Type*} [Finite ι] [AddCommGroup M] [AddCommGroup N]
 
 section CommRing
 
-variable [CommRing R] [Module R M] [Module R N] (P : RootPairing ι R M N)
-  {S : Type*} [LinearOrder S] [AddCommGroup S] [IsOrderedAddMonoid S] (f : M →+ S)
+variable
+  [CommRing R] [Module R M] [Module R N]
+  (P : RootPairing ι R M N)
+  {S : Type*} [LinearOrder S] [AddCommGroup S] [IsOrderedAddMonoid S]
+  (f : M →+ S)
 
 /-- This is [serre1965](Ch. V, §9, Lemma 3). -/
-lemma baseOf_pairwise_pairing_le_zero [CharZero R] [IsDomain R] [P.IsCrystallographic]
-    (hf : ∀ i, f (P.root i) ≠ 0) :
-    (baseOf P.root f).Pairwise fun i j ↦ P.pairingIn ℤ i j ≤ 0 := by
+lemma baseOf_pairwise_pairing_le_zero
+    [CharZero R] [IsDomain R] [P.IsCrystallographic] (hf : ∀ i, f (P.root i) ≠ 0)
+    : (baseOf P.root f).Pairwise fun i j ↦ P.pairingIn ℤ i j ≤ 0 := by
   let _i := P.indexNeg
   intro i hi j hj hne
   have := IsAddIndecomposable.pairwise_baseOf_sub_notMem P.root (by simp) f hf hi hj hne
   contrapose! this
   exact P.root_sub_root_mem_of_pairingIn_pos this hne
 
-/-- This lemma is usually established for root systems with coefficients `R` equal to `ℚ` or `ℝ`, in
+/--
+This lemma is usually established for root systems with coefficients `R` equal to `ℚ` or `ℝ`, in
 which case one may take `S = R`. However our statement allows for more general coefficients such as
 `R = ℂ` and `S = ℚ`.
 
 This lemma is mostly a stepping stone en route to `RootPairing.linearIndepOn_root_baseOf` (where
 linear independence is established over `R` rather than just `S`) except that this version does not
-make the field assumption and so covers the case `S = R = ℤ` which the latter does not. -/
-lemma linearIndepOn_root_baseOf' [IsDomain R] {S : Type*}
-    [LinearOrder S] [CommRing S] [IsStrictOrderedRing S] [Algebra S R] [FaithfulSMul S R]
-    [Module S M] [IsScalarTower S R M] [Module S N] [IsScalarTower S R N]
+make the field assumption and so covers the case `S = R = ℤ` which the latter does not.
+-/
+lemma linearIndepOn_root_baseOf'
+    [IsDomain R]
+    {S : Type*} [LinearOrder S] [CommRing S] [IsStrictOrderedRing S] [Algebra S R]
+    [FaithfulSMul S R] [Module S M] [IsScalarTower S R M] [Module S N] [IsScalarTower S R N]
     [P.IsValuedIn S] [P.IsCrystallographic]
-    (f : Dual S M) (hf : ∀ i, f (P.root i) ≠ 0) :
-    LinearIndepOn S P.root (baseOf P.root (f : M →+ S)) := by
+    (f : Dual S M) (hf : ∀ i, f (P.root i) ≠ 0)
+    : LinearIndepOn S P.root (baseOf P.root (f : M →+ S)) := by
   have : CharZero R := Algebra.charZero_of_charZero S R
   have : Fintype ι := Fintype.ofFinite ι
   let M₀ := span S (range P.root)
@@ -89,19 +94,21 @@ lemma linearIndepOn_root_baseOf' [IsDomain R] {S : Type*}
     simpa using P.baseOf_pairwise_pairing_le_zero _ hf (by simpa) (by simpa) (by aesop : i ≠ j)
   exact LinearMap.BilinForm.linearIndependent_of_pairwise_le_zero B.posForm hB f' v hp hn
 
-lemma ncard_eq_finrank_of_linearIndepOn_of [P.IsRootSystem] [Nontrivial R]
-    {s : Set ι}
-    (hli : LinearIndepOn R P.root s)
-    (hsp : ∀ i, P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-               -P.root i ∈ AddSubmonoid.closure (P.root '' s)) :
-    s.ncard = finrank R M := by
-  let b : Basis s R M := Basis.mk hli <| by
-    rw [← IsRootSystem.span_root_eq_top (P := P), span_le, ← span_span_of_tower (R := ℤ)]
-    rintro - ⟨i, rfl⟩
-    apply subset_span
-    rcases hsp i with hi | hi <;>
-      simpa [SetLike.mem_coe, ← Submodule.mem_toAddSubgroup, span_int_eq_addSubgroupClosure,
-        ← image_eq_range] using AddSubgroup.le_closure_toAddSubmonoid (P.root '' s) hi
+lemma ncard_eq_finrank_of_linearIndepOn_of
+    [P.IsRootSystem] [Nontrivial R]
+    {s : Set ι} (hli : LinearIndepOn R P.root s)
+    (hsp : ∀ i,
+      P.root i ∈ AddSubmonoid.closure (P.root '' s)
+        ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s))
+    : s.ncard = finrank R M := by
+  let b : Basis s R M :=
+    Basis.mk hli <| by
+      rw [← IsRootSystem.span_root_eq_top (P := P), span_le, ← span_span_of_tower (R := ℤ)]
+      rintro - ⟨i, rfl⟩
+      apply subset_span
+      rcases hsp i with hi | hi <;> simpa [SetLike.mem_coe, ← Submodule.mem_toAddSubgroup,
+          span_int_eq_addSubgroupClosure, ← image_eq_range]
+        using AddSubgroup.le_closure_toAddSubmonoid (P.root '' s) hi
   have _i : Fintype s := Fintype.ofFinite s
   rw [ncard_eq_toFinset_card]
   simpa using (finrank_eq_card_basis b).symm
@@ -110,12 +117,13 @@ end CommRing
 
 section Field
 
-variable [Field R] [CharZero R] [Module R M] [Module R N] (P : RootPairing ι R M N)
-  [P.IsRootSystem] [P.IsCrystallographic]
+variable
+  [Field R] [CharZero R] [Module R M] [Module R N]
+  (P : RootPairing ι R M N) [P.IsRootSystem] [P.IsCrystallographic]
 
 set_option backward.isDefEq.respectTransparency.types false in
-lemma linearIndepOn_root_baseOf (f : M →+ ℚ) (hf : ∀ i, f (P.root i) ≠ 0) :
-    LinearIndepOn R P.root (baseOf P.root f) := by
+lemma linearIndepOn_root_baseOf (f : M →+ ℚ) (hf : ∀ i, f (P.root i) ≠ 0)
+    : LinearIndepOn R P.root (baseOf P.root f) := by
   let _i : Module ℚ M := Module.compHom M (algebraMap ℚ R)
   let _i : Module ℚ N := Module.compHom N (algebraMap ℚ R)
   let := P.indexNeg
@@ -150,28 +158,35 @@ lemma linearIndepOn_root_baseOf (f : M →+ ℚ) (hf : ∀ i, f (P.root i) ≠ 0
     Fintype.card_eq_nat_card]
 
 lemma eq_baseOf_of_linearIndepOn_of_mem_or_neg_mem_closure
-    (s : Set ι)
-    (hli : LinearIndepOn R P.root s)
-    (hsp : ∀ i, P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-               -P.root i ∈ AddSubmonoid.closure (P.root '' s))
-    (f : M →+ ℚ) (hf : ∀ i ∈ s, f (P.root i) = 1) :
-    s = baseOf P.root f := by
+    (s : Set ι) (hli : LinearIndepOn R P.root s)
+    (hsp : ∀ i,
+      P.root i ∈ AddSubmonoid.closure (P.root '' s)
+        ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s))
+    (f : M →+ ℚ) (hf : ∀ i ∈ s, f (P.root i) = 1)
+    : s = baseOf P.root f := by
   let _i := P.indexNeg
   have h_card : (baseOf P.root f).ncard = s.ncard := by
-    have hf' (i : ι) : f (P.root i) ≠ 0 := AddSubmonoid.apply_ne_zero_of_mem_or_neg_mem_closure
-      P.root f s (by aesop) i (P.ne_zero i) (by simp) (hsp i)
+    have hf' (i : ι) : f (P.root i) ≠ 0 :=
+      AddSubmonoid.apply_ne_zero_of_mem_or_neg_mem_closure P.root f s (by aesop) i (P.ne_zero i)
+        (by simp) (hsp i)
     have aux (i : ι) := mem_or_neg_mem_closure_baseOf P.root f i (hf' i) (by simp)
-    rw [P.ncard_eq_finrank_of_linearIndepOn_of hli hsp, P.ncard_eq_finrank_of_linearIndepOn_of
-      (P.linearIndepOn_root_baseOf f hf') aux]
+    rw [P.ncard_eq_finrank_of_linearIndepOn_of hli hsp,
+      P.ncard_eq_finrank_of_linearIndepOn_of (P.linearIndepOn_root_baseOf f hf') aux]
   suffices s ⊆ baseOf P.root f from eq_of_subset_of_ncard_le this (by rw [h_card])
   replace hsp (i : ι) : ∃ z : ℤ, f (P.root i) = z := by
     rcases hsp i with hi | hi
-    · exact AddSubmonoid.closure_induction (fun x ⟨j, hj, hx⟩ ↦ ⟨1, by simp [hf _ hj, ← hx]⟩)
-        ⟨0, by simp⟩ (fun x y hx hy ⟨n, hn⟩ ⟨m, hm⟩ ↦ ⟨n + m, by simp [hn, hm]⟩) hi
+    · exact AddSubmonoid.closure_induction
+        (fun x ⟨j, hj, hx⟩ ↦ ⟨1, by simp [hf _ hj, ← hx]⟩)
+        ⟨0, by simp⟩
+        (fun x y hx hy ⟨n, hn⟩ ⟨m, hm⟩ ↦ ⟨n + m, by simp [hn, hm]⟩)
+        hi
     · suffices ∃ z : ℤ, f (P.root (-i)) = z by obtain ⟨z, hz⟩ := this; exact ⟨-z, by simp [← hz]⟩
       replace hi : P.root (-i) ∈ AddSubmonoid.closure (P.root '' s) := by simpa
-      exact AddSubmonoid.closure_induction (fun x ⟨j, hj, hx⟩ ↦ ⟨1, by simp [hf _ hj, ← hx]⟩)
-        ⟨0, by simp⟩ (fun x y hx hy ⟨n, hn⟩ ⟨m, hm⟩ ↦ ⟨n + m, by simp [hn, hm]⟩) hi
+      exact AddSubmonoid.closure_induction
+        (fun x ⟨j, hj, hx⟩ ↦ ⟨1, by simp [hf _ hj, ← hx]⟩)
+        ⟨0, by simp⟩
+        (fun x y hx hy ⟨n, hn⟩ ⟨m, hm⟩ ↦ ⟨n + m, by simp [hn, hm]⟩)
+        hi
   refine fun i hi ↦ ⟨by aesop, fun j hj k hk contra ↦ ?_⟩
   obtain ⟨n, hn⟩ := hsp j
   obtain ⟨m, hm⟩ := hsp k
@@ -182,24 +197,27 @@ lemma eq_baseOf_of_linearIndepOn_of_mem_or_neg_mem_closure
     rwa [hf i hi, map_add, hn, hm, ← Int.cast_add, ← Int.cast_one, Int.cast_inj] at contra
   lia
 
-lemma eq_baseOf_iff (s : Set ι) (f : M →+ ℚ)
-    (hf : ∀ i ∈ s, f (P.root i) = 1) (hf' : ∀ i, f (P.root i) ≠ 0) :
-    s = baseOf P.root f ↔
-      LinearIndepOn R P.root s ∧
-        ∀ i, P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-            -P.root i ∈ AddSubmonoid.closure (P.root '' s) := by
+lemma eq_baseOf_iff
+    (s : Set ι) (f : M →+ ℚ) (hf : ∀ i ∈ s, f (P.root i) = 1) (hf' : ∀ i, f (P.root i) ≠ 0)
+    : s = baseOf P.root f
+      ↔ LinearIndepOn R P.root s
+        ∧ ∀ i,
+          P.root i ∈ AddSubmonoid.closure (P.root '' s)
+            ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s) := by
   let := P.indexNeg
   refine ⟨?_, fun ⟨hli, sp⟩ ↦ P.eq_baseOf_of_linearIndepOn_of_mem_or_neg_mem_closure s hli sp f hf⟩
   rintro rfl
-  exact ⟨P.linearIndepOn_root_baseOf f hf', fun i ↦
-    mem_or_neg_mem_closure_baseOf P.root f i (by simp_all) (by simp)⟩
+  exact ⟨
+    P.linearIndepOn_root_baseOf f hf',
+    fun i ↦ mem_or_neg_mem_closure_baseOf P.root f i (by simp_all) (by simp)
+  ⟩
 
 variable [P.IsReduced]
 
 private lemma baseOf_root_eq_baseOf_coroot_aux
-    (f : M →+ ℚ) (g : N →+ ℚ) (hf : ∀ i, f (P.root i) ≠ 0)
-    (hfg : ∀ i, 0 < f (P.root i) ↔ 0 < g (P.coroot i)) :
-    baseOf P.root f ⊆ baseOf P.coroot (g : N →+ ℚ) := by
+    (f : M →+ ℚ) (g : N →+ ℚ)
+    (hf : ∀ i, f (P.root i) ≠ 0) (hfg : ∀ i, 0 < f (P.root i) ↔ 0 < g (P.coroot i))
+    : baseOf P.root f ⊆ baseOf P.coroot (g : N →+ ℚ) := by
   classical
   have _i : Fintype ι := Fintype.ofFinite _
   let _i : Module ℚ M := Module.compHom M (algebraMap ℚ R)
@@ -213,7 +231,8 @@ private lemma baseOf_root_eq_baseOf_coroot_aux
       simpa only [l, ← posRootForm_eq] using RootPositiveForm.zero_lt_posForm_apply_root _ _
     refine ⟨l i / l j, by simp [hl], l i / l k, by simp [hl], ?_⟩
     simp only [P.coroot_eq_polarizationEquiv_apply_root, ← map_smul, ← map_add,
-      P.PolarizationEquiv.injective.eq_iff] at contra
+        P.PolarizationEquiv.injective.eq_iff]
+      at contra
     let l' (i : ι) := P.RootForm (P.root i) (P.root i)
     have hll' (i : ι) : l i = l' i := P.algebraMap_rootFormIn ℚ _ _
     change (2 / l' i) • P.root i = (2 / l' j) • P.root j + (2 / l' k) • P.root k at contra
@@ -223,8 +242,8 @@ private lemma baseOf_root_eq_baseOf_coroot_aux
     simp only [smul_add, smul_smul, inv_mul_cancel₀ aux₁, aux₂, one_smul] at contra
     rw [contra]
     module
-  have hjk {l : ι} (hl : 0 < g (P.coroot l)) :
-      ∃ c : P.root '' s → ℕ, ∑ x, c x • (x : M) = P.root l := by
+  have hjk {l : ι} (hl : 0 < g (P.coroot l))
+      : ∃ c : P.root '' s → ℕ, ∑ x, c x • (x : M) = P.root l := by
     rwa [← Submodule.mem_span_iff_of_fintype, ← mem_toAddSubmonoid, span_nat_eq_addSubmonoidClosure,
       AddSubmonoid.closure_image_isAddIndecomposable_baseOf,
       AddSubmonoid.mem_closure_image_pos_iff P.root f _ (P.ne_zero _), hfg]
@@ -254,7 +273,7 @@ private lemma baseOf_root_eq_baseOf_coroot_aux
       have : 0 ≤ u * (a x) := by positivity
       have : 0 ≤ v * (b x) := by positivity
       grind
-    replace this (x : P.root '' s) (hx : a x • (x : M) ≠ 0) :  x ∈ ({ri} : Finset _) := by
+    replace this (x : P.root '' s) (hx : a x • (x : M) ≠ 0) : x ∈ ({ri} : Finset _) := by
       rw [Finset.mem_singleton]
       by_contra! contra
       simp [this x contra] at hx
@@ -268,20 +287,20 @@ private lemma baseOf_root_eq_baseOf_coroot_aux
 
 lemma baseOf_root_eq_baseOf_coroot
     (f : M →+ ℚ) (hf : ∀ i, f (P.root i) ≠ 0)
-    (g : N →+ ℚ) (hg : ∀ i, g (P.coroot i) ≠ 0)
-    (hfg : ∀ i, 0 < f (P.root i) ↔ 0 < g (P.coroot i)) :
-    baseOf P.root f = baseOf P.coroot (g : N →+ ℚ) :=
+    (g : N →+ ℚ) (hg : ∀ i, g (P.coroot i) ≠ 0) (hfg : ∀ i, 0 < f (P.root i) ↔ 0 < g (P.coroot i))
+    : baseOf P.root f = baseOf P.coroot (g : N →+ ℚ) :=
   subset_antisymm (P.baseOf_root_eq_baseOf_coroot_aux f g hf hfg)
     (P.flip.baseOf_root_eq_baseOf_coroot_aux g f hg (by aesop))
 
 /-- This is really just an auxiliary result en route to `RootPairing.Base.mk'`. -/
-lemma coroot_mem_or_neg_mem_closure_of_root (s : Set ι)
-    (hli : LinearIndepOn R P.root s)
-    (hsp : ∀ i, P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-               -P.root i ∈ AddSubmonoid.closure (P.root '' s))
-    (i : ι) :
-     P.coroot i ∈ AddSubmonoid.closure (P.coroot '' s) ∨
-    -P.coroot i ∈ AddSubmonoid.closure (P.coroot '' s) := by
+lemma coroot_mem_or_neg_mem_closure_of_root
+    (s : Set ι) (hli : LinearIndepOn R P.root s)
+    (hsp : ∀ i,
+      P.root i ∈ AddSubmonoid.closure (P.root '' s)
+        ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s))
+    (i : ι)
+    : P.coroot i ∈ AddSubmonoid.closure (P.coroot '' s)
+      ∨ - P.coroot i ∈ AddSubmonoid.closure (P.coroot '' s) := by
   let _i := P.indexNeg
   let _i : Fintype ι := Fintype.ofFinite ι
   let _i : Module ℚ M := Module.compHom M (algebraMap ℚ R)
@@ -306,13 +325,16 @@ lemma coroot_mem_or_neg_mem_closure_of_root (s : Set ι)
   rw [hf, P.baseOf_root_eq_baseOf_coroot f hf₀ g hg₀ (fun i ↦ (hg i).symm)]
   exact mem_or_neg_mem_closure_baseOf P.coroot (g : N →+ ℚ) i (hg₀ i) (by simp)
 
-/-- An alternate constructor for `RootPairing.Base` which demands the axioms for roots but not for
-coroots. -/
-noncomputable def Base.mk' (s : Set ι)
-    (hli : LinearIndepOn R P.root s)
-    (hsp : ∀ i, P.root i ∈ AddSubmonoid.closure (P.root '' s) ∨
-               -P.root i ∈ AddSubmonoid.closure (P.root '' s)) :
-    P.Base where
+/--
+An alternate constructor for `RootPairing.Base` which demands the axioms for roots but not for
+coroots.
+-/
+noncomputable def Base.mk'
+    (s : Set ι) (hli : LinearIndepOn R P.root s)
+    (hsp : ∀ i,
+      P.root i ∈ AddSubmonoid.closure (P.root '' s)
+        ∨ - P.root i ∈ AddSubmonoid.closure (P.root '' s))
+    : P.Base where
   support := (toFinite s).toFinset
   linearIndepOn_root := by simpa
   linearIndepOn_coroot := by have : Fintype ι := Fintype.ofFinite ι; simpa

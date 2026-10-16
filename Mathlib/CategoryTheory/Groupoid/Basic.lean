@@ -28,8 +28,9 @@ theorem isThin_iff : Quiver.IsThin C ↔ ∀ c : C, Subsingleton (c ⟶ c) := by
   have := h d
   calc
     f = f ≫ inv g ≫ g := by simp only [inv_eq_inv, IsIso.inv_hom_id, Category.comp_id]
-    _ = f ≫ inv f ≫ g := by congr 1
-                            simp only [inv_eq_inv, IsIso.inv_hom_id, eq_iff_true_of_subsingleton]
+    _ = f ≫ inv f ≫ g := by
+      congr 1
+      simp only [inv_eq_inv, IsIso.inv_hom_id, eq_iff_true_of_subsingleton]
     _ = g := by simp only [inv_eq_inv, IsIso.hom_inv_id_assoc]
 
 end Thin
@@ -37,8 +38,7 @@ end Thin
 section Disconnected
 
 /-- A subgroupoid is totally disconnected if it only has loops. -/
-def IsTotallyDisconnected :=
-  ∀ c d : C, (c ⟶ d) → c = d
+def IsTotallyDisconnected := ∀ c d : C, (c ⟶ d) → c = d
 
 end Disconnected
 

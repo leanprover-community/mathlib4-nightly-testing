@@ -16,8 +16,8 @@ variable {C : Type u} [Category.{v} C] [MonoidalCategory C]
 
 section
 
-lemma left_triangle {X Y : C} (η : 𝟙_ _ ⟶ X ⊗ Y) (ε : Y ⊗ X ⟶ 𝟙_ _) (w : False) :
-    η ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ ε = (λ_ _).hom ≫ (ρ_ _).inv := by
+lemma left_triangle {X Y : C} (η : 𝟙_ _ ⟶ X ⊗ Y) (ε : Y ⊗ X ⟶ 𝟙_ _) (w : False)
+    : η ▷ X ≫ (α_ _ _ _).hom ≫ X ◁ ε = (λ_ _).hom ≫ (ρ_ _).inv := by
   /- Displays string diagrams for the both sides of the goal. -/
   with_panel_widgets [StringDiagram]
     /- Place the cursor here to see the string diagrams. -/
@@ -29,24 +29,22 @@ lemma left_triangle {X Y : C} (η : 𝟙_ _ ⟶ X ⊗ Y) (ε : Y ⊗ X ⟶ 𝟙_
 /- Instead of writing `with_panel_widgets` everywhere, you can also use this command. -/
 show_panel_widgets [local StringDiagram, local SelectionPanel]
 
-lemma yang_baxter {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False) :
-    R V₁ V₂ ▷ V₃ ≫ (α_ _ ..).hom ≫ _ ◁ R _ _ ≫ (α_ _ ..).inv ≫ R _ _ ▷ _ ≫ (α_ _ ..).hom =
-    (α_ _ ..).hom ≫ V₁ ◁ R V₂ V₃ ≫ (α_ _ ..).inv ≫ R _ _ ▷ _ ≫ (α_ _ ..).hom ≫ _ ◁ R _ _ := by
+lemma yang_baxter {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False)
+    : R V₁ V₂ ▷ V₃ ≫ (α_ _ ..).hom ≫ _ ◁ R _ _ ≫ (α_ _ ..).inv ≫ R _ _ ▷ _ ≫ (α_ _ ..).hom
+      = (α_ _ ..).hom ≫ V₁ ◁ R V₂ V₃ ≫ (α_ _ ..).inv ≫ R _ _ ▷ _ ≫ (α_ _ ..).hom ≫ _ ◁ R _ _ := by
   /- Place the cursor here to see the string diagrams. -/
   exact w.elim
 
-lemma yang_baxter' {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False) :
-    R V₁ V₂ ▷ V₃ ⊗≫ V₂ ◁ R V₁ V₃ ⊗≫ R V₂ V₃ ▷ V₁ ⊗≫ 𝟙 _ =
-    𝟙 _ ⊗≫ V₁ ◁ R V₂ V₃ ⊗≫ R V₁ V₃ ▷ V₂ ⊗≫ V₃ ◁ R V₁ V₂ := by
+lemma yang_baxter' {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False)
+    : R V₁ V₂ ▷ V₃ ⊗≫ V₂ ◁ R V₁ V₃ ⊗≫ R V₂ V₃ ▷ V₁ ⊗≫ 𝟙 _
+      = 𝟙 _ ⊗≫ V₁ ◁ R V₂ V₃ ⊗≫ R V₁ V₃ ▷ V₂ ⊗≫ V₃ ◁ R V₁ V₂ := by
   exact w.elim
 
-lemma yang_baxter'' {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False) :
-    (R V₁ V₂ ⊗ₘ 𝟙 V₃) ≫ (α_ _ ..).hom ≫
-      (𝟙 V₂ ⊗ₘ R V₁ V₃) ≫ (α_ _ ..).inv ≫
-        (R V₂ V₃ ⊗ₘ 𝟙 V₁) ≫ (α_ _ ..).hom =
-      (α_ _ ..).hom ≫ (𝟙 V₁ ⊗ₘ R V₂ V₃) ≫
-        (α_ _ ..).inv ≫ (R V₁ V₃ ⊗ₘ 𝟙 V₂) ≫
-          (α_ _ ..).hom ≫ (𝟙 V₃ ⊗ₘ R V₁ V₂) := by
+lemma yang_baxter'' {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ V₁) (w : False)
+    : (R V₁ V₂ ⊗ₘ 𝟙 V₃) ≫ (α_ _ ..).hom ≫ (𝟙 V₂ ⊗ₘ R V₁ V₃) ≫ (α_ _ ..).inv ≫ (R V₂ V₃ ⊗ₘ 𝟙 V₁)
+        ≫ (α_ _ ..).hom
+      = (α_ _ ..).hom ≫ (𝟙 V₁ ⊗ₘ R V₂ V₃) ≫ (α_ _ ..).inv ≫ (R V₁ V₃ ⊗ₘ 𝟙 V₂) ≫ (α_ _ ..).hom
+        ≫ (𝟙 V₃ ⊗ₘ R V₁ V₂) := by
   exact w.elim
 
 example {X Y : C} (f : X ⟶ Y) (g : X ⊗ X ⊗ Y ⟶ Y ⊗ X ⊗ Y) (w : False) : f ▷ (X ⊗ Y) = g := by
@@ -99,7 +97,8 @@ trace: [string_diagram] Penrose substance:
 #guard_msgs (whitespace := lax) in
 #string_diagram MonoidalCategory.whisker_exchange
 
-/-- trace: [string_diagram] Penrose substance:
+/--
+trace: [string_diagram] Penrose substance:
     Left(E_0_0_0, E_0_1_1)
     Left(E_1_0_0, E_1_1_1)
     Left(E_2_0_0, E_2_1_1)

@@ -18,9 +18,10 @@ is also faithful.
 
 public section
 
-instance UniformSpace.Completion.faithfulSMul {R K : Type*} [CommSemiring R] [Field K] [Algebra R K]
-    [UniformSpace K] [UniformContinuousConstSMul R K] [IsUniformAddGroup K]
-    [IsTopologicalRing K] [Nontrivial (Completion K)] [FaithfulSMul R K] :
-    FaithfulSMul R (Completion K) := by
+instance UniformSpace.Completion.faithfulSMul
+    {R K : Type*}
+    [CommSemiring R] [Field K] [Algebra R K] [UniformSpace K] [UniformContinuousConstSMul R K]
+    [IsUniformAddGroup K] [IsTopologicalRing K] [Nontrivial (Completion K)] [FaithfulSMul R K]
+    : FaithfulSMul R (Completion K) := by
   rw [faithfulSMul_iff_algebraMap_injective]
   exact (FaithfulSMul.algebraMap_injective K _).comp (FaithfulSMul.algebraMap_injective R K)

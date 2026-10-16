@@ -14,7 +14,9 @@ import Mathlib.Data.PNat.Defs
 example (n : ℤ) (hn : 0 ≤ n) : 0 ≤ n + 1 := by
   lift n to ℕ
   guard_target =ₛ 0 ≤ n
-  swap; guard_target =ₛ 0 ≤ (n : Int) + 1; swap
+  swap
+  guard_target =ₛ 0 ≤ (n : Int) + 1
+  swap
   · exact hn
   · exact Int.le_add_one hn
 
@@ -69,26 +71,30 @@ example (n : ℤ) (hn : 0 ≤ n) : 0 ≤ n + 1 := by
   exact of_decide_eq_true rfl
 
 -- test lift of functions
-example (α : Type _) (f : α → ℤ) (hf : ∀ a, 0 ≤ f a) (hf' : ∀ a, f a < 1) (a : α) :
-    0 ≤ 2 * f a := by
+example (α : Type _) (f : α → ℤ) (hf : ∀ a, 0 ≤ f a) (hf' : ∀ a, f a < 1) (a : α)
+    : 0 ≤ 2 * f a := by
   lift f to α → ℕ using hf
   guard_target =ₛ (0 : ℤ) ≤ 2 * (fun i : α ↦ (f i : ℤ)) a
   guard_hyp hf' : ∀ a, ((fun i : α ↦ (f i : ℤ)) a) < 1
   constructor
 
-example (α : Type _) (f : α → ℤ) (hf : ∀ a, 0 ≤ f a) (_ : ∀ a, f a < 1) (a : α) :
-    0 ≤ 2 * f a := by
+example (α : Type _) (f : α → ℤ) (hf : ∀ a, 0 ≤ f a) (_ : ∀ a, f a < 1) (a : α) : 0 ≤ 2 * f a := by
   lift f to α → ℕ using hf with g hg
   guard_target =ₛ 0 ≤ 2 * (g a : Int)
   guard_hyp hg : (fun i => (g i : Int)) = f
   constructor
 
-example (n m k x : ℤ) (hn : 0 < n) (hk : 0 ≤ k + n) (h : k + n = 2 + x)
-    (hans : k + n = m + x) (hans2 : 0 ≤ m) : k + n = m + x := by
+example
+    (n m k x : ℤ)
+    (hn : 0 < n) (hk : 0 ≤ k + n) (h : k + n = 2 + x) (hans : k + n = m + x) (hans2 : 0 ≤ m)
+    : k + n = m + x := by
   lift n to ℕ using le_of_lt hn
-  guard_target =ₛ k + ↑n = m + x; guard_hyp hn : (0 : ℤ) < ↑n
+  guard_target =ₛ k + ↑n = m + x
+  guard_hyp hn : (0 : ℤ) < ↑n
   lift m to ℕ
-  guard_target =ₛ 0 ≤ m; swap; guard_target =ₛ k + ↑n = ↑m + x
+  guard_target =ₛ 0 ≤ m
+  swap
+  guard_target =ₛ k + ↑n = ↑m + x
   lift (k + n) to ℕ using hk with l hl
   exact hans
   exact hans2
@@ -97,7 +103,8 @@ example (n m k x : ℤ) (hn : 0 < n) (hk : 0 ≤ k + n) (h : k + n = 2 + x)
 example (h : False) : let n : ℤ := 3; n = 3 := by
   intro n
   fail_if_success lift n to ℕ
-  exfalso; exact h
+  exfalso
+  exact h
 
 instance canLift_unit : CanLift Unit Unit id (fun _ ↦ true) := ⟨fun x _ ↦ ⟨x, rfl⟩⟩
 
@@ -112,9 +119,10 @@ example (n : ℤ) : ℕ := by
   fail_if_success lift n to ℕ
   exact 0
 
-instance canLift_subtype (R : Type _) (s : Set R) :
-    CanLift R {x // x ∈ s} ((↑) : {x // x ∈ s} → R) (fun x => x ∈ s) :=
-  { prf := fun x hx => ⟨⟨x, hx⟩, rfl⟩ }
+instance canLift_subtype (R : Type _) (s : Set R)
+    : CanLift R {x // x ∈ s} ((↑) : {x // x ∈ s} → R) (fun x => x ∈ s) := {
+  prf := fun x hx => ⟨⟨x, hx⟩, rfl⟩
+}
 
 example {R : Type _} {P : R → Prop} (x : R) (hx : P x) : P x := by
   lift x to {x // P x} using hx with y hy hx

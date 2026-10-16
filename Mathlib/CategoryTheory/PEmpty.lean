@@ -52,22 +52,21 @@ def emptyEquivalence : Discrete.{w} PEmpty ≌ Discrete.{v} PEmpty := equivalenc
 namespace Functor
 
 /-- The canonical functor out of the empty category. -/
-def empty : Discrete.{w} PEmpty ⥤ C :=
-  Discrete.functor PEmpty.elim
+def empty : Discrete.{w} PEmpty ⥤ C := Discrete.functor PEmpty.elim
 
 variable {C}
 
 /-- Any two functors out of the empty category are isomorphic. -/
-def emptyExt (F G : Discrete.{w} PEmpty ⥤ C) : F ≅ G :=
-  Discrete.natIso fun x => x.as.elim
+def emptyExt (F G : Discrete.{w} PEmpty ⥤ C) : F ≅ G := Discrete.natIso fun x => x.as.elim
 
-/-- Any functor out of the empty category is isomorphic to the canonical functor from the empty
+/--
+Any functor out of the empty category is isomorphic to the canonical functor from the empty
 category.
 -/
-def uniqueFromEmpty (F : Discrete.{w} PEmpty ⥤ C) : F ≅ empty C :=
-  emptyExt _ _
+def uniqueFromEmpty (F : Discrete.{w} PEmpty ⥤ C) : F ≅ empty C := emptyExt _ _
 
-/-- Any two functors out of the empty category are *equal*. You probably want to use
+/--
+Any two functors out of the empty category are *equal*. You probably want to use
 `emptyExt` instead of this.
 -/
 theorem empty_ext' (F G : Discrete.{w} PEmpty ⥤ C) : F = G :=

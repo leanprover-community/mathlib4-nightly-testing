@@ -56,41 +56,42 @@ theorem ofDegLex_inj {a b : DegLex α} : ofDegLex a = ofDegLex b ↔ a = b := If
 
 /-- A recursor for `DegLex`. Use as `induction x`. -/
 @[elab_as_elim, induction_eliminator, cases_eliminator]
-protected def DegLex.rec {β : DegLex α → Sort*} (h : ∀ a, β (toDegLex a)) :
-    ∀ a, β a := fun a => h (ofDegLex a)
+protected def DegLex.rec {β : DegLex α → Sort*} (h : ∀ a, β (toDegLex a)) : ∀ a, β a := fun a =>
+  h (ofDegLex a)
 
 @[simp] lemma DegLex.forall_iff {p : DegLex α → Prop} : (∀ a, p a) ↔ ∀ a, p (toDegLex a) := Iff.rfl
 @[simp] lemma DegLex.exists_iff {p : DegLex α → Prop} : (∃ a, p a) ↔ ∃ a, p (toDegLex a) := Iff.rfl
 
-noncomputable instance [AddCommMonoid α] :
-    AddCommMonoid (DegLex α) := ofDegLex.addCommMonoid
+noncomputable instance [AddCommMonoid α] : AddCommMonoid (DegLex α) := ofDegLex.addCommMonoid
 
-theorem toDegLex_add [AddCommMonoid α] (a b : α) :
-    toDegLex (a + b) = toDegLex a + toDegLex b := rfl
+theorem toDegLex_add [AddCommMonoid α] (a b : α) : toDegLex (a + b) = toDegLex a + toDegLex b := rfl
 
-theorem ofDegLex_add [AddCommMonoid α] (a b : DegLex α) :
-    ofDegLex (a + b) = ofDegLex a + ofDegLex b := rfl
+theorem ofDegLex_add [AddCommMonoid α] (a b : DegLex α)
+    : ofDegLex (a + b) = ofDegLex a + ofDegLex b :=
+  rfl
 
 namespace Finsupp
 
 open scoped Function in -- required for scoped `on` notation
-/-- `Finsupp.DegLex r s` is the homogeneous lexicographic order on `α →₀ M`,
+/--
+`Finsupp.DegLex r s` is the homogeneous lexicographic order on `α →₀ M`,
 where `α` is ordered by `r` and `M` is ordered by `s`.
-The type synonym `DegLex (α →₀ M)` has an order given by `Finsupp.DegLex (· < ·) (· < ·)`. -/
-protected def DegLex (r : α → α → Prop) (s : ℕ → ℕ → Prop) :
-    (α →₀ ℕ) → (α →₀ ℕ) → Prop :=
+The type synonym `DegLex (α →₀ M)` has an order given by `Finsupp.DegLex (· < ·) (· < ·)`.
+-/
+protected def DegLex (r : α → α → Prop) (s : ℕ → ℕ → Prop) : (α →₀ ℕ) → (α →₀ ℕ) → Prop :=
   (Prod.Lex s (Finsupp.Lex r s)) on (fun x ↦ (x.degree, x))
 
-theorem degLex_def {r : α → α → Prop} {s : ℕ → ℕ → Prop} {a b : α →₀ ℕ} :
-    Finsupp.DegLex r s a b ↔ Prod.Lex s (Finsupp.Lex r s) (a.degree, a) (b.degree, b) :=
+theorem degLex_def {r : α → α → Prop} {s : ℕ → ℕ → Prop} {a b : α →₀ ℕ}
+    : Finsupp.DegLex r s a b ↔ Prod.Lex s (Finsupp.Lex r s) (a.degree, a) (b.degree, b) :=
   Iff.rfl
 
 namespace DegLex
 
 theorem wellFounded
-    {r : α → α → Prop} [Std.Trichotomous r] (hr : WellFounded (Function.swap r))
-    {s : ℕ → ℕ → Prop} (hs : WellFounded s) (hs0 : ∀ ⦃n⦄, ¬ s n 0) :
-    WellFounded (Finsupp.DegLex r s) := by
+    {r : α → α → Prop} [Std.Trichotomous r]
+    (hr : WellFounded (Function.swap r))
+    {s : ℕ → ℕ → Prop} (hs : WellFounded s) (hs0 : ∀ ⦃n⦄, ¬ s n 0)
+    : WellFounded (Finsupp.DegLex r s) := by
   have wft := WellFounded.prod_lex hs (Finsupp.Lex.wellFounded' hs0 hs hr)
   rw [← Set.wellFoundedOn_univ] at wft
   unfold Finsupp.DegLex
@@ -100,14 +101,17 @@ theorem wellFounded
 instance [LT α] : LT (DegLex (α →₀ ℕ)) :=
   ⟨fun f g ↦ Finsupp.DegLex (· < ·) (· < ·) (ofDegLex f) (ofDegLex g)⟩
 
-theorem lt_def [LT α] {a b : DegLex (α →₀ ℕ)} :
-    a < b ↔ (toLex ((ofDegLex a).degree, toLex (ofDegLex a))) <
-        (toLex ((ofDegLex b).degree, toLex (ofDegLex b))) :=
+theorem lt_def [LT α] {a b : DegLex (α →₀ ℕ)}
+    : a < b
+      ↔ (toLex ((ofDegLex a).degree, toLex (ofDegLex a)))
+        < (toLex ((ofDegLex b).degree, toLex (ofDegLex b))) :=
   Iff.rfl
 
-theorem lt_iff [LT α] {a b : DegLex (α →₀ ℕ)} :
-    a < b ↔ (ofDegLex a).degree < (ofDegLex b).degree ∨
-    (((ofDegLex a).degree = (ofDegLex b).degree) ∧ toLex (ofDegLex a) < toLex (ofDegLex b)) := by
+theorem lt_iff [LT α] {a b : DegLex (α →₀ ℕ)}
+    : a < b
+      ↔ (ofDegLex a).degree < (ofDegLex b).degree
+        ∨ (((ofDegLex a).degree = (ofDegLex b).degree)
+          ∧ toLex (ofDegLex a) < toLex (ofDegLex b)) := by
   simp [lt_def, Prod.Lex.toLex_lt_toLex]
 
 variable [LinearOrder α]
@@ -131,9 +135,10 @@ noncomputable instance : LinearOrder (DegLex (α →₀ ℕ)) :=
     (fun (f : DegLex (α →₀ ℕ)) ↦ toLex ((ofDegLex f).degree, toLex (ofDegLex f)))
     (fun f g ↦ by simp)
 
-theorem le_iff {x y : DegLex (α →₀ ℕ)} :
-    x ≤ y ↔ (ofDegLex x).degree < (ofDegLex y).degree ∨
-      (ofDegLex x).degree = (ofDegLex y).degree ∧ toLex (ofDegLex x) ≤ toLex (ofDegLex y) := by
+theorem le_iff {x y : DegLex (α →₀ ℕ)}
+    : x ≤ y
+      ↔ (ofDegLex x).degree < (ofDegLex y).degree
+        ∨ (ofDegLex x).degree = (ofDegLex y).degree ∧ toLex (ofDegLex x) ≤ toLex (ofDegLex y) := by
   simp only [le_iff_eq_or_lt, lt_iff, EmbeddingLike.apply_eq_iff_eq]
   by_cases h : x = y
   · simp [h]
@@ -145,7 +150,8 @@ instance : IsOrderedCancelAddMonoid (DegLex (α →₀ ℕ)) where
   le_of_add_le_add_left a b c h := by
     rw [le_iff] at h ⊢
     simpa only [ofDegLex_add, map_add, add_lt_add_iff_left, add_right_inj, toLex_add,
-      add_le_add_iff_left] using h
+        add_le_add_iff_left]
+      using h
   add_le_add_left a b h c := by
     rw [le_iff] at h ⊢
     simpa [ofDegLex_add, map_add] using h
@@ -158,16 +164,15 @@ theorem single_strictAnti : StrictAnti (fun (a : α) ↦ toDegLex (single a 1)) 
 theorem single_antitone : Antitone (fun (a : α) ↦ toDegLex (single a 1)) :=
   single_strictAnti.antitone
 
-theorem single_lt_iff {a b : α} :
-    toDegLex (Finsupp.single b 1) < toDegLex (Finsupp.single a 1) ↔ a < b :=
+theorem single_lt_iff {a b : α}
+    : toDegLex (Finsupp.single b 1) < toDegLex (Finsupp.single a 1) ↔ a < b :=
   single_strictAnti.lt_iff_gt
 
-theorem single_le_iff {a b : α} :
-    toDegLex (Finsupp.single b 1) ≤ toDegLex (Finsupp.single a 1) ↔ a ≤ b :=
+theorem single_le_iff {a b : α}
+    : toDegLex (Finsupp.single b 1) ≤ toDegLex (Finsupp.single a 1) ↔ a ≤ b :=
   single_strictAnti.le_iff_ge
 
-theorem monotone_degree :
-    Monotone (fun (x : DegLex (α →₀ ℕ)) ↦ (ofDegLex x).degree) := by
+theorem monotone_degree : Monotone (fun (x : DegLex (α →₀ ℕ)) ↦ (ofDegLex x).degree) := by
   intro x y
   rw [le_iff]
   rintro (h | h)
@@ -197,8 +202,7 @@ open Finsupp
 variable {σ : Type*} [LinearOrder σ] [WellFoundedGT σ]
 
 /-- The deg-lexicographic order on `σ →₀ ℕ`, as a `MonomialOrder` -/
-noncomputable def degLex :
-    MonomialOrder σ where
+noncomputable def degLex : MonomialOrder σ where
   syn := DegLex (σ →₀ ℕ)
   toSyn := { toEquiv := toDegLex, map_add' := toDegLex_add }
   toSyn_monotone a b h := by
@@ -209,20 +213,14 @@ noncomputable def degLex :
       rw [← add_tsub_cancel_of_le h, map_add]
       exact Nat.le_add_right a.degree (b - a).degree
 
-theorem degLex_le_iff {a b : σ →₀ ℕ} :
-    a ≼[degLex] b ↔ toDegLex a ≤ toDegLex b :=
-  Iff.rfl
+theorem degLex_le_iff {a b : σ →₀ ℕ} : a ≼[degLex] b ↔ toDegLex a ≤ toDegLex b := Iff.rfl
 
-theorem degLex_lt_iff {a b : σ →₀ ℕ} :
-    a ≺[degLex] b ↔ toDegLex a < toDegLex b :=
-  Iff.rfl
+theorem degLex_lt_iff {a b : σ →₀ ℕ} : a ≺[degLex] b ↔ toDegLex a < toDegLex b := Iff.rfl
 
-theorem degLex_single_le_iff {a b : σ} :
-    single a 1 ≼[degLex] single b 1 ↔ b ≤ a := by
+theorem degLex_single_le_iff {a b : σ} : single a 1 ≼[degLex] single b 1 ↔ b ≤ a := by
   rw [MonomialOrder.degLex_le_iff, DegLex.single_le_iff]
 
-theorem degLex_single_lt_iff {a b : σ} :
-    single a 1 ≺[degLex] single b 1 ↔ b < a := by
+theorem degLex_single_lt_iff {a b : σ} : single a 1 ≺[degLex] single b 1 ↔ b < a := by
   rw [MonomialOrder.degLex_lt_iff, DegLex.single_lt_iff]
 
 end MonomialOrder
@@ -245,7 +243,6 @@ example : (single 0 1 + single 1 1) ≺[degLex] single (0 : Fin 2) 2 := by
   simp
 
 /-- for the deg-lexicographic ordering, X 0 < X 1 ^ 2 -/
-example : single (0 : Fin 2) 1 ≺[degLex] single 1 2 := by
-  simp [degLex_lt_iff, lt_iff]
+example : single (0 : Fin 2) 1 ≺[degLex] single 1 2 := by simp [degLex_lt_iff, lt_iff]
 
 end Examples

@@ -6,7 +6,6 @@ Authors: Parikshit Khanna, Jeremy Avigad, Leonardo de Moura, Floris van Doorn, M
 module
 
 public import Mathlib.Order.Basic
-
 import Mathlib.Data.Nat.Basic
 import Mathlib.Tactic.Set
 
@@ -18,10 +17,11 @@ namespace List
 
 variable {α : Type*} (p : α → Bool)
 
-theorem dropWhile_get_zero_not (l : List α) (hl : 0 < (l.dropWhile p).length) :
-    ¬p ((l.dropWhile p).get ⟨0, hl⟩) := by
+theorem dropWhile_get_zero_not (l : List α) (hl : 0 < (l.dropWhile p).length)
+    : ¬ p ((l.dropWhile p).get ⟨0, hl⟩) := by
   induction l with
-  | nil => cases hl
+  | nil =>
+    cases hl
   | cons hd tl IH =>
     simp only [dropWhile]
     by_cases hp : p hd
@@ -32,7 +32,8 @@ theorem dropWhile_get_zero_not (l : List α) (hl : 0 < (l.dropWhile p).length) :
 
 theorem length_dropWhile_le (l : List α) : (dropWhile p l).length ≤ l.length := by
   induction l with
-  | nil => simp
+  | nil =>
+    simp
   | cons head tail ih =>
     simp only [dropWhile, length_cons]
     split
@@ -48,7 +49,7 @@ theorem dropWhile_eq_nil_iff : dropWhile p l = [] ↔ ∀ x ∈ l, p x := by
   | cons x xs IH => by_cases hp : p x <;> simp [hp, IH]
 
 @[simp]
-theorem dropWhile_eq_self_iff : dropWhile p l = l ↔ ∀ hl : 0 < l.length, ¬p (l[0]'hl) := by
+theorem dropWhile_eq_self_iff : dropWhile p l = l ↔ ∀ hl : 0 < l.length, ¬ p (l[0]'hl) := by
   rcases l with - | ⟨hd, tl⟩
   · simp
   · rw [dropWhile]
@@ -69,13 +70,14 @@ theorem takeWhile_eq_self_iff : takeWhile p l = l ↔ ∀ x ∈ l, p x := by
   | cons x xs IH => by_cases hp : p x <;> simp [hp, IH]
 
 @[simp]
-theorem takeWhile_eq_nil_iff : takeWhile p l = [] ↔ ∀ hl : 0 < l.length, ¬p (l.get ⟨0, hl⟩) := by
+theorem takeWhile_eq_nil_iff : takeWhile p l = [] ↔ ∀ hl : 0 < l.length, ¬ p (l.get ⟨0, hl⟩) := by
   induction l with
   | nil =>
     simp only [takeWhile_nil, Bool.not_eq_true, true_iff]
     intro h
     simp at h
-  | cons x xs IH => by_cases hp : p x <;> simp [hp]
+  | cons x xs IH =>
+    by_cases hp : p x <;> simp [hp]
 
 theorem mem_takeWhile_imp {x : α} (hx : x ∈ takeWhile p l) : p x := by
   induction l with simp [takeWhile] at hx
@@ -87,8 +89,8 @@ theorem mem_takeWhile_imp {x : α} (hx : x ∈ takeWhile p l) : p x := by
       · exact hp
       · exact IH hx
 
-theorem takeWhile_takeWhile (p q : α → Bool) (l : List α) :
-    takeWhile p (takeWhile q l) = takeWhile (fun a => p a ∧ q a) l := by
+theorem takeWhile_takeWhile (p q : α → Bool) (l : List α)
+    : takeWhile p (takeWhile q l) = takeWhile (fun a => p a ∧ q a) l := by
   induction l with
   | nil => simp
   | cons hd tl IH => by_cases hp : p hd <;> by_cases hq : q hd <;> simp [takeWhile, hp, hq, IH]
@@ -98,8 +100,7 @@ theorem takeWhile_idem : takeWhile p (takeWhile p l) = takeWhile p l := by
 
 variable (p) (l)
 
-lemma find?_eq_head?_dropWhile_not :
-    l.find? p = (l.dropWhile (fun x ↦ !(p x))).head? := by
+lemma find?_eq_head?_dropWhile_not : l.find? p = (l.dropWhile (fun x ↦ !(p x))).head? := by
   induction l
   case nil => simp
   case cons head tail hi =>
@@ -113,19 +114,18 @@ lemma find?_eq_head?_dropWhile_not :
       · simp
       · simpa using phh
 
-lemma find?_not_eq_head?_dropWhile :
-    l.find? (fun x ↦ !(p x)) = (l.dropWhile p).head? := by
+lemma find?_not_eq_head?_dropWhile : l.find? (fun x ↦ !(p x)) = (l.dropWhile p).head? := by
   convert! l.find?_eq_head?_dropWhile_not ?_
   simp
 
 variable {p} {l}
 
-lemma find?_eq_head_dropWhile_not (h : ∃ x ∈ l, p x) :
-    l.find? p = some ((l.dropWhile (fun x ↦ !(p x))).head (by simpa using h)) := by
+lemma find?_eq_head_dropWhile_not (h : ∃ x ∈ l, p x)
+    : l.find? p = some ((l.dropWhile (fun x ↦ !(p x))).head (by simpa using h)) := by
   rw [l.find?_eq_head?_dropWhile_not p, ← head_eq_iff_head?_eq_some]
 
-lemma find?_not_eq_head_dropWhile (h : ∃ x ∈ l, ¬p x) :
-    l.find? (fun x ↦ !(p x)) = some ((l.dropWhile p).head (by simpa using h)) := by
+lemma find?_not_eq_head_dropWhile (h : ∃ x ∈ l, ¬ p x)
+    : l.find? (fun x ↦ !(p x)) = some ((l.dropWhile p).head (by simpa using h)) := by
   convert! l.find?_eq_head_dropWhile_not ?_
   · simp
   · simpa using h

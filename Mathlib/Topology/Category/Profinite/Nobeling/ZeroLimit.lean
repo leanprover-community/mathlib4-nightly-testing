@@ -6,7 +6,6 @@ Authors: Dagur Asgeirsson
 module
 
 public import Mathlib.Topology.Category.Profinite.Nobeling.Basic
-
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
 
 /-!
@@ -40,13 +39,15 @@ In this case, we have `contained C 0` which means that `C` is either empty or a 
 instance : Subsingleton (LocallyConstant (∅ : Set (I → Bool)) ℤ) :=
   subsingleton_iff.mpr (fun _ _ ↦ LocallyConstant.ext isEmptyElim)
 
-instance : IsEmpty { l // Products.isGood (∅ : Set (I → Bool)) l } :=
-  isEmpty_iff.mpr fun ⟨l, hl⟩ ↦ hl <| by
-    rw [subsingleton_iff.mp inferInstance (Products.eval ∅ l) 0]
-    exact Submodule.zero_mem _
+instance : IsEmpty {l // Products.isGood (∅ : Set (I → Bool)) l} :=
+  isEmpty_iff.mpr fun ⟨l, hl⟩ ↦
+    hl <| by
+      rw [subsingleton_iff.mp inferInstance (Products.eval ∅ l) 0]
+      exact Submodule.zero_mem _
 
-theorem GoodProducts.linearIndependentEmpty {I} [LinearOrder I] :
-    LinearIndependent ℤ (eval (∅ : Set (I → Bool))) := linearIndependent_empty_type
+theorem GoodProducts.linearIndependentEmpty {I} [LinearOrder I]
+    : LinearIndependent ℤ (eval (∅ : Set (I → Bool))) :=
+  linearIndependent_empty_type
 
 /-- The empty list as a `Products` -/
 def Products.nil : Products I := ⟨[], by simp only [List.isChain_nil]⟩
@@ -61,13 +62,13 @@ instance {α : Type*} [TopologicalSpace α] [Nonempty α] : Nontrivial (LocallyC
   ⟨0, 1, ne_of_apply_ne DFunLike.coe <| (Function.const_injective (β := ℤ)).ne zero_ne_one⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem Products.isGood_nil {I} [LinearOrder I] :
-    Products.isGood ({fun _ ↦ false} : Set (I → Bool)) Products.nil := by
+theorem Products.isGood_nil {I} [LinearOrder I]
+    : Products.isGood ({fun _ ↦ false} : Set (I → Bool)) Products.nil := by
   intro h
   simp [Products.eval, Products.nil] at h
 
-theorem Products.span_nil_eq_top {I} [LinearOrder I] :
-    Submodule.span ℤ (eval ({fun _ ↦ false} : Set (I → Bool)) '' {nil}) = ⊤ := by
+theorem Products.span_nil_eq_top {I} [LinearOrder I]
+    : Submodule.span ℤ (eval ({fun _ ↦ false} : Set (I → Bool)) '' {nil}) = ⊤ := by
   rw [Set.image_singleton, eq_top_iff]
   intro f _
   rw [Submodule.mem_span_singleton]
@@ -79,8 +80,7 @@ theorem Products.span_nil_eq_top {I} [LinearOrder I] :
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- There is a unique `GoodProducts` for the singleton `{fun _ ↦ false}`. -/
-noncomputable
-instance : Unique { l // Products.isGood ({fun _ ↦ false} : Set (I → Bool)) l } where
+noncomputable instance : Unique {l // Products.isGood ({fun _ ↦ false} : Set (I → Bool)) l} where
   default := ⟨Products.nil, Products.isGood_nil⟩
   uniq := by
     intro ⟨⟨l, hl⟩, hll⟩
@@ -98,8 +98,8 @@ instance : Unique { l // Products.isGood ({fun _ ↦ false} : Set (I → Bool)) 
 instance (α : Type*) [TopologicalSpace α] : HasUniqueDiv (LocallyConstant α ℤ) :=
   LocallyConstant.coe_injective.hasUniqueDiv LocallyConstant.coeFnAddMonoidHom
 
-theorem GoodProducts.linearIndependentSingleton {I} [LinearOrder I] :
-    LinearIndependent ℤ (eval ({fun _ ↦ false} : Set (I → Bool))) :=
+theorem GoodProducts.linearIndependentSingleton {I} [LinearOrder I]
+    : LinearIndependent ℤ (eval ({fun _ ↦ false} : Set (I → Bool))) :=
   .of_subsingleton default <| by simp [eval, Products.eval, Products.nil, default]
 
 end Zero
@@ -151,13 +151,13 @@ noncomputable def smaller (o : Ordinal) : Set (LocallyConstant C ℤ) :=
 The map from the image of the `GoodProducts` in `LocallyConstant (π C (ord I · < o)) ℤ` to
 `smaller C o`
 -/
-noncomputable
-def range_equiv_smaller_toFun (o : Ordinal) (x : range (π C (ord I · < o))) : smaller C o :=
+noncomputable def range_equiv_smaller_toFun (o : Ordinal) (x : range (π C (ord I · < o)))
+    : smaller C o :=
   ⟨πs C o ↑x, x.val, x.property, rfl⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem range_equiv_smaller_toFun_bijective (o : Ordinal) :
-    Function.Bijective (range_equiv_smaller_toFun C o) := by
+theorem range_equiv_smaller_toFun_bijective (o : Ordinal)
+    : Function.Bijective (range_equiv_smaller_toFun C o) := by
   dsimp +unfoldPartialApp [range_equiv_smaller_toFun]
   refine ⟨fun a b hab ↦ ?_, fun ⟨a, b, hb⟩ ↦ ?_⟩
   · ext1
@@ -170,20 +170,21 @@ theorem range_equiv_smaller_toFun_bijective (o : Ordinal) :
 The equivalence from the image of the `GoodProducts` in `LocallyConstant (π C (ord I · < o)) ℤ` to
 `smaller C o`
 -/
-noncomputable
-def range_equiv_smaller (o : Ordinal) : range (π C (ord I · < o)) ≃ smaller C o :=
+noncomputable def range_equiv_smaller (o : Ordinal) : range (π C (ord I · < o)) ≃ smaller C o :=
   Equiv.ofBijective (range_equiv_smaller_toFun C o) (range_equiv_smaller_toFun_bijective C o)
 
-theorem smaller_factorization (o : Ordinal) :
-    (fun (p : smaller C o) ↦ p.1) ∘ (range_equiv_smaller C o).toFun =
-    (πs C o) ∘ (fun (p : range (π C (ord I · < o))) ↦ p.1) := by rfl
+theorem smaller_factorization (o : Ordinal)
+    : (fun (p : smaller C o) ↦ p.1) ∘ (range_equiv_smaller C o).toFun
+      = (πs C o) ∘ (fun (p : range (π C (ord I · < o))) ↦ p.1) := by
+  rfl
 
-theorem linearIndependent_iff_smaller (o : Ordinal) :
-    LinearIndependent ℤ (GoodProducts.eval (π C (ord I · < o))) ↔
-    LinearIndependent ℤ (fun (p : smaller C o) ↦ p.1) := by
+theorem linearIndependent_iff_smaller (o : Ordinal)
+    : LinearIndependent ℤ (GoodProducts.eval (π C (ord I · < o)))
+      ↔ LinearIndependent ℤ (fun (p : smaller C o) ↦ p.1) := by
   rw [GoodProducts.linearIndependent_iff_range,
     ← LinearMap.linearIndependent_iff (πs C o)
-    (LinearMap.ker_eq_bot_of_injective (injective_πs _ _)), ← smaller_factorization C o]
+      (LinearMap.ker_eq_bot_of_injective (injective_πs _ _)),
+    ← smaller_factorization C o]
   exact linearIndependent_equiv _
 
 theorem smaller_mono {o₁ o₂ : Ordinal} (h : o₁ ≤ o₂) : smaller C o₁ ⊆ smaller C o₂ := by
@@ -204,8 +205,8 @@ end GoodProducts
 variable {o : Ordinal} (ho : Order.IsSuccLimit o)
 include ho
 
-theorem Products.limitOrdinal (l : Products I) : l.isGood (π C (ord I · < o)) ↔
-    ∃ (o' : Ordinal), o' < o ∧ l.isGood (π C (ord I · < o')) := by
+theorem Products.limitOrdinal (l : Products I)
+    : l.isGood (π C (ord I · < o)) ↔ ∃ (o' : Ordinal), o' < o ∧ l.isGood (π C (ord I · < o')) := by
   refine ⟨fun h ↦ ?_, fun ⟨o', ⟨ho', hl⟩⟩ ↦ isGood_mono C (le_of_lt ho') hl⟩
   use Finset.sup l.val.toFinset (fun a ↦ Order.succ (ord I a))
   have hslt : Finset.sup l.val.toFinset (fun a ↦ Order.succ (ord I a)) < o := by
@@ -232,7 +233,7 @@ theorem GoodProducts.union : range C = ⋃ (e : {o' // o' < o}), (smaller C e.va
     refine ⟨o', ho'.1, eval (π C (ord I · < o')) ⟨l, ho'.2⟩, ⟨l, ho'.2, rfl⟩, ?_⟩
     exact Products.eval_πs C (Products.prop_of_isGood C _ ho'.2)
   · obtain ⟨o', h, _, ⟨l, hl, rfl⟩, rfl⟩ := hp
-    refine ⟨l, ?_, (Products.eval_πs C (Products.prop_of_isGood  C _ hl)).symm⟩
+    refine ⟨l, ?_, (Products.eval_πs C (Products.prop_of_isGood C _ hl)).symm⟩
     rw [contained_eq_proj C o hsC]
     exact Products.isGood_mono C (le_of_lt h) hl
 
@@ -245,13 +246,14 @@ ordinals `o' < o`.
 noncomputable def GoodProducts.range_equiv : range C ≃ ⋃ (e : {o' // o' < o}), (smaller C e.val) :=
   Set.equivOfEq (union C ho hsC)
 
-theorem GoodProducts.range_equiv_factorization :
-    (fun (p : ⋃ (e : {o' // o' < o}), (smaller C e.val)) ↦ p.1) ∘ (range_equiv C ho hsC).toFun =
-    (fun (p : range C) ↦ (p.1 : LocallyConstant C ℤ)) := rfl
+theorem GoodProducts.range_equiv_factorization
+    : (fun (p : ⋃ (e : {o' // o' < o}), (smaller C e.val)) ↦ p.1) ∘ (range_equiv C ho hsC).toFun
+      = (fun (p : range C) ↦ (p.1 : LocallyConstant C ℤ)) :=
+  rfl
 
-theorem GoodProducts.linearIndependent_iff_union_smaller :
-    LinearIndependent ℤ (GoodProducts.eval C) ↔
-      LinearIndependent ℤ (fun (p : ⋃ (e : {o' // o' < o}), (smaller C e.val)) ↦ p.1) := by
+theorem GoodProducts.linearIndependent_iff_union_smaller
+    : LinearIndependent ℤ (GoodProducts.eval C)
+      ↔ LinearIndependent ℤ (fun (p : ⋃ (e : {o' // o' < o}), (smaller C e.val)) ↦ p.1) := by
   rw [GoodProducts.linearIndependent_iff_range, ← range_equiv_factorization C ho hsC]
   exact linearIndependent_equiv (range_equiv C ho hsC)
 

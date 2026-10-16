@@ -35,8 +35,9 @@ open Lean Meta Elab Command Std Translate UnfoldBoundary
 /-- This attribute has been deprecated. -/
 syntax (name := to_dual_ignore_args) "to_dual_ignore_args" (ppSpace num)* : attr
 
-deprecated_syntax to_dual_ignore_args "This attribute is now redundant. \
-  to specify which argument is relevant, you can use `to_dual self (relevant_arg := ...)`"
+deprecated_syntax to_dual_ignore_args
+  "This attribute is now redundant. \
+    to specify which argument is relevant, you can use `to_dual self (relevant_arg := ...)`"
   (since := "2026-09-27")
 
 @[inherit_doc TranslateData.dontTranslateAttr]
@@ -45,7 +46,8 @@ syntax (name := to_dual_do_translate) "to_dual_do_translate" : attr
 @[inherit_doc TranslateData.dontTranslateAttr]
 syntax (name := to_dual_dont_translate) "to_dual_dont_translate" : attr
 
-/-- The attribute `to_dual` can be used to automatically transport theorems
+/--
+The attribute `to_dual` can be used to automatically transport theorems
 and definitions (but not inductive types and structures) to their dual version.
 It uses the same implementation as `to_additive`.
 
@@ -130,233 +132,251 @@ initialize translations : NameMapExtension TranslationInfo ← registerNameMapEx
 initialize
   registerBuiltinAttribute {
     name := `to_dual_do_translate
-    descr := "Auxiliary attribute for `to_dual` stating \
-      that the operations on this type should be translated."
-    add name _ _ := translations.add name { translation := name, relevantArg := .noArg} }
+    descr :=
+      "Auxiliary attribute for `to_dual` stating \
+        that the operations on this type should be translated."
+    add name _ _ := translations.add name { translation := name, relevantArg := .noArg }
+  }
   registerBuiltinAttribute {
     name := `to_dual_dont_translate
-    descr := "Auxiliary attribute for `to_dual` stating \
-      that the operations on this type should not be translated."
-    add name _ _ := dontTranslateAttr.add name () }
+    descr :=
+      "Auxiliary attribute for `to_dual` stating \
+        that the operations on this type should not be translated."
+    add name _ _ := dontTranslateAttr.add name ()
+  }
 
 @[inherit_doc GuessName.GuessNameData.nameDict]
-def nameDict : Std.HashMap String (List String) := .ofList [
-  ("top", ["Bot"]),
-  ("bot", ["Top"]),
-  ("untop", ["Unbot"]),
-  ("unbot", ["Untop"]),
-  ("inf", ["Sup"]),
-  ("sup", ["Inf"]),
-  ("inf₂", ["Sup₂"]),
-  ("sup₂", ["Inf₂"]),
-  ("sinf", ["SSup"]),
-  ("ssup", ["SInf"]),
-  ("liminf", ["Limsup"]),
-  ("limsup", ["Liminf"]),
-  ("bliminf", ["Blimsup"]),
-  ("blimsup", ["Bliminf"]),
-  ("min", ["Max"]),
-  ("max", ["Min"]),
-  ("min?", ["Max?"]),
-  ("max?", ["Min?"]),
-  ("argmin", ["Argmax"]),
-  ("argmax", ["Argmin"]),
-  ("minimum", ["Maximum"]),
-  ("maximum", ["Minimum"]),
-  ("minimal", ["Maximal"]),
-  ("maximal", ["Minimal"]),
-  ("lower", ["Upper"]),
-  ("upper", ["Lower"]),
-  ("below", ["Above"]),
-  ("above", ["Below"]),
-  ("least", ["Greatest"]),
-  ("greatest", ["Least"]),
-  ("glb", ["LUB"]),
-  ("lub", ["GLB"]),
-  ("cofinal", ["Coinitial"]),
-  ("coinitial", ["Cofinal"]),
-  ("succ", ["Pred"]),
-  ("pred", ["Succ"]),
-  ("disjoint", ["Codisjoint"]),
-  ("codisjoint", ["Disjoint"]),
-  ("atom", ["Coatom"]),
-  ("coatom", ["Atom"]),
-  ("atoms", ["Coatoms"]),
-  ("coatoms", ["Atoms"]),
-  ("atomic", ["Coatomic"]),
-  ("coatomic", ["Atomic"]),
-  ("atomistic", ["Coatomistic"]),
-  ("coatomistic", ["Atomistic"]),
-  ("lfp", ["Gfp"]),
-  ("gfp", ["Lfp"]),
-  ("ioi", ["Iio"]),
-  ("iio", ["Ioi"]),
-  ("ici", ["Iic"]),
-  ("iic", ["Ici"]),
-  ("ioc", ["Ico"]),
-  ("ico", ["Ioc"]),
-  ("next", ["Prev"]),
-  ("prev", ["Next"]),
-  ("heyting", ["Coheyting"]),
-  ("coheyting", ["Heyting"]),
-  ("frame", ["Coframe"]),
-  ("coframe", ["Frame"]),
-  ("epigraph", ["Hypograph"]),
-  ("hypograph", ["Epigraph"]),
+def nameDict : Std.HashMap String (List String) :=
+  .ofList [
+    ("top", ["Bot"]),
+    ("bot", ["Top"]),
+    ("untop", ["Unbot"]),
+    ("unbot", ["Untop"]),
+    ("inf", ["Sup"]),
+    ("sup", ["Inf"]),
+    ("inf₂", ["Sup₂"]),
+    ("sup₂", ["Inf₂"]),
+    ("sinf", ["SSup"]),
+    ("ssup", ["SInf"]),
+    ("liminf", ["Limsup"]),
+    ("limsup", ["Liminf"]),
+    ("bliminf", ["Blimsup"]),
+    ("blimsup", ["Bliminf"]),
+    ("min", ["Max"]),
+    ("max", ["Min"]),
+    ("min?", ["Max?"]),
+    ("max?", ["Min?"]),
+    ("argmin", ["Argmax"]),
+    ("argmax", ["Argmin"]),
+    ("minimum", ["Maximum"]),
+    ("maximum", ["Minimum"]),
+    ("minimal", ["Maximal"]),
+    ("maximal", ["Minimal"]),
+    ("lower", ["Upper"]),
+    ("upper", ["Lower"]),
+    ("below", ["Above"]),
+    ("above", ["Below"]),
+    ("least", ["Greatest"]),
+    ("greatest", ["Least"]),
+    ("glb", ["LUB"]),
+    ("lub", ["GLB"]),
+    ("cofinal", ["Coinitial"]),
+    ("coinitial", ["Cofinal"]),
+    ("succ", ["Pred"]),
+    ("pred", ["Succ"]),
+    ("disjoint", ["Codisjoint"]),
+    ("codisjoint", ["Disjoint"]),
+    ("atom", ["Coatom"]),
+    ("coatom", ["Atom"]),
+    ("atoms", ["Coatoms"]),
+    ("coatoms", ["Atoms"]),
+    ("atomic", ["Coatomic"]),
+    ("coatomic", ["Atomic"]),
+    ("atomistic", ["Coatomistic"]),
+    ("coatomistic", ["Atomistic"]),
+    ("lfp", ["Gfp"]),
+    ("gfp", ["Lfp"]),
+    ("ioi", ["Iio"]),
+    ("iio", ["Ioi"]),
+    ("ici", ["Iic"]),
+    ("iic", ["Ici"]),
+    ("ioc", ["Ico"]),
+    ("ico", ["Ioc"]),
+    ("next", ["Prev"]),
+    ("prev", ["Next"]),
+    ("heyting", ["Coheyting"]),
+    ("coheyting", ["Heyting"]),
+    ("frame", ["Coframe"]),
+    ("coframe", ["Frame"]),
+    ("epigraph", ["Hypograph"]),
+    ("hypograph", ["Epigraph"]),
 
-  ("epi", ["Mono"]),
-  /- `mono` can also refer to monotone, so we don't translate it. -/
-  -- ("mono", ["Epi"]),
-  ("epimorphisms", ["Monomorphisms"]),
-  ("monomorphisms", ["Epimorphisms"]),
-  ("terminal", ["Initial"]),
-  ("initial", ["Terminal"]),
-  ("precompose", ["Postcompose"]),
-  ("postcompose", ["Precompose"]),
-  ("cone", ["Cocone"]),
-  ("cocone", ["Cone"]),
-  ("cones", ["Cocones"]),
-  ("cocones", ["Cones"]),
-  ("fan", ["Cofan"]),
-  ("cofan", ["Fan"]),
-  ("limit", ["Colimit"]),
-  ("colimit", ["Limit"]),
-  ("lim", ["Colim"]),
-  ("colim", ["Lim"]),
-  ("limits", ["Colimits"]),
-  ("colimits", ["Limits"]),
-  ("product", ["Coproduct"]),
-  ("coproduct", ["Product"]),
-  ("products", ["Coproducts"]),
-  ("coproducts", ["Products"]),
-  ("diag", ["Codiag"]),
-  ("codiag", ["Diag"]),
-  ("pushout", ["Pullback"]),
-  ("pullback", ["Pushout"]),
-  ("pushouts", ["Pullbacks"]),
-  ("pullbacks", ["Pushouts"]),
-  ("span", ["Cospan"]),
-  ("cospan", ["Span"]),
-  ("kernel", ["Cokernel"]),
-  ("cokernel", ["Kernel"]),
-  ("kernels", ["Cokernels"]),
-  ("cokernels", ["Kernels"]),
-  ("fork", ["Cofork"]),
-  ("cofork", ["Fork"]),
-  ("equalizer", ["Coequalizer"]),
-  ("coequalizer", ["Equalizer"]),
-  ("equalizers", ["Coequalizers"]),
-  ("coequalizers", ["Equalizers"]),
-  ("equalizes", ["Coequalizes"]),
-  ("coequalizes", ["Equalizes"]),
-  ("unit", ["Counit"]),
-  ("counit", ["Unit"]),
-  ("monad", ["Comonad"]),
-  ("comonad", ["Monad"]),
-  ("monadic", ["Comonadic"]),
-  ("comonadic", ["Monadic"]),
-  ("section", ["Retraction"]),
-  ("retraction", ["Section"]),
-  ("ofπ", ["Ofι"]),
-  ("ofι", ["Ofπ"]),
-  ("functorπ", ["Functorι"]),
-  ("functorι", ["Functorπ"]),
-]
+    ("epi", ["Mono"]),
+    /- `mono` can also refer to monotone, so we don't translate it. -/
+    -- ("mono", ["Epi"]),
+    ("epimorphisms", ["Monomorphisms"]),
+    ("monomorphisms", ["Epimorphisms"]),
+    ("terminal", ["Initial"]),
+    ("initial", ["Terminal"]),
+    ("precompose", ["Postcompose"]),
+    ("postcompose", ["Precompose"]),
+    ("cone", ["Cocone"]),
+    ("cocone", ["Cone"]),
+    ("cones", ["Cocones"]),
+    ("cocones", ["Cones"]),
+    ("fan", ["Cofan"]),
+    ("cofan", ["Fan"]),
+    ("limit", ["Colimit"]),
+    ("colimit", ["Limit"]),
+    ("lim", ["Colim"]),
+    ("colim", ["Lim"]),
+    ("limits", ["Colimits"]),
+    ("colimits", ["Limits"]),
+    ("product", ["Coproduct"]),
+    ("coproduct", ["Product"]),
+    ("products", ["Coproducts"]),
+    ("coproducts", ["Products"]),
+    ("diag", ["Codiag"]),
+    ("codiag", ["Diag"]),
+    ("pushout", ["Pullback"]),
+    ("pullback", ["Pushout"]),
+    ("pushouts", ["Pullbacks"]),
+    ("pullbacks", ["Pushouts"]),
+    ("span", ["Cospan"]),
+    ("cospan", ["Span"]),
+    ("kernel", ["Cokernel"]),
+    ("cokernel", ["Kernel"]),
+    ("kernels", ["Cokernels"]),
+    ("cokernels", ["Kernels"]),
+    ("fork", ["Cofork"]),
+    ("cofork", ["Fork"]),
+    ("equalizer", ["Coequalizer"]),
+    ("coequalizer", ["Equalizer"]),
+    ("equalizers", ["Coequalizers"]),
+    ("coequalizers", ["Equalizers"]),
+    ("equalizes", ["Coequalizes"]),
+    ("coequalizes", ["Equalizes"]),
+    ("unit", ["Counit"]),
+    ("counit", ["Unit"]),
+    ("monad", ["Comonad"]),
+    ("comonad", ["Monad"]),
+    ("monadic", ["Comonadic"]),
+    ("comonadic", ["Monadic"]),
+    ("section", ["Retraction"]),
+    ("retraction", ["Section"]),
+    ("ofπ", ["Ofι"]),
+    ("ofι", ["Ofπ"]),
+    ("functorπ", ["Functorι"]),
+    ("functorι", ["Functorπ"]),
+  ]
 
 @[inherit_doc GuessName.GuessNameData.abbreviationDict]
-def abbreviationDict : Std.HashMap String String := .ofList [
-  ("wellFoundedLT", "WellFoundedGT"),
-  ("wellFoundedGT", "WellFoundedLT"),
-  ("nhdsLT", "NhdsGT"),
-  ("nhdsGT", "NhdsLT"),
-  ("nhdsLE", "NhdsGE"),
-  ("nhdsGE", "NhdsLE"),
-  ("relIsoLT", "RelIsoGT"),
-  ("relIsoGT", "RelIsoLT"),
-  ("succColimit", "SuccLimit"),
-  ("predColimit", "PredLimit"),
-  ("codirectedOrder", "DirectedOrder"),
-  ("directedOrder", "CodirectedOrder"),
-  ("galoisInsertion", "GaloisCoinsertion"),
-  ("galoisCoinsertion", "GaloisInsertion"),
-  ("leftOrdContinuous", "RightOrdContinuous"),
-  ("rightOrdContinuous", "LeftOrdContinuous"),
-  ("bihimp", "SymmDiff"),
-  ("symmDiff", "Bihimp"),
-  ("isRightContinuous", "IsLeftContinuous"),
-  ("isLeftContinuous", "IsRightContinuous"),
-  ("isCadlag", "IsCaglad"),
-  ("isCaglad", "IsCadlag"),
-  ("leftColim", "RightLim"),
-  ("rightColim", "LeftLim"),
-  ("colimUnder", "LimUnder"),
+def abbreviationDict : Std.HashMap String String :=
+  .ofList [
+    ("wellFoundedLT", "WellFoundedGT"),
+    ("wellFoundedGT", "WellFoundedLT"),
+    ("nhdsLT", "NhdsGT"),
+    ("nhdsGT", "NhdsLT"),
+    ("nhdsLE", "NhdsGE"),
+    ("nhdsGE", "NhdsLE"),
+    ("relIsoLT", "RelIsoGT"),
+    ("relIsoGT", "RelIsoLT"),
+    ("succColimit", "SuccLimit"),
+    ("predColimit", "PredLimit"),
+    ("codirectedOrder", "DirectedOrder"),
+    ("directedOrder", "CodirectedOrder"),
+    ("galoisInsertion", "GaloisCoinsertion"),
+    ("galoisCoinsertion", "GaloisInsertion"),
+    ("leftOrdContinuous", "RightOrdContinuous"),
+    ("rightOrdContinuous", "LeftOrdContinuous"),
+    ("bihimp", "SymmDiff"),
+    ("symmDiff", "Bihimp"),
+    ("isRightContinuous", "IsLeftContinuous"),
+    ("isLeftContinuous", "IsRightContinuous"),
+    ("isCadlag", "IsCaglad"),
+    ("isCaglad", "IsCadlag"),
+    ("leftColim", "RightLim"),
+    ("rightColim", "LeftLim"),
+    ("colimUnder", "LimUnder"),
 
-  -- Revert translations if they should not happen in certain word combinations:
-  ("neTop", "NeBot"),
-  ("decidableSucc", "DecidablePred"),
-  ("ofSucc", "OfPred"),
-  ("maximalAxioms", "MinimalAxioms"),
-  ("unitIso", "CounitIso"),
-  ("counitIso", "UnitIso"),
-]
+    -- Revert translations if they should not happen in certain word combinations:
+    ("neTop", "NeBot"),
+    ("decidableSucc", "DecidablePred"),
+    ("ofSucc", "OfPred"),
+    ("maximalAxioms", "MinimalAxioms"),
+    ("unitIso", "CounitIso"),
+    ("counitIso", "UnitIso"),
+  ]
 
 @[inherit_doc GuessName.GuessNameExt]
 initialize guessNameExt : GuessName.GuessNameExt ←
   GuessName.registerGuessNameExt { nameDict, abbreviationDict }
 
-
 /-- The bundle of environment extensions for `to_dual` -/
 def data : TranslateData where
-  dontTranslateAttr; translations
+  dontTranslateAttr
+  translations
   unfoldBoundaries? := some unfoldBoundaries
   attrName := `to_dual
   changeNumeral := false
   isDual := true
   guessNameExt
 
-/-- The `to_dual_insert_cast` attribute is used to tag declarations `foo` that should not be
+/--
+The `to_dual_insert_cast` attribute is used to tag declarations `foo` that should not be
 unfolded in a proof that is translated. Instead, a rewrite with an equality theorem is inserted.
-This equality theorem can then be translated by the translation attribute. -/
+This equality theorem can then be translated by the translation attribute.
+-/
 elab "to_dual_insert_cast" declName:ident " := " valStx:term : command =>
   elabInsertCast declName valStx data
 
-/-- The `to_dual_insert_cast_fun` attribute is used to tag types that should not be unfolded in a
+/--
+The `to_dual_insert_cast_fun` attribute is used to tag types that should not be unfolded in a
 proof that is translated. Instead, a casting function is inserted. This casting function then may be
-translated by the translation attribute. -/
+translated by the translation attribute.
+-/
 elab "to_dual_insert_cast_fun" declName:ident " := " valStx₁:term ", " valStx₂:term : command =>
   elabInsertCastFun declName valStx₁ valStx₂ data
 
-initialize registerBuiltinAttribute {
+initialize
+  registerBuiltinAttribute {
     name := `to_dual
     descr := "Transport to dual"
-    add := fun src stx kind ↦ discard do
-      profileitM Exception "to_dual" (← getOptions) do
-        addTranslationAttr data src (← elabTranslationAttr src stx) kind
+    add := fun src stx kind ↦
+      discard do
+        profileitM Exception "to_dual" (← getOptions) do
+          addTranslationAttr data src (← elabTranslationAttr src stx) kind
     applicationTime := .afterCompilation
   }
 
-/-- `insert_to_dual_translation name dualName` inserts the translation `name ↔ dualName`
+/--
+`insert_to_dual_translation name dualName` inserts the translation `name ↔ dualName`
 into the `to_dual` dictionary. This is useful for translating namespaces that don't (yet)
-have a corresponding translated declaration. -/
+have a corresponding translated declaration.
+-/
 elab "insert_to_dual_translation" src:ident tgt:ident : command => do
   translations.add src.getId { translation := tgt.getId }
   translations.add tgt.getId { translation := src.getId }
 
-/-- `to_dual_name_hint src₁ tgt₁, ..., srcₙ tgtₙ` lets `to_dual` translate between the name segments
-`srcᵢ` and `tgtᵢ` for the rest of the file current. The name segments should be capitalized. -/
+/--
+`to_dual_name_hint src₁ tgt₁, ..., srcₙ tgtₙ` lets `to_dual` translate between the name segments
+`srcᵢ` and `tgtᵢ` for the rest of the file current. The name segments should be capitalized.
+-/
 elab "to_dual_name_hint" hints:(ident ident),* : command => do
   for ⟨hint⟩ in hints.getElems do
     guessNameExt.addTranslation ⟨hint[0]⟩ ⟨hint[1]⟩
     guessNameExt.addTranslation ⟨hint[1]⟩ ⟨hint[0]⟩
 
-/-- `to_dual_for src := e` tells `to_dual` to translate the constant `src` to `e`,
+/--
+`to_dual_for src := e` tells `to_dual` to translate the constant `src` to `e`,
 where `e` can be an arbitrary expression.
 
 TODO: this currently doesn't accept the `(dont_translate := ...)`/`(relevant_arg := ...)` syntax.
   This can be added if necessary.
 -/
-elab tk:"to_dual_for" src:ident " := " tgt:term : command => Command.liftTermElabM do
-  let src ← realizeGlobalConstNoOverloadWithInfo src
-  addTranslationFor data tk src tgt (dontTranslate := []) (relevantArg? := none)
+elab tk:"to_dual_for" src:ident " := " tgt:term : command =>
+  Command.liftTermElabM do
+    let src ← realizeGlobalConstNoOverloadWithInfo src
+    addTranslationFor data tk src tgt (dontTranslate := []) (relevantArg? := none)
 
 end Mathlib.Tactic.ToDual

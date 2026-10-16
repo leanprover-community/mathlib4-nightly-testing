@@ -33,9 +33,11 @@ abbrev RingAut := RingEquiv R R
 
 namespace RingAut
 
-/-- The group operation on automorphisms of a ring is defined by
+/--
+The group operation on automorphisms of a ring is defined by
 `fun g h => RingEquiv.trans h g`.
-This means that multiplication agrees with composition, `(g*h)(x) = g (h x)`. -/
+This means that multiplication agrees with composition, `(g*h)(x) = g (h x)`.
+-/
 instance : Group (RingAut R) where
   mul g h := RingEquiv.trans h g
   one := RingEquiv.refl R
@@ -45,8 +47,7 @@ instance : Group (RingAut R) where
   mul_one _ := rfl
   inv_mul_cancel := RingEquiv.self_trans_symm
 
-instance : Inhabited (RingAut R) :=
-  ⟨1⟩
+instance : Inhabited (RingAut R) := ⟨1⟩
 
 /-- Monoid homomorphism from ring automorphisms to additive automorphisms. -/
 def toAddAut : RingAut R →* Multiplicative (AddAut R) where
@@ -70,17 +71,13 @@ variable {R}
 
 theorem one_eq_refl : (1 : R ≃+* R) = RingEquiv.refl R := rfl
 
-@[simp]
-theorem one_apply (x : R) : (1 : R ≃+* R) x = x := rfl
+@[simp] theorem one_apply (x : R) : (1 : R ≃+* R) x = x := rfl
 
-@[simp]
-theorem coe_one : ⇑(1 : R ≃+* R) = id := rfl
+@[simp] theorem coe_one : ⇑(1 : R ≃+* R) = id := rfl
 
-@[simp]
-theorem mul_apply (f g : R ≃+* R) (x : R) : (f * g) x = f (g x) := rfl
+@[simp] theorem mul_apply (f g : R ≃+* R) (x : R) : (f * g) x = f (g x) := rfl
 
-@[simp]
-theorem inv_apply (f : R ≃+* R) (x : R) : f⁻¹ x = f.symm x := rfl
+@[simp] theorem inv_apply (f : R ≃+* R) (x : R) : f⁻¹ x = f.symm x := rfl
 
 @[simp]
 theorem coe_pow (f : R ≃+* R) (n : ℕ) : ⇑(f ^ n) = f^[n] := by

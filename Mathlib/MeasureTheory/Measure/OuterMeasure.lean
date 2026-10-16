@@ -27,42 +27,50 @@ namespace MeasureTheory
 
 variable {α : Type*} [ms : MeasurableSpace α] {s t : Set α}
 
-/-- Obtain a measure by giving an outer measure where all sets in the σ-algebra are
-  Carathéodory measurable. -/
-noncomputable def OuterMeasure.toMeasure (m : OuterMeasure α) (h : ms ≤ m.caratheodory) :
-    Measure α :=
-  Measure.ofMeasurable (fun s _ => m s) m.empty fun _f hf hd =>
-    m.iUnion_eq_of_caratheodory (fun i => h _ (hf i)) hd
+/--
+Obtain a measure by giving an outer measure where all sets in the σ-algebra are
+Carathéodory measurable.
+-/
+noncomputable def OuterMeasure.toMeasure (m : OuterMeasure α) (h : ms ≤ m.caratheodory)
+    : Measure α :=
+  Measure.ofMeasurable
+    (fun s _ => m s)
+    m.empty
+    fun _f hf hd => m.iUnion_eq_of_caratheodory (fun i => h _ (hf i)) hd
 
 theorem le_toOuterMeasure_caratheodory (μ : Measure α) : ms ≤ μ.toOuterMeasure.caratheodory :=
   fun _s hs _t => (measure_inter_add_sdiff _ hs).symm
 
 @[simp]
-theorem toMeasure_toOuterMeasure (m : OuterMeasure α) (h : ms ≤ m.caratheodory) :
-    (m.toMeasure h).toOuterMeasure = m.trim :=
+theorem toMeasure_toOuterMeasure (m : OuterMeasure α) (h : ms ≤ m.caratheodory)
+    : (m.toMeasure h).toOuterMeasure = m.trim :=
   rfl
 
 @[simp]
-theorem toMeasure_apply (m : OuterMeasure α) (h : ms ≤ m.caratheodory) {s : Set α}
-    (hs : MeasurableSet s) : m.toMeasure h s = m s :=
+theorem toMeasure_apply
+    (m : OuterMeasure α) (h : ms ≤ m.caratheodory) {s : Set α} (hs : MeasurableSet s)
+    : m.toMeasure h s = m s :=
   m.trim_eq hs
 
-theorem le_toMeasure_apply (m : OuterMeasure α) (h : ms ≤ m.caratheodory) (s : Set α) :
-    m s ≤ m.toMeasure h s :=
+theorem le_toMeasure_apply (m : OuterMeasure α) (h : ms ≤ m.caratheodory) (s : Set α)
+    : m s ≤ m.toMeasure h s :=
   m.le_trim s
 
-theorem toMeasure_apply₀ (m : OuterMeasure α) (h : ms ≤ m.caratheodory) {s : Set α}
-    (hs : NullMeasurableSet s (m.toMeasure h)) : m.toMeasure h s = m s := by
+theorem toMeasure_apply₀
+    (m : OuterMeasure α) (h : ms ≤ m.caratheodory)
+    {s : Set α} (hs : NullMeasurableSet s (m.toMeasure h))
+    : m.toMeasure h s = m s := by
   refine le_antisymm ?_ (le_toMeasure_apply _ _ _)
   rcases hs.exists_measurable_subset_ae_eq with ⟨t, hts, htm, heq⟩
   calc
-    m.toMeasure h s = m.toMeasure h t := measure_congr heq.symm
+    m.toMeasure h s
+      = m.toMeasure h t := measure_congr heq.symm
     _ = m t := toMeasure_apply m h htm
     _ ≤ m s := m.mono hts
 
 @[simp]
-theorem toOuterMeasure_toMeasure {μ : Measure α} :
-    μ.toOuterMeasure.toMeasure (le_toOuterMeasure_caratheodory _) = μ :=
+theorem toOuterMeasure_toMeasure {μ : Measure α}
+    : μ.toOuterMeasure.toMeasure (le_toOuterMeasure_caratheodory _) = μ :=
   Measure.ext fun _s => μ.toOuterMeasure.trim_eq
 
 @[simp]

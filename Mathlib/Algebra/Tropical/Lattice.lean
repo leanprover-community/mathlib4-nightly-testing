@@ -29,7 +29,6 @@ constructions quicker to implement.
 
 public section
 
-
 variable {R : Type*}
 
 namespace MinTropical
@@ -48,40 +47,42 @@ instance [SemilatticeSup R] : SemilatticeSup (MinTropical R) where
   le_sup_left := fun _ _ ↦ le_sup_left
   le_sup_right := fun _ _ ↦ le_sup_right
 
-@[to_dual]
-instance [Lattice R] : Lattice (MinTropical R) where
+@[to_dual] instance [Lattice R] : Lattice (MinTropical R) where
 
 @[to_dual]
-instance [SupSet R] : SupSet (MinTropical R) where sSup s := trop (sSup (untrop '' s))
+instance [SupSet R] : SupSet (MinTropical R) where
+  sSup s := trop (sSup (untrop '' s))
 
 @[to_dual]
-instance [InfSet R] : InfSet (MinTropical R) where sInf s := trop (sInf (untrop '' s))
+instance [InfSet R] : InfSet (MinTropical R) where
+  sInf s := trop (sInf (untrop '' s))
 
 @[to_dual]
-instance [ConditionallyCompleteLattice R] :
-    ConditionallyCompleteLattice (MinTropical R) where
+instance [ConditionallyCompleteLattice R] : ConditionallyCompleteLattice (MinTropical R) where
   isLUB_csSup _ hn hb :=
     .of_image untrop_le_iff <| isLUB_csSup (hn.image _) (untrop_monotone.map_bddAbove hb)
   isGLB_csInf _ hn hb :=
     .of_image untrop_le_iff <| isGLB_csInf (hn.image _) (untrop_monotone.map_bddBelow hb)
 
-instance [ConditionallyCompleteLinearOrder R] : ConditionallyCompleteLinearOrder (MinTropical R) :=
-  { instConditionallyCompleteLattice, instLinearOrder with
-    csSup_of_not_bddAbove := by
-      intro s hs
-      have : Set.range untrop = (Set.univ : Set R) := Equiv.range_eq_univ tropEquiv.symm
-      simp only [sSup, Set.image_empty, trop_inj_iff]
-      apply csSup_of_not_bddAbove
-      contrapose hs
-      change BddAbove (tropOrderIso.symm '' s) at hs
-      exact tropOrderIso.symm.bddAbove_image.1 hs
-    csInf_of_not_bddBelow := by
-      intro s hs
-      have : Set.range untrop = (Set.univ : Set R) := Equiv.range_eq_univ tropEquiv.symm
-      simp only [sInf, Set.image_empty, trop_inj_iff]
-      apply csInf_of_not_bddBelow
-      contrapose hs
-      change BddBelow (tropOrderIso.symm '' s) at hs
-      exact tropOrderIso.symm.bddBelow_image.1 hs }
+instance [ConditionallyCompleteLinearOrder R]
+    : ConditionallyCompleteLinearOrder (MinTropical R) := {
+  instConditionallyCompleteLattice, instLinearOrder with
+  csSup_of_not_bddAbove := by
+    intro s hs
+    have : Set.range untrop = (Set.univ : Set R) := Equiv.range_eq_univ tropEquiv.symm
+    simp only [sSup, Set.image_empty, trop_inj_iff]
+    apply csSup_of_not_bddAbove
+    contrapose hs
+    change BddAbove (tropOrderIso.symm '' s) at hs
+    exact tropOrderIso.symm.bddAbove_image.1 hs
+  csInf_of_not_bddBelow := by
+    intro s hs
+    have : Set.range untrop = (Set.univ : Set R) := Equiv.range_eq_univ tropEquiv.symm
+    simp only [sInf, Set.image_empty, trop_inj_iff]
+    apply csInf_of_not_bddBelow
+    contrapose hs
+    change BddBelow (tropOrderIso.symm '' s) at hs
+    exact tropOrderIso.symm.bddBelow_image.1 hs
+}
 
 end MinTropical

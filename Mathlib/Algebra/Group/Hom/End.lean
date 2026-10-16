@@ -21,7 +21,6 @@ They are separate, and if someone would like to split this file in two that may 
 
 public section
 
-
 universe uM
 
 variable {M : Type uM}
@@ -37,8 +36,10 @@ instance instAddMonoidWithOne (M) [AddCommMonoid M] : AddMonoidWithOne (AddMonoi
 @[simp]
 lemma natCast_apply [AddCommMonoid M] (n : ℕ) (m : M) : (↑n : AddMonoid.End M) m = n • m := rfl
 
-@[simp] lemma ofNat_apply [AddCommMonoid M] (n : ℕ) [n.AtLeastTwo] (m : M) :
-    (ofNat(n) : AddMonoid.End M) m = n • m := rfl
+@[simp]
+lemma ofNat_apply [AddCommMonoid M] (n : ℕ) [n.AtLeastTwo] (m : M)
+    : (ofNat(n) : AddMonoid.End M) m = n • m :=
+  rfl
 
 instance instSemiring [AddCommMonoid M] : Semiring (AddMonoid.End M) :=
   fast_instance% { AddMonoid.End.instMonoid M,
@@ -55,9 +56,9 @@ instance instRing [AddCommGroup M] : Ring (AddMonoid.End M) :=
     intCast_ofNat := natCast_zsmul _,
     intCast_negSucc := negSucc_zsmul _ }
 
-example [AddCommGroup M] :
-    (AddMonoid.End.instRing (M := M)).toAddCommGroup.toAddGroup.toSubNegMonoid =
-    (AddMonoid.End.instRing (M := M)).toAddGroupWithOne.toAddGroup.toSubNegMonoid := by
+example [AddCommGroup M]
+    : (AddMonoid.End.instRing (M := M)).toAddCommGroup.toAddGroup.toSubNegMonoid
+      = (AddMonoid.End.instRing (M := M)).toAddGroupWithOne.toAddGroup.toSubNegMonoid := by
   with_reducible_and_instances rfl
 
 end AddMonoid.End

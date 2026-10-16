@@ -18,14 +18,13 @@ universe v u
 
 namespace Shrink
 
-noncomputable instance (X : Type u) [TopologicalSpace X] [Small.{v} X] :
-    TopologicalSpace (Shrink.{v} X) :=
+noncomputable instance (X : Type u) [TopologicalSpace X] [Small.{v} X]
+    : TopologicalSpace (Shrink.{v} X) :=
   (equivShrink X).symm.topologicalSpace
 
 /-- `equivShrink` as a homeomorphism. -/
 @[simps! toEquiv]
-noncomputable def homeomorph (X : Type u) [TopologicalSpace X] [Small.{v} X] :
-    X ≃ₜ Shrink.{v} X :=
+noncomputable def homeomorph (X : Type u) [TopologicalSpace X] [Small.{v} X] : X ≃ₜ Shrink.{v} X :=
   (equivShrink X).symm.homeomorph.symm
 
 end Shrink

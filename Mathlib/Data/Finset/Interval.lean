@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Finset.Powerset
 public import Mathlib.Order.Interval.Finset.Basic
-
 import Mathlib.Data.Finset.Grade
 
 /-!
@@ -28,14 +27,14 @@ out of `Finset α` in terms of `Finset.insert`
 
 public section
 
-
 variable {α β : Type*}
 
 namespace Finset
 
 section Decidable
 
-/-- `LocallyFiniteOrder` instance for `Finset α`.
+/--
+`LocallyFiniteOrder` instance for `Finset α`.
 
 We provide an optimized definition for `Finset.Icc (s : Finset α) t`,
 then define the other intervals based on `Icc`.
@@ -44,12 +43,16 @@ We do not define, e.g., `Finset.Ico` based on `Finset.ssubsets`,
 because it would require more code without performance gain.
 -/
 instance instLocallyFiniteOrder [DecidableEq α] : LocallyFiniteOrder (Finset α) :=
-  .ofIcc _ (fun s t ↦
-    if s ⊆ t then
-      (t \ s).powerset.attach.map ⟨fun u ↦ u.1.disjUnion s <|
-        disjoint_sdiff_self_left.mono_left <| mem_powerset.mp u.2, fun u₁ u₂ h ↦ by
-          simpa only [disjUnion_inj_left, Subtype.ext_iff] using h⟩
-    else ∅) fun s t u ↦ by
+  .ofIcc _
+    (fun s t ↦
+      if s ⊆ t then
+        (t \ s).powerset.attach.map ⟨
+          fun u ↦ u.1.disjUnion s <| disjoint_sdiff_self_left.mono_left <| mem_powerset.mp u.2,
+          fun u₁ u₂ h ↦ by simpa only [disjUnion_inj_left, Subtype.ext_iff] using h
+        ⟩
+      else
+        ∅)
+    fun s t u ↦ by
       by_cases hst : s ⊆ t
       · suffices (∃ a ⊆ t, Disjoint a s ∧ a ∪ s = u) ↔ s ⊆ u ∧ u ⊆ t by
           simpa [hst, subset_sdiff, and_assoc]
@@ -58,7 +61,7 @@ instance instLocallyFiniteOrder [DecidableEq α] : LocallyFiniteOrder (Finset α
           exact ⟨subset_union_right, union_subset hut hst⟩
         · rintro ⟨hsu, hut⟩
           exact ⟨u \ s, sdiff_subset.trans hut, disjoint_sdiff_self_left, sdiff_union_of_subset hsu⟩
-      · suffices s ⊆ u → ¬u ⊆ t by simpa [hst]
+      · suffices s ⊆ u → ¬ u ⊆ t by simpa [hst]
         exact fun hsu hut ↦ hst (hsu.trans hut)
 
 variable [DecidableEq α] (s t : Finset α)
@@ -116,23 +119,33 @@ variable [Preorder β] {s t : Finset α} {f : Finset α → β}
 
 section Cons
 
-/-- A function `f` from `Finset α` is monotone if and only if `f s ≤ f (cons a s ha)` for all `s`
-and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is monotone if and only if `f s ≤ f (cons a s ha)` for all `s`
+and `a ∉ s`.
+-/
 lemma monotone_iff_forall_le_cons : Monotone f ↔ ∀ s, ∀ ⦃a⦄ (ha), f s ≤ f (cons a s ha) := by
-  classical simp [monotone_iff_forall_covBy, covBy_iff_exists_cons]
+  classical
+  simp [monotone_iff_forall_covBy, covBy_iff_exists_cons]
 
-/-- A function `f` from `Finset α` is antitone if and only if `f (cons a s ha) ≤ f s` for all
-`s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is antitone if and only if `f (cons a s ha) ≤ f s` for all
+`s` and `a ∉ s`.
+-/
 lemma antitone_iff_forall_cons_le : Antitone f ↔ ∀ s ⦃a⦄ ha, f (cons a s ha) ≤ f s :=
   monotone_iff_forall_le_cons (β := βᵒᵈ)
 
-/-- A function `f` from `Finset α` is strictly monotone if and only if `f s < f (cons a s ha)` for
-all `s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is strictly monotone if and only if `f s < f (cons a s ha)` for
+all `s` and `a ∉ s`.
+-/
 lemma strictMono_iff_forall_lt_cons : StrictMono f ↔ ∀ s ⦃a⦄ ha, f s < f (cons a s ha) := by
-  classical simp [strictMono_iff_forall_covBy, covBy_iff_exists_cons]
+  classical
+  simp [strictMono_iff_forall_covBy, covBy_iff_exists_cons]
 
-/-- A function `f` from `Finset α` is strictly antitone if and only if `f (cons a s ha) < f s` for
-all `s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is strictly antitone if and only if `f (cons a s ha) < f s` for
+all `s` and `a ∉ s`.
+-/
 lemma strictAnti_iff_forall_cons_lt : StrictAnti f ↔ ∀ s ⦃a⦄ ha, f (cons a s ha) < f s :=
   strictMono_iff_forall_lt_cons (β := βᵒᵈ)
 
@@ -142,23 +155,31 @@ section Insert
 
 variable [DecidableEq α]
 
-/-- A function `f` from `Finset α` is monotone if and only if `f s ≤ f (insert a s)` for all `s` and
-`a ∉ s`. -/
+/--
+A function `f` from `Finset α` is monotone if and only if `f s ≤ f (insert a s)` for all `s` and
+`a ∉ s`.
+-/
 lemma monotone_iff_forall_le_insert : Monotone f ↔ ∀ s ⦃a⦄, a ∉ s → f s ≤ f (insert a s) := by
   simp [monotone_iff_forall_le_cons]
 
-/-- A function `f` from `Finset α` is antitone if and only if `f (insert a s) ≤ f s` for all
-`s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is antitone if and only if `f (insert a s) ≤ f s` for all
+`s` and `a ∉ s`.
+-/
 lemma antitone_iff_forall_insert_le : Antitone f ↔ ∀ s ⦃a⦄, a ∉ s → f (insert a s) ≤ f s :=
   monotone_iff_forall_le_insert (β := βᵒᵈ)
 
-/-- A function `f` from `Finset α` is strictly monotone if and only if `f s < f (insert a s)` for
-all `s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is strictly monotone if and only if `f s < f (insert a s)` for
+all `s` and `a ∉ s`.
+-/
 lemma strictMono_iff_forall_lt_insert : StrictMono f ↔ ∀ s ⦃a⦄, a ∉ s → f s < f (insert a s) := by
   simp [strictMono_iff_forall_lt_cons]
 
-/-- A function `f` from `Finset α` is strictly antitone if and only if `f (insert a s) < f s` for
-all `s` and `a ∉ s`. -/
+/--
+A function `f` from `Finset α` is strictly antitone if and only if `f (insert a s) < f s` for
+all `s` and `a ∉ s`.
+-/
 lemma strictAnti_iff_forall_lt_insert : StrictAnti f ↔ ∀ s ⦃a⦄, a ∉ s → f (insert a s) < f s :=
   strictMono_iff_forall_lt_insert (β := βᵒᵈ)
 

@@ -6,7 +6,6 @@ Authors: Yaël Dillies
 module
 
 public import Mathlib.Data.Nat.Squarefree
-
 import Mathlib.Combinatorics.SetFamily.FourFunctions
 
 /-!
@@ -28,21 +27,23 @@ open scoped FinsetFamily
 
 namespace Nat
 
-/-- Statement of Graham's conjecture (which is now a theorem in the literature).
+/--
+Statement of Graham's conjecture (which is now a theorem in the literature).
 
 Graham's conjecture states that if $0 < a_1 < \dots a_n$ are integers, then
-$\max_{i, j} \frac{a_i}{\gcd(a_i, a_j)} \ge n$. -/
+$\max_{i, j} \frac{a_i}{\gcd(a_i, a_j)} \ge n$.
+-/
 def GrahamConjecture (n : ℕ) (f : ℕ → ℕ) : Prop :=
   n ≠ 0 → StrictMonoOn f (Set.Iio n) → ∃ i < n, ∃ j < n, (f i).gcd (f j) * n ≤ f i
 
 /-- The special case of Graham's conjecture where all numbers are squarefree. -/
-lemma grahamConjecture_of_squarefree {n : ℕ} (f : ℕ → ℕ) (hf' : ∀ k < n, Squarefree (f k)) :
-    GrahamConjecture n f := by
+lemma grahamConjecture_of_squarefree {n : ℕ} (f : ℕ → ℕ) (hf' : ∀ k < n, Squarefree (f k))
+    : GrahamConjecture n f := by
   rintro hn hf
   by_contra!
   set 𝒜 := (Iio n).image fun n ↦ primeFactors (f n)
-  have hf'' : ∀ i < n, ∀ j, Squarefree (f i / (f i).gcd (f j)) :=
-    fun i hi j ↦ (hf' _ hi).squarefree_of_dvd <| div_dvd_of_dvd <| gcd_dvd_left _ _
+  have hf'' : ∀ i < n, ∀ j, Squarefree (f i / (f i).gcd (f j)) := fun i hi j ↦
+    (hf' _ hi).squarefree_of_dvd <| div_dvd_of_dvd <| gcd_dvd_left _ _
   refine lt_irrefl n ?_
   calc
     n = #𝒜 := ?_
@@ -56,13 +57,16 @@ lemma grahamConjecture_of_squarefree {n : ℕ} (f : ℕ → ℕ) (hf' : ∀ k < 
     rintro i hi j hj
     rw [← primeFactors_div_gcd (hf' _ hi) (hf' _ hj).ne_zero,
       prod_primeFactors_of_squarefree <| hf'' _ hi _]
-    exact ⟨Nat.div_pos (gcd_le_left _ (hf' _ hi).ne_zero.bot_lt) <|
-      Nat.gcd_pos_of_pos_left _ (hf' _ hi).ne_zero.bot_lt, Nat.div_lt_of_lt_mul <| this _ hi _ hj⟩
+    exact ⟨
+      Nat.div_pos (gcd_le_left _ (hf' _ hi).ne_zero.bot_lt) <|
+        Nat.gcd_pos_of_pos_left _ (hf' _ hi).ne_zero.bot_lt,
+      Nat.div_lt_of_lt_mul <| this _ hi _ hj
+    ⟩
   · simp only [𝒜, Set.InjOn, mem_coe, forall_mem_diffs, forall_mem_image, mem_Iio]
     rintro a ha b hb c hc d hd
-    rw [← primeFactors_div_gcd (hf' _ ha) (hf' _ hb).ne_zero, ← primeFactors_div_gcd
-      (hf' _ hc) (hf' _ hd).ne_zero, prod_primeFactors_of_squarefree (hf'' _ ha _),
-      prod_primeFactors_of_squarefree (hf'' _ hc _)]
+    rw [← primeFactors_div_gcd (hf' _ ha) (hf' _ hb).ne_zero,
+      ← primeFactors_div_gcd (hf' _ hc) (hf' _ hd).ne_zero,
+      prod_primeFactors_of_squarefree (hf'' _ ha _), prod_primeFactors_of_squarefree (hf'' _ hc _)]
     rintro h
     rw [h]
 

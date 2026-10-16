@@ -6,7 +6,6 @@ Authors: Dagur Asgeirsson
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.RegularMono
-
 import Mathlib.CategoryTheory.Limits.FunctorCategory.EpiMono
 import Mathlib.CategoryTheory.Limits.FunctorCategory.Shapes.Pullbacks
 
@@ -30,22 +29,23 @@ variable {C D : Type*} [Category C] [Category D]
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-instance [∀ {F G : D} (f : F ⟶ G) [Epi f], HasPullback f f] [HasPushouts D]
-    [IsRegularEpiCategory D] :
-    IsRegularEpiCategory (C ⥤ D) where
+instance [∀ {F G : D} (f : F ⟶ G) [Epi f], HasPullback f f] [HasPushouts D] [IsRegularEpiCategory D]
+    : IsRegularEpiCategory (C ⥤ D) where
   regularEpiOfEpi {F G} f := ⟨⟨{
     W := PullbackCone.combine f f _ (fun k ↦ pullback.isLimit (f.app k) (f.app k)) |>.pt
     left := PullbackCone.combine f f _ (fun k ↦ pullback.isLimit (f.app k) (f.app k)) |>.fst
     right := PullbackCone.combine f f _ (fun k ↦ pullback.isLimit (f.app k) (f.app k)) |>.snd
     w := PullbackCone.combine f f _ (fun k ↦ pullback.isLimit (f.app k) (f.app k)) |>.condition
-    isColimit := evaluationJointlyReflectsColimits _ fun k ↦ by
-      have := IsRegularEpiCategory.regularEpiOfEpi (f.app k)
-      refine .equivOfNatIsoOfIso ?_ _ _ ?_ (isColimitCoforkOfEffectiveEpi (f.app k)
-        (pullback.cone (f.app k) (f.app k))
-        (pullback.isLimit (f.app k) (f.app k)))
-      · refine NatIso.ofComponents (by rintro (_ | _); exacts [Iso.refl _, Iso.refl _]) ?_
-        rintro _ _ (_ | _)
-        all_goals cat_disch
-      · exact Cocone.ext (Iso.refl _) <| by rintro (_ | _ | _); all_goals cat_disch }⟩⟩
+    isColimit :=
+      evaluationJointlyReflectsColimits _ fun k ↦ by
+        have := IsRegularEpiCategory.regularEpiOfEpi (f.app k)
+        refine .equivOfNatIsoOfIso ?_ _ _ ?_
+          (isColimitCoforkOfEffectiveEpi (f.app k) (pullback.cone (f.app k) (f.app k))
+            (pullback.isLimit (f.app k) (f.app k)))
+        · refine NatIso.ofComponents (by rintro (_ | _); exacts [Iso.refl _, Iso.refl _]) ?_
+          rintro _ _ (_ | _)
+          all_goals cat_disch
+        · exact Cocone.ext (Iso.refl _) <| by rintro (_ | _ | _); all_goals cat_disch
+  }⟩⟩
 
 end CategoryTheory.Functor

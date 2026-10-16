@@ -21,9 +21,8 @@ open scoped NNReal
 
 open scoped ComplexOrder in
 open RCLike in
-noncomputable
-instance (priority := 100) instContinuousSqrtRCLike {𝕜 : Type*} [RCLike 𝕜] :
-    ContinuousSqrt 𝕜 where
+noncomputable instance (priority := 100) instContinuousSqrtRCLike {𝕜 : Type*} [RCLike 𝕜]
+    : ContinuousSqrt 𝕜 where
   sqrt := ((↑) ∘ (√·) ∘ re ∘ (fun z ↦ z.2 - z.1))
   continuousOn_sqrt := by fun_prop
   sqrt_nonneg _ _ := by simp

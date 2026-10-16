@@ -6,7 +6,6 @@ Authors: Dhruv Bhatia, Eric Wieser, Mario Carneiro, Thomas Zhu
 module
 
 public meta import Lean.Elab.Tactic.Basic
-
 import Mathlib.Init
 
 /-!

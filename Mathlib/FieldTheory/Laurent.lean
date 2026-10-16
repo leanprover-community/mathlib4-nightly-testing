@@ -24,7 +24,6 @@ An auxiliary definition is provided first to make the construction of the `AlgHo
 
 @[expose] public section
 
-
 universe u
 
 namespace RatFunc
@@ -42,30 +41,37 @@ theorem taylor_mem_nonZeroDivisors (hp : p ∈ R[X]⁰) : taylor r p ∈ R[X]⁰
   intro x hx
   have : x = taylor (r - r) x := by simp
   rwa [this, sub_eq_add_neg, ← taylor_taylor, ← taylor_mul,
-    LinearMap.map_eq_zero_iff _ (taylor_injective _), mul_right_mem_nonZeroDivisors_eq_zero_iff hp,
-    LinearMap.map_eq_zero_iff _ (taylor_injective _)] at hx
+      LinearMap.map_eq_zero_iff _ (taylor_injective _),
+      mul_right_mem_nonZeroDivisors_eq_zero_iff hp,
+      LinearMap.map_eq_zero_iff _ (taylor_injective _)]
+    at hx
 
-/-- The Laurent expansion of rational functions about a value.
-Auxiliary definition, usage when over integral domains should prefer `RatFunc.laurent`. -/
+/--
+The Laurent expansion of rational functions about a value.
+Auxiliary definition, usage when over integral domains should prefer `RatFunc.laurent`.
+-/
 def laurentAux : R⟮X⟯ →+* R⟮X⟯ :=
   RatFunc.mapRingHom
-    ( { toFun := taylor r
-        map_add' := map_add (taylor r)
-        map_mul' := taylor_mul _
-        map_zero' := map_zero (taylor r)
-        map_one' := taylor_one r } : R[X] →+* R[X])
+    ({
+       toFun := taylor r
+       map_add' := map_add (taylor r)
+       map_mul' := taylor_mul _
+       map_zero' := map_zero (taylor r)
+       map_one' := taylor_one r
+     }
+      : R[X] →+* R[X])
     (taylor_mem_nonZeroDivisors _)
 
-theorem laurentAux_ofFractionRing_mk (q : R[X]⁰) :
-    laurentAux r (ofFractionRing (Localization.mk p q)) =
-      ofFractionRing (.mk (taylor r p) ⟨taylor r q, taylor_mem_nonZeroDivisors r q q.prop⟩) :=
+theorem laurentAux_ofFractionRing_mk (q : R[X]⁰)
+    : laurentAux r (ofFractionRing (Localization.mk p q))
+      = ofFractionRing (.mk (taylor r p) ⟨taylor r q, taylor_mem_nonZeroDivisors r q q.prop⟩) :=
   map_apply_ofFractionRing_mk _ _ _ _
 
 variable [IsDomain R]
 
-theorem laurentAux_div :
-    laurentAux r (algebraMap _ _ p / algebraMap _ _ q) =
-      algebraMap _ _ (taylor r p) / algebraMap _ _ (taylor r q) :=
+theorem laurentAux_div
+    : laurentAux r (algebraMap _ _ p / algebraMap _ _ q)
+      = algebraMap _ _ (taylor r p) / algebraMap _ _ (taylor r q) :=
   -- Porting note: added `by exact taylor_mem_nonZeroDivisors r`
   map_apply_div _ (by exact taylor_mem_nonZeroDivisors r) _ _
 
@@ -78,9 +84,9 @@ def laurent : R⟮X⟯ →ₐ[R] R⟮X⟯ :=
   RatFunc.mapAlgHom (.ofLinearMap (taylor r) (taylor_one _) (taylor_mul _))
     (taylor_mem_nonZeroDivisors _)
 
-theorem laurent_div :
-    laurent r (algebraMap _ _ p / algebraMap _ _ q) =
-      algebraMap _ _ (taylor r p) / algebraMap _ _ (taylor r q) :=
+theorem laurent_div
+    : laurent r (algebraMap _ _ p / algebraMap _ _ q)
+      = algebraMap _ _ (taylor r p) / algebraMap _ _ (taylor r q) :=
   laurentAux_div r p q
 
 @[simp]
@@ -95,8 +101,7 @@ theorem laurent_X : laurent r X = X + C r := by
 theorem laurent_C (x : R) : laurent r (C x) = C x := by
   rw [← algebraMap_C, laurent_algebraMap, taylor_C]
 
-@[simp]
-theorem laurent_at_zero : laurent 0 f = f := by induction f using RatFunc.induction_on; simp
+@[simp] theorem laurent_at_zero : laurent 0 f = f := by induction f using RatFunc.induction_on; simp
 
 theorem laurent_laurent : laurent r (laurent s f) = laurent (r + s) f := by
   induction f using RatFunc.induction_on

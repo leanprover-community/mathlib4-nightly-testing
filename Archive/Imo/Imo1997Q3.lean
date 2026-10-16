@@ -48,65 +48,74 @@ open Equiv Fin Finset SignType
 variable {n : ℕ}
 
 /-- The sum $x_1 + 2x_2 + \cdots + nx_n$ mentioned in the problem. -/
-def S (x : Fin n → ℝ) (p : Perm (Fin n)) : ℝ :=
-  ∑ i, (i + 1) * x (p i)
+def S (x : Fin n → ℝ) (p : Perm (Fin n)) : ℝ := ∑ i, (i + 1) * x (p i)
 
-lemma sign_eq_of_abs_sub_le {a b c : ℝ} (ha : c / 2 < |a|) (hb : c / 2 < |b|) (hc : 0 < c)
-    (hs : |a - b| ≤ c) : sign a = sign b := by
-  obtain ha' | rfl | ha' := lt_trichotomy 0 a <;> obtain hb' | rfl | hb' := lt_trichotomy 0 b <;>
-  simp_all <;> grind
+lemma sign_eq_of_abs_sub_le
+    {a b c : ℝ} (ha : c / 2 < |a|) (hb : c / 2 < |b|) (hc : 0 < c) (hs : |a - b| ≤ c)
+    : sign a = sign b := by
+  obtain ha' | rfl | ha' := lt_trichotomy 0 a <;> obtain hb' | rfl | hb' := lt_trichotomy 0 b
+    <;> simp_all <;> grind
 
-lemma lt_abs_add_of_sign_eq {a b c : ℝ} (ha : c / 2 < |a|) (hb : c / 2 < |b|) (hc : 0 < c)
-    (hs : sign a = sign b) : c < |a + b| := by
-  obtain ha' | rfl | ha' := lt_trichotomy 0 a <;> obtain hb' | rfl | hb' := lt_trichotomy 0 b <;>
-  simp_all <;> grind
+lemma lt_abs_add_of_sign_eq
+    {a b c : ℝ} (ha : c / 2 < |a|) (hb : c / 2 < |b|) (hc : 0 < c) (hs : sign a = sign b)
+    : c < |a + b| := by
+  obtain ha' | rfl | ha' := lt_trichotomy 0 a <;> obtain hb' | rfl | hb' := lt_trichotomy 0 b
+    <;> simp_all <;> grind
 
-/-- For fixed nonempty `x`, assuming the opposite of what is to be proven,
-the signs of `S x p` are all the same. -/
+/--
+For fixed nonempty `x`, assuming the opposite of what is to be proven,
+the signs of `S x p` are all the same.
+-/
 lemma sign_eq_of_contra
     {x : Fin (n + 1) → ℝ} (hx₂ : ∀ i, |x i| ≤ ((n + 1 : ℕ) + 1) / 2)
-    (h : ∀ (p : Perm (Fin (n + 1))), ((n + 1 : ℕ) + 1) / 2 < |S x p|) :
-    ∀ p, sign (S x 1) = sign (S x p) := fun p ↦ by
-  induction p using Submonoid.induction_of_closure_eq_top_right
-    (Perm.mclosure_swap_castSucc_succ n) with
-  | one => rfl
+    (h : ∀ (p : Perm (Fin (n + 1))), ((n + 1 : ℕ) + 1) / 2 < |S x p|)
+    : ∀ p, sign (S x 1) = sign (S x p) := fun p ↦ by
+  induction p using
+    Submonoid.induction_of_closure_eq_top_right (Perm.mclosure_swap_castSucc_succ n) with
+  | one =>
+    rfl
   | mul_right p s sform ih =>
     suffices |S x p - S x (p * s)| ≤ (n + 1 : ℕ) + 1 by
       rw [ih]; exact sign_eq_of_abs_sub_le (h _) (h _) (by norm_cast; lia) this
-    rw [Set.mem_range] at sform; obtain ⟨i, hi⟩ := sform
+    rw [Set.mem_range] at sform
+    obtain ⟨i, hi⟩ := sform
     iterate 2 rw [S, ← sum_add_sum_compl {i.castSucc, i.succ}]
-    have cg : ∑ j ∈ {i.castSucc, i.succ}ᶜ, (j + 1) * x ((p * s) j) =
-        ∑ j ∈ {i.castSucc, i.succ}ᶜ, (j + 1) * x (p j) := by
-      congr! 3 with j mj; rw [Perm.mul_apply, ← hi]; congr
+    have cg
+        : ∑ j ∈ {i.castSucc, i.succ}ᶜ, (j + 1) * x ((p * s) j)
+          = ∑ j ∈ {i.castSucc, i.succ}ᶜ, (j + 1) * x (p j) := by
+      congr! 3 with j mj
+      rw [Perm.mul_apply, ← hi]
+      congr
       rw [mem_compl, mem_insert, mem_singleton, not_or] at mj
       exact swap_apply_of_ne_of_ne mj.1 mj.2
-    rw [cg, add_sub_add_right_eq_sub,
-      sum_pair castSucc_lt_succ.ne, sum_pair castSucc_lt_succ.ne,
-      Perm.mul_apply, Perm.mul_apply, ← hi, swap_apply_left, swap_apply_right,
-      add_comm, add_sub_add_comm, ← sub_mul, ← sub_mul,
-      val_succ, val_castSucc, Nat.cast_add, Nat.cast_one, add_sub_cancel_left, sub_add_cancel_left,
-      one_mul, neg_one_mul]
+    rw [cg, add_sub_add_right_eq_sub, sum_pair castSucc_lt_succ.ne, sum_pair castSucc_lt_succ.ne,
+      Perm.mul_apply, Perm.mul_apply, ← hi, swap_apply_left, swap_apply_right, add_comm,
+      add_sub_add_comm, ← sub_mul, ← sub_mul, val_succ, val_castSucc, Nat.cast_add, Nat.cast_one,
+      add_sub_cancel_left, sub_add_cancel_left, one_mul, neg_one_mul]
     calc
       _ ≤ |x (p i.succ)| + |-x (p i.castSucc)| := abs_add_le ..
       _ ≤ ((n + 1 : ℕ) + 1) / 2 + ((n + 1 : ℕ) + 1) / 2 := by
         rw [abs_neg]; exact add_le_add (hx₂ _) (hx₂ _)
       _ = _ := add_halves _
 
-lemma S_one_add_S_revPerm
-    {x : Fin n → ℝ} (hx₁ : |∑ i, x i| = 1) : |S x 1 + S x revPerm| = n + 1 := by
-  nth_rw 2 [S]; rw [← revPerm.sum_comp _ _ (by simp)]
+lemma S_one_add_S_revPerm {x : Fin n → ℝ} (hx₁ : |∑ i, x i| = 1)
+    : |S x 1 + S x revPerm| = n + 1 := by
+  nth_rw 2 [S]
+  rw [← revPerm.sum_comp _ _ (by simp)]
   simp_rw [revPerm_apply, val_rev, rev_rev, S, Perm.one_apply, ← sum_add_distrib, ← add_mul]
   have cg : ∑ i : Fin n, (i + 1 + ((n - (i + 1) : ℕ) + 1)) * x i = ∑ i, (n + 1) * x i := by
     congr! 2 with i; norm_cast; lia
-  rw [cg, ← mul_sum, abs_mul, hx₁, mul_one]; exact abs_of_nonneg (by norm_cast; lia)
+  rw [cg, ← mul_sum, abs_mul, hx₁, mul_one]
+  exact abs_of_nonneg (by norm_cast; lia)
 
-theorem result {x : Fin n → ℝ} (hx₁ : |∑ i, x i| = 1) (hx₂ : ∀ i, |x i| ≤ (n + 1) / 2) :
-    ∃ p, |S x p| ≤ (n + 1) / 2 := by
+theorem result {x : Fin n → ℝ} (hx₁ : |∑ i, x i| = 1) (hx₂ : ∀ i, |x i| ≤ (n + 1) / 2)
+    : ∃ p, |S x p| ≤ (n + 1) / 2 := by
   match n with
-  | 0 => simp [S]
+  | 0 =>
+    simp [S]
   | n + 1 =>
     by_contra! h
-    exact (lt_abs_add_of_sign_eq (h _) (h _) (by norm_cast; lia)
-      (sign_eq_of_contra hx₂ h _)).ne' (S_one_add_S_revPerm hx₁)
+    exact (lt_abs_add_of_sign_eq (h _) (h _) (by norm_cast; lia) (sign_eq_of_contra hx₂ h _)).ne'
+      (S_one_add_S_revPerm hx₁)
 
 end Imo1997Q3

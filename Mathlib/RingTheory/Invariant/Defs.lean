@@ -22,13 +22,16 @@ public section
 
 namespace Algebra
 
-variable (A B G : Type*) [CommSemiring A] [Semiring B] [Algebra A B]
-  [Group G] [MulSemiringAction G B]
+variable
+  (A B G : Type*) [CommSemiring A] [Semiring B] [Algebra A B] [Group G] [MulSemiringAction G B]
 
-/-- An action of a group `G` on an extension of rings `B/A` is invariant if every fixed point of
+/--
+An action of a group `G` on an extension of rings `B/A` is invariant if every fixed point of
 `B` lies in the image of `A`. The converse statement that every point in the image of `A` is fixed
-by `G` is `smul_algebraMap` (assuming `SMulCommClass A B G`). -/
-@[mk_iff] class IsInvariant : Prop where
+by `G` is `smul_algebraMap` (assuming `SMulCommClass A B G`).
+-/
+@[mk_iff]
+class IsInvariant : Prop where
   isInvariant : ∀ b : B, (∀ g : G, g • b = b) → ∃ a : A, algebraMap A B a = b
 
 end Algebra

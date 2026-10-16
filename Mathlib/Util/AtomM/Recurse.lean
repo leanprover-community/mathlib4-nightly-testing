@@ -51,14 +51,15 @@ attribute [nolint unusedArguments] Mathlib.Tactic.AtomM.Recurse.instReprConfig.r
 
 /-- The read-only state of the `AtomM.Recurse` monad. -/
 structure Recurse.Context where
-  /-- A basically empty simp context, passed to the `simp` traversal in `AtomM.onSubexpressions`.
-  -/
+  /-- A basically empty simp context, passed to the `simp` traversal in `AtomM.onSubexpressions`. -/
   ctx : Simp.Context
   /-- A cleanup routine, which simplifies evaluation results to a more human-friendly format. -/
   simp : Simp.Result → MetaM Simp.Result
 
-/-- The monad for `AtomM.Recurse` contains, in addition to the `AtomM` state,
-a simp context for the main traversal and a cleanup function to simplify evaluation results. -/
+/--
+The monad for `AtomM.Recurse` contains, in addition to the `AtomM` state,
+a simp context for the main traversal and a cleanup function to simplify evaluation results.
+-/
 abbrev RecurseM := ReaderT Recurse.Context AtomM
 
 /--
@@ -72,20 +73,20 @@ monad.
 * `root`: true if this is a direct call to the function.
   `AtomM.RecurseM.run` sets this to `false` in recursive mode.
 -/
-def onSubexpressions (eval : Expr → AtomM Simp.Result) (parent : Expr)
-    (wellBehavedDischarge : Bool) (root := true) :
-    RecurseM Simp.Result :=
-  fun nctx rctx s ↦ do
-    let pre : Simp.Simproc := fun e =>
-      try
-        guard <| root || parent != e -- recursion guard
-        let r' ← eval e rctx s
-        let r ← nctx.simp r'
-        if ← withReducible <| isDefEq r.expr e then return .done { expr := r.expr }
-        pure (.done r)
-      catch _ => pure .continue
-    let post := Simp.postDefault #[]
-    (·.1) <$> Simp.main parent nctx.ctx (methods := { pre, post, wellBehavedDischarge })
+def onSubexpressions
+    (eval : Expr → AtomM Simp.Result) (parent : Expr) (wellBehavedDischarge : Bool) (root := true)
+    : RecurseM Simp.Result := fun nctx rctx s ↦ do
+  let pre : Simp.Simproc := fun e =>
+    try
+      guard <| root || parent != e -- recursion guard
+      let r' ← eval e rctx s
+      let r ← nctx.simp r'
+      if ← withReducible <| isDefEq r.expr e then return .done { expr := r.expr }
+      pure (.done r)
+    catch _ =>
+      pure .continue
+  let post := Simp.postDefault #[]
+  (·.1) <$> Simp.main parent nctx.ctx (methods := { pre, post, wellBehavedDischarge })
 
 /--
 Runs a tactic in the `AtomM.RecurseM` monad, given initial data:
@@ -102,13 +103,14 @@ Runs a tactic in the `AtomM.RecurseM` monad, given initial data:
 * `x`: the tactic to run
 -/
 partial def RecurseM.run
-    {α : Type} (s : IO.Ref State) (cfg : Recurse.Config) (wellBehavedDischarge : Bool)
-    (eval : Expr → AtomM Simp.Result) (simp : Simp.Result → MetaM Simp.Result) (x : RecurseM α) :
-    MetaM α := do
-  let ctx ← Simp.mkContext
-    { zetaDelta := cfg.zetaDelta, singlePass := true, contextual := cfg.contextual }
-    (simpTheorems := #[← Elab.Tactic.simpOnlyBuiltins.foldlM (·.addConst ·) {}])
-    (congrTheorems := ← getSimpCongrTheorems)
+    {α : Type}
+    (s : IO.Ref State) (cfg : Recurse.Config) (wellBehavedDischarge : Bool)
+    (eval : Expr → AtomM Simp.Result) (simp : Simp.Result → MetaM Simp.Result) (x : RecurseM α)
+    : MetaM α := do
+  let ctx ←
+    Simp.mkContext { zetaDelta := cfg.zetaDelta, singlePass := true, contextual := cfg.contextual }
+      (simpTheorems := #[← Elab.Tactic.simpOnlyBuiltins.foldlM (·.addConst ·) {}])
+      (congrTheorems := ← getSimpCongrTheorems)
   let nctx := { ctx, simp }
   let rec
     /-- The recursive context. -/
@@ -131,11 +133,11 @@ Normalizes an expression, given initial data:
 * `simp`: a cleanup operation which will be used to post-process expressions
 * `tgt`: the expression to normalize
 -/
-def recurse (s : IO.Ref State) (cfg : Recurse.Config) (wellBehavedDischarge : Bool)
-    (eval : Expr → AtomM Simp.Result)
-    (simp : Simp.Result → MetaM Simp.Result) (tgt : Expr) :
-    MetaM Simp.Result := do
-  RecurseM.run s cfg wellBehavedDischarge eval simp
-    <| onSubexpressions eval tgt wellBehavedDischarge
+def recurse
+    (s : IO.Ref State) (cfg : Recurse.Config) (wellBehavedDischarge : Bool)
+    (eval : Expr → AtomM Simp.Result) (simp : Simp.Result → MetaM Simp.Result) (tgt : Expr)
+    : MetaM Simp.Result := do
+  RecurseM.run s cfg wellBehavedDischarge eval simp <|
+    onSubexpressions eval tgt wellBehavedDischarge
 
 end Mathlib.Tactic.AtomM

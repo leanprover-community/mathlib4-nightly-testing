@@ -25,8 +25,10 @@ namespace Equiv
 
 variable {α : Type*}
 
-/-- An equivalence between `Bool × ℕ` and `ℕ`, by mapping `(true, x)` to `2 * x + 1` and
-`(false, x)` to `2 * x`. -/
+/--
+An equivalence between `Bool × ℕ` and `ℕ`, by mapping `(true, x)` to `2 * x + 1` and
+`(false, x)` to `2 * x`.
+-/
 @[simps]
 def boolProdNatEquivNat : Bool × ℕ ≃ ℕ where
   toFun := uncurry bit
@@ -34,27 +36,27 @@ def boolProdNatEquivNat : Bool × ℕ ≃ ℕ where
   left_inv := fun ⟨b, n⟩ => by simp
   right_inv n := by simp
 
-/-- An equivalence between `ℕ ⊕ ℕ` and `ℕ`, by mapping `(Sum.inl x)` to `2 * x` and `(Sum.inr x)` to
+/--
+An equivalence between `ℕ ⊕ ℕ` and `ℕ`, by mapping `(Sum.inl x)` to `2 * x` and `(Sum.inr x)` to
 `2 * x + 1`.
 -/
 @[simps! symm_apply]
-def natSumNatEquivNat : ℕ ⊕ ℕ ≃ ℕ :=
-  (boolProdEquivSum ℕ).symm.trans boolProdNatEquivNat
+def natSumNatEquivNat : ℕ ⊕ ℕ ≃ ℕ := (boolProdEquivSum ℕ).symm.trans boolProdNatEquivNat
 
 @[simp]
 theorem natSumNatEquivNat_apply : ⇑natSumNatEquivNat = Sum.elim (2 * ·) (2 * · + 1) := by
   ext (x | x) <;> rfl
 
-/-- An equivalence between `ℤ` and `ℕ`, through `ℤ ≃ ℕ ⊕ ℕ` and `ℕ ⊕ ℕ ≃ ℕ`.
--/
-def intEquivNat : ℤ ≃ ℕ :=
-  intEquivNatSumNat.trans natSumNatEquivNat
+/-- An equivalence between `ℤ` and `ℕ`, through `ℤ ≃ ℕ ⊕ ℕ` and `ℕ ⊕ ℕ ≃ ℕ`. -/
+def intEquivNat : ℤ ≃ ℕ := intEquivNatSumNat.trans natSumNatEquivNat
 
-/-- An equivalence between `α × α` and `α`, given that there is an equivalence between `α` and `ℕ`.
+/--
+An equivalence between `α × α` and `α`, given that there is an equivalence between `α` and `ℕ`.
 -/
 def prodEquivOfEquivNat (e : α ≃ ℕ) : α × α ≃ α :=
   calc
-    α × α ≃ ℕ × ℕ := prodCongr e e
+    α × α
+      ≃ ℕ × ℕ := prodCongr e e
     _ ≃ ℕ := pairEquiv
     _ ≃ α := e.symm
 

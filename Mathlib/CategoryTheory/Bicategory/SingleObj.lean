@@ -35,14 +35,14 @@ namespace CategoryTheory
 
 variable (C : Type u) [Category.{v} C] [MonoidalCategory C]
 
-/-- Promote a monoidal category to a bicategory with a single object.
+/--
+Promote a monoidal category to a bicategory with a single object.
 (The objects of the monoidal category become the 1-morphisms,
 with composition given by tensor product,
 and the morphisms of the monoidal category become the 2-morphisms.)
 -/
 @[nolint unusedArguments]
-def MonoidalSingleObj (C : Type u) [Category.{v} C] [MonoidalCategory C] :=
-  Unit
+def MonoidalSingleObj (C : Type u) [Category.{v} C] [MonoidalCategory C] := Unit
 deriving Inhabited
 
 open MonoidalCategory
@@ -62,10 +62,10 @@ namespace MonoidalSingleObj
 
 /-- The unique object in the bicategory obtained by "promoting" a monoidal category. -/
 @[nolint unusedArguments]
-protected def star : MonoidalSingleObj C :=
-  Unit.unit
+protected def star : MonoidalSingleObj C := Unit.unit
 
-/-- The monoidal functor from the endomorphisms of the single object
+/--
+The monoidal functor from the endomorphisms of the single object
 when we promote a monoidal category to a single object bicategory,
 to the original monoidal category.
 
@@ -78,22 +78,19 @@ def endMonoidalStarFunctor : (EndMonoidal (MonoidalSingleObj.star C)) ⥤ C wher
 
 set_option backward.defeqAttrib.useBackward true in
 instance : (endMonoidalStarFunctor C).Monoidal :=
-  Functor.CoreMonoidal.toMonoidal
-    { εIso := Iso.refl _
-      μIso := fun _ _ ↦ Iso.refl _ }
+  Functor.CoreMonoidal.toMonoidal { εIso := Iso.refl _, μIso := fun _ _ ↦ Iso.refl _ }
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The equivalence between the endomorphisms of the single object
+/--
+The equivalence between the endomorphisms of the single object
 when we promote a monoidal category to a single object bicategory,
 and the original monoidal category.
 -/
 @[simps]
-noncomputable def endMonoidalStarFunctorEquivalence :
-    EndMonoidal (MonoidalSingleObj.star C) ≌ C where
+noncomputable def endMonoidalStarFunctorEquivalence
+    : EndMonoidal (MonoidalSingleObj.star C) ≌ C where
   functor := endMonoidalStarFunctor C
-  inverse :=
-    { obj := fun X => X
-      map := fun f => f }
+  inverse := { obj := fun X => X, map := fun f => f }
   unitIso := Iso.refl _
   counitIso := Iso.refl _
 

@@ -46,14 +46,16 @@ noncomputable section
 
 namespace RootPairing
 
-variable [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+variable
+  [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
   (P : RootPairing ι R M N) (i : ι)
 
-/-- The `Weyl group` of a root pairing is the group of automorphisms of the root pairing generated
-by reflections. -/
+/--
+The `Weyl group` of a root pairing is the group of automorphisms of the root pairing generated
+by reflections.
+-/
 @[wikidata Q768074]
-def weylGroup : Subgroup (Aut P) :=
-  Subgroup.closure (range (Equiv.reflection P))
+def weylGroup : Subgroup (Aut P) := Subgroup.closure (range (Equiv.reflection P))
 
 lemma reflection_mem_weylGroup : Equiv.reflection P i ∈ P.weylGroup :=
   Subgroup.subset_closure <| mem_range_self i
@@ -61,26 +63,28 @@ lemma reflection_mem_weylGroup : Equiv.reflection P i ∈ P.weylGroup :=
 /-- The `ith` reflection as a term of the Weyl group. -/
 def weylGroup.ofIdx (i : ι) : P.weylGroup := ⟨_, P.reflection_mem_weylGroup i⟩
 
-@[simp] lemma weylGroup.ofIdx_smul (i : ι) (m : M) :
-    weylGroup.ofIdx P i • m = Equiv.reflection P i • m :=
+@[simp]
+lemma weylGroup.ofIdx_smul (i : ι) (m : M) : weylGroup.ofIdx P i • m = Equiv.reflection P i • m :=
   rfl
 
 /-- Usually `RootPairing.weylGroup.induction` will be more useful than this lemma. -/
-lemma weylGroup_toSubmonoid :
-    P.weylGroup.toSubmonoid = Submonoid.closure (range (Equiv.reflection P)) := by
+lemma weylGroup_toSubmonoid
+    : P.weylGroup.toSubmonoid = Submonoid.closure (range (Equiv.reflection P)) := by
   suffices range (Equiv.reflection P) = (range (Equiv.reflection P))⁻¹ by
     rw [weylGroup, Subgroup.closure_toSubmonoid, ← this, union_self]
-  ext; simp [← inv_eq_iff_eq_inv]
+  ext
+  simp [← inv_eq_iff_eq_inv]
 
 @[elab_as_elim]
-lemma weylGroup.induction {pred : (g : Aut P) → g ∈ P.weylGroup → Prop}
+lemma weylGroup.induction
+    {pred : (g : Aut P) → g ∈ P.weylGroup → Prop}
     (mem : ∀ i, pred (Equiv.reflection P i) (P.reflection_mem_weylGroup i))
     (one : pred 1 (one_mem _))
     (mul : ∀ x y hx hy, pred x hx → pred y hy → pred (x * y) (mul_mem hx hy))
-    {x} (hx : x ∈ P.weylGroup) :
-    pred x hx := by
-  let pred' : (g : Aut P) → g ∈ Submonoid.closure (range (Equiv.reflection P)) → Prop :=
-    fun g hg ↦ pred g <| by change g ∈ P.weylGroup.toSubmonoid; rwa [weylGroup_toSubmonoid]
+    {x} (hx : x ∈ P.weylGroup)
+    : pred x hx := by
+  let pred' : (g : Aut P) → g ∈ Submonoid.closure (range (Equiv.reflection P)) → Prop := fun g hg ↦
+    pred g <| by change g ∈ P.weylGroup.toSubmonoid; rwa [weylGroup_toSubmonoid]
   have hx' : x ∈ Submonoid.closure (range (Equiv.reflection P)) := by rwa [← weylGroup_toSubmonoid]
   suffices pred' x hx' from this
   apply Submonoid.closure_induction
@@ -92,11 +96,13 @@ lemma weylGroup.induction {pred : (g : Aut P) → g ∈ P.weylGroup → Prop}
     exact mul x y hx hy hx' hy'
 
 @[elab_as_elim]
-lemma weylGroup.induction' [Nonempty ι] {pred : (g : Aut P) → g ∈ P.weylGroup → Prop}
+lemma weylGroup.induction'
+    [Nonempty ι]
+    {pred : (g : Aut P) → g ∈ P.weylGroup → Prop}
     (mem : ∀ i, pred (Equiv.reflection P i) (P.reflection_mem_weylGroup i))
     (mul : ∀ x y hx hy, pred x hx → pred y hy → pred (x * y) (mul_mem hx hy))
-    {x} (hx : x ∈ P.weylGroup) :
-    pred x hx := by
+    {x} (hx : x ∈ P.weylGroup)
+    : pred x hx := by
   refine weylGroup.induction P mem ?_ mul hx
   obtain ⟨i⟩ : Nonempty ι := inferInstance
   have : (Equiv.reflection P i) ^ 2 = 1 := by
@@ -104,9 +110,9 @@ lemma weylGroup.induction' [Nonempty ι] {pred : (g : Aut P) → g ∈ P.weylGro
   simpa [sq, ← this] using mul _ _ _ _ (mem i) (mem i)
 
 set_option backward.isDefEq.respectTransparency false in
-lemma range_weylGroup_weightHom :
-    MonoidHom.range ((Equiv.weightHom P).domRestrict P.weylGroup) =
-      Subgroup.closure (range P.reflection) := by
+lemma range_weylGroup_weightHom
+    : MonoidHom.range ((Equiv.weightHom P).domRestrict P.weylGroup)
+      = Subgroup.closure (range P.reflection) := by
   refine (Subgroup.closure_eq_of_le _ ?_ ?_).symm
   · rintro - ⟨i, rfl⟩
     simp only [MonoidHom.domRestrict_range, Subgroup.coe_map, Equiv.weightHom_apply, mem_image,
@@ -131,13 +137,12 @@ lemma range_weylGroup_weightHom :
       simpa only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using! Subgroup.mul_mem _ h₁ h₂
 
 set_option backward.isDefEq.respectTransparency false in
-lemma range_weylGroup_coweightHom :
-    MonoidHom.range ((Equiv.coweightHom P).domRestrict P.weylGroup) =
-      Subgroup.closure (range (MulOpposite.op ∘ P.coreflection)) := by
+lemma range_weylGroup_coweightHom
+    : MonoidHom.range ((Equiv.coweightHom P).domRestrict P.weylGroup)
+      = Subgroup.closure (range (MulOpposite.op ∘ P.coreflection)) := by
   refine (Subgroup.closure_eq_of_le _ ?_ ?_).symm
   · rintro - ⟨i, rfl⟩
-    simp only [MonoidHom.domRestrict_range, Subgroup.coe_map, mem_image,
-      SetLike.mem_coe]
+    simp only [MonoidHom.domRestrict_range, Subgroup.coe_map, mem_image, SetLike.mem_coe]
     use Equiv.reflection P i
     refine ⟨reflection_mem_weylGroup P i, by simp⟩
   · rintro fg ⟨⟨w, hw⟩, rfl⟩
@@ -161,8 +166,8 @@ lemma range_weylGroup_coweightHom :
 /-- The permutation representation of the Weyl group induced by `reflectionPerm`. -/
 abbrev weylGroupToPerm := (Equiv.indexHom P).domRestrict P.weylGroup
 
-lemma range_weylGroupToPerm :
-    P.weylGroupToPerm.range = Subgroup.closure (range P.reflectionPerm) := by
+lemma range_weylGroupToPerm
+    : P.weylGroupToPerm.range = Subgroup.closure (range P.reflectionPerm) := by
   refine (Subgroup.closure_eq_of_le _ ?_ ?_).symm
   · rintro - ⟨i, rfl⟩
     simp only [MonoidHom.domRestrict_range, Subgroup.coe_map, mem_image, SetLike.mem_coe]
@@ -193,18 +198,20 @@ def weylGroupRootRep : Representation R P.weylGroup M :=
 def weylGroupCorootRep : Representation R P.weylGroup.op N :=
   Representation.ofDistribMulAction R P.weylGroup.op N
 
-lemma weylGroup_apply_root (g : P.weylGroup) (i : ι) :
-    g • P.root i = P.root (P.weylGroupToPerm g i) :=
+lemma weylGroup_apply_root (g : P.weylGroup) (i : ι)
+    : g • P.root i = P.root (P.weylGroupToPerm g i) :=
   Hom.root_weightMap_apply _ _ _ _
 
 @[simp]
-lemma InvariantForm.apply_weylGroup_smul {B : P.InvariantForm} (g : P.weylGroup) (x y : M) :
-    B.form (g • x) (g • y) = B.form x y := by
+lemma InvariantForm.apply_weylGroup_smul {B : P.InvariantForm} (g : P.weylGroup) (x y : M)
+    : B.form (g • x) (g • y) = B.form x y := by
   revert x y
   obtain ⟨g, hg⟩ := g
   induction hg using weylGroup.induction with
-  | mem i => simp
-  | one => simp
+  | mem i =>
+    simp
+  | one =>
+    simp
   | mul g₁ g₂ hg₁ hg₂ hg₁' hg₂' =>
     intro x y
     rw [← Submonoid.mk_mul_mk _ _ _ hg₁ hg₂, mul_smul, mul_smul, hg₁', hg₂']

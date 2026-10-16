@@ -16,7 +16,6 @@ The ring of integers is integrally closed inside the original ring.
 
 public section
 
-
 universe u v w
 
 namespace Valuation
@@ -31,8 +30,7 @@ include hv
 
 open Polynomial
 
-lemma isIntegral_iff_v_le_one {x : R} :
-    IsIntegral O x ↔ v x ≤ 1 := by
+lemma isIntegral_iff_v_le_one {x : R} : IsIntegral O x ↔ v x ≤ 1 := by
   nontriviality R
   have : Nontrivial O := hv.nontrivial_iff.mpr inferInstance
   constructor
@@ -42,7 +40,8 @@ lemma isIntegral_iff_v_le_one {x : R} :
       obtain ⟨c, rfl⟩ := hn
       simp [map_eq_zero_iff _ hv.hom_inj, hm.ne_zero_of_C] at hf
     simp only [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hm.coeff_natDegree, map_one,
-      one_mul, add_eq_zero_iff_eq_neg] at hf
+        one_mul, add_eq_zero_iff_eq_neg]
+      at hf
     apply_fun v at hf
     simp only [map_neg, map_pow] at hf
     contrapose! hf
@@ -75,11 +74,9 @@ variable (hv : Integers v O)
 include hv in
 theorem isIntegrallyClosed : IsIntegrallyClosed O := by
   have : IsFractionRing O K := hv.isFractionRing
-  exact
-    (IsIntegrallyClosed.integralClosure_eq_bot_iff K).mp (Valuation.Integers.integralClosure hv)
+  exact (IsIntegrallyClosed.integralClosure_eq_bot_iff K).mp (Valuation.Integers.integralClosure hv)
 
-instance isIntegrallyClosed_integers (v : Valuation K Γ₀) :
-    IsIntegrallyClosed v.integer :=
+instance isIntegrallyClosed_integers (v : Valuation K Γ₀) : IsIntegrallyClosed v.integer :=
   (Valuation.integer.integers v).isIntegrallyClosed
 
 end FractionField

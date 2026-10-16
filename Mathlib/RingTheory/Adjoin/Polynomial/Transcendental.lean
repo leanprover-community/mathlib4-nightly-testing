@@ -39,10 +39,12 @@ variable (s : S)
 namespace Polynomial
 
 variable (R) in
-/-- Given a transcendental element `s : S` over `R`, the `R`-algebra equivalence
-between `R[X]` and `R[s]` given by sending `X` to `s`. -/
-@[expose] def algEquivOfTranscendental (h : Transcendental R s) :
-    R[X] ≃ₐ[R] R[s] :=
+/--
+Given a transcendental element `s : S` over `R`, the `R`-algebra equivalence
+between `R[X]` and `R[s]` given by sending `X` to `s`.
+-/
+@[expose]
+def algEquivOfTranscendental (h : Transcendental R s) : R[X] ≃ₐ[R] R[s] :=
   AlgEquiv.ofBijective (aeval (s : R[s])) <| by
     refine ⟨transcendental_iff_injective.mp ?_, ?_⟩
     · rwa [Subalgebra.transcendental_iff_transcendental_val]
@@ -52,25 +54,27 @@ between `R[X]` and `R[s]` given by sending `X` to `s`. -/
     exact ⟨r, by ext; simp⟩
 
 @[simp]
-theorem algEquivOfTranscendental_coe (h : Transcendental R s) :
-    (algEquivOfTranscendental R s h : R[X] →+* R[s]) = aeval (R := R) (A := R[s]) s :=
+theorem algEquivOfTranscendental_coe (h : Transcendental R s)
+    : (algEquivOfTranscendental R s h : R[X] →+* R[s]) = aeval (R := R) (A := R[s]) s :=
   rfl
 
 @[simp]
-theorem algEquivOfTranscendental_apply (h : Transcendental R s) (f : R[X]) :
-    algEquivOfTranscendental R s h f = aeval (s : R[s]) f := rfl
+theorem algEquivOfTranscendental_apply (h : Transcendental R s) (f : R[X])
+    : algEquivOfTranscendental R s h f = aeval (s : R[s]) f :=
+  rfl
 
-lemma algEquivOfTranscendental_apply_X (h : Transcendental R s) :
-    algEquivOfTranscendental R s h X = (s : R[s]) := by simp
+lemma algEquivOfTranscendental_apply_X (h : Transcendental R s)
+    : algEquivOfTranscendental R s h X = (s : R[s]) := by
+  simp
 
 @[simp]
-theorem algEquivOfTranscendental_symm_aeval (h : Transcendental R s) (f : R[X]) :
-    (algEquivOfTranscendental R s h).symm (aeval (s : R[s]) f) = f :=
+theorem algEquivOfTranscendental_symm_aeval (h : Transcendental R s) (f : R[X])
+    : (algEquivOfTranscendental R s h).symm (aeval (s : R[s]) f) = f :=
   (algEquivOfTranscendental R s h).toEquiv.injective (by simp)
 
 @[simp]
-theorem algEquivOfTranscendental_symm_gen (h : Transcendental R s) :
-    (algEquivOfTranscendental R s h).symm s = X :=
+theorem algEquivOfTranscendental_symm_gen (h : Transcendental R s)
+    : (algEquivOfTranscendental R s h).symm s = X :=
   (algEquivOfTranscendental R s h).toEquiv.injective (by simp)
 
 end Polynomial
@@ -81,7 +85,8 @@ open Ideal Polynomial
 
 variable {T : Type*} [CommRing T] [Algebra R T] {p : R[X]}
 
-/-- If `s : S` is transcendental over `R`, we get an `R`-algebra homomorphism given by
+/--
+If `s : S` is transcendental over `R`, we get an `R`-algebra homomorphism given by
 evaluation at some element `c`.
 
 For the more general case where `s` is not nec. transcendental see `Algebra.adjoin.liftSingleton`.
@@ -90,12 +95,12 @@ def adjoin.evalOfTranscendental (ht : Transcendental R s) (c : T) : R[s] →ₐ[
   (aeval c).comp (algEquivOfTranscendental R s ht).symm
 
 @[simp]
-theorem adjoin.evalOfTranscendental_aeval (ht : Transcendental R s) (c : T) :
-    evalOfTranscendental s ht c (p.aeval (s : R[s])) = p.aeval c := by
+theorem adjoin.evalOfTranscendental_aeval (ht : Transcendental R s) (c : T)
+    : evalOfTranscendental s ht c (p.aeval (s : R[s])) = p.aeval c := by
   simp_all [evalOfTranscendental]
 
-theorem adjoin.evalOfTranscendental_eq_zero_iff (ht : Transcendental R s) (x : R[s]) (c : R) :
-    evalOfTranscendental s ht c x = 0 ↔ ((s : R[s]) - algebraMap R R[s] c) ∣ x := by
+theorem adjoin.evalOfTranscendental_eq_zero_iff (ht : Transcendental R s) (x : R[s]) (c : R)
+    : evalOfTranscendental s ht c x = 0 ↔ ((s : R[s]) - algebraMap R R[s] c) ∣ x := by
   simp [evalOfTranscendental, ← map_dvd_iff (algEquivOfTranscendental R s ht).symm,
     Polynomial.dvd_iff_isRoot]
 
@@ -115,20 +120,23 @@ open Polynomial
 variable {s}
 
 /-- Given a transcendental element `s : S` over `F`, `F[s]` is a euclidean domain. -/
-abbrev Transcendental.euclideanDomainAdjoin {F : Type*} [Field F] [Algebra F S]
-    (h : Transcendental F s) : EuclideanDomain F[s] :=
+abbrev Transcendental.euclideanDomainAdjoin
+    {F : Type*} [Field F] [Algebra F S] (h : Transcendental F s)
+    : EuclideanDomain F[s] :=
   (algEquivOfTranscendental F s h).symm.euclideanDomain
 
-instance {F : Type*} [Field F] [Algebra F S] [h : Fact (Transcendental F s)] :
-    EuclideanDomain F[s] :=
+instance {F : Type*} [Field F] [Algebra F S] [h : Fact (Transcendental F s)]
+    : EuclideanDomain F[s] :=
   h.out.euclideanDomainAdjoin
 
 variable [UniqueFactorizationMonoid R]
 
-/-- Given a transcendental element `s : S` over `R`, a unique factorization monoid,
-`R[s]` is a unique factorization monoid as well. -/
-theorem Transcendental.uniqueFactorizationMonoid_adjoin (h : Transcendental R s) :
-    UniqueFactorizationMonoid R[s] :=
+/--
+Given a transcendental element `s : S` over `R`, a unique factorization monoid,
+`R[s]` is a unique factorization monoid as well.
+-/
+theorem Transcendental.uniqueFactorizationMonoid_adjoin (h : Transcendental R s)
+    : UniqueFactorizationMonoid R[s] :=
   (algEquivOfTranscendental R s h).toMulEquiv.uniqueFactorizationMonoid inferInstance
 
 instance [h : Fact (Transcendental R s)] : UniqueFactorizationMonoid R[s] :=

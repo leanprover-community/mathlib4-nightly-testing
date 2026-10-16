@@ -41,14 +41,18 @@ lemma degree_eq_zero_of_isUnit [Nontrivial R] (h : IsUnit p) : degree p = 0 :=
 lemma degree_coe_units [Nontrivial R] (u : R[X]ˣ) : degree (u : R[X]) = 0 :=
   degree_eq_zero_of_isUnit ⟨u, rfl⟩
 
-/-- Characterization of a unit of a polynomial ring over an integral domain `R`.
-See `Polynomial.isUnit_iff_coeff_isUnit_isNilpotent` when `R` is a commutative ring. -/
-lemma isUnit_iff : IsUnit p ↔ ∃ r : R, IsUnit r ∧ C r = p :=
-  ⟨fun hp =>
-    ⟨p.coeff 0,
-      let h := eq_C_of_natDegree_eq_zero (natDegree_eq_zero_of_isUnit hp)
-      ⟨isUnit_C.1 (h ▸ hp), h.symm⟩⟩,
-    fun ⟨_, hr, hrp⟩ => hrp ▸ isUnit_C.2 hr⟩
+/--
+Characterization of a unit of a polynomial ring over an integral domain `R`.
+See `Polynomial.isUnit_iff_coeff_isUnit_isNilpotent` when `R` is a commutative ring.
+-/
+lemma isUnit_iff : IsUnit p ↔ ∃ r : R, IsUnit r ∧ C r = p := ⟨
+  fun hp => ⟨
+    p.coeff 0,
+    let h := eq_C_of_natDegree_eq_zero (natDegree_eq_zero_of_isUnit hp)
+    ⟨isUnit_C.1 (h ▸ hp), h.symm⟩
+  ⟩,
+  fun ⟨_, hr, hrp⟩ => hrp ▸ isUnit_C.2 hr
+⟩
 
 lemma not_isUnit_of_degree_pos (p : R[X]) (hpl : 0 < p.degree) : ¬ IsUnit p := by
   cases subsingleton_or_nontrivial R
@@ -59,7 +63,8 @@ lemma not_isUnit_of_degree_pos (p : R[X]) (hpl : 0 < p.degree) : ¬ IsUnit p := 
 lemma not_isUnit_of_natDegree_pos (p : R[X]) (hpl : 0 < p.natDegree) : ¬ IsUnit p :=
   not_isUnit_of_degree_pos _ (natDegree_pos_iff_degree_pos.mp hpl)
 
-@[simp] lemma natDegree_coe_units (u : R[X]ˣ) : natDegree (u : R[X]) = 0 := by
+@[simp]
+lemma natDegree_coe_units (u : R[X]ˣ) : natDegree (u : R[X]) = 0 := by
   nontriviality R
   exact natDegree_eq_of_degree_eq_some (degree_coe_units u)
 
@@ -78,18 +83,18 @@ lemma Monic.C_dvd_iff_isUnit {a : R} : C a ∣ p ↔ IsUnit a where
   mp h := isUnit_iff_dvd_one.mpr <| hp.coeff_natDegree ▸ (C_dvd_iff_dvd_coeff _ _).mp h p.natDegree
   mpr ha := (ha.map C).dvd
 
-lemma Monic.degree_pos_of_not_isUnit (hu : ¬IsUnit p) : 0 < degree p :=
+lemma Monic.degree_pos_of_not_isUnit (hu : ¬ IsUnit p) : 0 < degree p :=
   hp.degree_pos.mpr fun hp' ↦ (hp' ▸ hu) isUnit_one
 
-lemma Monic.natDegree_pos_of_not_isUnit (hu : ¬IsUnit p) : 0 < natDegree p :=
+lemma Monic.natDegree_pos_of_not_isUnit (hu : ¬ IsUnit p) : 0 < natDegree p :=
   hp.natDegree_pos.mpr fun hp' ↦ (hp' ▸ hu) isUnit_one
 
-lemma degree_pos_of_not_isUnit_of_dvd_monic (ha : ¬IsUnit a) (hap : a ∣ p) : 0 < degree a := by
+lemma degree_pos_of_not_isUnit_of_dvd_monic (ha : ¬ IsUnit a) (hap : a ∣ p) : 0 < degree a := by
   contrapose! ha with h
   rw [Polynomial.eq_C_of_degree_le_zero h] at hap ⊢
   simpa [hp.C_dvd_iff_isUnit, isUnit_C] using hap
 
-lemma natDegree_pos_of_not_isUnit_of_dvd_monic (ha : ¬IsUnit a) (hap : a ∣ p) : 0 < natDegree a :=
+lemma natDegree_pos_of_not_isUnit_of_dvd_monic (ha : ¬ IsUnit a) (hap : a ∣ p) : 0 < natDegree a :=
   natDegree_pos_iff_degree_pos.mpr <| degree_pos_of_not_isUnit_of_dvd_monic hp ha hap
 
 end CommSemiring

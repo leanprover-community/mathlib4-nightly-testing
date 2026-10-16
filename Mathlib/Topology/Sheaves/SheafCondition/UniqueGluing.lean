@@ -38,8 +38,8 @@ isomorphism-reflecting functor leaves the sheaf condition invariant, as shown in
 
 noncomputable section
 
-open TopCat TopCat.Presheaf CategoryTheory CategoryTheory.Limits
-  TopologicalSpace TopologicalSpace.Opens Opposite
+open TopCat TopCat.Presheaf CategoryTheory CategoryTheory.Limits TopologicalSpace
+  TopologicalSpace.Opens Opposite
 
 universe x
 
@@ -54,13 +54,15 @@ section
 
 variable {X : TopCat.{x}} (F : Presheaf C X) {ι : Type*} (U : ι → Opens X)
 
-/-- A family of sections `sf` is compatible, if the restrictions of `sf i` and `sf j` to `U i ⊓ U j`
+/--
+A family of sections `sf` is compatible, if the restrictions of `sf i` and `sf j` to `U i ⊓ U j`
 agree, for all `i` and `j`
 -/
 def IsCompatible (sf : ∀ i : ι, ToType (F.obj (op (U i)))) : Prop :=
   ∀ i j : ι, F.map (infLELeft (U i) (U j)).op (sf i) = F.map (infLERight (U i) (U j)).op (sf j)
 
-/-- A section `s` is a gluing for a family of sections `sf` if it restricts to `sf i` on `U i`,
+/--
+A section `s` is a gluing for a family of sections `sf` if it restricts to `sf i` on `U i`,
 for all `i`
 -/
 def IsGluing (sf : ∀ i : ι, ToType (F.obj (op (U i)))) (s : ToType (F.obj (op (iSup U)))) : Prop :=
@@ -84,17 +86,20 @@ section TypeValued
 
 variable {X : TopCat.{x}} {F : Presheaf Type* X} {ι : Type*} {U : ι → Opens X}
 
-/-- Given sections over a family of open sets, extend it to include
-  sections over pairwise intersections of the open sets. -/
-def objPairwiseOfFamily (sf : ∀ i, F.obj (op (U i))) :
-    ∀ i, ((Pairwise.diagram U).op ⋙ F).obj i
+/--
+Given sections over a family of open sets, extend it to include
+sections over pairwise intersections of the open sets.
+-/
+def objPairwiseOfFamily (sf : ∀ i, F.obj (op (U i))) : ∀ i, ((Pairwise.diagram U).op ⋙ F).obj i
   | ⟨Pairwise.single i⟩ => sf i
   | ⟨Pairwise.pair i j⟩ => F.map (infLELeft (U i) (U j)).op (sf i)
 
-/-- Given a compatible family of sections over open sets, extend it to a
-  section of the functor `(Pairwise.diagram U).op ⋙ F`. -/
-def IsCompatible.sectionPairwise {sf} (h : IsCompatible F U sf) :
-    ((Pairwise.diagram U).op ⋙ F).sections := by
+/--
+Given a compatible family of sections over open sets, extend it to a
+section of the functor `(Pairwise.diagram U).op ⋙ F`.
+-/
+def IsCompatible.sectionPairwise {sf} (h : IsCompatible F U sf)
+    : ((Pairwise.diagram U).op ⋙ F).sections := by
   refine ⟨objPairwiseOfFamily sf, ?_⟩
   let G := (Pairwise.diagram U).op ⋙ F
   rintro (i | ⟨i, j⟩) (i' | ⟨i', j'⟩) (_ | _ | _ | _)
@@ -103,23 +108,26 @@ def IsCompatible.sectionPairwise {sf} (h : IsCompatible F U sf) :
   · exact (h i' i).symm
   · congrm $(G.map_id <| op <| Pairwise.pair i j) _
 
-theorem isGluing_iff_pairwise {sf s} : IsGluing F U sf s ↔
-    ∀ i, (F.mapCone (Pairwise.cocone U).op).π.app i s = objPairwiseOfFamily sf i := by
+theorem isGluing_iff_pairwise {sf s}
+    : IsGluing F U sf s
+      ↔ ∀ i, (F.mapCone (Pairwise.cocone U).op).π.app i s = objPairwiseOfFamily sf i := by
   refine ⟨fun h ↦ ?_, fun h i ↦ h (op <| Pairwise.single i)⟩
   rintro (i | ⟨i, j⟩)
   · exact h i
   · rw [← (F.mapCone (Pairwise.cocone U).op).w (op <| Pairwise.Hom.left i j)]
     exact congr_arg _ (h i)
 
-theorem IsSheaf.isSheafUniqueGluing_types (h : F.IsSheaf) (sf : ∀ i : ι, F.obj (op (U i)))
-    (cpt : IsCompatible F U sf) : ∃! s : F.obj (op (iSup U)), IsGluing F U sf s := by
+theorem IsSheaf.isSheafUniqueGluing_types
+    (h : F.IsSheaf) (sf : ∀ i : ι, F.obj (op (U i))) (cpt : IsCompatible F U sf)
+    : ∃! s : F.obj (op (iSup U)), IsGluing F U sf s := by
   simp_rw [isGluing_iff_pairwise]
   exact (Types.isLimit_iff _).mp (h.isSheafPairwiseIntersections U) _ cpt.sectionPairwise.prop
 
 variable (F)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- For type-valued presheaves, the sheaf condition in terms of unique gluings is equivalent to the
+/--
+For type-valued presheaves, the sheaf condition in terms of unique gluings is equivalent to the
 usual sheaf condition.
 -/
 theorem isSheaf_iff_isSheafUniqueGluing_types : F.IsSheaf ↔ F.IsSheafUniqueGluing := by
@@ -127,13 +135,16 @@ theorem isSheaf_iff_isSheafUniqueGluing_types : F.IsSheaf ↔ F.IsSheafUniqueGlu
     Types.isLimit_iff, IsSheafUniqueGluing, isGluing_iff_pairwise]
   refine forall₂_congr fun ι U ↦ ⟨fun h sf cpt ↦ ?_, fun h s hs ↦ ?_⟩
   · exact h _ cpt.sectionPairwise.prop
-  · specialize h (fun i ↦ s <| op <| Pairwise.single i) fun i j ↦
-      (hs <| op <| Pairwise.Hom.left i j).trans (hs <| op <| Pairwise.Hom.right i j).symm
-    convert! h; ext (i | ⟨i, j⟩)
+  · specialize h
+      (fun i ↦ s <| op <| Pairwise.single i)
+      fun i j ↦ (hs <| op <| Pairwise.Hom.left i j).trans (hs <| op <| Pairwise.Hom.right i j).symm
+    convert! h
+    ext (i | ⟨i, j⟩)
     · rfl
     · exact (hs <| op <| Pairwise.Hom.left i j).symm
 
-/-- The usual sheaf condition can be obtained from the sheaf condition
+/--
+The usual sheaf condition can be obtained from the sheaf condition
 in terms of unique gluings.
 -/
 theorem isSheaf_of_isSheafUniqueGluing_types (Fsh : F.IsSheafUniqueGluing) : F.IsSheaf :=
@@ -143,18 +154,22 @@ end TypeValued
 
 section
 
-variable [HasLimitsOfSize.{x, x} C] [(forget C).ReflectsIsomorphisms]
+variable
+  [HasLimitsOfSize.{x, x} C] [(forget C).ReflectsIsomorphisms]
   [PreservesLimitsOfSize.{x, x} (forget C)]
 variable {X : TopCat.{x}} {F : Presheaf C X}
 
-theorem IsSheaf.isSheafUniqueGluing (h : F.IsSheaf) {ι : Type*} (U : ι → Opens X)
-    (sf : ∀ i : ι, ToType (F.obj (op (U i))))
-    (cpt : IsCompatible F U sf) : ∃! s : ToType (F.obj (op (iSup U))), IsGluing F U sf s :=
+theorem IsSheaf.isSheafUniqueGluing
+    (h : F.IsSheaf)
+    {ι : Type*}
+    (U : ι → Opens X) (sf : ∀ i : ι, ToType (F.obj (op (U i)))) (cpt : IsCompatible F U sf)
+    : ∃! s : ToType (F.obj (op (iSup U))), IsGluing F U sf s :=
   ((isSheaf_iff_isSheaf_comp' (forget C) F).mp h).isSheafUniqueGluing_types sf cpt
 
 variable (F)
 
-/-- For presheaves valued in a concrete category, whose forgetful functor reflects isomorphisms and
+/--
+For presheaves valued in a concrete category, whose forgetful functor reflects isomorphisms and
 preserves limits, the sheaf condition in terms of unique gluings is equivalent to the usual one.
 -/
 theorem isSheaf_iff_isSheafUniqueGluing : F.IsSheaf ↔ F.IsSheafUniqueGluing :=
@@ -175,19 +190,19 @@ variable [HasLimitsOfSize.{x, x} C] [(CategoryTheory.forget C).ReflectsIsomorphi
 variable [PreservesLimitsOfSize.{x, x} (CategoryTheory.forget C)]
 variable {X : TopCat.{x}} (F : Sheaf C X) {ι : Type*} (U : ι → Opens X)
 
-/-- A more convenient way of obtaining a unique gluing of sections for a sheaf.
--/
-theorem existsUnique_gluing (sf : ∀ i : ι, ToType (F.1.obj (op (U i))))
-    (h : IsCompatible F.1 U sf) :
-    ∃! s : ToType (F.1.obj (op (iSup U))), IsGluing F.1 U sf s :=
+/-- A more convenient way of obtaining a unique gluing of sections for a sheaf. -/
+theorem existsUnique_gluing (sf : ∀ i : ι, ToType (F.1.obj (op (U i)))) (h : IsCompatible F.1 U sf)
+    : ∃! s : ToType (F.1.obj (op (iSup U))), IsGluing F.1 U sf s :=
   IsSheaf.isSheafUniqueGluing F.property U sf h
 
-/-- In this version of the lemma, the inclusion homs `iUV` can be specified directly by the user,
+/--
+In this version of the lemma, the inclusion homs `iUV` can be specified directly by the user,
 which can be more convenient in practice.
 -/
-theorem existsUnique_gluing' (V : Opens X) (iUV : ∀ i : ι, U i ⟶ V) (hcover : V ≤ iSup U)
-    (sf : ∀ i : ι, ToType (F.1.obj (op (U i)))) (h : IsCompatible F.1 U sf) :
-    ∃! s : ToType (F.1.obj (op V)), ∀ i : ι, F.1.map (iUV i).op s = sf i := by
+theorem existsUnique_gluing'
+    (V : Opens X) (iUV : ∀ i : ι, U i ⟶ V) (hcover : V ≤ iSup U)
+    (sf : ∀ i : ι, ToType (F.1.obj (op (U i)))) (h : IsCompatible F.1 U sf)
+    : ∃! s : ToType (F.1.obj (op V)), ∀ i : ι, F.1.map (iUV i).op s = sf i := by
   have V_eq_supr_U : V = iSup U := le_antisymm hcover (iSup_le fun i => (iUV i).le)
   obtain ⟨gl, gl_spec, gl_uniq⟩ := F.existsUnique_gluing U sf h
   refine ⟨F.1.map (eqToHom V_eq_supr_U).op gl, ?_, ?_⟩
@@ -195,14 +210,16 @@ theorem existsUnique_gluing' (V : Opens X) (iUV : ∀ i : ι, U i ⟶ V) (hcover
     rw [← ConcreteCategory.comp_apply, ← F.1.map_comp]
     exact gl_spec i
   · intro gl' gl'_spec
-    convert congr_arg _ (gl_uniq (F.1.map (eqToHom V_eq_supr_U.symm).op gl') fun i => _) <;>
-      rw [← ConcreteCategory.comp_apply, ← F.1.map_comp]
+    convert congr_arg _ (gl_uniq (F.1.map (eqToHom V_eq_supr_U.symm).op gl') fun i => _)
+      <;> rw [← ConcreteCategory.comp_apply, ← F.1.map_comp]
     · simp
     · exact gl'_spec i
 
 @[ext]
-theorem eq_of_locally_eq (s t : ToType (F.1.obj (op (iSup U))))
-    (h : ∀ i, F.1.map (Opens.leSupr U i).op s = F.1.map (Opens.leSupr U i).op t) : s = t := by
+theorem eq_of_locally_eq
+    (s t : ToType (F.1.obj (op (iSup U))))
+    (h : ∀ i, F.1.map (Opens.leSupr U i).op s = F.1.map (Opens.leSupr U i).op t)
+    : s = t := by
   let sf : ∀ i : ι, ToType (F.1.obj (op (U i))) := fun i => F.1.map (Opens.leSupr U i).op s
   have sf_compatible : IsCompatible _ U sf := by
     intro i j
@@ -218,25 +235,29 @@ theorem eq_of_locally_eq (s t : ToType (F.1.obj (op (iSup U))))
     intro i
     rw [← h]
 
-/-- In this version of the lemma, the inclusion homs `iUV` can be specified directly by the user,
+/--
+In this version of the lemma, the inclusion homs `iUV` can be specified directly by the user,
 which can be more convenient in practice.
 -/
-theorem eq_of_locally_eq' (V : Opens X) (iUV : ∀ i : ι, U i ⟶ V) (hcover : V ≤ iSup U)
-    (s t : ToType (F.1.obj (op V))) (h : ∀ i, F.1.map (iUV i).op s = F.1.map (iUV i).op t) :
-    s = t := by
+theorem eq_of_locally_eq'
+    (V : Opens X) (iUV : ∀ i : ι, U i ⟶ V) (hcover : V ≤ iSup U) (s t : ToType (F.1.obj (op V)))
+    (h : ∀ i, F.1.map (iUV i).op s = F.1.map (iUV i).op t)
+    : s = t := by
   have V_eq_supr_U : V = iSup U := le_antisymm hcover (iSup_le fun i => (iUV i).le)
   suffices F.1.map (eqToHom V_eq_supr_U.symm).op s = F.1.map (eqToHom V_eq_supr_U.symm).op t by
-    convert congr(F.1.map (eqToHom V_eq_supr_U).op $this) <;>
-    rw [← ConcreteCategory.comp_apply, ← F.1.map_comp, eqToHom_op, eqToHom_op, eqToHom_trans,
-      eqToHom_refl, F.1.map_id, ConcreteCategory.id_apply]
+    convert congr(F.1.map (eqToHom V_eq_supr_U).op $this)
+      <;> rw [← ConcreteCategory.comp_apply, ← F.1.map_comp, eqToHom_op, eqToHom_op, eqToHom_trans,
+        eqToHom_refl, F.1.map_id, ConcreteCategory.id_apply]
   apply eq_of_locally_eq
   intro i
   rw [← ConcreteCategory.comp_apply, ← ConcreteCategory.comp_apply, ← F.1.map_comp]
   exact h i
 
-theorem eq_of_locally_eq₂ {U₁ U₂ V : Opens X} (i₁ : U₁ ⟶ V) (i₂ : U₂ ⟶ V) (hcover : V ≤ U₁ ⊔ U₂)
-    (s t : ToType (F.1.obj (op V))) (h₁ : F.1.map i₁.op s = F.1.map i₁.op t)
-    (h₂ : F.1.map i₂.op s = F.1.map i₂.op t) : s = t := by
+theorem eq_of_locally_eq₂
+    {U₁ U₂ V : Opens X}
+    (i₁ : U₁ ⟶ V) (i₂ : U₂ ⟶ V) (hcover : V ≤ U₁ ⊔ U₂) (s t : ToType (F.1.obj (op V)))
+    (h₁ : F.1.map i₁.op s = F.1.map i₁.op t) (h₂ : F.1.map i₂.op s = F.1.map i₂.op t)
+    : s = t := by
   fapply F.eq_of_locally_eq' fun t : Bool => if t then U₁ else U₂
   · exact fun i => if h : i then eqToHom (ite_eq_left h) ≫ i₁ else eqToHom (ite_eq_right h) ≫ i₂
   · refine le_trans hcover ?_
@@ -249,11 +270,12 @@ theorem eq_of_locally_eq₂ {U₁ U₂ V : Opens X} (i₁ : U₁ ⟶ V) (i₂ : 
     any_goals exact h₂
 
 variable {F} {U} in
-theorem eq_app_of_locally_eq {V : Opens X} {G : Sheaf C X} {f : F ⟶ G}
-    {s : ToType (F.1.obj (op (iSup U)))} {t : ToType (G.1.obj (op V))}
-    {sf : ∀ i : ι, ToType (F.1.obj (op (U i)))} (h : IsGluing F.1 U sf s) (hV : ∀ i : ι, U i ≤ V)
-    (ht : ∀ i : ι, f.1.app (op (U i)) (sf i) = G.1.map (homOfLE (hV i)).op t) :
-    f.hom.app (op (iSup U)) s = G.obj.map (homOfLE (by aesop_cat)).op t := by
+theorem eq_app_of_locally_eq
+    {V : Opens X} {G : Sheaf C X} {f : F ⟶ G} {s : ToType (F.1.obj (op (iSup U)))}
+    {t : ToType (G.1.obj (op V))} {sf : ∀ i : ι, ToType (F.1.obj (op (U i)))}
+    (h : IsGluing F.1 U sf s) (hV : ∀ i : ι, U i ≤ V)
+    (ht : ∀ i : ι, f.1.app (op (U i)) (sf i) = G.1.map (homOfLE (hV i)).op t)
+    : f.hom.app (op (iSup U)) s = G.obj.map (homOfLE (by aesop_cat)).op t := by
   refine eq_of_locally_eq G U _ _ (fun _ ↦ ?_)
   rw [← NatTrans.naturality_apply, h, ht, ← ConcreteCategory.comp_apply, ← Functor.map_comp]
   rfl

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Module.Torsion.Basic
 public import Mathlib.RingTheory.Polynomial.Chebyshev
-
 import Mathlib.Algebra.EuclideanDomain.Basic
 import Mathlib.Algebra.EuclideanDomain.Int
 import Mathlib.LinearAlgebra.FiniteSpan
@@ -59,84 +58,76 @@ variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] (x : M) (f : D
 
 namespace Module
 
-/-- Given an element `x` in a module `M` and a linear form `f` on `M`, we define the endomorphism
+/--
+Given an element `x` in a module `M` and a linear form `f` on `M`, we define the endomorphism
 of `M` for which `y ↦ y - (f y) • x`.
 
 One is typically interested in this endomorphism when `f x = 2`; this definition exists to allow the
-user defer discharging this proof obligation. See also `Module.reflection`. -/
-def preReflection : End R M :=
-  LinearMap.id - f.smulRight x
+user defer discharging this proof obligation. See also `Module.reflection`.
+-/
+def preReflection : End R M := LinearMap.id - f.smulRight x
 
-lemma preReflection_apply :
-    preReflection x f y = y - (f y) • x := by
-  simp [preReflection]
+lemma preReflection_apply : preReflection x f y = y - (f y) • x := by simp [preReflection]
 
 variable {x f}
 
-lemma preReflection_apply_self (h : f x = 2) :
-    preReflection x f x = -x := by
+lemma preReflection_apply_self (h : f x = 2) : preReflection x f x = -x := by
   rw [preReflection_apply, h, two_smul]; abel
 
-lemma involutive_preReflection (h : f x = 2) :
-    Involutive (preReflection x f) :=
-  fun y ↦ by simp [map_sub, h, two_smul, preReflection_apply]
+lemma involutive_preReflection (h : f x = 2) : Involutive (preReflection x f) := fun y ↦ by
+  simp [map_sub, h, two_smul, preReflection_apply]
 
-lemma preReflection_preReflection (g : Dual R M) (h : f x = 2) :
-    preReflection (preReflection x f y) (preReflection f (Dual.eval R M x) g) =
-    (preReflection x f) ∘ₗ (preReflection y g) ∘ₗ (preReflection x f) := by
+lemma preReflection_preReflection (g : Dual R M) (h : f x = 2)
+    : preReflection (preReflection x f y) (preReflection f (Dual.eval R M x) g)
+      = (preReflection x f) ∘ₗ (preReflection y g) ∘ₗ (preReflection x f) := by
   ext m
   simp only [h, preReflection_apply, mul_comm (g x) (f m), mul_two, mul_assoc, Dual.eval_apply,
     LinearMap.sub_apply, LinearMap.coe_comp, LinearMap.smul_apply, smul_eq_mul, smul_sub, sub_smul,
     smul_smul, sub_mul, comp_apply, map_sub, map_smul, add_smul]
   abel
 
-/-- Given an element `x` in a module `M` and a linear form `f` on `M` for which `f x = 2`, we define
+/--
+Given an element `x` in a module `M` and a linear form `f` on `M` for which `f x = 2`, we define
 the endomorphism of `M` for which `y ↦ y - (f y) • x`.
 
-It is an involutive endomorphism of `M` fixing the kernel of `f` for which `x ↦ -x`. -/
-def reflection (h : f x = 2) : M ≃ₗ[R] M :=
-  { preReflection x f, (involutive_preReflection h).toPerm with }
+It is an involutive endomorphism of `M` fixing the kernel of `f` for which `x ↦ -x`.
+-/
+def reflection (h : f x = 2) : M ≃ₗ[R] M := {
+  preReflection x f, (involutive_preReflection h).toPerm with
+}
 
-lemma reflection_apply (h : f x = 2) :
-    reflection h y = y - (f y) • x :=
-  preReflection_apply x f y
-
-@[simp]
-lemma reflection_apply_self (h : f x = 2) :
-    reflection h x = -x :=
-  preReflection_apply_self h
-
-lemma involutive_reflection (h : f x = 2) :
-    Involutive (reflection h) :=
-  involutive_preReflection h
+lemma reflection_apply (h : f x = 2) : reflection h y = y - (f y) • x := preReflection_apply x f y
 
 @[simp]
-lemma reflection_inv (h : f x = 2) : (reflection h)⁻¹ = reflection h := rfl
+lemma reflection_apply_self (h : f x = 2) : reflection h x = -x := preReflection_apply_self h
 
-@[simp]
-lemma reflection_symm (h : f x = 2) :
-    (reflection h).symm = reflection h :=
-  rfl
+lemma involutive_reflection (h : f x = 2) : Involutive (reflection h) := involutive_preReflection h
 
-lemma invOn_reflection_of_mapsTo {Φ : Set M} (h : f x = 2) :
-    InvOn (reflection h) (reflection h) Φ Φ :=
+@[simp] lemma reflection_inv (h : f x = 2) : (reflection h)⁻¹ = reflection h := rfl
+
+@[simp] lemma reflection_symm (h : f x = 2) : (reflection h).symm = reflection h := rfl
+
+lemma invOn_reflection_of_mapsTo {Φ : Set M} (h : f x = 2)
+    : InvOn (reflection h) (reflection h) Φ Φ :=
   ⟨fun x _ ↦ involutive_reflection h x, fun x _ ↦ involutive_reflection h x⟩
 
-lemma bijOn_reflection_of_mapsTo {Φ : Set M} (h : f x = 2) (h' : MapsTo (reflection h) Φ Φ) :
-    BijOn (reflection h) Φ Φ :=
+lemma bijOn_reflection_of_mapsTo {Φ : Set M} (h : f x = 2) (h' : MapsTo (reflection h) Φ Φ)
+    : BijOn (reflection h) Φ Φ :=
   (invOn_reflection_of_mapsTo h).bijOn h' h'
 
-lemma _root_.Submodule.mem_invtSubmodule_reflection_of_mem (h : f x = 2)
-    (p : Submodule R M) (hx : x ∈ p) :
-    p ∈ End.invtSubmodule (reflection h) := by
+lemma _root_.Submodule.mem_invtSubmodule_reflection_of_mem
+    (h : f x = 2) (p : Submodule R M) (hx : x ∈ p)
+    : p ∈ End.invtSubmodule (reflection h) := by
   suffices ∀ y ∈ p, reflection h y ∈ p from
     (End.mem_invtSubmodule _).mpr fun y hy ↦ by simpa using this y hy
   intro y hy
   simpa only [reflection_apply, p.sub_mem_iff_right hy] using p.smul_mem (f y) hx
 
-lemma _root_.Submodule.mem_invtSubmodule_reflection_iff [IsDomain R] [NeZero (2 : R)]
-    [IsTorsionFree R M] (h : f x = 2) {p : Submodule R M} (hp : Disjoint p (R ∙ x)) :
-    p ∈ End.invtSubmodule (reflection h) ↔ p ≤ LinearMap.ker f := by
+lemma _root_.Submodule.mem_invtSubmodule_reflection_iff
+    [IsDomain R] [NeZero (2 : R)] [IsTorsionFree R M]
+    (h : f x = 2)
+    {p : Submodule R M} (hp : Disjoint p (R ∙ x))
+    : p ∈ End.invtSubmodule (reflection h) ↔ p ≤ LinearMap.ker f := by
   refine ⟨fun h' y hy ↦ ?_, fun h' y hy ↦ ?_⟩
   · have hx : x ≠ 0 := by rintro rfl; exact two_ne_zero (α := R) <| by simp [← h]
     suffices f y • x ∈ p by
@@ -176,25 +167,28 @@ open Int Polynomial.Chebyshev
 variable {x y : M} {f g : Dual R M} (hf : f x = 2) (hg : g y = 2)
 
 /-- A formula for $(r_1 r_2)^m z$, where $m$ is a natural number and $z \in M$. -/
-lemma reflection_mul_reflection_pow_apply (m : ℕ) (z : M)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m) z =
-      z +
-        ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t)) •
-          ((g x * f z - g z) • y - f z • x) +
-        ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t)) •
-          ((f y * g z - f z) • x - g z • y) := by
+lemma reflection_mul_reflection_pow_apply
+    (m : ℕ) (z : M) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m) z
+      = z
+        + ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t))
+          • ((g x * f z - g z) • y - f z • x)
+        + ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t))
+          • ((f y * g z - f z) • x - g z • y) := by
   induction m with
-  | zero => simp
+  | zero =>
+    simp
   | succ m ih =>
-    /- Now, let us collect two facts about the evaluations of `S r k`. These easily follow from the
-    properties of the `S` polynomials. -/
-    have S_eval_t_sub_two (k : ℤ) :
-        (S R (k - 2)).eval t = t * (S R (k - 1)).eval t - (S R k).eval t := by
+    /-
+    Now, let us collect two facts about the evaluations of `S r k`. These easily follow from the
+    properties of the `S` polynomials.
+    -/
+    have S_eval_t_sub_two (k : ℤ)
+        : (S R (k - 2)).eval t = t * (S R (k - 1)).eval t - (S R k).eval t := by
       simp [S_sub_two]
-    have S_eval_t_sq_add_S_eval_t_sq (k : ℤ) :
-        (S R k).eval t ^ 2 + (S R (k + 1)).eval t ^ 2 - t * (S R k).eval t * (S R (k + 1)).eval t
-        = 1 := by
+    have S_eval_t_sq_add_S_eval_t_sq (k : ℤ)
+        : (S R k).eval t ^ 2 + (S R (k + 1)).eval t ^ 2 - t * (S R k).eval t * (S R (k + 1)).eval t
+          = 1 := by
       simpa using congr(Polynomial.eval t $(S_sq_add_S_sq R k))
     -- Apply the inductive hypothesis.
     rw [pow_succ', LinearEquiv.mul_apply, ih, LinearEquiv.mul_apply]
@@ -209,8 +203,10 @@ lemma reflection_mul_reflection_pow_apply (m : ℕ) (z : M)
       add_mul_ediv_left _ k (by simp : (2 : ℤ) ≠ 0)]
     have he : e = 0 ∨ e = 1 := by lia
     clear_value e
-    /- Now, equate the coefficients on both sides. These linear combinations were
-    found using `polyrith`. -/
+    /-
+    Now, equate the coefficients on both sides. These linear combinations were
+    found using `polyrith`.
+    -/
     match_scalars
     · rfl
     · linear_combination (norm := skip) (-g z * f y * (S R (e - 1 + k)).eval t +
@@ -225,28 +221,29 @@ lemma reflection_mul_reflection_pow_apply (m : ℕ) (z : M)
       obtain rfl | rfl : e = 0 ∨ e = 1 := he <;> ring_nf
 
 /-- A formula for $(r_1 r_2)^m$, where $m$ is a natural number. -/
-lemma reflection_mul_reflection_pow (m : ℕ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m).toLinearMap =
-      LinearMap.id (R := R) (M := M) +
-        ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t)) •
-          ((g x • f - g).smulRight y - f.smulRight x) +
-        ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t)) •
-          ((f y • g - f).smulRight x - g.smulRight y) := by
+lemma reflection_mul_reflection_pow
+    (m : ℕ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m).toLinearMap
+      = LinearMap.id (R := R) (M := M)
+        + ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t))
+          • ((g x • f - g).smulRight y - f.smulRight x)
+        + ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t))
+          • ((f y • g - f).smulRight x - g.smulRight y) := by
   ext z
   simpa using reflection_mul_reflection_pow_apply hf hg m z t ht
 
 /-- A formula for $(r_1 r_2)^m z$, where $m$ is an integer and $z \in M$. -/
-lemma reflection_mul_reflection_zpow_apply (m : ℤ) (z : M)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m) z =
-      z +
-        ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t)) •
-          ((g x * f z - g z) • y - f z • x) +
-        ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t)) •
-          ((f y * g z - f z) • x - g z • y) := by
+lemma reflection_mul_reflection_zpow_apply
+    (m : ℤ) (z : M) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m) z
+      = z
+        + ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t))
+          • ((g x * f z - g z) • y - f z • x)
+        + ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t))
+          • ((f y * g z - f z) • x - g z • y) := by
   induction m using Int.negInduction with
-  | nat m => exact_mod_cast reflection_mul_reflection_pow_apply hf hg m z t ht
+  | nat m =>
+    exact_mod_cast reflection_mul_reflection_pow_apply hf hg m z t ht
   | neg _ m =>
     have ht' : t = g x * f y - 2 := by rwa [mul_comm (g x)]
     rw [zpow_neg, ← inv_zpow, mul_inv_rev, reflection_inv, reflection_inv, zpow_natCast,
@@ -257,30 +254,35 @@ lemma reflection_mul_reflection_zpow_apply (m : ℤ) (z : M)
     ring_nf
 
 /-- A formula for $(r_1 r_2)^m$, where $m$ is an integer. -/
-lemma reflection_mul_reflection_zpow (m : ℤ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m).toLinearMap =
-      LinearMap.id (R := R) (M := M) +
-        ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t)) •
-          ((g x • f - g).smulRight y - f.smulRight x) +
-        ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t)) •
-          ((f y • g - f).smulRight x - g.smulRight y) := by
+lemma reflection_mul_reflection_zpow
+    (m : ℤ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m).toLinearMap
+      = LinearMap.id (R := R) (M := M)
+        + ((S R ((m - 2) / 2)).eval t * ((S R ((m - 1) / 2)).eval t + (S R ((m - 3) / 2)).eval t))
+          • ((g x • f - g).smulRight y - f.smulRight x)
+        + ((S R ((m - 1) / 2)).eval t * ((S R (m / 2)).eval t + (S R ((m - 2) / 2)).eval t))
+          • ((f y • g - f).smulRight x - g.smulRight y) := by
   ext z
   simpa using reflection_mul_reflection_zpow_apply hf hg m z t ht
 
-/-- A formula for $(r_1 r_2)^m x$, where $m$ is an integer. This is the special case of
-`Module.reflection_mul_reflection_zpow_apply` with $z = x$. -/
-lemma reflection_mul_reflection_zpow_apply_self (m : ℤ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m) x =
-      ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R (m - 1)).eval t * -g x) • y := by
-  /- Even though this is a special case of `Module.reflection_mul_reflection_zpow_apply`, it is
-  easier to prove it from scratch. -/
-  have S_eval_t_sub_two (k : ℤ) :
-      (S R (k - 2)).eval t = (f y * g x - 2) * (S R (k - 1)).eval t - (S R k).eval t := by
+/--
+A formula for $(r_1 r_2)^m x$, where $m$ is an integer. This is the special case of
+`Module.reflection_mul_reflection_zpow_apply` with $z = x$.
+-/
+lemma reflection_mul_reflection_zpow_apply_self
+    (m : ℤ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m) x
+      = ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R (m - 1)).eval t * - g x) • y := by
+  /-
+  Even though this is a special case of `Module.reflection_mul_reflection_zpow_apply`, it is
+  easier to prove it from scratch.
+  -/
+  have S_eval_t_sub_two (k : ℤ)
+      : (S R (k - 2)).eval t = (f y * g x - 2) * (S R (k - 1)).eval t - (S R k).eval t := by
     simp [S_sub_two, ht]
   induction m with
-  | zero => simp
+  | zero =>
+    simp
   | succ m ih =>
     -- Apply the inductive hypothesis.
     rw [add_comm (m : ℤ) 1, zpow_one_add, LinearEquiv.mul_apply, LinearEquiv.mul_apply, ih]
@@ -301,19 +303,21 @@ lemma reflection_mul_reflection_zpow_apply_self (m : ℤ)
     · linear_combination (norm := ring_nf) -S_eval_t_sub_two (-m)
     · linear_combination (norm := ring_nf) g x * S_eval_t_sub_two (-m)
 
-/-- A formula for $(r_1 r_2)^m x$, where $m$ is a natural number. This is the special case of
-`Module.reflection_mul_reflection_pow_apply` with $z = x$. -/
-lemma reflection_mul_reflection_pow_apply_self (m : ℕ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    ((reflection hf * reflection hg) ^ m) x =
-      ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R (m - 1)).eval t * -g x) • y :=
+/--
+A formula for $(r_1 r_2)^m x$, where $m$ is a natural number. This is the special case of
+`Module.reflection_mul_reflection_pow_apply` with $z = x$.
+-/
+lemma reflection_mul_reflection_pow_apply_self
+    (m : ℕ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : ((reflection hf * reflection hg) ^ m) x
+      = ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R (m - 1)).eval t * - g x) • y :=
   mod_cast reflection_mul_reflection_zpow_apply_self hf hg m t ht
 
 /-- A formula for $r_2 (r_1 r_2)^m x$, where $m$ is an integer. -/
-lemma reflection_mul_reflection_mul_reflection_zpow_apply_self (m : ℤ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    (reflection hg * (reflection hf * reflection hg) ^ m) x =
-      ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R m).eval t * -g x) • y := by
+lemma reflection_mul_reflection_mul_reflection_zpow_apply_self
+    (m : ℤ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : (reflection hg * (reflection hf * reflection hg) ^ m) x
+      = ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R m).eval t * - g x) • y := by
   rw [LinearEquiv.mul_apply, reflection_mul_reflection_zpow_apply_self hf hg m t ht]
   -- Expand out all the reflections and use `hf`, `hg`.
   simp only [reflection_apply, map_add, map_smul, hg]
@@ -321,27 +325,30 @@ lemma reflection_mul_reflection_mul_reflection_zpow_apply_self (m : ℤ)
   module
 
 /-- A formula for $r_2 (r_1 r_2)^m x$, where $m$ is a natural number. -/
-lemma reflection_mul_reflection_mul_reflection_pow_apply_self (m : ℕ)
-    (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl) :
-    (reflection hg * (reflection hf * reflection hg) ^ m) x =
-      ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R m).eval t * -g x) • y :=
+lemma reflection_mul_reflection_mul_reflection_pow_apply_self
+    (m : ℕ) (t : R := f y * g x - 2) (ht : t = f y * g x - 2 := by rfl)
+    : (reflection hg * (reflection hf * reflection hg) ^ m) x
+      = ((S R m).eval t + (S R (m - 1)).eval t) • x + ((S R m).eval t * - g x) • y :=
   mod_cast reflection_mul_reflection_mul_reflection_zpow_apply_self hf hg m t ht
 
 end
 
 /-! ### Lemmas used to prove uniqueness results for root data -/
 
-/-- See also `Module.Dual.eq_of_preReflection_mapsTo'` for a variant of this lemma which
+/--
+See also `Module.Dual.eq_of_preReflection_mapsTo'` for a variant of this lemma which
 applies when `Φ` does not span.
 
 This rather technical-looking lemma exists because it is exactly what is needed to establish various
 uniqueness results for root data / systems. One might regard this lemma as lying at the boundary of
-linear algebra and combinatorics since the finiteness assumption is the key. -/
-lemma Dual.eq_of_preReflection_mapsTo [CharZero R] [IsDomain R] [IsTorsionFree R M]
-    {x : M} {Φ : Set M} (hΦ₁ : Φ.Finite) (hΦ₂ : span R Φ = ⊤) {f g : Dual R M}
-    (hf₁ : f x = 2) (hf₂ : MapsTo (preReflection x f) Φ Φ)
-    (hg₁ : g x = 2) (hg₂ : MapsTo (preReflection x g) Φ Φ) :
-    f = g := by
+linear algebra and combinatorics since the finiteness assumption is the key.
+-/
+lemma Dual.eq_of_preReflection_mapsTo
+    [CharZero R] [IsDomain R] [IsTorsionFree R M]
+    {x : M} {Φ : Set M} (hΦ₁ : Φ.Finite) (hΦ₂ : span R Φ = ⊤)
+    {f g : Dual R M} (hf₁ : f x = 2) (hf₂ : MapsTo (preReflection x f) Φ Φ) (hg₁ : g x = 2)
+    (hg₂ : MapsTo (preReflection x g) Φ Φ)
+    : f = g := by
   have hx : x ≠ 0 := by rintro rfl; simp at hf₁
   let u := reflection hg₁ * reflection hf₁
   have hu : u = LinearMap.id (R := R) (M := M) + (f - g).smulRight x := by
@@ -351,11 +358,12 @@ lemma Dual.eq_of_preReflection_mapsTo [CharZero R] [IsDomain R] [IsTorsionFree R
       LinearMap.coe_smulRight, LinearMap.sub_apply, map_sub, map_smul, sub_add_cancel_left,
       smul_neg, sub_neg_eq_add, sub_smul]
     abel
-  replace hu : ∀ (n : ℕ),
-      ↑(u ^ n) = LinearMap.id (R := R) (M := M) + (n : R) • (f - g).smulRight x := by
+  replace hu
+      : ∀ (n : ℕ), ↑(u ^ n) = LinearMap.id (R := R) (M := M) + (n : R) • (f - g).smulRight x := by
     intro n
     induction n with
-    | zero => simp
+    | zero =>
+      simp
     | succ n ih =>
       have : ((f - g).smulRight x).comp ((n : R) • (f - g).smulRight x) = 0 := by
         ext; simp [hf₁, hg₁]
@@ -368,14 +376,17 @@ lemma Dual.eq_of_preReflection_mapsTo [CharZero R] [IsDomain R] [IsTorsionFree R
     simpa [hn₁, hn₀.ne', hx, sub_eq_zero] using hu n
   exact u.isOfFinOrder_of_finite_of_span_eq_top_of_mapsTo hΦ₁ hΦ₂ (hg₂.comp hf₂)
 
-/-- This rather technical-looking lemma exists because it is exactly what is needed to establish a
+/--
+This rather technical-looking lemma exists because it is exactly what is needed to establish a
 uniqueness result for root data. See the doc string of `Module.Dual.eq_of_preReflection_mapsTo` for
-further remarks. -/
-lemma Dual.eq_of_preReflection_mapsTo' [CharZero R] [IsDomain R] [IsTorsionFree R M]
-    {x : M} {Φ : Set M} (hΦ₁ : Φ.Finite) (hx : x ∈ span R Φ) {f g : Dual R M}
-    (hf₁ : f x = 2) (hf₂ : MapsTo (preReflection x f) Φ Φ)
-    (hg₁ : g x = 2) (hg₂ : MapsTo (preReflection x g) Φ Φ) :
-    (span R Φ).subtype.dualMap f = (span R Φ).subtype.dualMap g := by
+further remarks.
+-/
+lemma Dual.eq_of_preReflection_mapsTo'
+    [CharZero R] [IsDomain R] [IsTorsionFree R M]
+    {x : M} {Φ : Set M} (hΦ₁ : Φ.Finite) (hx : x ∈ span R Φ)
+    {f g : Dual R M} (hf₁ : f x = 2) (hf₂ : MapsTo (preReflection x f) Φ Φ) (hg₁ : g x = 2)
+    (hg₂ : MapsTo (preReflection x g) Φ Φ)
+    : (span R Φ).subtype.dualMap f = (span R Φ).subtype.dualMap g := by
   set Φ' : Set (span R Φ) := range (inclusion <| Submodule.subset_span (R := R) (s := Φ))
   rw [← finite_coe_iff] at hΦ₁
   have hΦ'₁ : Φ'.Finite := finite_range (inclusion Submodule.subset_span)
@@ -384,8 +395,9 @@ lemma Dual.eq_of_preReflection_mapsTo' [CharZero R] [IsDomain R] [IsTorsionFree 
     rw [range_inclusion]
     simp
   let x' : span R Φ := ⟨x, hx⟩
-  have : ∀ {F : Dual R M}, MapsTo (preReflection x F) Φ Φ →
-      MapsTo (preReflection x' ((span R Φ).subtype.dualMap F)) Φ' Φ' := by
+  have : ∀ {F : Dual R M},
+      MapsTo (preReflection x F) Φ Φ
+        → MapsTo (preReflection x' ((span R Φ).subtype.dualMap F)) Φ' Φ' := by
     intro F hF ⟨y, hy⟩ hy'
     simp only [Φ'] at hy' ⊢
     rw [range_inclusion] at hy'
@@ -398,11 +410,11 @@ variable {y}
 variable {g : Dual R M}
 
 /-- Composite of reflections in "parallel" hyperplanes is a shear (special case). -/
-lemma reflection_reflection_iterate
-    (hfx : f x = 2) (hgy : g y = 2) (hgxfy : f y * g x = 4) (n : ℕ) :
-    ((reflection hgy).trans (reflection hfx))^[n] y = y + n • (f y • x - (2 : R) • y) := by
+lemma reflection_reflection_iterate (hfx : f x = 2) (hgy : g y = 2) (hgxfy : f y * g x = 4) (n : ℕ)
+    : ((reflection hgy).trans (reflection hfx))^[n] y = y + n • (f y • x - (2 : R) • y) := by
   induction n with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     have hz : ∀ z : M, f y • g x • z = 2 • 2 • z := by
       intro z
@@ -413,35 +425,36 @@ lemma reflection_reflection_iterate
       map_nsmul, map_smul, smul_neg, hz, add_smul]
     abel
 
-lemma infinite_range_reflection_reflection_iterate_iff [HasUniqueDiv M]
-    (hfx : f x = 2) (hgy : g y = 2) (hgxfy : f y * g x = 4) :
-    (range <| fun n ↦ ((reflection hgy).trans (reflection hfx))^[n] y).Infinite ↔
-    f y • x ≠ (2 : R) • y := by
+lemma infinite_range_reflection_reflection_iterate_iff
+    [HasUniqueDiv M] (hfx : f x = 2) (hgy : g y = 2) (hgxfy : f y * g x = 4)
+    : (range <| fun n ↦ ((reflection hgy).trans (reflection hfx))^[n] y).Infinite
+      ↔ f y • x ≠ (2 : R) • y := by
   simp only [reflection_reflection_iterate hfx hgy hgxfy, infinite_range_add_nsmul_iff, sub_ne_zero]
 
-lemma eq_of_mapsTo_reflection_of_mem [HasUniqueDiv M] {Φ : Set M} (hΦ : Φ.Finite)
+lemma eq_of_mapsTo_reflection_of_mem
+    [HasUniqueDiv M]
+    {Φ : Set M} (hΦ : Φ.Finite)
     (hfx : f x = 2) (hgy : g y = 2) (hgx : g x = 2) (hfy : f y = 2)
-    (hxfΦ : MapsTo (preReflection x f) Φ Φ)
-    (hygΦ : MapsTo (preReflection y g) Φ Φ)
-    (hyΦ : y ∈ Φ) :
-    x = y := by
+    (hxfΦ : MapsTo (preReflection x f) Φ Φ) (hygΦ : MapsTo (preReflection y g) Φ Φ) (hyΦ : y ∈ Φ)
+    : x = y := by
   suffices h : f y • x = (2 : R) • y by
     rw [hfy, two_smul R x, two_smul R y, ← two_zsmul, ← two_zsmul] at h
     exact smul_right_injective _ two_ne_zero h
   contrapose! hΦ
   apply ((infinite_range_reflection_reflection_iterate_iff hfx hgy
-    (by rw [hfy, hgx]; norm_cast)).mpr hΦ).mono
+      (by rw [hfy, hgx]; norm_cast)).mpr
+    hΦ).mono
   rw [range_subset_iff]
   intro n
-  rw [← IsFixedPt.image_iterate ((bijOn_reflection_of_mapsTo hfx hxfΦ).comp
-    (bijOn_reflection_of_mapsTo hgy hygΦ)).image_eq n]
+  rw [← IsFixedPt.image_iterate
+    ((bijOn_reflection_of_mapsTo hfx hxfΦ).comp (bijOn_reflection_of_mapsTo hgy hygΦ)).image_eq n]
   exact mem_image_of_mem _ hyΦ
 
-lemma injOn_dualMap_subtype_span_range_range {ι : Type*} [HasUniqueDiv M]
-    {r : ι ↪ M} {c : ι → Dual R M} (hfin : (range r).Finite)
-    (h_two : ∀ i, c i (r i) = 2)
-    (h_mapsTo : ∀ i, MapsTo (preReflection (r i) (c i)) (range r) (range r)) :
-    InjOn (span R (range r)).subtype.dualMap (range c) := by
+lemma injOn_dualMap_subtype_span_range_range
+    {ι : Type*} [HasUniqueDiv M]
+    {r : ι ↪ M} {c : ι → Dual R M} (hfin : (range r).Finite) (h_two : ∀ i, c i (r i) = 2)
+    (h_mapsTo : ∀ i, MapsTo (preReflection (r i) (c i)) (range r) (range r))
+    : InjOn (span R (range r)).subtype.dualMap (range c) := by
   rintro - ⟨i, rfl⟩ - ⟨j, rfl⟩ hij
   congr
   suffices ∀ k, c i (r k) = c j (r k) by

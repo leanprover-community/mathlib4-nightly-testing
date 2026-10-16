@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Group.TypeTags.Basic
 
 public section
 
-
 open Nat
 
 namespace Int

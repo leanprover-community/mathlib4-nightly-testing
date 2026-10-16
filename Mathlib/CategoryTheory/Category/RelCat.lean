@@ -28,10 +28,11 @@ namespace CategoryTheory
 
 universe u
 
-/-- A type synonym for `Type u`, which carries the category instance for which
-morphisms are binary relations. -/
-def RelCat :=
-  Type u
+/--
+A type synonym for `Type u`, which carries the category instance for which
+morphisms are binary relations.
+-/
+def RelCat := Type u
 deriving Inhabited
 
 namespace RelCat
@@ -62,14 +63,17 @@ namespace Hom
 
 theorem rel_id_apply₂ (x y : X) : x ~[rel (𝟙 X)] y ↔ x = y := .rfl
 
-theorem rel_comp_apply₂ (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) (z : Z) :
-    x ~[(f ≫ g).rel] z ↔ ∃ y, x ~[f.rel] y ∧ y ~[g.rel] z := .rfl
+theorem rel_comp_apply₂ (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) (z : Z)
+    : x ~[(f ≫ g).rel] z ↔ ∃ y, x ~[f.rel] y ∧ y ~[g.rel] z :=
+  .rfl
 
 end Hom
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The essentially surjective faithful embedding
-from the category of types and functions into the category of types and relations. -/
+/--
+The essentially surjective faithful embedding
+from the category of types and functions into the category of types and relations.
+-/
 @[simps obj map_rel]
 def graphFunctor : Type u ⥤ RelCat.{u} where
   obj X := X
@@ -81,13 +85,15 @@ instance graphFunctor_faithful : graphFunctor.Faithful where
     simp [Function.graph_injective congr(($h).rel)]
 
 instance graphFunctor_essSurj : graphFunctor.EssSurj :=
-    graphFunctor.essSurj_of_surj Function.surjective_id
+  graphFunctor.essSurj_of_surj Function.surjective_id
 
 set_option backward.isDefEq.respectTransparency false in
-/-- A relation is an isomorphism in `RelCat` iff it is the image of an isomorphism in
-`Type u`. -/
-theorem rel_iso_iff {X Y : RelCat} (r : X ⟶ Y) :
-    IsIso (C := RelCat) r ↔ ∃ f : Iso (C := Type u) X Y, graphFunctor.map f.hom = r := by
+/--
+A relation is an isomorphism in `RelCat` iff it is the image of an isomorphism in
+`Type u`.
+-/
+theorem rel_iso_iff {X Y : RelCat} (r : X ⟶ Y)
+    : IsIso (C := RelCat) r ↔ ∃ f : Iso (C := Type u) X Y, graphFunctor.map f.hom = r := by
   constructor
   · intro h
     have h1 := congr_fun₂ congr((· ~[($h.hom_inv_id).rel] ·))
@@ -125,15 +131,17 @@ def unopFunctor : RelCatᵒᵖ ⥤ RelCat where
   obj X := unop X
   map {_ _} r := .ofRel r.unop.rel.inv
 
-@[simp] theorem opFunctor_comp_unopFunctor_eq :
-    Functor.comp opFunctor unopFunctor = Functor.id _ := rfl
+@[simp]
+theorem opFunctor_comp_unopFunctor_eq : Functor.comp opFunctor unopFunctor = Functor.id _ := rfl
 
-@[simp] theorem unopFunctor_comp_opFunctor_eq :
-    Functor.comp unopFunctor opFunctor = Functor.id _ := rfl
+@[simp]
+theorem unopFunctor_comp_opFunctor_eq : Functor.comp unopFunctor opFunctor = Functor.id _ := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- `RelCat` is self-dual: The map that swaps the argument order of a
-relation induces an equivalence between `RelCat` and its opposite. -/
+/--
+`RelCat` is self-dual: The map that swaps the argument order of a
+relation induces an equivalence between `RelCat` and its opposite.
+-/
 @[simps]
 def opEquivalence : RelCat ≌ RelCatᵒᵖ where
   functor := opFunctor

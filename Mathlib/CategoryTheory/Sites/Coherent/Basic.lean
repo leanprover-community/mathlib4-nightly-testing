@@ -57,18 +57,18 @@ class Precoherent : Prop where
   Given an effective epi family `π₁` over `B₁` and a morphism `f : B₂ ⟶ B₁`, there exists
   an effective epi family `π₂` over `B₂`, such that `π₂` factors through `π₁`.
   -/
-  pullback {B₁ B₂ : C} (f : B₂ ⟶ B₁) :
-    ∀ (α : Type) [Finite α] (X₁ : α → C) (π₁ : (a : α) → (X₁ a ⟶ B₁)), EffectiveEpiFamily X₁ π₁ →
-    ∃ (β : Type) (_ : Finite β) (X₂ : β → C) (π₂ : (b : β) → (X₂ b ⟶ B₂)),
-      EffectiveEpiFamily X₂ π₂ ∧
-    ∃ (i : β → α) (ι : (b : β) → (X₂ b ⟶ X₁ (i b))), ∀ (b : β), ι b ≫ π₁ _ = π₂ _ ≫ f
+  pullback {B₁ B₂ : C} (f : B₂ ⟶ B₁)
+    : ∀ (α : Type) [Finite α] (X₁ : α → C) (π₁ : (a : α) → (X₁ a ⟶ B₁)),
+      EffectiveEpiFamily X₁ π₁
+        → ∃ (β : Type) (_ : Finite β) (X₂ : β → C) (π₂ : (b : β) → (X₂ b ⟶ B₂)),
+          EffectiveEpiFamily X₂ π₂
+            ∧ ∃ (i : β → α) (ι : (b : β) → (X₂ b ⟶ X₁ (i b))), ∀ (b : β), ι b ≫ π₁ _ = π₂ _ ≫ f
 
-/--
-The coherent coverage on a precoherent category `C`.
--/
+/-- The coherent coverage on a precoherent category `C`. -/
 def coherentCoverage [Precoherent C] : Coverage C where
-  coverings B := { S | ∃ (α : Type) (_ : Finite α) (X : α → C) (π : (a : α) → (X a ⟶ B)),
-    S = Presieve.ofArrows X π ∧ EffectiveEpiFamily X π }
+  coverings B :=
+    { S | ∃ (α : Type) (_ : Finite α) (X : α → C) (π : (a : α) → (X a ⟶ B)),
+      S = Presieve.ofArrows X π ∧ EffectiveEpiFamily X π }
   pullback := by
     rintro B₁ B₂ f S ⟨α, _, X₁, π₁, rfl, hS⟩
     obtain ⟨β, _, X₂, π₂, h, i, ι, hh⟩ := Precoherent.pullback f α X₁ π₁ hS
@@ -76,11 +76,8 @@ def coherentCoverage [Precoherent C] : Coverage C where
     rintro _ _ ⟨b⟩
     exact ⟨(X₁ (i b)), ι _, π₁ _, ⟨_⟩, hh _⟩
 
-/--
-The coherent Grothendieck topology on a precoherent category `C`.
--/
-def coherentTopology [Precoherent C] : GrothendieckTopology C :=
-  (coherentCoverage C).toGrothendieck
+/-- The coherent Grothendieck topology on a precoherent category `C`. -/
+def coherentTopology [Precoherent C] : GrothendieckTopology C := (coherentCoverage C).toGrothendieck
 
 /--
 The condition `Preregular C` is a property that effective epis can be "pulled back" along any
@@ -101,21 +98,28 @@ class Preregular : Prop where
   X --f-→ Y
   ```
   -/
-  exists_fac : ∀ {X Y Z : C} (f : X ⟶ Y) (g : Z ⟶ Y) [EffectiveEpi g],
-    (∃ (W : C) (h : W ⟶ X) (_ : EffectiveEpi h) (i : W ⟶ Z), i ≫ g = h ≫ f)
+  exists_fac
+    : ∀ {X Y Z : C} (f : X ⟶ Y) (g : Z ⟶ Y) [EffectiveEpi g],
+      (∃ (W : C) (h : W ⟶ X) (_ : EffectiveEpi h) (i : W ⟶ Z), i ≫ g = h ≫ f)
 
-/--
-The regular coverage on a regular category `C`.
--/
+/-- The regular coverage on a regular category `C`. -/
 def regularCoverage [Preregular C] : Coverage C where
-  coverings B := { S | ∃ (X : C) (f : X ⟶ B), S = Presieve.ofArrows (fun (_ : Unit) ↦ X)
-    (fun (_ : Unit) ↦ f) ∧ EffectiveEpi f }
+  coverings B :=
+    { S | ∃ (X : C) (f : X ⟶ B), S = Presieve.ofArrows (fun (_ : Unit) ↦ X)
+      (fun (_ : Unit) ↦ f) ∧ EffectiveEpi f }
   pullback := by
     intro X Y f S ⟨Z, π, hπ, h_epi⟩
     have := Preregular.exists_fac f π
     obtain ⟨W, h, _, i, this⟩ := this
     refine ⟨Presieve.singleton h, ⟨?_, ?_⟩⟩
-    · exact ⟨W, h, by {rw [Presieve.ofArrows_pUnit h]}, inferInstance⟩
+    · exact ⟨
+        W,
+        h,
+        by {
+          rw [Presieve.ofArrows_pUnit h]
+        },
+        inferInstance
+      ⟩
     · intro W g hg
       cases hg
       refine ⟨Z, i, π, ⟨?_, this⟩⟩
@@ -123,11 +127,8 @@ def regularCoverage [Preregular C] : Coverage C where
       rw [Presieve.ofArrows_pUnit]
       exact Presieve.singleton.mk
 
-/--
-The regular Grothendieck topology on a preregular category `C`.
--/
-def regularTopology [Preregular C] : GrothendieckTopology C :=
-  (regularCoverage C).toGrothendieck
+/-- The regular Grothendieck topology on a preregular category `C`. -/
+def regularTopology [Preregular C] : GrothendieckTopology C := (regularCoverage C).toGrothendieck
 
 /--
 The extensive coverage on an extensive category `C`
@@ -135,25 +136,28 @@ The extensive coverage on an extensive category `C`
 TODO: use general colimit API instead of `IsIso (Sigma.desc π)`
 -/
 def extensiveCoverage [FinitaryPreExtensive C] : Coverage C where
-  coverings B := { S | ∃ (α : Type) (_ : Finite α) (X : α → C) (π : (a : α) → (X a ⟶ B)),
-    S = Presieve.ofArrows X π ∧ IsIso (Sigma.desc π) }
+  coverings B :=
+    { S | ∃ (α : Type) (_ : Finite α) (X : α → C) (π : (a : α) → (X a ⟶ B)),
+      S = Presieve.ofArrows X π ∧ IsIso (Sigma.desc π) }
   pullback := by
     intro X Y f S ⟨α, hα, Z, π, hS, h_iso⟩
     let Z' : α → C := fun a ↦ pullback f (π a)
     let π' : (a : α) → Z' a ⟶ Y := fun a ↦ pullback.fst _ _
     refine ⟨@Presieve.ofArrows C _ _ α Z' π', ⟨?_, ?_⟩⟩
     · constructor
-      exact ⟨hα, Z', π', ⟨by simp only,
-        FinitaryPreExtensive.isIso_sigmaDesc_fst (fun x => π x) f h_iso⟩⟩
+      exact ⟨
+        hα,
+        Z',
+        π',
+        ⟨by simp only, FinitaryPreExtensive.isIso_sigmaDesc_fst (fun x => π x) f h_iso⟩
+      ⟩
     · intro W g hg
       rcases hg with ⟨a⟩
       refine ⟨Z a, pullback.snd _ _, π a, ?_, by rw [CategoryTheory.Limits.pullback.condition]⟩
       rw [hS]
       exact Presieve.ofArrows.mk a
 
-/--
-The extensive Grothendieck topology on a finitary pre-extensive category `C`.
--/
+/-- The extensive Grothendieck topology on a finitary pre-extensive category `C`. -/
 def extensiveTopology [FinitaryPreExtensive C] : GrothendieckTopology C :=
   (extensiveCoverage C).toGrothendieck
 

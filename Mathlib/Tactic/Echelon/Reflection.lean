@@ -42,22 +42,26 @@ variable {α : Type*}
 Both conditions read the same suffix of each row, so one sweep certifies them together.
 -/
 
-/-- `c` rows starting at row `k`, each with a nonzero entry at its diagonal position and zeros
-after it to the end of the row. -/
+/--
+`c` rows starting at row `k`, each with a nonzero entry at its diagonal position and zeros
+after it to the end of the row.
+-/
 inductive IsLowerTriangularDiagList [Zero α] : ℕ → ℕ → List (List α) → Prop
   | nil {k : ℕ} {rows : List (List α)} : IsLowerTriangularDiagList k 0 rows
-  | cons {k c : ℕ} {row : List α} {rows : List (List α)} {d : α}
-      (hdrop : row.drop k = d :: List.replicate c 0) (hd : d ≠ 0)
-      (h : IsLowerTriangularDiagList (k + 1) c rows) :
-      IsLowerTriangularDiagList k (c + 1) (row :: rows)
+  | cons
+    {k c : ℕ} {row : List α} {rows : List (List α)} {d : α}
+    (hdrop : row.drop k = d :: List.replicate c 0) (hd : d ≠ 0)
+    (h : IsLowerTriangularDiagList (k + 1) c rows)
+    : IsLowerTriangularDiagList k (c + 1) (row :: rows)
 
 /-- Lookup specification for `IsLowerTriangularDiagList`. -/
-theorem getD_of_isLowerTriangularDiagList [Zero α] {k c i : ℕ} {rows : List (List α)}
-    (h : IsLowerTriangularDiagList k c rows) (hi : i < c) :
-    (rows.getD i []).getD (k + i) 0 ≠ 0 ∧
-      ∀ j, k + i < j → (rows.getD i []).getD j 0 = 0 := by
+theorem getD_of_isLowerTriangularDiagList
+    [Zero α]
+    {k c i : ℕ} {rows : List (List α)} (h : IsLowerTriangularDiagList k c rows) (hi : i < c)
+    : (rows.getD i []).getD (k + i) 0 ≠ 0 ∧ ∀ j, k + i < j → (rows.getD i []).getD j 0 = 0 := by
   induction h generalizing i with
-  | nil => lia
+  | nil =>
+    lia
   | @cons k c row rows d hdrop hd h ih =>
     cases i with
     | zero =>
@@ -66,40 +70,48 @@ theorem getD_of_isLowerTriangularDiagList [Zero α] {k c i : ℕ} {rows : List (
         grind
       · have := List.getElem?_drop (xs := row) (i := k) (j := j - k)
         grind
-    | succ i => grind
+    | succ i =>
+      grind
 
-theorem isLowerTriangular_ofLists [Zero α] {m : ℕ} {rows : List (List α)}
-    (h : IsLowerTriangularDiagList 0 m rows) : (ofLists m m rows).IsLowerTriangular := by
+theorem isLowerTriangular_ofLists
+    [Zero α] {m : ℕ} {rows : List (List α)} (h : IsLowerTriangularDiagList 0 m rows)
+    : (ofLists m m rows).IsLowerTriangular := by
   intro i j hij
   rw [ofLists_apply, ofList_apply]
   exact (getD_of_isLowerTriangularDiagList h i.isLt).2 j (by simpa using hij)
 
-theorem diag_ofLists_ne_zero [Zero α] {m : ℕ} {rows : List (List α)}
-    (h : IsLowerTriangularDiagList 0 m rows) (i : Fin m) : (ofLists m m rows).diag i ≠ 0 := by
+theorem diag_ofLists_ne_zero
+    [Zero α] {m : ℕ} {rows : List (List α)} (h : IsLowerTriangularDiagList 0 m rows) (i : Fin m)
+    : (ofLists m m rows).diag i ≠ 0 := by
   simpa [ofLists_apply, ofList_apply] using (getD_of_isLowerTriangularDiagList h i.isLt).1
 
 /-! ### Pivots of `U` -/
 
 variable {n : ℕ}
 
-/-- The rows with a nonzero entry at their pivot columns and zeros before it, then the rows
-beyond the pivot list (all 0). -/
+/--
+The rows with a nonzero entry at their pivot columns and zeros before it, then the rows
+beyond the pivot list (all 0).
+-/
 inductive IsPivotedList [Zero α] : List (Fin n) → List (List α) → Prop
-  | nil {rows : List (List α)} (hz : rows = rows.map fun _ ↦ List.replicate n 0) :
-      IsPivotedList [] rows
-  | cons {k : Fin n} {ks : List (Fin n)} {row : List α} {rows : List (List α)} {d : α}
-      {suffix : List α} (hrow : row = List.replicate k 0 ++ d :: suffix) (hd : d ≠ 0)
-      (h : IsPivotedList ks rows) : IsPivotedList (k :: ks) (row :: rows)
+  | nil {rows : List (List α)} (hz : rows = rows.map fun _ ↦ List.replicate n 0)
+    : IsPivotedList [] rows
+  | cons
+    {k : Fin n} {ks : List (Fin n)} {row : List α} {rows : List (List α)} {d : α} {suffix : List α}
+    (hrow : row = List.replicate k 0 ++ d :: suffix) (hd : d ≠ 0) (h : IsPivotedList ks rows)
+    : IsPivotedList (k :: ks) (row :: rows)
 
-/-- The pivot function of the list of pivot columns. `WithTop (Fin n)` is `Option (Fin n)`, so
-the lookup `cols[i]?` is the value. -/
+/--
+The pivot function of the list of pivot columns. `WithTop (Fin n)` is `Option (Fin n)`, so
+the lookup `cols[i]?` is the value.
+-/
 @[expose] def pivotOfList (cols : List (Fin n)) (i : ℕ) : WithTop (Fin n) := cols[i]?
 
 /-- Lookup specification for `IsPivotedList`. -/
-theorem getD_of_isPivotedList [Zero α] {cols : List (Fin n)} {rows : List (List α)}
-    (h : IsPivotedList cols rows) (i : ℕ) :
-    (∀ j : Fin n, ↑j < pivotOfList cols i → (rows.getD i []).getD j 0 = 0) ∧
-      ∀ c : Fin n, pivotOfList cols i = c → (rows.getD i []).getD c 0 ≠ 0 := by
+theorem getD_of_isPivotedList
+    [Zero α] {cols : List (Fin n)} {rows : List (List α)} (h : IsPivotedList cols rows) (i : ℕ)
+    : (∀ j : Fin n, ↑j < pivotOfList cols i → (rows.getD i []).getD j 0 = 0)
+      ∧ ∀ c : Fin n, pivotOfList cols i = c → (rows.getD i []).getD c 0 ≠ 0 := by
   induction h generalizing i with
   | nil hz =>
     simp only [List.map_const'] at hz
@@ -112,22 +124,27 @@ theorem getD_of_isPivotedList [Zero α] {cols : List (Fin n)} {rows : List (List
         grind
       · obtain rfl : k = c := WithTop.coe_eq_coe.mp hc
         grind
-    | succ i => exact ih i
+    | succ i =>
+      exact ih i
 
-theorem pivotOfList_lt_pivotOfList {cols : List (Fin n)} (hsorted : cols.SortedLT) {i j : ℕ}
-    (hij : i < j) (hj : pivotOfList cols j ≠ ⊤) : pivotOfList cols i < pivotOfList cols j := by
+theorem pivotOfList_lt_pivotOfList
+    {cols : List (Fin n)} (hsorted : cols.SortedLT)
+    {i j : ℕ} (hij : i < j) (hj : pivotOfList cols j ≠ ⊤)
+    : pivotOfList cols i < pivotOfList cols j := by
   grind [pivotOfList, List.SortedLT.getElem_lt_getElem_iff, WithTop.coe_lt_coe, WithTop.some_eq_coe,
     WithTop.none_eq_top]
 
-theorem pivotOfList_mono_of_sortedLT {cols : List (Fin n)} (hsorted : cols.SortedLT) :
-    Monotone (pivotOfList cols) := by
+theorem pivotOfList_mono_of_sortedLT {cols : List (Fin n)} (hsorted : cols.SortedLT)
+    : Monotone (pivotOfList cols) := by
   refine monotone_nat_of_le_succ fun i ↦ ?_
   have := pivotOfList_lt_pivotOfList hsorted (Nat.lt_succ_self i)
   grind [le_top]
 
-theorem isPivotedBy_ofLists [Zero α] {m : ℕ} {rows : List (List α)} {cols : List (Fin n)}
-    (hsorted : cols.SortedLT) (h : IsPivotedList cols rows) :
-    (ofLists m n rows).IsPivotedBy fun i : Fin m ↦ pivotOfList cols i := by
+theorem isPivotedBy_ofLists
+    [Zero α]
+    {m : ℕ} {rows : List (List α)} {cols : List (Fin n)}
+    (hsorted : cols.SortedLT) (h : IsPivotedList cols rows)
+    : (ofLists m n rows).IsPivotedBy fun i : Fin m ↦ pivotOfList cols i := by
   refine Matrix.isPivotedBy_iff.mpr ⟨?_, fun _ _ _ hj hij ↦ ?_, fun i ↦ ?_⟩
   · exact (pivotOfList_mono_of_sortedLT hsorted).comp Fin.val_strictMono.monotone
   · exact pivotOfList_lt_pivotOfList hsorted hij hj

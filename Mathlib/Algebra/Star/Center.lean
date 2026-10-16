@@ -15,8 +15,9 @@ public section
 variable {R : Type*} [Mul R] [StarMul R] {a : R} {s : Set R}
 
 theorem Set.star_mem_center (ha : a ∈ Set.center R) : star a ∈ Set.center R where
-  comm := by simpa only [star_mul, star_star] using! fun g =>
-    congr(star $(((mem_center_iff.1 ha).comm <| star g).symm))
+  comm := by
+    simpa only [star_mul, star_star] using! fun g =>
+      congr(star $(((mem_center_iff.1 ha).comm <| star g).symm))
   left_assoc b c := by
     simpa only [star_mul, star_star] using congr(star $(ha.right_assoc (star c) (star b)))
   right_assoc b c := by
@@ -27,20 +28,23 @@ theorem Set.star_centralizer : star s.centralizer = (star s).centralizer := by
   conv_lhs => simp only [← star_preimage, preimage_ofPred_eq, ← commute_star_comm]
   conv_rhs => simp only [← image_star, forall_mem_image]
 
-theorem Set.union_star_self_comm (hcomm : ∀ x ∈ s, ∀ y ∈ s, y * x = x * y)
-    (hcomm_star : ∀ x ∈ s, ∀ y ∈ s, y * star x = star x * y) :
-    ∀ x ∈ s ∪ star s, ∀ y ∈ s ∪ star s, y * x = x * y := by
+theorem Set.union_star_self_comm
+    (hcomm : ∀ x ∈ s, ∀ y ∈ s, y * x = x * y)
+    (hcomm_star : ∀ x ∈ s, ∀ y ∈ s, y * star x = star x * y)
+    : ∀ x ∈ s ∪ star s, ∀ y ∈ s ∪ star s, y * x = x * y := by
   change s ∪ star s ⊆ (s ∪ star s).centralizer
   simp_rw [centralizer_union, ← star_centralizer, union_subset_iff, subset_inter_iff,
     star_subset_star, star_subset]
   exact ⟨⟨hcomm, hcomm_star⟩, ⟨hcomm_star, hcomm⟩⟩
 
-theorem Set.star_mem_centralizer' (h : ∀ a : R, a ∈ s → star a ∈ s) (ha : a ∈ Set.centralizer s) :
-    star a ∈ Set.centralizer s := fun y hy => by simpa using congr(star $((ha _ (h _ hy)).symm))
+theorem Set.star_mem_centralizer' (h : ∀ a : R, a ∈ s → star a ∈ s) (ha : a ∈ Set.centralizer s)
+    : star a ∈ Set.centralizer s := fun y hy => by
+  simpa using congr(star $((ha _ (h _ hy)).symm))
 
 open scoped Pointwise
 
-theorem Set.star_mem_centralizer (ha : a ∈ Set.centralizer (s ∪ star s)) :
-    star a ∈ Set.centralizer (s ∪ star s) :=
+theorem Set.star_mem_centralizer (ha : a ∈ Set.centralizer (s ∪ star s))
+    : star a ∈ Set.centralizer (s ∪ star s) :=
   Set.star_mem_centralizer'
-    (fun _x hx => hx.elim (fun hx => Or.inr <| Set.star_mem_star.mpr hx) Or.inl) ha
+    (fun _x hx => hx.elim (fun hx => Or.inr <| Set.star_mem_star.mpr hx) Or.inl)
+    ha

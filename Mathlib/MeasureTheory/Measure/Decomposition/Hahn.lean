@@ -44,9 +44,10 @@ namespace MeasureTheory
 variable {α : Type*} {mα : MeasurableSpace α}
 
 /-- **Hahn decomposition theorem** -/
-theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν] :
-    ∃ s, MeasurableSet s ∧ (∀ t, MeasurableSet t → t ⊆ s → ν t ≤ μ t) ∧
-      ∀ t, MeasurableSet t → t ⊆ sᶜ → μ t ≤ ν t := by
+theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    : ∃ s,
+      MeasurableSet s ∧ (∀ t, MeasurableSet t → t ⊆ s → ν t ≤ μ t)
+        ∧ ∀ t, MeasurableSet t → t ⊆ sᶜ → μ t ≤ ν t := by
   let d : Set α → ℝ := fun s => ((μ s).toNNReal : ℝ) - (ν s).toNNReal
   let c : Set ℝ := d '' { s | MeasurableSet s }
   let γ : ℝ := sSup c
@@ -61,17 +62,16 @@ theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMe
       NNReal.coe_add]
     simp only [sub_eq_add_neg, neg_add]
     abel
-  have d_Union (s : ℕ → Set α) (hm : Monotone s) :
-    Tendsto (fun n => d (s n)) atTop (𝓝 (d (⋃ n, s n))) := by
-    refine Tendsto.sub ?_ ?_ <;>
-      refine NNReal.tendsto_coe.2 <| (ENNReal.tendsto_toNNReal ?_).comp <|
-        tendsto_measure_iUnion_atTop hm
+  have d_Union (s : ℕ → Set α) (hm : Monotone s)
+      : Tendsto (fun n => d (s n)) atTop (𝓝 (d (⋃ n, s n))) := by
+    refine Tendsto.sub ?_ ?_ <;> refine NNReal.tendsto_coe.2 <|
+      (ENNReal.tendsto_toNNReal ?_).comp <| tendsto_measure_iUnion_atTop hm
     · exact hμ _
     · exact hν _
-  have d_Inter (s : ℕ → Set α) (hs : ∀ n, MeasurableSet (s n)) (hm : ∀ n m, n ≤ m → s m ⊆ s n) :
-        Tendsto (fun n => d (s n)) atTop (𝓝 (d (⋂ n, s n))) := by
-    refine Tendsto.sub ?_ ?_ <;>
-      refine NNReal.tendsto_coe.2 <| (ENNReal.tendsto_toNNReal <| ?_).comp <|
+  have d_Inter (s : ℕ → Set α) (hs : ∀ n, MeasurableSet (s n)) (hm : ∀ n m, n ≤ m → s m ⊆ s n)
+      : Tendsto (fun n => d (s n)) atTop (𝓝 (d (⋂ n, s n))) := by
+    refine Tendsto.sub ?_ ?_
+      <;> refine NNReal.tendsto_coe.2 <| (ENNReal.tendsto_toNNReal <| ?_).comp <|
         tendsto_measure_iInter_atTop (fun n ↦ (hs n).nullMeasurableSet) hm ?_
     exacts [hμ _, ⟨0, hμ _⟩, hν _, ⟨0, hν _⟩]
   have bdd_c : BddAbove c := by
@@ -110,8 +110,8 @@ theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMe
     · intro n (hmn : m ≤ n) ih
       refine le_of_add_le_add_left (a := γ) ?_
       calc
-        γ + (γ - 2 * (1 / 2) ^ m + (1 / 2) ^ (n + 1)) =
-            γ + (γ - 2 * (1 / 2) ^ m + ((1 / 2) ^ n - (1 / 2) ^ (n + 1))) := by
+        γ + (γ - 2 * (1 / 2) ^ m + (1 / 2) ^ (n + 1))
+            = γ + (γ - 2 * (1 / 2) ^ m + ((1 / 2) ^ n - (1 / 2) ^ (n + 1))) := by
           rw [pow_succ, mul_one_div, _root_.sub_half]
         _ = γ - (1 / 2) ^ (n + 1) + (γ - 2 * (1 / 2) ^ m + (1 / 2) ^ n) := by
           simp only [sub_eq_add_neg]; abel
@@ -128,11 +128,9 @@ theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMe
     have hγ : Tendsto (fun m : ℕ => γ - 2 * (1 / 2) ^ m) atTop (𝓝 γ) := by
       suffices Tendsto (fun m : ℕ => γ - 2 * (1 / 2) ^ m) atTop (𝓝 (γ - 2 * 0)) by
         simpa only [mul_zero, tsub_zero]
-      exact
-        tendsto_const_nhds.sub <|
-          tendsto_const_nhds.mul <|
-            tendsto_pow_atTop_nhds_zero_of_lt_one (le_of_lt <| half_pos zero_lt_one)
-              (half_lt_self zero_lt_one)
+      exact tendsto_const_nhds.sub <| tendsto_const_nhds.mul <|
+        tendsto_pow_atTop_nhds_zero_of_lt_one (le_of_lt <| half_pos zero_lt_one)
+          (half_lt_self zero_lt_one)
     have hd : Tendsto (fun m => d (⋂ n, f m n)) atTop (𝓝 (d (⋃ m, ⋂ n, f m n))) := by
       refine d_Union _ ?_
       exact fun n m hnm =>
@@ -152,41 +150,42 @@ theorem hahn_decomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMe
   refine ⟨s, hs, ?_, ?_⟩
   · intro t ht hts
     have : 0 ≤ d t :=
-      (add_le_add_iff_left γ).1 <|
-        calc
-          γ + 0 ≤ d s := by rw [add_zero]; exact γ_le_d_s
-          _ = d (s \ t) + d t := by rw [d_split s _ ht, inter_eq_self_of_subset_right hts]
-          _ ≤ γ + d t := add_le_add (d_le_γ _ (hs.diff ht)) le_rfl
+      (add_le_add_iff_left γ).1 <| calc
+        γ + 0
+          ≤ d s := by rw [add_zero]; exact γ_le_d_s
+        _ = d (s \ t) + d t := by rw [d_split s _ ht, inter_eq_self_of_subset_right hts]
+        _ ≤ γ + d t := add_le_add (d_le_γ _ (hs.diff ht)) le_rfl
     rw [← to_nnreal_μ, ← to_nnreal_ν, ENNReal.coe_le_coe, ← NNReal.coe_le_coe]
     simpa only [d, le_sub_iff_add_le, zero_add] using this
   · intro t ht hts
     have : d t ≤ 0 :=
-      (add_le_add_iff_left γ).1 <|
-        calc
-          γ + d t ≤ d s + d t := by gcongr
-          _ = d (s ∪ t) := by
-            rw [d_split (s ∪ t) _ ht, union_sdiff_right, union_inter_cancel_right,
-              (subset_compl_iff_disjoint_left.1 hts).sdiff_eq_left]
-          _ ≤ γ + 0 := by rw [add_zero]; exact d_le_γ _ (hs.union ht)
+      (add_le_add_iff_left γ).1 <| calc
+        γ + d t
+          ≤ d s + d t := by gcongr
+        _ = d (s ∪ t) := by
+          rw [d_split (s ∪ t) _ ht, union_sdiff_right, union_inter_cancel_right,
+            (subset_compl_iff_disjoint_left.1 hts).sdiff_eq_left]
+        _ ≤ γ + 0 := by rw [add_zero]; exact d_le_γ _ (hs.union ht)
     rw [← to_nnreal_μ, ← to_nnreal_ν, ENNReal.coe_le_coe, ← NNReal.coe_le_coe]
     simpa only [d, sub_le_iff_le_add, zero_add] using this
 
-
-/-- A set where `μ ≤ ν` (and the reverse inequality on the complement),
-defined via measurable set and measure restriction comparisons. -/
+/--
+A set where `μ ≤ ν` (and the reverse inequality on the complement),
+defined via measurable set and measure restriction comparisons.
+-/
 structure IsHahnDecomposition (μ ν : Measure α) (s : Set α) : Prop where
   measurableSet : MeasurableSet s
   le_on : μ.restrict s ≤ ν.restrict s
   ge_on_compl : ν.restrict sᶜ ≤ μ.restrict sᶜ
 
-lemma IsHahnDecomposition.compl {μ ν : Measure α} {s : Set α}
-    (h : IsHahnDecomposition μ ν s) : IsHahnDecomposition ν μ sᶜ where
+lemma IsHahnDecomposition.compl {μ ν : Measure α} {s : Set α} (h : IsHahnDecomposition μ ν s)
+    : IsHahnDecomposition ν μ sᶜ where
   measurableSet := h.measurableSet.compl
   le_on := h.ge_on_compl
   ge_on_compl := by simpa using h.le_on
 
-lemma exists_isHahnDecomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν] :
-    ∃ s : Set α, IsHahnDecomposition μ ν s := by
+lemma exists_isHahnDecomposition (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    : ∃ s : Set α, IsHahnDecomposition μ ν s := by
   obtain ⟨s, hs, h₁, h₂⟩ := hahn_decomposition ν μ
   refine ⟨s, hs, ?_, ?_⟩
   all_goals

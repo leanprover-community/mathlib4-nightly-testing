@@ -58,7 +58,8 @@ instance instCommSemiring : CommSemiring ℕ where
   __ := instSemiring
   __ := instCommMonoid
 
-instance instCharZero : CharZero ℕ where cast_injective := Function.injective_id
+instance instCharZero : CharZero ℕ where
+  cast_injective := Function.injective_id
 
 instance instIsDomain : IsDomain ℕ where
 

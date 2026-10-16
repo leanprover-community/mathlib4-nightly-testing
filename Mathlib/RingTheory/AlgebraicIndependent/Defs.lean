@@ -40,7 +40,6 @@ We show that algebraic independence is preserved under injective maps of the ind
 
 @[expose] public section
 
-
 noncomputable section
 
 open Function Set Subalgebra MvPolynomial Algebra
@@ -48,35 +47,39 @@ open Function Set Subalgebra MvPolynomial Algebra
 variable {ι ι' : Type*} (R : Type*) {A A' : Type*} (x : ι → A)
 variable [CommRing R] [CommRing A] [CommRing A'] [Algebra R A] [Algebra R A']
 
-/-- `AlgebraicIndependent R x` states the family of elements `x`
-  is algebraically independent over `R`, meaning that the canonical
-  map out of the multivariable polynomial ring is injective. -/
-@[stacks 030E "(1)"] def AlgebraicIndependent : Prop :=
-  Injective (MvPolynomial.aeval x : MvPolynomial ι R →ₐ[R] A)
+/--
+`AlgebraicIndependent R x` states the family of elements `x`
+is algebraically independent over `R`, meaning that the canonical
+map out of the multivariable polynomial ring is injective.
+-/
+@[stacks 030E "(1)"]
+def AlgebraicIndependent : Prop := Injective (MvPolynomial.aeval x : MvPolynomial ι R →ₐ[R] A)
 
-/-- `AlgebraicIndepOn R v s` states that the elements in the family `v` that are indexed by the
-elements of `s` are algebraically independent over `R`. -/
+/--
+`AlgebraicIndepOn R v s` states that the elements in the family `v` that are indexed by the
+elements of `s` are algebraically independent over `R`.
+-/
 abbrev AlgebraicIndepOn (s : Set ι) : Prop := AlgebraicIndependent R fun i : s ↦ x i
 
 variable {R} {x}
 
-theorem algebraicIndependent_iff :
-    AlgebraicIndependent R x ↔
-      ∀ p : MvPolynomial ι R, MvPolynomial.aeval (x : ι → A) p = 0 → p = 0 :=
+theorem algebraicIndependent_iff
+    : AlgebraicIndependent R x
+      ↔ ∀ p : MvPolynomial ι R, MvPolynomial.aeval (x : ι → A) p = 0 → p = 0 :=
   injective_iff_map_eq_zero _
 
-theorem AlgebraicIndependent.eq_zero_of_aeval_eq_zero (h : AlgebraicIndependent R x) :
-    ∀ p : MvPolynomial ι R, MvPolynomial.aeval (x : ι → A) p = 0 → p = 0 :=
+theorem AlgebraicIndependent.eq_zero_of_aeval_eq_zero (h : AlgebraicIndependent R x)
+    : ∀ p : MvPolynomial ι R, MvPolynomial.aeval (x : ι → A) p = 0 → p = 0 :=
   algebraicIndependent_iff.1 h
 
-theorem algebraicIndependent_iff_injective_aeval :
-    AlgebraicIndependent R x ↔ Injective (MvPolynomial.aeval x : MvPolynomial ι R →ₐ[R] A) :=
+theorem algebraicIndependent_iff_injective_aeval
+    : AlgebraicIndependent R x ↔ Injective (MvPolynomial.aeval x : MvPolynomial ι R →ₐ[R] A) :=
   Iff.rfl
 
 namespace AlgebraicIndependent
 
-theorem of_comp (f : A →ₐ[R] A') (hfv : AlgebraicIndependent R (f ∘ x)) :
-    AlgebraicIndependent R x := by
+theorem of_comp (f : A →ₐ[R] A') (hfv : AlgebraicIndependent R (f ∘ x))
+    : AlgebraicIndependent R x := by
   have : aeval (f ∘ x) = f.comp (aeval x) := by ext; simp
   rw [AlgebraicIndependent, this, AlgHom.coe_comp] at hfv
   exact hfv.of_comp
@@ -95,27 +98,29 @@ end AlgebraicIndependent
 
 open AlgebraicIndependent
 
-theorem algebraicIndependent_equiv (e : ι ≃ ι') {f : ι' → A} :
-    AlgebraicIndependent R (f ∘ e) ↔ AlgebraicIndependent R f :=
-  ⟨fun h => Function.comp_id f ▸ e.self_comp_symm ▸ h.comp _ e.symm.injective,
-    fun h => h.comp _ e.injective⟩
+theorem algebraicIndependent_equiv (e : ι ≃ ι') {f : ι' → A}
+    : AlgebraicIndependent R (f ∘ e) ↔ AlgebraicIndependent R f := ⟨
+  fun h => Function.comp_id f ▸ e.self_comp_symm ▸ h.comp _ e.symm.injective,
+  fun h => h.comp _ e.injective
+⟩
 
-theorem algebraicIndependent_equiv' (e : ι ≃ ι') {f : ι' → A} {g : ι → A} (h : f ∘ e = g) :
-    AlgebraicIndependent R g ↔ AlgebraicIndependent R f :=
+theorem algebraicIndependent_equiv' (e : ι ≃ ι') {f : ι' → A} {g : ι → A} (h : f ∘ e = g)
+    : AlgebraicIndependent R g ↔ AlgebraicIndependent R f :=
   h ▸ algebraicIndependent_equiv e
 
-theorem algebraicIndependent_subtype_range {ι} {f : ι → A} (hf : Injective f) :
-    AlgebraicIndependent R ((↑) : range f → A) ↔ AlgebraicIndependent R f :=
+theorem algebraicIndependent_subtype_range {ι} {f : ι → A} (hf : Injective f)
+    : AlgebraicIndependent R ((↑) : range f → A) ↔ AlgebraicIndependent R f :=
   Iff.symm <| algebraicIndependent_equiv' (Equiv.ofInjective f hf) rfl
 
 alias ⟨AlgebraicIndependent.of_subtype_range, _⟩ := algebraicIndependent_subtype_range
 
-theorem algebraicIndependent_image {ι} {s : Set ι} {f : ι → A} (hf : Set.InjOn f s) :
-    (AlgebraicIndependent R fun x : s => f x) ↔ AlgebraicIndependent R fun x : f '' s => (x : A) :=
+theorem algebraicIndependent_image {ι} {s : Set ι} {f : ι → A} (hf : Set.InjOn f s)
+    : (AlgebraicIndependent R fun x : s => f x)
+      ↔ AlgebraicIndependent R fun x : f '' s => (x : A) :=
   algebraicIndependent_equiv' (Equiv.Set.imageOfInjOn _ _ hf) rfl
 
-lemma AlgebraicIndepOn.mono {s t : Set ι} (H : AlgebraicIndepOn R x t) (hst : s ⊆ t) :
-    AlgebraicIndepOn R x s := by
+lemma AlgebraicIndepOn.mono {s t : Set ι} (H : AlgebraicIndepOn R x t) (hst : s ⊆ t)
+    : AlgebraicIndepOn R x s := by
   simpa [Function.comp] using! H.comp (Set.inclusion hst) (Set.inclusion_injective hst)
 
 @[simp]
@@ -124,8 +129,8 @@ lemma AlgebraicIndepOn.univ : AlgebraicIndepOn R x .univ ↔ AlgebraicIndependen
 
 namespace AlgebraicIndependent
 
-theorem mono {t s : Set A} (h : t ⊆ s)
-    (hx : AlgebraicIndependent R ((↑) : s → A)) : AlgebraicIndependent R ((↑) : t → A) :=
+theorem mono {t s : Set A} (h : t ⊆ s) (hx : AlgebraicIndependent R ((↑) : s → A))
+    : AlgebraicIndependent R ((↑) : t → A) :=
   AlgebraicIndepOn.mono (x := id) hx h
 
 section repr
@@ -133,34 +138,38 @@ section repr
 variable (hx : AlgebraicIndependent R x)
 include hx
 
-/-- Canonical isomorphism between polynomials and the subalgebra generated by
-  algebraically independent elements. -/
+/--
+Canonical isomorphism between polynomials and the subalgebra generated by
+algebraically independent elements.
+-/
 @[simps! apply_coe]
 def aevalEquiv : MvPolynomial ι R ≃ₐ[R] Algebra.adjoin R (range x) :=
   (AlgEquiv.ofInjective (aeval x) (algebraicIndependent_iff_injective_aeval.1 hx)).trans
     (Subalgebra.equivOfEq _ _ (Algebra.adjoin_range_eq_range_aeval R x).symm)
 
-theorem algebraMap_aevalEquiv (p : MvPolynomial ι R) :
-    algebraMap (Algebra.adjoin R (range x)) A (hx.aevalEquiv p) = aeval x p :=
+theorem algebraMap_aevalEquiv (p : MvPolynomial ι R)
+    : algebraMap (Algebra.adjoin R (range x)) A (hx.aevalEquiv p) = aeval x p :=
   rfl
 
-/-- The canonical map from the subalgebra generated by an algebraic independent family
-  into the polynomial ring. -/
-def repr : Algebra.adjoin R (range x) →ₐ[R] MvPolynomial ι R :=
-  hx.aevalEquiv.symm
+/--
+The canonical map from the subalgebra generated by an algebraic independent family
+into the polynomial ring.
+-/
+def repr : Algebra.adjoin R (range x) →ₐ[R] MvPolynomial ι R := hx.aevalEquiv.symm
 
 @[simp]
 theorem aeval_repr (p) : aeval x (hx.repr p) = p :=
   Subtype.ext_iff.1 (AlgEquiv.apply_symm_apply hx.aevalEquiv p)
 
-theorem aeval_comp_repr : (aeval x).comp hx.repr = Subalgebra.val _ :=
-  AlgHom.ext hx.aeval_repr
+theorem aeval_comp_repr : (aeval x).comp hx.repr = Subalgebra.val _ := AlgHom.ext hx.aeval_repr
 
-/-- Canonical isomorphism between polynomials and the subalgebra generated by
-  algebraically independent elements.
-  `AlgebraicIndepOn` version of `AlgebraicIndependent.aevalEquiv`. -/
-def _root_.AlgebraicIndepOn.aevalEquiv {s : Set ι} (hx : AlgebraicIndepOn R x s) :
-    MvPolynomial s R ≃ₐ[R] Algebra.adjoin R (x '' s) :=
+/--
+Canonical isomorphism between polynomials and the subalgebra generated by
+algebraically independent elements.
+`AlgebraicIndepOn` version of `AlgebraicIndependent.aevalEquiv`.
+-/
+def _root_.AlgebraicIndepOn.aevalEquiv {s : Set ι} (hx : AlgebraicIndepOn R x s)
+    : MvPolynomial s R ≃ₐ[R] Algebra.adjoin R (x '' s) :=
   (AlgebraicIndependent.aevalEquiv hx).trans
     (Subalgebra.equivOfEq _ _ congr(Algebra.adjoin _ $(by aesop)))
 
@@ -170,30 +179,31 @@ end AlgebraicIndependent
 
 variable (R) in
 /-- A family is a transcendence basis if it is a maximal algebraically independent subset. -/
-@[stacks 030E "(4)"] def IsTranscendenceBasis (x : ι → A) : Prop :=
-  AlgebraicIndependent R x ∧
-    ∀ (s : Set A) (_ : AlgebraicIndepOn R id s) (_ : range x ⊆ s), range x = s
+@[stacks 030E "(4)"]
+def IsTranscendenceBasis (x : ι → A) : Prop :=
+  AlgebraicIndependent R x
+    ∧ ∀ (s : Set A) (_ : AlgebraicIndepOn R id s) (_ : range x ⊆ s), range x = s
 
-theorem isTranscendenceBasis_iff_maximal {s : Set A} :
-    IsTranscendenceBasis R ((↑) : s → A) ↔ Maximal (AlgebraicIndepOn R id) s := by
+theorem isTranscendenceBasis_iff_maximal {s : Set A}
+    : IsTranscendenceBasis R ((↑) : s → A) ↔ Maximal (AlgebraicIndepOn R id) s := by
   rw [IsTranscendenceBasis, maximal_iff, Subtype.range_val]; rfl
 
-theorem isTranscendenceBasis_equiv (e : ι ≃ ι') {f : ι' → A} :
-    IsTranscendenceBasis R (f ∘ e) ↔ IsTranscendenceBasis R f := by
+theorem isTranscendenceBasis_equiv (e : ι ≃ ι') {f : ι' → A}
+    : IsTranscendenceBasis R (f ∘ e) ↔ IsTranscendenceBasis R f := by
   simp_rw [IsTranscendenceBasis, algebraicIndependent_equiv, EquivLike.range_comp]
 
 alias ⟨_, IsTranscendenceBasis.comp_equiv⟩ := isTranscendenceBasis_equiv
 
-theorem isTranscendenceBasis_equiv' (e : ι ≃ ι') {f : ι' → A} {g : ι → A} (h : f ∘ e = g) :
-    IsTranscendenceBasis R g ↔ IsTranscendenceBasis R f :=
+theorem isTranscendenceBasis_equiv' (e : ι ≃ ι') {f : ι' → A} {g : ι → A} (h : f ∘ e = g)
+    : IsTranscendenceBasis R g ↔ IsTranscendenceBasis R f :=
   h ▸ isTranscendenceBasis_equiv e
 
-theorem isTranscendenceBasis_subtype_range {ι} {f : ι → A} (hf : Injective f) :
-    IsTranscendenceBasis R ((↑) : range f → A) ↔ IsTranscendenceBasis R f :=
+theorem isTranscendenceBasis_subtype_range {ι} {f : ι → A} (hf : Injective f)
+    : IsTranscendenceBasis R ((↑) : range f → A) ↔ IsTranscendenceBasis R f :=
   .symm <| isTranscendenceBasis_equiv' (Equiv.ofInjective f hf) rfl
 
 alias ⟨IsTranscendenceBasis.of_subtype_range, _⟩ := isTranscendenceBasis_subtype_range
 
-theorem isTranscendenceBasis_image {ι} {s : Set ι} {f : ι → A} (hf : Set.InjOn f s) :
-    IsTranscendenceBasis R (fun x : s ↦ f x) ↔ IsTranscendenceBasis R fun x : f '' s ↦ (x : A) :=
+theorem isTranscendenceBasis_image {ι} {s : Set ι} {f : ι → A} (hf : Set.InjOn f s)
+    : IsTranscendenceBasis R (fun x : s ↦ f x) ↔ IsTranscendenceBasis R fun x : f '' s ↦ (x : A) :=
   isTranscendenceBasis_equiv' (Equiv.Set.imageOfInjOn _ _ hf) rfl

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Sites.Canonical
 public import Mathlib.CategoryTheory.Sites.Coherent.Basic
-
 import Mathlib.CategoryTheory.Sites.Preserves
 /-!
 
@@ -33,13 +32,18 @@ variable {C : Type*} [Category* C] {D : Type*} [Category* D]
 
 variable [FinitaryPreExtensive C]
 
-/-- A presieve is *extensive* if it is finite and its arrows induce an isomorphism from the
-coproduct to the target. -/
+/--
+A presieve is *extensive* if it is finite and its arrows induce an isomorphism from the
+coproduct to the target.
+-/
 class Presieve.Extensive {X : C} (R : Presieve X) : Prop where
-  /-- `R` consists of a finite collection of arrows that together induce an isomorphism from the
-  coproduct of their sources. -/
-  arrows_nonempty_isColimit : ∃ (α : Type) (_ : Finite α) (Z : α → C) (π : (a : α) → (Z a ⟶ X)),
-    R = Presieve.ofArrows Z π ∧ Nonempty (IsColimit (Cofan.mk X π))
+  /--
+  `R` consists of a finite collection of arrows that together induce an isomorphism from the
+  coproduct of their sources.
+  -/
+  arrows_nonempty_isColimit
+    : ∃ (α : Type) (_ : Finite α) (Z : α → C) (π : (a : α) → (Z a ⟶ X)),
+      R = Presieve.ofArrows Z π ∧ Nonempty (IsColimit (Cofan.mk X π))
 
 instance {X : C} (S : Presieve X) [S.Extensive] : S.HasPairwisePullbacks where
   has_pullbacks := by
@@ -52,8 +56,9 @@ instance {X : C} (S : Presieve X) [S.Extensive] : S.HasPairwisePullbacks where
 A finite-product-preserving presheaf is a sheaf for the extensive topology on a category which is
 `FinitaryPreExtensive`.
 -/
-theorem isSheafFor_extensive_of_preservesFiniteProducts {X : C} (S : Presieve X) [S.Extensive]
-    (F : Cᵒᵖ ⥤ Type w) [PreservesFiniteProducts F] : S.IsSheafFor F := by
+theorem isSheafFor_extensive_of_preservesFiniteProducts
+    {X : C} (S : Presieve X) [S.Extensive] (F : Cᵒᵖ ⥤ Type w) [PreservesFiniteProducts F]
+    : S.IsSheafFor F := by
   obtain ⟨α, _, Z, π, rfl, ⟨hc⟩⟩ := Extensive.arrows_nonempty_isColimit (R := S)
   have : (ofArrows Z (Cofan.mk X π).inj).HasPairwisePullbacks :=
     (inferInstance : (ofArrows Z π).HasPairwisePullbacks)
@@ -64,8 +69,8 @@ instance {α : Type} [Finite α] (Z : α → C) : (ofArrows Z (fun i ↦ Sigma.�
   ⟨⟨α, inferInstance, Z, (fun i ↦ Sigma.ι Z i), rfl, ⟨coproductIsCoproduct _⟩⟩⟩
 
 /-- Every Yoneda-presheaf is a sheaf for the extensive topology. -/
-theorem extensiveTopology.isSheaf_yoneda_obj (W : C) : Presieve.IsSheaf (extensiveTopology C)
-    (yoneda.obj W) := by
+theorem extensiveTopology.isSheaf_yoneda_obj (W : C)
+    : Presieve.IsSheaf (extensiveTopology C) (yoneda.obj W) := by
   rw [extensiveTopology, isSheaf_coverage]
   intro X R ⟨Y, α, Z, π, hR, hi⟩
   have : IsIso (Sigma.desc (Cofan.inj (Cofan.mk X π))) := hi
@@ -82,8 +87,8 @@ variable [FinitaryExtensive C]
 A presheaf of sets on a category which is `FinitaryExtensive` is a sheaf iff it preserves finite
 products.
 -/
-theorem Presieve.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ Type w) :
-    Presieve.IsSheaf (extensiveTopology C) F ↔ PreservesFiniteProducts F := by
+theorem Presieve.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ Type w)
+    : Presieve.IsSheaf (extensiveTopology C) F ↔ PreservesFiniteProducts F := by
   refine ⟨fun hF ↦ ⟨fun n ↦ ⟨fun {K} ↦ ?_⟩⟩, fun hF ↦ ?_⟩
   · rw [extensiveTopology, isSheaf_coverage] at hF
     let Z : Fin n → C := fun i ↦ unop (K.obj ⟨i⟩)
@@ -93,12 +98,12 @@ theorem Presieve.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ Type w) :
       inferInstanceAs <| ∀ (i : Fin n), Mono (Sigma.ι Z i)
     let i : K ≅ Discrete.functor (fun i ↦ op (Z i)) := Discrete.natIsoFunctor
     let _ : PreservesLimit (Discrete.functor (fun i ↦ op (Z i))) F :=
-        Presieve.preservesProduct_of_isSheafFor F ?_ initialIsInitial _ (coproductIsCoproduct Z)
+      Presieve.preservesProduct_of_isSheafFor F ?_ initialIsInitial _ (coproductIsCoproduct Z)
         (FinitaryExtensive.isPullback_initial_to_sigma_ι Z)
         (hF (Presieve.ofArrows Z (fun i ↦ Sigma.ι Z i)) ?_)
     · exact preservesLimit_of_iso_diagram F i.symm
     · apply hF
-      refine ⟨Empty, inferInstance, Empty.elim, IsEmpty.elim inferInstance, rfl, ⟨default,?_, ?_⟩⟩
+      refine ⟨Empty, inferInstance, Empty.elim, IsEmpty.elim inferInstance, rfl, ⟨default, ?_, ?_⟩⟩
       · ext b
         cases b
       · simp only [eq_iff_true_of_subsingleton]
@@ -112,8 +117,8 @@ theorem Presieve.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ Type w) :
 /--
 A presheaf on a category which is `FinitaryExtensive` is a sheaf iff it preserves finite products.
 -/
-theorem Presheaf.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ D) :
-    IsSheaf (extensiveTopology C) F ↔ PreservesFiniteProducts F := by
+theorem Presheaf.isSheaf_iff_preservesFiniteProducts (F : Cᵒᵖ ⥤ D)
+    : IsSheaf (extensiveTopology C) F ↔ PreservesFiniteProducts F := by
   constructor
   · intro h
     rw [IsSheaf] at h

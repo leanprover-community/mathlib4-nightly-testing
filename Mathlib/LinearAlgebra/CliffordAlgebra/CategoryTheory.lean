@@ -23,10 +23,12 @@ open CategoryTheory
 
 variable {R : Type u} [CommRing R]
 
-/-- The "clifford algebra" functor, sending a quadratic `R`-module `V` to the clifford algebra on
+/--
+The "clifford algebra" functor, sending a quadratic `R`-module `V` to the clifford algebra on
 `V`.
 
-This is `CliffordAlgebra.map` through the lens of category theory. -/
+This is `CliffordAlgebra.map` through the lens of category theory.
+-/
 @[simps]
 def QuadraticModuleCat.cliffordAlgebra : QuadraticModuleCat.{u} R ⥤ AlgCat.{u} R where
   obj M := ↧(CliffordAlgebra M.form)

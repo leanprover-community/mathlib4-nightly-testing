@@ -31,16 +31,17 @@ variable [AddCommMonoid M₁] [AddCommMonoid M₂] [AddCommMonoid M₃] [AddComm
 variable [AddCommMonoid N]
 variable [Module R M] [Module R M₁] [Module R M₂] [Module R M₃] [Module R M₄] [Module R N]
 
-/-- An isometry between two quadratic spaces `M₁, Q₁` and `M₂, Q₂` over a ring `R`,
-is a linear map between `M₁` and `M₂` that commutes with the quadratic forms. -/
+/--
+An isometry between two quadratic spaces `M₁, Q₁` and `M₂, Q₂` over a ring `R`,
+is a linear map between `M₁` and `M₂` that commutes with the quadratic forms.
+-/
 structure Isometry (Q₁ : QuadraticMap R M₁ N) (Q₂ : QuadraticMap R M₂ N) extends M₁ →ₗ[R] M₂ where
   /-- The quadratic form agrees across the map. -/
   map_app' : ∀ m, Q₂ (toFun m) = Q₁ m
 
 namespace Isometry
 
-@[inherit_doc]
-notation:25 Q₁ " →qᵢ " Q₂:0 => Isometry Q₁ Q₂
+@[inherit_doc] notation:25 Q₁ " →qᵢ " Q₂:0 => Isometry Q₁ Q₂
 
 variable {Q₁ : QuadraticMap R M₁ N} {Q₂ : QuadraticMap R M₂ N}
 variable {Q₃ : QuadraticMap R M₃ N} {Q₄ : QuadraticMap R M₄ N}
@@ -54,26 +55,20 @@ instance instLinearMapClass : LinearMapClass (Q₁ →qᵢ Q₂) R M₁ M₂ whe
   map_add f := f.toLinearMap.map_add
   map_smulₛₗ f := f.toLinearMap.map_smul
 
-theorem toLinearMap_injective :
-    Function.Injective (Isometry.toLinearMap : (Q₁ →qᵢ Q₂) → M₁ →ₗ[R] M₂) := fun _f _g h =>
+theorem toLinearMap_injective
+    : Function.Injective (Isometry.toLinearMap : (Q₁ →qᵢ Q₂) → M₁ →ₗ[R] M₂) := fun _f _g h =>
   DFunLike.coe_injective congr($h)
 
-@[ext]
-theorem ext ⦃f g : Q₁ →qᵢ Q₂⦄ (h : ∀ x, f x = g x) : f = g :=
-  DFunLike.ext _ _ h
+@[ext] theorem ext ⦃f g : Q₁ →qᵢ Q₂⦄ (h : ∀ x, f x = g x) : f = g := DFunLike.ext _ _ h
 
 /-- See Note [custom simps projection]. -/
 protected def Simps.apply (f : Q₁ →qᵢ Q₂) : M₁ → M₂ := f
 
 initialize_simps_projections Isometry (toFun → apply)
 
-@[simp]
-theorem map_app (f : Q₁ →qᵢ Q₂) (m : M₁) : Q₂ (f m) = Q₁ m :=
-  f.map_app' m
+@[simp] theorem map_app (f : Q₁ →qᵢ Q₂) (m : M₁) : Q₂ (f m) = Q₁ m := f.map_app' m
 
-@[simp]
-theorem coe_toLinearMap (f : Q₁ →qᵢ Q₂) : ⇑f.toLinearMap = f :=
-  rfl
+@[simp] theorem coe_toLinearMap (f : Q₁ →qᵢ Q₂) : ⇑f.toLinearMap = f := rfl
 
 /-- The identity isometry from a quadratic form to itself. -/
 @[simps!]
@@ -87,8 +82,7 @@ def ofEq {Q₁ Q₂ : QuadraticMap R M₁ N} (h : Q₁ = Q₂) : Q₁ →qᵢ Q�
   __ := LinearMap.id
   map_app' _ := h ▸ rfl
 
-@[simp]
-theorem ofEq_rfl {Q : QuadraticMap R M₁ N} : ofEq (rfl : Q = Q) = .id Q := rfl
+@[simp] theorem ofEq_rfl {Q : QuadraticMap R M₁ N} : ofEq (rfl : Q = Q) = .id Q := rfl
 
 /-- The composition of two isometries between quadratic forms. -/
 @[simps]
@@ -98,20 +92,16 @@ def comp (g : Q₂ →qᵢ Q₃) (f : Q₁ →qᵢ Q₂) : Q₁ →qᵢ Q₃ whe
   __ := (g.toLinearMap : M₂ →ₗ[R] M₃) ∘ₗ (f.toLinearMap : M₁ →ₗ[R] M₂)
 
 @[simp]
-theorem toLinearMap_comp (g : Q₂ →qᵢ Q₃) (f : Q₁ →qᵢ Q₂) :
-    (g.comp f).toLinearMap = g.toLinearMap.comp f.toLinearMap :=
+theorem toLinearMap_comp (g : Q₂ →qᵢ Q₃) (f : Q₁ →qᵢ Q₂)
+    : (g.comp f).toLinearMap = g.toLinearMap.comp f.toLinearMap :=
   rfl
 
-@[simp]
-theorem id_comp (f : Q₁ →qᵢ Q₂) : (id Q₂).comp f = f :=
-  ext fun _ => rfl
+@[simp] theorem id_comp (f : Q₁ →qᵢ Q₂) : (id Q₂).comp f = f := ext fun _ => rfl
 
-@[simp]
-theorem comp_id (f : Q₁ →qᵢ Q₂) : f.comp (id Q₁) = f :=
-  ext fun _ => rfl
+@[simp] theorem comp_id (f : Q₁ →qᵢ Q₂) : f.comp (id Q₁) = f := ext fun _ => rfl
 
-theorem comp_assoc (h : Q₃ →qᵢ Q₄) (g : Q₂ →qᵢ Q₃) (f : Q₁ →qᵢ Q₂) :
-    (h.comp g).comp f = h.comp (g.comp f) :=
+theorem comp_assoc (h : Q₃ →qᵢ Q₄) (g : Q₂ →qᵢ Q₃) (f : Q₁ →qᵢ Q₂)
+    : (h.comp g).comp f = h.comp (g.comp f) :=
   ext fun _ => rfl
 
 /-- There is a zero map from any module with the zero form. -/
@@ -120,9 +110,10 @@ instance : Zero ((0 : QuadraticMap R M₁ N) →qᵢ Q₂) where
 
 /-- There is a zero map from the trivial module. -/
 instance hasZeroOfSubsingleton [Subsingleton M₁] : Zero (Q₁ →qᵢ Q₂) where
-  zero :=
-  { (0 : M₁ →ₗ[R] M₂) with
-    map_app' := fun m => Subsingleton.elim 0 m ▸ (map_zero _).trans (map_zero _).symm }
+  zero := {
+    (0 : M₁ →ₗ[R] M₂) with
+    map_app' := fun m => Subsingleton.elim 0 m ▸ (map_zero _).trans (map_zero _).symm
+  }
 
 /-- Maps into the zero module are trivial -/
 instance [Subsingleton M₂] : Subsingleton (Q₁ →qᵢ Q₂) :=

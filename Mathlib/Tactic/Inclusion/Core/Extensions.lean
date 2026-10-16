@@ -33,8 +33,10 @@ structure InclusionExt where
   /-- The priority of the extension. Extensions with higher priority are tried first. -/
   priority : Nat := eval_prio default
 
-/-- An extension used by the `inclusion` tactic to construct inclusion hypotheses from local
-declarations. -/
+/--
+An extension used by the `inclusion` tactic to construct inclusion hypotheses from local
+declarations.
+-/
 structure HypothesisExt where
   /-- Name of the declaration of the extension. -/
   declName : Name := by exact decl_name%
@@ -49,14 +51,16 @@ structure HypothesisExt where
 
 /-- A family of inclusion and hypothesis extensions. -/
 structure InclusionFamily where
-  /-- The declaration the family was registered in. Recorded so that modules referring to the
-  family by name still depend on the module registering it. -/
+  /--
+  The declaration the family was registered in. Recorded so that modules referring to the
+  family by name still depend on the module registering it.
+  -/
   ref : Name
   /-- The `DiscrTree`-indexed collection of inclusion extensions. -/
   inclusionExt : EnvExt InclusionExt
   /-- The `DiscrTree`-indexed collection of hypothesis extensions. -/
   hypothesisExt : EnvExt HypothesisExt
-  deriving Nonempty
+deriving Nonempty
 
 /-- A map from family names to registered inclusion families. -/
 abbrev InclusionFamilies := Std.HashMap Name InclusionFamily
@@ -64,14 +68,16 @@ abbrev InclusionFamilies := Std.HashMap Name InclusionFamily
 /-- The registry of inclusion families. -/
 initialize inclusionFamiliesRef : IO.Ref InclusionFamilies ← IO.mkRef {}
 
-/-- Register an inclusion family.
+/--
+Register an inclusion family.
 
 `ref` must name the declaration whose initializer runs the registration: it is what
 `getInclusionFamily?` records, so that a module naming the family acquires a dependency on the
 module registering it. The `decl_name%` default is correct for the usual
-`initialize _ : InclusionFamily ← registerInclusionFamily ..` idiom. -/
-def registerInclusionFamily (name : Name) (ref : Name := by exact decl_name%) :
-    IO InclusionFamily := do
+`initialize _ : InclusionFamily ← registerInclusionFamily ..` idiom.
+-/
+def registerInclusionFamily (name : Name) (ref : Name := by exact decl_name%)
+    : IO InclusionFamily := do
   if (← inclusionFamiliesRef.get).contains name then
     throw <| IO.userError s!"Inclusion family `{name}` is already registered"
   let inclusionExt ← initializeEnvExt ``InclusionExt (ref.str "inclusionExt")
@@ -80,8 +86,10 @@ def registerInclusionFamily (name : Name) (ref : Name := by exact decl_name%) :
   inclusionFamiliesRef.modify (·.insert name family)
   return family
 
-/-- If `name` is the name of an `InclusionFamily` `family` then return `some family`,
-otherwise return `none`. -/
+/--
+If `name` is the name of an `InclusionFamily` `family` then return `some family`,
+otherwise return `none`.
+-/
 def getInclusionFamily? (name : Name) : CoreM (Option InclusionFamily) := do
   let family? := (← inclusionFamiliesRef.get)[name]?
   if let some family := family? then
@@ -94,10 +102,11 @@ def getInclusionFamily (name : Name) : CoreM InclusionFamily := do
     | throwError "Unknown inclusion family `{name}`"
   return family
 
-/-- Return an array of the inclusion extensions in `families` whose `DiscrTree` key matches `e`,
-sorted in order of highest to lowest priority. -/
-def getInclusionExtMatches (families : Array Name) (e : Expr) :
-    MetaM (Array InclusionExt) := do
+/--
+Return an array of the inclusion extensions in `families` whose `DiscrTree` key matches `e`,
+sorted in order of highest to lowest priority.
+-/
+def getInclusionExtMatches (families : Array Name) (e : Expr) : MetaM (Array InclusionExt) := do
   let env ← getEnv
   let mut matched := #[]
   for familyName in families do
@@ -106,10 +115,11 @@ def getInclusionExtMatches (families : Array Name) (e : Expr) :
       matched := matched.push ext
   return matched.qsort fun a b => a.priority > b.priority
 
-/-- Return an array of the hypothesis extensions in `families` whose `DiscrTree` key matches `e`,
-sorted in order of highest to lowest priority. -/
-def getHypothesisExtMatches (families : Array Name) (e : Expr) :
-    MetaM (Array HypothesisExt) := do
+/--
+Return an array of the hypothesis extensions in `families` whose `DiscrTree` key matches `e`,
+sorted in order of highest to lowest priority.
+-/
+def getHypothesisExtMatches (families : Array Name) (e : Expr) : MetaM (Array HypothesisExt) := do
   let env ← getEnv
   let mut matched := #[]
   for familyName in families do
@@ -120,8 +130,10 @@ def getHypothesisExtMatches (families : Array Name) (e : Expr) :
 
 section InclusionParam
 
-/-- A registered named parameter that can be set by the user and used across inclusion and
-hypothesis extensions. -/
+/--
+A registered named parameter that can be set by the user and used across inclusion and
+hypothesis extensions.
+-/
 structure InclusionParamDecl where
   /-- The name of the parameter. -/
   name : Name
@@ -139,8 +151,7 @@ def mkInclusionParamDecl (name : Name) : ImportM InclusionParamDecl := do
   IO.ofExcept <| unsafe env.evalConstCheck InclusionParamDecl opts ``InclusionParamDecl name
 
 /-- Initialize the `InclusionParamExt` environment extension. -/
-initialize inclusionParamExt :
-    ScopedEnvExtension Name (Name × InclusionParamDecl) InclusionParams ←
+initialize inclusionParamExt : ScopedEnvExtension Name (Name × InclusionParamDecl) InclusionParams ←
   registerScopedEnvExtension {
     mkInitial := pure {}
     ofOLeanEntry := fun _ name => return (name, ← mkInclusionParamDecl name)

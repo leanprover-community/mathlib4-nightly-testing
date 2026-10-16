@@ -58,8 +58,8 @@ theorem pentagonal_inj {x y : ℤ} : pentagonal x = pentagonal y ↔ x = y :=
 theorem pentagonal_lt_pentagonal_neg {k : ℤ} (h : 0 < k) : pentagonal k < pentagonal (-k) := by
   grind [natCast_pentagonal]
 
-theorem pentagonal_neg_lt_pentagonal_add_one {k : ℤ} (h : 0 ≤ k) :
-    pentagonal (-k) < pentagonal (k + 1) := by
+theorem pentagonal_neg_lt_pentagonal_add_one {k : ℤ} (h : 0 ≤ k)
+    : pentagonal (-k) < pentagonal (k + 1) := by
   grind [natCast_pentagonal]
 
 theorem pentagonal_strictMonoOn : StrictMonoOn pentagonal (Set.Ici 0) := by

@@ -16,16 +16,16 @@ meta def testModulesNotUpperCamelCase : IO Unit := do
     linterSets := {}
   }
 
-  assert!((← modulesNotUpperCamelCase opts #[]) == 0)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.Fine]) == 0)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.AlsoFine_]) == 0)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.NotFine_.Foo]) == 1)
+  assert! ((← modulesNotUpperCamelCase opts #[]) == 0)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.Fine]) == 0)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.AlsoFine_]) == 0)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.NotFine_.Foo]) == 1)
 
-  assert!((← modulesNotUpperCamelCase opts #[`bad_module]) == 1)
-  assert!((← modulesNotUpperCamelCase opts #[`GoodName, `bad_module, `bad_module]) == 2)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.BadModule__]) == 1)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.lowerCase]) == 1)
-  assert!((← modulesNotUpperCamelCase opts #[`Mathlib.snake_case]) == 1)
+  assert! ((← modulesNotUpperCamelCase opts #[`bad_module]) == 1)
+  assert! ((← modulesNotUpperCamelCase opts #[`GoodName, `bad_module, `bad_module]) == 2)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.BadModule__]) == 1)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.lowerCase]) == 1)
+  assert! ((← modulesNotUpperCamelCase opts #[`Mathlib.snake_case]) == 1)
 
 /--
 info: error: module name 'Mathlib.NotFine_.Foo' is not in 'UpperCamelCase': it should be 'Mathlib.NotFine.Foo' instead

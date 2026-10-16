@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Linter.EmptyLine
 
 set_option linter.style.emptyLine true
@@ -40,7 +41,6 @@ example : True := by
 
   refine ?_
 
-
   trivial
 
 /--
@@ -52,13 +52,12 @@ Context:
 Note: This linter can be disabled with `set_option linter.style.emptyLine false`
 -/
 #guard_msgs in
-/-- This is a doc-string.
+/--
+This is a doc-string.
 
 Here it should be allowed to have empty lines.
 -/
-example : True :=
-
-  trivial
+example : True := trivial
 
 /--
 warning: Please, write a comment here or remove this line, but do not place empty lines within commands!
@@ -84,19 +83,19 @@ Note: This linter can be disabled with `set_option linter.style.emptyLine false`
 -/
 #guard_msgs in
 run_cmd
-  let _ ← `(/--
-hello
+  let _ ←
+    `(/--
+      hello
 
 my name
 
 is
--/ abbrev D := 0)
-  let _ ←
-
-`(/-- hello -/ abbrev D := 0)
+      -/ abbrev D := 0)
   let _ ← `(/-- hello -/ abbrev D := 0)
-  let _ ← `(/--
-hello
+  let _ ← `(/-- hello -/ abbrev D := 0)
+  let _ ←
+    `(/--
+      hello
 
 also
 
@@ -105,13 +104,12 @@ my
 name
 
 is
--/ abbrev
---
+      -/ abbrev
+      --
 
-D
+      D
 
-:= 0)
-
+      := 0)
 
 section TrailingComments
 
@@ -141,17 +139,15 @@ An
 
 empty line.
 -/
-structure WithAString
-
- where
-  str : String := "I have
-
-                  embedded empty lines, but that is ok!"
+structure WithAString where
+  str : String :=
+    "I have\
+      \n\
+      \n                  embedded empty lines, but that is ok!"
 
 /-- warning: declaration uses `sorry` -/
 #guard_msgs in
-example : True := by  -- The following empty line is not reported, since the command is noisy.
-
+example : True := by -- The following empty line is not reported, since the command is noisy.
   stop
   sorry
 
@@ -172,36 +168,23 @@ Note: This linter can be disabled with `set_option linter.style.emptyLine false`
 -/
 #guard_msgs in
 example : True := by
-
   -- Here I start
-
-  /-
-
-  -/
-
-  --stop
-
+  /- -/
+  -- stop
   trivial -- also a comment
 
-  -- with a line break
+-- with a line break
 
 -- Check that `where` fields allow empty lines.
 structure F where
-
   a : Unit → Unit
-
   b : Unit
-
   c : Unit
 
 -- Check that `where` fields allow empty lines.
 def F₀ : F where
-
-  a _ := by
-    exact ()
-
+  a _ := by exact ()
   b := ()
-
   c := ()
 
 --

@@ -6,7 +6,6 @@ Authors: Alena Gusakov, Bhavik Mehta, Kyle Miller
 module
 
 public import Mathlib.CategoryTheory.CofilteredSystem
-
 import Mathlib.Combinatorics.Hall.Finite
 
 /-!
@@ -60,50 +59,56 @@ def hallMatchingsOn {ι : Type u} {α : Type v} (t : ι → Finset α) (ι' : Fi
   { f : ι' → α | Function.Injective f ∧ ∀ (x : {x // x ∈ ι'}), f x ∈ t x }
 
 /-- Given a matching on a finset, construct the restriction of that matching to a subset. -/
-def hallMatchingsOn.restrict {ι : Type u} {α : Type v} (t : ι → Finset α) {ι' ι'' : Finset ι}
-    (h : ι' ⊆ ι'') (f : hallMatchingsOn t ι'') : hallMatchingsOn t ι' := by
+def hallMatchingsOn.restrict
+    {ι : Type u} {α : Type v} (t : ι → Finset α)
+    {ι' ι'' : Finset ι} (h : ι' ⊆ ι'') (f : hallMatchingsOn t ι'')
+    : hallMatchingsOn t ι' := by
   refine ⟨fun i => f.val ⟨i, h i.property⟩, ?_⟩
   obtain ⟨hinj, hc⟩ := f.property
   refine ⟨?_, fun i => hc ⟨i, h i.property⟩⟩
   rintro ⟨i, hi⟩ ⟨j, hj⟩ hh
   simpa only [Subtype.mk_eq_mk] using hinj hh
 
-/-- When the Hall condition is satisfied, the set of matchings on a finite set is nonempty.
-This is where `Finset.all_card_le_biUnion_card_iff_existsInjective'` comes into the argument. -/
-theorem hallMatchingsOn.nonempty {ι : Type u} {α : Type v} [DecidableEq α] (t : ι → Finset α)
-    (h : ∀ s : Finset ι, #s ≤ #(s.biUnion t)) (ι' : Finset ι) :
-    Nonempty (hallMatchingsOn t ι') := by
-  classical
-    refine ⟨Classical.indefiniteDescription _ ?_⟩
-    apply (all_card_le_biUnion_card_iff_existsInjective' fun i : ι' => t i).mp
-    intro s'
-    convert h (s'.image (↑)) using 1
-    · simp only [card_image_of_injective s' Subtype.coe_injective]
-    · rw [image_biUnion]
-
-/-- This is the `hallMatchingsOn` sets assembled into a directed system.
+/--
+When the Hall condition is satisfied, the set of matchings on a finite set is nonempty.
+This is where `Finset.all_card_le_biUnion_card_iff_existsInjective'` comes into the argument.
 -/
-def hallMatchingsFunctor {ι : Type u} {α : Type v} (t : ι → Finset α) :
-    (Finset ι)ᵒᵖ ⥤ Type (max u v) where
+theorem hallMatchingsOn.nonempty
+    {ι : Type u} {α : Type v} [DecidableEq α]
+    (t : ι → Finset α) (h : ∀ s : Finset ι, #s ≤ #(s.biUnion t))
+    (ι' : Finset ι)
+    : Nonempty (hallMatchingsOn t ι') := by
+  classical
+  refine ⟨Classical.indefiniteDescription _ ?_⟩
+  apply (all_card_le_biUnion_card_iff_existsInjective' fun i : ι' => t i).mp
+  intro s'
+  convert h (s'.image (↑)) using 1
+  · simp only [card_image_of_injective s' Subtype.coe_injective]
+  · rw [image_biUnion]
+
+/-- This is the `hallMatchingsOn` sets assembled into a directed system. -/
+def hallMatchingsFunctor {ι : Type u} {α : Type v} (t : ι → Finset α)
+    : (Finset ι)ᵒᵖ ⥤ Type (max u v) where
   obj ι' := hallMatchingsOn t ι'.unop
   map {_ _} g := ↾(hallMatchingsOn.restrict t (CategoryTheory.leOfHom g.unop))
 
-instance hallMatchingsOn.finite {ι : Type u} {α : Type v} (t : ι → Finset α) (ι' : Finset ι) :
-    Finite (hallMatchingsOn t ι') := by
+instance hallMatchingsOn.finite {ι : Type u} {α : Type v} (t : ι → Finset α) (ι' : Finset ι)
+    : Finite (hallMatchingsOn t ι') := by
   classical
-    rw [hallMatchingsOn]
-    let g : hallMatchingsOn t ι' → ι' → ι'.biUnion t := by
-      rintro f i
-      refine ⟨f.val i, ?_⟩
-      rw [mem_biUnion]
-      exact ⟨i, i.property, f.property.2 i⟩
-    apply Finite.of_injective g
-    intro f f' h
-    ext a
-    rw [funext_iff] at h
-    simpa [g] using h a
+  rw [hallMatchingsOn]
+  let g : hallMatchingsOn t ι' → ι' → ι'.biUnion t := by
+    rintro f i
+    refine ⟨f.val i, ?_⟩
+    rw [mem_biUnion]
+    exact ⟨i, i.property, f.property.2 i⟩
+  apply Finite.of_injective g
+  intro f f' h
+  ext a
+  rw [funext_iff] at h
+  simpa [g] using h a
 
-/-- This is the version of **Hall's Marriage Theorem** in terms of indexed
+/--
+This is the version of **Hall's Marriage Theorem** in terms of indexed
 families of finite sets `t : ι → Finset α`.  It states that there is a
 set of distinct representatives if and only if every union of `k` of the
 sets has at least `k` elements.
@@ -113,38 +118,37 @@ Recall that `s.biUnion t` is the union of all the sets `t i` for `i ∈ s`.
 This theorem is bootstrapped from `Finset.all_card_le_biUnion_card_iff_exists_injective'`,
 which has the additional constraint that `ι` is a `Fintype`.
 -/
-theorem Finset.all_card_le_biUnion_card_iff_exists_injective {ι : Type u} {α : Type v}
-    [DecidableEq α] (t : ι → Finset α) :
-    (∀ s : Finset ι, #s ≤ #(s.biUnion t)) ↔
-      ∃ f : ι → α, Function.Injective f ∧ ∀ x, f x ∈ t x := by
+theorem Finset.all_card_le_biUnion_card_iff_exists_injective
+    {ι : Type u} {α : Type v} [DecidableEq α] (t : ι → Finset α)
+    : (∀ s : Finset ι, #s ≤ #(s.biUnion t))
+      ↔ ∃ f : ι → α, Function.Injective f ∧ ∀ x, f x ∈ t x := by
   constructor
   · intro h
     -- Set up the functor
     have : ∀ ι' : (Finset ι)ᵒᵖ, Nonempty ((hallMatchingsFunctor t).obj ι') := fun ι' =>
       hallMatchingsOn.nonempty t h ι'.unop
     classical
-      have : ∀ ι' : (Finset ι)ᵒᵖ, Finite ((hallMatchingsFunctor t).obj ι') := by
-        intro ι'
-        rw [hallMatchingsFunctor]
-        infer_instance
-      -- Apply the compactness argument
-      obtain ⟨u, hu⟩ := nonempty_sections_of_finite_inverse_system (hallMatchingsFunctor t)
-      -- Interpret the resulting section of the inverse limit
-      refine ⟨?_, ?_, ?_⟩
-      · -- Build the matching function from the section
-        exact fun i =>
-          (u (Opposite.op ({i} : Finset ι))).val ⟨i, by simp only [mem_singleton]⟩
-      · -- Show that it is injective
-        intro i i'
-        have subi : ({i} : Finset ι) ⊆ {i, i'} := by simp
-        have subi' : ({i'} : Finset ι) ⊆ {i, i'} := by simp
-        simp only
-        rw [← hu (CategoryTheory.homOfLE subi).op, ← hu (CategoryTheory.homOfLE subi').op]
-        let uii' := u (Opposite.op ({i, i'} : Finset ι))
-        exact fun h => Subtype.mk_eq_mk.mp (uii'.property.1 h)
-      · -- Show that it maps each index to the corresponding finite set
-        intro i
-        apply (u (Opposite.op ({i} : Finset ι))).property.2
+    have : ∀ ι' : (Finset ι)ᵒᵖ, Finite ((hallMatchingsFunctor t).obj ι') := by
+      intro ι'
+      rw [hallMatchingsFunctor]
+      infer_instance
+    -- Apply the compactness argument
+    obtain ⟨u, hu⟩ := nonempty_sections_of_finite_inverse_system (hallMatchingsFunctor t)
+    -- Interpret the resulting section of the inverse limit
+    refine ⟨?_, ?_, ?_⟩
+    · -- Build the matching function from the section
+      exact fun i => (u (Opposite.op ({i} : Finset ι))).val ⟨i, by simp only [mem_singleton]⟩
+    · -- Show that it is injective
+      intro i i'
+      have subi : ({i} : Finset ι) ⊆ {i, i'} := by simp
+      have subi' : ({i'} : Finset ι) ⊆ {i, i'} := by simp
+      simp only
+      rw [← hu (CategoryTheory.homOfLE subi).op, ← hu (CategoryTheory.homOfLE subi').op]
+      let uii' := u (Opposite.op ({i, i'} : Finset ι))
+      exact fun h => Subtype.mk_eq_mk.mp (uii'.property.1 h)
+    · -- Show that it maps each index to the corresponding finite set
+      intro i
+      apply (u (Opposite.op ({i} : Finset ι))).property.2
   · -- The reverse direction is a straightforward cardinality argument
     rintro ⟨f, hf₁, hf₂⟩ s
     rw [← Finset.card_image_of_injective s hf₁]
@@ -152,10 +156,15 @@ theorem Finset.all_card_le_biUnion_card_iff_exists_injective {ι : Type u} {α :
     grind
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- Given a relation such that the image of every singleton set is finite, then the image of every
-finite set is finite. -/
-instance {α : Type u} {β : Type v} [DecidableEq β] (R : SetRel α β)
-    [∀ a : α, Fintype (R.image {a})] (A : Finset α) : Fintype (R.image A) := by
+/--
+Given a relation such that the image of every singleton set is finite, then the image of every
+finite set is finite.
+-/
+instance
+    {α : Type u} {β : Type v} [DecidableEq β]
+    (R : SetRel α β) [∀ a : α, Fintype (R.image {a})]
+    (A : Finset α)
+    : Fintype (R.image A) := by
   have h : R.image A = (A.biUnion fun a => (R.image {a}).toFinset : Set β) := by
     ext
     simp [SetRel.image]
@@ -163,7 +172,8 @@ instance {α : Type u} {β : Type v} [DecidableEq β] (R : SetRel α β)
   apply FinsetCoe.fintype
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- This is a version of **Hall's Marriage Theorem** in terms of a relation
+/--
+This is a version of **Hall's Marriage Theorem** in terms of a relation
 between types `α` and `β` such that `α` is finite and the image of
 each `x : α` is finite (it suffices for `β` to be finite; see
 `Fintype.all_card_le_filter_rel_iff_exists_injective`).  There is
@@ -173,10 +183,10 @@ a subrelation of the relation) iff every subset of
 
 Note: if `[Fintype β]`, then there exist instances for `[∀ (a : α), Fintype (R.image {a})]`.
 -/
-theorem Fintype.all_card_le_rel_image_card_iff_exists_injective {α : Type u} {β : Type v}
-    [DecidableEq β] (R : SetRel α β) [∀ a : α, Fintype (R.image {a})] :
-    (∀ A : Finset α, #A ≤ Fintype.card (R.image A)) ↔
-      ∃ f : α → β, Function.Injective f ∧ ∀ x, x ~[R] f x := by
+theorem Fintype.all_card_le_rel_image_card_iff_exists_injective
+    {α : Type u} {β : Type v} [DecidableEq β] (R : SetRel α β) [∀ a : α, Fintype (R.image {a})]
+    : (∀ A : Finset α, #A ≤ Fintype.card (R.image A))
+      ↔ ∃ f : α → β, Function.Injective f ∧ ∀ x, x ~[R] f x := by
   let r' a := (R.image {a}).toFinset
   have h : ∀ A : Finset α, Fintype.card (R.image A) = #(A.biUnion r') := by
     intro A
@@ -188,16 +198,18 @@ theorem Fintype.all_card_le_rel_image_card_iff_exists_injective {α : Type u} {�
   simp only [h, h']
   apply Finset.all_card_le_biUnion_card_iff_exists_injective
 
-/-- This is a version of **Hall's Marriage Theorem** in terms of a relation to a finite type.
+/--
+This is a version of **Hall's Marriage Theorem** in terms of a relation to a finite type.
 There is a transversal of the relation (an injective function `α → β` whose graph is a subrelation
 of the relation) iff every subset of `k` terms of `α` is related to at least `k` terms of `β`.
 
 It is like `Fintype.all_card_le_rel_image_card_iff_exists_injective` but uses `Finset.filter`
 rather than `Rel.image`.
 -/
-theorem Fintype.all_card_le_filter_rel_iff_exists_injective {α : Type u} {β : Type v} [Fintype β]
-    (r : α → β → Prop) [DecidableRel r] :
-    (∀ A : Finset α, #A ≤ #{b | ∃ a ∈ A, r a b}) ↔ ∃ f : α → β, Injective f ∧ ∀ x, r x (f x) := by
+theorem Fintype.all_card_le_filter_rel_iff_exists_injective
+    {α : Type u} {β : Type v} [Fintype β] (r : α → β → Prop) [DecidableRel r]
+    : (∀ A : Finset α, #A ≤ # {b | ∃ a ∈ A, r a b})
+      ↔ ∃ f : α → β, Injective f ∧ ∀ x, r x (f x) := by
   have := Classical.decEq β
   let r' a : Finset β := {b | r a b}
   have h : ∀ A : Finset α, ({b | ∃ a ∈ A, r a b} : Finset _) = A.biUnion r' := by

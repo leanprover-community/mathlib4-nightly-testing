@@ -30,12 +30,12 @@ instance mulAction₀ : MulAction (ConjAct G₀) G₀ where
   one_smul := by simp [smul_def]
   mul_smul := by simp [smul_def, mul_assoc]
 
-instance smulCommClass₀ [SMul α G₀] [SMulCommClass α G₀ G₀] [IsScalarTower α G₀ G₀] :
-    SMulCommClass α (ConjAct G₀) G₀ where
+instance smulCommClass₀ [SMul α G₀] [SMulCommClass α G₀ G₀] [IsScalarTower α G₀ G₀]
+    : SMulCommClass α (ConjAct G₀) G₀ where
   smul_comm a ug g := by rw [smul_def, smul_def, mul_smul_comm, smul_mul_assoc]
 
-instance smulCommClass₀' [SMul α G₀] [SMulCommClass G₀ α G₀] [IsScalarTower α G₀ G₀] :
-    SMulCommClass (ConjAct G₀) α G₀ :=
+instance smulCommClass₀' [SMul α G₀] [SMulCommClass G₀ α G₀] [IsScalarTower α G₀ G₀]
+    : SMulCommClass (ConjAct G₀) α G₀ :=
   haveI := SMulCommClass.symm G₀ α G₀
   .symm ..
 

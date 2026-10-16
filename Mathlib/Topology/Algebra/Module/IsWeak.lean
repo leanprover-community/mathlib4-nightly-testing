@@ -68,12 +68,14 @@ open Topology Filter
 
 section Basic
 
-variable {α 𝕜 E F E' F' : Type*} [CommSemiring 𝕜] [TopologicalSpace 𝕜]
-    [AddCommMonoid E] [Module 𝕜 E]
-    [AddCommMonoid F] [Module 𝕜 F]
+variable
+  {α 𝕜 E F E' F' : Type*} [CommSemiring 𝕜] [TopologicalSpace 𝕜] [AddCommMonoid E] [Module 𝕜 E]
+  [AddCommMonoid F] [Module 𝕜 F]
 
-/-- Typeclass expressing that the topology on `E` is the weak topology induced
-by the bilinear form `B`. -/
+/--
+Typeclass expressing that the topology on `E` is the weak topology induced
+by the bilinear form `B`.
+-/
 @[mk_iff]
 class LinearMap.IsWeak [t : TopologicalSpace E] (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) : Prop where
   eq_induced : t = .induced (B · ·) Pi.topologicalSpace
@@ -85,23 +87,23 @@ namespace LinearMap.IsWeak
 instance : B.flip.flip.IsWeak := hB
 
 /-- The coercion `(B · ·) : E → (F → 𝕜)` is continuous. -/
-theorem coeFn_continuous : Continuous (B · ·) :=
-  hB.eq_induced ▸ continuous_induced_dom
+theorem coeFn_continuous : Continuous (B · ·) := hB.eq_induced ▸ continuous_induced_dom
 
 /-- The evaluation map `(B · y) : E → 𝕜` is continuous for each `y : F`. -/
 @[fun_prop]
-lemma continuous_eval (y : F) : Continuous (B · y) :=
-  continuous_pi_iff.mp (coeFn_continuous B) _
+lemma continuous_eval (y : F) : Continuous (B · y) := continuous_pi_iff.mp (coeFn_continuous B) _
 
-/-- A map `f : α → E` is continuous if all the maps `fun a ↦ B (f a) y` are continuous
-for each `y : F`. -/
-lemma continuous_of_continuous_eval {α : Type*} [TopologicalSpace α]
-    {f : α → E} (hf : ∀ y, Continuous (fun x ↦ B (f x) y)) :
-    Continuous f :=
+/--
+A map `f : α → E` is continuous if all the maps `fun a ↦ B (f a) y` are continuous
+for each `y : F`.
+-/
+lemma continuous_of_continuous_eval
+    {α : Type*} [TopologicalSpace α] {f : α → E} (hf : ∀ y, Continuous (fun x ↦ B (f x) y))
+    : Continuous f :=
   hB.eq_induced ▸ continuous_induced_rng.mpr (continuous_pi_iff.mpr hf)
 
-lemma continuous_iff {α : Type*} [TopologicalSpace α] {f : α → E} :
-    Continuous f ↔ ∀ y, Continuous (fun x ↦ B (f x) y) :=
+lemma continuous_iff {α : Type*} [TopologicalSpace α] {f : α → E}
+    : Continuous f ↔ ∀ y, Continuous (fun x ↦ B (f x) y) :=
   ⟨fun _ ↦ by fun_prop, hB.continuous_of_continuous_eval⟩
 
 /-- The coercion `(B · ·) : E → (F → 𝕜)` is an embedding. -/
@@ -110,24 +112,26 @@ theorem isInducing : IsInducing (B · ·) where
 
 variable {B} in
 /-- The coercion `(B · ·) : E → (F → 𝕜)` is an embedding. -/
-theorem isEmbedding (hB_inj : Function.Injective B) :
-    IsEmbedding (B · ·) := by
+theorem isEmbedding (hB_inj : Function.Injective B) : IsEmbedding (B · ·) := by
   convert! (LinearMap.coe_injective.comp hB_inj |>.isEmbedding_induced)
   exact hB.eq_induced
 
 variable {B} in
-theorem tendsto_iff_forall_eval_tendsto {α : Type*} {l : Filter α} {f : α → E} {x : E}
-    (hB_inj : Function.Injective B) :
-    Tendsto f l (𝓝 x) ↔ ∀ y, Tendsto (fun i ↦ B (f i) y) l (𝓝 (B x y)) := by
+theorem tendsto_iff_forall_eval_tendsto
+    {α : Type*} {l : Filter α} {f : α → E} {x : E} (hB_inj : Function.Injective B)
+    : Tendsto f l (𝓝 x) ↔ ∀ y, Tendsto (fun i ↦ B (f i) y) l (𝓝 (B x y)) := by
   rw [← tendsto_pi_nhds, (isEmbedding hB_inj).tendsto_nhds_iff, Function.comp_def]
 
-/-- Suppose `B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜` and `B' : E' →ₗ[𝕜] F' →ₗ[𝕜] 𝕜` are bilinear maps such that
-`E ≃L[𝕜] E'` and `F ≃ₗ[𝕜] F'`. If `B.IsWeak`, then so also `B'.IsWeak`. -/
-protected theorem congr [AddCommMonoid E'] [Module 𝕜 E']
-    [AddCommMonoid F'] [Module 𝕜 F'] [TopologicalSpace E']
+/--
+Suppose `B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜` and `B' : E' →ₗ[𝕜] F' →ₗ[𝕜] 𝕜` are bilinear maps such that
+`E ≃L[𝕜] E'` and `F ≃ₗ[𝕜] F'`. If `B.IsWeak`, then so also `B'.IsWeak`.
+-/
+protected theorem congr
+    [AddCommMonoid E'] [Module 𝕜 E'] [AddCommMonoid F'] [Module 𝕜 F'] [TopologicalSpace E']
     (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) (B' : E' →ₗ[𝕜] F' →ₗ[𝕜] 𝕜) (e : E ≃L[𝕜] E') (f : F ≃ₗ[𝕜] F')
-    (hBB' : e.toLinearEquiv.arrowCongr (f.arrowCongr (.refl ..)) B = B') [hB : B.IsWeak] :
-    B'.IsWeak where
+    (hBB' : e.toLinearEquiv.arrowCongr (f.arrowCongr (.refl ..)) B = B')
+    [hB : B.IsWeak]
+    : B'.IsWeak where
   eq_induced := by
     rw [e.symm.toHomeomorph.induced_eq.symm]
     apply congr(TopologicalSpace.induced e.symm $hB.eq_induced).trans
@@ -152,8 +156,10 @@ theorem continuousAdd [ContinuousAdd 𝕜] : ContinuousAdd E where
     fun_prop
 
 include hB in
-/-- Scalar multiplication in `E` is continuous when `E` is equipped with a `LinearMap.IsWeak`
-topology. -/
+/--
+Scalar multiplication in `E` is continuous when `E` is equipped with a `LinearMap.IsWeak`
+topology.
+-/
 theorem continuousSMul [ContinuousSMul 𝕜 𝕜] : ContinuousSMul 𝕜 E where
   continuous_smul := by
     let t₁ : TopologicalSpace E := .induced (B · ·) Pi.topologicalSpace
@@ -163,9 +169,11 @@ theorem continuousSMul [ContinuousSMul 𝕜 𝕜] : ContinuousSMul 𝕜 E where
     fun_prop
 
 /-- `E` is a `IsTopologicalAddGroup` when `E` is equipped with a `LinearMap.IsWeak` topology. -/
-theorem isTopologicalAddGroup {𝕜 E F : Type*} [CommRing 𝕜] [TopologicalSpace 𝕜]
-    [AddCommGroup E] [Module 𝕜 E] [AddCommGroup F] [Module 𝕜 F] [TopologicalSpace E]
-    [ContinuousAdd 𝕜] (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) [hB : B.IsWeak] : IsTopologicalAddGroup E where
+theorem isTopologicalAddGroup
+    {𝕜 E F : Type*} [CommRing 𝕜] [TopologicalSpace 𝕜] [AddCommGroup E] [Module 𝕜 E] [AddCommGroup F]
+    [Module 𝕜 F] [TopologicalSpace E] [ContinuousAdd 𝕜]
+    (B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜) [hB : B.IsWeak]
+    : IsTopologicalAddGroup E where
   toContinuousAdd := continuousAdd B
   continuous_neg := by
     let t₁ : TopologicalSpace E := .induced (B · ·) Pi.topologicalSpace

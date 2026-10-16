@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.Convert
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Data.Set.Image
@@ -11,25 +12,21 @@ namespace Tests
 
 example (P : Prop) (h : P) : P := by convert h
 
-example (α β : Type) (h : α = β) (b : β) : α := by
-  convert b
+example (α β : Type) (h : α = β) (b : β) : α := by convert b
 
 example (α β : Type) (h : ∀ α β : Type, α = β) (b : β) : α := by
   convert b
   apply h
 
-example (m n : Nat) (h : m = n) (b : Fin n) : Nat × Nat × Nat × Fin m := by
-  convert (37, 57, 2, b)
+example (m n : Nat) (h : m = n) (b : Fin n) : Nat × Nat × Nat × Fin m := by convert (37, 57, 2, b)
 
 example (α β : Type) (h : α = β) (b : β) : Nat × α := by
   -- type eq ok since arguments to `Prod` are explicit
   convert (37, b)
 
-example (α β : Type) (h : β = α) (b : β) : Nat × α := by
-  convert ← (37, b)
+example (α β : Type) (h : β = α) (b : β) : Nat × α := by convert ← (37, b)
 
-example (α β : Type) (h : α = β) (b : β) : Nat × Nat × Nat × α := by
-  convert (37, 57, 2, b)
+example (α β : Type) (h : α = β) (b : β) : Nat × Nat × Nat × α := by convert (37, 57, 2, b)
 
 example (α β : Type) (h : α = β) (b : β) : Nat × Nat × Nat × α := by
   convert (37, 57, 2, b) using 2
@@ -60,22 +57,19 @@ example {α} [AddCommMonoid α] {a b c d : α} (H : a = c) (H' : b = d) : a + b 
 
 end convert_to
 
-example (prime : Nat → Prop) (n : Nat) (h : prime (2 * n + 1)) :
-    prime (n + n + 1) := by
+example (prime : Nat → Prop) (n : Nat) (h : prime (2 * n + 1)) : prime (n + n + 1) := by
   convert! h
   · guard_target = (HAdd.hAdd : Nat → Nat → Nat) = HMul.hMul
     exact test_sorry
   · guard_target = n = 2
     exact test_sorry
 
-example (prime : Nat → Prop) (n : Nat) (h : prime (2 * n + 1)) :
-    prime (n + n + 1) := by
+example (prime : Nat → Prop) (n : Nat) (h : prime (2 * n + 1)) : prime (n + n + 1) := by
   convert h
   guard_target = n + n = 2 * n
   exact test_sorry
 
-example (p q : Nat → Prop) (h : ∀ ε > 0, p ε) :
-    ∀ ε > 0, q ε := by
+example (p q : Nat → Prop) (h : ∀ ε > 0, p ε) : ∀ ε > 0, q ε := by
   convert h using 2 with ε hε
   guard_hyp hε : ε > 0
   guard_target = q ε ↔ p ε
@@ -91,8 +85,7 @@ axiom Fintype.foo' (α : Type _) [Fintype α] [Fintype (Option α)] : Fintype.ca
 axiom instFintypeBool : Fintype Bool
 
 /- Would be "failed to synthesize instance Fintype ?m" without allowing TC failure. -/
-example : @Fintype.card Bool instFintypeBool = 2 := by
-  convert Fintype.foo _
+example : @Fintype.card Bool instFintypeBool = 2 := by convert Fintype.foo _
 
 example : @Fintype.card Bool instFintypeBool = 2 := by
   convert Fintype.foo' _ using 1
@@ -143,16 +136,14 @@ example (P : ℕ → Prop) {a : ℕ} (h : P a) : P (semireducibleId a) := by
   guard_target =ₛ semireducibleId a = a
   rfl
 
-example (P : ℕ → Prop) {a : ℕ} (h : P a) : P (semireducibleId a) := by
-  convert! h
+example (P : ℕ → Prop) {a : ℕ} (h : P a) : P (semireducibleId a) := by convert! h
 
 example (P : ℕ → Prop) {a b : ℕ} (hab : b = a) (h : P a) : P (semireducibleId b) := by
   convert h
   guard_target =ₛ semireducibleId b = a
   exact hab
 
-example (P : ℕ → Prop) {a b : ℕ} (hab : b = a) (h : P (semireducibleId a)) : P b := by
-  convert! h
+example (P : ℕ → Prop) {a b : ℕ} (hab : b = a) (h : P (semireducibleId a)) : P b := by convert! h
 
 -- Test that overapplications are supported
 example (f g h k : Nat → Nat) (H : (f + g) 1 = 0) : (h + k) 1 = 0 := by

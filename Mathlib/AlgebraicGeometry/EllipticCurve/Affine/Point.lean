@@ -76,9 +76,10 @@ universe r s u v w
 
 namespace WeierstrassCurve
 
-variable {R : Type r} {S : Type s} {A F : Type u} {B K : Type v} {L : Type w} [CommRing R]
-  [CommRing S] [CommRing A] [CommRing B] [Field F] [Field K] [Field L] {W' : Affine R}
-  {W : Affine F}
+variable
+  {R : Type r} {S : Type s} {A F : Type u} {B K : Type v} {L : Type w}
+  [CommRing R] [CommRing S] [CommRing A] [CommRing B] [Field F] [Field K] [Field L]
+  {W' : Affine R} {W : Affine F}
 
 namespace Affine
 
@@ -86,48 +87,46 @@ namespace Affine
 
 variable (W') in
 /-- The affine coordinate ring `R[W] := R[X, Y] / ⟨W(X, Y)⟩` of a Weierstrass curve `W`. -/
-abbrev CoordinateRing : Type r :=
-  AdjoinRoot W'.polynomial
+abbrev CoordinateRing : Type r := AdjoinRoot W'.polynomial
 
 variable (W') in
 /-- The function field `R(W) := Frac(R[W])` of a Weierstrass curve `W`. -/
-abbrev FunctionField : Type r :=
-  FractionRing W'.CoordinateRing
+abbrev FunctionField : Type r := FractionRing W'.CoordinateRing
 
 namespace CoordinateRing
 
 noncomputable instance : Algebra R W'.CoordinateRing := inferInstance
 
-noncomputable instance : Algebra R[X] W'.CoordinateRing := inferInstance
+noncomputable instance : Algebra (R[X]) W'.CoordinateRing := inferInstance
 
-instance : IsScalarTower R R[X] W'.CoordinateRing := inferInstance
+instance : IsScalarTower R (R[X]) W'.CoordinateRing := inferInstance
 
-instance [Subsingleton R] : Subsingleton W'.CoordinateRing :=
-  Module.subsingleton R[X] _
+instance [Subsingleton R] : Subsingleton W'.CoordinateRing := Module.subsingleton (R[X]) _
 
 variable (W') in
 /-- The natural ring homomorphism mapping `R[X][Y]` to `R[W]`. -/
-noncomputable abbrev mk : R[X][Y] →+* W'.CoordinateRing :=
-  AdjoinRoot.mk W'.polynomial
+noncomputable abbrev mk : R[X][Y] →+* W'.CoordinateRing := AdjoinRoot.mk W'.polynomial
 
 open scoped Classical in
 variable (W') in
 /-- The power basis `{1, Y}` for `R[W]` over `R[X]`. -/
-protected noncomputable def basis : Basis (Fin 2) R[X] W'.CoordinateRing :=
-  subsingleton_or_nontrivial R |>.by_cases (fun _ => default) fun _ =>
-    AdjoinRoot.powerBasis' monic_polynomial |>.basis.reindex <| finCongr <|
-      AdjoinRoot.powerBasis'_dim _ |>.trans natDegree_polynomial
+protected noncomputable def basis : Basis (Fin 2) (R[X]) W'.CoordinateRing :=
+  subsingleton_or_nontrivial R
+    |>.by_cases
+      (fun _ => default)
+      fun _ =>
+        AdjoinRoot.powerBasis' monic_polynomial |>.basis.reindex <| finCongr <|
+          AdjoinRoot.powerBasis'_dim _ |>.trans natDegree_polynomial
 
-lemma basis_apply (n : Fin 2) :
-    CoordinateRing.basis W' n = (AdjoinRoot.powerBasis' monic_polynomial).gen ^ (n : ℕ) := by
+lemma basis_apply (n : Fin 2)
+    : CoordinateRing.basis W' n = (AdjoinRoot.powerBasis' monic_polynomial).gen ^ (n : ℕ) := by
   classical
   nontriviality R
   rw [CoordinateRing.basis, Or.by_cases, dite_eq_right <| not_subsingleton R, Basis.reindex_apply,
     PowerBasis.basis_eq_pow, finCongr_symm_apply, Fin.val_cast]
 
 @[simp]
-lemma basis_zero : CoordinateRing.basis W' 0 = 1 := by
-  simpa only [basis_apply] using! pow_zero _
+lemma basis_zero : CoordinateRing.basis W' 0 = 1 := by simpa only [basis_apply] using! pow_zero _
 
 @[simp]
 lemma basis_one : CoordinateRing.basis W' 1 = mk W' Y := by
@@ -138,43 +137,47 @@ lemma coe_basis : (CoordinateRing.basis W' : Fin 2 → W'.CoordinateRing) = ![1,
   fin_cases n
   exacts [basis_zero, basis_one]
 
-instance : Module.Free R[X] W'.CoordinateRing := .of_basis (CoordinateRing.basis W')
+instance : Module.Free (R[X]) W'.CoordinateRing := .of_basis (CoordinateRing.basis W')
 
 instance : Module.Free R W'.CoordinateRing := .trans (S := R[X])
 
 instance [Nontrivial R] : Nontrivial W'.CoordinateRing :=
   ⟨_, _, (CoordinateRing.basis W').ne_zero 0⟩
 
-instance : FaithfulSMul R[X] W'.CoordinateRing := by nontriviality R; infer_instance
+instance : FaithfulSMul (R[X]) W'.CoordinateRing := by nontriviality R; infer_instance
 
-instance : FaithfulSMul R W'.CoordinateRing := .trans R R[X] _
+instance : FaithfulSMul R W'.CoordinateRing := .trans R (R[X]) _
 
 lemma smul (x : R[X]) (y : W'.CoordinateRing) : x • y = mk W' (C x) * y :=
   (algebraMap_smul W'.CoordinateRing x y).symm
 
-lemma smul_basis_eq_zero {p q : R[X]} (hpq : p • (1 : W'.CoordinateRing) + q • mk W' Y = 0) :
-    p = 0 ∧ q = 0 := by
+lemma smul_basis_eq_zero {p q : R[X]} (hpq : p • (1 : W'.CoordinateRing) + q • mk W' Y = 0)
+    : p = 0 ∧ q = 0 := by
   have h := Fintype.linearIndependent_iff.mp (CoordinateRing.basis W').linearIndependent ![p, q]
   rw [Fin.sum_univ_succ, basis_zero, Fin.sum_univ_one, Fin.succ_zero_eq_one, basis_one] at h
   exact ⟨h hpq 0, h hpq 1⟩
 
-lemma exists_smul_basis_eq (x : W'.CoordinateRing) :
-    ∃ p q : R[X], p • (1 : W'.CoordinateRing) + q • mk W' Y = x := by
+lemma exists_smul_basis_eq (x : W'.CoordinateRing)
+    : ∃ p q : R[X], p • (1 : W'.CoordinateRing) + q • mk W' Y = x := by
   have h := (CoordinateRing.basis W').sum_equivFun x
   rw [Fin.sum_univ_succ, Fin.sum_univ_one, basis_zero, Fin.succ_zero_eq_one, basis_one] at h
   exact ⟨_, _, h⟩
 
-lemma smul_basis_mul_C (y : R[X]) (p q : R[X]) :
-    (p • (1 : W'.CoordinateRing) + q • mk W' Y) * mk W' (C y) =
-      (p * y) • (1 : W'.CoordinateRing) + (q * y) • mk W' Y := by
+lemma smul_basis_mul_C (y : R[X]) (p q : R[X])
+    : (p • (1 : W'.CoordinateRing) + q • mk W' Y) * mk W' (C y)
+      = (p * y) • (1 : W'.CoordinateRing) + (q * y) • mk W' Y := by
   simp only [smul, map_mul]
   ring1
 
-lemma smul_basis_mul_Y (p q : R[X]) : (p • (1 : W'.CoordinateRing) + q • mk W' Y) * mk W' Y =
-    (q * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆)) • (1 : W'.CoordinateRing) +
-      (p - q * (C W'.a₁ * X + C W'.a₃)) • mk W' Y := by
-  have Y_sq : mk W' Y ^ 2 = mk W' (C (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆) -
-      C (C W'.a₁ * X + C W'.a₃) * Y) := AdjoinRoot.mk_eq_mk.mpr ⟨1, by rw [polynomial]; ring1⟩
+lemma smul_basis_mul_Y (p q : R[X])
+    : (p • (1 : W'.CoordinateRing) + q • mk W' Y) * mk W' Y
+      = (q * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆)) • (1 : W'.CoordinateRing)
+        + (p - q * (C W'.a₁ * X + C W'.a₃)) • mk W' Y := by
+  have Y_sq
+      : mk W' Y ^ 2
+        = mk W'
+          (C (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆) - C (C W'.a₁ * X + C W'.a₃) * Y) :=
+    AdjoinRoot.mk_eq_mk.mpr ⟨1, by rw [polynomial]; ring1⟩
   simp only [smul, add_mul, mul_assoc, ← sq, Y_sq, map_sub, map_mul]
   ring1
 
@@ -184,13 +187,13 @@ noncomputable def map (f : R →+* S) : W'.CoordinateRing →+* (W'.map f).Coord
   AdjoinRoot.lift ((AdjoinRoot.of _).comp <| mapRingHom f) (AdjoinRoot.root (W'.map f).polynomial)
     (by rw [← eval₂_map, ← map_polynomial, AdjoinRoot.eval₂_root])
 
-lemma map_mk (f : R →+* S) (x : R[X][Y]) :
-    map W' f (mk W' x) = mk (W'.map f) (x.map <| mapRingHom f) := by
+lemma map_mk (f : R →+* S) (x : R[X][Y])
+    : map W' f (mk W' x) = mk (W'.map f) (x.map <| mapRingHom f) := by
   rw [map, AdjoinRoot.lift_mk, ← eval₂_map]
   exact AdjoinRoot.aeval_eq <| x.map <| mapRingHom f
 
-protected lemma map_smul (f : R →+* S) (x : R[X]) (y : W'.CoordinateRing) :
-    map W' f (x • y) = x.map f • map W' f y := by
+protected lemma map_smul (f : R →+* S) (x : R[X]) (y : W'.CoordinateRing)
+    : map W' f (x • y) = x.map f • map W' f y := by
   rw [smul, map_mul, map_mk, map_C, smul]
   rfl
 
@@ -211,41 +214,40 @@ instance [IsDomain R] : IsDomain W'.CoordinateRing :=
 
 variable (W') in
 /-- The class of the element `X - x` in `R[W]` for some `x` in `R`. -/
-noncomputable def XClass (x : R) : W'.CoordinateRing :=
-  mk W' <| C <| X - C x
+noncomputable def XClass (x : R) : W'.CoordinateRing := mk W' <| C <| X - C x
 
 lemma XClass_ne_zero [Nontrivial R] (x : R) : XClass W' x ≠ 0 :=
-  AdjoinRoot.mk_ne_zero_of_natDegree_lt monic_polynomial (C_ne_zero.mpr <| X_sub_C_ne_zero x) <|
-    by rw [natDegree_polynomial, natDegree_C]; norm_num1
+  AdjoinRoot.mk_ne_zero_of_natDegree_lt monic_polynomial (C_ne_zero.mpr <| X_sub_C_ne_zero x) <| by
+    rw [natDegree_polynomial, natDegree_C]; norm_num1
 
 variable (W') in
 /-- The class of the element `Y - y(X)` in `R[W]` for some `y(X)` in `R[X]`. -/
-noncomputable def YClass (y : R[X]) : W'.CoordinateRing :=
-  mk W' <| Y - C y
+noncomputable def YClass (y : R[X]) : W'.CoordinateRing := mk W' <| Y - C y
 
 lemma YClass_ne_zero [Nontrivial R] (y : R[X]) : YClass W' y ≠ 0 :=
-  AdjoinRoot.mk_ne_zero_of_natDegree_lt monic_polynomial (X_sub_C_ne_zero y) <|
-    by rw [natDegree_polynomial, natDegree_X_sub_C]; norm_num1
+  AdjoinRoot.mk_ne_zero_of_natDegree_lt monic_polynomial (X_sub_C_ne_zero y) <| by
+    rw [natDegree_polynomial, natDegree_X_sub_C]; norm_num1
 
-lemma C_addPolynomial (x y ℓ : R) : mk W' (C <| W'.addPolynomial x y ℓ) =
-    mk W' ((Y - C (linePolynomial x y ℓ)) * (W'.negPolynomial - C (linePolynomial x y ℓ))) :=
+lemma C_addPolynomial (x y ℓ : R)
+    : mk W' (C <| W'.addPolynomial x y ℓ)
+      = mk W' ((Y - C (linePolynomial x y ℓ)) * (W'.negPolynomial - C (linePolynomial x y ℓ))) :=
   AdjoinRoot.mk_eq_mk.mpr ⟨1, by rw [W'.C_addPolynomial, add_sub_cancel_left, mul_one]⟩
 
-lemma C_addPolynomial_slope [DecidableEq F] {x₁ x₂ y₁ y₂ : F}
-    (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂)) :
-    mk W (C <| W.addPolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂) =
-      -(XClass W x₁ * XClass W x₂ * XClass W (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂)) :=
+lemma C_addPolynomial_slope
+    [DecidableEq F]
+    {x₁ x₂ y₁ y₂ : F}
+    (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂))
+    : mk W (C <| W.addPolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂)
+      = -(XClass W x₁ * XClass W x₂ * XClass W (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂)) :=
   congr(mk W $(W.C_addPolynomial_slope h₁ h₂ hxy))
 
 variable (W') in
 /-- The ideal `⟨X - x⟩` of `R[W]` for some `x` in `R`. -/
-noncomputable def XIdeal (x : R) : Ideal W'.CoordinateRing :=
-  .span {XClass W' x}
+noncomputable def XIdeal (x : R) : Ideal W'.CoordinateRing := .span {XClass W' x}
 
 variable (W') in
 /-- The ideal `⟨Y - y(X)⟩` of `R[W]` for some `y(X)` in `R[X]`. -/
-noncomputable def YIdeal (y : R[X]) : Ideal W'.CoordinateRing :=
-  .span {YClass W' y}
+noncomputable def YIdeal (y : R[X]) : Ideal W'.CoordinateRing := .span {YClass W' y}
 
 variable (W') in
 /-- The ideal `⟨X - x, Y - y(X)⟩` of `R[W]` for some `x` in `R` and `y(X)` in `R[X]`. -/
@@ -253,19 +255,22 @@ noncomputable def XYIdeal (x : R) (y : R[X]) : Ideal W'.CoordinateRing :=
   .span {XClass W' x, YClass W' y}
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The `R`-algebra isomorphism from `R[W] / ⟨X - x, Y - y(X)⟩` to `R` obtained by evaluation at
-some `y(X)` in `R[X]` and at some `x` in `R` provided that `W(x, y(x)) = 0`. -/
-noncomputable def quotientXYIdealEquiv {x : R} {y : R[X]} (h : (W'.polynomial.eval y).eval x = 0) :
-    (W'.CoordinateRing ⧸ XYIdeal W' x y) ≃ₐ[R] R :=
+/--
+The `R`-algebra isomorphism from `R[W] / ⟨X - x, Y - y(X)⟩` to `R` obtained by evaluation at
+some `y(X)` in `R[X]` and at some `x` in `R` provided that `W(x, y(x)) = 0`.
+-/
+noncomputable def quotientXYIdealEquiv {x : R} {y : R[X]} (h : (W'.polynomial.eval y).eval x = 0)
+    : (W'.CoordinateRing ⧸ XYIdeal W' x y) ≃ₐ[R] R :=
   ((quotientEquivAlgOfEq R <| by
-      simp only [XYIdeal, XClass, YClass, ← Set.image_pair, ← map_span]; rfl).trans <|
-        DoubleQuot.quotQuotEquivQuotOfLEₐ R <| (span_singleton_le_iff_mem _).mpr <|
-          mem_span_C_X_sub_C_X_sub_C_iff_eval_eval_eq_zero.mpr h).trans
+        simp only [XYIdeal, XClass, YClass, ← Set.image_pair, ← map_span]; rfl).trans <|
+      DoubleQuot.quotQuotEquivQuotOfLEₐ R <| (span_singleton_le_iff_mem _).mpr <|
+        mem_span_C_X_sub_C_X_sub_C_iff_eval_eval_eq_zero.mpr h).trans
     quotientSpanCXSubCXSubCAlgEquiv
 
-lemma XYIdeal_add_eq (x₁ x₂ y₁ ℓ : R) : XYIdeal W' (W'.addX x₁ x₂ ℓ) (C <| W'.addY x₁ x₂ y₁ ℓ) =
-    .span {mk W' <| W'.negPolynomial - C (linePolynomial x₁ y₁ ℓ)} ⊔
-      XIdeal W' (W'.addX x₁ x₂ ℓ) := by
+lemma XYIdeal_add_eq (x₁ x₂ y₁ ℓ : R)
+    : XYIdeal W' (W'.addX x₁ x₂ ℓ) (C <| W'.addY x₁ x₂ y₁ ℓ)
+      = .span {mk W' <| W'.negPolynomial - C (linePolynomial x₁ y₁ ℓ)}
+        ⊔ XIdeal W' (W'.addX x₁ x₂ ℓ) := by
   simp only [XYIdeal, XIdeal, XClass, YClass, addY, negAddY, negY, negPolynomial, linePolynomial]
   rw [sub_sub <| -(Y : R[X][Y]), neg_sub_left (Y : R[X][Y]), map_neg, span_singleton_neg, sup_comm,
     ← span_insert, ← span_pair_add_left_mul _ _ <| mk W' <| C <| C <| W'.a₁ + ℓ, ← map_mul,
@@ -281,9 +286,11 @@ lemma XYIdeal_eq₁ (x y ℓ : R) : XYIdeal W' x (C y) = XYIdeal W' x (linePolyn
   C_simp
   ring1
 
-lemma XYIdeal_eq₂ [DecidableEq F] {x₁ x₂ y₁ y₂ : F} (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂)
-    (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂)) :
-    XYIdeal W x₂ (C y₂) = XYIdeal W x₂ (linePolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂) := by
+lemma XYIdeal_eq₂
+    [DecidableEq F]
+    {x₁ x₂ y₁ y₂ : F}
+    (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂))
+    : XYIdeal W x₂ (C y₂) = XYIdeal W x₂ (linePolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂) := by
   have hy₂ : y₂ = (linePolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂).eval x₂ := by
     by_cases hx : x₁ = x₂
     · have hy : y₁ ≠ W.negY x₂ y₂ := fun h => hxy ⟨hx, h⟩
@@ -293,17 +300,19 @@ lemma XYIdeal_eq₂ [DecidableEq F] {x₁ x₂ y₁ y₂ : F} (h₁ : W.Equation
       ring1
   nth_rw 1 [hy₂]
   simp only [XYIdeal, XClass, YClass, linePolynomial]
-  rw [← span_pair_add_left_mul _ _ <| mk W <| C <| C <| -W.slope x₁ x₂ y₁ y₂, ← map_mul, ← map_add]
+  rw [← span_pair_add_left_mul _ _ <| mk W <| C <| C <| - W.slope x₁ x₂ y₁ y₂, ← map_mul, ← map_add]
   congr 4
   simp only [eval_C, eval_X, eval_add, eval_sub, eval_mul]
   C_simp
   ring1
 
-lemma XYIdeal_neg_mul {x y : F} (h : W.Nonsingular x y) :
-    XYIdeal W x (C <| W.negY x y) * XYIdeal W x (C y) = XIdeal W x := by
-  have Y_rw : (Y - C (C y)) * (Y - C (C <| W.negY x y)) -
-      C (X - C x) * (C (X ^ 2 + C (x + W.a₂) * X + C (x ^ 2 + W.a₂ * x + W.a₄)) - C (C W.a₁) * Y) =
-        W.polynomial * 1 := by
+lemma XYIdeal_neg_mul {x y : F} (h : W.Nonsingular x y)
+    : XYIdeal W x (C <| W.negY x y) * XYIdeal W x (C y) = XIdeal W x := by
+  have Y_rw
+      : (Y - C (C y)) * (Y - C (C <| W.negY x y))
+          - C (X - C x)
+            * (C (X ^ 2 + C (x + W.a₂) * X + C (x ^ 2 + W.a₂ * x + W.a₄)) - C (C W.a₁) * Y)
+        = W.polynomial * 1 := by
     linear_combination (norm := (rw [negY, polynomial]; C_simp; ring1))
       congr(C (C $(((equation_iff ..).mp h.left).symm)))
   simp_rw [XYIdeal, XClass, YClass, span_pair_mul_span_pair, mul_comm, ← map_mul,
@@ -330,14 +339,16 @@ lemma XYIdeal_neg_mul {x y : F} (h : W.Nonsingular x y) :
     C_simp
     ring1
 
-lemma XYIdeal_mul_XYIdeal [DecidableEq F] {x₁ x₂ y₁ y₂ : F}
-    (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂)) :
-    XIdeal W (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂) * (XYIdeal W x₁ (C y₁) * XYIdeal W x₂ (C y₂)) =
-      YIdeal W (linePolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂) *
-        XYIdeal W (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂)
-          (C <| W.addY x₁ x₂ y₁ <| W.slope x₁ x₂ y₁ y₂) := by
-  have sup_rw : ∀ a b c d : Ideal W.CoordinateRing, a ⊔ (b ⊔ (c ⊔ d)) = a ⊔ d ⊔ b ⊔ c :=
-    fun _ _ c _ => by rw [← sup_assoc, sup_comm c, sup_sup_sup_comm, ← sup_assoc]
+lemma XYIdeal_mul_XYIdeal
+    [DecidableEq F]
+    {x₁ x₂ y₁ y₂ : F}
+    (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂))
+    : XIdeal W (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂) * (XYIdeal W x₁ (C y₁) * XYIdeal W x₂ (C y₂))
+      = YIdeal W (linePolynomial x₁ y₁ <| W.slope x₁ x₂ y₁ y₂) * XYIdeal W
+        (W.addX x₁ x₂ <| W.slope x₁ x₂ y₁ y₂) (C <| W.addY x₁ x₂ y₁ <| W.slope x₁ x₂ y₁ y₂) := by
+  have sup_rw
+      : ∀ a b c d : Ideal W.CoordinateRing, a ⊔ (b ⊔ (c ⊔ d)) = a ⊔ d ⊔ b ⊔ c := fun _ _ c _ => by
+    rw [← sup_assoc, sup_comm c, sup_sup_sup_comm, ← sup_assoc]
   rw [XYIdeal_add_eq, XIdeal, mul_comm, XYIdeal_eq₁ x₁ y₁ <| W.slope x₁ x₂ y₁ y₂, XYIdeal,
     XYIdeal_eq₂ h₁ h₂ hxy, XYIdeal, span_pair_mul_span_pair]
   simp_rw [span_insert, sup_rw, Ideal.sup_mul, span_singleton_mul_span_singleton]
@@ -358,10 +369,16 @@ lemma XYIdeal_mul_XYIdeal [DecidableEq F] {x₁ x₂ y₁ y₂ : F}
     rcases hx, Y_eq_of_Y_ne h₁ h₂ hx hy with ⟨rfl, rfl⟩
     let y := (y₁ - W.negY x₁ y₁) ^ 2
     replace hxy := pow_ne_zero 2 <| sub_ne_zero_of_ne hy
-    refine ⟨1 + C (C <| y⁻¹ * 4) * W.polynomial,
-      ⟨C <| C y⁻¹ * (C 4 * X ^ 2 + C (4 * x₁ + W.b₂) * X + C (4 * x₁ ^ 2 + W.b₂ * x₁ + 2 * W.b₄)),
-        0, C (C y⁻¹) * (Y - W.negPolynomial), ?_⟩, by
-      rw [map_add, map_one, map_mul <| mk W, AdjoinRoot.mk_self, mul_zero, add_zero]⟩
+    refine ⟨
+      1 + C (C <| y⁻¹ * 4) * W.polynomial,
+      ⟨
+        C <| C y⁻¹ * (C 4 * X ^ 2 + C (4 * x₁ + W.b₂) * X + C (4 * x₁ ^ 2 + W.b₂ * x₁ + 2 * W.b₄)),
+        0,
+        C (C y⁻¹) * (Y - W.negPolynomial),
+        ?_
+      ⟩,
+      by rw [map_add, map_one, map_mul <| mk W, AdjoinRoot.mk_self, mul_zero, add_zero]
+    ⟩
     rw [polynomial, negPolynomial, ← mul_right_inj' <| C_ne_zero.mpr <| C_ne_zero.mpr hxy]
     simp only [y, mul_add, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hxy]
     linear_combination (norm := (rw [b₂, b₄, negY]; C_simp; ring1))
@@ -374,55 +391,63 @@ lemma XYIdeal_mul_XYIdeal [DecidableEq F] {x₁ x₂ y₁ y₂ : F}
     ring1
 
 /-- The non-zero fractional ideal `⟨X - x, Y - y⟩` of `F(W)` for some `x` and `y` in `F`. -/
-noncomputable def XYIdeal' {x y : F} (h : W.Nonsingular x y) :
-    (FractionalIdeal W.CoordinateRing⁰ W.FunctionField)ˣ :=
-  Units.mkOfMulEqOne (XYIdeal W x (C y)) (XYIdeal W x (C <| W.negY x y) *
-      (XIdeal W x : FractionalIdeal W.CoordinateRing⁰ W.FunctionField)⁻¹) <| by
-    rw [← mul_assoc, ← coeIdeal_mul, mul_comm <| XYIdeal W .., XYIdeal_neg_mul h, XIdeal,
-      FractionalIdeal.coe_ideal_span_singleton_mul_inv W.FunctionField <| XClass_ne_zero x]
+noncomputable def XYIdeal' {x y : F} (h : W.Nonsingular x y)
+    : (FractionalIdeal (W.CoordinateRing⁰) W.FunctionField)ˣ :=
+  Units.mkOfMulEqOne (XYIdeal W x (C y))
+      (XYIdeal W x (C <| W.negY x y)
+        * (XIdeal W x : FractionalIdeal (W.CoordinateRing⁰) W.FunctionField)⁻¹) <|
+    by
+      rw [← mul_assoc, ← coeIdeal_mul, mul_comm <| XYIdeal W .., XYIdeal_neg_mul h, XIdeal,
+        FractionalIdeal.coe_ideal_span_singleton_mul_inv W.FunctionField <| XClass_ne_zero x]
 
-lemma XYIdeal'_eq {x y : F} (h : W.Nonsingular x y) :
-    (XYIdeal' h : FractionalIdeal W.CoordinateRing⁰ W.FunctionField) = XYIdeal W x (C y) :=
+lemma XYIdeal'_eq {x y : F} (h : W.Nonsingular x y)
+    : (XYIdeal' h : FractionalIdeal (W.CoordinateRing⁰) W.FunctionField) = XYIdeal W x (C y) :=
   rfl
 
-lemma mk_XYIdeal'_neg_mul {x y : F} (h : W.Nonsingular x y) :
-    ClassGroup.mk W.FunctionField (XYIdeal'  <| (nonsingular_neg ..).mpr h) *
-      ClassGroup.mk W.FunctionField (XYIdeal' h) = 1 := by
+lemma mk_XYIdeal'_neg_mul {x y : F} (h : W.Nonsingular x y)
+    : ClassGroup.mk W.FunctionField (XYIdeal' <| (nonsingular_neg ..).mpr h)
+        * ClassGroup.mk W.FunctionField (XYIdeal' h)
+      = 1 := by
   rw [← map_mul]
   exact (ClassGroup.mk_eq_one_of_coe_ideal <| (coeIdeal_mul ..).symm.trans <|
-    FractionalIdeal.coeIdeal_inj.mpr <| XYIdeal_neg_mul h).mpr ⟨_, XClass_ne_zero x, rfl⟩
+      FractionalIdeal.coeIdeal_inj.mpr <| XYIdeal_neg_mul h).mpr
+    ⟨_, XClass_ne_zero x, rfl⟩
 
-lemma mk_XYIdeal'_mul_mk_XYIdeal' [DecidableEq F] {x₁ x₂ y₁ y₂ : F} (h₁ : W.Nonsingular x₁ y₁)
-    (h₂ : W.Nonsingular x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂)) :
-    ClassGroup.mk W.FunctionField (XYIdeal' h₁) *
-        ClassGroup.mk W.FunctionField (XYIdeal' h₂) =
-      ClassGroup.mk W.FunctionField (XYIdeal' <| nonsingular_add h₁ h₂ hxy) := by
+lemma mk_XYIdeal'_mul_mk_XYIdeal'
+    [DecidableEq F]
+    {x₁ x₂ y₁ y₂ : F}
+    (h₁ : W.Nonsingular x₁ y₁) (h₂ : W.Nonsingular x₂ y₂) (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂))
+    : ClassGroup.mk W.FunctionField (XYIdeal' h₁) * ClassGroup.mk W.FunctionField (XYIdeal' h₂)
+      = ClassGroup.mk W.FunctionField (XYIdeal' <| nonsingular_add h₁ h₂ hxy) := by
   rw [← map_mul]
   exact (ClassGroup.mk_eq_mk_of_coe_ideal (coeIdeal_mul ..).symm <| XYIdeal'_eq _).mpr
     ⟨_, _, XClass_ne_zero _, YClass_ne_zero _, XYIdeal_mul_XYIdeal h₁.left h₂.left hxy⟩
 
 /-! ## Norms on the affine coordinate ring -/
 
-lemma norm_smul_basis (p q : R[X]) : Algebra.norm R[X] (p • (1 : W'.CoordinateRing) + q • mk W' Y) =
-    p ^ 2 - p * q * (C W'.a₁ * X + C W'.a₃) -
-      q ^ 2 * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆) := by
+lemma norm_smul_basis (p q : R[X])
+    : Algebra.norm (R[X]) (p • (1 : W'.CoordinateRing) + q • mk W' Y)
+      = p ^ 2 - p * q * (C W'.a₁ * X + C W'.a₃)
+        - q ^ 2 * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆) := by
   simp_rw [Algebra.norm_eq_matrix_det <| CoordinateRing.basis W', Matrix.det_fin_two,
     Algebra.leftMulMatrix_eq_repr_mul, basis_zero, mul_one, basis_one, smul_basis_mul_Y, map_add,
     Finsupp.add_apply, map_smul, Finsupp.smul_apply, ← basis_zero, ← basis_one,
     Basis.repr_self_apply, ite_eq_left, one_ne_zero, ite_false, smul_eq_mul]
   ring1
 
-lemma coe_norm_smul_basis (p q : R[X]) : Algebra.norm R[X] (p • 1 + q • mk W' Y) =
-    mk W' ((C p + C q * X) * (C p + C q * (-(Y : R[X][Y]) - C (C W'.a₁ * X + C W'.a₃)))) :=
+lemma coe_norm_smul_basis (p q : R[X])
+    : Algebra.norm (R[X]) (p • 1 + q • mk W' Y)
+      = mk W' ((C p + C q * X) * (C p + C q * (-(Y : R[X][Y]) - C (C W'.a₁ * X + C W'.a₃)))) :=
   AdjoinRoot.mk_eq_mk.mpr ⟨C q ^ 2, by simp only [norm_smul_basis, polynomial]; C_simp; ring1⟩
 
-lemma degree_norm_smul_basis [IsDomain R] (p q : R[X]) :
-    (Algebra.norm R[X] <| p • 1 + q • mk W' Y).degree = max (2 • p.degree) (2 • q.degree + 3) := by
+lemma degree_norm_smul_basis [IsDomain R] (p q : R[X])
+    : (Algebra.norm R[X] <| p • 1 + q • mk W' Y).degree
+      = max (2 • p.degree) (2 • q.degree + 3) := by
   have hdp : (p ^ 2).degree = 2 • p.degree := degree_pow p 2
   have hdpq : (p * q * (C W'.a₁ * X + C W'.a₃)).degree ≤ p.degree + q.degree + 1 := by
     grw [degree_mul, degree_mul, degree_linear_le]
-  have hdq :
-      (q ^ 2 * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆)).degree = 2 • q.degree + 3 := by
+  have hdq
+      : (q ^ 2 * (X ^ 3 + C W'.a₂ * X ^ 2 + C W'.a₄ * X + C W'.a₆)).degree = 2 • q.degree + 3 := by
     rw [degree_mul, degree_pow, ← one_mul <| X ^ 3, ← C_1, degree_cubic <| one_ne_zero' R]
   rw [norm_smul_basis]
   by_cases hp : p = 0
@@ -444,26 +469,26 @@ lemma degree_norm_smul_basis [IsDomain R] (p q : R[X]) :
             (degree_sub_eq_right_of_degree_lt <|
                   (degree_sub_le _ _).trans_lt <|
                     max_lt_iff.mpr ⟨hdp.trans_lt _, hdpq.trans_lt _⟩).trans
-              (max_eq_right_of_lt _).symm <;> rw [hdq] <;>
-                exact WithBot.coe_lt_coe.mpr <| by dsimp; linarith only [hpq]
+              (max_eq_right_of_lt _).symm
+              <;> rw [hdq] <;> exact WithBot.coe_lt_coe.mpr <| by dsimp; linarith only [hpq]
           · rw [sub_sub]
             convert
               (degree_sub_eq_left_of_degree_lt <|
                     (degree_add_le _ _).trans_lt <|
                       max_lt_iff.mpr ⟨hdpq.trans_lt _, hdq.trans_lt _⟩).trans
-                (max_eq_left_of_lt _).symm <;> rw [hdp] <;>
-                exact WithBot.coe_lt_coe.mpr <| by dsimp; linarith only [hpq]
+                (max_eq_left_of_lt _).symm
+              <;> rw [hdp] <;> exact WithBot.coe_lt_coe.mpr <| by dsimp; linarith only [hpq]
 
-lemma degree_norm_ne_one [IsDomain R] (x : W'.CoordinateRing) :
-    (Algebra.norm R[X] x).degree ≠ 1 := by
+lemma degree_norm_ne_one [IsDomain R] (x : W'.CoordinateRing)
+    : (Algebra.norm (R[X]) x).degree ≠ 1 := by
   rcases exists_smul_basis_eq x with ⟨p, q, rfl⟩
   rw [degree_norm_smul_basis]
   rcases p.degree with (_ | _ | _ | _) <;> cases q.degree
   any_goals rintro (_ | _)
   exact (lt_max_of_lt_right <| (cmp_eq_lt_iff ..).mp rfl).ne'
 
-lemma natDegree_norm_ne_one [IsDomain R] (x : W'.CoordinateRing) :
-    (Algebra.norm R[X] x).natDegree ≠ 1 :=
+lemma natDegree_norm_ne_one [IsDomain R] (x : W'.CoordinateRing)
+    : (Algebra.norm (R[X]) x).natDegree ≠ 1 :=
   degree_norm_ne_one x ∘ (degree_eq_iff_natDegree_eq_of_pos zero_lt_one).mpr
 
 end CoordinateRing
@@ -471,18 +496,23 @@ end CoordinateRing
 /-! ## Nonsingular points in affine coordinates -/
 
 variable (W') in
-/-- A nonsingular point on a Weierstrass curve `W` in affine coordinates. This is either the unique
+/--
+A nonsingular point on a Weierstrass curve `W` in affine coordinates. This is either the unique
 point at infinity `WeierstrassCurve.Affine.Point.zero` or a nonsingular affine point
-`WeierstrassCurve.Affine.Point.some (x, y)` satisfying the Weierstrass equation of `W`. -/
+`WeierstrassCurve.Affine.Point.some (x, y)` satisfying the Weierstrass equation of `W`.
+-/
 inductive Point
   | zero
   | some (x y : R) (h : W'.Nonsingular x y)
 deriving DecidableEq
 
-/-- The equivalence between the nonsingular points on a Weierstrass curve `W` in affine coordinates
-satisfying a predicate and the set of pairs `⟨x, y⟩` satisfying `W.Nonsingular x y` with zero. -/
-def nonsingularPointEquivSubtype {p : W'.Point → Prop} (p0 : p .zero) : {P : W'.Point // p P} ≃
-    WithZero {xy : R × R // ∃ h : W'.Nonsingular xy.fst xy.snd, p <| .some _ _ h} where
+/--
+The equivalence between the nonsingular points on a Weierstrass curve `W` in affine coordinates
+satisfying a predicate and the set of pairs `⟨x, y⟩` satisfying `W.Nonsingular x y` with zero.
+-/
+def nonsingularPointEquivSubtype {p : W'.Point → Prop} (p0 : p .zero)
+    : {P : W'.Point // p P}
+      ≃ WithZero {xy : R × R // ∃ h : W'.Nonsingular xy.fst xy.snd, p <| .some _ _ h} where
   toFun
     | ⟨.zero, _⟩ => none
     | ⟨.some _ _ h, ph⟩ => .some ⟨⟨_, _⟩, h, ph⟩
@@ -491,50 +521,48 @@ def nonsingularPointEquivSubtype {p : W'.Point → Prop} (p0 : p .zero) : {P : W
   right_inv := by rintro (_ | _) <;> rfl
 
 @[simp]
-lemma nonsingularPointEquivSubtype_zero {p : W'.Point → Prop} (p0 : p .zero) :
-    nonsingularPointEquivSubtype p0 ⟨.zero, p0⟩ = none :=
+lemma nonsingularPointEquivSubtype_zero {p : W'.Point → Prop} (p0 : p .zero)
+    : nonsingularPointEquivSubtype p0 ⟨.zero, p0⟩ = none :=
   rfl
 
 @[simp]
-lemma nonsingularPointEquivSubtype_some {x y : R} {h : W'.Nonsingular x y} {p : W'.Point → Prop}
-    (p0 : p .zero) (ph : p <| .some _ _ h) :
-    nonsingularPointEquivSubtype p0 ⟨.some _ _ h, ph⟩ = .some ⟨⟨x, y⟩, h, ph⟩ :=
+lemma nonsingularPointEquivSubtype_some
+    {x y : R} {h : W'.Nonsingular x y} {p : W'.Point → Prop} (p0 : p .zero) (ph : p <| .some _ _ h)
+    : nonsingularPointEquivSubtype p0 ⟨.some _ _ h, ph⟩ = .some ⟨⟨x, y⟩, h, ph⟩ :=
   rfl
 
 @[simp]
-lemma nonsingularPointEquivSubtype_symm_none {p : W'.Point → Prop} (p0 : p .zero) :
-    (nonsingularPointEquivSubtype p0).symm none = ⟨.zero, p0⟩ :=
+lemma nonsingularPointEquivSubtype_symm_none {p : W'.Point → Prop} (p0 : p .zero)
+    : (nonsingularPointEquivSubtype p0).symm none = ⟨.zero, p0⟩ :=
   rfl
 
 @[simp]
-lemma nonsingularPointEquivSubtype_symm_some {x y : R} {h : W'.Nonsingular x y}
-    {p : W'.Point → Prop} (p0 : p .zero) (ph : p <| .some _ _ h) :
-    (nonsingularPointEquivSubtype p0).symm (.some ⟨⟨x, y⟩, h, ph⟩) = ⟨.some _ _ h, ph⟩ :=
+lemma nonsingularPointEquivSubtype_symm_some
+    {x y : R} {h : W'.Nonsingular x y} {p : W'.Point → Prop} (p0 : p .zero) (ph : p <| .some _ _ h)
+    : (nonsingularPointEquivSubtype p0).symm (.some ⟨⟨x, y⟩, h, ph⟩) = ⟨.some _ _ h, ph⟩ :=
   rfl
 
 variable (W') in
-/-- The equivalence between the nonsingular points on a Weierstrass curve `W` in affine coordinates
-and the set of pairs `⟨x, y⟩` satisfying `W.Nonsingular x y` with zero. -/
+/--
+The equivalence between the nonsingular points on a Weierstrass curve `W` in affine coordinates
+and the set of pairs `⟨x, y⟩` satisfying `W.Nonsingular x y` with zero.
+-/
 def nonsingularPointEquiv : W'.Point ≃ WithZero {xy : R × R // W'.Nonsingular xy.fst xy.snd} :=
-  (Equiv.Set.univ W'.Point).symm.trans <| (nonsingularPointEquivSubtype trivial).trans
-    (Equiv.subtypeEquivProp <| by simp).optionCongr
+  (Equiv.Set.univ W'.Point).symm.trans <|
+    (nonsingularPointEquivSubtype trivial).trans (Equiv.subtypeEquivProp <| by simp).optionCongr
+
+@[simp] lemma nonsingularPointEquiv_zero : nonsingularPointEquiv W' .zero = none := rfl
 
 @[simp]
-lemma nonsingularPointEquiv_zero : nonsingularPointEquiv W' .zero = none :=
+lemma nonsingularPointEquiv_some {x y : R} (h : W'.Nonsingular x y)
+    : W'.nonsingularPointEquiv (.some _ _ h) = .some ⟨⟨x, y⟩, h⟩ := by
   rfl
 
-@[simp]
-lemma nonsingularPointEquiv_some {x y : R} (h : W'.Nonsingular x y) :
-    W'.nonsingularPointEquiv (.some _ _ h) = .some ⟨⟨x, y⟩, h⟩ := by
-  rfl
+@[simp] lemma nonsingularPointEquiv_symm_none : W'.nonsingularPointEquiv.symm none = .zero := rfl
 
 @[simp]
-lemma nonsingularPointEquiv_symm_none : W'.nonsingularPointEquiv.symm none = .zero :=
-  rfl
-
-@[simp]
-lemma nonsingularPointEquiv_symm_some {x y : R} (h : W'.Nonsingular x y) :
-    W'.nonsingularPointEquiv.symm (.some ⟨⟨x, y⟩, h⟩) = .some _ _ h :=
+lemma nonsingularPointEquiv_symm_some {x y : R} (h : W'.Nonsingular x y)
+    : W'.nonsingularPointEquiv.symm (.some ⟨⟨x, y⟩, h⟩) = .some _ _ h :=
   rfl
 
 section IsElliptic
@@ -545,57 +573,59 @@ variable [Nontrivial R] [W'.IsElliptic]
 def Point.mk {x y : R} (h : W'.Equation x y) : W'.Point :=
   .some _ _ <| equation_iff_nonsingular.mp h
 
-/-- The equivalence between the points on an elliptic curve `W` in affine coordinates satisfying a
-predicate and the set of pairs `⟨x, y⟩` satisfying `W.Equation x y` with zero. -/
-def pointEquivSubtype {p : W'.Point → Prop} (p0 : p .zero) :
-    {P : W'.Point // p P} ≃ WithZero {xy : R × R // ∃ h : W'.Equation xy.fst xy.snd, p <| .mk h} :=
+/--
+The equivalence between the points on an elliptic curve `W` in affine coordinates satisfying a
+predicate and the set of pairs `⟨x, y⟩` satisfying `W.Equation x y` with zero.
+-/
+def pointEquivSubtype {p : W'.Point → Prop} (p0 : p .zero)
+    : {P : W'.Point // p P}
+      ≃ WithZero {xy : R × R // ∃ h : W'.Equation xy.fst xy.snd, p <| .mk h} :=
   (nonsingularPointEquivSubtype p0).trans
     (Equiv.subtypeEquivProp <| by ext; simp [equation_iff_nonsingular, Point.mk]).optionCongr
 
 @[simp]
-lemma pointEquivSubtype_zero {p : W'.Point → Prop} (p0 : p .zero) :
-    pointEquivSubtype p0 ⟨.zero, p0⟩ = none :=
+lemma pointEquivSubtype_zero {p : W'.Point → Prop} (p0 : p .zero)
+    : pointEquivSubtype p0 ⟨.zero, p0⟩ = none :=
   rfl
 
 @[simp]
-lemma pointEquivSubtype_some {x y : R} {h : W'.Equation x y} {p : W'.Point → Prop} (p0 : p .zero)
-    (ph : p <| .mk h) : pointEquivSubtype p0 ⟨.mk h, ph⟩ = .some ⟨⟨x, y⟩, h, ph⟩ :=
+lemma pointEquivSubtype_some
+    {x y : R} {h : W'.Equation x y} {p : W'.Point → Prop} (p0 : p .zero) (ph : p <| .mk h)
+    : pointEquivSubtype p0 ⟨.mk h, ph⟩ = .some ⟨⟨x, y⟩, h, ph⟩ :=
   rfl
 
 @[simp]
-lemma pointEquivSubtype_symm_none {p : W'.Point → Prop} (p0 : p .zero) :
-    (pointEquivSubtype p0).symm none = ⟨.zero, p0⟩ :=
+lemma pointEquivSubtype_symm_none {p : W'.Point → Prop} (p0 : p .zero)
+    : (pointEquivSubtype p0).symm none = ⟨.zero, p0⟩ :=
   rfl
 
 @[simp]
-lemma pointEquivSubtype_symm_some {x y : R} {h : W'.Equation x y} {p : W'.Point → Prop}
-    (p0 : p .zero) (ph : p <| .mk h) :
-    (pointEquivSubtype p0).symm (.some ⟨⟨x, y⟩, h, ph⟩) = ⟨.mk h, ph⟩ :=
+lemma pointEquivSubtype_symm_some
+    {x y : R} {h : W'.Equation x y} {p : W'.Point → Prop} (p0 : p .zero) (ph : p <| .mk h)
+    : (pointEquivSubtype p0).symm (.some ⟨⟨x, y⟩, h, ph⟩) = ⟨.mk h, ph⟩ :=
   rfl
 
 variable (W') in
-/-- The equivalence between the rational points on an elliptic curve `E` and the set of pairs
-`⟨x, y⟩` satisfying `E.Equation x y` with zero. -/
+/--
+The equivalence between the rational points on an elliptic curve `E` and the set of pairs
+`⟨x, y⟩` satisfying `E.Equation x y` with zero.
+-/
 def pointEquiv : W'.Point ≃ WithZero {xy : R × R // W'.Equation xy.fst xy.snd} :=
-  (Equiv.Set.univ W'.Point).symm.trans <| (pointEquivSubtype trivial).trans
-    (Equiv.subtypeEquivProp <| by simp).optionCongr
+  (Equiv.Set.univ W'.Point).symm.trans <|
+    (pointEquivSubtype trivial).trans (Equiv.subtypeEquivProp <| by simp).optionCongr
+
+@[simp] lemma pointEquiv_zero : W'.pointEquiv .zero = none := rfl
 
 @[simp]
-lemma pointEquiv_zero : W'.pointEquiv .zero = none :=
+lemma pointEquiv_some {x y : R} (h : W'.Equation x y)
+    : pointEquiv W' (.mk h) = .some ⟨⟨x, y⟩, h⟩ := by
   rfl
 
-@[simp]
-lemma pointEquiv_some {x y : R} (h : W'.Equation x y) :
-    pointEquiv W' (.mk h) = .some ⟨⟨x, y⟩, h⟩ := by
-  rfl
+@[simp] lemma pointEquiv_symm_none : (pointEquiv W').symm none = .zero := rfl
 
 @[simp]
-lemma pointEquiv_symm_none : (pointEquiv W').symm none = .zero :=
-  rfl
-
-@[simp]
-lemma pointEquiv_symm_some {x y : R} (h : W'.Equation x y) :
-    (pointEquiv W').symm (.some ⟨⟨x, y⟩, h⟩) = .mk h :=
+lemma pointEquiv_symm_some {x y : R} (h : W'.Equation x y)
+    : (pointEquiv W').symm (.some ⟨⟨x, y⟩, h⟩) = .mk h :=
   rfl
 
 end IsElliptic
@@ -604,38 +634,32 @@ namespace Point
 
 /-! ## Group law in affine coordinates -/
 
-instance : Inhabited W'.Point :=
-  ⟨zero⟩
+instance : Inhabited W'.Point := ⟨zero⟩
 
-instance : Zero W'.Point :=
-  ⟨zero⟩
+instance : Zero W'.Point := ⟨zero⟩
 
-lemma zero_def : 0 = (zero : W'.Point) :=
-  rfl
+lemma zero_def : 0 = (zero : W'.Point) := rfl
 
-lemma some_ne_zero {x y : R} (h : W'.Nonsingular x y) : some _ _ h ≠ 0 := by
-  rintro (_ | _)
+lemma some_ne_zero {x y : R} (h : W'.Nonsingular x y) : some _ _ h ≠ 0 := by rintro (_ | _)
 
-/-- The negation of a nonsingular point on a Weierstrass curve in affine coordinates.
+/--
+The negation of a nonsingular point on a Weierstrass curve in affine coordinates.
 
-Given a nonsingular point `P` in affine coordinates, use `-P` instead of `neg P`. -/
+Given a nonsingular point `P` in affine coordinates, use `-P` instead of `neg P`.
+-/
 def neg : W'.Point → W'.Point
   | 0 => 0
   | some _ _ h => some _ _ <| (nonsingular_neg ..).mpr h
 
-instance : Neg W'.Point :=
-  ⟨neg⟩
+instance : Neg W'.Point := ⟨neg⟩
 
-lemma neg_def (P : W'.Point) : -P = P.neg :=
-  rfl
+lemma neg_def (P : W'.Point) : -P = P.neg := rfl
 
-@[simp]
-lemma neg_zero : (-0 : W'.Point) = 0 :=
-  rfl
+@[simp] lemma neg_zero : (-0 : W'.Point) = 0 := rfl
 
 @[simp]
-lemma neg_some {x y : R} (h : W'.Nonsingular x y) :
-    -some _ _ h = some _ _ ((nonsingular_neg ..).mpr h) :=
+lemma neg_some {x y : R} (h : W'.Nonsingular x y)
+    : - some _ _ h = some _ _ ((nonsingular_neg ..).mpr h) :=
   rfl
 
 instance : InvolutiveNeg W'.Point where
@@ -644,83 +668,91 @@ instance : InvolutiveNeg W'.Point where
     · rfl
     · simp only [neg_some, negY_negY]
 
-lemma X_eq_iff {x₁ y₁ x₂ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂} :
-    x₁ = x₂ ↔ some x₁ y₁ h₁ = some x₂ y₂ h₂ ∨ some x₁ y₁ h₁ = -some x₂ y₂ h₂ := by
+lemma X_eq_iff {x₁ y₁ x₂ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
+    : x₁ = x₂ ↔ some x₁ y₁ h₁ = some x₂ y₂ h₂ ∨ some x₁ y₁ h₁ = - some x₂ y₂ h₂ := by
   refine ⟨fun H ↦ ?_, fun H ↦ by grind [neg_some]⟩
   simp_rw [neg_some, some.injEq, ← and_or_left]
   exact ⟨H, Y_eq_of_X_eq h₁.1 h₂.1 H⟩
 
 variable [DecidableEq F] [DecidableEq K] [DecidableEq L]
 
-/-- The addition of two nonsingular points on a Weierstrass curve in affine coordinates.
+/--
+The addition of two nonsingular points on a Weierstrass curve in affine coordinates.
 
-Given two nonsingular points `P` and `Q` in affine coordinates, use `P + Q` instead of `add P Q`. -/
+Given two nonsingular points `P` and `Q` in affine coordinates, use `P + Q` instead of `add P Q`.
+-/
 def add : W.Point → W.Point → W.Point
-  | 0, P => P
-  | P, 0 => P
+  | 0, P =>
+    P
+  | P, 0 =>
+    P
   | some x₁ y₁ h₁, some x₂ y₂ h₂ =>
     if hxy : x₁ = x₂ ∧ y₁ = W.negY x₂ y₂ then 0 else some _ _ <| nonsingular_add h₁ h₂ hxy
 
-instance : Add W.Point :=
-  ⟨add⟩
+instance : Add W.Point := ⟨add⟩
 
 instance : AddZeroClass W.Point where
   zero_add := by rintro (_ | _) <;> rfl
   add_zero := by rintro (_ | _) <;> rfl
 
-lemma add_def (P Q : W.Point) : P + Q = P.add Q :=
-  rfl
+lemma add_def (P Q : W.Point) : P + Q = P.add Q := rfl
 
-lemma add_some {x₁ x₂ y₁ y₂ : F} (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂)) {h₁ : W.Nonsingular x₁ y₁}
-    {h₂ : W.Nonsingular x₂ y₂} :
-    some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ hxy) := by
+lemma add_some
+    {x₁ x₂ y₁ y₂ : F} (hxy : ¬(x₁ = x₂ ∧ y₁ = W.negY x₂ y₂))
+    {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
+    : some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ hxy) := by
   simp only [add_def, add, dite_eq_right hxy]
 
 @[simp]
-lemma add_of_Y_eq {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
-    (hx : x₁ = x₂) (hy : y₁ = W.negY x₂ y₂) : some _ _ h₁ + some _ _ h₂ = 0 := by
+lemma add_of_Y_eq
+    {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
+    (hx : x₁ = x₂) (hy : y₁ = W.negY x₂ y₂)
+    : some _ _ h₁ + some _ _ h₂ = 0 := by
   simpa only [add_def, add] using dite_eq_left ⟨hx, hy⟩
 
 -- Removing `@[simp]`, because `hy` causes a maximum recursion depth error in the simpNF linter.
-lemma add_self_of_Y_eq {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ = W.negY x₁ y₁) :
-    some _ _ h₁ + some _ _ h₁ = 0 :=
+lemma add_self_of_Y_eq {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ = W.negY x₁ y₁)
+    : some _ _ h₁ + some _ _ h₁ = 0 :=
   add_of_Y_eq rfl hy
 
 -- @[simp] -- Not a good simp lemma, since `hy` is not in simp normal form.
-lemma add_of_Y_ne {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
-    (hy : y₁ ≠ W.negY x₂ y₂) :
-    some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ fun hxy => hy hxy.right) :=
+lemma add_of_Y_ne
+    {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂} (hy : y₁ ≠ W.negY x₂ y₂)
+    : some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ fun hxy => hy hxy.right) :=
   add_some fun hxy => hy hxy.right
 
-lemma add_of_Y_ne' {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
-    (hy : y₁ ≠ W.negY x₂ y₂) :
-    some _ _ h₁ + some _ _ h₂ = -some _ _ (nonsingular_negAdd h₁ h₂ fun hxy => hy hxy.right) :=
+lemma add_of_Y_ne'
+    {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂} (hy : y₁ ≠ W.negY x₂ y₂)
+    : some _ _ h₁ + some _ _ h₂ = - some _ _ (nonsingular_negAdd h₁ h₂ fun hxy => hy hxy.right) :=
   add_of_Y_ne hy
 
 -- @[simp] -- Not a good simp lemma, since `hy` is not in simp normal form.
-lemma add_self_of_Y_ne {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ ≠ W.negY x₁ y₁) :
-    some _ _ h₁ + some _ _ h₁ = some _ _ (nonsingular_add h₁ h₁ fun hxy => hy hxy.right) :=
+lemma add_self_of_Y_ne {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ ≠ W.negY x₁ y₁)
+    : some _ _ h₁ + some _ _ h₁ = some _ _ (nonsingular_add h₁ h₁ fun hxy => hy hxy.right) :=
   add_of_Y_ne hy
 
-lemma add_self_of_Y_ne' {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ ≠ W.negY x₁ y₁) :
-    some _ _ h₁ + some _ _ h₁ = -some _ _ (nonsingular_negAdd h₁ h₁ fun hxy => hy hxy.right) :=
+lemma add_self_of_Y_ne' {x₁ y₁ : F} {h₁ : W.Nonsingular x₁ y₁} (hy : y₁ ≠ W.negY x₁ y₁)
+    : some _ _ h₁ + some _ _ h₁ = - some _ _ (nonsingular_negAdd h₁ h₁ fun hxy => hy hxy.right) :=
   add_of_Y_ne hy
 
 @[simp]
-lemma add_of_X_ne {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
-    (hx : x₁ ≠ x₂) :
-    some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ fun hxy => hx hxy.left) :=
+lemma add_of_X_ne
+    {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂} (hx : x₁ ≠ x₂)
+    : some _ _ h₁ + some _ _ h₂ = some _ _ (nonsingular_add h₁ h₂ fun hxy => hx hxy.left) :=
   add_some fun hxy => hx hxy.left
 
-lemma add_of_X_ne' {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂}
-    (hx : x₁ ≠ x₂) :
-    some _ _ h₁ + some _ _ h₂ = -some _ _ (nonsingular_negAdd h₁ h₂ fun hxy => hx hxy.left) :=
+lemma add_of_X_ne'
+    {x₁ x₂ y₁ y₂ : F} {h₁ : W.Nonsingular x₁ y₁} {h₂ : W.Nonsingular x₂ y₂} (hx : x₁ ≠ x₂)
+    : some _ _ h₁ + some _ _ h₂ = - some _ _ (nonsingular_negAdd h₁ h₂ fun hxy => hx hxy.left) :=
   add_of_X_ne hx
 
-/-- A nonzero affine `2`-torsion point `some x y h` of `W` (that is, `P + P = 0`) has `X`-coordinate
-a root of `W.twoTorsionPolynomial`. -/
-theorem isRoot_twoTorsionPolynomial_of_add_self {x y : F} (h : W.Nonsingular x y)
-    (hP : some x y h + some x y h = 0) : W.twoTorsionPolynomial.toPoly.IsRoot x := by
+/--
+A nonzero affine `2`-torsion point `some x y h` of `W` (that is, `P + P = 0`) has `X`-coordinate
+a root of `W.twoTorsionPolynomial`.
+-/
+theorem isRoot_twoTorsionPolynomial_of_add_self
+    {x y : F} (h : W.Nonsingular x y) (hP : some x y h + some x y h = 0)
+    : W.twoTorsionPolynomial.toPoly.IsRoot x := by
   rw [IsRoot.def, eval_toPoly_twoTorsionPolynomial, b₂, b₄, b₆]
   have hy : y = W.negY x y := by
     by_contra hne
@@ -728,12 +760,14 @@ theorem isRoot_twoTorsionPolynomial_of_add_self {x y : F} (h : W.Nonsingular x y
     exact some_ne_zero _ hP
   grind [h.left, negY, equation_iff]
 
-/-- `x` is a root of the `2`-torsion polynomial of a Weierstrass curve of characteristic
+/--
+`x` is a root of the `2`-torsion polynomial of a Weierstrass curve of characteristic
 different from `2` with nonzero discriminant if and only if it is the `X`-coordinate of a nonzero
-affine `2`-torsion point. -/
-theorem isRoot_twoTorsionPolynomial_iff (h2 : NeZero (2 : F)) (hΔ : W.Δ ≠ 0) (x : F) :
-    W.twoTorsionPolynomial.toPoly.IsRoot x ↔
-      ∃ y, ∃ h : W.Nonsingular x y, some x y h + some x y h = 0 := by
+affine `2`-torsion point.
+-/
+theorem isRoot_twoTorsionPolynomial_iff (h2 : NeZero (2 : F)) (hΔ : W.Δ ≠ 0) (x : F)
+    : W.twoTorsionPolynomial.toPoly.IsRoot x
+      ↔ ∃ y, ∃ h : W.Nonsingular x y, some x y h + some x y h = 0 := by
   constructor
   · intro hroot
     rw [IsRoot.def, eval_toPoly_twoTorsionPolynomial, b₂, b₄, b₆] at hroot
@@ -744,11 +778,14 @@ theorem isRoot_twoTorsionPolynomial_iff (h2 : NeZero (2 : F)) (hΔ : W.Δ ≠ 0)
   · rintro ⟨y, hns, hP⟩
     exact isRoot_twoTorsionPolynomial_of_add_self hns hP
 
-/-- The group homomorphism mapping a nonsingular affine point `(x, y)` of a Weierstrass curve `W` to
-the class of the non-zero fractional ideal `⟨X - x, Y - y⟩` in the ideal class group of `F[W]`. -/
+/--
+The group homomorphism mapping a nonsingular affine point `(x, y)` of a Weierstrass curve `W` to
+the class of the non-zero fractional ideal `⟨X - x, Y - y⟩` in the ideal class group of `F[W]`.
+-/
 @[simps]
 noncomputable def toClass : W.Point →+ Additive (ClassGroup W.CoordinateRing) where
-  toFun P := match P with
+  toFun P :=
+    match P with
     | 0 => 0
     | some _ _ h => .ofMul <| ClassGroup.mk W.FunctionField <| CoordinateRing.XYIdeal' h
   map_zero' := rfl
@@ -761,13 +798,12 @@ noncomputable def toClass : W.Point →+ Additive (ClassGroup W.CoordinateRing) 
     · simp only [add_some hxy]
       exact (CoordinateRing.mk_XYIdeal'_mul_mk_XYIdeal' h₁ h₂ hxy).symm
 
-lemma toClass_zero : toClass (0 : W.Point) = 0 :=
-  rfl
+lemma toClass_zero : toClass (0 : W.Point) = 0 := rfl
 
 -- note: giving `W` to `XYIdeal'` explicitly hugely speeds up elaboration for some reason.
 -- see https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Field.20.28FunctionField.20.3Fm.2E19.29/near/594011283
-lemma toClass_some {x y : F} (h : W.Nonsingular x y) :
-    toClass (some _ _ h) = ClassGroup.mk W.FunctionField (CoordinateRing.XYIdeal' (W := W) h) :=
+lemma toClass_some {x y : F} (h : W.Nonsingular x y)
+    : toClass (some _ _ h) = ClassGroup.mk W.FunctionField (CoordinateRing.XYIdeal' (W := W) h) :=
   rfl
 
 private lemma add_eq_zero (P Q : W.Point) : P + Q = 0 ↔ P = -Q := by
@@ -813,14 +849,18 @@ instance : AddCommGroup W.Point where
 
 /-! ## Maps and base changes -/
 
-variable [Algebra R S] [Algebra R F] [Algebra S F] [IsScalarTower R S F] [Algebra R K] [Algebra S K]
-  [IsScalarTower R S K] [Algebra R L] [Algebra S L] [IsScalarTower R S L] (f : F →ₐ[S] K)
-  (g : K →ₐ[S] L)
+variable
+  [Algebra R S] [Algebra R F] [Algebra S F] [IsScalarTower R S F] [Algebra R K] [Algebra S K]
+  [IsScalarTower R S K] [Algebra R L] [Algebra S L] [IsScalarTower R S L]
+  (f : F →ₐ[S] K) (g : K →ₐ[S] L)
 
-/-- The group homomorphism on nonsingular points induced by an algebra homomorphism `f : F →ₐ[S] K`,
-where `W` is defined over a subring of a ring `S`, and `F` and `K` are field extensions of `S`. -/
+/--
+The group homomorphism on nonsingular points induced by an algebra homomorphism `f : F →ₐ[S] K`,
+where `W` is defined over a subring of a ring `S`, and `F` and `K` are field extensions of `S`.
+-/
 noncomputable def map : (W'⁄F).Point →+ (W'⁄K).Point where
-  toFun P := match P with
+  toFun P :=
+    match P with
     | 0 => 0
     | some _ _ h => some _ _ <| (W'.baseChange_nonsingular f.injective ..).mpr h
   map_zero' := rfl
@@ -833,18 +873,15 @@ noncomputable def map : (W'⁄F).Point →+ (W'⁄K).Point where
     · simpa only [add_some hxy, ← baseChange_addX, ← baseChange_addY, ← baseChange_slope] using!
         (add_some fun h ↦ hxy ⟨f.injective h.1, f.injective (W'.baseChange_negY f .. ▸ h).2⟩).symm
 
-lemma map_zero : map f (0 : (W'⁄F).Point) = 0 :=
+lemma map_zero : map f (0 : (W'⁄F).Point) = 0 := rfl
+
+lemma map_some {x y : F} (h : (W'⁄F).Nonsingular x y)
+    : map f (some _ _ h) = some _ _ ((W'.baseChange_nonsingular f.injective ..).mpr h) :=
   rfl
 
-lemma map_some {x y : F} (h : (W'⁄F).Nonsingular x y) :
-    map f (some _ _ h) = some _ _ ((W'.baseChange_nonsingular f.injective ..).mpr h) :=
-  rfl
+lemma map_id (P : (W'⁄F).Point) : map (Algebra.ofId F F) P = P := by cases P <;> rfl
 
-lemma map_id (P : (W'⁄F).Point) : map (Algebra.ofId F F) P = P := by
-  cases P <;> rfl
-
-lemma map_map (P : (W'⁄F).Point) : map g (map f P) = map (g.comp f) P := by
-  cases P <;> rfl
+lemma map_map (P : (W'⁄F).Point) : map g (map f P) = map (g.comp f) P := by cases P <;> rfl
 
 lemma map_injective : Function.Injective <| map (W' := W') f := by
   rintro (_ | _) (_ | _) h
@@ -853,14 +890,18 @@ lemma map_injective : Function.Injective <| map (W' := W') f := by
   · simpa only [some.injEq] using ⟨f.injective (some.inj h).left, f.injective (some.inj h).right⟩
 
 variable (F K) in
-/-- The group homomorphism on nonsingular points induced by the base change from `F` to `K`, where
-`W` is defined over a subring of a ring `S`, and `F` and `K` are field extensions of `S`. -/
-noncomputable abbrev baseChange [Algebra F K] [IsScalarTower R F K] :
-    (W'⁄F).Point →+ (W'⁄K).Point :=
+/--
+The group homomorphism on nonsingular points induced by the base change from `F` to `K`, where
+`W` is defined over a subring of a ring `S`, and `F` and `K` are field extensions of `S`.
+-/
+noncomputable abbrev baseChange [Algebra F K] [IsScalarTower R F K]
+    : (W'⁄F).Point →+ (W'⁄K).Point :=
   map <| Algebra.ofId F K
 
-lemma map_baseChange [Algebra F K] [IsScalarTower R F K] [Algebra F L] [IsScalarTower R F L]
-    (f : K →ₐ[F] L) (P : (W'⁄F).Point) : map f (baseChange F K P) = baseChange F L P := by
+lemma map_baseChange
+    [Algebra F K] [IsScalarTower R F K] [Algebra F L] [IsScalarTower R F L]
+    (f : K →ₐ[F] L) (P : (W'⁄F).Point)
+    : map f (baseChange F K P) = baseChange F L P := by
   have : Subsingleton (F →ₐ[F] L) := inferInstance
   convert map_map (Algebra.ofId F K) f P
 
@@ -875,40 +916,38 @@ by producing a coordinate vector in `Fin 2 → R` that represents the projective
 
 namespace Point
 
-/-- This map sends a point `P` on a Weierstrass curve `W'` in affine coordinates
+/--
+This map sends a point `P` on a Weierstrass curve `W'` in affine coordinates
 to a representative of its image on ℙ¹ under the x-coordinate map.
 We take `![1, 0]` for the point at infinity and `![x, 1]`,
 where `x` is the x-coordinate of `P`, for an affine point.
 
 We define it in the general setting of a commutative base ring, even though the definition
 of points in this setting is not really correct. For Weierstrass curves over fields, this
-gives the correct notion. -/
+gives the correct notion.
+-/
 noncomputable def xRep : W'.Point → Fin 2 → R
   | 0 => ![1, 0]
   | some x _ _ => ![x, 1]
 
-@[simp]
-lemma xRep_zero : (0 : W'.Point).xRep = ![1, 0] :=
-  rfl
+@[simp] lemma xRep_zero : (0 : W'.Point).xRep = ![1, 0] := rfl
 
-@[simp]
-lemma xRep_some {x y : R} (h : W'.Nonsingular x y) : (some x y h).xRep = ![x, 1] :=
-  rfl
+@[simp] lemma xRep_some {x y : R} (h : W'.Nonsingular x y) : (some x y h).xRep = ![x, 1] := rfl
 
-lemma xRep_ne_zero [Nontrivial R] (P : W'.Point) : P.xRep ≠ 0 := by
-  cases P <;> simp [xRep]
+lemma xRep_ne_zero [Nontrivial R] (P : W'.Point) : P.xRep ≠ 0 := by cases P <;> simp [xRep]
 
-@[simp]
-lemma xRep_neg (P : W'.Point) : (-P).xRep = P.xRep := by
-  cases P <;> simp [← zero_def]
+@[simp] lemma xRep_neg (P : W'.Point) : (-P).xRep = P.xRep := by cases P <;> simp [← zero_def]
 
 -- The following lemmas need a field as base ring.
 
 lemma eq_or_eq_neg_of_xRep_eq_xRep {P Q : W.Point} (h : P.xRep = Q.xRep) : P = Q ∨ P = -Q := by
   match P, Q with
-  | 0, 0 => exact .inl rfl
-  | 0, some .. => simp [xRep] at h
-  | some .., 0 => simp [xRep] at h
+  | 0, 0 =>
+    exact .inl rfl
+  | 0, some .. =>
+    simp [xRep] at h
+  | some .., 0 =>
+    simp [xRep] at h
   | some x₁ .., some x₂ .. =>
     simp only [xRep, Matrix.vecCons_inj, and_true] at h
     exact X_eq_iff.mp h
@@ -920,34 +959,33 @@ lemma xRep_eq_xRep_iff {P Q : W.Point} : P.xRep = Q.xRep ↔ P = Q ∨ P = -Q :=
 variable [DecidableEq F]
 
 /-- We give an explicit expression for `xRep` of `P + P` when `2*P ≠ 0`. -/
-lemma xRep_add_self_of_Y_ne {x y : F} (h : W.Nonsingular x y) (hn : y ≠ W.negY x y) :
-    (some x y h + some x y h).xRep =
-      ![(x ^ 4 - W.b₄ * x ^ 2 - 2 * W.b₆ * x - W.b₈) /
-        (4 * x ^ 3 + W.b₂ * x ^ 2 + 2 * W.b₄ * x + W.b₆), 1] := by
+lemma xRep_add_self_of_Y_ne {x y : F} (h : W.Nonsingular x y) (hn : y ≠ W.negY x y)
+    : (some x y h + some x y h).xRep
+      = ![(x ^ 4 - W.b₄ * x ^ 2 - 2 * W.b₆ * x - W.b₈) /
+          (4 * x ^ 3 + W.b₂ * x ^ 2 + 2 * W.b₄ * x + W.b₆), 1] := by
   simp only [add_self_of_Y_ne hn, ← addX_self_of_Y_ne h.1 hn, xRep_some]
 
 /-- We give an explicit expression for `xRep` of `P + P` when `P ≠ 0` and `2*P = 0`. -/
-lemma xRep_add_self_of_Y_eq {x y : F} (h : W.Nonsingular x y) (hn : y = W.negY x y) :
-    (some x y h + some x y h).xRep = ![1, 0] := by
+lemma xRep_add_self_of_Y_eq {x y : F} (h : W.Nonsingular x y) (hn : y = W.negY x y)
+    : (some x y h + some x y h).xRep = ![1, 0] := by
   simp only [add_self_of_Y_eq hn, xRep_zero]
 
 /-- We give an explicit expression for `xRep` of `P + Q` when `P ≠ ±Q`. -/
-lemma xRep_add_of_X_ne {xP yP xQ yQ : F} (hP : W.Nonsingular xP yP)
-    (hQ : W.Nonsingular xQ yQ) (hn : xP ≠ xQ) :
-    (some xP yP hP + some xQ yQ hQ).xRep =
-      ![((yP - yQ) ^ 2 + W.a₁ * (yP - yQ) * (xP - xQ) - (W.a₂ + xP + xQ) * (xP - xQ) ^2) /
-         (xP - xQ) ^ 2, 1] := by
+lemma xRep_add_of_X_ne
+    {xP yP xQ yQ : F} (hP : W.Nonsingular xP yP) (hQ : W.Nonsingular xQ yQ) (hn : xP ≠ xQ)
+    : (some xP yP hP + some xQ yQ hQ).xRep
+      = ![((yP - yQ) ^ 2 + W.a₁ * (yP - yQ) * (xP - xQ) - (W.a₂ + xP + xQ) * (xP - xQ) ^2) /
+           (xP - xQ) ^ 2, 1] := by
   simp only [add_of_X_ne (h₁ := hP) (h₂ := hQ) hn, xRep_some, addX_of_X_ne hn]
 
 /-- We give an explicit expression for `xRep` of `P - Q` when `P ≠ ±Q`. -/
-lemma xRep_sub_of_X_ne {xP yP xQ yQ : F} (hP : W.Nonsingular xP yP)
-    (hQ : W.Nonsingular xQ yQ) (hn : xP ≠ xQ) :
-    (some xP yP hP - some xQ yQ hQ).xRep =
-      ![((yP + yQ + W.a₁ * xQ + W.a₃) ^ 2 + W.a₁ * (yP + yQ + W.a₁ * xQ + W.a₃) * (xP - xQ)
-           - (W.a₂ + xP + xQ) * (xP - xQ) ^2) / (xP - xQ) ^ 2, 1] := by
+lemma xRep_sub_of_X_ne
+    {xP yP xQ yQ : F} (hP : W.Nonsingular xP yP) (hQ : W.Nonsingular xQ yQ) (hn : xP ≠ xQ)
+    : (some xP yP hP - some xQ yQ hQ).xRep
+      = ![((yP + yQ + W.a₁ * xQ + W.a₃) ^ 2 + W.a₁ * (yP + yQ + W.a₁ * xQ + W.a₃) * (xP - xQ)
+             - (W.a₂ + xP + xQ) * (xP - xQ) ^2) / (xP - xQ) ^ 2, 1] := by
   simp only [sub_eq_add_neg (some ..), neg_some hQ,
-    add_of_X_ne (h₁ := hP) (h₂ := (nonsingular_neg ..).mpr hQ) hn, xRep_some,
-    addX_of_X_ne hn]
+    add_of_X_ne (h₁ := hP) (h₂ := (nonsingular_neg ..).mpr hQ) hn, xRep_some, addX_of_X_ne hn]
   grind only [negY]
 
 end Point

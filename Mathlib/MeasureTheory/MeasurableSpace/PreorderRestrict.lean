@@ -23,7 +23,7 @@ variable {α : Type*} [Preorder α] {X : α → Type*} [∀ a, MeasurableSpace (
 
 @[fun_prop]
 theorem measurable_restrictLe (a : α) : Measurable (restrictLe (π := X) a) :=
-    Set.measurable_restrict _
+  Set.measurable_restrict _
 
 @[fun_prop]
 theorem measurable_restrictLe₂ {a b : α} (hab : a ≤ b) : Measurable (restrictLe₂ (π := X) hab) :=

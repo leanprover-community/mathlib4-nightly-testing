@@ -25,19 +25,22 @@ public section
 
 variable (R : Type*) [Ring R]
 
-/-- A module of finite length is either trivial or a simple extension of a module known
-to be of finite length. -/
+/--
+A module of finite length is either trivial or a simple extension of a module known
+to be of finite length.
+-/
 inductive IsFiniteLength : ∀ (M : Type*) [AddCommGroup M] [Module R M], Prop
   | of_subsingleton {M} [AddCommGroup M] [Module R M] [Subsingleton M] : IsFiniteLength M
-  | of_simple_quotient {M} [AddCommGroup M] [Module R M] {N : Submodule R M}
-      [IsSimpleModule R (M ⧸ N)] : IsFiniteLength N → IsFiniteLength M
+  | of_simple_quotient
+    {M} [AddCommGroup M] [Module R M] {N : Submodule R M} [IsSimpleModule R (M ⧸ N)]
+    : IsFiniteLength N → IsFiniteLength M
 
 attribute [nontriviality] IsFiniteLength.of_subsingleton
 
 variable {R} {M N : Type*} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
 
-theorem LinearEquiv.isFiniteLength (e : M ≃ₗ[R] N)
-    (h : IsFiniteLength R M) : IsFiniteLength R N := by
+theorem LinearEquiv.isFiniteLength (e : M ≃ₗ[R] N) (h : IsFiniteLength R M)
+    : IsFiniteLength R N := by
   induction h generalizing N with
   | of_subsingleton =>
     have := e.symm.toEquiv.subsingleton; exact .of_subsingleton
@@ -47,49 +50,61 @@ theorem LinearEquiv.isFiniteLength (e : M ≃ₗ[R] N)
     exact .of_simple_quotient (ih <| e.submoduleMap S)
 
 variable (R M) in
-theorem exists_compositionSeries_of_isNoetherian_isArtinian [IsNoetherian R M] [IsArtinian R M] :
-    ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤ := by
+theorem exists_compositionSeries_of_isNoetherian_isArtinian [IsNoetherian R M] [IsArtinian R M]
+    : ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤ := by
   obtain ⟨f, f0, n, hn⟩ := exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (Submodule R M)
   exact ⟨⟨n, fun i ↦ f i, fun i ↦ hn.2 i i.2⟩, f0.eq_bot, hn.1.eq_top⟩
 
 theorem isFiniteLength_of_exists_compositionSeries
-    (h : ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤) :
-    IsFiniteLength R M :=
+    (h : ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤)
+    : IsFiniteLength R M :=
   Submodule.topEquiv.isFiniteLength <| by
     obtain ⟨s, s_head, s_last⟩ := h
     rw [← s_last]
     suffices ∀ i, IsFiniteLength R (s i) from this (Fin.last _)
     intro i
     induction i using Fin.induction with
-    | zero => change IsFiniteLength R s.head; rw [s_head]; exact .of_subsingleton
+    | zero =>
+      change IsFiniteLength R s.head; rw [s_head]; exact .of_subsingleton
     | succ i ih =>
       let cov := s.step i
       have := (covBy_iff_quot_is_simple cov.le).mp cov
-      have := ((s i.castSucc).comap (s i.succ).subtype).equivMapOfInjective
-        _ (Submodule.injective_subtype _)
+      have :=
+        ((s i.castSucc).comap (s i.succ).subtype).equivMapOfInjective _
+          (Submodule.injective_subtype _)
       rw [Submodule.map_comap_subtype, inf_of_le_right cov.le] at this
       exact .of_simple_quotient (this.symm.isFiniteLength ih)
 
-theorem isFiniteLength_iff_isNoetherian_isArtinian :
-    IsFiniteLength R M ↔ IsNoetherian R M ∧ IsArtinian R M :=
+theorem isFiniteLength_iff_isNoetherian_isArtinian
+    : IsFiniteLength R M ↔ IsNoetherian R M ∧ IsArtinian R M :=
   open scoped IsSimpleOrder in
-  ⟨fun h ↦ h.rec (fun {M} _ _ _ ↦ ⟨inferInstance, inferInstance⟩) fun M _ _ {N} _ _ ⟨_, _⟩ ↦
-    ⟨(isNoetherian_iff_submodule_quotient N).mpr ⟨‹_›, inferInstance⟩,
-      (isArtinian_iff_submodule_quotient N).mpr ⟨‹_›, inferInstance⟩⟩,
-    fun ⟨_, _⟩ ↦ isFiniteLength_of_exists_compositionSeries
-      (exists_compositionSeries_of_isNoetherian_isArtinian R M)⟩
+  ⟨
+    fun h ↦
+      h.rec
+        (fun {M} _ _ _ ↦ ⟨inferInstance, inferInstance⟩)
+        fun M _ _ {N} _ _ ⟨_, _⟩ ↦ ⟨
+          (isNoetherian_iff_submodule_quotient N).mpr ⟨‹_›, inferInstance⟩,
+          (isArtinian_iff_submodule_quotient N).mpr ⟨‹_›, inferInstance⟩
+        ⟩,
+    fun ⟨_, _⟩ ↦
+      isFiniteLength_of_exists_compositionSeries
+        (exists_compositionSeries_of_isNoetherian_isArtinian R M)
+  ⟩
 
-theorem isFiniteLength_iff_exists_compositionSeries :
-    IsFiniteLength R M ↔ ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤ :=
-  ⟨fun h ↦ have ⟨_, _⟩ := isFiniteLength_iff_isNoetherian_isArtinian.mp h
+theorem isFiniteLength_iff_exists_compositionSeries
+    : IsFiniteLength R M ↔ ∃ s : CompositionSeries (Submodule R M), s.head = ⊥ ∧ s.last = ⊤ := ⟨
+  fun h ↦
+    have ⟨_, _⟩ := isFiniteLength_iff_isNoetherian_isArtinian.mp h
     exists_compositionSeries_of_isNoetherian_isArtinian R M,
-    isFiniteLength_of_exists_compositionSeries⟩
+  isFiniteLength_of_exists_compositionSeries
+⟩
 
 open scoped IsSimpleOrder in
-theorem IsSemisimpleModule.finite_tfae [IsSemisimpleModule R M] :
-    List.TFAE [Module.Finite R M, IsNoetherian R M, IsArtinian R M, IsFiniteLength R M,
-      ∃ s : Set (Submodule R M), s.Finite ∧ sSupIndep s ∧
-        sSup s = ⊤ ∧ ∀ m ∈ s, IsSimpleModule R m] := by
+theorem IsSemisimpleModule.finite_tfae [IsSemisimpleModule R M]
+    : List.TFAE [
+      Module.Finite R M, IsNoetherian R M, IsArtinian R M, IsFiniteLength R M,
+      ∃ s : Set (Submodule R M), s.Finite ∧ sSupIndep s ∧ sSup s = ⊤ ∧ ∀ m ∈ s, IsSimpleModule R m
+    ] := by
   rw [isFiniteLength_iff_isNoetherian_isArtinian]
   obtain ⟨s, hs⟩ := IsSemisimpleModule.exists_sSupIndep_sSup_simples_eq_top R M
   tfae_have 1 ↔ 2 := ⟨fun _ ↦ inferInstance, fun _ ↦ inferInstance⟩
@@ -110,20 +125,21 @@ instance [IsSemisimpleModule R M] [Module.Finite R M] : IsArtinian R M :=
 
 variable {f : M →ₗ[R] N}
 
-lemma IsFiniteLength.of_injective (H : IsFiniteLength R N) (hf : Function.Injective f) :
-    IsFiniteLength R M := by
+lemma IsFiniteLength.of_injective (H : IsFiniteLength R N) (hf : Function.Injective f)
+    : IsFiniteLength R M := by
   rw [isFiniteLength_iff_isNoetherian_isArtinian] at H ⊢
   cases H
   exact ⟨isNoetherian_of_injective f hf, isArtinian_of_injective f hf⟩
 
-lemma IsFiniteLength.of_surjective (H : IsFiniteLength R M) (hf : Function.Surjective f) :
-    IsFiniteLength R N := by
+lemma IsFiniteLength.of_surjective (H : IsFiniteLength R M) (hf : Function.Surjective f)
+    : IsFiniteLength R N := by
   rw [isFiniteLength_iff_isNoetherian_isArtinian] at H ⊢
   cases H
-  exact ⟨isNoetherian_of_surjective f (LinearMap.range_eq_top.mpr hf),
-    isArtinian_of_surjective _ f hf⟩
+  exact
+    ⟨isNoetherian_of_surjective f (LinearMap.range_eq_top.mpr hf), isArtinian_of_surjective _ f hf⟩
 
-/- The following instances are now automatic:
+/-
+The following instances are now automatic:
 example [IsSemisimpleRing R] : IsNoetherianRing R := inferInstance
 example [IsSemisimpleRing R] : IsArtinianRing R := inferInstance
 -/

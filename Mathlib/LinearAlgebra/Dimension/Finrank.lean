@@ -33,7 +33,6 @@ You should not assume that there has been any effort to state lemmas as generall
 
 @[expose] public section
 
-
 universe u v w
 
 open Cardinal Submodule Module Function
@@ -45,7 +44,8 @@ namespace Module
 
 section Semiring
 
-/-- The rank of a module as a natural number.
+/--
+The rank of a module as a natural number.
 
 For a finite-dimensional vector space `V` over a field `k`, `Module.finrank k V` is equal to
 the dimension of `V` over `k`.
@@ -57,11 +57,13 @@ cardinal-valued version where infinite rank modules have rank an infinite cardin
 
 Note that if `R` is not a field then there can exist modules `M` with `¬(Module.Finite R M)` but
 `finrank R M ≠ 0`. For example `ℚ` has `finrank` equal to `1` over `ℤ`, because the nonempty
-`ℤ`-linearly independent subsets of `ℚ` are precisely the nonzero singletons. -/
+`ℤ`-linearly independent subsets of `ℚ` are precisely the nonzero singletons.
+-/
 noncomputable def finrank (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M] : ℕ :=
   Cardinal.toNat (Module.rank R M)
 
-@[simp] theorem finrank_subsingleton [Subsingleton R] : finrank R M = 1 := by
+@[simp]
+theorem finrank_subsingleton [Subsingleton R] : finrank R M = 1 := by
   rw [finrank, rank_subsingleton, map_one]
 
 theorem finrank_eq_of_rank_eq {n : ℕ} (h : Module.rank R M = ↑n) : finrank R M = n := by
@@ -71,8 +73,8 @@ lemma rank_eq_one_iff_finrank_eq_one : Module.rank R M = 1 ↔ finrank R M = 1 :
   Cardinal.toNat_eq_one.symm
 
 /-- This is like `rank_eq_one_iff_finrank_eq_one` but works for `2`, `3`, `4`, ... -/
-lemma rank_eq_ofNat_iff_finrank_eq_ofNat (n : ℕ) [Nat.AtLeastTwo n] :
-    Module.rank R M = OfNat.ofNat n ↔ finrank R M = OfNat.ofNat n :=
+lemma rank_eq_ofNat_iff_finrank_eq_ofNat (n : ℕ) [Nat.AtLeastTwo n]
+    : Module.rank R M = OfNat.ofNat n ↔ finrank R M = OfNat.ofNat n :=
   Cardinal.toNat_eq_ofNat.symm
 
 theorem finrank_le_of_rank_le {n : ℕ} (h : Module.rank R M ≤ ↑n) : finrank R M ≤ n := by
@@ -97,7 +99,8 @@ theorem one_lt_rank_of_one_lt_finrank (h : 1 < finrank R M) : 1 < Module.rank R 
 
 theorem finrank_le_finrank_of_rank_le_rank
     (h : lift.{w} (Module.rank R M) ≤ Cardinal.lift.{v} (Module.rank R N))
-    (h' : Module.rank R N < ℵ₀) : finrank R M ≤ finrank R N := by
+    (h' : Module.rank R N < ℵ₀)
+    : finrank R M ≤ finrank R N := by
   simpa only [toNat_lift] using! toNat_le_toNat h (lift_lt_aleph0.mpr h')
 
 end Semiring
@@ -117,19 +120,20 @@ theorem finrank_eq (f : M ≃ₗ[R] N) : finrank R M = finrank R N := by
   rw [← Cardinal.toNat_lift, f.lift_rank_eq, Cardinal.toNat_lift]
 
 /-- Pushforwards of finite-dimensional submodules along a `LinearEquiv` have the same finrank. -/
-theorem finrank_map_eq (f : M ≃ₗ[R] N) (p : Submodule R M) :
-    finrank R (p.map (f : M →ₗ[R] N)) = finrank R p :=
+theorem finrank_map_eq (f : M ≃ₗ[R] N) (p : Submodule R M)
+    : finrank R (p.map (f : M →ₗ[R] N)) = finrank R p :=
   (f.submoduleMap p).finrank_eq.symm
 
 end LinearEquiv
 
 /-- The dimensions of the domain and range of an injective linear map are equal. -/
-theorem LinearMap.finrank_range_of_inj {f : M →ₗ[R] N} (hf : Function.Injective f) :
-    finrank R (LinearMap.range f) = finrank R M := by rw [(LinearEquiv.ofInjective f hf).finrank_eq]
+theorem LinearMap.finrank_range_of_inj {f : M →ₗ[R] N} (hf : Function.Injective f)
+    : finrank R (LinearMap.range f) = finrank R M := by
+  rw [(LinearEquiv.ofInjective f hf).finrank_eq]
 
 @[simp]
-theorem Submodule.finrank_map_subtype_eq (p : Submodule R M) (q : Submodule R p) :
-    finrank R (q.map p.subtype) = finrank R q :=
+theorem Submodule.finrank_map_subtype_eq (p : Submodule R M) (q : Submodule R p)
+    : finrank R (q.map p.subtype) = finrank R q :=
   (Submodule.equivSubtypeMap p q).symm.finrank_eq
 
 variable (R M)
@@ -141,13 +145,17 @@ theorem finrank_top : finrank R (⊤ : Submodule R M) = finrank R M := by
 
 namespace Algebra
 
-/-- If `S₀ / R₀` and `S₁ / R₁` are algebras, `i : R₀ ≃+* R₁` and `j : S₀ ≃+* S₁` are
+/--
+If `S₀ / R₀` and `S₁ / R₁` are algebras, `i : R₀ ≃+* R₁` and `j : S₀ ≃+* S₁` are
 ring isomorphisms, such that `R₀ → R₁ → S₁` and `R₀ → S₀ → S₁` commute,
-then the `finrank` of `S₀ / R₀` is equal to the finrank of `S₁ / R₁`. -/
-theorem finrank_eq_of_equiv_equiv {R₀ S₀ : Type*} [CommSemiring R₀] [Semiring S₀] [Algebra R₀ S₀]
-    {R₁ S₁ : Type*} [CommSemiring R₁] [Semiring S₁] [Algebra R₁ S₁] (i : R₀ ≃+* R₁) (j : S₀ ≃+* S₁)
-    (hc : (algebraMap R₁ S₁).comp i.toRingHom = j.toRingHom.comp (algebraMap R₀ S₀)) :
-    Module.finrank R₀ S₀ = Module.finrank R₁ S₁ := by
+then the `finrank` of `S₀ / R₀` is equal to the finrank of `S₁ / R₁`.
+-/
+theorem finrank_eq_of_equiv_equiv
+    {R₀ S₀ : Type*} [CommSemiring R₀] [Semiring S₀] [Algebra R₀ S₀]
+    {R₁ S₁ : Type*} [CommSemiring R₁] [Semiring S₁] [Algebra R₁ S₁]
+    (i : R₀ ≃+* R₁) (j : S₀ ≃+* S₁)
+    (hc : (algebraMap R₁ S₁).comp i.toRingHom = j.toRingHom.comp (algebraMap R₀ S₀))
+    : Module.finrank R₀ S₀ = Module.finrank R₁ S₁ := by
   simpa using! congr($(lift_rank_eq_of_equiv_equiv i j hc).toNat)
 
 end Algebra

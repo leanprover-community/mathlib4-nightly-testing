@@ -13,12 +13,14 @@ open Bundle Filter Function Topology Manifold
 
 -- Suppose `M` is a real manifold over `E` with model `I`.
 variable
-  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {H : Type*}
-  [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H]
+  (I : ModelWithCorners ℝ E H)
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   -- suppose `E'` is a real normed space, and `E''` is a real inner product space.
   {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
-  {E'' : Type*} [NormedAddCommGroup E''] [InnerProductSpace ℝ E''] {n : ℕ}
+  {E'' : Type*} [NormedAddCommGroup E''] [InnerProductSpace ℝ E'']
+  {n : ℕ}
 
 open ContDiff Manifold
 
@@ -27,8 +29,10 @@ section Circle
 -- Make a new real manifold N with model J.
 -- TODO: change this line to modify M and E instead (thus testing if everything
 -- still works in the presence of two instances over different fields).
-variable {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℝ E''] {J : ModelWithCorners ℝ E'' H}
-  {N : Type} [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
+variable
+  {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace ℝ E'']
+  {J : ModelWithCorners ℝ E'' H} {N : Type}
+  [TopologicalSpace N] [ChartedSpace H N] [IsManifold J 2 N]
 
 variable {g : Circle → N} {h : E'' → Circle} {k : Circle → ℝ} {y : Circle}
 
@@ -72,7 +76,8 @@ end
 section -- A domain with normed space also errors in the elaborators.
 
 -- Assume we have a real inner product space which is not a normed space.
-variable {G : Type*} [NormedAddCommGroup G] [InnerProductSpace ℝ G]
+variable
+  {G : Type*} [NormedAddCommGroup G] [InnerProductSpace ℝ G]
   {f : (Metric.sphere (0 : G) 1) → E''} {g : ℝ → (Metric.sphere (0 : G) 1)}
 
 -- The tests for the standard notation passes.
@@ -80,17 +85,17 @@ variable {G : Type*} [NormedAddCommGroup G] [InnerProductSpace ℝ G]
 variable [Fact (Module.finrank ℝ G = 3)] in
 /-- info: MDiff f : Prop -/
 #guard_msgs in
-#check MDifferentiable (𝓡 2) 𝓘(ℝ, E'') f
+#check MDifferentiable (𝓡 2) (𝓘(ℝ, E'')) f
 
 variable [Fact (Module.finrank ℝ G = 2 + 1)] in
 /-- info: MDiff f : Prop -/
 #guard_msgs in
-#check MDifferentiable (𝓡 2) 𝓘(ℝ, E'') f
+#check MDifferentiable (𝓡 2) (𝓘(ℝ, E'')) f
 
 variable [Fact (Module.finrank ℝ G = 4 + 1)] in
 /-- info: MDiff g : Prop -/
 #guard_msgs in
-#check MDifferentiable 𝓘(ℝ) (𝓡 4) g
+#check MDifferentiable (𝓘(ℝ)) (𝓡 4) g
 
 variable [Fact (Module.finrank ℝ G = 3)] in
 /-- info: MDiff f : Prop -/
@@ -126,7 +131,7 @@ variable {f : (Metric.sphere (0 : E'') 1) → ℝ} {g : M → (Metric.sphere (0 
 variable [Fact (Module.finrank ℝ E'' = n + 1)] in
 /-- info: ContMDiff (𝓡 n) 𝓘(ℝ, ℝ) 2 f : Prop -/
 #guard_msgs in
-#check ContMDiff (𝓡 n) 𝓘(ℝ) 2 f
+#check ContMDiff (𝓡 n) (𝓘(ℝ)) 2 f
 
 variable [Fact (Module.finrank ℝ E'' = n + 1)] in
 /-- info: ContMDiff (𝓡 n) 𝓘(ℝ, ℝ) 2 f : Prop -/

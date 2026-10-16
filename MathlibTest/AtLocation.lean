@@ -61,8 +61,7 @@ example (b : Bool) (_h : b = b) : True := by
 -- `failed` is called
 /-- error: no location visited -/
 #guard_msgs in
-example (h : True) : True := by
-  visit_none
+example (h : True) : True := by visit_none
 
 /-- Collect the types at each location visited by `mapNondepPropLocation`. -/
 elab "collect_nondep_prop" loc:(location)? : tactic => do

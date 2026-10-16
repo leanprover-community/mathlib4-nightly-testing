@@ -41,19 +41,23 @@ variable (X : SimplicialObject C) (n : ℕ)
 
 namespace Truncated
 
-/-- The identity natural transformation exhibits a simplicial set as a right extension of its
-restriction along `(Truncated.inclusion n).op`. -/
+/--
+The identity natural transformation exhibits a simplicial set as a right extension of its
+restriction along `(Truncated.inclusion n).op`.
+-/
 @[simps!]
-def rightExtensionInclusion :
-    RightExtension (Truncated.inclusion n).op
-      ((Truncated.inclusion n).op ⋙ X) := RightExtension.mk _ (𝟙 _)
+def rightExtensionInclusion
+    : RightExtension (Truncated.inclusion n).op ((Truncated.inclusion n).op ⋙ X) :=
+  RightExtension.mk _ (𝟙 _)
 
 end Truncated
 
 open Truncated
 
-/-- A simplicial object `X` is `n`-coskeletal when it is the right Kan extension of its restriction
-along `(Truncated.inclusion n).op` via the identity natural transformation. -/
+/--
+A simplicial object `X` is `n`-coskeletal when it is the right Kan extension of its restriction
+along `(Truncated.inclusion n).op` via the identity natural transformation.
+-/
 @[mk_iff]
 class IsCoskeletal : Prop where
   isRightKanExtension : IsRightKanExtension X (𝟙 ((Truncated.inclusion n).op ⋙ X))
@@ -62,26 +66,31 @@ attribute [instance] IsCoskeletal.isRightKanExtension
 
 section
 
-variable [∀ (F : (SimplexCategory.Truncated n)ᵒᵖ ⥤ C),
+variable
+  [∀ (F : (SimplexCategory.Truncated n)ᵒᵖ ⥤ C),
     (SimplexCategory.Truncated.inclusion n).op.HasRightKanExtension F]
 
-/-- If `X` is `n`-coskeletal, then `Truncated.rightExtensionInclusion X n` is a terminal object in
-the category `RightExtension (Truncated.inclusion n).op (Truncated.inclusion.op ⋙ X)`. -/
-noncomputable def IsCoskeletal.isUniversalOfIsRightKanExtension [X.IsCoskeletal n] :
-    (rightExtensionInclusion X n).IsUniversal := by
+/--
+If `X` is `n`-coskeletal, then `Truncated.rightExtensionInclusion X n` is a terminal object in
+the category `RightExtension (Truncated.inclusion n).op (Truncated.inclusion.op ⋙ X)`.
+-/
+noncomputable def IsCoskeletal.isUniversalOfIsRightKanExtension [X.IsCoskeletal n]
+    : (rightExtensionInclusion X n).IsUniversal := by
   apply Functor.isUniversalOfIsRightKanExtension
 
 theorem isCoskeletal_iff_isIso : X.IsCoskeletal n ↔ IsIso ((coskAdj n).unit.app X) := by
   rw [isCoskeletal_iff]
-  exact isRightKanExtension_iff_isIso ((coskAdj n).unit.app X)
-    ((coskAdj n).counit.app _) (𝟙 _) ((coskAdj n).left_triangle_components X)
+  exact isRightKanExtension_iff_isIso ((coskAdj n).unit.app X) ((coskAdj n).counit.app _) (𝟙 _)
+    ((coskAdj n).left_triangle_components X)
 
 instance [X.IsCoskeletal n] : IsIso ((coskAdj n).unit.app X) := by
   rw [← isCoskeletal_iff_isIso]
   infer_instance
 
-/-- The canonical isomorphism `X ≅ (cosk n).obj X` defined when `X` is coskeletal and the
-`n`-coskeleton functor exists. -/
+/--
+The canonical isomorphism `X ≅ (cosk n).obj X` defined when `X` is coskeletal and the
+`n`-coskeleton functor exists.
+-/
 @[simps! hom]
 noncomputable def isoCoskOfIsCoskeletal [X.IsCoskeletal n] : X ≅ (cosk n).obj X :=
   asIso ((coskAdj n).unit.app X)

@@ -26,53 +26,58 @@ respectively.
 open Function LinearMap
 
 namespace Submodule
-variable {R M N : Type*} [Ring R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+variable
+  {R M N : Type*} [Ring R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
   {L : Submodule R (M × N)}
   (hL₁ : Surjective (Prod.fst ∘ L.subtype)) (hL₂ : Surjective (Prod.snd ∘ L.subtype))
 
 variable (L) in
-/-- For `L` a submodule of `M × N`, `L.goursatFst` is the kernel of the projection map `L → N`,
+/--
+For `L` a submodule of `M × N`, `L.goursatFst` is the kernel of the projection map `L → N`,
 considered as a submodule of `M`.
 
-This is the first submodule appearing in Goursat's lemma. See `Subgroup.goursat`. -/
+This is the first submodule appearing in Goursat's lemma. See `Subgroup.goursat`.
+-/
 def goursatFst : Submodule R M :=
   (LinearMap.ker <| (LinearMap.snd R M N).comp L.subtype).map ((LinearMap.fst R M N).comp L.subtype)
 
-
 variable (L) in
-/-- For `L` a subgroup of `M × N`, `L.goursatSnd` is the kernel of the projection map `L → M`,
+/--
+For `L` a subgroup of `M × N`, `L.goursatSnd` is the kernel of the projection map `L → M`,
 considered as a subgroup of `N`.
 
-This is the second subgroup appearing in Goursat's lemma. See `Subgroup.goursat`. -/
+This is the second subgroup appearing in Goursat's lemma. See `Subgroup.goursat`.
+-/
 def goursatSnd : Submodule R N :=
   (LinearMap.ker <| (LinearMap.fst R M N).comp L.subtype).map ((LinearMap.snd R M N).comp L.subtype)
 
-lemma goursatFst_toAddSubgroup :
-    (goursatFst L).toAddSubgroup = L.toAddSubgroup.goursatFst := by
+lemma goursatFst_toAddSubgroup : (goursatFst L).toAddSubgroup = L.toAddSubgroup.goursatFst := by
   ext x
   simp [goursatFst, AddSubgroup.mem_goursatFst]
 
-lemma goursatSnd_toAddSubgroup :
-    (goursatSnd L).toAddSubgroup = L.toAddSubgroup.goursatSnd := by
+lemma goursatSnd_toAddSubgroup : (goursatSnd L).toAddSubgroup = L.toAddSubgroup.goursatSnd := by
   ext x
   simp [goursatSnd, AddSubgroup.mem_goursatSnd]
 
 variable (L) in
 lemma goursatFst_prod_goursatSnd_le : L.goursatFst.prod L.goursatSnd ≤ L := by
-  simpa only [← toAddSubgroup_le, goursatFst_toAddSubgroup, goursatSnd_toAddSubgroup]
-    using! L.toAddSubgroup.goursatFst_prod_goursatSnd_le
+  simpa only [← toAddSubgroup_le, goursatFst_toAddSubgroup, goursatSnd_toAddSubgroup] using!
+    L.toAddSubgroup.goursatFst_prod_goursatSnd_le
 
 set_option backward.isDefEq.respectTransparency false in
 include hL₁ hL₂ in
-/-- **Goursat's lemma** for a submodule of a product with surjective projections.
+/--
+**Goursat's lemma** for a submodule of a product with surjective projections.
 
 If `L` is a submodule of `M × N` which projects fully on both factors, then there exist submodules
 `M' ≤ M` and `N' ≤ N` such that `M' × N' ≤ L` and the image of `L` in `(M ⧸ M') × (N ⧸ N')` is the
 graph of an isomorphism of `R`-modules `(M ⧸ M') ≃ (N ⧸ N')`.
 
-`M` and `N` can be explicitly constructed as `L.goursatFst` and `L.goursatSnd` respectively. -/
-lemma goursat_surjective : ∃ e : (M ⧸ L.goursatFst) ≃ₗ[R] N ⧸ L.goursatSnd,
-    LinearMap.range ((L.goursatFst.mkQ.prodMap L.goursatSnd.mkQ).comp L.subtype) = e.graph := by
+`M` and `N` can be explicitly constructed as `L.goursatFst` and `L.goursatSnd` respectively.
+-/
+lemma goursat_surjective
+    : ∃ e : (M ⧸ L.goursatFst) ≃ₗ[R] N ⧸ L.goursatSnd,
+      LinearMap.range ((L.goursatFst.mkQ.prodMap L.goursatSnd.mkQ).comp L.subtype) = e.graph := by
   -- apply add-group result
   obtain ⟨(e : M ⧸ L.goursatFst ≃+ N ⧸ L.goursatSnd), he⟩ :=
     L.toAddSubgroup.goursat_surjective hL₁ hL₂
@@ -94,14 +99,17 @@ lemma goursat_surjective : ∃ e : (M ⧸ L.goursatFst) ≃ₗ[R] N ⧸ L.goursa
   rw [mem_toAddSubgroup, mem_graph_iff, Eq.comm]
   rfl
 
-/-- **Goursat's lemma** for an arbitrary submodule of a product.
+/--
+**Goursat's lemma** for an arbitrary submodule of a product.
 
 If `L` is a submodule of `M × N`, then there exist submodules `M'' ≤ M' ≤ M` and `N'' ≤ N' ≤ N` such
 that `L ≤ M' × N'`, and `L` is (the image in `M × N` of) the preimage of the graph of an `R`-linear
-isomorphism `M' ⧸ M'' ≃ N' ⧸ N''`. -/
-lemma goursat : ∃ (M' : Submodule R M) (N' : Submodule R N) (M'' : Submodule R M')
-    (N'' : Submodule R N') (e : (M' ⧸ M'') ≃ₗ[R] N' ⧸ N''),
-    L = (e.graph.comap <| M''.mkQ.prodMap N''.mkQ).map (M'.subtype.prodMap N'.subtype) := by
+isomorphism `M' ⧸ M'' ≃ N' ⧸ N''`.
+-/
+lemma goursat
+    : ∃ (M' : Submodule R M) (N' : Submodule R N) (M'' : Submodule R M') (N'' : Submodule R N')
+        (e : (M' ⧸ M'') ≃ₗ[R] N' ⧸ N''),
+      L = (e.graph.comap <| M''.mkQ.prodMap N''.mkQ).map (M'.subtype.prodMap N'.subtype) := by
   let M' := L.map (LinearMap.fst ..)
   let N' := L.map (LinearMap.snd ..)
   let P : L →ₗ[R] M' := (LinearMap.fst ..).submoduleMap L
@@ -123,12 +131,12 @@ lemma goursat : ∃ (M' : Submodule R M) (N' : Submodule R N) (M'' : Submodule R
   · ext ⟨m, n⟩
     constructor
     · simp only [mem_map, LinearMap.mem_range, LinearMap.prod_apply, Function.prod_apply,
-      Subtype.exists, Prod.exists, LinearMap.prodMap_apply, subtype_apply, Prod.mk.injEq,
-      Subtype.ext_iff, submoduleMap_coe_apply, fst_apply, snd_apply]
+        Subtype.exists, Prod.exists, LinearMap.prodMap_apply, subtype_apply, Prod.mk.injEq,
+        Subtype.ext_iff, submoduleMap_coe_apply, fst_apply, snd_apply]
       grind
     · simp only [mem_map, LinearMap.mem_range, LinearMap.prod_apply, Function.prod_apply,
-      Subtype.exists, Prod.exists, LinearMap.prodMap_apply, subtype_apply, Prod.mk.injEq,
-      snd_apply, fst_apply, Subtype.ext_iff, submoduleMap_coe_apply]
+        Subtype.exists, Prod.exists, LinearMap.prodMap_apply, subtype_apply, Prod.mk.injEq,
+        snd_apply, fst_apply, Subtype.ext_iff, submoduleMap_coe_apply]
       grind
   · convert goursatFst_prod_goursatSnd_le (range <| P.prod Q)
     simp only [ker_prodMap, ker_mkQ, Submodule.ext_iff]

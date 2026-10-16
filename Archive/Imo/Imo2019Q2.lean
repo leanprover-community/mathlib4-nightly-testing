@@ -35,7 +35,6 @@ angles used are modulo `2 * π`, so parts of the angle chase that are only valid
 as `(2 : ℤ) • ∡ _ _ _ = (2 : ℤ) • ∡ _ _ _`.
 -/
 
-
 library_note «IMO geometry formalization conventions» /--
 We apply the following conventions for formalizing IMO geometry problems. A problem is assumed
 to take place in the plane unless that is clearly not intended, so it is not required to prove
@@ -58,7 +57,6 @@ with them. A reference to a point being on a side or a segment is expressed dire
 rather than more literally with `affineSegment`.
 -/
 
-
 open Affine Affine.Simplex EuclideanGeometry Module
 open scoped Real
 
@@ -72,10 +70,12 @@ namespace Imo2019Q2
 
 @[expose] public noncomputable section
 
-/-- A configuration satisfying the conditions of the problem. We define this structure to avoid
+/--
+A configuration satisfying the conditions of the problem. We define this structure to avoid
 passing many hypotheses around as we build up information about the configuration; the final
 result for a statement of the problem not using this structure is then deduced from one in terms
-of this structure. -/
+of this structure.
+-/
 structure Imo2019q2Cfg where
   (A B C A₁ B₁ P Q P₁ Q₁ : Pt)
   affineIndependent_ABC : AffineIndependent ℝ ![A, B, C]
@@ -101,8 +101,10 @@ namespace Imo2019q2Cfg
 
 variable (cfg : Imo2019q2Cfg V Pt)
 
-/-- The configuration has symmetry, allowing results proved for one point to be applied for
-another (where the informal solution says "similarly"). -/
+/--
+The configuration has symmetry, allowing results proved for one point to be applied for
+another (where the informal solution says "similarly").
+-/
 def symm : Imo2019q2Cfg V Pt where
   A := cfg.B
   B := cfg.A
@@ -132,7 +134,6 @@ def symm : Imo2019q2Cfg V Pt where
 /-! ### Configuration properties that are obvious from the diagram, and construction of the
 points `A₂` and `B₂` -/
 
-
 theorem A_ne_B : cfg.A ≠ cfg.B :=
   cfg.affineIndependent_ABC.injective.ne (by decide : (0 : Fin 3) ≠ 1)
 
@@ -142,12 +143,11 @@ theorem A_ne_C : cfg.A ≠ cfg.C :=
 theorem B_ne_C : cfg.B ≠ cfg.C :=
   cfg.affineIndependent_ABC.injective.ne (by decide : (1 : Fin 3) ≠ 2)
 
-theorem not_collinear_ABC : ¬Collinear ℝ ({cfg.A, cfg.B, cfg.C} : Set Pt) :=
+theorem not_collinear_ABC : ¬ Collinear ℝ ({cfg.A, cfg.B, cfg.C} : Set Pt) :=
   affineIndependent_iff_not_collinear_set.1 cfg.affineIndependent_ABC
 
 /-- `ABC` as a `Triangle`. -/
-def triangleABC : Triangle ℝ Pt :=
-  ⟨_, cfg.affineIndependent_ABC⟩
+def triangleABC : Triangle ℝ Pt := ⟨_, cfg.affineIndependent_ABC⟩
 
 theorem A_mem_circumsphere : cfg.A ∈ cfg.triangleABC.circumsphere :=
   cfg.triangleABC.mem_circumsphere 0
@@ -161,17 +161,15 @@ theorem C_mem_circumsphere : cfg.C ∈ cfg.triangleABC.circumsphere :=
 theorem symm_triangleABC : cfg.symm.triangleABC = cfg.triangleABC.reindex (Equiv.swap 0 1) := by
   ext i; fin_cases i <;> rfl
 
-theorem symm_triangleABC_circumsphere :
-    cfg.symm.triangleABC.circumsphere = cfg.triangleABC.circumsphere := by
+theorem symm_triangleABC_circumsphere
+    : cfg.symm.triangleABC.circumsphere = cfg.triangleABC.circumsphere := by
   rw [symm_triangleABC, Affine.Simplex.circumsphere_reindex]
 
 /-- `A₂` is the second point of intersection of the ray `AA₁` with the circumcircle of `ABC`. -/
-def A₂ : Pt :=
-  cfg.triangleABC.circumsphere.secondInter cfg.A (cfg.A₁ -ᵥ cfg.A)
+def A₂ : Pt := cfg.triangleABC.circumsphere.secondInter cfg.A (cfg.A₁ -ᵥ cfg.A)
 
 /-- `B₂` is the second point of intersection of the ray `BB₁` with the circumcircle of `ABC`. -/
-def B₂ : Pt :=
-  cfg.triangleABC.circumsphere.secondInter cfg.B (cfg.B₁ -ᵥ cfg.B)
+def B₂ : Pt := cfg.triangleABC.circumsphere.secondInter cfg.B (cfg.B₁ -ᵥ cfg.B)
 
 theorem A₂_mem_circumsphere : cfg.A₂ ∈ cfg.triangleABC.circumsphere :=
   (Sphere.secondInter_mem _).2 cfg.A_mem_circumsphere
@@ -205,8 +203,7 @@ theorem A₁_ne_C : cfg.A₁ ≠ cfg.C := by
   rw [angle_CQ₁Q_eq_angle_CBA, angle_comm] at ha
   exact (angle_ne_zero_of_not_collinear cfg.not_collinear_ABC) ha
 
-theorem B₁_ne_C : cfg.B₁ ≠ cfg.C :=
-  cfg.symm.A₁_ne_C
+theorem B₁_ne_C : cfg.B₁ ≠ cfg.C := cfg.symm.A₁_ne_C
 
 theorem Q_notMem_CB : cfg.Q ∉ line[ℝ, cfg.C, cfg.B] := by
   intro hQ
@@ -222,7 +219,8 @@ theorem Q_notMem_CB : cfg.Q ∉ line[ℝ, cfg.C, cfg.B] := by
       exact collinear_insert_insert_of_mem_affineSpan_pair hQ₁ hQ
     hc'.subset (Set.subset_insert _ _)
   rw [collinear_iff_eq_or_eq_or_angle_eq_zero_or_angle_eq_pi, cfg.angle_CQ₁Q_eq_angle_CBA,
-    or_iff_right cfg.C_ne_Q₁, or_iff_right cfg.sbtw_Q_A₁_Q₁.left_ne_right, angle_comm] at hc
+      or_iff_right cfg.C_ne_Q₁, or_iff_right cfg.sbtw_Q_A₁_Q₁.left_ne_right, angle_comm]
+    at hc
   exact cfg.not_collinear_ABC (hc.elim collinear_of_angle_eq_zero collinear_of_angle_eq_pi)
 
 theorem Q_ne_B : cfg.Q ≠ cfg.B := by
@@ -236,13 +234,12 @@ theorem sOppSide_CB_Q_Q₁ : line[ℝ, cfg.C, cfg.B].SOppSide cfg.Q cfg.Q₁ :=
 
 /-! ### Relate the orientations of different angles in the configuration -/
 
-
 section Oriented
 
 variable [Module.Oriented ℝ V (Fin 2)]
 
-theorem oangle_CQ₁Q_sign_eq_oangle_CBA_sign [Fact (finrank ℝ V = 2)] :
-    (∡ cfg.C cfg.Q₁ cfg.Q).sign = (∡ cfg.C cfg.B cfg.A).sign := by
+theorem oangle_CQ₁Q_sign_eq_oangle_CBA_sign [Fact (finrank ℝ V = 2)]
+    : (∡ cfg.C cfg.Q₁ cfg.Q).sign = (∡ cfg.C cfg.B cfg.A).sign := by
   rw [← cfg.sbtw_Q_A₁_Q₁.symm.oangle_eq_right,
     cfg.sOppSide_CB_Q_Q₁.oangle_sign_eq_neg (left_mem_affineSpan_pair ℝ cfg.C cfg.B)
       cfg.wbtw_B_A₁_C.symm.mem_affineSpan,
@@ -251,8 +248,8 @@ theorem oangle_CQ₁Q_sign_eq_oangle_CBA_sign [Fact (finrank ℝ V = 2)] :
     cfg.wbtw_B_Q_B₁.oangle_eq_right cfg.Q_ne_B,
     cfg.wbtw_A_B₁_C.symm.oangle_sign_eq_of_ne_left cfg.B cfg.B₁_ne_C.symm]
 
-theorem oangle_CQ₁Q_eq_oangle_CBA [Fact (finrank ℝ V = 2)] :
-    ∡ cfg.C cfg.Q₁ cfg.Q = ∡ cfg.C cfg.B cfg.A :=
+theorem oangle_CQ₁Q_eq_oangle_CBA [Fact (finrank ℝ V = 2)]
+    : ∡ cfg.C cfg.Q₁ cfg.Q = ∡ cfg.C cfg.B cfg.A :=
   oangle_eq_of_angle_eq_of_sign_eq cfg.angle_CQ₁Q_eq_angle_CBA
     cfg.oangle_CQ₁Q_sign_eq_oangle_CBA_sign
 
@@ -282,7 +279,7 @@ theorem A₁_ne_B : cfg.A₁ ≠ cfg.B := by
     exact right_mem_affineSpan_pair _ _ _
   have ha : (2 : ℤ) • ∡ cfg.C cfg.B cfg.Q = (2 : ℤ) • ∡ cfg.C cfg.Q₁ cfg.Q := by
     rw [oangle_CQ₁Q_eq_oangle_CBA, haQ]
-  have hn : ¬Collinear ℝ ({cfg.C, cfg.B, cfg.Q} : Set Pt) := by
+  have hn : ¬ Collinear ℝ ({cfg.C, cfg.B, cfg.Q} : Set Pt) := by
     rw [collinear_iff_of_two_zsmul_oangle_eq haQ, Set.pair_comm, Set.insert_comm, Set.pair_comm]
     exact cfg.not_collinear_ABC
   have hc := cospherical_of_two_zsmul_oangle_eq_of_not_collinear ha hn
@@ -299,11 +296,9 @@ theorem A₁_ne_B : cfg.A₁ ≠ cfg.B := by
   rw [← h, Set.pair_comm, Set.insert_comm]
   exact cfg.sbtw_Q_A₁_Q₁.wbtw.collinear
 
-theorem sbtw_B_A₁_C : Sbtw ℝ cfg.B cfg.A₁ cfg.C :=
-  ⟨cfg.wbtw_B_A₁_C, cfg.A₁_ne_B, cfg.A₁_ne_C⟩
+theorem sbtw_B_A₁_C : Sbtw ℝ cfg.B cfg.A₁ cfg.C := ⟨cfg.wbtw_B_A₁_C, cfg.A₁_ne_B, cfg.A₁_ne_C⟩
 
-theorem sbtw_A_B₁_C : Sbtw ℝ cfg.A cfg.B₁ cfg.C :=
-  cfg.symm.sbtw_B_A₁_C
+theorem sbtw_A_B₁_C : Sbtw ℝ cfg.A cfg.B₁ cfg.C := cfg.symm.sbtw_B_A₁_C
 
 theorem sbtw_A_A₁_A₂ : Sbtw ℝ cfg.A cfg.A₁ cfg.A₂ := by
   refine Sphere.sbtw_secondInter cfg.A_mem_circumsphere ?_
@@ -314,11 +309,9 @@ theorem sbtw_A_A₁_A₂ : Sbtw ℝ cfg.A cfg.A₁ cfg.A₂ := by
 theorem sbtw_B_B₁_B₂ : Sbtw ℝ cfg.B cfg.B₁ cfg.B₂ := by
   rw [← cfg.symm_A₂]; exact cfg.symm.sbtw_A_A₁_A₂
 
-theorem A₂_ne_A : cfg.A₂ ≠ cfg.A :=
-  cfg.sbtw_A_A₁_A₂.left_ne_right.symm
+theorem A₂_ne_A : cfg.A₂ ≠ cfg.A := cfg.sbtw_A_A₁_A₂.left_ne_right.symm
 
-theorem A₂_ne_P : cfg.A₂ ≠ cfg.P :=
-  (cfg.sbtw_A_A₁_A₂.trans_wbtw_left_ne cfg.wbtw_A_P_A₁).symm
+theorem A₂_ne_P : cfg.A₂ ≠ cfg.P := (cfg.sbtw_A_A₁_A₂.trans_wbtw_left_ne cfg.wbtw_A_P_A₁).symm
 
 theorem A₂_ne_B : cfg.A₂ ≠ cfg.B := by
   intro h
@@ -360,35 +353,34 @@ theorem B₂_ne_A₂ : cfg.B₂ ≠ cfg.A₂ := by
   exact (sbtw_of_sbtw_of_sbtw_of_mem_affineSpan_pair (by decide) hA hB hA' hB').symm.not_rotate
     cfg.sbtw_A_A₁_A₂.wbtw
 
-theorem wbtw_B_Q_B₂ : Wbtw ℝ cfg.B cfg.Q cfg.B₂ :=
-  cfg.sbtw_B_B₁_B₂.wbtw.trans_left cfg.wbtw_B_Q_B₁
+theorem wbtw_B_Q_B₂ : Wbtw ℝ cfg.B cfg.Q cfg.B₂ := cfg.sbtw_B_B₁_B₂.wbtw.trans_left cfg.wbtw_B_Q_B₁
 
 /-! ### The first equality in the first angle chase in the solution -/
-
 
 section Oriented
 
 variable [Module.Oriented ℝ V (Fin 2)]
 
-theorem two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂ :
-    (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ = (2 : ℤ) • ∡ cfg.B cfg.A cfg.A₂ := by
+theorem two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂
+    : (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ = (2 : ℤ) • ∡ cfg.B cfg.A cfg.A₂ := by
   refine two_zsmul_oangle_of_parallel cfg.QP_parallel_BA ?_
   convert! AffineSubspace.Parallel.refl (k := ℝ) (P := Pt) _ using 1
-  rw [cfg.collinear_PAA₁A₂.affineSpan_eq_of_ne (Set.mem_insert_of_mem _
-    (Set.mem_insert_of_mem _ (Set.mem_insert_of_mem _ (Set.mem_singleton _))))
-    (Set.mem_insert_of_mem _ (Set.mem_insert _ _)) cfg.A₂_ne_A,
-      cfg.collinear_PAA₁A₂.affineSpan_eq_of_ne (Set.mem_insert_of_mem _
-    (Set.mem_insert_of_mem _ (Set.mem_insert_of_mem _ (Set.mem_singleton _))))
-    (Set.mem_insert _ _) cfg.A₂_ne_P]
+  rw [cfg.collinear_PAA₁A₂.affineSpan_eq_of_ne
+      (Set.mem_insert_of_mem _
+        (Set.mem_insert_of_mem _ (Set.mem_insert_of_mem _ (Set.mem_singleton _))))
+      (Set.mem_insert_of_mem _ (Set.mem_insert _ _)) cfg.A₂_ne_A,
+    cfg.collinear_PAA₁A₂.affineSpan_eq_of_ne
+      (Set.mem_insert_of_mem _
+        (Set.mem_insert_of_mem _ (Set.mem_insert_of_mem _ (Set.mem_singleton _))))
+      (Set.mem_insert _ _) cfg.A₂_ne_P]
 
 end Oriented
 
 /-! ### More obvious configuration properties -/
 
-
-theorem not_collinear_QPA₂ : ¬Collinear ℝ ({cfg.Q, cfg.P, cfg.A₂} : Set Pt) := by
-  rw [collinear_iff_of_two_zsmul_oangle_eq cfg.two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂, ←
-    affineIndependent_iff_not_collinear_set]
+theorem not_collinear_QPA₂ : ¬ Collinear ℝ ({cfg.Q, cfg.P, cfg.A₂} : Set Pt) := by
+  rw [collinear_iff_of_two_zsmul_oangle_eq cfg.two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂,
+    ← affineIndependent_iff_not_collinear_set]
   have h : Cospherical ({cfg.B, cfg.A, cfg.A₂} : Set Pt) := by
     refine cfg.triangleABC.circumsphere.cospherical.subset ?_
     simp only [Set.insert_subset_iff, cfg.A_mem_circumsphere, cfg.B_mem_circumsphere,
@@ -415,39 +407,35 @@ theorem affineIndependent_PQB₂ : AffineIndependent ℝ ![cfg.P, cfg.Q, cfg.B�
   rw [← symm_A₂]; exact cfg.symm.affineIndependent_QPA₂
 
 /-- `QPA₂` as a `Triangle`. -/
-def triangleQPA₂ : Triangle ℝ Pt :=
-  ⟨_, cfg.affineIndependent_QPA₂⟩
+def triangleQPA₂ : Triangle ℝ Pt := ⟨_, cfg.affineIndependent_QPA₂⟩
 
 /-- `PQB₂` as a `Triangle`. -/
-def trianglePQB₂ : Triangle ℝ Pt :=
-  ⟨_, cfg.affineIndependent_PQB₂⟩
+def trianglePQB₂ : Triangle ℝ Pt := ⟨_, cfg.affineIndependent_PQB₂⟩
 
 theorem symm_triangleQPA₂ : cfg.symm.triangleQPA₂ = cfg.trianglePQB₂ := by
   simp_rw [trianglePQB₂, ← symm_A₂]; ext i; fin_cases i <;> rfl
 
-/-- `ω` is the circle containing `Q`, `P` and `A₂`, which will be shown also to contain `B₂`,
-`P₁` and `Q₁`. -/
-def ω : Sphere Pt :=
-  cfg.triangleQPA₂.circumsphere
+/--
+`ω` is the circle containing `Q`, `P` and `A₂`, which will be shown also to contain `B₂`,
+`P₁` and `Q₁`.
+-/
+def ω : Sphere Pt := cfg.triangleQPA₂.circumsphere
 
-theorem P_mem_ω : cfg.P ∈ cfg.ω :=
-  cfg.triangleQPA₂.mem_circumsphere 1
+theorem P_mem_ω : cfg.P ∈ cfg.ω := cfg.triangleQPA₂.mem_circumsphere 1
 
-theorem Q_mem_ω : cfg.Q ∈ cfg.ω :=
-  cfg.triangleQPA₂.mem_circumsphere 0
+theorem Q_mem_ω : cfg.Q ∈ cfg.ω := cfg.triangleQPA₂.mem_circumsphere 0
 
 /-! ### The rest of the first angle chase in the solution -/
-
 
 section Oriented
 
 variable [Module.Oriented ℝ V (Fin 2)]
 
-theorem two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_QB₂A₂ :
-    (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ = (2 : ℤ) • ∡ cfg.Q cfg.B₂ cfg.A₂ :=
+theorem two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_QB₂A₂
+    : (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ = (2 : ℤ) • ∡ cfg.Q cfg.B₂ cfg.A₂ :=
   calc
-    (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ = (2 : ℤ) • ∡ cfg.B cfg.A cfg.A₂ :=
-      cfg.two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂
+    (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂
+      = (2 : ℤ) • ∡ cfg.B cfg.A cfg.A₂ := cfg.two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_BAA₂
     _ = (2 : ℤ) • ∡ cfg.B cfg.B₂ cfg.A₂ :=
       (Sphere.two_zsmul_oangle_eq cfg.B_mem_circumsphere cfg.A_mem_circumsphere
         cfg.B₂_mem_circumsphere cfg.A₂_mem_circumsphere cfg.A_ne_B cfg.A₂_ne_A.symm cfg.B₂_ne_B
@@ -458,7 +446,6 @@ theorem two_zsmul_oangle_QPA₂_eq_two_zsmul_oangle_QB₂A₂ :
 end Oriented
 
 /-! ### Conclusions from that first angle chase -/
-
 
 theorem cospherical_QPB₂A₂ : Cospherical ({cfg.Q, cfg.P, cfg.B₂, cfg.A₂} : Set Pt) :=
   cospherical_of_two_zsmul_oangle_eq_of_not_collinear
@@ -482,26 +469,25 @@ theorem symm_ω : cfg.symm.ω = cfg.ω := by
 
 /-! ### The second angle chase in the solution -/
 
-
 section Oriented
 
 variable [Module.Oriented ℝ V (Fin 2)]
 
-theorem two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CBA :
-    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.B cfg.A :=
+theorem two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CBA
+    : (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.B cfg.A :=
   calc
-    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A := by
-      rw [cfg.sbtw_A_A₁_A₂.symm.oangle_eq_right]
+    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁
+      = (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A := by rw [cfg.sbtw_A_A₁_A₂.symm.oangle_eq_right]
     _ = (2 : ℤ) • ∡ cfg.C cfg.B cfg.A :=
       Sphere.two_zsmul_oangle_eq cfg.C_mem_circumsphere cfg.A₂_mem_circumsphere
         cfg.B_mem_circumsphere cfg.A_mem_circumsphere cfg.A₂_ne_C cfg.A₂_ne_A cfg.B_ne_C
         cfg.A_ne_B.symm
 
-theorem two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CQ₁A₁ :
-    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.Q₁ cfg.A₁ :=
+theorem two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CQ₁A₁
+    : (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.Q₁ cfg.A₁ :=
   calc
-    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁ = (2 : ℤ) • ∡ cfg.C cfg.B cfg.A :=
-      cfg.two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CBA
+    (2 : ℤ) • ∡ cfg.C cfg.A₂ cfg.A₁
+      = (2 : ℤ) • ∡ cfg.C cfg.B cfg.A := cfg.two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CBA
     _ = (2 : ℤ) • ∡ cfg.C cfg.Q₁ cfg.Q := by rw [oangle_CQ₁Q_eq_oangle_CBA]
     _ = (2 : ℤ) • ∡ cfg.C cfg.Q₁ cfg.A₁ := by rw [cfg.sbtw_Q_A₁_Q₁.symm.oangle_eq_right]
 
@@ -509,8 +495,7 @@ end Oriented
 
 /-! ### Conclusions from that second angle chase -/
 
-
-theorem not_collinear_CA₂A₁ : ¬Collinear ℝ ({cfg.C, cfg.A₂, cfg.A₁} : Set Pt) := by
+theorem not_collinear_CA₂A₁ : ¬ Collinear ℝ ({cfg.C, cfg.A₂, cfg.A₁} : Set Pt) := by
   rw [collinear_iff_of_two_zsmul_oangle_eq cfg.two_zsmul_oangle_CA₂A₁_eq_two_zsmul_oangle_CBA,
     Set.pair_comm, Set.insert_comm, Set.pair_comm]
   exact cfg.not_collinear_ABC
@@ -523,16 +508,15 @@ theorem cospherical_A₁Q₁CA₂ : Cospherical ({cfg.A₁, cfg.Q₁, cfg.C, cfg
 
 /-! ### The third angle chase in the solution -/
 
-
 section Oriented
 
 variable [Module.Oriented ℝ V (Fin 2)]
 
-theorem two_zsmul_oangle_QQ₁A₂_eq_two_zsmul_oangle_QPA₂ :
-    (2 : ℤ) • ∡ cfg.Q cfg.Q₁ cfg.A₂ = (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ :=
+theorem two_zsmul_oangle_QQ₁A₂_eq_two_zsmul_oangle_QPA₂
+    : (2 : ℤ) • ∡ cfg.Q cfg.Q₁ cfg.A₂ = (2 : ℤ) • ∡ cfg.Q cfg.P cfg.A₂ :=
   calc
-    (2 : ℤ) • ∡ cfg.Q cfg.Q₁ cfg.A₂ = (2 : ℤ) • ∡ cfg.A₁ cfg.Q₁ cfg.A₂ := by
-      rw [cfg.sbtw_Q_A₁_Q₁.symm.oangle_eq_left]
+    (2 : ℤ) • ∡ cfg.Q cfg.Q₁ cfg.A₂
+      = (2 : ℤ) • ∡ cfg.A₁ cfg.Q₁ cfg.A₂ := by rw [cfg.sbtw_Q_A₁_Q₁.symm.oangle_eq_left]
     _ = (2 : ℤ) • ∡ cfg.A₁ cfg.C cfg.A₂ :=
       (cfg.cospherical_A₁Q₁CA₂.two_zsmul_oangle_eq cfg.sbtw_Q_A₁_Q₁.right_ne cfg.Q₁_ne_A₂
         cfg.A₁_ne_C.symm cfg.A₂_ne_C.symm)
@@ -546,7 +530,6 @@ theorem two_zsmul_oangle_QQ₁A₂_eq_two_zsmul_oangle_QPA₂ :
 end Oriented
 
 /-! ### Conclusions from that third angle chase -/
-
 
 theorem Q₁_mem_ω : cfg.Q₁ ∈ cfg.ω :=
   Affine.Triangle.mem_circumsphere_of_two_zsmul_oangle_eq (by decide : (0 : Fin 3) ≠ 1)
@@ -571,15 +554,37 @@ end Imo2019Q2
 
 open Imo2019Q2
 
-theorem imo2019_q2 [Fact (finrank ℝ V = 2)] (A B C A₁ B₁ P Q P₁ Q₁ : Pt)
-    (affine_independent_ABC : AffineIndependent ℝ ![A, B, C]) (wbtw_B_A₁_C : Wbtw ℝ B A₁ C)
-    (wbtw_A_B₁_C : Wbtw ℝ A B₁ C) (wbtw_A_P_A₁ : Wbtw ℝ A P A₁) (wbtw_B_Q_B₁ : Wbtw ℝ B Q B₁)
-    (PQ_parallel_AB : line[ℝ, P, Q] ∥ line[ℝ, A, B]) (P_ne_Q : P ≠ Q)
+theorem imo2019_q2
+    [Fact (finrank ℝ V = 2)]
+    (A B C A₁ B₁ P Q P₁ Q₁ : Pt) (affine_independent_ABC : AffineIndependent ℝ ![A, B, C])
+    (wbtw_B_A₁_C : Wbtw ℝ B A₁ C) (wbtw_A_B₁_C : Wbtw ℝ A B₁ C) (wbtw_A_P_A₁ : Wbtw ℝ A P A₁)
+    (wbtw_B_Q_B₁ : Wbtw ℝ B Q B₁) (PQ_parallel_AB : line[ℝ, P, Q] ∥ line[ℝ, A, B]) (P_ne_Q : P ≠ Q)
     (sbtw_P_B₁_P₁ : Sbtw ℝ P B₁ P₁) (angle_PP₁C_eq_angle_BAC : ∠ P P₁ C = ∠ B A C)
     (C_ne_P₁ : C ≠ P₁) (sbtw_Q_A₁_Q₁ : Sbtw ℝ Q A₁ Q₁)
-    (angle_CQ₁Q_eq_angle_CBA : ∠ C Q₁ Q = ∠ C B A) (C_ne_Q₁ : C ≠ Q₁) :
-    Concyclic ({P, Q, P₁, Q₁} : Set Pt) :=
-  (⟨A, B, C, A₁, B₁, P, Q, P₁, Q₁, affine_independent_ABC, wbtw_B_A₁_C, wbtw_A_B₁_C, wbtw_A_P_A₁,
-        wbtw_B_Q_B₁, PQ_parallel_AB, P_ne_Q, sbtw_P_B₁_P₁, angle_PP₁C_eq_angle_BAC, C_ne_P₁,
-        sbtw_Q_A₁_Q₁, angle_CQ₁Q_eq_angle_CBA, C_ne_Q₁⟩ :
-      Imo2019q2Cfg V Pt).result
+    (angle_CQ₁Q_eq_angle_CBA : ∠ C Q₁ Q = ∠ C B A) (C_ne_Q₁ : C ≠ Q₁)
+    : Concyclic ({P, Q, P₁, Q₁} : Set Pt) :=
+  (⟨
+     A,
+     B,
+     C,
+     A₁,
+     B₁,
+     P,
+     Q,
+     P₁,
+     Q₁,
+     affine_independent_ABC,
+     wbtw_B_A₁_C,
+     wbtw_A_B₁_C,
+     wbtw_A_P_A₁,
+     wbtw_B_Q_B₁,
+     PQ_parallel_AB,
+     P_ne_Q,
+     sbtw_P_B₁_P₁,
+     angle_PP₁C_eq_angle_BAC,
+     C_ne_P₁,
+     sbtw_Q_A₁_Q₁,
+     angle_CQ₁Q_eq_angle_CBA,
+     C_ne_Q₁
+   ⟩
+    : Imo2019q2Cfg V Pt).result

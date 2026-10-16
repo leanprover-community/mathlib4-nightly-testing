@@ -80,8 +80,7 @@ theorem Antitone.iInf_nat_add {f : ℕ → α} (hf : Antitone f) (k : ℕ) : ⨅
 -- Not `@[simp]` since the subterm `?f (i + ?k)` produces an ugly higher-order unification problem.
 -- (Although the `simpNF` linter does not complain.)
 -- See: https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/complete_lattice.20and.20has_sup/near/316497982
-theorem iSup_iInf_ge_nat_add (f : ℕ → α) (k : ℕ) :
-    ⨆ n, ⨅ i ≥ n, f (i + k) = ⨆ n, ⨅ i ≥ n, f i := by
+theorem iSup_iInf_ge_nat_add (f : ℕ → α) (k : ℕ) : ⨆ n, ⨅ i ≥ n, f (i + k) = ⨆ n, ⨅ i ≥ n, f i := by
   have hf : Monotone fun n => ⨅ i ≥ n, f i := fun n m h => biInf_mono fun i => h.trans
   rw [← Monotone.iSup_nat_add hf k]
   simp_rw [iInf_ge_eq_iInf_nat_add, ← Nat.add_assoc]
@@ -90,15 +89,15 @@ theorem iSup_iInf_ge_nat_add (f : ℕ → α) (k : ℕ) :
 -- (Although the `simpNF` linter does not complain.)
 -- See: https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/complete_lattice.20and.20has_sup/near/316497982
 @[to_dual existing]
-theorem iInf_iSup_ge_nat_add :
-    ∀ (f : ℕ → α) (k : ℕ), ⨅ n, ⨆ i ≥ n, f (i + k) = ⨅ n, ⨆ i ≥ n, f i :=
-  @iSup_iInf_ge_nat_add αᵒᵈ _
+theorem iInf_iSup_ge_nat_add : ∀ (f : ℕ → α) (k : ℕ), ⨅ n, ⨆ i ≥ n, f (i + k) = ⨅ n, ⨆ i ≥ n, f i :=
+  @iSup_iInf_ge_nat_add (αᵒᵈ) _
 
 @[to_dual inf_iInf_nat_succ]
 theorem sup_iSup_nat_succ (u : ℕ → α) : (u 0 ⊔ ⨆ i, u (i + 1)) = ⨆ i, u i :=
   calc
-    (u 0 ⊔ ⨆ i, u (i + 1)) = ⨆ x ∈ {0} ∪ range Nat.succ, u x := by
-      { rw [iSup_union, iSup_singleton, iSup_range] }
+    (u 0 ⊔ ⨆ i, u (i + 1)) = ⨆ x ∈ {0} ∪ range Nat.succ, u x := by {
+      rw [iSup_union, iSup_singleton, iSup_range]
+    }
     _ = ⨆ i, u i := by rw [Nat.zero_union_range_succ, iSup_univ]
 
 @[to_dual]
@@ -127,23 +126,21 @@ theorem sInf_sup_le_iInf_sup : sInf s ⊔ a ≤ ⨅ b ∈ s, b ⊔ a :=
   le_iInf₂ fun _ h => sup_le_sup_right (sInf_le h) _
 
 @[to_dual]
-theorem iInf_sup_le_iInf_sup (f : ι → α) (a : α) :
-    (⨅ i, f i) ⊔ a ≤ ⨅ i, (f i ⊔ a) :=
+theorem iInf_sup_le_iInf_sup (f : ι → α) (a : α) : (⨅ i, f i) ⊔ a ≤ ⨅ i, (f i ⊔ a) :=
   le_iInf fun i ↦ sup_le_sup_right (iInf_le f i) a
 
 @[to_dual iSup_inf_le_inf_iSup]
-theorem sup_iInf_le_iInf_sup (f : ι → α) (a : α) :
-    a ⊔ (⨅ i, f i) ≤ ⨅ i, (a ⊔ f i) :=
+theorem sup_iInf_le_iInf_sup (f : ι → α) (a : α) : a ⊔ (⨅ i, f i) ≤ ⨅ i, (a ⊔ f i) :=
   le_iInf fun i ↦ sup_le_sup_left (iInf_le f i) a
 
 @[to_dual]
-lemma biInf_sup_le_biInf_sup (f : β → α) (s : Set β) (a : α) :
-    (⨅ i ∈ s, f i) ⊔ a ≤ ⨅ i ∈ s, f i ⊔ a :=
+lemma biInf_sup_le_biInf_sup (f : β → α) (s : Set β) (a : α)
+    : (⨅ i ∈ s, f i) ⊔ a ≤ ⨅ i ∈ s, f i ⊔ a :=
   le_iInf₂ fun _ hi ↦ sup_le_sup_right (biInf_le f hi) a
 
 @[to_dual biSup_inf_le_inf_biSup]
-lemma sup_biInf_le_biInf_sup (f : β → α) (s : Set β) (a : α) :
-    a ⊔ (⨅ i ∈ s, f i) ≤ ⨅ i ∈ s, a ⊔ f i :=
+lemma sup_biInf_le_biInf_sup (f : β → α) (s : Set β) (a : α)
+    : a ⊔ (⨅ i ∈ s, f i) ≤ ⨅ i ∈ s, a ⊔ f i :=
   le_iInf₂ fun _ hi ↦ sup_le_sup_left (biInf_le f hi) a
 
 @[to_dual le_iSup_inf_iSup]
@@ -151,23 +148,25 @@ theorem iInf_sup_iInf_le (f g : ι → α) : (⨅ i, f i) ⊔ ⨅ i, g i ≤ ⨅
   sup_le (iInf_mono fun _ => le_sup_left) (iInf_mono fun _ => le_sup_right)
 
 @[to_dual]
-theorem disjoint_sSup_left {a : Set α} {b : α} (d : Disjoint (sSup a) b) {i} (hi : i ∈ a) :
-    Disjoint i b :=
+theorem disjoint_sSup_left {a : Set α} {b : α} (d : Disjoint (sSup a) b) {i} (hi : i ∈ a)
+    : Disjoint i b :=
   disjoint_iff_inf_le.mpr (iSup₂_le_iff.1 (iSup_inf_le_sSup_inf.trans d.le_bot) i hi :)
 
 @[to_dual]
-theorem disjoint_sSup_right {a : Set α} {b : α} (d : Disjoint b (sSup a)) {i} (hi : i ∈ a) :
-    Disjoint b i :=
+theorem disjoint_sSup_right {a : Set α} {b : α} (d : Disjoint b (sSup a)) {i} (hi : i ∈ a)
+    : Disjoint b i :=
   disjoint_iff_inf_le.mpr (iSup₂_le_iff.mp (iSup_inf_le_inf_sSup.trans d.le_bot) i hi :)
 
 @[to_dual]
-lemma disjoint_of_sSup_disjoint_of_le_of_le {a b : α} {c d : Set α} (hs : ∀ e ∈ c, e ≤ a)
-    (ht : ∀ e ∈ d, e ≤ b) (hd : Disjoint a b) (he : ⊥ ∉ c ∨ ⊥ ∉ d) : Disjoint c d := by
+lemma disjoint_of_sSup_disjoint_of_le_of_le
+    {a b : α} {c d : Set α}
+    (hs : ∀ e ∈ c, e ≤ a) (ht : ∀ e ∈ d, e ≤ b) (hd : Disjoint a b) (he : ⊥ ∉ c ∨ ⊥ ∉ d)
+    : Disjoint c d := by
   grind
 
 @[to_dual]
-lemma disjoint_of_sSup_disjoint {a b : Set α} (hd : Disjoint (sSup a) (sSup b))
-    (he : ⊥ ∉ a ∨ ⊥ ∉ b) : Disjoint a b :=
+lemma disjoint_of_sSup_disjoint {a b : Set α} (hd : Disjoint (sSup a) (sSup b)) (he : ⊥ ∉ a ∨ ⊥ ∉ b)
+    : Disjoint a b :=
   disjoint_of_sSup_disjoint_of_le_of_le (fun _ hc ↦ le_sSup hc) (fun _ hc ↦ le_sSup hc) hd he
 
 end CompleteLattice
@@ -177,13 +176,13 @@ namespace ULift
 universe v
 
 @[to_dual]
-instance supSet [SupSet α] : SupSet (ULift.{v} α) where sSup s := ULift.up (sSup <| ULift.up ⁻¹' s)
+instance supSet [SupSet α] : SupSet (ULift.{v} α) where
+  sSup s := ULift.up (sSup <| ULift.up ⁻¹' s)
 
 @[to_dual]
 theorem down_sSup [SupSet α] (s : Set (ULift.{v} α)) : (sSup s).down = sSup (ULift.up ⁻¹' s) := rfl
 
-@[to_dual]
-theorem up_sSup [SupSet α] (s : Set α) : up (sSup s) = sSup (ULift.down ⁻¹' s) := rfl
+@[to_dual] theorem up_sSup [SupSet α] (s : Set α) : up (sSup s) = sSup (ULift.down ⁻¹' s) := rfl
 
 @[to_dual]
 theorem down_iSup [SupSet α] (f : ι → ULift.{v} α) : (⨆ i, f i).down = ⨆ i, (f i).down :=
@@ -197,7 +196,8 @@ theorem up_iSup [SupSet α] (f : ι → α) : up (⨆ i, f i) = ⨆ i, up (f i) 
 instance instCompleteLattice [CompleteLattice α] : CompleteLattice (ULift.{v} α) :=
   ULift.down_injective.completeLattice _ .rfl .rfl down_sup down_inf
     (fun s => by rw [sSup_eq_iSup', down_iSup, iSup_subtype''])
-    (fun s => by rw [sInf_eq_iInf', down_iInf, iInf_subtype'']) down_top down_bot
+    (fun s => by rw [sInf_eq_iInf', down_iInf, iInf_subtype''])
+    down_top down_bot
 
 end ULift
 

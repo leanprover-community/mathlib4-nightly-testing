@@ -41,8 +41,8 @@ namespace MeasureTheory.VectorMeasure
 variable {V : Type*} [TopologicalSpace V] [ENormedAddCommMonoid V] [T2Space V]
 
 /-- The norm of a vector measure is σ-subadditive on measurable sets. -/
-lemma isSigmaSubadditiveSetFun_enorm (μ : VectorMeasure X V) :
-    IsSigmaSubadditiveSetFun (‖μ ·‖ₑ) := by
+lemma isSigmaSubadditiveSetFun_enorm (μ : VectorMeasure X V)
+    : IsSigmaSubadditiveSetFun (‖μ ·‖ₑ) := by
   intro s hs
   have hmeas : ∀ i, MeasurableSet (s i).val := fun i => (s i).prop
   simpa [VectorMeasure.of_disjoint_iUnion hmeas hs] using enorm_tsum_le_tsum_enorm

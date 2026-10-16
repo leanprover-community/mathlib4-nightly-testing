@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Algebra.Valued.LocallyCompact
 public import Mathlib.Topology.Algebra.Valued.ValuativeRel
-
 import Mathlib.RingTheory.Valuation.DiscreteValuativeRel
 import Mathlib.Topology.Algebra.Module.Compact
 
@@ -43,11 +42,8 @@ Assuming we have a compatible `UniformSpace K` instance
 - `CompleteSpace K`
 - `CompleteSpace 𝒪[K]`
 -/
-class IsNonarchimedeanLocalField
-    (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] : Prop extends
-  IsValuativeTopology K,
-  LocallyCompactSpace K,
-  ValuativeRel.IsNontrivial K
+class IsNonarchimedeanLocalField (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] : Prop
+  extends IsValuativeTopology K, LocallyCompactSpace K, ValuativeRel.IsNontrivial K
 
 open ValuativeRel Valued.integer
 
@@ -73,8 +69,8 @@ lemma isCompact_closedBall (γ : ValueGroupWithZero K) : IsCompact { x | valuati
   let := IsTopologicalAddGroup.rightUniformSpace K
   let := isUniformAddGroup_of_addCommGroup (G := K)
   obtain ⟨s, hs, -, hs'⟩ := LocallyCompactSpace.local_compact_nhds (0 : K) .univ Filter.univ_mem
-  obtain ⟨r, hr, hr1, H⟩ :
-      ∃ r', r' ≠ 0 ∧ valuation K r' < 1 ∧ { x | valuation K x ≤ valuation K r' } ⊆ s := by
+  obtain ⟨r, hr, hr1, H⟩
+      : ∃ r', r' ≠ 0 ∧ valuation K r' < 1 ∧ { x | valuation K x ≤ valuation K r' } ⊆ s := by
     obtain ⟨r, hr, hrs⟩ := (IsValuativeTopology.hasBasis_nhds_zero' K).mem_iff.mp hs
     obtain ⟨r', hr', hr⟩ := Valuation.IsNontrivial.exists_lt_one (v := valuation K)
     simp only [ne_eq] at hr'
@@ -102,8 +98,10 @@ lemma isCompact_closedBall (γ : ValueGroupWithZero K) : IsCompact { x | valuati
 
 instance : CompactSpace 𝒪[K] := isCompact_iff_compactSpace.mp (isCompact_closedBall K 1)
 
-instance (K : Type*) [Field K] [ValuativeRel K] [UniformSpace K] [IsUniformAddGroup K]
-    [IsValuativeTopology K] : (Valued.v (R := K) (Γ₀ := ValueGroupWithZero K)).Compatible :=
+instance
+    (K : Type*)
+    [Field K] [ValuativeRel K] [UniformSpace K] [IsUniformAddGroup K] [IsValuativeTopology K]
+    : (Valued.v (R := K) (Γ₀ := ValueGroupWithZero K)).Compatible :=
   inferInstanceAs (valuation K).Compatible
 
 instance : IsDiscreteValuationRing 𝒪[K] :=
@@ -113,16 +111,18 @@ instance : IsDiscreteValuationRing 𝒪[K] :=
   Valued.integer.isDiscreteValuationRing_of_compactSpace
 
 /-- The value group of a local field is (uniquely) isomorphic to `ℤᵐ⁰`. -/
-noncomputable
-def valueGroupWithZeroIsoInt : ValueGroupWithZero K ≃*o ℤᵐ⁰ := by
+noncomputable def valueGroupWithZeroIsoInt : ValueGroupWithZero K ≃*o ℤᵐ⁰ := by
   apply Nonempty.some
   let := IsTopologicalAddGroup.rightUniformSpace K
   have := isUniformAddGroup_of_addCommGroup (G := K)
-  obtain ⟨_⟩ := Valued.integer.locallyFiniteOrder_units_mrange_of_isCompact_integer
-    (isCompact_iff_compactSpace.mpr (inferInstance : CompactSpace 𝒪[K]))
-  let e : (MonoidHom.mrange (valuation K)) ≃*o ValueGroupWithZero K :=
-    ⟨.ofBijective (MonoidHom.mrange (valuation K)).subtype ⟨Subtype.val_injective, fun x ↦
-      ⟨⟨x, ValuativeRel.valuation_surjective x⟩, rfl⟩⟩, .rfl⟩
+  obtain ⟨_⟩ :=
+    Valued.integer.locallyFiniteOrder_units_mrange_of_isCompact_integer
+      (isCompact_iff_compactSpace.mpr (inferInstance : CompactSpace 𝒪[K]))
+  let e : (MonoidHom.mrange (valuation K)) ≃*o ValueGroupWithZero K := ⟨
+    .ofBijective (MonoidHom.mrange (valuation K)).subtype
+      ⟨Subtype.val_injective, fun x ↦ ⟨⟨x, ValuativeRel.valuation_surjective x⟩, rfl⟩⟩,
+    .rfl
+  ⟩
   have : Nontrivial (ValueGroupWithZero K)ˣ := isNontrivial_iff_nontrivial_units.mp inferInstance
   have : Nontrivial (↥(MonoidHom.mrange (valuation K)))ˣ :=
     (Units.map_injective (f := e.symm.toMonoidHom) e.symm.injective).nontrivial
@@ -136,16 +136,17 @@ instance : ValuativeRel.IsDiscrete K :=
     ⟨valueGroupWithZeroIsoInt K⟩).1
 
 instance : ValuativeRel.IsRankLeOne K :=
-  ValuativeRel.isRankLeOne_iff_mulArchimedean.mpr
-    (.comap (valueGroupWithZeroIsoInt K).toMonoidHom (valueGroupWithZeroIsoInt K).strictMono)
+  ValuativeRel.isRankLeOne_iff_mulArchimedean.mpr (.comap (valueGroupWithZeroIsoInt K).toMonoidHom
+    (valueGroupWithZeroIsoInt K).strictMono)
 
 instance : Finite 𝓀[K] :=
   letI := IsTopologicalAddGroup.rightUniformSpace K
   haveI := isUniformAddGroup_of_addCommGroup (G := K)
-  letI : (Valued.v (R := K)).RankOne :=
-  { hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
-    strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-        MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
+  letI : (Valued.v (R := K)).RankOne := {
+    hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
+    strictMono' :=
+      IsRankLeOne.nonempty.some.strictMono.comp MonoidWithZeroHom.ValueGroup₀.embedding_strictMono
+  }
   (compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField.mp
     (inferInstanceAs (CompactSpace 𝒪[K]))).2.2
 
@@ -153,37 +154,40 @@ end TopologicalSpace
 
 section UniformSpace
 
-variable (K : Type*) [Field K] [ValuativeRel K]
-  [UniformSpace K] [IsUniformAddGroup K] [IsNonarchimedeanLocalField K]
+variable
+  (K : Type*)
+  [Field K] [ValuativeRel K] [UniformSpace K] [IsUniformAddGroup K] [IsNonarchimedeanLocalField K]
 
 instance : CompleteSpace K :=
-  letI : (Valued.v (R := K)).RankOne :=
-  { hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
-    strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-        MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
+  letI : (Valued.v (R := K)).RankOne := {
+    hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
+    strictMono' :=
+      IsRankLeOne.nonempty.some.strictMono.comp MonoidWithZeroHom.ValueGroup₀.embedding_strictMono
+  }
   open scoped Valued in
   have : ProperSpace K := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace K
   (properSpace_iff_completeSpace_and_isDiscreteValuationRing_integer_and_finite_residueField.mp
     inferInstance).1
 
 instance : CompleteSpace 𝒪[K] :=
-  letI : (Valued.v (R := K)).RankOne :=
-  { hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
-    strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-        MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
+  letI : (Valued.v (R := K)).RankOne := {
+    hom' := IsRankLeOne.nonempty.some.emb (R := K).comp MonoidWithZeroHom.ValueGroup₀.embedding
+    strictMono' :=
+      IsRankLeOne.nonempty.some.strictMono.comp MonoidWithZeroHom.ValueGroup₀.embedding_strictMono
+  }
   (compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField.mp
     (inferInstanceAs (CompactSpace 𝒪[K]))).1
 
 open scoped Pointwise in
-instance : IsAdicComplete 𝓂[K] 𝒪[K] where
+instance : IsAdicComplete (𝓂[K]) 𝒪[K] where
   prec' f hf := by
     let S n : Set 𝒪[K] := f n +ᵥ ((𝓂[K] ^ n : Ideal 𝒪[K]) : Set 𝒪[K])
     have hS n : S (n + 1) ⊆ S n := by
       apply (Set.vadd_set_subset_vadd_set_iff.mpr (Ideal.pow_le_pow_right n.le_succ)).trans
       simpa [S] using (hf n.le_succ).symm
     have h n : IsClosed (S n) := (IsNoetherianRing.isClosed_ideal (𝓂[K] ^ n)).vadd (f n)
-    obtain ⟨L, hL⟩ := (h 0).isCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed S hS
-      (by simp [S]) h
+    obtain ⟨L, hL⟩ :=
+      (h 0).isCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed S hS (by simp [S]) h
     refine ⟨L, fun n ↦ ?_⟩
     obtain ⟨y, hy, rfl⟩ := Set.mem_iInter.mp hL n
     simpa [SModEq.sub_mem] using hy

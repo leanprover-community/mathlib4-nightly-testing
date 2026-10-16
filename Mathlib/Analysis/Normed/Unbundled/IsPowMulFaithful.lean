@@ -6,7 +6,6 @@ Authors: María Inés de Frutos-Fernández
 module
 
 public import Mathlib.Analysis.Normed.Unbundled.AlgebraNorm
-
 import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
 
 /-!
@@ -32,16 +31,24 @@ public section
 open Filter Real Algebra
 open scoped Topology
 
-/-- If `f : α →+* β` is bounded with respect to a ring seminorm `nα` on `α` and a
-  power-multiplicative function `nβ : β → ℝ`, then `∀ x : α, nβ (f x) ≤ nα x`. -/
-theorem contraction_of_isPowMul_of_boundedWrt {F : Type*} {α : outParam (Type*)} [Ring α]
-    [FunLike F α ℝ] [RingSeminormClass F α ℝ] {β : Type*} [Ring β] (nα : F) {nβ : β → ℝ}
-    (hβ : IsPowMul nβ) {f : α →+* β} (hf : f.IsBoundedWrt nα nβ) (x : α) : nβ (f x) ≤ nα x := by
+/--
+If `f : α →+* β` is bounded with respect to a ring seminorm `nα` on `α` and a
+power-multiplicative function `nβ : β → ℝ`, then `∀ x : α, nβ (f x) ≤ nα x`.
+-/
+theorem contraction_of_isPowMul_of_boundedWrt
+    {F : Type*} {α : outParam (Type*)} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ]
+    {β : Type*} [Ring β]
+    (nα : F)
+    {nβ : β → ℝ} (hβ : IsPowMul nβ)
+    {f : α →+* β} (hf : f.IsBoundedWrt nα nβ)
+    (x : α)
+    : nβ (f x) ≤ nα x := by
   obtain ⟨C, hC0, hC⟩ := hf
   have hlim : Tendsto (fun n : ℕ => C ^ (1 / (n : ℝ)) * nα x) atTop (𝓝 (nα x)) := by
     nth_rewrite 2 [← one_mul (nα x)]
     exact ((rpow_zero C ▸ ContinuousAt.tendsto (continuousAt_const_rpow (ne_of_gt hC0))).comp
-      (tendsto_const_div_atTop_nhds_zero_nat 1)).mul tendsto_const_nhds
+        (tendsto_const_div_atTop_nhds_zero_nat 1)).mul
+      tendsto_const_nhds
   apply ge_of_tendsto hlim
   simp only [eventually_atTop]
   use 1
@@ -55,18 +62,28 @@ theorem contraction_of_isPowMul_of_boundedWrt {F : Type*} {α : outParam (Type*)
   rw [mul_le_mul_iff_right₀ hC0]
   exact map_pow_le_pow _ _ (Nat.one_le_iff_ne_zero.mp hn)
 
-/-- Given a bounded `f : α →+* β` between seminormed rings, is the seminorm on `β` is
-  power-multiplicative, then `f` is a contraction. -/
-theorem contraction_of_isPowMul {α β : Type*} [SeminormedRing α] [SeminormedRing β]
-    (hβ : IsPowMul (norm : β → ℝ)) {f : α →+* β} (hf : f.IsBounded) (x : α) : norm (f x) ≤ norm x :=
+/--
+Given a bounded `f : α →+* β` between seminormed rings, is the seminorm on `β` is
+power-multiplicative, then `f` is a contraction.
+-/
+theorem contraction_of_isPowMul
+    {α β : Type*} [SeminormedRing α] [SeminormedRing β]
+    (hβ : IsPowMul (norm : β → ℝ))
+    {f : α →+* β} (hf : f.IsBounded)
+    (x : α)
+    : norm (f x) ≤ norm x :=
   contraction_of_isPowMul_of_boundedWrt (SeminormedRing.toRingSeminorm α) hβ hf x
 
-/-- Given two power-multiplicative ring seminorms `f, g` on `α`, if `f` is bounded by a positive
-  multiple of `g` and vice versa, then `f = g`. -/
-theorem eq_seminorms {F : Type*} {α : outParam (Type*)} [Ring α] [FunLike F α ℝ]
-    [RingSeminormClass F α ℝ] {f g : F} (hfpm : IsPowMul f) (hgpm : IsPowMul g)
-    (hfg : ∃ (r : ℝ) (_ : 0 < r), ∀ a : α, f a ≤ r * g a)
-    (hgf : ∃ (r : ℝ) (_ : 0 < r), ∀ a : α, g a ≤ r * f a) : f = g := by
+/--
+Given two power-multiplicative ring seminorms `f, g` on `α`, if `f` is bounded by a positive
+multiple of `g` and vice versa, then `f = g`.
+-/
+theorem eq_seminorms
+    {F : Type*} {α : outParam (Type*)} [Ring α] [FunLike F α ℝ] [RingSeminormClass F α ℝ]
+    {f g : F}
+    (hfpm : IsPowMul f) (hgpm : IsPowMul g) (hfg : ∃ (r : ℝ) (_ : 0 < r), ∀ a : α, f a ≤ r * g a)
+    (hgf : ∃ (r : ℝ) (_ : 0 < r), ∀ a : α, g a ≤ r * f a)
+    : f = g := by
   obtain ⟨r, hr0, hr⟩ := hfg
   obtain ⟨s, hs0, hs⟩ := hgf
   have hle : RingHom.IsBoundedWrt f g (RingHom.id _) := ⟨s, hs0, hs⟩
@@ -78,14 +95,17 @@ theorem eq_seminorms {F : Type*} {α : outParam (Type*)} [Ring α] [FunLike F α
 
 variable {R S : Type*} [NormedCommRing R] [CommRing S] [Algebra R S]
 
-/-- If `R` is a normed commutative ring and `f₁` and `f₂` are two power-multiplicative `R`-algebra
-  norms on `S`, then if `f₁` and `f₂` are equivalent on every subring `R[y]` for `y : S`, it
-  follows that `f₁ = f₂` [BGR, Proposition 3.1.5/1][bosch-guntzer-remmert]. -/
-theorem eq_of_powMul_faithful (f₁ : AlgebraNorm R S) (hf₁_pm : IsPowMul f₁) (f₂ : AlgebraNorm R S)
-    (hf₂_pm : IsPowMul f₂)
-    (h_eq : ∀ y : S, ∃ (C₁ C₂ : ℝ) (_ : 0 < C₁) (_ : 0 < C₂),
-      ∀ x : R[y], f₁ x.val ≤ C₁ * f₂ x.val ∧ f₂ x.val ≤ C₂ * f₁ x.val) :
-    f₁ = f₂ := by
+/--
+If `R` is a normed commutative ring and `f₁` and `f₂` are two power-multiplicative `R`-algebra
+norms on `S`, then if `f₁` and `f₂` are equivalent on every subring `R[y]` for `y : S`, it
+follows that `f₁ = f₂` [BGR, Proposition 3.1.5/1][bosch-guntzer-remmert].
+-/
+theorem eq_of_powMul_faithful
+    (f₁ : AlgebraNorm R S) (hf₁_pm : IsPowMul f₁)
+    (f₂ : AlgebraNorm R S) (hf₂_pm : IsPowMul f₂)
+    (h_eq : ∀ y : S, ∃ (C₁ C₂ : ℝ) (_ : 0 < C₁) (_ : 0 < C₂), ∀ x : R[y],
+      f₁ x.val ≤ C₁ * f₂ x.val ∧ f₂ x.val ≤ C₂ * f₁ x.val)
+    : f₁ = f₂ := by
   ext x
   set g₁ : AlgebraNorm R R[(x : S)] := AlgebraNorm.restriction _ f₁
   set g₂ : AlgebraNorm R R[(x : S)] := AlgebraNorm.restriction _ f₂

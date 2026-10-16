@@ -45,8 +45,7 @@ theorem abs_eq_natAbs : ∀ a : ℤ, |a| = natAbs a
 
 theorem natAbs_abs (a : ℤ) : natAbs |a| = natAbs a := by grind
 
-theorem sign_mul_abs (a : ℤ) : sign a * |a| = a := by
-  rw [abs_eq_natAbs, sign_mul_natAbs a]
+theorem sign_mul_abs (a : ℤ) : sign a * |a| = a := by rw [abs_eq_natAbs, sign_mul_natAbs a]
 
 theorem sign_mul_self_eq_abs (a : ℤ) : sign a * a = |a| := by
   rw [abs_eq_natAbs, sign_mul_self_eq_natAbs]
@@ -64,21 +63,16 @@ alias le_self_pow_two := le_self_sq
 
 @[norm_cast] lemma abs_natCast (n : ℕ) : |(n : ℤ)| = n := abs_of_nonneg (natCast_nonneg n)
 
-theorem natAbs_sub_pos_iff {i j : ℤ} : 0 < natAbs (i - j) ↔ i ≠ j := by
-  grind
+theorem natAbs_sub_pos_iff {i j : ℤ} : 0 < natAbs (i - j) ↔ i ≠ j := by grind
 
 theorem natAbs_sub_ne_zero_iff {i j : ℤ} : natAbs (i - j) ≠ 0 ↔ i ≠ j :=
   Nat.ne_zero_iff_zero_lt.trans natAbs_sub_pos_iff
 
-@[simp]
-theorem abs_lt_one_iff {a : ℤ} : |a| < 1 ↔ a = 0 := by
-  grind
+@[simp] theorem abs_lt_one_iff {a : ℤ} : |a| < 1 ↔ a = 0 := by grind
 
-theorem abs_le_one_iff {a : ℤ} : |a| ≤ 1 ↔ a = 0 ∨ a = 1 ∨ a = -1 := by
-  grind
+theorem abs_le_one_iff {a : ℤ} : |a| ≤ 1 ↔ a = 0 ∨ a = 1 ∨ a = -1 := by grind
 
-theorem one_le_abs {z : ℤ} (h₀ : z ≠ 0) : 1 ≤ |z| :=
-  add_one_le_iff.mpr (abs_pos.mpr h₀)
+theorem one_le_abs {z : ℤ} (h₀ : z ≠ 0) : 1 ≤ |z| := add_one_le_iff.mpr (abs_pos.mpr h₀)
 
 lemma eq_zero_of_abs_lt_dvd {m x : ℤ} (h1 : m ∣ x) (h2 : |x| < m) : x = 0 := by
   by_contra h
@@ -86,15 +80,16 @@ lemma eq_zero_of_abs_lt_dvd {m x : ℤ} (h1 : m ∣ x) (h2 : |x| < m) : x = 0 :=
   rw [Int.abs_eq_natAbs] at h2
   lia
 
-lemma abs_sub_lt_of_lt_lt {m a b : ℕ} (ha : a < m) (hb : b < m) : |(b : ℤ) - a| < m := by
-  grind
+lemma abs_sub_lt_of_lt_lt {m a b : ℕ} (ha : a < m) (hb : b < m) : |(b : ℤ) - a| < m := by grind
 
 /-! #### `/`  -/
 
 theorem ediv_eq_zero_of_lt_abs {a b : ℤ} (H1 : 0 ≤ a) (H2 : a < |b|) : a / b = 0 :=
   match b, |b|, abs_eq_natAbs b, H2 with
-  | (n : ℕ), _, rfl, H2 => ediv_eq_zero_of_lt H1 H2
-  | -[n+1], _, rfl, H2 => neg_injective <| by rw [← Int.ediv_neg]; exact ediv_eq_zero_of_lt H1 H2
+  | (n : ℕ), _, rfl, H2 =>
+    ediv_eq_zero_of_lt H1 H2
+  | -[n+1], _, rfl, H2 =>
+    neg_injective <| by rw [← Int.ediv_neg]; exact ediv_eq_zero_of_lt H1 H2
 
 /-! #### mod -/
 
@@ -110,26 +105,34 @@ theorem emod_lt_abs (a : ℤ) {b : ℤ} (H : b ≠ 0) : a % b < |b| := by
 theorem abs_ediv_le_abs : ∀ a b : ℤ, |a / b| ≤ |a| :=
   suffices ∀ (a : ℤ) (n : ℕ), |a / n| ≤ |a| from fun a b =>
     match b, Int.eq_nat_or_neg b with
-    | _, ⟨n, Or.inl rfl⟩ => this _ _
-    | _, ⟨n, Or.inr rfl⟩ => by rw [Int.ediv_neg, abs_neg]; apply this
+    | _, ⟨n, Or.inl rfl⟩ =>
+      this _ _
+    | _, ⟨n, Or.inr rfl⟩ => by
+      rw [Int.ediv_neg, abs_neg]; apply this
   fun a n => by
-  rw [abs_eq_natAbs, abs_eq_natAbs];
-  exact ofNat_le_ofNat_of_le
-    (match a, n with
-      | (m : ℕ), n => Nat.div_le_self _ _
-      | -[m+1], 0 => Nat.zero_le _
-      | -[m+1], n + 1 => Nat.succ_le_succ (Nat.div_le_self _ _))
+    rw [abs_eq_natAbs, abs_eq_natAbs]
+    exact ofNat_le_ofNat_of_le (match a, n with
+      | (m : ℕ), n =>
+        Nat.div_le_self _ _
+      | -[m+1], 0 =>
+        Nat.zero_le _
+      | -[m+1], n + 1 =>
+        Nat.succ_le_succ (Nat.div_le_self _ _))
 
 theorem abs_sign_of_ne_zero {z : ℤ} (hz : z ≠ 0) : |z.sign| = 1 := by
   rw [abs_eq_natAbs, natAbs_sign_of_ne_zero hz, Int.ofNat_one]
 
 protected theorem sign_eq_ediv_abs' (a : ℤ) : sign a = a / |a| :=
-  if az : a = 0 then by simp [az]
-  else (Int.ediv_eq_of_eq_mul_left (mt abs_eq_zero.1 az) (sign_mul_abs _).symm).symm
+  if az : a = 0 then by
+    simp [az]
+  else
+    (Int.ediv_eq_of_eq_mul_left (mt abs_eq_zero.1 az) (sign_mul_abs _).symm).symm
 
 protected theorem sign_eq_abs_ediv (a : ℤ) : sign a = |a| / a :=
-  if az : a = 0 then by simp [az]
-  else (Int.ediv_eq_of_eq_mul_left az (sign_mul_self_eq_abs _).symm).symm
+  if az : a = 0 then by
+    simp [az]
+  else
+    (Int.ediv_eq_of_eq_mul_left az (sign_mul_self_eq_abs _).symm).symm
 
 end Int
 

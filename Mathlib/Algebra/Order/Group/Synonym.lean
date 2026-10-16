@@ -18,7 +18,6 @@ Transfer algebraic instances from `α` to `αᵒᵈ`, `Lex α`, and `Colex α`.
 
 public section
 
-
 open OrderDual
 
 variable {α β : Type*}
@@ -41,7 +40,7 @@ set_option backward.inferInstanceAs.wrap.instances false in
 
 set_option backward.inferInstanceAs.wrap.instances false in
 @[to_additive (attr := to_additive) (reorder := 1 2) OrderDual.instSMul]
-instance [Pow α β] : Pow αᵒᵈ β := inferInstanceAs <| Pow α β
+instance [Pow α β] : Pow (αᵒᵈ) β := inferInstanceAs <| Pow α β
 
 set_option backward.inferInstanceAs.wrap.instances false in
 @[to_additive (attr := to_additive) (reorder := 1 2) OrderDual.instSMul']
@@ -52,30 +51,23 @@ instance [Pow α β] : Pow α βᵒᵈ := inferInstanceAs <| Pow α β
 @[to_additive] instance [CommSemigroup α] : CommSemigroup αᵒᵈ := inferInstanceAs <| CommSemigroup α
 
 @[to_additive]
-instance [Mul α] [IsLeftCancelMul α] : IsLeftCancelMul αᵒᵈ :=
-  inferInstanceAs <| IsLeftCancelMul α
+instance [Mul α] [IsLeftCancelMul α] : IsLeftCancelMul αᵒᵈ := inferInstanceAs <| IsLeftCancelMul α
 
 @[to_additive]
 instance [Mul α] [IsRightCancelMul α] : IsRightCancelMul αᵒᵈ :=
   inferInstanceAs <| IsRightCancelMul α
 
-@[to_additive]
-instance [Mul α] [IsCancelMul α] : IsCancelMul αᵒᵈ where
+@[to_additive] instance [Mul α] [IsCancelMul α] : IsCancelMul αᵒᵈ where
 
-@[to_additive]
-instance [LeftCancelSemigroup α] : LeftCancelSemigroup αᵒᵈ where
+@[to_additive] instance [LeftCancelSemigroup α] : LeftCancelSemigroup αᵒᵈ where
 
-@[to_additive]
-instance [RightCancelSemigroup α] : RightCancelSemigroup αᵒᵈ where
+@[to_additive] instance [RightCancelSemigroup α] : RightCancelSemigroup αᵒᵈ where
 
-@[to_additive]
-instance [MulOneClass α] : MulOneClass αᵒᵈ := inferInstanceAs <| MulOneClass α
+@[to_additive] instance [MulOneClass α] : MulOneClass αᵒᵈ := inferInstanceAs <| MulOneClass α
 
-@[to_additive]
-instance [Monoid α] : Monoid αᵒᵈ := inferInstanceAs <| Monoid α
+@[to_additive] instance [Monoid α] : Monoid αᵒᵈ := inferInstanceAs <| Monoid α
 
-@[to_additive]
-instance [CommMonoid α] : CommMonoid αᵒᵈ := inferInstanceAs <| CommMonoid α
+@[to_additive] instance [CommMonoid α] : CommMonoid αᵒᵈ := inferInstanceAs <| CommMonoid α
 
 @[to_additive]
 instance [LeftCancelMonoid α] : LeftCancelMonoid αᵒᵈ := inferInstanceAs <| LeftCancelMonoid α
@@ -83,30 +75,24 @@ instance [LeftCancelMonoid α] : LeftCancelMonoid αᵒᵈ := inferInstanceAs <|
 @[to_additive]
 instance [RightCancelMonoid α] : RightCancelMonoid αᵒᵈ := inferInstanceAs <| RightCancelMonoid α
 
-@[to_additive]
-instance [CancelMonoid α] : CancelMonoid αᵒᵈ := inferInstanceAs <| CancelMonoid α
+@[to_additive] instance [CancelMonoid α] : CancelMonoid αᵒᵈ := inferInstanceAs <| CancelMonoid α
 
 @[to_additive]
 instance [CancelCommMonoid α] : CancelCommMonoid αᵒᵈ := inferInstanceAs <| CancelCommMonoid α
 
-@[to_additive]
-instance [InvolutiveInv α] : InvolutiveInv αᵒᵈ := inferInstanceAs <| InvolutiveInv α
+@[to_additive] instance [InvolutiveInv α] : InvolutiveInv αᵒᵈ := inferInstanceAs <| InvolutiveInv α
 
-@[to_additive]
-instance [DivInvMonoid α] : DivInvMonoid αᵒᵈ := inferInstanceAs <| DivInvMonoid α
+@[to_additive] instance [DivInvMonoid α] : DivInvMonoid αᵒᵈ := inferInstanceAs <| DivInvMonoid α
 
 @[to_additive]
 instance [DivisionMonoid α] : DivisionMonoid αᵒᵈ := inferInstanceAs <| DivisionMonoid α
 
 @[to_additive]
-instance [DivisionCommMonoid α] : DivisionCommMonoid αᵒᵈ :=
-  inferInstanceAs <| DivisionCommMonoid α
+instance [DivisionCommMonoid α] : DivisionCommMonoid αᵒᵈ := inferInstanceAs <| DivisionCommMonoid α
 
-@[to_additive]
-instance [Group α] : Group αᵒᵈ := inferInstanceAs <| Group α
+@[to_additive] instance [Group α] : Group αᵒᵈ := inferInstanceAs <| Group α
 
-@[to_additive]
-instance [CommGroup α] : CommGroup αᵒᵈ := inferInstanceAs <| CommGroup α
+@[to_additive] instance [CommGroup α] : CommGroup αᵒᵈ := inferInstanceAs <| CommGroup α
 
 end OrderDual
 
@@ -116,8 +102,10 @@ theorem toDual_one [One α] : toDual (1 : α) = 1 := rfl
 @[to_additive (attr := simp)]
 theorem ofDual_one [One α] : (ofDual 1 : α) = 1 := rfl
 
-@[to_additive (attr := simp)] lemma toDual_eq_one [One α] {a : α} : toDual a = 1 ↔ a = 1 := .rfl
-@[to_additive (attr := simp)] lemma ofDual_eq_one [One α] {a : αᵒᵈ} : ofDual a = 1 ↔ a = 1 := .rfl
+@[to_additive (attr := simp)]
+lemma toDual_eq_one [One α] {a : α} : toDual a = 1 ↔ a = 1 := .rfl
+@[to_additive (attr := simp)]
+lemma ofDual_eq_one [One α] {a : αᵒᵈ} : ofDual a = 1 ↔ a = 1 := .rfl
 
 @[to_additive (attr := simp)]
 theorem toDual_mul [Mul α] (a b : α) : toDual (a * b) = toDual a * toDual b := rfl
@@ -174,7 +162,6 @@ end Monoid
 
 /-! ### Lexicographical order -/
 
-
 namespace Lex
 
 set_option backward.inferInstanceAs.wrap.instances false in
@@ -197,8 +184,7 @@ set_option backward.inferInstanceAs.wrap.instances false in
 @[to_additive (attr := to_additive) (reorder := 1 2) instSMul']
 instance [Pow α β] : Pow α (Lex β) := inferInstanceAs <| Pow α β
 
-@[to_additive]
-instance [Semigroup α] : Semigroup (Lex α) := inferInstanceAs <| Semigroup α
+@[to_additive] instance [Semigroup α] : Semigroup (Lex α) := inferInstanceAs <| Semigroup α
 
 @[to_additive]
 instance [CommSemigroup α] : CommSemigroup (Lex α) := inferInstanceAs <| CommSemigroup α
@@ -212,8 +198,7 @@ instance [Mul α] [IsRightCancelMul α] : IsRightCancelMul (Lex α) :=
   inferInstanceAs <| IsRightCancelMul α
 
 @[to_additive]
-instance [Mul α] [IsCancelMul α] : IsCancelMul (Lex α) :=
-  inferInstanceAs <| IsCancelMul α
+instance [Mul α] [IsCancelMul α] : IsCancelMul (Lex α) := inferInstanceAs <| IsCancelMul α
 
 @[to_additive]
 instance [LeftCancelSemigroup α] : LeftCancelSemigroup (Lex α) :=
@@ -223,14 +208,11 @@ instance [LeftCancelSemigroup α] : LeftCancelSemigroup (Lex α) :=
 instance [RightCancelSemigroup α] : RightCancelSemigroup (Lex α) :=
   inferInstanceAs <| RightCancelSemigroup α
 
-@[to_additive]
-instance [MulOneClass α] : MulOneClass (Lex α) := inferInstanceAs <| MulOneClass α
+@[to_additive] instance [MulOneClass α] : MulOneClass (Lex α) := inferInstanceAs <| MulOneClass α
 
-@[to_additive]
-instance [Monoid α] : Monoid (Lex α) := inferInstanceAs <| Monoid α
+@[to_additive] instance [Monoid α] : Monoid (Lex α) := inferInstanceAs <| Monoid α
 
-@[to_additive]
-instance [CommMonoid α] : CommMonoid (Lex α) := inferInstanceAs <| CommMonoid α
+@[to_additive] instance [CommMonoid α] : CommMonoid (Lex α) := inferInstanceAs <| CommMonoid α
 
 @[to_additive]
 instance [LeftCancelMonoid α] : LeftCancelMonoid (Lex α) := inferInstanceAs <| LeftCancelMonoid α
@@ -238,8 +220,7 @@ instance [LeftCancelMonoid α] : LeftCancelMonoid (Lex α) := inferInstanceAs <|
 @[to_additive]
 instance [RightCancelMonoid α] : RightCancelMonoid (Lex α) := inferInstanceAs <| RightCancelMonoid α
 
-@[to_additive]
-instance [CancelMonoid α] : CancelMonoid (Lex α) := inferInstanceAs <| CancelMonoid α
+@[to_additive] instance [CancelMonoid α] : CancelMonoid (Lex α) := inferInstanceAs <| CancelMonoid α
 
 @[to_additive]
 instance [CancelCommMonoid α] : CancelCommMonoid (Lex α) := inferInstanceAs <| CancelCommMonoid α
@@ -247,8 +228,7 @@ instance [CancelCommMonoid α] : CancelCommMonoid (Lex α) := inferInstanceAs <|
 @[to_additive]
 instance [InvolutiveInv α] : InvolutiveInv (Lex α) := inferInstanceAs <| InvolutiveInv α
 
-@[to_additive]
-instance [DivInvMonoid α] : DivInvMonoid (Lex α) := inferInstanceAs <| DivInvMonoid α
+@[to_additive] instance [DivInvMonoid α] : DivInvMonoid (Lex α) := inferInstanceAs <| DivInvMonoid α
 
 @[to_additive]
 instance [DivisionMonoid α] : DivisionMonoid (Lex α) := inferInstanceAs <| DivisionMonoid α
@@ -257,11 +237,9 @@ instance [DivisionMonoid α] : DivisionMonoid (Lex α) := inferInstanceAs <| Div
 instance [DivisionCommMonoid α] : DivisionCommMonoid (Lex α) :=
   inferInstanceAs <| DivisionCommMonoid α
 
-@[to_additive]
-instance [Group α] : Group (Lex α) := inferInstanceAs <| Group α
+@[to_additive] instance [Group α] : Group (Lex α) := inferInstanceAs <| Group α
 
-@[to_additive]
-instance [CommGroup α] : CommGroup (Lex α) := inferInstanceAs <| CommGroup α
+@[to_additive] instance [CommGroup α] : CommGroup (Lex α) := inferInstanceAs <| CommGroup α
 
 end Lex
 
@@ -332,7 +310,6 @@ end Monoid
 
 /-! ### Colexicographical order -/
 
-
 namespace Colex
 
 @[to_additive] instance [One α] : One (Colex α) := inferInstanceAs <| One α
@@ -349,8 +326,7 @@ instance [Pow α β] : Pow (Colex α) β := inferInstanceAs <| Pow α β
 @[to_additive (attr := to_additive) (reorder := 1 2) instSMul']
 instance [Pow α β] : Pow α (Colex β) := inferInstanceAs <| Pow α β
 
-@[to_additive]
-instance [Semigroup α] : Semigroup (Colex α) := inferInstanceAs <| Semigroup α
+@[to_additive] instance [Semigroup α] : Semigroup (Colex α) := inferInstanceAs <| Semigroup α
 
 @[to_additive]
 instance [CommSemigroup α] : CommSemigroup (Colex α) := inferInstanceAs <| CommSemigroup α
@@ -364,8 +340,7 @@ instance [Mul α] [IsRightCancelMul α] : IsRightCancelMul (Colex α) :=
   inferInstanceAs <| IsRightCancelMul α
 
 @[to_additive]
-instance [Mul α] [IsCancelMul α] : IsCancelMul (Colex α) :=
-  inferInstanceAs <| IsCancelMul α
+instance [Mul α] [IsCancelMul α] : IsCancelMul (Colex α) := inferInstanceAs <| IsCancelMul α
 
 @[to_additive]
 instance [LeftCancelSemigroup α] : LeftCancelSemigroup (Colex α) :=
@@ -375,14 +350,11 @@ instance [LeftCancelSemigroup α] : LeftCancelSemigroup (Colex α) :=
 instance [RightCancelSemigroup α] : RightCancelSemigroup (Colex α) :=
   inferInstanceAs <| RightCancelSemigroup α
 
-@[to_additive]
-instance [MulOneClass α] : MulOneClass (Colex α) := inferInstanceAs <| MulOneClass α
+@[to_additive] instance [MulOneClass α] : MulOneClass (Colex α) := inferInstanceAs <| MulOneClass α
 
-@[to_additive]
-instance [Monoid α] : Monoid (Colex α) := inferInstanceAs <| Monoid α
+@[to_additive] instance [Monoid α] : Monoid (Colex α) := inferInstanceAs <| Monoid α
 
-@[to_additive]
-instance [CommMonoid α] : CommMonoid (Colex α) := inferInstanceAs <| CommMonoid α
+@[to_additive] instance [CommMonoid α] : CommMonoid (Colex α) := inferInstanceAs <| CommMonoid α
 
 @[to_additive]
 instance [LeftCancelMonoid α] : LeftCancelMonoid (Colex α) := inferInstanceAs <| LeftCancelMonoid α
@@ -410,11 +382,9 @@ instance [DivisionMonoid α] : DivisionMonoid (Colex α) := inferInstanceAs <| D
 instance [DivisionCommMonoid α] : DivisionCommMonoid (Colex α) :=
   inferInstanceAs <| DivisionCommMonoid α
 
-@[to_additive]
-instance [Group α] : Group (Colex α) := inferInstanceAs <| Group α
+@[to_additive] instance [Group α] : Group (Colex α) := inferInstanceAs <| Group α
 
-@[to_additive]
-instance [CommGroup α] : CommGroup (Colex α) := inferInstanceAs <| CommGroup α
+@[to_additive] instance [CommGroup α] : CommGroup (Colex α) := inferInstanceAs <| CommGroup α
 
 end Colex
 

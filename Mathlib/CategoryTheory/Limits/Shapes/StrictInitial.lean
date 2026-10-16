@@ -39,7 +39,6 @@ The dual notion (strict terminal objects) occurs much less frequently in practic
 
 @[expose] public section
 
-
 universe v u
 
 namespace CategoryTheory
@@ -52,7 +51,8 @@ variable (C : Type u) [Category.{v} C]
 
 section StrictInitial
 
-/-- We say `C` has strict initial objects if every initial object is strict, i.e. given any morphism
+/--
+We say `C` has strict initial objects if every initial object is strict, i.e. given any morphism
 `f : A ⟶ I` where `I` is initial, then `f` is an isomorphism.
 
 Strictly speaking, this says that *any* initial object must be strict, rather than that strict
@@ -79,9 +79,7 @@ theorem IsInitial.subsingleton_to (hI : IsInitial I) {A : C} : Subsingleton (A �
   ⟨hI.strict_hom_ext⟩
 
 /-- If `X ⟶ Y` with `Y` being a strict initial object, then `X` is also an initial object. -/
-noncomputable
-def IsInitial.ofStrict {X Y : C} (f : X ⟶ Y)
-    (hY : IsInitial Y) : IsInitial X :=
+noncomputable def IsInitial.ofStrict {X Y : C} (f : X ⟶ Y) (hY : IsInitial Y) : IsInitial X :=
   letI := hY.isIso_to f
   hY.ofIso (asIso f).symm
 
@@ -95,8 +93,8 @@ noncomputable def mulIsInitial (X : C) [HasBinaryProduct X I] (hI : IsInitial I)
   exact asIso prod.snd
 
 @[simp]
-theorem mulIsInitial_inv (X : C) [HasBinaryProduct X I] (hI : IsInitial I) :
-    (mulIsInitial X hI).inv = hI.to _ :=
+theorem mulIsInitial_inv (X : C) [HasBinaryProduct X I] (hI : IsInitial I)
+    : (mulIsInitial X hI).inv = hI.to _ :=
   hI.hom_ext _ _
 
 /-- If `I` is initial, then `I ⨯ X` is isomorphic to it. -/
@@ -106,14 +104,13 @@ noncomputable def isInitialMul (X : C) [HasBinaryProduct I X] (hI : IsInitial I)
   exact asIso prod.fst
 
 @[simp]
-theorem isInitialMul_inv (X : C) [HasBinaryProduct I X] (hI : IsInitial I) :
-    (isInitialMul X hI).inv = hI.to _ :=
+theorem isInitialMul_inv (X : C) [HasBinaryProduct I X] (hI : IsInitial I)
+    : (isInitialMul X hI).inv = hI.to _ :=
   hI.hom_ext _ _
 
 variable [HasInitial C]
 
-instance initial_isIso_to {A : C} (f : A ⟶ ⊥_ C) : IsIso f :=
-  initialIsInitial.isIso_to _
+instance initial_isIso_to {A : C} (f : A ⟶ ⊥_ C) : IsIso f := initialIsInitial.isIso_to _
 
 @[ext]
 theorem initial.strict_hom_ext {A : C} (f g : A ⟶ ⊥_ C) : f = g :=
@@ -122,7 +119,8 @@ theorem initial.strict_hom_ext {A : C} (f g : A ⟶ ⊥_ C) : f = g :=
 theorem initial.subsingleton_to {A : C} : Subsingleton (A ⟶ ⊥_ C) :=
   initialIsInitial.subsingleton_to
 
-/-- The product of `X` with an initial object in a category with strict initial objects is itself
+/--
+The product of `X` with an initial object in a category with strict initial objects is itself
 initial.
 This is the generalisation of the fact that `X × Empty ≃ Empty` for types (or `n * 0 = 0`).
 -/
@@ -134,7 +132,8 @@ noncomputable def mulInitial (X : C) [HasBinaryProduct X (⊥_ C)] : X ⨯ ⊥_ 
 theorem mulInitial_inv (X : C) [HasBinaryProduct X (⊥_ C)] : (mulInitial X).inv = initial.to _ :=
   Subsingleton.elim _ _
 
-/-- The product of `X` with an initial object in a category with strict initial objects is itself
+/--
+The product of `X` with an initial object in a category with strict initial objects is itself
 initial.
 This is the generalisation of the fact that `Empty × X ≃ Empty` for types (or `0 * n = 0`).
 -/
@@ -148,13 +147,17 @@ theorem initialMul_inv (X : C) [HasBinaryProduct (⊥_ C) X] : (initialMul X).in
 
 end
 
-/-- If `C` has an initial object such that every morphism *to* it is an isomorphism, then `C`
-has strict initial objects. -/
-theorem hasStrictInitialObjects_of_initial_is_strict [HasInitial C]
-    (h : ∀ (A) (f : A ⟶ ⊥_ C), IsIso f) : HasStrictInitialObjects C :=
-  { out := fun {I A} f hI =>
-      haveI := h A (f ≫ hI.to _)
-      ⟨⟨hI.to _ ≫ inv (f ≫ hI.to (⊥_ C)), by rw [← assoc, IsIso.hom_inv_id], hI.hom_ext _ _⟩⟩ }
+/--
+If `C` has an initial object such that every morphism *to* it is an isomorphism, then `C`
+has strict initial objects.
+-/
+theorem hasStrictInitialObjects_of_initial_is_strict
+    [HasInitial C] (h : ∀ (A) (f : A ⟶ ⊥_ C), IsIso f)
+    : HasStrictInitialObjects C := {
+  out := fun {I A} f hI =>
+    haveI := h A (f ≫ hI.to _)
+    ⟨⟨hI.to _ ≫ inv (f ≫ hI.to (⊥_ C)), by rw [← assoc, IsIso.hom_inv_id], hI.hom_ext _ _⟩⟩
+}
 
 instance [Quiver.IsThin C] : HasStrictInitialObjects C where
   out {I A} f hI := by
@@ -165,7 +168,8 @@ end StrictInitial
 
 section StrictTerminal
 
-/-- We say `C` has strict terminal objects if every terminal object is strict, i.e. given any
+/--
+We say `C` has strict terminal objects if every terminal object is strict, i.e. given any
 morphism `f : I ⟶ A` where `I` is terminal, then `f` is an isomorphism.
 
 Strictly speaking, this says that *any* terminal object must be strict, rather than that strict
@@ -189,9 +193,7 @@ theorem IsTerminal.strict_hom_ext (hI : IsTerminal I) {A : C} (f g : I ⟶ A) : 
   exact eq_of_inv_eq_inv (hI.hom_ext (inv f) (inv g))
 
 /-- If `X ⟶ Y` with `Y` being a strict terminal object, then `X` is also a terminal object. -/
-noncomputable
-def IsTerminal.ofStrict {X Y : C} (f : X ⟶ Y)
-    (hY : IsTerminal X) : IsTerminal Y :=
+noncomputable def IsTerminal.ofStrict {X Y : C} (f : X ⟶ Y) (hY : IsTerminal X) : IsTerminal Y :=
   letI := hY.isIso_from f
   hY.ofIso (asIso f)
 
@@ -201,43 +203,43 @@ theorem IsTerminal.subsingleton_to (hI : IsTerminal I) {A : C} : Subsingleton (I
 variable {J : Type v} [SmallCategory J]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If all but one object in a diagram is strict terminal, then the limit is isomorphic to the
-said object via `limit.π`. -/
-theorem limit_π_isIso_of_is_strict_terminal (F : J ⥤ C) [HasLimit F] (i : J)
-    (H : ∀ (j) (_ : j ≠ i), IsTerminal (F.obj j)) [Subsingleton (i ⟶ i)] : IsIso (limit.π F i) := by
+/--
+If all but one object in a diagram is strict terminal, then the limit is isomorphic to the
+said object via `limit.π`.
+-/
+theorem limit_π_isIso_of_is_strict_terminal
+    (F : J ⥤ C) [HasLimit F]
+    (i : J) (H : ∀ (j) (_ : j ≠ i), IsTerminal (F.obj j)) [Subsingleton (i ⟶ i)]
+    : IsIso (limit.π F i) := by
   classical
-    refine ⟨⟨limit.lift _ ⟨_, ⟨?_, ?_⟩⟩, ?_, ?_⟩⟩
-    · exact fun j =>
-        dite (j = i)
-          (fun h => eqToHom (by cases h; rfl))
-          fun h => (H _ h).from _
-    · intro j k f
-      split_ifs with h h_1 h_1
-      · cases h
-        cases h_1
-        obtain rfl : f = 𝟙 _ := Subsingleton.elim _ _
-        simp
-      · cases h
-        have : IsIso (F.map f) := (H _ h_1).isIso_from _
-        rw [← IsIso.comp_inv_eq]
-        apply (H _ h_1).hom_ext
-      · cases h_1
-        apply (H _ h).hom_ext
-      · apply (H _ h).hom_ext
-    · ext
-      rw [assoc, limit.lift_π]
-      dsimp only
-      split_ifs with h
-      · cases h
-        rw [id_comp, eqToHom_refl]
-        exact comp_id _
-      · apply (H _ h).hom_ext
-    · simp
+  refine ⟨⟨limit.lift _ ⟨_, ⟨?_, ?_⟩⟩, ?_, ?_⟩⟩
+  · exact fun j => dite (j = i) (fun h => eqToHom (by cases h; rfl)) fun h => (H _ h).from _
+  · intro j k f
+    split_ifs with h h_1 h_1
+    · cases h
+      cases h_1
+      obtain rfl : f = 𝟙 _ := Subsingleton.elim _ _
+      simp
+    · cases h
+      have : IsIso (F.map f) := (H _ h_1).isIso_from _
+      rw [← IsIso.comp_inv_eq]
+      apply (H _ h_1).hom_ext
+    · cases h_1
+      apply (H _ h).hom_ext
+    · apply (H _ h).hom_ext
+  · ext
+    rw [assoc, limit.lift_π]
+    dsimp only
+    split_ifs with h
+    · cases h
+      rw [id_comp, eqToHom_refl]
+      exact comp_id _
+    · apply (H _ h).hom_ext
+  · simp
 
 variable [HasTerminal C]
 
-instance terminal_isIso_from {A : C} (f : ⊤_ C ⟶ A) : IsIso f :=
-  terminalIsTerminal.isIso_from _
+instance terminal_isIso_from {A : C} (f : ⊤_ C ⟶ A) : IsIso f := terminalIsTerminal.isIso_from _
 
 @[ext]
 theorem terminal.strict_hom_ext {A : C} (f g : ⊤_ C ⟶ A) : f = g :=
@@ -248,13 +250,16 @@ theorem terminal.subsingleton_to {A : C} : Subsingleton (⊤_ C ⟶ A) :=
 
 end
 
-/-- If `C` has an object such that every morphism *from* it is an isomorphism, then `C`
-has strict terminal objects. -/
-theorem hasStrictTerminalObjects_of_terminal_is_strict (I : C) (h : ∀ (A) (f : I ⟶ A), IsIso f) :
-    HasStrictTerminalObjects C :=
-  { out := fun {I' A} f hI' =>
-      haveI := h A (hI'.from _ ≫ f)
-      ⟨⟨inv (hI'.from I ≫ f) ≫ hI'.from I, hI'.hom_ext _ _, by rw [assoc, IsIso.inv_hom_id]⟩⟩ }
+/--
+If `C` has an object such that every morphism *from* it is an isomorphism, then `C`
+has strict terminal objects.
+-/
+theorem hasStrictTerminalObjects_of_terminal_is_strict (I : C) (h : ∀ (A) (f : I ⟶ A), IsIso f)
+    : HasStrictTerminalObjects C := {
+  out := fun {I' A} f hI' =>
+    haveI := h A (hI'.from _ ≫ f)
+    ⟨⟨inv (hI'.from I ≫ f) ≫ hI'.from I, hI'.hom_ext _ _, by rw [assoc, IsIso.inv_hom_id]⟩⟩
+}
 
 instance [Quiver.IsThin C] : HasStrictTerminalObjects C where
   out {I A} f hI := by

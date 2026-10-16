@@ -27,7 +27,6 @@ morphisms in induced categories.
 
 @[expose] public section
 
-
 namespace CategoryTheory
 
 universe v v₂ u₁ u₂
@@ -38,26 +37,26 @@ section Induced
 variable {C : Type u₁} (D : Type u₂) [Category.{v} D]
 variable (F : C → D)
 
-/-- `InducedCategory D F`, where `F : C → D`, is a typeclass synonym for `C`,
+/--
+`InducedCategory D F`, where `F : C → D`, is a typeclass synonym for `C`,
 which provides a category structure so that the morphisms `X ⟶ Y` are the morphisms
 in `D` from `F X` to `F Y`.
 -/
 @[nolint unusedArguments, implicit_reducible]
-def InducedCategory (_F : C → D) : Type u₁ :=
-  C
+def InducedCategory (_F : C → D) : Type u₁ := C
 
 variable {D}
 
 namespace InducedCategory
 
-instance hasCoeToSort {α : Sort*} [CoeSort D α] :
-    CoeSort (InducedCategory D F) α :=
-  ⟨fun c => F c⟩
+instance hasCoeToSort {α : Sort*} [CoeSort D α] : CoeSort (InducedCategory D F) α := ⟨fun c => F c⟩
 
 variable {F}
 
-/-- The type of morphisms in `InducedCategory D F` between `X` and `Y`
-is a 1-field structure which identifies to `F X ⟶ F Y`. -/
+/--
+The type of morphisms in `InducedCategory D F` between `X` and `Y`
+is a 1-field structure which identifies to `F X ⟶ F Y`.
+-/
 @[ext]
 structure Hom (X Y : InducedCategory D F) where
   /-- The underlying morphism. -/
@@ -72,12 +71,14 @@ instance : Category.{v} (InducedCategory D F) where
 attribute [reassoc] comp_hom
 
 @[ext]
-lemma hom_ext {X Y : InducedCategory D F} {f g : X ⟶ Y} (h : f.hom = g.hom) : f = g :=
-  Hom.ext h
+lemma hom_ext {X Y : InducedCategory D F} {f g : X ⟶ Y} (h : f.hom = g.hom) : f = g := Hom.ext h
 
-/-- Construct a morphism in the induced category
-from a morphism in the original category. -/
-@[simps] def homMk {X Y : InducedCategory D F} (f : F X ⟶ F Y) : X ⟶ Y where
+/--
+Construct a morphism in the induced category
+from a morphism in the original category.
+-/
+@[simps]
+def homMk {X Y : InducedCategory D F} (f : F X ⟶ F Y) : X ⟶ Y where
   hom := f
 
 /-- Morphisms in `InducedCategory D F` identify to morphisms in `D`. -/
@@ -86,15 +87,19 @@ def homEquiv {X Y : InducedCategory D F} : (X ⟶ Y) ≃ (F X ⟶ F Y) where
   toFun f := f.hom
   invFun f := homMk f
 
-/-- Construct an isomorphism in the induced category
-from an isomorphism in the original category. -/
-@[simps] def isoMk {X Y : InducedCategory D F} (f : F X ≅ F Y) : X ≅ Y where
+/--
+Construct an isomorphism in the induced category
+from an isomorphism in the original category.
+-/
+@[simps]
+def isoMk {X Y : InducedCategory D F} (f : F X ≅ F Y) : X ≅ Y where
   hom := homMk f.hom
   inv := homMk f.inv
 
 end InducedCategory
 
-/-- The forgetful functor from an induced category to the original category,
+/--
+The forgetful functor from an induced category to the original category,
 forgetting the extra data.
 -/
 @[simps, implicit_reducible]
@@ -106,8 +111,7 @@ def inducedFunctor : InducedCategory D F ⥤ D where
 def fullyFaithfulInducedFunctor : (inducedFunctor F).FullyFaithful where
   preimage f := InducedCategory.homMk f
 
-instance InducedCategory.full : (inducedFunctor F).Full :=
-  (fullyFaithfulInducedFunctor F).full
+instance InducedCategory.full : (inducedFunctor F).Full := (fullyFaithfulInducedFunctor F).full
 
 instance InducedCategory.faithful : (inducedFunctor F).Faithful :=
   (fullyFaithfulInducedFunctor F).faithful

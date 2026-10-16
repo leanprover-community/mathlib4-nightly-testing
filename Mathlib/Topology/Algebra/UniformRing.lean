@@ -47,18 +47,15 @@ open IsDenseInducing UniformSpace Function
 section one_and_mul
 variable (α : Type*) [Ring α] [UniformSpace α]
 
-instance one : One (Completion α) :=
-  ⟨(1 : α)⟩
+instance one : One (Completion α) := ⟨(1 : α)⟩
 
 instance mul : Mul (Completion α) :=
   ⟨curry <| (isDenseInducing_coe.prodMap isDenseInducing_coe).extend ((↑) ∘ uncurry (· * ·))⟩
 
-@[norm_cast]
-theorem coe_one : ((1 : α) : Completion α) = 1 :=
-  rfl
+@[norm_cast] theorem coe_one : ((1 : α) : Completion α) = 1 := rfl
 
-@[simp] lemma coe_eq_one_iff [T0Space α] {x : α} : (x : Completion α) = 1 ↔ x = 1 :=
-  Completion.coe_inj
+@[simp]
+lemma coe_eq_one_iff [T0Space α] {x : α} : (x : Completion α) = 1 ↔ x = 1 := Completion.coe_inj
 
 end one_and_mul
 
@@ -67,7 +64,7 @@ variable {α : Type*} [Ring α] [UniformSpace α] [IsTopologicalRing α]
 @[norm_cast]
 theorem coe_mul (a b : α) : ((a * b : α) : Completion α) = a * b :=
   ((isDenseInducing_coe.prodMap isDenseInducing_coe).extend_eq
-      ((continuous_coe α).comp (@continuous_mul α _ _ _)) (a, b)).symm
+    ((continuous_coe α).comp (@continuous_mul α _ _ _)) (a, b)).symm
 
 variable [IsUniformAddGroup α]
 
@@ -78,35 +75,33 @@ instance : ContinuousMul (Completion α) where
     have di : IsDenseInducing (toCompl : α → Completion α) := isDenseInducing_coe
     exact (di.extend_Z_bilin di this :)
 
-instance ring : Ring (Completion α) :=
-  { AddMonoidWithOne.unary, ((inferInstance : AddCommGroup (Completion α))),
-      ((inferInstance : Mul (Completion α))), ((inferInstance : One (Completion α))) with
-    zero_mul a :=
-      Completion.induction_on a (isClosed_eq (by fun_prop) continuous_const)
-        fun a => by rw [← coe_zero, ← coe_mul, zero_mul]
-    mul_zero a :=
-      Completion.induction_on a (isClosed_eq (by fun_prop) continuous_const)
-        fun a ↦ by rw [← coe_zero, ← coe_mul, mul_zero]
-    one_mul a :=
-      Completion.induction_on a
-        (isClosed_eq (by fun_prop) continuous_id)
-        fun a => by rw [← coe_one, ← coe_mul, one_mul]
-    mul_one a :=
-      Completion.induction_on a
-        (isClosed_eq (by fun_prop) continuous_id)
-        fun a => by rw [← coe_one, ← coe_mul, mul_one]
-    mul_assoc a b c :=
-      Completion.induction_on₃ a b c
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b c => by rw [← coe_mul, ← coe_mul, ← coe_mul, ← coe_mul, mul_assoc]
-    left_distrib a b c :=
-      Completion.induction_on₃ a b c
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b c => by rw [← coe_add, ← coe_mul, ← coe_mul, ← coe_mul, ← coe_add, mul_add]
-    right_distrib a b c :=
-      Completion.induction_on₃ a b c
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b c => by rw [← coe_add, ← coe_mul, ← coe_mul, ← coe_mul, ← coe_add, add_mul] }
+instance ring : Ring (Completion α) := {
+  AddMonoidWithOne.unary,
+  ((inferInstance : AddCommGroup (Completion α))),
+  ((inferInstance : Mul (Completion α))),
+  ((inferInstance : One (Completion α))) with
+  zero_mul a :=
+    Completion.induction_on a (isClosed_eq (by fun_prop) continuous_const) fun a => by
+      rw [← coe_zero, ← coe_mul, zero_mul]
+  mul_zero a :=
+    Completion.induction_on a (isClosed_eq (by fun_prop) continuous_const) fun a ↦ by
+      rw [← coe_zero, ← coe_mul, mul_zero]
+  one_mul a :=
+    Completion.induction_on a (isClosed_eq (by fun_prop) continuous_id) fun a => by
+      rw [← coe_one, ← coe_mul, one_mul]
+  mul_one a :=
+    Completion.induction_on a (isClosed_eq (by fun_prop) continuous_id) fun a => by
+      rw [← coe_one, ← coe_mul, mul_one]
+  mul_assoc a b c :=
+    Completion.induction_on₃ a b c (isClosed_eq (by fun_prop) (by fun_prop)) fun a b c => by
+      rw [← coe_mul, ← coe_mul, ← coe_mul, ← coe_mul, mul_assoc]
+  left_distrib a b c :=
+    Completion.induction_on₃ a b c (isClosed_eq (by fun_prop) (by fun_prop)) fun a b c => by
+      rw [← coe_add, ← coe_mul, ← coe_mul, ← coe_mul, ← coe_add, mul_add]
+  right_distrib a b c :=
+    Completion.induction_on₃ a b c (isClosed_eq (by fun_prop) (by fun_prop)) fun a b c => by
+      rw [← coe_add, ← coe_mul, ← coe_mul, ← coe_mul, ← coe_add, add_mul]
+}
 
 /-- The map from a uniform ring to its completion, as a ring homomorphism. -/
 def coeRingHom : α →+* Completion α where
@@ -116,10 +111,10 @@ def coeRingHom : α →+* Completion α where
   map_add' := coe_add
   map_mul' := coe_mul
 
-theorem continuous_coeRingHom : Continuous (coeRingHom : α → Completion α) :=
-  continuous_coe α
+theorem continuous_coeRingHom : Continuous (coeRingHom : α → Completion α) := continuous_coe α
 
-variable {β : Type u} [UniformSpace β] [Ring β] [IsUniformAddGroup β] [IsTopologicalRing β]
+variable
+  {β : Type u} [UniformSpace β] [Ring β] [IsUniformAddGroup β] [IsTopologicalRing β]
   (f : α →+* β) (hf : Continuous f)
 
 /-- The completion extension as a ring morphism. -/
@@ -127,20 +122,20 @@ def extensionHom [CompleteSpace β] [T0Space β] : Completion α →+* β :=
   have hf' : Continuous (f : α →+ β) := hf
   -- helping the elaborator
   have hf : UniformContinuous f := uniformContinuous_addMonoidHom_of_continuous hf'
-  { toFun := Completion.extension f
+  {
+    toFun := Completion.extension f
     map_zero' := by simp_rw [← coe_zero, extension_coe hf, f.map_zero]
     map_add' a b :=
-      Completion.induction_on₂ a b
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b => by simp_rw [← coe_add, extension_coe hf, f.map_add]
+      Completion.induction_on₂ a b (isClosed_eq (by fun_prop) (by fun_prop)) fun a b => by
+        simp_rw [← coe_add, extension_coe hf, f.map_add]
     map_one' := by rw [← coe_one, extension_coe hf, f.map_one]
     map_mul' a b :=
-      Completion.induction_on₂ a b
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b => by simp_rw [← coe_mul, extension_coe hf, f.map_mul] }
+      Completion.induction_on₂ a b (isClosed_eq (by fun_prop) (by fun_prop)) fun a b => by
+        simp_rw [← coe_mul, extension_coe hf, f.map_mul]
+  }
 
-theorem extensionHom_coe [CompleteSpace β] [T0Space β] (a : α) :
-    Completion.extensionHom f hf a = f a := by
+theorem extensionHom_coe [CompleteSpace β] [T0Space β] (a : α)
+    : Completion.extensionHom f hf a = f a := by
   simp only [Completion.extensionHom, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
     UniformSpace.Completion.extension_coe <| uniformContinuous_addMonoidHom_of_continuous hf]
 
@@ -160,11 +155,12 @@ variable {f}
 theorem mapRingHom_coe (hf : Continuous f) (a : α) : mapRingHom f hf a = f a := by
   rw [mapRingHom_apply, map_coe (uniformContinuous_addMonoidHom_of_continuous hf)]
 
-theorem mapRingHom_comp {γ : Type*} [UniformSpace γ] [Ring γ] [IsUniformAddGroup γ]
-    [IsTopologicalRing γ] {g : β →+* γ} (hg : Continuous g) (hf : Continuous f) :
-    (mapRingHom g hg).comp (mapRingHom f hf) = mapRingHom (g.comp f) (hg.comp hf) :=
-  DFunLike.ext' <| map_comp
-    (uniformContinuous_addMonoidHom_of_continuous hg)
+theorem mapRingHom_comp
+    {γ : Type*} [UniformSpace γ] [Ring γ] [IsUniformAddGroup γ] [IsTopologicalRing γ]
+    {g : β →+* γ} (hg : Continuous g)
+    (hf : Continuous f)
+    : (mapRingHom g hg).comp (mapRingHom f hf) = mapRingHom (g.comp f) (hg.comp hf) :=
+  DFunLike.ext' <| map_comp (uniformContinuous_addMonoidHom_of_continuous hg)
     (uniformContinuous_addMonoidHom_of_continuous hf)
 
 @[simp]
@@ -174,22 +170,25 @@ theorem mapRingHom_id : mapRingHom (.id α) continuous_id = .id (Completion α) 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
-/-- A ring isomorphism `α ≃+* β` between uniform rings, uniformly continuous in both directions,
-lifts to a ring isomorphism between corresponding uniform space completions. -/
+/--
+A ring isomorphism `α ≃+* β` between uniform rings, uniformly continuous in both directions,
+lifts to a ring isomorphism between corresponding uniform space completions.
+-/
 @[simps!]
-def mapRingEquiv (f : α ≃+* β) (hf : Continuous f) (hf' : Continuous f.symm) :
-    Completion α ≃+* Completion β :=
+def mapRingEquiv (f : α ≃+* β) (hf : Continuous f) (hf' : Continuous f.symm)
+    : Completion α ≃+* Completion β :=
   .ofRingHom (mapRingHom f.toRingHom hf) (mapRingHom f.symm.toRingHom hf')
     (by simp [mapRingHom_comp]) (by simp [mapRingHom_comp])
 
 section Algebra
 
-variable (A : Type*) [Ring A] [UniformSpace A] [IsUniformAddGroup A] [IsTopologicalRing A]
+variable
+  (A : Type*) [Ring A] [UniformSpace A] [IsUniformAddGroup A] [IsTopologicalRing A]
   (R : Type*) [CommSemiring R] [Algebra R A] [UniformContinuousConstSMul R A]
 
 @[simp]
-theorem map_smul_eq_mul_coe (r : R) :
-    Completion.map (r • ·) = ((algebraMap R A r : Completion A) * ·) := by
+theorem map_smul_eq_mul_coe (r : R)
+    : Completion.map (r • ·) = ((algebraMap R A r : Completion A) * ·) := by
   ext x
   refine Completion.induction_on x ?_ fun a => ?_
   · exact isClosed_eq Completion.continuous_map (continuous_const_mul _)
@@ -199,12 +198,11 @@ instance algebra : Algebra R (Completion A) where
   algebraMap := (UniformSpace.Completion.coeRingHom : A →+* Completion A).comp (algebraMap R A)
   commutes' := fun r x =>
     Completion.induction_on x (isClosed_eq (continuous_const_mul _) (continuous_mul_const _))
-      fun a => by
-      simpa only [coe_mul] using! congr(($(Algebra.commutes r a) : Completion A))
+      fun a => by simpa only [coe_mul] using! congr(($(Algebra.commutes r a) : Completion A))
   smul_def' := fun r x => congr($(map_smul_eq_mul_coe A R r) x)
 
-theorem algebraMap_def (r : R) :
-    algebraMap R (Completion A) r = (algebraMap R A r : Completion A) :=
+theorem algebraMap_def (r : R)
+    : algebraMap R (Completion A) r = (algebraMap R A r : Completion A) :=
   rfl
 
 end Algebra
@@ -213,12 +211,12 @@ section CommRing
 
 variable (R : Type*) [CommRing R] [UniformSpace R] [IsUniformAddGroup R] [IsTopologicalRing R]
 
-instance commRing : CommRing (Completion R) :=
-  { Completion.ring with
-    mul_comm a b :=
-      Completion.induction_on₂ a b
-        (isClosed_eq (by fun_prop) (by fun_prop))
-        fun a b => by rw [← coe_mul, ← coe_mul, mul_comm] }
+instance commRing : CommRing (Completion R) := {
+  Completion.ring with
+  mul_comm a b :=
+    Completion.induction_on₂ a b (isClosed_eq (by fun_prop) (by fun_prop)) fun a b => by
+      rw [← coe_mul, ← coe_mul, mul_comm]
+}
 
 /-- A shortcut instance for the common case -/
 instance algebra' : Algebra R (Completion R) := by infer_instance
@@ -232,27 +230,31 @@ namespace UniformSpace
 variable {α : Type*}
 
 -- TODO: move (some of) these results to the file about topological rings
-theorem inseparableSetoid_ring (α) [Ring α] [TopologicalSpace α] [IsTopologicalRing α] :
-    inseparableSetoid α = Submodule.quotientRel (Ideal.closure ⊥) :=
+theorem inseparableSetoid_ring (α) [Ring α] [TopologicalSpace α] [IsTopologicalRing α]
+    : inseparableSetoid α = Submodule.quotientRel (Ideal.closure ⊥) :=
   Setoid.ext fun x y =>
     addGroup_inseparable_iff.trans <| .trans (by rfl) (Submodule.quotientRel_def _).symm
 
-/-- Given a topological ring `α` equipped with a uniform structure that makes subtraction uniformly
+/--
+Given a topological ring `α` equipped with a uniform structure that makes subtraction uniformly
 continuous, get a homeomorphism between the separated quotient of `α` and the quotient ring
-corresponding to the closure of zero. -/
-def sepQuotHomeomorphRingQuot (α) [Ring α] [TopologicalSpace α] [IsTopologicalRing α] :
-    SeparationQuotient α ≃ₜ α ⧸ (⊥ : Ideal α).closure where
+corresponding to the closure of zero.
+-/
+def sepQuotHomeomorphRingQuot (α) [Ring α] [TopologicalSpace α] [IsTopologicalRing α]
+    : SeparationQuotient α ≃ₜ α ⧸ (⊥ : Ideal α).closure where
   toEquiv := Quotient.congrRight fun x y => by rw [inseparableSetoid_ring]
-  continuous_toFun := continuous_id.quotient_map' <| by
-    rw [inseparableSetoid_ring]; exact fun _ _ ↦ id
-  continuous_invFun := continuous_id.quotient_map' <| by
-    rw [inseparableSetoid_ring]; exact fun _ _ ↦ id
+  continuous_toFun :=
+    continuous_id.quotient_map' <| by rw [inseparableSetoid_ring]; exact fun _ _ ↦ id
+  continuous_invFun :=
+    continuous_id.quotient_map' <| by rw [inseparableSetoid_ring]; exact fun _ _ ↦ id
 
-/-- Given a topological ring `α` equipped with a uniform structure that makes subtraction uniformly
+/--
+Given a topological ring `α` equipped with a uniform structure that makes subtraction uniformly
 continuous, get an equivalence between the separated quotient of `α` and the quotient ring
-corresponding to the closure of zero. -/
-def sepQuotRingEquivRingQuot (α) [CommRing α] [TopologicalSpace α] [IsTopologicalRing α] :
-    SeparationQuotient α ≃+* α ⧸ (⊥ : Ideal α).closure where
+corresponding to the closure of zero.
+-/
+def sepQuotRingEquivRingQuot (α) [CommRing α] [TopologicalSpace α] [IsTopologicalRing α]
+    : SeparationQuotient α ≃+* α ⧸ (⊥ : Ideal α).closure where
   __ := sepQuotHomeomorphRingQuot α
   map_mul' := SeparationQuotient.surjective_mk.forall₂.2 (fun _ _ ↦ rfl)
   map_add' := SeparationQuotient.surjective_mk.forall₂.2 (fun _ _ ↦ rfl)
@@ -267,15 +269,17 @@ variable {γ : Type*} [UniformSpace γ] [Semiring γ] [IsTopologicalSemiring γ]
 variable [T2Space γ] [CompleteSpace γ]
 
 /-- The dense inducing extension as a ring homomorphism. -/
-noncomputable def IsDenseInducing.extendRingHom {i : α →+* β} {f : α →+* γ}
-    (ue : IsUniformInducing i) (dr : DenseRange i) (hf : UniformContinuous f) : β →+* γ where
+noncomputable def IsDenseInducing.extendRingHom
+    {i : α →+* β} {f : α →+* γ}
+    (ue : IsUniformInducing i) (dr : DenseRange i) (hf : UniformContinuous f)
+    : β →+* γ where
   toFun := (ue.isDenseInducing dr).extend f
   map_one' := by
     convert IsDenseInducing.extend_eq (ue.isDenseInducing dr) hf.continuous 1
     exacts [i.map_one.symm, f.map_one.symm]
   map_zero' := by
-    convert IsDenseInducing.extend_eq (ue.isDenseInducing dr) hf.continuous 0 <;>
-    simp only [map_zero]
+    convert IsDenseInducing.extend_eq (ue.isDenseInducing dr) hf.continuous 0
+      <;> simp only [map_zero]
   map_add' := by
     have h := (uniformContinuous_uniformly_extend ue dr hf).continuous
     refine fun x y => DenseRange.induction_on₂ dr ?_ (fun a b => ?_) x y

@@ -40,34 +40,38 @@ The definition of conformality in this file does NOT require the maps to be orie
 
 @[expose] public section
 
-
 noncomputable section
 
 open Function LinearIsometry ContinuousLinearMap
 
-/-- A continuous linear map `f'` is said to be conformal if it's
-a nonzero multiple of a linear isometry. -/
-def IsConformalMap {R : Type*} {X Y : Type*} [NormedField R] [SeminormedAddCommGroup X]
-    [SeminormedAddCommGroup Y] [NormedSpace R X] [NormedSpace R Y] (f' : X →L[R] Y) :=
+/--
+A continuous linear map `f'` is said to be conformal if it's
+a nonzero multiple of a linear isometry.
+-/
+def IsConformalMap
+    {R : Type*} {X Y : Type*} [NormedField R] [SeminormedAddCommGroup X] [SeminormedAddCommGroup Y]
+    [NormedSpace R X] [NormedSpace R Y]
+    (f' : X →L[R] Y) :=
   ∃ c ≠ (0 : R), ∃ li : X →ₗᵢ[R] Y, f' = c • li.toContinuousLinearMap
 
-variable {R M N G M' : Type*} [NormedField R] [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
-  [SeminormedAddCommGroup G] [NormedSpace R M] [NormedSpace R N] [NormedSpace R G]
-  [NormedAddCommGroup M'] [NormedSpace R M'] {f : M →L[R] N} {g : N →L[R] G} {c : R}
+variable
+  {R M N G M' : Type*}
+  [NormedField R] [SeminormedAddCommGroup M] [SeminormedAddCommGroup N] [SeminormedAddCommGroup G]
+  [NormedSpace R M] [NormedSpace R N] [NormedSpace R G] [NormedAddCommGroup M'] [NormedSpace R M']
+  {f : M →L[R] N} {g : N →L[R] G} {c : R}
 
-theorem isConformalMap_id : IsConformalMap (.id R M) :=
-  ⟨1, one_ne_zero, id, by simp⟩
+theorem isConformalMap_id : IsConformalMap (.id R M) := ⟨1, one_ne_zero, id, by simp⟩
 
-theorem IsConformalMap.smul (hf : IsConformalMap f) {c : R} (hc : c ≠ 0) :
-    IsConformalMap (c • f) := by
+theorem IsConformalMap.smul (hf : IsConformalMap f) {c : R} (hc : c ≠ 0)
+    : IsConformalMap (c • f) := by
   rcases hf with ⟨c', hc', li, rfl⟩
   exact ⟨c * c', mul_ne_zero hc hc', li, smul_smul _ _ _⟩
 
 theorem isConformalMap_const_smul (hc : c ≠ 0) : IsConformalMap (c • .id R M) :=
   isConformalMap_id.smul hc
 
-protected theorem LinearIsometry.isConformalMap (f' : M →ₗᵢ[R] N) :
-    IsConformalMap f'.toContinuousLinearMap :=
+protected theorem LinearIsometry.isConformalMap (f' : M →ₗᵢ[R] N)
+    : IsConformalMap f'.toContinuousLinearMap :=
   ⟨1, one_ne_zero, f', (one_smul _ _).symm⟩
 
 @[nontriviality]

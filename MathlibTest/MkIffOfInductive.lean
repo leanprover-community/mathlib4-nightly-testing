@@ -2,11 +2,11 @@ import Mathlib.Tactic.MkIffOfInductiveProp
 import Mathlib.Data.List.Perm.Lattice
 
 mk_iff_of_inductive_prop List.IsChain test.chain_iff
-example {α : Type _} (R : α → α → Prop) (al : List α) :
-    List.IsChain R al ↔
-      al = List.nil ∨ (∃ a, al = [a]) ∨
-      ∃ (a b : α) (l : List α), R a b ∧ List.IsChain R (b :: l) ∧ al = a :: b :: l :=
-  test.chain_iff R  al
+example {α : Type _} (R : α → α → Prop) (al : List α)
+    : List.IsChain R al
+      ↔ al = List.nil ∨ (∃ a, al = [a])
+        ∨ ∃ (a b : α) (l : List α), R a b ∧ List.IsChain R (b :: l) ∧ al = a :: b :: l :=
+  test.chain_iff R al
 
 /--
 info: test.chain_iff.{u_1} {α : Type u_1} (R : α → α → Prop) (a✝ : List α) :
@@ -39,21 +39,23 @@ example {α : Sort u} (a : α) {β : Sort u} (b : β) : a ≍ b ↔ β = α ∧ 
 
 mk_iff_of_inductive_prop List.Perm test.perm_iff
 open scoped List in
-example {α : Type _} (a b : List α) :
-    a ~ b ↔
-      a = List.nil ∧ b = List.nil ∨
-        (∃ (x : α) (l₁ l₂ : List α), l₁ ~ l₂ ∧ a = x :: l₁ ∧ b = x :: l₂) ∨
-          (∃ (x y : α) (l : List α), a = y :: x :: l ∧ b = x :: y :: l) ∨
-            ∃ (l₂ : List α), a ~ l₂ ∧ l₂ ~ b := test.perm_iff a b
+example {α : Type _} (a b : List α)
+    : a ~ b
+      ↔ a = List.nil ∧ b = List.nil
+        ∨ (∃ (x : α) (l₁ l₂ : List α), l₁ ~ l₂ ∧ a = x :: l₁ ∧ b = x :: l₂)
+        ∨ (∃ (x y : α) (l : List α), a = y :: x :: l ∧ b = x :: y :: l)
+        ∨ ∃ (l₂ : List α), a ~ l₂ ∧ l₂ ~ b :=
+  test.perm_iff a b
 
 mk_iff_of_inductive_prop List.Pairwise test.pairwise_iff
-example {α : Type} (R : α → α → Prop) (al : List α) :
-    List.Pairwise R al ↔
-      al = List.nil ∨
-        ∃ (a : α) (l : List α), (∀ (a' : α), a' ∈ l → R a a') ∧ List.Pairwise R l ∧ al = a :: l := test.pairwise_iff R al
+example {α : Type} (R : α → α → Prop) (al : List α)
+    : List.Pairwise R al
+      ↔ al = List.nil
+        ∨ ∃ (a : α) (l : List α), (∀ (a' : α), a' ∈ l → R a a') ∧ List.Pairwise R l ∧ al = a :: l :=
+  test.pairwise_iff R al
 
 inductive test.is_true (p : Prop) : Prop
-| triviality (h : p) : test.is_true p
+  | triviality (h : p) : test.is_true p
 
 mk_iff_of_inductive_prop test.is_true test.is_true_iff
 example (p : Prop) : test.is_true p ↔ p := test.is_true_iff p
@@ -74,9 +76,9 @@ example (m n : Nat) : foo2 m n ↔ m = n ∧ m + n = 2 := bar m n
 
 @[mk_iff]
 inductive ReflTransGen {α : Type _} (r : α → α → Prop) (a : α) : α → Prop
-| refl : ReflTransGen r a a
-| tail {b c} : ReflTransGen r a b → r b c → ReflTransGen r a c
+  | refl : ReflTransGen r a a
+  | tail {b c} : ReflTransGen r a b → r b c → ReflTransGen r a c
 
-example {α : Type} (r : α → α → Prop) (a c : α) :
-    ReflTransGen r a c ↔ c = a ∨ ∃ b : α, ReflTransGen r a b ∧ r b c :=
+example {α : Type} (r : α → α → Prop) (a c : α)
+    : ReflTransGen r a c ↔ c = a ∨ ∃ b : α, ReflTransGen r a b ∧ r b c :=
   reflTransGen_iff r a c

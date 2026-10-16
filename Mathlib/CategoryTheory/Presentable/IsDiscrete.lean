@@ -29,8 +29,8 @@ namespace IsDiscrete
 attribute [local instance] IsFiltered.nonempty
 
 protected instance (priority := low) isCardinalPresentable
-    (X : C) (κ : Cardinal.{w}) [Fact κ.IsRegular] :
-    IsCardinalPresentable X κ :=
+    (X : C) (κ : Cardinal.{w}) [Fact κ.IsRegular]
+    : IsCardinalPresentable X κ :=
   .mk (fun J _ _ F c hc ↦ by
     have := isFiltered_of_isCardinalFiltered J κ
     refine ⟨fun g ↦ ?_, fun j f₁ f₂ _ ↦ ⟨j, 𝟙 j, by subsingleton⟩⟩
@@ -39,43 +39,44 @@ protected instance (priority := low) isCardinalPresentable
     exact ⟨j, eqToHom (IsDiscrete.eq_of_hom (c.ι.app j)).symm, by subsingleton⟩)
 
 protected instance (priority := low) isCardinalAccessible
-    {D : Type*} [Category* D]
-    (F : C ⥤ D) (κ : Cardinal.{w}) [Fact κ.IsRegular] :
-    F.IsCardinalAccessible κ where
+    {D : Type*} [Category* D] (F : C ⥤ D) (κ : Cardinal.{w}) [Fact κ.IsRegular]
+    : F.IsCardinalAccessible κ where
   preservesColimitOfShape J _ _ := ⟨fun {K} ↦ ⟨fun {c} hc ↦ ⟨by
     have := isFiltered_of_isCardinalFiltered J κ
     let j : J := Classical.arbitrary _
-    have : IsIso ((F.mapCocone c).ι.app j) := by
-      dsimp; infer_instance
+    have : IsIso ((F.mapCocone c).ι.app j) := by dsimp; infer_instance
     exact Functor.IsEventuallyConstantFrom.isColimitOfIsIso (i₀ := j)
-      (fun _ _ ↦ by dsimp; infer_instance) _⟩⟩⟩
+      (fun _ _ ↦ by dsimp; infer_instance)
+      _⟩⟩⟩
 
-protected instance (priority := low) isAccessible
-    {D : Type*} [Category* D] (F : C ⥤ D) :
-    Functor.IsAccessible.{w} F where
-  exists_cardinal :=
-    ⟨.aleph0, Cardinal.fact_isRegular_aleph0, inferInstance⟩
+protected instance (priority := low) isAccessible {D : Type*} [Category* D] (F : C ⥤ D)
+    : Functor.IsAccessible.{w} F where
+  exists_cardinal := ⟨.aleph0, Cardinal.fact_isRegular_aleph0, inferInstance⟩
 
-instance (priority := low) (κ : Cardinal.{w}) [Fact κ.IsRegular]
-    [Subsingleton C] [Nonempty C] :
-    IsCardinalLocallyPresentable C κ where
-  has_colimits_of_shape J := ⟨fun F ↦
-    ⟨Cocone.mk (Classical.arbitrary C)
-      { app _ := eqToHom (by subsingleton) },
-      { desc _ := eqToHom (by subsingleton) }⟩⟩
+instance (priority := low) (κ : Cardinal.{w}) [Fact κ.IsRegular] [Subsingleton C] [Nonempty C]
+    : IsCardinalLocallyPresentable C κ where
+  has_colimits_of_shape J := ⟨fun F ↦ ⟨
+    Cocone.mk (Classical.arbitrary C) { app _ := eqToHom (by subsingleton) },
+    { desc _ := eqToHom (by subsingleton) }
+  ⟩⟩
   exists_generator := by
     let X : C := Classical.arbitrary _
-    refine ⟨.ofObj (fun (_ : PUnit.{w + 1}) ↦ X), inferInstance,
+    refine ⟨
+      .ofObj (fun (_ : PUnit.{w + 1}) ↦ X),
+      inferInstance,
       fun _ _ ↦ IsDiscrete.isCardinalPresentable _ _,
-      fun Y ↦ ?_⟩
+      fun Y ↦ ?_
+    ⟩
     obtain rfl := Subsingleton.elim X Y
-    exact ⟨PUnit.{w + 1}, inferInstance, inferInstance,
-      { diag := (Functor.const _).obj X
-        ι := 𝟙 _
-        isColimit.desc _ := eqToHom (by subsingleton) }, fun _ ↦ ⟨⟨⟩⟩⟩
+    exact ⟨
+      PUnit.{w + 1},
+      inferInstance,
+      inferInstance,
+      { diag := (Functor.const _).obj X, ι := 𝟙 _, isColimit.desc _ := eqToHom (by subsingleton) },
+      fun _ ↦ ⟨⟨⟩⟩
+    ⟩
 
-instance (priority := low) [Subsingleton C] [Nonempty C] :
-    IsLocallyPresentable.{w} C :=
+instance (priority := low) [Subsingleton C] [Nonempty C] : IsLocallyPresentable.{w} C :=
   ⟨.aleph0, Cardinal.fact_isRegular_aleph0, inferInstance⟩
 
 end IsDiscrete

@@ -18,13 +18,13 @@ public import Mathlib.Data.Nat.Cast.Order.Ring
 
 @[expose] public section
 
-
 variable {α : Type*}
 
 section LinearOrderedAddCommGroup
 variable [CommGroup α] [LinearOrder α] [IsOrderedMonoid α]
 
-@[to_additive] lemma mabs_zpow (n : ℤ) (a : α) : |a ^ n|ₘ = |a|ₘ ^ |n| := by
+@[to_additive]
+lemma mabs_zpow (n : ℤ) (a : α) : |a ^ n|ₘ = |a|ₘ ^ |n| := by
   obtain n0 | n0 := le_total 0 n
   · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le n0
     simp only [mabs_pow, zpow_natCast, Nat.abs_cast]
@@ -48,8 +48,8 @@ lemma abs_two : |(2 : α)| = 2 := abs_of_nonneg zero_le_two
 @[simp, grind =]
 lemma abs_mul (a b : α) : |a * b| = |a| * |b| := by
   rw [abs_eq (mul_nonneg (abs_nonneg a) (abs_nonneg b))]
-  rcases le_total a 0 with ha | ha <;> rcases le_total b 0 with hb | hb <;>
-    simp only [abs_of_nonpos, abs_of_nonneg, true_or, or_true, neg_mul, mul_neg, neg_neg, *]
+  rcases le_total a 0 with ha | ha <;> rcases le_total b 0 with hb | hb
+    <;> simp only [abs_of_nonpos, abs_of_nonneg, true_or, or_true, neg_mul, mul_neg, neg_neg, *]
 
 /-- `abs` as a `MonoidWithZeroHom`. -/
 def absHom : α →*₀ α where
@@ -66,13 +66,13 @@ lemma pow_abs (a : α) (n : ℕ) : |a| ^ n = |a ^ n| := (abs_pow a n).symm
 lemma Even.pow_abs (hn : Even n) (a : α) : |a| ^ n = a ^ n := by
   rw [← abs_pow, abs_eq_self]; exact hn.pow_nonneg _
 
-lemma pow_abs_two_mul (a : α) : |a| ^ (2 * n) = a ^ (2 * n) :=
-  Even.pow_abs ⟨n, two_mul n⟩ a
+lemma pow_abs_two_mul (a : α) : |a| ^ (2 * n) = a ^ (2 * n) := Even.pow_abs ⟨n, two_mul n⟩ a
 
 lemma abs_neg_one_pow (n : ℕ) : |(-1 : α) ^ n| = 1 := by rw [← pow_abs, abs_neg, abs_one, one_pow]
 
 omit [IsOrderedRing α] in
-@[simp] lemma abs_mul_abs_self (a : α) : |a| * |a| = a * a :=
+@[simp]
+lemma abs_mul_abs_self (a : α) : |a| * |a| = a * a :=
   abs_by_cases (fun x => x * x = a * a) rfl (neg_mul_neg a a)
 
 lemma abs_mul_self (a : α) : |a * a| = a * a := by simp
@@ -140,16 +140,20 @@ lemma abs_le_of_sq_le_sq' (h : a ^ 2 ≤ b ^ 2) (hb : 0 ≤ b) : -b ≤ a ∧ a 
 lemma sq_eq_sq_iff_abs_eq_abs (a b : α) : a ^ 2 = b ^ 2 ↔ |a| = |b| := by
   simp only [le_antisymm_iff, sq_le_sq]
 
-@[simp] lemma sq_le_one_iff_abs_le_one (a : α) : a ^ 2 ≤ 1 ↔ |a| ≤ 1 := by
+@[simp]
+lemma sq_le_one_iff_abs_le_one (a : α) : a ^ 2 ≤ 1 ↔ |a| ≤ 1 := by
   simpa only [one_pow, abs_one] using sq_le_sq (a := a) (b := 1)
 
-@[simp] lemma sq_lt_one_iff_abs_lt_one (a : α) : a ^ 2 < 1 ↔ |a| < 1 := by
+@[simp]
+lemma sq_lt_one_iff_abs_lt_one (a : α) : a ^ 2 < 1 ↔ |a| < 1 := by
   simpa only [one_pow, abs_one] using sq_lt_sq (a := a) (b := 1)
 
-@[simp] lemma one_le_sq_iff_one_le_abs (a : α) : 1 ≤ a ^ 2 ↔ 1 ≤ |a| := by
+@[simp]
+lemma one_le_sq_iff_one_le_abs (a : α) : 1 ≤ a ^ 2 ↔ 1 ≤ |a| := by
   simpa only [one_pow, abs_one] using sq_le_sq (a := 1) (b := a)
 
-@[simp] lemma one_lt_sq_iff_one_lt_abs (a : α) : 1 < a ^ 2 ↔ 1 < |a| := by
+@[simp]
+lemma one_lt_sq_iff_one_lt_abs (a : α) : 1 < a ^ 2 ↔ 1 < |a| := by
   simpa only [one_pow, abs_one] using sq_lt_sq (a := 1) (b := a)
 
 end LinearStrictOrderedRing
@@ -170,8 +174,11 @@ private def geomSum : ℕ → α
   | 0 => 1
   | n + 1 => a * geomSum n + b ^ (n + 1)
 
-private theorem abs_geomSum_le [IsOrderedRing α] : |geomSum a b n| ≤ (n + 1) * max |a| |b| ^ n := by
-  induction n with | zero => simp [geomSum] | succ n ih => ?_
+private theorem abs_geomSum_le [IsOrderedRing α]
+    : |geomSum a b n| ≤ (n + 1) * max (|a|) |b| ^ n := by
+  induction n with
+  | zero => simp [geomSum]
+  | succ n ih => ?_
   refine (abs_add_le ..).trans ?_
   rw [abs_mul, abs_pow, Nat.cast_succ, add_one_mul]
   refine add_le_add ?_ (pow_le_pow_left₀ (abs_nonneg _) le_sup_right _)
@@ -180,15 +187,18 @@ private theorem abs_geomSum_le [IsOrderedRing α] : |geomSum a b n| ≤ (n + 1) 
   exacts [abs_nonneg _, (abs_nonneg _).trans ih, le_sup_left]
 
 omit [LinearOrder α] in
-private theorem pow_sub_pow_eq_sub_mul_geomSum :
-    a ^ (n + 1) - b ^ (n + 1) = (a - b) * geomSum a b n := by
-  induction n with | zero => simp [geomSum] | succ n ih => ?_
-  rw [geomSum, mul_add, mul_comm a, ← mul_assoc, ← ih,
-    sub_mul, sub_mul, ← pow_succ, ← pow_succ', mul_comm, sub_add_sub_cancel]
+private theorem pow_sub_pow_eq_sub_mul_geomSum
+    : a ^ (n + 1) - b ^ (n + 1) = (a - b) * geomSum a b n := by
+  induction n with
+  | zero => simp [geomSum]
+  | succ n ih => ?_
+  rw [geomSum, mul_add, mul_comm a, ← mul_assoc, ← ih, sub_mul, sub_mul, ← pow_succ, ← pow_succ',
+    mul_comm, sub_add_sub_cancel]
 
-theorem abs_pow_sub_pow_le [IsOrderedRing α] :
-    |a ^ n - b ^ n| ≤ |a - b| * n * max |a| |b| ^ (n - 1) := by
-  obtain _ | n := n; · simp
+theorem abs_pow_sub_pow_le [IsOrderedRing α]
+    : |a ^ n - b ^ n| ≤ |a - b| * n * max (|a|) |b| ^ (n - 1) := by
+  obtain _ | n := n
+  · simp
   rw [Nat.add_sub_cancel, pow_sub_pow_eq_sub_mul_geomSum, abs_mul, mul_assoc, Nat.cast_succ]
   gcongr
   · exact abs_nonneg _
@@ -204,18 +214,15 @@ variable [Ring α] [LinearOrder α]
 theorem abs_dvd (a b : α) : |a| ∣ b ↔ a ∣ b := by
   rcases abs_choice a with h | h <;> simp only [h, neg_dvd]
 
-theorem abs_dvd_self (a : α) : |a| ∣ a :=
-  (abs_dvd a a).mpr (dvd_refl a)
+theorem abs_dvd_self (a : α) : |a| ∣ a := (abs_dvd a a).mpr (dvd_refl a)
 
 @[simp]
 theorem dvd_abs (a b : α) : a ∣ |b| ↔ a ∣ b := by
   rcases abs_choice b with h | h <;> simp only [h, dvd_neg]
 
-theorem self_dvd_abs (a : α) : a ∣ |a| :=
-  (dvd_abs a a).mpr (dvd_refl a)
+theorem self_dvd_abs (a : α) : a ∣ |a| := (dvd_abs a a).mpr (dvd_refl a)
 
-theorem abs_dvd_abs (a b : α) : |a| ∣ |b| ↔ a ∣ b :=
-  (abs_dvd _ _).trans (dvd_abs _ _)
+theorem abs_dvd_abs (a b : α) : |a| ∣ |b| ↔ a ∣ b := (abs_dvd _ _).trans (dvd_abs _ _)
 
 end
 
@@ -226,9 +233,11 @@ variable {R : Type*} [Ring R] [LinearOrder R] [IsStrictOrderedRing R] {a b : R} 
 
 lemma pow_eq_pow_iff_of_ne_zero (hn : n ≠ 0) : a ^ n = b ^ n ↔ a = b ∨ a = -b ∧ Even n :=
   match n.even_xor_odd with
-  | .inl hne => by simp only [*, and_true, ← abs_eq_abs,
-    ← pow_left_inj₀ (abs_nonneg a) (abs_nonneg b) hn, hne.1.pow_abs]
-  | .inr hn => by simp [hn, (hn.1.strictMono_pow (R := R)).injective.eq_iff]
+  | .inl hne => by
+    simp only [*, and_true, ← abs_eq_abs, ← pow_left_inj₀ (abs_nonneg a) (abs_nonneg b) hn,
+      hne.1.pow_abs]
+  | .inr hn => by
+    simp [hn, (hn.1.strictMono_pow (R := R)).injective.eq_iff]
 
 lemma pow_eq_pow_iff_cases : a ^ n = b ^ n ↔ n = 0 ∨ a = b ∨ a = -b ∧ Even n := by
   rcases eq_or_ne n 0 with rfl | hn <;> simp [pow_eq_pow_iff_of_ne_zero, *]
@@ -239,10 +248,10 @@ lemma pow_eq_one_iff_of_ne_zero (hn : n ≠ 0) : a ^ n = 1 ↔ a = 1 ∨ a = -1 
 lemma pow_eq_one_iff_cases : a ^ n = 1 ↔ n = 0 ∨ a = 1 ∨ a = -1 ∧ Even n := by
   simp [← pow_eq_pow_iff_cases]
 
-lemma pow_eq_neg_pow_iff (hb : b ≠ 0) : a ^ n = -b ^ n ↔ a = -b ∧ Odd n :=
+lemma pow_eq_neg_pow_iff (hb : b ≠ 0) : a ^ n = - b ^ n ↔ a = -b ∧ Odd n :=
   match n.even_or_odd with
   | .inl he =>
-    suffices a ^ n > -b ^ n by simpa [he, not_odd_iff_even.2 he] using this.ne'
+    suffices a ^ n > - b ^ n by simpa [he, not_odd_iff_even.2 he] using this.ne'
     lt_of_lt_of_le (by simp [he.pow_pos hb]) (he.pow_nonneg _)
   | .inr ho => by
     simp only [ho, and_true, ← ho.neg_pow, (ho.strictMono_pow (R := R)).injective.eq_iff]
@@ -256,20 +265,19 @@ variable {m n a : ℕ}
 
 /-- If `a` is even, then `n` is odd iff `n % a` is odd. -/
 lemma Odd.mod_even_iff (ha : Even a) : Odd (n % a) ↔ Odd n :=
-  ((even_sub' <| mod_le n a).mp <|
-      even_iff_two_dvd.mpr <| (even_iff_two_dvd.mp ha).trans <| dvd_sub_mod n).symm
+  ((even_sub' <| mod_le n a).mp <| even_iff_two_dvd.mpr <| (even_iff_two_dvd.mp ha).trans <|
+    dvd_sub_mod n).symm
 
 /-- If `a` is even, then `n` is even iff `n % a` is even. -/
 lemma Even.mod_even_iff (ha : Even a) : Even (n % a) ↔ Even n :=
-  ((even_sub <| mod_le n a).mp <|
-      even_iff_two_dvd.mpr <| (even_iff_two_dvd.mp ha).trans <| dvd_sub_mod n).symm
+  ((even_sub <| mod_le n a).mp <| even_iff_two_dvd.mpr <| (even_iff_two_dvd.mp ha).trans <|
+    dvd_sub_mod n).symm
 
 /-- If `n` is odd and `a` is even, then `n % a` is odd. -/
 lemma Odd.mod_even (hn : Odd n) (ha : Even a) : Odd (n % a) := (Odd.mod_even_iff ha).mpr hn
 
 /-- If `n` is even and `a` is even, then `n % a` is even. -/
-lemma Even.mod_even (hn : Even n) (ha : Even a) : Even (n % a) :=
-  (Even.mod_even_iff ha).mpr hn
+lemma Even.mod_even (hn : Even n) (ha : Even a) : Even (n % a) := (Even.mod_even_iff ha).mpr hn
 
 lemma Odd.of_dvd_nat (hn : Odd n) (hm : m ∣ n) : Odd m :=
   not_even_iff_odd.1 <| mt hm.even (not_even_iff_odd.2 hn)

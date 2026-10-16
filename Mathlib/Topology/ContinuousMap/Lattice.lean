@@ -14,7 +14,6 @@ public import Mathlib.Topology.ContinuousMap.Ordered
 
 public section
 
-
 /-!
 We now provide formulas for `f ⊓ g` and `f ⊔ g`, where `f g : C(α, β)`,
 in terms of `ContinuousMap.abs`.
@@ -30,14 +29,14 @@ section Lattice
 /-! `C(α, β)` is a lattice ordered group. -/
 
 @[to_additive]
-instance [PartialOrder β] [CommMonoid β] [IsOrderedMonoid β] [ContinuousMul β] :
-    IsOrderedMonoid C(α, β) where
+instance [PartialOrder β] [CommMonoid β] [IsOrderedMonoid β] [ContinuousMul β]
+    : IsOrderedMonoid C(α, β) where
   mul_le_mul_left _ _ hfg c x := mul_le_mul_left (hfg x) (c x)
 
 variable [Group β] [IsTopologicalGroup β] [Lattice β] [TopologicalLattice β]
 
 @[to_additive (attr := simp, norm_cast)]
-lemma coe_mabs (f : C(α, β)) : ⇑|f|ₘ = |⇑f|ₘ := rfl
+lemma coe_mabs (f : C(α, β)) : ⇑ |f|ₘ = |⇑f|ₘ := rfl
 
 @[to_additive (attr := simp)]
 lemma mabs_apply (f : C(α, β)) (x : α) : |f|ₘ x = |f x|ₘ := rfl

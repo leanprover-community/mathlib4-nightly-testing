@@ -6,7 +6,6 @@ Authors: Markus Himmel
 module
 
 public import Mathlib.CategoryTheory.Limits.FilteredColimitCommutesFiniteLimit
-
 import Mathlib.CategoryTheory.Limits.Elements
 
 /-!
@@ -54,13 +53,14 @@ section LargeCategory
 
 variable {C : Type u} [Category.{v} C] [HasFiniteColimits C] (A : Cᵒᵖ ⥤ Type v)
 
-/-- If `C` is a finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf that preserves
+/--
+If `C` is a finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf that preserves
 finite limits, then `CostructuredArrow yoneda A` is filtered.
 
 One direction of Proposition 3.3.13 of [Kashiwara2006].
 -/
-theorem isFiltered_costructuredArrow_yoneda_of_preservesFiniteLimits
-    [PreservesFiniteLimits A] : IsFiltered (CostructuredArrow yoneda A) := by
+theorem isFiltered_costructuredArrow_yoneda_of_preservesFiniteLimits [PreservesFiniteLimits A]
+    : IsFiltered (CostructuredArrow yoneda A) := by
   suffices IsCofiltered A.Elements from
     IsFiltered.of_equivalence (Functor.Elements.costructuredArrowYonedaEquivalence _)
   suffices HasFiniteLimits A.Elements from IsCofiltered.of_hasFiniteLimits A.Elements
@@ -76,64 +76,74 @@ namespace PreservesFiniteLimitsOfIsFilteredCostructuredArrowYonedaAux
 
 variable {J : Type} [SmallCategory J] [FinCategory J] (K : J ⥤ Cᵒᵖ)
 
-/-- (Implementation) This is the bifunctor we will apply "filtered colimits commute with finite
-limits" to. -/
+/--
+(Implementation) This is the bifunctor we will apply "filtered colimits commute with finite
+limits" to.
+-/
 def functorToInterchange : J ⥤ CostructuredArrow yoneda A ⥤ Type u :=
   K ⋙ coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj _ _)
 
 /-- (Implementation) The definition of `functorToInterchange`. -/
 @[simps!]
-def functorToInterchangeIso : functorToInterchange A K ≅
-    K ⋙ coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj _ _) :=
+def functorToInterchangeIso
+    : functorToInterchange A K
+      ≅ K ⋙ coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj _ _) :=
   Iso.refl _
 
 #adaptation_note
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
-/-- (Implementation) One way to express the flipped version of our functor. We choose this
+/--
+(Implementation) One way to express the flipped version of our functor. We choose this
 association because the type of `Presheaf.tautologicalCocone` is
 `Cocone (CostructuredArrow.proj yoneda P ⋙ yoneda)`, so this association will show up in the
-proof. -/
+proof.
+-/
 @[simps! +dsimpLhs]
-def flipFunctorToInterchange : (functorToInterchange A K).flip ≅
-    ((CostructuredArrow.proj yoneda A ⋙ yoneda) ⋙ (whiskeringLeft J Cᵒᵖ (Type u)).obj K) :=
+def flipFunctorToInterchange
+    : (functorToInterchange A K).flip
+      ≅ ((CostructuredArrow.proj yoneda A ⋙ yoneda) ⋙ (whiskeringLeft J (Cᵒᵖ) (Type u)).obj K) :=
   Iso.refl _
 
 /-- (Implementation) A natural isomorphism we will need to construct `iso`. -/
 @[simps! -fullyApplied hom_app]
-noncomputable def isoAux :
-    (CostructuredArrow.proj yoneda A ⋙ yoneda ⋙ (evaluation Cᵒᵖ (Type u)).obj (limit K)) ≅
-      ((coyoneda ⋙ (whiskeringLeft (CostructuredArrow yoneda A) C (Type u)).obj
-        (CostructuredArrow.proj yoneda A)).obj (limit K)) :=
+noncomputable def isoAux
+    : (CostructuredArrow.proj yoneda A ⋙ yoneda ⋙ (evaluation (Cᵒᵖ) (Type u)).obj (limit K))
+      ≅ ((coyoneda ⋙ (whiskeringLeft (CostructuredArrow yoneda A) C (Type u)).obj
+          (CostructuredArrow.proj yoneda A)).obj
+        (limit K)) :=
   Iso.refl _
 
 /-- (Implementation) The isomorphism that proves that `A` preserves finite limits. -/
-noncomputable def iso [IsFiltered (CostructuredArrow yoneda A)] :
-    A.obj (limit K) ≅ limit (K ⋙ A) := calc
-  A.obj (limit K) ≅ (colimit (CostructuredArrow.proj yoneda A ⋙ yoneda)).obj (limit K) :=
-      (IsColimit.coconePointUniqueUpToIso
-        (Presheaf.isColimitTautologicalCocone A) (colimit.isColimit _)).app _
-  _ ≅ colimit (((CostructuredArrow.proj yoneda A) ⋙ yoneda) ⋙ (evaluation _ _).obj (limit K)) :=
+noncomputable def iso [IsFiltered (CostructuredArrow yoneda A)] : A.obj (limit K) ≅ limit (K ⋙ A) :=
+  calc
+    A.obj (limit K) ≅ (colimit (CostructuredArrow.proj yoneda A ⋙ yoneda)).obj (limit K) :=
+      (IsColimit.coconePointUniqueUpToIso (Presheaf.isColimitTautologicalCocone A)
+          (colimit.isColimit _)).app
+        _
+    _ ≅ colimit (((CostructuredArrow.proj yoneda A) ⋙ yoneda) ⋙ (evaluation _ _).obj (limit K)) :=
       (colimitObjIsoColimitCompEvaluation _ _)
-  _ ≅ colimit ((CostructuredArrow.proj yoneda A) ⋙ yoneda ⋙ (evaluation _ _).obj (limit K)) :=
+    _ ≅ colimit ((CostructuredArrow.proj yoneda A) ⋙ yoneda ⋙ (evaluation _ _).obj (limit K)) :=
       HasColimit.isoOfNatIso (Functor.associator _ _ _)
-  _ ≅ colimit
-      ((coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj yoneda A)).obj (limit K)) :=
-        HasColimit.isoOfNatIso (isoAux A K)
-  _ ≅ colimit (limit (K ⋙ (coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj _ _)))) :=
-        HasColimit.isoOfNatIso (preservesLimitIso _ _)
-  _ ≅ colimit (limit (functorToInterchange A K)) :=
-        HasColimit.isoOfNatIso (HasLimit.isoOfNatIso (functorToInterchangeIso A K).symm)
-  _ ≅ limit (colimit (functorToInterchange A K).flip) := colimitLimitIso _
-  _ ≅ limit (colimit
+    _ ≅ colimit ((coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj yoneda A)).obj
+        (limit K)) :=
+      HasColimit.isoOfNatIso (isoAux A K)
+    _ ≅ colimit (limit
+        (K ⋙ (coyoneda ⋙ (whiskeringLeft _ _ _).obj (CostructuredArrow.proj _ _)))) :=
+      HasColimit.isoOfNatIso (preservesLimitIso _ _)
+    _ ≅ colimit (limit (functorToInterchange A K)) :=
+      HasColimit.isoOfNatIso (HasLimit.isoOfNatIso (functorToInterchangeIso A K).symm)
+    _ ≅ limit (colimit (functorToInterchange A K).flip) := colimitLimitIso _
+    _ ≅ limit (colimit
         ((CostructuredArrow.proj yoneda A ⋙ yoneda) ⋙ (whiskeringLeft _ _ _).obj K)) :=
-          HasLimit.isoOfNatIso (HasColimit.isoOfNatIso (flipFunctorToInterchange A K))
-  _ ≅ limit (K ⋙ colimit (CostructuredArrow.proj yoneda A ⋙ yoneda)) :=
-        HasLimit.isoOfNatIso
-          (colimitCompWhiskeringLeftIsoCompColimit (CostructuredArrow.proj yoneda A ⋙ yoneda) K)
-  _ ≅ limit (K ⋙ A) := HasLimit.isoOfNatIso (isoWhiskerLeft _
-        (IsColimit.coconePointUniqueUpToIso
-          (colimit.isColimit _) (Presheaf.isColimitTautologicalCocone A)))
+      HasLimit.isoOfNatIso (HasColimit.isoOfNatIso (flipFunctorToInterchange A K))
+    _ ≅ limit (K ⋙ colimit (CostructuredArrow.proj yoneda A ⋙ yoneda)) :=
+      HasLimit.isoOfNatIso (colimitCompWhiskeringLeftIsoCompColimit
+        (CostructuredArrow.proj yoneda A ⋙ yoneda) K)
+    _ ≅ limit (K ⋙ A) :=
+      HasLimit.isoOfNatIso (isoWhiskerLeft _
+        (IsColimit.coconePointUniqueUpToIso (colimit.isColimit _)
+          (Presheaf.isColimitTautologicalCocone A)))
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -156,12 +166,11 @@ theorem iso_hom [IsFiltered (CostructuredArrow yoneda A)] : (iso A K).hom = limi
     HasColimit.ι_isoOfNatIso_hom_assoc, HasColimit.ι_isoOfNatIso_hom_assoc,
     ι_colimitLimitIso_limit_π_assoc, isoAux_hom_app, ← NatTrans.comp_app_assoc,
     ← NatTrans.comp_app_assoc, Category.assoc, HasLimit.isoOfNatIso_hom_π,
-    preservesLimitIso_hom_π_assoc, Iso.symm_hom,
-    ← NatTrans.comp_app_assoc, HasColimit.ι_isoOfNatIso_hom,
-    ← NatTrans.comp_app_assoc, Category.assoc,
-    ι_colimitCompWhiskeringLeftIsoCompColimit_hom,
-    NatTrans.comp_app, Category.assoc, isoWhiskerLeft_hom, NatTrans.comp_app, Category.assoc,
-    ← NatTrans.comp_app, ← whiskerLeft_comp, colimit.comp_coconePointUniqueUpToIso_hom]
+    preservesLimitIso_hom_π_assoc, Iso.symm_hom, ← NatTrans.comp_app_assoc,
+    HasColimit.ι_isoOfNatIso_hom, ← NatTrans.comp_app_assoc, Category.assoc,
+    ι_colimitCompWhiskeringLeftIsoCompColimit_hom, NatTrans.comp_app, Category.assoc,
+    isoWhiskerLeft_hom, NatTrans.comp_app, Category.assoc, ← NatTrans.comp_app, ← whiskerLeft_comp,
+    colimit.comp_coconePointUniqueUpToIso_hom]
   have := i.hom.naturality (limit.π K j)
   dsimp only [yoneda_obj_obj, Functor.const_obj_obj] at this
   rw [← this]
@@ -175,23 +184,27 @@ end PreservesFiniteLimitsOfIsFilteredCostructuredArrowYonedaAux
 
 attribute [local instance] PreservesFiniteLimitsOfIsFilteredCostructuredArrowYonedaAux.isIso_post
 
-/-- If `C` is a small finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf such that
+/--
+If `C` is a small finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf such that
 `CostructuredArrow yoneda A` is filtered, then `A` preserves finite limits.
 
 One direction of Proposition 3.3.13 of [Kashiwara2006].
 -/
 lemma preservesFiniteLimits_of_isFiltered_costructuredArrow_yoneda
-    [IsFiltered (CostructuredArrow yoneda A)] : PreservesFiniteLimits A where
+    [IsFiltered (CostructuredArrow yoneda A)]
+    : PreservesFiniteLimits A where
   preservesFiniteLimits _ _ _ := ⟨fun {_} => preservesLimit_of_isIso_post _ _⟩
 
-/-- If `C` is a small finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf, then
+/--
+If `C` is a small finitely cocomplete category and `A : Cᵒᵖ ⥤ Type u` is a presheaf, then
 `CostructuredArrow yoneda A` is filtered if and only if `A` preserves finite limits.
 
 Proposition 3.3.13 of [Kashiwara2006].
 -/
-theorem isFiltered_costructuredArrow_yoneda_iff_nonempty_preservesFiniteLimits :
-    IsFiltered (CostructuredArrow yoneda A) ↔ PreservesFiniteLimits A :=
-  ⟨fun _ => preservesFiniteLimits_of_isFiltered_costructuredArrow_yoneda A,
-   fun _ => isFiltered_costructuredArrow_yoneda_of_preservesFiniteLimits A⟩
+theorem isFiltered_costructuredArrow_yoneda_iff_nonempty_preservesFiniteLimits
+    : IsFiltered (CostructuredArrow yoneda A) ↔ PreservesFiniteLimits A := ⟨
+  fun _ => preservesFiniteLimits_of_isFiltered_costructuredArrow_yoneda A,
+  fun _ => isFiltered_costructuredArrow_yoneda_of_preservesFiniteLimits A
+⟩
 
 end CategoryTheory.Limits

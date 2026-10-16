@@ -23,9 +23,9 @@ open Lean Meta
 
 /-- The type for a constant to be pushed by `push`. -/
 inductive Head where
-| const (c : Name)
-| lambda
-| forall
+  | const (c : Name)
+  | lambda
+  | forall
 deriving Inhabited, BEq
 
 /-- Converts a `Head` to a string. -/
@@ -46,7 +46,7 @@ def Head.ofExpr? : Expr → Option Head
 /-- The `push` environment extension -/
 initialize pushExt : SimpleScopedEnvExtension SimpTheorem (DiscrTree SimpTheorem) ←
   registerSimpleScopedEnvExtension {
-    initial  := {}
+    initial := {}
     addEntry := fun d e => d.insertKeyValue e.keys e
   }
 
@@ -58,20 +58,24 @@ but `f` is not the head of `x`.
 def isPullThm (declName : Name) (inv : Bool) : MetaM (Option Head) := do
   let cinfo ← getConstInfo declName
   forallTelescope cinfo.type fun _ type => do
-    let some (lhs, rhs) := type.eqOrIff? | return none
+    let some (lhs, rhs) := type.eqOrIff?
+      | return none
     let (lhs, rhs) := if inv then (rhs, lhs) else (lhs, rhs)
-    let some head := Head.ofExpr? rhs | return none
+    let some head := Head.ofExpr? rhs
+      | return none
     if Head.ofExpr? lhs != some head && containsHead lhs head then
       return head
     return none
 where
-  /-- Checks if the expression has the head in any subexpression.
+  /--
+  Checks if the expression has the head in any subexpression.
   We don't need to check this for `.lambda`, because the term being a function
-  is sufficient for `pull fun _ ↦ _` to be applicable. -/
+  is sufficient for `pull fun _ ↦ _` to be applicable.
+  -/
   containsHead (e : Expr) : Head → Bool
-  | .const c => e.containsConst (· == c)
-  | .lambda => true
-  | .forall => (e.find? (· matches .forallE ..)).isSome
+    | .const c => e.containsConst (· == c)
+    | .lambda => true
+    | .forall => (e.find? (· matches .forallE ..)).isSome
 
 /-- A theorem for the `pull` tactic -/
 abbrev PullTheorem := SimpTheorem × Head
@@ -79,7 +83,7 @@ abbrev PullTheorem := SimpTheorem × Head
 /-- The `pull` environment extension -/
 initialize pullExt : SimpleScopedEnvExtension PullTheorem (DiscrTree PullTheorem) ←
   registerSimpleScopedEnvExtension {
-    initial  := {}
+    initial := {}
     addEntry := fun d e => d.insertKeyValue e.1.keys e
   }
 
@@ -107,25 +111,27 @@ To tag the reverse direction of the lemma, use `@[push ←]`.
 syntax (name := pushAttr) "push" (" ←" <|> " <-")? (&" only")? (ppSpace prio)? : attr
 
 @[inherit_doc pushAttr]
-initialize registerBuiltinAttribute {
-  name := `pushAttr
-  descr := "attribute for push"
-  add := fun declName stx kind => MetaM.run' do
-    -- Make sure `mkSimpTheoremFromConst` aux decls are sufficiently visible, like in
-    -- `addSimpTheorem`.
-    withExporting (isExporting := !isPrivateName declName) do
-    let inv := !stx[1].isNone
-    let isOnly := !stx[2].isNone
-    let prio ← getAttrParamOptPrio stx[3]
-    let #[thm] ← mkSimpTheoremFromConst declName (inv := inv) (prio := prio) |
-      throwError "couldn't generate a simp theorem for `push`"
-    pushExt.add thm
-    unless isOnly do
-      let inv := !inv -- the `pull` lemma is added in the reverse direction
-      if let some head ← isPullThm declName inv then
-        let #[thm] ← mkSimpTheoremFromConst declName (inv := inv) (prio := prio) |
-          throwError "couldn't generate a simp theorem for `pull`"
-        pullExt.add (thm, head)
-}
+initialize
+  registerBuiltinAttribute {
+    name := `pushAttr
+    descr := "attribute for push"
+    add := fun declName stx kind =>
+      MetaM.run' do
+        -- Make sure `mkSimpTheoremFromConst` aux decls are sufficiently visible, like in
+        -- `addSimpTheorem`.
+        withExporting (isExporting := ! isPrivateName declName) do
+          let inv := !stx[1].isNone
+          let isOnly := !stx[2].isNone
+          let prio ← getAttrParamOptPrio stx[3]
+          let #[thm] ← mkSimpTheoremFromConst declName (inv := inv) (prio := prio)
+            | throwError "couldn't generate a simp theorem for `push`"
+          pushExt.add thm
+          unless isOnly do
+            let inv := !inv -- the `pull` lemma is added in the reverse direction
+            if let some head ← isPullThm declName inv then
+              let #[thm] ← mkSimpTheoremFromConst declName (inv := inv) (prio := prio)
+                | throwError "couldn't generate a simp theorem for `pull`"
+              pullExt.add (thm, head)
+  }
 
 end Mathlib.Tactic.Push

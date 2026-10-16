@@ -29,8 +29,9 @@ variable {R G M : Type*}
 
 namespace Finset
 section Semiring
-variable [Semiring R] [IsDomain R] [AddCommMonoid M] [DecidableEq M] [Module R M]
-  [IsTorsionFree R M] {s : Finset R} {t : Finset M} {r : R}
+variable
+  [Semiring R] [IsDomain R] [AddCommMonoid M] [DecidableEq M] [Module R M] [IsTorsionFree R M]
+  {s : Finset R} {t : Finset M} {r : R}
 
 lemma zero_mem_smul_finset_iff (hr : r ≠ 0) : 0 ∈ r • t ↔ 0 ∈ t := by
   rw [← mem_coe, coe_smul_finset, Set.zero_mem_smul_set_iff hr, mem_coe]
@@ -40,13 +41,15 @@ lemma zero_mem_smul_iff : (0 : M) ∈ s • t ↔ 0 ∈ s ∧ t.Nonempty ∨ 0 �
 
 end Semiring
 
-variable [Ring R] [AddCommGroup G] [Module R G] [DecidableEq G] {s : Finset R} {t : Finset G}
-  {a : R}
+variable
+  [Ring R] [AddCommGroup G] [Module R G] [DecidableEq G] {s : Finset R} {t : Finset G} {a : R}
 
-@[simp] lemma neg_smul_finset : -a • t = -(a • t) := by
+@[simp]
+lemma neg_smul_finset : -a • t = -(a • t) := by
   simp only [← image_smul, ← image_neg_eq_neg, image_image, neg_smul, Function.comp_def]
 
-@[simp] protected lemma neg_smul [DecidableEq R] : -s • t = -(s • t) := by
+@[simp]
+protected lemma neg_smul [DecidableEq R] : -s • t = -(s • t) := by
   simp_rw [← image_neg_eq_neg]
   exact image₂_image_left_comm neg_smul
 

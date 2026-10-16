@@ -8,7 +8,6 @@ module
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.GroupTheory.Torsion
 public import Mathlib.Order.Northcott
-
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 import Mathlib.Data.Fintype.Order
 import Mathlib.Tactic.FieldSimp
@@ -58,17 +57,21 @@ public section
 open scoped Pointwise
 
 open Subgroup in
-/-- If `G` is a group and `f : G →* G` is an endomorphism sending subgroups into themselves,
+/--
+If `G` is a group and `f : G →* G` is an endomorphism sending subgroups into themselves,
 and if there is a "height function" `h : G → ℝ` with respect to `f` and a finite subset `s`
-of `G`, then `G` is finitely generated. -/
+of `G`, then `G` is finitely generated.
+-/
 @[to_additive /-- If `G` is an additive group and `f : G →+ G` is an endomorphism sending
 subgroups into themselves, and if there is a "height function" `h : G → ℝ` with respect
 to `f` and a finite subset `s` of `G`, then `G` is finitely generated. -/]
-theorem Group.fg_of_descent {G : Type*} [Group G] {f : G →* G} (hf : ∀ U : Subgroup G, U.map f ≤ U)
-    {s : Set G} {h : G → ℝ} {a b c : ℝ} (ha : 0 ≤ a) (H₀ : a < b) (hs : s.Finite)
-    (H₁ : s * f.range = .univ) (H₂ : ∀ g ∈ s, ∀ x, h x ≤ a * h (g * x) + c)
-    (H₃ : ∀ x, b * h x - c ≤ h (f x)) [Northcott h] :
-    FG G := by
+theorem Group.fg_of_descent
+    {G : Type*} [Group G]
+    {f : G →* G} (hf : ∀ U : Subgroup G, U.map f ≤ U)
+    {s : Set G} {h : G → ℝ} {a b c : ℝ}
+    (ha : 0 ≤ a) (H₀ : a < b) (hs : s.Finite) (H₁ : s * f.range = .univ)
+    (H₂ : ∀ g ∈ s, ∀ x, h x ≤ a * h (g * x) + c) (H₃ : ∀ x, b * h x - c ≤ h (f x)) [Northcott h]
+    : FG G := by
   set q := QuotientGroup.mk (s := map f ⊤)
   -- Main proof idea: `s` together with elements of sufficiently small "height" `h` generates `G`.
   let S : Set G := s ∪ {x : G | h x ≤ 2 * c / (b - a)}
@@ -107,10 +110,12 @@ where `0 ≤ a < b` and `c₀` are real numbers, `c : G → ℝ`, then `G` is fi
 * for all `B : ℝ`, there are only finitely many `x : G` such that `h x ≤ B`,
 
 where `0 ≤ a < b` and `c₀` are real numbers, `c : G → ℝ`, then `G` is finitely generated. -/]
-theorem CommGroup.fg_of_descent {G : Type*} [CommGroup G] {n : ℕ} {h : G → ℝ} {a b c₀ : ℝ}
-    {c : G → ℝ} (ha : 0 ≤ a) (H₀ : a < b) (H₁ : (powMonoidHom (α := G) n).range.FiniteIndex)
-    (H₂ : ∀ g x, h x ≤ a * h (g * x) + c g) (H₃ : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h] :
-    Group.FG G := by
+theorem CommGroup.fg_of_descent
+    {G : Type*} [CommGroup G]
+    {n : ℕ} {h : G → ℝ} {a b c₀ : ℝ} {c : G → ℝ}
+    (ha : 0 ≤ a) (H₀ : a < b) (H₁ : (powMonoidHom (α := G) n).range.FiniteIndex)
+    (H₂ : ∀ g x, h x ≤ a * h (g * x) + c g) (H₃ : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h]
+    : Group.FG G := by
   let f : G →* G := powMonoidHom n
   let q := QuotientGroup.mk (s := f.range)
   let qi : G ⧸ f.range → G := Function.surjInv mk_surjective
@@ -119,7 +124,7 @@ theorem CommGroup.fg_of_descent {G : Type*} [CommGroup G] {n : ℕ} {h : G → �
   have H₁' : s * f.range = .univ := by
     refine Set.eq_univ_iff_forall.mpr fun x ↦ Set.mem_mul.mpr ⟨qi (q x), by simp [s], ?_⟩
     conv => enter [1, y]; rw [eq_comm, ← div_eq_iff_eq_mul', SetLike.mem_coe]
-    simp only [↓existsAndEq, and_true]
+    simp only [↓ existsAndEq, and_true]
     exact eq_iff_div_mem.mp (Function.surjInv_eq mk_surjective _).symm
   let c' : ℝ := max c₀ (c g)
   have H₃' x : b * h x - c' ≤ h (f x) := by grind [powMonoidHom_apply]
@@ -144,10 +149,13 @@ then `G` is finitely generated.
 * for all `B : ℝ`, there are only finitely many `x : G` such that `h x ≤ B`,
 
 then `G` is finitely generated. -/]
-theorem CommGroup.fg_of_descent' {G : Type*} [CommGroup G] {h : G → ℝ} {C : ℝ}
+theorem CommGroup.fg_of_descent'
+    {G : Type*} [CommGroup G]
+    {h : G → ℝ} {C : ℝ}
     (H₁ : (powMonoidHom (α := G) 2).range.FiniteIndex) (H₂ : ∀ x, 0 ≤ h x)
-    (H₃ : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C) [Northcott h] :
-    Group.FG G := by
+    (H₃ : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C)
+    [Northcott h]
+    : Group.FG G := by
   have H₃' x : 4 * h x - (h 1 + C) ≤ h (x ^ 2) := by grind [pow_two, div_self']
   have H₂' g x : h x ≤ 2 * h (g * x) + (2 * h g⁻¹ + C) := by grind [mul_inv_cancel_comm]
   exact fg_of_descent (b := 4) (by simp) (by norm_num) H₁ H₂' H₃'
@@ -165,14 +173,15 @@ where `1 < b` and `c₀` are real numbers, then the set of elements of finite or
 
 where `1 < b` and `c₀` are real numbers, then the set of elements of finite order in `M`
 is finite. -/]
-theorem Monoid.finite_set_isOfFiniteOrder_of_descent {M : Type*} [Monoid M] {n : ℕ} {h : M → ℝ}
-    {b c₀ : ℝ} (hb : 1 < b) (H : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h] :
-    Finite { x : M | IsOfFinOrder x } := by
+theorem Monoid.finite_set_isOfFiniteOrder_of_descent
+    {M : Type*} [Monoid M]
+    {n : ℕ} {h : M → ℝ} {b c₀ : ℝ} (hb : 1 < b) (H : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h]
+    : Finite { x : M | IsOfFinOrder x } := by
   refine (Northcott.finite_le (h := h) (c₀ / (b - 1))).subset fun t ht ↦ ?_
   have : Finite ↥(Submonoid.powers t) := ht.finite_powers
   let C : ℝ := ⨆ g : Submonoid.powers t, h g
-  have hC : ∀ g ∈ Submonoid.powers t, h g ≤ C :=
-    fun g hg ↦ Finite.le_ciSup (fun g : Submonoid.powers t ↦ h g) ⟨g, hg⟩
+  have hC : ∀ g ∈ Submonoid.powers t, h g ≤ C := fun g hg ↦
+    Finite.le_ciSup (fun g : Submonoid.powers t ↦ h g) ⟨g, hg⟩
   refine (hC t (Submonoid.mem_powers t)).trans ?_
   obtain ⟨t₀, ht₀⟩ : ∃ g : Submonoid.powers t, h g = C := exists_eq_ciSup_of_finite
   rw [le_div_iff₀' (by grind)]
@@ -190,9 +199,10 @@ where `1 < b` and `c₀` are real numbers, then the torsion subgroup of `G` is f
 * for all `B : ℝ`, there are only finitely many `x : G` such that `h x ≤ B`,
 
 where `1 < b` and `c₀` are real numbers, then the torsion subgroup of `G` is finite. -/]
-theorem CommGroup.finite_torsion_of_descent {G : Type*} [CommGroup G] {n : ℕ} {h : G → ℝ}
-    {b c₀ : ℝ} (hb : 1 < b) (H : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h] :
-    Finite (torsion G) :=
+theorem CommGroup.finite_torsion_of_descent
+    {G : Type*} [CommGroup G]
+    {n : ℕ} {h : G → ℝ} {b c₀ : ℝ} (hb : 1 < b) (H : ∀ x, b * h x - c₀ ≤ h (x ^ n)) [Northcott h]
+    : Finite (torsion G) :=
   Monoid.finite_set_isOfFiniteOrder_of_descent hb H
 
 /--
@@ -207,9 +217,10 @@ then the torsion subgroup of `G` is finite.
 * for all `B : ℝ`, there are only finitely many `x : G` such that `h x ≤ B`,
 
 then the torsion subgroup of `G` is finite. -/]
-theorem CommGroup.finite_torsion_of_descent' {G : Type*} [CommGroup G] {h : G → ℝ} {C : ℝ}
-    (H : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C) [Northcott h] :
-    Finite (torsion G) := by
+theorem CommGroup.finite_torsion_of_descent'
+    {G : Type*} [CommGroup G]
+    {h : G → ℝ} {C : ℝ} (H : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C) [Northcott h]
+    : Finite (torsion G) := by
   have H' x : 4 * h x - (h 1 + C) ≤ h (x ^ 2) := by grind [pow_two, div_self']
   exact finite_torsion_of_descent (b := 4) (by simp) H'
 

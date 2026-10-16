@@ -6,7 +6,6 @@ Authors: Edward Ayers
 module
 
 public import Lean.Exception
-
 import Mathlib.Init
 
 /-!
@@ -22,11 +21,9 @@ public section
 
 open Lean
 
-/--
-A generalisation of `fail_if_success` to an arbitrary `MonadError`.
--/
-def successIfFail {α : Type} {M : Type → Type} [MonadError M] [Monad M] (m : M α) :
-    M Exception := do
+/-- A generalisation of `fail_if_success` to an arbitrary `MonadError`. -/
+def successIfFail {α : Type} {M : Type → Type} [MonadError M] [Monad M] (m : M α)
+    : M Exception := do
   match ← tryCatch (m *> pure none) (pure ∘ some) with
   | none => throwError "Expected an exception."
   | some ex => return ex

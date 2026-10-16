@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 public import Mathlib.Algebra.Quaternion
-
 import Mathlib.Tactic.LinearCombination
 
 /-!
@@ -27,17 +26,18 @@ import Mathlib.Tactic.LinearCombination
 
 @[expose] public section
 
-
 open Quaternion
 
 namespace QuaternionAlgebra
 
-/-- A quaternion basis contains the information both sufficient and necessary to construct an
+/--
+A quaternion basis contains the information both sufficient and necessary to construct an
 `R`-algebra homomorphism from `ℍ[R,c₁,c₂,c₃]` to `A`; or equivalently, a surjective
 `R`-algebra homomorphism from `ℍ[R,c₁,c₂,c₃]` to an `R`-subalgebra of `A`.
 
 Note that for definitional convenience, `k` is provided as a field even though `i_mul_j` fully
-determines it. -/
+determines it.
+-/
 structure Basis {R : Type*} (A : Type*) [CommRing R] [Ring A] [Algebra R A] (c₁ c₂ c₃ : R) where
   /-- The first imaginary unit -/
   i : A
@@ -60,14 +60,14 @@ namespace Basis
 
 /-- Since `k` is redundant, it is not necessary to show `q₁.k = q₂.k` when showing `q₁ = q₂`. -/
 @[ext]
-protected theorem ext ⦃q₁ q₂ : Basis A c₁ c₂ c₃⦄ (hi : q₁.i = q₂.i)
-    (hj : q₁.j = q₂.j) : q₁ = q₂ := by
+protected theorem ext ⦃q₁ q₂ : Basis A c₁ c₂ c₃⦄ (hi : q₁.i = q₂.i) (hj : q₁.j = q₂.j)
+    : q₁ = q₂ := by
   cases q₁; cases q₂; grind
 
 variable (R) in
 /-- There is a natural quaternionic basis for the `QuaternionAlgebra`. -/
 @[simps i j k]
-protected def self : Basis ℍ[R,c₁,c₂,c₃] c₁ c₂ c₃ where
+protected def self : Basis (ℍ[R,c₁,c₂,c₃]) c₁ c₂ c₃ where
   i := ⟨0, 1, 0, 0⟩
   i_mul_i := by ext <;> simp
   j := ⟨0, 0, 1, 0⟩
@@ -76,8 +76,7 @@ protected def self : Basis ℍ[R,c₁,c₂,c₃] c₁ c₂ c₃ where
   i_mul_j := by ext <;> simp
   j_mul_i := by ext <;> simp
 
-instance : Inhabited (Basis ℍ[R,c₁,c₂,c₃] c₁ c₂ c₃) :=
-  ⟨Basis.self R⟩
+instance : Inhabited (Basis (ℍ[R,c₁,c₂,c₃]) c₁ c₂ c₃) := ⟨Basis.self R⟩
 
 variable (q : Basis A c₁ c₂ c₃)
 
@@ -103,16 +102,14 @@ theorem j_mul_k : q.j * q.k = (c₂ * c₃) • 1 - c₃ • q.i := by
 
 @[simp]
 theorem k_mul_k : q.k * q.k = -((c₁ * c₃) • (1 : A)) := by
-  rw [← i_mul_j, mul_assoc, ← mul_assoc q.j _ _, j_mul_i, ← i_mul_j, ← mul_assoc, mul_sub, ←
-    mul_assoc, i_mul_i, add_mul, smul_mul_assoc, one_mul, sub_mul, smul_mul_assoc, mul_smul_comm,
-    smul_mul_assoc, mul_assoc, j_mul_j, add_mul, smul_mul_assoc, j_mul_j, smul_smul,
-    smul_mul_assoc, mul_assoc, j_mul_j]
+  rw [← i_mul_j, mul_assoc, ← mul_assoc q.j _ _, j_mul_i, ← i_mul_j, ← mul_assoc, mul_sub,
+    ← mul_assoc, i_mul_i, add_mul, smul_mul_assoc, one_mul, sub_mul, smul_mul_assoc, mul_smul_comm,
+    smul_mul_assoc, mul_assoc, j_mul_j, add_mul, smul_mul_assoc, j_mul_j, smul_smul, smul_mul_assoc,
+    mul_assoc, j_mul_j]
   linear_combination (norm := module)
 
-
 /-- Intermediate result used to define `QuaternionAlgebra.Basis.liftHom`. -/
-def lift (x : ℍ[R,c₁,c₂,c₃]) : A :=
-  algebraMap R _ x.re + x.imI • q.i + x.imJ • q.j + x.imK • q.k
+def lift (x : ℍ[R,c₁,c₂,c₃]) : A := algebraMap R _ x.re + x.imI • q.i + x.imJ • q.j + x.imK • q.k
 
 theorem lift_zero : q.lift (0 : ℍ[R,c₁,c₂,c₃]) = 0 := by simp [lift]
 
@@ -141,21 +138,23 @@ theorem lift_smul (r : R) (x : ℍ[R,c₁,c₂,c₃]) : q.lift (r • x) = r •
 @[simps!]
 def liftHom : ℍ[R,c₁,c₂,c₃] →ₐ[R] A :=
   AlgHom.mk'
-    { toFun := q.lift
+    {
+      toFun := q.lift
       map_zero' := q.lift_zero
       map_one' := q.lift_one
       map_add' := q.lift_add
-      map_mul' := q.lift_mul } q.lift_smul
+      map_mul' := q.lift_mul
+    }
+    q.lift_smul
 
 @[simp]
-theorem range_liftHom (B : Basis A c₁ c₂ c₃) :
-    (liftHom B).range = Algebra.adjoin R {B.i, B.j, B.k} := by
+theorem range_liftHom (B : Basis A c₁ c₂ c₃)
+    : (liftHom B).range = Algebra.adjoin R {B.i, B.j, B.k} := by
   apply le_antisymm
   · rintro x ⟨y, rfl⟩
     refine add_mem (add_mem (add_mem ?_ ?_) ?_) ?_
     · exact algebraMap_mem _ _
-    all_goals
-      exact Subalgebra.smul_mem _ (Algebra.subset_adjoin <| by simp) _
+    all_goals exact Subalgebra.smul_mem _ (Algebra.subset_adjoin <| by simp) _
   · rw [Algebra.adjoin_le_iff]
     rintro x (rfl | rfl | rfl)
       <;> [use (Basis.self R).i; use (Basis.self R).j; use (Basis.self R).k]
@@ -190,9 +189,10 @@ def lift : Basis A c₁ c₂ c₃ ≃ (ℍ[R,c₁,c₂,c₃] →ₐ[R] A) where
 
 /-- Two `R`-algebra morphisms from a quaternion algebra are equal if they agree on `i` and `j`. -/
 @[ext]
-theorem hom_ext ⦃f g : ℍ[R,c₁,c₂,c₃] →ₐ[R] A⦄
-    (hi : f (Basis.self R).i = g (Basis.self R).i) (hj : f (Basis.self R).j = g (Basis.self R).j) :
-    f = g :=
+theorem hom_ext
+    ⦃f g : ℍ[R,c₁,c₂,c₃] →ₐ[R] A⦄
+    (hi : f (Basis.self R).i = g (Basis.self R).i) (hj : f (Basis.self R).j = g (Basis.self R).j)
+    : f = g :=
   lift.symm.injective <| Basis.ext hi hj
 
 end QuaternionAlgebra
@@ -204,9 +204,10 @@ open QuaternionAlgebra (Basis)
 
 /-- Two `R`-algebra morphisms from the quaternions are equal if they agree on `i` and `j`. -/
 @[ext]
-theorem hom_ext ⦃f g : ℍ[R] →ₐ[R] A⦄
-    (hi : f (Basis.self R).i = g (Basis.self R).i) (hj : f (Basis.self R).j = g (Basis.self R).j) :
-    f = g :=
+theorem hom_ext
+    ⦃f g : ℍ[R] →ₐ[R] A⦄
+    (hi : f (Basis.self R).i = g (Basis.self R).i) (hj : f (Basis.self R).j = g (Basis.self R).j)
+    : f = g :=
   QuaternionAlgebra.hom_ext hi hj
 
 end Quaternion

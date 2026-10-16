@@ -40,15 +40,16 @@ def SurjectiveOnStalks (f : R →+* S) : Prop :=
 every `x : S` is of the form `f x / f r` for some `f r ∉ q`.
 This is useful when proving `SurjectiveOnStalks`.
 -/
-lemma surjective_localRingHom_iff (P : Ideal S) [P.IsPrime] :
-    Function.Surjective (Localization.localRingHom _ P f rfl) ↔
-      ∀ s : S, ∃ x r : R, ∃ c ∉ P, f r ∉ P ∧ c * f r * s = c * f x := by
+lemma surjective_localRingHom_iff (P : Ideal S) [P.IsPrime]
+    : Function.Surjective (Localization.localRingHom _ P f rfl)
+      ↔ ∀ s : S, ∃ x r : R, ∃ c ∉ P, f r ∉ P ∧ c * f r * s = c * f x := by
   constructor
   · intro H y
     obtain ⟨a, ha⟩ := H (IsLocalization.mk' _ y (1 : P.primeCompl))
     obtain ⟨a, t, rfl⟩ := IsLocalization.exists_mk'_eq (P.comap f).primeCompl a
-    rw [Localization.localRingHom_mk', IsLocalization.mk'_eq_iff_eq,
-      Submonoid.coe_one, one_mul, IsLocalization.eq_iff_exists P.primeCompl] at ha
+    rw [Localization.localRingHom_mk', IsLocalization.mk'_eq_iff_eq, Submonoid.coe_one, one_mul,
+        IsLocalization.eq_iff_exists P.primeCompl]
+      at ha
     obtain ⟨c, hc⟩ := ha
     simp only [← mul_assoc] at hc
     exact ⟨_, _, _, c.2, t.2, hc.symm⟩
@@ -64,18 +65,19 @@ lemma surjective_localRingHom_iff (P : Ideal S) [P.IsPrime] :
       simp only [Submonoid.coe_mul]
       convert! congr($ey.symm * $et) using 1 <;> ring
 
-lemma surjectiveOnStalks_iff_forall_ideal :
-    f.SurjectiveOnStalks ↔
-      ∀ I : Ideal S, I ≠ ⊤ → ∀ s : S, ∃ x r : R, ∃ c ∉ I, f r ∉ I ∧ c * f r * s = c * f x := by
+lemma surjectiveOnStalks_iff_forall_ideal
+    : f.SurjectiveOnStalks
+      ↔ ∀ I : Ideal S, I ≠ ⊤ → ∀ s : S, ∃ x r : R, ∃ c ∉ I, f r ∉ I ∧ c * f r * s = c * f x := by
   simp_rw [SurjectiveOnStalks, surjective_localRingHom_iff]
   refine ⟨fun H I hI s ↦ ?_, fun H I hI ↦ H I hI.ne_top⟩
   obtain ⟨M, hM, hIM⟩ := I.exists_le_maximal hI
   obtain ⟨x, r, c, hc, hr, e⟩ := H M hM.isPrime s
   exact ⟨x, r, c, fun h ↦ hc (hIM h), fun h ↦ hr (hIM h), e⟩
 
-lemma surjectiveOnStalks_iff_forall_maximal :
-    f.SurjectiveOnStalks ↔ ∀ (I : Ideal S) (_ : I.IsMaximal),
-      Function.Surjective (Localization.localRingHom _ I f rfl) := by
+lemma surjectiveOnStalks_iff_forall_maximal
+    : f.SurjectiveOnStalks
+      ↔ ∀ (I : Ideal S) (_ : I.IsMaximal),
+        Function.Surjective (Localization.localRingHom _ I f rfl) := by
   refine ⟨fun H I hI ↦ H I hI.isPrime, fun H I hI ↦ ?_⟩
   simp_rw [surjective_localRingHom_iff] at H ⊢
   intro s
@@ -83,44 +85,46 @@ lemma surjectiveOnStalks_iff_forall_maximal :
   obtain ⟨x, r, c, hc, hr, e⟩ := H M hM s
   exact ⟨x, r, c, fun h ↦ hc (hIM h), fun h ↦ hr (hIM h), e⟩
 
-lemma surjectiveOnStalks_iff_forall_maximal' :
-    f.SurjectiveOnStalks ↔ ∀ I : Ideal S, I.IsMaximal →
-      ∀ s : S, ∃ x r : R, ∃ c ∉ I, f r ∉ I ∧ c * f r * s = c * f x := by
+lemma surjectiveOnStalks_iff_forall_maximal'
+    : f.SurjectiveOnStalks
+      ↔ ∀ I : Ideal S,
+        I.IsMaximal → ∀ s : S, ∃ x r : R, ∃ c ∉ I, f r ∉ I ∧ c * f r * s = c * f x := by
   simp only [surjectiveOnStalks_iff_forall_maximal, surjective_localRingHom_iff]
 
-lemma surjectiveOnStalks_of_exists_div (h : ∀ x : S, ∃ r s : R, IsUnit (f s) ∧ f s * x = f r) :
-    SurjectiveOnStalks f :=
+lemma surjectiveOnStalks_of_exists_div (h : ∀ x : S, ∃ r s : R, IsUnit (f s) ∧ f s * x = f r)
+    : SurjectiveOnStalks f :=
   surjectiveOnStalks_iff_forall_ideal.mpr fun I hI x ↦
     let ⟨r, s, hr, hr'⟩ := h x
     ⟨r, s, 1, by simpa [← Ideal.eq_top_iff_one], fun h ↦ hI (I.eq_top_of_isUnit_mem h hr), by simpa⟩
 
-lemma surjectiveOnStalks_of_surjective (h : Function.Surjective f) :
-    SurjectiveOnStalks f :=
+lemma surjectiveOnStalks_of_surjective (h : Function.Surjective f) : SurjectiveOnStalks f :=
   surjectiveOnStalks_iff_forall_ideal.mpr fun _ _ s ↦
     let ⟨r, hr⟩ := h s
     ⟨r, 1, 1, by simpa [← Ideal.eq_top_iff_one], by simpa [← Ideal.eq_top_iff_one], by simp [hr]⟩
 
-lemma _root_.RingEquiv.surjectiveOnStalks (e : R ≃+* S) :
-    e.toRingHom.SurjectiveOnStalks :=
+lemma _root_.RingEquiv.surjectiveOnStalks (e : R ≃+* S) : e.toRingHom.SurjectiveOnStalks :=
   RingHom.surjectiveOnStalks_of_surjective e.surjective
 
-lemma SurjectiveOnStalks.comp (hg : SurjectiveOnStalks g) (hf : SurjectiveOnStalks f) :
-    SurjectiveOnStalks (g.comp f) := by
+lemma SurjectiveOnStalks.comp (hg : SurjectiveOnStalks g) (hf : SurjectiveOnStalks f)
+    : SurjectiveOnStalks (g.comp f) := by
   intro I hI
   have := (hg I hI).comp (hf _ (hI.comap g))
   rwa [← RingHom.coe_comp, ← Localization.localRingHom_comp] at this
 
-lemma SurjectiveOnStalks.of_comp (hg : SurjectiveOnStalks (g.comp f)) :
-    SurjectiveOnStalks g := by
+lemma SurjectiveOnStalks.of_comp (hg : SurjectiveOnStalks (g.comp f)) : SurjectiveOnStalks g := by
   intro I hI
   have := hg I hI
   rw [Localization.localRingHom_comp (I.comap (g.comp f)) (I.comap g) _ _ rfl _ rfl,
-    RingHom.coe_comp] at this
+      RingHom.coe_comp]
+    at this
   exact this.of_comp
 
-lemma SurjectiveOnStalks.localRingHom_surjective (hf : SurjectiveOnStalks f)
-    (P : Ideal R) [P.IsPrime] (Q : Ideal S) [Q.IsPrime] (e : P = Q.comap f) :
-    Function.Surjective (Localization.localRingHom P Q f e) :=
+lemma SurjectiveOnStalks.localRingHom_surjective
+    (hf : SurjectiveOnStalks f)
+    (P : Ideal R) [P.IsPrime]
+    (Q : Ideal S) [Q.IsPrime]
+    (e : P = Q.comap f)
+    : Function.Surjective (Localization.localRingHom P Q f e) :=
   e ▸ hf Q _
 
 open TensorProduct
@@ -132,17 +136,15 @@ then every element `x` in `S ⊗[R] T` satisfies `(1 ⊗ r • t) * x = a ⊗ t`
 `r : R`, `a : S`, and `t : T` such that `r • t ∉ J`.
 -/
 lemma SurjectiveOnStalks.exists_mul_eq_tmul
-    (hf₂ : (algebraMap R T).SurjectiveOnStalks)
-    (x : S ⊗[R] T) (J : Ideal T) (hJ : J.IsPrime) :
-    ∃ (t : T) (r : R) (a : S), (r • t ∉ J) ∧
-      (1 : S) ⊗ₜ[R] (r • t) * x = a ⊗ₜ[R] t := by
+    (hf₂ : (algebraMap R T).SurjectiveOnStalks) (x : S ⊗[R] T) (J : Ideal T) (hJ : J.IsPrime)
+    : ∃ (t : T) (r : R) (a : S), (r • t ∉ J) ∧ (1 : S) ⊗ₜ[R] (r • t) * x = a ⊗ₜ[R] t := by
   induction x with
   | tmul x₁ x₂ =>
     obtain ⟨y, s, c, hs, hc, e⟩ := (surjective_localRingHom_iff _).mp (hf₂ J hJ) x₂
     simp_rw [Algebra.smul_def]
     refine ⟨c, s, y • x₁, J.primeCompl.mul_mem hc hs, ?_⟩
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_comm _ c, e,
-      TensorProduct.smul_tmul, Algebra.smul_def, mul_comm]
+    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_comm _ c, e, TensorProduct.smul_tmul,
+      Algebra.smul_def, mul_comm]
   | add x₁ x₂ hx₁ hx₂ =>
     obtain ⟨t₁, r₁, a₁, hr₁, e₁⟩ := hx₁
     obtain ⟨t₂, r₂, a₂, hr₂, e₂⟩ := hx₂
@@ -156,17 +158,15 @@ lemma SurjectiveOnStalks.exists_mul_eq_tmul
       TensorProduct.add_tmul, mul_comm t₁ t₂]
 
 variable (S) in
-lemma surjectiveOnStalks_of_isLocalization
-    [Algebra R S] [IsLocalization M S] :
-    SurjectiveOnStalks (algebraMap R S) := by
+lemma surjectiveOnStalks_of_isLocalization [Algebra R S] [IsLocalization M S]
+    : SurjectiveOnStalks (algebraMap R S) := by
   refine surjectiveOnStalks_of_exists_div fun s ↦ ?_
   obtain ⟨x, s, rfl⟩ := IsLocalization.exists_mk'_eq M s
   exact ⟨x, s, IsLocalization.map_units S s, IsLocalization.mk'_spec' S x s⟩
 
 lemma SurjectiveOnStalks.baseChange
-    [Algebra R T] [Algebra R S]
-    (hf : (algebraMap R T).SurjectiveOnStalks) :
-    (algebraMap S (S ⊗[R] T)).SurjectiveOnStalks := by
+    [Algebra R T] [Algebra R S] (hf : (algebraMap R T).SurjectiveOnStalks)
+    : (algebraMap S (S ⊗[R] T)).SurjectiveOnStalks := by
   let g : T →+* S ⊗[R] T := Algebra.TensorProduct.includeRight.toRingHom
   intro J hJ
   rw [surjective_localRingHom_iff]
@@ -175,7 +175,8 @@ lemma SurjectiveOnStalks.baseChange
   refine ⟨a, algebraMap _ _ r, 1 ⊗ₜ (r • t), ht, ?_, ?_⟩
   · intro H
     simp only [Algebra.algebraMap_eq_smul_one (A := S), Algebra.TensorProduct.algebraMap_apply,
-      Algebra.algebraMap_self, id_apply, smul_tmul, ← Algebra.algebraMap_eq_smul_one (A := T)] at H
+        Algebra.algebraMap_self, id_apply, smul_tmul, ← Algebra.algebraMap_eq_smul_one (A := T)]
+      at H
     rw [Ideal.mem_comap, Algebra.smul_def, g.map_mul] at ht
     exact ht (J.mul_mem_right _ H)
   · simp only [tmul_smul, Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self,
@@ -183,20 +184,19 @@ lemma SurjectiveOnStalks.baseChange
       one_mul, mul_one, id_apply, ← e]
     rw [Algebra.algebraMap_eq_smul_one, ← smul_tmul', smul_mul_assoc]
 
-lemma SurjectiveOnStalks.baseChange' [Algebra R T] [Algebra R S]
-    (hf : (algebraMap R S).SurjectiveOnStalks) :
-    (Algebra.TensorProduct.includeRight (R := R) (A := S) (B := T)).SurjectiveOnStalks := by
+lemma SurjectiveOnStalks.baseChange'
+    [Algebra R T] [Algebra R S] (hf : (algebraMap R S).SurjectiveOnStalks)
+    : (Algebra.TensorProduct.includeRight (R := R) (A := S) (B := T)).SurjectiveOnStalks := by
   convert!
     (surjectiveOnStalks_of_surjective (Algebra.TensorProduct.comm R T S).surjective).comp
       (hf.baseChange (S := T))
-        -- Subsumed by `RingHom.SurjectiveOnStalks.tensorProductMap`.
-
+-- Subsumed by `RingHom.SurjectiveOnStalks.tensorProductMap`.
 
 -- Subsumed by `RingHom.SurjectiveOnStalks.tensorProductMap`.
 private lemma SurjectiveOnStalks.tensorProductMap_id
     {S' : Type*} [CommRing S'] [Algebra R S] [Algebra R T] [Algebra R S']
-    {f : S →ₐ[R] S'} (Hf : f.SurjectiveOnStalks) :
-    (Algebra.TensorProduct.map f (AlgHom.id R T)).SurjectiveOnStalks := by
+    {f : S →ₐ[R] S'} (Hf : f.SurjectiveOnStalks)
+    : (Algebra.TensorProduct.map f (AlgHom.id R T)).SurjectiveOnStalks := by
   let := f.toRingHom.toAlgebra
   have := IsScalarTower.of_algebraMap_eq' f.comp_algebraMap.symm
   change (Algebra.TensorProduct.map (Algebra.ofId S S') (AlgHom.id R T)).SurjectiveOnStalks
@@ -207,22 +207,23 @@ private lemma SurjectiveOnStalks.tensorProductMap_id
     Hf.baseChange'
 
 lemma SurjectiveOnStalks.tensorProductMap
-    {S' T' : Type*} [CommRing S'] [CommRing T']
-    [Algebra R S] [Algebra R T] [Algebra R S'] [Algebra R T']
-    {f : S →ₐ[R] S'} (Hf : f.SurjectiveOnStalks) {g : T →ₐ[R] T'} (Hg : g.SurjectiveOnStalks) :
-    (Algebra.TensorProduct.map f g).SurjectiveOnStalks := by
+    {S' T' : Type*}
+    [CommRing S'] [CommRing T'] [Algebra R S] [Algebra R T] [Algebra R S'] [Algebra R T']
+    {f : S →ₐ[R] S'} (Hf : f.SurjectiveOnStalks)
+    {g : T →ₐ[R] T'} (Hg : g.SurjectiveOnStalks)
+    : (Algebra.TensorProduct.map f g).SurjectiveOnStalks := by
   convert
     RingHom.SurjectiveOnStalks.tensorProductMap_id (T := T') Hf |>.comp <|
       (Algebra.TensorProduct.comm _ _ _).toRingEquiv.surjectiveOnStalks |>.comp <|
         RingHom.SurjectiveOnStalks.tensorProductMap_id (T := S) Hg |>.comp <|
           (Algebra.TensorProduct.comm _ _ _).toRingEquiv.surjectiveOnStalks
-  simp only [AlgHom.toRingHom_eq_coe, RingEquiv.toRingHom_eq_coe,
-    AlgEquiv.toRingEquiv_toRingHom, ← AlgEquiv.toAlgHom_toRingHom, ← AlgHom.comp_toRingHom]
+  simp only [AlgHom.toRingHom_eq_coe, RingEquiv.toRingHom_eq_coe, AlgEquiv.toRingEquiv_toRingHom,
+    ← AlgEquiv.toAlgHom_toRingHom, ← AlgHom.comp_toRingHom]
   congr
   ext <;> simp
 
-lemma surjectiveOnStalks_iff_of_isLocalHom [IsLocalRing S] [IsLocalHom f] :
-    f.SurjectiveOnStalks ↔ Function.Surjective f := by
+lemma surjectiveOnStalks_iff_of_isLocalHom [IsLocalRing S] [IsLocalHom f]
+    : f.SurjectiveOnStalks ↔ Function.Surjective f := by
   refine ⟨fun H x ↦ ?_, fun h ↦ surjectiveOnStalks_of_surjective h⟩
   obtain ⟨y, r, c, hc, hr, e⟩ :=
     (surjective_localRingHom_iff _).mp (H (IsLocalRing.maximalIdeal _) inferInstance) x

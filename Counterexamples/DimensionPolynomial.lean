@@ -41,15 +41,18 @@ noncomputable abbrev A : Subring (RatFunc k)⟦X⟧ :=
 theorem ringKrullDim_A_eq_one : ringKrullDim (A k) = 1 := by
   have h_unit : ∀ (x : (RatFunc k)⟦X⟧) (hx : x ∈ A k), IsUnit x → IsUnit (⟨x, hx⟩ : A k) := by
     intro x ⟨z, hz⟩ ⟨y, hxy⟩
-    refine ⟨⟨⟨y.val, hxy ▸ ⟨z, hz⟩⟩, ⟨y.inv, ⟨z⁻¹, ?_⟩⟩, Subtype.ext y.3, Subtype.ext y.4⟩,
-      Subtype.ext hxy⟩
+    refine ⟨
+      ⟨⟨y.val, hxy ▸ ⟨z, hz⟩⟩, ⟨y.inv, ⟨z⁻¹, ?_⟩⟩, Subtype.ext y.3, Subtype.ext y.4⟩,
+      Subtype.ext hxy
+    ⟩
     have := hxy ▸ congr(PowerSeries.constantCoeff $(y.3))
     simp only [map_mul, ← hz, constantCoeff_one] at this
     have hz : z ≠ 0 := by
       intro rfl
       simp at this
-    simpa only [← mul_assoc, ← RatFunc.C.map_mul, inv_mul_cancel₀ hz, RatFunc.C.map_one,
-    one_mul, mul_one] using congr(RatFunc.C z⁻¹ * $this.symm)
+    simpa only [← mul_assoc, ← RatFunc.C.map_mul, inv_mul_cancel₀ hz, RatFunc.C.map_one, one_mul,
+        mul_one]
+      using congr(RatFunc.C z⁻¹ * $this.symm)
   have : IsLocalRing (A k) := Subring.isLocalRing_of_unit (A k) h_unit
   have : ¬ IsField (A k) := fun h ↦ by
     let Y : A k := ⟨PowerSeries.X, by simp [A]⟩
@@ -58,14 +61,16 @@ theorem ringKrullDim_A_eq_one : ringKrullDim (A k) = 1 := by
     have := congr(PowerSeries.constantCoeff $(h').val)
     simp [Y] at this
   refine ringKrullDim_eq_one_iff_of_isLocalRing_isDomain.mpr ⟨this, fun x hx y hy ↦ ?_⟩
-  have : ringKrullDim (RatFunc k)⟦X⟧ = 1 := IsPrincipalIdealRing.ringKrullDim_eq_one _
-    PowerSeries.not_isField
-  have hy_mem : y.val ∈ IsLocalRing.maximalIdeal (RatFunc k)⟦X⟧ :=
-    fun h ↦ hy (h_unit y.val y.prop h)
+  have : ringKrullDim (RatFunc k)⟦X⟧ = 1 :=
+    IsPrincipalIdealRing.ringKrullDim_eq_one _ PowerSeries.not_isField
+  have hy_mem : y.val ∈ IsLocalRing.maximalIdeal (RatFunc k)⟦X⟧ := fun h ↦
+    hy (h_unit y.val y.prop h)
   have hy_const : PowerSeries.constantCoeff y.val = 0 := by
     simpa [← PowerSeries.ker_coeff_eq_max_ideal] using hy_mem
-  obtain ⟨n, hn⟩ := (ringKrullDim_eq_one_iff_of_isLocalRing_isDomain.mp this).2 x
-    (fun h ↦ hx (Subtype.ext h)) hy_mem
+  obtain ⟨n, hn⟩ :=
+    (ringKrullDim_eq_one_iff_of_isLocalRing_isDomain.mp this).2 x
+      (fun h ↦ hx (Subtype.ext h))
+      hy_mem
   rw [Ideal.mem_span_singleton'] at hn
   obtain ⟨a, ha⟩ := hn
   refine ⟨n + 1, Ideal.mem_span_singleton'.mpr ⟨⟨a * y.val, ?_⟩, Subtype.ext ?_⟩⟩
@@ -73,29 +78,41 @@ theorem ringKrullDim_A_eq_one : ringKrullDim (A k) = 1 := by
   · simp only [Subring.coe_mul, SubmonoidClass.coe_pow, pow_succ, ← ha, mul_assoc, mul_comm x.val _]
 
 theorem ringKrullDim_polynomial_A_eq_three : ringKrullDim (A k)[X] = 3 := by
-  apply le_antisymm
-    (by simpa [ringKrullDim_A_eq_one k] using! Polynomial.ringKrullDim_le (R := A k))
+  apply le_antisymm (by
+    simpa [ringKrullDim_A_eq_one k] using! Polynomial.ringKrullDim_le (R := A k))
   let φ : (A k) →+* k := by
     refine ((((⊤ : Subring k).equivMapOfInjective _ RatFunc.C_injective).symm.trans
-      Subring.topEquiv).toRingHom.comp (Subring.inclusion ?_)).comp
-        (PowerSeries.constantCoeff.comp (A k).subtype).rangeRestrict
+          Subring.topEquiv).toRingHom.comp
+        (Subring.inclusion ?_)).comp
+      (PowerSeries.constantCoeff.comp (A k).subtype).rangeRestrict
     exact fun _ ⟨⟨_, ⟨u, _⟩⟩, _⟩ ↦ ⟨u, ⟨by simp, by simp_all⟩⟩
-  have h_phi : RatFunc.C.comp φ = PowerSeries.constantCoeff.comp (A k).subtype := RingHom.ext
-    fun x ↦ by simp [φ, ← Subring.coe_equivMapOfInjective_apply
-      (S := RatFunc k) (hf := RatFunc.C_injective)]
+  have h_phi : RatFunc.C.comp φ = PowerSeries.constantCoeff.comp (A k).subtype :=
+    RingHom.ext fun x ↦ by
+      simp [φ, ← Subring.coe_equivMapOfInjective_apply (S := RatFunc k) (hf := RatFunc.C_injective)]
   let f : (A k)[X] →+* (RatFunc k)⟦X⟧ := eval₂RingHom (A k).subtype (PowerSeries.C RatFunc.X)
   let Q : PrimeSpectrum (A k)[X] := ⟨RingHom.ker f, RingHom.ker_isPrime f⟩
   let g : (A k)[X] →+* k[X] := mapRingHom φ
   let P1 : PrimeSpectrum (A k)[X] := ⟨RingHom.ker g, RingHom.ker_isPrime g⟩
-  let P2 : PrimeSpectrum (A k)[X] := ⟨RingHom.ker (Polynomial.constantCoeff.comp g),
-    RingHom.ker_isPrime _⟩
+  let P2 : PrimeSpectrum (A k)[X] :=
+    ⟨RingHom.ker (Polynomial.constantCoeff.comp g), RingHom.ker_isPrime _⟩
   let Y : A k := ⟨PowerSeries.X, by simp⟩
   let tY : A k := ⟨PowerSeries.X * (PowerSeries.C RatFunc.X), by simp⟩
   have Y_ne_zero : Y ≠ 0 := fun h ↦ by simpa [Y] using congr($(h).val)
   have phi_Y_eq_zero : φ Y = 0 := RatFunc.C_injective (congr($h_phi Y).trans (by simp [Y]))
-  have comp_eq : (algebraMap k[X] (RatFunc k)).comp g = PowerSeries.constantCoeff.comp f :=
+  have comp_eq : (algebraMap (k[X]) (RatFunc k)).comp g = PowerSeries.constantCoeff.comp f :=
     Polynomial.ringHom_ext (fun z ↦ by simpa [f, g] using congr($h_phi z)) (by simp [f, g])
-  refine Order.le_krullDim_iff.mpr ⟨⟨3, fun | 0 => ⊥ | 1 => Q | 2 => P1 | 3 => P2, fun i ↦ ?_⟩, rfl⟩
+  refine Order.le_krullDim_iff.mpr ⟨
+    ⟨
+      3,
+      fun
+        | 0 => ⊥
+        | 1 => Q
+        | 2 => P1
+        | 3 => P2,
+      fun i ↦ ?_
+    ⟩,
+    rfl
+  ⟩
   fin_cases i
   · let val0 : (A k)[X] := Polynomial.C Y * Polynomial.X - Polynomial.C tY
     have h1_val0 : val0 ∈ Q.asIdeal := by simp [val0, Q, f, Y, tY]

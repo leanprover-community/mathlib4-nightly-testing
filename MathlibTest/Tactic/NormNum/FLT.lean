@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.NormNum
 
 -- From https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/Proving.20FLT.20with.20norm_num/near/429746342

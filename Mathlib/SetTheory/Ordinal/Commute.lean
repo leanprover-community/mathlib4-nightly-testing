@@ -21,10 +21,11 @@ public section
 
 namespace Ordinal
 
-theorem addCommute_iff_eq_mul_natCast {o₁ o₂ : Ordinal} :
-    AddCommute o₁ o₂ ↔ ∃ (o : Ordinal) (n₁ n₂ : ℕ), o * n₁ = o₁ ∧ o * n₂ = o₂ := by
+theorem addCommute_iff_eq_mul_natCast {o₁ o₂ : Ordinal}
+    : AddCommute o₁ o₂ ↔ ∃ (o : Ordinal) (n₁ n₂ : ℕ), o * n₁ = o₁ ∧ o * n₂ = o₂ := by
   refine ⟨fun hcomm ↦ ?_, ?_⟩
-  · induction h : o₁ + o₂ using WellFoundedLT.induction generalizing o₁ o₂ with | ind o ih
+  · induction h : o₁ + o₂ using WellFoundedLT.induction generalizing o₁ o₂ with
+    | ind o ih
     subst h
     wlog hle : o₁ ≤ o₂
     · grind [hcomm.symm]

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Sites.Point.Conservative
 public import Mathlib.CategoryTheory.Sites.Spaces
-
 import Mathlib.Topology.Sheaves.Presheaf
 
 /-!
@@ -33,22 +32,30 @@ open CategoryTheory GrothendieckTopology TopologicalSpace
 
 variable {X : Type u} [TopologicalSpace X] (x : X)
 
-/-- Given a topological space `X` and `x : X`, this is the point of the site
-`(Opens X, Opens.grothendieckTopology X)` corresponding to `x`. -/
+/--
+Given a topological space `X` and `x : X`, this is the point of the site
+`(Opens X, Opens.grothendieckTopology X)` corresponding to `x`.
+-/
 def pointGrothendieckTopology : Point.{u} (grothendieckTopology X) where
   fiber.obj U := ULift.{u} (PLift (x ∈ U))
   fiber.map f := ↾fun h ↦ ⟨⟨leOfHom f h.down.down⟩⟩
-  isCofiltered :=
-    { nonempty := ⟨.mk (obj := ⊤) ⟨⟨by simp⟩⟩⟩
-      cone_objs U V := by
-        induction U with | @mk U hU
-        induction V with | @mk V hV
-        obtain ⟨⟨hU⟩⟩ := hU
-        obtain ⟨⟨hV⟩⟩ := hV
-        exact ⟨.mk (obj := U ⊓ V) ⟨⟨hU, hV⟩⟩,
-          Functor.Elements.homMk (homOfLE (by simp)) rfl,
-          Functor.Elements.homMk (homOfLE (by simp)) rfl, by tauto⟩
-      cone_maps _ _ _ _ := ⟨_, 𝟙 _, rfl⟩ }
+  isCofiltered := {
+    nonempty := ⟨.mk (obj := ⊤) ⟨⟨by simp⟩⟩⟩
+    cone_objs U V := by
+      induction U with
+      | @mk U hU
+      induction V with
+      | @mk V hV
+      obtain ⟨⟨hU⟩⟩ := hU
+      obtain ⟨⟨hV⟩⟩ := hV
+      exact ⟨
+        .mk (obj := U ⊓ V) ⟨⟨hU, hV⟩⟩,
+        Functor.Elements.homMk (homOfLE (by simp)) rfl,
+        Functor.Elements.homMk (homOfLE (by simp)) rfl,
+        by tauto
+      ⟩
+    cone_maps _ _ _ _ := ⟨_, 𝟙 _, rfl⟩
+  }
   initiallySmall := initiallySmall_of_essentiallySmall _
   jointly_surjective := by
     rintro U R hR ⟨⟨hU⟩⟩
@@ -56,15 +63,17 @@ def pointGrothendieckTopology : Point.{u} (grothendieckTopology X) where
     exact ⟨_, _, hf, ⟨⟨hV⟩⟩, rfl⟩
 
 variable (X) in
-/-- When `X` is a topological space, this is the obvious conservative family of
-points on the site `(Opens X, Opens.grothendieckTopology X)`. -/
+/--
+When `X` is a topological space, this is the obvious conservative family of
+points on the site `(Opens X, Opens.grothendieckTopology X)`.
+-/
 def pointsGrothendieckTopology : ObjectProperty (Point.{u} (grothendieckTopology X)) :=
   ObjectProperty.ofObj pointGrothendieckTopology
-  deriving ObjectProperty.Small.{u}
+deriving ObjectProperty.Small.{u}
 
 variable (X) in
-lemma isConservativeFamilyOfPoints_pointsGrothendieckTopology :
-    (pointsGrothendieckTopology X).IsConservativeFamilyOfPoints :=
+lemma isConservativeFamilyOfPoints_pointsGrothendieckTopology
+    : (pointsGrothendieckTopology X).IsConservativeFamilyOfPoints :=
   .mk' (fun U S hS x hx ↦ by
     obtain ⟨V, f, hf, ⟨⟨hV⟩⟩, _⟩ := hS ⟨_, ⟨x⟩⟩ ⟨⟨hx⟩⟩
     exact ⟨V, f, hf, hV⟩)
@@ -73,21 +82,25 @@ instance : HasEnoughPoints.{u} (grothendieckTopology X) where
   exists_objectProperty :=
     ⟨_, inferInstance, isConservativeFamilyOfPoints_pointsGrothendieckTopology X⟩
 
-instance (U : Opens X) (Φ : Point.{u} (grothendieckTopology X)) :
-    Subsingleton (Φ.fiber.obj U) :=
+instance (U : Opens X) (Φ : Point.{u} (grothendieckTopology X)) : Subsingleton (Φ.fiber.obj U) :=
   Φ.subsingleton_fiber_obj (homOfLE le_top) Limits.isTerminalTop
 
 instance : Quiver.IsThin (Point.{u} (grothendieckTopology X)) :=
   fun _ _ ↦ ⟨fun _ _ ↦ by ext; subsingleton⟩
 
-/-- A point `x` of a topological space `X` specializes to `y` if and only iff
+/--
+A point `x` of a topological space `X` specializes to `y` if and only iff
 there is a (unique) morphism between the corresponding points of the site
-`(Opens X, grothendieckTopology X)`. -/
-def pointGrothendieckTopologyHomEquiv {x y : X} :
-    (pointGrothendieckTopology x ⟶ pointGrothendieckTopology y) ≃ x ⤳ y where
+`(Opens X, grothendieckTopology X)`.
+-/
+def pointGrothendieckTopologyHomEquiv {x y : X}
+    : (pointGrothendieckTopology x ⟶ pointGrothendieckTopology y) ≃ x ⤳ y where
   toFun f := specializes_iff_forall_open.2 (fun U h₁ h₂ ↦ (f.hom.app ⟨U, h₁⟩ ⟨⟨h₂⟩⟩).down.down)
-  invFun s := { hom.app U := ↾fun hU ↦
-    ⟨⟨specializes_iff_forall_open.1 s _ U.2 hU.down.down⟩⟩ }
+  invFun s := {
+    hom.app U :=
+      ↾fun hU ↦
+        ⟨⟨specializes_iff_forall_open.1 s _ U.2 hU.down.down⟩⟩
+  }
   left_inv _ := by subsingleton
   right_inv _ := rfl
 

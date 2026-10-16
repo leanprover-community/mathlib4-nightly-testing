@@ -6,7 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Data.List.Lattice
-
 import Mathlib.Data.Bool.Basic
 import Mathlib.Order.Lattice
 
@@ -26,20 +25,19 @@ and strictly less than `n`.
 
 @[expose] public section
 
-
 open Nat
 
 namespace List
 
-/-- `Ico n m` is the list of natural numbers `n ≤ x < m`.
+/--
+`Ico n m` is the list of natural numbers `n ≤ x < m`.
 (Ico stands for "interval, closed-open".)
 
 See also `Mathlib/Order/Interval/Basic.lean` for modelling intervals in general preorders, as well
 as sibling definitions alongside it such as `Set.Ico`, `Multiset.Ico` and `Finset.Ico`
 for sets, multisets and finite sets respectively.
 -/
-def Ico (n m : ℕ) : List ℕ :=
-  range' n (m - n)
+def Ico (n m : ℕ) : List ℕ := range' n (m - n)
 
 namespace Ico
 
@@ -69,20 +67,18 @@ theorem eq_nil_of_le {n m : ℕ} (h : m ≤ n) : Ico n m = [] := by
 theorem map_add (n m k : ℕ) : (Ico n m).map (k + ·) = Ico (n + k) (m + k) := by
   rw [Ico, Ico, map_add_range', Nat.add_sub_add_right m k, Nat.add_comm n k]
 
-theorem map_sub (n m k : ℕ) (h₁ : k ≤ n) :
-    ((Ico n m).map fun x => x - k) = Ico (n - k) (m - k) := by
+theorem map_sub (n m k : ℕ) (h₁ : k ≤ n)
+    : ((Ico n m).map fun x => x - k) = Ico (n - k) (m - k) := by
   rw [Ico, Ico, Nat.sub_sub_sub_cancel_right h₁, map_sub_range' h₁]
 
-@[simp]
-theorem self_empty {n : ℕ} : Ico n n = [] :=
-  eq_nil_of_le (le_refl n)
+@[simp] theorem self_empty {n : ℕ} : Ico n n = [] := eq_nil_of_le (le_refl n)
 
 @[simp]
 theorem eq_empty_iff {n m : ℕ} : Ico n m = [] ↔ m ≤ n :=
   Iff.intro (fun h => Nat.sub_eq_zero_iff_le.mp <| by rw [← length, h, List.length]) eq_nil_of_le
 
-theorem append_consecutive {n m l : ℕ} (hnm : n ≤ m) (hml : m ≤ l) :
-    Ico n m ++ Ico m l = Ico n l := by
+theorem append_consecutive {n m l : ℕ} (hnm : n ≤ m) (hml : m ≤ l)
+    : Ico n m ++ Ico m l = Ico n l := by
   dsimp only [Ico]
   convert range'_append using 2
   · rw [Nat.one_mul, Nat.add_sub_cancel' hnm]
@@ -98,8 +94,8 @@ theorem inter_consecutive (n m l : ℕ) : Ico n m ∩ Ico m l = [] := by
   exact not_lt_of_ge h₃ h₂
 
 @[simp]
-theorem bagInter_consecutive (n m l : Nat) :
-    @List.bagInter ℕ instBEqOfDecidableEq (Ico n m) (Ico m l) = [] :=
+theorem bagInter_consecutive (n m l : Nat)
+    : @List.bagInter ℕ instBEqOfDecidableEq (Ico n m) (Ico m l) = [] :=
   (bagInter_nil_iff_inter_nil _ _).2 (by convert inter_consecutive n m l)
 
 @[simp]
@@ -129,33 +125,31 @@ theorem isChain_succ (n m : ℕ) : IsChain (fun a b => b = succ a) (Ico n m) := 
 
 theorem notMem_top {n m : ℕ} : m ∉ Ico n m := by simp
 
-theorem filter_lt_of_top_le {n m l : ℕ} (hml : m ≤ l) :
-    ((Ico n m).filter fun x => x < l) = Ico n m :=
-  filter_eq_self.2 fun k hk => by
-    simp only [(lt_of_lt_of_le (mem.1 hk).2 hml), decide_true]
+theorem filter_lt_of_top_le {n m l : ℕ} (hml : m ≤ l)
+    : ((Ico n m).filter fun x => x < l) = Ico n m :=
+  filter_eq_self.2 fun k hk => by simp only [(lt_of_lt_of_le (mem.1 hk).2 hml), decide_true]
 
 theorem filter_lt_of_le_bot {n m l : ℕ} (hln : l ≤ n) : ((Ico n m).filter fun x => x < l) = [] :=
   filter_eq_nil_iff.2 fun k hk => by
-     simp only [decide_eq_true_eq, not_lt]
-     apply le_trans hln
-     exact (mem.1 hk).1
+    simp only [decide_eq_true_eq, not_lt]
+    apply le_trans hln
+    exact (mem.1 hk).1
 
-theorem filter_lt_of_ge {n m l : ℕ} (hlm : l ≤ m) :
-    ((Ico n m).filter fun x => x < l) = Ico n l := by
+theorem filter_lt_of_ge {n m l : ℕ} (hlm : l ≤ m)
+    : ((Ico n m).filter fun x => x < l) = Ico n l := by
   rcases le_total n l with hnl | hln
   · rw [← append_consecutive hnl hlm, filter_append, filter_lt_of_top_le (le_refl l),
       filter_lt_of_le_bot (le_refl l), append_nil]
   · rw [eq_nil_of_le hln, filter_lt_of_le_bot hln]
 
 @[simp]
-theorem filter_lt (n m l : ℕ) :
-    ((Ico n m).filter fun x => x < l) = Ico n (min m l) := by
+theorem filter_lt (n m l : ℕ) : ((Ico n m).filter fun x => x < l) = Ico n (min m l) := by
   rcases le_total m l with hml | hlm
   · rw [min_eq_left hml, filter_lt_of_top_le hml]
   · rw [min_eq_right hlm, filter_lt_of_ge hlm]
 
-theorem filter_le_of_le_bot {n m l : ℕ} (hln : l ≤ n) :
-    ((Ico n m).filter fun x => l ≤ x) = Ico n m :=
+theorem filter_le_of_le_bot {n m l : ℕ} (hln : l ≤ n)
+    : ((Ico n m).filter fun x => l ≤ x) = Ico n m :=
   filter_eq_self.2 fun k hk => by
     rw [decide_eq_true_eq]
     exact le_trans hln (mem.1 hk).1
@@ -165,8 +159,8 @@ theorem filter_le_of_top_le {n m l : ℕ} (hml : m ≤ l) : ((Ico n m).filter fu
     rw [decide_eq_true_eq]
     exact not_le_of_gt (lt_of_lt_of_le (mem.1 hk).2 hml)
 
-theorem filter_le_of_le {n m l : ℕ} (hnl : n ≤ l) :
-    ((Ico n m).filter fun x => l ≤ x) = Ico l m := by
+theorem filter_le_of_le {n m l : ℕ} (hnl : n ≤ l)
+    : ((Ico n m).filter fun x => l ≤ x) = Ico l m := by
   rcases le_total l m with hlm | hml
   · rw [← append_consecutive hnl hlm, filter_append, filter_le_of_top_le (le_refl l),
       filter_le_of_le_bot (le_refl l), nil_append]
@@ -178,24 +172,23 @@ theorem filter_le (n m l : ℕ) : ((Ico n m).filter fun x => l ≤ x) = Ico (max
   · rw [max_eq_right hnl, filter_le_of_le hnl]
   · rw [max_eq_left hln, filter_le_of_le_bot hln]
 
-theorem filter_lt_of_succ_bot {n m : ℕ} (hnm : n < m) :
-    ((Ico n m).filter fun x => x < n + 1) = [n] := by
+theorem filter_lt_of_succ_bot {n m : ℕ} (hnm : n < m)
+    : ((Ico n m).filter fun x => x < n + 1) = [n] := by
   have r : min m (n + 1) = n + 1 := (@inf_eq_right _ _ m (n + 1)).mpr hnm
   simp [filter_lt n m (n + 1), r]
 
 @[simp]
 theorem filter_le_of_bot {n m : ℕ} (hnm : n < m) : ((Ico n m).filter fun x => x ≤ n) = [n] := by
   rw [← filter_lt_of_succ_bot hnm]
-  exact filter_congr fun _ _ => by
-    simpa using Nat.lt_succ_iff.symm
+  exact filter_congr fun _ _ => by simpa using Nat.lt_succ_iff.symm
 
-/-- For any natural numbers n, a, and b, one of the following holds:
+/--
+For any natural numbers n, a, and b, one of the following holds:
 1. n < a
 2. n ≥ b
 3. n ∈ Ico a b
 -/
-theorem trichotomy (n a b : ℕ) : n < a ∨ b ≤ n ∨ n ∈ Ico a b := by
-  grind [mem]
+theorem trichotomy (n a b : ℕ) : n < a ∨ b ≤ n ∨ n ∈ Ico a b := by grind [mem]
 
 end Ico
 

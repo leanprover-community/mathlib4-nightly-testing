@@ -1,24 +1,29 @@
 module
+
 import Mathlib.Algebra.Group.Subgroup.Defs
 import Mathlib.Order.CompleteLattice.Basic
 import Mathlib.Tactic.DefEqAbuse
 
 private axiom test_sorry : ∀ {α}, α
 
-/-- info: #defeq_abuse: tactic succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected. -/
+/--
+info: #defeq_abuse: tactic succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected.
+-/
 #guard_msgs in
-example (a b : ℕ) (h : a = b) : a = b := by
-  #defeq_abuse in rw [h]
+example (a b : ℕ) (h : a = b) : a = b := by #defeq_abuse in rw [h]
 
-/-- info: #defeq_abuse: command succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected. -/
+/--
+info: #defeq_abuse: command succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected.
+-/
 #guard_msgs in
 #defeq_abuse in
 def myTestFun (n : ℕ) : ℕ := n + 1
 
-/-- warning: #defeq_abuse: tactic fails regardless of `backward.isDefEq.respectTransparency` setting. -/
+/--
+warning: #defeq_abuse: tactic fails regardless of `backward.isDefEq.respectTransparency` setting.
+-/
 #guard_msgs (warning, drop error) in
-example (n : Nat) : n = n + 1 := by
-  #defeq_abuse in rfl
+example (n : Nat) : n = n + 1 := by #defeq_abuse in rfl
 
 section SetAliasAbuse
 /-! ### Type alias with lattice instance diamond
@@ -52,12 +57,12 @@ noncomputable instance myPredBoundedOrder : BoundedOrder (MyPred ℕ) where
   bot _ := False
   top _ := True
 
-instance : Membership ℕ (MyPred ℕ) where mem s a := s a
-noncomputable instance : Singleton ℕ (MyPred ℕ) where singleton a x := x = a
+instance : Membership ℕ (MyPred ℕ) where
+  mem s a := s a
+noncomputable instance : Singleton ℕ (MyPred ℕ) where
+  singleton a x := x = a
 
-lemma myPred_disjoint_singleton_right (s : MyPred ℕ) (a : ℕ) :
-    Disjoint s {a} ↔ a ∉ s :=
-  test_sorry
+lemma myPred_disjoint_singleton_right (s : MyPred ℕ) (a : ℕ) : Disjoint s {a} ↔ a ∉ s := test_sorry
 
 -- Defined AFTER the lemma, so the lemma's elaborated type uses the DistribLattice path,
 -- while this provides PartialOrder/OrderBot through a different path (CompleteSemilatticeInf).
@@ -100,39 +105,39 @@ with a plain `def MySub₂.toAddSubgroup` as a virtual parent. -/
 structure MySub₂ (G : Type) [AddCommGroup G] extends AddSubmonoid G where
   neg_closed : ∀ {x}, x ∈ carrier → -x ∈ carrier
 
-def MySub₂.toAddSubgroup {G : Type} [AddCommGroup G] (s : MySub₂ G) : AddSubgroup G :=
-  { s.toAddSubmonoid with neg_mem' := s.neg_closed }
+def MySub₂.toAddSubgroup {G : Type} [AddCommGroup G] (s : MySub₂ G) : AddSubgroup G := {
+  s.toAddSubmonoid with
+  neg_mem' := s.neg_closed
+}
 
 instance {G : Type} [AddCommGroup G] : CoeSort (MySub₂ G) Type where
   coe s := {x : G // x ∈ s.carrier}
 
-instance mySub₂AddCommMonoid {G : Type} [AddCommGroup G] (s : MySub₂ G) :
-    AddCommMonoid s :=
+instance mySub₂AddCommMonoid {G : Type} [AddCommGroup G] (s : MySub₂ G) : AddCommMonoid s :=
   s.toAddSubmonoid.toAddCommMonoid
 
-instance mySub₂AddCommGroup {G : Type} [AddCommGroup G] (s : MySub₂ G) :
-    AddCommGroup s := fast_instance%
-  { s.toAddSubgroup.toAddCommGroup with }
+instance mySub₂AddCommGroup {G : Type} [AddCommGroup G] (s : MySub₂ G) : AddCommGroup s :=
+  fast_instance%
+    { s.toAddSubgroup.toAddCommGroup with }
 
 class MyAction (R α : Type) [AddCommMonoid α] where
   mySmul : R → α → α
 
-instance mySub₂MyAction {G : Type} [AddCommGroup G] (s : MySub₂ G) :
-    MyAction ℕ s where
+instance mySub₂MyAction {G : Type} [AddCommGroup G] (s : MySub₂ G) : MyAction ℕ s where
   mySmul _n x := x
 
-def myOp {α : Type} [AddCommGroup α] [MyAction ℕ α] (x : α) : α :=
-  -(MyAction.mySmul (R := ℕ) 1 x)
+def myOp {α : Type} [AddCommGroup α] [MyAction ℕ α] (x : α) : α := -(MyAction.mySmul (R := ℕ) 1 x)
 
 #guard_msgs in
-def testVirtualParent {G : Type} [AddCommGroup G] (s : MySub₂ G) (x : s) : s :=
-  myOp x
+def testVirtualParent {G : Type} [AddCommGroup G] (s : MySub₂ G) (x : s) : s := myOp x
 
 -- The fix: marking the virtual parent `def` as `@[instance_reducible]` makes it
 -- transparent enough for instance synthesis to unify the two `AddCommMonoid` paths.
 attribute [instance_reducible] MySub₂.toAddSubgroup
 
-/-- info: #defeq_abuse: command succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected. -/
+/--
+info: #defeq_abuse: command succeeds with `backward.isDefEq.respectTransparency true`. No abuse detected.
+-/
 #guard_msgs in
 #defeq_abuse in
 def testVirtualParentFixed {G : Type} [AddCommGroup G] (s : MySub₂ G) (x : s) : s :=
@@ -177,8 +182,10 @@ instance instGrCInt : GrC Int where
   toZoC := zoFromGrC
   add a b := a + b
 
-class NumC (α : Type _) (n : Nat) where fromNat : α
-instance {α} [ZoC α] : NumC α 0 where fromNat := ZoC.zo
+class NumC (α : Type _) (n : Nat) where
+  fromNat : α
+instance {α} [ZoC α] : NumC α 0 where
+  fromNat := ZoC.zo
 
 theorem zoC_eq_iff {α} [GrC α] (a : α) : NumC.fromNat 0 = a ↔ a = GrC.add a a := test_sorry
 
@@ -190,7 +197,6 @@ The following isDefEq checks are the root causes of the failure:
   ❌️ @ZoC.zo Int instZoCInt =?= @ZoC.zo Int (@GrC.toZoC Int ?_)
 -/
 #guard_msgs in
-example (a : Int) : NumC.fromNat 0 = a ↔ a = GrC.add a a := by
-  #defeq_abuse in rw [zoC_eq_iff]
+example (a : Int) : NumC.fromNat 0 = a ↔ a = GrC.add a a := by #defeq_abuse in rw [zoC_eq_iff]
 
 end IdenticalSidesAbuse

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Constructions.SimpleGraph
 public import Mathlib.Probability.Distributions.SetBernoulli
-
 import Mathlib.Data.Sym.Card
 
 /-!
@@ -44,8 +43,7 @@ variable {V : Type*} {p : I}
 variable (V p) in
 /-- The binomial distribution with parameter `p` on simple graphs with vertices `V`. -/
 @[expose]
-noncomputable def binomialRandom : Measure (SimpleGraph V) :=
-  setBer(Sym2.diagSetᶜ, p).comap edgeSet
+noncomputable def binomialRandom : Measure (SimpleGraph V) := setBer(Sym2.diagSetᶜ, p).comap edgeSet
 
 @[inherit_doc] scoped notation "G(" V ", " p ")" => binomialRandom V p
 
@@ -60,14 +58,16 @@ lemma binomialRandom_eq_map : G(V, p) = map fromEdgeSet setBer(Sym2.diagSetᶜ, 
   exact ⟨fromEdgeSet S, by simpa [← Set.compl_ofPred, Set.subset_compl_iff_disjoint_right] using hS⟩
 
 variable (p) in
-lemma binomialRandom_apply' (S : Set (SimpleGraph V)) :
-    G(V, p) S = setBer(Sym2.diagSetᶜ, p) (edgeSet '' S) := by
+lemma binomialRandom_apply' (S : Set (SimpleGraph V))
+    : G(V, p) S = setBer(Sym2.diagSetᶜ, p) (edgeSet '' S) := by
   rw [binomialRandom, measurableEmbedding_edgeSet.comap_apply]
 
 variable (p) in
-lemma binomialRandom_apply (S : Set (SimpleGraph V)) :
-    G(V, p) S = infinitePi (fun e : Sym2 V ↦ Ber(¬ e.IsDiag, False, p))
-      ((fun G e ↦ e ∈ G.edgeSet) '' S) := by
+lemma binomialRandom_apply (S : Set (SimpleGraph V))
+    : G(V, p) S
+      = infinitePi
+        (fun e : Sym2 V ↦ Ber(¬ e.IsDiag, False, p))
+        ((fun G e ↦ e ∈ G.edgeSet) '' S) := by
   simp [binomialRandom_apply', setBernoulli_apply, ← Set.image_comp]
 
 instance : IsProbabilityMeasure G(V, p) := by
@@ -85,9 +85,11 @@ variable (V) in
 end Countable
 
 variable (p) in
-@[simp] lemma binomialRandom_singleton [Finite V] (G : SimpleGraph V) :
-    G(V, p) {G} = toNNReal p ^ G.edgeSet.ncard *
-      toNNReal (σ p) ^ ((Nat.card V).choose 2 - G.edgeSet.ncard) := by
+@[simp]
+lemma binomialRandom_singleton [Finite V] (G : SimpleGraph V)
+    : G(V, p) {G}
+      = toNNReal p ^ G.edgeSet.ncard
+        * toNNReal (σ p) ^ ((Nat.card V).choose 2 - G.edgeSet.ncard) := by
   classical
   cases nonempty_fintype V
   simp only [binomialRandom, measurableEmbedding_edgeSet.comap_apply, Set.image_singleton,

@@ -19,14 +19,14 @@ open CategoryTheory
 
 universe t w v u
 
-variable (R : Type t) [Ring R] (C : Type u) [Category.{v} C] [Abelian C] [Linear R C]
-  [HasDerivedCategory.{w} C]
+variable
+  (R : Type t) [Ring R]
+  (C : Type u) [Category.{v} C] [Abelian C] [Linear R C] [HasDerivedCategory.{w} C]
 
 namespace DerivedCategory
 
 noncomputable instance : Linear R (DerivedCategory C) :=
-  Localization.linear R (DerivedCategory.Qh : _ ⥤ DerivedCategory C)
-    (HomotopyCategory.quasiIso C _)
+  Localization.linear R (DerivedCategory.Qh : _ ⥤ DerivedCategory C) (HomotopyCategory.quasiIso C _)
 
 instance : Functor.Linear R (DerivedCategory.Qh : _ ⥤ DerivedCategory C) :=
   Localization.functor_linear _ _ _

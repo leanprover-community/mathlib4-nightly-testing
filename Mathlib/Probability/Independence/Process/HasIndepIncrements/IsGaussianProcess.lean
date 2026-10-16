@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Probability.Distributions.Gaussian.IsGaussianProcess.Def
 public import Mathlib.Probability.Independence.Process.HasIndepIncrements.Basic
-
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence
 
@@ -52,24 +51,26 @@ section Bot
 
 variable [Bot T]
 
-/-- Given a finite set `I : Finset T` of cardinality `n`,
+/--
+Given a finite set `I : Finset T` of cardinality `n`,
 `I.orderEmbOfFinWithBot : Fin (#I + 1) → T` is the map `(⊥, t₁, ..., tₙ)`,
-where `t₁ < ... < tₙ` are the elements of `I` and `⊥` is the smallest element of `T`. -/
+where `t₁ < ... < tₙ` are the elements of `I` and `⊥` is the smallest element of `T`.
+-/
 noncomputable def orderEmbOfFinWithBot (i : Fin (#I + 1)) : T :=
-  if h : i = 0
-    then ⊥
-    else I.orderEmbOfFin rfl (i.pred h)
+  if h : i = 0 then
+    ⊥
+  else
+    I.orderEmbOfFin rfl (i.pred h)
 
-@[simp]
-lemma orderEmbOfFinWithBot_zero : I.orderEmbOfFinWithBot 0 = ⊥ := rfl
+@[simp] lemma orderEmbOfFinWithBot_zero : I.orderEmbOfFinWithBot 0 = ⊥ := rfl
 
-lemma orderEmbOfFinWithBot_of_ne_zero (i : Fin (#I + 1)) (hi : i ≠ 0) :
-    I.orderEmbOfFinWithBot i = I.orderEmbOfFin rfl (i.pred hi) := by
+lemma orderEmbOfFinWithBot_of_ne_zero (i : Fin (#I + 1)) (hi : i ≠ 0)
+    : I.orderEmbOfFinWithBot i = I.orderEmbOfFin rfl (i.pred hi) := by
   rw [orderEmbOfFinWithBot, dite_eq_right hi]
 
 @[simp]
-lemma orderEmbOfFinWithBot_succ (i : Fin #I) :
-    I.orderEmbOfFinWithBot i.succ = I.orderEmbOfFin rfl i := by
+lemma orderEmbOfFinWithBot_succ (i : Fin #I)
+    : I.orderEmbOfFinWithBot i.succ = I.orderEmbOfFin rfl i := by
   rw [orderEmbOfFinWithBot_of_ne_zero, Fin.pred_succ]
   simp
 
@@ -86,23 +87,29 @@ end Finset
 
 namespace ProbabilityTheory
 
-/-- `incrementsToRestrict I` is a continuous linear map `f` such that if `t₁ < ... < tₙ` are
-then elements of `I`, then `f (xₜ₁, xₜ₂ - xₜ₁, ..., xₜₙ - xₜₙ₋₁) = (xₜ₁, ..., xₜₙ)`. -/
-noncomputable def incrementsToRestrict (R : Type*) [Semiring R] [AddCommMonoid E]
-    [Module R E] [TopologicalSpace E] [ContinuousAdd E] (I : Finset T) :
-    (Fin #I → E) →L[R] (I → E) :=
-  { toFun x i := ∑ j ≤ (I.orderIsoOfFin rfl).symm i, x j
-    map_add' x y := by ext; simp [sum_add_distrib]
-    map_smul' m x := by ext; simp [smul_sum]
-    cont := by fun_prop }
+/--
+`incrementsToRestrict I` is a continuous linear map `f` such that if `t₁ < ... < tₙ` are
+then elements of `I`, then `f (xₜ₁, xₜ₂ - xₜ₁, ..., xₜₙ - xₜₙ₋₁) = (xₜ₁, ..., xₜₙ)`.
+-/
+noncomputable def incrementsToRestrict
+    (R : Type*) [Semiring R] [AddCommMonoid E] [Module R E] [TopologicalSpace E] [ContinuousAdd E]
+    (I : Finset T)
+    : (Fin #I → E) →L[R] (I → E) := {
+  toFun x i := ∑ j ≤ (I.orderIsoOfFin rfl).symm i, x j
+  map_add' x y := by ext; simp [sum_add_distrib]
+  map_smul' m x := by ext; simp [smul_sum]
+  cont := by fun_prop
+}
 
-lemma incrementsToRestrict_increments_orderEmbOfFinWithBot_ae_eq_restrict [Bot T] (R : Type*)
-    [Semiring R] [AddCommGroup E] [Module R E] [TopologicalSpace E] [ContinuousAdd E]
-    {X : T → Ω → E} (h : ∀ᵐ ω ∂P, X ⊥ ω = 0) (I : Finset T) :
-    (fun ω ↦ I.restrict (X · ω)) =ᵐ[P]
-      (incrementsToRestrict R I) ∘
-        (fun ω i ↦ X (I.orderEmbOfFinWithBot i.succ) ω -
-          X (I.orderEmbOfFinWithBot i.castSucc) ω) := by
+lemma incrementsToRestrict_increments_orderEmbOfFinWithBot_ae_eq_restrict
+    [Bot T]
+    (R : Type*) [Semiring R] [AddCommGroup E] [Module R E] [TopologicalSpace E] [ContinuousAdd E]
+    {X : T → Ω → E} (h : ∀ᵐ ω ∂P, X ⊥ ω = 0)
+    (I : Finset T)
+    : (fun ω ↦ I.restrict (X · ω)) =ᵐ[P]
+        (incrementsToRestrict R I) ∘
+          (fun ω i ↦ X (I.orderEmbOfFinWithBot i.succ) ω -
+            X (I.orderEmbOfFinWithBot i.castSucc) ω) := by
   filter_upwards [h] with ω hω
   ext t
   simp only [restrict, incrementsToRestrict, ContinuousLinearMap.coe_mk', LinearMap.coe_mk,
@@ -110,14 +117,16 @@ lemma incrementsToRestrict_increments_orderEmbOfFinWithBot_ae_eq_restrict [Bot T
   rw [Fin.sum_Iic_sub _ (fun j ↦ X (I.orderEmbOfFinWithBot j) ω)]
   simp [hω, orderEmbOfFin]
 
-/-- A stochastic process `X` with independent increments, such that `X t` is Gaussian for
-all `t` and such that `X ⊥ = 0` almost surely is a Gaussian process. -/
-public lemma HasIndepIncrements.isGaussianProcess [OrderBot T]
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E] [BorelSpace E]
+/--
+A stochastic process `X` with independent increments, such that `X t` is Gaussian for
+all `t` and such that `X ⊥ = 0` almost surely is a Gaussian process.
+-/
+public lemma HasIndepIncrements.isGaussianProcess
+    [OrderBot T] [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E] [BorelSpace E]
     [SecondCountableTopology E] [CompleteSpace E]
-    {X : T → Ω → E} (law : ∀ t, HasGaussianLaw (X t) P) (h_bot : ∀ᵐ ω ∂P, X ⊥ ω = 0)
-    (incr : HasIndepIncrements X P) :
-    IsGaussianProcess X P where
+    {X : T → Ω → E}
+    (law : ∀ t, HasGaussianLaw (X t) P) (h_bot : ∀ᵐ ω ∂P, X ⊥ ω = 0) (incr : HasIndepIncrements X P)
+    : IsGaussianProcess X P where
   hasGaussianLaw I := by
     -- Label `t₁ < ... < tₙ` the elements of `I`.
     -- We want to show that `(X t₁, ..., X tₙ)` is Gaussian.
@@ -138,7 +147,7 @@ public lemma HasIndepIncrements.isGaussianProcess [OrderBot T]
     -- `X tᵢ` is independent from `X tᵢ₊₁ - X tᵢ`.
     refine IndepFun.hasGaussianLaw_sub_of_sub (law _) (law _) ?_
     -- This follows from the fact that `X` has independent increments and `X ⊥ = 0` almost surely.
-    exact incr.indepFun_eval_sub bot_le
-      (monotone_orderEmbOfFinWithBot I (Fin.castSucc_le_succ i)) h_bot
+    exact incr.indepFun_eval_sub bot_le (monotone_orderEmbOfFinWithBot I (Fin.castSucc_le_succ i))
+      h_bot
 
 end ProbabilityTheory

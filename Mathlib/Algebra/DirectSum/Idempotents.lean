@@ -25,10 +25,11 @@ section OrthogonalIdempotents
 
 variable {R I : Type*} [Semiring R] [DecidableEq I] (V : I → Ideal R) [Decomposition V]
 
-/-- The decomposition of `(1 : R)` where `1 = e₁ + e₂ + ⋯ + eₙ` which is induced by
-  the decomposition of the semiring `R = V1 ⊕ V2 ⊕ ⋯ ⊕ Vn`. -/
-def idempotent (i : I) : R :=
-  decompose V 1 i
+/--
+The decomposition of `(1 : R)` where `1 = e₁ + e₂ + ⋯ + eₙ` which is induced by
+the decomposition of the semiring `R = V1 ⊕ V2 ⊕ ⋯ ⊕ Vn`.
+-/
+def idempotent (i : I) : R := decompose V 1 i
 
 lemma decompose_eq_mul_idempotent (x : R) (i : I) : decompose V x i = x * idempotent V i := by
   rw [← smul_eq_mul (a := x), idempotent, ← Submodule.coe_smul, ← smul_apply, ← decompose_smul,
@@ -37,16 +38,18 @@ lemma decompose_eq_mul_idempotent (x : R) (i : I) : decompose V x i = x * idempo
 lemma isIdempotentElem_idempotent (i : I) : IsIdempotentElem (idempotent V i : R) := by
   rw [IsIdempotentElem, ← decompose_eq_mul_idempotent, idempotent, decompose_coe, of_eq_same]
 
-/-- If a semiring can be decomposed into direct sum of finite left ideals `Vᵢ`
-  where `1 = e₁ + ... + eₙ` and `eᵢ ∈ Vᵢ`, then `eᵢ` is a family of complete
-  orthogonal idempotents. -/
-theorem completeOrthogonalIdempotents_idempotent [Fintype I] :
-    CompleteOrthogonalIdempotents (idempotent V) where
+/--
+If a semiring can be decomposed into direct sum of finite left ideals `Vᵢ`
+where `1 = e₁ + ... + eₙ` and `eᵢ ∈ Vᵢ`, then `eᵢ` is a family of complete
+orthogonal idempotents.
+-/
+theorem completeOrthogonalIdempotents_idempotent [Fintype I]
+    : CompleteOrthogonalIdempotents (idempotent V) where
   idem := isIdempotentElem_idempotent V
   ortho i j hij := by
     simp only
-    rw [← decompose_eq_mul_idempotent, idempotent, decompose_coe,
-      of_eq_of_ne (h := hij.symm), Submodule.coe_zero]
+    rw [← decompose_eq_mul_idempotent, idempotent, decompose_coe, of_eq_of_ne (h := hij.symm),
+      Submodule.coe_zero]
   complete := by
     apply (decompose V).injective
     refine DFunLike.ext _ _ fun i ↦ ?_

@@ -26,8 +26,6 @@ namespace Localization
 
 variable {M : Type u} [CommMonoid M] (S : Submonoid M)
 
-@[to_additive]
-theorem cardinalMk_le : #(Localization S) ≤ #M :=
-  OreLocalization.cardinalMk_le S
+@[to_additive] theorem cardinalMk_le : #(Localization S) ≤ #M := OreLocalization.cardinalMk_le S
 
 end Localization

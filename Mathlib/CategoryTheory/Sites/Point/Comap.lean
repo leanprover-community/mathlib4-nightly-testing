@@ -28,15 +28,18 @@ namespace CategoryTheory.GrothendieckTopology.Point
 
 open Limits
 
-variable {C D : Type*} [Category* C] [Category* D]
-  {K : GrothendieckTopology D}
-  (Φ : Point.{w} K) (F : C ⥤ D) [RepresentablyFlat F] {J : GrothendieckTopology C}
-  (hF : CoverPreserving J K F)
+variable
+  {C D : Type*} [Category* C] [Category* D]
+  {K : GrothendieckTopology D} (Φ : Point.{w} K)
+  (F : C ⥤ D) [RepresentablyFlat F]
+  {J : GrothendieckTopology C} (hF : CoverPreserving J K F)
   [InitiallySmall (F ⋙ Φ.fiber).Elements]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- If `F : C ⥤ D` is a representably flat and cover preserving functor between sites, then
-any point on `D` induces a point on `C` by precomposing the fiber functor with `F`. -/
+/--
+If `F : C ⥤ D` is a representably flat and cover preserving functor between sites, then
+any point on `D` induces a point on `C` by precomposing the fiber functor with `F`.
+-/
 @[simps]
 def comap : Point.{w} J where
   fiber := F ⋙ Φ.fiber
@@ -46,30 +49,32 @@ def comap : Point.{w} J where
     use W, g, hg, Φ.fiber.map h y
     simp
 
-variable (A : Type*) [Category.{v} A] [HasProducts.{w} A]
-  [Functor.IsContinuous F J K]
+variable (A : Type*) [Category.{v} A] [HasProducts.{w} A] [Functor.IsContinuous F J K]
 
-/-- Given a continuous functor `F : C ⥤ D` between sites `(C, J)` and `(D, K)`,
+/--
+Given a continuous functor `F : C ⥤ D` between sites `(C, J)` and `(D, K)`,
 and a point `Φ` of `(D, K)`, this is the isomorphism between
 `Φ.skyscraperSheafFunctor ⋙ F.sheafPushforwardContinuous A J K` and
-`(Φ.comap F hF).skyscraperSheafFunctor`. -/
-noncomputable def skyscraperSheafFunctorCompSheafPushforwardContinuous :
-    Φ.skyscraperSheafFunctor ⋙ F.sheafPushforwardContinuous A J K ≅
-      (Φ.comap F hF).skyscraperSheafFunctor :=
+`(Φ.comap F hF).skyscraperSheafFunctor`.
+-/
+noncomputable def skyscraperSheafFunctorCompSheafPushforwardContinuous
+    : Φ.skyscraperSheafFunctor ⋙ F.sheafPushforwardContinuous A J K
+      ≅ (Φ.comap F hF).skyscraperSheafFunctor :=
   Iso.refl _
 
-variable [(F.sheafPushforwardContinuous A J K).IsRightAdjoint]
-  [HasColimitsOfSize.{w, w} A]
+variable [(F.sheafPushforwardContinuous A J K).IsRightAdjoint] [HasColimitsOfSize.{w, w} A]
 
-/-- Given a continuous functor `F : C ⥤ D` between sites `(C, J)` and `(D, K)`,
+/--
+Given a continuous functor `F : C ⥤ D` between sites `(C, J)` and `(D, K)`,
 and a point `Φ` of `(D, K)`, the fiber functor on sheaves of the
 point `Φ.comap F hF` on `(C, J)` identifies to the composition
-`F.sheafPullback A J K ⋙ Φ.sheafFiber`. -/
+`F.sheafPullback A J K ⋙ Φ.sheafFiber`.
+-/
 @[simps! -isSimp]
-noncomputable def sheafFiberComapIso :
-    (Φ.comap F hF).sheafFiber ≅ F.sheafPullback A J K ⋙ Φ.sheafFiber :=
+noncomputable def sheafFiberComapIso
+    : (Φ.comap F hF).sheafFiber ≅ F.sheafPullback A J K ⋙ Φ.sheafFiber :=
   (conjugateIsoEquiv ((F.sheafAdjunctionContinuous A J K).comp Φ.skyscraperSheafAdjunction)
-    (Φ.comap F hF).skyscraperSheafAdjunction).symm
-      (Φ.skyscraperSheafFunctorCompSheafPushforwardContinuous F hF A)
+      (Φ.comap F hF).skyscraperSheafAdjunction).symm
+    (Φ.skyscraperSheafFunctorCompSheafPushforwardContinuous F hF A)
 
 end CategoryTheory.GrothendieckTopology.Point

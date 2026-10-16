@@ -28,17 +28,23 @@ open Order InfHom Set
 
 variable {X : Type*}
 
-/-- A nucleus is an inflationary idempotent `inf`-preserving endomorphism of a semilattice.
+/--
+A nucleus is an inflationary idempotent `inf`-preserving endomorphism of a semilattice.
 
-In a frame, nuclei correspond to sublocales. See `nucleusIsoSublocale`. -/
+In a frame, nuclei correspond to sublocales. See `nucleusIsoSublocale`.
+-/
 structure Nucleus (X : Type*) [SemilatticeInf X] extends InfHom X X where
-  /-- A nucleus is idempotent.
+  /--
+  A nucleus is idempotent.
 
-  Do not use this directly. Instead use `NucleusClass.idempotent`. -/
+  Do not use this directly. Instead use `NucleusClass.idempotent`.
+  -/
   idempotent' (x : X) : toFun (toFun x) ≤ toFun x
-  /-- A nucleus is increasing.
+  /--
+  A nucleus is increasing.
 
-  Do not use this directly. Instead use `NucleusClass.le_apply`. -/
+  Do not use this directly. Instead use `NucleusClass.le_apply`.
+  -/
   le_apply' (x : X) : x ≤ toFun x
 
 /-- `NucleusClass F X` states that F is a type of nuclei. -/
@@ -78,26 +84,24 @@ def toClosureOperator (n : Nucleus X) : ClosureOperator X :=
 
 @[simp] lemma idempotent (x : X) : n (n x) = n x := n.toClosureOperator.idempotent x
 
-lemma le_apply : x ≤ n x :=
-  n.toClosureOperator.le_closure x
+lemma le_apply : x ≤ n x := n.toClosureOperator.le_closure x
 
 lemma monotone : Monotone n := n.toClosureOperator.monotone
 
-lemma map_inf : n (x ⊓ y) = n x ⊓ n y :=
-  InfHomClass.map_inf n x y
+lemma map_inf : n (x ⊓ y) = n x ⊓ n y := InfHomClass.map_inf n x y
 
-@[ext] lemma ext {m n : Nucleus X} (h : ∀ a, m a = n a) : m = n :=
-  DFunLike.ext m n h
+@[ext] lemma ext {m n : Nucleus X} (h : ∀ a, m a = n a) : m = n := DFunLike.ext m n h
 
 instance : PartialOrder (Nucleus X) := .lift (⇑) DFunLike.coe_injective
 
 @[simp, norm_cast] lemma coe_le_coe : ⇑m ≤ n ↔ m ≤ n := .rfl
 @[simp, norm_cast] lemma coe_lt_coe : ⇑m < n ↔ m < n := .rfl
 
-@[simp, gcongr] lemma mk_le_mk (toInfHom₁ toInfHom₂ : InfHom X X)
-    (le_apply₁ le_apply₂ idempotent₁ idempotent₂) :
-    mk toInfHom₁ le_apply₁ idempotent₁ ≤ mk toInfHom₂ le_apply₂ idempotent₂ ↔
-      toInfHom₁ ≤ toInfHom₂ := .rfl
+@[simp, gcongr]
+lemma mk_le_mk (toInfHom₁ toInfHom₂ : InfHom X X) (le_apply₁ le_apply₂ idempotent₁ idempotent₂)
+    : mk toInfHom₁ le_apply₁ idempotent₁ ≤ mk toInfHom₂ le_apply₂ idempotent₂
+      ↔ toInfHom₁ ≤ toInfHom₂ :=
+  .rfl
 
 instance : Min (Nucleus X) where
   min m n := {
@@ -112,8 +116,7 @@ instance : Min (Nucleus X) where
 @[simp, norm_cast] lemma coe_inf (m n : Nucleus X) : ⇑(m ⊓ n) = ⇑m ⊓ ⇑n := rfl
 @[simp] lemma inf_apply (m n : Nucleus X) (x : X) : (m ⊓ n) x = m x ⊓ n x := rfl
 
-instance : SemilatticeInf (Nucleus X) :=
-  DFunLike.coe_injective.semilatticeInf _ .rfl .rfl coe_inf
+instance : SemilatticeInf (Nucleus X) := DFunLike.coe_injective.semilatticeInf _ .rfl .rfl coe_inf
 
 /-- The smallest nucleus is the identity. -/
 instance instBot : OrderBot (Nucleus X) where
@@ -152,8 +155,8 @@ section CompleteLattice
 variable [CompleteLattice X]
 
 instance : InfSet (Nucleus X) where
-  sInf s :=
-  { toFun x := ⨅ f ∈ s, f x,
+  sInf s := {
+    toFun x := ⨅ f ∈ s, f x
     map_inf' x y := by
       simp only [InfHomClass.map_inf, le_antisymm_iff, le_inf_iff, le_iInf_iff]
       refine ⟨⟨?_, ?_⟩, ?_⟩ <;> rintro f hf
@@ -161,17 +164,20 @@ instance : InfSet (Nucleus X) where
       · exact iInf₂_le_of_le f hf inf_le_right
       · exact ⟨inf_le_of_left_le <| iInf₂_le f hf, inf_le_of_right_le <| iInf₂_le f hf⟩
     idempotent' x := iInf₂_mono fun f hf ↦ (f.monotone <| iInf₂_le f hf).trans_eq (f.idempotent _)
-    le_apply' x := by simp [le_apply] }
+    le_apply' x := by simp [le_apply]
+  }
 
 @[simp] lemma sInf_apply (s : Set (Nucleus X)) (x : X) : sInf s x = ⨅ j ∈ s, j x := rfl
 
-@[simp] lemma iInf_apply {ι : Type*} (f : ι → (Nucleus X)) (x : X) : iInf f x = ⨅ j, f j x := by
+@[simp]
+lemma iInf_apply {ι : Type*} (f : ι → (Nucleus X)) (x : X) : iInf f x = ⨅ j, f j x := by
   rw [iInf, sInf_apply, iInf_range]
 
 instance : CompleteSemilatticeInf (Nucleus X) where
-  isGLB_sInf _ :=
-    ⟨by simp +contextual [mem_lowerBounds, ← coe_le_coe, Pi.le_def, iInf_le_iff],
-      by simp +contextual [mem_lowerBounds, mem_upperBounds, ← coe_le_coe, Pi.le_def]⟩
+  isGLB_sInf _ := ⟨
+    by simp +contextual [mem_lowerBounds, ← coe_le_coe, Pi.le_def, iInf_le_iff],
+    by simp +contextual [mem_lowerBounds, mem_upperBounds, ← coe_le_coe, Pi.le_def]
+  ⟩
 
 instance : CompleteLattice (Nucleus X) where
   __ : SemilatticeInf (Nucleus X) := inferInstance
@@ -196,18 +202,22 @@ lemma map_himp_apply (n : Nucleus X) (x y : X) : n (x ⇨ n y) = x ⇨ n y :=
   le_antisymm (map_himp_le.trans_eq <| by rw [n.idempotent]) n.le_apply
 
 instance : HImp (Nucleus X) where
-  himp m n :=
-  { toFun x := ⨅ y ≥ x, m y ⇨ n y
-    idempotent' x := le_iInf₂ fun y hy ↦
-      calc
-        ⨅ z ≥ ⨅ w ≥ x, m w ⇨ n w, m z ⇨ n z
-        _ ≤ m (m y ⇨ n y) ⇨ n (m y ⇨ n y) := iInf₂_le (m y ⇨ n y) <| iInf₂_le y hy
-        _ = m y ⇨ n y := by
-          rw [map_himp_apply, himp_himp, ← map_inf, inf_of_le_right (le_trans n.le_apply le_himp)]
+  himp m n := {
+    toFun x := ⨅ y ≥ x, m y ⇨ n y
+    idempotent' x :=
+      le_iInf₂ fun y hy ↦
+        calc
+          ⨅ z ≥ ⨅ w ≥ x, m w ⇨ n w, m z ⇨ n z
+          _ ≤ m (m y ⇨ n y) ⇨ n (m y ⇨ n y) := iInf₂_le (m y ⇨ n y) <| iInf₂_le y hy
+          _ = m y ⇨ n y := by
+            rw [map_himp_apply, himp_himp, ← map_inf, inf_of_le_right (le_trans n.le_apply le_himp)]
     map_inf' x y := by
       simp only [and_assoc, le_antisymm_iff, le_inf_iff, le_iInf_iff]
-      refine ⟨fun z hxz ↦ iInf₂_le _ <| inf_le_of_left_le hxz,
-        fun z hyz ↦ iInf₂_le _ <| inf_le_of_right_le hyz, ?_⟩
+      refine ⟨
+        fun z hxz ↦ iInf₂_le _ <| inf_le_of_left_le hxz,
+        fun z hyz ↦ iInf₂_le _ <| inf_le_of_right_le hyz,
+        ?_
+      ⟩
       have : Nonempty X := ⟨x⟩
       simp only [iInf_inf, le_iInf_iff, le_himp_iff, iInf_le_iff, le_inf_iff, forall_and,
         forall_const, and_imp]
@@ -219,16 +229,16 @@ instance : HImp (Nucleus X) where
         _ ≤ n (x ⊔ k) ⊓ n (y ⊔ k) := by
           gcongr; exacts [hlx (x ⊔ k) le_sup_left, hly (y ⊔ k) le_sup_left]
         _ = n k := by rw [← map_inf, ← sup_inf_right, sup_eq_right.2 hxyk]
-    le_apply' := by
-      simpa using fun _ _ h ↦ inf_le_of_left_le <| h.trans n.le_apply }
+    le_apply' := by simpa using fun _ _ h ↦ inf_le_of_left_le <| h.trans n.le_apply
+  }
 
 @[simp] lemma himp_apply (m n : Nucleus X) (x : X) : (m ⇨ n) x = ⨅ y ≥ x, m y ⇨ n y := rfl
 
 instance : HeytingAlgebra (Nucleus X) where
   compl m := m ⇨ ⊥
   le_himp_iff _ n _ := by
-    simpa [← coe_le_coe, Pi.le_def]
-      using ⟨fun h i ↦ h i i le_rfl, fun h i j _ ↦ (h j).trans' <| by gcongr⟩
+    simpa [← coe_le_coe, Pi.le_def] using
+      ⟨fun h i ↦ h i i le_rfl, fun h i j _ ↦ (h j).trans' <| by gcongr⟩
   himp_bot m := rfl
 
 instance : Order.Frame (Nucleus X) where
@@ -251,16 +261,19 @@ set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : CompleteLattice (range n) := n.giAux.liftCompleteLattice
 
-instance : Frame (range n) := .ofMinimalAxioms {
-  inf_sSup_le_iSup_inf a s := by
-    simp_rw [← Subtype.coe_le_coe, iSup_subtype', iSup, sSup, n.giAux.gc.u_inf]
-    rw [rangeFactorization_coe, ← mem_range.1 a.prop, ← map_inf]
-    apply n.monotone
-    simp_rw [inf_sSup_eq, sSup_image, iSup_range, iSup_image, iSup_subtype', n.giAux.gc.u_inf,
-      le_rfl] }
+instance : Frame (range n) :=
+  .ofMinimalAxioms {
+    inf_sSup_le_iSup_inf a s := by
+      simp_rw [← Subtype.coe_le_coe, iSup_subtype', iSup, sSup, n.giAux.gc.u_inf]
+      rw [rangeFactorization_coe, ← mem_range.1 a.prop, ← map_inf]
+      apply n.monotone
+      simp_rw [inf_sSup_eq, sSup_image, iSup_range, iSup_image, iSup_subtype', n.giAux.gc.u_inf,
+        le_rfl]
+  }
 
 /-- Restrict a nucleus to its range. -/
-@[simps] def restrict (n : Nucleus X) : FrameHom X (range n) where
+@[simps]
+def restrict (n : Nucleus X) : FrameHom X (range n) where
   toFun := rangeFactorization n
   map_inf' a b := by ext; exact map_inf
   map_top' := by ext; exact map_top n
@@ -268,8 +281,10 @@ instance : Frame (range n) := .ofMinimalAxioms {
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-/-- The restriction of a nucleus to its range forms a Galois insertion with the forgetful map from
-the range to the original frame. -/
+/--
+The restriction of a nucleus to its range forms a Galois insertion with the forgetful map from
+the range to the original frame.
+-/
 def giRestrict (n : Nucleus X) : GaloisInsertion n.restrict Subtype.val := n.giAux
 
 lemma comp_eq_right_iff_le : n ∘ m = m ↔ n ≤ m where
@@ -278,12 +293,12 @@ lemma comp_eq_right_iff_le : n ∘ m = m ↔ n ≤ m where
     rw [← coe_le_coe, ← h]
     exact fun _ ↦ monotone le_apply
 
-@[simp] lemma range_subset_range : range m ⊆ range n ↔ n ≤ m where
+@[simp]
+lemma range_subset_range : range m ⊆ range n ↔ n ≤ m where
   mp h x := by
     rw [← mem_range.mp (Set.range_subset_iff.mp h x)]
     exact n.monotone m.le_apply
-  mpr h :=
-    range_subset_range_iff_exists_comp.mpr ⟨m, (comp_eq_right_iff_le.mpr h).symm⟩
+  mpr h := range_subset_range_iff_exists_comp.mpr ⟨m, (comp_eq_right_iff_le.mpr h).symm⟩
 
 end Frame
 end Nucleus

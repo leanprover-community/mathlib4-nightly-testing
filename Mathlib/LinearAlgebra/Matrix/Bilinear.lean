@@ -30,15 +30,15 @@ variable (n) [SMulCommClass R A A]
 
 /-- A version of `LinearMap.mulLeft` for matrix multiplication. -/
 @[simps]
-def mulLeftLinearMap (X : Matrix l m A) :
-    Matrix m n A →ₗ[R] Matrix l n A where
+def mulLeftLinearMap (X : Matrix l m A) : Matrix m n A →ₗ[R] Matrix l n A where
   toFun := (X * ·)
   map_smul' := Matrix.mul_smul _
   map_add' := Matrix.mul_add _
 
 /-- On square matrices, `Matrix.mulLeftLinearMap` and `LinearMap.mulLeft` coincide. -/
-theorem mulLeftLinearMap_eq_mulLeft :
-    mulLeftLinearMap m R = LinearMap.mulLeft R (A := Matrix m m A) := rfl
+theorem mulLeftLinearMap_eq_mulLeft
+    : mulLeftLinearMap m R = LinearMap.mulLeft R (A := Matrix m m A) :=
+  rfl
 
 /-- A version of `LinearMap.mulLeft_zero_eq_zero` for matrix multiplication. -/
 @[simp]
@@ -52,15 +52,15 @@ variable (l) [IsScalarTower R A A]
 
 /-- A version of `LinearMap.mulRight` for matrix multiplication. -/
 @[simps]
-def mulRightLinearMap (Y : Matrix m n A) :
-    Matrix l m A →ₗ[R] Matrix l n A where
+def mulRightLinearMap (Y : Matrix m n A) : Matrix l m A →ₗ[R] Matrix l n A where
   toFun := (· * Y)
   map_smul' _ _ := Matrix.smul_mul _ _ _
   map_add' _ _ := Matrix.add_mul _ _ _
 
 /-- On square matrices, `Matrix.mulRightLinearMap` and `LinearMap.mulRight` coincide. -/
-theorem mulRightLinearMap_eq_mulRight :
-    mulRightLinearMap m R = LinearMap.mulRight R (A := Matrix m m A) := rfl
+theorem mulRightLinearMap_eq_mulRight
+    : mulRightLinearMap m R = LinearMap.mulRight R (A := Matrix m m A) :=
+  rfl
 
 /-- A version of `LinearMap.mulLeft_zero_eq_zero` for matrix multiplication. -/
 @[simp]
@@ -82,8 +82,7 @@ def mulLinearMap : Matrix l m A →ₗ[R] Matrix m n A →ₗ[R] Matrix l n A wh
   map_smul' _ _ := LinearMap.ext fun _ => Matrix.smul_mul _ _ _
 
 /-- On square matrices, `Matrix.mulLinearMap` and `LinearMap.mul` coincide. -/
-theorem mulLinearMap_eq_mul :
-    mulLinearMap R = LinearMap.mul R (A := Matrix m m A) := rfl
+theorem mulLinearMap_eq_mul : mulLinearMap R = LinearMap.mul R (A := Matrix m m A) := rfl
 
 end NonUnitalNonAssocSemiring
 
@@ -94,15 +93,15 @@ variable [Fintype m] [Fintype n] [Semiring R] [NonUnitalSemiring A] [Module R A]
 
 /-- A version of `LinearMap.mulLeft_mul` for matrix multiplication. -/
 @[simp]
-theorem mulLeftLinearMap_mul [SMulCommClass R A A] (a : Matrix l m A) (b : Matrix m n A) :
-    mulLeftLinearMap o R (a * b) = (mulLeftLinearMap o R a).comp (mulLeftLinearMap o R b) := by
+theorem mulLeftLinearMap_mul [SMulCommClass R A A] (a : Matrix l m A) (b : Matrix m n A)
+    : mulLeftLinearMap o R (a * b) = (mulLeftLinearMap o R a).comp (mulLeftLinearMap o R b) := by
   ext
   simp only [mulLeftLinearMap_apply, LinearMap.comp_apply, Matrix.mul_assoc]
 
 /-- A version of `LinearMap.mulRight_mul` for matrix multiplication. -/
 @[simp]
-theorem mulRightLinearMap_mul [IsScalarTower R A A] (a : Matrix m n A) (b : Matrix n o A) :
-    mulRightLinearMap l R (a * b) = (mulRightLinearMap l R b).comp (mulRightLinearMap l R a) := by
+theorem mulRightLinearMap_mul [IsScalarTower R A A] (a : Matrix m n A) (b : Matrix n o A)
+    : mulRightLinearMap l R (a * b) = (mulRightLinearMap l R b).comp (mulRightLinearMap l R a) := by
   ext
   simp only [mulRightLinearMap_apply, LinearMap.comp_apply, Matrix.mul_assoc]
 
@@ -112,9 +111,9 @@ variable [Fintype m] [Fintype n] [CommSemiring R] [NonUnitalSemiring A] [Module 
 variable [SMulCommClass R A A] [IsScalarTower R A A]
 
 /-- A version of `LinearMap.commute_mulLeft_right` for matrix multiplication. -/
-theorem commute_mulLeftLinearMap_mulRightLinearMap (a : Matrix l m A) (b : Matrix n o A) :
-    mulLeftLinearMap o R a ∘ₗ mulRightLinearMap m R b =
-      mulRightLinearMap l R b ∘ₗ mulLeftLinearMap n R a := by
+theorem commute_mulLeftLinearMap_mulRightLinearMap (a : Matrix l m A) (b : Matrix n o A)
+    : mulLeftLinearMap o R a ∘ₗ mulRightLinearMap m R b
+      = mulRightLinearMap l R b ∘ₗ mulLeftLinearMap n R a := by
   ext c : 1
   exact (Matrix.mul_assoc a c b).symm
 
@@ -136,8 +135,8 @@ theorem mulLeftLinearMap_one : mulLeftLinearMap n R (1 : Matrix m m A) = LinearM
 omit [DecidableEq m] in
 /-- A version of `LinearMap.mulLeft_eq_zero_iff` for matrix multiplication. -/
 @[simp]
-theorem mulLeftLinearMap_eq_zero_iff [Nonempty n] (a : Matrix l m A) :
-    mulLeftLinearMap n R a = 0 ↔ a = 0 := by
+theorem mulLeftLinearMap_eq_zero_iff [Nonempty n] (a : Matrix l m A)
+    : mulLeftLinearMap n R a = 0 ↔ a = 0 := by
   constructor <;> intro h
   · inhabit n
     ext i j
@@ -149,10 +148,11 @@ theorem mulLeftLinearMap_eq_zero_iff [Nonempty n] (a : Matrix l m A) :
 
 /-- A version of `LinearMap.pow_mulLeft` for matrix multiplication. -/
 @[simp]
-theorem pow_mulLeftLinearMap (a : Matrix m m A) (k : ℕ) :
-    mulLeftLinearMap n R a ^ k = mulLeftLinearMap n R (a ^ k) :=
+theorem pow_mulLeftLinearMap (a : Matrix m m A) (k : ℕ)
+    : mulLeftLinearMap n R a ^ k = mulLeftLinearMap n R (a ^ k) :=
   match k with
-  | 0 => by rw [pow_zero, pow_zero, mulLeftLinearMap_one, Module.End.one_eq_id]
+  | 0 => by
+    rw [pow_zero, pow_zero, mulLeftLinearMap_one, Module.End.one_eq_id]
   | (n + 1) => by
     rw [pow_succ, pow_succ, mulLeftLinearMap_mul, Module.End.mul_eq_comp, pow_mulLeftLinearMap]
 
@@ -169,8 +169,8 @@ theorem mulRightLinearMap_one : mulRightLinearMap l R (1 : Matrix m m A) = Linea
 omit [DecidableEq m] in
 /-- A version of `LinearMap.mulRight_eq_zero_iff` for matrix multiplication. -/
 @[simp]
-theorem mulRightLinearMap_eq_zero_iff (a : Matrix m n A) [Nonempty l] :
-    mulRightLinearMap l R a = 0 ↔ a = 0 := by
+theorem mulRightLinearMap_eq_zero_iff (a : Matrix m n A) [Nonempty l]
+    : mulRightLinearMap l R a = 0 ↔ a = 0 := by
   constructor <;> intro h
   · inhabit l
     ext i j
@@ -182,10 +182,11 @@ theorem mulRightLinearMap_eq_zero_iff (a : Matrix m n A) [Nonempty l] :
 
 /-- A version of `LinearMap.pow_mulRight` for matrix multiplication. -/
 @[simp]
-theorem pow_mulRightLinearMap (a : Matrix m m A) (k : ℕ) :
-    mulRightLinearMap l R a ^ k = mulRightLinearMap l R (a ^ k) :=
+theorem pow_mulRightLinearMap (a : Matrix m m A) (k : ℕ)
+    : mulRightLinearMap l R a ^ k = mulRightLinearMap l R (a ^ k) :=
   match k with
-  | 0 => by rw [pow_zero, pow_zero, mulRightLinearMap_one, Module.End.one_eq_id]
+  | 0 => by
+    rw [pow_zero, pow_zero, mulRightLinearMap_one, Module.End.one_eq_id]
   | (n + 1) => by
     rw [pow_succ, pow_succ', mulRightLinearMap_mul, Module.End.mul_eq_comp, pow_mulRightLinearMap]
 

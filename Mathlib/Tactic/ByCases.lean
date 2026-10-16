@@ -35,7 +35,8 @@ local elab "try_push_neg_at" cfg:optConfig h:ident : tactic => do
     (ifUnchanged := .silent)
 
 macro_rules
-  | `(tactic| by_cases! $cfg:optConfig $e) => `(tactic| by_cases! $cfg h : $e)
+  | `(tactic| by_cases! $cfg:optConfig $e) =>
+    `(tactic| by_cases! $cfg h : $e)
   | `(tactic| by_cases! $cfg:optConfig $h : $e) =>
     `(tactic| by_cases $h : $e; on_goal 2 => try_push_neg_at $cfg $h:ident)
 

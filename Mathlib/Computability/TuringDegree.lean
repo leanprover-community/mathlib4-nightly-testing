@@ -40,17 +40,11 @@ public section
 
 variable {f g h : ℕ →. ℕ}
 
-/--
-`f` is Turing reducible to `g` if `f` is partial recursive given access to the oracle `g`
--/
-abbrev TuringReducible (f g : ℕ →. ℕ) : Prop :=
-  RecursiveIn {g} f
+/-- `f` is Turing reducible to `g` if `f` is partial recursive given access to the oracle `g` -/
+abbrev TuringReducible (f g : ℕ →. ℕ) : Prop := RecursiveIn {g} f
 
-/--
-`f` is Turing equivalent to `g` if `f` is reducible to `g` and `g` is reducible to `f`.
--/
-abbrev TuringEquivalent (f g : ℕ →. ℕ) : Prop :=
-  AntisymmRel TuringReducible f g
+/-- `f` is Turing equivalent to `g` if `f` is reducible to `g` and `g` is reducible to `f`. -/
+abbrev TuringEquivalent (f g : ℕ →. ℕ) : Prop := AntisymmRel TuringReducible f g
 
 @[inherit_doc] scoped[Computability] infix:50 " ≤ᵀ " => TuringReducible
 @[inherit_doc] scoped[Computability] infix:50 " ≡ᵀ " => TuringEquivalent
@@ -58,23 +52,23 @@ abbrev TuringEquivalent (f g : ℕ →. ℕ) : Prop :=
 open scoped Computability
 
 /-- If a function is partial recursive, then it is recursive in every partial function. -/
-lemma Partrec.turingReducible (pF : Partrec f) : f ≤ᵀ g :=
-  pF.recursiveIn
+lemma Partrec.turingReducible (pF : Partrec f) : f ≤ᵀ g := pF.recursiveIn
 
 /-- If a function is recursive in a constant partial function, then it is partial recursive. -/
 lemma TuringReducible.partrec_of_const {s} (hf : f ≤ᵀ fun _ => s) : Partrec f :=
   RecursiveIn.partrec_of_const hf
 
-/-- A partial function `f` is partial recursive if and only if it is recursive in
-every partial function `g`. -/
+/--
+A partial function `f` is partial recursive if and only if it is recursive in
+every partial function `g`.
+-/
 theorem partrec_iff_forall_turingReducible : Partrec f ↔ ∀ g, f ≤ᵀ g :=
   ⟨fun hf _ => hf.turingReducible, fun hf => hf (fun _ => .none) |>.partrec_of_const⟩
 
 protected theorem TuringReducible.refl (f : ℕ →. ℕ) : f ≤ᵀ f := .oracle _ <| by simp
 protected theorem TuringReducible.rfl : f ≤ᵀ f := .refl _
 
-theorem TuringReducible.trans (hg : f ≤ᵀ g) (hh : g ≤ᵀ h) : f ≤ᵀ h :=
-  hg.subst (by simpa using hh)
+theorem TuringReducible.trans (hg : f ≤ᵀ g) (hh : g ≤ᵀ h) : f ≤ᵀ h := hg.subst (by simpa using hh)
 
 instance : IsPreorder (ℕ →. ℕ) TuringReducible where
   refl _ := .rfl
@@ -84,22 +78,17 @@ theorem TuringEquivalent.equivalence : Equivalence TuringEquivalent :=
   (AntisymmRel.setoid _ _).iseqv
 
 @[refl]
-protected theorem TuringEquivalent.refl (f : ℕ →. ℕ) : f ≡ᵀ f :=
-  Equivalence.refl equivalence f
+protected theorem TuringEquivalent.refl (f : ℕ →. ℕ) : f ≡ᵀ f := Equivalence.refl equivalence f
 
 @[symm]
-theorem TuringEquivalent.symm {f g : ℕ →. ℕ} (h : f ≡ᵀ g) : g ≡ᵀ f :=
-  Equivalence.symm equivalence h
+theorem TuringEquivalent.symm {f g : ℕ →. ℕ} (h : f ≡ᵀ g) : g ≡ᵀ f := Equivalence.symm equivalence h
 
 @[trans]
 theorem TuringEquivalent.trans (f g h : ℕ →. ℕ) (h₁ : f ≡ᵀ g) (h₂ : g ≡ᵀ h) : f ≡ᵀ h :=
   Equivalence.trans equivalence h₁ h₂
 
-/--
-Turing degrees are the equivalence classes of partial functions under Turing equivalence.
--/
-abbrev TuringDegree :=
-  Antisymmetrization _ TuringReducible
+/-- Turing degrees are the equivalence classes of partial functions under Turing equivalence. -/
+abbrev TuringDegree := Antisymmetrization _ TuringReducible
 
 set_option backward.privateInPublic true in
 private instance : Preorder (ℕ →. ℕ) where

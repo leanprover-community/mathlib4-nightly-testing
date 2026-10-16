@@ -51,14 +51,14 @@ open scoped SetRel Uniformity Topology
 
 universe u v w
 
-/-- Space of Cauchy filters
+/--
+Space of Cauchy filters
 
 This is essentially the completion of a uniform space. The embeddings are the neighbourhood filters.
 This space is not minimal, the separated uniform space (i.e. quotiented on the intersection of all
 entourages) is necessary for this.
 -/
-def CauchyFilter (α : Type u) [UniformSpace α] : Type u :=
-  { f : Filter α // Cauchy f }
+def CauchyFilter (α : Type u) [UniformSpace α] : Type u := {f : Filter α // Cauchy f}
 
 namespace CauchyFilter
 
@@ -80,34 +80,34 @@ theorem monotone_gen : Monotone (gen : SetRel α α → _) :=
 -- Porting note: this was a calc proof, but I could not make it work
 private theorem symm_gen : map Prod.swap ((𝓤 α).lift' gen) ≤ (𝓤 α).lift' gen := by
   let f := fun s : SetRel α α =>
-        { p : CauchyFilter α × CauchyFilter α | s ∈ (p.2.val ×ˢ p.1.val : Filter (α × α)) }
+    { p : CauchyFilter α × CauchyFilter α | s ∈ (p.2.val ×ˢ p.1.val : Filter (α × α)) }
   have h₁ : map Prod.swap ((𝓤 α).lift' gen) = (𝓤 α).lift' f := by
     delta gen
     simp [f, map_lift'_eq, monotone_ofPred, Filter.monotone_mem, Function.comp_def,
       image_swap_eq_preimage_swap]
   have h₂ : (𝓤 α).lift' f ≤ (𝓤 α).lift' gen :=
     uniformity_lift_le_swap
-      (monotone_principal.comp
-        (monotone_ofPred fun p => @Filter.monotone_mem _ (p.2.val ×ˢ p.1.val)))
+      (monotone_principal.comp (monotone_ofPred fun p =>
+        @Filter.monotone_mem _ (p.2.val ×ˢ p.1.val)))
       (by
         have h := fun p : CauchyFilter α × CauchyFilter α => @Filter.prod_comm _ _ p.2.val p.1.val
         simp only [Function.comp, h, mem_map, f]
         exact le_rfl)
   exact h₁.trans_le h₂
 
-private theorem subset_gen_relComp {s t : SetRel α α} : gen s ○ gen t ⊆ gen (s ○ t) :=
-  fun ⟨f, g⟩ ⟨h, h₁, h₂⟩ =>
+private theorem subset_gen_relComp {s t : SetRel α α}
+    : gen s ○ gen t ⊆ gen (s ○ t) := fun ⟨f, g⟩ ⟨h, h₁, h₂⟩ =>
   let ⟨t₁, (ht₁ : t₁ ∈ f.val), t₂, (ht₂ : t₂ ∈ h.val), (h₁ : t₁ ×ˢ t₂ ⊆ s)⟩ := mem_prod_iff.mp h₁
   let ⟨t₃, (ht₃ : t₃ ∈ h.val), t₄, (ht₄ : t₄ ∈ g.val), (h₂ : t₃ ×ˢ t₄ ⊆ t)⟩ := mem_prod_iff.mp h₂
   have : t₂ ∩ t₃ ∈ h.val := inter_mem ht₂ ht₃
   let ⟨x, xt₂, xt₃⟩ := h.property.left.nonempty_of_mem this
   (f.val ×ˢ g.val).sets_of_superset (prod_mem_prod ht₁ ht₄)
     fun ⟨a, b⟩ ⟨(ha : a ∈ t₁), (hb : b ∈ t₄)⟩ =>
-    ⟨x, h₁ (show (a, x) ∈ t₁ ×ˢ t₂ from ⟨ha, xt₂⟩), h₂ (show (x, b) ∈ t₃ ×ˢ t₄ from ⟨xt₃, hb⟩)⟩
+      ⟨x, h₁ (show (a, x) ∈ t₁ ×ˢ t₂ from ⟨ha, xt₂⟩), h₂ (show (x, b) ∈ t₃ ×ˢ t₄ from ⟨xt₃, hb⟩)⟩
 
 private theorem comp_gen : ((𝓤 α).lift' gen).lift' (fun s ↦ s ○ s) ≤ (𝓤 α).lift' gen :=
   calc
-        ((𝓤 α).lift' gen).lift' (fun s ↦ s ○ s)
+    ((𝓤 α).lift' gen).lift' (fun s ↦ s ○ s)
     _ = (𝓤 α).lift' fun s ↦ gen s ○ gen s := by
       rw [lift'_lift'_assoc]
       · exact monotone_gen
@@ -120,40 +120,38 @@ private theorem comp_gen : ((𝓤 α).lift' gen).lift' (fun s ↦ s ○ s) ≤ (
     _ ≤ (𝓤 α).lift' gen := lift'_mono comp_le_uniformity le_rfl
 
 instance : UniformSpace (CauchyFilter α) :=
-  UniformSpace.ofCore
-    { uniformity := (𝓤 α).lift' gen
-      refl := principal_le_lift'.2 fun _s hs ⟨a, b⟩ =>
-        fun (a_eq_b : a = b) => a_eq_b ▸ a.property.right hs
-      symm := by exact symm_gen
-      comp := by exact comp_gen }
+  UniformSpace.ofCore {
+    uniformity := (𝓤 α).lift' gen
+    refl :=
+      principal_le_lift'.2 fun _s hs ⟨a, b⟩ => fun (a_eq_b : a = b) => a_eq_b ▸ a.property.right hs
+    symm := by exact symm_gen
+    comp := by exact comp_gen
+  }
 
-theorem mem_uniformity {s : Set (CauchyFilter α × CauchyFilter α)} :
-    s ∈ 𝓤 (CauchyFilter α) ↔ ∃ t ∈ 𝓤 α, gen t ⊆ s :=
+theorem mem_uniformity {s : Set (CauchyFilter α × CauchyFilter α)}
+    : s ∈ 𝓤 (CauchyFilter α) ↔ ∃ t ∈ 𝓤 α, gen t ⊆ s :=
   mem_lift'_sets monotone_gen
 
-theorem basis_uniformity {ι : Sort*} {p : ι → Prop} {s : ι → SetRel α α} (h : (𝓤 α).HasBasis p s) :
-    (𝓤 (CauchyFilter α)).HasBasis p (gen ∘ s) :=
+theorem basis_uniformity {ι : Sort*} {p : ι → Prop} {s : ι → SetRel α α} (h : (𝓤 α).HasBasis p s)
+    : (𝓤 (CauchyFilter α)).HasBasis p (gen ∘ s) :=
   h.lift' monotone_gen
 
-theorem mem_uniformity' {s : Set (CauchyFilter α × CauchyFilter α)} :
-    s ∈ 𝓤 (CauchyFilter α) ↔ ∃ t ∈ 𝓤 α, ∀ f g : CauchyFilter α, t ∈ f.1 ×ˢ g.1 → (f, g) ∈ s := by
+theorem mem_uniformity' {s : Set (CauchyFilter α × CauchyFilter α)}
+    : s ∈ 𝓤 (CauchyFilter α) ↔ ∃ t ∈ 𝓤 α, ∀ f g : CauchyFilter α, t ∈ f.1 ×ˢ g.1 → (f, g) ∈ s := by
   refine mem_uniformity.trans (exists_congr (fun t => and_congr_right_iff.mpr (fun _h => ?_)))
   exact ⟨fun h _f _g ht => h ht, fun h _p hp => h _ _ hp⟩
 
 /-- Embedding of `α` into its completion `CauchyFilter α` -/
-def pureCauchy (a : α) : CauchyFilter α :=
-  ⟨pure a, cauchy_pure⟩
+def pureCauchy (a : α) : CauchyFilter α := ⟨pure a, cauchy_pure⟩
 
 theorem isUniformInducing_pureCauchy : IsUniformInducing (pureCauchy : α → CauchyFilter α) :=
   ⟨have : (preimage fun x : α × α => (pureCauchy x.fst, pureCauchy x.snd)) ∘ gen = id :=
-      funext fun s =>
-        Set.ext fun ⟨a₁, a₂⟩ => by simp [preimage, gen, pureCauchy]
-    calc
-      comap (fun x : α × α => (pureCauchy x.fst, pureCauchy x.snd)) ((𝓤 α).lift' gen) =
-          (𝓤 α).lift' ((preimage fun x : α × α => (pureCauchy x.fst, pureCauchy x.snd)) ∘ gen) :=
-        comap_lift'_eq
-      _ = 𝓤 α := by simp [this]
-      ⟩
+     funext fun s => Set.ext fun ⟨a₁, a₂⟩ => by simp [preimage, gen, pureCauchy]
+   calc
+     comap (fun x : α × α => (pureCauchy x.fst, pureCauchy x.snd)) ((𝓤 α).lift' gen)
+         = (𝓤 α).lift' ((preimage fun x : α × α => (pureCauchy x.fst, pureCauchy x.snd)) ∘ gen) :=
+       comap_lift'_eq
+     _ = 𝓤 α := by simp [this]⟩
 
 theorem isUniformEmbedding_pureCauchy : IsUniformEmbedding (pureCauchy : α → CauchyFilter α) where
   __ := isUniformInducing_pureCauchy
@@ -167,10 +165,14 @@ theorem denseRange_pureCauchy : DenseRange (pureCauchy : α → CauchyFilter α)
     let ⟨t, ht, (h : t ×ˢ t ⊆ t')⟩ := mem_prod_same_iff.mp this
     let ⟨x, (hx : x ∈ t)⟩ := f.property.left.nonempty_of_mem ht
     have : t'' ∈ f.val ×ˢ pure x :=
-      mem_prod_iff.mpr
-        ⟨t, ht, { y : α | (x, y) ∈ t' }, h <| mk_mem_prod hx hx,
-          fun ⟨a, b⟩ ⟨(h₁ : a ∈ t), (h₂ : (x, b) ∈ t')⟩ =>
-          ht'₂ <| SetRel.prodMk_mem_comp (@h (a, x) ⟨h₁, hx⟩) h₂⟩
+      mem_prod_iff.mpr ⟨
+        t,
+        ht,
+        { y : α | (x, y) ∈ t' },
+        h <| mk_mem_prod hx hx,
+        fun ⟨a, b⟩ ⟨(h₁ : a ∈ t), (h₂ : (x, b) ∈ t')⟩ =>
+          ht'₂ <| SetRel.prodMk_mem_comp (@h (a, x) ⟨h₁, hx⟩) h₂
+      ⟩
     ⟨x, ht''₂ <| by dsimp [gen]; exact this⟩
   simp only [closure_eq_cluster_pts, ClusterPt, nhds_eq_uniformity, lift'_inf_principal_eq,
     Set.inter_comm _ (range pureCauchy), mem_ofPred_eq]
@@ -210,8 +212,7 @@ instance : CompleteSpace (CauchyFilter α) :=
 
 end
 
-instance [Inhabited α] : Inhabited (CauchyFilter α) :=
-  ⟨pureCauchy default⟩
+instance [Inhabited α] : Inhabited (CauchyFilter α) := ⟨pureCauchy default⟩
 
 instance [h : Nonempty α] : Nonempty (CauchyFilter α) :=
   h.recOn fun a => Nonempty.intro <| CauchyFilter.pureCauchy a
@@ -219,18 +220,22 @@ instance [h : Nonempty α] : Nonempty (CauchyFilter α) :=
 section Extend
 
 open scoped Classical in
-/-- Extend a uniformly continuous function `α → β` to a function `CauchyFilter α → β`.
-Outputs junk when `f` is not uniformly continuous. -/
+/--
+Extend a uniformly continuous function `α → β` to a function `CauchyFilter α → β`.
+Outputs junk when `f` is not uniformly continuous.
+-/
 def extend (f : α → β) : CauchyFilter α → β :=
-  if UniformContinuous f then isDenseInducing_pureCauchy.extend f
-  else fun x => f (nonempty_cauchyFilter_iff.1 ⟨x⟩).some
+  if UniformContinuous f then
+    isDenseInducing_pureCauchy.extend f
+  else fun x =>
+    f (nonempty_cauchyFilter_iff.1 ⟨x⟩).some
 
 section T0Space
 
 variable [T0Space β]
 
-theorem extend_pureCauchy {f : α → β} (hf : UniformContinuous f) (a : α) :
-    extend f (pureCauchy a) = f a := by
+theorem extend_pureCauchy {f : α → β} (hf : UniformContinuous f) (a : α)
+    : extend f (pureCauchy a) = f a := by
   rw [extend, ite_eq_left hf]
   exact uniformly_extend_of_ind isUniformInducing_pureCauchy denseRange_pureCauchy hf _
 
@@ -251,27 +256,28 @@ end Extend
 theorem inseparable_iff {f g : CauchyFilter α} : Inseparable f g ↔ f.1 ×ˢ g.1 ≤ 𝓤 α :=
   (basis_uniformity (basis_sets _)).inseparable_iff_uniformity
 
-theorem inseparable_iff_of_le_nhds {f g : CauchyFilter α} {a b : α}
-    (ha : f.1 ≤ 𝓝 a) (hb : g.1 ≤ 𝓝 b) : Inseparable a b ↔ Inseparable f g := by
+theorem inseparable_iff_of_le_nhds
+    {f g : CauchyFilter α} {a b : α} (ha : f.1 ≤ 𝓝 a) (hb : g.1 ≤ 𝓝 b)
+    : Inseparable a b ↔ Inseparable f g := by
   rw [← tendsto_id'] at ha hb
   rw [inseparable_iff, (ha.comp tendsto_fst).inseparable_iff_uniformity (hb.comp tendsto_snd)]
   simp only [Function.comp_apply, id_eq, Prod.mk.eta, ← Function.id_def, tendsto_id']
 
-theorem inseparable_lim_iff [CompleteSpace α] {f g : CauchyFilter α} :
-    haveI := f.2.1.nonempty; Inseparable (lim f.1) (lim g.1) ↔ Inseparable f g :=
+theorem inseparable_lim_iff [CompleteSpace α] {f g : CauchyFilter α}
+    : haveI := f.2.1.nonempty; Inseparable (lim f.1) (lim g.1) ↔ Inseparable f g :=
   inseparable_iff_of_le_nhds f.2.le_nhds_lim g.2.le_nhds_lim
 
 end
 
-theorem cauchyFilter_eq {α : Type*} [UniformSpace α] [CompleteSpace α] [T0Space α]
-    {f g : CauchyFilter α} :
-    haveI := f.2.1.nonempty; lim f.1 = lim g.1 ↔ Inseparable f g := by
+theorem cauchyFilter_eq
+    {α : Type*} [UniformSpace α] [CompleteSpace α] [T0Space α] {f g : CauchyFilter α}
+    : haveI := f.2.1.nonempty; lim f.1 = lim g.1 ↔ Inseparable f g := by
   rw [← inseparable_iff_eq, inseparable_lim_iff]
 
 section
 
-theorem separated_pureCauchy_injective {α : Type*} [UniformSpace α] [T0Space α] :
-    Function.Injective fun a : α => SeparationQuotient.mk (pureCauchy a) := fun a b h ↦
+theorem separated_pureCauchy_injective {α : Type*} [UniformSpace α] [T0Space α]
+    : Function.Injective fun a : α => SeparationQuotient.mk (pureCauchy a) := fun a b h ↦
   Inseparable.eq <| (inseparable_iff_of_le_nhds (pure_le_nhds a) (pure_le_nhds b)).2 <|
     SeparationQuotient.mk_eq_mk.1 h
 
@@ -298,8 +304,7 @@ instance inhabited [Inhabited α] : Inhabited (Completion α) :=
 instance uniformSpace : UniformSpace (Completion α) :=
   fast_instance% SeparationQuotient.instUniformSpace
 
-instance completeSpace : CompleteSpace (Completion α) :=
-  SeparationQuotient.instCompleteSpace
+instance completeSpace : CompleteSpace (Completion α) := SeparationQuotient.instCompleteSpace
 
 instance t0Space : T0Space (Completion α) := SeparationQuotient.instT0Space
 
@@ -308,8 +313,7 @@ variable {α} in
 @[coe] def coe' : α → Completion α := SeparationQuotient.mk ∘ pureCauchy
 
 /-- Automatic coercion from `α` to its completion. Not always injective. -/
-instance : Coe α (Completion α) :=
-  ⟨coe'⟩
+instance : Coe α (Completion α) := ⟨coe'⟩
 
 -- note [use has_coe_t]
 protected theorem coe_eq : ((↑) : α → Completion α) = SeparationQuotient.mk ∘ pureCauchy := rfl
@@ -317,8 +321,8 @@ protected theorem coe_eq : ((↑) : α → Completion α) = SeparationQuotient.m
 theorem isUniformInducing_coe : IsUniformInducing ((↑) : α → Completion α) :=
   SeparationQuotient.isUniformInducing_mk.comp isUniformInducing_pureCauchy
 
-theorem comap_coe_eq_uniformity :
-    ((𝓤 _).comap fun p : α × α => ((p.1 : Completion α), (p.2 : Completion α))) = 𝓤 α :=
+theorem comap_coe_eq_uniformity
+    : ((𝓤 _).comap fun p : α × α => ((p.1 : Completion α), (p.2 : Completion α))) = 𝓤 α :=
   (isUniformInducing_coe _).1
 
 variable {α} in
@@ -336,8 +340,7 @@ def cPkg {α : Type*} [UniformSpace α] : AbstractCompletion α where
   isUniformInducing := Completion.isUniformInducing_coe α
   dense := Completion.denseRange_coe
 
-instance AbstractCompletion.inhabited : Inhabited (AbstractCompletion α) :=
-  ⟨cPkg⟩
+instance AbstractCompletion.inhabited : Inhabited (AbstractCompletion α) := ⟨cPkg⟩
 
 attribute [local instance]
   AbstractCompletion.uniformStruct AbstractCompletion.complete AbstractCompletion.separation
@@ -349,12 +352,12 @@ theorem nonempty_completion_iff : Nonempty (Completion α) ↔ Nonempty α :=
 theorem uniformContinuous_coe : UniformContinuous ((↑) : α → Completion α) :=
   cPkg.uniformContinuous_coe
 
-theorem continuous_coe : Continuous ((↑) : α → Completion α) :=
-  cPkg.continuous_coe
+theorem continuous_coe : Continuous ((↑) : α → Completion α) := cPkg.continuous_coe
 
-theorem isUniformEmbedding_coe [T0Space α] : IsUniformEmbedding ((↑) : α → Completion α) :=
-  { comap_uniformity := comap_coe_eq_uniformity α
-    injective := separated_pureCauchy_injective }
+theorem isUniformEmbedding_coe [T0Space α] : IsUniformEmbedding ((↑) : α → Completion α) := {
+  comap_uniformity := comap_coe_eq_uniformity α
+  injective := separated_pureCauchy_injective
+}
 
 theorem coe_injective [T0Space α] : Function.Injective ((↑) : α → Completion α) :=
   IsUniformEmbedding.injective (isUniformEmbedding_coe _)
@@ -362,11 +365,12 @@ theorem coe_injective [T0Space α] : Function.Injective ((↑) : α → Completi
 variable {α}
 
 @[simp]
-lemma coe_inj [T0Space α] {a b : α} : (a : Completion α) = b ↔ a = b :=
-  (coe_injective _).eq_iff
+lemma coe_inj [T0Space α] {a b : α} : (a : Completion α) = b ↔ a = b := (coe_injective _).eq_iff
 
-theorem isDenseInducing_coe : IsDenseInducing ((↑) : α → Completion α) :=
-  { (isUniformInducing_coe α).isInducing with dense := denseRange_coe }
+theorem isDenseInducing_coe : IsDenseInducing ((↑) : α → Completion α) := {
+  (isUniformInducing_coe α).isInducing with
+  dense := denseRange_coe
+}
 
 /-- The uniform bijection between a complete space and its uniform completion. -/
 def UniformCompletion.completeEquivSelf [CompleteSpace α] [T0Space α] : Completion α ≃ᵤ α :=
@@ -377,57 +381,69 @@ open TopologicalSpace
 instance separableSpace_completion [SeparableSpace α] : SeparableSpace (Completion α) :=
   Completion.isDenseInducing_coe.separableSpace
 
-theorem isDenseEmbedding_coe [T0Space α] : IsDenseEmbedding ((↑) : α → Completion α) :=
-  { isDenseInducing_coe with injective := separated_pureCauchy_injective }
+theorem isDenseEmbedding_coe [T0Space α] : IsDenseEmbedding ((↑) : α → Completion α) := {
+  isDenseInducing_coe with
+  injective := separated_pureCauchy_injective
+}
 
-theorem denseRange_coe₂ :
-    DenseRange fun x : α × β => ((x.1 : Completion α), (x.2 : Completion β)) :=
+theorem denseRange_coe₂
+    : DenseRange fun x : α × β => ((x.1 : Completion α), (x.2 : Completion β)) :=
   denseRange_coe.prodMap denseRange_coe
 
-theorem denseRange_coe₃ :
-    DenseRange fun x : α × β × γ =>
+theorem denseRange_coe₃
+    : DenseRange fun x : α × β × γ =>
       ((x.1 : Completion α), ((x.2.1 : Completion β), (x.2.2 : Completion γ))) :=
   denseRange_coe.prodMap denseRange_coe₂
 
 @[elab_as_elim]
-theorem induction_on {p : Completion α → Prop} (a : Completion α) (hp : IsClosed { a | p a })
-    (ih : ∀ a : α, p a) : p a :=
+theorem induction_on
+    {p : Completion α → Prop} (a : Completion α) (hp : IsClosed { a | p a }) (ih : ∀ a : α, p a)
+    : p a :=
   isClosed_property denseRange_coe hp ih a
 
 @[elab_as_elim]
-theorem induction_on₂ {p : Completion α → Completion β → Prop} (a : Completion α) (b : Completion β)
-    (hp : IsClosed { x : Completion α × Completion β | p x.1 x.2 })
-    (ih : ∀ (a : α) (b : β), p a b) : p a b :=
+theorem induction_on₂
+    {p : Completion α → Completion β → Prop}
+    (a : Completion α) (b : Completion β)
+    (hp : IsClosed { x : Completion α × Completion β | p x.1 x.2 }) (ih : ∀ (a : α) (b : β), p a b)
+    : p a b :=
   have : ∀ x : Completion α × Completion β, p x.1 x.2 :=
     isClosed_property denseRange_coe₂ hp fun ⟨a, b⟩ => ih a b
   this (a, b)
 
 @[elab_as_elim]
-theorem induction_on₃ {p : Completion α → Completion β → Completion γ → Prop} (a : Completion α)
-    (b : Completion β) (c : Completion γ)
+theorem induction_on₃
+    {p : Completion α → Completion β → Completion γ → Prop}
+    (a : Completion α) (b : Completion β) (c : Completion γ)
     (hp : IsClosed { x : Completion α × Completion β × Completion γ | p x.1 x.2.1 x.2.2 })
-    (ih : ∀ (a : α) (b : β) (c : γ), p a b c) : p a b c :=
+    (ih : ∀ (a : α) (b : β) (c : γ), p a b c)
+    : p a b c :=
   have : ∀ x : Completion α × Completion β × Completion γ, p x.1 x.2.1 x.2.2 :=
     isClosed_property denseRange_coe₃ hp fun ⟨a, b, c⟩ => ih a b c
   this (a, b, c)
 
-theorem ext {Y : Type*} [TopologicalSpace Y] [T2Space Y] {f g : Completion α → Y}
-    (hf : Continuous f) (hg : Continuous g) (h : ∀ a : α, f a = g a) : f = g :=
+theorem ext
+    {Y : Type*} [TopologicalSpace Y] [T2Space Y]
+    {f g : Completion α → Y} (hf : Continuous f) (hg : Continuous g) (h : ∀ a : α, f a = g a)
+    : f = g :=
   cPkg.funext hf hg h
 
-theorem ext' {Y : Type*} [TopologicalSpace Y] [T2Space Y] {f g : Completion α → Y}
-    (hf : Continuous f) (hg : Continuous g) (h : ∀ a : α, f a = g a) (a : Completion α) :
-    f a = g a :=
+theorem ext'
+    {Y : Type*} [TopologicalSpace Y] [T2Space Y]
+    {f g : Completion α → Y} (hf : Continuous f) (hg : Continuous g) (h : ∀ a : α, f a = g a)
+    (a : Completion α)
+    : f a = g a :=
   congr($(ext hf hg h) a)
 
 section Extension
 
 variable {f : α → β}
 
-/-- "Extension" to the completion. It is defined for any map `f` but
-returns an arbitrary constant value if `f` is not uniformly continuous -/
-protected def extension (f : α → β) : Completion α → β :=
-  cPkg.extend f
+/--
+"Extension" to the completion. It is defined for any map `f` but
+returns an arbitrary constant value if `f` is not uniformly continuous
+-/
+protected def extension (f : α → β) : Completion α → β := cPkg.extend f
 
 section CompleteSpace
 
@@ -438,33 +454,33 @@ theorem uniformContinuous_extension : UniformContinuous (Completion.extension f)
   cPkg.uniformContinuous_extend
 
 @[continuity, fun_prop]
-theorem continuous_extension : Continuous (Completion.extension f) :=
-  cPkg.continuous_extend
+theorem continuous_extension : Continuous (Completion.extension f) := cPkg.continuous_extend
 
 end CompleteSpace
 
-theorem extension_coe [T0Space β] (hf : UniformContinuous f) (a : α) :
-    (Completion.extension f) a = f a :=
+theorem extension_coe [T0Space β] (hf : UniformContinuous f) (a : α)
+    : (Completion.extension f) a = f a :=
   cPkg.extend_coe hf a
 
-theorem inseparable_extension_coe (hf : UniformContinuous f) (x : α) :
-    Inseparable (Completion.extension f x) (f x) :=
+theorem inseparable_extension_coe (hf : UniformContinuous f) (x : α)
+    : Inseparable (Completion.extension f x) (f x) :=
   cPkg.inseparable_extend_coe hf x
 
-lemma isUniformInducing_extension [CompleteSpace β] (h : IsUniformInducing f) :
-    IsUniformInducing (Completion.extension f) :=
+lemma isUniformInducing_extension [CompleteSpace β] (h : IsUniformInducing f)
+    : IsUniformInducing (Completion.extension f) :=
   cPkg.isUniformInducing_extend h
 
 variable [T0Space β] [CompleteSpace β]
 
-theorem extension_unique (hf : UniformContinuous f) {g : Completion α → β}
-    (hg : UniformContinuous g) (h : ∀ a : α, f a = g (a : Completion α)) :
-    Completion.extension f = g :=
+theorem extension_unique
+    (hf : UniformContinuous f)
+    {g : Completion α → β} (hg : UniformContinuous g) (h : ∀ a : α, f a = g (a : Completion α))
+    : Completion.extension f = g :=
   cPkg.extend_unique hf hg h
 
 @[simp]
-theorem extension_comp_coe {f : Completion α → β} (hf : UniformContinuous f) :
-    Completion.extension (f ∘ (↑)) = f :=
+theorem extension_comp_coe {f : Completion α → β} (hf : UniformContinuous f)
+    : Completion.extension (f ∘ (↑)) = f :=
   cPkg.extend_comp_coe hf
 
 end Extension
@@ -474,37 +490,36 @@ section Map
 variable {f : α → β}
 
 /-- Completion functor acting on morphisms -/
-protected def map (f : α → β) : Completion α → Completion β :=
-  cPkg.map cPkg f
+protected def map (f : α → β) : Completion α → Completion β := cPkg.map cPkg f
 
 @[fun_prop]
 theorem uniformContinuous_map : UniformContinuous (Completion.map f) :=
   cPkg.uniformContinuous_map cPkg f
 
 @[continuity, fun_prop]
-theorem continuous_map : Continuous (Completion.map f) :=
-  cPkg.continuous_map cPkg f
+theorem continuous_map : Continuous (Completion.map f) := cPkg.continuous_map cPkg f
 
 theorem map_coe (hf : UniformContinuous f) (a : α) : (Completion.map f) a = f a :=
   cPkg.map_coe cPkg hf a
 
-theorem map_unique {f : α → β} {g : Completion α → Completion β} (hg : UniformContinuous g)
-    (h : ∀ a : α, ↑(f a) = g a) : Completion.map f = g :=
+theorem map_unique
+    {f : α → β} {g : Completion α → Completion β}
+    (hg : UniformContinuous g) (h : ∀ a : α, ↑(f a) = g a)
+    : Completion.map f = g :=
   cPkg.map_unique cPkg hg h
 
-@[simp]
-theorem map_id : Completion.map (@id α) = id :=
-  cPkg.map_id
+@[simp] theorem map_id : Completion.map (@id α) = id := cPkg.map_id
 
-theorem extension_map [CompleteSpace γ] [T0Space γ] {f : β → γ} {g : α → β}
-    (hf : UniformContinuous f) (hg : UniformContinuous g) :
-    Completion.extension f ∘ Completion.map g = Completion.extension (f ∘ g) :=
+theorem extension_map
+    [CompleteSpace γ] [T0Space γ]
+    {f : β → γ} {g : α → β} (hf : UniformContinuous f) (hg : UniformContinuous g)
+    : Completion.extension f ∘ Completion.map g = Completion.extension (f ∘ g) :=
   Completion.ext (continuous_extension.comp continuous_map) continuous_extension <| by
     simp [hf, hg, hf.comp hg, map_coe, extension_coe]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem map_comp {g : β → γ} {f : α → β} (hg : UniformContinuous g) (hf : UniformContinuous f) :
-    Completion.map g ∘ Completion.map f = Completion.map (g ∘ f) :=
+theorem map_comp {g : β → γ} {f : α → β} (hg : UniformContinuous g) (hf : UniformContinuous f)
+    : Completion.map g ∘ Completion.map f = Completion.map (g ∘ f) :=
   extension_map ((uniformContinuous_coe _).comp hg) hf
 
 /-- The uniform isomorphism between two completions of isomorphic uniform spaces. -/
@@ -519,34 +534,42 @@ theorem mapEquiv_coe (e : α ≃ᵤ β) (a : α) : mapEquiv e a = (e a) := cPkg.
 
 end Map
 
-/- In this section we construct isomorphisms between the completion of a uniform space and the
-completion of its separation quotient -/
+/-
+In this section we construct isomorphisms between the completion of a uniform space and the
+completion of its separation quotient
+-/
 section SeparationQuotientCompletion
 
 open SeparationQuotient in
-/-- The isomorphism between the completion of a uniform space and the completion of its separation
-quotient. -/
-def completionSeparationQuotientEquiv (α : Type u) [UniformSpace α] :
-    Completion (SeparationQuotient α) ≃ Completion α := by
-  refine ⟨Completion.extension (lift' ((↑) : α → Completion α)),
-    Completion.map SeparationQuotient.mk, fun a ↦ ?_, fun a ↦ ?_⟩
+/--
+The isomorphism between the completion of a uniform space and the completion of its separation
+quotient.
+-/
+def completionSeparationQuotientEquiv (α : Type u) [UniformSpace α]
+    : Completion (SeparationQuotient α) ≃ Completion α := by
+  refine ⟨
+    Completion.extension (lift' ((↑) : α → Completion α)),
+    Completion.map SeparationQuotient.mk,
+    fun a ↦ ?_,
+    fun a ↦ ?_
+  ⟩
   · refine induction_on a (isClosed_eq (continuous_map.comp continuous_extension) continuous_id) ?_
     refine SeparationQuotient.surjective_mk.forall.2 fun a ↦ ?_
     rw [extension_coe (uniformContinuous_lift' _), lift'_mk (uniformContinuous_coe α),
       map_coe uniformContinuous_mk]
-  · refine induction_on a
-      (isClosed_eq (continuous_extension.comp continuous_map) continuous_id) fun a ↦ ?_
+  · refine induction_on a (isClosed_eq (continuous_extension.comp continuous_map) continuous_id)
+      fun a ↦ ?_
     rw [map_coe uniformContinuous_mk, extension_coe (uniformContinuous_lift' _),
       lift'_mk (uniformContinuous_coe _)]
 
 @[fun_prop]
-theorem uniformContinuous_completionSeparationQuotientEquiv :
-    UniformContinuous (completionSeparationQuotientEquiv α) :=
+theorem uniformContinuous_completionSeparationQuotientEquiv
+    : UniformContinuous (completionSeparationQuotientEquiv α) :=
   uniformContinuous_extension
 
 @[fun_prop]
-theorem uniformContinuous_completionSeparationQuotientEquiv_symm :
-    UniformContinuous (completionSeparationQuotientEquiv α).symm :=
+theorem uniformContinuous_completionSeparationQuotientEquiv_symm
+    : UniformContinuous (completionSeparationQuotientEquiv α).symm :=
   uniformContinuous_map
 
 end SeparationQuotientCompletion
@@ -556,15 +579,14 @@ section Extension₂
 variable (f : α → β → γ)
 
 /-- Extend a two variable map to the Hausdorff completions. -/
-protected def extension₂ (f : α → β → γ) : Completion α → Completion β → γ :=
-  cPkg.extend₂ cPkg f
+protected def extension₂ (f : α → β → γ) : Completion α → Completion β → γ := cPkg.extend₂ cPkg f
 
 section T0Space
 
 variable [T0Space γ] {f}
 
-theorem extension₂_coe_coe (hf : UniformContinuous₂ f) (a : α) (b : β) :
-    Completion.extension₂ f a b = f a b :=
+theorem extension₂_coe_coe (hf : UniformContinuous₂ f) (a : α) (b : β)
+    : Completion.extension₂ f a b = f a b :=
   cPkg.extension₂_coe_coe cPkg hf a b
 
 end T0Space
@@ -587,13 +609,15 @@ protected def map₂ (f : α → β → γ) : Completion α → Completion β �
 theorem uniformContinuous_map₂ (f : α → β → γ) : UniformContinuous₂ (Completion.map₂ f) :=
   cPkg.uniformContinuous_map₂ cPkg cPkg f
 
-theorem continuous_map₂ {δ} [TopologicalSpace δ] {f : α → β → γ} {a : δ → Completion α}
-    {b : δ → Completion β} (ha : Continuous a) (hb : Continuous b) :
-    Continuous fun d : δ => Completion.map₂ f (a d) (b d) :=
+theorem continuous_map₂
+    {δ} [TopologicalSpace δ]
+    {f : α → β → γ} {a : δ → Completion α} {b : δ → Completion β}
+    (ha : Continuous a) (hb : Continuous b)
+    : Continuous fun d : δ => Completion.map₂ f (a d) (b d) :=
   cPkg.continuous_map₂ cPkg cPkg ha hb
 
-theorem map₂_coe_coe (a : α) (b : β) (f : α → β → γ) (hf : UniformContinuous₂ f) :
-    Completion.map₂ f (a : Completion α) (b : Completion β) = f a b :=
+theorem map₂_coe_coe (a : α) (b : β) (f : α → β → γ) (hf : UniformContinuous₂ f)
+    : Completion.map₂ f (a : Completion α) (b : Completion β) = f a b :=
   cPkg.map₂_coe_coe cPkg cPkg a b f hf
 
 end Map₂

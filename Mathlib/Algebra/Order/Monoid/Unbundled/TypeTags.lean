@@ -14,23 +14,18 @@ public section
 
 variable {α : Type*}
 
-instance [LE α] : LE (Multiplicative α) :=
-  inferInstanceAs <| LE α
+instance [LE α] : LE (Multiplicative α) := inferInstanceAs <| LE α
 
-instance [LE α] : LE (Additive α) :=
-  inferInstanceAs <| LE α
+instance [LE α] : LE (Additive α) := inferInstanceAs <| LE α
 
-instance [LT α] : LT (Multiplicative α) :=
-  inferInstanceAs <| LT α
+instance [LT α] : LT (Multiplicative α) := inferInstanceAs <| LT α
 
-instance [LT α] : LT (Additive α) :=
-  inferInstanceAs <| LT α
+instance [LT α] : LT (Additive α) := inferInstanceAs <| LT α
 
 instance Multiplicative.preorder [Preorder α] : Preorder (Multiplicative α) :=
   inferInstanceAs <| Preorder α
 
-instance Additive.preorder [Preorder α] : Preorder (Additive α) :=
-  inferInstanceAs <| Preorder α
+instance Additive.preorder [Preorder α] : Preorder (Additive α) := inferInstanceAs <| Preorder α
 
 instance Multiplicative.partialOrder [PartialOrder α] : PartialOrder (Multiplicative α) :=
   inferInstanceAs <| PartialOrder α
@@ -62,8 +57,8 @@ instance Multiplicative.boundedOrder [LE α] [BoundedOrder α] : BoundedOrder (M
 instance Additive.boundedOrder [LE α] [BoundedOrder α] : BoundedOrder (Additive α) :=
   inferInstanceAs <| BoundedOrder α
 
-instance Multiplicative.existsMulOfLe [Add α] [LE α] [ExistsAddOfLE α] :
-    ExistsMulOfLE (Multiplicative α) :=
+instance Multiplicative.existsMulOfLe [Add α] [LE α] [ExistsAddOfLE α]
+    : ExistsMulOfLE (Multiplicative α) :=
   ⟨@exists_add_of_le α _ _ _⟩
 
 instance Additive.existsAddOfLe [Mul α] [LE α] [ExistsMulOfLE α] : ExistsAddOfLE (Additive α) :=
@@ -73,21 +68,13 @@ namespace Additive
 section Preorder
 variable [Preorder α]
 
-@[simp]
-theorem ofMul_le {a b : α} : ofMul a ≤ ofMul b ↔ a ≤ b :=
-  Iff.rfl
+@[simp] theorem ofMul_le {a b : α} : ofMul a ≤ ofMul b ↔ a ≤ b := Iff.rfl
 
-@[simp]
-theorem ofMul_lt {a b : α} : ofMul a < ofMul b ↔ a < b :=
-  Iff.rfl
+@[simp] theorem ofMul_lt {a b : α} : ofMul a < ofMul b ↔ a < b := Iff.rfl
 
-@[simp]
-theorem toMul_le {a b : Additive α} : a.toMul ≤ b.toMul ↔ a ≤ b :=
-  Iff.rfl
+@[simp] theorem toMul_le {a b : Additive α} : a.toMul ≤ b.toMul ↔ a ≤ b := Iff.rfl
 
-@[simp]
-theorem toMul_lt {a b : Additive α} : a.toMul < b.toMul ↔ a < b :=
-  Iff.rfl
+@[simp] theorem toMul_lt {a b : Additive α} : a.toMul < b.toMul ↔ a < b := Iff.rfl
 
 @[gcongr] alias ⟨_, toMul_mono⟩ := toMul_le
 @[gcongr] alias ⟨_, ofMul_mono⟩ := ofMul_le
@@ -123,21 +110,13 @@ namespace Multiplicative
 section Preorder
 variable [Preorder α]
 
-@[simp]
-theorem ofAdd_le {a b : α} : ofAdd a ≤ ofAdd b ↔ a ≤ b :=
-  Iff.rfl
+@[simp] theorem ofAdd_le {a b : α} : ofAdd a ≤ ofAdd b ↔ a ≤ b := Iff.rfl
 
-@[simp]
-theorem ofAdd_lt {a b : α} : ofAdd a < ofAdd b ↔ a < b :=
-  Iff.rfl
+@[simp] theorem ofAdd_lt {a b : α} : ofAdd a < ofAdd b ↔ a < b := Iff.rfl
 
-@[simp]
-theorem toAdd_le {a b : Multiplicative α} : a.toAdd ≤ b.toAdd ↔ a ≤ b :=
-  Iff.rfl
+@[simp] theorem toAdd_le {a b : Multiplicative α} : a.toAdd ≤ b.toAdd ↔ a ≤ b := Iff.rfl
 
-@[simp]
-theorem toAdd_lt {a b : Multiplicative α} : a.toAdd < b.toAdd ↔ a < b :=
-  Iff.rfl
+@[simp] theorem toAdd_lt {a b : Multiplicative α} : a.toAdd < b.toAdd ↔ a < b := Iff.rfl
 
 @[gcongr] alias ⟨_, toAdd_mono⟩ := toAdd_le
 @[gcongr] alias ⟨_, ofAdd_mono⟩ := ofAdd_le

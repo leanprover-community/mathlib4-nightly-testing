@@ -22,9 +22,9 @@ C⋆-algebra that involve the norm.
 
 public section
 
-variable {A : Type*} [NonUnitalNormedRing A] [NormedSpace ℝ A] [SMulCommClass ℝ A A]
-  [IsScalarTower ℝ A A] [StarRing A]
-  [NonUnitalIsometricContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
+variable
+  {A : Type*} [NonUnitalNormedRing A] [NormedSpace ℝ A] [SMulCommClass ℝ A A] [IsScalarTower ℝ A A]
+  [StarRing A] [NonUnitalIsometricContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
 
 @[simp]
 lemma CStarAlgebra.norm_posPart_le (a : A) : ‖a⁺‖ ≤ ‖a‖ := by
@@ -41,8 +41,8 @@ lemma CStarAlgebra.norm_negPart_le (a : A) : ‖a⁻‖ ≤ ‖a‖ := by
   simpa [CFC.negPart_neg] using norm_posPart_le (-a)
 
 open CStarAlgebra in
-lemma IsSelfAdjoint.norm_eq_max_norm_posPart_negPart (a : A) (ha : IsSelfAdjoint a := by cfc_tac) :
-    ‖a‖ = max ‖a⁺‖ ‖a⁻‖ := by
+lemma IsSelfAdjoint.norm_eq_max_norm_posPart_negPart (a : A) (ha : IsSelfAdjoint a := by cfc_tac)
+    : ‖a‖ = max (‖a⁺‖) ‖a⁻‖ := by
   refine le_antisymm ?_ <| max_le (norm_posPart_le a) (norm_negPart_le a)
   conv_lhs => rw [← cfcₙ_id' ℝ a]
   rw [norm_cfcₙ_le_iff ..]

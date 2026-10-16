@@ -31,28 +31,29 @@ open Equiv
 variable {n R : Type*} [DecidableEq n] (σ τ : Perm n)
 
 variable (R) in
-/-- the permutation matrix associated with an `Equiv.Perm`.
+/--
+the permutation matrix associated with an `Equiv.Perm`.
 
-This is available in a bundled form as `Matrix.permMatrixHom`. -/
-abbrev Equiv.Perm.permMatrix [Zero R] [One R] : Matrix n n R :=
-  σ.toPEquiv.toMatrix
+This is available in a bundled form as `Matrix.permMatrixHom`.
+-/
+abbrev Equiv.Perm.permMatrix [Zero R] [One R] : Matrix n n R := σ.toPEquiv.toMatrix
 
 namespace Matrix
 
-@[simp] lemma permMatrix_refl [Zero R] [One R] : Equiv.Perm.permMatrix R (.refl n) = 1 := by
+@[simp]
+lemma permMatrix_refl [Zero R] [One R] : Equiv.Perm.permMatrix R (.refl n) = 1 := by
   simp [← Matrix.ext_iff, Matrix.one_apply]
 
 @[simp]
-lemma permMatrix_one [Zero R] [One R] : (1 : Equiv.Perm n).permMatrix R = 1 :=
-  permMatrix_refl
+lemma permMatrix_one [Zero R] [One R] : (1 : Equiv.Perm n).permMatrix R = 1 := permMatrix_refl
 
 @[simp]
 lemma transpose_permMatrix [Zero R] [One R] : (σ.permMatrix R).transpose = (σ⁻¹).permMatrix R := by
   rw [← PEquiv.toMatrix_symm, ← Equiv.toPEquiv_symm, ← Equiv.Perm.inv_def]
 
 @[simp]
-lemma conjTranspose_permMatrix [NonAssocSemiring R] [StarRing R] :
-    (σ.permMatrix R).conjTranspose = (σ⁻¹).permMatrix R := by
+lemma conjTranspose_permMatrix [NonAssocSemiring R] [StarRing R]
+    : (σ.permMatrix R).conjTranspose = (σ⁻¹).permMatrix R := by
   simp only [conjTranspose, transpose_permMatrix, map]
   aesop
 
@@ -61,28 +62,26 @@ variable [Fintype n]
 /-- The determinant of a permutation matrix equals its sign. -/
 @[simp]
 theorem det_permutation [CommRing R] : det (σ.permMatrix R) = Perm.sign σ := by
-  rw [← Matrix.mul_one (σ.permMatrix R), PEquiv.toMatrix_toPEquiv_mul,
-    det_permute, det_one, mul_one]
+  rw [← Matrix.mul_one (σ.permMatrix R), PEquiv.toMatrix_toPEquiv_mul, det_permute, det_one,
+    mul_one]
 
 /-- The trace of a permutation matrix equals the number of fixed points. -/
-theorem trace_permutation [AddCommMonoidWithOne R] :
-    trace (σ.permMatrix R) = (Function.fixedPoints σ).ncard := by
+theorem trace_permutation [AddCommMonoidWithOne R]
+    : trace (σ.permMatrix R) = (Function.fixedPoints σ).ncard := by
   delta trace
   simp [toPEquiv_apply, ← Set.ncard_coe_finset, Function.fixedPoints, Function.IsFixedPt]
 
-lemma permMatrix_mulVec {v : n → R} [CommRing R] :
-    σ.permMatrix R *ᵥ v = v ∘ σ := by
+lemma permMatrix_mulVec {v : n → R} [CommRing R] : σ.permMatrix R *ᵥ v = v ∘ σ := by
   ext j
   simp [mulVec_eq_sum, Pi.single, Function.update, Equiv.eq_symm_apply]
 
-lemma vecMul_permMatrix {v : n → R} [CommRing R] :
-    v ᵥ* σ.permMatrix R = v ∘ σ.symm := by
+lemma vecMul_permMatrix {v : n → R} [CommRing R] : v ᵥ* σ.permMatrix R = v ∘ σ.symm := by
   ext j
   simp [vecMul_eq_sum, Pi.single, Function.update, ← Equiv.symm_apply_eq σ]
 
 @[simp]
-lemma permMatrix_mul [NonAssocSemiring R] :
-    (σ * τ).permMatrix R = τ.permMatrix R * σ.permMatrix R := by
+lemma permMatrix_mul [NonAssocSemiring R]
+    : (σ * τ).permMatrix R = τ.permMatrix R * σ.permMatrix R := by
   rw [Perm.permMatrix, Perm.mul_def, toPEquiv_trans, PEquiv.toMatrix_trans]
 
 /-- `permMatrix` as a homomorphism. -/
@@ -102,8 +101,7 @@ See `Matrix.permMatrix_l2_opNorm_eq` for the equality statement assuming the mat
 -/
 theorem permMatrix_l2_opNorm_le : ‖σ.permMatrix 𝕜‖ ≤ 1 :=
   ContinuousLinearMap.opNorm_le_bound _ (by simp) <| by
-    simp [EuclideanSpace.norm_eq, toLpLin_apply, permMatrix_mulVec,
-      σ.sum_comp _ (fun i ↦ ‖_‖ ^ 2)]
+    simp [EuclideanSpace.norm_eq, toLpLin_apply, permMatrix_mulVec, σ.sum_comp _ (fun i ↦ ‖_‖ ^ 2)]
 
 /--
 The l2-operator norm of a nonempty permutation matrix is equal to 1.

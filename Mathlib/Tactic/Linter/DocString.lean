@@ -7,11 +7,10 @@ module
 
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public meta import Std.Data.Iterators.Combinators.Zip
 public import Lean.DocString.Parser
 public import Lean.Parser.Command
-
 meta import Std.Data.Iterators.Producers.Range
 
 /-!
@@ -26,17 +25,13 @@ open Lean Elab Linter
 
 namespace Mathlib.Linter
 
-/--
-The "DocString" linter validates style conventions regarding doc-string formatting.
--/
+/-- The "DocString" linter validates style conventions regarding doc-string formatting. -/
 public register_option linter.style.docString : Bool := {
   defValue := false
   descr := "enable the style.docString linter"
 }
 
-/--
-The "empty doc string" warns on empty doc-strings.
--/
+/-- The "empty doc string" warns on empty doc-strings. -/
 public register_option linter.style.docString.empty : Bool := {
   defValue := true
   descr := "enable the style.docString.empty linter"
@@ -59,7 +54,8 @@ but we avoid extracting directly the `docComment` node, to skip `#adaptation_not
 public def getDeclModifiers : Syntax → Array Syntax
   | s@(.node _ kind args) =>
     (if kind == ``Parser.Command.declModifiers then #[s] else #[]) ++ args.flatMap getDeclModifiers
-  | _ => #[]
+  | _ =>
+    #[]
 
 /--
 Currently, this function simply removes `currIndent` spaces after each `\n`
@@ -90,16 +86,16 @@ elaborated).
 This is a copy of the first half of `versoDocStringFromString`, which also does elaboration
 (but here we only report parse errors).
 -/
-def checkVersoSyntax (docComment : String) (fileName : Option String := none) :
-    CommandElabM (Array (String.Pos.Raw × SyntaxStack × Error)) := do
+def checkVersoSyntax (docComment : String) (fileName : Option String := none)
+    : CommandElabM (Array (String.Pos.Raw × SyntaxStack × Error)) := do
   let fileName := fileName.getD (← getFileName)
   let env ← getEnv
   let ictx : InputContext := .mk docComment fileName
   let text := ictx.fileMap
   let pmctx : ParserModuleContext := {
-    env,
-    options := ← getOptions,
-    currNamespace := (← getCurrNamespace),
+    env
+    options := ← getOptions
+    currNamespace := (← getCurrNamespace)
     openDecls := (← getOpenDecls)
   }
   let s := mkParserState docComment
@@ -122,29 +118,31 @@ ignoring those that should be silenced by linters.
 `fileName` is the file where this docstring is defined (default: the file currently being
 elaborated).
 -/
-def lintVersoSyntax (docComment : String) (fileName : Option String := none) :
-    CommandElabM (Array (String.Pos.Raw × SyntaxStack × Error)) := do
+def lintVersoSyntax (docComment : String) (fileName : Option String := none)
+    : CommandElabM (Array (String.Pos.Raw × SyntaxStack × Error)) := do
   -- The replacements below preserve the byte length of the docstring, so that the positions of
   -- the parse errors are positions in `docComment`.
   -- Drop anything that looks like an autolink: this is not supported by Verso. Adding full links
   -- everywhere would be very noisy.
-  let trimmedStr := Std.Iter.fold (· ++ ·) "" <|
-    docComment.splitInclusive Char.isWhitespace |>.map fun str =>
-      if (str.contains "http://" || str.contains "https://") && !str.contains "(http" then
-        blankOut 'U' str.toString
-      else str.toString
+  let trimmedStr :=
+    Std.Iter.fold (· ++ ·) "" <| docComment.splitInclusive Char.isWhitespace
+      |>.map fun str =>
+        if (str.contains "http://" || str.contains "https://") && ! str.contains "(http" then
+          blankOut 'U' str.toString
+        else
+          str.toString
   -- Drop anything between LaTeX `$$`s.
   -- We keep single `$`s, since those also occur in `backquoted` code snippets (e.g. as `· <$> ·`),
   -- and so we'd need to build an actual parser to figure out if they are in a snippet or not.
-  let trimmedStr := Std.Iter.fold (· ++ ·) "" <|
-    trimmedStr.split "$$"
+  let trimmedStr :=
+    Std.Iter.fold (· ++ ·) "" <| trimmedStr.split "$$"
       |>.zip (0...*).iter
       |>.map fun (str, i) =>
         -- Each `LL` stands in for a `$$` delimiter that `split` removed.
         let str := if i % 2 == 0 then str.toString else "".pushn 'L' str.utf8ByteSize
         if i == 0 then str else "LL" ++ str
   let errs ← checkVersoSyntax trimmedStr fileName
-  return errs.filter fun (_, _, err) => !isSilencedVersoWarning err
+  return errs.filter fun (_, _, err) => ! isSilencedVersoWarning err
 
 open Command Parser in
 /--
@@ -155,11 +153,12 @@ The positions in `errs` are relative to the text of the doc-string, which starts
 child of `docStx`. If that child has no position, the errors are logged at offset 0,
 the default position for errors without associated syntax.
 -/
-def logVersoErrors (docStx : Syntax) (errs : Array (String.Pos.Raw × SyntaxStack × Error)) :
-    CommandElabM Unit := do
+def logVersoErrors (docStx : Syntax) (errs : Array (String.Pos.Raw × SyntaxStack × Error))
+    : CommandElabM Unit := do
   let start? := docStx[1].getPos?
   for (pos, _, err) in errs do
-    let pos := match start? with
+    let pos :=
+      match start? with
       | some start => pos.offsetBy start
       | none => 0
     Linter.logLint linter.style.docStringVerso (.ofRange ⟨pos, pos⟩) m!"{err}"
@@ -167,91 +166,106 @@ def logVersoErrors (docStx : Syntax) (errs : Array (String.Pos.Raw × SyntaxStac
 namespace Style
 
 @[inherit_doc Mathlib.Linter.linter.style.docString]
-def docStringLinter : Linter where run := withSetOptionIn fun stx ↦ do
-  unless getLinterValue linter.style.docString (← getLinterOptions) ||
-      getLinterValue linter.style.docString.empty (← getLinterOptions) ||
-      getLinterValue linter.style.docStringVerso (← getLinterOptions) do
-    return
-  if (← get).messages.hasErrors then
-    return
-  let fm ← getFileMap
-  for declMods in getDeclModifiers stx do
-    -- `docStx` extracts the `Lean.Parser.Command.docComment` node from the declaration modifiers.
-    -- In particular, this ignores parsing `#adaptation_note`s.
-    let docStx := declMods[0][0]
+def docStringLinter : Linter where
+  run :=
+    withSetOptionIn fun stx ↦ do
+      unless getLinterValue linter.style.docString (← getLinterOptions)
+          || getLinterValue linter.style.docString.empty (← getLinterOptions)
+          || getLinterValue linter.style.docStringVerso (← getLinterOptions) do
+        return
+      if (← get).messages.hasErrors then
+        return
+      let fm ← getFileMap
+      for declMods in getDeclModifiers stx do
+        -- `docStx` extracts the `Lean.Parser.Command.docComment` node from the declaration modifiers.
+        -- In particular, this ignores parsing `#adaptation_note`s.
+        let docStx := declMods[0][0]
 
-    let some pos := docStx.getPos? | continue
-    let currIndent := fm.toPosition pos |>.column
+        let some pos := docStx.getPos?
+          | continue
+        let currIndent := fm.toPosition pos |>.column
 
-    if docStx.isMissing then continue -- this is probably superfluous, thanks to `some pos` above.
-    -- ignore antiquotations from syntax patterns like `$(_)?`
-    unless docStx.getKind == ``Parser.Command.docComment do continue
-    -- `docString` contains neither the leading whitespace after the `/--`, nor the trailing
-    -- whitespace before the `-/`: the parser stores both in the source info of the
-    -- surrounding atoms, and they are recovered below.
-    let docString ← try getDocStringText ⟨docStx⟩ catch _ => continue
-    if docString.trimAscii.isEmpty then
-      Linter.logLintIf linter.style.docString.empty docStx m!"warning: this doc-string is empty"
-      continue
-    -- `startSubstring` is the whitespace between `/--` and the actual doc-string text.
-    let startSubstring := match docStx with
-      | .node _ _ #[(.atom si ..), _] => si.getTrailing?.getD default
-      | _ => default
-    -- `endSubstring` is the whitespace between the actual doc-string text and the closing `-/`.
-    -- The text and the `-/` are the two children of the `commentBody` node, and the parser puts
-    -- the whitespace separating them into the trailing of the text atom.
-    let endSubstring := match docStx with
-      | .node _ _ #[_, .node _ _ #[(.atom si ..), _]] => si.getTrailing?.getD default
-      | _ => default
-    -- We replace all line-breaks followed by `currIndent` spaces with a single space.
-    let start := deindentString currIndent startSubstring.toString
-    if !#["\n", " "].contains start then
-      let startRange := {start := startSubstring.startPos, stop := startSubstring.stopPos}
-      Linter.logLintIf linter.style.docString (.ofRange startRange)
-        s!"error: doc-strings should start with a single space or newline"
+        if docStx.isMissing then continue -- this is probably superfluous, thanks to `some pos` above.
+        -- ignore antiquotations from syntax patterns like `$(_)?`
+        unless docStx.getKind == ``Parser.Command.docComment do
+          continue
+        -- `docString` contains neither the leading whitespace after the `/--`, nor the trailing
+        -- whitespace before the `-/`: the parser stores both in the source info of the
+        -- surrounding atoms, and they are recovered below.
+        let docString ← try getDocStringText ⟨docStx⟩ catch _ => continue
+        if docString.trimAscii.isEmpty then
+          Linter.logLintIf linter.style.docString.empty docStx m!"warning: this doc-string is empty"
+          continue
+        -- `startSubstring` is the whitespace between `/--` and the actual doc-string text.
+        let startSubstring :=
+          match docStx with
+          | .node _ _ #[(.atom si ..), _] => si.getTrailing?.getD default
+          | _ => default
+        -- `endSubstring` is the whitespace between the actual doc-string text and the closing `-/`.
+        -- The text and the `-/` are the two children of the `commentBody` node, and the parser puts
+        -- the whitespace separating them into the trailing of the text atom.
+        let endSubstring :=
+          match docStx with
+          | .node _ _ #[_, .node _ _ #[(.atom si ..), _]] => si.getTrailing?.getD default
+          | _ => default
+        -- We replace all line-breaks followed by `currIndent` spaces with a single space.
+        let start := deindentString currIndent startSubstring.toString
+        if ! #["\n", " "].contains start then
+          let startRange := { start := startSubstring.startPos, stop := startSubstring.stopPos }
+          Linter.logLintIf linter.style.docString (.ofRange startRange)
+            s!"error: doc-strings should start with a single space or newline"
 
-    let deIndentedDocString := deindentString currIndent docString
+        let deIndentedDocString := deindentString currIndent docString
 
-    let docTrim := deIndentedDocString.trimAsciiEnd.copy
-    if docTrim.takeEnd 1 == ",".toSlice then
-      -- The comma is the last character of the doc-string text, so it sits immediately before
-      -- the whitespace that `endSubstring` spans.
-      let commaRange :=
-        {start := endSubstring.startPos.unoffsetBy ⟨1⟩, stop := endSubstring.startPos}
-      Linter.logLintIf linter.style.docString (.ofRange commaRange)
-        s!"error: doc-strings should not end with a comma"
-    let tail := deindentString currIndent endSubstring.toString
-    if !#["\n", " "].contains tail then
-      let endRange := {start := endSubstring.startPos, stop := endSubstring.stopPos}
-      Linter.logLintIf linter.style.docString (.ofRange endRange)
-        s!"error: doc-strings should end with a single space or newline"
-    -- Check for verso syntax, but only if it is not already enabled.
-    -- If Verso is already enabled for docstrings, then this check would be superfluous.
-    if !doc.verso.get (← getOptions) &&
-        getLinterValue linter.style.docStringVerso (← getLinterOptions) then do
-      logVersoErrors docStx (← lintVersoSyntax docString)
+        let docTrim := deIndentedDocString.trimAsciiEnd.copy
+        if docTrim.takeEnd 1 == ",".toSlice then
+          -- The comma is the last character of the doc-string text, so it sits immediately before
+          -- the whitespace that `endSubstring` spans.
+          let commaRange := {
+            start := endSubstring.startPos.unoffsetBy ⟨1⟩
+            stop := endSubstring.startPos
+          }
+          Linter.logLintIf linter.style.docString (.ofRange commaRange)
+            s!"error: doc-strings should not end with a comma"
+        let tail := deindentString currIndent endSubstring.toString
+        if ! #["\n", " "].contains tail then
+          let endRange := { start := endSubstring.startPos, stop := endSubstring.stopPos }
+          Linter.logLintIf linter.style.docString (.ofRange endRange)
+            s!"error: doc-strings should end with a single space or newline"
+        -- Check for verso syntax, but only if it is not already enabled.
+        -- If Verso is already enabled for docstrings, then this check would be superfluous.
+        if ! doc.verso.get (← getOptions)
+            && getLinterValue linter.style.docStringVerso (← getLinterOptions) then do
+          logVersoErrors docStx (← lintVersoSyntax docString)
 
 initialize addLinter docStringLinter
 
-/-- Lint module docs for Verso syntax errors.
+/--
+Lint module docs for Verso syntax errors.
 
-Verso syntax in declaration docstrings is already handled by the `docStringLinter`. -/
-def moduleDocVersoLinter : Linter where run := withSetOptionIn fun stx ↦ do
-  unless getLinterValue linter.style.docStringVerso (← getLinterOptions) do
-    return
-  -- Check for verso syntax, but only if it is not already enabled.
-  -- If Verso is already enabled for module docs, then this check would be superfluous.
-  let opts ← getOptions
-  if (doc.verso.module.get? opts).getD (doc.verso.get opts) then return
-  if (← get).messages.hasErrors then
-    return
-  let some moduleDoc := (match stx with
-  | s@(.node _ ``Parser.Command.moduleDoc args) => some s
-  | _ => none) | return
-  try
-    let docString ← getDocStringText ⟨moduleDoc⟩
-    logVersoErrors moduleDoc (← lintVersoSyntax docString)
-  catch _ => return
+Verso syntax in declaration docstrings is already handled by the `docStringLinter`.
+-/
+def moduleDocVersoLinter : Linter where
+  run :=
+    withSetOptionIn fun stx ↦ do
+      unless getLinterValue linter.style.docStringVerso (← getLinterOptions) do
+        return
+      -- Check for verso syntax, but only if it is not already enabled.
+      -- If Verso is already enabled for module docs, then this check would be superfluous.
+      let opts ← getOptions
+      if (doc.verso.module.get? opts).getD (doc.verso.get opts) then return
+      if (← get).messages.hasErrors then
+        return
+      let some moduleDoc :=
+          (match stx with
+            | s@(.node _ ``Parser.Command.moduleDoc args) => some s
+            | _ => none)
+        | return
+      try
+        let docString ← getDocStringText ⟨moduleDoc⟩
+        logVersoErrors moduleDoc (← lintVersoSyntax docString)
+      catch _ =>
+        return
 
 initialize addLinter moduleDocVersoLinter
 

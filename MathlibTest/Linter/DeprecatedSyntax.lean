@@ -14,18 +14,15 @@ The `refine'` tactic is discouraged: please strongly consider using `refine` or 
 Note: This linter can be disabled with `set_option linter.style.refine false`
 -/
 #guard_msgs in
-example : True := by
-  refine' (by refine' .intro)
+example : True := by refine' (by refine' .intro)
 
 set_option linter.style.refine false
 -- This is quiet because `linter.style.refine` is now false
-example : True := by
-  refine' (by refine' .intro)
+example : True := by refine' (by refine' .intro)
 
 set_option linter.style.refine false in
 -- This is quiet because `linter.style.refine` is now false, even using `in`.
-example : True := by
-  refine' (by refine' .intro)
+example : True := by refine' (by refine' .intro)
 
 set_option linter.style.cases true
 /--
@@ -38,13 +35,11 @@ warning: The `cases'` tactic is discouraged: please strongly consider using `obt
 Note: This linter can be disabled with `set_option linter.style.cases false`
 -/
 #guard_msgs in
-example (a : (True ∨ True) ∨ (True ∨ True)): True := by
-  cases' a with b b <;> cases' b <;> trivial
+example (a : (True ∨ True) ∨ (True ∨ True)) : True := by cases' a with b b <;> cases' b <;> trivial
 
 set_option linter.style.cases false
 -- This is quiet because `linter.style.cases` is now false
-example (a : (True ∨ True) ∨ (True ∨ True)): True := by
-  cases' a with b b <;> cases' b <;> trivial
+example (a : (True ∨ True) ∨ (True ∨ True)) : True := by cases' a with b b <;> cases' b <;> trivial
 
 set_option linter.style.induction true
 /--
@@ -97,17 +92,14 @@ Note: This linter can be disabled with `set_option linter.style.admit false`
 -/
 #guard_msgs in
 example : True ∧ True := by
-  have : True := by
-    · admit
+  have : True := by · admit
   let foo : Nat := by admit
   refine ⟨?_, ?_⟩
   · admit
   · admit
 
 set_option linter.style.admit false
-/--
-warning: declaration uses `sorry`
--/
+/-- warning: declaration uses `sorry` -/
 #guard_msgs in
 example : False := by admit
 
@@ -225,14 +217,18 @@ Note: This linter can be disabled with `set_option linter.style.maxHeartbeats fa
 #guard_msgs in
 set_option maxHeartbeats 10 in
 set_option synthInstance.maxHeartbeats 10 in
-/- The comment here is not enough to silence the linter:
-the *first* `maxHeartbeats` option should have a comment. -/
+/-
+The comment here is not enough to silence the linter:
+the *first* `maxHeartbeats` option should have a comment.
+-/
 section
 
 #guard_msgs in
 set_option maxHeartbeats 10 in
-/- The comment here is enough to silence the linter:
-the *first* `maxHeartbeats` has a comment, to remaining ones are free to be commentless. -/
+/-
+The comment here is enough to silence the linter:
+the *first* `maxHeartbeats` has a comment, to remaining ones are free to be commentless.
+-/
 set_option synthInstance.maxHeartbeats 10 in
 section
 

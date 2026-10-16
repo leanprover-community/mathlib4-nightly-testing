@@ -23,7 +23,8 @@ variable {C : Type u₁} [Category.{v₁} C] [MonoidalCategory C]
 
 /--
 The morphisms in `C` between the underlying objects of a pair of bimonoids in `C` naturally have a
-(set-theoretic) monoid structure. -/
+(set-theoretic) monoid structure.
+-/
 def Conv (M N : C) : Type v₁ := M ⟶ N
 
 namespace Conv
@@ -46,8 +47,7 @@ instance : Monoid (Conv M N) where
   mul_one f := by simp [one_eq, mul_eq, ← whisker_exchange_assoc]
   mul_assoc f g h := by
     simp only [mul_eq]
-    simp only [comp_whiskerRight, whisker_assoc, Category.assoc,
-      MonoidalCategory.whiskerLeft_comp]
+    simp only [comp_whiskerRight, whisker_assoc, Category.assoc, MonoidalCategory.whiskerLeft_comp]
     slice_lhs 7 8 =>
       rw [← whisker_exchange]
     slice_rhs 2 3 =>

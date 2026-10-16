@@ -21,7 +21,6 @@ element and inf-semilattices with a top element.
 
 @[expose] public section
 
-
 universe u
 
 open CategoryTheory
@@ -51,16 +50,13 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab SemilatSupCat.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-instance : CoeSort SemilatSupCat Type* :=
-  ⟨SemilatSupCat.X⟩
+instance : CoeSort SemilatSupCat Type* := ⟨SemilatSupCat.X⟩
 
 attribute [instance] isSemilatticeSup isOrderBot
 
-theorem coe_of (α : Type*) [SemilatticeSup α] [OrderBot α] : ↥(of α) = α :=
-  rfl
+theorem coe_of (α : Type*) [SemilatticeSup α] [OrderBot α] : ↥(of α) = α := rfl
 
-instance : Inhabited SemilatSupCat :=
-  ⟨of PUnit⟩
+instance : Inhabited SemilatSupCat := ⟨of PUnit⟩
 
 instance : LargeCategory.{u} SemilatSupCat where
   Hom X Y := SupBotHom X Y
@@ -79,8 +75,7 @@ instance hasForgetToPartOrd : HasForget₂ SemilatSupCat PartOrd where
   forget₂.map f := PartOrd.ofHom ⟨f.toSupHom, OrderHomClass.mono f.toSupHom⟩
 
 @[simp]
-theorem coe_forget_to_partOrd (X : SemilatSupCat) :
-    ↥((forget₂ SemilatSupCat PartOrd).obj X) = ↥X :=
+theorem coe_forget_to_partOrd (X : SemilatSupCat) : ↥((forget₂ SemilatSupCat PartOrd).obj X) = ↥X :=
   rfl
 
 end SemilatSupCat
@@ -92,16 +87,13 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab SemilatInfCat.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-instance : CoeSort SemilatInfCat Type* :=
-  ⟨SemilatInfCat.X⟩
+instance : CoeSort SemilatInfCat Type* := ⟨SemilatInfCat.X⟩
 
 attribute [instance] isSemilatticeInf isOrderTop
 
-theorem coe_of (α : Type*) [SemilatticeInf α] [OrderTop α] : ↥(of α) = α :=
-  rfl
+theorem coe_of (α : Type*) [SemilatticeInf α] [OrderTop α] : ↥(of α) = α := rfl
 
-instance : Inhabited SemilatInfCat :=
-  ⟨of PUnit⟩
+instance : Inhabited SemilatInfCat := ⟨of PUnit⟩
 
 instance : LargeCategory.{u} SemilatInfCat where
   Hom X Y := InfTopHom X Y
@@ -120,8 +112,7 @@ instance hasForgetToPartOrd : HasForget₂ SemilatInfCat PartOrd where
   forget₂.map f := PartOrd.ofHom ⟨f.toInfHom, OrderHomClass.mono f.toInfHom⟩
 
 @[simp]
-theorem coe_forget_to_partOrd (X : SemilatInfCat) :
-    ↥((forget₂ SemilatInfCat PartOrd).obj X) = ↥X :=
+theorem coe_forget_to_partOrd (X : SemilatInfCat) : ↥((forget₂ SemilatInfCat PartOrd).obj X) = ↥X :=
   rfl
 
 end SemilatInfCat
@@ -141,7 +132,7 @@ def Iso.mk {α β : SemilatSupCat.{u}} (e : α ≃o β) : α ≅ β where
 /-- `OrderDual` as a functor. -/
 @[simps map]
 def dual : SemilatSupCat ⥤ SemilatInfCat where
-  obj X := ↧Xᵒᵈ
+  obj X := ↧ Xᵒᵈ
   map {_ _} := SupBotHom.dual
 
 end SemilatSupCat
@@ -159,7 +150,7 @@ def Iso.mk {α β : SemilatInfCat.{u}} (e : α ≃o β) : α ≅ β where
 /-- `OrderDual` as a functor. -/
 @[simps]
 def dual : SemilatInfCat ⥤ SemilatSupCat where
-  obj X := ↧Xᵒᵈ
+  obj X := ↧ Xᵒᵈ
   map {_ _} := InfTopHom.dual
 
 end SemilatInfCat
@@ -172,12 +163,12 @@ def SemilatSupCatEquivSemilatInfCat : SemilatSupCat ≌ SemilatInfCat where
   unitIso := NatIso.ofComponents fun X => SemilatSupCat.Iso.mk <| OrderIso.dualDual X
   counitIso := NatIso.ofComponents fun X => SemilatInfCat.Iso.mk <| OrderIso.dualDual X
 
-theorem SemilatSupCat_dual_comp_forget_to_partOrd :
-    SemilatSupCat.dual ⋙ forget₂ SemilatInfCat PartOrd =
-      forget₂ SemilatSupCat PartOrd ⋙ PartOrd.dual :=
+theorem SemilatSupCat_dual_comp_forget_to_partOrd
+    : SemilatSupCat.dual ⋙ forget₂ SemilatInfCat PartOrd
+      = forget₂ SemilatSupCat PartOrd ⋙ PartOrd.dual :=
   rfl
 
-theorem SemilatInfCat_dual_comp_forget_to_partOrd :
-    SemilatInfCat.dual ⋙ forget₂ SemilatSupCat PartOrd =
-      forget₂ SemilatInfCat PartOrd ⋙ PartOrd.dual :=
+theorem SemilatInfCat_dual_comp_forget_to_partOrd
+    : SemilatInfCat.dual ⋙ forget₂ SemilatSupCat PartOrd
+      = forget₂ SemilatInfCat PartOrd ⋙ PartOrd.dual :=
   rfl

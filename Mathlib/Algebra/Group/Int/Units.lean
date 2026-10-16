@@ -16,7 +16,6 @@ public import Mathlib.Tactic.Tauto
 
 public section
 
-
 open Nat
 
 namespace Int
@@ -26,10 +25,12 @@ namespace Int
 variable {u v : ℤ}
 
 lemma units_natAbs (u : ℤˣ) : natAbs u = 1 :=
-  Units.ext_iff.1 <|
-    Nat.units_eq_one
-      ⟨natAbs u, natAbs ↑u⁻¹, by rw [← natAbs_mul, Units.mul_inv]; rfl, by
-        rw [← natAbs_mul, Units.inv_mul]; rfl⟩
+  Units.ext_iff.1 <| Nat.units_eq_one ⟨
+    natAbs u,
+    natAbs ↑u⁻¹,
+    by rw [← natAbs_mul, Units.mul_inv]; rfl,
+    by rw [← natAbs_mul, Units.inv_mul]; rfl
+  ⟩
 
 @[simp] lemma natAbs_of_isUnit (hu : IsUnit u) : natAbs u = 1 := units_natAbs hu.unit
 
@@ -53,16 +54,16 @@ lemma eq_one_or_neg_one_of_mul_eq_one (h : u * v = 1) : u = 1 ∨ u = -1 :=
 
 lemma eq_one_or_neg_one_of_mul_eq_one' (h : u * v = 1) : u = 1 ∧ v = 1 ∨ u = -1 ∧ v = -1 := by
   have h' : v * u = 1 := mul_comm u v ▸ h
-  obtain rfl | rfl := eq_one_or_neg_one_of_mul_eq_one h <;>
-      obtain rfl | rfl := eq_one_or_neg_one_of_mul_eq_one h' <;> tauto
+  obtain rfl | rfl := eq_one_or_neg_one_of_mul_eq_one h
+    <;> obtain rfl | rfl := eq_one_or_neg_one_of_mul_eq_one h' <;> tauto
 
 lemma eq_of_mul_eq_one (h : u * v = 1) : u = v :=
-  (eq_one_or_neg_one_of_mul_eq_one' h).elim
-    (and_imp.2 (·.trans ·.symm)) (and_imp.2 (·.trans ·.symm))
+  (eq_one_or_neg_one_of_mul_eq_one' h).elim (and_imp.2 (·.trans ·.symm))
+    (and_imp.2 (·.trans ·.symm))
 
 lemma mul_eq_one_iff_eq_one_or_neg_one : u * v = 1 ↔ u = 1 ∧ v = 1 ∨ u = -1 ∧ v = -1 := by
-  refine ⟨eq_one_or_neg_one_of_mul_eq_one', fun h ↦ Or.elim h (fun H ↦ ?_) fun H ↦ ?_⟩ <;>
-    obtain ⟨rfl, rfl⟩ := H <;> rfl
+  refine ⟨eq_one_or_neg_one_of_mul_eq_one', fun h ↦ Or.elim h (fun H ↦ ?_) fun H ↦ ?_⟩
+    <;> obtain ⟨rfl, rfl⟩ := H <;> rfl
 
 lemma eq_one_or_neg_one_of_mul_eq_neg_one' (h : u * v = -1) : u = 1 ∧ v = -1 ∨ u = -1 ∧ v = 1 := by
   obtain rfl | rfl := isUnit_eq_one_or (IsUnit.mul_iff.mp (Int.isUnit_iff.mpr (Or.inr h))).1
@@ -70,8 +71,8 @@ lemma eq_one_or_neg_one_of_mul_eq_neg_one' (h : u * v = -1) : u = 1 ∧ v = -1 �
   · simpa [Int.neg_mul] using h
 
 lemma mul_eq_neg_one_iff_eq_one_or_neg_one : u * v = -1 ↔ u = 1 ∧ v = -1 ∨ u = -1 ∧ v = 1 := by
-  refine ⟨eq_one_or_neg_one_of_mul_eq_neg_one', fun h ↦ Or.elim h (fun H ↦ ?_) fun H ↦ ?_⟩ <;>
-    obtain ⟨rfl, rfl⟩ := H <;> rfl
+  refine ⟨eq_one_or_neg_one_of_mul_eq_neg_one', fun h ↦ Or.elim h (fun H ↦ ?_) fun H ↦ ?_⟩
+    <;> obtain ⟨rfl, rfl⟩ := H <;> rfl
 
 lemma isUnit_iff_natAbs_eq : IsUnit u ↔ u.natAbs = 1 := by simp [natAbs_eq_iff, isUnit_iff]
 
@@ -83,8 +84,9 @@ lemma ofNat_isUnit {n : ℕ} : IsUnit (n : ℤ) ↔ IsUnit n := by simp [isUnit_
 lemma isUnit_mul_self (hu : IsUnit u) : u * u = 1 :=
   (isUnit_eq_one_or hu).elim (fun h ↦ h.symm ▸ rfl) fun h ↦ h.symm ▸ rfl
 
-lemma isUnit_add_isUnit_eq_isUnit_add_isUnit {a b c d : ℤ} (ha : IsUnit a) (hb : IsUnit b)
-    (hc : IsUnit c) (hd : IsUnit d) : a + b = c + d ↔ a = c ∧ b = d ∨ a = d ∧ b = c := by
+lemma isUnit_add_isUnit_eq_isUnit_add_isUnit
+    {a b c d : ℤ} (ha : IsUnit a) (hb : IsUnit b) (hc : IsUnit c) (hd : IsUnit d)
+    : a + b = c + d ↔ a = c ∧ b = d ∨ a = d ∧ b = c := by
   rw [isUnit_iff] at ha hb hc hd
   lia
 

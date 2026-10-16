@@ -40,15 +40,18 @@ instance Int.instMeasurableSpace : MeasurableSpace ℤ := ⊤
 instance Rat.instMeasurableSpace : MeasurableSpace ℚ := ⊤
 
 @[to_additive]
-instance IterateMulAct.instMeasurableSpace {α : Type*} {f : α → α} :
-    MeasurableSpace (IterateMulAct f) := ⊤
+instance IterateMulAct.instMeasurableSpace {α : Type*} {f : α → α}
+    : MeasurableSpace (IterateMulAct f) :=
+  ⊤
 
 @[to_additive]
-instance IterateMulAct.instDiscreteMeasurableSpace {α : Type*} {f : α → α} :
-    DiscreteMeasurableSpace (IterateMulAct f) := inferInstance
+instance IterateMulAct.instDiscreteMeasurableSpace {α : Type*} {f : α → α}
+    : DiscreteMeasurableSpace (IterateMulAct f) :=
+  inferInstance
 
 instance (priority := 100) Subsingleton.measurableSingletonClass
-    {α} [MeasurableSpace α] [Subsingleton α] : MeasurableSingletonClass α := by
+    {α} [MeasurableSpace α] [Subsingleton α]
+    : MeasurableSingletonClass α := by
   refine ⟨fun i => ?_⟩
   convert MeasurableSet.univ
   simp [Set.eq_univ_iff_forall, eq_iff_true_of_subsingleton]

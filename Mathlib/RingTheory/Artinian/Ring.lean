@@ -8,7 +8,6 @@ module
 public import Mathlib.RingTheory.Artinian.Module
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.RingTheory.Localization.Defs
-
 import Mathlib.Algebra.Field.Equiv
 
 /-!
@@ -52,8 +51,8 @@ open Set Submodule IsArtinian
 namespace IsArtinianRing
 
 @[stacks 00J8]
-theorem isNilpotent_jacobson_bot {R} [Ring R] [IsArtinianRing R] :
-    IsNilpotent (Ideal.jacobson (⊥ : Ideal R)) :=
+theorem isNilpotent_jacobson_bot {R} [Ring R] [IsArtinianRing R]
+    : IsNilpotent (Ideal.jacobson (⊥ : Ideal R)) :=
   Ideal.jacobson_bot (R := R) ▸ IsSemiprimaryRing.isNilpotent
 
 variable {R : Type*} [CommRing R] [IsArtinianRing R]
@@ -68,8 +67,8 @@ theorem isNilpotent_nilradical : IsNilpotent (nilradical R) := by
 variable (R) in
 /-- Commutative Artinian reduced local ring is a field. -/
 theorem isField_of_isReduced_of_isLocalRing [IsReduced R] [IsLocalRing R] : IsField R :=
-  (IsArtinianRing.equivPi R).toRingEquiv.trans (RingEquiv.piUnique _) |>.toMulEquiv.isField
-    (Ideal.Quotient.field _).toIsField
+  (IsArtinianRing.equivPi R).toRingEquiv.trans (RingEquiv.piUnique _)
+    |>.toMulEquiv.isField (Ideal.Quotient.field _).toIsField
 
 section Localization
 
@@ -87,16 +86,16 @@ theorem localization_surjective : Function.Surjective (algebraMap R L) := by
   rw [smul_eq_mul, smul_eq_mul, pow_succ, mul_assoc] at hr
   apply_fun algebraMap R L at hr
   simp only [map_mul] at hr
-  rw [← IsLocalization.mk'_one (M := S) L, IsLocalization.mk'_eq_iff_eq, mul_one,
-    Submonoid.coe_one, ← (IsLocalization.map_units L (s ^ n)).mul_left_cancel hr, map_mul]
+  rw [← IsLocalization.mk'_one (M := S) L, IsLocalization.mk'_eq_iff_eq, mul_one, Submonoid.coe_one,
+    ← (IsLocalization.map_units L (s ^ n)).mul_left_cancel hr, map_mul]
 
-theorem localization_artinian : IsArtinianRing L :=
-  (localization_surjective S L).isArtinianRing
+theorem localization_artinian : IsArtinianRing L := (localization_surjective S L).isArtinianRing
 
-/-- `IsArtinianRing.localization_artinian` can't be made an instance, as it would make `S` + `R`
-into metavariables. However, this is safe. -/
-instance : IsArtinianRing (Localization S) :=
-  localization_artinian S _
+/--
+`IsArtinianRing.localization_artinian` can't be made an instance, as it would make `S` + `R`
+into metavariables. However, this is safe.
+-/
+instance : IsArtinianRing (Localization S) := localization_artinian S _
 
 end Localization
 

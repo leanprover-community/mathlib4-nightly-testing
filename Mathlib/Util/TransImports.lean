@@ -30,17 +30,22 @@ syntax (name := transImportsStx) "#trans_imports" (ppSpace str)? (&" at_most " n
 open Lean in
 @[inherit_doc transImportsStx]
 elab_rules : command
-| `(command| #trans_imports $(stx)? $[at_most $le:num]?) => do
-  let imports := (← getEnv).allImportedModuleNames
-  let currMod := if let mod@(.str _ _) := ← getMainModule then m!"'{mod}' has " else ""
-  let rest := match stx with
-      | none => m!""
+  | `(command| #trans_imports $(stx)? $[at_most $le:num]?) => do
+    let imports := (← getEnv).allImportedModuleNames
+    let currMod := if let mod@(.str _ _) := ← getMainModule then m!"'{mod}' has " else ""
+    let rest :=
+      match stx with
+      | none =>
+        m!""
       | some str =>
-        let imps := imports.filterMap fun (i : Name) =>
-          if i.toString.startsWith str.getString then some i else none
-        m!"\n\n{imps.size} starting with {str}:\n{imps.qsort (·.toString < ·.toString)}"
-  match le with
-    | none => logInfo m!"{currMod}{imports.size} transitive imports{rest}"
+        let imps :=
+          imports.filterMap fun (i : Name) =>
+            if i.toString.startsWith str.getString then some i else none
+        m!"\n\n{imps.size} starting with {str}:\
+          \n{imps.qsort (·.toString < ·.toString)}"
+    match le with
+    | none =>
+      logInfo m!"{currMod}{imports.size} transitive imports{rest}"
     | some bd =>
       if imports.size ≤ bd.getNat then
         logInfo m!"{currMod}at most {bd} transitive imports{rest}"

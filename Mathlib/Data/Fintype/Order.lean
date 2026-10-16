@@ -7,9 +7,8 @@ module
 
 public import Mathlib.Data.Finset.Lattice.Fold
 public import Mathlib.Data.Finset.Order
-public import Mathlib.Data.Set.Finite.Basic  -- shake: keep (IsAtomic α), cf. lean#13417
+public import Mathlib.Data.Set.Finite.Basic -- shake: keep (IsAtomic α), cf. lean#13417
 public import Mathlib.Order.Atoms
-
 import Mathlib.Basic.Finite.Prod
 import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
@@ -74,8 +73,7 @@ abbrev toOrderTop [SemilatticeSup α] : OrderTop α where
 
 -- See note [reducible non-instances]
 /-- Constructs the `⊤` and `⊥` of a finite nonempty `Lattice`. -/
-abbrev toBoundedOrder [Lattice α] : BoundedOrder α :=
-  { toOrderBot α, toOrderTop α with }
+abbrev toBoundedOrder [Lattice α] : BoundedOrder α := { toOrderBot α, toOrderTop α with }
 
 end Nonempty
 
@@ -97,8 +95,8 @@ noncomputable abbrev toCompleteLattice [Lattice α] [BoundedOrder α] : Complete
 attribute [local instance] toCompleteLattice in
 -- See note [reducible non-instances]
 /-- A finite bounded distributive lattice is completely distributive. -/
-noncomputable abbrev toCompleteDistribLatticeMinimalAxioms [DistribLattice α] [BoundedOrder α] :
-    CompleteDistribLattice.MinimalAxioms α where
+noncomputable abbrev toCompleteDistribLatticeMinimalAxioms [DistribLattice α] [BoundedOrder α]
+    : CompleteDistribLattice.MinimalAxioms α where
   iInf_sup_le_sup_sInf := fun a s => by
     convert (Finset.inf_sup_distrib_left s.toFinset id a).ge using 1
     rw [Finset.inf_eq_iInf]
@@ -113,18 +111,22 @@ noncomputable abbrev toCompleteDistribLatticeMinimalAxioms [DistribLattice α] [
 attribute [local instance] toCompleteLattice in
 -- See note [reducible non-instances]
 /-- A finite bounded distributive lattice is completely distributive. -/
-noncomputable abbrev toCompleteDistribLattice [DistribLattice α] [BoundedOrder α] :
-    CompleteDistribLattice α := .ofMinimalAxioms (toCompleteDistribLatticeMinimalAxioms _)
+noncomputable abbrev toCompleteDistribLattice [DistribLattice α] [BoundedOrder α]
+    : CompleteDistribLattice α :=
+  .ofMinimalAxioms (toCompleteDistribLatticeMinimalAxioms _)
 
 -- See note [reducible non-instances]
-/-- A finite bounded linear order is complete.
+/--
+A finite bounded linear order is complete.
 
 If the `α` is already a `BiheytingAlgebra`, then prefer to construct this instance manually using
 `Fintype.toCompleteLattice` instead, to avoid creating a diamond with
-`LinearOrder.toBiheytingAlgebra`. -/
-noncomputable abbrev toCompleteLinearOrder
-    [LinearOrder α] [BoundedOrder α] : CompleteLinearOrder α :=
-  { toCompleteLattice α, ‹LinearOrder α›, LinearOrder.toBiheytingAlgebra _ with }
+`LinearOrder.toBiheytingAlgebra`.
+-/
+noncomputable abbrev toCompleteLinearOrder [LinearOrder α] [BoundedOrder α]
+    : CompleteLinearOrder α := {
+  toCompleteLattice α, ‹LinearOrder α›, LinearOrder.toBiheytingAlgebra _ with
+}
 
 -- See note [reducible non-instances]
 /-- A finite Boolean algebra is complete. -/
@@ -134,8 +136,8 @@ noncomputable abbrev toCompleteBooleanAlgebra [BooleanAlgebra α] : CompleteBool
 
 -- See note [reducible non-instances]
 /-- A finite Boolean algebra is complete and atomic. -/
-noncomputable abbrev toCompleteAtomicBooleanAlgebra [BooleanAlgebra α] :
-    CompleteAtomicBooleanAlgebra α :=
+noncomputable abbrev toCompleteAtomicBooleanAlgebra [BooleanAlgebra α]
+    : CompleteAtomicBooleanAlgebra α :=
   (toCompleteBooleanAlgebra α).toCompleteAtomicBooleanAlgebra
 
 end BoundedOrder
@@ -145,15 +147,19 @@ section Nonempty
 variable (α) [Nonempty α]
 
 -- See note [reducible non-instances]
-/-- A nonempty finite lattice is complete. If the lattice is already a `BoundedOrder`, then use
-`Fintype.toCompleteLattice` instead, as this gives definitional equality for `⊥` and `⊤`. -/
+/--
+A nonempty finite lattice is complete. If the lattice is already a `BoundedOrder`, then use
+`Fintype.toCompleteLattice` instead, as this gives definitional equality for `⊥` and `⊤`.
+-/
 noncomputable abbrev toCompleteLatticeOfNonempty [Lattice α] : CompleteLattice α :=
   @toCompleteLattice _ _ _ <| toBoundedOrder α
 
 -- See note [reducible non-instances]
-/-- A nonempty finite linear order is complete. If the linear order is already a `BoundedOrder`,
+/--
+A nonempty finite linear order is complete. If the linear order is already a `BoundedOrder`,
 then use `Fintype.toCompleteLinearOrder` instead, as this gives definitional equality for `⊥` and
-`⊤`. -/
+`⊤`.
+-/
 noncomputable abbrev toCompleteLinearOrderOfNonempty [LinearOrder α] : CompleteLinearOrder α :=
   @toCompleteLinearOrder _ _ _ <| toBoundedOrder α
 
@@ -181,15 +187,18 @@ noncomputable instance Bool.completeAtomicBooleanAlgebra : CompleteAtomicBoolean
 
 section DirectedOrders
 
-variable {ι : Sort*} {α : Type*} {r : α → α → Prop} [IsTrans α r] {γ : Type*} [Nonempty γ]
+variable
+  {ι : Sort*} {α : Type*} {r : α → α → Prop} [IsTrans α r]
+  {γ : Type*} [Nonempty γ]
   {f : γ → α} [Finite ι]
 
-theorem Directed.finite_set_le (D : Directed r f) {s : Set γ} (hs : s.Finite) :
-    ∃ z, ∀ i ∈ s, r (f i) (f z) := by
+theorem Directed.finite_set_le (D : Directed r f) {s : Set γ} (hs : s.Finite)
+    : ∃ z, ∀ i ∈ s, r (f i) (f z) := by
   convert! D.finset_le hs.toFinset using 3; rw [Set.Finite.mem_toFinset]
 
-lemma Directed.finite_le {ι κ : Sort*} [Nonempty ι] [Finite κ] {f : ι → α} (hf : Directed r f)
-    (g : κ → ι) : ∃ z, ∀ i, r (f (g i)) (f z) := by
+lemma Directed.finite_le
+    {ι κ : Sort*} [Nonempty ι] [Finite κ] {f : ι → α} (hf : Directed r f) (g : κ → ι)
+    : ∃ z, ∀ i, r (f (g i)) (f z) := by
   simpa using
     (hf.comp_of_surjective PLift.down_surjective).finite_set_le (Set.finite_range (PLift.up ∘ g))
 
@@ -201,12 +210,12 @@ theorem Finite.exists_le [IsDirectedOrder α] (f : ι → α) : ∃ M, ∀ i, f 
 theorem Finite.exists_ge [IsCodirectedOrder α] (f : ι → α) : ∃ M, ∀ i, M ≤ f i :=
   directed_id.finite_le (r := (· ≥ ·)) _
 
-theorem Set.Finite.exists_le [IsDirectedOrder α] {s : Set α} (hs : s.Finite) :
-    ∃ M, ∀ i ∈ s, i ≤ M :=
+theorem Set.Finite.exists_le [IsDirectedOrder α] {s : Set α} (hs : s.Finite)
+    : ∃ M, ∀ i ∈ s, i ≤ M :=
   directed_id.finite_set_le hs
 
-theorem Set.Finite.exists_ge [IsCodirectedOrder α] {s : Set α} (hs : s.Finite) :
-    ∃ M, ∀ i ∈ s, M ≤ i :=
+theorem Set.Finite.exists_ge [IsCodirectedOrder α] {s : Set α} (hs : s.Finite)
+    : ∃ M, ∀ i ∈ s, M ≤ i :=
   directed_id.finite_set_le (r := (· ≥ ·)) hs
 
 @[simp]
@@ -228,13 +237,13 @@ end DirectedOrders
 section
 variable {ι : Sort*} {α : Type*} [CompleteLattice α] {s : Set α} {a : α} {f : ι → α}
 
-lemma le_iSup_iff_of_directed [Nonempty ι] [Finite ι] (hf : Directed (· ≤ ·) f) :
-    a ≤ ⨆ i, f i ↔ ∃ i, a ≤ f i where
+lemma le_iSup_iff_of_directed [Nonempty ι] [Finite ι] (hf : Directed (· ≤ ·) f)
+    : a ≤ ⨆ i, f i ↔ ∃ i, a ≤ f i where
   mp ha := by obtain ⟨i, hi⟩ := hf.finite_le id; exact ⟨i, ha.trans <| iSup_le hi⟩
   mpr := by rintro ⟨i, hai⟩; exact le_iSup_of_le i hai
 
-lemma le_sSup_iff_of_directedOn (hs : s.Nonempty) (hs' : s.Finite) (hs'' : DirectedOn (· ≤ ·) s) :
-    a ≤ sSup s ↔ ∃ b ∈ s, a ≤ b := by
+lemma le_sSup_iff_of_directedOn (hs : s.Nonempty) (hs' : s.Finite) (hs'' : DirectedOn (· ≤ ·) s)
+    : a ≤ sSup s ↔ ∃ b ∈ s, a ≤ b := by
   have := hs.to_subtype
   have := hs'.to_subtype
   simp [sSup_eq_iSup', le_iSup_iff_of_directed hs''.directed_val]
@@ -244,11 +253,12 @@ end
 namespace Set
 variable {ι : Sort*} {α : Type*} {S : Set (Set α)} {s : Set α} {f : ι → Set α}
 
-lemma subset_iUnion_iff_of_directed [Nonempty ι] [Finite ι] (hf : Directed (· ≤ ·) f) :
-    s ⊆ ⋃ i, f i ↔ ∃ i, s ⊆ f i := le_iSup_iff_of_directed hf
+lemma subset_iUnion_iff_of_directed [Nonempty ι] [Finite ι] (hf : Directed (· ≤ ·) f)
+    : s ⊆ ⋃ i, f i ↔ ∃ i, s ⊆ f i :=
+  le_iSup_iff_of_directed hf
 
-lemma subset_sUnion_iff_of_directed (hS : S.Nonempty) (hS' : S.Finite)
-    (hS'' : DirectedOn (· ≤ ·) S) : s ⊆ sSup S ↔ ∃ t ∈ S, s ⊆ t :=
+lemma subset_sUnion_iff_of_directed (hS : S.Nonempty) (hS' : S.Finite) (hS'' : DirectedOn (· ≤ ·) S)
+    : s ⊆ sSup S ↔ ∃ t ∈ S, s ⊆ t :=
   le_sSup_iff_of_directedOn hS hS' hS''
 
 end Set
@@ -282,74 +292,68 @@ lemma ciSup_mono {f g : ι → α} (H : ∀ (x : ι), f x ≤ g x) : iSup f ≤ 
 lemma ciInf_mono {f g : ι → α} (H : ∀ (x : ι), f x ≤ g x) : iInf f ≤ iInf g :=
   _root_.ciInf_mono (bddBelow_range f) H
 
-lemma le_ciSup (f : ι → α) (i : ι) : f i ≤ ⨆ j, f j :=
-  le_ciSup_of_le i le_rfl
+lemma le_ciSup (f : ι → α) (i : ι) : f i ≤ ⨆ j, f j := le_ciSup_of_le i le_rfl
 
-lemma ciInf_le (f : ι → α) (i : ι) : ⨅ j, f j ≤ f i :=
-  le_ciSup (α := αᵒᵈ) f i
+lemma ciInf_le (f : ι → α) (i : ι) : ⨅ j, f j ≤ f i := le_ciSup (α := αᵒᵈ) f i
 
-lemma ciSup_sup [Nonempty ι] {f : ι → α} {a : α} :
-    (⨆ i, f i) ⊔ a = ⨆ i, f i ⊔ a := by
+lemma ciSup_sup [Nonempty ι] {f : ι → α} {a : α} : (⨆ i, f i) ⊔ a = ⨆ i, f i ⊔ a := by
   refine le_antisymm (sup_le ?_ ?_) <| ciSup_le fun i ↦ sup_le_sup_right (le_ciSup f i) a
   · exact ciSup_le fun i ↦ le_ciSup_of_le i le_sup_left
   · exact le_ciSup_of_le (Classical.arbitrary ι) le_sup_right
 
-lemma ciInf_inf [Nonempty ι] {f : ι → α} {a : α} :
-    (⨅ i, f i) ⊓ a = ⨅ i, f i ⊓ a :=
+lemma ciInf_inf [Nonempty ι] {f : ι → α} {a : α} : (⨅ i, f i) ⊓ a = ⨅ i, f i ⊓ a :=
   ciSup_sup (α := αᵒᵈ) ..
 
-lemma ciSup_prod (f : ι × ι' → α) :
-    ⨆ a, f a = ⨆ i, ⨆ i', f (i, i') :=
+lemma ciSup_prod (f : ι × ι' → α) : ⨆ a, f a = ⨆ i, ⨆ i', f (i, i') :=
   _root_.ciSup_prod (bddAbove_range f)
 
-lemma ciInf_prod (f : ι × ι' → α) :
-    ⨅ a, f a = ⨅ i, ⨅ i', f (i, i') :=
-  ciSup_prod (α := αᵒᵈ) f
+lemma ciInf_prod (f : ι × ι' → α) : ⨅ a, f a = ⨅ i, ⨅ i', f (i, i') := ciSup_prod (α := αᵒᵈ) f
 
 end CCL
 
 section CCLO
 
-variable {α β ι : Type*} [ConditionallyCompleteLinearOrder α] [ConditionallyCompleteLattice β]
-  [Finite ι] [Nonempty ι]
+variable
+  {α β ι : Type*}
+  [ConditionallyCompleteLinearOrder α] [ConditionallyCompleteLattice β] [Finite ι] [Nonempty ι]
 
-lemma map_iSup_of_monotoneOn {s : Set α} {f : ι → α} {g : α → β} (hg : MonotoneOn g s)
-    (hs : ∀ i, f i ∈ s) :
-    g (⨆ i, f i) = ⨆ i, g (f i) := by
+lemma map_iSup_of_monotoneOn
+    {s : Set α} {f : ι → α} {g : α → β} (hg : MonotoneOn g s) (hs : ∀ i, f i ∈ s)
+    : g (⨆ i, f i) = ⨆ i, g (f i) := by
   obtain ⟨j, hj⟩ : ∃ j, f j = ⨆ i, f i := exists_eq_ciSup_of_finite
   rw [← hj]
   exact le_antisymm (le_ciSup_of_le j le_rfl) <|
     ciSup_le fun i ↦ hg (hs i) (hs j) (hj ▸ le_ciSup f i)
 
-lemma map_iInf_of_monotoneOn {s : Set α} {f : ι → α} {g : α → β} (hg : MonotoneOn g s)
-    (hs : ∀ i, f i ∈ s) :
-    g (⨅ i, f i) = ⨅ i, g (f i) :=
+lemma map_iInf_of_monotoneOn
+    {s : Set α} {f : ι → α} {g : α → β} (hg : MonotoneOn g s) (hs : ∀ i, f i ∈ s)
+    : g (⨅ i, f i) = ⨅ i, g (f i) :=
   map_iSup_of_monotoneOn (α := αᵒᵈ) (β := βᵒᵈ) (fun _ hi _ hj h ↦ hg hj hi h) hs
 
-lemma map_iSup_of_antitoneOn {s : Set α} {f : ι → α} {g : α → β} (hg : AntitoneOn g s)
-    (hs : ∀ i, f i ∈ s) :
-    g (⨆ i, f i) = ⨅ i, g (f i) :=
+lemma map_iSup_of_antitoneOn
+    {s : Set α} {f : ι → α} {g : α → β} (hg : AntitoneOn g s) (hs : ∀ i, f i ∈ s)
+    : g (⨆ i, f i) = ⨅ i, g (f i) :=
   map_iSup_of_monotoneOn (β := βᵒᵈ) hg hs
 
-lemma map_iInf_of_antitoneOn {s : Set α} {f : ι → α} {g : α → β} (hg : AntitoneOn g s)
-    (hs : ∀ i, f i ∈ s) :
-    g (⨅ i, f i) = ⨆ i, g (f i) :=
+lemma map_iInf_of_antitoneOn
+    {s : Set α} {f : ι → α} {g : α → β} (hg : AntitoneOn g s) (hs : ∀ i, f i ∈ s)
+    : g (⨅ i, f i) = ⨆ i, g (f i) :=
   map_iInf_of_monotoneOn (β := βᵒᵈ) hg hs
 
-lemma map_iSup_of_monotone (f : ι → α) {g : α → β} (hg : Monotone g) :
-    g (⨆ i, f i) = ⨆ i, g (f i) :=
+lemma map_iSup_of_monotone (f : ι → α) {g : α → β} (hg : Monotone g)
+    : g (⨆ i, f i) = ⨆ i, g (f i) :=
   map_iSup_of_monotoneOn (monotoneOn_univ.mpr hg) (fun i ↦ Set.mem_univ (f i))
 
-lemma map_iInf_of_monotone (f : ι → α) {g : α → β} (hg : Monotone g) :
-    g (⨅ i, f i) = ⨅ i, g (f i) :=
+lemma map_iInf_of_monotone (f : ι → α) {g : α → β} (hg : Monotone g)
+    : g (⨅ i, f i) = ⨅ i, g (f i) :=
   map_iSup_of_monotone (α := αᵒᵈ) (β := βᵒᵈ) f fun _ _ h ↦ hg h
 
-lemma map_iSup_of_antitone (f : ι → α) {g : α → β} (hg : Antitone g) :
-    g (⨆ i, f i) = ⨅ i, g (f i) :=
+lemma map_iSup_of_antitone (f : ι → α) {g : α → β} (hg : Antitone g)
+    : g (⨆ i, f i) = ⨅ i, g (f i) :=
   map_iSup_of_monotone (β := βᵒᵈ) f hg
 
-lemma map_iInf_of_antitone (f : ι → α) {g : α → β} (hg : Antitone g) :
-    g (⨅ i, f i) = ⨆ i, g (f i) :=
+lemma map_iInf_of_antitone (f : ι → α) {g : α → β} (hg : Antitone g)
+    : g (⨅ i, f i) = ⨆ i, g (f i) :=
   map_iInf_of_monotone (β := βᵒᵈ) f hg
 
 @[to_dual ciInf_le_iff]

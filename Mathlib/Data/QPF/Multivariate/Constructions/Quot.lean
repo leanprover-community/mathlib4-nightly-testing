@@ -17,7 +17,6 @@ functions found in the definition of `MvQPF`
 
 @[expose] public section
 
-
 universe u
 
 open MvFunctor
@@ -34,13 +33,16 @@ variable {G : TypeVec.{u} n → Type u} [MvFunctor G]
 variable {FG_abs : ∀ {α}, F α → G α}
 variable {FG_repr : ∀ {α}, G α → F α}
 
-/-- If `F` is a QPF then `G` is a QPF as well. Can be used to
+/--
+If `F` is a QPF then `G` is a QPF as well. Can be used to
 construct `MvQPF` instances by transporting them across
-surjective functions -/
+surjective functions
+-/
 @[instance_reducible]
-def quotientQPF (FG_abs_repr : ∀ {α} (x : G α), FG_abs (FG_repr x) = x)
-    (FG_abs_map : ∀ {α β} (f : α ⟹ β) (x : F α), FG_abs (f <$$> x) = f <$$> FG_abs x) :
-    MvQPF G where
+def quotientQPF
+    (FG_abs_repr : ∀ {α} (x : G α), FG_abs (FG_repr x) = x)
+    (FG_abs_map : ∀ {α β} (f : α ⟹ β) (x : F α), FG_abs (f <$$> x) = f <$$> FG_abs x)
+    : MvQPF G where
   P := q.P
   abs p := FG_abs (abs p)
   repr x := repr (FG_repr x)
@@ -54,8 +56,7 @@ section Rel
 variable (R : ∀ ⦃α⦄, F α → F α → Prop)
 
 /-- Functorial quotient type -/
-def Quot1 (α : TypeVec n) :=
-  Quot (@R α)
+def Quot1 (α : TypeVec n) := Quot (@R α)
 
 instance Quot1.inhabited {α : TypeVec n} [Inhabited <| F α] : Inhabited (Quot1 R α) :=
   ⟨Quot.mk _ default⟩
@@ -70,7 +71,8 @@ def Quot1.map ⦃α β⦄ (f : α ⟹ β) : Quot1.{u} R α → Quot1.{u} R β :=
 
 /-- `mvFunctor` instance for `Quot1` with well-behaved `R` -/
 @[instance_reducible]
-def Quot1.mvFunctor : MvFunctor (Quot1 R) where map := @Quot1.map _ _ R _ Hfunc
+def Quot1.mvFunctor : MvFunctor (Quot1 R) where
+  map := @Quot1.map _ _ R _ Hfunc
 
 end
 
@@ -81,8 +83,11 @@ variable [q : MvQPF F] (Hfunc : ∀ ⦃α β⦄ (a b : F α) (f : α ⟹ β), R 
 /-- `Quot1` is a QPF -/
 @[instance_reducible]
 noncomputable def relQuot : @MvQPF _ (Quot1 R) :=
-  @quotientQPF n F q _ (MvQPF.Quot1.mvFunctor R Hfunc) (fun x => Quot.mk _ x)
-    Quot.out (fun _x => Quot.out_eq _) fun _f _x => rfl
+  @quotientQPF n F q _ (MvQPF.Quot1.mvFunctor R Hfunc)
+    (fun x => Quot.mk _ x)
+    Quot.out
+    (fun _x => Quot.out_eq _)
+    fun _f _x => rfl
 
 end
 

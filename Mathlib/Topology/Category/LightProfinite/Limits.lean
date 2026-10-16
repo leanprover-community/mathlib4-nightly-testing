@@ -24,31 +24,38 @@ universe u w
 
 open CategoryTheory Limits CompHausLike
 
-instance : HasExplicitPullbacks
-    (fun Y ↦ TotallyDisconnectedSpace Y ∧ SecondCountableTopology Y) where
+instance
+    : HasExplicitPullbacks (fun Y ↦ TotallyDisconnectedSpace Y ∧ SecondCountableTopology Y) where
   hasProp _ _ := {
-    hasProp := ⟨show TotallyDisconnectedSpace {_xy : _ | _} from inferInstance,
-      show SecondCountableTopology {_xy : _ | _} from inferInstance⟩ }
+    hasProp := ⟨
+      show TotallyDisconnectedSpace {_xy : _ | _} from inferInstance,
+      show SecondCountableTopology {_xy : _ | _} from inferInstance
+    ⟩
+  }
 
-instance : HasExplicitFiniteCoproducts.{w, u}
-    (fun Y ↦ TotallyDisconnectedSpace Y ∧ SecondCountableTopology Y) where
-  hasProp _ := { hasProp :=
-    ⟨show TotallyDisconnectedSpace (Σ (_a : _), _) from inferInstance,
-      show SecondCountableTopology (Σ (_a : _), _) from inferInstance⟩ }
+instance
+    : HasExplicitFiniteCoproducts.{w, u} (fun Y ↦
+      TotallyDisconnectedSpace Y ∧ SecondCountableTopology Y) where
+  hasProp _ := {
+    hasProp := ⟨
+      show TotallyDisconnectedSpace (Σ (_a : _), _) from inferInstance,
+      show SecondCountableTopology (Σ (_a : _), _) from inferInstance
+    ⟩
+  }
 
 /-- A one-element space is terminal in `Profinite` -/
 abbrev isTerminalPUnit : IsTerminal (LightProfinite.of PUnit.{u + 1}) :=
   CompHausLike.isTerminalPUnit
 
-instance {X Y Z : LightProfinite} (f : X ⟶ Z) (g : Y ⟶ Z) [h : Epi g] :
-    Epi (CompHausLike.pullback.fst f g) := by
+instance {X Y Z : LightProfinite} (f : X ⟶ Z) (g : Y ⟶ Z) [h : Epi g]
+    : Epi (CompHausLike.pullback.fst f g) := by
   rw [LightProfinite.epi_iff_surjective] at h ⊢
   intro x
   obtain ⟨y, hy⟩ := h (f x)
   exact ⟨⟨⟨x, y⟩, hy.symm⟩, rfl⟩
 
-instance {X Y Z : LightProfinite} (f : X ⟶ Z) (g : Y ⟶ Z) [h : Epi f] :
-    Epi (CompHausLike.pullback.snd f g) := by
+instance {X Y Z : LightProfinite} (f : X ⟶ Z) (g : Y ⟶ Z) [h : Epi f]
+    : Epi (CompHausLike.pullback.snd f g) := by
   rw [LightProfinite.epi_iff_surjective] at h ⊢
   intro y
   obtain ⟨x, hx⟩ := h (g y)

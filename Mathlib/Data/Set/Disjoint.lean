@@ -23,17 +23,13 @@ namespace Set
 
 variable {α : Type u} {s t u s₁ s₂ t₁ t₂ : Set α}
 
-
 /-! ### Disjointness -/
 
-protected theorem disjoint_iff : Disjoint s t ↔ s ∩ t ⊆ ∅ :=
-  disjoint_iff_inf_le
+protected theorem disjoint_iff : Disjoint s t ↔ s ∩ t ⊆ ∅ := disjoint_iff_inf_le
 
-theorem disjoint_iff_inter_eq_empty : Disjoint s t ↔ s ∩ t = ∅ :=
-  disjoint_iff
+theorem disjoint_iff_inter_eq_empty : Disjoint s t ↔ s ∩ t = ∅ := disjoint_iff
 
-theorem _root_.Disjoint.inter_eq : Disjoint s t → s ∩ t = ∅ :=
-  Disjoint.eq_bot
+theorem _root_.Disjoint.inter_eq : Disjoint s t → s ∩ t = ∅ := Disjoint.eq_bot
 
 @[grind =]
 theorem disjoint_left : Disjoint s t ↔ ∀ ⦃a⦄, a ∈ s → a ∉ t :=
@@ -45,7 +41,7 @@ theorem disjoint_right : Disjoint s t ↔ ∀ ⦃a⦄, a ∈ t → a ∉ s := by
 
 alias ⟨_root_.Disjoint.notMem_of_mem_right, _⟩ := disjoint_right
 
-lemma not_disjoint_iff : ¬Disjoint s t ↔ ∃ x, x ∈ s ∧ x ∈ t := by grind
+lemma not_disjoint_iff : ¬ Disjoint s t ↔ ∃ x, x ∈ s ∧ x ∈ t := by grind
 
 lemma not_disjoint_iff_nonempty_inter : ¬ Disjoint s t ↔ (s ∩ t).Nonempty := not_disjoint_iff
 
@@ -76,8 +72,8 @@ lemma disjoint_union_right : Disjoint s (t ∪ u) ↔ Disjoint s t ∧ Disjoint 
 @[simp] lemma univ_disjoint : Disjoint univ s ↔ s = ∅ := top_disjoint
 @[simp] lemma disjoint_univ : Disjoint s univ ↔ s = ∅ := disjoint_top
 
-theorem disjoint_range_iff {β γ : Sort*} {x : β → α} {y : γ → α} :
-    Disjoint (range x) (range y) ↔ ∀ i j, x i ≠ y j := by
+theorem disjoint_range_iff {β γ : Sort*} {x : β → α} {y : γ → α}
+    : Disjoint (range x) (range y) ↔ ∀ i j, x i ≠ y j := by
   simp [Set.disjoint_iff_forall_ne]
 
 end Set
@@ -88,23 +84,17 @@ variable {α : Type*} {s t u : Set α}
 
 namespace Disjoint
 
-theorem union_left (hs : Disjoint s u) (ht : Disjoint t u) : Disjoint (s ∪ t) u :=
-  hs.sup_left ht
+theorem union_left (hs : Disjoint s u) (ht : Disjoint t u) : Disjoint (s ∪ t) u := hs.sup_left ht
 
-theorem union_right (ht : Disjoint s t) (hu : Disjoint s u) : Disjoint s (t ∪ u) :=
-  ht.sup_right hu
+theorem union_right (ht : Disjoint s t) (hu : Disjoint s u) : Disjoint s (t ∪ u) := ht.sup_right hu
 
-theorem inter_left (u : Set α) (h : Disjoint s t) : Disjoint (s ∩ u) t :=
-  h.inf_left _
+theorem inter_left (u : Set α) (h : Disjoint s t) : Disjoint (s ∩ u) t := h.inf_left _
 
-theorem inter_left' (u : Set α) (h : Disjoint s t) : Disjoint (u ∩ s) t :=
-  h.inf_left' _
+theorem inter_left' (u : Set α) (h : Disjoint s t) : Disjoint (u ∩ s) t := h.inf_left' _
 
-theorem inter_right (u : Set α) (h : Disjoint s t) : Disjoint s (t ∩ u) :=
-  h.inf_right _
+theorem inter_right (u : Set α) (h : Disjoint s t) : Disjoint s (t ∩ u) := h.inf_right _
 
-theorem inter_right' (u : Set α) (h : Disjoint s t) : Disjoint s (u ∩ t) :=
-  h.inf_right' _
+theorem inter_right' (u : Set α) (h : Disjoint s t) : Disjoint s (u ∩ t) := h.inf_right' _
 
 theorem subset_left_of_subset_union (h : s ⊆ t ∪ u) (hac : Disjoint s u) : s ⊆ t :=
   hac.left_le_of_le_sup_right h

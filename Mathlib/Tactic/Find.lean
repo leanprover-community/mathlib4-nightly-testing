@@ -37,24 +37,24 @@ open Batteries.Tactic
 namespace Mathlib.Tactic.Find
 
 private partial def matchHyps : List Expr → List Expr → List Expr → MetaM Bool
-  | p::ps, oldHyps, h::newHyps => do
+  | p :: ps, oldHyps, h :: newHyps => do
     let pt ← inferType p
     let t ← inferType h
     if (← isDefEq pt t) then
       matchHyps ps [] (oldHyps ++ newHyps)
     else
-      matchHyps (p::ps) (h::oldHyps) newHyps
-  | [], _, _    => pure true
-  | _::_, _, [] => pure false
+      matchHyps (p :: ps) (h :: oldHyps) newHyps
+  | [], _, _ =>
+    pure true
+  | _ :: _, _, [] =>
+    pure false
 
 -- from Lean.Server.Completion
-private def isBlackListed (declName : Name) : MetaM Bool := do
-  let env ← getEnv
-  pure <| declName.isInternal
-   || isAuxRecursor env declName
-   || isNoConfusion env declName
-  <||> isRec declName
-  <||> isMatcher declName
+private def isBlackListed (declName : Name) : MetaM Bool :=
+  do
+      let env ← getEnv
+      pure <| declName.isInternal || isAuxRecursor env declName || isNoConfusion env declName
+    <||> isRec declName <||> isMatcher declName
 
 initialize findDeclsPerHead : DeclCache (Std.HashMap HeadIndex (Array Name)) ←
   DeclCache.mk "#find: init cache" failure {} fun _ c headMap ↦ do
@@ -66,28 +66,31 @@ initialize findDeclsPerHead : DeclCache (Std.HashMap HeadIndex (Array Name)) ←
     let head := ty.toHeadIndex
     pure <| headMap.insert head (headMap.getD head #[] |>.push c.name)
 
-def findType (t : Expr) : TermElabM Unit := withReducible do
-  let t ← instantiateMVars t
-  let head := (← forallMetaTelescopeReducing t).2.2.toHeadIndex
-  let pat ← abstractMVars t
+def findType (t : Expr) : TermElabM Unit :=
+  withReducible do
+    let t ← instantiateMVars t
+    let head := (← forallMetaTelescopeReducing t).2.2.toHeadIndex
+    let pat ← abstractMVars t
 
-  let env ← getEnv
-  let mut numFound := 0
-  for n in (← findDeclsPerHead.get).getD head #[] do
-    let c := env.find? n |>.get!
-    let cTy := c.instantiateTypeLevelParams (← mkFreshLevelMVars c.numLevelParams)
-    let found ← forallTelescopeReducing cTy fun cParams cTy' ↦ do
-      let pat := pat.expr.instantiateLevelParamsArray pat.paramNames
-        (← mkFreshLevelMVars pat.numMVars).toArray
-      let (_, _, pat) ← lambdaMetaTelescope pat
-      let (patParams, _, pat) ← forallMetaTelescopeReducing pat
-      isDefEq cTy' pat <&&> matchHyps patParams.toList [] cParams.toList
-    if found then
-      numFound := numFound + 1
-      if numFound > 20 then
-        logInfo m!"maximum number of search results reached"
-        break
-      logInfo m!"{n}: {cTy}"
+    let env ← getEnv
+    let mut numFound := 0
+    for n in (← findDeclsPerHead.get).getD head #[] do
+      let c := env.find? n |>.get!
+      let cTy := c.instantiateTypeLevelParams (← mkFreshLevelMVars c.numLevelParams)
+      let found ←
+        forallTelescopeReducing cTy fun cParams cTy' ↦ do
+          let pat :=
+            pat.expr.instantiateLevelParamsArray pat.paramNames
+              (← mkFreshLevelMVars pat.numMVars).toArray
+          let (_, _, pat) ← lambdaMetaTelescope pat
+          let (patParams, _, pat) ← forallMetaTelescopeReducing pat
+          isDefEq cTy' pat <&&> matchHyps patParams.toList [] cParams.toList
+      if found then
+        numFound := numFound + 1
+        if numFound > 20 then
+          logInfo m!"maximum number of search results reached"
+          break
+        logInfo m!"{n}: {cTy}"
 
 open Lean.Elab.Command in
 /--
@@ -112,9 +115,11 @@ elab "#find " t:term : command =>
     Term.synthesizeSyntheticMVars (postpone := .no) (ignoreStuckTC := true)
     findType t
 
-/- (Note that you'll get an error trying to run these here:
+/-
+(Note that you'll get an error trying to run these here:
 ``cannot evaluate `[init]` declaration 'findDeclsPerHead' in the same module``
-but they will work fine in a new file!) -/
+but they will work fine in a new file!)
+-/
 -- #find _ + _ = _ + _
 -- #find _ + _ = _ + _
 -- #find ?n + _ = _ + ?n
@@ -140,8 +145,7 @@ example : True := by
   -- ...
 ```
 -/
-elab "find" : tactic => do
-  findType (← getMainTarget)
+elab "find" : tactic => do findType (← getMainTarget)
 
 /--
 `#find t` finds definitions and theorems whose result type matches the term `t`, and prints them as

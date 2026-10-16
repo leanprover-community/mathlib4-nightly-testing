@@ -22,31 +22,35 @@ public section
 open ProbabilityTheory MeasureTheory
 open scoped ENNReal
 
-variable {𝓧 𝓨 𝓩 : Type*} {m𝓧 : MeasurableSpace 𝓧} {m𝓨 : MeasurableSpace 𝓨}
-  {m𝓩 : MeasurableSpace 𝓩} {μ : Measure 𝓧} {κ : Kernel 𝓧 𝓨} [IsSFiniteKernel κ]
+variable
+  {𝓧 𝓨 𝓩 : Type*} {m𝓧 : MeasurableSpace 𝓧} {m𝓨 : MeasurableSpace 𝓨} {m𝓩 : MeasurableSpace 𝓩}
+  {μ : Measure 𝓧} {κ : Kernel 𝓧 𝓨} [IsSFiniteKernel κ]
   {f : 𝓧 → ℝ≥0∞} {f' : 𝓨 → ℝ≥0∞} {g : 𝓧 → 𝓨 → ℝ≥0∞}
 
 namespace MeasureTheory.Measure
 
-lemma withDensity_comp (hf' : Measurable f') :
-    (κ ∘ₘ μ).withDensity f' = (κ.withDensity (fun _ b ↦ f' b)) ∘ₘ μ := by
+lemma withDensity_comp (hf' : Measurable f')
+    : (κ ∘ₘ μ).withDensity f' = (κ.withDensity (fun _ b ↦ f' b)) ∘ₘ μ := by
   refine Measure.ext_of_lintegral _ fun g hg ↦ Eq.symm ?_
-  calc ∫⁻ b, g b ∂((κ.withDensity (fun _ b ↦ f' b)) ∘ₘ μ)
-      = ∫⁻ a, ∫⁻ b, g b ∂(κ.withDensity (fun _ b ↦ f' b)) a ∂μ :=
-        Measure.lintegral_bind (Kernel.measurable _).aemeasurable hg.aemeasurable
+  calc
+    ∫⁻ b, g b ∂((κ.withDensity (fun _ b ↦ f' b)) ∘ₘ μ)
+        = ∫⁻ a, ∫⁻ b, g b ∂(κ.withDensity (fun _ b ↦ f' b)) a ∂μ :=
+      Measure.lintegral_bind (Kernel.measurable _).aemeasurable hg.aemeasurable
     _ = ∫⁻ a, ∫⁻ b, f' b * g b ∂κ a ∂μ := by
-        congr with a
-        exact Kernel.lintegral_withDensity _ (by fun_prop) _ hg
+      congr with a
+      exact Kernel.lintegral_withDensity _ (by fun_prop) _ hg
     _ = ∫⁻ b, f' b * g b ∂(κ ∘ₘ μ) :=
-        (Measure.lintegral_bind (Kernel.measurable _).aemeasurable (hf'.mul hg).aemeasurable).symm
+      (Measure.lintegral_bind (Kernel.measurable _).aemeasurable (hf'.mul hg).aemeasurable).symm
     _ = ∫⁻ b, g b ∂((κ ∘ₘ μ).withDensity f') :=
-        (lintegral_withDensity_eq_lintegral_mul _ hf' hg).symm
+      (lintegral_withDensity_eq_lintegral_mul _ hf' hg).symm
 
-/-- A composition-product of a measure with a kernel defined with `withDensity` is equal to the
-`withDensity` of the composition-product. -/
-lemma compProd_withDensity [SFinite μ] [IsSFiniteKernel (κ.withDensity g)]
-    (hg : Measurable (Function.uncurry g)) :
-    μ ⊗ₘ (κ.withDensity g) = (μ ⊗ₘ κ).withDensity (fun p ↦ g p.1 p.2) := by
+/--
+A composition-product of a measure with a kernel defined with `withDensity` is equal to the
+`withDensity` of the composition-product.
+-/
+lemma compProd_withDensity
+    [SFinite μ] [IsSFiniteKernel (κ.withDensity g)] (hg : Measurable (Function.uncurry g))
+    : μ ⊗ₘ (κ.withDensity g) = (μ ⊗ₘ κ).withDensity (fun p ↦ g p.1 p.2) := by
   ext s hs
   rw [compProd_apply hs, withDensity_apply _ hs, ← lintegral_indicator hs, lintegral_compProd]
   · congr with a
@@ -54,24 +58,26 @@ lemma compProd_withDensity [SFinite μ] [IsSFiniteKernel (κ.withDensity g)]
     rfl
   · exact hg.indicator hs
 
-lemma withDensity_compProd [SFinite μ] (hf : Measurable f) :
-    (μ.withDensity f) ⊗ₘ κ = (μ ⊗ₘ κ).withDensity (fun ab ↦ f ab.1) := by
+lemma withDensity_compProd [SFinite μ] (hf : Measurable f)
+    : (μ.withDensity f) ⊗ₘ κ = (μ ⊗ₘ κ).withDensity (fun ab ↦ f ab.1) := by
   refine ext_of_lintegral _ fun g hg ↦ ?_
-  calc ∫⁻ ab, g ab ∂((μ.withDensity f) ⊗ₘ κ)
-  _ = ∫⁻ a, ∫⁻ b, g (a, b) ∂κ a ∂(μ.withDensity f) := lintegral_compProd hg
-  _ = ∫⁻ a, f a * ∫⁻ b, g (a, b) ∂κ a ∂μ :=
+  calc
+    ∫⁻ ab, g ab ∂((μ.withDensity f) ⊗ₘ κ)
+    _ = ∫⁻ a, ∫⁻ b, g (a, b) ∂κ a ∂(μ.withDensity f) := lintegral_compProd hg
+    _ = ∫⁻ a, f a * ∫⁻ b, g (a, b) ∂κ a ∂μ :=
       lintegral_withDensity_eq_lintegral_mul _ hf hg.lintegral_kernel_prod_right'
-  _ = ∫⁻ a, ∫⁻ b, f a * g (a, b) ∂κ a ∂μ :=
+    _ = ∫⁻ a, ∫⁻ b, f a * g (a, b) ∂κ a ∂μ :=
       lintegral_congr fun a ↦ (lintegral_const_mul _ (by fun_prop)).symm
-  _ = ∫⁻ ab, (fun ab ↦ f ab.1) ab * g ab ∂(μ ⊗ₘ κ) :=
+    _ = ∫⁻ ab, (fun ab ↦ f ab.1) ab * g ab ∂(μ ⊗ₘ κ) :=
       (lintegral_compProd ((hf.comp measurable_fst).mul hg)).symm
-  _ = ∫⁻ ab, g ab ∂((μ ⊗ₘ κ).withDensity (fun ab ↦ f ab.1)) :=
+    _ = ∫⁻ ab, g ab ∂((μ ⊗ₘ κ).withDensity (fun ab ↦ f ab.1)) :=
       (lintegral_withDensity_eq_lintegral_mul _ (hf.comp measurable_fst) hg).symm
 
-lemma withDensity_compProd_withDensity [SFinite μ] [IsSFiniteKernel (κ.withDensity g)]
-    (hf : Measurable f) (hg : Measurable (Function.uncurry g)) :
-    (μ.withDensity f) ⊗ₘ (κ.withDensity g) =
-      (μ ⊗ₘ κ).withDensity (fun ac ↦ f ac.1 * g ac.1 ac.2) := by
+lemma withDensity_compProd_withDensity
+    [SFinite μ] [IsSFiniteKernel (κ.withDensity g)]
+    (hf : Measurable f) (hg : Measurable (Function.uncurry g))
+    : (μ.withDensity f) ⊗ₘ (κ.withDensity g)
+      = (μ ⊗ₘ κ).withDensity (fun ac ↦ f ac.1 * g ac.1 ac.2) := by
   rw [compProd_withDensity hg, withDensity_compProd hf]
   exact (withDensity_mul _ (hf.comp measurable_fst) hg).symm
 
@@ -79,9 +85,8 @@ end MeasureTheory.Measure
 
 namespace ProbabilityTheory.Kernel
 
-lemma withDensity_comp_left {η : Kernel 𝓨 𝓩} [IsSFiniteKernel η]
-    {f : 𝓧 → ℝ≥0∞} (hf : Measurable f) :
-    (η ∘ₖ κ).withDensity (fun a _ ↦ f a) = η ∘ₖ (κ.withDensity (fun a _ ↦ f a)) := by
+lemma withDensity_comp_left {η : Kernel 𝓨 𝓩} [IsSFiniteKernel η] {f : 𝓧 → ℝ≥0∞} (hf : Measurable f)
+    : (η ∘ₖ κ).withDensity (fun a _ ↦ f a) = η ∘ₖ (κ.withDensity (fun a _ ↦ f a)) := by
   ext a s hs
   rw [Kernel.withDensity_apply _ (by fun_prop), Kernel.comp_apply, Kernel.comp_apply]
   conv_rhs => rw [Measure.bind_apply hs (by fun_prop)]
@@ -89,24 +94,27 @@ lemma withDensity_comp_left {η : Kernel 𝓨 𝓩} [IsSFiniteKernel η]
   rw [lintegral_withDensity _ (by fun_prop) _ (η.measurable_coe hs),
     Measure.bind_apply hs (Kernel.aemeasurable _), lintegral_const_mul _ (η.measurable_coe hs)]
 
-lemma withDensity_comp_right {η : Kernel 𝓨 𝓩} [IsSFiniteKernel η]
-    {f : 𝓩 → ℝ≥0∞} (hf : Measurable f) :
-    (η ∘ₖ κ).withDensity (fun _ z ↦ f z) = (η.withDensity (fun _ z ↦ f z)) ∘ₖ κ := by
+lemma withDensity_comp_right {η : Kernel 𝓨 𝓩} [IsSFiniteKernel η] {f : 𝓩 → ℝ≥0∞} (hf : Measurable f)
+    : (η ∘ₖ κ).withDensity (fun _ z ↦ f z) = (η.withDensity (fun _ z ↦ f z)) ∘ₖ κ := by
   ext a s hs
   rw [Kernel.withDensity_apply _ (by fun_prop), Kernel.comp_apply, Kernel.comp_apply,
     Measure.withDensity_comp (by fun_prop), Measure.bind_apply hs (by fun_prop)]
 
-lemma sectR_withDensity {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η] {g : 𝓧 × 𝓨 → 𝓩 → ℝ≥0∞}
-    (hg : Measurable (Function.uncurry g)) (a : 𝓧) :
-    (η.withDensity g).sectR a = (η.sectR a).withDensity (fun b c ↦ g (a, b) c) := by
+lemma sectR_withDensity
+    {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η]
+    {g : 𝓧 × 𝓨 → 𝓩 → ℝ≥0∞} (hg : Measurable (Function.uncurry g))
+    (a : 𝓧)
+    : (η.withDensity g).sectR a = (η.sectR a).withDensity (fun b c ↦ g (a, b) c) := by
   ext b s hs
   simp only [sectR_apply]
   rw [Kernel.withDensity_apply _ (by fun_prop), Kernel.withDensity_apply _ (by fun_prop)]
   simp
 
-lemma compProd_withDensity {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η] {g : 𝓧 × 𝓨 → 𝓩 → ℝ≥0∞}
-    (hg : Measurable (Function.uncurry g)) [IsSFiniteKernel (η.withDensity g)] :
-    κ ⊗ₖ (η.withDensity g) = (κ ⊗ₖ η).withDensity (fun a bc ↦ g (a, bc.1) bc.2) := by
+lemma compProd_withDensity
+    {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η]
+    {g : 𝓧 × 𝓨 → 𝓩 → ℝ≥0∞} (hg : Measurable (Function.uncurry g))
+    [IsSFiniteKernel (η.withDensity g)]
+    : κ ⊗ₖ (η.withDensity g) = (κ ⊗ₖ η).withDensity (fun a bc ↦ g (a, bc.1) bc.2) := by
   ext a : 1
   rw [compProd_apply_eq_compProd_sectR, Kernel.withDensity_apply _ (by fun_prop),
     Kernel.compProd_apply_eq_compProd_sectR, sectR_withDensity hg]
@@ -115,16 +123,18 @@ lemma compProd_withDensity {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η
     infer_instance
   rw [Measure.compProd_withDensity (by fun_prop)]
 
-lemma withDensity_compProd {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η]
-    [IsSFiniteKernel (κ.withDensity g)] (hg : Measurable (Function.uncurry g)) :
-    (κ.withDensity g) ⊗ₖ η = (κ ⊗ₖ η).withDensity (fun a bc ↦ g a bc.1) := by
+lemma withDensity_compProd
+    {η : Kernel (𝓧 × 𝓨) 𝓩} [IsSFiniteKernel η] [IsSFiniteKernel (κ.withDensity g)]
+    (hg : Measurable (Function.uncurry g))
+    : (κ.withDensity g) ⊗ₖ η = (κ ⊗ₖ η).withDensity (fun a bc ↦ g a bc.1) := by
   ext a : 1
-  calc ((κ.withDensity g) ⊗ₖ η) a
-  _ = (κ a).withDensity (g a) ⊗ₘ η.sectR a := by
+  calc
+    ((κ.withDensity g) ⊗ₖ η) a
+    _ = (κ a).withDensity (g a) ⊗ₘ η.sectR a := by
       rw [compProd_apply_eq_compProd_sectR, Kernel.withDensity_apply _ hg]
-  _ = ((κ a) ⊗ₘ (η.sectR a)).withDensity (fun bc ↦ g a bc.1) :=
+    _ = ((κ a) ⊗ₘ (η.sectR a)).withDensity (fun bc ↦ g a bc.1) :=
       Measure.withDensity_compProd (by fun_prop)
-  _ = ((κ ⊗ₖ η).withDensity (fun a bc ↦ g a bc.1)) a := by
+    _ = ((κ ⊗ₖ η).withDensity (fun a bc ↦ g a bc.1)) a := by
       rw [← compProd_apply_eq_compProd_sectR, Kernel.withDensity_apply _ (by fun_prop)]
 
 end ProbabilityTheory.Kernel

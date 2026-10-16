@@ -57,13 +57,17 @@ section CommSemiring
 variable [CommSemiring R]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- The arithmetic function corresponding to the Dirichlet series `f(q⁻ˢ)`.
+/--
+The arithmetic function corresponding to the Dirichlet series `f(q⁻ˢ)`.
 For example, if `f = 1 + X + X² + ...` and `q = p`, then `f(q⁻ˢ) = 1 + p⁻ˢ + p⁻²ˢ + ...`.
 
-If `q ≤ 1` then `k ↦ q ^ k` is not injective, so we use the junk value `f.constantCoeff`. -/
+If `q ≤ 1` then `k ↦ q ^ k` is not injective, so we use the junk value `f.constantCoeff`.
+-/
 noncomputable def ofPowerSeries (q : ℕ) : PowerSeries R →ₐ[R] ArithmeticFunction R where
-  toFun f := if hq : 1 < q then
-    ⟨Function.extend (q ^ ·) (f.coeff ·) 0, by simp [Nat.ne_zero_of_lt hq]⟩ else
+  toFun f :=
+    if hq : 1 < q then
+      ⟨Function.extend (q ^ ·) (f.coeff ·) 0, by simp [Nat.ne_zero_of_lt hq]⟩
+    else
       algebraMap R (ArithmeticFunction R) f.constantCoeff
   map_zero' := by ext; split_ifs <;> simp [Function.extend]
   -- note that `ofPowerSeries.map_one'` relies on the junk value `f.constantCoeff`.
@@ -90,8 +94,11 @@ noncomputable def ofPowerSeries (q : ℕ) : PowerSeries R →ₐ[R] ArithmeticFu
       by_cases hn : ∃ a, q ^ a = n
       · obtain ⟨k, rfl⟩ := hn
         rw [(Nat.pow_right_injective hq).extend_apply]
-        have hs : (Finset.antidiagonal k).map (.prodMap ⟨fun k ↦ q ^ k, Nat.pow_right_injective hq⟩
-            ⟨fun k ↦ q ^ k, Nat.pow_right_injective hq⟩) ⊆ (q ^ k).divisorsAntidiagonal :=
+        have hs
+            : (Finset.antidiagonal k).map
+                (.prodMap ⟨fun k ↦ q ^ k, Nat.pow_right_injective hq⟩
+                  ⟨fun k ↦ q ^ k, Nat.pow_right_injective hq⟩)
+              ⊆ (q ^ k).divisorsAntidiagonal :=
           Nat.antidiagonal_map_subset_divisorsAntidiagonal_pow hq k
         rw [PowerSeries.coeff_mul k f g, ← Finset.sum_subset hs]
         · simp [(Nat.pow_right_injective hq).extend_apply]
@@ -130,22 +137,21 @@ noncomputable def ofPowerSeries (q : ℕ) : PowerSeries R →ₐ[R] ArithmeticFu
     · simp
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem ofPowerSeries_apply {q : ℕ} (hq : 1 < q) (f : PowerSeries R) (n : ℕ) :
-    ofPowerSeries q f n = Function.extend (q ^ ·) (f.coeff ·) 0 n := by
+theorem ofPowerSeries_apply {q : ℕ} (hq : 1 < q) (f : PowerSeries R) (n : ℕ)
+    : ofPowerSeries q f n = Function.extend (q ^ ·) (f.coeff ·) 0 n := by
   simp [ofPowerSeries, dite_eq_left hq]
 
-theorem ofPowerSeries_apply_pow {q : ℕ} (hq : 1 < q) (f : PowerSeries R) (k : ℕ) :
-    ofPowerSeries q f (q ^ k) = f.coeff k := by
+theorem ofPowerSeries_apply_pow {q : ℕ} (hq : 1 < q) (f : PowerSeries R) (k : ℕ)
+    : ofPowerSeries q f (q ^ k) = f.coeff k := by
   rw [ofPowerSeries_apply hq, (Nat.pow_right_injective hq).extend_apply]
 
-theorem ofPowerSeries_apply_zero (q : ℕ) (f : PowerSeries R) : ofPowerSeries q f 0 = 0 := by
-  simp
+theorem ofPowerSeries_apply_zero (q : ℕ) (f : PowerSeries R) : ofPowerSeries q f 0 = 0 := by simp
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 -- note that `ofPowerSeries_apply_one` relies on the junk value `f.constantCoeff`.
-theorem ofPowerSeries_apply_one (q : ℕ) (f : PowerSeries R) :
-    ofPowerSeries q f 1 = f.constantCoeff := by
+theorem ofPowerSeries_apply_one (q : ℕ) (f : PowerSeries R)
+    : ofPowerSeries q f 1 = f.constantCoeff := by
   by_cases hq : 1 < q
   · rw [← pow_zero q, ofPowerSeries_apply_pow hq, PowerSeries.coeff_zero_eq_constantCoeff]
   · simp [ofPowerSeries, dite_eq_right hq]
@@ -156,10 +162,12 @@ section CommRing
 
 variable [CommRing R]
 
-/-- In `ArithmeticFunction.ofPowerSeries`, replacing the base `q` with a power `q ^ k` corresponds
-to substituting `X` with `X ^ k` in the original power series. -/
-theorem ofPowerSeries_pow (q : ℕ) {k : ℕ} (hk : k ≠ 0) (f : PowerSeries R) :
-    ofPowerSeries (q ^ k) f = ofPowerSeries q (f.subst (PowerSeries.X ^ k)) := by
+/--
+In `ArithmeticFunction.ofPowerSeries`, replacing the base `q` with a power `q ^ k` corresponds
+to substituting `X` with `X ^ k` in the original power series.
+-/
+theorem ofPowerSeries_pow (q : ℕ) {k : ℕ} (hk : k ≠ 0) (f : PowerSeries R)
+    : ofPowerSeries (q ^ k) f = ofPowerSeries q (f.subst (PowerSeries.X ^ k)) := by
   by_cases hq : 1 < q
   · ext n
     by_cases hn : ∃ i, q ^ i = n
@@ -172,8 +180,8 @@ theorem ofPowerSeries_pow (q : ℕ) {k : ℕ} (hk : k ≠ 0) (f : PowerSeries R)
       · rw [ofPowerSeries_apply (one_lt_pow' hq hk), Function.extend_apply', Pi.zero_apply]
         simp_rw [← pow_mul, Nat.pow_right_inj hq, eq_comm, ← dvd_def]
         exact hn
-    · rwa [ofPowerSeries_apply hq, ofPowerSeries_apply (one_lt_pow' hq hk),
-        Function.extend_apply', Function.extend_apply']
+    · rwa [ofPowerSeries_apply hq, ofPowerSeries_apply (one_lt_pow' hq hk), Function.extend_apply',
+        Function.extend_apply']
       contrapose hn
       obtain ⟨i, rfl⟩ := hn
       exact ⟨k * i, pow_mul q k i⟩
@@ -182,8 +190,8 @@ theorem ofPowerSeries_pow (q : ℕ) {k : ℕ} (hk : k ≠ 0) (f : PowerSeries R)
 -- todo: generalize to `CommSemiring`
 /-- `ArithmeticFunction.ofPowerSeries` produces multiplicative power series. -/
 theorem isMultiplicative_ofPowerSeries_of_isPrimePow
-    (q : ℕ) (hq : IsPrimePow q) (f : PowerSeries R) (hf : f.constantCoeff = 1) :
-    IsMultiplicative (ofPowerSeries q f) := by
+    (q : ℕ) (hq : IsPrimePow q) (f : PowerSeries R) (hf : f.constantCoeff = 1)
+    : IsMultiplicative (ofPowerSeries q f) := by
   refine ⟨(ofPowerSeries_apply_one q f).trans hf, fun {m n} hmn ↦ ?_⟩
   obtain ⟨p, k, hp, hk, rfl⟩ := hq
   rw [← Nat.prime_iff] at hp
@@ -198,15 +206,15 @@ theorem isMultiplicative_ofPowerSeries_of_isPrimePow
         · simp [hk.ne', hf]
         · simp [hp.ne_one] at hmn
     · simp_rw [ofPowerSeries_apply hp.one_lt]
-      rw [Function.extend_apply', Function.extend_apply' _ _ _ hn,
-        Pi.zero_apply, Pi.zero_apply, mul_zero]
+      rw [Function.extend_apply', Function.extend_apply' _ _ _ hn, Pi.zero_apply, Pi.zero_apply,
+        mul_zero]
       contrapose hn
       obtain ⟨j, hj⟩ := hn
       obtain ⟨v, -, rfl⟩ := (Nat.dvd_prime_pow hp).mp (Dvd.intro_left _ hj.symm)
       exact ⟨v, rfl⟩
   · simp_rw [ofPowerSeries_apply hp.one_lt]
-    rw [Function.extend_apply', Function.extend_apply' _ _ _ hm,
-      Pi.zero_apply, Pi.zero_apply, zero_mul]
+    rw [Function.extend_apply', Function.extend_apply' _ _ _ hm, Pi.zero_apply, Pi.zero_apply,
+      zero_mul]
     contrapose hm
     obtain ⟨i, hi⟩ := hm
     obtain ⟨j, -, rfl⟩ := (Nat.dvd_prime_pow hp).mp ⟨n, hi⟩
@@ -222,29 +230,34 @@ open Filter
 
 variable {ι R : Type*} [CommSemiring R]
 
-/-- A private uniform space instance on `ArithmeticFunction R` in order to define `eulerProduct` as
+/--
+A private uniform space instance on `ArithmeticFunction R` in order to define `eulerProduct` as
 a `tprod`. If `R` is viewed as having the discrete topology, then the resulting topology on
 `ArithmeticFunction R` is the topology of pointwise convergence (see `tendsto_iff`).
 
-See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API. -/
+See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API.
+-/
 local instance uniformSpace : UniformSpace (ArithmeticFunction R) :=
   letI : UniformSpace R := ⊥
   .comap ((↑) : ArithmeticFunction R → (ℕ → R)) inferInstance
 
-/-- A family `f i : ArithmeticFunction R` tends to `g` if and only if for each `n`, the `n`th
+/--
+A family `f i : ArithmeticFunction R` tends to `g` if and only if for each `n`, the `n`th
 coefficient of `f i` is eventually equal to the `n`th coefficient of `g`. If `R` is viewed as
 having the discrete topology, then this is the topology of pointwise convergence.
 
-See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API. -/
-private theorem tendsto_iff
-    {f : ι → ArithmeticFunction R} {F : Filter ι} {g : ArithmeticFunction R} :
-    Tendsto f F (nhds g) ↔ ∀ n, ∀ᶠ i in F, f i n = g n := by
+See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API.
+-/
+private theorem tendsto_iff {f : ι → ArithmeticFunction R} {F : Filter ι} {g : ArithmeticFunction R}
+    : Tendsto f F (nhds g) ↔ ∀ n, ∀ᶠ i in F, f i n = g n := by
   let : UniformSpace R := ⊥
   have : Topology.IsInducing ((↑) : ArithmeticFunction R → (ℕ → R)) := ⟨rfl⟩
   simp [this.tendsto_nhds_iff, tendsto_pi_nhds]
 
-/-- The uniform space structure on arithmetic functions is complete.
-See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API. -/
+/--
+The uniform space structure on arithmetic functions is complete.
+See `tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API.
+-/
 local instance : CompleteSpace (ArithmeticFunction R) := by
   let : UniformSpace R := ⊥
   apply IsUniformInducing.completeSpace ⟨rfl⟩
@@ -255,16 +268,20 @@ local instance : CompleteSpace (ArithmeticFunction R) := by
   rw [ArithmeticFunction.range_coe]
   apply isClosed_setOfPred_map_zero
 
-/-- The Euler product of a family of arithmetic functions. Defined as a `tprod`, but see
-`tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API. -/
-noncomputable def eulerProduct (f : ι → ArithmeticFunction R) : ArithmeticFunction R :=
-  ∏' i, f i
+/--
+The Euler product of a family of arithmetic functions. Defined as a `tprod`, but see
+`tendsTo_eulerProduct_of_tendsTo` for the outward facing `eulerProduct` API.
+-/
+noncomputable def eulerProduct (f : ι → ArithmeticFunction R) : ArithmeticFunction R := ∏' i, f i
 
-/-- If arithmetic functions `f i` converges to `1` pointwise, then the partial products
-`∏ i ∈ s, f i` converge to `eulerProduct f` pointwise. -/
-theorem tendsTo_eulerProduct_of_tendsTo (f : ι → ArithmeticFunction R)
-    (hf : ∀ n, ∀ᶠ i in cofinite, f i n = (1 : ArithmeticFunction R) n) :
-    ∀ n, ∀ᶠ s in atTop, (∏ i ∈ s, f i) n = eulerProduct f n := by
+/--
+If arithmetic functions `f i` converges to `1` pointwise, then the partial products
+`∏ i ∈ s, f i` converge to `eulerProduct f` pointwise.
+-/
+theorem tendsTo_eulerProduct_of_tendsTo
+    (f : ι → ArithmeticFunction R)
+    (hf : ∀ n, ∀ᶠ i in cofinite, f i n = (1 : ArithmeticFunction R) n)
+    : ∀ n, ∀ᶠ s in atTop, (∏ i ∈ s, f i) n = eulerProduct f n := by
   let : UniformSpace R := ⊥
   have : IsUniformInducing ((↑) : ArithmeticFunction R → (ℕ → R)) := ⟨rfl⟩
   classical
@@ -303,14 +320,18 @@ theorem tendsTo_eulerProduct_of_tendsTo (f : ι → ArithmeticFunction R)
     intro k hk
     rw [← one_mul (1 : ArithmeticFunction R), Finset.prod_insert hi, mul_apply, mul_apply]
     refine Finset.sum_congr rfl fun j hj ↦ ?_
-    have h1 := hs' i (hw i (Finset.mem_insert_self i w)) j.1
-      ((Nat.divisor_le (Nat.fst_mem_divisors_of_mem_antidiagonal hj)).trans hk)
-    have h2 := hw' (fun i hi ↦ hw i (Finset.mem_insert_of_mem hi)) j.2
-      ((Nat.divisor_le (Nat.snd_mem_divisors_of_mem_antidiagonal hj)).trans hk)
+    have h1 :=
+      hs' i (hw i (Finset.mem_insert_self i w)) j.1
+        ((Nat.divisor_le (Nat.fst_mem_divisors_of_mem_antidiagonal hj)).trans hk)
+    have h2 :=
+      hw'
+        (fun i hi ↦ hw i (Finset.mem_insert_of_mem hi))
+        j.2 ((Nat.divisor_le (Nat.snd_mem_divisors_of_mem_antidiagonal hj)).trans hk)
     rw [h1, h2]
 
-theorem isMultiplicative_eulerProduct (f : ι → ArithmeticFunction R)
-    (hf : ∀ i, IsMultiplicative (f i)) : IsMultiplicative (eulerProduct f) := by
+theorem isMultiplicative_eulerProduct
+    (f : ι → ArithmeticFunction R) (hf : ∀ i, IsMultiplicative (f i))
+    : IsMultiplicative (eulerProduct f) := by
   by_cases hf' : Multipliable f
   · have h (s : Finset ι) : (∏ b ∈ s, f b).IsMultiplicative :=
       isMultiplicative_finsetProd f s fun i a ↦ hf i
@@ -326,12 +347,16 @@ theorem isMultiplicative_eulerProduct (f : ι → ArithmeticFunction R)
   · rw [eulerProduct, tprod_eq_one_of_not_multipliable hf']
     exact isMultiplicative_one
 
-/-- Given arithmetic functions `f(q⁻ˢ)` with `q → ∞`, the partial products `∏ i ∈ s, f i` converge
-to the Euler product pointwise. -/
-theorem tendsTo_eulerProduct_ofPowerSeries (q : ι → ℕ) [hq : Northcott q]
-    (f : ι → PowerSeries R) (hf : ∀ i, (f i).constantCoeff = 1) (n : ℕ) :
-    ∀ᶠ s in atTop, (∏ i ∈ s, ofPowerSeries (q i) (f i)) n =
-      eulerProduct (fun i ↦ ofPowerSeries (q i) (f i)) n := by
+/--
+Given arithmetic functions `f(q⁻ˢ)` with `q → ∞`, the partial products `∏ i ∈ s, f i` converge
+to the Euler product pointwise.
+-/
+theorem tendsTo_eulerProduct_ofPowerSeries
+    (q : ι → ℕ) [hq : Northcott q]
+    (f : ι → PowerSeries R) (hf : ∀ i, (f i).constantCoeff = 1)
+    (n : ℕ)
+    : ∀ᶠ s in atTop, (∏ i ∈ s, ofPowerSeries (q i) (f i)) n =
+        eulerProduct (fun i ↦ ofPowerSeries (q i) (f i)) n := by
   apply tendsTo_eulerProduct_of_tendsTo
   refine fun n ↦ (tendsto_atTop.mp ((northcott_iff_tendsto q).mp hq) (n + 1)).mono fun i hi ↦ ?_
   rcases n with rfl | rfl | n

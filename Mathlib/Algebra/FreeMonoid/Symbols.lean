@@ -35,7 +35,6 @@ theorem symbols_mul {a b : FreeMonoid α} : symbols (a * b) = symbols a ∪ symb
   List.toFinset_append
 
 @[to_additive (attr := simp)]
-theorem mem_symbols {m : α} {a : FreeMonoid α} : m ∈ symbols a ↔ m ∈ a :=
-  List.mem_toFinset
+theorem mem_symbols {m : α} {a : FreeMonoid α} : m ∈ symbols a ↔ m ∈ a := List.mem_toFinset
 
 end FreeMonoid

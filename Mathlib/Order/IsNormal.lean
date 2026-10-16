@@ -8,7 +8,6 @@ module
 public import Mathlib.Dynamics.FixedPoints.Defs
 public import Mathlib.Order.DirSupClosed
 public import Mathlib.Order.SuccPred.InitialSeg
-
 import Mathlib.Order.SuccPred.CompleteLinearOrder
 
 /-!
@@ -36,13 +35,15 @@ namespace Order
 @[mk_iff isNormal_iff']
 structure IsNormal [LinearOrder α] [LinearOrder β] (f : α → β) : Prop where
   strictMono : StrictMono f
-  /-- This condition is the RHS of the `IsLUB (f '' Iio a) (f a)` predicate, which is sufficient
-  since the LHS is implied by monotonicity. -/
-  mem_lowerBounds_upperBounds_of_isSuccLimit {a : α} (ha : IsSuccLimit a) :
-    f a ∈ lowerBounds (upperBounds (f '' Iio a))
+  /--
+  This condition is the RHS of the `IsLUB (f '' Iio a) (f a)` predicate, which is sufficient
+  since the LHS is implied by monotonicity.
+  -/
+  mem_lowerBounds_upperBounds_of_isSuccLimit {a : α} (ha : IsSuccLimit a)
+    : f a ∈ lowerBounds (upperBounds (f '' Iio a))
 
-theorem isNormal_iff [LinearOrder α] [LinearOrder β] {f : α → β} :
-    IsNormal f ↔ StrictMono f ∧ ∀ o, IsSuccLimit o → ∀ a, (∀ b < o, f b ≤ a) → f o ≤ a := by
+theorem isNormal_iff [LinearOrder α] [LinearOrder β] {f : α → β}
+    : IsNormal f ↔ StrictMono f ∧ ∀ o, IsSuccLimit o → ∀ a, (∀ b < o, f b ≤ a) → f o ≤ a := by
   simp [isNormal_iff', mem_lowerBounds, mem_upperBounds]
 
 namespace IsNormal
@@ -50,21 +51,20 @@ namespace IsNormal
 section LinearOrder
 variable [LinearOrder α] [LinearOrder β] [LinearOrder γ]
 
-protected theorem monotone {f : α → β} (hf : IsNormal f) : Monotone f :=
-  hf.strictMono.monotone
+protected theorem monotone {f : α → β} (hf : IsNormal f) : Monotone f := hf.strictMono.monotone
 
-theorem isLUB_image_Iio_of_isSuccLimit {f : α → β} (hf : IsNormal f) {a : α} (ha : IsSuccLimit a) :
-    IsLUB (f '' Iio a) (f a) := by
+theorem isLUB_image_Iio_of_isSuccLimit {f : α → β} (hf : IsNormal f) {a : α} (ha : IsSuccLimit a)
+    : IsLUB (f '' Iio a) (f a) := by
   refine ⟨?_, hf.2 ha⟩
   rintro - ⟨b, hb, rfl⟩
   exact (hf.1 hb).le
 
-theorem le_iff_forall_le (hf : IsNormal f) (ha : IsSuccLimit a) {b : β} :
-    f a ≤ b ↔ ∀ a' < a, f a' ≤ b := by
+theorem le_iff_forall_le (hf : IsNormal f) (ha : IsSuccLimit a) {b : β}
+    : f a ≤ b ↔ ∀ a' < a, f a' ≤ b := by
   simpa [mem_upperBounds] using isLUB_le_iff (hf.isLUB_image_Iio_of_isSuccLimit ha)
 
-theorem lt_iff_exists_lt (hf : IsNormal f) (ha : IsSuccLimit a) {b : β} :
-    b < f a ↔ ∃ a' < a, b < f a' := by
+theorem lt_iff_exists_lt (hf : IsNormal f) (ha : IsSuccLimit a) {b : β}
+    : b < f a ↔ ∃ a' < a, b < f a' := by
   simpa [mem_upperBounds] using lt_isLUB_iff (hf.isLUB_image_Iio_of_isSuccLimit ha)
 
 theorem map_isSuccLimit (hf : IsNormal f) (ha : IsSuccLimit a) : IsSuccLimit (f a) := by
@@ -76,8 +76,8 @@ theorem map_isSuccLimit (hf : IsNormal f) (ha : IsSuccLimit a) : IsSuccLimit (f 
     rw [hf.strictMono.le_iff_le] at hc'
     exact hc.not_ge hc'
 
-theorem map_isLUB (hf : IsNormal f) {s : Set α} (hs : IsLUB s a) (hs' : s.Nonempty) :
-    IsLUB (f '' s) (f a) := by
+theorem map_isLUB (hf : IsNormal f) {s : Set α} (hs : IsLUB s a) (hs' : s.Nonempty)
+    : IsLUB (f '' s) (f a) := by
   refine ⟨?_, fun b hb ↦ ?_⟩
   · simpa [mem_upperBounds, hf.strictMono.le_iff_le] using hs.1
   · by_cases ha : a ∈ s
@@ -95,24 +95,21 @@ theorem _root_.InitialSeg.isNormal (f : α ≤i β) : IsNormal f where
     rw [f.image_Iio]
     exact (f.map_isSuccLimit ha).isLUB_Iio.2
 
-theorem _root_.PrincipalSeg.isNormal (f : α <i β) : IsNormal f :=
-  (f : α ≤i β).isNormal
+theorem _root_.PrincipalSeg.isNormal (f : α <i β) : IsNormal f := (f : α ≤i β).isNormal
 
-theorem _root_.OrderIso.isNormal (f : α ≃o β) : IsNormal f :=
-  f.toInitialSeg.isNormal
+theorem _root_.OrderIso.isNormal (f : α ≃o β) : IsNormal f := f.toInitialSeg.isNormal
 
-protected theorem id : IsNormal (@id α) :=
-  (OrderIso.refl _).isNormal
+protected theorem id : IsNormal (@id α) := (OrderIso.refl _).isNormal
 
 theorem comp (hg : IsNormal g) (hf : IsNormal f) : IsNormal (g ∘ f) := by
   refine ⟨hg.strictMono.comp hf.strictMono, fun ha b hb ↦ ?_⟩
   simp_rw [Function.comp_apply, mem_upperBounds, forall_mem_image] at hb
-  simpa [hg.le_iff_forall_le (hf.map_isSuccLimit ha), hf.lt_iff_exists_lt ha] using
-    fun c d hd hc ↦ (hg.strictMono hc).le.trans (hb hd)
+  simpa [hg.le_iff_forall_le (hf.map_isSuccLimit ha), hf.lt_iff_exists_lt ha] using fun c d hd hc ↦
+    (hg.strictMono hc).le.trans (hb hd)
 
 /-- Restrict a normal function `α → β` to a normal function `Iio a → Iio (f a)`. -/
-theorem to_Iio (hf : IsNormal f) (a : α) :
-    IsNormal (β := Iio (f a)) fun x : Iio a ↦ ⟨f x.1, hf.strictMono x.2⟩ := by
+theorem to_Iio (hf : IsNormal f) (a : α)
+    : IsNormal (β := Iio (f a)) fun x : Iio a ↦ ⟨f x.1, hf.strictMono x.2⟩ := by
   rw [isNormal_iff]
   refine ⟨fun x y h ↦ hf.strictMono h, fun b hb c hc ↦ hf.2 (hb.subtypeVal (isLowerSet_Iio _)) ?_⟩
   simpa [upperBounds] using! fun d hd ↦ hc ⟨d, hd.trans b.2⟩ hd
@@ -122,19 +119,23 @@ end LinearOrder
 section ConditionallyCompleteLinearOrder
 variable [ConditionallyCompleteLinearOrder α] [ConditionallyCompleteLinearOrder β]
 
-theorem map_sSup (hf : IsNormal f) {s : Set α} (hs : s.Nonempty) (hs' : BddAbove s) :
-    f (sSup s) = sSup (f '' s) :=
+theorem map_sSup (hf : IsNormal f) {s : Set α} (hs : s.Nonempty) (hs' : BddAbove s)
+    : f (sSup s) = sSup (f '' s) :=
   ((hf.map_isLUB (isLUB_csSup hs hs') hs).csSup_eq (hs.image f)).symm
 
-theorem map_iSup {ι} [Nonempty ι] {g : ι → α} (hf : IsNormal f) (hg : BddAbove (range g)) :
-    f (⨆ i, g i) = ⨆ i, f (g i) := by
+theorem map_iSup {ι} [Nonempty ι] {g : ι → α} (hf : IsNormal f) (hg : BddAbove (range g))
+    : f (⨆ i, g i) = ⨆ i, f (g i) := by
   unfold iSup
   convert map_sSup hf (range_nonempty g) hg
   ext
   simp
 
-theorem iSup_iterate_mem_fixedPoints [WellFoundedLT α] {f : α → α} (a : α) (hf : IsNormal f)
-    (hf' : BddAbove (.range fun n ↦ f^[n] a)) : ⨆ n, f^[n] a ∈ f.fixedPoints := by
+theorem iSup_iterate_mem_fixedPoints
+    [WellFoundedLT α]
+    {f : α → α}
+    (a : α)
+    (hf : IsNormal f) (hf' : BddAbove (.range fun n ↦ f^[n] a))
+    : ⨆ n, f^[n] a ∈ f.fixedPoints := by
   rw [f.mem_fixedPoints_iff, hf.map_iSup hf']
   apply le_antisymm <;> refine ciSup_le fun n ↦ ?_
   · rw [← f.iterate_succ_apply']
@@ -144,9 +145,9 @@ theorem iSup_iterate_mem_fixedPoints [WellFoundedLT α] {f : α → α} (a : α)
     simp_rw [← f.iterate_succ_apply']
     grind
 
-theorem preimage_Iic (hf : IsNormal f) {x : β}
-    (h₁ : (f ⁻¹' Iic x).Nonempty) (h₂ : BddAbove (f ⁻¹' Iic x)) :
-    f ⁻¹' Iic x = Iic (sSup (f ⁻¹' Iic x)) := by
+theorem preimage_Iic
+    (hf : IsNormal f) {x : β} (h₁ : (f ⁻¹' Iic x).Nonempty) (h₂ : BddAbove (f ⁻¹' Iic x))
+    : f ⁻¹' Iic x = Iic (sSup (f ⁻¹' Iic x)) := by
   refine le_antisymm (fun _ ↦ le_csSup h₂) (fun y hy ↦ ?_)
   obtain hy | rfl := hy.lt_or_eq
   · rw [lt_csSup_iff h₂ h₁] at hy
@@ -157,15 +158,18 @@ theorem preimage_Iic (hf : IsNormal f) {x : β}
     · rw [csSup_Iic]
     · simpa
 
-theorem le_iff_le_sSup (hf : IsNormal f) {x : α} {y : β}
-    (h₁ : (f ⁻¹' Iic y).Nonempty) (h₂ : BddAbove (f ⁻¹' Iic y)) :
-    f x ≤ y ↔ x ≤ sSup (f ⁻¹' Iic y) :=
+theorem le_iff_le_sSup
+    (hf : IsNormal f) {x : α} {y : β} (h₁ : (f ⁻¹' Iic y).Nonempty) (h₂ : BddAbove (f ⁻¹' Iic y))
+    : f x ≤ y ↔ x ≤ sSup (f ⁻¹' Iic y) :=
   Set.ext_iff.1 (preimage_Iic hf h₁ h₂) x
 
-/-- If `f : α → α` in a well-order, we can infer one of the hypotheses in
-`Order.IsNormal.le_iff_le_sSup`. -/
-theorem le_iff_le_sSup' [WellFoundedLT α] {f : α → α} (hf : IsNormal f) {x y : α}
-    (h : (f ⁻¹' Iic y).Nonempty) : f x ≤ y ↔ x ≤ sSup (f ⁻¹' Iic y) :=
+/--
+If `f : α → α` in a well-order, we can infer one of the hypotheses in
+`Order.IsNormal.le_iff_le_sSup`.
+-/
+theorem le_iff_le_sSup'
+    [WellFoundedLT α] {f : α → α} (hf : IsNormal f) {x y : α} (h : (f ⁻¹' Iic y).Nonempty)
+    : f x ≤ y ↔ x ≤ sSup (f ⁻¹' Iic y) :=
   hf.le_iff_le_sSup h ⟨y, fun _ ↦ hf.strictMono.le_apply.trans⟩
 
 end ConditionallyCompleteLinearOrder
@@ -173,8 +177,7 @@ end ConditionallyCompleteLinearOrder
 section ConditionallyCompleteLinearOrderBot
 variable [ConditionallyCompleteLinearOrderBot α] [ConditionallyCompleteLinearOrder β]
 
-theorem apply_of_isSuccLimit (hf : IsNormal f) (ha : IsSuccLimit a) :
-    f a = ⨆ b : Iio a, f b := by
+theorem apply_of_isSuccLimit (hf : IsNormal f) (ha : IsSuccLimit a) : f a = ⨆ b : Iio a, f b := by
   convert map_iSup hf _
   · exact ha.iSup_Iio.symm
   · exact ⟨⊥, ha.bot_lt⟩
@@ -188,11 +191,12 @@ section WellFoundedLT
 variable [LinearOrder α] [WellFoundedLT α] [SuccOrder α] [LinearOrder β]
 
 theorem of_succ_lt
-    (hs : ∀ a, f a < f (succ a)) (hl : ∀ {a}, IsSuccLimit a → IsLUB (f '' Iio a) (f a)) :
-    IsNormal f := by
+    (hs : ∀ a, f a < f (succ a)) (hl : ∀ {a}, IsSuccLimit a → IsLUB (f '' Iio a) (f a))
+    : IsNormal f := by
   refine ⟨fun a b ↦ ?_, fun ha ↦ (hl ha).2⟩
   induction b using SuccOrder.limitRecOn with
-  | isMin b hb => exact hb.not_lt.elim
+  | isMin b hb =>
+    exact hb.not_lt.elim
   | succ b hb IH =>
     intro hab
     obtain rfl | h := (lt_succ_iff_eq_or_lt_of_not_isMax hb).1 hab
@@ -204,23 +208,26 @@ theorem of_succ_lt
     exact (IH _ hab' (lt_succ_of_not_isMax hab.not_isMax)).trans_le
       ((hl hb).1 (mem_image_of_mem _ hab'))
 
-theorem ext_iff [OrderBot α] {g : α → β} (hf : IsNormal f) (hg : IsNormal g) :
-    f = g ↔ f ⊥ = g ⊥ ∧ ∀ a, f a = g a → f (succ a) = g (succ a) := by
+theorem ext_iff [OrderBot α] {g : α → β} (hf : IsNormal f) (hg : IsNormal g)
+    : f = g ↔ f ⊥ = g ⊥ ∧ ∀ a, f a = g a → f (succ a) = g (succ a) := by
   constructor
   · simp_all
   rintro ⟨H₁, H₂⟩
   ext a
   induction a using SuccOrder.limitRecOn with
-  | isMin a ha => rw [ha.eq_bot, H₁]
-  | succ a ha IH => exact H₂ a IH
+  | isMin a ha =>
+    rw [ha.eq_bot, H₁]
+  | succ a ha IH =>
+    exact H₂ a IH
   | isSuccLimit a ha IH =>
     apply (hf.isLUB_image_Iio_of_isSuccLimit ha).unique
     convert hg.isLUB_image_Iio_of_isSuccLimit ha using 1
     aesop
 
-theorem exists_map_le_lt_map_succ_of_exists_ge [NoMaxOrder α] [OrderBot α] [WellFoundedLT β]
-    {f : α → β} {x : β} (hf : IsNormal f) (hf' : ∃ y, x ≤ f y) (hx : f ⊥ ≤ x) :
-    ∃ a, f a ≤ x ∧ x < f (succ a) := by
+theorem exists_map_le_lt_map_succ_of_exists_ge
+    [NoMaxOrder α] [OrderBot α] [WellFoundedLT β]
+    {f : α → β} {x : β} (hf : IsNormal f) (hf' : ∃ y, x ≤ f y) (hx : f ⊥ ≤ x)
+    : ∃ a, f a ≤ x ∧ x < f (succ a) := by
   have : Nonempty β := ⟨x⟩
   let := WellFoundedLT.toOrderBot β
   let := WellFoundedLT.conditionallyCompleteLinearOrderBot α
@@ -232,10 +239,13 @@ theorem exists_map_le_lt_map_succ_of_exists_ge [NoMaxOrder α] [OrderBot α] [We
   · rw [hf.le_iff_le_sSup ⟨⊥, hx⟩ H]
   · rw [← not_le, hf.le_iff_le_sSup ⟨⊥, hx⟩ H, not_le, lt_succ_iff]
 
-/-- If `f : α → α`, we can infer one of the hypotheses in
-`exists_map_le_lt_map_succ_of_exists_ge`. -/
-theorem exists_map_le_lt_map_succ [NoMaxOrder α] [OrderBot α] {f : α → α} {x : α}
-    (hf : IsNormal f) (hx : f ⊥ ≤ x) : ∃ a, f a ≤ x ∧ x < f (succ a) :=
+/--
+If `f : α → α`, we can infer one of the hypotheses in
+`exists_map_le_lt_map_succ_of_exists_ge`.
+-/
+theorem exists_map_le_lt_map_succ
+    [NoMaxOrder α] [OrderBot α] {f : α → α} {x : α} (hf : IsNormal f) (hx : f ⊥ ≤ x)
+    : ∃ a, f a ≤ x ∧ x < f (succ a) :=
   exists_map_le_lt_map_succ_of_exists_ge hf ⟨x, hf.strictMono.le_apply⟩ hx
 
 omit [SuccOrder α] in

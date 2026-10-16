@@ -78,7 +78,8 @@ variable [Semiring R]
 variable [AddCommMonoid M] [Module R M] [AddCommMonoid M'] [Module R M']
 
 variable (ι R M) in
-/-- A `Basis ι R M` for a module `M` is the type of `ι`-indexed `R`-bases of `M`.
+/--
+A `Basis ι R M` for a module `M` is the type of `ι`-indexed `R`-bases of `M`.
 
 The basis vectors are available as `DFunLike.coe (b : Basis ι R M) : ι → M`.
 To turn a linear independent family of vectors spanning `M` into a basis, use `Basis.mk`.
@@ -89,14 +90,15 @@ available as `Basis.repr`.
 structure Basis where
   /-- `Basis.ofRepr` constructs a basis given an assignment of coordinates to each vector. -/
   ofRepr ::
-    /-- `repr` is the linear equivalence sending a vector `x` to its coordinates:
-    the `c`s such that `x = ∑ i, c i`. -/
-    repr : M ≃ₗ[R] ι →₀ R
+  /--
+  `repr` is the linear equivalence sending a vector `x` to its coordinates:
+  the `c`s such that `x = ∑ i, c i`.
+  -/
+  repr : M ≃ₗ[R] ι →₀ R
 
 namespace Basis
 
-instance : Inhabited (Basis ι R (ι →₀ R)) :=
-  ⟨.ofRepr (LinearEquiv.refl _ _)⟩
+instance : Inhabited (Basis ι R (ι →₀ R)) := ⟨.ofRepr (LinearEquiv.refl _ _)⟩
 
 variable (b : Basis ι R M) (i : ι) (c : R) (x : M)
 
@@ -109,28 +111,26 @@ theorem repr_injective : Injective (repr : Basis ι R M → M ≃ₗ[R] ι →�
 @[macro_inline]
 instance instFunLike : FunLike (Basis ι R M) ι M where
   coe b i := b.repr.symm (Finsupp.single i 1)
-  coe_injective f g h := repr_injective <| LinearEquiv.symm_bijective.injective <|
-    LinearEquiv.toLinearMap_injective <| by ext; congrm $h _
+  coe_injective f g h :=
+    repr_injective <| LinearEquiv.symm_bijective.injective <| LinearEquiv.toLinearMap_injective <|
+      by ext; congrm $h _
 
 @[simp]
-theorem coe_ofRepr (e : M ≃ₗ[R] ι →₀ R) : ⇑(ofRepr e) = fun i => e.symm (Finsupp.single i 1) :=
-  rfl
+theorem coe_ofRepr (e : M ≃ₗ[R] ι →₀ R) : ⇑(ofRepr e) = fun i => e.symm (Finsupp.single i 1) := rfl
 
 protected theorem injective [Nontrivial R] : Injective b :=
   b.repr.symm.injective.comp fun _ _ => (Finsupp.single_left_inj (one_ne_zero : (1 : R) ≠ 0)).mp
 
-theorem repr_symm_single_one : b.repr.symm (Finsupp.single i 1) = b i :=
-  rfl
+theorem repr_symm_single_one : b.repr.symm (Finsupp.single i 1) = b i := rfl
 
 theorem repr_symm_single : b.repr.symm (Finsupp.single i c) = c • b i :=
   calc
-    b.repr.symm (Finsupp.single i c) = b.repr.symm (c • Finsupp.single i (1 : R)) := by
-      { rw [Finsupp.smul_single', mul_one] }
+    b.repr.symm (Finsupp.single i c) = b.repr.symm (c • Finsupp.single i (1 : R)) := by {
+      rw [Finsupp.smul_single', mul_one]
+    }
     _ = c • b i := by rw [map_smul, repr_symm_single_one]
 
-@[simp]
-theorem repr_self : b.repr (b i) = Finsupp.single i 1 :=
-  LinearEquiv.apply_symm_apply _ _
+@[simp] theorem repr_self : b.repr (b i) = Finsupp.single i 1 := LinearEquiv.apply_symm_apply _ _
 
 theorem repr_self_apply (j) [Decidable (i = j)] : b.repr (b i) j = if i = j then 1 else 0 := by
   rw [repr_self, Finsupp.single_apply]
@@ -138,10 +138,11 @@ theorem repr_self_apply (j) [Decidable (i = j)] : b.repr (b i) j = if i = j then
 @[simp]
 theorem repr_symm_apply (v) : b.repr.symm v = Finsupp.linearCombination R b v :=
   calc
-    b.repr.symm v = b.repr.symm (v.sum Finsupp.single) := by simp
+    b.repr.symm v
+      = b.repr.symm (v.sum Finsupp.single) := by simp
     _ = v.sum fun i vi => b.repr.symm (Finsupp.single i vi) := map_finsuppSum ..
-    _ = Finsupp.linearCombination R b v := by simp only [repr_symm_single,
-                                                         Finsupp.linearCombination_apply]
+    _ = Finsupp.linearCombination R b v := by
+      simp only [repr_symm_single, Finsupp.linearCombination_apply]
 
 @[simp]
 theorem coe_repr_symm : ↑b.repr.symm = Finsupp.linearCombination R b :=
@@ -164,16 +165,11 @@ section Map
 variable (f : M ≃ₗ[R] M')
 
 /-- Apply the linear equivalence `f` to the basis vectors. -/
-@[simps]
-protected def map : Basis ι R M' :=
-  ofRepr (f.symm.trans b.repr)
+@[simps] protected def map : Basis ι R M' := ofRepr (f.symm.trans b.repr)
 
-@[simp]
-theorem map_apply (i) : b.map f i = f (b i) :=
-  rfl
+@[simp] theorem map_apply (i) : b.map f i = f (b i) := rfl
 
-theorem coe_map : (b.map f : ι → M') = f ∘ b :=
-  rfl
+theorem coe_map : (b.map f : ι → M') = f ∘ b := rfl
 
 end Map
 
@@ -182,17 +178,14 @@ section Reindex
 variable (e : ι ≃ ι')
 
 /-- `b.reindex (e : ι ≃ ι')` is a basis indexed by `ι'` -/
-def reindex : Basis ι' R M :=
-  .ofRepr (b.repr.trans (Finsupp.domLCongr e))
+def reindex : Basis ι' R M := .ofRepr (b.repr.trans (Finsupp.domLCongr e))
 
 theorem reindex_apply (i' : ι') : b.reindex e i' = b (e.symm i') := by
-  change (b.repr.trans (Finsupp.domLCongr e)).symm (Finsupp.single i' 1) =
-    b.repr.symm (Finsupp.single (e.symm i') 1)
+  change (b.repr.trans (Finsupp.domLCongr e)).symm (Finsupp.single i' 1)
+    = b.repr.symm (Finsupp.single (e.symm i') 1)
   rw [LinearEquiv.symm_trans_apply, Finsupp.domLCongr_symm, Finsupp.domLCongr_single]
 
-@[simp]
-theorem coe_reindex : (b.reindex e : ι' → M) = b ∘ e.symm :=
-  funext (b.reindex_apply e)
+@[simp] theorem coe_reindex : (b.reindex e : ι' → M) = b ∘ e.symm := funext (b.reindex_apply e)
 
 theorem repr_reindex_apply (i' : ι') : (b.reindex e).repr x i' = b.repr x (e.symm i') :=
   show (Finsupp.domLCongr e : _ ≃ₗ[R] _) (b.repr x) i' = _ by simp
@@ -201,13 +194,10 @@ theorem repr_reindex_apply (i' : ι') : (b.reindex e).repr x i' = b.repr x (e.sy
 theorem repr_reindex : (b.reindex e).repr x = (b.repr x).equivMapDomain e :=
   DFunLike.ext _ _ <| by simp [repr_reindex_apply]
 
-@[simp]
-theorem reindex_refl : b.reindex (Equiv.refl ι) = b := by
-  simp [reindex]
+@[simp] theorem reindex_refl : b.reindex (Equiv.refl ι) = b := by simp [reindex]
 
 /-- `simp` can prove this as `Basis.coe_reindex` + `EquivLike.range_comp` -/
-theorem range_reindex : Set.range (b.reindex e) = Set.range b := by
-  simp [coe_reindex, range_comp]
+theorem range_reindex : Set.range (b.reindex e) = Set.range b := by simp [coe_reindex, range_comp]
 
 end Reindex
 
@@ -217,15 +207,18 @@ section Fintype
 
 open Fintype
 
-/-- A module over `R` with a finite basis is linearly equivalent to functions from its basis to `R`.
+/--
+A module over `R` with a finite basis is linearly equivalent to functions from its basis to `R`.
 -/
 def Basis.equivFun [Finite ι] (b : Basis ι R M) : M ≃ₗ[R] ι → R :=
   LinearEquiv.trans b.repr
-    ({ Finsupp.equivFunOnFinite with
-        toFun := (↑)
-        map_add' := Finsupp.coe_add
-        map_smul' := Finsupp.coe_smul } :
-      (ι →₀ R) ≃ₗ[R] ι → R)
+    ({
+       Finsupp.equivFunOnFinite with
+       toFun := (↑)
+       map_add' := Finsupp.coe_add
+       map_smul' := Finsupp.coe_smul
+     }
+      : (ι →₀ R) ≃ₗ[R] ι → R)
 
 /-- A module over a finite ring that admits a finite basis is finite. -/
 @[instance_reducible]
@@ -234,24 +227,25 @@ def fintypeOfFintype [Fintype ι] (b : Basis ι R M) [Fintype R] : Fintype M :=
   Fintype.ofEquiv _ b.equivFun.toEquiv.symm
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Given a basis `v` indexed by `ι`, the canonical linear equivalence between `ι → R` and `M` maps
-a function `x : ι → R` to the linear combination `∑_i x i • v i`. -/
+/--
+Given a basis `v` indexed by `ι`, the canonical linear equivalence between `ι → R` and `M` maps
+a function `x : ι → R` to the linear combination `∑_i x i • v i`.
+-/
 @[simp]
-theorem Basis.equivFun_symm_apply [Fintype ι] (b : Basis ι R M) (x : ι → R) :
-    b.equivFun.symm x = ∑ i, x i • b i := by
+theorem Basis.equivFun_symm_apply [Fintype ι] (b : Basis ι R M) (x : ι → R)
+    : b.equivFun.symm x = ∑ i, x i • b i := by
   simp [Basis.equivFun, Finsupp.linearCombination_apply, sum_fintype, equivFunOnFinite]
 
 @[simp]
-theorem Basis.equivFun_apply [Finite ι] (b : Basis ι R M) (u : M) : b.equivFun u = b.repr u :=
-  rfl
+theorem Basis.equivFun_apply [Finite ι] (b : Basis ι R M) (u : M) : b.equivFun u = b.repr u := rfl
 
 @[simp]
-theorem Basis.map_equivFun [Finite ι] (b : Basis ι R M) (f : M ≃ₗ[R] M') :
-    (b.map f).equivFun = f.symm.trans b.equivFun :=
+theorem Basis.map_equivFun [Finite ι] (b : Basis ι R M) (f : M ≃ₗ[R] M')
+    : (b.map f).equivFun = f.symm.trans b.equivFun :=
   rfl
 
-theorem Basis.sum_equivFun [Fintype ι] (b : Basis ι R M) (u : M) :
-    ∑ i, b.equivFun u i • b i = u := by
+theorem Basis.sum_equivFun [Fintype ι] (b : Basis ι R M) (u : M)
+    : ∑ i, b.equivFun u i • b i = u := by
   rw [← b.equivFun_symm_apply, b.equivFun.symm_apply_apply]
 
 @[simp]
@@ -259,39 +253,39 @@ theorem Basis.sum_repr [Fintype ι] (b : Basis ι R M) (u : M) : ∑ i, b.repr u
   b.sum_equivFun u
 
 @[simp]
-theorem Basis.equivFun_self [Finite ι] [DecidableEq ι] (b : Basis ι R M) (i j : ι) :
-    b.equivFun (b i) j = if i = j then 1 else 0 := by rw [b.equivFun_apply, b.repr_self_apply]
+theorem Basis.equivFun_self [Finite ι] [DecidableEq ι] (b : Basis ι R M) (i j : ι)
+    : b.equivFun (b i) j = if i = j then 1 else 0 := by
+  rw [b.equivFun_apply, b.repr_self_apply]
 
-theorem Basis.repr_sum_self [Fintype ι] (b : Basis ι R M) (c : ι → R) :
-    b.repr (∑ i, c i • b i) = c := by
+theorem Basis.repr_sum_self [Fintype ι] (b : Basis ι R M) (c : ι → R)
+    : b.repr (∑ i, c i • b i) = c := by
   simp_rw [← b.equivFun_symm_apply, ← b.equivFun_apply, b.equivFun.apply_symm_apply]
 
-/-- Define a basis by mapping each vector `x : M` to its coordinates `e x : ι → R`,
-as long as `ι` is finite. -/
+/--
+Define a basis by mapping each vector `x : M` to its coordinates `e x : ι → R`,
+as long as `ι` is finite.
+-/
 def Basis.ofEquivFun [Finite ι] (e : M ≃ₗ[R] ι → R) : Basis ι R M :=
   .ofRepr <| e.trans <| LinearEquiv.symm <| Finsupp.linearEquivFunOnFinite R R ι
 
 @[simp]
-theorem Basis.ofEquivFun_repr_apply [Finite ι] (e : M ≃ₗ[R] ι → R) (x : M) (i : ι) :
-    (Basis.ofEquivFun e).repr x i = e x i :=
+theorem Basis.ofEquivFun_repr_apply [Finite ι] (e : M ≃ₗ[R] ι → R) (x : M) (i : ι)
+    : (Basis.ofEquivFun e).repr x i = e x i :=
   rfl
 
 @[simp]
-theorem Basis.coe_ofEquivFun [Finite ι] [DecidableEq ι] (e : M ≃ₗ[R] ι → R) :
-    (Basis.ofEquivFun e : ι → M) = fun i => e.symm (Pi.single i 1) :=
+theorem Basis.coe_ofEquivFun [Finite ι] [DecidableEq ι] (e : M ≃ₗ[R] ι → R)
+    : (Basis.ofEquivFun e : ι → M) = fun i => e.symm (Pi.single i 1) :=
   funext fun i =>
-    e.injective <|
-      funext fun j => by
-        simp [Basis.ofEquivFun, ← Finsupp.single_eq_pi_single]
+    e.injective <| funext fun j => by simp [Basis.ofEquivFun, ← Finsupp.single_eq_pi_single]
 
 @[simp]
-theorem Basis.ofEquivFun_equivFun [Finite ι] (v : Basis ι R M) :
-    Basis.ofEquivFun v.equivFun = v :=
+theorem Basis.ofEquivFun_equivFun [Finite ι] (v : Basis ι R M) : Basis.ofEquivFun v.equivFun = v :=
   Basis.repr_injective <| by ext; rfl
 
 @[simp]
-theorem Basis.equivFun_ofEquivFun [Finite ι] (e : M ≃ₗ[R] ι → R) :
-    (Basis.ofEquivFun e).equivFun = e := by
+theorem Basis.equivFun_ofEquivFun [Finite ι] (e : M ≃ₗ[R] ι → R)
+    : (Basis.ofEquivFun e).equivFun = e := by
   ext j
   simp_rw [Basis.equivFun_apply, Basis.ofEquivFun_repr_apply]
 
@@ -329,33 +323,37 @@ theorem ext_elem_iff {x y : M} : x = y ↔ ∀ i, b.repr x i = b.repr y i := by
 
 alias ⟨_, ext_elem⟩ := ext_elem_iff
 
-theorem repr_eq_iff {b : Basis ι R M} {f : M →ₗ[R] ι →₀ R} :
-    ↑b.repr = f ↔ ∀ i, f (b i) = Finsupp.single i 1 :=
+theorem repr_eq_iff {b : Basis ι R M} {f : M →ₗ[R] ι →₀ R}
+    : ↑b.repr = f ↔ ∀ i, f (b i) = Finsupp.single i 1 :=
   ⟨fun h i => h ▸ b.repr_self i, fun h => b.ext fun i => (b.repr_self i).trans (h i).symm⟩
 
-theorem repr_eq_iff' {b : Basis ι R M} {f : M ≃ₗ[R] ι →₀ R} :
-    b.repr = f ↔ ∀ i, f (b i) = Finsupp.single i 1 :=
+theorem repr_eq_iff' {b : Basis ι R M} {f : M ≃ₗ[R] ι →₀ R}
+    : b.repr = f ↔ ∀ i, f (b i) = Finsupp.single i 1 :=
   ⟨fun h i => h ▸ b.repr_self i, fun h => b.ext' fun i => (b.repr_self i).trans (h i).symm⟩
 
 theorem apply_eq_iff {b : Basis ι R M} {x : M} {i : ι} : b i = x ↔ b.repr x = Finsupp.single i 1 :=
   ⟨fun h => h ▸ b.repr_self i, fun h => b.repr.injective ((b.repr_self i).trans h.symm)⟩
 
 /-- An unbundled version of `repr_eq_iff` -/
-theorem repr_apply_eq (f : M → ι → R) (hadd : ∀ x y, f (x + y) = f x + f y)
+theorem repr_apply_eq
+    (f : M → ι → R) (hadd : ∀ x y, f (x + y) = f x + f y)
     (hsmul : ∀ (c : R) (x : M), f (c • x) = c • f x) (f_eq : ∀ i, f (b i) = Finsupp.single i 1)
-    (x : M) (i : ι) : b.repr x i = f x i := by
-  let f_i : M →ₗ[R] R :=
-    { toFun x := f x i
-      map_add' _ _ := by rw [hadd, Pi.add_apply]
-      map_smul' _ _ := by simp [hsmul, Pi.smul_apply] }
+    (x : M) (i : ι)
+    : b.repr x i = f x i := by
+  let f_i : M →ₗ[R] R := {
+    toFun x := f x i
+    map_add' _ _ := by rw [hadd, Pi.add_apply]
+    map_smul' _ _ := by simp [hsmul, Pi.smul_apply]
+  }
   have : Finsupp.lapply i ∘ₗ ↑b.repr = f_i := by
     refine b.ext fun j => ?_
     change b.repr (b j) i = f (b j) i
     rw [b.repr_self, f_eq]
   calc
-    b.repr x i = f_i x := by
-      { rw [← this]
-        rfl }
+    b.repr x i = f_i x := by {
+      rw [← this]
+      rfl
+    }
     _ = f x i := rfl
 
 /-- Two bases are equal if they assign the same coordinates. -/
@@ -364,8 +362,7 @@ theorem eq_ofRepr_eq_repr {b₁ b₂ : Basis ι R M} (h : ∀ x i, b₁.repr x i
 
 /-- Two bases are equal if their basis vectors are the same. -/
 @[ext]
-theorem eq_of_apply_eq {b₁ b₂ : Basis ι R M} : (∀ i, b₁ i = b₂ i) → b₁ = b₂ :=
-  DFunLike.ext _ _
+theorem eq_of_apply_eq {b₁ b₂ : Basis ι R M} : (∀ i, b₁ i = b₂ i) → b₁ = b₂ := DFunLike.ext _ _
 
 end Ext
 
@@ -375,7 +372,8 @@ variable {R' : Type*} [Semiring R'] [Module R' M] (f : R ≃+* R')
 
 attribute [local instance] SMul.comp.isScalarTower
 
-/-- If `R` and `R'` are isomorphic rings that act identically on a module `M`,
+/--
+If `R` and `R'` are isomorphic rings that act identically on a module `M`,
 then a basis for `M` as `R`-module is also a basis for `M` as `R'`-module.
 
 See also `Basis.algebraMapCoeffs` for the case where `f` is equal to `algebraMap`.
@@ -392,12 +390,9 @@ def mapCoeffs (h : ∀ (c) (x : M), f c • x = c • x) : Basis ι R' M := by
 
 variable (h : ∀ (c) (x : M), f c • x = c • x)
 
-theorem mapCoeffs_apply (i : ι) : b.mapCoeffs f h i = b i :=
-  apply_eq_iff.mpr <| by simp
+theorem mapCoeffs_apply (i : ι) : b.mapCoeffs f h i = b i := apply_eq_iff.mpr <| by simp
 
-@[simp]
-theorem coe_mapCoeffs : (b.mapCoeffs f h : ι → M) = b :=
-  funext <| b.mapCoeffs_apply f h
+@[simp] theorem coe_mapCoeffs : (b.mapCoeffs f h : ι → M) = b := funext <| b.mapCoeffs_apply f h
 
 end MapCoeffs
 
@@ -418,8 +413,8 @@ theorem reindexRange_self (i : ι) (h := Set.mem_range_self i) : b.reindexRange 
     simp [reindexRange, eq_iff_true_of_subsingleton]
   · simp [*, reindexRange, reindex_apply]
 
-theorem reindexRange_repr_self (i : ι) :
-    b.reindexRange.repr (b i) = Finsupp.single ⟨b i, mem_range_self i⟩ 1 :=
+theorem reindexRange_repr_self (i : ι)
+    : b.reindexRange.repr (b i) = Finsupp.single ⟨b i, mem_range_self i⟩ 1 :=
   calc
     b.reindexRange.repr (b i) = b.reindexRange.repr (b.reindexRange ⟨b i, mem_range_self i⟩) :=
       congr_arg _ (b.reindexRange_self _ _).symm
@@ -430,8 +425,8 @@ theorem reindexRange_apply (x : range b) : b.reindexRange x = x := by
   rcases x with ⟨bi, ⟨i, rfl⟩⟩
   exact b.reindexRange_self i
 
-theorem reindexRange_repr' (x : M) {bi : M} {i : ι} (h : b i = bi) :
-    b.reindexRange.repr x ⟨bi, ⟨i, h⟩⟩ = b.repr x i := by
+theorem reindexRange_repr' (x : M) {bi : M} {i : ι} (h : b i = bi)
+    : b.reindexRange.repr x ⟨bi, ⟨i, h⟩⟩ = b.repr x i := by
   nontriviality
   subst h
   apply (b.repr_apply_eq (fun x i => b.reindexRange.repr x ⟨b i, _⟩) _ _ _ x i).symm
@@ -448,21 +443,23 @@ theorem reindexRange_repr' (x : M) {bi : M} {i : ι} (h : b i = bi) :
     exact fun i j h => b.injective (Subtype.mk.inj h)
 
 @[simp]
-theorem reindexRange_repr (x : M) (i : ι) (h := Set.mem_range_self i) :
-    b.reindexRange.repr x ⟨b i, h⟩ = b.repr x i :=
+theorem reindexRange_repr (x : M) (i : ι) (h := Set.mem_range_self i)
+    : b.reindexRange.repr x ⟨b i, h⟩ = b.repr x i :=
   b.reindexRange_repr' _ rfl
 
 section Fintype
 
 variable [Fintype ι] [DecidableEq M]
 
-/-- `b.reindexFinsetRange` is a basis indexed by `Finset.univ.image b`,
-the finite set of basis vectors themselves. -/
+/--
+`b.reindexFinsetRange` is a basis indexed by `Finset.univ.image b`,
+the finite set of basis vectors themselves.
+-/
 def reindexFinsetRange : Basis (Finset.univ.image b) R M :=
   b.reindexRange.reindex ((Equiv.refl M).subtypeEquiv (by simp))
 
-theorem reindexFinsetRange_self (i : ι) (h := Finset.mem_image_of_mem b (Finset.mem_univ i)) :
-    b.reindexFinsetRange ⟨b i, h⟩ = b i := by
+theorem reindexFinsetRange_self (i : ι) (h := Finset.mem_image_of_mem b (Finset.mem_univ i))
+    : b.reindexFinsetRange ⟨b i, h⟩ = b i := by
   rw [reindexFinsetRange, reindex_apply, reindexRange_apply]
   rfl
 
@@ -472,16 +469,16 @@ theorem reindexFinsetRange_apply (x : Finset.univ.image b) : b.reindexFinsetRang
   rcases Finset.mem_image.mp hbi with ⟨i, -, rfl⟩
   exact b.reindexFinsetRange_self i
 
-theorem reindexFinsetRange_repr_self (i : ι) :
-    b.reindexFinsetRange.repr (b i) =
-      Finsupp.single ⟨b i, Finset.mem_image_of_mem b (Finset.mem_univ i)⟩ 1 := by
+theorem reindexFinsetRange_repr_self (i : ι)
+    : b.reindexFinsetRange.repr (b i)
+      = Finsupp.single ⟨b i, Finset.mem_image_of_mem b (Finset.mem_univ i)⟩ 1 := by
   ext ⟨bi, hbi⟩
   simp [reindexFinsetRange, reindexRange_repr_self]
 
 @[simp]
-theorem reindexFinsetRange_repr (x : M) (i : ι)
-    (h := Finset.mem_image_of_mem b (Finset.mem_univ i)) :
-    b.reindexFinsetRange.repr x ⟨b i, h⟩ = b.repr x i := by simp [reindexFinsetRange]
+theorem reindexFinsetRange_repr (x : M) (i : ι) (h := Finset.mem_image_of_mem b (Finset.mem_univ i))
+    : b.reindexFinsetRange.repr x ⟨b i, h⟩ = b.repr x i := by
+  simp [reindexFinsetRange]
 
 end Fintype
 
@@ -494,7 +491,8 @@ section Constr
 variable (S : Type*) [Semiring S] [Module S M']
 variable [SMulCommClass R S M']
 
-/-- Construct a linear map given the value at the basis, called `Basis.constr b S f` where `b` is
+/--
+Construct a linear map given the value at the basis, called `Basis.constr b S f` where `b` is
 a basis, `f` is the value of the linear map over the elements of the basis, and `S` is an
 extra semiring (typically `S = R` or `S = ℕ`).
 
@@ -520,47 +518,45 @@ def constr : (ι → M') ≃ₗ[S] M →ₗ[R] M' where
     refine b.ext fun i => ?_
     simp
 
-theorem constr_def (f : ι → M') :
-    constr (M' := M') b S f = linearCombination R id ∘ₗ Finsupp.lmapDomain R R f ∘ₗ ↑b.repr :=
+theorem constr_def (f : ι → M')
+    : constr (M' := M') b S f = linearCombination R id ∘ₗ Finsupp.lmapDomain R R f ∘ₗ ↑b.repr :=
   rfl
 
-theorem constr_apply (f : ι → M') (x : M) :
-    constr (M' := M') b S f x = (b.repr x).sum fun b a => a • f b := by
+theorem constr_apply (f : ι → M') (x : M)
+    : constr (M' := M') b S f x = (b.repr x).sum fun b a => a • f b := by
   simp only [constr_def, LinearMap.comp_apply, lmapDomain_apply, linearCombination_apply]
   rw [Finsupp.sum_mapDomain_index] <;> simp [add_smul]
 
-@[simp] theorem constr_symm_apply (f : M →ₗ[R] M') (i) :
-    (b.constr S).symm f i = f (b i) := by
-  rfl
+@[simp] theorem constr_symm_apply (f : M →ₗ[R] M') (i) : (b.constr S).symm f i = f (b i) := by rfl
 
 @[simp]
 theorem constr_basis (f : ι → M') (i : ι) : (constr (M' := M') b S f : M → M') (b i) = f i := by
   simp [Basis.constr_apply, b.repr_self]
 
-theorem constr_eq {g : ι → M'} {f : M →ₗ[R] M'} (h : ∀ i, g i = f (b i)) :
-    constr (M' := M') b S g = f :=
+theorem constr_eq {g : ι → M'} {f : M →ₗ[R] M'} (h : ∀ i, g i = f (b i))
+    : constr (M' := M') b S g = f :=
   b.ext fun i => (b.constr_basis S g i).trans (h i)
 
 theorem constr_self (f : M →ₗ[R] M') : (constr (M' := M') b S fun i => f (b i)) = f :=
   b.constr_eq S fun _ => rfl
 
-theorem constr_range {f : ι → M'} :
-    LinearMap.range (constr (M' := M') b S f) = span R (range f) := by
-  rw [b.constr_def S f, LinearMap.range_comp, LinearMap.range_comp, LinearEquiv.range, ←
-    Finsupp.supported_univ, Finsupp.lmapDomain_supported, ← Set.image_univ, ←
-    Finsupp.span_image_eq_map_linearCombination, Set.image_id]
+theorem constr_range {f : ι → M'}
+    : LinearMap.range (constr (M' := M') b S f) = span R (range f) := by
+  rw [b.constr_def S f, LinearMap.range_comp, LinearMap.range_comp, LinearEquiv.range,
+    ← Finsupp.supported_univ, Finsupp.lmapDomain_supported, ← Set.image_univ,
+    ← Finsupp.span_image_eq_map_linearCombination, Set.image_id]
 
 @[simp]
-theorem constr_comp (f : M' →ₗ[R] M') (v : ι → M') :
-    constr (M' := M') b S (f ∘ v) = f.comp (constr (M' := M') b S v) :=
+theorem constr_comp (f : M' →ₗ[R] M') (v : ι → M')
+    : constr (M' := M') b S (f ∘ v) = f.comp (constr (M' := M') b S v) :=
   b.ext fun i => by simp only [Basis.constr_basis, LinearMap.comp_apply, Function.comp]
 
 variable (S : Type*) [Semiring S] [Module S M']
 variable [SMulCommClass R S M']
 
 @[simp]
-theorem constr_apply_fintype [Fintype ι] (b : Basis ι R M) (f : ι → M') (x : M) :
-    (constr (M' := M') b S f : M → M') x = ∑ i, b.equivFun x i • f i := by
+theorem constr_apply_fintype [Fintype ι] (b : Basis ι R M) (f : ι → M') (x : M)
+    : (constr (M' := M') b S f : M → M') x = ∑ i, b.equivFun x i • f i := by
   simp [b.constr_apply, b.equivFun_apply, Finsupp.sum_fintype]
 
 end Constr
@@ -571,30 +567,29 @@ variable (i : ι)
 variable {M'' : Type*} (b' : Basis ι' R M') (e : ι ≃ ι')
 variable [AddCommMonoid M''] [Module R M'']
 
-/-- If `b` is a basis for `M` and `b'` a basis for `M'`, and the index types are equivalent,
-`b.equiv b' e` is a linear equivalence `M ≃ₗ[R] M'`, mapping `b i` to `b' (e i)`. -/
-protected def equiv : M ≃ₗ[R] M' :=
-  b.repr.trans (b'.reindex e.symm).repr.symm
+/--
+If `b` is a basis for `M` and `b'` a basis for `M'`, and the index types are equivalent,
+`b.equiv b' e` is a linear equivalence `M ≃ₗ[R] M'`, mapping `b i` to `b' (e i)`.
+-/
+protected def equiv : M ≃ₗ[R] M' := b.repr.trans (b'.reindex e.symm).repr.symm
+
+@[simp] theorem equiv_apply : b.equiv b' e (b i) = b' (e i) := by simp [Basis.equiv]
 
 @[simp]
-theorem equiv_apply : b.equiv b' e (b i) = b' (e i) := by simp [Basis.equiv]
-
-@[simp]
-theorem equiv_refl : b.equiv b (Equiv.refl ι) = LinearEquiv.refl R M :=
-  b.ext' fun i => by simp
+theorem equiv_refl : b.equiv b (Equiv.refl ι) = LinearEquiv.refl R M := b.ext' fun i => by simp
 
 @[simp]
 theorem equiv_symm : (b.equiv b' e).symm = b'.equiv b e.symm :=
   b'.ext' fun i => (b.equiv b' e).injective (by simp)
 
 @[simp]
-theorem equiv_trans {ι'' : Type*} (b'' : Basis ι'' R M'') (e : ι ≃ ι') (e' : ι' ≃ ι'') :
-    (b.equiv b' e).trans (b'.equiv b'' e') = b.equiv b'' (e.trans e') :=
+theorem equiv_trans {ι'' : Type*} (b'' : Basis ι'' R M'') (e : ι ≃ ι') (e' : ι' ≃ ι'')
+    : (b.equiv b' e).trans (b'.equiv b'' e') = b.equiv b'' (e.trans e') :=
   b.ext' fun i => by simp
 
 @[simp]
-theorem map_equiv (b : Basis ι R M) (b' : Basis ι' R M') (e : ι ≃ ι') :
-    b.map (b.equiv b' e) = b'.reindex e.symm := by
+theorem map_equiv (b : Basis ι R M) (b' : Basis ι' R M') (e : ι ≃ ι')
+    : b.map (b.equiv b' e) = b'.reindex e.symm := by
   ext i
   simp
 
@@ -605,41 +600,45 @@ variable [AddCommMonoid M] [Module R M] [AddCommMonoid M'] [Module R M']
 variable (b : Basis ι R M) (b' : Basis ι' R M')
 variable [SMulCommClass R R M']
 
-/-- If `b` is a basis for `M` and `b'` a basis for `M'`,
+/--
+If `b` is a basis for `M` and `b'` a basis for `M'`,
 and `f`, `g` form a bijection between the basis vectors,
 `b.equiv' b' f g hf hg hgf hfg` is a linear equivalence `M ≃ₗ[R] M'`, mapping `b i` to `f (b i)`.
 -/
-def equiv' (f : M → M') (g : M' → M) (hf : ∀ i, f (b i) ∈ range b') (hg : ∀ i, g (b' i) ∈ range b)
-    (hgf : ∀ i, g (f (b i)) = b i) (hfg : ∀ i, f (g (b' i)) = b' i) : M ≃ₗ[R] M' :=
-  { constr (M' := M') b R (f ∘ b) with
-    invFun := constr (M' := M) b' R (g ∘ b')
-    left_inv :=
-      have : (constr (M' := M) b' R (g ∘ b')).comp (constr (M' := M') b R (f ∘ b)) = LinearMap.id :=
-        b.ext fun i =>
-          Exists.elim (hf i) fun i' hi' => by
-            rw [LinearMap.comp_apply, b.constr_basis, Function.comp_apply, ← hi', b'.constr_basis,
-              Function.comp_apply, hi', hgf, LinearMap.id_apply]
-      fun x => congr($this x)
-    right_inv :=
-      have : (constr (M' := M') b R (f ∘ b)).comp (constr (M' := M) b' R (g ∘ b')) = LinearMap.id :=
-        b'.ext fun i =>
-          Exists.elim (hg i) fun i' hi' => by
-            rw [LinearMap.comp_apply, b'.constr_basis, Function.comp_apply, ← hi', b.constr_basis,
-              Function.comp_apply, hi', hfg, LinearMap.id_apply]
-      fun x => congr($this x) }
+def equiv'
+    (f : M → M') (g : M' → M) (hf : ∀ i, f (b i) ∈ range b') (hg : ∀ i, g (b' i) ∈ range b)
+    (hgf : ∀ i, g (f (b i)) = b i) (hfg : ∀ i, f (g (b' i)) = b' i)
+    : M ≃ₗ[R] M' := {
+  constr (M' := M') b R (f ∘ b) with
+  invFun := constr (M' := M) b' R (g ∘ b')
+  left_inv :=
+    have : (constr (M' := M) b' R (g ∘ b')).comp (constr (M' := M') b R (f ∘ b)) = LinearMap.id :=
+      b.ext fun i =>
+        Exists.elim (hf i) fun i' hi' => by
+          rw [LinearMap.comp_apply, b.constr_basis, Function.comp_apply, ← hi', b'.constr_basis,
+            Function.comp_apply, hi', hgf, LinearMap.id_apply]
+    fun x => congr($this x)
+  right_inv :=
+    have : (constr (M' := M') b R (f ∘ b)).comp (constr (M' := M) b' R (g ∘ b')) = LinearMap.id :=
+      b'.ext fun i =>
+        Exists.elim (hg i) fun i' hi' => by
+          rw [LinearMap.comp_apply, b'.constr_basis, Function.comp_apply, ← hi', b.constr_basis,
+            Function.comp_apply, hi', hfg, LinearMap.id_apply]
+    fun x => congr($this x)
+}
 
 @[simp]
-theorem equiv'_apply (f : M → M') (g : M' → M) (hf hg hgf hfg) (i : ι) :
-    b.equiv' b' f g hf hg hgf hfg (b i) = f (b i) :=
+theorem equiv'_apply (f : M → M') (g : M' → M) (hf hg hgf hfg) (i : ι)
+    : b.equiv' b' f g hf hg hgf hfg (b i) = f (b i) :=
   b.constr_basis R _ _
 
 @[simp]
-theorem equiv'_symm_apply (f : M → M') (g : M' → M) (hf hg hgf hfg) (i : ι') :
-    (b.equiv' b' f g hf hg hgf hfg).symm (b' i) = g (b' i) :=
+theorem equiv'_symm_apply (f : M → M') (g : M' → M) (hf hg hgf hfg) (i : ι')
+    : (b.equiv' b' f g hf hg hgf hfg).symm (b' i) = g (b' i) :=
   b'.constr_basis R _ _
 
-theorem sum_repr_mul_repr {ι'} [Fintype ι'] (b' : Basis ι' R M) (x : M) (i : ι) :
-    (∑ j : ι', b.repr (b' j) i * b'.repr x j) = b.repr x i := by
+theorem sum_repr_mul_repr {ι'} [Fintype ι'] (b' : Basis ι' R M) (x : M) (i : ι)
+    : (∑ j : ι', b.repr (b' j) i * b'.repr x j) = b.repr x i := by
   conv_rhs => rw [← b'.sum_repr x]
   simp_rw [map_sum, map_smul, Finset.sum_apply']
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -653,15 +652,14 @@ section Coord
 
 variable (i : ι)
 
-/-- `b.coord i` is the linear function giving the `i`-th coordinate of a vector
+/--
+`b.coord i` is the linear function giving the `i`-th coordinate of a vector
 with respect to the basis `b`.
 
 `b.coord i` is an element of the dual space. In particular, for
 finite-dimensional spaces it is the `ι`th basis vector of the dual space.
 -/
-@[simps!]
-def coord : M →ₗ[R] R :=
-  Finsupp.lapply i ∘ₗ ↑b.repr
+@[simps!] def coord : M →ₗ[R] R := Finsupp.lapply i ∘ₗ ↑b.repr
 
 theorem forall_coord_eq_zero_iff {x : M} : (∀ i, b.coord i x = 0) ↔ x = 0 :=
   Iff.trans (by simp only [b.coord_apply, DFunLike.ext_iff, Finsupp.zero_apply])
@@ -671,15 +669,13 @@ theorem forall_coord_eq_zero_iff {x : M} : (∀ i, b.coord i x = 0) ↔ x = 0 :=
 noncomputable def sumCoords : M →ₗ[R] R :=
   (Finsupp.lsum ℕ fun _ => LinearMap.id) ∘ₗ (b.repr : M →ₗ[R] ι →₀ R)
 
-@[simp]
-theorem coe_sumCoords : (b.sumCoords : M → R) = fun m => (b.repr m).sum fun _ => id :=
-  rfl
+@[simp] theorem coe_sumCoords : (b.sumCoords : M → R) = fun m => (b.repr m).sum fun _ => id := rfl
 
 @[simp high]
 theorem coe_sumCoords_of_fintype [Fintype ι] : (b.sumCoords : M → R) = ∑ i, b.coord i := by
   ext m
-  simp only [sumCoords, Finsupp.sum_fintype, LinearMap.id_coe, LinearEquiv.coe_coe, coord_apply,
-    id, Fintype.sum_apply, imp_true_iff, Finsupp.coe_lsum, LinearMap.coe_comp, comp_apply,
+  simp only [sumCoords, Finsupp.sum_fintype, LinearMap.id_coe, LinearEquiv.coe_coe, coord_apply, id,
+    Fintype.sum_apply, imp_true_iff, Finsupp.coe_lsum, LinearMap.coe_comp, comp_apply,
     LinearMap.coe_sum]
 
 @[simp]
@@ -687,11 +683,10 @@ theorem sumCoords_self_apply : b.sumCoords (b i) = 1 := by
   simp only [Basis.sumCoords, LinearMap.id_coe, LinearEquiv.coe_coe, id, Basis.repr_self,
     Function.comp_apply, Finsupp.coe_lsum, LinearMap.coe_comp, Finsupp.sum_single_index]
 
-theorem dvd_coord_smul (i : ι) (m : M) (r : R) : r ∣ b.coord i (r • m) :=
-  ⟨b.coord i m, by simp⟩
+theorem dvd_coord_smul (i : ι) (m : M) (r : R) : r ∣ b.coord i (r • m) := ⟨b.coord i m, by simp⟩
 
-theorem coord_repr_symm (b : Basis ι R M) (i : ι) (f : ι →₀ R) :
-    b.coord i (b.repr.symm f) = f i := by
+theorem coord_repr_symm (b : Basis ι R M) (i : ι) (f : ι →₀ R)
+    : b.coord i (b.repr.symm f) = f i := by
   simp only [repr_symm_apply, coord_apply, repr_linearCombination]
 
 theorem coe_sumCoords_eq_finsum : (b.sumCoords : M → R) = fun m => ∑ᶠ i, b.coord i m := by
@@ -708,8 +703,8 @@ theorem sumCoords_reindex : (b.reindex e).sumCoords = b.sumCoords := by
   ext x
   simp [Function.id_def]
 
-theorem coord_equivFun_symm [Finite ι] (b : Basis ι R M) (i : ι) (f : ι → R) :
-    b.coord i (b.equivFun.symm f) = f i :=
+theorem coord_equivFun_symm [Finite ι] (b : Basis ι R M) (i : ι) (f : ι → R)
+    : b.coord i (b.equivFun.symm f) = f i :=
   b.coord_repr_symm i (Finsupp.equivFunOnFinite.symm f)
 
 end Coord

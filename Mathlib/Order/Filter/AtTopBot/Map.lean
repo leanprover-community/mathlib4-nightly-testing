@@ -6,7 +6,6 @@ Authors: Johannes Hölzl, Jeremy Avigad, Yury Kudryashov, Patrick Massot
 module
 
 public import Mathlib.Order.Filter.AtTopBot.Defs
-
 import Mathlib.Order.Filter.Map
 import Mathlib.Order.Filter.Tendsto
 import Mathlib.Order.Interval.Set.OrderIso
@@ -37,13 +36,11 @@ theorem comap_atTop (e : α ≃o β) : comap e atTop = atTop := by
 theorem map_atTop (e : α ≃o β) : map (e : α → β) atTop = atTop := by
   rw [← e.comap_atTop, map_comap_of_surjective e.surjective]
 
-@[to_dual]
-theorem tendsto_atTop (e : α ≃o β) : Tendsto e atTop atTop :=
-  e.map_atTop.le
+@[to_dual] theorem tendsto_atTop (e : α ≃o β) : Tendsto e atTop atTop := e.map_atTop.le
 
 @[to_dual (attr := simp)]
-theorem tendsto_atTop_iff {l : Filter γ} {f : γ → α} (e : α ≃o β) :
-    Tendsto (fun x => e (f x)) l atTop ↔ Tendsto f l atTop := by
+theorem tendsto_atTop_iff {l : Filter γ} {f : γ → α} (e : α ≃o β)
+    : Tendsto (fun x => e (f x)) l atTop ↔ Tendsto f l atTop := by
   rw [← e.comap_atTop, tendsto_comap_iff, Function.comp_def]
 
 end OrderIso

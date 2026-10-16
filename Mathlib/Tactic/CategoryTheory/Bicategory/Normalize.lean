@@ -34,126 +34,109 @@ variable {a b c d : B}
 variable {f f' g h i j : a ⟶ b}
 
 @[nolint synTaut]
-theorem evalComp_nil_nil (α : f ≅ g) (β : g ≅ h) :
-    (α ≪≫ β).hom = (α ≪≫ β).hom := by
+theorem evalComp_nil_nil (α : f ≅ g) (β : g ≅ h) : (α ≪≫ β).hom = (α ≪≫ β).hom := by simp
+
+theorem evalComp_nil_cons (α : f ≅ g) (β : g ≅ h) (η : h ⟶ i) (ηs : i ⟶ j)
+    : α.hom ≫ (β.hom ≫ η ≫ ηs) = (α ≪≫ β).hom ≫ η ≫ ηs := by
   simp
 
-theorem evalComp_nil_cons (α : f ≅ g) (β : g ≅ h) (η : h ⟶ i) (ηs : i ⟶ j) :
-    α.hom ≫ (β.hom ≫ η ≫ ηs) = (α ≪≫ β).hom ≫ η ≫ ηs := by
-  simp
-
-theorem evalComp_cons (α : f ≅ g) (η : g ⟶ h) {ηs : h ⟶ i} {θ : i ⟶ j} {ι : h ⟶ j}
-    (e_ι : ηs ≫ θ = ι) :
-    (α.hom ≫ η ≫ ηs) ≫ θ = α.hom ≫ η ≫ ι := by
+theorem evalComp_cons
+    (α : f ≅ g) (η : g ⟶ h) {ηs : h ⟶ i} {θ : i ⟶ j} {ι : h ⟶ j} (e_ι : ηs ≫ θ = ι)
+    : (α.hom ≫ η ≫ ηs) ≫ θ = α.hom ≫ η ≫ ι := by
   simp [e_ι]
 
 theorem eval_comp
-    {η η' : f ⟶ g} {θ θ' : g ⟶ h} {ι : f ⟶ h}
-    (e_η : η = η') (e_θ : θ = θ') (e_ηθ : η' ≫ θ' = ι) :
-    η ≫ θ = ι := by
+    {η η' : f ⟶ g} {θ θ' : g ⟶ h} {ι : f ⟶ h} (e_η : η = η') (e_θ : θ = θ') (e_ηθ : η' ≫ θ' = ι)
+    : η ≫ θ = ι := by
   simp [e_η, e_θ, e_ηθ]
 
-theorem eval_of (η : f ⟶ g) :
-    η = (Iso.refl _).hom ≫ η ≫ (Iso.refl _).hom := by
-  simp
+theorem eval_of (η : f ⟶ g) : η = (Iso.refl _).hom ≫ η ≫ (Iso.refl _).hom := by simp
 
 theorem eval_monoidalComp
     {η η' : f ⟶ g} {α : g ≅ h} {θ θ' : h ⟶ i} {αθ : g ⟶ i} {ηαθ : f ⟶ i}
-    (e_η : η = η') (e_θ : θ = θ') (e_αθ : α.hom ≫ θ' = αθ) (e_ηαθ : η' ≫ αθ = ηαθ) :
-    η ≫ α.hom ≫ θ = ηαθ := by
+    (e_η : η = η') (e_θ : θ = θ') (e_αθ : α.hom ≫ θ' = αθ) (e_ηαθ : η' ≫ αθ = ηαθ)
+    : η ≫ α.hom ≫ θ = ηαθ := by
   simp [e_η, e_θ, e_αθ, e_ηαθ]
 
 @[nolint synTaut]
-theorem evalWhiskerLeft_nil (f : a ⟶ b) {g h : b ⟶ c} (α : g ≅ h) :
-    (whiskerLeftIso f α).hom = (whiskerLeftIso f α).hom := by
+theorem evalWhiskerLeft_nil (f : a ⟶ b) {g h : b ⟶ c} (α : g ≅ h)
+    : (whiskerLeftIso f α).hom = (whiskerLeftIso f α).hom := by
   simp
 
 theorem evalWhiskerLeft_of_cons
-    {f : a ⟶ b} {g h i j : b ⟶ c}
-    (α : g ≅ h) (η : h ⟶ i) {ηs : i ⟶ j} {θ : f ≫ i ⟶ f ≫ j} (e_θ : f ◁ ηs = θ) :
-    f ◁ (α.hom ≫ η ≫ ηs) = (whiskerLeftIso f α).hom ≫ f ◁ η ≫ θ := by
+    {f : a ⟶ b} {g h i j : b ⟶ c} (α : g ≅ h) (η : h ⟶ i)
+    {ηs : i ⟶ j} {θ : f ≫ i ⟶ f ≫ j} (e_θ : f ◁ ηs = θ)
+    : f ◁ (α.hom ≫ η ≫ ηs) = (whiskerLeftIso f α).hom ≫ f ◁ η ≫ θ := by
   simp [e_θ]
 
 theorem evalWhiskerLeft_comp
-    {f : a ⟶ b} {g : b ⟶ c} {h i : c ⟶ d}
-    {η : h ⟶ i} {η₁ : g ≫ h ⟶ g ≫ i} {η₂ : f ≫ g ≫ h ⟶ f ≫ g ≫ i}
-    {η₃ : f ≫ g ≫ h ⟶ (f ≫ g) ≫ i} {η₄ : (f ≫ g) ≫ h ⟶ (f ≫ g) ≫ i}
-    (e_η₁ : g ◁ η = η₁) (e_η₂ : f ◁ η₁ = η₂)
-    (e_η₃ : η₂ ≫ (α_ _ _ _).inv = η₃) (e_η₄ : (α_ _ _ _).hom ≫ η₃ = η₄) :
-    (f ≫ g) ◁ η = η₄ := by
+    {f : a ⟶ b} {g : b ⟶ c} {h i : c ⟶ d} {η : h ⟶ i} {η₁ : g ≫ h ⟶ g ≫ i}
+    {η₂ : f ≫ g ≫ h ⟶ f ≫ g ≫ i} {η₃ : f ≫ g ≫ h ⟶ (f ≫ g) ≫ i} {η₄ : (f ≫ g) ≫ h ⟶ (f ≫ g) ≫ i}
+    (e_η₁ : g ◁ η = η₁) (e_η₂ : f ◁ η₁ = η₂) (e_η₃ : η₂ ≫ (α_ _ _ _).inv = η₃)
+    (e_η₄ : (α_ _ _ _).hom ≫ η₃ = η₄)
+    : (f ≫ g) ◁ η = η₄ := by
   simp [e_η₁, e_η₂, e_η₃, e_η₄]
 
-theorem evalWhiskerLeft_id {η : f ⟶ g}
-    {η₁ : f ⟶ 𝟙 a ≫ g} {η₂ : 𝟙 a ≫ f ⟶ 𝟙 a ≫ g}
-    (e_η₁ : η ≫ (λ_ _).inv = η₁) (e_η₂ : (λ_ _).hom ≫ η₁ = η₂) :
-    𝟙 a ◁ η = η₂ := by
+theorem evalWhiskerLeft_id
+    {η : f ⟶ g} {η₁ : f ⟶ 𝟙 a ≫ g} {η₂ : 𝟙 a ≫ f ⟶ 𝟙 a ≫ g}
+    (e_η₁ : η ≫ (λ_ _).inv = η₁) (e_η₂ : (λ_ _).hom ≫ η₁ = η₂)
+    : 𝟙 a ◁ η = η₂ := by
   simp [e_η₁, e_η₂]
 
 theorem eval_whiskerLeft
-    {f : a ⟶ b} {g h : b ⟶ c}
-    {η η' : g ⟶ h} {θ : f ≫ g ⟶ f ≫ h}
-    (e_η : η = η') (e_θ : f ◁ η' = θ) :
-    f ◁ η = θ := by
+    {f : a ⟶ b} {g h : b ⟶ c} {η η' : g ⟶ h} {θ : f ≫ g ⟶ f ≫ h} (e_η : η = η') (e_θ : f ◁ η' = θ)
+    : f ◁ η = θ := by
   simp [e_η, e_θ]
 
 theorem eval_whiskerRight
-    {f g : a ⟶ b} {h : b ⟶ c}
-    {η η' : f ⟶ g} {θ : f ≫ h ⟶ g ≫ h}
-    (e_η : η = η') (e_θ : η' ▷ h = θ) :
-    η ▷ h = θ := by
+    {f g : a ⟶ b} {h : b ⟶ c} {η η' : f ⟶ g} {θ : f ≫ h ⟶ g ≫ h} (e_η : η = η') (e_θ : η' ▷ h = θ)
+    : η ▷ h = θ := by
   simp [e_η, e_θ]
 
 @[nolint synTaut]
-theorem evalWhiskerRight_nil (α : f ≅ g) (h : b ⟶ c) :
-    α.hom ▷ h = α.hom ▷ h := by
-  simp
+theorem evalWhiskerRight_nil (α : f ≅ g) (h : b ⟶ c) : α.hom ▷ h = α.hom ▷ h := by simp
 
-theorem evalWhiskerRightAux_of {f g : a ⟶ b} (η : f ⟶ g) (h : b ⟶ c) :
-    η ▷ h = (Iso.refl _).hom ≫ η ▷ h ≫ (Iso.refl _).hom := by
+theorem evalWhiskerRightAux_of {f g : a ⟶ b} (η : f ⟶ g) (h : b ⟶ c)
+    : η ▷ h = (Iso.refl _).hom ≫ η ▷ h ≫ (Iso.refl _).hom := by
   simp
 
 theorem evalWhiskerRight_cons_of_of
-    {f g h i : a ⟶ b} {j : b ⟶ c}
-    {α : f ≅ g} {η : g ⟶ h} {ηs : h ⟶ i} {ηs₁ : h ≫ j ⟶ i ≫ j}
-    {η₁ : g ≫ j ⟶ h ≫ j} {η₂ : g ≫ j ⟶ i ≫ j} {η₃ : f ≫ j ⟶ i ≫ j}
-    (e_ηs₁ : ηs ▷ j = ηs₁) (e_η₁ : η ▷ j = η₁)
-    (e_η₂ : η₁ ≫ ηs₁ = η₂) (e_η₃ : (whiskerRightIso α j).hom ≫ η₂ = η₃) :
-    (α.hom ≫ η ≫ ηs) ▷ j = η₃ := by
+    {f g h i : a ⟶ b} {j : b ⟶ c} {α : f ≅ g} {η : g ⟶ h} {ηs : h ⟶ i} {ηs₁ : h ≫ j ⟶ i ≫ j}
+    {η₁ : g ≫ j ⟶ h ≫ j} {η₂ : g ≫ j ⟶ i ≫ j} {η₃ : f ≫ j ⟶ i ≫ j} (e_ηs₁ : ηs ▷ j = ηs₁)
+    (e_η₁ : η ▷ j = η₁) (e_η₂ : η₁ ≫ ηs₁ = η₂) (e_η₃ : (whiskerRightIso α j).hom ≫ η₂ = η₃)
+    : (α.hom ≫ η ≫ ηs) ▷ j = η₃ := by
   simp_all
 
 theorem evalWhiskerRight_cons_whisker
-    {f : a ⟶ b} {g : a ⟶ c} {h i : b ⟶ c} {j : a ⟶ c} {k : c ⟶ d}
-    {α : g ≅ f ≫ h} {η : h ⟶ i} {ηs : f ≫ i ⟶ j}
-    {η₁ : h ≫ k ⟶ i ≫ k} {η₂ : f ≫ (h ≫ k) ⟶ f ≫ (i ≫ k)} {ηs₁ : (f ≫ i) ≫ k ⟶ j ≫ k}
-    {ηs₂ : f ≫ (i ≫ k) ⟶ j ≫ k} {η₃ : f ≫ (h ≫ k) ⟶ j ≫ k} {η₄ : (f ≫ h) ≫ k ⟶ j ≫ k}
-    {η₅ : g ≫ k ⟶ j ≫ k}
+    {f : a ⟶ b} {g : a ⟶ c} {h i : b ⟶ c} {j : a ⟶ c} {k : c ⟶ d} {α : g ≅ f ≫ h} {η : h ⟶ i}
+    {ηs : f ≫ i ⟶ j} {η₁ : h ≫ k ⟶ i ≫ k} {η₂ : f ≫ (h ≫ k) ⟶ f ≫ (i ≫ k)}
+    {ηs₁ : (f ≫ i) ≫ k ⟶ j ≫ k} {ηs₂ : f ≫ (i ≫ k) ⟶ j ≫ k} {η₃ : f ≫ (h ≫ k) ⟶ j ≫ k}
+    {η₄ : (f ≫ h) ≫ k ⟶ j ≫ k} {η₅ : g ≫ k ⟶ j ≫ k}
     (e_η₁ : ((Iso.refl _).hom ≫ η ≫ (Iso.refl _).hom) ▷ k = η₁) (e_η₂ : f ◁ η₁ = η₂)
-    (e_ηs₁ : ηs ▷ k = ηs₁) (e_ηs₂ : (α_ _ _ _).inv ≫ ηs₁ = ηs₂)
-    (e_η₃ : η₂ ≫ ηs₂ = η₃) (e_η₄ : (α_ _ _ _).hom ≫ η₃ = η₄)
-    (e_η₅ : (whiskerRightIso α k).hom ≫ η₄ = η₅) :
-    (α.hom ≫ (f ◁ η) ≫ ηs) ▷ k = η₅ := by
+    (e_ηs₁ : ηs ▷ k = ηs₁) (e_ηs₂ : (α_ _ _ _).inv ≫ ηs₁ = ηs₂) (e_η₃ : η₂ ≫ ηs₂ = η₃)
+    (e_η₄ : (α_ _ _ _).hom ≫ η₃ = η₄) (e_η₅ : (whiskerRightIso α k).hom ≫ η₄ = η₅)
+    : (α.hom ≫ (f ◁ η) ≫ ηs) ▷ k = η₅ := by
   simp at e_η₁ e_η₅
   simp [e_η₁, e_η₂, e_ηs₁, e_ηs₂, e_η₃, e_η₄, e_η₅]
 
 theorem evalWhiskerRight_comp
-    {f f' : a ⟶ b} {g : b ⟶ c} {h : c ⟶ d}
-    {η : f ⟶ f'} {η₁ : f ≫ g ⟶ f' ≫ g} {η₂ : (f ≫ g) ≫ h ⟶ (f' ≫ g) ≫ h}
-    {η₃ : (f ≫ g) ≫ h ⟶ f' ≫ (g ≫ h)} {η₄ : f ≫ (g ≫ h) ⟶ f' ≫ (g ≫ h)}
-    (e_η₁ : η ▷ g = η₁) (e_η₂ : η₁ ▷ h = η₂)
-    (e_η₃ : η₂ ≫ (α_ _ _ _).hom = η₃) (e_η₄ : (α_ _ _ _).inv ≫ η₃ = η₄) :
-    η ▷ (g ≫ h) = η₄ := by
+    {f f' : a ⟶ b} {g : b ⟶ c} {h : c ⟶ d} {η : f ⟶ f'} {η₁ : f ≫ g ⟶ f' ≫ g}
+    {η₂ : (f ≫ g) ≫ h ⟶ (f' ≫ g) ≫ h} {η₃ : (f ≫ g) ≫ h ⟶ f' ≫ (g ≫ h)}
+    {η₄ : f ≫ (g ≫ h) ⟶ f' ≫ (g ≫ h)} (e_η₁ : η ▷ g = η₁) (e_η₂ : η₁ ▷ h = η₂)
+    (e_η₃ : η₂ ≫ (α_ _ _ _).hom = η₃) (e_η₄ : (α_ _ _ _).inv ≫ η₃ = η₄)
+    : η ▷ (g ≫ h) = η₄ := by
   simp [e_η₁, e_η₂, e_η₃, e_η₄]
 
 theorem evalWhiskerRight_id
     {η : f ⟶ g} {η₁ : f ⟶ g ≫ 𝟙 b} {η₂ : f ≫ 𝟙 b ⟶ g ≫ 𝟙 b}
-    (e_η₁ : η ≫ (ρ_ _).inv = η₁) (e_η₂ : (ρ_ _).hom ≫ η₁ = η₂) :
-    η ▷ 𝟙 b = η₂ := by
+    (e_η₁ : η ≫ (ρ_ _).inv = η₁) (e_η₂ : (ρ_ _).hom ≫ η₁ = η₂)
+    : η ▷ 𝟙 b = η₂ := by
   simp [e_η₁, e_η₂]
 
 theorem eval_bicategoricalComp
     {η η' : f ⟶ g} {α : g ≅ h} {θ θ' : h ⟶ i} {αθ : g ⟶ i} {ηαθ : f ⟶ i}
-    (e_η : η = η') (e_θ : θ = θ') (e_αθ : α.hom ≫ θ' = αθ) (e_ηαθ : η' ≫ αθ = ηαθ) :
-    η ≫ α.hom ≫ θ = ηαθ := by
+    (e_η : η = η') (e_θ : θ = θ') (e_αθ : α.hom ≫ θ' = αθ) (e_ηαθ : η' ≫ αθ = ηαθ)
+    : η ≫ α.hom ≫ θ = ηαθ := by
   simp [e_η, e_θ, e_αθ, e_ηαθ]
 
 end
@@ -306,21 +289,20 @@ instance : MkEvalWhiskerRight BicategoryM where
     have h : Q($b ⟶ $c) := h.e
     have η : Q($f ⟶ $g) := η.e.e
     return q(evalWhiskerRightAux_of $η $h)
-  mkEvalWhiskerRightAuxCons _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
+  mkEvalWhiskerRightAuxCons _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
   mkEvalWhiskerRightNil α h := do
-      let ctx ← read
-      let _bicat := ctx.instBicategory
-      let f ← α.srcM
-      let g ← α.tgtM
-      have a : Q($ctx.B) := f.src.e
-      have b : Q($ctx.B) := f.tgt.e
-      have c : Q($ctx.B) := h.tgt.e
-      have f : Q($a ⟶ $b) := f.e
-      have g : Q($a ⟶ $b) := g.e
-      have h : Q($b ⟶ $c) := h.e
-      have α : Q($f ≅ $g) := α.e
-      return q(evalWhiskerRight_nil $α $h)
+    let ctx ← read
+    let _bicat := ctx.instBicategory
+    let f ← α.srcM
+    let g ← α.tgtM
+    have a : Q($ctx.B) := f.src.e
+    have b : Q($ctx.B) := f.tgt.e
+    have c : Q($ctx.B) := h.tgt.e
+    have f : Q($a ⟶ $b) := f.e
+    have g : Q($a ⟶ $b) := g.e
+    have h : Q($b ⟶ $c) := h.e
+    have α : Q($f ≅ $g) := α.e
+    return q(evalWhiskerRight_nil $α $h)
   mkEvalWhiskerRightConsOfOf j α η ηs ηs₁ η₁ η₂ η₃ e_ηs₁ e_η₁ e_η₂ e_η₃ := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -348,8 +330,8 @@ instance : MkEvalWhiskerRight BicategoryM where
     have e_η₂ : Q($η₁ ≫ $ηs₁ = $η₂) := e_η₂
     have e_η₃ : Q((whiskerRightIso $α $j).hom ≫ $η₂ = $η₃) := e_η₃
     return q(evalWhiskerRight_cons_of_of $e_ηs₁ $e_η₁ $e_η₂ $e_η₃)
-  mkEvalWhiskerRightConsWhisker f k α η ηs η₁ η₂ ηs₁ ηs₂ η₃ η₄ η₅
-      e_η₁ e_η₂ e_ηs₁ e_ηs₂ e_η₃ e_η₄ e_η₅ := do
+  mkEvalWhiskerRightConsWhisker
+      f k α η ηs η₁ η₂ ηs₁ ηs₂ η₃ η₄ η₅ e_η₁ e_η₂ e_ηs₁ e_ηs₂ e_η₃ e_η₄ e_η₅ := do
     let ctx ← read
     let _bicat := ctx.instBicategory
     let g ← α.srcM
@@ -424,22 +406,14 @@ instance : MkEvalWhiskerRight BicategoryM where
     return q(evalWhiskerRight_id $e_η₁ $e_η₂)
 
 instance : MkEvalHorizontalComp BicategoryM where
-  mkEvalHorizontalCompAuxOf _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompAuxCons _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompAux'Whisker _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompAux'OfWhisker _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompNilNil _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompNilCons _ _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompConsNil _ _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
-  mkEvalHorizontalCompConsCons _ _ _ _ _ _ _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
+  mkEvalHorizontalCompAuxOf _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompAuxCons _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompAux'Whisker _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompAux'OfWhisker _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompNilNil _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompNilCons _ _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompConsNil _ _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
+  mkEvalHorizontalCompConsCons _ _ _ _ _ _ _ _ _ _ _ _ _ _ := do throwError "not implemented"
 
 instance : MkEval BicategoryM where
   mkEvalComp η θ η' θ' ι e_η e_θ e_ηθ := do
@@ -496,8 +470,7 @@ instance : MkEval BicategoryM where
     have e_η : Q($η = $η') := e_η
     have e_θ : Q($η' ▷ $h = $θ) := e_θ
     return q(eval_whiskerRight $e_η $e_θ)
-  mkEvalHorizontalComp _ _ _ _ _ _ _ _ := do
-    throwError "not implemented"
+  mkEvalHorizontalComp _ _ _ _ _ _ _ _ := do throwError "not implemented"
   mkEvalOf η := do
     let ctx ← read
     let _bicat := ctx.instBicategory
@@ -536,14 +509,10 @@ instance : MkEval BicategoryM where
     return q(eval_bicategoricalComp $e_η $e_θ $e_αθ $e_ηαθ)
 
 instance : MonadNormalExpr BicategoryM where
-  whiskerRightM η h := do
-    return .whisker (← MonadMor₂.whiskerRightM η.e (.of h)) η h
-  hConsM _ _ := do
-    throwError "not implemented"
-  whiskerLeftM f η := do
-    return .whisker (← MonadMor₂.whiskerLeftM (.of f) η.e) f η
-  nilM α := do
-    return .nil (← MonadMor₂.homM α) α
+  whiskerRightM η h := do return .whisker (← MonadMor₂.whiskerRightM η.e (.of h)) η h
+  hConsM _ _ := do throwError "not implemented"
+  whiskerLeftM f η := do return .whisker (← MonadMor₂.whiskerLeftM (.of f) η.e) f η
+  nilM α := do return .nil (← MonadMor₂.homM α) α
   consM α η ηs := do
     return .cons (← MonadMor₂.comp₂M (← MonadMor₂.homM α) (← MonadMor₂.comp₂M η.e ηs.e)) α η ηs
 

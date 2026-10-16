@@ -45,8 +45,10 @@ variable {p : M →ₗ[R] N →ₗ[R] R} {s t : Set M} {y : N}
 local notation3 "R≥0" => Nonneg R
 
 variable (p) in
-/-- The dual cone of a set `s` with respect to a bilinear pairing `p` is the cone consisting of all
-points `y` such that for all points `x ∈ s` we have `0 ≤ p x y`. -/
+/--
+The dual cone of a set `s` with respect to a bilinear pairing `p` is the cone consisting of all
+points `y` such that for all points `x ∈ s` we have `0 ≤ p x y`.
+-/
 def dual (s : Set M) : PointedCone R N where
   carrier := {y | ∀ ⦃x⦄, x ∈ s → 0 ≤ p x y}
   zero_mem' := by simp
@@ -66,8 +68,10 @@ alias dual_le_dual := dual_anti
 
 lemma dual_antitone : Antitone (dual p) := fun _ _ h => dual_anti h
 
-/-- The inner dual cone of a singleton is given by the preimage of the positive cone under the
-linear map `p x`. -/
+/--
+The inner dual cone of a singleton is given by the preimage of the positive cone under the
+linear map `p x`.
+-/
 lemma dual_singleton (x : M) : dual p {x} = (positive R R).comap (p x) := by ext; simp
 
 lemma dual_union (s t : Set M) : dual p (s ∪ t) = dual p s ⊓ dual p t := by aesop
@@ -78,26 +82,29 @@ lemma dual_insert (x : M) (s : Set M) : dual p (insert x s) = dual p {x} ⊓ dua
 lemma dual_iUnion {ι : Sort*} (f : ι → Set M) : dual p (⋃ i, f i) = ⨅ i, dual p (f i) := by
   ext; simp [forall_comm (α := M)]
 
-lemma dual_sUnion (S : Set (Set M)) : dual p (⋃₀ S) = sInf (dual p '' S) := by
+lemma dual_sUnion (S : Set (Set M)) : dual p (⋃₀S) = sInf (dual p '' S) := by
   ext; simp [forall_comm (α := M)]
 
 /-- The dual cone of `s` equals the intersection of dual cones of the points in `s`. -/
-lemma dual_eq_iInter_dual_singleton (s : Set M) :
-    dual p s = ⋂ i : s, (dual p {i.val} : Set N) := by ext; simp
+lemma dual_eq_iInter_dual_singleton (s : Set M) : dual p s = ⋂ i : s, (dual p {i.val} : Set N) := by
+  ext; simp
 
 /-- Any set is a subset of its double dual cone. -/
 lemma subset_dual_dual : s ⊆ dual p.flip (dual p s) := fun _x hx _y hy ↦ hy hx
 
-@[simp] lemma subset_dual_flip_iff_subset_dual {s : Set M} {t : Set N} :
-    s ⊆ dual p.flip t ↔ t ⊆ dual p s := by
+@[simp]
+lemma subset_dual_flip_iff_subset_dual {s : Set M} {t : Set N}
+    : s ⊆ dual p.flip t ↔ t ⊆ dual p s := by
   constructor <;> exact (le_trans subset_dual_dual <| dual_antitone ·)
 
 variable (s) in
-@[simp] lemma dual_dual_flip_dual : dual p (dual p.flip (dual p s)) = dual p s :=
+@[simp]
+lemma dual_dual_flip_dual : dual p (dual p.flip (dual p s)) = dual p s :=
   le_antisymm (dual_anti subset_dual_dual) subset_dual_dual
 
-@[simp] lemma dual_flip_dual_dual_flip (s : Set N) :
-    dual p.flip (dual p (dual p.flip s)) = dual p.flip s := dual_dual_flip_dual _
+@[simp]
+lemma dual_flip_dual_dual_flip (s : Set N) : dual p.flip (dual p (dual p.flip s)) = dual p.flip s :=
+  dual_dual_flip_dual _
 
 @[simp]
 lemma dual_hull (s : Set M) : dual p (hull R s) = dual p s := by
@@ -108,26 +115,33 @@ lemma dual_hull (s : Set M) : dual p (hull R s) = dual p s := by
   | add y z _hy _hz hy hz => rw [map_add, add_apply]; exact add_nonneg hy hz
   | smul t y _hy hy => rw [map_smul_of_tower, Nonneg.mk_smul, smul_apply]; exact mul_nonneg t.2 hy
 
-@[simp] lemma dual_sup (C D : PointedCone R M) : dual p (C ⊔ D : PointedCone R M) = dual p (C ∪ D)
-  := by simp [← dual_hull]
+@[simp]
+lemma dual_sup (C D : PointedCone R M) : dual p (C ⊔ D : PointedCone R M) = dual p (C ∪ D) := by
+  simp [← dual_hull]
 
 variable {M' : Type*} [AddCommMonoid M'] [Module R M']
 
-@[simp] lemma dual_image (s : Set M') (q : M' →ₗ[R] M) : dual p (q '' s) = dual (p.comp q) s := by
-  ext; simp
+@[simp]
+lemma dual_image (s : Set M') (q : M' →ₗ[R] M) : dual p (q '' s) = dual (p.comp q) s := by ext; simp
 
-/-- Duality with respect to a general bilinear map can be expressed as duality using the
-  identity pairing. -/
+/--
+Duality with respect to a general bilinear map can be expressed as duality using the
+identity pairing.
+-/
 lemma dual_eq_dual_id_image (s : Set M) : dual p s = dual .id (p '' s) := by simp
 
-/-- Duality with respect to a general bilinear map can be expressed as duality using the
-  identity pairing. -/
+/--
+Duality with respect to a general bilinear map can be expressed as duality using the
+identity pairing.
+-/
 lemma dual_eq_dual_id_map (C : PointedCone R M) : dual p C = dual .id (map p C) := by simp
 
-/-- Duality with respect to a general bilinear map can be expressed as duality using the
-  standard pairing `Dual.eval`. -/
-lemma dual_eq_comap_dual_eval (s : Set M) :
-    dual p s = comap p.flip (dual (Module.Dual.eval R M) s) := by
+/--
+Duality with respect to a general bilinear map can be expressed as duality using the
+standard pairing `Dual.eval`.
+-/
+lemma dual_eq_comap_dual_eval (s : Set M)
+    : dual p s = comap p.flip (dual (Module.Dual.eval R M) s) := by
   ext; simp
 
 end CommSemiring
@@ -147,7 +161,7 @@ lemma dual_univ (hp : Injective p.flip) : dual p univ = 0 := by
 variable {N : Type*} [AddCommGroup N] [Module R N]
 variable {p : M →ₗ[R] N →ₗ[R] R}
 
-@[simp] lemma dual_neg {s : Set M} : dual p (-s) = -dual p s := by ext; simp
+@[simp] lemma dual_neg {s : Set M} : dual p (-s) = - dual p s := by ext; simp
 
 end CommRing
 

@@ -32,11 +32,12 @@ namespace InjectiveResolution
 
 section
 
-variable [HasZeroObject C] [Preadditive C] {X : C}
-  (R : InjectiveResolution X)
+variable [HasZeroObject C] [Preadditive C] {X : C} (R : InjectiveResolution X)
 
-/-- If `R : InjectiveResolution X`, this is the cochain complex indexed by `ℤ`
-obtained by extending by zero the cochain complex `R.cocomplex` indexed by `ℕ`. -/
+/--
+If `R : InjectiveResolution X`, this is the cochain complex indexed by `ℤ`
+obtained by extending by zero the cochain complex `R.cocomplex` indexed by `ℕ`.
+-/
 noncomputable def cochainComplex : CochainComplex C ℤ :=
   R.cocomplex.extend ComplexShape.embeddingUpNat
 
@@ -44,16 +45,19 @@ instance : R.cochainComplex.IsStrictlyGE 0 := by
   dsimp [cochainComplex]
   infer_instance
 
-/-- If `R : InjectiveResolution X`, then `R.cochainComplex.X n` (with `n : ℕ`)
-is isomorphic to `R.cocomplex.X k` (with `k : ℕ`) when `k = n`. -/
-noncomputable def cochainComplexXIso (n : ℤ) (k : ℕ) (h : k = n) :
-    R.cochainComplex.X n ≅ R.cocomplex.X k :=
+/--
+If `R : InjectiveResolution X`, then `R.cochainComplex.X n` (with `n : ℕ`)
+is isomorphic to `R.cocomplex.X k` (with `k : ℕ`) when `k = n`.
+-/
+noncomputable def cochainComplexXIso (n : ℤ) (k : ℕ) (h : k = n)
+    : R.cochainComplex.X n ≅ R.cocomplex.X k :=
   HomologicalComplex.extendXIso _ _ h
 
 @[reassoc]
-lemma cochainComplex_d (n₁ n₂ : ℤ) (k₁ k₂ : ℕ) (h₁ : k₁ = n₁) (h₂ : k₂ = n₂) :
-    R.cochainComplex.d n₁ n₂ = (cochainComplexXIso _ _ _ h₁).hom ≫
-      R.cocomplex.d k₁ k₂ ≫ (cochainComplexXIso _ _ _ h₂).inv :=
+lemma cochainComplex_d (n₁ n₂ : ℤ) (k₁ k₂ : ℕ) (h₁ : k₁ = n₁) (h₂ : k₂ = n₂)
+    : R.cochainComplex.d n₁ n₂
+      = (cochainComplexXIso _ _ _ h₁).hom ≫ R.cocomplex.d k₁ k₂
+        ≫ (cochainComplexXIso _ _ _ h₂).inv :=
   HomologicalComplex.extend_d_eq _ _ h₁ h₂
 
 instance : R.cochainComplex.IsStrictlyGE 0 := by
@@ -66,18 +70,21 @@ instance (n : ℤ) : Injective (R.cochainComplex.X n) := by
     exact Injective.of_iso (R.cochainComplexXIso _ _ rfl).symm inferInstance
   · exact IsZero.injective (CochainComplex.isZero_of_isStrictlyGE _ 0 _ (by lia))
 
-/-- The quasi-isomorphism `(CochainComplex.singleFunctor C 0).obj X ⟶ R.cochainComplex`
-in `CochainComplex C ℤ` when `R` is an injective resolution of `X`. -/
+/--
+The quasi-isomorphism `(CochainComplex.singleFunctor C 0).obj X ⟶ R.cochainComplex`
+in `CochainComplex C ℤ` when `R` is an injective resolution of `X`.
+-/
 noncomputable def ι' : (CochainComplex.singleFunctor C 0).obj X ⟶ R.cochainComplex :=
-  (HomologicalComplex.extendSingleIso _ _ _ _ (by simp)).inv ≫
-    (ComplexShape.embeddingUpNat.extendFunctor C).map R.ι
+  (HomologicalComplex.extendSingleIso _ _ _ _ (by simp)).inv
+    ≫ (ComplexShape.embeddingUpNat.extendFunctor C).map R.ι
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
-lemma ι'_f_zero :
-    R.ι'.f 0 = (HomologicalComplex.singleObjXSelf (.up ℤ) 0 X).hom ≫ R.ι.f 0 ≫
-      (R.cochainComplexXIso _ _ (by simp)).inv := by
+lemma ι'_f_zero
+    : R.ι'.f 0
+      = (HomologicalComplex.singleObjXSelf (.up ℤ) 0 X).hom ≫ R.ι.f 0
+        ≫ (R.cochainComplexXIso _ _ (by simp)).inv := by
   dsimp [ι']
   rw [HomologicalComplex.extendMap_f _ _ (i := 0) (by simp),
     HomologicalComplex.extendSingleIso_inv_f]
@@ -97,31 +104,30 @@ instance : R.cochainComplex.IsLE 0 := by
 
 namespace Hom
 
-variable {R} {X' : C} {R' : InjectiveResolution X'} {f : X ⟶ X'}
-  (φ : Hom R R' f)
+variable {R} {X' : C} {R' : InjectiveResolution X'} {f : X ⟶ X'} (φ : Hom R R' f)
 
-/-- The morphism on cochain complexes indexed by `ℤ` that is induced by
-an (heterogeneous) morphism of injective resolutions. -/
+/--
+The morphism on cochain complexes indexed by `ℤ` that is induced by
+an (heterogeneous) morphism of injective resolutions.
+-/
 noncomputable def hom' : R.cochainComplex ⟶ R'.cochainComplex :=
   HomologicalComplex.extendMap φ.hom _
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
-lemma hom'_f (n : ℤ) (m : ℕ) (h : m = n) :
-    φ.hom'.f n =
-    (R.cochainComplexXIso n m h).hom ≫ φ.hom.f m ≫ (R'.cochainComplexXIso n m h).inv := by
+lemma hom'_f (n : ℤ) (m : ℕ) (h : m = n)
+    : φ.hom'.f n
+      = (R.cochainComplexXIso n m h).hom ≫ φ.hom.f m ≫ (R'.cochainComplexXIso n m h).inv := by
   simp [hom',
     HomologicalComplex.extendMap_f _ ComplexShape.embeddingUpNat (i := m) (i' := n) (by simpa),
     cochainComplexXIso]
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
-lemma ι'_comp_hom' :
-    R.ι' ≫ φ.hom' = (CochainComplex.singleFunctor C 0).map f ≫ R'.ι' :=
+lemma ι'_comp_hom' : R.ι' ≫ φ.hom' = (CochainComplex.singleFunctor C 0).map f ≫ R'.ι' :=
   HomologicalComplex.from_single_hom_ext (by
-    simp [hom'_f _ 0 0 rfl, ι'_f_zero, CochainComplex.singleFunctor,
-      HomologicalComplex.single, HomologicalComplex.singleObjXSelf,
-      HomologicalComplex.singleObjXIsoOfEq])
+    simp [hom'_f _ 0 0 rfl, ι'_f_zero, CochainComplex.singleFunctor, HomologicalComplex.single,
+      HomologicalComplex.singleObjXSelf, HomologicalComplex.singleObjXIsoOfEq])
 
 end Hom
 

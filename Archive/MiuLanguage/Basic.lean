@@ -70,14 +70,12 @@ namespace Miu
 ### Declarations and instance derivations for `MiuAtom` and `Miustr`
 -/
 
-
-/-- The atoms of MIU can be represented as an enumerated type in Lean.
--/
+/-- The atoms of MIU can be represented as an enumerated type in Lean. -/
 inductive MiuAtom : Type
   | M : MiuAtom
   | I : MiuAtom
   | U : MiuAtom
-  deriving DecidableEq
+deriving DecidableEq
 
 /-!
 The annotation `deriving DecidableEq` above indicates that Lean will automatically derive that
@@ -85,45 +83,37 @@ The annotation `deriving DecidableEq` above indicates that Lean will automatical
 lead to the automatic derivation of decidability.
 -/
 
-
 open MiuAtom
 
 /--
 We show that the type `MiuAtom` is inhabited, giving `M` (for no particular reason) as the default
 element.
 -/
-instance miuAtomInhabited : Inhabited MiuAtom :=
-  Inhabited.mk M
+instance miuAtomInhabited : Inhabited MiuAtom := Inhabited.mk M
 
-/-- `MiuAtom.repr` is the 'natural' function from `MiuAtom` to `String`.
--/
+/-- `MiuAtom.repr` is the 'natural' function from `MiuAtom` to `String`. -/
 def MiuAtom.repr : MiuAtom → String
   | M => "M"
   | I => "I"
   | U => "U"
 
-/-- Using `MiuAtom.repr`, we prove that `MiuAtom` is an instance of `Repr`.
--/
-instance : Repr MiuAtom :=
-  ⟨fun u _ => u.repr⟩
+/-- Using `MiuAtom.repr`, we prove that `MiuAtom` is an instance of `Repr`. -/
+instance : Repr MiuAtom := ⟨fun u _ => u.repr⟩
 
-/-- For simplicity, an `Miustr` is just a list of elements of type `MiuAtom`.
--/
+/-- For simplicity, an `Miustr` is just a list of elements of type `MiuAtom`. -/
 abbrev Miustr := List MiuAtom
 
-/-- For display purposes, an `Miustr` can be represented as a `String`.
--/
+/-- For display purposes, an `Miustr` can be represented as a `String`. -/
 def Miustr.mrepr : Miustr → String
   | [] => ""
   | c :: cs => c.repr ++ Miustr.mrepr cs
 
-instance miurepr : Repr Miustr :=
-  ⟨fun u _ => u.mrepr⟩
+instance miurepr : Repr Miustr := ⟨fun u _ => u.mrepr⟩
 
-/-- In the other direction, we set up a coercion from `String` to `Miustr`.
--/
+/-- In the other direction, we set up a coercion from `String` to `Miustr`. -/
 def lcharToMiustr : List Char → Miustr
-  | [] => []
+  | [] =>
+    []
   | c :: cs =>
     let ms := lcharToMiustr cs
     match c with
@@ -132,13 +122,11 @@ def lcharToMiustr : List Char → Miustr
     | 'U' => U :: ms
     | _ => []
 
-instance stringCoeMiustr : Coe String Miustr :=
-  ⟨fun st => lcharToMiustr st.toList⟩
+instance stringCoeMiustr : Coe String Miustr := ⟨fun st => lcharToMiustr st.toList⟩
 
 /-!
 ### Derivability
 -/
-
 
 /--
 The inductive type `Derivable` has five constructors. The nonrecursive constructor `mk` corresponds
@@ -155,7 +143,6 @@ inductive Derivable : Miustr → Prop
 /-!
 ### Rule usage examples
 -/
-
 
 example (h : Derivable "UMI") : Derivable "UMIU" := by
   change Derivable ([U, M] ++ [I, U])
@@ -176,7 +163,6 @@ example (h : Derivable "MIMIMUUIIM") : Derivable "MIMIMIIM" := by
 /-!
 ### Derivability examples
 -/
-
 
 private theorem MIU_der : Derivable "MIU" := by
   change Derivable ([M] ++ [I, U])

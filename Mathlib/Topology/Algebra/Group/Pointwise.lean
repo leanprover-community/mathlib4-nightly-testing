@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Algebra.Group.ContinuousDiv
 public import Mathlib.Topology.Maps.Proper.Basic
-
 import Mathlib.Topology.Algebra.Group.Subgroup
 
 /-!
@@ -23,7 +22,6 @@ universe u v w x
 
 variable {G : Type w} {H : Type x} {α : Type u} {β : Type v}
 
-
 /-!
 ### Topological operations on pointwise sums and products
 
@@ -34,8 +32,8 @@ with continuous addition/multiplication. See also `Submonoid.top_closure_mul_sel
 
 section ContinuousConstSMul
 
-variable [TopologicalSpace β] [Group α] [MulAction α β] [ContinuousConstSMul α β] {s : Set α}
-  {t : Set β}
+variable
+  [TopologicalSpace β] [Group α] [MulAction α β] [ContinuousConstSMul α β] {s : Set α} {t : Set β}
 
 variable [TopologicalSpace α]
 
@@ -47,28 +45,33 @@ end ContinuousConstSMul
 
 section ContinuousSMul
 
-variable [TopologicalSpace α] [TopologicalSpace β] [Group α] [MulAction α β] [ContinuousInv α]
-  [ContinuousSMul α β] {s : Set α} {t : Set β}
+variable
+  [TopologicalSpace α] [TopologicalSpace β] [Group α] [MulAction α β] [ContinuousInv α]
+  [ContinuousSMul α β]
+  {s : Set α} {t : Set β}
 
 open Prod in
-/-- If `G` acts on `X` continuously, the set `s • t` is closed when `s : Set G` is *compact* and
+/--
+If `G` acts on `X` continuously, the set `s • t` is closed when `s : Set G` is *compact* and
 `t : Set X` is *closed*.
 
 See also `IsClosed.smul_right_of_isCompact` for a version with the assumptions on `s` and `t`
-reversed, assuming that the action is *proper*. -/
+reversed, assuming that the action is *proper*.
+-/
 @[to_additive
-/-- If `G` acts on `X` continuously, the set `s +ᵥ t` is closed when `s : Set G` is *compact* and
+  /-- If `G` acts on `X` continuously, the set `s +ᵥ t` is closed when `s : Set G` is *compact* and
 `t : Set X` is *closed*.
 
 See also `IsClosed.vadd_right_of_isCompact` for a version with the assumptions on `s` and `t`
 reversed, assuming that the action is *proper*. -/]
-theorem IsClosed.smul_left_of_isCompact (ht : IsClosed t) (hs : IsCompact s) :
-    IsClosed (s • t) := by
-  let Φ : s × β ≃ₜ s × β :=
-  { toFun := fun gx ↦ (gx.1, (gx.1 : α) • gx.2)
+theorem IsClosed.smul_left_of_isCompact (ht : IsClosed t) (hs : IsCompact s)
+    : IsClosed (s • t) := by
+  let Φ : s × β ≃ₜ s × β := {
+    toFun := fun gx ↦ (gx.1, (gx.1 : α) • gx.2)
     invFun := fun gx ↦ (gx.1, (gx.1 : α)⁻¹ • gx.2)
     left_inv := fun _ ↦ by simp
-    right_inv := fun _ ↦ by simp }
+    right_inv := fun _ ↦ by simp
+  }
   have : s • t = (snd ∘ Φ) '' snd ⁻¹' t :=
     subset_antisymm
       (smul_subset_iff.mpr fun g hg x hx ↦ mem_image_of_mem (snd ∘ Φ) (x := ⟨⟨g, hg⟩, x⟩) hx)
@@ -79,9 +82,9 @@ theorem IsClosed.smul_left_of_isCompact (ht : IsClosed t) (hs : IsCompact s) :
     (ht.preimage continuous_snd)
 
 @[to_additive]
-theorem MulAction.isClosedMap_quotient [CompactSpace α] :
-    letI := orbitRel α β
-    IsClosedMap (Quotient.mk' : β → Quotient (orbitRel α β)) := by
+theorem MulAction.isClosedMap_quotient [CompactSpace α]
+    : letI := orbitRel α β
+      IsClosedMap (Quotient.mk' : β → Quotient (orbitRel α β)) := by
   intro t ht
   rw [← isQuotientMap_quotient_mk'.isClosed_preimage,
     MulAction.quotient_preimage_image_eq_union_mul]
@@ -95,17 +98,13 @@ section ContinuousConstSMul
 
 variable [TopologicalSpace α] [Group α] [ContinuousConstSMul α α] {s t : Set α}
 
-@[to_additive]
-theorem IsOpen.mul_left : IsOpen t → IsOpen (s * t) :=
-  IsOpen.smul_left
+@[to_additive] theorem IsOpen.mul_left : IsOpen t → IsOpen (s * t) := IsOpen.smul_left
 
 @[to_additive]
-theorem subset_interior_mul_right : s * interior t ⊆ interior (s * t) :=
-  subset_interior_smul_right
+theorem subset_interior_mul_right : s * interior t ⊆ interior (s * t) := subset_interior_smul_right
 
 @[to_additive]
-theorem subset_interior_mul : interior s * interior t ⊆ interior (s * t) :=
-  subset_interior_smul
+theorem subset_interior_mul : interior s * interior t ⊆ interior (s * t) := subset_interior_smul
 
 @[to_additive]
 theorem singleton_mul_mem_nhds (a : α) {b : α} (h : s ∈ 𝓝 b) : {a} * s ∈ 𝓝 (a * b) := by
@@ -150,9 +149,9 @@ section SeparatelyContinuousMul
 variable [TopologicalSpace G] [Group G] [SeparatelyContinuousMul G]
 
 @[to_additive]
-theorem closure_subset_mul_left_of_mem_nhds_one_of_inv {s : Set G} (s' : Set G)
-    (hs₀ : s ∈ 𝓝 1) (h_symm : ∀ x ∈ s, x⁻¹ ∈ s) :
-    closure s' ⊆ s * s' := by
+theorem closure_subset_mul_left_of_mem_nhds_one_of_inv
+    {s : Set G} (s' : Set G) (hs₀ : s ∈ 𝓝 1) (h_symm : ∀ x ∈ s, x⁻¹ ∈ s)
+    : closure s' ⊆ s * s' := by
   intro y hy
   obtain ⟨_, ⟨b, hb, rfl⟩, hc⟩ :=
     mem_closure_iff_nhds.mp hy ((· * y) '' s)
@@ -160,9 +159,9 @@ theorem closure_subset_mul_left_of_mem_nhds_one_of_inv {s : Set G} (s' : Set G)
   simpa using Set.mul_mem_mul (h_symm b hb) hc
 
 @[to_additive]
-theorem closure_subset_mul_right_of_mem_nhds_one_of_inv (s : Set G) {s' : Set G}
-    (hs'₀ : s' ∈ 𝓝 1) (h_symm : ∀ x ∈ s', x⁻¹ ∈ s') :
-    closure s ⊆ s * s' := by
+theorem closure_subset_mul_right_of_mem_nhds_one_of_inv
+    (s : Set G) {s' : Set G} (hs'₀ : s' ∈ 𝓝 1) (h_symm : ∀ x ∈ s', x⁻¹ ∈ s')
+    : closure s ⊆ s * s' := by
   intro y hy
   obtain ⟨_, ⟨b, hb, rfl⟩, hc⟩ :=
     mem_closure_iff_nhds.mp hy ((y * ·) '' s')
@@ -170,15 +169,15 @@ theorem closure_subset_mul_right_of_mem_nhds_one_of_inv (s : Set G) {s' : Set G}
   simpa using Set.mul_mem_mul hc (h_symm b hb)
 
 @[to_additive]
-theorem closure_subset_of_mem_nhds_one_of_inv_mul_left_subset {s s' t : Set G}
-    (hs₀ : s ∈ 𝓝 1) (h_symm : ∀ x ∈ s, x⁻¹ ∈ s) (hs : s * s' ⊆ t) :
-    closure s' ⊆ t :=
+theorem closure_subset_of_mem_nhds_one_of_inv_mul_left_subset
+    {s s' t : Set G} (hs₀ : s ∈ 𝓝 1) (h_symm : ∀ x ∈ s, x⁻¹ ∈ s) (hs : s * s' ⊆ t)
+    : closure s' ⊆ t :=
   closure_subset_mul_left_of_mem_nhds_one_of_inv s' hs₀ h_symm |>.trans hs
 
 @[to_additive]
-theorem closure_subset_of_mem_nhds_one_of_inv_mul_right_subset {s s' t : Set G}
-    (hs'₀ : s' ∈ 𝓝 1) (h_symm : ∀ x ∈ s', x⁻¹ ∈ s') (hs : s * s' ⊆ t) :
-    closure s ⊆ t :=
+theorem closure_subset_of_mem_nhds_one_of_inv_mul_right_subset
+    {s s' t : Set G} (hs'₀ : s' ∈ 𝓝 1) (h_symm : ∀ x ∈ s', x⁻¹ ∈ s') (hs : s * s' ⊆ t)
+    : closure s ⊆ t :=
   closure_subset_mul_right_of_mem_nhds_one_of_inv s hs'₀ h_symm |>.trans hs
 
 end SeparatelyContinuousMul
@@ -235,43 +234,44 @@ theorem IsClosed.mul_left_of_isCompact (ht : IsClosed t) (hs : IsCompact s) : Is
   ht.smul_left_of_isCompact hs
 
 @[to_additive]
-theorem IsClosed.mul_right_of_isCompact (ht : IsClosed t) (hs : IsCompact s) :
-    IsClosed (t * s) := by
+theorem IsClosed.mul_right_of_isCompact (ht : IsClosed t) (hs : IsCompact s)
+    : IsClosed (t * s) := by
   rw [← image_op_smul]
   exact IsClosed.smul_left_of_isCompact ht (hs.image continuous_op)
 
 @[to_additive]
-lemma subset_mul_closure_one {G} [MulOneClass G] [TopologicalSpace G] (s : Set G) :
-    s ⊆ s * (closure {1} : Set G) := by
+lemma subset_mul_closure_one {G} [MulOneClass G] [TopologicalSpace G] (s : Set G)
+    : s ⊆ s * (closure {1} : Set G) := by
   have : s ⊆ s * ({1} : Set G) := by simp
   exact this.trans (smul_subset_smul_left subset_closure)
 
 @[to_additive]
-lemma IsCompact.mul_closure_one_eq_closure {K : Set G} (hK : IsCompact K) :
-    K * (closure {1} : Set G) = closure K := by
+lemma IsCompact.mul_closure_one_eq_closure {K : Set G} (hK : IsCompact K)
+    : K * (closure {1} : Set G) = closure K := by
   apply Subset.antisymm ?_ ?_
   · calc
-    K * (closure {1} : Set G) ⊆ closure K * (closure {1} : Set G) :=
-      smul_subset_smul_right subset_closure
-    _ ⊆ closure (K * ({1} : Set G)) := smul_set_closure_subset _ _
-    _ = closure K := by simp
+      K * (closure {1} : Set G)
+        ⊆ closure K * (closure {1} : Set G) := smul_subset_smul_right subset_closure
+      _ ⊆ closure (K * ({1} : Set G)) := smul_set_closure_subset _ _
+      _ = closure K := by simp
   · have : IsClosed (K * (closure {1} : Set G)) :=
       IsClosed.smul_left_of_isCompact isClosed_closure hK
     rw [IsClosed.closure_subset_iff this]
     exact subset_mul_closure_one K
 
 @[to_additive]
-lemma IsClosed.mul_closure_one_eq {F : Set G} (hF : IsClosed F) :
-    F * (closure {1} : Set G) = F := by
+lemma IsClosed.mul_closure_one_eq {F : Set G} (hF : IsClosed F)
+    : F * (closure {1} : Set G) = F := by
   refine Subset.antisymm ?_ (subset_mul_closure_one F)
   calc
-  F * (closure {1} : Set G) = closure F * closure ({1} : Set G) := by rw [hF.closure_eq]
-  _ ⊆ closure (F * ({1} : Set G)) := smul_set_closure_subset _ _
-  _ = F := by simp
+    F * (closure {1} : Set G)
+      = closure F * closure ({1} : Set G) := by rw [hF.closure_eq]
+    _ ⊆ closure (F * ({1} : Set G)) := smul_set_closure_subset _ _
+    _ = F := by simp
 
 @[to_additive]
-lemma compl_mul_closure_one_eq {t : Set G} (ht : t * (closure {1} : Set G) = t) :
-    tᶜ * (closure {1} : Set G) = tᶜ := by
+lemma compl_mul_closure_one_eq {t : Set G} (ht : t * (closure {1} : Set G) = t)
+    : tᶜ * (closure {1} : Set G) = tᶜ := by
   refine Subset.antisymm ?_ (subset_mul_closure_one tᶜ)
   rintro - ⟨x, hx, g, hg, rfl⟩
   by_contra H
@@ -283,42 +283,48 @@ lemma compl_mul_closure_one_eq {t : Set G} (ht : t * (closure {1} : Set G) = t) 
   exact hx this
 
 @[to_additive]
-lemma compl_mul_closure_one_eq_iff {t : Set G} :
-    tᶜ * (closure {1} : Set G) = tᶜ ↔ t * (closure {1} : Set G) = t :=
+lemma compl_mul_closure_one_eq_iff {t : Set G}
+    : tᶜ * (closure {1} : Set G) = tᶜ ↔ t * (closure {1} : Set G) = t :=
   ⟨fun h ↦ by simpa using compl_mul_closure_one_eq h, fun h ↦ compl_mul_closure_one_eq h⟩
 
 @[to_additive]
-lemma IsOpen.mul_closure_one_eq {U : Set G} (hU : IsOpen U) :
-    U * (closure {1} : Set G) = U :=
+lemma IsOpen.mul_closure_one_eq {U : Set G} (hU : IsOpen U) : U * (closure {1} : Set G) = U :=
   compl_mul_closure_one_eq_iff.1 (hU.isClosed_compl.mul_closure_one_eq)
 
 @[to_additive]
-theorem closure_subset_mul_right_of_mem_nhds_one {V : Set G} (U : Set G) (hV : V ∈ 𝓝 1) :
-    closure U ⊆ U * V := by
+theorem closure_subset_mul_right_of_mem_nhds_one {V : Set G} (U : Set G) (hV : V ∈ 𝓝 1)
+    : closure U ⊆ U * V := by
   apply closure_subset_mul_right_of_mem_nhds_one_of_inv U
-    (Filter.inter_mem hV (inv_mem_nhds_one _ hV))
-    (fun x ⟨hx, hx'⟩ ↦ ⟨Set.mem_inv.mp hx', Set.inv_mem_inv.mpr hx⟩) |>.trans
-  gcongr; simp
+      (Filter.inter_mem hV (inv_mem_nhds_one _ hV))
+      (fun x ⟨hx, hx'⟩ ↦ ⟨Set.mem_inv.mp hx', Set.inv_mem_inv.mpr hx⟩)
+    |>.trans
+  gcongr
+  simp
 
 @[to_additive]
-theorem closure_subset_mul_left_of_mem_nhds_one {U : Set G} (V : Set G) (hU : U ∈ 𝓝 1) :
-    closure V ⊆ U * V := by
+theorem closure_subset_mul_left_of_mem_nhds_one {U : Set G} (V : Set G) (hU : U ∈ 𝓝 1)
+    : closure V ⊆ U * V := by
   apply closure_subset_mul_left_of_mem_nhds_one_of_inv V
-    (Filter.inter_mem hU (inv_mem_nhds_one _ hU))
-    (fun x ⟨hx, hx'⟩ ↦ ⟨Set.mem_inv.mp hx', Set.inv_mem_inv.mpr hx⟩) |>.trans
-  gcongr; simp
+      (Filter.inter_mem hU (inv_mem_nhds_one _ hU))
+      (fun x ⟨hx, hx'⟩ ↦ ⟨Set.mem_inv.mp hx', Set.inv_mem_inv.mpr hx⟩)
+    |>.trans
+  gcongr
+  simp
 
 @[to_additive]
-theorem closure_subset_mul_self_of_mem_nhds_one {U : Set G} (hU : U ∈ 𝓝 1) :
-    closure U ⊆ U * U := closure_subset_mul_left_of_mem_nhds_one U hU
+theorem closure_subset_mul_self_of_mem_nhds_one {U : Set G} (hU : U ∈ 𝓝 1) : closure U ⊆ U * U :=
+  closure_subset_mul_left_of_mem_nhds_one U hU
 
-/-- In a topological group, the closure of a set `s` is the intersection of `s * U` where `U`
-ranges over any basis of `𝓝 1`. Note that `s * U` does _not_ constitute a basis of `𝓝ˢ s` -/
+/--
+In a topological group, the closure of a set `s` is the intersection of `s * U` where `U`
+ranges over any basis of `𝓝 1`. Note that `s * U` does _not_ constitute a basis of `𝓝ˢ s`
+-/
 @[to_additive /-- In a topological additive group, the closure of a set `s` is the intersection of
 `s + U` where `U` ranges over any basis of `𝓝 0`. Note that `s + U` does _not_ constitute a basis
 of `𝓝ˢ s` -/]
-theorem Filter.HasBasis.iInter_mul_right_eq_closure {ι : Type*} {s : Set G} {p : ι → Prop}
-    {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) : ⋂ (i) (_ : p i), s * U i = closure s := by
+theorem Filter.HasBasis.iInter_mul_right_eq_closure
+    {ι : Type*} {s : Set G} {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), s * U i = closure s := by
   ext x
   simp only [Set.mem_iInter, mem_closure_iff_nhds_basis (hU.nhds_one_inv.nhds_of_one' x)]
   refine forall₂_congr fun i hi ↦ ⟨?_, ?_⟩
@@ -327,22 +333,27 @@ theorem Filter.HasBasis.iInter_mul_right_eq_closure {ι : Type*} {s : Set G} {p 
   · rintro ⟨y, hy, u, hu, rfl⟩
     exact ⟨_, hy, u⁻¹, Set.mem_inv.1 hu, by simp⟩
 
-/-- In a topological group, the closure of a set `s` is the intersection of `U * s` where `U`
-ranges over any basis of `𝓝 1`. Note that `U * s` does _not_ constitute a basis of `𝓝ˢ s` -/
+/--
+In a topological group, the closure of a set `s` is the intersection of `U * s` where `U`
+ranges over any basis of `𝓝 1`. Note that `U * s` does _not_ constitute a basis of `𝓝ˢ s`
+-/
 @[to_additive /-- In a topological additive group, the closure of a set `s` is the intersection of
 `U + s` where `U` ranges over any basis of `𝓝 0`. Note that `U + s` does _not_ constitute a basis
 of `𝓝ˢ s` -/]
-theorem Filter.HasBasis.iInter_mul_left_eq_closure {ι : Type*} {s : Set G} {p : ι → Prop}
-    {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) : ⋂ (i) (_ : p i), U i * s = closure s := by
+theorem Filter.HasBasis.iInter_mul_left_eq_closure
+    {ι : Type*} {s : Set G} {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), U i * s = closure s := by
   simpa [inv_closure] using congr($(hU.nhds_one_inv.iInter_mul_right_eq_closure (s := s⁻¹))⁻¹)
 
-/-- In a topological group, the closure of a set `s` is the intersection of `closure (s * U)` where
-`U` ranges over any basis of `𝓝 1`. -/
+/--
+In a topological group, the closure of a set `s` is the intersection of `closure (s * U)` where
+`U` ranges over any basis of `𝓝 1`.
+-/
 @[to_additive /-- In a topological additive group, the closure of a set `s` is the intersection of
 `closure (s + U)` where `U` ranges over any basis of `𝓝 0`. -/]
-theorem Filter.HasBasis.iInter_closure_mul_right_eq_closure {ι : Type*} {s : Set G}
-    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) :
-    ⋂ (i) (_ : p i), closure (s * U i) = closure s := by
+theorem Filter.HasBasis.iInter_closure_mul_right_eq_closure
+    {ι : Type*} {s : Set G} {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), closure (s * U i) = closure s := by
   refine Set.Subset.antisymm ?_ ?_
   · rw [← hU.mul_self.iInter_mul_right_eq_closure]
     refine Set.subset_iInter₂ fun j hj ↦ (Set.iInter₂_subset j hj).trans ?_
@@ -351,26 +362,30 @@ theorem Filter.HasBasis.iInter_closure_mul_right_eq_closure {ι : Type*} {s : Se
     have h1 := (mem_of_mem_nhds (hU.mem_of_mem hi))
     exact closure_mono fun a ha ↦ by simpa using Set.mul_mem_mul ha h1
 
-/-- In a topological group, the closure of a set `s` is the intersection of `closure (U * s)` where
-`U` ranges over any basis of `𝓝 1`. -/
+/--
+In a topological group, the closure of a set `s` is the intersection of `closure (U * s)` where
+`U` ranges over any basis of `𝓝 1`.
+-/
 @[to_additive /-- In a topological additive group, the closure of a set `s` is the intersection of
 `closure (U + s)` where `U` ranges over any basis of `𝓝 0`. -/]
-theorem Filter.HasBasis.iInter_closure_mul_left_eq_closure {ι : Type*} {s : Set G}
-    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) :
-    ⋂ (i) (_ : p i), closure (U i * s) = closure s := by
+theorem Filter.HasBasis.iInter_closure_mul_left_eq_closure
+    {ι : Type*} {s : Set G} {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), closure (U i * s) = closure s := by
   simpa [inv_closure] using
     congr($(hU.nhds_one_inv.iInter_closure_mul_right_eq_closure (s := s⁻¹))⁻¹)
 
 @[to_additive]
-theorem IsClosed.iInter_closure_mul_right_eq {ι : Type*} {s : Set G} (hs : IsClosed s)
-    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) :
-    ⋂ (i) (_ : p i), closure (s * U i) = s := by
+theorem IsClosed.iInter_closure_mul_right_eq
+    {ι : Type*} {s : Set G} (hs : IsClosed s)
+    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), closure (s * U i) = s := by
   rw [hU.iInter_closure_mul_right_eq_closure, hs.closure_eq]
 
 @[to_additive]
-theorem IsClosed.iInter_closure_mul_left_eq {ι : Type*} {s : Set G} (hs : IsClosed s)
-    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U) :
-    ⋂ (i) (_ : p i), closure (U i * s) = s := by
+theorem IsClosed.iInter_closure_mul_left_eq
+    {ι : Type*} {s : Set G} (hs : IsClosed s)
+    {p : ι → Prop} {U : ι → Set G} (hU : (𝓝 1).HasBasis p U)
+    : ⋂ (i) (_ : p i), closure (U i * s) = s := by
   rw [hU.iInter_closure_mul_left_eq_closure, hs.closure_eq]
 
 end IsTopologicalGroup
@@ -390,7 +405,8 @@ instance (priority := 100) IsTopologicalGroup.regularSpace : RegularSpace G := b
   rw [← image_subset_iff, image_prod] at hUV
   refine ⟨closure U, mem_of_superset hU subset_closure, isClosed_closure, ?_⟩
   calc
-    closure U ⊆ closure U * interior V := subset_mul_left _ (mem_interior_iff_mem_nhds.2 hV)
+    closure U
+      ⊆ closure U * interior V := subset_mul_left _ (mem_interior_iff_mem_nhds.2 hV)
     _ = U * interior V := isOpen_interior.closure_mul U
     _ ⊆ U * V := mul_subset_mul_left interior_subset
     _ ⊆ s := hUV
@@ -405,36 +421,43 @@ theorem group_inseparable_iff {x y : G} : Inseparable x y ↔ x / y ∈ closure 
 
 @[to_additive]
 theorem IsTopologicalGroup.t2Space_iff_one_closed : T2Space G ↔ IsClosed ({1} : Set G) :=
-  ⟨fun _ ↦ isClosed_singleton, fun h ↦
-    have := IsTopologicalGroup.t1Space G h; inferInstance⟩
+  ⟨fun _ ↦ isClosed_singleton, fun h ↦ have := IsTopologicalGroup.t1Space G h; inferInstance⟩
 
 @[to_additive]
-theorem IsTopologicalGroup.t2Space_of_one_sep (H : ∀ x : G, x ≠ 1 → ∃ U ∈ 𝓝 (1 : G), x ∉ U) :
-    T2Space G := by
+theorem IsTopologicalGroup.t2Space_of_one_sep (H : ∀ x : G, x ≠ 1 → ∃ U ∈ 𝓝 (1 : G), x ∉ U)
+    : T2Space G := by
   suffices T1Space G from inferInstance
   refine t1Space_iff_specializes_imp_eq.2 fun x y hspec ↦ by_contra fun hne ↦ ?_
   rcases H (x * y⁻¹) (by rwa [Ne, mul_inv_eq_one]) with ⟨U, hU₁, hU⟩
   exact hU <| mem_of_mem_nhds <| hspec.map (continuous_mul_const y⁻¹) (by rwa [mul_inv_cancel])
 
-/-- Given a neighborhood `U` of the identity, one may find a neighborhood `V` of the identity which
-is closed, symmetric, and satisfies `V * V ⊆ U`. -/
+/--
+Given a neighborhood `U` of the identity, one may find a neighborhood `V` of the identity which
+is closed, symmetric, and satisfies `V * V ⊆ U`.
+-/
 @[to_additive /-- Given a neighborhood `U` of the identity, one may find a neighborhood `V` of the
 identity which is closed, symmetric, and satisfies `V + V ⊆ U`. -/]
-theorem exists_closed_nhds_one_inv_eq_mul_subset {U : Set G} (hU : U ∈ 𝓝 1) :
-    ∃ V ∈ 𝓝 1, IsClosed V ∧ V⁻¹ = V ∧ V * V ⊆ U := by
+theorem exists_closed_nhds_one_inv_eq_mul_subset {U : Set G} (hU : U ∈ 𝓝 1)
+    : ∃ V ∈ 𝓝 1, IsClosed V ∧ V⁻¹ = V ∧ V * V ⊆ U := by
   rcases exists_open_nhds_one_mul_subset hU with ⟨V, V_open, V_mem, hV⟩
   rcases exists_mem_nhds_isClosed_subset (V_open.mem_nhds V_mem) with ⟨W, W_mem, W_closed, hW⟩
-  refine ⟨W ∩ W⁻¹, Filter.inter_mem W_mem (inv_mem_nhds_one G W_mem), W_closed.inter W_closed.inv,
-    by simp [inter_comm], ?_⟩
+  refine ⟨
+    W ∩ W⁻¹,
+    Filter.inter_mem W_mem (inv_mem_nhds_one G W_mem),
+    W_closed.inter W_closed.inv,
+    by simp [inter_comm],
+    ?_
+  ⟩
   calc
-  W ∩ W⁻¹ * (W ∩ W⁻¹)
-    ⊆ W * W := mul_subset_mul inter_subset_left inter_subset_left
-  _ ⊆ V * V := mul_subset_mul hW hW
-  _ ⊆ U := hV
+    W ∩ W⁻¹ * (W ∩ W⁻¹)
+      ⊆ W * W := mul_subset_mul inter_subset_left inter_subset_left
+    _ ⊆ V * V := mul_subset_mul hW hW
+    _ ⊆ U := hV
 
-@[to_additive] lemma IsDiscrete.exists_nhds_eq_one_of_image_mulLeft_inter_nonempty
-    (S : Subgroup G) (hS : IsDiscrete (S : Set G)) :
-    ∃ U ∈ 𝓝 (1 : G), U⁻¹ = U ∧ ∀ g ∈ S, ((g * ·) '' U ∩ U).Nonempty → g = 1 := by
+@[to_additive]
+lemma IsDiscrete.exists_nhds_eq_one_of_image_mulLeft_inter_nonempty
+    (S : Subgroup G) (hS : IsDiscrete (S : Set G))
+    : ∃ U ∈ 𝓝 (1 : G), U⁻¹ = U ∧ ∀ g ∈ S, ((g * ·) '' U ∩ U).Nonempty → g = 1 := by
   obtain ⟨V, hV⟩ := nhds_inter_eq_singleton_of_mem_discrete hS S.one_mem
   obtain ⟨U, hU, -, hUinv, hUV⟩ := exists_closed_nhds_one_inv_eq_mul_subset hV.1
   refine ⟨U, hU, hUinv, fun g hgS ↦ ?_⟩
@@ -443,9 +466,10 @@ theorem exists_closed_nhds_one_inv_eq_mul_subset {U : Set G} (hU : U ∈ 𝓝 1)
   rw [← hUinv] at hx
   exact ⟨_, hgx, _, hx, by simp⟩
 
-@[to_additive] lemma IsDiscrete.exists_nhds_eq_one_of_image_mulRight_inter_nonempty
-    (S : Subgroup G) (hS : IsDiscrete (S : Set G)) :
-    ∃ U ∈ 𝓝 (1 : G), U⁻¹ = U ∧ ∀ g ∈ S, ((· * g) '' U ∩ U).Nonempty → g = 1 := by
+@[to_additive]
+lemma IsDiscrete.exists_nhds_eq_one_of_image_mulRight_inter_nonempty
+    (S : Subgroup G) (hS : IsDiscrete (S : Set G))
+    : ∃ U ∈ 𝓝 (1 : G), U⁻¹ = U ∧ ∀ g ∈ S, ((· * g) '' U ∩ U).Nonempty → g = 1 := by
   have ⟨U, hU, hUinv, h⟩ := hS.exists_nhds_eq_one_of_image_mulLeft_inter_nonempty
   refine ⟨U, hU, hUinv, fun g hgS hgU ↦ inv_eq_one.mp (h _ (S.inv_mem hgS) ?_)⟩
   rwa [Set.nonempty_image_mulLeft_inv_inter_iff, hUinv]
@@ -456,45 +480,51 @@ section
 
 variable [TopologicalSpace G] [Group G] [IsTopologicalGroup G]
 
-/-- If a point in a topological group has a compact neighborhood, then the group is
-locally compact. -/
+/--
+If a point in a topological group has a compact neighborhood, then the group is
+locally compact.
+-/
 @[to_additive
   /-- If a point in a topological additive group has a compact neighborhood, then the additive group
   is locally compact. -/]
-theorem IsCompact.locallyCompactSpace_of_mem_nhds_of_group {K : Set G} (hK : IsCompact K) {x : G}
-    (h : K ∈ 𝓝 x) : LocallyCompactSpace G := by
+theorem IsCompact.locallyCompactSpace_of_mem_nhds_of_group
+    {K : Set G} (hK : IsCompact K) {x : G} (h : K ∈ 𝓝 x)
+    : LocallyCompactSpace G := by
   suffices WeaklyLocallyCompactSpace G from inferInstance
   refine ⟨fun y ↦ ⟨(y * x⁻¹) • K, ?_, ?_⟩⟩
   · exact hK.smul _
   · rw [← preimage_smul_inv]
     exact (continuous_const_smul _).continuousAt.preimage_mem_nhds (by simpa using h)
 
-/-- If a function defined on a topological group has a support contained in a
-compact set, then either the function is trivial or the group is locally compact. -/
+/--
+If a function defined on a topological group has a support contained in a
+compact set, then either the function is trivial or the group is locally compact.
+-/
 @[to_additive
       /-- If a function defined on a topological additive group has a support contained in a compact
       set, then either the function is trivial or the group is locally compact. -/]
 theorem eq_zero_or_locallyCompactSpace_of_support_subset_isCompact_of_group
     [TopologicalSpace α] [Zero α] [T1Space α]
-    {f : G → α} {k : Set G} (hk : IsCompact k) (hf : support f ⊆ k) (h'f : Continuous f) :
-    f = 0 ∨ LocallyCompactSpace G := by
+    {f : G → α} {k : Set G} (hk : IsCompact k) (hf : support f ⊆ k) (h'f : Continuous f)
+    : f = 0 ∨ LocallyCompactSpace G := by
   refine or_iff_not_imp_left.mpr fun h => ?_
   simp_rw [funext_iff, Pi.zero_apply] at h
   push Not at h
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := h
-  have : k ∈ 𝓝 x :=
-    mem_of_superset (h'f.isOpen_support.mem_nhds hx) hf
+  have : k ∈ 𝓝 x := mem_of_superset (h'f.isOpen_support.mem_nhds hx) hf
   exact IsCompact.locallyCompactSpace_of_mem_nhds_of_group hk this
 
-/-- If a function defined on a topological group has compact support, then either
-the function is trivial or the group is locally compact. -/
+/--
+If a function defined on a topological group has compact support, then either
+the function is trivial or the group is locally compact.
+-/
 @[to_additive
       /-- If a function defined on a topological additive group has compact support,
       then either the function is trivial or the group is locally compact. -/]
 theorem HasCompactSupport.eq_zero_or_locallyCompactSpace_of_group
     [TopologicalSpace α] [Zero α] [T1Space α]
-    {f : G → α} (hf : HasCompactSupport f) (h'f : Continuous f) :
-    f = 0 ∨ LocallyCompactSpace G :=
+    {f : G → α} (hf : HasCompactSupport f) (h'f : Continuous f)
+    : f = 0 ∨ LocallyCompactSpace G :=
   eq_zero_or_locallyCompactSpace_of_support_subset_isCompact_of_group hf (subset_tsupport f) h'f
 
 end

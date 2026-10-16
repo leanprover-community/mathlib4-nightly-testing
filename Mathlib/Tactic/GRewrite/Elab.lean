@@ -8,7 +8,6 @@ module
 public meta import Lean.Elab.ConfigEval
 public meta import Lean.Elab.Tactic.Rewrite
 public import Mathlib.Tactic.GRewrite.Core
-
 meta import Mathlib.Tactic.GRewrite.Core
 import Lean.Elab.ConfigEval
 
@@ -39,58 +38,69 @@ def mergeLCtx (lctx₁ lctx₂ : LocalContext) : LocalContext :=
     else
       lctx.addDecl decl
 
-/-- Merge `lctx` into the local contexts in `tree`.
-This is used to let `tree` know about bound variables that the term has been unified with. -/
+/--
+Merge `lctx` into the local contexts in `tree`.
+This is used to let `tree` know about bound variables that the term has been unified with.
+-/
 partial def updateInfoTree (lctx : LocalContext) (tree : InfoTree) : InfoTree :=
   match tree with
-  | .context i tree => .context i (updateInfoTree lctx tree)
+  | .context i tree =>
+    .context i (updateInfoTree lctx tree)
   | .node i children =>
-    let i := match i with
+    let i :=
+      match i with
       | .ofTermInfo i => .ofTermInfo { i with lctx := mergeLCtx lctx i.lctx }
       | .ofFieldInfo i => .ofFieldInfo { i with lctx := mergeLCtx lctx i.lctx }
       | .ofMacroExpansionInfo i => .ofMacroExpansionInfo { i with lctx := mergeLCtx lctx i.lctx }
       | _ => i
     .node i (children.map (updateInfoTree lctx))
-  | _ => tree
+  | _ =>
+    tree
 
 /-- Analogous to `finishElabRewrite`. -/
 def finishElabGRewrite (r : GRewriteResult) : MetaM GRewriteResult := do
   let mvarIds ← r.mvarIds.filterM (not <$> ·.isAssigned)
-  mvarIds.forM fun newMVarId => newMVarId.withContext do
-    if ← Meta.isProp (← newMVarId.getType) then
-      newMVarId.setKind .syntheticOpaque
+  mvarIds.forM fun newMVarId =>
+    newMVarId.withContext do
+      if ← Meta.isProp (← newMVarId.getType) then
+        newMVarId.setKind .syntheticOpaque
   return { r with mvarIds }
 
 /-- Mostly analogous to `elabRewrite`. -/
-def elabGRewrite (mvarId : MVarId) (e : Expr) (stx : Syntax) (forwardImp symm : Bool)
-    (config : GRewrite.Config) : TacticM GRewriteResult := do
+def elabGRewrite
+    (mvarId : MVarId) (e : Expr) (stx : Syntax) (forwardImp symm : Bool) (config : GRewrite.Config)
+    : TacticM GRewriteResult := do
   let treesSaved ← getResetInfoTrees
-  let r ← Term.withSynthesize do
-    let mvarCounterSaved := (← getMCtx).mvarCounter
-    let thm ← elabTerm stx none true
-    if thm.hasSyntheticSorry then
-      throwAbortTactic
-    unless ← occursCheck mvarId thm do
-      throwErrorAt stx
-        "Occurs check failed: Expression{indentExpr thm}\ncontains the goal {Expr.mvar mvarId}"
-    let mvarIds ← getMVarsNoDelayed thm
-    let mctx ← getMCtx
-    let mvarIds := mvarIds.filter fun mvarId ↦ mvarCounterSaved ≤ (mctx.getDecl mvarId).index
-    let lctx ← getLCtx
-    let mvarIds ← mvarIds.mapM fun mvarId ↦ do
-      let mut fvarIds := #[]
-      for decl in (← mvarId.getDecl).lctx do
-        unless lctx.contains decl.fvarId do
-          fvarIds := fvarIds.push decl
-      return (mvarId, fvarIds)
-    let r ← mvarId.grewrite e thm mvarIds
-      (forwardImp := forwardImp) (symm := symm) (config := config)
-    let mctx ← getMCtx
-    let mvarIds := r.mvarIds.filter fun mvarId => mvarCounterSaved ≤ (mctx.getDecl mvarId).index
-    return { r with mvarIds }
+  let r ←
+    Term.withSynthesize do
+      let mvarCounterSaved := (← getMCtx).mvarCounter
+      let thm ← elabTerm stx none true
+      if thm.hasSyntheticSorry then
+        throwAbortTactic
+      unless ← occursCheck mvarId thm do
+        throwErrorAt stx
+          "Occurs check failed: Expression{indentExpr thm}\
+            \ncontains the goal {Expr.mvar mvarId}"
+      let mvarIds ← getMVarsNoDelayed thm
+      let mctx ← getMCtx
+      let mvarIds := mvarIds.filter fun mvarId ↦ mvarCounterSaved ≤ (mctx.getDecl mvarId).index
+      let lctx ← getLCtx
+      let mvarIds ←
+        mvarIds.mapM fun mvarId ↦ do
+          let mut fvarIds := #[]
+          for decl in (← mvarId.getDecl).lctx do
+            unless lctx.contains decl.fvarId do
+              fvarIds := fvarIds.push decl
+          return (mvarId, fvarIds)
+      let r ←
+        mvarId.grewrite e thm mvarIds (forwardImp := forwardImp) (symm := symm) (config := config)
+      let mctx ← getMCtx
+      let mvarIds := r.mvarIds.filter fun mvarId => mvarCounterSaved ≤ (mctx.getDecl mvarId).index
+      return { r with mvarIds }
   let s ← getInfoState
   let trees := s.trees.map (·.substitute s.assignment)
-  let trees := match r.lctx? with
+  let trees :=
+    match r.lctx? with
     | some lctx => trees.map (updateInfoTree lctx)
     | none => trees
   modifyInfoState fun s => { s with trees := treesSaved ++ trees }
@@ -99,23 +109,27 @@ def elabGRewrite (mvarId : MVarId) (e : Expr) (stx : Syntax) (forwardImp symm : 
 /-- Apply the `grewrite` tactic to the current goal. -/
 def grewriteTarget (stx : Syntax) (symm : Bool) (config : GRewrite.Config) : TacticM Unit := do
   let goal ← getMainGoal
-  let r ← goal.withContext do
-    elabGRewrite goal (← goal.getType) stx (forwardImp := false) (symm := symm) (config := config)
+  let r ←
+    goal.withContext do
+      elabGRewrite goal (← goal.getType) stx (forwardImp := false) (symm := symm) (config := config)
   let mvarNew ← mkFreshExprSyntheticOpaqueMVar r.eNew (← goal.getTag)
   goal.assign (r.impProof.app mvarNew)
   replaceMainGoal (mvarNew.mvarId! :: r.mvarIds)
 
 /-- Apply the `grewrite` tactic to a local hypothesis. -/
-def grewriteLocalDecl (stx : Syntax) (symm : Bool) (fvarId : FVarId) (config : GRewrite.Config) :
-    TacticM Unit := withMainContext do
-  -- Note: we cannot execute `replace` inside `Term.withSynthesize`.
-  -- See issues https://github.com/leanprover-community/mathlib4/issues/2711 and https://github.com/leanprover-community/mathlib4/issues/2727.
-  let goal ← getMainGoal
-  let r ← withMainContext do
-    elabGRewrite (← getMainGoal) (← fvarId.getType) stx symm (forwardImp := true) (config := config)
-  let proof := r.impProof.app (.fvar fvarId)
-  let { mvarId, .. } ← goal.replace fvarId proof r.eNew
-  replaceMainGoal (mvarId :: r.mvarIds)
+def grewriteLocalDecl (stx : Syntax) (symm : Bool) (fvarId : FVarId) (config : GRewrite.Config)
+    : TacticM Unit :=
+  withMainContext do
+    -- Note: we cannot execute `replace` inside `Term.withSynthesize`.
+    -- See issues https://github.com/leanprover-community/mathlib4/issues/2711 and https://github.com/leanprover-community/mathlib4/issues/2727.
+    let goal ← getMainGoal
+    let r ←
+      withMainContext do
+        elabGRewrite (← getMainGoal) (← fvarId.getType) stx symm (forwardImp := true)
+          (config := config)
+    let proof := r.impProof.app (.fvar fvarId)
+    let { mvarId, .. } ← goal.replace fvarId proof r.eNew
+    replaceMainGoal (mvarId :: r.mvarIds)
 
 /-- Function elaborating `GRewrite.Config`. -/
 declare_config_elab elabGRewriteConfig GRewrite.Config
@@ -158,9 +172,7 @@ public def evalGRewriteSeq : Tactic := fun stx => do
   let cfg ← elabGRewriteConfig stx[1]
   let loc := expandOptLocation stx[3]
   withRWRulesSeq stx[0] stx[2] fun symm term => do
-    withLocation loc
-      (grewriteLocalDecl term symm · cfg)
-      (grewriteTarget term symm cfg)
+    withLocation loc (grewriteLocalDecl term symm · cfg) (grewriteTarget term symm cfg)
       (throwTacticEx `grewrite · "did not find instance of the pattern in the current goal")
 
 /--
@@ -220,7 +232,8 @@ macro (name := grwSeq) "grw " c:optConfig s:rwRuleSeq l:(location)? : tactic =>
   | `(rwRuleSeq| [$rs,*]%$rbrak) =>
     -- We show the `rfl` state on `]`
     `(tactic| (grewrite $c [$rs,*] $(l)?; with_annotate_state $rbrak (try (with_reducible rfl))))
-  | _ => Macro.throwUnsupported
+  | _ =>
+    Macro.throwUnsupported
 
 /--
 `apply_rewrite [e₁, ..., eₙ]` uses the expressions `e₁`, ..., `eₙ` as generalized rewrite rules, of

@@ -48,12 +48,13 @@ open scoped Topology
 
 namespace ProbabilityTheory
 
-/-- Cumulative distribution function of a real measure. The definition currently makes sense only
+/--
+Cumulative distribution function of a real measure. The definition currently makes sense only
 for probability measures. In that case, it satisfies `cdf μ x = μ.real (Iic x)` (see
-`ProbabilityTheory.cdf_eq_real`). -/
+`ProbabilityTheory.cdf_eq_real`).
+-/
 @[wikidata Q386228]
-noncomputable
-def cdf (μ : Measure ℝ) : StieltjesFunction ℝ :=
+noncomputable def cdf (μ : Measure ℝ) : StieltjesFunction ℝ :=
   condCDF ((dirac Unit.unit).prod μ) Unit.unit
 
 section ExplicitMeasureArg
@@ -93,30 +94,32 @@ lemma measure_cdf [IsProbabilityMeasure μ] : (cdf μ).measure = μ := by
 
 end ExplicitMeasureArg
 
-lemma cdf_measure_stieltjesFunction (f : StieltjesFunction ℝ) (hf0 : Tendsto f atBot (𝓝 0))
-    (hf1 : Tendsto f atTop (𝓝 1)) :
-    cdf f.measure = f := by
+lemma cdf_measure_stieltjesFunction
+    (f : StieltjesFunction ℝ) (hf0 : Tendsto f atBot (𝓝 0)) (hf1 : Tendsto f atTop (𝓝 1))
+    : cdf f.measure = f := by
   refine (cdf f.measure).eq_of_measure_of_tendsto_atBot f ?_ (tendsto_cdf_atBot _) hf0
   have h_prob : IsProbabilityMeasure f.measure :=
     ⟨by rw [f.measure_univ hf0 hf1, sub_zero, ENNReal.ofReal_one]⟩
   exact measure_cdf f.measure
 
 open unitInterval in
-lemma unitInterval.cdf_eq_real (μ : Measure I) [IsProbabilityMeasure μ] (x : I) :
-    cdf (μ.map Subtype.val) x.1 = μ.real (Icc 0 x) := by
-  rw [ProbabilityTheory.cdf_eq_real,
-    map_measureReal_apply measurable_subtype_coe measurableSet_Iic, subtype_Iic_eq_Icc]
+lemma unitInterval.cdf_eq_real (μ : Measure I) [IsProbabilityMeasure μ] (x : I)
+    : cdf (μ.map Subtype.val) x.1 = μ.real (Icc 0 x) := by
+  rw [ProbabilityTheory.cdf_eq_real, map_measureReal_apply measurable_subtype_coe measurableSet_Iic,
+    subtype_Iic_eq_Icc]
 
 end ProbabilityTheory
 
 open ProbabilityTheory
 
 /-- If two real probability distributions have the same cdf, they are equal. -/
-lemma MeasureTheory.Measure.eq_of_cdf (μ ν : Measure ℝ) [IsProbabilityMeasure μ]
-    [IsProbabilityMeasure ν] (h : cdf μ = cdf ν) : μ = ν := by
+lemma MeasureTheory.Measure.eq_of_cdf
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] (h : cdf μ = cdf ν)
+    : μ = ν := by
   rw [← measure_cdf μ, ← measure_cdf ν, h]
 
-@[simp] lemma MeasureTheory.Measure.cdf_eq_iff (μ ν : Measure ℝ) [IsProbabilityMeasure μ]
-    [IsProbabilityMeasure ν] :
-    cdf μ = cdf ν ↔ μ = ν :=
-⟨eq_of_cdf μ ν, fun h ↦ by rw [h]⟩
+@[simp]
+lemma MeasureTheory.Measure.cdf_eq_iff
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    : cdf μ = cdf ν ↔ μ = ν :=
+  ⟨eq_of_cdf μ ν, fun h ↦ by rw [h]⟩

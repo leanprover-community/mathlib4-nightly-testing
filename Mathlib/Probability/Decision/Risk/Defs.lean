@@ -41,85 +41,87 @@ namespace ProbabilityTheory
 
 variable {Θ 𝓧 𝓨 : Type*} {mΘ : MeasurableSpace Θ} {m𝓧 : MeasurableSpace 𝓧}
 
-/-- The average risk of an estimator `κ` on an estimation task with loss `ℓ` and
-data generating kernel `P` with respect to a prior `π`. -/
-noncomputable
-def avgRisk {m𝓨 : MeasurableSpace 𝓨}
-    (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (κ : Kernel 𝓧 𝓨) (π : Measure Θ) : ℝ≥0∞ :=
+/--
+The average risk of an estimator `κ` on an estimation task with loss `ℓ` and
+data generating kernel `P` with respect to a prior `π`.
+-/
+noncomputable def avgRisk
+    {m𝓨 : MeasurableSpace 𝓨} (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (κ : Kernel 𝓧 𝓨) (π : Measure Θ)
+    : ℝ≥0∞ :=
   ∫⁻ θ, ∫⁻ y, ℓ θ y ∂((κ ∘ₖ P) θ) ∂π
 
-/-- The Bayes risk with respect to a prior `π`, defined as the infimum of the average risks of all
-estimators. -/
-noncomputable
-def bayesRisk [MeasurableSpace 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (π : Measure Θ) : ℝ≥0∞ :=
+/--
+The Bayes risk with respect to a prior `π`, defined as the infimum of the average risks of all
+estimators.
+-/
+noncomputable def bayesRisk [MeasurableSpace 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (π : Measure Θ)
+    : ℝ≥0∞ :=
   ⨅ (κ : Kernel 𝓧 𝓨) (_ : IsMarkovKernel κ), avgRisk ℓ P κ π
 
-/-- The minimax risk, defined as the infimum over estimators of the maximal risk of
-the estimator. -/
-noncomputable
-def minimaxRisk [MeasurableSpace 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) : ℝ≥0∞ :=
+/--
+The minimax risk, defined as the infimum over estimators of the maximal risk of
+the estimator.
+-/
+noncomputable def minimaxRisk [MeasurableSpace 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) : ℝ≥0∞ :=
   ⨅ (κ : Kernel 𝓧 𝓨) (_ : IsMarkovKernel κ), ⨆ θ, ∫⁻ y, ℓ θ y ∂((κ ∘ₖ P) θ)
 
-variable {m𝓨 : MeasurableSpace 𝓨}
-  {ℓ : Θ → 𝓨 → ℝ≥0∞} {P : Kernel Θ 𝓧} {κ : Kernel 𝓧 𝓨} {π : Measure Θ}
+variable
+  {m𝓨 : MeasurableSpace 𝓨} {ℓ : Θ → 𝓨 → ℝ≥0∞} {P : Kernel Θ 𝓧} {κ : Kernel 𝓧 𝓨} {π : Measure Θ}
 
 section Zero
 
 @[simp]
-lemma avgRisk_zero_left (ℓ : Θ → 𝓨 → ℝ≥0∞) (κ : Kernel 𝓧 𝓨) (π : Measure Θ) :
-    avgRisk ℓ (0 : Kernel Θ 𝓧) κ π = 0 := by simp [avgRisk]
+lemma avgRisk_zero_left (ℓ : Θ → 𝓨 → ℝ≥0∞) (κ : Kernel 𝓧 𝓨) (π : Measure Θ)
+    : avgRisk ℓ (0 : Kernel Θ 𝓧) κ π = 0 := by
+  simp [avgRisk]
 
 @[simp]
-lemma avgRisk_zero_right (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (π : Measure Θ) :
-    avgRisk ℓ P (0 : Kernel 𝓧 𝓨) π = 0 := by simp [avgRisk]
+lemma avgRisk_zero_right (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (π : Measure Θ)
+    : avgRisk ℓ P (0 : Kernel 𝓧 𝓨) π = 0 := by
+  simp [avgRisk]
 
 @[simp]
-lemma avgRisk_zero_prior (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (κ : Kernel 𝓧 𝓨) :
-    avgRisk ℓ P κ 0 = 0 := by simp [avgRisk]
+lemma avgRisk_zero_prior (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) (κ : Kernel 𝓧 𝓨)
+    : avgRisk ℓ P κ 0 = 0 := by
+  simp [avgRisk]
 
 @[simp]
-lemma bayesRisk_zero_left [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (π : Measure Θ) :
-    bayesRisk ℓ (0 : Kernel Θ 𝓧) π = 0 := by simp [bayesRisk, iInf_subtype']
+lemma bayesRisk_zero_left [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (π : Measure Θ)
+    : bayesRisk ℓ (0 : Kernel Θ 𝓧) π = 0 := by
+  simp [bayesRisk, iInf_subtype']
 
 @[simp]
-lemma bayesRisk_zero_right [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧) :
-    bayesRisk ℓ P (0 : Measure Θ) = 0 := by simp [bayesRisk, iInf_subtype']
+lemma bayesRisk_zero_right [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) (P : Kernel Θ 𝓧)
+    : bayesRisk ℓ P (0 : Measure Θ) = 0 := by
+  simp [bayesRisk, iInf_subtype']
 
 @[simp]
-lemma minimaxRisk_zero [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) :
-    minimaxRisk ℓ (0 : Kernel Θ 𝓧) = 0 := by simp [minimaxRisk, iInf_subtype']
+lemma minimaxRisk_zero [Nonempty 𝓨] (ℓ : Θ → 𝓨 → ℝ≥0∞) : minimaxRisk ℓ (0 : Kernel Θ 𝓧) = 0 := by
+  simp [minimaxRisk, iInf_subtype']
 
 end Zero
 
 section Empty
 
 @[simp]
-lemma avgRisk_of_isEmpty [IsEmpty 𝓧] : avgRisk ℓ P κ π = 0 := by
-  simp [Subsingleton.elim P 0]
+lemma avgRisk_of_isEmpty [IsEmpty 𝓧] : avgRisk ℓ P κ π = 0 := by simp [Subsingleton.elim P 0]
 
 @[simp]
-lemma avgRisk_of_isEmpty' [IsEmpty 𝓨] : avgRisk ℓ P κ π = 0 := by
-  simp [Subsingleton.elim κ 0]
+lemma avgRisk_of_isEmpty' [IsEmpty 𝓨] : avgRisk ℓ P κ π = 0 := by simp [Subsingleton.elim κ 0]
+
+@[simp] lemma avgRisk_of_isEmpty'' [IsEmpty Θ] : avgRisk ℓ P κ π = 0 := by simp [avgRisk]
+
+@[simp] lemma bayesRisk_of_isEmpty [IsEmpty 𝓧] : bayesRisk ℓ P π = 0 := by simp [bayesRisk]
 
 @[simp]
-lemma avgRisk_of_isEmpty'' [IsEmpty Θ] : avgRisk ℓ P κ π = 0 := by
-  simp [avgRisk]
-
-@[simp]
-lemma bayesRisk_of_isEmpty [IsEmpty 𝓧] : bayesRisk ℓ P π = 0 := by
-  simp [bayesRisk]
-
-@[simp]
-lemma bayesRisk_of_isEmpty' [Nonempty 𝓧] [IsEmpty 𝓨] :
-    bayesRisk ℓ P π = ∞ := by
+lemma bayesRisk_of_isEmpty' [Nonempty 𝓧] [IsEmpty 𝓨] : bayesRisk ℓ P π = ∞ := by
   have : IsEmpty (Subtype (@IsMarkovKernel 𝓧 𝓨 m𝓧 m𝓨)) := by
     simp only [isEmpty_subtype]
     exact fun κ ↦ Subsingleton.elim κ 0 ▸ Kernel.not_isMarkovKernel_zero
   simp [bayesRisk, iInf_subtype']
 
 @[simp]
-lemma bayesRisk_of_isEmpty'' [IsEmpty Θ] [Nonempty 𝓨] :
-    bayesRisk ℓ P π = 0 := by
+lemma bayesRisk_of_isEmpty'' [IsEmpty Θ] [Nonempty 𝓨] : bayesRisk ℓ P π = 0 := by
   simp [bayesRisk, iInf_subtype']
 
 @[simp]

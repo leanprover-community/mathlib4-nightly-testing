@@ -18,15 +18,17 @@ such that `affine f g (t, x) = AffineMap.lineMap (f x) (g x) t`.
 
 @[expose] public section
 
-variable {X E : Type*} [TopologicalSpace X]
-  [AddCommGroup E] [TopologicalSpace E] [IsTopologicalAddGroup E]
+variable
+  {X E : Type*} [TopologicalSpace X] [AddCommGroup E] [TopologicalSpace E] [IsTopologicalAddGroup E]
   [Module ℝ E] [ContinuousSMul ℝ E]
 
 namespace ContinuousMap.Homotopy
 
 set_option backward.defeqAttrib.useBackward true in
-/-- The homotopy between `f` and `g`
-such that `affine f g (t, x) = AffineMap.lineMap (f x) (g x) t`. -/
+/--
+The homotopy between `f` and `g`
+such that `affine f g (t, x) = AffineMap.lineMap (f x) (g x) t`.
+-/
 @[simps +simpRhs]
 def affine (f g : C(X, E)) : f.Homotopy g where
   toFun x := Path.segment (f x.2) (g x.2) x.1

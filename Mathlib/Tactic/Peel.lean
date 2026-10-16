@@ -87,35 +87,40 @@ This tactic works by repeatedly applying lemmas such as `forall_imp`, `Exists.im
 `Filter.Eventually.mp`, `Filter.Frequently.mp`, and `Filter.Eventually.of_forall`.
 -/
 syntax (name := peel)
-  "peel" (num)? (ppSpace colGt term)?
-  (" with" (ppSpace colGt (ident <|> hole))+)? (usingArg)? : tactic
+  "peel" (num)? (ppSpace colGt term)? (" with" (ppSpace colGt (ident <|> hole))+)? (usingArg)?
+  : tactic
 
 deprecated_syntax peel "use `gconvert` or `congr!` instead of `peel`" (since := "2026-08-03")
 
 lemma and_imp_left_of_imp_imp {p q r : Prop} (h : r → p → q) : r ∧ p → r ∧ q := by tauto
 
-theorem eventually_imp {α : Type*} {p q : α → Prop} {f : Filter α}
-    (hq : ∀ (x : α), p x → q x) (hp : ∀ᶠ (x : α) in f, p x) : ∀ᶠ (x : α) in f, q x :=
+theorem eventually_imp
+    {α : Type*} {p q : α → Prop} {f : Filter α}
+    (hq : ∀ (x : α), p x → q x) (hp : ∀ᶠ (x : α) in f, p x)
+    : ∀ᶠ (x : α) in f, q x :=
   Filter.Eventually.mp hp (Filter.Eventually.of_forall hq)
 
-theorem frequently_imp {α : Type*} {p q : α → Prop} {f : Filter α}
-    (hq : ∀ (x : α), p x → q x) (hp : ∃ᶠ (x : α) in f, p x) : ∃ᶠ (x : α) in f, q x :=
+theorem frequently_imp
+    {α : Type*} {p q : α → Prop} {f : Filter α}
+    (hq : ∀ (x : α), p x → q x) (hp : ∃ᶠ (x : α) in f, p x)
+    : ∃ᶠ (x : α) in f, q x :=
   Filter.Frequently.mp hp (Filter.Eventually.of_forall hq)
 
-theorem eventually_congr {α : Type*} {p q : α → Prop} {f : Filter α}
-    (hq : ∀ (x : α), p x ↔ q x) : (∀ᶠ (x : α) in f, p x) ↔ ∀ᶠ (x : α) in f, q x := by
+theorem eventually_congr {α : Type*} {p q : α → Prop} {f : Filter α} (hq : ∀ (x : α), p x ↔ q x)
+    : (∀ᶠ (x : α) in f, p x) ↔ ∀ᶠ (x : α) in f, q x := by
   congr! 2; exact hq _
 
-theorem frequently_congr {α : Type*} {p q : α → Prop} {f : Filter α}
-    (hq : ∀ (x : α), p x ↔ q x) : (∃ᶠ (x : α) in f, p x) ↔ ∃ᶠ (x : α) in f, q x := by
+theorem frequently_congr {α : Type*} {p q : α → Prop} {f : Filter α} (hq : ∀ (x : α), p x ↔ q x)
+    : (∃ᶠ (x : α) in f, p x) ↔ ∃ᶠ (x : α) in f, q x := by
   congr! 2; exact hq _
 
 /-- The list of constants that are regarded as being quantifiers. -/
-def quantifiers : List Name :=
-  [``Exists, ``And, ``Filter.Eventually, ``Filter.Frequently]
+def quantifiers : List Name := [``Exists, ``And, ``Filter.Eventually, ``Filter.Frequently]
 
-/-- If `unfold` is false then do `whnfR`, otherwise unfold everything that's not a quantifier,
-according to the `quantifiers` list. -/
+/--
+If `unfold` is false then do `whnfR`, otherwise unfold everything that's not a quantifier,
+according to the `quantifiers` list.
+-/
 def whnfQuantifier (p : Expr) (unfold : Bool) : MetaM Expr := do
   if unfold then
     whnfHeadPred p fun e =>
@@ -128,76 +133,89 @@ def whnfQuantifier (p : Expr) (unfold : Bool) : MetaM Expr := do
 
 /-- Throws an error saying `ty` and `target` could not be matched up. -/
 def throwPeelError {α : Type} (ty target : Expr) : MetaM α :=
-  throwError "Tactic 'peel' could not match quantifiers in{indentD ty}\nand{indentD target}"
+  throwError "Tactic 'peel' could not match quantifiers in{indentD ty}\
+    \nand{indentD target}"
 
-/-- If `f` is a lambda then use its binding name to generate a new hygienic name,
-and otherwise choose a new hygienic name. -/
+/--
+If `f` is a lambda then use its binding name to generate a new hygienic name,
+and otherwise choose a new hygienic name.
+-/
 def mkFreshBinderName (f : Expr) : MetaM Name :=
   mkFreshUserName (if let .lam n .. := f then n else `a)
 
-/-- Applies a "peel theorem" with two main arguments, where the first is the new goal
+/--
+Applies a "peel theorem" with two main arguments, where the first is the new goal
 and the second can be filled in using `e`. Then it intros two variables with the
 provided names.
 
 If, for example, `goal : ∃ y : α, q y` and `thm := Exists.imp`, the metavariable returned has
-type `q x` where `x : α` has been introduced into the context. -/
-def applyPeelThm (thm : Name) (goal : MVarId)
-    (e : Expr) (ty target : Expr) (n : Name) (n' : Name) :
-    MetaM (FVarId × List MVarId) := do
+type `q x` where `x : α` has been introduced into the context.
+-/
+def applyPeelThm (thm : Name) (goal : MVarId) (e : Expr) (ty target : Expr) (n : Name) (n' : Name)
+    : MetaM (FVarId × List MVarId) := do
   let new_goal :: ge :: _ ← goal.applyConst thm <|> throwPeelError ty target
     | throwError "peel: internal error"
   ge.assignIfDefEq e <|> throwPeelError ty target
   let (fvars, new_goal) ← new_goal.introN 2 [n, n']
   return (fvars[1]!, [new_goal])
 
-/-- This is the core to the `peel` tactic.
+/--
+This is the core to the `peel` tactic.
 
 It tries to match `e` and `goal` as quantified statements (using `∀` and the quantifiers in
 the `quantifiers` list), then applies "peel theorems" using `applyPeelThm`.
 
 We treat `∧` as a quantifier for sake of dealing with quantified statements
-like `∃ δ > (0 : ℝ), q δ`, which is notation for `∃ δ, δ > (0 : ℝ) ∧ q δ`. -/
-def peelCore (goal : MVarId) (e : Expr) (n? : Option Name) (n' : Name) (unfold : Bool) :
-    MetaM (FVarId × List MVarId) := goal.withContext do
-  let ty ← whnfQuantifier (← inferType e) unfold
-  let target ← whnfQuantifier (← goal.getType) unfold
-  if ty.isForall && target.isForall then
-    applyPeelThm ``forall_imp goal e ty target (← n?.getDM (mkFreshUserName target.bindingName!)) n'
-  else if ty.getAppFn.isConst
-            && ty.getAppNumArgs == target.getAppNumArgs
-            && ty.getAppFn == target.getAppFn then
-    match target.getAppFnArgs with
-    | (``Exists, #[_, p]) =>
-      applyPeelThm ``Exists.imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
-    | (``And, #[_, _]) =>
-      applyPeelThm ``and_imp_left_of_imp_imp goal e ty target (← n?.getDM (mkFreshUserName `p)) n'
-    | (``Filter.Eventually, #[_, p, _]) =>
-      applyPeelThm ``eventually_imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
-    | (``Filter.Frequently, #[_, p, _]) =>
-      applyPeelThm ``frequently_imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
-    | _ => throwPeelError ty target
-  else
-    throwPeelError ty target
+like `∃ δ > (0 : ℝ), q δ`, which is notation for `∃ δ, δ > (0 : ℝ) ∧ q δ`.
+-/
+def peelCore (goal : MVarId) (e : Expr) (n? : Option Name) (n' : Name) (unfold : Bool)
+    : MetaM (FVarId × List MVarId) :=
+  goal.withContext do
+    let ty ← whnfQuantifier (← inferType e) unfold
+    let target ← whnfQuantifier (← goal.getType) unfold
+    if ty.isForall && target.isForall then
+      applyPeelThm ``forall_imp goal e ty target (← n?.getDM (mkFreshUserName target.bindingName!))
+        n'
+    else if ty.getAppFn.isConst && ty.getAppNumArgs == target.getAppNumArgs
+        && ty.getAppFn == target.getAppFn then
+      match target.getAppFnArgs with
+      | (``Exists, #[_, p]) =>
+        applyPeelThm ``Exists.imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
+      | (``And, #[_, _]) =>
+        applyPeelThm ``and_imp_left_of_imp_imp goal e ty target (← n?.getDM (mkFreshUserName `p)) n'
+      | (``Filter.Eventually, #[_, p, _]) =>
+        applyPeelThm ``eventually_imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
+      | (``Filter.Frequently, #[_, p, _]) =>
+        applyPeelThm ``frequently_imp goal e ty target (← n?.getDM (mkFreshBinderName p)) n'
+      | _ =>
+        throwPeelError ty target
+    else
+      throwPeelError ty target
 
-/-- Given a list `l` of names, this peels `num` quantifiers off of the expression `e` and
+/--
+Given a list `l` of names, this peels `num` quantifiers off of the expression `e` and
 the main goal and introduces variables with the provided names until the list of names is exhausted.
 Note: the name `n?` (with default `this`) is used for the name of the expression `e` with
-quantifiers peeled. -/
-def peelArgs (e : Expr) (num : Nat) (l : List Name) (n? : Option Name) (unfold : Bool := true) :
-    TacticM Unit := do
+quantifiers peeled.
+-/
+def peelArgs (e : Expr) (num : Nat) (l : List Name) (n? : Option Name) (unfold : Bool := true)
+    : TacticM Unit := do
   match num with
-    | 0 => return
-    | num + 1 =>
-      let fvarId ← liftMetaTacticAux (peelCore · e l.head? (n?.getD `this) unfold)
-      peelArgs (.fvar fvarId) num l.tail n?
-      unless num == 0 do
-        if let some mvarId ← observing? do (← getMainGoal).clear fvarId then
-          replaceMainGoal [mvarId]
+  | 0 =>
+    return
+  | num + 1 =>
+    let fvarId ← liftMetaTacticAux (peelCore · e l.head? (n?.getD `this) unfold)
+    peelArgs (.fvar fvarId) num l.tail n?
+    unless num == 0 do
+      if let some mvarId ← observing? do (← getMainGoal).clear fvarId then
+        replaceMainGoal [mvarId]
 
-/-- Similar to `peelArgs` but peels arbitrarily many quantifiers. Returns whether or not
-any quantifiers were peeled. -/
-partial def peelUnbounded (e : Expr) (n? : Option Name) (unfold : Bool := false) :
-    TacticM Bool := do
+/--
+Similar to `peelArgs` but peels arbitrarily many quantifiers. Returns whether or not
+any quantifiers were peeled.
+-/
+partial def peelUnbounded (e : Expr) (n? : Option Name) (unfold : Bool := false)
+    : TacticM Bool := do
   let fvarId? ← observing? <| liftMetaTacticAux (peelCore · e none (n?.getD `this) unfold)
   if let some fvarId := fvarId? then
     let peeled ← peelUnbounded (.fvar fvarId) n?
@@ -218,11 +236,15 @@ def peelIffAux : TacticM Unit := do
           | apply and_congr_right
           | fail "failed to apply a quantifier congruence lemma."))
 
-/-- Peel off quantifiers from an `↔` and assign the names given in `l` to the introduced
-variables. -/
-def peelArgsIff (l : List Name) : TacticM Unit := withMainContext do
-  match l with
-    | [] => pure ()
+/--
+Peel off quantifiers from an `↔` and assign the names given in `l` to the introduced
+variables.
+-/
+def peelArgsIff (l : List Name) : TacticM Unit :=
+  withMainContext do
+    match l with
+    | [] =>
+      pure ()
     | h :: hs =>
       peelIffAux
       let goal ← getMainGoal
@@ -231,22 +253,27 @@ def peelArgsIff (l : List Name) : TacticM Unit := withMainContext do
       peelArgsIff hs
 
 elab_rules : tactic
-  | `(tactic| peel $[$num?:num]? $e:term $[with $l?* $n?]?) => withMainContext do
-    /- we use `elabTermForApply` instead of `elabTerm` so that terms passed to `peel` can contain
-    quantifiers with implicit bound variables without causing errors or requiring `@`. -/
-    let e ← elabTermForApply e false
-    let n? := n?.bind fun n => if n.raw.isIdent then pure n.raw.getId else none
-    let l := (l?.getD #[]).map getNameOfIdent' |>.toList
-    -- If num is not present and if there are any provided variable names,
-    -- use the number of variable names.
-    let num? := num?.map (·.getNat) <|> if l.isEmpty then none else l.length
-    if let some num := num? then
-      peelArgs e num l n?
-    else
-      unless ← peelUnbounded e n? do
-        throwPeelError (← inferType e) (← getMainTarget)
-  | `(tactic| peel $n:num) => peelArgsIff <| .replicate n.getNat `_
-  | `(tactic| peel with $args*) => peelArgsIff (args.map getNameOfIdent').toList
+  | `(tactic| peel $[$num?:num]? $e:term $[with $l?* $n?]?) =>
+    withMainContext do
+      /-
+      we use `elabTermForApply` instead of `elabTerm` so that terms passed to `peel` can contain
+      quantifiers with implicit bound variables without causing errors or requiring `@`.
+      -/
+      let e ← elabTermForApply e false
+      let n? := n?.bind fun n => if n.raw.isIdent then pure n.raw.getId else none
+      let l := (l?.getD #[]).map getNameOfIdent' |>.toList
+      -- If num is not present and if there are any provided variable names,
+      -- use the number of variable names.
+      let num? := num?.map (·.getNat) <|> if l.isEmpty then none else l.length
+      if let some num := num? then
+        peelArgs e num l n?
+      else
+        unless ← peelUnbounded e n? do
+          throwPeelError (← inferType e) (← getMainTarget)
+  | `(tactic| peel $n:num) =>
+    peelArgsIff <| .replicate n.getNat `_
+  | `(tactic| peel with $args*) =>
+    peelArgsIff (args.map getNameOfIdent').toList
 
 macro_rules
   | `(tactic| peel $[$n:num]? $[$e:term]? $[with $h*]? using $u:term) =>

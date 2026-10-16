@@ -20,8 +20,9 @@ public section
 open Subgroup
 
 @[to_additive (attr := simp)]
-theorem mabs_mem_iff {S G} [Group G] [LinearOrder G] {_ : SetLike S G}
-    [InvMemClass S G] {H : S} {x : G} : |x|ₘ ∈ H ↔ x ∈ H := by
+theorem mabs_mem_iff
+    {S G} [Group G] [LinearOrder G] {_ : SetLike S G} [InvMemClass S G] {H : S} {x : G}
+    : |x|ₘ ∈ H ↔ x ∈ H := by
   cases mabs_choice x <;> simp [*]
 
 section ModularLattice
@@ -29,12 +30,11 @@ section ModularLattice
 variable {C : Type*} [CommGroup C]
 
 @[to_additive]
-instance : IsModularLattice (Subgroup C) :=
-  ⟨fun {x} y z xz a ha => by
-    rw [mem_inf, mem_sup] at ha
-    rcases ha with ⟨⟨b, hb, c, hc, rfl⟩, haz⟩
-    rw [mem_sup]
-    exact ⟨b, hb, c, mem_inf.2 ⟨hc, (mul_mem_cancel_left (xz hb)).1 haz⟩, rfl⟩⟩
+instance : IsModularLattice (Subgroup C) := ⟨fun {x} y z xz a ha => by
+  rw [mem_inf, mem_sup] at ha
+  rcases ha with ⟨⟨b, hb, c, hc, rfl⟩, haz⟩
+  rw [mem_sup]
+  exact ⟨b, hb, c, mem_inf.2 ⟨hc, (mul_mem_cancel_left (xz hb)).1 haz⟩, rfl⟩⟩
 
 end ModularLattice
 
@@ -46,23 +46,25 @@ variable {G : Type*} [Group G] (H : Subgroup G)
 /-- In a group that satisfies the normalizer condition, every maximal subgroup is normal -/
 @[to_additive /-- In an additive group that satisfies the normalizer condition, every maximal
 additive subgroup is normal -/]
-theorem NormalizerCondition.normal_of_coatom (hnc : NormalizerCondition G) (hmax : IsCoatom H) :
-    H.Normal :=
+theorem NormalizerCondition.normal_of_coatom (hnc : NormalizerCondition G) (hmax : IsCoatom H)
+    : H.Normal :=
   normalizer_eq_top_iff.mp (hmax.2 _ (hnc H (lt_top_iff_ne_top.mpr hmax.1)))
 
 @[simp]
-theorem isCoatom_comap {H : Type*} [Group H] (f : G ≃* H) {K : Subgroup H} :
-    IsCoatom (Subgroup.comap (f : G →* H) K) ↔ IsCoatom K :=
+theorem isCoatom_comap {H : Type*} [Group H] (f : G ≃* H) {K : Subgroup H}
+    : IsCoatom (Subgroup.comap (f : G →* H) K) ↔ IsCoatom K :=
   OrderIso.isCoatom_iff (f.comapSubgroup) K
 
 @[simp]
-theorem isCoatom_map (f : G ≃* H) {K : Subgroup G} :
-    IsCoatom (Subgroup.map (f : G →* H) K) ↔ IsCoatom K :=
+theorem isCoatom_map (f : G ≃* H) {K : Subgroup G}
+    : IsCoatom (Subgroup.map (f : G →* H) K) ↔ IsCoatom K :=
   OrderIso.isCoatom_iff (f.mapSubgroup) K
 
 lemma isCoatom_comap_of_surjective
-    {H : Type*} [Group H] {φ : G →* H} (hφ : Function.Surjective φ)
-    {M : Subgroup H} (hM : IsCoatom M) : IsCoatom (M.comap φ) := by
+    {H : Type*} [Group H]
+    {φ : G →* H} (hφ : Function.Surjective φ)
+    {M : Subgroup H} (hM : IsCoatom M)
+    : IsCoatom (M.comap φ) := by
   refine And.imp (fun hM ↦ ?_) (fun hM ↦ ?_) hM
   · rwa [← (comap_injective hφ).ne_iff, comap_top] at hM
   · intro K hK
@@ -80,24 +82,28 @@ variable {G : Type*}
 
 /-- A subgroup of an ordered group is an ordered group. -/
 @[to_additive
-/-- An additive subgroup of an additive ordered group is an additive ordered group. -/]
-instance toIsOrderedMonoid [CommGroup G] [Preorder G] [IsOrderedMonoid G] (H : Subgroup G) :
-    IsOrderedMonoid H :=
+  /-- An additive subgroup of an additive ordered group is an additive ordered group. -/]
+instance toIsOrderedMonoid [CommGroup G] [Preorder G] [IsOrderedMonoid G] (H : Subgroup G)
+    : IsOrderedMonoid H :=
   Function.Injective.isOrderedMonoid Subtype.val (fun _ _ => rfl) .rfl
 
 end Subgroup
 
 @[to_additive]
-lemma Subsemigroup.strictMono_topEquiv {G : Type*} [CommMonoid G] [Preorder G] :
-    StrictMono (topEquiv (M := G)) := fun _ _ ↦ id
+lemma Subsemigroup.strictMono_topEquiv {G : Type*} [CommMonoid G] [Preorder G]
+    : StrictMono (topEquiv (M := G)) := fun _ _ ↦
+  id
 
 @[to_additive]
-lemma MulEquiv.strictMono_subsemigroupCongr {G : Type*}
-    [CommMonoid G] [Preorder G] {S T : Subsemigroup G}
-    (h : S = T) : StrictMono (subsemigroupCongr h) := fun _ _ ↦ id
+lemma MulEquiv.strictMono_subsemigroupCongr
+    {G : Type*} [CommMonoid G] [Preorder G] {S T : Subsemigroup G} (h : S = T)
+    : StrictMono (subsemigroupCongr h) := fun _ _ ↦
+  id
 
 @[to_additive]
-lemma MulEquiv.strictMono_symm {G G' : Type*} [CommMonoid G] [LinearOrder G]
-    [CommMonoid G'] [Preorder G'] {e : G ≃* G'} (he : StrictMono e) : StrictMono e.symm := by
+lemma MulEquiv.strictMono_symm
+    {G G' : Type*} [CommMonoid G] [LinearOrder G] [CommMonoid G'] [Preorder G']
+    {e : G ≃* G'} (he : StrictMono e)
+    : StrictMono e.symm := by
   intro
   simp [← he.lt_iff_lt]

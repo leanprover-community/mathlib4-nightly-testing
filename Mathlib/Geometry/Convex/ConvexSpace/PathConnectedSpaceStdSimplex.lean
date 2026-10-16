@@ -19,9 +19,10 @@ namespace Convexity.StdSimplex
 
 open Classical in
 @[fun_prop]
-lemma continuous_convexCombPair {M : Type*} (x y : StdSimplex ℝ M) :
-    Continuous (fun t ↦ convexCombPair (R := ℝ) (unitInterval.symm t) t
-        (unitInterval.nonneg _) (unitInterval.nonneg _) (by simp) x y) := by
+lemma continuous_convexCombPair {M : Type*} (x y : StdSimplex ℝ M)
+    : Continuous (fun t ↦
+      convexCombPair (R := ℝ) (unitInterval.symm t) t (unitInterval.nonneg _)
+        (unitInterval.nonneg _) (by simp) x y) := by
   wlog hM : Finite M
   · let s : Finset M := x.weights.support ∪ y.weights.support
     let ι : s → M := Subtype.val
@@ -35,46 +36,40 @@ lemma continuous_convexCombPair {M : Type*} (x y : StdSimplex ℝ M) :
   rw [(StdSimplex.isEmbedding_toFun_comp_weights _ _).continuous_iff]
   unfold Function.comp
   refine continuous_pi (fun i ↦ ?_)
-  simp only [unitInterval.coe_symm_eq, weights_convexCombPair, Finsupp.coe_add,
-    Finsupp.coe_smul, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  simp only [unitInterval.coe_symm_eq, weights_convexCombPair, Finsupp.coe_add, Finsupp.coe_smul,
+    Pi.add_apply, Pi.smul_apply, smul_eq_mul]
   fun_prop
 
 @[fun_prop]
-lemma continuous_duple {M : Type*} (x y : M) :
-    Continuous (fun t ↦ duple x y
-      (unitInterval.nonneg (unitInterval.symm t)) (unitInterval.nonneg t) (by simp)) := by
+lemma continuous_duple {M : Type*} (x y : M)
+    : Continuous (fun t ↦
+      duple x y (unitInterval.nonneg (unitInterval.symm t)) (unitInterval.nonneg t) (by simp)) := by
   convert continuous_convexCombPair (.single x) (.single y)
   aesop
 
-instance pathConnectedSpace
-    (M : Type*) [Nonempty M] : PathConnectedSpace (StdSimplex ℝ M) where
+instance pathConnectedSpace (M : Type*) [Nonempty M] : PathConnectedSpace (StdSimplex ℝ M) where
   nonempty := by infer_instance
-  joined x y :=
-  ⟨{toContinuousMap := ⟨_, continuous_convexCombPair x y⟩
+  joined x y := ⟨{
+    toContinuousMap := ⟨_, continuous_convexCombPair x y⟩
     source' := by simp
-    target' := by simp }⟩
+    target' := by simp
+  }⟩
 
 /-- The standard one-dimensional simplex is homeomorphic to the unit interval. -/
 noncomputable def homeomorphI : StdSimplex ℝ (Fin 2) ≃ₜ unitInterval where
   toEquiv := equivIcc
 
 @[local simp]
-lemma homeomorphI_apply_coe (s : StdSimplex ℝ (Fin 2)) :
-    (homeomorphI s).val = s.weights 1 := by
-  rfl
+lemma homeomorphI_apply_coe (s : StdSimplex ℝ (Fin 2)) : (homeomorphI s).val = s.weights 1 := by rfl
+
+@[simp] lemma homeomorphI_single_zero : homeomorphI (.single 0) = 0 := by aesop
+
+@[simp] lemma homeomorphI_single_one : homeomorphI (.single 1) = 1 := by aesop
 
 @[simp]
-lemma homeomorphI_single_zero : homeomorphI (.single 0) = 0 := by aesop
+lemma homeomorphI_symm_zero : homeomorphI.symm 0 = .single 0 := homeomorphI.injective (by simp)
 
 @[simp]
-lemma homeomorphI_single_one : homeomorphI (.single 1) = 1 := by aesop
-
-@[simp]
-lemma homeomorphI_symm_zero : homeomorphI.symm 0 = .single 0 :=
-  homeomorphI.injective (by simp)
-
-@[simp]
-lemma homeomorphI_symm_one : homeomorphI.symm 1 = .single 1 :=
-  homeomorphI.injective (by simp)
+lemma homeomorphI_symm_one : homeomorphI.symm 1 = .single 1 := homeomorphI.injective (by simp)
 
 end Convexity.StdSimplex

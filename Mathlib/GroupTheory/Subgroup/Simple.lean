@@ -25,7 +25,6 @@ subgroup, subgroups
 
 public section
 
-
 variable {G : Type*} [Group G]
 variable {A : Type*} [AddGroup A]
 
@@ -54,13 +53,13 @@ attribute [to_additive existing] IsSimpleGroup isSimpleGroup_iff
 variable {G} {A}
 
 @[to_additive]
-theorem Subgroup.Normal.eq_bot_or_eq_top [IsSimpleGroup G] (H : Subgroup G) [H.Normal] :
-    H = ⊥ ∨ H = ⊤ :=
+theorem Subgroup.Normal.eq_bot_or_eq_top [IsSimpleGroup G] (H : Subgroup G) [H.Normal]
+    : H = ⊥ ∨ H = ⊤ :=
   IsSimpleGroup.eq_bot_or_eq_top_of_normal H
 
 @[to_additive]
-protected lemma Subgroup.isSimpleGroup_iff {H : Subgroup G} :
-    IsSimpleGroup ↥H ↔ H ≠ ⊥ ∧ ∀ H' ≤ H, (H'.subgroupOf H).Normal → H' = ⊥ ∨ H' = H := by
+protected lemma Subgroup.isSimpleGroup_iff {H : Subgroup G}
+    : IsSimpleGroup ↥H ↔ H ≠ ⊥ ∧ ∀ H' ≤ H, (H'.subgroupOf H).Normal → H' = ⊥ ∨ H' = H := by
   rw [isSimpleGroup_iff, H.nontrivial_iff_ne_bot, Subgroup.forall]
   simp +contextual [disjoint_of_le_iff_left_eq_bot, LE.le.ge_iff_eq]
 
@@ -79,23 +78,23 @@ theorem of_isSimpleOrder [hG : IsSimpleOrder (Subgroup G)] : IsSimpleGroup G whe
 open Subgroup
 
 @[to_additive]
-theorem isSimpleGroup_of_surjective {H : Type*} [Group H] [IsSimpleGroup G] [Nontrivial H]
-    (f : G →* H) (hf : Function.Surjective f) : IsSimpleGroup H :=
-  ⟨fun H iH => by
-    refine (iH.comap f).eq_bot_or_eq_top.imp (fun h => ?_) fun h => ?_
-    · rw [← map_bot f, ← h, map_comap_eq_self_of_surjective hf]
-    · rw [← comap_top f] at h
-      exact comap_injective hf h⟩
+theorem isSimpleGroup_of_surjective
+    {H : Type*} [Group H] [IsSimpleGroup G] [Nontrivial H] (f : G →* H) (hf : Function.Surjective f)
+    : IsSimpleGroup H := ⟨fun H iH => by
+  refine (iH.comap f).eq_bot_or_eq_top.imp (fun h => ?_) fun h => ?_
+  · rw [← map_bot f, ← h, map_comap_eq_self_of_surjective hf]
+  · rw [← comap_top f] at h
+    exact comap_injective hf h⟩
 
 @[to_additive]
-lemma _root_.MulEquiv.isSimpleGroup {H : Type*} [Group H] [IsSimpleGroup H] (e : G ≃* H) :
-    IsSimpleGroup G :=
+lemma _root_.MulEquiv.isSimpleGroup {H : Type*} [Group H] [IsSimpleGroup H] (e : G ≃* H)
+    : IsSimpleGroup G :=
   haveI : Nontrivial G := e.toEquiv.nontrivial
   isSimpleGroup_of_surjective e.symm.toMonoidHom e.symm.surjective
 
 @[to_additive]
-lemma _root_.MulEquiv.isSimpleGroup_congr {H : Type*} [Group H] (e : G ≃* H) :
-    IsSimpleGroup G ↔ IsSimpleGroup H where
+lemma _root_.MulEquiv.isSimpleGroup_congr {H : Type*} [Group H] (e : G ≃* H)
+    : IsSimpleGroup G ↔ IsSimpleGroup H where
   mp _ := e.symm.isSimpleGroup
   mpr _ := e.isSimpleGroup
 

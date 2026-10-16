@@ -70,12 +70,14 @@ variable {α : Type u} {x y z : α}
 ### Generalized Boolean algebras
 -/
 
-/-- A generalized Boolean algebra is a distributive lattice with `⊥` and a relative complement
+/--
+A generalized Boolean algebra is a distributive lattice with `⊥` and a relative complement
 operation `\` (called `sdiff`, after "set difference") satisfying `(a ⊓ b) ⊔ (a \ b) = a` and
 `(a ⊓ b) ⊓ (a \ b) = ⊥`, i.e. `a \ b` is the complement of `b` in `a`.
 
 This is a generalization of Boolean algebras which applies to `Finset α` for arbitrary
-(not-necessarily-`Fintype`) `α`. -/
+(not-necessarily-`Fintype`) `α`.
+-/
 class GeneralizedBooleanAlgebra (α : Type u) extends DistribLattice α, SDiff α, Bot α where
   /-- For any `a`, `b`, `(a ⊓ b) ⊔ (a / b) = a` -/
   sup_inf_sdiff : ∀ a b : α, a ⊓ b ⊔ a \ b = a
@@ -86,8 +88,8 @@ class GeneralizedBooleanAlgebra (α : Type u) extends DistribLattice α, SDiff �
 ### Boolean algebras
 -/
 
-
-/-- A Boolean algebra is a bounded distributive lattice with a complement operator `ᶜ` such that
+/--
+A Boolean algebra is a bounded distributive lattice with a complement operator `ᶜ` such that
 `x ⊓ xᶜ = ⊥` and `x ⊔ xᶜ = ⊤`. For convenience, it must also provide a set difference operation `\`
 and a Heyting implication `⇨` satisfying `x \ y = x ⊓ yᶜ` and `x ⇨ y = y ⊔ xᶜ`.
 
@@ -98,8 +100,8 @@ to be present at define-time, the `extends` mechanism does not work with them.
 Instead, we extend using the underlying `Bot` and `Top` data typeclasses, and replicate the
 order axioms of those classes here. A "forgetful" instance back to `BoundedOrder` is provided.
 -/
-class BooleanAlgebra (α : Type u) extends
-    DistribLattice α, Compl α, SDiff α, HImp α, Top α, Bot α where
+class BooleanAlgebra (α : Type u)
+    extends DistribLattice α, Compl α, SDiff α, HImp α, Top α, Bot α where
   /-- The infimum of `x` and `xᶜ` is at most `⊥` -/
   inf_compl_le_bot : ∀ x : α, x ⊓ xᶜ ≤ ⊥
   /-- The supremum of `x` and `xᶜ` is at least `⊤` -/
@@ -118,8 +120,10 @@ class BooleanAlgebra (α : Type u) extends
   himp_eq : ∀ x y : α, x ⇨ y = y ⊔ xᶜ := by aesop
 
 -- see Note [lower instance priority]
-instance (priority := 100) BooleanAlgebra.toBoundedOrder [h : BooleanAlgebra α] : BoundedOrder α :=
-  { h with }
+instance (priority := 100) BooleanAlgebra.toBoundedOrder [h : BooleanAlgebra α]
+    : BoundedOrder α := {
+  h with
+}
 
 instance Prop.instBooleanAlgebra : BooleanAlgebra Prop where
   __ := Prop.instHeytingAlgebra
@@ -139,9 +143,7 @@ theorem Bool.sup_eq_bor : (· ⊔ ·) = or := by dsimp
 
 theorem Bool.inf_eq_band : (· ⊓ ·) = and := by dsimp
 
-@[simp]
-theorem Bool.compl_eq_bnot : Compl.compl = not :=
-  rfl
+@[simp] theorem Bool.compl_eq_bnot : Compl.compl = not := rfl
 
 instance PUnit.instBooleanAlgebra : BooleanAlgebra PUnit where
   __ := PUnit.instBiheytingAlgebra
@@ -160,8 +162,8 @@ a distributive lattice that is complemented is a Boolean algebra.
 This is not an instance, because it creates data using choice.
 -/
 @[instance_reducible]
-noncomputable
-def booleanAlgebraOfComplemented [BoundedOrder α] [ComplementedLattice α] : BooleanAlgebra α where
+noncomputable def booleanAlgebraOfComplemented [BoundedOrder α] [ComplementedLattice α]
+    : BooleanAlgebra α where
   __ := ((inferInstance : BoundedOrder α))
   compl a := Classical.choose <| exists_isCompl a
   inf_compl_le_bot a := (Classical.choose_spec (exists_isCompl a)).disjoint.le_bot

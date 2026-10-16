@@ -38,16 +38,17 @@ Explicit binary fan in `CompHausLike P`, given that the predicate `P` is preserv
 type-theoretic products.
 -/
 def productCone : BinaryFan X Y :=
-  BinaryFan.mk (P := ↧(X × Y))
-    (ofHom _ { toFun := Prod.fst }) (ofHom _ { toFun := Prod.snd })
+  BinaryFan.mk (P := ↧(X × Y)) (ofHom _ { toFun := Prod.fst }) (ofHom _ { toFun := Prod.snd })
 
 /--
 When the predicate `P` is preserved under taking type-theoretic products, that product is a
 category-theoretic product in `CompHausLike P`.
 -/
 def productIsLimit : IsLimit (productCone X Y) := by
-  refine BinaryFan.isLimitMk (fun s ↦ ofHom _ { toFun x := (s.fst x, s.snd x) })
-    (by rfl_cat) (by rfl_cat) fun _ _ h₁ h₂ ↦ ?_
+  refine BinaryFan.isLimitMk
+    (fun s ↦ ofHom _ { toFun x := (s.fst x, s.snd x) })
+    (by rfl_cat) (by rfl_cat)
+    fun _ _ h₁ h₂ ↦ ?_
   ext x
   exacts [congr($h₁ _), congr($h₂ _)]
 
@@ -60,10 +61,10 @@ keep it as a def and turn it on as an instance for the explicit examples of `Com
 needed.
 -/
 @[instance_reducible]
-def cartesianMonoidalCategory [∀ (X Y : CompHausLike.{u} P), HasProp P (X × Y)]
-    [HasProp P PUnit.{u + 1}] : CartesianMonoidalCategory (CompHausLike.{u} P) :=
-  .ofChosenFiniteProducts
-    ⟨_, CompHausLike.isTerminalPUnit⟩
+def cartesianMonoidalCategory
+    [∀ (X Y : CompHausLike.{u} P), HasProp P (X × Y)] [HasProp P PUnit.{u + 1}]
+    : CartesianMonoidalCategory (CompHausLike.{u} P) :=
+  .ofChosenFiniteProducts ⟨_, CompHausLike.isTerminalPUnit⟩
     (fun X Y ↦ ⟨productCone X Y, productIsLimit X Y⟩)
 
 end Product
@@ -76,16 +77,18 @@ variable [HasProp P (X ⊕ Y)]
 Explicit binary cofan in `CompHausLike P`, given that the predicate `P` is preserved under taking
 type-theoretic sums.
 -/
-def coproductCocone : BinaryCofan X Y := BinaryCofan.mk (P := ↧(X ⊕ Y))
-  (ofHom _ { toFun := Sum.inl }) (ofHom _ { toFun := Sum.inr })
+def coproductCocone : BinaryCofan X Y :=
+  BinaryCofan.mk (P := ↧(X ⊕ Y)) (ofHom _ { toFun := Sum.inl }) (ofHom _ { toFun := Sum.inr })
 
 /--
 When the predicate `P` is preserved under taking type-theoretic sums, that sum is a
 category-theoretic coproduct in `CompHausLike P`.
 -/
 def coproductIsColimit : IsColimit (coproductCocone X Y) := by
-  refine BinaryCofan.isColimitMk (fun s ↦ ofHom _ { toFun := Sum.elim s.inl s.inr })
-    (by rfl_cat) (by rfl_cat) fun _ _ h₁ h₂ ↦ ?_
+  refine BinaryCofan.isColimitMk
+    (fun s ↦ ofHom _ { toFun := Sum.elim s.inl s.inr })
+    (by rfl_cat) (by rfl_cat)
+    fun _ _ h₁ h₂ ↦ ?_
   ext ⟨⟩
   exacts [congr($h₁ _), congr($h₂ _)]
 

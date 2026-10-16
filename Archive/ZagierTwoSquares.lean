@@ -36,8 +36,10 @@ open Set
 
 variable (k : ℕ) [hk : Fact (4 * k + 1).Prime]
 
-/-- The set of all triples of natural numbers `(x, y, z)` satisfying
-`x * x + 4 * y * z = 4 * k + 1`. -/
+/--
+The set of all triples of natural numbers `(x, y, z)` satisfying
+`x * x + 4 * y * z = 4 * k + 1`.
+-/
 def zagierSet : Set (ℕ × ℕ × ℕ) := {t | t.1 * t.1 + 4 * t.2.1 * t.2.2 = 4 * k + 1}
 
 lemma zagierSet_lower_bound {x y z : ℕ} (h : (x, y, z) ∈ zagierSet k) : 0 < x ∧ 0 < y ∧ 0 < z := by
@@ -52,13 +54,14 @@ lemma zagierSet_lower_bound {x y z : ℕ} (h : (x, y, z) ∈ zagierSet k) : 0 < 
   all_goals
     rcases (Nat.dvd_prime hk.out).1 (dvd_of_mul_left_eq _ h) with e | e
     all_goals
-      simp only [e, right_eq_add, ne_eq, add_eq_zero, and_false, not_false_eq_true,
-        mul_eq_left₀, reduceCtorEq] at h
+      simp only [e, right_eq_add, ne_eq, add_eq_zero, and_false, not_false_eq_true, mul_eq_left₀,
+          reduceCtorEq]
+        at h
       simp only [h, zero_add] at hk
       exact Nat.not_prime_one hk.out
 
-lemma zagierSet_upper_bound {x y z : ℕ} (h : (x, y, z) ∈ zagierSet k) :
-    x ≤ k + 1 ∧ y ≤ k ∧ z ≤ k := by
+lemma zagierSet_upper_bound {x y z : ℕ} (h : (x, y, z) ∈ zagierSet k)
+    : x ≤ k + 1 ∧ y ≤ k ∧ z ≤ k := by
   obtain ⟨_, _, _⟩ := zagierSet_lower_bound k h
   rw [zagierSet, mem_ofPred_eq] at h
   refine ⟨?_, ?_, ?_⟩ <;> nlinarith
@@ -82,16 +85,21 @@ open Function
 variable (k : ℕ)
 
 /-- The obvious involution `(x, y, z) ↦ (x, z, y)`. -/
-def obvInvo : Function.End (zagierSet k) := fun ⟨⟨x, y, z⟩, h⟩ => ⟨⟨x, z, y⟩, by
-  simp only [zagierSet, Set.mem_ofPred_eq] at h ⊢
-  linarith [h]⟩
+def obvInvo : Function.End (zagierSet k) := fun ⟨⟨x, y, z⟩, h⟩ => ⟨
+  ⟨x, z, y⟩,
+  by
+    simp only [zagierSet, Set.mem_ofPred_eq] at h ⊢
+    linarith [h]
+⟩
 
 theorem obvInvo_sq : obvInvo k ^ 2 = 1 := rfl
 
-/-- If `obvInvo k` has a fixed point, a representation of `4 * k + 1` as a sum of two squares
-can be extracted from it. -/
-theorem sq_add_sq_of_nonempty_fixedPoints (hn : (fixedPoints (obvInvo k)).Nonempty) :
-    ∃ a b : ℕ, a ^ 2 + b ^ 2 = 4 * k + 1 := by
+/--
+If `obvInvo k` has a fixed point, a representation of `4 * k + 1` as a sum of two squares
+can be extracted from it.
+-/
+theorem sq_add_sq_of_nonempty_fixedPoints (hn : (fixedPoints (obvInvo k)).Nonempty)
+    : ∃ a b : ℕ, a ^ 2 + b ^ 2 = 4 * k + 1 := by
   simp only [sq]
   obtain ⟨⟨⟨x, y, z⟩, he⟩, hf⟩ := hn
   have := mem_fixedPoints_iff.mp hf
@@ -100,19 +108,26 @@ theorem sq_add_sq_of_nonempty_fixedPoints (hn : (fixedPoints (obvInvo k)).Nonemp
   use x, (2 * y)
   rw [show 2 * y * (2 * y) = 4 * y * y by linarith, ← he, this.1]
 
-/-- The complicated involution, defined piecewise according to how `x` compares with
-`y - z` and `2 * y`. -/
-def complexInvo : Function.End (zagierSet k) := fun ⟨⟨x, y, z⟩, h⟩ =>
-  ⟨if x + z < y then ⟨x + 2 * z, z, y - x - z⟩ else
-   if 2 * y < x then ⟨x - 2 * y, x + z - y, y⟩ else
-                     ⟨2 * y - x, y, x + z - y⟩, by
-  split_ifs with less more <;> simp only [zagierSet, Set.mem_ofPred_eq] at h ⊢
-  · -- less: `x + z < y` (`x < y - z` as stated by Zagier)
-    rw [Nat.sub_sub]; zify [less.le] at h ⊢; linarith [h]
-  · -- more: `2 * y < x`
-    push Not at less; zify [less, more.le] at h ⊢; linarith [h]
-  · -- middle: `x` is neither less than `y - z` or more than `2 * y`
-    push Not at less more; zify [less, more] at h ⊢; linarith [h]⟩
+/--
+The complicated involution, defined piecewise according to how `x` compares with
+`y - z` and `2 * y`.
+-/
+def complexInvo : Function.End (zagierSet k) := fun ⟨⟨x, y, z⟩, h⟩ => ⟨
+  if x + z < y then
+    ⟨x + 2 * z, z, y - x - z⟩
+  else if 2 * y < x then
+    ⟨x - 2 * y, x + z - y, y⟩
+  else
+    ⟨2 * y - x, y, x + z - y⟩,
+  by
+    split_ifs with less more <;> simp only [zagierSet, Set.mem_ofPred_eq] at h ⊢
+    · -- less: `x + z < y` (`x < y - z` as stated by Zagier)
+      rw [Nat.sub_sub]; zify [less.le] at h ⊢; linarith [h]
+    · -- more: `2 * y < x`
+      push Not at less; zify [less, more.le] at h ⊢; linarith [h]
+    · -- middle: `x` is neither less than `y - z` or more than `2 * y`
+      push Not at less more; zify [less, more] at h ⊢; linarith [h]
+⟩
 
 variable [hk : Fact (4 * k + 1).Prime]
 
@@ -128,8 +143,8 @@ theorem complexInvo_sq : complexInvo k ^ 2 = 1 := by
   · -- less
     simp only [show ¬(x + 2 * z + (y - x - z) < z) by linarith [less], ite_false,
       lt_add_iff_pos_left, xb, add_tsub_cancel_right, ite_true]
-    rw [Nat.sub_sub, two_mul, ← tsub_add_eq_add_tsub (by linarith), ← add_assoc,
-      Nat.add_sub_cancel, add_comm (x + z), Nat.sub_add_cancel less.le]
+    rw [Nat.sub_sub, two_mul, ← tsub_add_eq_add_tsub (by linarith), ← add_assoc, Nat.add_sub_cancel,
+      add_comm (x + z), Nat.sub_add_cancel less.le]
   · -- more
     push Not at less
     simp only [show x - 2 * y + y < x + z - y by zify [less, more.le]; linarith, ite_true]
@@ -139,21 +154,21 @@ theorem complexInvo_sq : complexInvo k ^ 2 = 1 := by
     push Not at less more
     simp only [show ¬(2 * y - x + (x + z - y) < y) by zify [less, more]; linarith,
       show ¬(2 * y < 2 * y - x) by zify [more]; linarith, ite_false]
-    rw [tsub_tsub_assoc (2 * y).le_refl more, tsub_self, zero_add,
-      ← Nat.add_sub_assoc less, ← add_assoc, Nat.sub_add_cancel more, Nat.sub_sub _ _ y,
-      ← two_mul, add_comm, Nat.add_sub_cancel]
+    rw [tsub_tsub_assoc (2 * y).le_refl more, tsub_self, zero_add, ← Nat.add_sub_assoc less,
+      ← add_assoc, Nat.sub_add_cancel more, Nat.sub_sub _ _ y, ← two_mul, add_comm,
+      Nat.add_sub_cancel]
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Any fixed point of `complexInvo k` must be `(1, 1, k)`. -/
-theorem eq_of_mem_fixedPoints {t : zagierSet k} (mem : t ∈ fixedPoints (complexInvo k)) :
-    t.val = (1, 1, k) := by
+theorem eq_of_mem_fixedPoints {t : zagierSet k} (mem : t ∈ fixedPoints (complexInvo k))
+    : t.val = (1, 1, k) := by
   obtain ⟨⟨x, y, z⟩, h⟩ := t
   obtain ⟨_, _, _⟩ := zagierSet_lower_bound k h
   rw [mem_fixedPoints_iff, complexInvo, Subtype.mk.injEq] at mem
-  split_ifs at mem with less more <;>
+  split_ifs at mem with less more
     -- less (completely handled by the pre-applied `simp_all only`)
-    simp_all only [not_lt, Prod.mk.injEq, add_eq_left, mul_eq_zero, false_or,
-      lt_self_iff_false, reduceCtorEq]
+    <;> simp_all only [not_lt, Prod.mk.injEq, add_eq_left, mul_eq_zero, false_or, lt_self_iff_false,
+      reduceCtorEq]
   · -- more
     obtain ⟨_, _, _⟩ := mem; simp_all
   · -- middle (the one fixed point falls under this case)
@@ -193,15 +208,18 @@ end Zagier
 
 open Zagier
 
-/-- **Fermat's theorem on sums of two squares** (Wiedijk #20).
-Every prime congruent to 1 mod 4 is the sum of two squares, proved using Zagier's involutions. -/
-theorem Nat.Prime.sq_add_sq' {p : ℕ} [h : Fact p.Prime] (hp : p % 4 = 1) :
-    ∃ a b : ℕ, a ^ 2 + b ^ 2 = p := by
+/--
+**Fermat's theorem on sums of two squares** (Wiedijk #20).
+Every prime congruent to 1 mod 4 is the sum of two squares, proved using Zagier's involutions.
+-/
+theorem Nat.Prime.sq_add_sq' {p : ℕ} [h : Fact p.Prime] (hp : p % 4 = 1)
+    : ∃ a b : ℕ, a ^ 2 + b ^ 2 = p := by
   rw [← div_add_mod p 4, hp] at h ⊢
   let k := p / 4
   apply sq_add_sq_of_nonempty_fixedPoints
-  have key := (Equiv.Perm.card_fixedPoints_modEq (p := 2) (n := 1) (obvInvo_sq k)).symm.trans
-    (Equiv.Perm.card_fixedPoints_modEq (p := 2) (n := 1) (complexInvo_sq k))
+  have key :=
+    (Equiv.Perm.card_fixedPoints_modEq (p := 2) (n := 1) (obvInvo_sq k)).symm.trans
+      (Equiv.Perm.card_fixedPoints_modEq (p := 2) (n := 1) (complexInvo_sq k))
   contrapose key
   rw [Set.not_nonempty_iff_eq_empty] at key
   simp_rw [k, key, Fintype.card_eq_zero, card_fixedPoints_eq_one]

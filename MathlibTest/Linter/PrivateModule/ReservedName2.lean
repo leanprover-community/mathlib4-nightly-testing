@@ -9,8 +9,7 @@ open Lean
 -- `foo.eq_1` is still reserved:
 /-- info: true -/
 #guard_msgs in
-run_cmd do
-  logInfo m!"{isReservedName (← getEnv) ``foo.eq_1}"
+run_cmd do logInfo m!"{isReservedName (← getEnv) ``foo.eq_1}"
 
 -- `foo.eq_1` is not yet realized:
 /-- info: reserved names: [] -/

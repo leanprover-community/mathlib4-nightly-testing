@@ -8,7 +8,6 @@ module
 public import Mathlib.LinearAlgebra.Basis.Defs
 public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Mathlib.SetTheory.Cardinal.Pigeonhole
-
 import Mathlib.LinearAlgebra.Span.Basic
 
 /-!
@@ -29,13 +28,15 @@ section Semiring
 
 variable [Semiring R] [AddCommMonoid M] [Module R M]
 
-lemma finite_of_span_finite_eq_top_finsupp [Nontrivial M] {ι : Type*} {s : Set (ι →₀ M)}
-    (hs : s.Finite) (hsspan : span R s = ⊤) : Finite ι :=
-  suffices ⋃ i ∈ s, i.support = .univ from
-    .of_finite_univ (this ▸ hs.biUnion fun _ _ ↦ by simp)
+lemma finite_of_span_finite_eq_top_finsupp
+    [Nontrivial M] {ι : Type*} {s : Set (ι →₀ M)} (hs : s.Finite) (hsspan : span R s = ⊤)
+    : Finite ι :=
+  suffices ⋃ i ∈ s, i.support = .univ from .of_finite_univ (this ▸ hs.biUnion fun _ _ ↦ by simp)
   have ⟨x, hx⟩ := exists_ne (0 : M)
-  eq_univ_of_forall fun j ↦ (top_unique (hsspan.ge.trans (span_le_supported_biUnion_support R s)) ▸
-    mem_top (x := single j x)) ((mem_support_single ..).mpr ⟨rfl, hx⟩)
+  eq_univ_of_forall fun j ↦
+    (top_unique (hsspan.ge.trans (span_le_supported_biUnion_support R s))
+        ▸ mem_top (x := single j x))
+      ((mem_support_single ..).mpr ⟨rfl, hx⟩)
 
 -- One might hope that a finite spanning set implies that any linearly independent set is finite.
 -- While this is true over a division ring
@@ -52,8 +53,11 @@ lemma finite_of_span_finite_eq_top_finsupp [Nontrivial M] {ι : Type*} {s : Set 
 /--
 Over any nontrivial ring, the existence of a finite spanning set implies that any basis is finite.
 -/
-lemma basis_finite_of_finite_spans [Nontrivial R] {s : Set M} (hs : s.Finite)
-    (hsspan : span R s = ⊤) {ι : Type w} (b : Basis ι R M) : Finite ι := by
+lemma basis_finite_of_finite_spans
+    [Nontrivial R]
+    {s : Set M} (hs : s.Finite) (hsspan : span R s = ⊤)
+    {ι : Type w} (b : Basis ι R M)
+    : Finite ι := by
   have := congr(($hsspan).map b.repr.toLinearMap)
   rw [← span_image, Submodule.map_top, LinearEquiv.range] at this
   exact finite_of_span_finite_eq_top_finsupp (hs.image _) this
@@ -65,17 +69,20 @@ section Ring
 variable [Semiring R] [AddCommMonoid M] [Nontrivial R] [Module R M]
 
 -- From [Les familles libres maximales d'un module ont-elles le meme cardinal?][lazarus1973]
-/-- Over any ring `R`, if `b` is a basis for a module `M`,
+/--
+Over any ring `R`, if `b` is a basis for a module `M`,
 and `s` is a maximal linearly independent set,
 then the union of the supports of `x ∈ s` (when written out in the basis `b`) is all of `b`.
 -/
-theorem union_support_maximal_linearIndependent_eq_range_basis {ι : Type w} (b : Basis ι R M)
-    {κ : Type w'} (v : κ → M) (ind : LinearIndependent R v) (m : ind.Maximal) :
-    ⋃ k, ((b.repr (v k)).support : Set ι) = Set.univ := by
+theorem union_support_maximal_linearIndependent_eq_range_basis
+    {ι : Type w} (b : Basis ι R M)
+    {κ : Type w'} (v : κ → M) (ind : LinearIndependent R v) (m : ind.Maximal)
+    : ⋃ k, ((b.repr (v k)).support : Set ι) = Set.univ := by
   -- If that's not the case,
   by_contra h
   simp only [← Ne.eq_def, ne_univ_iff_exists_notMem, mem_iUnion, not_exists_not,
-    Finsupp.mem_support_iff, Finset.mem_coe] at h
+      Finsupp.mem_support_iff, Finset.mem_coe]
+    at h
   -- We have some basis element `b i` which is not in the support of any of the `v k`.
   obtain ⟨i, w⟩ := h
   have repr_eq_zero (l) : b.repr (linearCombination R v l) i = 0 := by
@@ -101,20 +108,23 @@ theorem union_support_maximal_linearIndependent_eq_range_basis {ι : Type w} (b 
     · simpa [repr_eq_zero] using congr(b.repr $z i)
     -- All the other coefficients are also equal, because `v` is linear independent,
     -- by comparing the coefficients in the basis `b`.
-    have l₁ : l.some = l'.some := ind <| b.repr.injective <| ext fun j ↦ by
-      obtain rfl | ne := eq_or_ne i j
-      · simp_rw [repr_eq_zero]
-      simpa [single_apply, ne] using congr(b.repr $z j)
+    have l₁ : l.some = l'.some :=
+      ind <| b.repr.injective <| ext fun j ↦ by
+        obtain rfl | ne := eq_or_ne i j
+        · simp_rw [repr_eq_zero]
+        simpa [single_apply, ne] using congr(b.repr $z j)
     congrm $l₁ a
   exact r'' (m (range v') i' r)
 
-/-- Over any ring `R`, if `b` is an infinite basis for a module `M`,
+/--
+Over any ring `R`, if `b` is an infinite basis for a module `M`,
 and `s` is a maximal linearly independent set,
 then the cardinality of `b` is bounded by the cardinality of `s`.
 -/
-theorem infinite_basis_le_maximal_linearIndependent' {ι : Type w} (b : Basis ι R M) [Infinite ι]
-    {κ : Type w'} (v : κ → M) (i : LinearIndependent R v) (m : i.Maximal) :
-    Cardinal.lift.{w'} #ι ≤ Cardinal.lift.{w} #κ := by
+theorem infinite_basis_le_maximal_linearIndependent'
+    {ι : Type w} (b : Basis ι R M) [Infinite ι]
+    {κ : Type w'} (v : κ → M) (i : LinearIndependent R v) (m : i.Maximal)
+    : Cardinal.lift.{w'} #ι ≤ Cardinal.lift.{w} #κ := by
   let Φ := fun k : κ => (b.repr (v k)).support
   have w₁ : #ι ≤ #(Set.range Φ) := by
     apply Cardinal.le_range_of_union_finset_eq_univ
@@ -124,12 +134,15 @@ theorem infinite_basis_le_maximal_linearIndependent' {ι : Type w} (b : Basis ι
 
 -- (See `infinite_basis_le_maximal_linearIndependent'` for the more general version
 -- where the index types can live in different universes.)
-/-- Over any ring `R`, if `b` is an infinite basis for a module `M`,
+/--
+Over any ring `R`, if `b` is an infinite basis for a module `M`,
 and `s` is a maximal linearly independent set,
 then the cardinality of `b` is bounded by the cardinality of `s`.
 -/
-theorem infinite_basis_le_maximal_linearIndependent {ι : Type w} (b : Basis ι R M) [Infinite ι]
-    {κ : Type w} (v : κ → M) (i : LinearIndependent R v) (m : i.Maximal) : #ι ≤ #κ :=
+theorem infinite_basis_le_maximal_linearIndependent
+    {ι : Type w} (b : Basis ι R M) [Infinite ι]
+    {κ : Type w} (v : κ → M) (i : LinearIndependent R v) (m : i.Maximal)
+    : #ι ≤ #κ :=
   Cardinal.lift_le.mp (infinite_basis_le_maximal_linearIndependent' b v i m)
 
 end Ring

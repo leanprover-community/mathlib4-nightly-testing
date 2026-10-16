@@ -6,7 +6,6 @@ Authors: Moritz Firsching, Ralf Stephan
 module
 
 public import Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity
-
 import Mathlib.NumberTheory.LucasPrimality
 
 /-!
@@ -55,29 +54,32 @@ theorem odd_fermatNumber (n : ℕ) : Odd (fermatNumber n) :=
   (even_two.pow_of_ne_zero (pow_pos two_pos n).ne').add_one
 
 theorem prod_fermatNumber (n : ℕ) : ∏ k ∈ range n, fermatNumber k = fermatNumber n - 2 := by
-  induction n with | zero => rfl | succ n hn =>
-  rw [prod_range_succ, hn, fermatNumber, fermatNumber, mul_comm,
-    (show 2 ^ 2 ^ n + 1 - 2 = 2 ^ 2 ^ n - 1 by lia), ← sq_sub_sq]
-  ring_nf
-  lia
+  induction n with
+  | zero =>
+    rfl
+  | succ n hn =>
+    rw [prod_range_succ, hn, fermatNumber, fermatNumber, mul_comm,
+      (show 2 ^ 2 ^ n + 1 - 2 = 2 ^ 2 ^ n - 1 by lia), ← sq_sub_sq]
+    ring_nf
+    lia
 
-theorem fermatNumber_eq_prod_add_two (n : ℕ) :
-    fermatNumber n = ∏ k ∈ range n, fermatNumber k + 2 := by
+theorem fermatNumber_eq_prod_add_two (n : ℕ)
+    : fermatNumber n = ∏ k ∈ range n, fermatNumber k + 2 := by
   rw [prod_fermatNumber, Nat.sub_add_cancel]
   exact le_of_lt <| two_lt_fermatNumber _
 
 theorem fermatNumber_succ (n : ℕ) : fermatNumber (n + 1) = (fermatNumber n - 1) ^ 2 + 1 := by
   rw [fermatNumber, pow_succ, mul_comm, pow_mul', fermatNumber, add_tsub_cancel_right]
 
-theorem two_mul_fermatNumber_sub_one_sq_le_fermatNumber_sq (n : ℕ) :
-    2 * (fermatNumber n - 1) ^ 2 ≤ (fermatNumber (n + 1)) ^ 2 := by
+theorem two_mul_fermatNumber_sub_one_sq_le_fermatNumber_sq (n : ℕ)
+    : 2 * (fermatNumber n - 1) ^ 2 ≤ (fermatNumber (n + 1)) ^ 2 := by
   simp only [fermatNumber, add_tsub_cancel_right]
   have : 0 ≤ 1 + 2 ^ (2 ^ n * 4) := le_add_left _ _
   ring_nf
   lia
 
-theorem fermatNumber_eq_fermatNumber_sq_sub_two_mul_fermatNumber_sub_one_sq (n : ℕ) :
-    fermatNumber (n + 2) = (fermatNumber (n + 1)) ^ 2 - 2 * (fermatNumber n - 1) ^ 2 := by
+theorem fermatNumber_eq_fermatNumber_sq_sub_two_mul_fermatNumber_sub_one_sq (n : ℕ)
+    : fermatNumber (n + 2) = (fermatNumber (n + 1)) ^ 2 - 2 * (fermatNumber n - 1) ^ 2 := by
   simp only [fermatNumber, add_sub_self_right]
   rw [← add_sub_self_right (2 ^ 2 ^ (n + 2) + 1) <| 2 * 2 ^ 2 ^ (n + 1)]
   ring_nf
@@ -86,8 +88,8 @@ end Nat
 
 open Nat
 
-theorem Int.fermatNumber_eq_fermatNumber_sq_sub_two_mul_fermatNumber_sub_one_sq (n : ℕ) :
-    (fermatNumber (n + 2) : ℤ) = (fermatNumber (n + 1)) ^ 2 - 2 * (fermatNumber n - 1) ^ 2 := by
+theorem Int.fermatNumber_eq_fermatNumber_sq_sub_two_mul_fermatNumber_sub_one_sq (n : ℕ)
+    : (fermatNumber (n + 2) : ℤ) = (fermatNumber (n + 1)) ^ 2 - 2 * (fermatNumber n - 1) ^ 2 := by
   rw [Nat.fermatNumber_eq_fermatNumber_sq_sub_two_mul_fermatNumber_sub_one_sq,
     Nat.cast_sub <| two_mul_fermatNumber_sub_one_sq_le_fermatNumber_sq n]
   simp only [fermatNumber, push_cast, add_tsub_cancel_right]
@@ -100,26 +102,27 @@ open Finset
 
 From a letter to Euler, see page 37 in [juskevic2022].
 -/
-theorem coprime_fermatNumber_fermatNumber {m n : ℕ} (hmn : m ≠ n) :
-    Coprime (fermatNumber m) (fermatNumber n) := by
+theorem coprime_fermatNumber_fermatNumber {m n : ℕ} (hmn : m ≠ n)
+    : Coprime (fermatNumber m) (fermatNumber n) := by
   wlog hmn' : m < n
   · simpa only [coprime_comm] using this hmn.symm (by lia)
   let d := (fermatNumber m).gcd (fermatNumber n)
   have h_n : d ∣ fermatNumber n := gcd_dvd_right ..
-  have h_m : d ∣ 2 := (Nat.dvd_add_right <| (gcd_dvd_left _ _).trans <| dvd_prod_of_mem _
-    <| mem_range.mpr hmn').mp <| fermatNumber_eq_prod_add_two _ ▸ h_n
+  have h_m : d ∣ 2 :=
+    (Nat.dvd_add_right <| (gcd_dvd_left _ _).trans <| dvd_prod_of_mem _ <| mem_range.mpr hmn').mp <|
+      fermatNumber_eq_prod_add_two _ ▸ h_n
   refine ((dvd_prime prime_two).mp h_m).resolve_right fun h_two ↦ ?_
   exact (odd_fermatNumber _).not_two_dvd_nat (h_two ▸ h_n)
 
-lemma pairwise_coprime_fermatNumber :
-    Pairwise fun m n ↦ Coprime (fermatNumber m) (fermatNumber n) :=
-  fun _m _n ↦ coprime_fermatNumber_fermatNumber
+lemma pairwise_coprime_fermatNumber
+    : Pairwise fun m n ↦ Coprime (fermatNumber m) (fermatNumber n) := fun _m _n ↦
+  coprime_fermatNumber_fermatNumber
 
 open ZMod
 
 /-- Prime `a ^ n + 1` implies `n` is a power of two (**Fermat primes**). -/
-theorem pow_of_pow_add_prime {a n : ℕ} (ha : 1 < a) (hn : n ≠ 0) (hP : (a ^ n + 1).Prime) :
-    ∃ m : ℕ, n = 2 ^ m := by
+theorem pow_of_pow_add_prime {a n : ℕ} (ha : 1 < a) (hn : n ≠ 0) (hP : (a ^ n + 1).Prime)
+    : ∃ m : ℕ, n = 2 ^ m := by
   obtain ⟨k, m, hm, rfl⟩ := exists_eq_two_pow_mul_odd hn
   rw [pow_mul] at hP
   use k
@@ -129,8 +132,8 @@ theorem pow_of_pow_add_prime {a n : ℕ} (ha : 1 < a) (hn : n ≠ 0) (hP : (a ^ 
   rw [h, mul_one]
 
 /-- `Fₙ = 2^(2^n)+1` is prime if `3^(2^(2^n-1)) = -1 mod Fₙ` (**Pépin's test**). -/
-lemma pepin_primality (n : ℕ) (h : 3 ^ (2 ^ (2 ^ n - 1)) = (-1 : ZMod (fermatNumber n))) :
-    (fermatNumber n).Prime := by
+lemma pepin_primality (n : ℕ) (h : 3 ^ (2 ^ (2 ^ n - 1)) = (-1 : ZMod (fermatNumber n)))
+    : (fermatNumber n).Prime := by
   have := Fact.mk (two_lt_fermatNumber n)
   unfold fermatNumber at h this
   have key : 2 ^ n = 2 ^ n - 1 + 1 := (Nat.sub_add_cancel Nat.one_le_two_pow).symm
@@ -138,22 +141,21 @@ lemma pepin_primality (n : ℕ) (h : 3 ^ (2 ^ (2 ^ n - 1)) = (-1 : ZMod (fermatN
   · rw [Nat.add_sub_cancel, key, pow_succ, pow_mul, ← pow_succ, ← key, h, neg_one_sq]
   · intro p hp1 hp2
     rw [Nat.add_sub_cancel, (Nat.prime_dvd_prime_iff_eq hp1 prime_two).mp (hp1.dvd_of_dvd_pow hp2),
-        key, pow_succ, Nat.mul_div_cancel _ two_pos, ← pow_succ, ← key, h]
+      key, pow_succ, Nat.mul_div_cancel _ two_pos, ← pow_succ, ← key, h]
     exact neg_one_ne_one
 
 /-- `Fₙ = 2^(2^n)+1` is prime if `3^((Fₙ - 1)/2) = -1 mod Fₙ` (**Pépin's test**). -/
-lemma pepin_primality' (n : ℕ) (h : 3 ^ ((fermatNumber n - 1) / 2) = (-1 : ZMod (fermatNumber n))) :
-    (fermatNumber n).Prime := by
+lemma pepin_primality' (n : ℕ) (h : 3 ^ ((fermatNumber n - 1) / 2) = (-1 : ZMod (fermatNumber n)))
+    : (fermatNumber n).Prime := by
   apply pepin_primality
   rw [← h]
   congr
   rw [fermatNumber, add_tsub_cancel_right, Nat.pow_div Nat.one_le_two_pow Nat.zero_lt_two]
 
-
 /-- Prime factors of `a ^ (2 ^ n) + 1` are of form `k * 2 ^ (n + 1) + 1`. -/
-lemma pow_pow_add_primeFactors_one_lt {a n p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2)
-    (hpdvd : p ∣ a ^ (2 ^ n) + 1) :
-    ∃ k, p = k * 2 ^ (n + 1) + 1 := by
+lemma pow_pow_add_primeFactors_one_lt
+    {a n p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) (hpdvd : p ∣ a ^ (2 ^ n) + 1)
+    : ∃ k, p = k * 2 ^ (n + 1) + 1 := by
   have : Fact (2 < p) := Fact.mk (lt_of_le_of_ne hp.two_le hp2.symm)
   have : Fact p.Prime := Fact.mk hp
   have ha1 : (a : ZMod p) ^ (2 ^ n) = -1 := by
@@ -171,9 +173,8 @@ lemma pow_pow_add_primeFactors_one_lt {a n p : ℕ} (hp : p.Prime) (hp2 : p ≠ 
   simpa [ha, dvd_def, Nat.sub_eq_iff_eq_add hp.one_le, mul_comm] using orderOf_dvd_card_sub_one ha0
 
 -- Prime factors of `Fₙ = 2 ^ (2 ^ n) + 1`, `1 < n`, are of form `k * 2 ^ (n + 2) + 1`. -/
-lemma fermat_primeFactors_one_lt (n p : ℕ) (hn : 1 < n) (hp : p.Prime)
-    (hpdvd : p ∣ fermatNumber n) :
-    ∃ k, p = k * 2 ^ (n + 2) + 1 := by
+lemma fermat_primeFactors_one_lt (n p : ℕ) (hn : 1 < n) (hp : p.Prime) (hpdvd : p ∣ fermatNumber n)
+    : ∃ k, p = k * 2 ^ (n + 2) + 1 := by
   have : Fact p.Prime := Fact.mk hp
   have hp2 : p ≠ 2 := by
     exact (even_two.pow_of_ne_zero <| pow_ne_zero n two_ne_zero).add_one.ne_two_of_dvd_nat hpdvd
@@ -183,12 +184,10 @@ lemma fermat_primeFactors_one_lt (n p : ℕ) (hn : 1 < n) (hp : p.Prime)
     rw [add_assoc, pow_add, ← mul_assoc, ← mod_add_mod, mul_mod]
     simp
   obtain ⟨a, ha⟩ := (exists_sq_eq_two_iff hp2).mpr (Or.inl hp8)
-  suffices h : p ∣ a.val ^ (2 ^ (n + 1)) + 1 by
-    exact pow_pow_add_primeFactors_one_lt hp hp2 h
+  suffices h : p ∣ a.val ^ (2 ^ (n + 1)) + 1 by exact pow_pow_add_primeFactors_one_lt hp hp2 h
   rw [fermatNumber] at hpdvd
   rw [← natCast_eq_zero_iff, Nat.cast_add _ 1, Nat.cast_one, Nat.cast_pow] at hpdvd ⊢
   rwa [natCast_val, ZMod.cast_id, pow_succ', pow_mul, sq, ← ha]
-
 
 -- TODO: move to NumberTheory.Mersenne, once we have that.
 /-!
@@ -196,8 +195,8 @@ lemma fermat_primeFactors_one_lt (n p : ℕ) (hn : 1 < n) (hp : p.Prime)
 -/
 
 /-- Prime `a ^ n - 1` implies `a = 2` and prime `n`. -/
-theorem prime_of_pow_sub_one_prime {a n : ℕ} (hn1 : n ≠ 1) (hP : (a ^ n - 1).Prime) :
-    a = 2 ∧ n.Prime := by
+theorem prime_of_pow_sub_one_prime {a n : ℕ} (hn1 : n ≠ 1) (hP : (a ^ n - 1).Prime)
+    : a = 2 ∧ n.Prime := by
   have han1 : 1 < a ^ n := tsub_pos_iff_lt.mp hP.pos
   have hn0 : n ≠ 0 := fun h ↦ (h ▸ han1).ne' rfl
   have ha1 : 1 < a := (Nat.one_lt_pow_iff hn0).mp han1
@@ -209,8 +208,8 @@ theorem prime_of_pow_sub_one_prime {a n : ℕ} (hn1 : n ≠ 1) (hP : (a ^ n - 1)
     exact (pow_eq_self_iff ha1).mp (Nat.sub_one_cancel ha0 (pow_pos ha0 n) h).symm
   subst ha2
   refine ⟨rfl, Nat.prime_def.mpr ⟨(two_le_iff n).mpr ⟨hn0, hn1⟩, fun d hdn ↦ ?_⟩⟩
-  have hinj : ∀ x y, 2 ^ x - 1 = 2 ^ y - 1 → x = y :=
-    fun x y h ↦ Nat.pow_right_injective le_rfl (sub_one_cancel (pow_pos ha0 x) (pow_pos ha0 y) h)
+  have hinj : ∀ x y, 2 ^ x - 1 = 2 ^ y - 1 → x = y := fun x y h ↦
+    Nat.pow_right_injective le_rfl (sub_one_cancel (pow_pos ha0 x) (pow_pos ha0 y) h)
   let h := Nat.sub_dvd_pow_sub_pow (2 ^ d) 1 (n / d)
   rw [one_pow, ← pow_mul, Nat.mul_div_cancel' hdn] at h
   exact (hP.eq_one_or_self_of_dvd (2 ^ d - 1) h).imp (hinj d 1) (hinj d n)

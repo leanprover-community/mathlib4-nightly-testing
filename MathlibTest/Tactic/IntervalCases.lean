@@ -90,14 +90,16 @@ example (n : ℕ) (w₁ : n % 3 < 1) : n % 3 = 0 := by
 example (n : ℕ) (w₁ : n % 3 < 1) : n % 3 = 0 := by
   interval_cases n % 3
   rfl
-  -- the Lean 3 version had a different goal state after the `interval_cases`
-  -- the `n % 3` was not substituted, instead there was a hypothesis `h : n % 3 = 0` provided
-  -- so the proof was:
-  -- assumption
+-- the Lean 3 version had a different goal state after the `interval_cases`
+-- the `n % 3` was not substituted, instead there was a hypothesis `h : n % 3 = 0` provided
+-- so the proof was:
+-- assumption
 
 example (n : ℕ) (h1 : 4 ≤ n) (h2 : n < 10) : n < 20 := by
   interval_cases using h1, h2
-  all_goals { norm_num }
+  all_goals {
+    norm_num
+  }
 
 -- example (n : ℕ+) (w₂ : n < 1) : False := by interval_cases n
 
@@ -121,7 +123,9 @@ example (n : ℕ) (h1 : 4 ≤ n) (h2 : n < 10) : n < 20 := by
 
 example (z : ℤ) (h1 : z ≥ -3) (h2 : z < 2) : z < 20 := by
   interval_cases using h1, h2
-  all_goals { norm_num }
+  all_goals {
+    norm_num
+  }
 
 example (z : ℤ) (h1 : z ≥ -3) (h2 : z < 2) : z < 20 := by
   interval_cases z
@@ -138,13 +142,12 @@ example (z : ℤ) (h1 : z ≥ -3) (h2 : z < 2) : z < 20 := by
 
 example (n : ℕ) : n % 2 = 0 ∨ n % 2 = 1 := by
   set r := n % 2 with hr
-  have h2 : r < 2 := by
-    exact Nat.mod_lt _ (by decide)
+  have h2 : r < 2 := by exact Nat.mod_lt _ (by decide)
   interval_cases hrv : r
   · left; exact hrv.symm.trans hrv
-               --^ hover says `hrv : r = 0` and jumps to `hrv :` above
+  -- ^ hover says `hrv : r = 0` and jumps to `hrv :` above
   · right; exact hrv.symm.trans hrv
-               --^ hover says `hrv : r = 1` and jumps to `hrv :` above
+-- ^ hover says `hrv : r = 1` and jumps to `hrv :` above
 
 /- https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/interval_cases.20bug -/
 example {x : ℕ} (hx2 : x < 2) (h : False) : False := by

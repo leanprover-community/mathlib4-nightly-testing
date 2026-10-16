@@ -42,13 +42,14 @@ We also register the fact that `ℂ` is an `RCLike` field.
 
 @[expose] public section
 
-
 assert_not_exists Absorbs
 
 namespace Complex
 
-/-- A shortcut instance to ensure computability; otherwise we get the noncomputable instance
-`Complex.instNormedField.toNormedModule.toModule`. -/
+/--
+A shortcut instance to ensure computability; otherwise we get the noncomputable instance
+`Complex.instNormedField.toNormedModule.toModule`.
+-/
 instance instModuleSelf : Module ℂ ℂ := delta% inferInstance
 
 end Complex
@@ -84,14 +85,15 @@ instance (priority := 900) _root_.NormedSpace.complexToReal : NormedSpace ℝ E 
 
 -- see Note [lower instance priority]
 /-- The algebra structure from `Algebra.complexToReal` is a normed algebra. -/
-instance (priority := 900) _root_.NormedAlgebra.complexToReal {A : Type*} [SeminormedRing A]
-    [NormedAlgebra ℂ A] : NormedAlgebra ℝ A :=
+instance (priority := 900) _root_.NormedAlgebra.complexToReal
+    {A : Type*} [SeminormedRing A] [NormedAlgebra ℂ A]
+    : NormedAlgebra ℝ A :=
   NormedAlgebra.restrictScalars ℝ ℂ A
 
 -- This result cannot be moved to `Data/Complex/Norm` since `ℤ` gets its norm from its
 -- normed ring structure and that file does not know about rings
-@[simp 1100, norm_cast] lemma nnnorm_intCast (n : ℤ) : ‖(n : ℂ)‖₊ = ‖n‖₊ := by
-  ext; exact norm_intCast n
+@[simp 1100, norm_cast]
+lemma nnnorm_intCast (n : ℤ) : ‖(n : ℂ)‖₊ = ‖n‖₊ := by ext; exact norm_intCast n
 
 @[continuity, fun_prop]
 theorem continuous_normSq : Continuous normSq := by
@@ -103,8 +105,10 @@ theorem nnnorm_eq_one_of_pow_eq_one {ζ : ℂ} {n : ℕ} (h : ζ ^ n = 1) (hn : 
 theorem norm_eq_one_of_pow_eq_one {ζ : ℂ} {n : ℕ} (h : ζ ^ n = 1) (hn : n ≠ 0) : ‖ζ‖ = 1 :=
   congr($(nnnorm_eq_one_of_pow_eq_one h hn).val)
 
-lemma le_of_eq_sum_of_eq_sum_norm {ι : Type*} {a b : ℝ} (f : ι → ℂ) (s : Finset ι) (ha₀ : 0 ≤ a)
-    (ha : a = ∑ i ∈ s, f i) (hb : b = ∑ i ∈ s, (‖f i‖ : ℂ)) : a ≤ b := by
+lemma le_of_eq_sum_of_eq_sum_norm
+    {ι : Type*} {a b : ℝ}
+    (f : ι → ℂ) (s : Finset ι) (ha₀ : 0 ≤ a) (ha : a = ∑ i ∈ s, f i) (hb : b = ∑ i ∈ s, (‖f i‖ : ℂ))
+    : a ≤ b := by
   norm_cast at hb; rw [← Complex.norm_of_nonneg ha₀, ha, hb]; exact norm_sum_le s f
 
 theorem equivRealProd_apply_le (z : ℂ) : ‖equivRealProd z‖ ≤ ‖z‖ := by
@@ -135,90 +139,66 @@ def equivRealProdCLM : ℂ ≃L[ℝ] ℝ × ℝ :=
   equivRealProdLm.toContinuousLinearEquivOfBounds 1 (√2) equivRealProd_apply_le' fun p =>
     norm_le_sqrt_two_mul_max (equivRealProd.symm p)
 
-theorem equivRealProdCLM_symm_apply (p : ℝ × ℝ) :
-    Complex.equivRealProdCLM.symm p = p.1 + p.2 * Complex.I := Complex.equivRealProd_symm_apply p
+theorem equivRealProdCLM_symm_apply (p : ℝ × ℝ)
+    : Complex.equivRealProdCLM.symm p = p.1 + p.2 * Complex.I :=
+  Complex.equivRealProd_symm_apply p
 
-instance : ProperSpace ℂ := lipschitz_equivRealProd.properSpace
-  equivRealProdCLM.toHomeomorph.isProperMap
+instance : ProperSpace ℂ :=
+  lipschitz_equivRealProd.properSpace equivRealProdCLM.toHomeomorph.isProperMap
 
 /-- The `normSq` function on `ℂ` is proper. -/
 theorem tendsto_normSq_cocompact_atTop : Tendsto normSq (cocompact ℂ) atTop := by
-  simpa [norm_mul_self_eq_normSq]
-    using tendsto_norm_cocompact_atTop.atTop_mul_atTop₀ (tendsto_norm_cocompact_atTop (E := ℂ))
+  simpa [norm_mul_self_eq_normSq] using
+    tendsto_norm_cocompact_atTop.atTop_mul_atTop₀ (tendsto_norm_cocompact_atTop (E := ℂ))
 
 open ContinuousLinearMap
 
 /-- Continuous linear map version of the real part function, from `ℂ` to `ℝ`. -/
-def reCLM : ℂ →L[ℝ] ℝ :=
-  reLm.mkContinuous 1 fun x => by simp [abs_re_le_norm]
+def reCLM : ℂ →L[ℝ] ℝ := reLm.mkContinuous 1 fun x => by simp [abs_re_le_norm]
 
-@[continuity, fun_prop]
-theorem continuous_re : Continuous re :=
-  reCLM.continuous
+@[continuity, fun_prop] theorem continuous_re : Continuous re := reCLM.continuous
 
-@[fun_prop]
-lemma uniformContinuous_re : UniformContinuous re :=
-  reCLM.uniformContinuous
+@[fun_prop] lemma uniformContinuous_re : UniformContinuous re := reCLM.uniformContinuous
 
-@[simp]
-theorem reCLM_coe : (reCLM : ℂ →ₗ[ℝ] ℝ) = reLm :=
-  rfl
+@[simp] theorem reCLM_coe : (reCLM : ℂ →ₗ[ℝ] ℝ) = reLm := rfl
 
-@[simp]
-theorem reCLM_apply (z : ℂ) : (reCLM : ℂ → ℝ) z = z.re :=
-  rfl
+@[simp] theorem reCLM_apply (z : ℂ) : (reCLM : ℂ → ℝ) z = z.re := rfl
 
 /-- Continuous linear map version of the imaginary part function, from `ℂ` to `ℝ`. -/
-def imCLM : ℂ →L[ℝ] ℝ :=
-  imLm.mkContinuous 1 fun x => by simp [abs_im_le_norm]
+def imCLM : ℂ →L[ℝ] ℝ := imLm.mkContinuous 1 fun x => by simp [abs_im_le_norm]
 
-@[continuity, fun_prop]
-theorem continuous_im : Continuous im :=
-  imCLM.continuous
+@[continuity, fun_prop] theorem continuous_im : Continuous im := imCLM.continuous
 
-@[fun_prop]
-lemma uniformContinuous_im : UniformContinuous im :=
-  imCLM.uniformContinuous
+@[fun_prop] lemma uniformContinuous_im : UniformContinuous im := imCLM.uniformContinuous
 
-@[simp]
-theorem imCLM_coe : (imCLM : ℂ →ₗ[ℝ] ℝ) = imLm :=
-  rfl
+@[simp] theorem imCLM_coe : (imCLM : ℂ →ₗ[ℝ] ℝ) = imLm := rfl
 
-@[simp]
-theorem imCLM_apply (z : ℂ) : (imCLM : ℂ → ℝ) z = z.im :=
-  rfl
+@[simp] theorem imCLM_apply (z : ℂ) : (imCLM : ℂ → ℝ) z = z.im := rfl
 
-theorem restrictScalars_toSpanSingleton' (x : E) :
-    ContinuousLinearMap.restrictScalars ℝ (toSpanSingleton ℂ x : ℂ →L[ℂ] E) =
-      reCLM.smulRight x + I • imCLM.smulRight x := by
+theorem restrictScalars_toSpanSingleton' (x : E)
+    : ContinuousLinearMap.restrictScalars ℝ (toSpanSingleton ℂ x : ℂ →L[ℂ] E)
+      = reCLM.smulRight x + I • imCLM.smulRight x := by
   ext ⟨a, b⟩
   simp [map_add, mk_eq_add_mul_I, mul_smul, smul_comm I b x]
 
-theorem restrictScalars_toSpanSingleton (x : ℂ) :
-    ContinuousLinearMap.restrictScalars ℝ (toSpanSingleton ℂ x : ℂ →L[ℂ] ℂ) =
-    x • (1 : ℂ →L[ℝ] ℂ) := by
+theorem restrictScalars_toSpanSingleton (x : ℂ)
+    : ContinuousLinearMap.restrictScalars ℝ (toSpanSingleton ℂ x : ℂ →L[ℂ] ℂ)
+      = x • (1 : ℂ →L[ℝ] ℂ) := by
   ext1 z
   dsimp
   apply mul_comm
 
 /-- The complex-conjugation function from `ℂ` to itself is an isometric linear equivalence. -/
-def conjLIE : ℂ ≃ₗᵢ[ℝ] ℂ :=
-  ⟨conjAe.toLinearEquiv, norm_conj⟩
+def conjLIE : ℂ ≃ₗᵢ[ℝ] ℂ := ⟨conjAe.toLinearEquiv, norm_conj⟩
+
+@[simp] theorem conjLIE_apply (z : ℂ) : conjLIE z = conj z := rfl
+
+@[simp] theorem conjLIE_symm : conjLIE.symm = conjLIE := rfl
+
+theorem isometry_conj : Isometry (conj : ℂ → ℂ) := conjLIE.isometry
 
 @[simp]
-theorem conjLIE_apply (z : ℂ) : conjLIE z = conj z :=
-  rfl
-
-@[simp]
-theorem conjLIE_symm : conjLIE.symm = conjLIE :=
-  rfl
-
-theorem isometry_conj : Isometry (conj : ℂ → ℂ) :=
-  conjLIE.isometry
-
-@[simp]
-theorem dist_conj_conj (z w : ℂ) : dist (conj z) (conj w) = dist z w :=
-  isometry_conj.dist_eq z w
+theorem dist_conj_conj (z w : ℂ) : dist (conj z) (conj w) = dist z w := isometry_conj.dist_eq z w
 
 @[simp]
 theorem nndist_conj_conj (z w : ℂ) : nndist (conj z) (conj w) = nndist z w :=
@@ -230,81 +210,71 @@ theorem dist_conj_comm (z w : ℂ) : dist (conj z) w = dist z (conj w) := by
 theorem nndist_conj_comm (z w : ℂ) : nndist (conj z) w = nndist z (conj w) :=
   Subtype.ext <| dist_conj_comm _ _
 
-instance : ContinuousStar ℂ :=
-  ⟨conjLIE.continuous⟩
+instance : ContinuousStar ℂ := ⟨conjLIE.continuous⟩
 
-@[continuity, fun_prop]
-theorem continuous_conj : Continuous (conj : ℂ → ℂ) :=
-  continuous_star
+@[continuity, fun_prop] theorem continuous_conj : Continuous (conj : ℂ → ℂ) := continuous_star
 
-/-- The only continuous ring homomorphisms from `ℂ` to `ℂ` are the identity and the complex
-conjugation. -/
-theorem ringHom_eq_id_or_conj_of_continuous {f : ℂ →+* ℂ} (hf : Continuous f) :
-    f = RingHom.id ℂ ∨ f = conj := by
+/--
+The only continuous ring homomorphisms from `ℂ` to `ℂ` are the identity and the complex
+conjugation.
+-/
+theorem ringHom_eq_id_or_conj_of_continuous {f : ℂ →+* ℂ} (hf : Continuous f)
+    : f = RingHom.id ℂ ∨ f = conj := by
   simpa only [DFunLike.ext_iff] using! real_algHom_eq_id_or_conj (AlgHom.mk' f (map_real_smul f hf))
 
 /-- The complex-conjugation function from `ℂ` to itself is a continuous `ℝ`-algebra isomorphism. -/
 def conjCAE : ℂ ≃A[ℝ] ℂ := { conjAe, conjLIE.toContinuousLinearEquiv with }
 
-/-- Continuous linear equiv version of the conj function, from `ℂ` to `ℂ`.
+/--
+Continuous linear equiv version of the conj function, from `ℂ` to `ℂ`.
 
-This is an abbreviation for `conjCAE` coerced to a continuous linear map. -/
+This is an abbreviation for `conjCAE` coerced to a continuous linear map.
+-/
 abbrev conjCLE : ℂ ≃L[ℝ] ℂ := conjCAE.toContinuousLinearEquiv
 
 @[simp] lemma conjLIE_toCLE : conjLIE.toContinuousLinearEquiv = conjCLE := rfl
 
-@[simp]
-theorem conjCAE_toAlgEquiv : conjCAE.toAlgEquiv = conjAe :=
-  rfl
+@[simp] theorem conjCAE_toAlgEquiv : conjCAE.toAlgEquiv = conjAe := rfl
 
-@[simp] theorem conjCLE_toLinearEquiv : conjCLE.toLinearEquiv = conjAe.toLinearEquiv :=
-  rfl
+@[simp] theorem conjCLE_toLinearEquiv : conjCLE.toLinearEquiv = conjAe.toLinearEquiv := rfl
 
 @[deprecated "Now provable by simp" (since := "2026-04-13")]
 lemma conjCLE_coe_toLinearMap : (conjCLE : ℂ →ₗ[ℝ] ℂ) = conjAe.toLinearMap := by simp
 
-@[simp]
-theorem conjCAE_apply (z : ℂ) : conjCAE z = conj z :=
-  rfl
+@[simp] theorem conjCAE_apply (z : ℂ) : conjCAE z = conj z := rfl
 
 -- simp tag not needed because conjCLE is `abbrev`
-theorem conjCLE_apply (z : ℂ) : conjCLE z = conj z :=
-  rfl
+theorem conjCLE_apply (z : ℂ) : conjCLE z = conj z := rfl
 
 @[simp] lemma conjCAE_toLinearMap : conjCAE.toLinearMap = conjAe.toLinearMap := rfl
 
 /-- Linear isometry version of the canonical embedding of `ℝ` in `ℂ`. -/
-def ofRealLI : ℝ →ₗᵢ[ℝ] ℂ :=
-  ⟨ofRealAm.toLinearMap, norm_real⟩
+def ofRealLI : ℝ →ₗᵢ[ℝ] ℂ := ⟨ofRealAm.toLinearMap, norm_real⟩
 
-@[simp]
-theorem ofRealLI_apply (x : ℝ) : ofRealLI x = x := rfl
+@[simp] theorem ofRealLI_apply (x : ℝ) : ofRealLI x = x := rfl
 
-theorem isometry_ofReal : Isometry ((↑) : ℝ → ℂ) :=
-  ofRealLI.isometry
+theorem isometry_ofReal : Isometry ((↑) : ℝ → ℂ) := ofRealLI.isometry
 
-@[continuity, fun_prop]
-theorem continuous_ofReal : Continuous ((↑) : ℝ → ℂ) :=
-  ofRealLI.continuous
+@[continuity, fun_prop] theorem continuous_ofReal : Continuous ((↑) : ℝ → ℂ) := ofRealLI.continuous
 
 theorem isUniformEmbedding_ofReal : IsUniformEmbedding ((↑) : ℝ → ℂ) :=
   ofRealLI.isometry.isUniformEmbedding
 
-lemma _root_.RCLike.isUniformEmbedding_ofReal {𝕜 : Type*} [RCLike 𝕜] :
-    IsUniformEmbedding ((↑) : ℝ → 𝕜) :=
+lemma _root_.RCLike.isUniformEmbedding_ofReal {𝕜 : Type*} [RCLike 𝕜]
+    : IsUniformEmbedding ((↑) : ℝ → 𝕜) :=
   RCLike.ofRealLI.isometry.isUniformEmbedding
 
-theorem _root_.Filter.tendsto_ofReal_iff {α : Type*} {l : Filter α} {f : α → ℝ} {x : ℝ} :
-    Tendsto (fun x ↦ (f x : ℂ)) l (𝓝 (x : ℂ)) ↔ Tendsto f l (𝓝 x) :=
+theorem _root_.Filter.tendsto_ofReal_iff {α : Type*} {l : Filter α} {f : α → ℝ} {x : ℝ}
+    : Tendsto (fun x ↦ (f x : ℂ)) l (𝓝 (x : ℂ)) ↔ Tendsto f l (𝓝 x) :=
   isUniformEmbedding_ofReal.isClosedEmbedding.tendsto_nhds_iff.symm
 
-lemma _root_.Filter.tendsto_ofReal_iff' {α 𝕜 : Type*} [RCLike 𝕜]
-    {l : Filter α} {f : α → ℝ} {x : ℝ} :
-    Tendsto (fun x ↦ (f x : 𝕜)) l (𝓝 (x : 𝕜)) ↔ Tendsto f l (𝓝 x) :=
+lemma _root_.Filter.tendsto_ofReal_iff' {α 𝕜 : Type*} [RCLike 𝕜] {l : Filter α} {f : α → ℝ} {x : ℝ}
+    : Tendsto (fun x ↦ (f x : 𝕜)) l (𝓝 (x : 𝕜)) ↔ Tendsto f l (𝓝 x) :=
   RCLike.isUniformEmbedding_ofReal.isClosedEmbedding.tendsto_nhds_iff.symm
 
-lemma _root_.Filter.Tendsto.ofReal {α : Type*} {l : Filter α} {f : α → ℝ} {x : ℝ}
-    (hf : Tendsto f l (𝓝 x)) : Tendsto (fun x ↦ (f x : ℂ)) l (𝓝 (x : ℂ)) :=
+lemma _root_.Filter.Tendsto.ofReal
+    {α : Type*} {l : Filter α} {f : α → ℝ} {x : ℝ} (hf : Tendsto f l (𝓝 x))
+    : Tendsto (fun x ↦ (f x : ℂ)) l (𝓝 (x : ℂ)) :=
   tendsto_ofReal_iff.mpr hf
 
 /-- The only continuous ring homomorphism from `ℝ` to `ℂ` is the identity. -/
@@ -314,16 +284,11 @@ theorem ringHom_eq_ofReal_of_continuous {f : ℝ →+* ℂ} (h : Continuous f) :
       Subsingleton.elim (AlgHom.mk' f <| map_real_smul f h) (Algebra.ofId ℝ ℂ)
 
 /-- Continuous linear map version of the canonical embedding of `ℝ` in `ℂ`. -/
-def ofRealCLM : ℝ →L[ℝ] ℂ :=
-  ofRealLI.toContinuousLinearMap
+def ofRealCLM : ℝ →L[ℝ] ℂ := ofRealLI.toContinuousLinearMap
 
-@[simp]
-theorem ofRealCLM_coe : (ofRealCLM : ℝ →ₗ[ℝ] ℂ) = ofRealAm.toLinearMap :=
-  rfl
+@[simp] theorem ofRealCLM_coe : (ofRealCLM : ℝ →ₗ[ℝ] ℂ) = ofRealAm.toLinearMap := rfl
 
-@[simp]
-theorem ofRealCLM_apply (x : ℝ) : ofRealCLM x = x :=
-  rfl
+@[simp] theorem ofRealCLM_apply (x : ℝ) : ofRealCLM x = x := rfl
 
 noncomputable instance : RCLike ℂ where
   re := ⟨⟨Complex.re, Complex.zero_re⟩, Complex.add_re⟩
@@ -344,11 +309,9 @@ noncomputable instance : RCLike ℂ where
   toPartialOrder := Complex.partialOrder
   le_iff_re_im := Iff.rfl
 
-theorem _root_.RCLike.re_eq_complex_re : ⇑(RCLike.re : ℂ →+ ℝ) = Complex.re :=
-  rfl
+theorem _root_.RCLike.re_eq_complex_re : ⇑(RCLike.re : ℂ →+ ℝ) = Complex.re := rfl
 
-theorem _root_.RCLike.im_eq_complex_im : ⇑(RCLike.im : ℂ →+ ℝ) = Complex.im :=
-  rfl
+theorem _root_.RCLike.im_eq_complex_im : ⇑(RCLike.im : ℂ →+ ℝ) = Complex.im := rfl
 
 theorem _root_.RCLike.ofReal_eq_complex_ofReal : (RCLike.ofReal : ℝ → ℂ) = Complex.ofReal := rfl
 
@@ -368,21 +331,23 @@ lemma im_eq_zero_iff_isSelfAdjoint (x : ℂ) : Complex.im x = 0 ↔ IsSelfAdjoin
   rw [← RCLike.im_eq_complex_im]
   exact RCLike.im_eq_zero_iff_isSelfAdjoint
 
-lemma re_eq_ofReal_of_isSelfAdjoint {x : ℂ} {y : ℝ} (hx : IsSelfAdjoint x) :
-    Complex.re x = y ↔ x = y := by
+lemma re_eq_ofReal_of_isSelfAdjoint {x : ℂ} {y : ℝ} (hx : IsSelfAdjoint x)
+    : Complex.re x = y ↔ x = y := by
   rw [← RCLike.re_eq_complex_re]
   exact RCLike.re_eq_ofReal_of_isSelfAdjoint hx
 
-lemma ofReal_eq_re_of_isSelfAdjoint {x : ℂ} {y : ℝ} (hx : IsSelfAdjoint x) :
-    y = Complex.re x ↔ y = x := by
+lemma ofReal_eq_re_of_isSelfAdjoint {x : ℂ} {y : ℝ} (hx : IsSelfAdjoint x)
+    : y = Complex.re x ↔ y = x := by
   rw [← RCLike.re_eq_complex_re]
   exact RCLike.ofReal_eq_re_of_isSelfAdjoint hx
 
-/-- The natural isomorphism between `𝕜` satisfying `RCLike 𝕜` and `ℂ` when
-`RCLike.im RCLike.I = 1`. -/
+/--
+The natural isomorphism between `𝕜` satisfying `RCLike 𝕜` and `ℂ` when
+`RCLike.im RCLike.I = 1`.
+-/
 @[simps]
-def _root_.RCLike.complexRingEquiv {𝕜 : Type*} [RCLike 𝕜]
-    (h : RCLike.im (RCLike.I : 𝕜) = 1) : 𝕜 ≃+* ℂ where
+def _root_.RCLike.complexRingEquiv {𝕜 : Type*} [RCLike 𝕜] (h : RCLike.im (RCLike.I : 𝕜) = 1)
+    : 𝕜 ≃+* ℂ where
   toFun x := RCLike.re x + RCLike.im x * I
   invFun x := re x + im x * RCLike.I
   left_inv x := by simp
@@ -395,21 +360,26 @@ def _root_.RCLike.complexRingEquiv {𝕜 : Type*} [RCLike 𝕜]
     ring
 
 open scoped ComplexOrder in
-theorem _root_.RCLike.map_nonneg_iff {𝕜 𝕜' : Type*} [RCLike 𝕜] [RCLike 𝕜']
-    (h : RCLike.im (RCLike.I : 𝕜') = 1) {a : 𝕜} :
-    0 ≤ RCLike.map 𝕜 𝕜' a ↔ 0 ≤ a := by
+theorem _root_.RCLike.map_nonneg_iff
+    {𝕜 𝕜' : Type*} [RCLike 𝕜] [RCLike 𝕜'] (h : RCLike.im (RCLike.I : 𝕜') = 1) {a : 𝕜}
+    : 0 ≤ RCLike.map 𝕜 𝕜' a ↔ 0 ≤ a := by
   rw [RCLike.nonneg_iff, RCLike.nonneg_iff (K := 𝕜)]
   simp [h]
 
 open scoped ComplexOrder in
-@[simp] theorem _root_.RCLike.to_complex_nonneg_iff {𝕜 : Type*} [RCLike 𝕜] {a : 𝕜} :
-    0 ≤ RCLike.re a + RCLike.im a * Complex.I ↔ 0 ≤ a := RCLike.map_nonneg_iff I_im
+@[simp]
+theorem _root_.RCLike.to_complex_nonneg_iff {𝕜 : Type*} [RCLike 𝕜] {a : 𝕜}
+    : 0 ≤ RCLike.re a + RCLike.im a * Complex.I ↔ 0 ≤ a :=
+  RCLike.map_nonneg_iff I_im
 
-/-- The natural `ℝ`-linear isometry equivalence between `𝕜` satisfying `RCLike 𝕜` and `ℂ` when
-`RCLike.im RCLike.I = 1`. -/
+/--
+The natural `ℝ`-linear isometry equivalence between `𝕜` satisfying `RCLike 𝕜` and `ℂ` when
+`RCLike.im RCLike.I = 1`.
+-/
 @[simps]
-def _root_.RCLike.complexLinearIsometryEquiv {𝕜 : Type*} [RCLike 𝕜]
-    (h : RCLike.im (RCLike.I : 𝕜) = 1) : 𝕜 ≃ₗᵢ[ℝ] ℂ where
+def _root_.RCLike.complexLinearIsometryEquiv
+    {𝕜 : Type*} [RCLike 𝕜] (h : RCLike.im (RCLike.I : 𝕜) = 1)
+    : 𝕜 ≃ₗᵢ[ℝ] ℂ where
   map_smul' _ _ := by simp [RCLike.smul_re, RCLike.smul_im, ofReal_mul]; ring
   norm_map' _ := by
     rw [← sq_eq_sq₀ (by positivity) (by positivity), ← normSq_eq_norm_sq, ← RCLike.normSq_eq_def',
@@ -417,20 +387,24 @@ def _root_.RCLike.complexLinearIsometryEquiv {𝕜 : Type*} [RCLike 𝕜]
     simp [normSq_add]
   __ := RCLike.complexRingEquiv h
 
-@[simp] theorem _root_.RCLike.toContinuousLinearMap_complexLinearIsometryEquiv
-    {𝕜 : Type*} [RCLike 𝕜] (h : RCLike.im (RCLike.I : 𝕜) = 1) :
-    (RCLike.complexLinearIsometryEquiv h : 𝕜 →L[ℝ] ℂ) = RCLike.map 𝕜 ℂ := rfl
+@[simp]
+theorem _root_.RCLike.toContinuousLinearMap_complexLinearIsometryEquiv
+    {𝕜 : Type*} [RCLike 𝕜] (h : RCLike.im (RCLike.I : 𝕜) = 1)
+    : (RCLike.complexLinearIsometryEquiv h : 𝕜 →L[ℝ] ℂ) = RCLike.map 𝕜 ℂ :=
+  rfl
 
-@[simp] theorem _root_.RCLike.norm_to_complex {𝕜 : Type*} [RCLike 𝕜] (a : 𝕜) :
-    ‖RCLike.re a + RCLike.im a * Complex.I‖ = ‖a‖ := by
+@[simp]
+theorem _root_.RCLike.norm_to_complex {𝕜 : Type*} [RCLike 𝕜] (a : 𝕜)
+    : ‖RCLike.re a + RCLike.im a * Complex.I‖ = ‖a‖ := by
   obtain (h | h) := RCLike.I_eq_zero_or_im_I_eq_one (K := 𝕜)
   · rw [← RCLike.re_add_im a, RCLike.im_eq_zero h]
     simp
   exact (RCLike.complexLinearIsometryEquiv h).norm_map a
 
 theorem isometry_intCast : Isometry ((↑) : ℤ → ℂ) :=
-  Isometry.of_dist_eq <| by simp_rw [← Complex.ofReal_intCast,
-    Complex.isometry_ofReal.dist_eq, Int.dist_cast_real, implies_true]
+  Isometry.of_dist_eq <| by
+    simp_rw [← Complex.ofReal_intCast,
+      Complex.isometry_ofReal.dist_eq, Int.dist_cast_real, implies_true]
 
 theorem isClosedEmbedding_intCast : IsClosedEmbedding ((↑) : ℤ → ℂ) :=
   isometry_intCast.isClosedEmbedding
@@ -447,12 +421,14 @@ section ComplexOrder
 
 open ComplexOrder
 
-theorem eq_coe_norm_of_nonneg {z : ℂ} (hz : 0 ≤ z) : z = ↑‖z‖ := by
+theorem eq_coe_norm_of_nonneg {z : ℂ} (hz : 0 ≤ z) : z = ↑ ‖z‖ := by
   lift z to ℝ using hz.2.symm
   rw [norm_real, Real.norm_of_nonneg (id hz.1 : 0 ≤ z)]
 
-/-- We show that the partial order and the topology on `ℂ` are compatible.
-We turn this into an instance scoped to `ComplexOrder`. -/
+/--
+We show that the partial order and the topology on `ℂ` are compatible.
+We turn this into an instance scoped to `ComplexOrder`.
+-/
 lemma orderClosedTopology : OrderClosedTopology ℂ := RCLike.instOrderClosedTopology
 
 scoped[ComplexOrder] attribute [instance] Complex.orderClosedTopology
@@ -483,21 +459,13 @@ local notation "imC" => @RCLike.im ℂ _
 local notation "IC" => @RCLike.I ℂ _
 local notation "norm_sqC" => @RCLike.normSq ℂ _
 
-@[simp]
-theorem re_to_complex {x : ℂ} : reC x = x.re :=
-  rfl
+@[simp] theorem re_to_complex {x : ℂ} : reC x = x.re := rfl
 
-@[simp]
-theorem im_to_complex {x : ℂ} : imC x = x.im :=
-  rfl
+@[simp] theorem im_to_complex {x : ℂ} : imC x = x.im := rfl
 
-@[simp]
-theorem I_to_complex : IC = Complex.I :=
-  rfl
+@[simp] theorem I_to_complex : IC = Complex.I := rfl
 
-@[simp]
-theorem normSq_to_complex {x : ℂ} : norm_sqC x = Complex.normSq x :=
-  rfl
+@[simp] theorem normSq_to_complex {x : ℂ} : norm_sqC x = Complex.normSq x := rfl
 
 section tsum
 
@@ -515,18 +483,19 @@ theorem summable_conj {f : α → 𝕜} : Summable (fun x => conj (f x)) L ↔ S
   summable_star_iff
 
 variable {𝕜} in
-theorem conj_tsum (f : α → 𝕜) : conj (∑'[L] a, f a) = ∑'[L] a, conj (f a) :=
-  tsum_star
+theorem conj_tsum (f : α → 𝕜) : conj (∑'[L] a, f a) = ∑'[L] a, conj (f a) := tsum_star
 
 @[simp, norm_cast]
-theorem hasSum_ofReal {f : α → ℝ} {x : ℝ} : HasSum (fun x => (f x : 𝕜)) x L ↔ HasSum f x L :=
-  ⟨fun h => by simpa only [RCLike.reCLM_apply, RCLike.ofReal_re] using reCLM.hasSum h,
-    ofRealCLM.hasSum⟩
+theorem hasSum_ofReal {f : α → ℝ} {x : ℝ} : HasSum (fun x => (f x : 𝕜)) x L ↔ HasSum f x L := ⟨
+  fun h => by simpa only [RCLike.reCLM_apply, RCLike.ofReal_re] using reCLM.hasSum h,
+  ofRealCLM.hasSum
+⟩
 
 @[simp, norm_cast]
-theorem summable_ofReal {f : α → ℝ} : Summable (fun x => (f x : 𝕜)) L ↔ Summable f L :=
-  ⟨fun h => by simpa only [RCLike.reCLM_apply, RCLike.ofReal_re] using reCLM.summable h,
-    ofRealCLM.summable⟩
+theorem summable_ofReal {f : α → ℝ} : Summable (fun x => (f x : 𝕜)) L ↔ Summable f L := ⟨
+  fun h => by simpa only [RCLike.reCLM_apply, RCLike.ofReal_re] using reCLM.summable h,
+  ofRealCLM.summable
+⟩
 
 @[norm_cast]
 theorem ofReal_tsum (f : α → ℝ) : (↑(∑'[L] a, f a) : 𝕜) = ∑'[L] a, (f a : 𝕜) :=
@@ -546,8 +515,8 @@ theorem im_tsum [L.NeBot] {f : α → 𝕜} (h : Summable f L) : im (∑'[L] a, 
 
 variable {𝕜}
 
-theorem hasSum_iff (f : α → 𝕜) (c : 𝕜) :
-    HasSum f c L ↔ HasSum (fun x => re (f x)) (re c) L ∧ HasSum (fun x => im (f x)) (im c) L := by
+theorem hasSum_iff (f : α → 𝕜) (c : 𝕜)
+    : HasSum f c L ↔ HasSum (fun x => re (f x)) (re c) L ∧ HasSum (fun x => im (f x)) (im c) L := by
   refine ⟨fun h => ⟨hasSum_re _ h, hasSum_im _ h⟩, ?_⟩
   rintro ⟨h₁, h₂⟩
   simpa only [re_add_im] using
@@ -567,7 +536,6 @@ We do not have this problem with `ofReal` and `conj`, although we repeat them an
 discoverability and to avoid the need to unify `𝕜`.
 -/
 
-
 section tsum
 
 variable {α : Type*} {L : SummationFilter α}
@@ -583,8 +551,7 @@ theorem hasSum_conj' {f : α → ℂ} {x : ℂ} : HasSum (fun x => conj (f x)) (
 theorem summable_conj {f : α → ℂ} : (Summable fun x => conj (f x)) ↔ Summable f :=
   RCLike.summable_conj _
 
-theorem conj_tsum (f : α → ℂ) : conj (∑'[L] a, f a) = ∑'[L] a, conj (f a) :=
-  RCLike.conj_tsum _
+theorem conj_tsum (f : α → ℂ) : conj (∑'[L] a, f a) = ∑'[L] a, conj (f a) := RCLike.conj_tsum _
 
 @[simp, norm_cast]
 theorem hasSum_ofReal {f : α → ℝ} {x : ℝ} : HasSum (fun x => (f x : ℂ)) x L ↔ HasSum f x L :=
@@ -595,8 +562,7 @@ theorem summable_ofReal {f : α → ℝ} : (Summable (fun x => (f x : ℂ)) L) �
   RCLike.summable_ofReal _
 
 @[norm_cast]
-theorem ofReal_tsum (f : α → ℝ) : (↑(∑'[L] a, f a) : ℂ) = ∑'[L] a, ↑(f a) :=
-  RCLike.ofReal_tsum _ _
+theorem ofReal_tsum (f : α → ℝ) : (↑(∑'[L] a, f a) : ℂ) = ∑'[L] a, ↑(f a) := RCLike.ofReal_tsum _ _
 
 theorem hasSum_re {f : α → ℂ} {x : ℂ} (h : HasSum f x L) : HasSum (fun x => (f x).re) x.re L :=
   RCLike.hasSum_re ℂ h
@@ -610,8 +576,8 @@ theorem re_tsum [L.NeBot] {f : α → ℂ} (h : Summable f L) : (∑'[L] a, f a)
 theorem im_tsum [L.NeBot] {f : α → ℂ} (h : Summable f L) : (∑'[L] a, f a).im = ∑'[L] a, (f a).im :=
   RCLike.im_tsum _ h
 
-theorem hasSum_iff (f : α → ℂ) (c : ℂ) :
-    HasSum f c L ↔ HasSum (fun x => (f x).re) c.re L ∧ HasSum (fun x => (f x).im) c.im L :=
+theorem hasSum_iff (f : α → ℂ) (c : ℂ)
+    : HasSum f c L ↔ HasSum (fun x => (f x).re) c.re L ∧ HasSum (fun x => (f x).im) c.im L :=
   RCLike.hasSum_iff _ _
 
 end tsum
@@ -630,8 +596,7 @@ def slitPlane : Set ℂ := {z | 0 < z.re ∨ z.im ≠ 0}
 lemma mem_slitPlane_iff {z : ℂ} : z ∈ slitPlane ↔ 0 < z.re ∨ z.im ≠ 0 := Set.mem_ofPred
 
 /- If `z` is non-zero, then either `z` or `-z` is in `slitPlane`. -/
-lemma mem_slitPlane_or_neg_mem_slitPlane {z : ℂ} (hz : z ≠ 0) :
-    z ∈ slitPlane ∨ -z ∈ slitPlane := by
+lemma mem_slitPlane_or_neg_mem_slitPlane {z : ℂ} (hz : z ≠ 0) : z ∈ slitPlane ∨ -z ∈ slitPlane := by
   rw [mem_slitPlane_iff, mem_slitPlane_iff]
   rw [ne_eq, Complex.ext_iff] at hz
   push Not at hz
@@ -644,17 +609,15 @@ lemma slitPlane_eq_union : slitPlane = {z | 0 < z.re} ∪ {z | z.im ≠ 0} := Se
 lemma isOpen_slitPlane : IsOpen slitPlane :=
   (isOpen_lt continuous_const continuous_re).union (isOpen_ne_fun continuous_im continuous_const)
 
-@[simp]
-lemma ofReal_mem_slitPlane {x : ℝ} : ↑x ∈ slitPlane ↔ 0 < x := by simp [mem_slitPlane_iff]
+@[simp] lemma ofReal_mem_slitPlane {x : ℝ} : ↑x ∈ slitPlane ↔ 0 < x := by simp [mem_slitPlane_iff]
 
 @[simp]
-lemma neg_ofReal_mem_slitPlane {x : ℝ} : -↑x ∈ slitPlane ↔ x < 0 := by
+lemma neg_ofReal_mem_slitPlane {x : ℝ} : - ↑x ∈ slitPlane ↔ x < 0 := by
   simpa using ofReal_mem_slitPlane (x := -x)
 
 @[simp] lemma one_mem_slitPlane : 1 ∈ slitPlane := ofReal_mem_slitPlane.2 one_pos
 
-@[simp]
-lemma zero_notMem_slitPlane : 0 ∉ slitPlane := mt ofReal_mem_slitPlane.1 (lt_irrefl _)
+@[simp] lemma zero_notMem_slitPlane : 0 ∉ slitPlane := mt ofReal_mem_slitPlane.1 (lt_irrefl _)
 
 @[simp]
 lemma natCast_mem_slitPlane {n : ℕ} : ↑n ∈ slitPlane ↔ n ≠ 0 := by
@@ -664,11 +627,11 @@ lemma natCast_mem_slitPlane {n : ℕ} : ↑n ∈ slitPlane ↔ n ≠ 0 := by
 lemma ofNat_mem_slitPlane (n : ℕ) [n.AtLeastTwo] : ofNat(n) ∈ slitPlane :=
   natCast_mem_slitPlane.2 (NeZero.ne n)
 
-lemma mem_slitPlane_iff_not_le_zero {z : ℂ} : z ∈ slitPlane ↔ ¬z ≤ 0 :=
+lemma mem_slitPlane_iff_not_le_zero {z : ℂ} : z ∈ slitPlane ↔ ¬ z ≤ 0 :=
   mem_slitPlane_iff.trans not_le_zero_iff.symm
 
-protected lemma compl_Iic_zero : (Set.Iic 0)ᶜ = slitPlane := Set.ext fun _ ↦
-  mem_slitPlane_iff_not_le_zero.symm
+protected lemma compl_Iic_zero : (Set.Iic 0)ᶜ = slitPlane :=
+  Set.ext fun _ ↦ mem_slitPlane_iff_not_le_zero.symm
 
 lemma slitPlane_ne_zero {z : ℂ} (hz : z ∈ slitPlane) : z ≠ 0 :=
   ne_of_mem_of_not_mem hz zero_notMem_slitPlane
@@ -684,10 +647,12 @@ lemma mem_slitPlane_of_norm_lt_one {z : ℂ} (hz : ‖z‖ < 1) : 1 + z ∈ slit
   ball_one_subset_slitPlane <| by simpa
 
 open Metric in
-/-- A subset of the circle centered at the origin in `ℂ` of radius `r` is a subset of
-the `slitPlane` if it does not contain `-r`. -/
-lemma subset_slitPlane_iff_of_subset_sphere {r : ℝ} {s : Set ℂ} (hs : s ⊆ sphere 0 r) :
-    s ⊆ slitPlane ↔ (-r : ℂ) ∉ s := by
+/--
+A subset of the circle centered at the origin in `ℂ` of radius `r` is a subset of
+the `slitPlane` if it does not contain `-r`.
+-/
+lemma subset_slitPlane_iff_of_subset_sphere {r : ℝ} {s : Set ℂ} (hs : s ⊆ sphere 0 r)
+    : s ⊆ slitPlane ↔ (-r : ℂ) ∉ s := by
   simp_rw [Set.subset_def, mem_slitPlane_iff_not_le_zero]
   contrapose!
   refine ⟨?_, fun hr ↦ ⟨_, hr, by simpa using hs hr⟩⟩
@@ -697,27 +662,31 @@ lemma subset_slitPlane_iff_of_subset_sphere {r : ℝ} {s : Set ℂ} (hs : s ⊆ 
 
 end slitPlane
 
-lemma _root_.IsCompact.reProdIm {s t : Set ℝ} (hs : IsCompact s) (ht : IsCompact t) :
-    IsCompact (s ×ℂ t) :=
+lemma _root_.IsCompact.reProdIm {s t : Set ℝ} (hs : IsCompact s) (ht : IsCompact t)
+    : IsCompact (s ×ℂ t) :=
   equivRealProdCLM.toHomeomorph.isCompact_preimage.2 (hs.prod ht)
 
 end Complex
 
 section realPart_imaginaryPart
 
-variable {A : Type*} [SeminormedAddCommGroup A] [StarAddMonoid A] [NormedSpace ℂ A] [StarModule ℂ A]
+variable
+  {A : Type*} [SeminormedAddCommGroup A] [StarAddMonoid A] [NormedSpace ℂ A] [StarModule ℂ A]
   [NormedStarGroup A]
 
 lemma realPart.norm_le (x : A) : ‖realPart x‖ ≤ ‖x‖ := by
-  rw [← inv_mul_cancel_left₀ two_ne_zero ‖x‖, ← AddSubgroup.norm_coe, realPart_apply_coe,
-    norm_smul, norm_inv, Real.norm_ofNat]
+  rw [← inv_mul_cancel_left₀ two_ne_zero ‖x‖, ← AddSubgroup.norm_coe, realPart_apply_coe, norm_smul,
+    norm_inv, Real.norm_ofNat]
   gcongr
   exact norm_add_le _ _ |>.trans <| by simp [two_mul]
 
 lemma imaginaryPart.norm_le (x : A) : ‖imaginaryPart x‖ ≤ ‖x‖ := by
-  calc ‖imaginaryPart x‖ = ‖realPart (Complex.I • (-x))‖ := by simp
-    _ ≤ ‖x‖ := by simpa only [smul_neg, map_neg, realPart_I_smul, neg_neg,
-        AddSubgroupClass.coe_norm, norm_neg, norm_smul, Complex.norm_I, one_mul] using
-        realPart.norm_le (Complex.I • (-x))
+  calc
+    ‖imaginaryPart x‖
+      = ‖realPart (Complex.I • (-x))‖ := by simp
+    _ ≤ ‖x‖ := by
+      simpa only [smul_neg, map_neg, realPart_I_smul, neg_neg, AddSubgroupClass.coe_norm, norm_neg,
+          norm_smul, Complex.norm_I, one_mul]
+        using realPart.norm_le (Complex.I • (-x))
 
 end realPart_imaginaryPart

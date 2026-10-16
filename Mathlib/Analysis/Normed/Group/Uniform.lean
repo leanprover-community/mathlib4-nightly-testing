@@ -32,22 +32,24 @@ instance NormedGroup.to_isIsometricSMul : IsIsometricSMul E E :=
   ⟨fun a => Isometry.of_dist_eq fun b c => by simp [dist_eq_norm_inv_mul]⟩
 
 @[to_additive]
-theorem Isometry.norm_map_of_map_one {f : E → F} (hi : Isometry f) (h₁ : f 1 = 1) (x : E) :
-    ‖f x‖ = ‖x‖ := by rw [← dist_one_right, ← h₁, hi.dist_eq, dist_one_right]
+theorem Isometry.norm_map_of_map_one {f : E → F} (hi : Isometry f) (h₁ : f 1 = 1) (x : E)
+    : ‖f x‖ = ‖x‖ := by
+  rw [← dist_one_right, ← h₁, hi.dist_eq, dist_one_right]
 
 @[to_additive (attr := simp) norm_map]
-theorem norm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E) :
-    ‖f x‖ = ‖x‖ :=
+theorem norm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E)
+    : ‖f x‖ = ‖x‖ :=
   (IsometryClass.isometry f).norm_map_of_map_one (map_one f) x
 
 @[to_additive (attr := simp) nnnorm_map]
-theorem nnnorm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E) :
-    ‖f x‖₊ = ‖x‖₊ :=
+theorem nnnorm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E)
+    : ‖f x‖₊ = ‖x‖₊ :=
   NNReal.eq <| norm_map' f x
 
 @[to_additive (attr := simp) enorm_map]
-lemma enorm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E) :
-    ‖f x‖ₑ = ‖x‖ₑ := by simp [enorm]
+lemma enorm_map' [FunLike 𝓕 E F] [IsometryClass 𝓕 E F] [OneHomClass 𝓕 E F] (f : 𝓕) (x : E)
+    : ‖f x‖ₑ = ‖x‖ₑ := by
+  simp [enorm]
 
 @[to_additive (attr := simp)]
 theorem dist_self_mul_right (a b : E) : dist b (b * a) = ‖a‖ := by
@@ -59,20 +61,23 @@ theorem dist_self_mul_left (a b : E) : dist (b * a) b = ‖a‖ := by
 
 variable [FunLike 𝓕 E F]
 
-/-- A homomorphism `f` of seminormed groups is Lipschitz, if there exists a constant `C` such that
+/--
+A homomorphism `f` of seminormed groups is Lipschitz, if there exists a constant `C` such that
 for all `x`, one has `‖f x‖ ≤ C * ‖x‖`. The analogous condition for a linear map of
-(semi)normed spaces is in `Mathlib/Analysis/Normed/Operator/Basic.lean`. -/
+(semi)normed spaces is in `Mathlib/Analysis/Normed/Operator/Basic.lean`.
+-/
 @[to_additive /-- A homomorphism `f` of seminormed groups is Lipschitz, if there exists a constant
 `C` such that for all `x`, one has `‖f x‖ ≤ C * ‖x‖`. The analogous condition for a linear map of
 (semi)normed spaces is in `Mathlib/Analysis/Normed/Operator/Basic.lean`. -/]
-theorem MonoidHomClass.lipschitz_of_bound [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ)
-    (h : ∀ x, ‖f x‖ ≤ C * ‖x‖) : LipschitzWith (Real.toNNReal C) f :=
+theorem MonoidHomClass.lipschitz_of_bound
+    [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ) (h : ∀ x, ‖f x‖ ≤ C * ‖x‖)
+    : LipschitzWith (Real.toNNReal C) f :=
   LipschitzWith.of_dist_le' fun x y => by
     simpa only [dist_eq_norm_inv_mul, map_mul, map_inv] using h (x⁻¹ * y)
 
 @[to_additive]
-theorem lipschitzOnWith_iff_norm_inv_mul_le {f : E → F} {C : ℝ≥0} :
-    LipschitzOnWith C f s ↔ ∀ ⦃x⦄, x ∈ s → ∀ ⦃y⦄, y ∈ s → ‖(f x)⁻¹ * f y‖ ≤ C * ‖x⁻¹ * y‖ := by
+theorem lipschitzOnWith_iff_norm_inv_mul_le {f : E → F} {C : ℝ≥0}
+    : LipschitzOnWith C f s ↔ ∀ ⦃x⦄, x ∈ s → ∀ ⦃y⦄, y ∈ s → ‖(f x)⁻¹ * f y‖ ≤ C * ‖x⁻¹ * y‖ := by
   simp only [lipschitzOnWith_iff_dist_le_mul, dist_eq_norm_inv_mul]
 
 alias ⟨LipschitzOnWith.norm_inv_mul_le, _⟩ := lipschitzOnWith_iff_norm_inv_mul_le
@@ -80,13 +85,14 @@ alias ⟨LipschitzOnWith.norm_inv_mul_le, _⟩ := lipschitzOnWith_iff_norm_inv_m
 attribute [to_additive] LipschitzOnWith.norm_inv_mul_le
 
 @[to_additive]
-theorem LipschitzOnWith.norm_inv_mul_le_of_le {f : E → F} {C : ℝ≥0} (h : LipschitzOnWith C f s)
-    (ha : a ∈ s) (hb : b ∈ s) (hr : ‖a⁻¹ * b‖ ≤ r) : ‖(f a)⁻¹ * f b‖ ≤ C * r :=
+theorem LipschitzOnWith.norm_inv_mul_le_of_le
+    {f : E → F} {C : ℝ≥0} (h : LipschitzOnWith C f s) (ha : a ∈ s) (hb : b ∈ s) (hr : ‖a⁻¹ * b‖ ≤ r)
+    : ‖(f a)⁻¹ * f b‖ ≤ C * r :=
   (h.norm_inv_mul_le ha hb).trans <| by gcongr
 
 @[to_additive]
-theorem lipschitzWith_iff_norm_inv_mul_le {f : E → F} {C : ℝ≥0} :
-    LipschitzWith C f ↔ ∀ x y, ‖(f x)⁻¹ * f y‖ ≤ C * ‖x⁻¹ * y‖ := by
+theorem lipschitzWith_iff_norm_inv_mul_le {f : E → F} {C : ℝ≥0}
+    : LipschitzWith C f ↔ ∀ x y, ‖(f x)⁻¹ * f y‖ ≤ C * ‖x⁻¹ * y‖ := by
   simp only [lipschitzWith_iff_dist_le_mul, dist_eq_norm_inv_mul]
 
 alias ⟨LipschitzWith.norm_inv_mul_le, _⟩ := lipschitzWith_iff_norm_inv_mul_le
@@ -94,26 +100,31 @@ alias ⟨LipschitzWith.norm_inv_mul_le, _⟩ := lipschitzWith_iff_norm_inv_mul_l
 attribute [to_additive] LipschitzWith.norm_inv_mul_le
 
 @[to_additive]
-theorem LipschitzWith.norm_inv_mul_le_of_le {f : E → F} {C : ℝ≥0} (h : LipschitzWith C f)
-    (hr : ‖a⁻¹ * b‖ ≤ r) : ‖(f a)⁻¹ * f b‖ ≤ C * r :=
+theorem LipschitzWith.norm_inv_mul_le_of_le
+    {f : E → F} {C : ℝ≥0} (h : LipschitzWith C f) (hr : ‖a⁻¹ * b‖ ≤ r)
+    : ‖(f a)⁻¹ * f b‖ ≤ C * r :=
   (h.norm_inv_mul_le _ _).trans <| by gcongr
 
-/-- A homomorphism `f` of seminormed groups is continuous, if there exists a constant `C` such that
-for all `x`, one has `‖f x‖ ≤ C * ‖x‖`. -/
+/--
+A homomorphism `f` of seminormed groups is continuous, if there exists a constant `C` such that
+for all `x`, one has `‖f x‖ ≤ C * ‖x‖`.
+-/
 @[to_additive /-- A homomorphism `f` of seminormed groups is continuous, if there exists a constant
 `C` such that for all `x`, one has `‖f x‖ ≤ C * ‖x‖`. -/]
-theorem MonoidHomClass.continuous_of_bound [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ)
-    (h : ∀ x, ‖f x‖ ≤ C * ‖x‖) : Continuous f :=
+theorem MonoidHomClass.continuous_of_bound
+    [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ) (h : ∀ x, ‖f x‖ ≤ C * ‖x‖)
+    : Continuous f :=
   (MonoidHomClass.lipschitz_of_bound f C h).continuous
 
 @[to_additive]
-theorem MonoidHomClass.uniformContinuous_of_bound [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ)
-    (h : ∀ x, ‖f x‖ ≤ C * ‖x‖) : UniformContinuous f :=
+theorem MonoidHomClass.uniformContinuous_of_bound
+    [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ) (h : ∀ x, ‖f x‖ ≤ C * ‖x‖)
+    : UniformContinuous f :=
   (MonoidHomClass.lipschitz_of_bound f C h).uniformContinuous
 
 @[to_additive]
-theorem MonoidHomClass.isometry_iff_norm [MonoidHomClass 𝓕 E F] (f : 𝓕) :
-    Isometry f ↔ ∀ x, ‖f x‖ = ‖x‖ := by
+theorem MonoidHomClass.isometry_iff_norm [MonoidHomClass 𝓕 E F] (f : 𝓕)
+    : Isometry f ↔ ∀ x, ‖f x‖ = ‖x‖ := by
   simp only [isometry_iff_dist_eq, dist_eq_norm_inv_mul, ← map_inv, ← map_mul]
   refine ⟨fun h x => ?_, fun h x y => h _⟩
   simpa using h x 1
@@ -125,55 +136,64 @@ attribute [to_additive] MonoidHomClass.isometry_of_norm
 section NNNorm
 
 @[to_additive]
-theorem MonoidHomClass.lipschitz_of_bound_nnnorm [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ≥0)
-    (h : ∀ x, ‖f x‖₊ ≤ C * ‖x‖₊) : LipschitzWith C f :=
+theorem MonoidHomClass.lipschitz_of_bound_nnnorm
+    [MonoidHomClass 𝓕 E F] (f : 𝓕) (C : ℝ≥0) (h : ∀ x, ‖f x‖₊ ≤ C * ‖x‖₊)
+    : LipschitzWith C f :=
   @Real.toNNReal_coe C ▸ MonoidHomClass.lipschitz_of_bound f C h
 
 @[to_additive]
-theorem MonoidHomClass.antilipschitz_of_bound [MonoidHomClass 𝓕 E F] (f : 𝓕) {K : ℝ≥0}
-    (h : ∀ x, ‖x‖ ≤ K * ‖f x‖) : AntilipschitzWith K f :=
+theorem MonoidHomClass.antilipschitz_of_bound
+    [MonoidHomClass 𝓕 E F] (f : 𝓕) {K : ℝ≥0} (h : ∀ x, ‖x‖ ≤ K * ‖f x‖)
+    : AntilipschitzWith K f :=
   AntilipschitzWith.of_le_mul_dist fun x y => by
     simpa only [dist_eq_norm_inv_mul, map_inv, map_mul] using h (x⁻¹ * y)
 
 @[to_additive LipschitzWith.norm_le_mul]
-theorem LipschitzWith.norm_le_mul' {f : E → F} {K : ℝ≥0} (h : LipschitzWith K f) (hf : f 1 = 1)
-    (x) : ‖f x‖ ≤ K * ‖x‖ := by simpa only [dist_one_right, hf] using h.dist_le_mul x 1
+theorem LipschitzWith.norm_le_mul' {f : E → F} {K : ℝ≥0} (h : LipschitzWith K f) (hf : f 1 = 1) (x)
+    : ‖f x‖ ≤ K * ‖x‖ := by
+  simpa only [dist_one_right, hf] using h.dist_le_mul x 1
 
 @[to_additive LipschitzWith.nnnorm_le_mul]
-theorem LipschitzWith.nnnorm_le_mul' {f : E → F} {K : ℝ≥0} (h : LipschitzWith K f)
-    (hf : f 1 = 1) (x) : ‖f x‖₊ ≤ K * ‖x‖₊ :=
+theorem LipschitzWith.nnnorm_le_mul'
+    {f : E → F} {K : ℝ≥0} (h : LipschitzWith K f) (hf : f 1 = 1) (x)
+    : ‖f x‖₊ ≤ K * ‖x‖₊ :=
   h.norm_le_mul' hf x
 
 @[to_additive (attr := deprecated (since := "2026-09-28")) LipschitzWith.nnorm_le_mul]
 alias LipschitzWith.nnorm_le_mul' := LipschitzWith.nnnorm_le_mul'
 
 @[to_additive AntilipschitzWith.le_mul_norm]
-theorem AntilipschitzWith.le_mul_norm' {f : E → F} {K : ℝ≥0} (h : AntilipschitzWith K f)
-    (hf : f 1 = 1) (x) : ‖x‖ ≤ K * ‖f x‖ := by
+theorem AntilipschitzWith.le_mul_norm'
+    {f : E → F} {K : ℝ≥0} (h : AntilipschitzWith K f) (hf : f 1 = 1) (x)
+    : ‖x‖ ≤ K * ‖f x‖ := by
   simpa only [dist_one_right, hf] using h.le_mul_dist x 1
 
 @[to_additive antilipschitzWith_iff_exists_mul_le_norm]
-theorem antilipschitzWith_iff_exists_mul_le_norm' [MonoidHomClass 𝓕 E F] {f : 𝓕} :
-    (∃ K, AntilipschitzWith K f) ↔ ∃ c > 0, ∀ x, c * ‖x‖ ≤ ‖f x‖ := by
-  refine ⟨fun ⟨K, hK⟩ ↦ ⟨(K + 1)⁻¹, by positivity, fun x ↦ ?_⟩, fun ⟨c, hc0, hc⟩ ↦
-    ⟨.mk c⁻¹ (by positivity), MonoidHomClass.antilipschitz_of_bound f fun x ↦ ?_⟩⟩
+theorem antilipschitzWith_iff_exists_mul_le_norm' [MonoidHomClass 𝓕 E F] {f : 𝓕}
+    : (∃ K, AntilipschitzWith K f) ↔ ∃ c > 0, ∀ x, c * ‖x‖ ≤ ‖f x‖ := by
+  refine ⟨
+    fun ⟨K, hK⟩ ↦ ⟨(K + 1)⁻¹, by positivity, fun x ↦ ?_⟩,
+    fun ⟨c, hc0, hc⟩ ↦ ⟨.mk c⁻¹ (by positivity), MonoidHomClass.antilipschitz_of_bound f fun x ↦ ?_⟩
+  ⟩
   · grw [hK.le_mul_norm' (map_one f), ← mul_assoc]
     exact mul_le_of_le_one_left (norm_nonneg' (f x)) (by simp [field])
   · grw [← hc, NNReal.coe_mk, inv_mul_cancel_left₀ hc0.ne']
 
 @[to_additive AntilipschitzWith.le_mul_nnnorm]
-theorem AntilipschitzWith.le_mul_nnnorm' {f : E → F} {K : ℝ≥0} (h : AntilipschitzWith K f)
-    (hf : f 1 = 1) (x) : ‖x‖₊ ≤ K * ‖f x‖₊ :=
+theorem AntilipschitzWith.le_mul_nnnorm'
+    {f : E → F} {K : ℝ≥0} (h : AntilipschitzWith K f) (hf : f 1 = 1) (x)
+    : ‖x‖₊ ≤ K * ‖f x‖₊ :=
   h.le_mul_norm' hf x
 
 @[to_additive]
-theorem OneHomClass.bound_of_antilipschitz [OneHomClass 𝓕 E F] (f : 𝓕) {K : ℝ≥0}
-    (h : AntilipschitzWith K f) (x) : ‖x‖ ≤ K * ‖f x‖ :=
+theorem OneHomClass.bound_of_antilipschitz
+    [OneHomClass 𝓕 E F] (f : 𝓕) {K : ℝ≥0} (h : AntilipschitzWith K f) (x)
+    : ‖x‖ ≤ K * ‖f x‖ :=
   h.le_mul_nnnorm' (map_one f) x
 
 @[to_additive]
-theorem Isometry.nnnorm_map_of_map_one {f : E → F} (hi : Isometry f) (h₁ : f 1 = 1) (x : E) :
-    ‖f x‖₊ = ‖x‖₊ :=
+theorem Isometry.nnnorm_map_of_map_one {f : E → F} (hi : Isometry f) (h₁ : f 1 = 1) (x : E)
+    : ‖f x‖₊ = ‖x‖₊ :=
   Subtype.ext <| hi.norm_map_of_map_one h₁ x
 
 end NNNorm
@@ -233,8 +253,8 @@ theorem dist_mul_mul_le (a₁ a₂ b₁ b₂ : E) : dist (a₁ * a₂) (b₁ * b
   simpa only [dist_mul_left, dist_mul_right] using dist_triangle (a₁ * a₂) (b₁ * a₂) (b₁ * b₂)
 
 @[to_additive]
-theorem dist_mul_mul_le_of_le (h₁ : dist a₁ b₁ ≤ r₁) (h₂ : dist a₂ b₂ ≤ r₂) :
-    dist (a₁ * a₂) (b₁ * b₂) ≤ r₁ + r₂ :=
+theorem dist_mul_mul_le_of_le (h₁ : dist a₁ b₁ ≤ r₁) (h₂ : dist a₂ b₂ ≤ r₂)
+    : dist (a₁ * a₂) (b₁ * b₂) ≤ r₁ + r₂ :=
   (dist_mul_mul_le a₁ a₂ b₁ b₂).trans <| add_le_add h₁ h₂
 
 @[to_additive]
@@ -242,33 +262,34 @@ theorem dist_div_div_le (a₁ a₂ b₁ b₂ : E) : dist (a₁ / a₂) (b₁ / b
   simpa only [div_eq_mul_inv, dist_inv_inv] using dist_mul_mul_le a₁ a₂⁻¹ b₁ b₂⁻¹
 
 @[to_additive]
-theorem dist_div_div_le_of_le (h₁ : dist a₁ b₁ ≤ r₁) (h₂ : dist a₂ b₂ ≤ r₂) :
-    dist (a₁ / a₂) (b₁ / b₂) ≤ r₁ + r₂ :=
+theorem dist_div_div_le_of_le (h₁ : dist a₁ b₁ ≤ r₁) (h₂ : dist a₂ b₂ ≤ r₂)
+    : dist (a₁ / a₂) (b₁ / b₂) ≤ r₁ + r₂ :=
   (dist_div_div_le a₁ a₂ b₁ b₂).trans <| add_le_add h₁ h₂
 
 @[to_additive]
-theorem abs_dist_sub_le_dist_mul_mul (a₁ a₂ b₁ b₂ : E) :
-    |dist a₁ b₁ - dist a₂ b₂| ≤ dist (a₁ * a₂) (b₁ * b₂) := by
+theorem abs_dist_sub_le_dist_mul_mul (a₁ a₂ b₁ b₂ : E)
+    : |dist a₁ b₁ - dist a₂ b₂| ≤ dist (a₁ * a₂) (b₁ * b₂) := by
   simpa only [dist_mul_left, dist_mul_right, dist_comm b₂] using
     abs_dist_sub_le (a₁ * a₂) (b₁ * b₂) (b₁ * a₂)
 
 open Finset
 
 @[to_additive]
-theorem nndist_mul_mul_le (a₁ a₂ b₁ b₂ : E) :
-    nndist (a₁ * a₂) (b₁ * b₂) ≤ nndist a₁ b₁ + nndist a₂ b₂ :=
+theorem nndist_mul_mul_le (a₁ a₂ b₁ b₂ : E)
+    : nndist (a₁ * a₂) (b₁ * b₂) ≤ nndist a₁ b₁ + nndist a₂ b₂ :=
   NNReal.coe_le_coe.1 <| dist_mul_mul_le a₁ a₂ b₁ b₂
 
 @[to_additive]
-theorem edist_mul_mul_le (a₁ a₂ b₁ b₂ : E) :
-    edist (a₁ * a₂) (b₁ * b₂) ≤ edist a₁ b₁ + edist a₂ b₂ := by
+theorem edist_mul_mul_le (a₁ a₂ b₁ b₂ : E)
+    : edist (a₁ * a₂) (b₁ * b₂) ≤ edist a₁ b₁ + edist a₂ b₂ := by
   simp only [edist_nndist]
   norm_cast
   apply nndist_mul_mul_le
 
 section PseudoEMetricSpace
-variable {α E : Type*} [SeminormedCommGroup E] [PseudoEMetricSpace α] {K Kf Kg : ℝ≥0}
-  {f g : α → E} {s : Set α}
+variable
+  {α E : Type*} [SeminormedCommGroup E] [PseudoEMetricSpace α]
+  {K Kf Kg : ℝ≥0} {f g : α → E} {s : Set α}
 
 @[to_additive (attr := simp)]
 lemma lipschitzWith_inv_iff : LipschitzWith K f⁻¹ ↔ LipschitzWith K f := by simp [LipschitzWith]
@@ -297,75 +318,81 @@ lemma locallyLipschitzOn_inv_iff : LocallyLipschitzOn s f⁻¹ ↔ LocallyLipsch
 alias ⟨LocallyLipschitzOn.of_inv, LocallyLipschitzOn.inv⟩ := locallyLipschitzOn_inv_iff
 
 @[to_additive]
-lemma LipschitzOnWith.mul (hf : LipschitzOnWith Kf f s) (hg : LipschitzOnWith Kg g s) :
-    LipschitzOnWith (Kf + Kg) (fun x ↦ f x * g x) s := fun x hx y hy ↦
+lemma LipschitzOnWith.mul (hf : LipschitzOnWith Kf f s) (hg : LipschitzOnWith Kg g s)
+    : LipschitzOnWith (Kf + Kg) (fun x ↦ f x * g x) s := fun x hx y hy ↦
   calc
-    edist (f x * g x) (f y * g y) ≤ edist (f x) (f y) + edist (g x) (g y) :=
-      edist_mul_mul_le _ _ _ _
+    edist (f x * g x) (f y * g y)
+      ≤ edist (f x) (f y) + edist (g x) (g y) := edist_mul_mul_le _ _ _ _
     _ ≤ Kf * edist x y + Kg * edist x y := add_le_add (hf hx hy) (hg hx hy)
     _ = (Kf + Kg) * edist x y := (add_mul _ _ _).symm
 
 @[to_additive]
-lemma LipschitzWith.mul (hf : LipschitzWith Kf f) (hg : LipschitzWith Kg g) :
-    LipschitzWith (Kf + Kg) fun x ↦ f x * g x := by
+lemma LipschitzWith.mul (hf : LipschitzWith Kf f) (hg : LipschitzWith Kg g)
+    : LipschitzWith (Kf + Kg) fun x ↦ f x * g x := by
   simpa [← lipschitzOnWith_univ] using hf.lipschitzOnWith.mul hg.lipschitzOnWith
 
 @[to_additive]
-lemma LocallyLipschitzOn.mul (hf : LocallyLipschitzOn s f) (hg : LocallyLipschitzOn s g) :
-    LocallyLipschitzOn s fun x ↦ f x * g x := fun x hx ↦ by
+lemma LocallyLipschitzOn.mul (hf : LocallyLipschitzOn s f) (hg : LocallyLipschitzOn s g)
+    : LocallyLipschitzOn s fun x ↦ f x * g x := fun x hx ↦ by
   obtain ⟨Kf, t, ht, hKf⟩ := hf hx
   obtain ⟨Kg, u, hu, hKg⟩ := hg hx
-  exact ⟨Kf + Kg, t ∩ u, inter_mem ht hu,
-    (hKf.mono Set.inter_subset_left).mul (hKg.mono Set.inter_subset_right)⟩
+  exact ⟨
+    Kf + Kg,
+    t ∩ u,
+    inter_mem ht hu,
+    (hKf.mono Set.inter_subset_left).mul (hKg.mono Set.inter_subset_right)
+  ⟩
 
 @[to_additive]
-lemma LocallyLipschitz.mul (hf : LocallyLipschitz f) (hg : LocallyLipschitz g) :
-    LocallyLipschitz fun x ↦ f x * g x := by
+lemma LocallyLipschitz.mul (hf : LocallyLipschitz f) (hg : LocallyLipschitz g)
+    : LocallyLipschitz fun x ↦ f x * g x := by
   simpa [← locallyLipschitzOn_univ] using hf.locallyLipschitzOn.mul hg.locallyLipschitzOn
 
 @[to_additive]
-lemma LipschitzOnWith.div (hf : LipschitzOnWith Kf f s) (hg : LipschitzOnWith Kg g s) :
-    LipschitzOnWith (Kf + Kg) (fun x ↦ f x / g x) s := by
+lemma LipschitzOnWith.div (hf : LipschitzOnWith Kf f s) (hg : LipschitzOnWith Kg g s)
+    : LipschitzOnWith (Kf + Kg) (fun x ↦ f x / g x) s := by
   simpa only [div_eq_mul_inv] using! hf.mul hg.inv
 
 @[to_additive]
-theorem LipschitzWith.div (hf : LipschitzWith Kf f) (hg : LipschitzWith Kg g) :
-    LipschitzWith (Kf + Kg) fun x => f x / g x := by
+theorem LipschitzWith.div (hf : LipschitzWith Kf f) (hg : LipschitzWith Kg g)
+    : LipschitzWith (Kf + Kg) fun x => f x / g x := by
   simpa only [div_eq_mul_inv] using! hf.mul hg.inv
 
 @[to_additive]
-lemma LocallyLipschitzOn.div (hf : LocallyLipschitzOn s f) (hg : LocallyLipschitzOn s g) :
-    LocallyLipschitzOn s fun x ↦ f x / g x := by
+lemma LocallyLipschitzOn.div (hf : LocallyLipschitzOn s f) (hg : LocallyLipschitzOn s g)
+    : LocallyLipschitzOn s fun x ↦ f x / g x := by
   simpa only [div_eq_mul_inv] using! hf.mul hg.inv
 
 @[to_additive]
-lemma LocallyLipschitz.div (hf : LocallyLipschitz f) (hg : LocallyLipschitz g) :
-    LocallyLipschitz fun x ↦ f x / g x := by
+lemma LocallyLipschitz.div (hf : LocallyLipschitz f) (hg : LocallyLipschitz g)
+    : LocallyLipschitz fun x ↦ f x / g x := by
   simpa only [div_eq_mul_inv] using! hf.mul hg.inv
 
 namespace AntilipschitzWith
 
 @[to_additive]
-theorem mul_lipschitzWith (hf : AntilipschitzWith Kf f) (hg : LipschitzWith Kg g) (hK : Kg < Kf⁻¹) :
-    AntilipschitzWith (Kf⁻¹ - Kg)⁻¹ fun x => f x * g x := by
+theorem mul_lipschitzWith (hf : AntilipschitzWith Kf f) (hg : LipschitzWith Kg g) (hK : Kg < Kf⁻¹)
+    : AntilipschitzWith (Kf⁻¹ - Kg)⁻¹ fun x => f x * g x := by
   let : PseudoMetricSpace α := PseudoEMetricSpace.toPseudoMetricSpace hf.edist_ne_top
   refine AntilipschitzWith.of_le_mul_dist fun x y => ?_
   rw [NNReal.coe_inv, ← _root_.div_eq_inv_mul]
   rw [le_div_iff₀ (NNReal.coe_pos.2 <| tsub_pos_iff_lt.2 hK)]
   rw [mul_comm, NNReal.coe_sub hK.le, sub_mul]
   calc
-    ↑Kf⁻¹ * dist x y - Kg * dist x y ≤ dist (f x) (f y) - dist (g x) (g y) :=
-      sub_le_sub (hf.mul_le_dist x y) (hg.dist_le_mul x y)
+    ↑Kf⁻¹ * dist x y - Kg * dist x y
+      ≤ dist (f x) (f y) - dist (g x) (g y) := sub_le_sub (hf.mul_le_dist x y) (hg.dist_le_mul x y)
     _ ≤ _ := le_trans (le_abs_self _) (abs_dist_sub_le_dist_mul_mul _ _ _ _)
 
 @[to_additive]
-theorem mul_div_lipschitzWith (hf : AntilipschitzWith Kf f) (hg : LipschitzWith Kg (g / f))
-    (hK : Kg < Kf⁻¹) : AntilipschitzWith (Kf⁻¹ - Kg)⁻¹ g := by
+theorem mul_div_lipschitzWith
+    (hf : AntilipschitzWith Kf f) (hg : LipschitzWith Kg (g / f)) (hK : Kg < Kf⁻¹)
+    : AntilipschitzWith (Kf⁻¹ - Kg)⁻¹ g := by
   simpa only [Pi.div_apply, mul_div_cancel] using hf.mul_lipschitzWith hg hK
 
 @[to_additive le_mul_norm_sub]
-theorem le_mul_norm_div {f : E → F} (hf : AntilipschitzWith K f) (x y : E) :
-    ‖x⁻¹ * y‖ ≤ K * ‖(f x)⁻¹ * f y‖ := by simp [← dist_eq_norm_inv_mul, hf.le_mul_dist x y]
+theorem le_mul_norm_div {f : E → F} (hf : AntilipschitzWith K f) (x y : E)
+    : ‖x⁻¹ * y‖ ≤ K * ‖(f x)⁻¹ * f y‖ := by
+  simp [← dist_eq_norm_inv_mul, hf.le_mul_dist x y]
 
 end AntilipschitzWith
 end PseudoEMetricSpace
@@ -376,8 +403,10 @@ instance (priority := 100) SeminormedCommGroup.to_lipschitzMul : LipschitzMul E 
   ⟨⟨1 + 1, LipschitzWith.prod_fst.mul LipschitzWith.prod_snd⟩⟩
 
 -- See note [lower instance priority]
-/-- A seminormed group is a uniform group, i.e., multiplication and division are uniformly
-continuous. -/
+/--
+A seminormed group is a uniform group, i.e., multiplication and division are uniformly
+continuous.
+-/
 @[to_additive /-- A seminormed group is a uniform additive group, i.e., addition and subtraction are
 uniformly continuous. -/]
 instance (priority := 100) SeminormedCommGroup.to_isUniformGroup : IsUniformGroup E :=
@@ -407,8 +436,7 @@ instance : NormedCommGroup (SeparationQuotient E) where
   dist_eq := Quotient.ind₂ dist_eq_norm_inv_mul
 
 @[to_additive]
-theorem mk_eq_one_iff {p : E} : mk p = 1 ↔ ‖p‖ = 0 := by
-  rw [← norm_mk', norm_eq_zero']
+theorem mk_eq_one_iff {p : E} : mk p = 1 ↔ ‖p‖ = 0 := by rw [← norm_mk', norm_eq_zero']
 
 set_option linter.docPrime false in
 @[to_additive (attr := simp) nnnorm_mk]
@@ -417,12 +445,13 @@ theorem nnnorm_mk' (p : E) : ‖mk p‖₊ = ‖p‖₊ := rfl
 end SeparationQuotient
 
 @[to_additive]
-theorem cauchySeq_prod_of_eventually_eq {u v : ℕ → E} {N : ℕ} (huv : ∀ n ≥ N, u n = v n)
-    (hv : CauchySeq fun n => ∏ k ∈ range (n + 1), v k) :
-    CauchySeq fun n => ∏ k ∈ range (n + 1), u k := by
+theorem cauchySeq_prod_of_eventually_eq
+    {u v : ℕ → E} {N : ℕ}
+    (huv : ∀ n ≥ N, u n = v n) (hv : CauchySeq fun n => ∏ k ∈ range (n + 1), v k)
+    : CauchySeq fun n => ∏ k ∈ range (n + 1), u k := by
   let d : ℕ → E := fun n => ∏ k ∈ range (n + 1), u k / v k
-  rw [show (fun n => ∏ k ∈ range (n + 1), u k) = d * fun n => ∏ k ∈ range (n + 1), v k
-      by ext n; simp [d]]
+  rw [show (fun n => ∏ k ∈ range (n + 1), u k) = d * fun n => ∏ k ∈ range (n + 1), v k by
+    ext n; simp [d]]
   suffices ∀ n ≥ N, d n = d N from (tendsto_atTop_of_eventually_const this).cauchySeq.mul hv
   intro n hn
   dsimp [d]
@@ -431,8 +460,8 @@ theorem cauchySeq_prod_of_eventually_eq {u v : ℕ → E} {N : ℕ} (huv : ∀ n
   simp [huv m (le_of_lt hm)]
 
 @[to_additive CauchySeq.norm_bddAbove]
-lemma CauchySeq.mul_norm_bddAbove {G : Type*} [SeminormedGroup G] {u : ℕ → G}
-    (hu : CauchySeq u) : BddAbove (Set.range (fun n ↦ ‖u n‖)) := by
+lemma CauchySeq.mul_norm_bddAbove {G : Type*} [SeminormedGroup G] {u : ℕ → G} (hu : CauchySeq u)
+    : BddAbove (Set.range (fun n ↦ ‖u n‖)) := by
   obtain ⟨C, -, hC⟩ := cauchySeq_bdd hu
   simp_rw [SeminormedGroup.dist_eq] at hC
   have : ∀ n, ‖u n‖ ≤ C + ‖u 0‖ := by
@@ -444,8 +473,8 @@ lemma CauchySeq.mul_norm_bddAbove {G : Type*} [SeminormedGroup G] {u : ℕ → G
   exact ⟨C + ‖u 0‖, by simpa using this⟩
 
 @[to_additive]
-theorem lipschitzOnWith_iff_norm_div_le {f : E → F} {C : ℝ≥0} {s : Set E} :
-    LipschitzOnWith C f s ↔ ∀ ⦃x⦄, x ∈ s → ∀ ⦃y⦄, y ∈ s → ‖f x / f y‖ ≤ C * ‖x / y‖ := by
+theorem lipschitzOnWith_iff_norm_div_le {f : E → F} {C : ℝ≥0} {s : Set E}
+    : LipschitzOnWith C f s ↔ ∀ ⦃x⦄, x ∈ s → ∀ ⦃y⦄, y ∈ s → ‖f x / f y‖ ≤ C * ‖x / y‖ := by
   simpa [← norm_inv_mul] using lipschitzOnWith_iff_norm_inv_mul_le
 
 alias ⟨LipschitzOnWith.norm_div_le, _⟩ := lipschitzOnWith_iff_norm_div_le
@@ -453,14 +482,15 @@ alias ⟨LipschitzOnWith.norm_div_le, _⟩ := lipschitzOnWith_iff_norm_div_le
 attribute [to_additive] LipschitzOnWith.norm_div_le
 
 @[to_additive]
-theorem LipschitzOnWith.norm_div_le_of_le {f : E → F} {C : ℝ≥0} {s : Set E} {a b : E} {r : ℝ}
-    (h : LipschitzOnWith C f s) (ha : a ∈ s) (hb : b ∈ s) (hr : ‖a / b‖ ≤ r) :
-    ‖f a / f b‖ ≤ C * r :=
+theorem LipschitzOnWith.norm_div_le_of_le
+    {f : E → F} {C : ℝ≥0} {s : Set E} {a b : E} {r : ℝ}
+    (h : LipschitzOnWith C f s) (ha : a ∈ s) (hb : b ∈ s) (hr : ‖a / b‖ ≤ r)
+    : ‖f a / f b‖ ≤ C * r :=
   (h.norm_div_le ha hb).trans <| by gcongr
 
 @[to_additive]
-theorem lipschitzWith_iff_norm_div_le {f : E → F} {C : ℝ≥0} :
-    LipschitzWith C f ↔ ∀ x y, ‖f x / f y‖ ≤ C * ‖x / y‖ := by
+theorem lipschitzWith_iff_norm_div_le {f : E → F} {C : ℝ≥0}
+    : LipschitzWith C f ↔ ∀ x y, ‖f x / f y‖ ≤ C * ‖x / y‖ := by
   simp only [lipschitzWith_iff_dist_le_mul, dist_eq_norm_div]
 
 alias ⟨LipschitzWith.norm_div_le, _⟩ := lipschitzWith_iff_norm_div_le
@@ -468,8 +498,9 @@ alias ⟨LipschitzWith.norm_div_le, _⟩ := lipschitzWith_iff_norm_div_le
 attribute [to_additive] LipschitzWith.norm_div_le
 
 @[to_additive]
-theorem LipschitzWith.norm_div_le_of_le {f : E → F} {C : ℝ≥0} {a b : E} {r : ℝ}
-    (h : LipschitzWith C f) (hr : ‖a / b‖ ≤ r) : ‖f a / f b‖ ≤ C * r :=
+theorem LipschitzWith.norm_div_le_of_le
+    {f : E → F} {C : ℝ≥0} {a b : E} {r : ℝ} (h : LipschitzWith C f) (hr : ‖a / b‖ ≤ r)
+    : ‖f a / f b‖ ≤ C * r :=
   (h.norm_div_le _ _).trans <| by gcongr
 
 end SeminormedCommGroup
@@ -477,8 +508,7 @@ end SeminormedCommGroup
 namespace Real
 open Topology
 
-theorem isometry_intCast : Isometry ((↑) : ℤ → ℝ) :=
-  Isometry.of_dist_eq <| by tauto
+theorem isometry_intCast : Isometry ((↑) : ℤ → ℝ) := Isometry.of_dist_eq <| by tauto
 
 theorem isClosedEmbedding_intCast : IsClosedEmbedding ((↑) : ℤ → ℝ) :=
   isometry_intCast.isClosedEmbedding

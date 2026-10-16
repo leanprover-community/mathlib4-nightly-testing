@@ -17,11 +17,12 @@ public section
 
 section Field
 
-variable {F Γ₀ O : Type*} [Field F] [LinearOrderedCommGroupWithZero Γ₀]
-  [CommRing O] [Algebra O F] {v : Valuation F Γ₀}
+variable
+  {F Γ₀ O : Type*} [Field F] [LinearOrderedCommGroupWithZero Γ₀] [CommRing O] [Algebra O F]
+  {v : Valuation F Γ₀}
 
-instance MonoidWithZeroHom.instLinearOrderedCommGroupWithZeroMrange (v : F →*₀ Γ₀) :
-    LinearOrderedCommGroupWithZero (MonoidHom.mrange v) where
+instance MonoidWithZeroHom.instLinearOrderedCommGroupWithZeroMrange (v : F →*₀ Γ₀)
+    : LinearOrderedCommGroupWithZero (MonoidHom.mrange v) where
   bot := ⟨⊥, by simp [bot_eq_zero]⟩
   bot_le a := by simp [bot_eq_zero, ← Subtype.coe_le_coe]
   isBot_zero a := by simp [← Subtype.coe_le_coe]
@@ -31,26 +32,25 @@ instance MonoidWithZeroHom.instLinearOrderedCommGroupWithZeroMrange (v : F →*�
     rintro a ha b c hbc
     gcongr
 
-instance Valuation.instLinearOrderedCommGroupWithZeroMrange :
-    LinearOrderedCommGroupWithZero (MonoidHom.mrange v) :=
+instance Valuation.instLinearOrderedCommGroupWithZeroMrange
+    : LinearOrderedCommGroupWithZero (MonoidHom.mrange v) :=
   inferInstanceAs (LinearOrderedCommGroupWithZero (MonoidHom.mrange (v : F →*₀ Γ₀)))
 
 namespace Valuation.Integers
 
 open scoped Function in
-lemma wfDvdMonoid_iff_wellFounded_gt_on_v (hv : Integers v O) :
-    WfDvdMonoid O ↔ WellFounded ((· > ·) on (v ∘ algebraMap O F)) := by
-  refine ⟨fun _ ↦ wellFounded_dvdNotUnit.mono ?_, fun h ↦ h.mono ?_⟩ <;>
-  simp [Function.onFun, hv.dvdNotUnit_iff_lt]
+lemma wfDvdMonoid_iff_wellFounded_gt_on_v (hv : Integers v O)
+    : WfDvdMonoid O ↔ WellFounded ((· > ·) on (v ∘ algebraMap O F)) := by
+  refine ⟨fun _ ↦ wellFounded_dvdNotUnit.mono ?_, fun h ↦ h.mono ?_⟩
+    <;> simp [Function.onFun, hv.dvdNotUnit_iff_lt]
 
 open scoped Function WithZero in
-lemma wellFounded_gt_on_v_iff_discrete_mrange [Nontrivial (MonoidHom.mrange v)ˣ]
-    (hv : Integers v O) :
-    WellFounded ((· > ·) on (v ∘ algebraMap O F)) ↔
-      Nonempty (MonoidHom.mrange v ≃*o ℤᵐ⁰) := by
-  rw [←
-    LinearOrderedCommGroupWithZero.wellFoundedOn_setOfPred_ge_gt_iff_nonempty_discrete_of_ne_zero
-    one_ne_zero, ← Set.wellFoundedOn_range]
+lemma wellFounded_gt_on_v_iff_discrete_mrange [Nontrivial (MonoidHom.mrange v)ˣ] (hv : Integers v O)
+    : WellFounded ((· > ·) on (v ∘ algebraMap O F)) ↔ Nonempty (MonoidHom.mrange v ≃*o ℤᵐ⁰) := by
+  rw
+    [← LinearOrderedCommGroupWithZero.wellFoundedOn_setOfPred_ge_gt_iff_nonempty_discrete_of_ne_zero
+        one_ne_zero,
+      ← Set.wellFoundedOn_range]
   classical
   refine ⟨fun h ↦ (h.mapsTo Subtype.val ?_).mono' (by simp), fun h ↦ (h.mapsTo ?_ ?_).mono' ?_⟩
   · rintro ⟨_, x, rfl⟩
@@ -67,9 +67,9 @@ lemma wellFounded_gt_on_v_iff_discrete_mrange [Nontrivial (MonoidHom.mrange v)ˣ
     simp [← Subtype.coe_le_coe, hv.map_le_one]
   · simp [Function.onFun]
 
-lemma isPrincipalIdealRing_iff_not_denselyOrdered [MulArchimedean (MonoidHom.mrange v)]
-    (hv : Integers v O) :
-    IsPrincipalIdealRing O ↔ ¬ DenselyOrdered (Set.range v) := by
+lemma isPrincipalIdealRing_iff_not_denselyOrdered
+    [MulArchimedean (MonoidHom.mrange v)] (hv : Integers v O)
+    : IsPrincipalIdealRing O ↔ ¬ DenselyOrdered (Set.range v) := by
   refine ⟨fun _ ↦ not_denselyOrdered_of_isPrincipalIdealRing hv, fun H ↦ ?_⟩
   rcases subsingleton_or_nontrivial (MonoidHom.mrange v)ˣ with hs | _
   · have := bijective_algebraMap_of_subsingleton_units_mrange hv
@@ -81,9 +81,9 @@ lemma isPrincipalIdealRing_iff_not_denselyOrdered [MulArchimedean (MonoidHom.mra
     LinearOrderedCommGroupWithZero.discrete_iff_not_denselyOrdered]
   exact H
 
-lemma isPrincipalIdealRing_iff_not_denselyOrdered_mrange [MulArchimedean (MonoidHom.mrange v)]
-    (hv : Integers v O) :
-    IsPrincipalIdealRing O ↔ ¬ DenselyOrdered (MonoidHom.mrange v) :=
+lemma isPrincipalIdealRing_iff_not_denselyOrdered_mrange
+    [MulArchimedean (MonoidHom.mrange v)] (hv : Integers v O)
+    : IsPrincipalIdealRing O ↔ ¬ DenselyOrdered (MonoidHom.mrange v) :=
   isPrincipalIdealRing_iff_not_denselyOrdered hv
 
 end Valuation.Integers

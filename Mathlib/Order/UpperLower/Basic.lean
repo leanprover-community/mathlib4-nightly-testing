@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Order.Interval.Set.OrderEmbedding
 public import Mathlib.Order.SetNotation
-
 import Mathlib.Logic.Equiv.Set
 import Mathlib.Order.WellFounded
 
@@ -36,20 +35,20 @@ section LE
 
 variable [LE α] {s t : Set α} {a : α}
 
-@[to_dual]
-theorem isUpperSet_empty : IsUpperSet (∅ : Set α) := fun _ _ _ => id
+@[to_dual] theorem isUpperSet_empty : IsUpperSet (∅ : Set α) := fun _ _ _ => id
 
-@[to_dual]
-theorem isUpperSet_univ : IsUpperSet (univ : Set α) := fun _ _ _ => id
+@[to_dual] theorem isUpperSet_univ : IsUpperSet (univ : Set α) := fun _ _ _ => id
 
 @[to_dual]
 theorem IsUpperSet.compl (hs : IsUpperSet s) : IsLowerSet sᶜ := fun _a _b h hb ha => hb <| hs h ha
 
 @[to_dual (attr := simp)]
-theorem isUpperSet_compl : IsUpperSet sᶜ ↔ IsLowerSet s :=
-  ⟨fun h => by
+theorem isUpperSet_compl : IsUpperSet sᶜ ↔ IsLowerSet s := ⟨
+  fun h => by
     convert h.compl
-    rw [compl_compl], IsLowerSet.compl⟩
+    rw [compl_compl],
+  IsLowerSet.compl
+⟩
 
 @[to_dual]
 theorem IsUpperSet.union (hs : IsUpperSet s) (ht : IsUpperSet t) : IsUpperSet (s ∪ t) :=
@@ -60,7 +59,7 @@ theorem IsUpperSet.inter (hs : IsUpperSet s) (ht : IsUpperSet t) : IsUpperSet (s
   fun _ _ h => And.imp (hs h) (ht h)
 
 @[to_dual]
-theorem isUpperSet_sUnion {S : Set (Set α)} (hf : ∀ s ∈ S, IsUpperSet s) : IsUpperSet (⋃₀ S) :=
+theorem isUpperSet_sUnion {S : Set (Set α)} (hf : ∀ s ∈ S, IsUpperSet s) : IsUpperSet (⋃₀S) :=
   fun _ _ h => Exists.imp fun _ hs => ⟨hs.1, hf _ hs.1 h hs.2⟩
 
 @[to_dual]
@@ -68,12 +67,12 @@ theorem isUpperSet_iUnion {f : ι → Set α} (hf : ∀ i, IsUpperSet (f i)) : I
   isUpperSet_sUnion <| forall_mem_range.2 hf
 
 @[to_dual]
-theorem isUpperSet_iUnion₂ {f : ∀ i, κ i → Set α} (hf : ∀ i j, IsUpperSet (f i j)) :
-    IsUpperSet (⋃ (i) (j), f i j) :=
+theorem isUpperSet_iUnion₂ {f : ∀ i, κ i → Set α} (hf : ∀ i j, IsUpperSet (f i j))
+    : IsUpperSet (⋃ (i) (j), f i j) :=
   isUpperSet_iUnion fun i => isUpperSet_iUnion <| hf i
 
 @[to_dual]
-theorem isUpperSet_sInter {S : Set (Set α)} (hf : ∀ s ∈ S, IsUpperSet s) : IsUpperSet (⋂₀ S) :=
+theorem isUpperSet_sInter {S : Set (Set α)} (hf : ∀ s ∈ S, IsUpperSet s) : IsUpperSet (⋂₀S) :=
   fun _ _ h => forall₂_imp fun s hs => hf s hs h
 
 @[to_dual]
@@ -81,13 +80,12 @@ theorem isUpperSet_iInter {f : ι → Set α} (hf : ∀ i, IsUpperSet (f i)) : I
   isUpperSet_sInter <| forall_mem_range.2 hf
 
 @[to_dual]
-theorem isUpperSet_iInter₂ {f : ∀ i, κ i → Set α} (hf : ∀ i j, IsUpperSet (f i j)) :
-    IsUpperSet (⋂ (i) (j), f i j) :=
+theorem isUpperSet_iInter₂ {f : ∀ i, κ i → Set α} (hf : ∀ i j, IsUpperSet (f i j))
+    : IsUpperSet (⋂ (i) (j), f i j) :=
   isUpperSet_iInter fun i => isUpperSet_iInter <| hf i
 
 @[to_dual (attr := simp)]
-theorem isUpperSet_preimage_ofDual_iff : IsUpperSet (ofDual ⁻¹' s) ↔ IsLowerSet s :=
-  Iff.rfl
+theorem isUpperSet_preimage_ofDual_iff : IsUpperSet (ofDual ⁻¹' s) ↔ IsLowerSet s := Iff.rfl
 
 @[to_dual (attr := simp)]
 theorem isUpperSet_preimage_toDual_iff {s : Set αᵒᵈ} : IsUpperSet (toDual ⁻¹' s) ↔ IsLowerSet s :=
@@ -97,13 +95,14 @@ theorem isUpperSet_preimage_toDual_iff {s : Set αᵒᵈ} : IsUpperSet (toDual �
 @[to_dual] alias ⟨_, IsUpperSet.ofDual⟩ := isLowerSet_preimage_toDual_iff
 
 @[to_dual]
-lemma IsUpperSet.isLowerSet_preimage_coe (hs : IsUpperSet s) :
-    IsLowerSet ((↑) ⁻¹' t : Set s) ↔ ∀ b ∈ s, ∀ c ∈ t, b ≤ c → b ∈ t := by aesop
+lemma IsUpperSet.isLowerSet_preimage_coe (hs : IsUpperSet s)
+    : IsLowerSet ((↑) ⁻¹' t : Set s) ↔ ∀ b ∈ s, ∀ c ∈ t, b ≤ c → b ∈ t := by
+  aesop
 
 @[to_dual]
-lemma IsUpperSet.sdiff (hs : IsUpperSet s) (ht : ∀ b ∈ s, ∀ c ∈ t, b ≤ c → b ∈ t) :
-    IsUpperSet (s \ t) :=
-  fun _b _c hbc hb ↦ ⟨hs hbc hb.1, fun hc ↦ hb.2 <| ht _ hb.1 _ hc hbc⟩
+lemma IsUpperSet.sdiff (hs : IsUpperSet s) (ht : ∀ b ∈ s, ∀ c ∈ t, b ≤ c → b ∈ t)
+    : IsUpperSet (s \ t) := fun _b _c hbc hb ↦
+  ⟨hs hbc hb.1, fun hc ↦ hb.2 <| ht _ hb.1 _ hc hbc⟩
 
 @[to_dual]
 lemma IsUpperSet.sdiff_of_isLowerSet (hs : IsUpperSet s) (ht : IsLowerSet t) : IsUpperSet (s \ t) :=
@@ -141,8 +140,9 @@ theorem IsLowerSet.ordConnected (h : IsLowerSet s) : s.OrdConnected :=
   ⟨fun _ _ _ hb => Icc_subset_Iic_self.trans <| h.Iic_subset hb⟩
 
 @[to_dual]
-theorem IsUpperSet.preimage (hs : IsUpperSet s) {f : β → α} (hf : Monotone f) :
-    IsUpperSet (f ⁻¹' s : Set β) := fun _ _ h => hs <| hf h
+theorem IsUpperSet.preimage (hs : IsUpperSet s) {f : β → α} (hf : Monotone f)
+    : IsUpperSet (f ⁻¹' s : Set β) := fun _ _ h =>
+  hs <| hf h
 
 @[to_dual]
 theorem IsUpperSet.image (hs : IsUpperSet s) (f : α ≃o β) : IsUpperSet (f '' s : Set β) := by
@@ -151,34 +151,26 @@ theorem IsUpperSet.image (hs : IsUpperSet s) (f : α ≃o β) : IsUpperSet (f ''
   exact hs.preimage f.symm.monotone
 
 @[to_dual]
-theorem OrderEmbedding.image_Ici (e : α ↪o β) (he : IsUpperSet (range e)) (a : α) :
-    e '' Ici a = Ici (e a) := by
+theorem OrderEmbedding.image_Ici (e : α ↪o β) (he : IsUpperSet (range e)) (a : α)
+    : e '' Ici a = Ici (e a) := by
   rw [← e.preimage_Ici, image_preimage_eq_inter_range,
     inter_eq_left.2 <| he.Ici_subset (mem_range_self _)]
 
 @[to_dual]
-theorem OrderEmbedding.image_Ioi (e : α ↪o β) (he : IsUpperSet (range e)) (a : α) :
-    e '' Ioi a = Ioi (e a) := by
+theorem OrderEmbedding.image_Ioi (e : α ↪o β) (he : IsUpperSet (range e)) (a : α)
+    : e '' Ioi a = Ioi (e a) := by
   rw [← e.preimage_Ioi, image_preimage_eq_inter_range,
     inter_eq_left.2 <| he.Ioi_subset (mem_range_self _)]
 
-@[simp]
-theorem Set.monotone_mem : Monotone (· ∈ s) ↔ IsUpperSet s :=
-  Iff.rfl
+@[simp] theorem Set.monotone_mem : Monotone (· ∈ s) ↔ IsUpperSet s := Iff.rfl
 
-@[simp]
-theorem Set.antitone_mem : Antitone (· ∈ s) ↔ IsLowerSet s :=
-  forall_comm
+@[simp] theorem Set.antitone_mem : Antitone (· ∈ s) ↔ IsLowerSet s := forall_comm
 
-@[simp]
-theorem isUpperSet_setOfPred : IsUpperSet { a | p a } ↔ Monotone p :=
-  Iff.rfl
+@[simp] theorem isUpperSet_setOfPred : IsUpperSet { a | p a } ↔ Monotone p := Iff.rfl
 
 @[deprecated (since := "2026-07-09")] alias isUpperSet_setOf := isUpperSet_setOfPred
 
-@[simp]
-theorem isLowerSet_setOfPred : IsLowerSet { a | p a } ↔ Antitone p :=
-  forall_comm
+@[simp] theorem isLowerSet_setOfPred : IsLowerSet { a | p a } ↔ Antitone p := forall_comm
 
 @[deprecated (since := "2026-07-09")] alias isLowerSet_setOf := isLowerSet_setOfPred
 
@@ -209,18 +201,16 @@ section NoMaxOrder
 variable [NoMaxOrder α]
 
 @[to_dual]
-theorem IsUpperSet.not_bddAbove (hs : IsUpperSet s) : s.Nonempty → ¬BddAbove s := by
+theorem IsUpperSet.not_bddAbove (hs : IsUpperSet s) : s.Nonempty → ¬ BddAbove s := by
   rintro ⟨a, ha⟩ ⟨b, hb⟩
   obtain ⟨c, hc⟩ := exists_gt b
   exact hc.not_ge (hb <| hs ((hb ha).trans hc.le) ha)
 
 @[to_dual]
-theorem not_bddAbove_Ici : ¬BddAbove (Ici a) :=
-  (isUpperSet_Ici _).not_bddAbove nonempty_Ici
+theorem not_bddAbove_Ici : ¬ BddAbove (Ici a) := (isUpperSet_Ici _).not_bddAbove nonempty_Ici
 
 @[to_dual]
-theorem not_bddAbove_Ioi : ¬BddAbove (Ioi a) :=
-  (isUpperSet_Ioi _).not_bddAbove nonempty_Ioi
+theorem not_bddAbove_Ioi : ¬ BddAbove (Ioi a) := (isUpperSet_Ioi _).not_bddAbove nonempty_Ioi
 
 end NoMaxOrder
 
@@ -249,15 +239,15 @@ theorem IsUpperSet.total (hs : IsUpperSet s) (ht : IsUpperSet t) : s ⊆ t ∨ t
   grind [isUpperSet_iff_forall_lt]
 
 @[to_dual]
-theorem IsUpperSet.eq_empty_or_Ici [WellFoundedLT α] (h : IsUpperSet s) :
-    s = ∅ ∨ ∃ a, s = Ici a := by
+theorem IsUpperSet.eq_empty_or_Ici [WellFoundedLT α] (h : IsUpperSet s)
+    : s = ∅ ∨ ∃ a, s = Ici a := by
   refine or_iff_not_imp_left.2 fun ha ↦ ?_
   obtain ⟨a, ha⟩ := Set.nonempty_iff_ne_empty.2 ha
   exact ⟨_, ext fun b ↦ ⟨WellFoundedLT.min_le, (h · <| wellFounded_lt.min_mem _ ⟨a, ha⟩)⟩⟩
 
 @[to_dual]
-theorem IsLowerSet.eq_univ_or_Iio [WellFoundedLT α] (h : IsLowerSet s) :
-    s = univ ∨ ∃ a, s = Iio a := by
+theorem IsLowerSet.eq_univ_or_Iio [WellFoundedLT α] (h : IsLowerSet s)
+    : s = univ ∨ ∃ a, s = Iio a := by
   simp_rw [← @compl_inj_iff _ s]
   simpa using h.compl.eq_empty_or_Ici
 

@@ -37,20 +37,21 @@ set_option backward.isDefEq.respectTransparency.types false in
 instance baseChange : GradedAlgebra fun i ↦ (𝒜 i).baseChange S where
   one_mem := tmul_mem_baseChange_of_mem _ <| one_mem_graded 𝒜
   mul_mem i j := by
-    suffices h : ((𝒜 i).baseChange S).map₂ (Algebra.lmul S (S ⊗[R] A)) ((𝒜 j).baseChange S) ≤
-      (𝒜 (i + j)).baseChange S from fun xi xj ↦ (h <| apply_mem_map₂ _ · ·)
+    suffices h
+        : ((𝒜 i).baseChange S).map₂ (Algebra.lmul S (S ⊗[R] A)) ((𝒜 j).baseChange S)
+          ≤ (𝒜 (i + j)).baseChange S from fun xi xj ↦
+      (h <| apply_mem_map₂ _ · ·)
     simp_rw [baseChange_eq_span, map₂_span_span, span_le, Set.image2_subset_iff]
     rintro - ⟨x, hx, rfl⟩ - ⟨y, hy, rfl⟩
     simpa using subset_span <| Set.mem_image_of_mem _ <| mul_mem_graded hx hy
 
-instance : Semiring ((𝒜 0).baseChange S) :=
-  GradeZero.instSemiring fun i ↦ (𝒜 i).baseChange S
+instance : Semiring ((𝒜 0).baseChange S) := GradeZero.instSemiring fun i ↦ (𝒜 i).baseChange S
 
-instance : Algebra S ((𝒜 0).baseChange S) :=
-  GradeZero.instAlgebra fun i ↦ (𝒜 i).baseChange S
+instance : Algebra S ((𝒜 0).baseChange S) := GradeZero.instAlgebra fun i ↦ (𝒜 i).baseChange S
 
-@[simp] lemma coe_algebraMap_apply (s : S) :
-    (algebraMap _ ((𝒜 0).baseChange S) s : S ⊗[R] A) = s ⊗ₜ 1 := rfl
+@[simp]
+lemma coe_algebraMap_apply (s : S) : (algebraMap _ ((𝒜 0).baseChange S) s : S ⊗[R] A) = s ⊗ₜ 1 :=
+  rfl
 
 end Semiring
 
@@ -81,8 +82,7 @@ variable [CommSemiring R] [CommRing S] [Algebra R S]
 variable [DecidableEq ι] [AddMonoid ι]
 variable [Semiring A] [Algebra R A] (𝒜 : ι → Submodule R A) [GradedAlgebra 𝒜]
 
-instance : Ring ((𝒜 0).baseChange S) :=
-  GradeZero.instRing fun i ↦ (𝒜 i).baseChange S
+instance : Ring ((𝒜 0).baseChange S) := GradeZero.instRing fun i ↦ (𝒜 i).baseChange S
 
 end Ring
 
@@ -91,8 +91,7 @@ variable [CommSemiring R] [CommRing S] [Algebra R S]
 variable [DecidableEq ι] [AddCommMonoid ι]
 variable [CommSemiring A] [Algebra R A] (𝒜 : ι → Submodule R A) [GradedAlgebra 𝒜]
 
-instance : CommRing ((𝒜 0).baseChange S) :=
-  GradeZero.instCommRing fun i ↦ (𝒜 i).baseChange S
+instance : CommRing ((𝒜 0).baseChange S) := GradeZero.instCommRing fun i ↦ (𝒜 i).baseChange S
 
 end CommRing
 
@@ -111,41 +110,50 @@ variable [Algebra R S] [Algebra R B] [IsScalarTower R S B]
 
 open TensorProduct
 
-/-- A map from the base change of a graded algebra is the same as a map to the scalar restriction.
+/--
+A map from the base change of a graded algebra is the same as a map to the scalar restriction.
 
 In category-theoretical terms, this is an adjunction between:
 1. `𝒜 ↦ (𝒜 · |>.baseChange S)`, a functor from Graded `R`-Algebra to Graded `S`-Algebra; and:
 2. `ℬ ↦ (ℬ · |>.restrictScalars R)`, a functor from Graded `S`-Algebra to Graded `R`-Algebra.
 -/
 def liftEquiv : (𝒜 →ₐᵍ[R] (ℬ · |>.restrictScalars R)) ≃ ((𝒜 · |>.baseChange S) →ₐᵍ[S] ℬ) where
-  toFun f :=
-    { AlgHom.liftEquiv R S A B f with
-      map_mem hx := by
-        obtain ⟨x, rfl⟩ := toBaseChange_surjective' _ _ hx
-        induction x with
-        | add => simp_all [add_mem]
-        | tmul r x => simpa using smul_mem _ _ <| by exact f.map_mem x.2 }
-  invFun f :=
-    { AlgHom.liftEquiv R S A B |>.symm f with
-      map_mem hx := f.map_mem <| tmul_mem_baseChange_of_mem _ hx }
+  toFun f := {
+    AlgHom.liftEquiv R S A B f with
+    map_mem hx := by
+      obtain ⟨x, rfl⟩ := toBaseChange_surjective' _ _ hx
+      induction x with
+      | add => simp_all [add_mem]
+      | tmul r x => simpa using smul_mem _ _ <| by exact f.map_mem x.2
+  }
+  invFun f := {
+    AlgHom.liftEquiv R S A B |>.symm f with
+    map_mem hx := f.map_mem <| tmul_mem_baseChange_of_mem _ hx
+  }
   left_inv f := coe_toAlgHom_injective <| by simp
   right_inv f := coe_toAlgHom_injective <| by simp
 
 variable {𝒜 ℬ}
 
-@[simp] lemma liftEquiv_tmul (f : 𝒜 →ₐᵍ[R] (ℬ · |>.restrictScalars R)) (r : S) (x : A) :
-    liftEquiv 𝒜 ℬ f (r ⊗ₜ[R] x) = r • f x := rfl
+@[simp]
+lemma liftEquiv_tmul (f : 𝒜 →ₐᵍ[R] (ℬ · |>.restrictScalars R)) (r : S) (x : A)
+    : liftEquiv 𝒜 ℬ f (r ⊗ₜ[R] x) = r • f x :=
+  rfl
 
-@[simp] lemma liftEquiv_symm_apply (f : (𝒜 · |>.baseChange S) →ₐᵍ[S] ℬ) (x : A) :
-    (liftEquiv 𝒜 ℬ).symm f x = f (1 ⊗ₜ[R] x) := rfl
+@[simp]
+lemma liftEquiv_symm_apply (f : (𝒜 · |>.baseChange S) →ₐᵍ[S] ℬ) (x : A)
+    : (liftEquiv 𝒜 ℬ).symm f x = f (1 ⊗ₜ[R] x) :=
+  rfl
 
 variable (S 𝒜)
 
-/-- Graded version of  `Algebra.TensorProduct.includeRight`, i.e. the inclusion from a graded
+/--
+Graded version of  `Algebra.TensorProduct.includeRight`, i.e. the inclusion from a graded
 `R`-algebra `𝒜` to its base change to `S` and then restricted back to `R`. (The restriction does
 not change the actual sets).
 
-In categorical terms, this is the unit of the adjunction `GradedAlgHom.liftEquiv`. -/
+In categorical terms, this is the unit of the adjunction `GradedAlgHom.liftEquiv`.
+-/
 def includeRight : 𝒜 →ₐᵍ[R] (𝒜 · |>.baseChange S |>.restrictScalars R) where
   __ := Algebra.TensorProduct.includeRight
   map_mem hx := tmul_mem_baseChange_of_mem _ hx

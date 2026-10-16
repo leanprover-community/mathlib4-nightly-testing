@@ -35,8 +35,8 @@ universe w v₁ v₂ v₃ u₁ u₂ u₃
 
 namespace CategoryTheory
 
-variable {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
-  {E : Type u₃} [Category.{v₃} E]
+variable
+  {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D] {E : Type u₃} [Category.{v₃} E]
 
 variable {F : C ⥤ D} {J : GrothendieckTopology C} {K : GrothendieckTopology D}
 
@@ -47,8 +47,7 @@ The induced topology by a topology on `D` along a functor `F : C ⥤ D` is the f
 topology on `C` making `F` continuous.
 [SGA4, III, 3.1][sga-4-tome-1]
 -/
-def inducedTopology (F : C ⥤ D) (K : GrothendieckTopology D) :
-    GrothendieckTopology C :=
+def inducedTopology (F : C ⥤ D) (K : GrothendieckTopology D) : GrothendieckTopology C :=
   Sheaf.finestTopology <| Set.range fun G : Sheaf K (Type max u₁ v₁ u₂ v₂) ↦ F.op ⋙ G.obj
 
 instance : F.IsContinuous (F.inducedTopology K) K where
@@ -57,8 +56,8 @@ instance : F.IsContinuous (F.inducedTopology K) K where
     use G
 
 @[simp]
-lemma le_inducedTopology_iff {J : GrothendieckTopology C} :
-    J ≤ F.inducedTopology K ↔ F.IsContinuous J K := by
+lemma le_inducedTopology_iff {J : GrothendieckTopology C}
+    : J ≤ F.inducedTopology K ↔ F.IsContinuous J K := by
   refine ⟨fun h ↦ ⟨fun G ↦ ?_⟩, fun h ↦ ?_⟩
   · apply Presieve.isSheaf_of_le _ h
     exact Functor.op_comp_isSheaf_of_types F (F.inducedTopology K) K G
@@ -67,11 +66,13 @@ lemma le_inducedTopology_iff {J : GrothendieckTopology C} :
     exact Functor.op_comp_isSheaf_of_types F J K P
 
 /-- [SGA4, III, Proposition 3.2][sga-4-tome-1] -/
-lemma mem_inducedTopology_iff [LocallySmall.{max u₁ v₁ u₂ v₂} C] (X : C) (S : Sieve X)
+lemma mem_inducedTopology_iff
+    [LocallySmall.{max u₁ v₁ u₂ v₂} C]
+    (X : C) (S : Sieve X)
     (G : (Cᵒᵖ ⥤ Type max u₁ v₁ u₂ v₂) ⥤ (Dᵒᵖ ⥤ Type max u₁ v₁ u₂ v₂))
-    (adj : G ⊣ (Functor.whiskeringLeft _ _ _).obj F.op) :
-    S ∈ F.inducedTopology K X ↔
-      ∀ ⦃Y : C⦄ (f : Y ⟶ X),
+    (adj : G ⊣ (Functor.whiskeringLeft _ _ _).obj F.op)
+    : S ∈ F.inducedTopology K X
+      ↔ ∀ ⦃Y : C⦄ (f : Y ⟶ X),
         K.W (G.map (Sieve.shrinkFunctor.{max u₁ v₁ u₂ v₂} (S.pullback f)).ι) := by
   refine ⟨?_, ?_⟩
   · intro hS Y f
@@ -85,53 +86,57 @@ lemma mem_inducedTopology_iff [LocallySmall.{max u₁ v₁ u₂ v₂} C] (X : C)
     rw [Presieve.isSheafFor_iff_bijective_shrinkFunctor_ι_comp]
     exact (adj.map_comp_bijective_iff _ _).mp (H f _ P.property)
 
-lemma induced_induced_le (G : D ⥤ E) (J : GrothendieckTopology E) :
-    F.inducedTopology (G.inducedTopology J) ≤ (F ⋙ G).inducedTopology J := by
+lemma induced_induced_le (G : D ⥤ E) (J : GrothendieckTopology E)
+    : F.inducedTopology (G.inducedTopology J) ≤ (F ⋙ G).inducedTopology J := by
   rw [le_inducedTopology_iff]
   exact Functor.isContinuous_comp _ _ _ (G.inducedTopology J) _
 
-lemma inducedTopology_eq_of_iso {F G : C ⥤ D} (e : F ≅ G) :
-    F.inducedTopology K = G.inducedTopology K := by
+lemma inducedTopology_eq_of_iso {F G : C ⥤ D} (e : F ≅ G)
+    : F.inducedTopology K = G.inducedTopology K := by
   refine le_antisymm ?_ ?_ <;> rw [le_inducedTopology_iff]
   · apply Functor.isContinuous_of_iso e
   · apply Functor.isContinuous_of_iso e.symm
 
-/-- The coarsest topology containing all sieves whose image under `F` generates a covering sieve
-of `K`. -/
+/--
+The coarsest topology containing all sieves whose image under `F` generates a covering sieve
+of `K`.
+-/
 def restrictedTopology (F : C ⥤ D) (K : GrothendieckTopology D) : GrothendieckTopology C :=
   Precoverage.toGrothendieck (Precoverage.comap F K.toPrecoverage)
 
-lemma mem_restrictedTopology_of_functorPushforward_mem {X : C} {S : Sieve X}
-    (hS : S.functorPushforward F ∈ K _) :
-    S ∈ F.restrictedTopology K X := by
+lemma mem_restrictedTopology_of_functorPushforward_mem
+    {X : C} {S : Sieve X} (hS : S.functorPushforward F ∈ K _)
+    : S ∈ F.restrictedTopology K X := by
   rw [← Sieve.generate_sieve S]
   apply Precoverage.generate_mem_toGrothendieck
   simpa [GrothendieckTopology.mem_toPrecoverage_iff, Sieve.generate_map_eq_functorPushforward]
 
-lemma inducedTopology_le_restrictedTopology : F.inducedTopology K ≤ F.restrictedTopology K :=
-  fun _ _ hS ↦ mem_restrictedTopology_of_functorPushforward_mem <|
+lemma inducedTopology_le_restrictedTopology
+    : F.inducedTopology K ≤ F.restrictedTopology K := fun _ _ hS ↦
+  mem_restrictedTopology_of_functorPushforward_mem <|
     (CoverPreserving.of_isContinuous F _ _).cover_preserve hS
 
 /--
 If `F` is continuous with the restricted topology, the restricted topology agrees with the
 induced topology. This holds for example if `G` is locally faithful, locally full and cover dense.
 -/
-lemma restrictedTopology_eq_inducedTopology [F.IsContinuous (F.restrictedTopology K) K] :
-    F.restrictedTopology K = F.inducedTopology K := by
+lemma restrictedTopology_eq_inducedTopology [F.IsContinuous (F.restrictedTopology K) K]
+    : F.restrictedTopology K = F.inducedTopology K := by
   refine le_antisymm ?_ inducedTopology_le_restrictedTopology
   rw [le_inducedTopology_iff]
   infer_instance
 
 /-- Variant of `Functor.restrictedTopology_eq_inducedTopology` that is sometimes easier to use. -/
-lemma restrictedTopology_eq_inducedTopology_of_isContinuous [F.IsContinuous J K]
-    (h : F.restrictedTopology K = J) : F.inducedTopology K = J := by
+lemma restrictedTopology_eq_inducedTopology_of_isContinuous
+    [F.IsContinuous J K] (h : F.restrictedTopology K = J)
+    : F.inducedTopology K = J := by
   subst h
   rw [restrictedTopology_eq_inducedTopology]
 
 end Functor
 
-lemma Precoverage.toGrothendieck_comap_le_restrictedTopology (K : Precoverage D) :
-    (K.comap F).toGrothendieck ≤ F.restrictedTopology K.toGrothendieck := by
+lemma Precoverage.toGrothendieck_comap_le_restrictedTopology (K : Precoverage D)
+    : (K.comap F).toGrothendieck ≤ F.restrictedTopology K.toGrothendieck := by
   rw [Functor.restrictedTopology]
   grw [← K.le_toPrecoverage_toGrothendieck]
 

@@ -7,10 +7,9 @@ module
 
 public meta import Lean.Elab.Command
 public meta import Lean.Linter.Basic
-
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-import Mathlib.Tactic.Linter.Header  -- shake: keep
+import Mathlib.Tactic.Linter.Header -- shake: keep
 
 /-!
 # Additional utilities and boilerplate for the `Linter` API
@@ -46,7 +45,8 @@ option which has been registered in the same module.
 -/
 @[expose, macro_inline]
 def whenNotLinterOption (opt : Lean.Option Bool) (x : m Unit) : m Unit := do
-  unless getLinterValue opt (← getLinterOptions) do x
+  unless getLinterValue opt (← getLinterOptions) do
+    x
 
 /--
 Processes `set_option ... in`s that wrap the input `stx`, then acts on the inner syntax with
@@ -65,10 +65,11 @@ Note: this definition is marked as `@[macro_inline]`, so it is okay to supply it
 option which has been registered in the same module.
 -/
 @[expose, macro_inline]
-def whenLinterActivated (opt : Lean.Option Bool) (x : CommandElab) (breakOnError := true) :
-    CommandElab :=
-  withSetOptionIn fun stx => whenLinterOption opt do
-    unless ← pure breakOnError <&&> MonadLog.hasErrors do
-      x stx
+def whenLinterActivated (opt : Lean.Option Bool) (x : CommandElab) (breakOnError := true)
+    : CommandElab :=
+  withSetOptionIn fun stx =>
+    whenLinterOption opt do
+      unless ← pure breakOnError <&&> MonadLog.hasErrors do
+        x stx
 
 end Lean.Linter

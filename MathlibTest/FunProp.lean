@@ -15,28 +15,20 @@ Use this file for `fun_prop` tests that depend on mathlib
 `fun_prop_dev` is for unit and synthetic tests avoiding mathlib.
 -/
 
-noncomputable
-def foo (x : ℝ) := x * (Real.log x) ^ 2 - Real.exp x / x
+noncomputable def foo (x : ℝ) := x * (Real.log x) ^ 2 - Real.exp x / x
 
-example : ContinuousOn foo {0}ᶜ := by
-  unfold foo; fun_prop (disch := aesop)
+example : ContinuousOn foo {0}ᶜ := by unfold foo; fun_prop (disch := aesop)
 
 example (y : ℝ) (hy : y ≠ 0) : ContinuousAt (fun x => x * (Real.log x) ^ 2 - Real.exp x / x) y := by
   fun_prop (disch := aesop)
 
+example : DifferentiableOn ℝ foo {0}ᶜ := by fun_prop (disch := aesop) [foo] -- equivalent to `unfold foo; fun_prop (disch := aesop)`
 
-example : DifferentiableOn ℝ foo {0}ᶜ := by
-  fun_prop (disch := aesop) [foo] -- equivalent to `unfold foo; fun_prop (disch := aesop)`
+example (y : ℝ) (hy : y ≠ 0) : DifferentiableAt ℝ foo y := by unfold foo; fun_prop (disch := aesop)
 
-example (y : ℝ) (hy : y ≠ 0) : DifferentiableAt ℝ foo y := by
-  unfold foo; fun_prop (disch := aesop)
+example {n} : ContDiffOn ℝ n foo {0}ᶜ := by unfold foo; fun_prop (disch := aesop)
 
-example {n} : ContDiffOn ℝ n foo {0}ᶜ := by
-  unfold foo; fun_prop (disch := aesop)
-
-example {n} (y : ℝ) (hy : y ≠ 0) :
-    ContDiffAt ℝ n foo y := by
-  unfold foo; fun_prop (disch := aesop)
+example {n} (y : ℝ) (hy : y ≠ 0) : ContDiffAt ℝ n foo y := by unfold foo; fun_prop (disch := aesop)
 
 example : Continuous fun ((x, _, _) : ℝ × ℝ × ℝ) ↦ x := by fun_prop
 example : Continuous fun ((_, y, _) : ℝ × ℝ × ℝ) ↦ y := by fun_prop
@@ -48,18 +40,14 @@ example : Continuous fun ((_, _, z) : ℝ × ℝ × ℝ) ↦ z := by fun_prop
 theorem ContinuousOn.log' : ContinuousOn Real.log {0}ᶜ := ContinuousOn.log (by fun_prop) (by aesop)
 
 -- Notice that no theorems about measurability of log are used. It is inferred from continuity.
-example : Measurable (fun x ↦ x * (Real.log x) ^ 2 - Real.exp x / x) := by
-  fun_prop
+example : Measurable (fun x ↦ x * (Real.log x) ^ 2 - Real.exp x / x) := by fun_prop
 
 -- Notice that no theorems about measurability of log are used. It is inferred from continuity.
 example : AEMeasurable (fun x ↦ x * (Real.log x) ^ 2 - Real.exp x / x) := by
   fun_prop (maxTransitionDepth := 2)
 
-
-
 private noncomputable def S (a b c d : ℝ) : ℝ :=
-    a / (a + b + d) + b / (a + b + c) +
-    c / (b + c + d) + d / (a + c + d)
+  a / (a + b + d) + b / (a + b + c) + c / (b + c + d) + d / (a + c + d)
 
 private noncomputable def T (t : ℝ) : ℝ := S 1 (1 - t) t (t * (1 - t))
 
@@ -67,12 +55,11 @@ example : ContinuousOn T (Set.Icc 0 1) := by
   unfold T S
   fun_prop (disch := (rintro x ⟨a,b⟩; nlinarith))
 
-
 example : DifferentiableOn ℝ T (Set.Icc 0 1) := by
   unfold T S
   fun_prop (disch := (rintro x ⟨a,b⟩; nlinarith))
 
-example {n}: ContDiffOn ℝ n T (Set.Icc 0 1) := by
+example {n} : ContDiffOn ℝ n T (Set.Icc 0 1) := by
   unfold T S
   fun_prop (disch := (rintro x ⟨a,b⟩; nlinarith))
 
@@ -84,11 +71,9 @@ example : AEMeasurable T := by
   unfold T S
   fun_prop
 
-example (z : ℂ) : MeromorphicAt (fun t ↦ Complex.cosh t) z := by
-  fun_prop
+example (z : ℂ) : MeromorphicAt (fun t ↦ Complex.cosh t) z := by fun_prop
 
-example (z : ℂ) : MeromorphicAt (fun t ↦ Complex.cosh (2 * t)) z := by
-  fun_prop
+example (z : ℂ) : MeromorphicAt (fun t ↦ Complex.cosh (2 * t)) z := by fun_prop
 
 /-! ### `MeromorphicOn` -/
 
@@ -101,8 +86,9 @@ example : MeromorphicOn (fun z ↦ z) U := by fun_prop
 example (c : ℂ) : MeromorphicOn (fun _ ↦ c) U := by fun_prop
 
 -- Unlike `DifferentiableOn`, meromorphic `inv` and `div` are unconditional, so no discharger.
-example (hf : MeromorphicOn f U) (hg : MeromorphicOn g U) :
-    MeromorphicOn (fun z ↦ f z * (g z)⁻¹ + f z / g z - 3 * g z ^ 2) U := by fun_prop
+example (hf : MeromorphicOn f U) (hg : MeromorphicOn g U)
+    : MeromorphicOn (fun z ↦ f z * (g z)⁻¹ + f z / g z - 3 * g z ^ 2) U := by
+  fun_prop
 
 -- Analytic leaves are reached through the `AnalyticOnNhd.meromorphicOn` transition.
 example : MeromorphicOn (fun z ↦ Complex.exp z / (z ^ 2 - 1)) U := by fun_prop
@@ -112,8 +98,9 @@ example (hf : Meromorphic f) : MeromorphicOn (fun z ↦ f z + Complex.sin z) U :
 -- Composition: the outer function must be the meromorphic one.
 example (hf : Meromorphic f) : MeromorphicOn (fun z ↦ f (z ^ 2 + 1)) U := by fun_prop
 
-example (N : Finset ℕ) (F : ℕ → ℂ → ℂ) (h : ∀ n ∈ N, MeromorphicOn (F n) U) :
-    MeromorphicOn (fun z ↦ ∑ n ∈ N, F n z) U := by fun_prop
+example (N : Finset ℕ) (F : ℕ → ℂ → ℂ) (h : ∀ n ∈ N, MeromorphicOn (F n) U)
+    : MeromorphicOn (fun z ↦ ∑ n ∈ N, F n z) U := by
+  fun_prop
 
 example (hf : MeromorphicOn f U) : MeromorphicOn (logDeriv f) U := by fun_prop
 
@@ -124,10 +111,10 @@ example : MeromorphicOn (fun z ↦ Complex.Gamma (z ^ 2 + 1)) U := by fun_prop
 
 end MeromorphicOn
 
-private theorem t1 : (5: ℕ) + (1 : ℕ∞) ≤ (12 : WithTop ℕ∞) := by norm_cast
+private theorem t1 : (5 : ℕ) + (1 : ℕ∞) ≤ (12 : WithTop ℕ∞) := by norm_cast
 
-example {f : ℝ → ℝ} (hf : ContDiff ℝ 12 f) :
-    Differentiable ℝ (iteratedDeriv 5 (fun x ↦ f (2 * (f (x + x))) + x)) := by
+example {f : ℝ → ℝ} (hf : ContDiff ℝ 12 f)
+    : Differentiable ℝ (iteratedDeriv 5 (fun x ↦ f (2 * (f (x + x))) + x)) := by
   fun_prop (disch := exact t1)
 
 -- This example used to panic due to loose bvars before #31001.
@@ -139,20 +126,22 @@ Issues:
   No theorems found for `f` in order to prove `MeasureTheory.AEStronglyMeasurable (fun a => f a) μ`
 -/
 #guard_msgs in
-example {α : Type*} {m₀ : MeasurableSpace α} {μ : MeasureTheory.Measure α} {M : Type*}
-    [CommMonoid M] [TopologicalSpace M] [ContinuousMul M] (l : Multiset (α → M))
-    (hl : ∀ f ∈ l, MeasureTheory.AEStronglyMeasurable f μ) :
-    MeasureTheory.AEStronglyMeasurable l.prod μ := by
+example
+    {α : Type*} {m₀ : MeasurableSpace α} {μ : MeasureTheory.Measure α} {M : Type*}
+    [CommMonoid M] [TopologicalSpace M] [ContinuousMul M]
+    (l : Multiset (α → M)) (hl : ∀ f ∈ l, MeasureTheory.AEStronglyMeasurable f μ)
+    : MeasureTheory.AEStronglyMeasurable l.prod μ := by
   fun_prop
 
 /-! Test that `fun_prop` should work on `→` and `∀` -/
 
 attribute [fun_prop] Measurable.imp Measurable.forall
 
-example {α : Type*} [MeasurableSpace α] {p q : α → Prop} (hp : Measurable p) (hq : Measurable q) :
-    Measurable fun x => p x → q x := by
+example {α : Type*} [MeasurableSpace α] {p q : α → Prop} (hp : Measurable p) (hq : Measurable q)
+    : Measurable fun x => p x → q x := by
   fun_prop
 
-example {α ι : Type*} [MeasurableSpace α] [Countable ι] {p : ι → α → Prop}
-    (hp : ∀ i, Measurable (p i)) : Measurable fun x => ∀ i, p i x := by
+example
+    {α ι : Type*} [MeasurableSpace α] [Countable ι] {p : ι → α → Prop} (hp : ∀ i, Measurable (p i))
+    : Measurable fun x => ∀ i, p i x := by
   fun_prop

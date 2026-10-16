@@ -35,24 +35,25 @@ variable {C D : Type*} [Category* C] [Category* D]
 
 namespace Quotient
 
-variable (r : HomRel C) (W : MorphismProperty C)
-  (hW : W.IsInvertedBy (functor r))
-  (hr : ∀ ⦃X Y : C⦄ (f₀ f₁ : X ⟶ Y) (_ : r f₀ f₁),
-    ∃ (P : Precylinder X) (_ : P.LeftHomotopy f₀ f₁), W P.π)
+variable
+  (r : HomRel C) (W : MorphismProperty C) (hW : W.IsInvertedBy (functor r))
+  (hr : ∀ ⦃X Y : C⦄ (f₀ f₁ : X ⟶ Y) (_ : r f₀ f₁), ∃ (P : Precylinder X) (_ : P.LeftHomotopy f₀ f₁),
+    W P.π)
 
 namespace isLocalization_functor
 
 variable {r W} in
 /-- Auxiliary definition for `Quotient.isLocalization_functor`. -/
-private def strictUniversalPropertyFixedTarget (E : Type*) [Category* E] :
-    Localization.StrictUniversalPropertyFixedTarget (functor r) W E where
+private def strictUniversalPropertyFixedTarget (E : Type*) [Category* E]
+    : Localization.StrictUniversalPropertyFixedTarget (functor r) W E where
   inverts := hW
-  lift F hF := Quotient.lift r F (fun X Y f₀ f₁ hf ↦ by
-    obtain ⟨P, h, hπ⟩ := hr f₀ f₁ hf
-    simp only [← h.h₀, ← h.h₁, Functor.map_comp]
-    congr 1
-    have := hF _ hπ
-    simp [← cancel_mono (F.map P.π), ← Functor.map_comp])
+  lift F hF :=
+    Quotient.lift r F (fun X Y f₀ f₁ hf ↦ by
+      obtain ⟨P, h, hπ⟩ := hr f₀ f₁ hf
+      simp only [← h.h₀, ← h.h₁, Functor.map_comp]
+      congr 1
+      have := hF _ hπ
+      simp [← cancel_mono (F.map P.π), ← Functor.map_comp])
   fac F hF := rfl
   uniq F₁ F₂ h := by
     fapply Functor.ext
@@ -73,23 +74,27 @@ end Quotient
 namespace Functor
 
 lemma isLocalization_of_essSurj_of_full_of_exists_cylinders
-    (L : C ⥤ D) [L.EssSurj] [L.Full] (W : MorphismProperty C) (hW : W.IsInvertedBy L)
+    (L : C ⥤ D) [L.EssSurj] [L.Full]
+    (W : MorphismProperty C) (hW : W.IsInvertedBy L)
     (hr : ∀ ⦃X Y : C⦄ (f₀ f₁ : X ⟶ Y) (_ : L.map f₀ = L.map f₁),
-      ∃ (P : Precylinder X) (_ : P.LeftHomotopy f₀ f₁), W P.π) :
-    L.IsLocalization W := by
+      ∃ (P : Precylinder X) (_ : P.LeftHomotopy f₀ f₁),
+        W P.π)
+    : L.IsLocalization W := by
   let F := Quotient.lift L.homRel L (by simp)
   have hW' : W.IsInvertedBy (Quotient.functor L.homRel) := fun _ _ f hf ↦ by
     have : IsIso (F.map ((Quotient.functor L.homRel).map f)) := hW _ hf
     apply isIso_of_reflects_iso _ F
   have := Quotient.isLocalization_functor L.homRel W hW' hr
-  exact IsLocalization.of_equivalence_target (Quotient.functor L.homRel) W L
-    F.asEquivalence (Iso.refl _)
+  exact IsLocalization.of_equivalence_target (Quotient.functor L.homRel) W L F.asEquivalence
+    (Iso.refl _)
 
 lemma isLocalization_of_essSurj_of_full_of_exists_pathObjects
-    (L : C ⥤ D) [L.EssSurj] [L.Full] (W : MorphismProperty C) (hW : W.IsInvertedBy L)
+    (L : C ⥤ D) [L.EssSurj] [L.Full]
+    (W : MorphismProperty C) (hW : W.IsInvertedBy L)
     (hr : ∀ ⦃X Y : C⦄ (f₀ f₁ : X ⟶ Y) (_ : L.map f₀ = L.map f₁),
-      ∃ (P : PrepathObject Y) (_ : P.RightHomotopy f₀ f₁), W P.ι) :
-    L.IsLocalization W := by
+      ∃ (P : PrepathObject Y) (_ : P.RightHomotopy f₀ f₁),
+        W P.ι)
+    : L.IsLocalization W := by
   rw [← Functor.IsLocalization.op_iff]
   refine isLocalization_of_essSurj_of_full_of_exists_cylinders L.op W.op hW.op
     (fun X Y f₀ f₁ hf ↦ ?_)
@@ -98,14 +103,15 @@ lemma isLocalization_of_essSurj_of_full_of_exists_pathObjects
 
 end Functor
 
-lemma Quotient.isLocalization_functor' (r : HomRel C) [Congruence r] (W : MorphismProperty C)
-    (hW : W.IsInvertedBy (functor r))
+lemma Quotient.isLocalization_functor'
+    (r : HomRel C) [Congruence r]
+    (W : MorphismProperty C) (hW : W.IsInvertedBy (functor r))
     (hr : ∀ ⦃X Y : C⦄ (f₀ f₁ : X ⟶ Y) (_ : r f₀ f₁),
-      ∃ (P : PrepathObject Y) (_ : P.RightHomotopy f₀ f₁), W P.ι) :
-    (functor r).IsLocalization W :=
-  (functor r).isLocalization_of_essSurj_of_full_of_exists_pathObjects W hW
-    (fun X Y f₀ f₁ hf ↦ by
-      rw [functor_map_eq_iff] at hf
-      exact hr _ _ hf)
+      ∃ (P : PrepathObject Y) (_ : P.RightHomotopy f₀ f₁),
+        W P.ι)
+    : (functor r).IsLocalization W :=
+  (functor r).isLocalization_of_essSurj_of_full_of_exists_pathObjects W hW (fun X Y f₀ f₁ hf ↦ by
+    rw [functor_map_eq_iff] at hf
+    exact hr _ _ hf)
 
 end CategoryTheory

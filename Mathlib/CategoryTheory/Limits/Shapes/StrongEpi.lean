@@ -37,7 +37,6 @@ Show that the dual of a strong epimorphism is a strong monomorphism, and vice ve
 
 public section
 
-
 universe v u
 
 namespace CategoryTheory
@@ -47,16 +46,20 @@ variable {P Q : C}
 
 to_dual_name_hint Epi Mono
 
-/-- A strong epimorphism `f` is an epimorphism which has the left lifting property
-with respect to monomorphisms. -/
+/--
+A strong epimorphism `f` is an epimorphism which has the left lifting property
+with respect to monomorphisms.
+-/
 class StrongEpi (f : P ⟶ Q) : Prop where
   /-- The epimorphism condition on `f` -/
   epi : Epi f
   /-- The left lifting property with respect to all monomorphisms -/
   llp : ∀ ⦃X Y : C⦄ (z : X ⟶ Y) [Mono z], HasLiftingProperty f z
 
-/-- A strong monomorphism `f` is a monomorphism which has the right lifting property
-with respect to epimorphisms. -/
+/--
+A strong monomorphism `f` is a monomorphism which has the right lifting property
+with respect to epimorphisms.
+-/
 @[to_dual]
 class StrongMono (f : P ⟶ Q) : Prop where
   /-- The monomorphism condition on `f` -/
@@ -65,9 +68,11 @@ class StrongMono (f : P ⟶ Q) : Prop where
   rlp : ∀ ⦃X Y : C⦄ (z : X ⟶ Y) [Epi z], HasLiftingProperty z f
 
 @[to_dual (reorder := hf (X Y, u v))]
-theorem StrongEpi.mk' {f : P ⟶ Q} [Epi f]
-    (hf : ∀ (X Y : C) (z : X ⟶ Y) (_ : Mono z) (u : P ⟶ X)
-      (v : Q ⟶ Y) (sq : CommSq u f z v), sq.HasLift) : StrongEpi f where
+theorem StrongEpi.mk'
+    {f : P ⟶ Q} [Epi f]
+    (hf : ∀ (X Y : C) (z : X ⟶ Y) (_ : Mono z) (u : P ⟶ X) (v : Q ⟶ Y) (sq : CommSq u f z v),
+      sq.HasLift)
+    : StrongEpi f where
   epi := inferInstance
   llp {X Y} z hz := ⟨fun {u v} sq => hf X Y z hz u v sq⟩
 
@@ -79,25 +84,28 @@ variable {R : C} (f : P ⟶ Q) (g : Q ⟶ R)
 
 /-- The composition of two strong epimorphisms is a strong epimorphism. -/
 @[to_dual /-- The composition of two strong monomorphisms is a strong monomorphism. -/]
-instance strongEpi_comp [StrongEpi f] [StrongEpi g] : StrongEpi (f ≫ g) :=
-  { epi := epi_comp _ _
-    llp := by
-      intros
-      infer_instance }
+instance strongEpi_comp [StrongEpi f] [StrongEpi g] : StrongEpi (f ≫ g) := {
+  epi := epi_comp _ _
+  llp := by
+    intros
+    infer_instance
+}
 
 /-- If `f ≫ g` is a strong epimorphism, then so is `g`. -/
 @[to_dual (reorder := f g) (rename := f ↔ g, P ↔ R)
-/-- If `f ≫ g` is a strong monomorphism, then so is `f`. -/]
-theorem strongEpi_of_strongEpi [StrongEpi (f ≫ g)] : StrongEpi g :=
-  { epi := epi_of_epi f g
-    llp := fun {X Y} z _ => by
-      constructor
-      intro u v sq
-      have h₀ : (f ≫ u) ≫ z = (f ≫ g) ≫ v := by simp only [Category.assoc, sq.w]
-      exact
-        CommSq.HasLift.mk'
-          ⟨(CommSq.mk h₀).lift, by
-            simp only [← cancel_mono z, Category.assoc, CommSq.fac_right, sq.w], by simp⟩ }
+  /-- If `f ≫ g` is a strong monomorphism, then so is `f`. -/]
+theorem strongEpi_of_strongEpi [StrongEpi (f ≫ g)] : StrongEpi g := {
+  epi := epi_of_epi f g
+  llp := fun {X Y} z _ => by
+    constructor
+    intro u v sq
+    have h₀ : (f ≫ u) ≫ z = (f ≫ g) ≫ v := by simp only [Category.assoc, sq.w]
+    exact CommSq.HasLift.mk' ⟨
+      (CommSq.mk h₀).lift,
+      by simp only [← cancel_mono z, Category.assoc, CommSq.fac_right, sq.w],
+      by simp
+    ⟩
+}
 
 /-- An isomorphism is in particular a strong epimorphism. -/
 @[to_dual /-- An isomorphism is in particular a strong monomorphism. -/]
@@ -106,8 +114,9 @@ instance (priority := 100) strongEpi_of_isIso [IsIso f] : StrongEpi f where
   llp {_ _} _ := HasLiftingProperty.of_left_iso _ _
 
 @[to_dual]
-theorem StrongEpi.of_arrow_iso {A B A' B' : C} {f : A ⟶ B} {g : A' ⟶ B'}
-    (e : Arrow.mk f ≅ Arrow.mk g) [h : StrongEpi f] : StrongEpi g where
+theorem StrongEpi.of_arrow_iso
+    {A B A' B' : C} {f : A ⟶ B} {g : A' ⟶ B'} (e : Arrow.mk f ≅ Arrow.mk g) [h : StrongEpi f]
+    : StrongEpi g where
   epi := by
     rw [Arrow.iso_w' e]
     infer_instance
@@ -116,8 +125,9 @@ theorem StrongEpi.of_arrow_iso {A B A' B' : C} {f : A ⟶ B} {g : A' ⟶ B'}
     apply HasLiftingProperty.of_arrow_iso_left e z
 
 @[to_dual]
-theorem StrongEpi.iff_of_arrow_iso {A B A' B' : C} {f : A ⟶ B} {g : A' ⟶ B'}
-    (e : Arrow.mk f ≅ Arrow.mk g) : StrongEpi f ↔ StrongEpi g := by
+theorem StrongEpi.iff_of_arrow_iso
+    {A B A' B' : C} {f : A ⟶ B} {g : A' ⟶ B'} (e : Arrow.mk f ≅ Arrow.mk g)
+    : StrongEpi f ↔ StrongEpi g := by
   constructor <;> intro
   exacts [StrongEpi.of_arrow_iso e, StrongEpi.of_arrow_iso e.symm]
 

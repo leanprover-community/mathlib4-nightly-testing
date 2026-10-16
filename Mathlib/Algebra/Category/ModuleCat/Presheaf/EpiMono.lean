@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Algebra.Category.ModuleCat.Presheaf.Limits
-
 import Mathlib.Algebra.Category.ModuleCat.Presheaf.Colimits
 
 /-!
@@ -25,8 +24,9 @@ open CategoryTheory
 
 namespace PresheafOfModules
 
-variable {C : Type u₁} [Category.{v₁} C] {R : Cᵒᵖ ⥤ RingCat.{u}}
-  {M₁ M₂ : PresheafOfModules.{v} R} {f : M₁ ⟶ M₂}
+variable
+  {C : Type u₁} [Category.{v₁} C]
+  {R : Cᵒᵖ ⥤ RingCat.{u}} {M₁ M₂ : PresheafOfModules.{v} R} {f : M₁ ⟶ M₂}
 
 lemma epi_of_surjective (hf : ∀ ⦃X : Cᵒᵖ⦄, Function.Surjective (f.app X)) : Epi f where
   left_cancellation g₁ g₂ hg := by
@@ -41,28 +41,22 @@ lemma mono_of_injective (hf : ∀ ⦃X : Cᵒᵖ⦄, Function.Injective (f.app X
 
 variable (f)
 
-instance [Epi f] (X : Cᵒᵖ) : Epi (f.app X) :=
-  inferInstanceAs (Epi ((evaluation R X).map f))
+instance [Epi f] (X : Cᵒᵖ) : Epi (f.app X) := inferInstanceAs (Epi ((evaluation R X).map f))
 
-instance [Mono f] (X : Cᵒᵖ) : Mono (f.app X) :=
-  inferInstanceAs (Mono ((evaluation R X).map f))
+instance [Mono f] (X : Cᵒᵖ) : Mono (f.app X) := inferInstanceAs (Mono ((evaluation R X).map f))
 
-lemma surjective_of_epi [Epi f] (X : Cᵒᵖ) :
-    Function.Surjective (f.app X) := by
+lemma surjective_of_epi [Epi f] (X : Cᵒᵖ) : Function.Surjective (f.app X) := by
   rw [← ModuleCat.epi_iff_surjective]
   infer_instance
 
-lemma injective_of_mono [Mono f] (X : Cᵒᵖ) :
-    Function.Injective (f.app X) := by
+lemma injective_of_mono [Mono f] (X : Cᵒᵖ) : Function.Injective (f.app X) := by
   rw [← ModuleCat.mono_iff_injective]
   infer_instance
 
-lemma epi_iff_surjective :
-    Epi f ↔ ∀ ⦃X : Cᵒᵖ⦄, Function.Surjective (f.app X) :=
+lemma epi_iff_surjective : Epi f ↔ ∀ ⦃X : Cᵒᵖ⦄, Function.Surjective (f.app X) :=
   ⟨fun _ ↦ surjective_of_epi f, epi_of_surjective⟩
 
-lemma mono_iff_surjective :
-    Mono f ↔ ∀ ⦃X : Cᵒᵖ⦄, Function.Injective (f.app X) :=
+lemma mono_iff_surjective : Mono f ↔ ∀ ⦃X : Cᵒᵖ⦄, Function.Injective (f.app X) :=
   ⟨fun _ ↦ injective_of_mono f, mono_of_injective⟩
 
 end PresheafOfModules

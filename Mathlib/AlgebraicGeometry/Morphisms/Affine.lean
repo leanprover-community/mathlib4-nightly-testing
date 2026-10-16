@@ -7,7 +7,6 @@ module
 
 public import Mathlib.AlgebraicGeometry.Morphisms.IsIso
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiSeparated
-
 import Mathlib.AlgebraicGeometry.PullbackCarrier
 
 /-!
@@ -42,19 +41,20 @@ namespace AlgebraicGeometry
 
 variable {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z)
 
-/-- A morphism of schemes `X ⟶ Y` is affine if
-the preimage of any affine open subset of `Y` is affine. -/
+/--
+A morphism of schemes `X ⟶ Y` is affine if
+the preimage of any affine open subset of `Y` is affine.
+-/
 @[mk_iff]
 class IsAffineHom {X Y : Scheme} (f : X ⟶ Y) : Prop where
   isAffine_preimage : ∀ U : Y.Opens, IsAffineOpen U → IsAffineOpen (f ⁻¹ᵁ U)
 
-lemma IsAffineOpen.preimage {X Y : Scheme} {U : Y.Opens} (hU : IsAffineOpen U)
-    (f : X ⟶ Y) [IsAffineHom f] :
-    IsAffineOpen (f ⁻¹ᵁ U) :=
+lemma IsAffineOpen.preimage
+    {X Y : Scheme} {U : Y.Opens} (hU : IsAffineOpen U) (f : X ⟶ Y) [IsAffineHom f]
+    : IsAffineOpen (f ⁻¹ᵁ U) :=
   IsAffineHom.isAffine_preimage _ hU
 
-instance (priority := 900) [IsIso f] : IsAffineHom f :=
-  ⟨fun _ hU ↦ hU.preimage_of_isIso f⟩
+instance (priority := 900) [IsIso f] : IsAffineHom f := ⟨fun _ hU ↦ hU.preimage_of_isIso f⟩
 
 instance (priority := 900) [IsAffineHom f] : QuasiCompact f :=
   quasiCompact_iff_forall_isAffineOpen.mpr fun _ hU ↦ (hU.preimage f).isCompact
@@ -71,8 +71,7 @@ instance : MorphismProperty.IsMultiplicative @IsAffineHom where
   id_mem := inferInstance
   comp_mem _ _ _ _ := inferInstance
 
-instance {X : Scheme} (r : Γ(X, ⊤)) :
-    IsAffineHom (X.basicOpen r).ι := by
+instance {X : Scheme} (r : Γ(X, ⊤)) : IsAffineHom (X.basicOpen r).ι := by
   constructor
   intro U hU
   fapply (Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion (X.basicOpen r).ι).mp
@@ -86,9 +85,9 @@ lemma isRetrocompact_basicOpen (s : Γ(X, ⊤)) : IsRetrocompact (X := X) (X.bas
   IsRetrocompact_iff_isSpectralMap_subtypeVal.mpr (X.basicOpen s).ι.isSpectralMap
 
 /-- Superseded by `isAffine_of_isAffineOpen_basicOpen`. -/
-private lemma isAffine_of_isAffineOpen_basicOpen_aux (s : Set Γ(X, ⊤))
-    (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i)) :
-    QuasiSeparatedSpace X := by
+private lemma isAffine_of_isAffineOpen_basicOpen_aux
+    (s : Set Γ(X, ⊤)) (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i))
+    : QuasiSeparatedSpace X := by
   rw [quasiSeparatedSpace_iff_forall_affineOpens]
   intro U V
   obtain ⟨s', hs', e⟩ := (Ideal.span_eq_top_iff_finite _).mp hs
@@ -106,9 +105,9 @@ private lemma isAffine_of_isAffineOpen_basicOpen_aux (s : Set Γ(X, ⊤))
 
 set_option backward.isDefEq.respectTransparency false in
 @[stacks 01QF]
-lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
-    (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i)) :
-    IsAffine X := by
+lemma isAffine_of_isAffineOpen_basicOpen
+    (s : Set Γ(X, ⊤)) (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i))
+    : IsAffine X := by
   have : QuasiSeparatedSpace X := isAffine_of_isAffineOpen_basicOpen_aux s hs hs₂
   have : CompactSpace X := by
     obtain ⟨s', hs', e⟩ := (Ideal.span_eq_top_iff_finite _).mp hs
@@ -118,7 +117,9 @@ lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
     exact fun i hi ↦ (hs₂ _ (hs' hi)).isCompact
   constructor
   refine HasAffineProperty.of_iSup_eq_top (P := MorphismProperty.isomorphisms Scheme)
-    (fun i : s ↦ ⟨PrimeSpectrum.basicOpen i.1, ?_⟩) ?_ (fun i ↦ ⟨?_, ?_⟩)
+    (fun i : s ↦ ⟨PrimeSpectrum.basicOpen i.1, ?_⟩)
+    ?_
+    (fun i ↦ ⟨?_, ?_⟩)
   · change IsAffineOpen _
     simp only [← basicOpen_eq_of_affine]
     exact (isAffineOpen_top (Scheme.Spec.obj (op _))).basicOpen _
@@ -135,9 +136,9 @@ set_option backward.isDefEq.respectTransparency false in
 If `s` is a spanning set of `Γ(X, U)`, such that each `X.basicOpen i` is affine, then `U` is also
 affine.
 -/
-lemma isAffineOpen_of_isAffineOpen_basicOpen (U) (s : Set Γ(X, U))
-    (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i)) :
-    IsAffineOpen U := by
+lemma isAffineOpen_of_isAffineOpen_basicOpen
+    (U) (s : Set Γ(X, U)) (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i))
+    : IsAffineOpen U := by
   apply isAffine_of_isAffineOpen_basicOpen (U.topIso.inv '' s)
   · rw [← Ideal.map_span U.topIso.inv.hom, hs, Ideal.map_top]
   · rintro _ ⟨j, hj, rfl⟩
@@ -170,8 +171,8 @@ instance : HasAffineProperty @IsAffineHom fun X _ _ _ ↦ IsAffine X where
     rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance isAffineHom_isStableUnderBaseChange :
-    MorphismProperty.IsStableUnderBaseChange @IsAffineHom := by
+instance isAffineHom_isStableUnderBaseChange
+    : MorphismProperty.IsStableUnderBaseChange @IsAffineHom := by
   apply HasAffineProperty.isStableUnderBaseChange
   let := HasAffineProperty.isLocal_affineProperty
   apply AffineTargetMorphismProperty.IsStableUnderBaseChange.mk
@@ -188,33 +189,37 @@ lemma isAffine_of_isAffineHom [IsAffineHom f] [IsAffine Y] : IsAffine X :=
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma isAffineHom_of_forall_exists_isAffineOpen
-    (H : ∀ x : Y, ∃ U : Y.Opens, x ∈ U ∧ IsAffineOpen U ∧ IsAffineOpen (f ⁻¹ᵁ U)) :
-    IsAffineHom f := by
+    (H : ∀ x : Y, ∃ U : Y.Opens, x ∈ U ∧ IsAffineOpen U ∧ IsAffineOpen (f ⁻¹ᵁ U))
+    : IsAffineHom f := by
   choose U hxU hU hfU using H
   rw [HasAffineProperty.iff_of_iSup_eq_top (P := @IsAffineHom) fun i ↦ ⟨U i, hU i⟩]
   · exact hfU
   · exact top_le_iff.mp (fun x _ ↦ by simpa using ⟨x, hxU x⟩)
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [IsAffineHom f] [IsAffine Y] :
-    IsAffine (pullback f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [IsAffineHom f] [IsAffine Y]
+    : IsAffine (pullback f g) :=
   letI : IsAffineHom (pullback.snd f g) := MorphismProperty.pullback_snd _ _ ‹_›
   isAffine_of_isAffineHom (pullback.snd f g)
 
 set_option backward.isDefEq.respectTransparency.types false in
-instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [IsAffineHom g] [IsAffine X] :
-    IsAffine (pullback f g) :=
+instance {X Y S : Scheme} (f : X ⟶ S) (g : Y ⟶ S) [IsAffineHom g] [IsAffine X]
+    : IsAffine (pullback f g) :=
   letI : IsAffineHom (pullback.fst f g) := MorphismProperty.pullback_fst _ _ ‹_›
   isAffine_of_isAffineHom (pullback.fst f g)
 
-lemma IsAffine.of_isPullback {P : Scheme.{u}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
-    [IsAffine X] [IsAffineHom g] (h : IsPullback fst snd f g) :
-    IsAffine P :=
+lemma IsAffine.of_isPullback
+    {P : Scheme.{u}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
+    [IsAffine X] [IsAffineHom g]
+    (h : IsPullback fst snd f g)
+    : IsAffine P :=
   .of_isIso h.isoPullback.hom
 
-lemma isPushout_appTop_of_isPullback {P : Scheme.{u}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z}
-    {g : Y ⟶ Z} [IsAffine X] [IsAffine Y] [IsAffine Z] (h : IsPullback fst snd f g) :
-    IsPushout f.appTop g.appTop fst.appTop snd.appTop := by
+lemma isPushout_appTop_of_isPullback
+    {P : Scheme.{u}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
+    [IsAffine X] [IsAffine Y] [IsAffine Z]
+    (h : IsPullback fst snd f g)
+    : IsPushout f.appTop g.appTop fst.appTop snd.appTop := by
   have : IsAffine P := .of_isPullback h
   have : IsPullback (AffineScheme.ofHom fst) (AffineScheme.ofHom snd) (AffineScheme.ofHom f)
       (AffineScheme.ofHom g) :=
@@ -222,8 +227,8 @@ lemma isPushout_appTop_of_isPullback {P : Scheme.{u}} {fst : P ⟶ X} {snd : P �
   exact (IsPullback.map AffineScheme.Γ.rightOp this).unop.flip
 
 set_option backward.isDefEq.respectTransparency false in
-instance {U V X : Scheme.{u}} (f : U ⟶ X) (g : V ⟶ X) [IsAffineHom f] [IsAffineHom g] :
-    IsAffineHom (coprod.desc f g) := by
+instance {U V X : Scheme.{u}} (f : U ⟶ X) (g : V ⟶ X) [IsAffineHom f] [IsAffineHom g]
+    : IsAffineHom (coprod.desc f g) := by
   refine ⟨fun W hW ↦ ?_⟩
   have : IsAffine (f ⁻¹ᵁ W).toScheme := hW.preimage f
   have : IsAffine (g ⁻¹ᵁ W).toScheme := hW.preimage g
@@ -243,10 +248,8 @@ instance {U V X : Scheme.{u}} (f : U ⟶ X) (g : V ⟶ X) [IsAffineHom f] [IsAff
 
 /-- If the underlying map of a morphism is inducing and has closed range, then it is affine. -/
 @[stacks 04DE]
-lemma isAffineHom_of_isInducing
-    (hf₁ : Topology.IsInducing f)
-    (hf₂ : IsClosed (Set.range f)) :
-    IsAffineHom f := by
+lemma isAffineHom_of_isInducing (hf₁ : Topology.IsInducing f) (hf₂ : IsClosed (Set.range f))
+    : IsAffineHom f := by
   apply isAffineHom_of_forall_exists_isAffineOpen
   intro y
   by_cases hy : y ∈ Set.range f
@@ -270,10 +273,11 @@ lemma isAffineHom_of_isInducing
     convert isAffineOpen_bot _
     exact Opens.ext hU'
 
-lemma IsAffineOpen.isCompact_pullback_inf {X Y Z : Scheme.{u}} {f : X ⟶ Z} {g : Y ⟶ Z}
-    {U : X.Opens} (hU : IsAffineOpen U) {V : Y.Opens} (hV : IsCompact (V : Set Y))
-    {W : Z.Opens} (hW : IsAffineOpen W) (hUW : U ≤ f ⁻¹ᵁ W) (hVW : V ≤ g ⁻¹ᵁ W) :
-    IsCompact (pullback.fst f g ⁻¹ᵁ U ⊓ pullback.snd f g ⁻¹ᵁ V : Set ↑(pullback f g)) := by
+lemma IsAffineOpen.isCompact_pullback_inf
+    {X Y Z : Scheme.{u}} {f : X ⟶ Z} {g : Y ⟶ Z} {U : X.Opens} (hU : IsAffineOpen U)
+    {V : Y.Opens} (hV : IsCompact (V : Set Y))
+    {W : Z.Opens} (hW : IsAffineOpen W) (hUW : U ≤ f ⁻¹ᵁ W) (hVW : V ≤ g ⁻¹ᵁ W)
+    : IsCompact (pullback.fst f g ⁻¹ᵁ U ⊓ pullback.snd f g ⁻¹ᵁ V : Set ↑(pullback f g)) := by
   have : IsAffine U.toScheme := hU
   have : IsAffine W.toScheme := hW
   have : CompactSpace V := isCompact_iff_compactSpace.mp hV
@@ -286,8 +290,8 @@ lemma IsAffineOpen.isCompact_pullback_inf {X Y Z : Scheme.{u}} {f : X ⟶ Z} {g 
   simp [p, Scheme.Pullback.range_map]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma isIso_morphismRestrict_iff_isIso_app [IsAffineHom f] {U : Y.Opens} (hU : IsAffineOpen U) :
-    IsIso (f ∣_ U) ↔ IsIso (f.app U) := by
+lemma isIso_morphismRestrict_iff_isIso_app [IsAffineHom f] {U : Y.Opens} (hU : IsAffineOpen U)
+    : IsIso (f ∣_ U) ↔ IsIso (f.app U) := by
   have : IsAffine U := hU
   refine (HasAffineProperty.iff_of_isAffine (P := .isomorphisms _)).trans <|
     (and_iff_right (hU.preimage f)).trans ?_
@@ -296,9 +300,9 @@ lemma isIso_morphismRestrict_iff_isIso_app [IsAffineHom f] {U : Y.Opens} (hU : I
   congr! <;> simp [Scheme.Opens.toScheme_presheaf_obj]
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem diagonal_isAffine_iff_forall_isAffineOpen_inf [IsAffine Y] (f : X ⟶ Y) :
-    AffineTargetMorphismProperty.diagonal (fun X _ _ _ ↦ IsAffine X) f ↔
-      ∀ (U V : X.Opens), IsAffineOpen U → IsAffineOpen V → IsAffineOpen (U ⊓ V) := by
+theorem diagonal_isAffine_iff_forall_isAffineOpen_inf [IsAffine Y] (f : X ⟶ Y)
+    : AffineTargetMorphismProperty.diagonal (fun X _ _ _ ↦ IsAffine X) f
+      ↔ ∀ (U V : X.Opens), IsAffineOpen U → IsAffineOpen V → IsAffineOpen (U ⊓ V) := by
   delta AffineTargetMorphismProperty.diagonal
   constructor
   · intro H U V hU hV
@@ -306,8 +310,9 @@ theorem diagonal_isAffine_iff_forall_isAffineOpen_inf [IsAffine Y] (f : X ⟶ Y)
     have : IsAffine _ := hU
     have : IsAffine _ := hV
     let g : pullback U.ι V.ι ⟶ X := pullback.fst _ _ ≫ U.ι
-    have := IsOpenImmersion.isPullback (X.homOfLE inf_le_left) (X.homOfLE inf_le_right)
-      U.ι V.ι (by simp) (by ext; simp)
+    have :=
+      IsOpenImmersion.isPullback (X.homOfLE inf_le_left) (X.homOfLE inf_le_right) U.ι V.ι (by simp)
+        (by ext; simp)
     exact .of_isIso this.isoPullback.hom
   · introv H h₁ h₂
     have : IsAffineOpen (pullback.fst f₁ f₂ ≫ f₁).opensRange := by
@@ -317,34 +322,45 @@ theorem diagonal_isAffine_iff_forall_isAffineOpen_inf [IsAffine Y] (f : X ⟶ Y)
     exact .of_isIso (pullback.fst f₁ f₂ ≫ f₁).isoOpensRange.hom
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem isAffineHom_diagonal_iff {f : X ⟶ Y} :
-    IsAffineHom (pullback.diagonal f) ↔
-      ∀ (U : Y.Opens), IsAffineOpen U → ∀ V₁ ≤ f ⁻¹ᵁ U, ∀ V₂ ≤ f ⁻¹ᵁ U,
-        IsAffineOpen V₁ → IsAffineOpen V₂ → IsAffineOpen (V₁ ⊓ V₂) := by
+theorem isAffineHom_diagonal_iff {f : X ⟶ Y}
+    : IsAffineHom (pullback.diagonal f)
+      ↔ ∀ (U : Y.Opens),
+        IsAffineOpen U
+          → ∀ V₁ ≤ f ⁻¹ᵁ U, ∀ V₂ ≤ f ⁻¹ᵁ U,
+            IsAffineOpen V₁ → IsAffineOpen V₂ → IsAffineOpen (V₁ ⊓ V₂) := by
   refine congr($(HasAffineProperty.eq_targetAffineLocally
-    (.diagonal @IsAffineHom)) f).to_iff.trans ?_
+      (.diagonal @IsAffineHom)) f).to_iff.trans
+    ?_
   simp only [targetAffineLocally, diagonal_isAffine_iff_forall_isAffineOpen_inf,
-    (IsOpenImmersion.opensEquiv (f ⁻¹ᵁ _).ι).forall_congr_left, Scheme.affineOpens,
-    Subtype.forall, Set.mem_ofPred_eq, Scheme.Opens.opensRange_ι, ← Scheme.Hom.preimage_inf,
+    (IsOpenImmersion.opensEquiv (f ⁻¹ᵁ _).ι).forall_congr_left, Scheme.affineOpens, Subtype.forall,
+    Set.mem_ofPred_eq, Scheme.Opens.opensRange_ι, ← Scheme.Hom.preimage_inf,
     IsOpenImmersion.opensEquiv_symm_apply, Scheme.Hom.image_preimage_eq_opensRange_inf,
     ← Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion (Scheme.Opens.ι _)]
   congr! with U hU V₁ hV₁ V₂ hV₂
   rw [inf_eq_right.mpr hV₁, inf_eq_right.mpr hV₂, inf_eq_right.mpr (inf_le_left.trans hV₁)]
 
-/-- If `X ⟶ Spec ℤ` has affine diagonal (in particular when `X` is separated), then intersections
-of affine opens of `X` are also affine. -/
-lemma IsAffineOpen.inf [IsAffineHom (pullback.diagonal (terminal.from X))]
-    {U V : X.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V) : IsAffineOpen (U ⊓ V) :=
+/--
+If `X ⟶ Spec ℤ` has affine diagonal (in particular when `X` is separated), then intersections
+of affine opens of `X` are also affine.
+-/
+lemma IsAffineOpen.inf
+    [IsAffineHom (pullback.diagonal (terminal.from X))]
+    {U V : X.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
+    : IsAffineOpen (U ⊓ V) :=
   isAffineHom_diagonal_iff.mp ‹_› ⊤ (isAffineOpen_top _) U (by simp) V (by simp) hU hV
 
-lemma IsAffineOpen.iInf [IsAffineHom (pullback.diagonal (terminal.from X))]
-    {ι : Sort*} [Finite ι] [Nonempty ι] {U : ι → X.Opens} (hU : ∀ i, IsAffineOpen (U i)) :
-      IsAffineOpen (⨅ i, U i) :=
+lemma IsAffineOpen.iInf
+    [IsAffineHom (pullback.diagonal (terminal.from X))]
+    {ι : Sort*} [Finite ι] [Nonempty ι]
+    {U : ι → X.Opens} (hU : ∀ i, IsAffineOpen (U i))
+    : IsAffineOpen (⨅ i, U i) :=
   InfClosed.iInf_mem_of_nonempty (s := Set.ofPred IsAffineOpen) (fun _ h _ h' ↦ h.inf h') hU
 
-lemma IsAffineOpen.biInf [IsAffineHom (pullback.diagonal (terminal.from X))]
-    {ι : Type*} (s : Set ι) (hs : s.Finite) (hs' : s.Nonempty) {U : ι → X.Opens}
-    (hU : ∀ i ∈ s, IsAffineOpen (U i)) : IsAffineOpen (⨅ i ∈ s, U i) :=
+lemma IsAffineOpen.biInf
+    [IsAffineHom (pullback.diagonal (terminal.from X))]
+    {ι : Type*} (s : Set ι) (hs : s.Finite) (hs' : s.Nonempty)
+    {U : ι → X.Opens} (hU : ∀ i ∈ s, IsAffineOpen (U i))
+    : IsAffineOpen (⨅ i ∈ s, U i) :=
   InfClosed.biInf_mem_of_nonempty (s := Set.ofPred IsAffineOpen) (fun _ h _ h' ↦ h.inf h') hs hs' hU
 
 end AlgebraicGeometry

@@ -36,45 +36,52 @@ variable {X : SSet.{u}}
 
 section
 
-variable {A : X.Subcomplex} {ι : Type*}
-  {U : ι → X.Subcomplex} {V : ι → ι → X.Subcomplex}
+variable {A : X.Subcomplex} {ι : Type*} {U : ι → X.Subcomplex} {V : ι → ι → X.Subcomplex}
 
 variable (A U V) in
-/-- Abbreviation for multicoequalizer diagrams in the complete lattice of
-subcomplexes of a simplicial set. -/
+/--
+Abbreviation for multicoequalizer diagrams in the complete lattice of
+subcomplexes of a simplicial set.
+-/
 abbrev MulticoequalizerDiagram := CompleteLattice.MulticoequalizerDiagram A U V
 
 namespace MulticoequalizerDiagram
 
 variable (h : MulticoequalizerDiagram A U V)
 
-/-- The colimit multicofork attached to a `MulticoequalizerDiagram`
-structure in the complete lattice of subcomplexes of a simplicial set. -/
-noncomputable def isColimit :
-    IsColimit (h.multicofork.map toSSetFunctor) :=
+/--
+The colimit multicofork attached to a `MulticoequalizerDiagram`
+structure in the complete lattice of subcomplexes of a simplicial set.
+-/
+noncomputable def isColimit : IsColimit (h.multicofork.map toSSetFunctor) :=
   evaluationJointlyReflectsColimits _ (fun n ↦ by
-    have h' : CompleteLattice.MulticoequalizerDiagram (A.obj n) (fun i ↦ (U i).obj n)
-        (fun i j ↦ (V i j).obj n) :=
-      { eq_inf := by simp [h.eq_inf]
-        iSup_eq := by simp [← h.iSup_eq] }
-    exact (Multicofork.isColimitMapEquiv _ _).2
-      (Types.isColimitOfMulticoequalizerDiagram h'))
+    have h' : CompleteLattice.MulticoequalizerDiagram (A.obj n)
+        (fun i ↦ (U i).obj n)
+        (fun i j ↦ (V i j).obj n) := {
+      eq_inf := by simp [h.eq_inf]
+      iSup_eq := by simp [← h.iSup_eq]
+    }
+    exact (Multicofork.isColimitMapEquiv _ _).2 (Types.isColimitOfMulticoequalizerDiagram h'))
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- A colimit multicofork attached to a `MulticoequalizerDiagram`
+/--
+A colimit multicofork attached to a `MulticoequalizerDiagram`
 structure in the complete lattice of subcomplexes of a simplicial set.
 In this variant, we assume that the index type `ι` has a linear order. This allows
-to consider only the "relations" given by tuples `(i, j)` such that `i < j`. -/
-noncomputable def isColimit' [LinearOrder ι] :
-    IsColimit (h.multicofork.toLinearOrder.map toSSetFunctor) :=
-  Multicofork.isColimitToLinearOrder _ h.isColimit
-    { iso i j := toSSetFunctor.mapIso (eqToIso (by
+to consider only the "relations" given by tuples `(i, j)` such that `i < j`.
+-/
+noncomputable def isColimit' [LinearOrder ι]
+    : IsColimit (h.multicofork.toLinearOrder.map toSSetFunctor) :=
+  Multicofork.isColimitToLinearOrder _ h.isColimit {
+    iso i j :=
+      toSSetFunctor.mapIso (eqToIso (by
         dsimp
         rw [h.eq_inf, h.eq_inf, inf_comm]))
-      iso_hom_fst _ _ := rfl
-      iso_hom_snd _ _ := rfl
-      fst_eq_snd _ := rfl }
+    iso_hom_fst _ _ := rfl
+    iso_hom_snd _ _ := rfl
+    fst_eq_snd _ := rfl
+  }
 
 end MulticoequalizerDiagram
 
@@ -83,20 +90,20 @@ end
 /-- Abbreviation for bicartesian squares in the lattice of subcomplexes of a simplicial set. -/
 abbrev BicartSq (A₁ A₂ A₃ A₄ : X.Subcomplex) := Lattice.BicartSq A₁ A₂ A₃ A₄
 
-lemma BicartSq.isPushout {A₁ A₂ A₃ A₄ : X.Subcomplex} (sq : BicartSq A₁ A₂ A₃ A₄) :
-    IsPushout (homOfLE sq.le₁₂) (homOfLE sq.le₁₃)
-    (homOfLE sq.le₂₄) (homOfLE sq.le₃₄) where
+lemma BicartSq.isPushout {A₁ A₂ A₃ A₄ : X.Subcomplex} (sq : BicartSq A₁ A₂ A₃ A₄)
+    : IsPushout (homOfLE sq.le₁₂) (homOfLE sq.le₁₃) (homOfLE sq.le₂₄) (homOfLE sq.le₃₄) where
   w := rfl
   isColimit' :=
-    ⟨evaluationJointlyReflectsColimits _
-      (fun n ↦ (PushoutCocone.isColimitMapCoconeEquiv _ _).2 (by
-        have h : Lattice.BicartSq (A₁.obj n) (A₂.obj n) (A₃.obj n) (A₄.obj n) :=
-          { sup_eq := by
-              rw [← sq.sup_eq]
-              rfl
-            inf_eq := by
-              rw [← sq.inf_eq]
-              rfl }
+    ⟨evaluationJointlyReflectsColimits _ (fun n ↦
+      (PushoutCocone.isColimitMapCoconeEquiv _ _).2 (by
+        have h : Lattice.BicartSq (A₁.obj n) (A₂.obj n) (A₃.obj n) (A₄.obj n) := {
+          sup_eq := by
+            rw [← sq.sup_eq]
+            rfl
+          inf_eq := by
+            rw [← sq.inf_eq]
+            rfl
+        }
         exact (Types.isPushout_of_bicartSq h).isColimit))⟩
 
 end Subcomplex

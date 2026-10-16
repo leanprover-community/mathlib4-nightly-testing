@@ -31,7 +31,6 @@ Given a morphism `f : X ⟶ Y`, `CategoryTheory.Projective.left f` is a projecti
 
 @[expose] public section
 
-
 noncomputable section
 
 open CategoryTheory Limits Opposite
@@ -57,7 +56,8 @@ lemma Limits.IsZero.projective {X : C} (h : IsZero X) : Projective X where
 
 section
 
-/-- A projective presentation of an object `X` consists of an epimorphism `f : P ⟶ X`
+/--
+A projective presentation of an object `X` consists of an epimorphism `f : P ⟶ X`
 from some projective object `P`.
 -/
 structure ProjectivePresentation (X : C) where
@@ -72,8 +72,10 @@ attribute [instance] ProjectivePresentation.projective ProjectivePresentation.ep
 
 variable (C)
 
-/-- A category "has enough projectives" if for every object `X` there is a projective object `P` and
-an epimorphism `P ↠ X`. -/
+/--
+A category "has enough projectives" if for every object `X` there is a projective object `P` and
+an epimorphism `P ↠ X`.
+-/
 class EnoughProjectives : Prop where
   presentation : ∀ X : C, Nonempty (ProjectivePresentation X)
 
@@ -90,16 +92,15 @@ def factorThru {P X E : C} [Projective P] (f : P ⟶ X) (e : E ⟶ X) [Epi e] : 
   (Projective.factors f e).choose
 
 @[reassoc (attr := simp)]
-theorem factorThru_comp {P X E : C} [Projective P] (f : P ⟶ X) (e : E ⟶ X) [Epi e] :
-    factorThru f e ≫ e = f :=
+theorem factorThru_comp {P X E : C} [Projective P] (f : P ⟶ X) (e : E ⟶ X) [Epi e]
+    : factorThru f e ≫ e = f :=
   (Projective.factors f e).choose_spec
 
 section
 
 open ZeroObject
 
-instance zero_projective [HasZeroObject C] : Projective (0 : C) :=
-  (isZero_zero C).projective
+instance zero_projective [HasZeroObject C] : Projective (0 : C) := (isZero_zero C).projective
 
 end
 
@@ -108,8 +109,7 @@ theorem of_iso {P Q : C} (i : P ≅ Q) (_ : Projective P) : Projective Q where
     let ⟨f', hf'⟩ := Projective.factors (i.hom ≫ f) e
     ⟨i.inv ≫ f', by simp [hf']⟩
 
-theorem iso_iff {P Q : C} (i : P ≅ Q) : Projective P ↔ Projective Q :=
-  ⟨of_iso i, of_iso i.symm⟩
+theorem iso_iff {P Q : C} (i : P ≅ Q) : Projective P ↔ Projective Q := ⟨of_iso i, of_iso i.symm⟩
 
 /-- The axiom of choice says that every type is a projective object in `Type`. -/
 instance (X : Type u) : Projective X where
@@ -121,73 +121,72 @@ instance Type.enoughProjectives : EnoughProjectives (Type u) where
   presentation X := ⟨⟨X, 𝟙 X⟩⟩
 
 instance {P Q : C} [HasBinaryCoproduct P Q] [Projective P] [Projective Q] : Projective (P ⨿ Q) where
-  factors f e epi := ⟨coprod.desc (factorThru (coprod.inl ≫ f) e) (factorThru (coprod.inr ≫ f) e),
-    by cat_disch⟩
+  factors f e epi :=
+    ⟨coprod.desc (factorThru (coprod.inl ≫ f) e) (factorThru (coprod.inr ≫ f) e), by cat_disch⟩
 
 instance {β : Type v} (g : β → C) [HasCoproduct g] [∀ b, Projective (g b)] : Projective (∐ g) where
   factors f e epi := ⟨Sigma.desc fun b => factorThru (Sigma.ι g b ≫ f) e, by cat_disch⟩
 
-instance {P Q : C} [HasZeroMorphisms C] [HasBinaryBiproduct P Q] [Projective P] [Projective Q] :
-    Projective (P ⊞ Q) where
-  factors f e epi := ⟨biprod.desc (factorThru (biprod.inl ≫ f) e) (factorThru (biprod.inr ≫ f) e),
-    by cat_disch⟩
+instance {P Q : C} [HasZeroMorphisms C] [HasBinaryBiproduct P Q] [Projective P] [Projective Q]
+    : Projective (P ⊞ Q) where
+  factors f e epi :=
+    ⟨biprod.desc (factorThru (biprod.inl ≫ f) e) (factorThru (biprod.inr ≫ f) e), by cat_disch⟩
 
-instance {β : Type v} (g : β → C) [HasZeroMorphisms C] [HasBiproduct g] [∀ b, Projective (g b)] :
-    Projective (⨁ g) where
+instance {β : Type v} (g : β → C) [HasZeroMorphisms C] [HasBiproduct g] [∀ b, Projective (g b)]
+    : Projective (⨁ g) where
   factors f e epi := ⟨biproduct.desc fun b => factorThru (biproduct.ι g b ≫ f) e, by cat_disch⟩
 
-theorem projective_iff_preservesEpimorphisms_coyoneda_obj (P : C) :
-    Projective P ↔ (coyoneda.obj (op P)).PreservesEpimorphisms :=
-  ⟨fun hP =>
-    ⟨fun f _ =>
-      (epi_iff_surjective _).2 fun g =>
-        have : Projective (unop (op P)) := hP
-        ⟨factorThru g f, factorThru_comp _ _⟩⟩,
-    fun _ =>
-    ⟨fun f e _ =>
-      (epi_iff_surjective _).1 (inferInstance : Epi ((coyoneda.obj (op P)).map e)) f⟩⟩
+theorem projective_iff_preservesEpimorphisms_coyoneda_obj (P : C)
+    : Projective P ↔ (coyoneda.obj (op P)).PreservesEpimorphisms := ⟨
+  fun hP => ⟨fun f _ =>
+    (epi_iff_surjective _).2 fun g =>
+      have : Projective (unop (op P)) := hP
+      ⟨factorThru g f, factorThru_comp _ _⟩⟩,
+  fun _ =>
+    ⟨fun f e _ => (epi_iff_surjective _).1 (inferInstance : Epi ((coyoneda.obj (op P)).map e)) f⟩
+⟩
 
 section EnoughProjectives
 
 variable [EnoughProjectives C]
 
-/-- `Projective.over X` provides an arbitrarily chosen projective object equipped with
+/--
+`Projective.over X` provides an arbitrarily chosen projective object equipped with
 an epimorphism `Projective.π : Projective.over X ⟶ X`.
 -/
-def over (X : C) : C :=
-  (EnoughProjectives.presentation X).some.p
+def over (X : C) : C := (EnoughProjectives.presentation X).some.p
 
 instance projective_over (X : C) : Projective (over X) :=
   (EnoughProjectives.presentation X).some.projective
 
-/-- The epimorphism `projective.π : projective.over X ⟶ X`
+/--
+The epimorphism `projective.π : projective.over X ⟶ X`
 from the arbitrarily chosen projective object over `X`.
 -/
-def π (X : C) : over X ⟶ X :=
-  (EnoughProjectives.presentation X).some.f
+def π (X : C) : over X ⟶ X := (EnoughProjectives.presentation X).some.f
 
-instance π_epi (X : C) : Epi (π X) :=
-  (EnoughProjectives.presentation X).some.epi
+instance π_epi (X : C) : Epi (π X) := (EnoughProjectives.presentation X).some.epi
 
 section
 
 variable [HasZeroMorphisms C] {X Y : C} (f : X ⟶ Y) [HasKernel f]
 
-/-- When `C` has enough projectives, the object `Projective.syzygies f` is
+/--
+When `C` has enough projectives, the object `Projective.syzygies f` is
 an arbitrarily chosen projective object over `kernel f`.
 -/
 def syzygies : C := over (kernel f)
 
 instance : Projective (syzygies f) := inferInstanceAs (Projective (over _))
 
-/-- When `C` has enough projectives,
+/--
+When `C` has enough projectives,
 `Projective.d f : Projective.syzygies f ⟶ X` is the composition
 `π (kernel f) ≫ kernel.ι f`.
 
 (When `C` is abelian, we have `exact (projective.d f) f`.)
 -/
-abbrev d : syzygies f ⟶ X :=
-  π (kernel f) ≫ kernel.ι f
+abbrev d : syzygies f ⟶ X := π (kernel f) ≫ kernel.ι f
 
 end
 
@@ -200,26 +199,30 @@ namespace Adjunction
 variable {D : Type u'} [Category.{v'} D] {F : C ⥤ D} {G : D ⥤ C}
 
 set_option backward.defeqAttrib.useBackward true in
-theorem map_projective (adj : F ⊣ G) [G.PreservesEpimorphisms] (P : C) (hP : Projective P) :
-    Projective (F.obj P) where
+theorem map_projective (adj : F ⊣ G) [G.PreservesEpimorphisms] (P : C) (hP : Projective P)
+    : Projective (F.obj P) where
   factors f g _ := by
     rcases hP.factors (adj.unit.app P ≫ G.map f) (G.map g) with ⟨f', hf'⟩
     use F.map f' ≫ adj.counit.app _
     rw [Category.assoc, ← Adjunction.counit_naturality, ← Category.assoc, ← F.map_comp, hf']
     simp
 
-theorem projective_of_map_projective (adj : F ⊣ G) [F.Full] [F.Faithful] (P : C)
-    (hP : Projective (F.obj P)) : Projective P where
+theorem projective_of_map_projective
+    (adj : F ⊣ G) [F.Full] [F.Faithful] (P : C) (hP : Projective (F.obj P))
+    : Projective P where
   factors f g _ := by
     have := Adjunction.leftAdjoint_preservesColimits.{0, 0} adj
     rcases (@hP).1 (F.map f) (F.map g) with ⟨f', hf'⟩
     use adj.unit.app _ ≫ G.map f' ≫ (inv <| adj.unit.app _)
     exact F.map_injective (by simpa)
 
-/-- Given an adjunction `F ⊣ G` such that `G` preserves epis, `F` maps a projective presentation of
-`X` to a projective presentation of `F(X)`. -/
-def mapProjectivePresentation (adj : F ⊣ G) [G.PreservesEpimorphisms] (X : C)
-    (Y : ProjectivePresentation X) : ProjectivePresentation (F.obj X) where
+/--
+Given an adjunction `F ⊣ G` such that `G` preserves epis, `F` maps a projective presentation of
+`X` to a projective presentation of `F(X)`.
+-/
+def mapProjectivePresentation
+    (adj : F ⊣ G) [G.PreservesEpimorphisms] (X : C) (Y : ProjectivePresentation X)
+    : ProjectivePresentation (F.obj X) where
   p := F.obj Y.p
   projective := adj.map_projective _ Y.projective
   f := F.map Y.f
@@ -231,8 +234,9 @@ namespace Functor
 
 variable {D : Type*} [Category* D] (F : C ⥤ D)
 
-theorem projective_of_map_projective [F.Full] [F.Faithful]
-    [F.PreservesEpimorphisms] {P : C} (hP : Projective (F.obj P)) : Projective P where
+theorem projective_of_map_projective
+    [F.Full] [F.Faithful] [F.PreservesEpimorphisms] {P : C} (hP : Projective (F.obj P))
+    : Projective P where
   factors g f _ := by
     obtain ⟨h, fac⟩ := hP.factors (F.map g) (F.map f)
     exact ⟨F.preimage h, F.map_injective (by simp [fac])⟩
@@ -246,10 +250,13 @@ variable {D : Type u'} [Category.{v'} D] (F : C ≌ D)
 theorem map_projective_iff (P : C) : Projective (F.functor.obj P) ↔ Projective P :=
   ⟨F.toAdjunction.projective_of_map_projective P, F.toAdjunction.map_projective P⟩
 
-/-- Given an equivalence of categories `F`, a projective presentation of `F(X)` induces a
-projective presentation of `X.` -/
-def projectivePresentationOfMapProjectivePresentation (X : C)
-    (Y : ProjectivePresentation (F.functor.obj X)) : ProjectivePresentation X where
+/--
+Given an equivalence of categories `F`, a projective presentation of `F(X)` induces a
+projective presentation of `X.`
+-/
+def projectivePresentationOfMapProjectivePresentation
+    (X : C) (Y : ProjectivePresentation (F.functor.obj X))
+    : ProjectivePresentation X where
   p := F.inverse.obj Y.p
   projective := Adjunction.map_projective F.symm.toAdjunction Y.p Y.projective
   f := F.inverse.map Y.f ≫ F.unitInv.app _

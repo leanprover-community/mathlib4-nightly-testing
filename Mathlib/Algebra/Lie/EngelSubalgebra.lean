@@ -32,35 +32,38 @@ and minimal ones are nilpotent (TODO), hence Cartan subalgebras.
 
 open LieAlgebra
 
-variable {R L M : Type*} [CommRing R] [LieRing L] [LieAlgebra R L]
-  [AddCommGroup M] [Module R M] [LieRingModule L M] [LieModule R L M]
+variable
+  {R L M : Type*} [CommRing R] [LieRing L] [LieAlgebra R L] [AddCommGroup M] [Module R M]
+  [LieRingModule L M] [LieModule R L M]
 
 namespace LieSubalgebra
 
 variable (R)
 
-/-- The Engel subalgebra `Engel R x` consists of
+/--
+The Engel subalgebra `Engel R x` consists of
 all `y : L` such that `(ad R L x)^n` kills `y` for some `n`.
 
 Engel subalgebras are self-normalizing (`LieSubalgebra.normalizer_engel`),
-and minimal ones are nilpotent, hence Cartan subalgebras. -/
+and minimal ones are nilpotent, hence Cartan subalgebras.
+-/
 @[simps!]
-def engel (x : L) : LieSubalgebra R L :=
-  { (ad R L x).maxGenEigenspace 0 with
-    lie_mem' := by
-      simp only [AddSubsemigroup.mem_carrier, AddSubmonoid.mem_toSubsemigroup,
-        Submodule.mem_toAddSubmonoid, Module.End.mem_maxGenEigenspace, zero_smul,
-        sub_zero, forall_exists_index]
-      intro y z m hm n hn
-      refine ⟨m + n, ?_⟩
-      rw [ad_pow_lie]
-      apply Finset.sum_eq_zero
-      intro ij hij
-      obtain (h | h) : m ≤ ij.1 ∨ n ≤ ij.2 := by rw [Finset.mem_antidiagonal] at hij; lia
-      all_goals simp [Module.End.pow_map_zero_of_le h, hm, hn] }
+def engel (x : L) : LieSubalgebra R L := {
+  (ad R L x).maxGenEigenspace 0 with
+  lie_mem' := by
+    simp only [AddSubsemigroup.mem_carrier, AddSubmonoid.mem_toSubsemigroup,
+      Submodule.mem_toAddSubmonoid, Module.End.mem_maxGenEigenspace, zero_smul, sub_zero,
+      forall_exists_index]
+    intro y z m hm n hn
+    refine ⟨m + n, ?_⟩
+    rw [ad_pow_lie]
+    apply Finset.sum_eq_zero
+    intro ij hij
+    obtain (h | h) : m ≤ ij.1 ∨ n ≤ ij.2 := by rw [Finset.mem_antidiagonal] at hij; lia
+    all_goals simp [Module.End.pow_map_zero_of_le h, hm, hn]
+}
 
-lemma mem_engel_iff (x y : L) :
-    y ∈ engel R x ↔ ∃ n : ℕ, ((ad R L x) ^ n) y = 0 :=
+lemma mem_engel_iff (x y : L) : y ∈ engel R x ↔ ∃ n : ℕ, ((ad R L x) ^ n) y = 0 :=
   (Module.End.mem_maxGenEigenspace _ _ _).trans <| by simp only [zero_smul, sub_zero]
 
 lemma self_mem_engel (x : L) : x ∈ engel R x := by
@@ -75,10 +78,12 @@ lemma engel_zero : engel R (0 : L) = ⊤ := by
   use 1
   simp only [pow_one, LinearMap.zero_apply]
 
-/-- Engel subalgebras are self-normalizing.
+/--
+Engel subalgebras are self-normalizing.
 See `LieSubalgebra.normalizer_eq_self_of_engel_le` for a proof that Lie-subalgebras
 containing an Engel subalgebra are also self-normalizing,
-provided that the ambient Lie algebra is Artinian. -/
+provided that the ambient Lie algebra is Artinian.
+-/
 @[simp]
 lemma normalizer_engel (x : L) : normalizer (engel R x) = engel R x := by
   apply le_antisymm _ (le_normalizer _)
@@ -95,17 +100,21 @@ lemma normalizer_engel (x : L) : normalizer (engel R x) = engel R x := by
 variable {R}
 
 open Filter in
-/-- A Lie-subalgebra of an Artinian Lie algebra is self-normalizing
+/--
+A Lie-subalgebra of an Artinian Lie algebra is self-normalizing
 if it contains an Engel subalgebra.
 See `LieSubalgebra.normalizer_engel` for a proof that Engel subalgebras are self-normalizing,
-avoiding the Artinian condition. -/
-lemma normalizer_eq_self_of_engel_le [IsArtinian R L]
-    (H : LieSubalgebra R L) (x : L) (h : engel R x ≤ H) :
-    normalizer H = H := by
+avoiding the Artinian condition.
+-/
+lemma normalizer_eq_self_of_engel_le
+    [IsArtinian R L] (H : LieSubalgebra R L) (x : L) (h : engel R x ≤ H)
+    : normalizer H = H := by
   set N := normalizer H
   apply le_antisymm _ (le_normalizer H)
-  calc N.toSubmodule ≤ (engel R x).toSubmodule ⊔ H.toSubmodule := ?_
-       _ = H := by rwa [sup_eq_right]
+  calc
+    N.toSubmodule
+      ≤ (engel R x).toSubmodule ⊔ H.toSubmodule := ?_
+    _ = H := by rwa [sup_eq_right]
   have aux₁ : ∀ n ∈ N, ⁅x, n⁆ ∈ H := by
     intro n hn
     rw [mem_normalizer_iff] at hn
@@ -124,13 +133,17 @@ lemma normalizer_eq_self_of_engel_le [IsArtinian R L]
     intro y hy
     simp only [Submodule.mem_comap, mem_engel_iff, mem_toSubmodule]
     use k + 1
-    clear hk; revert hy
+    clear hk
+    revert hy
     generalize k + 1 = k
     induction k generalizing y with
     | zero =>
-      cases y; intro hy; simp only [pow_zero, Module.End.one_apply]
+      cases y
+      intro hy
+      simp only [pow_zero, Module.End.one_apply]
       exact (AddSubmonoid.mk_eq_zero N.toAddSubmonoid).mp hy
-    | succ k ih => solve_by_elim
+    | succ k ih =>
+      solve_by_elim
   · rw [← Submodule.map_le_iff_le_comap]
     apply le_sup_of_le_right
     rw [Submodule.map_le_iff_le_comap]
@@ -140,15 +153,16 @@ lemma normalizer_eq_self_of_engel_le [IsArtinian R L]
     simp only [Submodule.coe_subtype, SetLike.coe_mem]
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- A Lie subalgebra of a Noetherian Lie algebra is nilpotent
-if it is contained in the Engel subalgebra of all its elements. -/
-lemma isNilpotent_of_forall_le_engel [IsNoetherian R L]
-    (H : LieSubalgebra R L) (h : ∀ x ∈ H, H ≤ engel R x) :
-    LieRing.IsNilpotent H := by
+/--
+A Lie subalgebra of a Noetherian Lie algebra is nilpotent
+if it is contained in the Engel subalgebra of all its elements.
+-/
+lemma isNilpotent_of_forall_le_engel
+    [IsNoetherian R L] (H : LieSubalgebra R L) (h : ∀ x ∈ H, H ≤ engel R x)
+    : LieRing.IsNilpotent H := by
   rw [LieAlgebra.isNilpotent_iff_forall (R := R)]
   intro x
-  let K : ℕ →o Submodule R H :=
-    ⟨fun n ↦ LinearMap.ker ((ad R H x) ^ n), fun m n hmn ↦ ?mono⟩
+  let K : ℕ →o Submodule R H := ⟨fun n ↦ LinearMap.ker ((ad R H x) ^ n), fun m n hmn ↦ ?mono⟩
   case mono =>
     intro y hy
     rw [LinearMap.mem_ker] at hy ⊢

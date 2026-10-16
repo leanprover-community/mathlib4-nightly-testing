@@ -30,9 +30,10 @@ def equivSubtype : MaximalSpectrum R ≃ {I : Ideal R // I.IsMaximal} where
   invFun I := ⟨I, I.2⟩
 
 theorem range_asIdeal : Set.range MaximalSpectrum.asIdeal = {J : Ideal R | J.IsMaximal} :=
-  Set.ext fun J ↦
-    ⟨fun hJ ↦ let ⟨j, hj⟩ := Set.mem_range.mp hJ; Set.mem_ofPred.mpr <| hj ▸ j.isMaximal,
-      fun hJ ↦ Set.mem_range.mpr ⟨⟨J, Set.mem_ofPred.mp hJ⟩, rfl⟩⟩
+  Set.ext fun J ↦ ⟨
+    fun hJ ↦ let ⟨j, hj⟩ := Set.mem_range.mp hJ; Set.mem_ofPred.mpr <| hj ▸ j.isMaximal,
+    fun hJ ↦ Set.mem_range.mpr ⟨⟨J, Set.mem_ofPred.mp hJ⟩, rfl⟩
+  ⟩
 
 variable {R}
 
@@ -41,8 +42,7 @@ instance [Nontrivial R] : Nonempty <| MaximalSpectrum R :=
   ⟨⟨I, hI⟩⟩
 
 /-- The natural inclusion from the maximal spectrum to the prime spectrum. -/
-def toPrimeSpectrum (x : MaximalSpectrum R) : PrimeSpectrum R :=
-  ⟨x.asIdeal, x.isMaximal.isPrime⟩
+def toPrimeSpectrum (x : MaximalSpectrum R) : PrimeSpectrum R := ⟨x.asIdeal, x.isMaximal.isPrime⟩
 
 theorem toPrimeSpectrum_injective : (@toPrimeSpectrum R _).Injective := fun ⟨_, _⟩ ⟨_, _⟩ h => by
   simpa only [MaximalSpectrum.mk.injEq] using! PrimeSpectrum.ext_iff.mp h

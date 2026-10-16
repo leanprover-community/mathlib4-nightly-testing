@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Algebra.Module.Torsion.Free
-
 import Mathlib.Algebra.GroupWithZero.Action.Units
 
 /-!

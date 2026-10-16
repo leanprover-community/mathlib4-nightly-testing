@@ -9,7 +9,6 @@ public import Mathlib.RingTheory.DedekindDomain.AdicValuation
 public import Mathlib.RingTheory.RamificationInertia.Ramification
 public import Mathlib.RingTheory.Valuation.Discrete.RankOne
 
-
 /-!
 # Ramification theory for valuations
 
@@ -32,16 +31,16 @@ open WithZero Ideal.IsDedekindDomain Valuation.IsRankOneDiscrete
 section AKLB
 
 variable {A K : Type*} (L : Type*) {B : Type*}
-variable [CommRing A] [IsDedekindDomain A] [CommRing B] [IsDedekindDomain B] [Algebra A B]
+variable
+  [CommRing A] [IsDedekindDomain A] [CommRing B] [IsDedekindDomain B] [Algebra A B]
   [Module.IsTorsionFree A B]
 variable [Field K] [Field L] [Algebra K L]
 variable [Algebra A K] [IsFractionRing A K] [Algebra A L] [IsScalarTower A K L]
 variable [Algebra B L] [IsFractionRing B L] [IsScalarTower A B L]
 variable (v : HeightOneSpectrum A) (w : HeightOneSpectrum B) [w.asIdeal.LiesOver v.asIdeal]
 
-theorem intValuation_liesOver (x : A) :
-    v.intValuation x ^ (w.asIdeal.ramificationIdx A) =
-      w.intValuation (algebraMap A B x) := by
+theorem intValuation_liesOver (x : A)
+    : v.intValuation x ^ (w.asIdeal.ramificationIdx A) = w.intValuation (algebraMap A B x) := by
   rcases eq_or_ne x 0 with rfl | hx
   · simp [(Ideal.ramificationIdx_pos_of_isDedekindDomain' w.asIdeal v.ne_bot).ne']
   rw [intValuation_eq_exp_neg_multiplicity v hx, intValuation_eq_exp_neg_multiplicity w (by simpa),
@@ -53,20 +52,20 @@ theorem intValuation_liesOver (x : A) :
   rw [emultiplicity_map_eq_ramificationIdx'_mul hx v.irreducible w.irreducible w.ne_bot,
     Nat.cast_mul, (FiniteMultiplicity.of_prime_left v.prime hx).emultiplicity_eq_multiplicity]
 
-theorem valuation_liesOver (x : K) :
-    v.valuation K x ^ w.asIdeal.ramificationIdx A =
-      w.valuation L (algebraMap K L x) := by
+theorem valuation_liesOver (x : K)
+    : v.valuation K x ^ w.asIdeal.ramificationIdx A = w.valuation L (algebraMap K L x) := by
   obtain ⟨x, y, hy, rfl⟩ := IsFractionRing.div_surjective (A := A) x
   simp [valuation_of_algebraMap, div_pow, ← IsScalarTower.algebraMap_apply A K L,
     IsScalarTower.algebraMap_apply A B L, intValuation_liesOver v w]
 
 variable (K)
 
-theorem uniformContinuous_algebraMap_liesOver :
-    UniformContinuous (algebraMap (WithVal (v.valuation K)) (WithVal (w.valuation L))) := by
+theorem uniformContinuous_algebraMap_liesOver
+    : UniformContinuous (algebraMap (WithVal (v.valuation K)) (WithVal (w.valuation L))) := by
   refine uniformContinuous_of_continuousAt_zero _ ?_
-  rw [ContinuousAt, map_zero, (IsValuativeTopology.hasBasis_nhds_zero _).tendsto_iff
-    (IsValuativeTopology.hasBasis_nhds_zero _)]
+  rw [ContinuousAt, map_zero,
+    (IsValuativeTopology.hasBasis_nhds_zero _).tendsto_iff
+      (IsValuativeTopology.hasBasis_nhds_zero _)]
   intro γL _
   /-
   `ValueGroup₀ (w.valuation L)` <-------->  `ℤᵐ⁰` <--------> `ValueGroup₀ (v.valuation K)`
@@ -96,12 +95,14 @@ theorem uniformContinuous_algebraMap_liesOver :
   use .mk0 _ hγK
   simp only [Units.val_mk0, Set.mem_ofPred_eq, true_and]
   intro x hx
-  rcases eq_or_ne x 0 with rfl | hx₀; · simp
+  rcases eq_or_ne x 0 with rfl | hx₀
+  · simp
   rw [σvV.lt_symm_apply, σK.lt_symm_apply, σv.lt_symm_apply,
-    ValuativeRel.ValueGroupWithZero.orderMonoidIso_valuation_eq_restrict₀,
-    ← Valuation.restrict_def, WithVal.valueGroupOrderIso₀_restrict,
-    valueGroup₀_equiv_withZeroMulInt_restrict_apply_of_surjective (v.valuation_surjective K),
-    ← log_lt_log (by simp_all) (by simp)] at hx
+      ValuativeRel.ValueGroupWithZero.orderMonoidIso_valuation_eq_restrict₀,
+      ← Valuation.restrict_def, WithVal.valueGroupOrderIso₀_restrict,
+      valueGroup₀_equiv_withZeroMulInt_restrict_apply_of_surjective (v.valuation_surjective K),
+      ← log_lt_log (by simp_all) (by simp)]
+    at hx
   rw [← σwV.strictMono.lt_iff_lt, ← σL.strictMono.lt_iff_lt,
     ValuativeRel.ValueGroupWithZero.orderMonoidIso_valuation_eq_restrict₀, ← Valuation.restrict_def,
     WithVal.valueGroupOrderIso₀_restrict, ← σw.strictMono.lt_iff_lt,

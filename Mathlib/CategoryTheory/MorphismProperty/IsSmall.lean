@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.MorphismProperty.Basic
-
 import Mathlib.Logic.Small.Basic
 
 /-!
@@ -29,25 +28,26 @@ namespace MorphismProperty
 
 variable (W : MorphismProperty C)
 
-/-- A class of morphisms `W : MorphismProperty C` is `w`-small
-if the corresponding set in `Set (Arrow C)` is. -/
+/--
+A class of morphisms `W : MorphismProperty C` is `w`-small
+if the corresponding set in `Set (Arrow C)` is.
+-/
 @[pp_with_univ]
 class IsSmall : Prop where
   small_toSet : Small.{w} W.toSet
 
 attribute [instance] IsSmall.small_toSet
 
-instance isSmall_ofHoms {ι : Type t} [Small.{w} ι] {A B : ι → C} (f : ∀ i, A i ⟶ B i) :
-    IsSmall.{w} (ofHoms f) := by
+instance isSmall_ofHoms {ι : Type t} [Small.{w} ι] {A B : ι → C} (f : ∀ i, A i ⟶ B i)
+    : IsSmall.{w} (ofHoms f) := by
   let φ (i : ι) : (ofHoms f).toSet := ⟨Arrow.mk (f i), ⟨i⟩⟩
   have hφ : Function.Surjective φ := by
     rintro ⟨⟨_, _, f⟩, ⟨i⟩⟩
     exact ⟨i, rfl⟩
   exact ⟨small_of_surjective hφ⟩
 
-lemma isSmall_iff_eq_ofHoms :
-    IsSmall.{w} W ↔ ∃ (ι : Type w) (A B : ι → C) (f : ∀ i, A i ⟶ B i),
-      W = ofHoms f := by
+lemma isSmall_iff_eq_ofHoms
+    : IsSmall.{w} W ↔ ∃ (ι : Type w) (A B : ι → C) (f : ∀ i, A i ⟶ B i), W = ofHoms f := by
   constructor
   · intro
     refine ⟨Shrink.{w} W.toSet, _, _, fun i ↦ ((equivShrink _).symm i).1.hom, ?_⟩
@@ -61,20 +61,21 @@ lemma isSmall_iff_eq_ofHoms :
   · rintro ⟨_, _, _, _, rfl⟩
     infer_instance
 
-instance isSmall_iSup {α : Type*} (W : α → MorphismProperty C)
-    [Small.{w} α] [∀ a, IsSmall.{w} (W a)] :
-    IsSmall.{w} (iSup W) where
+instance isSmall_iSup
+    {α : Type*} (W : α → MorphismProperty C) [Small.{w} α] [∀ a, IsSmall.{w} (W a)]
+    : IsSmall.{w} (iSup W) where
   small_toSet := by
     rw [toSet_iSup]
-    refine small_of_surjective (f := fun (⟨i, f⟩ : Σ i, (W i).toSet) ↦
-      ⟨f, by rw [Set.mem_iUnion]; exact ⟨i, f.prop⟩⟩) ?_
+    refine small_of_surjective
+      (f := fun (⟨i, f⟩ : Σ i, (W i).toSet) ↦ ⟨f, by rw [Set.mem_iUnion]; exact ⟨i, f.prop⟩⟩)
+      ?_
     rintro ⟨f, hf⟩
     simp only [Set.mem_iUnion] at hf
     obtain ⟨i, hf⟩ := hf
     exact ⟨⟨i, ⟨_, hf⟩⟩, rfl⟩
 
-instance {α : Type t} [Small.{w} α] (W : α → MorphismProperty C) [∀ i, IsSmall.{w} (W i)] :
-    IsSmall.{w} (⨆ i, W i) := by
+instance {α : Type t} [Small.{w} α] (W : α → MorphismProperty C) [∀ i, IsSmall.{w} (W i)]
+    : IsSmall.{w} (⨆ i, W i) := by
   choose α A B f hf using fun i ↦ (isSmall_iff_eq_ofHoms.{w} (W i)).1 inferInstance
   simp only [hf, iSup_ofHoms]
   infer_instance

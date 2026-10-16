@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Subsemigroup.Basic
 public import Mathlib.Data.Finset.Defs
-
 import Mathlib.Algebra.Group.Subsemigroup.Membership
 import Mathlib.Order.CompleteLattice.Finset
 
@@ -24,8 +23,8 @@ variable {M : Type*} [Mul M]
 namespace Subsemigroup
 
 @[to_additive]
-theorem coe_iSup_eq_iUnion_finset_coe_biSup {ι : Type*} (S : ι → Subsemigroup M) :
-    ((⨆ i, S i : Subsemigroup M) : Set M) = ⋃ s : Finset ι, (⨆ i ∈ s, S i : Subsemigroup M) := by
+theorem coe_iSup_eq_iUnion_finset_coe_biSup {ι : Type*} (S : ι → Subsemigroup M)
+    : ((⨆ i, S i : Subsemigroup M) : Set M) = ⋃ s : Finset ι, (⨆ i ∈ s, S i : Subsemigroup M) := by
   rw [iSup_eq_iSup_finset, coe_iSup_of_directed <| Monotone.directed_le fun _ _ ↦ biSup_mono]
 
 end Subsemigroup

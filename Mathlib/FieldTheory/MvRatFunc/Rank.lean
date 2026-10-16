@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.MvPolynomial.Cardinal
 public import Mathlib.RingTheory.Localization.Cardinality
 public import Mathlib.RingTheory.MvPolynomial
-
 import Mathlib.RingTheory.Algebraic.LinearIndependent
 import Mathlib.RingTheory.Algebraic.MvPolynomial
 
@@ -21,9 +20,8 @@ public section
 universe u v
 
 open Cardinal in
-theorem MvRatFunc.rank_eq_max_lift
-    {σ : Type u} {F : Type v} [Field F] [Nonempty σ] :
-    Module.rank F (FractionRing (MvPolynomial σ F)) = lift.{u} #F ⊔ lift.{v} #σ ⊔ ℵ₀ := by
+theorem MvRatFunc.rank_eq_max_lift {σ : Type u} {F : Type v} [Field F] [Nonempty σ]
+    : Module.rank F (FractionRing (MvPolynomial σ F)) = lift.{u} #F ⊔ lift.{v} #σ ⊔ ℵ₀ := by
   let R := MvPolynomial σ F
   let K := FractionRing R
   refine ((rank_le_card _ _).trans ?_).antisymm ?_

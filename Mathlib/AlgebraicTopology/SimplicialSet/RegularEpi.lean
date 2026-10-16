@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.AlgebraicTopology.SimplicialSet.Basic
-
 import Mathlib.CategoryTheory.Functor.RegularEpi
 
 /-!
@@ -22,7 +21,6 @@ open CategoryTheory
 
 namespace SSet
 
-instance : IsRegularEpiCategory SSet.{u} :=
-  inferInstanceAs (IsRegularEpiCategory (_ ⥤ _))
+instance : IsRegularEpiCategory SSet.{u} := inferInstanceAs (IsRegularEpiCategory (_ ⥤ _))
 
 end SSet

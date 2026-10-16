@@ -7,8 +7,10 @@ open Lean
 
 local notation3 "MyList[" (x", "* => foldr (a b => List.cons a b) List.nil) "]" => x
 
-/- Check that we have indeed created declarations, and aren't not linting just due to being an
-empty file: -/
+/-
+Check that we have indeed created declarations, and aren't not linting just due to being an
+empty file:
+-/
 /--
 info: [_private.MathlibTest.Linter.PrivateModule.Notation3.0.«termMyList[_,]»,
  _private.MathlibTest.Linter.PrivateModule.Notation3.0.«_aux_MathlibTest_Linter_PrivateModule_Notation3___macroRules__private_MathlibTest_Linter_PrivateModule_Notation3_0_termMyList[_,]_1»,
@@ -16,8 +18,7 @@ info: [_private.MathlibTest.Linter.PrivateModule.Notation3.0.«termMyList[_,]»,
  _private.MathlibTest.Linter.PrivateModule.Notation3.0.«_aux_MathlibTest_Linter_PrivateModule_Notation3___delab_app__private_MathlibTest_Linter_PrivateModule_Notation3_0_termMyList[_,]_1»]
 -/
 #guard_msgs in
-run_cmd do
-  logInfo m!"{(← getEnv).constants.map₂.toArray.map (·.1)}"
+run_cmd do logInfo m!"{(← getEnv).constants.map₂.toArray.map (·.1)}"
 
 -- The linter should fire since the `notation3` is local
 set_option linter.mathlibStandardSet true in

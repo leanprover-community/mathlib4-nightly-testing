@@ -68,9 +68,10 @@ end Preorder
 
 /-- Order isomorphism between `Iic (⊤ : α)` and `α` when `α` has a top element -/
 @[to_dual
-/-- Order isomorphism between `Ici (⊥ : α)` and `α` when `α` has a bottom element -/]
-def IicTop {α : Type*} [Preorder α] [OrderTop α] : Iic (⊤ : α) ≃o α :=
-  { @Equiv.subtypeUnivEquiv α (· ∈ Iic (⊤ : α)) fun _ => le_top with
-    map_rel_iff' := @fun x y => by rfl }
+  /-- Order isomorphism between `Ici (⊥ : α)` and `α` when `α` has a bottom element -/]
+def IicTop {α : Type*} [Preorder α] [OrderTop α] : Iic (⊤ : α) ≃o α := {
+  @Equiv.subtypeUnivEquiv α (· ∈ Iic (⊤ : α)) fun _ => le_top with
+  map_rel_iff' := @fun x y => by rfl
+}
 
 end OrderIso

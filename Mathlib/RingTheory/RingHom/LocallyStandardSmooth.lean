@@ -24,8 +24,9 @@ namespace RingHom
 variable {R S : Type u} [CommRing R] [CommRing S] {f : R →+* S}
 
 /-- Any standard smooth ring homomorphism is smooth. -/
-lemma IsStandardSmooth.smooth {R S : Type*} [CommRing R] [CommRing S] {f : R →+* S}
-    (hf : IsStandardSmooth f) : Smooth f := by
+lemma IsStandardSmooth.smooth
+    {R S : Type*} [CommRing R] [CommRing S] {f : R →+* S} (hf : IsStandardSmooth f)
+    : Smooth f := by
   algebraize [f]
   rw [RingHom.Smooth]
   infer_instance
@@ -47,8 +48,8 @@ theorem smooth_iff_locally_isStandardSmooth : Smooth f ↔ Locally IsStandardSmo
   exact locally_of_locally (fun hf ↦ hf.smooth) hf
 
 /-- A ring homomorphism is étale if and only if it is standard smooth of relative dimension `0`. -/
-lemma etale_iff_isStandardSmoothOfRelativeDimension_zero :
-    Etale f ↔ IsStandardSmoothOfRelativeDimension 0 f := by
+lemma etale_iff_isStandardSmoothOfRelativeDimension_zero
+    : Etale f ↔ IsStandardSmoothOfRelativeDimension 0 f := by
   algebraize [f]
   exact Algebra.Etale.iff_isStandardSmoothOfRelativeDimension_zero
 

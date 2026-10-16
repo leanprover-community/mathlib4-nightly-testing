@@ -38,16 +38,10 @@ instance : StrongNormalizedGCDMonoid PUnit where
 
 instance normalizedGCDMonoid : NormalizedGCDMonoid PUnit := inferInstance
 
-@[simp]
-theorem gcd_eq {x y : PUnit} : gcd x y = unit :=
-  rfl
+@[simp] theorem gcd_eq {x y : PUnit} : gcd x y = unit := rfl
 
-@[simp]
-theorem lcm_eq {x y : PUnit} : lcm x y = unit :=
-  rfl
+@[simp] theorem lcm_eq {x y : PUnit} : lcm x y = unit := rfl
 
-@[simp]
-theorem norm_unit_eq {x : PUnit} : normUnit x = 1 :=
-  rfl
+@[simp] theorem norm_unit_eq {x : PUnit} : normUnit x = 1 := rfl
 
 end PUnit

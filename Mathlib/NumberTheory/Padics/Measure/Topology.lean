@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.Padics.Measure.Basic
 public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
-
 import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Data.EReal.Inv
 import Mathlib.Tactic.ContinuousFunctionalCalculus
@@ -31,14 +30,16 @@ section Topology
 
 section Weak
 
-variable [NormedAddCommGroup E] [CommRing R] [Module R E] [TopologicalSpace R]
-  [IsTopologicalRing R] [ContinuousSMul R E]
+variable
+  [NormedAddCommGroup E] [CommRing R] [Module R E] [TopologicalSpace R] [IsTopologicalRing R]
+  [ContinuousSMul R E]
 
 /--
 The weak topology on `AbstractMeasure G R E` (the weakest topology such that `μ ↦ μ f` is
 continuous for all `f`).
 -/
-@[reducible] def WeakTopology : TopologicalSpace (AbstractMeasure X R E) :=
+@[reducible]
+def WeakTopology : TopologicalSpace (AbstractMeasure X R E) :=
   .induced (fun μ f ↦ μ f) inferInstance
 
 end Weak
@@ -46,7 +47,8 @@ end Weak
 variable [CompactSpace X] [NontriviallyNormedField R] [NormedAddCommGroup E] [NormedSpace R E]
 
 /-- The strong topology on `AbstractMeasure G R E` (the topology induced by the norm). -/
-@[reducible] def StrongTopology : TopologicalSpace (AbstractMeasure X R E) :=
+@[reducible]
+def StrongTopology : TopologicalSpace (AbstractMeasure X R E) :=
   inferInstanceAs (TopologicalSpace (C(X, R) →L[R] E))
 
 end Topology

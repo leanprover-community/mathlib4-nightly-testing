@@ -135,23 +135,32 @@ section subject
 -- Starting with an acronym is fine, however.
 #guard_msgs in
 #check_title "feat: RPC acronyms are fine"
-#guard_msgs in #check_title "feat: `ℕ` is countable"
+#guard_msgs in
+#check_title "feat: `ℕ` is countable"
 -- We also allow a `s`, `'s` or `'ed` suffix, as manual heuristic.
-#guard_msgs in #check_title "feat: RPCs are yellow"
-#guard_msgs in #check_title "chore: LLMs require adjusting our policies"
-#guard_msgs in #check_title "chore: PR'ed lemmas"
-#guard_msgs in #check_title "feat(CI): PR's to be deleted"
-#guard_msgs in #check_title "chore: FCP'ed decisions should be listed separately"
+#guard_msgs in
+#check_title "feat: RPCs are yellow"
+#guard_msgs in
+#check_title "chore: LLMs require adjusting our policies"
+#guard_msgs in
+#check_title "chore: PR'ed lemmas"
+#guard_msgs in
+#check_title "feat(CI): PR's to be deleted"
+#guard_msgs in
+#check_title "chore: FCP'ed decisions should be listed separately"
 -- We only remove at most one suffix.
 /-- info: Message: 'error: the PR subject `PR'ed's lemmas` should be lowercased' -/
-#guard_msgs in #check_title "chore: PR'ed's lemmas"
+#guard_msgs in
+#check_title "chore: PR'ed's lemmas"
 /-- info: Message: 'error: the PR subject `PRs's something` should be lowercased' -/
-#guard_msgs in #check_title "chore: PRs's something"
+#guard_msgs in
+#check_title "chore: PRs's something"
 -- This is not quite an abbreviation (and a grammar error).
 /--
 info: Message: 'error: the PR subject `FCPed decisions should be listed separately` should be lowercased'
 -/
-#guard_msgs in #check_title "chore: FCPed decisions should be listed separately"
+#guard_msgs in
+#check_title "chore: FCPed decisions should be listed separately"
 
 -- This PR title is arguably not very bad (Lindelöf is a proper name),
 -- a better fix is to start with a verb (which you should do anyway.)

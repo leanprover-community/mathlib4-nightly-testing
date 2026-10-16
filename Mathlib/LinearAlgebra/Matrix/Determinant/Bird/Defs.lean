@@ -46,8 +46,7 @@ stored in `A` in row-major order.
 
 The function does not check the matrix index bounds.
 -/
-protected def get (n : ℕ) (A : Array R) (i j : ℕ) : R :=
-  A.getD (n * i + j) 0
+protected def get (n : ℕ) (A : Array R) (i j : ℕ) : R := A.getD (n * i + j) 0
 
 /-- Sum `f lo + ... + f (n - 1)`. Returns zero when `n <= lo`. -/
 protected def sumFrom (n lo : ℕ) (f : ℕ → R) : R :=
@@ -85,8 +84,8 @@ F_{t+1} i j =
 ```
 -/
 def stepEntry (n : ℕ) (A : Array R) (F : ℕ → ℕ → R) (i j : ℕ) : R :=
-  -(BirdDet.sumFrom n (i + 1) fun k => F k k) * BirdDet.get n A i j +
-    BirdDet.sumFrom n (i + 1) fun k => F i k * BirdDet.get n A k j
+  -(BirdDet.sumFrom n (i + 1) fun k => F k k) * BirdDet.get n A i j
+    + BirdDet.sumFrom n (i + 1) fun k => F i k * BirdDet.get n A k j
 
 /--
 `birdDet n A` computes the determinant of the `n × n` matrix whose entries are
@@ -100,45 +99,43 @@ def birdDet (n : ℕ) (A : Array R) : R :=
 /- Unfolding lemmas -/
 
 /-- Unfold a row-major matrix entry lookup. -/
-theorem get_eq (n : ℕ) (A : Array R) (i j : ℕ) :
-    BirdDet.get n A i j = A.getD (n * i + j) 0 := by
+theorem get_eq (n : ℕ) (A : Array R) (i j : ℕ) : BirdDet.get n A i j = A.getD (n * i + j) 0 := by
   rfl
 
-theorem sumFrom_step (n lo : ℕ) (f : ℕ → R) (h : lo < n) :
-    BirdDet.sumFrom n lo f = f lo + BirdDet.sumFrom n (lo + 1) f := by
+theorem sumFrom_step (n lo : ℕ) (f : ℕ → R) (h : lo < n)
+    : BirdDet.sumFrom n lo f = f lo + BirdDet.sumFrom n (lo + 1) f := by
   rw [BirdDet.sumFrom]
   simp [h]
 
-theorem sumFrom_stop (n lo : ℕ) (f : ℕ → R) (h : ¬ lo < n) :
-    BirdDet.sumFrom n lo f = 0 := by
+theorem sumFrom_stop (n lo : ℕ) (f : ℕ → R) (h : ¬ lo < n) : BirdDet.sumFrom n lo f = 0 := by
   rw [BirdDet.sumFrom]
   simp [h]
 
 /-- Induction following the recursive structure of `sumFrom`. -/
 @[elab_as_elim]
-theorem sumFrom_induct (n : ℕ) (motive : ℕ → Prop)
-    (step : ∀ lo, lo < n → motive (lo + 1) → motive lo)
-    (stop : ∀ lo, ¬lo < n → motive lo) (lo : ℕ) : motive lo :=
+theorem sumFrom_induct
+    (n : ℕ) (motive : ℕ → Prop)
+    (step : ∀ lo, lo < n → motive (lo + 1) → motive lo) (stop : ∀ lo, ¬ lo < n → motive lo)
+    (lo : ℕ)
+    : motive lo :=
   BirdDet.sumFrom.induct n motive step stop lo
 
 /-- Unfold one scalar Bird recurrence step to the entry-wise formula. -/
-theorem stepEntry_eq (n : ℕ) (A : Array R) (F : ℕ → ℕ → R) (i j : ℕ) :
-    stepEntry n A F i j =
-      -(BirdDet.sumFrom n (i + 1) fun k => F k k) * BirdDet.get n A i j
+theorem stepEntry_eq (n : ℕ) (A : Array R) (F : ℕ → ℕ → R) (i j : ℕ)
+    : stepEntry n A F i j
+      = -(BirdDet.sumFrom n (i + 1) fun k => F k k) * BirdDet.get n A i j
         + BirdDet.sumFrom n (i + 1) fun k => F i k * BirdDet.get n A k j := by
   rfl
 
-theorem birdDet_zero (A : Array R) : birdDet 0 A = 1 := by
-  rfl
+theorem birdDet_zero (A : Array R) : birdDet 0 A = 1 := by rfl
 
 /-- Unfold `birdDet` at a successor dimension. -/
-theorem birdDet_succ (k : ℕ) (A : Array R) :
-    birdDet (k + 1) A =
-      (-1 : R) ^ k * (stepEntry (k + 1) A)^[k] (BirdDet.get (k + 1) A) 0 0 := by
+theorem birdDet_succ (k : ℕ) (A : Array R)
+    : birdDet (k + 1) A = (-1 : R) ^ k * (stepEntry (k + 1) A)^[k] (BirdDet.get (k + 1) A) 0 0 := by
   rw [birdDet]
 
-theorem birdDet_eq (n k : ℕ) (A : Array R) (hn : n = k + 1) :
-    birdDet n A = (-1 : R) ^ k * (stepEntry n A)^[k] (BirdDet.get n A) 0 0 := by
+theorem birdDet_eq (n k : ℕ) (A : Array R) (hn : n = k + 1)
+    : birdDet n A = (-1 : R) ^ k * (stepEntry n A)^[k] (BirdDet.get n A) 0 0 := by
   subst hn
   exact birdDet_succ k A
 
@@ -148,8 +145,7 @@ open scoped BigOperators
 
 /-- One entry of one Matrix/Fin Bird recurrence step. -/
 def stepEntry {n : ℕ} (A F : Matrix (Fin n) (Fin n) R) : Matrix (Fin n) (Fin n) R :=
-  .of fun i j ↦ (-∑ k ∈ Finset.Ioi i, F k k) * A i j +
-    ∑ k ∈ Finset.Ioi i, F i k * A k j
+  .of fun i j ↦ (- ∑ k ∈ Finset.Ioi i, F k k) * A i j + ∑ k ∈ Finset.Ioi i, F i k * A k j
 
 /-- A version of the Bird determinant algorithm that is stated in terms of `Matrix`. -/
 def birdDet {n : ℕ} (A : Matrix (Fin n) (Fin n) R) : R :=
@@ -157,18 +153,16 @@ def birdDet {n : ℕ} (A : Matrix (Fin n) (Fin n) R) : R :=
   | 0 => 1
   | k + 1 => (-1 : R) ^ k * (stepEntry A)^[k] A 0 0
 
-theorem stepEntry_eq {n : ℕ} (A F : Matrix (Fin n) (Fin n) R) :
-    stepEntry A F =
-      .of fun i j ↦ (-∑ k ∈ Finset.Ioi i, F k k) * A i j
-        + ∑ k ∈ Finset.Ioi i, F i k * A k j := by
+theorem stepEntry_eq {n : ℕ} (A F : Matrix (Fin n) (Fin n) R)
+    : stepEntry A F
+      = .of fun i j ↦
+        (- ∑ k ∈ Finset.Ioi i, F k k) * A i j + ∑ k ∈ Finset.Ioi i, F i k * A k j := by
   rfl
 
-@[simp] theorem birdDetSpec_zero (A : Matrix (Fin 0) (Fin 0) R) :
-    birdDet A = 1 := by
-  rfl
+@[simp] theorem birdDetSpec_zero (A : Matrix (Fin 0) (Fin 0) R) : birdDet A = 1 := by rfl
 
-theorem birdDetSpec_succ {k : ℕ} (A : Matrix (Fin (k + 1)) (Fin (k + 1)) R) :
-    birdDet A = (-1 : R) ^ k * (stepEntry A)^[k] A 0 0 := by
+theorem birdDetSpec_succ {k : ℕ} (A : Matrix (Fin (k + 1)) (Fin (k + 1)) R)
+    : birdDet A = (-1 : R) ^ k * (stepEntry A)^[k] A 0 0 := by
   rw [birdDet]
 
 end Spec

@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.Presentable.LocallyPresentable
-
 import Mathlib.CategoryTheory.Monad.Limits
 
 /-!
@@ -39,9 +38,9 @@ variable {F : C ⥤ D} {G : D ⥤ C} (adj : F ⊣ G) (κ : Cardinal.{w}) [Fact �
 
 include adj
 
-lemma isCardinalPresentable_leftAdjoint_obj (X : C) [IsCardinalPresentable X κ]
-    [G.IsCardinalAccessible κ] :
-    IsCardinalPresentable (F.obj X) κ := by
+lemma isCardinalPresentable_leftAdjoint_obj
+    (X : C) [IsCardinalPresentable X κ] [G.IsCardinalAccessible κ]
+    : IsCardinalPresentable (F.obj X) κ := by
   rw [isCardinalPresentable_iff_isCardinalAccessible_uliftCoyoneda_obj.{v}]
   exact Functor.isCardinalAccessible_of_natIso
     (show G ⋙ _ ≅ _ from (Adjunction.compUliftCoyonedaIso.{0} adj).symm.app (op X)) κ
@@ -49,8 +48,8 @@ lemma isCardinalPresentable_leftAdjoint_obj (X : C) [IsCardinalPresentable X κ]
 variable {κ} in
 lemma isCardinalFilteredGenerator
     {P : ObjectProperty C} (hP : P.IsCardinalFilteredGenerator κ)
-    [G.IsCardinalAccessible κ] [G.Full] [G.Faithful] :
-    (P.map F).IsCardinalFilteredGenerator κ where
+    [G.IsCardinalAccessible κ] [G.Full] [G.Faithful]
+    : (P.map F).IsCardinalFilteredGenerator κ where
   le_isCardinalPresentable := by
     rintro Y ⟨X, hX, ⟨e⟩⟩
     have hX' := hP.le_isCardinalPresentable X hX
@@ -60,32 +59,37 @@ lemma isCardinalFilteredGenerator
   exists_colimitsOfShape Y := by
     have := adj.isLeftAdjoint
     obtain ⟨J, _, _, ⟨hY⟩⟩ := hP.exists_colimitsOfShape (G.obj Y)
-    exact ⟨J, inferInstance, inferInstance,
+    exact ⟨
+      J,
+      inferInstance,
+      inferInstance,
       ObjectProperty.prop_of_isIso _ (adj.counit.app Y) ⟨{
         diag := _
         ι := _
         isColimit := isColimitOfPreserves F hY.isColimit
-        prop_diag_obj j := P.prop_map_obj _ (hY.prop_diag_obj j) }⟩⟩
+        prop_diag_obj j := P.prop_map_obj _ (hY.prop_diag_obj j)
+      }⟩
+    ⟩
 
-lemma hasCardinalFilteredGenerator [HasCardinalFilteredGenerator C κ]
-    [G.IsCardinalAccessible κ] [G.Full] [G.Faithful] :
-    HasCardinalFilteredGenerator D κ where
+lemma hasCardinalFilteredGenerator
+    [HasCardinalFilteredGenerator C κ] [G.IsCardinalAccessible κ] [G.Full] [G.Faithful]
+    : HasCardinalFilteredGenerator D κ where
   toLocallySmall := locallySmall_of_faithful G
   exists_generator := by
     obtain ⟨P, _, hP⟩ := HasCardinalFilteredGenerator.exists_generator C κ
     exact ⟨P.map F, inferInstance, adj.isCardinalFilteredGenerator hP⟩
 
-lemma isCardinalLocallyPresentable [IsCardinalLocallyPresentable C κ]
-    [G.IsCardinalAccessible κ] [G.Full] [G.Faithful] :
-    IsCardinalLocallyPresentable D κ where
+lemma isCardinalLocallyPresentable
+    [IsCardinalLocallyPresentable C κ] [G.IsCardinalAccessible κ] [G.Full] [G.Faithful]
+    : IsCardinalLocallyPresentable D κ where
   toHasColimitsOfSize :=
     letI : Reflective G := ⟨_, adj⟩
     hasColimits_of_reflective G
   toHasCardinalFilteredGenerator := adj.hasCardinalFilteredGenerator κ
 
-lemma isCardinalAccessibleCategory [IsCardinalAccessibleCategory C κ]
-    [G.IsCardinalAccessible κ] [G.Full] [G.Faithful] :
-    IsCardinalAccessibleCategory D κ where
+lemma isCardinalAccessibleCategory
+    [IsCardinalAccessibleCategory C κ] [G.IsCardinalAccessible κ] [G.Full] [G.Faithful]
+    : IsCardinalAccessibleCategory D κ where
   toHasCardinalFilteredColimits := ⟨fun J _ _ ↦
     let : Reflective G := ⟨_, adj⟩
     have := HasCardinalFilteredColimits.hasColimitsOfShape C κ J
@@ -104,27 +108,25 @@ section
 
 variable (κ : Cardinal.{w}) [Fact κ.IsRegular]
 
-lemma hasCardinalFilteredGenerator [HasCardinalFilteredGenerator C κ] :
-    HasCardinalFilteredGenerator D κ :=
+lemma hasCardinalFilteredGenerator [HasCardinalFilteredGenerator C κ]
+    : HasCardinalFilteredGenerator D κ :=
   e.toAdjunction.hasCardinalFilteredGenerator κ
 
-lemma isCardinalLocallyPresentable [IsCardinalLocallyPresentable C κ] :
-    IsCardinalLocallyPresentable D κ :=
+lemma isCardinalLocallyPresentable [IsCardinalLocallyPresentable C κ]
+    : IsCardinalLocallyPresentable D κ :=
   e.toAdjunction.isCardinalLocallyPresentable κ
 
-lemma isCardinalAccessibleCategory [IsCardinalAccessibleCategory C κ] :
-    IsCardinalAccessibleCategory D κ :=
+lemma isCardinalAccessibleCategory [IsCardinalAccessibleCategory C κ]
+    : IsCardinalAccessibleCategory D κ :=
   e.toAdjunction.isCardinalAccessibleCategory κ
 
 end
 
-lemma isLocallyPresentable [IsLocallyPresentable.{w} C] :
-    IsLocallyPresentable.{w} D := by
+lemma isLocallyPresentable [IsLocallyPresentable.{w} C] : IsLocallyPresentable.{w} D := by
   obtain ⟨κ, _, _⟩ := IsLocallyPresentable.exists_cardinal.{w} C
   exact ⟨κ, inferInstance, e.isCardinalLocallyPresentable κ⟩
 
-lemma isAccessibleCategory [IsAccessibleCategory.{w} C] :
-    IsAccessibleCategory.{w} D := by
+lemma isAccessibleCategory [IsAccessibleCategory.{w} C] : IsAccessibleCategory.{w} D := by
   obtain ⟨κ, _, _⟩ := IsAccessibleCategory.exists_cardinal.{w} C
   exact ⟨κ, inferInstance, e.isCardinalAccessibleCategory κ⟩
 

@@ -37,9 +37,10 @@ receive uploads independently, a marker does not establish that its
 destination holds the commit's full transitive closure. The infrastructure
 documentation governs when markers may be trusted for completeness.
 -/
-def uploadMarker (location : Location)
-    (transfer : Location.Marker → FilePath → IO Unit) : IO Unit := do
-  let some marker := location.marker? | return
+def uploadMarker (location : Location) (transfer : Location.Marker → FilePath → IO Unit)
+    : IO Unit := do
+  let some marker := location.marker?
+    | return
   let dir ← IO.FS.createTempDir
   try
     let file := dir / marker.sha
@@ -64,18 +65,21 @@ Cheaper than blob-listing: deterministic URL, headers-only response,
 billed as a Read op.
 -/
 def checkMarker (location : Location) : IO Bool := do
-  let some marker := location.marker? | return false
+  let some marker := location.marker?
+    | return false
   -- Discard the response body to the platform null device (`NUL` on Windows),
   -- so curl reports a write error only on a genuine failure, not on every probe.
-  let out ← IO.Process.output
-    {cmd := (← IO.getCurl),
-     args := #["-s", "-o", IO.nullDevice, "-w", "%{http_code}", "-I"] ++
-       -- No retry flags: the probe is diagnostic and a false negative is
-       -- cheap. The time bounds keep an unreachable endpoint from stalling
-       -- the up-to-50-probe `cache query` walk.
-       curlFollowRedirectArgs ++
-       #["--connect-timeout", "10", "--max-time", "30", marker.url],
-     cwd := "."}
+  let out ←
+    IO.Process.output {
+      cmd := (← IO.getCurl)
+      args :=
+        #["-s", "-o", IO.nullDevice, "-w", "%{http_code}", "-I"]
+          -- No retry flags: the probe is diagnostic and a false negative is
+          -- cheap. The time bounds keep an unreachable endpoint from stalling
+          -- the up-to-50-probe `cache query` walk.
+          ++ curlFollowRedirectArgs ++ #["--connect-timeout", "10", "--max-time", "30", marker.url]
+      cwd := "."
+    }
   if out.exitCode != 0 then
     -- Network error; assume no cache at this SHA
     pure false

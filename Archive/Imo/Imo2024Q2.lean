@@ -30,16 +30,15 @@ open scoped Nat
 def Condition (a b : ℕ) : Prop :=
   0 < a ∧ 0 < b ∧ ∃ g N : ℕ, 0 < g ∧ 0 < N ∧ ∀ n : ℕ, N ≤ n → Nat.gcd (a ^ n + b) (b ^ n + a) = g
 
-lemma dvd_pow_iff_of_dvd_sub {a b d n : ℕ} {z : ℤ} (ha : a.Coprime d)
-    (hd : (φ d : ℤ) ∣ (n : ℤ) - z) :
-    d ∣ a ^ n + b ↔ (((ZMod.unitOfCoprime _ ha) ^ z : (ZMod d)ˣ) : ZMod d) + b = 0 := by
+lemma dvd_pow_iff_of_dvd_sub {a b d n : ℕ} {z : ℤ} (ha : a.Coprime d) (hd : (φ d : ℤ) ∣ (n : ℤ) - z)
+    : d ∣ a ^ n + b ↔ (((ZMod.unitOfCoprime _ ha) ^ z : (ZMod d)ˣ) : ZMod d) + b = 0 := by
   rcases hd with ⟨k, hk⟩
   rw [← ZMod.natCast_eq_zero_iff]
   convert! Iff.rfl
   push_cast
   congr
-  suffices (((ZMod.unitOfCoprime _ ha) ^ z : (ZMod d)ˣ) : ZMod d) =
-      (((ZMod.unitOfCoprime _ ha) ^ (n : ℤ) : (ZMod d)ˣ) : ZMod d) by
+  suffices (((ZMod.unitOfCoprime _ ha) ^ z : (ZMod d)ˣ) : ZMod d)
+      = (((ZMod.unitOfCoprime _ ha) ^ (n : ℤ) : (ZMod d)ˣ) : ZMod d) by
     convert! this
   rw [sub_eq_iff_eq_add] at hk
   rw [hk, zpow_add, zpow_mul]
@@ -80,15 +79,15 @@ protected lemma symm : Condition b a := by
   rw [Nat.gcd_comm]
   exact h.gcd_eq_g hn
 
-lemma dvd_g_of_le_N_of_dvd {n : ℕ} (hn : h.N ≤ n) {d : ℕ} (hab : d ∣ a ^ n + b)
-    (hba : d ∣ b ^ n + a) : d ∣ h.g := by
+lemma dvd_g_of_le_N_of_dvd
+    {n : ℕ} (hn : h.N ≤ n) {d : ℕ} (hab : d ∣ a ^ n + b) (hba : d ∣ b ^ n + a)
+    : d ∣ h.g := by
   rw [← h.gcd_eq_g hn, Nat.dvd_gcd_iff]
   exact ⟨hab, hba⟩
 
 end
 
-lemma a_coprime_ab_add_one : a.Coprime (a * b + 1) := by
-  simp
+lemma a_coprime_ab_add_one : a.Coprime (a * b + 1) := by simp
 
 /-- A sufficiently large value of n, congruent to `-1` mod `φ (a * b + 1)`. -/
 noncomputable def large_n : ℕ := (max h.N h.symm.N + 1) * φ (a * b + 1) - 1
@@ -134,10 +133,12 @@ lemma dvd_large_n_0_sub_zero : (φ (a * b + 1) : ℤ) ∣ (h.large_n_0 : ℤ) - 
 
 lemma ab_add_one_dvd_a_pow_large_n_add_b : a * b + 1 ∣ a ^ h.large_n + b := by
   rw [dvd_pow_iff_of_dvd_sub a_coprime_ab_add_one h.dvd_large_n_sub_neg_one, zpow_neg, zpow_one]
-  suffices ((ZMod.unitOfCoprime _ a_coprime_ab_add_one : (ZMod (a * b + 1))ˣ) : ZMod (a * b + 1)) *
-    ((((ZMod.unitOfCoprime _ a_coprime_ab_add_one)⁻¹ : (ZMod (a * b + 1))ˣ) :
-      ZMod (a * b + 1)) + (b : ZMod (a * b + 1))) = 0 from
-      (IsUnit.mul_right_eq_zero (ZMod.unitOfCoprime _ a_coprime_ab_add_one).isUnit).1 this
+  suffices ((ZMod.unitOfCoprime _ a_coprime_ab_add_one : (ZMod (a * b + 1))ˣ) : ZMod (a * b + 1))
+        * ((((ZMod.unitOfCoprime _ a_coprime_ab_add_one)⁻¹ : (ZMod (a * b + 1))ˣ)
+            : ZMod (a * b + 1))
+          + (b : ZMod (a * b + 1)))
+      = 0 from
+    (IsUnit.mul_right_eq_zero (ZMod.unitOfCoprime _ a_coprime_ab_add_one).isUnit).1 this
   rw [mul_add]
   norm_cast
   simp only [mul_inv_cancel, Units.val_one, ZMod.coe_unitOfCoprime]
@@ -176,8 +177,7 @@ lemma a_eq_one : a = 1 := by
   suffices a ≤ 1 by
     have hp := h.a_pos
     lia
-  have hle' : a * b ≤ 1 * b := by
-    simpa using hle
+  have hle' : a * b ≤ 1 * b := by simpa using hle
   exact Nat.le_of_mul_le_mul_right hle' h.b_pos
 
 lemma b_eq_one : b = 1 := h.symm.a_eq_one

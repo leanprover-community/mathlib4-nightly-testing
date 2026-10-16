@@ -77,11 +77,10 @@ theorem le_sum_log (hx : 1 ≤ x) : x * log x - x - log x + 1 ≤ ∑ n ∈ Ioc 
       apply integral_mono_on (floor_le (by linarith)) (by simp) (by simp)
       grind [log_le_log_iff]
     _ = ∫ t in 1..⌊x⌋₊, log t := by
-      rw [integral_symm _ ⌊x⌋₊, sub_neg_eq_add, integral_add_adjacent_intervals] <;>
-      simp
+      rw [integral_symm _ ⌊x⌋₊, sub_neg_eq_add, integral_add_adjacent_intervals] <;> simp
     _ ≤ _ := by
-      rw [← Icc_add_one_left_eq_Ioc, zero_add, ← add_sum_Ioc_eq_sum_Icc this, cast_one,
-        log_one, ← Ico_add_one_add_one_eq_Ioc, zero_add, ← sum_Ico_add']
+      rw [← Icc_add_one_left_eq_Ioc, zero_add, ← add_sum_Ioc_eq_sum_Icc this, cast_one, log_one,
+        ← Ico_add_one_add_one_eq_Ioc, zero_add, ← sum_Ico_add']
       exact_mod_cast ((strictMonoOn_log.mono (by grind)).monotoneOn.integral_le_sum_Ico this)
 
 /-- An even cruder lower bound on the partial sum of the logarithm. -/

@@ -14,23 +14,27 @@ public import Mathlib.RingTheory.Nilpotent.Lemmas
 
 public section
 
-theorem Ideal.isRadical_iff_quotient_reduced {R : Type*} [CommRing R] (I : Ideal R) :
-    I.IsRadical ↔ IsReduced (R ⧸ I) := by
+theorem Ideal.isRadical_iff_quotient_reduced {R : Type*} [CommRing R] (I : Ideal R)
+    : I.IsRadical ↔ IsReduced (R ⧸ I) := by
   conv_lhs => rw [← @Ideal.mk_ker R _ I]
   exact RingHom.ker_isRadical_iff_reduced_of_surjective Quotient.mk_surjective
 
 variable {S : Type*} [CommRing S] (I : Ideal S)
 
-/-- Let `P` be a property on ideals. If `P` holds for square-zero ideals, and if
-  `P I → P (J ⧸ I) → P J`, then `P` holds for all nilpotent ideals. -/
-theorem Ideal.IsNilpotent.induction_on (hI : IsNilpotent I)
+/--
+Let `P` be a property on ideals. If `P` holds for square-zero ideals, and if
+`P I → P (J ⧸ I) → P J`, then `P` holds for all nilpotent ideals.
+-/
+theorem Ideal.IsNilpotent.induction_on
+    (hI : IsNilpotent I)
     {P : ∀ ⦃S : Type _⦄ [CommRing S], Ideal S → Prop}
     (h₁ : ∀ ⦃S : Type _⦄ [CommRing S], ∀ I : Ideal S, I ^ 2 = ⊥ → P I)
-    (h₂ : ∀ ⦃S : Type _⦄ [CommRing S], ∀ I J : Ideal S, I ≤ J → P I →
-      P (J.map (Ideal.Quotient.mk I)) → P J) :
-    P I := by
+    (h₂ : ∀ ⦃S : Type _⦄ [CommRing S], ∀ I J : Ideal S,
+      I ≤ J → P I → P (J.map (Ideal.Quotient.mk I)) → P J)
+    : P I := by
   obtain ⟨n, hI : I ^ n = ⊥⟩ := hI
-  induction n using Nat.strong_induction_on generalizing S with | _ n H
+  induction n using Nat.strong_induction_on generalizing S with
+  | _ n H
   by_cases hI' : I = ⊥
   · subst hI'
     apply h₁
@@ -50,8 +54,9 @@ theorem Ideal.IsNilpotent.induction_on (hI : IsNilpotent I)
   · apply h₁
     rw [← Ideal.map_pow, Ideal.map_quotient_self]
 
-theorem IsNilpotent.isUnit_quotient_mk_iff {R : Type*} [CommRing R] {I : Ideal R}
-    (hI : IsNilpotent I) {x : R} : IsUnit (Ideal.Quotient.mk I x) ↔ IsUnit x := by
+theorem IsNilpotent.isUnit_quotient_mk_iff
+    {R : Type*} [CommRing R] {I : Ideal R} (hI : IsNilpotent I) {x : R}
+    : IsUnit (Ideal.Quotient.mk I x) ↔ IsUnit x := by
   refine ⟨?_, fun h => h.map <| Ideal.Quotient.mk I⟩
   revert x
   apply Ideal.IsNilpotent.induction_on (S := R) I hI <;> clear hI I
@@ -59,10 +64,8 @@ theorem IsNilpotent.isUnit_quotient_mk_iff {R : Type*} [CommRing R] {I : Ideal R
   · introv e h₁ h₂ h₃
     apply h₁
     apply h₂
-    exact
-      h₃.map
-        ((DoubleQuot.quotQuotEquivQuotSup I J).trans
-              (Ideal.quotEquivOfEq (sup_eq_right.mpr e))).symm.toRingHom
+    exact h₃.map ((DoubleQuot.quotQuotEquivQuotSup I J).trans
+      (Ideal.quotEquivOfEq (sup_eq_right.mpr e))).symm.toRingHom
   · introv e H
     obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (↑H.unit⁻¹ : S ⧸ I)
     have : Ideal.Quotient.mk I (x * y) = Ideal.Quotient.mk I 1 := by
@@ -76,22 +79,22 @@ theorem IsNilpotent.isUnit_quotient_mk_iff {R : Type*} [CommRing R] {I : Ideal R
       ring
     exact .of_mul_eq_one _ this
 
-theorem Ideal.Quotient.isUnit_mk_pow_iff_isUnit_mk {x : S} {n : ℕ} (hn : n ≠ 0) :
-    IsUnit (Ideal.Quotient.mk (I ^ n) x) ↔ IsUnit (Ideal.Quotient.mk I x) := by
+theorem Ideal.Quotient.isUnit_mk_pow_iff_isUnit_mk {x : S} {n : ℕ} (hn : n ≠ 0)
+    : IsUnit (Ideal.Quotient.mk (I ^ n) x) ↔ IsUnit (Ideal.Quotient.mk I x) := by
   rw [← IsNilpotent.isUnit_quotient_mk_iff (I := Ideal.map (Ideal.Quotient.mk (I ^ n)) I)]
   · rw [← isUnit_map_iff (DoubleQuot.quotQuotEquivQuotOfLE (Ideal.pow_le_self hn))]
     rfl
   · use n
     simp [← Ideal.map_pow]
 
-theorem Ideal.Quotient.isUnit_mk_pow_iff_notMem [I.IsMaximal] {n : ℕ} (hn : n ≠ 0) {x : S} :
-    IsUnit (mk (I ^ n) x) ↔ x ∉ I := by
+theorem Ideal.Quotient.isUnit_mk_pow_iff_notMem [I.IsMaximal] {n : ℕ} (hn : n ≠ 0) {x : S}
+    : IsUnit (mk (I ^ n) x) ↔ x ∉ I := by
   let := Ideal.Quotient.field I
   rw [isUnit_mk_pow_iff_isUnit_mk I hn, isUnit_iff_ne_zero]
   exact Ideal.Quotient.eq_zero_iff_mem.not
 
-theorem Ideal.Quotient.isUnit_mk_pow_of_notMem [I.IsMaximal] {n : ℕ} {x : S} (hx : x ∉ I) :
-    IsUnit (mk (I ^ n) x) := by
+theorem Ideal.Quotient.isUnit_mk_pow_of_notMem [I.IsMaximal] {n : ℕ} {x : S} (hx : x ∉ I)
+    : IsUnit (mk (I ^ n) x) := by
   by_cases! hn : n = 0
   · rw [pow_eq_top_iff.mpr (Or.inr hn)]
     exact isUnit_of_subsingleton _

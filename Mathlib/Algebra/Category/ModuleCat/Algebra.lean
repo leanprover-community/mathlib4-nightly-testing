@@ -32,7 +32,6 @@ requiring users to write `ModuleCat' ℤ A` when `A` is merely a ring.)
 
 @[expose] public section
 
-
 universe v u w
 
 open CategoryTheory
@@ -44,8 +43,7 @@ variable {A : Type w} [Ring A] [Algebra k A]
 
 /-- Type synonym for considering a module over a `k`-algebra as a `k`-module. -/
 @[instance_reducible]
-def moduleOfAlgebraModule (M : ModuleCat.{v} A) : Module k M :=
-  Module.restrictScalars k A M
+def moduleOfAlgebraModule (M : ModuleCat.{v} A) : Module k M := Module.restrictScalars k A M
 
 attribute [scoped instance] ModuleCat.moduleOfAlgebraModule
 

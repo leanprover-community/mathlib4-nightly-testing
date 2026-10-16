@@ -36,8 +36,7 @@ variable {C : Type u} [Category.{v} C] [CartesianMonoidalCategory.{v} C]
 namespace CartesianCopyDiscard
 
 /-- Provide `ComonObj` instances using the canonical cartesian comonoid structure. -/
-abbrev instComonObjOfCartesian (X : C) : ComonObj X :=
-  ((cartesianComon C).obj X).comon
+abbrev instComonObjOfCartesian (X : C) : ComonObj X := ((cartesianComon C).obj X).comon
 
 attribute [local instance] instComonObjOfCartesian
 

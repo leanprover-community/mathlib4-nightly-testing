@@ -33,7 +33,6 @@ local notation:80 g " ⊚ " f:80 => CategoryTheory.CategoryStruct.comp f g    --
 
 @[expose] public section
 
-
 library_note «category theory universes»
 /--
 The typeclass `Category C` describes morphisms associated to objects of type `C : Type u`.
@@ -117,8 +116,10 @@ universe v u
 
 namespace CategoryTheory
 
-/-- A preliminary structure on the way to defining a category,
-containing the data, but none of the axioms. -/
+/--
+A preliminary structure on the way to defining a category,
+containing the data, but none of the axioms.
+-/
 @[pp_with_univ]
 class CategoryStruct (obj : Type u) : Type max u (v + 1) extends Quiver.{v} obj where
   /-- The identity morphism on an object. -/
@@ -132,7 +133,7 @@ attribute [to_dual self (reorder := comp (X Z, 4 5))] CategoryStruct.mk
 initialize_simps_projections CategoryStruct (-toQuiver_Hom, -Hom)
 
 /-- Notation for the identity morphism in a category. -/
-scoped notation "𝟙" => CategoryStruct.id  -- type as \b1
+scoped notation "𝟙" => CategoryStruct.id -- type as \b1
 
 /-- Notation for composition of morphisms in a category. -/
 scoped infixr:80 " ≫ " => CategoryStruct.comp -- type as \gg
@@ -141,7 +142,8 @@ scoped infixr:80 " ≫ " => CategoryStruct.comp -- type as \gg
 syntax (name := sorryIfSorry) "sorry_if_sorry" : tactic
 
 open Lean Meta Elab.Tactic in
-@[tactic sorryIfSorry, inherit_doc sorryIfSorry] meta def evalSorryIfSorry : Tactic := fun _ => do
+@[tactic sorryIfSorry, inherit_doc sorryIfSorry]
+meta def evalSorryIfSorry : Tactic := fun _ => do
   let goalType ← getMainTarget
   if goalType.hasSorry then
     closeMainGoal `sorry_if_sorry (← mkSorry goalType true)
@@ -165,7 +167,6 @@ Implementation notes:
 * `apply_rfl`:
   `rfl` is a macro that attempts both `eq_refl` and `apply_rfl`. Since `apply_rfl`
   subsumes `eq_refl`, we can use `apply_rfl` instead. This fails twice as fast as `rfl`.
-
 -/
 macro (name := rfl_cat) "rfl_cat" : tactic => do `(tactic| (refine id ?_; intros; apply_rfl))
 
@@ -176,19 +177,17 @@ This tactic fails when it is unable to solve the goal, making it suitable for
 use in auto-params.
 -/
 macro (name := aesop_cat) "aesop_cat" c:Aesop.tactic_clause* : tactic =>
-`(tactic|
-  first | sorry_if_sorry | rfl_cat |
-  aesop $c* (config := { introsTransparency? := some .default, terminal := true })
-            (rule_sets := [$(Lean.mkIdent `CategoryTheory):ident]))
+  `(tactic|
+    first | sorry_if_sorry | rfl_cat |
+    aesop $c* (config := { introsTransparency? := some .default, terminal := true })
+              (rule_sets := [$(Lean.mkIdent `CategoryTheory):ident]))
 
-/--
-We also use `aesop_cat?` to pass along a `Try this` suggestion when using `aesop_cat`
--/
+/-- We also use `aesop_cat?` to pass along a `Try this` suggestion when using `aesop_cat` -/
 macro (name := aesop_cat?) "aesop_cat?" c:Aesop.tactic_clause* : tactic =>
-`(tactic|
-  first | sorry_if_sorry | try_this rfl_cat |
-  aesop? $c* (config := { introsTransparency? := some .default, terminal := true })
-             (rule_sets := [$(Lean.mkIdent `CategoryTheory):ident]))
+  `(tactic|
+    first | sorry_if_sorry | try_this rfl_cat |
+    aesop? $c* (config := { introsTransparency? := some .default, terminal := true })
+               (rule_sets := [$(Lean.mkIdent `CategoryTheory):ident]))
 /--
 A variant of `aesop_cat` which does not fail when it is unable to solve the
 goal. Use this only for exploration! Nonterminal `aesop` is even worse than
@@ -202,7 +201,8 @@ macro (name := aesop_cat_nonterminal) "aesop_cat_nonterminal" c:Aesop.tactic_cla
 attribute [aesop safe (rule_sets := [CategoryTheory])] Subsingleton.elim
 
 open Lean Elab Tactic in
-/-- A tactic for discharging easy category theory goals, widely used as an autoparameter.
+/--
+A tactic for discharging easy category theory goals, widely used as an autoparameter.
 Currently this defaults to the `aesop_cat` wrapper around `aesop`, but by setting
 the option `mathlib.tactic.category.grind` to `true`, it will use the `grind` tactic instead.
 -/
@@ -218,14 +218,15 @@ meta def categoryTheoryDischarger : TacticM Unit := do
     evalTactic (← `(tactic| aesop_cat))
 
 @[inherit_doc categoryTheoryDischarger]
-elab (name := cat_disch) "cat_disch" : tactic =>
-  categoryTheoryDischarger
+elab (name := cat_disch) "cat_disch" : tactic => categoryTheoryDischarger
 
 set_option mathlib.tactic.category.grind true
 
-/-- The typeclass `Category C` describes morphisms associated to objects of type `C`.
+/--
+The typeclass `Category C` describes morphisms associated to objects of type `C`.
 The universe levels of the objects and morphisms are unconstrained, and will often need to be
-specified explicitly, as `Category.{v} C`. (See also `LargeCategory` and `SmallCategory`.) -/
+specified explicitly, as `Category.{v} C`. (See also `LargeCategory` and `SmallCategory`.)
+-/
 -- After https://github.com/leanprover/lean4/pull/12286 and
 -- https://github.com/leanprover/lean4/pull/12423, the morphism universe `v` would default to
 -- being a universe output parameter.
@@ -252,14 +253,14 @@ to_dual_for Category.mk := {}
 example {C} [Category C] {X Y : C} (f : X ⟶ Y) : 𝟙 X ≫ f = f := by simp
 example {C} [Category C] {X Y : C} (f : X ⟶ Y) : f ≫ 𝟙 Y = f := by simp
 
-/-- A `LargeCategory` has objects in one universe level higher than the universe level of
+/--
+A `LargeCategory` has objects in one universe level higher than the universe level of
 the morphisms. It is useful for examples such as the category of types, or the category
 of groups, etc.
 -/
 abbrev LargeCategory (C : Type (u + 1)) : Type (u + 1) := Category.{u} C
 
-/-- A `SmallCategory` has objects and morphisms in the same universe level.
--/
+/-- A `SmallCategory` has objects and morphisms in the same universe level. -/
 abbrev SmallCategory (C : Type u) : Type (u + 1) := Category.{u} C
 
 section
@@ -267,12 +268,12 @@ section
 variable {C : Type u} [Category.{v} C] {X Y Z : C}
 
 @[deprecated assoc +typeChanged (since := "2026-09-15")]
-lemma Category.assoc' {W X Y Z : C} (f : X ⟶ W) (g : Y ⟶ X) (h : Z ⟶ Y) :
-    h ≫ g ≫ f = (h ≫ g) ≫ f := (Category.assoc h g f).symm
+lemma Category.assoc' {W X Y Z : C} (f : X ⟶ W) (g : Y ⟶ X) (h : Z ⟶ Y) : h ≫ g ≫ f = (h ≫ g) ≫ f :=
+  (Category.assoc h g f).symm
 
 /-- Postcompose an equation between morphisms by another morphism -/
 @[to_dual (reorder := w h) whisker_eq
-/-- Precompose an equation between morphisms by another morphism -/]
+  /-- Precompose an equation between morphisms by another morphism -/]
 theorem eq_whisker {f g : X ⟶ Y} (w : f = g) (h : Y ⟶ Z) : f ≫ h = g ≫ h := by rw [w]
 
 /--
@@ -288,13 +289,13 @@ If `g h : Y ⟶ Z` and `w : g = h` and `f : X ⟶ Y`, then `f ≫= w : f ≫ g =
 scoped infixr:80 " ≫= " => whisker_eq
 
 @[to_dual eq_of_comp_right_eq]
-theorem eq_of_comp_left_eq {f g : X ⟶ Y} (w : ∀ {Z : C} (h : Y ⟶ Z), f ≫ h = g ≫ h) :
-    f = g := by
+theorem eq_of_comp_left_eq {f g : X ⟶ Y} (w : ∀ {Z : C} (h : Y ⟶ Z), f ≫ h = g ≫ h) : f = g := by
   convert w (𝟙 Y) <;> simp
 
 @[to_dual eq_of_comp_right_eq']
-theorem eq_of_comp_left_eq' (f g : X ⟶ Y)
-    (w : (fun {Z} (h : Y ⟶ Z) => f ≫ h) = fun {Z} (h : Y ⟶ Z) => g ≫ h) : f = g :=
+theorem eq_of_comp_left_eq'
+    (f g : X ⟶ Y) (w : (fun {Z} (h : Y ⟶ Z) => f ≫ h) = fun {Z} (h : Y ⟶ Z) => g ≫ h)
+    : f = g :=
   eq_of_comp_left_eq @fun Z h => by convert congr_fun (congr_fun w Z) h
 
 @[to_dual id_of_comp_right_id]
@@ -303,38 +304,42 @@ theorem id_of_comp_left_id (f : X ⟶ X) (w : ∀ {Y : C} (g : X ⟶ Y), f ≫ g
   simp
 
 @[to_dual (reorder := f g' g) ite_comp]
-theorem comp_ite {P : Prop} [Decidable P] {X Y Z : C} (f : X ⟶ Y) (g g' : Y ⟶ Z) :
-    (f ≫ if P then g else g') = if P then f ≫ g else f ≫ g' := by aesop
+theorem comp_ite {P : Prop} [Decidable P] {X Y Z : C} (f : X ⟶ Y) (g g' : Y ⟶ Z)
+    : (f ≫ if P then g else g') = if P then f ≫ g else f ≫ g' := by
+  aesop
 
 @[to_dual (reorder := f g' g) dite_comp]
-theorem comp_dite {P : Prop} [Decidable P]
-    {X Y Z : C} (f : X ⟶ Y) (g : P → (Y ⟶ Z)) (g' : ¬P → (Y ⟶ Z)) :
-    (f ≫ if h : P then g h else g' h) = if h : P then f ≫ g h else f ≫ g' h := by aesop
+theorem comp_dite
+    {P : Prop} [Decidable P] {X Y Z : C} (f : X ⟶ Y) (g : P → (Y ⟶ Z)) (g' : ¬P → (Y ⟶ Z))
+    : (f ≫ if h : P then g h else g' h) = if h : P then f ≫ g h else f ≫ g' h := by
+  aesop
 
-/-- A morphism `f` is an epimorphism if it can be cancelled when precomposed:
-`f ≫ g = f ≫ h` implies `g = h`. -/
+/--
+A morphism `f` is an epimorphism if it can be cancelled when precomposed:
+`f ≫ g = f ≫ h` implies `g = h`.
+-/
 class Epi (f : X ⟶ Y) : Prop where
   /-- A morphism `f` is an epimorphism if it can be cancelled when precomposed. -/
   left_cancellation : ∀ {Z : C} (g h : Y ⟶ Z), f ≫ g = f ≫ h → g = h
 
-/-- A morphism `f` is a monomorphism if it can be cancelled when postcomposed:
-`g ≫ f = h ≫ f` implies `g = h`. -/
+/--
+A morphism `f` is a monomorphism if it can be cancelled when postcomposed:
+`g ≫ f = h ≫ f` implies `g = h`.
+-/
 @[to_dual (attr := stacks 003B) Epi]
 class Mono (f : X ⟶ Y) : Prop where
   /-- A morphism `f` is a monomorphism if it can be cancelled when postcomposed. -/
   right_cancellation : ∀ {Z : C} (g h : Z ⟶ X), g ≫ f = h ≫ f → g = h
 
-@[to_dual]
-instance (X : C) : Epi (𝟙 X) :=
-  ⟨fun g h w => by aesop⟩
+@[to_dual] instance (X : C) : Epi (𝟙 X) := ⟨fun g h w => by aesop⟩
 
 @[to_dual]
 theorem cancel_epi (f : X ⟶ Y) [Epi f] {g h : Y ⟶ Z} : f ≫ g = f ≫ h ↔ g = h :=
   ⟨fun p => Epi.left_cancellation g h p, congr_arg _⟩
 
 @[to_dual]
-theorem cancel_epi_assoc_iff (f : X ⟶ Y) [Epi f] {g h : Y ⟶ Z} {W : C} {k l : Z ⟶ W} :
-    (f ≫ g) ≫ k = (f ≫ h) ≫ l ↔ g ≫ k = h ≫ l :=
+theorem cancel_epi_assoc_iff (f : X ⟶ Y) [Epi f] {g h : Y ⟶ Z} {W : C} {k l : Z ⟶ W}
+    : (f ≫ g) ≫ k = (f ≫ h) ≫ l ↔ g ≫ k = h ≫ l :=
   ⟨fun p => (cancel_epi f).1 <| by simpa using p, fun p => by simp only [Category.assoc, p]⟩
 
 @[to_dual]
@@ -342,23 +347,26 @@ theorem cancel_epi_id (f : X ⟶ Y) [Epi f] {h : Y ⟶ Y} : f ≫ h = f ↔ h = 
   convert cancel_epi f
   simp
 
-/-- The composition of epimorphisms is again an epimorphism. This version takes `Epi f` and `Epi g`
-as typeclass arguments. For a version taking them as explicit arguments, see `epi_comp'`. -/
+/--
+The composition of epimorphisms is again an epimorphism. This version takes `Epi f` and `Epi g`
+as typeclass arguments. For a version taking them as explicit arguments, see `epi_comp'`.
+-/
 @[to_dual (reorder := f g, 7 9)
-/-- The composition of monomorphisms is again a monomorphism. This version takes `Mono f` and
+  /-- The composition of monomorphisms is again a monomorphism. This version takes `Mono f` and
 `Mono g` as typeclass arguments. For a version taking them as explicit arguments, see `mono_comp'`.
--/]
+  -/]
 instance epi_comp (f : X ⟶ Y) [Epi f] (g : Y ⟶ Z) [Epi g] : Epi (f ≫ g) :=
   ⟨fun _ _ w => (cancel_epi g).1 <| (cancel_epi_assoc_iff f).1 w⟩
 
-/-- The composition of epimorphisms is again an epimorphism. This version takes `Epi f` and `Epi g`
-as explicit arguments. For a version taking them as typeclass arguments, see `epi_comp`. -/
+/--
+The composition of epimorphisms is again an epimorphism. This version takes `Epi f` and `Epi g`
+as explicit arguments. For a version taking them as typeclass arguments, see `epi_comp`.
+-/
 @[to_dual (reorder := hf hg)
-/-- The composition of monomorphisms is again a monomorphism. This version takes `Mono f` and
+  /-- The composition of monomorphisms is again a monomorphism. This version takes `Mono f` and
 `Mono g` as explicit arguments. For a version taking them as typeclass arguments, see `mono_comp`.
--/]
-theorem epi_comp' {f : X ⟶ Y} {g : Y ⟶ Z} (hf : Epi f) (hg : Epi g) : Epi (f ≫ g) :=
-  inferInstance
+  -/]
+theorem epi_comp' {f : X ⟶ Y} {g : Y ⟶ Z} (hf : Epi f) (hg : Epi g) : Epi (f ≫ g) := inferInstance
 
 @[to_dual (reorder := f g)]
 theorem epi_of_epi (f : X ⟶ Y) (g : Y ⟶ Z) [Epi (f ≫ g)] : Epi g :=
@@ -368,10 +376,12 @@ theorem epi_of_epi (f : X ⟶ Y) (g : Y ⟶ Z) [Epi (f ≫ g)] : Epi g :=
 theorem epi_of_epi_fac {f : X ⟶ Y} {g : Y ⟶ Z} {h : X ⟶ Z} [Epi h] (w : f ≫ g = h) : Epi g := by
   subst h; exact epi_of_epi f g
 
-/-- `f : X ⟶ Y` is an epimorphism iff for all `Z`, composition of morphisms `Y ⟶ Z` with `f`
-is injective. -/
+/--
+`f : X ⟶ Y` is an epimorphism iff for all `Z`, composition of morphisms `Y ⟶ Z` with `f`
+is injective.
+-/
 @[to_dual
-/-- `f : X ⟶ Y` is a monomorphism iff for all `Z`, composition of morphisms `Z ⟶ X` with `f`
+  /-- `f : X ⟶ Y` is a monomorphism iff for all `Z`, composition of morphisms `Z ⟶ X` with `f`
 is injective. -/]
 lemma epi_iff_forall_injective (f : X ⟶ Y) : Epi f ↔ ∀ Z, (fun g : Y ⟶ Z ↦ f ≫ g).Injective :=
   ⟨fun _ _ _ _ hg ↦ (cancel_epi f).1 hg, fun h ↦ ⟨fun _ _ hg ↦ h _ hg⟩⟩
@@ -389,9 +399,11 @@ variable [Category.{v} C]
 
 universe u'
 
-/-- The category structure on `ULift C` that is induced from the category
+/--
+The category structure on `ULift C` that is induced from the category
 structure on `C`. This is not made a global instance because of a diamond
-when `C` is a preordered type. -/
+when `C` is a preordered type.
+-/
 @[instance_reducible]
 def uliftCategory : Category.{v} (ULift.{u'} C) where
   Hom X Y := X.down ⟶ Y.down

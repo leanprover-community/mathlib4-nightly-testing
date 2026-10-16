@@ -32,8 +32,7 @@ variable {n : ℕ}
 variable {f : E → F} {x : E} {s : Set E}
 
 /-- A polynomial function is infinitely differentiable. -/
-theorem CPolynomialOn.contDiffOn (h : CPolynomialOn 𝕜 f s) {n : ℕ∞ω} :
-    ContDiffOn 𝕜 n f s := by
+theorem CPolynomialOn.contDiffOn (h : CPolynomialOn 𝕜 f s) {n : ℕ∞ω} : ContDiffOn 𝕜 n f s := by
   let t := { x | CPolynomialAt 𝕜 f x }
   suffices ContDiffOn 𝕜 n f t from this.mono h
   suffices AnalyticOnNhd 𝕜 f t by
@@ -42,8 +41,7 @@ theorem CPolynomialOn.contDiffOn (h : CPolynomialOn 𝕜 f s) {n : ℕ∞ω} :
   have H : CPolynomialOn 𝕜 f t := fun _x hx ↦ hx
   exact H.analyticOnNhd
 
-theorem CPolynomialAt.contDiffAt (h : CPolynomialAt 𝕜 f x) {n : ℕ∞ω} :
-    ContDiffAt 𝕜 n f x :=
+theorem CPolynomialAt.contDiffAt (h : CPolynomialAt 𝕜 f x) {n : ℕ∞ω} : ContDiffAt 𝕜 n f x :=
   let ⟨_, hs, hf⟩ := h.exists_mem_nhds_cpolynomialOn
   hf.contDiffOn.contDiffAt hs
 
@@ -51,8 +49,10 @@ end fderiv
 
 namespace ContinuousMultilinearMap
 
-variable {ι : Type*} {E : ι → Type*} [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace 𝕜 (E i)]
-  [Fintype ι] (f : ContinuousMultilinearMap 𝕜 E F) {n : ℕ∞ω} {x : Π i, E i}
+variable
+  {ι : Type*} {E : ι → Type*} [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace 𝕜 (E i)] [Fintype ι]
+  (f : ContinuousMultilinearMap 𝕜 E F)
+  {n : ℕ∞ω} {x : Π i, E i}
 
 lemma contDiffAt : ContDiffAt 𝕜 n f x := f.cpolynomialAt.contDiffAt
 

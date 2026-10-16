@@ -5,9 +5,8 @@ Authors: Jovan Gerbscheid
 -/
 module
 
-public import ImportGraph.Lean.Environment  -- shake: keep (Environment.getModuleFor? is used from public meta code), cf. lean#14427
+public import ImportGraph.Lean.Environment -- shake: keep (Environment.getModuleFor? is used from public meta code), cf. lean#14427
 public import Mathlib.Init
-
 meta import ImportGraph.Lean.Environment
 
 /-!
@@ -61,47 +60,50 @@ partial def eraseUnivs (e : Expr) : Expr :=
   | .proj _ _ s => e.updateProj! (eraseUnivs s)
   | e => e
 
-/-- Sort the hypotheses in `e` into a normalized order by sorting their types.
+/--
+Sort the hypotheses in `e` into a normalized order by sorting their types.
 Also replace universe levels with a default value.
 
 TODO: When there are multiple variables of the same type, their order will not be changed.
-This is a limitation of the current approach. -/
+This is a limitation of the current approach.
+-/
 def sortBinders (e : Expr) : MetaM Expr := do
   (if e.isLambda then lambdaTelescope else forallTelescope) e fun fvars e ↦ do
-  let n := fvars.size
-  let fvars : Vector Expr n := fvars.toVector
-  let mut remainingTypes ← fvars.mapM (return some <| eraseUnivs <| ← inferType ·)
-  let mut e := eraseUnivs e
-  let mut sortedTypes := #[]
-  for _ in *...n do
-    let mut minType? : Option (Fin n × Expr) := none
-    for h : i in 0...n do
-      if let some type := remainingTypes[i] then
-        if !type.hasFVar then
-          if let some (minIdx, minType) := minType? then
-            if type.quickLt minType then
-              continue
-          minType? := some (⟨i, by get_elem_tactic⟩, type)
-    let some (minIdx, minType) := minType? |
-      panic! s!"All types have fvars: {remainingTypes.toArray}"
-    sortedTypes := sortedTypes.push minType
-    remainingTypes := remainingTypes.set minIdx none
-    let abstractFVar (e : Expr) := (e.liftLooseBVars 0 1).abstract #[fvars[minIdx]]
-    remainingTypes := remainingTypes.map (·.map abstractFVar)
-    e := abstractFVar e
-  return sortedTypes.foldr (init := e) fun type e ↦ .forallE `_ type e .default
+    let n := fvars.size
+    let fvars : Vector Expr n := fvars.toVector
+    let mut remainingTypes ← fvars.mapM (return some <| eraseUnivs <| ← inferType ·)
+    let mut e := eraseUnivs e
+    let mut sortedTypes := #[]
+    for _ in *...n do
+      let mut minType? : Option (Fin n × Expr) := none
+      for h : i in 0...n do
+        if let some type := remainingTypes[i] then
+          if !type.hasFVar then
+            if let some (minIdx, minType) := minType? then
+              if type.quickLt minType then
+                continue
+            minType? := some (⟨i, by get_elem_tactic⟩, type)
+      let some (minIdx, minType) := minType?
+        | panic! s!"All types have fvars: {remainingTypes.toArray}"
+      sortedTypes := sortedTypes.push minType
+      remainingTypes := remainingTypes.set minIdx none
+      let abstractFVar (e : Expr) := (e.liftLooseBVars 0 1).abstract #[fvars[minIdx]]
+      remainingTypes := remainingTypes.map (·.map abstractFVar)
+      e := abstractFVar e
+    return sortedTypes.foldr (init := e) fun type e ↦ .forallE `_ type e .default
 
-/-- Return `true` if `cinfo` is defined as another constant.
+/--
+Return `true` if `cinfo` is defined as another constant.
 If so, we assume that the declaration is intentionally duplicated.
-This only works for exposed definitions. -/
-def isAlias (cinfo : ConstantInfo) : Bool :=
-  (cinfo.value? (allowOpaque := true)).any isConstBVarApp
+This only works for exposed definitions.
+-/
+def isAlias (cinfo : ConstantInfo) : Bool := (cinfo.value? (allowOpaque := true)).any isConstBVarApp
 where
   isConstBVarApp : Expr → Bool
-  | .const .. => true
-  | .app f (.bvar _) => isConstBVarApp f
-  | .lam _ _ b _ => isConstBVarApp b
-  | _ => false
+    | .const .. => true
+    | .app f (.bvar _) => isConstBVarApp f
+    | .lam _ _ b _ => isConstBVarApp b
+    | _ => false
 
 /-- An inductive type for the kind of duplicate declarations to search for. -/
 public inductive Target where
@@ -109,71 +111,79 @@ public inductive Target where
   | theorems
   /-- Search for duplicate instances that aren't theorems. -/
   | instances
-  /-- Search for duplicate definitions that aren't instances or theorems,
-  Also indexes on the value, not just the type. -/
+  /--
+  Search for duplicate definitions that aren't instances or theorems,
+  Also indexes on the value, not just the type.
+  -/
   | defs
 
 /-- Compute an array of duplicate declarations in the current environment. -/
-def duplicateDeclarations (cfg : Target) : CoreM (Array (Array Name)) := MetaM.run' do
-  let env ← getEnv
-  let mut visited : Std.HashMap Expr Name := {}
-  let mut dups : Std.HashMap Expr (Array Name) := {}
-  for (name, cinfo) in env.constants.map₁ do
-    if name.isInternalDetail
-      || name.isMetaprogramming
-      || !allowCompletion env name
-      || Linter.isDeprecated env name
-      || isAlias cinfo then continue
-    if ← isProp cinfo.type then
-      unless cfg matches .theorems do continue
-    else
-      match cfg with
-      | .theorems => continue
-      | .instances => if (← isClass? cinfo.type).isNone then continue
-      | .defs =>
-        if (← isClass? cinfo.type).isNone then
-          if let some value := cinfo.value? then
-            let normValue ← sortBinders value
-            let normType ← sortBinders cinfo.type
-            let key := .app normValue normType
-            if let some name' := visited[key]? then
-              dups := dups.alter key (·.getD #[name'] |>.push name)
-            else
-              visited := visited.insert key name
+def duplicateDeclarations (cfg : Target) : CoreM (Array (Array Name)) :=
+  MetaM.run' do
+    let env ← getEnv
+    let mut visited : Std.HashMap Expr Name := {}
+    let mut dups : Std.HashMap Expr (Array Name) := {}
+    for (name, cinfo) in env.constants.map₁ do
+      if name.isInternalDetail || name.isMetaprogramming || ! allowCompletion env name
+          || Linter.isDeprecated env name || isAlias cinfo then
         continue
-    let normType ← sortBinders cinfo.type
-    if let some name' := visited[normType]? then
-      dups := dups.alter normType (·.getD #[name'] |>.push name)
-    else
-      visited := visited.insert normType name
-  return dups.valuesArray
+      if ← isProp cinfo.type then
+        unless cfg matches .theorems do
+          continue
+      else
+        match cfg with
+        | .theorems =>
+          continue
+        | .instances =>
+          if (← isClass? cinfo.type).isNone then continue
+        | .defs =>
+          if (← isClass? cinfo.type).isNone then
+            if let some value := cinfo.value? then
+              let normValue ← sortBinders value
+              let normType ← sortBinders cinfo.type
+              let key := .app normValue normType
+              if let some name' := visited[key]? then
+                dups := dups.alter key (·.getD #[name'] |>.push name)
+              else
+                visited := visited.insert key name
+          continue
+      let normType ← sortBinders cinfo.type
+      if let some name' := visited[normType]? then
+        dups := dups.alter normType (·.getD #[name'] |>.push name)
+      else
+        visited := visited.insert normType name
+    return dups.valuesArray
 
 /-- Given a module name, return a number that can be used for sorting. -/
 def libraryNumber (module : Name) : Nat :=
   #[`Init, `Std, `Lean, `Batteries, `Mathlib].idxOf module.getRoot
 
-/-- Structure used for sorting imported modules:
+/--
+Structure used for sorting imported modules:
 1. The number given by `libraryNumber`.
 2. The name of the module as a string.
 -/
 def ModuleKey := Nat × String
-  deriving Inhabited
+deriving Inhabited
 
 instance : Ord ModuleKey := ⟨fun a b ↦ (compare a.1 b.1).then (compare a.2 b.2)⟩
 instance : LT ModuleKey := ltOfOrd
 instance : LE ModuleKey := leOfOrd
 instance : Max ModuleKey := maxOfLe
 
-/-- Return the object by which to sort the module that `name` is from.
-That is, the `libraryNumber` followed by the module as a string. -/
+/--
+Return the object by which to sort the module that `name` is from.
+That is, the `libraryNumber` followed by the module as a string.
+-/
 def mkModuleKey! (name : Name) (env : Environment) : ModuleKey :=
   let mod := (env.getModuleFor? name).get!
   (libraryNumber mod, mod.toString)
 
-/-- Return the list of duplicate declarations, grouped by the name of the module
-with the biggest `ModuleKey`. -/
-def sortedDuplicateDeclarations (cfg : Target) :
-    CoreM (Array (String × Array (Array Name))) := do
+/--
+Return the list of duplicate declarations, grouped by the name of the module
+with the biggest `ModuleKey`.
+-/
+def sortedDuplicateDeclarations (cfg : Target) : CoreM (Array (String × Array (Array Name))) := do
   let env ← getEnv
   let dups ← duplicateDeclarations cfg
   let mut result : Std.TreeMap ModuleKey (Array (Array Name)) := {}
@@ -182,8 +192,10 @@ def sortedDuplicateDeclarations (cfg : Target) :
     result := result.alter moduleKey (·.getD #[] |>.push (names.qsort Name.lt))
   return result.toArray.map fun (a, dups) ↦ (a.2, dups)
 
-/-- The duplicate declarations linter. It tells you which duplicate declarations there are
-in the current environment. -/
+/--
+The duplicate declarations linter. It tells you which duplicate declarations there are
+in the current environment.
+-/
 public def lintDuplicateDeclarations (tgt : Target) : CoreM MessageData := do
   if (← getEnv).header.isModule then
     throwError "In order to detect aliases, this function should be run in a non-module"

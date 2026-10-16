@@ -22,60 +22,69 @@ namespace Mathlib.Tactic
 
 open Lean Meta Elab Elab.Tactic
 
-/--
-This is `Lean.MVarId.changeLocalDecl` but makes sure to preserve local variable order.
--/
-def _root_.Lean.MVarId.changeLocalDecl' (mvarId : MVarId) (fvarId : FVarId) (typeNew : Expr)
-    (checkDefEq := true) : MetaM MVarId := do
+/-- This is `Lean.MVarId.changeLocalDecl` but makes sure to preserve local variable order. -/
+def _root_.Lean.MVarId.changeLocalDecl'
+    (mvarId : MVarId) (fvarId : FVarId) (typeNew : Expr) (checkDefEq := true)
+    : MetaM MVarId := do
   mvarId.checkNotAssigned `changeLocalDecl
   let lctx := (← mvarId.getDecl).lctx
-  let some decl := lctx.find? fvarId | throwTacticEx `changeLocalDecl mvarId m!"\
-    local variable {Expr.fvar fvarId} is not present in local context{mvarId}"
-  let toRevert := lctx.foldl (init := #[]) fun arr decl' =>
-    if decl.index ≤ decl'.index then arr.push decl'.fvarId else arr
-  let (_, mvarId) ← mvarId.withReverted toRevert fun mvarId fvars => mvarId.withContext do
-    let check (typeOld : Expr) : MetaM Unit := do
-      if checkDefEq then
-        unless ← isDefEq typeNew typeOld do
-          throwTacticEx `changeLocalDecl mvarId
-            m!"given type{indentExpr typeNew}\nis not definitionally equal to{indentExpr typeOld}"
-    let finalize (targetNew : Expr) := do
-      return ((), fvars.map some, ← mvarId.replaceTargetDefEq targetNew)
-    match ← mvarId.getType with
-    | .forallE n d b bi => do check d; finalize (.forallE n typeNew b bi)
-    | .letE n t v b ndep => do check t; finalize (.letE n typeNew v b ndep)
-    | _ => throwTacticEx `changeLocalDecl mvarId "unexpected auxiliary target"
+  let some decl := lctx.find? fvarId
+    | throwTacticEx `changeLocalDecl mvarId
+        m!"\
+          local variable {Expr.fvar fvarId} is not present in local context{mvarId}"
+  let toRevert :=
+    lctx.foldl (init := #[]) fun arr decl' =>
+      if decl.index ≤ decl'.index then arr.push decl'.fvarId else arr
+  let (_, mvarId) ←
+    mvarId.withReverted toRevert fun mvarId fvars =>
+      mvarId.withContext do
+        let check (typeOld : Expr) : MetaM Unit := do
+          if checkDefEq then
+            unless ← isDefEq typeNew typeOld do
+              throwTacticEx `changeLocalDecl mvarId
+                m!"given type{indentExpr typeNew}\
+                  \nis not definitionally equal to{indentExpr typeOld}"
+        let finalize (targetNew : Expr) := do
+          return ((), fvars.map some, ← mvarId.replaceTargetDefEq targetNew)
+        match ← mvarId.getType with
+        | .forallE n d b bi => do check d; finalize (.forallE n typeNew b bi)
+        | .letE n t v b ndep => do check t; finalize (.letE n typeNew v b ndep)
+        | _ => throwTacticEx `changeLocalDecl mvarId "unexpected auxiliary target"
   return mvarId
 
-/-- For the main goal, use `m` to transform the types of locations specified by `loc?`.
+/--
+For the main goal, use `m` to transform the types of locations specified by `loc?`.
 If `loc?` is none, then transforms the type of target. `m` is provided with an expression
 with instantiated metavariables as well as, if the location is a local hypothesis, the fvar.
 
 `m` *must* transform expressions to defeq expressions.
 If `checkDefEq = true` (the default) then `runDefEqTactic` will throw an error
-if the resulting expression is not definitionally equal to the original expression. -/
-def runDefEqTactic (m : Option FVarId → Expr → MetaM Expr)
-    (loc? : Option (TSyntax ``Parser.Tactic.location))
+if the resulting expression is not definitionally equal to the original expression.
+-/
+def runDefEqTactic
+    (m : Option FVarId → Expr → MetaM Expr) (loc? : Option (TSyntax ``Parser.Tactic.location))
     (tacticName : String)
-    (checkDefEq : Bool := true) :
-    TacticM Unit := withMainContext do
-  withLocation (expandOptLocation (Lean.mkOptionalNode loc?))
-    (atLocal := fun h => liftMetaTactic1 fun mvarId => do
-      let ty ← h.getType
-      let ty' ← m h (← instantiateMVars ty)
-      if Expr.equal ty ty' then
-        return mvarId
-      else
-        mvarId.changeLocalDecl' (checkDefEq := checkDefEq) h ty')
-    (atTarget := liftMetaTactic1 fun mvarId => do
-      let ty ← instantiateMVars (← mvarId.getType)
-      mvarId.change (checkDefEq := checkDefEq) (← m none ty))
-    (failed := fun _ => throwError "{tacticName} failed")
+    (checkDefEq : Bool := true)
+    : TacticM Unit :=
+  withMainContext do
+    withLocation (expandOptLocation (Lean.mkOptionalNode loc?))
+      (atLocal := fun h =>
+        liftMetaTactic1 fun mvarId => do
+          let ty ← h.getType
+          let ty' ← m h (← instantiateMVars ty)
+          if Expr.equal ty ty' then
+            return mvarId
+          else
+            mvarId.changeLocalDecl' (checkDefEq := checkDefEq) h ty')
+      (atTarget :=
+        liftMetaTactic1 fun mvarId => do
+          let ty ← instantiateMVars (← mvarId.getType)
+          mvarId.change (checkDefEq := checkDefEq) (← m none ty))
+      (failed := fun _ => throwError "{tacticName} failed")
 
 /-- Like `Mathlib.Tactic.runDefEqTactic` but for `conv` mode. -/
-def runDefEqConvTactic (m : Expr → MetaM Expr) : TacticM Unit := withMainContext do
-  Conv.changeLhs <| ← m (← instantiateMVars <| ← Conv.getLhs)
-
+def runDefEqConvTactic (m : Expr → MetaM Expr) : TacticM Unit :=
+  withMainContext do Conv.changeLhs <| ← m (← instantiateMVars <| ← Conv.getLhs)
 
 /-! ### `whnf` -/
 
@@ -88,7 +97,6 @@ may contain subexpressions which have not been reduced.
 -/
 elab "whnf" loc?:(ppSpace Parser.Tactic.location)? : tactic =>
   runDefEqTactic (checkDefEq := false) (fun _ => whnf) loc? "whnf"
-
 
 /-! ### `beta_reduce` -/
 
@@ -106,7 +114,6 @@ elab (name := betaReduceStx) "beta_reduce" loc?:(ppSpace Parser.Tactic.location)
 @[inherit_doc betaReduceStx]
 elab "beta_reduce" : conv => runDefEqConvTactic (Core.betaReduce ·)
 
-
 /-! ### `reduce` -/
 
 /--
@@ -117,7 +124,6 @@ This does the same transformation as the `#reduce` command.
 -/
 elab "reduce" loc?:(ppSpace Parser.Tactic.location)? : tactic =>
   runDefEqTactic (fun _ e => reduce e (skipTypes := false) (skipProofs := false)) loc? "reduce"
-
 
 /-! ### `unfold_let` -/
 
@@ -133,7 +139,8 @@ def unfoldFVars (fvars : Array FVarId) (e : Expr) : MetaM Expr := do
           return .continue
       else
         return .continue
-    | _ => return .continue
+    | _ =>
+      return .continue
 
 /-! ### `refold_let` -/
 
@@ -144,7 +151,8 @@ def refoldFVars (fvars : Array FVarId) (loc? : Option FVarId) (e : Expr) : MetaM
     if let some loc := loc? then
       let locIndex := (← loc.getDecl).index
       fvars.filterM fun fvar => do
-        let some decl ← fvar.findDecl? | return false
+        let some decl ← fvar.findDecl?
+          | return false
         return decl.index < locIndex
     else
       pure fvars
@@ -160,8 +168,9 @@ def refoldFVars (fvars : Array FVarId) (loc? : Option FVarId) (e : Expr) : MetaM
 location and replaces them with `x`, `y`, or `z`. This is the inverse of "zeta reduction."
 This also exists as a `conv`-mode tactic.
 -/
-syntax (name := refoldLetStx) "refold_let" (ppSpace colGt term:max)*
-  (ppSpace Parser.Tactic.location)? : tactic
+syntax (name := refoldLetStx)
+  "refold_let" (ppSpace colGt term:max)* (ppSpace Parser.Tactic.location)?
+  : tactic
 
 elab_rules : tactic
   | `(tactic| refold_let $hs:term* $[$loc?]?) => do
@@ -172,9 +181,7 @@ elab_rules : tactic
 syntax "refold_let" (ppSpace colGt term:max)* : conv
 
 elab_rules : conv
-  | `(conv| refold_let $hs:term*) => do
-    runDefEqConvTactic (refoldFVars (← getFVarIds hs) none)
-
+  | `(conv| refold_let $hs:term*) => do runDefEqConvTactic (refoldFVars (← getFVarIds hs) none)
 
 /-! ### `unfold_projs` -/
 
@@ -195,7 +202,6 @@ elab (name := unfoldProjsStx) "unfold_projs" loc?:(ppSpace Parser.Tactic.locatio
 
 @[inherit_doc unfoldProjsStx]
 elab "unfold_projs" : conv => runDefEqConvTactic unfoldProjs
-
 
 /-! ### `eta_reduce` -/
 
@@ -218,12 +224,13 @@ elab (name := etaReduceStx) "eta_reduce" loc?:(ppSpace Parser.Tactic.location)? 
 @[inherit_doc etaReduceStx]
 elab "eta_reduce" : conv => runDefEqConvTactic etaReduceAll
 
-
 /-! ### `eta_expand` -/
 
-/-- Eta expand every sub-expression in the given expression.
+/--
+Eta expand every sub-expression in the given expression.
 
-As a side-effect, beta reduces any pre-existing instances of eta expanded terms. -/
+As a side-effect, beta reduces any pre-existing instances of eta expanded terms.
+-/
 partial def etaExpandAll (e : Expr) : MetaM Expr := do
   if e.isLambda then
     expandSubterms e
@@ -233,36 +240,31 @@ partial def etaExpandAll (e : Expr) : MetaM Expr := do
       mkLambdaFVars xs (← expandSubterms e)
 where
   expandSubterms
-  | .forallE n t b bi =>
-    return .forallE n
-      (← etaExpandAll t)
-      (← withLocalDecl n bi t fun x => (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x))
-      bi
-  | .lam n t b bi =>
-    return .lam n
-      (← etaExpandAll t)
-      (← withLocalDecl n bi t fun x => (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x))
-      bi
-  | .letE n t v b ndep =>
-    return .letE n
-      (← etaExpandAll t)
-      (← etaExpandAll v)
-      (← withLetDecl n t v (nondep := ndep) fun x =>
-        (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x))
-      ndep
-  | e@(.app ..) =>
-    let f := e.getAppFn
-    let args := e.getAppArgs
-    if f.etaExpandedStrict?.isSome then
-      expandSubterms (f.beta args)
-    else
-      -- We use `expandSubterms` for `f` to avoid creating a beta-redex
-      return mkAppN (← expandSubterms f) (← args.mapM etaExpandAll)
-  | .mdata d e =>
-    return .mdata d (← etaExpandAll e)
-  | .proj n i e =>
-    return .proj n i (← etaExpandAll e)
-  | e => return e
+    | .forallE n t b bi =>
+      return .forallE n (← etaExpandAll t)
+        (← withLocalDecl n bi t fun x => (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x)) bi
+    | .lam n t b bi =>
+      return .lam n (← etaExpandAll t)
+        (← withLocalDecl n bi t fun x => (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x)) bi
+    | .letE n t v b ndep =>
+      return .letE n (← etaExpandAll t) (← etaExpandAll v)
+        (← withLetDecl n t v (nondep := ndep) fun x =>
+          (·.abstract #[x]) <$> etaExpandAll (b.instantiate1 x))
+        ndep
+    | e@(.app ..) =>
+      let f := e.getAppFn
+      let args := e.getAppArgs
+      if f.etaExpandedStrict?.isSome then
+        expandSubterms (f.beta args)
+      else
+        -- We use `expandSubterms` for `f` to avoid creating a beta-redex
+        return mkAppN (← expandSubterms f) (← args.mapM etaExpandAll)
+    | .mdata d e =>
+      return .mdata d (← etaExpandAll e)
+    | .proj n i e =>
+      return .proj n i (← etaExpandAll e)
+    | e =>
+      return e
 
 /--
 `eta_expand at loc` eta expands all sub-expressions at the given location.
@@ -281,12 +283,13 @@ elab (name := etaExpandStx) "eta_expand" loc?:(ppSpace Parser.Tactic.location)? 
 @[inherit_doc etaExpandStx]
 elab "eta_expand" : conv => runDefEqConvTactic etaExpandAll
 
-
 /-! ### `eta_struct` -/
 
-/-- Given an expression that's either a native projection or a registered projection
+/--
+Given an expression that's either a native projection or a registered projection
 function, gives (1) the name of the structure type, (2) the index of the projection, and
-(3) the object being projected. -/
+(3) the object being projected.
+-/
 def getProjectedExpr (e : Expr) : MetaM (Option (Name × Nat × Expr)) := do
   if let .proj S i x := e then
     return (S, i, x)
@@ -297,19 +300,25 @@ def getProjectedExpr (e : Expr) : MetaM (Option (Name × Nat × Expr)) := do
           return (fVal.induct, info.i, e.appArg!)
   return none
 
-/-- Checks if the expression is of the form `S.mk x.1 ... x.n` with `n` nonzero
+/--
+Checks if the expression is of the form `S.mk x.1 ... x.n` with `n` nonzero
 and `S.mk` a structure constructor and returns `x`.
 Each projection `x.i` can be either a native projection or from a projection function.
 
 `tryWhnfR` controls whether to try applying `whnfR` to arguments when none of them
 are obviously projections.
 
-Once an obviously correct projection is found, relies on the structure eta rule in `isDefEq`. -/
+Once an obviously correct projection is found, relies on the structure eta rule in `isDefEq`.
+-/
 def etaStruct? (e : Expr) (tryWhnfR : Bool := true) : MetaM (Option Expr) := do
-  let .const f _ := e.getAppFn | return none
-  let some (ConstantInfo.ctorInfo fVal) := (← getEnv).find? f | return none
-  unless 0 < fVal.numFields && e.getAppNumArgs == fVal.numParams + fVal.numFields do return none
-  unless isStructure (← getEnv) fVal.induct do return none
+  let .const f _ := e.getAppFn
+    | return none
+  let some (ConstantInfo.ctorInfo fVal) := (← getEnv).find? f
+    | return none
+  unless 0 < fVal.numFields && e.getAppNumArgs == fVal.numParams + fVal.numFields do
+    return none
+  unless isStructure (← getEnv) fVal.induct do
+    return none
   let args := e.getAppArgs
   let mut x? ← findProj fVal args pure
   if tryWhnfR then
@@ -321,14 +330,17 @@ def etaStruct? (e : Expr) (tryWhnfR : Bool := true) : MetaM (Option Expr) := do
       return x
   return none
 where
-  /-- Check to see if there's an argument at some index `i`
+  /--
+  Check to see if there's an argument at some index `i`
   such that it's the `i`th projection of a some expression.
-  Returns the expression. -/
-  findProj (fVal : ConstructorVal) (args : Array Expr) (m : Expr → MetaM Expr) :
-      MetaM (LOption Expr) := do
-    for i in [0 : fVal.numFields] do
+  Returns the expression.
+  -/
+  findProj (fVal : ConstructorVal) (args : Array Expr) (m : Expr → MetaM Expr)
+      : MetaM (LOption Expr) := do
+    for i in [0:fVal.numFields] do
       let arg ← m args[fVal.numParams + i]!
-      let some (S, j, x) ← getProjectedExpr arg | continue
+      let some (S, j, x) ← getProjectedExpr arg
+        | continue
       if S == fVal.induct && i == j then
         return .some x
       else
@@ -336,8 +348,10 @@ where
         return .none
     return .undef
 
-/-- Finds all occurrences of expressions of the form `S.mk x.1 ... x.n` where `S.mk`
-is a structure constructor and replaces them by `x`. -/
+/--
+Finds all occurrences of expressions of the form `S.mk x.1 ... x.n` where `S.mk`
+is a structure constructor and replaces them by `x`.
+-/
 def etaStructAll (e : Expr) : MetaM Expr :=
   transform e fun node => do
     if let some node' ← etaStruct? node then

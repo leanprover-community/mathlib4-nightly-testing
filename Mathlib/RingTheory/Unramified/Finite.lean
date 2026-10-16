@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Flat.Stability
 public import Mathlib.RingTheory.Unramified.Basic
-
 import Mathlib.RingTheory.Ideal.IdempotentFG
 
 /-!
@@ -49,16 +48,16 @@ A finite-type `R`-algebra `S` is (formally) unramified iff there exists a `t : S
 1. `t` annihilates every `1 ⊗ s - s ⊗ 1`.
 2. the image of `t` is `1` under the map `S ⊗[R] S → S`.
 -/
-theorem iff_exists_tensorProduct [EssFiniteType R S] :
-    FormallyUnramified R S ↔ ∃ t : S ⊗[R] S,
-      (∀ s, ((1 : S) ⊗ₜ[R] s - s ⊗ₜ[R] (1 : S)) * t = 0) ∧ TensorProduct.lmul' R t = 1 := by
-  rw [formallyUnramified_iff, KaehlerDifferential,
-    Ideal.cotangent_subsingleton_iff, Ideal.isIdempotentElem_iff_of_fg _
-      (KaehlerDifferential.ideal_fg R S)]
+theorem iff_exists_tensorProduct [EssFiniteType R S]
+    : FormallyUnramified R S
+      ↔ ∃ t : S ⊗[R] S,
+        (∀ s, ((1 : S) ⊗ₜ[R] s - s ⊗ₜ[R] (1 : S)) * t = 0) ∧ TensorProduct.lmul' R t = 1 := by
+  rw [formallyUnramified_iff, KaehlerDifferential, Ideal.cotangent_subsingleton_iff,
+    Ideal.isIdempotentElem_iff_of_fg _ (KaehlerDifferential.ideal_fg R S)]
   have : ∀ t : S ⊗[R] S, TensorProduct.lmul' R t = 1 ↔ 1 - t ∈ KaehlerDifferential.ideal R S := by
     intro t
-    simp only [KaehlerDifferential.ideal, RingHom.mem_ker, map_sub, map_one,
-      sub_eq_zero, @eq_comm S 1]
+    simp only [KaehlerDifferential.ideal, RingHom.mem_ker, map_sub, map_one, sub_eq_zero,
+      @eq_comm S 1]
   simp_rw [this, ← KaehlerDifferential.span_range_eq_ideal]
   constructor
   · rintro ⟨e, he₁, he₂ : _ = Ideal.span _⟩
@@ -71,24 +70,31 @@ theorem iff_exists_tensorProduct [EssFiniteType R S] :
     · rw [sub_sub_cancel, he₂, Ideal.mem_span_singleton]
   · rintro ⟨t, ht₁, ht₂⟩
     use 1 - t
-    rw [← sub_sub_self 1 t] at ht₁; generalize 1 - t = e at *
+    rw [← sub_sub_self 1 t] at ht₁
+    generalize 1 - t = e at *
     constructor
     · suffices e ∈ (Submodule.span (S ⊗[R] S) {1 - e}).annihilator by
         simpa [IsIdempotentElem, mul_sub, sub_eq_zero, eq_comm,
-          Submodule.mem_annihilator_span_singleton] using this
-      exact (show Ideal.span _ ≤ _ by simpa only [Ideal.span_le, Set.range_subset_iff,
-        Submodule.mem_annihilator_span_singleton, SetLike.mem_coe]) ht₂
+            Submodule.mem_annihilator_span_singleton]
+          using this
+      exact (show Ideal.span _ ≤ _ by
+          simpa only [Ideal.span_le, Set.range_subset_iff, Submodule.mem_annihilator_span_singleton,
+            SetLike.mem_coe])
+        ht₂
     · apply le_antisymm <;> simp only [Ideal.submodule_span_eq, Ideal.mem_span_singleton, ht₂,
         Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Set.range_subset_iff]
       intro s
       use 1 ⊗ₜ[R] s - s ⊗ₜ[R] 1
       linear_combination ht₁ s
 
-lemma finite_of_free_aux (I) [DecidableEq I] (b : Basis I R S)
-    (f : I →₀ S) (x : S) (a : I → I →₀ R) (ha : a = fun i ↦ b.repr (b i * x)) :
-    (1 ⊗ₜ[R] x * Finsupp.sum f fun i y ↦ y ⊗ₜ[R] b i) =
-      Finset.sum (f.support.biUnion fun i ↦ (a i).support) fun k ↦
-      Finsupp.sum (b.repr (f.sum fun i y ↦ a i k • y)) fun j c ↦ c • b j ⊗ₜ[R] b k := by
+lemma finite_of_free_aux
+    (I) [DecidableEq I]
+    (b : Basis I R S)
+    (f : I →₀ S)
+    (x : S) (a : I → I →₀ R) (ha : a = fun i ↦ b.repr (b i * x))
+    : (1 ⊗ₜ[R] x * Finsupp.sum f fun i y ↦ y ⊗ₜ[R] b i)
+      = Finset.sum (f.support.biUnion fun i ↦ (a i).support) fun k ↦
+        Finsupp.sum (b.repr (f.sum fun i y ↦ a i k • y)) fun j c ↦ c • b j ⊗ₜ[R] b k := by
   rw [Finsupp.sum, Finset.mul_sum]
   subst ha
   let a i := b.repr (b i * x)
@@ -99,16 +105,18 @@ lemma finite_of_free_aux (I) [DecidableEq I] (b : Basis I R S)
   conv_lhs => simp only [Finsupp.linearCombination, Finsupp.coe_lsum,
     LinearMap.coe_smulRight, LinearMap.id_coe, id_eq, Finsupp.sum, TensorProduct.tmul_sum,
     ← TensorProduct.smul_tmul]
-  have h₁ : ∀ k,
-    (Finsupp.sum (Finsupp.sum f fun i y ↦ a i k • b.repr y) fun j z ↦ z • b j ⊗ₜ[R] b k) =
-      (f.sum fun i y ↦ (b.repr y).sum fun j z ↦ a i k • z • b j ⊗ₜ[R] b k) := by
+  have h₁
+      : ∀ k,
+        (Finsupp.sum (Finsupp.sum f fun i y ↦ a i k • b.repr y) fun j z ↦ z • b j ⊗ₜ[R] b k)
+          = (f.sum fun i y ↦ (b.repr y).sum fun j z ↦ a i k • z • b j ⊗ₜ[R] b k) := by
     intro i
     rw [Finsupp.sum_sum_index]
     · congr
       ext j s
       rw [Finsupp.sum_smul_index]
       · simp only [mul_smul, Finsupp.sum, ← Finset.smul_sum]
-      intro; simp only [zero_smul]
+      intro
+      simp only [zero_smul]
     · intro; simp only [zero_smul]
     · intros; simp only [add_smul]
   have h₂ : ∀ (x : S), ((b.repr x).support.sum fun a ↦ b.repr x a • b a) = x := by
@@ -136,22 +144,16 @@ A finite-type `R`-algebra `S` is (formally) unramified iff there exists a `t : S
 See `Algebra.FormallyUnramified.iff_exists_tensorProduct`.
 This is the choice of such a `t`.
 -/
-noncomputable
-def elem : S ⊗[R] S :=
-  (iff_exists_tensorProduct.mp inferInstance).choose
+noncomputable def elem : S ⊗[R] S := (iff_exists_tensorProduct.mp inferInstance).choose
 
-lemma one_tmul_sub_tmul_one_mul_elem
-    (s : S) : (1 ⊗ₜ s - s ⊗ₜ 1) * elem R S = 0 :=
+lemma one_tmul_sub_tmul_one_mul_elem (s : S) : (1 ⊗ₜ s - s ⊗ₜ 1) * elem R S = 0 :=
   (iff_exists_tensorProduct.mp inferInstance).choose_spec.1 s
 
-lemma one_tmul_mul_elem
-    (s : S) : (1 ⊗ₜ s) * elem R S = (s ⊗ₜ 1) * elem R S := by
+lemma one_tmul_mul_elem (s : S) : (1 ⊗ₜ s) * elem R S = (s ⊗ₜ 1) * elem R S := by
   rw [← sub_eq_zero, ← sub_mul, one_tmul_sub_tmul_one_mul_elem]
 
-lemma lmul_elem :
-    TensorProduct.lmul' R (elem R S) = 1 :=
+lemma lmul_elem : TensorProduct.lmul' R (elem R S) = 1 :=
   (iff_exists_tensorProduct.mp inferInstance).choose_spec.2
-
 
 variable (R S)
 
@@ -177,13 +179,16 @@ lemma finite_of_free [Module.Free R S] : Module.Finite R S := by
   rintro x -
   let a : I → I →₀ R := fun i ↦ b.repr (b i * x)
   -- Consider `F` such that `fⱼx = ∑ Fᵢⱼbⱼ`.
-  let F : I →₀ I →₀ R := Finsupp.onFinset f.support (fun j ↦ b.repr (x * f j))
-    (fun j ↦ not_imp_comm.mp fun hj ↦ by simp [Finsupp.notMem_support_iff.mp hj])
-  have hG : ∀ j ∉ (Finset.biUnion f.support fun i ↦ (a i).support),
-      b.repr (f.sum (fun i y ↦ a i j • y)) = 0 := by
+  let F : I →₀ I →₀ R :=
+    Finsupp.onFinset f.support
+      (fun j ↦ b.repr (x * f j))
+      (fun j ↦ not_imp_comm.mp fun hj ↦ by simp [Finsupp.notMem_support_iff.mp hj])
+  have hG
+      : ∀ j ∉ (Finset.biUnion f.support fun i ↦ (a i).support),
+        b.repr (f.sum (fun i y ↦ a i j • y)) = 0 := by
     intro j hj
-    simp only [Finset.mem_biUnion, Finsupp.mem_support_iff, ne_eq, not_exists, not_and,
-      not_not] at hj
+    simp only [Finset.mem_biUnion, Finsupp.mem_support_iff, ne_eq, not_exists, not_and, not_not]
+      at hj
     simp only [Finsupp.sum]
     trans b.repr (f.support.sum (fun _ ↦ 0))
     · congr! with i hi
@@ -191,17 +196,18 @@ lemma finite_of_free [Module.Free R S] : Module.Finite R S := by
       rw [hj i hi, zero_smul]
     · simp only [Finset.sum_const_zero, map_zero]
   -- And `G` such that `∑ₛ aᵢⱼfᵢ = ∑ Gᵢⱼbⱼ`, where `aᵢⱼ` are the coefficients `bᵢx = ∑ aᵢⱼbⱼ`.
-  let G : I →₀ I →₀ R := Finsupp.onFinset (Finset.biUnion f.support (fun i ↦ (a i).support))
-    (fun j ↦ b.repr (f.sum (fun i y ↦ a i j • y)))
-    (fun j ↦ not_imp_comm.mp (hG j))
+  let G : I →₀ I →₀ R :=
+    Finsupp.onFinset (Finset.biUnion f.support (fun i ↦ (a i).support))
+      (fun j ↦ b.repr (f.sum (fun i y ↦ a i j • y)))
+      (fun j ↦ not_imp_comm.mp (hG j))
   -- Then `∑ Fᵢⱼ(bⱼ ⊗ bᵢ) = ∑ fⱼx ⊗ bᵢ = ∑ fⱼ ⊗ xbᵢ = ∑ aᵢⱼ(fⱼ ⊗ bᵢ) = ∑ Gᵢⱼ(bⱼ ⊗ bᵢ)`.
   -- Since `bⱼ ⊗ bᵢ` forms an `R`-basis of `S ⊗ S`, we conclude that `F = G`.
   have : F = G := by
     apply Finsupp.curryEquiv.symm.injective
     apply (Finsupp.equivCongrLeft (Equiv.prodComm I I)).injective
     apply (b.tensorProduct b).repr.symm.injective
-    suffices (F.sum fun a f ↦ f.sum fun b' c ↦ c • b b' ⊗ₜ[R] b a) =
-        G.sum fun a f ↦ f.sum fun b' c ↦ c • b b' ⊗ₜ[R] b a by
+    suffices (F.sum fun a f ↦ f.sum fun b' c ↦ c • b b' ⊗ₜ[R] b a)
+        = G.sum fun a f ↦ f.sum fun b' c ↦ c • b b' ⊗ₜ[R] b a by
       simpa [Finsupp.linearCombination_apply, Finsupp.sum_uncurry_index]
     have : ∀ i, ((b.repr (x * f i)).sum fun j k ↦ k • b j ⊗ₜ[R] b i) = (x * f i) ⊗ₜ[R] b i := by
       intro i
@@ -222,10 +228,12 @@ lemma finite_of_free [Module.Free R S] : Module.Finite R S := by
     congrm $this j
   -- Since `∑ₛ fⱼbⱼ = 1`, `x = ∑ₛ aᵢⱼfᵢbⱼ` is indeed in the span of `{ fᵢbⱼ | i, j ∈ s }`.
   rw [← mul_one x, ← @lmul_elem R, hf, map_finsuppSum, Finsupp.sum, Finset.mul_sum]
-  simp only [TensorProduct.lmul'_apply_tmul, Finset.coe_image₂, ← mul_assoc, this,
-    Finsupp.sum, Finset.sum_mul, smul_mul_assoc]
-  apply Submodule.sum_mem; intro i hi
-  apply Submodule.sum_mem; intro j hj
+  simp only [TensorProduct.lmul'_apply_tmul, Finset.coe_image₂, ← mul_assoc, this, Finsupp.sum,
+    Finset.sum_mul, smul_mul_assoc]
+  apply Submodule.sum_mem
+  intro i hi
+  apply Submodule.sum_mem
+  intro j hj
   apply Submodule.smul_mem
   apply Submodule.subset_span
   use j, hj, i, hi
@@ -233,12 +241,13 @@ lemma finite_of_free [Module.Free R S] : Module.Finite R S := by
 /--
 Proposition I.2.3 of [iversen]
 If `S` is an unramified `R`-algebra, and `M` is an `S`-module, then the map
-`S ⊗[R] M →ₗ[S] M` taking `(b, m) ↦ b • m` admits an `S`-linear section. -/
-noncomputable
-def sec :
-    M →ₗ[S] S ⊗[R] M where
-  __ := ((TensorProduct.AlgebraTensorModule.mapBilinear R S S S S S M
-    LinearMap.id).flip (elem R S)).comp (lsmul R R M).toLinearMap.flip
+`S ⊗[R] M →ₗ[S] M` taking `(b, m) ↦ b • m` admits an `S`-linear section.
+-/
+noncomputable def sec : M →ₗ[S] S ⊗[R] M where
+  __ :=
+    ((TensorProduct.AlgebraTensorModule.mapBilinear R S S S S S M LinearMap.id).flip
+        (elem R S)).comp
+      (lsmul R R M).toLinearMap.flip
   map_smul' r m := by
     simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, LinearMap.coe_comp, Function.comp_apply,
       LinearMap.flip_apply, TensorProduct.AlgebraTensorModule.mapBilinear_apply, RingHom.id_apply]
@@ -254,13 +263,14 @@ def sec :
       · simp [TensorProduct.smul_tmul']
       · simp only [map_add, smul_add, mul_add, *]
 
-lemma comp_sec :
-    (TensorProduct.AlgebraTensorModule.lift
-      ((lsmul S S M).toLinearMap.flip.restrictScalars R).flip).comp (sec R S M) =
-      LinearMap.id := by
+lemma comp_sec
+    : (TensorProduct.AlgebraTensorModule.lift ((lsmul S S M).toLinearMap.flip.restrictScalars
+          R).flip).comp
+        (sec R S M)
+      = LinearMap.id := by
   ext x
-  simp only [sec, LinearMap.coe_comp, LinearMap.coe_mk, LinearMap.coe_toAddHom,
-    Function.comp_apply, LinearMap.flip_apply, TensorProduct.AlgebraTensorModule.mapBilinear_apply,
+  simp only [sec, LinearMap.coe_comp, LinearMap.coe_mk, LinearMap.coe_toAddHom, Function.comp_apply,
+    LinearMap.flip_apply, TensorProduct.AlgebraTensorModule.mapBilinear_apply,
     TensorProduct.AlgebraTensorModule.lift_apply, LinearMap.id_coe, id_eq]
   trans (TensorProduct.lmul' R (elem R S)) • x
   · induction elem R S using TensorProduct.inductionOn with

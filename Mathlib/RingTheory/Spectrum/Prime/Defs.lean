@@ -25,11 +25,13 @@ which is constructed in `AlgebraicGeometry.StructureSheaf`.)
 
 @[expose] public section
 
-/-- The prime spectrum of a commutative (semi)ring `R` is the type of all prime ideals of `R`.
+/--
+The prime spectrum of a commutative (semi)ring `R` is the type of all prime ideals of `R`.
 
 It is naturally endowed with a topology (the Zariski topology),
 and a sheaf of commutative rings (see `Mathlib/AlgebraicGeometry/StructureSheaf.lean`).
-It is a fundamental building block in algebraic geometry. -/
+It is a fundamental building block in algebraic geometry.
+-/
 @[ext]
 structure PrimeSpectrum (R : Type*) [CommSemiring R] where
   asIdeal : Ideal R
@@ -52,16 +54,13 @@ variable {R : Type*} [CommSemiring R]
 instance : Coe (PrimeSpectrum R) (Ideal R) where
   coe P := P.asIdeal
 
-instance : PartialOrder (PrimeSpectrum R) :=
-  PartialOrder.lift asIdeal (@PrimeSpectrum.ext _ _)
+instance : PartialOrder (PrimeSpectrum R) := PartialOrder.lift asIdeal (@PrimeSpectrum.ext _ _)
 
 @[simp]
-theorem asIdeal_le_asIdeal (x y : PrimeSpectrum R) : x.asIdeal ≤ y.asIdeal ↔ x ≤ y :=
-  Iff.rfl
+theorem asIdeal_le_asIdeal (x y : PrimeSpectrum R) : x.asIdeal ≤ y.asIdeal ↔ x ≤ y := Iff.rfl
 
 @[simp]
-theorem asIdeal_lt_asIdeal (x y : PrimeSpectrum R) : x.asIdeal < y.asIdeal ↔ x < y :=
-  Iff.rfl
+theorem asIdeal_lt_asIdeal (x y : PrimeSpectrum R) : x.asIdeal < y.asIdeal ↔ x < y := Iff.rfl
 
 variable (R) in
 /-- The prime spectrum is in bijection with the set of prime ideals. -/

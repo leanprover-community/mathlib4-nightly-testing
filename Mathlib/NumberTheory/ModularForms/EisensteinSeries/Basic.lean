@@ -30,10 +30,12 @@ open EisensteinSeries CongruenceSubgroup
 
 open scoped MatrixGroups
 
-/-- This defines Eisenstein series as modular forms of weight `k`, level `Γ(N)` and congruence
-condition given by `a : Fin 2 → ZMod N`. -/
-def eisensteinSeriesMF {k : ℤ} {N : ℕ} [NeZero N] (hk : 3 ≤ k) (a : Fin 2 → ZMod N) :
-    ModularForm Γ(N) k where
+/--
+This defines Eisenstein series as modular forms of weight `k`, level `Γ(N)` and congruence
+condition given by `a : Fin 2 → ZMod N`.
+-/
+def eisensteinSeriesMF {k : ℤ} {N : ℕ} [NeZero N] (hk : 3 ≤ k) (a : Fin 2 → ZMod N)
+    : ModularForm (Γ(N)) k where
   toFun := eisensteinSeriesSIF a k
   slash_action_eq' := (eisensteinSeriesSIF a k).slash_action_eq'
   holo' := eisensteinSeriesSIF_mdifferentiable hk a
@@ -42,8 +44,10 @@ def eisensteinSeriesMF {k : ℤ} {N : ℕ} [NeZero N] (hk : 3 ≤ k) (a : Fin 2 
     rw [OnePoint.isBoundedAt_iff_forall_SL2Z hc]
     exact fun γ hγ ↦ isBoundedAtImInfty_eisensteinSeriesSIF a hk γ
 
-/-- Normalised Eisenstein series of level 1 and weight `k`,
-here they have been scaled by `1/2` since we sum over coprime pairs. -/
+/--
+Normalised Eisenstein series of level 1 and weight `k`,
+here they have been scaled by `1/2` since we sum over coprime pairs.
+-/
 def E {k : ℕ} (hk : 3 ≤ k) : ModularForm 𝒮ℒ k :=
   ((1 / 2 : ℂ) • eisensteinSeriesMF (mod_cast hk) 0).copy _ rfl Gamma_one_coe_eq_SL.symm
 

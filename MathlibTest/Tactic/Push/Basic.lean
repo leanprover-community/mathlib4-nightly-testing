@@ -72,15 +72,13 @@ example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 :
   push fun x ↦ _
   with_reducible rfl
 
-example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by
-  simp only [pushFun]
+example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by simp only [pushFun]
 
 example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by
   pull fun _ ↦ _
   with_reducible rfl
 
-example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by
-  simp only [pullFun]
+example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by simp only [pullFun]
 
 end lambda
 
@@ -116,7 +114,7 @@ section membership
 
 example (x : Nat) (A : Set Nat) : x ∈ ∅ ∪ Set.univ ∩ ({a | a = 4} \ Aᶜ) := by
   push _ ∈ _
-  guard_target =ₛ (False ∨ True ∧ x = 4 ∧ ¬x ∉ A)
+  guard_target =ₛ (False ∨ True ∧ x = 4 ∧ ¬ x ∉ A)
   exact test_sorry
 
 example (A : Set Nat) : A ∈ 𝒫 A := by
@@ -153,7 +151,7 @@ example (x : Nat) (A B C : Set Nat) : x ∈ A ∧ ¬ x ∈ B ∨ x ∈ C := by
 
 example (a b c : α) (s : Set α) : a ∈ (∅ ∪ (Set.univ ∩ (({b, c} \ sᶜᶜ) ∪ {b | b = a}))) := by
   push _ ∈ _
-  guard_target =ₛ False ∨ True ∧ ((a = b ∨ a = c) ∧ ¬¬a ∉ s ∨ a = a)
+  guard_target =ₛ False ∨ True ∧ ((a = b ∨ a = c) ∧ ¬ ¬ a ∉ s ∨ a = a)
   exact test_sorry
 
 end membership

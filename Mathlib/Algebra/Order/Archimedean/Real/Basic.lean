@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.Pointwise.Set.Basic
 public import Mathlib.Algebra.Order.Archimedean.Basic
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Order.Interval.Set.Disjoint
-
 import Mathlib.Algebra.Order.Group.Pointwise.CompleteLattice
 import Mathlib.Order.Int.LeastGreatest
 
@@ -34,8 +33,7 @@ instance instArchimedean : Archimedean ℝ :=
       let ⟨M, _, H⟩ := f.bounded' 0
       ⟨M, mk_le_of_forall_le ⟨0, fun i _ => Rat.cast_le.2 <| le_of_lt (abs_lt.1 (H i)).2⟩⟩
 
-noncomputable instance : FloorRing ℝ :=
-  Archimedean.floorRing _
+noncomputable instance : FloorRing ℝ := Archimedean.floorRing _
 
 theorem isCauSeq_iff_lift {f : ℕ → ℚ} : IsCauSeq abs f ↔ IsCauSeq abs fun i => (f i : ℝ) where
   mp H ε ε0 :=
@@ -44,13 +42,12 @@ theorem isCauSeq_iff_lift {f : ℕ → ℚ} : IsCauSeq abs f ↔ IsCauSeq abs fu
   mpr H ε ε0 :=
     (H _ (Rat.cast_pos.2 ε0)).imp fun i hi j ij => by dsimp at hi; exact mod_cast hi _ ij
 
-theorem of_near (f : ℕ → ℚ) (x : ℝ) (h : ∀ ε > 0, ∃ i, ∀ j ≥ i, |(f j : ℝ) - x| < ε) :
-    ∃ h', Real.mk ⟨f, h'⟩ = x :=
-  ⟨isCauSeq_iff_lift.2 (CauSeq.of_near _ (const abs x) h),
-    sub_eq_zero.1 <|
-      abs_eq_zero.1 <|
-        (eq_of_le_of_forall_lt_imp_le_of_dense (abs_nonneg _)) fun _ε ε0 =>
-          mk_near_of_forall_near <| (h _ ε0).imp fun _i h j ij => le_of_lt (h j ij)⟩
+theorem of_near (f : ℕ → ℚ) (x : ℝ) (h : ∀ ε > 0, ∃ i, ∀ j ≥ i, |(f j : ℝ) - x| < ε)
+    : ∃ h', Real.mk ⟨f, h'⟩ = x := ⟨
+  isCauSeq_iff_lift.2 (CauSeq.of_near _ (const abs x) h),
+  sub_eq_zero.1 <| abs_eq_zero.1 <| (eq_of_le_of_forall_lt_imp_le_of_dense (abs_nonneg _))
+    fun _ε ε0 => mk_near_of_forall_near <| (h _ ε0).imp fun _i h j ij => le_of_lt (h j ij)
+⟩
 
 theorem exists_isLUB (hne : s.Nonempty) (hbdd : BddAbove s) : ∃ x, IsLUB s x := by
   rcases hne, hbdd with ⟨⟨L, hL⟩, ⟨U, hU⟩⟩
@@ -97,11 +94,12 @@ theorem exists_isLUB (hne : s.Nonempty) (hbdd : BddAbove s) : ∃ x, IsLUB s x :
     have n0 : 0 < n := Nat.cast_pos.1 ((inv_pos.2 xz).trans_le hK)
     refine le_trans ?_ (hf₂ _ n0 _ xS).le
     rwa [le_sub_comm, inv_le_comm₀ (Nat.cast_pos.2 n0 : (_ : ℝ) < _) xz]
-  · exact
-      mk_le_of_forall_le
-        ⟨1, fun n n1 =>
-          let ⟨x, xS, hx⟩ := hf₁ _ n1
-          le_trans hx (h xS)⟩
+  · exact mk_le_of_forall_le ⟨
+      1,
+      fun n n1 =>
+        let ⟨x, xS, hx⟩ := hf₁ _ n1
+        le_trans hx (h xS)
+    ⟩
 
 /-- A nonempty, bounded below set of real numbers has a greatest lower bound. -/
 theorem exists_isGLB (hne : s.Nonempty) (hbdd : BddBelow s) : ∃ x, IsGLB s x := by
@@ -116,18 +114,17 @@ noncomputable instance : SupSet ℝ :=
   ⟨fun s => if h : s.Nonempty ∧ BddAbove s then Classical.choose (exists_isLUB h.1 h.2) else 0⟩
 
 open scoped Classical in
-theorem sSup_def (s : Set ℝ) :
-    sSup s = if h : s.Nonempty ∧ BddAbove s then Classical.choose (exists_isLUB h.1 h.2) else 0 :=
+theorem sSup_def (s : Set ℝ)
+    : sSup s = if h : s.Nonempty ∧ BddAbove s then Classical.choose (exists_isLUB h.1 h.2) else 0 :=
   rfl
 
 protected theorem isLUB_sSup (h₁ : s.Nonempty) (h₂ : BddAbove s) : IsLUB s (sSup s) := by
   simp only [sSup_def, dite_eq_left (And.intro h₁ h₂)]
   apply Classical.choose_spec
 
-noncomputable instance : InfSet ℝ :=
-  ⟨fun s => -sSup (-s)⟩
+noncomputable instance : InfSet ℝ := ⟨fun s => - sSup (-s)⟩
 
-theorem sInf_def (s : Set ℝ) : sInf s = -sSup (-s) := rfl
+theorem sInf_def (s : Set ℝ) : sInf s = - sSup (-s) := rfl
 
 protected theorem isGLB_sInf (h₁ : s.Nonempty) (h₂ : BddBelow s) : IsGLB s (sInf s) := by
   rw [sInf_def, ← isLUB_neg', neg_neg]
@@ -148,31 +145,27 @@ theorem lt_sInf_add_pos (h : s.Nonempty) {ε : ℝ} (hε : 0 < ε) : ∃ a ∈ s
 theorem add_neg_lt_sSup (h : s.Nonempty) {ε : ℝ} (hε : ε < 0) : ∃ a ∈ s, sSup s + ε < a :=
   exists_lt_of_lt_csSup h <| add_lt_of_neg_right _ hε
 
-theorem sInf_le_iff (h : BddBelow s) (h' : s.Nonempty) :
-    sInf s ≤ a ↔ ∀ ε, 0 < ε → ∃ x ∈ s, x < a + ε := by
+theorem sInf_le_iff (h : BddBelow s) (h' : s.Nonempty)
+    : sInf s ≤ a ↔ ∀ ε, 0 < ε → ∃ x ∈ s, x < a + ε := by
   rw [le_iff_forall_pos_lt_add]
   constructor <;> intro H ε ε_pos
   · exact exists_lt_of_csInf_lt h' (H ε ε_pos)
   · rcases H ε ε_pos with ⟨x, x_in, hx⟩
     exact csInf_lt_of_lt h x_in hx
 
-theorem le_sSup_iff (h : BddAbove s) (h' : s.Nonempty) :
-    a ≤ sSup s ↔ ∀ ε, ε < 0 → ∃ x ∈ s, a + ε < x := by
+theorem le_sSup_iff (h : BddAbove s) (h' : s.Nonempty)
+    : a ≤ sSup s ↔ ∀ ε, ε < 0 → ∃ x ∈ s, a + ε < x := by
   rw [le_iff_forall_pos_lt_add]
   refine ⟨fun H ε ε_neg => ?_, fun H ε ε_pos => ?_⟩
   · exact exists_lt_of_lt_csSup h' (lt_sub_iff_add_lt.mp (H _ (neg_pos.mpr ε_neg)))
   · rcases H _ (neg_lt_zero.mpr ε_pos) with ⟨x, x_in, hx⟩
     exact sub_lt_iff_lt_add.mp (lt_csSup_of_lt h x_in hx)
 
-@[simp]
-theorem sSup_empty : sSup (∅ : Set ℝ) = 0 :=
-  dite_eq_right <| by simp
+@[simp] theorem sSup_empty : sSup (∅ : Set ℝ) = 0 := dite_eq_right <| by simp
 
-theorem sInf_univ : sInf (@Set.univ ℝ) = 0 := by
-  simp [sInf_def]
+theorem sInf_univ : sInf (@Set.univ ℝ) = 0 := by simp [sInf_def]
 
-lemma iSup_of_isEmpty [IsEmpty ι] (f : ι → ℝ) : ⨆ i, f i = 0 := by
-  simp
+lemma iSup_of_isEmpty [IsEmpty ι] (f : ι → ℝ) : ⨆ i, f i = 0 := by simp
 
 @[simp]
 theorem iSup_const_zero : ⨆ _ : ι, (0 : ℝ) = 0 := by
@@ -180,16 +173,14 @@ theorem iSup_const_zero : ⨆ _ : ι, (0 : ℝ) = 0 := by
   · exact Real.iSup_of_isEmpty _
   · exact ciSup_const
 
-lemma sSup_of_not_bddAbove (hs : ¬BddAbove s) : sSup s = 0 := dite_eq_right fun h => hs h.2
-lemma iSup_of_not_bddAbove (hf : ¬BddAbove (Set.range f)) : ⨆ i, f i = 0 := sSup_of_not_bddAbove hf
+lemma sSup_of_not_bddAbove (hs : ¬ BddAbove s) : sSup s = 0 := dite_eq_right fun h => hs h.2
+lemma iSup_of_not_bddAbove (hf : ¬ BddAbove (Set.range f)) : ⨆ i, f i = 0 := sSup_of_not_bddAbove hf
 
 theorem sSup_univ : sSup (@Set.univ ℝ) = 0 := Real.sSup_of_not_bddAbove not_bddAbove_univ
 
-@[simp]
-theorem sInf_empty : sInf (∅ : Set ℝ) = 0 := by simp [sInf_def, sSup_empty]
+@[simp] theorem sInf_empty : sInf (∅ : Set ℝ) = 0 := by simp [sInf_def, sSup_empty]
 
-lemma iInf_of_isEmpty [IsEmpty ι] (f : ι → ℝ) : ⨅ i, f i = 0 := by
-  simp
+lemma iInf_of_isEmpty [IsEmpty ι] (f : ι → ℝ) : ⨅ i, f i = 0 := by simp
 
 @[simp]
 theorem iInf_const_zero : ⨅ _ : ι, (0 : ℝ) = 0 := by
@@ -197,117 +188,150 @@ theorem iInf_const_zero : ⨅ _ : ι, (0 : ℝ) = 0 := by
   · exact Real.iInf_of_isEmpty _
   · exact ciInf_const
 
-theorem sInf_of_not_bddBelow (hs : ¬BddBelow s) : sInf s = 0 :=
+theorem sInf_of_not_bddBelow (hs : ¬ BddBelow s) : sInf s = 0 :=
   neg_eq_zero.2 <| sSup_of_not_bddAbove <| mt bddAbove_neg.1 hs
 
-theorem iInf_of_not_bddBelow (hf : ¬BddBelow (Set.range f)) : ⨅ i, f i = 0 :=
+theorem iInf_of_not_bddBelow (hf : ¬ BddBelow (Set.range f)) : ⨅ i, f i = 0 :=
   sInf_of_not_bddBelow hf
 
 @[simp]
-theorem sSup_neg (s : Set ℝ) : sSup (-s) = -sInf s := by
-  obtain rfl | hn := s.eq_empty_or_nonempty; · simp
+theorem sSup_neg (s : Set ℝ) : sSup (-s) = - sInf s := by
+  obtain rfl | hn := s.eq_empty_or_nonempty
+  · simp
   by_cases hb : BddBelow s
   · rw [csSup_neg hn hb]
   · rw [csInf_of_not_bddBelow hb, Real.sInf_empty, csSup_of_not_bddAbove (bddAbove_neg.not.2 hb),
       Real.sSup_empty, neg_zero]
 
 @[simp]
-theorem sInf_neg (s : Set ℝ) : sInf (-s) = -sSup s := by
+theorem sInf_neg (s : Set ℝ) : sInf (-s) = - sSup s := by
   rw [← neg_eq_iff_eq_neg, ← Real.sSup_neg, neg_neg]
 
-/-- As `sSup s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
+/--
+As `sSup s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
 are at most some nonnegative number `a` to show that `sSup s ≤ a`.
 
-See also `csSup_le`. -/
+See also `csSup_le`.
+-/
 protected lemma sSup_le (hs : ∀ x ∈ s, x ≤ a) (ha : 0 ≤ a) : sSup s ≤ a := by
   obtain rfl | hs' := s.eq_empty_or_nonempty
   exacts [sSup_empty.trans_le ha, csSup_le hs' hs]
 
-/-- As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty, it suffices to show
+/--
+As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty, it suffices to show
 that all values of `f` are at most some nonnegative number `a` to show that `⨆ i, f i ≤ a`.
 
-See also `ciSup_le`. -/
+See also `ciSup_le`.
+-/
 protected lemma iSup_le (hf : ∀ i, f i ≤ a) (ha : 0 ≤ a) : ⨆ i, f i ≤ a :=
   Real.sSup_le (Set.forall_mem_range.2 hf) ha
 
-/-- As `sInf s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
+/--
+As `sInf s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
 are at least some nonpositive number `a` to show that `a ≤ sInf s`.
 
-See also `le_csInf`. -/
+See also `le_csInf`.
+-/
 protected lemma le_sInf (hs : ∀ x ∈ s, a ≤ x) (ha : a ≤ 0) : a ≤ sInf s := by
   obtain rfl | hs' := s.eq_empty_or_nonempty
   exacts [ha.trans_eq sInf_empty.symm, le_csInf hs' hs]
 
-/-- As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty, it suffices to show
+/--
+As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty, it suffices to show
 that all values of `f` are at least some nonpositive number `a` to show that `a ≤ ⨅ i, f i`.
 
-See also `le_ciInf`. -/
+See also `le_ciInf`.
+-/
 protected lemma le_iInf (hf : ∀ i, a ≤ f i) (ha : a ≤ 0) : a ≤ ⨅ i, f i :=
   Real.le_sInf (Set.forall_mem_range.2 hf) ha
 
-/-- As `sSup s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
-are nonpositive to show that `sSup s ≤ 0`. -/
+/--
+As `sSup s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
+are nonpositive to show that `sSup s ≤ 0`.
+-/
 lemma sSup_nonpos (hs : ∀ x ∈ s, x ≤ 0) : sSup s ≤ 0 := Real.sSup_le hs le_rfl
 
-/-- As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty,
-it suffices to show that all values of `f` are nonpositive to show that `⨆ i, f i ≤ 0`. -/
+/--
+As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty,
+it suffices to show that all values of `f` are nonpositive to show that `⨆ i, f i ≤ 0`.
+-/
 lemma iSup_nonpos (hf : ∀ i, f i ≤ 0) : ⨆ i, f i ≤ 0 := Real.iSup_le hf le_rfl
 
-/-- As `sInf s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
-are nonnegative to show that `0 ≤ sInf s`. -/
+/--
+As `sInf s = 0` when `s` is an empty set of reals, it suffices to show that all elements of `s`
+are nonnegative to show that `0 ≤ sInf s`.
+-/
 lemma sInf_nonneg (hs : ∀ x ∈ s, 0 ≤ x) : 0 ≤ sInf s := Real.le_sInf hs le_rfl
 
-/-- As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty,
-it suffices to show that all values of `f` are nonnegative to show that `0 ≤ ⨅ i, f i`. -/
+/--
+As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty,
+it suffices to show that all values of `f` are nonnegative to show that `0 ≤ ⨅ i, f i`.
+-/
 lemma iInf_nonneg (hf : ∀ i, 0 ≤ f i) : 0 ≤ iInf f := Real.le_iInf hf le_rfl
 
-/-- As `sSup s = 0` when `s` is a set of reals that's unbounded above, it suffices to show that `s`
-contains a nonnegative element to show that `0 ≤ sSup s`. -/
+/--
+As `sSup s = 0` when `s` is a set of reals that's unbounded above, it suffices to show that `s`
+contains a nonnegative element to show that `0 ≤ sSup s`.
+-/
 lemma sSup_nonneg' (hs : ∃ x ∈ s, 0 ≤ x) : 0 ≤ sSup s := by
   classical
   obtain ⟨x, hxs, hx⟩ := hs
   exact dite _ (fun h ↦ le_csSup_of_le h hxs hx) fun h ↦ (sSup_of_not_bddAbove h).ge
 
-/-- As `⨆ i, f i = 0` when the real-valued function `f` is unbounded above,
-it suffices to show that `f` takes a nonnegative value to show that `0 ≤ ⨆ i, f i`. -/
+/--
+As `⨆ i, f i = 0` when the real-valued function `f` is unbounded above,
+it suffices to show that `f` takes a nonnegative value to show that `0 ≤ ⨆ i, f i`.
+-/
 lemma iSup_nonneg' (hf : ∃ i, 0 ≤ f i) : 0 ≤ ⨆ i, f i := sSup_nonneg' <| Set.exists_range_iff.2 hf
 
-/-- As `sInf s = 0` when `s` is a set of reals that's unbounded below, it suffices to show that `s`
-contains a nonpositive element to show that `sInf s ≤ 0`. -/
+/--
+As `sInf s = 0` when `s` is a set of reals that's unbounded below, it suffices to show that `s`
+contains a nonpositive element to show that `sInf s ≤ 0`.
+-/
 lemma sInf_nonpos' (hs : ∃ x ∈ s, x ≤ 0) : sInf s ≤ 0 := by
   classical
   obtain ⟨x, hxs, hx⟩ := hs
   exact dite _ (fun h ↦ csInf_le_of_le h hxs hx) fun h ↦ (sInf_of_not_bddBelow h).le
 
-/-- As `⨅ i, f i = 0` when the real-valued function `f` is unbounded below,
-it suffices to show that `f` takes a nonpositive value to show that `0 ≤ ⨅ i, f i`. -/
+/--
+As `⨅ i, f i = 0` when the real-valued function `f` is unbounded below,
+it suffices to show that `f` takes a nonpositive value to show that `0 ≤ ⨅ i, f i`.
+-/
 lemma iInf_nonpos' (hf : ∃ i, f i ≤ 0) : ⨅ i, f i ≤ 0 := sInf_nonpos' <| Set.exists_range_iff.2 hf
 
-/-- As `sSup s = 0` when `s` is a set of reals that's either empty or unbounded above,
-it suffices to show that all elements of `s` are nonnegative to show that `0 ≤ sSup s`. -/
+/--
+As `sSup s = 0` when `s` is a set of reals that's either empty or unbounded above,
+it suffices to show that all elements of `s` are nonnegative to show that `0 ≤ sSup s`.
+-/
 lemma sSup_nonneg (hs : ∀ x ∈ s, 0 ≤ x) : 0 ≤ sSup s := by
   obtain rfl | ⟨x, hx⟩ := s.eq_empty_or_nonempty
   · exact sSup_empty.ge
   · exact sSup_nonneg' ⟨x, hx, hs _ hx⟩
 
-/-- As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty or unbounded above,
-it suffices to show that all values of `f` are nonnegative to show that `0 ≤ ⨆ i, f i`. -/
+/--
+As `⨆ i, f i = 0` when the domain of the real-valued function `f` is empty or unbounded above,
+it suffices to show that all values of `f` are nonnegative to show that `0 ≤ ⨆ i, f i`.
+-/
 lemma iSup_nonneg (hf : ∀ i, 0 ≤ f i) : 0 ≤ ⨆ i, f i := sSup_nonneg <| Set.forall_mem_range.2 hf
 
-lemma iSup_nonneg_of_nonnegHomClass {ι F α : Type*} [FunLike F α ℝ] [NonnegHomClass F α ℝ] (f : F)
-    (g : ι → α) :
-    0 ≤ ⨆ i, f (g i) :=
+lemma iSup_nonneg_of_nonnegHomClass
+    {ι F α : Type*} [FunLike F α ℝ] [NonnegHomClass F α ℝ] (f : F) (g : ι → α)
+    : 0 ≤ ⨆ i, f (g i) :=
   iSup_nonneg (fun i ↦ apply_nonneg f (g i))
 
-/-- As `sInf s = 0` when `s` is a set of reals that's either empty or unbounded below,
-it suffices to show that all elements of `s` are nonpositive to show that `sInf s ≤ 0`. -/
+/--
+As `sInf s = 0` when `s` is a set of reals that's either empty or unbounded below,
+it suffices to show that all elements of `s` are nonpositive to show that `sInf s ≤ 0`.
+-/
 lemma sInf_nonpos (hs : ∀ x ∈ s, x ≤ 0) : sInf s ≤ 0 := by
   obtain rfl | ⟨x, hx⟩ := s.eq_empty_or_nonempty
   · exact sInf_empty.le
   · exact sInf_nonpos' ⟨x, hx, hs _ hx⟩
 
-/-- As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty or unbounded below,
-it suffices to show that all values of `f` are nonpositive to show that `0 ≤ ⨅ i, f i`. -/
+/--
+As `⨅ i, f i = 0` when the domain of the real-valued function `f` is empty or unbounded below,
+it suffices to show that all values of `f` are nonpositive to show that `0 ≤ ⨅ i, f i`.
+-/
 lemma iInf_nonpos (hf : ∀ i, f i ≤ 0) : ⨅ i, f i ≤ 0 := sInf_nonpos <| Set.forall_mem_range.2 hf
 
 theorem sInf_le_sSup (s : Set ℝ) (h₁ : BddBelow s) (h₂ : BddAbove s) : sInf s ≤ sSup s := by
@@ -333,15 +357,15 @@ theorem cauSeq_converges (f : CauSeq ℝ abs) : ∃ x, f ≈ const abs x := by
     rw [sub_apply, const_apply, add_comm, ← sub_sub, le_sub_iff_add_le, add_halves]
     exact ih _ ij
 
-instance : CauSeq.IsComplete ℝ abs :=
-  ⟨cauSeq_converges⟩
+instance : CauSeq.IsComplete ℝ abs := ⟨cauSeq_converges⟩
 
 open Set
 
-theorem iInf_Ioi_eq_iInf_rat_gt {f : ℝ → ℝ} (x : ℝ) (hf : BddBelow (f '' Ioi x))
-    (hf_mono : Monotone f) : ⨅ r : Ioi x, f r = ⨅ q : { q' : ℚ // x < q' }, f q := by
+theorem iInf_Ioi_eq_iInf_rat_gt
+    {f : ℝ → ℝ} (x : ℝ) (hf : BddBelow (f '' Ioi x)) (hf_mono : Monotone f)
+    : ⨅ r : Ioi x, f r = ⨅ q : { q' : ℚ // x < q' }, f q := by
   refine le_antisymm ?_ ?_
-  · have : Nonempty { r' : ℚ // x < ↑r' } := by
+  · have : Nonempty {r' : ℚ // x < ↑r'} := by
       obtain ⟨r, hrx⟩ := exists_rat_gt x
       exact ⟨⟨r, hrx⟩⟩
     refine le_ciInf fun r => ?_
@@ -361,13 +385,13 @@ theorem iInf_Ioi_eq_iInf_rat_gt {f : ℝ → ℝ} (x : ℝ) (hf : BddBelow (f ''
     · refine hf_mono (le_trans ?_ hyq.le)
       norm_cast
 
-theorem not_bddAbove_coe : ¬ (BddAbove <| range (fun (x : ℚ) ↦ (x : ℝ))) := by
+theorem not_bddAbove_coe : ¬(BddAbove <| range (fun (x : ℚ) ↦ (x : ℝ))) := by
   dsimp only [BddAbove, upperBounds]
   rw [Set.not_nonempty_iff_eq_empty]
   ext
   simpa using exists_rat_gt _
 
-theorem not_bddBelow_coe : ¬ (BddBelow <| range (fun (x : ℚ) ↦ (x : ℝ))) := by
+theorem not_bddBelow_coe : ¬(BddBelow <| range (fun (x : ℚ) ↦ (x : ℝ))) := by
   dsimp only [BddBelow, lowerBounds]
   rw [Set.not_nonempty_iff_eq_empty]
   ext
@@ -394,14 +418,14 @@ lemma exists_natCast_add_one_lt_pow_of_one_lt (ha : 1 < a) : ∃ m : ℕ, (m + 1
     lia
   use 2 * k ^ 2
   calc
-    ((2 * k ^ 2 : ℕ) + 1 : ℝ) ≤ 2 ^ (2 * k) := mod_cast Nat.two_mul_sq_add_one_le_two_pow_two_mul _
+    ((2 * k ^ 2 : ℕ) + 1 : ℝ)
+      ≤ 2 ^ (2 * k) := mod_cast Nat.two_mul_sq_add_one_le_two_pow_two_mul _
     _ = (1 / k * k + 1 : ℝ) ^ (2 * k) := by simp [posk.ne']; norm_num
     _ ≤ ((1 / k + 1) ^ k : ℝ) ^ (2 * k) := by gcongr; exact mul_add_one_le_add_one_pow (by simp) _
     _ = (1 / k + 1 : ℝ) ^ (2 * k ^ 2) := by rw [← pow_mul, mul_left_comm, sq]
     _ < a ^ (2 * k ^ 2) := by gcongr
 
-lemma exists_nat_pos_inv_lt {b : ℝ} (hb : 0 < b) :
-    ∃ (n : ℕ), 0 < n ∧ (n : ℝ)⁻¹ < b := by
+lemma exists_nat_pos_inv_lt {b : ℝ} (hb : 0 < b) : ∃ (n : ℕ), 0 < n ∧ (n : ℝ)⁻¹ < b := by
   refine (exists_nat_gt b⁻¹).imp fun k hk ↦ ?_
   have := (inv_pos_of_pos hb).trans hk
   refine ⟨Nat.cast_pos.mp this, ?_⟩

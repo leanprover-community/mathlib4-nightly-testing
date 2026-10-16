@@ -19,11 +19,9 @@ by a tactic that analyses the shape of `CommRing` and `RingHom`.
 
 @[expose] public section
 
-
 universe u v
 
 open CategoryTheory Limits
-
 
 namespace RingCat.Colimits
 
@@ -34,10 +32,10 @@ then taking the quotient by the ring laws within each ring,
 and the identifications given by the morphisms in the diagram.
 -/
 
-
 variable {J : Type v} [SmallCategory J] (F : J ⥤ RingCat.{v})
 
-/-- An inductive type representing all ring expressions (without Relations)
+/--
+An inductive type representing all ring expressions (without Relations)
 on a collection of types indexed by the objects of `J`.
 -/
 inductive Prequotient
@@ -50,12 +48,12 @@ inductive Prequotient
   | add : Prequotient → Prequotient → Prequotient
   | mul : Prequotient → Prequotient → Prequotient
 
-instance : Inhabited (Prequotient F) :=
-  ⟨Prequotient.zero⟩
+instance : Inhabited (Prequotient F) := ⟨Prequotient.zero⟩
 
 open Prequotient
 
-/-- The Relation on `Prequotient` saying when two expressions are equal
+/--
+The Relation on `Prequotient` saying when two expressions are equal
 because of the ring laws, or
 because one element is mapped to another by a morphism in the diagram.
 -/
@@ -64,18 +62,19 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
   | symm : ∀ (x y) (_ : Relation x y), Relation y x
   | trans : ∀ (x y z) (_ : Relation x y) (_ : Relation y z), Relation x z
   -- There's always a `map` Relation
-  | map : ∀ (j j' : J) (f : j ⟶ j') (x : F.obj j),
-      Relation (Prequotient.of j' (F.map f x))
-        (Prequotient.of j x)
+  | map
+    : ∀ (j j' : J) (f : j ⟶ j') (x : F.obj j),
+      Relation (Prequotient.of j' (F.map f x)) (Prequotient.of j x)
   -- Then one Relation per operation, describing the interaction with `of`
   | zero : ∀ j, Relation (Prequotient.of j 0) zero
   | one : ∀ j, Relation (Prequotient.of j 1) one
   | neg : ∀ (j) (x : F.obj j), Relation (Prequotient.of j (-x)) (neg (Prequotient.of j x))
-  | add : ∀ (j) (x y : F.obj j), Relation (Prequotient.of j (x + y))
-      (add (Prequotient.of j x) (Prequotient.of j y))
-  | mul : ∀ (j) (x y : F.obj j),
-      Relation (Prequotient.of j (x * y))
-        (mul (Prequotient.of j x) (Prequotient.of j y))
+  | add
+    : ∀ (j) (x y : F.obj j),
+      Relation (Prequotient.of j (x + y)) (add (Prequotient.of j x) (Prequotient.of j y))
+  | mul
+    : ∀ (j) (x y : F.obj j),
+      Relation (Prequotient.of j (x * y)) (mul (Prequotient.of j x) (Prequotient.of j y))
   -- Then one Relation per argument of each operation
   | neg_1 : ∀ (x x') (_ : Relation x x'), Relation (neg x) (neg x')
   | add_1 : ∀ (x x' y) (_ : Relation x x'), Relation (add x y) (add x' y)
@@ -96,22 +95,23 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
   | zero_mul : ∀ x, Relation (mul zero x) zero
   | mul_zero : ∀ x, Relation (mul x zero) zero
 
-/-- The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
+/--
+The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
 -/
 instance colimitSetoid : Setoid (Prequotient F) where
   r := Relation F
   iseqv := ⟨Relation.refl, Relation.symm _ _, Relation.trans _ _ _⟩
 
-/-- The underlying type of the colimit of a diagram in `CommRingCat`.
--/
-def ColimitType : Type v :=
-  Quotient (colimitSetoid F)
+/-- The underlying type of the colimit of a diagram in `CommRingCat`. -/
+def ColimitType : Type v := Quotient (colimitSetoid F)
 
-instance ColimitType.instZero : Zero (ColimitType F) where zero := Quotient.mk _ zero
+instance ColimitType.instZero : Zero (ColimitType F) where
+  zero := Quotient.mk _ zero
 
 instance ColimitType.instAdd : Add (ColimitType F) where
-  add := Quotient.map₂ add <| fun _x x' rx y _y' ry =>
-    Setoid.trans (Relation.add_1 _ _ y rx) (Relation.add_2 x' _ _ ry)
+  add :=
+    Quotient.map₂ add <| fun _x x' rx y _y' ry =>
+      Setoid.trans (Relation.add_1 _ _ y rx) (Relation.add_2 x' _ _ ry)
 
 instance ColimitType.instNeg : Neg (ColimitType F) where
   neg := Quotient.map neg Relation.neg_1
@@ -121,87 +121,91 @@ instance ColimitType.AddGroup : AddGroup (ColimitType F) where
   zero_add := Quotient.ind <| fun _ => Quotient.sound <| Relation.zero_add _
   add_zero := Quotient.ind <| fun _ => Quotient.sound <| Relation.add_zero _
   neg_add_cancel := Quotient.ind <| fun _ => Quotient.sound <| Relation.neg_add_cancel _
-  add_assoc := Quotient.ind <| fun _ => Quotient.ind₂ <| fun _ _ =>
-    Quotient.sound <| Relation.add_assoc _ _ _
+  add_assoc :=
+    Quotient.ind <| fun _ => Quotient.ind₂ <| fun _ _ => Quotient.sound <| Relation.add_assoc _ _ _
   nsmul := nsmulRec
   zsmul := zsmulRec
 
 instance InhabitedColimitType : Inhabited <| ColimitType F where
   default := 0
 
-instance ColimitType.AddGroupWithOne : AddGroupWithOne (ColimitType F) :=
-  { ColimitType.AddGroup F with one := Quotient.mk _ one }
+instance ColimitType.AddGroupWithOne : AddGroupWithOne (ColimitType F) := {
+  ColimitType.AddGroup F with
+  one := Quotient.mk _ one
+}
 
-instance : Ring (ColimitType.{v} F) :=
-  { ColimitType.AddGroupWithOne F with
-    mul := Quot.map₂ Prequotient.mul Relation.mul_2 Relation.mul_1
-    one_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.one_mul _
-    mul_one := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_one _
-    add_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.add_comm _ _
-    mul_assoc := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+instance : Ring (ColimitType.{v} F) := {
+  ColimitType.AddGroupWithOne F with
+  mul := Quot.map₂ Prequotient.mul Relation.mul_2 Relation.mul_1
+  one_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.one_mul _
+  mul_one := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_one _
+  add_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.add_comm _ _
+  mul_assoc := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· * ·)]
       exact Quot.sound (Relation.mul_assoc _ _ _)
-    mul_zero := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_zero _
-    zero_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.zero_mul _
-    left_distrib := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+  mul_zero := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_zero _
+  zero_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.zero_mul _
+  left_distrib := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· + ·), (· * ·), Add.add]
       exact Quot.sound (Relation.left_distrib _ _ _)
-    right_distrib := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+  right_distrib := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· + ·), (· * ·), Add.add]
-      exact Quot.sound (Relation.right_distrib _ _ _) }
+      exact Quot.sound (Relation.right_distrib _ _ _)
+}
+
+@[simp] theorem quot_zero : Quot.mk Setoid.r zero = (0 : ColimitType F) := rfl
+
+@[simp] theorem quot_one : Quot.mk Setoid.r one = (1 : ColimitType F) := rfl
 
 @[simp]
-theorem quot_zero : Quot.mk Setoid.r zero = (0 : ColimitType F) :=
+theorem quot_neg (x : Prequotient F)
+    : Quot.mk Setoid.r (neg x) = -(show ColimitType F from Quot.mk Setoid.r x) :=
   rfl
 
 @[simp]
-theorem quot_one : Quot.mk Setoid.r one = (1 : ColimitType F) :=
+theorem quot_add (x y)
+    : Quot.mk Setoid.r (add x y)
+      = (show ColimitType F from Quot.mk _ x) + (show ColimitType F from Quot.mk _ y) :=
   rfl
 
 @[simp]
-theorem quot_neg (x : Prequotient F) :
-    Quot.mk Setoid.r (neg x) = -(show ColimitType F from Quot.mk Setoid.r x) :=
-  rfl
-
-@[simp]
-theorem quot_add (x y) :
-    Quot.mk Setoid.r (add x y) =
-      (show ColimitType F from Quot.mk _ x) + (show ColimitType F from Quot.mk _ y) :=
-  rfl
-
-@[simp]
-theorem quot_mul (x y) :
-    Quot.mk Setoid.r (mul x y) =
-      (show ColimitType F from Quot.mk _ x) * (show ColimitType F from Quot.mk _ y) :=
+theorem quot_mul (x y)
+    : Quot.mk Setoid.r (mul x y)
+      = (show ColimitType F from Quot.mk _ x) * (show ColimitType F from Quot.mk _ y) :=
   rfl
 
 /-- The bundled ring giving the colimit of a diagram. -/
-def colimit : RingCat :=
-  ↧(ColimitType F)
+def colimit : RingCat := ↧(ColimitType F)
 
 /-- The function from a given ring in the diagram to the colimit ring. -/
-def coconeFun (j : J) (x : F.obj j) : ColimitType F :=
-  Quot.mk _ (Prequotient.of j x)
+def coconeFun (j : J) (x : F.obj j) : ColimitType F := Quot.mk _ (Prequotient.of j x)
 
-/-- The ring homomorphism from a given ring in the diagram to the colimit
-ring. -/
-def coconeMorphism (j : J) : F.obj j ⟶ colimit F := ofHom
-  { toFun := coconeFun F j
+/--
+The ring homomorphism from a given ring in the diagram to the colimit
+ring.
+-/
+def coconeMorphism (j : J) : F.obj j ⟶ colimit F :=
+  ofHom {
+    toFun := coconeFun F j
     map_one' := by apply Quot.sound; apply Relation.one
     map_mul' := by intros; apply Quot.sound; apply Relation.mul
     map_zero' := by apply Quot.sound; apply Relation.zero
-    map_add' := by intros; apply Quot.sound; apply Relation.add }
+    map_add' := by intros; apply Quot.sound; apply Relation.add
+  }
 
 @[simp]
-theorem cocone_naturality {j j' : J} (f : j ⟶ j') :
-    F.map f ≫ coconeMorphism F j' = coconeMorphism F j := by
+theorem cocone_naturality {j j' : J} (f : j ⟶ j')
+    : F.map f ≫ coconeMorphism F j' = coconeMorphism F j := by
   ext
   apply Quot.sound
   apply Relation.map
 
 @[simp]
-theorem cocone_naturality_components (j j' : J) (f : j ⟶ j') (x : F.obj j) :
-    (coconeMorphism F j') (F.map f x) = (coconeMorphism F j) x := by
+theorem cocone_naturality_components (j j' : J) (f : j ⟶ j') (x : F.obj j)
+    : (coconeMorphism F j') (F.map f x) = (coconeMorphism F j) x := by
   rw [← cocone_naturality F f, comp_apply]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -210,14 +214,16 @@ def colimitCocone : Cocone F where
   pt := colimit F
   ι := { app := coconeMorphism F }
 
-/-- The function from the free ring on the diagram to the cone point of any other
-cocone. -/
+/--
+The function from the free ring on the diagram to the cone point of any other
+cocone.
+-/
 @[simp]
 def descFunLift (s : Cocone F) : Prequotient F → s.pt
   | Prequotient.of j x => (s.ι.app j) x
   | zero => 0
   | one => 1
-  | neg x => -descFunLift s x
+  | neg x => - descFunLift s x
   | add x y => descFunLift s x + descFunLift s y
   | mul x y => descFunLift s x * descFunLift s y
 
@@ -255,10 +261,13 @@ def descFun (s : Cocone F) : ColimitType F → s.pt := by
     | zero_mul x => dsimp; rw [zero_mul]
     | mul_zero x => dsimp; rw [mul_zero]
 
-/-- The ring homomorphism from the colimit ring to the cone point of any other
-cocone. -/
-def descMorphism (s : Cocone F) : colimit F ⟶ s.pt := ofHom
-  { toFun := descFun F s
+/--
+The ring homomorphism from the colimit ring to the cone point of any other
+cocone.
+-/
+def descMorphism (s : Cocone F) : colimit F ⟶ s.pt :=
+  ofHom {
+    toFun := descFun F s
     map_one' := rfl
     map_zero' := rfl
     map_add' := fun x y ↦ by
@@ -266,30 +275,30 @@ def descMorphism (s : Cocone F) : colimit F ⟶ s.pt := ofHom
       dsimp [descFun]
       rw [← quot_add]
       rfl
-    map_mul' := fun x y ↦ by exact Quot.induction_on₂ x y fun a b => rfl }
+    map_mul' := fun x y ↦ by exact Quot.induction_on₂ x y fun a b => rfl
+  }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Evidence that the proposed colimit is the colimit. -/
 def colimitIsColimit : IsColimit (colimitCocone F) where
   desc s := descMorphism F s
-  uniq s m w := hom_ext <| RingHom.ext fun x => by
-    refine Quot.inductionOn x ?_
-    intro x
-    induction x with
-    | zero => simp
-    | one => simp
-    | neg x ih => simp [ih]
-    | of j x =>
-      congrm $(w j) x
-    | add x y ih_x ih_y => simp [ih_x, ih_y]
-    | mul x y ih_x ih_y => simp [ih_x, ih_y]
+  uniq s m w :=
+    hom_ext <| RingHom.ext fun x => by
+      refine Quot.inductionOn x ?_
+      intro x
+      induction x with
+      | zero => simp
+      | one => simp
+      | neg x ih => simp [ih]
+      | of j x => congrm $(w j) x
+      | add x y ih_x ih_y => simp [ih_x, ih_y]
+      | mul x y ih_x ih_y => simp [ih_x, ih_y]
 
 instance hasColimits_ringCat : HasColimits RingCat where
-  has_colimits_of_shape _ _ :=
-    { has_colimit := fun F =>
-        HasColimit.mk
-          { cocone := colimitCocone F
-            isColimit := colimitIsColimit F } }
+  has_colimits_of_shape _ _ := {
+    has_colimit := fun F =>
+      HasColimit.mk { cocone := colimitCocone F, isColimit := colimitIsColimit F }
+  }
 
 end RingCat.Colimits
 
@@ -330,10 +339,10 @@ then taking the quotient by the commutative ring laws within each commutative ri
 and the identifications given by the morphisms in the diagram.
 -/
 
-
 variable {J : Type v} [SmallCategory J] (F : J ⥤ CommRingCat.{v})
 
-/-- An inductive type representing all commutative ring expressions (without Relations)
+/--
+An inductive type representing all commutative ring expressions (without Relations)
 on a collection of types indexed by the objects of `J`.
 -/
 inductive Prequotient -- There's always `of`
@@ -344,12 +353,12 @@ inductive Prequotient -- There's always `of`
   | add : Prequotient → Prequotient → Prequotient
   | mul : Prequotient → Prequotient → Prequotient
 
-instance : Inhabited (Prequotient F) :=
-  ⟨Prequotient.zero⟩
+instance : Inhabited (Prequotient F) := ⟨Prequotient.zero⟩
 
 open Prequotient
 
-/-- The Relation on `Prequotient` saying when two expressions are equal
+/--
+The Relation on `Prequotient` saying when two expressions are equal
 because of the commutative ring laws, or
 because one element is mapped to another by a morphism in the diagram.
 -/
@@ -358,18 +367,19 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
   | symm : ∀ (x y) (_ : Relation x y), Relation y x
   | trans : ∀ (x y z) (_ : Relation x y) (_ : Relation y z), Relation x z
   -- There's always a `map` Relation
-  | map : ∀ (j j' : J) (f : j ⟶ j') (x : F.obj j),
-      Relation (Prequotient.of j' (F.map f x))
-        (Prequotient.of j x)
+  | map
+    : ∀ (j j' : J) (f : j ⟶ j') (x : F.obj j),
+      Relation (Prequotient.of j' (F.map f x)) (Prequotient.of j x)
   -- Then one Relation per operation, describing the interaction with `of`
   | zero : ∀ j, Relation (Prequotient.of j 0) zero
   | one : ∀ j, Relation (Prequotient.of j 1) one
   | neg : ∀ (j) (x : F.obj j), Relation (Prequotient.of j (-x)) (neg (Prequotient.of j x))
-  | add : ∀ (j) (x y : F.obj j), Relation (Prequotient.of j (x + y))
-      (add (Prequotient.of j x) (Prequotient.of j y))
-  | mul : ∀ (j) (x y : F.obj j),
-      Relation (Prequotient.of j (x * y))
-        (mul (Prequotient.of j x) (Prequotient.of j y))
+  | add
+    : ∀ (j) (x y : F.obj j),
+      Relation (Prequotient.of j (x + y)) (add (Prequotient.of j x) (Prequotient.of j y))
+  | mul
+    : ∀ (j) (x y : F.obj j),
+      Relation (Prequotient.of j (x * y)) (mul (Prequotient.of j x) (Prequotient.of j y))
   -- Then one Relation per argument of each operation
   | neg_1 : ∀ (x x') (_ : Relation x x'), Relation (neg x) (neg x')
   | add_1 : ∀ (x x' y) (_ : Relation x x'), Relation (add x y) (add x' y)
@@ -391,22 +401,23 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
   | zero_mul : ∀ x, Relation (mul zero x) zero
   | mul_zero : ∀ x, Relation (mul x zero) zero
 
-/-- The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
+/--
+The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
 -/
 instance colimitSetoid : Setoid (Prequotient F) where
   r := Relation F
   iseqv := ⟨Relation.refl, Relation.symm _ _, Relation.trans _ _ _⟩
 
-/-- The underlying type of the colimit of a diagram in `CommRingCat`.
--/
-def ColimitType : Type v :=
-  Quotient (colimitSetoid F)
+/-- The underlying type of the colimit of a diagram in `CommRingCat`. -/
+def ColimitType : Type v := Quotient (colimitSetoid F)
 
-instance ColimitType.instZero : Zero (ColimitType F) where zero := Quotient.mk _ zero
+instance ColimitType.instZero : Zero (ColimitType F) where
+  zero := Quotient.mk _ zero
 
 instance ColimitType.instAdd : Add (ColimitType F) where
-  add := Quotient.map₂ add <| fun _x x' rx y _y' ry =>
-    Setoid.trans (Relation.add_1 _ _ y rx) (Relation.add_2 x' _ _ ry)
+  add :=
+    Quotient.map₂ add <| fun _x x' rx y _y' ry =>
+      Setoid.trans (Relation.add_1 _ _ y rx) (Relation.add_2 x' _ _ ry)
 
 instance ColimitType.instNeg : Neg (ColimitType F) where
   neg := Quotient.map neg Relation.neg_1
@@ -416,92 +427,96 @@ instance ColimitType.AddGroup : AddGroup (ColimitType F) where
   zero_add := Quotient.ind <| fun _ => Quotient.sound <| Relation.zero_add _
   add_zero := Quotient.ind <| fun _ => Quotient.sound <| Relation.add_zero _
   neg_add_cancel := Quotient.ind <| fun _ => Quotient.sound <| Relation.neg_add_cancel _
-  add_assoc := Quotient.ind <| fun _ => Quotient.ind₂ <| fun _ _ =>
-    Quotient.sound <| Relation.add_assoc _ _ _
+  add_assoc :=
+    Quotient.ind <| fun _ => Quotient.ind₂ <| fun _ _ => Quotient.sound <| Relation.add_assoc _ _ _
   nsmul := nsmulRec
   zsmul := zsmulRec
 
 instance InhabitedColimitType : Inhabited <| ColimitType F where
   default := 0
 
-instance ColimitType.AddGroupWithOne : AddGroupWithOne (ColimitType F) :=
-  { ColimitType.AddGroup F with one := Quotient.mk _ one }
+instance ColimitType.AddGroupWithOne : AddGroupWithOne (ColimitType F) := {
+  ColimitType.AddGroup F with
+  one := Quotient.mk _ one
+}
 
-instance : CommRing (ColimitType.{v} F) :=
-  { ColimitType.AddGroupWithOne F with
-    mul := Quot.map₂ Prequotient.mul Relation.mul_2 Relation.mul_1
-    one_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.one_mul _
-    mul_one := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_one _
-    add_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.add_comm _ _
-    mul_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.mul_comm _ _
-    mul_assoc := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+instance : CommRing (ColimitType.{v} F) := {
+  ColimitType.AddGroupWithOne F with
+  mul := Quot.map₂ Prequotient.mul Relation.mul_2 Relation.mul_1
+  one_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.one_mul _
+  mul_one := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_one _
+  add_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.add_comm _ _
+  mul_comm := fun x y => Quot.induction_on₂ x y fun _ _ => Quot.sound <| Relation.mul_comm _ _
+  mul_assoc := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· * ·)]
       exact Quot.sound (Relation.mul_assoc _ _ _)
-    mul_zero := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_zero _
-    zero_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.zero_mul _
-    left_distrib := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+  mul_zero := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.mul_zero _
+  zero_mul := fun x => Quot.inductionOn x fun _ => Quot.sound <| Relation.zero_mul _
+  left_distrib := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· + ·), (· * ·), Add.add]
       exact Quot.sound (Relation.left_distrib _ _ _)
-    right_distrib := fun x y z => Quot.induction_on₃ x y z fun x y z => by
+  right_distrib := fun x y z =>
+    Quot.induction_on₃ x y z fun x y z => by
       simp only [(· + ·), (· * ·), Add.add]
-      exact Quot.sound (Relation.right_distrib _ _ _) }
+      exact Quot.sound (Relation.right_distrib _ _ _)
+}
+
+@[simp] theorem quot_zero : Quot.mk Setoid.r zero = (0 : ColimitType F) := rfl
+
+@[simp] theorem quot_one : Quot.mk Setoid.r one = (1 : ColimitType F) := rfl
 
 @[simp]
-theorem quot_zero : Quot.mk Setoid.r zero = (0 : ColimitType F) :=
-  rfl
-
-@[simp]
-theorem quot_one : Quot.mk Setoid.r one = (1 : ColimitType F) :=
-  rfl
-
-@[simp]
-theorem quot_neg (x : Prequotient F) :
-    Quot.mk Setoid.r (neg x) = -(show ColimitType F from Quot.mk Setoid.r x) :=
+theorem quot_neg (x : Prequotient F)
+    : Quot.mk Setoid.r (neg x) = -(show ColimitType F from Quot.mk Setoid.r x) :=
   rfl
 
 -- Porting note: Lean can't see `Quot.mk Setoid.r x` is a `ColimitType F` even with type annotation
 -- unless we use `by exact` to change the elaboration order.
 @[simp]
-theorem quot_add (x y) :
-    Quot.mk Setoid.r (add x y) =
-      (show ColimitType F from Quot.mk _ x) + (show ColimitType F from Quot.mk _ y) :=
+theorem quot_add (x y)
+    : Quot.mk Setoid.r (add x y)
+      = (show ColimitType F from Quot.mk _ x) + (show ColimitType F from Quot.mk _ y) :=
   rfl
 
 -- Porting note: Lean can't see `Quot.mk Setoid.r x` is a `ColimitType F` even with type annotation
 -- unless we use `by exact` to change the elaboration order.
 @[simp]
-theorem quot_mul (x y) :
-    Quot.mk Setoid.r (mul x y) =
-      (show ColimitType F from Quot.mk _ x) * (show ColimitType F from Quot.mk _ y) :=
+theorem quot_mul (x y)
+    : Quot.mk Setoid.r (mul x y)
+      = (show ColimitType F from Quot.mk _ x) * (show ColimitType F from Quot.mk _ y) :=
   rfl
 
 /-- The bundled commutative ring giving the colimit of a diagram. -/
-def colimit : CommRingCat :=
-  ↧(ColimitType F)
+def colimit : CommRingCat := ↧(ColimitType F)
 
 /-- The function from a given commutative ring in the diagram to the colimit commutative ring. -/
-def coconeFun (j : J) (x : F.obj j) : ColimitType F :=
-  Quot.mk _ (Prequotient.of j x)
+def coconeFun (j : J) (x : F.obj j) : ColimitType F := Quot.mk _ (Prequotient.of j x)
 
-/-- The ring homomorphism from a given commutative ring in the diagram to the colimit commutative
-ring. -/
-def coconeMorphism (j : J) : F.obj j ⟶ colimit F := ofHom
-  { toFun := coconeFun F j
+/--
+The ring homomorphism from a given commutative ring in the diagram to the colimit commutative
+ring.
+-/
+def coconeMorphism (j : J) : F.obj j ⟶ colimit F :=
+  ofHom {
+    toFun := coconeFun F j
     map_one' := by apply Quot.sound; apply Relation.one
     map_mul' := by intros; apply Quot.sound; apply Relation.mul
     map_zero' := by apply Quot.sound; apply Relation.zero
-    map_add' := by intros; apply Quot.sound; apply Relation.add }
+    map_add' := by intros; apply Quot.sound; apply Relation.add
+  }
 
 @[simp]
-theorem cocone_naturality {j j' : J} (f : j ⟶ j') :
-    F.map f ≫ coconeMorphism F j' = coconeMorphism F j := by
+theorem cocone_naturality {j j' : J} (f : j ⟶ j')
+    : F.map f ≫ coconeMorphism F j' = coconeMorphism F j := by
   ext
   apply Quot.sound
   apply Relation.map
 
 @[simp]
-theorem cocone_naturality_components (j j' : J) (f : j ⟶ j') (x : F.obj j) :
-    (coconeMorphism F j') (F.map f x) = (coconeMorphism F j) x := by
+theorem cocone_naturality_components (j j' : J) (f : j ⟶ j') (x : F.obj j)
+    : (coconeMorphism F j') (F.map f x) = (coconeMorphism F j) x := by
   rw [← cocone_naturality F f, comp_apply]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -510,14 +525,16 @@ def colimitCocone : Cocone F where
   pt := colimit F
   ι := { app := coconeMorphism F }
 
-/-- The function from the free commutative ring on the diagram to the cone point of any other
-cocone. -/
+/--
+The function from the free commutative ring on the diagram to the cone point of any other
+cocone.
+-/
 @[simp]
 def descFunLift (s : Cocone F) : Prequotient F → s.pt
   | Prequotient.of j x => (s.ι.app j) x
   | zero => 0
   | one => 1
-  | neg x => -descFunLift s x
+  | neg x => - descFunLift s x
   | add x y => descFunLift s x + descFunLift s y
   | mul x y => descFunLift s x * descFunLift s y
 
@@ -556,10 +573,13 @@ def descFun (s : Cocone F) : ColimitType F → s.pt := by
     | zero_mul x => dsimp; rw [zero_mul]
     | mul_zero x => dsimp; rw [mul_zero]
 
-/-- The ring homomorphism from the colimit commutative ring to the cone point of any other
-cocone. -/
-def descMorphism (s : Cocone F) : colimit F ⟶ s.pt := ofHom
-  { toFun := descFun F s
+/--
+The ring homomorphism from the colimit commutative ring to the cone point of any other
+cocone.
+-/
+def descMorphism (s : Cocone F) : colimit F ⟶ s.pt :=
+  ofHom {
+    toFun := descFun F s
     map_one' := rfl
     map_zero' := rfl
     map_add' := fun x y ↦ by
@@ -567,29 +587,29 @@ def descMorphism (s : Cocone F) : colimit F ⟶ s.pt := ofHom
       dsimp [descFun]
       rw [← quot_add]
       rfl
-    map_mul' := fun x y ↦ by exact Quot.induction_on₂ x y fun a b => rfl }
+    map_mul' := fun x y ↦ by exact Quot.induction_on₂ x y fun a b => rfl
+  }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Evidence that the proposed colimit is the colimit. -/
 def colimitIsColimit : IsColimit (colimitCocone F) where
   desc := fun s ↦ descMorphism F s
-  uniq := fun s m w ↦ hom_ext <| RingHom.ext fun x => by
-    refine Quot.inductionOn x ?_
-    intro x
-    induction x with
-    | zero => simp
-    | one => simp
-    | neg x ih => simp [ih]
-    | of j x =>
-      congrm $(w j) x
-    | add x y ih_x ih_y => simp [ih_x, ih_y]
-    | mul x y ih_x ih_y => simp [ih_x, ih_y]
+  uniq := fun s m w ↦
+    hom_ext <| RingHom.ext fun x => by
+      refine Quot.inductionOn x ?_
+      intro x
+      induction x with
+      | zero => simp
+      | one => simp
+      | neg x ih => simp [ih]
+      | of j x => congrm $(w j) x
+      | add x y ih_x ih_y => simp [ih_x, ih_y]
+      | mul x y ih_x ih_y => simp [ih_x, ih_y]
 
 instance hasColimits_commRingCat : HasColimits CommRingCat where
-  has_colimits_of_shape _ _ :=
-    { has_colimit := fun F =>
-        HasColimit.mk
-          { cocone := colimitCocone F
-            isColimit := colimitIsColimit F } }
+  has_colimits_of_shape _ _ := {
+    has_colimit := fun F =>
+      HasColimit.mk { cocone := colimitCocone F, isColimit := colimitIsColimit F }
+  }
 
 end CommRingCat.Colimits

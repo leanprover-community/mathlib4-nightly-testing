@@ -57,9 +57,8 @@ instance [FinitaryPreExtensive C] [Preregular C] : Precoherent C where
       simp
 
 /-- The union of the extensive and regular coverages generates the coherent topology on `C`. -/
-theorem extensive_regular_generate_coherent [Preregular C] [FinitaryPreExtensive C] :
-    ((extensiveCoverage C) ⊔ (regularCoverage C)).toGrothendieck =
-    (coherentTopology C) := by
+theorem extensive_regular_generate_coherent [Preregular C] [FinitaryPreExtensive C]
+    : ((extensiveCoverage C) ⊔ (regularCoverage C)).toGrothendieck = (coherentTopology C) := by
   ext B S
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · induction h with
@@ -69,13 +68,17 @@ theorem extensive_regular_generate_coherent [Preregular C] [FinitaryPreExtensive
       exact Or.elim hT
         (fun ⟨α, x, X, π, ⟨h, _⟩⟩ ↦ ⟨α, x, X, π, ⟨h, inferInstance⟩⟩)
         (fun ⟨Z, f, ⟨h, _⟩⟩ ↦ ⟨Unit, inferInstance, fun _ ↦ Z, fun _ ↦ f, ⟨h, inferInstance⟩⟩)
-    | top => apply Coverage.Saturate.top
-    | transitive Y T => apply Coverage.Saturate.transitive Y T <;> [assumption; assumption]
+    | top =>
+      apply Coverage.Saturate.top
+    | transitive Y T =>
+      apply Coverage.Saturate.transitive Y T <;> [assumption; assumption]
   · induction h with
     | of Y T hT =>
       obtain ⟨I, _, X, f, rfl, hT⟩ := hT
-      apply Coverage.Saturate.transitive Y (generate (Presieve.ofArrows
-        (fun (_ : Unit) ↦ (∐ fun (i : I) => X i)) (fun (_ : Unit) ↦ Sigma.desc f)))
+      apply Coverage.Saturate.transitive Y
+        (generate (Presieve.ofArrows
+          (fun (_ : Unit) ↦ (∐ fun (i : I) => X i))
+          (fun (_ : Unit) ↦ Sigma.desc f)))
       · apply Coverage.Saturate.of
         simp only [Coverage.sup_covering, extensiveCoverage, regularCoverage, Set.mem_union,
           Set.mem_ofPred_eq]
@@ -84,8 +87,8 @@ theorem extensive_regular_generate_coherent [Preregular C] [FinitaryPreExtensive
         change _ ∈ ((extensiveCoverage C) ⊔ (regularCoverage C)).toGrothendieck R
         rw [Sieve.pullback_comp]
         apply pullback_stable
-        have : generate (Presieve.ofArrows X fun (i : I) ↦ Sigma.ι X i) ≤
-            (generate (Presieve.ofArrows X f)).pullback (Sigma.desc f) := by
+        have : generate (Presieve.ofArrows X fun (i : I) ↦ Sigma.ι X i)
+            ≤ (generate (Presieve.ofArrows X f)).pullback (Sigma.desc f) := by
           rintro Q q ⟨E, e, r, ⟨hq, rfl⟩⟩
           exact ⟨E, e, r ≫ (Sigma.desc f), by cases hq; simpa using Presieve.ofArrows.mk _, by simp⟩
         apply Coverage.saturate_of_superset _ this
@@ -93,7 +96,9 @@ theorem extensive_regular_generate_coherent [Preregular C] [FinitaryPreExtensive
         refine Or.inl ⟨I, inferInstance, _, _, ⟨rfl, ?_⟩⟩
         convert! IsIso.id _
         aesop
-    | top => apply Coverage.Saturate.top
-    | transitive Y T => apply Coverage.Saturate.transitive Y T <;> [assumption; assumption]
+    | top =>
+      apply Coverage.Saturate.top
+    | transitive Y T =>
+      apply Coverage.Saturate.transitive Y T <;> [assumption; assumption]
 
 end CategoryTheory

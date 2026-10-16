@@ -26,18 +26,22 @@ open NormedSpace -- For `NormedSpace.exp`.
 
 section Star
 
-variable {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [StarRing A] [ContinuousStar A]
-  [CompleteSpace A] [StarModule ℂ A]
+variable
+  {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [StarRing A] [ContinuousStar A] [CompleteSpace A]
+  [StarModule ℂ A]
 
 open Complex
 
-/-- The map from the selfadjoint real subspace to the unitary group. This map only makes sense
-over ℂ. -/
+/--
+The map from the selfadjoint real subspace to the unitary group. This map only makes sense
+over ℂ.
+-/
 @[simps]
-noncomputable def selfAdjoint.expUnitary (a : selfAdjoint A) : unitary A :=
-  ⟨exp ((I • a.val) : A),
-      let +nondep : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
-      exp_mem_unitary_of_mem_skewAdjoint (a.prop.smul_mem_skewAdjoint conj_I)⟩
+noncomputable def selfAdjoint.expUnitary (a : selfAdjoint A) : unitary A := ⟨
+  exp ((I • a.val) : A),
+  let +nondep : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
+  exp_mem_unitary_of_mem_skewAdjoint (a.prop.smul_mem_skewAdjoint conj_I)
+⟩
 
 open selfAdjoint
 
@@ -52,14 +56,14 @@ lemma selfAdjoint.continuous_expUnitary : Continuous (expUnitary : selfAdjoint A
   let +nondep : NormedAlgebra ℚ A := NormedAlgebra.restrictScalars ℚ ℂ A
   fun_prop
 
-theorem Commute.expUnitary_add {a b : selfAdjoint A} (h : Commute (a : A) (b : A)) :
-    expUnitary (a + b) = expUnitary a * expUnitary b := by
+theorem Commute.expUnitary_add {a b : selfAdjoint A} (h : Commute (a : A) (b : A))
+    : expUnitary (a + b) = expUnitary a * expUnitary b := by
   let +nondep : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   simpa only [Subtype.ext_iff, expUnitary_coe, AddSubgroup.coe_add, smul_add] using!
     exp_add_of_commute ((h.smul_left I).smul_right I)
 
-theorem Commute.expUnitary {a b : selfAdjoint A} (h : Commute (a : A) (b : A)) :
-    Commute (expUnitary a) (expUnitary b) := by
+theorem Commute.expUnitary {a b : selfAdjoint A} (h : Commute (a : A) (b : A))
+    : Commute (expUnitary a) (expUnitary b) := by
   rw [Commute, SemiconjBy, ← h.expUnitary_add, ← h.symm.expUnitary_add, add_comm]
 
 end Star

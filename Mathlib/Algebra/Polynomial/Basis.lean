@@ -23,8 +23,10 @@ variable (R : Type u) [Semiring R]
 
 namespace Polynomial
 
-/-- The monomials form a basis on `R[X]`. To get the rank of a polynomial ring,
-use this and `Basis.mk_eq_rank`. -/
+/--
+The monomials form a basis on `R[X]`. To get the rank of a polynomial ring,
+use this and `Basis.mk_eq_rank`.
+-/
 def basisMonomials : Basis ℕ R R[X] :=
   .ofRepr <| (toFinsuppIsoLinear R).trans <| AddMonoidAlgebra.coeffLinearEquiv _
 

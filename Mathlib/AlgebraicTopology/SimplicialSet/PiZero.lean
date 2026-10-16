@@ -39,10 +39,11 @@ namespace SSet
 
 variable {X Y Z : SSet.{u}}
 
-/-- The homotopy relation on `0`-simplices of a simplicial set. It holds
-for `x₀` and `x₁` when there exists an edge from `x₀` to `x₁`. -/
-def π₀Rel (x₀ x₁ : X _⦋0⦌) : Prop :=
-  Nonempty (Edge x₀ x₁)
+/--
+The homotopy relation on `0`-simplices of a simplicial set. It holds
+for `x₀` and `x₁` when there exists an edge from `x₀` to `x₁`.
+-/
+def π₀Rel (x₀ x₁ : X _⦋0⦌) : Prop := Nonempty (Edge x₀ x₁)
 
 variable (X) in
 /-- The type of connected components of a simplicial set. -/
@@ -60,43 +61,35 @@ unseal π₀ in
 lemma mk_surjective : Function.Surjective (π₀.mk (X := X)) := Quot.mk_surjective
 
 unseal π₀ in
-lemma sound {x₀ x₁ : X _⦋0⦌} (e : Edge x₀ x₁) :
-    π₀.mk x₀ = π₀.mk x₁ :=
-  Quot.sound ⟨e⟩
+lemma sound {x₀ x₁ : X _⦋0⦌} (e : Edge x₀ x₁) : π₀.mk x₀ = π₀.mk x₁ := Quot.sound ⟨e⟩
 
 unseal π₀ in
-lemma mk_eq_mk_iff (x₀ x₁ : X _⦋0⦌) :
-    π₀.mk x₀ = π₀.mk x₁ ↔ Relation.EqvGen π₀Rel x₀ x₁ :=
-  Quot.eq
+lemma mk_eq_mk_iff (x₀ x₁ : X _⦋0⦌) : π₀.mk x₀ = π₀.mk x₁ ↔ Relation.EqvGen π₀Rel x₀ x₁ := Quot.eq
 
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-lemma rec {motive : π₀ X → Prop} (mk : ∀ (x : X _⦋0⦌), motive (.mk x)) (x : π₀ X) :
-    motive x := by
+lemma rec {motive : π₀ X → Prop} (mk : ∀ (x : X _⦋0⦌), motive (.mk x)) (x : π₀ X) : motive x := by
   obtain ⟨x, rfl⟩ := x.mk_surjective
   exact mk x
 
 unseal π₀ in
 /-- Constructor for maps from the type of connected components of a simplicial set. -/
-def lift {T : Type*} (f : X _⦋0⦌ → T) (hf : ∀ ⦃x₀ x₁ : X _⦋0⦌⦄ (_ : X.Edge x₀ x₁), f x₀ = f x₁) :
-    π₀ X → T :=
+def lift {T : Type*} (f : X _⦋0⦌ → T) (hf : ∀ ⦃x₀ x₁ : X _⦋0⦌⦄ (_ : X.Edge x₀ x₁), f x₀ = f x₁)
+    : π₀ X → T :=
   Quot.lift f (by rintro x y ⟨e⟩; exact hf e)
 
 @[simp]
-lemma lift_mk {T : Type*} (f : X _⦋0⦌ → T)
-    (hf : ∀ ⦃x₀ x₁ : X _⦋0⦌⦄ (_ : X.Edge x₀ x₁), f x₀ = f x₁) (x : X _⦋0⦌) :
-    lift f hf (.mk x) = f x :=
+lemma lift_mk
+    {T : Type*} (f : X _⦋0⦌ → T) (hf : ∀ ⦃x₀ x₁ : X _⦋0⦌⦄ (_ : X.Edge x₀ x₁), f x₀ = f x₁)
+    (x : X _⦋0⦌)
+    : lift f hf (.mk x) = f x :=
   rfl
 
 end π₀
 
 /-- The map `π₀ X → π₀ Y` induced by a morphism `X ⟶ Y` of simplicial sets. -/
-def mapπ₀ (f : X ⟶ Y) : π₀ X → π₀ Y :=
-  π₀.lift (π₀.mk ∘ f.app _) (fun _ _ e ↦ π₀.sound (e.map f))
+def mapπ₀ (f : X ⟶ Y) : π₀ X → π₀ Y := π₀.lift (π₀.mk ∘ f.app _) (fun _ _ e ↦ π₀.sound (e.map f))
 
-@[simp]
-lemma mapπ₀_mk (f : X ⟶ Y) (x₀ : X _⦋0⦌) :
-    mapπ₀ f (π₀.mk x₀) = π₀.mk (f.app _ x₀) :=
-  rfl
+@[simp] lemma mapπ₀_mk (f : X ⟶ Y) (x₀ : X _⦋0⦌) : mapπ₀ f (π₀.mk x₀) = π₀.mk (f.app _ x₀) := rfl
 
 @[simp]
 lemma mapπ₀_id_apply (x : π₀ X) : mapπ₀ (𝟙 X) x = x := by
@@ -104,8 +97,8 @@ lemma mapπ₀_id_apply (x : π₀ X) : mapπ₀ (𝟙 X) x = x := by
   simp
 
 @[simp]
-lemma mapπ₀_comp_apply (f : X ⟶ Y) (g : Y ⟶ Z) (x : π₀ X) :
-    mapπ₀ (f ≫ g) x = mapπ₀ g (mapπ₀ f x) := by
+lemma mapπ₀_comp_apply (f : X ⟶ Y) (g : Y ⟶ Z) (x : π₀ X)
+    : mapπ₀ (f ≫ g) x = mapπ₀ g (mapπ₀ f x) := by
   induction x
   simp
 
@@ -115,51 +108,63 @@ def π₀Functor : SSet.{u} ⥤ Type u where
   obj X := π₀ X
   map f := ↾(mapπ₀ f)
 
-/-- The map `π₀.mk : X _⦋0⦌ ⟶ π₀ X` for all simplicial sets `X`,
-as a natural transformation. -/
+/--
+The map `π₀.mk : X _⦋0⦌ ⟶ π₀ X` for all simplicial sets `X`,
+as a natural transformation.
+-/
 def toπ₀NatTrans : SSet.evaluation.obj (op ⦋0⦌) ⟶ π₀Functor.{u} where
   app X := ↾π₀.mk
 
-/-- The (colimit) cofork expressing `π₀ X` as a coequalizer
-of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`. -/
+/--
+The (colimit) cofork expressing `π₀ X` as a coequalizer
+of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`.
+-/
 abbrev coforkπ₀ : Cofork (X.δ (1 : Fin 2)) (X.δ 0) :=
   Cofork.ofπ (↾π₀.mk) (by ext s; exact π₀.sound (Edge.mk' s))
 
-/-- If `X` is a simplicial set, `£₀ X` is a coequalizer
-of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`. -/
+/--
+If `X` is a simplicial set, `£₀ X` is a coequalizer
+of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`.
+-/
 def isColimitCoforkπ₀ : IsColimit X.coforkπ₀ :=
   Cofork.IsColimit.mk _
-    (fun s ↦ ↾π₀.lift s.π (fun x₀ x₁ e ↦ by
-      simpa only [← e.src_eq, ← e.tgt_eq] using!
-        congr($s.condition e.edge)))
+    (fun s ↦
+      ↾π₀.lift s.π (fun x₀ x₁ e ↦ by
+        simpa only [← e.src_eq, ← e.tgt_eq] using!
+          congr($s.condition e.edge)))
     (fun s ↦ rfl)
     (fun s m hm ↦ by
       ext (x : π₀ X)
       induction x
       congrm $hm _)
 
-/-- The colimit cofork exhibiting the natural transformation
+/--
+The colimit cofork exhibiting the natural transformation
 `toπ₀NatTrans : SSet.evaluation.obj (op ⦋0⦌) ⟶ π₀Functor`
 as a coequalizer of the two face maps, considered as
-natural transformations of functors `SSet.{u} ⥤ Type u`. -/
-abbrev coforkπ₀Functor :
-    Cofork (SSet.evaluation.{u}.map (SimplexCategory.δ (1 : Fin 2)).op)
+natural transformations of functors `SSet.{u} ⥤ Type u`.
+-/
+abbrev coforkπ₀Functor
+    : Cofork (SSet.evaluation.{u}.map (SimplexCategory.δ (1 : Fin 2)).op)
       (SSet.evaluation.map (SimplexCategory.δ (0 : Fin 2)).op) :=
   Cofork.ofπ toπ₀NatTrans (by ext X s; exact π₀.sound (Edge.mk' s))
 
-/-- The functor `π₀Functor : SSet.{u} ⥤ Type u` is the coequalizer
+/--
+The functor `π₀Functor : SSet.{u} ⥤ Type u` is the coequalizer
 of the two face maps `δ (0 : Fin 2)` and `δ 1`, considered
-as natural transformations. -/
+as natural transformations.
+-/
 def isColimitCoforkπ₀Functor : IsColimit coforkπ₀Functor.{u} :=
-  evaluationJointlyReflectsColimits _ (fun X ↦
-    (isColimitMapCoconeCoforkEquiv _ _).2 X.isColimitCoforkπ₀)
+  evaluationJointlyReflectsColimits _
+    (fun X ↦ (isColimitMapCoconeCoforkEquiv _ _).2 X.isColimitCoforkπ₀)
 
 variable (X)
 
 @[simp]
-lemma π₀.nonempty_iff : Nonempty (π₀ X) ↔ X.Nonempty :=
-  ⟨fun _ ↦ ⟨(π₀.mk_surjective (Classical.arbitrary (π₀ X))).choose⟩,
-    fun _ ↦ ⟨.mk (Classical.arbitrary _)⟩⟩
+lemma π₀.nonempty_iff : Nonempty (π₀ X) ↔ X.Nonempty := ⟨
+  fun _ ↦ ⟨(π₀.mk_surjective (Classical.arbitrary (π₀ X))).choose⟩,
+  fun _ ↦ ⟨.mk (Classical.arbitrary _)⟩
+⟩
 
 /-- A simplicial set is preconnected when it has at most one connected component. -/
 protected abbrev IsPreconnected : Prop := Subsingleton (π₀ X)
@@ -172,12 +177,10 @@ attribute [instance] IsConnected.nonempty
 
 instance [X.IsConnected] : Nonempty (π₀ X) := ⟨π₀.mk (Classical.arbitrary _)⟩
 
-lemma isConnected_iff :
-    X.IsConnected ↔ X.IsPreconnected ∧ X.Nonempty :=
+lemma isConnected_iff : X.IsConnected ↔ X.IsPreconnected ∧ X.Nonempty :=
   ⟨fun h ↦ ⟨inferInstance, inferInstance⟩, fun ⟨_, _⟩ ↦ ⟨by assumption⟩⟩
 
-lemma isConnected_iff_nonempty_unique :
-    X.IsConnected ↔ Nonempty (Unique (π₀ X)) := by
+lemma isConnected_iff_nonempty_unique : X.IsConnected ↔ Nonempty (Unique (π₀ X)) := by
   rw [isConnected_iff, unique_iff_subsingleton_and_nonempty, π₀.nonempty_iff]
 
 end SSet

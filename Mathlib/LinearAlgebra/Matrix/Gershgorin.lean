@@ -24,11 +24,13 @@ public section
 
 variable {K n : Type*} [NormedField K] [Fintype n] [DecidableEq n] {A : Matrix n n K}
 
-/-- **Gershgorin's circle theorem**: for any eigenvalue `μ` of a square matrix `A`, there exists an
+/--
+**Gershgorin's circle theorem**: for any eigenvalue `μ` of a square matrix `A`, there exists an
 index `k` such that `μ` lies in the closed ball of center the diagonal term `A k k` and of
-radius the sum of the norms `∑ j ≠ k, ‖A k j‖`. -/
-theorem eigenvalue_mem_ball {μ : K} (hμ : Module.End.HasEigenvalue (Matrix.toLin' A) μ) :
-    ∃ k, μ ∈ Metric.closedBall (A k k) (∑ j ∈ Finset.univ.erase k, ‖A k j‖) := by
+radius the sum of the norms `∑ j ≠ k, ‖A k j‖`.
+-/
+theorem eigenvalue_mem_ball {μ : K} (hμ : Module.End.HasEigenvalue (Matrix.toLin' A) μ)
+    : ∃ k, μ ∈ Metric.closedBall (A k k) (∑ j ∈ Finset.univ.erase k, ‖A k j‖) := by
   cases isEmpty_or_nonempty n
   · exfalso
     exact hμ Submodule.eq_bot_of_subsingleton
@@ -48,20 +50,20 @@ theorem eigenvalue_mem_ball {μ : K} (hμ : Module.End.HasEigenvalue (Matrix.toL
     calc
       _ = ‖(A i i * v i - μ * v i) * (v i)⁻¹‖ := by congr; field
       _ = ‖(A i i * v i - ∑ j, A i j * v j) * (v i)⁻¹‖ := by
-                rw [show μ * v i = ∑ x : n, A i x * v x by
-                  rw [← dotProduct, ← Matrix.mulVec]
-                  exact congr($(Module.End.mem_eigenspace_iff.mp h_eg) i).symm]
+        rw [show μ * v i = ∑ x : n, A i x * v x by
+          rw [← dotProduct, ← Matrix.mulVec]
+          exact congr($(Module.End.mem_eigenspace_iff.mp h_eg) i).symm]
       _ = ‖(∑ j ∈ Finset.univ.erase i, A i j * v j) * (v i)⁻¹‖ := by
-                rw [Finset.sum_erase_eq_sub (Finset.mem_univ i), ← neg_sub, neg_mul, norm_neg]
+        rw [Finset.sum_erase_eq_sub (Finset.mem_univ i), ← neg_sub, neg_mul, norm_neg]
       _ ≤ ∑ j ∈ Finset.univ.erase i, ‖A i j‖ * ‖v j * (v i)⁻¹‖ := by
-                rw [Finset.sum_mul]
-                exact (norm_sum_le _ _).trans (le_of_eq (by simp_rw [mul_assoc, norm_mul]))
+        rw [Finset.sum_mul]
+        exact (norm_sum_le _ _).trans (le_of_eq (by simp_rw [mul_assoc, norm_mul]))
       _ ≤ ∑ j ∈ Finset.univ.erase i, ‖A i j‖ :=
-                (Finset.sum_le_sum fun j _ => mul_le_of_le_one_right (norm_nonneg _) (h_le j))
+        (Finset.sum_le_sum fun j _ => mul_le_of_le_one_right (norm_nonneg _) (h_le j))
 
 /-- If `A` is a row strictly dominant diagonal matrix, then its determinant is nonzero. -/
-theorem det_ne_zero_of_sum_row_lt_diag (h : ∀ k, ∑ j ∈ Finset.univ.erase k, ‖A k j‖ < ‖A k k‖) :
-    A.det ≠ 0 := by
+theorem det_ne_zero_of_sum_row_lt_diag (h : ∀ k, ∑ j ∈ Finset.univ.erase k, ‖A k j‖ < ‖A k k‖)
+    : A.det ≠ 0 := by
   contrapose! h
   suffices ∃ k, 0 ∈ Metric.closedBall (A k k) (∑ j ∈ Finset.univ.erase k, ‖A k j‖) by
     exact this.imp (fun a h ↦ by rwa [mem_closedBall_iff_norm', sub_zero] at h)
@@ -70,7 +72,7 @@ theorem det_ne_zero_of_sum_row_lt_diag (h : ∀ k, ∑ j ∈ Finset.univ.erase k
   exact ne_of_lt (LinearMap.bot_lt_ker_of_det_eq_zero (by rwa [LinearMap.det_toLin']))
 
 /-- If `A` is a column strictly dominant diagonal matrix, then its determinant is nonzero. -/
-theorem det_ne_zero_of_sum_col_lt_diag (h : ∀ k, ∑ i ∈ Finset.univ.erase k, ‖A i k‖ < ‖A k k‖) :
-    A.det ≠ 0 := by
+theorem det_ne_zero_of_sum_col_lt_diag (h : ∀ k, ∑ i ∈ Finset.univ.erase k, ‖A i k‖ < ‖A k k‖)
+    : A.det ≠ 0 := by
   rw [← Matrix.det_transpose]
   exact det_ne_zero_of_sum_row_lt_diag (by simp_rw [Matrix.transpose_apply]; exact h)

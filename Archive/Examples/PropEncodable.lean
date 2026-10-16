@@ -36,8 +36,7 @@ public inductive PropForm (α : Type*)
 
 namespace PropForm
 
-def Constructors (α : Type*) :=
-  α ⊕ (Unit ⊕ (Unit ⊕ Unit))
+def Constructors (α : Type*) := α ⊕ (Unit ⊕ (Unit ⊕ Unit))
 
 local notation "cvar " a => Sum.inl a
 
@@ -73,7 +72,8 @@ def finv : (WType fun i => Fin (arity α i)) → PropForm α
   | ⟨cand, fn⟩ => and (finv (fn 0)) (finv (fn 1))
   | ⟨cor, fn⟩ => or (finv (fn 0)) (finv (fn 1))
 
-@[no_expose] public instance [Encodable α] : Encodable (PropForm α) :=
+@[no_expose]
+public instance [Encodable α] : Encodable (PropForm α) :=
   haveI : Encodable (Constructors α) := inferInstanceAs <| Encodable (α ⊕ Unit ⊕ Unit ⊕ Unit)
   Encodable.ofLeftInverse f finv (by intro p; induction p <;> simp [f, finv, *])
 

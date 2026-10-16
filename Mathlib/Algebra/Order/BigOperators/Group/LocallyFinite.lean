@@ -62,8 +62,8 @@ lemma prod_Ioo_mul_eq_prod_Ioc (h : a < b) : (∏ x ∈ Ioo a b, f x) * f b = �
 variable [AddMonoidWithOne α] [SuccAddOrder α]
 
 @[to_additive]
-theorem prod_eq_prod_Ico_succ_bot {a b : ℕ} (hab : a < b) (f : ℕ → M) :
-    ∏ k ∈ Ico a b, f k = f a * ∏ k ∈ Ico (a + 1) b, f k := by
+theorem prod_eq_prod_Ico_succ_bot {a b : ℕ} (hab : a < b) (f : ℕ → M)
+    : ∏ k ∈ Ico a b, f k = f a * ∏ k ∈ Ico (a + 1) b, f k := by
   have ha : a ∉ Ico (a + 1) b := by simp
   rw [← prod_insert ha, Finset.insert_Ico_add_one_left_eq_Ico hab]
 
@@ -104,8 +104,8 @@ section LocallyFiniteOrder
 variable [LocallyFiniteOrder α] [AddMonoidWithOne α] [SuccAddOrder α] [NoMaxOrder α]
 
 @[to_additive (dont_translate := α) sum_Ico_add_eq_sum_Ico_add_one]
-lemma prod_Ico_mul_eq_prod_Ico_add_one (hab : a ≤ b) (f : α → M) :
-    (∏ x ∈ Ico a b, f x) * f b = ∏ x ∈ Ico a (b + 1), f x := by
+lemma prod_Ico_mul_eq_prod_Ico_add_one (hab : a ≤ b) (f : α → M)
+    : (∏ x ∈ Ico a b, f x) * f b = ∏ x ∈ Ico a (b + 1), f x := by
   rw [← Finset.insert_Ico_right_eq_Ico_add_one hab, prod_insert right_notMem_Ico, mul_comm]
 
 end LocallyFiniteOrder
@@ -114,24 +114,24 @@ section LocallyFiniteOrderBot
 variable [LocallyFiniteOrderBot α]
 
 @[to_additive (dont_translate := α)]
-lemma prod_Iio_add_one_comm [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α]
-    (a : α) (f : α → M) : ∏ i < a + 1, f i = f a * (∏ i < a, f i) := by
+lemma prod_Iio_add_one_comm [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α] (a : α) (f : α → M)
+    : ∏ i < a + 1, f i = f a * (∏ i < a, f i) := by
   simp [Iio_add_one_eq_Iic, ← Iio_insert, Finset.prod_insert]
 
 @[to_additive (dont_translate := α) (attr := simp)]
-lemma prod_Iio_add_one [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α]
-    (a : α) (f : α → M) : ∏ i < a + 1, f i = (∏ i < a, f i) * f a := by
+lemma prod_Iio_add_one [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α] (a : α) (f : α → M)
+    : ∏ i < a + 1, f i = (∏ i < a, f i) * f a := by
   simp_rw [prod_Iio_add_one_comm, mul_comm]
 
 @[to_additive (dont_translate := α)]
-lemma prod_Iic_add_one_comm [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α]
-    (a : α) (f : α → M) : ∏ i ≤ a + 1, f i = f (a + 1) * (∏ i ≤ a, f i) := by
+lemma prod_Iic_add_one_comm [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α] (a : α) (f : α → M)
+    : ∏ i ≤ a + 1, f i = f (a + 1) * (∏ i ≤ a, f i) := by
   simp only [← Iio_insert, mem_Iio, lt_self_iff_false, not_false_eq_true, prod_insert,
     prod_Iio_add_one_comm]
 
 @[to_additive (dont_translate := α) (attr := simp)]
-lemma prod_Iic_add_one [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α]
-    (a : α) (f : α → M) : ∏ i ≤ a + 1, f i = (∏ i ≤ a, f i) * f (a + 1) := by
+lemma prod_Iic_add_one [Add α] [One α] [SuccAddOrder α] [NoMaxOrder α] (a : α) (f : α → M)
+    : ∏ i ≤ a + 1, f i = (∏ i ≤ a, f i) * f (a + 1) := by
   simp_rw [prod_Iic_add_one_comm, mul_comm]
 
 end LocallyFiniteOrderBot
@@ -140,8 +140,8 @@ section LocallyFiniteOrderTopBot
 variable [Fintype α] [LocallyFiniteOrderTop α] [LocallyFiniteOrderBot α]
 
 @[to_additive]
-lemma prod_prod_Ioi_mul_eq_prod_prod_off_diag (f : α → α → M) :
-    ∏ i, ∏ j ∈ Ioi i, f j i * f i j = ∏ i, ∏ j ∈ {i}ᶜ, f j i := by
+lemma prod_prod_Ioi_mul_eq_prod_prod_off_diag (f : α → α → M)
+    : ∏ i, ∏ j ∈ Ioi i, f j i * f i j = ∏ i, ∏ j ∈ {i}ᶜ, f j i := by
   simp_rw [← Ioi_disjUnion_Iio, prod_disjUnion, prod_mul_distrib]
   congr 1
   rw [prod_sigma', prod_sigma']
@@ -152,14 +152,17 @@ end LocallyFiniteOrderTopBot
 end LinearOrder
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Given a sequence of finite sets `s₀ ⊆ s₁ ⊆ s₂ ⋯`, the product of `gᵢ` over `i ∈ sₙ` is equal
-to `∏_{i ∈ s₀} gᵢ` * `∏_{j < n, i ∈ sⱼ₊₁ \ sⱼ} gᵢ`. -/
+/--
+Given a sequence of finite sets `s₀ ⊆ s₁ ⊆ s₂ ⋯`, the product of `gᵢ` over `i ∈ sₙ` is equal
+to `∏_{i ∈ s₀} gᵢ` * `∏_{j < n, i ∈ sⱼ₊₁ \ sⱼ} gᵢ`.
+-/
 @[to_additive /-- Given a sequence of finite sets `s₀ ⊆ s₁ ⊆ s₂ ⋯`, the sum of `gᵢ` over `i ∈ sₙ` is
 equal to `∑_{i ∈ s₀} gᵢ` + `∑_{j < n, i ∈ sⱼ₊₁ \ sⱼ} gᵢ`.-/]
 lemma prod_eq_prod_range_sdiff
-    {α β : Type*} [DecidableEq α] [CommMonoid β] (s : ℕ → Finset α) (hs : Monotone s)
-    (g : α → β) (n : ℕ) :
-    ∏ i ∈ s n, g i = (∏ i ∈ s 0, g i) * ∏ i ∈ range n, ∏ j ∈ s (i + 1) \ s i, g j := by
+    {α β : Type*} [DecidableEq α] [CommMonoid β]
+    (s : ℕ → Finset α) (hs : Monotone s)
+    (g : α → β) (n : ℕ)
+    : ∏ i ∈ s n, g i = (∏ i ∈ s 0, g i) * ∏ i ∈ range n, ∏ j ∈ s (i + 1) \ s i, g j := by
   conv_lhs => rw [← hs.partialSups_eq, ← disjiUnion_Iic_disjointed, Iic_eq_Icc,
     prod_disjiUnion, Nat.bot_eq_zero, ← Nat.range_succ_eq_Icc_zero, prod_range_succ', mul_comm]
   congrm (∏ x ∈ ?_, g x) * ∏ k ∈ range n, ∏ x ∈ s (k + 1) \ ?_, g x

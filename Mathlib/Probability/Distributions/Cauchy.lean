@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-! # Cauchy Distribution over ℝ
@@ -39,19 +38,19 @@ namespace ProbabilityTheory
 section CauchyPDF
 
 /-- The pdf of the cauchy distribution depending on its location `x₀` and scale `γ` parameters. -/
-noncomputable def cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ) : ℝ :=
-  π⁻¹ * γ * ((x - x₀) ^ 2 + γ ^ 2)⁻¹
+noncomputable def cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ) : ℝ := π⁻¹ * γ * ((x - x₀) ^ 2 + γ ^ 2)⁻¹
 
 @[simp]
 lemma cauchyPDFReal_scale_zero (x₀ : ℝ) : cauchyPDFReal x₀ 0 = 0 := by
   ext
   simp [cauchyPDFReal]
 
-lemma cauchyPDFReal_def (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ) :
-    cauchyPDFReal x₀ γ x = π⁻¹ * γ * ((x - x₀) ^ 2 + γ ^ 2)⁻¹ := by rfl
+lemma cauchyPDFReal_def (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ)
+    : cauchyPDFReal x₀ γ x = π⁻¹ * γ * ((x - x₀) ^ 2 + γ ^ 2)⁻¹ := by
+  rfl
 
-lemma cauchyPDFReal_def' (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ) :
-    cauchyPDFReal x₀ γ x = π⁻¹ * γ⁻¹ * (1 + ((x - x₀) / γ) ^ 2)⁻¹ := by
+lemma cauchyPDFReal_def' (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ)
+    : cauchyPDFReal x₀ γ x = π⁻¹ * γ⁻¹ * (1 + ((x - x₀) / γ) ^ 2)⁻¹ := by
   rw [cauchyPDFReal_def]
   by_cases h : γ = 0
   · simp [h]
@@ -67,8 +66,9 @@ lemma cauchyPDF_scale_zero (x₀ : ℝ) : cauchyPDF x₀ 0 = 0 := by
   ext
   simp [cauchyPDF]
 
-lemma cauchyPDF_def (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ) :
-  cauchyPDF x₀ γ x = ENNReal.ofReal (cauchyPDFReal x₀ γ x) := by rfl
+lemma cauchyPDF_def (x₀ : ℝ) (γ : ℝ≥0) (x : ℝ)
+    : cauchyPDF x₀ γ x = ENNReal.ofReal (cauchyPDFReal x₀ γ x) := by
+  rfl
 
 @[fun_prop]
 lemma measurable_cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0) : Measurable (cauchyPDFReal x₀ γ) := by
@@ -76,8 +76,9 @@ lemma measurable_cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0) : Measurable (cauchyP
   fun_prop
 
 @[fun_prop]
-lemma stronglyMeasurable_cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0) :
-    StronglyMeasurable (cauchyPDFReal x₀ γ) := by fun_prop
+lemma stronglyMeasurable_cauchyPDFReal (x₀ : ℝ) (γ : ℝ≥0)
+    : StronglyMeasurable (cauchyPDFReal x₀ γ) := by
+  fun_prop
 
 @[fun_prop]
 lemma measurable_cauchyPDF (x₀ : ℝ) (γ : ℝ≥0) : Measurable (cauchyPDF x₀ γ) := by
@@ -85,24 +86,23 @@ lemma measurable_cauchyPDF (x₀ : ℝ) (γ : ℝ≥0) : Measurable (cauchyPDF x
   fun_prop
 
 @[fun_prop]
-lemma stronglyMeasurable_cauchyPDF (x₀ : ℝ) (γ : ℝ≥0) :
-    StronglyMeasurable (cauchyPDF x₀ γ) := by fun_prop
+lemma stronglyMeasurable_cauchyPDF (x₀ : ℝ) (γ : ℝ≥0) : StronglyMeasurable (cauchyPDF x₀ γ) := by
+  fun_prop
 
 /-- `cauchyPDFReal` is positive for `γ > 0`. -/
 lemma cauchyPDF_pos (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0) (x : ℝ) : 0 < cauchyPDFReal x₀ γ x := by
   rw [cauchyPDFReal_def]
   positivity
 
-lemma integral_cauchyPDFReal_eq_one (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0) :
-    ∫ x, cauchyPDFReal x₀ γ x = 1 := by
+lemma integral_cauchyPDFReal_eq_one (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0)
+    : ∫ x, cauchyPDFReal x₀ γ x = 1 := by
   simp [cauchyPDFReal_def', NNReal.coe_inv, integral_const_mul,
     integral_sub_right_eq_self (f := fun x : ℝ ↦ (1 + (x / ↑γ) ^ 2)⁻¹),
     integral_comp_div (g := fun x : ℝ ↦ (1 + x ^ 2)⁻¹)]
   field
 
 @[fun_prop]
-lemma integrable_cauchyPDFReal (x₀ : ℝ) {γ : ℝ≥0} :
-    Integrable (cauchyPDFReal x₀ γ) := by
+lemma integrable_cauchyPDFReal (x₀ : ℝ) {γ : ℝ≥0} : Integrable (cauchyPDFReal x₀ γ) := by
   by_cases! h : γ = 0
   · simp only [h, cauchyPDFReal_scale_zero]
     exact integrable_zero _ _ _
@@ -111,11 +111,11 @@ lemma integrable_cauchyPDFReal (x₀ : ℝ) {γ : ℝ≥0} :
 
 /-- The pdf of the cauchy distribution integrates to 1. -/
 @[simp]
-lemma lintegral_cauchyPDF_eq_one (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0) :
-    ∫⁻ x, cauchyPDF x₀ γ x = 1 := by
+lemma lintegral_cauchyPDF_eq_one (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0) : ∫⁻ x, cauchyPDF x₀ γ x = 1 := by
   unfold cauchyPDF
-  rw [← ENNReal.toReal_eq_one_iff, ← integral_eq_lintegral_of_nonneg_ae
-    (ae_of_all _ fun x ↦ (cauchyPDF_pos x₀ hγ x).le) (by fun_prop),
+  rw [← ENNReal.toReal_eq_one_iff,
+    ← integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun x ↦ (cauchyPDF_pos x₀ hγ x).le)
+      (by fun_prop),
     integral_cauchyPDFReal_eq_one x₀ hγ]
 
 end CauchyPDF
@@ -126,14 +126,14 @@ section CauchyMeasure
 noncomputable def cauchyMeasure (x₀ : ℝ) (γ : ℝ≥0) : Measure ℝ :=
   if γ = 0 then dirac x₀ else volume.withDensity (cauchyPDF x₀ γ)
 
-lemma cauchyMeasure_of_scale_ne_zero (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0) :
-    cauchyMeasure x₀ γ = volume.withDensity (cauchyPDF x₀ γ) := ite_eq_right hγ
+lemma cauchyMeasure_of_scale_ne_zero (x₀ : ℝ) {γ : ℝ≥0} (hγ : γ ≠ 0)
+    : cauchyMeasure x₀ γ = volume.withDensity (cauchyPDF x₀ γ) :=
+  ite_eq_right hγ
 
-@[simp]
-lemma cauchyMeasure_zero_scale (x₀ : ℝ) : cauchyMeasure x₀ 0 = dirac x₀ := ite_eq_left rfl
+@[simp] lemma cauchyMeasure_zero_scale (x₀ : ℝ) : cauchyMeasure x₀ 0 = dirac x₀ := ite_eq_left rfl
 
-instance instIsProbabilityMeasure_cauchyMeasure (x₀ : ℝ) (γ : ℝ≥0) :
-    IsProbabilityMeasure (cauchyMeasure x₀ γ) where
+instance instIsProbabilityMeasure_cauchyMeasure (x₀ : ℝ) (γ : ℝ≥0)
+    : IsProbabilityMeasure (cauchyMeasure x₀ γ) where
   measure_univ := by by_cases h : γ = 0 <;> simp [cauchyMeasure_of_scale_ne_zero, h]
 
 end CauchyMeasure

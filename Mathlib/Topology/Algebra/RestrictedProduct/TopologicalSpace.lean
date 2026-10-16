@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Topology.Algebra.RestrictedProduct.Basic
 public import Mathlib.Topology.Algebra.Ring.Basic
-
 import Mathlib.Topology.Algebra.Group.Pointwise
 
 /-!
@@ -150,19 +149,16 @@ instance topologicalSpace : TopologicalSpace (Πʳ i, [R i, A i]_[𝓕]) :=
     (.induced ((↑) : Πʳ i, [R i, A i]_[𝓟 S] → Π i, R i) inferInstance)
 
 @[fun_prop]
-theorem continuous_coe :
-    Continuous ((↑) : Πʳ i, [R i, A i]_[𝓕] → Π i, R i) :=
-  continuous_iSup_dom.mpr fun _ ↦ continuous_iSup_dom.mpr fun _ ↦
-    continuous_coinduced_dom.mpr continuous_induced_dom
+theorem continuous_coe : Continuous ((↑) : Πʳ i, [R i, A i]_[𝓕] → Π i, R i) :=
+  continuous_iSup_dom.mpr fun _ ↦
+    continuous_iSup_dom.mpr fun _ ↦ continuous_coinduced_dom.mpr continuous_induced_dom
 
 @[fun_prop]
-theorem continuous_eval (i : ι) :
-    Continuous (fun (x : Πʳ i, [R i, A i]_[𝓕]) ↦ x i) :=
+theorem continuous_eval (i : ι) : Continuous (fun (x : Πʳ i, [R i, A i]_[𝓕]) ↦ x i) :=
   continuous_apply _ |>.comp continuous_coe
 
 @[fun_prop]
-theorem continuous_inclusion {𝓖 : Filter ι} (h : 𝓕 ≤ 𝓖) :
-    Continuous (inclusion R A h) := by
+theorem continuous_inclusion {𝓖 : Filter ι} (h : 𝓕 ≤ 𝓖) : Continuous (inclusion R A h) := by
   simp_rw [continuous_iff_coinduced_le, topologicalSpace, coinduced_iSup, coinduced_compose]
   exact iSup₂_le fun S hS ↦ le_iSup₂_of_le S (le_trans h hS) le_rfl
 
@@ -182,61 +178,55 @@ section principal
 
 variable {S : Set ι}
 
-theorem topologicalSpace_eq_of_principal :
-    topologicalSpace R A (𝓟 S) =
-      .induced ((↑) : Πʳ i, [R i, A i]_[𝓟 S] → Π i, R i) inferInstance :=
+theorem topologicalSpace_eq_of_principal
+    : topologicalSpace R A (𝓟 S)
+      = .induced ((↑) : Πʳ i, [R i, A i]_[𝓟 S] → Π i, R i) inferInstance :=
   le_antisymm (continuous_iff_le_induced.mp continuous_coe)
     (le_iSup₂_of_le S le_rfl <| by rw [inclusion_eq_id R A (𝓟 S), @coinduced_id])
 
-theorem topologicalSpace_eq_of_top :
-    topologicalSpace R A ⊤ =
-      .induced ((↑) : Πʳ i, [R i, A i]_[⊤] → Π i, R i) inferInstance :=
+theorem topologicalSpace_eq_of_top
+    : topologicalSpace R A ⊤ = .induced ((↑) : Πʳ i, [R i, A i]_[⊤] → Π i, R i) inferInstance :=
   principal_univ ▸ topologicalSpace_eq_of_principal
 
-theorem topologicalSpace_eq_of_bot :
-    topologicalSpace R A ⊥ =
-      .induced ((↑) : Πʳ i, [R i, A i]_[⊥] → Π i, R i) inferInstance :=
+theorem topologicalSpace_eq_of_bot
+    : topologicalSpace R A ⊥ = .induced ((↑) : Πʳ i, [R i, A i]_[⊥] → Π i, R i) inferInstance :=
   principal_empty ▸ topologicalSpace_eq_of_principal
 
-theorem isEmbedding_coe_of_principal :
-    IsEmbedding ((↑) : Πʳ i, [R i, A i]_[𝓟 S] → Π i, R i) where
+theorem isEmbedding_coe_of_principal : IsEmbedding ((↑) : Πʳ i, [R i, A i]_[𝓟 S] → Π i, R i) where
   eq_induced := topologicalSpace_eq_of_principal
   injective := DFunLike.coe_injective
 
-theorem isEmbedding_coe_of_top :
-    IsEmbedding ((↑) : Πʳ i, [R i, A i]_[⊤] → Π i, R i) :=
+theorem isEmbedding_coe_of_top : IsEmbedding ((↑) : Πʳ i, [R i, A i]_[⊤] → Π i, R i) :=
   principal_univ ▸ isEmbedding_coe_of_principal
 
-theorem isEmbedding_coe_of_bot :
-    IsEmbedding ((↑) : Πʳ i, [R i, A i]_[⊥] → Π i, R i) :=
+theorem isEmbedding_coe_of_bot : IsEmbedding ((↑) : Πʳ i, [R i, A i]_[⊥] → Π i, R i) :=
   principal_empty ▸ isEmbedding_coe_of_principal
 
-theorem continuous_rng_of_principal {X : Type*} [TopologicalSpace X]
-    {f : X → Πʳ i, [R i, A i]_[𝓟 S]} :
-    Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
+theorem continuous_rng_of_principal
+    {X : Type*} [TopologicalSpace X] {f : X → Πʳ i, [R i, A i]_[𝓟 S]}
+    : Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
   isEmbedding_coe_of_principal.continuous_iff
 
-theorem continuous_rng_of_top {X : Type*} [TopologicalSpace X]
-    {f : X → Πʳ i, [R i, A i]_[⊤]} :
-    Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
+theorem continuous_rng_of_top {X : Type*} [TopologicalSpace X] {f : X → Πʳ i, [R i, A i]_[⊤]}
+    : Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
   isEmbedding_coe_of_top.continuous_iff
 
-theorem continuous_rng_of_bot {X : Type*} [TopologicalSpace X]
-    {f : X → Πʳ i, [R i, A i]_[⊥]} :
-    Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
+theorem continuous_rng_of_bot {X : Type*} [TopologicalSpace X] {f : X → Πʳ i, [R i, A i]_[⊥]}
+    : Continuous f ↔ Continuous ((↑) ∘ f : X → Π i, R i) :=
   isEmbedding_coe_of_bot.continuous_iff
 
-lemma continuous_rng_of_principal_iff_forall {X : Type*} [TopologicalSpace X]
-    {f : X → Πʳ (i : ι), [R i, A i]_[𝓟 S]} :
-    Continuous f ↔ ∀ i : ι, Continuous ((fun x ↦ x i) ∘ f) :=
+lemma continuous_rng_of_principal_iff_forall
+    {X : Type*} [TopologicalSpace X] {f : X → Πʳ (i : ι), [R i, A i]_[𝓟 S]}
+    : Continuous f ↔ ∀ i : ι, Continuous ((fun x ↦ x i) ∘ f) :=
   continuous_rng_of_principal.trans continuous_pi_iff
 
 /-- The obvious bijection between `Πʳ i, [R i, A i]_[⊤]` and `Π i, A i` is a homeomorphism. -/
 def homeoTop : (Π i, A i) ≃ₜ (Πʳ i, [R i, A i]_[⊤]) where
   toFun f := ⟨fun i ↦ f i, fun i ↦ (f i).2⟩
   invFun f i := ⟨f i, f.2 i⟩
-  continuous_toFun := continuous_rng_of_top.mpr <| continuous_pi fun i ↦
-    continuous_subtype_val.comp <| continuous_apply i
+  continuous_toFun :=
+    continuous_rng_of_top.mpr <|
+      continuous_pi fun i ↦ continuous_subtype_val.comp <| continuous_apply i
   continuous_invFun := continuous_pi fun i ↦ continuous_induced_rng.mpr <| continuous_eval i
 
 /-- The obvious bijection between `Πʳ i, [R i, A i]_[⊥]` and `Π i, R i` is a homeomorphism. -/
@@ -246,24 +236,28 @@ def homeoBot : (Π i, R i) ≃ₜ (Πʳ i, [R i, A i]_[⊥]) where
   continuous_toFun := continuous_rng_of_bot.mpr <| continuous_pi fun i ↦ continuous_apply i
   continuous_invFun := continuous_pi continuous_eval
 
-/-- Assume that `S` is a subset of `ι` with finite complement, that each `R i` is weakly locally
+/--
+Assume that `S` is a subset of `ι` with finite complement, that each `R i` is weakly locally
 compact, and that `A i` is *compact* for all `i ∈ S`. Then the restricted product
 `Πʳ i, [R i, A i]_[𝓟 S]` is locally compact.
 
-Note: we spell "`S` has finite complement" as `cofinite ≤ 𝓟 S`. -/
-theorem weaklyLocallyCompactSpace_of_principal [∀ i, WeaklyLocallyCompactSpace (R i)]
-    (hS : cofinite ≤ 𝓟 S) (hAcompact : ∀ i ∈ S, IsCompact (A i)) :
-    WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]_[𝓟 S]) where
+Note: we spell "`S` has finite complement" as `cofinite ≤ 𝓟 S`.
+-/
+theorem weaklyLocallyCompactSpace_of_principal
+    [∀ i, WeaklyLocallyCompactSpace (R i)]
+    (hS : cofinite ≤ 𝓟 S) (hAcompact : ∀ i ∈ S, IsCompact (A i))
+    : WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]_[𝓟 S]) where
   exists_compact_mem_nhds := fun x ↦ by
     rw [le_principal_iff, mem_cofinite] at hS
     classical
     have : ∀ i, ∃ K, IsCompact K ∧ K ∈ 𝓝 (x i) := fun i ↦ exists_compact_mem_nhds (x i)
     choose K K_compact hK using this
     set Q : Set (Π i, R i) := univ.pi (fun i ↦ if i ∈ S then A i else K i) with Q_def
-    have Q_compact : IsCompact Q := isCompact_univ_pi fun i ↦ by
-      split_ifs with his
-      · exact hAcompact i his
-      · exact K_compact i
+    have Q_compact : IsCompact Q :=
+      isCompact_univ_pi fun i ↦ by
+        split_ifs with his
+        · exact hAcompact i his
+        · exact K_compact i
     set U : Set (Π i, R i) := Sᶜ.pi K
     have U_nhds : U ∈ 𝓝 (x : Π i, R i) := set_pi_mem_nhds hS fun i _ ↦ hK i
     have QU : (↑) ⁻¹' U ⊆ ((↑) ⁻¹' Q : Set (Πʳ i, [R i, A i]_[𝓟 S])) := fun y H i _ ↦ by
@@ -277,11 +271,12 @@ theorem weaklyLocallyCompactSpace_of_principal [∀ i, WeaklyLocallyCompactSpace
       exact inter_subset_left
     · simpa only [isEmbedding_coe_of_principal.nhds_eq_comap] using preimage_mem_comap U_nhds
 
-instance [∀ i, WeaklyLocallyCompactSpace (R i)] [hS : Fact (cofinite ≤ 𝓟 S)]
-    [hAcompact : ∀ i, CompactSpace (A i)] :
-    WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]_[𝓟 S]) :=
-  weaklyLocallyCompactSpace_of_principal hS.out
-    fun _ _ ↦ isCompact_iff_compactSpace.mpr inferInstance
+instance
+    [∀ i, WeaklyLocallyCompactSpace (R i)] [hS : Fact (cofinite ≤ 𝓟 S)]
+    [hAcompact : ∀ i, CompactSpace (A i)]
+    : WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]_[𝓟 S]) :=
+  weaklyLocallyCompactSpace_of_principal hS.out fun _ _ ↦
+    isCompact_iff_compactSpace.mpr inferInstance
 
 end principal
 
@@ -291,33 +286,33 @@ section general
 -/
 
 variable (𝓕) in
-theorem topologicalSpace_eq_iSup :
-    topologicalSpace R A 𝓕 = ⨆ (S : Set ι) (hS : 𝓕 ≤ 𝓟 S),
-      .coinduced (inclusion R A hS) (topologicalSpace R A (𝓟 S)) := by
+theorem topologicalSpace_eq_iSup
+    : topologicalSpace R A 𝓕
+      = ⨆ (S : Set ι) (hS : 𝓕 ≤ 𝓟 S),
+        .coinduced (inclusion R A hS) (topologicalSpace R A (𝓟 S)) := by
   simp_rw [topologicalSpace_eq_of_principal, topologicalSpace]
 
-/-- The **universal property** of the topology on the restricted product: a map from
+/--
+The **universal property** of the topology on the restricted product: a map from
 `Πʳ i, [R i, A i]_[𝓕]` is continuous *iff* its restriction to each `Πʳ i, [R i, A i]_[𝓟 s]`
 (with `𝓕 ≤ 𝓟 s`) is continuous.
 
-See also `RestrictedProduct.continuous_dom_prod_left`. -/
-theorem continuous_dom {X : Type*} [TopologicalSpace X]
-    {f : Πʳ i, [R i, A i]_[𝓕] → X} :
-    Continuous f ↔ ∀ (S : Set ι) (hS : 𝓕 ≤ 𝓟 S), Continuous (f ∘ inclusion R A hS) := by
+See also `RestrictedProduct.continuous_dom_prod_left`.
+-/
+theorem continuous_dom {X : Type*} [TopologicalSpace X] {f : Πʳ i, [R i, A i]_[𝓕] → X}
+    : Continuous f ↔ ∀ (S : Set ι) (hS : 𝓕 ≤ 𝓟 S), Continuous (f ∘ inclusion R A hS) := by
   simp_rw +instances [topologicalSpace_eq_of_principal, continuous_iSup_dom,
     continuous_coinduced_dom]
 
-theorem isEmbedding_inclusion_principal {S : Set ι} (hS : 𝓕 ≤ 𝓟 S) :
-    IsEmbedding (inclusion R A hS) :=
+theorem isEmbedding_inclusion_principal {S : Set ι} (hS : 𝓕 ≤ 𝓟 S)
+    : IsEmbedding (inclusion R A hS) :=
   .of_comp (continuous_inclusion hS) continuous_coe isEmbedding_coe_of_principal
 
-theorem isEmbedding_inclusion_top :
-    IsEmbedding (inclusion R A (le_top : 𝓕 ≤ ⊤)) :=
+theorem isEmbedding_inclusion_top : IsEmbedding (inclusion R A (le_top : 𝓕 ≤ ⊤)) :=
   .of_comp (continuous_inclusion _) continuous_coe isEmbedding_coe_of_top
 
 /-- `Π i, A i` has the subset topology from the restricted product. -/
-theorem isEmbedding_structureMap :
-    IsEmbedding (structureMap R A 𝓕) :=
+theorem isEmbedding_structureMap : IsEmbedding (structureMap R A 𝓕) :=
   isEmbedding_inclusion_top.comp homeoTop.isEmbedding
 
 end general
@@ -342,8 +337,8 @@ of functions of two variables (e.g algebraic operations), which would otherwise 
 variable (hAopen : ∀ i, IsOpen (A i))
 
 include hAopen in
-theorem isOpen_forall_imp_mem_of_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S) {p : ι → Prop} :
-    IsOpen {f : Πʳ i, [R i, A i]_[𝓟 S] | ∀ i, p i → f.1 i ∈ A i} := by
+theorem isOpen_forall_imp_mem_of_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S) {p : ι → Prop}
+    : IsOpen {f : Πʳ i, [R i, A i]_[𝓟 S] | ∀ i, p i → f.1 i ∈ A i} := by
   rw [le_principal_iff] at hS
   convert
       isOpen_set_pi (hS.inter_of_left {i | p i}) (fun i _ ↦ hAopen i) |>.preimage continuous_coe
@@ -354,26 +349,25 @@ theorem isOpen_forall_imp_mem_of_principal {S : Set ι} (hS : cofinite ≤ 𝓟 
   · exact H i ⟨hiS, hiT⟩
 
 include hAopen in
-theorem isOpen_forall_mem_of_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S) :
-    IsOpen {f : Πʳ i, [R i, A i]_[𝓟 S] | ∀ i, f.1 i ∈ A i} := by
+theorem isOpen_forall_mem_of_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S)
+    : IsOpen {f : Πʳ i, [R i, A i]_[𝓟 S] | ∀ i, f.1 i ∈ A i} := by
   convert! isOpen_forall_imp_mem_of_principal hAopen hS (p := fun _ ↦ True)
   simp
 
 include hAopen in
-theorem isOpen_forall_imp_mem {p : ι → Prop} :
-    IsOpen {f : Πʳ i, [R i, A i] | ∀ i, p i → f.1 i ∈ A i} := by
+theorem isOpen_forall_imp_mem {p : ι → Prop}
+    : IsOpen {f : Πʳ i, [R i, A i] | ∀ i, p i → f.1 i ∈ A i} := by
   simp_rw +instances [topologicalSpace_eq_iSup cofinite, isOpen_iSup_iff, isOpen_coinduced]
   exact fun S hS ↦ isOpen_forall_imp_mem_of_principal hAopen hS
 
 include hAopen in
-theorem isOpen_forall_mem :
-    IsOpen {f : Πʳ i, [R i, A i] | ∀ i, f.1 i ∈ A i} := by
+theorem isOpen_forall_mem : IsOpen {f : Πʳ i, [R i, A i] | ∀ i, f.1 i ∈ A i} := by
   simp_rw +instances [topologicalSpace_eq_iSup cofinite, isOpen_iSup_iff, isOpen_coinduced]
   exact fun S hS ↦ isOpen_forall_mem_of_principal hAopen hS
 
 include hAopen in
-theorem isOpenEmbedding_inclusion_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S) :
-    IsOpenEmbedding (inclusion R A hS) where
+theorem isOpenEmbedding_inclusion_principal {S : Set ι} (hS : cofinite ≤ 𝓟 S)
+    : IsOpenEmbedding (inclusion R A hS) where
   toIsEmbedding := isEmbedding_inclusion_principal hS
   isOpen_range := by
     rw [range_inclusion]
@@ -381,31 +375,30 @@ theorem isOpenEmbedding_inclusion_principal {S : Set ι} (hS : cofinite ≤ 𝓟
 
 include hAopen in
 /-- `Π i, A i` is homeomorphic to an open subset of the restricted product. -/
-theorem isOpenEmbedding_structureMap :
-    IsOpenEmbedding (structureMap R A cofinite) where
+theorem isOpenEmbedding_structureMap : IsOpenEmbedding (structureMap R A cofinite) where
   toIsEmbedding := isEmbedding_structureMap
   isOpen_range := by
     rw [range_structureMap]
     exact isOpen_forall_mem hAopen
 
 include hAopen in
-theorem nhds_eq_map_inclusion {S : Set ι} (hS : cofinite ≤ 𝓟 S)
-    (x : Πʳ i, [R i, A i]_[𝓟 S]) :
-    (𝓝 (inclusion R A hS x)) = .map (inclusion R A hS) (𝓝 x) := by
+theorem nhds_eq_map_inclusion {S : Set ι} (hS : cofinite ≤ 𝓟 S) (x : Πʳ i, [R i, A i]_[𝓟 S])
+    : (𝓝 (inclusion R A hS x)) = .map (inclusion R A hS) (𝓝 x) := by
   rw [isOpenEmbedding_inclusion_principal hAopen hS |>.map_nhds_eq x]
 
 include hAopen in
-theorem nhds_eq_map_structureMap
-    (x : Π i, A i) :
-    (𝓝 (structureMap R A cofinite x)) = .map (structureMap R A cofinite) (𝓝 x) := by
+theorem nhds_eq_map_structureMap (x : Π i, A i)
+    : (𝓝 (structureMap R A cofinite x)) = .map (structureMap R A cofinite) (𝓝 x) := by
   rw [isOpenEmbedding_structureMap hAopen |>.map_nhds_eq x]
 
 include hAopen in
-/-- If each `R i` is weakly locally compact, each `A i` is open, and all but finitely many `A i`s
-are also compact, then the restricted product `Πʳ i, [R i, A i]` is weakly locally compact. -/
-theorem weaklyLocallyCompactSpace_of_cofinite [∀ i, WeaklyLocallyCompactSpace (R i)]
-    (hAcompact : ∀ᶠ i in cofinite, IsCompact (A i)) :
-    WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]) where
+/--
+If each `R i` is weakly locally compact, each `A i` is open, and all but finitely many `A i`s
+are also compact, then the restricted product `Πʳ i, [R i, A i]` is weakly locally compact.
+-/
+theorem weaklyLocallyCompactSpace_of_cofinite
+    [∀ i, WeaklyLocallyCompactSpace (R i)] (hAcompact : ∀ᶠ i in cofinite, IsCompact (A i))
+    : WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]) where
   exists_compact_mem_nhds := fun x ↦ by
     set S := {i | IsCompact (A i) ∧ x i ∈ A i}
     have hS : cofinite ≤ 𝓟 S := le_principal_iff.mpr (hAcompact.and x.2)
@@ -417,65 +410,72 @@ theorem weaklyLocallyCompactSpace_of_cofinite [∀ i, WeaklyLocallyCompactSpace 
     rcases exists_compact_mem_nhds x' with ⟨K, K_compact, hK⟩
     exact ⟨inclusion R A hS '' K, K_compact.image (continuous_inclusion hS), image_mem_map hK⟩
 
-instance [hAopen : Fact (∀ i, IsOpen (A i))] [∀ i, WeaklyLocallyCompactSpace (R i)]
-    [hAcompact : ∀ i, CompactSpace (A i)] :
-    WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]) :=
+instance
+    [hAopen : Fact (∀ i, IsOpen (A i))] [∀ i, WeaklyLocallyCompactSpace (R i)]
+    [hAcompact : ∀ i, CompactSpace (A i)]
+    : WeaklyLocallyCompactSpace (Πʳ i, [R i, A i]) :=
   weaklyLocallyCompactSpace_of_cofinite hAopen.out <|
     .of_forall fun _ ↦ isCompact_iff_compactSpace.mpr inferInstance
 
 include hAopen in
-/-- The **universal property with parameters** of the topology on the restricted product:
+/--
+The **universal property with parameters** of the topology on the restricted product:
 for any topological space `Y` of "parameters", a map from `(Πʳ i, [R i, A i]) × Y` is continuous
-*iff* its restriction to each `(Πʳ i, [R i, A i]_[𝓟 S]) × Y` (with `S` cofinite) is continuous. -/
-theorem continuous_dom_prod_right {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-    {f : Πʳ i, [R i, A i] × Y → X} :
-    Continuous f ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S),
-      Continuous (f ∘ (Prod.map (inclusion R A hS) id)) := by
-  refine ⟨fun H S hS ↦ H.comp ((continuous_inclusion hS).prodMap continuous_id),
-    fun H ↦ ?_⟩
+*iff* its restriction to each `(Πʳ i, [R i, A i]_[𝓟 S]) × Y` (with `S` cofinite) is continuous.
+-/
+theorem continuous_dom_prod_right
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {f : Πʳ i, [R i, A i] × Y → X}
+    : Continuous f
+      ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S), Continuous (f ∘ (Prod.map (inclusion R A hS) id)) := by
+  refine ⟨fun H S hS ↦ H.comp ((continuous_inclusion hS).prodMap continuous_id), fun H ↦ ?_⟩
   simp_rw [continuous_iff_continuousAt, ContinuousAt]
   rintro ⟨x, y⟩
   set S : Set ι := {i | x i ∈ A i}
   have hS : cofinite ≤ 𝓟 S := le_principal_iff.mpr x.2
   have hxS : ∀ i ∈ S, x i ∈ A i := fun i hi ↦ hi
   rcases exists_inclusion_eq_of_eventually R A hS hxS with ⟨x', hxx'⟩
-  rw [← hxx', nhds_prod_eq, nhds_eq_map_inclusion hAopen hS x',
-    ← Filter.map_id (f := 𝓝 y), prod_map_map_eq, ← nhds_prod_eq, tendsto_map'_iff]
+  rw [← hxx', nhds_prod_eq, nhds_eq_map_inclusion hAopen hS x', ← Filter.map_id (f := 𝓝 y),
+    prod_map_map_eq, ← nhds_prod_eq, tendsto_map'_iff]
   exact H S hS |>.tendsto ⟨x', y⟩
 
 -- TODO: get from the previous one instead of copy-pasting
 include hAopen in
-/-- The **universal property with parameters** of the topology on the restricted product:
+/--
+The **universal property with parameters** of the topology on the restricted product:
 for any topological space `Y` of "parameters", a map from `Y × Πʳ i, [R i, A i]` is continuous
-*iff* its restriction to each `Y × Πʳ i, [R i, A i]_[𝓟 S]` (with `S` cofinite) is continuous. -/
-theorem continuous_dom_prod_left {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-    {f : Y × Πʳ i, [R i, A i] → X} :
-    Continuous f ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S),
-      Continuous (f ∘ (Prod.map id (inclusion R A hS))) := by
-  refine ⟨fun H S hS ↦ H.comp (continuous_id.prodMap (continuous_inclusion hS)),
-    fun H ↦ ?_⟩
+*iff* its restriction to each `Y × Πʳ i, [R i, A i]_[𝓟 S]` (with `S` cofinite) is continuous.
+-/
+theorem continuous_dom_prod_left
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {f : Y × Πʳ i, [R i, A i] → X}
+    : Continuous f
+      ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S), Continuous (f ∘ (Prod.map id (inclusion R A hS))) := by
+  refine ⟨fun H S hS ↦ H.comp (continuous_id.prodMap (continuous_inclusion hS)), fun H ↦ ?_⟩
   simp_rw [continuous_iff_continuousAt, ContinuousAt]
   rintro ⟨y, x⟩
   set S : Set ι := {i | x i ∈ A i}
   have hS : cofinite ≤ 𝓟 S := le_principal_iff.mpr x.2
   have hxS : ∀ i ∈ S, x i ∈ A i := fun i hi ↦ hi
   rcases exists_inclusion_eq_of_eventually R A hS hxS with ⟨x', hxx'⟩
-  rw [← hxx', nhds_prod_eq, nhds_eq_map_inclusion hAopen hS x',
-    ← Filter.map_id (f := 𝓝 y), prod_map_map_eq, ← nhds_prod_eq, tendsto_map'_iff]
+  rw [← hxx', nhds_prod_eq, nhds_eq_map_inclusion hAopen hS x', ← Filter.map_id (f := 𝓝 y),
+    prod_map_map_eq, ← nhds_prod_eq, tendsto_map'_iff]
   exact H S hS |>.tendsto ⟨y, x'⟩
 
 include hAopen in
-/-- A map from `Πʳ i, [R i, A i] × Πʳ i, [R' i, A' i]` is continuous
+/--
+A map from `Πʳ i, [R i, A i] × Πʳ i, [R' i, A' i]` is continuous
 *iff* its restriction to each `Πʳ i, [R i, A i]_[𝓟 S] × Πʳ i, [R' i, A' i]_[𝓟 S]`
 (with `S` cofinite) is continuous.
 
-This is the key result for continuity of multiplication and addition. -/
-theorem continuous_dom_prod {R' : ι → Type*} {A' : (i : ι) → Set (R' i)}
-    [∀ i, TopologicalSpace (R' i)] (hAopen' : ∀ i, IsOpen (A' i))
+This is the key result for continuity of multiplication and addition.
+-/
+theorem continuous_dom_prod
+    {R' : ι → Type*} {A' : (i : ι) → Set (R' i)} [∀ i, TopologicalSpace (R' i)]
+    (hAopen' : ∀ i, IsOpen (A' i))
     {X : Type*} [TopologicalSpace X]
-    {f : Πʳ i, [R i, A i] × Πʳ i, [R' i, A' i] → X} :
-    Continuous f ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S),
-      Continuous (f ∘ (Prod.map (inclusion R A hS) (inclusion R' A' hS))) := by
+    {f : Πʳ i, [R i, A i] × Πʳ i, [R' i, A' i] → X}
+    : Continuous f
+      ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S),
+        Continuous (f ∘ (Prod.map (inclusion R A hS) (inclusion R' A' hS))) := by
   simp_rw [continuous_dom_prod_right hAopen, continuous_dom_prod_left hAopen']
   refine ⟨fun H S hS ↦ H S hS S hS, fun H S hS T hT ↦ ?_⟩
   set U := S ∩ T
@@ -485,14 +485,14 @@ theorem continuous_dom_prod {R' : ι → Type*} {A' : (i : ι) → Set (R' i)}
   exact (H U hU).comp ((continuous_inclusion hSU).prodMap (continuous_inclusion hTU))
 
 /-- A finitary (instead of binary) version of `continuous_dom_prod`. -/
-theorem continuous_dom_pi {n : Type*} [Finite n] {X : Type*}
-    [TopologicalSpace X] {A : n → ι → Type*}
-    [∀ j i, TopologicalSpace (A j i)]
-    {C : (j : n) → (i : ι) → Set (A j i)}
-    (hCopen : ∀ j i, IsOpen (C j i))
-    {f : (Π j : n, Πʳ i : ι, [A j i, C j i]) → X} :
-    Continuous f ↔
-      ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S), Continuous (f ∘ Pi.map fun _ ↦ inclusion _ _ hS) := by
+theorem continuous_dom_pi
+    {n : Type*} [Finite n]
+    {X : Type*} [TopologicalSpace X]
+    {A : n → ι → Type*} [∀ j i, TopologicalSpace (A j i)]
+    {C : (j : n) → (i : ι) → Set (A j i)} (hCopen : ∀ j i, IsOpen (C j i))
+    {f : (Π j : n, Πʳ i : ι, [A j i, C j i]) → X}
+    : Continuous f
+      ↔ ∀ (S : Set ι) (hS : cofinite ≤ 𝓟 S), Continuous (f ∘ Pi.map fun _ ↦ inclusion _ _ hS) := by
   refine ⟨by fun_prop, fun H ↦ ?_⟩
   simp_rw [continuous_iff_continuousAt, ContinuousAt]
   intro x
@@ -525,8 +525,8 @@ variable [Π i, TopologicalSpace (R i)]
 section general
 
 @[to_additive]
-instance [Π i, Inv (R i)] [∀ i, InvMemClass (S i) (R i)] [∀ i, ContinuousInv (R i)] :
-    ContinuousInv (Πʳ i, [R i, B i]_[𝓕]) where
+instance [Π i, Inv (R i)] [∀ i, InvMemClass (S i) (R i)] [∀ i, ContinuousInv (R i)]
+    : ContinuousInv (Πʳ i, [R i, B i]_[𝓕]) where
   continuous_inv := by
     rw [continuous_dom]
     intro T hT
@@ -535,9 +535,10 @@ instance [Π i, Inv (R i)] [∀ i, InvMemClass (S i) (R i)] [∀ i, ContinuousIn
     exact (continuous_inclusion hT).comp continuous_inv
 
 @[to_additive]
-instance {G : Type*} [Π i, SMul G (R i)] [∀ i, SMulMemClass (S i) G (R i)]
-    [∀ i, ContinuousConstSMul G (R i)] :
-    ContinuousConstSMul G (Πʳ i, [R i, B i]_[𝓕]) where
+instance
+    {G : Type*}
+    [Π i, SMul G (R i)] [∀ i, SMulMemClass (S i) G (R i)] [∀ i, ContinuousConstSMul G (R i)]
+    : ContinuousConstSMul G (Πʳ i, [R i, B i]_[𝓕]) where
   continuous_const_smul g := by
     rw [continuous_dom]
     intro T hT
@@ -550,92 +551,101 @@ end general
 section principal
 
 @[to_additive]
-instance [Π i, Mul (R i)] [∀ i, MulMemClass (S i) (R i)] [∀ i, ContinuousMul (R i)] :
-    ContinuousMul (Πʳ i, [R i, B i]_[𝓟 T]) :=
-  let φ : Πʳ i, [R i, B i]_[𝓟 T] →ₙ* Π i, R i :=
-  { toFun := (↑)
-    map_mul' := fun _ _ ↦ rfl }
+instance [Π i, Mul (R i)] [∀ i, MulMemClass (S i) (R i)] [∀ i, ContinuousMul (R i)]
+    : ContinuousMul (Πʳ i, [R i, B i]_[𝓟 T]) :=
+  let φ : Πʳ i, [R i, B i]_[𝓟 T] →ₙ* Π i, R i := { toFun := (↑), map_mul' := fun _ _ ↦ rfl }
   isEmbedding_coe_of_principal.continuousMul φ
 
 @[to_additive]
-instance {G : Type*} [TopologicalSpace G] [Π i, SMul G (R i)] [∀ i, SMulMemClass (S i) G (R i)]
-    [∀ i, ContinuousSMul G (R i)] :
-    ContinuousSMul G (Πʳ i, [R i, B i]_[𝓟 T]) :=
+instance
+    {G : Type*} [TopologicalSpace G] [Π i, SMul G (R i)] [∀ i, SMulMemClass (S i) G (R i)]
+    [∀ i, ContinuousSMul G (R i)]
+    : ContinuousSMul G (Πʳ i, [R i, B i]_[𝓟 T]) :=
   isEmbedding_coe_of_principal.continuousSMul continuous_id rfl
 
 @[to_additive]
-instance [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)] :
-    IsTopologicalGroup (Πʳ i, [R i, B i]_[𝓟 T]) where
+instance [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)]
+  : IsTopologicalGroup (Πʳ i, [R i, B i]_[𝓟 T]) where
 
-instance [Π i, Ring (R i)] [∀ i, SubringClass (S i) (R i)] [∀ i, IsTopologicalRing (R i)] :
-    IsTopologicalRing (Πʳ i, [R i, B i]_[𝓟 T]) where
+instance [Π i, Ring (R i)] [∀ i, SubringClass (S i) (R i)] [∀ i, IsTopologicalRing (R i)]
+  : IsTopologicalRing (Πʳ i, [R i, B i]_[𝓟 T]) where
 
 end principal
 
 section cofinite
 
-theorem nhds_zero_eq_map_ofPre [Π i, Zero (R i)] [∀ i, ZeroMemClass (S i) (R i)]
-    (hBopen : ∀ i, IsOpen (B i : Set (R i))) (hT : cofinite ≤ 𝓟 T) :
-    (𝓝 (inclusion R (fun i ↦ B i) hT 0)) = .map (inclusion R (fun i ↦ B i) hT) (𝓝 0) :=
+theorem nhds_zero_eq_map_ofPre
+    [Π i, Zero (R i)] [∀ i, ZeroMemClass (S i) (R i)]
+    (hBopen : ∀ i, IsOpen (B i : Set (R i))) (hT : cofinite ≤ 𝓟 T)
+    : (𝓝 (inclusion R (fun i ↦ B i) hT 0)) = .map (inclusion R (fun i ↦ B i) hT) (𝓝 0) :=
   nhds_eq_map_inclusion hBopen hT 0
 
-theorem nhds_zero_eq_map_structureMap [Π i, Zero (R i)] [∀ i, ZeroMemClass (S i) (R i)]
-    (hBopen : ∀ i, IsOpen (B i : Set (R i))) :
-    (𝓝 (structureMap R (fun i ↦ B i) cofinite 0)) =
-      .map (structureMap R (fun i ↦ B i) cofinite) (𝓝 0) :=
+theorem nhds_zero_eq_map_structureMap
+    [Π i, Zero (R i)] [∀ i, ZeroMemClass (S i) (R i)] (hBopen : ∀ i, IsOpen (B i : Set (R i)))
+    : (𝓝 (structureMap R (fun i ↦ B i) cofinite 0))
+      = .map (structureMap R (fun i ↦ B i) cofinite) (𝓝 0) :=
   nhds_eq_map_structureMap hBopen 0
 
 -- TODO: Make `IsOpen` a class like `IsClosed` ?
 variable [hBopen : Fact (∀ i, IsOpen (B i : Set (R i)))]
 
 @[to_additive]
-instance [Π i, Mul (R i)] [∀ i, MulMemClass (S i) (R i)] [∀ i, ContinuousMul (R i)] :
-    ContinuousMul (Πʳ i, [R i, B i]) where
+instance [Π i, Mul (R i)] [∀ i, MulMemClass (S i) (R i)] [∀ i, ContinuousMul (R i)]
+    : ContinuousMul (Πʳ i, [R i, B i]) where
   continuous_mul := by
     rw [continuous_dom_prod hBopen.out hBopen.out]
     exact fun S hS ↦ (continuous_inclusion hS).comp continuous_mul
 
 @[to_additive]
-instance continuousSMul {G : Type*} [TopologicalSpace G] [Π i, SMul G (R i)]
-    [∀ i, SMulMemClass (S i) G (R i)] [∀ i, ContinuousSMul G (R i)] :
-    ContinuousSMul G (Πʳ i, [R i, B i]) where
+instance continuousSMul
+    {G : Type*} [TopologicalSpace G] [Π i, SMul G (R i)] [∀ i, SMulMemClass (S i) G (R i)]
+    [∀ i, ContinuousSMul G (R i)]
+    : ContinuousSMul G (Πʳ i, [R i, B i]) where
   continuous_smul := by
     rw [continuous_dom_prod_left hBopen.out]
     exact fun S hS ↦ (continuous_inclusion hS).comp continuous_smul
 
 @[to_additive]
-instance isTopologicalGroup [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)]
-    [∀ i, IsTopologicalGroup (R i)] :
-    IsTopologicalGroup (Πʳ i, [R i, B i]) where
+instance isTopologicalGroup
+  [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)]
+  : IsTopologicalGroup (Πʳ i, [R i, B i]) where
 
-instance isTopologicalRing [Π i, Ring (R i)] [∀ i, SubringClass (S i) (R i)]
-    [∀ i, IsTopologicalRing (R i)] :
-    IsTopologicalRing (Πʳ i, [R i, B i]) where
+instance isTopologicalRing
+  [Π i, Ring (R i)] [∀ i, SubringClass (S i) (R i)] [∀ i, IsTopologicalRing (R i)]
+  : IsTopologicalRing (Πʳ i, [R i, B i]) where
 
-/-- Assume that each `R i` is a locally compact group with `A i` an open subgroup.
+/--
+Assume that each `R i` is a locally compact group with `A i` an open subgroup.
 Assume also that all but finitely many `A i`s are compact.
-Then the restricted product `Πʳ i, [R i, A i]` is a locally compact group. -/
+Then the restricted product `Πʳ i, [R i, A i]` is a locally compact group.
+-/
 @[to_additive
-/-- Assume that each `R i` is a locally compact additive group with `A i` an open subgroup.
+  /-- Assume that each `R i` is a locally compact additive group with `A i` an open subgroup.
 Assume also that all but finitely many `A i`s are compact.
 Then the restricted product `Πʳ i, [R i, A i]` is a locally compact additive group. -/]
-theorem locallyCompactSpace_of_group [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)]
-    [∀ i, IsTopologicalGroup (R i)] [∀ i, LocallyCompactSpace (R i)]
-    (hBcompact : ∀ᶠ i in cofinite, IsCompact (B i : Set (R i))) :
-    LocallyCompactSpace (Πʳ i, [R i, B i]) :=
+theorem locallyCompactSpace_of_group
+    [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)]
+    [∀ i, LocallyCompactSpace (R i)]
+    (hBcompact : ∀ᶠ i in cofinite, IsCompact (B i : Set (R i)))
+    : LocallyCompactSpace (Πʳ i, [R i, B i]) :=
   haveI : WeaklyLocallyCompactSpace (Πʳ i, [R i, B i]) :=
     weaklyLocallyCompactSpace_of_cofinite hBopen.out hBcompact
   inferInstance
 
 open scoped Pointwise in
 @[to_additive]
-instance [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)]
-    [hAcompact : ∀ i, CompactSpace (B i)] : LocallyCompactSpace (Πʳ i, [R i, B i]) :=
+instance
+    [Π i, Group (R i)] [∀ i, SubgroupClass (S i) (R i)] [∀ i, IsTopologicalGroup (R i)]
+    [hAcompact : ∀ i, CompactSpace (B i)]
+    : LocallyCompactSpace (Πʳ i, [R i, B i]) :=
   -- TODO: extract as a lemma
-  haveI : ∀ i, WeaklyLocallyCompactSpace (R i) := fun i ↦ .mk fun x ↦
-    ⟨x • (B i : Set (R i)), .smul _ (isCompact_iff_compactSpace.mpr inferInstance),
+  haveI : ∀ i, WeaklyLocallyCompactSpace (R i) := fun i ↦
+    .mk fun x ↦ ⟨
+      x • (B i : Set (R i)),
+      .smul _ (isCompact_iff_compactSpace.mpr inferInstance),
       hBopen.out i |>.smul _ |>.mem_nhds <| by
-      simpa using smul_mem_smul_set (a := x) (one_mem (B i))⟩
+        simpa using smul_mem_smul_set (a := x) (one_mem (B i))
+    ⟩
   locallyCompactSpace_of_group _ <| .of_forall fun _ ↦ isCompact_iff_compactSpace.mpr inferInstance
 
 end cofinite
@@ -653,8 +663,8 @@ variable (f : ι₂ → ι₁) (hf : Tendsto f 𝓕₂ 𝓕₁)
 
 variable (φ : ∀ j, R₁ (f j) → R₂ j) (hφ : ∀ᶠ j in 𝓕₂, MapsTo (φ j) (A₁ (f j)) (A₂ j))
 
-theorem mapAlong_continuous (φ_cont : ∀ j, Continuous (φ j)) :
-    Continuous (mapAlong R₁ R₂ f hf φ hφ) := by
+theorem mapAlong_continuous (φ_cont : ∀ j, Continuous (φ j))
+    : Continuous (mapAlong R₁ R₂ f hf φ hφ) := by
   rw [continuous_dom]
   intro S hS
   set T := f ⁻¹' S ∩ {j | MapsTo (φ j) (A₁ (f j)) (A₂ j)}
@@ -663,11 +673,12 @@ theorem mapAlong_continuous (φ_cont : ∀ j, Continuous (φ j)) :
     exact inter_mem (hf hS) hφ
   have hf' : Tendsto f (𝓟 T) (𝓟 S) := by aesop
   have hφ' : ∀ᶠ j in 𝓟 T, MapsTo (φ j) (A₁ (f j)) (A₂ j) := by aesop
-  have key : mapAlong R₁ R₂ f hf φ hφ ∘ inclusion R₁ A₁ hS =
-      inclusion R₂ A₂ hT ∘ mapAlong R₁ R₂ f hf' φ hφ' := rfl
+  have key
+      : mapAlong R₁ R₂ f hf φ hφ ∘ inclusion R₁ A₁ hS
+        = inclusion R₂ A₂ hT ∘ mapAlong R₁ R₂ f hf' φ hφ' :=
+    rfl
   rw [key]
-  exact continuous_inclusion _ |>.comp <|
-    continuous_rng_of_principal.mpr <|
+  exact continuous_inclusion _ |>.comp <| continuous_rng_of_principal.mpr <|
     continuous_pi fun j ↦ φ_cont j |>.comp <| continuous_eval (f j)
 
 end map_continuous

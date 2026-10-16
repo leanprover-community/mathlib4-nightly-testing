@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel
 module
 
 public import Mathlib.Analysis.Calculus.TangentCone.Basic
-
 import Mathlib.Topology.Algebra.Module.Basic
 
 /-!
@@ -24,14 +23,15 @@ open scoped Topology
 
 section Semiring
 
-variable {𝕜 : Type*} [Semiring 𝕜]
+variable
+  {𝕜 : Type*} [Semiring 𝕜]
   {ι : Type*} {E : ι → Type*} [∀ i, AddCommGroup (E i)] [∀ i, Module 𝕜 (E i)]
   [∀ i, TopologicalSpace (E i)] [∀ i, ContinuousAdd (E i)] [∀ i, ContinuousConstSMul 𝕜 (E i)]
   {s : ∀ i, Set (E i)} {x : ∀ i, E i}
 
 /-- The tangent cone of a product contains the tangent cone of each factor. -/
-theorem mapsTo_tangentConeAt_pi [DecidableEq ι] {i : ι} (hi : ∀ j ≠ i, x j ∈ closure (s j)) :
-    MapsTo (Pi.single i) (tangentConeAt 𝕜 (s i) (x i)) (tangentConeAt 𝕜 (Set.pi univ s) x) := by
+theorem mapsTo_tangentConeAt_pi [DecidableEq ι] {i : ι} (hi : ∀ j ≠ i, x j ∈ closure (s j))
+    : MapsTo (Pi.single i) (tangentConeAt 𝕜 (s i) (x i)) (tangentConeAt 𝕜 (Set.pi univ s) x) := by
   rw [← tangentConeAt_closure (s := .pi _ _)]
   intro y hy
   rcases exists_fun_of_mem_tangentConeAt hy with ⟨ι, l, hl, c, d, hd₀, hds, hcd⟩
@@ -47,8 +47,9 @@ theorem mapsTo_tangentConeAt_pi [DecidableEq ι] {i : ι} (hi : ∀ j ≠ i, x j
     intro j
     rcases eq_or_ne j i with rfl | hj <;> simp [*, tendsto_const_nhds]
 
-theorem UniqueDiffWithinAt.univ_pi {s : ∀ i, Set (E i)} {x : ∀ i, E i}
-    (h : ∀ i, UniqueDiffWithinAt 𝕜 (s i) (x i)) : UniqueDiffWithinAt 𝕜 (Set.pi univ s) x := by
+theorem UniqueDiffWithinAt.univ_pi
+    {s : ∀ i, Set (E i)} {x : ∀ i, E i} (h : ∀ i, UniqueDiffWithinAt 𝕜 (s i) (x i))
+    : UniqueDiffWithinAt 𝕜 (Set.pi univ s) x := by
   classical
   simp only [uniqueDiffWithinAt_iff, closure_pi_set] at h ⊢
   refine ⟨.of_closure <| (dense_pi univ fun i _ ↦ (h i).1).closure.mono ?_, fun i _ => (h i).2⟩
@@ -58,28 +59,33 @@ theorem UniqueDiffWithinAt.univ_pi {s : ∀ i, Set (E i)} {x : ∀ i, E i}
   gcongr
   exact mapsTo_tangentConeAt_pi (fun j _ ↦ (h j).2) |>.image_subset
 
-/-- The product of a family of sets of unique differentiability is a set of unique
-differentiability. -/
-theorem UniqueDiffOn.univ_pi {s : ∀ i, Set (E i)} (h : ∀ i, UniqueDiffOn 𝕜 (s i)) :
-    UniqueDiffOn 𝕜 (Set.pi univ s) :=
-  fun _x hx ↦ .univ_pi fun i ↦ h i _ <| hx i (mem_univ i)
+/--
+The product of a family of sets of unique differentiability is a set of unique
+differentiability.
+-/
+theorem UniqueDiffOn.univ_pi {s : ∀ i, Set (E i)} (h : ∀ i, UniqueDiffOn 𝕜 (s i))
+    : UniqueDiffOn 𝕜 (Set.pi univ s) := fun _x hx ↦
+  .univ_pi fun i ↦ h i _ <| hx i (mem_univ i)
 
 end Semiring
 
-variable {𝕜 : Type*} [DivisionSemiring 𝕜]
-  {ι : Type*} {E : ι → Type*} [∀ i, AddCommGroup (E i)] [∀ i, Module 𝕜 (E i)]
-  [TopologicalSpace 𝕜] [(𝓝[≠] (0 : 𝕜)).NeBot]
+variable
+  {𝕜 : Type*} [DivisionSemiring 𝕜]
+  {ι : Type*} {E : ι → Type*}
+  [∀ i, AddCommGroup (E i)] [∀ i, Module 𝕜 (E i)] [TopologicalSpace 𝕜] [(𝓝[≠] (0 : 𝕜)).NeBot]
   [∀ i, TopologicalSpace (E i)] [∀ i, ContinuousAdd (E i)] [∀ i, ContinuousSMul 𝕜 (E i)]
   {s : ∀ i, Set (E i)} {x : ∀ i, E i} {I : Set ι}
 
-theorem UniqueDiffWithinAt.pi (h : ∀ i ∈ I, UniqueDiffWithinAt 𝕜 (s i) (x i)) :
-    UniqueDiffWithinAt 𝕜 (Set.pi I s) x := by
+theorem UniqueDiffWithinAt.pi (h : ∀ i ∈ I, UniqueDiffWithinAt 𝕜 (s i) (x i))
+    : UniqueDiffWithinAt 𝕜 (Set.pi I s) x := by
   classical
   rw [← Set.univ_pi_piecewise_univ]
   refine UniqueDiffWithinAt.univ_pi fun i => ?_
   by_cases hi : i ∈ I <;> simp [*, uniqueDiffWithinAt_univ]
 
-/-- The product of a family of sets of unique differentiability is a set of unique
-differentiability. -/
+/--
+The product of a family of sets of unique differentiability is a set of unique
+differentiability.
+-/
 theorem UniqueDiffOn.pi (h : ∀ i ∈ I, UniqueDiffOn 𝕜 (s i)) : UniqueDiffOn 𝕜 (Set.pi I s) :=
   fun x hx => UniqueDiffWithinAt.pi fun i hi => h i hi (x i) (hx i hi)

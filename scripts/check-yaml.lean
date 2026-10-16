@@ -22,16 +22,15 @@ abbrev DBFile := Array (String × Name)
 
 def readJsonFile (α) [FromJson α] (path : System.FilePath) : IO α := do
   let _ : MonadExceptOf String IO := ⟨throw ∘ IO.userError, fun x _ => x⟩
-  liftExcept <| fromJson? <|← liftExcept <| Json.parse <|← IO.FS.readFile path
+  liftExcept <| fromJson? <| ← liftExcept <| Json.parse <| ← IO.FS.readFile path
 
-def databases : List String :=
-  ["undergrad", "overview", "100", "1000"]
+def databases : List String := ["undergrad", "overview", "100", "1000"]
 
 def processDb (env : Environment) (file : String) : IO Bool := do
   let lines ← readJsonFile DBFile s!"{file}.json"
   let mut (missing, deprecated) := (#[], #[])
   for entry@(_, decl) in lines do
-    if !env.contains decl then
+    if ! env.contains decl then
       missing := missing.push entry
     else if let some newName := Linter.getDeprecatedNewName env decl then
       deprecated := deprecated.push (entry, newName)

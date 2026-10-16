@@ -22,10 +22,12 @@ variable {R M : Type*} [Semiring R] [Mul M]
 
 namespace MonoidAlgebra
 
-/-- The opposite of a monoid algebra is equivalent as a ring to the opposite monoid algebra over the
-opposite ring. -/
+/--
+The opposite of a monoid algebra is equivalent as a ring to the opposite monoid algebra over the
+opposite ring.
+-/
 @[to_additive (dont_translate := R) (attr := simps! +simpRhs apply symm_apply)
-/-- The opposite of a monoid algebra is equivalent as a ring to the opposite monoid algebra over the
+  /-- The opposite of a monoid algebra is equivalent as a ring to the opposite monoid algebra over the
 opposite ring. -/]
 protected noncomputable def opRingEquiv : R[M]ᵐᵒᵖ ≃+* Rᵐᵒᵖ[Mᵐᵒᵖ] where
   toAddEquiv :=
@@ -37,12 +39,13 @@ protected noncomputable def opRingEquiv : R[M]ᵐᵒᵖ ≃+* Rᵐᵒᵖ[Mᵐᵒ
     simpa using fun _ _ _ ↦ Finsupp.sum_comm ..
 
 @[to_additive (dont_translate := R)]
-lemma opRingEquiv_single (r : R) (x : M) :
-    MonoidAlgebra.opRingEquiv (op (single x r)) = single (op x) (op r) := by ext; simp
+lemma opRingEquiv_single (r : R) (x : M)
+    : MonoidAlgebra.opRingEquiv (op (single x r)) = single (op x) (op r) := by
+  ext; simp
 
 @[to_additive (dont_translate := R)]
-lemma opRingEquiv_symm_single (r : Rᵐᵒᵖ) (x : Mᵐᵒᵖ) :
-    MonoidAlgebra.opRingEquiv.symm (single x r) = op (single x.unop r.unop) := by
+lemma opRingEquiv_symm_single (r : Rᵐᵒᵖ) (x : Mᵐᵒᵖ)
+    : MonoidAlgebra.opRingEquiv.symm (single x r) = op (single x.unop r.unop) := by
   apply MulOpposite.unop_injective; ext; simp
 
 end MonoidAlgebra

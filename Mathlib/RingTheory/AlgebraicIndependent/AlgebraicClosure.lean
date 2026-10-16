@@ -43,18 +43,24 @@ theorem extendScalars [alg : Algebra.IsAlgebraic R S] : AlgebraicIndependent S x
   let _ : Algebra Rt St :=
     (Rt.inclusion (T := St.restrictScalars R) <| adjoin_le <| by exact subset_adjoin).toAlgebra
   have : IsScalarTower Rt St A := .of_algebraMap_eq fun ⟨y, _⟩ ↦ show y = y from rfl
-  have : NoZeroDivisors St := (Set.image_eq_range _ _ ▸ ind.aevalEquiv)
-    |>.symm.injective.noZeroDivisors _ (map_zero _) (map_mul _)
-  have : NoZeroDivisors Rt := (Subalgebra.inclusion_injective _).noZeroDivisors
-    (algebraMap Rt St) (map_zero _) (map_mul _)
+  have : NoZeroDivisors St :=
+    (Set.image_eq_range _ _ ▸ ind.aevalEquiv)
+      |>.symm.injective.noZeroDivisors _ (map_zero _) (map_mul _)
+  have : NoZeroDivisors Rt :=
+    (Subalgebra.inclusion_injective _).noZeroDivisors (algebraMap Rt St) (map_zero _) (map_mul _)
   have : Algebra.IsAlgebraic Rt St := ⟨fun ⟨y, hy⟩ ↦ by
     rw [← isAlgebraic_algHom_iff (IsScalarTower.toAlgHom Rt St A) Subtype.val_injective]
     change IsAlgebraic Rt y
     have := Algebra.IsAlgebraic.nontrivial R S
     have := hx.algebraMap_injective.nontrivial
-    exact adjoin_induction (fun _ h ↦ isAlgebraic_algebraMap (⟨_, subset_adjoin h⟩ : Rt))
-      (fun z ↦ ((alg.1 z).algHom (IsScalarTower.toAlgHom R S A)).extendScalars fun _ _ eq ↦ by
-        exact hx.algebraMap_injective congr($eq.1)) (fun _ _ _ _ ↦ .add) (fun _ _ _ _ ↦ .mul) hy⟩
+    exact adjoin_induction
+      (fun _ h ↦ isAlgebraic_algebraMap (⟨_, subset_adjoin h⟩ : Rt))
+      (fun z ↦
+        ((alg.1 z).algHom (IsScalarTower.toAlgHom R S A)).extendScalars fun _ _ eq ↦ by
+          exact hx.algebraMap_injective congr($eq.1))
+      (fun _ _ _ _ ↦ .add)
+      (fun _ _ _ _ ↦ .mul)
+      hy⟩
   change Transcendental St (x i)
   exact (hx.transcendental_adjoin hi).extendScalars _
 
@@ -63,17 +69,18 @@ theorem extendScalars_of_isIntegral [Algebra.IsIntegral R S] : AlgebraicIndepend
   have := Module.nontrivial R S
   exact hx.extendScalars S
 
-theorem subalgebraAlgebraicClosure [IsDomain R] [NoZeroDivisors A] :
-    AlgebraicIndependent (Subalgebra.algebraicClosure R A) x :=
+theorem subalgebraAlgebraicClosure [IsDomain R] [NoZeroDivisors A]
+    : AlgebraicIndependent (Subalgebra.algebraicClosure R A) x :=
   hx.extendScalars _
 
-protected theorem integralClosure [NoZeroDivisors A] :
-    AlgebraicIndependent (integralClosure R A) x :=
+protected theorem integralClosure [NoZeroDivisors A]
+    : AlgebraicIndependent (integralClosure R A) x :=
   hx.extendScalars_of_isIntegral _
 
 omit hx in
-protected theorem algebraicClosure {F E : Type*} [Field F] [Field E] [Algebra F E] {x : ι → E}
-    (hx : AlgebraicIndependent F x) : AlgebraicIndependent (algebraicClosure F E) x :=
+protected theorem algebraicClosure
+    {F E : Type*} [Field F] [Field E] [Algebra F E] {x : ι → E} (hx : AlgebraicIndependent F x)
+    : AlgebraicIndependent (algebraicClosure F E) x :=
   hx.extendScalars _
 
 end AlgebraicIndependent
@@ -83,21 +90,20 @@ namespace Algebra
 variable (R) [FaithfulSMul R S]
 omit hx
 
-protected theorem IsIntegral.algebraicIndependent_iff [Algebra.IsIntegral R S] :
-    AlgebraicIndependent R x ↔ AlgebraicIndependent S x :=
-  ⟨(·.extendScalars_of_isIntegral _),
-    (·.restrictScalars (FaithfulSMul.algebraMap_injective R S))⟩
+protected theorem IsIntegral.algebraicIndependent_iff [Algebra.IsIntegral R S]
+    : AlgebraicIndependent R x ↔ AlgebraicIndependent S x :=
+  ⟨(·.extendScalars_of_isIntegral _), (·.restrictScalars (FaithfulSMul.algebraMap_injective R S))⟩
 
-protected theorem IsIntegral.isTranscendenceBasis_iff [Algebra.IsIntegral R S] :
-    IsTranscendenceBasis R x ↔ IsTranscendenceBasis S x := by
+protected theorem IsIntegral.isTranscendenceBasis_iff [Algebra.IsIntegral R S]
+    : IsTranscendenceBasis R x ↔ IsTranscendenceBasis S x := by
   simp_rw [IsTranscendenceBasis, IsIntegral.algebraicIndependent_iff R S]
 
-protected theorem IsAlgebraic.algebraicIndependent_iff [Algebra.IsAlgebraic R S] :
-    AlgebraicIndependent R x ↔ AlgebraicIndependent S x :=
+protected theorem IsAlgebraic.algebraicIndependent_iff [Algebra.IsAlgebraic R S]
+    : AlgebraicIndependent R x ↔ AlgebraicIndependent S x :=
   ⟨(·.extendScalars _), (·.restrictScalars (FaithfulSMul.algebraMap_injective R S))⟩
 
-protected theorem IsAlgebraic.isTranscendenceBasis_iff [Algebra.IsAlgebraic R S] :
-    IsTranscendenceBasis R x ↔ IsTranscendenceBasis S x := by
+protected theorem IsAlgebraic.isTranscendenceBasis_iff [Algebra.IsAlgebraic R S]
+    : IsTranscendenceBasis R x ↔ IsTranscendenceBasis S x := by
   simp_rw [IsTranscendenceBasis, IsAlgebraic.algebraicIndependent_iff R S]
 
 end Algebra
@@ -116,32 +122,32 @@ section Ring
 
 variable [Ring S] [Algebra E S]
 
-theorem isAlgebraic_adjoin_iff {x : S} :
-    IsAlgebraic (adjoin F s) x ↔ IsAlgebraic (Algebra.adjoin F s) x :=
+theorem isAlgebraic_adjoin_iff {x : S}
+    : IsAlgebraic (adjoin F s) x ↔ IsAlgebraic (Algebra.adjoin F s) x :=
   (IsAlgebraic.isAlgebraic_iff ..).symm
 
-theorem isAlgebraic_adjoin_iff_top :
-    Algebra.IsAlgebraic (adjoin F s) S ↔ Algebra.IsAlgebraic (Algebra.adjoin F s) S :=
+theorem isAlgebraic_adjoin_iff_top
+    : Algebra.IsAlgebraic (adjoin F s) S ↔ Algebra.IsAlgebraic (Algebra.adjoin F s) S :=
   (IsAlgebraic.isAlgebraic_iff_top ..).symm
 
-theorem isAlgebraic_adjoin_iff_bot :
-    Algebra.IsAlgebraic R (adjoin F s) ↔ Algebra.IsAlgebraic R (Algebra.adjoin F s) :=
+theorem isAlgebraic_adjoin_iff_bot
+    : Algebra.IsAlgebraic R (adjoin F s) ↔ Algebra.IsAlgebraic R (Algebra.adjoin F s) :=
   IsAlgebraic.isAlgebraic_iff_bot ..
 
-theorem transcendental_adjoin_iff {x : S} :
-    Transcendental (adjoin F s) x ↔ Transcendental (Algebra.adjoin F s) x :=
+theorem transcendental_adjoin_iff {x : S}
+    : Transcendental (adjoin F s) x ↔ Transcendental (Algebra.adjoin F s) x :=
   (IsAlgebraic.transcendental_iff ..).symm
 
 end Ring
 
 variable [CommRing S] [Algebra E S]
 
-theorem algebraicIndependent_adjoin_iff {x : ι → S} :
-    AlgebraicIndependent (adjoin F s) x ↔ AlgebraicIndependent (Algebra.adjoin F s) x :=
+theorem algebraicIndependent_adjoin_iff {x : ι → S}
+    : AlgebraicIndependent (adjoin F s) x ↔ AlgebraicIndependent (Algebra.adjoin F s) x :=
   (Algebra.IsAlgebraic.algebraicIndependent_iff ..).symm
 
-theorem isTranscendenceBasis_adjoin_iff {x : ι → S} :
-    IsTranscendenceBasis (adjoin F s) x ↔ IsTranscendenceBasis (Algebra.adjoin F s) x :=
+theorem isTranscendenceBasis_adjoin_iff {x : ι → S}
+    : IsTranscendenceBasis (adjoin F s) x ↔ IsTranscendenceBasis (Algebra.adjoin F s) x :=
   (Algebra.IsAlgebraic.isTranscendenceBasis_iff ..).symm
 
 end IntermediateField

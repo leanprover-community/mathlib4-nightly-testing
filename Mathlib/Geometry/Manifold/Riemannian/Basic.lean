@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Geometry.Manifold.Riemannian.PathELength
 public import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.ContDiff
 
 /-! # Riemannian manifolds
@@ -59,16 +58,17 @@ noncomputable section
 
 variable
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 section
 
-variable [PseudoEMetricSpace M] [ChartedSpace H M]
-  [RiemannianBundle (fun (x : M) ↦ TangentSpace% x)]
+variable
+  [PseudoEMetricSpace M] [ChartedSpace H M] [RiemannianBundle (fun (x : M) ↦ TangentSpace% x)]
 
 variable (I M) in
-/-- Consider a manifold in which the tangent spaces are already endowed with an inner product, and
+/--
+Consider a manifold in which the tangent spaces are already endowed with an inner product, and
 the space is already endowed with an extended distance. We say that this is a Riemannian manifold
 if the distance is given by the infimum of the lengths of `C^1` paths, measured using the norm in
 the tangent spaces.
@@ -76,7 +76,8 @@ the tangent spaces.
 This is a `Prop`-valued typeclass, on top of existing data.
 
 If you need to *construct* a distance using a Riemannian structure,
-see `EMetricSpace.ofRiemannianMetric`. -/
+see `EMetricSpace.ofRiemannianMetric`.
+-/
 class IsRiemannianManifold : Prop where
   out (x y : M) : edist x y = riemannianEDist I x y
 
@@ -97,10 +98,12 @@ variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 set_option backward.isDefEq.respectTransparency false in
 variable (F) in
-/-- The standard Riemannian metric on a vector space with an inner product, given by this inner
-product on each tangent space. -/
-noncomputable def riemannianMetricVectorSpace :
-    ContMDiffRiemannianMetric 𝓘(ℝ, F) ω F (fun (x : F) ↦ TangentSpace% x) where
+/--
+The standard Riemannian metric on a vector space with an inner product, given by this inner
+product on each tangent space.
+-/
+noncomputable def riemannianMetricVectorSpace
+    : ContMDiffRiemannianMetric (𝓘(ℝ, F)) ω F (fun (x : F) ↦ TangentSpace% x) where
   inner x := (innerSL ℝ (E := F) : F →L[ℝ] F →L[ℝ] ℝ)
   symm x v w := real_inner_comm _ _
   pos x v hv := real_inner_self_pos.2 hv
@@ -125,26 +128,25 @@ noncomputable def riemannianMetricVectorSpace :
 noncomputable instance : RiemannianBundle (fun (x : F) ↦ TangentSpace% x) :=
   ⟨(riemannianMetricVectorSpace F).toRiemannianMetric⟩
 
-lemma norm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x} :
-    ‖v‖ = ‖NormedSpace.fromTangentSpace _ v‖ := by
+lemma norm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x}
+    : ‖v‖ = ‖NormedSpace.fromTangentSpace _ v‖ := by
   rw [norm_eq_sqrt_real_inner, norm_eq_sqrt_real_inner]
   rfl
 
-lemma nnnorm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x} :
-    ‖v‖₊ = ‖NormedSpace.fromTangentSpace _  v‖₊ := by
+lemma nnnorm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x}
+    : ‖v‖₊ = ‖NormedSpace.fromTangentSpace _  v‖₊ := by
   simp [nnnorm, norm_tangentSpace_vectorSpace]
 
-lemma enorm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x} :
-    ‖v‖ₑ = ‖NormedSpace.fromTangentSpace _ v‖ₑ := by
+lemma enorm_tangentSpace_vectorSpace {x : F} {v : TangentSpace% x}
+    : ‖v‖ₑ = ‖NormedSpace.fromTangentSpace _ v‖ₑ := by
   simp [enorm, nnnorm_tangentSpace_vectorSpace]
 
 open MeasureTheory
 
-lemma lintegral_fderiv_lineMap_eq_edist {x y : E} :
-    ∫⁻ t in Icc 0 1, ‖fderivWithin ℝ (ContinuousAffineMap.lineMap (R := ℝ) x y) (Icc 0 1) t 1‖ₑ
+lemma lintegral_fderiv_lineMap_eq_edist {x y : E}
+    : ∫⁻ t in Icc 0 1, ‖fderivWithin ℝ (ContinuousAffineMap.lineMap (R := ℝ) x y) (Icc 0 1) t 1‖ₑ
       = edist x y := by
-  have : edist x y = ∫⁻ t in Icc (0 : ℝ) 1, ‖y - x‖ₑ := by
-    simp [edist_comm x y, edist_eq_enorm_sub]
+  have : edist x y = ∫⁻ t in Icc (0 : ℝ) 1, ‖y - x‖ₑ := by simp [edist_comm x y, edist_eq_enorm_sub]
   rw [this]
   apply setLIntegral_congr_fun measurableSet_Icc (fun z hz ↦ ?_)
   rw [show y - x = fderiv ℝ (ContinuousAffineMap.lineMap (R := ℝ) x y) z 1 by simp]
@@ -152,9 +154,11 @@ lemma lintegral_fderiv_lineMap_eq_edist {x y : E} :
   exact fderivWithin_eq_fderiv (uniqueDiffOn_Icc zero_lt_one _ hz)
     (ContinuousAffineMap.differentiableAt _)
 
-/-- An inner product vector space is a Riemannian manifold, i.e., the distance between two points
-is the infimum of the lengths of paths between these points. -/
-instance : IsRiemannianManifold 𝓘(ℝ, F) F := by
+/--
+An inner product vector space is a Riemannian manifold, i.e., the distance between two points
+is the infimum of the lengths of paths between these points.
+-/
+instance : IsRiemannianManifold (𝓘(ℝ, F)) F := by
   refine ⟨fun x y ↦ le_antisymm ?_ ?_⟩
   · simp only [riemannianEDist, le_iInf_iff]
     intro γ hγ
@@ -168,7 +172,7 @@ instance : IsRiemannianManifold 𝓘(ℝ, F) F := by
       rw [edist_comm, edist_eq_enorm_sub, show x = e 0 by simp [e], show y = e 1 by simp [e]]
     exact (enorm_sub_le_lintegral_derivWithin_Icc_of_contDiffOn_Icc D zero_le_one).trans_eq rfl
   · let γ := ContinuousAffineMap.lineMap (R := ℝ) x y
-    have : riemannianEDist 𝓘(ℝ, F) x y ≤ pathELength 𝓘(ℝ, F) γ 0 1 := by
+    have : riemannianEDist (𝓘(ℝ, F)) x y ≤ pathELength (𝓘(ℝ, F)) γ 0 1 := by
       apply riemannianEDist_le_pathELength ?_ (by simp [γ, ContinuousAffineMap.coe_lineMap_eq])
         (by simp [γ, ContinuousAffineMap.coe_lineMap_eq]) zero_le_one
       rw [contMDiffOn_iff_contDiffOn]
@@ -209,26 +213,30 @@ the image of the neighborhood in the extended chart.
 open Manifold Metric
 open scoped NNReal
 
-variable [RiemannianBundle (fun (x : M) ↦ TangentSpace% x)]
-  [IsManifold I 1 M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace% x)]
+variable
+  [RiemannianBundle (fun (x : M) ↦ TangentSpace% x)] [IsManifold I 1 M]
+  [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace% x)]
 
-/-- Register on the tangent space to a normed vector space the same `NormedAddCommGroup` structure
+/--
+Register on the tangent space to a normed vector space the same `NormedAddCommGroup` structure
 as in the vector space.
 
 Should not be a global instance, as it does not coincide definitionally with the Riemannian
-structure for inner product spaces, but can be activated locally. -/
+structure for inner product spaces, but can be activated locally.
+-/
 @[instance_reducible]
-def normedAddCommGroupTangentSpaceVectorSpace (x : E) :
-    NormedAddCommGroup (TangentSpace% x) :=
+def normedAddCommGroupTangentSpaceVectorSpace (x : E) : NormedAddCommGroup (TangentSpace% x) :=
   inferInstanceAs (NormedAddCommGroup E)
 
 attribute [local instance] normedAddCommGroupTangentSpaceVectorSpace
 
-/-- Register on the tangent space to a normed vector space the same `NormedSpace` structure
+/--
+Register on the tangent space to a normed vector space the same `NormedSpace` structure
 as in the vector space.
 
 Should not be a global instance, as it does not coincide definitionally with the Riemannian
-structure for inner product spaces, but can be activated locally. -/
+structure for inner product spaces, but can be activated locally.
+-/
 @[instance_reducible]
 def normedSpaceTangentSpaceVectorSpace (x : E) : NormedSpace ℝ (TangentSpace% x) :=
   inferInstanceAs (NormedSpace ℝ E)
@@ -239,18 +247,17 @@ variable (I)
 
 -- TODO: once mathlib has a notion vmfderiv, use mvfderiv here and vmfderiv in related lemmas below
 set_option backward.isDefEq.respectTransparency false in
-lemma eventually_norm_mfderiv_extChartAt_lt (x : M) :
-    ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv% (extChartAt I x) y‖ < C := by
-  rcases eventually_norm_trivializationAt_lt E (fun (x : M) ↦ TangentSpace% x) x
-    with ⟨C, C_pos, hC⟩
+lemma eventually_norm_mfderiv_extChartAt_lt (x : M)
+    : ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv% (extChartAt I x) y‖ < C := by
+  rcases eventually_norm_trivializationAt_lt E (fun (x : M) ↦ TangentSpace% x) x with ⟨C, C_pos, hC⟩
   refine ⟨C, C_pos, ?_⟩
   have hx : (chartAt H x).source ∈ 𝓝 x := chart_source_mem_nhds H x
   filter_upwards [hC, hx] with y hy h'y
   rwa [← TangentBundle.continuousLinearMapAt_trivializationAt h'y]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma eventually_enorm_mfderiv_extChartAt_lt (x : M) :
-    ∃ C > (0 : ℝ≥0), ∀ᶠ y in 𝓝 x, ‖mfderiv% (extChartAt I x) y‖ₑ < C := by
+lemma eventually_enorm_mfderiv_extChartAt_lt (x : M)
+    : ∃ C > (0 : ℝ≥0), ∀ᶠ y in 𝓝 x, ‖mfderiv% (extChartAt I x) y‖ₑ < C := by
   rcases eventually_norm_mfderiv_extChartAt_lt I x with ⟨C, C_pos, hC⟩
   lift C to ℝ≥0 using C_pos.le
   simp only [gt_iff_lt, NNReal.coe_pos] at C_pos
@@ -260,10 +267,10 @@ lemma eventually_enorm_mfderiv_extChartAt_lt (x : M) :
   exact_mod_cast hy
 
 set_option backward.isDefEq.respectTransparency false in
-lemma eventually_norm_mfderivWithin_symm_extChartAt_comp_lt (x : M) :
-    ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv[range I] (extChartAt I x).symm (extChartAt I x y)‖ < C := by
-  rcases eventually_norm_symmL_trivializationAt_lt E (fun (x : M) ↦ TangentSpace% x) x
-    with ⟨C, C_pos, hC⟩
+lemma eventually_norm_mfderivWithin_symm_extChartAt_comp_lt (x : M)
+    : ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv[range I] (extChartAt I x).symm (extChartAt I x y)‖ < C := by
+  rcases eventually_norm_symmL_trivializationAt_lt E (fun (x : M) ↦ TangentSpace% x) x with
+    ⟨C, C_pos, hC⟩
   refine ⟨C, C_pos, ?_⟩
   have hx : (chartAt H x).source ∈ 𝓝 x := chart_source_mem_nhds H x
   filter_upwards [hC, hx] with y hy h'y
@@ -273,9 +280,10 @@ lemma eventually_norm_mfderivWithin_symm_extChartAt_comp_lt (x : M) :
   convert! hy using 3 <;> congr
 
 set_option backward.isDefEq.respectTransparency false in
-lemma eventually_norm_mfderivWithin_symm_extChartAt_lt (x : M) :
-    ∃ C > 0, ∀ᶠ y in 𝓝[range I] (extChartAt I x x),
-    ‖mfderiv[range I] (extChartAt I x).symm y‖ < C := by
+lemma eventually_norm_mfderivWithin_symm_extChartAt_lt (x : M)
+    : ∃ C > 0,
+      ∀ᶠ y in 𝓝[range I] (extChartAt I x x),
+        ‖mfderiv[range I] (extChartAt I x).symm y‖ < C := by
   rcases eventually_norm_mfderivWithin_symm_extChartAt_comp_lt I x with ⟨C, C_pos, hC⟩
   refine ⟨C, C_pos, ?_⟩
   have : 𝓝 x = 𝓝 ((extChartAt I x).symm (extChartAt I x x)) := by simp
@@ -288,9 +296,10 @@ lemma eventually_norm_mfderivWithin_symm_extChartAt_lt (x : M) :
   convert hy
 
 set_option backward.isDefEq.respectTransparency false in
-lemma eventually_enorm_mfderivWithin_symm_extChartAt_lt (x : M) :
-    ∃ C > (0 : ℝ≥0), ∀ᶠ y in 𝓝[range I] (extChartAt I x x),
-    ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C := by
+lemma eventually_enorm_mfderivWithin_symm_extChartAt_lt (x : M)
+    : ∃ C > (0 : ℝ≥0),
+      ∀ᶠ y in 𝓝[range I] (extChartAt I x x),
+        ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C := by
   rcases eventually_norm_mfderivWithin_symm_extChartAt_lt I x with ⟨C, C_pos, hC⟩
   lift C to ℝ≥0 using C_pos.le
   simp only [gt_iff_lt, NNReal.coe_pos] at C_pos
@@ -300,22 +309,28 @@ lemma eventually_enorm_mfderivWithin_symm_extChartAt_lt (x : M) :
   exact_mod_cast hy
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Around any point `x`, the Riemannian distance between two points is controlled by the distance
-in the extended chart. In other words, the extended chart is locally Lipschitz. -/
-lemma eventually_riemannianEDist_le_edist_extChartAt (x : M) :
-    ∃ C > (0 : ℝ≥0), ∀ᶠ y in 𝓝 x,
-    riemannianEDist I x y ≤ C * edist (extChartAt I x x) (extChartAt I x y) := by
-  /- To construct a path with controlled distance from `x` to `y`, we consider the segment from
+/--
+Around any point `x`, the Riemannian distance between two points is controlled by the distance
+in the extended chart. In other words, the extended chart is locally Lipschitz.
+-/
+lemma eventually_riemannianEDist_le_edist_extChartAt (x : M)
+    : ∃ C > (0 : ℝ≥0),
+      ∀ᶠ y in 𝓝 x,
+        riemannianEDist I x y ≤ C * edist (extChartAt I x x) (extChartAt I x y) := by
+  /-
+  To construct a path with controlled distance from `x` to `y`, we consider the segment from
   `extChartAt x x` to `extChartAt x y` in the chart, and we push it by `(extChartAt x).symm`. As
   the derivative of the latter is locally bounded, this only multiplies the length by a bounded
-  amount. -/
+  amount.
+  -/
   -- first start from a bound on the derivative
   rcases eventually_enorm_mfderivWithin_symm_extChartAt_lt I x with ⟨C, C_pos, hC⟩
   refine ⟨C, C_pos, ?_⟩
   -- consider a small convex set around `extChartAt x x` where everything is controlled.
-  obtain ⟨r, r_pos, hr⟩ : ∃ r > 0,
-      ball (extChartAt I x x) r ∩ range I ⊆ (extChartAt I x).target ∩
-        {y | ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C} :=
+  obtain ⟨r, r_pos, hr⟩
+      : ∃ r > 0,
+        ball (extChartAt I x x) r ∩ range I
+          ⊆ (extChartAt I x).target ∩ {y | ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C} :=
     mem_nhdsWithin_iff.1 (inter_mem (extChartAt_target_mem_nhdsWithin x) hC)
   -- pull this set inside `M`: this is the set where we will get the estimate.
   have A : (extChartAt I x) ⁻¹' (ball (extChartAt I x x) r ∩ range I) ∈ 𝓝 x := by
@@ -329,10 +344,13 @@ lemma eventually_riemannianEDist_le_edist_extChartAt (x : M) :
   set γ := (extChartAt I x).symm ∘ η
   -- by convexity, the whole segment between `extChartAt x x` and `extChartAt x y` is in the
   -- controlled set.
-  have hη : Icc 0 1 ⊆ ⇑η ⁻¹' ((extChartAt I x).target ∩
-        {y | ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C}) := by
-    simp only [← image_subset_iff, ContinuousAffineMap.coe_lineMap_eq,
-     ← segment_eq_image_lineMap, η]
+  have hη
+      : Icc 0 1
+        ⊆ ⇑η
+          ⁻¹' ((extChartAt I x).target
+            ∩ {y | ‖mfderiv[range I] (extChartAt I x).symm y‖ₑ < C}) := by
+    simp only [← image_subset_iff, ContinuousAffineMap.coe_lineMap_eq, ← segment_eq_image_lineMap,
+      η]
     apply Subset.trans _ hr
     exact ((convex_ball _ _).inter I.convex_range).segment_subset (by simp [r_pos]) hy
   simp only [preimage_inter, subset_inter_iff] at hη
@@ -352,16 +370,17 @@ lemma eventually_riemannianEDist_le_edist_extChartAt (x : M) :
   rw [← lintegral_fderiv_lineMap_eq_edist, pathELength_eq_lintegral_mfderivWithin_Icc,
     ← lintegral_const_mul' _ _ ENNReal.coe_ne_top]
   apply setLIntegral_mono' measurableSet_Icc (fun t ht ↦ ?_)
-  have : mfderiv[Icc 0 1] γ t =
-      (mfderiv[range I] (extChartAt I x).symm (η t)) ∘L (mfderiv[Icc 0 1] η t) := by
+  have : mfderiv[Icc 0 1] γ t
+      = (mfderiv[range I] (extChartAt I x).symm (η t)) ∘L (mfderiv[Icc 0 1] η t) := by
     apply mfderivWithin_comp
     · exact mdifferentiableWithinAt_extChartAt_symm (hη.1 ht)
     · exact η_smooth.mdifferentiableOn one_ne_zero t ht
     · exact hη.1.trans (preimage_mono (extChartAt_target_subset_range x))
     · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
       exact uniqueDiffOn_Icc zero_lt_one t ht
-  have : mfderiv[Icc 0 1] γ t 1 =
-      (mfderiv[range I] (extChartAt I x).symm (η t)) (mfderiv[Icc 0 1] η t 1) := congr($this 1)
+  have : mfderiv[Icc 0 1] γ t 1
+      = (mfderiv[range I] (extChartAt I x).symm (η t)) (mfderiv[Icc 0 1] η t 1) :=
+    congr($this 1)
   rw [this]
   apply (ContinuousLinearMap.le_opENorm _ _).trans
   gcongr
@@ -370,8 +389,8 @@ lemma eventually_riemannianEDist_le_edist_extChartAt (x : M) :
     exact le_of_eq rfl
 
 /-- If points are close for the topology, then their Riemannian distance is small. -/
-lemma eventually_riemannianEDist_lt (x : M) {c : ℝ≥0∞} (hc : 0 < c) :
-    ∀ᶠ y in 𝓝 x, riemannianEDist I x y < c := by
+lemma eventually_riemannianEDist_lt (x : M) {c : ℝ≥0∞} (hc : 0 < c)
+    : ∀ᶠ y in 𝓝 x, riemannianEDist I x y < c := by
   rcases eventually_riemannianEDist_le_edist_extChartAt I x with ⟨C, C_pos, hC⟩
   have : (extChartAt I x) ⁻¹' (Metric.eball (extChartAt I x x) (c / C)) ∈ 𝓝 x := by
     apply (continuousAt_extChartAt x).preimage_mem_nhds
@@ -385,11 +404,14 @@ lemma eventually_riemannianEDist_lt (x : M) {c : ℝ≥0∞} (hc : 0 < c) :
   · simp
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Any neighborhood of `x` contains all the points which are close enough to `x` for the
-Riemannian distance, `ℝ≥0` version. -/
-lemma setOfPred_riemannianEDist_lt_subset_nhds [RegularSpace M] {x : M} {s : Set M} (hs : s ∈ 𝓝 x) :
-    ∃ c > (0 : ℝ≥0), {y | riemannianEDist I x y < c} ⊆ s := by
-  /- Consider a closed neighborhood `u` of `x` on which the derivative of the extended chart is
+/--
+Any neighborhood of `x` contains all the points which are close enough to `x` for the
+Riemannian distance, `ℝ≥0` version.
+-/
+lemma setOfPred_riemannianEDist_lt_subset_nhds [RegularSpace M] {x : M} {s : Set M} (hs : s ∈ 𝓝 x)
+    : ∃ c > (0 : ℝ≥0), {y | riemannianEDist I x y < c} ⊆ s := by
+  /-
+  Consider a closed neighborhood `u` of `x` on which the derivative of the extended chart is
   bounded by some `C`, contained in `s`, then an open neighborhood `v` of `x` inside `u`,
   and finally `r` small enough that the ball of radius `r` in the extended chart is contained in
   the image of `v`.
@@ -410,8 +432,10 @@ lemma setOfPred_riemannianEDist_lt_subset_nhds [RegularSpace M] {x : M} {s : Set
   -- first introduce a neighborhood where the derivative of the extended chart is bounded by `C`
   rcases eventually_enorm_mfderiv_extChartAt_lt I x with ⟨C, C_pos, hC⟩
   -- let `u` be a closed neighborhood, inside `s`, with the derivative control
-  obtain ⟨u, u_mem, u_closed, us, hu, uc⟩ : ∃ u ∈ 𝓝 x, IsClosed u ∧ u ⊆ s
-      ∧ u ⊆ {y | ‖mfderiv% (extChartAt I x) y‖ₑ < C} ∧ u ⊆ (extChartAt I x).source := by
+  obtain ⟨u, u_mem, u_closed, us, hu, uc⟩
+      : ∃ u ∈ 𝓝 x,
+        IsClosed u ∧ u ⊆ s ∧ u ⊆ {y | ‖mfderiv% (extChartAt I x) y‖ₑ < C}
+          ∧ u ⊆ (extChartAt I x).source := by
     have := Filter.inter_mem (Filter.inter_mem hs hC) (extChartAt_source_mem_nhds (I := I) x)
     rcases exists_mem_nhds_isClosed_subset this with ⟨u, u_mem, u_closed, hu⟩
     simp only [subset_inter_iff] at hu
@@ -431,10 +455,10 @@ lemma setOfPred_riemannianEDist_lt_subset_nhds [RegularSpace M] {x : M} {s : Set
   intro y hy
   -- consider a path `γ` of length `< r / C` from `x` to a point `y`. We will show that `y` belongs
   -- to `u`.
-  rcases exists_lt_locally_constant_of_riemannianEDist_lt hy zero_lt_one
-    with ⟨γ, hγx, hγy, γ_smooth, hγ, -⟩
+  rcases exists_lt_locally_constant_of_riemannianEDist_lt hy zero_lt_one with
+    ⟨γ, hγx, hγy, γ_smooth, hγ, -⟩
   let A := γ ⁻¹' u
-  have zero_mem : 0 ∈ A := by simpa  [hγx, A] using mem_of_mem_nhds u_mem
+  have zero_mem : 0 ∈ A := by simpa [hγx, A] using mem_of_mem_nhds u_mem
   have A_closed : IsClosed (A ∩ Icc 0 1) :=
     (u_closed.preimage γ_smooth.continuous).inter isClosed_Icc
   suffices Icc 0 1 ⊆ A by
@@ -447,64 +471,63 @@ lemma setOfPred_riemannianEDist_lt_subset_nhds [RegularSpace M] {x : M} {s : Set
     γ_smooth.continuous.continuousWithinAt <| mem_of_superset (v_open.mem_nhds this) hv
   let γ' := extChartAt I x ∘ γ
   have hC : CMDiff[Icc 0 t₁] 1 γ' :=
-    contMDiffOn_extChartAt.comp (I' := I) (t := (chartAt H x).source)
-      γ_smooth.contMDiffOn (fun t' ht' ↦ uc' <| t₁_mem ht')
+    contMDiffOn_extChartAt.comp (I' := I) (t := (chartAt H x).source) γ_smooth.contMDiffOn
+      (fun t' ht' ↦ uc' <| t₁_mem ht')
   have : ‖γ' t₁ - γ' 0‖ₑ < r := by
     rcases ht₁0.eq_or_lt with rfl | h't'
     · simp [r_pos]
     calc
       ‖γ' t₁ - γ' 0‖ₑ
-    _ ≤ ∫⁻ t' in Icc 0 t₁, ‖derivWithin γ' (Icc 0 t₁) t'‖ₑ := by
-      apply enorm_sub_le_lintegral_derivWithin_Icc_of_contDiffOn_Icc _ ht₁0
-      rwa [← contMDiffOn_iff_contDiffOn]
-    _ = ∫⁻ t' in Icc 0 t₁, ‖mfderiv[Icc 0 t₁] γ' t' 1‖ₑ := by
-      simp_rw [← fderivWithin_derivWithin, mfderivWithin_eq_fderivWithin]
-      rfl
-    _ ≤ ∫⁻ t' in Icc 0 t₁, C * ‖mfderiv[Icc 0 t₁] γ t' 1‖ₑ := by
-      apply setLIntegral_mono' measurableSet_Icc (fun t' ht' ↦ ?_)
-      have : mfderiv[Icc 0 t₁] γ' t' =
-          (mfderiv% (extChartAt I x) (γ t')) ∘L (mfderiv[Icc 0 t₁] γ t') := by
-        apply mfderiv_comp_mfderivWithin
-        · refine mdifferentiableAt_extChartAt (uc' ?_)
-          apply t₁_mem ht'
-        · exact (γ_smooth.mdifferentiable one_ne_zero).mdifferentiableOn _ ht'
-        · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
-          exact uniqueDiffOn_Icc h't' _ ht'
-      have : mfderiv[Icc 0 t₁] γ' t' 1 =
-          (mfderiv% (extChartAt I x) (γ t')) (mfderiv[Icc 0 t₁] γ t' 1) :=
-        congr($this 1)
-      rw [this]
-      apply (ContinuousLinearMap.le_opENorm _ _).trans
-      gcongr
-      refine (hu ?_).le
-      apply t₁_mem ht'
-    _ = C * pathELength I γ 0 t₁ := by
-      rw [lintegral_const_mul' _ _ ENNReal.coe_ne_top,
-          pathELength_eq_lintegral_mfderivWithin_Icc]
-    _ ≤ C * pathELength I γ 0 1 := by
-      gcongr
-    _ < C * (r / C) := by
-      gcongr
-      · exact ENNReal.coe_ne_top
-      · exact hγ.trans_eq (ENNReal.coe_div C_pos.ne')
-    _ = r := (ENNReal.eq_div_iff (by simpa using C_pos.ne') ENNReal.coe_ne_top).mp rfl
+      _ ≤ ∫⁻ t' in Icc 0 t₁, ‖derivWithin γ' (Icc 0 t₁) t'‖ₑ := by
+        apply enorm_sub_le_lintegral_derivWithin_Icc_of_contDiffOn_Icc _ ht₁0
+        rwa [← contMDiffOn_iff_contDiffOn]
+      _ = ∫⁻ t' in Icc 0 t₁, ‖mfderiv[Icc 0 t₁] γ' t' 1‖ₑ := by
+        simp_rw [← fderivWithin_derivWithin, mfderivWithin_eq_fderivWithin]
+        rfl
+      _ ≤ ∫⁻ t' in Icc 0 t₁, C * ‖mfderiv[Icc 0 t₁] γ t' 1‖ₑ := by
+        apply setLIntegral_mono' measurableSet_Icc (fun t' ht' ↦ ?_)
+        have : mfderiv[Icc 0 t₁] γ' t'
+            = (mfderiv% (extChartAt I x) (γ t')) ∘L (mfderiv[Icc 0 t₁] γ t') := by
+          apply mfderiv_comp_mfderivWithin
+          · refine mdifferentiableAt_extChartAt (uc' ?_)
+            apply t₁_mem ht'
+          · exact (γ_smooth.mdifferentiable one_ne_zero).mdifferentiableOn _ ht'
+          · rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
+            exact uniqueDiffOn_Icc h't' _ ht'
+        have : mfderiv[Icc 0 t₁] γ' t' 1
+            = (mfderiv% (extChartAt I x) (γ t')) (mfderiv[Icc 0 t₁] γ t' 1) :=
+          congr($this 1)
+        rw [this]
+        apply (ContinuousLinearMap.le_opENorm _ _).trans
+        gcongr
+        refine (hu ?_).le
+        apply t₁_mem ht'
+      _ = C * pathELength I γ 0 t₁ := by
+        rw [lintegral_const_mul' _ _ ENNReal.coe_ne_top, pathELength_eq_lintegral_mfderivWithin_Icc]
+      _ ≤ C * pathELength I γ 0 1 := by gcongr
+      _ < C * (r / C) := by
+        gcongr
+        · exact ENNReal.coe_ne_top
+        · exact hγ.trans_eq (ENNReal.coe_div C_pos.ne')
+      _ = r := (ENNReal.eq_div_iff (by simpa using C_pos.ne') ENNReal.coe_ne_top).mp rfl
   have : γ' t₁ ∈ (extChartAt I x).symm ⁻¹' v := by
     apply hr
     rw [← Metric.eball_coe, Metric.mem_eball, edist_eq_enorm_sub]
     convert this
     simp [γ', hγx]
   convert mem_preimage.1 this
-  simp only [Function.comp_apply, γ', (extChartAt I x).left_inv <| uc <| t₁_mem
-    (right_mem_Icc.mpr ht₁0)]
+  simp only [Function.comp_apply, γ',
+    (extChartAt I x).left_inv <| uc <| t₁_mem (right_mem_Icc.mpr ht₁0)]
 
 @[deprecated (since := "2026-07-09")]
 alias setOf_riemannianEDist_lt_subset_nhds := setOfPred_riemannianEDist_lt_subset_nhds
 
-/-- Any neighborhood of `x` contains all the points which are close enough to `x` for the
-Riemannian distance, `ℝ≥0∞` version. -/
-lemma setOfPred_riemannianEDist_lt_subset_nhds' [RegularSpace M] {x : M} {s : Set M}
-    (hs : s ∈ 𝓝 x) :
-    ∃ c > 0, {y | riemannianEDist I x y < c} ⊆ s := by
+/--
+Any neighborhood of `x` contains all the points which are close enough to `x` for the
+Riemannian distance, `ℝ≥0∞` version.
+-/
+lemma setOfPred_riemannianEDist_lt_subset_nhds' [RegularSpace M] {x : M} {s : Set M} (hs : s ∈ 𝓝 x)
+    : ∃ c > 0, {y | riemannianEDist I x y < c} ⊆ s := by
   rcases setOfPred_riemannianEDist_lt_subset_nhds I hs with ⟨c, c_pos, hc⟩
   exact ⟨c, mod_cast c_pos, hc⟩
 
@@ -512,38 +535,47 @@ lemma setOfPred_riemannianEDist_lt_subset_nhds' [RegularSpace M] {x : M} {s : Se
 alias setOf_riemannianEDist_lt_subset_nhds' := setOfPred_riemannianEDist_lt_subset_nhds'
 
 variable (M) in
-/-- The pseudoemetric space structure associated to a Riemannian metric on a manifold. Designed
+/--
+The pseudoemetric space structure associated to a Riemannian metric on a manifold. Designed
 so that the topology is defeq to the original one.
 
 This should only be used when constructing data in specific situations. To develop the theory,
 one should rather assume that there is an already existing emetric space structure, which satisfies
-additionally the predicate `IsRiemannianManifold I M`. -/
-@[reducible] def PseudoEMetricSpace.ofRiemannianMetric [RegularSpace M] : PseudoEMetricSpace M :=
+additionally the predicate `IsRiemannianManifold I M`.
+-/
+@[reducible]
+def PseudoEMetricSpace.ofRiemannianMetric [RegularSpace M] : PseudoEMetricSpace M :=
   PseudoEMetricSpace.ofEDistOfTopology (riemannianEDist I (M := M))
     (fun _ ↦ riemannianEDist_self)
     (fun _ _ ↦ riemannianEDist_comm)
     (fun _ _ _ ↦ riemannianEDist_triangle)
-    (fun x ↦ (basis_sets (𝓝 x)).to_hasBasis'
-      (fun _ hs ↦ setOfPred_riemannianEDist_lt_subset_nhds' I hs)
-      (fun _ hc ↦ eventually_riemannianEDist_lt I x hc))
+    (fun x ↦
+      (basis_sets (𝓝 x)).to_hasBasis'
+        (fun _ hs ↦ setOfPred_riemannianEDist_lt_subset_nhds' I hs)
+        (fun _ hc ↦ eventually_riemannianEDist_lt I x hc))
 
-/-- Given a manifold with a Riemannian metric, consider the associated Riemannian distance. Then
+/--
+Given a manifold with a Riemannian metric, consider the associated Riemannian distance. Then
 by definition the distance is the infimum of the length of paths between the points, i.e., the
-manifold satisfies the `IsRiemannianManifold I M` predicate. -/
-instance [RegularSpace M] :
-    letI : PseudoEMetricSpace M := .ofRiemannianMetric I M
-    IsRiemannianManifold I M := by
+manifold satisfies the `IsRiemannianManifold I M` predicate.
+-/
+instance [RegularSpace M]
+    : letI : PseudoEMetricSpace M := .ofRiemannianMetric I M
+      IsRiemannianManifold I M := by
   let : PseudoEMetricSpace M := .ofRiemannianMetric I M
   exact ⟨fun x y ↦ rfl⟩
 
 variable (M) in
-/-- The emetric space structure associated to a Riemannian metric on a manifold. Designed
+/--
+The emetric space structure associated to a Riemannian metric on a manifold. Designed
 so that the topology is defeq to the original one.
 
 This should only be used when constructing data in specific situations. To develop the theory,
 one should rather assume that there is an already existing emetric space structure, which satisfies
-additionally the predicate `IsRiemannianManifold I M`. -/
-@[reducible] def EMetricSpace.ofRiemannianMetric [T3Space M] : EMetricSpace M :=
+additionally the predicate `IsRiemannianManifold I M`.
+-/
+@[reducible]
+def EMetricSpace.ofRiemannianMetric [T3Space M] : EMetricSpace M :=
   letI : PseudoEMetricSpace M := .ofRiemannianMetric I M
   EMetricSpace.ofT0PseudoEMetricSpace M
 

@@ -29,8 +29,9 @@ attribute [notation_class xor] HXor
 attribute [notation_class or] HOr
 attribute [notation_class shiftLeft] HShiftLeft
 attribute [notation_class shiftRight] HShiftRight
-attribute [notation_class] Neg Inv Dvd LE LT HasEquiv HasSubset HasSSubset Union Inter SDiff Insert
-  Singleton Sep Membership EmptyCollection
+attribute [notation_class]
+  Neg Inv Dvd LE LT HasEquiv HasSubset HasSSubset Union Inter SDiff Insert Singleton Sep Membership
+  EmptyCollection
 attribute [notation_class pow Simps.copyFirst] HPow
 attribute [notation_class one Simps.findOneArgs] OfNat
 attribute [notation_class zero Simps.findZeroArgs] OfNat

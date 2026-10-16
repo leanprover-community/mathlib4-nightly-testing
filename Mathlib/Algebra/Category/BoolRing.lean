@@ -21,7 +21,6 @@ Finish the equivalence with `BoolAlg`.
 
 @[expose] public section
 
-
 universe u
 
 open CategoryTheory
@@ -38,18 +37,15 @@ namespace BoolRing
 
 initialize_simps_projections BoolRing (-booleanRing)
 
-instance : CoeSort BoolRing Type* :=
-  ⟨carrier⟩
+instance : CoeSort BoolRing Type* := ⟨carrier⟩
 
 attribute [coe] carrier
 
 attribute [instance] booleanRing
 
-theorem coe_of (α : Type*) [BooleanRing α] : ↥(of α) = α :=
-  rfl
+theorem coe_of (α : Type*) [BooleanRing α] : ↥(of α) = α := rfl
 
-instance : Inhabited BoolRing :=
-  ⟨of PUnit⟩
+instance : Inhabited BoolRing := ⟨of PUnit⟩
 
 variable {R} in
 /-- The type of morphisms in `BoolRing`. -/
@@ -69,21 +65,16 @@ instance : ConcreteCategory BoolRing (· →+* ·) where
   ofHom f := ⟨f⟩
 
 /-- Turn a morphism in `BoolRing` back into a `RingHom`. -/
-abbrev Hom.hom {X Y : BoolRing} (f : Hom X Y) :=
-  ConcreteCategory.hom (C := BoolRing) f
+abbrev Hom.hom {X Y : BoolRing} (f : Hom X Y) := ConcreteCategory.hom (C := BoolRing) f
 
 /-- Typecheck a `RingHom` as a morphism in `BoolRing`. -/
 abbrev ofHom {R S : Type u} [BooleanRing R] [BooleanRing S] (f : R →+* S) : of R ⟶ of S :=
   ConcreteCategory.ofHom f
 
-@[ext]
-lemma hom_ext {R S : BoolRing} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g :=
-  Hom.ext hf
+@[ext] lemma hom_ext {R S : BoolRing} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
 instance hasForgetToCommRing : HasForget₂ BoolRing CommRingCat where
-  forget₂ :=
-    { obj := fun R ↦ ↧R
-      map := fun f ↦ CommRingCat.ofHom f.hom }
+  forget₂ := { obj := fun R ↦ ↧R, map := fun f ↦ CommRingCat.ofHom f.hom }
 
 /-- Constructs an isomorphism of Boolean rings from a ring isomorphism between them. -/
 @[simps]
@@ -98,13 +89,12 @@ end BoolRing
 /-! ### Equivalence between `BoolAlg` and `BoolRing` -/
 
 -- We have to add this instance since Lean doesn't see through `X.toBddDistLat`.
-instance {X : BoolAlg} :
-    BooleanAlgebra ↑(BddDistLat.toBddLat (X.toBddDistLat)).toLat :=
+instance {X : BoolAlg} : BooleanAlgebra ↑(BddDistLat.toBddLat (X.toBddDistLat)).toLat :=
   BoolAlg.str _
 
 -- We have to add this instance since Lean doesn't see through `R.toBddDistLat`.
-instance {R : Type u} [BooleanRing R] :
-    BooleanRing (BoolAlg.of (AsBoolAlg ↑R)).toBddDistLat.toBddLat.toLat :=
+instance {R : Type u} [BooleanRing R]
+    : BooleanRing (BoolAlg.of (AsBoolAlg ↑R)).toBddDistLat.toBddLat.toLat :=
   inferInstanceAs <| BooleanRing R
 
 @[simps]
@@ -122,10 +112,14 @@ instance BoolAlg.hasForgetToBoolRing : HasForget₂ BoolAlg BoolRing where
 def boolRingCatEquivBoolAlg : BoolRing ≌ BoolAlg where
   functor := forget₂ BoolRing BoolAlg
   inverse := forget₂ BoolAlg BoolRing
-  unitIso := NatIso.ofComponents (fun X => BoolRing.Iso.mk
-    (RingEquiv.asBoolRingAsBoolAlg X).symm) fun {_ _} _ => rfl
-  counitIso := NatIso.ofComponents (fun X => BoolAlg.Iso.mk <|
-    OrderIso.asBoolAlgAsBoolRing X) fun {_ _} _ => rfl
+  unitIso :=
+    NatIso.ofComponents
+      (fun X => BoolRing.Iso.mk (RingEquiv.asBoolRingAsBoolAlg X).symm)
+      fun {_ _} _ => rfl
+  counitIso :=
+    NatIso.ofComponents
+      (fun X => BoolAlg.Iso.mk <| OrderIso.asBoolAlgAsBoolRing X)
+      fun {_ _} _ => rfl
 
 section Notation
 

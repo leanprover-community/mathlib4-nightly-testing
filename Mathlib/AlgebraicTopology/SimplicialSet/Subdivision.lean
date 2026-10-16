@@ -33,27 +33,26 @@ universe v u
 
 open CategoryTheory
 
-/-- The functor `SimplexCategory ⥤ SSet` which sends `⦋n⦌` to the nerve of the
+/--
+The functor `SimplexCategory ⥤ SSet` which sends `⦋n⦌` to the nerve of the
 partially ordered type of nonempty finite chains in `{0, ..., n}` (ulifted to `Type u`).
-Vertices in `SimplexCategory.sd.obj ⦋n⦌` identify to nonempty subsets of `{0, ..., n}`. -/
+Vertices in `SimplexCategory.sd.obj ⦋n⦌` identify to nonempty subsets of `{0, ..., n}`.
+-/
 noncomputable def SimplexCategory.sd : SimplexCategory ⥤ SSet.{u} :=
   toPartOrd ⋙ PartOrd.nonemptyFiniteChainsFunctor ⋙ PartOrd.nerveFunctor
 
 namespace SSet
 
 /-- The subdivision functor on simplicial sets. -/
-noncomputable def sd : SSet.{u} ⥤ SSet.{u} :=
-  stdSimplex.leftKanExtension SimplexCategory.sd
+noncomputable def sd : SSet.{u} ⥤ SSet.{u} := stdSimplex.leftKanExtension SimplexCategory.sd
 
 /-- The right adjoint to the subdivision functor on simplicial sets. -/
-noncomputable def ex : SSet.{u} ⥤ SSet.{u} :=
-  Presheaf.restrictedULiftYoneda.{0} SimplexCategory.sd
+noncomputable def ex : SSet.{u} ⥤ SSet.{u} := Presheaf.restrictedULiftYoneda.{0} SimplexCategory.sd
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The adjunction between the subdivision functor `sd` and `ex`. -/
 noncomputable def sdExAdjunction : sd.{u} ⊣ ex :=
-  Presheaf.uliftYonedaAdjunction.{0}
-    (SSet.stdSimplex.{u}.leftKanExtension SimplexCategory.sd)
+  Presheaf.uliftYonedaAdjunction.{0} (SSet.stdSimplex.{u}.leftKanExtension SimplexCategory.sd)
     (SSet.stdSimplex.{u}.leftKanExtensionUnit SimplexCategory.sd)
 
 instance : sd.{u}.IsLeftAdjoint := sdExAdjunction.isLeftAdjoint
@@ -69,7 +68,7 @@ noncomputable def sdIso : stdSimplex.{u} ⋙ sd ≅ SimplexCategory.sd :=
 end stdSimplex
 
 instance : sd.{u}.IsLeftKanExtension stdSimplex.sdIso.inv :=
-  inferInstanceAs (Functor.IsLeftKanExtension _
-    (SSet.stdSimplex.leftKanExtensionUnit SimplexCategory.sd.{u}))
+  inferInstanceAs
+    (Functor.IsLeftKanExtension _ (SSet.stdSimplex.leftKanExtensionUnit SimplexCategory.sd.{u}))
 
 end SSet

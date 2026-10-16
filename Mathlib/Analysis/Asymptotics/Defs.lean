@@ -85,11 +85,12 @@ by this definition. -/
 irreducible_def IsBigO (l : Filter α) (f : α → E) (g : α → F) : Prop :=
   ∃ c : ℝ, IsBigOWith c l f g
 
-@[inherit_doc]
-notation:100 f " =O[" l "] " g:100 => IsBigO l f g
+@[inherit_doc] notation:100 f " =O[" l "] " g:100 => IsBigO l f g
 
-/-- Definition of `IsBigO` in terms of `IsBigOWith`. We record it in a lemma as `IsBigO` is
-irreducible. -/
+/--
+Definition of `IsBigO` in terms of `IsBigOWith`. We record it in a lemma as `IsBigO` is
+irreducible.
+-/
 theorem isBigO_iff_isBigOWith : f =O[l] g ↔ ∃ c : ℝ, IsBigOWith c l f g := by rw [IsBigO_def]
 
 /-- Definition of `IsBigO` in terms of filters. -/
@@ -97,8 +98,7 @@ theorem isBigO_iff : f =O[l] g ↔ ∃ c : ℝ, ∀ᶠ x in l, ‖f x‖ ≤ c *
   simp only [IsBigO_def, IsBigOWith_def]
 
 /-- Definition of `IsBigO` in terms of filters, with a positive constant. -/
-theorem isBigO_iff' {g : α → E'} :
-    f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ := by
+theorem isBigO_iff' {g : α → E'} : f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ := by
   refine ⟨fun h => ?mp, fun h => ?mpr⟩
   case mp =>
     rw [isBigO_iff] at h
@@ -114,8 +114,7 @@ theorem isBigO_iff' {g : α → E'} :
     exact ⟨c, hc⟩
 
 /-- Definition of `IsBigO` in terms of filters, with the constant in the lower bound. -/
-theorem isBigO_iff'' {g : α → E'} :
-    f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, c * ‖f x‖ ≤ ‖g x‖ := by
+theorem isBigO_iff'' {g : α → E'} : f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, c * ‖f x‖ ≤ ‖g x‖ := by
   refine ⟨fun h => ?mp, fun h => ?mpr⟩
   case mp =>
     rw [isBigO_iff'] at h
@@ -136,27 +135,27 @@ theorem IsBigO.of_bound (c : ℝ) (h : ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x�
 theorem IsBigO.of_bound' (h : ∀ᶠ x in l, ‖f x‖ ≤ ‖g x‖) : f =O[l] g :=
   .of_bound 1 <| by simpa only [one_mul] using h
 
-theorem IsBigO.bound : f =O[l] g → ∃ c : ℝ, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ :=
-  isBigO_iff.1
+theorem IsBigO.bound : f =O[l] g → ∃ c : ℝ, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ := isBigO_iff.1
 
-/-- See also `Filter.Eventually.isBigO`, which is the same lemma
-stated using `Filter.Eventually` instead of `Filter.EventuallyLE`. -/
+/--
+See also `Filter.Eventually.isBigO`, which is the same lemma
+stated using `Filter.Eventually` instead of `Filter.EventuallyLE`.
+-/
 theorem IsBigO.of_norm_eventuallyLE {g : α → ℝ} (h : (‖f ·‖) ≤ᶠ[l] g) : f =O[l] g :=
   .of_bound' <| h.mono fun _ h ↦ h.trans <| le_abs_self _
 
 theorem IsBigO.of_norm_le {g : α → ℝ} (h : ∀ x, ‖f x‖ ≤ g x) : f =O[l] g :=
   .of_norm_eventuallyLE <| .of_forall h
 
-/-- We say that `f` is `Θ(g)` along a filter `l` (notation: `f =Θ[l] g`) if `f =O[l] g` and
-`g =O[l] f`. -/
-def IsTheta (l : Filter α) (f : α → E) (g : α → F) : Prop :=
-  IsBigO l f g ∧ IsBigO l g f
+/--
+We say that `f` is `Θ(g)` along a filter `l` (notation: `f =Θ[l] g`) if `f =O[l] g` and
+`g =O[l] f`.
+-/
+def IsTheta (l : Filter α) (f : α → E) (g : α → F) : Prop := IsBigO l f g ∧ IsBigO l g f
 
-@[inherit_doc]
-notation:100 f " =Θ[" l "] " g:100 => IsTheta l f g
+@[inherit_doc] notation:100 f " =Θ[" l "] " g:100 => IsTheta l f g
 
-theorem IsBigO.antisymm (h₁ : f =O[l] g) (h₂ : g =O[l] f) : f =Θ[l] g :=
-  ⟨h₁, h₂⟩
+theorem IsBigO.antisymm (h₁ : f =O[l] g) (h₂ : g =O[l] f) : f =Θ[l] g := ⟨h₁, h₂⟩
 
 lemma IsTheta.isBigO (h : f =Θ[l] g) : f =O[l] g := h.1
 
@@ -169,8 +168,7 @@ issues that are avoided by this definition. -/
 irreducible_def IsLittleO (l : Filter α) (f : α → E) (g : α → F) : Prop :=
   ∀ ⦃c : ℝ⦄, 0 < c → IsBigOWith c l f g
 
-@[inherit_doc]
-notation:100 f " =o[" l "] " g:100 => IsLittleO l f g
+@[inherit_doc] notation:100 f " =o[" l "] " g:100 => IsLittleO l f g
 
 /-- Definition of `IsLittleO` in terms of `IsBigOWith`. -/
 theorem isLittleO_iff_forall_isBigOWith : f =o[l] g ↔ ∀ ⦃c : ℝ⦄, 0 < c → IsBigOWith c l f g := by
@@ -193,8 +191,8 @@ theorem IsLittleO.def' (h : f =o[l] g) (hc : 0 < c) : IsBigOWith c l f g :=
 theorem IsLittleO.eventuallyLE (h : f =o[l] g) : ∀ᶠ x in l, ‖f x‖ ≤ ‖g x‖ := by
   simpa using h.def zero_lt_one
 
-theorem IsLittleO.eventuallyLT_norm_of_eventually_pos (h : f =o[l] g) (hg : ∀ᶠ x in l, 0 < ‖g x‖) :
-    ∀ᶠ x in l, ‖f x‖ < ‖g x‖ := by
+theorem IsLittleO.eventuallyLT_norm_of_eventually_pos (h : f =o[l] g) (hg : ∀ᶠ x in l, 0 < ‖g x‖)
+    : ∀ᶠ x in l, ‖f x‖ < ‖g x‖ := by
   refine ((h.def (show 0 < 2⁻¹ by simp)).and hg).mono fun x ⟨hx₁, hx₂⟩ ↦ hx₁.trans_lt ?_
   rw [mul_lt_iff_lt_one_left hx₂]
   norm_num

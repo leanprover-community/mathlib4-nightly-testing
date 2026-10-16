@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Module.Submodule.Bilinear
 public import Mathlib.GroupTheory.Congruence.Hom
-
 import Mathlib.Tactic.NormNum.Basic
 
 /-!
@@ -52,8 +51,10 @@ section
 
 variable (R)
 
-/-- The relation on `FreeAddMonoid (M × N)` that generates a congruence whose quotient is
-the tensor product. -/
+/--
+The relation on `FreeAddMonoid (M × N)` that generates a congruence whose quotient is
+the tensor product.
+-/
 inductive Eqv : FreeAddMonoid (M × N) → FreeAddMonoid (M × N) → Prop
   | of_zero_left : ∀ n : N, Eqv (.of (0, n)) 0
   | of_zero_right : ∀ m : M, Eqv (.of (m, 0)) 0
@@ -67,10 +68,11 @@ end
 end TensorProduct
 
 variable (R) in
-/-- The tensor product of two modules `M` and `N` over the same commutative semiring `R`.
-The localized notations are `M ⊗ N` and `M ⊗[R] N`, accessed by `open scoped TensorProduct`. -/
-def TensorProduct : Type _ :=
-  (addConGen (TensorProduct.Eqv R M N)).Quotient
+/--
+The tensor product of two modules `M` and `N` over the same commutative semiring `R`.
+The localized notations are `M ⊗ N` and `M ⊗[R] N`, accessed by `open scoped TensorProduct`.
+-/
+def TensorProduct : Type _ := (addConGen (TensorProduct.Eqv R M N)).Quotient
 deriving Zero, Add, AddZeroClass, AddSemigroup
 
 set_option quotPrecheck false in
@@ -84,19 +86,18 @@ section Module
 
 instance addCommSemigroup : AddCommSemigroup (M ⊗[R] N) where
   add_comm := fun x y =>
-    AddCon.induction_on₂ x y fun _ _ =>
-      Quotient.sound' <| AddConGen.Rel.of _ _ <| Eqv.add_comm _ _
+    AddCon.induction_on₂ x y fun _ _ => Quotient.sound' <| AddConGen.Rel.of _ _ <| Eqv.add_comm _ _
 
-instance : Inhabited (M ⊗[R] N) :=
-  ⟨0⟩
+instance : Inhabited (M ⊗[R] N) := ⟨0⟩
 
 variable {M N}
 
 variable (R) in
-/-- The canonical function `M → N → M ⊗ N`. The localized notations are `m ⊗ₜ n` and `m ⊗ₜ[R] n`,
-accessed by `open scoped TensorProduct`. -/
-def tmul (m : M) (n : N) : M ⊗[R] N :=
-  AddCon.mk' _ <| FreeAddMonoid.of (m, n)
+/--
+The canonical function `M → N → M ⊗ N`. The localized notations are `m ⊗ₜ n` and `m ⊗ₜ[R] n`,
+accessed by `open scoped TensorProduct`.
+-/
+def tmul (m : M) (n : N) : M ⊗[R] N := AddCon.mk' _ <| FreeAddMonoid.of (m, n)
 
 /-- The canonical function `M → N → M ⊗ N`. -/
 infixl:100 " ⊗ₜ " => tmul _
@@ -107,11 +108,14 @@ notation:100 x:100 " ⊗ₜ[" R "] " y:101 => tmul R x y
 /-- Produces an arbitrary representation of the form `mₒ ⊗ₜ n₀ + ...`. -/
 unsafe instance [Repr M] [Repr N] : Repr (M ⊗[R] N) where
   reprPrec mn p :=
-    let parts := mn.unquot.toList.map fun (mi, ni) =>
-      Std.Format.group f!"{reprPrec mi 100} ⊗ₜ {reprPrec ni 101}"
+    let parts :=
+      mn.unquot.toList.map fun (mi, ni) =>
+        Std.Format.group f!"{reprPrec mi 100} ⊗ₜ {reprPrec ni 101}"
     match parts with
-    | [] => f!"0"
-    | [part] => if p > 100 then Std.Format.bracketFill "(" part ")" else .fill part
+    | [] =>
+      f!"0"
+    | [part] =>
+      if p > 100 then Std.Format.bracketFill "(" part ")" else .fill part
     | parts =>
       (if p > 65 then (Std.Format.bracketFill "(" · ")") else (.fill ·)) <|
         .joinSep parts f!" +{Std.Format.line}"
@@ -133,36 +137,42 @@ theorem tmul_add (m : M) (n₁ n₂ : N) : m ⊗ₜ (n₁ + n₂) = m ⊗ₜ n�
   Eq.symm <| Quotient.sound' <| AddConGen.Rel.of _ _ <| Eqv.of_add_right _ _ _
 
 @[elab_as_elim, induction_eliminator]
-protected theorem inductionOn {motive : M ⊗[R] N → Prop} (z : M ⊗[R] N)
-    (tmul : ∀ x y, motive <| x ⊗ₜ[R] y)
-    (add : ∀ x y, motive x → motive y → motive (x + y)) : motive z :=
+protected theorem inductionOn
+    {motive : M ⊗[R] N → Prop}
+    (z : M ⊗[R] N) (tmul : ∀ x y, motive <| x ⊗ₜ[R] y)
+    (add : ∀ x y, motive x → motive y → motive (x + y))
+    : motive z :=
   AddCon.induction_on z fun x =>
     FreeAddMonoid.recOn x (by simpa using! tmul 0 0) fun ⟨m, n⟩ y ih => by
       simpa using! add _ _ (tmul ..) ih
 
 set_option linter.unusedVariables false
 @[deprecated TensorProduct.inductionOn +typeChanged (since := "2026-09-07")]
-protected theorem induction_on {motive : M ⊗[R] N → Prop} (z : M ⊗[R] N)
-    (zero : motive 0)
-    (tmul : ∀ x y, motive <| x ⊗ₜ[R] y)
-    (add : ∀ x y, motive x → motive y → motive (x + y)) : motive z :=
+protected theorem induction_on
+    {motive : M ⊗[R] N → Prop}
+    (z : M ⊗[R] N) (zero : motive 0) (tmul : ∀ x y, motive <| x ⊗ₜ[R] y)
+    (add : ∀ x y, motive x → motive y → motive (x + y))
+    : motive z :=
   TensorProduct.inductionOn z tmul add
 
 instance uniqueLeft [Subsingleton M] : Unique (M ⊗[R] N) where
   default := 0
-  uniq z := z.inductionOn (fun x y ↦ by rw [Subsingleton.elim x 0, zero_tmul]) <| by
-    rintro _ _ rfl rfl; apply add_zero
+  uniq z :=
+    z.inductionOn (fun x y ↦ by rw [Subsingleton.elim x 0, zero_tmul]) <| by
+      rintro _ _ rfl rfl; apply add_zero
 
 instance uniqueRight [Subsingleton N] : Unique (M ⊗[R] N) where
   default := 0
-  uniq z := z.inductionOn (fun x y ↦ by rw [Subsingleton.elim y 0, tmul_zero]) <| by
-    rintro _ _ rfl rfl; apply add_zero
+  uniq z :=
+    z.inductionOn (fun x y ↦ by rw [Subsingleton.elim y 0, tmul_zero]) <| by
+      rintro _ _ rfl rfl; apply add_zero
 
 section
 
 variable (R R' M N)
 
-/-- A typeclass for `SMul` structures which can be moved across a tensor product.
+/--
+A typeclass for `SMul` structures which can be moved across a tensor product.
 
 This typeclass is generated automatically from an `IsScalarTower` instance, but exists so that
 we can also add an instance for `AddCommGroup.toIntModule`, allowing `z •` to be moved even if
@@ -177,38 +187,42 @@ class CompatibleSMul [DistribMulAction R' N] : Prop where
 
 end
 
-/-- Note that this provides the default `CompatibleSMul R R M N` instance through
-`IsScalarTower.left`. -/
-instance (priority := 100) CompatibleSMul.isScalarTower [SMul R' R] [IsScalarTower R' R M]
-    [DistribMulAction R' N] [IsScalarTower R' R N] : CompatibleSMul R R' M N :=
-  ⟨fun r m n => by
-    conv_lhs => rw [← one_smul R m]
-    conv_rhs => rw [← one_smul R n]
-    rw [← smul_assoc, ← smul_assoc]
-    exact Quotient.sound' <| AddConGen.Rel.of _ _ <| Eqv.of_smul _ _ _⟩
+/--
+Note that this provides the default `CompatibleSMul R R M N` instance through
+`IsScalarTower.left`.
+-/
+instance (priority := 100) CompatibleSMul.isScalarTower
+    [SMul R' R] [IsScalarTower R' R M] [DistribMulAction R' N] [IsScalarTower R' R N]
+    : CompatibleSMul R R' M N := ⟨fun r m n => by
+  conv_lhs => rw [← one_smul R m]
+  conv_rhs => rw [← one_smul R n]
+  rw [← smul_assoc, ← smul_assoc]
+  exact Quotient.sound' <| AddConGen.Rel.of _ _ <| Eqv.of_smul _ _ _⟩
 
 /-- `smul` can be moved from one side of the product to the other . -/
-theorem smul_tmul [DistribMulAction R' N] [CompatibleSMul R R' M N] (r : R') (m : M) (n : N) :
-    (r • m) ⊗ₜ n = m ⊗ₜ[R] (r • n) :=
+theorem smul_tmul [DistribMulAction R' N] [CompatibleSMul R R' M N] (r : R') (m : M) (n : N)
+    : (r • m) ⊗ₜ n = m ⊗ₜ[R] (r • n) :=
   CompatibleSMul.smul_tmul _ _ _
 
 set_option backward.privateInPublic true in
 @[instance_reducible]
-private def addMonoidWithWrongNSMul : AddMonoid (M ⊗[R] N) :=
-  { (addConGen (TensorProduct.Eqv R M N)).addMonoid with }
+private def addMonoidWithWrongNSMul : AddMonoid (M ⊗[R] N) := {
+  (addConGen (TensorProduct.Eqv R M N)).addMonoid with
+}
 
 attribute [local instance] addMonoidWithWrongNSMul in
 /-- Auxiliary function to defining scalar multiplication on tensor product. -/
 def SMul.aux {R' : Type*} [SMul R' M] (r : R') : FreeAddMonoid (M × N) →+ M ⊗[R] N :=
   FreeAddMonoid.lift fun p : M × N => (r • p.1) ⊗ₜ p.2
 
-theorem SMul.aux_of {R' : Type*} [SMul R' M] (r : R') (m : M) (n : N) :
-    SMul.aux r (.of (m, n)) = (r • m) ⊗ₜ[R] n :=
+theorem SMul.aux_of {R' : Type*} [SMul R' M] (r : R') (m : M) (n : N)
+    : SMul.aux r (.of (m, n)) = (r • m) ⊗ₜ[R] n :=
   rfl
 
 variable [SMulCommClass R R' M] [SMulCommClass R R'' M]
 
-/-- Given two modules over a commutative semiring `R`, if one of the factors carries a
+/--
+Given two modules over a commutative semiring `R`, if one of the factors carries a
 (distributive) action of a second type of scalars `R'`, which commutes with the action of `R`, then
 the tensor product (over `R`) carries an action of `R'`.
 
@@ -219,7 +233,8 @@ action. Two natural ways in which this situation arises are:
 
 Note that in the special case that `R = R'`, since `R` is commutative, we just get the usual scalar
 action on a tensor product of two modules. This special case is important enough that, for
-performance reasons, we define it explicitly below. -/
+performance reasons, we define it explicitly below.
+-/
 instance leftHasSMul : SMul R' (M ⊗[R] N) :=
   id ⟨fun r =>
     (addConGen (TensorProduct.Eqv R M N)).lift (SMul.aux r : _ →+ M ⊗[R] N) <|
@@ -238,20 +253,17 @@ instance leftHasSMul : SMul R' (M ⊗[R] N) :=
         | _, _, .add_comm x y =>
           (AddCon.ker_rel _).2 <| by simp_rw [map_add, add_comm]⟩
 
-instance : SMul R (M ⊗[R] N) :=
-  TensorProduct.leftHasSMul
+instance : SMul R (M ⊗[R] N) := TensorProduct.leftHasSMul
 
-protected theorem smul_zero (r : R') : r • (0 : M ⊗[R] N) = 0 :=
-  map_zero _
+protected theorem smul_zero (r : R') : r • (0 : M ⊗[R] N) = 0 := map_zero _
 
-protected theorem smul_add (r : R') (x y : M ⊗[R] N) : r • (x + y) = r • x + r • y :=
-  map_add _ _ _
+protected theorem smul_add (r : R') (x y : M ⊗[R] N) : r • (x + y) = r • x + r • y := map_add _ _ _
 
 protected theorem zero_smul (x : M ⊗[R] N) : (0 : R'') • x = 0 :=
   have : ∀ (r : R'') (m : M) (n : N), r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n := fun _ _ _ => rfl
   x.inductionOn
-    (fun m n => by rw [this, zero_smul, zero_tmul]) fun x y ihx ihy => by
-    rw [TensorProduct.smul_add, ihx, ihy, add_zero]
+    (fun m n => by rw [this, zero_smul, zero_tmul])
+    fun x y ihx ihy => by rw [TensorProduct.smul_add, ihx, ihy, add_zero]
 
 protected theorem one_smul (x : M ⊗[R] N) : (1 : R') • x = x :=
   have : ∀ (r : R') (m : M) (n : N), r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n := fun _ _ _ => rfl
@@ -262,9 +274,10 @@ protected theorem one_smul (x : M ⊗[R] N) : (1 : R') • x = x :=
 protected theorem add_smul (r s : R'') (x : M ⊗[R] N) : (r + s) • x = r • x + s • x :=
   have : ∀ (r : R'') (m : M) (n : N), r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n := fun _ _ _ => rfl
   x.inductionOn
-    (fun m n => by simp_rw [this, add_smul, add_tmul]) fun x y ihx ihy => by
-    simp_rw [TensorProduct.smul_add]
-    rw [ihx, ihy, add_add_add_comm]
+    (fun m n => by simp_rw [this, add_smul, add_tmul])
+    fun x y ihx ihy => by
+      simp_rw [TensorProduct.smul_add]
+      rw [ihx, ihy, add_add_add_comm]
 
 instance addMonoid : AddMonoid (M ⊗[R] N) where
   nsmul_zero := by simp [TensorProduct.zero_smul]
@@ -288,45 +301,47 @@ variable {R}
 
 instance leftDistribMulAction : DistribMulAction R' (M ⊗[R] N) :=
   have : ∀ (r : R') (m : M) (n : N), r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n := fun _ _ _ => rfl
-  { smul_add := fun r x y => TensorProduct.smul_add r x y
+  {
+    smul_add := fun r x y => TensorProduct.smul_add r x y
     mul_smul := fun r s x =>
       x.inductionOn
-        (fun m n => by simp_rw [this, mul_smul]) fun x y ihx ihy => by
-        simp_rw [TensorProduct.smul_add]
-        rw [ihx, ihy]
+        (fun m n => by simp_rw [this, mul_smul])
+        fun x y ihx ihy => by
+          simp_rw [TensorProduct.smul_add]
+          rw [ihx, ihy]
     one_smul := TensorProduct.one_smul
-    smul_zero := TensorProduct.smul_zero }
+    smul_zero := TensorProduct.smul_zero
+  }
 
-instance : DistribMulAction R (M ⊗[R] N) :=
-  TensorProduct.leftDistribMulAction
+instance : DistribMulAction R (M ⊗[R] N) := TensorProduct.leftDistribMulAction
 
-theorem smul_tmul' (r : R') (m : M) (n : N) : r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n :=
-  rfl
+theorem smul_tmul' (r : R') (m : M) (n : N) : r • m ⊗ₜ[R] n = (r • m) ⊗ₜ n := rfl
 
 @[simp]
-theorem tmul_smul [DistribMulAction R' N] [CompatibleSMul R R' M N] (r : R') (x : M) (y : N) :
-    x ⊗ₜ (r • y) = r • x ⊗ₜ[R] y :=
+theorem tmul_smul [DistribMulAction R' N] [CompatibleSMul R R' M N] (r : R') (x : M) (y : N)
+    : x ⊗ₜ (r • y) = r • x ⊗ₜ[R] y :=
   (smul_tmul _ _ _).symm
 
 theorem smul_tmul_smul (r s : R) (m : M) (n : N) : (r • m) ⊗ₜ[R] (s • n) = (r * s) • m ⊗ₜ[R] n := by
   simp_rw [smul_tmul, tmul_smul, mul_smul]
 
-theorem tmul_eq_smul_one_tmul {S : Type*} [Semiring S] [Module R S] [SMulCommClass R S S]
-    (s : S) (m : M) : s ⊗ₜ[R] m = s • (1 ⊗ₜ[R] m) := by
+theorem tmul_eq_smul_one_tmul
+    {S : Type*} [Semiring S] [Module R S] [SMulCommClass R S S] (s : S) (m : M)
+    : s ⊗ₜ[R] m = s • (1 ⊗ₜ[R] m) := by
   nth_rw 1 [← mul_one s, ← smul_eq_mul, smul_tmul']
 
-instance leftModule : Module R'' (M ⊗[R] N) :=
-  { add_smul := TensorProduct.add_smul
-    zero_smul := TensorProduct.zero_smul }
+instance leftModule : Module R'' (M ⊗[R] N) := {
+  add_smul := TensorProduct.add_smul
+  zero_smul := TensorProduct.zero_smul
+}
 
-instance : Module R (M ⊗[R] N) :=
-  TensorProduct.leftModule
+instance : Module R (M ⊗[R] N) := TensorProduct.leftModule
 
 instance [Module R''ᵐᵒᵖ M] [IsCentralScalar R'' M] : IsCentralScalar R'' (M ⊗[R] N) where
   op_smul_eq_smul r x :=
     x.inductionOn
-      (fun x y => by rw [smul_tmul', smul_tmul', op_smul_eq_smul]) fun x y hx hy => by
-      rw [smul_add, smul_add, hx, hy]
+      (fun x y => by rw [smul_tmul', smul_tmul', op_smul_eq_smul])
+      fun x y hx hy => by rw [smul_add, smul_add, hx, hy]
 
 section
 
@@ -338,8 +353,8 @@ variable [SMulCommClass R R'₂ M]
 instance smulCommClass_left [SMulCommClass R' R'₂ M] : SMulCommClass R' R'₂ (M ⊗[R] N) where
   smul_comm r' r'₂ x :=
     TensorProduct.inductionOn x
-      (fun m n => by simp_rw [smul_tmul', smul_comm]) fun x y ihx ihy => by
-      simp_rw [TensorProduct.smul_add]; rw [ihx, ihy]
+      (fun m n => by simp_rw [smul_tmul', smul_comm])
+      fun x y ihx ihy => by simp_rw [TensorProduct.smul_add]; rw [ihx, ihy]
 
 variable [SMul R'₂ R']
 
@@ -347,8 +362,8 @@ variable [SMul R'₂ R']
 instance isScalarTower_left [IsScalarTower R'₂ R' M] : IsScalarTower R'₂ R' (M ⊗[R] N) :=
   ⟨fun s r x =>
     x.inductionOn
-      (fun m n => by rw [smul_tmul', smul_tmul', smul_tmul', smul_assoc]) fun x y ihx ihy => by
-      rw [smul_add, smul_add, smul_add, ihx, ihy]⟩
+      (fun m n => by rw [smul_tmul', smul_tmul', smul_tmul', smul_assoc])
+      fun x y ihx ihy => by rw [smul_add, smul_add, smul_add, ihx, ihy]⟩
 
 variable [DistribMulAction R'₂ N] [DistribMulAction R' N]
 variable [CompatibleSMul R R'₂ M N] [CompatibleSMul R R' M N]
@@ -357,13 +372,15 @@ variable [CompatibleSMul R R'₂ M N] [CompatibleSMul R R' M N]
 instance isScalarTower_right [IsScalarTower R'₂ R' N] : IsScalarTower R'₂ R' (M ⊗[R] N) :=
   ⟨fun s r x =>
     x.inductionOn
-      (fun m n => by rw [← tmul_smul, ← tmul_smul, ← tmul_smul, smul_assoc]) fun x y ihx ihy => by
-      rw [smul_add, smul_add, smul_add, ihx, ihy]⟩
+      (fun m n => by rw [← tmul_smul, ← tmul_smul, ← tmul_smul, smul_assoc])
+      fun x y ihx ihy => by rw [smul_add, smul_add, smul_add, ihx, ihy]⟩
 
 end
 
-/-- A short-cut instance for the common case, where the requirements for the `compatible_smul`
-instances are sufficient. -/
+/--
+A short-cut instance for the common case, where the requirements for the `compatible_smul`
+instances are sufficient.
+-/
 instance isScalarTower [SMul R' R] [IsScalarTower R' R M] : IsScalarTower R' R (M ⊗[R] N) :=
   TensorProduct.isScalarTower_left
 
@@ -371,44 +388,51 @@ instance isScalarTower [SMul R' R] [IsScalarTower R' R M] : IsScalarTower R' R (
 variable (R M N) in
 /-- The canonical bilinear map `M → N → M ⊗[R] N`. -/
 def mk : M →ₗ[R] N →ₗ[R] M ⊗[R] N :=
-  LinearMap.mk₂ R (· ⊗ₜ ·) add_tmul (fun c m n => by simp_rw [smul_tmul, tmul_smul])
+  LinearMap.mk₂ R (· ⊗ₜ ·) add_tmul
+    (fun c m n => by simp_rw [smul_tmul, tmul_smul])
     tmul_add tmul_smul
 
-@[simp]
-theorem mk_apply (m : M) (n : N) : mk R M N m n = m ⊗ₜ n :=
-  rfl
+@[simp] theorem mk_apply (m : M) (n : N) : mk R M N m n = m ⊗ₜ n := rfl
 
-theorem ite_tmul (x₁ : M) (x₂ : N) (P : Prop) [Decidable P] :
-    (if P then x₁ else 0) ⊗ₜ[R] x₂ = if P then x₁ ⊗ₜ x₂ else 0 := by split_ifs <;> simp
+theorem ite_tmul (x₁ : M) (x₂ : N) (P : Prop) [Decidable P]
+    : (if P then x₁ else 0) ⊗ₜ[R] x₂ = if P then x₁ ⊗ₜ x₂ else 0 := by
+  split_ifs <;> simp
 
-theorem tmul_ite (x₁ : M) (x₂ : N) (P : Prop) [Decidable P] :
-    (x₁ ⊗ₜ[R] if P then x₂ else 0) = if P then x₁ ⊗ₜ x₂ else 0 := by split_ifs <;> simp
+theorem tmul_ite (x₁ : M) (x₂ : N) (P : Prop) [Decidable P]
+    : (x₁ ⊗ₜ[R] if P then x₂ else 0) = if P then x₁ ⊗ₜ x₂ else 0 := by
+  split_ifs <;> simp
 
-lemma tmul_single {ι : Type*} [DecidableEq ι] {M : ι → Type*} [∀ i, AddCommMonoid (M i)]
-    [∀ i, Module R (M i)] (i : ι) (x : N) (m : M i) (j : ι) :
-    x ⊗ₜ[R] Pi.single i m j = (Pi.single i (x ⊗ₜ[R] m) : ∀ i, N ⊗[R] M i) j := by
+lemma tmul_single
+    {ι : Type*} [DecidableEq ι]
+    {M : ι → Type*} [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
+    (i : ι)
+    (x : N) (m : M i) (j : ι)
+    : x ⊗ₜ[R] Pi.single i m j = (Pi.single i (x ⊗ₜ[R] m) : ∀ i, N ⊗[R] M i) j := by
   by_cases h : i = j <;> aesop
 
-lemma single_tmul {ι : Type*} [DecidableEq ι] {M : ι → Type*} [∀ i, AddCommMonoid (M i)]
-    [∀ i, Module R (M i)] (i : ι) (x : N) (m : M i) (j : ι) :
-    Pi.single i m j ⊗ₜ[R] x = (Pi.single i (m ⊗ₜ[R] x) : ∀ i, M i ⊗[R] N) j := by
+lemma single_tmul
+    {ι : Type*} [DecidableEq ι]
+    {M : ι → Type*} [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
+    (i : ι)
+    (x : N) (m : M i) (j : ι)
+    : Pi.single i m j ⊗ₜ[R] x = (Pi.single i (m ⊗ₜ[R] x) : ∀ i, M i ⊗[R] N) j := by
   by_cases h : i = j <;> aesop
 
 section
 
-theorem sum_tmul {α : Type*} (s : Finset α) (m : α → M) (n : N) :
-    (∑ a ∈ s, m a) ⊗ₜ[R] n = ∑ a ∈ s, m a ⊗ₜ[R] n := by
+theorem sum_tmul {α : Type*} (s : Finset α) (m : α → M) (n : N)
+    : (∑ a ∈ s, m a) ⊗ₜ[R] n = ∑ a ∈ s, m a ⊗ₜ[R] n := by
   classical
-    induction s using Finset.induction with
-    | empty => simp
-    | insert _ _ has ih => simp [Finset.sum_insert has, add_tmul, ih]
+  induction s using Finset.induction with
+  | empty => simp
+  | insert _ _ has ih => simp [Finset.sum_insert has, add_tmul, ih]
 
-theorem tmul_sum (m : M) {α : Type*} (s : Finset α) (n : α → N) :
-    (m ⊗ₜ[R] ∑ a ∈ s, n a) = ∑ a ∈ s, m ⊗ₜ[R] n a := by
+theorem tmul_sum (m : M) {α : Type*} (s : Finset α) (n : α → N)
+    : (m ⊗ₜ[R] ∑ a ∈ s, n a) = ∑ a ∈ s, m ⊗ₜ[R] n a := by
   classical
-    induction s using Finset.induction with
-    | empty => simp
-    | insert _ _ has ih => simp [Finset.sum_insert has, tmul_add, ih]
+  induction s using Finset.induction with
+  | empty => simp
+  | insert _ _ has ih => simp [Finset.sum_insert has, tmul_add, ih]
 
 end
 
@@ -416,7 +440,8 @@ variable (R M N)
 
 /-- The simple (aka pure) elements span the tensor product. -/
 theorem span_tmul_eq_top : Submodule.span R { t : M ⊗[R] N | ∃ m n, m ⊗ₜ n = t } = ⊤ := by
-  ext t; simp only [Submodule.mem_top, iff_true]
+  ext t
+  simp only [Submodule.mem_top, iff_true]
   refine t.inductionOn ?_ ?_
   · intro m n
     apply Submodule.subset_span
@@ -429,11 +454,13 @@ theorem map₂_mk_top_top_eq_top : Submodule.map₂ (mk R M N) ⊤ ⊤ = ⊤ := 
   rw [← top_le_iff, ← span_tmul_eq_top, Submodule.map₂_eq_span_image2]
   exact Submodule.span_mono fun _ ⟨m, n, h⟩ => ⟨m, trivial, n, trivial, h⟩
 
-theorem exists_eq_tmul_of_forall (x : TensorProduct R M N)
-    (h : ∀ (m₁ m₂ : M) (n₁ n₂ : N), ∃ m n, m₁ ⊗ₜ n₁ + m₂ ⊗ₜ n₂ = m ⊗ₜ[R] n) :
-    ∃ m n, x = m ⊗ₜ n := by
+theorem exists_eq_tmul_of_forall
+    (x : TensorProduct R M N)
+    (h : ∀ (m₁ m₂ : M) (n₁ n₂ : N), ∃ m n, m₁ ⊗ₜ n₁ + m₂ ⊗ₜ n₂ = m ⊗ₜ[R] n)
+    : ∃ m n, x = m ⊗ₜ n := by
   induction x with
-  | tmul m n => use m, n
+  | tmul m n =>
+    use m, n
   | add x y h₁ h₂ =>
     obtain ⟨m₁, n₁, rfl⟩ := h₁
     obtain ⟨m₂, n₂, rfl⟩ := h₂

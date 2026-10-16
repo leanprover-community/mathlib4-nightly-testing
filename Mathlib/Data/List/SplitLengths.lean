@@ -20,12 +20,11 @@ variable {α : Type*} (l : List α) (sz : List ℕ)
 
 namespace List
 
-/--
-Split a list to chunks of given lengths.
--/
+/-- Split a list to chunks of given lengths. -/
 def splitLengths : List ℕ → List α → List (List α)
-  | [], _ => []
-  | n::ns, x =>
+  | [], _ =>
+    []
+  | n :: ns, x =>
     let (x0, x1) := x.splitAt n
     x0 :: ns.splitLengths x1
 
@@ -33,12 +32,11 @@ def splitLengths : List ℕ → List α → List (List α)
 theorem length_splitLengths : (sz.splitLengths l).length = sz.length := by
   induction sz generalizing l <;> simp [splitLengths, *]
 
-@[simp]
-lemma splitLengths_nil : [].splitLengths l = [] := rfl
+@[simp] lemma splitLengths_nil : [].splitLengths l = [] := rfl
 
 @[simp]
-lemma splitLengths_cons (n : ℕ) :
-    (n :: sz).splitLengths l = l.take n :: sz.splitLengths (l.drop n) := by
+lemma splitLengths_cons (n : ℕ)
+    : (n :: sz).splitLengths l = l.take n :: sz.splitLengths (l.drop n) := by
   simp [splitLengths]
 
 theorem take_splitLength (i : ℕ) : (sz.splitLengths l).take i = (sz.take i).splitLengths l := by
@@ -49,8 +47,8 @@ theorem take_splitLength (i : ℕ) : (sz.splitLengths l).take i = (sz.take i).sp
     · simp
     · simp only [splitLengths_cons, take_succ_cons, hi]
 
-theorem length_splitLengths_getElem_le {i : ℕ} {hi : i < (sz.splitLengths l).length} :
-    (sz.splitLengths l)[i].length ≤ sz[i]'(by simpa using hi) := by
+theorem length_splitLengths_getElem_le {i : ℕ} {hi : i < (sz.splitLengths l).length}
+    : (sz.splitLengths l)[i].length ≤ sz[i]'(by simpa using hi) := by
   induction sz generalizing l i
   · simp at hi
   case cons head tail tail_ih =>
@@ -67,8 +65,7 @@ theorem flatten_splitLengths (h : l.length ≤ sz.sum) : (sz.splitLengths l).fla
     rw [ih, take_append_drop]
     simpa [add_comm] using h
 
-theorem map_splitLengths_length (h : sz.sum ≤ l.length) :
-    (sz.splitLengths l).map length = sz := by
+theorem map_splitLengths_length (h : sz.sum ≤ l.length) : (sz.splitLengths l).map length = sz := by
   induction sz generalizing l
   · simp
   case cons head tail ih =>
@@ -78,9 +75,9 @@ theorem map_splitLengths_length (h : sz.sum ≤ l.length) :
     · simp [Nat.le_of_add_right_le h]
     · simp [Nat.le_sub_of_add_le' h]
 
-theorem length_splitLengths_getElem_eq {i : ℕ} (hi : i < sz.length)
-    (h : (sz.take (i + 1)).sum ≤ l.length) :
-    ((sz.splitLengths l)[i]'(by simpa)).length = sz[i] := by
+theorem length_splitLengths_getElem_eq
+    {i : ℕ} (hi : i < sz.length) (h : (sz.take (i + 1)).sum ≤ l.length)
+    : ((sz.splitLengths l)[i]'(by simpa)).length = sz[i] := by
   rw [List.getElem_take' (hj := i.lt_add_one)]
   simp only [take_splitLength]
   conv_rhs =>
@@ -88,16 +85,18 @@ theorem length_splitLengths_getElem_eq {i : ℕ} (hi : i < sz.length)
     simp +singlePass only [← map_splitLengths_length l _ h]
     rw [getElem_map]
 
-theorem splitLengths_length_getElem {α : Type*} (l : List α) (sz : List ℕ)
-    (h : sz.sum ≤ l.length) (i : ℕ) (hi : i < (sz.splitLengths l).length) :
-    (sz.splitLengths l)[i].length = sz[i]'(by simpa using hi) := by
+theorem splitLengths_length_getElem
+    {α : Type*} (l : List α)
+    (sz : List ℕ) (h : sz.sum ≤ l.length)
+    (i : ℕ) (hi : i < (sz.splitLengths l).length)
+    : (sz.splitLengths l)[i].length = sz[i]'(by simpa using hi) := by
   have := map_splitLengths_length l sz h
   rw [← List.getElem_map List.length]
   · simp [this]
   · simpa using hi
 
-theorem length_mem_splitLengths {α : Type*} (l : List α) (sz : List ℕ) (b : ℕ)
-    (h : ∀ n ∈ sz, n ≤ b) : ∀ l₂ ∈ sz.splitLengths l, l₂.length ≤ b := by
+theorem length_mem_splitLengths {α : Type*} (l : List α) (sz : List ℕ) (b : ℕ) (h : ∀ n ∈ sz, n ≤ b)
+    : ∀ l₂ ∈ sz.splitLengths l, l₂.length ≤ b := by
   rw [List.forall_mem_iff_forall_getElem]
   intro i hi
   have := length_splitLengths_getElem_le l sz (hi := hi)

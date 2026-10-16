@@ -21,16 +21,18 @@ open Function
 
 variable {α M R : Type*}
 
-theorem IsSquare.nonneg [Semiring R] [LinearOrder R]
-    [ExistsAddOfLE R] [PosMulMono R] [AddLeftMono R]
-    {x : R} (h : IsSquare x) : 0 ≤ x := by
+theorem IsSquare.nonneg
+    [Semiring R] [LinearOrder R] [ExistsAddOfLE R] [PosMulMono R] [AddLeftMono R]
+    {x : R} (h : IsSquare x)
+    : 0 ≤ x := by
   rcases h with ⟨y, rfl⟩
   exact mul_self_nonneg y
 
 @[simp]
-lemma not_isSquare_of_neg [Semiring R] [LinearOrder R]
-    [ExistsAddOfLE R] [PosMulMono R] [AddLeftMono R]
-    {x : R} (h : x < 0) : ¬ IsSquare x :=
+lemma not_isSquare_of_neg
+    [Semiring R] [LinearOrder R] [ExistsAddOfLE R] [PosMulMono R] [AddLeftMono R]
+    {x : R} (h : x < 0)
+    : ¬ IsSquare x :=
   (h.not_ge ·.nonneg)
 
 section OrderedSemiring
@@ -40,7 +42,8 @@ variable [Semiring R] [PartialOrder R] [IsOrderedRing R] {a b x y : R} {n : ℕ}
 theorem pow_add_pow_le (hx : 0 ≤ x) (hy : 0 ≤ y) (hn : n ≠ 0) : x ^ n + y ^ n ≤ (x + y) ^ n := by
   rcases Nat.exists_eq_add_one_of_ne_zero hn with ⟨k, rfl⟩
   induction k with
-  | zero => simp only [zero_add, pow_one, le_refl]
+  | zero =>
+    simp only [zero_add, pow_one, le_refl]
   | succ k ih =>
     let n := k.succ
     have h1 := add_nonneg (mul_nonneg hx (pow_nonneg hy n)) (mul_nonneg hy (pow_nonneg hx n))
@@ -54,7 +57,8 @@ theorem pow_add_pow_le (hx : 0 ≤ x) (hy : 0 ≤ y) (hn : n ≠ 0) : x ^ n + y 
           add_assoc (x * x ^ n) (x * y ^ n), add_comm (x * y ^ n) (y * y ^ n), ← add_assoc]
       _ ≤ (x + y) ^ (n + 1) := by
         rw [pow_succ' _ n]
-        gcongr; exact ih (Nat.succ_ne_zero k)
+        gcongr
+        exact ih (Nat.succ_ne_zero k)
 
 attribute [bound] pow_le_one₀ one_le_pow₀
 
@@ -65,12 +69,19 @@ lemma pow_add_pow_le' (ha : 0 ≤ a) (hb : 0 ≤ b) : a ^ n + b ^ n ≤ 2 * (a +
 
 end OrderedSemiring
 
-lemma Even.pow_le_pow_of_nonpos [Ring R] [PartialOrder R] [IsOrderedRing R] {n : ℕ}
-    (hn : Even n) {a b : R} (hb : b ≤ 0) (hab : a ≤ b) : b ^ n ≤ a ^ n := by
+lemma Even.pow_le_pow_of_nonpos
+    [Ring R] [PartialOrder R] [IsOrderedRing R]
+    {n : ℕ} (hn : Even n)
+    {a b : R} (hb : b ≤ 0) (hab : a ≤ b)
+    : b ^ n ≤ a ^ n := by
   simpa [hn.neg_pow] using pow_le_pow_left₀ (neg_nonneg.mpr hb) (neg_le_neg hab) n
 
-lemma Even.pow_lt_pow_of_nonpos [Ring R] [PartialOrder R] [IsStrictOrderedRing R] {n : ℕ}
-    (hn : Even n) {a b : R} (hb : b ≤ 0) (hab : a < b) (hn₀ : n ≠ 0) : b ^ n < a ^ n := by
+lemma Even.pow_lt_pow_of_nonpos
+    [Ring R] [PartialOrder R] [IsStrictOrderedRing R]
+    {n : ℕ} (hn : Even n)
+    {a b : R} (hb : b ≤ 0) (hab : a < b)
+    (hn₀ : n ≠ 0)
+    : b ^ n < a ^ n := by
   simpa [hn.neg_pow] using pow_lt_pow_left₀ (neg_lt_neg hab) (neg_nonneg.mpr hb) hn₀
 
 section StrictOrderedRing
@@ -92,9 +103,9 @@ protected lemma Even.pow_nonneg (hn : Even n) (a : R) : 0 ≤ a ^ n := by
 lemma pow_four_le_pow_two_of_pow_two_le {a b : R} (h : a ^ 2 ≤ b) : a ^ 4 ≤ b ^ 2 :=
   (pow_mul a 2 2).symm ▸ pow_le_pow_left₀ (sq_nonneg a) h 2
 
-lemma pow_add_pow_eq_zero_iff_of_even [NoZeroDivisors R]
-    {n : ℕ} (hn : n ≠ 0) (hn' : Even n) (x y : R) :
-    x ^ n + y ^ n = 0 ↔ x = 0 ∧ y = 0 := by
+lemma pow_add_pow_eq_zero_iff_of_even
+    [NoZeroDivisors R] {n : ℕ} (hn : n ≠ 0) (hn' : Even n) (x y : R)
+    : x ^ n + y ^ n = 0 ↔ x = 0 ∧ y = 0 := by
   obtain ⟨m, rfl⟩ := hn'
   simp only [pow_add]
   grind [mul_self_add_mul_self_eq_zero, pow_eq_zero_iff]
@@ -103,8 +114,10 @@ end IsOrderedRing
 
 variable [Semiring R] [LinearOrder R] [IsStrictOrderedRing R] {a b : R} {m n : ℕ}
 
-/-- A function `f : α → R` is nonarchimedean if it satisfies the ultrametric inequality
-  `f (a + b) ≤ max (f a) (f b)` for all `a b : α`. -/
+/--
+A function `f : α → R` is nonarchimedean if it satisfies the ultrametric inequality
+`f (a + b) ≤ max (f a) (f b)` for all `a b : α`.
+-/
 def IsNonarchimedean {α : Type*} [Add α] (f : α → R) : Prop := ∀ a b : α, f (a + b) ≤ f a ⊔ f b
 
 /-!
@@ -121,7 +134,7 @@ variable [ExistsAddOfLE R]
 lemma add_sq_le : (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by
   calc
     (a + b) ^ 2 = a ^ 2 + b ^ 2 + (a * b + b * a) := by
-        simp_rw [pow_succ', pow_zero, mul_one, add_mul, mul_add, add_comm (b * a), add_add_add_comm]
+      simp_rw [pow_succ', pow_zero, mul_one, add_mul, mul_add, add_comm (b * a), add_add_add_comm]
     _ ≤ a ^ 2 + b ^ 2 + (a * a + b * b) := add_le_add_right ?_ _
     _ = _ := by simp_rw [pow_succ', pow_zero, mul_one, two_mul]
   cases le_total a b
@@ -130,16 +143,18 @@ lemma add_sq_le : (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by
 
 -- TODO: Use `gcongr`, `positivity`, `ring` once those tactics are made available here
 lemma add_pow_le (ha : 0 ≤ a) (hb : 0 ≤ b) : ∀ n, (a + b) ^ n ≤ 2 ^ (n - 1) * (a ^ n + b ^ n)
-  | 0 => by simp
-  | 1 => by simp
+  | 0 => by
+    simp
+  | 1 => by
+    simp
   | n + 2 => by
     rw [pow_succ]
     calc
       _ ≤ 2 ^ n * (a ^ (n + 1) + b ^ (n + 1)) * (a + b) :=
-          mul_le_mul_of_nonneg_right (add_pow_le ha hb (n + 1)) <| add_nonneg ha hb
+        mul_le_mul_of_nonneg_right (add_pow_le ha hb (n + 1)) <| add_nonneg ha hb
       _ = 2 ^ n * (a ^ (n + 2) + b ^ (n + 2) + (a ^ (n + 1) * b + b ^ (n + 1) * a)) := by
-          rw [mul_assoc, mul_add, add_mul, add_mul, ← pow_succ, ← pow_succ, add_comm _ (b ^ _),
-            add_add_add_comm, add_comm (_ * a)]
+        rw [mul_assoc, mul_add, add_mul, add_mul, ← pow_succ, ← pow_succ, add_comm _ (b ^ _),
+          add_add_add_comm, add_comm (_ * a)]
       _ ≤ 2 ^ n * (a ^ (n + 2) + b ^ (n + 2) + (a ^ (n + 1) * a + b ^ (n + 1) * b)) := by
         gcongr _ * (_ + _ + ?_)
         · exact pow_nonneg zero_le_two _
@@ -148,16 +163,16 @@ lemma add_pow_le (ha : 0 ≤ a) (hb : 0 ≤ b) : ∀ n, (a + b) ^ n ≤ 2 ^ (n -
         · exact mul_add_mul_le_mul_add_mul' (by gcongr) hba
       _ = _ := by simp only [← pow_succ, ← two_mul, ← mul_assoc]; rfl
 
-protected lemma Even.add_pow_le (hn : Even n) :
-    (a + b) ^ n ≤ 2 ^ (n - 1) * (a ^ n + b ^ n) := by
+protected lemma Even.add_pow_le (hn : Even n) : (a + b) ^ n ≤ 2 ^ (n - 1) * (a ^ n + b ^ n) := by
   obtain ⟨n, rfl⟩ := hn
   rw [← two_mul, pow_mul]
   calc
     _ ≤ (2 * (a ^ 2 + b ^ 2)) ^ n := pow_le_pow_left₀ (sq_nonneg _) add_sq_le _
     _ = 2 ^ n * (a ^ 2 + b ^ 2) ^ n := by -- TODO: Should be `Nat.cast_commute`
-        rw [Commute.mul_pow]; simp [Commute, SemiconjBy, two_mul, mul_two]
-    _ ≤ 2 ^ n * (2 ^ (n - 1) * ((a ^ 2) ^ n + (b ^ 2) ^ n)) := mul_le_mul_of_nonneg_left
-          (add_pow_le (sq_nonneg _) (sq_nonneg _) _) <| pow_nonneg (zero_le_two (α := R)) _
+      rw [Commute.mul_pow]; simp [Commute, SemiconjBy, two_mul, mul_two]
+    _ ≤ 2 ^ n * (2 ^ (n - 1) * ((a ^ 2) ^ n + (b ^ 2) ^ n)) :=
+      mul_le_mul_of_nonneg_left (add_pow_le (sq_nonneg _) (sq_nonneg _) _) <|
+        pow_nonneg (zero_le_two (α := R)) _
     _ = _ := by
       simp only [← mul_assoc, ← pow_add, ← pow_mul]
       cases n
@@ -181,7 +196,8 @@ lemma Odd.pow_nonneg_iff (hn : Odd n) : 0 ≤ a ^ n ↔ 0 ≤ a :=
 
 lemma Odd.pow_nonpos_iff (hn : Odd n) : a ^ n ≤ 0 ↔ a ≤ 0 := by
   rw [le_iff_lt_or_eq, le_iff_lt_or_eq, hn.pow_neg_iff, pow_eq_zero_iff]
-  rintro rfl; simp at hn
+  rintro rfl
+  simp at hn
 
 lemma Odd.pow_pos_iff (hn : Odd n) : 0 < a ^ n ↔ 0 < a := lt_iff_lt_of_le_iff_le hn.pow_nonpos_iff
 
@@ -201,8 +217,8 @@ lemma Odd.strictMono_pow (hn : Odd n) : StrictMono fun a : R => a ^ n := by
   refine lt_of_add_lt_add_right (a := c ^ n + d ^ n) ?_
   dsimp
   calc
-    a ^ n + (c ^ n + d ^ n) = d ^ n := by
-      rw [← add_assoc, hn.pow_add_pow_eq_zero hac.symm, zero_add]
+    a ^ n + (c ^ n + d ^ n)
+      = d ^ n := by rw [← add_assoc, hn.pow_add_pow_eq_zero hac.symm, zero_add]
     _ < c ^ n := pow_lt_pow_left₀ ?_ hd hn₀
     _ = b ^ n + (c ^ n + d ^ n) := by rw [add_left_comm, hn.pow_add_pow_eq_zero hbd.symm, add_zero]
   refine lt_of_add_lt_add_right (a := a + b) ?_
@@ -217,8 +233,7 @@ lemma Odd.pow_lt_pow {n : ℕ} (hn : Odd n) {a b : R} : a ^ n < b ^ n ↔ a < b 
 lemma Odd.pow_le_pow {n : ℕ} (hn : Odd n) {a b : R} : a ^ n ≤ b ^ n ↔ a ≤ b :=
   hn.strictMono_pow.le_iff_le
 
-lemma Odd.pow_inj {n : ℕ} (hn : Odd n) {a b : R} : a ^ n = b ^ n ↔ a = b :=
-  hn.pow_injective.eq_iff
+lemma Odd.pow_inj {n : ℕ} (hn : Odd n) {a b : R} : a ^ n = b ^ n ↔ a = b := hn.pow_injective.eq_iff
 
 lemma sq_pos_iff {a : R} : 0 < a ^ 2 ↔ a ≠ 0 := even_two.pow_pos_iff two_ne_zero
 

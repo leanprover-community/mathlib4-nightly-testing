@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon
 -/
 module
+
 import Mathlib.Algebra.Order.Ring.Defs
 import Mathlib.Data.List.Defs
 import Mathlib.Tactic.Monotonicity
@@ -12,44 +13,28 @@ import Mathlib.Tactic.NormNum
 private axiom test_sorry : ∀ {α}, α
 open List Set
 
-example (x y z k : ℕ)
-    (h : 3 ≤ (4 : ℕ))
-    (h' : z ≤ y) :
-    (k + 3 + x) - y ≤ (k + 4 + x) - z := by
-  mono
-  -- norm_num
+example (x y z k : ℕ) (h : 3 ≤ (4 : ℕ)) (h' : z ≤ y) : (k + 3 + x) - y ≤ (k + 4 + x) - z := by mono
+-- norm_num
 
-example (x y z k : ℤ)
-    (h : 3 ≤ (4 : ℤ))
-    (h' : z ≤ y) :
-    (k + 3 + x) - y ≤ (k + 4 + x) - z := by
-  mono
-  -- norm_num
+example (x y z k : ℤ) (h : 3 ≤ (4 : ℤ)) (h' : z ≤ y) : (k + 3 + x) - y ≤ (k + 4 + x) - z := by mono
+-- norm_num
 
-example (x y z a b : ℕ)
-    (h : a ≤ (b : ℕ))
-    (h' : z ≤ y) :
-    (1 + a + x) - y ≤ (1 + b + x) - z := by
+example (x y z a b : ℕ) (h : a ≤ (b : ℕ)) (h' : z ≤ y) : (1 + a + x) - y ≤ (1 + b + x) - z := by
   transitivity (1 + a + x - z)
   · mono
   · mono
-    -- mono
-    -- mono
+-- mono
+-- mono
 
-example (x y z a b : ℤ)
-    (h : a ≤ (b : ℤ))
-    (h' : z ≤ y) :
-    (1 + a + x) - y ≤ (1 + b + x) - z := by
+example (x y z a b : ℤ) (h : a ≤ (b : ℤ)) (h' : z ≤ y) : (1 + a + x) - y ≤ (1 + b + x) - z := by
   apply @le_trans ℤ _ _ (1 + a + x - z)
   -- transitivity (1 + a + x - z)
   · mono
   · mono
-    -- mono
-    -- mono
+-- mono
+-- mono
 
-example (x y z : ℤ)
-    (h' : z ≤ y) :
-    (1 + 3 + x) - y ≤ (1 + 4 + x) - z := by
+example (x y z : ℤ) (h' : z ≤ y) : (1 + 3 + x) - y ≤ (1 + 4 + x) - z := by
   apply @le_trans ℤ _ _ (1 + 3 + x - z)
   -- transitivity (1 + 3 + x - z)
   · mono
@@ -73,8 +58,10 @@ example {x y z : ℕ} : true := by
 example {x y z w : ℕ} : true := by
   have : x + y ≤ z + w := by
     mono
-    guard_target = x ≤ z; exact test_sorry
-    guard_target = y ≤ w; exact test_sorry
+    guard_target = x ≤ z
+    exact test_sorry
+    guard_target = y ≤ w
+    exact test_sorry
   trivial
 
 -- example
@@ -351,7 +338,6 @@ example {x y z w : ℕ} : true := by
 --   trivial,
 --   exact 1,
 -- end
-
 
 -- example {x y z w : ℕ} : true := by
 --   have : x * y ≤ z * w := by

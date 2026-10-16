@@ -101,13 +101,16 @@ Once Aesop can do general terms directly, we can remove these:
   https://github.com/leanprover-community/aesop/issues/107
 -/
 
-lemma Nat.cast_pos_of_pos {R : Type} [Semiring R] [PartialOrder R] [IsOrderedRing R] [Nontrivial R]
-    {n : ℕ} : 0 < n → 0 < (n : R) :=
+lemma Nat.cast_pos_of_pos
+    {R : Type} [Semiring R] [PartialOrder R] [IsOrderedRing R] [Nontrivial R] {n : ℕ}
+    : 0 < n → 0 < (n : R) :=
   Nat.cast_pos.mpr
 
-lemma Nat.one_le_cast_of_le {α : Type} [AddCommMonoidWithOne α] [PartialOrder α]
-    [AddLeftMono α] [ZeroLEOneClass α]
-    [CharZero α] {n : ℕ} : 1 ≤ n → 1 ≤ (n : α) :=
+lemma Nat.one_le_cast_of_le
+    {α : Type}
+    [AddCommMonoidWithOne α] [PartialOrder α] [AddLeftMono α] [ZeroLEOneClass α] [CharZero α]
+    {n : ℕ}
+    : 1 ≤ n → 1 ≤ (n : α) :=
   Nat.one_le_cast.mpr
 
 /-!
@@ -121,21 +124,24 @@ that do not require additional imports within this file.
 attribute [bound] le_refl
 
 -- 0 ≤, 0 <
-attribute [bound] sq_nonneg Nat.cast_nonneg abs_nonneg Nat.zero_lt_succ pow_pos pow_nonneg
-  sub_nonneg_of_le sub_pos_of_lt inv_nonneg_of_nonneg inv_pos_of_pos tsub_pos_of_lt mul_pos
-  mul_nonneg div_pos div_nonneg add_nonneg
+attribute [bound]
+  sq_nonneg Nat.cast_nonneg abs_nonneg Nat.zero_lt_succ pow_pos pow_nonneg sub_nonneg_of_le
+  sub_pos_of_lt inv_nonneg_of_nonneg inv_pos_of_pos tsub_pos_of_lt mul_pos mul_nonneg div_pos
+  div_nonneg add_nonneg
 
 -- 1 ≤, ≤ 1
 attribute [bound] Nat.one_le_cast_of_le one_le_mul_of_one_le_of_one_le
 
 -- ≤
-attribute [bound] le_abs_self neg_abs_le neg_le_neg tsub_le_tsub_right mul_le_mul_of_nonneg_left
+attribute [bound]
+  le_abs_self neg_abs_le neg_le_neg tsub_le_tsub_right mul_le_mul_of_nonneg_left
   mul_le_mul_of_nonneg_right le_add_of_nonneg_right le_add_of_nonneg_left le_mul_of_one_le_right
   mul_le_of_le_one_right sub_le_sub add_le_add mul_le_mul
 
 -- <
-attribute [bound] Nat.cast_pos_of_pos neg_lt_neg sub_lt_sub_left sub_lt_sub_right add_lt_add_left
-  add_lt_add_right mul_lt_mul_of_pos_left mul_lt_mul_of_pos_right
+attribute [bound]
+  Nat.cast_pos_of_pos neg_lt_neg sub_lt_sub_left sub_lt_sub_right add_lt_add_left add_lt_add_right
+  mul_lt_mul_of_pos_left mul_lt_mul_of_pos_right
 
 -- min and max
 attribute [bound] min_le_right min_le_left le_max_left le_max_right le_min max_le lt_min max_lt
@@ -167,11 +173,9 @@ lemma min_lt_of_left_lt_or_right_lt : a < c ∨ b < c → min a b < c := min_lt_
 -- Register guessing rules
 attribute [bound]
   -- Which side of the `max` should we use as the lower bound?
-  le_max_of_le_left_or_le_right
-  lt_max_of_lt_left_or_lt_right
+  le_max_of_le_left_or_le_right lt_max_of_lt_left_or_lt_right
   -- Which side of the `min` should we use as the upper bound?
-  min_le_of_left_le_or_right_le
-  min_lt_of_left_lt_or_right_lt
+  min_le_of_left_le_or_right_le min_lt_of_left_lt_or_right_lt
 
 end Guessing
 
@@ -202,14 +206,12 @@ attribute [aesop unsafe 5% tactic (rule_sets := [Bound])] boundLinarith
 -/
 
 /-- Aesop configuration for `bound` -/
-def boundConfig : Aesop.Options := {
-  enableSimp := false,
-  terminal := true
-}
+def boundConfig : Aesop.Options := { enableSimp := false, terminal := true }
 
 end Mathlib.Tactic.Bound
 
-/-- `bound` tactic for proving inequalities via straightforward recursion on expression structure.
+/--
+`bound` tactic for proving inequalities via straightforward recursion on expression structure.
 
 An example use case is
 
@@ -238,7 +240,8 @@ between `0 ≤ x` and `x ≤ y`-type inequalities.  For example, `bound` proves
 by turning the goal into `b * c ≤ a * c`, then using `mul_le_mul_of_nonneg_right`.  `bound` also
 contains lemmas for goals of the form `1 ≤ x, 1 < x, x ≤ 1, x < 1`.  Conversely, `gcongr` can prove
 inequalities for more types of relations, supports all `positivity` functionality, and is likely
-faster since it is more specialized (not built atop `aesop`). -/
+faster since it is more specialized (not built atop `aesop`).
+-/
 syntax "bound" (" [" term,* "]")? : tactic
 
 -- Plain `bound` elaboration, with no hypotheses

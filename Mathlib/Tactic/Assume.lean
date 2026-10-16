@@ -11,7 +11,8 @@ public import Mathlib.Init
 # The `assume` tactic
 -/
 
-/-- `assume e` introduces a new (unnamed) hypothesis of type `e`.
+/--
+`assume e` introduces a new (unnamed) hypothesis of type `e`.
 It is equivalent to `intro (_ : e)`.
 
 The argument `e` is required to be a proposition, definitionally equal to the hypothesis
@@ -38,12 +39,19 @@ elab_rules : tactic
     withMainContext do
       let e ← elabTerm t (some (.sort .zero))
       let eType ← inferType e
-      let .true ← isDefEq eType (.sort .zero) |
-        throwErrorAt t "Tactic 'assume' failed: Given type{indentExpr e}\nis not a proposition."
+      let .true ← isDefEq eType (.sort .zero)
+        | throwErrorAt t
+            "Tactic 'assume' failed: Given type{indentExpr e}\
+              \nis not a proposition."
       let tgt ← getMainTarget
-      let .forallE _ b _ _ ← whnf tgt |
-        throwErrorAt t "Tactic 'assume' failed: Goal{indentExpr tgt}\nis not an implication."
-      let .true ← isDefEq b e |
-        throwErrorAt t "Tactic 'assume' failed: Given type{indentExpr e}\ndoes not match the \
-        type{indentExpr b}\nof the hypothesis in the goal."
+      let .forallE _ b _ _ ← whnf tgt
+        | throwErrorAt t
+            "Tactic 'assume' failed: Goal{indentExpr tgt}\
+              \nis not an implication."
+      let .true ← isDefEq b e
+        | throwErrorAt t
+            "Tactic 'assume' failed: Given type{indentExpr e}\
+              \ndoes not match the \
+              type{indentExpr b}\
+              \nof the hypothesis in the goal."
       evalTactic (← `(tactic | intro (_ : $t)))

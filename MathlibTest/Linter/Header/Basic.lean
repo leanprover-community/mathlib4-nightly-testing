@@ -50,8 +50,7 @@ A convenience function that replaces `/` with `|`.
 This converts `/-` and `-/` into `|-` and `-|` that no longer interfere with the ending of the
 `#guard_msgs` doc-string.
 -/
-def replaceMultilineComments (s : String) : String :=
-  s.replace "/" "|"
+def replaceMultilineComments (s : String) : String := s.replace "/" "|"
 
 open Lean Elab Command in
 /--
@@ -64,10 +63,10 @@ elab "#check_copyright " copStx:str : command => do
   let expectedLicense := Mathlib.Linter.linter.style.header.license.get (← getOptions)
   for (s, m) in Mathlib.Linter.copyrightHeaderChecks cop expectedLicense do
     if let some rg := s.getRange? then
-      logInfoAt (.ofRange ({start := rg.start.offsetBy offset, stop := rg.stop.offsetBy offset}))
+      logInfoAt (.ofRange ({ start := rg.start.offsetBy offset, stop := rg.stop.offsetBy offset }))
         m!"Text: `{replaceMultilineComments s.getAtomVal}`\n\
-           Range: {(rg.start, rg.stop)}\n\
-           Message: '{replaceMultilineComments m}'"
+          Range: {(rg.start, rg.stop)}\n\
+          Message: '{replaceMultilineComments m}'"
 
 -- well-formed
 #check_copyright

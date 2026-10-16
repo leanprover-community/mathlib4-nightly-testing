@@ -8,7 +8,7 @@ module
 public meta import Lean.Elab.Command
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header  -- shake: keep
+public meta import Mathlib.Tactic.Linter.Header -- shake: keep
 public import Lean.Parser.Command
 
 /-!
@@ -42,44 +42,49 @@ public register_option linter.docPrime : Bool := {
 namespace DocPrime
 
 @[inherit_doc Mathlib.Linter.linter.docPrime]
-def docPrimeLinter : Linter where run := withSetOptionIn fun stx ↦ do
-  unless getLinterValue linter.docPrime (← getLinterOptions) do
-    return
-  if (← get).messages.hasErrors then
-    return
-  unless [``Lean.Parser.Command.declaration, `lemma].contains stx.getKind do return
-  -- ignore private declarations
-  if (stx.find? (·.isOfKind ``Lean.Parser.Command.private)).isSome then return
-  -- ignore examples
-  if (stx.find? (·.isOfKind ``Lean.Parser.Command.example)).isSome then return
-  let docstring := stx[0][0]
-  -- The current declaration's id, possibly followed by a list of universe names.
-  let declId :=
-    if stx[1].isOfKind ``Lean.Parser.Command.instance then
-      stx[1][3][0]
-    else
-      stx[1][1]
-  if let .missing := declId then return
-  -- The name of the current declaration, with namespaces resolved.
-  let declName : Name :=
-    if let `_root_ :: rest := declId[0].getId.components then
-      rest.foldl (· ++ ·) default
-    else (← getCurrNamespace) ++ declId[0].getId
-  let msg := m!"`{declName}` is missing a doc-string, please add one.\n\
-      Declarations whose name ends with a `'` are expected to contain an explanation for the \
-      presence of a `'` in their doc-string. This may consist of discussion of the difference \
-      relative to the unprimed version, or an explanation as to why no better naming scheme \
-      is possible."
-  -- A `docComment` is `/--`, then a `commentBody` node holding the text and the closing `-/`,
-  -- so the text itself is `docstring[0][1][0]`.
-  if docstring[0][1][0].getAtomVal.isEmpty && declName.toString.back == '\'' then
-    if ← System.FilePath.pathExists "scripts/nolints_prime_decls.txt" then
-      if (← IO.FS.lines "scripts/nolints_prime_decls.txt").contains declName.toString then
+def docPrimeLinter : Linter where
+  run :=
+    withSetOptionIn fun stx ↦ do
+      unless getLinterValue linter.docPrime (← getLinterOptions) do
         return
-      else
-        Linter.logLint linter.docPrime declId msg
-    else
-      Linter.logLint linter.docPrime declId msg
+      if (← get).messages.hasErrors then
+        return
+      unless [``Lean.Parser.Command.declaration, `lemma].contains stx.getKind do
+        return
+      -- ignore private declarations
+      if (stx.find? (·.isOfKind ``Lean.Parser.Command.private)).isSome then return
+      -- ignore examples
+      if (stx.find? (·.isOfKind ``Lean.Parser.Command.example)).isSome then return
+      let docstring := stx[0][0]
+      -- The current declaration's id, possibly followed by a list of universe names.
+      let declId :=
+        if stx[1].isOfKind ``Lean.Parser.Command.instance then
+          stx[1][3][0]
+        else
+          stx[1][1]
+      if let .missing := declId then return
+      -- The name of the current declaration, with namespaces resolved.
+      let declName : Name :=
+        if let `_root_ :: rest := declId[0].getId.components then
+          rest.foldl (· ++ ·) default
+        else
+          (← getCurrNamespace) ++ declId[0].getId
+      let msg :=
+        m!"`{declName}` is missing a doc-string, please add one.\n\
+          Declarations whose name ends with a `'` are expected to contain an explanation for the \
+          presence of a `'` in their doc-string. This may consist of discussion of the difference \
+          relative to the unprimed version, or an explanation as to why no better naming scheme \
+          is possible."
+      -- A `docComment` is `/--`, then a `commentBody` node holding the text and the closing `-/`,
+      -- so the text itself is `docstring[0][1][0]`.
+      if docstring[0][1][0].getAtomVal.isEmpty && declName.toString.back == '\'' then
+        if ← System.FilePath.pathExists "scripts/nolints_prime_decls.txt" then
+          if (← IO.FS.lines "scripts/nolints_prime_decls.txt").contains declName.toString then
+            return
+          else
+            Linter.logLint linter.docPrime declId msg
+        else
+          Linter.logLint linter.docPrime declId msg
 
 initialize addLinter docPrimeLinter
 

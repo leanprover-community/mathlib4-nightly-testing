@@ -44,20 +44,19 @@ variable {R : Type*} (S : Type*) [CommSemiring R] [CommSemiring S] [Algebra R S]
 attribute [local instance] QuadraticAlgebra.algebra
 
 @[simp]
-theorem algebraMap_eq_mapRingHom :
-    algebraMap (QuadraticAlgebra R a b)
-        (QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b)) =
-      mapRingHom (algebraMap R S) a b :=
+theorem algebraMap_eq_mapRingHom
+    : algebraMap (QuadraticAlgebra R a b) (QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b))
+      = mapRingHom (algebraMap R S) a b :=
   rfl
 
-instance :
-    IsScalarTower R (QuadraticAlgebra R a b)
+instance
+    : IsScalarTower R (QuadraticAlgebra R a b)
       (QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b)) :=
   IsScalarTower.of_algebraMap_eq fun _ ↦ QuadraticAlgebra.ext rfl (map_zero _).symm
 
 /-- A quadratic algebra is stable under base change. -/
-instance isPushout :
-    Algebra.IsPushout R S (QuadraticAlgebra R a b)
+instance isPushout
+    : Algebra.IsPushout R S (QuadraticAlgebra R a b)
       (QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b)) := by
   refine ⟨IsBaseChange.of_lift_unique _ fun Q _ _ _ _ g ↦ ?_⟩
   refine ⟨(basis _ _).constr S ![g 1, g ω], ?_, fun k hk ↦ ?_⟩
@@ -69,14 +68,14 @@ instance isPushout :
     simp [← LinearMap.congr_fun hk]
 
 /-- The base change of `QuadraticAlgebra R a b` along `R → S`, as an algebra isomorphism. -/
-noncomputable def baseChangeEquiv :
-    S ⊗[R] QuadraticAlgebra R a b ≃ₐ[S]
-      QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b) :=
+noncomputable def baseChangeEquiv
+    : S ⊗[R] QuadraticAlgebra R a b ≃ₐ[S]
+        QuadraticAlgebra S (algebraMap R S a) (algebraMap R S b) :=
   Algebra.IsPushout.equiv R S _ _
 
 @[simp]
-theorem baseChangeEquiv_tmul (s : S) (x : QuadraticAlgebra R a b) :
-    baseChangeEquiv S a b (s ⊗ₜ x) = s • mapRingHom (algebraMap R S) a b x := by
+theorem baseChangeEquiv_tmul (s : S) (x : QuadraticAlgebra R a b)
+    : baseChangeEquiv S a b (s ⊗ₜ x) = s • mapRingHom (algebraMap R S) a b x := by
   simp [baseChangeEquiv, Algebra.IsPushout.equiv_tmul, Algebra.smul_def]
 
 end QuadraticAlgebra

@@ -26,14 +26,11 @@ variable [AddMonoidWithOne α]
 theorem addCommute_cast (m n : ℕ) : AddCommute (m : α) (n : α) := by
   rw [addCommute_iff_eq, ← Nat.cast_add, ← Nat.cast_add, m.add_comm]
 
-theorem addCommute_cast_one (n : ℕ) : AddCommute (n : α) 1 :=
-  mod_cast addCommute_cast n 1
+theorem addCommute_cast_one (n : ℕ) : AddCommute (n : α) 1 := mod_cast addCommute_cast n 1
 
-theorem cast_add_comm (m n : ℕ) : (m : α) + n = n + m :=
-  addCommute_cast m n
+theorem cast_add_comm (m n : ℕ) : (m : α) + n = n + m := addCommute_cast m n
 
-theorem cast_add_one_comm (n : ℕ) : (n : α) + 1 = 1 + n :=
-  addCommute_cast_one n
+theorem cast_add_one_comm (n : ℕ) : (n : α) + 1 = 1 + n := addCommute_cast_one n
 
 end AddCommute
 
@@ -49,11 +46,9 @@ theorem cast_commute (n : ℕ) (x : α) : Commute (n : α) x := by
 theorem _root_.Commute.ofNat_left (n : ℕ) [n.AtLeastTwo] (x : α) : Commute (OfNat.ofNat n) x :=
   n.cast_commute x
 
-theorem cast_comm (n : ℕ) (x : α) : (n : α) * x = x * n :=
-  (cast_commute n x).eq
+theorem cast_comm (n : ℕ) (x : α) : (n : α) * x = x * n := (cast_commute n x).eq
 
-theorem commute_cast (x : α) (n : ℕ) : Commute x n :=
-  (n.cast_commute x).symm
+theorem commute_cast (x : α) (n : ℕ) : Commute x n := (n.cast_commute x).symm
 
 theorem _root_.Commute.ofNat_right (x : α) (n : ℕ) [n.AtLeastTwo] : Commute x (OfNat.ofNat n) :=
   n.commute_cast x
@@ -72,8 +67,8 @@ lemma natCast_mul_right (h : SemiconjBy a x y) (n : ℕ) : SemiconjBy a (n * x) 
 lemma natCast_mul_left (h : SemiconjBy a x y) (n : ℕ) : SemiconjBy (n * a) x y :=
   SemiconjBy.mul_left (Nat.cast_commute _ _) h
 
-lemma natCast_mul_natCast_mul (h : SemiconjBy a x y) (m n : ℕ) :
-    SemiconjBy (m * a) (n * x) (n * y) := by
+lemma natCast_mul_natCast_mul (h : SemiconjBy a x y) (m n : ℕ)
+    : SemiconjBy (m * a) (n * x) (n * y) := by
   simp [h]
 
 end SemiconjBy
@@ -81,14 +76,15 @@ end SemiconjBy
 namespace Commute
 variable [Semiring α] {a b : α}
 
-@[simp] lemma natCast_mul_right (h : Commute a b) (n : ℕ) : Commute a (n * b) :=
+@[simp]
+lemma natCast_mul_right (h : Commute a b) (n : ℕ) : Commute a (n * b) :=
   SemiconjBy.natCast_mul_right h n
 
-@[simp] lemma natCast_mul_left (h : Commute a b) (n : ℕ) : Commute (n * a) b :=
+@[simp]
+lemma natCast_mul_left (h : Commute a b) (n : ℕ) : Commute (n * a) b :=
   SemiconjBy.natCast_mul_left h n
 
-lemma natCast_mul_natCast_mul (h : Commute a b) (m n : ℕ) : Commute (m * a) (n * b) := by
-  simp [h]
+lemma natCast_mul_natCast_mul (h : Commute a b) (m n : ℕ) : Commute (m * a) (n * b) := by simp [h]
 
 variable (a) (m n : ℕ)
 

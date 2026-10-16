@@ -29,24 +29,20 @@ assert_not_exists Field TwoSidedIdeal
 namespace SimpleGraph
 variable {V : Type*} {G : SimpleGraph V}
 
-/--
-The set of vertices that are connected to all other vertices.
--/
+/-- The set of vertices that are connected to all other vertices. -/
 def universalVerts (G : SimpleGraph V) : Set V := {v : V | G.IsUniversal v}
 
 lemma isClique_universalVerts (G : SimpleGraph V) : G.IsClique G.universalVerts :=
   fun _ hx _ _ hxy ↦ hx hxy
 
-/--
-The subgraph of `G` with the universal vertices removed.
--/
+/-- The subgraph of `G` with the universal vertices removed. -/
 @[simps!]
 def deleteUniversalVerts (G : SimpleGraph V) : Subgraph G :=
   (⊤ : Subgraph G).deleteVerts G.universalVerts
 
-lemma Subgraph.IsMatching.exists_of_universalVerts [Finite V] {s : Set V}
-    (h : Disjoint G.universalVerts s) (hc : s.ncard ≤ G.universalVerts.ncard) :
-    ∃ t ⊆ G.universalVerts, ∃ (M : Subgraph G), M.verts = s ∪ t ∧ M.IsMatching := by
+lemma Subgraph.IsMatching.exists_of_universalVerts
+    [Finite V] {s : Set V} (h : Disjoint G.universalVerts s) (hc : s.ncard ≤ G.universalVerts.ncard)
+    : ∃ t ⊆ G.universalVerts, ∃ (M : Subgraph G), M.verts = s ∪ t ∧ M.IsMatching := by
   obtain ⟨t, ht⟩ := Set.exists_subset_card_eq hc
   refine ⟨t, ht.1, ?_⟩
   obtain ⟨f⟩ : Nonempty (s ≃ t) := by
@@ -55,21 +51,23 @@ lemma Subgraph.IsMatching.exists_of_universalVerts [Finite V] {s : Set V}
   have hadj (v : s) : G.Adj v (f v) := ht.1 (f v).2 (hd.ne_of_mem (f v).2 v.2) |>.symm
   exact Subgraph.IsMatching.exists_of_disjoint_sets_of_equiv hd.symm f hadj
 
-lemma disjoint_image_val_universalVerts (s : Set G.deleteUniversalVerts.verts) :
-    Disjoint (Subtype.val '' s) G.universalVerts := by
+lemma disjoint_image_val_universalVerts (s : Set G.deleteUniversalVerts.verts)
+    : Disjoint (Subtype.val '' s) G.universalVerts := by
   simpa [← Set.disjoint_compl_right_iff_subset, Set.compl_eq_univ_sdiff] using
     Subtype.coe_image_subset _ s
 
-/-- A component of the graph with universal vertices is even if we remove a set of representatives
+/--
+A component of the graph with universal vertices is even if we remove a set of representatives
 of odd components and a subset of universal vertices.
 
 This is because the number of vertices in the even components is not affected, and from odd
-components exactly one vertex is removed. -/
-lemma even_ncard_image_val_supp_sdiff_image_val_rep_union {t : Set V}
-    {s : Set G.deleteUniversalVerts.verts} (K : G.deleteUniversalVerts.coe.ConnectedComponent)
-    (h : t ⊆ G.universalVerts)
-    (hrep : ConnectedComponent.Represents s G.deleteUniversalVerts.coe.oddComponents) :
-    Even (Subtype.val '' K.supp \ (Subtype.val '' s ∪ t)).ncard := by
+components exactly one vertex is removed.
+-/
+lemma even_ncard_image_val_supp_sdiff_image_val_rep_union
+    {t : Set V} {s : Set G.deleteUniversalVerts.verts}
+    (K : G.deleteUniversalVerts.coe.ConnectedComponent) (h : t ⊆ G.universalVerts)
+    (hrep : ConnectedComponent.Represents s G.deleteUniversalVerts.coe.oddComponents)
+    : Even (Subtype.val '' K.supp \ (Subtype.val '' s ∪ t)).ncard := by
   simp [-deleteUniversalVerts_verts, ← Set.sdiff_inter_sdiff,
     ← Set.image_sdiff Subtype.val_injective,
     sdiff_eq_left.mpr <| Set.disjoint_of_subset_right h (disjoint_image_val_universalVerts _),

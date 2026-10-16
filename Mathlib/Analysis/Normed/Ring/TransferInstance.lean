@@ -24,8 +24,7 @@ variable {α β : Type*}
 namespace Equiv
 
 /-- Transfer a `SeminormedRing` across an `Equiv` -/
-protected abbrev seminormedRing [SeminormedRing β] (e : α ≃ β) :
-    SeminormedRing α :=
+protected abbrev seminormedRing [SeminormedRing β] (e : α ≃ β) : SeminormedRing α :=
   letI := e.ring
   .induced α β e.ringEquiv
 

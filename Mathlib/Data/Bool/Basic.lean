@@ -38,25 +38,29 @@ theorem eq_false_eq_not_eq_true (b : Bool) : (¬(b = true)) = (b = false) := by 
 
 theorem eq_true_eq_not_eq_false (b : Bool) : (¬(b = false)) = (b = true) := by simp
 
-theorem eq_false_of_not_eq_true {b : Bool} : ¬b = true → b = false :=
+theorem eq_false_of_not_eq_true {b : Bool} : ¬ b = true → b = false :=
   Eq.mp (eq_false_eq_not_eq_true b)
 
-theorem eq_true_of_not_eq_false {b : Bool} : ¬b = false → b = true :=
+theorem eq_true_of_not_eq_false {b : Bool} : ¬ b = false → b = true :=
   Eq.mp (eq_true_eq_not_eq_false b)
 
-theorem and_eq_true_eq_eq_true_and_eq_true (a b : Bool) :
-    ((a && b) = true) = (a = true ∧ b = true) := by simp
+theorem and_eq_true_eq_eq_true_and_eq_true (a b : Bool)
+    : ((a && b) = true) = (a = true ∧ b = true) := by
+  simp
 
-theorem or_eq_true_eq_eq_true_or_eq_true (a b : Bool) :
-    ((a || b) = true) = (a = true ∨ b = true) := by simp
+theorem or_eq_true_eq_eq_true_or_eq_true (a b : Bool)
+    : ((a || b) = true) = (a = true ∨ b = true) := by
+  simp
 
 theorem not_eq_true_eq_eq_false (a : Bool) : (not a = true) = (a = false) := by grind
 
-theorem and_eq_false_eq_eq_false_or_eq_false (a b : Bool) :
-    ((a && b) = false) = (a = false ∨ b = false) := by grind
+theorem and_eq_false_eq_eq_false_or_eq_false (a b : Bool)
+    : ((a && b) = false) = (a = false ∨ b = false) := by
+  grind
 
-theorem or_eq_false_eq_eq_false_and_eq_false (a b : Bool) :
-    ((a || b) = false) = (a = false ∧ b = false) := by grind
+theorem or_eq_false_eq_eq_false_and_eq_false (a b : Bool)
+    : ((a || b) = false) = (a = false ∧ b = false) := by
+  grind
 
 theorem not_eq_false_eq_eq_true (a : Bool) : (not a = false) = (a = true) := by grind
 
@@ -70,25 +74,20 @@ theorem coe_sort_true : (true : Prop) = True := by simp
 
 theorem decide_iff (p : Prop) [d : Decidable p] : decide p = true ↔ p := by simp
 
-theorem decide_true {p : Prop} [Decidable p] : p → decide p :=
-  (decide_iff p).2
+theorem decide_true {p : Prop} [Decidable p] : p → decide p := (decide_iff p).2
 
-theorem of_decide_true {p : Prop} [Decidable p] : decide p → p :=
-  (decide_iff p).1
+theorem of_decide_true {p : Prop} [Decidable p] : decide p → p := (decide_iff p).1
 
 theorem bool_iff_false {b : Bool} : ¬b ↔ b = false := by grind
 
-theorem bool_eq_false {b : Bool} : ¬b → b = false :=
-  bool_iff_false.1
+theorem bool_eq_false {b : Bool} : ¬b → b = false := bool_iff_false.1
 
 theorem decide_false_iff (p : Prop) {_ : Decidable p} : decide p = false ↔ ¬p :=
   bool_iff_false.symm.trans (not_congr (decide_iff _))
 
-theorem decide_false {p : Prop} [Decidable p] : ¬p → decide p = false :=
-  (decide_false_iff p).2
+theorem decide_false {p : Prop} [Decidable p] : ¬p → decide p = false := (decide_false_iff p).2
 
-theorem of_decide_false {p : Prop} [Decidable p] : decide p = false → ¬p :=
-  (decide_false_iff p).1
+theorem of_decide_false {p : Prop} [Decidable p] : decide p = false → ¬p := (decide_false_iff p).1
 
 theorem decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : decide p = decide q :=
   decide_eq_decide.mpr h
@@ -115,8 +114,7 @@ lemma eq_not_iff : ∀ {a b : Bool}, a = !b ↔ a ≠ b := by decide
 
 lemma not_eq_iff : ∀ {a b : Bool}, (!a) = b ↔ a ≠ b := by decide
 
-theorem ne_not {a b : Bool} : a ≠ !b ↔ a = b :=
-  not_eq_not
+theorem ne_not {a b : Bool} : a ≠ !b ↔ a = b := not_eq_not
 
 lemma not_ne_self : ∀ b : Bool, (!b) ≠ b := by decide
 
@@ -153,9 +151,7 @@ instance linearOrder : LinearOrder Bool where
 
 theorem lt_iff : ∀ {x y : Bool}, x < y ↔ x = false ∧ y = true := by decide
 
-@[simp]
-theorem false_lt_true : false < true :=
-  lt_iff.2 ⟨rfl, rfl⟩
+@[simp] theorem false_lt_true : false < true := lt_iff.2 ⟨rfl, rfl⟩
 
 theorem le_iff_imp : ∀ {x y : Bool}, x ≤ y ↔ x → y := by decide
 
@@ -172,8 +168,7 @@ theorem right_le_or : ∀ x y : Bool, y ≤ (x || y) := by decide
 theorem or_le : ∀ {x y z}, x ≤ z → y ≤ z → (x || y) ≤ z := by decide
 
 /-- convert a `ℕ` to a `Bool`, `0 -> false`, everything else -> `true` -/
-def ofNat (n : Nat) : Bool :=
-  decide (n ≠ 0)
+def ofNat (n : Nat) : Bool := decide (n ≠ 0)
 
 @[simp, grind =]
 theorem ofNat_zero : ofNat 0 = false := rfl
@@ -206,11 +201,9 @@ theorem apply_apply_apply (f : Bool → Bool) (x : Bool) : f (f (f x)) = f x := 
   cases h₁ : f true <;> cases h₂ : f false <;> grind [cases Bool]
 
 /-- `xor3 x y c` is `((x XOR y) XOR c)`. -/
-protected def xor3 (x y c : Bool) :=
-  xor (xor x y) c
+protected def xor3 (x y c : Bool) := xor (xor x y) c
 
 /-- `carry x y c` is `x && y || x && c || y && c`. -/
-protected def carry (x y c : Bool) :=
-  x && y || x && c || y && c
+protected def carry (x y c : Bool) := x && y || x && c || y && c
 
 end Bool

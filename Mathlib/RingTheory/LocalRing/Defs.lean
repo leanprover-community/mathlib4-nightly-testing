@@ -24,11 +24,15 @@ maximal ideal in `IsLocalRing.of_unique_max_ideal` and `IsLocalRing.maximal_idea
 -/
 
 public section
-/-- A semiring is local if it is nontrivial and `a` or `b` is a unit whenever `a + b = 1`.
-Note that `IsLocalRing` is a predicate. -/
+/--
+A semiring is local if it is nontrivial and `a` or `b` is a unit whenever `a + b = 1`.
+Note that `IsLocalRing` is a predicate.
+-/
 @[wikidata Q1142704]
 class IsLocalRing (R : Type*) [Semiring R] : Prop extends Nontrivial R where
   of_is_unit_or_is_unit_of_add_one ::
-  /-- in a local ring `R`, if `a + b = 1`, then either `a` is a unit or `b` is a unit. In another
-  word, for every `a : R`, either `a` is a unit or `1 - a` is a unit. -/
+  /--
+  in a local ring `R`, if `a + b = 1`, then either `a` is a unit or `b` is a unit. In another
+  word, for every `a : R`, either `a` is a unit or `1 - a` is a unit.
+  -/
   isUnit_or_isUnit_of_add_one {a b : R} (h : a + b = 1) : IsUnit a ∨ IsUnit b

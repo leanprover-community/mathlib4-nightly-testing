@@ -36,13 +36,16 @@ open CategoryTheory Limits
 
 namespace HomotopicalAlgebra
 
-variable {C : Type u} [Category.{v} C]
+variable
+  {C : Type u} [Category.{v} C]
   {α : Type t} {A B : α → C} (g : ∀ a, A a ⟶ B a)
   {X₁ X₂ : C} (f : X₁ ⟶ X₂)
 
-/-- Given a family of morphisms `g a : A a ⟶ B a` and a morphism `f : X₁ ⟶ X₂`,
+/--
+Given a family of morphisms `g a : A a ⟶ B a` and a morphism `f : X₁ ⟶ X₂`,
 this structure contains the data and properties which expresses that `X₂`
-is obtained from `X₁` by attaching cells of the form `g a`. -/
+is obtained from `X₁` by attaching cells of the form `g a`.
+-/
 structure AttachCells where
   /-- the index type of the cells -/
   ι : Type w
@@ -77,8 +80,9 @@ include c
 
 lemma pushouts_coproducts : (coproducts.{w} (ofHoms g)).pushouts f := by
   refine ⟨_, _, _, _, _, ?_, c.isPushout⟩
-  have : c.m = c.isColimit₁.desc
-      (Cocone.mk _ (Discrete.natTrans (fun ⟨i⟩ ↦ by exact g (c.π i)) ≫ c.cofan₂.ι)) :=
+  have : c.m
+      = c.isColimit₁.desc (Cocone.mk _
+        (Discrete.natTrans (fun ⟨i⟩ ↦ by exact g (c.π i)) ≫ c.cofan₂.ι)) :=
     c.isColimit₁.hom_ext (fun ⟨i⟩ ↦ by rw [IsColimit.fac]; exact c.hm i)
   rw [this, coproducts_iff]
   exact ⟨c.ι, ⟨_, _, _, _, c.isColimit₁, c.isColimit₂, _, fun i ↦ ⟨_⟩⟩⟩
@@ -86,22 +90,22 @@ lemma pushouts_coproducts : (coproducts.{w} (ofHoms g)).pushouts f := by
 /-- The inclusion of a cell. -/
 def cell (i : c.ι) : B (c.π i) ⟶ X₂ := c.cofan₂.inj i ≫ c.g₂
 
-@[reassoc]
-lemma cell_def (i : c.ι) : c.cell i = c.cofan₂.inj i ≫ c.g₂ := rfl
+@[reassoc] lemma cell_def (i : c.ι) : c.cell i = c.cofan₂.inj i ≫ c.g₂ := rfl
 
-lemma hom_ext {Z : C} {φ φ' : X₂ ⟶ Z}
-    (h₀ : f ≫ φ = f ≫ φ') (h : ∀ i, c.cell i ≫ φ = c.cell i ≫ φ') :
-    φ = φ' := by
+lemma hom_ext {Z : C} {φ φ' : X₂ ⟶ Z} (h₀ : f ≫ φ = f ≫ φ') (h : ∀ i, c.cell i ≫ φ = c.cell i ≫ φ')
+    : φ = φ' := by
   apply c.isPushout.hom_ext h₀
   apply Cofan.IsColimit.hom_ext c.isColimit₂
   simpa [cell_def] using h
 
-/-- If `f` and `f'` are isomorphic morphisms and the target of `f`
+/--
+If `f` and `f'` are isomorphic morphisms and the target of `f`
 is obtained by attaching cells to the source of `f`,
-then the same holds for `f'`. -/
+then the same holds for `f'`.
+-/
 @[simps]
-def ofArrowIso {Y₁ Y₂ : C} {f' : Y₁ ⟶ Y₂} (e : Arrow.mk f ≅ Arrow.mk f') :
-    AttachCells.{w} g f' where
+def ofArrowIso {Y₁ Y₂ : C} {f' : Y₁ ⟶ Y₂} (e : Arrow.mk f ≅ Arrow.mk f')
+    : AttachCells.{w} g f' where
   ι := c.ι
   π := c.π
   cofan₁ := c.cofan₁
@@ -115,11 +119,12 @@ def ofArrowIso {Y₁ Y₂ : C} {f' : Y₁ ⟶ Y₂} (e : Arrow.mk f ≅ Arrow.mk
     c.isPushout.of_iso (Iso.refl _) (Arrow.leftFunc.mapIso e) (Iso.refl _)
       (Arrow.rightFunc.mapIso e) (by simp) (by simp) (by simp) (by simp)
 
-/-- This definition allows the replacement of the `ι` field of
-a `AttachCells g f` structure by an equivalent type. -/
+/--
+This definition allows the replacement of the `ι` field of
+a `AttachCells g f` structure by an equivalent type.
+-/
 @[simps]
-def reindex {ι' : Type w'} (e : ι' ≃ c.ι) :
-    AttachCells.{w'} g f where
+def reindex {ι' : Type w'} (e : ι' ≃ c.ι) : AttachCells.{w'} g f where
   ι := ι'
   π i' := c.π (e i')
   cofan₁ := Cofan.mk c.cofan₁.pt (fun i' ↦ c.cofan₁.inj (e i'))
@@ -134,29 +139,28 @@ def reindex {ι' : Type w'} (e : ι' ≃ c.ι) :
 
 section
 
-variable {α' : Type t'} {A' B' : α' → C} (g' : ∀ i', A' i' ⟶ B' i')
-  (a : α → α') (ha : ∀ (i : α), Arrow.mk (g i) ≅ Arrow.mk (g' (a i)))
+variable
+  {α' : Type t'} {A' B' : α' → C}
+  (g' : ∀ i', A' i' ⟶ B' i') (a : α → α') (ha : ∀ (i : α), Arrow.mk (g i) ≅ Arrow.mk (g' (a i)))
 
-/-- If a family of maps `g` is contained in another family `g'` (up to isomorphisms),
+/--
+If a family of maps `g` is contained in another family `g'` (up to isomorphisms),
 if `f : X₁ ⟶ X₂` is a morphism, and `X₂` is obtained from `X₁` by attaching cells
-of the form `g`, then it is also obtained by attaching cells of the form `g'`. -/
+of the form `g`, then it is also obtained by attaching cells of the form `g'`.
+-/
 def reindexCellTypes : AttachCells g' f where
   ι := c.ι
   π := a ∘ c.π
-  cofan₁ := Cofan.mk c.cofan₁.pt
-    (fun i ↦ Arrow.leftFunc.map (ha (c.π i)).inv ≫ c.cofan₁.inj i)
-  cofan₂ := Cofan.mk c.cofan₂.pt
-    (fun i ↦ Arrow.rightFunc.map (ha (c.π i)).inv ≫ c.cofan₂.inj i)
+  cofan₁ := Cofan.mk c.cofan₁.pt (fun i ↦ Arrow.leftFunc.map (ha (c.π i)).inv ≫ c.cofan₁.inj i)
+  cofan₂ := Cofan.mk c.cofan₂.pt (fun i ↦ Arrow.rightFunc.map (ha (c.π i)).inv ≫ c.cofan₂.inj i)
   isColimit₁ := by
-    let e : Discrete.functor (fun i ↦ A (c.π i)) ≅
-        Discrete.functor (fun i ↦ A' (a (c.π i))) :=
+    let e : Discrete.functor (fun i ↦ A (c.π i)) ≅ Discrete.functor (fun i ↦ A' (a (c.π i))) :=
       Discrete.natIso (fun ⟨i⟩ ↦ Arrow.leftFunc.mapIso (ha (c.π i)))
     refine (IsColimit.precomposeHomEquiv e _).1
       (IsColimit.ofIsoColimit c.isColimit₁ (Cofan.ext (Iso.refl _) (fun i ↦ ?_)))
     simp [Cocone.precompose, e, Cofan.inj]
   isColimit₂ := by
-    let e : Discrete.functor (fun i ↦ B (c.π i)) ≅
-        Discrete.functor (fun i ↦ B' (a (c.π i))) :=
+    let e : Discrete.functor (fun i ↦ B (c.π i)) ≅ Discrete.functor (fun i ↦ B' (a (c.π i))) :=
       Discrete.natIso (fun ⟨i⟩ ↦ Arrow.rightFunc.mapIso (ha (c.π i)))
     refine (IsColimit.precomposeHomEquiv e _).1
       (IsColimit.ofIsoColimit c.isColimit₂ (Cofan.ext (Iso.refl _) (fun i ↦ ?_)))
@@ -171,8 +175,8 @@ end
 end AttachCells
 
 open MorphismProperty in
-lemma nonempty_attachCells_iff :
-    Nonempty (AttachCells.{w} g f) ↔ (coproducts.{w} (ofHoms g)).pushouts f := by
+lemma nonempty_attachCells_iff
+    : Nonempty (AttachCells.{w} g f) ↔ (coproducts.{w} (ofHoms g)).pushouts f := by
   constructor
   · rintro ⟨c⟩
     exact c.pushouts_coproducts
@@ -196,6 +200,8 @@ lemma nonempty_attachCells_iff :
         (IsColimit.precomposeHomEquiv (Discrete.natIso (fun ⟨i⟩ ↦ e₂ i)) _).1
           (IsColimit.ofIsoColimit h₂ (Cocone.ext (Iso.refl _) (by simp)))
       hm i := by simp [e₁, e₂]
-      isPushout := sq, .. }⟩
+      isPushout := sq
+      ..
+    }⟩
 
 end HomotopicalAlgebra

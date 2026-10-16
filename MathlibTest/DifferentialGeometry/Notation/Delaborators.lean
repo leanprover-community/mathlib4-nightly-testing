@@ -16,10 +16,11 @@ open scoped Manifold ContDiff
 
 variable
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type*} [TopologicalSpace M]
-  [ChartedSpace H M] [IsManifold I ∞ M]
-  (f : M → M) (x : M) (s : Set M) (f' : TangentSpace I x →L[ℝ] TangentSpace I (f x))
-  (v : (x : M) → TangentSpace I x)
+  {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type*}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  (f : M → M) (x : M)
+  (s : Set M) (f' : TangentSpace I x →L[ℝ] TangentSpace I (f x)) (v : (x : M) → TangentSpace I x)
 
 /-- info: MDiff f : Prop -/
 #guard_msgs in
@@ -136,9 +137,11 @@ variable
   {HB : Type*} [TopologicalSpace HB] [ChartedSpace HB B]
   -- Moreover let `HB` be modelled on a normed space `EB` so that `B` (and hence `E`) have
   -- differentiable structures
-  {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB] {I : ModelWithCorners 𝕜 EB HB}
+  {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB]
+  {I : ModelWithCorners 𝕜 EB HB}
 
-variable {f : B → 𝕜} {a : 𝕜} {s : Π x : B, E x} {u : Set B} {x₀ : B}
+variable
+  {f : B → 𝕜} {a : 𝕜} {s : Π x : B, E x} {u : Set B} {x₀ : B}
   {f' : TangentSpace I x₀ →L[𝕜] TangentSpace (I.prod 𝓘(𝕜, F)) (⟨x₀, s x₀⟩ : TotalSpace F E)}
 
 /--
@@ -216,7 +219,7 @@ section ambiguity
 variable {g : E × E → M} in
 /-- info: MDiff g : Prop -/
 #guard_msgs in
-#check MDifferentiable 𝓘(ℝ, E × E) I g
+#check MDifferentiable (𝓘(ℝ, E × E)) I g
 
 variable {g : E × E → M} in
 /-- info: MDiff g : Prop -/
@@ -227,7 +230,7 @@ variable {g : E × E → M} in
 variable {g : E × E → E × E}
 /-- info: MDiff g : Prop -/
 #guard_msgs in
-#check MDifferentiable 𝓘(ℝ, E × E) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) g
+#check MDifferentiable (𝓘(ℝ, E × E)) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) g
 
 -- This can yield rather confusing errors
 /--
@@ -260,7 +263,8 @@ g✝ g : E × E → E × E
 ⊢ MDiff id
 -/
 #guard_msgs in
-example {g : E × E → E × E} : MDifferentiable 𝓘(ℝ, E × E) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) (@id (E × E)) := by
+example {g : E × E → E × E}
+    : MDifferentiable (𝓘(ℝ, E × E)) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) (@id (E × E)) := by
   apply mdifferentiable_id
 
 -- However, hovering over the goal in the infoview shows the different models used,
@@ -274,6 +278,6 @@ info: MDifferentiable (modelWithCornersSelf Real (Prod E E))
 -/
 #guard_msgs in
 set_option pp.notation false in
-#check MDifferentiable 𝓘(ℝ, E × E) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) g
+#check MDifferentiable (𝓘(ℝ, E × E)) ((𝓘(ℝ, E)).prod (𝓘(ℝ, E))) g
 
 end ambiguity

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import Mathlib.NumberTheory.ClassNumber.AdmissibleAbsoluteValue
-
 import Mathlib.Algebra.Algebra.Basic
 
 /-!
@@ -25,22 +24,23 @@ is finite.
 
 @[expose] public section
 
-
 namespace AbsoluteValue
 
 open Int
 
-/-- We can partition a finite family into `partition_card ε` sets, such that the remainders
-in each set are close together. -/
-theorem exists_partition_int (n : ℕ) {ε : ℝ} (hε : 0 < ε) {b : ℤ} (hb : b ≠ 0) (A : Fin n → ℤ) :
-    ∃ t : Fin n → Fin ⌈1 / ε⌉₊,
-    ∀ i₀ i₁, t i₀ = t i₁ → ↑(abs (A i₁ % b - A i₀ % b)) < abs b • ε := by
+/--
+We can partition a finite family into `partition_card ε` sets, such that the remainders
+in each set are close together.
+-/
+theorem exists_partition_int (n : ℕ) {ε : ℝ} (hε : 0 < ε) {b : ℤ} (hb : b ≠ 0) (A : Fin n → ℤ)
+    : ∃ t : Fin n → Fin ⌈1 / ε⌉₊, ∀ i₀ i₁,
+      t i₀ = t i₁ → ↑(abs (A i₁ % b - A i₀ % b)) < abs b • ε := by
   have hb' : (0 : ℝ) < ↑(abs b) := Int.cast_pos.mpr (abs_pos.mpr hb)
   have hbε : 0 < abs b • ε := by
     rw [Algebra.smul_def]
     exact mul_pos hb' hε
-  have hfloor : ∀ i, 0 ≤ floor ((A i % b : ℤ) / abs b • ε : ℝ) :=
-    fun _ ↦ floor_nonneg.mpr (div_nonneg (cast_nonneg (emod_nonneg _ hb)) hbε.le)
+  have hfloor : ∀ i, 0 ≤ floor ((A i % b : ℤ) / abs b • ε : ℝ) := fun _ ↦
+    floor_nonneg.mpr (div_nonneg (cast_nonneg (emod_nonneg _ hb)) hbε.le)
   refine ⟨fun i ↦ ⟨natAbs (floor ((A i % b : ℤ) / abs b • ε : ℝ)), ?_⟩, ?_⟩
   · rw [← ofNat_lt, natAbs_of_nonneg (hfloor i), floor_lt, Algebra.smul_def, eq_intCast, ← div_div]
     apply lt_of_lt_of_le _ (Nat.le_ceil _)
@@ -56,12 +56,12 @@ theorem exists_partition_int (n : ℕ) {ε : ℝ} (hε : 0 < ε) {b : ℤ} (hb :
   rwa [Int.cast_abs, Int.cast_sub]
 
 /-- `abs : ℤ → ℤ` is an admissible absolute value. -/
-noncomputable def absIsAdmissible : IsAdmissible AbsoluteValue.abs :=
-  { AbsoluteValue.abs_isEuclidean with
-    card := fun ε ↦ ⌈1 / ε⌉₊
-    exists_partition' := fun n _ hε _ hb ↦ exists_partition_int n hε hb }
+noncomputable def absIsAdmissible : IsAdmissible AbsoluteValue.abs := {
+  AbsoluteValue.abs_isEuclidean with
+  card := fun ε ↦ ⌈1 / ε⌉₊
+  exists_partition' := fun n _ hε _ hb ↦ exists_partition_int n hε hb
+}
 
-noncomputable instance : Inhabited (IsAdmissible AbsoluteValue.abs) :=
-  ⟨absIsAdmissible⟩
+noncomputable instance : Inhabited (IsAdmissible AbsoluteValue.abs) := ⟨absIsAdmissible⟩
 
 end AbsoluteValue

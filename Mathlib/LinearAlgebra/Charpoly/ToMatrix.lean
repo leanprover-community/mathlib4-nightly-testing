@@ -37,8 +37,8 @@ section Basic
 
 /-- `charpoly f` is the characteristic polynomial of the matrix of `f` in any basis. -/
 @[simp]
-theorem charpoly_toMatrix {ι : Type w} [DecidableEq ι] [Fintype ι] (b : Basis ι R M) :
-    (toMatrix b b f).charpoly = f.charpoly := by
+theorem charpoly_toMatrix {ι : Type w} [DecidableEq ι] [Fintype ι] (b : Basis ι R M)
+    : (toMatrix b b f).charpoly = f.charpoly := by
   nontriviality R
   unfold LinearMap.charpoly
   set b' := chooseBasis R M
@@ -53,12 +53,13 @@ theorem charpoly_toMatrix {ι : Type w} [DecidableEq ι] [Fintype ι] (b : Basis
   let φ₂ := reindexLinearEquiv R R (Equiv.refl ι') (Equiv.refl ι')
   let φ₃ := reindexLinearEquiv R R (Equiv.refl ι') e
   calc
-    (P * A * Q).charpoly = (φ (P * A * Q)).charpoly := (charpoly_reindex ..).symm
+    (P * A * Q).charpoly
+      = (φ (P * A * Q)).charpoly := (charpoly_reindex ..).symm
     _ = (φ₁ P * φ₂ A * φ₃ Q).charpoly := by rw [reindexLinearEquiv_mul, reindexLinearEquiv_mul]
     _ = A.charpoly := by rw [charpoly_mul_comm, ← mul_assoc]; simp [P, Q, φ₁, φ₂, φ₃]
 
-lemma charpoly_prodMap (f₁ : M₁ →ₗ[R] M₁) (f₂ : M₂ →ₗ[R] M₂) :
-    (f₁.prodMap f₂).charpoly = f₁.charpoly * f₂.charpoly := by
+lemma charpoly_prodMap (f₁ : M₁ →ₗ[R] M₁) (f₂ : M₂ →ₗ[R] M₂)
+    : (f₁.prodMap f₂).charpoly = f₁.charpoly * f₂.charpoly := by
   let b₁ := chooseBasis R M₁
   let b₂ := chooseBasis R M₂
   let b := b₁.prod b₂
@@ -70,8 +71,8 @@ end Basic
 end LinearMap
 
 @[simp]
-lemma LinearEquiv.charpoly_conj (e : M₁ ≃ₗ[R] M₂) (φ : Module.End R M₁) :
-    (e.conj φ).charpoly = φ.charpoly := by
+lemma LinearEquiv.charpoly_conj (e : M₁ ≃ₗ[R] M₂) (φ : Module.End R M₁)
+    : (e.conj φ).charpoly = φ.charpoly := by
   let b := chooseBasis R M₁
   rw [← LinearMap.charpoly_toMatrix φ b, ← LinearMap.charpoly_toMatrix (e.conj φ) (b.map e)]
   congr 1
@@ -83,8 +84,8 @@ namespace Matrix
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
 @[simp]
-theorem charpoly_toLin (A : Matrix n n R) (b : Basis n R M) :
-    (A.toLin b b).charpoly = A.charpoly := by
+theorem charpoly_toLin (A : Matrix n n R) (b : Basis n R M)
+    : (A.toLin b b).charpoly = A.charpoly := by
   simp [← LinearMap.charpoly_toMatrix (A.toLin b b) b]
 
 @[simp]

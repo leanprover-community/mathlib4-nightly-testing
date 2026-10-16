@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Field.Subfield.Basic
 public import Mathlib.Data.W.Cardinal
-
 import Mathlib.Tactic.FinCases
 
 /-!
@@ -44,7 +43,7 @@ variable [DivisionRing α]
 private def operate : (Σ n, Operands s n → closure s) → closure s
   | ⟨.inl 0, f⟩ => f false + f true
   | ⟨.inl 1, f⟩ => f false * f true
-  | ⟨.inl 2, f⟩ => -f ()
+  | ⟨.inl 2, f⟩ => - f ()
   | ⟨.inl 3, f⟩ => (f ())⁻¹
   | ⟨.inl 4, _⟩ => 0
   | ⟨.inl 5, _⟩ => 1
@@ -59,11 +58,12 @@ private def rangeOfWType : Subfield (closure s) where
   zero_mem' := ⟨WType.mk (.inl 4) Empty.rec, rfl⟩
   one_mem' := ⟨WType.mk (.inl 5) Empty.rec, rfl⟩
 
-private lemma rangeOfWType_eq_top : rangeOfWType s = ⊤ := top_le_iff.mp fun a _ ↦ by
-  rw [← SetLike.mem_coe, ← Subtype.val_injective.mem_set_image]
-  change ↑a ∈ map (closure s).subtype _
-  refine closure_le.mpr (fun a ha ↦ ?_) a.prop
-  exact ⟨⟨a, subset_closure ha⟩, ⟨WType.mk (.inr ⟨a, ha⟩) Empty.rec, rfl⟩, rfl⟩
+private lemma rangeOfWType_eq_top : rangeOfWType s = ⊤ :=
+  top_le_iff.mp fun a _ ↦ by
+    rw [← SetLike.mem_coe, ← Subtype.val_injective.mem_set_image]
+    change ↑a ∈ map (closure s).subtype _
+    refine closure_le.mpr (fun a ha ↦ ?_) a.prop
+    exact ⟨⟨a, subset_closure ha⟩, ⟨WType.mk (.inr ⟨a, ha⟩) Empty.rec, rfl⟩, rfl⟩
 
 private lemma surjective_ofWType : Function.Surjective (WType.elim _ <| operate s) := by
   rw [← Set.range_eq_univ]

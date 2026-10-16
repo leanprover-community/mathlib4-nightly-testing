@@ -16,18 +16,21 @@ meta def testModulesOSForbidden : IO Unit := do
     linterSets := {}
   }
 
-  assert!((← modulesOSForbidden opts #[]) == 0)
-  assert!((← modulesOSForbidden opts #[`Mathlib.Aux.Foo, `Mathlib.Algebra.Con]) == 2)
-  assert!((← modulesOSForbidden opts #[`Mathlib.Foo.Bar, `Aux.Algebra.Con.Bar]) == 1)
-  assert!((← modulesOSForbidden opts #[`Com1.prn.Aux, `LPT.Aux]) == 2)
-  assert!((← modulesOSForbidden opts #[`Mathlib.Foo.«Foo*»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«B>ar<»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«Bar!»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«Qu<x!!»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«Ba dname»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«Bar dname»]) == 1)
-  assert!((← modulesOSForbidden opts #[`Mathlib.«Bar
-dname»]) == 1)
+  assert! ((← modulesOSForbidden opts #[]) == 0)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.Aux.Foo, `Mathlib.Algebra.Con]) == 2)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.Foo.Bar, `Aux.Algebra.Con.Bar]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Com1.prn.Aux, `LPT.Aux]) == 2)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.Foo.«Foo*»]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.«B>ar<»]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.«Bar!»]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.«Qu<x!!»]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.«Ba dname»]) == 1)
+  assert! ((← modulesOSForbidden opts #[`Mathlib.«Bar dname»]) == 1)
+  assert! ((← modulesOSForbidden opts #[
+      `Mathlib.«Bar
+dname»
+    ])
+    == 1)
 
 /--
 info: error: module name 'Mathlib.Aux.Foo' contains component '[Aux]', which is forbidden in Windows filenames.

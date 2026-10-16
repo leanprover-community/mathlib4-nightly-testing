@@ -6,7 +6,6 @@ Authors: Yael Dillies
 module
 
 public import Mathlib.Tactic.ToAdditive
-
 import Batteries.Tactic.Init
 
 /-! # Lemmas about inequalities with `1`. -/

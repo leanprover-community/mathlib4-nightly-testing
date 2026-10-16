@@ -27,15 +27,21 @@ example := @List._sizeOf_1
 open Lean Elab Term
 
 def tryToCompileAllInductives : TermElabM Unit := do
-  let ivs := (← getEnv).constants.toList.filterMap fun | (_, .inductInfo iv) => some iv | _ => none
+  let ivs :=
+    (← getEnv).constants.toList.filterMap fun
+      | (_, .inductInfo iv) => some iv
+      | _ => none
   let mut success : Nat := 0
   for iv in ivs do
     try
       withCurrHeartbeats <| Mathlib.Util.compileInductive iv
       success := success + 1
-    catch | e => logError m!"[{iv.name}] {e.toMessageData}"
-  modifyThe Core.State fun s =>
-    { s with messages.unreported := s.messages.unreported.filter (·.severity != .warning) }
+    catch
+      | e => logError m!"[{iv.name}] {e.toMessageData}"
+  modifyThe Core.State fun s => {
+    s with
+    messages.unreported := s.messages.unreported.filter (·.severity != .warning)
+  }
   modifyThe Core.State fun s => { s with messages := s.messages.errorsToWarnings }
   logInfo m!"{success} / {ivs.length}"
 

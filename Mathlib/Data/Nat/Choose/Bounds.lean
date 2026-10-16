@@ -24,7 +24,6 @@ bounds `n^r/r^r ≤ n.choose r ≤ e^r n^r/r^r` in the future.
 
 public section
 
-
 open Nat
 
 variable {α : Type*} [Semifield α] [LinearOrder α] [IsStrictOrderedRing α] {n k : ℕ}
@@ -80,7 +79,8 @@ theorem choose_succ_le_two_pow (n k : ℕ) : (n + 1).choose k ≤ 2 ^ n := by
   by_cases lt : n + 1 < k
   · simp [choose_eq_zero_of_lt lt]
   · cases n with
-    | zero => cases k <;> simp_all
+    | zero =>
+      cases k <;> simp_all
     | succ n =>
       rcases k with - | k
       · rw [choose_zero_right]

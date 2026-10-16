@@ -40,16 +40,17 @@ def whiskerLeft (η : F ⟶ G) {θ ι : G ⟶ H} (Γ : θ ⟶ ι) : η ≫ θ �
     naturality {a b} f := by
       dsimp only [comp_app, comp_naturality]
       calc
-        _ = 𝟙 _ ⊗≫ η.app a ◁ ((Γ.as.app a ▷ H.map f ≫ ι.naturality f)) ⊗≫
-              η.naturality f ▷ (ι.app b) ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ η.app a ◁ ((Γ.as.app a ▷ H.map f ≫ ι.naturality f)) ⊗≫ η.naturality f ▷ (ι.app b)
+            ⊗≫ 𝟙 _ := by
           bicategory
-        _ = 𝟙 _ ⊗≫ η.app a ◁ θ.naturality f ⊗≫
-              ((η.app a ≫ G.map f) ◁ Γ.as.app b ≫ η.naturality f ▷ ι.app b) ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ η.app a ◁ θ.naturality f
+            ⊗≫ ((η.app a ≫ G.map f) ◁ Γ.as.app b ≫ η.naturality f ▷ ι.app b) ⊗≫ 𝟙 _ := by
           rw [Γ.as.naturality]
           bicategory
         _ = _ := by
           rw [whisker_exchange]
-          bicategory }
+          bicategory
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Right whiskering of a lax natural transformation and a modification. -/
@@ -60,16 +61,17 @@ def whiskerRight {η θ : F ⟶ G} (Γ : η ⟶ θ) (ι : G ⟶ H) : η ≫ ι �
     naturality {a b} f := by
       dsimp only [comp_app, comp_naturality]
       calc
-        _ = 𝟙 _ ⊗≫ (Γ.as.app a ▷ (ι.app a ≫ H.map f) ≫ θ.app a ◁ ι.naturality f) ⊗≫
-              θ.naturality f ▷ ι.app b ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ (Γ.as.app a ▷ (ι.app a ≫ H.map f) ≫ θ.app a ◁ ι.naturality f)
+            ⊗≫ θ.naturality f ▷ ι.app b ⊗≫ 𝟙 _ := by
           bicategory
-        _ = 𝟙 _ ⊗≫ (η.app a ◁ ι.naturality f ⊗≫ (Γ.as.app a ▷ G.map f ≫
-              θ.naturality f) ▷ ι.app b) ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ (η.app a ◁ ι.naturality f ⊗≫ (Γ.as.app a ▷ G.map f ≫ θ.naturality f) ▷ ι.app b)
+            ⊗≫ 𝟙 _ := by
           rw [← whisker_exchange]
           bicategory
         _ = _ := by
           rw [Γ.as.naturality]
-          bicategory }
+          bicategory
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Associator for the vertical composition of lax natural transformations. -/
@@ -82,15 +84,11 @@ def associator (η : F ⟶ G) (θ : G ⟶ H) (ι : H ⟶ I) : (η ≫ θ) ≫ ι
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Left unitor for the vertical composition of lax natural transformations. -/
-@[simps!]
-def leftUnitor (η : F ⟶ G) : 𝟙 F ≫ η ≅ η :=
-  isoMk (fun a => λ_ (η.app a))
+@[simps!] def leftUnitor (η : F ⟶ G) : 𝟙 F ≫ η ≅ η := isoMk (fun a => λ_ (η.app a))
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Right unitor for the vertical composition of lax natural transformations. -/
-@[simps!]
-def rightUnitor (η : F ⟶ G) : η ≫ 𝟙 G ≅ η :=
-  isoMk (fun a => ρ_ (η.app a))
+@[simps!] def rightUnitor (η : F ⟶ G) : η ≫ 𝟙 G ≅ η := isoMk (fun a => ρ_ (η.app a))
 
 variable (B C)
 
@@ -119,16 +117,17 @@ def whiskerLeft (η : F ⟶ G) {θ ι : G ⟶ H} (Γ : θ ⟶ ι) : η ≫ θ �
     naturality {a b} f := by
       dsimp only [comp_app, comp_naturality]
       calc
-        _ = 𝟙 _ ⊗≫ ((F.map f ≫ η.app b) ◁ Γ.as.app b ≫ η.naturality f ▷ ι.app b) ⊗≫
-            η.app a ◁ ι.naturality f ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ ((F.map f ≫ η.app b) ◁ Γ.as.app b ≫ η.naturality f ▷ ι.app b)
+            ⊗≫ η.app a ◁ ι.naturality f ⊗≫ 𝟙 _ := by
           bicategory
-        _ = 𝟙 _ ⊗≫ η.naturality f ▷ θ.app b ⊗≫ η.app a ◁ (G.map f ◁ Γ.as.app b ≫
-            ι.naturality f) ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ η.naturality f ▷ θ.app b ⊗≫ η.app a ◁ (G.map f ◁ Γ.as.app b ≫ ι.naturality f)
+            ⊗≫ 𝟙 _ := by
           rw [whisker_exchange]
           bicategory
         _ = _ := by
           rw [Γ.as.naturality]
-          bicategory }
+          bicategory
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Right whiskering of an oplax natural transformation and a modification. -/
@@ -139,16 +138,17 @@ def whiskerRight {η θ : F ⟶ G} (Γ : η ⟶ θ) (ι : G ⟶ H) : η ≫ ι �
     naturality {a b} f := by
       dsimp only [comp_app, comp_naturality]
       calc
-        _ = 𝟙 _ ⊗≫ (F.map f ◁ Γ.as.app b ≫ θ.naturality f) ▷ ι.app b ⊗≫
-              θ.app a ◁ ι.naturality f ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ (F.map f ◁ Γ.as.app b ≫ θ.naturality f) ▷ ι.app b ⊗≫ θ.app a ◁ ι.naturality f
+            ⊗≫ 𝟙 _ := by
           bicategory
-        _ = 𝟙 _ ⊗≫ η.naturality f ▷ ι.app b ⊗≫ (Γ.as.app a ▷ (G.map f ≫ ι.app b) ≫
-              θ.app a ◁ ι.naturality f) ⊗≫ 𝟙 _ := by
+        _ = 𝟙 _ ⊗≫ η.naturality f ▷ ι.app b
+            ⊗≫ (Γ.as.app a ▷ (G.map f ≫ ι.app b) ≫ θ.app a ◁ ι.naturality f) ⊗≫ 𝟙 _ := by
           rw [Γ.as.naturality]
           bicategory
         _ = _ := by
           rw [← whisker_exchange]
-          bicategory }
+          bicategory
+  }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Associator for the vertical composition of oplax natural transformations. -/
@@ -161,15 +161,11 @@ def associator (η : F ⟶ G) (θ : G ⟶ H) (ι : H ⟶ I) : (η ≫ θ) ≫ ι
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Left unitor for the vertical composition of oplax natural transformations. -/
-@[simps!]
-def leftUnitor (η : F ⟶ G) : 𝟙 F ≫ η ≅ η :=
-  isoMk (fun a => λ_ (η.app a))
+@[simps!] def leftUnitor (η : F ⟶ G) : 𝟙 F ≫ η ≅ η := isoMk (fun a => λ_ (η.app a))
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Right unitor for the vertical composition of oplax natural transformations. -/
-@[simps!]
-def rightUnitor (η : F ⟶ G) : η ≫ 𝟙 G ≅ η :=
-  isoMk (fun a => ρ_ (η.app a))
+@[simps!] def rightUnitor (η : F ⟶ G) : η ≫ 𝟙 G ≅ η := isoMk (fun a => ρ_ (η.app a))
 
 variable (B C)
 

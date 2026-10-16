@@ -39,12 +39,17 @@ assert_not_exists Cardinal
 
 noncomputable section
 
-variable {Γ : Type*} [PartialOrder Γ] {R : Type*} {V W : Type*} [CommRing R]
-  [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W]
+variable
+  {Γ : Type*} [PartialOrder Γ]
+  {R : Type*} {V W : Type*} [CommRing R] [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W]
 
-/-- A heterogeneous `Γ`-vertex operator over a commutator ring `R` is an `R`-linear map from an
-`R`-module `V` to `Γ`-Hahn series with coefficients in an `R`-module `W`. -/
-abbrev HVertexOperator (Γ : Type*) [PartialOrder Γ] (R : Type*) [CommRing R]
+/--
+A heterogeneous `Γ`-vertex operator over a commutator ring `R` is an `R`-linear map from an
+`R`-module `V` to `Γ`-Hahn series with coefficients in an `R`-module `W`.
+-/
+abbrev HVertexOperator
+    (Γ : Type*) [PartialOrder Γ]
+    (R : Type*) [CommRing R]
     (V : Type*) (W : Type*) [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W] :=
   V →ₗ[R] (HahnModule Γ R W)
 
@@ -55,23 +60,25 @@ section Coeff
 open HahnModule
 
 @[ext]
-theorem ext (A B : HVertexOperator Γ R V W) (h : ∀ v : V, A v = B v) :
-    A = B := LinearMap.ext h
+theorem ext (A B : HVertexOperator Γ R V W) (h : ∀ v : V, A v = B v) : A = B := LinearMap.ext h
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The coefficients of a heterogeneous vertex operator, viewed as a linear map to formal power
-series with coefficients in linear maps. -/
+/--
+The coefficients of a heterogeneous vertex operator, viewed as a linear map to formal power
+series with coefficients in linear maps.
+-/
 @[simps]
 def coeff : HVertexOperator Γ R V W →ₗ[R] Γ → V →ₗ[R] W where
   toFun A n := {
     toFun v := ((of R).symm (A v)).coeff n
     map_add' u v := by simp
-    map_smul' r v := by simp }
+    map_smul' r v := by simp
+  }
   map_add' _ _ := by ext; simp
   map_smul' _ _ := by ext; simp
 
-theorem isPWO_support_coeff (A : HVertexOperator Γ R V W) (v : V) :
-    ((of R).symm (A v)).coeff.support.IsPWO :=
+theorem isPWO_support_coeff (A : HVertexOperator Γ R V W) (v : V)
+    : ((of R).symm (A v)).coeff.support.IsPWO :=
   ((of R).symm (A v)).isPWO_support'
 
 @[deprecated (since := "2026-09-17")] alias coeff_isPWOsupport := isPWO_support_coeff
@@ -83,18 +90,21 @@ theorem coeff_inj : Function.Injective (coeff : HVertexOperator Γ R V W →ₗ[
   congrm $h n v
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Given a coefficient function valued in linear maps satisfying a partially well-ordered support
-condition, we produce a heterogeneous vertex operator. -/
+/--
+Given a coefficient function valued in linear maps satisfying a partially well-ordered support
+condition, we produce a heterogeneous vertex operator.
+-/
 @[simps]
-def of_coeff (f : Γ → V →ₗ[R] W) (hf : ∀ (x : V), (Function.support (f · x)).IsPWO) :
-    HVertexOperator Γ R V W where
+def of_coeff (f : Γ → V →ₗ[R] W) (hf : ∀ (x : V), (Function.support (f · x)).IsPWO)
+    : HVertexOperator Γ R V W where
   toFun x := (of R) { coeff := fun g => f g x, isPWO_support' := hf x }
   map_add' _ _ := by ext; simp
   map_smul' _ _ := by ext; simp
 
 @[simp]
-theorem coeff_of_coeff (f : Γ → V →ₗ[R] W)
-    (hf : ∀ (x : V), (Function.support (fun g => f g x)).IsPWO) : (of_coeff f hf).coeff = f :=
+theorem coeff_of_coeff
+    (f : Γ → V →ₗ[R] W) (hf : ∀ (x : V), (Function.support (fun g => f g x)).IsPWO)
+    : (of_coeff f hf).coeff = f :=
   rfl
 
 @[simp]
@@ -105,15 +115,20 @@ end Coeff
 
 section Products
 
-variable {Γ Γ' : Type*} [PartialOrder Γ] [PartialOrder Γ'] {R : Type*}
-  [CommRing R] {U V W : Type*} [AddCommGroup U] [Module R U] [AddCommGroup V] [Module R V]
-  [AddCommGroup W] [Module R W] (A : HVertexOperator Γ R V W) (B : HVertexOperator Γ' R U V)
+variable
+  {Γ Γ' : Type*} [PartialOrder Γ] [PartialOrder Γ']
+  {R : Type*} [CommRing R]
+  {U V W : Type*}
+  [AddCommGroup U] [Module R U] [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W]
+  (A : HVertexOperator Γ R V W) (B : HVertexOperator Γ' R U V)
 
 open HahnModule
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The composite of two heterogeneous vertex operators acting on a vector, as an iterated Hahn
-series. -/
+/--
+The composite of two heterogeneous vertex operators acting on a vector, as an iterated Hahn
+series.
+-/
 @[simps]
 def compHahnSeries (u : U) : HahnSeries Γ' (HahnSeries Γ W) where
   coeff g' := A (coeff B g' u)
@@ -125,16 +140,16 @@ def compHahnSeries (u : U) : HahnSeries Γ' (HahnSeries Γ W) where
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem compHahnSeries_add (u v : U) :
-    compHahnSeries A B (u + v) = compHahnSeries A B u + compHahnSeries A B v := by
+theorem compHahnSeries_add (u v : U)
+    : compHahnSeries A B (u + v) = compHahnSeries A B u + compHahnSeries A B v := by
   ext
   simp only [compHahnSeries_coeff, map_add, coeff_apply_apply, HahnSeries.coeff_add', Pi.add_apply]
   rw [← HahnSeries.coeff_add]
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem compHahnSeries_smul (r : R) (u : U) :
-    compHahnSeries A B (r • u) = r • compHahnSeries A B u := by
+theorem compHahnSeries_smul (r : R) (u : U)
+    : compHahnSeries A B (r • u) = r • compHahnSeries A B u := by
   ext
   simp only [compHahnSeries_coeff, map_smul, coeff_apply_apply, HahnSeries.coeff_smul]
   rw [← HahnSeries.coeff_smul]
@@ -154,8 +169,8 @@ def comp : HVertexOperator (Γ' ×ₗ Γ) R U W where
     simp [HahnSeries.ofIterate]
 
 @[simp]
-theorem coeff_comp (g : Γ' ×ₗ Γ) :
-    (comp A B).coeff g = A.coeff (ofLex g).2 ∘ₗ B.coeff (ofLex g).1 := by
+theorem coeff_comp (g : Γ' ×ₗ Γ)
+    : (comp A B).coeff g = A.coeff (ofLex g).2 ∘ₗ B.coeff (ofLex g).1 := by
   rfl
 
 end Products

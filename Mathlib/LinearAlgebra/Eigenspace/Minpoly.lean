@@ -7,7 +7,6 @@ module
 
 public import Mathlib.FieldTheory.Minpoly.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
-
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
 
@@ -20,7 +19,6 @@ eigenvalue, minimal polynomial
 -/
 
 public section
-
 
 universe u v w
 
@@ -36,8 +34,8 @@ section CommSemiring
 
 variable {R : Type v} {M : Type w} [CommSemiring R] [AddCommMonoid M] [Module R M]
 
-theorem ker_aeval_ring_hom'_unit_polynomial (f : End R M) (c : R[X]ˣ) :
-    LinearMap.ker (aeval f (c : R[X])) = ⊥ :=
+theorem ker_aeval_ring_hom'_unit_polynomial (f : End R M) (c : R[X]ˣ)
+    : LinearMap.ker (aeval f (c : R[X])) = ⊥ :=
   LinearMap.ker_eq_bot'.mpr fun m hm ↦ by
     simpa [← mul_apply, ← aeval_mul] using congr(c⁻¹.1.aeval f $hm)
 
@@ -45,11 +43,11 @@ end CommSemiring
 
 section CommRing
 
-variable {R : Type v} {M : Type w} [CommRing R] [AddCommGroup M] [Module R M] {f : End R M} {μ : R}
-  {x : M} {p : R[X]}
+variable
+  {R : Type v} {M : Type w} [CommRing R] [AddCommGroup M] [Module R M]
+  {f : End R M} {μ : R} {x : M} {p : R[X]}
 
-theorem aeval_apply_of_hasEigenvector (h : f.HasEigenvector μ x) :
-    aeval f p x = p.eval μ • x := by
+theorem aeval_apply_of_hasEigenvector (h : f.HasEigenvector μ x) : aeval f p x = p.eval μ • x := by
   refine p.induction_on ?_ ?_ ?_
   · intro a; simp [Module.algebraMap_end_apply]
   · intro p q hp hq; simp [hp, hq, add_smul]
@@ -59,14 +57,14 @@ theorem aeval_apply_of_hasEigenvector (h : f.HasEigenvector μ x) :
       map_smulₛₗ, RingHom.id_apply, mul_comm]
 
 /-- A variant of `Module.End.aeval_apply_of_hasEigenvector` which does not require `x ≠ 0`. -/
-lemma aeval_apply_of_mem_apply_eq_smul (hx : f x = μ • x) :
-    aeval f p x = p.eval μ • x := by
+lemma aeval_apply_of_mem_apply_eq_smul (hx : f x = μ • x) : aeval f p x = p.eval μ • x := by
   rcases eq_or_ne x 0 with rfl | hne
   · simp
   · exact aeval_apply_of_hasEigenvector ⟨mem_eigenspace_iff.mpr hx, hne⟩
 
-theorem isRoot_of_hasEigenvalue [IsDomain R] [IsTorsionFree R M] {f : End R M} {μ : R}
-    (h : f.HasEigenvalue μ) : (minpoly R f).IsRoot μ := by
+theorem isRoot_of_hasEigenvalue
+    [IsDomain R] [IsTorsionFree R M] {f : End R M} {μ : R} (h : f.HasEigenvalue μ)
+    : (minpoly R f).IsRoot μ := by
   rcases (Submodule.ne_bot_iff _).1 h with ⟨w, ⟨H, ne0⟩⟩
   refine Or.resolve_right (smul_eq_zero.1 ?_) ne0
   rw [← aeval_apply_of_hasEigenvector ⟨H, ne0⟩]
@@ -80,9 +78,10 @@ theorem hasEigenvalue_of_isRoot (h : (minpoly R f).IsRoot μ) : f.HasEigenvalue 
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr h
   obtain ⟨v, hv⟩ : ∃ v : M, q.aeval f v ≠ 0 := by
     by_contra! h_contra
-    have := minpoly.min R f
-      ((monic_X_sub_C μ).of_mul_monic_left (hq ▸ minpoly.monic (Algebra.IsIntegral.isIntegral f)))
-      (LinearMap.ext h_contra)
+    have :=
+      minpoly.min R f
+        ((monic_X_sub_C μ).of_mul_monic_left (hq ▸ minpoly.monic (Algebra.IsIntegral.isIntegral f)))
+        (LinearMap.ext h_contra)
     rw [hq, degree_mul, degree_X_sub_C, degree_eq_natDegree] at this
     · norm_cast at this; grind
     · rintro rfl
@@ -103,8 +102,7 @@ lemma finite_hasEigenvalue : Set.Finite {μ | f.HasEigenvalue μ} := by
   simp [Set.subset_def, hasEigenvalue_iff_isRoot, mem_rootSet, h]
 
 /-- An endomorphism of a finite-dimensional vector space has finitely many eigenvalues. -/
-noncomputable instance : Fintype f.Eigenvalues :=
-  Set.Finite.fintype f.finite_hasEigenvalue
+noncomputable instance : Fintype f.Eigenvalues := Set.Finite.fintype f.finite_hasEigenvalue
 
 end IsDomain
 
@@ -114,16 +112,16 @@ section Field
 
 variable {K : Type v} {V : Type w} [Field K] [AddCommGroup V] [Module K V]
 
-theorem eigenspace_aeval_polynomial_degree_1 (f : End K V) (q : K[X]) (hq : degree q = 1) :
-    eigenspace f (-q.coeff 0 / q.leadingCoeff) = LinearMap.ker (aeval f q) :=
+theorem eigenspace_aeval_polynomial_degree_1 (f : End K V) (q : K[X]) (hq : degree q = 1)
+    : eigenspace f (- q.coeff 0 / q.leadingCoeff) = LinearMap.ker (aeval f q) :=
   calc
-    eigenspace f (-q.coeff 0 / q.leadingCoeff)
-    _ = LinearMap.ker (q.leadingCoeff • f - algebraMap K (End K V) (-q.coeff 0)) := by
-          apply eigenspace_div
-          rw [Ne, leadingCoeff_eq_zero_iff_deg_eq_bot, hq]
-          exact WithBot.one_ne_bot
+    eigenspace f (- q.coeff 0 / q.leadingCoeff)
+    _ = LinearMap.ker (q.leadingCoeff • f - algebraMap K (End K V) (- q.coeff 0)) := by
+      apply eigenspace_div
+      rw [Ne, leadingCoeff_eq_zero_iff_deg_eq_bot, hq]
+      exact WithBot.one_ne_bot
     _ = LinearMap.ker (aeval f (C q.leadingCoeff * X + C (q.coeff 0))) := by
-          rw [C_mul', aeval_def]; simp [algebraMap, Algebra.algebraMap]
+      rw [C_mul', aeval_def]; simp [algebraMap, Algebra.algebraMap]
     _ = LinearMap.ker (aeval f q) := by rwa [← eq_X_add_C_of_degree_eq_one]
 
 end Field
@@ -135,9 +133,10 @@ end Module
 section FiniteSpectrum
 
 /-- An endomorphism of a finite-dimensional vector space has a finite spectrum. -/
-theorem Module.End.finite_spectrum {K : Type v} {V : Type w} [Field K] [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V] (f : Module.End K V) :
-    Set.Finite (spectrum K f) := by
+theorem Module.End.finite_spectrum
+    {K : Type v} {V : Type w} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+    (f : Module.End K V)
+    : Set.Finite (spectrum K f) := by
   convert f.finite_hasEigenvalue using 1
   ext x
   exact Module.End.hasEigenvalue_iff_mem_spectrum.symm

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Data.Nat.ChineseRemainder
 public import Mathlib.Data.Nat.Pairing
-
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Nat.Factorial.Basic
@@ -52,8 +51,7 @@ namespace Nat
 lemma coprime_mul_succ {n m a} (ha : m - n ∣ a) : Coprime (n * a + 1) (m * a + 1) :=
   Nat.coprime_of_dvd fun p pp hn hm => by
     have : p ∣ (m - n) * a := by
-      simpa [Nat.succ_sub_succ, ← Nat.mul_sub_right_distrib] using
-        Nat.dvd_sub hm hn
+      simpa [Nat.succ_sub_succ, ← Nat.mul_sub_right_distrib] using Nat.dvd_sub hm hn
     have : p ∣ a := by
       rcases (Nat.Prime.dvd_mul pp).mp this with (hp | hp)
       · exact Nat.dvd_trans hp ha
@@ -71,8 +69,8 @@ private lemma coprimes_lt (a : Fin m → ℕ) (i) : a i < coprimes a i := by
   have h₁ : a i < supOfSeq a :=
     Nat.lt_add_one_iff.mpr (le_max_of_le_right <| Finset.le_sup (by simp))
   have h₂ : supOfSeq a ≤ (i + 1) * (supOfSeq a)! + 1 :=
-    le_trans (self_le_factorial _) (le_trans (Nat.le_mul_of_pos_left (supOfSeq a)! (succ_pos i))
-      (le_add_right _ _))
+    le_trans (self_le_factorial _)
+      (le_trans (Nat.le_mul_of_pos_left ((supOfSeq a)!) (succ_pos i)) (le_add_right _ _))
   simpa only [coprimes] using lt_of_lt_of_le h₁ h₂
 
 open scoped Function in -- required for scoped `on` notation
@@ -82,28 +80,33 @@ private lemma pairwise_coprime_coprimes (a : Fin m → ℕ) : Pairwise (Coprime 
   · exact (this a hij.symm (lt_of_le_of_ne ltij hij.symm)).symm
   unfold Function.onFun coprimes
   have hja : j < supOfSeq a := lt_of_lt_of_le j.prop (le_succ_of_le (le_max_left _ _))
-  exact coprime_mul_succ
-    (Nat.dvd_factorial (by lia)
-      (by simpa only [Nat.succ_sub_succ] using le_of_lt (lt_of_le_of_lt (sub_le j i) hja)))
+  exact coprime_mul_succ (Nat.dvd_factorial (by lia)
+    (by simpa only [Nat.succ_sub_succ] using le_of_lt (lt_of_le_of_lt (sub_le j i) hja)))
 
-/-- Gödel's Beta Function. This is similar to `(Encodable.decodeList)[i]`, but it is easier to
-prove that it is arithmetically definable. -/
+/--
+Gödel's Beta Function. This is similar to `(Encodable.decodeList)[i]`, but it is easier to
+prove that it is arithmetically definable.
+-/
 def beta (n i : ℕ) : ℕ := n.unpair.1 % ((i + 1) * n.unpair.2 + 1)
 
-/-- Inverse of Gödel's Beta Function. This is similar to `Encodable.encodeList`, but it is easier
-to prove that it is arithmetically definable. -/
-@[no_expose] def unbeta (l : List ℕ) : ℕ :=
+/--
+Inverse of Gödel's Beta Function. This is similar to `Encodable.encodeList`, but it is easier
+to prove that it is arithmetically definable.
+-/
+@[no_expose]
+def unbeta (l : List ℕ) : ℕ :=
   (chineseRemainderOfFinset (ι := Fin l.length) (l[·]) (coprimes (l[·])) Finset.univ
-    (by simp [coprimes])
-    (by simpa using Set.pairwise_univ.mpr (pairwise_coprime_coprimes _)) : ℕ).pair
-  (supOfSeq (m := l.length) (l[·]))!
+        (by simp [coprimes]) (by simpa using Set.pairwise_univ.mpr (pairwise_coprime_coprimes _))
+      : ℕ).pair
+    (supOfSeq (m := l.length) (l[·]))!
 
 /-- **Gödel's Beta Function Lemma** -/
 lemma beta_unbeta_coe (l : List ℕ) (i : Fin l.length) : beta (unbeta l) i = l[i] := by
-  simpa [beta, unbeta, coprimes] using mod_eq_of_modEq
-    ((chineseRemainderOfFinset (l[·]) (coprimes (l[·])) Finset.univ
-      (by simp [coprimes])
-      (by simpa using Set.pairwise_univ.mpr (pairwise_coprime_coprimes _))).prop i (by simp))
-    (coprimes_lt _ _)
+  simpa [beta, unbeta, coprimes] using
+    mod_eq_of_modEq
+      ((chineseRemainderOfFinset (l[·]) (coprimes (l[·])) Finset.univ (by simp [coprimes])
+          (by simpa using Set.pairwise_univ.mpr (pairwise_coprime_coprimes _))).prop
+        i (by simp))
+      (coprimes_lt _ _)
 
 end Nat

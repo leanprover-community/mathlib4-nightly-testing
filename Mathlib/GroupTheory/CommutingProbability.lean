@@ -6,7 +6,6 @@ Authors: Thomas Browning
 module
 
 public import Mathlib.GroupTheory.SpecificGroups.Dihedral
-
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.GroupTheory.Abelianization.Finite
 import Mathlib.Tactic.FieldSimp
@@ -35,30 +34,37 @@ open Fintype
 variable (M : Type*) [Mul M]
 
 /-- The commuting probability of a finite type with a multiplication operation. -/
-def commProb : ℚ :=
-  Nat.card { p : M × M // Commute p.1 p.2 } / (Nat.card M : ℚ) ^ 2
+def commProb : ℚ := Nat.card {p : M × M // Commute p.1 p.2} / (Nat.card M : ℚ) ^ 2
 
-theorem commProb_def :
-    commProb M = Nat.card { p : M × M // Commute p.1 p.2 } / (Nat.card M : ℚ) ^ 2 :=
+theorem commProb_def
+    : commProb M = Nat.card {p : M × M // Commute p.1 p.2} / (Nat.card M : ℚ) ^ 2 :=
   rfl
 
 theorem commProb_prod (M' : Type*) [Mul M'] : commProb (M × M') = commProb M * commProb M' := by
   simp_rw [commProb_def, div_mul_div_comm, Nat.card_prod, Nat.cast_mul, mul_pow, ← Nat.cast_mul,
     ← Nat.card_prod, Commute, SemiconjBy, Prod.ext_iff]
   congr 2
-  exact Nat.card_congr ⟨fun x => ⟨⟨⟨x.1.1.1, x.1.2.1⟩, x.2.1⟩, ⟨⟨x.1.1.2, x.1.2.2⟩, x.2.2⟩⟩,
-    fun x => ⟨⟨⟨x.1.1.1, x.2.1.1⟩, ⟨x.1.1.2, x.2.1.2⟩⟩, ⟨x.1.2, x.2.2⟩⟩, fun x => rfl, fun x => rfl⟩
+  exact Nat.card_congr ⟨
+    fun x => ⟨⟨⟨x.1.1.1, x.1.2.1⟩, x.2.1⟩, ⟨⟨x.1.1.2, x.1.2.2⟩, x.2.2⟩⟩,
+    fun x => ⟨⟨⟨x.1.1.1, x.2.1.1⟩, ⟨x.1.1.2, x.2.1.2⟩⟩, ⟨x.1.2, x.2.2⟩⟩,
+    fun x => rfl,
+    fun x => rfl
+  ⟩
 
-theorem commProb_pi {α : Type*} (i : α → Type*) [Fintype α] [∀ a, Mul (i a)] :
-    commProb (∀ a, i a) = ∏ a, commProb (i a) := by
+theorem commProb_pi {α : Type*} (i : α → Type*) [Fintype α] [∀ a, Mul (i a)]
+    : commProb (∀ a, i a) = ∏ a, commProb (i a) := by
   simp_rw [commProb_def, Finset.prod_div_distrib, Finset.prod_pow, ← Nat.cast_prod,
     ← Nat.card_pi, Commute, SemiconjBy, funext_iff]
   congr 2
-  exact Nat.card_congr ⟨fun x a => ⟨⟨x.1.1 a, x.1.2 a⟩, x.2 a⟩, fun x => ⟨⟨fun a => (x a).1.1,
-    fun a => (x a).1.2⟩, fun a => (x a).2⟩, fun x => rfl, fun x => rfl⟩
+  exact Nat.card_congr ⟨
+    fun x a => ⟨⟨x.1.1 a, x.1.2 a⟩, x.2 a⟩,
+    fun x => ⟨⟨fun a => (x a).1.1, fun a => (x a).1.2⟩, fun a => (x a).2⟩,
+    fun x => rfl,
+    fun x => rfl
+  ⟩
 
-theorem commProb_function {α β : Type*} [Fintype α] [Mul β] :
-    commProb (α → β) = (commProb β) ^ Fintype.card α := by
+theorem commProb_function {α β : Type*} [Fintype α] [Mul β]
+    : commProb (α → β) = (commProb β) ^ Fintype.card α := by
   rw [commProb_pi, Finset.prod_const, Finset.card_univ]
 
 @[simp]
@@ -104,8 +110,10 @@ variable {G}
 variable [Finite G] (H : Subgroup G)
 
 theorem Subgroup.commProb_subgroup_le : commProb H ≤ commProb G * (H.index : ℚ) ^ 2 := by
-  /- After rewriting with `commProb_def`, we reduce to showing that `G` has at least as many
-      commuting pairs as `H`. -/
+  /-
+  After rewriting with `commProb_def`, we reduce to showing that `G` has at least as many
+   commuting pairs as `H`.
+  -/
   rw [commProb_def, commProb_def, div_le_iff₀, mul_assoc, ← mul_pow, ← Nat.cast_mul,
     mul_comm H.index, H.card_mul_index, div_mul_cancel₀, Nat.cast_le]
   · refine Nat.card_le_card_of_injective (fun p ↦ ⟨⟨p.1.1, p.1.2⟩, Subtype.ext_iff.mp p.2⟩) ?_
@@ -114,8 +122,10 @@ theorem Subgroup.commProb_subgroup_le : commProb H ≤ commProb G * (H.index : �
   · exact pow_pos (Nat.cast_pos.mpr Finite.card_pos) 2
 
 theorem Subgroup.commProb_quotient_le [H.Normal] : commProb (G ⧸ H) ≤ commProb G * Nat.card H := by
-  /- After rewriting with `commProb_def'`, we reduce to showing that `G` has at least as many
-      conjugacy classes as `G ⧸ H`. -/
+  /-
+  After rewriting with `commProb_def'`, we reduce to showing that `G` has at least as many
+   conjugacy classes as `G ⧸ H`.
+  -/
   rw [commProb_def', commProb_def', div_le_iff₀, mul_assoc, ← Nat.cast_mul, ← Subgroup.index,
     H.card_mul_index, div_mul_cancel₀, Nat.cast_le]
   · apply Nat.card_le_card_of_surjective (f := ConjClasses.map (QuotientGroup.mk' H))
@@ -132,8 +142,7 @@ theorem inv_card_commutator_le_commProb : (↑(Nat.card (commutator G)))⁻¹ �
 -- Construction of group with commuting probability 1/n
 namespace DihedralGroup
 
-lemma commProb_odd {n : ℕ} (hn : Odd n) :
-    commProb (DihedralGroup n) = (n + 3) / (4 * n) := by
+lemma commProb_odd {n : ℕ} (hn : Odd n) : commProb (DihedralGroup n) = (n + 3) / (4 * n) := by
   rw [commProb_def', DihedralGroup.card_conjClasses_odd hn, nat_card]
   qify [show 2 ∣ n + 3 by rw [Nat.dvd_iff_mod_eq_zero, Nat.add_mod, Nat.odd_iff.mp hn]]
   rw [div_div, ← mul_assoc]
@@ -142,28 +151,28 @@ lemma commProb_odd {n : ℕ} (hn : Odd n) :
 
 /-- A list of Dihedral groups whose product will have commuting probability `1 / n`. -/
 def reciprocalFactors (n : ℕ) : List ℕ :=
-  if _ : n = 0 then [0]
-  else if _ : n = 1 then []
+  if _ : n = 0 then
+    [0]
+  else if _ : n = 1 then
+    []
   else if Even n then
     3 :: reciprocalFactors (n / 2)
   else
     n % 4 * n :: reciprocalFactors (n / 4 + 1)
 
-@[simp] lemma reciprocalFactors_zero : reciprocalFactors 0 = [0] := by
-  unfold reciprocalFactors; rfl
+@[simp] lemma reciprocalFactors_zero : reciprocalFactors 0 = [0] := by unfold reciprocalFactors; rfl
 
-@[simp] lemma reciprocalFactors_one : reciprocalFactors 1 = [] := by
-  unfold reciprocalFactors; rfl
+@[simp] lemma reciprocalFactors_one : reciprocalFactors 1 = [] := by unfold reciprocalFactors; rfl
 
-lemma reciprocalFactors_even {n : ℕ} (h0 : n ≠ 0) (h2 : Even n) :
-    reciprocalFactors n = 3 :: reciprocalFactors (n / 2) := by
+lemma reciprocalFactors_even {n : ℕ} (h0 : n ≠ 0) (h2 : Even n)
+    : reciprocalFactors n = 3 :: reciprocalFactors (n / 2) := by
   have h1 : n ≠ 1 := by
     rintro rfl
     simp at h2
   rw [reciprocalFactors, dite_eq_right h0, dite_eq_right h1, ite_eq_left h2]
 
-lemma reciprocalFactors_odd {n : ℕ} (h1 : n ≠ 1) (h2 : Odd n) :
-    reciprocalFactors n = n % 4 * n :: reciprocalFactors (n / 4 + 1) := by
+lemma reciprocalFactors_odd {n : ℕ} (h1 : n ≠ 1) (h2 : Odd n)
+    : reciprocalFactors n = n % 4 * n :: reciprocalFactors (n / 4 + 1) := by
   have h0 : n ≠ 0 := by
     rintro rfl
     simp [← Nat.not_even_iff_odd] at h2
@@ -171,21 +180,18 @@ lemma reciprocalFactors_odd {n : ℕ} (h1 : n ≠ 1) (h2 : Odd n) :
     ite_eq_right (Nat.not_even_iff_odd.2 h2)]
 
 /-- A finite product of Dihedral groups. -/
-abbrev Product (l : List ℕ) : Type :=
-  ∀ i : Fin l.length, DihedralGroup l[i]
+abbrev Product (l : List ℕ) : Type := ∀ i : Fin l.length, DihedralGroup l[i]
 
-lemma commProb_nil : commProb (Product []) = 1 := by
-  simp [Product, commProb_pi]
+lemma commProb_nil : commProb (Product []) = 1 := by simp [Product, commProb_pi]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma commProb_cons (n : ℕ) (l : List ℕ) :
-    commProb (Product (n :: l)) = commProb (DihedralGroup n) * commProb (Product l) := by
+lemma commProb_cons (n : ℕ) (l : List ℕ)
+    : commProb (Product (n :: l)) = commProb (DihedralGroup n) * commProb (Product l) := by
   simp only [commProb_pi, Fin.prod_univ_succ, Fin.getElem_fin, Fin.val_succ, Fin.val_zero,
     List.getElem_cons_zero, List.length_cons, List.getElem_cons_succ]
 
 /-- Construction of a group with commuting probability `1 / n`. -/
-theorem commProb_reciprocal (n : ℕ) :
-    commProb (Product (reciprocalFactors n)) = 1 / n := by
+theorem commProb_reciprocal (n : ℕ) : commProb (Product (reciprocalFactors n)) = 1 / n := by
   by_cases h0 : n = 0
   · rw [h0, reciprocalFactors_zero, commProb_cons, commProb_nil, mul_one, Nat.cast_zero, div_zero]
     apply commProb_eq_zero_of_infinite
@@ -193,7 +199,7 @@ theorem commProb_reciprocal (n : ℕ) :
   · rw [h1, reciprocalFactors_one, commProb_nil, Nat.cast_one, div_one]
   rcases Nat.even_or_odd n with h2 | h2
   · rw [reciprocalFactors_even h0 h2, commProb_cons, commProb_reciprocal (n / 2),
-        commProb_odd (by decide)]
+      commProb_odd (by decide)]
     simp [field, h2.two_dvd]
     norm_num
   · rw [reciprocalFactors_odd h1 h2, commProb_cons, commProb_reciprocal (n / 4 + 1)]

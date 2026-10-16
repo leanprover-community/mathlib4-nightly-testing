@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Polynomial.Degree.Domain
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Algebra.Ring.Semireal.Defs
-
 import Mathlib.Tactic.LinearCombination
 
 /-!
@@ -58,10 +57,11 @@ universe u
 
 variable {R : Type u} [Field R]
 
-theorem of_linearOrderedField [LinearOrder R] [IsStrictOrderedRing R]
+theorem of_linearOrderedField
+    [LinearOrder R] [IsStrictOrderedRing R]
     (isSquare_of_nonneg : ∀ {x : R}, 0 ≤ x → IsSquare x)
-    (exists_isRoot_of_odd_natDegree : ∀ {f : R[X]}, Odd f.natDegree → ∃ x, f.IsRoot x) :
-    IsRealClosed R where
+    (exists_isRoot_of_odd_natDegree : ∀ {f : R[X]}, Odd f.natDegree → ∃ x, f.IsRoot x)
+    : IsRealClosed R where
   isSquare_or_isSquare_neg {x} := by
     rcases le_total x 0 with (neg | pos)
     · exact .inr <| isSquare_of_nonneg (neg_nonneg_of_nonpos neg)
@@ -86,20 +86,20 @@ theorem exists_eq_zpow_of_odd (x : R) {k : ℤ} (hk : Odd k) : ∃ r, x = r ^ k 
   · rcases exists_eq_pow_of_odd x (by simpa using hk) with ⟨r, hr⟩
     exact ⟨r⁻¹, by simpa using hr⟩
 
-theorem exists_eq_pow_of_isSquare {x : R} (hx : IsSquare x) {n : ℕ} (hn : n ≠ 0) :
-    ∃ r, x = r ^ n := by
+theorem exists_eq_pow_of_isSquare {x : R} (hx : IsSquare x) {n : ℕ} (hn : n ≠ 0)
+    : ∃ r, x = r ^ n := by
   induction n using Nat.strong_induction_on generalizing x with
   | h n ih =>
     rcases Nat.even_or_odd n with (even | odd)
     · rcases even with ⟨m, hm⟩
       rcases hx with ⟨s, hs⟩
-      rcases isSquare_or_isSquare_neg s with (h | h) <;>
-        rcases ih m (by lia) h (by lia) with ⟨r, hr⟩ <;>
-        exact ⟨r, by simp [hm, pow_add, ← hr, hs]⟩
+      rcases isSquare_or_isSquare_neg s with (h | h)
+        <;> rcases ih m (by lia) h (by lia) with ⟨r, hr⟩
+        <;> exact ⟨r, by simp [hm, pow_add, ← hr, hs]⟩
     · exact exists_eq_pow_of_odd x odd
 
-theorem exists_eq_zpow_of_isSquare {x : R} (hx : IsSquare x) {k : ℤ} (hk : k ≠ 0) :
-    ∃ r, x = r ^ k := by
+theorem exists_eq_zpow_of_isSquare {x : R} (hx : IsSquare x) {k : ℤ} (hk : k ≠ 0)
+    : ∃ r, x = r ^ k := by
   rcases k.eq_nat_or_neg with ⟨n, rfl | rfl⟩
   · simpa using exists_eq_pow_of_isSquare hx (by simpa using hk)
   · rcases exists_eq_pow_of_isSquare hx (by simpa using hk) with ⟨r, hr⟩

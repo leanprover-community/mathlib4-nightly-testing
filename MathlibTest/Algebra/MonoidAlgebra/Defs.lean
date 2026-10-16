@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Algebra.MonoidAlgebra.Defs
 
 variable {R M A} [Semiring R] [Monoid M] [AddMonoid A]

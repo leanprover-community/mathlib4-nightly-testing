@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel
 module
 
 public import Mathlib.MeasureTheory.VectorMeasure.Variation.Basic
-
 import Mathlib.Analysis.Normed.Module.HahnBanach
 
 /-!
@@ -45,16 +44,18 @@ open Set Filter
 
 namespace MeasureTheory.VectorMeasure
 
-variable {X E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {mX : MeasurableSpace X}
-  {μ : VectorMeasure X E} {s t : Set X}
+variable
+  {X E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {mX : MeasurableSpace X} {μ : VectorMeasure X E} {s t : Set X}
 
-/-- The semivariation of a vector measure, defined as the supremum of the variations
-of the images of the vector measures under continuous linear forms of norm at most `1`. -/
+/--
+The semivariation of a vector measure, defined as the supremum of the variations
+of the images of the vector measures under continuous linear forms of norm at most `1`.
+-/
 noncomputable def semivariation (μ : VectorMeasure X E) (s : Set X) : ℝ≥0∞ :=
   ⨆ ℓ ∈ {ℓ : StrongDual ℝ E | ‖ℓ‖ₑ ≤ 1}, (μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous).variation s
 
-lemma semivariation_union_le :
-    μ.semivariation (s ∪ t) ≤ μ.semivariation s + μ.semivariation t := by
+lemma semivariation_union_le : μ.semivariation (s ∪ t) ≤ μ.semivariation s + μ.semivariation t := by
   simp only [semivariation, iSup_le_iff]
   intro ℓ hℓ
   apply (measure_union_le _ _).trans
@@ -76,36 +77,39 @@ lemma semivariation_le_variation : μ.semivariation s ≤ μ.variation s := by
   exact (ContinuousLinearMap.le_opENorm _ _).trans (mul_le_of_le_one_left (by positivity) hℓ)
 
 lemma enorm_apply_le_semivariation : ‖μ s‖ₑ ≤ μ.semivariation s := by
-  by_cases hs : MeasurableSet s; swap
+  by_cases hs : MeasurableSet s
+  swap
   · simp [not_measurable, hs]
   obtain ⟨ℓ, ℓ_norm, hℓ⟩ : ∃ ℓ : StrongDual ℝ E, ‖ℓ‖ ≤ 1 ∧ ℓ (μ s) = ‖μ s‖ :=
     exists_dual_vector'' _ _
   have h'ℓ : ℓ ∈ {ℓ : StrongDual ℝ E | ‖ℓ‖ₑ ≤ 1} := by
     simp [enorm_eq_nnnorm, ← NNReal.coe_le_one, ℓ_norm]
-  calc ‖μ s‖ₑ
-  _ = ‖(μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous) s‖ₑ := by simp [← ofReal_norm, hℓ]
-  _ ≤ (μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous).variation s := enorm_measure_le_variation _ _
-  _ ≤ μ.semivariation s := by apply le_biSup _ h'ℓ
+  calc
+    ‖μ s‖ₑ
+    _ = ‖(μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous) s‖ₑ := by simp [← ofReal_norm, hℓ]
+    _ ≤ (μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous).variation s := enorm_measure_le_variation _ _
+    _ ≤ μ.semivariation s := by apply le_biSup _ h'ℓ
 
-lemma enorm_apply_le_semivariation_of_subset (hst : s ⊆ t) :
-    ‖μ s‖ₑ ≤ μ.semivariation t :=
+lemma enorm_apply_le_semivariation_of_subset (hst : s ⊆ t) : ‖μ s‖ₑ ≤ μ.semivariation t :=
   enorm_apply_le_semivariation.trans (semivariation_mono hst)
 
-lemma exists_subset_lt_enorm_apply_of_lt_semivariation (hs : MeasurableSet s)
-    {a : ℝ≥0∞} (ha : a < μ.semivariation s) :
-    ∃ t ⊆ s, MeasurableSet t ∧ a < 2 * ‖μ t‖ₑ := by
-  obtain ⟨ℓ, hℓ, h'ℓ⟩ : ∃ ℓ ∈ {ℓ : StrongDual ℝ E | ‖ℓ‖ₑ ≤ 1},
-    a < (μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous).variation s := lt_biSup_iff.1 ha
-  obtain ⟨t, ts, t_meas, ht⟩ :
-      ∃ t ⊆ s, MeasurableSet t ∧ a < 2 * ‖μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous t‖ₑ :=
+lemma exists_subset_lt_enorm_apply_of_lt_semivariation
+    (hs : MeasurableSet s) {a : ℝ≥0∞} (ha : a < μ.semivariation s)
+    : ∃ t ⊆ s, MeasurableSet t ∧ a < 2 * ‖μ t‖ₑ := by
+  obtain ⟨ℓ, hℓ, h'ℓ⟩
+      : ∃ ℓ ∈ {ℓ : StrongDual ℝ E | ‖ℓ‖ₑ ≤ 1},
+        a < (μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous).variation s :=
+    lt_biSup_iff.1 ha
+  obtain ⟨t, ts, t_meas, ht⟩
+      : ∃ t ⊆ s, MeasurableSet t ∧ a < 2 * ‖μ.mapRange (ℓ : E →+ ℝ) ℓ.continuous t‖ₑ :=
     SignedMeasure.exists_subset_lt_enorm_apply_of_lt_variation _ hs h'ℓ
   refine ⟨t, ts, t_meas, ht.trans_le ?_⟩
   gcongr
   exact (ContinuousLinearMap.le_opENorm _ _).trans (mul_le_of_le_one_left (by positivity) hℓ)
 
 private lemma exists_one_le_enorm_apply_of_semivariation_eq_top
-    (hs : MeasurableSet s) (h's : μ.semivariation s = ∞) :
-    ∃ t, MeasurableSet t ∧ t ⊆ s ∧ μ.semivariation t = ∞ ∧ 1 ≤ ‖μ (s \ t)‖ₑ := by
+    (hs : MeasurableSet s) (h's : μ.semivariation s = ∞)
+    : ∃ t, MeasurableSet t ∧ t ⊆ s ∧ μ.semivariation t = ∞ ∧ 1 ≤ ‖μ (s \ t)‖ₑ := by
   obtain ⟨t, ts, t_meas, ht⟩ : ∃ t ⊆ s, MeasurableSet t ∧ 2 * ‖μ s‖ₑ + 2 < 2 * ‖μ t‖ₑ := by
     apply exists_subset_lt_enorm_apply_of_lt_semivariation hs
     rw [h's]
@@ -132,14 +136,15 @@ private lemma exists_one_le_enorm_apply_of_semivariation_eq_top
 
 private lemma semivariation_univ_lt_top : μ.semivariation univ < ∞ := by
   apply Ne.lt_top (fun h ↦ ?_)
-  have A (s : Set X) (hs : MeasurableSet s) (h's : μ.semivariation s = ∞) :
-      ∃ t, MeasurableSet t ∧ t ⊆ s ∧ μ.semivariation t = ∞ ∧ 1 ≤ ‖μ (s \ t)‖ₑ :=
+  have A (s : Set X) (hs : MeasurableSet s) (h's : μ.semivariation s = ∞)
+      : ∃ t, MeasurableSet t ∧ t ⊆ s ∧ μ.semivariation t = ∞ ∧ 1 ≤ ‖μ (s \ t)‖ₑ :=
     exists_one_le_enorm_apply_of_semivariation_eq_top hs h's
   choose! t t_meas t_subs t_var ht using A
   let s n := t^[n] univ
   have hs n : MeasurableSet (s n) ∧ μ.semivariation (s n) = ∞ := by
     induction n with
-    | zero => simp [s, h]
+    | zero =>
+      simp [s, h]
     | succ n ih =>
       simp only [Function.iterate_succ', Function.comp_apply, s]
       exact ⟨t_meas _ ih.1 ih.2, t_var _ ih.1 ih.2⟩
@@ -180,7 +185,6 @@ lemma nnnorm_apply_le_bound : ‖μ s‖₊ ≤ μ.bound := by
   rw [← ENNReal.coe_le_coe, ← enorm_eq_nnnorm]
   exact enorm_apply_le_bound
 
-lemma norm_apply_le_bound : ‖μ s‖ ≤ μ.bound := by
-  simpa [← coe_nnnorm] using nnnorm_apply_le_bound
+lemma norm_apply_le_bound : ‖μ s‖ ≤ μ.bound := by simpa [← coe_nnnorm] using nnnorm_apply_le_bound
 
 end MeasureTheory.VectorMeasure

@@ -6,7 +6,6 @@ Authors: Eric Wieser
 module
 
 public import Qq
-
 import Mathlib.Init
 import Qq.Typ
 

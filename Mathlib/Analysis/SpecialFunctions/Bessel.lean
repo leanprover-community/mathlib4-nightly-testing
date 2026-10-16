@@ -7,7 +7,6 @@ Authors: Weiyi Wang
 module
 
 public import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
-
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
@@ -51,8 +50,7 @@ namespace Complex
 local notation "F₀₁(" a ")" => regularizedHGFun 0 {(a : ℂ)}
 
 /-- Bessel function of the first kind $J_a(x)$. -/
-@[pp_nodot]
-noncomputable def besselJ (a x : ℂ) := (x / 2) ^ a * F₀₁(a + 1) (- (x / 2) ^ 2)
+@[pp_nodot] noncomputable def besselJ (a x : ℂ) := (x / 2) ^ a * F₀₁(a + 1) (- (x / 2) ^ 2)
 
 local notation "J" => besselJ
 
@@ -76,8 +74,8 @@ theorem analyticAt_besselJ (a : ℂ) {x : ℂ} (h : x ∈ slitPlane) : AnalyticA
   fun_prop (disch := simpa [slitPlane] using h) [besselJ]
 
 @[fun_prop]
-theorem analyticOnNhd_besselJ (a : ℂ) : AnalyticOnNhd ℂ (J a) slitPlane :=
-  fun _ hz ↦ analyticAt_besselJ a hz
+theorem analyticOnNhd_besselJ (a : ℂ) : AnalyticOnNhd ℂ (J a) slitPlane := fun _ hz ↦
+  analyticAt_besselJ a hz
 
 /-- For integer `a`, `J a` and `J (-a)` are related by a sign. -/
 theorem besselJ_neg_int (a : ℤ) (x : ℂ) : J (-a) x = (-1) ^ a * J a x := by
@@ -112,8 +110,8 @@ theorem analyticAt_besselJ_int (a : ℤ) (x : ℂ) : AnalyticAt ℂ (J a) x := b
   simpa [besselJ_def]
 
 @[fun_prop]
-theorem analyticOnNhd_besselJ_int (a : ℤ) : AnalyticOnNhd ℂ (J a) .univ :=
-  fun z _ ↦ analyticAt_besselJ_int a z
+theorem analyticOnNhd_besselJ_int (a : ℤ) : AnalyticOnNhd ℂ (J a) .univ := fun z _ ↦
+  analyticAt_besselJ_int a z
 
 theorem besselJ_zero (a : ℂ) : J a 0 = if a = 0 then 1 else 0 := by
   split_ifs with h <;> simp [besselJ, h, regularizedHGFunCoeff]

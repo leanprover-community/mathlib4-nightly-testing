@@ -6,7 +6,6 @@ Authors: Kim Morrison, Eric Wieser
 module
 
 public import Batteries.Util.LibraryNote
-
 import Mathlib.Init
 
 /-!

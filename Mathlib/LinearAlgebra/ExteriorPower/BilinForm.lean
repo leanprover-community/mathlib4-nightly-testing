@@ -27,19 +27,21 @@ namespace LinearMap.BilinForm
 
 open Function exteriorPower
 
-variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
-  (B : LinearMap.BilinForm R M) (n : ℕ)
+variable
+  {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] (B : LinearMap.BilinForm R M) (n : ℕ)
 
 /-- A bilinear form on `M` induces a bilinear form on each exterior power. -/
 public protected def exteriorPower : LinearMap.BilinForm R (⋀[R]^n M) :=
   (pairingDual R M n).comp (map n B)
 
-@[simp] lemma bilinForm_ιMulti_ιMulti (v w : Fin n → M) :
-    B.exteriorPower n (ιMulti R n v) (ιMulti R n w) = (Matrix.of fun i j ↦ B (v j) (w i)).det := by
+@[simp]
+lemma bilinForm_ιMulti_ιMulti (v w : Fin n → M)
+    : B.exteriorPower n (ιMulti R n v) (ιMulti R n w)
+      = (Matrix.of fun i j ↦ B (v j) (w i)).det := by
   simp [LinearMap.BilinForm.exteriorPower]
 
-public lemma bijective_exteriorPower [Module.Free R M] [Module.Finite R M] (hB : Bijective B) :
-    Bijective (B.exteriorPower n) := by
+public lemma bijective_exteriorPower [Module.Free R M] [Module.Finite R M] (hB : Bijective B)
+    : Bijective (B.exteriorPower n) := by
   refine (bijective_pairingDual R M n).comp ⟨?_, ?_⟩
   · exact exteriorPower.map_injective (LinearEquiv.ofBijective _ hB).symm (by ext; simp)
   · exact exteriorPower.map_surjective hB.surjective

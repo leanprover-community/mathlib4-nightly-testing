@@ -36,8 +36,7 @@ def bicategoryNf (mvarId : MVarId) : MetaM (List MVarId) := do
   BicategoryLike.normalForm Bicategory.Context `bicategory mvarId
 
 @[inherit_doc bicategoryNf]
-elab "bicategory_nf" : tactic => withMainContext do
-  replaceMainGoal (← bicategoryNf (← getMainGoal))
+elab "bicategory_nf" : tactic => withMainContext do replaceMainGoal (← bicategoryNf (← getMainGoal))
 
 /--
 Use the coherence theorem for bicategories to solve equations in a bicategory,
@@ -50,10 +49,9 @@ That is, `bicategory` can handle goals of the form
 where `a = a'`, `b = b'`, and `c = c'` can be proved using `bicategory_coherence`.
 -/
 def bicategory (mvarId : MVarId) : MetaM (List MVarId) :=
-  BicategoryLike.main  Bicategory.Context `bicategory mvarId
+  BicategoryLike.main Bicategory.Context `bicategory mvarId
 
 @[inherit_doc bicategory]
-elab "bicategory" : tactic => withMainContext do
-  replaceMainGoal <| ← bicategory <| ← getMainGoal
+elab "bicategory" : tactic => withMainContext do replaceMainGoal <| ← bicategory <| ← getMainGoal
 
 end Mathlib.Tactic.Bicategory

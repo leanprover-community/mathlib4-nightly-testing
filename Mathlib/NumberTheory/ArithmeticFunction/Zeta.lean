@@ -35,8 +35,7 @@ variable {R : Type*}
 namespace ArithmeticFunction
 
 /-- `ζ 0 = 0`, otherwise `ζ x = 1`. The Dirichlet Series is the Riemann `ζ`. -/
-def zeta : ArithmeticFunction ℕ :=
-  ⟨fun x => ite (x = 0) 0 1, rfl⟩
+def zeta : ArithmeticFunction ℕ := ⟨fun x => ite (x = 0) 0 1, rfl⟩
 
 @[inherit_doc]
 scoped[ArithmeticFunction.zeta] notation "ζ" => ArithmeticFunction.zeta
@@ -45,21 +44,18 @@ open scoped zeta
 
 section Zeta
 
-@[simp]
-theorem zeta_apply {x : ℕ} : ζ x = if x = 0 then 0 else 1 :=
-  rfl
+@[simp] theorem zeta_apply {x : ℕ} : ζ x = if x = 0 then 0 else 1 := rfl
 
-theorem zeta_apply_ne {x : ℕ} (h : x ≠ 0) : ζ x = 1 :=
-  ite_eq_right h
+theorem zeta_apply_ne {x : ℕ} (h : x ≠ 0) : ζ x = 1 := ite_eq_right h
 
 theorem zeta_eq_zero {x : ℕ} : ζ x = 0 ↔ x = 0 := by simp [zeta]
 
 theorem zeta_pos {x : ℕ} : 0 < ζ x ↔ 0 < x := by simp [pos_iff_ne_zero]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem coe_zeta_smul_apply {M} [Semiring R] [AddCommMonoid M] [MulAction R M]
-    {f : ArithmeticFunction M} {x : ℕ} :
-    ((↑ζ : ArithmeticFunction R) • f) x = ∑ i ∈ divisors x, f i := by
+theorem coe_zeta_smul_apply
+    {M} [Semiring R] [AddCommMonoid M] [MulAction R M] {f : ArithmeticFunction M} {x : ℕ}
+    : ((↑ζ : ArithmeticFunction R) • f) x = ∑ i ∈ divisors x, f i := by
   rw [smul_apply]
   trans ∑ i ∈ divisorsAntidiagonal x, f i.snd
   · refine sum_congr rfl fun i hi => ?_
@@ -69,10 +65,10 @@ theorem coe_zeta_smul_apply {M} [Semiring R] [AddCommMonoid M] [MulAction R M]
 
 /-- `@[simp]`-normal form of `coe_zeta_smul_apply`. -/
 @[simp]
-theorem sum_divisorsAntidiagonal_eq_sum_divisors {M} [Semiring R] [AddCommMonoid M] [MulAction R M]
-    {f : ArithmeticFunction M} {x : ℕ} :
-    (∑ x ∈ x.divisorsAntidiagonal, if x.1 = 0 then (0 : R) • f x.2 else f x.2) =
-      ∑ i ∈ divisors x, f i := by
+theorem sum_divisorsAntidiagonal_eq_sum_divisors
+    {M} [Semiring R] [AddCommMonoid M] [MulAction R M] {f : ArithmeticFunction M} {x : ℕ}
+    : (∑ x ∈ x.divisorsAntidiagonal, if x.1 = 0 then (0 : R) • f x.2 else f x.2)
+      = ∑ i ∈ divisors x, f i := by
   simp [← coe_zeta_smul_apply (R := R)]
 
 theorem coe_zeta_mul_comm [Semiring R] {f : ArithmeticFunction R} : ζ * f = f * ζ := by
@@ -80,12 +76,12 @@ theorem coe_zeta_mul_comm [Semiring R] {f : ArithmeticFunction R} : ζ * f = f *
   simp_rw [mul_apply, natCoe_apply, (cast_commute ..).eq]
   rw [sum_divisorsAntidiagonal fun x y ↦ f y * ζ x, sum_divisorsAntidiagonal' fun x y ↦ f x * ζ y]
 
-theorem coe_zeta_mul_apply [Semiring R] {f : ArithmeticFunction R} {x : ℕ} :
-    (ζ * f) x = ∑ i ∈ divisors x, f i :=
+theorem coe_zeta_mul_apply [Semiring R] {f : ArithmeticFunction R} {x : ℕ}
+    : (ζ * f) x = ∑ i ∈ divisors x, f i :=
   coe_zeta_smul_apply
 
-theorem coe_mul_zeta_apply [Semiring R] {f : ArithmeticFunction R} {x : ℕ} :
-    (f * ζ) x = ∑ i ∈ divisors x, f i := by
+theorem coe_mul_zeta_apply [Semiring R] {f : ArithmeticFunction R} {x : ℕ}
+    : (f * ζ) x = ∑ i ∈ divisors x, f i := by
   rw [← coe_zeta_mul_comm, coe_zeta_mul_apply]
 
 theorem zeta_mul_apply {f : ArithmeticFunction ℕ} {x : ℕ} : (ζ * f) x = ∑ i ∈ divisors x, f i := by
@@ -113,8 +109,8 @@ theorem pmul_comm [CommMonoidWithZero R] (f g : ArithmeticFunction R) : f.pmul g
   ext
   simp [mul_comm]
 
-lemma pmul_assoc [SemigroupWithZero R] (f₁ f₂ f₃ : ArithmeticFunction R) :
-    pmul (pmul f₁ f₂) f₃ = pmul f₁ (pmul f₂ f₃) := by
+lemma pmul_assoc [SemigroupWithZero R] (f₁ f₂ f₃ : ArithmeticFunction R)
+    : pmul (pmul f₁ f₂) f₃ = pmul f₁ (pmul f₂ f₃) := by
   ext
   simp only [pmul_apply, mul_assoc]
 
@@ -146,9 +142,7 @@ set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ppow_zero {f : ArithmeticFunction R} : f.ppow 0 = ζ := by rw [ppow, dite_eq_left rfl]
 
-@[simp]
-theorem ppow_one {f : ArithmeticFunction R} : f.ppow 1 = f := by
-  ext; simp [ppow]
+@[simp] theorem ppow_one {f : ArithmeticFunction R} : f.ppow 1 = f := by ext; simp [ppow]
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
@@ -160,8 +154,8 @@ theorem ppow_succ' {f : ArithmeticFunction R} {k : ℕ} : f.ppow (k + 1) = f.pmu
   rw [ppow_apply (succ_pos k), _root_.pow_succ']
   induction k <;> simp
 
-theorem ppow_succ {f : ArithmeticFunction R} {k : ℕ} {kpos : 0 < k} :
-    f.ppow (k + 1) = (f.ppow k).pmul f := by
+theorem ppow_succ {f : ArithmeticFunction R} {k : ℕ} {kpos : 0 < k}
+    : f.ppow (k + 1) = (f.ppow k).pmul f := by
   ext x
   rw [ppow_apply (succ_pos k), _root_.pow_succ]
   induction k <;> simp
@@ -175,14 +169,16 @@ def pdiv [GroupWithZero R] (f g : ArithmeticFunction R) : ArithmeticFunction R :
   ⟨fun n => f n / g n, by simp only [map_zero, div_zero]⟩
 
 @[simp]
-theorem pdiv_apply [GroupWithZero R] (f g : ArithmeticFunction R) (n : ℕ) :
-    pdiv f g n = f n / g n := rfl
+theorem pdiv_apply [GroupWithZero R] (f g : ArithmeticFunction R) (n : ℕ)
+    : pdiv f g n = f n / g n :=
+  rfl
 
-/-- This result only holds for `DivisionSemiring`s instead of `GroupWithZero`s because zeta takes
-values in ℕ, and hence the coercion requires an `AddMonoidWithOne`. TODO: Generalise zeta -/
+/--
+This result only holds for `DivisionSemiring`s instead of `GroupWithZero`s because zeta takes
+values in ℕ, and hence the coercion requires an `AddMonoidWithOne`. TODO: Generalise zeta
+-/
 @[simp]
-theorem pdiv_zeta [DivisionSemiring R] (f : ArithmeticFunction R) :
-    pdiv f zeta = f := by
+theorem pdiv_zeta [DivisionSemiring R] (f : ArithmeticFunction R) : pdiv f zeta = f := by
   ext n
   cases n <;> simp
 
@@ -195,23 +191,31 @@ theorem isMultiplicative_zeta : IsMultiplicative ζ :=
 namespace IsMultiplicative
 
 @[arith_mult]
-theorem pmul [CommSemiring R] {f g : ArithmeticFunction R} (hf : f.IsMultiplicative)
-    (hg : g.IsMultiplicative) : IsMultiplicative (f.pmul g) :=
-  ⟨by simp [hf, hg], fun cop => by
+theorem pmul
+    [CommSemiring R]
+    {f g : ArithmeticFunction R} (hf : f.IsMultiplicative) (hg : g.IsMultiplicative)
+    : IsMultiplicative (f.pmul g) := ⟨
+  by simp [hf, hg],
+  fun cop => by
     simp only [pmul_apply, hf.map_mul_of_coprime cop, hg.map_mul_of_coprime cop]
-    ring⟩
+    ring
+⟩
 
 @[arith_mult]
-theorem pdiv [CommGroupWithZero R] {f g : ArithmeticFunction R} (hf : IsMultiplicative f)
-    (hg : IsMultiplicative g) : IsMultiplicative (pdiv f g) :=
-  ⟨by simp [hf, hg], fun cop => by
+theorem pdiv
+    [CommGroupWithZero R]
+    {f g : ArithmeticFunction R} (hf : IsMultiplicative f) (hg : IsMultiplicative g)
+    : IsMultiplicative (pdiv f g) := ⟨
+  by simp [hf, hg],
+  fun cop => by
     simp only [pdiv_apply, map_mul_of_coprime hf cop, map_mul_of_coprime hg cop, div_eq_mul_inv,
       mul_inv]
-    apply mul_mul_mul_comm ⟩
+    apply mul_mul_mul_comm
+⟩
 
 @[arith_mult]
-theorem ppow [CommSemiring R] {f : ArithmeticFunction R} (hf : f.IsMultiplicative)
-    {k : ℕ} : IsMultiplicative (f.ppow k) := by
+theorem ppow [CommSemiring R] {f : ArithmeticFunction R} (hf : f.IsMultiplicative) {k : ℕ}
+    : IsMultiplicative (f.ppow k) := by
   induction k with
   | zero => exact isMultiplicative_zeta.natCast
   | succ k hi => rw [ppow_succ']; apply hf.pmul hi
@@ -225,15 +229,20 @@ open Lean Qq
 
 /-- Extension for `ArithmeticFunction.zeta`. -/
 @[positivity ArithmeticFunction.zeta _]
-meta def evalArithmeticFunctionZeta : PositivityExt where eval {u α} z p? e :=
-  match p? with | none => throwError "no PartialOrder instance" | some p => do
-  match u, α, e with
-  | 0, ~q(ℕ), ~q(ArithmeticFunction.zeta $n) =>
-    assumeInstancesCommute
-    let rn ← core z p n
-    match rn with
-    | .positive pn => return .positive q(Iff.mpr ArithmeticFunction.zeta_pos $pn)
-    | _ => return .nonnegative q(Nat.zero_le _)
-  | _, _, _ => throwError "not ArithmeticFunction.zeta"
+meta def evalArithmeticFunctionZeta : PositivityExt where
+  eval {u α} z p? e :=
+    match p? with
+    | none =>
+      throwError "no PartialOrder instance"
+    | some p => do
+      match u, α, e with
+      | 0, ~q(ℕ), ~q(ArithmeticFunction.zeta $n) =>
+        assumeInstancesCommute
+        let rn ← core z p n
+        match rn with
+        | .positive pn => return .positive q(Iff.mpr ArithmeticFunction.zeta_pos $pn)
+        | _ => return .nonnegative q(Nat.zero_le _)
+      | _, _, _ =>
+        throwError "not ArithmeticFunction.zeta"
 
 end Mathlib.Meta.Positivity

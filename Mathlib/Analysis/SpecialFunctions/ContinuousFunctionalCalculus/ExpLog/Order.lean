@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
-
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Continuity
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import Mathlib.Analysis.Convex.FunctionTopology
@@ -38,11 +37,10 @@ open scoped Topology
 variable {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
 
 open Filter in
-lemma CFC.tendsto_cfc_rpow_sub_one_log {a : A} (ha : IsStrictlyPositive a := by cfc_tac) :
-    Tendsto (fun p : ℝ => cfc (fun x => p⁻¹ * (x ^ p - 1)) a) (𝓝[>] 0) (𝓝 (CFC.log a)) := by
+lemma CFC.tendsto_cfc_rpow_sub_one_log {a : A} (ha : IsStrictlyPositive a := by cfc_tac)
+    : Tendsto (fun p : ℝ => cfc (fun x => p⁻¹ * (x ^ p - 1)) a) (𝓝[>] 0) (𝓝 (CFC.log a)) := by
   refine tendsto_cfc_fun ?tendsto ?cont
-  case cont =>
-    exact .of_forall fun p ↦ by fun_prop (disch := grind -abstractProof)
+  case cont => exact .of_forall fun p ↦ by fun_prop (disch := grind -abstractProof)
   case tendsto =>
     let s := {a : A | IsStrictlyPositive a}
     let f (p : ℝ) (x : ℝ) := if p > 0 then p⁻¹ * (x ^ p - 1) else Real.log x
@@ -51,10 +49,11 @@ lemma CFC.tendsto_cfc_rpow_sub_one_log {a : A} (ha : IsStrictlyPositive a := by 
     exact hmain (spectrum ℝ a) (by grind) (by grind)
 
 open Filter Classical Real in
-lemma CFC.tendsto_ite_cfc_rpow_sub_one_ite_log :
-    Tendsto (fun (p : ℝ) (a : A) =>
-      if a ∈ {b : A | IsStrictlyPositive b} then cfc (fun x => p⁻¹ * (x ^ p - 1)) a else 0) (𝓝[>] 0)
-      (𝓝 (fun a => if a ∈ {b : A | IsStrictlyPositive b} then CFC.log a else 0)) := by
+lemma CFC.tendsto_ite_cfc_rpow_sub_one_ite_log
+    : Tendsto
+      (fun (p : ℝ) (a : A) =>
+        if a ∈ {b : A | IsStrictlyPositive b} then cfc (fun x => p⁻¹ * (x ^ p - 1)) a else 0)
+      (𝓝[>] 0) (𝓝 (fun a => if a ∈ {b : A | IsStrictlyPositive b} then CFC.log a else 0)) := by
   rw [tendsto_pi_nhds]
   intro a
   by_cases ha : IsStrictlyPositive a
@@ -62,24 +61,29 @@ lemma CFC.tendsto_ite_cfc_rpow_sub_one_ite_log :
   · simp_all
 
 open scoped Classical in
-private lemma CFC.cfc_rpow_sub_one_eqOn {p : ℝ} :
-    {a : A | IsStrictlyPositive a}.EqOn
-      (fun a => if a ∈ {b : A | IsStrictlyPositive b}
-        then cfc (fun x => p⁻¹ * (x ^ p - 1)) a else 0) (fun a => p⁻¹ • (a ^ p - (1 : A))) := by
+private lemma CFC.cfc_rpow_sub_one_eqOn {p : ℝ}
+    : {a : A | IsStrictlyPositive a}.EqOn
+      (fun a =>
+        if a ∈ {b : A | IsStrictlyPositive b} then
+          cfc (fun x => p⁻¹ * (x ^ p - 1)) a
+        else
+          0)
+      (fun a => p⁻¹ • (a ^ p - (1 : A))) := by
   intro a ha
-  simp only [ha, ↓reduceIte, ← smul_eq_mul]
+  simp only [ha, ↓ reduceIte, ← smul_eq_mul]
   rw [cfc_smul _ (hf := by fun_prop (disch := grind)),
-    cfc_sub _ _ (hf := by fun_prop (disch := grind)),
-    cfc_const_one .., rpow_eq_cfc_real ..]
+    cfc_sub _ _ (hf := by fun_prop (disch := grind)), cfc_const_one .., rpow_eq_cfc_real ..]
 
 open Classical Real in
 /-- `log` is operator monotone. -/
 lemma CFC.log_monotoneOn : MonotoneOn log {a : A | IsStrictlyPositive a} := by
-  /- We have that `log x = lim_{p → 0} p⁻¹ * (x ^ p - 1)` with uniform convergence on the spectrum
+  /-
+  We have that `log x = lim_{p → 0} p⁻¹ * (x ^ p - 1)` with uniform convergence on the spectrum
   of any positive definite operator, which means that `CFC.log a = lim_{p → 0} p⁻¹ * (a ^ p - 1)`
   by the continuity of the continuous functional calculus (`tendsto_cfc_fun`). Then, we use the
   fact that `x^p` is monotone for `p ∈ [0,1]` (`CFC.monotone_nnrpow`) and that the set of
-  monotone functions is closed (`isClosed_monotoneOn`) to conclude the proof. -/
+  monotone functions is closed (`isClosed_monotoneOn`) to conclude the proof.
+  -/
   let s := {a : A | IsStrictlyPositive a}
   let f (p : ℝ) := fun a => if a ∈ s then cfc (A := A) (fun x => p⁻¹ * (x ^ p - 1)) a else 0
   let g := fun a => if a ∈ s then log (A := A) a else 0
@@ -94,18 +98,20 @@ lemma CFC.log_monotoneOn : MonotoneOn log {a : A | IsStrictlyPositive a} := by
   grind
 
 @[gcongr]
-lemma CFC.log_le_log {a b : A} (hab : a ≤ b) (ha : IsStrictlyPositive a := by cfc_tac) :
-    log a ≤ log b :=
+lemma CFC.log_le_log {a b : A} (hab : a ≤ b) (ha : IsStrictlyPositive a := by cfc_tac)
+    : log a ≤ log b :=
   log_monotoneOn ha (ha.of_le hab) hab
 
 open Classical Real Set in
 /-- `log` is operator concave. -/
-lemma CFC.concaveOn_log : ConcaveOn ℝ {a : A | IsStrictlyPositive a} log := by
-  /- We have that `log x = lim_{p → 0} p⁻¹ * (x ^ p - 1)` with uniform convergence on the spectrum
+lemma CFC.concaveOn_log : ConcaveOn ℝ ({a : A | IsStrictlyPositive a}) log := by
+  /-
+  We have that `log x = lim_{p → 0} p⁻¹ * (x ^ p - 1)` with uniform convergence on the spectrum
   of any positive definite operator, which means that `CFC.log a = lim_{p → 0} p⁻¹ * (a ^ p - 1)`
   by the continuity of the continuous functional calculus (`tendsto_cfc_fun`). Then, we use the
   fact that `x^p` is concave for `p ∈ [0,1]` (`CFC.concaveOn_rpow`) and that the set of
-  concave functions is closed (`isClosed_setOfPred_concaveOn`) to conclude the proof. -/
+  concave functions is closed (`isClosed_setOfPred_concaveOn`) to conclude the proof.
+  -/
   set s := {a : A | IsStrictlyPositive a}
   let f (p : ℝ) := fun a => if a ∈ s then cfc (A := A) (fun x => p⁻¹ * (x ^ p - 1)) a else 0
   let g := fun a => if a ∈ s then log (A := A) a else 0

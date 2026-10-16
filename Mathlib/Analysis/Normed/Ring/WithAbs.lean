@@ -26,11 +26,13 @@ public import Mathlib.Analysis.Normed.Ring.TransferInstance
 
 variable {R : Type*} {S : Type*} [Semiring S] [PartialOrder S]
 
-/-- Type synonym for a semiring which depends on an absolute value. This is a function that takes
+/--
+Type synonym for a semiring which depends on an absolute value. This is a function that takes
 an absolute value on a semiring and returns the semiring. We use this to assign and infer instances
 on a semiring that depend on absolute values.
 
-This is also helpful when dealing with several absolute values on the same semiring. -/
+This is also helpful when dealing with several absolute values on the same semiring.
+-/
 structure WithAbs [Semiring R] (v : AbsoluteValue R S) where
   /-- Converts an element of `R` to an element of `WithAbs v`. -/
   toAbs (v) ::
@@ -74,8 +76,7 @@ lemma toAbs_injective : Function.Injective (toAbs v) :=
 lemma ofAbs_bijective : Function.Bijective (ofAbs (v := v)) :=
   ⟨ofAbs_injective v, ofAbs_surjective v⟩
 
-lemma toAbs_bijective : Function.Bijective (toAbs v) :=
-  ⟨toAbs_injective v, toAbs_surjective v⟩
+lemma toAbs_bijective : Function.Bijective (toAbs v) := ⟨toAbs_injective v, toAbs_surjective v⟩
 
 @[simp] lemma toAbs_zero : toAbs v (0 : R) = 0 := rfl
 @[simp] lemma ofAbs_zero : ofAbs (0 : WithAbs v) = 0 := rfl
@@ -107,8 +108,9 @@ instance [Nontrivial R] : Nontrivial (WithAbs v) := (equiv v).nontrivial
 instance [Unique R] : Unique (WithAbs v) := (equiv v).unique
 instance : Inhabited (WithAbs v) := ⟨0⟩
 
-variable {T U : Type*} [Semiring T] [Semiring U] (w : AbsoluteValue T S) (u : AbsoluteValue U S)
-  (f : R →+* T) (g : T →+* U)
+variable
+  {T U : Type*} [Semiring T] [Semiring U]
+  (w : AbsoluteValue T S) (u : AbsoluteValue U S) (f : R →+* T) (g : T →+* U)
 
 /-- Lift a ring hom to `WithAbs`. -/
 def map : WithAbs v →+* WithAbs w := (equiv w).symm.toRingHom.comp (f.comp (equiv v).toRingHom)
@@ -126,13 +128,12 @@ def congr : WithAbs v ≃+* WithAbs w where
   left_inv x := by simp
   right_inv x := by simp
 
-@[simp]
-theorem congr_refl : congr v v (RingEquiv.refl R) = RingEquiv.refl (WithAbs v) := rfl
+@[simp] theorem congr_refl : congr v v (RingEquiv.refl R) = RingEquiv.refl (WithAbs v) := rfl
 theorem congr_trans : congr v u (f.trans g) = (congr v w f).trans (congr w u g) := rfl
 theorem congr_symm : (congr v w f).symm = congr w v f.symm := rfl
 @[simp] theorem congr_apply (x : WithAbs v) : congr v w f x = toAbs w (f x.ofAbs) := rfl
-@[simp] theorem congr_symm_apply (x : WithAbs w) :
-    (congr v w f).symm x = toAbs v (f.symm x.ofAbs) := rfl
+@[simp]
+theorem congr_symm_apply (x : WithAbs w) : (congr v w f).symm x = toAbs v (f.symm x.ofAbs) := rfl
 
 end Semiring
 
@@ -182,31 +183,30 @@ variable {R T : Type*} [Semiring R] (v : AbsoluteValue R S)
 instance [SMul R T] : SMul (WithAbs v) T where
   smul x t := ofAbs x • t
 
-theorem smul_left_def [SMul R T] (x : WithAbs v) (t : T) :
-    x • t = ofAbs x • t := rfl
+theorem smul_left_def [SMul R T] (x : WithAbs v) (t : T) : x • t = ofAbs x • t := rfl
 
 instance [SMul R T] [FaithfulSMul R T] : FaithfulSMul (WithAbs v) T where
   eq_of_smul_eq_smul h := ofAbs_injective v <| FaithfulSMul.eq_of_smul_eq_smul h
 
 instance [SMul T R] : SMul T (WithAbs v) := Equiv.smul T { toFun := ofAbs, invFun := toAbs v }
 
-theorem smul_right_def [SMul T R] (t : T) (x : WithAbs v) :
-    t • x = toAbs v (t • x.ofAbs) := rfl
+theorem smul_right_def [SMul T R] (t : T) (x : WithAbs v) : t • x = toAbs v (t • x.ofAbs) := rfl
 
 instance [SMul T R] [FaithfulSMul T R] : FaithfulSMul T (WithAbs v) where
   eq_of_smul_eq_smul h := by
     simp only [smul_right_def, toAbs.injEq] at h
     exact FaithfulSMul.eq_of_smul_eq_smul fun _ ↦ h (toAbs v _)
 
-instance {P : Type*} [SMul T P] [SMul R T] [SMul R P] [IsScalarTower R T P] :
-    IsScalarTower (WithAbs v) T P where
+instance {P : Type*} [SMul T P] [SMul R T] [SMul R P] [IsScalarTower R T P]
+    : IsScalarTower (WithAbs v) T P where
   smul_assoc := by simp [smul_left_def]
 
-instance {P : Type*} [SMul P R] [SMul T R] [SMul P T]
-    [IsScalarTower P T R] : IsScalarTower P T (WithAbs v) := (equiv v).isScalarTower P T
+instance {P : Type*} [SMul P R] [SMul T R] [SMul P T] [IsScalarTower P T R]
+    : IsScalarTower P T (WithAbs v) :=
+  (equiv v).isScalarTower P T
 
-instance {P : Type*} [SMul P R] [SMul P T] [SMul R T]
-    [IsScalarTower P R T] : IsScalarTower P (WithAbs v) T where
+instance {P : Type*} [SMul P R] [SMul P T] [SMul R T] [IsScalarTower P R T]
+    : IsScalarTower P (WithAbs v) T where
   smul_assoc := by simp [smul_right_def, smul_left_def]
 
 instance moduleLeft [AddCommMonoid T] [Module R T] : Module (WithAbs v) T :=
@@ -218,8 +218,10 @@ instance [Semiring T] [Module T R] : Module T (WithAbs v) :=
 variable [Semiring T] [Module R T] (v : AbsoluteValue T S)
 
 variable (R) in
-/-- The canonical `R`-linear isomorphism between `WithAbs v` and `T`, when
-`v : AbsoluteValue T S`. -/
+/--
+The canonical `R`-linear isomorphism between `WithAbs v` and `T`, when
+`v : AbsoluteValue T S`.
+-/
 def linearEquiv : WithAbs v ≃ₗ[R] T := (equiv v).toAddEquiv.linearEquiv R
 
 variable {v}
@@ -237,36 +239,40 @@ variable (T) in
 instance algebraLeft (v : AbsoluteValue R S) : Algebra (WithAbs v) T :=
   fast_instance% .compHom T (equiv v).toRingHom
 
-theorem algebraMap_left_apply {v : AbsoluteValue R S} (x : WithAbs v) :
-    algebraMap (WithAbs v) T x = algebraMap R T x.ofAbs := rfl
+theorem algebraMap_left_apply {v : AbsoluteValue R S} (x : WithAbs v)
+    : algebraMap (WithAbs v) T x = algebraMap R T x.ofAbs :=
+  rfl
 
-theorem algebraMap_left_injective (v : AbsoluteValue R S)
-    (h : Function.Injective (algebraMap R T)) :
-    Function.Injective (algebraMap (WithAbs v) T) :=
+theorem algebraMap_left_injective (v : AbsoluteValue R S) (h : Function.Injective (algebraMap R T))
+    : Function.Injective (algebraMap (WithAbs v) T) :=
   h.comp (ofAbs_injective v)
 
-instance (v : AbsoluteValue T S) : Algebra R (WithAbs v) :=
-  fast_instance% (equiv v).algebra R
+instance (v : AbsoluteValue T S) : Algebra R (WithAbs v) := fast_instance% (equiv v).algebra R
 
-theorem algebraMap_right_apply {v : AbsoluteValue T S} (x : R) :
-    algebraMap R (WithAbs v) x = toAbs v (algebraMap R T x) := rfl
+theorem algebraMap_right_apply {v : AbsoluteValue T S} (x : R)
+    : algebraMap R (WithAbs v) x = toAbs v (algebraMap R T x) :=
+  rfl
 
-theorem algebraMap_right_injective (v : AbsoluteValue T S)
-    (h : Function.Injective (algebraMap R T)) : Function.Injective (algebraMap R (WithAbs v)) :=
+theorem algebraMap_right_injective (v : AbsoluteValue T S) (h : Function.Injective (algebraMap R T))
+    : Function.Injective (algebraMap R (WithAbs v)) :=
   (toAbs_injective v).comp h
 
-theorem ofAbs_algebraMap (v : AbsoluteValue R S) (w : AbsoluteValue T S) (x : WithAbs v) :
-    (algebraMap (WithAbs v) (WithAbs w) x).ofAbs = algebraMap R T x.ofAbs := rfl
+theorem ofAbs_algebraMap (v : AbsoluteValue R S) (w : AbsoluteValue T S) (x : WithAbs v)
+    : (algebraMap (WithAbs v) (WithAbs w) x).ofAbs = algebraMap R T x.ofAbs :=
+  rfl
 
 variable (R) in
-/-- The canonical algebra isomorphism from an `R`-algebra `R'` with an absolute value `v`
-to `R'`. -/
+/--
+The canonical algebra isomorphism from an `R`-algebra `R'` with an absolute value `v`
+to `R'`.
+-/
 def algEquiv (v : AbsoluteValue T S) : (WithAbs v) ≃ₐ[R] T := (equiv v).algEquiv R
 
-@[simp] theorem algEquiv_apply (v : AbsoluteValue T S) (x : WithAbs v) :
-    algEquiv R v x = x.ofAbs := rfl
-@[simp] theorem algEquiv_symm_apply (v : AbsoluteValue T S) (x : T) :
-    (algEquiv R v).symm x = toAbs v x := rfl
+@[simp]
+theorem algEquiv_apply (v : AbsoluteValue T S) (x : WithAbs v) : algEquiv R v x = x.ofAbs := rfl
+@[simp]
+theorem algEquiv_symm_apply (v : AbsoluteValue T S) (x : T) : (algEquiv R v).symm x = toAbs v x :=
+  rfl
 
 end algebra
 
@@ -274,8 +280,9 @@ end WithAbs
 
 namespace AbsoluteValue
 
-variable {L K S : Type*} [CommSemiring K] [Semiring L] [Algebra K L] [FaithfulSMul K L]
-  [PartialOrder S] [Semiring S]
+variable
+  {L K S : Type*}
+  [CommSemiring K] [Semiring L] [Algebra K L] [FaithfulSMul K L] [PartialOrder S] [Semiring S]
 
 variable (K)
 
@@ -283,14 +290,16 @@ variable (K)
 def under (w : AbsoluteValue L S) : AbsoluteValue K S :=
   w.comp (FaithfulSMul.algebraMap_injective K L)
 
-theorem under_def (w : AbsoluteValue L S) :
-    w.under K = w.comp (FaithfulSMul.algebraMap_injective K L) :=
+theorem under_def (w : AbsoluteValue L S)
+    : w.under K = w.comp (FaithfulSMul.algebraMap_injective K L) :=
   rfl
 
 variable {K}
 
-/-- An absolute value `w` of `L / K` lies over the absolute value `v` of `K` if `v` is the
-restriction of `w` to `K`. -/
+/--
+An absolute value `w` of `L / K` lies over the absolute value `v` of `K` if `v` is the
+restriction of `w` to `K`.
+-/
 class LiesOver (w : AbsoluteValue L S) (v : AbsoluteValue K S) : Prop where
   under_eq (w) (v) : w.under K = v
 

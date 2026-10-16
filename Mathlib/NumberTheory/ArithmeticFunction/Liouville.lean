@@ -22,20 +22,19 @@ This file defines the Liouville function `λ(n)`.
 
 namespace ArithmeticFunction
 
-/-- The Liouville function `λ(n)` defined to be `1` if `n` has an even number of prime factors
-(counting multiplicity) and `-1` otherwise. -/
+/--
+The Liouville function `λ(n)` defined to be `1` if `n` has an even number of prime factors
+(counting multiplicity) and `-1` otherwise.
+-/
 def liouville : ArithmeticFunction ℤ where
   toFun n := if n = 0 then 0 else (-1) ^ cardFactors n
   map_zero' := by simp
 
-theorem liouville_apply {n : ℕ} (h : n ≠ 0) : liouville n = (-1) ^ cardFactors n :=
-  ite_eq_right h
+theorem liouville_apply {n : ℕ} (h : n ≠ 0) : liouville n = (-1) ^ cardFactors n := ite_eq_right h
 
-theorem liouville_ne_zero {n : ℕ} (h : n ≠ 0) : liouville n ≠ 0 := by
-  simp [liouville_apply h]
+theorem liouville_ne_zero {n : ℕ} (h : n ≠ 0) : liouville n ≠ 0 := by simp [liouville_apply h]
 
-theorem liouville_apply_one : liouville 1 = 1 := by
-  simp [liouville_apply]
+theorem liouville_apply_one : liouville 1 = 1 := by simp [liouville_apply]
 
 theorem liouville_apply_mul (m n : ℕ) : liouville (m * n) = liouville m * liouville n := by
   by_cases hm : m = 0

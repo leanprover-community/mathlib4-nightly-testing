@@ -24,8 +24,10 @@ variable {M : Type*} [CommMonoid M] {S : Submonoid M}
 
 namespace Localization
 
-/-- The localization of a finitely generated monoid at a finitely generated submonoid is
-finitely generated. -/
+/--
+The localization of a finitely generated monoid at a finitely generated submonoid is
+finitely generated.
+-/
 @[to_additive /-- The localization of a finitely generated monoid at a finitely generated submonoid
 is finitely generated. -/]
 lemma fg [Monoid.FG M] (hS : S.FG) : Monoid.FG <| Localization S := by

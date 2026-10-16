@@ -53,14 +53,14 @@ lemma IsMinimalPrime.iff_minimal (p : Ideal R) : IsMinimalPrime p ↔ Minimal Id
   simp [Ideal.IsMinimalPrime]
 
 /-- `I.minimalPrimes` is the set of ideals that are minimal primes over `I`. -/
-protected abbrev Ideal.minimalPrimes : Set (Ideal R) :=
-  {p | I.IsMinimalPrime p}
+protected abbrev Ideal.minimalPrimes : Set (Ideal R) := {p | I.IsMinimalPrime p}
 
 variable (R) in
-/-- `minimalPrimes R` is the set of minimal primes of `R`.
-This is defined as `Ideal.minimalPrimes ⊥`. -/
-abbrev minimalPrimes : Set (Ideal R) :=
-  {p | IsMinimalPrime p}
+/--
+`minimalPrimes R` is the set of minimal primes of `R`.
+This is defined as `Ideal.minimalPrimes ⊥`.
+-/
+abbrev minimalPrimes : Set (Ideal R) := {p | IsMinimalPrime p}
 
 lemma minimalPrimes_eq_minimals : minimalPrimes R = {x | Minimal Ideal.IsPrime x} := by
   ext; simp [Ideal.IsMinimalPrime]
@@ -68,8 +68,7 @@ lemma minimalPrimes_eq_minimals : minimalPrimes R = {x | Minimal Ideal.IsPrime x
 variable {I J}
 
 @[deprecated "Use `Ideal.IsMinimalPrime.isPrime` instead." (since := "2026-05-08")]
-theorem Ideal.minimalPrimes_isPrime {p : Ideal R} (h : p ∈ minimalPrimes R) : p.IsPrime :=
-  h.1.1
+theorem Ideal.minimalPrimes_isPrime {p : Ideal R} (h : p ∈ minimalPrimes R) : p.IsPrime := h.1.1
 
 theorem Ideal.exists_minimalPrimes_le [J.IsPrime] (e : I ≤ J) : ∃ p ∈ I.minimalPrimes, p ≤ J := by
   set S := { p : (Ideal R)ᵒᵈ | Ideal.IsPrime p ∧ I ≤ OrderDual.ofDual p }
@@ -80,9 +79,11 @@ theorem Ideal.exists_minimalPrimes_le [J.IsPrime] (e : I ≤ J) : ∃ p ∈ I.mi
   swap
   · refine ⟨show J.IsPrime by infer_instance, e⟩
   rintro (c : Set (Ideal R)) hc hc' J' hJ'
-  refine
-    ⟨OrderDual.toDual (sInf c),
-      ⟨Ideal.sInf_isPrime_of_isChain ⟨J', hJ'⟩ hc'.symm fun x hx => (hc hx).1, ?_⟩, ?_⟩
+  refine ⟨
+    OrderDual.toDual (sInf c),
+    ⟨Ideal.sInf_isPrime_of_isChain ⟨J', hJ'⟩ hc'.symm fun x hx => (hc hx).1, ?_⟩,
+    ?_
+  ⟩
   · rw [OrderDual.ofDual_toDual, le_sInf_iff]
     exact fun _ hx => (hc hx).2
   · rintro z hz
@@ -146,8 +147,7 @@ theorem Ideal.minimalPrimes_eq_subsingleton_self [I.IsPrime] : I.minimalPrimes =
   exact ⟨⟨inferInstance, rfl.le⟩, fun _ h _ => h.2⟩
 
 variable (R) in
-theorem IsDomain.minimalPrimes_eq_singleton_bot [IsDomain R] :
-    minimalPrimes R = {⊥} :=
+theorem IsDomain.minimalPrimes_eq_singleton_bot [IsDomain R] : minimalPrimes R = {⊥} :=
   Ideal.minimalPrimes_eq_subsingleton_self
 
 end
@@ -162,8 +162,7 @@ theorem Ideal.minimalPrimes_top : (⊤ : Ideal R).minimalPrimes = ∅ := by
   intro h
   exact h.isPrime.ne_top (top_le_iff.mp h.le)
 
-theorem Ideal.minimalPrimes_eq_empty_iff (I : Ideal R) :
-    I.minimalPrimes = ∅ ↔ I = ⊤ := by
+theorem Ideal.minimalPrimes_eq_empty_iff (I : Ideal R) : I.minimalPrimes = ∅ ↔ I = ⊤ := by
   constructor
   · intro e
     by_contra h
@@ -174,9 +173,11 @@ theorem Ideal.minimalPrimes_eq_empty_iff (I : Ideal R) :
   · rintro rfl
     exact Ideal.minimalPrimes_top
 
-lemma Ideal.mem_minimalPrimes_sup {R : Type*} [CommRing R] {p I J : Ideal R} [p.IsPrime]
-    (hle : I ≤ p) (h : p.map (Ideal.Quotient.mk I) ∈ (J.map (Ideal.Quotient.mk I)).minimalPrimes) :
-    p ∈ (I ⊔ J).minimalPrimes := by
+lemma Ideal.mem_minimalPrimes_sup
+    {R : Type*} [CommRing R]
+    {p I J : Ideal R} [p.IsPrime]
+    (hle : I ≤ p) (h : p.map (Ideal.Quotient.mk I) ∈ (J.map (Ideal.Quotient.mk I)).minimalPrimes)
+    : p ∈ (I ⊔ J).minimalPrimes := by
   refine ⟨⟨‹_›, ?_⟩, fun q ⟨_, hq⟩ hqp ↦ ?_⟩
   · rw [sup_le_iff]
     refine ⟨hle, by simpa [hle] using Ideal.comap_mono (f := Ideal.Quotient.mk I) h.le⟩
@@ -187,15 +188,18 @@ lemma Ideal.mem_minimalPrimes_sup {R : Type*} [CommRing R] {p I J : Ideal R} [p.
 
 variable {S : Type*} [CommRing S] [Algebra R S]
 
-/-- If `P` lies over `p`, `p` is a minimal prime over `I` and the image of `P` is
+/--
+If `P` lies over `p`, `p` is a minimal prime over `I` and the image of `P` is
 a minimal prime over the image of `J` in `S ⧸ p S`, then `P` is a minimal prime
-over `I S ⊔ J`. -/
+over `I S ⊔ J`.
+-/
 lemma Ideal.map_sup_mem_minimalPrimes_of_map_quotientMk_mem_minimalPrimes
     {I p : Ideal R} {P : Ideal S} [P.IsPrime] [P.LiesOver p]
-    (hI : p ∈ I.minimalPrimes) {J : Ideal S} (hJP : J ≤ P)
-    (hJ : P.map (Ideal.Quotient.mk _) ∈
-      (J.map (Ideal.Quotient.mk (p.map (algebraMap R S)))).minimalPrimes) :
-    P ∈ (I.map (algebraMap R S) ⊔ J).minimalPrimes := by
+    (hI : p ∈ I.minimalPrimes)
+    {J : Ideal S} (hJP : J ≤ P)
+    (hJ : P.map (Ideal.Quotient.mk _)
+      ∈ (J.map (Ideal.Quotient.mk (p.map (algebraMap R S)))).minimalPrimes)
+    : P ∈ (I.map (algebraMap R S) ⊔ J).minimalPrimes := by
   refine ⟨⟨inferInstance, sup_le_iff.mpr ?_⟩, fun q ⟨_, hleq⟩ hqle ↦ ?_⟩
   · refine ⟨?_, hJP⟩
     rw [Ideal.map_le_iff_le_comap, ← Ideal.under_def, ← Ideal.over_def P p]
@@ -206,10 +210,10 @@ lemma Ideal.map_sup_mem_minimalPrimes_of_map_quotientMk_mem_minimalPrimes
       refine hI.2 ⟨inferInstance, le_trans Ideal.le_comap_map (Ideal.comap_mono hleq.1)⟩ ?_
       convert Ideal.comap_mono hqle
       exact Ideal.LiesOver.over
-    have h2 : P.map (Ideal.Quotient.mk (p.map (algebraMap R S))) ≤
-        q.map (Ideal.Quotient.mk (p.map (algebraMap R S))) :=
-      hJ.2 ⟨Ideal.isPrime_map_quotientMk_of_isPrime h1, Ideal.map_mono hleq.2⟩
-        (Ideal.map_mono hqle)
+    have h2
+        : P.map (Ideal.Quotient.mk (p.map (algebraMap R S)))
+          ≤ q.map (Ideal.Quotient.mk (p.map (algebraMap R S))) :=
+      hJ.2 ⟨Ideal.isPrime_map_quotientMk_of_isPrime h1, Ideal.map_mono hleq.2⟩ (Ideal.map_mono hqle)
     simpa [h1] using Ideal.comap_mono (f := Ideal.Quotient.mk (p.map (algebraMap R S))) h2
 
 end

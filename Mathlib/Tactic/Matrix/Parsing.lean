@@ -7,7 +7,6 @@ module
 
 public meta import Mathlib.LinearAlgebra.Matrix.Notation -- shake: keep (!![] elaboration)
 public import Mathlib.Data.Fin.VecNotation
-
 import Mathlib.Data.Finset.Attr
 import Mathlib.LinearAlgebra.Matrix.Defs
 import Mathlib.Tactic.Bound.Init
@@ -35,26 +34,38 @@ open Lean Meta
 
 namespace Mathlib.Tactic.Matrix
 
-/-- Match a `Fin`-indexed matrix literal: its dimensions, element type, and rows of entries;
-with `closed := true`, only a literal without free variables or metavariables. -/
-def matchMatrixLit? (A : Expr) (closed := true) :
-    MetaM (Option (Nat × Nat × Expr × Array (Array Expr))) := do
+/--
+Match a `Fin`-indexed matrix literal: its dimensions, element type, and rows of entries;
+with `closed := true`, only a literal without free variables or metavariables.
+-/
+def matchMatrixLit? (A : Expr) (closed := true)
+    : MetaM (Option (Nat × Nat × Expr × Array (Array Expr))) := do
   -- A literal with free variables (hypothesis- or let-bound) or metavariables is not evaluable
   -- by a tactic computing with its entries; unfold or substitute such variables before calling it.
   if closed && (A.hasFVar || A.hasMVar) then return none
-  let_expr Matrix finM finN R := ← inferType A | return none
-  let_expr Fin mE := finM | return none
-  let_expr Fin nE := finN | return none
-  let some m ← getNatValue? mE | return none
-  let some n ← getNatValue? nE | return none
-  let_expr DFunLike.coe _ _ _ _ f v := A | return none
-  let_expr Matrix.of _ _ _ := f | return none
+  let_expr Matrix finM finN R := ← inferType A
+    | return none
+  let_expr Fin mE := finM
+    | return none
+  let_expr Fin nE := finN
+    | return none
+  let some m ← getNatValue? mE
+    | return none
+  let some n ← getNatValue? nE
+    | return none
+  let_expr DFunLike.coe _ _ _ _ f v := A
+    | return none
+  let_expr Matrix.of _ _ _ := f
+    | return none
   let (rows, _, _) ← Matrix.matchVecConsPrefix mE v
-  unless rows.length == m do return none
-  let entries ← rows.toArray.mapM fun row => do
-    let (es, _, _) ← Matrix.matchVecConsPrefix nE row
-    return es.toArray
-  unless entries.all (·.size == n) do return none
+  unless rows.length == m do
+    return none
+  let entries ←
+    rows.toArray.mapM fun row => do
+      let (es, _, _) ← Matrix.matchVecConsPrefix nE row
+      return es.toArray
+  unless entries.all (·.size == n) do
+    return none
   return some (m, n, R, entries)
 
 end Mathlib.Tactic.Matrix

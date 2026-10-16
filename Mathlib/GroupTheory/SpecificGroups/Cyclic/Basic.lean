@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Group.Basic
 public import Mathlib.Algebra.Group.Equiv.Defs
 public import Mathlib.Algebra.Group.IsCommutative
 public import Mathlib.Algebra.Group.TypeTags.Basic
-
 import Mathlib.Algebra.Group.Action.Defs
 import Mathlib.Tactic.Contrapose
 
@@ -37,8 +36,8 @@ instance (priority := 100) isCyclic_of_subsingleton [Group α] [Subsingleton α]
   ⟨⟨1, fun _ => ⟨0, Subsingleton.elim _ _⟩⟩⟩
 
 @[simp]
-theorem isCyclic_multiplicative_iff [SubNegMonoid α] :
-    IsCyclic (Multiplicative α) ↔ IsAddCyclic α :=
+theorem isCyclic_multiplicative_iff [SubNegMonoid α]
+    : IsCyclic (Multiplicative α) ↔ IsAddCyclic α :=
   ⟨fun H ↦ ⟨H.1⟩, fun H ↦ ⟨H.1⟩⟩
 
 instance isCyclic_multiplicative [AddGroup α] [IsAddCyclic α] : IsCyclic (Multiplicative α) :=
@@ -65,25 +64,25 @@ alias IsAddCyclic.commutative := IsAddCyclic.isAddCommutative
 alias IsCyclic.commutative := IsCyclic.isMulCommutative
 
 open scoped IsMulCommutative in
-/-- A cyclic group is always commutative. This is not an `instance` because often we have a better
-proof of `CommGroup`. -/
+/--
+A cyclic group is always commutative. This is not an `instance` because often we have a better
+proof of `CommGroup`.
+-/
 @[to_additive (attr := instance_reducible)
       /-- A cyclic group is always commutative. This is not an `instance` because often we have
       a better proof of `AddCommGroup`. -/]
-def IsCyclic.commGroup [Group α] [IsCyclic α] : CommGroup α :=
-  inferInstance
+def IsCyclic.commGroup [Group α] [IsCyclic α] : CommGroup α := inferInstance
 
 variable [Group α] [Group G] [Group G']
 
 /-- A non-cyclic multiplicative group is non-trivial. -/
 @[to_additive /-- A non-cyclic additive group is non-trivial. -/]
-theorem Nontrivial.of_not_isCyclic (nc : ¬IsCyclic α) : Nontrivial α := by
+theorem Nontrivial.of_not_isCyclic (nc : ¬ IsCyclic α) : Nontrivial α := by
   contrapose! nc
   exact isCyclic_of_subsingleton
 
 @[to_additive]
-theorem MonoidHom.map_cyclic [h : IsCyclic G] (σ : G →* G) :
-    ∃ m : ℤ, ∀ g : G, σ g = g ^ m := by
+theorem MonoidHom.map_cyclic [h : IsCyclic G] (σ : G →* G) : ∃ m : ℤ, ∀ g : G, σ g = g ^ m := by
   let ⟨h, hG⟩ := exists_zpow_surjective G
   obtain ⟨m, hm⟩ := hG (σ h)
   refine ⟨m, fun g => ?_⟩
@@ -91,9 +90,10 @@ theorem MonoidHom.map_cyclic [h : IsCyclic G] (σ : G →* G) :
   rw [map_zpow, ← hm, ← zpow_mul, ← zpow_mul']
 
 @[to_additive]
-theorem isCyclic_of_surjective {F : Type*} [hH : IsCyclic G']
-    [FunLike F G' G] [MonoidHomClass F G' G] (f : F) (hf : Function.Surjective f) :
-    IsCyclic G := by
+theorem isCyclic_of_surjective
+    {F : Type*} [hH : IsCyclic G'] [FunLike F G' G] [MonoidHomClass F G' G]
+    (f : F) (hf : Function.Surjective f)
+    : IsCyclic G := by
   obtain ⟨x, hx⟩ := hH
   refine ⟨f x, fun a ↦ ?_⟩
   obtain ⟨a, rfl⟩ := hf a
@@ -101,10 +101,10 @@ theorem isCyclic_of_surjective {F : Type*} [hH : IsCyclic G']
   exact ⟨n, (map_zpow _ _ _).symm⟩
 
 @[to_additive]
-theorem MulEquiv.isCyclic (e : G ≃* G') :
-    IsCyclic G ↔ IsCyclic G' :=
-  ⟨fun _ ↦ isCyclic_of_surjective e e.surjective,
-    fun _ ↦ isCyclic_of_surjective e.symm e.symm.surjective⟩
+theorem MulEquiv.isCyclic (e : G ≃* G') : IsCyclic G ↔ IsCyclic G' := ⟨
+  fun _ ↦ isCyclic_of_surjective e e.surjective,
+  fun _ ↦ isCyclic_of_surjective e.symm e.symm.surjective
+⟩
 
 end Cyclic
 

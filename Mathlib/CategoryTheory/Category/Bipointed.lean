@@ -19,7 +19,6 @@ Monoidal structure
 
 @[expose] public section
 
-
 open CategoryTheory
 
 universe u
@@ -36,16 +35,13 @@ namespace Bipointed
 instance : CoeSort Bipointed Type* := ⟨Bipointed.X⟩
 
 /-- Turns a bipointing into a bipointed type. -/
-abbrev of {X : Type*} (to_prod : X × X) : Bipointed :=
-  ⟨X, to_prod⟩
+abbrev of {X : Type*} (to_prod : X × X) : Bipointed := ⟨X, to_prod⟩
 
-theorem coe_of {X : Type*} (to_prod : X × X) : ↥(of to_prod) = X :=
-  rfl
+theorem coe_of {X : Type*} (to_prod : X × X) : ↥(of to_prod) = X := rfl
 
 alias _root_.Prod.Bipointed := of
 
-instance : Inhabited Bipointed :=
-  ⟨of ((), ())⟩
+instance : Inhabited Bipointed := ⟨of ((), ())⟩
 
 /-- Morphisms in `Bipointed`. -/
 @[ext]
@@ -58,19 +54,18 @@ protected structure Hom (X Y : Bipointed.{u}) : Type u where
 namespace Hom
 
 /-- The identity morphism of `X : Bipointed`. -/
-@[simps]
-nonrec def id (X : Bipointed) : Bipointed.Hom X X :=
-  ⟨id, rfl, rfl⟩
+@[simps] nonrec def id (X : Bipointed) : Bipointed.Hom X X := ⟨id, rfl, rfl⟩
 
-instance (X : Bipointed) : Inhabited (Bipointed.Hom X X) :=
-  ⟨id X⟩
+instance (X : Bipointed) : Inhabited (Bipointed.Hom X X) := ⟨id X⟩
 
 /-- Composition of morphisms of `Bipointed`. -/
 @[simps]
-def comp {X Y Z : Bipointed.{u}} (f : Bipointed.Hom X Y) (g : Bipointed.Hom Y Z) :
-    Bipointed.Hom X Z :=
-  ⟨g.toFun ∘ f.toFun, by rw [Function.comp_apply, f.map_fst, g.map_fst], by
-    rw [Function.comp_apply, f.map_snd, g.map_snd]⟩
+def comp {X Y Z : Bipointed.{u}} (f : Bipointed.Hom X Y) (g : Bipointed.Hom Y Z)
+    : Bipointed.Hom X Z := ⟨
+  g.toFun ∘ f.toFun,
+  by rw [Function.comp_apply, f.map_fst, g.map_fst],
+  by rw [Function.comp_apply, f.map_snd, g.map_snd]
+⟩
 
 end Hom
 
@@ -81,7 +76,7 @@ instance largeCategory : LargeCategory Bipointed where
 
 /-- The subtype of functions corresponding to the morphisms in `Bipointed`. -/
 abbrev HomSubtype (X Y : Bipointed) :=
-  { f : X → Y // f X.toProd.1 = Y.toProd.1 ∧ f X.toProd.2 = Y.toProd.2 }
+  {f : X → Y // f X.toProd.1 = Y.toProd.1 ∧ f X.toProd.2 = Y.toProd.2}
 
 @[macro_inline]
 instance (X Y : Bipointed) : FunLike (HomSubtype X Y) X Y where
@@ -109,9 +104,7 @@ def swapEquiv : Bipointed ≌ Bipointed where
   unitIso := Iso.refl _
   counitIso := Iso.refl _
 
-@[simp]
-theorem swapEquiv_symm : swapEquiv.symm = swapEquiv :=
-  rfl
+@[simp] theorem swapEquiv_symm : swapEquiv.symm = swapEquiv := rfl
 
 end Bipointed
 
@@ -126,23 +119,23 @@ def bipointedToPointedSnd : Bipointed ⥤ Pointed where
   map f := ⟨f.toFun, f.map_snd⟩
 
 @[simp]
-theorem bipointedToPointedFst_comp_forget :
-    bipointedToPointedFst ⋙ forget Pointed = forget Bipointed :=
+theorem bipointedToPointedFst_comp_forget
+    : bipointedToPointedFst ⋙ forget Pointed = forget Bipointed :=
   rfl
 
 @[simp]
-theorem bipointedToPointedSnd_comp_forget :
-    bipointedToPointedSnd ⋙ forget Pointed = forget Bipointed :=
+theorem bipointedToPointedSnd_comp_forget
+    : bipointedToPointedSnd ⋙ forget Pointed = forget Bipointed :=
   rfl
 
 @[simp]
-theorem swap_comp_bipointedToPointedFst :
-    Bipointed.swap ⋙ bipointedToPointedFst = bipointedToPointedSnd :=
+theorem swap_comp_bipointedToPointedFst
+    : Bipointed.swap ⋙ bipointedToPointedFst = bipointedToPointedSnd :=
   rfl
 
 @[simp]
-theorem swap_comp_bipointedToPointedSnd :
-    Bipointed.swap ⋙ bipointedToPointedSnd = bipointedToPointedFst :=
+theorem swap_comp_bipointedToPointedSnd
+    : Bipointed.swap ⋙ bipointedToPointedSnd = bipointedToPointedFst :=
   rfl
 
 /-- The functor from `Pointed` to `Bipointed` which bipoints the point. -/
@@ -165,65 +158,63 @@ def pointedToBipointedSnd : Pointed.{u} ⥤ Bipointed where
   map_comp f g := Bipointed.Hom.ext (Option.map_comp_map f.1 g.1).symm
 
 @[simp]
-theorem pointedToBipointedFst_comp_swap :
-    pointedToBipointedFst ⋙ Bipointed.swap = pointedToBipointedSnd :=
+theorem pointedToBipointedFst_comp_swap
+    : pointedToBipointedFst ⋙ Bipointed.swap = pointedToBipointedSnd :=
   rfl
 
 @[simp]
-theorem pointedToBipointedSnd_comp_swap :
-    pointedToBipointedSnd ⋙ Bipointed.swap = pointedToBipointedFst :=
+theorem pointedToBipointedSnd_comp_swap
+    : pointedToBipointedSnd ⋙ Bipointed.swap = pointedToBipointedFst :=
   rfl
 
 /-- `BipointedToPointed_fst` is inverse to `PointedToBipointed`. -/
 @[simps!]
-def pointedToBipointedCompBipointedToPointedFst :
-    pointedToBipointed ⋙ bipointedToPointedFst ≅ 𝟭 _ :=
-  NatIso.ofComponents fun X =>
-    { hom := ⟨id, rfl⟩
-      inv := ⟨id, rfl⟩ }
+def pointedToBipointedCompBipointedToPointedFst
+    : pointedToBipointed ⋙ bipointedToPointedFst ≅ 𝟭 _ :=
+  NatIso.ofComponents fun X => { hom := ⟨id, rfl⟩, inv := ⟨id, rfl⟩ }
 
 /-- `BipointedToPointed_snd` is inverse to `PointedToBipointed`. -/
 @[simps!]
-def pointedToBipointedCompBipointedToPointedSnd :
-    pointedToBipointed ⋙ bipointedToPointedSnd ≅ 𝟭 _ :=
-  NatIso.ofComponents fun X =>
-    { hom := ⟨id, rfl⟩
-      inv := ⟨id, rfl⟩ }
+def pointedToBipointedCompBipointedToPointedSnd
+    : pointedToBipointed ⋙ bipointedToPointedSnd ≅ 𝟭 _ :=
+  NatIso.ofComponents fun X => { hom := ⟨id, rfl⟩, inv := ⟨id, rfl⟩ }
 
-/-- The free/forgetful adjunction between `PointedToBipointed_fst` and `BipointedToPointed_fst`.
--/
-def pointedToBipointedFstBipointedToPointedFstAdjunction :
-    pointedToBipointedFst ⊣ bipointedToPointedFst :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv := fun X Y =>
-        { toFun := fun f => ⟨f.toFun ∘ Option.some, f.map_fst⟩
-          invFun := fun f => ⟨fun o => o.elim Y.toProd.2 f.toFun, f.map_point, rfl⟩
-          left_inv := fun f => by
-            apply Bipointed.Hom.ext
-            funext x
-            cases x
-            · exact f.map_snd.symm
-            · rfl }
-      homEquiv_naturality_left_symm := fun f g => by
+/-- The free/forgetful adjunction between `PointedToBipointed_fst` and `BipointedToPointed_fst`. -/
+def pointedToBipointedFstBipointedToPointedFstAdjunction
+    : pointedToBipointedFst ⊣ bipointedToPointedFst :=
+  Adjunction.mkOfHomEquiv {
+    homEquiv := fun X Y => {
+      toFun := fun f => ⟨f.toFun ∘ Option.some, f.map_fst⟩
+      invFun := fun f => ⟨fun o => o.elim Y.toProd.2 f.toFun, f.map_point, rfl⟩
+      left_inv := fun f => by
         apply Bipointed.Hom.ext
         funext x
-        cases x <;> rfl }
+        cases x
+        · exact f.map_snd.symm
+        · rfl
+    }
+    homEquiv_naturality_left_symm := fun f g => by
+      apply Bipointed.Hom.ext
+      funext x
+      cases x <;> rfl
+  }
 
-/-- The free/forgetful adjunction between `PointedToBipointed_snd` and `BipointedToPointed_snd`.
--/
-def pointedToBipointedSndBipointedToPointedSndAdjunction :
-    pointedToBipointedSnd ⊣ bipointedToPointedSnd :=
-  Adjunction.mkOfHomEquiv
-    { homEquiv := fun X Y =>
-        { toFun := fun f => ⟨f.toFun ∘ Option.some, f.map_snd⟩
-          invFun := fun f => ⟨fun o => o.elim Y.toProd.1 f.toFun, rfl, f.map_point⟩
-          left_inv := fun f => by
-            apply Bipointed.Hom.ext
-            funext x
-            cases x
-            · exact f.map_fst.symm
-            · rfl }
-      homEquiv_naturality_left_symm := fun f g => by
+/-- The free/forgetful adjunction between `PointedToBipointed_snd` and `BipointedToPointed_snd`. -/
+def pointedToBipointedSndBipointedToPointedSndAdjunction
+    : pointedToBipointedSnd ⊣ bipointedToPointedSnd :=
+  Adjunction.mkOfHomEquiv {
+    homEquiv := fun X Y => {
+      toFun := fun f => ⟨f.toFun ∘ Option.some, f.map_snd⟩
+      invFun := fun f => ⟨fun o => o.elim Y.toProd.1 f.toFun, rfl, f.map_point⟩
+      left_inv := fun f => by
         apply Bipointed.Hom.ext
         funext x
-        cases x <;> rfl }
+        cases x
+        · exact f.map_fst.symm
+        · rfl
+    }
+    homEquiv_naturality_left_symm := fun f g => by
+      apply Bipointed.Hom.ext
+      funext x
+      cases x <;> rfl
+  }

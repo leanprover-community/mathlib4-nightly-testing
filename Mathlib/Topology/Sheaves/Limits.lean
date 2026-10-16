@@ -14,7 +14,6 @@ public import Mathlib.Topology.Sheaves.Sheaf
 
 public section
 
-
 noncomputable section
 
 universe v u w t
@@ -48,18 +47,20 @@ instance [HasLimits C] (X : TopCat) : CreatesLimits.{v, v} (Sheaf.forget C X) wh
 instance [HasLimits C] (X : TopCat.{v}) : HasLimitsOfSize.{v, v} (Sheaf.{v} C X) where
 
 set_option backward.isDefEq.respectTransparency false in
-theorem isSheaf_of_isLimit [HasLimitsOfShape J C] {X : TopCat.{v}} (F : J ⥤ Presheaf.{v} C X)
-    (H : ∀ j, (F.obj j).IsSheaf) {c : Cone F} (hc : IsLimit c) : c.pt.IsSheaf := by
-  let F' : J ⥤ Sheaf C X :=
-    { obj := fun j => ⟨F.obj j, H j⟩
-      map := fun f => ⟨F.map f⟩ }
+theorem isSheaf_of_isLimit
+    [HasLimitsOfShape J C]
+    {X : TopCat.{v}} (F : J ⥤ Presheaf.{v} C X) (H : ∀ j, (F.obj j).IsSheaf)
+    {c : Cone F} (hc : IsLimit c)
+    : c.pt.IsSheaf := by
+  let F' : J ⥤ Sheaf C X := { obj := fun j => ⟨F.obj j, H j⟩, map := fun f => ⟨F.map f⟩ }
   let e : F' ⋙ Sheaf.forget C X ≅ F := NatIso.ofComponents fun _ => Iso.refl _
   exact Presheaf.isSheaf_of_iso
     ((isLimitOfPreserves (Sheaf.forget C X) (limit.isLimit F')).conePointsIsoOfNatIso hc e)
     (limit F').2
 
-theorem limit_isSheaf [HasLimitsOfShape J C] {X : TopCat.{v}} (F : J ⥤ Presheaf.{v} C X)
-    (H : ∀ j, (F.obj j).IsSheaf) : (limit F).IsSheaf :=
+theorem limit_isSheaf
+    [HasLimitsOfShape J C] {X : TopCat.{v}} (F : J ⥤ Presheaf.{v} C X) (H : ∀ j, (F.obj j).IsSheaf)
+    : (limit F).IsSheaf :=
   isSheaf_of_isLimit F H (limit.isLimit F)
 
 end TopCat

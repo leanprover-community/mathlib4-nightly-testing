@@ -27,8 +27,8 @@ open CategoryTheory HomotopicalAlgebra MorphismProperty Limits
 
 namespace SimplexCategory
 
-instance {x y : SimplexCategory} (f : x ⟶ y) :
-    Subsingleton ((epimorphisms _).MapFactorizationData (monomorphisms _) f) where
+instance {x y : SimplexCategory} (f : x ⟶ y)
+    : Subsingleton ((epimorphisms _).MapFactorizationData (monomorphisms _) f) where
   allEq := by
     rintro ⟨z1, p1, i1, hfac1, _, _⟩ ⟨z2, p2, i2, hfac2, _, _⟩
     obtain rfl := image_eq hfac1

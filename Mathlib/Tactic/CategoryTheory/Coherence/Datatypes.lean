@@ -46,14 +46,15 @@ namespace BicategoryLike
 
 /-- Expressions for objects. -/
 structure Obj where
-  /-- Extracts a lean expression from an `Obj` term. Return `none` in the monoidal
-  category context. -/
+  /--
+  Extracts a lean expression from an `Obj` term. Return `none` in the monoidal
+  category context.
+  -/
   e? : Option Expr
-  deriving Inhabited
+deriving Inhabited
 
 /-- Extract a lean expression from an `Obj` term. -/
-def Obj.e (a : Obj) : Expr :=
-  a.e?.get!
+def Obj.e (a : Obj) : Expr := a.e?.get!
 
 /-- Expressions for atomic 1-morphisms. -/
 structure Atom₁ : Type where
@@ -63,7 +64,7 @@ structure Atom₁ : Type where
   src : Obj
   /-- The codomain of the 1-morphism. -/
   tgt : Obj
-  deriving Inhabited
+deriving Inhabited
 
 /-- A monad equipped with the ability to construct `Atom₁` terms. -/
 class MkAtom₁ (m : Type → Type) where
@@ -78,7 +79,7 @@ inductive Mor₁ : Type
   | comp (e : Expr) : Mor₁ → Mor₁ → Mor₁
   /-- The expression for an atomic 1-morphism. -/
   | of : Atom₁ → Mor₁
-  deriving Inhabited
+deriving Inhabited
 
 /-- A monad equipped with the ability to construct `Mor₁` terms. -/
 class MkMor₁ (m : Type → Type) where
@@ -116,8 +117,10 @@ class MonadMor₁ (m : Type → Type) where
   /-- The expression for `f ≫ g`. -/
   comp₁M (f g : Mor₁) : m Mor₁
 
-/-- Expressions for coherence isomorphisms (i.e., structural 2-morphisms
-given by `BicategoricalCoherence.iso`). -/
+/--
+Expressions for coherence isomorphisms (i.e., structural 2-morphisms
+given by `BicategoricalCoherence.iso`).
+-/
 structure CoherenceHom where
   /-- The underlying lean expression of a coherence isomorphism. -/
   e : Expr
@@ -129,7 +132,7 @@ structure CoherenceHom where
   inst : Expr
   /-- Extract the structural 2-isomorphism. -/
   unfold : Expr
-  deriving Inhabited
+deriving Inhabited
 
 /-- Expressions for atomic non-structural 2-isomorphisms. -/
 structure AtomIso where
@@ -139,7 +142,7 @@ structure AtomIso where
   src : Mor₁
   /-- The codomain of a 2-isomorphism. -/
   tgt : Mor₁
-  deriving Inhabited
+deriving Inhabited
 
 /-- Expressions for atomic structural 2-morphisms. -/
 inductive StructuralAtom : Type
@@ -151,7 +154,7 @@ inductive StructuralAtom : Type
   | rightUnitor (e : Expr) (f : Mor₁) : StructuralAtom
   | id (e : Expr) (f : Mor₁) : StructuralAtom
   | coherenceHom (α : CoherenceHom) : StructuralAtom
-  deriving Inhabited
+deriving Inhabited
 
 /-- Expressions for 2-isomorphisms. -/
 inductive Mor₂Iso : Type where
@@ -163,7 +166,7 @@ inductive Mor₂Iso : Type where
   | inv (e : Expr) (f g : Mor₁) (η : Mor₂Iso) : Mor₂Iso
   | coherenceComp (e : Expr) (f g h i : Mor₁) (α : CoherenceHom) (η θ : Mor₂Iso) : Mor₂Iso
   | of (η : AtomIso) : Mor₂Iso
-  deriving Inhabited
+deriving Inhabited
 
 /-- A monad equipped with the ability to unfold `BicategoricalCoherence.iso`. -/
 class MonadCoherenceHom (m : Type → Type) where
@@ -297,16 +300,14 @@ def associatorM' (f g h : Mor₁) : m Mor₂Iso := do
   return .structuralAtom <| ← MonadMor₂Iso.associatorM f g h
 
 /-- The expression for the left unitor `λ_ f`. -/
-def leftUnitorM' (f : Mor₁) : m Mor₂Iso := do
-  return .structuralAtom <| ← MonadMor₂Iso.leftUnitorM f
+def leftUnitorM' (f : Mor₁) : m Mor₂Iso := do return .structuralAtom <| ← MonadMor₂Iso.leftUnitorM f
 
 /-- The expression for the right unitor `ρ_ f`. -/
 def rightUnitorM' (f : Mor₁) : m Mor₂Iso := do
   return .structuralAtom <| ← MonadMor₂Iso.rightUnitorM f
 
 /-- The expression for the identity `Iso.refl f`. -/
-def id₂M' (f : Mor₁) : m Mor₂Iso := do
-  return .structuralAtom <| ← MonadMor₂Iso.id₂M f
+def id₂M' (f : Mor₁) : m Mor₂Iso := do return .structuralAtom <| ← MonadMor₂Iso.id₂M f
 
 /-- The expression for the coherence isomorphism `⊗𝟙 : f ⟶ g`. -/
 def coherenceHomM' (f g : Mor₁) (inst : Expr) : m Mor₂Iso := do
@@ -322,9 +323,10 @@ structure Atom where
   src : Mor₁
   /-- The codomain of a 2-morphism. -/
   tgt : Mor₁
-  deriving Inhabited
+deriving Inhabited
 
-/-- `Mor₂` expressions defined below will have the `isoLift? : Option IsoLift` field.
+/--
+`Mor₂` expressions defined below will have the `isoLift? : Option IsoLift` field.
 For `η : Mor₂` such that `η.isoLift? = some isoLift`, we have the following data:
 - `isoLift.e`: an expression for a 2-isomorphism `η'`, given as a `Mor₂Iso` term,
 - `isoLift.eq`: a lean expression for the proof that `η'.hom = η`.
@@ -332,8 +334,10 @@ For `η : Mor₂` such that `η.isoLift? = some isoLift`, we have the following 
 structure IsoLift where
   /-- The expression for the 2-isomorphism. -/
   e : Mor₂Iso
-  /-- The expression for the proof that the forward direction of the 2-isomorphism is equal to
-  the original 2-morphism. -/
+  /--
+  The expression for the proof that the forward direction of the 2-isomorphism is equal to
+  the original 2-morphism.
+  -/
   eq : Expr
 
 /-- Expressions for 2-morphisms. -/
@@ -352,13 +356,16 @@ inductive Mor₂ : Type where
   | whiskerRight (e : Expr) (isoLift? : Option IsoLift) (f g : Mor₁) (η : Mor₂) (h : Mor₁) : Mor₂
   /-- The expression for the horizontal composition `η ◫ θ` with `η : f₁ ⟶ g₁` and `θ : f₂ ⟶ g₂`. -/
   | horizontalComp (e : Expr) (isoLift? : Option IsoLift) (f₁ g₁ f₂ g₂ : Mor₁) (η θ : Mor₂) : Mor₂
-  /-- The expression for the coherence composition `η ⊗≫ θ := η ≫ α ≫ θ` with `η : f ⟶ g`
-  and `θ : h ⟶ i`. -/
-  | coherenceComp (e : Expr) (isoLift? : Option IsoLift) (f g h i : Mor₁)
-    (α : CoherenceHom) (η θ : Mor₂) : Mor₂
+  /--
+  The expression for the coherence composition `η ⊗≫ θ := η ≫ α ≫ θ` with `η : f ⟶ g`
+  and `θ : h ⟶ i`.
+  -/
+  | coherenceComp
+    (e : Expr) (isoLift? : Option IsoLift) (f g h i : Mor₁) (α : CoherenceHom) (η θ : Mor₂)
+    : Mor₂
   /-- The expression for an atomic non-structural 2-morphism. -/
   | of (η : Atom) : Mor₂
-  deriving Inhabited
+deriving Inhabited
 
 /-- A monad equipped with the ability to construct `Mor₂` terms. -/
 class MkMor₂ (m : Type → Type) where
@@ -377,8 +384,10 @@ def Mor₂.e : Mor₂ → Expr
   | .coherenceComp e .. => e
   | .of η => η.e
 
-/-- `η.isoLift?` is a pair of a 2-isomorphism `η'` and a proof that `η'.hom = η`. If no such `η'`
-is found, returns `none`. This function does not seek `IsIso` instance. -/
+/--
+`η.isoLift?` is a pair of a 2-isomorphism `η'` and a proof that `η'.hom = η`. If no such `η'`
+is found, returns `none`. This function does not seek `IsIso` instance.
+-/
 def Mor₂.isoLift? : Mor₂ → Option IsoLift
   | .isoHom _ isoLift .. => some isoLift
   | .isoInv _ isoLift .. => some isoLift
@@ -443,7 +452,7 @@ inductive NormalizedHom : Type
   | nil (e : Mor₁) (a : Obj) : NormalizedHom
   /-- The `cons` composes an atomic 1-morphism at the end of a normalized 1-morphism. -/
   | cons (e : Mor₁) : NormalizedHom → Atom₁ → NormalizedHom
-  deriving Inhabited
+deriving Inhabited
 
 /-- The underlying expression of a normalized 1-morphism. -/
 def NormalizedHom.e : NormalizedHom → Mor₁
@@ -458,20 +467,21 @@ def NormalizedHom.src : NormalizedHom → Obj
 /-- The codomain of a normalized 1-morphism. -/
 def NormalizedHom.tgt : NormalizedHom → Obj
   | NormalizedHom.nil _ a => a
-  | NormalizedHom.cons _ _  f => f.tgt
+  | NormalizedHom.cons _ _ f => f.tgt
 
 /-- Construct the `NormalizedHom.nil` term in `m`. -/
 def normalizedHom.nilM [MonadMor₁ m] (a : Obj) : m NormalizedHom := do
   return NormalizedHom.nil (← id₁M a) a
 
 /-- Construct a `NormalizedHom.cons` term in `m`. -/
-def NormalizedHom.consM [MonadMor₁ m] (p : NormalizedHom) (f : Atom₁) :
-    m NormalizedHom := do
+def NormalizedHom.consM [MonadMor₁ m] (p : NormalizedHom) (f : Atom₁) : m NormalizedHom := do
   return NormalizedHom.cons (← comp₁M p.e (.of f)) p f
 
-/-- `Context ρ` provides the context for manipulating 2-morphisms in a monoidal category or
+/--
+`Context ρ` provides the context for manipulating 2-morphisms in a monoidal category or
 bicategory. In particular, we will store `MonoidalCategory` or `Bicategory` instance in a context,
-and use this through a reader monad when we construct the lean expressions for 2-morphisms. -/
+and use this through a reader monad when we construct the lean expressions for 2-morphisms.
+-/
 class Context (ρ : Type) where
   /-- Construct a context from a lean expression for a 2-morphism. -/
   mkContext? : Expr → MetaM (Option ρ)
@@ -493,8 +503,7 @@ structure State where
 abbrev CoherenceM (ρ : Type) := ReaderT ρ <| StateT State MetaM
 
 /-- Run the `CoherenceM ρ` monad. -/
-def CoherenceM.run {α ρ : Type} (x : CoherenceM ρ α) (ctx : ρ) (s : State := {}) :
-    MetaM α := do
+def CoherenceM.run {α ρ : Type} (x : CoherenceM ρ α) (ctx : ρ) (s : State := {}) : MetaM α := do
   Prod.fst <$> ReaderT.run x ctx s
 
 end BicategoryLike

@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.Multiequalizer
-
 import Mathlib.Data.Finset.Attr
 import Mathlib.Tactic.SetLike
 
@@ -44,8 +43,10 @@ namespace Lattice
 
 variable {T : Type u} (x₁ x₂ x₃ x₄ : T) [Lattice T]
 
-/-- A bi-Cartesian square in a lattice consists of elements `x₁`, `x₂`, `x₃` and `x₄`
-such that `x₂ ⊔ x₃ = x₄` and `x₂ ⊓ x₃ = x₁`. -/
+/--
+A bi-Cartesian square in a lattice consists of elements `x₁`, `x₂`, `x₃` and `x₄`
+such that `x₂ ⊔ x₃ = x₄` and `x₂ ⊓ x₃ = x₁`.
+-/
 structure BicartSq : Prop where
   sup_eq : x₂ ⊔ x₃ = x₄
   inf_eq : x₂ ⊓ x₃ = x₁
@@ -64,8 +65,8 @@ lemma le₂₄ : x₂ ≤ x₄ := by grind
 lemma le₃₄ : x₃ ≤ x₄ := by grind
 
 /-- The commutative square associated to a bi-Cartesian square in a lattice. -/
-lemma commSq : CommSq (homOfLE sq.le₁₂) (homOfLE sq.le₁₃)
-    (homOfLE sq.le₂₄) (homOfLE sq.le₃₄) := ⟨rfl⟩
+lemma commSq : CommSq (homOfLE sq.le₁₂) (homOfLE sq.le₁₃) (homOfLE sq.le₂₄) (homOfLE sq.le₃₄) :=
+  ⟨rfl⟩
 
 end BicartSq
 
@@ -75,9 +76,11 @@ namespace CompleteLattice
 
 variable {T : Type u} [CompleteLattice T] {ι : Type*} (x : T) (u : ι → T) (v : ι → ι → T)
 
-/-- A multicoequalizer diagram in a complete lattice `T` consists of families of elements
+/--
+A multicoequalizer diagram in a complete lattice `T` consists of families of elements
 `u : ι → T`, `v : ι → ι → T`, and an element `x : T` such that `x` is the supremum of `u`,
-and for any `i` and `j`, `v i j` is the minimum of `u i` and `u j`. -/
+and for any `i` and `j`, `v i j` is the minimum of `u i` and `u j`.
+-/
 structure MulticoequalizerDiagram : Prop where
   iSup_eq : ⨆ (i : ι), u i = x
   eq_inf (i j : ι) : v i j = u i ⊓ u j
@@ -89,9 +92,11 @@ attribute [local grind =] MultispanShape.prod_fst MultispanShape.prod_snd
 
 variable {x u v} (d : MulticoequalizerDiagram x u v)
 
-/-- The multispan index in the category associated to the complete lattice `T`
+/--
+The multispan index in the category associated to the complete lattice `T`
 given by the objects `u i` and the minima `v i j = u i ⊓ u j`,
-when `d : MulticoequalizerDiagram x u v`. -/
+when `d : MulticoequalizerDiagram x u v`.
+-/
 @[simps]
 def multispanIndex : MultispanIndex (.prod ι) T where
   left := fun ⟨i, j⟩ ↦ v i j
@@ -99,24 +104,30 @@ def multispanIndex : MultispanIndex (.prod ι) T where
   fst _ := homOfLE (by grind)
   snd _ := homOfLE (by grind)
 
-/-- The multicofork in the category associated to the complete lattice `T`
+/--
+The multicofork in the category associated to the complete lattice `T`
 associated to `d : MulticoequalizerDiagram x u v` with `x : T`.
 (In the case `T := Set X`, this multicofork becomes colimit after the application
-of the obvious functor `Set X ⥤ Type _`.) -/
+of the obvious functor `Set X ⥤ Type _`.)
+-/
 @[simps! pt]
 def multicofork : Multicofork d.multispanIndex :=
-  Multicofork.ofπ _ x (fun i ↦ homOfLE (by grind [multispanIndex_right, le_iSup_iff]))
-    (fun _ ↦ rfl)
+  Multicofork.ofπ _ x (fun i ↦ homOfLE (by grind [multispanIndex_right, le_iSup_iff])) (fun _ ↦ rfl)
 
 end MulticoequalizerDiagram
 
 end CompleteLattice
 
-lemma Lattice.BicartSq.multicoequalizerDiagram {T : Type u} [CompleteLattice T]
-    {x₁ x₂ x₃ x₄} (sq : BicartSq x₁ x₂ x₃ x₄) :
-    CompleteLattice.MulticoequalizerDiagram (T := T) x₄
+lemma Lattice.BicartSq.multicoequalizerDiagram
+    {T : Type u} [CompleteLattice T] {x₁ x₂ x₃ x₄} (sq : BicartSq x₁ x₂ x₃ x₄)
+    : CompleteLattice.MulticoequalizerDiagram (T := T) x₄
       (fun i ↦ bif i then x₃ else x₂)
-      (fun i j ↦ bif i then bif j then x₃ else x₁
-        else bif j then x₁ else x₂) where
+      (fun i j ↦
+        bif i then
+          bif j then x₃ else x₁
+        else bif j then
+          x₁
+        else
+          x₂) where
   iSup_eq := by rw [← sq.sup_eq, sup_comm, sup_eq_iSup]
   eq_inf i j := by grind

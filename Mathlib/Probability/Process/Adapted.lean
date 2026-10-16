@@ -52,32 +52,38 @@ section Adapted
 
 variable {β : ι → Type*} [∀ i, MeasurableSpace (β i)] {u v : (i : ι) → Ω → β i}
 
-/-- A sequence of functions `u` is adapted to a filtration `f` if for all `i`,
+/--
+A sequence of functions `u` is adapted to a filtration `f` if for all `i`,
 `u i` is `f i`-measurable.
 
-The definition known as `Adapted` before 2026-01-13 is now `StronglyAdapted`. -/
-def Adapted (f : Filtration ι m) (u : (i : ι) → Ω → β i) : Prop :=
-  ∀ i : ι, Measurable[f i] (u i)
+The definition known as `Adapted` before 2026-01-13 is now `StronglyAdapted`.
+-/
+def Adapted (f : Filtration ι m) (u : (i : ι) → Ω → β i) : Prop := ∀ i : ι, Measurable[f i] (u i)
 
 namespace Adapted
 
 @[to_additive]
-protected theorem mul [∀ i, Mul (β i)] [∀ i, MeasurableMul₂ (β i)]
-    (hu : Adapted f u) (hv : Adapted f v) :
-    Adapted f (u * v) := fun i => (hu i).mul (hv i)
+protected theorem mul
+    [∀ i, Mul (β i)] [∀ i, MeasurableMul₂ (β i)] (hu : Adapted f u) (hv : Adapted f v)
+    : Adapted f (u * v) := fun i =>
+  (hu i).mul (hv i)
 
 @[to_additive]
-protected theorem div [∀ i, Div (β i)] [∀ i, MeasurableDiv₂ (β i)]
-    (hu : Adapted f u) (hv : Adapted f v) :
-    Adapted f (u / v) := fun i => (hu i).div (hv i)
+protected theorem div
+    [∀ i, Div (β i)] [∀ i, MeasurableDiv₂ (β i)] (hu : Adapted f u) (hv : Adapted f v)
+    : Adapted f (u / v) := fun i =>
+  (hu i).div (hv i)
 
 @[to_additive]
-protected theorem inv [∀ i, Group (β i)] [∀ i, MeasurableInv (β i)] (hu : Adapted f u) :
-    Adapted f u⁻¹ := fun i => (hu i).inv
+protected theorem inv [∀ i, Group (β i)] [∀ i, MeasurableInv (β i)] (hu : Adapted f u)
+    : Adapted f u⁻¹ := fun i =>
+  (hu i).inv
 
-protected theorem smul {𝕂 : Type*} [MeasurableSpace 𝕂]
-    [∀ i, SMul 𝕂 (β i)] [∀ i, MeasurableSMul 𝕂 (β i)] (c : 𝕂) (hu : Adapted f u) :
-    Adapted f (c • u) := fun i => (hu i).const_smul c
+protected theorem smul
+    {𝕂 : Type*} [MeasurableSpace 𝕂] [∀ i, SMul 𝕂 (β i)] [∀ i, MeasurableSMul 𝕂 (β i)]
+    (c : 𝕂) (hu : Adapted f u)
+    : Adapted f (c • u) := fun i =>
+  (hu i).const_smul c
 
 protected theorem measurable {i : ι} (hf : Adapted f u) : Measurable[m] (u i) :=
   (hf i).mono (f.le i) (by rfl)
@@ -87,11 +93,12 @@ theorem measurable_le {i j : ι} (hf : Adapted f u) (hij : i ≤ j) : Measurable
 
 end Adapted
 
-theorem adapted_const' (f : Filtration ι m) (x : (i : ι) → β i) : Adapted f fun i _ ↦ x i :=
-  fun _ ↦ measurable_const
+theorem adapted_const' (f : Filtration ι m) (x : (i : ι) → β i) : Adapted f fun i _ ↦ x i := fun _ ↦
+  measurable_const
 
-theorem adapted_const {β : Type*} [MeasurableSpace β] (f : Filtration ι m) (x : β) :
-    Adapted f fun _ _ ↦ x := adapted_const' _ _
+theorem adapted_const {β : Type*} [MeasurableSpace β] (f : Filtration ι m) (x : β)
+    : Adapted f fun _ _ ↦ x :=
+  adapted_const' _ _
 
 end Adapted
 
@@ -99,79 +106,96 @@ section StronglyAdapted
 
 variable {β : ι → Type*} [∀ i, TopologicalSpace (β i)] {u v : (i : ι) → Ω → β i}
 
-/-- A sequence of functions `u` is strongly adapted to a filtration `f` if for all `i`,
-`u i` is `f i`-strongly measurable. -/
+/--
+A sequence of functions `u` is strongly adapted to a filtration `f` if for all `i`,
+`u i` is `f i`-strongly measurable.
+-/
 def StronglyAdapted (f : Filtration ι m) (u : (i : ι) → Ω → β i) : Prop :=
   ∀ i : ι, StronglyMeasurable[f i] (u i)
 
 namespace StronglyAdapted
 
 @[to_additive]
-protected theorem mul [∀ i, Mul (β i)] [∀ i, ContinuousMul (β i)]
-    (hu : StronglyAdapted f u) (hv : StronglyAdapted f v) :
-    StronglyAdapted f (u * v) := fun i => (hu i).mul (hv i)
+protected theorem mul
+    [∀ i, Mul (β i)] [∀ i, ContinuousMul (β i)]
+    (hu : StronglyAdapted f u) (hv : StronglyAdapted f v)
+    : StronglyAdapted f (u * v) := fun i =>
+  (hu i).mul (hv i)
 
 @[to_additive sub]
-protected theorem div' [∀ i, Div (β i)] [∀ i, ContinuousDiv (β i)]
-    (hu : StronglyAdapted f u) (hv : StronglyAdapted f v) :
-    StronglyAdapted f (u / v) := fun i => (hu i).div' (hv i)
+protected theorem div'
+    [∀ i, Div (β i)] [∀ i, ContinuousDiv (β i)]
+    (hu : StronglyAdapted f u) (hv : StronglyAdapted f v)
+    : StronglyAdapted f (u / v) := fun i =>
+  (hu i).div' (hv i)
 
 @[to_additive]
-protected theorem inv [∀ i, Group (β i)] [∀ i, ContinuousInv (β i)] (hu : StronglyAdapted f u) :
-    StronglyAdapted f u⁻¹ := fun i => (hu i).inv
+protected theorem inv [∀ i, Group (β i)] [∀ i, ContinuousInv (β i)] (hu : StronglyAdapted f u)
+    : StronglyAdapted f u⁻¹ := fun i =>
+  (hu i).inv
 
-protected theorem smul [∀ i, SMul ℝ (β i)] [∀ i, ContinuousConstSMul ℝ (β i)]
-    (c : ℝ) (hu : StronglyAdapted f u) :
-    StronglyAdapted f (c • u) := fun i => (hu i).const_smul c
+protected theorem smul
+    [∀ i, SMul ℝ (β i)] [∀ i, ContinuousConstSMul ℝ (β i)] (c : ℝ) (hu : StronglyAdapted f u)
+    : StronglyAdapted f (c • u) := fun i =>
+  (hu i).const_smul c
 
 /-- The norm of a strongly adapted process is strongly adapted. -/
-protected lemma norm {β : ι → Type*} {u : (i : ι) → Ω → β i} [∀ i, SeminormedAddCommGroup (β i)]
-    (hu : StronglyAdapted f u) :
-    StronglyAdapted f (fun t ω ↦ ‖u t ω‖) := fun t ↦ (hu t).norm
+protected lemma norm
+    {β : ι → Type*} {u : (i : ι) → Ω → β i} [∀ i, SeminormedAddCommGroup (β i)]
+    (hu : StronglyAdapted f u)
+    : StronglyAdapted f (fun t ω ↦ ‖u t ω‖) := fun t ↦
+  (hu t).norm
 
-protected theorem stronglyMeasurable {i : ι} (hf : StronglyAdapted f u) :
-    StronglyMeasurable[m] (u i) := (hf i).mono (f.le i)
+protected theorem stronglyMeasurable {i : ι} (hf : StronglyAdapted f u)
+    : StronglyMeasurable[m] (u i) :=
+  (hf i).mono (f.le i)
 
-theorem stronglyMeasurable_le {i j : ι} (hf : StronglyAdapted f u) (hij : i ≤ j) :
-    StronglyMeasurable[f j] (u i) := (hf i).mono (f.mono hij)
+theorem stronglyMeasurable_le {i j : ι} (hf : StronglyAdapted f u) (hij : i ≤ j)
+    : StronglyMeasurable[f j] (u i) :=
+  (hf i).mono (f.mono hij)
 
 end StronglyAdapted
 
-theorem StronglyAdapted.adapted [mΒ : ∀ i, MeasurableSpace (β i)] [∀ i, BorelSpace (β i)]
-    [∀ i, PseudoMetrizableSpace (β i)] (hf : StronglyAdapted f u) :
-    Adapted f u := fun _ ↦ (hf _).measurable
+theorem StronglyAdapted.adapted
+    [mΒ : ∀ i, MeasurableSpace (β i)] [∀ i, BorelSpace (β i)] [∀ i, PseudoMetrizableSpace (β i)]
+    (hf : StronglyAdapted f u)
+    : Adapted f u := fun _ ↦
+  (hf _).measurable
 
-theorem Adapted.stronglyAdapted [mΒ : ∀ i, MeasurableSpace (β i)]
-    [∀ i, OpensMeasurableSpace (β i)] [∀ i, PseudoMetrizableSpace (β i)]
-    [∀ i, SecondCountableTopology (β i)] (hf : Adapted f u) :
-    StronglyAdapted f u := fun _ ↦ (hf _).stronglyMeasurable
+theorem Adapted.stronglyAdapted
+    [mΒ : ∀ i, MeasurableSpace (β i)] [∀ i, OpensMeasurableSpace (β i)]
+    [∀ i, PseudoMetrizableSpace (β i)] [∀ i, SecondCountableTopology (β i)]
+    (hf : Adapted f u)
+    : StronglyAdapted f u := fun _ ↦
+  (hf _).stronglyMeasurable
 
-theorem stronglyAdapted_iff_adapted [mΒ : ∀ i, MeasurableSpace (β i)]
-    [∀ i, BorelSpace (β i)] [∀ i, PseudoMetrizableSpace (β i)]
-    [∀ i, SecondCountableTopology (β i)] :
-    StronglyAdapted f u ↔ Adapted f u := ⟨fun h ↦ h.adapted, fun h ↦ h.stronglyAdapted⟩
+theorem stronglyAdapted_iff_adapted
+    [mΒ : ∀ i, MeasurableSpace (β i)] [∀ i, BorelSpace (β i)] [∀ i, PseudoMetrizableSpace (β i)]
+    [∀ i, SecondCountableTopology (β i)]
+    : StronglyAdapted f u ↔ Adapted f u :=
+  ⟨fun h ↦ h.adapted, fun h ↦ h.stronglyAdapted⟩
 
-theorem stronglyAdapted_const' (f : Filtration ι m) (x : (i : ι) → β i) :
-    StronglyAdapted f fun i _ ↦ x i :=
-  fun _ ↦ stronglyMeasurable_const
+theorem stronglyAdapted_const' (f : Filtration ι m) (x : (i : ι) → β i)
+    : StronglyAdapted f fun i _ ↦ x i := fun _ ↦
+  stronglyMeasurable_const
 
-theorem stronglyAdapted_const {β : Type*} [TopologicalSpace β] (f : Filtration ι m) (x : β) :
-    StronglyAdapted f fun _ _ ↦ x :=
+theorem stronglyAdapted_const {β : Type*} [TopologicalSpace β] (f : Filtration ι m) (x : β)
+    : StronglyAdapted f fun _ _ ↦ x :=
   stronglyAdapted_const' _ _
 
 variable (β) in
-theorem stronglyAdapted_zero' [∀ i, Zero (β i)] (f : Filtration ι m) :
-    StronglyAdapted f (0 : (i : ι) → Ω → β i) :=
-  fun i ↦ @stronglyMeasurable_zero Ω (β i) (f i) _ _
+theorem stronglyAdapted_zero' [∀ i, Zero (β i)] (f : Filtration ι m)
+    : StronglyAdapted f (0 : (i : ι) → Ω → β i) := fun i ↦
+  @stronglyMeasurable_zero Ω (β i) (f i) _ _
 
-theorem stronglyAdapted_zero (β : Type*) [TopologicalSpace β] [Zero β] (f : Filtration ι m) :
-    StronglyAdapted f (0 : ι → Ω → β) :=
-  fun i ↦ @stronglyMeasurable_zero Ω β (f i) _ _
+theorem stronglyAdapted_zero (β : Type*) [TopologicalSpace β] [Zero β] (f : Filtration ι m)
+    : StronglyAdapted f (0 : ι → Ω → β) := fun i ↦
+  @stronglyMeasurable_zero Ω β (f i) _ _
 
-theorem Filtration.stronglyAdapted_natural [∀ i, MetrizableSpace (β i)]
-    [mβ : ∀ i, MeasurableSpace (β i)] [∀ i, BorelSpace (β i)]
-    (hum : ∀ i, StronglyMeasurable[m] (u i)) :
-    StronglyAdapted (Filtration.natural u hum) u := by
+theorem Filtration.stronglyAdapted_natural
+    [∀ i, MetrizableSpace (β i)] [mβ : ∀ i, MeasurableSpace (β i)] [∀ i, BorelSpace (β i)]
+    (hum : ∀ i, StronglyMeasurable[m] (u i))
+    : StronglyAdapted (Filtration.natural u hum) u := by
   intro i
   refine StronglyMeasurable.mono ?_ (le_iSup₂_of_le i (le_refl i) le_rfl)
   rw [stronglyMeasurable_iff_measurable_separable]
@@ -183,18 +207,21 @@ section Progressive
 
 variable {β : Type*} {u v : ι → Ω → β}
 
-/-- Progressive process. A sequence of functions `u` is said to be progressive with respect
+/--
+Progressive process. A sequence of functions `u` is said to be progressive with respect
 to a filtration `f` if at each point in time `i`, `u` restricted to `Set.Iic i × Ω` is measurable
 with respect to the product `MeasurableSpace` structure where the σ-algebra used for `Ω` is `f i`.
 The usual definition uses the interval `[0,i]`, which we replace by `Set.Iic i`. We recover the
-usual definition for index types `ℝ≥0` or `ℕ`. -/
-def IsProgressive [MeasurableSpace ι] [MeasurableSpace β] (f : Filtration ι m)
-    (u : ι → Ω → β) : Prop :=
+usual definition for index types `ℝ≥0` or `ℕ`.
+-/
+def IsProgressive [MeasurableSpace ι] [MeasurableSpace β] (f : Filtration ι m) (u : ι → Ω → β)
+    : Prop :=
   ∀ i, Measurable[Subtype.instMeasurableSpace.prod (f i)] fun p : Set.Iic i × Ω => u p.1 p.2
 
-theorem isProgressive_const {mi : MeasurableSpace ι} {mβ : MeasurableSpace β} (f : Filtration ι m)
-    (b : β) : IsProgressive f (fun _ _ => b : ι → Ω → β) :=
-  fun _ ↦ by exact measurable_const
+theorem isProgressive_const
+    {mi : MeasurableSpace ι} {mβ : MeasurableSpace β} (f : Filtration ι m) (b : β)
+    : IsProgressive f (fun _ _ => b : ι → Ω → β) := fun _ ↦ by
+  exact measurable_const
 
 namespace IsProgressive
 
@@ -207,42 +234,45 @@ protected theorem adapted (h : IsProgressive f u) : Adapted f u := by
   rw [this]
   exact (h i).comp measurable_prodMk_left
 
-protected theorem comp {t : ι → Ω → ι} (h : IsProgressive f u) (ht : IsProgressive f t)
-    (ht_le : ∀ i ω, t i ω ≤ i) :
-    IsProgressive f fun i ω => u (t i ω) ω := by
+protected theorem comp
+    {t : ι → Ω → ι} (h : IsProgressive f u) (ht : IsProgressive f t) (ht_le : ∀ i ω, t i ω ≤ i)
+    : IsProgressive f fun i ω => u (t i ω) ω := by
   intro i
-  have : (fun p : ↥(Set.Iic i) × Ω => u (t (p.fst : ι) p.snd) p.snd) =
-    (fun p : ↥(Set.Iic i) × Ω => u (p.fst : ι) p.snd) ∘ fun p : ↥(Set.Iic i) × Ω =>
-      (⟨t (p.fst : ι) p.snd, Set.mem_Iic.mpr ((ht_le _ _).trans p.fst.prop)⟩, p.snd) := rfl
+  have : (fun p : ↥(Set.Iic i) × Ω => u (t (p.fst : ι) p.snd) p.snd)
+      = (fun p : ↥(Set.Iic i) × Ω => u (p.fst : ι) p.snd) ∘ fun p : ↥(Set.Iic i) × Ω =>
+        (⟨t (p.fst : ι) p.snd, Set.mem_Iic.mpr ((ht_le _ _).trans p.fst.prop)⟩, p.snd) :=
+    rfl
   rw [this]
   exact (h i).comp ((ht i).subtype_mk.prodMk measurable_snd)
 
 section Arithmetic
 
 @[to_additive]
-protected theorem mul [Mul β] [MeasurableMul₂ β] (hu : IsProgressive f u)
-    (hv : IsProgressive f v) : IsProgressive f fun i ω ↦  (u i ω * v i ω) :=
-  fun i ↦ Measurable.mul (hu i) (hv i)
+protected theorem mul [Mul β] [MeasurableMul₂ β] (hu : IsProgressive f u) (hv : IsProgressive f v)
+    : IsProgressive f fun i ω ↦ (u i ω * v i ω) := fun i ↦
+  Measurable.mul (hu i) (hv i)
 
 @[to_additive]
-protected theorem finsetProd {γ} [CommMonoid β] [MeasurableMul₂ β] {U : γ → ι → Ω → β}
-    {s : Finset γ} (h : ∀ c ∈ s, IsProgressive f (U c)) :
-    IsProgressive f fun i ω ↦ ∏ c ∈ s, U c i ω :=
-  fun i ↦ s.measurable_prod fun c hc ↦ h c hc i
+protected theorem finsetProd
+    {γ} [CommMonoid β] [MeasurableMul₂ β]
+    {U : γ → ι → Ω → β} {s : Finset γ} (h : ∀ c ∈ s, IsProgressive f (U c))
+    : IsProgressive f fun i ω ↦ ∏ c ∈ s, U c i ω := fun i ↦
+  s.measurable_prod fun c hc ↦ h c hc i
 
 @[to_additive]
-protected theorem inv [Group β] [MeasurableInv β] (hu : IsProgressive f u) :
-    IsProgressive f fun i ω => (u i ω)⁻¹ := fun i ↦ (hu i).inv
+protected theorem inv [Group β] [MeasurableInv β] (hu : IsProgressive f u)
+    : IsProgressive f fun i ω => (u i ω)⁻¹ := fun i ↦
+  (hu i).inv
 
 @[to_additive]
-protected theorem div [Group β] [MeasurableDiv₂ β] (hu : IsProgressive f u)
-    (hv : IsProgressive f v) : IsProgressive f fun i ω ↦ u i ω / v i ω :=
-  fun i ↦ Measurable.div (hu i) (hv i)
+protected theorem div [Group β] [MeasurableDiv₂ β] (hu : IsProgressive f u) (hv : IsProgressive f v)
+    : IsProgressive f fun i ω ↦ u i ω / v i ω := fun i ↦
+  Measurable.div (hu i) (hv i)
 
 /-- The norm of a progressive process is progressive. -/
-protected lemma norm [NormedAddCommGroup β] [OpensMeasurableSpace β] (hu : IsProgressive f u) :
-    IsProgressive f fun t ω ↦ ‖u t ω‖ :=
-  fun i ↦ by apply @(hu i).norm; infer_instance
+protected lemma norm [NormedAddCommGroup β] [OpensMeasurableSpace β] (hu : IsProgressive f u)
+    : IsProgressive f fun t ω ↦ ‖u t ω‖ := fun i ↦ by
+  apply @(hu i).norm; infer_instance
 
 end Arithmetic
 
@@ -252,17 +282,19 @@ end Progressive
 
 variable {β : Type*} [TopologicalSpace β] {u v : ι → Ω → β}
 
-/-- Strongly progressive process. A sequence of functions `u` is said to be strongly
+/--
+Strongly progressive process. A sequence of functions `u` is said to be strongly
 progressive with respect to a filtration `f` if at each point in time `i`, `u` restricted to
 `Set.Iic i × Ω` is strongly measurable with respect to the product `MeasurableSpace` structure
 where the σ-algebra used for `Ω` is `f i`.
 The usual definition uses the interval `[0,i]`, which we replace by `Set.Iic i`. We recover the
-usual definition for index types `ℝ≥0` or `ℕ`. -/
+usual definition for index types `ℝ≥0` or `ℕ`.
+-/
 def IsStronglyProgressive [MeasurableSpace ι] (f : Filtration ι m) (u : ι → Ω → β) : Prop :=
   ∀ i, StronglyMeasurable[Subtype.instMeasurableSpace.prod (f i)] fun p : Set.Iic i × Ω => u p.1 p.2
 
-theorem isStronglyProgressive_const [MeasurableSpace ι] (f : Filtration ι m) (b : β) :
-    IsStronglyProgressive f (fun _ _ => b : ι → Ω → β) := fun i =>
+theorem isStronglyProgressive_const [MeasurableSpace ι] (f : Filtration ι m) (b : β)
+    : IsStronglyProgressive f (fun _ _ => b : ι → Ω → β) := fun i =>
   @stronglyMeasurable_const _ _ (Subtype.instMeasurableSpace.prod (f i)) _ _
 
 namespace IsStronglyProgressive
@@ -276,28 +308,33 @@ protected theorem stronglyAdapted (h : IsStronglyProgressive f u) : StronglyAdap
   rw [this]
   exact (h i).comp_measurable measurable_prodMk_left
 
-protected theorem comp {t : ι → Ω → ι} [TopologicalSpace ι] [BorelSpace ι] [PseudoMetrizableSpace ι]
-    (h : IsStronglyProgressive f u) (ht : IsStronglyProgressive f t) (ht_le : ∀ i ω, t i ω ≤ i) :
-    IsStronglyProgressive f fun i ω => u (t i ω) ω := by
+protected theorem comp
+    {t : ι → Ω → ι} [TopologicalSpace ι] [BorelSpace ι] [PseudoMetrizableSpace ι]
+    (h : IsStronglyProgressive f u) (ht : IsStronglyProgressive f t) (ht_le : ∀ i ω, t i ω ≤ i)
+    : IsStronglyProgressive f fun i ω => u (t i ω) ω := by
   intro i
-  have : (fun p : ↥(Set.Iic i) × Ω => u (t (p.fst : ι) p.snd) p.snd) =
-    (fun p : ↥(Set.Iic i) × Ω => u (p.fst : ι) p.snd) ∘ fun p : ↥(Set.Iic i) × Ω =>
-      (⟨t (p.fst : ι) p.snd, Set.mem_Iic.mpr ((ht_le _ _).trans p.fst.prop)⟩, p.snd) := rfl
+  have : (fun p : ↥(Set.Iic i) × Ω => u (t (p.fst : ι) p.snd) p.snd)
+      = (fun p : ↥(Set.Iic i) × Ω => u (p.fst : ι) p.snd) ∘ fun p : ↥(Set.Iic i) × Ω =>
+        (⟨t (p.fst : ι) p.snd, Set.mem_Iic.mpr ((ht_le _ _).trans p.fst.prop)⟩, p.snd) :=
+    rfl
   rw [this]
   exact (h i).comp_measurable ((ht i).measurable.subtype_mk.prodMk measurable_snd)
 
 section Arithmetic
 
 @[to_additive]
-protected theorem mul [Mul β] [ContinuousMul β] (hu : IsStronglyProgressive f u)
-    (hv : IsStronglyProgressive f v) : IsStronglyProgressive f fun i ω => u i ω * v i ω := fun i =>
+protected theorem mul
+    [Mul β] [ContinuousMul β] (hu : IsStronglyProgressive f u) (hv : IsStronglyProgressive f v)
+    : IsStronglyProgressive f fun i ω => u i ω * v i ω := fun i =>
   (hu i).mul (hv i)
 
 @[to_additive]
-protected theorem finsetProd' {γ} [CommMonoid β] [ContinuousMul β] {U : γ → ι → Ω → β}
-    {s : Finset γ} (h : ∀ c ∈ s, IsStronglyProgressive f (U c)) :
-    IsStronglyProgressive f (∏ c ∈ s, U c) :=
-  Finset.prod_induction U (IsStronglyProgressive f) (fun _ _ => .mul)
+protected theorem finsetProd'
+    {γ} [CommMonoid β] [ContinuousMul β]
+    {U : γ → ι → Ω → β} {s : Finset γ} (h : ∀ c ∈ s, IsStronglyProgressive f (U c))
+    : IsStronglyProgressive f (∏ c ∈ s, U c) :=
+  Finset.prod_induction U (IsStronglyProgressive f)
+    (fun _ _ => .mul)
     (isStronglyProgressive_const _ 1) h
 
 @[deprecated (since := "2026-04-08")]
@@ -307,9 +344,10 @@ protected alias finset_sum' := MeasureTheory.IsStronglyProgressive.finsetSum'
 protected alias finset_prod' := MeasureTheory.IsStronglyProgressive.finsetProd'
 
 @[to_additive]
-protected theorem finsetProd {γ} [CommMonoid β] [ContinuousMul β] {U : γ → ι → Ω → β}
-    {s : Finset γ} (h : ∀ c ∈ s, IsStronglyProgressive f (U c)) :
-    IsStronglyProgressive f fun i a => ∏ c ∈ s, U c i a := by
+protected theorem finsetProd
+    {γ} [CommMonoid β] [ContinuousMul β]
+    {U : γ → ι → Ω → β} {s : Finset γ} (h : ∀ c ∈ s, IsStronglyProgressive f (U c))
+    : IsStronglyProgressive f fun i a => ∏ c ∈ s, U c i a := by
   convert IsStronglyProgressive.finsetProd' h using 1; ext (i a); simp only [Finset.prod_apply]
 
 @[deprecated (since := "2026-04-08")]
@@ -319,62 +357,77 @@ protected alias finset_sum := MeasureTheory.IsStronglyProgressive.finsetSum
 protected alias finset_prod := MeasureTheory.IsStronglyProgressive.finsetProd
 
 @[to_additive]
-protected theorem inv [Group β] [ContinuousInv β] (hu : IsStronglyProgressive f u) :
-    IsStronglyProgressive f fun i ω => (u i ω)⁻¹ := fun i => (hu i).inv
+protected theorem inv [Group β] [ContinuousInv β] (hu : IsStronglyProgressive f u)
+    : IsStronglyProgressive f fun i ω => (u i ω)⁻¹ := fun i =>
+  (hu i).inv
 
 @[to_additive sub]
-protected theorem div' [Group β] [ContinuousDiv β] (hu : IsStronglyProgressive f u)
-    (hv : IsStronglyProgressive f v) : IsStronglyProgressive f fun i ω => u i ω / v i ω := fun i =>
+protected theorem div'
+    [Group β] [ContinuousDiv β] (hu : IsStronglyProgressive f u) (hv : IsStronglyProgressive f v)
+    : IsStronglyProgressive f fun i ω => u i ω / v i ω := fun i =>
   (hu i).div' (hv i)
 
 /-- The norm of a strongly progressive process is strongly progressive. -/
-protected lemma norm {β : Type*} {u : ι → Ω → β} [SeminormedAddCommGroup β]
-    (hu : IsStronglyProgressive f u) :
-    IsStronglyProgressive f fun t ω ↦ ‖u t ω‖ := fun t ↦ (hu t).norm
+protected lemma norm
+    {β : Type*} {u : ι → Ω → β} [SeminormedAddCommGroup β] (hu : IsStronglyProgressive f u)
+    : IsStronglyProgressive f fun t ω ↦ ‖u t ω‖ := fun t ↦
+  (hu t).norm
 
 end Arithmetic
 
 end IsStronglyProgressive
 
-lemma IsProgressive.isStronglyProgressive {mi : MeasurableSpace ι} {mβ : MeasurableSpace β}
+lemma IsProgressive.isStronglyProgressive
+    {mi : MeasurableSpace ι} {mβ : MeasurableSpace β}
     [PseudoMetrizableSpace β] [SecondCountableTopology β] [OpensMeasurableSpace β]
-  (h : IsProgressive f u) : IsStronglyProgressive f u :=
-  fun i ↦ (h i).stronglyMeasurable
+    (h : IsProgressive f u)
+    : IsStronglyProgressive f u := fun i ↦
+  (h i).stronglyMeasurable
 
-lemma IsStronglyProgressive.isProgressive {mi : MeasurableSpace ι} {mβ : MeasurableSpace β}
-    [PseudoMetrizableSpace β] [BorelSpace β] (h : IsStronglyProgressive f u) : IsProgressive f u :=
-  fun i ↦ (h i).measurable
+lemma IsStronglyProgressive.isProgressive
+    {mi : MeasurableSpace ι} {mβ : MeasurableSpace β} [PseudoMetrizableSpace β] [BorelSpace β]
+    (h : IsStronglyProgressive f u)
+    : IsProgressive f u := fun i ↦
+  (h i).measurable
 
-theorem isStronglyProgressive_of_tendsto' {γ} [MeasurableSpace ι] [PseudoMetrizableSpace β]
-    (fltr : Filter γ) [fltr.NeBot] [fltr.IsCountablyGenerated] {U : γ → ι → Ω → β}
-    (h : ∀ l, IsStronglyProgressive f (U l)) (h_tendsto : Tendsto U fltr (𝓝 u)) :
-    IsStronglyProgressive f u := by
+theorem isStronglyProgressive_of_tendsto'
+    {γ} [MeasurableSpace ι] [PseudoMetrizableSpace β]
+    (fltr : Filter γ) [fltr.NeBot] [fltr.IsCountablyGenerated]
+    {U : γ → ι → Ω → β} (h : ∀ l, IsStronglyProgressive f (U l)) (h_tendsto : Tendsto U fltr (𝓝 u))
+    : IsStronglyProgressive f u := by
   intro i
-  apply @stronglyMeasurable_of_tendsto (Set.Iic i × Ω) β γ
-    (MeasurableSpace.prod _ (f i)) _ _ fltr _ _ _ _ fun l => h l i
+  apply @stronglyMeasurable_of_tendsto (Set.Iic i × Ω) β γ (MeasurableSpace.prod _ (f i)) _ _ fltr _
+    _ _ _ fun l => h l i
   rw [tendsto_pi_nhds] at h_tendsto ⊢
   exact fun _ ↦ Tendsto.apply_nhds (h_tendsto _) _
 
-theorem isStronglyProgressive_of_tendsto [MeasurableSpace ι] [PseudoMetrizableSpace β]
-    {U : ℕ → ι → Ω → β} (h : ∀ l, IsStronglyProgressive f (U l))
-    (h_tendsto : Tendsto U atTop (𝓝 u)) : IsStronglyProgressive f u :=
+theorem isStronglyProgressive_of_tendsto
+    [MeasurableSpace ι] [PseudoMetrizableSpace β]
+    {U : ℕ → ι → Ω → β} (h : ∀ l, IsStronglyProgressive f (U l)) (h_tendsto : Tendsto U atTop (𝓝 u))
+    : IsStronglyProgressive f u :=
   isStronglyProgressive_of_tendsto' atTop h h_tendsto
 
 /-- A continuous and strongly adapted process is strongly progressive. -/
-theorem StronglyAdapted.isStronglyProgressive_of_continuous [TopologicalSpace ι] [MetrizableSpace ι]
-    [SecondCountableTopology ι] [MeasurableSpace ι] [OpensMeasurableSpace ι]
-    [PseudoMetrizableSpace β] (h : StronglyAdapted f u) (hu_cont : ∀ ω, Continuous fun i => u i ω) :
-    IsStronglyProgressive f u := fun i =>
+theorem StronglyAdapted.isStronglyProgressive_of_continuous
+    [TopologicalSpace ι] [MetrizableSpace ι] [SecondCountableTopology ι] [MeasurableSpace ι]
+    [OpensMeasurableSpace ι] [PseudoMetrizableSpace β]
+    (h : StronglyAdapted f u) (hu_cont : ∀ ω, Continuous fun i => u i ω)
+    : IsStronglyProgressive f u := fun i =>
   @stronglyMeasurable_uncurry_of_continuous_of_stronglyMeasurable _ _ (Set.Iic i) _ _ _ _ _ _ _
-    (f i) _ (fun ω => (hu_cont ω).comp continuous_induced_dom) fun j => (h j).mono (f.mono j.prop)
+    (f i) _
+    (fun ω => (hu_cont ω).comp continuous_induced_dom)
+    fun j => (h j).mono (f.mono j.prop)
 
-/-- For filtrations indexed by a discrete order, `StronglyAdapted` and `IsStronglyProgressive` are
+/--
+For filtrations indexed by a discrete order, `StronglyAdapted` and `IsStronglyProgressive` are
 equivalent. This lemma provides `StronglyAdapted f u → IsStronglyProgressive f u`.
 See `IsStronglyProgressive.stronglyAdapted` for the reverse direction, which is true more generally.
 -/
-theorem StronglyAdapted.isStronglyProgressive_of_discrete [TopologicalSpace ι] [DiscreteTopology ι]
-    [SecondCountableTopology ι] [MeasurableSpace ι] [OpensMeasurableSpace ι]
-    [PseudoMetrizableSpace β] (h : StronglyAdapted f u) : IsStronglyProgressive f u :=
+theorem StronglyAdapted.isStronglyProgressive_of_discrete
+    [TopologicalSpace ι] [DiscreteTopology ι] [SecondCountableTopology ι] [MeasurableSpace ι]
+    [OpensMeasurableSpace ι] [PseudoMetrizableSpace β]
+    (h : StronglyAdapted f u)
+    : IsStronglyProgressive f u :=
   h.isStronglyProgressive_of_continuous fun _ => continuous_of_discreteTopology
 
 @[deprecated (since := "2026-04-24")] alias ProgMeasurable := IsStronglyProgressive

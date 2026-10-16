@@ -36,13 +36,11 @@ namespace Real
 variable {x : ℝ}
 
 /-- The function `sin x / x` modified to take the value 1 at 0, which makes it continuous. -/
-@[pp_nodot]
-noncomputable def sinc (x : ℝ) : ℝ := if x = 0 then 1 else sin x / x
+@[pp_nodot] noncomputable def sinc (x : ℝ) : ℝ := if x = 0 then 1 else sin x / x
 
 lemma sinc_apply : sinc x = if x = 0 then 1 else sin x / x := rfl
 
-@[simp]
-lemma sinc_zero : sinc 0 = 1 := by simp [sinc]
+@[simp] lemma sinc_zero : sinc 0 = 1 := by simp [sinc]
 
 lemma sinc_of_ne_zero (hx : x ≠ 0) : sinc x = sin x / x := by simp [sinc, hx]
 
@@ -95,8 +93,10 @@ lemma continuous_sinc : Continuous sinc := by
 
 attribute [grind =] tan_mul_cos sinc_of_ne_zero
 
-/-- For `|x| < π / 2` we have `cos x ≤ sinc x`, and together with
-`sinc_le_one` this gives the squeeze `cos x ≤ sin x / x ≤ 1`. -/
+/--
+For `|x| < π / 2` we have `cos x ≤ sinc x`, and together with
+`sinc_le_one` this gives the squeeze `cos x ≤ sin x / x ≤ 1`.
+-/
 lemma cos_le_sinc (hx : |x| < π / 2) : cos x ≤ sinc x := by
   wlog hx₀ : 0 ≤ x generalizing x
   · grind [sinc_neg, cos_neg]

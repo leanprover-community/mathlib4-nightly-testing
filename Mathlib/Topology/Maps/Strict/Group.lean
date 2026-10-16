@@ -33,38 +33,42 @@ open Topology QuotientGroup
 
 namespace MonoidHom
 
-variable {G H G' H' : Type*} [Group G'] [Group H'] [Group G] [Group H] {f : G →* H} {g : G' →* H'}
-  [TopologicalSpace G] [TopologicalSpace H]
+variable
+  {G H G' H' : Type*} [Group G'] [Group H'] [Group G] [Group H]
+  {f : G →* H} {g : G' →* H'} [TopologicalSpace G] [TopologicalSpace H]
 
 /-- A group homomorphism is strict if and only if its `QuotientGroup.kerLift` is an embedding. -/
 @[to_additive /-- An additive group homomorphism is strict if and only if its
 `QuotientAddGroup.kerLift` is an embedding. -/]
-protected lemma isStrictMap_iff_isEmbedding_kerLift :
-    IsStrictMap f ↔ IsEmbedding (kerLift f) := by
+protected lemma isStrictMap_iff_isEmbedding_kerLift : IsStrictMap f ↔ IsEmbedding (kerLift f) := by
   -- Note: `G ⧸ MonoidHom.ker f` and `G ⧸ Setoid.ker f` are not definitionally equal, so
   -- using `Topology.isStrictMap_iff_isEmbedding_kerLift` is too painful here.
   simp_rw [isEmbedding_iff_isStrictMap_injective, kerLift_injective, and_true,
     (isQuotientMap_mk _).isStrictMap_iff]
   rfl
 
-/-- A group homomorphism is strict if and only if the canonical isomorphism
-`G ⧸ f.ker ≃ f.range` is a homeomorphism. -/
+/--
+A group homomorphism is strict if and only if the canonical isomorphism
+`G ⧸ f.ker ≃ f.range` is a homeomorphism.
+-/
 @[to_additive /-- An additive group homomorphism is strict if and only if the canonical isomorphism
 `G ⧸ f.ker ≃ f.range` is a homeomorphism. -/]
-protected lemma isStrictMap_iff_isHomeomorph_quotientKerEquivRange :
-    IsStrictMap f ↔ IsHomeomorph (quotientKerEquivRange f) := by
+protected lemma isStrictMap_iff_isHomeomorph_quotientKerEquivRange
+    : IsStrictMap f ↔ IsHomeomorph (quotientKerEquivRange f) := by
   -- Note: `G ⧸ MonoidHom.ker f` and `G ⧸ Setoid.ker f` are not definitionally equal, so
   -- using `Topology.isStrictMap_iff_isHomeomorph_quotientKerEquivRange` is too painful here.
   simp_rw [isHomeomorph_iff_isStrictMap_bijective, EquivLike.bijective, and_true,
     (isQuotientMap_mk _).isStrictMap_iff, IsEmbedding.subtypeVal.isStrictMap_iff]
   rfl
 
-/-- The isomorphism of topological groups `G ⧸ f.ker ≃ f.range` given by a strict group
-homomorphism `f`. This is an avatar of the first isomorphism theorem. -/
+/--
+The isomorphism of topological groups `G ⧸ f.ker ≃ f.range` given by a strict group
+homomorphism `f`. This is an avatar of the first isomorphism theorem.
+-/
 @[to_additive /-- The isomorphism of topological additive groups `G ⧸ f.ker ≃ f.range` given by a
 strict additive group homomorphism `f`. This is an avatar of the first isomorphism theorem. -/]
-noncomputable def _root_.ContinuousMulEquiv.quotientKerEquivRange
-    (hf : IsStrictMap f) : G ⧸ f.ker ≃ₜ* f.range where
+noncomputable def _root_.ContinuousMulEquiv.quotientKerEquivRange (hf : IsStrictMap f)
+    : G ⧸ f.ker ≃ₜ* f.range where
   toMulEquiv := QuotientGroup.quotientKerEquivRange f
   __ := (f.isStrictMap_iff_isHomeomorph_quotientKerEquivRange.mp hf).homeomorph
 
@@ -73,19 +77,21 @@ variable [IsTopologicalGroup G]
 /-- A group homomorphism is strict if and only if its `rangeRestrict` is an open quotient map. -/
 @[to_additive /-- An additive group homomorphism is strict if and only if its `rangeRestrict` is an
 open quotient map. -/]
-protected lemma isStrictMap_iff_isOpenQuotientMap_rangeRestrict :
-    IsStrictMap f ↔ IsOpenQuotientMap f.rangeRestrict := by
+protected lemma isStrictMap_iff_isOpenQuotientMap_rangeRestrict
+    : IsStrictMap f ↔ IsOpenQuotientMap f.rangeRestrict := by
   rw [isOpenQuotientMap_iff_isQuotientMap]
   rfl
 
 variable [TopologicalSpace G'] [IsTopologicalGroup G'] [TopologicalSpace H']
 
-/-- The product (in the sense of `MonoidHom.prodMap`) of group homomorphisms is strict if and only
-if both homomorphisms are strict. -/
+/--
+The product (in the sense of `MonoidHom.prodMap`) of group homomorphisms is strict if and only
+if both homomorphisms are strict.
+-/
 @[to_additive isStrictMap_prodMap_iff /-- The product (in the sense of `AddMonoidHom.prodMap`) of
 additive group homomorphisms is strict if and only if both homomorphisms are strict. -/]
-protected lemma isStrictMap_prodMap_iff :
-    IsStrictMap (f.prodMap g) ↔ IsStrictMap f ∧ IsStrictMap g := by
+protected lemma isStrictMap_prodMap_iff
+    : IsStrictMap (f.prodMap g) ↔ IsStrictMap f ∧ IsStrictMap g := by
   simp_rw [MonoidHom.isStrictMap_iff_isOpenQuotientMap_rangeRestrict]
   let Φ : (f.prodMap g).range ≃ₜ f.range × g.range :=
     (Homeomorph.setCongr (by simp [Subgroup.coe_prod])).trans (Homeomorph.Set.prod _ _)
@@ -95,8 +101,8 @@ protected lemma isStrictMap_prodMap_iff :
 /-- The product (in the sense of `MonoidHom.prodMap`) of strict group homomorphisms is strict. -/
 @[to_additive isStrictMap_prodMap /-- The product (in the sense of `AddMonoidHom.prodMap`) of strict
 additive group homomorphisms is strict. -/]
-protected lemma isStrictMap_prodMap (hf : IsStrictMap f)
-    (hg : IsStrictMap g) : IsStrictMap (f.prodMap g) :=
+protected lemma isStrictMap_prodMap (hf : IsStrictMap f) (hg : IsStrictMap g)
+    : IsStrictMap (f.prodMap g) :=
   MonoidHom.isStrictMap_prodMap_iff.mpr ⟨hf, hg⟩
 
 -- TODO: Add the lemma `isStrictMap_piMap` once `MonoidHom.piMap` has been defined.

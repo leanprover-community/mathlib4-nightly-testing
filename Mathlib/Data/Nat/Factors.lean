@@ -36,47 +36,51 @@ namespace Nat
 
 /-- `primeFactorsList n` is the prime factorization of `n`, listed in increasing order. -/
 def primeFactorsList : ℕ → List ℕ
-  | 0 => []
-  | 1 => []
+  | 0 =>
+    []
+  | 1 =>
+    []
   | k + 2 =>
     let m := minFac (k + 2)
     m :: primeFactorsList ((k + 2) / m)
 decreasing_by exact factors_lemma
 
-@[simp]
-theorem primeFactorsList_zero : primeFactorsList 0 = [] := by rw [primeFactorsList]
+@[simp] theorem primeFactorsList_zero : primeFactorsList 0 = [] := by rw [primeFactorsList]
 
-@[simp]
-theorem primeFactorsList_one : primeFactorsList 1 = [] := by rw [primeFactorsList]
+@[simp] theorem primeFactorsList_one : primeFactorsList 1 = [] := by rw [primeFactorsList]
 
-@[simp]
-theorem primeFactorsList_two : primeFactorsList 2 = [2] := by simp [primeFactorsList]
+@[simp] theorem primeFactorsList_two : primeFactorsList 2 = [2] := by simp [primeFactorsList]
 
 theorem prime_of_mem_primeFactorsList {n : ℕ} : ∀ {p : ℕ}, p ∈ primeFactorsList n → Prime p := by
   match n with
-  | 0 => simp
-  | 1 => simp
+  | 0 =>
+    simp
+  | 1 =>
+    simp
   | k + 2 =>
-      intro p h
-      let m := minFac (k + 2)
-      have : (k + 2) / m < (k + 2) := factors_lemma
-      have h₁ : p = m ∨ p ∈ primeFactorsList ((k + 2) / m) :=
-        List.mem_cons.1 (by rwa [primeFactorsList] at h)
-      exact Or.casesOn h₁ (fun h₂ => h₂.symm ▸ minFac_prime (by simp)) prime_of_mem_primeFactorsList
+    intro p h
+    let m := minFac (k + 2)
+    have : (k + 2) / m < (k + 2) := factors_lemma
+    have h₁ : p = m ∨ p ∈ primeFactorsList ((k + 2) / m) :=
+      List.mem_cons.1 (by rwa [primeFactorsList] at h)
+    exact Or.casesOn h₁ (fun h₂ => h₂.symm ▸ minFac_prime (by simp)) prime_of_mem_primeFactorsList
 
 theorem pos_of_mem_primeFactorsList {n p : ℕ} (h : p ∈ primeFactorsList n) : 0 < p :=
   Prime.pos (prime_of_mem_primeFactorsList h)
 
 theorem prod_primeFactorsList : ∀ {n}, n ≠ 0 → List.prod (primeFactorsList n) = n
-  | 0 => by simp
-  | 1 => by simp
+  | 0 => by
+    simp
+  | 1 => by
+    simp
   | k + 2 => fun _ =>
     let m := minFac (k + 2)
     have : (k + 2) / m < (k + 2) := factors_lemma
     show (primeFactorsList (k + 2)).prod = (k + 2) by
       have h₁ : (k + 2) / m ≠ 0 := fun h => by
         have : (k + 2) = 0 * m := (Nat.div_eq_iff_eq_mul_left (minFac_pos _) (minFac_dvd _)).1 h
-        rw [zero_mul] at this; exact (show k + 2 ≠ 0 by simp) this
+        rw [zero_mul] at this
+        exact (show k + 2 ≠ 0 by simp) this
       rw [primeFactorsList, List.prod_cons, prod_primeFactorsList h₁,
         Nat.mul_div_cancel' (minFac_dvd _)]
 
@@ -87,19 +91,21 @@ theorem primeFactorsList_prime {p : ℕ} (hp : Nat.Prime p) : p.primeFactorsList
   have : Nat.minFac p = p := (Nat.prime_def_minFac.mp hp).2
   simp only [this, primeFactorsList, Nat.div_self (Nat.Prime.pos hp)]
 
-theorem isChain_cons_primeFactorsList {n : ℕ} :
-    ∀ {a}, (∀ p, Prime p → p ∣ n → a ≤ p) → List.IsChain (· ≤ ·) (a :: primeFactorsList n) := by
+theorem isChain_cons_primeFactorsList {n : ℕ}
+    : ∀ {a}, (∀ p, Prime p → p ∣ n → a ≤ p) → List.IsChain (· ≤ ·) (a :: primeFactorsList n) := by
   match n with
-  | 0 => simp
-  | 1 => simp
+  | 0 =>
+    simp
+  | 1 =>
+    simp
   | k + 2 =>
-      intro a h
-      let m := minFac (k + 2)
-      have : (k + 2) / m < (k + 2) := factors_lemma
-      rw [primeFactorsList]
-      refine List.IsChain.cons_cons
-        ((le_minFac.2 h).resolve_left (by simp)) (isChain_cons_primeFactorsList ?_)
-      exact fun p pp d => minFac_le_of_dvd pp.two_le (d.trans <| div_dvd_of_dvd <| minFac_dvd _)
+    intro a h
+    let m := minFac (k + 2)
+    have : (k + 2) / m < (k + 2) := factors_lemma
+    rw [primeFactorsList]
+    refine List.IsChain.cons_cons ((le_minFac.2 h).resolve_left (by simp))
+      (isChain_cons_primeFactorsList ?_)
+    exact fun p pp d => minFac_le_of_dvd pp.two_le (d.trans <| div_dvd_of_dvd <| minFac_dvd _)
 
 theorem isChain_two_cons_primeFactorsList (n) : List.IsChain (· ≤ ·) (2 :: primeFactorsList n) :=
   isChain_cons_primeFactorsList fun _ pp _ => pp.two_le
@@ -110,10 +116,12 @@ theorem isChain_primeFactorsList (n) : List.IsChain (· ≤ ·) (primeFactorsLis
 theorem primeFactorsList_sorted (n : ℕ) : List.SortedLE (primeFactorsList n) :=
   (isChain_primeFactorsList _).sortedLE
 
-/-- `primeFactorsList` can be constructed inductively by extracting `minFac`, for sufficiently
-large `n`. -/
-theorem primeFactorsList_add_two (n : ℕ) :
-    primeFactorsList (n + 2) = minFac (n + 2) :: primeFactorsList ((n + 2) / minFac (n + 2)) := by
+/--
+`primeFactorsList` can be constructed inductively by extracting `minFac`, for sufficiently
+large `n`.
+-/
+theorem primeFactorsList_add_two (n : ℕ)
+    : primeFactorsList (n + 2) = minFac (n + 2) :: primeFactorsList ((n + 2) / minFac (n + 2)) := by
   rw [primeFactorsList]
 
 @[simp]
@@ -132,30 +140,35 @@ theorem primeFactorsList_ne_nil (n : ℕ) : n.primeFactorsList ≠ [] ↔ 1 < n 
   simp [primeFactorsList_eq_nil n, one_lt_iff_ne_zero_and_ne_one]
 
 open scoped List in
-theorem eq_of_perm_primeFactorsList {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0)
-    (h : a.primeFactorsList ~ b.primeFactorsList) : a = b := by
+theorem eq_of_perm_primeFactorsList
+    {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) (h : a.primeFactorsList ~ b.primeFactorsList)
+    : a = b := by
   simpa [prod_primeFactorsList ha, prod_primeFactorsList hb] using List.Perm.prod_eq h
 
 section
 
 open List
 
-theorem mem_primeFactorsList_iff_dvd {n p : ℕ} (hn : n ≠ 0) (hp : Prime p) :
-    p ∈ primeFactorsList n ↔ p ∣ n where
+theorem mem_primeFactorsList_iff_dvd {n p : ℕ} (hn : n ≠ 0) (hp : Prime p)
+    : p ∈ primeFactorsList n ↔ p ∣ n where
   mp h := prod_primeFactorsList hn ▸ List.dvd_prod h
-  mpr h := mem_list_primes_of_dvd_prod (prime_iff.mp hp)
-    (fun _ h ↦ prime_iff.mp (prime_of_mem_primeFactorsList h)) ((prod_primeFactorsList hn).symm ▸ h)
+  mpr h :=
+    mem_list_primes_of_dvd_prod (prime_iff.mp hp)
+      (fun _ h ↦ prime_iff.mp (prime_of_mem_primeFactorsList h))
+      ((prod_primeFactorsList hn).symm ▸ h)
 
 theorem dvd_of_mem_primeFactorsList {n p : ℕ} (h : p ∈ n.primeFactorsList) : p ∣ n := by
   rcases n.eq_zero_or_pos with (rfl | hn)
   · exact dvd_zero p
   · rwa [← mem_primeFactorsList_iff_dvd hn.ne' (prime_of_mem_primeFactorsList h)]
 
-theorem mem_primeFactorsList {n p} (hn : n ≠ 0) : p ∈ primeFactorsList n ↔ Prime p ∧ p ∣ n :=
-  ⟨fun h => ⟨prime_of_mem_primeFactorsList h, dvd_of_mem_primeFactorsList h⟩, fun ⟨hprime, hdvd⟩ =>
-    (mem_primeFactorsList_iff_dvd hn hprime).mpr hdvd⟩
+theorem mem_primeFactorsList {n p} (hn : n ≠ 0) : p ∈ primeFactorsList n ↔ Prime p ∧ p ∣ n := ⟨
+  fun h => ⟨prime_of_mem_primeFactorsList h, dvd_of_mem_primeFactorsList h⟩,
+  fun ⟨hprime, hdvd⟩ => (mem_primeFactorsList_iff_dvd hn hprime).mpr hdvd
+⟩
 
-@[simp] lemma mem_primeFactorsList' {n p} : p ∈ n.primeFactorsList ↔ p.Prime ∧ p ∣ n ∧ n ≠ 0 := by
+@[simp]
+lemma mem_primeFactorsList' {n p} : p ∈ n.primeFactorsList ↔ p.Prime ∧ p ∣ n ∧ n ≠ 0 := by
   cases n <;> simp [mem_primeFactorsList, *]
 
 theorem le_of_mem_primeFactorsList {n p : ℕ} (h : p ∈ n.primeFactorsList) : p ≤ n := by
@@ -165,8 +178,8 @@ theorem le_of_mem_primeFactorsList {n p : ℕ} (h : p ∈ n.primeFactorsList) : 
   · exact le_of_dvd hn (dvd_of_mem_primeFactorsList h)
 
 /-- **Fundamental theorem of arithmetic** -/
-theorem primeFactorsList_unique {n : ℕ} {l : List ℕ} (h₁ : prod l = n) (h₂ : ∀ p ∈ l, Prime p) :
-    l ~ primeFactorsList n := by
+theorem primeFactorsList_unique {n : ℕ} {l : List ℕ} (h₁ : prod l = n) (h₂ : ∀ p ∈ l, Prime p)
+    : l ~ primeFactorsList n := by
   refine perm_of_prod_eq_prod ?_ ?_ ?_
   · rw [h₁]
     refine (prod_primeFactorsList ?_).symm
@@ -178,23 +191,25 @@ theorem primeFactorsList_unique {n : ℕ} {l : List ℕ} (h₁ : prod l = n) (h�
   · simp_rw [← prime_iff]
     exact fun p => prime_of_mem_primeFactorsList
 
-theorem Prime.primeFactorsList_pow {p : ℕ} (hp : p.Prime) (n : ℕ) :
-    (p ^ n).primeFactorsList = List.replicate n p := by
+theorem Prime.primeFactorsList_pow {p : ℕ} (hp : p.Prime) (n : ℕ)
+    : (p ^ n).primeFactorsList = List.replicate n p := by
   symm
   rw [← List.replicate_perm]
   apply Nat.primeFactorsList_unique (List.prod_replicate n p)
   intro q hq
   rwa [eq_of_mem_replicate hq]
 
-theorem eq_prime_pow_of_unique_prime_dvd {n p : ℕ} (hpos : n ≠ 0)
-    (h : ∀ {d}, Nat.Prime d → d ∣ n → d = p) : n = p ^ n.primeFactorsList.length := by
+theorem eq_prime_pow_of_unique_prime_dvd
+    {n p : ℕ} (hpos : n ≠ 0) (h : ∀ {d}, Nat.Prime d → d ∣ n → d = p)
+    : n = p ^ n.primeFactorsList.length := by
   set k := n.primeFactorsList.length
-  rw [← prod_primeFactorsList hpos, ← prod_replicate k p, eq_replicate_of_mem fun d hd =>
-    h (prime_of_mem_primeFactorsList hd) (dvd_of_mem_primeFactorsList hd)]
+  rw [← prod_primeFactorsList hpos, ← prod_replicate k p,
+    eq_replicate_of_mem fun d hd =>
+      h (prime_of_mem_primeFactorsList hd) (dvd_of_mem_primeFactorsList hd)]
 
 /-- For positive `a` and `b`, the prime factors of `a * b` are the union of those of `a` and `b` -/
-theorem perm_primeFactorsList_mul {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
-    (a * b).primeFactorsList ~ a.primeFactorsList ++ b.primeFactorsList := by
+theorem perm_primeFactorsList_mul {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0)
+    : (a * b).primeFactorsList ~ a.primeFactorsList ++ b.primeFactorsList := by
   refine (primeFactorsList_unique ?_ ?_).symm
   · rw [List.prod_append, prod_primeFactorsList ha, prod_primeFactorsList hb]
   · intro p hp
@@ -202,38 +217,39 @@ theorem perm_primeFactorsList_mul {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
     rcases hp with hp' | hp' <;> exact prime_of_mem_primeFactorsList hp'
 
 /-- For coprime `a` and `b`, the prime factors of `a * b` are the union of those of `a` and `b` -/
-theorem perm_primeFactorsList_mul_of_coprime {a b : ℕ} (hab : Coprime a b) :
-    (a * b).primeFactorsList ~ a.primeFactorsList ++ b.primeFactorsList := by
+theorem perm_primeFactorsList_mul_of_coprime {a b : ℕ} (hab : Coprime a b)
+    : (a * b).primeFactorsList ~ a.primeFactorsList ++ b.primeFactorsList := by
   rcases a.eq_zero_or_pos with (rfl | ha)
   · simp [(coprime_zero_left _).mp hab]
   rcases b.eq_zero_or_pos with (rfl | hb)
   · simp [(coprime_zero_right _).mp hab]
   exact perm_primeFactorsList_mul ha.ne' hb.ne'
 
-theorem primeFactorsList_sublist_right {n k : ℕ} (h : k ≠ 0) :
-    n.primeFactorsList <+ (n * k).primeFactorsList := by
+theorem primeFactorsList_sublist_right {n k : ℕ} (h : k ≠ 0)
+    : n.primeFactorsList <+ (n * k).primeFactorsList := by
   rcases n with - | hn
   · simp [zero_mul]
-  apply sublist_of_subperm_of_pairwise _
-    (primeFactorsList_sorted _).pairwise (primeFactorsList_sorted _).pairwise
+  apply sublist_of_subperm_of_pairwise _ (primeFactorsList_sorted _).pairwise
+    (primeFactorsList_sorted _).pairwise
   simp only [(perm_primeFactorsList_mul (Nat.succ_ne_zero _) h).subperm_left]
   exact (sublist_append_left _ _).subperm
 
-theorem primeFactorsList_sublist_of_dvd {n k : ℕ} (h : n ∣ k) (h' : k ≠ 0) :
-    n.primeFactorsList <+ k.primeFactorsList := by
+theorem primeFactorsList_sublist_of_dvd {n k : ℕ} (h : n ∣ k) (h' : k ≠ 0)
+    : n.primeFactorsList <+ k.primeFactorsList := by
   obtain ⟨a, rfl⟩ := h
   exact primeFactorsList_sublist_right (right_ne_zero_of_mul h')
 
-theorem primeFactorsList_subset_right {n k : ℕ} (h : k ≠ 0) :
-    n.primeFactorsList ⊆ (n * k).primeFactorsList :=
+theorem primeFactorsList_subset_right {n k : ℕ} (h : k ≠ 0)
+    : n.primeFactorsList ⊆ (n * k).primeFactorsList :=
   (primeFactorsList_sublist_right h).subset
 
-theorem primeFactorsList_subset_of_dvd {n k : ℕ} (h : n ∣ k) (h' : k ≠ 0) :
-    n.primeFactorsList ⊆ k.primeFactorsList :=
+theorem primeFactorsList_subset_of_dvd {n k : ℕ} (h : n ∣ k) (h' : k ≠ 0)
+    : n.primeFactorsList ⊆ k.primeFactorsList :=
   (primeFactorsList_sublist_of_dvd h h').subset
 
-theorem dvd_of_primeFactorsList_subperm {a b : ℕ} (ha : a ≠ 0)
-    (h : a.primeFactorsList <+~ b.primeFactorsList) : a ∣ b := by
+theorem dvd_of_primeFactorsList_subperm
+    {a b : ℕ} (ha : a ≠ 0) (h : a.primeFactorsList <+~ b.primeFactorsList)
+    : a ∣ b := by
   rcases b.eq_zero_or_pos with (rfl | hb)
   · exact dvd_zero _
   rcases a with (_ | _ | a)
@@ -245,10 +261,11 @@ theorem dvd_of_primeFactorsList_subperm {a b : ℕ} (ha : a ≠ 0)
     List.Perm.prod_eq <| List.subperm_append_diff_self_of_count_le <| List.subperm_ext_iff.mp h,
     Nat.prod_primeFactorsList hb.ne']
 
-theorem replicate_subperm_primeFactorsList_iff {a b n : ℕ} (ha : Prime a) (hb : b ≠ 0) :
-    replicate n a <+~ primeFactorsList b ↔ a ^ n ∣ b := by
+theorem replicate_subperm_primeFactorsList_iff {a b n : ℕ} (ha : Prime a) (hb : b ≠ 0)
+    : replicate n a <+~ primeFactorsList b ↔ a ^ n ∣ b := by
   induction n generalizing b with
-  | zero => simp
+  | zero =>
+    simp
   | succ n ih =>
     constructor
     · rw [List.subperm_iff]
@@ -264,23 +281,23 @@ theorem replicate_subperm_primeFactorsList_iff {a b n : ℕ} (ha : Prime a) (hb 
 
 end
 
-theorem mem_primeFactorsList_mul {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) {p : ℕ} :
-    p ∈ (a * b).primeFactorsList ↔ p ∈ a.primeFactorsList ∨ p ∈ b.primeFactorsList := by
+theorem mem_primeFactorsList_mul {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) {p : ℕ}
+    : p ∈ (a * b).primeFactorsList ↔ p ∈ a.primeFactorsList ∨ p ∈ b.primeFactorsList := by
   rw [mem_primeFactorsList (mul_ne_zero ha hb), mem_primeFactorsList ha, mem_primeFactorsList hb,
     ← and_or_left]
   simpa only [and_congr_right_iff] using Prime.dvd_mul
 
 /-- The sets of factors of coprime `a` and `b` are disjoint -/
-theorem coprime_primeFactorsList_disjoint {a b : ℕ} (hab : a.Coprime b) :
-    List.Disjoint a.primeFactorsList b.primeFactorsList := by
+theorem coprime_primeFactorsList_disjoint {a b : ℕ} (hab : a.Coprime b)
+    : List.Disjoint a.primeFactorsList b.primeFactorsList := by
   intro q hqa hqb
   apply not_prime_one
   rw [← eq_one_of_dvd_coprimes hab (dvd_of_mem_primeFactorsList hqa)
     (dvd_of_mem_primeFactorsList hqb)]
   exact prime_of_mem_primeFactorsList hqa
 
-theorem mem_primeFactorsList_mul_of_coprime {a b : ℕ} (hab : Coprime a b) (p : ℕ) :
-    p ∈ (a * b).primeFactorsList ↔ p ∈ a.primeFactorsList ∪ b.primeFactorsList := by
+theorem mem_primeFactorsList_mul_of_coprime {a b : ℕ} (hab : Coprime a b) (p : ℕ)
+    : p ∈ (a * b).primeFactorsList ↔ p ∈ a.primeFactorsList ∪ b.primeFactorsList := by
   rcases a.eq_zero_or_pos with (rfl | ha)
   · simp [(coprime_zero_left _).mp hab]
   rcases b.eq_zero_or_pos with (rfl | hb)
@@ -290,28 +307,31 @@ theorem mem_primeFactorsList_mul_of_coprime {a b : ℕ} (hab : Coprime a b) (p :
 open List
 
 /-- If `p` is a prime factor of `a` then `p` is also a prime factor of `a * b` for any `b > 0` -/
-theorem mem_primeFactorsList_mul_left {p a b : ℕ} (hpa : p ∈ a.primeFactorsList) (hb : b ≠ 0) :
-    p ∈ (a * b).primeFactorsList := by
+theorem mem_primeFactorsList_mul_left {p a b : ℕ} (hpa : p ∈ a.primeFactorsList) (hb : b ≠ 0)
+    : p ∈ (a * b).primeFactorsList := by
   rcases eq_or_ne a 0 with (rfl | ha)
   · simp at hpa
   apply (mem_primeFactorsList_mul ha hb).2 (Or.inl hpa)
 
 /-- If `p` is a prime factor of `b` then `p` is also a prime factor of `a * b` for any `a > 0` -/
-theorem mem_primeFactorsList_mul_right {p a b : ℕ} (hpb : p ∈ b.primeFactorsList) (ha : a ≠ 0) :
-    p ∈ (a * b).primeFactorsList := by
+theorem mem_primeFactorsList_mul_right {p a b : ℕ} (hpb : p ∈ b.primeFactorsList) (ha : a ≠ 0)
+    : p ∈ (a * b).primeFactorsList := by
   rw [mul_comm]
   exact mem_primeFactorsList_mul_left hpb ha
 
-theorem eq_two_pow_or_exists_odd_prime_and_dvd (n : ℕ) :
-    (∃ k : ℕ, n = 2 ^ k) ∨ ∃ p, Nat.Prime p ∧ p ∣ n ∧ Odd p :=
-  (eq_or_ne n 0).elim (fun hn => Or.inr ⟨3, prime_three, hn.symm ▸ dvd_zero 3, ⟨1, rfl⟩⟩) fun hn =>
-    or_iff_not_imp_right.mpr fun H =>
-      ⟨n.primeFactorsList.length,
+theorem eq_two_pow_or_exists_odd_prime_and_dvd (n : ℕ)
+    : (∃ k : ℕ, n = 2 ^ k) ∨ ∃ p, Nat.Prime p ∧ p ∣ n ∧ Odd p :=
+  (eq_or_ne n 0).elim
+    (fun hn => Or.inr ⟨3, prime_three, hn.symm ▸ dvd_zero 3, ⟨1, rfl⟩⟩)
+    fun hn =>
+      or_iff_not_imp_right.mpr fun H => ⟨
+        n.primeFactorsList.length,
         eq_prime_pow_of_unique_prime_dvd hn fun {_} hprime hdvd =>
-          hprime.eq_two_or_odd'.resolve_right fun hodd => H ⟨_, hprime, hdvd, hodd⟩⟩
+          hprime.eq_two_or_odd'.resolve_right fun hodd => H ⟨_, hprime, hdvd, hodd⟩
+      ⟩
 
-theorem four_dvd_or_exists_odd_prime_and_dvd_of_two_lt {n : ℕ} (n2 : 2 < n) :
-    4 ∣ n ∨ ∃ p, Prime p ∧ p ∣ n ∧ Odd p := by
+theorem four_dvd_or_exists_odd_prime_and_dvd_of_two_lt {n : ℕ} (n2 : 2 < n)
+    : 4 ∣ n ∨ ∃ p, Prime p ∧ p ∣ n ∧ Odd p := by
   obtain ⟨_ | _ | k, rfl⟩ | ⟨p, hp, hdvd, hodd⟩ := n.eq_two_pow_or_exists_odd_prime_and_dvd
   · contradiction
   · contradiction

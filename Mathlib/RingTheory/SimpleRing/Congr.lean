@@ -20,20 +20,25 @@ public section
 
 namespace IsSimpleRing
 
-lemma of_surjective {R S : Type*} [NonAssocRing R] [NonAssocRing S] [Nontrivial S]
-    (f : R →+* S) (h : IsSimpleRing R) (hf : Function.Surjective f) : IsSimpleRing S where
-  simple := OrderIso.isSimpleOrder (RingEquiv.ofBijective f
-    ⟨RingHom.injective f, hf⟩).symm.mapTwoSidedIdeal
+lemma of_surjective
+    {R S : Type*} [NonAssocRing R] [NonAssocRing S] [Nontrivial S]
+    (f : R →+* S)
+    (h : IsSimpleRing R) (hf : Function.Surjective f)
+    : IsSimpleRing S where
+  simple :=
+    OrderIso.isSimpleOrder (RingEquiv.ofBijective f ⟨RingHom.injective f, hf⟩).symm.mapTwoSidedIdeal
 
-lemma of_ringEquiv {R S : Type*} [NonUnitalNonAssocRing R] [NonUnitalNonAssocRing S]
-    (f : R ≃+* S) (h : IsSimpleRing R) : IsSimpleRing S where
+lemma of_ringEquiv
+    {R S : Type*} [NonUnitalNonAssocRing R] [NonUnitalNonAssocRing S]
+    (f : R ≃+* S) (h : IsSimpleRing R)
+    : IsSimpleRing S where
   simple := OrderIso.isSimpleOrder f.symm.mapTwoSidedIdeal
 
 end IsSimpleRing
 
 open TwoSidedIdeal in
-theorem isSimpleRing_iff_isTwoSided_imp {R : Type*} [Ring R] :
-    IsSimpleRing R ↔ Nontrivial R ∧ ∀ I : Ideal R, I.IsTwoSided → I = ⊥ ∨ I = ⊤ := by
+theorem isSimpleRing_iff_isTwoSided_imp {R : Type*} [Ring R]
+    : IsSimpleRing R ↔ Nontrivial R ∧ ∀ I : Ideal R, I.IsTwoSided → I = ⊥ ∨ I = ⊤ := by
   let e := orderIsoIsTwoSided (R := R)
   simp_rw [isSimpleRing_iff, isSimpleOrder_iff, orderIsoRingCon.toEquiv.nontrivial_congr,
     RingCon.nontrivial_iff, e.forall_congr_left, Subtype.forall, ← e.injective.eq_iff]

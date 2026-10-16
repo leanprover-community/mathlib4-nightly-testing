@@ -41,10 +41,11 @@ open scoped FiniteAdeleRing
 
 /-! ## The adele ring  -/
 
-variable (R K : Type*) [CommRing R] [IsDedekindDomain R] [Field K]
-  [Algebra R K] [IsFractionRing R K]
+variable
+  (R K : Type*) [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
 
-/-- `AdeleRing (𝓞 K) K` is the adele ring of a number field `K`.
+/--
+`AdeleRing (𝓞 K) K` is the adele ring of a number field `K`.
 
 More generally `AdeleRing R K` can be used if `K` is the field of fractions
 of the Dedekind domain `R`. This enables use of rings like `AdeleRing ℤ ℚ`, which
@@ -66,18 +67,17 @@ scoped notation:max "𝔸[" K "]" => AdeleRing (𝓞 K) K
 instance : Inhabited 𝔸[R, K] := ⟨0⟩
 
 @[simp]
-theorem algebraMap_fst_apply (x : K) (v : InfinitePlace K) :
-    (algebraMap K 𝔸[R, K] x).1 v = x := rfl
+theorem algebraMap_fst_apply (x : K) (v : InfinitePlace K) : (algebraMap K (𝔸[R, K]) x).1 v = x :=
+  rfl
 
-theorem algebraMap_fst_def (x : K) :
-    (algebraMap K 𝔸[R, K] x).1 = algebraMap K K∞ x := rfl
+theorem algebraMap_fst_def (x : K) : (algebraMap K (𝔸[R, K]) x).1 = algebraMap K (K∞) x := rfl
 
 @[simp]
-theorem algebraMap_snd_apply (x : K) (v : HeightOneSpectrum R) :
-    (algebraMap K 𝔸[R, K] x).2 v = x := rfl
+theorem algebraMap_snd_apply (x : K) (v : HeightOneSpectrum R)
+    : (algebraMap K (𝔸[R, K]) x).2 v = x :=
+  rfl
 
-theorem algebraMap_snd_def (x : K) :
-    (algebraMap K 𝔸[R, K] x).2 = algebraMap K 𝔸ᶠ[R, K] x := rfl
+theorem algebraMap_snd_def (x : K) : (algebraMap K (𝔸[R, K]) x).2 = algebraMap K (𝔸ᶠ[R, K]) x := rfl
 
 theorem algebraMap_injective [NumberField K] : Function.Injective (algebraMap K 𝔸[R, K]) :=
   fun _ _ hxy => (algebraMap K K∞).injective (Prod.ext_iff.1 hxy).1
@@ -105,9 +105,7 @@ abbrev IdeleGroup := 𝔸[R, K]ˣ
 namespace IdeleGroup
 
 /-- The map from `Kˣ` to the idele group of `K`. The image is the subgroup of principal ideles. -/
-@[simps!]
-def unitEmbedding : Kˣ →* IdeleGroup R K :=
-  Units.map (algebraMap K 𝔸[R, K]).toMonoidHom
+@[simps!] def unitEmbedding : Kˣ →* IdeleGroup R K := Units.map (algebraMap K 𝔸[R, K]).toMonoidHom
 
 /-- The map from the completion `Kᵥ` at an infinite place `v` to the idele group. -/
 @[simps!]
@@ -120,8 +118,7 @@ def ofAdicCompletion (v : HeightOneSpectrum R) : (v.adicCompletion K)ˣ →* Ide
   Units.map (AdeleRing.ofAdicCompletion R K v)
 
 /-- The subgroup of principal ideles `(x)ᵥ` where `x ∈ Kˣ`. -/
-abbrev principalSubgroup : Subgroup (IdeleGroup R K) :=
-  (IdeleGroup.unitEmbedding R K).range
+abbrev principalSubgroup : Subgroup (IdeleGroup R K) := (IdeleGroup.unitEmbedding R K).range
 
 end IdeleGroup
 
@@ -144,37 +141,40 @@ end IdeleClassGroup
 
 section norm
 
-variable {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
-  [IsFractionRing R K]
+variable
+  {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
 
 namespace AdeleRing
 
-theorem isUnit_iff {x : 𝔸[R, K]} : IsUnit x ↔ (∀ v, x.1 v ≠ 0) ∧ (∀ v, x.2 v ≠ 0) ∧
-    ∀ᶠ v in Filter.cofinite, Valued.v (x.2 v) = 1 := by
+theorem isUnit_iff {x : 𝔸[R, K]}
+    : IsUnit x
+      ↔ (∀ v, x.1 v ≠ 0) ∧ (∀ v, x.2 v ≠ 0) ∧ ∀ᶠ v in Filter.cofinite, Valued.v (x.2 v) = 1 := by
   rw [Prod.isUnit_iff, Pi.isUnit_iff, FiniteAdeleRing.isUnit_iff]
   simp_rw [isUnit_iff_ne_zero]
 
 variable [NumberField K] [Ring.HasFiniteQuotients R] [Infinite R]
 
-/-- The norm on the adele ring is the product of all the local norms. If an adele is
+/--
+The norm on the adele ring is the product of all the local norms. If an adele is
 a unit, then this is a finite product in disguise. Otherwise, it is zero (and not the junk
-`tprod` value of `1`). -/
-instance : Norm 𝔸[R, K] where norm x := ‖x.1‖ * ‖x.2‖
+`tprod` value of `1`).
+-/
+instance : Norm 𝔸[R, K] where
+  norm x := ‖x.1‖ * ‖x.2‖
 
 theorem norm_def (x : 𝔸[R, K]) : ‖x‖ = ‖x.1‖ * ‖x.2‖ := rfl
 
-theorem norm_apply_of_isUnit {x : 𝔸[R, K]} (hx : IsUnit x) :
-    ‖x‖ = (∏ v, ‖x.1 v‖ ^ v.mult) * ∏ᶠ v, ‖x.2 v‖ := by
+theorem norm_apply_of_isUnit {x : 𝔸[R, K]} (hx : IsUnit x)
+    : ‖x‖ = (∏ v, ‖x.1 v‖ ^ v.mult) * ∏ᶠ v, ‖x.2 v‖ := by
   rw [norm_def, FiniteAdeleRing.norm_eq_finprod_of_isUnit (Prod.isUnit_iff.1 hx).2,
     InfiniteAdeleRing.norm_def]
 
-theorem norm_eq_zero_of_not_isUnit {x : 𝔸[R, K]} (hx : ¬IsUnit x) : ‖x‖ = 0 := by
+theorem norm_eq_zero_of_not_isUnit {x : 𝔸[R, K]} (hx : ¬ IsUnit x) : ‖x‖ = 0 := by
   rcases not_and_or.1 <| Prod.isUnit_iff.not.1 hx with hi | hf
   · simp [norm_def, InfiniteAdeleRing.norm_eq_zero_of_not_isUnit hi]
   · simp [norm_def, FiniteAdeleRing.norm_eq_zero_of_not_isUnit hf]
 
-theorem norm_algebraMap_eq_one_of_ne_zero {x : K} (hx : x ≠ 0) :
-    ‖algebraMap K 𝔸[K] x‖ = 1 := by
+theorem norm_algebraMap_eq_one_of_ne_zero {x : K} (hx : x ≠ 0) : ‖algebraMap K 𝔸[K] x‖ = 1 := by
   rw [norm_def, algebraMap_fst_def, algebraMap_snd_def, InfiniteAdeleRing.coe_norm_eq_abs_norm,
     FiniteAdeleRing.coe_norm_eq_inv_abs_norm hx, Rat.cast_inv, mul_inv_cancel₀ (by simpa)]
 

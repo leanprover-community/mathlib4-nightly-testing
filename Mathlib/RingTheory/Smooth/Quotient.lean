@@ -21,26 +21,32 @@ public section
 
 variable {R : Type*} [CommRing R]
 
-/-- For any surjection `f : M →ₗ[R] N`, with `N` a flat `R`-module,
-we have `K ⊓ IM = IK` for any `I : Ideal R`. -/
-lemma LinearMap.ker_inf_smul_top_eq_smul_of_flat {M N : Type*} [AddCommGroup M] [AddCommGroup N]
-    [Module R M] [Module R N] (I : Ideal R) (f : M →ₗ[R] N) (surj : Function.Surjective f)
-    [Module.Flat R N] : f.ker ⊓ (I • (⊤ : Submodule R M)) = I • f.ker := by
+/--
+For any surjection `f : M →ₗ[R] N`, with `N` a flat `R`-module,
+we have `K ⊓ IM = IK` for any `I : Ideal R`.
+-/
+lemma LinearMap.ker_inf_smul_top_eq_smul_of_flat
+    {M N : Type*} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
+    (I : Ideal R)
+    (f : M →ₗ[R] N) (surj : Function.Surjective f)
+    [Module.Flat R N]
+    : f.ker ⊓ (I • (⊤ : Submodule R M)) = I • f.ker := by
   refine le_antisymm (fun x hx ↦ ?_) (fun x hx ↦ ?_)
   · rcases (Submodule.ext_iff.mp (I.subtype_rTensor_range M) x).mpr hx.2 with ⟨y, hy⟩
     have inj : Function.Injective ((TensorProduct.lid R N).comp (I.subtype.rTensor N)) := by
       simpa using Module.Flat.iff_rTensor_injective'.mp ‹_› I
-    have comm1 : ((TensorProduct.lid R N).comp (I.subtype.rTensor N)).comp (f.lTensor I) =
-      f.comp ((TensorProduct.lid R M).comp (I.subtype.rTensor M)) := by
+    have comm1
+        : ((TensorProduct.lid R N).comp (I.subtype.rTensor N)).comp (f.lTensor I)
+          = f.comp ((TensorProduct.lid R M).comp (I.subtype.rTensor M)) := by
       ext
       simp
     have eq0 : f.lTensor I y = 0 := by
       apply inj
       rw [map_zero, ← LinearMap.comp_apply, comm1, LinearMap.comp_apply, hy, f.mem_ker.mp hx.1]
     rcases ((lTensor_exact I (f.exact_subtype_ker_map) surj) y).mp eq0 with ⟨z, hz⟩
-    have comm2 : ((TensorProduct.lid R M).comp (I.subtype.rTensor M)).comp
-      (f.ker.subtype.lTensor I) = f.ker.subtype.comp
-      ((TensorProduct.lid R f.ker).comp (I.subtype.rTensor f.ker)) := by
+    have comm2
+        : ((TensorProduct.lid R M).comp (I.subtype.rTensor M)).comp (f.ker.subtype.lTensor I)
+          = f.ker.subtype.comp ((TensorProduct.lid R f.ker).comp (I.subtype.rTensor f.ker)) := by
       ext
       simp
     apply (Submodule.mem_smul_top_iff I f.ker ⟨x, hx.1⟩).mp
@@ -51,27 +57,30 @@ lemma LinearMap.ker_inf_smul_top_eq_smul_of_flat {M N : Type*} [AddCommGroup M] 
   · induction hx using Submodule.smul_induction_on' with
     | smul r hr m hm =>
       simpa [LinearMap.mem_ker.mp hm] using Submodule.smul_mem_smul hr Submodule.mem_top
-    | add y ymem z zmem hy hz => exact add_mem hy hz
+    | add y ymem z zmem hy hz =>
+      exact add_mem hy hz
 
 variable {S : Type*} [CommRing S] {R' S' : Type*} [CommRing R'] [CommRing S']
 
 section
 
-variable [Algebra R S] [Algebra R R'] [Algebra R' S'] [Algebra S S']
-    [Algebra R S'] [IsScalarTower R S S'] [IsScalarTower R R' S']
+variable
+  [Algebra R S] [Algebra R R'] [Algebra R' S'] [Algebra S S'] [Algebra R S'] [IsScalarTower R S S']
+  [IsScalarTower R R' S']
 
-private lemma comap_ker_eq_sup_of_ker_eq_map (surjRS : Function.Surjective (algebraMap R S))
-    (eqmap : RingHom.ker (algebraMap S S') = (RingHom.ker (algebraMap R R')).map (algebraMap R S)) :
-    (RingHom.ker (algebraMap R' S')).comap (algebraMap R R') =
-      RingHom.ker (algebraMap R R') ⊔ RingHom.ker (algebraMap R S) := by
+private lemma comap_ker_eq_sup_of_ker_eq_map
+    (surjRS : Function.Surjective (algebraMap R S))
+    (eqmap : RingHom.ker (algebraMap S S') = (RingHom.ker (algebraMap R R')).map (algebraMap R S))
+    : (RingHom.ker (algebraMap R' S')).comap (algebraMap R R')
+      = RingHom.ker (algebraMap R R') ⊔ RingHom.ker (algebraMap R S) := by
   rw [RingHom.comap_ker, ← IsScalarTower.algebraMap_eq, IsScalarTower.algebraMap_eq _ S,
-      ← RingHom.comap_ker]
+    ← RingHom.comap_ker]
   simp [eqmap, Ideal.comap_map_of_surjective' _ surjRS]
 
-private lemma mul_le_ker_of_range_le_mul_of_sq_zero {J I : Ideal R} (sq : I ^ 2 = ⊥)
-    (f : J.Cotangent →ₗ[R] J.Cotangent)
-    (le : f.range ≤ (Submodule.comap J.subtype (I * J)).map J.toCotangent) :
-    (Submodule.comap J.subtype (I * J)).map J.toCotangent ≤ f.ker := by
+private lemma mul_le_ker_of_range_le_mul_of_sq_zero
+    {J I : Ideal R} (sq : I ^ 2 = ⊥) (f : J.Cotangent →ₗ[R] J.Cotangent)
+    (le : f.range ≤ (Submodule.comap J.subtype (I * J)).map J.toCotangent)
+    : (Submodule.comap J.subtype (I * J)).map J.toCotangent ≤ f.ker := by
   rw [pow_two] at sq
   have {x : R} (h : x ∈ I * J) : f (J.toCotangent ⟨x, Ideal.mul_le_right h⟩) = 0 := by
     induction h using Submodule.mul_induction_on' with
@@ -83,30 +92,34 @@ private lemma mul_le_ker_of_range_le_mul_of_sq_zero {J I : Ideal R} (sq : I ^ 2 
       have : ⟨y * z, Ideal.mul_le_right (Submodule.mul_mem_mul hy hz)⟩ = y • (⟨z, hz⟩ : J) := rfl
       rw [this, map_smul, map_smul, ← eqz, ← map_smul, eq0, map_zero]
     | add y ymem z zmem hy hz =>
-      have : (⟨y + z, Ideal.mul_le_right (add_mem ymem zmem)⟩ : J) =
-        ⟨y, Ideal.mul_le_right ymem⟩ + ⟨z, Ideal.mul_le_right zmem⟩ := rfl
+      have : (⟨y + z, Ideal.mul_le_right (add_mem ymem zmem)⟩ : J)
+          = ⟨y, Ideal.mul_le_right ymem⟩ + ⟨z, Ideal.mul_le_right zmem⟩ :=
+        rfl
       rw [this, map_add, map_add, hy, hz, add_zero]
   intro x hx
   rcases Submodule.mem_map.mp hx with ⟨x', hx', eq⟩
   simpa [← eq] using this hx'
 
 set_option backward.isDefEq.respectTransparency.types false in
-/-- For flat ring homomorphism `f : R →+* S`, `I` an ideal of `R` which is square zero,
-if `R ⧸ I →+* S ⧸ IS` is formally smooth, so is `f`. -/
+/--
+For flat ring homomorphism `f : R →+* S`, `I` an ideal of `R` which is square zero,
+if `R ⧸ I →+* S ⧸ IS` is formally smooth, so is `f`.
+-/
 @[stacks 031L]
-lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat [Module.Flat R S]
-    (surj : Function.Surjective (algebraMap R R'))
-    (surjS : Function.Surjective (algebraMap S S'))
+lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat
+    [Module.Flat R S]
+    (surj : Function.Surjective (algebraMap R R')) (surjS : Function.Surjective (algebraMap S S'))
     (eqmap : RingHom.ker (algebraMap S S') = (RingHom.ker (algebraMap R R')).map (algebraMap R S))
-    (sq0 : (RingHom.ker (algebraMap R R')) ^ 2 = ⊥) (smoothq : Algebra.FormallySmooth R' S') :
-    Algebra.FormallySmooth R S := by
+    (sq0 : (RingHom.ker (algebraMap R R')) ^ 2 = ⊥) (smoothq : Algebra.FormallySmooth R' S')
+    : Algebra.FormallySmooth R S := by
   let P := (Algebra.Generators.self R S).toExtension
   let : Algebra.FormallySmooth R P.Ring := instFormallySmoothMvPolynomial S
   let IP := (RingHom.ker (algebraMap R R')).map (algebraMap R P.Ring)
   let Gen : Algebra.Generators R' S' S := {
     val := algebraMap S S'
     σ' := fun s' ↦ MvPolynomial.X (Classical.choose (surjS s'))
-    aeval_val_σ' s' := by simp [Classical.choose_spec (surjS s')] }
+    aeval_val_σ' s' := by simp [Classical.choose_spec (surjS s')]
+  }
   let P' := Gen.toExtension
   let : Algebra.FormallySmooth R' P'.Ring := instFormallySmoothMvPolynomial S
   let : Algebra P.Ring P'.Ring := MvPolynomial.algebraMvPolynomial
@@ -115,8 +128,8 @@ lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat [Module.Flat R 
   algebraize [(algebraMap S S').comp (algebraMap P.Ring S)]
   have : IsScalarTower P.Ring P'.Ring S' := by
     refine IsScalarTower.of_algebraMap_eq (fun x ↦ ?_)
-    change (algebraMap S S') (MvPolynomial.aeval _root_.id x) =
-      MvPolynomial.aeval Gen.val (MvPolynomial.map (algebraMap R R') x)
+    change (algebraMap S S') (MvPolynomial.aeval _root_.id x)
+      = MvPolynomial.aeval Gen.val (MvPolynomial.map (algebraMap R R') x)
     rw [← MvPolynomial.aeval_algebraMap_apply]
     simp [MvPolynomial.aeval_map_algebraMap, Gen]
   let J := RingHom.ker (algebraMap P.Ring S)
@@ -153,30 +166,33 @@ lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat [Module.Flat R 
   let cottoTen := KaehlerDifferential.kerCotangentToTensor R P.Ring S
   let cottoTen' := KaehlerDifferential.kerCotangentToTensor R' P'.Ring S'
   let mapTen : TensorProduct P.Ring S Ω[P.Ring⁄R] →ₗ[P.Ring]
-    TensorProduct P'.Ring S' Ω[P'.Ring⁄R'] :=
+      TensorProduct P'.Ring S' Ω[P'.Ring⁄R'] :=
     _root_.TensorProduct.lift ((((TensorProduct.mk P'.Ring S' Ω[P'.Ring⁄R']).restrictScalars₁₂
-      P.Ring P.Ring).compl₂ (KaehlerDifferential.map R R' P.Ring P'.Ring)).comp
+          P.Ring P.Ring).compl₂
+        (KaehlerDifferential.map R R' P.Ring P'.Ring)).comp
       (IsScalarTower.toAlgHom P.Ring S S').toLinearMap)
   have comm : (cottoTen'.restrictScalars P.Ring).comp mapcot = mapTen.comp cottoTen := by
     ext x
     rcases Ideal.toCotangent_surjective _ x with ⟨y, rfl⟩
     have : (KaehlerDifferential.kerToTensor R' P'.Ring S')
-      ⟨(algebraMap P.Ring P'.Ring) y.1, Jle y.2⟩ =
-      mapTen ((KaehlerDifferential.kerToTensor R P.Ring S) y) := by
+          ⟨(algebraMap P.Ring P'.Ring) y.1, Jle y.2⟩
+        = mapTen ((KaehlerDifferential.kerToTensor R P.Ring S) y) := by
       simp [KaehlerDifferential.kerToTensor, mapTen]
     simpa [mapcot] using! this
   let ediff : Ω[P.Ring⁄R] ≃ₗ[P.Ring] S →₀ P.Ring := KaehlerDifferential.mvPolynomialEquiv R S
   let eTen : TensorProduct P.Ring S Ω[P.Ring⁄R] ≃ₗ[P.Ring] (S →₀ S) :=
     ((ediff.lTensor S).trans (TensorProduct.finsuppRight P.Ring P.Ring _ _ S)).trans
-    (Finsupp.mapRange.linearEquiv (_root_.TensorProduct.rid P.Ring _))
+      (Finsupp.mapRange.linearEquiv (_root_.TensorProduct.rid P.Ring _))
   let toJ'cot : (S →₀ S) →ₗ[P.Ring] J'.Cotangent :=
     ((σ.restrictScalars P.Ring).comp mapTen).comp eTen.symm.toLinearMap
   let eS : (P.Ring ⧸ J) ≃ₗ[P.Ring] S :=
     (Submodule.quotEquivOfEq _ _ rfl).trans
-    ((Algebra.linearMap P.Ring S).quotKerEquivOfSurjective surjP)
+      ((Algebra.linearMap P.Ring S).quotKerEquivOfSurjective surjP)
   let toJcot : (S →₀ S) →ₗ[P.Ring] J.Cotangent :=
-    Finsupp.lsum P.Ring (fun s ↦ ((LinearMap.toSpanSingleton (P.Ring ⧸ J) J.Cotangent
-      (Classical.choose (cotsurj (toJ'cot (Finsupp.single s 1))))).restrictScalars P.Ring).comp
+    Finsupp.lsum P.Ring (fun s ↦
+      ((LinearMap.toSpanSingleton (P.Ring ⧸ J) J.Cotangent
+            (Classical.choose (cotsurj (toJ'cot (Finsupp.single s 1))))).restrictScalars
+          P.Ring).comp
         eS.symm.toLinearMap)
   have toJcot_spec : mapcot.comp toJcot = toJ'cot := by
     ext i s
@@ -200,13 +216,14 @@ lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat [Module.Flat R 
     simp only [← cotker, ← hy, LinearMap.mem_ker, Δ]
     rw [LinearMap.sub_apply, map_sub, LinearMap.id_apply, ← LinearMap.comp_apply, σ'_spec, sub_self]
   have leΔk := mul_le_ker_of_range_le_mul_of_sq_zero (by simp [IP, ← Ideal.map_pow, I, sq0]) Δ rΔle
-  let δ := (Submodule.liftQ _ Δ (le_of_eq_of_le cotker leΔk)).comp
-    (mapcot.quotKerEquivOfSurjective cotsurj).symm.toLinearMap
+  let δ :=
+    (Submodule.liftQ _ Δ (le_of_eq_of_le cotker leΔk)).comp
+      (mapcot.quotKerEquivOfSurjective cotsurj).symm.toLinearMap
   have δ_spec : δ.comp mapcot = Δ := by
     ext
     simp [δ]
-  have : σ'.comp cottoTen + δ.comp ((σ.restrictScalars P.Ring).comp (mapTen.comp cottoTen)) =
-    LinearMap.id := by
+  have : σ'.comp cottoTen + δ.comp ((σ.restrictScalars P.Ring).comp (mapTen.comp cottoTen))
+      = LinearMap.id := by
     rw [← comm, ← LinearMap.comp_assoc mapcot, ← LinearMap.restrictScalars_comp, hσ]
     exact add_eq_of_eq_sub' δ_spec
   exact ⟨σ' + (δ.comp (σ.restrictScalars P.Ring)).comp mapTen, this⟩
@@ -214,11 +231,12 @@ lemma Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat [Module.Flat R 
 end
 
 /-- A pure `RingHom` variant of `Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat` -/
-lemma RingHom.FormallySmooth.of_flat_of_ker_eq_map_of_square_zero (f : R →+* S) (flat : f.Flat)
+lemma RingHom.FormallySmooth.of_flat_of_ker_eq_map_of_square_zero
+    (f : R →+* S) (flat : f.Flat)
     (qR : R →+* R') (qS : S →+* S') (g : R' →+* S') (surjR : Function.Surjective qR)
-    (surjS : Function.Surjective qS) (comm : qS.comp f = g.comp qR)
-    (sq0 : (RingHom.ker qR) ^ 2 = ⊥) (eqmap : RingHom.ker qS = (RingHom.ker qR).map f)
-    (smoothq : g.FormallySmooth) : f.FormallySmooth := by
+    (surjS : Function.Surjective qS) (comm : qS.comp f = g.comp qR) (sq0 : (RingHom.ker qR) ^ 2 = ⊥)
+    (eqmap : RingHom.ker qS = (RingHom.ker qR).map f) (smoothq : g.FormallySmooth)
+    : f.FormallySmooth := by
   algebraize [f, qR, qS, g, qS.comp f]
   let _ : IsScalarTower R R' S' := IsScalarTower.of_algebraMap_eq' comm
   exact Algebra.FormallySmooth.of_surjective_of_ker_eq_map_of_flat surjR surjS eqmap sq0 ‹_›

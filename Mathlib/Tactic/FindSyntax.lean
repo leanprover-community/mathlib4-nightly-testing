@@ -32,9 +32,13 @@ open Lean Elab Command
 The output array serves as a way of regenerating what the syntax tree of the input parser is.
 -/
 def extractSymbols : ParserDescr → Array String → Array String
-  | .symbol s, acc | .nonReservedSymbol s _, acc | .unicodeSymbol s _ _, acc =>
+  | .symbol s, acc
+  | .nonReservedSymbol s _, acc
+  | .unicodeSymbol s _ _, acc =>
     acc.push s
-  | .parser _, acc | .const _, acc | .cat _ _, acc =>
+  | .parser _, acc
+  | .const _, acc
+  | .cat _ _, acc =>
     acc
   | .node _ _ descr, acc
   | .trailingNode _ _ _ descr, acc
@@ -43,7 +47,8 @@ def extractSymbols : ParserDescr → Array String → Array String
     extractSymbols descr acc
   | .binary _ l r, acc =>
     extractSymbols r (extractSymbols l acc)
-  | .sepBy p _ psep _, acc | .sepBy1 p _ psep _, acc =>
+  | .sepBy p _ psep _, acc
+  | .sepBy1 p _ psep _, acc =>
     extractSymbols psep (extractSymbols p acc)
 
 /--
@@ -77,18 +82,19 @@ elab "#find_syntax " id:str d:(&" approx")? : command => do
     -- then we include an entry into the final message.
     if 2 ≤ (nm.toString.splitOn id.getString).length || 2 ≤ (rem.splitOn id.getString).length then
       let mod := (← findModuleOf? nm).getD (← getMainModule)
-      match_results := match_results.insert mod <| (match_results.getD mod #[]).push
-        (nm, rem.trimAscii.copy)
+      match_results :=
+        match_results.insert mod <| (match_results.getD mod #[]).push (nm, rem.trimAscii.copy)
   -- We sort the messages to produce a more stable output.
   let sorted_results := match_results.toArray.qsort (·.1.lt ·.1)
   let sorted_results := sorted_results.map fun (mod, msgs) => (mod, msgs.qsort (·.1.lt ·.1))
-  let mods := (sorted_results.toList).map fun (mod, msgs) =>
-    m!"In `{mod}`:" ++ (MessageData.nest 2 <|
-      m!"".joinSep <| msgs.toList.map fun (decl, patt) =>
-        m!"\n{MessageData.ofConstName decl}: '{patt}'")
+  let mods :=
+    (sorted_results.toList).map fun (mod, msgs) =>
+      m!"In `{mod}`:" ++ (MessageData.nest 2 <| m!"".joinSep <|
+        msgs.toList.map fun (decl, patt) => m!"\n{MessageData.ofConstName decl}: '{patt}'")
   let uses := (sorted_results.toList.map fun (_, msgs) => msgs.size).sum
   let numSymbs := if d.isSome then s!"over {(symbs.size / 100) * 100}" else s!"{symbs.size}"
-  let head := m!"Found {uses} use{if uses == 1 then "" else "s"} \
-                among {numSymbs} syntax declarations"
+  let head :=
+    m!"Found {uses} use{if uses == 1 then "" else "s"} \
+      among {numSymbs} syntax declarations"
   logInfo <| head ++ m!"\n" ++ m!"\n\n".joinSep mods
 end Mathlib.FindSyntax

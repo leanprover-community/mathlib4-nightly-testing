@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Group.InjSurj
 public import Mathlib.Algebra.Group.Units.Defs
 public import Mathlib.Order.Setoid.Basic
-
 import Mathlib.Order.GaloisConnection.Basic
 
 /-!
@@ -52,19 +51,22 @@ quotient monoid, isomorphism theorems
 
 @[expose] public section
 
-
 variable (M : Type*) {N : Type*} {P : Type*}
 
 open Function Setoid
 
-/-- A congruence relation on a type with an addition is an equivalence relation which
-preserves addition. -/
+/--
+A congruence relation on a type with an addition is an equivalence relation which
+preserves addition.
+-/
 structure AddCon [Add M] extends Setoid M where
   /-- Additive congruence relations are closed under addition -/
   add' : ∀ {w x y z}, r w x → r y z → r (w + y) (x + z)
 
-/-- A congruence relation on a type with a multiplication is an equivalence relation which
-preserves multiplication. -/
+/--
+A congruence relation on a type with a multiplication is an equivalence relation which
+preserves multiplication.
+-/
 @[to_additive AddCon]
 structure Con [Mul M] extends Setoid M where
   /-- Congruence relations are closed under multiplication -/
@@ -78,8 +80,10 @@ add_decl_doc Con.toSetoid
 
 variable {M}
 
-/-- The inductively defined smallest additive congruence relation containing a given binary
-relation. -/
+/--
+The inductively defined smallest additive congruence relation containing a given binary
+relation.
+-/
 inductive AddConGen.Rel [Add M] (r : M → M → Prop) : M → M → Prop
   | of : ∀ x y, r x y → AddConGen.Rel r x y
   | refl : ∀ x, AddConGen.Rel r x x
@@ -87,8 +91,10 @@ inductive AddConGen.Rel [Add M] (r : M → M → Prop) : M → M → Prop
   | trans : ∀ {x y z}, AddConGen.Rel r x y → AddConGen.Rel r y z → AddConGen.Rel r x z
   | add : ∀ {w x y z}, AddConGen.Rel r w x → AddConGen.Rel r y z → AddConGen.Rel r (w + y) (x + z)
 
-/-- The inductively defined smallest multiplicative congruence relation containing a given binary
-relation. -/
+/--
+The inductively defined smallest multiplicative congruence relation containing a given binary
+relation.
+-/
 @[to_additive AddConGen.Rel]
 inductive ConGen.Rel [Mul M] (r : M → M → Prop) : M → M → Prop
   | of : ∀ x y, r x y → ConGen.Rel r x y
@@ -97,8 +103,10 @@ inductive ConGen.Rel [Mul M] (r : M → M → Prop) : M → M → Prop
   | trans : ∀ {x y z}, ConGen.Rel r x y → ConGen.Rel r y z → ConGen.Rel r x z
   | mul : ∀ {w x y z}, ConGen.Rel r w x → ConGen.Rel r y z → ConGen.Rel r (w * y) (x * z)
 
-/-- The inductively defined smallest multiplicative congruence relation containing a given binary
-relation. -/
+/--
+The inductively defined smallest multiplicative congruence relation containing a given binary
+relation.
+-/
 @[to_additive /-- The inductively defined smallest additive congruence relation containing
 a given binary relation. -/]
 def conGen [Mul M] (r : M → M → Prop) : Con M :=
@@ -110,37 +118,34 @@ section
 
 variable [Mul M] [Mul N] [Mul P] {c d : Con M}
 
+@[to_additive] instance : Inhabited (Con M) := ⟨conGen emptyRelation⟩
+
 @[to_additive]
-instance : Inhabited (Con M) :=
-  ⟨conGen emptyRelation⟩
+lemma toSetoid_injective : Injective (toSetoid (M := M)) := fun c d ↦ by cases c; congr!
 
-@[to_additive] lemma toSetoid_injective : Injective (toSetoid (M := M)) :=
-  fun c d ↦ by cases c; congr!
-
-@[to_additive (attr := simp)] lemma toSetoid_inj : c.toSetoid = d.toSetoid ↔ c = d :=
-  toSetoid_injective.eq_iff
+@[to_additive (attr := simp)]
+lemma toSetoid_inj : c.toSetoid = d.toSetoid ↔ c = d := toSetoid_injective.eq_iff
 
 /-- A coercion from a congruence relation to its underlying binary relation. -/
 @[to_additive (attr := macro_inline)
-/-- A coercion from an additive congruence relation to its underlying binary relation. -/]
+  /-- A coercion from an additive congruence relation to its underlying binary relation. -/]
 instance : FunLike (Con M) M (M → Prop) where
   coe c := c.r
   coe_injective x y h := by
     rcases x with ⟨⟨x, _⟩, _⟩
     rcases y with ⟨⟨y, _⟩, _⟩
     have : x = y := h
-    subst x; rfl
+    subst x
+    rfl
 
 variable (c)
 
 @[to_additive (attr := simp)]
-theorem rel_eq_coe (c : Con M) : c.r = c :=
-  rfl
+theorem rel_eq_coe (c : Con M) : c.r = c := rfl
 
 /-- Congruence relations are reflexive. -/
 @[to_additive /-- Additive congruence relations are reflexive. -/]
-protected theorem refl (x) : c x x :=
-  c.toSetoid.refl' x
+protected theorem refl (x) : c x x := c.toSetoid.refl' x
 
 /-- Congruence relations are symmetric. -/
 @[to_additive /-- Additive congruence relations are symmetric. -/]
@@ -155,16 +160,16 @@ protected theorem trans {x y z} : c x y → c y z → c x z := c.toSetoid.trans'
 protected theorem mul {w x y z} : c w x → c y z → c (w * y) (x * z) := c.mul'
 
 @[to_additive (attr := simp)]
-theorem rel_mk {s : Setoid M} {h a b} : Con.mk s h a b ↔ r a b :=
-  Iff.rfl
+theorem rel_mk {s : Setoid M} {h a b} : Con.mk s h a b ↔ r a b := Iff.rfl
 
-/-- Given a type `M` with a multiplication, a congruence relation `c` on `M`, and elements of `M`
-`x, y`, `(x, y) ∈ M × M` iff `x` is related to `y` by `c`. -/
+/--
+Given a type `M` with a multiplication, a congruence relation `c` on `M`, and elements of `M`
+`x, y`, `(x, y) ∈ M × M` iff `x` is related to `y` by `c`.
+-/
 @[to_additive instMembershipProd
   /-- Given a type `M` with an addition, `x, y ∈ M`, and an additive congruence relation
 `c` on `M`, `(x, y) ∈ M × M` iff `x` is related to `y` by `c`. -/]
-instance instMembershipProd : Membership (M × M) (Con M) :=
-  ⟨fun c x => c x.1 x.2⟩
+instance instMembershipProd : Membership (M × M) (Con M) := ⟨fun c x => c x.1 x.2⟩
 
 variable {c}
 
@@ -175,8 +180,7 @@ theorem ext' {c d : Con M} (H : ⇑c = ⇑d) : c = d := DFunLike.coe_injective H
 
 /-- Extensionality rule for congruence relations. -/
 @[to_additive (attr := ext) /-- Extensionality rule for additive congruence relations. -/]
-theorem ext {c d : Con M} (H : ∀ x y, c x y ↔ d x y) : c = d :=
-  ext' <| by ext; apply H
+theorem ext {c d : Con M} (H : ∀ x y, c x y ↔ d x y) : c = d := ext' <| by ext; apply H
 
 /-- Two congruence relations are equal iff their underlying binary relations are equal. -/
 @[to_additive /-- Two additive congruence relations are equal iff their underlying binary relations
@@ -189,31 +193,30 @@ variable (c)
 /-- Defining the quotient by a congruence relation of a type with a multiplication. -/
 @[to_additive /-- Defining the quotient by an additive congruence relation of a type with
 an addition. -/]
-protected def Quotient :=
-  Quotient c.toSetoid
+protected def Quotient := Quotient c.toSetoid
 
 variable {c}
 
 /-- The morphism into the quotient by a congruence relation -/
 @[to_additive (attr := coe)
-/-- The morphism into the quotient by an additive congruence relation -/]
-def toQuotient : M → c.Quotient :=
-  Quotient.mk''
+  /-- The morphism into the quotient by an additive congruence relation -/]
+def toQuotient : M → c.Quotient := Quotient.mk''
 
 variable (c)
 
-/-- Coercion from a type with a multiplication to its quotient by a congruence relation.
+/--
+Coercion from a type with a multiplication to its quotient by a congruence relation.
 
-See Note [use has_coe_t]. -/
+See Note [use has_coe_t].
+-/
 @[to_additive /-- Coercion from a type with an addition to its quotient by an additive congruence
 relation -/]
-instance (priority := 10) : CoeTC M c.Quotient :=
-  ⟨toQuotient⟩
+instance (priority := 10) : CoeTC M c.Quotient := ⟨toQuotient⟩
 
 -- Lower the priority since it unifies with any quotient type.
 /-- The quotient by a decidable congruence relation has decidable equality. -/
 @[to_additive
-/-- The quotient by a decidable additive congruence relation has decidable equality. -/]
+  /-- The quotient by a decidable additive congruence relation has decidable equality. -/]
 instance (priority := 500) [∀ a b, Decidable (c a b)] : DecidableEq c.Quotient :=
   inferInstanceAs (DecidableEq (Quotient c.toSetoid))
 
@@ -222,41 +225,52 @@ theorem quot_mk_eq_coe {M : Type*} [Mul M] (c : Con M) (x : M) : Quot.mk c x = (
   rfl
 
 -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11215): TODO: restore `elab_as_elim`
-/-- The function on the quotient by a congruence relation `c` induced by a function that is
-constant on `c`'s equivalence classes. -/
+/--
+The function on the quotient by a congruence relation `c` induced by a function that is
+constant on `c`'s equivalence classes.
+-/
 @[to_additive /-- The function on the quotient by a congruence relation `c`
 induced by a function that is constant on `c`'s equivalence classes. -/]
-protected def liftOn {β} {c : Con M} (q : c.Quotient) (f : M → β) (h : ∀ a b, c a b → f a = f b) :
-    β :=
+protected def liftOn {β} {c : Con M} (q : c.Quotient) (f : M → β) (h : ∀ a b, c a b → f a = f b)
+    : β :=
   Quotient.liftOn' q f h
 
 -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11215): TODO: restore `elab_as_elim`
-/-- The binary function on the quotient by a congruence relation `c` induced by a binary function
-that is constant on `c`'s equivalence classes. -/
+/--
+The binary function on the quotient by a congruence relation `c` induced by a binary function
+that is constant on `c`'s equivalence classes.
+-/
 @[to_additive /-- The binary function on the quotient by a congruence relation `c`
 induced by a binary function that is constant on `c`'s equivalence classes. -/]
-protected def liftOn₂ {β} {c : Con M} (q r : c.Quotient) (f : M → M → β)
-    (h : ∀ a₁ a₂ b₁ b₂, c a₁ b₁ → c a₂ b₂ → f a₁ a₂ = f b₁ b₂) : β :=
+protected def liftOn₂
+    {β} {c : Con M}
+    (q r : c.Quotient) (f : M → M → β) (h : ∀ a₁ a₂ b₁ b₂, c a₁ b₁ → c a₂ b₂ → f a₁ a₂ = f b₁ b₂)
+    : β :=
   Quotient.liftOn₂' q r f h
 
 /-- A version of `Quotient.hrecOn₂'` for quotients by `Con`. -/
 @[to_additive /-- A version of `Quotient.hrecOn₂'` for quotients by `AddCon`. -/]
-protected def hrecOn₂ {cM : Con M} {cN : Con N} {φ : cM.Quotient → cN.Quotient → Sort*}
+protected def hrecOn₂
+    {cM : Con M} {cN : Con N} {φ : cM.Quotient → cN.Quotient → Sort*}
     (a : cM.Quotient) (b : cN.Quotient) (f : ∀ (x : M) (y : N), φ x y)
-    (h : ∀ x y x' y', cM x x' → cN y y' → f x y ≍ f x' y') : φ a b :=
+    (h : ∀ x y x' y', cM x x' → cN y y' → f x y ≍ f x' y')
+    : φ a b :=
   Quotient.hrecOn₂' a b f h
 
 @[to_additive (attr := simp)]
-theorem hrec_on₂_coe {cM : Con M} {cN : Con N} {φ : cM.Quotient → cN.Quotient → Sort*} (a : M)
-    (b : N) (f : ∀ (x : M) (y : N), φ x y)
-    (h : ∀ x y x' y', cM x x' → cN y y' → f x y ≍ f x' y') :
-    Con.hrecOn₂ (↑a) (↑b) f h = f a b :=
+theorem hrec_on₂_coe
+    {cM : Con M} {cN : Con N} {φ : cM.Quotient → cN.Quotient → Sort*}
+    (a : M) (b : N)
+    (f : ∀ (x : M) (y : N), φ x y) (h : ∀ x y x' y', cM x x' → cN y y' → f x y ≍ f x' y')
+    : Con.hrecOn₂ (↑a) (↑b) f h = f a b :=
   rfl
 
 variable {c}
 
-/-- The inductive principle used to prove propositions about the elements of a quotient by a
-congruence relation. -/
+/--
+The inductive principle used to prove propositions about the elements of a quotient by a
+congruence relation.
+-/
 @[to_additive (attr := elab_as_elim) /-- The inductive principle used to prove propositions about
 the elements of a quotient by an additive congruence relation. -/]
 protected theorem induction_on {C : c.Quotient → Prop} (q : c.Quotient) (H : ∀ x : M, C x) : C q :=
@@ -264,47 +278,56 @@ protected theorem induction_on {C : c.Quotient → Prop} (q : c.Quotient) (H : �
 
 /-- A version of `Con.induction_on` for predicates which takes two arguments. -/
 @[to_additive (attr := elab_as_elim)
-/-- A version of `AddCon.induction_on` for predicates which takes two arguments. -/]
-protected theorem induction_on₂ {d : Con N} {C : c.Quotient → d.Quotient → Prop} (p : c.Quotient)
-    (q : d.Quotient) (H : ∀ (x : M) (y : N), C x y) : C p q :=
+  /-- A version of `AddCon.induction_on` for predicates which takes two arguments. -/]
+protected theorem induction_on₂
+    {d : Con N} {C : c.Quotient → d.Quotient → Prop}
+    (p : c.Quotient) (q : d.Quotient) (H : ∀ (x : M) (y : N), C x y)
+    : C p q :=
   Quotient.inductionOn₂' p q H
 
 variable (c)
 
-/-- Two elements are related by a congruence relation `c` iff they are represented by the same
-element of the quotient by `c`. -/
+/--
+Two elements are related by a congruence relation `c` iff they are represented by the same
+element of the quotient by `c`.
+-/
 @[to_additive (attr := simp) /-- Two elements are related by an additive congruence relation `c` iff
 they are represented by the same element of the quotient by `c`. -/]
-protected theorem eq {a b : M} : (a : c.Quotient) = (b : c.Quotient) ↔ c a b :=
-  Quotient.eq''
+protected theorem eq {a b : M} : (a : c.Quotient) = (b : c.Quotient) ↔ c a b := Quotient.eq''
 
-/-- The multiplication induced on the quotient by a congruence relation on a type with a
-multiplication. -/
+/--
+The multiplication induced on the quotient by a congruence relation on a type with a
+multiplication.
+-/
 @[to_additive /-- The addition induced on the quotient by an additive congruence relation on a type
 with an addition. -/]
-instance hasMul : Mul c.Quotient :=
-  ⟨Quotient.map₂ (· * ·) fun _ _ h1 _ _ h2 => c.mul h1 h2⟩
+instance hasMul : Mul c.Quotient := ⟨Quotient.map₂ (· * ·) fun _ _ h1 _ _ h2 => c.mul h1 h2⟩
 
 variable {c}
 
-/-- The coercion to the quotient of a congruence relation commutes with multiplication (by
-definition). -/
+/--
+The coercion to the quotient of a congruence relation commutes with multiplication (by
+definition).
+-/
 @[to_additive (attr := simp) /-- The coercion to the quotient of an additive congruence relation
 commutes with addition (by definition). -/]
-theorem coe_mul (x y : M) : (↑(x * y) : c.Quotient) = ↑x * ↑y :=
-  rfl
+theorem coe_mul (x y : M) : (↑(x * y) : c.Quotient) = ↑x * ↑y := rfl
 
-/-- Definition of the function on the quotient by a congruence relation `c` induced by a function
-that is constant on `c`'s equivalence classes. -/
+/--
+Definition of the function on the quotient by a congruence relation `c` induced by a function
+that is constant on `c`'s equivalence classes.
+-/
 @[to_additive (attr := simp) /-- Definition of the function on the quotient by an additive
 congruence relation `c` induced by a function that is constant on `c`'s equivalence classes. -/]
-protected theorem liftOn_coe {β} (c : Con M) (f : M → β) (h : ∀ a b, c a b → f a = f b) (x : M) :
-    Con.liftOn (x : c.Quotient) f h = f x :=
+protected theorem liftOn_coe {β} (c : Con M) (f : M → β) (h : ∀ a b, c a b → f a = f b) (x : M)
+    : Con.liftOn (x : c.Quotient) f h = f x :=
   rfl
 
 -- The complete lattice of congruence relations on a type
-/-- For congruence relations `c, d` on a type `M` with a multiplication, `c ≤ d` iff `∀ x y ∈ M`,
-`x` is related to `y` by `d` if `x` is related to `y` by `c`. -/
+/--
+For congruence relations `c, d` on a type `M` with a multiplication, `c ≤ d` iff `∀ x y ∈ M`,
+`x` is related to `y` by `d` if `x` is related to `y` by `c`.
+-/
 @[to_additive /-- For additive congruence relations `c, d` on a type `M` with an addition, `c ≤ d`
 iff `∀ x y ∈ M`, `x` is related to `y` by `d` if `x` is related to `y` by `c`. -/]
 instance : LE (Con M) where
@@ -312,34 +335,40 @@ instance : LE (Con M) where
 
 /-- Definition of `≤` for congruence relations. -/
 @[to_additive /-- Definition of `≤` for additive congruence relations. -/]
-theorem le_def {c d : Con M} : c ≤ d ↔ ∀ {x y}, c x y → d x y :=
-  Iff.rfl
+theorem le_def {c d : Con M} : c ≤ d ↔ ∀ {x y}, c x y → d x y := Iff.rfl
 
 /-- The infimum of a set of congruence relations on a given type with a multiplication. -/
 @[to_additive /-- The infimum of a set of additive congruence relations on a given type with
 an addition. -/]
 instance : InfSet (Con M) where
-  sInf S :=
-    { r := fun x y => ∀ c : Con M, c ∈ S → c x y
-      iseqv := ⟨fun x c _ => c.refl x, fun h c hc => c.symm <| h c hc,
-        fun h1 h2 c hc => c.trans (h1 c hc) <| h2 c hc⟩
-      mul' := fun h1 h2 c hc => c.mul (h1 c hc) <| h2 c hc }
+  sInf S := {
+    r := fun x y => ∀ c : Con M, c ∈ S → c x y
+    iseqv := ⟨
+      fun x c _ => c.refl x,
+      fun h c hc => c.symm <| h c hc,
+      fun h1 h2 c hc => c.trans (h1 c hc) <| h2 c hc
+    ⟩
+    mul' := fun h1 h2 c hc => c.mul (h1 c hc) <| h2 c hc
+  }
 
-/-- The infimum of a set of congruence relations is the same as the infimum of the set's image
-under the map to the underlying equivalence relation. -/
+/--
+The infimum of a set of congruence relations is the same as the infimum of the set's image
+under the map to the underlying equivalence relation.
+-/
 @[to_additive /-- The infimum of a set of additive congruence relations is the same as the infimum
 of the set's image under the map to the underlying equivalence relation. -/]
 theorem sInf_toSetoid (S : Set (Con M)) : (sInf S).toSetoid = sInf (toSetoid '' S) :=
   Setoid.ext fun x y =>
     ⟨fun h r ⟨c, hS, hr⟩ => by rw [← hr]; exact h c hS, fun h c hS => h c.toSetoid ⟨c, hS, rfl⟩⟩
 
-/-- The infimum of a set of congruence relations is the same as the infimum of the set's image
-under the map to the underlying binary relation. -/
+/--
+The infimum of a set of congruence relations is the same as the infimum of the set's image
+under the map to the underlying binary relation.
+-/
 @[to_additive (attr := simp, norm_cast)
   /-- The infimum of a set of additive congruence relations is the same as the infimum
   of the set's image under the map to the underlying binary relation. -/]
-theorem coe_sInf (S : Set (Con M)) :
-    ⇑(sInf S) = sInf ((⇑) '' S) := by
+theorem coe_sInf (S : Set (Con M)) : ⇑(sInf S) = sInf ((⇑) '' S) := by
   ext
   simp only [sInf_image, iInf_apply, iInf_Prop_eq]
   rfl
@@ -358,10 +387,9 @@ instance : PartialOrder (Con M) where
 @[to_additive /-- The complete lattice of additive congruence relations on a given type with
 an addition. -/]
 instance : CompleteLattice (Con M) where
-  __ := completeLatticeOfInf (Con M) fun s =>
-      ⟨fun r hr x y h => (h : ∀ r ∈ s, (r : Con M) x y) r hr, fun r hr x y h r' hr' =>
-        hr hr'
-          h⟩
+  __ :=
+    completeLatticeOfInf (Con M) fun s =>
+      ⟨fun r hr x y h => (h : ∀ r ∈ s, (r : Con M) x y) r hr, fun r hr x y h r' hr' => hr hr' h⟩
   inf c d := ⟨c.toSetoid ⊓ d.toSetoid, fun h1 h2 => ⟨c.mul h1.1 h2.1, d.mul h1.2 h2.2⟩⟩
   inf_le_left _ _ := fun _ _ h => h.1
   inf_le_right _ _ := fun _ _ h => h.2
@@ -371,16 +399,19 @@ instance : CompleteLattice (Con M) where
   bot := { Setoid.completeLattice.bot with mul' := fun h1 h2 => h1 ▸ h2 ▸ rfl }
   bot_le c := fun x _ h => h ▸ c.refl x
 
-/-- The infimum of two congruence relations equals the infimum of the underlying binary
-operations. -/
+/--
+The infimum of two congruence relations equals the infimum of the underlying binary
+operations.
+-/
 @[to_additive (attr := simp, norm_cast)
   /-- The infimum of two additive congruence relations equals the infimum of the underlying binary
   operations. -/]
-theorem coe_inf {c d : Con M} : ⇑(c ⊓ d) = ⇑c ⊓ ⇑d :=
-  rfl
+theorem coe_inf {c d : Con M} : ⇑(c ⊓ d) = ⇑c ⊓ ⇑d := rfl
 
-@[to_additive (attr := simp)] lemma toSetoid_top : (⊤ : Con M).toSetoid = ⊤ := rfl
-@[to_additive (attr := simp)] lemma toSetoid_bot : (⊥ : Con M).toSetoid = ⊥ := rfl
+@[to_additive (attr := simp)]
+lemma toSetoid_top : (⊤ : Con M).toSetoid = ⊤ := rfl
+@[to_additive (attr := simp)]
+lemma toSetoid_bot : (⊥ : Con M).toSetoid = ⊥ := rfl
 
 @[to_additive (attr := simp)]
 lemma toSetoid_eq_top : c.toSetoid = ⊤ ↔ c = ⊤ := by rw [← toSetoid_top, toSetoid_inj]
@@ -390,14 +421,14 @@ lemma toSetoid_eq_bot : c.toSetoid = ⊥ ↔ c = ⊥ := by rw [← toSetoid_bot,
 
 /-- Definition of the infimum of two congruence relations. -/
 @[to_additive /-- Definition of the infimum of two additive congruence relations. -/]
-theorem inf_iff_and {c d : Con M} {x y} : (c ⊓ d) x y ↔ c x y ∧ d x y :=
-  Iff.rfl
+theorem inf_iff_and {c d : Con M} {x y} : (c ⊓ d) x y ↔ c x y ∧ d x y := Iff.rfl
 
-@[to_additive]
-theorem le_conGen {r : M → M → Prop} : r ≤ ⇑(conGen r) := ConGen.Rel.of
+@[to_additive] theorem le_conGen {r : M → M → Prop} : r ≤ ⇑(conGen r) := ConGen.Rel.of
 
-/-- The inductively defined smallest congruence relation containing a binary relation `r` equals
-the infimum of the set of congruence relations containing `r`. -/
+/--
+The inductively defined smallest congruence relation containing a binary relation `r` equals
+the infimum of the set of congruence relations containing `r`.
+-/
 @[to_additive /-- The inductively defined smallest additive congruence relation
 containing a binary relation `r` equals the infimum of the set of additive congruence relations
 containing `r`. -/]
@@ -413,16 +444,20 @@ theorem conGen_eq (r : M → M → Prop) : conGen r = sInf { s : Con M | ∀ x y
         · exact fun _ _ => s.mul))
     (sInf_le ConGen.Rel.of)
 
-/-- The smallest congruence relation containing a binary relation `r` is contained in any
-congruence relation containing `r`. -/
+/--
+The smallest congruence relation containing a binary relation `r` is contained in any
+congruence relation containing `r`.
+-/
 @[to_additive /-- The smallest additive congruence relation containing a binary
 relation `r` is contained in any additive congruence relation containing `r`. -/]
 theorem conGen_le {r : M → M → Prop} {c : Con M} : conGen r ≤ c ↔ r ≤ ⇑c :=
   ⟨le_trans le_conGen, conGen_eq r ▸ fun h => sInf_le h⟩
 
 variable (M) in
-/-- There is a Galois insertion of congruence relations on a type with a multiplication `M` into
-binary relations on `M`. -/
+/--
+There is a Galois insertion of congruence relations on a type with a multiplication `M` into
+binary relations on `M`.
+-/
 @[to_additive /-- There is a Galois insertion of additive congruence relations on a type with
 an addition `M` into binary relations on `M`. -/]
 protected def gi : GaloisInsertion (conGen (M := M)) DFunLike.coe where
@@ -431,12 +466,12 @@ protected def gi : GaloisInsertion (conGen (M := M)) DFunLike.coe where
   le_l_u _ := le_conGen
   choice_eq _ _ := rfl
 
-@[to_additive]
-theorem conGen_monotone : Monotone (conGen (M := M)) :=
-  Con.gi M |>.gc.monotone_l
+@[to_additive] theorem conGen_monotone : Monotone (conGen (M := M)) := Con.gi M |>.gc.monotone_l
 
-/-- Given binary relations `r, s` with `r` contained in `s`, the smallest congruence relation
-containing `s` contains the smallest congruence relation containing `r`. -/
+/--
+Given binary relations `r, s` with `r` contained in `s`, the smallest congruence relation
+containing `s` contains the smallest congruence relation containing `r`.
+-/
 @[to_additive /-- Given binary relations `r, s` with `r` contained in `s`, the
 smallest additive congruence relation containing `s` contains the smallest additive congruence
 relation containing `r`. -/]
@@ -446,15 +481,15 @@ theorem conGen_mono {r s : M → M → Prop} (h : ∀ x y, r x y → s x y) : co
 /-- Congruence relations equal the smallest congruence relation in which they are contained. -/
 @[to_additive (attr := simp) addConGen_of_addCon /-- Additive congruence relations equal the
 smallest additive congruence relation in which they are contained. -/]
-theorem conGen_of_con (c : Con M) : conGen c = c :=
-  Con.gi M |>.l_u_eq _
+theorem conGen_of_con (c : Con M) : conGen c = c := Con.gi M |>.l_u_eq _
 
-/-- The map sending a binary relation to the smallest congruence relation in which it is
-contained is idempotent. -/
+/--
+The map sending a binary relation to the smallest congruence relation in which it is
+contained is idempotent.
+-/
 @[to_additive /-- The map sending a binary relation to the smallest additive
 congruence relation in which it is contained is idempotent. -/]
-theorem conGen_idem (r : M → M → Prop) : conGen (conGen r) = conGen r :=
-  Con.gi M |>.gc.l_u_l_eq_l _
+theorem conGen_idem (r : M → M → Prop) : conGen (conGen r) = conGen r := Con.gi M |>.gc.l_u_l_eq_l _
 
 theorem conGen_sup (r s : M → M → Prop) : conGen (r ⊔ s) = conGen r ⊔ conGen s :=
   Con.gi M |>.gc.l_sup
@@ -465,73 +500,82 @@ theorem conGen_sSup (rs : Set (M → M → Prop)) : conGen (sSup rs) = ⨆ r ∈
 theorem conGen_iSup {ι : Sort*} (r : ι → M → M → Prop) : conGen (iSup r) = ⨆ i, conGen (r i) :=
   Con.gi M |>.gc.l_iSup
 
-/-- The supremum of two congruence relations equals the smallest congruence relation containing
-the supremum of the underlying binary operations. -/
+/--
+The supremum of two congruence relations equals the smallest congruence relation containing
+the supremum of the underlying binary operations.
+-/
 @[to_additive /-- The supremum of two additive congruence relations equals the smallest additive
 congruence relation containing the supremum of the underlying binary operations. -/]
-theorem sup_def (c d : Con M) : c ⊔ d = conGen (⇑c ⊔ ⇑d) :=
-  Con.gi M |>.l_sup_u _ _ |>.symm
+theorem sup_def (c d : Con M) : c ⊔ d = conGen (⇑c ⊔ ⇑d) := Con.gi M |>.l_sup_u _ _ |>.symm
 
-/-- The supremum of congruence relations `c, d` equals the smallest congruence relation containing
-the binary relation '`x` is related to `y` by `c` or `d`'. -/
+/--
+The supremum of congruence relations `c, d` equals the smallest congruence relation containing
+the binary relation '`x` is related to `y` by `c` or `d`'.
+-/
 @[to_additive /-- The supremum of additive congruence relations `c, d` equals the
 smallest additive congruence relation containing the binary relation '`x` is related to `y`
 by `c` or `d`'. -/]
-theorem sup_eq_conGen (c d : Con M) : c ⊔ d = conGen fun x y => c x y ∨ d x y :=
-  sup_def _ _
+theorem sup_eq_conGen (c d : Con M) : c ⊔ d = conGen fun x y => c x y ∨ d x y := sup_def _ _
 
-/-- The supremum of a set of congruence relations is the same as the smallest congruence relation
-containing the supremum of the set's image under the map to the underlying binary relation. -/
+/--
+The supremum of a set of congruence relations is the same as the smallest congruence relation
+containing the supremum of the set's image under the map to the underlying binary relation.
+-/
 @[to_additive /-- The supremum of a set of additive congruence relations is the same as the smallest
 additive congruence relation containing the supremum of the set's image under the map to the
 underlying binary relation. -/]
 theorem sSup_def (S : Set (Con M)) : sSup S = conGen (sSup ((⇑) '' S)) :=
   Con.gi M |>.l_sSup_u_image _ |>.symm
 
-/-- The supremum of a set of congruence relations `S` equals the smallest congruence relation
-containing the binary relation 'there exists `c ∈ S` such that `x` is related to `y` by `c`'. -/
+/--
+The supremum of a set of congruence relations `S` equals the smallest congruence relation
+containing the binary relation 'there exists `c ∈ S` such that `x` is related to `y` by `c`'.
+-/
 @[to_additive /-- The supremum of a set of additive congruence relations `S`
 equals the smallest additive congruence relation containing the binary relation 'there exists
 `c ∈ S` such that `x` is related to `y` by `c`'. -/]
-theorem sSup_eq_conGen (S : Set (Con M)) :
-    sSup S = conGen fun x y => ∃ c : Con M, c ∈ S ∧ c x y := by
+theorem sSup_eq_conGen (S : Set (Con M))
+    : sSup S = conGen fun x y => ∃ c : Con M, c ∈ S ∧ c x y := by
   rw [sSup_def]
   congr! with x y
   simp
 
 variable (c)
 
-
-/-- Given types with multiplications `M, N` and a congruence relation `c` on `N`, a
+/--
+Given types with multiplications `M, N` and a congruence relation `c` on `N`, a
 multiplication-preserving map `f : M → N` induces a congruence relation on `f`'s domain
-defined by '`x ≈ y` iff `f(x)` is related to `f(y)` by `c`.' -/
+defined by '`x ≈ y` iff `f(x)` is related to `f(y)` by `c`.'
+-/
 @[to_additive /-- Given types with additions `M, N` and an additive congruence relation `c` on `N`,
 an addition-preserving map `f : M → N` induces an additive congruence relation on `f`'s domain
 defined by '`x ≈ y` iff `f(x)` is related to `f(y)` by `c`.' -/]
-def comap (f : M → N) (H : ∀ x y, f (x * y) = f x * f y) (c : Con N) : Con M :=
-  { c.toSetoid.comap f with
-    mul' := @fun w x y z h1 h2 => show c (f (w * y)) (f (x * z)) by rw [H, H]; exact c.mul h1 h2 }
+def comap (f : M → N) (H : ∀ x y, f (x * y) = f x * f y) (c : Con N) : Con M := {
+  c.toSetoid.comap f with
+  mul' := @fun w x y z h1 h2 => show c (f (w * y)) (f (x * z)) by rw [H, H]; exact c.mul h1 h2
+}
 
 @[to_additive (attr := simp)]
-theorem comap_rel {f : M → N} (H : ∀ x y, f (x * y) = f x * f y) {c : Con N} {x y : M} :
-    comap f H c x y ↔ c (f x) (f y) :=
+theorem comap_rel {f : M → N} (H : ∀ x y, f (x * y) = f x * f y) {c : Con N} {x y : M}
+    : comap f H c x y ↔ c (f x) (f y) :=
   Iff.rfl
 
 @[to_additive (attr := simp)]
 theorem comap_id (c : Con M) : c.comap id (by intros; rfl) = c := rfl
 
 @[to_additive (attr := simp)]
-theorem comap_comp (c : Con P) (g : N → P) (f : M → N) (hg) (hf) :
-    c.comap (g ∘ f) (by grind) = (c.comap g hg).comap f hf := rfl
+theorem comap_comp (c : Con P) (g : N → P) (f : M → N) (hg) (hf)
+    : c.comap (g ∘ f) (by grind) = (c.comap g hg).comap f hf :=
+  rfl
 
 @[to_additive]
-theorem le_comap_conGen (r : N → N → Prop) (f : M → N) (hf) :
-    conGen (r.onFun f) ≤ (conGen r).comap f hf :=
+theorem le_comap_conGen (r : N → N → Prop) (f : M → N) (hf)
+    : conGen (r.onFun f) ≤ (conGen r).comap f hf :=
   conGen_le.2 fun _ _ h => ConGen.Rel.of _ _ h
 
 @[to_additive]
-theorem comap_injective (f : M → N) (hf : Function.Surjective f) (hf') :
-    Function.Injective (comap f hf') :=
+theorem comap_injective (f : M → N) (hf : Function.Surjective f) (hf')
+    : Function.Injective (comap f hf') :=
   .of_comp (f := toSetoid) <| (Setoid.comap_injective f hf).comp toSetoid_injective
 
 end
@@ -547,22 +591,22 @@ instance one : One c.Quotient where
   -- This would lead to non-defeq diamonds since this instance ends up in
   -- quotients modulo ideals.
   one := Quotient.mk'' (1 : M)
-  -- one := ((1 : M) : c.Quotient)
+-- one := ((1 : M) : c.Quotient)
 
 variable {c}
 
-/-- The 1 of the quotient of a monoid by a congruence relation is the equivalence class of the
-monoid's 1. -/
+/--
+The 1 of the quotient of a monoid by a congruence relation is the equivalence class of the
+monoid's 1.
+-/
 @[to_additive (attr := simp) /-- The 0 of the quotient of an `AddMonoid` by an additive congruence
 relation is the equivalence class of the `AddMonoid`'s 0. -/]
-theorem coe_one : ((1 : M) : c.Quotient) = 1 :=
-  rfl
+theorem coe_one : ((1 : M) : c.Quotient) = 1 := rfl
 
 /-- There exists an element of the quotient of a monoid by a congruence relation (namely 1). -/
 @[to_additive /-- There exists an element of the quotient of an `AddMonoid` by a congruence relation
 (namely 0). -/]
-instance Quotient.inhabited : Inhabited c.Quotient :=
-  ⟨((1 : M) : c.Quotient)⟩
+instance Quotient.inhabited : Inhabited c.Quotient := ⟨((1 : M) : c.Quotient)⟩
 
 end
 
@@ -583,10 +627,12 @@ section Monoids
 
 /-- Multiplicative congruence relations preserve natural powers. -/
 @[to_additive /-- Additive congruence relations preserve natural scaling. -/]
-protected theorem pow {M : Type*} [Monoid M] (c : Con M) :
-    ∀ (n : ℕ) {w x}, c w x → c (w ^ n) (x ^ n)
-  | 0, w, x, _ => by simpa using c.refl _
-  | Nat.succ n, w, x, h => by simpa [pow_succ] using c.mul (Con.pow c n h) h
+protected theorem pow {M : Type*} [Monoid M] (c : Con M)
+    : ∀ (n : ℕ) {w x}, c w x → c (w ^ n) (x ^ n)
+  | 0, w, x, _ => by
+    simpa using c.refl _
+  | Nat.succ n, w, x, h => by
+    simpa [pow_succ] using c.mul (Con.pow c n h) h
 
 @[to_additive]
 instance {M : Type*} [Monoid M] (c : Con M) : Pow c.Quotient ℕ where
@@ -595,14 +641,16 @@ instance {M : Type*} [Monoid M] (c : Con M) : Pow c.Quotient ℕ where
 /-- The quotient of a semigroup by a congruence relation is a semigroup. -/
 @[to_additive /-- The quotient of an `AddSemigroup` by an additive congruence relation is
 an `AddSemigroup`. -/]
-instance semigroup {M : Type*} [Semigroup M] (c : Con M) : Semigroup c.Quotient := fast_instance%
-  Function.Surjective.semigroup _ Quotient.mk''_surjective fun _ _ => rfl
+instance semigroup {M : Type*} [Semigroup M] (c : Con M) : Semigroup c.Quotient :=
+  fast_instance%
+    Function.Surjective.semigroup _ Quotient.mk''_surjective fun _ _ => rfl
 
 /-- The quotient of a commutative magma by a congruence relation is a commutative magma. -/
 @[to_additive /-- The quotient of an `AddCommMagma` by an additive congruence relation is
 an `AddCommMagma`. -/]
-instance commMagma {M : Type*} [CommMagma M] (c : Con M) : CommMagma c.Quotient := fast_instance%
-  Function.Surjective.commMagma _ Quotient.mk''_surjective fun _ _ => rfl
+instance commMagma {M : Type*} [CommMagma M] (c : Con M) : CommMagma c.Quotient :=
+  fast_instance%
+    Function.Surjective.commMagma _ Quotient.mk''_surjective fun _ _ => rfl
 
 /-- The quotient of a commutative semigroup by a congruence relation is a semigroup. -/
 @[to_additive /-- The quotient of an `AddCommSemigroup` by an additive congruence relation is
@@ -613,33 +661,39 @@ instance commSemigroup {M : Type*} [CommSemigroup M] (c : Con M) : CommSemigroup
 /-- The quotient of a monoid by a congruence relation is a monoid. -/
 @[to_additive /-- The quotient of an `AddMonoid` by an additive congruence relation is
 an `AddMonoid`. -/]
-instance monoid {M : Type*} [Monoid M] (c : Con M) : Monoid c.Quotient := fast_instance%
-  Function.Surjective.monoid _ Quotient.mk''_surjective rfl (fun _ _ => rfl) fun _ _ => rfl
+instance monoid {M : Type*} [Monoid M] (c : Con M) : Monoid c.Quotient :=
+  fast_instance%
+    Function.Surjective.monoid _ Quotient.mk''_surjective rfl (fun _ _ => rfl) fun _ _ => rfl
 
 /-- The quotient of a `CommMonoid` by a congruence relation is a `CommMonoid`. -/
 @[to_additive /-- The quotient of an `AddCommMonoid` by an additive congruence
 relation is an `AddCommMonoid`. -/]
-instance commMonoid {M : Type*} [CommMonoid M] (c : Con M) : CommMonoid c.Quotient := fast_instance%
-  fast_instance% Function.Surjective.commMonoid _ Quotient.mk''_surjective rfl
-    (fun _ _ => rfl) fun _ _ => rfl
+instance commMonoid {M : Type*} [CommMonoid M] (c : Con M) : CommMonoid c.Quotient :=
+  fast_instance%
+    fast_instance% Function.Surjective.commMonoid _ Quotient.mk''_surjective rfl
+      (fun _ _ => rfl) fun _ _ => rfl
 
-/-- Sometimes, a group is defined as a quotient of a monoid by a congruence relation.
+/--
+Sometimes, a group is defined as a quotient of a monoid by a congruence relation.
 Usually, the inverse operation is defined as `Setoid.map f _` for some `f`.
 This lemma allows to avoid code duplication in the definition of the inverse operation:
 instead of proving both `∀ x y, c x y → c (f x) (f y)` (to define the operation)
-and `∀ x, c (f x * x) 1` (to prove the group laws), one can only prove the latter. -/
+and `∀ x, c (f x * x) 1` (to prove the group laws), one can only prove the latter.
+-/
 @[to_additive /-- Sometimes, an additive group is defined as a quotient of a monoid
   by an additive congruence relation.
   Usually, the inverse operation is defined as `Setoid.map f _` for some `f`.
   This lemma allows to avoid code duplication in the definition of the inverse operation:
   instead of proving both `∀ x y, c x y → c (f x) (f y)` (to define the operation)
   and `∀ x, c (f x + x) 0` (to prove the group laws), one can only prove the latter. -/]
-theorem map_of_mul_left_rel_one [Monoid M] (c : Con M)
-    (f : M → M) (hf : ∀ x, c (f x * x) 1) {x y} (h : c x y) : c (f x) (f y) := by
+theorem map_of_mul_left_rel_one
+    [Monoid M] (c : Con M) (f : M → M) (hf : ∀ x, c (f x * x) 1) {x y} (h : c x y)
+    : c (f x) (f y) := by
   simp only [← Con.eq, coe_one, coe_mul] at *
   have hf' : ∀ x : M, (x : c.Quotient) * f x = 1 := fun x ↦
     calc
-      (x : c.Quotient) * f x = f (f x) * f x * (x * f x) := by simp [hf]
+      (x : c.Quotient) * f x
+        = f (f x) * f x * (x * f x) := by simp [hf]
       _ = f (f x) * (f x * x) * f x := by simp_rw [mul_assoc]
       _ = 1 := by simp [hf]
   have : (⟨_, _, hf' x, hf x⟩ : c.Quotientˣ) = ⟨_, _, hf' y, hf y⟩ := Units.ext h
@@ -658,31 +712,37 @@ protected theorem inv {x y} (h : c x y) : c x⁻¹ y⁻¹ :=
 
 /-- Multiplicative congruence relations preserve division. -/
 @[to_additive /-- Additive congruence relations preserve subtraction. -/]
-protected theorem div : ∀ {w x y z}, c w x → c y z → c (w / y) (x / z) := @fun w x y z h1 h2 => by
-  simpa only [div_eq_mul_inv] using c.mul h1 (c.inv h2)
+protected theorem div : ∀ {w x y z}, c w x → c y z → c (w / y) (x / z) :=
+  @fun w x y z h1 h2 => by simpa only [div_eq_mul_inv] using c.mul h1 (c.inv h2)
 
 /-- Multiplicative congruence relations preserve integer powers. -/
 @[to_additive /-- Additive congruence relations preserve integer scaling. -/]
 protected theorem zpow : ∀ (n : ℤ) {w x}, c w x → c (w ^ n) (x ^ n)
-  | Int.ofNat n, w, x, h => by simpa only [zpow_natCast, Int.ofNat_eq_natCast] using c.pow n h
-  | Int.negSucc n, w, x, h => by simpa only [zpow_negSucc] using c.inv (c.pow _ h)
+  | Int.ofNat n, w, x, h => by
+    simpa only [zpow_natCast, Int.ofNat_eq_natCast] using c.pow n h
+  | Int.negSucc n, w, x, h => by
+    simpa only [zpow_negSucc] using c.inv (c.pow _ h)
 
-/-- The inversion induced on the quotient by a congruence relation on a type with an
-inversion. -/
+/--
+The inversion induced on the quotient by a congruence relation on a type with an
+inversion.
+-/
 @[to_additive /-- The negation induced on the quotient by an additive congruence relation on a type
 with a negation. -/]
-instance hasInv : Inv c.Quotient :=
-  ⟨(Quotient.map' Inv.inv) fun _ _ => c.inv⟩
+instance hasInv : Inv c.Quotient := ⟨(Quotient.map' Inv.inv) fun _ _ => c.inv⟩
 
-/-- The division induced on the quotient by a congruence relation on a type with a
-division. -/
+/--
+The division induced on the quotient by a congruence relation on a type with a
+division.
+-/
 @[to_additive /-- The subtraction induced on the quotient by an additive congruence relation on a
 type with a subtraction. -/]
-instance hasDiv : Div c.Quotient :=
-  ⟨(Quotient.map₂ (· / ·)) fun _ _ h₁ _ _ h₂ => c.div h₁ h₂⟩
+instance hasDiv : Div c.Quotient := ⟨(Quotient.map₂ (· / ·)) fun _ _ h₁ _ _ h₂ => c.div h₁ h₂⟩
 
-/-- The integer power induced on the quotient by a congruence relation on a type with a
-division. -/
+/--
+The integer power induced on the quotient by a congruence relation on a type with a
+division.
+-/
 @[to_additive /-- The integer scaling induced on the quotient by a congruence relation on a type
 with a subtraction. -/]
 instance instZPow : Pow c.Quotient ℤ :=
@@ -691,16 +751,18 @@ instance instZPow : Pow c.Quotient ℤ :=
 /-- The quotient of a group by a congruence relation is a group. -/
 @[to_additive /-- The quotient of an `AddGroup` by an additive congruence relation is
 an `AddGroup`. -/]
-instance group : Group c.Quotient := fast_instance%
-  Function.Surjective.group Quotient.mk'' Quotient.mk''_surjective
-    rfl (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl) fun _ _ => rfl
+instance group : Group c.Quotient :=
+  fast_instance%
+    Function.Surjective.group Quotient.mk'' Quotient.mk''_surjective
+      rfl (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl) fun _ _ => rfl
 
 /-- The quotient of a `CommGroup` by a congruence relation is a `CommGroup`. -/
 @[to_additive /-- The quotient of an `AddCommGroup` by an additive congruence
 relation is an `AddCommGroup`. -/]
-instance commGroup {M : Type*} [CommGroup M] (c : Con M) : CommGroup c.Quotient := fast_instance%
-  Function.Surjective.commGroup _ Quotient.mk''_surjective rfl (fun _ _ => rfl) (fun _ => rfl)
-      (fun _ _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl)
+instance commGroup {M : Type*} [CommGroup M] (c : Con M) : CommGroup c.Quotient :=
+  fast_instance%
+    Function.Surjective.commGroup _ Quotient.mk''_surjective rfl (fun _ _ => rfl) (fun _ => rfl)
+        (fun _ _ => rfl) (fun _ _ => rfl) (fun _ _ => rfl)
 
 end Groups
 
@@ -708,20 +770,25 @@ section Units
 
 variable {α : Type*} [Monoid M] {c : Con M}
 
-/-- In order to define a function `(Con.Quotient c)ˣ → α` on the units of `Con.Quotient c`,
+/--
+In order to define a function `(Con.Quotient c)ˣ → α` on the units of `Con.Quotient c`,
 where `c : Con M` is a multiplicative congruence on a monoid, it suffices to define a function `f`
 that takes elements `x y : M` with proofs of `c (x * y) 1` and `c (y * x) 1`, and returns an element
-of `α` provided that `f x y _ _ = f x' y' _ _` whenever `c x x'` and `c y y'`. -/
+of `α` provided that `f x y _ _ = f x' y' _ _` whenever `c x x'` and `c y y'`.
+-/
 @[to_additive]
-def liftOnUnits (u : Units c.Quotient) (f : ∀ x y : M, c (x * y) 1 → c (y * x) 1 → α)
-    (Hf : ∀ x y hxy hyx x' y' hxy' hyx',
-      c x x' → c y y' → f x y hxy hyx = f x' y' hxy' hyx') : α := by
-  refine
-    Con.hrecOn₂ (cN := c) (φ := fun x y => x * y = 1 → y * x = 1 → α) (u : c.Quotient)
-      (↑u⁻¹ : c.Quotient)
-      (fun (x y : M) (hxy : (x * y : c.Quotient) = 1) (hyx : (y * x : c.Quotient) = 1) =>
-        f x y (c.eq.1 hxy) (c.eq.1 hyx))
-      (fun x y x' y' hx hy => ?_) u.3 u.4
+def liftOnUnits
+    (u : Units c.Quotient)
+    (f : ∀ x y : M, c (x * y) 1 → c (y * x) 1 → α)
+    (Hf : ∀ x y hxy hyx x' y' hxy' hyx', c x x' → c y y' → f x y hxy hyx = f x' y' hxy' hyx')
+    : α := by
+  refine Con.hrecOn₂ (cN := c)
+    (φ := fun x y => x * y = 1 → y * x = 1 → α)
+    (u : c.Quotient) (↑u⁻¹ : c.Quotient)
+    (fun (x y : M) (hxy : (x * y : c.Quotient) = 1) (hyx : (y * x : c.Quotient) = 1) =>
+      f x y (c.eq.1 hxy) (c.eq.1 hyx))
+    (fun x y x' y' hx hy => ?_)
+    u.3 u.4
   refine Function.hfunext ?_ ?_
   · rw [c.eq.2 hx, c.eq.2 hy]
   · rintro Hxy Hxy' -
@@ -730,23 +797,28 @@ def liftOnUnits (u : Units c.Quotient) (f : ∀ x y : M, c (x * y) 1 → c (y * 
     · rintro Hyx Hyx' -
       exact heq_of_eq (Hf _ _ _ _ _ _ _ _ hx hy)
 
-/-- In order to define a function `(Con.Quotient c)ˣ → α` on the units of `Con.Quotient c`,
+/--
+In order to define a function `(Con.Quotient c)ˣ → α` on the units of `Con.Quotient c`,
 where `c : Con M` is a multiplicative congruence on a monoid, it suffices to define a function `f`
 that takes elements `x y : M` with proofs of `c (x * y) 1` and `c (y * x) 1`, and returns an element
-of `α` provided that `f x y _ _ = f x' y' _ _` whenever `c x x'` and `c y y'`. -/
+of `α` provided that `f x y _ _ = f x' y' _ _` whenever `c x x'` and `c y y'`.
+-/
 add_decl_doc AddCon.liftOnAddUnits
 
 @[to_additive (attr := simp)]
-theorem liftOnUnits_mk (f : ∀ x y : M, c (x * y) 1 → c (y * x) 1 → α)
+theorem liftOnUnits_mk
+    (f : ∀ x y : M, c (x * y) 1 → c (y * x) 1 → α)
     (Hf : ∀ x y hxy hyx x' y' hxy' hyx', c x x' → c y y' → f x y hxy hyx = f x' y' hxy' hyx')
-    (x y : M) (hxy hyx) :
-    liftOnUnits ⟨(x : c.Quotient), y, hxy, hyx⟩ f Hf = f x y (c.eq.1 hxy) (c.eq.1 hyx) :=
+    (x y : M) (hxy hyx)
+    : liftOnUnits ⟨(x : c.Quotient), y, hxy, hyx⟩ f Hf = f x y (c.eq.1 hxy) (c.eq.1 hyx) :=
   rfl
 
 @[to_additive (attr := elab_as_elim)]
-theorem induction_on_units {p : Units c.Quotient → Prop} (u : Units c.Quotient)
-    (H : ∀ (x y : M) (hxy : c (x * y) 1) (hyx : c (y * x) 1), p ⟨x, y, c.eq.2 hxy, c.eq.2 hyx⟩) :
-    p u := by
+theorem induction_on_units
+    {p : Units c.Quotient → Prop}
+    (u : Units c.Quotient)
+    (H : ∀ (x y : M) (hxy : c (x * y) 1) (hyx : c (y * x) 1), p ⟨x, y, c.eq.2 hxy, c.eq.2 hyx⟩)
+    : p u := by
   rcases u with ⟨⟨x⟩, ⟨y⟩, h₁, h₂⟩
   exact H x y (c.eq.1 h₁) (c.eq.1 h₂)
 

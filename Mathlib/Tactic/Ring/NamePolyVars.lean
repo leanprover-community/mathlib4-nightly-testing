@@ -5,7 +5,7 @@ Authors: Adam Topaz
 -/
 module
 
-public import Mathlib.Algebra.MvPolynomial.Basic  -- shake: keep (tactic dependency)
+public import Mathlib.Algebra.MvPolynomial.Basic -- shake: keep (tactic dependency)
 
 /-!
 The command `name_poly_vars` names variables in
@@ -48,17 +48,19 @@ syntax (name := namePolyVarsOver) "name_poly_vars" (ppSpace ident),+ " over " te
 
 @[command_elab namePolyVarsOver, inherit_doc namePolyVarsOver]
 def elabNameVariablesOver : CommandElab
-| `(command|name_poly_vars $vars:ident,* over $R:term) => do
-  let vars := vars.getElems
-  let size := vars.size
-  let sizeStx : TSyntax `term := quote size
-  for h : idx in [:size] do
-    let var := vars[idx]
-    let var := quote s!"{var.getId}"
-    let idx : TSyntax `term ← `(($(quote idx) : Fin $sizeStx))
-    let cmd ← `(command|local notation3 $var:str =>
-      MvPolynomial.X (R := $R) (σ := Fin $sizeStx) $idx)
-    elabCommand cmd
-| _ => throwUnsupportedSyntax
+  | `(command|name_poly_vars $vars:ident,* over $R:term) => do
+    let vars := vars.getElems
+    let size := vars.size
+    let sizeStx : TSyntax `term := quote size
+    for h : idx in [:size] do
+      let var := vars[idx]
+      let var := quote s!"{var.getId}"
+      let idx : TSyntax `term ← `(($(quote idx) : Fin $sizeStx))
+      let cmd ←
+        `(command|local notation3 $var:str =>
+          MvPolynomial.X (R := $R) (σ := Fin $sizeStx) $idx)
+      elabCommand cmd
+  | _ =>
+    throwUnsupportedSyntax
 
 end Mathlib.Tactic

@@ -30,7 +30,6 @@ Obviously there's more to do:
 
 @[expose] public section
 
-
 open CategoryTheory TopologicalSpace Opens
 
 noncomputable section
@@ -41,7 +40,8 @@ open TopCat
 
 namespace TopCat.Presheaf
 
-/-- We show that the presheaf of functions to a type `T`
+/--
+We show that the presheaf of functions to a type `T`
 (no continuity assumptions, just plain functions)
 form a sheaf.
 
@@ -50,9 +50,9 @@ so we do the more general case.
 -/
 theorem toTypes_isSheaf (T : X → Type*) : (presheafToTypes X T).IsSheaf :=
   isSheaf_of_isSheafUniqueGluing_types _ fun ι U sf hsf => by
-  -- We use the sheaf condition in terms of unique gluing
-  -- U is a family of open sets, indexed by `ι` and `sf` is a compatible family of sections.
-  -- In the informal comments below, I'll just write `U` to represent the union.
+    -- We use the sheaf condition in terms of unique gluing
+    -- U is a family of open sets, indexed by `ι` and `sf` is a compatible family of sections.
+    -- In the informal comments below, I'll just write `U` to represent the union.
     -- Our first goal is to define a function "lifted" to all of `U`.
     -- We do this one point at a time. Using the axiom of choice, we can pick for each
     -- `x : ↑(iSup U)` an index `i : ι` such that `x` lies in `U i`
@@ -77,25 +77,24 @@ theorem toTypes_isSheaf (T : X → Type*) : (presheafToTypes X T).IsSheaf :=
       congrm $(ht (index x)) ⟨x.1, index_spec x⟩
 
 -- We verify that the non-dependent version is an immediate consequence:
-/-- The presheaf of not-necessarily-continuous functions to
+/--
+The presheaf of not-necessarily-continuous functions to
 a target type `T` satisfies the sheaf condition.
 -/
-theorem toType_isSheaf (T : Type*) : (presheafToType X T).IsSheaf :=
-  toTypes_isSheaf X fun _ => T
+theorem toType_isSheaf (T : Type*) : (presheafToType X T).IsSheaf := toTypes_isSheaf X fun _ => T
 
 end TopCat.Presheaf
 
 namespace TopCat
 
-/-- The sheaf of not-necessarily-continuous functions on `X` with values in type family
+/--
+The sheaf of not-necessarily-continuous functions on `X` with values in type family
 `T : X → Type u`.
 -/
 def sheafToTypes (T : X → Type*) : Sheaf (Type _) X :=
   ⟨presheafToTypes X T, Presheaf.toTypes_isSheaf _ _⟩
 
-/-- The sheaf of not-necessarily-continuous functions on `X` with values in a type `T`.
--/
-def sheafToType (T : Type*) : Sheaf (Type _) X :=
-  ⟨presheafToType X T, Presheaf.toType_isSheaf _ _⟩
+/-- The sheaf of not-necessarily-continuous functions on `X` with values in a type `T`. -/
+def sheafToType (T : Type*) : Sheaf (Type _) X := ⟨presheafToType X T, Presheaf.toType_isSheaf _ _⟩
 
 end TopCat

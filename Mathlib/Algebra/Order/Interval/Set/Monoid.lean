@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Order.Monoid.Defs
 public import Mathlib.Algebra.Order.Monoid.Unbundled.ExistsOfLE
 public import Mathlib.Order.Interval.Set.Basic
-
 import Mathlib.Data.Set.Function
 
 /-!
@@ -22,11 +21,11 @@ but also to `ℕ` and `ℝ≥0`, which are not groups.
 
 public section
 
-
 namespace Set
 
-variable {M : Type*} [AddCommMonoid M] [PartialOrder M] [IsOrderedCancelAddMonoid M]
-  [ExistsAddOfLE M] (a b c d : M)
+variable
+  {M : Type*} [AddCommMonoid M] [PartialOrder M] [IsOrderedCancelAddMonoid M] [ExistsAddOfLE M]
+  (a b c d : M)
 
 theorem Ici_add_bij : BijOn (· + d) (Ici a) (Ici (a + d)) := by
   refine ⟨by simp [MapsTo], by simp, fun _ h => ?_⟩
@@ -60,14 +59,11 @@ theorem Ico_add_bij : BijOn (· + d) (Ico a b) (Ico (a + d) (b + d)) := by
 ### Images under `x ↦ x + a`
 -/
 
+@[simp]
+theorem image_add_const_Ici : (fun x => x + a) '' Ici b = Ici (b + a) := (Ici_add_bij _ _).image_eq
 
 @[simp]
-theorem image_add_const_Ici : (fun x => x + a) '' Ici b = Ici (b + a) :=
-  (Ici_add_bij _ _).image_eq
-
-@[simp]
-theorem image_add_const_Ioi : (fun x => x + a) '' Ioi b = Ioi (b + a) :=
-  (Ioi_add_bij _ _).image_eq
+theorem image_add_const_Ioi : (fun x => x + a) '' Ioi b = Ioi (b + a) := (Ioi_add_bij _ _).image_eq
 
 @[simp]
 theorem image_add_const_Icc : (fun x => x + a) '' Icc b c = Icc (b + a) (c + a) :=
@@ -88,7 +84,6 @@ theorem image_add_const_Ioo : (fun x => x + a) '' Ioo b c = Ioo (b + a) (c + a) 
 /-!
 ### Images under `x ↦ a + x`
 -/
-
 
 @[simp]
 theorem image_const_add_Ici : (fun x => a + x) '' Ici b = Ici (a + b) := by

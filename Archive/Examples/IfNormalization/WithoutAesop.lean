@@ -21,27 +21,30 @@ we put primes on the declarations in the file.)
 
 namespace IfExpr
 
-attribute [local simp] eval normalized hasNestedIf hasConstantIf hasRedundantIf disjoint vars
-  List.disjoint
+attribute [local simp]
+  eval normalized hasNestedIf hasConstantIf hasRedundantIf disjoint vars List.disjoint
 
-theorem eval_ite_ite' {a b c d e : IfExpr} {f : ℕ → Bool} :
-    (ite (ite a b c) d e).eval f = (ite a (ite b d e) (ite c d e)).eval f := by
+theorem eval_ite_ite' {a b c d e : IfExpr} {f : ℕ → Bool}
+    : (ite (ite a b c) d e).eval f = (ite a (ite b d e) (ite c d e)).eval f := by
   cases h : eval f a <;> simp_all
 
 /-- Custom size function for if-expressions, used for proving termination. -/
-@[simp] def normSize' : IfExpr → ℕ
+@[simp]
+def normSize' : IfExpr → ℕ
   | lit _ => 0
   | var _ => 1
   | .ite i t e => 2 * normSize' i + max (normSize' t) (normSize' e) + 1
 
-/-- Normalizes the expression at the same time as assigning all variables in
-`e` to the literal Booleans given by `l` -/
-def normalize' (l : AList (fun _ : ℕ => Bool)) :
-    (e : IfExpr) → { e' : IfExpr //
-        (∀ f, e'.eval f = e.eval (fun w => (l.lookup w).elim (f w) id))
-        ∧ e'.normalized
-        ∧ ∀ (v : ℕ), v ∈ vars e' → l.lookup v = none }
-  | lit b => ⟨lit b, by simp⟩
+/--
+Normalizes the expression at the same time as assigning all variables in
+`e` to the literal Booleans given by `l`
+-/
+def normalize' (l : AList (fun _ : ℕ => Bool))
+    : (e : IfExpr)
+      → {e' : IfExpr // (∀ f, e'.eval f = e.eval (fun w => (l.lookup w).elim (f w) id))
+        ∧ e'.normalized ∧ ∀ (v : ℕ), v ∈ vars e' → l.lookup v = none}
+  | lit b =>
+    ⟨lit b, by simp⟩
   | var v =>
     match h : l.lookup v with
     | none => ⟨var v, by simp_all⟩
@@ -60,68 +63,70 @@ def normalize' (l : AList (fun _ : ℕ => Bool)) :
     | none =>
       have ⟨t', ht₁, ht₂, ht₃⟩ := normalize' (l.insert v true) t
       have ⟨e', he₁, he₂, he₃⟩ := normalize' (l.insert v false) e
-      ⟨if t' = e' then t' else .ite (var v) t' e', by
-        refine ⟨fun f => ?_, ?_, fun w b => ?_⟩
-        · simp only [eval, apply_ite, ite_eq_iff']
-          cases hfv : f v
-          · simp +contextual only [Bool.cond_false, h, he₁]
-            refine ⟨fun _ => ?_, fun _ => ?_⟩
-            · congr
-              ext w
-              by_cases h : w = v
-              · subst h
-                simp_all
-              · simp_all
-            · congr
-              ext w
-              by_cases h : w = v
-              · subst h
-                simp_all
-              · simp_all
-          · simp only [Bool.cond_true, h, ht₁]
-            refine ⟨fun _ => ?_, fun _ => ?_⟩
-            · congr
-              ext w
-              by_cases h : w = v
-              · subst h
-                simp_all
-              · simp_all
-            · congr
-              ext w
-              by_cases h : w = v
-              · subst h
-                simp_all
-              · simp_all
-        · have := ht₃ v
-          have := he₃ v
-          simp_all? says
-            simp_all only [normalized, Bool.and_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true,
-              AList.lookup_insert_eq_none, ne_eq, AList.lookup_insert, reduceCtorEq, imp_false]
-          obtain ⟨⟨⟨tn, tc⟩, tr⟩, td⟩ := ht₂
-          split <;> rename_i h'
-          · subst h'
-            simp_all
-          · simp_all
-        · have := ht₃ w
-          have := he₃ w
-          by_cases h : w = v
-          · subst h; simp_all
-          · simp_all? says
+      ⟨
+        if t' = e' then t' else .ite (var v) t' e',
+        by
+          refine ⟨fun f => ?_, ?_, fun w b => ?_⟩
+          · simp only [eval, apply_ite, ite_eq_iff']
+            cases hfv : f v
+            · simp +contextual only [Bool.cond_false, h, he₁]
+              refine ⟨fun _ => ?_, fun _ => ?_⟩
+              · congr
+                ext w
+                by_cases h : w = v
+                · subst h
+                  simp_all
+                · simp_all
+              · congr
+                ext w
+                by_cases h : w = v
+                · subst h
+                  simp_all
+                · simp_all
+            · simp only [Bool.cond_true, h, ht₁]
+              refine ⟨fun _ => ?_, fun _ => ?_⟩
+              · congr
+                ext w
+                by_cases h : w = v
+                · subst h
+                  simp_all
+                · simp_all
+              · congr
+                ext w
+                by_cases h : w = v
+                · subst h
+                  simp_all
+                · simp_all
+          · have := ht₃ v
+            have := he₃ v
+            simp_all? says
               simp_all only [normalized, Bool.and_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true,
-                AList.lookup_insert_eq_none, ne_eq, not_false_eq_true, AList.lookup_insert_ne,
-                implies_true]
-            obtain ⟨⟨⟨en, ec⟩, er⟩, ed⟩ := he₂
-            split at b <;> rename_i h'
-            · subst h'; simp_all
-            · simp_all only [vars, List.cons_append, List.mem_cons, List.mem_append, false_or]
-              cases b <;> simp_all⟩
+                AList.lookup_insert_eq_none, ne_eq, AList.lookup_insert, reduceCtorEq, imp_false]
+            obtain ⟨⟨⟨tn, tc⟩, tr⟩, td⟩ := ht₂
+            split <;> rename_i h'
+            · subst h'
+              simp_all
+            · simp_all
+          · have := ht₃ w
+            have := he₃ w
+            by_cases h : w = v
+            · subst h; simp_all
+            · simp_all? says
+                simp_all only [normalized, Bool.and_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true,
+                  AList.lookup_insert_eq_none, ne_eq, not_false_eq_true, AList.lookup_insert_ne,
+                  implies_true]
+              obtain ⟨⟨⟨en, ec⟩, er⟩, ed⟩ := he₂
+              split at b <;> rename_i h'
+              · subst h'; simp_all
+              · simp_all only [vars, List.cons_append, List.mem_cons, List.mem_append, false_or]
+                cases b <;> simp_all
+      ⟩
     | some b =>
       have ⟨e', he'⟩ := normalize' l (.ite (lit b) t e)
       ⟨e', by simp_all⟩
-  termination_by e' => e'.normSize'
+termination_by e' => e'.normSize'
 
 example : IfNormalization :=
-  ⟨fun e => (normalize' ∅ e).1,
-   fun e => ⟨(normalize' ∅ e).2.2.1, by simp [(normalize' ∅ e).2.1]⟩⟩
+  ⟨fun e => (normalize' ∅ e).1, fun e => ⟨(normalize' ∅ e).2.2.1, by simp [(normalize' ∅ e).2.1]⟩⟩
 
 end IfExpr

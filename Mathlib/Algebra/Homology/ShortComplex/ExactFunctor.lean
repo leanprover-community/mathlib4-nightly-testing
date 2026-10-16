@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Homology.ShortComplex.ShortExact
 public import Mathlib.CategoryTheory.Abelian.Exact
-
 import Mathlib.CategoryTheory.Preadditive.LeftExact
 
 /-!
@@ -62,12 +61,13 @@ namespace Functor
 
 section
 
-variable {C D : Type*} [Category* C] [Category* D] [Preadditive C] [Preadditive D]
+variable
+  {C D : Type*} [Category* C] [Category* D] [Preadditive C] [Preadditive D]
   (F : C ⥤ D) [F.Additive] [F.PreservesHomology] [HasZeroObject C]
 
 /-- An additive functor which preserves homology preserves finite limits. -/
-lemma preservesFiniteLimits_of_preservesHomology
-    [HasFiniteProducts C] [HasKernels C] : PreservesFiniteLimits F := by
+lemma preservesFiniteLimits_of_preservesHomology [HasFiniteProducts C] [HasKernels C]
+    : PreservesFiniteLimits F := by
   have := fun {X Y : C} (f : X ⟶ Y) ↦ PreservesHomology.preservesKernel F f
   have : HasBinaryBiproducts C := HasBinaryBiproducts.of_hasBinaryProducts
   have : HasEqualizers C := Preadditive.hasEqualizers_of_hasKernels
@@ -76,8 +76,8 @@ lemma preservesFiniteLimits_of_preservesHomology
   exact preservesFiniteLimits_of_preservesKernels F
 
 /-- An additive which preserves homology preserves finite colimits. -/
-lemma preservesFiniteColimits_of_preservesHomology
-    [HasFiniteCoproducts C] [HasCokernels C] : PreservesFiniteColimits F := by
+lemma preservesFiniteColimits_of_preservesHomology [HasFiniteCoproducts C] [HasCokernels C]
+    : PreservesFiniteColimits F := by
   have := fun {X Y : C} (f : X ⟶ Y) ↦ PreservesHomology.preservesCokernel F f
   have : HasBinaryBiproducts C := HasBinaryBiproducts.of_hasBinaryCoproducts
   have : HasCoequalizers C := Preadditive.hasCoequalizers_of_hasCokernels
@@ -98,8 +98,8 @@ if `0 ⟶ A ⟶ B ⟶ C ⟶ 0` is exact then `0 ⟶ F(A) ⟶ F(B) ⟶ F(C)` is e
 then it preserves monomorphism.
 -/
 lemma preservesMonomorphisms_of_preserves_shortExact_left
-    (h : ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Mono (F.map S.f)) :
-    F.PreservesMonomorphisms where
+    (h : ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Mono (F.map S.f))
+    : F.PreservesMonomorphisms where
   preserves f := h _ { exact := exact_cokernel f } |>.2
 
 /--
@@ -111,8 +111,8 @@ For an additive functor `F : C ⥤ D` between abelian categories, the following 
 - `F` preserves kernels.
 - `F` preserves finite limits.
 -/
-lemma preservesFiniteLimits_tfae : List.TFAE
-    [
+lemma preservesFiniteLimits_tfae
+    : List.TFAE [
       ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Mono (F.map S.f),
       ∀ (S : ShortComplex C), S.Exact ∧ Mono S.f → (S.map F).Exact ∧ Mono (F.map S.f),
       ∀ ⦃X Y : C⦄ (f : X ⟶ Y), PreservesLimit (parallelPair f 0) F,
@@ -146,9 +146,9 @@ lemma preservesFiniteLimits_tfae : List.TFAE
     (S.map F).exact_and_mono_f_iff_f_is_kernel |>.2 ⟨KernelFork.mapIsLimit _ hS.fIsKernel F⟩
   tfae_finish
 
-lemma preservesFiniteLimits_iff_forall_exact_map_and_mono :
-    PreservesFiniteLimits F ↔
-      ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Mono (F.map S.f) :=
+lemma preservesFiniteLimits_iff_forall_exact_map_and_mono
+    : PreservesFiniteLimits F
+      ↔ ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Mono (F.map S.f) :=
   (Functor.preservesFiniteLimits_tfae F).out 4 1
 
 /--
@@ -157,8 +157,8 @@ if `0 ⟶ A ⟶ B ⟶ C ⟶ 0` is exact then `F(A) ⟶ F(B) ⟶ F(C) ⟶ 0` is e
 then it preserves epimorphisms.
 -/
 lemma preservesEpimorphisms_of_preserves_shortExact_right
-    (h : ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Epi (F.map S.g)) :
-    F.PreservesEpimorphisms where
+    (h : ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Epi (F.map S.g))
+    : F.PreservesEpimorphisms where
   preserves f := h _ { exact := exact_kernel f } |>.2
 
 /--
@@ -170,8 +170,8 @@ For an additive functor `F : C ⥤ D` between abelian categories, the following 
 - `F` preserves cokernels.
 - `F` preserves finite colimits.
 -/
-lemma preservesFiniteColimits_tfae : List.TFAE
-    [
+lemma preservesFiniteColimits_tfae
+    : List.TFAE [
       ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Epi (F.map S.g),
       ∀ (S : ShortComplex C), S.Exact ∧ Epi S.g → (S.map F).Exact ∧ Epi (F.map S.g),
       ∀ ⦃X Y : C⦄ (f : X ⟶ Y), PreservesColimit (parallelPair f 0) F,
@@ -213,8 +213,8 @@ For an additive functor `F : C ⥤ D` between abelian categories, the following 
 - `F` preserves homology.
 - `F` preserves both finite limits and finite colimits.
 -/
-lemma exact_tfae : List.TFAE
-    [
+lemma exact_tfae
+    : List.TFAE [
       ∀ (S : ShortComplex C), S.ShortExact → (S.map F).ShortExact,
       ∀ (S : ShortComplex C), S.Exact → (S.map F).Exact,
       PreservesHomology F,
@@ -243,9 +243,9 @@ lemma exact_tfae : List.TFAE
   | ⟨h1, h2⟩, _, h => h.map F
   tfae_finish
 
-lemma preservesFiniteColimits_iff_forall_exact_map_and_epi :
-    PreservesFiniteColimits F ↔
-      ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Epi (F.map S.g) :=
+lemma preservesFiniteColimits_iff_forall_exact_map_and_epi
+    : PreservesFiniteColimits F
+      ↔ ∀ (S : ShortComplex C), S.ShortExact → (S.map F).Exact ∧ Epi (F.map S.g) :=
   (Functor.preservesFiniteColimits_tfae F).out 4 1
 
 end

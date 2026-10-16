@@ -29,15 +29,12 @@ namespace CompHausLike
 
 variable {P : TopCat.{u} → Prop}
 
-/--
-If `π` is a surjective morphism in `CompHausLike P`, then it is an effective epi.
--/
-noncomputable
-def effectiveEpiStruct {B X : CompHausLike P} (π : X ⟶ B) (hπ : Function.Surjective π) :
-    EffectiveEpiStruct π where
+/-- If `π` is a surjective morphism in `CompHausLike P`, then it is an effective epi. -/
+noncomputable def effectiveEpiStruct {B X : CompHausLike P} (π : X ⟶ B) (hπ : Function.Surjective π)
+    : EffectiveEpiStruct π where
   desc e h :=
-    ofHom _ ((IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).lift e.hom.hom
-      fun a b hab ↦
+    ofHom _
+      ((IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).lift e.hom.hom fun a b hab ↦
         congr($(h (ofHom _ ⟨fun _ ↦ a, continuous_const⟩)
           (ofHom _ ⟨fun _ ↦ b, continuous_const⟩)
         (by ext; exact hab)) a))
@@ -45,32 +42,45 @@ def effectiveEpiStruct {B X : CompHausLike P} (π : X ⟶ B) (hπ : Function.Sur
     InducedCategory.hom_ext (TopCat.hom_ext
       ((IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).lift_comp _ _))
   uniq e h g hm := by
-    suffices g = ofHom _
-        ((IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).liftEquiv ⟨e.hom.hom,
-      fun a b hab ↦ congr($(h (ofHom _ ⟨fun _ ↦ a, continuous_const⟩)
-          (ofHom _ ⟨fun _ ↦ b, continuous_const⟩)
-          (by ext; exact hab)) a)⟩) by assumption
+    suffices g
+        = ofHom _
+          ((IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).liftEquiv ⟨
+            e.hom.hom,
+            fun a b hab ↦
+              congr($(h (ofHom _ ⟨fun _ ↦ a, continuous_const⟩)
+                (ofHom _ ⟨fun _ ↦ b, continuous_const⟩)
+                (by ext; exact hab)) a)
+          ⟩) by
+      assumption
     apply ConcreteCategory.ext
-    rw [hom_ofHom, ← Equiv.symm_apply_eq
-      (IsQuotientMap.of_surjective_continuous hπ π.hom.hom.continuous).liftEquiv]
+    rw [hom_ofHom,
+      ← Equiv.symm_apply_eq (IsQuotientMap.of_surjective_continuous hπ
+        π.hom.hom.continuous).liftEquiv]
     ext
     simp only [IsQuotientMap.liftEquiv_symm_apply_coe, ContinuousMap.comp_apply, ← hm]
     rfl
 
-theorem preregular [HasExplicitPullbacks P]
-    (hs : ∀ ⦃X Y : CompHausLike P⦄ (f : X ⟶ Y), EffectiveEpi f → Function.Surjective f) :
-    Preregular (CompHausLike P) where
+theorem preregular
+    [HasExplicitPullbacks P]
+    (hs : ∀ ⦃X Y : CompHausLike P⦄ (f : X ⟶ Y), EffectiveEpi f → Function.Surjective f)
+    : Preregular (CompHausLike P) where
   exists_fac := by
     intro X Y Z f π hπ
-    refine ⟨pullback f π, pullback.fst f π, ⟨⟨effectiveEpiStruct _ ?_⟩⟩, pullback.snd f π,
-      (pullback.condition _ _).symm⟩
+    refine ⟨
+      pullback f π,
+      pullback.fst f π,
+      ⟨⟨effectiveEpiStruct _ ?_⟩⟩,
+      pullback.snd f π,
+      (pullback.condition _ _).symm
+    ⟩
     intro y
     obtain ⟨z, hz⟩ := hs π hπ (f y)
     exact ⟨⟨(y, z), hz.symm⟩, rfl⟩
 
-theorem precoherent [HasExplicitPullbacks P] [HasExplicitFiniteCoproducts.{0} P]
-    (hs : ∀ ⦃X Y : CompHausLike P⦄ (f : X ⟶ Y), EffectiveEpi f → Function.Surjective f) :
-    Precoherent (CompHausLike P) := by
+theorem precoherent
+    [HasExplicitPullbacks P] [HasExplicitFiniteCoproducts.{0} P]
+    (hs : ∀ ⦃X Y : CompHausLike P⦄ (f : X ⟶ Y), EffectiveEpi f → Function.Surjective f)
+    : Precoherent (CompHausLike P) := by
   have : Preregular (CompHausLike P) := preregular hs
   infer_instance
 

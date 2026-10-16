@@ -33,15 +33,16 @@ open CategoryTheory Limits FintypeCat Functor
 
 namespace Profinite
 
-variable {I : Type u} [SmallCategory I] [IsCofiltered I]
-    {F : I ⥤ FintypeCat.{max u w}} (c : Cone <| F ⋙ toProfinite)
+variable
+  {I : Type u} [SmallCategory I] [IsCofiltered I]
+  {F : I ⥤ FintypeCat.{max u w}} (c : Cone <| F ⋙ toProfinite)
 
 /--
 A continuous map from a profinite set to a finite set factors through one of the components of
 the profinite set when written as a cofiltered limit of finite sets.
 -/
-lemma exists_hom (hc : IsLimit c) {X : FintypeCat} (f : c.pt ⟶ toProfinite.obj X) :
-    ∃ (i : I) (g : F.obj i ⟶ X), f = c.π.app i ≫ toProfinite.map g := by
+lemma exists_hom (hc : IsLimit c) {X : FintypeCat} (f : c.pt ⟶ toProfinite.obj X)
+    : ∃ (i : I) (g : F.obj i ⟶ X), f = c.π.app i ≫ toProfinite.map g := by
   have : DiscreteTopology (toProfinite.obj X) := ⟨rfl⟩
   let f' : LocallyConstant c.pt (toProfinite.obj X) :=
     ⟨f, (IsLocallyConstant.iff_continuous _).mpr f.hom.hom.continuous⟩
@@ -95,8 +96,7 @@ lemma functor_initial (hc : IsLimit c) [∀ i, Epi (c.π.app i)] : Initial (func
     exact ⟨⟨i⟩, ⟨StructuredArrow.homMk g h.symm⟩⟩
   · intro ⟨_, X, (f : c.pt ⟶ _)⟩ ⟨i⟩ ⟨_, (s : F.obj i ⟶ X), (w : f = c.π.app i ≫ _)⟩
       ⟨_, (s' : F.obj i ⟶ X), (w' : f = c.π.app i ≫ _)⟩
-    simp only [StructuredArrow.hom_eq_iff,
-      StructuredArrow.comp_right]
+    simp only [StructuredArrow.hom_eq_iff, StructuredArrow.comp_right]
     refine ⟨⟨i⟩, 𝟙 _, ?_⟩
     simp only [CategoryTheory.Functor.map_id]
     rw [w] at w'
@@ -125,12 +125,9 @@ Whiskering this cone with `Profinite.Extend.functor c` gives `G.mapCone c` as we
 example below.
 -/
 @[simps]
-def cone (S : Profinite) :
-    Cone (StructuredArrow.proj S toProfinite ⋙ toProfinite ⋙ G) where
+def cone (S : Profinite) : Cone (StructuredArrow.proj S toProfinite ⋙ toProfinite ⋙ G) where
   pt := G.obj S
-  π := {
-    app := fun i ↦ G.map i.hom
-    naturality := fun _ _ f ↦ (by simp [← map_comp]) }
+  π := { app := fun i ↦ G.map i.hom, naturality := fun _ _ f ↦ (by simp [← map_comp]) }
 
 example : G.mapCone c = (cone G c.pt).whisker (functor c) := rfl
 
@@ -138,9 +135,9 @@ example : G.mapCone c = (cone G c.pt).whisker (functor c) := rfl
 If `c` and `G.mapCone c` are limit cones and the projection maps in `c` are epimorphic,
 then `cone G c.pt` is a limit cone.
 -/
-noncomputable
-def isLimitCone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsLimit <| G.mapCone c) :
-    IsLimit (cone G c.pt) := (functor_initial c hc).isLimitWhiskerEquiv _ _ hc'
+noncomputable def isLimitCone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsLimit <| G.mapCone c)
+    : IsLimit (cone G c.pt) :=
+  (functor_initial c hc).isLimitWhiskerEquiv _ _ hc'
 
 end Limit
 
@@ -157,15 +154,16 @@ Whiskering this cocone with `Profinite.Extend.functorOp c` gives `G.mapCocone c.
 the example below.
 -/
 @[simps]
-def cocone (S : Profinite) :
-    Cocone (CostructuredArrow.proj toProfinite.op ⟨S⟩ ⋙ toProfinite.op ⋙ G) where
+def cocone (S : Profinite)
+    : Cocone (CostructuredArrow.proj toProfinite.op ⟨S⟩ ⋙ toProfinite.op ⋙ G) where
   pt := G.obj ⟨S⟩
   ι := {
     app := fun i ↦ G.map i.hom
     naturality := fun _ _ f ↦ (by
       have := f.w
       simp only [op_obj, op_map] at this
-      simp [← map_comp, this]) }
+      simp [← map_comp, this])
+  }
 
 example : G.mapCocone c.op = (cocone G c.pt).whisker (functorOp c) := rfl
 
@@ -173,9 +171,10 @@ example : G.mapCocone c.op = (cocone G c.pt).whisker (functorOp c) := rfl
 If `c` is a limit cone, `G.mapCocone c.op` is a colimit cone and the projection maps in `c`
 are epimorphic, then `cocone G c.pt` is a colimit cone.
 -/
-noncomputable
-def isColimitCocone (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsColimit <| G.mapCocone c.op) :
-    IsColimit (cocone G c.pt) := (functorOp_final c hc).isColimitWhiskerEquiv _ _ hc'
+noncomputable def isColimitCocone
+    (hc : IsLimit c) [∀ i, Epi (c.π.app i)] (hc' : IsColimit <| G.mapCocone c.op)
+    : IsColimit (cocone G c.pt) :=
+  (functorOp_final c hc).isColimitWhiskerEquiv _ _ hc'
 
 end Colimit
 
@@ -195,8 +194,7 @@ abbrev fintypeDiagram' : StructuredArrow S toProfinite ⥤ FintypeCat :=
   StructuredArrow.proj S toProfinite
 
 /-- An abbreviation for `S.fintypeDiagram' ⋙ toProfinite`. -/
-abbrev diagram' : StructuredArrow S toProfinite ⥤ Profinite :=
-  S.fintypeDiagram' ⋙ toProfinite
+abbrev diagram' : StructuredArrow S toProfinite ⥤ Profinite := S.fintypeDiagram' ⋙ toProfinite
 
 /-- A cone over `S.diagram'` whose cone point is `S`. -/
 abbrev asLimitCone' : Cone (S.diagram') := cone (𝟭 _) S

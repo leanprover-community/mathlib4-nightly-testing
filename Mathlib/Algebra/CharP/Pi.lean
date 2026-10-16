@@ -17,24 +17,24 @@ public section
 section
 variable {ι : Type*} {α : ι → Type*}
 
-theorem CharZero.pi (i : ι) [Π i, AddMonoidWithOne (α i)] [CharZero (α i)] :
-    CharZero (Π i, α i) where
+theorem CharZero.pi (i : ι) [Π i, AddMonoidWithOne (α i)] [CharZero (α i)]
+    : CharZero (Π i, α i) where
   cast_injective _ _ h := Nat.cast_injective congr($h i)
 
 variable [Nonempty ι]
 
 /-- Strictly this only needs any one component to be char-zero, but this is awkward to express. -/
-instance Pi.instCharZero [Π i, AddMonoidWithOne (α i)] [∀ i, CharZero (α i)] :
-    CharZero (Π i, α i) := by
+instance Pi.instCharZero [Π i, AddMonoidWithOne (α i)] [∀ i, CharZero (α i)]
+    : CharZero (Π i, α i) := by
   inhabit ι
   exact CharZero.pi default
 
-instance Pi.instCharP [Π i, AddMonoidWithOne (α i)] (p : ℕ) [∀ i, CharP (α i) p] :
-    CharP (Π i, α i) p where
+instance Pi.instCharP [Π i, AddMonoidWithOne (α i)] (p : ℕ) [∀ i, CharP (α i) p]
+    : CharP (Π i, α i) p where
   cast_eq_zero_iff x := by simp [funext_iff, CharP.cast_eq_zero_iff _ p x]
 
-instance Pi.instExpChar [Π i, AddMonoidWithOne (α i)] (p : ℕ) [∀ i, ExpChar (α i) p] :
-    ExpChar (Π i, α i) p := by
+instance Pi.instExpChar [Π i, AddMonoidWithOne (α i)] (p : ℕ) [∀ i, ExpChar (α i) p]
+    : ExpChar (Π i, α i) p := by
   inhabit ι
   obtain hp | rfl := expChar_is_prime_or_one (α default) p
   · simp only [expChar_prime_iff, hp] at *

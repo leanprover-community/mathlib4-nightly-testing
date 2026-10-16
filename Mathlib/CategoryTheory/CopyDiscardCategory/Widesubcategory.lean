@@ -35,20 +35,23 @@ class IsStableUnderComonoid (P : MorphismProperty C) (c : C) [ComonObj c] : Prop
 export IsStableUnderComonoid (counit_mem comul_mem)
 
 @[simps]
-instance [P.IsMonoidalStable] (c : WideSubcategory P) [ComonObj c.obj]
-    [P.IsStableUnderComonoid c.obj] : ComonObj c where
+instance
+    [P.IsMonoidalStable] (c : WideSubcategory P) [ComonObj c.obj] [P.IsStableUnderComonoid c.obj]
+    : ComonObj c where
   counit := ⟨ε[c.obj], P.counit_mem⟩
   comul := ⟨Δ[c.obj], P.comul_mem⟩
 
-instance [BraidedCategory C] [P.IsStableUnderBraiding] (c : WideSubcategory P) [ComonObj c.obj]
-    [IsCommComonObj c.obj] [P.IsStableUnderComonoid c.obj] : IsCommComonObj c where
+instance
+    [BraidedCategory C] [P.IsStableUnderBraiding]
+    (c : WideSubcategory P) [ComonObj c.obj] [IsCommComonObj c.obj] [P.IsStableUnderComonoid c.obj]
+    : IsCommComonObj c where
   comul_comm := by
     ext
     exact IsCommComonObj.comul_comm _
 
 open CopyDiscardCategory in
 attribute [local simp] copy_tensor discard_tensor copy_unit discard_unit in
-instance [CopyDiscardCategory C] [P.IsStableUnderBraiding] [∀ c, P.IsStableUnderComonoid c] :
-    CopyDiscardCategory (WideSubcategory P) where
+instance [CopyDiscardCategory C] [P.IsStableUnderBraiding] [∀ c, P.IsStableUnderComonoid c]
+  : CopyDiscardCategory (WideSubcategory P) where
 
 end CategoryTheory.MorphismProperty

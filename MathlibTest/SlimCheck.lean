@@ -37,7 +37,7 @@ example : ∀ x : ℕ, 2 ∣ x → x < 100 := by
 -- y := 5
 -- issue: 5 < 5 does not hold
 -- (5 shrinks)
--- -------------------
+---------------------
 -- "
 --     plausible (config := { randomSeed := some 257 })
 --   admit
@@ -76,7 +76,7 @@ open Function Plausible
 -- guard: 3 ≤ 4 (by construction)
 -- issue: 9 ≤ 6 does not hold
 -- (5 shrinks)
--- -------------------
+---------------------
 -- "
 --     plausible (config := { randomSeed := some 257 })
 --   admit
@@ -129,8 +129,7 @@ issue: 0 = 1 does not hold
 -------------------
 -/
 #guard_msgs in
-example (f : ℤ → ℤ) : Injective f := by
-  plausible (config := { randomSeed := some 257 })
+example (f : ℤ → ℤ) : Injective f := by plausible (config := { randomSeed := some 257 })
 
 /--
 error:
@@ -145,12 +144,10 @@ issue: 5 ≤ 0 does not hold
 -------------------
 -/
 #guard_msgs in
-example (f : ℤ → ℤ) : Monotone f := by
-  plausible (config := { randomSeed := some 257 })
+example (f : ℤ → ℤ) : Monotone f := by plausible (config := { randomSeed := some 257 })
 
 -- TODO: fails without this line!
 attribute [-instance] Finsupp.instRepr in
-
 example (f : ℕ →₀ ℕ) : true := by
   have : f = 0 := by
     success_if_fail_with_msg
@@ -202,8 +199,8 @@ info: Unable to find a counter-example
 warning: declaration uses `sorry`
 -/
 #guard_msgs in
-example (q : ℕ) : q = 0 ∨ q ≥ 2 ∨
-    8 = ∑ k ∈ Finset.range 2, 5 ^ k * Nat.choose (2 * q + 1) (2 * k + 1) := by
+example (q : ℕ)
+    : q = 0 ∨ q ≥ 2 ∨ 8 = ∑ k ∈ Finset.range 2, 5 ^ k * Nat.choose (2 * q + 1) (2 * k + 1) := by
   plausible
 
 -- https://github.com/leanprover-community/mathlib4/issues/12565
@@ -233,5 +230,4 @@ issue: 64 < 42 does not hold
 -------------------
 -/
 #guard_msgs in
-example (x : PNat) : x^3 < 2*x^2 + 10 := by
-  plausible (config := { randomSeed := some 257 })
+example (x : PNat) : x ^ 3 < 2 * x ^ 2 + 10 := by plausible (config := { randomSeed := some 257 })

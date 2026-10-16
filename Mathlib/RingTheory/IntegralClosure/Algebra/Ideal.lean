@@ -29,15 +29,19 @@ namespace Polynomial
 
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 
-lemma coeff_mem_pow_of_mem_adjoin_C_mul_X {R : Type*} [CommRing R]
-    {I : Ideal R} {P : R[X]} (hP : P ∈ Algebra.adjoin R { C r * X | r ∈ I }) (i : ℕ) :
-    P.coeff i ∈ I ^ i := by
+lemma coeff_mem_pow_of_mem_adjoin_C_mul_X
+    {R : Type*} [CommRing R]
+    {I : Ideal R} {P : R[X]} (hP : P ∈ Algebra.adjoin R { C r * X | r ∈ I })
+    (i : ℕ)
+    : P.coeff i ∈ I ^ i := by
   induction hP using Algebra.adjoin_induction generalizing i with
   | mem x hx =>
     obtain ⟨r, hrI, rfl⟩ := hx
     simp +contextual [coeff_X, apply_ite, hrI, @eq_comm _ 1]
-  | algebraMap r => simp +contextual [coeff_C, apply_ite]
-  | add x y hx hy _ _ => aesop
+  | algebraMap r =>
+    simp +contextual [coeff_C, apply_ite]
+  | add x y hx hy _ _ =>
+    aesop
   | mul x y _ _ hx hy =>
     rw [coeff_mul]
     refine sum_mem fun ⟨j₁, j₂⟩ hj ↦ ?_
@@ -46,14 +50,14 @@ lemma coeff_mem_pow_of_mem_adjoin_C_mul_X {R : Type*} [CommRing R]
 
 attribute [local instance] Polynomial.algebra in
 lemma exists_monic_aeval_eq_zero_forall_mem_pow_of_isIntegral
-    {I : Ideal R} {x : S}
-    (hx : IsIntegral (Algebra.adjoin R { C r * X | r ∈ I }) (C x * X)) :
-    ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i, p.coeff i ∈ I ^ (p.natDegree - i) := by
+    {I : Ideal R} {x : S} (hx : IsIntegral (Algebra.adjoin R { C r * X | r ∈ I }) (C x * X))
+    : ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i, p.coeff i ∈ I ^ (p.natDegree - i) := by
   cases subsingleton_or_nontrivial R
   · use 0; simp [Monic, Subsingleton.elim (α := R) 0 1]
   obtain ⟨p, hp, e⟩ := hx
-  let q : R[X] := ∑ i ∈ Finset.range (p.natDegree + 1),
-    C ((p.coeff i).1.coeff (p.natDegree - i)) * X ^ i
+  let q : R[X] :=
+    ∑ i ∈ Finset.range (p.natDegree + 1),
+      C ((p.coeff i).1.coeff (p.natDegree - i)) * X ^ i
   have hq : q.natDegree = p.natDegree := by
     refine natDegree_eq_of_le_of_coeff_ne_zero (natDegree_sum_le_of_forall_le _ _ ?_) ?_
     · exact fun i hi ↦ (natDegree_C_mul_X_pow_le _ _).trans (by simpa [Nat.lt_succ_iff] using! hi)
@@ -70,28 +74,31 @@ lemma exists_monic_aeval_eq_zero_forall_mem_pow_of_isIntegral
   · rw [hq]
     simp [q, apply_ite, coeff_mem_pow_of_mem_adjoin_C_mul_X (p.coeff _).2]
 
-lemma exists_monic_aeval_eq_zero_forall_mem_pow_of_mem_map [Algebra.IsIntegral R S]
-    {I : Ideal R} {x : S} (hx : x ∈ I.map (algebraMap R S)) :
-    ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i, p.coeff i ∈ I ^ (p.natDegree - i) := by
+lemma exists_monic_aeval_eq_zero_forall_mem_pow_of_mem_map
+    [Algebra.IsIntegral R S] {I : Ideal R} {x : S} (hx : x ∈ I.map (algebraMap R S))
+    : ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i, p.coeff i ∈ I ^ (p.natDegree - i) := by
   let A : Subalgebra R R[X] := Algebra.adjoin R { C r * X | r ∈ I }
   let := Polynomial.algebra R S
   refine exists_monic_aeval_eq_zero_forall_mem_pow_of_isIntegral ?_
   induction hx using Submodule.span_induction with
-  | zero => simp [isIntegral_zero]
-  | add x y _ _ hx hy => simpa [add_mul] using hx.add hy
+  | zero =>
+    simp [isIntegral_zero]
+  | add x y _ _ hx hy =>
+    simpa [add_mul] using hx.add hy
   | mem x h =>
     obtain ⟨x, hx, rfl⟩ := h
-    simpa using isIntegral_algebraMap (R := A) (A := S[X])
-      (x := ⟨C x * X, Algebra.subset_adjoin ⟨x, hx, rfl⟩⟩)
+    simpa using
+      isIntegral_algebraMap (R := A) (A := S[X])
+        (x := ⟨C x * X, Algebra.subset_adjoin ⟨x, hx, rfl⟩⟩)
   | smul a x _ hx =>
     simp only [smul_eq_mul, map_mul, mul_assoc]
     refine .mul ?_ hx
     exact ((Algebra.IsIntegral.isIntegral (R := R) a).map (IsScalarTower.toAlgHom R S _)).tower_top
 
 @[stacks 00H5]
-lemma exists_monic_aeval_eq_zero_forall_mem_of_mem_map [Algebra.IsIntegral R S]
-    {I : Ideal R} {x : S} (hx : x ∈ I.map (algebraMap R S)) :
-    ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i ≠ p.natDegree, p.coeff i ∈ I := by
+lemma exists_monic_aeval_eq_zero_forall_mem_of_mem_map
+    [Algebra.IsIntegral R S] {I : Ideal R} {x : S} (hx : x ∈ I.map (algebraMap R S))
+    : ∃ p : R[X], p.Monic ∧ aeval x p = 0 ∧ ∀ i ≠ p.natDegree, p.coeff i ∈ I := by
   obtain ⟨p, hp, e, h⟩ := exists_monic_aeval_eq_zero_forall_mem_pow_of_mem_map hx
   refine ⟨p, hp, e, fun i hi ↦ ?_⟩
   obtain hi | hi := hi.lt_or_gt

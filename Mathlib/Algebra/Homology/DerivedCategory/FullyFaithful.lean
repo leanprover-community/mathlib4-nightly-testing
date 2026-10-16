@@ -25,14 +25,16 @@ namespace DerivedCategory
 
 variable (C : Type u) [Category.{v} C] [Abelian C] [HasDerivedCategory.{w} C]
 
-/-- The canonical isomorphism
-`DerivedCategory.singleFunctor C n ⋙ DerivedCategory.homologyFunctor C n ≅ 𝟭 C` -/
-noncomputable def singleFunctorCompHomologyFunctorIso (n : ℤ) :
-    singleFunctor C n ⋙ homologyFunctor C n ≅ 𝟭 C :=
-  Functor.isoWhiskerRight ((SingleFunctors.evaluation _ _ n).mapIso
-    (singleFunctorsPostcompQIso C)) _ ≪≫ Functor.associator _ _ _ ≪≫
-    Functor.isoWhiskerLeft _ (homologyFunctorFactors C n) ≪≫
-      (HomologicalComplex.homologyFunctorSingleIso _ _ _)
+/--
+The canonical isomorphism
+`DerivedCategory.singleFunctor C n ⋙ DerivedCategory.homologyFunctor C n ≅ 𝟭 C`
+-/
+noncomputable def singleFunctorCompHomologyFunctorIso (n : ℤ)
+    : singleFunctor C n ⋙ homologyFunctor C n ≅ 𝟭 C :=
+  Functor.isoWhiskerRight ((SingleFunctors.evaluation _ _ n).mapIso (singleFunctorsPostcompQIso C))
+      _
+    ≪≫ Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft _ (homologyFunctorFactors C n)
+    ≪≫ (HomologicalComplex.homologyFunctorSingleIso _ _ _)
 
 instance (n : ℤ) : (singleFunctor C n).Faithful where
   map_injective {_ _ f₁ f₂} h := by
@@ -43,8 +45,9 @@ instance (n : ℤ) : (singleFunctor C n).Faithful where
 
 instance (n : ℤ) : (singleFunctor C n).Full where
   map_surjective {A B} f := by
-    change Q.obj ((CochainComplex.singleFunctor C n).obj A) ⟶
-      Q.obj ((CochainComplex.singleFunctor C n).obj B) at f
+    change Q.obj ((CochainComplex.singleFunctor C n).obj A)
+        ⟶ Q.obj ((CochainComplex.singleFunctor C n).obj B)
+      at f
     suffices ∃ f', f = Q.map f' by
       obtain ⟨f', rfl⟩ := this
       obtain ⟨g, rfl⟩ := (CochainComplex.singleFunctor C n).map_surjective f'
@@ -56,7 +59,8 @@ instance (n : ℤ) : (singleFunctor C n).Full where
       change IsIso (Q.map ((CochainComplex.singleFunctor C n).map φ))
       rw [hφ, Functor.map_comp]
       infer_instance
-    have : IsIso φ := (NatIso.isIso_map_iff (singleFunctorCompHomologyFunctorIso C n) φ).1
+    have : IsIso φ :=
+      (NatIso.isIso_map_iff (singleFunctorCompHomologyFunctorIso C n) φ).1
         (by dsimp; infer_instance)
     have : IsIso (e.inv ≫ s) := by rw [← hφ]; infer_instance
     have : IsIso s := IsIso.of_isIso_comp_left e.inv s

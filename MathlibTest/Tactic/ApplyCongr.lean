@@ -1,9 +1,10 @@
 module
+
 import Mathlib.Tactic.ApplyCongr
 import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 
-example (f g : ℤ → ℤ) (S : Finset ℤ) (h : ∀ m ∈ S, f m = g m) :
-    Finset.sum S f = Finset.sum S g := by
+example (f g : ℤ → ℤ) (S : Finset ℤ) (h : ∀ m ∈ S, f m = g m)
+    : Finset.sum S f = Finset.sum S g := by
   conv_lhs =>
     -- If we just call `congr` here, in the second goal we're helpless,
     -- because we are only given the opportunity to rewrite `f`.

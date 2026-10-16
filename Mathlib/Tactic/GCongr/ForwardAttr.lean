@@ -27,35 +27,39 @@ def mkForwardExt (n : Name) : ImportM ForwardExt := do
   IO.ofExcept <| unsafe env.evalConstCheck ForwardExt opts ``ForwardExt n
 
 /-- Environment extensions for `gcongrForward` declarations -/
-initialize forwardExt : PersistentEnvExtension Name (Name × ForwardExt)
-    (List Name × List (Name × ForwardExt)) ←
+initialize forwardExt
+    : PersistentEnvExtension Name (Name × ForwardExt) (List Name × List (Name × ForwardExt)) ←
   registerPersistentEnvExtension {
     mkInitial := pure ([], {})
     addImportedFn := fun s => do
-      let dt ← s.foldlM (init := {}) fun dt s => s.foldlM (init := dt) fun dt n => do
-        return (n, ← mkForwardExt n) :: dt
+      let dt ←
+        s.foldlM (init := {}) fun dt s =>
+          s.foldlM (init := dt) fun dt n => do return (n, ← mkForwardExt n) :: dt
       pure ([], dt)
     addEntryFn := fun (entries, s) (n, ext) => (n :: entries, (n, ext) :: s)
     exportEntriesFn := fun s => s.1.reverse.toArray
   }
 
-initialize registerBuiltinAttribute {
-  name := `gcongr_forward
-  descr := "adds a gcongr_forward extension"
-  applicationTime := .afterCompilation
-  add := fun declName stx kind => match stx with
-    | `(attr| gcongr_forward) => do
-      unless kind == AttributeKind.global do
-        throwAttrMustBeGlobal `gcongr_forward kind
-      ensureAttrDeclIsMeta `gcongr_forward declName kind
-      let env ← getEnv
-      unless (env.getModuleIdxFor? declName).isNone do
-        throwError "invalid attribute 'gcongr_forward', declaration is in an imported module"
-      if (IR.getSorryDep env declName).isSome then return -- ignore in progress definitions
-      let ext ← mkForwardExt declName
-      setEnv <| forwardExt.addEntry env (declName, ext)
-    | _ => throwUnsupportedSyntax
-}
+initialize
+  registerBuiltinAttribute {
+    name := `gcongr_forward
+    descr := "adds a gcongr_forward extension"
+    applicationTime := .afterCompilation
+    add := fun declName stx kind =>
+      match stx with
+      | `(attr| gcongr_forward) => do
+        unless kind == AttributeKind.global do
+          throwAttrMustBeGlobal `gcongr_forward kind
+        ensureAttrDeclIsMeta `gcongr_forward declName kind
+        let env ← getEnv
+        unless (env.getModuleIdxFor? declName).isNone do
+          throwError "invalid attribute 'gcongr_forward', declaration is in an imported module"
+        if (IR.getSorryDep env declName).isSome then return -- ignore in progress definitions
+        let ext ← mkForwardExt declName
+        setEnv <| forwardExt.addEntry env (declName, ext)
+      | _ =>
+        throwUnsupportedSyntax
+  }
 
 end GCongr
 

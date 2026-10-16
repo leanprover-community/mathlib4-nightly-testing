@@ -31,13 +31,16 @@ Based on Watkins' LF implementation of Hurkens' simplification of Girard's parad
 
 namespace Counterexample
 
-/-- **Girard's paradox**: there are no universes `u` such that `Type u : Type u`.
+/--
+**Girard's paradox**: there are no universes `u` such that `Type u : Type u`.
 Since we can't actually change the type of Lean's `Π` operator, we assume the existence of
 `pi`, `lam`, `app` and the `beta` rule equivalent to the `Π` and `app` constructors of type theory.
 -/
-theorem girard.{u} (pi : (Type u → Type u) → Type u)
-    (lam : ∀ {A : Type u → Type u}, (∀ x, A x) → pi A) (app : ∀ {A}, pi A → ∀ x, A x)
-    (beta : ∀ {A : Type u → Type u} (f : ∀ x, A x) (x), app (lam f) x = f x) : False :=
+theorem girard.{u}
+    (pi : (Type u → Type u) → Type u) (lam : ∀ {A : Type u → Type u}, (∀ x, A x) → pi A)
+    (app : ∀ {A}, pi A → ∀ x, A x)
+    (beta : ∀ {A : Type u → Type u} (f : ∀ x, A x) (x), app (lam f) x = f x)
+    : False :=
   let F (X) := (Set (Set X) → X) → Set (Set X)
   let U := pi F
   let G (T : Set (Set U)) (X) : F X := fun f => {p | {x : U | f (app x X f) ∈ p} ∈ T}
@@ -48,6 +51,6 @@ theorem girard.{u} (pi : (Type u → Type u) → Type u)
   let ω : Set (Set U) := {p | ∀ x, p ∈ σ x → x ∈ p}
   let δ (S : Set (Set U)) := ∀ p, p ∈ S → τ S ∈ p
   have : δ ω := fun _p d => d (τ ω) <| στ.2 fun x h => d (τ (σ x)) (στ.2 h)
-  this {y | ¬δ (σ y)} (fun _x e f => f _ e fun _p h => f _ (στ.1 h)) fun _p h => this _ (στ.1 h)
+  this ({y | ¬δ (σ y)}) (fun _x e f => f _ e fun _p h => f _ (στ.1 h)) fun _p h => this _ (στ.1 h)
 
 end Counterexample

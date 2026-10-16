@@ -72,19 +72,22 @@ abbrev hull (T : Set α) (a : α) := T ↓∩ Ici a
 
 variable {T : Set α}
 
-/-- The set of relative-closed sets of the form `hull T a` for some `a` in `α` is closed under
-pairwise union. -/
-lemma hull_inf (hT : ∀ p ∈ T, InfPrime p) (a b : α) :
-    hull T (a ⊓ b) = hull T a ∪ hull T b := by
+/--
+The set of relative-closed sets of the form `hull T a` for some `a` in `α` is closed under
+pairwise union.
+-/
+lemma hull_inf (hT : ∀ p ∈ T, InfPrime p) (a b : α) : hull T (a ⊓ b) = hull T a ∪ hull T b := by
   grind [InfPrime.inf_le]
 
 variable [OrderTop α]
 
 open Finset in
-/-- Every relative-closed set of the form `T ↓∩ (↑(upperClosure F))` for `F` finite is a
-relative-closed set of the form `hull T a` where `a = ⨅ F`. -/
-lemma hull_finsetInf (hT : ∀ p ∈ T, InfPrime p) (F : Finset α) :
-    hull T (inf F id) = T ↓∩ upperClosure (F : Set α) := by
+/--
+Every relative-closed set of the form `T ↓∩ (↑(upperClosure F))` for `F` finite is a
+relative-closed set of the form `hull T a` where `a = ⨅ F`.
+-/
+lemma hull_finsetInf (hT : ∀ p ∈ T, InfPrime p) (F : Finset α)
+    : hull T (inf F id) = T ↓∩ upperClosure (F : Set α) := by
   rw [coe_upperClosure]
   induction F using Finset.cons_induction with
   | empty =>
@@ -94,13 +97,16 @@ lemma hull_finsetInf (hT : ∀ p ∈ T, InfPrime p) (F : Finset α) :
     rw [← Set.not_nonempty_iff_eq_empty, not_not] at hf
     obtain ⟨x, hx⟩ := hf
     exact (hT x (Subtype.coe_prop x)).1 (isMax_iff_eq_top.mpr (eq_top_iff.mpr hx))
-  | cons a F' _ I4 => simp [hull_inf hT, I4]
+  | cons a F' _ I4 =>
+    simp [hull_inf hT, I4]
 
 open Finset in
-/-- Every relative-open set of the form `T ↓∩ (↑(upperClosure F))ᶜ` for `F` finite
-is a relative-open set of the form `(hull T a)ᶜ` where `a = ⨅ F`. -/
-lemma preimage_upperClosure_compl_finset (hT : ∀ p ∈ T, InfPrime p) (F : Finset α) :
-    T ↓∩ (upperClosure (F : Set α))ᶜ = (hull T (inf F id))ᶜ := by
+/--
+Every relative-open set of the form `T ↓∩ (↑(upperClosure F))ᶜ` for `F` finite
+is a relative-open set of the form `(hull T a)ᶜ` where `a = ⨅ F`.
+-/
+lemma preimage_upperClosure_compl_finset (hT : ∀ p ∈ T, InfPrime p) (F : Finset α)
+    : T ↓∩ (upperClosure (F : Set α))ᶜ = (hull T (inf F id))ᶜ := by
   rw [Set.preimage_compl, (hull_finsetInf hT)]
 
 variable [TopologicalSpace α] [IsLower α]
@@ -109,8 +115,8 @@ variable [TopologicalSpace α] [IsLower α]
 The relative-open sets of the form `(hull T a)ᶜ` for `a` in `α` form a basis for the relative
 Lower topology.
 -/
-lemma isTopologicalBasis_relativeLower (hT : ∀ p ∈ T, InfPrime p) :
-    IsTopologicalBasis { S : Set T | ∃ (a : α), (hull T a)ᶜ = S } := by
+lemma isTopologicalBasis_relativeLower (hT : ∀ p ∈ T, InfPrime p)
+    : IsTopologicalBasis { S : Set T | ∃ (a : α), (hull T a)ᶜ = S } := by
   convert isTopologicalBasis_subtype Topology.IsLower.isTopologicalBasis (· ∈ T)
   simp only [preimage_compl, mem_ofPred_eq, mem_eq_mem, IsLower.lowerBasis, mem_image,
     exists_exists_and_eq_and]
@@ -141,10 +147,12 @@ lemma hull_iSup {ι : Sort v} (s : ι → α) : hull T (iSup s) = ⋂ i, hull T 
 
 lemma hull_sSup (S : Set α) : hull T (sSup S) = ⋂₀ { hull T a | a ∈ S } := by aesop
 
-/-- When `α` is complete, a set is Lower topology relative-open if and only if it is of the form
-`(hull T a)ᶜ` for some `a` in `α`. -/
-lemma isOpen_iff [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime p)
-    (S : Set T) : IsOpen S ↔ ∃ (a : α), S = (hull T a)ᶜ := by
+/--
+When `α` is complete, a set is Lower topology relative-open if and only if it is of the form
+`(hull T a)ᶜ` for some `a` in `α`.
+-/
+lemma isOpen_iff [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime p) (S : Set T)
+    : IsOpen S ↔ ∃ (a : α), S = (hull T a)ᶜ := by
   constructor <;> intro h
   · let R := {a : α | (hull T a)ᶜ ⊆ S}
     use sSup R
@@ -153,20 +161,26 @@ lemma isOpen_iff [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime 
   · obtain ⟨a, ha⟩ := h
     exact ⟨(Ici a)ᶜ, isClosed_Ici.isOpen_compl, ha.symm⟩
 
-/-- When `α` is complete, a set is closed in the relative lower topology if and only if it is of the
-form `hull T a` for some `a` in `α`. -/
-lemma isClosed_iff [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime p)
-    {S : Set T} : IsClosed S ↔ ∃ (a : α), S = hull T a := by
+/--
+When `α` is complete, a set is closed in the relative lower topology if and only if it is of the
+form `hull T a` for some `a` in `α`.
+-/
+lemma isClosed_iff [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime p) {S : Set T}
+    : IsClosed S ↔ ∃ (a : α), S = hull T a := by
   simp only [← isOpen_compl_iff, isOpen_iff hT, compl_inj_iff]
 
 /-- For a subset `S` of `T`, `kernel S` is the infimum of `S` (considered as a set of `α`) -/
 abbrev kernel (S : Set T) := sInf (Subtype.val '' S)
 
 open OrderDual in
-/-- The pair of maps `kernel` and `hull` form an antitone Galois connection between the
-subsets of `T` and `α`. -/
-theorem gc : GaloisConnection (α := Set T) (β := αᵒᵈ)
-    (fun S => toDual (kernel S)) (fun a => hull T (ofDual a)) := fun S a => by
+/--
+The pair of maps `kernel` and `hull` form an antitone Galois connection between the
+subsets of `T` and `α`.
+-/
+theorem gc
+    : GaloisConnection (α := Set T) (β := αᵒᵈ)
+      (fun S => toDual (kernel S))
+      (fun a => hull T (ofDual a)) := fun S a => by
   simp [Set.subset_def]
 
 lemma gc_closureOperator (S : Set T) : gc.closureOperator S = hull T (kernel S) := by
@@ -175,19 +189,19 @@ lemma gc_closureOperator (S : Set T) : gc.closureOperator S = hull T (kernel S) 
 
 variable (T)
 
-/-- `T` order generates `α` if, for every `a` in `α`, there exists a subset of `T` such that `a` is
-the `kernel` of `S`. -/
+/--
+`T` order generates `α` if, for every `a` in `α`, there exists a subset of `T` such that `a` is
+the `kernel` of `S`.
+-/
 def OrderGenerates := ∀ (a : α), ∃ (S : Set T), a = kernel S
 
 variable {T}
 
 set_option backward.isDefEq.respectTransparency false in
-/--
-When `T` is order generating, the `kernel` and the `hull` form a Galois insertion
--/
-def gi (hG : OrderGenerates T) : GaloisInsertion (α := Set T) (β := αᵒᵈ)
-    (OrderDual.toDual ∘ kernel)
-    (hull T ∘ OrderDual.ofDual) :=
+/-- When `T` is order generating, the `kernel` and the `hull` form a Galois insertion -/
+def gi (hG : OrderGenerates T)
+    : GaloisInsertion (α := Set T) (β := αᵒᵈ) (OrderDual.toDual ∘ kernel)
+      (hull T ∘ OrderDual.ofDual) :=
   gc.toGaloisInsertion fun a ↦ by
     obtain ⟨S, rfl⟩ := hG a
     rw [OrderDual.le_toDual, kernel, kernel]
@@ -199,19 +213,22 @@ lemma kernel_hull (hG : OrderGenerates T) (a : α) : kernel (hull T a) = a := by
   conv_rhs => rw [← OrderDual.ofDual_toDual a, ← (gi hG).l_u_eq a]
   rfl
 
-lemma hull_kernel_of_isClosed [TopologicalSpace α] [IsLower α]
-    (hT : ∀ p ∈ T, InfPrime p) (hG : OrderGenerates T) {C : Set T} (h : IsClosed C) :
-    hull T (kernel C) = C := by
+lemma hull_kernel_of_isClosed
+    [TopologicalSpace α] [IsLower α]
+    (hT : ∀ p ∈ T, InfPrime p) (hG : OrderGenerates T)
+    {C : Set T} (h : IsClosed C)
+    : hull T (kernel C) = C := by
   obtain ⟨a, ha⟩ := (isClosed_iff hT).mp h
   rw [ha, kernel_hull hG]
 
-lemma closedsGC_closureOperator [TopologicalSpace α] [IsLower α]
-    (hT : ∀ p ∈ T, InfPrime p) (hG : OrderGenerates T) (S : Set T) :
-    (TopologicalSpace.Closeds.gc (α := T)).closureOperator S = hull T (kernel S) := by
+lemma closedsGC_closureOperator
+    [TopologicalSpace α] [IsLower α] (hT : ∀ p ∈ T, InfPrime p) (hG : OrderGenerates T) (S : Set T)
+    : (TopologicalSpace.Closeds.gc (α := T)).closureOperator S = hull T (kernel S) := by
   simp only [GaloisConnection.closureOperator_apply, Closeds.coe_closure, closure, le_antisymm_iff]
   constructor
-  · exact fun ⦃a⦄ a ↦ a (hull T (kernel S)) ⟨(isClosed_iff hT).mpr ⟨kernel S, rfl⟩,
-      image_subset_iff.mp (fun _ hbS => sInf_le hbS)⟩
+  · exact fun ⦃a⦄ a ↦
+      a (hull T (kernel S))
+        ⟨(isClosed_iff hT).mpr ⟨kernel S, rfl⟩, image_subset_iff.mp (fun _ hbS => sInf_le hbS)⟩
   · simp_rw [subset_sInter_iff]
     intro R hR
     rw [← (hull_kernel_of_isClosed hT hG hR.1), ← gc_closureOperator]

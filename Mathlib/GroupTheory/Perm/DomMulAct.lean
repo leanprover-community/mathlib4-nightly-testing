@@ -44,23 +44,28 @@ variable {α ι : Type*} {f : α → ι}
 
 namespace DomMulAct
 
-lemma mem_stabilizer_iff {g : (Perm α)ᵈᵐᵃ} :
-    g ∈ stabilizer (Perm α)ᵈᵐᵃ f ↔ f ∘ (mk.symm g :) = f := by
+lemma mem_stabilizer_iff {g : (Perm α)ᵈᵐᵃ}
+    : g ∈ stabilizer ((Perm α)ᵈᵐᵃ) f ↔ f ∘ (mk.symm g :) = f := by
   simp only [MulAction.mem_stabilizer_iff]; rfl
 
-/-- The `invFun` component of `MulEquiv` from `MulAction.stabilizer (Perm α) f`
-  to the product of the `Equiv.Perm {a // f a = i}`. -/
+/--
+The `invFun` component of `MulEquiv` from `MulAction.stabilizer (Perm α) f`
+to the product of the `Equiv.Perm {a // f a = i}`.
+-/
 def stabilizerEquiv_invFun (g : ∀ i, Perm {a // f a = i}) (a : α) : α := g (f a) ⟨a, rfl⟩
 
-lemma stabilizerEquiv_invFun_eq (g : ∀ i, Perm {a // f a = i}) {a : α} {i : ι} (h : f a = i) :
-    stabilizerEquiv_invFun g a = g i ⟨a, h⟩ := by subst h; rfl
+lemma stabilizerEquiv_invFun_eq (g : ∀ i, Perm {a // f a = i}) {a : α} {i : ι} (h : f a = i)
+    : stabilizerEquiv_invFun g a = g i ⟨a, h⟩ := by
+  subst h; rfl
 
-lemma comp_stabilizerEquiv_invFun (g : ∀ i, Perm {a // f a = i}) (a : α) :
-    f (stabilizerEquiv_invFun g a) = f a :=
+lemma comp_stabilizerEquiv_invFun (g : ∀ i, Perm {a // f a = i}) (a : α)
+    : f (stabilizerEquiv_invFun g a) = f a :=
   (g (f a) ⟨a, rfl⟩).prop
 
-/-- The `invFun` component of `MulEquiv` from `MulAction.stabilizer (Perm α) p`
-  to the product of the `Equiv.Perm {a | f a = i}` (as an `Equiv.Perm α`). -/
+/--
+The `invFun` component of `MulEquiv` from `MulAction.stabilizer (Perm α) p`
+to the product of the `Equiv.Perm {a | f a = i}` (as an `Equiv.Perm α`).
+-/
 def stabilizerEquiv_invFun_aux (g : ∀ i, Perm {a // f a = i}) : Perm α where
   toFun := stabilizerEquiv_invFun g
   invFun := stabilizerEquiv_invFun (fun i ↦ (g i).symm)
@@ -72,20 +77,27 @@ def stabilizerEquiv_invFun_aux (g : ∀ i, Perm {a // f a = i}) : Perm α where
     exact congr_arg Subtype.val ((g <| f a).right_inv _)
 
 variable (f) in
-/-- The `MulEquiv` from the `MulOpposite` of `MulAction.stabilizer (Perm α)ᵈᵐᵃ f`
-  to the product of the `Equiv.Perm {a // f a = i}` -/
-def stabilizerMulEquiv : (stabilizer (Perm α)ᵈᵐᵃ f)ᵐᵒᵖ ≃* (∀ i, Perm {a // f a = i}) where
-  toFun g i := Perm.subtypePerm (mk.symm g.unop) fun a ↦ by
-    rw [← Function.comp_apply (f := f), mem_stabilizer_iff.mp g.unop.prop]
-  invFun g := ⟨mk (stabilizerEquiv_invFun_aux g), by
-    ext a
-    rw [smul_apply, symm_apply_apply, Perm.smul_def]
-    apply comp_stabilizerEquiv_invFun⟩
+/--
+The `MulEquiv` from the `MulOpposite` of `MulAction.stabilizer (Perm α)ᵈᵐᵃ f`
+to the product of the `Equiv.Perm {a // f a = i}`
+-/
+def stabilizerMulEquiv : (stabilizer ((Perm α)ᵈᵐᵃ) f)ᵐᵒᵖ ≃* (∀ i, Perm {a // f a = i}) where
+  toFun g i :=
+    Perm.subtypePerm (mk.symm g.unop) fun a ↦ by
+      rw [← Function.comp_apply (f := f), mem_stabilizer_iff.mp g.unop.prop]
+  invFun g := ⟨
+    mk (stabilizerEquiv_invFun_aux g),
+    by
+      ext a
+      rw [smul_apply, symm_apply_apply, Perm.smul_def]
+      apply comp_stabilizerEquiv_invFun
+  ⟩
   right_inv g := by ext i a; apply stabilizerEquiv_invFun_eq
   map_mul' _ _ := rfl
 
-lemma stabilizerMulEquiv_apply (g : (stabilizer (Perm α)ᵈᵐᵃ f)ᵐᵒᵖ) {a : α} {i : ι} (h : f a = i) :
-    ((stabilizerMulEquiv f)) g i ⟨a, h⟩ = (mk.symm g.unop : Equiv.Perm α) a := rfl
+lemma stabilizerMulEquiv_apply (g : (stabilizer ((Perm α)ᵈᵐᵃ) f)ᵐᵒᵖ) {a : α} {i : ι} (h : f a = i)
+    : ((stabilizerMulEquiv f)) g i ⟨a, h⟩ = (mk.symm g.unop : Equiv.Perm α) a :=
+  rfl
 
 section Fintype
 
@@ -96,20 +108,19 @@ open Nat
 variable (f)
 
 /-- The cardinality of the type of permutations preserving a function -/
-theorem stabilizer_card [DecidableEq α] [DecidableEq ι] [Fintype ι] :
-    Fintype.card {g : Perm α // f ∘ g = f} = ∏ i, (Fintype.card {a // f a = i})! := by
+theorem stabilizer_card [DecidableEq α] [DecidableEq ι] [Fintype ι]
+    : Fintype.card {g : Perm α // f ∘ g = f} = ∏ i, (Fintype.card {a // f a = i})! := by
   -- rewriting via Nat.card because Fintype instance is not found
-  rw [← Nat.card_eq_fintype_card,
-    Nat.card_congr (subtypeEquiv mk fun _ ↦ ?_),
-    Nat.card_congr MulOpposite.opEquiv,
-    Nat.card_congr (DomMulAct.stabilizerMulEquiv f).toEquiv, Nat.card_pi]
+  rw [← Nat.card_eq_fintype_card, Nat.card_congr (subtypeEquiv mk fun _ ↦ ?_),
+    Nat.card_congr MulOpposite.opEquiv, Nat.card_congr (DomMulAct.stabilizerMulEquiv f).toEquiv,
+    Nat.card_pi]
   · exact Finset.prod_congr rfl fun i _ ↦ by rw [Nat.card_eq_fintype_card, Fintype.card_perm]
   · rfl
 
 omit [Fintype α] in
 /-- The cardinality of the set of permutations preserving a function -/
-theorem stabilizer_ncard [Finite α] [Fintype ι] :
-    Set.ncard {g : Perm α | f ∘ g = f} = ∏ i, (Set.ncard {a | f a = i})! := by
+theorem stabilizer_ncard [Finite α] [Fintype ι]
+    : Set.ncard {g : Perm α | f ∘ g = f} = ∏ i, (Set.ncard {a | f a = i})! := by
   classical
   cases nonempty_fintype α
   simp only [← Nat.card_coe_set_eq, Set.coe_ofPred, card_eq_fintype_card]
@@ -117,11 +128,13 @@ theorem stabilizer_ncard [Finite α] [Fintype ι] :
 
 variable [DecidableEq α] [DecidableEq ι]
 
-/-- The cardinality of the type of permutations preserving a function
-  (without the finiteness assumption on target) -/
-theorem stabilizer_card' :
-    Fintype.card {g : Perm α // f ∘ g = f} =
-      ∏ i ∈ Finset.univ.image f, (Fintype.card ({a // f a = i}))! := by
+/--
+The cardinality of the type of permutations preserving a function
+(without the finiteness assumption on target)
+-/
+theorem stabilizer_card'
+    : Fintype.card {g : Perm α // f ∘ g = f}
+      = ∏ i ∈ Finset.univ.image f, (Fintype.card ({a // f a = i}))! := by
   set φ : α → Finset.univ.image f :=
     Set.codRestrict f (Finset.univ.image f) (fun a => by simp)
   suffices ∀ g : Perm α, f ∘ g = f ↔ φ ∘ g = φ by

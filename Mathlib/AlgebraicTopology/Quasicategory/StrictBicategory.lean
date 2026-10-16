@@ -46,28 +46,31 @@ namespace SSet
 
 open CategoryTheory Simplicial
 
-/-- `QCat` is the category of quasi-categories defined as the full subcategory of the category
-`SSet` of simplicial sets. -/
+/--
+`QCat` is the category of quasi-categories defined as the full subcategory of the category
+`SSet` of simplicial sets.
+-/
 abbrev QCat := ObjectProperty.FullSubcategory Quasicategory
 
-/-- `QCat` obtains a `Cat`-enriched ordinary category structure by applying `hoFunctor` to the
-hom objects in its `SSet`-enriched ordinary structure. -/
+/--
+`QCat` obtains a `Cat`-enriched ordinary category structure by applying `hoFunctor` to the
+hom objects in its `SSet`-enriched ordinary structure.
+-/
 instance QCat.catEnrichedOrdinaryCategory : EnrichedOrdinaryCategory Cat QCat :=
   TransportEnrichment.enrichedOrdinaryCategory QCat hoFunctor.{u}
     (hoFunctor.unitHomEquiv · |>.trans <| Functor.equivCatHom _ _)
-      (congrArg (Functor.toCatHom) <| hoFunctor.unitHomEquiv_eq · ·)
+    (congrArg (Functor.toCatHom) <| hoFunctor.unitHomEquiv_eq · ·)
 
-/-- The underlying category of the `Cat`-enriched ordinary category of quasicategories is
-equivalent to `QCat`. -/
-def QCat.forgetEnrichment.equiv :
-    ForgetEnrichment Cat QCat ≌ QCat := ForgetEnrichment.equiv Cat
+/--
+The underlying category of the `Cat`-enriched ordinary category of quasicategories is
+equivalent to `QCat`.
+-/
+def QCat.forgetEnrichment.equiv : ForgetEnrichment Cat QCat ≌ QCat := ForgetEnrichment.equiv Cat
 
 /-- The bicategory of quasicategories extracted from `QCat.CatEnrichedOrdinaryCat`. -/
-instance QCat.bicategory : Bicategory QCat :=
-  CatEnrichedOrdinary.instBicategory
+instance QCat.bicategory : Bicategory QCat := CatEnrichedOrdinary.instBicategory
 
 /-- The strict bicategory of quasicategories extracted from `QCat.CatEnrichedOrdinaryCat`. -/
-instance QCat.strictBicategory : Bicategory.Strict QCat :=
-  CatEnrichedOrdinary.instStrict
+instance QCat.strictBicategory : Bicategory.Strict QCat := CatEnrichedOrdinary.instStrict
 
 end SSet

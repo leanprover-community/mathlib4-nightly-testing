@@ -64,17 +64,20 @@ section SMul
 
 variable [SMul G X]
 
-/-- Let `G` act on a space `X` and `A : Set X`. We say `f : X → X` is a decomposition on `A`
+/--
+Let `G` act on a space `X` and `A : Set X`. We say `f : X → X` is a decomposition on `A`
 as witnessed by some `S : Finset G` if for all `a ∈ A`, the value `f a` can be obtained
 by applying some element of `S` to `a` instead.
 
 More familiarly, the restriction of `f` to `A` is the result of partitioning `A` into finitely many
-pieces, then applying a single element of `G` to each piece. -/
+pieces, then applying a single element of `G` to each piece.
+-/
 def IsDecompOn (f : X → X) (A : Set X) (S : Finset G) : Prop := ∀ a ∈ A, ∃ g ∈ S, f a = g • a
 
 variable (X G)
 
-/-- Let `G` act on a space `X`. An `Equidecomposition` with respect to `X` and `G` is a partial
+/--
+Let `G` act on a space `X`. An `Equidecomposition` with respect to `X` and `G` is a partial
 bijection `f : PartialEquiv X X` with the property that for some set `elements : Finset G`,
 (which we record), for each `a ∈ f.source`, `f a` can be obtained by applying some `g ∈ elements`
 instead. We call `f` an equidecomposition of `f.source` with `f.target`.
@@ -91,21 +94,22 @@ variable {X G}
 instance : CoeFun (Equidecomp X G) fun _ => X → X := ⟨fun f => f.toFun⟩
 
 /-- A finite set of group elements witnessing that `f` is an equidecomposition. -/
-noncomputable
-def witness (f : Equidecomp X G) : Finset G := f.isDecompOn'.choose
+noncomputable def witness (f : Equidecomp X G) : Finset G := f.isDecompOn'.choose
 
 theorem isDecompOn (f : Equidecomp X G) : IsDecompOn f f.source f.witness :=
   f.isDecompOn'.choose_spec
 
-theorem apply_mem_target {f : Equidecomp X G} {x : X} (h : x ∈ f.source) :
-    f x ∈ f.target := by simp [h]
+theorem apply_mem_target {f : Equidecomp X G} {x : X} (h : x ∈ f.source) : f x ∈ f.target := by
+  simp [h]
 
 theorem toPartialEquiv_injective : Injective <| toPartialEquiv (X := X) (G := G) := by
   intro ⟨_, _, _⟩ _ _
   congr
 
-theorem IsDecompOn.mono {f f' : X → X} {A A' : Set X} {S : Finset G} (h : IsDecompOn f A S)
-    (hA' : A' ⊆ A) (hf' : EqOn f f' A') : IsDecompOn f' A' S := by
+theorem IsDecompOn.mono
+    {f f' : X → X} {A A' : Set X} {S : Finset G}
+    (h : IsDecompOn f A S) (hA' : A' ⊆ A) (hf' : EqOn f f' A')
+    : IsDecompOn f' A' S := by
   intro a ha
   rw [← hf' ha]
   exact h a (hA' ha)
@@ -114,18 +118,20 @@ theorem IsDecompOn.mono {f f' : X → X} {A A' : Set X} {S : Finset G} (h : IsDe
 @[simps!]
 def restr (f : Equidecomp X G) (A : Set X) : Equidecomp X G where
   toPartialEquiv := f.toPartialEquiv.restr A
-  isDecompOn' := ⟨f.witness,
-    f.isDecompOn.mono (source_restr_subset_source _ _) fun _ ↦ congrFun rfl⟩
+  isDecompOn' :=
+    ⟨f.witness, f.isDecompOn.mono (source_restr_subset_source _ _) fun _ ↦ congrFun rfl⟩
 
 @[simp]
-theorem toPartialEquiv_restr (f : Equidecomp X G) (A : Set X) :
-    (f.restr A).toPartialEquiv = f.toPartialEquiv.restr A := rfl
+theorem toPartialEquiv_restr (f : Equidecomp X G) (A : Set X)
+    : (f.restr A).toPartialEquiv = f.toPartialEquiv.restr A :=
+  rfl
 
-theorem source_restr (f : Equidecomp X G) {A : Set X} (hA : A ⊆ f.source) :
-    (f.restr A).source = A := by rw [restr_source, inter_eq_self_of_subset_right hA]
+theorem source_restr (f : Equidecomp X G) {A : Set X} (hA : A ⊆ f.source)
+    : (f.restr A).source = A := by
+  rw [restr_source, inter_eq_self_of_subset_right hA]
 
-theorem restr_of_source_subset {f : Equidecomp X G} {A : Set X} (hA : f.source ⊆ A) :
-    f.restr A = f := by
+theorem restr_of_source_subset {f : Equidecomp X G} {A : Set X} (hA : f.source ⊆ A)
+    : f.restr A = f := by
   apply toPartialEquiv_injective
   rw [toPartialEquiv_restr, PartialEquiv.restr_eq_of_source_subset hA]
 
@@ -150,9 +156,9 @@ def refl : Equidecomp X G where
 variable {X} {G}
 
 open scoped Classical in
-theorem IsDecompOn.comp' {g f : X → X} {B A : Set X} {T S : Finset G}
-    (hg : IsDecompOn g B T) (hf : IsDecompOn f A S) :
-    IsDecompOn (g ∘ f) (A ∩ f ⁻¹' B) (T * S) := by
+theorem IsDecompOn.comp'
+    {g f : X → X} {B A : Set X} {T S : Finset G} (hg : IsDecompOn g B T) (hf : IsDecompOn f A S)
+    : IsDecompOn (g ∘ f) (A ∩ f ⁻¹' B) (T * S) := by
   intro _ ⟨aA, aB⟩
   rcases hf _ aA with ⟨γ, γ_mem, hγ⟩
   rcases hg _ aB with ⟨δ, δ_mem, hδ⟩
@@ -160,9 +166,10 @@ theorem IsDecompOn.comp' {g f : X → X} {B A : Set X} {T S : Finset G}
   rwa [mul_smul, ← hγ]
 
 open scoped Classical in
-theorem IsDecompOn.comp {g f : X → X} {B A : Set X} {T S : Finset G}
-    (hg : IsDecompOn g B T) (hf : IsDecompOn f A S) (h : MapsTo f A B) :
-    IsDecompOn (g ∘ f) A (T * S) := by
+theorem IsDecompOn.comp
+    {g f : X → X} {B A : Set X} {T S : Finset G}
+    (hg : IsDecompOn g B T) (hf : IsDecompOn f A S) (h : MapsTo f A B)
+    : IsDecompOn (g ∘ f) A (T * S) := by
   rw [left_eq_inter.mpr h.subset_preimage]
   exact hg.comp' hf
 
@@ -170,7 +177,9 @@ theorem IsDecompOn.comp {g f : X → X} {B A : Set X} {T S : Finset G}
 @[simps toPartialEquiv, trans]
 noncomputable def trans (f g : Equidecomp X G) : Equidecomp X G where
   toPartialEquiv := f.toPartialEquiv.trans g.toPartialEquiv
-  isDecompOn' := by classical exact ⟨g.witness * f.witness, g.isDecompOn.comp' f.isDecompOn⟩
+  isDecompOn' := by
+    classical
+    exact ⟨g.witness * f.witness, g.isDecompOn.comp' f.isDecompOn⟩
 
 end Monoid
 
@@ -179,8 +188,9 @@ section Group
 variable [Group G] [MulAction G X]
 
 open scoped Classical in
-theorem IsDecompOn.of_leftInvOn {f g : X → X} {A : Set X} {S : Finset G}
-    (hf : IsDecompOn f A S) (h : LeftInvOn g f A) : IsDecompOn g (f '' A) S⁻¹ := by
+theorem IsDecompOn.of_leftInvOn
+    {f g : X → X} {A : Set X} {S : Finset G} (hf : IsDecompOn f A S) (h : LeftInvOn g f A)
+    : IsDecompOn g (f '' A) S⁻¹ := by
   rintro _ ⟨a, ha, rfl⟩
   rcases hf a ha with ⟨γ, γ_mem, hγ⟩
   use γ⁻¹, Finset.inv_mem_inv γ_mem
@@ -190,40 +200,48 @@ theorem IsDecompOn.of_leftInvOn {f g : X → X} {A : Set X} {S : Finset G}
 @[symm, simps toPartialEquiv]
 noncomputable def symm (f : Equidecomp X G) : Equidecomp X G where
   toPartialEquiv := f.toPartialEquiv.symm
-  isDecompOn' := by classical exact ⟨f.witness⁻¹, by
-    convert f.isDecompOn.of_leftInvOn f.leftInvOn
-    rw [image_source_eq_target, symm_source]⟩
+  isDecompOn' := by
+    classical
+    exact ⟨
+      f.witness⁻¹,
+      by
+        convert f.isDecompOn.of_leftInvOn f.leftInvOn
+        rw [image_source_eq_target, symm_source]
+    ⟩
 
-theorem map_target {f : Equidecomp X G} {x : X} (h : x ∈ f.target) :
-    f.symm x ∈ f.source := f.toPartialEquiv.map_target h
+theorem map_target {f : Equidecomp X G} {x : X} (h : x ∈ f.target) : f.symm x ∈ f.source :=
+  f.toPartialEquiv.map_target h
 
-theorem left_inv {f : Equidecomp X G} {x : X} (h : x ∈ f.source) :
-    f.toPartialEquiv.symm (f x) = x := by simp [h]
+theorem left_inv {f : Equidecomp X G} {x : X} (h : x ∈ f.source)
+    : f.toPartialEquiv.symm (f x) = x := by
+  simp [h]
 
-theorem right_inv {f : Equidecomp X G} {x : X} (h : x ∈ f.target) :
-    f (f.toPartialEquiv.symm x) = x := by simp [h]
+theorem right_inv {f : Equidecomp X G} {x : X} (h : x ∈ f.target)
+    : f (f.toPartialEquiv.symm x) = x := by
+  simp [h]
 
-@[simp]
-theorem symm_symm (f : Equidecomp X G) : f.symm.symm = f := rfl
+@[simp] theorem symm_symm (f : Equidecomp X G) : f.symm.symm = f := rfl
 
-theorem symm_apply_eq (f : Equidecomp X G) {x y} (hx : x ∈ f.toPartialEquiv.target)
-    (hy : y ∈ f.toPartialEquiv.source) : f.symm x = y ↔ x = f y :=
+theorem symm_apply_eq
+    (f : Equidecomp X G) {x y} (hx : x ∈ f.toPartialEquiv.target) (hy : y ∈ f.toPartialEquiv.source)
+    : f.symm x = y ↔ x = f y :=
   f.toPartialEquiv.symm_apply_eq hy hx
 
-theorem eq_symm_apply (f : Equidecomp X G) {x y} (hx : x ∈ f.toPartialEquiv.target)
-    (hy : y ∈ f.toPartialEquiv.source) : y = f.symm x ↔ f y = x :=
+theorem eq_symm_apply
+    (f : Equidecomp X G) {x y} (hx : x ∈ f.toPartialEquiv.target) (hy : y ∈ f.toPartialEquiv.source)
+    : y = f.symm x ↔ f y = x :=
   f.toPartialEquiv.eq_symm_apply hy hx
 
 theorem symm_involutive : Function.Involutive (symm : Equidecomp X G → _) := symm_symm
 
 theorem symm_bijective : Function.Bijective (symm : Equidecomp X G → _) := symm_involutive.bijective
 
-@[simp]
-theorem refl_symm : (refl X G).symm = refl X G := rfl
+@[simp] theorem refl_symm : (refl X G).symm = refl X G := rfl
 
 @[simp]
-theorem restr_refl_symm (A : Set X) :
-    ((Equidecomp.refl X G).restr A).symm = (Equidecomp.refl X G).restr A := rfl
+theorem restr_refl_symm (A : Set X)
+    : ((Equidecomp.refl X G).restr A).symm = (Equidecomp.refl X G).restr A :=
+  rfl
 
 end Group
 

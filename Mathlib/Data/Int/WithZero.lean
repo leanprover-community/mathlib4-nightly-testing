@@ -40,8 +40,10 @@ open Multiplicative WithZero
 
 namespace WithZeroMulInt
 
-/-- Given a nonzero `e : ℝ≥0`, this is the map `ℤᵐ⁰ → ℝ≥0` sending `0 ↦ 0` and
-  `x ↦ e^(WithZero.log x)` when `x ≠ 0` as a `MonoidWithZeroHom`. -/
+/--
+Given a nonzero `e : ℝ≥0`, this is the map `ℤᵐ⁰ → ℝ≥0` sending `0 ↦ 0` and
+`x ↦ e^(WithZero.log x)` when `x ≠ 0` as a `MonoidWithZeroHom`.
+-/
 def toNNReal {e : ℝ≥0} (he : e ≠ 0) : ℤᵐ⁰ →*₀ ℝ≥0 where
   toFun := fun x ↦ if hx : x = 0 then 0 else e ^ log x
   map_zero' := rfl
@@ -57,12 +59,11 @@ def toNNReal {e : ℝ≥0} (he : e ≠ 0) : ℤᵐ⁰ →*₀ ℝ≥0 where
       rw [dite_eq_right hxy, dite_eq_right hx, dite_eq_right hy, ← zpow_add' (Or.inl he),
         ← log_mul hx hy]
 
-theorem toNNReal_pos_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x = 0) :
-    toNNReal he x = 0 := by
+theorem toNNReal_pos_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x = 0) : toNNReal he x = 0 := by
   simp [toNNReal, hx]
 
-theorem toNNReal_neg_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x ≠ 0) :
-    toNNReal he x = e ^ log x := by
+theorem toNNReal_neg_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x ≠ 0)
+    : toNNReal he x = e ^ log x := by
   simp [toNNReal, hx]
 
 /-- `toNNReal` sends nonzero elements to nonzero elements. -/
@@ -74,8 +75,7 @@ theorem toNNReal_pos {e : ℝ≥0} {m : ℤᵐ⁰} (he : e ≠ 0) (hm : m ≠ 0)
   (toNNReal_ne_zero he hm).pos
 
 /-- The map `toNNReal` is strictly monotone whenever `1 < e`. -/
-theorem toNNReal_strictMono {e : ℝ≥0} (he : 1 < e) :
-    StrictMono (toNNReal he.ne_zero) := by
+theorem toNNReal_strictMono {e : ℝ≥0} (he : 1 < e) : StrictMono (toNNReal he.ne_zero) := by
   intro x y
   cases y
   · simp
@@ -83,21 +83,22 @@ theorem toNNReal_strictMono {e : ℝ≥0} (he : 1 < e) :
   · simpa using! zpow_pos he.pos _
   · simp [toNNReal, he]
 
-theorem toNNReal_eq_one_iff {e : ℝ≥0} (m : ℤᵐ⁰) (he0 : e ≠ 0) (he1 : e ≠ 1) :
-    toNNReal he0 m = 1 ↔ m = 1 := by
+theorem toNNReal_eq_one_iff {e : ℝ≥0} (m : ℤᵐ⁰) (he0 : e ≠ 0) (he1 : e ≠ 1)
+    : toNNReal he0 m = 1 ↔ m = 1 := by
   by_cases hm : m = 0
   · simp only [hm, map_zero, zero_ne_one]
   · refine ⟨fun h1 ↦ ?_, fun h1 ↦ h1 ▸ map_one _⟩
     rw [toNNReal_neg_apply he0 hm, zpow_eq_one_iff_right₀ _root_.zero_le he1,
-      ← toAdd_unzero_eq_log hm, toAdd_eq_zero] at h1
+        ← toAdd_unzero_eq_log hm, toAdd_eq_zero]
+      at h1
     rw [← WithZero.coe_unzero hm, h1, coe_one]
 
-theorem toNNReal_lt_one_iff {e : ℝ≥0} {m : ℤᵐ⁰} (he : 1 < e) :
-    toNNReal (ne_zero_of_lt he) m < 1 ↔ m < 1 := by
+theorem toNNReal_lt_one_iff {e : ℝ≥0} {m : ℤᵐ⁰} (he : 1 < e)
+    : toNNReal (ne_zero_of_lt he) m < 1 ↔ m < 1 := by
   rw [← (toNNReal_strictMono he).lt_iff_lt, map_one]
 
-theorem toNNReal_le_one_iff {e : ℝ≥0} {m : ℤᵐ⁰} (he : 1 < e) :
-    toNNReal (ne_zero_of_lt he) m ≤ 1 ↔ m ≤ 1 := by
+theorem toNNReal_le_one_iff {e : ℝ≥0} {m : ℤᵐ⁰} (he : 1 < e)
+    : toNNReal (ne_zero_of_lt he) m ≤ 1 ↔ m ≤ 1 := by
   rw [← (toNNReal_strictMono he).le_iff_le, map_one]
 
 end WithZeroMulInt

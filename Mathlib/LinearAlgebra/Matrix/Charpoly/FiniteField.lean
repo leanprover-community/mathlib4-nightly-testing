@@ -6,7 +6,6 @@ Authors: Aaron Anderson, Jalex Stark
 module
 
 public import Mathlib.FieldTheory.Finite.Basic
-
 import Mathlib.LinearAlgebra.Matrix.CharP
 
 /-!
@@ -15,7 +14,6 @@ import Mathlib.LinearAlgebra.Matrix.CharP
 
 public section
 
-
 open Polynomial Matrix
 
 open scoped Polynomial
@@ -23,14 +21,15 @@ open scoped Polynomial
 variable {n : Type*} [DecidableEq n] [Fintype n]
 
 @[simp]
-theorem FiniteField.Matrix.charpoly_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K) :
-    (M ^ Fintype.card K).charpoly = M.charpoly := by
+theorem FiniteField.Matrix.charpoly_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K)
+    : (M ^ Fintype.card K).charpoly = M.charpoly := by
   cases (isEmpty_or_nonempty n).symm
   · obtain ⟨p, hp⟩ := CharP.exists K
     rcases FiniteField.card K p with ⟨⟨k, kpos⟩, ⟨hp, hk⟩⟩
     have : Fact p.Prime := ⟨hp⟩
-    dsimp at hk; rw [hk]
-    apply (frobenius_inj K[X] p).iterate k
+    dsimp at hk
+    rw [hk]
+    apply (frobenius_inj (K[X]) p).iterate k
     repeat' rw [iterate_frobenius (R := K[X])]; rw [← hk]
     rw [← FiniteField.Polynomial.expand_card]
     unfold charpoly
@@ -43,17 +42,18 @@ theorem FiniteField.Matrix.charpoly_pow_card {K : Type*} [Field K] [Fintype K] (
   · exact congr_arg _ (Subsingleton.elim _ _)
 
 @[simp]
-theorem ZMod.charpoly_pow_card {p : ℕ} [Fact p.Prime] (M : Matrix n n (ZMod p)) :
-    (M ^ p).charpoly = M.charpoly := by
+theorem ZMod.charpoly_pow_card {p : ℕ} [Fact p.Prime] (M : Matrix n n (ZMod p))
+    : (M ^ p).charpoly = M.charpoly := by
   have h := FiniteField.Matrix.charpoly_pow_card M
   rwa [ZMod.card] at h
 
-theorem FiniteField.trace_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K) :
-    trace (M ^ Fintype.card K) = trace M ^ Fintype.card K := by
+theorem FiniteField.trace_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K)
+    : trace (M ^ Fintype.card K) = trace M ^ Fintype.card K := by
   cases isEmpty_or_nonempty n
   · simp [Matrix.trace]
   rw [Matrix.trace_eq_neg_charpoly_coeff, Matrix.trace_eq_neg_charpoly_coeff,
     FiniteField.Matrix.charpoly_pow_card, FiniteField.pow_card]
 
-theorem ZMod.trace_pow_card {p : ℕ} [Fact p.Prime] (M : Matrix n n (ZMod p)) :
-    trace (M ^ p) = trace M ^ p := by have h := FiniteField.trace_pow_card M; rwa [ZMod.card] at h
+theorem ZMod.trace_pow_card {p : ℕ} [Fact p.Prime] (M : Matrix n n (ZMod p))
+    : trace (M ^ p) = trace M ^ p := by
+  have h := FiniteField.trace_pow_card M; rwa [ZMod.card] at h

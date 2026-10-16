@@ -23,8 +23,8 @@ variable {C : Type u} [Category.{v} C] [Preadditive C]
 
 open scoped IsMulCommutative in
 @[simp]
-lemma app_neg_one_zpow (n : ℤ) (X : C) :
-    ((-1) ^ n : (CatCenter C)ˣ).val.app X = n.negOnePow • 𝟙 X := by
+lemma app_neg_one_zpow (n : ℤ) (X : C)
+    : ((-1) ^ n : (CatCenter C)ˣ).val.app X = n.negOnePow • 𝟙 X := by
   obtain ⟨n, rfl⟩ | ⟨n, rfl⟩ := Int.even_or_odd n
   · simp [zpow_add, ← mul_zpow, Int.negOnePow_even _ (Even.add_self n)]
   · rw [Int.negOnePow_odd _ (by exact odd_two_mul_add_one n)]

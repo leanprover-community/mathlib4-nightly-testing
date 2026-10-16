@@ -8,7 +8,6 @@ module
 
 public import Mathlib.GroupTheory.Commensurable
 public import Mathlib.Topology.Algebra.ConstMulAction
-
 import Mathlib.GroupTheory.Complement
 
 /-!
@@ -22,9 +21,10 @@ public section
 variable {Γ α : Type*} [Group Γ] [TopologicalSpace α]
 
 @[to_additive]
-protected lemma Subgroup.properlyDiscontinuousSMul_iff
-    [SMul Γ α] (S : Subgroup Γ) : ProperlyDiscontinuousSMul S α ↔ ∀ {K L : Set α},
-      IsCompact K → IsCompact L →  {g : Γ | g ∈ S ∧ (g • K ∩ L).Nonempty}.Finite := by
+protected lemma Subgroup.properlyDiscontinuousSMul_iff [SMul Γ α] (S : Subgroup Γ)
+    : ProperlyDiscontinuousSMul S α
+      ↔ ∀ {K L : Set α},
+        IsCompact K → IsCompact L → {g : Γ | g ∈ S ∧ (g • K ∩ L).Nonempty}.Finite := by
   rw [properlyDiscontinuousSMul_iff]
   congr! with K L hK hL
   convert injOn_subtype_val (s := {m : S | (m • K ∩ L).Nonempty}) |>.bijOn_image.finite_iff_finite
@@ -32,8 +32,8 @@ protected lemma Subgroup.properlyDiscontinuousSMul_iff
 
 @[to_additive]
 lemma Subgroup.properlyDiscontinuousSMul_of_le
-    [SMul Γ α] {G H : Subgroup Γ} (hG : ProperlyDiscontinuousSMul G α) (hGH : H ≤ G) :
-    ProperlyDiscontinuousSMul H α := by
+    [SMul Γ α] {G H : Subgroup Γ} (hG : ProperlyDiscontinuousSMul G α) (hGH : H ≤ G)
+    : ProperlyDiscontinuousSMul H α := by
   rw [Subgroup.properlyDiscontinuousSMul_iff] at hG ⊢
   intro K L hK hL
   grw [hGH]
@@ -41,20 +41,23 @@ lemma Subgroup.properlyDiscontinuousSMul_of_le
 
 /-- If `Γ` acts properly discontinuously, so does every subgroup of `Γ`. -/
 @[to_additive /-- If `Γ` acts properly discontinuously, so does every additive subgroup of `Γ`. -/]
-instance [SMul Γ α] [ProperlyDiscontinuousSMul Γ α] (G : Subgroup Γ) :
-    ProperlyDiscontinuousSMul G α := by
+instance [SMul Γ α] [ProperlyDiscontinuousSMul Γ α] (G : Subgroup Γ)
+    : ProperlyDiscontinuousSMul G α := by
   refine Subgroup.properlyDiscontinuousSMul_of_le ?_ le_top
   simp only [Subgroup.properlyDiscontinuousSMul_iff, Subgroup.mem_top, true_and]
   exact finite_disjoint_inter_image
 
 open Pointwise in
-/-- If `G, H` are subgroups of `Γ` which acts on `α`, and `G ∩ H` has finite index in `G`,
-then `G` acts properly discontinuously if `H` does. -/
+/--
+If `G, H` are subgroups of `Γ` which acts on `α`, and `G ∩ H` has finite index in `G`,
+then `G` acts properly discontinuously if `H` does.
+-/
 @[to_additive /-- If `G, H` are additive subgroups of `Γ` which acts on `α`, and `G ∩ H` has finite
 index in `G`, then `G` acts properly discontinuously if `H` does. -/]
-lemma ProperlyDiscontinuousSMul.ofFiniteRelIndex [MulAction Γ α] [ContinuousConstSMul Γ α]
-    (G H : Subgroup Γ) [hH : ProperlyDiscontinuousSMul H α] [H.IsFiniteRelIndex G] :
-    ProperlyDiscontinuousSMul G α := by
+lemma ProperlyDiscontinuousSMul.ofFiniteRelIndex
+    [MulAction Γ α] [ContinuousConstSMul Γ α]
+    (G H : Subgroup Γ) [hH : ProperlyDiscontinuousSMul H α] [H.IsFiniteRelIndex G]
+    : ProperlyDiscontinuousSMul G α := by
   rw [Subgroup.properlyDiscontinuousSMul_iff] at hH ⊢
   intro K L hK hL
   have (t : Γ) : {g | g ∈ H ∧ (g • t • K ∩ L).Nonempty}.Finite :=
@@ -74,20 +77,20 @@ lemma ProperlyDiscontinuousSMul.ofFiniteRelIndex [MulAction Γ α] [ContinuousCo
 @[to_additive]
 lemma Subgroup.properlyDiscontinuousSMul_iff_of_isFiniteRelIndex
     [MulAction Γ α] [ContinuousConstSMul Γ α]
-    {G H : Subgroup Γ} (hGH : G ≤ H) [IsFiniteRelIndex G H] :
-    ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul H α :=
+    {G H : Subgroup Γ} (hGH : G ≤ H) [IsFiniteRelIndex G H]
+    : ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul H α :=
   ⟨fun _ ↦ .ofFiniteRelIndex H G, (properlyDiscontinuousSMul_of_le · hGH)⟩
 
 @[to_additive]
 lemma Subgroup.Commensurable.properlyDiscontinuousSMul_iff
-    [MulAction Γ α] [ContinuousConstSMul Γ α]
-    {G H : Subgroup Γ} (h : G.Commensurable H) :
-    ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul H α := by
+    [MulAction Γ α] [ContinuousConstSMul Γ α] {G H : Subgroup Γ} (h : G.Commensurable H)
+    : ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul H α := by
   have : IsFiniteRelIndex (G ⊓ H) H := ⟨Subgroup.inf_relIndex_right G H ▸ h.1.relIndex_ne_zero⟩
   have : IsFiniteRelIndex (G ⊓ H) G := ⟨Subgroup.inf_relIndex_left G H ▸ h.2.relIndex_ne_zero⟩
-  calc ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul ↑(G ⊓ H) α :=
-    (properlyDiscontinuousSMul_iff_of_isFiniteRelIndex inf_le_left).symm
-  _ ↔ ProperlyDiscontinuousSMul H α :=
-    properlyDiscontinuousSMul_iff_of_isFiniteRelIndex inf_le_right
+  calc
+    ProperlyDiscontinuousSMul G α ↔ ProperlyDiscontinuousSMul (↑(G ⊓ H)) α :=
+      (properlyDiscontinuousSMul_iff_of_isFiniteRelIndex inf_le_left).symm
+    _ ↔ ProperlyDiscontinuousSMul H α :=
+      properlyDiscontinuousSMul_iff_of_isFiniteRelIndex inf_le_right
 
 end

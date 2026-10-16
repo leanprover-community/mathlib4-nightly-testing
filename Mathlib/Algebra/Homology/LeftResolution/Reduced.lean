@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Homology.LeftResolution.Transport
 public import Mathlib.CategoryTheory.Idempotents.FunctorExtension
-
 import Mathlib.CategoryTheory.MorphismProperty.Retract
 
 /-!
@@ -39,8 +38,7 @@ to `0 : M` (TODO).
 
 namespace CategoryTheory.Abelian
 
-variable {A C : Type*} [Category* C] [Category* A] {ι : C ⥤ A}
-  (Λ : LeftResolution ι)
+variable {A C : Type*} [Category* C] [Category* A] {ι : C ⥤ A} (Λ : LeftResolution ι)
 
 open Idempotents Limits MorphismProperty
 
@@ -56,8 +54,7 @@ def karoubi.F' : A ⥤ Karoubi C where
   map_comp _ _ := by simp [← Functor.map_comp]
 
 /-- Auxiliary definition for `LeftResolution.karoubi`. -/
-@[simps!]
-def karoubi.F : Karoubi A ⥤ Karoubi C := (functorExtension₁ A C).obj (karoubi.F' Λ)
+@[simps!] def karoubi.F : Karoubi A ⥤ Karoubi C := (functorExtension₁ A C).obj (karoubi.F' Λ)
 
 instance : (karoubi.F Λ).PreservesZeroMorphisms where
 
@@ -69,8 +66,8 @@ def karoubi.π' : toKaroubi A ⋙ F Λ ⋙ (functorExtension₂ C A).obj ι ⟶ 
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The morphism `(karoubi.π' Λ).app X` is a retract of `(toKaroubi _).map (Λ.π.app X)`. -/
-def karoubi.retractArrow (X : A) :
-    RetractArrow ((karoubi.π' Λ).app X) ((toKaroubi _).map (Λ.π.app X)) where
+def karoubi.retractArrow (X : A)
+    : RetractArrow ((karoubi.π' Λ).app X) ((toKaroubi _).map (Λ.π.app X)) where
   i := Arrow.homMk ⟨ι.map ((karoubi.F' Λ).obj X).p, by simp [← Functor.map_comp]⟩ (𝟙 _)
   r := Arrow.homMk ⟨ι.map ((karoubi.F' Λ).obj X).p, by simp [← Functor.map_comp]⟩ (𝟙 _)
   retract := by
@@ -79,8 +76,7 @@ def karoubi.retractArrow (X : A) :
     · simp
 
 instance (X : A) : Epi ((karoubi.π' Λ).app X) :=
-  of_retract (P := epimorphisms _) (karoubi.retractArrow Λ X)
-    (epimorphisms.infer_property _)
+  of_retract (P := epimorphisms _) (karoubi.retractArrow Λ X) (epimorphisms.infer_property _)
 
 /-- Auxiliary definition for `LeftResolution.karoubi`. -/
 def karoubi.π : karoubi.F Λ ⋙ (functorExtension₂ C A).obj ι ⟶ 𝟭 (Karoubi A) :=
@@ -88,8 +84,8 @@ def karoubi.π : karoubi.F Λ ⋙ (functorExtension₂ C A).obj ι ⟶ 𝟭 (Kar
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma karoubi.π_app_toKaroubi_obj (X : A) :
-    (karoubi.π Λ).app ((toKaroubi _).obj X) = (karoubi.π' Λ).app X := by
+lemma karoubi.π_app_toKaroubi_obj (X : A)
+    : (karoubi.π Λ).app ((toKaroubi _).obj X) = (karoubi.π' Λ).app X := by
   simp [π, whiskeringLeftObjToKaroubiFullyFaithful]
 
 instance (X : A) : Epi ((karoubi.π Λ).app ((toKaroubi _).obj X)) := by
@@ -100,9 +96,11 @@ instance (X : Karoubi A) : Epi ((karoubi.π Λ).app X) :=
   of_retract (P := epimorphisms _) (NatTrans.retractArrowApp (karoubi.π Λ) X.retract)
     (epimorphisms.infer_property _)
 
-/-- Given `ι : C ⥤ A`, this is the extension of `Λ : LeftResolution ι` to
+/--
+Given `ι : C ⥤ A`, this is the extension of `Λ : LeftResolution ι` to
 `LeftResolution ((functorExtension₂ C A).obj ι)`, where
-`(functorExtension₂ C A).obj ι : Karoubi C ⥤ Karoubi A` is the extension of `ι`. -/
+`(functorExtension₂ C A).obj ι : Karoubi C ⥤ Karoubi A` is the extension of `ι`.
+-/
 @[simps]
 noncomputable def karoubi : LeftResolution ((functorExtension₂ C A).obj ι) where
   F := karoubi.F Λ
@@ -115,12 +113,14 @@ section
 
 variable [IsIdempotentComplete A] [IsIdempotentComplete C]
 
-/-- Given an additive functor `ι : C ⥤ A` between idempotent complete categories,
+/--
+Given an additive functor `ι : C ⥤ A` between idempotent complete categories,
 any `Λ : LeftResolution ι` induces a term `Λ.reduced : LeftResolution ι`
-such that `Λ.reduced.F` preserves zero morphisms. -/
+such that `Λ.reduced.F` preserves zero morphisms.
+-/
 noncomputable def reduced : LeftResolution ι :=
   Λ.karoubi.transport (toKaroubiEquivalence A) (toKaroubiEquivalence C)
-     ((karoubiUniversal₁ C A).unitIso.app _)
+    ((karoubiUniversal₁ C A).unitIso.app _)
 
 instance : Λ.reduced.F.PreservesZeroMorphisms := by
   dsimp [reduced, transport]

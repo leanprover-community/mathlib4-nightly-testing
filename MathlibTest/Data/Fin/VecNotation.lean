@@ -39,13 +39,14 @@ run_elab do
 /-! These tests are testing delaborators -/
 
 /-- info: fun x => ![0, 1] x : Fin 2 → ℕ -/
-#guard_msgs in #check fun x : Fin 2 => (![0, 1] : Fin 2 → ℕ) x
+#guard_msgs in
+#check fun x : Fin 2 => (![0, 1] : Fin 2 → ℕ) x
 /-- info: fun x => ![] x : Fin 0 → ℕ -/
-#guard_msgs in #check fun x : Fin 0 => (![] : Fin 0 → ℕ) x
+#guard_msgs in
+#check fun x : Fin 0 => (![] : Fin 0 → ℕ) x
 
 section
 variable {a b c d e f g h : α}
-
 
 example : ![a] 0 = a := by dsimp only [Matrix.cons_val]
 example : ![a] 1 = a := by dsimp only [Matrix.cons_val]
@@ -87,20 +88,27 @@ end
 
 open Matrix
 
-example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 0 = a := by dsimp only [Matrix.cons_val]
-example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 2 = c := by dsimp only [Matrix.cons_val]
-example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) (-1) = f 2 := by dsimp only [Matrix.cons_val]
-example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 8 = c := by dsimp only [Matrix.cons_val]
+example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 0 = a := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 2 = c := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) (-1) = f 2 := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {f : Fin 3 → α} : vecCons a (vecCons b (vecCons c f)) 8 = c := by
+  dsimp only [Matrix.cons_val]
 
-example {a b c : α} {n : ℕ} {f : Fin n → α} : vecCons a (vecCons b (vecCons c f)) 0 = a := by dsimp only [Matrix.cons_val]
-example {a b c : α} {n : ℕ} {f : Fin n → α} : vecCons a (vecCons b (vecCons c f)) 2 = c := by dsimp only [Matrix.cons_val]
+example {a b c : α} {n : ℕ} {f : Fin n → α} : vecCons a (vecCons b (vecCons c f)) 0 = a := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {n : ℕ} {f : Fin n → α} : vecCons a (vecCons b (vecCons c f)) 2 = c := by
+  dsimp only [Matrix.cons_val]
 
-example {a b c : α} {n : ℕ} {f : Fin n.succ → α} :
-    vecCons a (vecCons b (vecCons c f)) 3 = f 0 := by dsimp only [Matrix.cons_val]
-example {a b c : α} {n : ℕ} {f : Fin n.succ → α} :
-    vecCons a (vecCons b (vecCons c f)) 3 = f 0 := by dsimp only [Matrix.cons_val]
-example {a b c : α} {n : ℕ} {f : Fin (n + 2) → α} :
-    vecCons a (vecCons b (vecCons c f)) 4 = f 1 := by dsimp only [Matrix.cons_val]
+example {a b c : α} {n : ℕ} {f : Fin n.succ → α} : vecCons a (vecCons b (vecCons c f)) 3 = f 0 := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {n : ℕ} {f : Fin n.succ → α} : vecCons a (vecCons b (vecCons c f)) 3 = f 0 := by
+  dsimp only [Matrix.cons_val]
+example {a b c : α} {n : ℕ} {f : Fin (n + 2) → α}
+    : vecCons a (vecCons b (vecCons c f)) 4 = f 1 := by
+  dsimp only [Matrix.cons_val]
 
 -- these won't be true by `dsimp`, so need a separate simproc
 -- example {a b c : α} {n : ℕ} {f : Fin n.succ → α} :

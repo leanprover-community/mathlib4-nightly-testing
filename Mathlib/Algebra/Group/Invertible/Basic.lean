@@ -34,8 +34,7 @@ theorem isUnit_of_invertible [Monoid α] (a : α) [Invertible a] : IsUnit a :=
   ⟨unitOfInvertible a, rfl⟩
 
 /-- Units are invertible in their associated monoid. -/
-instance Units.invertible [Monoid α] (u : αˣ) :
-    Invertible (u : α) where
+instance Units.invertible [Monoid α] (u : αˣ) : Invertible (u : α) where
   invOf := ↑u⁻¹
   invOf_mul_self := u.inv_mul
   mul_invOf_self := u.mul_inv
@@ -48,9 +47,11 @@ theorem IsUnit.nonempty_invertible [Monoid α] {a : α} (h : IsUnit a) : Nonempt
   let ⟨x, hx⟩ := h
   ⟨x.invertible.copy _ hx.symm⟩
 
-/-- Convert `IsUnit` to `Invertible` using `Classical.choice`.
+/--
+Convert `IsUnit` to `Invertible` using `Classical.choice`.
 
-Prefer `casesI h.nonempty_invertible` over `letI := h.invertible` if you want to avoid choice. -/
+Prefer `casesI h.nonempty_invertible` over `letI := h.invertible` if you want to avoid choice.
+-/
 @[instance_reducible]
 noncomputable def IsUnit.invertible [Monoid α] {a : α} (h : IsUnit a) : Invertible a :=
   Classical.choice h.nonempty_invertible
@@ -59,23 +60,25 @@ noncomputable def IsUnit.invertible [Monoid α] {a : α} (h : IsUnit a) : Invert
 theorem nonempty_invertible_iff_isUnit [Monoid α] (a : α) : Nonempty (Invertible a) ↔ IsUnit a :=
   ⟨Nonempty.rec <| @isUnit_of_invertible _ _ _, IsUnit.nonempty_invertible⟩
 
-theorem Commute.invOf_right [Monoid α] {a b : α} [Invertible b] (h : Commute a b) :
-    Commute a (⅟b) :=
+theorem Commute.invOf_right [Monoid α] {a b : α} [Invertible b] (h : Commute a b)
+    : Commute a (⅟b) :=
   calc
-    a * ⅟b = ⅟b * (b * a * ⅟b) := by simp [mul_assoc]
+    a * ⅟b
+      = ⅟b * (b * a * ⅟b) := by simp [mul_assoc]
     _ = ⅟b * (a * b * ⅟b) := by rw [h.eq]
     _ = ⅟b * a := by simp [mul_assoc]
 
-theorem Commute.invOf_left [Monoid α] {a b : α} [Invertible b] (h : Commute b a) :
-    Commute (⅟b) a :=
+theorem Commute.invOf_left [Monoid α] {a b : α} [Invertible b] (h : Commute b a) : Commute (⅟b) a :=
   calc
-    ⅟b * a = ⅟b * (a * b * ⅟b) := by simp [mul_assoc]
+    ⅟b * a
+      = ⅟b * (a * b * ⅟b) := by simp [mul_assoc]
     _ = ⅟b * (b * a * ⅟b) := by rw [h.eq]
     _ = a * ⅟b := by simp [mul_assoc]
 
 theorem commute_invOf {M : Type*} [One M] [Mul M] (m : M) [Invertible m] : Commute m (⅟m) :=
   calc
-    m * ⅟m = 1 := mul_invOf_self m
+    m * ⅟m
+      = 1 := mul_invOf_self m
     _ = ⅟m * m := (invOf_mul_self m).symm
 
 section Monoid
@@ -129,39 +132,55 @@ def invertibleOfPowEqOne (x : α) (n : ℕ) (hx : x ^ n = 1) (hn : n ≠ 0) : In
 
 end Monoid
 
-
 /-- Monoid homs preserve invertibility. -/
 @[instance_reducible]
-def Invertible.map {R : Type*} {S : Type*} {F : Type*} [MulOneClass R] [MulOneClass S]
-    [FunLike F R S] [MonoidHomClass F R S] (f : F) (r : R) [Invertible r] :
-    Invertible (f r) where
+def Invertible.map
+    {R : Type*} {S : Type*} {F : Type*}
+    [MulOneClass R] [MulOneClass S] [FunLike F R S] [MonoidHomClass F R S]
+    (f : F)
+    (r : R) [Invertible r]
+    : Invertible (f r) where
   invOf := f (⅟r)
   invOf_mul_self := by rw [← map_mul, invOf_mul_self, map_one]
   mul_invOf_self := by rw [← map_mul, mul_invOf_self, map_one]
 
-/-- Note that the `Invertible (f r)` argument can be satisfied by using `letI := Invertible.map f r`
-before applying this lemma. -/
-theorem map_invOf {R : Type*} {S : Type*} {F : Type*} [MulOneClass R] [Monoid S]
-    [FunLike F R S] [MonoidHomClass F R S] (f : F) (r : R)
-    [Invertible r] [ifr : Invertible (f r)] :
-    f (⅟r) = ⅟(f r) := by
+/--
+Note that the `Invertible (f r)` argument can be satisfied by using `letI := Invertible.map f r`
+before applying this lemma.
+-/
+theorem map_invOf
+    {R : Type*} {S : Type*} {F : Type*}
+    [MulOneClass R] [Monoid S] [FunLike F R S] [MonoidHomClass F R S]
+    (f : F) (r : R) [Invertible r] [ifr : Invertible (f r)]
+    : f (⅟r) = ⅟(f r) := by
   obtain rfl : ifr = Invertible.map f r := Subsingleton.elim _ _; rfl
 
-/-- If a function `f : R → S` has a left-inverse that is a monoid hom,
+/--
+If a function `f : R → S` has a left-inverse that is a monoid hom,
   then `r : R` is invertible if `f r` is.
 
-The inverse is computed as `g (⅟(f r))` -/
+The inverse is computed as `g (⅟(f r))`
+-/
 @[simps! -isSimp, instance_reducible]
-def Invertible.ofLeftInverse {R : Type*} {S : Type*} {G : Type*} [MulOneClass R] [MulOneClass S]
-    [FunLike G S R] [MonoidHomClass G S R] (f : R → S) (g : G) (r : R)
-    (h : Function.LeftInverse g f) [Invertible (f r)] : Invertible r :=
+def Invertible.ofLeftInverse
+    {R : Type*} {S : Type*} {G : Type*}
+    [MulOneClass R] [MulOneClass S] [FunLike G S R] [MonoidHomClass G S R]
+    (f : R → S)
+    (g : G)
+    (r : R)
+    (h : Function.LeftInverse g f)
+    [Invertible (f r)]
+    : Invertible r :=
   (Invertible.map g (f r)).copy _ (h r).symm
 
 /-- Invertibility on either side of a monoid hom with a left-inverse is equivalent. -/
 @[simps]
-def invertibleEquivOfLeftInverse {R : Type*} {S : Type*} {F G : Type*} [Monoid R] [Monoid S]
-    [FunLike F R S] [MonoidHomClass F R S] [FunLike G S R] [MonoidHomClass G S R]
-    (f : F) (g : G) (r : R) (h : Function.LeftInverse g f) : Invertible (f r) ≃ Invertible r where
+def invertibleEquivOfLeftInverse
+    {R : Type*} {S : Type*} {F G : Type*} [Monoid R] [Monoid S] [FunLike F R S]
+    [MonoidHomClass F R S] [FunLike G S R] [MonoidHomClass G S R]
+    (f : F) (g : G)
+    (r : R) (h : Function.LeftInverse g f)
+    : Invertible (f r) ≃ Invertible r where
   toFun _ := Invertible.ofLeftInverse f _ _ h
   invFun _ := Invertible.map f _
   left_inv _ := Subsingleton.elim _ _

@@ -28,9 +28,10 @@ theorem upperBounds_image {s : Set α} : upperBounds (f '' s) = f '' upperBounds
     f.monotone.image_upperBounds_subset_upperBounds_image
 
 @[to_dual (attr := simp)]
-theorem isLUB_image {s : Set α} {x : β} : IsLUB (f '' s) x ↔ IsLUB s (f.symm x) :=
-  ⟨fun h => IsLUB.of_image (by simp) ((f.apply_symm_apply x).symm ▸ h), fun h =>
-    (IsLUB.of_image (by simp)) <| (f.symm_image_image s).symm ▸ h⟩
+theorem isLUB_image {s : Set α} {x : β} : IsLUB (f '' s) x ↔ IsLUB s (f.symm x) := ⟨
+  fun h => IsLUB.of_image (by simp) ((f.apply_symm_apply x).symm ▸ h),
+  fun h => (IsLUB.of_image (by simp)) <| (f.symm_image_image s).symm ▸ h
+⟩
 
 @[to_dual]
 theorem isLUB_image' {s : Set α} {x : α} : IsLUB (f '' s) (f x) ↔ IsLUB s x := by

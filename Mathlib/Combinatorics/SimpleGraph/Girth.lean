@@ -23,7 +23,6 @@ variable {α β : Type*} {G : SimpleGraph α} {G' : SimpleGraph β}
 
 section egirth
 
-
 /--
 The extended girth of a simple graph is the length of its smallest cycle, or `∞` if the graph is
 acyclic.
@@ -40,8 +39,8 @@ lemma Walk.IsCycle.egirth_le_length {a} {w : G.Walk a a} (h : w.IsCycle) : G.egi
 
 @[deprecated (since := "2026-07-05")] alias egirth_le_length := Walk.IsCycle.egirth_le_length
 
-lemma Walk.IsCircuit.egirth_le_length {a} {w : G.Walk a a} (hwc : w.IsCircuit) :
-    G.egirth ≤ w.length := by
+lemma Walk.IsCircuit.egirth_le_length {a} {w : G.Walk a a} (hwc : w.IsCircuit)
+    : G.egirth ≤ w.length := by
   classical
   by_contra! hlg
   let w' : G.Walk a a := w.cycleBypass
@@ -51,16 +50,15 @@ lemma Walk.IsCircuit.egirth_le_length {a} {w : G.Walk a a} (hwc : w.IsCircuit) :
     exact hlg
   exact not_le_of_gt hwlg' hwc'.egirth_le_length
 
-@[simp]
-lemma egirth_eq_top : G.egirth = ⊤ ↔ G.IsAcyclic := by simp [egirth, IsAcyclic]
+@[simp] lemma egirth_eq_top : G.egirth = ⊤ ↔ G.IsAcyclic := by simp [egirth, IsAcyclic]
 
 protected alias ⟨_, IsAcyclic.egirth_eq_top⟩ := egirth_eq_top
 
-lemma egirth_anti : Antitone (egirth : SimpleGraph α → ℕ∞) :=
-  fun G H h ↦ iInf_mono fun a ↦ iInf₂_mono' fun w hw ↦ ⟨w.mapLe h, hw.mapLe _, by simp⟩
+lemma egirth_anti : Antitone (egirth : SimpleGraph α → ℕ∞) := fun G H h ↦
+  iInf_mono fun a ↦ iInf₂_mono' fun w hw ↦ ⟨w.mapLe h, hw.mapLe _, by simp⟩
 
-lemma exists_egirth_eq_length :
-    (∃ (a : α) (w : G.Walk a a), w.IsCycle ∧ G.egirth = w.length) ↔ ¬ G.IsAcyclic := by
+lemma exists_egirth_eq_length
+    : (∃ (a : α) (w : G.Walk a a), w.IsCycle ∧ G.egirth = w.length) ↔ ¬G.IsAcyclic := by
   refine ⟨?_, fun h ↦ ?_⟩
   · rintro ⟨a, w, hw, _⟩ hG
     exact hG _ hw
@@ -68,8 +66,7 @@ lemma exists_egirth_eq_length :
       ENat.iInf_natCast_ne_top, ← exists_prop, Subtype.exists', Sigma.exists', eq_comm] at h ⊢
     exact ciInf_mem _
 
-lemma three_le_egirth : 3 ≤ G.egirth := by
-  simpa using fun _ _ h ↦ h.three_le_length
+lemma three_le_egirth : 3 ≤ G.egirth := by simpa using fun _ _ h ↦ h.three_le_length
 
 @[simp] lemma egirth_bot : egirth (⊥ : SimpleGraph α) = ⊤ := by simp
 
@@ -79,15 +76,12 @@ theorem egirth_top (h : 3 ≤ ENat.card α) : egirth (⊤ : SimpleGraph α) = 3 
   obtain ⟨s, hcard⟩ := Cardinal.exists_finset_eq_card <| Cardinal.ofNat_le_toENat.mp h
   obtain ⟨x, y, z, hxy, hxz, hyz, -⟩ := s.card_eq_three.mp hcard.symm
   set w : Walk ⊤ x x := .cons hxy <| .cons hyz <| .cons hxz.symm .nil with hw
-  have : w.IsCycle :=
-    { edges_nodup := by aesop
-      ne_nil := by aesop
-      support_nodup := by aesop }
+  have : w.IsCycle := { edges_nodup := by aesop, ne_nil := by aesop, support_nodup := by aesop }
   grw [this.egirth_le_length]
   simp [hw]
 
 open Walk in
-lemma egirth_le_two_mul_ediam_add_one (h : ¬ G.IsAcyclic) : G.egirth ≤ 2 * G.ediam + 1 := by
+lemma egirth_le_two_mul_ediam_add_one (h : ¬G.IsAcyclic) : G.egirth ≤ 2 * G.ediam + 1 := by
   obtain ⟨u, w, hw, hwl⟩ := exists_egirth_eq_length.mpr h
   have ⟨p, hp, _⟩ := (w.take (w.length / 2)).reachable.exists_path_of_dist
   have half_g_le_edist : w.length / 2 ≤ G.dist u (w.getVert (w.length / 2)) := by
@@ -113,23 +107,20 @@ end egirth
 
 section girth
 
-
 /--
 The girth of a simple graph is the length of its smallest cycle, or junk value `0` if the graph is
 acyclic.
 -/
-noncomputable def girth (G : SimpleGraph α) : ℕ :=
-  G.egirth.toNat
+noncomputable def girth (G : SimpleGraph α) : ℕ := G.egirth.toNat
 
 lemma Walk.IsCycle.girth_le_length {a} {w : G.Walk a a} (h : w.IsCycle) : G.girth ≤ w.length :=
   ENat.natCast_le_natCast.mp <| G.egirth.natCast_toNat_le_self.trans h.egirth_le_length
 
 @[deprecated (since := "2026-07-05")] alias girth_le_length := Walk.IsCycle.girth_le_length
 
-lemma natCast_girth_le_egirth : G.girth ≤ G.egirth :=
-  ENat.natCast_toNat_le_self _
+lemma natCast_girth_le_egirth : G.girth ≤ G.egirth := ENat.natCast_toNat_le_self _
 
-lemma three_le_girth (hG : ¬ G.IsAcyclic) : 3 ≤ G.girth :=
+lemma three_le_girth (hG : ¬G.IsAcyclic) : 3 ≤ G.girth :=
   ENat.toNat_le_toNat three_le_egirth <| egirth_eq_top.not.mpr hG
 
 lemma girth_eq_zero : G.girth = 0 ↔ G.IsAcyclic :=
@@ -137,15 +128,15 @@ lemma girth_eq_zero : G.girth = 0 ↔ G.IsAcyclic :=
 
 protected alias ⟨_, IsAcyclic.girth_eq_zero⟩ := girth_eq_zero
 
-lemma girth_anti {G' : SimpleGraph α} (hab : G ≤ G') (h : ¬ G.IsAcyclic) : G'.girth ≤ G.girth :=
+lemma girth_anti {G' : SimpleGraph α} (hab : G ≤ G') (h : ¬G.IsAcyclic) : G'.girth ≤ G.girth :=
   ENat.toNat_le_toNat (egirth_anti hab) <| egirth_eq_top.not.mpr h
 
-lemma Walk.IsCircuit.girth_le_length {a} {w : G.Walk a a} (hwc : w.IsCircuit) :
-    G.girth ≤ w.length :=
+lemma Walk.IsCircuit.girth_le_length {a} {w : G.Walk a a} (hwc : w.IsCircuit)
+    : G.girth ≤ w.length :=
   ENat.natCast_le_natCast.mp <| G.egirth.natCast_toNat_le_self.trans hwc.egirth_le_length
 
-lemma exists_girth_eq_length :
-    (∃ (a : α) (w : G.Walk a a), w.IsCycle ∧ G.girth = w.length) ↔ ¬ G.IsAcyclic := by
+lemma exists_girth_eq_length
+    : (∃ (a : α) (w : G.Walk a a), w.IsCycle ∧ G.girth = w.length) ↔ ¬G.IsAcyclic := by
   refine ⟨by tauto, fun h ↦ ?_⟩
   obtain ⟨_, _, _⟩ := exists_egirth_eq_length.mpr h
   simp_all only [girth, ENat.toNat_natCast]
@@ -159,8 +150,7 @@ lemma girth_le_two_mul_ediam_add_one : G.girth ≤ 2 * G.ediam + 1 := by
 lemma girth_le_two_mul_diam_add_one (h : G.ediam ≠ ⊤) : G.girth ≤ 2 * G.diam + 1 := by
   exact_mod_cast natCast_diam_eq_ediam_iff.mpr h ▸ girth_le_two_mul_ediam_add_one
 
-@[simp] lemma girth_bot : girth (⊥ : SimpleGraph α) = 0 := by
-  simp [girth]
+@[simp] lemma girth_bot : girth (⊥ : SimpleGraph α) = 0 := by simp [girth]
 
 theorem girth_top (h : 3 ≤ ENat.card α) : girth (⊤ : SimpleGraph α) = 3 := by
   simp [girth, egirth_top h]
@@ -168,8 +158,7 @@ theorem girth_top (h : 3 ≤ ENat.card α) : girth (⊤ : SimpleGraph α) = 3 :=
 lemma IsContained.girth_le (h : G ⊑ G') (hG : ¬G.IsAcyclic) : G'.girth ≤ G.girth :=
   ENat.toNat_le_toNat h.egirth_le <| egirth_eq_top.not.mpr hG
 
-lemma Iso.girth_eq (f : G ≃g G') : G.girth = G'.girth := by
-  simp [girth, f.egirth_eq]
+lemma Iso.girth_eq (f : G ≃g G') : G.girth = G'.girth := by simp [girth, f.egirth_eq]
 
 end girth
 

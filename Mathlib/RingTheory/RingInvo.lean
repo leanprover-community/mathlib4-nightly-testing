@@ -39,36 +39,43 @@ structure RingInvo [Semiring R] extends R ≃+* Rᵐᵒᵖ where
 /-- The equivalence of rings underlying a ring involution. -/
 add_decl_doc RingInvo.toRingEquiv
 
-/-- `RingInvoClass F R` states that `F` is a type of ring involutions.
-You should extend this class when you extend `RingInvo`. -/
+/--
+`RingInvoClass F R` states that `F` is a type of ring involutions.
+You should extend this class when you extend `RingInvo`.
+-/
 class RingInvoClass (F R : Type*) [Semiring R] [EquivLike F R Rᵐᵒᵖ] : Prop
-  extends RingEquivClass F R Rᵐᵒᵖ where
+    extends RingEquivClass F R Rᵐᵒᵖ where
   /-- Every ring involution must be its own inverse -/
   involution : ∀ (f : F) (x), (f (f x).unop).unop = x
 
-
-/-- Turn an element of a type `F` satisfying `RingInvoClass F R` into an actual
-`RingInvo`. This is declared as the default coercion from `F` to `RingInvo R`. -/
+/--
+Turn an element of a type `F` satisfying `RingInvoClass F R` into an actual
+`RingInvo`. This is declared as the default coercion from `F` to `RingInvo R`.
+-/
 @[coe]
-def RingInvoClass.toRingInvo {R} [Semiring R] [EquivLike F R Rᵐᵒᵖ] [RingInvoClass F R] (f : F) :
-    RingInvo R :=
-  { (RingEquivClass.toRingEquiv f : R ≃+* Rᵐᵒᵖ) with involution' := RingInvoClass.involution f }
+def RingInvoClass.toRingInvo {R} [Semiring R] [EquivLike F R Rᵐᵒᵖ] [RingInvoClass F R] (f : F)
+    : RingInvo R := {
+  (RingEquivClass.toRingEquiv f : R ≃+* Rᵐᵒᵖ) with
+  involution' := RingInvoClass.involution f
+}
 
 namespace RingInvo
 
 variable {R} [Semiring R] [EquivLike F R Rᵐᵒᵖ]
 
-/-- Any type satisfying `RingInvoClass` can be cast into `RingInvo` via
-`RingInvoClass.toRingInvo`. -/
-instance [RingInvoClass F R] : CoeTC F (RingInvo R) :=
-  ⟨RingInvoClass.toRingInvo⟩
+/--
+Any type satisfying `RingInvoClass` can be cast into `RingInvo` via
+`RingInvoClass.toRingInvo`.
+-/
+instance [RingInvoClass F R] : CoeTC F (RingInvo R) := ⟨RingInvoClass.toRingInvo⟩
 
 @[macro_inline]
 instance : EquivLike (RingInvo R) R Rᵐᵒᵖ where
   coe f := f.toFun
   inv f := f.invFun
   coe_injective' e f h₁ h₂ := by
-    rcases e with ⟨⟨tE, _⟩, _⟩; rcases f with ⟨⟨tF, _⟩, _⟩
+    rcases e with ⟨⟨tE, _⟩, _⟩
+    rcases f with ⟨⟨tF, _⟩, _⟩
     cases tE
     cases tF
     congr
@@ -80,27 +87,25 @@ instance : RingInvoClass (RingInvo R) R where
   map_mul f := f.map_mul'
   involution f := f.involution'
 
-instance : CoeOut (RingInvo R) (R ≃+* Rᵐᵒᵖ) where coe := toRingEquiv
+instance : CoeOut (RingInvo R) (R ≃+* Rᵐᵒᵖ) where
+  coe := toRingEquiv
 
 /-- Construct a ring involution from a ring homomorphism. -/
-def mk' (f : R →+* Rᵐᵒᵖ) (involution : ∀ r, (f (f r).unop).unop = r) : RingInvo R :=
-  { f with
-    invFun := fun r => (f r.unop).unop
-    left_inv := fun r => involution r
-    right_inv := fun _ => MulOpposite.unop_injective <| involution _
-    involution' := involution }
+def mk' (f : R →+* Rᵐᵒᵖ) (involution : ∀ r, (f (f r).unop).unop = r) : RingInvo R := {
+  f with
+  invFun := fun r => (f r.unop).unop
+  left_inv := fun r => involution r
+  right_inv := fun _ => MulOpposite.unop_injective <| involution _
+  involution' := involution
+}
 
-@[simp]
-theorem involution (f : RingInvo R) (x : R) : (f (f x).unop).unop = x :=
-  f.involution' x
+@[simp] theorem involution (f : RingInvo R) (x : R) : (f (f x).unop).unop = x := f.involution' x
 
-theorem toRingEquiv_apply (f : RingInvo R) (a : R) : (f : R ≃+* Rᵐᵒᵖ) a = f a :=
-  rfl
+theorem toRingEquiv_apply (f : RingInvo R) (a : R) : (f : R ≃+* Rᵐᵒᵖ) a = f a := rfl
 
 @[deprecated (since := "2026-05-05")] alias coe_ringEquiv := toRingEquiv_apply
 
-theorem map_eq_zero_iff (f : RingInvo R) {x : R} : f x = 0 ↔ x = 0 :=
-  f.toRingEquiv.map_eq_zero_iff
+theorem map_eq_zero_iff (f : RingInvo R) {x : R} : f x = 0 ↔ x = 0 := f.toRingEquiv.map_eq_zero_iff
 
 end RingInvo
 
@@ -111,10 +116,11 @@ section CommRing
 variable [CommRing R]
 
 /-- The identity function of a `CommRing` is a ring involution. -/
-protected def RingInvo.id : RingInvo R :=
-  { RingEquiv.toOpposite R with involution' := fun _ => rfl }
+protected def RingInvo.id : RingInvo R := {
+  RingEquiv.toOpposite R with
+  involution' := fun _ => rfl
+}
 
-instance : Inhabited (RingInvo R) :=
-  ⟨RingInvo.id _⟩
+instance : Inhabited (RingInvo R) := ⟨RingInvo.id _⟩
 
 end CommRing

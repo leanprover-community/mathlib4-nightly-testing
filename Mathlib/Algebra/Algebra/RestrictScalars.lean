@@ -44,10 +44,10 @@ refer to restricting the scalar type in a bundled type, such as from `A →ₗ[R
 
 @[expose] public section
 
-
 variable (R S M A : Type*)
 
-/-- If we put an `R`-algebra structure on a semiring `S`, we get a natural equivalence from the
+/--
+If we put an `R`-algebra structure on a semiring `S`, we get a natural equivalence from the
 category of `S`-modules to the category of representations of the algebra `S` (over `R`). The type
 synonym `RestrictScalars` is essentially this equivalence.
 
@@ -77,7 +77,8 @@ Note that this means we almost always want to state definitions and lemmas in th
 `IsScalarTower` rather than `RestrictScalars`.
 
 An example of when one might want to use `RestrictScalars` would be if one has a vector space
-over a field of characteristic zero and wishes to make use of the `ℚ`-algebra structure. -/
+over a field of characteristic zero and wishes to make use of the `ℚ`-algebra structure.
+-/
 @[nolint unusedArguments]
 def RestrictScalars (_R _S M : Type*) : Type _ := M
 
@@ -103,15 +104,16 @@ section
 
 attribute [local instance] RestrictScalars.moduleOrig
 
-/-- When `M` is a module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
+/--
+When `M` is a module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
 module structure over `R`. Not an instance because `S` cannot be inferred.
 
 The preferred way of setting this up is `[Module R M] [Module S M] [IsScalarTower R S M]`.
 -/
-abbrev Module.restrictScalars [Module S M] : Module R M :=
-  Module.compHom M (algebraMap R S)
+abbrev Module.restrictScalars [Module S M] : Module R M := Module.compHom M (algebraMap R S)
 
-/-- When `M` is a module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
+/--
+When `M` is a module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
 module structure over `R`.
 
 The preferred way of setting this up is `[Module R M] [Module S M] [IsScalarTower R S M]`.
@@ -120,19 +122,19 @@ instance RestrictScalars.module [Module S M] : Module R (RestrictScalars R S M) 
   Module.restrictScalars R S M
 
 /-- `Module.restrictScalars` forms a scalar tower. -/
-theorem IsScalarTower.restrictScalars [Module S M] :
-    letI := Module.restrictScalars R S M
-    IsScalarTower R S M :=
+theorem IsScalarTower.restrictScalars [Module S M]
+    : letI := Module.restrictScalars R S M
+      IsScalarTower R S M :=
   IsScalarTower.of_compHom R S M
 
-/-- This instance is only relevant when `RestrictScalars.moduleOrig` is available as an instance.
--/
+/-- This instance is only relevant when `RestrictScalars.moduleOrig` is available as an instance. -/
 instance RestrictScalars.isScalarTower [Module S M] : IsScalarTower R S (RestrictScalars R S M) :=
   IsScalarTower.restrictScalars R S M
 
 end
 
-/-- When `M` is a right-module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
+/--
+When `M` is a right-module over a ring `S`, and `S` is an algebra over `R`, then `M` inherits a
 right-module structure over `R`.
 The preferred way of setting this up is
 `[Module Rᵐᵒᵖ M] [Module Sᵐᵒᵖ M] [IsScalarTower Rᵐᵒᵖ Sᵐᵒᵖ M]`.
@@ -141,11 +143,12 @@ instance RestrictScalars.opModule [Module Sᵐᵒᵖ M] : Module Rᵐᵒᵖ (Res
   letI : Module Sᵐᵒᵖ (RestrictScalars R S M) := ‹Module Sᵐᵒᵖ M›
   Module.compHom M (RingHom.op <| algebraMap R S)
 
-instance RestrictScalars.isCentralScalar [Module S M] [Module Sᵐᵒᵖ M] [IsCentralScalar S M] :
-    IsCentralScalar R (RestrictScalars R S M) where
+instance RestrictScalars.isCentralScalar [Module S M] [Module Sᵐᵒᵖ M] [IsCentralScalar S M]
+    : IsCentralScalar R (RestrictScalars R S M) where
   op_smul_eq_smul r _x := (op_smul_eq_smul (algebraMap R S r) (_ : M) :)
 
-/-- The `R`-algebra homomorphism from the original coefficient algebra `S` to endomorphisms
+/--
+The `R`-algebra homomorphism from the original coefficient algebra `S` to endomorphisms
 of `RestrictScalars R S M`.
 -/
 def RestrictScalars.lsmul [Module S M] : S →ₐ[R] Module.End R (RestrictScalars R S M) :=
@@ -159,35 +162,36 @@ end
 variable [AddCommMonoid M]
 
 /-- `RestrictScalars.addEquiv` is the additive equivalence with the original module. -/
-def RestrictScalars.addEquiv : RestrictScalars R S M ≃+ M :=
-  AddEquiv.refl M
+def RestrictScalars.addEquiv : RestrictScalars R S M ≃+ M := AddEquiv.refl M
 
 variable [CommSemiring R] [Semiring S] [Algebra R S] [Module S M]
 
-theorem RestrictScalars.smul_def (c : R) (x : RestrictScalars R S M) :
-    c • x = (RestrictScalars.addEquiv R S M).symm
-      (algebraMap R S c • RestrictScalars.addEquiv R S M x) :=
+theorem RestrictScalars.smul_def (c : R) (x : RestrictScalars R S M)
+    : c • x
+      = (RestrictScalars.addEquiv R S M).symm
+        (algebraMap R S c • RestrictScalars.addEquiv R S M x) :=
   rfl
 
 @[simp]
-theorem RestrictScalars.addEquiv_map_smul (c : R) (x : RestrictScalars R S M) :
-    RestrictScalars.addEquiv R S M (c • x) = algebraMap R S c • RestrictScalars.addEquiv R S M x :=
+theorem RestrictScalars.addEquiv_map_smul (c : R) (x : RestrictScalars R S M)
+    : RestrictScalars.addEquiv R S M (c • x)
+      = algebraMap R S c • RestrictScalars.addEquiv R S M x :=
   rfl
 
-theorem RestrictScalars.addEquiv_symm_map_algebraMap_smul (r : R) (x : M) :
-    (RestrictScalars.addEquiv R S M).symm (algebraMap R S r • x) =
-      r • (RestrictScalars.addEquiv R S M).symm x :=
+theorem RestrictScalars.addEquiv_symm_map_algebraMap_smul (r : R) (x : M)
+    : (RestrictScalars.addEquiv R S M).symm (algebraMap R S r • x)
+      = r • (RestrictScalars.addEquiv R S M).symm x :=
   rfl
 
-theorem RestrictScalars.addEquiv_symm_map_smul_smul (r : R) (s : S) (x : M) :
-    (RestrictScalars.addEquiv R S M).symm ((r • s) • x) =
-      r • (RestrictScalars.addEquiv R S M).symm (s • x) := by
+theorem RestrictScalars.addEquiv_symm_map_smul_smul (r : R) (s : S) (x : M)
+    : (RestrictScalars.addEquiv R S M).symm ((r • s) • x)
+      = r • (RestrictScalars.addEquiv R S M).symm (s • x) := by
   rw [Algebra.smul_def, mul_smul]
   rfl
 
-theorem RestrictScalars.lsmul_apply_apply (s : S) (x : RestrictScalars R S M) :
-    RestrictScalars.lsmul R S M s x =
-      (RestrictScalars.addEquiv R S M).symm (s • RestrictScalars.addEquiv R S M x) :=
+theorem RestrictScalars.lsmul_apply_apply (s : S) (x : RestrictScalars R S M)
+    : RestrictScalars.lsmul R S M s x
+      = (RestrictScalars.addEquiv R S M).symm (s • RestrictScalars.addEquiv R S M x) :=
   rfl
 
 end Module
@@ -205,29 +209,27 @@ instance [I : CommRing A] : CommRing (RestrictScalars R S A) := I
 variable [Semiring A]
 
 /-- Tautological ring isomorphism `RestrictScalars R S A ≃+* A`. -/
-def RestrictScalars.ringEquiv : RestrictScalars R S A ≃+* A :=
-  RingEquiv.refl _
+def RestrictScalars.ringEquiv : RestrictScalars R S A ≃+* A := RingEquiv.refl _
 
 variable [CommSemiring S] [Algebra S A] [CommSemiring R] [Algebra R S]
 
 @[simp]
-theorem RestrictScalars.ringEquiv_map_smul (r : R) (x : RestrictScalars R S A) :
-    RestrictScalars.ringEquiv R S A (r • x) =
-      algebraMap R S r • RestrictScalars.ringEquiv R S A x :=
+theorem RestrictScalars.ringEquiv_map_smul (r : R) (x : RestrictScalars R S A)
+    : RestrictScalars.ringEquiv R S A (r • x)
+      = algebraMap R S r • RestrictScalars.ringEquiv R S A x :=
   rfl
 
 /-- `R ⟶ S` induces `S-Alg ⥤ R-Alg`. Not an instance because `S` cannot be inferred. -/
-abbrev Algebra.restrictScalars : Algebra R A :=
-  Algebra.compHom A (algebraMap R S)
+abbrev Algebra.restrictScalars : Algebra R A := Algebra.compHom A (algebraMap R S)
 
 /-- `R ⟶ S` induces `S-Alg ⥤ R-Alg` -/
 instance RestrictScalars.algebra : Algebra R (RestrictScalars R S A) :=
   Algebra.restrictScalars R S A
 
 @[simp]
-theorem RestrictScalars.ringEquiv_algebraMap (r : R) :
-    RestrictScalars.ringEquiv R S A (algebraMap R (RestrictScalars R S A) r) =
-      algebraMap S A (algebraMap R S r) :=
+theorem RestrictScalars.ringEquiv_algebraMap (r : R)
+    : RestrictScalars.ringEquiv R S A (algebraMap R (RestrictScalars R S A) r)
+      = algebraMap S A (algebraMap R S r) :=
   rfl
 
 end Algebra

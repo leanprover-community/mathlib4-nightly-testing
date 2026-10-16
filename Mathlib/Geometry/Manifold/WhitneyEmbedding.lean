@@ -6,7 +6,6 @@ Authors: Yury Kudryashov
 module
 
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
-
 import Mathlib.FieldTheory.Finiteness
 
 /-!
@@ -32,9 +31,11 @@ universe uι uE uH uM
 open Function Filter Module Set Topology
 open scoped Manifold ContDiff
 
-variable {ι : Type uι} {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M : Type uM} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable
+  {ι : Type uι} {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type uM}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 noncomputable section
 
@@ -57,8 +58,8 @@ def embeddingPiTangent : C^∞⟮I, M; 𝓘(ℝ, ι → E × ℝ), ι → E × �
       ((f i).contMDiff_smul contMDiffOn_extChartAt).prodMk_space (f i).contMDiff
 
 @[local simp]
-theorem embeddingPiTangent_coe :
-    ⇑f.embeddingPiTangent = fun x i => (f i x • extChartAt I (f.c i) x, f i x) :=
+theorem embeddingPiTangent_coe
+    : ⇑f.embeddingPiTangent = fun x i => (f i x • extChartAt I (f.c i) x, f i x) :=
   (rfl)
 
 theorem embeddingPiTangent_injOn : InjOn f.embeddingPiTangent s := by
@@ -70,21 +71,24 @@ theorem embeddingPiTangent_injOn : InjOn f.embeddingPiTangent s := by
   have := f.mem_extChartAt_source_of_eq_one h₂.symm
   exact (extChartAt I (f.c _)).injOn (f.mem_extChartAt_ind_source x hx) this h₁
 
-theorem embeddingPiTangent_injective (f : SmoothBumpCovering ι I M) :
-    Injective f.embeddingPiTangent :=
+theorem embeddingPiTangent_injective (f : SmoothBumpCovering ι I M)
+    : Injective f.embeddingPiTangent :=
   injOn_univ.1 f.embeddingPiTangent_injOn
 
-theorem comp_embeddingPiTangent_mfderiv (x : M) (hx : x ∈ s) :
-    ((ContinuousLinearMap.fst ℝ E ℝ).comp
-            (@ContinuousLinearMap.proj ℝ _ ι (fun _ => E × ℝ) _ _ (fun _ => inferInstance)
-              (f.ind x hx))).comp
-        (mfderiv I 𝓘(ℝ, ι → E × ℝ) f.embeddingPiTangent x) =
-      mfderiv% (chartAt H (f.c (f.ind x hx))) x := by
+theorem comp_embeddingPiTangent_mfderiv (x : M) (hx : x ∈ s)
+    : ((ContinuousLinearMap.fst ℝ E ℝ).comp
+          (@ContinuousLinearMap.proj ℝ _ ι
+            (fun _ => E × ℝ)
+            _ _
+            (fun _ => inferInstance)
+            (f.ind x hx))).comp
+        (mfderiv I (𝓘(ℝ, ι → E × ℝ)) f.embeddingPiTangent x)
+      = mfderiv% (chartAt H (f.c (f.ind x hx))) x := by
   set L :=
     (ContinuousLinearMap.fst ℝ E ℝ).comp
       (@ContinuousLinearMap.proj ℝ _ ι (fun _ => E × ℝ) _ _ (fun _ => inferInstance) (f.ind x hx))
-  have := L.hasMFDerivAt.comp x
-    (f.embeddingPiTangent.contMDiff.mdifferentiableAt (by simp)).hasMFDerivAt
+  have :=
+    L.hasMFDerivAt.comp x (f.embeddingPiTangent.contMDiff.mdifferentiableAt (by simp)).hasMFDerivAt
   convert! hasMFDerivAt_unique this _
   refine (hasMFDerivAt_extChartAt (f.mem_chartAt_ind_source x hx)).congr_of_eventuallyEq ?_
   refine (f.eventuallyEq_one x hx).mono fun y hy => ?_
@@ -92,23 +96,25 @@ theorem comp_embeddingPiTangent_mfderiv (x : M) (hx : x ∈ s) :
     ContinuousLinearMap.coe_fst', ContinuousLinearMap.proj_apply]
   rw [hy, Pi.one_apply, one_smul]
 
-theorem embeddingPiTangent_ker_mfderiv (x : M) (hx : x ∈ s) :
-    (mfderiv I 𝓘(ℝ, ι → E × ℝ) f.embeddingPiTangent x).ker = ⊥ := by
+theorem embeddingPiTangent_ker_mfderiv (x : M) (hx : x ∈ s)
+    : (mfderiv I (𝓘(ℝ, ι → E × ℝ)) f.embeddingPiTangent x).ker = ⊥ := by
   apply bot_unique
   rw [← (mdifferentiable_chart (f.c (f.ind x hx))).ker_mfderiv_eq_bot
       (f.mem_chartAt_ind_source x hx),
     ← comp_embeddingPiTangent_mfderiv]
   exact LinearMap.ker_le_ker_comp _ _
 
-theorem embeddingPiTangent_injective_mfderiv (x : M) (hx : x ∈ s) :
-    Injective (mfderiv I 𝓘(ℝ, ι → E × ℝ) f.embeddingPiTangent x) :=
+theorem embeddingPiTangent_injective_mfderiv (x : M) (hx : x ∈ s)
+    : Injective (mfderiv I (𝓘(ℝ, ι → E × ℝ)) f.embeddingPiTangent x) :=
   LinearMap.ker_eq_bot.1 (f.embeddingPiTangent_ker_mfderiv x hx)
 
-/-- Baby version of the **Whitney weak embedding theorem**: if `M` admits a finite covering by
+/--
+Baby version of the **Whitney weak embedding theorem**: if `M` admits a finite covering by
 supports of bump functions, then for some `n` it can be immersed into the `n`-dimensional
-Euclidean space. -/
-public theorem exists_immersion_euclidean {ι : Type*} [Finite ι] (f : SmoothBumpCovering ι I M) :
-    ∃ (n : ℕ) (e : M → EuclideanSpace ℝ (Fin n)),
+Euclidean space.
+-/
+public theorem exists_immersion_euclidean {ι : Type*} [Finite ι] (f : SmoothBumpCovering ι I M)
+    : ∃ (n : ℕ) (e : M → EuclideanSpace ℝ (Fin n)),
       CMDiff ∞ e ∧ Injective e ∧ ∀ x : M, Injective (mfderiv% e x) := by
   cases nonempty_fintype ι
   set F := EuclideanSpace ℝ (Fin <| finrank ℝ (ι → E × ℝ))
@@ -116,9 +122,13 @@ public theorem exists_immersion_euclidean {ι : Type*} [Finite ι] (f : SmoothBu
   let : FiniteDimensional ℝ (ι → E × ℝ) := IsNoetherian.iff_fg.1 inferInstance
   set eEF : (ι → E × ℝ) ≃L[ℝ] F :=
     ContinuousLinearEquiv.ofFinrankEq finrank_euclideanSpace_fin.symm
-  refine ⟨_, eEF ∘ f.embeddingPiTangent,
+  refine ⟨
+    _,
+    eEF ∘ f.embeddingPiTangent,
     eEF.toDiffeomorph.contMDiff.comp f.embeddingPiTangent.contMDiff,
-    eEF.injective.comp f.embeddingPiTangent_injective, fun x => ?_⟩
+    eEF.injective.comp f.embeddingPiTangent_injective,
+    fun x => ?_
+  ⟩
   rw [mfderiv_comp _ eEF.differentiableAt.mdifferentiableAt
       (f.embeddingPiTangent.contMDiff.mdifferentiableAt (by simp)),
     eEF.mfderiv_eq]
@@ -126,11 +136,13 @@ public theorem exists_immersion_euclidean {ι : Type*} [Finite ι] (f : SmoothBu
 
 end SmoothBumpCovering
 
-/-- Baby version of the Whitney weak embedding theorem: if `M` admits a finite covering by
+/--
+Baby version of the Whitney weak embedding theorem: if `M` admits a finite covering by
 supports of bump functions, then for some `n` it can be embedded into the `n`-dimensional
-Euclidean space. -/
-public theorem exists_embedding_euclidean_of_compact [T2Space M] [CompactSpace M] :
-    ∃ (n : ℕ) (e : M → EuclideanSpace ℝ (Fin n)),
+Euclidean space.
+-/
+public theorem exists_embedding_euclidean_of_compact [T2Space M] [CompactSpace M]
+    : ∃ (n : ℕ) (e : M → EuclideanSpace ℝ (Fin n)),
       CMDiff ∞ e ∧ IsClosedEmbedding e ∧ ∀ x : M, Injective (mfderiv% e x) := by
   rcases SmoothBumpCovering.exists_isSubordinate I isClosed_univ fun (x : M) _ => univ_mem with
     ⟨ι, f, -⟩

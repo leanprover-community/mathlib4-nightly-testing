@@ -37,8 +37,8 @@ class Northcott [LE β] : Prop where
   finite_le : ∀ b, {a : α | h a ≤ b}.Finite
 
 open Filter in
-theorem northcott_iff_tendsto [LinearOrder β] [NoMaxOrder β] :
-    Northcott h ↔ Tendsto h cofinite atTop := by
+theorem northcott_iff_tendsto [LinearOrder β] [NoMaxOrder β]
+    : Northcott h ↔ Tendsto h cofinite atTop := by
   simp_rw [northcott_iff, tendsto_atTop, eventually_cofinite, not_le]
   refine ⟨fun H b ↦ (H b).subset fun x ↦ le_of_lt, fun H b ↦ ?_⟩
   obtain ⟨b', hc⟩ := exists_gt b
@@ -46,24 +46,27 @@ theorem northcott_iff_tendsto [LinearOrder β] [NoMaxOrder β] :
 
 namespace Northcott
 
-theorem exists_min_image [LinearOrder β] [Northcott h] (s : Set α) (hs : s.Nonempty) :
-    ∃ a ∈ s, ∀ a' ∈ s, h a ≤ h a' := by
+theorem exists_min_image [LinearOrder β] [Northcott h] (s : Set α) (hs : s.Nonempty)
+    : ∃ a ∈ s, ∀ a' ∈ s, h a ≤ h a' := by
   obtain ⟨a₁, h₁⟩ := hs
-  obtain ⟨a₂, h₂, h₃⟩ := Set.exists_min_image ({a | h a ≤ h a₁} ∩ s) h
-    ((finite_le (h a₁)).inter_of_left s) ⟨a₁, le_rfl, h₁⟩
+  obtain ⟨a₂, h₂, h₃⟩ :=
+    Set.exists_min_image ({a | h a ≤ h a₁} ∩ s) h ((finite_le (h a₁)).inter_of_left s)
+      ⟨a₁, le_rfl, h₁⟩
   grind
 
-/-- A composition `h' ∘ h` is Northcott when `h` is Northcott and preimages of bounded above sets
-under `h'` are bounded above. -/
-lemma comp_of_bddAbove [Preorder β] [LE γ] [Northcott h] (H : ∀ c, BddAbove (h' ⁻¹' {x | x ≤ c})) :
-    Northcott (h' ∘ h) where
+/--
+A composition `h' ∘ h` is Northcott when `h` is Northcott and preimages of bounded above sets
+under `h'` are bounded above.
+-/
+lemma comp_of_bddAbove [Preorder β] [LE γ] [Northcott h] (H : ∀ c, BddAbove (h' ⁻¹' {x | x ≤ c}))
+    : Northcott (h' ∘ h) where
   finite_le c := by
     obtain ⟨b, hb⟩ := bddAbove_def.mp (H c)
     exact (finite_le (h := h) b).subset <| by grind
 
 /-- A composition `h' ∘ h` is Northcott when `h'` is Northcott and the fibers of `h` are finite. -/
-lemma comp_of_finite_fibers [LE γ] [Northcott h'] [Filter.TendstoCofinite h] :
-    Northcott (h' ∘ h) where
+lemma comp_of_finite_fibers [LE γ] [Northcott h'] [Filter.TendstoCofinite h]
+    : Northcott (h' ∘ h) where
   finite_le c := by
     refine Set.Finite.of_finite_fibers h ?_ fun x _ ↦
       (Filter.TendstoCofinite.finite_preimage_singleton h x).inter_of_right _

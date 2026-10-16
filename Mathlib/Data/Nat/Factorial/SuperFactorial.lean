@@ -21,7 +21,6 @@ This file defines the [superfactorial](https://en.wikipedia.org/wiki/Superfactor
 
 @[expose] public section
 
-
 namespace Nat
 
 /-- `Nat.superFactorial n` is the superfactorial of `n`. -/
@@ -34,26 +33,20 @@ scoped notation "sf " n:60 => Nat.superFactorial n
 
 section SuperFactorial
 
-@[simp]
-theorem superFactorial_zero : sf 0 = 1 :=
-  rfl
+@[simp] theorem superFactorial_zero : sf 0 = 1 := rfl
 
-theorem superFactorial_succ (n : ℕ) : (sf n.succ) = (n + 1)! * sf n :=
-  rfl
+theorem superFactorial_succ (n : ℕ) : (sf n.succ) = (n + 1)! * sf n := rfl
 
-@[simp]
-theorem superFactorial_one : sf 1 = 1 :=
-  rfl
+@[simp] theorem superFactorial_one : sf 1 = 1 := rfl
 
-@[simp]
-theorem superFactorial_two : sf 2 = 2 :=
-  rfl
+@[simp] theorem superFactorial_two : sf 2 = 2 := rfl
 
 open Finset
 
 @[simp]
 theorem prod_Icc_factorial : ∀ n : ℕ, ∏ x ∈ Icc 1 n, x ! = sf n
-  | 0 => rfl
+  | 0 =>
+    rfl
   | n + 1 => by
     rw [← Ico_add_one_right_eq_Icc 1, prod_Ico_succ_top le_add_self, Nat.factorial_succ,
       Ico_add_one_right_eq_Icc 1 n, prod_Icc_factorial n, superFactorial, factorial, mul_comm]
@@ -65,24 +58,23 @@ theorem prod_range_factorial_succ (n : ℕ) : ∏ x ∈ range n, (x + 1)! = sf n
 @[simp]
 theorem prod_range_succ_factorial : ∀ n : ℕ, ∏ x ∈ range (n + 1), x ! = sf n
   | 0 => rfl
-  | n + 1 => by
-    rw [prod_range_succ, prod_range_succ_factorial n, mul_comm, superFactorial]
+  | n + 1 => by rw [prod_range_succ, prod_range_succ_factorial n, mul_comm, superFactorial]
 
-theorem superFactorial_two_mul : ∀ n : ℕ,
-    sf (2 * n) = (∏ i ∈ range n, (2 * i + 1)!) ^ 2 * 2 ^ n * n !
-  | 0 => rfl
+theorem superFactorial_two_mul
+    : ∀ n : ℕ, sf (2 * n) = (∏ i ∈ range n, (2 * i + 1)!) ^ 2 * 2 ^ n * n !
+  | 0 =>
+    rfl
   | (n + 1) => by
     simp only [prod_range_succ, mul_pow, mul_add, mul_one, superFactorial_succ,
       superFactorial_two_mul n, factorial_succ]
     ring
 
-theorem superFactorial_four_mul (n : ℕ) :
-    sf (4 * n) = ((∏ i ∈ range (2 * n), (2 * i + 1)!) * 2 ^ n) ^ 2 * (2 * n)! :=
+theorem superFactorial_four_mul (n : ℕ)
+    : sf (4 * n) = ((∏ i ∈ range (2 * n), (2 * i + 1)!) * 2 ^ n) ^ 2 * (2 * n)! :=
   calc
     sf (4 * n) = (∏ i ∈ range (2 * n), (2 * i + 1)!) ^ 2 * 2 ^ (2 * n) * (2 * n)! := by
       rw [← superFactorial_two_mul, ← mul_assoc, Nat.mul_two]
-    _ = ((∏ i ∈ range (2 * n), (2 * i + 1)!) * 2 ^ n) ^ 2 * (2 * n)! := by
-      rw [pow_mul', mul_pow]
+    _ = ((∏ i ∈ range (2 * n), (2 * i + 1)!) * 2 ^ n) ^ 2 * (2 * n)! := by rw [pow_mul', mul_pow]
 
 end SuperFactorial
 

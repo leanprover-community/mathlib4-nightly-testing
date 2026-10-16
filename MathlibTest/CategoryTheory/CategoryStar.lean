@@ -1,4 +1,5 @@
 module
+
 import Mathlib.Tactic.CategoryTheory.CategoryStar
 import Mathlib.CategoryTheory.Functor.Category
 
@@ -18,21 +19,15 @@ def fooD := D ⥤ D
 def fooE := E ⥤ E
 def fooCDE := C ⥤ D ⥤ E
 
-/--
-info: fooC.{v_1, u_1} (C : Type u_1) [Category.{v_1, u_1} C] : Type (max v_1 u_1)
--/
+/-- info: fooC.{v_1, u_1} (C : Type u_1) [Category.{v_1, u_1} C] : Type (max v_1 u_1) -/
 #guard_msgs (info) in
 #check fooC
 
-/--
-info: fooD.{v_2, u} (D : Type u) [Category.{v_2, u} D] : Type (max v_2 u)
--/
+/-- info: fooD.{v_2, u} (D : Type u) [Category.{v_2, u} D] : Type (max v_2 u) -/
 #guard_msgs (info) in
 #check fooD
 
-/--
-info: fooE.{v_3} (E : Type 3) [Category.{v_3, 3} E] : Type (max v_3 3)
--/
+/-- info: fooE.{v_3} (E : Type 3) [Category.{v_3, 3} E] : Type (max v_3 3) -/
 #guard_msgs (info) in
 #check fooE
 
@@ -56,8 +51,6 @@ info: foo.{v_1, u_1, u_2} (C : Type u_1) (D : Type u_2) [Category.{v_1, max u_2 
 -/
 #guard_msgs (info) in
 #check foo
-
-
 
 universe u₁ u₂
 
@@ -179,9 +172,7 @@ variable [Category* TypeWithParam.{w}]
 
 def ff := TypeWithParam.{w} ⥤ TypeWithParam.{w}
 
-/--
-info: ff.{v_1, w} [Category.{v_1, 0} TypeWithParam] : Type v_1
--/
+/-- info: ff.{v_1, w} [Category.{v_1, 0} TypeWithParam] : Type v_1 -/
 #guard_msgs (info) in
 #check ff
 

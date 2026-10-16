@@ -31,17 +31,17 @@ variable {R : Type*} [CommRing R]
 
 namespace PrimeSpectrum
 
-lemma exists_isClosed_singleton_of_isJacobsonRing [IsJacobsonRing R]
-    (s : (Set (PrimeSpectrum R))) (hs : IsOpen s) (hs' : s.Nonempty) :
-    ∃ x ∈ s, IsClosed {x} := by
+lemma exists_isClosed_singleton_of_isJacobsonRing
+    [IsJacobsonRing R] (s : (Set (PrimeSpectrum R))) (hs : IsOpen s) (hs' : s.Nonempty)
+    : ∃ x ∈ s, IsClosed {x} := by
   simp_rw [isClosed_singleton_iff_isMaximal]
   obtain ⟨I, hI'⟩ := (isClosed_iff_zeroLocus_ideal _).mp hs.isClosed_compl
   simp_rw [← @Set.notMem_compl_iff _ s, hI', mem_zeroLocus]
   have := hs'.ne_empty
   contrapose! this
   simp_rw [not_imp_not] at this
-  rw [← Set.compl_univ, eq_compl_comm, hI', eq_comm, ← zeroLocus_bot,
-    zeroLocus_eq_iff, Ideal.radical_eq_jacobson, Ideal.radical_eq_jacobson]
+  rw [← Set.compl_univ, eq_compl_comm, hI', eq_comm, ← zeroLocus_bot, zeroLocus_eq_iff,
+    Ideal.radical_eq_jacobson, Ideal.radical_eq_jacobson]
   refine le_antisymm (le_sInf ?_) (Ideal.jacobson_mono bot_le)
   rintro x ⟨-, hx⟩
   exact sInf_le ⟨this ⟨x, hx.isPrime⟩ hx, hx⟩
@@ -51,15 +51,15 @@ instance [IsJacobsonRing R] : JacobsonSpace (PrimeSpectrum R) := by
   rintro S hS ⟨U, Z, hU, hZ, rfl⟩
   simp only [← isClosed_compl_iff, isClosed_iff_zeroLocus_ideal, @compl_eq_comm _ U] at hU hZ
   obtain ⟨⟨I, rfl⟩, ⟨J, rfl⟩⟩ := And.intro hU hZ
-  simp only [Set.nonempty_iff_ne_empty, ne_eq, Set.inter_assoc,
-    ← Set.disjoint_iff_inter_eq_empty, Set.disjoint_compl_left_iff_subset,
-    zeroLocus_subset_zeroLocus_iff, Ideal.radical_eq_jacobson, Ideal.jacobson, le_sInf_iff] at hS ⊢
+  simp only [Set.nonempty_iff_ne_empty, ne_eq, Set.inter_assoc, ← Set.disjoint_iff_inter_eq_empty,
+      Set.disjoint_compl_left_iff_subset, zeroLocus_subset_zeroLocus_iff, Ideal.radical_eq_jacobson,
+      Ideal.jacobson, le_sInf_iff]
+    at hS ⊢
   contrapose hS
   rintro x ⟨hJx, hx⟩
   exact @hS ⟨x, hx.isPrime⟩ ⟨hJx, (isClosed_singleton_iff_isMaximal _).mpr hx⟩
 
-lemma isJacobsonRing_iff_jacobsonSpace :
-    IsJacobsonRing R ↔ JacobsonSpace (PrimeSpectrum R) := by
+lemma isJacobsonRing_iff_jacobsonSpace : IsJacobsonRing R ↔ JacobsonSpace (PrimeSpectrum R) := by
   refine ⟨fun _ ↦ inferInstance, fun H ↦ ⟨fun I hI ↦ le_antisymm ?_ Ideal.le_jacobson⟩⟩
   rw [← I.isRadical_jacobson.radical]
   conv_rhs => rw [← hI.radical]
@@ -78,8 +78,8 @@ If `R` is both Noetherian and Jacobson, then the following are equivalent for `x
   (i.e. `x` is both a minimal prime and a maximal ideal)
 -/
 lemma isOpen_singleton_tfae_of_isNoetherian_of_isJacobsonRing
-    [IsNoetherianRing R] [IsJacobsonRing R] (x : PrimeSpectrum R) :
-    List.TFAE [IsOpen {x}, IsClopen {x}, IsClosed {x} ∧ StableUnderGeneralization {x}] := by
+    [IsNoetherianRing R] [IsJacobsonRing R] (x : PrimeSpectrum R)
+    : List.TFAE [IsOpen {x}, IsClopen {x}, IsClosed {x} ∧ StableUnderGeneralization {x}] := by
   tfae_have 1 → 2
   | h => by
     obtain ⟨y, rfl : y = x, h'⟩ := exists_isClosed_singleton_of_isJacobsonRing _ h

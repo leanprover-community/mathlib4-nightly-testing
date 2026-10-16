@@ -33,8 +33,10 @@ namespace TopologistsSineCurve
 /-- The topologist's sine curve, i.e. the graph of `y = sin (x⁻¹)` for `0 < x`. -/
 noncomputable def S : Set (ℝ × ℝ) := (fun x ↦ (x, sin x⁻¹)) '' Ioi 0
 
-/-- The vertical line segment `{ (0, y) | -1 ≤ y ≤ 1 }`, which is the set of limit points of `S`
-not contained in `S` itself. -/
+/--
+The vertical line segment `{ (0, y) | -1 ≤ y ≤ 1 }`, which is the set of limit points of `S`
+not contained in `S` itself.
+-/
 def Z : Set (ℝ × ℝ) := (fun y ↦ (0, y)) '' Icc (-1) 1
 
 /-- The union of `S` and `Z` (which we will show is the closure of `S`). -/
@@ -95,8 +97,8 @@ lemma closure_S : closure S = T := by
     · -- Point is in `Z`: use sequence from `xSeq`
       simp only [Prod.mk.injEq] at hz
       rcases hz with ⟨hz, ⟨rfl, rfl⟩⟩
-      refine ⟨fun n ↦ (xSeq z n, z), fun n ↦ ⟨_, xSeq_pos z n, ?_⟩, xSeq_tendsto z,
-        tendsto_const_nhds⟩
+      refine
+        ⟨fun n ↦ (xSeq z n, z), fun n ↦ ⟨_, xSeq_pos z n, ?_⟩, xSeq_tendsto z, tendsto_const_nhds⟩
       simpa using sin_inv_xSeq hz n
 
 lemma isClosed_T : IsClosed T := by simpa only [← closure_S] using isClosed_closure
@@ -105,8 +107,10 @@ lemma isClosed_T : IsClosed T := by simpa only [← closure_S] using isClosed_cl
 ## `T` is connected
 -/
 
-/-- `T` is connected, being the closure of the set `S` (which is obviously connected since it
-is a continuous image of the positive real line). -/
+/--
+`T` is connected, being the closure of the set `S` (which is obviously connected since it
+is a continuous image of the positive real line).
+-/
 theorem isConnected_T : IsConnected T := by
   rw [← closure_S]
   refine (isConnected_Ioi.image _ <| continuousOn_id.prodMk ?_).closure
@@ -116,9 +120,7 @@ theorem isConnected_T : IsConnected T := by
 ## `T` is not path-connected
 -/
 
-lemma zero_mem_T : (0, 0) ∈ T := by
-  refine .inr ⟨0, ⟨?_, ?_⟩, rfl⟩ <;>
-  linarith
+lemma zero_mem_T : (0, 0) ∈ T := by refine .inr ⟨0, ⟨?_, ?_⟩, rfl⟩ <;> linarith
 
 /-- A point in the `body` of the topologist's sine curve. -/
 noncomputable def w : ℝ × ℝ := (1, sin 1⁻¹)
@@ -127,8 +129,8 @@ lemma w_mem_T : w ∈ T := .inl ⟨1, ⟨zero_lt_one' ℝ, rfl⟩⟩
 
 private lemma norm_ge_abs_snd {a b : ℝ} : |b| ≤ ‖(a, b)‖ := by simp
 
-private lemma exists_unitInterval_gt {t₀ : unitInterval} (ht₀ : t₀ < 1) {δ : ℝ} (hδ : 0 < δ) :
-    ∃ t₁, t₀ < t₁ ∧ dist t₀ t₁ < δ := by
+private lemma exists_unitInterval_gt {t₀ : unitInterval} (ht₀ : t₀ < 1) {δ : ℝ} (hδ : 0 < δ)
+    : ∃ t₁, t₀ < t₁ ∧ dist t₀ t₁ < δ := by
   let s₀ := (t₀ : ℝ) -- t₀ is in unitInterval
   let s₁ := min (s₀ + δ / 2) 1
   have h_s₀_delta_pos : 0 ≤ s₀ + δ / 2 := add_nonneg t₀.2.1 (by positivity)
@@ -148,8 +150,8 @@ private lemma mem_S_of_x_pos {p : ℝ × ℝ} (hx : 0 < p.1) (hT : p ∈ T) : p.
   simp [← hx]
 
 /-- For any `0 < a` and any `y ∈ Icc (-1) 1`, we can find `x ∈ Ioc a 0` with `sin x⁻¹ = y`. -/
-lemma exists_mem_Ioc_of_y {y : ℝ} (hy : y ∈ Icc (-1) 1) {a : ℝ} (ha : 0 < a) :
-    ∃ x ∈ Ioc 0 a, sin x⁻¹ = y := by
+lemma exists_mem_Ioc_of_y {y : ℝ} (hy : y ∈ Icc (-1) 1) {a : ℝ} (ha : 0 < a)
+    : ∃ x ∈ Ioc 0 a, sin x⁻¹ = y := by
   obtain ⟨N, h_dist⟩ := (Metric.tendsto_nhds.mp (xSeq_tendsto y) (a / 2) (by positivity)).exists
   refine ⟨xSeq y N, ⟨xSeq_pos y N, ?_⟩, sin_inv_xSeq hy _⟩
   rw [dist_eq, sub_zero, abs_of_pos (xSeq_pos _ N)] at h_dist
@@ -197,9 +199,10 @@ theorem not_isPathConnected_T : ¬ IsPathConnected T := by
     have hp : (p t).2 = sin (p t).1⁻¹ := mem_S_of_x_pos (ht.2 ▸ hx.1) (h_pathConn.somePath_mem t)
     refine ⟨t, ?_, by rw [← hx', hp, ht.2]⟩
     calc -- now show `t ∈ Icc t₀ t₁` implies `dist t t₀ < δ`
-    dist t t₀ ≤ dist t₁ t₀ := dist_right_le_of_mem_uIcc (Icc_subset_uIcc' ht.1)
-    _ = dist t₀ t₁ := by rw [dist_comm]
-    _ < δ := ht₁.2
+      dist t t₀
+        ≤ dist t₁ t₀ := dist_right_le_of_mem_uIcc (Icc_subset_uIcc' ht.1)
+      _ = dist t₀ t₁ := by rw [dist_comm]
+      _ < δ := ht₁.2
   -- **Step 4**:
   -- Now the final contradiction: there are times within `δ` of `t₀` with `p t = 1`, and with
   -- `p t = -1`; but both must have distance `< 1` from `p t₀`, contradicting the triangle

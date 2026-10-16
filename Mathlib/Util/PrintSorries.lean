@@ -39,9 +39,11 @@ namespace Mathlib.PrintSorries
 structure State where
   /-- The set of already visited declarations. -/
   visited : NameSet := {}
-  /-- The set of `sorry` expressions that have been found.
+  /--
+  The set of `sorry` expressions that have been found.
   Note that unlabeled sorries will only be reported in the *first* declaration that uses them,
-  even if a later definition independently has a direct use of `sorryAx`. -/
+  even if a later definition independently has a direct use of `sorryAx`.
+  -/
   sorries : Std.HashSet Expr := {}
   /-- The uses of `sorry` that were found. -/
   sorryMsgs : Array MessageData := #[]
@@ -76,12 +78,14 @@ partial def collect (c : Name) : StateT State MetaM Unit := do
             msg := msg ++ " (from error)"
           try
             msg := msg ++ " of type" ++ indentExpr (← inferType e)
-          catch _ => pure ()
+          catch _ =>
+            pure ()
           msg ← addMessageContext msg
-          modify fun s =>
-            { s with
-              sorries := s.sorries.insert e
-              sorryMsgs := s.sorryMsgs.push msg }
+          modify fun s => {
+            s with
+            sorries := s.sorries.insert e
+            sorryMsgs := s.sorryMsgs.push msg
+          }
       Meta.forEachExpr' e fun e => do
         if e.isSorry then
           if let some _ := isLabeledSorry? e then
@@ -97,15 +101,15 @@ partial def collect (c : Name) : StateT State MetaM Unit := do
     modify fun s => { s with visited := s.visited.insert c }
     let env ← getEnv
     match env.checked.get.find? c with
-    | some (.axiomInfo v)  => collectExpr v.type
-    | some (.defnInfo v)   => collectExpr v.type *> collectExpr v.value
-    | some (.thmInfo v)    => collectExpr v.type *> collectExpr v.value
+    | some (.axiomInfo v) => collectExpr v.type
+    | some (.defnInfo v) => collectExpr v.type *> collectExpr v.value
+    | some (.thmInfo v) => collectExpr v.type *> collectExpr v.value
     | some (.opaqueInfo v) => collectExpr v.type *> collectExpr v.value
-    | some (.quotInfo _)   => pure ()
-    | some (.ctorInfo v)   => collectExpr v.type
-    | some (.recInfo v)    => collectExpr v.type
+    | some (.quotInfo _) => pure ()
+    | some (.ctorInfo v) => collectExpr v.type
+    | some (.recInfo v) => collectExpr v.type
     | some (.inductInfo v) => collectExpr v.type *> v.ctors.forM collect
-    | none                 => pure ()
+    | none => pure ()
 
 /--
 Prints all uses of `sorry` inside a list of declarations.
@@ -124,9 +128,7 @@ Displayed sorries are hoverable and support "go to definition".
 -/
 syntax (name := printSorriesStx) "#print " &"sorries" (ppSpace ident)* : command
 
-/--
-Collects sorries in the given constants and logs a message.
--/
+/-- Collects sorries in the given constants and logs a message. -/
 def evalCollectSorries (names : Array Name) : CommandElabM Unit := do
   let msgs ← liftTermElabM <| collectSorries names
   if msgs.isEmpty then
@@ -136,11 +138,12 @@ def evalCollectSorries (names : Array Name) : CommandElabM Unit := do
 
 elab_rules : command
   | `(#print%$tk1 sorries%$tk2 $idents*) => do
-    let mut names ← liftCoreM <| idents.flatMapM fun id =>
-      return (← realizeGlobalConstWithInfos id).toArray
+    let mut names ←
+      liftCoreM <| idents.flatMapM fun id => return (← realizeGlobalConstWithInfos id).toArray
     if names.isEmpty then
-      names ← (← getEnv).checked.get.constants.map₂.foldlM (init := #[]) fun acc name _ =>
-        return if ← name.isBlackListed then acc else acc.push name
+      names ←
+        (← getEnv).checked.get.constants.map₂.foldlM (init := #[]) fun acc name _ =>
+          return if ← name.isBlackListed then acc else acc.push name
     withRef (mkNullNode #[tk1, tk2]) <| evalCollectSorries names
 
 @[inherit_doc printSorriesStx]
@@ -153,13 +156,14 @@ elab_rules : command
       elabCommand cmd
     finally
       let newEnv ← getEnv
-      let names ← newEnv.checked.get.constants.map₂.foldlM (init := #[]) fun acc name _ => do
-        if oldEnv.constants.map₂.contains name then
-          return acc
-        else if ← name.isBlackListed then
-          return acc
-        else
-          return acc.push name
+      let names ←
+        newEnv.checked.get.constants.map₂.foldlM (init := #[]) fun acc name _ => do
+          if oldEnv.constants.map₂.contains name then
+            return acc
+          else if ← name.isBlackListed then
+            return acc
+          else
+            return acc.push name
       withRef (mkNullNode #[tk1, tk2]) <| evalCollectSorries names
 
 end Mathlib.PrintSorries

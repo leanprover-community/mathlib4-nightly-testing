@@ -26,17 +26,20 @@ namespace CategoryTheory.Pretriangulated
 
 open Limits Category Preadditive Pretriangulated
 
-variable {C : Type*} [Category* C] [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
+variable
+  {C : Type*} [Category* C] [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]
 
 /-- If `T` is a distinguished triangle, then `T.mor₁` defines a kernel fork for `T.mor₂`. -/
-def kernelForkOfDistTriangle (T : Triangle C) (dT : T ∈ distTriang C) :
-    KernelFork T.mor₂ := KernelFork.ofι T.mor₁ (comp_distTriang_mor_zero₁₂ _ dT)
+def kernelForkOfDistTriangle (T : Triangle C) (dT : T ∈ distTriang C) : KernelFork T.mor₂ :=
+  KernelFork.ofι T.mor₁ (comp_distTriang_mor_zero₁₂ _ dT)
 
-/-- If `T` is a distinguished triangle, then the kernel fork for `T.mor₂` defined in
-`kernelForkOfDistTriangle` is a weak kernel fork. -/
-def isWeakLimitKernelForkOfDistTriangle (T : Triangle C) (dT : T ∈ distTriang C) :
-    IsWeakLimit (kernelForkOfDistTriangle _ dT) :=
+/--
+If `T` is a distinguished triangle, then the kernel fork for `T.mor₂` defined in
+`kernelForkOfDistTriangle` is a weak kernel fork.
+-/
+def isWeakLimitKernelForkOfDistTriangle (T : Triangle C) (dT : T ∈ distTriang C)
+    : IsWeakLimit (kernelForkOfDistTriangle _ dT) :=
   Fork.IsWeakLimit.mk' _
     (fun s ↦ ⟨_, (T.coyoneda_exact₂ dT _ (KernelFork.condition s)).choose_spec.symm⟩)
 

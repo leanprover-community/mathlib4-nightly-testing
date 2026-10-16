@@ -38,8 +38,8 @@ section UniformSpace
 
 open scoped Uniformity
 
-variable {R : Type*} [CommRing R] [UniformSpace R] [IsUniformAddGroup R]
-  {I : Ideal R} (hI : IsAdic I)
+variable
+  {R : Type*} [CommRing R] [UniformSpace R] [IsUniformAddGroup R] {I : Ideal R} (hI : IsAdic I)
 
 include hI in
 /-- `IsPrecomplete I R` is equivalent to being complete in the adic topology. -/
@@ -53,19 +53,25 @@ protected lemma IsAdic.isPrecomplete_iff : IsPrecomplete I R ↔ CompleteSpace R
     have : ∀ i, ∃ N, ∀ m, N ≤ m → ∀ n, N ≤ n → u n - u m ∈ I ^ i := by
       simpa using hI.hasBasis_nhds_zero.uniformity_of_nhds_zero.cauchySeq_iff.mp hu
     choose N hN using this
-    obtain ⟨L, hL⟩ := H (fun i ↦ u ((Finset.Iic i).sup N))
-      fun _ ↦ hN _ _ (Finset.le_sup (by simpa)) _ (Finset.le_sup (by simp))
+    obtain ⟨L, hL⟩ :=
+      H
+        (fun i ↦ u ((Finset.Iic i).sup N))
+        fun _ ↦ hN _ _ (Finset.le_sup (by simpa)) _ (Finset.le_sup (by simp))
     use L
     suffices ∀ i, ∃ N, ∀ n, N ≤ n → u n - L ∈ I ^ i by
       simpa [(hI.hasBasis_nhds L).tendsto_right_iff, sub_eq_neg_add]
     refine fun i ↦ ⟨(Finset.Iic i).sup N, fun n hn ↦ ?_⟩
-    have := Ideal.add_mem _ (hN i ((Finset.Iic i).sup N) (Finset.le_sup (by simp))
-      n (.trans (Finset.le_sup (by simp)) hn)) (hL i)
+    have :=
+      Ideal.add_mem _
+        (hN i ((Finset.Iic i).sup N) (Finset.le_sup (by simp)) n
+          (.trans (Finset.le_sup (by simp)) hn))
+        (hL i)
     rwa [sub_add_sub_cancel] at this
   · intro H f hf
-    obtain ⟨L, hL⟩ := CompleteSpace.complete (f := Filter.atTop.map f)
-      (hI.hasBasis_nhds_zero.uniformity_of_nhds_zero.cauchySeq_iff.mpr fun i _ ↦
-        ⟨i, fun m hm n hn ↦ by simpa using Ideal.sub_mem _ (hf hm) (hf hn)⟩)
+    obtain ⟨L, hL⟩ :=
+      CompleteSpace.complete (f := Filter.atTop.map f)
+        (hI.hasBasis_nhds_zero.uniformity_of_nhds_zero.cauchySeq_iff.mpr fun i _ ↦
+          ⟨i, fun m hm n hn ↦ by simpa using Ideal.sub_mem _ (hf hm) (hf hn)⟩)
     refine ⟨L, fun i ↦ ?_⟩
     obtain ⟨N, hN⟩ : ∃ N, ∀ n, N ≤ n → f n - L ∈ I ^ i := by
       simpa [sub_eq_neg_add] using (hI.hasBasis_nhds L).tendsto_right_iff.mp hL i
@@ -86,15 +92,17 @@ theorem IsPrecomplete.congr_ringEquiv : IsPrecomplete (I.map e) S ↔ IsPrecompl
   let : WithIdeal R := ⟨I⟩
   let : WithIdeal S := ⟨I.map e⟩
   rw [iff_comm, IsAdic.isPrecomplete_iff (by rfl), IsAdic.isPrecomplete_iff (by rfl)]
-  exact completeSpace_congr (e := WithIdeal.uniformEquiv e rfl) (by
-    simpa using UniformEquiv.isUniformEmbedding ..)
+  exact completeSpace_congr (e := WithIdeal.uniformEquiv e rfl)
+    (by simpa using UniformEquiv.isUniformEmbedding ..)
 
 theorem IsHausdorff.congr_ringEquiv : IsHausdorff (I.map e) S ↔ IsHausdorff I R := by
   let : WithIdeal R := ⟨I⟩
   let : WithIdeal S := ⟨I.map e⟩
   rw [iff_comm, IsAdic.isHausdorff_iff rfl, IsAdic.isHausdorff_iff rfl]
-  exact ⟨fun _ ↦ (WithIdeal.uniformEquiv e rfl).toHomeomorph.t2Space, fun _ ↦
-    (WithIdeal.uniformEquiv e rfl).toHomeomorph.symm.t2Space⟩
+  exact ⟨
+    fun _ ↦ (WithIdeal.uniformEquiv e rfl).toHomeomorph.t2Space,
+    fun _ ↦ (WithIdeal.uniformEquiv e rfl).toHomeomorph.symm.t2Space
+  ⟩
 
 theorem IsAdicComplete.congr_ringEquiv : IsAdicComplete (I.map e) S ↔ IsAdicComplete I R := by
   simp [isAdicComplete_iff, IsHausdorff.congr_ringEquiv, IsPrecomplete.congr_ringEquiv]

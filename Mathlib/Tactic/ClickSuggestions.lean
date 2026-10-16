@@ -60,11 +60,14 @@ namespace Mathlib.Tactic.ClickSuggestions
 
 open Lean Meta Server Widget ProofWidgets
 
-/-- Run `k` with the `RwKind` of the selected position, and the subexpression at that position.
-If the subexpression contains bound variables, then they are introduced as free variables. -/
-def viewKAbstractSubExpr' {m α}
-    [Monad m] [MonadLiftT MetaM m] [MonadControlT MetaM m] [MonadError m]
-    (e : Expr) (pos : SubExpr.Pos) (k : Expr → RwKind → m α) : m α := do
+/--
+Run `k` with the `RwKind` of the selected position, and the subexpression at that position.
+If the subexpression contains bound variables, then they are introduced as free variables.
+-/
+def viewKAbstractSubExpr'
+    {m α} [Monad m] [MonadLiftT MetaM m] [MonadControlT MetaM m] [MonadError m]
+    (e : Expr) (pos : SubExpr.Pos) (k : Expr → RwKind → m α)
+    : m α := do
   if let some (subExpr, occ) ← viewKAbstractSubExpr e pos then
     let tpCorrect ← kabstractIsTypeCorrect e subExpr pos
     k subExpr (.valid tpCorrect occ)
@@ -72,86 +75,101 @@ def viewKAbstractSubExpr' {m α}
     Meta.viewSubexpr (fun _ e ↦ k e .hasBVars) pos e
 
 /-- Compute the suggestions. Use `token` for the output. -/
-public def generateSuggestions (loc : SubExpr.GoalsLocation) (parentDecl? : Option Name)
-    (token : RefreshToken) : ClickSuggestionsM Unit := withReducible do
-  -- Instantiate all metavariables, so that we won't need to worry about this later on.
-  instantiateMVarDeclMVars loc.mvarId
-  loc.mvarId.withContext do
-  -- TODO: instead of just putting `✝` after inaccessible names,
-  -- we should figure out how to use `rename_i` to actually refer to shadowed local variables.
-  let lctx := (← getLCtx).sanitizeNames.run' { options := (← getOptions) }
-  Meta.withLCtx' lctx do
-  trackingComputation "click_suggestions" do
-  let (fvarId?, pos) ← match loc.loc with
-    | .hypType fvarId pos  => pure (some fvarId, pos)
-    | .target pos => pure (none, pos)
-    | .hyp _fvarId =>
-      -- In a follow-up PR: suggestions for `induction`/`cases`, `contrapose`
-      return
-    | .hypValue .. =>
-      token.update <| .text "internal click_suggestions error: selected location is a `.hypValue`"
-      return
-  let rootExpr ← match fvarId? with
-    | some fvarId => fvarId.getType
-    | none => loc.mvarId.getType
-  viewKAbstractSubExpr' rootExpr pos fun subExpr rwKind ↦ do
-  let mut htmls : Array Html := #[]
+public def generateSuggestions
+    (loc : SubExpr.GoalsLocation) (parentDecl? : Option Name) (token : RefreshToken)
+    : ClickSuggestionsM Unit :=
+  withReducible do
+    -- Instantiate all metavariables, so that we won't need to worry about this later on.
+    instantiateMVarDeclMVars loc.mvarId
+    loc.mvarId.withContext do
+      -- TODO: instead of just putting `✝` after inaccessible names,
+      -- we should figure out how to use `rename_i` to actually refer to shadowed local variables.
+      let lctx := (← getLCtx).sanitizeNames.run' { options := (← getOptions) }
+      Meta.withLCtx' lctx do
+        trackingComputation "click_suggestions" do
+          let (fvarId?, pos) ←
+            match loc.loc with
+            | .hypType fvarId pos =>
+              pure (some fvarId, pos)
+            | .target pos =>
+              pure (none, pos)
+            | .hyp _fvarId =>
+              -- In a follow-up PR: suggestions for `induction`/`cases`, `contrapose`
+              return
+            | .hypValue .. =>
+              token.update <|
+                .text "internal click_suggestions error: selected location is a `.hypValue`"
+              return
+          let rootExpr ←
+            match fvarId? with
+            | some fvarId => fvarId.getType
+            | none => loc.mvarId.getType
+          viewKAbstractSubExpr' rootExpr pos fun subExpr rwKind ↦ do
+            let mut htmls : Array Html := #[]
 
-  -- In a follow-up PR: suggestions for
-  -- `induction`/`cases`, `contrapose`, if `subExpr` is an fvar.
-  -- `rfl`, `intro`, `by_contra`
-  -- `push`, `simp`, `norm_cast`, `ring`/`field`/`abel`/..
+            -- In a follow-up PR: suggestions for
+            -- `induction`/`cases`, `contrapose`, if `subExpr` is an fvar.
+            -- `rfl`, `intro`, `by_contra`
+            -- `push`, `simp`, `norm_cast`, `ring`/`field`/`abel`/..
 
-  if let some html ← suggestUnfold subExpr rwKind then
-    markProgress
-    htmls := htmls.push html
+            if let some html ← suggestUnfold subExpr rwKind then
+              markProgress
+              htmls := htmls.push html
 
-  let (searchHtml, token') ← mkRefreshComponent
-  htmls := htmls.push searchHtml
-  token.update (.element "div" #[("style", json% {"marginLeft" : "4px"})] htmls)
+            let (searchHtml, token') ← mkRefreshComponent
+            htmls := htmls.push searchHtml
+            token.update (.element "div" #[("style", json% { "marginLeft": "4px" })] htmls)
 
-  librarySearchSuggestions rootExpr subExpr lctx rwKind parentDecl? token'
+            librarySearchSuggestions rootExpr subExpr lctx rwKind parentDecl? token'
 
 /-- Rpc function for the `#click_suggestions` widget. -/
 @[server_rpc_method]
 public def rpc (props : PanelWidgetProps) : RequestM (RequestTask Html) :=
   RequestM.asTask do
-  let some loc := props.selectedLocations.back? |
-    return .text "Shift-click an expression in the tactic state to get suggestions."
-  let doc ← RequestM.readDoc
-  if loc.loc matches .hypValue .. then
-    return .text "#click_suggestions cannot suggest anything about the value of a let variable."
-  let some onGoal := props.goals.findFinIdx? (·.mvarId == loc.mvarId) |
-    return .text "#click_suggestions: please reload the tactic state"
-  let goal := props.goals[onGoal]
-  let onGoal := if onGoal.val != 0 then some onGoal.val else none
-  let some goalsAt := (FileWorker.findGoalsAt? doc (doc.meta.text.lspPosToUtf8Pos props.pos)).get |
-    return .text "Internal #click_suggestions error: could not find any goal at the cursor position"
-  let some { ctxInfo := { parentDecl?, .. }, useAfter, tacticInfo := { stx, .. }, .. } :=
-    goalsAt.find? fun { useAfter, tacticInfo, .. } ↦
-      let goals := if useAfter then tacticInfo.goalsAfter else tacticInfo.goalsBefore
-      goals.contains loc.mvarId
-    | return .text "#click_suggestions: Please reload the tactic state"
-  goal.ctx.val.runMetaM {} do withConfig Elab.Term.setElabConfig do loc.mvarId.withContext do
-    let (statusHtml, statusToken) ← mkRefreshComponent
-    let (solvedHtml, solvedToken) ← mkRefreshComponent
-    let targetHtml ←
-      if let .hyp h := loc.loc then
-        pure jsx%{<span> hypothesis {← exprToHtml (.fvar h)}</span>}
-      else
-        Meta.viewSubexpr (fun _ e ↦ exprToHtml e) loc.pos (← loc.rootExpr)
-    let html ← mkRefreshComponentM
-      (.text "#click_suggestions has started searching.") fun masterToken ↦ do
-      (generateSuggestions loc parentDecl? masterToken).run {
-        onGoal, masterToken, statusToken, solvedToken
-        stx := if useAfter then some ⟨stx⟩ else none
-        «meta» := doc.meta
-        cursorPos := props.pos
-        goal := loc.mvarId
-        hyp? := loc.fvarId?
-        pos := loc.pos
-      } |>.run (← IO.mkRef {})
-    return jsx%{<details open={true}>
+    let some loc := props.selectedLocations.back?
+      | return .text "Shift-click an expression in the tactic state to get suggestions."
+    let doc ← RequestM.readDoc
+    if loc.loc matches .hypValue .. then
+      return .text "#click_suggestions cannot suggest anything about the value of a let variable."
+    let some onGoal := props.goals.findFinIdx? (·.mvarId == loc.mvarId)
+      | return .text "#click_suggestions: please reload the tactic state"
+    let goal := props.goals[onGoal]
+    let onGoal := if onGoal.val != 0 then some onGoal.val else none
+    let some goalsAt := (FileWorker.findGoalsAt? doc (doc.meta.text.lspPosToUtf8Pos props.pos)).get
+      | return .text
+          "Internal #click_suggestions error: could not find any goal at the cursor position"
+    let some { ctxInfo := { parentDecl?, .. }, useAfter, tacticInfo := { stx, .. }, .. } :=
+        goalsAt.find? fun { useAfter, tacticInfo, .. } ↦
+          let goals := if useAfter then tacticInfo.goalsAfter else tacticInfo.goalsBefore
+          goals.contains loc.mvarId
+      | return .text "#click_suggestions: Please reload the tactic state"
+    goal.ctx.val.runMetaM {} do
+      withConfig Elab.Term.setElabConfig do
+        loc.mvarId.withContext do
+          let (statusHtml, statusToken) ← mkRefreshComponent
+          let (solvedHtml, solvedToken) ← mkRefreshComponent
+          let targetHtml ←
+            if let .hyp h := loc.loc then
+              pure jsx%{<span> hypothesis {← exprToHtml (.fvar h)}</span>}
+            else
+              Meta.viewSubexpr (fun _ e ↦ exprToHtml e) loc.pos (← loc.rootExpr)
+          let html ←
+            mkRefreshComponentM (.text "#click_suggestions has started searching.")
+              fun masterToken ↦ do
+                (generateSuggestions loc parentDecl? masterToken).run {
+                    onGoal
+                    masterToken
+                    statusToken
+                    solvedToken
+                    stx := if useAfter then some ⟨stx⟩ else none
+                    «meta» := doc.meta
+                    cursorPos := props.pos
+                    goal := loc.mvarId
+                    hyp? := loc.fvarId?
+                    pos := loc.pos
+                  }
+                  |>.run (← IO.mkRef {})
+          return jsx%{<details open={true}>
       <summary className="mv2 pointer">
         Suggestions for {targetHtml}: {statusHtml}
       </summary>
@@ -161,8 +179,7 @@ public def rpc (props : PanelWidgetProps) : RequestM (RequestTask Html) :=
 
 /-- The component called by the `#click_suggestions` command. -/
 @[widget_module]
-public def clickSuggestionsComponent : Component PanelWidgetProps :=
-  mk_rpc_widget% rpc
+public def clickSuggestionsComponent : Component PanelWidgetProps := mk_rpc_widget% rpc
 
 /--
 `#click_suggestions` enables a widget in the infoview that gives tactic suggestions for
@@ -176,8 +193,9 @@ are filtered out, as well as suggestions that create new goal(s) with metavariab
 To see all suggestions, click on the filter button (▼) in the top right.
 -/
 elab "#click_suggestions" : command => do
-  let widget ← Elab.Command.liftCoreM <|
-    WidgetInstance.ofHash clickSuggestionsComponent.javascriptHash (return json% {})
+  let widget ←
+    Elab.Command.liftCoreM <|
+      WidgetInstance.ofHash clickSuggestionsComponent.javascriptHash (return json% {})
   addPanelWidgetLocal widget
 
 end Mathlib.Tactic.ClickSuggestions

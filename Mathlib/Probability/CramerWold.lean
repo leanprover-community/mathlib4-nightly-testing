@@ -6,7 +6,6 @@ Authors: Ivo Malinowski
 module
 
 public import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
-
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 
 /-!
@@ -26,20 +25,24 @@ open MeasureTheory Filter RealInnerProductSpace
 
 public section
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [MeasurableSpace E] [BorelSpace E] [FiniteDimensional ℝ E]
+variable
+  {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [MeasurableSpace E] [BorelSpace E]
+  [FiniteDimensional ℝ E]
 
-variable {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω} [IsProbabilityMeasure P]
+variable
+  {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω} [IsProbabilityMeasure P]
   {Ω' : Type*} {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} [IsProbabilityMeasure P']
   {X' : Ω' → E} {X : ℕ → Ω → E}
 
-/-- The **Cramér-Wold theorem**: convergence in distribution of a sequence of random variables
+/--
+The **Cramér-Wold theorem**: convergence in distribution of a sequence of random variables
 taking values in a finite-dimensional real inner product space is equivalent to convergence in
-distribution of all its scalar projections. -/
+distribution of all its scalar projections.
+-/
 theorem tendstoInDistribution_iff_tendstoInDistribution_inner
-    (hX' : AEMeasurable X' P') (hX : ∀ n, AEMeasurable (X n) P) :
-    TendstoInDistribution X atTop X' (fun _ ↦ P) P' ↔
-    (∀ t, TendstoInDistribution (⟪X · ·, t⟫) atTop (⟪X' ·, t⟫) (fun _ ↦ P) P') where
+    (hX' : AEMeasurable X' P') (hX : ∀ n, AEMeasurable (X n) P)
+    : TendstoInDistribution X atTop X' (fun _ ↦ P) P'
+      ↔ (∀ t, TendstoInDistribution (⟪X · ·, t⟫) atTop (⟪X' ·, t⟫) (fun _ ↦ P) P') where
   mp h t := h.continuous_comp (continuous_id.inner continuous_const)
   mpr h := by
     refine .of_tendsto_charFun hX hX' fun t ↦ ?_

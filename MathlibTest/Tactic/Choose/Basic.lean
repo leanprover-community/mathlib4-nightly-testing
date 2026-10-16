@@ -1,4 +1,5 @@
 module
+
 import Batteries.Util.ExtendedBinder
 import Mathlib.Tactic.Choose
 
@@ -19,7 +20,7 @@ example (h : ∀ n m : Nat, ∃ i j, m = n + i ∨ m + j = n) : True := by
   guard_hyp h : ∀ (n m : Nat), m = n + i n m ∨ m + j n m = n
   trivial
 
-example (h : ∀ i : Nat, i < 7 → ∃ j, i < j ∧ j < i+i) : True := by
+example (h : ∀ i : Nat, i < 7 → ∃ j, i < j ∧ j < i + i) : True := by
   choose! f h h' using h
   guard_hyp f : Nat → Nat
   guard_hyp h : ∀ (i : Nat), i < 7 → i < f i
@@ -50,7 +51,7 @@ example : (∀ m : Nat, ∃ i, ∀ n : Nat, ∃ j, m = n + i ∨ m + j = n) → 
   guard_hyp h : ∀ (m k : Nat), m = k + i m ∨ m + j m k = k
   trivial
 
-example (h : ∀ _n m : Nat, ∃ i, ∀ n:Nat, ∃ j, m = n + i ∨ m + j = n) : True := by
+example (h : ∀ _n m : Nat, ∃ i, ∀ n : Nat, ∃ j, m = n + i ∨ m + j = n) : True := by
   choose i j h using h
   guard_hyp i : Nat → Nat → Nat
   guard_hyp j : Nat → Nat → Nat → Nat
@@ -62,10 +63,11 @@ example (h : ∀ _n m : Nat, ∃ i, ∀ n:Nat, ∃ j, m = n + i ∨ m + j = n) :
 example (h : ∀ n, ∃ k ≥ 0, n = k) : ∀ _ : Nat, 1 = 1 := by
   choose u hu using h
   guard_hyp hu : ∀ n, u n ≥ 0 ∧ n = u n
-  intro; rfl
+  intro
+  rfl
 
 -- test choose with conjunction
-example (h : ∀ i : Nat, ∃ j, i < j ∧ j < i+i) : True := by
+example (h : ∀ i : Nat, ∃ j, i < j ∧ j < i + i) : True := by
   choose f h h' using h
   guard_hyp f : Nat → Nat
   guard_hyp h : ∀ (i : Nat), i < f i
@@ -110,7 +112,7 @@ example (h : ∀ m : Nat, ∃ n k : Nat, m < n ∧ n < k) : True := by
   trivial
 
 -- Type annotation with choose!
-example (h : ∀ i : Nat, i < 7 → ∃ j, i < j ∧ j < i+i) : True := by
+example (h : ∀ i : Nat, i < 7 → ∃ j, i < j ∧ j < i + i) : True := by
   choose! (f : Nat → Nat) (h : ∀ i, i < 7 → i < f i) h' using h
   guard_hyp f : Nat → Nat
   guard_hyp h : ∀ (i : Nat), i < 7 → i < f i
@@ -121,7 +123,7 @@ example (h : ∀ i : Nat, i < 7 → ∃ j, i < j ∧ j < i+i) : True := by
 example (h : ∃ n : Nat, n > 0) : True := by
   choose (n : Nat) (hn : n > 0 + 0) using h
   guard_hyp n : Nat
-  guard_hyp hn : n > 0 + 0  -- user-specified type is preserved
+  guard_hyp hn : n > 0 + 0 -- user-specified type is preserved
   trivial
 
 -- Type annotation with wildcard

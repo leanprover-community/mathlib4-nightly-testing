@@ -35,27 +35,29 @@ namespace LieAlgebra
 
 namespace ExtendScalars
 
-variable [CommRing R] [CommRing A] [Algebra R A] [LieRing L] [LieAlgebra R L]
-  [AddCommGroup M] [Module R M] [LieRingModule L M] [LieModule R L M]
+variable
+  [CommRing R] [CommRing A] [Algebra R A] [LieRing L] [LieAlgebra R L] [AddCommGroup M] [Module R M]
+  [LieRingModule L M] [LieModule R L M]
 
 set_option backward.privateInPublic true in
 /-- The Lie bracket on the extension of a Lie algebra `L` over `R` by an algebra `A` over `R`. -/
 private def bracket' : A ⊗[R] L →ₗ[A] A ⊗[R] M →ₗ[A] A ⊗[R] M :=
   TensorProduct.curry <|
-    TensorProduct.AlgebraTensorModule.map
-        (LinearMap.mul' A A) (LieModule.toModuleHom R L M : L ⊗[R] M →ₗ[R] M) ∘ₗ
-      (TensorProduct.AlgebraTensorModule.tensorTensorTensorComm R R A A A L A M).toLinearMap
+    TensorProduct.AlgebraTensorModule.map (LinearMap.mul' A A)
+        (LieModule.toModuleHom R L M : L ⊗[R] M →ₗ[R] M)
+      ∘ₗ (TensorProduct.AlgebraTensorModule.tensorTensorTensorComm R R A A A L A M).toLinearMap
 
 @[simp]
-private theorem bracket'_tmul (s t : A) (x : L) (m : M) :
-    bracket' R A L M (s ⊗ₜ[R] x) (t ⊗ₜ[R] m) = (s * t) ⊗ₜ ⁅x, m⁆ := rfl
+private theorem bracket'_tmul (s t : A) (x : L) (m : M)
+    : bracket' R A L M (s ⊗ₜ[R] x) (t ⊗ₜ[R] m) = (s * t) ⊗ₜ ⁅x, m⁆ :=
+  rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-instance : Bracket (A ⊗[R] L) (A ⊗[R] M) where bracket x m := bracket' R A L M x m
+instance : Bracket (A ⊗[R] L) (A ⊗[R] M) where
+  bracket x m := bracket' R A L M x m
 
-private theorem bracket_def (x : A ⊗[R] L) (m : A ⊗[R] M) : ⁅x, m⁆ = bracket' R A L M x m :=
-  rfl
+private theorem bracket_def (x : A ⊗[R] L) (m : A ⊗[R] M) : ⁅x, m⁆ = bracket' R A L M x m := rfl
 
 @[simp]
 theorem bracket_tmul (s t : A) (x : L) (y : M) : ⁅s ⊗ₜ[R] x, t ⊗ₜ[R] y⁆ = (s * t) ⊗ₜ ⁅x, y⁆ := rfl
@@ -68,10 +70,11 @@ private theorem bracket_lie_self (x : A ⊗[R] L) : ⁅x, x⁆ = 0 := by
     simp only [bracket'_tmul, TensorProduct.tmul_zero, lie_self]
   · intro z₁ z₂ h₁ h₂
     suffices bracket' R A L L z₁ z₂ + bracket' R A L L z₂ z₁ = 0 by
-      rw [map_add, map_add, LinearMap.add_apply, LinearMap.add_apply, h₁, h₂,
-        zero_add, add_zero, add_comm, this]
+      rw [map_add, map_add, LinearMap.add_apply, LinearMap.add_apply, h₁, h₂, zero_add, add_zero,
+        add_comm, this]
     refine z₁.inductionOn ?_ ?_
-    · intro a₁ l₁; refine z₂.inductionOn ?_ ?_
+    · intro a₁ l₁
+      refine z₂.inductionOn ?_ ?_
       · intro a₂ l₂
         simp only [← lie_skew l₂ l₁, mul_comm a₁ a₂, TensorProduct.tmul_neg, bracket'_tmul,
           add_neg_cancel]
@@ -81,15 +84,16 @@ private theorem bracket_lie_self (x : A ⊗[R] L) : ⁅x, x⁆ = 0 := by
       simp only [add_add_add_comm, hy₁, hy₂, add_zero, LinearMap.add_apply, map_add]
 
 set_option backward.privateInPublic true in
-private theorem bracket_leibniz_lie (x y : A ⊗[R] L) (z : A ⊗[R] M) :
-    ⁅x, ⁅y, z⁆⁆ = ⁅⁅x, y⁆, z⁆ + ⁅y, ⁅x, z⁆⁆ := by
+private theorem bracket_leibniz_lie (x y : A ⊗[R] L) (z : A ⊗[R] M)
+    : ⁅x, ⁅y, z⁆⁆ = ⁅⁅x, y⁆, z⁆ + ⁅y, ⁅x, z⁆⁆ := by
   simp only [bracket_def]
   refine x.inductionOn ?_ ?_
   · intro a₁ l₁
     refine y.inductionOn ?_ ?_
     · intro a₂ l₂
       refine z.inductionOn ?_ ?_
-      · intro a₃ l₃; simp only [bracket'_tmul]
+      · intro a₃ l₃
+        simp only [bracket'_tmul]
         rw [mul_left_comm a₂ a₁ a₃, mul_assoc, leibniz_lie, TensorProduct.tmul_add]
       · grind
     · grind [LinearMap.add_apply]
@@ -103,9 +107,11 @@ instance instLieRing : LieRing (A ⊗[R] L) where
   lie_self := bracket_lie_self R A L
   leibniz_lie := bracket_leibniz_lie R A L L
 
-instance instBaseLieAlgebra : LieAlgebra R (A ⊗[R] L) where lie_smul := by simp [bracket_def]
+instance instBaseLieAlgebra : LieAlgebra R (A ⊗[R] L) where
+  lie_smul := by simp [bracket_def]
 
-instance instLieAlgebra : LieAlgebra A (A ⊗[R] L) where lie_smul _a _x _y := map_smul _ _ _
+instance instLieAlgebra : LieAlgebra A (A ⊗[R] L) where
+  lie_smul _a _x _y := map_smul _ _ _
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
@@ -119,41 +125,46 @@ instance instLieModule : LieModule A (A ⊗[R] L) (A ⊗[R] M) where
   lie_smul _ _ _ := map_smul _ _ _
 
 /-- The Lie algebra homomorphism induced by an algebra map. -/
-def map {R A B L L' : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing B] [Algebra R B]
-    [LieRing L] [LieAlgebra R L] [LieRing L'] [LieAlgebra R L'] (f : A →ₐ[R] B) (g : L →ₗ⁅R⁆ L') :
-    A ⊗[R] L →ₗ⁅R⁆ B ⊗[R] L' :=
-  { TensorProduct.map f.toLinearMap g with
-    map_lie' {x y} := by
-      simp only [bracket_def, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom]
-      refine x.inductionOn ?_ ?_
-      · intro _ _
-        refine y.inductionOn (fun _ _ ↦ by simp) (fun _ _ h1 h2 ↦ by simp [h1, h2])
-      · intro _ _
-        refine y.inductionOn (fun _ _ h ↦ by simp [h]) (by simp_all) }
+def map
+    {R A B L L' : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing B] [Algebra R B]
+    [LieRing L] [LieAlgebra R L] [LieRing L'] [LieAlgebra R L']
+    (f : A →ₐ[R] B) (g : L →ₗ⁅R⁆ L')
+    : A ⊗[R] L →ₗ⁅R⁆ B ⊗[R] L' := {
+  TensorProduct.map f.toLinearMap g with
+  map_lie' {x y} := by
+    simp only [bracket_def, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom]
+    refine x.inductionOn ?_ ?_
+    · intro _ _
+      refine y.inductionOn (fun _ _ ↦ by simp) (fun _ _ h1 h2 ↦ by simp [h1, h2])
+    · intro _ _
+      refine y.inductionOn (fun _ _ h ↦ by simp [h]) (by simp_all)
+}
 
 @[simp]
-lemma map_apply_tmul {R A B L L' : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing B]
-    [Algebra R B] [LieRing L] [LieAlgebra R L] [LieRing L'] [LieAlgebra R L'] {f : A →ₐ[R] B}
-    {g : L →ₗ⁅R⁆ L'} (a : A) (x : L) :
-    map f g (a ⊗ₜ x) = (f a) ⊗ₜ (g x) :=
+lemma map_apply_tmul
+    {R A B L L' : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing B] [Algebra R B]
+    [LieRing L] [LieAlgebra R L] [LieRing L'] [LieAlgebra R L']
+    {f : A →ₐ[R] B} {g : L →ₗ⁅R⁆ L'}
+    (a : A) (x : L)
+    : map f g (a ⊗ₜ x) = (f a) ⊗ₜ (g x) :=
   rfl
 
 end ExtendScalars
 
 namespace RestrictScalars
 
-
 variable [h : LieRing L]
 
-instance : LieRing (RestrictScalars R A L) :=
-  h
+instance : LieRing (RestrictScalars R A L) := h
 
 variable [CommRing A] [LieAlgebra A L]
 
 set_option backward.isDefEq.respectTransparency false in
 instance lieAlgebra [CommRing R] [Algebra R A] : LieAlgebra R (RestrictScalars R A L) where
-  lie_smul t x y := (lie_smul (algebraMap R A t) (RestrictScalars.addEquiv R A L x)
-    (RestrictScalars.addEquiv R A L y) :)
+  lie_smul t x y :=
+    (lie_smul (algebraMap R A t) (RestrictScalars.addEquiv R A L x)
+        (RestrictScalars.addEquiv R A L y)
+      :)
 
 end RestrictScalars
 
@@ -161,13 +172,13 @@ end LieAlgebra
 
 section ExtendScalars
 
-variable [CommRing R] [LieRing L] [LieAlgebra R L]
-  [AddCommGroup M] [Module R M] [LieRingModule L M] [LieModule R L M]
-  [CommRing A] [Algebra R A]
+variable
+  [CommRing R] [LieRing L] [LieAlgebra R L] [AddCommGroup M] [Module R M] [LieRingModule L M]
+  [LieModule R L M] [CommRing A] [Algebra R A]
 
 @[simp]
-lemma LieModule.toEnd_baseChange (x : L) :
-    toEnd A (A ⊗[R] L) (A ⊗[R] M) (1 ⊗ₜ x) = (toEnd R L M x).baseChange A := by
+lemma LieModule.toEnd_baseChange (x : L)
+    : toEnd A (A ⊗[R] L) (A ⊗[R] M) (1 ⊗ₜ x) = (toEnd R L M x).baseChange A := by
   ext; simp
 
 namespace LieSubmodule
@@ -178,41 +189,43 @@ open LieModule
 
 set_option backward.isDefEq.respectTransparency false in
 variable {R L M} in
-/-- If `A` is an `R`-algebra, any Lie submodule of a Lie module `M` with coefficients in `R` may be
+/--
+If `A` is an `R`-algebra, any Lie submodule of a Lie module `M` with coefficients in `R` may be
 pushed forward to a Lie submodule of `A ⊗ M` with coefficients in `A`.
 
-This "base change" operation is also known as "extension of scalars". -/
-def baseChange : LieSubmodule A (A ⊗[R] L) (A ⊗[R] M) :=
-  { (N : Submodule R M).baseChange A with
-    lie_mem := by
-      intro x m hm
-      rw [Submodule.mem_carrier, SetLike.mem_coe] at hm ⊢
-      rw [Submodule.baseChange_eq_span] at hm
-      obtain ⟨c, rfl⟩ := (Finsupp.mem_span_iff_linearCombination _ _ _).mp hm
-      refine x.inductionOn (fun a y ↦ ?_) (fun y z hy hz ↦ ?_)
-      · change toEnd A (A ⊗[R] L) (A ⊗[R] M) _ _ ∈ _
-        simp_rw [Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, toEnd_apply_apply]
-        refine Submodule.sum_mem _ fun ⟨_, n, hn, h⟩ _ ↦ Submodule.smul_mem _ _ ?_
-        rw [Subtype.coe_mk, ← h]
-        exact Submodule.tmul_mem_baseChange_of_mem _ (N.lie_mem hn)
-      · rw [add_lie]
-        exact ((N : Submodule R M).baseChange A).add_mem hy hz }
+This "base change" operation is also known as "extension of scalars".
+-/
+def baseChange : LieSubmodule A (A ⊗[R] L) (A ⊗[R] M) := {
+  (N : Submodule R M).baseChange A with
+  lie_mem := by
+    intro x m hm
+    rw [Submodule.mem_carrier, SetLike.mem_coe] at hm ⊢
+    rw [Submodule.baseChange_eq_span] at hm
+    obtain ⟨c, rfl⟩ := (Finsupp.mem_span_iff_linearCombination _ _ _).mp hm
+    refine x.inductionOn (fun a y ↦ ?_) (fun y z hy hz ↦ ?_)
+    · change toEnd A (A ⊗[R] L) (A ⊗[R] M) _ _ ∈ _
+      simp_rw [Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, toEnd_apply_apply]
+      refine Submodule.sum_mem _ fun ⟨_, n, hn, h⟩ _ ↦ Submodule.smul_mem _ _ ?_
+      rw [Subtype.coe_mk, ← h]
+      exact Submodule.tmul_mem_baseChange_of_mem _ (N.lie_mem hn)
+    · rw [add_lie]
+      exact ((N : Submodule R M).baseChange A).add_mem hy hz
+}
 
 @[simp]
-lemma coe_baseChange :
-    (N.baseChange A : Submodule A (A ⊗[R] M)) = (N : Submodule R M).baseChange A :=
+lemma coe_baseChange
+    : (N.baseChange A : Submodule A (A ⊗[R] M)) = (N : Submodule R M).baseChange A :=
   rfl
 
 variable {N}
 
 variable {R A L M} in
-lemma tmul_mem_baseChange_of_mem (a : A) {m : M} (hm : m ∈ N) :
-    a ⊗ₜ[R] m ∈ N.baseChange A :=
+lemma tmul_mem_baseChange_of_mem (a : A) {m : M} (hm : m ∈ N) : a ⊗ₜ[R] m ∈ N.baseChange A :=
   (N : Submodule R M).tmul_mem_baseChange_of_mem a hm
 
-lemma mem_baseChange_iff {m : A ⊗[R] M} :
-    m ∈ N.baseChange A ↔
-    m ∈ Submodule.span A ((N : Submodule R M).map (TensorProduct.mk R A M 1)) := by
+lemma mem_baseChange_iff {m : A ⊗[R] M}
+    : m ∈ N.baseChange A
+      ↔ m ∈ Submodule.span A ((N : Submodule R M).map (TensorProduct.mk R A M 1)) := by
   rw [← Submodule.baseChange_eq_span]; rfl
 
 @[simp]
@@ -225,22 +238,25 @@ lemma baseChange_top : (⊤ : LieSubmodule R L M).baseChange A = ⊤ := by
   simp only [baseChange, top_toSubmodule, Submodule.baseChange_top]
   rfl
 
-lemma lie_baseChange {I : LieIdeal R L} {N : LieSubmodule R L M} :
-    ⁅I, N⁆.baseChange A = ⁅I.baseChange A, N.baseChange A⁆ := by
+lemma lie_baseChange {I : LieIdeal R L} {N : LieSubmodule R L M}
+    : ⁅I, N⁆.baseChange A = ⁅I.baseChange A, N.baseChange A⁆ := by
   set s : Set (A ⊗[R] M) := { m | ∃ x ∈ I, ∃ n ∈ N, 1 ⊗ₜ ⁅x, n⁆ = m}
   have : (TensorProduct.mk R A M 1) '' {m | ∃ x ∈ I, ∃ n ∈ N, ⁅x, n⁆ = m} = s := by ext; simp [s]
-  rw [← toSubmodule_inj, coe_baseChange, lieIdeal_oper_eq_linear_span',
-    Submodule.baseChange_span, this, lieIdeal_oper_eq_linear_span']
+  rw [← toSubmodule_inj, coe_baseChange, lieIdeal_oper_eq_linear_span', Submodule.baseChange_span,
+    this, lieIdeal_oper_eq_linear_span']
   refine le_antisymm (Submodule.span_mono ?_) (Submodule.span_le.mpr ?_)
   · rintro - ⟨x, hx, m, hm, rfl⟩
-    exact ⟨1 ⊗ₜ x, tmul_mem_baseChange_of_mem 1 hx,
-           1 ⊗ₜ m, tmul_mem_baseChange_of_mem 1 hm, by simp⟩
+    exact
+      ⟨1 ⊗ₜ x, tmul_mem_baseChange_of_mem 1 hx, 1 ⊗ₜ m, tmul_mem_baseChange_of_mem 1 hm, by simp⟩
   · rintro - ⟨x, hx, m, hm, rfl⟩
     rw [mem_baseChange_iff] at hx hm
-    refine Submodule.span_induction₂ (p := fun x m _ _ ↦ ⁅x, m⁆ ∈ Submodule.span A s)
+    refine Submodule.span_induction₂
+      (p := fun x m _ _ ↦ ⁅x, m⁆ ∈ Submodule.span A s)
       ?_ (by simp) (by simp) ?_ ?_ ?_ ?_ hx hm
     · rintro - - ⟨x, hx, rfl⟩ ⟨y, hy, rfl⟩; exact Submodule.subset_span ⟨x, hx, y, hy, by simp⟩
-    all_goals { intros; simp [add_mem, Submodule.smul_mem, *] }
+    all_goals {
+      intros; simp [add_mem, Submodule.smul_mem, *]
+    }
 
 end LieSubmodule
 

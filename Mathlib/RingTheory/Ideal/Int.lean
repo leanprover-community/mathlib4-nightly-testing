@@ -35,8 +35,8 @@ public section
 theorem Int.card_ideal_quot (n : ℕ) : Nat.card (ℤ ⧸ (Ideal.span {(n : ℤ)})) = n := by
   simp [← Submodule.cardQuot_apply, ← Ideal.absNorm_apply]
 
-instance Int.ideal_span_isMaximal_of_prime (p : ℕ) [Fact (Nat.Prime p)] :
-    (Ideal.span {(p : ℤ)}).IsMaximal :=
+instance Int.ideal_span_isMaximal_of_prime (p : ℕ) [Fact (Nat.Prime p)]
+    : (Ideal.span {(p : ℤ)}).IsMaximal :=
   Ideal.Quotient.maximal_of_isField _ <|
     (Int.quotientSpanNatEquivZMod p).toMulEquiv.isField (Field.toIsField _)
 
@@ -56,22 +56,18 @@ section Ring
 
 variable [Ring R] {I : Ideal R}
 
-instance liesOver_span_absNorm (I : Ideal R) :
-    I.LiesOver (span {(absNorm (under ℤ I) : ℤ)}) := by
+instance liesOver_span_absNorm (I : Ideal R) : I.LiesOver (span {(absNorm (under ℤ I) : ℤ)}) := by
   rw [liesOver_iff, under_def, Int.ideal_span_absNorm_eq_self]
 
-theorem cast_mem_ideal_iff {d : ℤ} :
-    (d : R) ∈ I ↔ (absNorm (under ℤ I) : ℤ) ∣ d := by
+theorem cast_mem_ideal_iff {d : ℤ} : (d : R) ∈ I ↔ (absNorm (under ℤ I) : ℤ) ∣ d := by
   rw [← mem_span_singleton, ideal_span_absNorm_eq_self, under_def, mem_comap, eq_intCast]
 
 variable (I)
 
-theorem absNorm_under_mem :
-    (absNorm (under ℤ I) : R) ∈ I := by
+theorem absNorm_under_mem : (absNorm (under ℤ I) : R) ∈ I := by
   rw [← cast_natCast, cast_mem_ideal_iff]
 
-theorem absNorm_under_eq_sInf :
-    absNorm (under ℤ I) = sInf {d : ℕ | 0 < d ∧ (d : R) ∈ I} := by
+theorem absNorm_under_eq_sInf : absNorm (under ℤ I) = sInf {d : ℕ | 0 < d ∧ (d : R) ∈ I} := by
   by_cases h : absNorm (under ℤ I) = 0
   · have : {d : ℕ | 0 < d ∧ ↑d ∈ I} = ∅ := by
       refine Set.eq_empty_of_forall_notMem ?_
@@ -88,9 +84,9 @@ theorem absNorm_under_eq_sInf :
     rw [← cast_natCast, cast_mem_ideal_iff, natCast_dvd_natCast] at h₂
     exact lt_iff_not_ge.mp h₀ <| Nat.le_of_dvd (Nat.sInf_mem (Set.nonempty_of_mem h₁)).1 h₂
 
-theorem absNorm_under_dvd_absNorm {S : Type*} [CommRing S] [IsDedekindDomain S] [Infinite S]
-    (I : Ideal S) :
-    absNorm (under ℤ I) ∣ absNorm I := by
+theorem absNorm_under_dvd_absNorm
+    {S : Type*} [CommRing S] [IsDedekindDomain S] [Infinite S] (I : Ideal S)
+    : absNorm (under ℤ I) ∣ absNorm I := by
   cases finite_or_infinite (S ⧸ I)
   · have : Fintype (S ⧸ I) := Fintype.ofFinite (S ⧸ I)
     have h_main {d : ℕ} : (d : S) ∈ I ↔ ∀ (x : S ⧸ I), d • x = 0 := by
@@ -102,8 +98,8 @@ theorem absNorm_under_dvd_absNorm {S : Type*} [CommRing S] [IsDedekindDomain S] 
   · rw [absNorm_apply I, Submodule.cardQuot_apply, Nat.card_eq_zero_of_infinite]
     exact Nat.dvd_zero _
 
-theorem _root_.Ideal.ringChar_quot {S : Type*} [CommRing S] (I : Ideal S) :
-    ringChar (S ⧸ I) = absNorm (under ℤ I) := by
+theorem _root_.Ideal.ringChar_quot {S : Type*} [CommRing S] (I : Ideal S)
+    : ringChar (S ⧸ I) = absNorm (under ℤ I) := by
   refine ringChar.eq_iff.mpr <| (charP_iff _ _).mpr fun x ↦ ?_
   change Ideal.Quotient.mk I x = 0 ↔ _
   rw [Quotient.eq_zero_iff_mem, ← Int.cast_natCast, cast_mem_ideal_iff, natCast_dvd_natCast]
@@ -116,8 +112,8 @@ section CommRing
 
 variable [CommRing R] [IsDomain R] [Algebra.IsIntegral ℤ R]
 
-theorem Nat.absNorm_under_prime (P : Ideal R) [P.IsPrime] [NeZero P] :
-    (absNorm (under ℤ P)).Prime := by
+theorem Nat.absNorm_under_prime (P : Ideal R) [P.IsPrime] [NeZero P]
+    : (absNorm (under ℤ P)).Prime := by
   rw [Nat.prime_iff_prime_int, ← span_singleton_prime, Int.ideal_span_absNorm_eq_self]
   · infer_instance
   · refine Int.natCast_ne_zero.mpr <| absNorm_eq_zero_iff.not.mpr ?_

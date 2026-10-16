@@ -45,8 +45,7 @@ instance : LargeCategory NonemptyFinLinOrd :=
 instance : ConcreteCategory NonemptyFinLinOrd (· →o ·) :=
   inferInstanceAs <| ConcreteCategory (InducedCategory _ toLinOrd) _
 
-instance (X : NonemptyFinLinOrd) : BoundedOrder X :=
-  Fintype.toBoundedOrder X
+instance (X : NonemptyFinLinOrd) : BoundedOrder X := Fintype.toBoundedOrder X
 
 /-- Construct a bundled `NonemptyFinLinOrd` from the underlying type and typeclass. -/
 abbrev of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : NonemptyFinLinOrd where
@@ -57,45 +56,44 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab NonemptyFinLinOrd.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-theorem coe_of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : ↥(of α) = α :=
-  rfl
+theorem coe_of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : ↥(of α) = α := rfl
 
 /-- Typecheck a `OrderHom` as a morphism in `NonemptyFinLinOrd`. -/
-abbrev ofHom {X Y : Type u} [Nonempty X] [LinearOrder X] [Fintype X]
-    [Nonempty Y] [LinearOrder Y] [Fintype Y] (f : X →o Y) :
-    of X ⟶ of Y :=
+abbrev ofHom
+    {X Y : Type u} [Nonempty X] [LinearOrder X] [Fintype X] [Nonempty Y] [LinearOrder Y] [Fintype Y]
+    (f : X →o Y)
+    : of X ⟶ of Y :=
   ConcreteCategory.ofHom (C := NonemptyFinLinOrd) f
 
-@[simp]
-lemma hom_hom_id {X : NonemptyFinLinOrd} : (𝟙 X : X ⟶ X).hom.hom = OrderHom.id := rfl
+@[simp] lemma hom_hom_id {X : NonemptyFinLinOrd} : (𝟙 X : X ⟶ X).hom.hom = OrderHom.id := rfl
 
 /- Provided for rewriting. -/
-lemma id_apply (X : NonemptyFinLinOrd) (x : X) :
-    (𝟙 X : X ⟶ X) x = x := by simp
+lemma id_apply (X : NonemptyFinLinOrd) (x : X) : (𝟙 X : X ⟶ X) x = x := by simp
 
 @[simp]
-lemma hom_hom_comp {X Y Z : NonemptyFinLinOrd} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).hom.hom = g.hom.hom.comp f.hom.hom := rfl
+lemma hom_hom_comp {X Y Z : NonemptyFinLinOrd} (f : X ⟶ Y) (g : Y ⟶ Z)
+    : (f ≫ g).hom.hom = g.hom.hom.comp f.hom.hom :=
+  rfl
 
 /- Provided for rewriting. -/
-lemma comp_apply {X Y Z : NonemptyFinLinOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-    (f ≫ g) x = g (f x) := by simp
+lemma comp_apply {X Y Z : NonemptyFinLinOrd} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X)
+    : (f ≫ g) x = g (f x) := by
+  simp
 
 @[ext]
 lemma hom_ext {X Y : NonemptyFinLinOrd} {f g : X ⟶ Y} (hf : f.hom.hom = g.hom.hom) : f = g :=
   InducedCategory.hom_ext (ConcreteCategory.ext hf)
 
 @[simp]
-lemma hom_hom_ofHom {X Y : Type u} [Nonempty X] [LinearOrder X] [Fintype X] [Nonempty Y]
-    [LinearOrder Y] [Fintype Y] (f : X →o Y) :
-  (ofHom f).hom.hom = f := rfl
+lemma hom_hom_ofHom
+    {X Y : Type u} [Nonempty X] [LinearOrder X] [Fintype X] [Nonempty Y] [LinearOrder Y] [Fintype Y]
+    (f : X →o Y)
+    : (ofHom f).hom.hom = f :=
+  rfl
 
-@[simp]
-lemma ofHom_hom {X Y : NonemptyFinLinOrd} (f : X ⟶ Y) :
-    ofHom f.hom.hom = f := rfl
+@[simp] lemma ofHom_hom {X Y : NonemptyFinLinOrd} (f : X ⟶ Y) : ofHom f.hom.hom = f := rfl
 
-instance : Inhabited NonemptyFinLinOrd :=
-  ⟨of PUnit⟩
+instance : Inhabited NonemptyFinLinOrd := ⟨of PUnit⟩
 
 instance hasForgetToLinOrd : HasForget₂ NonemptyFinLinOrd LinOrd :=
   inferInstanceAs <| HasForget₂ (InducedCategory _ toLinOrd) _
@@ -104,8 +102,10 @@ instance hasForgetToFinPartOrd : HasForget₂ NonemptyFinLinOrd FinPartOrd where
   forget₂.obj X := ↧X
   forget₂.map f := FinPartOrd.ofHom f.hom.hom
 
-/-- Constructs an equivalence between nonempty finite linear orders from an order isomorphism
-between them. -/
+/--
+Constructs an equivalence between nonempty finite linear orders from an order isomorphism
+between them.
+-/
 @[simps]
 def Iso.mk {α β : NonemptyFinLinOrd.{u}} (e : α ≃o β) : α ≅ β where
   hom := ofHom e
@@ -125,8 +125,8 @@ def dualEquiv : NonemptyFinLinOrd ≌ NonemptyFinLinOrd where
   unitIso := NatIso.ofComponents fun X => Iso.mk <| OrderIso.dualDual X
   counitIso := NatIso.ofComponents fun X => Iso.mk <| OrderIso.dualDual X
 
-theorem mono_iff_injective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
-    Mono f ↔ Function.Injective f := by
+theorem mono_iff_injective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B)
+    : Mono f ↔ Function.Injective f := by
   refine ⟨?_, ConcreteCategory.mono_of_injective f⟩
   intro _ a₁ a₂ h
   let X := of (ULift (Fin 1))
@@ -140,29 +140,35 @@ theorem mono_iff_injective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
   rw [eq]
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem epi_iff_surjective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
-    Epi f ↔ Function.Surjective f := by
+theorem epi_iff_surjective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B)
+    : Epi f ↔ Function.Surjective f := by
   constructor
   · intro
     dsimp only [Function.Surjective]
     by_contra! ⟨m, hm⟩
     let Y := of (ULift (Fin 2))
-    let p₁ : B ⟶ Y := ofHom
-      ⟨fun b => if b < m then ULift.up 0 else ULift.up 1, fun x₁ x₂ h => by
-        simp only
-        split_ifs with h₁ h₂ h₂
-        any_goals apply Fin.zero_le
-        · exfalso
-          exact h₁ (lt_of_le_of_lt h h₂)
-        · rfl⟩
-    let p₂ : B ⟶ Y := ofHom
-      ⟨fun b => if b ≤ m then ULift.up 0 else ULift.up 1, fun x₁ x₂ h => by
-        simp only
-        split_ifs with h₁ h₂ h₂
-        any_goals apply Fin.zero_le
-        · exfalso
-          exact h₁ (h.trans h₂)
-        · rfl⟩
+    let p₁ : B ⟶ Y :=
+      ofHom ⟨
+        fun b => if b < m then ULift.up 0 else ULift.up 1,
+        fun x₁ x₂ h => by
+          simp only
+          split_ifs with h₁ h₂ h₂
+          any_goals apply Fin.zero_le
+          · exfalso
+            exact h₁ (lt_of_le_of_lt h h₂)
+          · rfl
+      ⟩
+    let p₂ : B ⟶ Y :=
+      ofHom ⟨
+        fun b => if b ≤ m then ULift.up 0 else ULift.up 1,
+        fun x₁ x₂ h => by
+          simp only
+          split_ifs with h₁ h₂ h₂
+          any_goals apply Fin.zero_le
+          · exfalso
+            exact h₁ (h.trans h₂)
+          · rfl
+      ⟩
     have h : p₁ m = p₂ m := by
       congr
       rw [← cancel_epi f]
@@ -179,54 +185,52 @@ theorem epi_iff_surjective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
   · intro h
     exact ConcreteCategory.epi_of_surjective f h
 
-instance : SplitEpiCategory NonemptyFinLinOrd.{u} :=
-  ⟨fun {X Y} f hf => by
-    have H : ∀ y : Y, Nonempty (f ⁻¹' {y}) := by
-      rw [epi_iff_surjective] at hf
-      intro y
-      exact Nonempty.intro ⟨(hf y).choose, (hf y).choose_spec⟩
-    let φ : Y → X := fun y => (H y).some.1
-    have hφ : ∀ y : Y, f (φ y) = y := fun y => (H y).some.2
-    refine IsSplitEpi.mk' ⟨ofHom ⟨φ, ?_⟩, ?_⟩
-    swap
-    · ext b
-      apply hφ
-    · intro a b
-      contrapose
-      intro h
-      simp only [not_le] at h ⊢
-      suffices b ≤ a by
-        apply lt_of_le_of_ne this
-        rintro rfl
-        exfalso
-        simp at h
-      have H : f (φ b) ≤ f (φ a) := f.hom.hom.monotone (le_of_lt h)
-      simpa only [hφ] using H⟩
+instance : SplitEpiCategory NonemptyFinLinOrd.{u} := ⟨fun {X Y} f hf => by
+  have H : ∀ y : Y, Nonempty (f ⁻¹' {y}) := by
+    rw [epi_iff_surjective] at hf
+    intro y
+    exact Nonempty.intro ⟨(hf y).choose, (hf y).choose_spec⟩
+  let φ : Y → X := fun y => (H y).some.1
+  have hφ : ∀ y : Y, f (φ y) = y := fun y => (H y).some.2
+  refine IsSplitEpi.mk' ⟨ofHom ⟨φ, ?_⟩, ?_⟩
+  swap
+  · ext b
+    apply hφ
+  · intro a b
+    contrapose
+    intro h
+    simp only [not_le] at h ⊢
+    suffices b ≤ a by
+      apply lt_of_le_of_ne this
+      rintro rfl
+      exfalso
+      simp at h
+    have H : f (φ b) ≤ f (φ a) := f.hom.hom.monotone (le_of_lt h)
+    simpa only [hφ] using H⟩
 
-instance : HasStrongEpiMonoFactorisations NonemptyFinLinOrd.{u} :=
-  ⟨fun {X Y} f => by
-    let I := of (Set.image f ⊤)
-    let e : X ⟶ I := ofHom ⟨fun x => ⟨f x, ⟨x, by tauto⟩⟩, fun x₁ x₂ h => f.hom.hom.monotone h⟩
-    let m : I ⟶ Y := ofHom ⟨fun y => y.1, by tauto⟩
-    have : Epi e := by
-      rw [epi_iff_surjective]
-      rintro ⟨_, y, h, rfl⟩
-      exact ⟨y, rfl⟩
-    have : StrongEpi e := strongEpi_of_epi e
-    have : Mono m := ConcreteCategory.mono_of_injective _ (fun x y h => Subtype.ext h)
-    exact ⟨⟨I, m, e, rfl⟩⟩⟩
+instance : HasStrongEpiMonoFactorisations NonemptyFinLinOrd.{u} := ⟨fun {X Y} f => by
+  let I := of (Set.image f ⊤)
+  let e : X ⟶ I := ofHom ⟨fun x => ⟨f x, ⟨x, by tauto⟩⟩, fun x₁ x₂ h => f.hom.hom.monotone h⟩
+  let m : I ⟶ Y := ofHom ⟨fun y => y.1, by tauto⟩
+  have : Epi e := by
+    rw [epi_iff_surjective]
+    rintro ⟨_, y, h, rfl⟩
+    exact ⟨y, rfl⟩
+  have : StrongEpi e := strongEpi_of_epi e
+  have : Mono m := ConcreteCategory.mono_of_injective _ (fun x y h => Subtype.ext h)
+  exact ⟨⟨I, m, e, rfl⟩⟩⟩
 
 end NonemptyFinLinOrd
 
-theorem nonemptyFinLinOrd_dual_comp_forget_to_linOrd :
-    NonemptyFinLinOrd.dual ⋙ forget₂ NonemptyFinLinOrd LinOrd =
-      forget₂ NonemptyFinLinOrd LinOrd ⋙ LinOrd.dual :=
+theorem nonemptyFinLinOrd_dual_comp_forget_to_linOrd
+    : NonemptyFinLinOrd.dual ⋙ forget₂ NonemptyFinLinOrd LinOrd
+      = forget₂ NonemptyFinLinOrd LinOrd ⋙ LinOrd.dual :=
   rfl
 
 /-- The forgetful functor `NonemptyFinLinOrd ⥤ FinPartOrd` and `OrderDual` commute. -/
-def nonemptyFinLinOrdDualCompForgetToFinPartOrd :
-    NonemptyFinLinOrd.dual ⋙ forget₂ NonemptyFinLinOrd FinPartOrd ≅
-      forget₂ NonemptyFinLinOrd FinPartOrd ⋙ FinPartOrd.dual where
+def nonemptyFinLinOrdDualCompForgetToFinPartOrd
+    : NonemptyFinLinOrd.dual ⋙ forget₂ NonemptyFinLinOrd FinPartOrd
+      ≅ forget₂ NonemptyFinLinOrd FinPartOrd ⋙ FinPartOrd.dual where
   hom.app X := FinPartOrd.ofHom OrderHom.id
   inv.app X := FinPartOrd.ofHom OrderHom.id
 

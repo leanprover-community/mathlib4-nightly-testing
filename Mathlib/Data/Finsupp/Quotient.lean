@@ -32,9 +32,7 @@ protected def liftFinsupp : Quot r →₀ β := by
     rw [lift_mk _ h]
     exact fun hb => mem_image_of_mem _ (Finsupp.mem_support_iff.mpr hb)
 
-@[simp]
-theorem liftFinsupp_mk (a : α) : Quot.liftFinsupp f h (Quot.mk r a) = f a :=
-  rfl
+@[simp] theorem liftFinsupp_mk (a : α) : Quot.liftFinsupp f h (Quot.mk r a) = f a := rfl
 
 end Quot
 
@@ -43,11 +41,8 @@ namespace Quotient
 variable {s : Setoid α} [Zero β] (f : α →₀ β) (h : ∀ a b, s a b → f a = f b)
 
 /-- Lift a function `α →₀ β` to `Quot r →₀ β`. -/
-protected def liftFinsupp : Quotient s →₀ β :=
-  Quot.liftFinsupp f h
+protected def liftFinsupp : Quotient s →₀ β := Quot.liftFinsupp f h
 
-@[simp]
-theorem liftFinsupp_mk (a : α) : Quotient.liftFinsupp f h ⟦a⟧ = f a :=
-  rfl
+@[simp] theorem liftFinsupp_mk (a : α) : Quotient.liftFinsupp f h ⟦a⟧ = f a := rfl
 
 end Quotient

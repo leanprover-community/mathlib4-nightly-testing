@@ -69,8 +69,10 @@ open CategoryTheory.Functor Category Opposite Discrete Bicategory StrongTrans
 
 variable {𝒮 : Type u₁} [Category.{v₁} 𝒮]
 
-/-- The type of objects in the fibered category associated to a pseudofunctor from a
-1-category to Cat. -/
+/--
+The type of objects in the fibered category associated to a pseudofunctor from a
+1-category to Cat.
+-/
 @[ext]
 structure Grothendieck (F : LocallyDiscrete 𝒮 ⥤ᵖ Cat.{v₂, u₂}) where
   /-- The underlying object in the base category. -/
@@ -85,47 +87,49 @@ variable {F : LocallyDiscrete 𝒮 ⥤ᵖ Cat.{v₂, u₂}}
 /-- Notation for the Grothendieck category associated to a pseudofunctor `F`. -/
 scoped prefix:75 "∫ " => Grothendieck
 
-/-- A morphism in the Grothendieck construction `∫ F` between two points `X Y : ∫ F` consists of
+/--
+A morphism in the Grothendieck construction `∫ F` between two points `X Y : ∫ F` consists of
 a morphism in the base category `base : X.base ⟶ Y.base` and
-a morphism in a fiber `f.fiber : (F.map base).obj X.fiber ⟶ Y.fiber`. -/
-structure Hom (X Y : ∫ F) where
+a morphism in a fiber `f.fiber : (F.map base).obj X.fiber ⟶ Y.fiber`.
+-/
+structure Hom (X Y : ∫F) where
   /-- The morphism between base objects. -/
   base : X.base ⟶ Y.base
   /-- The morphism in the fiber over the domain. -/
   fiber : (F.map base.toLoc).toFunctor.obj X.fiber ⟶ Y.fiber
 
 @[simps! id_base id_fiber comp_base comp_fiber]
-instance categoryStruct : CategoryStruct (∫ F) where
+instance categoryStruct : CategoryStruct (∫F) where
   Hom X Y := Hom X Y
-  id X := {
-    base := 𝟙 X.base
-    fiber := (F.mapId ⟨X.base⟩).hom.toNatTrans.app X.fiber }
+  id X := { base := 𝟙 X.base, fiber := (F.mapId ⟨X.base⟩).hom.toNatTrans.app X.fiber }
   comp {X _ _} f g := {
     base := f.base ≫ g.base
-    fiber := (F.mapComp f.base.toLoc g.base.toLoc).hom.toNatTrans.app X.fiber ≫
-      (F.map g.base.toLoc).toFunctor.map f.fiber ≫ g.fiber }
+    fiber :=
+      (F.mapComp f.base.toLoc g.base.toLoc).hom.toNatTrans.app X.fiber
+        ≫ (F.map g.base.toLoc).toFunctor.map f.fiber ≫ g.fiber
+  }
 
-instance (X : ∫ F) : Inhabited (Hom X X) :=
-  ⟨𝟙 X⟩
+instance (X : ∫F) : Inhabited (Hom X X) := ⟨𝟙 X⟩
 
 section
 
-variable {a b : ∫ F}
+variable {a b : ∫F}
 
 @[ext (iff := false)]
-lemma Hom.ext (f g : a ⟶ b) (hfg₁ : f.base = g.base)
-    (hfg₂ : eqToHom (hfg₁ ▸ rfl) ≫ f.fiber = g.fiber) : f = g := by
-  cases f; cases g
+lemma Hom.ext
+    (f g : a ⟶ b) (hfg₁ : f.base = g.base) (hfg₂ : eqToHom (hfg₁ ▸ rfl) ≫ f.fiber = g.fiber)
+    : f = g := by
+  cases f
+  cases g
   dsimp at hfg₁ hfg₂
   cat_disch
 
-lemma Hom.ext_iff (f g : a ⟶ b) :
-    f = g ↔ ∃ (hfg : f.base = g.base), eqToHom (hfg ▸ rfl) ≫ f.fiber = g.fiber where
+lemma Hom.ext_iff (f g : a ⟶ b)
+    : f = g ↔ ∃ (hfg : f.base = g.base), eqToHom (hfg ▸ rfl) ≫ f.fiber = g.fiber where
   mp hfg := by subst hfg; simp
   mpr := fun ⟨hfg₁, hfg₂⟩ => Hom.ext f g hfg₁ hfg₂
 
-lemma Hom.congr {a b : ∫ F} {f g : a ⟶ b} (h : f = g) :
-    f.fiber = eqToHom (h ▸ rfl) ≫ g.fiber := by
+lemma Hom.congr {a b : ∫F} {f g : a ⟶ b} (h : f = g) : f.fiber = eqToHom (h ▸ rfl) ≫ g.fiber := by
   subst h
   simp
 
@@ -134,7 +138,7 @@ end
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] PrelaxFunctor.map₂_eqToHom in
 /-- The category structure on `∫ F`. -/
-instance category : Category (∫ F) where
+instance category : Category (∫F) where
   toCategoryStruct := Pseudofunctor.Grothendieck.categoryStruct
   id_comp {a b} f := by
     ext
@@ -154,7 +158,7 @@ variable (F)
 
 /-- The projection `∫ F ⥤ 𝒮` given by projecting both objects and homs to the first factor. -/
 @[simps]
-def forget (F : Pseudofunctor (LocallyDiscrete 𝒮) Cat.{v₂, u₂}) : ∫ F ⥤ 𝒮 where
+def forget (F : Pseudofunctor (LocallyDiscrete 𝒮) Cat.{v₂, u₂}) : ∫F ⥤ 𝒮 where
   obj X := X.base
   map f := f.base
 
@@ -163,22 +167,24 @@ section
 attribute [local simp]
   Strict.leftUnitor_eqToIso Strict.rightUnitor_eqToIso Strict.associator_eqToIso
 
-variable {F} {G : Pseudofunctor (LocallyDiscrete 𝒮) Cat.{v₂, u₂}}
+variable
+  {F} {G : Pseudofunctor (LocallyDiscrete 𝒮) Cat.{v₂, u₂}}
   {H : Pseudofunctor (LocallyDiscrete 𝒮) Cat.{v₂, u₂}}
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The Grothendieck construction is functorial: a strong natural transformation `α : F ⟶ G`
-induces a functor `Grothendieck.map : ∫ F ⥤ ∫ G`. -/
+/--
+The Grothendieck construction is functorial: a strong natural transformation `α : F ⟶ G`
+induces a functor `Grothendieck.map : ∫ F ⥤ ∫ G`.
+-/
 @[simps!]
-def map (α : F ⟶ G) : ∫ F ⥤ ∫ G where
-  obj a := {
-    base := a.base
-    fiber := (α.app ⟨a.base⟩).toFunctor.obj a.fiber }
+def map (α : F ⟶ G) : ∫F ⥤ ∫G where
+  obj a := { base := a.base, fiber := (α.app ⟨a.base⟩).toFunctor.obj a.fiber }
   map {a b} f := {
     base := f.1
-    fiber := (α.naturality f.1.toLoc).inv.toNatTrans.app a.fiber ≫
-      (α.app ⟨b.base⟩).toFunctor.map f.2 }
+    fiber :=
+      (α.naturality f.1.toLoc).inv.toNatTrans.app a.fiber ≫ (α.app ⟨b.base⟩).toFunctor.map f.2
+  }
   map_id a := by
     ext
     · dsimp
@@ -193,12 +199,9 @@ def map (α : F ⟶ G) : ∫ F ⥤ ∫ G where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-lemma map_id_map {x y : ∫ F} (f : x ⟶ y) : (map (𝟙 F)).map f = f := by
-  ext <;> simp
+@[simp] lemma map_id_map {x y : ∫F} (f : x ⟶ y) : (map (𝟙 F)).map f = f := by ext <;> simp
 
-@[simp]
-theorem map_comp_forget (α : F ⟶ G) : map α ⋙ forget G = forget F := rfl
+@[simp] theorem map_comp_forget (α : F ⟶ G) : map α ⋙ forget G = forget F := rfl
 
 section
 
@@ -206,10 +209,9 @@ variable (F)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural isomorphism witnessing the pseudo-unity constraint of `Grothendieck.map`. -/
-def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫ F) :=
-  NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
+def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫F) := NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
 
-lemma map_id_eq : map (𝟙 F) = 𝟭 (∫ F) :=
+lemma map_id_eq : map (𝟙 F) = 𝟭 (∫F) :=
   Functor.ext_of_iso (mapIdIso F) (fun x ↦ by simp [map]) (fun x ↦ by simp [mapIdIso])
 
 end
@@ -218,10 +220,12 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural isomorphism witnessing the pseudo-functoriality of `Grothendieck.map`. -/
 def mapCompIso (α : F ⟶ G) (β : G ⟶ H) : map (α ≫ β) ≅ map α ⋙ map β :=
-  NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch)) (fun f ↦ by
-    dsimp
-    simp only [comp_id, id_comp]
-    ext <;> simp)
+  NatIso.ofComponents
+    (fun _ ↦ eqToIso (by cat_disch))
+    (fun f ↦ by
+      dsimp
+      simp only [comp_id, id_comp]
+      ext <;> simp)
 
 lemma map_comp_eq (α : F ⟶ G) (β : G ⟶ H) : map (α ≫ β) = map α ⋙ map β :=
   Functor.ext_of_iso (mapCompIso α β) (fun _ ↦ by simp [map]) (fun _ ↦ by simp [mapCompIso])
@@ -230,8 +234,10 @@ end
 
 end Grothendieck
 
-/-- The type of objects in the fibered category associated to a contravariant
-pseudofunctor from a 1-category to Cat. -/
+/--
+The type of objects in the fibered category associated to a contravariant
+pseudofunctor from a 1-category to Cat.
+-/
 @[ext]
 structure CoGrothendieck (F : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}) where
   /-- The underlying object in the base category. -/
@@ -246,54 +252,56 @@ variable {F : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}}
 /-- Notation for the CoGrothendieck category associated to a pseudofunctor `F`. -/
 scoped prefix:75 "∫ᶜ " => CoGrothendieck
 
-/-- A morphism in the CoGrothendieck construction `∫ᶜ F` between two points `X Y : ∫ᶜ F` consists of
+/--
+A morphism in the CoGrothendieck construction `∫ᶜ F` between two points `X Y : ∫ᶜ F` consists of
 a morphism in the base category `base : X.base ⟶ Y.base` and
-a morphism in a fiber `f.fiber : X.fiber ⟶ (F.map base.op.toLoc).obj Y.fiber`. -/
-structure Hom (X Y : ∫ᶜ F) where
+a morphism in a fiber `f.fiber : X.fiber ⟶ (F.map base.op.toLoc).obj Y.fiber`.
+-/
+structure Hom (X Y : ∫ᶜF) where
   /-- The morphism between base objects. -/
   base : X.base ⟶ Y.base
   /-- The morphism in the fiber over the domain. -/
   fiber : X.fiber ⟶ (F.map base.op.toLoc).toFunctor.obj Y.fiber
 
 @[simps! id_base id_fiber comp_base comp_fiber]
-instance categoryStruct : CategoryStruct (∫ᶜ F) where
+instance categoryStruct : CategoryStruct (∫ᶜF) where
   Hom X Y := Hom X Y
-  id X := {
-    base := 𝟙 X.base
-    fiber := (F.mapId ⟨op X.base⟩).inv.toNatTrans.app X.fiber }
+  id X := { base := 𝟙 X.base, fiber := (F.mapId ⟨op X.base⟩).inv.toNatTrans.app X.fiber }
   comp {_ _ Z} f g := {
     base := f.base ≫ g.base
-    fiber := f.fiber ≫ (F.map f.base.op.toLoc).toFunctor.map g.fiber ≫
-      (F.mapComp g.base.op.toLoc f.base.op.toLoc).inv.toNatTrans.app Z.fiber }
+    fiber :=
+      f.fiber ≫ (F.map f.base.op.toLoc).toFunctor.map g.fiber
+        ≫ (F.mapComp g.base.op.toLoc f.base.op.toLoc).inv.toNatTrans.app Z.fiber
+  }
 
-instance (X : ∫ᶜ F) : Inhabited (Hom X X) :=
-  ⟨𝟙 X⟩
+instance (X : ∫ᶜF) : Inhabited (Hom X X) := ⟨𝟙 X⟩
 
 section
 
-variable {a b : ∫ᶜ F}
+variable {a b : ∫ᶜF}
 
 @[ext (iff := false)]
-lemma Hom.ext (f g : a ⟶ b) (hfg₁ : f.base = g.base)
-    (hfg₂ : f.fiber = g.fiber ≫ eqToHom (hfg₁ ▸ rfl)) : f = g := by
-  cases f; cases g
+lemma Hom.ext
+    (f g : a ⟶ b) (hfg₁ : f.base = g.base) (hfg₂ : f.fiber = g.fiber ≫ eqToHom (hfg₁ ▸ rfl))
+    : f = g := by
+  cases f
+  cases g
   dsimp at hfg₁
   cat_disch
 
-lemma Hom.ext_iff (f g : a ⟶ b) :
-    f = g ↔ ∃ (hfg : f.base = g.base), f.fiber = g.fiber ≫ eqToHom (hfg ▸ rfl) where
+lemma Hom.ext_iff (f g : a ⟶ b)
+    : f = g ↔ ∃ (hfg : f.base = g.base), f.fiber = g.fiber ≫ eqToHom (hfg ▸ rfl) where
   mp hfg := ⟨by rw [hfg], by simp [hfg]⟩
   mpr := fun ⟨hfg₁, hfg₂⟩ => Hom.ext f g hfg₁ hfg₂
 
-lemma Hom.congr {a b : ∫ᶜ F} {f g : a ⟶ b} (h : f = g) :
-    f.fiber = g.fiber ≫ eqToHom (h ▸ rfl) := by
+lemma Hom.congr {a b : ∫ᶜF} {f g : a ⟶ b} (h : f = g) : f.fiber = g.fiber ≫ eqToHom (h ▸ rfl) := by
   simp [h]
 
 end
 
 attribute [local simp] PrelaxFunctor.map₂_eqToHom in
 /-- The category structure on `∫ᶜ F`. -/
-instance category : Category (∫ᶜ F) where
+instance category : Category (∫ᶜF) where
   toCategoryStruct := Pseudofunctor.CoGrothendieck.categoryStruct
   id_comp {a b} f := by
     ext
@@ -314,7 +322,7 @@ variable (F)
 
 /-- The projection `∫ᶜ F ⥤ 𝒮` given by projecting both objects and homs to the first factor. -/
 @[simps]
-def forget (F : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}) : ∫ᶜ F ⥤ 𝒮 where
+def forget (F : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}) : ∫ᶜF ⥤ 𝒮 where
   obj X := X.base
   map f := f.base
 
@@ -323,22 +331,22 @@ section
 attribute [local simp]
   Strict.leftUnitor_eqToIso Strict.rightUnitor_eqToIso Strict.associator_eqToIso
 
-variable {F} {G : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}}
-  {H : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}}
+variable {F} {G : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}} {H : LocallyDiscrete 𝒮ᵒᵖ ⥤ᵖ Cat.{v₂, u₂}}
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-/-- The CoGrothendieck construction is functorial: a strong natural transformation `α : F ⟶ G`
-induces a functor `CoGrothendieck.map : ∫ᶜ F ⥤ ∫ᶜ G`. -/
+/--
+The CoGrothendieck construction is functorial: a strong natural transformation `α : F ⟶ G`
+induces a functor `CoGrothendieck.map : ∫ᶜ F ⥤ ∫ᶜ G`.
+-/
 @[simps!]
-def map (α : F ⟶ G) : ∫ᶜ F ⥤ ∫ᶜ G where
-  obj a := {
-    base := a.base
-    fiber := (α.app ⟨op a.base⟩).toFunctor.obj a.fiber }
+def map (α : F ⟶ G) : ∫ᶜF ⥤ ∫ᶜG where
+  obj a := { base := a.base, fiber := (α.app ⟨op a.base⟩).toFunctor.obj a.fiber }
   map {a b} f := {
     base := f.1
-    fiber := (α.app ⟨op a.base⟩).toFunctor.map f.2 ≫
-      (α.naturality f.1.op.toLoc).hom.toNatTrans.app b.fiber }
+    fiber :=
+      (α.app ⟨op a.base⟩).toFunctor.map f.2 ≫ (α.naturality f.1.op.toLoc).hom.toNatTrans.app b.fiber
+  }
   map_id a := by
     ext1
     · dsimp
@@ -352,17 +360,14 @@ def map (α : F ⟶ G) : ∫ᶜ F ⥤ ∫ᶜ G where
         eqToHom_refl, comp_id]
       slice_lhs 2 4 => simp [← Cat.Hom.toNatIso_inv, Cat.Hom.comp_toFunctor,
         ← Cat.Hom.toNatIso_hom, ← map_comp, Iso.inv_hom_id_app, comp_obj, map_id, comp_id]
-      simp only [assoc, ← reassoc_of% Cat.Hom.comp_map,
-        Cat.Hom.comp_toFunctor, Functor.comp_obj, NatTrans.naturality_assoc]
+      simp only [assoc, ← reassoc_of% Cat.Hom.comp_map, Cat.Hom.comp_toFunctor, Functor.comp_obj,
+        NatTrans.naturality_assoc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-lemma map_id_map {x y : ∫ᶜ F} (f : x ⟶ y) : (map (𝟙 F)).map f = f := by
-  ext <;> simp
+@[simp] lemma map_id_map {x y : ∫ᶜF} (f : x ⟶ y) : (map (𝟙 F)).map f = f := by ext <;> simp
 
-@[simp]
-theorem map_comp_forget (α : F ⟶ G) : map α ⋙ forget G = forget F := rfl
+@[simp] theorem map_comp_forget (α : F ⟶ G) : map α ⋙ forget G = forget F := rfl
 
 section
 
@@ -370,10 +375,9 @@ variable (F)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural isomorphism witnessing the pseudo-unity constraint of `CoGrothendieck.map`. -/
-def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫ᶜ F) :=
-  NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
+def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫ᶜF) := NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
 
-lemma map_id_eq : map (𝟙 F) = 𝟭 (∫ᶜ F) :=
+lemma map_id_eq : map (𝟙 F) = 𝟭 (∫ᶜF) :=
   Functor.ext_of_iso (mapIdIso F) (fun x ↦ by simp [map]) (fun x ↦ by simp [mapIdIso])
 
 end
@@ -382,10 +386,12 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural isomorphism witnessing the pseudo-functoriality of `CoGrothendieck.map`. -/
 def mapCompIso (α : F ⟶ G) (β : G ⟶ H) : map (α ≫ β) ≅ map α ⋙ map β :=
-  NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch)) (fun f ↦ by
-    dsimp
-    simp only [comp_id, id_comp]
-    ext <;> simp)
+  NatIso.ofComponents
+    (fun _ ↦ eqToIso (by cat_disch))
+    (fun f ↦ by
+      dsimp
+      simp only [comp_id, id_comp]
+      ext <;> simp)
 
 lemma map_comp_eq (α : F ⟶ G) (β : G ⟶ H) : map (α ≫ β) = map α ⋙ map β :=
   Functor.ext_of_iso (mapCompIso α β) (fun _ ↦ by simp [map]) (fun _ ↦ by simp [mapCompIso])

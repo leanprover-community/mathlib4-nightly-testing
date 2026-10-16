@@ -23,10 +23,14 @@ variable (R : Type u) [CommRing R]
 
 open CategoryTheory Abelian
 
-instance ModuleCat.finite_ext [Small.{v} R] [IsNoetherianRing R] (N M : ModuleCat.{v} R)
-    [Module.Finite R N] [Module.Finite R M] (i : ℕ) : Module.Finite R (Ext N M i) := by
+instance ModuleCat.finite_ext
+    [Small.{v} R] [IsNoetherianRing R]
+    (N M : ModuleCat.{v} R) [Module.Finite R N] [Module.Finite R M]
+    (i : ℕ)
+    : Module.Finite R (Ext N M i) := by
   induction i generalizing N with
-  | zero => exact Module.Finite.equiv (Ext.linearEquiv₀.trans ModuleCat.homLinearEquiv).symm
+  | zero =>
+    exact Module.Finite.equiv (Ext.linearEquiv₀.trans ModuleCat.homLinearEquiv).symm
   | succ n ih =>
     obtain ⟨N, _, _, _, _, f, surjf⟩ := Module.exists_finite_presentation R N
     let exac := LinearMap.shortExact_shortComplexKer surjf

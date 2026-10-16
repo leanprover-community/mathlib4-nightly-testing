@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 public import Mathlib.Analysis.CStarAlgebra.Exponential
-
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Continuity
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
@@ -62,9 +61,9 @@ variable {A : Type*} [CStarAlgebra A]
 open Complex Metric NormedSpace selfAdjoint Unitary
 open scoped Real
 
-lemma Unitary.two_mul_one_sub_le_norm_sub_one_sq {u : A} (hu : u ∈ unitary A)
-    {z : ℂ} (hz : z ∈ spectrum ℂ u) :
-    2 * (1 - z.re) ≤ ‖u - 1‖ ^ 2 := by
+lemma Unitary.two_mul_one_sub_le_norm_sub_one_sq
+    {u : A} (hu : u ∈ unitary A) {z : ℂ} (hz : z ∈ spectrum ℂ u)
+    : 2 * (1 - z.re) ≤ ‖u - 1‖ ^ 2 := by
   rw [← Real.sqrt_le_left (by positivity)]
   have := spectrum.subset_circle_of_unitary hu hz
   simp only [mem_sphere_iff_norm, sub_zero] at this
@@ -72,9 +71,9 @@ lemma Unitary.two_mul_one_sub_le_norm_sub_one_sq {u : A} (hu : u ∈ unitary A)
   convert norm_apply_le_norm_cfc (fun z ↦ z - 1) u hz
   simpa using congr(Real.sqrt $(norm_sub_one_sq_eq_of_norm_eq_one this)).symm
 
-lemma Unitary.norm_sub_one_sq_eq {u : A} (hu : u ∈ unitary A) {x : ℝ}
-    (hz : IsLeast (re '' (spectrum ℂ u)) x) :
-    ‖u - 1‖ ^ 2 = 2 * (1 - x) := by
+lemma Unitary.norm_sub_one_sq_eq
+    {u : A} (hu : u ∈ unitary A) {x : ℝ} (hz : IsLeast (re '' (spectrum ℂ u)) x)
+    : ‖u - 1‖ ^ 2 = 2 * (1 - x) := by
   obtain (_ | _) := subsingleton_or_nontrivial A
   · exfalso; apply hz.nonempty.of_image.ne_empty; simp
   rw [← cfc_id' ℂ u, ← cfc_one ℂ u, ← cfc_sub ..]
@@ -88,8 +87,8 @@ lemma Unitary.norm_sub_one_sq_eq {u : A} (hu : u ∈ unitary A) {x : ℝ}
     simpa [Set.image_image] using this.map_isGreatest (IsGreatest.norm_cfc (fun z : ℂ ↦ z - 1) u)
   exact h₃.unique (h_eqOn.image_eq ▸ h₂)
 
-lemma Unitary.norm_sub_one_lt_two_iff {u : A} (hu : u ∈ unitary A) :
-    ‖u - 1‖ < 2 ↔ -1 ∉ spectrum ℂ u := by
+lemma Unitary.norm_sub_one_lt_two_iff {u : A} (hu : u ∈ unitary A)
+    : ‖u - 1‖ < 2 ↔ -1 ∉ spectrum ℂ u := by
   nontriviality A
   rw [← sq_lt_sq₀ (by positivity) (by positivity)]
   constructor
@@ -97,8 +96,9 @@ lemma Unitary.norm_sub_one_lt_two_iff {u : A} (hu : u ∈ unitary A) :
     have := two_mul_one_sub_le_norm_sub_one_sq hu h1 |>.trans_lt h
     norm_num at this
   · contrapose!
-    obtain ⟨x, hx⟩ := spectrum.isCompact (𝕜 := ℂ) u |>.image continuous_re |>.exists_isLeast <|
-      (spectrum.nonempty _).image _
+    obtain ⟨x, hx⟩ :=
+      spectrum.isCompact (𝕜 := ℂ) u |>.image continuous_re |>.exists_isLeast <|
+        (spectrum.nonempty _).image _
     rw [norm_sub_one_sq_eq hu hx]
     obtain ⟨z, hz, rfl⟩ := hx.1
     intro key
@@ -107,8 +107,8 @@ lemma Unitary.norm_sub_one_lt_two_iff {u : A} (hu : u ∈ unitary A) :
     rw [← hz_norm, ← RCLike.re_eq_complex_re, RCLike.re_le_neg_norm_iff_eq_neg_norm, hz_norm] at key
     exact key ▸ hz
 
-lemma Unitary.spectrum_subset_slitPlane_iff_norm_lt_two {u : A} (hu : u ∈ unitary A) :
-    spectrum ℂ u ⊆ slitPlane ↔ ‖u - 1‖ < 2 := by
+lemma Unitary.spectrum_subset_slitPlane_iff_norm_lt_two {u : A} (hu : u ∈ unitary A)
+    : spectrum ℂ u ⊆ slitPlane ↔ ‖u - 1‖ < 2 := by
   simp [subset_slitPlane_iff_of_subset_sphere (spectrum.subset_circle_of_unitary hu),
     norm_sub_one_lt_two_iff hu]
 
@@ -116,16 +116,18 @@ lemma Unitary.spectrum_subset_slitPlane_iff_norm_lt_two {u : A} (hu : u ∈ unit
 lemma IsSelfAdjoint.cfc_arg (u : A) : IsSelfAdjoint (cfc (ofReal ∘ arg : ℂ → ℂ) u) := by
   simp [isSelfAdjoint_iff, ← cfc_star]
 
-/-- The selfadjoint element obtained by taking the argument (using the principal branch and the
+/--
+The selfadjoint element obtained by taking the argument (using the principal branch and the
 continuous functional calculus) of a unitary whose spectrum does not contain `-1`. This returns
 `0` if the principal branch of the logarithm is not continuous on the spectrum of the unitary
-element. -/
+element.
+-/
 @[simps]
 noncomputable def Unitary.argSelfAdjoint (u : unitary A) : selfAdjoint A :=
   ⟨cfc (arg · : ℂ → ℂ) (u : A), .cfc_arg (u : A)⟩
 
-lemma selfAdjoint.norm_sq_expUnitary_sub_one {x : selfAdjoint A} (hx : ‖x‖ ≤ π) :
-    ‖(expUnitary x - 1 : A)‖ ^ 2 = 2 * (1 - Real.cos ‖x‖) := by
+lemma selfAdjoint.norm_sq_expUnitary_sub_one {x : selfAdjoint A} (hx : ‖x‖ ≤ π)
+    : ‖(expUnitary x - 1 : A)‖ ^ 2 = 2 * (1 - Real.cos ‖x‖) := by
   nontriviality A
   apply norm_sub_one_sq_eq (expUnitary x).2
   simp only [expUnitary_coe]
@@ -141,8 +143,8 @@ lemma selfAdjoint.norm_sq_expUnitary_sub_one {x : selfAdjoint A} (hx : ‖x‖ �
     exact Real.cos_abs y ▸ Real.cos_le_cos_of_nonneg_of_le_pi (by positivity) hx <|
       spectrum.norm_le_norm_of_mem hy
 
-lemma argSelfAdjoint_expUnitary {x : selfAdjoint A} (hx : ‖x‖ < π) :
-    argSelfAdjoint (expUnitary x) = x := by
+lemma argSelfAdjoint_expUnitary {x : selfAdjoint A} (hx : ‖x‖ < π)
+    : argSelfAdjoint (expUnitary x) = x := by
   nontriviality A
   ext
   have : spectrum ℂ (expUnitary x : A) ⊆ slitPlane := by
@@ -158,7 +160,8 @@ lemma argSelfAdjoint_expUnitary {x : selfAdjoint A} (hx : ‖x‖ < π) :
   case hg =>
     refine continuous_ofReal.comp_continuousOn <| continuousOn_arg.mono ?_
     rwa [expUnitary_coe, ← CFC.exp_eq_normedSpace_exp (𝕜 := ℂ), ← cfc_comp_smul ..,
-      cfc_map_spectrum ..] at this
+        cfc_map_spectrum ..]
+      at this
   conv_rhs => rw [← cfc_id' ℂ (x : A)]
   congr! 1 with y hy
   rw [← x.2.spectrumRestricts.algebraMap_image] at hy
@@ -168,13 +171,13 @@ lemma argSelfAdjoint_expUnitary {x : selfAdjoint A} (hx : ‖x‖ < π) :
   simp only [Real.norm_eq_abs, abs_lt] at hy
   rw [← Circle.coe_exp, Circle.arg_exp hy.1 hy.2.le]
 
-lemma expUnitary_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2) :
-    expUnitary (argSelfAdjoint u) = u := by
+lemma expUnitary_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2)
+    : expUnitary (argSelfAdjoint u) = u := by
   ext
   have : ContinuousOn arg (spectrum ℂ (u : A)) :=
     continuousOn_arg.mono <| (spectrum_subset_slitPlane_iff_norm_lt_two u.2).mpr hu
-  rw [expUnitary_coe, argSelfAdjoint_coe, ← CFC.exp_eq_normedSpace_exp (𝕜 := ℂ),
-    ← cfc_comp_smul .., ← cfc_comp' ..]
+  rw [expUnitary_coe, argSelfAdjoint_coe, ← CFC.exp_eq_normedSpace_exp (𝕜 := ℂ), ← cfc_comp_smul ..,
+    ← cfc_comp' ..]
   conv_rhs => rw [← cfc_id' ℂ (u : A)]
   congr! 1 with y hy
   have hy₁ : ‖y‖ = 1 := spectrum.norm_eq_one_of_unitary u.2 hy
@@ -182,24 +185,23 @@ lemma expUnitary_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2) :
     Complex.ext (by simp [log_re, spectrum.norm_eq_one_of_unitary u.2 hy]) (by simp [log_im])
   simpa [← exp_eq_exp_ℂ, this] using exp_log (by aesop)
 
-lemma Unitary.norm_argSelfAdjoint_le_pi (u : unitary A) :
-    ‖argSelfAdjoint u‖ ≤ π :=
+lemma Unitary.norm_argSelfAdjoint_le_pi (u : unitary A) : ‖argSelfAdjoint u‖ ≤ π :=
   norm_cfc_le (by positivity) fun y hy ↦ by simpa using abs_arg_le_pi y
 
-lemma Unitary.two_mul_one_sub_cos_norm_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2) :
-    2 * (1 - Real.cos ‖argSelfAdjoint u‖) = ‖(u - 1 : A)‖ ^ 2 := by
+lemma Unitary.two_mul_one_sub_cos_norm_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2)
+    : 2 * (1 - Real.cos ‖argSelfAdjoint u‖) = ‖(u - 1 : A)‖ ^ 2 := by
   conv_rhs => rw [← expUnitary_argSelfAdjoint hu]
   exact Eq.symm <| norm_sq_expUnitary_sub_one <| norm_argSelfAdjoint_le_pi u
 
-lemma Unitary.norm_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2) :
-    ‖argSelfAdjoint u‖ = Real.arccos (1 - ‖(u - 1 : A)‖ ^ 2 / 2) := by
+lemma Unitary.norm_argSelfAdjoint {u : unitary A} (hu : ‖(u - 1 : A)‖ < 2)
+    : ‖argSelfAdjoint u‖ = Real.arccos (1 - ‖(u - 1 : A)‖ ^ 2 / 2) := by
   refine Real.arccos_eq_of_eq_cos (by positivity) (norm_argSelfAdjoint_le_pi u) ?_ |>.symm
   linarith [two_mul_one_sub_cos_norm_argSelfAdjoint hu]
 
 set_option backward.isDefEq.respectTransparency false in
-lemma Unitary.norm_expUnitary_smul_argSelfAdjoint_sub_one_le (u : unitary A)
-    {t : ℝ} (ht : t ∈ Set.Icc 0 1) (hu : ‖(u - 1 : A)‖ < 2) :
-    ‖(expUnitary (t • argSelfAdjoint u) - 1 : A)‖ ≤ ‖(u - 1 : A)‖ := by
+lemma Unitary.norm_expUnitary_smul_argSelfAdjoint_sub_one_le
+    (u : unitary A) {t : ℝ} (ht : t ∈ Set.Icc 0 1) (hu : ‖(u - 1 : A)‖ < 2)
+    : ‖(expUnitary (t • argSelfAdjoint u) - 1 : A)‖ ≤ ‖(u - 1 : A)‖ := by
   have key : ‖t • argSelfAdjoint u‖ ≤ ‖argSelfAdjoint u‖ := by
     rw [← one_mul ‖argSelfAdjoint u‖]
     simp_rw [AddSubgroupClass.coe_norm, val_smul, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
@@ -213,8 +215,8 @@ lemma Unitary.norm_expUnitary_smul_argSelfAdjoint_sub_one_le (u : unitary A)
   · exact (two_mul_one_sub_cos_norm_argSelfAdjoint hu).le
 
 @[fun_prop]
-lemma Unitary.continuousOn_argSelfAdjoint :
-    ContinuousOn (argSelfAdjoint : unitary A → selfAdjoint A) (ball (1 : unitary A) 2) := by
+lemma Unitary.continuousOn_argSelfAdjoint
+    : ContinuousOn (argSelfAdjoint : unitary A → selfAdjoint A) (ball (1 : unitary A) 2) := by
   rw [Topology.IsInducing.subtypeVal.continuousOn_iff]
   simp only [Function.comp_def, argSelfAdjoint_coe]
   rw [isOpen_ball.continuousOn_iff]
@@ -241,11 +243,13 @@ lemma Unitary.continuousOn_argSelfAdjoint :
     exact hε2
 
 set_option backward.isDefEq.respectTransparency false in
-/-- the maps `unitary.argSelfAdjoint` and `selfAdjoint.expUnitary` form a partial
-homeomorphism between `ball (1 : unitary A) 2` and `ball (0 : selfAdjoint A) π`. -/
+/--
+the maps `unitary.argSelfAdjoint` and `selfAdjoint.expUnitary` form a partial
+homeomorphism between `ball (1 : unitary A) 2` and `ball (0 : selfAdjoint A) π`.
+-/
 @[simps]
-noncomputable def Unitary.openPartialHomeomorph :
-    OpenPartialHomeomorph (unitary A) (selfAdjoint A) where
+noncomputable def Unitary.openPartialHomeomorph
+    : OpenPartialHomeomorph (unitary A) (selfAdjoint A) where
   toFun := argSelfAdjoint
   invFun := expUnitary
   source := ball 1 2
@@ -265,57 +269,60 @@ noncomputable def Unitary.openPartialHomeomorph :
       Real.cos_pi ▸ Real.cos_lt_cos_of_nonneg_of_le_pi (by positivity) le_rfl hx
     simp only [AddSubgroupClass.coe_norm, mul_sub, mul_one, sq, gt_iff_lt]
     linarith
-  left_inv' u hu := expUnitary_argSelfAdjoint <| by
-    simpa [Subtype.dist_eq, dist_eq_norm] using hu
+  left_inv' u hu := expUnitary_argSelfAdjoint <| by simpa [Subtype.dist_eq, dist_eq_norm] using hu
   right_inv' x hx := argSelfAdjoint_expUnitary <| by simpa using hx
   open_source := isOpen_ball
   open_target := isOpen_ball
   continuousOn_toFun := by fun_prop
   continuousOn_invFun := by fun_prop
 
-lemma Unitary.norm_sub_eq (u v : unitary A) :
-    ‖(u - v : A)‖ = ‖((u * star v : unitary A) - 1 : A)‖ := calc
-  ‖(u - v : A)‖ = ‖(u * star v - 1 : A) * v‖ := by simp [sub_mul, mul_assoc]
-  _ = ‖((u * star v : unitary A) - 1 : A)‖ := by simp
+lemma Unitary.norm_sub_eq (u v : unitary A)
+    : ‖(u - v : A)‖ = ‖((u * star v : unitary A) - 1 : A)‖ :=
+  calc
+    ‖(u - v : A)‖
+      = ‖(u * star v - 1 : A) * v‖ := by simp [sub_mul, mul_assoc]
+    _ = ‖((u * star v : unitary A) - 1 : A)‖ := by simp
 
-lemma Unitary.expUnitary_eq_mul_inv (u v : unitary A) (huv : ‖(u - v : A)‖ < 2) :
-    expUnitary (argSelfAdjoint (u * star v)) = u * star v :=
+lemma Unitary.expUnitary_eq_mul_inv (u v : unitary A) (huv : ‖(u - v : A)‖ < 2)
+    : expUnitary (argSelfAdjoint (u * star v)) = u * star v :=
   expUnitary_argSelfAdjoint <| norm_sub_eq u v ▸ huv
 
-/-- For a selfadjoint element `x` in a C⋆-algebra, this is the path from `1` to `expUnitary x`
-given by `t ↦ expUnitary (t • x)`. -/
+/--
+For a selfadjoint element `x` in a C⋆-algebra, this is the path from `1` to `expUnitary x`
+given by `t ↦ expUnitary (t • x)`.
+-/
 @[simps]
-noncomputable def selfAdjoint.expUnitaryPathToOne (x : selfAdjoint A) :
-    Path 1 (expUnitary x) where
+noncomputable def selfAdjoint.expUnitaryPathToOne (x : selfAdjoint A) : Path 1 (expUnitary x) where
   toFun t := expUnitary ((t : ℝ) • x)
   continuous_toFun := by fun_prop
   source' := by simp
   target' := by simp
 
 @[simp]
-lemma selfAdjoint.joined_one_expUnitary (x : selfAdjoint A) :
-    Joined (1 : unitary A) (expUnitary x) :=
+lemma selfAdjoint.joined_one_expUnitary (x : selfAdjoint A)
+    : Joined (1 : unitary A) (expUnitary x) :=
   ⟨expUnitaryPathToOne x⟩
 
-/-- The path `t ↦ expUnitary (t • argSelfAdjoint (v * star u)) * u`
-from `u : unitary A` to `v` when `‖v - u‖ < 2`. -/
+/--
+The path `t ↦ expUnitary (t • argSelfAdjoint (v * star u)) * u`
+from `u : unitary A` to `v` when `‖v - u‖ < 2`.
+-/
 @[simps]
-noncomputable def Unitary.path (u v : unitary A) (huv : ‖(v - u : A)‖ < 2) :
-    Path u v where
+noncomputable def Unitary.path (u v : unitary A) (huv : ‖(v - u : A)‖ < 2) : Path u v where
   toFun t := expUnitary ((t : ℝ) • argSelfAdjoint (v * star u)) * u
   continuous_toFun := by fun_prop
   source' := by ext; simp
   target' := by simp [expUnitary_eq_mul_inv v u huv, mul_assoc]
 
-/-- Two unitary elements `u` and `v` in a unital C⋆-algebra are joined by a path if the
-distance between them is less than `2`. -/
-lemma Unitary.joined (u v : unitary A) (huv : ‖(v - u : A)‖ < 2) :
-    Joined u v :=
-  ⟨path u v huv⟩
+/--
+Two unitary elements `u` and `v` in a unital C⋆-algebra are joined by a path if the
+distance between them is less than `2`.
+-/
+lemma Unitary.joined (u v : unitary A) (huv : ‖(v - u : A)‖ < 2) : Joined u v := ⟨path u v huv⟩
 
 /-- Any ball of radius `δ < 2` in the unitary group of a unital C⋆-algebra is path connected. -/
-lemma Unitary.isPathConnected_ball (u : unitary A) (δ : ℝ) (hδ₀ : 0 < δ) (hδ₂ : δ < 2) :
-    IsPathConnected (ball (u : unitary A) δ) := by
+lemma Unitary.isPathConnected_ball (u : unitary A) (δ : ℝ) (hδ₀ : 0 < δ) (hδ₂ : δ < 2)
+    : IsPathConnected (ball (u : unitary A) δ) := by
   suffices IsPathConnected (ball (1 : unitary A) δ) by
     convert this |>.image (f := (u * ·)) (by fun_prop)
     ext v
@@ -332,10 +339,12 @@ instance Unitary.instLocallyPathConnectedSpace : LocallyPathConnectedSpace (unit
   .of_bases (fun _ ↦ nhds_basis_uniformity <| uniformity_basis_dist_lt zero_lt_two) <| by
     simpa using! isPathConnected_ball
 
-/-- The path component of the identity in the unitary group of a C⋆-algebra is the set of
-unitaries that can be expressed as a product of exponential unitaries. -/
-lemma Unitary.mem_pathComponentOne_iff {u : unitary A} :
-    u ∈ pathComponent 1 ↔ ∃ l : List (selfAdjoint A), (l.map expUnitary).prod = u := by
+/--
+The path component of the identity in the unitary group of a C⋆-algebra is the set of
+unitaries that can be expressed as a product of exponential unitaries.
+-/
+lemma Unitary.mem_pathComponentOne_iff {u : unitary A}
+    : u ∈ pathComponent 1 ↔ ∃ l : List (selfAdjoint A), (l.map expUnitary).prod = u := by
   constructor
   · revert u
     simp_rw [← Set.mem_range, ← Set.subset_def, pathComponent_eq_connectedComponent]

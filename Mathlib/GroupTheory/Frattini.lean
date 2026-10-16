@@ -21,8 +21,7 @@ We give the definition of the Frattini subgroup of a group, and three elementary
 @[expose] public section
 
 /-- The Frattini subgroup of a group is the intersection of the maximal subgroups. -/
-def frattini (G : Type*) [Group G] : Subgroup G :=
-  Order.radical (Subgroup G)
+def frattini (G : Type*) [Group G] : Subgroup G := Order.radical (Subgroup G)
 
 variable {G H : Type*} [Group G] [Group H] {φ : G →* H}
 
@@ -31,8 +30,8 @@ lemma frattini_le_coatom {K : Subgroup G} (h : IsCoatom K) : frattini G ≤ K :=
 
 open Subgroup
 
-lemma frattini_le_comap_frattini_of_surjective (hφ : Function.Surjective φ) :
-    frattini G ≤ (frattini H).comap φ := by
+lemma frattini_le_comap_frattini_of_surjective (hφ : Function.Surjective φ)
+    : frattini G ≤ (frattini H).comap φ := by
   simp_rw [frattini, Order.radical, comap_iInf, le_iInf_iff]
   intro M hM
   apply biInf_le
@@ -50,15 +49,16 @@ The Frattini subgroup consists of "non-generating" elements in the following sen
 If a subgroup together with the Frattini subgroup generates the whole group,
 then the subgroup is already the whole group.
 -/
-theorem frattini_nongenerating [IsCoatomic (Subgroup G)] {K : Subgroup G}
-    (h : K ⊔ frattini G = ⊤) : K = ⊤ :=
+theorem frattini_nongenerating [IsCoatomic (Subgroup G)] {K : Subgroup G} (h : K ⊔ frattini G = ⊤)
+    : K = ⊤ :=
   Order.radical_nongenerating h
 
 /-- When `G` is finite, the Frattini subgroup is nilpotent. -/
 theorem frattini_nilpotent [Finite G] : Group.IsNilpotent (frattini G) := by
   -- We use the characterisation of nilpotency in terms of all Sylow subgroups being normal.
   have q := (Group.isNilpotent_of_finite_tfae (G := frattini G)).out 1 4
-  rw [q]; clear q
+  rw [q]
+  clear q
   -- Consider each prime `p` and Sylow `p`-subgroup `P` of `frattini G`.
   intro p p_prime P
   -- The Frattini argument shows that the normalizer of `P` in `G`

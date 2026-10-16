@@ -29,27 +29,29 @@ namespace MeasureTheory.VectorMeasure
 
 local infixr:25 " →ₛ " => SimpleFunc
 
-variable {X E F G : Type*} {mX : MeasurableSpace X}
-  [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-  [NormedAddCommGroup G] [NormedSpace ℝ G]
+variable
+  {X E F G : Type*} {mX : MeasurableSpace X} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
   {μ : VectorMeasure X F} {f g : X → E} {B : E →L[ℝ] F →L[ℝ] G} {s : Set X}
 
 open scoped Classical in
-/-- The vector measure with density `f` with respect to a vector measure `μ`, associating to a
+/--
+The vector measure with density `f` with respect to a vector measure `μ`, associating to a
 measurable set the mass `∫ᵛ x in s, f x ∂[B; μ]`.
-If `f` is not integrable, we use the junk value `0`. -/
-noncomputable def withDensity (μ : VectorMeasure X F) (f : X → E) (B : E →L[ℝ] F →L[ℝ] G) :
-    VectorMeasure X G :=
-  if h : μ.Integrable f then
-    { measureOf' s := ∫ᵛ x in s, f x ∂[B; μ]
-      empty' := by simp
-      not_measurable' s hs := setIntegral_eq_zero_of_not_measurableSet hs
-      m_iUnion' s s_meas s_disj := hasSum_setIntegral_iUnion s_meas s_disj h.integrableOn }
-  else 0
+If `f` is not integrable, we use the junk value `0`.
+-/
+noncomputable def withDensity (μ : VectorMeasure X F) (f : X → E) (B : E →L[ℝ] F →L[ℝ] G)
+    : VectorMeasure X G :=
+  if h : μ.Integrable f then {
+    measureOf' s := ∫ᵛ x in s, f x ∂[B; μ]
+    empty' := by simp
+    not_measurable' s hs := setIntegral_eq_zero_of_not_measurableSet hs
+    m_iUnion' s s_meas s_disj := hasSum_setIntegral_iUnion s_meas s_disj h.integrableOn
+  }
+  else
+    0
 
-lemma withDensity_apply (hf : μ.Integrable f) :
-    μ.withDensity f B s = ∫ᵛ x in s, f x ∂[B; μ] := by
+lemma withDensity_apply (hf : μ.Integrable f) : μ.withDensity f B s = ∫ᵛ x in s, f x ∂[B; μ] := by
   simp [withDensity, hf]
 
 lemma withDensity_apply_univ : μ.withDensity f B univ = ∫ᵛ x, f x ∂[B; μ] := by
@@ -67,26 +69,26 @@ lemma withDensity_zero : μ.withDensity 0 B = 0 := by
   ext s hs
   simp [withDensity_apply]
 
-lemma withDensity_congr (h : f =ᵐ[μ.variation] g) :
-    μ.withDensity f B = μ.withDensity g B := by
+lemma withDensity_congr (h : f =ᵐ[μ.variation] g) : μ.withDensity f B = μ.withDensity g B := by
   by_cases hf : μ.Integrable f
-  · simp only [withDensity, hf, ↓reduceDIte, Integrable.congr hf h, mk.injEq]
+  · simp only [withDensity, hf, ↓ reduceDIte, Integrable.congr hf h, mk.injEq]
     ext s
     apply setIntegral_congr_ae
     filter_upwards [h] with x hx xs using hx
   · have : ¬(μ.Integrable g) := by simpa [← integrable_congr h] using hf
     simp [withDensity, hf, this]
 
-lemma restrict_withDensity (hf : μ.Integrable f) :
-    (μ.withDensity f B).restrict s = (μ.restrict s).withDensity f B := by
-  by_cases hs : MeasurableSet s; swap
+lemma restrict_withDensity (hf : μ.Integrable f)
+    : (μ.withDensity f B).restrict s = (μ.restrict s).withDensity f B := by
+  by_cases hs : MeasurableSet s
+  swap
   · simp [restrict_not_measurable _ hs]
   · ext t ht
     simp only [hs, ht, restrict_apply]
     rw [withDensity_apply hf, withDensity_apply hf.restrict, restrict_restrict _ ht hs]
 
-lemma variation_WithDensity_le :
-    (μ.withDensity f B).variation ≤ (μ.transpose B).variation.withDensity (fun x ↦ ‖f x‖ₑ) := by
+lemma variation_WithDensity_le
+    : (μ.withDensity f B).variation ≤ (μ.transpose B).variation.withDensity (fun x ↦ ‖f x‖ₑ) := by
   by_cases hf : μ.Integrable f
   · apply variation_le_of_forall_enorm_le (fun s hs ↦ ?_)
     rw [withDensity_apply hf, MeasureTheory.withDensity_apply _ hs]
@@ -344,16 +346,17 @@ lemma variation_withDensity' [CompleteSpace G]
     simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, ENNReal.coe_div, ENNReal.coe_ofNat, δ]
     rw [ENNReal.mul_div_cancel (by simp) (by simp)]
 
-/-- If `‖B x y‖ = ‖x‖ * ‖y‖` for all `x, y`, then the variation of a vector measure with
+/--
+If `‖B x y‖ = ‖x‖ * ‖y‖` for all `x, y`, then the variation of a vector measure with
 density `f` wrt `μ` is the measure with density `‖f‖ₑ` with respect to the variation of `μ`.
 
 The condition on `B` is necessary: for a counterexample without it, let `B` be the scalar
 product in `ℝ²` and `f x` everywhere horizontal and `μ s` everywhere vertical.
 Then `μ.withDensity f B = 0` so its variation is zero, while the integral of `‖f‖ₑ` is not.
 -/
-lemma variation_withDensity [CompleteSpace G]
-    (hf : μ.Integrable f) (hB : ∀ x y, ‖B x y‖₊ = ‖x‖₊ * ‖y‖₊) :
-    (μ.withDensity f B).variation = (μ.transpose B).variation.withDensity (fun x ↦ ‖f x‖ₑ) := by
+lemma variation_withDensity
+    [CompleteSpace G] (hf : μ.Integrable f) (hB : ∀ x y, ‖B x y‖₊ = ‖x‖₊ * ‖y‖₊)
+    : (μ.withDensity f B).variation = (μ.transpose B).variation.withDensity (fun x ↦ ‖f x‖ₑ) := by
   apply variation_withDensity' hf (fun x y ↦ ?_)
   refine le_antisymm (ContinuousLinearMap.le_opNorm (B.flip y) x) ?_
   rw [hB, mul_comm]
@@ -361,14 +364,18 @@ lemma variation_withDensity [CompleteSpace G]
   apply ContinuousLinearMap.opNNNorm_le_bound
   simp [hB, mul_comm]
 
-/-- The variation of a vecture measure with density `f` with respect to a positive measure `μ`
-is the measure with density `‖f‖ₑ` with respect to `μ`. -/
-lemma _root_.MeasureTheory.Measure.variation_withDensityᵥ [CompleteSpace E]
-    {μ : Measure X} {f : X → E} (hf : Integrable f μ) :
-    (μ.withDensityᵥ f).variation = μ.withDensity (fun x ↦ ‖f x‖ₑ) := by
-  /- We deduce this statement from the statement `variation_withDensity` for vector measures
+/--
+The variation of a vecture measure with density `f` with respect to a positive measure `μ`
+is the measure with density `‖f‖ₑ` with respect to `μ`.
+-/
+lemma _root_.MeasureTheory.Measure.variation_withDensityᵥ
+    [CompleteSpace E] {μ : Measure X} {f : X → E} (hf : Integrable f μ)
+    : (μ.withDensityᵥ f).variation = μ.withDensity (fun x ↦ ‖f x‖ₑ) := by
+  /-
+  We deduce this statement from the statement `variation_withDensity` for vector measures
   with density. For this, we write `μ.withDensityᵥ f` as the vector measure with density `f / ‖f‖`
-  with respect to the measure `μ.withDensity ‖f‖` interpreted as a signed measure. -/
+  with respect to the measure `μ.withDensity ‖f‖` interpreted as a signed measure.
+  -/
   rcases subsingleton_or_nontrivial E with hE | hE
   · simp [show f = 0 from Subsingleton.elim _ _]
   have : IsFiniteMeasure (μ.withDensity fun x ↦ ‖f x‖ₑ) := ⟨by simpa using! hf.2⟩
@@ -378,11 +385,14 @@ lemma _root_.MeasureTheory.Measure.variation_withDensityᵥ [CompleteSpace E]
     · apply AEStronglyMeasurable.mono_ac (withDensity_absolutelyContinuous _ _)
       exact hf.aestronglyMeasurable.norm.inv₀.smul hf.aestronglyMeasurable
     · filter_upwards with x using by simp [norm_smul, inv_mul_le_one]
-  have : μ.withDensityᵥ f = (μ.withDensity (‖f ·‖ₑ)).toSignedMeasure.withDensity
-      (fun x ↦ ‖f x‖⁻¹ • f x) (ContinuousLinearMap.lsmul ℝ ℝ).flip := by
+  have : μ.withDensityᵥ f
+      = (μ.withDensity (‖f ·‖ₑ)).toSignedMeasure.withDensity
+        (fun x ↦ ‖f x‖⁻¹ • f x)
+        (ContinuousLinearMap.lsmul ℝ ℝ).flip := by
     ext s hs
     rw [withDensityᵥ_apply hf hs, withDensity_apply I, setIntegral_toSignedMeasure hs,
-        setIntegral_withDensity_eq_setIntegral_toReal_smul₀ _ _ _ hs]; rotate_left
+      setIntegral_withDensity_eq_setIntegral_toReal_smul₀ _ _ _ hs]
+    rotate_left
     · exact hf.aestronglyMeasurable.restrict.enorm
     · filter_upwards with x using by simp
     congr with x
@@ -393,7 +403,8 @@ lemma _root_.MeasureTheory.Measure.variation_withDensityᵥ [CompleteSpace E]
     simpa using hx
   rw [this, variation_withDensity I (by simp [nnnorm_smul, mul_comm]),
     variation_transpose_eq _ _ (by simp [nnnorm_smul, mul_comm]), Measure.variation_toSignedMeasure,
-    ← withDensity_mul₀ hf.aestronglyMeasurable.enorm]; swap
+    ← withDensity_mul₀ hf.aestronglyMeasurable.enorm]
+  swap
   · exact (hf.aestronglyMeasurable.norm.inv₀.smul hf.aestronglyMeasurable).enorm
   congr with x
   rcases eq_or_ne (f x) 0 with hx | hx

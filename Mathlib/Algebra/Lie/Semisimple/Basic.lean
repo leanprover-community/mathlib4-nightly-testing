@@ -53,8 +53,9 @@ namespace LieAlgebra
 variable (R L : Type*) [CommRing R] [LieRing L] [LieAlgebra R L]
 
 variable {R L} in
-theorem HasTrivialRadical.eq_bot_of_isSolvable [HasTrivialRadical R L]
-    (I : LieIdeal R L) [hI : IsSolvable I] : I = ⊥ :=
+theorem HasTrivialRadical.eq_bot_of_isSolvable
+    [HasTrivialRadical R L] (I : LieIdeal R L) [hI : IsSolvable I]
+    : I = ⊥ :=
   sSup_eq_bot.mp radical_eq_bot _ hI
 
 instance [HasTrivialRadical R L] : LieModule.IsFaithful R L L := by
@@ -62,16 +63,16 @@ instance [HasTrivialRadical R L] : LieModule.IsFaithful R L L := by
   exact HasTrivialRadical.eq_bot_of_isSolvable _
 
 variable {R L} in
-theorem hasTrivialRadical_of_no_solvable_ideals (h : ∀ I : LieIdeal R L, IsSolvable I → I = ⊥) :
-    HasTrivialRadical R L :=
+theorem hasTrivialRadical_of_no_solvable_ideals (h : ∀ I : LieIdeal R L, IsSolvable I → I = ⊥)
+    : HasTrivialRadical R L :=
   ⟨sSup_eq_bot.mpr h⟩
 
-theorem hasTrivialRadical_iff_no_solvable_ideals :
-    HasTrivialRadical R L ↔ ∀ I : LieIdeal R L, IsSolvable I → I = ⊥ :=
+theorem hasTrivialRadical_iff_no_solvable_ideals
+    : HasTrivialRadical R L ↔ ∀ I : LieIdeal R L, IsSolvable I → I = ⊥ :=
   ⟨@HasTrivialRadical.eq_bot_of_isSolvable _ _ _ _ _, hasTrivialRadical_of_no_solvable_ideals⟩
 
-theorem hasTrivialRadical_iff_no_abelian_ideals :
-    HasTrivialRadical R L ↔ ∀ I : LieIdeal R L, IsLieAbelian I → I = ⊥ := by
+theorem hasTrivialRadical_iff_no_abelian_ideals
+    : HasTrivialRadical R L ↔ ∀ I : LieIdeal R L, IsLieAbelian I → I = ⊥ := by
   rw [hasTrivialRadical_iff_no_solvable_ideals]
   constructor <;> intro h₁ I h₂
   · exact h₁ _ <| LieAlgebra.ofAbelianIsSolvable I
@@ -114,14 +115,13 @@ instance : HasTrivialRadical R L := by
 
 end IsSimple
 
-lemma isSimple_iff_of_not_isLieAbelian (hL : ¬ IsLieAbelian L) :
-    IsSimpleOrder (LieIdeal R L) ↔ IsSimple R L :=
+lemma isSimple_iff_of_not_isLieAbelian (hL : ¬ IsLieAbelian L)
+    : IsSimpleOrder (LieIdeal R L) ↔ IsSimple R L :=
   ⟨fun _ ↦ ⟨IsSimpleOrder.eq_bot_or_eq_top, hL⟩, fun _ ↦ inferInstance⟩
 
 @[nontriviality]
-lemma not_isSimple_of_subsingleton [Subsingleton L] :
-    ¬ IsSimple R L :=
-  fun contra ↦ contra.non_abelian inferInstance
+lemma not_isSimple_of_subsingleton [Subsingleton L] : ¬ IsSimple R L := fun contra ↦
+  contra.non_abelian inferInstance
 
 namespace IsSemisimple
 
@@ -136,8 +136,8 @@ lemma isSimple_of_isAtom (I : LieIdeal R L) (hI : IsAtom I) : IsSimple R I where
     -- Suppose that `J` is an ideal of `I`.
     intro J
     -- We first show that `J` is also an ideal of the ambient Lie algebra `L`.
-    let J' : LieIdeal R L :=
-    { __ := J.toSubmodule.map I.incl.toLinearMap
+    let J' : LieIdeal R L := {
+      __ := J.toSubmodule.map I.incl.toLinearMap
       lie_mem := by
         rintro x _ ⟨y, hy, rfl⟩
         -- We need to show that `⁅x, y⁆ ∈ J` for any `x ∈ L` and `y ∈ J`.
@@ -163,9 +163,9 @@ lemma isSimple_of_isAtom (I : LieIdeal R L) (hI : IsAtom I) : IsSimple R I where
           exact lie_mem_right R I J ⟨a, ha⟩ y hy
         -- Finally `⁅b, y⁆ = 0`, by the independence of the atoms.
         · suffices ⁅b, y.val⁆ = 0 by erw [this]; simp only [zero_mem]
-          rw [← LieSubmodule.mem_bot (R := R) (L := L),
-              ← (IsSemisimple.sSupIndep_isAtom hI).eq_bot]
-          exact ⟨lie_mem_right R L I b y y.2, lie_mem_left _ _ _ _ _ hb⟩ }
+          rw [← LieSubmodule.mem_bot (R := R) (L := L), ← (IsSemisimple.sSupIndep_isAtom hI).eq_bot]
+          exact ⟨lie_mem_right R L I b y y.2, lie_mem_left _ _ _ _ _ hb⟩
+    }
     -- Now that we know that `J` is an ideal of `L`,
     -- we start with the proof that `I` is a simple Lie algebra.
     -- Assume that `J ≠ ⊤`.
@@ -176,9 +176,10 @@ lemma isSimple_of_isAtom (I : LieIdeal R L) (hI : IsAtom I) : IsSimple R I where
       intro x hx
       suffices x ∈ J → x = 0 from this hx
       have := @this x.1
-      simp only [LieIdeal.incl_coe, LieIdeal.toLieSubalgebra_toSubmodule,
-        LieSubmodule.mem_mk_iff', Submodule.mem_map, LieSubmodule.mem_toSubmodule, Subtype.exists,
-        LieSubmodule.mem_bot, ZeroMemClass.coe_eq_zero, forall_exists_index, and_imp, J'] at this
+      simp only [LieIdeal.incl_coe, LieIdeal.toLieSubalgebra_toSubmodule, LieSubmodule.mem_mk_iff',
+          Submodule.mem_map, LieSubmodule.mem_toSubmodule, Subtype.exists, LieSubmodule.mem_bot,
+          ZeroMemClass.coe_eq_zero, forall_exists_index, and_imp, J']
+        at this
       exact fun _ ↦ this (↑x) x.property hx rfl
     -- We need to show that `J = ⊥`.
     -- Since `J` is an ideal of `L`, and `I` is an atom,
@@ -208,9 +209,10 @@ See `atomistic`.
 
 The proof is by induction on the finite set of atoms.
 -/
-private
-lemma finitelyAtomistic : ∀ s : Finset (LieIdeal R L), ↑s ⊆ {I : LieIdeal R L | IsAtom I} →
-    ∀ I : LieIdeal R L, I ≤ s.sup id → ∃ t ⊆ s, I = t.sup id := by
+private lemma finitelyAtomistic
+    : ∀ s : Finset (LieIdeal R L),
+      ↑s ⊆ {I : LieIdeal R L | IsAtom I}
+        → ∀ I : LieIdeal R L, I ≤ s.sup id → ∃ t ⊆ s, I = t.sup id := by
   intro s hs I hI
   let S := {I : LieIdeal R L | IsAtom I}
   obtain rfl | hI := hI.eq_or_lt
@@ -280,8 +282,7 @@ lemma booleanGenerators : BooleanGenerators {I : LieIdeal R L | IsAtom I} where
 instance (priority := 100) instDistribLattice : DistribLattice (LieIdeal R L) :=
   (booleanGenerators R L).distribLatticeOfSSupEqTop sSup_atoms_eq_top
 
-noncomputable
-instance (priority := 100) instBooleanAlgebra : BooleanAlgebra (LieIdeal R L) :=
+noncomputable instance (priority := 100) instBooleanAlgebra : BooleanAlgebra (LieIdeal R L) :=
   (booleanGenerators R L).booleanAlgebraOfSSupEqTop sSup_atoms_eq_top
 
 /-- A semisimple Lie algebra has trivial radical. -/
@@ -302,8 +303,7 @@ instance (priority := 100) instHasTrivialRadical : HasTrivialRadical R L := by
 end IsSemisimple
 
 /-- A simple Lie algebra is semisimple. -/
-instance (priority := 100) IsSimple.instIsSemisimple [IsSimple R L] :
-    IsSemisimple R L := by
+instance (priority := 100) IsSimple.instIsSemisimple [IsSimple R L] : IsSemisimple R L := by
   constructor
   · simp
   · simpa using sSupIndep_singleton _
@@ -313,17 +313,17 @@ instance (priority := 100) IsSimple.instIsSemisimple [IsSimple R L] :
     rwa [hI₁, lie_abelian_iff_equiv_lie_abelian LieIdeal.topEquiv] at hI₂
 
 /-- An abelian Lie algebra with trivial radical is trivial. -/
-theorem subsingleton_of_hasTrivialRadical_lie_abelian [HasTrivialRadical R L] [h : IsLieAbelian L] :
-    Subsingleton L := by
+theorem subsingleton_of_hasTrivialRadical_lie_abelian [HasTrivialRadical R L] [h : IsLieAbelian L]
+    : Subsingleton L := by
   rw [isLieAbelian_iff_center_eq_top R L, center_eq_bot] at h
   exact (LieSubmodule.subsingleton_iff R L L).mp (subsingleton_of_bot_eq_top h)
 
-theorem abelian_radical_of_hasTrivialRadical [HasTrivialRadical R L] :
-    IsLieAbelian (radical R L) := by
+theorem abelian_radical_of_hasTrivialRadical [HasTrivialRadical R L]
+    : IsLieAbelian (radical R L) := by
   rw [HasTrivialRadical.radical_eq_bot]; exact LieIdeal.isLieAbelian_of_trivial ..
 
-theorem abelian_radical_iff_solvable_is_abelian [IsNoetherian R L] :
-    IsLieAbelian (radical R L) ↔ ∀ I : LieIdeal R L, IsSolvable I → IsLieAbelian I := by
+theorem abelian_radical_iff_solvable_is_abelian [IsNoetherian R L]
+    : IsLieAbelian (radical R L) ↔ ∀ I : LieIdeal R L, IsSolvable I → IsLieAbelian I := by
   constructor
   · rintro h₁ I h₂
     rw [LieIdeal.solvable_iff_le_radical] at h₂

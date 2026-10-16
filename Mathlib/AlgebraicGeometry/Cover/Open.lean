@@ -22,7 +22,6 @@ This file provides the basic API for open covers of schemes.
 
 @[expose] public section
 
-
 noncomputable section
 
 open TopologicalSpace CategoryTheory Opposite CategoryTheory.Limits
@@ -53,35 +52,35 @@ set_option backward.isDefEq.respectTransparency false in
 def affineCover (X : Scheme.{u}) : OpenCover X := by
   choose U R h using X.local_affine
   let e (x) := (h x).some
-  exact
-  { I₀ := X
+  exact {
+    I₀ := X
     X x := Spec (R x)
     f x := ⟨(e x).inv ≫ X.toLocallyRingedSpace.ofRestrict _⟩
     mem₀ := by
       rw [presieve₀_mem_precoverage_iff]
       refine ⟨fun x ↦ ⟨x, ⟨(e x).hom.base ⟨x, (U x).2⟩, ?_⟩⟩, inferInstance⟩
       change ((((e x).hom ≫ (e x).inv).base ≫ (X.ofRestrict _).base)) ⟨x, _⟩ = x
-      cat_disch }
+      cat_disch
+  }
 
-instance : Inhabited X.OpenCover :=
-  ⟨X.affineCover⟩
+instance : Inhabited X.OpenCover := ⟨X.affineCover⟩
 
-theorem OpenCover.iSup_opensRange {X : Scheme.{u}} (𝒰 : Scheme.OpenCover.{v} X) :
-    ⨆ i, (𝒰.f i).opensRange = ⊤ :=
+theorem OpenCover.iSup_opensRange {X : Scheme.{u}} (𝒰 : Scheme.OpenCover.{v} X)
+    : ⨆ i, (𝒰.f i).opensRange = ⊤ :=
   Opens.ext <| by rw [Opens.coe_iSup]; exact 𝒰.iUnion_range
 
 /-- The ranges of the maps in a scheme-theoretic open cover are a topological open cover. -/
-lemma OpenCover.isOpenCover_opensRange {X : Scheme.{u}} (𝒰 : OpenCover.{v} X) :
-    IsOpenCover fun i ↦ (𝒰.f i).opensRange :=
+lemma OpenCover.isOpenCover_opensRange {X : Scheme.{u}} (𝒰 : OpenCover.{v} X)
+    : IsOpenCover fun i ↦ (𝒰.f i).opensRange :=
   .mk 𝒰.iSup_opensRange
 
-/-- Every open cover of a quasi-compact scheme can be refined into a finite subcover.
--/
+/-- Every open cover of a quasi-compact scheme can be refined into a finite subcover. -/
 @[simps! X f]
-def OpenCover.finiteSubcover {X : Scheme.{u}} (𝒰 : OpenCover.{v} X) [H : CompactSpace X] :
-    OpenCover X := by
+def OpenCover.finiteSubcover {X : Scheme.{u}} (𝒰 : OpenCover.{v} X) [H : CompactSpace X]
+    : OpenCover X := by
   have :=
-    @CompactSpace.elim_nhds_subcover _ _ H (fun x : X => Set.range (𝒰.f (𝒰.idx x)))
+    @CompactSpace.elim_nhds_subcover _ _ H
+      (fun x : X => Set.range (𝒰.f (𝒰.idx x)))
       fun x => (IsOpenImmersion.isOpen_range (𝒰.f (𝒰.idx x))).mem_nhds (𝒰.covers x)
   let t := this.choose
   have h : ∀ x : X, ∃ y : t, x ∈ Set.range (𝒰.f (𝒰.idx y)) := by
@@ -90,37 +89,35 @@ def OpenCover.finiteSubcover {X : Scheme.{u}} (𝒰 : OpenCover.{v} X) [H : Comp
     rw [← Classical.choose_spec this, Set.mem_iUnion] at h'
     rcases h' with ⟨y, _, ⟨hy, rfl⟩, hy'⟩
     exact ⟨⟨y, hy⟩, hy'⟩
-  exact
-    { I₀ := t
-      X := fun x => 𝒰.X (𝒰.idx x.1)
-      f := fun x => 𝒰.f (𝒰.idx x.1)
-      mem₀ := by
-        rw [presieve₀_mem_precoverage_iff]
-        exact ⟨h, inferInstance⟩ }
+  exact {
+    I₀ := t
+    X := fun x => 𝒰.X (𝒰.idx x.1)
+    f := fun x => 𝒰.f (𝒰.idx x.1)
+    mem₀ := by
+      rw [presieve₀_mem_precoverage_iff]
+      exact ⟨h, inferInstance⟩
+  }
 
 instance [H : CompactSpace X] : Fintype 𝒰.finiteSubcover.I₀ := by
   delta OpenCover.finiteSubcover; infer_instance
 
-theorem OpenCover.compactSpace {X : Scheme.{u}} (𝒰 : X.OpenCover) [Finite 𝒰.I₀]
-    [H : ∀ i, CompactSpace (𝒰.X i)] : CompactSpace X := by
+theorem OpenCover.compactSpace
+    {X : Scheme.{u}} (𝒰 : X.OpenCover) [Finite 𝒰.I₀] [H : ∀ i, CompactSpace (𝒰.X i)]
+    : CompactSpace X := by
   cases nonempty_fintype 𝒰.I₀
   rw [← isCompact_univ_iff, ← 𝒰.iUnion_range]
   apply isCompact_iUnion
   intro i
   rw [isCompact_iff_compactSpace]
-  exact
-    @Homeomorph.compactSpace _ _ _ _ (H i)
-      (TopCat.homeoOfIso
-        (asIso
-          (IsOpenImmersion.isoOfRangeEq (𝒰.f i)
-            (X.ofRestrict (Opens.isOpenEmbedding ⟨_, (𝒰.map_prop i).base_open.isOpen_range⟩))
-            Subtype.range_coe.symm).hom.base))
+  exact @Homeomorph.compactSpace _ _ _ _ (H i)
+    (TopCat.homeoOfIso (asIso (IsOpenImmersion.isoOfRangeEq (𝒰.f i)
+      (X.ofRestrict (Opens.isOpenEmbedding ⟨_, (𝒰.map_prop i).base_open.isOpen_range⟩))
+      Subtype.range_coe.symm).hom.base))
 /--
 An affine open cover of `X` consists of a family of open immersions into `X` from
 spectra of rings.
 -/
-abbrev AffineOpenCover (X : Scheme.{u}) : Type _ :=
-  AffineCover.{v} @IsOpenImmersion X
+abbrev AffineOpenCover (X : Scheme.{u}) : Type _ := AffineCover.{v} @IsOpenImmersion X
 
 namespace AffineOpenCover
 
@@ -129,8 +126,7 @@ instance {X : Scheme.{u}} (𝒰 : X.AffineOpenCover) (j : 𝒰.I₀) : IsOpenImm
 
 /-- The open cover associated to an affine open cover. -/
 @[simps! I₀ X f]
-def openCover {X : Scheme.{u}} (𝒰 : X.AffineOpenCover) : X.OpenCover :=
-  AffineCover.cover 𝒰
+def openCover {X : Scheme.{u}} (𝒰 : X.AffineOpenCover) : X.OpenCover := AffineCover.cover 𝒰
 
 end AffineOpenCover
 
@@ -149,7 +145,8 @@ lemma openCover_affineOpenCover (X : Scheme.{u}) : X.affineOpenCover.openCover =
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Given any open cover `𝓤`, this is an affine open cover which refines it.
+/--
+Given any open cover `𝓤`, this is an affine open cover which refines it.
 The morphism in the category of open covers which proves that this is indeed a refinement, see
 `AlgebraicGeometry.Scheme.OpenCover.fromAffineRefinement`.
 -/
@@ -162,21 +159,20 @@ def OpenCover.affineRefinement {X : Scheme.{u}} (𝓤 : X.OpenCover) : X.AffineO
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The pullback of the affine refinement is the pullback of the affine cover. -/
-def OpenCover.pullbackCoverAffineRefinementObjIso (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i) :
-    (𝒰.affineRefinement.openCover.pullback₁ f).X i ≅
-      ((𝒰.X i.1).affineCover.pullback₁ (𝒰.pullbackHom f i.1)).X i.2 :=
-  pullbackSymmetry _ _ ≪≫ (pullbackRightPullbackFstIso _ _ _).symm ≪≫
-    pullbackSymmetry _ _ ≪≫ asIso (pullback.map _ _ _ _ (pullbackSymmetry _ _).hom (𝟙 _) (𝟙 _)
+def OpenCover.pullbackCoverAffineRefinementObjIso (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i)
+    : (𝒰.affineRefinement.openCover.pullback₁ f).X i
+      ≅ ((𝒰.X i.1).affineCover.pullback₁ (𝒰.pullbackHom f i.1)).X i.2 :=
+  pullbackSymmetry _ _ ≪≫ (pullbackRightPullbackFstIso _ _ _).symm ≪≫ pullbackSymmetry _ _
+    ≪≫ asIso (pullback.map _ _ _ _ (pullbackSymmetry _ _).hom (𝟙 _) (𝟙 _)
       (by simp [Cover.pullbackHom]) (by simp))
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
-lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_map (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i) :
-    (𝒰.pullbackCoverAffineRefinementObjIso f i).inv ≫
-      (𝒰.affineRefinement.openCover.pullback₁ f).f i =
-      ((𝒰.X i.1).affineCover.pullback₁ (𝒰.pullbackHom f i.1)).f i.2 ≫
-        (𝒰.pullback₁ f).f i.1 := by
+lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_map (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i)
+    : (𝒰.pullbackCoverAffineRefinementObjIso f i).inv
+        ≫ (𝒰.affineRefinement.openCover.pullback₁ f).f i
+      = ((𝒰.X i.1).affineCover.pullback₁ (𝒰.pullbackHom f i.1)).f i.2 ≫ (𝒰.pullback₁ f).f i.1 := by
   simp only [Precoverage.ZeroHypercover.pullback₁_toPreZeroHypercover,
     PreZeroHypercover.pullback₁_X, AffineOpenCover.openCover_X, AffineOpenCover.openCover_f,
     pullbackCoverAffineRefinementObjIso, Iso.trans_inv, asIso_inv, Iso.symm_inv, Category.assoc,
@@ -190,10 +186,9 @@ lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_map (f : X ⟶ Y) (𝒰 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_pullbackHom
-    (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i) :
-    (𝒰.pullbackCoverAffineRefinementObjIso f i).inv ≫
-      𝒰.affineRefinement.openCover.pullbackHom f i =
-      (𝒰.X i.1).affineCover.pullbackHom (𝒰.pullbackHom f i.1) i.2 := by
+    (f : X ⟶ Y) (𝒰 : Y.OpenCover) (i)
+    : (𝒰.pullbackCoverAffineRefinementObjIso f i).inv ≫ 𝒰.affineRefinement.openCover.pullbackHom f i
+      = (𝒰.X i.1).affineCover.pullbackHom (𝒰.pullbackHom f i.1) i.2 := by
   simp only [Cover.pullbackHom, pullbackCoverAffineRefinementObjIso, Iso.trans_inv, asIso_inv,
     Iso.symm_inv, Category.assoc, pullbackSymmetry_inv_comp_snd, IsIso.inv_comp_eq, limit.lift_π,
     PullbackCone.mk_π_app, Category.comp_id]
@@ -202,9 +197,9 @@ lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_pullbackHom
 
 /-- A family of elements spanning the unit ideal of `R` gives an affine open cover of `Spec R`. -/
 @[simps]
-noncomputable
-def affineOpenCoverOfSpanRangeEqTop {R : CommRingCat} {ι : Type*} (s : ι → R)
-    (hs : Ideal.span (Set.range s) = ⊤) : (Spec R).AffineOpenCover where
+noncomputable def affineOpenCoverOfSpanRangeEqTop
+    {R : CommRingCat} {ι : Type*} (s : ι → R) (hs : Ideal.span (Set.range s) = ⊤)
+    : (Spec R).AffineOpenCover where
   I₀ := ι
   X i := ↧(Localization.Away (s i))
   f i := Spec.map (CommRingCat.ofHom (algebraMap R (Localization.Away (s i))))
@@ -219,15 +214,19 @@ def affineOpenCoverOfSpanRangeEqTop {R : CommRingCat} {ι : Type*} (s : ι → R
     exact (eq_iff_iff.mp congr(x ∈ $this)).mpr H.choose_spec
 
 /-- Given any open cover `𝓤`, this is an affine open cover which refines it. -/
-def OpenCover.fromAffineRefinement {X : Scheme.{u}} (𝓤 : X.OpenCover) :
-    𝓤.affineRefinement.openCover ⟶ 𝓤 where
+def OpenCover.fromAffineRefinement {X : Scheme.{u}} (𝓤 : X.OpenCover)
+    : 𝓤.affineRefinement.openCover ⟶ 𝓤 where
   s₀ j := j.fst
   h₀ j := (𝓤.X j.fst).affineCover.f _
 
-/-- If two global sections agree after restriction to each member of an open cover, then
-they agree globally. -/
-lemma OpenCover.ext_elem {X : Scheme.{u}} {U : X.Opens} (f g : Γ(X, U)) (𝒰 : X.OpenCover)
-    (h : ∀ i : 𝒰.I₀, (𝒰.f i).app U f = (𝒰.f i).app U g) : f = g := by
+/--
+If two global sections agree after restriction to each member of an open cover, then
+they agree globally.
+-/
+lemma OpenCover.ext_elem
+    {X : Scheme.{u}} {U : X.Opens}
+    (f g : Γ(X, U)) (𝒰 : X.OpenCover) (h : ∀ i : 𝒰.I₀, (𝒰.f i).app U f = (𝒰.f i).app U g)
+    : f = g := by
   fapply TopCat.Sheaf.eq_of_locally_eq' X.sheaf
     (fun i ↦ (𝒰.f (𝒰.idx i)).opensRange ⊓ U) _ (fun _ ↦ homOfLE inf_le_right)
   · intro x hx
@@ -240,17 +239,24 @@ lemma OpenCover.ext_elem {X : Scheme.{u}} {U : X.Opens} (f g : Γ(X, U)) (𝒰 :
     rw [← IsOpenImmersion.map_ΓIso_inv] at h
     exact (IsOpenImmersion.ΓIso (𝒰.f (𝒰.idx x)) U).commRingCatIsoToRingEquiv.symm.injective h
 
-/-- If the restriction of a global section to each member of an open cover is zero, then it is
-globally zero. -/
-lemma zero_of_zero_cover {X : Scheme.{u}} {U : X.Opens} (s : Γ(X, U)) (𝒰 : X.OpenCover)
-    (h : ∀ i : 𝒰.I₀, (𝒰.f i).app U s = 0) : s = 0 :=
+/--
+If the restriction of a global section to each member of an open cover is zero, then it is
+globally zero.
+-/
+lemma zero_of_zero_cover
+    {X : Scheme.{u}} {U : X.Opens}
+    (s : Γ(X, U)) (𝒰 : X.OpenCover) (h : ∀ i : 𝒰.I₀, (𝒰.f i).app U s = 0)
+    : s = 0 :=
   𝒰.ext_elem s 0 (fun i ↦ by rw [map_zero]; exact h i)
 
-/-- If a global section is nilpotent on each member of a finite open cover, then `f` is
-nilpotent. -/
-lemma isNilpotent_of_isNilpotent_cover {X : Scheme.{u}} {U : X.Opens} (s : Γ(X, U))
-    (𝒰 : X.OpenCover) [Finite 𝒰.I₀] (h : ∀ i : 𝒰.I₀, IsNilpotent ((𝒰.f i).app U s)) :
-    IsNilpotent s := by
+/--
+If a global section is nilpotent on each member of a finite open cover, then `f` is
+nilpotent.
+-/
+lemma isNilpotent_of_isNilpotent_cover
+    {X : Scheme.{u}} {U : X.Opens} (s : Γ(X, U)) (𝒰 : X.OpenCover) [Finite 𝒰.I₀]
+    (h : ∀ i : 𝒰.I₀, IsNilpotent ((𝒰.f i).app U s))
+    : IsNilpotent s := by
   choose fn hfn using h
   have : Fintype 𝒰.I₀ := Fintype.ofFinite 𝒰.I₀
   /- the maximum of all `fn i` (exists, because `𝒰.I₀` is finite) -/
@@ -276,8 +282,10 @@ def affineBasisCoverOfAffine (R : CommRingCat.{u}) : OpenCover (Spec R) where
     · exact trivial
     · infer_instance
 
-/-- We may bind the basic open sets of an open affine cover to form an affine cover that is also
-a basis. -/
+/--
+We may bind the basic open sets of an open affine cover to form an affine cover that is also
+a basis.
+-/
 def affineBasisCover (X : Scheme.{u}) : OpenCover X :=
   X.affineCover.bind fun _ => affineBasisCoverOfAffine _
 
@@ -285,24 +293,24 @@ def affineBasisCover (X : Scheme.{u}) : OpenCover X :=
 def affineBasisCoverRing (X : Scheme.{u}) (i : X.affineBasisCover.I₀) : CommRingCat :=
   ↧(@Localization.Away (X.local_affine i.1).choose_spec.choose _ i.2)
 
-theorem affineBasisCover_obj (X : Scheme.{u}) (i : X.affineBasisCover.I₀) :
-    X.affineBasisCover.X i = Spec (X.affineBasisCoverRing i) :=
+theorem affineBasisCover_obj (X : Scheme.{u}) (i : X.affineBasisCover.I₀)
+    : X.affineBasisCover.X i = Spec (X.affineBasisCoverRing i) :=
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-theorem affineBasisCover_map_range (X : Scheme.{u}) (x : X)
-    (r : (X.local_affine x).choose_spec.choose) :
-    Set.range (X.affineBasisCover.f ⟨x, r⟩) =
-      (X.affineCover.f x) '' (PrimeSpectrum.basicOpen r).1 := by
+theorem affineBasisCover_map_range
+    (X : Scheme.{u}) (x : X) (r : (X.local_affine x).choose_spec.choose)
+    : Set.range (X.affineBasisCover.f ⟨x, r⟩)
+      = (X.affineCover.f x) '' (PrimeSpectrum.basicOpen r).1 := by
   simp only [affineBasisCover, Precoverage.ZeroHypercover.bind_toPreZeroHypercover, Set.range_comp,
     PreZeroHypercover.bind_f, Hom.comp_base, TopCat.hom_comp, ContinuousMap.coe_comp]
   congr
   exact (PrimeSpectrum.localization_away_comap_range (Localization.Away r) r :)
 
 set_option backward.isDefEq.respectTransparency.types false in
-theorem affineBasisCover_is_basis (X : Scheme.{u}) :
-    TopologicalSpace.IsTopologicalBasis
+theorem affineBasisCover_is_basis (X : Scheme.{u})
+    : TopologicalSpace.IsTopologicalBasis
       {x : Set X |
         ∃ a : X.affineBasisCover.I₀, x = Set.range (X.affineBasisCover.f a)} := by
   apply TopologicalSpace.isTopologicalBasis_of_isOpen_of_nhds
@@ -313,9 +321,8 @@ theorem affineBasisCover_is_basis (X : Scheme.{u}) :
     let U' := (X.affineCover.f (X.affineCover.idx a)) ⁻¹' U
     have hxU' : x ∈ U' := by rw [← e] at haU; exact haU
     rcases PrimeSpectrum.isBasis_basic_opens.exists_subset_of_mem_open hxU'
-        ((X.affineCover.f (X.affineCover.idx a)).continuous.isOpen_preimage _
-          hU) with
-      ⟨_, ⟨_, ⟨s, rfl⟩, rfl⟩, hxV, hVU⟩
+        ((X.affineCover.f (X.affineCover.idx a)).continuous.isOpen_preimage _ hU)
+      with ⟨_, ⟨_, ⟨s, rfl⟩, rfl⟩, hxV, hVU⟩
     refine ⟨_, ⟨⟨_, s⟩, rfl⟩, ?_, ?_⟩ <;> rw [affineBasisCover_map_range]
     · exact ⟨x, hxV, e⟩
     · rw [Set.image_subset_iff]; exact hVU

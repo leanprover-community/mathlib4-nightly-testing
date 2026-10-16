@@ -28,15 +28,17 @@ universe v u
 variable {C : Type u} [Category.{v} C]
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
-/-- Factorisations of a morphism `f` as a structure, containing, one object, two morphisms,
-and the condition that their composition equals `f`. -/
+/--
+Factorisations of a morphism `f` as a structure, containing, one object, two morphisms,
+and the condition that their composition equals `f`.
+-/
 structure Factorisation {X Y : C} (f : X ⟶ Y) where
   /-- The midpoint of the factorisation. -/
   mid : C
   /-- The morphism into the factorisation midpoint. -/
-  ι   : X ⟶ mid
+  ι : X ⟶ mid
   /-- The morphism out of the factorisation midpoint. -/
-  π   : mid ⟶ Y
+  π : mid ⟶ Y
   /-- The factorisation condition. -/
   ι_π : ι ≫ π = f := by cat_disch
 
@@ -46,8 +48,10 @@ namespace Factorisation
 
 variable {X Y : C} {f : X ⟶ Y}
 
-/-- Morphisms of `Factorisation f` consist of morphism between their midpoints and the obvious
-commutativity conditions. -/
+/--
+Morphisms of `Factorisation f` consist of morphism between their midpoints and the obvious
+commutativity conditions.
+-/
 @[ext]
 protected structure Hom (d e : Factorisation f) : Type (max u v) where
   /-- The morphism between the midpoints of the factorizations. -/
@@ -81,8 +85,8 @@ protected def initial : Factorisation f where
 set_option backward.defeqAttrib.useBackward true in
 /-- The unique morphism out of `Factorisation.initial f`. -/
 @[simps]
-protected def initialHom (d : Factorisation f) :
-    Factorisation.Hom (Factorisation.initial : Factorisation f) d where
+protected def initialHom (d : Factorisation f)
+    : Factorisation.Hom (Factorisation.initial : Factorisation f) d where
   h := d.ι
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -101,8 +105,8 @@ protected def terminal : Factorisation f where
 set_option backward.defeqAttrib.useBackward true in
 /-- The unique morphism into `Factorisation.terminal f`. -/
 @[simps]
-protected def terminalHom (d : Factorisation f) :
-    Factorisation.Hom d (Factorisation.terminal : Factorisation f) where
+protected def terminalHom (d : Factorisation f)
+    : Factorisation.Hom d (Factorisation.terminal : Factorisation f) where
   h := d.π
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -120,7 +124,7 @@ instance : HasInitial (Factorisation f) := Limits.hasInitial_of_unique Factorisa
 
 /-- The terminal factorisation is a terminal object -/
 def IsTerminal_terminal : IsTerminal (Factorisation.terminal : Factorisation f) :=
-IsTerminal.ofUnique _
+  IsTerminal.ofUnique _
 
 instance : HasTerminal (Factorisation f) := Limits.hasTerminal_of_unique Factorisation.terminal
 

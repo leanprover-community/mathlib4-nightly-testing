@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Damiano Testa
 -/
 
---import Mathlib.Init
+-- import Mathlib.Init
 import Std.Time.Format
 import Std.Time.Zoned
 import Lean.Meta.Tactic.TryThis
@@ -34,8 +34,9 @@ pass `"git commit -m 'message with spaces'`, the command will be split into
 `["git", "commit", "-m", "'message", "with", "spaces'"]`, which is not what you want.
 -/
 def runCmd (s : String) : IO String := do
-  let cmd::args := s.splitOn | throw <| IO.userError "Please provide at least one word in your command!"
-  IO.Process.run {cmd := cmd, args := args.toArray}
+  let cmd :: args := s.splitOn
+    | throw <| IO.userError "Please provide at least one word in your command!"
+  IO.Process.run { cmd := cmd, args := args.toArray }
 
 /--
 `getHeader fname fileContent keepTrailing` takes as input two strings and a `Bool`ean.
@@ -52,12 +53,12 @@ def getHeader (fname fileContent : String) (keepTrailing : Bool) : IO String := 
   let (stx, _) ← Parser.parseHeader (Parser.mkInputContext fileContent fname)
   -- The first argument is a module token (if any).
   let isModule := !(stx.raw.getArg 0).getArgs.isEmpty
-  let imports := stx.raw.getArg 2  -- extract just the imports list
+  let imports := stx.raw.getArg 2 -- extract just the imports list
   let imports := if keepTrailing then imports else imports.unsetTrailing
   -- Use `withLeading := false` to exclude leading comments (e.g. copyright header) that the
   -- parser now attaches to the first token (see leanprover/lean4#12662).
-  let some substring := imports.getSubstring? (withLeading := false) |
-    throw <| .userError "No substring: we have a problem!"
+  let some substring := imports.getSubstring? (withLeading := false)
+    | throw <| .userError "No substring: we have a problem!"
   -- This implementation is geared for to create a deprecated module:
   -- since imports there are unused by definition, we need to tell shake to keep them.
   -- For a general-purpose implementation, whether to add the `--keep-all` flag
@@ -76,9 +77,9 @@ def getHeaderFromFileName (fname : String) (keepTrailing : Bool) : IO String := 
 `deprecated_module "customMessage" (since := "date")`,
 where the date is of the form `YYYY-MM-DD`.
 -/
-def mkDeprecationWithDate (date : String)
-    (customMessage : Option String := some "Auto-generated deprecation") :
-    CommandElabM Format := do
+def mkDeprecationWithDate
+    (date : String) (customMessage : Option String := some "Auto-generated deprecation")
+    : CommandElabM Format := do
   let msgStx := customMessage.map Syntax.mkStrLit
   let dateStx := Syntax.mkStrLit date
   let stx ← `(command|deprecated_module $[$msgStx]? (since := $dateStx))
@@ -88,8 +89,8 @@ def mkDeprecationWithDate (date : String)
 `mkDeprecation customMessage` returns the formatted syntax
 `deprecated_module "customMessage" (since := "YYYY-MM-DD")`, where the date is today's date.
 -/
-def mkDeprecation (customMessage : Option String := some "Auto-generated deprecation") :
-    CommandElabM Format := do
+def mkDeprecation (customMessage : Option String := some "Auto-generated deprecation")
+    : CommandElabM Format := do
   -- Get the current date in UTC: we don't want this to depend on the user computer's time zone.
   let date := s!"{(Std.Time.DateTime.ofTimestamp (← Std.Time.Timestamp.now) .UTC).toPlainDate}"
   mkDeprecationWithDate date customMessage
@@ -121,10 +122,11 @@ Finally, if everything looks correct, adding a final `write` actually generates 
 #create_deprecated_module path/To/DeletedFile.lean "This file is no longer relevant" write
 ```
 -/
-syntax "#create_deprecated_module " str (ppSpace str)? (&" rename_to " str)? (&" write")? ppLine :
-  command
+syntax "#create_deprecated_module " str (ppSpace str)? (&" rename_to " str)? (&" write")? ppLine
+  : command
 
-/-- `processPrettyOneLine log msg` takes as input two strings `log` and `msg`.
+/--
+`processPrettyOneLine log msg` takes as input two strings `log` and `msg`.
 It expects `log` to be a line in the output of `git log --pretty=oneline`:
 it should look like `<hash> <PRdescr>`.
 
@@ -138,9 +140,12 @@ def processPrettyOneLine (log msg fname : String.Slice) : IO (String.Slice × Me
   let PRdescr := (log.dropWhile (!·.isWhitespace)).trimAscii
   let gitDiffCLI := s!"git diff {hash}^...{hash} -- {fname}"
   let diff ← runCmd gitDiffCLI <|> pure s!"{hash}: error in computing '{gitDiffCLI}'"
-  let diffCollapsed := .trace {cls := .str .anonymous s!"{hash}"} m!"{gitDiffCLI}" #[m!"{diff}"]
-  return (hash, m!"{msg} in " ++
-    .trace {cls := .str .anonymous ("_" ++ hash.take 7)} m!"{PRdescr}" #[diffCollapsed])
+  let diffCollapsed := .trace { cls := .str .anonymous s!"{hash}" } m!"{gitDiffCLI}" #[m!"{diff}"]
+  return (
+    hash,
+    m!"{msg} in "
+      ++ .trace { cls := .str .anonymous ("_" ++ hash.take 7) } m!"{PRdescr}" #[diffCollapsed]
+  )
 
 /--
 `mkRenamesDict pct` takes as optional input a natural number.
@@ -160,13 +165,15 @@ def mkRenamesDict (percent : Nat := 100) : IO (Std.HashMap String String) := do
   for git in lines do
     -- If `git` corresponds to a rename, it contains `3` segments, separated by a
     -- tab character (`\t`): `R%%`, `oldName`, `newName`.
-    let [pct, oldName, newName] := git.split (· == '\t') |>.toList | continue
+    let [pct, oldName, newName] := git.split (· == '\t') |>.toList
+      | continue
     if pct.take 1 != "R" then
-      IO.println
-        s!"mkRenamesDict: '{pct}' should have been of the form Rxxx, denoting a `R`ename \
-          and a similarity percentage.\nFull git line: '{git}'"
+      IO.println s!"mkRenamesDict: '{pct}' should have been of the form Rxxx, denoting a `R`ename \
+        and a similarity percentage.\
+        \nFull git line: '{git}'"
       continue
-    let some pctNat := (pct.drop 1).toNat? | continue
+    let some pctNat := (pct.drop 1).toNat?
+      | continue
     -- We skip renames of files in `MathlibTest`.
     if oldName.startsWith "MathlibTest/" then continue
     -- This looks like a rename with a similarity index at least as big as our threshold:
@@ -176,10 +183,11 @@ def mkRenamesDict (percent : Nat := 100) : IO (Std.HashMap String String) := do
     -- This looks like a rename, but the similarity index is smaller than our threshold:
     -- we report a message and do not add the rename to our dictionary.
     else
-      IO.println
-        s!"'{oldName}' was renamed to '{newName}' ({pct}), but the similarity {pctNat}% \
-          is less than the expected threshold of {percent}%.\n\n
-          We treat this file as a removal."
+      IO.println s!"'{oldName}' was renamed to '{newName}' ({pct}), but the similarity {pctNat}% \
+        is less than the expected threshold of {percent}%.\
+        \n\
+        \n\
+        \n          We treat this file as a removal."
   return dict
 
 /--
@@ -193,10 +201,11 @@ def mkModName (fname : System.FilePath) : String :=
   let cpts := fname.components
   let cpts :=
     match cpts.getLast? with
-    | none => cpts
+    | none =>
+      cpts
     | some last =>
-      cpts.dropLast ++
-        [if last.endsWith ".lean" then last.dropEnd ".lean".length |>.toString else last]
+      cpts.dropLast
+        ++ [if last.endsWith ".lean" then last.dropEnd ".lean".length |>.toString else last]
   ".".intercalate cpts
 
 #guard mkModName ("Mathlib" / "Data" / "Nat" / "Basic.lean") == "Mathlib.Data.Nat.Basic"
@@ -218,8 +227,8 @@ It returns a pair consisting of
   In both cases, after the imports, there will be the `deprecated_module` command with the optional
   `comment` input, defaulting to `Auto-generated deprecation` if `comment = none`.
 -/
-def deprecateFilePath (fname : String) (rename comment : Option String) :
-    CommandElabM (Array MessageData × String) := do
+def deprecateFilePath (fname : String) (rename comment : Option String)
+    : CommandElabM (Array MessageData × String) := do
   let mut msgs : Array MessageData := #[]
   -- Check that the input `fname` is a file that currently does not exist.
   if ← System.FilePath.pathExists fname then
@@ -227,9 +236,9 @@ def deprecateFilePath (fname : String) (rename comment : Option String) :
   -- Retrieve the last two commits that modified `fname`:
   -- the last one is the deletion, the previous one is the last file modification.
   let log ← runCmd s!"git log --pretty=oneline -2 -- {fname}"
-  let [deleted, lastModified] := log.lines.toList |
-    throwError "Found {log.lines.length} commits, but expected 2! \
-      Please make sure the file {fname} existed at some point!"
+  let [deleted, lastModified] := log.lines.toList
+    | throwError "Found {log.lines.length} commits, but expected 2! \
+        Please make sure the file {fname} existed at some point!"
   let (_deleteHash, deletedMsg) ← processPrettyOneLine deleted "deleted" fname
   let (modifiedHash, modifiedMsg) ← processPrettyOneLine lastModified "last modified" fname
   msgs := msgs.append #[m!"The file {fname} was\n", modifiedMsg, deletedMsg]
@@ -242,43 +251,57 @@ def deprecateFilePath (fname : String) (rename comment : Option String) :
   let file ← runCmd s!"git show {modifiedHash}:{fname}"
   -- Generate a module deprecation for the file `fname`.
   -- As mathlib uses the module system, it is fine to always generate a module.
-  let fileHeader ← match rename with
+  let fileHeader ←
+    match rename with
     | some rename => do
       let modName := mkModName rename
-      pure s!"module -- shake: keep-all\n\npublic import {modName}"
-    | none => getHeader fname file false
-  let deprecatedFile := s!"{fileHeader.trimAsciiEnd}\n\n{deprecation.pretty.trimAsciiEnd}\n"
-  msgs := msgs.push <| .trace {cls := `Deprecation} m!"{fname}" #[m!"\n{deprecatedFile}"]
+      pure s!"module -- shake: keep-all\
+        \n\
+        \npublic import {modName}"
+    | none =>
+      getHeader fname file false
+  let deprecatedFile :=
+    s!"{fileHeader.trimAsciiEnd}\
+      \n\
+      \n{deprecation.pretty.trimAsciiEnd}\n"
+  msgs := msgs.push <| .trace { cls := `Deprecation } m!"{fname}" #[m!"\n{deprecatedFile}"]
   return (msgs, deprecatedFile)
 
 elab_rules : command
-| `(#create_deprecated_module%$tk $fnameStx:str $[$comment:str]? $[rename_to $rename?:str]? $[write%$write?]?) => do
-  let fname := fnameStx.getString
-  if ← System.FilePath.pathExists fname then
-    logWarningAt fnameStx m!"The file {fname} exists: I cannot deprecate it!"
-    return
-  let (msgs, deprecatedFile) ← deprecateFilePath fname (rename?.map (·.getString)) (comment.map (·.getString))
-  if write?.isSome then
-    if let some dir := System.FilePath.parent fname then
-      if !(← System.FilePath.pathExists dir) then
-        logInfoAt fnameStx m!"Creating directory {dir}"
-        IO.FS.createDirAll dir
-    IO.FS.writeFile fname deprecatedFile
-  if write?.isNone then
-    -- We strip trailing comments from `fnameStx` and `comment` to avoid them showing up in the
-    -- regenerated syntax.
-    let fnameStx := ⟨fnameStx.raw.unsetTrailing⟩
-    let comment := comment.map (⟨·.raw.unsetTrailing⟩)
-    let stx ← `(command|#create_deprecated_module $fnameStx:str $[$comment:str]? $[rename_to $rename?:str]? write)
-    liftTermElabM do Meta.liftMetaM do
-      Meta.Tactic.TryThis.addSuggestion (← getRef).unsetTrailing
-        { preInfo? := "Confirm that you are happy with the information below before continuing!\n\n"
-          suggestion := stx
-          postInfo? :=
-            if comment.isNone
-            then "\nYou can add a reason for the removal after the file name, as a string."
-            else ""}
-  logInfoAt tk <| .joinSep msgs.toList "\n"
+  | `(#create_deprecated_module%$tk $fnameStx:str $[$comment:str]? $[rename_to $rename?:str]? $[write%$write?]?) =>
+    do
+      let fname := fnameStx.getString
+      if ← System.FilePath.pathExists fname then
+        logWarningAt fnameStx m!"The file {fname} exists: I cannot deprecate it!"
+        return
+      let (msgs, deprecatedFile) ←
+        deprecateFilePath fname (rename?.map (·.getString)) (comment.map (·.getString))
+      if write?.isSome then
+        if let some dir := System.FilePath.parent fname then
+          if !(← System.FilePath.pathExists dir) then
+            logInfoAt fnameStx m!"Creating directory {dir}"
+            IO.FS.createDirAll dir
+        IO.FS.writeFile fname deprecatedFile
+      if write?.isNone then
+        -- We strip trailing comments from `fnameStx` and `comment` to avoid them showing up in the
+        -- regenerated syntax.
+        let fnameStx := ⟨fnameStx.raw.unsetTrailing⟩
+        let comment := comment.map (⟨·.raw.unsetTrailing⟩)
+        let stx ←
+          `(command|#create_deprecated_module $fnameStx:str $[$comment:str]? $[rename_to $rename?:str]? write)
+        liftTermElabM do
+          Meta.liftMetaM do
+            Meta.Tactic.TryThis.addSuggestion (← getRef).unsetTrailing {
+              preInfo? :=
+                "Confirm that you are happy with the information below before continuing!\n\n"
+              suggestion := stx
+              postInfo? :=
+                if comment.isNone then
+                  "\nYou can add a reason for the removal after the file name, as a string."
+                else
+                  ""
+            }
+      logInfoAt tk <| .joinSep msgs.toList "\n"
 
 /--
 `#find_deleted_files (nc)? (pct%)?` takes an optional natural number input `nc` and an optional
@@ -314,10 +337,11 @@ elab tk:"#find_deleted_files" nc:(ppSpace num)? pct:(ppSpace num)? bang:&"%"? : 
   -- (throwing an error if that doesn't exist).
   let getHashAndMessage (n : Nat) : CommandElabM (String × MessageData) := do
     let log ← runCmd s!"git log --pretty=oneline -{n}"
-    let some last := log.lines.toList.getLast? | throwError "Found no commits!"
+    let some last := log.lines.toList.getLast?
+      | throwError "Found no commits!"
     let commitHash := last.takeWhile (fun c : Char ↦ !c.isWhitespace)
     let PRdescr := (last.dropWhile (fun c : Char ↦ !c.isWhitespace)).trimAscii
-    return (commitHash.toString, .trace {cls := `Commit} m!"{PRdescr}" #[m!"{commitHash}"])
+    return (commitHash.toString, .trace { cls := `Commit } m!"{PRdescr}" #[m!"{commitHash}"])
   let getFilesAtHash (hash : String) : CommandElabM (Std.HashSet String) := do
     let files ← runCmd s!"git ls-tree -r --name-only {hash} Mathlib/"
     return .ofList <| files.splitOn "\n"
@@ -327,36 +351,47 @@ elab tk:"#find_deleted_files" nc:(ppSpace num)? pct:(ppSpace num)? bang:&"%"? : 
   let (pastHash, pastPRdescr) ← getHashAndMessage n
   let pastFiles ← getFilesAtHash pastHash
   msgs := msgs.push m!"{pastFiles.size} files at the past commit {pastPRdescr}"
-  let onlyPastFiles := pastFiles.filter fun fil ↦ fil.endsWith ".lean" && !currentFiles.contains fil
+  let onlyPastFiles :=
+    pastFiles.filter fun fil ↦ fil.endsWith ".lean" && ! currentFiles.contains fil
   let noFiles := onlyPastFiles.size
-  msgs := msgs.push
-    m!"{noFiles} Lean file{if noFiles == 1 then "" else "s"} in 'Mathlib' that no longer exist:"
+  msgs :=
+    msgs.push
+      m!"{noFiles} Lean file{if noFiles == 1 then "" else "s"} in 'Mathlib' that no longer exist:"
   msgs := msgs.push "" ++ onlyPastFiles.toArray.map (m!"  {·}") |>.push ""
   if onlyPastFiles.isEmpty then
     logWarningAt (nc.getD ⟨tk⟩)
       m!"All Lean files in Mathlib that existed {n} commits ago are still present.  \
-      Increase {n} to search further back!"
+        Increase {n} to search further back!"
     return
   let mut suggestions : Array Meta.Tactic.TryThis.Suggestion := #[]
-  let ref := .ofRange {tk.getRange?.get! with stop := tk.getPos?.get!}
+  let ref := .ofRange { tk.getRange?.get! with stop := tk.getPos?.get! }
   let dict ← mkRenamesDict (pct.getD (Syntax.mkNumLit "100")).getNat
   for fname in onlyPastFiles do
     let fnameStx := Syntax.mkStrLit fname
-    let stx ← if let some newName := dict[fname]? then
-      let newNameStx := Syntax.mkStrLit newName
-      `(command|#create_deprecated_module $fnameStx rename_to $newNameStx)
-    else
-      `(command|#create_deprecated_module $fnameStx)
-    suggestions := suggestions.push {
-      suggestion := (⟨stx.raw.updateTrailing "hello".toRawSubstring⟩ : TSyntax `command)
-    }
+    let stx ←
+      if let some newName := dict[fname]? then
+        let newNameStx := Syntax.mkStrLit newName
+        `(command|#create_deprecated_module $fnameStx rename_to $newNameStx)
+      else
+        `(command|#create_deprecated_module $fnameStx)
+    suggestions :=
+      suggestions.push {
+        suggestion := (⟨stx.raw.updateTrailing "hello".toRawSubstring⟩ : TSyntax `command)
+      }
   let suggestionsText :=
-    if suggestions.size == 1 then ("the suggestion", "")
-    else (s!"any of the {suggestions.size} suggestions", ", so you can click several of them")
-  liftTermElabM do Meta.liftMetaM do
-    Meta.Tactic.TryThis.addSuggestions (origSpan? := some ref) (header := s!"Try these:\n\n\
-          Clicking on {suggestionsText.1} below will *not* remove the \
-          `#find_delete_files` command{suggestionsText.2}.\n") tk suggestions
+    if suggestions.size == 1 then
+      ("the suggestion", "")
+    else
+      (s!"any of the {suggestions.size} suggestions", ", so you can click several of them")
+  liftTermElabM do
+    Meta.liftMetaM do
+      Meta.Tactic.TryThis.addSuggestions (origSpan? := some ref)
+        (header :=
+          s!"Try these:\
+            \n\n\
+            Clicking on {suggestionsText.1} below will *not* remove the \
+            `#find_delete_files` command{suggestionsText.2}.\n")
+        tk suggestions
   logInfoAt tk <| .joinSep msgs.toList "\n"
 
 /-!
@@ -368,7 +403,7 @@ If you already know the name of the file that you want to deprecate, then uncomm
   The command will also by proposed this as a `Try this` suggestion by the
   `#create_deprecated_module` command.
 -/
---#create_deprecated_module "Mathlib/LinearAlgebra/RootSystem/Finite/g2.lean"  "a comment here" --write
+-- #create_deprecated_module "Mathlib/LinearAlgebra/RootSystem/Finite/g2.lean"  "a comment here" --write
 
 /-!
 If, instead, you are looking for a file to be deprecated, uncomment the

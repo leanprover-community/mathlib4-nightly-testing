@@ -31,7 +31,6 @@ cancellative `CommMonoidWithZero`.
 
 public section
 
-
 namespace Cardinal
 
 universe u
@@ -40,10 +39,12 @@ variable {a b : Cardinal.{u}} {n m : ℕ}
 
 /-- Alias of `isUnit_iff_eq_one` for discoverability. -/
 theorem isUnit_iff : IsUnit a ↔ a = 1 := by
-  refine
-    ⟨fun h => ?_, by
+  refine ⟨
+    fun h => ?_,
+    by
       rintro rfl
-      exact isUnit_one⟩
+      exact isUnit_one
+  ⟩
   rcases eq_or_ne a 0 with (rfl | ha)
   · exact (not_isUnit_zero h).elim
   rw [isUnit_iff_forall_dvd] at h
@@ -84,7 +85,7 @@ theorem prime_of_aleph0_le (ha : ℵ₀ ≤ a) : Prime a := by
   have habc := le_of_dvd hz hbc
   rwa [mul_eq_max' <| ha.trans habc, max_def', ite_eq_left h] at hbc
 
-theorem not_irreducible_of_aleph0_le (ha : ℵ₀ ≤ a) : ¬Irreducible a := by
+theorem not_irreducible_of_aleph0_le (ha : ℵ₀ ≤ a) : ¬ Irreducible a := by
   rw [irreducible_iff, not_and_or]
   refine Or.inr fun h => ?_
   simpa [mul_aleph0_eq ha, isUnit_iff, (one_lt_aleph0.trans_le ha).ne', one_lt_aleph0.ne'] using
@@ -138,9 +139,11 @@ theorem isPrimePow_iff {a : Cardinal} : IsPrimePow a ↔ ℵ₀ ≤ a ∨ ∃ n 
   simp only [h, false_or, isPrimePow_nat_iff]
   lift a to ℕ using not_le.mp h
   rw [isPrimePow_def]
-  refine
-    ⟨?_, fun ⟨n, han, p, k, hp, hk, h⟩ =>
-          ⟨p, k, nat_is_prime_iff.2 hp, hk, by rw [han]; exact mod_cast h⟩⟩
+  refine ⟨
+    ?_,
+    fun ⟨n, han, p, k, hp, hk, h⟩ =>
+      ⟨p, k, nat_is_prime_iff.2 hp, hk, by rw [han]; exact mod_cast h⟩
+  ⟩
   rintro ⟨p, k, hp, hk, hpk⟩
   have key : p ^ (1 : Cardinal) ≤ ↑a := by
     rw [← hpk]; apply power_le_power_left hp.ne_zero; exact mod_cast hk

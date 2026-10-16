@@ -64,12 +64,10 @@ variable [LinearOrder α] [OrderBot α]
 @[to_dual] theorem max_eq_bot {a b : α} : max a b = ⊥ ↔ a = ⊥ ∧ b = ⊥ := sup_eq_bot_iff
 
 @[to_dual (attr := simp)]
-theorem min_eq_bot {a b : α} : min a b = ⊥ ↔ a = ⊥ ∨ b = ⊥ := by
-  simp_rw [← le_bot_iff, inf_le_iff]
+theorem min_eq_bot {a b : α} : min a b = ⊥ ↔ a = ⊥ ∨ b = ⊥ := by simp_rw [← le_bot_iff, inf_le_iff]
 
 @[to_dual (attr := aesop (rule_sets := [finiteness]) safe apply)]
-lemma min_ne_bot {a b : α} (ha : a ≠ ⊥) (hb : b ≠ ⊥) : min a b ≠ ⊥ := by
-  grind
+lemma min_ne_bot {a b : α} (ha : a ≠ ⊥) (hb : b ≠ ⊥) : min a b ≠ ⊥ := by grind
 
 end LinearOrder
 
@@ -78,8 +76,10 @@ end LinearOrder
 section WellFounded
 
 @[to_dual (attr := elab_as_elim)]
-theorem WellFoundedGT.induction_top [Preorder α] [WellFoundedGT α] [OrderTop α]
-    {P : α → Prop} (hexists : ∃ M, P M) (hind : ∀ N ≠ ⊤, P N → ∃ M > N, P M) : P ⊤ := by
+theorem WellFoundedGT.induction_top
+    [Preorder α] [WellFoundedGT α] [OrderTop α]
+    {P : α → Prop} (hexists : ∃ M, P M) (hind : ∀ N ≠ ⊤, P N → ∃ M > N, P M)
+    : P ⊤ := by
   contrapose! hexists
   intro M
   induction M using WellFoundedGT.induction with

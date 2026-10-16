@@ -88,9 +88,11 @@ namespace AddGroupExtension
 
 variable [AddGroup N] [AddGroup E] [AddGroup G] (S : AddGroupExtension N E G)
 
-/-- `AddGroupExtension`s are equivalent iff there is an isomorphism making a commuting diagram.
-  Use `AddGroupExtension.Equiv.ofMonoidHom` in `Mathlib/GroupTheory/GroupExtension/Basic.lean` to
-  construct an equivalence without providing the inverse map. -/
+/--
+`AddGroupExtension`s are equivalent iff there is an isomorphism making a commuting diagram.
+Use `AddGroupExtension.Equiv.ofMonoidHom` in `Mathlib/GroupTheory/GroupExtension/Basic.lean` to
+construct an equivalence without providing the inverse map.
+-/
 structure Equiv {E' : Type*} [AddGroup E'] (S' : AddGroupExtension N E' G) extends E ≃+ E' where
   /-- The left-hand side of the diagram commutes. -/
   inl_comm : toAddEquiv ∘ S.inl = S'.inl
@@ -134,8 +136,9 @@ theorem rightHom_comp_inl : S.rightHom.comp S.inl = 1 := by
 
 /-- `E` acts on `N` by conjugation. -/
 noncomputable def conjAct : E →* MulAut N where
-  toFun e := (MonoidHom.ofInjective S.inl_injective).trans <|
-    (MulAut.conjNormal e).trans (MonoidHom.ofInjective S.inl_injective).symm
+  toFun e :=
+    (MonoidHom.ofInjective S.inl_injective).trans <|
+      (MulAut.conjNormal e).trans (MonoidHom.ofInjective S.inl_injective).symm
   map_one' := by
     ext _
     simp only [map_one, MulEquiv.trans_apply, MulAut.one_apply, MulEquiv.symm_apply_apply]
@@ -148,9 +151,11 @@ theorem inl_conjAct_comm {e : E} {n : N} : S.inl (S.conjAct e n) = e * S.inl n *
   simp only [conjAct, MonoidHom.coe_mk, OneHom.coe_mk, MulEquiv.trans_apply,
     MonoidHom.apply_ofInjective_symm, MulAut.conjNormal_apply, MonoidHom.ofInjective_apply]
 
-/-- `GroupExtension`s are equivalent iff there is an isomorphism making a commuting diagram.
-  Use `GroupExtension.Equiv.ofMonoidHom` in `Mathlib/GroupTheory/GroupExtension/Basic.lean` to
-  construct an equivalence without providing the inverse map. -/
+/--
+`GroupExtension`s are equivalent iff there is an isomorphism making a commuting diagram.
+Use `GroupExtension.Equiv.ofMonoidHom` in `Mathlib/GroupTheory/GroupExtension/Basic.lean` to
+construct an equivalence without providing the inverse map.
+-/
 @[to_additive]
 structure Equiv {E' : Type*} [Group E'] (S' : GroupExtension N E' G) extends E ≃* E' where
   /-- The left-hand side of the diagram commutes. -/
@@ -190,8 +195,7 @@ theorem coe_toMulEquiv : ⇑(equiv : E ≃* E') = equiv := rfl
 theorem map_inl (n : N) : equiv (S.inl n) = S'.inl n := congr($equiv.inl_comm n)
 
 @[to_additive (attr := simp)]
-theorem rightHom_map (e : E) : S'.rightHom (equiv e) = S.rightHom e :=
-  congr($equiv.rightHom_comm e)
+theorem rightHom_map (e : E) : S'.rightHom (equiv e) = S.rightHom e := congr($equiv.rightHom_comm e)
 
 /-- The inverse of an equivalence of group extensions is an equivalence. -/
 @[to_additive /-- The inverse of an equivalence of additive group extensions is an equivalence. -/]
@@ -213,13 +217,15 @@ initialize_simps_projections Equiv (toFun → apply, invFun → symm_apply)
 attribute [simps! symm_apply] AddGroupExtension.Equiv.symm
 attribute [simps! symm_apply] symm
 
-/-- The composition of monoid isomorphisms associated to equivalences of group extensions gives
-another equivalence. -/
+/--
+The composition of monoid isomorphisms associated to equivalences of group extensions gives
+another equivalence.
+-/
 @[to_additive (attr := simps!)
-/-- The composition of monoid isomorphisms associated to equivalences of additive group
+  /-- The composition of monoid isomorphisms associated to equivalences of additive group
 extensions gives another equivalence. -/]
-def trans {E'' : Type*} [Group E''] {S'' : GroupExtension N E'' G} (equiv' : S'.Equiv S'') :
-    S.Equiv S'' where
+def trans {E'' : Type*} [Group E''] {S'' : GroupExtension N E'' G} (equiv' : S'.Equiv S'')
+    : S.Equiv S'' where
   __ := equiv.toMulEquiv.trans equiv'.toMulEquiv
   inl_comm := by rw [MulEquiv.coe_trans, Function.comp_assoc, equiv.inl_comm, equiv'.inl_comm]
   rightHom_comm := by
@@ -266,8 +272,7 @@ theorem rightHom_comp_section : S.rightHom ∘ σ = id := σ.rightInverse_rightH
 end Section
 
 /-- `Splitting` of a group extension is a section homomorphism. -/
-@[to_additive]
-structure Splitting extends G →* E, S.Section
+@[to_additive] structure Splitting extends G →* E, S.Section
 
 /-- A splitting of a group extension as a (set-theoretic) section. -/
 add_decl_doc Splitting.toSection
@@ -293,8 +298,9 @@ variable {S}
 theorem coe_mk (s : G →* E) (hs : Function.RightInverse s S.rightHom) : (mk s hs : G → E) = s := rfl
 
 @[to_additive (attr := simp)]
-theorem toMonoidHom_mk (s : G →* E) (hs : Function.RightInverse s S.rightHom) :
-    (mk s hs : G →* E) = s := rfl
+theorem toMonoidHom_mk (s : G →* E) (hs : Function.RightInverse s S.rightHom)
+    : (mk s hs : G →* E) = s :=
+  rfl
 
 @[to_additive (attr := deprecated (since := "2026-09-15"))]
 alias coe_monoidHom_mk := toMonoidHom_mk
@@ -311,10 +317,12 @@ theorem rightHom_comp_splitting : S.rightHom.comp s = MonoidHom.id G := by
 
 end Splitting
 
-/-- A splitting of an extension `S` is `N`-conjugate to another iff there exists `n : N` such that
-the section homomorphism is a conjugate of the other section homomorphism by `S.inl n`. -/
+/--
+A splitting of an extension `S` is `N`-conjugate to another iff there exists `n : N` such that
+the section homomorphism is a conjugate of the other section homomorphism by `S.inl n`.
+-/
 @[to_additive
-/-- A splitting of an extension `S` is `N`-conjugate to another iff there exists `n : N` such
+  /-- A splitting of an extension `S` is `N`-conjugate to another iff there exists `n : N` such
 that the section homomorphism is a conjugate of the other section homomorphism by `S.inl n`. -/]
 def IsConj (s s' : S.Splitting) : Prop := ∃ n : N, s = fun g ↦ S.inl n * s' g * (S.inl n)⁻¹
 

@@ -26,7 +26,7 @@ variable (S) in
 In a commutative semigroup `S`, `Subsemigroup.square S` is the subsemigroup of squares in `S`.
 -/
 @[to_additive
-/-- In a commutative additive semigroup `S`, `AddSubsemigroup.even S`
+  /-- In a commutative additive semigroup `S`, `AddSubsemigroup.even S`
 is the subsemigroup of even elements in `S`. -/]
 def square : Subsemigroup S where
   carrier := {s : S | IsSquare s}
@@ -44,11 +44,9 @@ namespace Submonoid
 variable {M : Type*} [CommMonoid M]
 
 variable (M) in
-/--
-In a commutative monoid `M`, `Submonoid.square M` is the submonoid of squares in `M`.
--/
+/-- In a commutative monoid `M`, `Submonoid.square M` is the submonoid of squares in `M`. -/
 @[to_additive
-/-- In a commutative additive monoid `M`, `AddSubmonoid.even M`
+  /-- In a commutative additive monoid `M`, `AddSubmonoid.even M`
 is the submonoid of even elements in `M`. -/]
 def square : Submonoid M where
   __ := Subsemigroup.square M
@@ -69,11 +67,9 @@ namespace Subgroup
 variable {G : Type*} [CommGroup G]
 
 variable (G) in
-/--
-In an abelian group `G`, `Subgroup.square G` is the subgroup of squares in `G`.
--/
+/-- In an abelian group `G`, `Subgroup.square G` is the subgroup of squares in `G`. -/
 @[to_additive
-/-- In an abelian additive group `G`, `AddSubgroup.even G` is
+  /-- In an abelian additive group `G`, `AddSubgroup.even G` is
 the subgroup of even elements in `G`. -/]
 def square : Subgroup G where
   __ := Submonoid.square G

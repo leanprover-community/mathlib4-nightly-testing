@@ -6,7 +6,7 @@ Authors: Lenny Taelman
 module
 
 public meta import Mathlib.Tactic.ToDual
-public import Mathlib.Data.Set.SymmDiff  -- shake: keep (Qq dependency)
+public import Mathlib.Data.Set.SymmDiff -- shake: keep (Qq dependency)
 
 /-!
 # The `tauto_set` tactic
@@ -20,13 +20,11 @@ namespace Mathlib.Tactic.TautoSet
 
 open Lean Elab.Tactic
 
-/--
-`specialize_all x` runs `specialize h x` for all hypotheses `h` where this tactic succeeds.
--/
-elab (name := specialize_all) "specialize_all" x:term : tactic => withMainContext do
-  for h in ← getLCtx do
-    evalTactic (← `(tactic|specialize $(mkIdent h.userName) $x)) <|> pure ()
-
+/-- `specialize_all x` runs `specialize h x` for all hypotheses `h` where this tactic succeeds. -/
+elab (name := specialize_all) "specialize_all" x:term : tactic =>
+  withMainContext do
+    for h in ← getLCtx do
+      evalTactic (← `(tactic|specialize $(mkIdent h.userName) $x)) <|> pure ()
 
 /--
 `tauto_set` proves tautologies involving hypotheses and goals of the form `X ⊆ Y`
@@ -45,16 +43,16 @@ example {α} (A B C : Set α) (h1 : A ⊆ B ∪ C) : (A ∩ B) ∪ (A ∩ C) = A
   tauto_set
 ```
 -/
-macro "tauto_set" : tactic => `(tactic|
-  · simp_all -failIfUnchanged only [
-      Set.ext_iff, Set.subset_def,
-      Set.mem_union, Set.mem_compl_iff, Set.mem_inter_iff,
-      Set.symmDiff_def, Set.sdiff_eq, Set.disjoint_iff
-    ]
-    try intro x
-    try specialize_all x
-    <;> tauto
-)
-
+macro "tauto_set" : tactic =>
+  `(tactic|
+      · simp_all -failIfUnchanged only [
+          Set.ext_iff, Set.subset_def,
+          Set.mem_union, Set.mem_compl_iff, Set.mem_inter_iff,
+          Set.symmDiff_def, Set.sdiff_eq, Set.disjoint_iff
+        ]
+        try intro x
+        try specialize_all x
+        <;> tauto
+    )
 
 end Mathlib.Tactic.TautoSet

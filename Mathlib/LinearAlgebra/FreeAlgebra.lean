@@ -28,20 +28,22 @@ variable (R : Type u) (X : Type v)
 section
 variable [CommSemiring R]
 
-/-- The `FreeMonoid X` basis on the `FreeAlgebra R X`,
-mapping `[x₁, x₂, ..., xₙ]` to the "monomial" `1 • x₁ * x₂ * ⋯ * xₙ` -/
+/--
+The `FreeMonoid X` basis on the `FreeAlgebra R X`,
+mapping `[x₁, x₂, ..., xₙ]` to the "monomial" `1 • x₁ * x₂ * ⋯ * xₙ`
+-/
 -- @[simps]
 noncomputable def basisFreeMonoid : Basis (FreeMonoid X) R (FreeAlgebra R X) :=
-  Finsupp.basisSingleOne.map
-    (equivMonoidAlgebraFreeMonoid.toLinearEquiv.trans <| MonoidAlgebra.coeffLinearEquiv _).symm
+  Finsupp.basisSingleOne.map (equivMonoidAlgebraFreeMonoid.toLinearEquiv.trans <|
+    MonoidAlgebra.coeffLinearEquiv _).symm
 
 instance : Module.Free R (FreeAlgebra R X) :=
   .of_equiv equivMonoidAlgebraFreeMonoid.symm.toLinearEquiv
 
 end
 
-theorem rank_eq [CommRing R] [Nontrivial R] :
-    Module.rank R (FreeAlgebra R X) = Cardinal.lift.{u} (Cardinal.mk (List X)) := by
+theorem rank_eq [CommRing R] [Nontrivial R]
+    : Module.rank R (FreeAlgebra R X) = Cardinal.lift.{u} (Cardinal.mk (List X)) := by
   rw [← (Basis.mk_eq_rank'.{_, _, _, u} (basisFreeMonoid R X)).trans (Cardinal.lift_id _),
     Cardinal.lift_umax.{v, u}, FreeMonoid]
 
@@ -49,8 +51,9 @@ end FreeAlgebra
 
 open Cardinal
 
-theorem Algebra.rank_adjoin_le {R : Type u} {S : Type v} [CommRing R] [Ring S] [Algebra R S]
-    (s : Set S) : Module.rank R (adjoin R s) ≤ max #s ℵ₀ := by
+theorem Algebra.rank_adjoin_le
+    {R : Type u} {S : Type v} [CommRing R] [Ring S] [Algebra R S] (s : Set S)
+    : Module.rank R (adjoin R s) ≤ max #s ℵ₀ := by
   rw [adjoin_eq_range_freeAlgebra_lift]
   cases subsingleton_or_nontrivial R
   · rw [rank_subsingleton]; exact one_le_aleph0.trans (le_max_right _ _)

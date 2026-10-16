@@ -6,7 +6,6 @@ Authors: Michael Stoll
 module
 
 public import Mathlib.Data.ZMod.Basic
-
 import Mathlib.Algebra.EuclideanDomain.Int
 import Mathlib.Data.Nat.Prime.Int
 import Mathlib.RingTheory.PrincipalIdealDomain
@@ -24,10 +23,12 @@ assert_not_exists TwoSidedIdeal
 
 namespace ZMod
 
-/-- If `p` is a prime and `a` is an integer, then `a : ZMod p` is zero if and only if
-`gcd a p ≠ 1`. -/
-theorem eq_zero_iff_gcd_ne_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
-    (a : ZMod p) = 0 ↔ a.gcd p ≠ 1 := by
+/--
+If `p` is a prime and `a` is an integer, then `a : ZMod p` is zero if and only if
+`gcd a p ≠ 1`.
+-/
+theorem eq_zero_iff_gcd_ne_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime]
+    : (a : ZMod p) = 0 ↔ a.gcd p ≠ 1 := by
   rw [Ne, Int.gcd_comm, ← Int.isCoprime_iff_gcd_eq_one,
     (Nat.prime_iff_prime_int.1 pp.1).coprime_iff_not_dvd, Classical.not_not,
     intCast_zmod_eq_zero_iff_dvd]

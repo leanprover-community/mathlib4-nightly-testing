@@ -57,8 +57,8 @@ instance : Comonad.PreservesLimitOfIsCoreflexivePair ((whiskeringLeft _ _ C).obj
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : ComonadicLeftAdjoint ((whiskeringLeft _ _ C).obj (incl I)) :=
-  Comonad.comonadicOfHasPreservesCoreflexiveEqualizersOfReflectsIsomorphisms
-    ((incl I).ranAdjunction C)
+  Comonad.comonadicOfHasPreservesCoreflexiveEqualizersOfReflectsIsomorphisms ((incl I).ranAdjunction
+    C)
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
@@ -71,10 +71,10 @@ set_option backward.privateInPublic.warn false in
 @[instance_reducible]
 def functorCategoryClosed (F : I ⥤ C) : Closed F :=
   have := (ihom.adjunction (incl I ⋙ F)).isLeftAdjoint
-  have := isLeftAdjoint_square_lift_comonadic (tensorLeft F) ((whiskeringLeft _ _ C).obj (incl I))
-    ((whiskeringLeft _ _ C).obj (incl I)) (tensorLeft (incl I ⋙ F)) (Iso.refl _)
-  { rightAdj := (tensorLeft F).rightAdjoint
-    adj := Adjunction.ofIsLeftAdjoint (tensorLeft F) }
+  have :=
+    isLeftAdjoint_square_lift_comonadic (tensorLeft F) ((whiskeringLeft _ _ C).obj (incl I))
+      ((whiskeringLeft _ _ C).obj (incl I)) (tensorLeft (incl I ⋙ F)) (Iso.refl _)
+  { rightAdj := (tensorLeft F).rightAdjoint, adj := Adjunction.ofIsLeftAdjoint (tensorLeft F) }
 
 /--
 Assuming the existence of certain limits, functors into a monoidal closed category form a

@@ -313,12 +313,14 @@ def collectInclusionArgs (argStxs : Array Syntax) : TacticM InclusionConfig := d
       Term.synthesizeSyntheticMVarsNoPostponing
       let value ← instantiateMVars value
       paramSettings := paramSettings.insert name value
-    | _ => throwUnsupportedSyntax
+    | _ =>
+      throwUnsupportedSyntax
   if families.isEmpty then
     throwError "At least one inclusion family must be specified"
   return { paramSettings, families }
 
-/-- `inclusion [fam₁, fam₂, ...]` is a low-level tactic for proving the main goal by reasoning
+/--
+`inclusion [fam₁, fam₂, ...]` is a low-level tactic for proving the main goal by reasoning
 about the set inclusion operator `∈` using the *inclusion families* `fam₁`, `fam₂`, ...
 The goal `⊢ P` is first transformed into `⊢ P ∈ {True}` and then each family defines forward-
 and backward reasoning rules to replace the goal with a form suitable for checking by computation
@@ -348,9 +350,11 @@ elab (name := inclusion) "inclusion" cfg:optConfig " [" args:inclusionArg,* "]" 
   let config := { config with kernel := options.kernel, native := options.native }
   closeMainGoalUsing `inclusion fun goal _ => inclusionCore goal config
 
-/-- `inclusion? [fam₁, ...]` is a proof writing aid that quickly checks if
+/--
+`inclusion? [fam₁, ...]` is a proof writing aid that quickly checks if
 `inclusion [fam₁, ...]` would close the goal, without doing the expensive kernel computation that
-actually closes the goal. -/
+actually closes the goal.
+-/
 elab (name := inclusion?) "inclusion?" " [" args:inclusionArg,* "]" : tactic => do
   let config ← collectInclusionArgs args.getElems
   withoutModifyingStateWithInfoAndMessages <| withMainContext do
@@ -358,6 +362,7 @@ elab (name := inclusion?) "inclusion?" " [" args:inclusionArg,* "]" : tactic => 
       discard <| inclusionCore (← getMainTarget) config
       logInfo "The inclusion check succeeded."
     catch err =>
-      logError m!"The inclusion check failed:\n{err.toMessageData}"
+      logError m!"The inclusion check failed:\
+        \n{err.toMessageData}"
 
 end Inclusion

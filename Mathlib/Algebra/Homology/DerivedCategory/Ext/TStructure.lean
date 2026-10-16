@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic
-
 import Mathlib.Algebra.Homology.DerivedCategory.TStructure
 
 /-!
@@ -40,24 +39,22 @@ namespace HasExt
 
 variable {C} in
 lemma hasSmallLocalizedShiftedHom_of_isLE_of_isGE
-    [HasExt.{w} C] (K L : CochainComplex C ℤ)
-    (a b : ℤ) [K.IsGE a] [K.IsLE a] [L.IsGE b] [L.IsLE b] :
-    HasSmallLocalizedShiftedHom.{w}
-      (HomologicalComplex.quasiIso C (ComplexShape.up ℤ)) ℤ K L := by
+    [HasExt.{w} C] (K L : CochainComplex C ℤ) (a b : ℤ) [K.IsGE a] [K.IsLE a] [L.IsGE b] [L.IsLE b]
+    : HasSmallLocalizedShiftedHom.{w} (HomologicalComplex.quasiIso C (ComplexShape.up ℤ)) ℤ K
+      L := by
   let := HasDerivedCategory.standard
   obtain ⟨X, ⟨eX⟩⟩ := DerivedCategory.exists_iso_singleFunctor_obj_of_isGE_of_isLE (Q.obj K) a
   obtain ⟨Y, ⟨eY⟩⟩ := DerivedCategory.exists_iso_singleFunctor_obj_of_isGE_of_isLE (Q.obj L) b
   simp only [hasSmallLocalizedShiftedHom_iff _ _ Q]
-  exact fun p q ↦ small_of_injective (f := fun φ ↦
-    ((singleFunctors C).shiftIso p (a - p) a (by simp)).inv.app X ≫
-      eX.inv⟦p⟧' ≫ φ ≫ eY.hom⟦q⟧' ≫
-        ((singleFunctors C).shiftIso q (b - q) b (by simp)).hom.app Y)
-    (fun φ₁ φ₂ h ↦ by simpa [cancel_epi, cancel_mono] using h)
+  exact fun p q ↦
+    small_of_injective
+      (f := fun φ ↦
+        ((singleFunctors C).shiftIso p (a - p) a (by simp)).inv.app X ≫ eX.inv⟦p⟧' ≫ φ ≫ eY.hom⟦q⟧'
+          ≫ ((singleFunctors C).shiftIso q (b - q) b (by simp)).hom.app Y)
+      (fun φ₁ φ₂ h ↦ by simpa [cancel_epi, cancel_mono] using h)
 
-instance [HasExt.{w} C] (K L : CochainComplex C ℤ)
-    [K.IsGE 0] [K.IsLE 0] [L.IsGE 0] [L.IsLE 0] :
-    HasSmallLocalizedShiftedHom.{w}
-      (HomologicalComplex.quasiIso C (ComplexShape.up ℤ)) ℤ K L :=
+instance [HasExt.{w} C] (K L : CochainComplex C ℤ) [K.IsGE 0] [K.IsLE 0] [L.IsGE 0] [L.IsLE 0]
+    : HasSmallLocalizedShiftedHom.{w} (HomologicalComplex.quasiIso C (ComplexShape.up ℤ)) ℤ K L :=
   HasExt.hasSmallLocalizedShiftedHom_of_isLE_of_isGE _ _ 0 0
 
 end HasExt

@@ -16,7 +16,6 @@ that it is a semigroup.
 
 public section
 
-
 universe u
 
 @[to_additive]

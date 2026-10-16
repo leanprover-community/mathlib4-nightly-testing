@@ -24,11 +24,13 @@ namespace WithTop
 section AddCommMonoid
 variable [AddCommMonoid M] {s : Finset ι} {f : ι → WithTop M}
 
-@[simp, norm_cast] lemma coe_sum (s : Finset ι) (f : ι → M) :
-    ∑ i ∈ s, f i = ∑ i ∈ s, (f i : WithTop M) := map_sum addHom f s
+@[simp, norm_cast]
+lemma coe_sum (s : Finset ι) (f : ι → M) : ∑ i ∈ s, f i = ∑ i ∈ s, (f i : WithTop M) :=
+  map_sum addHom f s
 
 /-- A sum is infinite iff one term is infinite. -/
-@[simp] lemma sum_eq_top : ∑ i ∈ s, f i = ⊤ ↔ ∃ i ∈ s, f i = ⊤ := by
+@[simp]
+lemma sum_eq_top : ∑ i ∈ s, f i = ⊤ ↔ ∃ i ∈ s, f i = ⊤ := by
   induction s using Finset.cons_induction <;> simp [*]
 
 /-- A sum is finite iff all terms are finite. -/
@@ -37,13 +39,14 @@ lemma sum_ne_top : ∑ i ∈ s, f i ≠ ⊤ ↔ ∀ i ∈ s, f i ≠ ⊤ := by s
 variable [LT M]
 
 /-- A sum is finite iff all terms are finite. -/
-@[simp] lemma sum_lt_top : ∑ i ∈ s, f i < ⊤ ↔ ∀ i ∈ s, f i < ⊤ := by
-  simp [WithTop.lt_top_iff_ne_top]
+@[simp]
+lemma sum_lt_top : ∑ i ∈ s, f i < ⊤ ↔ ∀ i ∈ s, f i < ⊤ := by simp [WithTop.lt_top_iff_ne_top]
 
 end AddCommMonoid
 
 section CommMonoidWithZero
-variable [CommMonoidWithZero M₀] [NoZeroDivisors M₀] [Nontrivial M₀] [DecidableEq M₀]
+variable
+  [CommMonoidWithZero M₀] [NoZeroDivisors M₀] [Nontrivial M₀] [DecidableEq M₀]
   {s : Finset ι} {f : ι → WithTop M₀} {i : ι}
 
 /-- A product of finite terms is finite. -/
@@ -54,8 +57,7 @@ lemma prod_ne_top (h : ∀ i ∈ s, f i ≠ ⊤) : ∏ i ∈ s, f i ≠ ⊤ :=
 lemma prod_lt_top [LT M₀] (h : ∀ i ∈ s, f i < ⊤) : ∏ i ∈ s, f i < ⊤ :=
   prod_induction f (· < ⊤) (fun _ _ ↦ mul_lt_top) (coe_lt_top _) h
 
-lemma prod_eq_top (hi : i ∈ s) (hi' : f i = ⊤) (h : ∀ j ∈ s, f j ≠ 0) :
-    ∏ j ∈ s, f j = ⊤ := by
+lemma prod_eq_top (hi : i ∈ s) (hi' : f i = ⊤) (h : ∀ j ∈ s, f j ≠ 0) : ∏ j ∈ s, f j = ⊤ := by
   classical rw [← prod_erase_mul _ _ hi]
   refine WithTop.mul_eq_top_iff.mpr (Or.inl ⟨?_, hi'⟩)
   refine prod_ne_zero_iff.mpr ?_
@@ -86,8 +88,9 @@ namespace WithBot
 section AddCommMonoid
 variable [AddCommMonoid M] {s : Finset ι} {f : ι → WithBot M}
 
-@[simp, norm_cast] lemma coe_sum (s : Finset ι) (f : ι → M) :
-    ∑ i ∈ s, f i = ∑ i ∈ s, (f i : WithBot M) := map_sum addHom f s
+@[simp, norm_cast]
+lemma coe_sum (s : Finset ι) (f : ι → M) : ∑ i ∈ s, f i = ∑ i ∈ s, (f i : WithBot M) :=
+  map_sum addHom f s
 
 /-- A sum is infinite iff one term is infinite. -/
 lemma sum_eq_bot_iff : ∑ i ∈ s, f i = ⊥ ↔ ∃ i ∈ s, f i = ⊥ := by
@@ -106,7 +109,8 @@ lemma sum_lt_bot (h : ∀ i ∈ s, f i ≠ ⊥) : ⊥ < ∑ i ∈ s, f i :=
 end AddCommMonoid
 
 section CommMonoidWithZero
-variable [CommMonoidWithZero M₀] [NoZeroDivisors M₀] [Nontrivial M₀] [DecidableEq M₀]
+variable
+  [CommMonoidWithZero M₀] [NoZeroDivisors M₀] [Nontrivial M₀] [DecidableEq M₀]
   {s : Finset ι} {f : ι → WithBot M₀}
 
 /-- A product of finite terms is finite. -/

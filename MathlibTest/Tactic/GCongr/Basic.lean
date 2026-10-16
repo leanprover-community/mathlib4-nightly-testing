@@ -13,7 +13,8 @@ open MeasureTheory
 
 variable {α : Type*} (a : Set α) {μ : OuterMeasure α} {μ' : OuterMeasure α}
 
-@[gcongr high] lemma mono_outerMeasure (h : μ ≤ μ') : μ a ≤ μ' a := h a
+@[gcongr high]
+lemma mono_outerMeasure (h : μ ≤ μ') : μ a ≤ μ' a := h a
 example (h : μ ≤ μ') : μ a ≤ μ' a := by gcongr
 
 variable [MeasurableSpace α] {ν : Measure α} {ν' : Measure α}
@@ -54,8 +55,7 @@ h : b~d
 ⊢ c~c
 -/
 #guard_msgs in
-example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by
-  gcongr
+example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by gcongr
 
 /--
 error: Tactic `gcongr` failed: subgoal a~a is not allowed by the provided pattern and is not closed by `rfl`
@@ -66,16 +66,13 @@ h : b~d
 ⊢ a~a
 -/
 #guard_msgs in
-example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by
-  gcongr myAdd _ (myAdd ?_ _)
+example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by gcongr myAdd _ (myAdd ?_ _)
 
 attribute [refl] myAdd_rfl
 
-example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by
-  gcongr
+example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by gcongr
 
-example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by
-  gcongr myAdd _ (myAdd ?_ _)
+example (h : b ~ d) : myAdd a (myAdd b c) ~ myAdd a (myAdd d c) := by gcongr myAdd _ (myAdd ?_ _)
 
 end rfl
 
@@ -84,13 +81,17 @@ end rfl
 axiom foo : Nat → Prop
 
 axiom foo_mono_iff (a b) : a ≤ b ↔ (foo a → foo b)
-attribute [local gcongr] foo_mono_iff in example (a b) (h : a ≤ b) : foo a → foo b := by gcongr
+attribute [local gcongr] foo_mono_iff in
+example (a b) (h : a ≤ b) : foo a → foo b := by gcongr
 
 axiom foo_mono_iff_rev (a b) : (foo a → foo b) ↔ a ≤ b
-attribute [local gcongr] foo_mono_iff_rev in example (a b) (h : a ≤ b) : foo a → foo b := by gcongr
+attribute [local gcongr] foo_mono_iff_rev in
+example (a b) (h : a ≤ b) : foo a → foo b := by gcongr
 
 axiom foo_monotone : Monotone foo
-attribute [local gcongr] foo_monotone in example (a b) (h : a ≤ b) : foo a ≤ foo b := by gcongr
+attribute [local gcongr] foo_monotone in
+example (a b) (h : a ≤ b) : foo a ≤ foo b := by gcongr
 
 axiom foo_mono_rev (a b) : foo a → a ≤ b → foo b
-attribute [local gcongr] foo_mono_rev in example (a b) (h : a ≤ b) : foo a → foo b := by gcongr
+attribute [local gcongr] foo_mono_rev in
+example (a b) (h : a ≤ b) : foo a → foo b := by gcongr

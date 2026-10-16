@@ -33,41 +33,36 @@ variable [Abelian C]
 
 noncomputable instance : IsNormalEpiCategory (HomologicalComplex C c) := ⟨fun p _ =>
   ⟨NormalEpi.mk _ (kernel.ι p) (kernel.condition _)
-    (isColimitOfEval _ _ (fun _ =>
-      Abelian.isColimitMapCoconeOfCokernelCoforkOfπ _ _))⟩⟩
+    (isColimitOfEval _ _ (fun _ => Abelian.isColimitMapCoconeOfCokernelCoforkOfπ _ _))⟩⟩
 
 noncomputable instance : IsNormalMonoCategory (HomologicalComplex C c) := ⟨fun p _ =>
   ⟨NormalMono.mk _ (cokernel.π p) (cokernel.condition _)
-    (isLimitOfEval _ _ (fun _ =>
-      Abelian.isLimitMapConeOfKernelForkOfι _ _))⟩⟩
+    (isLimitOfEval _ _ (fun _ => Abelian.isLimitMapConeOfKernelForkOfι _ _))⟩⟩
 
 noncomputable instance : Abelian (HomologicalComplex C c) where
 
 variable (S : ShortComplex (HomologicalComplex C c))
 
-lemma exact_of_degreewise_exact (hS : ∀ (i : ι), (S.map (eval C c i)).Exact) :
-    S.Exact := by
+lemma exact_of_degreewise_exact (hS : ∀ (i : ι), (S.map (eval C c i)).Exact) : S.Exact := by
   simp only [ShortComplex.exact_iff_isZero_homology] at hS ⊢
   rw [IsZero.iff_id_eq_zero]
   ext i
   apply (IsZero.of_iso (hS i) (S.mapHomologyIso (eval C c i)).symm).eq_of_src
 
-lemma shortExact_of_degreewise_shortExact
-    (hS : ∀ (i : ι), (S.map (eval C c i)).ShortExact) :
-    S.ShortExact where
+lemma shortExact_of_degreewise_shortExact (hS : ∀ (i : ι), (S.map (eval C c i)).ShortExact)
+    : S.ShortExact where
   mono_f := mono_of_mono_f _ (fun i => (hS i).mono_f)
   epi_g := epi_of_epi_f _ (fun i => (hS i).epi_g)
   exact := exact_of_degreewise_exact S (fun i => (hS i).exact)
 
-lemma exact_iff_degreewise_exact :
-    S.Exact ↔ ∀ (i : ι), (S.map (eval C c i)).Exact := by
+lemma exact_iff_degreewise_exact : S.Exact ↔ ∀ (i : ι), (S.map (eval C c i)).Exact := by
   constructor
   · intro hS i
     exact hS.map (eval C c i)
   · exact exact_of_degreewise_exact S
 
-lemma shortExact_iff_degreewise_shortExact :
-    S.ShortExact ↔ ∀ (i : ι), (S.map (eval C c i)).ShortExact := by
+lemma shortExact_iff_degreewise_shortExact
+    : S.ShortExact ↔ ∀ (i : ι), (S.map (eval C c i)).ShortExact := by
   constructor
   · intro hS i
     have := hS.mono_f
@@ -81,16 +76,14 @@ section
 
 variable [HasZeroMorphisms C] [HasZeroObject C] [DecidableEq ι]
 
-instance (i j : ι) (I : C) [Injective I] :
-    Injective (((single C c i).obj I).X j) := by
+instance (i j : ι) (I : C) [Injective I] : Injective (((single C c i).obj I).X j) := by
   by_cases hij : j = i
   · subst hij
     simp only [single_obj_X_self]
     infer_instance
   · exact (isZero_single_obj_X _ _ _ _ hij).injective
 
-instance (i j : ι) (P : C) [Projective P] :
-    Projective (((single C c i).obj P).X j) := by
+instance (i j : ι) (P : C) [Projective P] : Projective (((single C c i).obj P).X j) := by
   by_cases hij : j = i
   · subst hij
     simp only [single_obj_X_self]
@@ -110,22 +103,26 @@ variable {D : Type*} [Category* D] [HasZeroMorphisms D]
 
 variable (F : C ⥤ D) {ι : Type*} (c : ComplexShape ι)
 
-instance [F.PreservesZeroMorphisms] {J : Type*} [Category* J] [HasLimitsOfShape J C]
-    [PreservesLimitsOfShape J F] : PreservesLimitsOfShape J (F.mapHomologicalComplex c) :=
-  HomologicalComplex.preservesLimitsOfShape_of_eval _ (fun i ↦
-    inferInstanceAs <| PreservesLimitsOfShape J <| HomologicalComplex.eval C c i ⋙ F)
+instance
+    [F.PreservesZeroMorphisms]
+    {J : Type*} [Category* J] [HasLimitsOfShape J C] [PreservesLimitsOfShape J F]
+    : PreservesLimitsOfShape J (F.mapHomologicalComplex c) :=
+  HomologicalComplex.preservesLimitsOfShape_of_eval _
+    (fun i ↦ inferInstanceAs <| PreservesLimitsOfShape J <| HomologicalComplex.eval C c i ⋙ F)
 
-instance [F.PreservesZeroMorphisms] {J : Type*} [Category* J] [HasColimitsOfShape J C]
-    [PreservesColimitsOfShape J F] : PreservesColimitsOfShape J (F.mapHomologicalComplex c) :=
-  HomologicalComplex.preservesColimitsOfShape_of_eval _ (fun i ↦
-    inferInstanceAs <| PreservesColimitsOfShape J <| HomologicalComplex.eval C c i ⋙ F)
+instance
+    [F.PreservesZeroMorphisms]
+    {J : Type*} [Category* J] [HasColimitsOfShape J C] [PreservesColimitsOfShape J F]
+    : PreservesColimitsOfShape J (F.mapHomologicalComplex c) :=
+  HomologicalComplex.preservesColimitsOfShape_of_eval _
+    (fun i ↦ inferInstanceAs <| PreservesColimitsOfShape J <| HomologicalComplex.eval C c i ⋙ F)
 
-instance [HasFiniteLimits C] [F.PreservesZeroMorphisms] [PreservesFiniteLimits F] :
-    PreservesFiniteLimits (F.mapHomologicalComplex c) :=
+instance [HasFiniteLimits C] [F.PreservesZeroMorphisms] [PreservesFiniteLimits F]
+    : PreservesFiniteLimits (F.mapHomologicalComplex c) :=
   ⟨by intros; infer_instance⟩
 
-instance [HasFiniteColimits C] [F.PreservesZeroMorphisms] [PreservesFiniteColimits F] :
-    PreservesFiniteColimits (F.mapHomologicalComplex c) :=
+instance [HasFiniteColimits C] [F.PreservesZeroMorphisms] [PreservesFiniteColimits F]
+    : PreservesFiniteColimits (F.mapHomologicalComplex c) :=
   ⟨by intros; infer_instance⟩
 
 end CategoryTheory

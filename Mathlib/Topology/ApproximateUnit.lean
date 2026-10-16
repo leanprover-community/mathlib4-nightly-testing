@@ -26,10 +26,12 @@ open Filter
 
 open scoped Topology
 
-/-- An *approximate unit* is a proper filter (i.e., `≠ ⊥`) such that multiplication on the left
-(and separately on the right) by `m : α` tends to `𝓝 m` along the filter. -/
-structure Filter.IsApproximateUnit {α : Type*} [TopologicalSpace α] [Mul α]
-    (l : Filter α) : Prop where
+/--
+An *approximate unit* is a proper filter (i.e., `≠ ⊥`) such that multiplication on the left
+(and separately on the right) by `m : α` tends to `𝓝 m` along the filter.
+-/
+structure Filter.IsApproximateUnit {α : Type*} [TopologicalSpace α] [Mul α] (l : Filter α)
+    : Prop where
   /-- Multiplication on the left by `m` tends to `𝓝 m` along the filter. -/
   tendsto_mul_left m : Tendsto (m * ·) l (𝓝 m)
   /-- Multiplication on the right by `m` tends to `𝓝 m` along the filter. -/
@@ -50,8 +52,8 @@ lemma pure_one : IsApproximateUnit (pure (1 : α)) where
   tendsto_mul_right m := by simpa using tendsto_pure_nhds (· * m) (1 : α)
 
 /-- If `l` is an approximate unit and `⊥ < l' ≤ l`, then `l'` is also an approximate unit. -/
-lemma mono {l l' : Filter α} (hl : l.IsApproximateUnit) (hle : l' ≤ l) [hl' : l'.NeBot] :
-    l'.IsApproximateUnit where
+lemma mono {l l' : Filter α} (hl : l.IsApproximateUnit) (hle : l' ≤ l) [hl' : l'.NeBot]
+    : l'.IsApproximateUnit where
   tendsto_mul_left m := hl.tendsto_mul_left m |>.mono_left hle
   tendsto_mul_right m := hl.tendsto_mul_right m |>.mono_left hle
 
@@ -62,16 +64,16 @@ lemma nhds_one [SeparatelyContinuousMul α] : IsApproximateUnit (𝓝 (1 : α)) 
   tendsto_mul_right m := by simpa using tendsto_id (x := 𝓝 1) |>.mul_const m
 
 /-- In a topological unital magma, `𝓝 1` is the largest approximate unit. -/
-lemma iff_neBot_and_le_nhds_one [SeparatelyContinuousMul α] {l : Filter α} :
-    IsApproximateUnit l ↔ l.NeBot ∧ l ≤ 𝓝 1 :=
-  ⟨fun hl ↦ ⟨hl.neBot, by simpa using! hl.tendsto_mul_left 1⟩,
-    And.elim fun _ hl ↦ nhds_one α |>.mono hl⟩
+lemma iff_neBot_and_le_nhds_one [SeparatelyContinuousMul α] {l : Filter α}
+    : IsApproximateUnit l ↔ l.NeBot ∧ l ≤ 𝓝 1 := ⟨
+  fun hl ↦ ⟨hl.neBot, by simpa using! hl.tendsto_mul_left 1⟩,
+  And.elim fun _ hl ↦ nhds_one α |>.mono hl
+⟩
 
 /-- In a topological unital magma, `𝓝 1` is the largest approximate unit. -/
-lemma iff_le_nhds_one [SeparatelyContinuousMul α] {l : Filter α} [l.NeBot] :
-    IsApproximateUnit l ↔ l ≤ 𝓝 1 := by
+lemma iff_le_nhds_one [SeparatelyContinuousMul α] {l : Filter α} [l.NeBot]
+    : IsApproximateUnit l ↔ l ≤ 𝓝 1 := by
   simpa [iff_neBot_and_le_nhds_one] using fun _ ↦ ‹_›
-
 
 end TopologicalMonoid
 

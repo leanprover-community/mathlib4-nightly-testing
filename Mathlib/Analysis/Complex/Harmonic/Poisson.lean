@@ -23,13 +23,13 @@ public section
 
 open Complex InnerProductSpace Metric Real
 
-variable
-  {f : ℂ → ℝ} {c w : ℂ} {R : ℝ}
+variable {f : ℂ → ℝ} {c w : ℂ} {R : ℝ}
 
 namespace InnerProductSpace
 
-private lemma continuousOn_herglotz_riesz (_ : w ∈ ball c R) :
-    ContinuousOn (fun x ↦ ((x - c + (w - c)) / (x - c - (w - c))).re)
+private lemma continuousOn_herglotz_riesz (_ : w ∈ ball c R)
+    : ContinuousOn
+      (fun x ↦ ((x - c + (w - c)) / (x - c - (w - c))).re)
       {z | ‖z - c‖ ∈ Set.Ioc ‖w - c‖ R} := by
   have : ∀ x ∈ {z | ‖z - c‖ ∈ Set.Ioc ‖w - c‖ R}, x - c - (w - c) ≠ 0 := by
     grind [mem_ball, mem_sphere]
@@ -40,10 +40,11 @@ private lemma continuousOn_herglotz_riesz (_ : w ∈ ball c R) :
 formulated with the real part of the Herglotz–Riesz kernel of integration.
 -/
 theorem HarmonicOnNhd.circleAverage_re_herglotzRieszKernel_smul
-    (hf : HarmonicOnNhd f (closedBall c R)) (hw : w ∈ ball c R) :
-    Real.circleAverage ((re ∘ herglotzRieszKernel c w) • f) c R = f w := by
-  obtain ⟨e, h₁e, h₂e⟩ := (isCompact_closedBall c R).exists_thickening_subset_open
-    (isOpen_setOfPred_harmonicAt f) (by aesop)
+    (hf : HarmonicOnNhd f (closedBall c R)) (hw : w ∈ ball c R)
+    : Real.circleAverage ((re ∘ herglotzRieszKernel c w) • f) c R = f w := by
+  obtain ⟨e, h₁e, h₂e⟩ :=
+    (isCompact_closedBall c R).exists_thickening_subset_open (isOpen_setOfPred_harmonicAt f)
+      (by aesop)
   rw [thickening_closedBall h₁e (pos_of_mem_ball hw).le] at h₂e
   obtain ⟨F, h₁F, h₂F⟩ := HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq h₂e
   have h₃F : DifferentiableOn ℂ F (closure (ball c R)) := by
@@ -51,8 +52,7 @@ theorem HarmonicOnNhd.circleAverage_re_herglotzRieszKernel_smul
     apply (h₁F x _).differentiableWithinAt
     grind [mem_ball, mem_closedBall.1 (closure_ball_subset_closedBall hx)]
   have h₄F : Set.EqOn (re ∘ herglotzRieszKernel c w • f)
-      (reCLM ∘ (fun z ↦ ((z - c + (w - c)) / (z - c - (w - c))).re • F z))
-      (sphere c R) := by
+      (reCLM ∘ (fun z ↦ ((z - c + (w - c)) / (z - c - (w - c))).re • F z)) (sphere c R) := by
     intro x hx
     simp [h₂F (sphere_subset_ball (lt_add_of_pos_left R h₁e) hx), herglotzRieszKernel_def]
   rw [← abs_of_pos (pos_of_mem_ball hw)] at h₄F
@@ -72,8 +72,8 @@ theorem HarmonicOnNhd.circleAverage_re_herglotzRieszKernel_smul
 formulated with the real part of the Herglotz–Riesz kernel of integration.
 -/
 theorem HarmonicContOnCl.circleAverage_re_herglotzRieszKernel_smul
-    (hf : HarmonicContOnCl f (ball c R)) (hw : w ∈ ball c R) :
-    Real.circleAverage ((re ∘ herglotzRieszKernel c w) • f) c R = f w := by
+    (hf : HarmonicContOnCl f (ball c R)) (hw : w ∈ ball c R)
+    : Real.circleAverage ((re ∘ herglotzRieszKernel c w) • f) c R = f w := by
   apply ContinuousOn.eq_of_eqOn_Ioo (r := ‖w - c‖)
   · apply ContinuousOn.circleAverage
     · rw [herglotzRieszKernel_fun_def]
@@ -90,21 +90,21 @@ theorem HarmonicContOnCl.circleAverage_re_herglotzRieszKernel_smul
 formulated with the Poisson kernel of integration.
 -/
 theorem HarmonicOnNhd.circleAverage_poissonKernel_smul
-    (hf : HarmonicOnNhd f (closedBall c R)) (hw : w ∈ ball c R) :
-    Real.circleAverage (poissonKernel c w • f) c R = f w := by
+    (hf : HarmonicOnNhd f (closedBall c R)) (hw : w ∈ ball c R)
+    : Real.circleAverage (poissonKernel c w • f) c R = f w := by
   rw [← hf.circleAverage_re_herglotzRieszKernel_smul hw]
-  apply circleAverage_congr_sphere
-    (fun _ _ ↦ by simp_rw [← poissonKernel_eq_re_herglotzRieszKernel])
+  apply circleAverage_congr_sphere (fun _ _ ↦ by
+    simp_rw [← poissonKernel_eq_re_herglotzRieszKernel])
 
 /--
 **Poisson integral formula** for harmonic functions on arbitrary disks in the complex plane,
 formulated with the Poisson kernel of integration.
 -/
 theorem HarmonicContOnCl.circleAverage_poissonKernel_smul
-    (hf : HarmonicContOnCl f (ball c R)) (hw : w ∈ ball c R) :
-    Real.circleAverage (poissonKernel c w • f) c R = f w := by
+    (hf : HarmonicContOnCl f (ball c R)) (hw : w ∈ ball c R)
+    : Real.circleAverage (poissonKernel c w • f) c R = f w := by
   rw [← hf.circleAverage_re_herglotzRieszKernel_smul hw]
-  apply circleAverage_congr_sphere
-    (fun _ _ ↦ by simp_rw [← poissonKernel_eq_re_herglotzRieszKernel])
+  apply circleAverage_congr_sphere (fun _ _ ↦ by
+    simp_rw [← poissonKernel_eq_re_herglotzRieszKernel])
 
 end InnerProductSpace

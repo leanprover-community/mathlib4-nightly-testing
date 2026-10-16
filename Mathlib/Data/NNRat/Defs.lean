@@ -70,7 +70,8 @@ namespace NNRat
 
 variable {p q : ℚ≥0}
 
-instance instNontrivial : Nontrivial ℚ≥0 where exists_pair_ne := ⟨1, 0, by decide⟩
+instance instNontrivial : Nontrivial ℚ≥0 where
+  exists_pair_ne := ⟨1, 0, by decide⟩
 instance instOrderBot : OrderBot ℚ≥0 where
   bot := 0
   bot_le q := q.2
@@ -83,20 +84,15 @@ instance instCharZero : CharZero ℚ≥0 where
 instance canLift : CanLift ℚ ℚ≥0 (↑) fun q ↦ 0 ≤ q where
   prf q hq := ⟨⟨q, hq⟩, rfl⟩
 
-@[ext]
-theorem ext : (p : ℚ) = (q : ℚ) → p = q :=
-  Subtype.ext
+@[ext] theorem ext : (p : ℚ) = (q : ℚ) → p = q := Subtype.ext
 
-protected theorem coe_injective : Injective ((↑) : ℚ≥0 → ℚ) :=
-  Subtype.coe_injective
+protected theorem coe_injective : Injective ((↑) : ℚ≥0 → ℚ) := Subtype.coe_injective
 
 -- See note [specialised high priority simp lemma]
 @[simp high, norm_cast]
-theorem coe_inj : (p : ℚ) = q ↔ p = q :=
-  Subtype.coe_inj
+theorem coe_inj : (p : ℚ) = q ↔ p = q := Subtype.coe_inj
 
-theorem ne_iff {x y : ℚ≥0} : (x : ℚ) ≠ (y : ℚ) ↔ x ≠ y :=
-  NNRat.coe_inj.not
+theorem ne_iff {x y : ℚ≥0} : (x : ℚ) ≠ (y : ℚ) ↔ x ≠ y := NNRat.coe_inj.not
 
 -- TODO: We have to write `NNRat.cast` explicitly, else the statement picks up `Subtype.val` instead
 @[simp, norm_cast] lemma coe_mk (q : ℚ) (hq) : NNRat.cast ⟨q, hq⟩ = q := rfl
@@ -105,20 +101,15 @@ lemma «forall» {p : ℚ≥0 → Prop} : (∀ q, p q) ↔ ∀ q hq, p ⟨q, hq�
 lemma «exists» {p : ℚ≥0 → Prop} : (∃ q, p q) ↔ ∃ q hq, p ⟨q, hq⟩ := Subtype.exists
 
 /-- Reinterpret a rational number `q` as a non-negative rational number. Returns `0` if `q ≤ 0`. -/
-def _root_.Rat.toNNRat (q : ℚ) : ℚ≥0 :=
-  ⟨max q 0, le_max_right _ _⟩
+def _root_.Rat.toNNRat (q : ℚ) : ℚ≥0 := ⟨max q 0, le_max_right _ _⟩
 
-theorem _root_.Rat.coe_toNNRat (q : ℚ) (hq : 0 ≤ q) : (q.toNNRat : ℚ) = q :=
-  max_eq_left hq
+theorem _root_.Rat.coe_toNNRat (q : ℚ) (hq : 0 ≤ q) : (q.toNNRat : ℚ) = q := max_eq_left hq
 
-theorem _root_.Rat.le_coe_toNNRat (q : ℚ) : q ≤ q.toNNRat :=
-  le_max_left _ _
+theorem _root_.Rat.le_coe_toNNRat (q : ℚ) : q ≤ q.toNNRat := le_max_left _ _
 
 open Rat (toNNRat)
 
-@[simp]
-theorem coe_nonneg (q : ℚ≥0) : (0 : ℚ) ≤ q :=
-  q.2
+@[simp] theorem coe_nonneg (q : ℚ≥0) : (0 : ℚ) ≤ q := q.2
 
 @[simp, norm_cast] lemma coe_zero : ((0 : ℚ≥0) : ℚ) = 0 := rfl
 @[simp] lemma num_zero : num 0 = 0 := rfl
@@ -128,16 +119,11 @@ theorem coe_nonneg (q : ℚ≥0) : (0 : ℚ) ≤ q :=
 @[simp] lemma num_one : num 1 = 1 := rfl
 @[simp] lemma den_one : den 1 = 1 := rfl
 
-@[simp, norm_cast]
-theorem coe_add (p q : ℚ≥0) : ((p + q : ℚ≥0) : ℚ) = p + q :=
-  rfl
+@[simp, norm_cast] theorem coe_add (p q : ℚ≥0) : ((p + q : ℚ≥0) : ℚ) = p + q := rfl
 
-@[simp, norm_cast]
-theorem coe_mul (p q : ℚ≥0) : ((p * q : ℚ≥0) : ℚ) = p * q :=
-  rfl
+@[simp, norm_cast] theorem coe_mul (p q : ℚ≥0) : ((p * q : ℚ≥0) : ℚ) = p * q := rfl
 
-@[simp, norm_cast] lemma coe_pow (q : ℚ≥0) (n : ℕ) : (↑(q ^ n) : ℚ) = (q : ℚ) ^ n :=
-  rfl
+@[simp, norm_cast] lemma coe_pow (q : ℚ≥0) (n : ℕ) : (↑(q ^ n) : ℚ) = (q : ℚ) ^ n := rfl
 
 @[simp] lemma num_pow (q : ℚ≥0) (n : ℕ) : (q ^ n).num = q.num ^ n := by simp [num, Int.natAbs_pow]
 @[simp] lemma den_pow (q : ℚ≥0) (n : ℕ) : (q ^ n).den = q.den ^ n := rfl
@@ -150,33 +136,21 @@ theorem coe_sub (h : q ≤ p) : ((p - q : ℚ≥0) : ℚ) = p - q :=
 @[simp high]
 theorem coe_eq_zero : (q : ℚ) = 0 ↔ q = 0 := by norm_cast
 
-theorem coe_ne_zero : (q : ℚ) ≠ 0 ↔ q ≠ 0 :=
-  coe_eq_zero.not
+theorem coe_ne_zero : (q : ℚ) ≠ 0 ↔ q ≠ 0 := coe_eq_zero.not
 
-@[simp]
-theorem mk_zero : (⟨0, le_rfl⟩ : ℚ≥0) = 0 := rfl
+@[simp] theorem mk_zero : (⟨0, le_rfl⟩ : ℚ≥0) = 0 := rfl
 
-@[norm_cast]
-theorem coe_le_coe : (p : ℚ) ≤ q ↔ p ≤ q :=
-  Iff.rfl
+@[norm_cast] theorem coe_le_coe : (p : ℚ) ≤ q ↔ p ≤ q := Iff.rfl
 
-@[norm_cast]
-theorem coe_lt_coe : (p : ℚ) < q ↔ p < q :=
-  Iff.rfl
+@[norm_cast] theorem coe_lt_coe : (p : ℚ) < q ↔ p < q := Iff.rfl
 
-@[norm_cast]
-theorem coe_pos : (0 : ℚ) < q ↔ 0 < q :=
-  Iff.rfl
+@[norm_cast] theorem coe_pos : (0 : ℚ) < q ↔ 0 < q := Iff.rfl
 
-theorem coe_mono : Monotone ((↑) : ℚ≥0 → ℚ) :=
-  fun _ _ ↦ coe_le_coe.2
+theorem coe_mono : Monotone ((↑) : ℚ≥0 → ℚ) := fun _ _ ↦ coe_le_coe.2
 
-theorem toNNRat_mono : Monotone toNNRat :=
-  fun _ _ h ↦ max_le_max h le_rfl
+theorem toNNRat_mono : Monotone toNNRat := fun _ _ h ↦ max_le_max h le_rfl
 
-@[simp]
-theorem toNNRat_coe (q : ℚ≥0) : toNNRat q = q :=
-  ext <| max_eq_left q.2
+@[simp] theorem toNNRat_coe (q : ℚ≥0) : toNNRat q = q := ext <| max_eq_left q.2
 
 @[simp]
 theorem toNNRat_coe_nat (n : ℕ) : toNNRat n = n :=
@@ -196,41 +170,34 @@ def coeHom : ℚ≥0 →+* ℚ where
 
 @[simp, norm_cast] lemma coe_natCast (n : ℕ) : (↑(↑n : ℚ≥0) : ℚ) = n := rfl
 
-@[simp]
-theorem mk_natCast (n : ℕ) : @Eq ℚ≥0 (⟨(n : ℚ), Nat.cast_nonneg' n⟩ : ℚ≥0) n :=
-  rfl
+@[simp] theorem mk_natCast (n : ℕ) : @Eq ℚ≥0 (⟨(n : ℚ), Nat.cast_nonneg' n⟩ : ℚ≥0) n := rfl
 
-@[simp]
-theorem coe_coeHom : ⇑coeHom = ((↑) : ℚ≥0 → ℚ) :=
-  rfl
+@[simp] theorem coe_coeHom : ⇑coeHom = ((↑) : ℚ≥0 → ℚ) := rfl
 
 @[norm_cast]
-theorem nsmul_coe (q : ℚ≥0) (n : ℕ) : ↑(n • q) = n • (q : ℚ) :=
-  coeHom.toAddMonoidHom.map_nsmul _ _
+theorem nsmul_coe (q : ℚ≥0) (n : ℕ) : ↑(n • q) = n • (q : ℚ) := coeHom.toAddMonoidHom.map_nsmul _ _
 
-theorem bddAbove_coe {s : Set ℚ≥0} : BddAbove ((↑) '' s : Set ℚ) ↔ BddAbove s :=
-  ⟨fun ⟨b, hb⟩ ↦
-    ⟨toNNRat b, fun ⟨y, _⟩ hys ↦
-      show y ≤ max b 0 from (hb <| Set.mem_image_of_mem _ hys).trans <| le_max_left _ _⟩,
-    fun ⟨b, hb⟩ ↦ ⟨b, fun _ ⟨_, hx, Eq⟩ ↦ Eq ▸ hb hx⟩⟩
+theorem bddAbove_coe {s : Set ℚ≥0} : BddAbove ((↑) '' s : Set ℚ) ↔ BddAbove s := ⟨
+  fun ⟨b, hb⟩ ↦ ⟨
+    toNNRat b,
+    fun ⟨y, _⟩ hys ↦
+      show y ≤ max b 0 from (hb <| Set.mem_image_of_mem _ hys).trans <| le_max_left _ _
+  ⟩,
+  fun ⟨b, hb⟩ ↦ ⟨b, fun _ ⟨_, hx, Eq⟩ ↦ Eq ▸ hb hx⟩
+⟩
 
 theorem bddBelow_coe (s : Set ℚ≥0) : BddBelow (((↑) : ℚ≥0 → ℚ) '' s) :=
   ⟨0, fun _ ⟨q, _, h⟩ ↦ h ▸ q.2⟩
 
 @[norm_cast]
-theorem coe_max (x y : ℚ≥0) : ((max x y : ℚ≥0) : ℚ) = max (x : ℚ) (y : ℚ) :=
-  coe_mono.map_max
+theorem coe_max (x y : ℚ≥0) : ((max x y : ℚ≥0) : ℚ) = max (x : ℚ) (y : ℚ) := coe_mono.map_max
 
 @[norm_cast]
-theorem coe_min (x y : ℚ≥0) : ((min x y : ℚ≥0) : ℚ) = min (x : ℚ) (y : ℚ) :=
-  coe_mono.map_min
+theorem coe_min (x y : ℚ≥0) : ((min x y : ℚ≥0) : ℚ) = min (x : ℚ) (y : ℚ) := coe_mono.map_min
 
-theorem sub_def (p q : ℚ≥0) : p - q = toNNRat (p - q) :=
-  rfl
+theorem sub_def (p q : ℚ≥0) : p - q = toNNRat (p - q) := rfl
 
-@[simp]
-theorem abs_coe (q : ℚ≥0) : |(q : ℚ)| = q :=
-  abs_of_nonneg q.2
+@[simp] theorem abs_coe (q : ℚ≥0) : |(q : ℚ)| = q := abs_of_nonneg q.2
 
 -- See note [specialised high priority simp lemma]
 @[simp high]
@@ -245,15 +212,12 @@ namespace Rat
 
 variable {p q : ℚ}
 
-@[simp]
-theorem toNNRat_zero : toNNRat 0 = 0 := rfl
+@[simp] theorem toNNRat_zero : toNNRat 0 = 0 := rfl
 
-@[simp]
-theorem toNNRat_one : toNNRat 1 = 1 := rfl
+@[simp] theorem toNNRat_one : toNNRat 1 = 1 := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-theorem toNNRat_pos : 0 < toNNRat q ↔ 0 < q := by simp [toNNRat, ← coe_lt_coe]
+@[simp] theorem toNNRat_pos : 0 < toNNRat q ↔ 0 < q := by simp [toNNRat, ← coe_lt_coe]
 
 @[simp]
 theorem toNNRat_eq_zero : toNNRat q = 0 ↔ q ≤ 0 := by
@@ -285,8 +249,7 @@ theorem toNNRat_add (hq : 0 ≤ q) (hp : 0 ≤ p) : toNNRat (q + p) = toNNRat q 
 theorem toNNRat_add_le : toNNRat (q + p) ≤ toNNRat q + toNNRat p :=
   coe_le_coe.1 <| max_le (add_le_add (le_max_left _ _) (le_max_left _ _)) <| coe_nonneg _
 
-theorem toNNRat_le_iff_le_coe {p : ℚ≥0} : toNNRat q ≤ p ↔ q ≤ ↑p :=
-  NNRat.gi.gc q p
+theorem toNNRat_le_iff_le_coe {p : ℚ≥0} : toNNRat q ≤ p ↔ q ≤ ↑p := NNRat.gi.gc q p
 
 theorem le_toNNRat_iff_coe_le {q : ℚ≥0} (hp : 0 ≤ p) : q ≤ toNNRat p ↔ ↑q ≤ p := by
   rw [← coe_le_coe, Rat.coe_toNNRat p hp]
@@ -298,8 +261,7 @@ theorem le_toNNRat_iff_coe_le' {q : ℚ≥0} (hq : 0 < q) : q ≤ toNNRat p ↔ 
 theorem toNNRat_lt_iff_lt_coe {p : ℚ≥0} (hq : 0 ≤ q) : toNNRat q < p ↔ q < ↑p := by
   rw [← coe_lt_coe, Rat.coe_toNNRat q hq]
 
-theorem lt_toNNRat_iff_coe_lt {q : ℚ≥0} : q < toNNRat p ↔ ↑q < p :=
-  NNRat.gi.gc.lt_iff_lt
+theorem lt_toNNRat_iff_coe_lt {q : ℚ≥0} : q < toNNRat p ↔ ↑q < p := NNRat.gi.gc.lt_iff_lt
 
 set_option backward.isDefEq.respectTransparency false in
 theorem toNNRat_mul (hp : 0 ≤ p) : toNNRat (p * q) = toNNRat p * toNNRat q := by
@@ -311,21 +273,18 @@ theorem toNNRat_mul (hp : 0 ≤ p) : toNNRat (p * q) = toNNRat p * toNNRat q := 
 end Rat
 
 /-- The absolute value on `ℚ` as a map to `ℚ≥0`. -/
-@[pp_nodot]
-def Rat.nnabs (x : ℚ) : ℚ≥0 :=
-  ⟨abs x, abs_nonneg x⟩
+@[pp_nodot] def Rat.nnabs (x : ℚ) : ℚ≥0 := ⟨abs x, abs_nonneg x⟩
 
-@[norm_cast, simp]
-theorem Rat.coe_nnabs (x : ℚ) : (Rat.nnabs x : ℚ) = abs x := rfl
+@[norm_cast, simp] theorem Rat.coe_nnabs (x : ℚ) : (Rat.nnabs x : ℚ) = abs x := rfl
 
 /-! ### Numerator and denominator -/
-
 
 namespace NNRat
 
 variable {p q : ℚ≥0}
 
-@[norm_cast] lemma num_coe (q : ℚ≥0) : (q : ℚ).num = q.num := by
+@[norm_cast]
+lemma num_coe (q : ℚ≥0) : (q : ℚ).num = q.num := by
   simp only [num, Int.natCast_natAbs, Rat.num_nonneg, coe_nonneg, abs_of_nonneg]
 
 theorem natAbs_num_coe : (q : ℚ).num.natAbs = q.num := rfl
@@ -333,7 +292,8 @@ theorem natAbs_num_coe : (q : ℚ).num.natAbs = q.num := rfl
 @[norm_cast] lemma den_coe : (q : ℚ).den = q.den := rfl
 
 @[simp] lemma num_ne_zero : q.num ≠ 0 ↔ q ≠ 0 := by simp [num]
-@[simp] lemma num_pos : 0 < q.num ↔ 0 < q := by
+@[simp]
+lemma num_pos : 0 < q.num ↔ 0 < q := by
   simpa [num, -nonpos_iff_eq_zero] using nonpos_iff_eq_zero _ |>.not.symm
 @[simp] lemma den_pos (q : ℚ≥0) : 0 < q.den := Rat.den_pos _
 @[simp] lemma den_ne_zero (q : ℚ≥0) : q.den ≠ 0 := Rat.den_ne_zero _
@@ -344,8 +304,7 @@ lemma coprime_num_den (q : ℚ≥0) : q.num.Coprime q.den := by simpa [num, den]
 @[simp, norm_cast] lemma num_natCast (n : ℕ) : num n = n := rfl
 @[simp, norm_cast] lemma den_natCast (n : ℕ) : den n = 1 := rfl
 
-@[simp] lemma num_ofNat (n : ℕ) [n.AtLeastTwo] : num ofNat(n) = OfNat.ofNat n :=
-  rfl
+@[simp] lemma num_ofNat (n : ℕ) [n.AtLeastTwo] : num ofNat(n) = OfNat.ofNat n := rfl
 @[simp] lemma den_ofNat (n : ℕ) [n.AtLeastTwo] : den ofNat(n) = 1 := rfl
 
 theorem ext_num_den (hn : p.num = q.num) (hd : p.den = q.den) : p = q := by
@@ -355,9 +314,11 @@ theorem ext_num_den (hn : p.num = q.num) (hd : p.den = q.den) : p = q := by
 theorem ext_num_den_iff : p = q ↔ p.num = q.num ∧ p.den = q.den :=
   ⟨by rintro rfl; exact ⟨rfl, rfl⟩, fun h ↦ ext_num_den h.1 h.2⟩
 
-/-- Form the quotient `n / d` where `n d : ℕ`.
+/--
+Form the quotient `n / d` where `n d : ℕ`.
 
-See also `Rat.divInt` and `mkRat`. -/
+See also `Rat.divInt` and `mkRat`.
+-/
 def divNat (n d : ℕ) : ℚ≥0 :=
   ⟨.divInt n d, Rat.divInt_nonneg (Int.natCast_nonneg n) (Int.natCast_nonneg d)⟩
 
@@ -365,9 +326,9 @@ variable {n₁ n₂ d₁ d₂ : ℕ}
 
 @[simp, norm_cast] lemma coe_divNat (n d : ℕ) : (divNat n d : ℚ) = .divInt n d := rfl
 
-lemma mk_divInt (n d : ℕ) :
-    ⟨.divInt n d, Rat.divInt_nonneg (Int.natCast_nonneg n) (Int.natCast_nonneg d)⟩ =
-      divNat n d := rfl
+lemma mk_divInt (n d : ℕ)
+    : ⟨.divInt n d, Rat.divInt_nonneg (Int.natCast_nonneg n) (Int.natCast_nonneg d)⟩ = divNat n d :=
+  rfl
 
 lemma divNat_inj (h₁ : d₁ ≠ 0) (h₂ : d₂ ≠ 0) : divNat n₁ d₁ = divNat n₂ d₂ ↔ n₁ * d₂ = n₂ * d₁ := by
   rw [← coe_inj]; simp [Rat.mkRat_eq_iff, h₁, h₂]; norm_cast
@@ -375,13 +336,14 @@ lemma divNat_inj (h₁ : d₁ ≠ 0) (h₂ : d₂ ≠ 0) : divNat n₁ d₁ = di
 set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma divNat_zero (n : ℕ) : divNat n 0 = 0 := by simp [divNat]
 
-@[simp] lemma num_divNat_den (q : ℚ≥0) : divNat q.num q.den = q :=
+@[simp]
+lemma num_divNat_den (q : ℚ≥0) : divNat q.num q.den = q :=
   ext <| by rw [← (q : ℚ).mkRat_num_den']; simp [num_coe, den_coe]
 
 lemma natCast_eq_divNat (n : ℕ) : (n : ℚ≥0) = divNat n 1 := (num_divNat_den _).symm
 
-lemma divNat_mul_divNat (n₁ n₂ : ℕ) {d₁ d₂} :
-    divNat n₁ d₁ * divNat n₂ d₂ = divNat (n₁ * n₂) (d₁ * d₂) := by
+lemma divNat_mul_divNat (n₁ n₂ : ℕ) {d₁ d₂}
+    : divNat n₁ d₁ * divNat n₂ d₂ = divNat (n₁ * n₂) (d₁ * d₂) := by
   ext; push_cast; exact Rat.divInt_mul_divInt _ _
 
 lemma divNat_mul_left {a : ℕ} (ha : a ≠ 0) (n d : ℕ) : divNat (a * n) (a * d) = divNat n d := by
@@ -390,7 +352,8 @@ lemma divNat_mul_left {a : ℕ} (ha : a ≠ 0) (n d : ℕ) : divNat (a * n) (a *
 lemma divNat_mul_right {a : ℕ} (ha : a ≠ 0) (n d : ℕ) : divNat (n * a) (d * a) = divNat n d := by
   ext; push_cast; exact Rat.divInt_mul_right (mod_cast ha)
 
-@[simp] lemma mul_den_eq_num (q : ℚ≥0) : q * q.den = q.num := by
+@[simp]
+lemma mul_den_eq_num (q : ℚ≥0) : q * q.den = q.num := by
   ext
   push_cast
   rw [← Int.cast_natCast, ← den_coe, ← Int.cast_natCast q.num, ← num_coe]
@@ -398,11 +361,14 @@ lemma divNat_mul_right {a : ℕ} (ha : a ≠ 0) (n d : ℕ) : divNat (n * a) (d 
 
 @[simp] lemma den_mul_eq_num (q : ℚ≥0) : q.den * q = q.num := by rw [mul_comm, mul_den_eq_num]
 
-/-- Define a (dependent) function or prove `∀ r : ℚ, p r` by dealing with nonnegative rational
-numbers of the form `n / d` with `d ≠ 0` and `n`, `d` coprime. -/
+/--
+Define a (dependent) function or prove `∀ r : ℚ, p r` by dealing with nonnegative rational
+numbers of the form `n / d` with `d ≠ 0` and `n`, `d` coprime.
+-/
 @[elab_as_elim]
-def numDenCasesOn.{u} {C : ℚ≥0 → Sort u} (q) (H : ∀ n d, d ≠ 0 → n.Coprime d → C (divNat n d)) :
-    C q := by rw [← q.num_divNat_den]; exact H _ _ q.den_ne_zero q.coprime_num_den
+def numDenCasesOn.{u} {C : ℚ≥0 → Sort u} (q) (H : ∀ n d, d ≠ 0 → n.Coprime d → C (divNat n d))
+    : C q := by
+  rw [← q.num_divNat_den]; exact H _ _ q.den_ne_zero q.coprime_num_den
 
 lemma add_def (q r : ℚ≥0) : q + r = divNat (q.num * r.den + r.num * q.den) (q.den * r.den) := by
   ext; simp [Rat.add_def', Rat.mkRat_eq_divInt, num_coe, den_coe]

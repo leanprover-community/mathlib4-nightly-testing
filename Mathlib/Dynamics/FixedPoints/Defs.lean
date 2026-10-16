@@ -25,19 +25,15 @@ namespace Function
 variable {α : Type*} {x : α} {f g : α → α}
 
 /-- The set of fixed points of a map `f : α → α`. -/
-def fixedPoints (f : α → α) : Set α :=
-  { x : α | IsFixedPt f x }
+def fixedPoints (f : α → α) : Set α := { x : α | IsFixedPt f x }
 
-instance fixedPoints.decidable [DecidableEq α] (f : α → α) (x : α) :
-    Decidable (x ∈ fixedPoints f) :=
+instance fixedPoints.decidable [DecidableEq α] (f : α → α) (x : α)
+    : Decidable (x ∈ fixedPoints f) :=
   IsFixedPt.decidable
 
-@[simp]
-theorem mem_fixedPoints : x ∈ fixedPoints f ↔ IsFixedPt f x :=
-  .rfl
+@[simp] theorem mem_fixedPoints : x ∈ fixedPoints f ↔ IsFixedPt f x := .rfl
 
-theorem mem_fixedPoints_iff {α : Type*} {f : α → α} {x : α} : x ∈ fixedPoints f ↔ f x = x :=
-  .rfl
+theorem mem_fixedPoints_iff {α : Type*} {f : α → α} {x : α} : x ∈ fixedPoints f ↔ f x = x := .rfl
 
 @[simp]
 theorem fixedPoints_id : fixedPoints (@id α) = Set.univ :=

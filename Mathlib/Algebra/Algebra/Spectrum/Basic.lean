@@ -58,25 +58,29 @@ variable [CommSemiring R] [Ring A] [Algebra R A]
 local notation "↑ₐ" => algebraMap R A
 
 -- definition and basic properties
-/-- Given a commutative ring `R` and an `R`-algebra `A`, the *resolvent set* of `a : A`
+/--
+Given a commutative ring `R` and an `R`-algebra `A`, the *resolvent set* of `a : A`
 is the `Set R` consisting of those `r : R` for which `r•1 - a` is a unit of the
-algebra `A`. -/
-def resolventSet (a : A) : Set R :=
-  {r : R | IsUnit (↑ₐ r - a)}
+algebra `A`.
+-/
+def resolventSet (a : A) : Set R := {r : R | IsUnit (↑ₐ r - a)}
 
-/-- Given a commutative ring `R` and an `R`-algebra `A`, the *spectrum* of `a : A`
+/--
+Given a commutative ring `R` and an `R`-algebra `A`, the *spectrum* of `a : A`
 is the `Set R` consisting of those `r : R` for which `r•1 - a` is not a unit of the
 algebra `A`.
 
-The spectrum is simply the complement of the resolvent set. -/
-def spectrum (a : A) : Set R :=
-  (resolventSet R a)ᶜ
+The spectrum is simply the complement of the resolvent set.
+-/
+def spectrum (a : A) : Set R := (resolventSet R a)ᶜ
 
 variable {R}
 
-/-- Given an `a : A` where `A` is an `R`-algebra, the *resolvent* is
-    a map `R → A` which sends `r : R` to `(algebraMap R A r - a)⁻¹` when
-    `r ∈ resolvent R A` and `0` when `r ∈ spectrum R A`. -/
+/--
+Given an `a : A` where `A` is an `R`-algebra, the *resolvent* is
+a map `R → A` which sends `r : R` to `(algebraMap R A r - a)⁻¹` when
+`r ∈ resolvent R A` and `0` when `r ∈ spectrum R A`.
+-/
 noncomputable def resolvent (a : A) (r : R) : A := (↑ₐ r - a)⁻¹ʳ
 
 /-- The unit `1 - r⁻¹ • a` constructed from `r • 1 - a` when the latter is a unit. -/
@@ -100,24 +104,22 @@ local notation "σ" => spectrum R
 
 local notation "↑ₐ" => algebraMap R A
 
-theorem mem_iff {r : R} {a : A} : r ∈ σ a ↔ ¬IsUnit (↑ₐ r - a) :=
-  Iff.rfl
+theorem mem_iff {r : R} {a : A} : r ∈ σ a ↔ ¬ IsUnit (↑ₐ r - a) := Iff.rfl
 
 @[simp]
-theorem resolvent_zero_of_mem_spectrum {r : R} {a : A} (hr : r ∈ σ a) :
-    resolvent a r = 0 := Ring.inverse_non_unit _ (mem_iff.mp hr)
+theorem resolvent_zero_of_mem_spectrum {r : R} {a : A} (hr : r ∈ σ a) : resolvent a r = 0 :=
+  Ring.inverse_non_unit _ (mem_iff.mp hr)
 
-theorem mem_spectrum_iff_resolvent_zero [Nontrivial A] {r : R} {a : A} :
-    r ∈ σ a ↔ resolvent a r = 0 := by
+theorem mem_spectrum_iff_resolvent_zero [Nontrivial A] {r : R} {a : A}
+    : r ∈ σ a ↔ resolvent a r = 0 := by
   refine ⟨resolvent_zero_of_mem_spectrum, fun hr ↦ ?_⟩
   simpa [mem_iff, Ring.not_isUnit_iff_inverse_eq_zero]
 
-theorem notMem_iff {r : R} {a : A} : r ∉ σ a ↔ IsUnit (↑ₐ r - a) := by
-  simp [mem_iff]
+theorem notMem_iff {r : R} {a : A} : r ∉ σ a ↔ IsUnit (↑ₐ r - a) := by simp [mem_iff]
 
 variable (R)
 
-theorem zero_mem_iff {a : A} : (0 : R) ∈ σ a ↔ ¬IsUnit a := by
+theorem zero_mem_iff {a : A} : (0 : R) ∈ σ a ↔ ¬ IsUnit a := by
   rw [mem_iff, map_zero, zero_sub, IsUnit.neg_iff]
 
 alias ⟨not_isUnit_of_zero_mem, zero_mem⟩ := spectrum.zero_mem_iff
@@ -136,25 +138,31 @@ lemma subset_singleton_zero_compl {a : A} (ha : IsUnit a) : spectrum R a ⊆ {0}
 
 variable {R}
 
-theorem mem_resolventSet_of_left_right_inverse {r : R} {a b c : A} (h₁ : (↑ₐ r - a) * b = 1)
-    (h₂ : c * (↑ₐ r - a) = 1) : r ∈ resolventSet R a :=
+theorem mem_resolventSet_of_left_right_inverse
+    {r : R} {a b c : A} (h₁ : (↑ₐ r - a) * b = 1) (h₂ : c * (↑ₐ r - a) = 1)
+    : r ∈ resolventSet R a :=
   Units.isUnit ⟨↑ₐ r - a, b, h₁, by rwa [← left_inv_eq_right_inv h₂ h₁]⟩
 
-theorem mem_resolventSet_iff {r : R} {a : A} : r ∈ resolventSet R a ↔ IsUnit (↑ₐ r - a) :=
-  Iff.rfl
+theorem mem_resolventSet_iff {r : R} {a : A} : r ∈ resolventSet R a ↔ IsUnit (↑ₐ r - a) := Iff.rfl
 
 @[simp]
-theorem algebraMap_mem_iff (S : Type*) {R A : Type*} [CommSemiring R] [CommSemiring S]
-    [Ring A] [Algebra R S] [Algebra R A] [Algebra S A] [IsScalarTower R S A] {a : A} {r : R} :
-    algebraMap R S r ∈ spectrum S a ↔ r ∈ spectrum R a := by
+theorem algebraMap_mem_iff
+    (S : Type*)
+    {R A : Type*} [CommSemiring R] [CommSemiring S] [Ring A] [Algebra R S] [Algebra R A]
+    [Algebra S A] [IsScalarTower R S A]
+    {a : A} {r : R}
+    : algebraMap R S r ∈ spectrum S a ↔ r ∈ spectrum R a := by
   simp only [spectrum.mem_iff, Algebra.algebraMap_eq_smul_one, smul_assoc, one_smul]
 
 protected alias ⟨of_algebraMap_mem, algebraMap_mem⟩ := spectrum.algebraMap_mem_iff
 
 @[simp]
-theorem preimage_algebraMap (S : Type*) {R A : Type*} [CommSemiring R] [CommSemiring S]
-    [Ring A] [Algebra R S] [Algebra R A] [Algebra S A] [IsScalarTower R S A] {a : A} :
-    algebraMap R S ⁻¹' spectrum S a = spectrum R a :=
+theorem preimage_algebraMap
+    (S : Type*)
+    {R A : Type*} [CommSemiring R] [CommSemiring S] [Ring A] [Algebra R S] [Algebra R A]
+    [Algebra S A] [IsScalarTower R S A]
+    {a : A}
+    : algebraMap R S ⁻¹' spectrum S a = spectrum R a :=
   Set.ext fun _ => spectrum.algebraMap_mem_iff _
 
 @[simp]
@@ -168,24 +176,26 @@ theorem of_subsingleton [Subsingleton A] (a : A) : spectrum R a = ∅ := by
 theorem resolvent_eq {a : A} {r : R} (h : r ∈ resolventSet R a) : resolvent a r = ↑h.unit⁻¹ :=
   Ring.inverse_unit h.unit
 
-/-- The second resolvent identity: for `r` in the resolvent set of both
+/--
+The second resolvent identity: for `r` in the resolvent set of both
 `a` and `b`,
-`resolvent a r - resolvent b r = resolvent a r * (a - b) * resolvent b r`. -/
-theorem resolvent_sub_resolvent {a b : A} {r : R}
-    (ha : r ∈ resolventSet R a) (hb : r ∈ resolventSet R b) :
-    resolvent a r - resolvent b r = resolvent a r * (a - b) * resolvent b r := by
+`resolvent a r - resolvent b r = resolvent a r * (a - b) * resolvent b r`.
+-/
+theorem resolvent_sub_resolvent
+    {a b : A} {r : R} (ha : r ∈ resolventSet R a) (hb : r ∈ resolventSet R b)
+    : resolvent a r - resolvent b r = resolvent a r * (a - b) * resolvent b r := by
   rw [resolvent_eq ha, resolvent_eq hb, Units.eq_mul_inv_iff_mul_eq, Units.eq_inv_mul_iff_mul_eq,
-    sub_mul, Units.inv_mul, mul_sub, ← mul_assoc, Units.mul_inv, one_mul, mul_one,
-    hb.unit_spec, ha.unit_spec]
+    sub_mul, Units.inv_mul, mul_sub, ← mul_assoc, Units.mul_inv, one_mul, mul_one, hb.unit_spec,
+    ha.unit_spec]
   abel
 
-theorem units_smul_resolvent {r : Rˣ} {s : R} {a : A} :
-    r • resolvent a (s : R) = resolvent (r⁻¹ • a) (r⁻¹ • s : R) := by
+theorem units_smul_resolvent {r : Rˣ} {s : R} {a : A}
+    : r • resolvent a (s : R) = resolvent (r⁻¹ • a) (r⁻¹ • s : R) := by
   by_cases h : s ∈ spectrum R a
   · rw [mem_iff] at h
     simp only [resolvent, Algebra.algebraMap_eq_smul_one] at *
     rw [smul_assoc, ← smul_sub]
-    have h' : ¬IsUnit (r⁻¹ • (s • (1 : A) - a)) := fun hu =>
+    have h' : ¬ IsUnit (r⁻¹ • (s • (1 : A) - a)) := fun hu =>
       h (by simpa only [smul_inv_smul] using IsUnit.smul r hu)
     simp only [Ring.inverse_non_unit _ h, Ring.inverse_non_unit _ h', smul_zero]
   · simp only [resolvent]
@@ -195,8 +205,8 @@ theorem units_smul_resolvent {r : Rˣ} {s : R} {a : A} :
       h'.val_inv_subInvSMul]
     simp only [Algebra.algebraMap_eq_smul_one, smul_assoc, smul_inv_smul]
 
-theorem units_smul_resolvent_self {r : Rˣ} {a : A} :
-    r • resolvent a (r : R) = resolvent (r⁻¹ • a) (1 : R) := by
+theorem units_smul_resolvent_self {r : Rˣ} {a : A}
+    : r • resolvent a (r : R) = resolvent (r⁻¹ • a) (1 : R) := by
   simpa only [Units.smul_def, smul_eq_mul, Units.inv_mul] using
     @units_smul_resolvent _ _ _ _ _ r r a
 
@@ -204,8 +214,8 @@ theorem units_smul_resolvent_self {r : Rˣ} {a : A} :
 theorem isUnit_resolvent {r : R} {a : A} : r ∈ resolventSet R a ↔ IsUnit (resolvent a r) :=
   isUnit_ringInverse.symm
 
-theorem inv_mem_resolventSet {r : Rˣ} {a : Aˣ} (h : (r : R) ∈ resolventSet R (a : A)) :
-    (↑r⁻¹ : R) ∈ resolventSet R (↑a⁻¹ : A) := by
+theorem inv_mem_resolventSet {r : Rˣ} {a : Aˣ} (h : (r : R) ∈ resolventSet R (a : A))
+    : (↑r⁻¹ : R) ∈ resolventSet R (↑a⁻¹ : A) := by
   rw [mem_resolventSet_iff, Algebra.algebraMap_eq_smul_one, ← Units.smul_def] at h ⊢
   rw [IsUnit.smul_sub_iff_sub_inv_smul, inv_inv, IsUnit.sub_iff]
   have h₁ : (a : A) * (r • (↑a⁻¹ : A) - 1) = r • (1 : A) - a := by
@@ -224,7 +234,7 @@ theorem zero_mem_resolventSet_of_unit (a : Aˣ) : 0 ∈ resolventSet R (a : A) :
 theorem ne_zero_of_mem_of_unit {a : Aˣ} {r : R} (hr : r ∈ σ (a : A)) : r ≠ 0 := fun hn =>
   (hn ▸ hr) (zero_mem_resolventSet_of_unit a)
 
-theorem add_mem_iff {a : A} {r s : R} : r + s ∈ σ a ↔ r ∈ σ (-↑ₐ s + a) := by
+theorem add_mem_iff {a : A} {r s : R} : r + s ∈ σ a ↔ r ∈ σ (- ↑ₐ s + a) := by
   simp only [mem_iff, sub_neg_eq_add, ← sub_sub, map_add]
 
 theorem add_mem_add_iff {a : A} {r s : R} : r + s ∈ σ (↑ₐ s + a) ↔ r ∈ σ a := by
@@ -248,24 +258,23 @@ theorem unit_mem_mul_comm {a b : A} {r : Rˣ} : ↑r ∈ σ (a * b) ↔ ↑r ∈
   have h₁ : ∀ x y : A, IsUnit (1 - x * y) → IsUnit (1 - y * x) := by
     refine fun x y h => ⟨⟨1 - y * x, 1 + y * h.unit.inv * x, ?_, ?_⟩, rfl⟩
     · calc
-        (1 - y * x) * (1 + y * (IsUnit.unit h).inv * x) =
-            1 - y * x + y * ((1 - x * y) * h.unit.inv) * x := by noncomm_ring
+        (1 - y * x) * (1 + y * (IsUnit.unit h).inv * x)
+          = 1 - y * x + y * ((1 - x * y) * h.unit.inv) * x := by noncomm_ring
         _ = 1 := by simp only [Units.inv_eq_val_inv, IsUnit.mul_val_inv, mul_one, sub_add_cancel]
     · calc
-        (1 + y * (IsUnit.unit h).inv * x) * (1 - y * x) =
-            1 - y * x + y * (h.unit.inv * (1 - x * y)) * x := by noncomm_ring
+        (1 + y * (IsUnit.unit h).inv * x) * (1 - y * x)
+          = 1 - y * x + y * (h.unit.inv * (1 - x * y)) * x := by noncomm_ring
         _ = 1 := by simp only [Units.inv_eq_val_inv, IsUnit.val_inv_mul, mul_one, sub_add_cancel]
   have := Iff.intro (h₁ (r⁻¹ • a) b) (h₁ b (r⁻¹ • a))
   rw [mul_smul_comm r⁻¹ b a] at this
   simpa only [mem_iff, not_iff_not, Algebra.algebraMap_eq_smul_one, ← Units.smul_def,
     IsUnit.smul_sub_iff_sub_inv_smul, smul_mul_assoc]
 
-theorem preimage_units_mul_comm (a b : A) :
-    ((↑) : Rˣ → R) ⁻¹' σ (a * b) = (↑) ⁻¹' σ (b * a) :=
+theorem preimage_units_mul_comm (a b : A) : ((↑) : Rˣ → R) ⁻¹' σ (a * b) = (↑) ⁻¹' σ (b * a) :=
   Set.ext fun _ => unit_mem_mul_comm
 
-theorem setOfPred_isUnit_inter_mul_comm (a b : A) :
-    {r | IsUnit r} ∩ σ (a * b) = {r | IsUnit r} ∩ σ (b * a) := by
+theorem setOfPred_isUnit_inter_mul_comm (a b : A)
+    : {r | IsUnit r} ∩ σ (a * b) = {r | IsUnit r} ∩ σ (b * a) := by
   ext r
   simpa using fun hr : IsUnit r ↦ unit_mem_mul_comm (r := hr.unit)
 
@@ -276,11 +285,11 @@ section Star
 
 variable [InvolutiveStar R] [StarRing A] [StarModule R A]
 
-theorem star_mem_resolventSet_iff {r : R} {a : A} :
-    star r ∈ resolventSet R a ↔ r ∈ resolventSet R (star a) := by
-  refine ⟨fun h => ?_, fun h => ?_⟩ <;>
-    simpa only [mem_resolventSet_iff, Algebra.algebraMap_eq_smul_one, star_sub, star_smul,
-      star_star, star_one] using IsUnit.star h
+theorem star_mem_resolventSet_iff {r : R} {a : A}
+    : star r ∈ resolventSet R a ↔ r ∈ resolventSet R (star a) := by
+  refine ⟨fun h => ?_, fun h => ?_⟩ <;> simpa only [mem_resolventSet_iff,
+      Algebra.algebraMap_eq_smul_one, star_sub, star_smul, star_star, star_one]
+    using IsUnit.star h
 
 protected theorem map_star (a : A) : σ (star a) = star (σ a) := by
   ext
@@ -299,9 +308,11 @@ local notation "σ" => spectrum R
 
 local notation "↑ₐ" => algebraMap R A
 
-theorem subset_subalgebra {S R A : Type*} [CommSemiring R] [Ring A] [Algebra R A]
-    [SetLike S A] [SubringClass S A] [SMulMemClass S R A] {s : S} (a : s) :
-    spectrum R (a : A) ⊆ spectrum R a :=
+theorem subset_subalgebra
+    {S R A : Type*}
+    [CommSemiring R] [Ring A] [Algebra R A] [SetLike S A] [SubringClass S A] [SMulMemClass S R A]
+    {s : S} (a : s)
+    : spectrum R (a : A) ⊆ spectrum R a :=
   Set.compl_subset_compl.mpr fun _ ↦ IsUnit.map (SubalgebraClass.val s)
 
 theorem singleton_add_eq (a : A) (r : R) : {r} + σ a = σ (↑ₐ r + a) :=
@@ -314,11 +325,11 @@ theorem add_singleton_eq (a : A) (r : R) : σ a + {r} = σ (a + ↑ₐ r) :=
 theorem vadd_eq (a : A) (r : R) : r +ᵥ σ a = σ (↑ₐ r + a) :=
   singleton_add.symm.trans <| singleton_add_eq a r
 
-theorem _root_.resolventSet_neg (a : A) : resolventSet R (-a) = -resolventSet R a :=
+theorem _root_.resolventSet_neg (a : A) : resolventSet R (-a) = - resolventSet R a :=
   Set.ext fun x => by
     simp only [mem_neg, mem_resolventSet_iff, map_neg, ← neg_add', IsUnit.neg_iff, sub_neg_eq_add]
 
-theorem neg_eq (a : A) : -σ a = σ (-a) := by
+theorem neg_eq (a : A) : - σ a = σ (-a) := by
   rw [spectrum, Set.compl_neg, spectrum, resolventSet_neg]
 
 theorem singleton_sub_eq (a : A) (r : R) : {r} - σ a = σ (↑ₐ r - a) := by
@@ -334,15 +345,13 @@ section ScalarSemifield
 variable {R : Type u} {A : Type v} [Semifield R] [Ring A] [Algebra R A]
 
 @[simp]
-lemma inv₀_mem_iff {r : R} {a : Aˣ} :
-    r⁻¹ ∈ spectrum R (a : A) ↔ r ∈ spectrum R (↑a⁻¹ : A) := by
+lemma inv₀_mem_iff {r : R} {a : Aˣ} : r⁻¹ ∈ spectrum R (a : A) ↔ r ∈ spectrum R (↑a⁻¹ : A) := by
   obtain (rfl | hr) := eq_or_ne r 0
   · simp
   · lift r to Rˣ using hr.isUnit
     simp [inv_mem_iff]
 
-lemma inv₀_mem_inv_iff {r : R} {a : Aˣ} :
-    r⁻¹ ∈ spectrum R (↑a⁻¹ : A) ↔ r ∈ spectrum R (a : A) := by
+lemma inv₀_mem_inv_iff {r : R} {a : Aˣ} : r⁻¹ ∈ spectrum R (↑a⁻¹ : A) ↔ r ∈ spectrum R (a : A) := by
   simp
 
 alias ⟨of_inv₀_mem, inv₀_mem⟩ := inv₀_mem_iff
@@ -372,13 +381,16 @@ theorem scalar_eq [Nontrivial A] (k : 𝕜) : σ (↑ₐ k) = {k} := by
 @[simp]
 theorem one_eq [Nontrivial A] : σ (1 : A) = {1} :=
   calc
-    σ (1 : A) = σ (↑ₐ 1) := by rw [Algebra.algebraMap_eq_smul_one, one_smul]
+    σ (1 : A)
+      = σ (↑ₐ 1) := by rw [Algebra.algebraMap_eq_smul_one, one_smul]
     _ = {1} := scalar_eq 1
 
-/-- the assumption `(σ a).Nonempty` is necessary and cannot be removed without
-further conditions on the algebra `A` and scalar field `𝕜`. -/
-theorem smul_eq_smul [Nontrivial A] (k : 𝕜) (a : A) (ha : (σ a).Nonempty) :
-    σ (k • a) = k • σ a := by
+/--
+the assumption `(σ a).Nonempty` is necessary and cannot be removed without
+further conditions on the algebra `A` and scalar field `𝕜`.
+-/
+theorem smul_eq_smul [Nontrivial A] (k : 𝕜) (a : A) (ha : (σ a).Nonempty)
+    : σ (k • a) = k • σ a := by
   rcases eq_or_ne k 0 with (rfl | h)
   · simpa [ha, zero_smul_set] using (show {(0 : 𝕜)} = (0 : Set 𝕜) from rfl)
   · exact unit_smul_eq_smul a (Units.mk0 k h)
@@ -409,8 +421,8 @@ local notation "σ" => spectrum R
 
 local notation "↑ₐ" => algebraMap R A
 
-theorem mem_resolventSet_apply (φ : F) {a : A} {r : R} (h : r ∈ resolventSet R a) :
-    r ∈ resolventSet R ((φ : A → B) a) := by
+theorem mem_resolventSet_apply (φ : F) {a : A} {r : R} (h : r ∈ resolventSet R a)
+    : r ∈ resolventSet R ((φ : A → B) a) := by
   simpa only [map_sub, AlgHomClass.commutes] using! h.map φ
 
 theorem spectrum_apply_subset (φ : F) (a : A) : σ ((φ : A → B) a) ⊆ σ a := fun _ =>
@@ -439,9 +451,11 @@ end CommRing
 end AlgHom
 
 @[simp]
-theorem AlgEquiv.spectrum_eq {F R A B : Type*} [CommSemiring R] [Ring A] [Ring B] [Algebra R A]
-    [Algebra R B] [EquivLike F A B] [AlgEquivClass F R A B] (f : F) (a : A) :
-    spectrum R (f a) = spectrum R a :=
+theorem AlgEquiv.spectrum_eq
+    {F R A B : Type*} [CommSemiring R] [Ring A] [Ring B] [Algebra R A] [Algebra R B]
+    [EquivLike F A B] [AlgEquivClass F R A B]
+    (f : F) (a : A)
+    : spectrum R (f a) = spectrum R a :=
   Set.Subset.antisymm (AlgHom.spectrum_apply_subset _ _) <| by
     simpa only [AlgEquiv.coe_toAlgHom, AlgEquiv.ofClass_symm_apply_apply] using
       AlgHom.spectrum_apply_subset (AlgEquiv.ofClass f : A ≃ₐ[R] B).symm (f a)
@@ -452,8 +466,7 @@ variable {R A : Type*} [CommSemiring R] [Ring A] [Algebra R A]
 
 /-- Conjugation by a unit preserves the spectrum, inverse on right. -/
 @[simp]
-lemma spectrum.units_conjugate {a : A} {u : Aˣ} :
-    spectrum R (u * a * u⁻¹) = spectrum R a := by
+lemma spectrum.units_conjugate {a : A} {u : Aˣ} : spectrum R (u * a * u⁻¹) = spectrum R a := by
   suffices ∀ (b : A) (v : Aˣ), spectrum R (v * b * v⁻¹) ⊆ spectrum R b by
     refine le_antisymm (this a u) ?_
     apply le_of_eq_of_le ?_ <| this (u * a * u⁻¹) u⁻¹
@@ -465,8 +478,7 @@ lemma spectrum.units_conjugate {a : A} {u : Aˣ} :
 
 /-- Conjugation by a unit preserves the spectrum, inverse on left. -/
 @[simp]
-lemma spectrum.units_conjugate' {a : A} {u : Aˣ} :
-    spectrum R (u⁻¹ * a * u) = spectrum R a := by
+lemma spectrum.units_conjugate' {a : A} {u : Aˣ} : spectrum R (u⁻¹ * a * u) = spectrum R a := by
   simpa using spectrum.units_conjugate (u := u⁻¹)
 
 end ConjugateUnits

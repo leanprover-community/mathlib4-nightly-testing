@@ -25,8 +25,9 @@ open Lean Meta
 
 def measureImport (choice : Choice) : MetaM (Nat × PreDiscrTrees) := do
   let t0 ← IO.monoMsNow
-  let (tasks, _) ← foldImportedDecls {} { transparency := .reducible, proj := .no }
-    (Entries.addConst choice (← getEnv))
+  let (tasks, _) ←
+    foldImportedDecls {} { transparency := .reducible, proj := .no }
+      (Entries.addConst choice (← getEnv))
   let pre : PreDiscrTrees ← MonadExcept.ofExcept <| tasks.foldlM (·.append <$> ·.get) {}
   return ((← IO.monoMsNow) - t0, pre)
 

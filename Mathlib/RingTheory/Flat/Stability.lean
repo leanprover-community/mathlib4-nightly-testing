@@ -50,8 +50,8 @@ tensored on the left with `M` is injective. For this consider the composition of
 so the middle map is injective by `S`-flatness of `M`.
 -/
 
-variable (R : Type u) (S : Type v) (M : Type w)
-  [CommSemiring R] [CommSemiring S] [Algebra R S]
+variable
+  (R : Type u) (S : Type v) (M : Type w) [CommSemiring R] [CommSemiring S] [Algebra R S]
   [AddCommMonoid M] [Module R M] [Module S M] [IsScalarTower R S M]
 
 open AlgebraTensorModule in
@@ -60,8 +60,8 @@ theorem trans [Flat R S] [Flat S M] : Flat R M := by
   rw [Flat.iff_lTensor_injectiveₛ]
   introv
   rw [← coe_lTensor (A := S), ← EquivLike.injective_comp (cancelBaseChange R S S _ _),
-    ← LinearEquiv.coe_coe, ← LinearMap.coe_comp, lTensor_comp_cancelBaseChange,
-    LinearMap.coe_comp, LinearEquiv.coe_coe, EquivLike.comp_injective]
+    ← LinearEquiv.coe_coe, ← LinearMap.coe_comp, lTensor_comp_cancelBaseChange, LinearMap.coe_comp,
+    LinearEquiv.coe_coe, EquivLike.comp_injective]
   iterate 2 apply Flat.lTensor_preserves_injective_linearMap
   exact Subtype.val_injective
 
@@ -74,9 +74,7 @@ lemma ulift_left_iff : Flat (ULift.{t} R) M ↔ Flat R M := by
   exact .trans _ R _
 
 variable {R M} in
-@[simp]
-lemma ulift_right_iff : Flat R (ULift.{t} M) ↔ Flat R M :=
-  Flat.equiv_iff ULift.moduleEquiv
+@[simp] lemma ulift_right_iff : Flat R (ULift.{t} M) ↔ Flat R M := Flat.equiv_iff ULift.moduleEquiv
 
 end Composition
 
@@ -89,41 +87,44 @@ Let `R` be a ring, `M` a flat `R`-module and `S` an `R`-algebra, then
 
 -/
 
-variable (R : Type u) (S : Type v) (M : Type w)
-  [CommSemiring R] [CommSemiring S] [Algebra R S]
-  [AddCommMonoid M] [Module R M]
+variable
+  (R : Type u) (S : Type v) (M : Type w)
+  [CommSemiring R] [CommSemiring S] [Algebra R S] [AddCommMonoid M] [Module R M]
 
 /-- If `M` is a flat `R`-module and `S` is any `R`-algebra, `S ⊗[R] M` is `S`-flat. -/
 instance baseChange [Flat R M] : Flat S (S ⊗[R] M) := inferInstance
 
 /-- A base change of a flat module is flat. -/
-theorem isBaseChange [Flat R M] (N : Type t) [AddCommMonoid N] [Module R N] [Module S N]
-    [IsScalarTower R S N] {f : M →ₗ[R] N} (h : IsBaseChange S f) :
-    Flat S N :=
+theorem isBaseChange
+    [Flat R M]
+    (N : Type t) [AddCommMonoid N] [Module R N] [Module S N] [IsScalarTower R S N]
+    {f : M →ₗ[R] N} (h : IsBaseChange S f)
+    : Flat S N :=
   of_linearEquiv (IsBaseChange.equiv h).symm
 
 end BaseChange
 
 section Localization
 
-variable {R : Type u} {M Mp : Type*} (Rp : Type v)
-  [CommSemiring R] [AddCommMonoid M] [Module R M] [CommSemiring Rp] [Algebra R Rp]
+variable
+  {R : Type u} {M Mp : Type*}
+  (Rp : Type v) [CommSemiring R] [AddCommMonoid M] [Module R M] [CommSemiring Rp] [Algebra R Rp]
   [AddCommMonoid Mp] [Module R Mp] [Module Rp Mp] [IsScalarTower R Rp Mp]
 
-instance localizedModule [Flat R M] (S : Submonoid R) :
-    Flat (Localization S) (LocalizedModule S M) := by
-  apply Flat.isBaseChange (R := R) (S := Localization S)
-    (f := LocalizedModule.mkLinearMap S M)
+instance localizedModule [Flat R M] (S : Submonoid R)
+    : Flat (Localization S) (LocalizedModule S M) := by
+  apply Flat.isBaseChange (R := R) (S := Localization S) (f := LocalizedModule.mkLinearMap S M)
   rw [← isLocalizedModule_iff_isBaseChange S]
   exact localizedModuleIsLocalizedModule S
 
-theorem of_isLocalizedModule [Flat R M] (S : Submonoid R) [IsLocalization S Rp]
-    (f : M →ₗ[R] Mp) [h : IsLocalizedModule S f] : Flat Rp Mp := by
+theorem of_isLocalizedModule
+    [Flat R M] (S : Submonoid R) [IsLocalization S Rp] (f : M →ₗ[R] Mp) [h : IsLocalizedModule S f]
+    : Flat Rp Mp := by
   fapply Flat.isBaseChange (R := R) (M := M) (S := Rp) (N := Mp)
   exact (isLocalizedModule_iff_isBaseChange S Rp f).mp h
 
-instance {A : Type*} [CommSemiring A] [Algebra R A] [Flat R A] (S : Submonoid R) :
-    Flat (Localization S) (Localization (Algebra.algebraMapSubmonoid A S)) :=
+instance {A : Type*} [CommSemiring A] [Algebra R A] [Flat R A] (S : Submonoid R)
+    : Flat (Localization S) (Localization (Algebra.algebraMapSubmonoid A S)) :=
   of_isLocalizedModule _ S (IsScalarTower.toAlgHom R A _).toLinearMap
 
 end Localization

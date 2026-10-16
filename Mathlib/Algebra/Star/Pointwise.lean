@@ -32,19 +32,18 @@ local postfix:max "⋆" => star
 
 variable {α : Type*} {s t : Set α} {a : α}
 
-/-- The set `(star s : Set α)` is defined as `{x | star x ∈ s}` in the scope `Pointwise`.
+/--
+The set `(star s : Set α)` is defined as `{x | star x ∈ s}` in the scope `Pointwise`.
 In the usual case where `star` is involutive, it is equal to `{star s | x ∈ s}`, see
-`Set.image_star`. -/
-@[instance_reducible]
-protected def star [Star α] : Star (Set α) := ⟨preimage Star.star⟩
+`Set.image_star`.
+-/
+@[instance_reducible] protected def star [Star α] : Star (Set α) := ⟨preimage Star.star⟩
 
 scoped[Pointwise] attribute [instance] Set.star
 
-@[simp]
-theorem star_empty [Star α] : (∅ : Set α)⋆ = ∅ := rfl
+@[simp] theorem star_empty [Star α] : (∅ : Set α)⋆ = ∅ := rfl
 
-@[simp]
-theorem star_univ [Star α] : (univ : Set α)⋆ = univ := rfl
+@[simp] theorem star_univ [Star α] : (univ : Set α)⋆ = univ := rfl
 
 @[simp]
 theorem nonempty_star [InvolutiveStar α] {s : Set α} : s⋆.Nonempty ↔ s.Nonempty :=
@@ -53,24 +52,20 @@ theorem nonempty_star [InvolutiveStar α] {s : Set α} : s⋆.Nonempty ↔ s.Non
 theorem Nonempty.star [InvolutiveStar α] {s : Set α} (h : s.Nonempty) : s⋆.Nonempty :=
   nonempty_star.2 h
 
-@[simp, push]
-theorem mem_star [Star α] : a ∈ s⋆ ↔ a⋆ ∈ s := Iff.rfl
+@[simp, push] theorem mem_star [Star α] : a ∈ s⋆ ↔ a⋆ ∈ s := Iff.rfl
 
 theorem star_mem_star [InvolutiveStar α] : a⋆ ∈ s⋆ ↔ a ∈ s := by simp only [mem_star, star_star]
 
-@[simp]
-theorem star_preimage [Star α] : Star.star ⁻¹' s = s⋆ := rfl
+@[simp] theorem star_preimage [Star α] : Star.star ⁻¹' s = s⋆ := rfl
 
 @[simp]
 theorem image_star [InvolutiveStar α] : Star.star '' s = s⋆ := by
   simp only [← star_preimage]
   rw [image_eq_preimage_of_inverse] <;> intro <;> simp only [star_star]
 
-@[simp]
-theorem inter_star [Star α] : (s ∩ t)⋆ = s⋆ ∩ t⋆ := preimage_inter
+@[simp] theorem inter_star [Star α] : (s ∩ t)⋆ = s⋆ ∩ t⋆ := preimage_inter
 
-@[simp]
-theorem union_star [Star α] : (s ∪ t)⋆ = s⋆ ∪ t⋆ := preimage_union
+@[simp] theorem union_star [Star α] : (s ∪ t)⋆ = s⋆ ∪ t⋆ := preimage_union
 
 @[simp]
 theorem iInter_star {ι : Sort*} [Star α] (s : ι → Set α) : (⋂ i, s i)⋆ = ⋂ i, (s i)⋆ :=
@@ -80,8 +75,7 @@ theorem iInter_star {ι : Sort*} [Star α] (s : ι → Set α) : (⋂ i, s i)⋆
 theorem iUnion_star {ι : Sort*} [Star α] (s : ι → Set α) : (⋃ i, s i)⋆ = ⋃ i, (s i)⋆ :=
   preimage_iUnion
 
-@[simp]
-theorem compl_star [Star α] : sᶜ⋆ = s⋆ᶜ := preimage_compl
+@[simp] theorem compl_star [Star α] : sᶜ⋆ = s⋆ᶜ := preimage_compl
 
 @[simp]
 instance [InvolutiveStar α] : InvolutiveStar (Set α) where
@@ -127,16 +121,17 @@ protected theorem star_inv' [GroupWithZero α] [StarMul α] (s : Set α) : s⁻�
 end Set
 
 @[simp]
-lemma StarMemClass.star_coe_eq {S α : Type*} [InvolutiveStar α] [SetLike S α]
-    [StarMemClass S α] (s : S) : star (s : Set α) = s := by
+lemma StarMemClass.star_coe_eq
+    {S α : Type*} [InvolutiveStar α] [SetLike S α] [StarMemClass S α] (s : S)
+    : star (s : Set α) = s := by
   ext
   simpa using star_mem_iff
 
 namespace Set.Pairwise
 
 @[simp]
-lemma commute_star_iff {α : Type*} [Mul α] [StarMul α] {s : Set α} :
-    (star s).Pairwise Commute ↔ s.Pairwise Commute := by
+lemma commute_star_iff {α : Type*} [Mul α] [StarMul α] {s : Set α}
+    : (star s).Pairwise Commute ↔ s.Pairwise Commute := by
   simp only [Set.Pairwise]
   conv_rhs => simp +singlePass only [star_involutive.surjective.forall]
   simp

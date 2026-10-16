@@ -26,19 +26,17 @@ namespace Pi
 
 variable {ι : Type*} {π : ι → Type*} [∀ i, NatCast (π i)]
 
-instance instNatCast : NatCast (∀ i, π i) where natCast n _ := n
+instance instNatCast : NatCast (∀ i, π i) where
+  natCast n _ := n
 
-@[simp]
-theorem natCast_apply (n : ℕ) (i : ι) : (n : ∀ i, π i) i = n :=
-  rfl
+@[simp] theorem natCast_apply (n : ℕ) (i : ι) : (n : ∀ i, π i) i = n := rfl
 
 @[push ←]
-theorem natCast_def (n : ℕ) : (n : ∀ i, π i) = fun _ => ↑n :=
-  rfl
+theorem natCast_def (n : ℕ) : (n : ∀ i, π i) = fun _ => ↑n := rfl
 
 end Pi
 
 @[simp]
-theorem Sum.elim_natCast_natCast {α β γ : Type*} [NatCast γ] (n : ℕ) :
-    Sum.elim (n : α → γ) (n : β → γ) = n :=
+theorem Sum.elim_natCast_natCast {α β γ : Type*} [NatCast γ] (n : ℕ)
+    : Sum.elim (n : α → γ) (n : β → γ) = n :=
   Sum.elim_lam_const_lam_const (γ := γ) n

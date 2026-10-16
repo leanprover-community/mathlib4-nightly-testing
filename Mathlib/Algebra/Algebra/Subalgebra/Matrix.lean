@@ -28,9 +28,11 @@ namespace Subalgebra
 variable {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A]
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- A version of `Set.matrix` for `Subalgebra`s.
+/--
+A version of `Set.matrix` for `Subalgebra`s.
 Given a `Subalgebra` `S`, `S.matrix` is the `Subalgebra` of square matrices `m`
-all of whose entries `m i j` belong to `S`. -/
+all of whose entries `m i j` belong to `S`.
+-/
 @[simps!]
 def matrix (S : Subalgebra R A) : Subalgebra R (Matrix n n A) where
   __ := S.toSubsemiring.matrix

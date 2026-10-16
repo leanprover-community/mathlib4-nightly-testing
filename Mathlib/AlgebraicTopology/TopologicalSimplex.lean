@@ -27,8 +27,10 @@ open scoped Simplicial
 
 namespace SimplexCategory
 
-/-- The functor `SimplexCategory ⥤ TopCat.{0}`
-associating the topological `n`-simplex to `⦋n⦌ : SimplexCategory`. -/
+/--
+The functor `SimplexCategory ⥤ TopCat.{0}`
+associating the topological `n`-simplex to `⦋n⦌ : SimplexCategory`.
+-/
 @[simps obj map, implicit_reducible]
 noncomputable def toTop₀ : CosimplicialObject TopCat.{0} where
   obj n := ↧(StdSimplex ℝ (Fin (n.len + 1)))
@@ -38,11 +40,12 @@ noncomputable def toTop₀ : CosimplicialObject TopCat.{0} where
     simp [← StdSimplex.map_comp]
     rfl
 
-/-- The functor `SimplexCategory ⥤ TopCat.{u}`
-associating the topological `n`-simplex to `⦋n⦌ : SimplexCategory`. -/
+/--
+The functor `SimplexCategory ⥤ TopCat.{u}`
+associating the topological `n`-simplex to `⦋n⦌ : SimplexCategory`.
+-/
 @[simps! obj map, pp_with_univ]
-noncomputable def toTop : SimplexCategory ⥤ TopCat.{u} :=
-  toTop₀ ⋙ TopCat.uliftFunctor
+noncomputable def toTop : SimplexCategory ⥤ TopCat.{u} := toTop₀ ⋙ TopCat.uliftFunctor
 
 set_option backward.defeqAttrib.useBackward true in
 instance (n : SimplexCategory) : Nonempty (toTop₀.obj n) := by dsimp; infer_instance

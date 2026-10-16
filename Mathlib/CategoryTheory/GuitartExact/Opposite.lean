@@ -21,7 +21,8 @@ universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
 
 namespace CategoryTheory
 
-variable {C₁ : Type u₁} {C₂ : Type u₂} {C₃ : Type u₃} {C₄ : Type u₄}
+variable
+  {C₁ : Type u₁} {C₂ : Type u₂} {C₃ : Type u₃} {C₄ : Type u₄}
   [Category.{v₁} C₁] [Category.{v₂} C₂] [Category.{v₃} C₃] [Category.{v₄} C₄]
   {T : C₁ ⥤ C₂} {L : C₁ ⥤ C₃} {R : C₂ ⥤ C₄} {B : C₃ ⥤ C₄}
 
@@ -37,45 +38,42 @@ namespace structuredArrowRightwardsOpEquivalence
 
 /-- Auxiliary definition for `structuredArrowRightwardsOpEquivalence`. -/
 @[simps!, implicit_reducible]
-def functor :
-    (w.op.StructuredArrowRightwards g)ᵒᵖ ⥤
-      w.CostructuredArrowDownwards g.unop where
-  obj f := CostructuredArrowDownwards.mk _ _ f.unop.right.left.unop
-      f.unop.right.hom.unop f.unop.hom.left.unop
-      (Quiver.Hom.op_inj (by simpa using! CostructuredArrow.w f.unop.hom))
+def functor : (w.op.StructuredArrowRightwards g)ᵒᵖ ⥤ w.CostructuredArrowDownwards g.unop where
+  obj f :=
+    CostructuredArrowDownwards.mk _ _ f.unop.right.left.unop f.unop.right.hom.unop
+      f.unop.hom.left.unop (Quiver.Hom.op_inj (by simpa using! CostructuredArrow.w f.unop.hom))
   map {f f'} φ :=
     CostructuredArrow.homMk
       (StructuredArrow.homMk (φ.unop.right.left.unop)
-        (Quiver.Hom.op_inj (CostructuredArrow.w φ.unop.right))) (by
-          ext
-          exact Quiver.Hom.op_inj
-            ((CostructuredArrow.proj _ _).congr_map (StructuredArrow.w φ.unop)))
+        (Quiver.Hom.op_inj (CostructuredArrow.w φ.unop.right)))
+      (by
+        ext
+        exact Quiver.Hom.op_inj ((CostructuredArrow.proj _ _).congr_map (StructuredArrow.w φ.unop)))
 
 /-- Auxiliary definition for `structuredArrowRightwardsOpEquivalence`. -/
 @[simps!, implicit_reducible]
-def inverse :
-    w.CostructuredArrowDownwards g.unop ⥤
-      (w.op.StructuredArrowRightwards g)ᵒᵖ where
-  obj f := Opposite.op
-    (StructuredArrowRightwards.mk _ _ (Opposite.op f.left.right)
-      f.hom.right.op f.left.hom.op (Quiver.Hom.unop_inj (StructuredArrow.w f.hom)))
+def inverse : w.CostructuredArrowDownwards g.unop ⥤ (w.op.StructuredArrowRightwards g)ᵒᵖ where
+  obj f :=
+    Opposite.op (StructuredArrowRightwards.mk _ _ (Opposite.op f.left.right) f.hom.right.op
+      f.left.hom.op (Quiver.Hom.unop_inj (StructuredArrow.w f.hom)))
   map {f f'} φ :=
     (StructuredArrow.homMk
       (CostructuredArrow.homMk (φ.left.right.op)
         (Quiver.Hom.unop_inj (by exact StructuredArrow.w φ.left)))
-          (by
-            ext
-            exact ((StructuredArrow.proj _ _).congr_map (CostructuredArrow.w φ)))).op
+      (by
+        ext
+        exact ((StructuredArrow.proj _ _).congr_map (CostructuredArrow.w φ)))).op
 
 end structuredArrowRightwardsOpEquivalence
 
-/-- If `w : TwoSquare T L R B`, and `g : B.op.obj X₃ ⟶ R.op.obj X₂`, this is
+/--
+If `w : TwoSquare T L R B`, and `g : B.op.obj X₃ ⟶ R.op.obj X₂`, this is
 the obvious equivalence of categories between
-`(w.op.StructuredArrowRightwards g)ᵒᵖ` and `w.CostructuredArrowDownwards g.unop`. -/
+`(w.op.StructuredArrowRightwards g)ᵒᵖ` and `w.CostructuredArrowDownwards g.unop`.
+-/
 @[simps]
-def structuredArrowRightwardsOpEquivalence :
-    (w.op.StructuredArrowRightwards g)ᵒᵖ ≌
-      w.CostructuredArrowDownwards g.unop where
+def structuredArrowRightwardsOpEquivalence
+    : (w.op.StructuredArrowRightwards g)ᵒᵖ ≌ w.CostructuredArrowDownwards g.unop where
   functor := structuredArrowRightwardsOpEquivalence.functor w g
   inverse := structuredArrowRightwardsOpEquivalence.inverse w g
   unitIso := Iso.refl _
@@ -101,13 +99,12 @@ lemma guitartExact_op_iff : w.op.GuitartExact ↔ w.GuitartExact := by
   · intro
     infer_instance
 
-instance guitartExact_id' (F : C₁ ⥤ C₂) :
-    GuitartExact (TwoSquare.mk F (𝟭 C₁) (𝟭 C₂) F (𝟙 F)) := by
+instance guitartExact_id' (F : C₁ ⥤ C₂) : GuitartExact (TwoSquare.mk F (𝟭 C₁) (𝟭 C₂) F (𝟙 F)) := by
   rw [← guitartExact_op_iff]
   apply guitartExact_id
 
-instance guitartExact_of_isEquivalence_of_isIso'
-    [T.IsEquivalence] [B.IsEquivalence] [IsIso w] : GuitartExact w := by
+instance guitartExact_of_isEquivalence_of_isIso' [T.IsEquivalence] [B.IsEquivalence] [IsIso w]
+    : GuitartExact w := by
   rw [← guitartExact_op_iff]
   infer_instance
 

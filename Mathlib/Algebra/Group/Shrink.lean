@@ -32,37 +32,37 @@ lemma equivShrink_symm_one [One α] : (equivShrink α).symm 1 = 1 :=
   (equivShrink α).symm_apply_apply 1
 
 @[to_additive (attr := simp)]
-lemma equivShrink_symm_mul [Mul α] (x y : Shrink α) :
-    (equivShrink α).symm (x * y) = (equivShrink α).symm x * (equivShrink α).symm y := by
+lemma equivShrink_symm_mul [Mul α] (x y : Shrink α)
+    : (equivShrink α).symm (x * y) = (equivShrink α).symm x * (equivShrink α).symm y := by
   simp [Equiv.mul_def]
 
 @[to_additive (attr := simp)]
-lemma equivShrink_mul [Mul α] (x y : α) :
-    equivShrink α (x * y) = equivShrink α x * equivShrink α y := by
+lemma equivShrink_mul [Mul α] (x y : α)
+    : equivShrink α (x * y) = equivShrink α x * equivShrink α y := by
   simp [Equiv.mul_def]
 
 @[simp]
-lemma equivShrink_symm_smul {M : Type*} [SMul M α] (m : M) (x : Shrink α) :
-    (equivShrink α).symm (m • x) = m • (equivShrink α).symm x := by
+lemma equivShrink_symm_smul {M : Type*} [SMul M α] (m : M) (x : Shrink α)
+    : (equivShrink α).symm (m • x) = m • (equivShrink α).symm x := by
   simp [Equiv.smul_def]
 
 @[simp]
-lemma equivShrink_smul {M : Type*} [SMul M α] (m : M) (x : α) :
-    equivShrink α (m • x) = m • equivShrink α x := by
+lemma equivShrink_smul {M : Type*} [SMul M α] (m : M) (x : α)
+    : equivShrink α (m • x) = m • equivShrink α x := by
   simp [Equiv.smul_def]
 @[to_additive (attr := simp)]
-lemma equivShrink_symm_div [Div α] (x y : Shrink α) :
-    (equivShrink α).symm (x / y) = (equivShrink α).symm x / (equivShrink α).symm y := by
+lemma equivShrink_symm_div [Div α] (x y : Shrink α)
+    : (equivShrink α).symm (x / y) = (equivShrink α).symm x / (equivShrink α).symm y := by
   simp [Equiv.div_def]
 
 @[to_additive (attr := simp)]
-lemma equivShrink_div [Div α] (x y : α) :
-    equivShrink α (x / y) = equivShrink α x / equivShrink α y := by
+lemma equivShrink_div [Div α] (x y : α)
+    : equivShrink α (x / y) = equivShrink α x / equivShrink α y := by
   simp [Equiv.div_def]
 
 @[to_additive (attr := simp)]
-lemma equivShrink_symm_inv [Inv α] (x : Shrink α) :
-    (equivShrink α).symm x⁻¹ = ((equivShrink α).symm x)⁻¹ := by
+lemma equivShrink_symm_inv [Inv α] (x : Shrink α)
+    : (equivShrink α).symm x⁻¹ = ((equivShrink α).symm x)⁻¹ := by
   simp [Equiv.inv_def]
 
 @[to_additive (attr := simp)]
@@ -98,23 +98,19 @@ instance [MulOneClass α] : MulOneClass (Shrink.{v} α) :=
   fast_instance% (equivShrink α).symm.mulOneClass
 
 @[to_additive]
-instance [Monoid α] : Monoid (Shrink.{v} α) :=
-  fast_instance% (equivShrink α).symm.monoid
+instance [Monoid α] : Monoid (Shrink.{v} α) := fast_instance% (equivShrink α).symm.monoid
 
 @[to_additive]
 instance [CommMonoid α] : CommMonoid (Shrink.{v} α) :=
   fast_instance% (equivShrink α).symm.commMonoid
 
 @[to_additive]
-instance [Group α] : Group (Shrink.{v} α) :=
-  fast_instance% (equivShrink α).symm.group
+instance [Group α] : Group (Shrink.{v} α) := fast_instance% (equivShrink α).symm.group
 
 @[to_additive]
-instance [CommGroup α] : CommGroup (Shrink.{v} α) :=
-  fast_instance% (equivShrink α).symm.commGroup
+instance [CommGroup α] : CommGroup (Shrink.{v} α) := fast_instance% (equivShrink α).symm.commGroup
 
 @[to_additive]
-instance [Monoid M] [MulAction M α] : MulAction M (Shrink.{v} α) :=
-  (equivShrink α).symm.mulAction M
+instance [Monoid M] [MulAction M α] : MulAction M (Shrink.{v} α) := (equivShrink α).symm.mulAction M
 
 end Shrink

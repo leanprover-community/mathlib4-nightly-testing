@@ -69,8 +69,10 @@ universe u
 
 variable {α : Type*} {β : Type*}
 
-/-- `Finset α` is the type of finite sets of elements of `α`. It is implemented
-  as a multiset (a list up to permutation) which has no duplicate elements. -/
+/--
+`Finset α` is the type of finite sets of elements of `α`. It is implemented
+as a multiset (a list up to permutation) which has no duplicate elements.
+-/
 @[use_set_notation_for_order, to_dual_dont_translate]
 structure Finset (α : Type*) where
   /-- The underlying multiset -/
@@ -88,9 +90,7 @@ theorem eq_of_veq : ∀ {s t : Finset α}, s.1 = t.1 → s = t
 
 theorem val_injective : Injective (val : Finset α → Multiset α) := fun _ _ => eq_of_veq
 
-@[simp]
-theorem val_inj {s t : Finset α} : s.1 = t.1 ↔ s = t :=
-  val_injective.eq_iff
+@[simp] theorem val_inj {s t : Finset α} : s.1 = t.1 ↔ s = t := val_injective.eq_iff
 
 instance decidableEq [DecidableEq α] : DecidableEq (Finset α)
   | _, _ => decidable_of_iff _ val_inj
@@ -102,8 +102,7 @@ instance : SetLike (Finset α) α where
   coe s := {a | a ∈ s.1}
   coe_injective s₁ s₂ h := (val_inj.symm.trans <| s₁.nodup.ext s₂.nodup).2 <| Set.ext_iff.mp h
 
-theorem mem_def {a : α} {s : Finset α} : a ∈ s ↔ a ∈ s.1 :=
-  Iff.rfl
+theorem mem_def {a : α} {s : Finset α} : a ∈ s ↔ a ∈ s.1 := Iff.rfl
 
 -- If https://github.com/leanprover/lean4/issues/2678 is resolved-
 -- this can be changed back to an `Iff`, but for now we would like `dsimp` to use it.
@@ -111,8 +110,7 @@ theorem mem_def {a : α} {s : Finset α} : a ∈ s ↔ a ∈ s.1 :=
 theorem mem_val {a : α} {s : Finset α} : (a ∈ s.1) = (a ∈ s) := rfl
 
 @[simp, grind =]
-theorem mem_mk {a : α} {s nd} : a ∈ @Finset.mk α s nd ↔ a ∈ s :=
-  Iff.rfl
+theorem mem_mk {a : α} {s nd} : a ∈ @Finset.mk α s nd ↔ a ∈ s := Iff.rfl
 
 instance decidableMem [_h : DecidableEq α] (a : α) (s : Finset α) : Decidable (a ∈ s) :=
   Multiset.decidableMem _ _
@@ -123,17 +121,13 @@ instance decidableMem [_h : DecidableEq α] (a : α) (s : Finset α) : Decidable
 instance : PartialOrder (Finset α) := .ofSetLike (Finset α)
 
 @[norm_cast, grind =]
-theorem mem_coe {a : α} {s : Finset α} : a ∈ (s : Set α) ↔ a ∈ (s : Finset α) :=
-  Iff.rfl
+theorem mem_coe {a : α} {s : Finset α} : a ∈ (s : Set α) ↔ a ∈ (s : Finset α) := Iff.rfl
 
-@[simp]
-theorem setOfPred_mem {α} {s : Finset α} : { a | a ∈ s } = s :=
-  rfl
+@[simp] theorem setOfPred_mem {α} {s : Finset α} : { a | a ∈ s } = s := rfl
 
 @[deprecated (since := "2026-07-09")] alias setOf_mem := setOfPred_mem
 
-theorem coe_mem {s : Finset α} (x : (s : Set α)) : ↑x ∈ s :=
-  x.2
+theorem coe_mem {s : Finset α} (x : (s : Set α)) : ↑x ∈ s := x.2
 
 theorem mk_coe {s : Finset α} (x : (s : Set α)) {h} : (⟨x, h⟩ : (s : Set α)) = x :=
   Subtype.coe_eta _ _
@@ -144,44 +138,37 @@ instance decidableMem' [DecidableEq α] (a : α) (s : Finset α) : Decidable (a 
 /-! ### extensionality -/
 
 @[ext, grind ext]
-theorem ext {s₁ s₂ : Finset α} (h : ∀ a, a ∈ s₁ ↔ a ∈ s₂) : s₁ = s₂ :=
-  SetLike.ext h
+theorem ext {s₁ s₂ : Finset α} (h : ∀ a, a ∈ s₁ ↔ a ∈ s₂) : s₁ = s₂ := SetLike.ext h
 
-@[norm_cast]
-theorem coe_inj {s₁ s₂ : Finset α} : (s₁ : Set α) = s₂ ↔ s₁ = s₂ :=
-  SetLike.coe_set_eq
+@[norm_cast] theorem coe_inj {s₁ s₂ : Finset α} : (s₁ : Set α) = s₂ ↔ s₁ = s₂ := SetLike.coe_set_eq
 
 @[grind inj]
 theorem coe_injective {α} : Injective ((↑) : Finset α → Set α) := fun _s _t => coe_inj.1
 
 /-! ### type coercion -/
 
-
-protected theorem forall_coe {α : Type*} (s : Finset α) (p : s → Prop) :
-    (∀ x : s, p x) ↔ ∀ (x : α) (h : x ∈ s), p ⟨x, h⟩ :=
+protected theorem forall_coe {α : Type*} (s : Finset α) (p : s → Prop)
+    : (∀ x : s, p x) ↔ ∀ (x : α) (h : x ∈ s), p ⟨x, h⟩ :=
   Subtype.forall
 
-protected theorem exists_coe {α : Type*} (s : Finset α) (p : s → Prop) :
-    (∃ x : s, p x) ↔ ∃ (x : α) (h : x ∈ s), p ⟨x, h⟩ :=
+protected theorem exists_coe {α : Type*} (s : Finset α) (p : s → Prop)
+    : (∃ x : s, p x) ↔ ∃ (x : α) (h : x ∈ s), p ⟨x, h⟩ :=
   Subtype.exists
 
-instance PiFinsetCoe.canLift (ι : Type*) (α : ι → Type*) [_ne : ∀ i, Nonempty (α i)]
-    (s : Finset ι) : CanLift (∀ i : s, α i) (∀ i, α i) (fun f i => f i) fun _ => True :=
+instance PiFinsetCoe.canLift (ι : Type*) (α : ι → Type*) [_ne : ∀ i, Nonempty (α i)] (s : Finset ι)
+    : CanLift (∀ i : s, α i) (∀ i, α i) (fun f i => f i) fun _ => True :=
   PiSubtype.canLift ι α (· ∈ s)
 
-instance PiFinsetCoe.canLift' (ι α : Type*) [_ne : Nonempty α] (s : Finset ι) :
-    CanLift (s → α) (ι → α) (fun f i => f i) fun _ => True :=
+instance PiFinsetCoe.canLift' (ι α : Type*) [_ne : Nonempty α] (s : Finset ι)
+    : CanLift (s → α) (ι → α) (fun f i => f i) fun _ => True :=
   PiFinsetCoe.canLift ι (fun _ => α) s
 
 instance FinsetCoe.canLift (s : Finset α) : CanLift α s (↑) fun a => a ∈ s where
   prf a ha := ⟨⟨a, ha⟩, rfl⟩
 
-@[norm_cast]
-theorem coe_sort_coe (s : Finset α) : ((s : Set α) : Sort _) = s :=
-  rfl
+@[norm_cast] theorem coe_sort_coe (s : Finset α) : ((s : Set α) : Sort _) = s := rfl
 
 /-! ### Subset and strict subset relations -/
-
 
 section Subset
 
@@ -190,23 +177,17 @@ variable {s t : Finset α}
 @[deprecated "This is now a syntactic identity" (since := "2026-05-24")]
 theorem subset_of_le : s ≤ t → s ⊆ t := id
 
-theorem subset_def : s ⊆ t ↔ s.1 ⊆ t.1 :=
-  Iff.rfl
+theorem subset_def : s ⊆ t ↔ s.1 ⊆ t.1 := Iff.rfl
 
-theorem ssubset_def : s ⊂ t ↔ s ⊆ t ∧ ¬t ⊆ s :=
-  Iff.rfl
+theorem ssubset_def : s ⊂ t ↔ s ⊆ t ∧ ¬ t ⊆ s := Iff.rfl
 
-theorem Subset.refl (s : Finset α) : s ⊆ s :=
-  Multiset.Subset.refl _
+theorem Subset.refl (s : Finset α) : s ⊆ s := Multiset.Subset.refl _
 
-protected theorem Subset.rfl {s : Finset α} : s ⊆ s :=
-  Subset.refl _
+protected theorem Subset.rfl {s : Finset α} : s ⊆ s := Subset.refl _
 
-protected theorem subset_of_eq {s t : Finset α} (h : s = t) : s ⊆ t :=
-  h ▸ Subset.refl _
+protected theorem subset_of_eq {s t : Finset α} (h : s = t) : s ⊆ t := h ▸ Subset.refl _
 
-theorem Subset.trans {s₁ s₂ s₃ : Finset α} : s₁ ⊆ s₂ → s₂ ⊆ s₃ → s₁ ⊆ s₃ :=
-  Multiset.Subset.trans
+theorem Subset.trans {s₁ s₂ s₃ : Finset α} : s₁ ⊆ s₂ → s₂ ⊆ s₃ → s₁ ⊆ s₃ := Multiset.Subset.trans
 
 theorem Superset.trans {s₁ s₂ s₃ : Finset α} : s₁ ⊇ s₂ → s₂ ⊇ s₃ → s₁ ⊇ s₃ := fun h' h =>
   Subset.trans h h'
@@ -214,8 +195,7 @@ theorem Superset.trans {s₁ s₂ s₃ : Finset α} : s₁ ⊇ s₂ → s₂ ⊇
 theorem mem_of_subset {s₁ s₂ : Finset α} {a : α} : s₁ ⊆ s₂ → a ∈ s₁ → a ∈ s₂ :=
   Multiset.mem_of_subset
 
-theorem notMem_mono {s t : Finset α} (h : s ⊆ t) {a : α} : a ∉ t → a ∉ s :=
-  mt <| @h _
+theorem notMem_mono {s t : Finset α} (h : s ⊆ t) {a : α} : a ∉ t → a ∉ s := mt <| @h _
 
 alias notMem_subset := notMem_mono
 
@@ -225,44 +205,32 @@ theorem Subset.antisymm {s₁ s₂ : Finset α} (H₁ : s₁ ⊆ s₂) (H₂ : s
   ext fun a => ⟨@H₁ a, @H₂ a⟩
 
 @[grind =]
-theorem subset_iff {s₁ s₂ : Finset α} : s₁ ⊆ s₂ ↔ ∀ ⦃x⦄, x ∈ s₁ → x ∈ s₂ :=
-  Iff.rfl
+theorem subset_iff {s₁ s₂ : Finset α} : s₁ ⊆ s₂ ↔ ∀ ⦃x⦄, x ∈ s₁ → x ∈ s₂ := Iff.rfl
 
-theorem subset_iff_notMem : s ⊆ t ↔ ∀ ⦃a⦄, a ∉ t → a ∉ s := by
-  simp only [subset_iff, not_imp_not]
+theorem subset_iff_notMem : s ⊆ t ↔ ∀ ⦃a⦄, a ∉ t → a ∉ s := by simp only [subset_iff, not_imp_not]
 
-@[norm_cast, gcongr]
-theorem coe_subset {s₁ s₂ : Finset α} : (s₁ : Set α) ⊆ s₂ ↔ s₁ ⊆ s₂ :=
-  Iff.rfl
+@[norm_cast, gcongr] theorem coe_subset {s₁ s₂ : Finset α} : (s₁ : Set α) ⊆ s₂ ↔ s₁ ⊆ s₂ := Iff.rfl
 
-@[simp]
-theorem val_le_iff {s₁ s₂ : Finset α} : s₁.1 ≤ s₂.1 ↔ s₁ ⊆ s₂ :=
-  le_iff_subset s₁.2
+@[simp] theorem val_le_iff {s₁ s₂ : Finset α} : s₁.1 ≤ s₂.1 ↔ s₁ ⊆ s₂ := le_iff_subset s₁.2
 
-theorem Subset.antisymm_iff {s₁ s₂ : Finset α} : s₁ = s₂ ↔ s₁ ⊆ s₂ ∧ s₂ ⊆ s₁ :=
-  le_antisymm_iff
+theorem Subset.antisymm_iff {s₁ s₂ : Finset α} : s₁ = s₂ ↔ s₁ ⊆ s₂ ∧ s₂ ⊆ s₁ := le_antisymm_iff
 
-theorem not_subset : ¬s ⊆ t ↔ ∃ x ∈ s, x ∉ t := by simp only [← coe_subset, Set.not_subset, mem_coe]
+theorem not_subset : ¬ s ⊆ t ↔ ∃ x ∈ s, x ∉ t := by
+  simp only [← coe_subset, Set.not_subset, mem_coe]
 
 @[deprecated "This is now a syntactic equality" (since := "2026-05-24"), nolint synTaut]
-theorem le_eq_subset : ((· ≤ ·) : Finset α → Finset α → Prop) = (· ⊆ ·) :=
-  rfl
+theorem le_eq_subset : ((· ≤ ·) : Finset α → Finset α → Prop) = (· ⊆ ·) := rfl
 
 @[deprecated "This is now a syntactic equality" (since := "2026-05-24"), nolint synTaut]
-theorem lt_eq_subset : ((· < ·) : Finset α → Finset α → Prop) = (· ⊂ ·) :=
-  rfl
+theorem lt_eq_subset : ((· < ·) : Finset α → Finset α → Prop) = (· ⊂ ·) := rfl
 
 @[deprecated "This is now a syntactic equality" (since := "2026-05-24"), nolint synTaut]
-theorem le_iff_subset {s₁ s₂ : Finset α} : s₁ ≤ s₂ ↔ s₁ ⊆ s₂ :=
-  Iff.rfl
+theorem le_iff_subset {s₁ s₂ : Finset α} : s₁ ≤ s₂ ↔ s₁ ⊆ s₂ := Iff.rfl
 
 @[deprecated "This is now a syntactic equality" (since := "2026-05-24"), nolint synTaut]
-theorem lt_iff_ssubset {s₁ s₂ : Finset α} : s₁ < s₂ ↔ s₁ ⊂ s₂ :=
-  Iff.rfl
+theorem lt_iff_ssubset {s₁ s₂ : Finset α} : s₁ < s₂ ↔ s₁ ⊂ s₂ := Iff.rfl
 
-@[norm_cast]
-theorem coe_ssubset {s₁ s₂ : Finset α} : (s₁ : Set α) ⊂ s₂ ↔ s₁ ⊂ s₂ := by
-  simp
+@[norm_cast] theorem coe_ssubset {s₁ s₂ : Finset α} : (s₁ : Set α) ⊂ s₂ ↔ s₁ ⊂ s₂ := by simp
 
 @[simp]
 theorem val_lt_iff {s₁ s₂ : Finset α} : s₁.1 < s₂.1 ↔ s₁ ⊂ s₂ :=
@@ -271,18 +239,17 @@ theorem val_lt_iff {s₁ s₂ : Finset α} : s₁.1 < s₂.1 ↔ s₁ ⊂ s₂ :
 lemma val_strictMono : StrictMono (val : Finset α → Multiset α) := fun _ _ ↦ val_lt_iff.2
 
 @[grind =]
-theorem ssubset_iff_subset_ne {s t : Finset α} : s ⊂ t ↔ s ⊆ t ∧ s ≠ t :=
-  @lt_iff_le_and_ne _ _ s t
+theorem ssubset_iff_subset_ne {s t : Finset α} : s ⊂ t ↔ s ⊆ t ∧ s ≠ t := @lt_iff_le_and_ne _ _ s t
 
 theorem ssubset_iff_of_subset {s₁ s₂ : Finset α} (h : s₁ ⊆ s₂) : s₁ ⊂ s₂ ↔ ∃ x ∈ s₂, x ∉ s₁ :=
   Set.ssubset_iff_of_subset h
 
-theorem ssubset_of_ssubset_of_subset {s₁ s₂ s₃ : Finset α} (hs₁s₂ : s₁ ⊂ s₂) (hs₂s₃ : s₂ ⊆ s₃) :
-    s₁ ⊂ s₃ :=
+theorem ssubset_of_ssubset_of_subset {s₁ s₂ s₃ : Finset α} (hs₁s₂ : s₁ ⊂ s₂) (hs₂s₃ : s₂ ⊆ s₃)
+    : s₁ ⊂ s₃ :=
   Set.ssubset_of_ssubset_of_subset hs₁s₂ hs₂s₃
 
-theorem ssubset_of_subset_of_ssubset {s₁ s₂ s₃ : Finset α} (hs₁s₂ : s₁ ⊆ s₂) (hs₂s₃ : s₂ ⊂ s₃) :
-    s₁ ⊂ s₃ :=
+theorem ssubset_of_subset_of_ssubset {s₁ s₂ s₃ : Finset α} (hs₁s₂ : s₁ ⊆ s₂) (hs₂s₃ : s₂ ⊂ s₃)
+    : s₁ ⊂ s₃ :=
   Set.ssubset_of_subset_of_ssubset hs₁s₂ hs₂s₃
 
 theorem exists_of_ssubset {s₁ s₂ : Finset α} (h : s₁ ⊂ s₂) : ∃ x ∈ s₂, x ∉ s₁ :=
@@ -291,8 +258,7 @@ theorem exists_of_ssubset {s₁ s₂ : Finset α} (h : s₁ ⊂ s₂) : ∃ x �
 instance isWellFounded_ssubset : @WellFounded (Finset α) (· ⊂ ·) :=
   Subrelation.isWellFounded (InvImage _ _) val_lt_iff.2
 
-instance wellFoundedLT : WellFoundedLT (Finset α) :=
-  Finset.isWellFounded_ssubset
+instance wellFoundedLT : WellFoundedLT (Finset α) := Finset.isWellFounded_ssubset
 
 end Subset
 
@@ -301,14 +267,10 @@ attribute [local trans] Subset.trans Superset.trans
 
 /-! ### Order embedding from `Finset α` to `Set α` -/
 
-
 /-- Coercion to `Set α` as an `OrderEmbedding`. -/
-def coeEmb : Finset α ↪o Set α :=
-  ⟨⟨(↑), coe_injective⟩, coe_subset⟩
+def coeEmb : Finset α ↪o Set α := ⟨⟨(↑), coe_injective⟩, coe_subset⟩
 
-@[simp]
-theorem coe_coeEmb : ⇑(coeEmb : Finset α ↪o Set α) = ((↑) : Finset α → Set α) :=
-  rfl
+@[simp] theorem coe_coeEmb : ⇑(coeEmb : Finset α ↪o Set α) = ((↑) : Finset α → Set α) := rfl
 
 /-! ### Assorted results
 
@@ -319,36 +281,35 @@ section DecidablePiExists
 
 variable {s : Finset α}
 
-instance decidableDforallFinset {p : ∀ a ∈ s, Prop} [_hp : ∀ (a) (h : a ∈ s), Decidable (p a h)] :
-    Decidable (∀ (a) (h : a ∈ s), p a h) :=
+instance decidableDforallFinset {p : ∀ a ∈ s, Prop} [_hp : ∀ (a) (h : a ∈ s), Decidable (p a h)]
+    : Decidable (∀ (a) (h : a ∈ s), p a h) :=
   Multiset.decidableDforallMultiset
 
-instance instDecidableRelSubset [DecidableEq α] : DecidableRel (α := Finset α) (· ⊆ ·) :=
-  fun _ _ ↦ decidableDforallFinset
+instance instDecidableRelSubset [DecidableEq α] : DecidableRel (α := Finset α) (· ⊆ ·) := fun _ _ ↦
+  decidableDforallFinset
 
-instance instDecidableRelSSubset [DecidableEq α] : DecidableRel (α := Finset α) (· ⊂ ·) :=
-  fun _ _ ↦ instDecidableAnd
+instance instDecidableRelSSubset [DecidableEq α] : DecidableRel (α := Finset α) (· ⊂ ·) := fun _ _ ↦
+  instDecidableAnd
 
-instance instDecidableLE [DecidableEq α] : DecidableLE (Finset α) :=
-  instDecidableRelSubset
+instance instDecidableLE [DecidableEq α] : DecidableLE (Finset α) := instDecidableRelSubset
 
-instance instDecidableLT [DecidableEq α] : DecidableLT (Finset α) :=
-  instDecidableRelSSubset
+instance instDecidableLT [DecidableEq α] : DecidableLT (Finset α) := instDecidableRelSSubset
 
-instance decidableDExistsFinset {p : ∀ a ∈ s, Prop} [_hp : ∀ (a) (h : a ∈ s), Decidable (p a h)] :
-    Decidable (∃ (a : _) (h : a ∈ s), p a h) :=
+instance decidableDExistsFinset {p : ∀ a ∈ s, Prop} [_hp : ∀ (a) (h : a ∈ s), Decidable (p a h)]
+    : Decidable (∃ (a : _) (h : a ∈ s), p a h) :=
   Multiset.decidableDexistsMultiset
 
-instance decidableExistsAndFinset {p : α → Prop} [_hp : ∀ (a), Decidable (p a)] :
-    Decidable (∃ a ∈ s, p a) :=
+instance decidableExistsAndFinset {p : α → Prop} [_hp : ∀ (a), Decidable (p a)]
+    : Decidable (∃ a ∈ s, p a) :=
   decidable_of_iff (∃ (a : _) (_ : a ∈ s), p a) (by simp)
 
-instance decidableExistsAndFinsetCoe {p : α → Prop} [DecidablePred p] :
-    Decidable (∃ a ∈ (s : Set α), p a) := decidableExistsAndFinset
+instance decidableExistsAndFinsetCoe {p : α → Prop} [DecidablePred p]
+    : Decidable (∃ a ∈ (s : Set α), p a) :=
+  decidableExistsAndFinset
 
 /-- decidable equality for functions whose domain is bounded by finsets -/
-instance decidableEqPiFinset {β : α → Type*} [_h : ∀ a, DecidableEq (β a)] :
-    DecidableEq (∀ a ∈ s, β a) :=
+instance decidableEqPiFinset {β : α → Type*} [_h : ∀ a, DecidableEq (β a)]
+    : DecidableEq (∀ a ∈ s, β a) :=
   Multiset.decidableEqPiMultiset
 
 end DecidablePiExists
@@ -373,12 +334,12 @@ section Pairwise
 
 variable {s : Finset α}
 
-theorem pairwise_subtype_iff_pairwise_finset' (r : β → β → Prop) (f : α → β) :
-    Pairwise (r on fun x : s => f x) ↔ (s : Set α).Pairwise (r on f) :=
+theorem pairwise_subtype_iff_pairwise_finset' (r : β → β → Prop) (f : α → β)
+    : Pairwise (r on fun x : s => f x) ↔ (s : Set α).Pairwise (r on f) :=
   pairwise_subtype_iff_pairwise_set (s : Set α) (r on f)
 
-theorem pairwise_subtype_iff_pairwise_finset (r : α → α → Prop) :
-    Pairwise (r on fun x : s => x) ↔ (s : Set α).Pairwise r :=
+theorem pairwise_subtype_iff_pairwise_finset (r : α → α → Prop)
+    : Pairwise (r on fun x : s => x) ↔ (s : Set α).Pairwise r :=
   pairwise_subtype_iff_pairwise_finset' r id
 
 end Pairwise

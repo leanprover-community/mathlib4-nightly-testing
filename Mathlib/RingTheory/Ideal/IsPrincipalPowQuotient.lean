@@ -30,28 +30,29 @@ formed as ring equivs.
 
 @[expose] public section
 
-
 namespace Ideal
 
 section IsPrincipal
 
 variable {R : Type*} [CommRing R] [IsDomain R] {I : Ideal R}
 
-/-- For a principal ideal `I`, `R ⧸ I ≃ₗ[R] I ^ n ⧸ I ^ (n + 1)`. To convert into a form
+/--
+For a principal ideal `I`, `R ⧸ I ≃ₗ[R] I ^ n ⧸ I ^ (n + 1)`. To convert into a form
 that uses the ideal of `R ⧸ I ^ (n + 1)`, compose with
-`Ideal.powQuotPowSuccLinearEquivMapMkPowSuccPow`. -/
-noncomputable
-def quotEquivPowQuotPowSucc (h : I.IsPrincipal) (h' : I ≠ ⊥) (n : ℕ) :
-    (R ⧸ I) ≃ₗ[R] (I ^ n : Ideal R) ⧸ (I • ⊤ : Submodule R (I ^ n : Ideal R)) := by
+`Ideal.powQuotPowSuccLinearEquivMapMkPowSuccPow`.
+-/
+noncomputable def quotEquivPowQuotPowSucc (h : I.IsPrincipal) (h' : I ≠ ⊥) (n : ℕ)
+    : (R ⧸ I) ≃ₗ[R] (I ^ n : Ideal R) ⧸ (I • ⊤ : Submodule R (I ^ n : Ideal R)) := by
   let f : (I ^ n : Ideal R) →ₗ[R] (I ^ n : Ideal R) ⧸ (I • ⊤ : Submodule R (I ^ n : Ideal R)) :=
     Submodule.mkQ _
   let ϖ := h.principal.choose
   have hI : I = Ideal.span {ϖ} := h.principal.choose_spec
   have hϖ : ϖ ^ n ∈ I ^ n := hI ▸ (Ideal.pow_mem_pow (Ideal.mem_span_singleton_self _) n)
-  let g : R →ₗ[R] (I ^ n : Ideal R) := (LinearMap.mulRight R ϖ ^ n).codRestrict _ fun x ↦ by
-    simp only [LinearMap.pow_mulRight, LinearMap.mulRight_apply]
-    -- TODO: change argument of Ideal.pow_mem_of_mem
-    exact Ideal.mul_mem_left _ _ hϖ
+  let g : R →ₗ[R] (I ^ n : Ideal R) :=
+    (LinearMap.mulRight R ϖ ^ n).codRestrict _ fun x ↦ by
+      simp only [LinearMap.pow_mulRight, LinearMap.mulRight_apply]
+      -- TODO: change argument of Ideal.pow_mem_of_mem
+      exact Ideal.mul_mem_left _ _ hϖ
   have : I = LinearMap.ker (f.comp g) := by
     ext x
     simp only [LinearMap.codRestrict, LinearMap.pow_mulRight, LinearMap.mulRight_apply,
@@ -76,13 +77,14 @@ def quotEquivPowQuotPowSucc (h : I.IsPrincipal) (h' : I ≠ ⊥) (n : ℕ) :
   refine hx.imp ?_
   simp [g, LinearMap.codRestrict, eq_comm, mul_comm]
 
-/-- For a principal ideal `I`, `R ⧸ I ≃ I ^ n ⧸ I ^ (n + 1)`. Supplied as a plain equiv to bypass
+/--
+For a principal ideal `I`, `R ⧸ I ≃ I ^ n ⧸ I ^ (n + 1)`. Supplied as a plain equiv to bypass
 typeclass synthesis issues on complex `Module` goals.  To convert into a form
 that uses the ideal of `R ⧸ I ^ (n + 1)`, compose with
-`Ideal.powQuotPowSuccEquivMapMkPowSuccPow`. -/
-noncomputable
-def quotEquivPowQuotPowSuccEquiv (h : I.IsPrincipal) (h' : I ≠ ⊥) (n : ℕ) :
-    (R ⧸ I) ≃ (I ^ n : Ideal R) ⧸ (I • ⊤ : Submodule R (I ^ n : Ideal R)) :=
+`Ideal.powQuotPowSuccEquivMapMkPowSuccPow`.
+-/
+noncomputable def quotEquivPowQuotPowSuccEquiv (h : I.IsPrincipal) (h' : I ≠ ⊥) (n : ℕ)
+    : (R ⧸ I) ≃ (I ^ n : Ideal R) ⧸ (I • ⊤ : Submodule R (I ^ n : Ideal R)) :=
   quotEquivPowQuotPowSucc h h' n
 
 end IsPrincipal

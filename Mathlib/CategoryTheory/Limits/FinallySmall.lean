@@ -6,7 +6,6 @@ Authors: Markus Himmel
 module
 
 public import Mathlib.CategoryTheory.Filtered.Final
-
 import Mathlib.CategoryTheory.Comma.StructuredArrow.Small
 import Mathlib.Logic.Small.Set
 
@@ -46,22 +45,23 @@ class FinallySmall : Prop where
   final_smallCategory : ∃ (S : Type w) (_ : SmallCategory S) (F : S ⥤ J), Final F
 
 /-- Constructor for `FinallySmall C` from an explicit small category witness. -/
-theorem FinallySmall.mk' {J : Type u} [Category.{v} J] {S : Type w} [SmallCategory S]
-    (F : S ⥤ J) [Final F] : FinallySmall.{w} J :=
+theorem FinallySmall.mk'
+    {J : Type u} [Category.{v} J] {S : Type w} [SmallCategory S] (F : S ⥤ J) [Final F]
+    : FinallySmall.{w} J :=
   ⟨S, _, F, inferInstance⟩
 
 /-- An arbitrarily chosen small model for a finally small category. -/
 def FinalModel [FinallySmall.{w} J] : Type w :=
   Classical.choose (@FinallySmall.final_smallCategory J _ _)
 
-noncomputable instance smallCategoryFinalModel [FinallySmall.{w} J] :
-    SmallCategory (FinalModel J) :=
+noncomputable instance smallCategoryFinalModel [FinallySmall.{w} J]
+    : SmallCategory (FinalModel J) :=
   Classical.choose (Classical.choose_spec (@FinallySmall.final_smallCategory J _ _))
 
 /-- An arbitrarily chosen final functor `FinalModel J ⥤ J`. -/
 noncomputable def fromFinalModel [FinallySmall.{w} J] : FinalModel J ⥤ J :=
-  Classical.choose (Classical.choose_spec (Classical.choose_spec
-    (@FinallySmall.final_smallCategory J _ _)))
+  Classical.choose (Classical.choose_spec (Classical.choose_spec (@FinallySmall.final_smallCategory
+    J _ _)))
 
 instance final_fromFinalModel [FinallySmall.{w} J] : Final (fromFinalModel J) :=
   Classical.choose_spec (Classical.choose_spec (Classical.choose_spec
@@ -73,13 +73,13 @@ theorem finallySmall_of_essentiallySmall [EssentiallySmall.{w} J] : FinallySmall
 variable {J}
 variable {K : Type u₁} [Category.{v₁} K]
 
-theorem finallySmall_of_final_of_finallySmall [FinallySmall.{w} K] (F : K ⥤ J) [Final F] :
-    FinallySmall.{w} J :=
+theorem finallySmall_of_final_of_finallySmall [FinallySmall.{w} K] (F : K ⥤ J) [Final F]
+    : FinallySmall.{w} J :=
   suffices Final ((fromFinalModel K) ⋙ F) from .mk' ((fromFinalModel K) ⋙ F)
   final_comp _ _
 
-theorem finallySmall_of_final_of_essentiallySmall [EssentiallySmall.{w} K] (F : K ⥤ J) [Final F] :
-    FinallySmall.{w} J :=
+theorem finallySmall_of_final_of_essentiallySmall [EssentiallySmall.{w} K] (F : K ⥤ J) [Final F]
+    : FinallySmall.{w} J :=
   have := finallySmall_of_essentiallySmall K
   finallySmall_of_final_of_finallySmall F
 
@@ -87,10 +87,9 @@ instance [Limits.HasTerminal J] : FinallySmall.{w} J :=
   have := Functor.final_const_terminal (C := PUnit.{w + 1}) (D := J)
   .mk' ((Functor.const PUnit.{w + 1}).obj (⊤_ J))
 
-instance {J' : Type*} [Category* J'] [FinallySmall.{w} J] [FinallySmall.{w'} J'] :
-    FinallySmall.{max w w'} (J × J') :=
-  finallySmall_of_final_of_essentiallySmall
-    ((fromFinalModel.{w} J).prod (fromFinalModel.{w'} J'))
+instance {J' : Type*} [Category* J'] [FinallySmall.{w} J] [FinallySmall.{w'} J']
+    : FinallySmall.{max w w'} (J × J') :=
+  finallySmall_of_final_of_essentiallySmall ((fromFinalModel.{w} J).prod (fromFinalModel.{w'} J'))
 
 end FinallySmall
 
@@ -104,16 +103,17 @@ class InitiallySmall : Prop where
   initial_smallCategory : ∃ (S : Type w) (_ : SmallCategory S) (F : S ⥤ J), Initial F
 
 /-- Constructor for `InitialSmall C` from an explicit small category witness. -/
-theorem InitiallySmall.mk' {J : Type u} [Category.{v} J] {S : Type w} [SmallCategory S]
-    (F : S ⥤ J) [Initial F] : InitiallySmall.{w} J :=
+theorem InitiallySmall.mk'
+    {J : Type u} [Category.{v} J] {S : Type w} [SmallCategory S] (F : S ⥤ J) [Initial F]
+    : InitiallySmall.{w} J :=
   ⟨S, _, F, inferInstance⟩
 
 /-- An arbitrarily chosen small model for an initially small category. -/
 def InitialModel [InitiallySmall.{w} J] : Type w :=
   Classical.choose (@InitiallySmall.initial_smallCategory J _ _)
 
-noncomputable instance smallCategoryInitialModel [InitiallySmall.{w} J] :
-    SmallCategory (InitialModel J) :=
+noncomputable instance smallCategoryInitialModel [InitiallySmall.{w} J]
+    : SmallCategory (InitialModel J) :=
   Classical.choose (Classical.choose_spec (@InitiallySmall.initial_smallCategory J _ _))
 
 /-- An arbitrarily chosen initial functor `InitialModel J ⥤ J`. -/
@@ -131,13 +131,14 @@ theorem initiallySmall_of_essentiallySmall [EssentiallySmall.{w} J] : InitiallyS
 variable {J}
 variable {K : Type u₁} [Category.{v₁} K]
 
-theorem initiallySmall_of_initial_of_initiallySmall [InitiallySmall.{w} K]
-    (F : K ⥤ J) [Initial F] : InitiallySmall.{w} J :=
+theorem initiallySmall_of_initial_of_initiallySmall [InitiallySmall.{w} K] (F : K ⥤ J) [Initial F]
+    : InitiallySmall.{w} J :=
   suffices Initial ((fromInitialModel K) ⋙ F) from .mk' ((fromInitialModel K) ⋙ F)
   initial_comp _ _
 
-theorem initiallySmall_of_initial_of_essentiallySmall [EssentiallySmall.{w} K]
-    (F : K ⥤ J) [Initial F] : InitiallySmall.{w} J :=
+theorem initiallySmall_of_initial_of_essentiallySmall
+    [EssentiallySmall.{w} K] (F : K ⥤ J) [Initial F]
+    : InitiallySmall.{w} J :=
   have := initiallySmall_of_essentiallySmall K
   initiallySmall_of_initial_of_initiallySmall F
 
@@ -145,17 +146,16 @@ instance [Limits.HasInitial J] : InitiallySmall.{w} J :=
   have := Functor.initial_const_initial (C := PUnit.{w + 1}) (D := J)
   .mk' ((Functor.const PUnit.{w + 1}).obj (⊥_ J))
 
-instance [LocallySmall.{w} J] [InitiallySmall.{w} J] (X : J) :
-    InitiallySmall.{w} (Over X) := by
+instance [LocallySmall.{w} J] [InitiallySmall.{w} J] (X : J) : InitiallySmall.{w} (Over X) := by
   have : InitiallySmall.{w} (CostructuredArrow (fromInitialModel.{w} J) X) :=
     initiallySmall_of_essentiallySmall _
-  exact initiallySmall_of_initial_of_initiallySmall
-    (CostructuredArrow.toOver (fromInitialModel.{w} J) X)
+  exact initiallySmall_of_initial_of_initiallySmall (CostructuredArrow.toOver
+    (fromInitialModel.{w} J) X)
 
-instance {J' : Type*} [Category* J'] [InitiallySmall.{w} J] [InitiallySmall.{w'} J'] :
-    InitiallySmall.{max w w'} (J × J') :=
-  initiallySmall_of_initial_of_essentiallySmall
-    ((fromInitialModel.{w} J).prod (fromInitialModel.{w'} J'))
+instance {J' : Type*} [Category* J'] [InitiallySmall.{w} J] [InitiallySmall.{w'} J']
+    : InitiallySmall.{max w w'} (J × J') :=
+  initiallySmall_of_initial_of_essentiallySmall ((fromInitialModel.{w} J).prod
+    (fromInitialModel.{w'} J'))
 
 end InitiallySmall
 
@@ -170,23 +170,24 @@ section WeaklyTerminal
 variable (J : Type u) [Category.{v} J]
 
 /-- The converse is true if `J` is filtered, see `finallySmall_of_small_weakly_terminal_set`. -/
-theorem FinallySmall.exists_small_weakly_terminal_set [FinallySmall.{w} J] :
-    ∃ (s : Set J) (_ : Small.{w} s), ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j) := by
+theorem FinallySmall.exists_small_weakly_terminal_set [FinallySmall.{w} J]
+    : ∃ (s : Set J) (_ : Small.{w} s), ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j) := by
   refine ⟨Set.range (fromFinalModel J).obj, inferInstance, fun i => ?_⟩
   obtain ⟨f⟩ : Nonempty (StructuredArrow i (fromFinalModel J)) := IsConnected.is_nonempty
   exact ⟨(fromFinalModel J).obj f.right, Set.mem_range_self _, ⟨f.hom⟩⟩
 
 variable {J} in
-theorem finallySmall_of_small_weakly_terminal_set [IsFilteredOrEmpty J] (s : Set J) [Small.{v} s]
-    (hs : ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j)) : FinallySmall.{v} J := by
+theorem finallySmall_of_small_weakly_terminal_set
+    [IsFilteredOrEmpty J] (s : Set J) [Small.{v} s] (hs : ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j))
+    : FinallySmall.{v} J := by
   suffices Functor.Final (ObjectProperty.ι (· ∈ s)) from
     finallySmall_of_final_of_essentiallySmall (ObjectProperty.ι (· ∈ s))
   refine Functor.final_of_exists_of_isFiltered_of_fullyFaithful _ (fun i => ?_)
   obtain ⟨j, hj₁, hj₂⟩ := hs i
   exact ⟨⟨j, hj₁⟩, hj₂⟩
 
-theorem finallySmall_iff_exists_small_weakly_terminal_set [IsFilteredOrEmpty J] :
-    FinallySmall.{v} J ↔ ∃ (s : Set J) (_ : Small.{v} s), ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j) := by
+theorem finallySmall_iff_exists_small_weakly_terminal_set [IsFilteredOrEmpty J]
+    : FinallySmall.{v} J ↔ ∃ (s : Set J) (_ : Small.{v} s), ∀ i, ∃ j ∈ s, Nonempty (i ⟶ j) := by
   refine ⟨fun _ => FinallySmall.exists_small_weakly_terminal_set _, fun h => ?_⟩
   rcases h with ⟨s, hs, hs'⟩
   exact finallySmall_of_small_weakly_terminal_set s hs'
@@ -198,15 +199,16 @@ section WeaklyInitial
 variable (J : Type u) [Category.{v} J]
 
 /-- The converse is true if `J` is cofiltered, see `initiallySmall_of_small_weakly_initial_set`. -/
-theorem InitiallySmall.exists_small_weakly_initial_set [InitiallySmall.{w} J] :
-    ∃ (s : Set J) (_ : Small.{w} s), ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i) := by
+theorem InitiallySmall.exists_small_weakly_initial_set [InitiallySmall.{w} J]
+    : ∃ (s : Set J) (_ : Small.{w} s), ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i) := by
   refine ⟨Set.range (fromInitialModel J).obj, inferInstance, fun i => ?_⟩
   obtain ⟨f⟩ : Nonempty (CostructuredArrow (fromInitialModel J) i) := IsConnected.is_nonempty
   exact ⟨(fromInitialModel J).obj f.left, Set.mem_range_self _, ⟨f.hom⟩⟩
 
 variable {J} in
-theorem initiallySmall_of_small_weakly_initial_set [IsCofilteredOrEmpty J] (s : Set J) [Small.{v} s]
-    (hs : ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i)) : InitiallySmall.{v} J := by
+theorem initiallySmall_of_small_weakly_initial_set
+    [IsCofilteredOrEmpty J] (s : Set J) [Small.{v} s] (hs : ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i))
+    : InitiallySmall.{v} J := by
   suffices Functor.Initial (ObjectProperty.ι (· ∈ s)) from
     initiallySmall_of_initial_of_essentiallySmall (ObjectProperty.ι (· ∈ s))
   refine Functor.initial_of_exists_of_isCofiltered_of_fullyFaithful _ (fun i => ?_)
@@ -215,16 +217,18 @@ theorem initiallySmall_of_small_weakly_initial_set [IsCofilteredOrEmpty J] (s : 
 
 variable {J} in
 theorem initiallySmall_of_essentiallySmall_weakly_initial_objectProperty
-    [IsCofilteredOrEmpty J] (P : ObjectProperty J) [ObjectProperty.EssentiallySmall.{v} P]
-    (hP : ∀ i, ∃ j, P j ∧ Nonempty (j ⟶ i)) : InitiallySmall.{v} J := by
+    [IsCofilteredOrEmpty J]
+    (P : ObjectProperty J) [ObjectProperty.EssentiallySmall.{v} P]
+    (hP : ∀ i, ∃ j, P j ∧ Nonempty (j ⟶ i))
+    : InitiallySmall.{v} J := by
   obtain ⟨Q, H, hQ⟩ := ObjectProperty.EssentiallySmall.exists_small_le'.{v} P
-  refine initiallySmall_of_small_weakly_initial_set {j | Q j} fun i ↦ ?_
+  refine initiallySmall_of_small_weakly_initial_set ({j | Q j}) fun i ↦ ?_
   obtain ⟨j, hj, ⟨f⟩⟩ := hP i
   obtain ⟨k, hk, ⟨e⟩⟩ := hQ _ hj
   exact ⟨k, hk, ⟨e.inv ≫ f⟩⟩
 
-theorem initiallySmall_iff_exists_small_weakly_initial_set [IsCofilteredOrEmpty J] :
-    InitiallySmall.{v} J ↔ ∃ (s : Set J) (_ : Small.{v} s), ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i) := by
+theorem initiallySmall_iff_exists_small_weakly_initial_set [IsCofilteredOrEmpty J]
+    : InitiallySmall.{v} J ↔ ∃ (s : Set J) (_ : Small.{v} s), ∀ i, ∃ j ∈ s, Nonempty (j ⟶ i) := by
   refine ⟨fun _ => InitiallySmall.exists_small_weakly_initial_set _, fun h => ?_⟩
   rcases h with ⟨s, hs, hs'⟩
   exact initiallySmall_of_small_weakly_initial_set s hs'
@@ -233,12 +237,16 @@ end WeaklyInitial
 
 namespace Limits
 
-theorem hasColimitsOfShape_of_finallySmall (J : Type u) [Category.{v} J] [FinallySmall.{w} J]
-    (C : Type u₁) [Category.{v₁} C] [HasColimitsOfSize.{w, w} C] : HasColimitsOfShape J C :=
+theorem hasColimitsOfShape_of_finallySmall
+    (J : Type u) [Category.{v} J] [FinallySmall.{w} J]
+    (C : Type u₁) [Category.{v₁} C] [HasColimitsOfSize.{w, w} C]
+    : HasColimitsOfShape J C :=
   Final.hasColimitsOfShape_of_final (fromFinalModel J)
 
-theorem hasLimitsOfShape_of_initiallySmall (J : Type u) [Category.{v} J] [InitiallySmall.{w} J]
-    (C : Type u₁) [Category.{v₁} C] [HasLimitsOfSize.{w, w} C] : HasLimitsOfShape J C :=
+theorem hasLimitsOfShape_of_initiallySmall
+    (J : Type u) [Category.{v} J] [InitiallySmall.{w} J]
+    (C : Type u₁) [Category.{v₁} C] [HasLimitsOfSize.{w, w} C]
+    : HasLimitsOfShape J C :=
   Initial.hasLimitsOfShape_of_initial (fromInitialModel J)
 
 end Limits

@@ -42,7 +42,8 @@ universe v
 
 open CategoryTheory
 
-/-- The simplex category:
+/--
+The simplex category:
 * for each `n : ℕ`, there is an object `⦋n⦌`;
 * morphisms `⦋n⦌ ⟶ ⦋m⦌` are monotone functions `Fin (n+1) → Fin (m+1)`
 -/
@@ -62,13 +63,10 @@ open Simplicial
 
 theorem len_mk (n : ℕ) : ⦋n⦌.len = n := rfl
 
-@[simp]
-theorem mk_len (n : SimplexCategory) : ⦋n.len⦌ = n :=
-  rfl
+@[simp] theorem mk_len (n : SimplexCategory) : ⦋n.len⦌ = n := rfl
 
 /-- Morphisms in the `SimplexCategory`. -/
-protected def Hom (a b : SimplexCategory) :=
-  Fin (a.len + 1) →o Fin (b.len + 1)
+protected def Hom (a b : SimplexCategory) := Fin (a.len + 1) →o Fin (b.len + 1)
 
 namespace Hom
 
@@ -77,12 +75,12 @@ def mk {a b : SimplexCategory} (f : Fin (a.len + 1) →o Fin (b.len + 1)) : Simp
   f
 
 /-- Recover the monotone map from a morphism in the simplex category. -/
-def toOrderHom {a b : SimplexCategory} (f : SimplexCategory.Hom a b) :
-    Fin (a.len + 1) →o Fin (b.len + 1) :=
+def toOrderHom {a b : SimplexCategory} (f : SimplexCategory.Hom a b)
+    : Fin (a.len + 1) →o Fin (b.len + 1) :=
   f
 
-theorem ext' {a b : SimplexCategory} (f g : SimplexCategory.Hom a b) :
-    f.toOrderHom = g.toOrderHom → f = g :=
+theorem ext' {a b : SimplexCategory} (f g : SimplexCategory.Hom a b)
+    : f.toOrderHom = g.toOrderHom → f = g :=
   id
 
 @[simp]
@@ -90,23 +88,22 @@ theorem mk_toOrderHom {a b : SimplexCategory} (f : SimplexCategory.Hom a b) : mk
   rfl
 
 @[simp]
-theorem toOrderHom_mk {a b : SimplexCategory} (f : Fin (a.len + 1) →o Fin (b.len + 1)) :
-    (mk f).toOrderHom = f :=
+theorem toOrderHom_mk {a b : SimplexCategory} (f : Fin (a.len + 1) →o Fin (b.len + 1))
+    : (mk f).toOrderHom = f :=
   rfl
 
-theorem mk_toOrderHom_apply {a b : SimplexCategory} (f : Fin (a.len + 1) →o Fin (b.len + 1))
-    (i : Fin (a.len + 1)) : (mk f).toOrderHom i = f i :=
+theorem mk_toOrderHom_apply
+    {a b : SimplexCategory} (f : Fin (a.len + 1) →o Fin (b.len + 1)) (i : Fin (a.len + 1))
+    : (mk f).toOrderHom i = f i :=
   rfl
 
 /-- Identity morphisms of `SimplexCategory`. -/
-@[simp]
-def id (a : SimplexCategory) : SimplexCategory.Hom a a :=
-  mk OrderHom.id
+@[simp] def id (a : SimplexCategory) : SimplexCategory.Hom a a := mk OrderHom.id
 
 /-- Composition of morphisms of `SimplexCategory`. -/
 @[simp]
-def comp {a b c : SimplexCategory} (f : SimplexCategory.Hom b c) (g : SimplexCategory.Hom a b) :
-    SimplexCategory.Hom a c :=
+def comp {a b c : SimplexCategory} (f : SimplexCategory.Hom b c) (g : SimplexCategory.Hom a b)
+    : SimplexCategory.Hom a c :=
   mk <| f.toOrderHom.comp g.toOrderHom
 
 end Hom
@@ -118,54 +115,50 @@ instance smallCategory : SmallCategory.{0} SimplexCategory where
   id _ := SimplexCategory.Hom.id _
   comp f g := SimplexCategory.Hom.comp g f
 
-@[simp]
-lemma id_toOrderHom (a : SimplexCategory) :
-    Hom.toOrderHom (𝟙 a) = OrderHom.id := rfl
+@[simp] lemma id_toOrderHom (a : SimplexCategory) : Hom.toOrderHom (𝟙 a) = OrderHom.id := rfl
 
 @[simp]
-lemma comp_toOrderHom {a b c : SimplexCategory} (f : a ⟶ b) (g : b ⟶ c) :
-    (f ≫ g).toOrderHom = g.toOrderHom.comp f.toOrderHom := rfl
+lemma comp_toOrderHom {a b c : SimplexCategory} (f : a ⟶ b) (g : b ⟶ c)
+    : (f ≫ g).toOrderHom = g.toOrderHom.comp f.toOrderHom :=
+  rfl
 
 @[ext]
-theorem Hom.ext {a b : SimplexCategory} (f g : a ⟶ b) :
-    f.toOrderHom = g.toOrderHom → f = g :=
+theorem Hom.ext {a b : SimplexCategory} (f g : a ⟶ b) : f.toOrderHom = g.toOrderHom → f = g :=
   Hom.ext' _ _
 
-/-- Homs in `SimplexCategory` are equivalent to order-preserving functions of finite linear
-orders. -/
-def homEquivOrderHom {a b : SimplexCategory} :
-    (a ⟶ b) ≃ (Fin (a.len + 1) →o Fin (b.len + 1)) where
+/--
+Homs in `SimplexCategory` are equivalent to order-preserving functions of finite linear
+orders.
+-/
+def homEquivOrderHom {a b : SimplexCategory} : (a ⟶ b) ≃ (Fin (a.len + 1) →o Fin (b.len + 1)) where
   toFun := Hom.toOrderHom
   invFun := Hom.mk
 
 /-- Homs in `SimplexCategory` are equivalent to functors between finite linear orders. -/
-def homEquivFunctor {a b : SimplexCategory} :
-    (a ⟶ b) ≃ (Fin (a.len + 1) ⥤ Fin (b.len + 1)) :=
+def homEquivFunctor {a b : SimplexCategory} : (a ⟶ b) ≃ (Fin (a.len + 1) ⥤ Fin (b.len + 1)) :=
   SimplexCategory.homEquivOrderHom.trans OrderHom.equivFunctor
 
 /-- The truncated simplex category. -/
-abbrev Truncated (n : ℕ) :=
-  ObjectProperty.FullSubcategory fun a : SimplexCategory => a.len ≤ n
+abbrev Truncated (n : ℕ) := ObjectProperty.FullSubcategory fun a : SimplexCategory => a.len ≤ n
 
 namespace Truncated
 
-instance {n} : Inhabited (Truncated n) :=
-  ⟨⟨⦋0⦌, by simp⟩⟩
+instance {n} : Inhabited (Truncated n) := ⟨⟨⦋0⦌, by simp⟩⟩
 
-/-- The fully faithful inclusion of the truncated simplex category into the usual
+/--
+The fully faithful inclusion of the truncated simplex category into the usual
 simplex category.
 -/
-abbrev inclusion (n : ℕ) : SimplexCategory.Truncated n ⥤ SimplexCategory :=
-  ObjectProperty.ι _
+abbrev inclusion (n : ℕ) : SimplexCategory.Truncated n ⥤ SimplexCategory := ObjectProperty.ι _
 
 /-- A proof that the full subcategory inclusion is fully faithful -/
-noncomputable def inclusion.fullyFaithful (n : ℕ) :
-    (inclusion n : Truncated n ⥤ _).op.FullyFaithful :=
+noncomputable def inclusion.fullyFaithful (n : ℕ)
+    : (inclusion n : Truncated n ⥤ _).op.FullyFaithful :=
   Functor.FullyFaithful.ofFullyFaithful _
 
 @[ext]
-theorem Hom.ext {n} {a b : Truncated n} (f g : a ⟶ b)
-    (h : f.hom.toOrderHom = g.hom.toOrderHom) : f = g :=
+theorem Hom.ext {n} {a b : Truncated n} (f g : a ⟶ b) (h : f.hom.toOrderHom = g.hom.toOrderHom)
+    : f = g :=
   ObjectProperty.hom_ext _ (SimplexCategory.Hom.ext _ _ h)
 
 /-- A quick attempt to prove that `⦋m⦌` is `n`-truncated (`⦋m⦌.len ≤ n`). -/
@@ -173,10 +166,11 @@ scoped macro "trunc" : tactic =>
   `(tactic| first | assumption | dsimp only [SimplexCategory.len_mk] <;> lia)
 
 open Mathlib.Tactic (subscriptTerm) in
-/-- For `m ≤ n`, `⦋m⦌ₙ` is the `m`-dimensional simplex in `Truncated n`. The
-proof `p : m ≤ n` can also be provided using the syntax `⦋m, p⦌ₙ`. -/
-scoped syntax:max (name := mkNotation)
-  "⦋" term ("," term)? "⦌" noWs subscriptTerm : term
+/--
+For `m ≤ n`, `⦋m⦌ₙ` is the `m`-dimensional simplex in `Truncated n`. The
+proof `p : m ≤ n` can also be provided using the syntax `⦋m, p⦌ₙ`.
+-/
+scoped syntax:max (name := mkNotation) "⦋" term ("," term)? "⦌" noWs subscriptTerm : term
 scoped macro_rules
   | `(⦋$m:term⦌$n:subscript) =>
     `((⟨SimplexCategory.mk $m, by first | trunc |
@@ -185,28 +179,34 @@ scoped macro_rules
   | `(⦋$m:term, $p:term⦌$n:subscript) =>
     `((⟨SimplexCategory.mk $m, $p⟩ : SimplexCategory.Truncated $n))
 
-/-- Make a morphism in `Truncated n` from a morphism in `SimplexCategory`. This
-is equivalent to `@id (⦋a⦌ₙ ⟶ ⦋b⦌ₙ) f`. -/
-abbrev Hom.tr {n : ℕ} {a b : SimplexCategory} (f : a ⟶ b)
-    (ha : a.len ≤ n := by trunc) (hb : b.len ≤ n := by trunc) :
-    (⟨a, ha⟩ : Truncated n) ⟶ ⟨b, hb⟩ :=
+/--
+Make a morphism in `Truncated n` from a morphism in `SimplexCategory`. This
+is equivalent to `@id (⦋a⦌ₙ ⟶ ⦋b⦌ₙ) f`.
+-/
+abbrev Hom.tr
+    {n : ℕ} {a b : SimplexCategory} (f : a ⟶ b)
+    (ha : a.len ≤ n := by trunc) (hb : b.len ≤ n := by trunc)
+    : (⟨a, ha⟩ : Truncated n) ⟶ ⟨b, hb⟩ :=
   ObjectProperty.homMk f
 
 @[simp]
-lemma Hom.tr_id {n : ℕ} (a : SimplexCategory) (ha : a.len ≤ n := by trunc) :
-    Hom.tr (𝟙 a) ha = 𝟙 _ := rfl
-
-@[reassoc]
-lemma Hom.tr_comp {n : ℕ} {a b c : SimplexCategory} (f : a ⟶ b) (g : b ⟶ c)
-    (ha : a.len ≤ n := by trunc) (hb : b.len ≤ n := by trunc)
-    (hc : c.len ≤ n := by trunc) :
-    tr (f ≫ g) = tr f ≫ tr g :=
+lemma Hom.tr_id {n : ℕ} (a : SimplexCategory) (ha : a.len ≤ n := by trunc)
+    : Hom.tr (𝟙 a) ha = 𝟙 _ :=
   rfl
 
 @[reassoc]
-lemma Hom.tr_comp' {n : ℕ} {a b c : SimplexCategory} (f : a ⟶ b) {hb : b.len ≤ n}
-    {hc : c.len ≤ n} (g : (⟨b, hb⟩ : Truncated n) ⟶ ⟨c, hc⟩) (ha : a.len ≤ n := by trunc) :
-    tr (f ≫ g.hom) = tr f ≫ g :=
+lemma Hom.tr_comp
+    {n : ℕ} {a b c : SimplexCategory} (f : a ⟶ b) (g : b ⟶ c)
+    (ha : a.len ≤ n := by trunc) (hb : b.len ≤ n := by trunc) (hc : c.len ≤ n := by trunc)
+    : tr (f ≫ g) = tr f ≫ tr g :=
+  rfl
+
+@[reassoc]
+lemma Hom.tr_comp'
+    {n : ℕ} {a b c : SimplexCategory} (f : a ⟶ b)
+    {hb : b.len ≤ n} {hc : c.len ≤ n} (g : (⟨b, hb⟩ : Truncated n) ⟶ ⟨c, hc⟩)
+    (ha : a.len ≤ n := by trunc)
+    : tr (f ≫ g.hom) = tr f ≫ g :=
   rfl
 
 /-- The inclusion of `Truncated n` into `Truncated m` when `n ≤ m`. -/
@@ -214,9 +214,7 @@ abbrev incl (n m : ℕ) (h : n ≤ m := by lia) : Truncated n ⥤ Truncated m :=
   ObjectProperty.ιOfLE (fun _ h' ↦ h'.trans h)
 
 /-- For all `n ≤ m`, `inclusion n` factors through `Truncated m`. -/
-def inclCompInclusion {n m : ℕ} (h : n ≤ m) :
-    incl n m ⋙ inclusion m ≅ inclusion n :=
-  Iso.refl _
+def inclCompInclusion {n m : ℕ} (h : n ≤ m) : incl n m ⋙ inclusion m ≅ inclusion n := Iso.refl _
 
 end Truncated
 

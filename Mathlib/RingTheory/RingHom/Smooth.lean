@@ -25,29 +25,33 @@ open TensorProduct
 
 namespace RingHom
 
-/-- A ring homomorphism `f : R →+* S` is formally smooth
-if `S` is formally smooth as an `R` algebra. -/
+/--
+A ring homomorphism `f : R →+* S` is formally smooth
+if `S` is formally smooth as an `R` algebra.
+-/
 @[algebraize RingHom.FormallySmooth.toAlgebra]
 def FormallySmooth (f : R →+* S) : Prop :=
   letI := f.toAlgebra
   Algebra.FormallySmooth R S
 
 /-- Helper lemma for the `algebraize` tactic -/
-lemma FormallySmooth.toAlgebra {f : R →+* S} (hf : FormallySmooth f) :
-    @Algebra.FormallySmooth R S _ _ f.toAlgebra := hf
+lemma FormallySmooth.toAlgebra {f : R →+* S} (hf : FormallySmooth f)
+    : @Algebra.FormallySmooth R S _ _ f.toAlgebra :=
+  hf
 
-lemma formallySmooth_algebraMap [Algebra R S] :
-    (algebraMap R S).FormallySmooth ↔ Algebra.FormallySmooth R S := by
+lemma formallySmooth_algebraMap [Algebra R S]
+    : (algebraMap R S).FormallySmooth ↔ Algebra.FormallySmooth R S := by
   rw [FormallySmooth, toAlgebra_algebraMap]
 
 /-- Composition of formally smooth ring homomorphisms is formally smooth. -/
-lemma FormallySmooth.comp {T : Type*} [CommRing T] {f : R →+* S} {g : S →+* T}
-    (hf : f.FormallySmooth) (hg : g.FormallySmooth) : (g.comp f).FormallySmooth := by
+lemma FormallySmooth.comp
+    {T : Type*} [CommRing T]
+    {f : R →+* S} {g : S →+* T} (hf : f.FormallySmooth) (hg : g.FormallySmooth)
+    : (g.comp f).FormallySmooth := by
   algebraize [f, g, g.comp f]
   exact Algebra.FormallySmooth.comp R S T
 
-lemma FormallySmooth.of_bijective {f : R →+* S} (hf : Function.Bijective f) :
-    f.FormallySmooth := by
+lemma FormallySmooth.of_bijective {f : R →+* S} (hf : Function.Bijective f) : f.FormallySmooth := by
   algebraize [f]
   exact Algebra.FormallySmooth.of_equiv (AlgEquiv.ofBijective (Algebra.ofId R S) hf)
 
@@ -76,11 +80,9 @@ def Smooth (f : R →+* S) : Prop :=
   Algebra.Smooth R S
 
 /-- Helper lemma for the `algebraize` tactic -/
-lemma Smooth.toAlgebra {f : R →+* S} (hf : Smooth f) :
-    @Algebra.Smooth R _ S _ f.toAlgebra := hf
+lemma Smooth.toAlgebra {f : R →+* S} (hf : Smooth f) : @Algebra.Smooth R _ S _ f.toAlgebra := hf
 
-lemma smooth_algebraMap [Algebra R S] :
-    (algebraMap R S).Smooth ↔ Algebra.Smooth R S := by
+lemma smooth_algebraMap [Algebra R S] : (algebraMap R S).Smooth ↔ Algebra.Smooth R S := by
   rw [RingHom.Smooth, toAlgebra_algebraMap]
 
 lemma smooth_def {f : R →+* S} : f.Smooth ↔ f.FormallySmooth ∧ f.FinitePresentation :=
@@ -104,8 +106,8 @@ lemma comp {f : R →+* S} {g : S →+* T} (hf : f.Smooth) (hg : g.Smooth) : (g.
   algebraize [f, g, g.comp f]
   exact Algebra.Smooth.comp R S T
 
-lemma stableUnderComposition : StableUnderComposition Smooth :=
-  fun _ _ _ _ _ _ _ _ ↦ RingHom.Smooth.comp
+lemma stableUnderComposition : StableUnderComposition Smooth := fun _ _ _ _ _ _ _ _ ↦
+  RingHom.Smooth.comp
 
 lemma isStableUnderBaseChange : IsStableUnderBaseChange Smooth := by
   convert!
@@ -116,8 +118,8 @@ lemma isStableUnderBaseChange : IsStableUnderBaseChange Smooth := by
 lemma holdsForLocalizationAway : HoldsForLocalizationAway Smooth := by
   introv R h
   rw [smooth_algebraMap]
-  exact ⟨Algebra.FormallySmooth.of_isLocalization (.powers r),
-    IsLocalization.Away.finitePresentation r⟩
+  exact
+    ⟨Algebra.FormallySmooth.of_isLocalization (.powers r), IsLocalization.Away.finitePresentation r⟩
 
 lemma of_bijective {f : R →+* S} (hf : Function.Bijective f) : f.Smooth := by
   rw [RingHom.smooth_def]
@@ -125,8 +127,7 @@ lemma of_bijective {f : R →+* S} (hf : Function.Bijective f) : f.Smooth := by
 
 variable (R) in
 /-- The identity of a ring is smooth. -/
-lemma id : RingHom.Smooth (RingHom.id R) :=
-  holdsForLocalizationAway.containsIdentities R
+lemma id : RingHom.Smooth (RingHom.id R) := holdsForLocalizationAway.containsIdentities R
 
 lemma ofLocalizationSpanTarget : OfLocalizationSpanTarget Smooth := by
   introv R hs hf
@@ -144,14 +145,14 @@ lemma ofLocalizationSpanTarget : OfLocalizationSpanTarget Smooth := by
 lemma propertyIsLocal : PropertyIsLocal Smooth where
   localizationAwayPreserves := isStableUnderBaseChange.localizationPreserves.away
   ofLocalizationSpanTarget := ofLocalizationSpanTarget
-  ofLocalizationSpan := ofLocalizationSpanTarget.ofLocalizationSpan
-    (stableUnderComposition.stableUnderCompositionWithLocalizationAway
-      holdsForLocalizationAway).left
+  ofLocalizationSpan :=
+    ofLocalizationSpanTarget.ofLocalizationSpan
+      (stableUnderComposition.stableUnderCompositionWithLocalizationAway
+        holdsForLocalizationAway).left
   StableUnderCompositionWithLocalizationAwayTarget :=
     (stableUnderComposition.stableUnderCompositionWithLocalizationAway
       holdsForLocalizationAway).right
 
-lemma respectsIso : RespectsIso Smooth :=
-  propertyIsLocal.respectsIso
+lemma respectsIso : RespectsIso Smooth := propertyIsLocal.respectsIso
 
 end RingHom.Smooth

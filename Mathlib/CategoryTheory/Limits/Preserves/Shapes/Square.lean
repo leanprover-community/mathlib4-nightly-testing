@@ -37,56 +37,60 @@ namespace Square
 
 variable {sq : Square C}
 
-lemma IsPullback.map (h : sq.IsPullback) (F : C ⥤ D) [PreservesLimit (cospan sq.f₂₄ sq.f₃₄) F] :
-    (sq.map F).IsPullback :=
+lemma IsPullback.map (h : sq.IsPullback) (F : C ⥤ D) [PreservesLimit (cospan sq.f₂₄ sq.f₃₄) F]
+    : (sq.map F).IsPullback :=
   Square.IsPullback.mk _ (isLimitPullbackConeMapOfIsLimit F sq.fac h.isLimit)
 
-lemma IsPullback.of_map (F : C ⥤ D) [ReflectsLimit (cospan sq.f₂₄ sq.f₃₄) F]
-    (h : (sq.map F).IsPullback) : sq.IsPullback :=
+lemma IsPullback.of_map
+    (F : C ⥤ D) [ReflectsLimit (cospan sq.f₂₄ sq.f₃₄) F] (h : (sq.map F).IsPullback)
+    : sq.IsPullback :=
   CategoryTheory.IsPullback.of_map F sq.fac h
 
 variable (sq) in
-lemma IsPullback.map_iff (F : C ⥤ D) [PreservesLimit (cospan sq.f₂₄ sq.f₃₄) F]
-    [ReflectsLimit (cospan sq.f₂₄ sq.f₃₄) F] :
-    (sq.map F).IsPullback ↔ sq.IsPullback :=
+lemma IsPullback.map_iff
+    (F : C ⥤ D) [PreservesLimit (cospan sq.f₂₄ sq.f₃₄) F] [ReflectsLimit (cospan sq.f₂₄ sq.f₃₄) F]
+    : (sq.map F).IsPullback ↔ sq.IsPullback :=
   ⟨fun h ↦ of_map F h, fun h ↦ h.map F⟩
 
-lemma IsPushout.map (h : sq.IsPushout) (F : C ⥤ D) [PreservesColimit (span sq.f₁₂ sq.f₁₃) F] :
-    (sq.map F).IsPushout :=
+lemma IsPushout.map (h : sq.IsPushout) (F : C ⥤ D) [PreservesColimit (span sq.f₁₂ sq.f₁₃) F]
+    : (sq.map F).IsPushout :=
   Square.IsPushout.mk _ (isColimitPushoutCoconeMapOfIsColimit F sq.fac h.isColimit)
 
-lemma IsPushout.of_map (F : C ⥤ D) [ReflectsColimit (span sq.f₁₂ sq.f₁₃) F]
-    (h : (sq.map F).IsPushout) : sq.IsPushout :=
+lemma IsPushout.of_map
+    (F : C ⥤ D) [ReflectsColimit (span sq.f₁₂ sq.f₁₃) F] (h : (sq.map F).IsPushout)
+    : sq.IsPushout :=
   CategoryTheory.IsPushout.of_map F sq.fac h
 
 variable (sq) in
-lemma IsPushout.map_iff (F : C ⥤ D) [PreservesColimit (span sq.f₁₂ sq.f₁₃) F]
-    [ReflectsColimit (span sq.f₁₂ sq.f₁₃) F] :
-    (sq.map F).IsPushout ↔ sq.IsPushout :=
+lemma IsPushout.map_iff
+    (F : C ⥤ D) [PreservesColimit (span sq.f₁₂ sq.f₁₃) F] [ReflectsColimit (span sq.f₁₂ sq.f₁₃) F]
+    : (sq.map F).IsPushout ↔ sq.IsPushout :=
   ⟨fun h ↦ of_map F h, fun h ↦ h.map F⟩
 
 variable (sq)
 
-lemma isPullback_iff_map_coyoneda_isPullback :
-    sq.IsPullback ↔ ∀ (X : Cᵒᵖ), (sq.map (coyoneda.obj X)).IsPullback :=
-  ⟨fun h _ ↦ h.map _, fun h ↦ IsPullback.mk _
-    ((sq.pullbackCone.isLimitCoyonedaEquiv).symm (fun X ↦ (h X).isLimit))⟩
+lemma isPullback_iff_map_coyoneda_isPullback
+    : sq.IsPullback ↔ ∀ (X : Cᵒᵖ), (sq.map (coyoneda.obj X)).IsPullback := ⟨
+  fun h _ ↦ h.map _,
+  fun h ↦ IsPullback.mk _ ((sq.pullbackCone.isLimitCoyonedaEquiv).symm (fun X ↦ (h X).isLimit))
+⟩
 
-lemma isPushout_iff_op_map_yoneda_isPullback :
-    sq.IsPushout ↔ ∀ (X : C), (sq.op.map (yoneda.obj X)).IsPullback :=
-  ⟨fun h _ ↦ h.op.map _, fun h ↦ IsPushout.mk _
-    ((sq.pushoutCocone.isColimitYonedaEquiv).symm
-      (fun X ↦ IsLimit.ofIsoLimit (h X).isLimit (PullbackCone.ext (Iso.refl _))))⟩
+lemma isPushout_iff_op_map_yoneda_isPullback
+    : sq.IsPushout ↔ ∀ (X : C), (sq.op.map (yoneda.obj X)).IsPullback := ⟨
+  fun h _ ↦ h.op.map _,
+  fun h ↦
+    IsPushout.mk _
+      ((sq.pushoutCocone.isColimitYonedaEquiv).symm
+        (fun X ↦ IsLimit.ofIsoLimit (h X).isLimit (PullbackCone.ext (Iso.refl _))))
+⟩
 
 section
 
-variable {sq₁ : Square (Type v)} {sq₂ : Square (Type u)}
-  (e₁ : sq₁.X₁ ≃ sq₂.X₁) (e₂ : sq₁.X₂ ≃ sq₂.X₂)
-  (e₃ : sq₁.X₃ ≃ sq₂.X₃) (e₄ : sq₁.X₄ ≃ sq₂.X₄)
-  (comm₁₂ : e₂ ∘ sq₁.f₁₂ = sq₂.f₁₂ ∘ e₁)
-  (comm₁₃ : e₃ ∘ sq₁.f₁₃ = sq₂.f₁₃ ∘ e₁)
-  (comm₂₄ : e₄ ∘ sq₁.f₂₄ = sq₂.f₂₄ ∘ e₂)
-  (comm₃₄ : e₄ ∘ sq₁.f₃₄ = sq₂.f₃₄ ∘ e₃)
+variable
+  {sq₁ : Square (Type v)} {sq₂ : Square (Type u)}
+  (e₁ : sq₁.X₁ ≃ sq₂.X₁) (e₂ : sq₁.X₂ ≃ sq₂.X₂) (e₃ : sq₁.X₃ ≃ sq₂.X₃) (e₄ : sq₁.X₄ ≃ sq₂.X₄)
+  (comm₁₂ : e₂ ∘ sq₁.f₁₂ = sq₂.f₁₂ ∘ e₁) (comm₁₃ : e₃ ∘ sq₁.f₁₃ = sq₂.f₁₃ ∘ e₁)
+  (comm₂₄ : e₄ ∘ sq₁.f₂₄ = sq₂.f₂₄ ∘ e₂) (comm₃₄ : e₄ ∘ sq₁.f₃₄ = sq₂.f₃₄ ∘ e₃)
 include comm₁₂ comm₁₃ comm₂₄ comm₃₄
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -94,13 +98,11 @@ set_option backward.defeqAttrib.useBackward true in
 variable (sq₁ sq₂) in
 lemma IsPullback.iff_of_equiv : sq₁.IsPullback ↔ sq₂.IsPullback := by
   rw [← IsPullback.map_iff sq₁ uliftFunctor.{max u v},
-      ← IsPullback.map_iff sq₂ uliftFunctor.{max u v}]
-  refine iff_of_iso (Square.isoMk
-    (((Equiv.trans Equiv.ulift e₁).trans Equiv.ulift.symm).toIso)
+    ← IsPullback.map_iff sq₂ uliftFunctor.{max u v}]
+  refine iff_of_iso (Square.isoMk (((Equiv.trans Equiv.ulift e₁).trans Equiv.ulift.symm).toIso)
     (((Equiv.trans Equiv.ulift e₂).trans Equiv.ulift.symm).toIso)
     (((Equiv.trans Equiv.ulift e₃).trans Equiv.ulift.symm).toIso)
-    (((Equiv.trans Equiv.ulift e₄).trans Equiv.ulift.symm).toIso)
-    ?_ ?_ ?_ ?_)
+    (((Equiv.trans Equiv.ulift e₄).trans Equiv.ulift.symm).toIso) ?_ ?_ ?_ ?_)
   all_goals ext; apply ULift.down_injective
   · simpa [types_comp, uliftFunctor_map] using congr($comm₁₂ _)
   · simpa [types_comp, uliftFunctor_map] using congr($comm₁₃ _)

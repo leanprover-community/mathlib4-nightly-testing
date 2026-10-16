@@ -28,7 +28,6 @@ FintypeCat_to_FinBoolAlg_op.left_op
 
 @[expose] public section
 
-
 universe u
 
 open CategoryTheory OrderDual Opposite
@@ -41,8 +40,7 @@ attribute [instance] FinBoolAlg.isFintype
 
 namespace FinBoolAlg
 
-instance : CoeSort FinBoolAlg Type* :=
-  ⟨fun X => X.carrier⟩
+instance : CoeSort FinBoolAlg Type* := ⟨fun X => X.carrier⟩
 
 /-- Construct a bundled `FinBoolAlg` from `BooleanAlgebra` + `Fintype`. -/
 abbrev of (α : Type*) [BooleanAlgebra α] [Fintype α] : FinBoolAlg where
@@ -53,11 +51,9 @@ open Lean.PrettyPrinter.Delaborator in
 @[app_delab FinBoolAlg.of]
 meta def delabOf : Delab := CategoryTheory.delabOf
 
-theorem coe_of (α : Type*) [BooleanAlgebra α] [Fintype α] : ↥(of α) = α :=
-  rfl
+theorem coe_of (α : Type*) [BooleanAlgebra α] [Fintype α] : ↥(of α) = α := rfl
 
-instance : Inhabited FinBoolAlg :=
-  ⟨of PUnit⟩
+instance : Inhabited FinBoolAlg := ⟨of PUnit⟩
 
 instance largeCategory : LargeCategory FinBoolAlg :=
   inferInstanceAs <| Category (InducedCategory _ toBoolAlg)
@@ -72,8 +68,7 @@ instance hasForgetToFinBddDistLat : HasForget₂ FinBoolAlg FinBddDistLat where
   forget₂.obj X := ↧X
   forget₂.map f := FinBddDistLat.ofHom f.hom.hom
 
-instance forgetToBoolAlg_full : (forget₂ FinBoolAlg BoolAlg).Full :=
-  InducedCategory.full _
+instance forgetToBoolAlg_full : (forget₂ FinBoolAlg BoolAlg).Full := InducedCategory.full _
 
 instance forgetToBoolAlgFaithful : (forget₂ FinBoolAlg BoolAlg).Faithful :=
   InducedCategory.faithful _
@@ -88,8 +83,10 @@ instance forgetToFinPartOrdFaithful : (forget₂ FinBoolAlg FinPartOrd).Faithful
     ext x
     congrm $h x
 
-/-- Constructs an equivalence between finite Boolean algebras from an order isomorphism between
-them. -/
+/--
+Constructs an equivalence between finite Boolean algebras from an order isomorphism between
+them.
+-/
 @[simps]
 def Iso.mk {α β : FinBoolAlg.{u}} (e : α ≃o β) : α ≅ β where
   hom := InducedCategory.homMk (BoolAlg.ofHom e)
@@ -113,9 +110,9 @@ def dualEquiv : FinBoolAlg ≌ FinBoolAlg where
 
 end FinBoolAlg
 
-theorem finBoolAlg_dual_comp_forget_to_finBddDistLat :
-    FinBoolAlg.dual ⋙ forget₂ FinBoolAlg FinBddDistLat =
-      forget₂ FinBoolAlg FinBddDistLat ⋙ FinBddDistLat.dual :=
+theorem finBoolAlg_dual_comp_forget_to_finBddDistLat
+    : FinBoolAlg.dual ⋙ forget₂ FinBoolAlg FinBddDistLat
+      = forget₂ FinBoolAlg FinBddDistLat ⋙ FinBddDistLat.dual :=
   rfl
 
 attribute [local instance] FintypeCat.fintype in
@@ -124,5 +121,4 @@ attribute [local instance] FintypeCat.fintype in
 noncomputable def fintypeToFinBoolAlgOp : FintypeCat ⥤ FinBoolAlgᵒᵖ where
   obj X := op ↧(Set X)
   map {X Y} f :=
-    Quiver.Hom.op <| InducedCategory.homMk <|
-      BoolAlg.ofHom <| CompleteLatticeHom.setPreimage f
+    Quiver.Hom.op <| InducedCategory.homMk <| BoolAlg.ofHom <| CompleteLatticeHom.setPreimage f

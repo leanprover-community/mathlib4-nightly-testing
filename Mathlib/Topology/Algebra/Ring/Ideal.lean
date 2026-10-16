@@ -7,7 +7,6 @@ module
 
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
 public import Mathlib.Topology.Algebra.Ring.Basic
-
 import Mathlib.Topology.Algebra.Group.Quotient
 
 /-!
@@ -27,16 +26,13 @@ section Ring
 variable {R : Type*} [TopologicalSpace R] [Ring R] [IsTopologicalRing R]
 
 /-- The closure of an ideal in a topological ring as an ideal. -/
-protected def Ideal.closure (I : Ideal R) : Ideal R :=
-  {
-    AddSubmonoid.topologicalClosure
-      I.toAddSubmonoid with
-    carrier := closure I
-    smul_mem' := fun c _ hx => map_mem_closure (mulLeft_continuous _) hx fun _ => I.mul_mem_left c }
+protected def Ideal.closure (I : Ideal R) : Ideal R := {
+  AddSubmonoid.topologicalClosure I.toAddSubmonoid with
+  carrier := closure I
+  smul_mem' := fun c _ hx => map_mem_closure (mulLeft_continuous _) hx fun _ => I.mul_mem_left c
+}
 
-@[simp]
-theorem Ideal.coe_closure (I : Ideal R) : (I.closure : Set R) = closure I :=
-  rfl
+@[simp] theorem Ideal.coe_closure (I : Ideal R) : (I.closure : Set R) = closure I := rfl
 
 /--
 This is not `@[simp]` since otherwise it causes timeouts downstream as `simp` tries and fails to
@@ -51,13 +47,14 @@ variable (R)
 /-- The connected component of zero in a topological ring as an ideal. -/
 def Ideal.connectedComponentOfZero : Ideal R where
   __ := AddSubgroup.connectedComponentOfZero R
-  smul_mem' c x h := IsConnected.subset_connectedComponent
-    (isConnected_connectedComponent.image _ (continuous_const_mul c).continuousOn)
-    ⟨0, mem_connectedComponent, mul_zero c⟩ ⟨x, h, rfl⟩
+  smul_mem' c x h :=
+    IsConnected.subset_connectedComponent
+      (isConnected_connectedComponent.image _ (continuous_const_mul c).continuousOn)
+      ⟨0, mem_connectedComponent, mul_zero c⟩ ⟨x, h, rfl⟩
 
 @[simp]
-theorem Ideal.coe_connectedComponentOfZero :
-    (Ideal.connectedComponentOfZero R : Set R) = connectedComponent 0 :=
+theorem Ideal.coe_connectedComponentOfZero
+    : (Ideal.connectedComponentOfZero R : Set R) = connectedComponent 0 :=
   rfl
 
 end Ring
@@ -68,14 +65,12 @@ variable {R : Type*} [TopologicalSpace R] [CommRing R] (N : Ideal R)
 
 open Ideal.Quotient
 
-instance topologicalRingQuotientTopology : TopologicalSpace (R ⧸ N) :=
-  instTopologicalSpaceQuotient
+instance topologicalRingQuotientTopology : TopologicalSpace (R ⧸ N) := instTopologicalSpaceQuotient
 
 -- note for the reader: in the following, `mk` is `Ideal.Quotient.mk`, the canonical map `R → R/I`.
 variable [IsTopologicalRing R]
 
-theorem QuotientRing.isOpenMap_coe : IsOpenMap (mk N) :=
-  QuotientAddGroup.isOpenMap_coe
+theorem QuotientRing.isOpenMap_coe : IsOpenMap (mk N) := QuotientAddGroup.isOpenMap_coe
 
 theorem QuotientRing.isOpenQuotientMap_mk : IsOpenQuotientMap (mk N) :=
   QuotientAddGroup.isOpenQuotientMap_mk
@@ -85,10 +80,10 @@ theorem QuotientRing.isQuotientMap_coe_coe : IsQuotientMap fun p : R × R => (mk
 
 instance topologicalRing_quotient : IsTopologicalRing (R ⧸ N) where
   __ := QuotientAddGroup.instIsTopologicalAddGroup _
-  continuous_mul := (QuotientRing.isQuotientMap_coe_coe N).continuous_iff.2 <|
-    continuous_quot_mk.comp continuous_mul
+  continuous_mul :=
+    (QuotientRing.isQuotientMap_coe_coe N).continuous_iff.2 <|
+      continuous_quot_mk.comp continuous_mul
 
-instance [CompactSpace R] : CompactSpace (R ⧸ N) :=
-  Quotient.compactSpace
+instance [CompactSpace R] : CompactSpace (R ⧸ N) := Quotient.compactSpace
 
 end CommRing

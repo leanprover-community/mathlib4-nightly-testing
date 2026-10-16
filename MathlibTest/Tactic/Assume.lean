@@ -2,8 +2,8 @@ module
 
 import Mathlib.Tactic.Assume
 
-example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.Injective) :
-    (g ∘ f).Injective := by
+example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.Injective)
+    : (g ∘ f).Injective := by
   intro x y
   assume g (f x) = g (f y)
   rename_i h
@@ -12,16 +12,16 @@ example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.In
 
 /- A nice "teaching" example -/
 open Function
-example {α β γ} {g : β → γ} {f : α → β} (hg : Injective g) (hf : Injective f) :
-    Injective (g ∘ f) := by
+example {α β γ} {g : β → γ} {f : α → β} (hg : Injective g) (hf : Injective f)
+    : Injective (g ∘ f) := by
   intro x y
   assume g (f x) = g (f y)
   have : f x = f y := by grind
   show x = y
   grind
 
-example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.Injective) :
-    (g ∘ f).Injective := by
+example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.Injective)
+    : (g ∘ f).Injective := by
   intro x y
   assume _
   rename_i h
@@ -30,8 +30,7 @@ example {α β γ} {g : β → γ} {f : α → β} (hg : g.Injective) (hf : f.In
 
 /-- error: Tactic 'assume' failed: No hypotheses given. -/
 #guard_msgs in
-example (p : Prop) : p → p := by
-  assume
+example (p : Prop) : p → p := by assume
 
 /--
 error: Tactic 'assume' failed: Given type
@@ -41,8 +40,7 @@ does not match the type
 of the hypothesis in the goal.
 -/
 #guard_msgs in
-example (p q : Prop) : p → p := by
-  assume q
+example (p q : Prop) : p → p := by assume q
 
 /--
 error: Tactic 'assume' failed: Goal
@@ -60,8 +58,7 @@ error: Tactic 'assume' failed: Given type
 is not a proposition.
 -/
 #guard_msgs in
-example : ∀ n, n < 5 → Fin 5 := by
-  assume Nat
+example : ∀ n, n < 5 → Fin 5 := by assume Nat
 
 example (n : Nat) : n < 5 → Fin 5 := by
   assume n < 5

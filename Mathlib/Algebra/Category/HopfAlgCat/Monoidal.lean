@@ -28,8 +28,8 @@ open CategoryTheory TensorProduct
 
 variable (R : Type u) [CommRing R]
 
-@[simps] noncomputable instance instMonoidalCategoryStruct :
-    MonoidalCategoryStruct.{u} (HopfAlgCat R) where
+@[simps]
+noncomputable instance instMonoidalCategoryStruct : MonoidalCategoryStruct.{u} (HopfAlgCat R) where
   tensorObj X Y := of R (X ⊗[R] Y)
   whiskerLeft X _ _ f := ofHom (f.1.lTensor X)
   whiskerRight f X := ofHom (f.1.rTensor X)
@@ -39,22 +39,25 @@ variable (R : Type u) [CommRing R]
   leftUnitor X := (Bialgebra.TensorProduct.lid R X).toHopfAlgIso
   rightUnitor X := (Bialgebra.TensorProduct.rid R R X).toHopfAlgIso
 
-/-- The data needed to induce a `MonoidalCategory` structure via
-`HopfAlgCat.instMonoidalCategoryStruct` and the forgetful functor to bialgebras. -/
+/--
+The data needed to induce a `MonoidalCategory` structure via
+`HopfAlgCat.instMonoidalCategoryStruct` and the forgetful functor to bialgebras.
+-/
 @[simps]
-noncomputable def MonoidalCategory.inducingFunctorData :
-    Monoidal.InducingFunctorData (forget₂ (HopfAlgCat R) (BialgCat R)) where
+noncomputable def MonoidalCategory.inducingFunctorData
+    : Monoidal.InducingFunctorData (forget₂ (HopfAlgCat R) (BialgCat R)) where
   μIso _ _ := Iso.refl _
   whiskerLeft_eq _ _ _ _ := by ext; rfl
   whiskerRight_eq _ _ := by ext; rfl
   tensorHom_eq _ _ := by ext; rfl
   εIso := Iso.refl _
-  associator_eq _ _ _ := BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <|
-    TensorProduct.ext <| TensorProduct.ext (by ext; rfl)
-  leftUnitor_eq _ := BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <|
-    TensorProduct.ext (by ext; rfl)
-  rightUnitor_eq _ := BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <|
-    TensorProduct.ext (by ext; rfl)
+  associator_eq _ _ _ :=
+    BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <| TensorProduct.ext <|
+      TensorProduct.ext (by ext; rfl)
+  leftUnitor_eq _ :=
+    BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <| TensorProduct.ext (by ext; rfl)
+  rightUnitor_eq _ :=
+    BialgCat.Hom.ext <| BialgHom.coe_linearMap_injective <| TensorProduct.ext (by ext; rfl)
 
 noncomputable instance instMonoidalCategory : MonoidalCategory (HopfAlgCat R) :=
   Monoidal.induced (forget₂ _ (BialgCat R)) (MonoidalCategory.inducingFunctorData R)

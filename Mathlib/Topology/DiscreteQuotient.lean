@@ -8,7 +8,6 @@ module
 public import Mathlib.Order.Setoid.Partition
 public import Mathlib.Topology.Connected.TotallyDisconnected
 public import Mathlib.Topology.LocallyConstant.Basic
-
 import Mathlib.Topology.Separation.Regular
 
 /-!
@@ -66,7 +65,6 @@ of finite discrete spaces.
 
 @[expose] public section
 
-
 open Set Function TopologicalSpace Topology
 
 variable {α X Y Z : Type*} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
@@ -101,11 +99,9 @@ theorem trans (x y z : X) : S.toSetoid x y → S.toSetoid y z → S.toSetoid x z
 /-- The setoid whose quotient yields the discrete quotient. -/
 add_decl_doc toSetoid
 
-instance : CoeSort (DiscreteQuotient X) (Type _) :=
-  ⟨fun S => Quotient S.toSetoid⟩
+instance : CoeSort (DiscreteQuotient X) (Type _) := ⟨fun S => Quotient S.toSetoid⟩
 
-instance : TopologicalSpace S :=
-  inferInstanceAs (TopologicalSpace (Quotient S.toSetoid))
+instance : TopologicalSpace S := inferInstanceAs (TopologicalSpace (Quotient S.toSetoid))
 
 /-- The projection from `X` to the given discrete quotient. -/
 def proj : X → S := Quotient.mk''
@@ -113,14 +109,11 @@ def proj : X → S := Quotient.mk''
 theorem fiber_eq (x : X) : S.proj ⁻¹' {S.proj x} = Set.ofPred (S.toSetoid x) :=
   Set.ext fun _ => eq_comm.trans Quotient.eq''
 
-theorem proj_surjective : Function.Surjective S.proj :=
-  Quotient.mk''_surjective
+theorem proj_surjective : Function.Surjective S.proj := Quotient.mk''_surjective
 
-theorem proj_isQuotientMap : IsQuotientMap S.proj :=
-  isQuotientMap_quot_mk
+theorem proj_isQuotientMap : IsQuotientMap S.proj := isQuotientMap_quot_mk
 
-theorem proj_continuous : Continuous S.proj :=
-  S.proj_isQuotientMap.continuous
+theorem proj_continuous : Continuous S.proj := S.proj_isQuotientMap.continuous
 
 instance : DiscreteTopology S :=
   discreteTopology_iff_isOpen_singleton.2 <| S.proj_surjective.forall.2 fun x => by
@@ -133,11 +126,9 @@ theorem proj_isLocallyConstant : IsLocallyConstant S.proj :=
 theorem isClopen_preimage (A : Set S) : IsClopen (S.proj ⁻¹' A) :=
   (isClopen_discrete A).preimage S.proj_continuous
 
-theorem isOpen_preimage (A : Set S) : IsOpen (S.proj ⁻¹' A) :=
-  (S.isClopen_preimage A).2
+theorem isOpen_preimage (A : Set S) : IsOpen (S.proj ⁻¹' A) := (S.isClopen_preimage A).2
 
-theorem isClosed_preimage (A : Set S) : IsClosed (S.proj ⁻¹' A) :=
-  (S.isClopen_preimage A).1
+theorem isClosed_preimage (A : Set S) : IsClosed (S.proj ⁻¹' A) := (S.isClopen_preimage A).1
 
 theorem isClopen_setOfPred_rel (x : X) : IsClopen (Set.ofPred (S.toSetoid x)) := by
   rw [← fiber_eq]
@@ -149,8 +140,7 @@ alias isClopen_setOf_rel := isClopen_setOfPred_rel
 instance : Min (DiscreteQuotient X) :=
   ⟨fun S₁ S₂ => ⟨S₁.1 ⊓ S₂.1, fun x => (S₁.2 x).inter (S₂.2 x)⟩⟩
 
-instance : PartialOrder (DiscreteQuotient X) :=
-  PartialOrder.lift _ toSetoid_injective
+instance : PartialOrder (DiscreteQuotient X) := PartialOrder.lift _ toSetoid_injective
 
 instance : SemilatticeInf (DiscreteQuotient X) :=
   toSetoid_injective.semilatticeInf _ .rfl .rfl fun _ _ ↦ rfl
@@ -177,12 +167,10 @@ def comap (S : DiscreteQuotient Y) : DiscreteQuotient X where
   toSetoid := Setoid.comap f S.1
   isOpen_setOfPred_rel _ := (S.2 _).preimage f.continuous
 
-@[simp]
-theorem comap_id : S.comap (ContinuousMap.id X) = S := rfl
+@[simp] theorem comap_id : S.comap (ContinuousMap.id X) = S := rfl
 
 @[simp]
-theorem comap_comp (S : DiscreteQuotient Z) : S.comap (g.comp f) = (S.comap g).comap f :=
-  rfl
+theorem comap_comp (S : DiscreteQuotient Z) : S.comap (g.comp f) = (S.comap g).comap f := rfl
 
 @[gcongr, mono]
 theorem comap_mono {A B : DiscreteQuotient Y} (h : A ≤ B) : A.comap f ≤ B.comap f := by tauto
@@ -194,8 +182,7 @@ section OfLE
 variable {A B C : DiscreteQuotient X}
 
 /-- The map induced by a refinement of a discrete quotient. -/
-def ofLE (h : A ≤ B) : A → B :=
-  Quotient.map' id h
+def ofLE (h : A ≤ B) : A → B := Quotient.map' id h
 
 @[simp]
 theorem ofLE_refl : ofLE (le_refl A) = id := by
@@ -205,8 +192,8 @@ theorem ofLE_refl : ofLE (le_refl A) = id := by
 theorem ofLE_refl_apply (a : A) : ofLE (le_refl A) a = a := by simp
 
 @[simp]
-theorem ofLE_ofLE (h₁ : A ≤ B) (h₂ : B ≤ C) (x : A) :
-    ofLE h₂ (ofLE h₁ x) = ofLE (h₁.trans h₂) x := by
+theorem ofLE_ofLE (h₁ : A ≤ B) (h₂ : B ≤ C) (x : A)
+    : ofLE h₂ (ofLE h₁ x) = ofLE (h₁.trans h₂) x := by
   rcases x with ⟨⟩
   rfl
 
@@ -214,36 +201,34 @@ theorem ofLE_ofLE (h₁ : A ≤ B) (h₂ : B ≤ C) (x : A) :
 theorem ofLE_comp_ofLE (h₁ : A ≤ B) (h₂ : B ≤ C) : ofLE h₂ ∘ ofLE h₁ = ofLE (le_trans h₁ h₂) :=
   funext <| ofLE_ofLE _ _
 
-theorem ofLE_continuous (h : A ≤ B) : Continuous (ofLE h) :=
-  continuous_of_discreteTopology
+theorem ofLE_continuous (h : A ≤ B) : Continuous (ofLE h) := continuous_of_discreteTopology
 
 @[simp]
-theorem ofLE_proj (h : A ≤ B) (x : X) : ofLE h (A.proj x) = B.proj x :=
-  Quotient.sound' (B.refl _)
+theorem ofLE_proj (h : A ≤ B) (x : X) : ofLE h (A.proj x) = B.proj x := Quotient.sound' (B.refl _)
 
-@[simp]
-theorem ofLE_comp_proj (h : A ≤ B) : ofLE h ∘ A.proj = B.proj :=
-  funext <| ofLE_proj _
+@[simp] theorem ofLE_comp_proj (h : A ≤ B) : ofLE h ∘ A.proj = B.proj := funext <| ofLE_proj _
 
 end OfLE
 
-/-- When `X` is a locally connected space, there is an `OrderBot` instance on
+/--
+When `X` is a locally connected space, there is an `OrderBot` instance on
 `DiscreteQuotient X`. The bottom element is given by `connectedComponentSetoid X`
 -/
 instance [LocallyConnectedSpace X] : OrderBot (DiscreteQuotient X) where
-  bot :=
-    { toSetoid := connectedComponentSetoid X
-      isOpen_setOfPred_rel := fun x => by
-        convert isOpen_connectedComponent (x := x)
-        ext y
-        simpa [connectedComponentSetoid, ← connectedComponent_eq_iff_mem] using eq_comm }
+  bot := {
+    toSetoid := connectedComponentSetoid X
+    isOpen_setOfPred_rel := fun x => by
+      convert isOpen_connectedComponent (x := x)
+      ext y
+      simpa [connectedComponentSetoid, ← connectedComponent_eq_iff_mem] using eq_comm
+  }
   bot_le S := fun x y (h : connectedComponent x = connectedComponent y) =>
     (S.isClopen_setOfPred_rel x).connectedComponent_subset (S.refl _) <|
       h.symm ▸ mem_connectedComponent
 
 @[simp]
-theorem proj_bot_eq [LocallyConnectedSpace X] {x y : X} :
-    proj ⊥ x = proj ⊥ y ↔ connectedComponent x = connectedComponent y :=
+theorem proj_bot_eq [LocallyConnectedSpace X] {x y : X}
+    : proj ⊥ x = proj ⊥ y ↔ connectedComponent x = connectedComponent y :=
   Quotient.eq''
 
 theorem proj_bot_inj [DiscreteTopology X] {x y : X} : proj ⊥ x = proj ⊥ y ↔ x = y := by simp
@@ -258,18 +243,17 @@ section Map
 
 variable (f : C(X, Y)) (A A' : DiscreteQuotient X) (B B' : DiscreteQuotient Y)
 
-/-- Given `f : C(X, Y)`, `DiscreteQuotient.LEComap f A B` is defined as
-`A ≤ B.comap f`. Mathematically this means that `f` descends to a morphism `A → B`. -/
-def LEComap : Prop :=
-  A ≤ B.comap f
+/--
+Given `f : C(X, Y)`, `DiscreteQuotient.LEComap f A B` is defined as
+`A ≤ B.comap f`. Mathematically this means that `f` descends to a morphism `A → B`.
+-/
+def LEComap : Prop := A ≤ B.comap f
 
 theorem leComap_id : LEComap (.id X) A A := le_rfl
 
 variable {A A' B B'} {f} {g : C(Y, Z)} {C : DiscreteQuotient Z}
 
-@[simp]
-theorem leComap_id_iff : LEComap (ContinuousMap.id X) A A' ↔ A ≤ A' :=
-  Iff.rfl
+@[simp] theorem leComap_id_iff : LEComap (ContinuousMap.id X) A A' ↔ A ≤ A' := Iff.rfl
 
 theorem LEComap.comp : LEComap g B C → LEComap f A B → LEComap (g.comp f) A C := by tauto
 
@@ -283,71 +267,73 @@ def map (f : C(X, Y)) (cond : LEComap f A B) : A → B := Quotient.map' f cond
 theorem map_continuous (cond : LEComap f A B) : Continuous (map f cond) :=
   continuous_of_discreteTopology
 
-@[simp]
-theorem map_comp_proj (cond : LEComap f A B) : map f cond ∘ A.proj = B.proj ∘ f :=
-  rfl
+@[simp] theorem map_comp_proj (cond : LEComap f A B) : map f cond ∘ A.proj = B.proj ∘ f := rfl
 
 @[simp]
-theorem map_proj (cond : LEComap f A B) (x : X) : map f cond (A.proj x) = B.proj (f x) :=
-  rfl
+theorem map_proj (cond : LEComap f A B) (x : X) : map f cond (A.proj x) = B.proj (f x) := rfl
 
-@[simp]
-theorem map_id : map _ (leComap_id A) = id := by ext ⟨⟩; rfl
+@[simp] theorem map_id : map _ (leComap_id A) = id := by ext ⟨⟩; rfl
 
 -- This can't be a `@[simp]` lemma since `h1` and `h2` can't be found by unification in a Prop.
-theorem map_comp (h1 : LEComap g B C) (h2 : LEComap f A B) :
-    map (g.comp f) (h1.comp h2) = map g h1 ∘ map f h2 := by
+theorem map_comp (h1 : LEComap g B C) (h2 : LEComap f A B)
+    : map (g.comp f) (h1.comp h2) = map g h1 ∘ map f h2 := by
   ext ⟨⟩
   rfl
 
 @[simp]
-theorem ofLE_map (cond : LEComap f A B) (h : B ≤ B') (a : A) :
-    ofLE h (map f cond a) = map f (cond.mono le_rfl h) a := by
+theorem ofLE_map (cond : LEComap f A B) (h : B ≤ B') (a : A)
+    : ofLE h (map f cond a) = map f (cond.mono le_rfl h) a := by
   rcases a with ⟨⟩
   rfl
 
 @[simp]
-theorem ofLE_comp_map (cond : LEComap f A B) (h : B ≤ B') :
-    ofLE h ∘ map f cond = map f (cond.mono le_rfl h) :=
+theorem ofLE_comp_map (cond : LEComap f A B) (h : B ≤ B')
+    : ofLE h ∘ map f cond = map f (cond.mono le_rfl h) :=
   funext <| ofLE_map cond h
 
 @[simp]
-theorem map_ofLE (cond : LEComap f A B) (h : A' ≤ A) (c : A') :
-    map f cond (ofLE h c) = map f (cond.mono h le_rfl) c := by
+theorem map_ofLE (cond : LEComap f A B) (h : A' ≤ A) (c : A')
+    : map f cond (ofLE h c) = map f (cond.mono h le_rfl) c := by
   rcases c with ⟨⟩
   rfl
 
 @[simp]
-theorem map_comp_ofLE (cond : LEComap f A B) (h : A' ≤ A) :
-    map f cond ∘ ofLE h = map f (cond.mono h le_rfl) :=
+theorem map_comp_ofLE (cond : LEComap f A B) (h : A' ≤ A)
+    : map f cond ∘ ofLE h = map f (cond.mono h le_rfl) :=
   funext <| map_ofLE cond h
 
 end Map
 
-theorem eq_of_forall_proj_eq [T2Space X] [CompactSpace X] [disc : TotallyDisconnectedSpace X]
-    {x y : X} (h : ∀ Q : DiscreteQuotient X, Q.proj x = Q.proj y) : x = y := by
+theorem eq_of_forall_proj_eq
+    [T2Space X] [CompactSpace X] [disc : TotallyDisconnectedSpace X]
+    {x y : X} (h : ∀ Q : DiscreteQuotient X, Q.proj x = Q.proj y)
+    : x = y := by
   rw [← mem_singleton_iff, ← connectedComponent_eq_singleton, connectedComponent_eq_iInter_isClopen,
     mem_iInter]
   rintro ⟨U, hU1, hU2⟩
   exact (Quotient.exact' (h (ofIsClopen hU1))).mpr hU2
 
-theorem fiber_subset_ofLE {A B : DiscreteQuotient X} (h : A ≤ B) (a : A) :
-    A.proj ⁻¹' {a} ⊆ B.proj ⁻¹' {ofLE h a} := by
+theorem fiber_subset_ofLE {A B : DiscreteQuotient X} (h : A ≤ B) (a : A)
+    : A.proj ⁻¹' {a} ⊆ B.proj ⁻¹' {ofLE h a} := by
   rcases A.proj_surjective a with ⟨a, rfl⟩
   rw [fiber_eq, ofLE_proj, fiber_eq]
   exact fun _ h' => h h'
 
-theorem exists_of_compat [CompactSpace X] (Qs : (Q : DiscreteQuotient X) → Q)
-    (compat : ∀ (A B : DiscreteQuotient X) (h : A ≤ B), ofLE h (Qs _) = Qs _) :
-    ∃ x : X, ∀ Q : DiscreteQuotient X, Q.proj x = Qs _ := by
+theorem exists_of_compat
+    [CompactSpace X]
+    (Qs : (Q : DiscreteQuotient X) → Q)
+    (compat : ∀ (A B : DiscreteQuotient X) (h : A ≤ B), ofLE h (Qs _) = Qs _)
+    : ∃ x : X, ∀ Q : DiscreteQuotient X, Q.proj x = Qs _ := by
   have H₁ : ∀ Q₁ Q₂, Q₁ ≤ Q₂ → proj Q₁ ⁻¹' {Qs Q₁} ⊆ proj Q₂ ⁻¹' {Qs Q₂} := fun _ _ h => by
     rw [← compat _ _ h]
     exact fiber_subset_ofLE _ _
   obtain ⟨x, hx⟩ : Set.Nonempty (⋂ Q, proj Q ⁻¹' {Qs Q}) :=
     IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed
-      (fun Q : DiscreteQuotient X => Q.proj ⁻¹' {Qs _}) (directed_of_isDirected_ge H₁)
+      (fun Q : DiscreteQuotient X => Q.proj ⁻¹' {Qs _})
+      (directed_of_isDirected_ge H₁)
       (fun Q => (singleton_nonempty _).preimage Q.proj_surjective)
-      (fun Q => (Q.isClosed_preimage {Qs _}).isCompact) fun Q => Q.isClosed_preimage _
+      (fun Q => (Q.isClosed_preimage {Qs _}).isCompact)
+      fun Q => Q.isClosed_preimage _
   exact ⟨x, mem_iInter.1 hx⟩
 
 /-- If `X` is a compact space, then any discrete quotient of `X` is finite. -/
@@ -364,18 +350,17 @@ clopen subsets of `X`, given by the fibers of `proj`.
 
 TODO: prove that these form a partition of `X`
 -/
-noncomputable def finsetClopens [CompactSpace X]
-    (d : DiscreteQuotient X) : Finset (Clopens X) := have : Fintype d := Fintype.ofFinite _
+noncomputable def finsetClopens [CompactSpace X] (d : DiscreteQuotient X) : Finset (Clopens X) :=
+  have : Fintype d := Fintype.ofFinite _
   (Set.range (fun (x : d) ↦ ⟨_, d.isClopen_preimage {x}⟩) : Set (Clopens X)).toFinset
 
 /-- A helper lemma to prove that `finsetClopens X` is injective, see `finsetClopens_inj`. -/
-lemma comp_finsetClopens [CompactSpace X] :
-    (Set.image (fun (t : Clopens X) ↦ t.carrier) ∘ (↑)) ∘
-      finsetClopens X = fun ⟨f, _⟩ ↦ f.classes := by
+lemma comp_finsetClopens [CompactSpace X]
+    : (Set.image (fun (t : Clopens X) ↦ t.carrier) ∘ (↑)) ∘ finsetClopens X
+      = fun ⟨f, _⟩ ↦ f.classes := by
   ext d
-  simp only [Setoid.classes, Set.mem_ofPred_eq, Function.comp_apply,
-    finsetClopens, Set.coe_toFinset, Set.mem_image, Set.mem_range,
-    exists_exists_eq_and]
+  simp only [Setoid.classes, Set.mem_ofPred_eq, Function.comp_apply, finsetClopens,
+    Set.coe_toFinset, Set.mem_image, Set.mem_range, exists_exists_eq_and]
   constructor
   · refine fun ⟨y, h⟩ ↦ ⟨Quotient.out (s := d.toSetoid) y, ?_⟩
     ext
@@ -383,8 +368,7 @@ lemma comp_finsetClopens [CompactSpace X] :
   · exact fun ⟨y, h⟩ ↦ ⟨d.proj y, by ext; simp [h, proj, Quotient.eq]⟩
 
 /-- `finsetClopens X` is injective. -/
-theorem finsetClopens_inj [CompactSpace X] :
-    (finsetClopens X).Injective := by
+theorem finsetClopens_inj [CompactSpace X] : (finsetClopens X).Injective := by
   apply Function.Injective.of_comp (f := Set.image (fun (t : Clopens X) ↦ t.carrier) ∘ (↑))
   rw [comp_finsetClopens]
   intro ⟨_, _⟩ ⟨_, _⟩ h
@@ -398,8 +382,7 @@ The discrete quotients of a compact space are in bijection with a subtype of the
 
 TODO: show that this is precisely those finsets of clopens which form a partition of `X`.
 -/
-noncomputable
-def equivFinsetClopens [CompactSpace X] := Equiv.ofInjective _ (finsetClopens_inj X)
+noncomputable def equivFinsetClopens [CompactSpace X] := Equiv.ofInjective _ (finsetClopens_inj X)
 
 end DiscreteQuotient
 
@@ -412,12 +395,13 @@ def discreteQuotient : DiscreteQuotient X where
   toSetoid := .comap f ⊥
   isOpen_setOfPred_rel x := f.isLocallyConstant {y | f x = y}
 
-/-- The (locally constant) function from the discrete quotient associated to a locally constant
-function. -/
+/--
+The (locally constant) function from the discrete quotient associated to a locally constant
+function.
+-/
 def lift : LocallyConstant f.discreteQuotient α :=
   ⟨fun a => Quotient.liftOn' a f fun _ _ => id, fun _ => isOpen_discrete _⟩
 
-@[simp]
-theorem lift_comp_proj : f.lift ∘ f.discreteQuotient.proj = f := rfl
+@[simp] theorem lift_comp_proj : f.lift ∘ f.discreteQuotient.proj = f := rfl
 
 end LocallyConstant

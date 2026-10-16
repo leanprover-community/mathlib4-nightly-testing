@@ -7,7 +7,6 @@ module
 
 public import Mathlib.NumberTheory.ArithmeticFunction.Defs
 public import Mathlib.RingTheory.ZMod.UnitsCyclic
-
 import Mathlib.Algebra.GCDMonoid.FinsetLemmas
 
 /-!
@@ -42,8 +41,10 @@ open Nat Monoid
 
 namespace ArithmeticFunction
 
-/-- `λ` is the Carmichael function, also known as the reduced totient function,
-defined as the exponent of the unit group of `ZMod n`. -/
+/--
+`λ` is the Carmichael function, also known as the reduced totient function,
+defined as the exponent of the unit group of `ZMod n`.
+-/
 def carmichael : ArithmeticFunction ℕ where
   toFun
     | 0 => 0
@@ -58,9 +59,12 @@ scoped[ArithmeticFunction.carmichael] notation "λ" => ArithmeticFunction.carmic
 open scoped carmichael
 
 theorem carmichael_eq_exponent {n : ℕ} (hn : n ≠ 0) : carmichael n = exponent (ZMod n)ˣ := by
-  cases n with | zero => contradiction | succ n =>
-  change Nat.find _ = _
-  grind [exponent, ExponentExists.of_finite]
+  cases n with
+  | zero =>
+    contradiction
+  | succ n =>
+    change Nat.find _ = _
+    grind [exponent, ExponentExists.of_finite]
 
 /-- This takes in an `NeZero n` instance instead of an `n ≠ 0` hypothesis. -/
 theorem carmichael_eq_exponent' (n : ℕ) [NeZero n] : carmichael n = exponent (ZMod n)ˣ :=
@@ -85,8 +89,8 @@ theorem carmichael_dvd {a b : ℕ} (h : a ∣ b) : carmichael a ∣ carmichael b
   rw [carmichael_eq_exponent <| ne_zero_of_dvd_ne_zero (by lia) h, carmichael_eq_exponent']
   exact MonoidHom.exponent_dvd <| ZMod.unitsMap_surjective h
 
-theorem carmichael_lcm (a b : ℕ) :
-    carmichael (Nat.lcm a b) = Nat.lcm (carmichael a) (carmichael b) := by
+theorem carmichael_lcm (a b : ℕ)
+    : carmichael (Nat.lcm a b) = Nat.lcm (carmichael a) (carmichael b) := by
   by_cases! h₀ : a = 0 ∨ b = 0
   · grind [Nat.lcm_eq_zero_iff, map_zero]
   apply dvd_antisymm
@@ -98,45 +102,44 @@ theorem carmichael_lcm (a b : ℕ) :
     have hb := carmichael_dvd <| Nat.dvd_lcm_right a b
     exact Nat.lcm_dvd ha hb
 
-theorem carmichael_mul {a b : ℕ} (h : Coprime a b) :
-    carmichael (a * b) = Nat.lcm (carmichael a) (carmichael b) :=
+theorem carmichael_mul {a b : ℕ} (h : Coprime a b)
+    : carmichael (a * b) = Nat.lcm (carmichael a) (carmichael b) :=
   h.lcm_eq_mul ▸ carmichael_lcm ..
 
-theorem carmichael_finset_lcm {α : Type*} (s : Finset α) (f : α → ℕ) :
-    carmichael (s.lcm f) = s.lcm (carmichael ∘ f) := by
+theorem carmichael_finset_lcm {α : Type*} (s : Finset α) (f : α → ℕ)
+    : carmichael (s.lcm f) = s.lcm (carmichael ∘ f) := by
   classical
   refine s.induction ?_ fun a s ha ih ↦ ?_
   · exact carmichael_eq_exponent' 1 |>.trans exp_eq_one_of_subsingleton
   rw [Finset.lcm_insert, Finset.lcm_insert, ← ih]
   exact carmichael_lcm ..
 
-theorem carmichael_finsetProd {α : Type*} {s : Finset α} {f : α → ℕ}
-    (h : Set.Pairwise s <| Coprime.onFun f) : carmichael (s.prod f) = s.lcm (carmichael ∘ f) :=
+theorem carmichael_finsetProd
+    {α : Type*} {s : Finset α} {f : α → ℕ} (h : Set.Pairwise s <| Coprime.onFun f)
+    : carmichael (s.prod f) = s.lcm (carmichael ∘ f) :=
   s.lcm_eq_prod h ▸ carmichael_finset_lcm ..
 
 @[deprecated (since := "2026-04-08")] alias carmichael_finset_prod := carmichael_finsetProd
 
-theorem carmichael_factorization (n : ℕ) [NeZero n] :
-    carmichael n = n.primeFactors.lcm fun p ↦ carmichael (p ^ n.factorization p) := by
+theorem carmichael_factorization (n : ℕ) [NeZero n]
+    : carmichael n = n.primeFactors.lcm fun p ↦ carmichael (p ^ n.factorization p) := by
   nth_rw 1 [← n.prod_factorization_pow_eq_self <| NeZero.ne _]
   exact carmichael_finsetProd pairwise_coprime_pow_primeFactors_factorization.set_of_subtype
 
-theorem carmichael_two_pow_of_le_two_eq_totient {n : ℕ} (hn : n ≤ 2) :
-    carmichael (2 ^ n) = (2 ^ n).totient := by
+theorem carmichael_two_pow_of_le_two_eq_totient {n : ℕ} (hn : n ≤ 2)
+    : carmichael (2 ^ n) = (2 ^ n).totient := by
   rw [carmichael_eq_exponent', ← ZMod.card_units_eq_totient, Fintype.card_eq_nat_card]
   exact IsCyclic.iff_exponent_eq_card.mp <| ZMod.isCyclic_units_two_pow_iff n |>.mpr hn
 
 /-- Note that `2 ^ (n - 1) = 1` when `n = 0`. -/
 @[simp]
-theorem carmichael_two_pow_of_le_two {n : ℕ} (hn : n ≤ 2) :
-    carmichael (2 ^ n) = 2 ^ (n - 1) := by
+theorem carmichael_two_pow_of_le_two {n : ℕ} (hn : n ≤ 2) : carmichael (2 ^ n) = 2 ^ (n - 1) := by
   rw [carmichael_two_pow_of_le_two_eq_totient hn]
   interval_cases n <;> decide
 
 /-- Note that `2 ^ (n - 2) = 1` when `n ≤ 1`. -/
 @[simp]
-theorem carmichael_two_pow_of_ne_two {n : ℕ} (hn : n ≠ 2) :
-    carmichael (2 ^ n) = 2 ^ (n - 2) := by
+theorem carmichael_two_pow_of_ne_two {n : ℕ} (hn : n ≠ 2) : carmichael (2 ^ n) = 2 ^ (n - 2) := by
   by_cases hn' : n ≤ 2
   · grind [carmichael_two_pow_of_le_two]
   refine carmichael_eq_exponent' _ |>.trans <| dvd_antisymm ?_ ?_
@@ -151,16 +154,16 @@ theorem carmichael_two_pow_of_ne_two {n : ℕ} (hn : n ≠ 2) :
       show (5 : ZMod (2 ^ n)) = five by rfl, orderOf_units]
     exact order_dvd_exponent five
 
-theorem two_mul_carmichael_two_pow_of_three_le_eq_totient {n : ℕ} (hn : 3 ≤ n) :
-    2 * carmichael (2 ^ n) = (2 ^ n).totient := by
-  rw [carmichael_two_pow_of_ne_two, ← pow_succ', totient_prime_pow prime_two] <;>
-  · #adaptation_note /-- After https://github.com/leanprover/lean4/pull/13593
+theorem two_mul_carmichael_two_pow_of_three_le_eq_totient {n : ℕ} (hn : 3 ≤ n)
+    : 2 * carmichael (2 ^ n) = (2 ^ n).totient := by
+  rw [carmichael_two_pow_of_ne_two, ← pow_succ', totient_prime_pow prime_two]
+    <;> · #adaptation_note /-- After https://github.com/leanprover/lean4/pull/13593
     we need to re-enable model-based theory combination in `lia` for this to go through. -/
-    lia +mbtc
+          lia +mbtc
 
 @[simp]
-theorem carmichael_pow_of_prime_ne_two {p : ℕ} (n : ℕ) (hp : p.Prime) (hp₂ : p ≠ 2) :
-    carmichael (p ^ n) = (p ^ n).totient := by
+theorem carmichael_pow_of_prime_ne_two {p : ℕ} (n : ℕ) (hp : p.Prime) (hp₂ : p ≠ 2)
+    : carmichael (p ^ n) = (p ^ n).totient := by
   have : NeZero p := ⟨hp.ne_zero⟩
   rw [carmichael_eq_exponent', ← ZMod.card_units_eq_totient, Fintype.card_eq_nat_card]
   exact IsCyclic.iff_exponent_eq_card.mp <| ZMod.isCyclic_units_of_prime_pow p hp hp₂ n

@@ -6,7 +6,6 @@ Authors: Antoine Chambert-Loir
 module
 
 public import Mathlib.GroupTheory.SpecificGroups.Cyclic.Subgroup
-
 import Mathlib.Data.Fintype.Perm
 
 /-! # Properties of `Equiv.Perm` on `Finite` types
@@ -43,13 +42,11 @@ end Nat
 
 namespace Equiv.Perm
 
-theorem isCyclic_of_card_le_two (hα : Nat.card α ≤ 2) :
-    IsCyclic (Perm α) := by
+theorem isCyclic_of_card_le_two (hα : Nat.card α ≤ 2) : IsCyclic (Perm α) := by
   apply isCyclic_of_card_dvd_prime (p := 2)
   simpa [card_perm] using factorial_dvd_factorial hα
 
-theorem isMulCommutative_iff_card_le_two :
-    IsMulCommutative (Perm α) ↔ Nat.card α ≤ 2 := by
+theorem isMulCommutative_iff_card_le_two : IsMulCommutative (Perm α) ↔ Nat.card α ≤ 2 := by
   refine ⟨?_, fun h ↦ (isCyclic_of_card_le_two h).isMulCommutative⟩
   classical
   rintro ⟨⟨h⟩⟩
@@ -59,8 +56,7 @@ theorem isMulCommutative_iff_card_le_two :
   simp_rw [Perm.ext_iff] at h
   simpa [swap_apply_of_ne_of_ne hab hac] using h (swap a b) (swap b c) a
 
-theorem isCyclic_iff_card_le_two :
-    IsCyclic (Perm α) ↔ Nat.card α ≤ 2 :=
+theorem isCyclic_iff_card_le_two : IsCyclic (Perm α) ↔ Nat.card α ≤ 2 :=
   ⟨fun h ↦ isMulCommutative_iff_card_le_two.mp h.isMulCommutative, isCyclic_of_card_le_two⟩
 
 end Equiv.Perm

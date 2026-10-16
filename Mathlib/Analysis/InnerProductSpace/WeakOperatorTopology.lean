@@ -31,8 +31,9 @@ open scoped Topology InnerProductSpace
 
 namespace ContinuousLinearMapWOT
 
-variable {𝕜 : Type*} {E : Type*} {F : Type*} [RCLike 𝕜] [AddCommGroup E] [TopologicalSpace E]
-  [Module 𝕜 E] [NormedAddCommGroup F] [InnerProductSpace 𝕜 F]
+variable
+  {𝕜 : Type*} {E : Type*} {F : Type*} [RCLike 𝕜] [AddCommGroup E] [TopologicalSpace E] [Module 𝕜 E]
+  [NormedAddCommGroup F] [InnerProductSpace 𝕜 F]
 
 @[ext]
 lemma ext_inner {A B : E →WOT[𝕜] F} (h : ∀ x y, ⟪y, A x⟫_𝕜 = ⟪y, B x⟫_𝕜) : A = B := by
@@ -42,34 +43,36 @@ lemma ext_inner {A B : E →WOT[𝕜] F} (h : ∀ x y, ⟪y, A x⟫_𝕜 = ⟪y,
 variable [CompleteSpace F]
 
 open Filter in
-/-- The defining property of the weak operator topology: a function `f` tends to
-`A : E →WOT[𝕜] F` along filter `l` iff `⟪y, (f a) x⟫` tends to `⟪y, A x⟫` along the same filter. -/
-lemma tendsto_iff_forall_inner_apply_tendsto {α : Type*} {l : Filter α}
-    {f : α → E →WOT[𝕜] F} {A : E →WOT[𝕜] F} :
-    Tendsto f l (𝓝 A) ↔ ∀ x y, Tendsto (fun a => ⟪y, (f a) x⟫_𝕜) l (𝓝 ⟪y, A x⟫_𝕜) := by
+/--
+The defining property of the weak operator topology: a function `f` tends to
+`A : E →WOT[𝕜] F` along filter `l` iff `⟪y, (f a) x⟫` tends to `⟪y, A x⟫` along the same filter.
+-/
+lemma tendsto_iff_forall_inner_apply_tendsto
+    {α : Type*} {l : Filter α} {f : α → E →WOT[𝕜] F} {A : E →WOT[𝕜] F}
+    : Tendsto f l (𝓝 A) ↔ ∀ x y, Tendsto (fun a => ⟪y, (f a) x⟫_𝕜) l (𝓝 ⟪y, A x⟫_𝕜) := by
   simp_rw [tendsto_iff_forall_dual_apply_tendsto]
-  exact .symm <| forall_congr' fun _ ↦
-    Equiv.forall_congr (InnerProductSpace.toDual 𝕜 F) fun _ ↦ Iff.rfl
+  exact .symm <|
+    forall_congr' fun _ ↦ Equiv.forall_congr (InnerProductSpace.toDual 𝕜 F) fun _ ↦ Iff.rfl
 
-lemma le_nhds_iff_forall_inner_apply_le_nhds {l : Filter (E →WOT[𝕜] F)}
-    {A : E →WOT[𝕜] F} : l ≤ 𝓝 A ↔ ∀ x y, l.map (fun T => ⟪y, T x⟫_𝕜) ≤ 𝓝 (⟪y, A x⟫_𝕜) :=
+lemma le_nhds_iff_forall_inner_apply_le_nhds {l : Filter (E →WOT[𝕜] F)} {A : E →WOT[𝕜] F}
+    : l ≤ 𝓝 A ↔ ∀ x y, l.map (fun T => ⟪y, T x⟫_𝕜) ≤ 𝓝 (⟪y, A x⟫_𝕜) :=
   tendsto_iff_forall_inner_apply_tendsto (f := id)
 
-lemma continuousWithinAt_iff {α : Type*} [TopologicalSpace α]
-    {f : α → E →WOT[𝕜] F} {s : Set α} {a : α} :
-    ContinuousWithinAt f s a ↔ ∀ x y, ContinuousWithinAt (⟪y, f · x⟫_𝕜) s a :=
+lemma continuousWithinAt_iff
+    {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} {s : Set α} {a : α}
+    : ContinuousWithinAt f s a ↔ ∀ x y, ContinuousWithinAt (⟪y, f · x⟫_𝕜) s a :=
   tendsto_iff_forall_inner_apply_tendsto
 
-lemma continuousAt_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} {a : α} :
-    ContinuousAt f a ↔ ∀ x y, ContinuousAt (⟪y, f · x⟫_𝕜) a :=
+lemma continuousAt_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} {a : α}
+    : ContinuousAt f a ↔ ∀ x y, ContinuousAt (⟪y, f · x⟫_𝕜) a :=
   tendsto_iff_forall_inner_apply_tendsto
 
-lemma continuousOn_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} {s : Set α} :
-    ContinuousOn f s ↔ ∀ x y, ContinuousOn (⟪y, f · x⟫_𝕜) s := by
+lemma continuousOn_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} {s : Set α}
+    : ContinuousOn f s ↔ ∀ x y, ContinuousOn (⟪y, f · x⟫_𝕜) s := by
   simp_rw [ContinuousOn, forall_comm (α := E), forall_comm (α := F), continuousWithinAt_iff]
 
-lemma continuous_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F} :
-    Continuous f ↔ ∀ x y, Continuous (⟪y, f · x⟫_𝕜) := by
+lemma continuous_iff {α : Type*} [TopologicalSpace α] {f : α → E →WOT[𝕜] F}
+    : Continuous f ↔ ∀ x y, Continuous (⟪y, f · x⟫_𝕜) := by
   simp_rw [continuous_iff_continuousAt, forall_comm (α := E), forall_comm (α := F),
     continuousAt_iff]
 

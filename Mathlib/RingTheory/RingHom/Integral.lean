@@ -16,7 +16,6 @@ public import Mathlib.RingTheory.Localization.Integral
 
 public section
 
-
 namespace RingHom
 
 open scoped TensorProduct
@@ -39,26 +38,29 @@ theorem isIntegral_isStableUnderBaseChange : IsStableUnderBaseChange fun f => f.
   infer_instance
 
 open Polynomial in
-/-- `S` is an integral `R`-algebra if there exists a set `{ r }` that
-  spans `R` such that each `Sᵣ` is an integral `Rᵣ`-algebra. -/
-theorem isIntegral_ofLocalizationSpan :
-    OfLocalizationSpan (RingHom.IsIntegral ·) := by
+/--
+`S` is an integral `R`-algebra if there exists a set `{ r }` that
+spans `R` such that each `Sᵣ` is an integral `Rᵣ`-algebra.
+-/
+theorem isIntegral_ofLocalizationSpan : OfLocalizationSpan (RingHom.IsIntegral ·) := by
   introv R hs H r
   let := f.toAlgebra
   change r ∈ (integralClosure R S).toSubmodule
   apply Submodule.mem_of_span_eq_top_of_smul_pow_mem _ s hs
   rintro ⟨t, ht⟩
   let := (Localization.awayMap f t).toAlgebra
-  have : IsScalarTower R (Localization.Away t) (Localization.Away (f t)) := .of_algebraMap_eq'
-    (IsLocalization.lift_comp _).symm
+  have : IsScalarTower R (Localization.Away t) (Localization.Away (f t)) :=
+    .of_algebraMap_eq' (IsLocalization.lift_comp _).symm
   have : _root_.IsIntegral (Localization.Away t) (algebraMap S (Localization.Away (f t)) r) :=
     H ⟨t, ht⟩ (algebraMap _ _ r)
   obtain ⟨⟨_, n, rfl⟩, p, hp, hp'⟩ := this.exists_multiple_integral_of_isLocalization (.powers t)
   rw [IsScalarTower.algebraMap_eq R S, Submonoid.smul_def, Algebra.smul_def,
-    IsScalarTower.algebraMap_apply R S, ← map_mul, ← hom_eval₂,
-    IsLocalization.map_eq_zero_iff (.powers (f t))] at hp'
+      IsScalarTower.algebraMap_apply R S, ← map_mul, ← hom_eval₂,
+      IsLocalization.map_eq_zero_iff (.powers (f t))]
+    at hp'
   obtain ⟨⟨x, m, (rfl : algebraMap R S t ^ m = x)⟩, e⟩ := hp'
-  by_cases hp' : 1 ≤ p.natDegree; swap
+  by_cases hp' : 1 ≤ p.natDegree
+  swap
   · obtain rfl : p = 1 := eq_one_of_monic_natDegree_zero hp (by lia)
     exact ⟨m, by simp [Algebra.smul_def, show algebraMap R S t ^ m = 0 by simpa using e]⟩
   refine ⟨m + n, p.scaleRoots (t ^ m), (monic_scaleRoots_iff _).mpr hp, ?_⟩

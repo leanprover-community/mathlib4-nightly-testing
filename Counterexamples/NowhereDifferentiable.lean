@@ -52,24 +52,25 @@ We show that for $a \in (0, 1)$, the summation in the definition is uniformly co
 each term is uniformly continuous, and therefore Weierstrass function is uniformly continuous.
 -/
 
-theorem hasSumUniformlyOn_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ) :
-    HasSumUniformlyOn (fun n x ↦ a ^ n * cos (b ^ n * π * x)) (weierstrass a b) Set.univ := by
+theorem hasSumUniformlyOn_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ)
+    : HasSumUniformlyOn (fun n x ↦ a ^ n * cos (b ^ n * π * x)) (weierstrass a b) Set.univ := by
   refine .of_norm_le_summable (summable_geometric_of_abs_lt_one (r := |a|) (by grind)) ?_
   intro n x _
   simpa using mul_le_mul_of_nonneg_left (abs_cos_le_one (b ^ n * π * x)) (abs_nonneg (a ^ n))
 
-theorem tendstoUniformly_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ) :
-    TendstoUniformly (fun s x ↦ ∑ n ∈ s, a ^ n * cos (b ^ n * π * x))
-    (weierstrass a b) atTop := by
+theorem tendstoUniformly_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ)
+    : TendstoUniformly
+      (fun s x ↦ ∑ n ∈ s, a ^ n * cos (b ^ n * π * x))
+      (weierstrass a b) atTop := by
   rw [← tendstoUniformlyOn_univ]
   exact (hasSumUniformlyOn_weierstrass ha b).tendstoUniformlyOn
 
-theorem summable_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b x : ℝ) :
-    Summable fun n ↦ a ^ n * cos (b ^ n * π * x) :=
+theorem summable_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b x : ℝ)
+    : Summable fun n ↦ a ^ n * cos (b ^ n * π * x) :=
   (hasSumUniformlyOn_weierstrass ha b).summableUniformlyOn.summable (Set.mem_univ x)
 
-theorem uniformContinuous_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ) :
-    UniformContinuous (weierstrass a b) := by
+theorem uniformContinuous_weierstrass {a : ℝ} (ha : a ∈ Set.Ioo 0 1) (b : ℝ)
+    : UniformContinuous (weierstrass a b) := by
   apply (tendstoUniformly_weierstrass ha b).uniformContinuous
   refine .of_forall fun s ↦ s.uniformContinuous_sum fun n _ ↦ ?_
   exact (lipschitzWith_cos.uniformContinuous.comp (uniformContinuous_id.const_mul' _)).const_mul' _
@@ -85,11 +86,10 @@ $\{x_m\}$ such that, as $m\to\infty$
 -/
 
 /-- The approximating sequence `seq` is defined as $x_m = \lfloor b^m x + 3/2 \rfloor / b^m$ -/
-noncomputable
-abbrev seq (b x : ℝ) (m : ℕ) := ⌊b ^ m * x + 3 / 2⌋ / b ^ m
+noncomputable abbrev seq (b x : ℝ) (m : ℕ) := ⌊b ^ m * x + 3 / 2⌋ / b ^ m
 
-theorem seq_mul_pow {b : ℝ} (hb : b ≠ 0) (x : ℝ) (m : ℕ) :
-    seq b x m * b ^ m = ⌊b ^ m * x + 2⁻¹⌋ + 1 := by
+theorem seq_mul_pow {b : ℝ} (hb : b ≠ 0) (x : ℝ) (m : ℕ)
+    : seq b x m * b ^ m = ⌊b ^ m * x + 2⁻¹⌋ + 1 := by
   rw [seq, div_mul_cancel₀ _ (pow_ne_zero m hb)]
   norm_cast
   rw [← Int.floor_add_one, add_assoc]
@@ -117,8 +117,8 @@ theorem tendsto_seq {b : ℝ} (hb : 1 < b) (x : ℝ) : Tendsto (seq b x ·) atTo
   refine tendsto_const_nhds.add (Tendsto.const_mul _ ?_)
   exact tendsto_pow_atTop_nhds_zero_of_lt_one (by positivity) (by simpa [inv_lt_one₀ hb0])
 
-theorem tendsto_seq_sub_inv {b : ℝ} (hb : 1 < b) (x : ℝ) :
-    Tendsto (fun m ↦ (seq b x m - x)⁻¹) atTop atTop := by
+theorem tendsto_seq_sub_inv {b : ℝ} (hb : 1 < b) (x : ℝ)
+    : Tendsto (fun m ↦ (seq b x m - x)⁻¹) atTop atTop := by
   refine .inv_tendsto_nhdsGT_zero <| tendsto_nhdsWithin_iff.mpr ⟨?_, .of_forall ?_⟩
   · simpa using (tendsto_seq hb x |>.sub_const x)
   · simpa using lt_seq (by grind) x
@@ -132,15 +132,15 @@ $$ B = ∑_{n=m}^{\infty} a^n (\cos(b^n\pi x_m) - \cos(b^n\pi x)) $$
 -/
 
 /-- The partial sum has upper bound in absolute value $|A| \le |x_m - x| \pi (ab)^m / (ab - 1)$ -/
-theorem weierstrass_partial {a : ℝ} (ha : 0 < a) {b : ℕ} (hab : 1 < a * b) (x : ℝ) (m : ℕ) :
-    |∑ n ∈ Finset.range m, a ^ n * (cos (b ^ n * π * seq b x m) - cos (b ^ n * π * x))| ≤
-      |seq b x m - x| * (π / (a * b - 1) * (a * b) ^ m) := by
+theorem weierstrass_partial {a : ℝ} (ha : 0 < a) {b : ℕ} (hab : 1 < a * b) (x : ℝ) (m : ℕ)
+    : |∑ n ∈ Finset.range m, a ^ n * (cos (b ^ n * π * seq b x m) - cos (b ^ n * π * x))|
+      ≤ |seq b x m - x| * (π / (a * b - 1) * (a * b) ^ m) := by
   grw [Finset.abs_sum_le_sum_abs]
   simp_rw [abs_mul, abs_pow, abs_of_nonneg ha.le]
   apply le_trans <| Finset.sum_le_sum fun n _ ↦
     mul_le_mul_of_nonneg_left (abs_cos_sub_cos_le _ _) (pow_nonneg ha.le _)
-  have (n : ℕ) : a ^ n * |b ^ n * π * seq b x m - b ^ n * π * x| =
-      (a * b) ^ n * (π * |seq b x m - x|) := by
+  have (n : ℕ)
+      : a ^ n * |b ^ n * π * seq b x m - b ^ n * π * x| = (a * b) ^ n * (π * |seq b x m - x|) := by
     simp_rw [← mul_sub, abs_mul, abs_pow, mul_pow]
     rw [abs_of_nonneg pi_nonneg, abs_of_nonneg b.cast_nonneg]
     ring
@@ -149,19 +149,22 @@ theorem weierstrass_partial {a : ℝ} (ha : 0 < a) {b : ℕ} (hab : 1 < a * b) (
   simp [sub_one_mul]
 
 /-- The remainder has lower bound in absolute value $|B| \ge |x_m - x| 2 (ab)^m / 3$ -/
-theorem weierstrass_remainder {a : ℝ} (ha : 0 < a) {b : ℕ} (hb : Odd b) {x : ℝ} {m : ℕ}
+theorem weierstrass_remainder
+    {a : ℝ} (ha : 0 < a)
+    {b : ℕ} (hb : Odd b)
+    {x : ℝ} {m : ℕ}
     (hsum : Summable fun n ↦
-      a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x))) :
-    |seq b x m - x| * (2 / 3 * (a * b) ^ m) ≤
-      |∑' n, a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x))| := by
+      a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x)))
+    : |seq b x m - x| * (2 / 3 * (a * b) ^ m)
+      ≤ |∑' n, a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x))| := by
   have hb0 : b ≠ 0 := fun h ↦ Nat.not_odd_zero (h ▸ hb)
   have hb0' : (0 : ℝ) < b := by simpa using Nat.pos_of_ne_zero hb0
   -- We are going to show that all terms in the sum have the same sign,
   -- and we only need to use the first term to get the lower bound
   trans a ^ m * (1 + cos ((b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π))
   · -- Show that the first term (after simplification) satisfies the bound
-    suffices a ^ m * (2 / 3 * b ^ m * |seq b x m - x|) ≤
-        a ^ m * (1 + cos ((b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π)) by
+    suffices a ^ m * (2 / 3 * b ^ m * |seq b x m - x|)
+        ≤ a ^ m * (1 + cos ((b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π)) by
       convert! this using 1
       ring
     refine mul_le_mul_of_nonneg_left ?_ (pow_nonneg ha.le _)
@@ -189,27 +192,28 @@ theorem weierstrass_remainder {a : ℝ} (ha : 0 < a) {b : ℕ} (hb : Odd b) {x :
       _ = ((-1) ^ b ^ n) ^ (⌊b ^ m * x + 2⁻¹⌋) * (-1) ^ b ^ n := by
         rw [cos_int_mul_pi, mul_add_one, zpow_add₀ (by simp), zpow_mul]
         norm_cast
-      _ = _ := by
-        simp [Odd.neg_one_pow (show Odd (b ^ n) from hb.pow)]
+      _ = _ := by simp [Odd.neg_one_pow (show Odd (b ^ n) from hb.pow)]
   -- Show that the second cos in each term is always ±cos(...)
-  have h2 (n : ℕ) : cos (b ^ (n + m) * π * x) =
-      (-1) ^ (⌊b ^ m * x + 2⁻¹⌋) * cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π) :=
+  have h2 (n : ℕ)
+      : cos (b ^ (n + m) * π * x)
+        = (-1) ^ (⌊b ^ m * x + 2⁻¹⌋) * cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π) :=
     calc
-      _ = cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π +
-          (b ^ n * (⌊b ^ m * x + 2⁻¹⌋) : ℤ) * π) := by
+      _ = cos
+          (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π
+            + (b ^ n * (⌊b ^ m * x + 2⁻¹⌋) : ℤ) * π) := by
         push_cast
         ring_nf
-      _ = ((-1) ^ b ^ n) ^ (⌊b ^ m * x + 2⁻¹⌋) *
-          cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π) := by
+      _ = ((-1) ^ b ^ n) ^ (⌊b ^ m * x + 2⁻¹⌋)
+          * cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π) := by
         rw [cos_add_int_mul_pi, zpow_mul]
         norm_cast
-      _ = _ := by
-        simp [Odd.neg_one_pow (show Odd (b ^ n) from hb.pow)]
+      _ = _ := by simp [Odd.neg_one_pow (show Odd (b ^ n) from hb.pow)]
   -- Show that all terms have the same sign, and the first term agrees with the one we previously
   -- assumed
-  have h3 (n : ℕ) : a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x))
-      = - (-1) ^ (⌊b ^ m * x + 2⁻¹⌋) *
-        (a ^ (n + m) * (1 + cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π))) := by
+  have h3 (n : ℕ)
+      : a ^ (n + m) * (cos (b ^ (n + m) * π * seq b x m) - cos (b ^ (n + m) * π * x))
+        = - (-1) ^ (⌊b ^ m * x + 2⁻¹⌋)
+          * (a ^ (n + m) * (1 + cos (b ^ n * (b ^ m * x - ⌊b ^ m * x + 2⁻¹⌋) * π))) := by
     rw [h1, h2]
     ring
   simp_rw [h3, tsum_mul_left] at ⊢ hsum
@@ -232,10 +236,10 @@ It is obvious that $|f(x_m) - f(x)| / |x_m - x|$ grows exponentially and gives n
 derivative.
 -/
 
-theorem weierstrass_slope {a : ℝ} (ha : a ∈ Set.Ioo 0 1) {b : ℕ} (hb : Odd b) (hab : 1 < a * b)
-    (x : ℝ) (m : ℕ) :
-    |seq b x m - x| * ((2 / 3 - π / (a * b - 1)) * (a * b) ^ m) ≤
-      |weierstrass a b (seq b x m) - weierstrass a b x| := by
+theorem weierstrass_slope
+    {a : ℝ} (ha : a ∈ Set.Ioo 0 1) {b : ℕ} (hb : Odd b) (hab : 1 < a * b) (x : ℝ) (m : ℕ)
+    : |seq b x m - x| * ((2 / 3 - π / (a * b - 1)) * (a * b) ^ m)
+      ≤ |weierstrass a b (seq b x m) - weierstrass a b x| := by
   simp_rw [weierstrass]
   have hsseq := summable_weierstrass ha b (seq b x m)
   have hsx := summable_weierstrass ha b x
@@ -250,19 +254,21 @@ theorem weierstrass_slope {a : ℝ} (ha : a ∈ Set.Ioo 0 1) {b : ℕ} (hb : Odd
   exact sub_le_sub (weierstrass_remainder ha.1 hb hsum_shift) (weierstrass_partial ha.1 hab x m)
 
 theorem not_differentiableAt_weierstrass
-    {a : ℝ} (ha : a ∈ Set.Ioo 0 1) {b : ℕ} (hb : Odd b) (hab : 3 / 2 * π + 1 < a * b) (x : ℝ) :
-    ¬ DifferentiableAt ℝ (weierstrass a b) x := by
+    {a : ℝ} (ha : a ∈ Set.Ioo 0 1) {b : ℕ} (hb : Odd b) (hab : 3 / 2 * π + 1 < a * b) (x : ℝ)
+    : ¬ DifferentiableAt ℝ (weierstrass a b) x := by
   have hb0 : b ≠ 0 := fun h ↦ Nat.not_odd_zero (h ▸ hb)
   have hb0' : (0 : ℝ) < b := by simpa using Nat.pos_of_ne_zero hb0
   have hb1 : (1 : ℝ) < b := by
     contrapose! hab with hb1
     calc
-      a * b ≤ 1 := by bound [ha.2]
+      a * b
+        ≤ 1 := by bound [ha.2]
       1 ≤ 3 / 2 * π + 1 := by simp [pi_nonneg]
   have hab' : 1 < a * b := lt_trans (lt_add_of_pos_left _ (mul_pos (by norm_num) pi_pos)) hab
   by_contra
   obtain ⟨f', h⟩ := this
-  have : Tendsto (fun m ↦ (seq b x m - x)⁻¹ * (weierstrass a b (seq b x m) - weierstrass a b x))
+  have : Tendsto
+      (fun m ↦ (seq b x m - x)⁻¹ * (weierstrass a b (seq b x m) - weierstrass a b x))
       atTop (𝓝 (f' 1)) := by
     convert! (h.lim_real 1).comp (tendsto_seq_sub_inv hb1 x)
     simp
@@ -282,15 +288,17 @@ theorem not_differentiableAt_weierstrass
   exact (tendsto_const_nhds_iff.mpr rfl).pos_mul_atTop hpos (tendsto_pow_atTop_atTop_of_one_lt hab')
 
 /-- A concrete example of $a$ and $b$ to show that the condition is not vacuous. -/
-theorem not_differentiableAt_weierstrass_seven (x : ℝ) :
-    ¬ DifferentiableAt ℝ (weierstrass 0.9 7) x := by
+theorem not_differentiableAt_weierstrass_seven (x : ℝ)
+    : ¬ DifferentiableAt ℝ (weierstrass 0.9 7) x := by
   apply not_differentiableAt_weierstrass (by norm_num) (by decide)
   grw [pi_lt_d2]
   norm_num
 
-theorem exists_uniformContinuous_and_not_differentiableAt :
-    ∃ f : ℝ → ℝ, UniformContinuous f ∧ ∀ x, ¬ DifferentiableAt ℝ f x :=
-  ⟨weierstrass 0.9 7, uniformContinuous_weierstrass (by norm_num) _,
-    not_differentiableAt_weierstrass_seven⟩
+theorem exists_uniformContinuous_and_not_differentiableAt
+    : ∃ f : ℝ → ℝ, UniformContinuous f ∧ ∀ x, ¬ DifferentiableAt ℝ f x := ⟨
+  weierstrass 0.9 7,
+  uniformContinuous_weierstrass (by norm_num) _,
+  not_differentiableAt_weierstrass_seven
+⟩
 
 end NowhereDifferentiable

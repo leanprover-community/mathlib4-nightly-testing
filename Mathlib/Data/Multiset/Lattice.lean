@@ -17,7 +17,6 @@ via `to_dual`.
 
 @[expose] public section
 
-
 namespace Multiset
 
 variable {α : Type*}
@@ -28,20 +27,16 @@ variable [SemilatticeSup α] [OrderBot α]
 
 /-- Supremum of a multiset: `sup {a, b, c} = a ⊔ b ⊔ c` -/
 @[to_dual /-- Infimum of a multiset: `inf {a, b, c} = a ⊓ b ⊓ c` -/]
-def sup (s : Multiset α) : α :=
-  s.fold (· ⊔ ·) ⊥
+def sup (s : Multiset α) : α := s.fold (· ⊔ ·) ⊥
 
 @[to_dual (attr := simp)]
-theorem sup_coe (l : List α) : sup (l : Multiset α) = l.foldr (· ⊔ ·) ⊥ :=
-  rfl
+theorem sup_coe (l : List α) : sup (l : Multiset α) = l.foldr (· ⊔ ·) ⊥ := rfl
 
 @[to_dual (attr := simp)]
-theorem sup_zero : (0 : Multiset α).sup = ⊥ :=
-  fold_zero _ _
+theorem sup_zero : (0 : Multiset α).sup = ⊥ := fold_zero _ _
 
 @[to_dual (attr := simp)]
-theorem sup_cons (a : α) (s : Multiset α) : (a ::ₘ s).sup = a ⊔ s.sup :=
-  fold_cons_left _ _ _ _
+theorem sup_cons (a : α) (s : Multiset α) : (a ::ₘ s).sup = a ⊔ s.sup := fold_cons_left _ _ _ _
 
 @[to_dual (attr := simp)]
 theorem sup_singleton {a : α} : ({a} : Multiset α).sup = a := sup_bot_eq _
@@ -52,12 +47,10 @@ theorem sup_add (s₁ s₂ : Multiset α) : (s₁ + s₂).sup = s₁.sup ⊔ s�
 
 @[to_dual (attr := simp) le_inf]
 theorem sup_le {s : Multiset α} {a : α} : s.sup ≤ a ↔ ∀ b ∈ s, b ≤ a :=
-  Multiset.induction_on s (by simp)
-    (by simp +contextual [or_imp, forall_and])
+  Multiset.induction_on s (by simp) (by simp +contextual [or_imp, forall_and])
 
 @[to_dual inf_le]
-theorem le_sup {s : Multiset α} {a : α} (h : a ∈ s) : a ≤ s.sup :=
-  sup_le.1 le_rfl _ h
+theorem le_sup {s : Multiset α} {a : α} (h : a ∈ s) : a ≤ s.sup := sup_le.1 le_rfl _ h
 
 @[to_dual (attr := gcongr)]
 theorem sup_mono {s₁ s₂ : Multiset α} (h : s₁ ⊆ s₂) : s₁.sup ≤ s₂.sup :=
@@ -66,8 +59,7 @@ theorem sup_mono {s₁ s₂ : Multiset α} (h : s₁ ⊆ s₂) : s₁.sup ≤ s�
 variable [DecidableEq α]
 
 @[to_dual (attr := simp)]
-theorem sup_dedup (s : Multiset α) : (dedup s).sup = s.sup :=
-  fold_dedup_idem _ _ _
+theorem sup_dedup (s : Multiset α) : (dedup s).sup = s.sup := fold_dedup_idem _ _ _
 
 @[to_dual (attr := simp)]
 theorem sup_ndunion (s₁ s₂ : Multiset α) : (ndunion s₁ s₂).sup = s₁.sup ⊔ s₂.sup := by
@@ -81,8 +73,8 @@ theorem sup_union (s₁ s₂ : Multiset α) : (s₁ ∪ s₂).sup = s₁.sup ⊔
 theorem sup_ndinsert (a : α) (s : Multiset α) : (ndinsert a s).sup = a ⊔ s.sup := by
   rw [← sup_dedup, dedup_ext.2, sup_dedup, sup_cons]; simp
 
-theorem nodup_sup_iff {α : Type*} [DecidableEq α] {m : Multiset (Multiset α)} :
-    m.sup.Nodup ↔ ∀ a : Multiset α, a ∈ m → a.Nodup := by
+theorem nodup_sup_iff {α : Type*} [DecidableEq α] {m : Multiset (Multiset α)}
+    : m.sup.Nodup ↔ ∀ a : Multiset α, a ∈ m → a.Nodup := by
   induction m using Multiset.induction_on with
   | empty => simp
   | cons _ _ h => simp [h]

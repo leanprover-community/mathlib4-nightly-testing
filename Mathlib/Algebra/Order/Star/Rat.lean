@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Order.Monoid.Submonoid
 public import Mathlib.Algebra.Order.Star.Basic
-
 import Mathlib.Algebra.Order.Ring.Abs
 import Mathlib.Algebra.Order.Ring.NNRat
 
@@ -25,8 +24,9 @@ open scoped NNRat
 
 namespace NNRat
 
-@[simp] lemma addSubmonoid_closure_range_pow {n : ℕ} (hn₀ : n ≠ 0) :
-    closure (range fun x : ℚ≥0 ↦ x ^ n) = ⊤ := by
+@[simp]
+lemma addSubmonoid_closure_range_pow {n : ℕ} (hn₀ : n ≠ 0)
+    : closure (range fun x : ℚ≥0 ↦ x ^ n) = ⊤ := by
   refine (eq_top_iff' _).2 fun x ↦ ?_
   suffices x = (x.num * x.den ^ (n - 1)) • (x.den : ℚ≥0)⁻¹ ^ n by
     rw [this]
@@ -37,7 +37,8 @@ namespace NNRat
     ← div_eq_mul_inv, num_div_den]
   all_goals simp [x.den_pos.ne', Nat.one_le_iff_ne_zero, *]
 
-@[simp] lemma addSubmonoid_closure_range_mul_self : closure (range fun x : ℚ≥0 ↦ x * x) = ⊤ := by
+@[simp]
+lemma addSubmonoid_closure_range_mul_self : closure (range fun x : ℚ≥0 ↦ x * x) = ⊤ := by
   simpa only [sq] using addSubmonoid_closure_range_pow two_ne_zero
 
 instance instStarOrderedRing : StarOrderedRing ℚ≥0 where
@@ -47,8 +48,9 @@ end NNRat
 
 namespace Rat
 
-@[simp] lemma addSubmonoid_closure_range_pow {n : ℕ} (hn₀ : n ≠ 0) (hn : Even n) :
-    closure (range fun x : ℚ ↦ x ^ n) = nonneg _ := by
+@[simp]
+lemma addSubmonoid_closure_range_pow {n : ℕ} (hn₀ : n ≠ 0) (hn : Even n)
+    : closure (range fun x : ℚ ↦ x ^ n) = nonneg _ := by
   convert (AddMonoidHom.map_mclosure NNRat.coeHom <| range fun x ↦ x ^ n).symm
   · have (x : ℚ) : ∃ y : ℚ≥0, y ^ n = x ^ n := ⟨x.nnabs, by simp [hn.pow_abs]⟩
     simp [subset_antisymm_iff, range_subset_iff, this]

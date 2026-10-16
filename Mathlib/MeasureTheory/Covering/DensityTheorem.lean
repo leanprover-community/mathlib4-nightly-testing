@@ -29,7 +29,6 @@ form of Lebesgue's density theorem.
 
 @[expose] public section
 
-
 noncomputable section
 
 open Set Filter Metric MeasureTheory
@@ -38,8 +37,8 @@ open scoped NNReal Topology
 
 namespace IsUnifLocDoublingMeasure
 
-variable {α : Type*} [PseudoMetricSpace α] [MeasurableSpace α] (μ : Measure α)
-  [IsUnifLocDoublingMeasure μ]
+variable
+  {α : Type*} [PseudoMetricSpace α] [MeasurableSpace α] (μ : Measure α) [IsUnifLocDoublingMeasure μ]
 
 section
 
@@ -66,23 +65,31 @@ irreducible_def vitaliFamily (K : ℝ) : VitaliFamily μ := by
   exact (Vitali.vitaliFamily μ (scalingConstantOf μ (max (4 * K + 3) 3)) A).enlarge (R / 4)
     (by linarith)
 
-/-- In the Vitali family `IsUnifLocDoublingMeasure.vitaliFamily K`, the sets based at `x`
-contain all balls `closedBall y r` when `dist x y ≤ K * r`. -/
-theorem closedBall_mem_vitaliFamily_of_dist_le_mul {K : ℝ} {x y : α} {r : ℝ} (h : dist x y ≤ K * r)
-    (rpos : 0 < r) : closedBall y r ∈ (vitaliFamily μ K).setsAt x := by
+/--
+In the Vitali family `IsUnifLocDoublingMeasure.vitaliFamily K`, the sets based at `x`
+contain all balls `closedBall y r` when `dist x y ≤ K * r`.
+-/
+theorem closedBall_mem_vitaliFamily_of_dist_le_mul
+    {K : ℝ} {x y : α} {r : ℝ} (h : dist x y ≤ K * r) (rpos : 0 < r)
+    : closedBall y r ∈ (vitaliFamily μ K).setsAt x := by
   let R := scalingScaleOf μ (max (4 * K + 3) 3)
   simp only [vitaliFamily, VitaliFamily.enlarge, Vitali.vitaliFamily, mem_union, mem_ofPred_eq,
     isClosed_closedBall, true_and, (nonempty_ball.2 rpos).mono ball_subset_interior_closedBall,
     measurableSet_closedBall]
-  /- The measure is doubling on scales smaller than `R`. Therefore, we treat differently small
-    and large balls. For large balls, this follows directly from the enlargement we used in the
-    definition. -/
+  /-
+  The measure is doubling on scales smaller than `R`. Therefore, we treat differently small
+  and large balls. For large balls, this follows directly from the enlargement we used in the
+  definition.
+  -/
   by_cases H : closedBall y r ⊆ closedBall x (R / 4)
-  swap; · exact Or.inr H
+  swap
+  · exact Or.inr H
   left
-  /- For small balls, there is the difficulty that `r` could be large but still the ball could be
-    small, if the annulus `{y | ε ≤ dist y x ≤ R/4}` is empty. We split between the cases `r ≤ R`
-    and `r > R`, and use the doubling for the former and rough estimates for the latter. -/
+  /-
+  For small balls, there is the difficulty that `r` could be large but still the ball could be
+  small, if the annulus `{y | ε ≤ dist y x ≤ R/4}` is empty. We split between the cases `r ≤ R`
+  and `r > R`, and use the doubling for the former and rough estimates for the latter.
+  -/
   rcases le_or_gt r R with (hr | hr)
   · refine ⟨(K + 1) * r, ?_⟩
     constructor
@@ -105,9 +112,10 @@ theorem closedBall_mem_vitaliFamily_of_dist_le_mul {K : ℝ} {x y : α} {r : ℝ
     have B := mem_closedBall'.1 (H A)
     linarith
 
-theorem tendsto_closedBall_filterAt {K : ℝ} {x : α} {ι : Type*} {l : Filter ι} (w : ι → α)
-    (δ : ι → ℝ) (δlim : Tendsto δ l (𝓝[>] 0)) (xmem : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)) :
-    Tendsto (fun j => closedBall (w j) (δ j)) l ((vitaliFamily μ K).filterAt x) := by
+theorem tendsto_closedBall_filterAt
+    {K : ℝ} {x : α} {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (δlim : Tendsto δ l (𝓝[>] 0))
+    (xmem : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j))
+    : Tendsto (fun j => closedBall (w j) (δ j)) l ((vitaliFamily μ K).filterAt x) := by
   refine (vitaliFamily μ K).tendsto_filterAt_iff.mpr ⟨?_, fun ε hε => ?_⟩
   · filter_upwards [xmem, δlim self_mem_nhdsWithin] with j hj h'j
     exact closedBall_mem_vitaliFamily_of_dist_le_mul μ hj h'j
@@ -131,33 +139,43 @@ end
 
 section Applications
 
-variable [SecondCountableTopology α] [BorelSpace α] [IsLocallyFiniteMeasure μ] {E : Type*}
-  [NormedAddCommGroup E]
+variable
+  [SecondCountableTopology α] [BorelSpace α] [IsLocallyFiniteMeasure μ]
+  {E : Type*} [NormedAddCommGroup E]
 
-/-- A version of **Lebesgue's density theorem** for a sequence of closed balls whose centers are
+/--
+A version of **Lebesgue's density theorem** for a sequence of closed balls whose centers are
 not required to be fixed.
 
-See also `Besicovitch.ae_tendsto_measure_inter_div`. -/
-theorem ae_tendsto_measure_inter_div (S : Set α) (K : ℝ) : ∀ᵐ x ∂μ.restrict S,
-    ∀ {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (_ : Tendsto δ l (𝓝[>] 0))
-      (_ : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)),
-      Tendsto (fun j => μ (S ∩ closedBall (w j) (δ j)) / μ (closedBall (w j) (δ j))) l (𝓝 1) := by
+See also `Besicovitch.ae_tendsto_measure_inter_div`.
+-/
+theorem ae_tendsto_measure_inter_div (S : Set α) (K : ℝ)
+    : ∀ᵐ x ∂μ.restrict S,
+      ∀ {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (_ : Tendsto δ l (𝓝[>] 0))
+        (_ : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)),
+        Tendsto (fun j => μ (S ∩ closedBall (w j) (δ j)) / μ (closedBall (w j) (δ j))) l (𝓝 1) := by
   filter_upwards [(vitaliFamily μ K).ae_tendsto_measure_inter_div S] with x hx ι l w δ δlim
     xmem using hx.comp (tendsto_closedBall_filterAt μ _ _ δlim xmem)
 
-/-- A version of **Lebesgue differentiation theorem** for a sequence of closed balls whose
-centers are not required to be fixed. -/
-theorem ae_tendsto_average_norm_sub {f : α → E} (hf : LocallyIntegrable f μ) (K : ℝ) : ∀ᵐ x ∂μ,
-    ∀ {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (_ : Tendsto δ l (𝓝[>] 0))
-      (_ : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)),
-      Tendsto (fun j => ⨍ y in closedBall (w j) (δ j), ‖f y - f x‖ ∂μ) l (𝓝 0) := by
+/--
+A version of **Lebesgue differentiation theorem** for a sequence of closed balls whose
+centers are not required to be fixed.
+-/
+theorem ae_tendsto_average_norm_sub {f : α → E} (hf : LocallyIntegrable f μ) (K : ℝ)
+    : ∀ᵐ x ∂μ,
+      ∀ {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (_ : Tendsto δ l (𝓝[>] 0))
+        (_ : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)),
+        Tendsto (fun j => ⨍ y in closedBall (w j) (δ j), ‖f y - f x‖ ∂μ) l (𝓝 0) := by
   filter_upwards [(vitaliFamily μ K).ae_tendsto_average_norm_sub hf] with x hx ι l w δ δlim
     xmem using hx.comp (tendsto_closedBall_filterAt μ _ _ δlim xmem)
 
-/-- A version of **Lebesgue differentiation theorem** for a sequence of closed balls whose
-centers are not required to be fixed. -/
-theorem ae_tendsto_average [NormedSpace ℝ E] [CompleteSpace E]
-    {f : α → E} (hf : LocallyIntegrable f μ) (K : ℝ) : ∀ᵐ x ∂μ,
+/--
+A version of **Lebesgue differentiation theorem** for a sequence of closed balls whose
+centers are not required to be fixed.
+-/
+theorem ae_tendsto_average
+    [NormedSpace ℝ E] [CompleteSpace E] {f : α → E} (hf : LocallyIntegrable f μ) (K : ℝ)
+    : ∀ᵐ x ∂μ,
       ∀ {ι : Type*} {l : Filter ι} (w : ι → α) (δ : ι → ℝ) (_ : Tendsto δ l (𝓝[>] 0))
         (_ : ∀ᶠ j in l, x ∈ closedBall (w j) (K * δ j)),
         Tendsto (fun j => ⨍ y in closedBall (w j) (δ j), f y ∂μ) l (𝓝 (f x)) := by

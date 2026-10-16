@@ -44,13 +44,10 @@ section properties
 variable [HasFiniteQuotients R]
 
 /-- A quotient of a ring with finite quotients by a nonzero ideal is finite. -/
-instance {I : Ideal R} [NeZero I] :
-    Finite (R ⧸ I) :=
-  finiteQuotient (NeZero.ne I)
+instance {I : Ideal R} [NeZero I] : Finite (R ⧸ I) := finiteQuotient (NeZero.ne I)
 
 /-- A nonzero prime ideal of a ring with finite quotients is maximal. -/
-theorem maximalOfPrime {P : Ideal R} [P.IsPrime] (hp : P ≠ ⊥) :
-    P.IsMaximal :=
+theorem maximalOfPrime {P : Ideal R} [P.IsPrime] (hp : P ≠ ⊥) : P.IsMaximal :=
   have : Finite (R ⧸ P) := finiteQuotient hp
   Ideal.Quotient.maximal_of_isField P <| Finite.isField_of_domain (R ⧸ P)
 
@@ -70,8 +67,8 @@ instance : IsNoetherianRing R := by
   · rw [Submodule.ker_mkQ, inf_eq_right.mpr ((Ideal.span_singleton_le_iff_mem I).mpr hx₁)]
     exact Submodule.fg_span_singleton x
 
-instance [IsDomain R] [PerfectField (FractionRing R)] (P : Ideal R) [P.IsPrime] :
-    PerfectField P.ResidueField := by
+instance [IsDomain R] [PerfectField (FractionRing R)] (P : Ideal R) [P.IsPrime]
+    : PerfectField P.ResidueField := by
   rcases eq_or_ne P ⊥ with rfl | hP
   · exact PerfectField.of_ringEquiv (FractionRing.algEquiv R _).toRingEquiv
   · have : Finite (R ⧸ P) := Ring.HasFiniteQuotients.finiteQuotient hP
@@ -82,9 +79,8 @@ variable (R) in
 Assume that `R` has finite quotients and that `S` is a domain and a finite `R`-module. Then
 `S` has finite quotients.
 -/
-theorem of_module_finite (S : Type*) [CommRing S] [IsDomain S]
-    [Algebra R S] [Module.Finite R S] :
-    HasFiniteQuotients S where
+theorem of_module_finite (S : Type*) [CommRing S] [IsDomain S] [Algebra R S] [Module.Finite R S]
+    : HasFiniteQuotients S where
   finiteQuotient {I} hI := by
     obtain hR | hR := subsingleton_or_nontrivial R
     · have : Finite S := Module.finite_of_finite R

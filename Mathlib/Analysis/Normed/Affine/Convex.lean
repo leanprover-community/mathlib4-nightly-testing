@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Analysis.Convex.Between
 public import Mathlib.Analysis.Normed.Affine.AddTorsorBases
-
 import Mathlib.Analysis.Normed.Affine.AddTorsor
 
 /-!
@@ -31,13 +30,12 @@ open scoped Convex Pointwise Topology
 section SeminormedAddCommGroup
 variable [SeminormedAddCommGroup E] [NormedSpace ℝ E] [PseudoMetricSpace P] [NormedAddTorsor E P]
 
-theorem Wbtw.dist_add_dist {x y z : P} (h : Wbtw ℝ x y z) :
-    dist x y + dist y z = dist x z := by
+theorem Wbtw.dist_add_dist {x y z : P} (h : Wbtw ℝ x y z) : dist x y + dist y z = dist x z := by
   obtain ⟨a, ⟨ha₀, ha₁⟩, rfl⟩ := h
   simp [abs_of_nonneg, ha₀, ha₁, sub_mul]
 
-theorem dist_add_dist_of_mem_segment {x y z : E} (h : y ∈ [x -[ℝ] z]) :
-    dist x y + dist y z = dist x z :=
+theorem dist_add_dist_of_mem_segment {x y z : E} (h : y ∈ [x -[ℝ] z])
+    : dist x y + dist y z = dist x z :=
   (mem_segment_iff_wbtw.1 h).dist_add_dist
 
 end SeminormedAddCommGroup
@@ -46,19 +44,20 @@ section NormedAddCommGroup
 variable [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] {s t : Set E} {x : E}
 
 /-- We can intercalate a simplex between a point and one of its neighborhoods. -/
-lemma exists_mem_interior_convexHull_affineBasis (hs : s ∈ 𝓝 x) :
-    ∃ b : AffineBasis (Fin (finrank ℝ E + 1)) ℝ E,
+lemma exists_mem_interior_convexHull_affineBasis (hs : s ∈ 𝓝 x)
+    : ∃ b : AffineBasis (Fin (finrank ℝ E + 1)) ℝ E,
       x ∈ interior (convexHull ℝ (range b)) ∧ convexHull ℝ (range b) ⊆ s := by
   -- By translating, WLOG `x` is the origin.
   wlog hx : x = 0
   · obtain ⟨b, hb⟩ := this (s := -x +ᵥ s) (by simpa using vadd_mem_nhds_vadd (-x) hs) rfl
     use x +ᵥ b
     simpa [subset_vadd_set_iff, mem_vadd_set_iff_neg_vadd_mem, convexHull_vadd, interior_vadd,
-      Pi.vadd_def, -vadd_eq_add, vadd_eq_add (a := -x), ← Set.vadd_set_range] using hb
+        Pi.vadd_def, -vadd_eq_add, vadd_eq_add (a := -x), ← Set.vadd_set_range]
+      using hb
   subst hx
   -- The strategy is now to find an arbitrary maximal spanning simplex (aka an affine basis)...
-  obtain ⟨b⟩ := exists_affineBasis_of_finiteDimensional
-    (ι := Fin (finrank ℝ E + 1)) (k := ℝ) (P := E) (by simp)
+  obtain ⟨b⟩ :=
+    exists_affineBasis_of_finiteDimensional (ι := Fin (finrank ℝ E + 1)) (k := ℝ) (P := E) (by simp)
   -- ... translate it to contain the origin...
   set c : AffineBasis (Fin (finrank ℝ E + 1)) ℝ E := -Finset.univ.centroid ℝ b +ᵥ b
   have hc₀ : 0 ∈ interior (convexHull ℝ (range c) : Set E) := by
@@ -67,7 +66,8 @@ lemma exists_mem_interior_convexHull_affineBasis (hs : s ∈ 𝓝 x) :
   set cnorm := Finset.univ.sup' Finset.univ_nonempty (fun i ↦ ‖c i‖)
   have hcnorm : range c ⊆ closedBall 0 (cnorm + 1) := by
     simpa only [cnorm, subset_def, Finset.mem_coe, mem_closedBall, dist_zero_right,
-      ← sub_le_iff_le_add, Finset.le_sup'_iff, forall_mem_range] using fun i ↦ ⟨i, by simp⟩
+        ← sub_le_iff_le_add, Finset.le_sup'_iff, forall_mem_range]
+      using fun i ↦ ⟨i, by simp⟩
   -- ... and finally scale it to fit inside the neighborhood `s`.
   obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
   set ε' : ℝ := ε / 2 / (cnorm + 1)
@@ -79,21 +79,23 @@ lemma exists_mem_interior_convexHull_affineBasis (hs : s ∈ 𝓝 x) :
   have hε₀ : 0 < ε / 2 := by positivity
   have hdnorm : (range d : Set E) ⊆ closedBall 0 (ε / 2) := by
     simp [d, abs_of_nonneg hε'.le, range_subset_iff, norm_smul]
-    simpa [ε', hε₀.ne', range_subset_iff, ← mul_div_right_comm (ε / 2), div_le_iff₀ hc', hε₀]
-      using hcnorm
+    simpa [ε', hε₀.ne', range_subset_iff, ← mul_div_right_comm (ε / 2), div_le_iff₀ hc', hε₀] using
+      hcnorm
   refine ⟨d, ?_, ?_⟩
   · simpa [d, Pi.smul_def, range_smul, interior_smul₀, convexHull_smul, zero_mem_smul_set_iff,
       hε'.ne']
   · calc
-      convexHull ℝ (range d) ⊆ closedBall 0 (ε / 2) := convexHull_min hdnorm (convex_closedBall ..)
+      convexHull ℝ (range d)
+        ⊆ closedBall 0 (ε / 2) := convexHull_min hdnorm (convex_closedBall ..)
       _ ⊆ ball 0 ε := closedBall_subset_ball (by linarith)
       _ ⊆ s := hεs
 
-/-- We can intercalate a convex polytope between a compact convex set and one of its neighborhoods.
+/--
+We can intercalate a convex polytope between a compact convex set and one of its neighborhoods.
 -/
 theorem Convex.exists_subset_interior_convexHull_finset_of_isCompact
-    (hs₁ : Convex ℝ s) (hs₂ : IsCompact s) (ht : t ∈ 𝓝ˢ s) :
-    ∃ u : Finset E, s ⊆ interior (convexHull ℝ u) ∧ convexHull ℝ u ⊆ t := by
+    (hs₁ : Convex ℝ s) (hs₂ : IsCompact s) (ht : t ∈ 𝓝ˢ s)
+    : ∃ u : Finset E, s ⊆ interior (convexHull ℝ u) ∧ convexHull ℝ u ⊆ t := by
   classical
   rcases mem_nhdsSet_iff_exists.1 ht with ⟨U, hU₁, hU₂, hU₃⟩
   rcases compact_open_separated_add_left hs₂ hU₁ hU₂ with ⟨V, hV₁, hV₂⟩

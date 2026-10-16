@@ -7,7 +7,6 @@ module
 
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Integral.IntegrableOn
-
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 /-!
@@ -48,14 +47,15 @@ open scoped ENNReal NNReal Topology
 
 namespace MeasureTheory
 
-variable {ι X E : Type*} [Countable ι] {mX : MeasurableSpace X} [NormedAddCommGroup E]
+variable
+  {ι X E : Type*} [Countable ι]
+  {mX : MeasurableSpace X} [NormedAddCommGroup E]
   {μ : ι → Measure X} {f : X → E}
 
 section Integrable
 
-lemma integrable_sum_measure
-    (hf : ∀ i, Integrable f (μ i)) (h : Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i)) :
-    Integrable f (Measure.sum μ) := by
+lemma integrable_sum_measure (hf : ∀ i, Integrable f (μ i)) (h : Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i))
+    : Integrable f (Measure.sum μ) := by
   refine ⟨aestronglyMeasurable_sum_measure_iff.mpr fun i ↦ (hf i).aestronglyMeasurable, ?_⟩
   rw [HasFiniteIntegral, lintegral_sum_measure]
   convert! h.tsum_ofReal_lt_top with i
@@ -64,8 +64,8 @@ lemma integrable_sum_measure
   · exact ae_of_all _ fun _ ↦ by positivity
 
 omit [Countable ι] in
-lemma Integrable.summable_integral (hf : Integrable f (Measure.sum μ)) :
-    Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i) := by
+lemma Integrable.summable_integral (hf : Integrable f (Measure.sum μ))
+    : Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i) := by
   convert! ENNReal.summable_toReal (f := fun i ↦ ∫⁻ x, ‖f x‖ₑ ∂μ i) ?_ with i
   · rw [← integral_toReal ?_ (by simp)]
     · simp
@@ -73,12 +73,14 @@ lemma Integrable.summable_integral (hf : Integrable f (Measure.sum μ)) :
   rw [← lintegral_sum_measure]
   exact hf.2.ne
 
-/-- A function `f` is integrable with respect to a countable sum of measures `Measure.sum μ`
+/--
+A function `f` is integrable with respect to a countable sum of measures `Measure.sum μ`
 if and only if `f` is integrable with respect to each `μ i` and
-the sequence `fun i ↦ ∫ x, ‖f x‖ ∂μ i` is summable. -/
-lemma integrable_sum_measure_iff :
-    Integrable f (Measure.sum μ) ↔
-      (∀ i, Integrable f (μ i)) ∧ Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i) where
+the sequence `fun i ↦ ∫ x, ‖f x‖ ∂μ i` is summable.
+-/
+lemma integrable_sum_measure_iff
+    : Integrable f (Measure.sum μ)
+      ↔ (∀ i, Integrable f (μ i)) ∧ Summable (fun i ↦ ∫ x, ‖f x‖ ∂μ i) where
   mp h := ⟨fun i ↦ h.mono_measure (Measure.le_sum _ i), h.summable_integral⟩
   mpr h := integrable_sum_measure h.1 h.2
 
@@ -86,23 +88,24 @@ section Dirac
 
 variable [MeasurableSingletonClass X] {x : ι → X} {c : ι → ℝ≥0∞}
 
-lemma integrable_sum_dirac (hc : ∀ i, c i ≠ ∞) (h : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖)) :
-    Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i))) :=
-  integrable_sum_measure (fun i ↦ (integrable_dirac (by simp)).smul_measure (hc i))
-    (by simpa using h)
+lemma integrable_sum_dirac (hc : ∀ i, c i ≠ ∞) (h : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖))
+    : Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i))) :=
+  integrable_sum_measure (fun i ↦ (integrable_dirac (by simp)).smul_measure (hc i)) (by
+    simpa using h)
 
 omit [Countable ι] in
-lemma Integrable.summable_of_dirac
-    (hf : Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i)))) :
-    Summable (fun i ↦ (c i).toReal * ‖f (x i)‖) := by
+lemma Integrable.summable_of_dirac (hf : Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i))))
+    : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖) := by
   simpa using hf.summable_integral
 
-/-- A function `f` is integrable with respect to a countable sum of
+/--
+A function `f` is integrable with respect to a countable sum of
 Dirac masses `Measure.sum (fun i ↦ (c i) • Measure.dirac (x i))` if and only if
-the sequence `fun i ↦ (c i).toReal * ‖f (x i)‖` is summable. -/
-lemma integrable_sum_dirac_iff (hc : ∀ i, c i ≠ ∞) :
-    Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i))) ↔
-      Summable (fun i ↦ (c i).toReal * ‖f (x i)‖) where
+the sequence `fun i ↦ (c i).toReal * ‖f (x i)‖` is summable.
+-/
+lemma integrable_sum_dirac_iff (hc : ∀ i, c i ≠ ∞)
+    : Integrable f (Measure.sum (fun i ↦ (c i) • .dirac (x i)))
+      ↔ Summable (fun i ↦ (c i).toReal * ‖f (x i)‖) where
   mp h := h.summable_of_dirac
   mpr h := integrable_sum_dirac hc h
 
@@ -115,10 +118,12 @@ section Integral
 variable [NormedSpace ℝ E]
 
 omit [Countable ι] in
-/-- If `f` is integrable with respect to `Measure.sum μ`, then the sequence
-`fun i ↦ ∫ x, f x ∂μ i` is summable and its sum is `∫ x, f x ∂Measure.sum μ`. -/
-theorem hasSum_integral_measure (hf : Integrable f (Measure.sum μ)) :
-    HasSum (fun i ↦ ∫ x, f x ∂μ i) (∫ x, f x ∂Measure.sum μ) := by
+/--
+If `f` is integrable with respect to `Measure.sum μ`, then the sequence
+`fun i ↦ ∫ x, f x ∂μ i` is summable and its sum is `∫ x, f x ∂Measure.sum μ`.
+-/
+theorem hasSum_integral_measure (hf : Integrable f (Measure.sum μ))
+    : HasSum (fun i ↦ ∫ x, f x ∂μ i) (∫ x, f x ∂Measure.sum μ) := by
   have hfi : ∀ i, Integrable f (μ i) := fun i ↦ hf.mono_measure (Measure.le_sum _ _)
   simp only [HasSum, ← integral_finsetSum_measure fun i _ ↦ hfi i]
   refine Metric.nhds_basis_ball.tendsto_right_iff.mpr fun ε ε0 ↦ ?_
@@ -138,16 +143,16 @@ theorem hasSum_integral_measure (hf : Integrable f (Measure.sum μ)) :
   exact lt_of_add_lt_add_left hs
 
 omit [Countable ι] in
-theorem integral_sum_measure (hf : Integrable f (Measure.sum μ)) :
-    ∫ x, f x ∂Measure.sum μ = ∑' i, ∫ x, f x ∂μ i :=
+theorem integral_sum_measure (hf : Integrable f (Measure.sum μ))
+    : ∫ x, f x ∂Measure.sum μ = ∑' i, ∫ x, f x ∂μ i :=
   (hasSum_integral_measure hf).tsum_eq.symm
 
 section Dirac
 
 variable [MeasurableSingletonClass X] {x : ι → X} {c : ι → ℝ≥0∞}
 
-lemma integral_sum_dirac [FiniteDimensional ℝ E] (hc : ∀ i, c i ≠ ∞) :
-    ∫ x, f x ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i) := by
+lemma integral_sum_dirac [FiniteDimensional ℝ E] (hc : ∀ i, c i ≠ ∞)
+    : ∫ x, f x ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i) := by
   by_cases hf : Integrable f (.sum (fun i ↦ (c i) • .dirac (x i)))
   · rw [integral_sum_measure hf]
     congr with i
@@ -157,17 +162,20 @@ lemma integral_sum_dirac [FiniteDimensional ℝ E] (hc : ∀ i, c i ≠ ∞) :
     convert! mt (integrable_sum_dirac hc) hf
     simp [norm_smul]
 
-lemma hasSum_integral_sum_dirac [CompleteSpace E] (hc : ∀ i, c i ≠ ∞)
-    (hf : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖)) :
-    HasSum (fun i ↦ (c i).toReal • f (x i))
+lemma hasSum_integral_sum_dirac
+    [CompleteSpace E] (hc : ∀ i, c i ≠ ∞) (hf : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖))
+    : HasSum
+      (fun i ↦ (c i).toReal • f (x i))
       (∫ x, f x ∂Measure.sum (fun i ↦ (c i) • .dirac (x i))) := by
   simpa using hasSum_integral_measure (integrable_sum_dirac hc hf)
 
-/-- If the sequence `fun i ↦ (c i).toReal * ‖f (x i)‖` is summable, then
-`∫ x, f x, ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i)`. -/
-lemma integral_sum_dirac_eq_tsum [CompleteSpace E] (hc : ∀ i, c i ≠ ∞)
-    (hf : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖)) :
-    ∫ x, f x ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i) :=
+/--
+If the sequence `fun i ↦ (c i).toReal * ‖f (x i)‖` is summable, then
+`∫ x, f x, ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i)`.
+-/
+lemma integral_sum_dirac_eq_tsum
+    [CompleteSpace E] (hc : ∀ i, c i ≠ ∞) (hf : Summable (fun i ↦ (c i).toReal * ‖f (x i)‖))
+    : ∫ x, f x ∂Measure.sum (fun i ↦ (c i) • .dirac (x i)) = ∑' i, (c i).toReal • f (x i) :=
   (hasSum_integral_sum_dirac hc hf).tsum_eq.symm
 
 end Dirac
@@ -176,16 +184,16 @@ section DiscreteSpace
 
 variable [CompleteSpace E] [MeasurableSingletonClass X] {μ : Measure X}
 
-theorem integral_countable [Countable X] (hf : Integrable f μ) :
-    ∫ x, f x ∂μ = ∑' x, μ.real {x} • f x := by
+theorem integral_countable [Countable X] (hf : Integrable f μ)
+    : ∫ x, f x ∂μ = ∑' x, μ.real {x} • f x := by
   rw [← Measure.sum_smul_dirac μ] at hf
   rw [← Measure.sum_smul_dirac μ, integral_sum_measure hf]
   congr 1 with a : 1
   rw [integral_smul_measure, integral_dirac, Measure.sum_smul_dirac, measureReal_def]
 
-theorem setIntegral_countable (f : X → E) {s : Set X} (hs : s.Countable) (hf : IntegrableOn f s μ) :
-    ∫ x in s, f x ∂μ = ∑' x : s, μ.real {(x : X)} • f x := by
-  have hi : Countable { x // x ∈ s } := Iff.mpr countable_coe_iff hs
+theorem setIntegral_countable (f : X → E) {s : Set X} (hs : s.Countable) (hf : IntegrableOn f s μ)
+    : ∫ x in s, f x ∂μ = ∑' x : s, μ.real {(x : X)} • f x := by
+  have hi : Countable {x // x ∈ s} := Iff.mpr countable_coe_iff hs
   have hf' : Integrable (fun (x : s) ↦ f x) (Measure.comap Subtype.val μ) := by
     rw [IntegrableOn, ← map_comap_subtype_coe, integrable_map_measure] at hf
     · apply hf
@@ -194,23 +202,25 @@ theorem setIntegral_countable (f : X → E) {s : Set X} (hs : s.Countable) (hf :
     · exact Countable.measurableSet hs
   rw [← integral_subtype_comap hs.measurableSet, integral_countable hf']
   congr 1 with a : 1
-  rw [measureReal_def, Measure.comap_apply Subtype.val Subtype.coe_injective
-    (fun s' hs' ↦ MeasurableSet.subtype_image (Countable.measurableSet hs) hs') _
-    (MeasurableSet.singleton a)]
+  rw [measureReal_def,
+    Measure.comap_apply Subtype.val Subtype.coe_injective
+      (fun s' hs' ↦ MeasurableSet.subtype_image (Countable.measurableSet hs) hs')
+      _ (MeasurableSet.singleton a)]
   simp [measureReal_def]
 
-theorem setIntegral_finset (s : Finset X) (hf : IntegrableOn f s μ) :
-    ∫ x in s, f x ∂μ = ∑ x ∈ s, μ.real {x} • f x := by
+theorem setIntegral_finset (s : Finset X) (hf : IntegrableOn f s μ)
+    : ∫ x in s, f x ∂μ = ∑ x ∈ s, μ.real {x} • f x := by
   rw [setIntegral_countable _ s.countable_toSet hf, ← Finset.tsum_subtype']
 
-theorem integral_fintype [Fintype X] (hf : Integrable f μ) :
-    ∫ x, f x ∂μ = ∑ x, μ.real {x} • f x := by
+theorem integral_fintype [Fintype X] (hf : Integrable f μ)
+    : ∫ x, f x ∂μ = ∑ x, μ.real {x} • f x := by
   -- NB: Integrable f does not follow from Fintype, because the measure itself could be non-finite
   rw [← setIntegral_finset .univ, Finset.coe_univ, Measure.restrict_univ]
   simp [Finset.coe_univ, hf]
 
-@[simp] lemma integral_count [Fintype X] (f : X → E) :
-    ∫ x, f x ∂.count = ∑ a, f a := by simp [integral_fintype]
+@[simp]
+lemma integral_count [Fintype X] (f : X → E) : ∫ x, f x ∂.count = ∑ a, f a := by
+  simp [integral_fintype]
 
 end DiscreteSpace
 

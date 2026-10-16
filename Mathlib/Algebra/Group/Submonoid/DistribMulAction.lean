@@ -27,8 +27,8 @@ instance (priority := low) [AddMonoid α] [DistribMulAction M α] : DistribMulAc
   smul_add r := smul_add (r : M)
 
 /-- The action by a submonoid is the action by the underlying monoid. -/
-instance distribMulAction [AddMonoid α] [DistribMulAction M α] (S : Submonoid M) :
-    DistribMulAction S α :=
+instance distribMulAction [AddMonoid α] [DistribMulAction M α] (S : Submonoid M)
+    : DistribMulAction S α :=
   inferInstance
 
 instance (priority := low) [Monoid α] [MulDistribMulAction M α] : MulDistribMulAction s α where
@@ -36,8 +36,8 @@ instance (priority := low) [Monoid α] [MulDistribMulAction M α] : MulDistribMu
   smul_one r := smul_one (r : M)
 
 /-- The action by a submonoid is the action by the underlying monoid. -/
-instance mulDistribMulAction [Monoid α] [MulDistribMulAction M α] (S : Submonoid M) :
-    MulDistribMulAction S α :=
+instance mulDistribMulAction [Monoid α] [MulDistribMulAction M α] (S : Submonoid M)
+    : MulDistribMulAction S α :=
   inferInstance
 
 end Submonoid

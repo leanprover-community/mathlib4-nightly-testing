@@ -32,22 +32,23 @@ namespace SSet
 
 variable (X : SSet) (R : C)
 
-/-- Given a simplicial set `X`, this is the morphism from
+/--
+Given a simplicial set `X`, this is the morphism from
 `0`-chains with coefficients in `R` to coproduct of copies
-of `R` indexed by `π₀ X`. -/
-noncomputable def π₀.fromChainComplexXZero :
-    (X.chainComplex R).X 0 ⟶ ∐ (fun (_ : π₀ X) ↦ R) :=
+of `R` indexed by `π₀ X`.
+-/
+noncomputable def π₀.fromChainComplexXZero : (X.chainComplex R).X 0 ⟶ ∐ (fun (_ : π₀ X) ↦ R) :=
   (sigmaConst.obj _).map (↾π₀.mk)
 
 @[reassoc (attr := simp)]
-lemma π₀.comp_fromChainComplexXZero (x : X _⦋0⦌) :
-    X.ιChainComplex x ≫ π₀.fromChainComplexXZero X R =
-    Sigma.ι (fun (_ : π₀ X) ↦ R) (π₀.mk x) := by
+lemma π₀.comp_fromChainComplexXZero (x : X _⦋0⦌)
+    : X.ιChainComplex x ≫ π₀.fromChainComplexXZero X R
+      = Sigma.ι (fun (_ : π₀ X) ↦ R) (π₀.mk x) := by
   simp [π₀.fromChainComplexXZero, ιChainComplex]
 
 @[reassoc (attr := simp)]
-lemma π₀.d_fromChainComplexXZero (n : ℕ) :
-    (X.chainComplex R).d n 0 ≫ π₀.fromChainComplexXZero X R = 0 := by
+lemma π₀.d_fromChainComplexXZero (n : ℕ)
+    : (X.chainComplex R).d n 0 ≫ π₀.fromChainComplexXZero X R = 0 := by
   by_cases! hn : n ≠ 1
   · rw [HomologicalComplex.shape _ _ _ (by simp; lia), zero_comp]
   · subst hn
@@ -55,73 +56,73 @@ lemma π₀.d_fromChainComplexXZero (n : ℕ) :
     simp [π₀.sound (Edge.mk' x)]
 
 set_option backward.defeqAttrib.useBackward true in
-/-- Given a simplicial set `X`, the cokernel of the differential `d 1 0`
+/--
+Given a simplicial set `X`, the cokernel of the differential `d 1 0`
 of the chain complex of `X` with coefficients in `R` identifies
-to the coproduct of copies of `R` indexed by `π₀ X`. -/
-noncomputable def isColimitCokernelCoforkChainComplexDOneZero :
-    IsColimit (CokernelCofork.ofπ _ (π₀.d_fromChainComplexXZero X R 1)) := by
+to the coproduct of copies of `R` indexed by `π₀ X`.
+-/
+noncomputable def isColimitCokernelCoforkChainComplexDOneZero
+    : IsColimit (CokernelCofork.ofπ _ (π₀.d_fromChainComplexXZero X R 1)) := by
   refine (IsColimit.equivOfNatIsoOfIso ?_ _ _ ?_).1
-    (Preadditive.isColimitCokernelCoforkOfCofork
-      ((isColimitMapCoconeCoforkEquiv _ _).1
-        (isColimitOfPreserves (sigmaConst.obj R) X.isColimitCoforkπ₀)))
-  · refine parallelPair.ext (-Iso.refl _) (Iso.refl _) ?_ (by simp)
+    (Preadditive.isColimitCokernelCoforkOfCofork ((isColimitMapCoconeCoforkEquiv _ _).1
+      (isColimitOfPreserves (sigmaConst.obj R) X.isColimitCoforkπ₀)))
+  · refine parallelPair.ext (- Iso.refl _) (Iso.refl _) ?_ (by simp)
     simp [chainComplex, SSet.chainComplexFunctor, sub_eq_neg_add]
   · refine Cofork.ext (Iso.refl _) ?_
     ext
     simp [chainComplex, SSet.chainComplexFunctor, π₀.fromChainComplexXZero]
 
-/-- A homology data saying that the singular homology in degree `0`
+/--
+A homology data saying that the singular homology in degree `0`
 of a simplicial set with coefficients in `R` identify to a coproduct
-of copies of `X` indexed by `π₀ X`. -/
+of copies of `X` indexed by `π₀ X`.
+-/
 @[simps! left_K left_H right_Q right_H]
-noncomputable def homologyData₀ :
-    ((X.chainComplex R).sc' 1 0 0).HomologyData :=
+noncomputable def homologyData₀ : ((X.chainComplex R).sc' 1 0 0).HomologyData :=
   ShortComplex.HomologyData.ofIsColimitCokernelCofork _ (by cat_disch) _
     (isColimitCokernelCoforkChainComplexDOneZero X R)
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma homologyData₀_left_π :
-    dsimp% (X.homologyData₀ R).left.π = π₀.fromChainComplexXZero X R := rfl
+lemma homologyData₀_left_π : dsimp% (X.homologyData₀ R).left.π = π₀.fromChainComplexXZero X R := rfl
+
+set_option backward.defeqAttrib.useBackward true in
+@[simp] lemma homologyData₀_left_i : dsimp% (X.homologyData₀ R).left.i = 𝟙 _ := rfl
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma homologyData₀_left_i :
-    dsimp% (X.homologyData₀ R).left.i = 𝟙 _ := rfl
-
-set_option backward.defeqAttrib.useBackward true in
-@[simp]
-lemma homologyData₀_left_liftK {T : C} (f : T ⟶ (X.chainComplex R).X 0) :
-    dsimp% (X.homologyData₀ R).left.liftK f (by cat_disch) = f :=
+lemma homologyData₀_left_liftK {T : C} (f : T ⟶ (X.chainComplex R).X 0)
+    : dsimp% (X.homologyData₀ R).left.liftK f (by cat_disch) = f :=
   ShortComplex.LeftHomologyData.ofIsColimitCokernelCofork_liftK ..
 
 variable [CategoryWithHomology C]
 
-/-- The homology of a simplicial set in degree `0` with coefficients
-in `R` identifies to a coproduct of copies of `R` indexed by `π₀ X`. -/
-noncomputable def homology₀Iso :
-    X.homology R 0 ≅ ∐ (fun (_ : π₀ X) ↦ R) :=
-  ShortComplex.homologyMapIso (HomologicalComplex.isoSc' _ 1 0 0 (by simp) (by simp)) ≪≫
-    (X.homologyData₀ R).left.homologyIso
+/--
+The homology of a simplicial set in degree `0` with coefficients
+in `R` identifies to a coproduct of copies of `R` indexed by `π₀ X`.
+-/
+noncomputable def homology₀Iso : X.homology R 0 ≅ ∐ (fun (_ : π₀ X) ↦ R) :=
+  ShortComplex.homologyMapIso (HomologicalComplex.isoSc' _ 1 0 0 (by simp) (by simp))
+    ≪≫ (X.homologyData₀ R).left.homologyIso
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
-lemma liftCycles_ιChainComplex_homologyπ_homology₀Iso_hom (x : X _⦋0⦌) :
-    (X.chainComplex R).liftCycles (k := X.ιChainComplex x) 0 (by simp) (by simp) ≫
-      (X.chainComplex R).homologyπ 0 ≫ (X.homology₀Iso R).hom =
-    Sigma.ι (fun (_ : π₀ X) ↦ R) (π₀.mk x) := by
-  simp [homology₀Iso, HomologicalComplex.homologyπ, SSet.homology,
-    HomologicalComplex.liftCycles]
+lemma liftCycles_ιChainComplex_homologyπ_homology₀Iso_hom (x : X _⦋0⦌)
+    : (X.chainComplex R).liftCycles (k := X.ιChainComplex x) 0 (by simp) (by simp)
+        ≫ (X.chainComplex R).homologyπ 0 ≫ (X.homology₀Iso R).hom
+      = Sigma.ι (fun (_ : π₀ X) ↦ R) (π₀.mk x) := by
+  simp [homology₀Iso, HomologicalComplex.homologyπ, SSet.homology, HomologicalComplex.liftCycles]
 
 /-- The augmentation map `X.homology R 0 ⟶ R`. -/
 noncomputable def homology₀ε : X.homology R 0 ⟶ R :=
   (X.homology₀Iso R).hom ≫ Sigma.desc (fun _ ↦ 𝟙 R)
 
 @[reassoc (attr := simp)]
-lemma liftCycles_ιChainComplex_homologyπ_homology₀ε (x : X _⦋0⦌) :
-    (X.chainComplex R).liftCycles (X.ιChainComplex x) 0 (by simp) (by simp) ≫
-      (X.chainComplex R).homologyπ 0 ≫ X.homology₀ε R = 𝟙 R := by
+lemma liftCycles_ιChainComplex_homologyπ_homology₀ε (x : X _⦋0⦌)
+    : (X.chainComplex R).liftCycles (X.ιChainComplex x) 0 (by simp) (by simp)
+        ≫ (X.chainComplex R).homologyπ 0 ≫ X.homology₀ε R
+      = 𝟙 R := by
   simp [homology₀ε]
 
 instance [X.IsConnected] : IsIso (X.homology₀ε R) := by

@@ -40,45 +40,42 @@ namespace CategoryTheory
 
 namespace Functor
 
-variable {C₁ C₂ C₃ D₁ D₂ D₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
-  [Category* D₁] [Category* D₂] [Category* D₃]
+variable
+  {C₁ C₂ C₃ D₁ D₂ D₃ : Type*}
+  [Category* C₁] [Category* C₂] [Category* C₃] [Category* D₁] [Category* D₂] [Category* D₃]
   {F₁₂ : C₁ ⥤ C₂} {F₂₃ : C₂ ⥤ C₃} {F₁₃ : C₁ ⥤ C₃} (e : F₁₂ ⋙ F₂₃ ≅ F₁₃)
-  (L₁ : C₁ ⥤ D₁) (L₂ : C₂ ⥤ D₂) (L₃ : C₃ ⥤ D₃)
+  (L₁ : C₁ ⥤ D₁)
+  (L₂ : C₂ ⥤ D₂) (L₃ : C₃ ⥤ D₃)
   (W₁ : MorphismProperty C₁) [L₁.IsLocalization W₁]
-  {RF₁₂ : D₁ ⥤ D₂} {RF₂₃ : D₂ ⥤ D₃} {RF₁₃ : D₁ ⥤ D₃}
-  (α₁₂ : F₁₂ ⋙ L₂ ⟶ L₁ ⋙ RF₁₂)
-  (α₂₃ : F₂₃ ⋙ L₃ ⟶ L₂ ⋙ RF₂₃)
-  (α₁₃ : F₁₃ ⋙ L₃ ⟶ L₁ ⋙ RF₁₃) [RF₁₃.IsRightDerivedFunctor α₁₃ W₁]
+  {RF₁₂ : D₁ ⥤ D₂} {RF₂₃ : D₂ ⥤ D₃} {RF₁₃ : D₁ ⥤ D₃} (α₁₂ : F₁₂ ⋙ L₂ ⟶ L₁ ⋙ RF₁₂)
+  (α₂₃ : F₂₃ ⋙ L₃ ⟶ L₂ ⋙ RF₂₃) (α₁₃ : F₁₃ ⋙ L₃ ⟶ L₁ ⋙ RF₁₃) [RF₁₃.IsRightDerivedFunctor α₁₃ W₁]
 
 /-- The comparison morphism for the composition of right derived functors. -/
 @[no_expose]
-noncomputable def natTransOfIsRightDerivedFunctorComp :
-    RF₁₃ ⟶ RF₁₂ ⋙ RF₂₃ :=
-  rightDerivedDesc RF₁₃ α₁₃ W₁ _ (whiskerRight e.inv _ ≫
-    (associator _ _ _).hom ≫ whiskerLeft F₁₂ α₂₃ ≫ (associator _ _ _).inv ≫
-      whiskerRight α₁₂ RF₂₃ ≫ (associator _ _ _).hom)
+noncomputable def natTransOfIsRightDerivedFunctorComp : RF₁₃ ⟶ RF₁₂ ⋙ RF₂₃ :=
+  rightDerivedDesc RF₁₃ α₁₃ W₁ _
+    (whiskerRight e.inv _ ≫ (associator _ _ _).hom ≫ whiskerLeft F₁₂ α₂₃ ≫ (associator _ _ _).inv
+      ≫ whiskerRight α₁₂ RF₂₃ ≫ (associator _ _ _).hom)
 
 @[reassoc (attr := simp)]
-lemma comp_whiskerLeft_natTransOfIsRightDerivedFunctorComp :
-    α₁₃ ≫ whiskerLeft L₁ (natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃) =
-      whiskerRight e.inv _ ≫
-        (associator _ _ _).hom ≫ whiskerLeft F₁₂ α₂₃ ≫ (associator _ _ _).inv ≫
-          whiskerRight α₁₂ RF₂₃ ≫ (associator _ _ _).hom := by
+lemma comp_whiskerLeft_natTransOfIsRightDerivedFunctorComp
+    : α₁₃ ≫ whiskerLeft L₁ (natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃)
+      = whiskerRight e.inv _ ≫ (associator _ _ _).hom ≫ whiskerLeft F₁₂ α₂₃ ≫ (associator _ _ _).inv
+        ≫ whiskerRight α₁₂ RF₂₃ ≫ (associator _ _ _).hom := by
   simp [natTransOfIsRightDerivedFunctorComp]
 
 @[reassoc (attr := simp)]
-lemma comp_natTransOfIsRightDerivedFunctorComp_app (X : C₁) :
-    α₁₃.app X ≫ (natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃).app (L₁.obj X) =
-      L₃.map (e.inv.app X) ≫ α₂₃.app (F₁₂.obj X) ≫ RF₂₃.map (α₁₂.app X) := by
+lemma comp_natTransOfIsRightDerivedFunctorComp_app (X : C₁)
+    : α₁₃.app X ≫ (natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃).app (L₁.obj X)
+      = L₃.map (e.inv.app X) ≫ α₂₃.app (F₁₂.obj X) ≫ RF₂₃.map (α₁₂.app X) := by
   simp [natTransOfIsRightDerivedFunctorComp]
 
-lemma isIso_natTransOfIsRightDerivedFunctorComp_app (X : C₁)
-    (h₁₂ : IsIso (α₁₃.app X) := by infer_instance)
-    (h₁₂ : IsIso (α₁₂.app X) := by infer_instance)
-    (h₂₃ : IsIso (α₂₃.app (F₁₂.obj X)) := by infer_instance) :
-    IsIso ((natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃).app (L₁.obj X)) :=
-  IsIso.of_isIso_fac_left
-    (comp_natTransOfIsRightDerivedFunctorComp_app e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃ X)
+lemma isIso_natTransOfIsRightDerivedFunctorComp_app
+    (X : C₁)
+    (h₁₂ : IsIso (α₁₃.app X) := by infer_instance) (h₁₂ : IsIso (α₁₂.app X) := by infer_instance)
+    (h₂₃ : IsIso (α₂₃.app (F₁₂.obj X)) := by infer_instance)
+    : IsIso ((natTransOfIsRightDerivedFunctorComp e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃).app (L₁.obj X)) :=
+  IsIso.of_isIso_fac_left (comp_natTransOfIsRightDerivedFunctorComp_app e L₁ L₂ L₃ W₁ α₁₂ α₂₃ α₁₃ X)
 
 end Functor
 

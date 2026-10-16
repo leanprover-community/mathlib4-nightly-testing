@@ -23,15 +23,17 @@ group `CategoryTheory.Aut X`, which is equipped with a bijection with `X ≅ X`.
 
 @[expose] public section
 
-
 universe v v' u u'
 
 namespace CategoryTheory
 
-/-- Endomorphisms of an object in a category. Arguments order in multiplication agrees with
-`Function.comp`, not with `CategoryTheory.CategoryStruct.comp`. -/
+/--
+Endomorphisms of an object in a category. Arguments order in multiplication agrees with
+`Function.comp`, not with `CategoryTheory.CategoryStruct.comp`.
+-/
 @[ext]
-structure End {C : Type u} [CategoryStruct.{v} C] (X : C) where of ::
+structure End {C : Type u} [CategoryStruct.{v} C] (X : C) where
+  of ::
   /-- the underlying morphism of an endomorphism -/
   asHom : X ⟶ X
 
@@ -48,13 +50,14 @@ def homEquiv : End X ≃ (X ⟶ X) where
   toFun := asHom
   invFun := of
 
-@[simps]
-protected instance : One (End X) := ⟨.of (𝟙 X)⟩
+@[simps] protected instance : One (End X) := ⟨.of (𝟙 X)⟩
 
 protected instance inhabited : Inhabited (End X) := ⟨.of (𝟙 X)⟩
 
-/-- Multiplication of endomorphisms agrees with `Function.comp`, not with
-`CategoryTheory.CategoryStruct.comp`. -/
+/--
+Multiplication of endomorphisms agrees with `Function.comp`, not with
+`CategoryTheory.CategoryStruct.comp`.
+-/
 @[simps]
 protected instance : Mul (End X) where
   mul f g := .of (g.asHom ≫ f.asHom)
@@ -79,22 +82,19 @@ variable {C : Type u} [Category.{v} C]
 instance {X Y : C} : SMul (End Y) (X ⟶ Y) where
   smul r f := f ≫ r.asHom
 
-instance {X Y : C} : SMul (End X)ᵐᵒᵖ (X ⟶ Y) where
+instance {X Y : C} : SMul ((End X)ᵐᵒᵖ) (X ⟶ Y) where
   smul r f := r.unop.asHom ≫ f
 
-@[local simp]
-theorem smul_right {X Y : C} {r : End Y} {f : X ⟶ Y} : r • f = f ≫ r.asHom :=
-  rfl
+@[local simp] theorem smul_right {X Y : C} {r : End Y} {f : X ⟶ Y} : r • f = f ≫ r.asHom := rfl
 
 @[local simp]
-theorem smul_left {X Y : C} {r : (End X)ᵐᵒᵖ} {f : X ⟶ Y} : r • f = r.unop.asHom ≫ f :=
-  rfl
+theorem smul_left {X Y : C} {r : (End X)ᵐᵒᵖ} {f : X ⟶ Y} : r • f = r.unop.asHom ≫ f := rfl
 
 instance mulActionRight {X Y : C} : MulAction (End Y) (X ⟶ Y) where
   one_smul := by cat_disch
-  mul_smul _ _ _ :=  by cat_disch
+  mul_smul _ _ _ := by cat_disch
 
-instance mulActionLeft {X Y : C} : MulAction (End X)ᵐᵒᵖ (X ⟶ Y) where
+instance mulActionLeft {X Y : C} : MulAction ((End X)ᵐᵒᵖ) (X ⟶ Y) where
   one_smul := by cat_disch
   mul_smul _ _ _ := by cat_disch
 
@@ -107,20 +107,23 @@ instance group {C : Type u} [Groupoid.{v} C] (X : C) : Group (End X) where
 
 end End
 
-theorem isUnit_iff_isIso {C : Type u} [Category.{v} C] {X : C} (f : End X) :
-    IsUnit (f : End X) ↔ IsIso f.asHom :=
-  ⟨fun h ↦ ⟨h.unit.inv.asHom, congr($(h.unit.inv_val).asHom), congr($(h.unit.val_inv).asHom)⟩,
-    fun h ↦ ⟨⟨f, .of (inv f.asHom), by cat_disch, by cat_disch⟩, rfl⟩⟩
+theorem isUnit_iff_isIso {C : Type u} [Category.{v} C] {X : C} (f : End X)
+    : IsUnit (f : End X) ↔ IsIso f.asHom := ⟨
+  fun h ↦ ⟨h.unit.inv.asHom, congr($(h.unit.inv_val).asHom), congr($(h.unit.val_inv).asHom)⟩,
+  fun h ↦ ⟨⟨f, .of (inv f.asHom), by cat_disch, by cat_disch⟩, rfl⟩
+⟩
 
 variable {C : Type u} [Category.{v} C] (X : C)
 
-/-- Automorphisms of an object in a category.
+/--
+Automorphisms of an object in a category.
 
 The order of arguments in multiplication agrees with
 `Function.comp`, not with `CategoryTheory.CategoryStruct.comp`.
 -/
 @[ext]
-structure Aut (X : C) where of ::
+structure Aut (X : C) where
+  of ::
   /-- the underlying isomorphism of an automorphism -/
   asIso : X ≅ X
 
@@ -162,21 +165,25 @@ def toEnd {X : C} : Aut X →* End X where
   map_one' := by cat_disch
   map_mul' := by cat_disch
 
-/-- Units in the monoid of endomorphisms of an object
+/--
+Units in the monoid of endomorphisms of an object
 are (multiplicatively) equivalent to automorphisms of that object.
 -/
 @[simps]
 def unitsEndEquivAut : (End X)ˣ ≃* Aut X where
-  toFun f := .of
-    { hom := f.val.asHom
+  toFun f :=
+    .of {
+      hom := f.val.asHom
       inv := f.inv.asHom
       hom_inv_id := congr($(f.inv_val).asHom)
-      inv_hom_id := congr($(f.val_inv).asHom) }
-  invFun f :=
-    { val := .of f.asIso.hom
-      inv := .of f.asIso.inv
-      val_inv := by cat_disch
-      inv_val := by cat_disch }
+      inv_hom_id := congr($(f.val_inv).asHom)
+    }
+  invFun f := {
+    val := .of f.asIso.hom
+    inv := .of f.asIso.inv
+    val_inv := by cat_disch
+    inv_val := by cat_disch
+  }
   map_mul' f g := by cat_disch
 
 /-- Isomorphisms induce isomorphisms of the automorphism group -/
@@ -215,15 +222,13 @@ variable (hf : FullyFaithful f)
 
 /-- `mulEquivEnd` as an isomorphism between endomorphism monoids. -/
 @[simps!]
-noncomputable def mulEquivEnd (X : C) :
-    End X ≃* End (f.obj X) where
+noncomputable def mulEquivEnd (X : C) : End X ≃* End (f.obj X) where
   toEquiv := End.homEquiv.trans (hf.homEquiv.trans End.homEquiv.symm)
   map_mul' := by cat_disch
 
 /-- `mulEquivAut` as an isomorphism between automorphism groups. -/
 @[simps!]
-noncomputable def autMulEquivOfFullyFaithful (X : C) :
-    Aut X ≃* Aut (f.obj X) where
+noncomputable def autMulEquivOfFullyFaithful (X : C) : Aut X ≃* Aut (f.obj X) where
   toEquiv := Aut.isoEquiv.trans (hf.isoEquiv.trans Aut.isoEquiv.symm)
   map_mul' := by cat_disch
 
@@ -233,8 +238,8 @@ end Functor
 
 /-- The multiplicative bijection `End X ≃* End (F X)` when `X : InducedCategory C F`. -/
 @[simps!]
-def InducedCategory.endEquiv {D : Type*} {F : D → C}
-    {X : InducedCategory C F} : End X ≃* End (F X) where
+def InducedCategory.endEquiv {D : Type*} {F : D → C} {X : InducedCategory C F}
+    : End X ≃* End (F X) where
   toEquiv := End.homEquiv.trans (InducedCategory.homEquiv.trans End.homEquiv.symm)
   map_mul' := by cat_disch
 

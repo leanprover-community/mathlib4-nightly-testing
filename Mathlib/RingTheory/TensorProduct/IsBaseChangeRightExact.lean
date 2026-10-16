@@ -7,7 +7,6 @@ module
 
 public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
 public import Mathlib.RingTheory.IsTensorProduct
-
 import Mathlib.Algebra.FiveLemma
 
 /-!
@@ -41,21 +40,24 @@ public section
 
 variable {R : Type*} [CommRing R] (S : Type*) [CommRing S] [Algebra R S]
 
-variable {M₁ M₂ M₃ N₁ N₂ N₃ : Type*} [AddCommGroup M₁] [AddCommGroup M₂] [AddCommGroup M₃]
+variable
+  {M₁ M₂ M₃ N₁ N₂ N₃ : Type*} [AddCommGroup M₁] [AddCommGroup M₂] [AddCommGroup M₃]
   [AddCommGroup N₁] [AddCommGroup N₂] [AddCommGroup N₃] [Module R M₁] [Module R M₂] [Module R M₃]
   [Module R N₁] [Module R N₂] [Module R N₃] [Module S N₁] [Module S N₂] [Module S N₃]
   [IsScalarTower R S N₁] [IsScalarTower R S N₂] [IsScalarTower R S N₃]
   (h₁ : M₁ →ₗ[R] N₁) (h₂ : M₂ →ₗ[R] N₂) (h₃ : M₃ →ₗ[R] N₃)
   {f : M₁ →ₗ[R] M₂} {g : M₂ →ₗ[R] M₃} {f' : N₁ →ₗ[S] N₂} {g' : N₂ →ₗ[S] N₃}
 
-lemma IsBaseChange.of_right_exact (comm₁ : h₂.comp f = (f'.restrictScalars R).comp h₁)
+lemma IsBaseChange.of_right_exact
+    (comm₁ : h₂.comp f = (f'.restrictScalars R).comp h₁)
     (comm₂ : h₃.comp g = (g'.restrictScalars R).comp h₂) (isb₁ : IsBaseChange S h₁)
     (isb₂ : IsBaseChange S h₂) (exact₁ : Function.Exact f g) (surj₁ : Function.Surjective g)
-    (exact₂ : Function.Exact f' g') (surj₂ : Function.Surjective g') : IsBaseChange S h₃ := by
+    (exact₂ : Function.Exact f' g') (surj₂ : Function.Surjective g')
+    : IsBaseChange S h₃ := by
   simp only [IsBaseChange, IsTensorProduct] at isb₁ isb₂ ⊢
   refine LinearMap.bijective_of_surjective_of_bijective_of_right_exact
-    ((f.baseChange S).restrictScalars R) ((g.baseChange S).restrictScalars R)
-    (f'.restrictScalars R) (g'.restrictScalars R) _ _ _ ?_ ?_ ?_ exact₂ isb₁.2 isb₂ ?_ surj₂
+    ((f.baseChange S).restrictScalars R) ((g.baseChange S).restrictScalars R) (f'.restrictScalars R)
+    (g'.restrictScalars R) _ _ _ ?_ ?_ ?_ exact₂ isb₁.2 isb₂ ?_ surj₂
   · ext s m
     simpa using congr(s • ($comm₁ m)).symm
   · ext s m

@@ -41,13 +41,14 @@ in the file `Mathlib/RingTheory/LaurentSeries.lean`.
 
 @[expose] public section
 
-
 open Function
 
 noncomputable section
 
-/-- If `Γ` is linearly ordered and `R` has zero, then `R⟦Γ⟧` consists of
-  formal series over `Γ` with coefficients in `R`, whose supports are well-founded. -/
+/--
+If `Γ` is linearly ordered and `R` has zero, then `R⟦Γ⟧` consists of
+formal series over `Γ` with coefficients in `R`, whose supports are well-founded.
+-/
 @[ext]
 structure HahnSeries (Γ : Type*) (R : Type*) [PartialOrder Γ] [Zero R] where
   /-- The coefficient function of a Hahn Series. -/
@@ -61,7 +62,8 @@ namespace HahnSeries
 @[inherit_doc HahnSeries]
 scoped syntax:max (priority := high) term noWs "⟦" term "⟧" : term
 
-macro_rules | `($R⟦$M⟧) => `(HahnSeries $M $R)
+macro_rules
+  | `($R⟦$M⟧) => `(HahnSeries $M $R)
 
 /-- Unexpander for `HahnSeries`. -/
 @[scoped app_unexpander HahnSeries]
@@ -73,61 +75,41 @@ section Zero
 
 variable [PartialOrder Γ] [Zero R]
 
-theorem coeff_injective : Injective (coeff : R⟦Γ⟧ → Γ → R) :=
-  fun _ _ => HahnSeries.ext
+theorem coeff_injective : Injective (coeff : R⟦Γ⟧ → Γ → R) := fun _ _ => HahnSeries.ext
+
+@[simp] theorem coeff_inj {x y : R⟦Γ⟧} : x.coeff = y.coeff ↔ x = y := coeff_injective.eq_iff
+
+/--
+The support of a Hahn series is just the set of indices whose coefficients are nonzero.
+Notably, it is well-founded.
+-/
+nonrec def support (x : R⟦Γ⟧) : Set Γ := support x.coeff
+
+@[simp] theorem support_mk (f : Γ → R) (h) : support ⟨f, h⟩ = Function.support f := rfl
+
+@[simp] theorem isPWO_support (x : R⟦Γ⟧) : x.support.IsPWO := x.isPWO_support'
+
+@[simp] theorem isWF_support (x : R⟦Γ⟧) : x.support.IsWF := x.isPWO_support.isWF
+
+@[simp] theorem mem_support (x : R⟦Γ⟧) (a : Γ) : a ∈ x.support ↔ x.coeff a ≠ 0 := .rfl
+
+instance : Zero R⟦Γ⟧ := ⟨{ coeff := 0, isPWO_support' := by simp }⟩
+
+instance : Inhabited R⟦Γ⟧ := ⟨0⟩
+
+instance [Subsingleton R] : Subsingleton R⟦Γ⟧ := ⟨fun _ _ => HahnSeries.ext (by subsingleton)⟩
+
+theorem coeff_zero' : (0 : R⟦Γ⟧).coeff = 0 := rfl
+
+@[simp] theorem coeff_zero {a : Γ} : (0 : R⟦Γ⟧).coeff a = 0 := rfl
 
 @[simp]
-theorem coeff_inj {x y : R⟦Γ⟧} : x.coeff = y.coeff ↔ x = y :=
-  coeff_injective.eq_iff
-
-/-- The support of a Hahn series is just the set of indices whose coefficients are nonzero.
-  Notably, it is well-founded. -/
-nonrec def support (x : R⟦Γ⟧) : Set Γ :=
-  support x.coeff
-
-@[simp]
-theorem support_mk (f : Γ → R) (h) : support ⟨f, h⟩ = Function.support f :=
-  rfl
-
-@[simp]
-theorem isPWO_support (x : R⟦Γ⟧) : x.support.IsPWO :=
-  x.isPWO_support'
-
-@[simp]
-theorem isWF_support (x : R⟦Γ⟧) : x.support.IsWF :=
-  x.isPWO_support.isWF
-
-@[simp]
-theorem mem_support (x : R⟦Γ⟧) (a : Γ) : a ∈ x.support ↔ x.coeff a ≠ 0 :=
-  .rfl
-
-instance : Zero R⟦Γ⟧ :=
-  ⟨{  coeff := 0
-      isPWO_support' := by simp }⟩
-
-instance : Inhabited R⟦Γ⟧ :=
-  ⟨0⟩
-
-instance [Subsingleton R] : Subsingleton R⟦Γ⟧ :=
-  ⟨fun _ _ => HahnSeries.ext (by subsingleton)⟩
-
-theorem coeff_zero' : (0 : R⟦Γ⟧).coeff = 0 :=
-  rfl
-
-@[simp]
-theorem coeff_zero {a : Γ} : (0 : R⟦Γ⟧).coeff a = 0 :=
-  rfl
-
-@[simp]
-theorem coeff_fun_eq_zero_iff {x : R⟦Γ⟧} : x.coeff = 0 ↔ x = 0 :=
-  coeff_injective.eq_iff' rfl
+theorem coeff_fun_eq_zero_iff {x : R⟦Γ⟧} : x.coeff = 0 ↔ x = 0 := coeff_injective.eq_iff' rfl
 
 theorem ne_zero_of_coeff_ne_zero {x : R⟦Γ⟧} {g : Γ} (h : x.coeff g ≠ 0) : x ≠ 0 :=
   mt (fun x0 => (x0.symm ▸ coeff_zero : x.coeff g = 0)) h
 
-@[simp]
-theorem support_zero : support (0 : R⟦Γ⟧) = ∅ :=
-  Function.support_zero
+@[simp] theorem support_zero : support (0 : R⟦Γ⟧) = ∅ := Function.support_zero
 
 @[simp]
 nonrec theorem support_nonempty_iff {x : R⟦Γ⟧} : x.support.Nonempty ↔ x ≠ 0 := by
@@ -143,12 +125,9 @@ def map [Zero S] (x : R⟦Γ⟧) {F : Type*} [FunLike F R S] [ZeroHomClass F R S
   coeff g := f (x.coeff g)
   isPWO_support' := x.isPWO_support.mono <| Function.support_comp_subset (ZeroHomClass.map_zero f) _
 
-@[simp]
-protected lemma map_zero [Zero S] (f : ZeroHom R S) : (0 : R⟦Γ⟧).map f = 0 := by
-  ext; simp
+@[simp] protected lemma map_zero [Zero S] (f : ZeroHom R S) : (0 : R⟦Γ⟧).map f = 0 := by ext; simp
 
-theorem support_map_subset [Zero S] (x : R⟦Γ⟧) (f : ZeroHom R S) :
-    (x.map f).support ⊆ x.support :=
+theorem support_map_subset [Zero S] (x : R⟦Γ⟧) (f : ZeroHom R S) : (x.map f).support ⊆ x.support :=
   Function.support_comp_subset (ZeroHomClass.map_zero f) _
 
 /-- Change a `HahnSeries` with coefficients in a `HahnSeries` to a `HahnSeries` on a Lex product. -/
@@ -173,9 +152,12 @@ def toIterate [PartialOrder Γ'] (x : R⟦Γ ×ₗ Γ'⟧) : R⟦Γ'⟧⟦Γ⟧ 
     isPWO_support' := Set.PartiallyWellOrderedOn.fiberProdLex x.isPWO_support' g
   }
   isPWO_support' := by
-    have h₁ : (Function.support fun g => HahnSeries.mk (fun g' => x.coeff (g, g'))
-        (Set.PartiallyWellOrderedOn.fiberProdLex x.isPWO_support' g)) = Function.support
-        fun g => fun g' => x.coeff (g, g') := by
+    have h₁
+        : (Function.support fun g =>
+            HahnSeries.mk
+              (fun g' => x.coeff (g, g'))
+              (Set.PartiallyWellOrderedOn.fiberProdLex x.isPWO_support' g))
+          = Function.support fun g => fun g' => x.coeff (g, g') := by
       simp only [Function.support, ne_eq, mk_eq_zero]
     rw [h₁, Function.support_fun_curry x.coeff]
     exact Set.PartiallyWellOrderedOn.imageProdLex x.isPWO_support'
@@ -191,20 +173,23 @@ def iterateEquiv [PartialOrder Γ'] : R⟦Γ'⟧⟦Γ⟧ ≃ R⟦Γ ×ₗ Γ'⟧
 open scoped Classical in
 /-- `single a r` is the Hahn series which has coefficient `r` at `a` and zero otherwise. -/
 def single (a : Γ) : ZeroHom R R⟦Γ⟧ where
-  toFun r :=
-    { coeff := Pi.single a r
-      isPWO_support' := (Set.isPWO_singleton a).mono Pi.support_single_subset }
+  toFun r := {
+    coeff := Pi.single a r
+    isPWO_support' := (Set.isPWO_singleton a).mono Pi.support_single_subset
+  }
   map_zero' := HahnSeries.ext (Pi.single_zero _)
 
 variable {a b : Γ} {r : R}
 
 @[simp]
 theorem coeff_single_same (a : Γ) (r : R) : (single a r).coeff a = r := by
-  classical exact Pi.single_eq_same (M := fun _ => R) a r
+  classical
+  exact Pi.single_eq_same (M := fun _ => R) a r
 
 @[simp]
 theorem coeff_single_of_ne (h : b ≠ a) : (single a r).coeff b = 0 := by
-  classical exact Pi.single_eq_of_ne (M := fun _ => R) h r
+  classical
+  exact Pi.single_eq_of_ne (M := fun _ => R) h r
 
 open scoped Classical in
 theorem coeff_single : (single a r).coeff b = if b = a then r else 0 := by
@@ -212,19 +197,20 @@ theorem coeff_single : (single a r).coeff b = if b = a then r else 0 := by
 
 @[simp]
 theorem support_single_of_ne (h : r ≠ 0) : support (single a r) = {a} := by
-  classical exact Pi.support_single_of_ne h
+  classical
+  exact Pi.support_single_of_ne h
 
 theorem support_single_subset : support (single a r) ⊆ {a} := by
-  classical exact Pi.support_single_subset
+  classical
+  exact Pi.support_single_subset
 
 theorem eq_of_mem_support_single {b : Γ} (h : b ∈ support (single a r)) : b = a :=
   support_single_subset h
 
-theorem single_eq_zero : single a (0 : R) = 0 :=
-  (single a).map_zero
+theorem single_eq_zero : single a (0 : R) = 0 := (single a).map_zero
 
-theorem single_injective (a : Γ) : Function.Injective (single a : R → R⟦Γ⟧) :=
-  fun r s rs => by rw [← coeff_single_same a r, ← coeff_single_same a s, rs]
+theorem single_injective (a : Γ) : Function.Injective (single a : R → R⟦Γ⟧) := fun r s rs => by
+  rw [← coeff_single_same a r, ← coeff_single_same a s, rs]
 
 theorem single_ne_zero (h : r ≠ 0) : single a r ≠ 0 := fun con =>
   h (single_injective a (con.trans single_eq_zero.symm))
@@ -238,32 +224,31 @@ protected lemma map_single [Zero S] (f : ZeroHom R S) : (single a r).map f = sin
   ext g
   by_cases h : g = a <;> simp [h]
 
-instance [Nonempty Γ] [Nontrivial R] : Nontrivial R⟦Γ⟧ :=
-  ⟨by
-    obtain ⟨r, s, rs⟩ := exists_pair_ne R
-    inhabit Γ
-    refine ⟨single default r, single default s, fun con => rs ?_⟩
-    rw [← coeff_single_same (default : Γ) r, con, coeff_single_same]⟩
+instance [Nonempty Γ] [Nontrivial R] : Nontrivial R⟦Γ⟧ := ⟨by
+  obtain ⟨r, s, rs⟩ := exists_pair_ne R
+  inhabit Γ
+  refine ⟨single default r, single default s, fun con => rs ?_⟩
+  rw [← coeff_single_same (default : Γ) r, con, coeff_single_same]⟩
 
 section Order
 variable {x : R⟦Γ⟧}
 
 open scoped Classical in
-/-- The orderTop of a Hahn series `x` is a minimal element of `WithTop Γ` where `x` has a nonzero
-coefficient if `x ≠ 0`, and is `⊤` when `x = 0`. -/
+/--
+The orderTop of a Hahn series `x` is a minimal element of `WithTop Γ` where `x` has a nonzero
+coefficient if `x ≠ 0`, and is `⊤` when `x = 0`.
+-/
 def orderTop (x : R⟦Γ⟧) : WithTop Γ :=
   if h : x = 0 then ⊤ else x.isWF_support.min (support_nonempty_iff.2 h)
 
-@[simp]
-theorem orderTop_zero : orderTop (0 : R⟦Γ⟧) = ⊤ :=
-  dite_eq_left rfl
+@[simp] theorem orderTop_zero : orderTop (0 : R⟦Γ⟧) = ⊤ := dite_eq_left rfl
 
 @[simp]
 theorem orderTop_of_subsingleton [Subsingleton R] : x.orderTop = ⊤ :=
   (Subsingleton.eq_zero x) ▸ orderTop_zero
 
-theorem orderTop_of_ne_zero (hx : x ≠ 0) :
-    orderTop x = x.isWF_support.min (support_nonempty_iff.2 hx) :=
+theorem orderTop_of_ne_zero (hx : x ≠ 0)
+    : orderTop x = x.isWF_support.min (support_nonempty_iff.2 hx) :=
   dite_eq_right hx
 
 @[simp] lemma orderTop_eq_top : orderTop x = ⊤ ↔ x = 0 := by simp [orderTop]
@@ -272,39 +257,37 @@ theorem orderTop_of_ne_zero (hx : x ≠ 0) :
 
 lemma orderTop_ne_top : orderTop x ≠ ⊤ ↔ x ≠ 0 := orderTop_eq_top.not
 
-theorem orderTop_eq_of_le {x : R⟦Γ⟧} {g : Γ} (hg : g ∈ x.support)
-    (hx : ∀ g' ∈ x.support, g ≤ g') : orderTop x = g := by
+theorem orderTop_eq_of_le {x : R⟦Γ⟧} {g : Γ} (hg : g ∈ x.support) (hx : ∀ g' ∈ x.support, g ≤ g')
+    : orderTop x = g := by
   rw [orderTop_of_ne_zero <| support_nonempty_iff.mp <| Set.nonempty_of_mem hg,
     x.isWF_support.min_eq_of_le hg hx]
 
-theorem untop_orderTop_of_ne_zero {x : R⟦Γ⟧} (hx : x ≠ 0) :
-    WithTop.untop x.orderTop (orderTop_ne_top.2 hx) =
-      x.isWF_support.min (support_nonempty_iff.2 hx) :=
+theorem untop_orderTop_of_ne_zero {x : R⟦Γ⟧} (hx : x ≠ 0)
+    : WithTop.untop x.orderTop (orderTop_ne_top.2 hx)
+      = x.isWF_support.min (support_nonempty_iff.2 hx) :=
   WithTop.coe_inj.mp ((WithTop.coe_untop (orderTop x) (orderTop_ne_top.2 hx)).trans
     (orderTop_of_ne_zero hx))
 
-theorem coeff_orderTop_ne {x : R⟦Γ⟧} {g : Γ} (hg : x.orderTop = g) :
-    x.coeff g ≠ 0 := by
+theorem coeff_orderTop_ne {x : R⟦Γ⟧} {g : Γ} (hg : x.orderTop = g) : x.coeff g ≠ 0 := by
   have h : orderTop x ≠ ⊤ := by simp_all only [ne_eq, WithTop.coe_ne_top, not_false_eq_true]
   have hx : x ≠ 0 := orderTop_ne_top.1 h
   rw [orderTop_of_ne_zero hx, WithTop.coe_eq_coe] at hg
   rw [← hg]
   exact x.isWF_support.min_mem (support_nonempty_iff.2 hx)
 
-theorem orderTop_ne_of_coeff_eq_zero {x : R⟦Γ⟧} {i : Γ} (hx : x.coeff i = 0) :
-    x.orderTop ≠ i :=
+theorem orderTop_ne_of_coeff_eq_zero {x : R⟦Γ⟧} {i : Γ} (hx : x.coeff i = 0) : x.orderTop ≠ i :=
   fun h ↦ coeff_orderTop_ne h hx
 
-theorem orderTop_le_of_coeff_ne_zero {Γ} [LinearOrder Γ] {x : R⟦Γ⟧}
-    {g : Γ} (h : x.coeff g ≠ 0) : x.orderTop ≤ g := by
+theorem orderTop_le_of_coeff_ne_zero {Γ} [LinearOrder Γ] {x : R⟦Γ⟧} {g : Γ} (h : x.coeff g ≠ 0)
+    : x.orderTop ≤ g := by
   rw [orderTop_of_ne_zero (ne_zero_of_coeff_ne_zero h), WithTop.coe_le_coe]
   exact Set.IsWF.min_le _ _ ((mem_support _ _).2 h)
 
 @[simp]
 theorem orderTop_single (h : r ≠ 0) : (single a r).orderTop = a :=
   (orderTop_of_ne_zero (single_ne_zero h)).trans
-    (WithTop.coe_inj.mpr (support_single_subset
-      ((single a r).isWF_support.min_mem (support_nonempty_iff.2 (single_ne_zero h)))))
+    (WithTop.coe_inj.mpr (support_single_subset ((single a r).isWF_support.min_mem
+      (support_nonempty_iff.2 (single_ne_zero h)))))
 
 theorem orderTop_single_le : a ≤ (single a r).orderTop := by
   by_cases hr : r = 0
@@ -314,8 +297,7 @@ theorem orderTop_single_le : a ≤ (single a r).orderTop := by
 theorem lt_orderTop_single {g g' : Γ} (hgg' : g < g') : g < (single g' r).orderTop :=
   lt_of_lt_of_le (WithTop.coe_lt_coe.mpr hgg') orderTop_single_le
 
-theorem coeff_eq_zero_of_lt_orderTop {x : R⟦Γ⟧} {i : Γ} (hi : i < x.orderTop) :
-    x.coeff i = 0 := by
+theorem coeff_eq_zero_of_lt_orderTop {x : R⟦Γ⟧} {i : Γ} (hi : i < x.orderTop) : x.coeff i = 0 := by
   rcases eq_or_ne x 0 with (rfl | hx)
   · exact coeff_zero
   contrapose! hi
@@ -323,47 +305,46 @@ theorem coeff_eq_zero_of_lt_orderTop {x : R⟦Γ⟧} {i : Γ} (hi : i < x.orderT
   rw [orderTop_of_ne_zero hx, WithTop.coe_lt_coe]
   exact Set.IsWF.not_lt_min _ _ hi
 
-/-- A leading coefficient of a Hahn series is the coefficient of a lowest-order nonzero term, or
-zero if the series vanishes. -/
+/--
+A leading coefficient of a Hahn series is the coefficient of a lowest-order nonzero term, or
+zero if the series vanishes.
+-/
 def leadingCoeff (x : R⟦Γ⟧) : R := x.orderTop.recTopCoe 0 x.coeff
 
-@[simp]
-theorem leadingCoeff_zero : leadingCoeff (0 : R⟦Γ⟧) = 0 := by simp [leadingCoeff]
+@[simp] theorem leadingCoeff_zero : leadingCoeff (0 : R⟦Γ⟧) = 0 := by simp [leadingCoeff]
 
-theorem leadingCoeff_of_ne_zero {x : R⟦Γ⟧} (hx : x ≠ 0) :
-    x.leadingCoeff = x.coeff (x.orderTop.untop <| orderTop_ne_top.2 hx) := by
+theorem leadingCoeff_of_ne_zero {x : R⟦Γ⟧} (hx : x ≠ 0)
+    : x.leadingCoeff = x.coeff (x.orderTop.untop <| orderTop_ne_top.2 hx) := by
   simp [leadingCoeff, orderTop, hx]
 
 @[simp]
 theorem leadingCoeff_eq_zero {x : R⟦Γ⟧} : x.leadingCoeff = 0 ↔ x = 0 := by
   obtain rfl | hx := eq_or_ne x 0 <;> simp [leadingCoeff_of_ne_zero, coeff_orderTop_ne, *]
 
-theorem leadingCoeff_ne_zero {x : R⟦Γ⟧} : x.leadingCoeff ≠ 0 ↔ x ≠ 0 :=
-  leadingCoeff_eq_zero.not
+theorem leadingCoeff_ne_zero {x : R⟦Γ⟧} : x.leadingCoeff ≠ 0 ↔ x ≠ 0 := leadingCoeff_eq_zero.not
 
 @[simp]
 theorem leadingCoeff_of_single {a : Γ} {r : R} : leadingCoeff (single a r) = r := by
   by_cases h : r = 0 <;> simp [leadingCoeff, h]
 
-theorem coeff_untop_eq_leadingCoeff {x : R⟦Γ⟧} (hx) :
-    x.coeff (x.orderTop.untop hx) = x.leadingCoeff := by
+theorem coeff_untop_eq_leadingCoeff {x : R⟦Γ⟧} (hx)
+    : x.coeff (x.orderTop.untop hx) = x.leadingCoeff := by
   rw [orderTop_ne_top] at hx
   rw [leadingCoeff_of_ne_zero hx, (WithTop.untop_eq_iff _).mpr (orderTop_of_ne_zero hx)]
 
 variable [Zero Γ]
 
 open scoped Classical in
-/-- The order of a nonzero Hahn series `x` is a minimal element of `Γ` where `x` has a
-  nonzero coefficient, the order of 0 is 0. -/
-def order (x : R⟦Γ⟧) : Γ :=
-  if h : x = 0 then 0 else x.isWF_support.min (support_nonempty_iff.2 h)
+/--
+The order of a nonzero Hahn series `x` is a minimal element of `Γ` where `x` has a
+nonzero coefficient, the order of 0 is 0.
+-/
+def order (x : R⟦Γ⟧) : Γ := if h : x = 0 then 0 else x.isWF_support.min (support_nonempty_iff.2 h)
 
-@[simp]
-theorem order_zero : order (0 : R⟦Γ⟧) = 0 :=
-  dite_eq_left rfl
+@[simp] theorem order_zero : order (0 : R⟦Γ⟧) = 0 := dite_eq_left rfl
 
-theorem order_of_ne {x : R⟦Γ⟧} (hx : x ≠ 0) :
-    order x = x.isWF_support.min (support_nonempty_iff.2 hx) :=
+theorem order_of_ne {x : R⟦Γ⟧} (hx : x ≠ 0)
+    : order x = x.isWF_support.min (support_nonempty_iff.2 hx) :=
   dite_eq_right hx
 
 theorem order_eq_orderTop_of_ne_zero (hx : x ≠ 0) : order x = orderTop x := by
@@ -375,16 +356,17 @@ theorem coeff_order_eq_zero {x : R⟦Γ⟧} : x.coeff x.order = 0 ↔ x = 0 := b
   rw [order_of_ne hx]
   exact x.isWF_support.min_mem (support_nonempty_iff.2 hx)
 
-theorem order_le_of_coeff_ne_zero {Γ} [Zero Γ] [LinearOrder Γ] {x : R⟦Γ⟧}
-    {g : Γ} (h : x.coeff g ≠ 0) : x.order ≤ g :=
+theorem order_le_of_coeff_ne_zero
+    {Γ} [Zero Γ] [LinearOrder Γ] {x : R⟦Γ⟧} {g : Γ} (h : x.coeff g ≠ 0)
+    : x.order ≤ g :=
   le_trans (le_of_eq (order_of_ne (ne_zero_of_coeff_ne_zero h)))
     (Set.IsWF.min_le _ _ ((mem_support _ _).2 h))
 
 @[simp]
 theorem order_single (h : r ≠ 0) : (single a r).order = a :=
   (order_of_ne (single_ne_zero h)).trans
-    (support_single_subset
-      ((single a r).isWF_support.min_mem (support_nonempty_iff.2 (single_ne_zero h))))
+    (support_single_subset ((single a r).isWF_support.min_mem
+      (support_nonempty_iff.2 (single_ne_zero h))))
 
 theorem coeff_eq_zero_of_lt_order {x : R⟦Γ⟧} {i : Γ} (hi : i < x.order) : x.coeff i = 0 := by
   rcases eq_or_ne x 0 with (rfl | hx)
@@ -394,8 +376,7 @@ theorem coeff_eq_zero_of_lt_order {x : R⟦Γ⟧} {i : Γ} (hi : i < x.order) : 
   rw [order_of_ne hx]
   exact Set.IsWF.not_lt_min _ _ hi
 
-theorem zero_lt_orderTop_iff {x : R⟦Γ⟧} (hx : x ≠ 0) :
-    0 < x.orderTop ↔ 0 < x.order := by
+theorem zero_lt_orderTop_iff {x : R⟦Γ⟧} (hx : x ≠ 0) : 0 < x.orderTop ↔ 0 < x.order := by
   simp_all [orderTop_of_ne_zero hx, order_of_ne hx]
 
 theorem zero_lt_orderTop_of_order {x : R⟦Γ⟧} (hx : 0 < x.order) : 0 < x.orderTop := by
@@ -422,8 +403,7 @@ def ofFinsupp : ZeroHom (Γ →₀ R) R⟦Γ⟧ where
   toFun f := { coeff := f, isPWO_support' := f.hasFiniteSupport.isPWO }
   map_zero' := by simp
 
-@[simp]
-theorem coeff_ofFinsupp (f : Γ →₀ R) (a : Γ) : (ofFinsupp f).coeff a = f a := rfl
+@[simp] theorem coeff_ofFinsupp (f : Γ →₀ R) (a : Γ) : (ofFinsupp f).coeff a = f a := rfl
 
 end Finsupp
 
@@ -433,16 +413,17 @@ variable [PartialOrder Γ']
 
 open scoped Classical in
 /-- Extends the domain of a `HahnSeries` by an `OrderEmbedding`. -/
-def embDomain (f : Γ ↪o Γ') : R⟦Γ⟧ → R⟦Γ'⟧ := fun x =>
-  { coeff := fun b : Γ' => if h : b ∈ f '' x.support then x.coeff (Classical.choose h) else 0
-    isPWO_support' :=
-      (x.isPWO_support.image_of_monotone f.monotone).mono fun b hb => by
-        contrapose hb
-        rw [Function.mem_support, dite_eq_right hb, Classical.not_not] }
+def embDomain (f : Γ ↪o Γ') : R⟦Γ⟧ → R⟦Γ'⟧ := fun x => {
+  coeff := fun b : Γ' => if h : b ∈ f '' x.support then x.coeff (Classical.choose h) else 0
+  isPWO_support' :=
+    (x.isPWO_support.image_of_monotone f.monotone).mono fun b hb => by
+      contrapose hb
+      rw [Function.mem_support, dite_eq_right hb, Classical.not_not]
+}
 
 @[simp]
-theorem embDomain_coeff {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {a : Γ} :
-    (embDomain f x).coeff (f a) = x.coeff a := by
+theorem embDomain_coeff {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {a : Γ}
+    : (embDomain f x).coeff (f a) = x.coeff a := by
   rw [embDomain]
   dsimp only
   by_cases ha : a ∈ x.support
@@ -454,23 +435,24 @@ theorem embDomain_coeff {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {a : Γ} :
     rwa [f.injective hb2] at hb1
 
 @[simp]
-theorem embDomain_mk_coeff {f : Γ → Γ'} (hfi : Function.Injective f)
-    (hf : ∀ g g' : Γ, f g ≤ f g' ↔ g ≤ g') {x : R⟦Γ⟧} {a : Γ} :
-    (embDomain ⟨⟨f, hfi⟩, hf _ _⟩ x).coeff (f a) = x.coeff a :=
+theorem embDomain_mk_coeff
+    {f : Γ → Γ'} (hfi : Function.Injective f) (hf : ∀ g g' : Γ, f g ≤ f g' ↔ g ≤ g')
+    {x : R⟦Γ⟧} {a : Γ}
+    : (embDomain ⟨⟨f, hfi⟩, hf _ _⟩ x).coeff (f a) = x.coeff a :=
   embDomain_coeff
 
-theorem embDomain_notin_image_support {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {b : Γ'}
-    (hb : b ∉ f '' x.support) : (embDomain f x).coeff b = 0 :=
+theorem embDomain_notin_image_support {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {b : Γ'} (hb : b ∉ f '' x.support)
+    : (embDomain f x).coeff b = 0 :=
   dite_eq_right hb
 
-theorem support_embDomain_subset {f : Γ ↪o Γ'} {x : R⟦Γ⟧} :
-    support (embDomain f x) ⊆ f '' x.support := by
+theorem support_embDomain_subset {f : Γ ↪o Γ'} {x : R⟦Γ⟧}
+    : support (embDomain f x) ⊆ f '' x.support := by
   intro g hg
   contrapose hg
   rw [mem_support, embDomain_notin_image_support hg, Classical.not_not]
 
-theorem embDomain_of_notMem_range {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {b : Γ'} (hb : b ∉ Set.range f) :
-    (embDomain f x).coeff b = 0 :=
+theorem embDomain_of_notMem_range {f : Γ ↪o Γ'} {x : R⟦Γ⟧} {b : Γ'} (hb : b ∉ Set.range f)
+    : (embDomain f x).coeff b = 0 :=
   embDomain_notin_image_support fun con => hb (Set.image_subset_range _ _ con)
 
 @[deprecated (since := "2026-07-15")] alias embDomain_notin_range := embDomain_of_notMem_range
@@ -481,8 +463,8 @@ theorem embDomain_zero {f : Γ ↪o Γ'} : embDomain f (0 : R⟦Γ⟧) = 0 := by
   simp [embDomain_notin_image_support]
 
 @[simp]
-theorem embDomain_single {f : Γ ↪o Γ'} {g : Γ} {r : R} :
-    embDomain f (single g r) = single (f g) r := by
+theorem embDomain_single {f : Γ ↪o Γ'} {g : Γ} {r : R}
+    : embDomain f (single g r) = single (f g) r := by
   ext g'
   by_cases h : g' = f g
   · simp [h]
@@ -491,16 +473,16 @@ theorem embDomain_single {f : Γ ↪o Γ'} {g : Γ} {r : R} :
   · simp [hr]
   rwa [support_single_of_ne hr, Set.image_singleton, Set.mem_singleton_iff]
 
-theorem embDomain_injective {f : Γ ↪o Γ'} :
-    Function.Injective (embDomain f : R⟦Γ⟧ → R⟦Γ'⟧) := fun x y xy => by
+theorem embDomain_injective {f : Γ ↪o Γ'}
+    : Function.Injective (embDomain f : R⟦Γ⟧ → R⟦Γ'⟧) := fun x y xy => by
   ext g
   rw [HahnSeries.ext_iff, funext_iff] at xy
   have xyg := xy (f g)
   rwa [embDomain_coeff, embDomain_coeff] at xyg
 
 @[simp]
-theorem orderTop_embDomain {Γ : Type*} [LinearOrder Γ] {f : Γ ↪o Γ'} {x : R⟦Γ⟧} :
-    (embDomain f x).orderTop = WithTop.map f x.orderTop := by
+theorem orderTop_embDomain {Γ : Type*} [LinearOrder Γ] {f : Γ ↪o Γ'} {x : R⟦Γ⟧}
+    : (embDomain f x).orderTop = WithTop.map f x.orderTop := by
   obtain rfl | hx := eq_or_ne x 0
   · simp
   rw [← WithTop.coe_untop x.orderTop (by simpa using hx), WithTop.map_coe]
@@ -521,8 +503,8 @@ section LinearOrder
 
 variable [Zero R] [LinearOrder Γ]
 
-theorem le_orderTop_iff_forall {x : R⟦Γ⟧} {i : WithTop Γ} :
-    i ≤ x.orderTop ↔ ∀ j : Γ, j < i → x.coeff j = 0 where
+theorem le_orderTop_iff_forall {x : R⟦Γ⟧} {i : WithTop Γ}
+    : i ≤ x.orderTop ↔ ∀ j : Γ, j < i → x.coeff j = 0 where
   mp hi j hj := coeff_eq_zero_of_lt_orderTop (hj.trans_le hi)
   mpr H := by
     obtain rfl | h := eq_or_ne x 0
@@ -530,21 +512,21 @@ theorem le_orderTop_iff_forall {x : R⟦Γ⟧} {i : WithTop Γ} :
     · by_contra! hi
       exact x.isWF_support.min_mem (support_nonempty_iff.2 h) (H _ (orderTop_of_ne_zero h ▸ hi))
 
-theorem orderTop_lt_iff_exists {x : R⟦Γ⟧} {i : WithTop Γ} :
-    x.orderTop < i ↔ ∃ j : Γ, j < i ∧ x.coeff j ≠ 0 := by
+theorem orderTop_lt_iff_exists {x : R⟦Γ⟧} {i : WithTop Γ}
+    : x.orderTop < i ↔ ∃ j : Γ, j < i ∧ x.coeff j ≠ 0 := by
   rw [← not_le, le_orderTop_iff_forall]
   simp
 
-theorem le_order_iff_forall [Zero Γ] {x : R⟦Γ⟧} {i : Γ} (h : x ≠ 0) :
-    i ≤ x.order ↔ ∀ j < i, x.coeff j = 0 where
+theorem le_order_iff_forall [Zero Γ] {x : R⟦Γ⟧} {i : Γ} (h : x ≠ 0)
+    : i ≤ x.order ↔ ∀ j < i, x.coeff j = 0 where
   mp hi j hj := coeff_eq_zero_of_lt_order (hj.trans_le hi)
   mpr H := by
     contrapose! h
     have := H _ h
     rwa [coeff_order_eq_zero] at this
 
-theorem order_lt_iff_exists [Zero Γ] {x : R⟦Γ⟧} {i : Γ} (h : x ≠ 0) :
-    x.order < i ↔ ∃ j < i, x.coeff j ≠ 0 := by
+theorem order_lt_iff_exists [Zero Γ] {x : R⟦Γ⟧} {i : Γ} (h : x ≠ 0)
+    : x.order < i ↔ ∃ j < i, x.coeff j ≠ 0 := by
   rw [← not_le, le_order_iff_forall h]
   simp
 
@@ -552,20 +534,15 @@ variable [LocallyFiniteOrder Γ]
 
 /-- Construct a Hahn series from any function whose support is bounded below. -/
 @[simps]
-def ofSuppBddBelow (f : Γ → R) (hf : BddBelow (Function.support f)) : R⟦Γ⟧ :=
-  ⟨f, hf.isWF.isPWO⟩
+def ofSuppBddBelow (f : Γ → R) (hf : BddBelow (Function.support f)) : R⟦Γ⟧ := ⟨f, hf.isWF.isPWO⟩
 
-@[simp]
-theorem ofSuppBddBelow_zero [Nonempty Γ] : ofSuppBddBelow 0 (by simp) = (0 : R⟦Γ⟧) :=
-  rfl
+@[simp] theorem ofSuppBddBelow_zero [Nonempty Γ] : ofSuppBddBelow 0 (by simp) = (0 : R⟦Γ⟧) := rfl
 
 @[simp]
 theorem ofSuppBddBelow_eq_zero {f : Γ → R} {hf} : ofSuppBddBelow f hf = 0 ↔ f = 0 :=
   HahnSeries.ext_iff
 
-@[simp]
-theorem coeff_ofSuppBddBelow {f : Γ → R} {hf} : (ofSuppBddBelow f hf).coeff = f :=
-  rfl
+@[simp] theorem coeff_ofSuppBddBelow {f : Γ → R} {hf} : (ofSuppBddBelow f hf).coeff = f := rfl
 
 end LinearOrder
 
@@ -573,31 +550,33 @@ section Truncate
 variable [Zero R]
 
 /-- Zeroes out coefficients of a `HahnSeries` at indices not less than `c`. -/
-def truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) : ZeroHom R⟦Γ⟧ R⟦Γ⟧ where
-  toFun x :=
-    { coeff i := if i < c then x.coeff i else 0
-      isPWO_support' := Set.IsPWO.mono x.isPWO_support (by simp) }
+def truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) : ZeroHom (R⟦Γ⟧) R⟦Γ⟧ where
+  toFun x := {
+    coeff i := if i < c then x.coeff i else 0
+    isPWO_support' := Set.IsPWO.mono x.isPWO_support (by simp)
+  }
   map_zero' := by ext; simp
 
-theorem support_truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧) :
-    (truncLT c x).support = {y ∈ x.support | y < c} := by
+theorem support_truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧)
+    : (truncLT c x).support = {y ∈ x.support | y < c} := by
   simp [truncLT, Function.support, and_comm]
 
-theorem support_truncLT_subset [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧) :
-    (truncLT c x).support ⊆ x.support := by
+theorem support_truncLT_subset [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧)
+    : (truncLT c x).support ⊆ x.support := by
   rw [support_truncLT]
   exact Set.sep_subset ..
 
 @[simp]
-protected theorem coeff_truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧) (i : Γ) :
-    (truncLT c x).coeff i = if i < c then x.coeff i else 0 := rfl
+protected theorem coeff_truncLT [PartialOrder Γ] [DecidableLT Γ] (c : Γ) (x : R⟦Γ⟧) (i : Γ)
+    : (truncLT c x).coeff i = if i < c then x.coeff i else 0 :=
+  rfl
 
-theorem coeff_truncLT_of_lt [PartialOrder Γ] [DecidableLT Γ] {c i : Γ} (h : i < c) (x : R⟦Γ⟧) :
-    (truncLT c x).coeff i = x.coeff i := by
+theorem coeff_truncLT_of_lt [PartialOrder Γ] [DecidableLT Γ] {c i : Γ} (h : i < c) (x : R⟦Γ⟧)
+    : (truncLT c x).coeff i = x.coeff i := by
   simp [h]
 
-theorem coeff_truncLT_of_le [LinearOrder Γ] {c i : Γ} (h : c ≤ i) (x : R⟦Γ⟧) :
-    (truncLT c x).coeff i = 0 := by
+theorem coeff_truncLT_of_le [LinearOrder Γ] {c i : Γ} (h : c ≤ i) (x : R⟦Γ⟧)
+    : (truncLT c x).coeff i = 0 := by
   simp [h]
 
 end Truncate

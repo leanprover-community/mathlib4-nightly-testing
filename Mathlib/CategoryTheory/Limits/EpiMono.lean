@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
-
 import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Mono
 
 /-!
@@ -61,8 +60,8 @@ lemma mono_iff_isIso_fst (hc : IsLimit c) : Mono f ↔ IsIso c.fst := by
     · simp only [assoc, hφ₂, id_comp, comp_id, h]
   · intro
     obtain ⟨φ, hφ₁, hφ₂⟩ := PullbackCone.IsLimit.lift' hc (𝟙 X) (𝟙 X) (by simp)
-    have : IsSplitEpi φ := IsSplitEpi.mk ⟨SplitEpi.mk c.fst (by
-      rw [← cancel_mono c.fst, assoc, id_comp, hφ₁, comp_id])⟩
+    have : IsSplitEpi φ :=
+      IsSplitEpi.mk ⟨SplitEpi.mk c.fst (by rw [← cancel_mono c.fst, assoc, id_comp, hφ₁, comp_id])⟩
     rw [← cancel_epi φ, hφ₁, hφ₂]
 
 lemma mono_iff_isIso_snd (hc : IsLimit c) : Mono f ↔ IsIso c.snd :=
@@ -103,8 +102,8 @@ lemma epi_iff_isIso_inl (hc : IsColimit c) : Epi f ↔ IsIso c.inl := by
     · simp only [comp_id, h, reassoc_of% hφ₂]
   · intro
     obtain ⟨φ, hφ₁, hφ₂⟩ := PushoutCocone.IsColimit.desc' hc (𝟙 Y) (𝟙 Y) (by simp)
-    have : IsSplitMono φ := IsSplitMono.mk ⟨SplitMono.mk c.inl (by
-      rw [← cancel_epi c.inl, reassoc_of% hφ₁, comp_id])⟩
+    have : IsSplitMono φ :=
+      IsSplitMono.mk ⟨SplitMono.mk c.inl (by rw [← cancel_epi c.inl, reassoc_of% hφ₁, comp_id])⟩
     rw [← cancel_mono φ, hφ₁, hφ₂]
 
 lemma epi_iff_isIso_inr (hc : IsColimit c) : Epi f ↔ IsIso c.inr :=

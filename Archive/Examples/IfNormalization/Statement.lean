@@ -19,8 +19,10 @@ This file contains a Lean formulation of the problem. See `Result.lean` for a Le
 
 @[expose] public section
 
-/-- An if-expression is either Boolean literal, a numbered variable,
-or an if-then-else expression where each subexpression is an if-expression. -/
+/--
+An if-expression is either Boolean literal, a numbered variable,
+or an if-then-else expression where each subexpression is an if-expression.
+-/
 inductive IfExpr
   | lit : Bool → IfExpr
   | var : Nat → IfExpr
@@ -66,12 +68,12 @@ def vars : IfExpr → List Nat
   | var i => [i]
   | ite i t e => i.vars ++ t.vars ++ e.vars
 
-/--
-A helper function to specify that two lists are disjoint.
--/
+/-- A helper function to specify that two lists are disjoint. -/
 def _root_.List.disjoint {α} [DecidableEq α] : List α → List α → Bool
-  | [], _ => true
-  | x::xs, ys => x ∉ ys && xs.disjoint ys
+  | [], _ =>
+    true
+  | x :: xs, ys =>
+    x ∉ ys && xs.disjoint ys
 
 /--
 An if expression evaluates each variable at most once if for each if-then-else
@@ -79,10 +81,12 @@ the variables in the if clause are disjoint from the variables in the then claus
 the variables in the if clause are disjoint from the variables in the else clause.
 -/
 def disjoint : IfExpr → Bool
-  | lit _ => true
-  | var _ => true
+  | lit _ =>
+    true
+  | var _ =>
+    true
   | ite i t e =>
-      i.vars.disjoint t.vars && i.vars.disjoint e.vars && i.disjoint && t.disjoint && e.disjoint
+    i.vars.disjoint t.vars && i.vars.disjoint e.vars && i.disjoint && t.disjoint && e.disjoint
 
 /--
 An if expression is "normalized" if it has not nested, constant, or redundant ifs,
@@ -91,9 +95,7 @@ and it evaluates each variable at most once.
 def normalized (e : IfExpr) : Bool :=
   !e.hasNestedIf && !e.hasConstantIf && !e.hasRedundantIf && e.disjoint
 
-/--
-The evaluation of an if expression at some assignment of variables.
--/
+/-- The evaluation of an if expression at some assignment of variables. -/
 def eval (f : Nat → Bool) : IfExpr → Bool
   | lit b => b
   | var i => f i
@@ -107,4 +109,4 @@ This is the statement of the if normalization problem.
 We require a function from that transforms if expressions to normalized if expressions,
 preserving all evaluations.
 -/
-def IfNormalization : Type := { Z : IfExpr → IfExpr // ∀ e, (Z e).normalized ∧ (Z e).eval = e.eval }
+def IfNormalization : Type := {Z : IfExpr → IfExpr // ∀ e, (Z e).normalized ∧ (Z e).eval = e.eval}

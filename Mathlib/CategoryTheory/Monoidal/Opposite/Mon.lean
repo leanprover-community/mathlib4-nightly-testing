@@ -42,10 +42,11 @@ instance mopMonObj : MonObj (mop M) where
     simp
 
 variable {M} in
-/-- If `f` is a morphism of monoid objects internal to `C`,
-then `f.mop` is a morphism of monoid objects internal to `Cᴹᵒᵖ`. -/
-instance mop_isMonHom {N : C} [MonObj N]
-    (f : M ⟶ N) [IsMonHom f] : IsMonHom f.mop where
+/--
+If `f` is a morphism of monoid objects internal to `C`,
+then `f.mop` is a morphism of monoid objects internal to `Cᴹᵒᵖ`.
+-/
+instance mop_isMonHom {N : C} [MonObj N] (f : M ⟶ N) [IsMonHom f] : IsMonHom f.mop where
   mul_hom := by
     apply mopEquiv C |>.fullyFaithfulInverse.map_injective
     simpa [-IsMonHom.mul_hom] using! IsMonHom.mul_hom f
@@ -76,10 +77,11 @@ instance unmopMonObj : MonObj (unmop M) where
     simp
 
 variable {M} in
-/-- If `f` is a morphism of monoid objects internal to `Cᴹᵒᵖ`,
-so is `f.unmop`. -/
-instance unmop_isMonHom {N : Cᴹᵒᵖ} [MonObj N]
-    (f : M ⟶ N) [IsMonHom f] : IsMonHom f.unmop where
+/--
+If `f` is a morphism of monoid objects internal to `Cᴹᵒᵖ`,
+so is `f.unmop`.
+-/
+instance unmop_isMonHom {N : Cᴹᵒᵖ} [MonObj N] (f : M ⟶ N) [IsMonHom f] : IsMonHom f.unmop where
   mul_hom := by
     apply mopEquiv C |>.fullyFaithfulFunctor.map_injective
     simpa [-IsMonHom.mul_hom] using! IsMonHom.mul_hom f
@@ -91,26 +93,26 @@ end unmop
 
 set_option backward.isDefEq.respectTransparency.types false in
 variable (C) in
-/-- The equivalence of categories between monoids internal to `C`
-and monoids internal to the monoidal opposite of `C`. -/
+/--
+The equivalence of categories between monoids internal to `C`
+and monoids internal to the monoidal opposite of `C`.
+-/
 @[simps!]
 def mopEquiv : Mon C ≌ Mon Cᴹᵒᵖ where
-  functor :=
-    { obj M := ⟨mop M.X⟩
-      map f := ⟨f.hom.mop⟩ }
-  inverse :=
-    { obj M := ⟨unmop M.X⟩
-      map f := ⟨f.hom.unmop⟩ }
+  functor := { obj M := ⟨mop M.X⟩, map f := ⟨f.hom.mop⟩ }
+  inverse := { obj M := ⟨unmop M.X⟩, map f := ⟨f.hom.unmop⟩ }
   unitIso := .refl _
   counitIso := .refl _
 
-/-- The equivalence of categories between monoids internal to `C`
+/--
+The equivalence of categories between monoids internal to `C`
 and monoids internal to the monoidal opposite of `C` lies over
-the equivalence `C ≌ Cᴹᵒᵖ` via the forgetful functors. -/
+the equivalence `C ≌ Cᴹᵒᵖ` via the forgetful functors.
+-/
 @[simps!]
-def mopEquivCompForgetIso :
-    (mopEquiv C).functor ⋙ Mon.forget Cᴹᵒᵖ ≅
-    Mon.forget C ⋙ (MonoidalOpposite.mopEquiv C).functor :=
+def mopEquivCompForgetIso
+    : (mopEquiv C).functor ⋙ Mon.forget Cᴹᵒᵖ
+      ≅ Mon.forget C ⋙ (MonoidalOpposite.mopEquiv C).functor :=
   .refl _
 
 end MonObj

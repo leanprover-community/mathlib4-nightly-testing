@@ -23,7 +23,8 @@ variable {C : Type*} [Category* C] {A : Type*} [Category* A]
 
 open Limits
 
-/-- A relation on a pre-`0`-hypercover is a commutative diagram
+/--
+A relation on a pre-`0`-hypercover is a commutative diagram
 ```
 obj ----> E.X i
  |         |
@@ -41,8 +42,10 @@ structure Relation {S : C} (E : PreZeroHypercover S) (i j : E.I₀) where
   snd : obj ⟶ E.X j
   w : fst ≫ E.f i = snd ≫ E.f j
 
-/-- The maximal pre-`1`-hypercover containing `E`, where the `1`-components are all relations
-on `E`. -/
+/--
+The maximal pre-`1`-hypercover containing `E`, where the `1`-components are all relations
+on `E`.
+-/
 @[simps toPreZeroHypercover I₁ Y p₁ p₂]
 def saturate {S : C} (E : PreZeroHypercover S) : PreOneHypercover S where
   __ := E
@@ -52,42 +55,46 @@ def saturate {S : C} (E : PreZeroHypercover S) : PreOneHypercover S where
   p₂ _ _ r := r.snd
   w _ _ r := r.w
 
-/-- For a presheaf of types, sections over the multifork associated to `E.saturate` are equivalent
-to compatible families. -/
+/--
+For a presheaf of types, sections over the multifork associated to `E.saturate` are equivalent
+to compatible families.
+-/
 @[simps]
-def sectionsSaturateEquiv {S : C} (E : PreZeroHypercover S) (F : Cᵒᵖ ⥤ Type*) :
-    (E.saturate.multicospanIndex F).sections ≃ Subtype (Presieve.Arrows.Compatible F E.f) where
+def sectionsSaturateEquiv {S : C} (E : PreZeroHypercover S) (F : Cᵒᵖ ⥤ Type*)
+    : (E.saturate.multicospanIndex F).sections ≃ Subtype (Presieve.Arrows.Compatible F E.f) where
   toFun s := ⟨s.val, fun i j _ _ _ hgij ↦ s.property ⟨(i, j), ⟨_, _, _, hgij⟩⟩⟩
   invFun s := ⟨s.val, fun r ↦ s.property _ _ _ _ _ r.snd.w⟩
   left_inv _ := rfl
   right_inv _ := rfl
 
-lemma isLimit_saturate_type_iff {S : C} (E : PreZeroHypercover S) (F : Cᵒᵖ ⥤ Type*) :
-    Nonempty (IsLimit <| E.saturate.multifork F) ↔ E.presieve₀.IsSheafFor F := by
+lemma isLimit_saturate_type_iff {S : C} (E : PreZeroHypercover S) (F : Cᵒᵖ ⥤ Type*)
+    : Nonempty (IsLimit <| E.saturate.multifork F) ↔ E.presieve₀.IsSheafFor F := by
   rw [Multifork.isLimit_types_iff, Presieve.isSheafFor_ofArrows_iff_bijective_toCompatible,
     ← Function.Bijective.of_comp_iff' (E.sectionsSaturateEquiv F).symm.bijective]
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- If `E` has pairwise pullbacks, this is the canonical map from the minimal `1`-hypercover
-to the saturation. -/
+/--
+If `E` has pairwise pullbacks, this is the canonical map from the minimal `1`-hypercover
+to the saturation.
+-/
 @[simps]
-noncomputable
-def toSaturateOfHasPullbacks {S : C} (E : PreZeroHypercover S) [E.HasPullbacks] :
-    E.toPreOneHypercover ⟶ E.saturate where
+noncomputable def toSaturateOfHasPullbacks {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]
+    : E.toPreOneHypercover ⟶ E.saturate where
   s₀ i := i
   h₀ i := 𝟙 _
   s₁ {i j} k := ⟨pullback (E.f i) (E.f j), _, _, pullback.condition⟩
   h₁ {i j} k := 𝟙 _
 
 set_option backward.isDefEq.respectTransparency false in
-/-- If `E` has pairwise pullbacks, this is the canonical map to the minimal `1`-hypercover
-from the saturation. -/
+/--
+If `E` has pairwise pullbacks, this is the canonical map to the minimal `1`-hypercover
+from the saturation.
+-/
 @[simps]
-noncomputable
-def fromSaturateOfHasPullbacks {S : C} (E : PreZeroHypercover S)
-    [E.HasPullbacks] : E.saturate ⟶ E.toPreOneHypercover where
+noncomputable def fromSaturateOfHasPullbacks {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]
+    : E.saturate ⟶ E.toPreOneHypercover where
   s₀ i := i
   h₀ i := 𝟙 _
   s₁ {i j} k := ⟨⟩
@@ -97,12 +104,12 @@ variable {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-/-- The identity of the minimal pre-`1`-hypercover when `E` has pairwise pullbacks
-is homotopic to itself. -/
-noncomputable
-def toPreOneHypercoverHomotopy {S : C} (E : PreZeroHypercover S)
-    [E.HasPullbacks] :
-    PreOneHypercover.Homotopy (.id E.toPreOneHypercover) (.id E.toPreOneHypercover) where
+/--
+The identity of the minimal pre-`1`-hypercover when `E` has pairwise pullbacks
+is homotopic to itself.
+-/
+noncomputable def toPreOneHypercoverHomotopy {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]
+    : PreOneHypercover.Homotopy (.id E.toPreOneHypercover) (.id E.toPreOneHypercover) where
   H _ := ⟨⟩
   a i := pullback.diagonal (E.f i)
   wl := by simp
@@ -113,28 +120,31 @@ variable {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
-lemma toSaturateOfHasPullbacks_fromSaturateOfHasPullbacks :
-    E.toSaturateOfHasPullbacks.comp E.fromSaturateOfHasPullbacks = .id _ := by
+lemma toSaturateOfHasPullbacks_fromSaturateOfHasPullbacks
+    : E.toSaturateOfHasPullbacks.comp E.fromSaturateOfHasPullbacks = .id _ := by
   refine PreOneHypercover.Hom.ext' rfl (by simp) (by simp) (by simp)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The composition `E.saturate ⟶ E.toPreOneHypercover ⟶ E.saturate` is homotopic to the
-identity. -/
-noncomputable
-def fromSaturateToSaturateHomotopy : PreOneHypercover.Homotopy
-    (E.fromSaturateOfHasPullbacks.comp E.toSaturateOfHasPullbacks) (.id _) where
+/--
+The composition `E.saturate ⟶ E.toPreOneHypercover ⟶ E.saturate` is homotopic to the
+identity.
+-/
+noncomputable def fromSaturateToSaturateHomotopy
+    : PreOneHypercover.Homotopy (E.fromSaturateOfHasPullbacks.comp E.toSaturateOfHasPullbacks)
+      (.id _) where
   H i := ⟨pullback (E.f i) (E.f i), pullback.fst _ _, pullback.snd _ _, pullback.condition⟩
   a i := pullback.diagonal (E.f i)
   wl i := by simp
   wr i := by simp
 
-/-- If the pre-`0`-hypercover `E` has pairwise pullbacks, then the multifork associated to the
+/--
+If the pre-`0`-hypercover `E` has pairwise pullbacks, then the multifork associated to the
 full saturated pre-`1`-hypercover is exact if and only if the minimal one given by taking
-the pairwise pullbacks is exact. -/
-noncomputable
-def isLimitSaturateEquivOfHasPullbacks {S : C} (E : PreZeroHypercover S)
-    [E.HasPullbacks] (F : Cᵒᵖ ⥤ A) :
-    IsLimit (E.saturate.multifork F) ≃ IsLimit (E.toPreOneHypercover.multifork F) :=
+the pairwise pullbacks is exact.
+-/
+noncomputable def isLimitSaturateEquivOfHasPullbacks
+    {S : C} (E : PreZeroHypercover S) [E.HasPullbacks] (F : Cᵒᵖ ⥤ A)
+    : IsLimit (E.saturate.multifork F) ≃ IsLimit (E.toPreOneHypercover.multifork F) :=
   PreOneHypercover.Homotopy.isLimitMultiforkEquiv E.fromSaturateOfHasPullbacks
     E.toSaturateOfHasPullbacks E.fromSaturateToSaturateHomotopy
     (by

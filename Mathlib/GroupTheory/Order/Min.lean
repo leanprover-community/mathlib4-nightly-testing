@@ -30,8 +30,10 @@ namespace Monoid
 section Monoid
 variable (α) [Monoid α]
 
-/-- The minimum order of a non-identity element. Also the minimum size of a nontrivial subgroup, see
-`Monoid.le_minOrder_iff_forall_subgroup`. Returns `∞` if the monoid is torsion-free. -/
+/--
+The minimum order of a non-identity element. Also the minimum size of a nontrivial subgroup, see
+`Monoid.le_minOrder_iff_forall_subgroup`. Returns `∞` if the monoid is torsion-free.
+-/
 @[to_additive /-- The minimum order of a non-identity element. Also the minimum size of a nontrivial
 subgroup, see `AddMonoid.le_minOrder_iff_forall_addSubgroup`. Returns `∞` if the monoid is
 torsion-free. -/]
@@ -40,8 +42,9 @@ noncomputable def minOrder : ℕ∞ := ⨅ (a : α) (_ha : a ≠ 1) (_ha' : IsOf
 variable {α} {a : α}
 
 @[to_additive (attr := simp)]
-lemma le_minOrder {n : ℕ∞} :
-    n ≤ minOrder α ↔ ∀ ⦃a : α⦄, a ≠ 1 → IsOfFinOrder a → n ≤ orderOf a := by simp [minOrder]
+lemma le_minOrder {n : ℕ∞}
+    : n ≤ minOrder α ↔ ∀ ⦃a : α⦄, a ≠ 1 → IsOfFinOrder a → n ≤ orderOf a := by
+  simp [minOrder]
 
 @[to_additive]
 lemma minOrder_le_orderOf (ha : a ≠ 1) (ha' : IsOfFinOrder a) : minOrder α ≤ orderOf a :=
@@ -53,14 +56,13 @@ section Group
 variable [Group G] {s : Subgroup G}
 
 @[to_additive]
-lemma le_minOrder_iff_forall_subgroup {n : ℕ∞} :
-    n ≤ minOrder G ↔ ∀ ⦃s : Subgroup G⦄, s ≠ ⊥ → (s : Set G).Finite → n ≤ Nat.card s := by
+lemma le_minOrder_iff_forall_subgroup {n : ℕ∞}
+    : n ≤ minOrder G ↔ ∀ ⦃s : Subgroup G⦄, s ≠ ⊥ → (s : Set G).Finite → n ≤ Nat.card s := by
   rw [le_minOrder]
   refine ⟨fun h s hs hs' ↦ ?_, fun h a ha ha' ↦ ?_⟩
   · obtain ⟨a, has, ha⟩ := s.bot_or_exists_ne_one.resolve_left hs
-    exact
-      (h ha <| finite_zpowers.1 <| hs'.subset <| zpowers_le.2 has).trans
-        (WithTop.coe_le_coe.2 <| s.orderOf_le_card hs' has)
+    exact (h ha <| finite_zpowers.1 <| hs'.subset <| zpowers_le.2 has).trans
+      (WithTop.coe_le_coe.2 <| s.orderOf_le_card hs' has)
   · simpa using h (zpowers_ne_bot.2 ha) ha'.finite_zpowers
 
 @[to_additive]
@@ -92,13 +94,12 @@ protected lemma minOrder {n : ℕ} (hn : n ≠ 0) (hn₁ : n ≠ 1) : minOrder (
   have : Fact (1 < n) := ⟨one_lt_iff_ne_zero_and_ne_one.mpr ⟨hn, hn₁⟩⟩
   have : (↑(n / n.minFac) : ZMod n) ≠ 0 := by
     rw [Ne, ringChar.spec, ringChar.eq (ZMod n) n]
-    exact
-      not_dvd_of_pos_of_lt (Nat.div_pos (minFac_le hn.bot_lt) n.minFac_pos)
-        (div_lt_self hn.bot_lt (minFac_prime hn₁).one_lt)
+    exact not_dvd_of_pos_of_lt (Nat.div_pos (minFac_le hn.bot_lt) n.minFac_pos)
+      (div_lt_self hn.bot_lt (minFac_prime hn₁).one_lt)
   refine ((minOrder_le_natCard (zmultiples_eq_bot.not.2 this) <| toFinite _).trans ?_).antisymm <|
     le_minOrder_iff_forall_addSubgroup.2 fun s hs _ ↦ ?_
-  · rw [Nat.card_zmultiples, ZMod.addOrderOf_coe _ hn,
-      gcd_eq_right (div_dvd_of_dvd n.minFac_dvd), Nat.div_div_self n.minFac_dvd hn]
+  · rw [Nat.card_zmultiples, ZMod.addOrderOf_coe _ hn, gcd_eq_right (div_dvd_of_dvd n.minFac_dvd),
+      Nat.div_div_self n.minFac_dvd hn]
   · have : Nontrivial s := s.bot_or_nontrivial.resolve_left hs
     exact WithTop.coe_le_coe.2 <| minFac_le_of_dvd Finite.one_lt_card <|
       (card_addSubgroup_dvd_card _).trans n.card_zmod.dvd

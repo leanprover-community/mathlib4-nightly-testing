@@ -33,9 +33,7 @@ open Prod Decidable Function
 namespace Nat
 
 /-- Pairing function for the natural numbers. -/
-@[pp_nodot]
-def pair (a b : ℕ) : ℕ :=
-  if a < b then b * b + a else a * a + a + b
+@[pp_nodot] def pair (a b : ℕ) : ℕ := if a < b then b * b + a else a * a + a + b
 
 /-- Unpairing function for the natural numbers. -/
 @[pp_nodot]
@@ -45,12 +43,14 @@ def unpair (n : ℕ) : ℕ × ℕ :=
 
 @[simp]
 theorem pair_unpair (n : ℕ) : pair (unpair n).1 (unpair n).2 = n := by
-  dsimp only [unpair]; let s := sqrt n
+  dsimp only [unpair]
+  let s := sqrt n
   have sm : s * s + (n - s * s) = n := Nat.add_sub_cancel' (sqrt_le _)
   split_ifs with h
   · simp [s, pair, h, sm]
-  · have hl : n - s * s - s ≤ s := Nat.sub_le_iff_le_add.2
-      (Nat.sub_le_iff_le_add'.2 <| by rw [← Nat.add_assoc]; apply sqrt_le_add)
+  · have hl : n - s * s - s ≤ s :=
+      Nat.sub_le_iff_le_add.2 (Nat.sub_le_iff_le_add'.2 <| by
+        rw [← Nat.add_assoc]; apply sqrt_le_add)
     simp [s, pair, hl.not_gt, Nat.add_assoc, Nat.add_sub_cancel' (le_of_not_gt h), sm]
 
 theorem pair_eq_of_unpair_eq {n a b} (H : unpair n = (a, b)) : pair a b = n := by
@@ -58,7 +58,8 @@ theorem pair_eq_of_unpair_eq {n a b} (H : unpair n = (a, b)) : pair a b = n := b
 
 @[simp]
 theorem unpair_pair (a b : ℕ) : unpair (pair a b) = (a, b) := by
-  dsimp only [pair]; split_ifs with h
+  dsimp only [pair]
+  split_ifs with h
   · show unpair (b * b + a) = (a, b)
     have be : sqrt (b * b + a) = b := sqrt_add_eq _ (le_trans (le_of_lt h) (Nat.le_add_left _ _))
     simp [unpair, be, Nat.add_sub_cancel_left, h]
@@ -70,11 +71,9 @@ theorem unpair_pair (a b : ℕ) : unpair (pair a b) = (a, b) := by
 
 /-- An equivalence between `ℕ × ℕ` and `ℕ`. -/
 @[simps -fullyApplied]
-def pairEquiv : ℕ × ℕ ≃ ℕ :=
-  ⟨uncurry pair, unpair, fun ⟨a, b⟩ => unpair_pair a b, pair_unpair⟩
+def pairEquiv : ℕ × ℕ ≃ ℕ := ⟨uncurry pair, unpair, fun ⟨a, b⟩ => unpair_pair a b, pair_unpair⟩
 
-theorem surjective_unpair : Surjective unpair :=
-  pairEquiv.symm.surjective
+theorem surjective_unpair : Surjective unpair := pairEquiv.symm.surjective
 
 @[simp]
 theorem pair_eq_pair {a b c d : ℕ} : pair a b = pair c d ↔ a = c ∧ b = d :=
@@ -83,7 +82,7 @@ theorem pair_eq_pair {a b c d : ℕ} : pair a b = pair c d ↔ a = c ∧ b = d :
 theorem unpair_lt {n : ℕ} (n1 : 1 ≤ n) : (unpair n).1 < n := by
   let s := sqrt n
   simp only [unpair]
-  by_cases h : n - s * s < s <;> simp only [h, ↓reduceIte, gt_iff_lt, s]
+  by_cases h : n - s * s < s <;> simp only [h, ↓ reduceIte, gt_iff_lt, s]
   · exact lt_of_lt_of_le h (sqrt_le_self _)
   · simp only [not_lt] at h
     have s0 : 0 < s := sqrt_pos.2 n1
@@ -109,10 +108,10 @@ theorem unpair_right_le (n : ℕ) : (unpair n).2 ≤ n := by
   simpa using right_le_pair n.unpair.1 n.unpair.2
 
 theorem pair_lt_pair_left {a₁ a₂} (b) (h : a₁ < a₂) : pair a₁ b < pair a₂ b := by
-  by_cases h₁ : a₁ < b <;> simp only [pair, h₁, ↓reduceIte, Nat.add_assoc]
+  by_cases h₁ : a₁ < b <;> simp only [pair, h₁, ↓ reduceIte, Nat.add_assoc]
   · by_cases h₂ : a₂ < b
     · simp [h₂, h]
-    simp only [h₂, ↓reduceIte]
+    simp only [h₂, ↓ reduceIte]
     apply Nat.add_lt_add_of_le_of_lt
     · exact Nat.mul_self_le_mul_self (not_lt.mp h₂)
     · exact Nat.lt_add_right _ h
@@ -125,9 +124,11 @@ theorem pair_lt_pair_left {a₁ a₂} (b) (h : a₁ < a₂) : pair a₁ b < pair
 theorem pair_lt_pair_right (a) {b₁ b₂} (h : b₁ < b₂) : pair a b₁ < pair a b₂ := by
   by_cases h₁ : a < b₁
   · simpa [pair, h₁, Nat.add_assoc, lt_trans h₁ h, h] using mul_self_lt_mul_self h
-  · simp only [pair, h₁, ↓reduceIte, Nat.add_assoc]
-    by_cases h₂ : a < b₂; swap; · simp [h₂, h]
-    simp only [h₂, ↓reduceIte]
+  · simp only [pair, h₁, ↓ reduceIte, Nat.add_assoc]
+    by_cases h₂ : a < b₂
+    swap
+    · simp [h₂, h]
+    simp only [h₂, ↓ reduceIte]
     rw [Nat.add_comm, Nat.add_comm _ a, Nat.add_assoc, Nat.add_lt_add_iff_left]
     rwa [Nat.add_comm, ← sqrt_lt, sqrt_add_eq]
     exact le_trans (not_lt.mp h₁) (Nat.le_add_left _ _)
@@ -161,25 +162,25 @@ open Nat
 section CompleteLattice
 
 @[to_dual]
-theorem iSup_unpair {α} [CompleteLattice α] (f : ℕ → ℕ → α) :
-    ⨆ n : ℕ, f n.unpair.1 n.unpair.2 = ⨆ (i : ℕ) (j : ℕ), f i j := by
+theorem iSup_unpair {α} [CompleteLattice α] (f : ℕ → ℕ → α)
+    : ⨆ n : ℕ, f n.unpair.1 n.unpair.2 = ⨆ (i : ℕ) (j : ℕ), f i j := by
   rw [← (iSup_prod : ⨆ i : ℕ × ℕ, f i.1 i.2 = _), ← Nat.surjective_unpair.iSup_comp]
 
 end CompleteLattice
 
 namespace Set
 
-theorem iUnion_unpair_prod {α β} {s : ℕ → Set α} {t : ℕ → Set β} :
-    ⋃ n : ℕ, s n.unpair.fst ×ˢ t n.unpair.snd = (⋃ n, s n) ×ˢ ⋃ n, t n := by
+theorem iUnion_unpair_prod {α β} {s : ℕ → Set α} {t : ℕ → Set β}
+    : ⋃ n : ℕ, s n.unpair.fst ×ˢ t n.unpair.snd = (⋃ n, s n) ×ˢ ⋃ n, t n := by
   rw [← Set.iUnion_prod]
   exact surjective_unpair.iUnion_comp (fun x => s x.fst ×ˢ t x.snd)
 
-theorem iUnion_unpair {α} (f : ℕ → ℕ → Set α) :
-    ⋃ n : ℕ, f n.unpair.1 n.unpair.2 = ⋃ (i : ℕ) (j : ℕ), f i j :=
+theorem iUnion_unpair {α} (f : ℕ → ℕ → Set α)
+    : ⋃ n : ℕ, f n.unpair.1 n.unpair.2 = ⋃ (i : ℕ) (j : ℕ), f i j :=
   iSup_unpair f
 
-theorem iInter_unpair {α} (f : ℕ → ℕ → Set α) :
-    ⋂ n : ℕ, f n.unpair.1 n.unpair.2 = ⋂ (i : ℕ) (j : ℕ), f i j :=
+theorem iInter_unpair {α} (f : ℕ → ℕ → Set α)
+    : ⋂ n : ℕ, f n.unpair.1 n.unpair.2 = ⋂ (i : ℕ) (j : ℕ), f i j :=
   iInf_unpair f
 
 end Set

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Arthur Paulino
 -/
 module
+
 import Mathlib.Tactic.Use
 import Mathlib.Tactic.Basic
 import Mathlib.Logic.Equiv.Defs
@@ -53,14 +54,13 @@ example : ∃ p : Nat × Nat, p.1 = p.2 := by use! 42, 42
 
 example : ∃ p : Nat × Nat, p.1 = p.2 := by use! (42, 42)
 
-example (r : Nat → Nat → Prop) (h : ∀ x, r x x) :
-    ∃ p : Nat × Nat, r p.1 p.2 := by use! 42; use! 42; apply h
+example (r : Nat → Nat → Prop) (h : ∀ x, r x x) : ∃ p : Nat × Nat, r p.1 p.2 := by
+  use! 42; use! 42; apply h
 
-example (r : Nat → Nat → Prop) (h : ∀ x, r x x) :
-    ∃ p : Nat × Nat, r p.1 p.2 := by use! 42, 42; apply h
+example (r : Nat → Nat → Prop) (h : ∀ x, r x x) : ∃ p : Nat × Nat, r p.1 p.2 := by
+  use! 42, 42; apply h
 
-example (r : Nat → Nat → Prop) (h : ∀ x, r x x) :
-    ∃ p : Nat × Nat, r p.1 p.2 := by use! 42, 42, h _
+example (r : Nat → Nat → Prop) (h : ∀ x, r x x) : ∃ p : Nat × Nat, r p.1 p.2 := by use! 42, 42, h _
 
 example : ∃ x : String × String, x.1 = x.2 := by use ("a", "a")
 
@@ -96,11 +96,9 @@ example : ∃ n : Int, n * 3 = 3 * 2 := by
   use 2
   rfl
 
-example : Σ _x _y : Int, Int × Int × Int := by
-  use 1, 2, 3, 4, 5
+example : Σ _x _y : Int, Int × Int × Int := by use 1, 2, 3, 4, 5
 
-example : Σ _x _y : Int, (Int × Int) × Int := by
-  use! 1, 2, 3, 4, 5
+example : Σ _x _y : Int, (Int × Int) × Int := by use! 1, 2, 3, 4, 5
 
 -- There are two constructors, so applying a constructor fails and it tries to just refine
 /--
@@ -128,13 +126,11 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 example : Nat → Nat := by use 1
 
 inductive foo
-| mk : Nat → Bool × Nat → Nat → foo
+  | mk : Nat → Bool × Nat → Nat → foo
 
-example : foo := by
-  use 100, ⟨true, 4⟩, 3
+example : foo := by use 100, ⟨true, 4⟩, 3
 
-example : foo := by
-  use! 100, true, 4, 3
+example : foo := by use! 100, true, 4, 3
 
 /--
 info: Try this:
@@ -142,11 +138,12 @@ info: Try this:
 -/
 #guard_msgs in
 -- `use` puts placeholders after the current goal
-example : foo := show_term by
-  use ?x, ⟨?b, 4⟩
-  exact (3 : Nat)
-  exact (100 : Nat)
-  exact true
+example : foo :=
+  show_term by
+    use ?x, ⟨?b, 4⟩
+    exact (3 : Nat)
+    exact (100 : Nat)
+    exact true
 
 /--
 info: Try this:
@@ -154,12 +151,13 @@ info: Try this:
 -/
 #guard_msgs in
 -- `use` puts placeholders after the current goal
-example : foo := show_term by
-  -- Type ascriptions keep refinement from occurring before applying the constructor
-  use! (?x : Nat), (?b : Bool), 4
-  exact (3 : Nat)
-  exact (100 : Nat)
-  exact true
+example : foo :=
+  show_term by
+    -- Type ascriptions keep refinement from occurring before applying the constructor
+    use! (?x : Nat), (?b : Bool), 4
+    exact (3 : Nat)
+    exact (100 : Nat)
+    exact true
 
 -- `use!` is helpful for auto-flattening quantifiers over subtypes
 example : ∃ p : {x : Nat // 0 < x}, 1 < p.1 := by use! 2 <;> decide
@@ -196,15 +194,12 @@ structure DecidableType where
   [deq : DecidableEq α]
 
 -- Auto-synthesizes instance
-example : DecidableType := by
-  use Nat
+example : DecidableType := by use Nat
 
-example (β : Type) [DecidableEq β] : DecidableType := by
-  use β
+example (β : Type) [DecidableEq β] : DecidableType := by use β
 
 -- Leaves instances as extra goals when synthesis fails
-noncomputable
-example (β : Type) : DecidableType := by
+noncomputable example (β : Type) : DecidableType := by
   use β
   guard_target = DecidableEq β
   apply Classical.typeDecidableEq
@@ -223,7 +218,6 @@ example (α : Type u) : Embedding α α × Unit := by
   · simp
   constructor
 
-
 -- FIXME Failing tests ported from mathlib3
 
 -- Note(kmill): mathlib3 `use` would try to rewrite any lingering existentials with
@@ -235,7 +229,6 @@ set_option linter.style.longLine false in
 --   -- goal should now be `1 > 0 ∧ 1 = 1`, whereas it would be `∃ (H : 1 > 0), 1 = 1` after existsi 1.
 --   guard_target = 1 > 0 ∧ 1 = 1
 --   exact ⟨Nat.zero_lt_one, rfl⟩
-
 -- This feature might not be useful anymore since bounded `Exists` already uses a conjunction.
 example : ∃ n > 0, n = n := by
   use (discharger := skip) 1
@@ -243,8 +236,7 @@ example : ∃ n > 0, n = n := by
   decide
 
 -- The discharger knows about `exists_prop`.
-example (h1 : 1 > 0) : ∃ (n : Nat) (_h : n > 0), n = n := by
-  use 1
+example (h1 : 1 > 0) : ∃ (n : Nat) (_h : n > 0), n = n := by use 1
 
 -- Regression test: `use` needs to ensure it does calculations inside the correct local contexts
 example : let P : Nat → Prop := fun _x => ∃ _n : Nat, True; P 1 := by
@@ -259,10 +251,8 @@ case h
 ⊢ sorry 1 = 1
 -/
 #guard_msgs in
-example : ∃ f : Nat → Nat, f 1 = 1 := by
-  use ·
+example : ∃ f : Nat → Nat, f 1 = 1 := by use ·
 
-example : ∃ f : Nat → Nat, f 1 = 1 := by
-  use (·)
+example : ∃ f : Nat → Nat, f 1 = 1 := by use (·)
 
 end UseTests

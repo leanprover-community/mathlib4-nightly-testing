@@ -12,8 +12,7 @@ Tests for the behavior of `dsimp%`.
 
 def f : ℕ → ℕ → ℕ := fun a b => a + b
 
-@[simp]
-lemma f_apply (a b : ℕ) : f a b = a + b := rfl
+@[simp] lemma f_apply (a b : ℕ) : f a b = a + b := rfl
 
 -- Testing dsimp% on a proof
 variable {a b c : ℕ} in

@@ -6,7 +6,6 @@ Authors: Johan Commelin
 module
 
 public import Mathlib.Algebra.MvPolynomial.Rename
-
 import Mathlib.Algebra.MvPolynomial.Polynomial
 import Mathlib.Algebra.Polynomial.RingDivision
 import Mathlib.Algebra.Polynomial.Roots
@@ -30,9 +29,10 @@ namespace MvPolynomial
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
-private theorem funext_fin {n : ℕ} {p : MvPolynomial (Fin n) R}
-    (s : Fin n → Set R) (hs : ∀ i, (s i).Infinite)
-    (h : ∀ x ∈ Set.pi .univ s, eval x p = 0) : p = 0 := by
+private theorem funext_fin
+    {n : ℕ} {p : MvPolynomial (Fin n) R}
+    (s : Fin n → Set R) (hs : ∀ i, (s i).Infinite) (h : ∀ x ∈ Set.pi .univ s, eval x p = 0)
+    : p = 0 := by
   induction n with
   | zero =>
     apply (MvPolynomial.isEmptyRingEquiv R (Fin 0)).injective
@@ -52,10 +52,11 @@ section
 variable {σ : Type*} {p q : MvPolynomial σ R} (s : σ → Set R) (hs : ∀ i, (s i).Infinite)
 include hs
 
-/-- Two multivariate polynomials over an integral domain are equal
-if they are equal when evaluated anywhere in a box with infinite sides. -/
-theorem funext_set (h : ∀ x ∈ Set.pi .univ s, eval x p = eval x q) :
-    p = q := by
+/--
+Two multivariate polynomials over an integral domain are equal
+if they are equal when evaluated anywhere in a box with infinite sides.
+-/
+theorem funext_set (h : ∀ x ∈ Set.pi .univ s, eval x p = eval x q) : p = q := by
   suffices ∀ p, (∀ x ∈ Set.pi .univ s, eval x p = 0) → p = 0 by
     rw [← sub_eq_zero, this (p - q)]
     intro x hx
@@ -78,15 +79,16 @@ end
 
 variable [Infinite R]
 
-/-- Two multivariate polynomials over an infinite integral domain are equal
-if they are equal upon evaluating them on an arbitrary assignment of the variables. -/
-theorem funext {σ : Type*} {p q : MvPolynomial σ R}
-    (h : ∀ x : σ → R, eval x p = eval x q) :
-    p = q :=
+/--
+Two multivariate polynomials over an infinite integral domain are equal
+if they are equal upon evaluating them on an arbitrary assignment of the variables.
+-/
+theorem funext {σ : Type*} {p q : MvPolynomial σ R} (h : ∀ x : σ → R, eval x p = eval x q)
+    : p = q :=
   funext_set _ (fun _ ↦ Set.infinite_univ) fun _ _ ↦ h _
 
-theorem funext_iff {σ : Type*} {p q : MvPolynomial σ R} :
-    p = q ↔ ∀ x : σ → R, eval x p = eval x q :=
+theorem funext_iff {σ : Type*} {p q : MvPolynomial σ R}
+    : p = q ↔ ∀ x : σ → R, eval x p = eval x q :=
   ⟨by rintro rfl; simp only [forall_const], funext⟩
 
 end MvPolynomial

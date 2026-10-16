@@ -31,19 +31,22 @@ namespace CategoryTheory.Abelian
 variable [Small.{v} R] {M N : ModuleCat.{v} R}
 
 /-- If `r • N = 0`, then `r • 𝟙 M` induces the zero endomorphism on `Ext M N n`. -/
-lemma Ext.postcomp_smul_id_eq_zero_of_mem_annihilator {r : R} (mem_ann : r ∈ Module.annihilator R N)
-    (n : ℕ) : AddCommGrpCat.ofHom ((Ext.mk₀ (r • 𝟙 M)).postcomp N (add_zero n)) = 0 := by
+lemma Ext.postcomp_smul_id_eq_zero_of_mem_annihilator
+    {r : R} (mem_ann : r ∈ Module.annihilator R N) (n : ℕ)
+    : AddCommGrpCat.ofHom ((Ext.mk₀ (r • 𝟙 M)).postcomp N (add_zero n)) = 0 := by
   ext h
   have : r • 𝟙 N = 0 := by
     simp [← ModuleCat.lsmul_eq_smul_id, Module.mem_annihilator_iff_lsmul_eq_zero.mp mem_ann]
   have smul_eq : r • h = (Ext.mk₀ (r • 𝟙 N)).comp h (zero_add n) := by simp [Ext.mk₀_smul]
   simp [Ext.mk₀_smul, this, smul_eq]
 
-/-- `r • 𝟙 M` induces a monomorphism in `Ext M N n` if and only if scalar multiplication by `r`
-is faithful on `Ext M N n`. -/
-lemma Ext.postcomp_smul_id_mono_iff (r : R) (i : ℕ) :
-    Mono (AddCommGrpCat.ofHom ((Ext.mk₀ (r • 𝟙 M)).postcomp N (add_zero i))) ↔
-      IsSMulRegular (Ext N M i) r := by
+/--
+`r • 𝟙 M` induces a monomorphism in `Ext M N n` if and only if scalar multiplication by `r`
+is faithful on `Ext M N n`.
+-/
+lemma Ext.postcomp_smul_id_mono_iff (r : R) (i : ℕ)
+    : Mono (AddCommGrpCat.ofHom ((Ext.mk₀ (r • 𝟙 M)).postcomp N (add_zero i)))
+      ↔ IsSMulRegular (Ext N M i) r := by
   simp only [IsSMulRegular, AddCommGrpCat.mono_iff_injective]
   congr!
   ext

@@ -42,8 +42,8 @@ punctured neighborhood of `x` iff it vanishes frequently in punctured neighborho
 
 See `AnalyticAt.frequently_zero_iff_eventually_zero` for a stronger result in the analytic case.
 -/
-theorem frequently_zero_iff_eventuallyEq_zero (hf : MeromorphicAt f x) :
-    (∃ᶠ z in 𝓝[≠] x, f z = 0) ↔ f =ᶠ[𝓝[≠] x] 0 :=
+theorem frequently_zero_iff_eventuallyEq_zero (hf : MeromorphicAt f x)
+    : (∃ᶠ z in 𝓝[≠] x, f z = 0) ↔ f =ᶠ[𝓝[≠] x] 0 :=
   ⟨hf.eventually_eq_zero_or_eventually_ne_zero.resolve_right, fun h ↦ h.frequently⟩
 
 /--
@@ -58,21 +58,21 @@ neighbourhood of `x`, which intersects `U` non-trivially but is not contained in
 The assumption that `x` is not an isolated point of `U` is expressed as `AccPt x (𝓟 U)`. See
 `accPt_iff_frequently` and `accPt_iff_frequently_nhdsNE` for useful reformulations.
 -/
-theorem eventuallyEq_zero_nhdsNE_of_eventuallyEq_zero_codiscreteWithin (hf : MeromorphicAt f x)
-    (h₁x : x ∈ U) (h₂x : AccPt x (𝓟 U)) (h : f =ᶠ[codiscreteWithin U] 0) :
-    f =ᶠ[𝓝[≠] x] 0 := by
+theorem eventuallyEq_zero_nhdsNE_of_eventuallyEq_zero_codiscreteWithin
+    (hf : MeromorphicAt f x) (h₁x : x ∈ U) (h₂x : AccPt x (𝓟 U)) (h : f =ᶠ[codiscreteWithin U] 0)
+    : f =ᶠ[𝓝[≠] x] 0 := by
   rw [← hf.frequently_zero_iff_eventuallyEq_zero]
-  apply ((accPt_iff_frequently_nhdsNE.1 h₂x).and_eventually <| eventually_mem_set.2
-    (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 h x h₁x)).mono
+  apply ((accPt_iff_frequently_nhdsNE.1 h₂x).and_eventually <|
+    eventually_mem_set.2 (mem_codiscreteWithin_iff_forall_mem_nhdsNE.1 h x h₁x)).mono
   simp +contextual
 
 /--
 Variant of the principle of isolated zeros, formulated in terms of orders: If `f` is nowhere locally
 constant zero, then its zero set is discrete within its domain of meromorphicity.
 -/
-theorem _root_.MeromorphicOn.codiscreteWithin_setOfPred_ne_zero (h₁f : MeromorphicOn f U)
-    (h₂f : ∀ u ∈ U, meromorphicOrderAt f u ≠ ⊤) :
-    ∀ᶠ x in codiscreteWithin U, f x ≠ 0 := by
+theorem _root_.MeromorphicOn.codiscreteWithin_setOfPred_ne_zero
+    (h₁f : MeromorphicOn f U) (h₂f : ∀ u ∈ U, meromorphicOrderAt f u ≠ ⊤)
+    : ∀ᶠ x in codiscreteWithin U, f x ≠ 0 := by
   filter_upwards [h₁f.analyticAt_mem_codiscreteWithin,
     h₁f.codiscreteWithin_setOfPred_meromorphicOrderAt_eq_zero_or_top h₂f] with x h₁x h₂x
   have := h₂f x h₂x.1
@@ -95,8 +95,8 @@ Formulation of `MeromorphicAt.frequently_zero_iff_eventuallyEq_zero` as an ident
 `f` and `g` are meromorphic at `x`, then `f` and `g` agree eventually in a punctured neighborhood of
 `x` iff they agree at points arbitrarily close to (but different from) `x`.
 -/
-theorem frequently_eq_iff_eventuallyEq (hf : MeromorphicAt f x) (hg : MeromorphicAt g x) :
-    (∃ᶠ z in 𝓝[≠] x, f z = g z) ↔ f =ᶠ[𝓝[≠] x] g := by
+theorem frequently_eq_iff_eventuallyEq (hf : MeromorphicAt f x) (hg : MeromorphicAt g x)
+    : (∃ᶠ z in 𝓝[≠] x, f z = g z) ↔ f =ᶠ[𝓝[≠] x] g := by
   rw [eventuallyEq_iff_sub, ← (hf.sub hg).frequently_zero_iff_eventuallyEq_zero]
   simp_rw [Pi.sub_apply, sub_eq_zero]
 
@@ -106,9 +106,10 @@ identity principle: Let `U` be a subset of `𝕜` and assume that `x ∈ U` is n
 `U`. If function `f` and `g` are meromorphic at `x` and agree along a subset that is codiscrete
 within `U`, then `f` and `g` agree in a punctured neighbourhood of `f`.
 -/
-theorem eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin (hf : MeromorphicAt f x)
-    (hg : MeromorphicAt g x) (h₁x : x ∈ U) (h₂x : AccPt x (𝓟 U)) (h : f =ᶠ[codiscreteWithin U] g) :
-    f =ᶠ[𝓝[≠] x] g := by
+theorem eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin
+    (hf : MeromorphicAt f x) (hg : MeromorphicAt g x) (h₁x : x ∈ U) (h₂x : AccPt x (𝓟 U))
+    (h : f =ᶠ[codiscreteWithin U] g)
+    : f =ᶠ[𝓝[≠] x] g := by
   rw [eventuallyEq_iff_sub] at *
   apply (hf.sub hg).eventuallyEq_zero_nhdsNE_of_eventuallyEq_zero_codiscreteWithin h₁x h₂x h
 
@@ -116,18 +117,20 @@ theorem eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin (hf : MeromorphicAt
 Variant of `MeromorphicAt.eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin`, as a statement
 about meromorphic functions that agree outside a set codiscrete within a perfect set.
 -/
-theorem eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin_preperfect (hf : MeromorphicAt f x)
-    (hg : MeromorphicAt g x) (hx : x ∈ U) (hU : Preperfect U) (h : f =ᶠ[codiscreteWithin U] g) :
-    f =ᶠ[𝓝[≠] x] g :=
+theorem eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin_preperfect
+    (hf : MeromorphicAt f x) (hg : MeromorphicAt g x) (hx : x ∈ U) (hU : Preperfect U)
+    (h : f =ᶠ[codiscreteWithin U] g)
+    : f =ᶠ[𝓝[≠] x] g :=
   hf.eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin hg hx (hU x hx) h
 
 /-
 Variant of `MeromorphicAt.eventuallyEq_nhdsNE_of_eventuallyEq_codiscreteWithin`, as a statement
 about meromorphic functions agreeing in a neighborhood of a preperfect set.
 -/
-theorem eventually_nhdsSet_eventuallyEq_codiscreteWithin (hf : MeromorphicOn f U)
-    (hg : MeromorphicOn g U) (hU : Preperfect U) (h : f =ᶠ[codiscreteWithin U] g) :
-    ∀ᶠ x in 𝓝ˢ U, f =ᶠ[𝓝[≠] x] g := by
+theorem eventually_nhdsSet_eventuallyEq_codiscreteWithin
+    (hf : MeromorphicOn f U) (hg : MeromorphicOn g U) (hU : Preperfect U)
+    (h : f =ᶠ[codiscreteWithin U] g)
+    : ∀ᶠ x in 𝓝ˢ U, f =ᶠ[𝓝[≠] x] g := by
   rw [eventually_nhdsSet_iff_exists]
   use {x | f =ᶠ[𝓝[≠] x] g}
   simp only [Set.mem_ofPred_eq, imp_self, implies_true, and_true]
@@ -140,9 +143,9 @@ theorem eventually_nhdsSet_eventuallyEq_codiscreteWithin (hf : MeromorphicOn f U
 end MeromorphicAt
 
 /-- If meromorphic `f` and `g` agree on `codiscreteWithin U`, so do their derivatives. -/
-theorem MeromorphicOn.deriv_eventuallyEq_codiscreteWithin (hf : MeromorphicOn f U)
-    (hg : MeromorphicOn g U) (h : f =ᶠ[codiscreteWithin U] g) :
-    deriv f =ᶠ[codiscreteWithin U] deriv g := by
+theorem MeromorphicOn.deriv_eventuallyEq_codiscreteWithin
+    (hf : MeromorphicOn f U) (hg : MeromorphicOn g U) (h : f =ᶠ[codiscreteWithin U] g)
+    : deriv f =ᶠ[codiscreteWithin U] deriv g := by
   rw [eventuallyEq_codiscreteWithin_iff_forall_eventually_nhdsNE]
   intro x hx
   by_cases hacc : AccPt x (𝓟 U)

@@ -10,7 +10,6 @@ public import Mathlib.LinearAlgebra.Dimension.DivisionRing
 public import Mathlib.LinearAlgebra.LinearIndependent.Algebra
 public import Mathlib.RingTheory.Localization.BaseChange
 public import Mathlib.RingTheory.OreLocalization.OreSet
-
 import Mathlib.Algebra.Group.Pointwise.Finset.Scalar
 
 /-!
@@ -42,14 +41,12 @@ include hp
 section
 include f
 
-lemma IsLocalizedModule.lift_rank_eq :
-    Cardinal.lift.{uM} (Module.rank R N) = Cardinal.lift.{uN} (Module.rank R M) := by
+lemma IsLocalizedModule.lift_rank_eq
+    : Cardinal.lift.{uM} (Module.rank R N) = Cardinal.lift.{uN} (Module.rank R M) := by
   cases subsingleton_or_nontrivial R
   · simp only [rank_subsingleton, lift_one]
-  apply le_antisymm <;>
-    rw [Module.rank_def, lift_iSup bddAbove_of_small] <;>
-    apply ciSup_le' <;>
-    intro ⟨s, hs⟩
+  apply le_antisymm <;> rw [Module.rank_def, lift_iSup bddAbove_of_small] <;> apply ciSup_le'
+    <;> intro ⟨s, hs⟩
   exacts [(IsLocalizedModule.linearIndependent_lift p f hs).choose_spec.cardinal_lift_le_rank,
     hs.of_isLocalizedModule_of_isRegular p f (le_nonZeroDivisors_iff_isRegular.mp hp)
       |>.cardinal_lift_le_rank]
@@ -59,8 +56,9 @@ lemma IsLocalizedModule.finrank_eq : finrank R N = finrank R M := by
 
 end
 
-lemma IsLocalizedModule.rank_eq {N : Type uM} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N)
-    [IsLocalizedModule p f] : Module.rank R N = Module.rank R M := by
+lemma IsLocalizedModule.rank_eq
+    {N : Type uM} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N) [IsLocalizedModule p f]
+    : Module.rank R N = Module.rank R M := by
   simpa using lift_rank_eq p f hp
 
 lemma IsLocalization.rank_eq : Module.rank S N = Module.rank R N := by
@@ -79,13 +77,15 @@ theorem IsLocalization.finrank_eq : finrank S N = finrank R N := by
 end
 
 variable {S} in
-theorem IsLocalization.linearIndepOn_finsetIntegerMultiple {A : Type*} [CommRing A] [Algebra S A]
-    [Algebra R A] [IsScalarTower R S A] (M : Submonoid S) [IsLocalization M A] [FaithfulSMul S A]
-    {s : Finset A} (hs : LinearIndepOn R id (s : Set A)) [DecidableEq S] :
-    LinearIndepOn R id (finsetIntegerMultiple M s : Set S) := by
+theorem IsLocalization.linearIndepOn_finsetIntegerMultiple
+    {A : Type*} [CommRing A] [Algebra S A] [Algebra R A] [IsScalarTower R S A]
+    (M : Submonoid S) [IsLocalization M A] [FaithfulSMul S A]
+    {s : Finset A} (hs : LinearIndepOn R id (s : Set A))
+    [DecidableEq S]
+    : LinearIndepOn R id (finsetIntegerMultiple M s : Set S) := by
   classical
-  rw [← LinearIndepOn.id_image_algebraMap_iff (A := A),
-    finsetIntegerMultiple_image, ← s.coe_smul_finset]
+  rw [← LinearIndepOn.id_image_algebraMap_iff (A := A), finsetIntegerMultiple_image,
+    ← s.coe_smul_finset]
   rw [linearIndepOn_finset_iff] at hs ⊢
   intro f h
   rw [s.smul_finset_def, s.forall_mem_image]
@@ -98,33 +98,40 @@ section
 
 variable (R N) [IsFractionRing R S]
 
-/-- Given `IsScalarTower R S N`, if `S` is the fraction ring of `R`, then the rank `rank S N`
+/--
+Given `IsScalarTower R S N`, if `S` is the fraction ring of `R`, then the rank `rank S N`
 of the right part of the tower equals the rank `rank R N` of the whole tower.
 
-See `IsFractionRing.finrank_right_eq` for the finrank version. -/
+See `IsFractionRing.finrank_right_eq` for the finrank version.
+-/
 theorem IsFractionRing.rank_right_eq : Module.rank S N = Module.rank R N :=
-  IsLocalization.rank_eq S R⁰ le_rfl
+  IsLocalization.rank_eq S (R⁰) le_rfl
 
-/-- Given `IsScalarTower R S N`, if `S` is the fraction ring of `R`, then the finrank `finrank S N`
+/--
+Given `IsScalarTower R S N`, if `S` is the fraction ring of `R`, then the finrank `finrank S N`
 of the right part of the tower equals the finrank `finrank R N` of the whole tower.
 
 See `IsFractionRing.rank_right_eq` for the rank version.
 See `IsFractionRing.finrank_left_eq` for the left version.
-See `IsFractionRing.finrank_eq` for the simultaneous version. -/
+See `IsFractionRing.finrank_eq` for the simultaneous version.
+-/
 theorem IsFractionRing.finrank_right_eq : finrank S N = finrank R N :=
-  IsLocalization.finrank_eq S R⁰ le_rfl
+  IsLocalization.finrank_eq S (R⁰) le_rfl
 
 end
 
 variable (R) in
 open IsLocalization in
-/-- Given `IsScalarTower R S A`, if `A` is the fraction ring of `S`, then the finrank `finrank R S`
+/--
+Given `IsScalarTower R S A`, if `A` is the fraction ring of `S`, then the finrank `finrank R S`
 of the left part of the tower equals the finrank `finrank R A` of the whole tower.
 
 See `IsFractionRing.finrank_right_eq` for the right version.
-See `IsFractionRing.finrank_eq` for the simultaneous version. -/
-theorem IsFractionRing.finrank_left_eq (A : Type*) [CommRing A] [Algebra S A] [Algebra R A]
-    [IsScalarTower R S A] [IsFractionRing S A] : Module.finrank R S = Module.finrank R A := by
+See `IsFractionRing.finrank_eq` for the simultaneous version.
+-/
+theorem IsFractionRing.finrank_left_eq
+    (A : Type*) [CommRing A] [Algebra S A] [Algebra R A] [IsScalarTower R S A] [IsFractionRing S A]
+    : Module.finrank R S = Module.finrank R A := by
   nontriviality R
   classical
   apply Cardinal.toNat_eq_of_forall_le_iff
@@ -133,39 +140,48 @@ theorem IsFractionRing.finrank_left_eq (A : Type*) [CommRing A] [Algebra S A] [A
   constructor
   · rintro ⟨s, rfl, hs⟩
     let f : S ↪ A := ⟨algebraMap S A, FaithfulSMul.algebraMap_injective S A⟩
-    exact ⟨s.map f, s.card_map f,
-      (linearIndependent_equiv (s.equivMap f)).mp (LinearIndependent.algebraMap_comp_iff.mpr hs)⟩
+    exact ⟨
+      s.map f,
+      s.card_map f,
+      (linearIndependent_equiv (s.equivMap f)).mp (LinearIndependent.algebraMap_comp_iff.mpr hs)
+    ⟩
   · rintro ⟨s, rfl, hs⟩
-    exact ⟨finsetIntegerMultiple S⁰ s, card_finsetIntegerMultiple S⁰ s,
-      linearIndepOn_finsetIntegerMultiple S⁰ hs⟩
+    exact ⟨
+      finsetIntegerMultiple (S⁰) s,
+      card_finsetIntegerMultiple (S⁰) s,
+      linearIndepOn_finsetIntegerMultiple (S⁰) hs
+    ⟩
 
-/-- If `K` is the fraction ring of `A` and `L` is the fraction ring of `B`, then the finrank
+/--
+If `K` is the fraction ring of `A` and `L` is the fraction ring of `B`, then the finrank
 `finrank K L` of the fraction rings equals the finrank `finrank A B` of the base rings.
 
 See `IsFractionRing.finrank_left_eq` and `IsFractionRing.finrank_right_eq` for one-sided versions.
-See `Algebra.IsAlgebraic.rank_of_isFractionRing` for a rank version with additional assumptions. -/
-protected theorem IsFractionRing.finrank_eq (A K B L : Type*)
-    [CommRing A] [CommRing K] [CommRing B] [CommRing L] [Algebra A B] [Module K L]
+See `Algebra.IsAlgebraic.rank_of_isFractionRing` for a rank version with additional assumptions.
+-/
+protected theorem IsFractionRing.finrank_eq
+    (A K B L : Type*) [CommRing A] [CommRing K] [CommRing B] [CommRing L] [Algebra A B] [Module K L]
     [Algebra A K] [Algebra B L] [Algebra A L] [IsScalarTower A K L] [IsScalarTower A B L]
-    [IsFractionRing A K] [IsFractionRing B L] : Module.finrank K L = Module.finrank A B :=
+    [IsFractionRing A K] [IsFractionRing B L]
+    : Module.finrank K L = Module.finrank A B :=
   (finrank_right_eq A K L).trans (finrank_left_eq A B L).symm
 
 variable (R M) in
-theorem exists_set_linearIndependent_of_isDomain [IsDomain R] :
-    ∃ s : Set M, #s = Module.rank R M ∧ LinearIndepOn R id s := by
+theorem exists_set_linearIndependent_of_isDomain [IsDomain R]
+    : ∃ s : Set M, #s = Module.rank R M ∧ LinearIndepOn R id s := by
   obtain ⟨w, hw⟩ :=
-    IsLocalizedModule.linearIndependent_lift R⁰ (LocalizedModule.mkLinearMap R⁰ M) <|
-      Module.Free.chooseBasis (FractionRing R) (LocalizedModule R⁰ M)
+    IsLocalizedModule.linearIndependent_lift (R⁰) (LocalizedModule.mkLinearMap (R⁰) M) <|
+      Module.Free.chooseBasis (FractionRing R) (LocalizedModule (R⁰) M)
         |>.linearIndependent.restrict_scalars' _
   refine ⟨Set.range w, ?_, (linearIndepOn_id_range_iff hw.injective).mpr hw⟩
   apply Cardinal.lift_injective.{max uR uM}
   rw [Cardinal.mk_range_eq_of_injective hw.injective, ← Module.Free.rank_eq_card_chooseBasisIndex,
-    IsLocalization.rank_eq (FractionRing R) R⁰ le_rfl,
-    IsLocalizedModule.lift_rank_eq R⁰ (LocalizedModule.mkLinearMap R⁰ M) le_rfl]
+    IsLocalization.rank_eq (FractionRing R) (R⁰) le_rfl,
+    IsLocalizedModule.lift_rank_eq (R⁰) (LocalizedModule.mkLinearMap (R⁰) M) le_rfl]
 
 /-- The **rank-nullity theorem** for commutative domains. Also see `rank_quotient_add_rank`. -/
-theorem rank_quotient_add_rank_of_isDomain [IsDomain R] (M' : Submodule R M) :
-    Module.rank R (M ⧸ M') + Module.rank R M' = Module.rank R M := by
+theorem rank_quotient_add_rank_of_isDomain [IsDomain R] (M' : Submodule R M)
+    : Module.rank R (M ⧸ M') + Module.rank R M' = Module.rank R M := by
   apply lift_injective.{max uR uM}
   simp_rw [lift_add, ← IsLocalizedModule.lift_rank_eq R⁰ (M'.toLocalized R⁰) le_rfl,
     ← IsLocalizedModule.lift_rank_eq R⁰ (LocalizedModule.mkLinearMap R⁰ M) le_rfl,
@@ -184,15 +200,18 @@ open Cardinal TensorProduct
 
 section
 
-variable {p} [Free S N] [StrongRankCondition S] {T : Type uT} [CommRing T] [Algebra R T]
-  (hpT : Algebra.algebraMapSubmonoid T p ≤ T⁰) [StrongRankCondition (S ⊗[R] T)]
+variable
+  {p} [Free S N] [StrongRankCondition S]
+  {T : Type uT} [CommRing T] [Algebra R T]
+  (hpT : Algebra.algebraMapSubmonoid T p ≤ T⁰)
+  [StrongRankCondition (S ⊗[R] T)]
   {P : Type uP} [AddCommGroup P] [Module R P] [Module T P] [IsScalarTower R T P]
   {g : M →ₗ[R] P} (bc : IsBaseChange T g)
 
 include S hp hpT f bc
 
-theorem lift_rank_eq_of_le_nonZeroDivisors :
-    Cardinal.lift.{uM} (Module.rank T P) = Cardinal.lift.{uP} (Module.rank R M) := by
+theorem lift_rank_eq_of_le_nonZeroDivisors
+    : Cardinal.lift.{uM} (Module.rank T P) = Cardinal.lift.{uP} (Module.rank R M) := by
   rw [← lift_inj.{_, max uS uT uN}, lift_lift, lift_lift]
   let ST := S ⊗[R] T
   conv_rhs => rw [← lift_lift.{uN, max uS uT uP}, ← IsLocalizedModule.lift_rank_eq p f hp,
@@ -202,60 +221,70 @@ theorem lift_rank_eq_of_le_nonZeroDivisors :
   let _ : Algebra T ST := Algebra.TensorProduct.rightAlgebra
   set pT := Algebra.algebraMapSubmonoid T p
   rw [← lift_lift.{max uS uT, max uM uN}, ← lift_umax.{uP},
-    ← IsLocalizedModule.lift_rank_eq pT (mk T ST P 1) hpT,
-    ← IsLocalization.rank_eq ST pT hpT, lift_id'.{uP, max uS uT},
-    ← lift_id'.{max uS uT, max uS uT uP} (Module.rank ..), lift_lift,
+    ← IsLocalizedModule.lift_rank_eq pT (mk T ST P 1) hpT, ← IsLocalization.rank_eq ST pT hpT,
+    lift_id'.{uP, max uS uT}, ← lift_id'.{max uS uT, max uS uT uP} (Module.rank ..), lift_lift,
     ← lift_lift.{max uS uT uN, uM}, lift_inj]
-  exact LinearEquiv.lift_rank_eq <| AlgebraTensorModule.congr (.refl ST ST) bc.equiv.symm ≪≫ₗ
-    AlgebraTensorModule.cancelBaseChange .. ≪≫ₗ (AlgebraTensorModule.cancelBaseChange ..).symm ≪≫ₗ
-    AlgebraTensorModule.congr (.refl ..) ((isLocalizedModule_iff_isBaseChange p S f).mp ‹_›).equiv
+  exact LinearEquiv.lift_rank_eq <|
+    AlgebraTensorModule.congr (.refl ST ST) bc.equiv.symm
+      ≪≫ₗ AlgebraTensorModule.cancelBaseChange .. ≪≫ₗ (AlgebraTensorModule.cancelBaseChange ..).symm
+      ≪≫ₗ AlgebraTensorModule.congr (.refl ..)
+        ((isLocalizedModule_iff_isBaseChange p S f).mp ‹_›).equiv
 
 theorem finrank_eq_of_le_nonZeroDivisors : finrank T P = finrank R M := by
   simpa using! congr(toNat $(lift_rank_eq_of_le_nonZeroDivisors S f hp hpT bc))
 
 omit bc
-theorem rank_eq_of_le_nonZeroDivisors {P : Type uM} [AddCommGroup P] [Module R P] [Module T P]
-    [IsScalarTower R T P] {g : M →ₗ[R] P} (bc : IsBaseChange T g) :
-    Module.rank T P = Module.rank R M := by
+theorem rank_eq_of_le_nonZeroDivisors
+    {P : Type uM} [AddCommGroup P] [Module R P] [Module T P] [IsScalarTower R T P]
+    {g : M →ₗ[R] P} (bc : IsBaseChange T g)
+    : Module.rank T P = Module.rank R M := by
   simpa using lift_rank_eq_of_le_nonZeroDivisors S f hp hpT bc
 
 end
 
-variable {p} {T : Type uT} [CommRing T] [NoZeroDivisors T] [Algebra R T] [FaithfulSMul R T]
+variable
+  {p} {T : Type uT} [CommRing T] [NoZeroDivisors T] [Algebra R T] [FaithfulSMul R T]
   {P : Type uP} [AddCommGroup P] [Module R P] [Module T P] [IsScalarTower R T P]
   {g : M →ₗ[R] P} (bc : IsBaseChange T g)
 
 include bc
 
-theorem lift_rank_eq :
-    Cardinal.lift.{uM} (Module.rank T P) = Cardinal.lift.{uP} (Module.rank R M) := by
+theorem lift_rank_eq
+    : Cardinal.lift.{uM} (Module.rank T P) = Cardinal.lift.{uP} (Module.rank R M) := by
   have inj := FaithfulSMul.algebraMap_injective R T
   have := inj.noZeroDivisors _ (map_zero _) (map_mul _)
   cases subsingleton_or_nontrivial R
   · have := (algebraMap R T).codomain_trivial; simp only [rank_subsingleton, lift_one]
-  have := (isDomain_iff_noZeroDivisors_and_nontrivial T).mpr
-    ⟨‹_›, (FaithfulSMul.algebraMap_injective R T).nontrivial⟩
+  have :=
+    (isDomain_iff_noZeroDivisors_and_nontrivial T).mpr
+      ⟨‹_›, (FaithfulSMul.algebraMap_injective R T).nontrivial⟩
   let FR := FractionRing R
   let FT := FractionRing T
   replace inj : Function.Injective (algebraMap R FT) := (IsFractionRing.injective T _).comp inj
   let g := TensorProduct.mk T FT P 1
-  have : IsLocalizedModule R⁰ (TensorProduct.mk R FR FT 1) := inferInstance
+  have : IsLocalizedModule (R⁰) (TensorProduct.mk R FR FT 1) := inferInstance
   let _ : Algebra FT (FR ⊗[R] FT) := Algebra.TensorProduct.rightAlgebra
-  let _ := isLocalizedModule_iff_isLocalization.mp this |>.atUnits _ _ ?_ |>.symm.isField
-    (Field.toIsField FT) |>.toField
+  let _ :=
+    isLocalizedModule_iff_isLocalization.mp this
+      |>.atUnits _ _ ?_
+      |>.symm.isField (Field.toIsField FT)
+      |>.toField
   on_goal 2 => rintro _ ⟨_, mem, rfl⟩; exact (map_ne_zero_of_mem_nonZeroDivisors _ inj mem).isUnit
-  have := bc.comp_iff.2 ((isLocalizedModule_iff_isBaseChange T⁰ FT g).1 inferInstance)
+  have := bc.comp_iff.2 ((isLocalizedModule_iff_isBaseChange (T⁰) FT g).1 inferInstance)
   rw [← lift_inj.{_, max uT uP}, lift_lift, lift_lift, ← lift_lift.{max uT uP, uM},
-    ← IsLocalizedModule.lift_rank_eq T⁰ g le_rfl, lift_lift, ← lift_lift.{uM},
-    ← IsLocalization.rank_eq FT T⁰ le_rfl,
-    lift_rank_eq_of_le_nonZeroDivisors FR (LocalizedModule.mkLinearMap R⁰ M) le_rfl
-      (map_le_nonZeroDivisors_of_injective _ inj le_rfl) this, lift_lift]
+    ← IsLocalizedModule.lift_rank_eq (T⁰) g le_rfl, lift_lift, ← lift_lift.{uM},
+    ← IsLocalization.rank_eq FT (T⁰) le_rfl,
+    lift_rank_eq_of_le_nonZeroDivisors FR (LocalizedModule.mkLinearMap (R⁰) M) le_rfl
+      (map_le_nonZeroDivisors_of_injective _ inj le_rfl) this,
+    lift_lift]
 
 theorem finrank_eq : finrank T P = finrank R M := by simpa using! congr(toNat $bc.lift_rank_eq)
 
 omit bc
-theorem rank_eq {P : Type uM} [AddCommGroup P] [Module R P] [Module T P] [IsScalarTower R T P]
-    {g : M →ₗ[R] P} (bc : IsBaseChange T g) : Module.rank T P = Module.rank R M := by
+theorem rank_eq
+    {P : Type uM} [AddCommGroup P] [Module R P] [Module T P] [IsScalarTower R T P]
+    {g : M →ₗ[R] P} (bc : IsBaseChange T g)
+    : Module.rank T P = Module.rank R M := by
   simpa using bc.lift_rank_eq
 
 end IsBaseChange
@@ -266,38 +295,43 @@ section Ring
 
 variable {R} [Ring R] [IsDomain R]
 
-/-- A domain that is not (left) Ore is of infinite rank.
-See [cohn_1995] Proposition 1.3.6 -/
-lemma aleph0_le_rank_of_isEmpty_oreSet (hS : IsEmpty (OreLocalization.OreSet R⁰)) :
-    ℵ₀ ≤ Module.rank R R := by
+/--
+A domain that is not (left) Ore is of infinite rank.
+See [cohn_1995] Proposition 1.3.6
+-/
+lemma aleph0_le_rank_of_isEmpty_oreSet (hS : IsEmpty (OreLocalization.OreSet R⁰))
+    : ℵ₀ ≤ Module.rank R R := by
   rw [← not_nonempty_iff, OreLocalization.nonempty_oreSet_iff_of_noZeroDivisors] at hS
   push Not at hS
   obtain ⟨r, s, h⟩ := hS
   refine Cardinal.aleph0_le.mpr fun n ↦ ?_
   suffices LinearIndependent R (fun (i : Fin n) ↦ r * s ^ (i : ℕ)) by
     simpa using this.cardinal_lift_le_rank
-  suffices ∀ (g : ℕ → R) (x), (∑ i ∈ Finset.range n, g i • (r * s ^ (i + x))) = 0 →
-      ∀ i < n, g i = 0 by
+  suffices ∀ (g : ℕ → R) (x),
+      (∑ i ∈ Finset.range n, g i • (r * s ^ (i + x))) = 0 → ∀ i < n, g i = 0 by
     refine Fintype.linearIndependent_iff.mpr fun g hg i ↦ ?_
-    simpa only [dite_eq_left i.prop] using this (fun i ↦ if h : i < n then g ⟨i, h⟩ else 0) 0
-      (by simp [← Fin.sum_univ_eq_sum_range, ← hg]) i i.prop
+    simpa only [dite_eq_left i.prop] using
+      this
+        (fun i ↦ if h : i < n then g ⟨i, h⟩ else 0)
+        0 (by simp [← Fin.sum_univ_eq_sum_range, ← hg]) i i.prop
   intro g x hg i hin
   induction n generalizing g x i with
-  | zero => contradiction
+  | zero =>
+    contradiction
   | succ n IH =>
     rw [Finset.sum_range_succ'] at hg
     by_cases hg0 : g 0 = 0
     · simp only [hg0, zero_smul, add_zero, add_assoc] at hg
-      cases i; exacts [hg0, IH _ _ hg _ (Nat.succ_lt_succ_iff.mp hin)]
-    simp only [zero_add, pow_add _ _ x,
-      ← mul_assoc, pow_succ, ← Finset.sum_mul, smul_eq_mul] at hg
+      cases i
+      exacts [hg0, IH _ _ hg _ (Nat.succ_lt_succ_iff.mp hin)]
+    simp only [zero_add, pow_add _ _ x, ← mul_assoc, pow_succ, ← Finset.sum_mul, smul_eq_mul] at hg
     rw [← neg_eq_iff_add_eq_zero, ← neg_mul, ← neg_mul] at hg
     have := mul_right_cancel₀ (mem_nonZeroDivisors_iff_ne_zero.mp (s ^ x).prop) hg
     exact (h _ ⟨(g 0), mem_nonZeroDivisors_iff_ne_zero.mpr (by simpa)⟩ this.symm).elim
 
 -- TODO: Upgrade this to an iff. See [lam_1999] Exercise 10.21
-lemma nonempty_oreSet_of_strongRankCondition [StrongRankCondition R] :
-    Nonempty (OreLocalization.OreSet R⁰) := by
+lemma nonempty_oreSet_of_strongRankCondition [StrongRankCondition R]
+    : Nonempty (OreLocalization.OreSet R⁰) := by
   by_contra! h
   have := aleph0_le_rank_of_isEmpty_oreSet h
   rw [rank_self] at this

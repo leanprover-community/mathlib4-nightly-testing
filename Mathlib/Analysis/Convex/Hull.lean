@@ -22,7 +22,6 @@ while the impact on writing code is minimal as `convexHull 𝕜 s` is automatica
 
 @[expose] public section
 
-
 open Set
 
 open scoped Pointwise
@@ -46,8 +45,7 @@ def convexHull : ClosureOperator (Set E) := .ofCompletePred (Convex 𝕜) fun _ 
 
 variable (s : Set E)
 
-theorem subset_convexHull : s ⊆ convexHull 𝕜 s :=
-  (convexHull 𝕜).le_closure s
+theorem subset_convexHull : s ⊆ convexHull 𝕜 s := (convexHull 𝕜).le_closure s
 
 theorem convex_convexHull : Convex 𝕜 (convexHull 𝕜 s) := (convexHull 𝕜).isClosed_closure s
 
@@ -77,9 +75,7 @@ alias ⟨_, Convex.convexHull_eq⟩ := convexHull_eq_self
 theorem convexHull_univ : convexHull 𝕜 (univ : Set E) = univ :=
   ClosureOperator.closure_top (convexHull 𝕜)
 
-@[simp]
-theorem convexHull_empty : convexHull 𝕜 (∅ : Set E) = ∅ :=
-  convex_empty.convexHull_eq
+@[simp] theorem convexHull_empty : convexHull 𝕜 (∅ : Set E) = ∅ := convex_empty.convexHull_eq
 
 @[simp]
 theorem convexHull_eq_empty : convexHull 𝕜 s = ∅ ↔ s = ∅ := by
@@ -104,7 +100,8 @@ theorem segment_subset_convexHull (hx : x ∈ s) (hy : y ∈ s) : segment 𝕜 x
 theorem convexHull_singleton (x : E) : convexHull 𝕜 ({x} : Set E) = {x} :=
   (convex_singleton x).convexHull_eq
 
-@[simp] lemma convexHull_eq_singleton : convexHull 𝕜 s = {x} ↔ s = {x} where
+@[simp]
+lemma convexHull_eq_singleton : convexHull 𝕜 s = {x} ↔ s = {x} where
   mp hs := by
     rw [← Set.Nonempty.subset_singleton_iff, ← hs]
     · exact subset_convexHull ..
@@ -112,9 +109,7 @@ theorem convexHull_singleton (x : E) : convexHull 𝕜 ({x} : Set E) = {x} :=
       simp_all [eq_comm (a := ∅)]
   mpr hs := by simp [hs]
 
-@[simp]
-theorem convexHull_zero : convexHull 𝕜 (0 : Set E) = 0 :=
-  convexHull_singleton 0
+@[simp] theorem convexHull_zero : convexHull 𝕜 (0 : Set E) = 0 := convexHull_singleton 0
 
 @[simp] lemma convexHull_eq_zero : convexHull 𝕜 s = 0 ↔ s = 0 := convexHull_eq_singleton
 
@@ -125,16 +120,16 @@ theorem convexHull_pair [IsOrderedRing 𝕜] (x y : E) : convexHull 𝕜 {x, y} 
   rw [insert_subset_iff, singleton_subset_iff]
   exact ⟨left_mem_segment _ _ _, right_mem_segment _ _ _⟩
 
-theorem convexHull_convexHull_union_left (s t : Set E) :
-    convexHull 𝕜 (convexHull 𝕜 s ∪ t) = convexHull 𝕜 (s ∪ t) :=
+theorem convexHull_convexHull_union_left (s t : Set E)
+    : convexHull 𝕜 (convexHull 𝕜 s ∪ t) = convexHull 𝕜 (s ∪ t) :=
   ClosureOperator.closure_sup_closure_left _ _ _
 
-theorem convexHull_convexHull_union_right (s t : Set E) :
-    convexHull 𝕜 (s ∪ convexHull 𝕜 t) = convexHull 𝕜 (s ∪ t) :=
+theorem convexHull_convexHull_union_right (s t : Set E)
+    : convexHull 𝕜 (s ∪ convexHull 𝕜 t) = convexHull 𝕜 (s ∪ t) :=
   ClosureOperator.closure_sup_closure_right _ _ _
 
-theorem Convex.convex_remove_iff_notMem_convexHull_remove {s : Set E} (hs : Convex 𝕜 s) (x : E) :
-    Convex 𝕜 (s \ {x}) ↔ x ∉ convexHull 𝕜 (s \ {x}) := by
+theorem Convex.convex_remove_iff_notMem_convexHull_remove {s : Set E} (hs : Convex 𝕜 s) (x : E)
+    : Convex 𝕜 (s \ {x}) ↔ x ∉ convexHull 𝕜 (s \ {x}) := by
   constructor
   · rintro hsx hx
     rw [hsx.convexHull_eq] at hx
@@ -143,27 +138,27 @@ theorem Convex.convex_remove_iff_notMem_convexHull_remove {s : Set E} (hs : Conv
   suffices h : s \ {x} = convexHull 𝕜 (s \ {x}) by
     rw [h]
     exact convex_convexHull 𝕜 _
-  exact
-    Subset.antisymm (subset_convexHull 𝕜 _) fun y hy =>
-      ⟨convexHull_min sdiff_subset hs hy, by
-        rintro (rfl : y = x)
-        exact hx hy⟩
+  exact Subset.antisymm (subset_convexHull 𝕜 _) fun y hy => ⟨
+    convexHull_min sdiff_subset hs hy,
+    by
+      rintro (rfl : y = x)
+      exact hx hy
+  ⟩
 
-theorem IsLinearMap.image_convexHull {f : E → F} (hf : IsLinearMap 𝕜 f) (s : Set E) :
-    f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) :=
+theorem IsLinearMap.image_convexHull {f : E → F} (hf : IsLinearMap 𝕜 f) (s : Set E)
+    : f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) :=
   Set.Subset.antisymm
-    (image_subset_iff.2 <|
-      convexHull_min (image_subset_iff.1 <| subset_convexHull 𝕜 _)
-        ((convex_convexHull 𝕜 _).is_linear_preimage hf))
+    (image_subset_iff.2 <| convexHull_min (image_subset_iff.1 <| subset_convexHull 𝕜 _)
+      ((convex_convexHull 𝕜 _).is_linear_preimage hf))
     (convexHull_min (image_mono (subset_convexHull 𝕜 s)) <|
       (convex_convexHull 𝕜 s).is_linear_image hf)
 
-theorem LinearMap.image_convexHull (f : E →ₗ[𝕜] F) (s : Set E) :
-    f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) :=
+theorem LinearMap.image_convexHull (f : E →ₗ[𝕜] F) (s : Set E)
+    : f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) :=
   f.isLinear.image_convexHull s
 
-theorem convexHull_add_subset {s t : Set E} :
-    convexHull 𝕜 (s + t) ⊆ convexHull 𝕜 s + convexHull 𝕜 t :=
+theorem convexHull_add_subset {s t : Set E}
+    : convexHull 𝕜 (s + t) ⊆ convexHull 𝕜 s + convexHull 𝕜 t :=
   convexHull_min (add_subset_add (subset_convexHull _ _) (subset_convexHull _ _))
     (Convex.add (convex_convexHull 𝕜 s) (convex_convexHull 𝕜 t))
 
@@ -188,8 +183,8 @@ section AddCommGroup
 
 variable [AddCommGroup E] [AddCommGroup F] [Module 𝕜 E] [Module 𝕜 F]
 
-theorem AffineMap.image_convexHull (f : E →ᵃ[𝕜] F) (s : Set E) :
-    f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) := by
+theorem AffineMap.image_convexHull (f : E →ᵃ[𝕜] F) (s : Set E)
+    : f '' convexHull 𝕜 s = convexHull 𝕜 (f '' s) := by
   apply Set.Subset.antisymm
   · rw [Set.image_subset_iff]
     refine convexHull_min ?_ ((convex_convexHull 𝕜 (f '' s)).affine_preimage f)
@@ -207,7 +202,7 @@ theorem affineSpan_convexHull (s : Set E) : affineSpan 𝕜 (convexHull 𝕜 s) 
   rw [affineSpan_le]
   exact convexHull_subset_affineSpan s
 
-theorem convexHull_neg (s : Set E) : convexHull 𝕜 (-s) = -convexHull 𝕜 s := by
+theorem convexHull_neg (s : Set E) : convexHull 𝕜 (-s) = - convexHull 𝕜 s := by
   simp_rw [← image_neg_eq_neg]
   exact AffineMap.image_convexHull (-1) _ |>.symm
 

@@ -6,7 +6,6 @@ Authors: Yizheng Zhu
 module
 
 public import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
-
 import Mathlib.Algebra.Order.Interval.Set.Group
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Slope
 
@@ -33,27 +32,33 @@ open MeasureTheory Set Filter
 
 open scoped Topology
 
-/-- If `f` is monotone on `[a, b]`, then `f'` is the limit of `G n` a.e. on `[a, b]`, where each
+/--
+If `f` is monotone on `[a, b]`, then `f'` is the limit of `G n` a.e. on `[a, b]`, where each
 `G n` is `AEStronglyMeasurable` and the liminf of the lower Lebesgue integral of `‖G n ·‖ₑ` is at
-most `f b - f a`. -/
+most `f b - f a`.
+-/
 lemma MonotoneOn.exists_tendsto_deriv_liminf_lintegral_enorm_le
-    {f : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hf : MonotoneOn f (Icc a b)) :
-    ∃ G : (ℕ → ℝ → ℝ), (∀ᵐ x ∂volume.restrict (Icc a b),
-      Filter.Tendsto (fun (n : ℕ) ↦ G n x) Filter.atTop (𝓝 (deriv f x))) ∧
-      (∀ (n : ℕ), AEStronglyMeasurable (G n) (volume.restrict (Icc a b))) ∧
-      liminf (fun (n : ℕ) ↦ ∫⁻ (x : ℝ) in Icc a b, ‖G n x‖ₑ) atTop ≤
-        ENNReal.ofReal (f b - f a) := by
-  /- Proof Sketch: Extend `f` on `[a, b]` to a function `g` on `ℝ` by defining `g x = f a` for
+    {f : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hf : MonotoneOn f (Icc a b))
+    : ∃ G : (ℕ → ℝ → ℝ),
+      (∀ᵐ x ∂volume.restrict (Icc a b),
+          Filter.Tendsto (fun (n : ℕ) ↦ G n x) Filter.atTop (𝓝 (deriv f x)))
+        ∧ (∀ (n : ℕ), AEStronglyMeasurable (G n) (volume.restrict (Icc a b)))
+        ∧ liminf (fun (n : ℕ) ↦ ∫⁻ (x : ℝ) in Icc a b, ‖G n x‖ₑ) atTop
+          ≤ ENNReal.ofReal (f b - f a) := by
+  /-
+  Proof Sketch: Extend `f` on `[a, b]` to a function `g` on `ℝ` by defining `g x = f a` for
   `x < a` and `g x = f b` for `x > b`. `g` is globally monotone and `g'` agrees with `f'` on
   `(a, b)`. We let `G c x = slope g x (x + c)` for `c > 0`. Then `G c x` is nonnegative,
   `∫⁻ (x : ℝ) in Icc a b, ‖G c x‖ₑ ≤ f b - f a`, and `G c x` tends to `f' x` as `c` tends to `0`
   from the right. The function `fun n x ↦ G (n : ℝ)⁻¹ x` is a witness to the conclusion of the
-  lemma. -/
+  lemma.
+  -/
   let g (x : ℝ) : ℝ := f (max a (min x b))
-  have hg : Monotone g := monotoneOn_univ.mp <| hf.comp
-    (monotoneOn_const.max <| monotoneOn_id.min monotoneOn_const) (by simpa)
-  have hfg : EqOn f g (Ioo a b) := fun x ⟨hxa, hxb⟩ => congrArg f <|
-    min_eq_left hxb.le |>.symm ▸ (max_eq_right hxa.le).symm
+  have hg : Monotone g :=
+    monotoneOn_univ.mp <|
+      hf.comp (monotoneOn_const.max <| monotoneOn_id.min monotoneOn_const) (by simpa)
+  have hfg : EqOn f g (Ioo a b) := fun x ⟨hxa, hxb⟩ =>
+    congrArg f <| min_eq_left hxb.le |>.symm ▸ (max_eq_right hxa.le).symm
   replace hfg := hfg.deriv isOpen_Ioo
   let G (c x : ℝ) := slope g x (x + c)
   have G_integrable (n : ℕ) : Integrable (G (↑n)⁻¹) (volume.restrict (Icc a b)) := by
@@ -65,8 +70,8 @@ lemma MonotoneOn.exists_tendsto_deriv_liminf_lintegral_enorm_le
     rw [hfg hx₂]
     exact hx₁.hasDerivAt.tendsto_slope.comp <|
       tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
-      (by convert tendsto_const_nhds.add (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)); simp)
-      (by simp [eventually_ne_atTop 0])
+        (by convert tendsto_const_nhds.add (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)); simp)
+        (by simp [eventually_ne_atTop 0])
   · calc
       _ = liminf (fun (n : ℕ) ↦ ENNReal.ofReal (∫ (x : ℝ) in Icc a b, (G (n : ℝ)⁻¹) x)) atTop := by
         apply Filter.liminf_congr
@@ -75,8 +80,8 @@ lemma MonotoneOn.exists_tendsto_deriv_liminf_lintegral_enorm_le
         congr with y
         exact abs_eq_self.mpr (hg.monotoneOn univ |>.slope_nonneg trivial trivial)
       _ ≤ ENNReal.ofReal (g b - g a) := by
-        refine Filter.liminf_le_of_frequently_le'
-          (Filter.Frequently.of_forall fun n ↦ ENNReal.ofReal_le_ofReal ?_)
+        refine Filter.liminf_le_of_frequently_le' (Filter.Frequently.of_forall fun n ↦
+          ENNReal.ofReal_le_ofReal ?_)
         rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hab]
         convert
           hg.monotoneOn (Icc a (b + (n : ℝ)⁻¹)) |>.intervalIntegral_slope_le hab (by simp) using 2
@@ -84,9 +89,8 @@ lemma MonotoneOn.exists_tendsto_deriv_liminf_lintegral_enorm_le
       _ = ENNReal.ofReal (f b - f a) := by grind
 
 /-- If `f` is monotone on `a..b`, then `f'` is interval integrable on `a..b`. -/
-theorem MonotoneOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}
-    (hf : MonotoneOn f (uIcc a b)) :
-    IntervalIntegrable (deriv f) volume a b := by
+theorem MonotoneOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ} (hf : MonotoneOn f (uIcc a b))
+    : IntervalIntegrable (deriv f) volume a b := by
   wlog hab : a ≤ b generalizing a b with h
   · exact h (uIcc_comm a b ▸ hf) (by linarith) |>.symm
   rw [uIcc_of_le hab] at hf
@@ -96,11 +100,13 @@ theorem MonotoneOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}
   have integrable_f_deriv := integrable_of_tendsto hGf hG hG'₀
   exact (intervalIntegrable_iff_integrableOn_Icc_of_le hab).mpr integrable_f_deriv
 
-/-- If `f` is monotone on `a..b`, then `f'` is interval integrable on `a..b` and the integral of
-`f'` on `a..b` is in between `0` and `f b - f a`. -/
-theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc {f : ℝ → ℝ} {a b : ℝ}
-    (hf : MonotoneOn f (uIcc a b)) :
-    ∫ x in a..b, deriv f x ∈ uIcc 0 (f b - f a) := by
+/--
+If `f` is monotone on `a..b`, then `f'` is interval integrable on `a..b` and the integral of
+`f'` on `a..b` is in between `0` and `f b - f a`.
+-/
+theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc
+    {f : ℝ → ℝ} {a b : ℝ} (hf : MonotoneOn f (uIcc a b))
+    : ∫ x in a..b, deriv f x ∈ uIcc 0 (f b - f a) := by
   wlog hab : a ≤ b generalizing a b with h
   · specialize h (uIcc_comm a b ▸ hf) (by linarith)
     have : f b ≤ f a := hf (by simp) (by simp) (by linarith)
@@ -125,15 +131,15 @@ theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc {f : ℝ → ℝ} {a b : ℝ}
     rw [Filter.EventuallyLE, ← restrict_Ioo_eq_restrict_Icc,
       MeasureTheory.ae_restrict_iff' measurableSet_Ioo]
     exact Filter.Eventually.of_forall @f_deriv_nonneg
-  · have ebound := lintegral_enorm_le_liminf_of_tendsto
-      ((MeasureTheory.ae_restrict_iff' (by measurability) |>.mpr hGf))
-      (fun n ↦ (hG n).aemeasurable.enorm)
+  · have ebound :=
+      lintegral_enorm_le_liminf_of_tendsto
+        ((MeasureTheory.ae_restrict_iff' (by measurability) |>.mpr hGf))
+        (fun n ↦ (hG n).aemeasurable.enorm)
     grw [hG'] at ebound
-    rw [uIcc_of_le hab,
-        ← MeasureTheory.ofReal_integral_norm_eq_lintegral_enorm integrable_f_deriv,
-        ENNReal.ofReal_le_ofReal_iff (by linarith),
-        integral_Icc_eq_integral_Ioc,
-        ← intervalIntegral.integral_of_le hab] at ebound
+    rw [uIcc_of_le hab, ← MeasureTheory.ofReal_integral_norm_eq_lintegral_enorm integrable_f_deriv,
+        ENNReal.ofReal_le_ofReal_iff (by linarith), integral_Icc_eq_integral_Ioc,
+        ← intervalIntegral.integral_of_le hab]
+      at ebound
     convert ebound using 1
     refine intervalIntegral.integral_congr_uIoo ?_
     rw [uIoo_of_le hab]
@@ -141,9 +147,9 @@ theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc {f : ℝ → ℝ} {a b : ℝ}
     exact Eq.symm <| abs_eq_self.mpr <| f_deriv_nonneg hx
 
 /-- If `f` has bounded variation on `uIcc a b`, then `f'` is interval integrable on `a..b`. -/
-theorem BoundedVariationOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}
-    (hf : BoundedVariationOn f (uIcc a b)) :
-    IntervalIntegrable (deriv f) volume a b := by
+theorem BoundedVariationOn.intervalIntegrable_deriv
+    {f : ℝ → ℝ} {a b : ℝ} (hf : BoundedVariationOn f (uIcc a b))
+    : IntervalIntegrable (deriv f) volume a b := by
   obtain ⟨p, q, hp, hq, rfl⟩ := hf.locallyBoundedVariationOn.exists_monotoneOn_sub_monotoneOn
   have h₂ : ∀ᵐ x, x ≠ max a b := by simp [ae_iff, measure_singleton]
   apply (hp.intervalIntegrable_deriv.sub hq.intervalIntegrable_deriv).congr_ae
@@ -158,7 +164,7 @@ theorem BoundedVariationOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ
   exact (hx₁.sub hx₂).deriv.symm
 
 /-- If `f` is absolutely continuous on `uIcc a b`, then `f'` is interval integrable on `a..b`. -/
-theorem AbsolutelyContinuousOnInterval.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}
-    (hf : AbsolutelyContinuousOnInterval f a b) :
-    IntervalIntegrable (deriv f) volume a b :=
+theorem AbsolutelyContinuousOnInterval.intervalIntegrable_deriv
+    {f : ℝ → ℝ} {a b : ℝ} (hf : AbsolutelyContinuousOnInterval f a b)
+    : IntervalIntegrable (deriv f) volume a b :=
   hf.boundedVariationOn.intervalIntegrable_deriv

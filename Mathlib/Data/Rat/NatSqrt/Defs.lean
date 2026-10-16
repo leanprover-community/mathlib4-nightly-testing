@@ -20,9 +20,7 @@ See also `Mathlib.Analysis.Rat.NatSqrt.Real` for comparisons with the real squar
 
 namespace Nat
 
-/--
-Approximate the square root of a natural number as a rational number, to within `1 / prec`.
--/
+/-- Approximate the square root of a natural number as a rational number, to within `1 / prec`. -/
 def ratSqrt (x : ℕ) (prec : ℕ) : ℚ := ((x * prec ^ 2).sqrt : ℚ) / prec
 
 theorem ratSqrt_nonneg (x prec : ℕ) : 0 ≤ ratSqrt x prec := by
@@ -35,8 +33,8 @@ theorem ratSqrt_sq_le (x : ℕ) {prec : ℕ} (h : 0 < prec) : (ratSqrt x prec) ^
   norm_cast
   exact sqrt_le' (x * prec ^ 2)
 
-theorem lt_ratSqrt_add_inv_prec_sq (x : ℕ) {prec : ℕ} (h : 0 < prec) :
-    x < (ratSqrt x prec + 1 / prec) ^ 2 := by
+theorem lt_ratSqrt_add_inv_prec_sq (x : ℕ) {prec : ℕ} (h : 0 < prec)
+    : x < (ratSqrt x prec + 1 / prec) ^ 2 := by
   unfold ratSqrt
   rw [← mul_lt_mul_iff_of_pos_right (a := (prec ^ 2 : ℚ)) (by positivity)]
   rw [← mul_pow, add_mul]

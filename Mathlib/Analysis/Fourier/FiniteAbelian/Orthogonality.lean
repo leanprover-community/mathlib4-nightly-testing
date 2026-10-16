@@ -55,8 +55,8 @@ variable [AddCommGroup G]
 section RCLike
 variable [RCLike R] {ψ₁ ψ₂ : AddChar G R}
 
-lemma wInner_cWeight_eq_boole [Fintype G] (ψ₁ ψ₂ : AddChar G R) :
-    ⟪(ψ₁ : G → R), ψ₂⟫ₙ_[R] = if ψ₁ = ψ₂ then 1 else 0 := by
+lemma wInner_cWeight_eq_boole [Fintype G] (ψ₁ ψ₂ : AddChar G R)
+    : ⟪(ψ₁ : G → R), ψ₂⟫ₙ_[R] = if ψ₁ = ψ₂ then 1 else 0 := by
   split_ifs with h
   · rw [h, wInner_cWeight_self]
   have : ψ₂ * ψ₁⁻¹ ≠ 1 := by rwa [Ne, mul_inv_eq_one, eq_comm]
@@ -73,13 +73,14 @@ variable (G R)
 
 protected lemma linearIndependent [Finite G] : LinearIndependent R ((⇑) : AddChar G R → G → R) := by
   cases nonempty_fintype G
-  exact linearIndependent_of_ne_zero_of_wInner_cWeight_eq_zero coe_ne_zero
-    fun ψ₁ ψ₂ ↦ wInner_cWeight_eq_zero_iff_ne.2
+  exact linearIndependent_of_ne_zero_of_wInner_cWeight_eq_zero coe_ne_zero fun ψ₁ ψ₂ ↦
+    wInner_cWeight_eq_zero_iff_ne.2
 
 noncomputable instance instFintype [Finite G] : Fintype (AddChar G R) :=
   @Fintype.ofFinite _ (AddChar.linearIndependent G R).finite
 
-@[simp] lemma card_addChar_le [Fintype G] : card (AddChar G R) ≤ card G := by
+@[simp]
+lemma card_addChar_le [Fintype G] : card (AddChar G R) ≤ card G := by
   simpa only [Module.finrank_fintype_fun_eq_card] using
     (AddChar.linearIndependent G R).fintype_card_le_finrank
 

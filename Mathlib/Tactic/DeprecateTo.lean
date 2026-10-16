@@ -7,7 +7,6 @@ module
 
 public meta import Mathlib.Lean.Name
 public meta import Std.Time.Format
-
 import Mathlib.Init
 
 /-!
@@ -46,11 +45,11 @@ namespace Mathlib.Tactic.DeprecateTo
 open Lean Elab Term Command
 
 /-- Produce the syntax for the command `@[deprecated (since := "YYYY-MM-DD")] alias n := id`. -/
-def mkDeprecationStx (id : TSyntax `ident) (n : Name) (dat : Option String := none) :
-    CommandElabM (TSyntax `command) := do
-  let dat ← match dat with
-    | none => do
-      pure s!"{← Std.Time.PlainDate.now}"
+def mkDeprecationStx (id : TSyntax `ident) (n : Name) (dat : Option String := none)
+    : CommandElabM (TSyntax `command) := do
+  let dat ←
+    match dat with
+    | none => do pure s!"{← Std.Time.PlainDate.now}"
     | some s => pure s
   let nd := mkNode `str #[mkAtom ("\"" ++ dat.trimAsciiEnd ++ "\"")]
   `(command| @[deprecated (since := $nd)] alias $(mkIdent n) := $id)
@@ -73,11 +72,14 @@ If the input command is neither a `theorem` nor a `lemma`, then it returns
 `.missing` and the unchanged command.
 -/
 def renameTheorem : TSyntax `command → TSyntax `Lean.Parser.Command.declId × TSyntax `command
-  | `(command| $dm:declModifiers theorem $id:declId $d:declSig $v:declVal) => Unhygienic.run do
-    return (id, ← `($dm:declModifiers theorem $newName:declId $d:declSig $v:declVal))
-  | `(command| $dm:declModifiers lemma $id:declId $d:declSig $v:declVal) => Unhygienic.run do
-    return (id, ← `($dm:declModifiers lemma $newName:declId $d:declSig $v:declVal))
-  | a => (default, a)
+  | `(command| $dm:declModifiers theorem $id:declId $d:declSig $v:declVal) =>
+    Unhygienic.run do
+      return (id, ← `($dm:declModifiers theorem $newName:declId $d:declSig $v:declVal))
+  | `(command| $dm:declModifiers lemma $id:declId $d:declSig $v:declVal) =>
+    Unhygienic.run do
+      return (id, ← `($dm:declModifiers lemma $newName:declId $d:declSig $v:declVal))
+  | a =>
+    (default, a)
 
 open Meta.Tactic.TryThis in
 /--
@@ -113,8 +115,9 @@ Technically, the command also take an optional `String` argument to fill in the 
 However, its use is mostly intended for debugging purposes, where having a variable date would
 make tests time-dependent.
 -/
-elab (name := deprecateTo) tk:"#deprecate " "to" id:ident* dat:(ppSpace str ppSpace)? ppLine
-    cmd:command : command => do
+elab (name := deprecateTo)
+      tk:"#deprecate " "to" id:ident* dat:(ppSpace str ppSpace)? ppLine cmd:command
+    : command => do
   let oldEnv ← getEnv
   try
     elabCommand cmd
@@ -127,7 +130,8 @@ elab (name := deprecateTo) tk:"#deprecate " "to" id:ident* dat:(ppSpace str ppSp
     if id.size < news.size then
       warn := warn.push s!"Un-deprecated declarations: {news.toList.drop id.size}"
     if news.size < id.size then
-      for i in id.toList.drop news.size do logErrorAt i ""
+      for i in id.toList.drop news.size do
+        logErrorAt i ""
       warn := warn.push s!"Unused names: {id.toList.drop news.size}"
     let (oldId, newCmd) := renameTheorem id[0]! cmd
     let oldNames ← resolveGlobalName (oldId.raw.getArg 0).getId.eraseMacroScopes
@@ -137,8 +141,10 @@ elab (name := deprecateTo) tk:"#deprecate " "to" id:ident* dat:(ppSpace str ppSp
     if oldId != default then
       news := #[fil[0]!] ++ (news.erase fil[0]!)
     let pairs := id.zip news
-    let msg := s!"* Pairings:\n{pairs.map fun (l, r) => (l.getId, r)}" ++
-      if skip.size != 0 then s!"\n\n* Ignoring: {skip}" else ""
+    let msg :=
+      s!"* Pairings:\
+          \n{pairs.map fun (l, r) => (l.getId, r)}"
+        ++ if skip.size != 0 then s!"\n\n* Ignoring: {skip}" else ""
     let dat := if dat.isSome then some dat.get!.getString else none
     let stxs ← pairs.mapM fun (id, n) => mkDeprecationStx id n dat
     if newCmd == cmd then
@@ -147,16 +153,15 @@ elab (name := deprecateTo) tk:"#deprecate " "to" id:ident* dat:(ppSpace str ppSp
     if warn != #[] then
       logWarningAt tk m!"{warn.foldl (· ++ "\n" ++ ·) "Warnings:\n"}"
     liftTermElabM do
-      let prettyStxs ← stxs.mapM (SuggestionText.prettyExtra <|.tsyntax ·)
-      let toMessageData := (prettyStxs.toList.drop 1).foldl
-        (fun x y => x ++ "\n\n" ++ y) prettyStxs[0]!
+      let prettyStxs ← stxs.mapM (SuggestionText.prettyExtra <| .tsyntax ·)
+      let toMessageData :=
+        (prettyStxs.toList.drop 1).foldl (fun x y => x ++ "\n\n" ++ y) prettyStxs[0]!
 
-      addSuggestion (header := msg ++ "\n\nTry this:\n") (← getRef)
-        toMessageData
+      addSuggestion (header := msg ++ "\n\nTry this:\n") (← getRef) toMessageData
 
 @[inherit_doc deprecateTo]
-macro (name := oldStx) "deprecate" "to" id:ident* dat:(ppSpace str ppSpace)? ppLine cmd:command :
-    command =>
+macro (name := oldStx) "deprecate" "to" id:ident* dat:(ppSpace str ppSpace)? ppLine cmd:command
+    : command =>
   `(command| #deprecate to $id* $[$dat]? $cmd)
 
 deprecated_syntax oldStx "use `#deprecate to` instead of `deprecate to`" (since := "2026-09-19")

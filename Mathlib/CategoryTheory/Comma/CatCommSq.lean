@@ -20,8 +20,8 @@ namespace CategoryTheory.Arrow
 @[simps]
 instance catCommSq
     {C₁ C₂ D₁ D₂ : Type*} [Category C₁] [Category C₂] [Category D₁] [Category D₂]
-    (T : C₁ ⥤ C₂) (L : C₁ ⥤ D₁) (R : C₂ ⥤ D₂) (B : D₁ ⥤ D₂) [CatCommSq T L R B] :
-    CatCommSq T.mapArrow L.mapArrow R.mapArrow B.mapArrow where
+    (T : C₁ ⥤ C₂) (L : C₁ ⥤ D₁) (R : C₂ ⥤ D₂) (B : D₁ ⥤ D₂) [CatCommSq T L R B]
+    : CatCommSq T.mapArrow L.mapArrow R.mapArrow B.mapArrow where
   iso := (Functor.mapArrowFunctor _ _).mapIso (CatCommSq.iso T L R B)
 
 end CategoryTheory.Arrow

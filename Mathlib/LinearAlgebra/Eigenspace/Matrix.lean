@@ -32,20 +32,21 @@ section NontrivialCommRing
 variable [CommRing R] [Nontrivial R] [AddCommGroup M] [Module R M]
 
 /-- Basis vectors are eigenvectors of associated diagonal linear operator. -/
-lemma hasEigenvector_toLin_diagonal (d : n → R) (i : n) (b : Basis n R M) :
-    HasEigenvector (toLin b b (diagonal d)) (d i) (b i) :=
+lemma hasEigenvector_toLin_diagonal (d : n → R) (i : n) (b : Basis n R M)
+    : HasEigenvector (toLin b b (diagonal d)) (d i) (b i) :=
   ⟨mem_eigenspace_iff.mpr <| by simp [diagonal], Basis.ne_zero b i⟩
 
 /-- Standard basis vectors are eigenvectors of any associated diagonal linear operator. -/
-lemma hasEigenvector_toLin'_diagonal (d : n → R) (i : n) :
-    HasEigenvector (toLin' (diagonal d)) (d i) (Pi.basisFun R n i) :=
+lemma hasEigenvector_toLin'_diagonal (d : n → R) (i : n)
+    : HasEigenvector (toLin' (diagonal d)) (d i) (Pi.basisFun R n i) :=
   hasEigenvector_toLin_diagonal _ _ (Pi.basisFun R n)
 
 set_option linter.overlappingInstances false
 
 /-- Eigenvalues of a diagonal linear operator are the diagonal entries. -/
-lemma hasEigenvalue_toLin_diagonal_iff (d : n → R) {μ : R} [IsDomain R] [IsTorsionFree R M]
-    (b : Basis n R M) : HasEigenvalue (toLin b b (diagonal d)) μ ↔ ∃ i, d i = μ := by
+lemma hasEigenvalue_toLin_diagonal_iff
+    (d : n → R) {μ : R} [IsDomain R] [IsTorsionFree R M] (b : Basis n R M)
+    : HasEigenvalue (toLin b b (diagonal d)) μ ↔ ∃ i, d i = μ := by
   have (i : n) : HasEigenvalue (toLin b b (diagonal d)) (d i) :=
     hasEigenvalue_of_hasEigenvector <| hasEigenvector_toLin_diagonal d i b
   constructor
@@ -66,10 +67,12 @@ lemma hasEigenvalue_toLin_diagonal_iff (d : n → R) {μ : R} [IsDomain R] [IsTo
   · rintro ⟨i, rfl⟩
     exact this i
 
-/-- Eigenvalues of a diagonal linear operator with respect to standard basis
-are the diagonal entries. -/
-lemma hasEigenvalue_toLin'_diagonal_iff [IsDomain R] (d : n → R) {μ : R} :
-    HasEigenvalue (toLin' (diagonal d)) μ ↔ (∃ i, d i = μ) :=
+/--
+Eigenvalues of a diagonal linear operator with respect to standard basis
+are the diagonal entries.
+-/
+lemma hasEigenvalue_toLin'_diagonal_iff [IsDomain R] (d : n → R) {μ : R}
+    : HasEigenvalue (toLin' (diagonal d)) μ ↔ (∃ i, d i = μ) :=
   hasEigenvalue_toLin_diagonal_iff _ <| Pi.basisFun R n
 
 end NontrivialCommRing
@@ -79,26 +82,24 @@ namespace Matrix
 variable [CommRing R] [AddCommGroup M] [Module R M] (d : n → R) {μ : R} (b : Basis n R M)
 
 lemma _root_.Module.End.HasEigenvalue.nonempty
-    {A : Matrix n n R} {μ : R} (hμ : HasEigenvalue A.toLin' μ) :
-    Nonempty n := by
+    {A : Matrix n n R} {μ : R} (hμ : HasEigenvalue A.toLin' μ)
+    : Nonempty n := by
   rw [hasEigenvalue_iff] at hμ
   contrapose! hμ
   exact Submodule.eq_bot_of_subsingleton
 
 @[simp]
-lemma iSup_eigenspace_toLin_diagonal_eq_top :
-    ⨆ μ, eigenspace ((diagonal d).toLin b b) μ = ⊤ := by
+lemma iSup_eigenspace_toLin_diagonal_eq_top : ⨆ μ, eigenspace ((diagonal d).toLin b b) μ = ⊤ := by
   refine (Submodule.eq_top_iff_forall_basis_mem b).mpr fun j ↦ ?_
   exact Submodule.mem_iSup_of_mem (d j) <| by simp [diagonal_apply]
 
 @[simp]
-lemma iSup_eigenspace_toLin'_diagonal_eq_top :
-    ⨆ μ, eigenspace (diagonal d).toLin' μ = ⊤ :=
+lemma iSup_eigenspace_toLin'_diagonal_eq_top : ⨆ μ, eigenspace (diagonal d).toLin' μ = ⊤ :=
   iSup_eigenspace_toLin_diagonal_eq_top d <| Pi.basisFun R n
 
 @[simp]
-lemma maxGenEigenspace_toLin_diagonal_eq_eigenspace [IsDomain R] :
-    maxGenEigenspace ((diagonal d).toLin b b) μ = eigenspace ((diagonal d).toLin b b) μ := by
+lemma maxGenEigenspace_toLin_diagonal_eq_eigenspace [IsDomain R]
+    : maxGenEigenspace ((diagonal d).toLin b b) μ = eigenspace ((diagonal d).toLin b b) μ := by
   refine le_antisymm (fun x hx ↦ ?_) eigenspace_le_maxGenEigenspace
   obtain ⟨k, hk⟩ := (mem_maxGenEigenspace _ _ _).mp hx
   replace hk (j : n) : b.repr x j = 0 ∨ d j = μ ∧ k ≠ 0 := by
@@ -113,23 +114,23 @@ lemma maxGenEigenspace_toLin_diagonal_eq_eigenspace [IsDomain R] :
   simp [toLin_apply, mulVec_eq_sum, diagonal_apply, aux, ← Finset.smul_sum]
 
 @[simp]
-lemma maxGenEigenspace_toLin'_diagonal_eq_eigenspace [IsDomain R] :
-    maxGenEigenspace (diagonal d).toLin' μ = eigenspace (diagonal d).toLin' μ :=
+lemma maxGenEigenspace_toLin'_diagonal_eq_eigenspace [IsDomain R]
+    : maxGenEigenspace (diagonal d).toLin' μ = eigenspace (diagonal d).toLin' μ :=
   maxGenEigenspace_toLin_diagonal_eq_eigenspace d <| Pi.basisFun R n
 
 @[simp]
-theorem _root_.LinearMap.spectrum_toMatrix (f : M →ₗ[R] M) (b : Basis n R M) :
-    spectrum R (f.toMatrix b b) = spectrum R f :=
+theorem _root_.LinearMap.spectrum_toMatrix (f : M →ₗ[R] M) (b : Basis n R M)
+    : spectrum R (f.toMatrix b b) = spectrum R f :=
   AlgEquiv.spectrum_eq (LinearMap.toMatrixAlgEquiv b) f
 
 @[simp]
-theorem _root_.LinearMap.spectrum_toMatrix' (f : (n → R) →ₗ[R] (n → R)) :
-    spectrum R f.toMatrix' = spectrum R f :=
+theorem _root_.LinearMap.spectrum_toMatrix' (f : (n → R) →ₗ[R] (n → R))
+    : spectrum R f.toMatrix' = spectrum R f :=
   AlgEquiv.spectrum_eq LinearMap.toMatrixAlgEquiv' f
 
 @[simp]
-theorem spectrum_toLin (A : Matrix n n R) (b : Basis n R M) :
-    spectrum R (A.toLin b b) = spectrum R A :=
+theorem spectrum_toLin (A : Matrix n n R) (b : Basis n R M)
+    : spectrum R (A.toLin b b) = spectrum R A :=
   AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv b) A
 
 @[simp]
@@ -139,8 +140,8 @@ theorem spectrum_toLin' (A : Matrix n n R) : spectrum R A.toLin' = spectrum R A 
 end Matrix
 
 /-- The spectrum of the diagonal operator is the range of the diagonal viewed as a function. -/
-@[simp] lemma spectrum_diagonal [Field R] (d : n → R) :
-    spectrum R (diagonal d) = Set.range d := by
+@[simp]
+lemma spectrum_diagonal [Field R] (d : n → R) : spectrum R (diagonal d) = Set.range d := by
   ext μ
   rw [← AlgEquiv.spectrum_eq (toLinAlgEquiv <| Pi.basisFun R n), ← hasEigenvalue_iff_mem_spectrum]
   exact hasEigenvalue_toLin'_diagonal_iff d

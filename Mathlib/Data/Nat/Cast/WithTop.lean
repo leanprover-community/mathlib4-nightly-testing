@@ -18,8 +18,6 @@ public section
 
 instance : WellFoundedRelation (WithTop ℕ) := WellFoundedLT.toWellFoundedRelation
 
-theorem Nat.cast_withTop (n : ℕ) : Nat.cast n = WithTop.some n :=
-  rfl
+theorem Nat.cast_withTop (n : ℕ) : Nat.cast n = WithTop.some n := rfl
 
-theorem Nat.cast_withBot (n : ℕ) : Nat.cast n = WithBot.some n :=
-  rfl
+theorem Nat.cast_withBot (n : ℕ) : Nat.cast n = WithBot.some n := rfl

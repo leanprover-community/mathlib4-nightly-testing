@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Monoidal.Closed.Braided
 public import Mathlib.CategoryTheory.Monoidal.PushoutProduct
-
 import Mathlib.CategoryTheory.Monoidal.Limits.HasLimits
 
 /-!
@@ -40,8 +39,10 @@ noncomputable section
 
 /-- The monoidal category instance induced by the pushout-product. -/
 @[simps]
-scoped instance [HasPushouts C] [HasInitial C] [CartesianMonoidalCategory C] [MonoidalClosed C]
-    [BraidedCategory C] : MonoidalCategoryStruct (Arrow C) where
+scoped instance
+    [HasPushouts C] [HasInitial C] [CartesianMonoidalCategory C] [MonoidalClosed C]
+    [BraidedCategory C]
+    : MonoidalCategoryStruct (Arrow C) where
   tensorObj X Y := X □ Y
   whiskerLeft X _ _ f := (pushoutProduct.obj X).map f
   whiskerRight f X := (pushoutProduct.map f).app X
@@ -50,70 +51,71 @@ scoped instance [HasPushouts C] [HasInitial C] [CartesianMonoidalCategory C] [Mo
   leftUnitor := PushoutProduct.leftUnitor
   rightUnitor := PushoutProduct.rightUnitor
 
-variable [HasPushouts C] [HasInitial C] [CartesianMonoidalCategory C] [MonoidalClosed C]
+variable
+  [HasPushouts C] [HasInitial C] [CartesianMonoidalCategory C] [MonoidalClosed C]
   [BraidedCategory C]
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-lemma tensorHom_comp_tensorHom {X₁ Y₁ Z₁ X₂ Y₂ Z₂ : Arrow C}
-    (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂) (g₁ : Y₁ ⟶ Z₁) (g₂ : Y₂ ⟶ Z₂) :
-    (f₁ ⊗ₘ f₂) ≫ (g₁ ⊗ₘ g₂) = (f₁ ≫ g₁) ⊗ₘ (f₂ ≫ g₂) := by
+lemma tensorHom_comp_tensorHom
+    {X₁ Y₁ Z₁ X₂ Y₂ Z₂ : Arrow C} (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂) (g₁ : Y₁ ⟶ Z₁) (g₂ : Y₂ ⟶ Z₂)
+    : (f₁ ⊗ₘ f₂) ≫ (g₁ ⊗ₘ g₂) = (f₁ ≫ g₁) ⊗ₘ (f₂ ≫ g₂) := by
   refine Arrow.hom_ext _ _ ?_ (by simp [whisker_exchange_assoc])
   apply pushout.hom_ext <;> simp [whisker_exchange_assoc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma associator_naturality {X₁ X₂ X₃ Y₁ Y₂ Y₃ : Arrow C}
-    (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂) (f₃ : X₃ ⟶ Y₃) :
-    ((f₁ ⊗ₘ f₂) ⊗ₘ f₃) ≫ (α_ Y₁ Y₂ Y₃).hom = (α_ X₁ X₂ X₃).hom ≫ (f₁ ⊗ₘ (f₂ ⊗ₘ f₃)) := by
+lemma associator_naturality
+    {X₁ X₂ X₃ Y₁ Y₂ Y₃ : Arrow C} (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂) (f₃ : X₃ ⟶ Y₃)
+    : ((f₁ ⊗ₘ f₂) ⊗ₘ f₃) ≫ (α_ Y₁ Y₂ Y₃).hom = (α_ X₁ X₂ X₃).hom ≫ (f₁ ⊗ₘ (f₂ ⊗ₘ f₃)) := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext (by simp [whisker_exchange_assoc]) ?_) (by simp)
   apply ((tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext
-  · suffices _ ◁ _ ◁ f₃.right ≫ (α_ _ _ _).inv ≫ f₁.right ▷ _ ▷ _ ≫ (α_ _ _ _).hom ≫
-      _ ◁ f₂.left ▷ _ ≫ _ ◁ pushout.inr _ _ = _ ◁ f₂.left ▷ _ ≫ _ ◁ _ ◁ f₃.right ≫
-      _ ◁ pushout.inr _ _ ≫ f₁.right ▷ pushout (Y₂.hom ▷ Y₃.left) (Y₂.left ◁ Y₃.hom) by
+  · suffices _ ◁ _ ◁ f₃.right ≫ (α_ _ _ _).inv ≫ f₁.right ▷ _ ▷ _ ≫ (α_ _ _ _).hom ≫ _ ◁ f₂.left ▷ _
+          ≫ _ ◁ pushout.inr _ _
+        = _ ◁ f₂.left ▷ _ ≫ _ ◁ _ ◁ f₃.right ≫ _ ◁ pushout.inr _ _
+          ≫ f₁.right ▷ pushout (Y₂.hom ▷ Y₃.left) (Y₂.left ◁ Y₃.hom) by
       simp [← whisker_exchange_assoc, reassoc_of% this]
     rw [← MonoidalCategory.whiskerLeft_comp_assoc, whisker_exchange, whisker_exchange_assoc,
       ← whisker_exchange, associator_inv_naturality_right_assoc, whisker_exchange_assoc,
       ← associator_inv_naturality_left_assoc, associator_naturality_right_assoc,
       Iso.inv_hom_id_assoc, MonoidalCategory.whiskerLeft_comp_assoc]
-  · suffices ((α_ _ _ _).hom ≫ _ ◁ _ ◁ f₃.right ≫ (α_ _ _ _).inv ≫ f₁.left ▷ _ ▷ _ ≫
-      (α_ _ _ _).hom ≫ _ ◁ f₂.right ▷ _ = f₁.left ▷ _ ▷ _ ≫ (α_ _ _ _).hom ≫
-      _ ◁ f₂.right ▷ _ ≫ _ ◁ _ ◁ f₃.right) by
+  · suffices ((α_ _ _ _).hom ≫ _ ◁ _ ◁ f₃.right ≫ (α_ _ _ _).inv ≫ f₁.left ▷ _ ▷ _ ≫ (α_ _ _ _).hom
+          ≫ _ ◁ f₂.right ▷ _
+        = f₁.left ▷ _ ▷ _ ≫ (α_ _ _ _).hom ≫ _ ◁ f₂.right ▷ _ ≫ _ ◁ _ ◁ f₃.right) by
       simp [← whisker_exchange_assoc, reassoc_of% this]
     cat_disch
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma leftUnitor_naturality {X Y : Arrow C} (f : X ⟶ Y) :
-    𝟙_ _ ◁ f ≫ (λ_ Y).hom = (λ_ X).hom ≫ f := by
+lemma leftUnitor_naturality {X Y : Arrow C} (f : X ⟶ Y)
+    : 𝟙_ _ ◁ f ≫ (λ_ Y).hom = (λ_ X).hom ≫ f := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext (by simp) ?_) (by simp)
   apply (initialIsInitial.ofIso (mulZero initialIsInitial).symm).hom_ext
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma rightUnitor_naturality {X Y : Arrow C} (f : X ⟶ Y) :
-    f ▷ 𝟙_ _ ≫ (ρ_ Y).hom = (ρ_ X).hom ≫ f := by
+lemma rightUnitor_naturality {X Y : Arrow C} (f : X ⟶ Y)
+    : f ▷ 𝟙_ _ ≫ (ρ_ Y).hom = (ρ_ X).hom ≫ f := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext ?_ (by simp)) (by simp)
   apply (initialIsInitial.ofIso (zeroMul initialIsInitial).symm).hom_ext
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma pentagon (W X Y Z : Arrow C) :
-    (α_ W X Y).hom ▷ Z ≫ (α_ W (X ⊗ Y) Z).hom ≫ W ◁ (α_ X Y Z).hom =
-      (α_ (W ⊗ X) Y Z).hom ≫ (α_ W X (Y ⊗ Z)).hom := by
+lemma pentagon (W X Y Z : Arrow C)
+    : (α_ W X Y).hom ▷ Z ≫ (α_ W (X ⊗ Y) Z).hom ≫ W ◁ (α_ X Y Z).hom
+      = (α_ (W ⊗ X) Y Z).hom ≫ (α_ W X (Y ⊗ Z)).hom := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext (by simp) ?_) (by simp)
   apply ((tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext (by simp)
-  apply ((tensorRight _ ⋙ tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext <;>
-  simp [associator_naturality_left_assoc]
+  apply ((tensorRight _ ⋙ tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext
+    <;> simp [associator_naturality_left_assoc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma triangle (X Y : Arrow C) :
-    (α_ X (𝟙_ _) Y).hom ≫ X ◁ (λ_ Y).hom = (ρ_ X).hom ▷ Y := by
+lemma triangle (X Y : Arrow C) : (α_ X (𝟙_ _) Y).hom ≫ X ◁ (λ_ Y).hom = (ρ_ X).hom ▷ Y := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext (by simp) ?_) (by simp)
   apply ((tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext
-  · apply (initialIsInitial.ofIso ((initialIsoIsInitial ?_) ≪≫ (mulZero ?_).symm)).hom_ext <;>
-    exact initialIsInitial.ofIso (zeroMul initialIsInitial).symm
+  · apply (initialIsInitial.ofIso ((initialIsoIsInitial ?_) ≪≫ (mulZero ?_).symm)).hom_ext
+      <;> exact initialIsInitial.ofIso (zeroMul initialIsInitial).symm
   · simp [← comp_whiskerRight_assoc]
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -128,17 +130,17 @@ scoped instance : MonoidalCategory (Arrow C) where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma hexagon_forward (X Y Z : Arrow C) :
-    (α_ X Y Z).hom ≫ (braiding X (Y ⊗ Z)).hom ≫ (α_ Y Z X).hom =
-      ((braiding X Y).hom ▷ Z) ≫ (α_ Y X Z).hom ≫ (Y ◁ (braiding X Z).hom) := by
+lemma hexagon_forward (X Y Z : Arrow C)
+    : (α_ X Y Z).hom ≫ (braiding X (Y ⊗ Z)).hom ≫ (α_ Y Z X).hom
+      = ((braiding X Y).hom ▷ Z) ≫ (α_ Y X Z).hom ≫ (Y ◁ (braiding X Z).hom) := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext (by simp) ?_) (by simp)
   apply ((tensorRight _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext <;> simp
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-lemma hexagon_reverse (X Y Z : Arrow C) :
-    (α_ X Y Z).inv ≫ (braiding (X ⊗ Y) Z).hom ≫ (α_ Z X Y).inv =
-      (X ◁ (braiding Y Z).hom) ≫ (α_ X Z Y).inv ≫ ((braiding X Z).hom ▷ Y) := by
+lemma hexagon_reverse (X Y Z : Arrow C)
+    : (α_ X Y Z).inv ≫ (braiding (X ⊗ Y) Z).hom ≫ (α_ Z X Y).inv
+      = (X ◁ (braiding Y Z).hom) ≫ (α_ X Z Y).inv ≫ ((braiding X Z).hom ▷ Y) := by
   refine Arrow.hom_ext _ _ (pushout.hom_ext ?_ (by simp)) (by simp)
   apply ((tensorLeft _).map_isPushout (IsPushout.of_hasPushout _ _)).hom_ext <;> simp
 
@@ -161,7 +163,8 @@ scoped instance symmetricCategory : SymmetricCategory (Arrow C) where
 scoped instance [HasPullbacks C] : MonoidalClosed (Arrow C) where
   closed X := {
     rightAdj := pullbackHom.obj (Opposite.op X)
-    adj := LeibnizAdjunction.adj _ _ (MonoidalClosed.internalHomAdjunction₂) X }
+    adj := LeibnizAdjunction.adj _ _ (MonoidalClosed.internalHomAdjunction₂) X
+  }
 
 end
 

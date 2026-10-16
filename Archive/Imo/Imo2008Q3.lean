@@ -35,8 +35,8 @@ open Real
 
 namespace Imo2008Q3
 
-theorem p_lemma (p : ℕ) (hpp : Nat.Prime p) (hp_mod_4_eq_1 : p ≡ 1 [MOD 4]) (hp_gt_20 : p > 20) :
-    ∃ n : ℕ, p ∣ n ^ 2 + 1 ∧ (p : ℝ) > 2 * n + sqrt (2 * n) := by
+theorem p_lemma (p : ℕ) (hpp : Nat.Prime p) (hp_mod_4_eq_1 : p ≡ 1 [MOD 4]) (hp_gt_20 : p > 20)
+    : ∃ n : ℕ, p ∣ n ^ 2 + 1 ∧ (p : ℝ) > 2 * n + sqrt (2 * n) := by
   have := Fact.mk hpp
   have hp_mod_4_ne_3 : p % 4 ≠ 3 := by linarith [show p % 4 = 1 from hp_mod_4_eq_1]
   obtain ⟨y, hy⟩ := ZMod.exists_sq_eq_neg_one_iff.mpr hp_mod_4_ne_3
@@ -47,7 +47,8 @@ theorem p_lemma (p : ℕ) (hpp : Nat.Prime p) (hp_mod_4_eq_1 : p ≡ 1 [MOD 4]) 
     simp only [n, Int.natAbs_sq, Int.natCast_pow, Int.natCast_succ]
     refine (ZMod.intCast_zmod_eq_zero_iff_dvd (m ^ 2 + 1) p).mp ?_
     simp only [m, Int.cast_pow, Int.cast_add, Int.cast_one, ZMod.coe_valMinAbs]
-    rw [pow_two, ← hy]; exact neg_add_cancel 1
+    rw [pow_two, ← hy]
+    exact neg_add_cancel 1
   have hnat₂ : n ≤ p / 2 := ZMod.natAbs_valMinAbs_le y
   have hnat₃ : 2 * n ≤ p := by lia
   set k : ℕ := p - 2 * n with hnat₄
@@ -76,8 +77,9 @@ end Imo2008Q3
 
 open Imo2008Q3
 
-theorem imo2008_q3 : ∀ N : ℕ, ∃ n : ℕ, n ≥ N ∧
-    ∃ p : ℕ, Nat.Prime p ∧ p ∣ n ^ 2 + 1 ∧ (p : ℝ) > 2 * n + sqrt (2 * n) := by
+theorem imo2008_q3
+    : ∀ N : ℕ, ∃ n : ℕ,
+      n ≥ N ∧ ∃ p : ℕ, Nat.Prime p ∧ p ∣ n ^ 2 + 1 ∧ (p : ℝ) > 2 * n + sqrt (2 * n) := by
   intro N
   obtain ⟨p, hpp, hineq₁, hpmod4⟩ := Nat.exists_prime_gt_modEq_one (N ^ 2 + 20) four_ne_zero
   obtain ⟨n, hnat, hreal⟩ := p_lemma p hpp hpmod4 (by linarith [hineq₁, Nat.zero_le (N ^ 2)])

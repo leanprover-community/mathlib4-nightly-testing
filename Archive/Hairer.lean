@@ -53,29 +53,26 @@ instance : FunLike (ContDiffSupportedOn 𝕜 E F n s) E F where
   coe := Subtype.val
   coe_injective := Subtype.coe_injective
 
-@[simp]
-lemma coe_mk (f : E → F) (h) : (⟨f, h⟩ : ContDiffSupportedOn 𝕜 E F n s) = f := rfl
+@[simp] lemma coe_mk (f : E → F) (h) : (⟨f, h⟩ : ContDiffSupportedOn 𝕜 E F n s) = f := rfl
 
 lemma tsupport_subset (f : ContDiffSupportedOn 𝕜 E F n s) : tsupport f ⊆ s := f.2.1
 
-lemma support_subset (f : ContDiffSupportedOn 𝕜 E F n s) :
-    support f ⊆ s := subset_tsupport _ |>.trans (tsupport_subset f)
+lemma support_subset (f : ContDiffSupportedOn 𝕜 E F n s) : support f ⊆ s :=
+  subset_tsupport _ |>.trans (tsupport_subset f)
 
-lemma contDiff (f : ContDiffSupportedOn 𝕜 E F n s) :
-    ContDiff 𝕜 n f := f.2.2
+lemma contDiff (f : ContDiffSupportedOn 𝕜 E F n s) : ContDiff 𝕜 n f := f.2.2
 
 theorem continuous (f : ContDiffSupportedOn 𝕜 E F n s) : Continuous f :=
   (ContDiffSupportedOn.contDiff _).continuous
 
-lemma hasCompactSupport [ProperSpace E] (f : ContDiffSupportedOn 𝕜 E F n (closedBall 0 1)) :
-    HasCompactSupport f :=
+lemma hasCompactSupport [ProperSpace E] (f : ContDiffSupportedOn 𝕜 E F n (closedBall 0 1))
+    : HasCompactSupport f :=
   HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall 0 1) (support_subset f)
 
-theorem integrable_eval_mul (p : MvPolynomial ι ℝ)
-    (f : ContDiffSupportedOn ℝ (EuclideanSpace ℝ ι) ℝ ⊤ (closedBall 0 1)) :
-    Integrable fun (x : EuclideanSpace ℝ ι) ↦ eval x p * f x :=
-  (p.continuous_eval.comp (continuous_ofLp 2 _)).mul
-    (ContDiffSupportedOn.contDiff f).continuous
+theorem integrable_eval_mul
+    (p : MvPolynomial ι ℝ) (f : ContDiffSupportedOn ℝ (EuclideanSpace ℝ ι) ℝ ⊤ (closedBall 0 1))
+    : Integrable fun (x : EuclideanSpace ℝ ι) ↦ eval x p * f x :=
+  (p.continuous_eval.comp (continuous_ofLp 2 _)).mul (ContDiffSupportedOn.contDiff f).continuous
     |>.integrable_of_hasCompactSupport (hasCompactSupport f).mul_left
 
 end ContDiffSupportedOn
@@ -84,12 +81,16 @@ end normed
 open ContDiffSupportedOn
 
 variable (ι)
-/-- Interpreting a multivariate polynomial as an element of the dual of smooth functions supported
-in the unit ball, via integration against Lebesgue measure. -/
-def L : MvPolynomial ι ℝ →ₗ[ℝ]
-    Module.Dual ℝ (ContDiffSupportedOn ℝ (EuclideanSpace ℝ ι) ℝ ⊤ (closedBall 0 1)) :=
+/--
+Interpreting a multivariate polynomial as an element of the dual of smooth functions supported
+in the unit ball, via integration against Lebesgue measure.
+-/
+def L
+    : MvPolynomial ι ℝ →ₗ[ℝ]
+      Module.Dual ℝ (ContDiffSupportedOn ℝ (EuclideanSpace ℝ ι) ℝ ⊤ (closedBall 0 1)) :=
   have int := ContDiffSupportedOn.integrable_eval_mul (ι := ι)
-  .mk₂ ℝ (fun p f ↦ ∫ x : EuclideanSpace ℝ ι, eval x p • f x)
+  .mk₂ ℝ
+    (fun p f ↦ ∫ x : EuclideanSpace ℝ ι, eval x p • f x)
     (fun p₁ p₂ f ↦ by simp [add_mul, integral_add (int p₁ f) (int p₂ f)])
     (fun r p f ↦ by simp [mul_assoc, integral_const_mul])
     (fun p f₁ f₂ ↦ by simp_rw [smul_eq_mul, ← integral_add (int p _) (int p _), ← mul_add]; rfl)
@@ -100,25 +101,26 @@ lemma inj_L : Injective (L ι) :=
   (injective_iff_map_eq_zero _).mpr fun p hp ↦ by
     have H : ∀ᵐ x : EuclideanSpace ℝ ι, x ∈ ball 0 1 → eval x p = 0 :=
       isOpen_ball.ae_eq_zero_of_integral_contDiff_smul_eq_zero
-        (p.continuous_eval.comp (continuous_ofLp 2 _)
-          |>.locallyIntegrable.locallyIntegrableOn _)
+        (p.continuous_eval.comp (continuous_ofLp 2 _) |>.locallyIntegrable.locallyIntegrableOn _)
         fun g hg _h2g g_supp ↦ by
           simpa [mul_comm (g _), L] using congr($hp ⟨g, g_supp.trans ball_subset_closedBall, hg⟩)
     simp_rw [MvPolynomial.funext_iff, map_zero]
-    refine fun x ↦ AnalyticOnNhd.eval_linearMap (EuclideanSpace.equiv ι ℝ).toLinearMap p
-      |>.eqOn_zero_of_preconnected_of_eventuallyEq_zero
-      (preconnectedSpace_iff_univ.mp inferInstance) (z₀ := 0) trivial
-      (Filter.mem_of_superset (Metric.ball_mem_nhds 0 zero_lt_one) ?_) trivial
+    refine fun x ↦
+      AnalyticOnNhd.eval_linearMap (EuclideanSpace.equiv ι ℝ).toLinearMap p
+        |>.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+          (preconnectedSpace_iff_univ.mp inferInstance) (z₀ := 0) trivial
+          (Filter.mem_of_superset (Metric.ball_mem_nhds 0 zero_lt_one) ?_) trivial
     rw [← ae_restrict_iff'₀ measurableSet_ball.nullMeasurableSet] at H
-    apply Measure.eqOn_of_ae_eq H
-      (p.continuous_eval.comp (continuous_ofLp 2 _)).continuousOn continuousOn_const
+    apply Measure.eqOn_of_ae_eq H (p.continuous_eval.comp (continuous_ofLp 2 _)).continuousOn
+      continuousOn_const
     rw [isOpen_ball.interior_eq]
     apply subset_closure
 
-lemma hairer (N : ℕ) (ι : Type*) [Fintype ι] :
-    ∃ (ρ : EuclideanSpace ℝ ι → ℝ), tsupport ρ ⊆ closedBall 0 1 ∧ ContDiff ℝ ∞ ρ ∧
-    ∀ (p : MvPolynomial ι ℝ), p.totalDegree ≤ N →
-    ∫ x : EuclideanSpace ℝ ι, eval x p • ρ x = eval 0 p := by
+lemma hairer (N : ℕ) (ι : Type*) [Fintype ι]
+    : ∃ (ρ : EuclideanSpace ℝ ι → ℝ),
+      tsupport ρ ⊆ closedBall 0 1 ∧ ContDiff ℝ ∞ ρ
+        ∧ ∀ (p : MvPolynomial ι ℝ),
+          p.totalDegree ≤ N → ∫ x : EuclideanSpace ℝ ι, eval x p • ρ x = eval 0 p := by
   have := (inj_L ι).comp (restrictTotalDegree ι ℝ N).injective_subtype
   rw [← LinearMap.coe_comp] at this
   obtain ⟨⟨φ, supφ, difφ⟩, hφ⟩ :=

@@ -36,7 +36,6 @@ artanh, arctanh, argtanh, atanh
 
 @[expose] public section
 
-
 noncomputable section
 
 open Function Set
@@ -48,29 +47,24 @@ namespace Real
 variable {x y : ℝ}
 
 /-- `artanh` is defined using a logarithm, `artanh x = log √((1 + x) / (1 - x))`. -/
-@[pp_nodot]
-def artanh (x : ℝ) :=
-  log √((1 + x) / (1 - x))
+@[pp_nodot] def artanh (x : ℝ) := log √((1 + x) / (1 - x))
 
-theorem artanh_eq_half_log {x : ℝ} (hx : x ∈ Icc (-1) 1) :
-    artanh x = 1 / 2 * log ((1 + x) / (1 - x)) := by
+theorem artanh_eq_half_log {x : ℝ} (hx : x ∈ Icc (-1) 1)
+    : artanh x = 1 / 2 * log ((1 + x) / (1 - x)) := by
   rw [artanh, log_sqrt <| div_nonneg (by grind) (by grind), one_div_mul_eq_div]
 
 theorem exp_artanh {x : ℝ} (hx : x ∈ Ioo (-1) 1) : exp (artanh x) = √((1 + x) / (1 - x)) :=
   exp_log <| sqrt_pos_of_pos <| div_pos (by grind) (by grind)
 
-@[simp]
-theorem artanh_zero : artanh 0 = 0 := by simp [artanh]
+@[simp] theorem artanh_zero : artanh 0 = 0 := by simp [artanh]
 
 theorem sinh_artanh {x : ℝ} (hx : x ∈ Ioo (-1) 1) : sinh (artanh x) = x / √(1 - x ^ 2) := by
   have : 0 < √((1 + x) / (1 - x)) := sqrt_pos_of_pos <| div_pos (by grind) (by grind)
-  rw [← one_pow, sq_sub_sq 1 x, sqrt_mul]
-    <;> grind [artanh, sinh_eq, exp_neg, exp_log, sqrt_div]
+  rw [← one_pow, sq_sub_sq 1 x, sqrt_mul] <;> grind [artanh, sinh_eq, exp_neg, exp_log, sqrt_div]
 
 theorem cosh_artanh {x : ℝ} (hx : x ∈ Ioo (-1) 1) : cosh (artanh x) = 1 / √(1 - x ^ 2) := by
   have : 0 < √((1 + x) / (1 - x)) := sqrt_pos_of_pos <| div_pos (by grind) (by grind)
-  rw [← one_pow, sq_sub_sq 1 x, sqrt_mul]
-    <;> grind [artanh, cosh_eq, exp_neg, exp_log, sqrt_div]
+  rw [← one_pow, sq_sub_sq 1 x, sqrt_mul] <;> grind [artanh, cosh_eq, exp_neg, exp_log, sqrt_div]
 
 /-- `artanh` is the right inverse of `tanh` over (-1, 1). -/
 theorem tanh_artanh {x : ℝ} (hx : x ∈ Ioo (-1) 1) : tanh (artanh x) = x := by
@@ -82,35 +76,33 @@ theorem artanh_tanh (x : ℝ) : artanh (tanh x) = x := by
   have h : 0 < (1 + tanh x) / (1 - tanh x) :=
     div_pos (by grind [neg_one_lt_tanh]) (by grind [tanh_lt_one])
   rw [artanh, ← exp_eq_exp, exp_log (sqrt_pos_of_pos h),
-    ← sq_eq_sq₀ (le_of_lt <| sqrt_pos_of_pos h) (exp_nonneg x),
-    sq_sqrt (le_of_lt h), tanh_eq, exp_neg]
+    ← sq_eq_sq₀ (le_of_lt <| sqrt_pos_of_pos h) (exp_nonneg x), sq_sqrt (le_of_lt h), tanh_eq,
+    exp_neg]
   field
 
-theorem strictMonoOn_one_add_div_one_sub :
-    StrictMonoOn (fun (x : ℝ) => (1 + x) / (1 - x)) (Ioo (-1) 1) := by
+theorem strictMonoOn_one_add_div_one_sub
+    : StrictMonoOn (fun (x : ℝ) => (1 + x) / (1 - x)) (Ioo (-1) 1) := by
   intro x hx y hy h
   field_simp [show 0 < 1 - x by grind, show 0 < 1 - y by grind]
   grind
 
 theorem strictMonoOn_artanh : StrictMonoOn artanh (Ioo (-1) 1) := by
   apply strictMonoOn_log.comp ?_ fun x hx ↦ sqrt_pos_of_pos <| div_pos (by grind) (by grind)
-  apply strictMonoOn_sqrt.comp strictMonoOn_one_add_div_one_sub
-    fun x hx ↦ show 0 ≤ (1 + x) / (1 - x) by exact div_nonneg (by grind) (by grind)
+  apply strictMonoOn_sqrt.comp strictMonoOn_one_add_div_one_sub fun x hx ↦
+    show 0 ≤ (1 + x) / (1 - x) by exact div_nonneg (by grind) (by grind)
 
-theorem artanh_le_artanh_iff {x y : ℝ} (hx : x ∈ Ioo (-1) 1) (hy : y ∈ Ioo (-1) 1) :
-    artanh x ≤ artanh y ↔ x ≤ y :=
+theorem artanh_le_artanh_iff {x y : ℝ} (hx : x ∈ Ioo (-1) 1) (hy : y ∈ Ioo (-1) 1)
+    : artanh x ≤ artanh y ↔ x ≤ y :=
   strictMonoOn_artanh.le_iff_le hx hy
 
-theorem artanh_lt_artanh_iff {x y : ℝ} (hx : x ∈ Ioo (-1) 1) (hy : y ∈ Ioo (-1) 1) :
-    artanh x < artanh y ↔ x < y :=
+theorem artanh_lt_artanh_iff {x y : ℝ} (hx : x ∈ Ioo (-1) 1) (hy : y ∈ Ioo (-1) 1)
+    : artanh x < artanh y ↔ x < y :=
   strictMonoOn_artanh.lt_iff_lt hx hy
 
-theorem artanh_le_artanh {x y : ℝ} (hx : -1 < x) (hy : y < 1) (hxy : x ≤ y) :
-    artanh x ≤ artanh y :=
+theorem artanh_le_artanh {x y : ℝ} (hx : -1 < x) (hy : y < 1) (hxy : x ≤ y) : artanh x ≤ artanh y :=
   (artanh_le_artanh_iff (by grind) (by grind)).mpr hxy
 
-theorem artanh_lt_artanh {x y : ℝ} (hx : -1 < x) (hy : y < 1) (hxy : x < y) :
-    artanh x < artanh y :=
+theorem artanh_lt_artanh {x y : ℝ} (hx : -1 < x) (hy : y < 1) (hxy : x < y) : artanh x < artanh y :=
   (artanh_lt_artanh_iff (by grind) (by grind)).mpr hxy
 
 theorem artanh_eq_zero_iff {x : ℝ} : artanh x = 0 ↔ x ≤ -1 ∨ x = 0 ∨ 1 ≤ x := by

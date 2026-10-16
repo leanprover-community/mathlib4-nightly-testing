@@ -8,7 +8,6 @@ module
 public import Mathlib.Data.Nat.Prime.Factorial
 public import Mathlib.GroupTheory.Index
 public import Mathlib.Order.Atoms
-
 import Mathlib.Data.Finite.Perm
 
 /-! # Subgroups of small index are normal
@@ -54,11 +53,12 @@ theorem normal_of_index_eq_one (hH : H.index = 1) : H.Normal := by
 theorem normal_of_index_eq_two (hH : H.index = 2) : H.Normal where
   conj_mem x hxH g := by simp_rw [mul_mem_iff_of_index_two hH, hxH, iff_true, inv_mem_iff]
 
-/-- A subgroup of a finite group whose index is the smallest prime factor is normal.
+/--
+A subgroup of a finite group whose index is the smallest prime factor is normal.
 
-Note : if `G` is infinite, then `Nat.card G = 0` and `(Nat.card G).minFac = 2` -/
-theorem normal_of_index_eq_minFac_card (hHp : H.index = (Nat.card G).minFac) :
-    H.Normal := by
+Note : if `G` is infinite, then `Nat.card G = 0` and `(Nat.card G).minFac = 2`
+-/
+theorem normal_of_index_eq_minFac_card (hHp : H.index = (Nat.card G).minFac) : H.Normal := by
   by_cases hG0 : Nat.card G = 0
   · rw [hG0, minFac_zero] at hHp
     exact normal_of_index_eq_two hHp
@@ -77,22 +77,22 @@ theorem normal_of_index_eq_minFac_card (hHp : H.index = (Nat.card G).minFac) :
     exact card_subgroup_dvd_card (toPermHom G (G ⧸ H)).range
   apply dvd_antisymm _ (index_dvd_of_le H.normalCore_le)
   rwa [← Coprime.dvd_mul_right, mul_factorial_pred hp.ne_zero]
-  have hr1 : H.normalCore.index ≠ 1 := fun hr1 ↦ hp.ne_one <|
-    Nat.eq_one_of_dvd_one (hr1 ▸ H.normalCore.index_dvd_of_le H.normalCore_le)
+  have hr1 : H.normalCore.index ≠ 1 := fun hr1 ↦
+    hp.ne_one <| Nat.eq_one_of_dvd_one (hr1 ▸ H.normalCore.index_dvd_of_le H.normalCore_le)
   rw [Nat.coprime_factorial_iff hr1]
   exact lt_of_lt_of_le (Nat.sub_one_lt hp.ne_zero) <|
     hHp ▸ minFac_le_of_dvd (Nat.minFac_prime hr1).two_le
       (dvd_trans (minFac_dvd H.normalCore.index) (H.normalCore.index_dvd_card))
 
-theorem _root_.AddSubgroup.index_normalCore_dvd_factorial_index {G : Type*} [AddGroup G]
-    (H : AddSubgroup G) [H.FiniteIndex] : H.normalCore.index ∣ H.index ! := by
+theorem _root_.AddSubgroup.index_normalCore_dvd_factorial_index
+    {G : Type*} [AddGroup G] (H : AddSubgroup G) [H.FiniteIndex]
+    : H.normalCore.index ∣ H.index ! := by
   rw [H.normalCore_eq_ker, AddSubgroup.index_ker, AddSubgroup.index, ← card_perm]
   apply AddSubgroup.card_addSubgroup_dvd_card
 
 variable (H) in
 @[to_additive existing]
-theorem index_normalCore_dvd_factorial_index [H.FiniteIndex] :
-    H.normalCore.index ∣ H.index ! := by
+theorem index_normalCore_dvd_factorial_index [H.FiniteIndex] : H.normalCore.index ∣ H.index ! := by
   rw [normalCore_eq_ker, index_ker, index, ← card_perm]
   apply card_subgroup_dvd_card
 

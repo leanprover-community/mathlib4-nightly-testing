@@ -26,10 +26,10 @@ that the concrete definition is equivalent to a \*-closed subalgebra which is we
 
 @[expose] public section
 
-
 universe u v
 
-/-- Sakai's definition of a von Neumann algebra as a C⋆ algebra with a Banach space predual.
+/--
+Sakai's definition of a von Neumann algebra as a C⋆ algebra with a Banach space predual.
 
 So that we can unambiguously talk about these "abstract" von Neumann algebras
 in parallel with the "concrete" ones (weakly closed \*-subalgebras of B(H)),
@@ -43,14 +43,17 @@ One the other hand, not picking one means that the weak-\* topology
 and we may be unhappy with the resulting opaqueness of the definition.
 -/
 class WStarAlgebra (M : Type u) [CStarAlgebra M] : Prop where
-  /-- There is a Banach space `X` whose dual is isometrically (conjugate-linearly) isomorphic
-  to the `WStarAlgebra`. -/
-  exists_predual :
-    ∃ (X : Type u) (_ : NormedAddCommGroup X) (_ : NormedSpace ℂ X) (_ : CompleteSpace X),
+  /--
+  There is a Banach space `X` whose dual is isometrically (conjugate-linearly) isomorphic
+  to the `WStarAlgebra`.
+  -/
+  exists_predual
+    : ∃ (X : Type u) (_ : NormedAddCommGroup X) (_ : NormedSpace ℂ X) (_ : CompleteSpace X),
       Nonempty (StrongDual ℂ X ≃ₗᵢ⋆[ℂ] M)
 
 -- TODO: Without this, `VonNeumannAlgebra` times out. Why?
-/-- The double commutant definition of a von Neumann algebra,
+/--
+The double commutant definition of a von Neumann algebra,
 as a \*-closed subalgebra of bounded operators on a Hilbert space,
 which is equal to its double commutant.
 
@@ -64,12 +67,14 @@ Thus we can't say that the bounded operators `H →L[ℂ] H` form a `VonNeumannA
 (although we will later construct the instance `WStarAlgebra (H →L[ℂ] H)`),
 and instead will use `⊤ : VonNeumannAlgebra H`.
 -/
-structure VonNeumannAlgebra (H : Type u) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] extends StarSubalgebra ℂ (H →L[ℂ] H) where
+structure VonNeumannAlgebra
+    (H : Type u) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    extends StarSubalgebra ℂ (H →L[ℂ] H) where
   /-- The double commutant (a.k.a. centralizer) of a `VonNeumannAlgebra` is itself. -/
   centralizer_centralizer' : Set.centralizer (Set.centralizer carrier) = carrier
 
-/-- Consider a von Neumann algebra acting on a Hilbert space `H` as a \*-subalgebra of `H →L[ℂ] H`.
+/--
+Consider a von Neumann algebra acting on a Hilbert space `H` as a \*-subalgebra of `H →L[ℂ] H`.
 (That is, we forget that it is equal to its double commutant
 or equivalently that it is closed in the weak and strong operator topologies.)
 -/
@@ -96,27 +101,25 @@ instance instSubringClass : SubringClass (VonNeumannAlgebra H) (H →L[ℂ] H) w
   neg_mem {s} a ha := show -a ∈ s.toStarSubalgebra from neg_mem ha
 
 @[simp]
-theorem mem_carrier {S : VonNeumannAlgebra H} {x : H →L[ℂ] H} :
-    x ∈ S.toStarSubalgebra ↔ x ∈ (S : Set (H →L[ℂ] H)) :=
+theorem mem_carrier {S : VonNeumannAlgebra H} {x : H →L[ℂ] H}
+    : x ∈ S.toStarSubalgebra ↔ x ∈ (S : Set (H →L[ℂ] H)) :=
   Iff.rfl
 
 @[simp]
-theorem coe_toStarSubalgebra (S : VonNeumannAlgebra H) :
-    (S.toStarSubalgebra : Set (H →L[ℂ] H)) = S :=
+theorem coe_toStarSubalgebra (S : VonNeumannAlgebra H)
+    : (S.toStarSubalgebra : Set (H →L[ℂ] H)) = S :=
   rfl
 
 @[simp]
-theorem coe_mk (S : StarSubalgebra ℂ (H →L[ℂ] H)) (h) :
-    ((⟨S, h⟩ : VonNeumannAlgebra H) : Set (H →L[ℂ] H)) = S :=
+theorem coe_mk (S : StarSubalgebra ℂ (H →L[ℂ] H)) (h)
+    : ((⟨S, h⟩ : VonNeumannAlgebra H) : Set (H →L[ℂ] H)) = S :=
   rfl
 
-@[ext]
-theorem ext {S T : VonNeumannAlgebra H} (h : ∀ x, x ∈ S ↔ x ∈ T) : S = T :=
-  SetLike.ext h
+@[ext] theorem ext {S T : VonNeumannAlgebra H} (h : ∀ x, x ∈ S ↔ x ∈ T) : S = T := SetLike.ext h
 
 @[simp]
-theorem centralizer_centralizer (S : VonNeumannAlgebra H) :
-    Set.centralizer (Set.centralizer (S : Set (H →L[ℂ] H))) = S :=
+theorem centralizer_centralizer (S : VonNeumannAlgebra H)
+    : Set.centralizer (Set.centralizer (S : Set (H →L[ℂ] H))) = S :=
   S.centralizer_centralizer'
 
 /-- The centralizer of a `VonNeumannAlgebra`, as a `VonNeumannAlgebra`. -/
@@ -125,13 +128,13 @@ noncomputable def commutant (S : VonNeumannAlgebra H) : VonNeumannAlgebra H wher
   centralizer_centralizer' := by simp
 
 @[simp]
-theorem coe_commutant (S : VonNeumannAlgebra H) :
-    ↑S.commutant = Set.centralizer (S : Set (H →L[ℂ] H)) := by
+theorem coe_commutant (S : VonNeumannAlgebra H)
+    : ↑S.commutant = Set.centralizer (S : Set (H →L[ℂ] H)) := by
   simp [commutant]
 
 @[simp]
-theorem mem_commutant_iff {S : VonNeumannAlgebra H} {z : H →L[ℂ] H} :
-    z ∈ S.commutant ↔ ∀ g ∈ S, g * z = z * g := by
+theorem mem_commutant_iff {S : VonNeumannAlgebra H} {z : H →L[ℂ] H}
+    : z ∈ S.commutant ↔ ∀ g ∈ S, g * z = z * g := by
   rw [← SetLike.mem_coe, coe_commutant]
   rfl
 
@@ -140,20 +143,23 @@ theorem commutant_commutant (S : VonNeumannAlgebra H) : S.commutant.commutant = 
   SetLike.coe_injective <| by simp
 
 open ContinuousLinearMap in
-/-- An idempotent is an element in a von Neumann algebra if and only if
-its range and kernel are invariant under the commutant. -/
-theorem IsIdempotentElem.mem_iff {e : H →L[ℂ] H} (h : IsIdempotentElem e)
-    (S : VonNeumannAlgebra H) :
-    e ∈ S ↔ ∀ y ∈ S.commutant,
-      e.range ∈ Module.End.invtSubmodule y ∧ e.ker ∈ Module.End.invtSubmodule y := by
+/--
+An idempotent is an element in a von Neumann algebra if and only if
+its range and kernel are invariant under the commutant.
+-/
+theorem IsIdempotentElem.mem_iff {e : H →L[ℂ] H} (h : IsIdempotentElem e) (S : VonNeumannAlgebra H)
+    : e ∈ S
+      ↔ ∀ y ∈ S.commutant,
+        e.range ∈ Module.End.invtSubmodule y ∧ e.ker ∈ Module.End.invtSubmodule y := by
   conv_rhs => simp [← h.commute_iff, Commute.symm_iff (a := e), commute_iff_eq, ← mem_commutant_iff]
 
 open VonNeumannAlgebra ContinuousLinearMap in
-/-- A star projection is an element in a von Neumann algebra if and only if
-its range is invariant under the commutant. -/
-theorem IsStarProjection.mem_iff {e : H →L[ℂ] H} (he : IsStarProjection e)
-    (S : VonNeumannAlgebra H) :
-    e ∈ S ↔ ∀ y ∈ S.commutant, e.range ∈ Module.End.invtSubmodule y := by
+/--
+A star projection is an element in a von Neumann algebra if and only if
+its range is invariant under the commutant.
+-/
+theorem IsStarProjection.mem_iff {e : H →L[ℂ] H} (he : IsStarProjection e) (S : VonNeumannAlgebra H)
+    : e ∈ S ↔ ∀ y ∈ S.commutant, e.range ∈ Module.End.invtSubmodule y := by
   simp_rw [he.isIdempotentElem.mem_iff, he.isIdempotentElem.range_mem_invtSubmodule_iff,
     he.isIdempotentElem.ker_mem_invtSubmodule_iff, forall_and, and_iff_left_iff_imp, ← mul_def]
   intro h x hx

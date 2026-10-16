@@ -22,7 +22,6 @@ set, and the forgetful functor from the category of condensed sets to the catego
 
 @[expose] public section
 
-
 open Function
 
 variable {S Y : Type*} (f : S → Y)
@@ -34,7 +33,8 @@ variable [TopologicalSpace S]
 /-- The canonical map from the disjoint union induced by `f` to `S`. -/
 @[simps apply]
 def sigmaIsoHom : C((x : Fiber f) × x.val, S) where
-  toFun | ⟨a, x⟩ => x.val
+  toFun
+    | ⟨a, x⟩ => x.val
   continuous_toFun := continuous_sigma (by fun_prop)
 
 set_option backward.isDefEq.respectTransparency false in
@@ -45,8 +45,8 @@ lemma sigmaIsoHom_inj : Function.Injective (sigmaIsoHom f) := by
   rw [Set.mem_preimage, Set.mem_singleton_iff] at hx hy
   simp [← hx, ← hy, h]
 
-lemma sigmaIsoHom_surj : Function.Surjective (sigmaIsoHom f) :=
-  fun _ ↦ ⟨⟨⟨_, ⟨⟨_, Set.mem_range_self _⟩, rfl⟩⟩, ⟨_, rfl⟩⟩, rfl⟩
+lemma sigmaIsoHom_surj : Function.Surjective (sigmaIsoHom f) := fun _ ↦
+  ⟨⟨⟨_, ⟨⟨_, Set.mem_range_self _⟩, rfl⟩⟩, ⟨_, rfl⟩⟩, rfl⟩
 
 /-- The inclusion map from a component of the disjoint union induced by `f` into `S`. -/
 def sigmaIncl (a : Fiber f) : C(a.val, S) where
@@ -54,14 +54,17 @@ def sigmaIncl (a : Fiber f) : C(a.val, S) where
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The inclusion map from a fiber of a composition into the intermediate fiber. -/
-def sigmaInclIncl {X : Type*} (g : Y → X) (a : Fiber (g ∘ f))
-    (b : Fiber (f ∘ (sigmaIncl (g ∘ f) a))) :
-    C(b.val, (Fiber.mk f (b.preimage).val).val) where
-  toFun x := ⟨x.val.val, by
-    have := x.prop
-    simp only [sigmaIncl, ContinuousMap.coe_mk, Fiber.mem_iff_eq_image, comp_apply] at this
-    rw [Fiber.mem_iff_eq_image, Fiber.mk_image, this, ← Fiber.map_preimage_eq_image]
-    simp [sigmaIncl]⟩
+def sigmaInclIncl
+    {X : Type*} (g : Y → X) (a : Fiber (g ∘ f)) (b : Fiber (f ∘ (sigmaIncl (g ∘ f) a)))
+    : C(b.val, (Fiber.mk f (b.preimage).val).val) where
+  toFun x := ⟨
+    x.val.val,
+    by
+      have := x.prop
+      simp only [sigmaIncl, ContinuousMap.coe_mk, Fiber.mem_iff_eq_image, comp_apply] at this
+      rw [Fiber.mem_iff_eq_image, Fiber.mk_image, this, ← Fiber.map_preimage_eq_image]
+      simp [sigmaIncl]
+  ⟩
 
 variable (l : LocallyConstant S Y) [CompactSpace S]
 

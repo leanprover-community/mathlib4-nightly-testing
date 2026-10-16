@@ -17,14 +17,21 @@ public meta section
 
 open Lean Elab
 
-private def setOption {m : Type → Type} [Monad m] [MonadError m]
-    (name val : Syntax) (opts : Options) : m Options := do
-  let val ← match val with
-    | Syntax.ident _ _ `true _  => pure <| DataValue.ofBool true
-    | Syntax.ident _ _ `false _ => pure <| DataValue.ofBool false
-    | _ => match val.isNatLit? with
-      | some num => pure <| DataValue.ofNat num
-      | none => match val.isStrLit? with
+private def setOption
+    {m : Type → Type} [Monad m] [MonadError m] (name val : Syntax) (opts : Options)
+    : m Options := do
+  let val ←
+    match val with
+    | Syntax.ident _ _ `true _ =>
+      pure <| DataValue.ofBool true
+    | Syntax.ident _ _ `false _ =>
+      pure <| DataValue.ofBool false
+    | _ =>
+      match val.isNatLit? with
+      | some num =>
+        pure <| DataValue.ofNat num
+      | none =>
+        match val.isStrLit? with
         | some str => pure <| DataValue.ofString str
         | none => throwError "unsupported option value {val}"
   pure <| opts.insert name.getId val
@@ -46,9 +53,9 @@ but it also allows to set undeclared options.
 -/
 elab "sudo " "set_option " n:ident ppSpace val:term " in " body:term : term <= expectedType => do
   let options ← setOption n val (← getOptions)
-  withTheReader Core.Context (fun ctx ↦
-      { ctx.setOptions options with maxRecDepth := maxRecDepth.get options }) do
-    elabTerm body expectedType
+  withTheReader Core.Context
+    (fun ctx ↦ { ctx.setOptions options with maxRecDepth := maxRecDepth.get options })
+    do elabTerm body expectedType
 
 /-
 sudo set_option trace.Elab.resuming true in #check 4

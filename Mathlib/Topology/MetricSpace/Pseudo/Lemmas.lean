@@ -27,22 +27,32 @@ instance : OrderTopology ℝ :=
 lemma Real.singleton_eq_inter_Icc (b : ℝ) : {b} = ⋂ (r > 0), Icc (b - r) (b + r) := by
   simp [Icc_eq_closedBall, biInter_basis_nhds Metric.nhds_basis_closedBall]
 
-/-- Special case of the sandwich lemma; see `tendsto_of_tendsto_of_tendsto_of_le_of_le'` for the
-general case. -/
-lemma squeeze_zero' {α} {f g : α → ℝ} {t₀ : Filter α} (hf : ∀ᶠ t in t₀, 0 ≤ f t)
-    (hft : ∀ᶠ t in t₀, f t ≤ g t) (g0 : Tendsto g t₀ (𝓝 0)) : Tendsto f t₀ (𝓝 0) :=
+/--
+Special case of the sandwich lemma; see `tendsto_of_tendsto_of_tendsto_of_le_of_le'` for the
+general case.
+-/
+lemma squeeze_zero'
+    {α} {f g : α → ℝ} {t₀ : Filter α}
+    (hf : ∀ᶠ t in t₀, 0 ≤ f t) (hft : ∀ᶠ t in t₀, f t ≤ g t) (g0 : Tendsto g t₀ (𝓝 0))
+    : Tendsto f t₀ (𝓝 0) :=
   tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds g0 hf hft
 
-/-- Special case of the sandwich lemma; see `tendsto_of_tendsto_of_tendsto_of_le_of_le`
-and `tendsto_of_tendsto_of_tendsto_of_le_of_le'` for the general case. -/
-lemma squeeze_zero {α} {f g : α → ℝ} {t₀ : Filter α} (hf : ∀ t, 0 ≤ f t) (hft : ∀ t, f t ≤ g t)
-    (g0 : Tendsto g t₀ (𝓝 0)) : Tendsto f t₀ (𝓝 0) :=
+/--
+Special case of the sandwich lemma; see `tendsto_of_tendsto_of_tendsto_of_le_of_le`
+and `tendsto_of_tendsto_of_tendsto_of_le_of_le'` for the general case.
+-/
+lemma squeeze_zero
+    {α} {f g : α → ℝ} {t₀ : Filter α}
+    (hf : ∀ t, 0 ≤ f t) (hft : ∀ t, f t ≤ g t) (g0 : Tendsto g t₀ (𝓝 0))
+    : Tendsto f t₀ (𝓝 0) :=
   squeeze_zero' (Eventually.of_forall hf) (Eventually.of_forall hft) g0
 
-/-- If `u` is a neighborhood of `x`, then for small enough `r`, the closed ball
-`Metric.closedBall x r` is contained in `u`. -/
-lemma eventually_closedBall_subset {x : α} {u : Set α} (hu : u ∈ 𝓝 x) :
-    ∀ᶠ r in 𝓝 (0 : ℝ), closedBall x r ⊆ u := by
+/--
+If `u` is a neighborhood of `x`, then for small enough `r`, the closed ball
+`Metric.closedBall x r` is contained in `u`.
+-/
+lemma eventually_closedBall_subset {x : α} {u : Set α} (hu : u ∈ 𝓝 x)
+    : ∀ᶠ r in 𝓝 (0 : ℝ), closedBall x r ⊆ u := by
   obtain ⟨ε, εpos, hε⟩ : ∃ ε, 0 < ε ∧ closedBall x ε ⊆ u := nhds_basis_closedBall.mem_iff.1 hu
   have : Iic ε ∈ 𝓝 (0 : ℝ) := Iic_mem_nhds εpos
   filter_upwards [this] with _ hr using Subset.trans (closedBall_subset_closedBall hr) hε
@@ -50,8 +60,10 @@ lemma eventually_closedBall_subset {x : α} {u : Set α} (hu : u ∈ 𝓝 x) :
 lemma tendsto_closedBall_smallSets (x : α) : Tendsto (closedBall x) (𝓝 0) (𝓝 x).smallSets :=
   tendsto_smallSets_iff.2 fun _ ↦ eventually_closedBall_subset
 
-/-- If `u` is a neighborhood of `x`, then for small enough `r`, the open ball
-`Metric.ball x r` is contained in `u`. -/
+/--
+If `u` is a neighborhood of `x`, then for small enough `r`, the open ball
+`Metric.ball x r` is contained in `u`.
+-/
 lemma eventually_ball_subset {x : α} {u : Set α} (hu : u ∈ 𝓝 x) : ∀ᶠ r in 𝓝 (0 : ℝ), ball x r ⊆ u :=
   (eventually_closedBall_subset hu).mono fun _r hr ↦ ball_subset_closedBall.trans hr
 
@@ -66,9 +78,7 @@ lemma isClosed_sphere : IsClosed (sphere x ε) := isClosed_eq (by fun_prop) cont
 lemma closure_closedBall : closure (closedBall x ε) = closedBall x ε :=
   isClosed_closedBall.closure_eq
 
-@[simp]
-lemma closure_sphere : closure (sphere x ε) = sphere x ε :=
-  isClosed_sphere.closure_eq
+@[simp] lemma closure_sphere : closure (sphere x ε) = sphere x ε := isClosed_sphere.closure_eq
 
 lemma closure_ball_subset_closedBall : closure (ball x ε) ⊆ closedBall x ε :=
   closure_minimal ball_subset_closedBall isClosed_closedBall
@@ -85,14 +95,14 @@ lemma closedBall_zero' (x : α) : closedBall x 0 = closure {x} :=
       mem_closure_iff.2 fun _ε ε0 => ⟨x, mem_singleton x, (mem_closedBall.1 hy).trans_lt ε0⟩)
     (closure_minimal (singleton_subset_iff.2 (dist_self x).le) isClosed_closedBall)
 
-lemma eventually_isCompact_closedBall [WeaklyLocallyCompactSpace α] (x : α) :
-    ∀ᶠ r in 𝓝 (0 : ℝ), IsCompact (closedBall x r) := by
+lemma eventually_isCompact_closedBall [WeaklyLocallyCompactSpace α] (x : α)
+    : ∀ᶠ r in 𝓝 (0 : ℝ), IsCompact (closedBall x r) := by
   rcases exists_compact_mem_nhds x with ⟨s, s_compact, hs⟩
   filter_upwards [eventually_closedBall_subset hs] with r hr
   exact IsCompact.of_isClosed_subset s_compact isClosed_closedBall hr
 
-lemma exists_isCompact_closedBall [WeaklyLocallyCompactSpace α] (x : α) :
-    ∃ r, 0 < r ∧ IsCompact (closedBall x r) := by
+lemma exists_isCompact_closedBall [WeaklyLocallyCompactSpace α] (x : α)
+    : ∃ r, 0 < r ∧ IsCompact (closedBall x r) := by
   have : ∀ᶠ r in 𝓝[>] 0, IsCompact (closedBall x r) :=
     eventually_nhdsWithin_of_eventually_nhds (eventually_isCompact_closedBall x)
   simpa only [and_comm] using (this.and self_mem_nhdsWithin).exists
@@ -117,12 +127,15 @@ theorem biUnion_lt_closedBall (x : α) (r : ℝ) : ⋃ r' < r, closedBall x r' =
 
 end Metric
 
-theorem lebesgue_number_lemma_of_metric {s : Set α} {ι : Sort*} {c : ι → Set α} (hs : IsCompact s)
-    (hc₁ : ∀ i, IsOpen (c i)) (hc₂ : s ⊆ ⋃ i, c i) : ∃ δ > 0, ∀ x ∈ s, ∃ i, ball x δ ⊆ c i := by
+theorem lebesgue_number_lemma_of_metric
+    {s : Set α} {ι : Sort*} {c : ι → Set α}
+    (hs : IsCompact s) (hc₁ : ∀ i, IsOpen (c i)) (hc₂ : s ⊆ ⋃ i, c i)
+    : ∃ δ > 0, ∀ x ∈ s, ∃ i, ball x δ ⊆ c i := by
   simpa only [ball, UniformSpace.ball, SetRel.ball, SetRel.inv, preimage_ofPred_eq, dist_comm,
-    Set.preimage, Prod.swap, mem_ofPred_eq]
+      Set.preimage, Prod.swap, mem_ofPred_eq]
     using uniformity_basis_dist.lebesgue_number_lemma hs hc₁ hc₂
 
-theorem lebesgue_number_lemma_of_metric_sUnion {s : Set α} {c : Set (Set α)} (hs : IsCompact s)
-    (hc₁ : ∀ t ∈ c, IsOpen t) (hc₂ : s ⊆ ⋃₀ c) : ∃ δ > 0, ∀ x ∈ s, ∃ t ∈ c, ball x δ ⊆ t := by
+theorem lebesgue_number_lemma_of_metric_sUnion
+    {s : Set α} {c : Set (Set α)} (hs : IsCompact s) (hc₁ : ∀ t ∈ c, IsOpen t) (hc₂ : s ⊆ ⋃₀c)
+    : ∃ δ > 0, ∀ x ∈ s, ∃ t ∈ c, ball x δ ⊆ t := by
   rw [sUnion_eq_iUnion] at hc₂; simpa using lebesgue_number_lemma_of_metric hs (by simpa) hc₂

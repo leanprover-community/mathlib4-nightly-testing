@@ -26,15 +26,19 @@ public section
 open scoped Pointwise
 
 /-- A predicate stating that `φ` and `ψ` define a short exact sequence of topological groups. -/
-structure TopologicalGroup.IsSES {A B C : Type*} [Group A] [Group B] [Group C]
-    [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace C] (φ : A →* B) (ψ : B →* C) where
+structure TopologicalGroup.IsSES
+    {A B C : Type*}
+    [Group A] [Group B] [Group C] [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace C]
+    (φ : A →* B) (ψ : B →* C) where
   isClosedEmbedding : Topology.IsClosedEmbedding φ
   isOpenQuotientMap : IsOpenQuotientMap ψ
   mulExact : Function.MulExact φ ψ
 
 /-- A predicate stating that `φ` and `ψ` define a short exact sequence of topological groups. -/
-structure TopologicalAddGroup.IsSES {A B C : Type*} [AddGroup A] [AddGroup B] [AddGroup C]
-    [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace C] (φ : A →+ B) (ψ : B →+ C) where
+structure TopologicalAddGroup.IsSES
+    {A B C : Type*} [AddGroup A] [AddGroup B] [AddGroup C] [TopologicalSpace A] [TopologicalSpace B]
+    [TopologicalSpace C]
+    (φ : A →+ B) (ψ : B →+ C) where
   isClosedEmbedding : Topology.IsClosedEmbedding φ
   isOpenQuotientMap : IsOpenQuotientMap ψ
   exact : Function.Exact φ ψ
@@ -46,9 +50,11 @@ namespace TopologicalGroup.IsSES
 /-- Construct a short exact sequence of topological groups from a closed normal subgroup. -/
 @[to_additive /-- Construct a short exact sequence of topological groups from a
 closed normal subgroup. -/]
-theorem ofClosedSubgroup {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-    (H : Subgroup G) [H.Normal] (hH : IsClosed (H : Set G)) :
-    TopologicalGroup.IsSES H.subtype (QuotientGroup.mk' H) where
+theorem ofClosedSubgroup
+    {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    (H : Subgroup G) [H.Normal]
+    (hH : IsClosed (H : Set G))
+    : TopologicalGroup.IsSES H.subtype (QuotientGroup.mk' H) where
   isClosedEmbedding := ⟨⟨Topology.IsInducing.subtypeVal, H.subtype_injective⟩, by simpa⟩
   isOpenQuotientMap := MulAction.isOpenQuotientMap_quotientMk
   mulExact := by simp [Function.MulExact]

@@ -26,7 +26,6 @@ variable {M : Type*} {M₂ : Type*}
 
 /-! ### Properties of linear maps -/
 
-
 namespace LinearMap
 
 section AddCommMonoid
@@ -42,48 +41,45 @@ variable {τ₁₂ : R →+* R₂}
 section
 
 /-- A linear map version of `AddMonoidHom.eqLocusM` -/
-def eqLocus (f g : M →ₛₗ[τ₁₂] M₂) : Submodule R M :=
-  { (f : M →+ M₂).eqLocusM g with
-    carrier := { x | f x = g x }
-    smul_mem' := fun {r} {x} (hx : _ = _) => show _ = _ by
+def eqLocus (f g : M →ₛₗ[τ₁₂] M₂) : Submodule R M := {
+  (f : M →+ M₂).eqLocusM g with
+  carrier := { x | f x = g x }
+  smul_mem' := fun {r} {x} (hx : _ = _) =>
+    show _ = _ by
       -- Note: https://github.com/leanprover-community/mathlib4/pull/8386 changed `map_smulₛₗ` into `map_smulₛₗ _`
-      simpa only [map_smulₛₗ _] using congr(τ₁₂ r • $hx) }
+      simpa only [map_smulₛₗ _] using congr(τ₁₂ r • $hx)
+}
 
-@[simp]
-theorem mem_eqLocus {x : M} {f g : M →ₛₗ[τ₁₂] M₂} : x ∈ eqLocus f g ↔ f x = g x :=
-  Iff.rfl
+@[simp] theorem mem_eqLocus {x : M} {f g : M →ₛₗ[τ₁₂] M₂} : x ∈ eqLocus f g ↔ f x = g x := Iff.rfl
 
-theorem eqLocus_toAddSubmonoid (f g : M →ₛₗ[τ₁₂] M₂) :
-    (eqLocus f g).toAddSubmonoid = (f : M →+ M₂).eqLocusM g :=
+theorem eqLocus_toAddSubmonoid (f g : M →ₛₗ[τ₁₂] M₂)
+    : (eqLocus f g).toAddSubmonoid = (f : M →+ M₂).eqLocusM g :=
   rfl
 
 @[simp]
 theorem eqLocus_eq_top {f g : M →ₛₗ[τ₁₂] M₂} : eqLocus f g = ⊤ ↔ f = g := by
   simp [SetLike.ext_iff, DFunLike.ext_iff]
 
-@[simp]
-theorem eqLocus_same (f : M →ₛₗ[τ₁₂] M₂) : eqLocus f f = ⊤ := eqLocus_eq_top.2 rfl
+@[simp] theorem eqLocus_same (f : M →ₛₗ[τ₁₂] M₂) : eqLocus f f = ⊤ := eqLocus_eq_top.2 rfl
 
-theorem le_eqLocus {f g : M →ₛₗ[τ₁₂] M₂} {S : Submodule R M} :
-    S ≤ eqLocus f g ↔ Set.EqOn f g S :=
+theorem le_eqLocus {f g : M →ₛₗ[τ₁₂] M₂} {S : Submodule R M} : S ≤ eqLocus f g ↔ Set.EqOn f g S :=
   Iff.rfl
 
-theorem eqOn_eqLocus {f g : M →ₛₗ[τ₁₂] M₂} :
-    Set.EqOn f g (eqLocus f g) :=
-  fun _ h ↦ h
+theorem eqOn_eqLocus {f g : M →ₛₗ[τ₁₂] M₂} : Set.EqOn f g (eqLocus f g) := fun _ h ↦ h
 
 variable {F : Type*} [FunLike F M M₂] [SemilinearMapClass F τ₁₂ M M₂]
 
 include τ₁₂ in
-theorem eqOn_sup {f g : F} {S T : Submodule R M}
-    (hS : Set.EqOn f g S) (hT : Set.EqOn f g T) :
-    Set.EqOn f g ↑(S ⊔ T) := by
+theorem eqOn_sup {f g : F} {S T : Submodule R M} (hS : Set.EqOn f g S) (hT : Set.EqOn f g T)
+    : Set.EqOn f g ↑(S ⊔ T) := by
   rw [← LinearMap.coe_ofClass (f := f), ← LinearMap.coe_ofClass (f := g), ← le_eqLocus] at hS hT ⊢
   exact sup_le hS hT
 
 include τ₁₂ in
-theorem ext_on_codisjoint {f g : F} {S T : Submodule R M} (hST : Codisjoint S T)
-    (hS : Set.EqOn f g S) (hT : Set.EqOn f g T) : f = g :=
+theorem ext_on_codisjoint
+    {f g : F} {S T : Submodule R M}
+    (hST : Codisjoint S T) (hS : Set.EqOn f g S) (hT : Set.EqOn f g T)
+    : f = g :=
   DFunLike.ext _ _ fun _ ↦ eqOn_sup hS hT <| hST.eq_top.symm ▸ trivial
 
 end

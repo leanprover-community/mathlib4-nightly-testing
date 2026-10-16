@@ -23,25 +23,27 @@ namespace SSet.Subcomplex.Pairing
 
 variable {X : SSet.{u}} {A : X.Subcomplex} (P : A.Pairing)
 
-/-- If `P` is a pairing for a subcomplex `A` of a simplicial set `X`,
-this is the corresponding pairing of `A.op`. -/
+/--
+If `P` is a pairing for a subcomplex `A` of a simplicial set `X`,
+this is the corresponding pairing of `A.op`.
+-/
 @[implicit_reducible, simps I II]
 def op : A.op.Pairing where
   I := Subcomplex.N.opEquiv ⁻¹' P.I
   II := Subcomplex.N.opEquiv ⁻¹' P.II
   inter := by simp [← Set.preimage_inter, P.inter]
   union := by simp [← Set.preimage_union, P.union]
-  p := (N.opEquiv.subtypeEquiv (by simp)).trans
-    (P.p.trans (N.opEquiv.symm.subtypeEquiv (by simp)))
+  p := (N.opEquiv.subtypeEquiv (by simp)).trans (P.p.trans (N.opEquiv.symm.subtypeEquiv (by simp)))
 
 @[simp]
-lemma op_p (x : P.II) :
-    dsimp% P.op.p ⟨Subcomplex.N.opEquiv.symm x.1, x.2⟩ =
-      ⟨Subcomplex.N.opEquiv.symm (P.p x), by simp⟩ := rfl
+lemma op_p (x : P.II)
+    : dsimp% P.op.p ⟨Subcomplex.N.opEquiv.symm x.1, x.2⟩ =
+        ⟨Subcomplex.N.opEquiv.symm (P.p x), by simp⟩ :=
+  rfl
 
-lemma op_ancestralRel_iff (x y : P.II) :
-    P.op.AncestralRel ⟨Subcomplex.N.opEquiv.symm x.1, x.2⟩
-      ⟨Subcomplex.N.opEquiv.symm y.1, y.2⟩ ↔ P.AncestralRel x y :=
+lemma op_ancestralRel_iff (x y : P.II)
+    : P.op.AncestralRel ⟨Subcomplex.N.opEquiv.symm x.1, x.2⟩ ⟨Subcomplex.N.opEquiv.symm y.1, y.2⟩
+      ↔ P.AncestralRel x y :=
   and_congr (not_congr (by simp [Subtype.ext_iff])) (by simp)
 
 instance [P.IsProper] : P.op.IsProper where
